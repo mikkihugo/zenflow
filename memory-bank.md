@@ -1,58 +1,74 @@
-# Memory Bank Configuration
+# Memory Bank
 
-## Overview
-The Claude-Flow memory system provides persistent storage and intelligent retrieval of information across agent sessions. It uses a hybrid approach combining SQL databases with semantic search capabilities.
+This file serves as persistent memory storage for Claude across sessions.
 
-## Storage Backends
-- **Primary**: JSON database (`./memory/claude-flow-data.json`)
-- **Sessions**: File-based storage in `./memory/sessions/`
-- **Cache**: In-memory cache for frequently accessed data
+## Session Information
+- **Current Session**: Started 2025-06-10T22:40:08.013Z
+- **Project Phase**: [Development/Testing/Production]
+- **Active Tasks**: [List current tasks]
 
-## Memory Organization
-- **Namespaces**: Logical groupings of related information
-- **Sessions**: Time-bound conversation contexts
-- **Indexing**: Automatic content indexing for fast retrieval
-- **Replication**: Optional distributed storage support
+## Project Context
+### Technical Stack
+- Languages: [List languages used]
+- Frameworks: [List frameworks]
+- Tools: [Development tools]
 
-## Commands
-- `npx claude-flow memory query <search>`: Search stored information
-- `npx claude-flow memory stats`: Show memory usage statistics
-- `npx claude-flow memory export <file>`: Export memory to file
-- `npx claude-flow memory import <file>`: Import memory from file
+### Architecture Decisions
+- [Record key architectural decisions]
+- [Rationale for technology choices]
 
-## Configuration
-Memory settings are configured in `claude-flow.config.json`:
-```json
-{
-  "memory": {
-    "backend": "json",
-    "path": "./memory/claude-flow-data.json",
-    "cacheSize": 1000,
-    "indexing": true,
-    "namespaces": ["default", "agents", "tasks", "sessions"],
-    "retentionPolicy": {
-      "sessions": "30d",
-      "tasks": "90d",
-      "agents": "permanent"
-    }
-  }
-}
+## Important Information
+### API Keys and Secrets
+- [Never store actual secrets here, just references]
+
+### External Services
+- [List integrated services]
+- [Configuration requirements]
+
+### Database Schema
+- [Current schema version]
+- [Recent migrations]
+
+## Progress Tracking
+### Completed Tasks
+- [x] [Completed task 1]
+- [x] [Completed task 2]
+
+### In Progress
+- [ ] [Current task 1]
+- [ ] [Current task 2]
+
+### Upcoming
+- [ ] [Future task 1]
+- [ ] [Future task 2]
+
+## Code Patterns
+### Established Patterns
+```javascript
+// Example pattern
 ```
 
-## Best Practices
-- Use descriptive namespaces for different data types
-- Regular memory exports for backup purposes
-- Monitor memory usage with stats command
-- Clean up old sessions periodically
+### Anti-patterns to Avoid
+- [List anti-patterns]
 
-## Memory Types
-- **Episodic**: Conversation and interaction history
-- **Semantic**: Factual knowledge and relationships
-- **Procedural**: Task patterns and workflows
-- **Meta**: System configuration and preferences
+## Meeting Notes
+### [Date]
+- Participants: [Names]
+- Decisions: [Key decisions]
+- Action items: [Tasks assigned]
 
-## Integration Notes
-- Memory is automatically synchronized across agents
-- Search supports both exact match and semantic similarity
-- Memory contents are private to your local instance
-- No data is sent to external services without explicit commands
+## Debugging History
+### Issue: [Issue name]
+- **Date**: [Date]
+- **Symptoms**: [What was observed]
+- **Root Cause**: [What caused it]
+- **Solution**: [How it was fixed]
+
+## Performance Metrics
+- [Baseline metrics]
+- [Optimization goals]
+
+## Documentation Links
+- [API Documentation]: [URL]
+- [Design Documents]: [URL]
+- [Issue Tracker]: [URL]
