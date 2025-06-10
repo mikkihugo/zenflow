@@ -36,17 +36,17 @@ npx claude-flow init
 npx claude-flow start
 
 # 🤖 Spawn a research team
-claude-flow agent spawn researcher --name "Senior Researcher"
-claude-flow agent spawn analyst --name "Data Analyst"
-claude-flow agent spawn implementer --name "Code Developer"
+npx claude-flow agent spawn researcher --name "Senior Researcher"
+npx claude-flow agent spawn analyst --name "Data Analyst"
+npx claude-flow agent spawn implementer --name "Code Developer"
 
 # 📋 Create and execute tasks
-claude-flow task create research "Research AI optimization techniques"
-claude-flow task list
+npx claude-flow task create research "Research AI optimization techniques"
+npx claude-flow task list
 
 # 📊 Monitor in real-time
-claude-flow status
-claude-flow monitor
+npx claude-flow status
+npx claude-flow monitor
 ```
 
 ## 🏗️ **Core Features**

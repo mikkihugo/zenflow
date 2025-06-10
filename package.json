@@ -35,9 +35,9 @@
     "node": ">=16.0.0"
   },
   "files": [
-    "bin/",
+    "bin/claude-flow",
     "src/",
-    "scripts/",
+    "scripts/install.js",
     "README.md",
     "LICENSE",
     "deno.json"

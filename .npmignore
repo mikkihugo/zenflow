@@ -1,0 +1,48 @@
+# Development files
+*.test.ts
+*.spec.ts
+test/
+tests/
+coverage/
+.github/
+.vscode/
+
+# Build artifacts
+bin/claude-flow-simple
+bin/claude-flow-typecheck
+*.tgz
+
+# Documentation
+docs/
+examples/
+plans/
+research/
+coordination/
+memory/
+mcp_config/
+
+# Scripts (except install.js)
+scripts/*.ts
+scripts/*.sh
+scripts/demo-*.ts
+scripts/test-*.ts
+scripts/validate-*.ts
+scripts/check-*.ts
+scripts/coverage-*.ts
+
+# Logs and temp files
+*.log
+*.tmp
+.DS_Store
+node_modules/
+dist/
+test-results/
+
+# Config files
+tsconfig.json
+vitest.config.ts
+codecov.yml
+claude.md
+*.md
+!README.md
+!LICENSE

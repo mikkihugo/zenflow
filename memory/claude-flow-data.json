@@ -59,6 +59,21 @@
       "maxConcurrentTasks": 5,
       "priority": 1,
       "createdAt": 1749575024875
+    },
+    {
+      "id": "agent-1749576897556-ye3qz5dmr",
+      "type": "implementer",
+      "name": "implementer-1749576897555",
+      "status": "active",
+      "capabilities": [
+        "code-generation",
+        "file-manipulation",
+        "testing"
+      ],
+      "systemPrompt": "You are an implementation agent focused on writing code and creating solutions.",
+      "maxConcurrentTasks": 5,
+      "priority": 1,
+      "createdAt": 1749576897556
     }
   ],
   "tasks": [
@@ -99,5 +114,5 @@
       "assignedAgent": "agent-1749575024875-mmcz7tobo"
     }
   ],
-  "lastUpdated": 1749575730565
+  "lastUpdated": 1749576897556
 }
