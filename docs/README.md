@@ -23,6 +23,7 @@ This guide is organized into 10 comprehensive sections, progressing from basic u
 ### 🔧 Integration and Tools
 - **[07. MCP Integration](./07-mcp-integration.md)** - External tools and Model Context Protocol
 - **[08. Terminal Management](./08-terminal-management.md)** - Session handling and multi-terminal workflows
+- **[11. Claude Spawning](./11-claude-spawning.md)** 🆕 - Spawn Claude instances with specific configurations
 
 ### 🛠️ Support and Advanced Usage
 - **[09. Troubleshooting](./09-troubleshooting.md)** - Common issues and diagnostic procedures

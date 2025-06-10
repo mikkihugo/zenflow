@@ -1,6 +1,6 @@
 import { CLI, success, error, warning, info, VERSION } from "../cli-core.ts";
 import type { Command, CommandContext } from "../cli-core.ts";
-import { bold, blue } from "https://deno.land/std@0.224.0/fmt/colors.ts";
+import { bold, blue, yellow } from "https://deno.land/std@0.224.0/fmt/colors.ts";
 import { Orchestrator } from "../../core/orchestrator-fixed.ts";
 import { ConfigManager } from "../../core/config.ts";
 import { MemoryManager } from "../../memory/manager.ts";
@@ -607,12 +607,430 @@ export function setupCommands(cli: CLI): void {
     },
   });
 
+  // Claude command
+  cli.command({
+    name: "claude",
+    description: "Spawn Claude instances with specific configurations",
+    aliases: ["cl"],
+    options: [
+      {
+        name: "tools",
+        short: "t",
+        description: "Allowed tools (comma-separated)",
+        type: "string",
+        default: "View,Edit,Replace,GlobTool,GrepTool,LS,Bash",
+      },
+      {
+        name: "no-permissions",
+        description: "Use --dangerously-skip-permissions flag",
+        type: "boolean",
+      },
+      {
+        name: "config",
+        short: "c",
+        description: "MCP config file path",
+        type: "string",
+      },
+      {
+        name: "mode",
+        short: "m",
+        description: "Development mode (full, backend-only, frontend-only, api-only)",
+        type: "string",
+        default: "full",
+      },
+      {
+        name: "parallel",
+        description: "Enable parallel execution with BatchTool",
+        type: "boolean",
+      },
+      {
+        name: "research",
+        description: "Enable web research with WebFetchTool",
+        type: "boolean",
+      },
+      {
+        name: "coverage",
+        description: "Test coverage target percentage",
+        type: "number",
+        default: 80,
+      },
+      {
+        name: "commit",
+        description: "Commit frequency (phase, feature, manual)",
+        type: "string",
+        default: "phase",
+      },
+      {
+        name: "verbose",
+        short: "v",
+        description: "Enable verbose output",
+        type: "boolean",
+      },
+      {
+        name: "dry-run",
+        short: "d",
+        description: "Show what would be executed without running",
+        type: "boolean",
+      },
+    ],
+    action: async (ctx: CommandContext) => {
+      const subcommand = ctx.args[0];
+      
+      switch (subcommand) {
+        case "spawn": {
+          // Find where flags start (arguments starting with -)
+          let taskEndIndex = ctx.args.length;
+          for (let i = 1; i < ctx.args.length; i++) {
+            if (ctx.args[i].startsWith("-")) {
+              taskEndIndex = i;
+              break;
+            }
+          }
+          
+          const task = ctx.args.slice(1, taskEndIndex).join(" ");
+          if (!task) {
+            error("Usage: claude spawn <task description>");
+            break;
+          }
+          
+          try {
+            // Build allowed tools list
+            let tools = ctx.flags.tools as string || "View,Edit,Replace,GlobTool,GrepTool,LS,Bash";
+            
+            if (ctx.flags.parallel) {
+              tools += ",BatchTool,dispatch_agent";
+            }
+            
+            if (ctx.flags.research) {
+              tools += ",WebFetchTool";
+            }
+            
+            // Build Claude command
+            const claudeCmd = ["claude", `"${task}"`];
+            claudeCmd.push("--allowedTools", tools);
+            
+            if (ctx.flags.noPermissions || ctx.flags["skip-permissions"]) {
+              claudeCmd.push("--dangerously-skip-permissions");
+            }
+            
+            if (ctx.flags.config) {
+              claudeCmd.push("--mcp-config", ctx.flags.config as string);
+            }
+            
+            if (ctx.flags.verbose) {
+              claudeCmd.push("--verbose");
+            }
+            
+            const instanceId = `claude-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            if (ctx.flags.dryRun || ctx.flags["dry-run"] || ctx.flags.d) {
+              warning("DRY RUN - Would execute:");
+              console.log(`Command: ${claudeCmd.join(" ")}`);
+              console.log(`Instance ID: ${instanceId}`);
+              console.log(`Task: ${task}`);
+              console.log(`Tools: ${tools}`);
+              console.log(`Mode: ${ctx.flags.mode || "full"}`);
+              return;
+            }
+            
+            success(`Spawning Claude instance: ${instanceId}`);
+            console.log(`📝 Task: ${task}`);
+            console.log(`🔧 Tools: ${tools}`);
+            console.log(`⚙️  Mode: ${ctx.flags.mode || "full"}`);
+            
+            // Execute Claude command
+            const command = new Deno.Command("claude", {
+              args: claudeCmd.slice(1).map(arg => arg.replace(/^"|"$/g, '')),
+              env: {
+                ...Deno.env.toObject(),
+                CLAUDE_INSTANCE_ID: instanceId,
+                CLAUDE_FLOW_MODE: ctx.flags.mode as string || "full",
+                CLAUDE_FLOW_COVERAGE: (ctx.flags.coverage || 80).toString(),
+                CLAUDE_FLOW_COMMIT: ctx.flags.commit as string || "phase",
+              },
+              stdin: "inherit",
+              stdout: "inherit",
+              stderr: "inherit",
+            });
+            
+            const child = command.spawn();
+            const status = await child.status;
+            
+            if (status.success) {
+              success(`Claude instance ${instanceId} completed successfully`);
+            } else {
+              error(`Claude instance ${instanceId} exited with code ${status.code}`);
+            }
+            
+          } catch (err) {
+            error(`Failed to spawn Claude: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        case "batch": {
+          const workflowFile = ctx.args[1];
+          if (!workflowFile) {
+            error("Usage: claude batch <workflow-file>");
+            break;
+          }
+          
+          try {
+            const content = await Deno.readTextFile(workflowFile);
+            const workflow = JSON.parse(content);
+            
+            success(`Loading workflow: ${workflow.name || "Unnamed"}`);
+            console.log(`📋 Tasks: ${workflow.tasks?.length || 0}`);
+            
+            if (!workflow.tasks || workflow.tasks.length === 0) {
+              warning("No tasks found in workflow");
+              return;
+            }
+            
+            const promises = [];
+            
+            for (const task of workflow.tasks) {
+              const claudeCmd = ["claude", `"${task.description || task.name}"`];
+              
+              // Add tools
+              if (task.tools) {
+                const toolsList = Array.isArray(task.tools) ? task.tools.join(",") : task.tools;
+                claudeCmd.push("--allowedTools", toolsList);
+              }
+              
+              // Add flags
+              if (task.skipPermissions || task.dangerouslySkipPermissions) {
+                claudeCmd.push("--dangerously-skip-permissions");
+              }
+              
+              if (task.config) {
+                claudeCmd.push("--mcp-config", task.config);
+              }
+              
+              const taskId = task.id || `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+              
+              if (ctx.flags.dryRun || ctx.flags["dry-run"]) {
+                console.log(`\n${yellow("DRY RUN")} - Task: ${task.name || taskId}`);
+                console.log(`Command: ${claudeCmd.join(" ")}`);
+                continue;
+              }
+              
+              console.log(`\n🚀 Spawning Claude for task: ${task.name || taskId}`);
+              
+              const command = new Deno.Command("claude", {
+                args: claudeCmd.slice(1).map(arg => arg.replace(/^"|"$/g, '')),
+                env: {
+                  ...Deno.env.toObject(),
+                  CLAUDE_TASK_ID: taskId,
+                  CLAUDE_TASK_TYPE: task.type || "general",
+                },
+                stdin: "inherit",
+                stdout: "inherit", 
+                stderr: "inherit",
+              });
+              
+              const child = command.spawn();
+              
+              if (workflow.parallel) {
+                promises.push(child.status);
+              } else {
+                // Wait for completion if sequential
+                const status = await child.status;
+                if (!status.success) {
+                  error(`Task ${taskId} failed with code ${status.code}`);
+                }
+              }
+            }
+            
+            if (workflow.parallel && promises.length > 0) {
+              success("All Claude instances spawned in parallel mode");
+              const results = await Promise.all(promises);
+              const failed = results.filter(s => !s.success).length;
+              if (failed > 0) {
+                warning(`${failed} tasks failed`);
+              } else {
+                success("All tasks completed successfully");
+              }
+            }
+            
+          } catch (err) {
+            error(`Failed to process workflow: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        default: {
+          console.log("Available subcommands: spawn, batch");
+          console.log("\nExamples:");
+          console.log("  claude-flow claude spawn \"implement user authentication\" --research --parallel");
+          console.log("  claude-flow claude spawn \"fix bug in payment system\" --no-permissions");
+          console.log("  claude-flow claude batch workflow.json --dry-run");
+          break;
+        }
+      }
+    },
+  });
+
+  // Monitor command
+  cli.command({
+    name: "monitor",
+    description: "Live monitoring dashboard",
+    options: [
+      {
+        name: "interval",
+        short: "i",
+        description: "Update interval in seconds",
+        type: "number",
+        default: 2,
+      },
+      {
+        name: "compact",
+        short: "c",
+        description: "Compact view mode",
+        type: "boolean",
+      },
+      {
+        name: "focus",
+        short: "f",
+        description: "Focus on specific component",
+        type: "string",
+      },
+    ],
+    action: async (ctx: CommandContext) => {
+      try {
+        const persist = await getPersistence();
+        const stats = await persist.getStats();
+        
+        // Check if orchestrator is running
+        const isRunning = await Deno.stat("orchestrator.log").then(() => true).catch(() => false);
+        
+        if (!isRunning) {
+          warning("Orchestrator is not running. Start it first with 'claude-flow start'");
+          return;
+        }
+        
+        info("Starting live monitoring dashboard...");
+        console.log("Press Ctrl+C to exit");
+        
+        // Simple monitoring loop
+        const interval = (ctx.flags.interval as number || ctx.flags.i as number || 2) * 1000;
+        const isCompact = ctx.flags.compact as boolean || ctx.flags.c as boolean || false;
+        let running = true;
+        
+        const cleanup = () => {
+          running = false;
+          console.log("\nMonitor stopped");
+          Deno.exit(0);
+        };
+        
+        Deno.addSignalListener("SIGINT", cleanup);
+        Deno.addSignalListener("SIGTERM", cleanup);
+        
+        // Hide cursor
+        Deno.stdout.writeSync(new TextEncoder().encode('\x1b[?25l'));
+        
+        while (running) {
+          try {
+            // Clear screen
+            console.clear();
+            
+            // Get latest stats
+            const currentStats = await persist.getStats();
+            const agents = await persist.getActiveAgents();
+            const tasks = await persist.getActiveTasks();
+            
+            // Header
+            success("Claude-Flow Live Monitor");
+            console.log("═".repeat(50));
+            
+            // System overview
+            console.log("\n📊 System Overview:");
+            console.log(`   🟢 Status: ${isRunning ? 'Running' : 'Stopped'}`);
+            console.log(`   🤖 Agents: ${currentStats.activeAgents} active (${currentStats.totalAgents} total)`);
+            console.log(`   📋 Tasks: ${currentStats.pendingTasks} pending (${currentStats.totalTasks} total)`);
+            console.log(`   ✅ Completed: ${currentStats.completedTasks} tasks`);
+            
+            // Active agents
+            if (agents.length > 0 && !isCompact) {
+              console.log("\n🤖 Active Agents:");
+              for (const agent of agents.slice(0, 5)) {
+                console.log(`   • ${agent.id.substring(0, 20)}... (${agent.type}) - ${agent.status}`);
+              }
+              if (agents.length > 5) {
+                console.log(`   ... and ${agents.length - 5} more`);
+              }
+            }
+            
+            // Active tasks
+            if (tasks.length > 0 && !isCompact) {
+              console.log("\n📋 Active Tasks:");
+              for (const task of tasks.slice(0, 5)) {
+                const assignedTo = task.assignedAgent ? `→ ${task.assignedAgent.substring(0, 15)}...` : '(unassigned)';
+                console.log(`   • ${task.id.substring(0, 20)}... (${task.type}) - ${task.status} ${assignedTo}`);
+              }
+              if (tasks.length > 5) {
+                console.log(`   ... and ${tasks.length - 5} more`);
+              }
+            }
+            
+            // Footer
+            console.log("\n" + "─".repeat(50));
+            console.log(`Last updated: ${new Date().toLocaleTimeString()} • Interval: ${interval/1000}s`);
+            
+            await new Promise(resolve => setTimeout(resolve, interval));
+          } catch (err) {
+            error(`Monitor error: ${(err as Error).message}`);
+            await new Promise(resolve => setTimeout(resolve, interval));
+          }
+        }
+        
+        // Show cursor
+        Deno.stdout.writeSync(new TextEncoder().encode('\x1b[?25h'));
+        
+      } catch (err) {
+        error(`Failed to start monitor: ${(err as Error).message}`);
+      }
+    },
+  });
+
   // Help command
   cli.command({
     name: "help",
     description: "Show help information",
-    action: () => {
-      // The CLI will show help automatically
+    action: (ctx: CommandContext) => {
+      const command = ctx.args[0];
+      
+      if (command === "claude") {
+        console.log(bold(blue("Claude Instance Management")));
+        console.log();
+        console.log("Spawn and manage Claude Code instances with specific configurations.");
+        console.log();
+        console.log(bold("Subcommands:"));
+        console.log("  spawn <task>    Spawn Claude with specific configuration");
+        console.log("  batch <file>    Execute multiple Claude instances from workflow");
+        console.log();
+        console.log(bold("Spawn Options:"));
+        console.log("  -t, --tools <tools>        Allowed tools (comma-separated)");
+        console.log("  --no-permissions           Use --dangerously-skip-permissions flag");
+        console.log("  -c, --config <file>        MCP config file path");
+        console.log("  -m, --mode <mode>          Development mode (full/backend-only/frontend-only/api-only)");
+        console.log("  --parallel                 Enable parallel execution with BatchTool");
+        console.log("  --research                 Enable web research with WebFetchTool");
+        console.log("  --coverage <n>             Test coverage target percentage (default: 80)");
+        console.log("  --commit <freq>            Commit frequency (phase/feature/manual)");
+        console.log("  -v, --verbose              Enable verbose output");
+        console.log("  -d, --dry-run              Show what would be executed without running");
+        console.log();
+        console.log(bold("Examples:"));
+        console.log(`  ${blue("claude-flow claude spawn")} "implement user authentication" --research --parallel`);
+        console.log(`  ${blue("claude-flow claude spawn")} "fix payment bug" --tools "View,Edit,Bash" --no-permissions`);
+        console.log(`  ${blue("claude-flow claude batch")} workflow.json --dry-run`);
+        console.log();
+        console.log("For more information, see: https://github.com/ruvnet/claude-code-flow/docs/11-claude-spawning.md");
+      } else {
+        // Show general help
+        cli.showHelp();
+      }
     },
   });
 }

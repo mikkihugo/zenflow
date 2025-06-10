@@ -177,7 +177,19 @@ npx claude-flow task create code "Implement authentication" --priority 9
 npx claude-flow task list --verbose
 ```
 
-### 5. **Monitor System Status**
+### 5. **Spawn Claude Instances** 🆕
+```bash
+# Spawn Claude with specific configuration
+npx claude-flow claude spawn "implement user authentication" --research --parallel
+
+# Run with custom tools
+npx claude-flow claude spawn "fix payment bug" --tools "View,Edit,Bash" --no-permissions
+
+# Execute batch workflow
+npx claude-flow claude batch examples/claude-workflow.json --dry-run
+```
+
+### 6. **Monitor System Status**
 ```bash
 # Check system health
 npx claude-flow status
@@ -343,8 +355,28 @@ npx claude-flow mcp <subcommand>
 #### `monitor` - Real-time Monitoring
 ```bash
 npx claude-flow monitor [options]
-  --interval <ms>           Update interval (default: 5000)
-  --metrics                 Show performance metrics
+  -i, --interval <seconds>  Update interval (default: 2)
+  -c, --compact             Compact view mode
+  -f, --focus <component>   Focus on specific component
+```
+
+#### `claude` - Spawn Claude Instances 🆕
+```bash
+npx claude-flow claude <subcommand>
+  spawn <task>              Spawn Claude with specific configuration
+    -t, --tools <tools>     Allowed tools (comma-separated)
+    --no-permissions        Use --dangerously-skip-permissions flag
+    -c, --config <file>     MCP config file path
+    -m, --mode <mode>       Development mode (full/backend-only/frontend-only/api-only)
+    --parallel              Enable parallel execution with BatchTool
+    --research              Enable web research with WebFetchTool
+    --coverage <n>          Test coverage target percentage (default: 80)
+    --commit <freq>         Commit frequency (phase/feature/manual)
+    -v, --verbose           Enable verbose output
+    -d, --dry-run           Show what would be executed without running
+    
+  batch <workflow-file>     Execute multiple Claude instances from workflow
+    --dry-run               Show what would be executed without running
 ```
 
 #### `config` - Configuration Management
