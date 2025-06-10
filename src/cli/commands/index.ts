@@ -7,6 +7,7 @@ import { MemoryManager } from "../../memory/manager.ts";
 import { EventBus } from "../../core/event-bus.ts";
 import { Logger } from "../../core/logger.ts";
 import { JsonPersistenceManager } from "../../core/json-persistence.ts";
+import { swarmAction } from "./swarm.ts";
 
 let orchestrator: Orchestrator | null = null;
 let configManager: ConfigManager | null = null;
@@ -993,6 +994,84 @@ export function setupCommands(cli: CLI): void {
     },
   });
 
+  // Swarm command
+  cli.command({
+    name: "swarm",
+    description: "Create self-orchestrating Claude agent swarms",
+    options: [
+      {
+        name: "strategy",
+        short: "s",
+        description: "Orchestration strategy (auto, research, development, analysis)",
+        type: "string",
+        default: "auto",
+      },
+      {
+        name: "max-agents",
+        description: "Maximum number of agents to spawn",
+        type: "number",
+        default: 5,
+      },
+      {
+        name: "max-depth",
+        description: "Maximum delegation depth",
+        type: "number",
+        default: 3,
+      },
+      {
+        name: "research",
+        description: "Enable research capabilities for all agents",
+        type: "boolean",
+      },
+      {
+        name: "parallel",
+        description: "Enable parallel execution",
+        type: "boolean",
+      },
+      {
+        name: "memory-namespace",
+        description: "Shared memory namespace",
+        type: "string",
+        default: "swarm",
+      },
+      {
+        name: "timeout",
+        description: "Swarm timeout in minutes",
+        type: "number",
+        default: 60,
+      },
+      {
+        name: "review",
+        description: "Enable peer review between agents",
+        type: "boolean",
+      },
+      {
+        name: "coordinator",
+        description: "Spawn dedicated coordinator agent",
+        type: "boolean",
+      },
+      {
+        name: "config",
+        short: "c",
+        description: "MCP config file",
+        type: "string",
+      },
+      {
+        name: "verbose",
+        short: "v",
+        description: "Enable verbose output",
+        type: "boolean",
+      },
+      {
+        name: "dry-run",
+        short: "d",
+        description: "Preview swarm configuration",
+        type: "boolean",
+      },
+    ],
+    action: swarmAction,
+  });
+
   // Help command
   cli.command({
     name: "help",
@@ -1027,6 +1106,34 @@ export function setupCommands(cli: CLI): void {
         console.log(`  ${blue("claude-flow claude batch")} workflow.json --dry-run`);
         console.log();
         console.log("For more information, see: https://github.com/ruvnet/claude-code-flow/docs/11-claude-spawning.md");
+      } else if (command === "swarm") {
+        console.log(bold(blue("Claude Swarm Mode")));
+        console.log();
+        console.log("Create self-orchestrating Claude agent swarms to tackle complex objectives.");
+        console.log();
+        console.log(bold("Usage:"));
+        console.log("  claude-flow swarm <objective> [options]");
+        console.log();
+        console.log(bold("Options:"));
+        console.log("  -s, --strategy <s>         Orchestration strategy (auto, research, development, analysis)");
+        console.log("  --max-agents <n>           Maximum number of agents (default: 5)");
+        console.log("  --max-depth <n>            Maximum delegation depth (default: 3)");
+        console.log("  --research                 Enable research capabilities for all agents");
+        console.log("  --parallel                 Enable parallel execution");
+        console.log("  --memory-namespace <ns>    Shared memory namespace (default: swarm)");
+        console.log("  --timeout <minutes>        Swarm timeout in minutes (default: 60)");
+        console.log("  --review                   Enable peer review between agents");
+        console.log("  --coordinator              Spawn dedicated coordinator agent");
+        console.log("  -c, --config <file>        MCP config file");
+        console.log("  -v, --verbose              Enable verbose output");
+        console.log("  -d, --dry-run              Preview swarm configuration");
+        console.log();
+        console.log(bold("Examples:"));
+        console.log(`  ${blue("claude-flow swarm")} "Build a REST API"`);
+        console.log(`  ${blue("claude-flow swarm")} "Research cloud architecture" --strategy research --research`);
+        console.log(`  ${blue("claude-flow swarm")} "Migrate app to microservices" --coordinator --review`);
+        console.log();
+        console.log("For more information, see: https://github.com/ruvnet/claude-code-flow/docs/12-swarm.md");
       } else {
         // Show general help
         cli.showHelp();

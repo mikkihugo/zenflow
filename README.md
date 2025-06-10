@@ -138,6 +138,8 @@ Comprehensive documentation is available to help you get the most out of Claude-
 - **[Terminal Management](./docs/08-terminal-management.md)** - Terminal pooling and sessions
 - **[Troubleshooting](./docs/09-troubleshooting.md)** - Common issues and solutions
 - **[Advanced Usage](./docs/10-advanced-usage.md)** - Power user features
+- **[Claude Spawning](./docs/11-claude-spawning.md)** - Spawning Claude instances
+- **[Swarm Mode](./docs/12-swarm.md)** - Self-orchestrating agent swarms 🐝
 - **[CLI Reference](./docs/cli-reference.md)** - Complete command documentation
 
 ## 💡 **Quick Start Guide**
@@ -189,7 +191,28 @@ npx claude-flow claude spawn "fix payment bug" --tools "View,Edit,Bash" --no-per
 npx claude-flow claude batch examples/claude-workflow.json --dry-run
 ```
 
-### 6. **Monitor System Status**
+### 6. **Claude Swarm Mode** 🐝 🆕
+```bash
+# Create self-orchestrating agent swarms
+npx claude-flow swarm "Build a complete e-commerce platform"
+
+# Research-focused swarm
+npx claude-flow swarm "Research cloud architecture best practices" \
+  --strategy research --research --max-agents 8
+
+# Development swarm with review
+npx claude-flow swarm "Refactor authentication system" \
+  --strategy development --review --parallel
+
+# Complex project with coordinator
+npx claude-flow swarm "Migrate monolithic app to microservices" \
+  --coordinator --max-depth 4 --timeout 120
+
+# Preview swarm configuration
+npx claude-flow swarm "Create mobile app" --dry-run --verbose
+```
+
+### 7. **Monitor System Status**
 ```bash
 # Check system health
 npx claude-flow status
@@ -477,7 +500,7 @@ claude-flow task workflow example-workflow.json
 ## Development
 
 ### Prerequisites
-- Deno 1.38+ or Node.js 16+
+- Deno 1.38+ or Node.js 16+ (Install Deno: https://deno.land/#installation)
 - Git
 
 ### Setup

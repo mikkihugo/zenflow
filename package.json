@@ -4,7 +4,8 @@
   "description": "Advanced AI agent orchestration system for Claude Code",
   "main": "src/cli/main.ts",
   "bin": {
-    "claude-flow": "./bin/claude-flow"
+    "claude-flow": "./bin/claude-flow",
+    "claude-flow-swarm": "./bin/claude-flow-swarm"
   },
   "scripts": {
     "postinstall": "node scripts/install.js",
@@ -36,7 +37,9 @@
   },
   "files": [
     "bin/claude-flow",
+    "bin/claude-flow-swarm",
     "src/",
+    "swarm-demo.ts",
     "scripts/install.js",
     "README.md",
     "LICENSE",
