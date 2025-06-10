@@ -2,10 +2,10 @@
  * Workflow execution commands for Claude-Flow
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
-import { Confirm, Input } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
+import { Confirm, Input } from '@cliffy/prompt';
 import { formatDuration, formatStatusIndicator, formatProgressBar } from '../formatter.ts';
 import { generateId } from '../../utils/helpers.ts';
 
@@ -22,7 +22,7 @@ export const workflowCommand = new Command()
     .option('-w, --watch', 'Watch workflow execution progress')
     .option('--parallel', 'Allow parallel execution where possible')
     .option('--fail-fast', 'Stop on first task failure')
-    .action(async (workflowFile, options) => {
+    .action(async (options: any, workflowFile: string) => {
       await runWorkflow(workflowFile, options);
     }),
   )
@@ -30,7 +30,7 @@ export const workflowCommand = new Command()
     .description('Validate a workflow file')
     .arguments('<workflow-file:string>')
     .option('--strict', 'Use strict validation mode')
-    .action(async (workflowFile, options) => {
+    .action(async (options: any, workflowFile: string) => {
       await validateWorkflow(workflowFile, options);
     }),
   )
@@ -38,7 +38,7 @@ export const workflowCommand = new Command()
     .description('List running workflows')
     .option('--all', 'Include completed workflows')
     .option('--format <format:string>', 'Output format (table, json)', { default: 'table' })
-    .action(async (options) => {
+    .action(async (options: any) => {
       await listWorkflows(options);
     }),
   )
@@ -46,7 +46,7 @@ export const workflowCommand = new Command()
     .description('Show workflow execution status')
     .arguments('<workflow-id:string>')
     .option('-w, --watch', 'Watch workflow progress')
-    .action(async (workflowId, options) => {
+    .action(async (options: any, workflowId: string) => {
       await showWorkflowStatus(workflowId, options);
     }),
   )
@@ -54,7 +54,7 @@ export const workflowCommand = new Command()
     .description('Stop a running workflow')
     .arguments('<workflow-id:string>')
     .option('-f, --force', 'Force stop without cleanup')
-    .action(async (workflowId, options) => {
+    .action(async (options: any, workflowId: string) => {
       await stopWorkflow(workflowId, options);
     }),
   )
@@ -63,7 +63,7 @@ export const workflowCommand = new Command()
     .arguments('<template-type:string>')
     .option('-o, --output <file:string>', 'Output file path')
     .option('--format <format:string>', 'Template format (json, yaml)', { default: 'json' })
-    .action(async (templateType, options) => {
+    .action(async (options: any, templateType: string) => {
       await generateTemplate(templateType, options);
     }),
   );
@@ -148,7 +148,7 @@ async function runWorkflow(workflowFile: string, options: any): Promise<void> {
         const vars = JSON.parse(options.variables);
         workflow.variables = { ...workflow.variables, ...vars };
       } catch (error) {
-        throw new Error(`Invalid variables JSON: ${error.message}`);
+        throw new Error(`Invalid variables JSON: ${(error as Error).message}`);
       }
     }
 
@@ -168,7 +168,7 @@ async function runWorkflow(workflowFile: string, options: any): Promise<void> {
       await executeWorkflow(execution, workflow, options);
     }
   } catch (error) {
-    console.error(colors.red('Workflow execution failed:'), error.message);
+    console.error(colors.red('Workflow execution failed:'), (error as Error).message);
     Deno.exit(1);
   }
 }
@@ -188,7 +188,7 @@ async function validateWorkflow(workflowFile: string, options: any): Promise<voi
       console.log(`${colors.white('Dependencies:')} ${depCount}`);
     }
   } catch (error) {
-    console.error(colors.red('✗ Workflow validation failed:'), error.message);
+    console.error(colors.red('✗ Workflow validation failed:'), (error as Error).message);
     Deno.exit(1);
   }
 }
@@ -239,7 +239,7 @@ async function listWorkflows(options: any): Promise<void> {
 
     table.render();
   } catch (error) {
-    console.error(colors.red('Failed to list workflows:'), error.message);
+    console.error(colors.red('Failed to list workflows:'), (error as Error).message);
   }
 }
 
@@ -252,7 +252,7 @@ async function showWorkflowStatus(workflowId: string, options: any): Promise<voi
       displayWorkflowStatus(execution);
     }
   } catch (error) {
-    console.error(colors.red('Failed to get workflow status:'), error.message);
+    console.error(colors.red('Failed to get workflow status:'), (error as Error).message);
   }
 }
 
@@ -289,7 +289,7 @@ async function stopWorkflow(workflowId: string, options: any): Promise<void> {
 
     console.log(colors.green('✓ Workflow stopped'));
   } catch (error) {
-    console.error(colors.red('Failed to stop workflow:'), error.message);
+    console.error(colors.red('Failed to stop workflow:'), (error as Error).message);
   }
 }
 
@@ -434,7 +434,7 @@ async function loadWorkflow(workflowFile: string): Promise<WorkflowDefinition> {
     
     return JSON.parse(content) as WorkflowDefinition;
   } catch (error) {
-    throw new Error(`Failed to load workflow file: ${error.message}`);
+    throw new Error(`Failed to load workflow file: ${(error as Error).message}`);
   }
 }
 
@@ -629,7 +629,7 @@ async function watchWorkflowStatus(workflowId: string): Promise<void> {
       
       await new Promise(resolve => setTimeout(resolve, 2000));
     } catch (error) {
-      console.error(colors.red('Error watching workflow:'), error.message);
+      console.error(colors.red('Error watching workflow:'), (error as Error).message);
       break;
     }
   }
@@ -707,7 +707,7 @@ async function getRunningWorkflows(includeAll = false): Promise<WorkflowExecutio
     {
       id: 'workflow-001',
       workflowName: 'Research Workflow',
-      status: 'running',
+      status: 'running' as const,
       startedAt: new Date(Date.now() - 120000), // 2 minutes ago
       progress: { total: 5, completed: 3, failed: 0 },
       tasks: []
@@ -715,7 +715,7 @@ async function getRunningWorkflows(includeAll = false): Promise<WorkflowExecutio
     {
       id: 'workflow-002',
       workflowName: 'Implementation Workflow',
-      status: 'completed',
+      status: 'completed' as const,
       startedAt: new Date(Date.now() - 300000), // 5 minutes ago
       completedAt: new Date(Date.now() - 60000), // 1 minute ago
       progress: { total: 3, completed: 3, failed: 0 },

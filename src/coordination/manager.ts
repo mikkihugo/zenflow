@@ -19,7 +19,7 @@ export interface ICoordinationManager {
   assignTask(task: Task, agentId: string): Promise<void>;
   getAgentTaskCount(agentId: string): Promise<number>;
   getAgentTasks(agentId: string): Promise<Task[]>;
-  cancelTask(taskId: string): Promise<void>;
+  cancelTask(taskId: string, reason?: string): Promise<void>;
   acquireResource(resourceId: string, agentId: string): Promise<void>;
   releaseResource(resourceId: string, agentId: string): Promise<void>;
   sendMessage(from: string, to: string, message: unknown): Promise<void>;
@@ -40,7 +40,7 @@ export class CoordinationManager implements ICoordinationManager {
   private conflictResolver: ConflictResolver;
   private metricsCollector: CoordinationMetricsCollector;
   private initialized = false;
-  private deadlockCheckInterval?: number;
+  private deadlockCheckInterval?: ReturnType<typeof setInterval>;
   private advancedSchedulingEnabled = false;
 
   constructor(
@@ -186,11 +186,14 @@ export class CoordinationManager implements ICoordinationManager {
         messageHealth.error,
       ].filter(Boolean);
 
-      return {
+      const status: { healthy: boolean; error?: string; metrics?: Record<string, number> } = {
         healthy,
         metrics,
-        error: errors.length > 0 ? errors.join('; ') : undefined,
       };
+      if (errors.length > 0) {
+        status.error = errors.join('; ');
+      }
+      return status;
     } catch (error) {
       return {
         healthy: false,
@@ -201,7 +204,8 @@ export class CoordinationManager implements ICoordinationManager {
 
   private setupEventHandlers(): void {
     // Handle task events
-    this.eventBus.on(SystemEvents.TASK_COMPLETED, async ({ taskId, result }) => {
+    this.eventBus.on(SystemEvents.TASK_COMPLETED, async (data: unknown) => {
+      const { taskId, result } = data as { taskId: string; result: unknown };
       try {
         await this.scheduler.completeTask(taskId, result);
       } catch (error) {
@@ -209,7 +213,8 @@ export class CoordinationManager implements ICoordinationManager {
       }
     });
 
-    this.eventBus.on(SystemEvents.TASK_FAILED, async ({ taskId, error }) => {
+    this.eventBus.on(SystemEvents.TASK_FAILED, async (data: unknown) => {
+      const { taskId, error } = data as { taskId: string; error: Error };
       try {
         await this.scheduler.failTask(taskId, error);
       } catch (err) {
@@ -218,7 +223,8 @@ export class CoordinationManager implements ICoordinationManager {
     });
 
     // Handle agent termination
-    this.eventBus.on(SystemEvents.AGENT_TERMINATED, async ({ agentId }) => {
+    this.eventBus.on(SystemEvents.AGENT_TERMINATED, async (data: unknown) => {
+      const { agentId } = data as { agentId: string };
       try {
         // Release all resources held by the agent
         await this.resourceManager.releaseAllForAgent(agentId);
@@ -366,12 +372,12 @@ export class CoordinationManager implements ICoordinationManager {
     return this.scheduler.getAgentTasks(agentId);
   }
 
-  async cancelTask(taskId: string): Promise<void> {
+  async cancelTask(taskId: string, reason?: string): Promise<void> {
     if (!this.initialized) {
       throw new CoordinationError('Coordination manager not initialized');
     }
 
-    await this.scheduler.cancelTask(taskId);
+    await this.scheduler.cancelTask(taskId, reason || 'User requested cancellation');
   }
 
   async performMaintenance(): Promise<void> {

@@ -20,15 +20,15 @@ interface ScheduledTask {
  * Task scheduler for managing task assignment and execution
  */
 export class TaskScheduler {
-  private tasks = new Map<string, ScheduledTask>();
-  private agentTasks = new Map<string, Set<string>>(); // agentId -> taskIds
-  private taskDependencies = new Map<string, Set<string>>(); // taskId -> dependent taskIds
-  private completedTasks = new Set<string>();
+  protected tasks = new Map<string, ScheduledTask>();
+  protected agentTasks = new Map<string, Set<string>>(); // agentId -> taskIds
+  protected taskDependencies = new Map<string, Set<string>>(); // taskId -> dependent taskIds
+  protected completedTasks = new Set<string>();
 
   constructor(
-    private config: CoordinationConfig,
-    private eventBus: IEventBus,
-    private logger: ILogger,
+    protected config: CoordinationConfig,
+    protected eventBus: IEventBus,
+    protected logger: ILogger,
   ) {}
 
   async initialize(): Promise<void> {
@@ -103,7 +103,7 @@ export class TaskScheduler {
 
     // Update task status
     scheduled.task.status = 'completed';
-    scheduled.task.output = result;
+    scheduled.task.output = result as Record<string, unknown>;
     scheduled.task.completedAt = new Date();
 
     // Clear timeout
@@ -379,9 +379,11 @@ export class TaskScheduler {
       const iterator = this.completedTasks.values();
       
       for (let i = 0; i < toRemove; i++) {
-        const taskId = iterator.next().value;
-        this.completedTasks.delete(taskId);
-        this.taskDependencies.delete(taskId);
+        const result = iterator.next();
+        if (!result.done && result.value) {
+          this.completedTasks.delete(result.value);
+          this.taskDependencies.delete(result.value);
+        }
       }
     }
   }

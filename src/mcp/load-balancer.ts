@@ -279,7 +279,10 @@ export class LoadBalancer implements ILoadBalancer {
 
     const success = !error && (!response || !response.error);
     metrics.success = success;
-    metrics.error = error?.message || response?.error?.message;
+    const errorMessage = error?.message || response?.error?.message;
+    if (errorMessage) {
+      metrics.error = errorMessage;
+    }
 
     if (success) {
       this.metrics.successfulRequests++;

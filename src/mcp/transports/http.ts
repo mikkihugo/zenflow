@@ -13,11 +13,11 @@ import { MCPTransportError } from '../../utils/errors.ts';
 export class HttpTransport implements ITransport {
   private requestHandler?: RequestHandler;
   private notificationHandler?: NotificationHandler;
-  private server?: Deno.HttpServer;
+  private server?: Deno.HttpServer | undefined;
   private messageCount = 0;
   private notificationCount = 0;
   private running = false;
-  private connections = new Set<Deno.HttpConn>();
+  private connections = new Set<WebSocket>();
   private activeWebSockets = new Set<WebSocket>();
 
   constructor(

@@ -71,7 +71,7 @@ export class Logger implements ILogger {
     // Reset file handle if destination changed
     if (this.fileHandle && config.destination !== 'file' && config.destination !== 'both') {
       await this.fileHandle.close();
-      this.fileHandle = undefined;
+      delete this.fileHandle;
     }
   }
 
@@ -217,7 +217,7 @@ export class Logger implements ILogger {
     // Close current file
     if (this.fileHandle) {
       await this.fileHandle.close();
-      this.fileHandle = undefined;
+      delete this.fileHandle;
     }
 
     // Rename current file

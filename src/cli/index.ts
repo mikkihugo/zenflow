@@ -4,9 +4,9 @@
  * Advanced AI agent orchestration system
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Spinner } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+// Spinner import removed - not available in current cliffy version
 import { logger } from '../core/logger.ts';
 import { configManager } from '../core/config.ts';
 import { startCommand } from './commands/start.ts';
@@ -19,6 +19,7 @@ import { monitorCommand } from './commands/monitor.ts';
 import { sessionCommand } from './commands/session.ts';
 import { workflowCommand } from './commands/workflow.ts';
 import { helpCommand } from './commands/help.ts';
+import { mcpCommand } from './commands/mcp.ts';
 import { formatError, displayBanner, displayVersion } from './formatter.ts';
 import { startREPL } from './repl.ts';
 import { CompletionGenerator } from './completion.ts';
@@ -41,7 +42,6 @@ const cli = new Command()
   .globalOption('-q, --quiet', 'Suppress non-essential output')
   .globalOption('--log-level <level:string>', 'Set log level (debug, info, warn, error)', {
     default: 'info',
-    validate: ['debug', 'info', 'warn', 'error'],
   })
   .globalOption('--no-color', 'Disable colored output')
   .globalOption('--json', 'Output in JSON format where applicable')
@@ -69,17 +69,18 @@ cli
   .command('monitor', monitorCommand)
   .command('session', sessionCommand)
   .command('workflow', workflowCommand)
+  .command('mcp', mcpCommand)
   .command('help', helpCommand)
   .command('repl', new Command()
     .description('Start interactive REPL mode with command completion')
     .option('--no-banner', 'Skip welcome banner')
     .option('--history-file <path:string>', 'Custom history file path')
-    .action(async (options, ...globalOptions) => {
-      await setupLogging({ ...globalOptions[0], ...options });
-      if (!options.noBanner) {
+    .action(async (options) => {
+      await setupLogging(options);
+      if (options.banner !== false) {
         displayBanner(VERSION);
       }
-      await startREPL({ ...globalOptions[0], ...options });
+      await startREPL(options);
     }),
   )
   .command('version', new Command()
@@ -97,9 +98,9 @@ cli
     .description('Generate shell completion scripts')
     .arguments('[shell:string]')
     .option('--install', 'Install completion script automatically')
-    .action(async (shell, options) => {
+    .action(async (options, shell) => {
       const generator = new CompletionGenerator();
-      await generator.generate(shell || 'detect', options.install);
+      await generator.generate(shell || 'detect', options.install === true);
     }),
   );
 
@@ -114,7 +115,7 @@ async function handleError(error: unknown, options?: any): Promise<void> {
       timestamp: new Date().toISOString(),
     }));
   } else {
-    console.error(colors.red.bold('✗ Error:'), formatted);
+    console.error(colors.red(colors.bold('✗ Error:')), formatted);
   }
   
   // Show stack trace in debug mode or verbose
@@ -144,7 +145,6 @@ async function setupLogging(options: any): Promise<void> {
     level: logLevel as any,
     format: options.json ? 'json' : 'text',
     destination: 'console',
-    colors: !options.noColor,
   });
   
   // Load configuration
@@ -166,7 +166,7 @@ async function setupLogging(options: any): Promise<void> {
       await configManager.applyProfile(options.profile);
     }
   } catch (error) {
-    logger.warn('Failed to load configuration:', error.message);
+    logger.warn('Failed to load configuration:', (error as Error).message);
     configManager.loadDefault();
   }
 }

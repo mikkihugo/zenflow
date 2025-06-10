@@ -17,7 +17,7 @@ export function generateId(prefix?: string): string {
  * Creates a timeout promise that rejects after the specified time
  */
 export function timeout<T>(promise: Promise<T>, ms: number, message?: string): Promise<T> {
-  let timeoutId: number | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
   let completed = false;
   
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -109,7 +109,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delayMs: number,
 ): (...args: Parameters<T>) => void {
-  let timeoutId: number | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   return (...args: Parameters<T>) => {
     if (timeoutId !== undefined) {

@@ -19,7 +19,7 @@ export class StdioTransport implements ITransport {
   private messageCount = 0;
   private notificationCount = 0;
   private running = false;
-  private reader?: ReadableStreamDefaultReader<Uint8Array>;
+  private reader?: ReadableStreamDefaultReader<Uint8Array> | undefined;
 
   constructor(private logger: ILogger) {}
 

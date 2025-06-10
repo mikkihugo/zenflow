@@ -2,10 +2,10 @@
  * Session management commands for Claude-Flow
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
-import { Confirm, Input } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
+import { Confirm, Input } from '@cliffy/prompt';
 import { formatDuration, formatStatusIndicator } from '../formatter.ts';
 import { generateId } from '../../utils/helpers.ts';
 
@@ -18,7 +18,7 @@ export const sessionCommand = new Command()
     .description('List all saved sessions')
     .option('-a, --active', 'Show only active sessions')
     .option('--format <format:string>', 'Output format (table, json)', { default: 'table' })
-    .action(async (options) => {
+    .action(async (options: any) => {
       await listSessions(options);
     }),
   )
@@ -28,7 +28,7 @@ export const sessionCommand = new Command()
     .option('-d, --description <desc:string>', 'Session description')
     .option('-t, --tags <tags:string>', 'Comma-separated tags')
     .option('--auto', 'Auto-generate session name')
-    .action(async (name, options) => {
+    .action(async (options: any, name: string | undefined) => {
       await saveSession(name, options);
     }),
   )
@@ -37,7 +37,7 @@ export const sessionCommand = new Command()
     .arguments('<session-id:string>')
     .option('-f, --force', 'Force restore without confirmation')
     .option('--merge', 'Merge with current session instead of replacing')
-    .action(async (sessionId, options) => {
+    .action(async (options: any, sessionId: string) => {
       await restoreSession(sessionId, options);
     }),
   )
@@ -45,7 +45,7 @@ export const sessionCommand = new Command()
     .description('Delete a saved session')
     .arguments('<session-id:string>')
     .option('-f, --force', 'Skip confirmation prompt')
-    .action(async (sessionId, options) => {
+    .action(async (options: any, sessionId: string) => {
       await deleteSession(sessionId, options);
     }),
   )
@@ -54,7 +54,7 @@ export const sessionCommand = new Command()
     .arguments('<session-id:string> <output-file:string>')
     .option('--format <format:string>', 'Export format (json, yaml)', { default: 'json' })
     .option('--include-memory', 'Include agent memory in export')
-    .action(async (sessionId, outputFile, options) => {
+    .action(async (options: any, sessionId: string, outputFile: string) => {
       await exportSession(sessionId, outputFile, options);
     }),
   )
@@ -63,14 +63,14 @@ export const sessionCommand = new Command()
     .arguments('<input-file:string>')
     .option('-n, --name <name:string>', 'Custom session name')
     .option('--overwrite', 'Overwrite existing session with same ID')
-    .action(async (inputFile, options) => {
+    .action(async (options: any, inputFile: string) => {
       await importSession(inputFile, options);
     }),
   )
   .command('info', new Command()
     .description('Show detailed session information')
     .arguments('<session-id:string>')
-    .action(async (sessionId) => {
+    .action(async (options: any, sessionId: string) => {
       await showSessionInfo(sessionId);
     }),
   )
@@ -79,7 +79,7 @@ export const sessionCommand = new Command()
     .option('--older-than <days:number>', 'Delete sessions older than N days', { default: 30 })
     .option('--dry-run', 'Show what would be deleted without deleting')
     .option('--orphaned', 'Only clean orphaned sessions')
-    .action(async (options) => {
+    .action(async (options: any) => {
       await cleanSessions(options);
     }),
   );
@@ -124,7 +124,7 @@ async function listSessions(options: any): Promise<void> {
     let filteredSessions = sessions;
     if (options.active) {
       // In production, this would check if the session is currently active
-      filteredSessions = sessions.filter(s => s.metadata.active);
+      filteredSessions = sessions.filter(s => (s.metadata as any).active);
     }
 
     if (options.format === 'json') {
@@ -148,7 +148,7 @@ async function listSessions(options: any): Promise<void> {
       table.push([
         colors.gray(session.id.substring(0, 8) + '...'),
         colors.white(session.name),
-        session.description?.substring(0, 30) + (session.description?.length > 30 ? '...' : '') || '-',
+        session.description ? session.description.substring(0, 30) + (session.description.length > 30 ? '...' : '') : '-',
         session.state.agents.length.toString(),
         session.state.tasks.length.toString(),
         session.createdAt.toLocaleDateString()
@@ -157,7 +157,7 @@ async function listSessions(options: any): Promise<void> {
 
     table.render();
   } catch (error) {
-    console.error(colors.red('Failed to list sessions:'), error.message);
+    console.error(colors.red('Failed to list sessions:'), (error as Error).message);
   }
 }
 
@@ -208,7 +208,7 @@ async function saveSession(name: string | undefined, options: any): Promise<void
     console.log(`${colors.white('Agents:')} ${session.state.agents.length}`);
     console.log(`${colors.white('Tasks:')} ${session.state.tasks.length}`);
   } catch (error) {
-    console.error(colors.red('Failed to save session:'), error.message);
+    console.error(colors.red('Failed to save session:'), (error as Error).message);
   }
 }
 
@@ -284,7 +284,7 @@ async function restoreSession(sessionId: string, options: any): Promise<void> {
     console.log(colors.green('✓ Session restored successfully'));
     console.log(colors.yellow('Note: This is a mock implementation. In production, this would connect to the orchestrator.'));
   } catch (error) {
-    console.error(colors.red('Failed to restore session:'), error.message);
+    console.error(colors.red('Failed to restore session:'), (error as Error).message);
   }
 }
 
@@ -318,7 +318,7 @@ async function deleteSession(sessionId: string, options: any): Promise<void> {
 
     console.log(colors.green('✓ Session deleted successfully'));
   } catch (error) {
-    console.error(colors.red('Failed to delete session:'), error.message);
+    console.error(colors.red('Failed to delete session:'), (error as Error).message);
   }
 }
 
@@ -359,7 +359,7 @@ async function exportSession(sessionId: string, outputFile: string, options: any
     console.log(`${colors.white('Format:')} ${options.format}`);
     console.log(`${colors.white('Size:')} ${new Blob([content]).size} bytes`);
   } catch (error) {
-    console.error(colors.red('Failed to export session:'), error.message);
+    console.error(colors.red('Failed to export session:'), (error as Error).message);
   }
 }
 
@@ -408,7 +408,7 @@ async function importSession(inputFile: string, options: any): Promise<void> {
     console.log(`${colors.white('Name:')} ${sessionData.name}`);
     console.log(`${colors.white('Action:')} ${options.overwrite ? 'Overwritten' : 'Created'}`);
   } catch (error) {
-    console.error(colors.red('Failed to import session:'), error.message);
+    console.error(colors.red('Failed to import session:'), (error as Error).message);
   }
 }
 
@@ -464,7 +464,7 @@ async function showSessionInfo(sessionId: string): Promise<void> {
       console.log(colors.red('Warning: Session file not found'));
     }
   } catch (error) {
-    console.error(colors.red('Failed to show session info:'), error.message);
+    console.error(colors.red('Failed to show session info:'), (error as Error).message);
   }
 }
 
@@ -480,7 +480,7 @@ async function cleanSessions(options: any): Promise<void> {
     
     if (options.orphaned) {
       // In production, check if sessions have valid references
-      toDelete = toDelete.filter(session => session.metadata.orphaned);
+      toDelete = toDelete.filter(session => (session.metadata as any).orphaned);
     }
 
     if (toDelete.length === 0) {
@@ -519,13 +519,13 @@ async function cleanSessions(options: any): Promise<void> {
         await Deno.remove(filePath);
         deleted++;
       } catch (error) {
-        console.error(colors.red(`Failed to delete ${session.name}:`), error.message);
+        console.error(colors.red(`Failed to delete ${session.name}:`), (error as Error).message);
       }
     }
 
     console.log(colors.green(`✓ Cleaned ${deleted} sessions`));
   } catch (error) {
-    console.error(colors.red('Failed to clean sessions:'), error.message);
+    console.error(colors.red('Failed to clean sessions:'), (error as Error).message);
   }
 }
 
@@ -545,7 +545,7 @@ async function loadAllSessions(): Promise<SessionData[]> {
           
           sessions.push(session);
         } catch (error) {
-          console.warn(colors.yellow(`Warning: Failed to load session file ${entry.name}:`), error.message);
+          console.warn(colors.yellow(`Warning: Failed to load session file ${entry.name}:`), (error as Error).message);
         }
       }
     }

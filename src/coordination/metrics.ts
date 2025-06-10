@@ -80,7 +80,7 @@ export class CoordinationMetricsCollector {
   private taskStartTimes = new Map<string, Date>();
   private messageStartTimes = new Map<string, Date>();
   private lockStartTimes = new Map<string, Date>();
-  private collectionInterval?: NodeJS.Timeout;
+  private collectionInterval?: number;
   
   // Counters
   private counters = {
@@ -143,7 +143,7 @@ export class CoordinationMetricsCollector {
   stop(): void {
     if (this.collectionInterval) {
       clearInterval(this.collectionInterval);
-      this.collectionInterval = undefined;
+      delete this.collectionInterval;
     }
     
     this.logger.info('Stopped coordination metrics collection');
@@ -157,8 +157,11 @@ export class CoordinationMetricsCollector {
       timestamp: new Date(),
       metric,
       value,
-      tags,
     };
+    
+    if (tags !== undefined) {
+      sample.tags = tags;
+    }
     
     this.samples.push(sample);
     

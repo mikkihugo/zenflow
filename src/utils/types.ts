@@ -104,6 +104,7 @@ export interface MemoryQuery {
   search?: string;
   limit?: number;
   offset?: number;
+  namespace?: string;
 }
 
 // Event-related types

@@ -38,16 +38,18 @@ export class TerminalError extends ClaudeFlowError {
 }
 
 export class TerminalSpawnError extends TerminalError {
+  override readonly code = 'TERMINAL_SPAWN_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'TERMINAL_SPAWN_ERROR';
   }
 }
 
 export class TerminalCommandError extends TerminalError {
+  override readonly code = 'TERMINAL_COMMAND_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'TERMINAL_COMMAND_ERROR';
   }
 }
 
@@ -62,16 +64,18 @@ export class MemoryError extends ClaudeFlowError {
 }
 
 export class MemoryBackendError extends MemoryError {
+  override readonly code = 'MEMORY_BACKEND_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'MEMORY_BACKEND_ERROR';
   }
 }
 
 export class MemoryConflictError extends MemoryError {
+  override readonly code = 'MEMORY_CONFLICT_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'MEMORY_CONFLICT_ERROR';
   }
 }
 
@@ -86,20 +90,22 @@ export class CoordinationError extends ClaudeFlowError {
 }
 
 export class DeadlockError extends CoordinationError {
+  override readonly code = 'DEADLOCK_ERROR';
+  
   constructor(
     message: string,
     public readonly agents: string[],
     public readonly resources: string[],
   ) {
     super(message, { agents, resources });
-    this.code = 'DEADLOCK_ERROR';
   }
 }
 
 export class ResourceLockError extends CoordinationError {
+  override readonly code = 'RESOURCE_LOCK_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'RESOURCE_LOCK_ERROR';
   }
 }
 
@@ -114,16 +120,18 @@ export class MCPError extends ClaudeFlowError {
 }
 
 export class MCPTransportError extends MCPError {
+  override readonly code = 'MCP_TRANSPORT_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'MCP_TRANSPORT_ERROR';
   }
 }
 
 export class MCPMethodNotFoundError extends MCPError {
+  override readonly code = 'MCP_METHOD_NOT_FOUND';
+  
   constructor(method: string) {
     super(`Method not found: ${method}`, { method });
-    this.code = 'MCP_METHOD_NOT_FOUND';
   }
 }
 
@@ -138,9 +146,10 @@ export class ConfigError extends ClaudeFlowError {
 }
 
 export class ValidationError extends ConfigError {
+  override readonly code = 'VALIDATION_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'VALIDATION_ERROR';
   }
 }
 
@@ -155,16 +164,18 @@ export class TaskError extends ClaudeFlowError {
 }
 
 export class TaskTimeoutError extends TaskError {
+  override readonly code = 'TASK_TIMEOUT_ERROR';
+  
   constructor(taskId: string, timeout: number) {
     super(`Task ${taskId} timed out after ${timeout}ms`, { taskId, timeout });
-    this.code = 'TASK_TIMEOUT_ERROR';
   }
 }
 
 export class TaskDependencyError extends TaskError {
+  override readonly code = 'TASK_DEPENDENCY_ERROR';
+  
   constructor(taskId: string, dependencies: string[]) {
     super(`Task ${taskId} has unmet dependencies`, { taskId, dependencies });
-    this.code = 'TASK_DEPENDENCY_ERROR';
   }
 }
 
@@ -179,20 +190,22 @@ export class SystemError extends ClaudeFlowError {
 }
 
 export class InitializationError extends SystemError {
+  override readonly code = 'INITIALIZATION_ERROR';
+  
   constructor(componentOrMessage: string, details?: unknown) {
     // If the message already contains the word "initialize", use it as-is
     const message = componentOrMessage.includes('initialize') 
       ? componentOrMessage 
       : `Failed to initialize ${componentOrMessage}`;
     super(message, details ? { component: componentOrMessage, ...details } : { component: componentOrMessage });
-    this.code = 'INITIALIZATION_ERROR';
   }
 }
 
 export class ShutdownError extends SystemError {
+  override readonly code = 'SHUTDOWN_ERROR';
+  
   constructor(message: string, details?: unknown) {
     super(message, details);
-    this.code = 'SHUTDOWN_ERROR';
   }
 }
 

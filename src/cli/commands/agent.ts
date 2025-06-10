@@ -2,9 +2,9 @@
  * Agent management commands
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
+import { Command } from '@cliffy/command';
+import { Table } from '@cliffy/table';
+import { colors } from '@cliffy/ansi/colors';
 import { AgentProfile } from '../../utils/types.ts';
 import { generateId } from '../../utils/helpers.ts';
 
@@ -27,7 +27,7 @@ export const agentCommand = new Command()
     .option('-p, --priority <priority:number>', 'Agent priority', { default: 0 })
     .option('-m, --max-tasks <max:number>', 'Maximum concurrent tasks', { default: 5 })
     .option('--system-prompt <prompt:string>', 'Custom system prompt')
-    .action(async (type, options) => {
+    .action(async (options: any, type: string) => {
       const profile: AgentProfile = {
         id: generateId('agent'),
         name: options.name || `${type}-agent`,
@@ -46,14 +46,14 @@ export const agentCommand = new Command()
   .command('terminate', new Command()
     .description('Terminate an agent')
     .arguments('<agent-id:string>')
-    .action(async (agentId) => {
+    .action(async (options: any, agentId: string) => {
       console.log(colors.yellow(`Terminating agent ${agentId} requires a running Claude-Flow instance`));
     }),
   )
   .command('info', new Command()
     .description('Get information about an agent')
     .arguments('<agent-id:string>')
-    .action(async (agentId) => {
+    .action(async (options: any, agentId: string) => {
       console.log(colors.yellow(`Agent info requires a running Claude-Flow instance`));
     }),
   );

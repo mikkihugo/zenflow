@@ -2,9 +2,9 @@
  * Monitor command for Claude-Flow - Live dashboard mode
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
 import { formatProgressBar, formatDuration, formatStatusIndicator } from '../formatter.ts';
 
 export const monitorCommand = new Command()
@@ -13,7 +13,7 @@ export const monitorCommand = new Command()
   .option('-c, --compact', 'Compact view mode')
   .option('--no-graphs', 'Disable ASCII graphs')
   .option('--focus <component:string>', 'Focus on specific component')
-  .action(async (options) => {
+  .action(async (options: any) => {
     await startMonitorDashboard(options);
   });
 
@@ -40,13 +40,13 @@ class Dashboard {
 
   async start(): Promise<void> {
     // Hide cursor and clear screen
-    console.write('\x1b[?25l');
+    Deno.stdout.writeSync(new TextEncoder().encode('\x1b[?25l'));
     console.clear();
 
     // Setup signal handlers
     const cleanup = () => {
       this.running = false;
-      console.write('\x1b[?25h'); // Show cursor
+      Deno.stdout.writeSync(new TextEncoder().encode('\x1b[?25h')); // Show cursor
       console.log('\n' + colors.gray('Monitor stopped'));
       Deno.exit(0);
     };
@@ -301,11 +301,11 @@ class Dashboard {
     console.log(colors.red.bold('Monitor Error'));
     console.log('─'.repeat(40));
     
-    if (error.message.includes('ECONNREFUSED')) {
+    if ((error as Error).message.includes('ECONNREFUSED')) {
       console.log(colors.red('✗ Cannot connect to Claude-Flow'));
       console.log(colors.gray('Make sure Claude-Flow is running with: claude-flow start'));
     } else {
-      console.log(colors.red('Error:'), error.message);
+      console.log(colors.red('Error:'), (error as Error).message);
     }
     
     console.log('\n' + colors.gray('Retrying in ') + colors.yellow(`${this.options.interval}s...`));

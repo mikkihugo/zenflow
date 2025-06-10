@@ -304,8 +304,9 @@ export class SessionManager implements ISessionManager {
 
     // Use timing-safe comparison to prevent timing attacks
     return this.authConfig.tokens.some((validToken) => {
-      const validTokenBytes = Buffer.from(validToken, 'utf8');
-      const providedTokenBytes = Buffer.from(token, 'utf8');
+      const encoder = new TextEncoder();
+      const validTokenBytes = encoder.encode(validToken);
+      const providedTokenBytes = encoder.encode(token);
       
       if (validTokenBytes.length !== providedTokenBytes.length) {
         return false;
@@ -334,8 +335,9 @@ export class SessionManager implements ISessionManager {
     const hashedPassword = this.hashPassword(password);
     const expectedHashedPassword = this.hashPassword(user.password);
 
-    const hashedPasswordBytes = Buffer.from(hashedPassword, 'utf8');
-    const expectedHashedPasswordBytes = Buffer.from(expectedHashedPassword, 'utf8');
+    const encoder = new TextEncoder();
+    const hashedPasswordBytes = encoder.encode(hashedPassword);
+    const expectedHashedPasswordBytes = encoder.encode(expectedHashedPassword);
 
     if (hashedPasswordBytes.length !== expectedHashedPasswordBytes.length) {
       return false;

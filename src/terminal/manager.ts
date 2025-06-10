@@ -2,7 +2,7 @@
  * Terminal manager interface and implementation
  */
 
-import { AgentProfile, TerminalConfig } from '../utils/types.ts';
+import { AgentProfile, AgentSession, TerminalConfig } from '../utils/types.ts';
 import { IEventBus } from '../core/event-bus.ts';
 import { ILogger } from '../core/logger.ts';
 import { TerminalError, TerminalSpawnError } from '../utils/errors.ts';
@@ -190,11 +190,18 @@ export class TerminalManager implements ITerminalManager {
 
       const healthy = poolHealth.healthy && healthySessions === activeSessions;
 
-      return {
-        healthy,
-        metrics,
-        error: healthy ? undefined : 'Some terminals are unhealthy',
-      };
+      if (healthy) {
+        return {
+          healthy,
+          metrics,
+        };
+      } else {
+        return {
+          healthy,
+          metrics,
+          error: 'Some terminals are unhealthy',
+        };
+      }
     } catch (error) {
       return {
         healthy: false,

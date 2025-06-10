@@ -211,7 +211,7 @@ export class TerminalSession {
 
       this.lastCommandTime = new Date();
     } catch (error) {
-      throw new Error(`Health check failed: ${error.message}`);
+      throw new Error(`Health check failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

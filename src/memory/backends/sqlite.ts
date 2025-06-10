@@ -48,7 +48,7 @@ export class SQLiteBackend implements IMemoryBackend {
 
     if (this.db) {
       await this.db.close();
-      this.db = undefined;
+      delete this.db;
     }
   }
 
@@ -287,7 +287,7 @@ export class SQLiteBackend implements IMemoryBackend {
   }
 
   private rowToEntry(row: Record<string, unknown>): MemoryEntry {
-    return {
+    const entry: MemoryEntry = {
       id: row.id as string,
       agentId: row.agent_id as string,
       sessionId: row.session_id as string,
@@ -297,9 +297,17 @@ export class SQLiteBackend implements IMemoryBackend {
       timestamp: new Date(row.timestamp as string),
       tags: JSON.parse(row.tags as string),
       version: row.version as number,
-      parentId: row.parent_id as string | undefined,
-      metadata: row.metadata ? JSON.parse(row.metadata as string) : undefined,
     };
+    
+    if (row.parent_id) {
+      entry.parentId = row.parent_id as string;
+    }
+    
+    if (row.metadata) {
+      entry.metadata = JSON.parse(row.metadata as string);
+    }
+    
+    return entry;
   }
 }
 

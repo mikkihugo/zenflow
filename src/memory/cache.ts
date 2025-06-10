@@ -163,6 +163,16 @@ export class MemoryCache {
     this.misses = 0;
   }
 
+  /**
+   * Performs cache maintenance
+   */
+  performMaintenance(): void {
+    // Remove expired entries if needed
+    // For now, just log metrics
+    const metrics = this.getMetrics();
+    this.logger.debug('Cache maintenance', metrics);
+  }
+
   private calculateSize(entry: MemoryEntry): number {
     // Rough estimate of memory size
     let size = 0;

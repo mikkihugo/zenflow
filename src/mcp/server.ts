@@ -14,6 +14,7 @@ import {
   MCPMetrics,
   MCPProtocolVersion,
   MCPCapabilities,
+  MCPContext,
 } from '../utils/types.ts';
 import { IEventBus } from '../core/event-bus.ts';
 import { ILogger } from '../core/logger.ts';
@@ -55,7 +56,7 @@ export class MCPServer implements IMCPServer {
   private loadBalancer?: ILoadBalancer;
   private requestQueue?: RequestQueue;
   private running = false;
-  private currentSession?: MCPSession;
+  private currentSession?: MCPSession | undefined;
 
   private readonly serverInfo = {
     name: 'Claude-Flow MCP Server',
@@ -205,11 +206,14 @@ export class MCPServer implements IMCPServer {
         metrics.circuitBreakerTrips = lbMetrics.circuitBreakerTrips;
       }
 
-      return {
+      const status: { healthy: boolean; error?: string; metrics?: Record<string, number> } = {
         healthy: this.running && transportHealth.healthy,
         metrics,
-        error: transportHealth.error,
       };
+      if (transportHealth.error !== undefined) {
+        status.error = transportHealth.error;
+      }
+      return status;
     } catch (error) {
       return {
         healthy: false,

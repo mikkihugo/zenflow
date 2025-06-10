@@ -2,9 +2,9 @@
  * Configuration management commands
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Confirm } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Confirm } from '@cliffy/prompt';
 import { configManager } from '../../core/config.ts';
 import { deepMerge } from '../../utils/helpers.ts';
 
@@ -18,7 +18,7 @@ export const configCommand = new Command()
     .option('--format <format:string>', 'Output format (json, yaml)', { default: 'json' })
     .option('--diff', 'Show only differences from defaults')
     .option('--profile', 'Include profile information')
-    .action(async (options) => {
+    .action(async (options: any) => {
       if (options.diff) {
         const diff = configManager.getDiff();
         console.log(JSON.stringify(diff, null, 2));
@@ -40,7 +40,7 @@ export const configCommand = new Command()
   .command('get', new Command()
     .description('Get a specific configuration value')
     .arguments('<path:string>')
-    .action(async (path) => {
+    .action(async (options: any, path: string) => {
       const value = configManager.getValue(path);
       
       if (value === undefined) {
@@ -55,7 +55,7 @@ export const configCommand = new Command()
     .description('Set a configuration value')
     .arguments('<path:string> <value:string>')
     .option('--type <type:string>', 'Value type (string, number, boolean, json)', { default: 'auto' })
-    .action(async (path, value, options) => {
+    .action(async (options: any, path: string, value: string) => {
       try {
         let parsedValue: any;
         
@@ -87,7 +87,7 @@ export const configCommand = new Command()
         configManager.set(path, parsedValue);
         console.log(colors.green('✓'), `Set ${path} = ${JSON.stringify(parsedValue)}`);
       } catch (error) {
-        console.error(colors.red('Failed to set configuration:'), error.message);
+        console.error(colors.red('Failed to set configuration:'), (error as Error).message);
         Deno.exit(1);
       }
     }),
@@ -95,7 +95,7 @@ export const configCommand = new Command()
   .command('reset', new Command()
     .description('Reset configuration to defaults')
     .option('--confirm', 'Skip confirmation prompt')
-    .action(async (options) => {
+    .action(async (options: any) => {
       if (!options.confirm) {
         const confirmed = await Confirm.prompt({
           message: 'Reset configuration to defaults?',
@@ -117,7 +117,7 @@ export const configCommand = new Command()
     .arguments('[output-file:string]')
     .option('--force', 'Overwrite existing file')
     .option('--template <template:string>', 'Use configuration template', { default: 'default' })
-    .action(async (outputFile = 'claude-flow.config.json', options) => {
+    .action(async (options: any, outputFile: string = 'claude-flow.config.json') => {
       try {
         // Check if file exists
         try {
@@ -137,7 +137,7 @@ export const configCommand = new Command()
         console.log(colors.green('✓'), `Configuration file created: ${outputFile}`);
         console.log(colors.gray(`Template: ${options.template}`));
       } catch (error) {
-        console.error(colors.red('Failed to create configuration file:'), error.message);
+        console.error(colors.red('Failed to create configuration file:'), (error as Error).message);
         Deno.exit(1);
       }
     }),
@@ -146,7 +146,7 @@ export const configCommand = new Command()
     .description('Validate a configuration file')
     .arguments('<config-file:string>')
     .option('--strict', 'Use strict validation')
-    .action(async (configFile, options) => {
+    .action(async (options: any, configFile: string) => {
       try {
         await configManager.load(configFile);
         console.log(colors.green('✓'), 'Configuration is valid');
@@ -157,7 +157,7 @@ export const configCommand = new Command()
         }
       } catch (error) {
         console.error(colors.red('✗'), 'Configuration validation failed:');
-        console.error(error.message);
+        console.error((error as Error).message);
         Deno.exit(1);
       }
     }),
@@ -192,7 +192,7 @@ export const configCommand = new Command()
             console.log(colors.gray(`Current: ${currentProfile}`));
           }
         } catch (error) {
-          console.error(colors.red('Failed to list profiles:'), error.message);
+          console.error(colors.red('Failed to list profiles:'), (error as Error).message);
         }
       }),
     )
@@ -200,7 +200,7 @@ export const configCommand = new Command()
       .description('Save current configuration as a profile')
       .arguments('<profile-name:string>')
       .option('--force', 'Overwrite existing profile')
-      .action(async (profileName, options) => {
+      .action(async (options: any, profileName: string) => {
         try {
           const existing = await configManager.getProfile(profileName);
           if (existing && !options.force) {
@@ -212,19 +212,19 @@ export const configCommand = new Command()
           await configManager.saveProfile(profileName);
           console.log(colors.green('✓'), `Profile '${profileName}' saved`);
         } catch (error) {
-          console.error(colors.red('Failed to save profile:'), error.message);
+          console.error(colors.red('Failed to save profile:'), (error as Error).message);
         }
       }),
     )
     .command('load', new Command()
       .description('Load a configuration profile')
       .arguments('<profile-name:string>')
-      .action(async (profileName) => {
+      .action(async (options: any, profileName: string) => {
         try {
           await configManager.applyProfile(profileName);
           console.log(colors.green('✓'), `Profile '${profileName}' loaded`);
         } catch (error) {
-          console.error(colors.red('Failed to load profile:'), error.message);
+          console.error(colors.red('Failed to load profile:'), (error as Error).message);
         }
       }),
     )
@@ -232,7 +232,7 @@ export const configCommand = new Command()
       .description('Delete a configuration profile')
       .arguments('<profile-name:string>')
       .option('--force', 'Skip confirmation prompt')
-      .action(async (profileName, options) => {
+      .action(async (options: any, profileName: string) => {
         try {
           if (!options.force) {
             const confirmed = await Confirm.prompt({
@@ -249,14 +249,14 @@ export const configCommand = new Command()
           await configManager.deleteProfile(profileName);
           console.log(colors.green('✓'), `Profile '${profileName}' deleted`);
         } catch (error) {
-          console.error(colors.red('Failed to delete profile:'), error.message);
+          console.error(colors.red('Failed to delete profile:'), (error as Error).message);
         }
       }),
     )
     .command('show', new Command()
       .description('Show profile configuration')
       .arguments('<profile-name:string>')
-      .action(async (profileName) => {
+      .action(async (options: any, profileName: string) => {
         try {
           const profile = await configManager.getProfile(profileName);
           if (!profile) {
@@ -266,7 +266,7 @@ export const configCommand = new Command()
           
           console.log(JSON.stringify(profile, null, 2));
         } catch (error) {
-          console.error(colors.red('Failed to show profile:'), error.message);
+          console.error(colors.red('Failed to show profile:'), (error as Error).message);
         }
       }),
     ),
@@ -275,7 +275,7 @@ export const configCommand = new Command()
     .description('Export configuration')
     .arguments('<output-file:string>')
     .option('--include-defaults', 'Include default values')
-    .action(async (outputFile, options) => {
+    .action(async (options: any, outputFile: string) => {
       try {
         let data;
         if (options.includeDefaults) {
@@ -292,7 +292,7 @@ export const configCommand = new Command()
         await Deno.writeTextFile(outputFile, JSON.stringify(data, null, 2));
         console.log(colors.green('✓'), `Configuration exported to ${outputFile}`);
       } catch (error) {
-        console.error(colors.red('Failed to export configuration:'), error.message);
+        console.error(colors.red('Failed to export configuration:'), (error as Error).message);
       }
     }),
   )
@@ -300,14 +300,14 @@ export const configCommand = new Command()
     .description('Import configuration')
     .arguments('<input-file:string>')
     .option('--merge', 'Merge with current configuration')
-    .action(async (inputFile, options) => {
+    .action(async (options: any, inputFile: string) => {
       try {
         const content = await Deno.readTextFile(inputFile);
         const data = JSON.parse(content);
         
         if (options.merge) {
           const current = configManager.get();
-          data.config = deepMerge(current, data.config);
+          data.config = deepMerge(current as unknown as Record<string, unknown>, data.config) as any;
         }
         
         configManager.import(data);
@@ -317,14 +317,14 @@ export const configCommand = new Command()
           console.log(colors.gray(`Profile: ${data.profile}`));
         }
       } catch (error) {
-        console.error(colors.red('Failed to import configuration:'), error.message);
+        console.error(colors.red('Failed to import configuration:'), (error as Error).message);
       }
     }),
   )
   .command('schema', new Command()
     .description('Show configuration schema')
     .option('--path <path:string>', 'Show schema for specific path')
-    .action(async (options) => {
+    .action(async (options: any) => {
       const schema = configManager.getSchema();
       
       if (options.path) {

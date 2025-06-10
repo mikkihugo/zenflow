@@ -40,7 +40,7 @@ export function initializeTerminalBridge(context: vscode.ExtensionContext): void
   // Override terminal creation to capture output
   const originalCreateTerminal = vscode.window.createTerminal;
   (vscode.window as any).createTerminal = function(options: vscode.TerminalOptions) {
-    const terminal = originalCreateTerminal.call(vscode.window, options);
+    const terminal = originalCreateTerminal.call(vscode.window, options) as vscode.Terminal;
     
     // Create write emulator for this terminal
     const writeEmulator = new vscode.EventEmitter<string>();
@@ -61,7 +61,7 @@ export function initializeTerminalBridge(context: vscode.ExtensionContext): void
 
   // Clean up on terminal close
   context.subscriptions.push(
-    vscode.window.onDidCloseTerminal((terminal) => {
+    vscode.window.onDidCloseTerminal((terminal: vscode.Terminal) => {
       // Find and remove from registries
       for (const [id, term] of activeTerminals.entries()) {
         if (term === terminal) {
@@ -185,7 +185,7 @@ export async function executeTerminalCommand(
     const marker = `__COMMAND_COMPLETE_${Date.now()}__`;
     
     // Set up output listener
-    const disposable = writeEmulator.event((data) => {
+    const disposable = writeEmulator.event((data: string) => {
       output += data;
       
       if (output.includes(marker)) {

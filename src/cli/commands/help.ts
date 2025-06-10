@@ -2,10 +2,10 @@
  * Comprehensive help system for Claude-Flow CLI
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
-import { Select } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
+import { Select } from '@cliffy/prompt';
 
 export const helpCommand = new Command()
   .description('Comprehensive help system with examples and tutorials')
@@ -14,7 +14,7 @@ export const helpCommand = new Command()
   .option('-e, --examples', 'Show examples for the topic')
   .option('--tutorial', 'Show tutorial for the topic')
   .option('--all', 'Show all available help topics')
-  .action(async (topic, options) => {
+  .action(async (options: any, topic: string | undefined) => {
     if (options.interactive) {
       await startInteractiveHelp();
     } else if (options.all) {
@@ -732,10 +732,12 @@ async function startInteractiveHelp(): Promise<void> {
       { name: 'Exit', value: 'exit' }
     ];
     
-    const choice = await Select.prompt({
+    const result = await Select.prompt({
       message: 'What would you like help with?',
       options: categories,
     });
+    
+    const choice = typeof result === 'string' ? result : result.value;
     
     if (choice === 'exit') {
       console.log(colors.gray('Goodbye!'));

@@ -22,18 +22,18 @@ interface ShellConfig {
 class NativeTerminal implements Terminal {
   id: string;
   pid?: number;
-  private process?: Deno.ChildProcess;
+  private process?: Deno.ChildProcess | undefined;
   private encoder = new TextEncoder();
   private decoder = new TextDecoder();
   private shell: string;
   private outputBuffer = '';
   private errorBuffer = '';
   private commandMarker: string;
-  private commandDeferred?: ReturnType<typeof createDeferred<string>>;
+  private commandDeferred?: ReturnType<typeof createDeferred<string>> | undefined;
   private outputListeners = new Set<(data: string) => void>();
   private alive = true;
-  private stdoutReader?: ReadableStreamDefaultReader<Uint8Array>;
-  private stderrReader?: ReadableStreamDefaultReader<Uint8Array>;
+  private stdoutReader?: ReadableStreamDefaultReader<Uint8Array> | undefined;
+  private stderrReader?: ReadableStreamDefaultReader<Uint8Array> | undefined;
 
   constructor(shell: string, private logger: ILogger) {
     this.id = generateId('native-term');

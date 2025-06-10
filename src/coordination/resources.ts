@@ -259,8 +259,8 @@ export class ResourceManager {
     }
 
     resource.locked = false;
-    resource.lockedBy = undefined;
-    resource.lockedAt = undefined;
+    delete resource.lockedBy;
+    delete resource.lockedAt;
     
     this.locks.delete(resourceId);
     

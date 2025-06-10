@@ -1,0 +1,7 @@
+[0m[1m[31merror[0m: unexpected argument '--unstable-temporal-api' found
+
+  tip: a similar argument exists: '--unstable-temporal'
+  tip: to pass '--unstable-temporal-api' as a value, use '-- --unstable-temporal-api'
+
+Usage: deno test [OPTIONS] [files]... [-- [SCRIPT_ARG]...]
+

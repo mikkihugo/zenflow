@@ -2,9 +2,9 @@
  * Status command for Claude-Flow
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
 import { formatHealthStatus, formatDuration, formatStatusIndicator } from '../formatter.ts';
 
 export const statusCommand = new Command()
@@ -13,7 +13,7 @@ export const statusCommand = new Command()
   .option('-i, --interval <seconds:number>', 'Update interval in seconds', { default: 5 })
   .option('-c, --component <name:string>', 'Show status for specific component')
   .option('--json', 'Output in JSON format')
-  .action(async (options) => {
+  .action(async (options: any) => {
     if (options.watch) {
       await watchStatus(options);
     } else {
@@ -37,11 +37,11 @@ async function showStatus(options: any): Promise<void> {
       showFullStatus(status);
     }
   } catch (error) {
-    if (error.message.includes('ECONNREFUSED') || error.message.includes('connection refused')) {
+    if ((error as Error).message.includes('ECONNREFUSED') || (error as Error).message.includes('connection refused')) {
       console.error(colors.red('✗ Claude-Flow is not running'));
       console.log(colors.gray('Start it with: claude-flow start'));
     } else {
-      console.error(colors.red('Error getting status:'), error.message);
+      console.error(colors.red('Error getting status:'), (error as Error).message);
     }
   }
 }
@@ -63,7 +63,7 @@ async function watchStatus(options: any): Promise<void> {
     try {
       await showStatus({ ...options, json: false });
     } catch (error) {
-      console.error(colors.red('Status update failed:'), error.message);
+      console.error(colors.red('Status update failed:'), (error as Error).message);
     }
     
     await new Promise(resolve => setTimeout(resolve, interval));

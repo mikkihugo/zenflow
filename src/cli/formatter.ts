@@ -2,9 +2,9 @@
  * Output formatting utilities for CLI
  */
 
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
-import { Box } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/mod.ts';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
+// Box is not available in the current cliffy version
 import { AgentProfile, Task, MemoryEntry, HealthStatus } from '../utils/types.ts';
 
 /**
@@ -152,7 +152,7 @@ export function createAgentTable(agents: AgentProfile[]): Table {
     .border(true);
 
   for (const agent of agents) {
-    table.body([
+    table.push([
       agent.id,
       agent.name,
       agent.type,
@@ -183,7 +183,7 @@ export function createTaskTable(tasks: Task[]): Table {
       cancelled: colors.magenta(task.status),
     }[task.status] || task.status;
 
-    table.body([
+    table.push([
       task.id,
       task.type,
       task.description.substring(0, 40) + (task.description.length > 40 ? '...' : ''),

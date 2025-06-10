@@ -28,7 +28,7 @@ export interface AgentWorkload {
  */
 export class WorkStealingCoordinator {
   private workloads = new Map<string, AgentWorkload>();
-  private stealInterval?: NodeJS.Timeout;
+  private stealInterval?: ReturnType<typeof setInterval>;
   private taskDurations = new Map<string, number[]>(); // agentId -> task durations
 
   constructor(

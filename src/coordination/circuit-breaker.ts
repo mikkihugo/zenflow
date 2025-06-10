@@ -181,7 +181,7 @@ export class CircuitBreaker {
         this.failures = 0;
         this.successes = 0;
         this.halfOpenRequests = 0;
-        this.nextAttempt = undefined;
+        delete this.nextAttempt;
         break;
         
       case CircuitState.OPEN:
@@ -227,16 +227,24 @@ export class CircuitBreaker {
    * Get circuit breaker metrics
    */
   getMetrics(): CircuitBreakerMetrics {
-    return {
+    const metrics: CircuitBreakerMetrics = {
       state: this.state,
       failures: this.failures,
       successes: this.successes,
-      lastFailureTime: this.lastFailureTime,
-      lastSuccessTime: this.lastSuccessTime,
       totalRequests: this.totalRequests,
       rejectedRequests: this.rejectedRequests,
       halfOpenRequests: this.halfOpenRequests,
     };
+    
+    if (this.lastFailureTime !== undefined) {
+      metrics.lastFailureTime = this.lastFailureTime;
+    }
+    
+    if (this.lastSuccessTime !== undefined) {
+      metrics.lastSuccessTime = this.lastSuccessTime;
+    }
+    
+    return metrics;
   }
 
   /**
@@ -247,9 +255,9 @@ export class CircuitBreaker {
     this.state = CircuitState.CLOSED;
     this.failures = 0;
     this.successes = 0;
-    this.lastFailureTime = undefined;
-    this.lastSuccessTime = undefined;
-    this.nextAttempt = undefined;
+    delete this.lastFailureTime;
+    delete this.lastSuccessTime;
+    delete this.nextAttempt;
     this.halfOpenRequests = 0;
     this.totalRequests = 0;
     this.rejectedRequests = 0;

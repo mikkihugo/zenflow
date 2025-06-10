@@ -1,89 +1,72 @@
 #!/usr/bin/env node
-/**
- * NPM post-install script for Claude-Flow
- * Downloads the appropriate binary for the platform
- */
 
-const { exec } = require('child_process');
-const fs = require('fs');
+const os = require('os');
 const path = require('path');
+const fs = require('fs');
 const https = require('https');
+const { spawn } = require('child_process');
 
-const BINARY_NAME = 'claude-flow';
-const REPO = 'your-org/claude-flow';
-const VERSION = require('../package.json').version;
+console.log('Installing Claude-Flow...');
 
-// Platform mapping
-const PLATFORM_MAP = {
-  'darwin-x64': 'darwin-amd64',
-  'darwin-arm64': 'darwin-arm64',
-  'linux-x64': 'linux-amd64',
-  'linux-arm64': 'linux-arm64',
-  'win32-x64': 'windows-amd64.exe',
-};
-
-async function install() {
-  console.log('Installing Claude-Flow...');
-
-  // Check if Deno is installed
-  try {
-    await execCommand('deno --version');
-    console.log('✓ Deno is installed');
-    
-    // Use Deno to compile instead of downloading pre-built binary
-    console.log('Compiling Claude-Flow with Deno...');
-    const srcPath = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
-    const outPath = path.join(__dirname, '..', 'dist', BINARY_NAME);
-    
-    // Ensure dist directory exists
-    const distDir = path.join(__dirname, '..', 'dist');
-    if (!fs.existsSync(distDir)) {
-      fs.mkdirSync(distDir, { recursive: true });
-    }
-    
-    await execCommand(`deno compile --allow-all --output="${outPath}" "${srcPath}"`);
-    
-    // Make binary executable on Unix-like systems
-    if (process.platform !== 'win32') {
-      fs.chmodSync(outPath, '755');
-    }
-    
-    console.log('✓ Claude-Flow installed successfully!');
-    console.log(`Binary location: ${outPath}`);
-    
-  } catch (error) {
-    console.log('Deno not found. Attempting to download pre-built binary...');
-    
-    const platform = `${process.platform}-${process.arch}`;
-    const binaryFile = PLATFORM_MAP[platform];
-    
-    if (!binaryFile) {
-      console.error(`Unsupported platform: ${platform}`);
-      console.error('Please install Deno and run: npm run build');
-      process.exit(1);
-    }
-    
-    // In a real implementation, download pre-built binary from GitHub releases
-    console.error('Pre-built binaries not yet available.');
-    console.error('Please install Deno from https://deno.land and run: npm run build');
-    process.exit(1);
-  }
+// Check if Deno is available
+function checkDeno() {
+  return new Promise((resolve) => {
+    const deno = spawn('deno', ['--version'], { stdio: 'pipe' });
+    deno.on('close', (code) => {
+      resolve(code === 0);
+    });
+    deno.on('error', () => {
+      resolve(false);
+    });
+  });
 }
 
-function execCommand(command) {
+// Install Deno if not available
+async function installDeno() {
+  console.log('Deno not found. Installing Deno...');
+  
+  const platform = os.platform();
+  const arch = os.arch();
+  
+  if (platform === 'win32') {
+    console.log('Please install Deno manually from https://deno.land/');
+    process.exit(1);
+  }
+  
   return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
+    const installScript = spawn('curl', ['-fsSL', 'https://deno.land/x/install/install.sh'], { stdio: 'pipe' });
+    const sh = spawn('sh', [], { stdio: ['pipe', 'inherit', 'inherit'] });
+    
+    installScript.stdout.pipe(sh.stdin);
+    
+    sh.on('close', (code) => {
+      if (code === 0) {
+        console.log('Deno installed successfully!');
+        resolve();
       } else {
-        resolve(stdout);
+        reject(new Error('Failed to install Deno'));
       }
     });
   });
 }
 
-// Run installation
-install().catch(error => {
-  console.error('Installation failed:', error.message);
-  process.exit(1);
-});
+// Main installation process
+async function main() {
+  try {
+    const denoAvailable = await checkDeno();
+    
+    if (!denoAvailable) {
+      await installDeno();
+    }
+    
+    console.log('Claude-Flow installation completed!');
+    console.log('You can now use: npx claude-flow or claude-flow (if installed globally)');
+    
+  } catch (error) {
+    console.error('Installation failed:', error.message);
+    console.log('Please install Deno manually from https://deno.land/ and try again.');
+    process.exit(1);
+  }
+}
+
+main();

@@ -41,3 +41,8 @@ claude-flow.config.json
 *.tmp
 *.temp
 .cache/
+
+bin
+test-init
+test-full-init
+claude-flow-1.0.0

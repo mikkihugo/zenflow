@@ -188,14 +188,14 @@ export class AdvancedTaskScheduler extends TaskScheduler {
     this.setupAdvancedEventHandlers();
   }
 
-  async initialize(): Promise<void> {
+  override async initialize(): Promise<void> {
     await super.initialize();
     await this.workStealing.initialize();
     
     this.logger.info('Advanced task scheduler initialized');
   }
 
-  async shutdown(): Promise<void> {
+  override async shutdown(): Promise<void> {
     await this.workStealing.shutdown();
     await super.shutdown();
   }
@@ -244,16 +244,17 @@ export class AdvancedTaskScheduler extends TaskScheduler {
   /**
    * Override assignTask to use advanced scheduling
    */
-  async assignTask(task: Task, agentId?: string): Promise<void> {
+  override async assignTask(task: Task, agentId?: string): Promise<void> {
     // Add to dependency graph
     this.dependencyGraph.addTask(task);
 
     // If no agent specified, select one
     if (!agentId) {
-      agentId = await this.selectAgentForTask(task);
-      if (!agentId) {
+      const selectedAgent = await this.selectAgentForTask(task);
+      if (!selectedAgent) {
         throw new Error('No suitable agent found for task');
       }
+      agentId = selectedAgent;
     }
 
     // Use circuit breaker for assignment
@@ -310,7 +311,7 @@ export class AdvancedTaskScheduler extends TaskScheduler {
   /**
    * Override completeTask to update stats and dependency graph
    */
-  async completeTask(taskId: string, result: unknown): Promise<void> {
+  override async completeTask(taskId: string, result: unknown): Promise<void> {
     const task = await this.getTask(taskId);
     if (!task) {
       throw new Error(`Task not found: ${taskId}`);
@@ -347,7 +348,7 @@ export class AdvancedTaskScheduler extends TaskScheduler {
   /**
    * Override failTask to update stats and dependency graph
    */
-  async failTask(taskId: string, error: Error): Promise<void> {
+  override async failTask(taskId: string, error: Error): Promise<void> {
     const task = await this.getTask(taskId);
     if (!task) {
       throw new Error(`Task not found: ${taskId}`);

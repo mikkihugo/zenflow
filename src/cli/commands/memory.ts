@@ -2,9 +2,9 @@
  * Memory management commands
  */
 
-import { Command } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
+import { Command } from '@cliffy/command';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
 
 export const memoryCommand = new Command()
   .description('Manage agent memory')
@@ -19,7 +19,7 @@ export const memoryCommand = new Command()
     .option('--tags <tags:string>', 'Filter by tags (comma-separated)')
     .option('--search <search:string>', 'Search in content')
     .option('--limit <limit:number>', 'Limit results', { default: 10 })
-    .action(async (options) => {
+    .action(async (options: any) => {
       console.log(colors.yellow('Memory query requires a running Claude-Flow instance'));
       console.log(colors.gray('Query parameters:'));
       console.log(JSON.stringify(options, null, 2));
@@ -32,7 +32,7 @@ export const memoryCommand = new Command()
     .option('-f, --format <format:string>', 'Export format (json, markdown)', {
       default: 'json',
     })
-    .action(async (outputFile, options) => {
+    .action(async (options: any, outputFile: string) => {
       console.log(colors.yellow('Memory export requires a running Claude-Flow instance'));
     }),
   )
@@ -40,7 +40,7 @@ export const memoryCommand = new Command()
     .description('Import memory from file')
     .arguments('<input-file:string>')
     .option('-a, --agent <agent:string>', 'Import to specific agent')
-    .action(async (inputFile, options) => {
+    .action(async (options: any, inputFile: string) => {
       try {
         const content = await Deno.readTextFile(inputFile);
         const data = JSON.parse(content);
@@ -49,7 +49,7 @@ export const memoryCommand = new Command()
         console.log(`- Entries: ${Array.isArray(data) ? data.length : 1}`);
         console.log(colors.yellow('\nTo import this data, ensure Claude-Flow is running'));
       } catch (error) {
-        console.error(colors.red('Failed to load memory file:'), error.message);
+        console.error(colors.red('Failed to load memory file:'), (error as Error).message);
       }
     }),
   )
@@ -65,7 +65,7 @@ export const memoryCommand = new Command()
       default: 30,
     })
     .option('--dry-run', 'Show what would be deleted without deleting')
-    .action(async (options) => {
+    .action(async (options: any) => {
       console.log(colors.yellow('Memory cleanup requires a running Claude-Flow instance'));
       if (options.dryRun) {
         console.log(colors.gray('(Dry run mode - no changes would be made)'));

@@ -79,7 +79,9 @@ export class ConfigManager {
    * Loads configuration from various sources
    */
   async load(configPath?: string): Promise<Config> {
-    this.configPath = configPath;
+    if (configPath !== undefined) {
+      this.configPath = configPath;
+    }
 
     // Start with defaults
     let config = deepClone(DEFAULT_CONFIG);
@@ -87,12 +89,12 @@ export class ConfigManager {
     // Load from file if specified
     if (configPath) {
       const fileConfig = await this.loadFromFile(configPath);
-      config = deepMerge(config, fileConfig);
+      config = deepMergeConfig(config, fileConfig);
     }
 
     // Load from environment variables
     const envConfig = this.loadFromEnv();
-    config = deepMerge(config, envConfig);
+    config = deepMergeConfig(config, envConfig);
 
     // Validate the final configuration
     this.validate(config);
@@ -112,7 +114,7 @@ export class ConfigManager {
    * Updates configuration values
    */
   update(updates: Partial<Config>): Config {
-    this.config = deepMerge(this.config, updates);
+    this.config = deepMergeConfig(this.config, updates);
     this.validate(this.config);
     return this.get();
   }
@@ -153,7 +155,7 @@ export class ConfigManager {
       await Deno.mkdir(this.userConfigDir, { recursive: true });
     } catch (error) {
       if (!(error instanceof Deno.errors.AlreadyExists)) {
-        throw new ConfigError(`Failed to create config directory: ${error.message}`);
+        throw new ConfigError(`Failed to create config directory: ${(error as Error).message}`);
       }
     }
   }
@@ -178,7 +180,7 @@ export class ConfigManager {
               this.profiles.set(profileName, profileConfig);
             }
           } catch (error) {
-            console.warn(`Failed to load profile ${profileName}: ${error.message}`);
+            console.warn(`Failed to load profile ${profileName}: ${(error as Error).message}`);
           }
         }
       }
@@ -198,7 +200,7 @@ export class ConfigManager {
       throw new ConfigError(`Profile '${profileName}' not found`);
     }
 
-    this.config = deepMerge(this.config, profile);
+    this.config = deepMergeConfig(this.config, profile);
     this.currentProfile = profileName;
     this.validate(this.config);
   }
@@ -234,7 +236,7 @@ export class ConfigManager {
       if (error instanceof Deno.errors.NotFound) {
         throw new ConfigError(`Profile '${profileName}' not found`);
       }
-      throw new ConfigError(`Failed to delete profile: ${error.message}`);
+      throw new ConfigError(`Failed to delete profile: ${(error as Error).message}`);
     }
   }
 
@@ -303,7 +305,7 @@ export class ConfigManager {
    */
   reset(): void {
     this.config = deepClone(DEFAULT_CONFIG);
-    this.currentProfile = undefined;
+    delete this.currentProfile;
   }
 
   /**
@@ -464,7 +466,7 @@ export class ConfigManager {
         // File doesn't exist, use defaults
         return {};
       }
-      throw new ConfigError(`Failed to load configuration from ${path}: ${error.message}`);
+      throw new ConfigError(`Failed to load configuration from ${path}: ${(error as Error).message}`);
     }
   }
 
@@ -477,7 +479,11 @@ export class ConfigManager {
     // Orchestrator settings
     const maxAgents = Deno.env.get('CLAUDE_FLOW_MAX_AGENTS');
     if (maxAgents) {
+      if (!config.orchestrator) {
+        config.orchestrator = {} as any;
+      }
       config.orchestrator = {
+        ...DEFAULT_CONFIG.orchestrator,
         ...config.orchestrator,
         maxConcurrentAgents: parseInt(maxAgents, 10),
       };
@@ -487,6 +493,7 @@ export class ConfigManager {
     const terminalType = Deno.env.get('CLAUDE_FLOW_TERMINAL_TYPE');
     if (terminalType === 'vscode' || terminalType === 'native' || terminalType === 'auto') {
       config.terminal = {
+        ...DEFAULT_CONFIG.terminal,
         ...config.terminal,
         type: terminalType,
       };
@@ -496,6 +503,7 @@ export class ConfigManager {
     const memoryBackend = Deno.env.get('CLAUDE_FLOW_MEMORY_BACKEND');
     if (memoryBackend === 'sqlite' || memoryBackend === 'markdown' || memoryBackend === 'hybrid') {
       config.memory = {
+        ...DEFAULT_CONFIG.memory,
         ...config.memory,
         backend: memoryBackend,
       };
@@ -505,6 +513,7 @@ export class ConfigManager {
     const mcpTransport = Deno.env.get('CLAUDE_FLOW_MCP_TRANSPORT');
     if (mcpTransport === 'stdio' || mcpTransport === 'http' || mcpTransport === 'websocket') {
       config.mcp = {
+        ...DEFAULT_CONFIG.mcp,
         ...config.mcp,
         transport: mcpTransport,
       };
@@ -513,6 +522,7 @@ export class ConfigManager {
     const mcpPort = Deno.env.get('CLAUDE_FLOW_MCP_PORT');
     if (mcpPort) {
       config.mcp = {
+        ...DEFAULT_CONFIG.mcp,
         ...config.mcp,
         port: parseInt(mcpPort, 10),
       };
@@ -522,6 +532,7 @@ export class ConfigManager {
     const logLevel = Deno.env.get('CLAUDE_FLOW_LOG_LEVEL');
     if (logLevel === 'debug' || logLevel === 'info' || logLevel === 'warn' || logLevel === 'error') {
       config.logging = {
+        ...DEFAULT_CONFIG.logging,
         ...config.logging,
         level: logLevel,
       };
@@ -582,4 +593,35 @@ export async function loadConfig(path?: string): Promise<Config> {
 
 function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
+}
+
+// Custom deepMerge for Config type
+function deepMergeConfig(target: Config, ...sources: Partial<Config>[]): Config {
+  const result = deepClone(target);
+  
+  for (const source of sources) {
+    if (!source) continue;
+    
+    // Merge each section
+    if (source.orchestrator) {
+      result.orchestrator = { ...result.orchestrator, ...source.orchestrator };
+    }
+    if (source.terminal) {
+      result.terminal = { ...result.terminal, ...source.terminal };
+    }
+    if (source.memory) {
+      result.memory = { ...result.memory, ...source.memory };
+    }
+    if (source.coordination) {
+      result.coordination = { ...result.coordination, ...source.coordination };
+    }
+    if (source.mcp) {
+      result.mcp = { ...result.mcp, ...source.mcp };
+    }
+    if (source.logging) {
+      result.logging = { ...result.logging, ...source.logging };
+    }
+  }
+  
+  return result;
 }

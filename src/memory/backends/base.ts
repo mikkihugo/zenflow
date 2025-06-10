@@ -18,4 +18,5 @@ export interface IMemoryBackend {
     error?: string; 
     metrics?: Record<string, number>;
   }>;
+  performMaintenance?(): Promise<void>;
 }

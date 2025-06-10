@@ -341,7 +341,7 @@ export class MemoryManager implements IMemoryManager {
       return {
         healthy: backendHealth.healthy,
         metrics,
-        error: backendHealth.error,
+        ...(backendHealth.error && { error: backendHealth.error }),
       };
     } catch (error) {
       return {
@@ -559,9 +559,10 @@ class HybridBackend implements IMemoryBackend {
       this.secondary.getHealthStatus(),
     ]);
 
+    const error = primaryHealth.error || secondaryHealth.error;
     return {
       healthy: primaryHealth.healthy && secondaryHealth.healthy,
-      error: primaryHealth.error || secondaryHealth.error,
+      ...(error && { error }),
       metrics: {
         ...primaryHealth.metrics,
         ...secondaryHealth.metrics,

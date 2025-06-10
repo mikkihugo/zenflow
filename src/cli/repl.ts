@@ -2,9 +2,9 @@
  * Enhanced Interactive REPL for Claude-Flow
  */
 
-import { Input, Confirm, Select } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts';
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
-import { Table } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts';
+import { Input, Confirm, Select } from '@cliffy/prompt';
+import { colors } from '@cliffy/ansi/colors';
+import { Table } from '@cliffy/table';
 import { AgentProfile, Task } from '../utils/types.ts';
 import { generateId } from '../utils/helpers.ts';
 import { formatStatusIndicator, formatDuration, formatProgressBar } from './formatter.ts';
@@ -334,7 +334,7 @@ export async function startREPL(options: any = {}): Promise<void> {
           ctx.workingDirectory = Deno.cwd();
           console.log(colors.gray(`Changed to: ${ctx.workingDirectory}`));
         } catch (error) {
-          console.error(colors.red('Error:'), error.message);
+          console.error(colors.red('Error:'), error instanceof Error ? error.message : String(error));
         }
       },
     },
@@ -406,7 +406,7 @@ export async function startREPL(options: any = {}): Promise<void> {
         try {
           await command.handler(commandArgs, context);
         } catch (error) {
-          console.error(colors.red('Command failed:'), error.message);
+          console.error(colors.red('Command failed:'), error instanceof Error ? error.message : String(error));
         }
       } else {
         console.log(colors.red(`Unknown command: ${commandName}`));
@@ -419,12 +419,13 @@ export async function startREPL(options: any = {}): Promise<void> {
         }
       }
     } catch (error) {
-      if (error.message.includes('EOF') || error.message.includes('interrupted')) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('EOF') || errorMessage.includes('interrupted')) {
         // Ctrl+D or Ctrl+C pressed
         console.log('\n' + colors.gray('Goodbye!'));
         break;
       }
-      console.error(colors.red('REPL Error:'), error.message);
+      console.error(colors.red('REPL Error:'), errorMessage);
     }
   }
 }

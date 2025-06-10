@@ -2,7 +2,7 @@
  * Shell completion generator for Claude-Flow CLI
  */
 
-import { colors } from 'https://deno.land/x/cliffy@v1.0.0-rc.3/ansi/colors.ts';
+import { colors } from '@cliffy/ansi/colors';
 
 export class CompletionGenerator {
   private commands = [

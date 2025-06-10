@@ -55,19 +55,26 @@ class VSCodeTerminalWrapper implements Terminal {
   async initialize(): Promise<void> {
     try {
       // Create VSCode terminal
-      this.vscodeTerminal = this.vscodeApi.window.createTerminal({
+      const shellPath = this.getShellPath();
+      const terminalOptions: any = {
         name: `Claude-Flow Terminal ${this.id}`,
-        shellPath: this.getShellPath(),
         shellArgs: this.getShellArgs(),
         env: {
           CLAUDE_FLOW_TERMINAL: 'true',
           CLAUDE_FLOW_TERMINAL_ID: this.id,
           PS1: '$ ', // Simple prompt
         },
-      });
+      };
+      if (shellPath !== undefined) {
+        terminalOptions.shellPath = shellPath;
+      }
+      this.vscodeTerminal = this.vscodeApi.window.createTerminal(terminalOptions);
 
       // Get process ID
-      this.pid = await this.vscodeTerminal.processId;
+      const processId = await this.vscodeTerminal.processId;
+      if (processId !== undefined) {
+        this.pid = processId;
+      }
 
       // Show terminal (but don't steal focus)
       this.vscodeTerminal.show(true);

@@ -353,8 +353,9 @@ export class AuthManager implements IAuthManager {
   }
 
   private timingSafeEqual(a: string, b: string): boolean {
-    const bufferA = Buffer.from(a, 'utf8');
-    const bufferB = Buffer.from(b, 'utf8');
+    const encoder = new TextEncoder();
+    const bufferA = encoder.encode(a);
+    const bufferB = encoder.encode(b);
     
     if (bufferA.length !== bufferB.length) {
       return false;
