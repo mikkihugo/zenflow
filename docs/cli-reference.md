@@ -609,9 +609,9 @@ claude-flow status [options]
 
 ---
 
-### `monitor` - System Monitoring
+### `monitor` - Live Monitoring Dashboard
 
-Monitor system performance and metrics.
+Start the real-time monitoring dashboard to track system performance and activity.
 
 ```bash
 claude-flow monitor [options]
@@ -619,12 +619,110 @@ claude-flow monitor [options]
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
-| `--interval <ms>` | Update interval |
-| `--metrics <list>` | Specific metrics to monitor |
-| `--export <file>` | Export metrics to file |
-| `--dashboard` | Show dashboard view |
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--interval` | `-i` | Update interval in seconds | `2` |
+| `--compact` | `-c` | Compact view mode (hide lists) | `false` |
+| `--focus` | `-f` | Focus on specific component | |
+
+**Examples:**
+
+```bash
+# Start monitor with default settings
+claude-flow monitor
+
+# Monitor with 5-second updates
+claude-flow monitor --interval 5
+
+# Compact mode for smaller screens
+claude-flow monitor --compact
+
+# Focus on specific component
+claude-flow monitor --focus orchestrator
+```
+
+---
+
+### `claude` - Spawn Claude Instances
+
+Spawn and manage Claude Code instances with specific configurations, similar to claude-sparc.sh but integrated into the orchestration system.
+
+```bash
+claude-flow claude <subcommand> [options]
+```
+
+#### `spawn` - Spawn Single Claude Instance
+
+```bash
+claude-flow claude spawn <task> [options]
+```
+
+**Options:**
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--tools` | `-t` | Comma-separated list of allowed tools | `View,Edit,Replace,GlobTool,GrepTool,LS,Bash` |
+| `--no-permissions` | | Use --dangerously-skip-permissions flag | `false` |
+| `--config` | `-c` | MCP config file path | |
+| `--mode` | `-m` | Development mode (full/backend-only/frontend-only/api-only) | `full` |
+| `--parallel` | | Enable parallel execution with BatchTool | `false` |
+| `--research` | | Enable web research with WebFetchTool | `false` |
+| `--coverage` | | Test coverage target percentage | `80` |
+| `--commit` | | Commit frequency (phase/feature/manual) | `phase` |
+| `--verbose` | `-v` | Enable verbose output | `false` |
+| `--dry-run` | `-d` | Show what would be executed without running | `false` |
+
+**Examples:**
+
+```bash
+# Basic task
+claude-flow claude spawn "implement user authentication"
+
+# Research task
+claude-flow claude spawn "research microservices patterns" --research --parallel
+
+# Backend development
+claude-flow claude spawn "create REST API" --mode backend-only --coverage 90
+
+# Frontend with no permissions
+claude-flow claude spawn "build dashboard" --mode frontend-only --no-permissions
+
+# Dry run
+claude-flow claude spawn "refactor code" --dry-run
+```
+
+#### `batch` - Execute Workflow File
+
+```bash
+claude-flow claude batch <workflow-file> [options]
+```
+
+Execute multiple Claude instances from a JSON workflow file.
+
+**Workflow Format:**
+
+```json
+{
+  "name": "Workflow Name",
+  "parallel": true,
+  "tasks": [{
+    "id": "task-1",
+    "description": "Task description",
+    "tools": ["View", "Edit"],
+    "skipPermissions": true
+  }]
+}
+```
+
+**Example:**
+
+```bash
+# Execute workflow
+claude-flow claude batch workflow.json
+
+# Dry run
+claude-flow claude batch workflow.json --dry-run
+```
 
 ---
 
