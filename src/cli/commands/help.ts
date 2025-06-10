@@ -178,6 +178,67 @@ const HELP_TOPICS: HelpTopic[] = [
     related: ['agents', 'workflows', 'coordination']
   },
   {
+    name: 'claude',
+    description: 'Spawning Claude instances with specific configurations',
+    category: 'basic',
+    examples: [
+      {
+        description: 'Spawn Claude with web research capabilities',
+        command: 'claude-flow claude spawn "implement user authentication" --research --parallel',
+        explanation: 'Creates a Claude instance with WebFetchTool and BatchTool for parallel web research'
+      },
+      {
+        description: 'Spawn Claude without permission prompts',
+        command: 'claude-flow claude spawn "fix payment bug" --no-permissions',
+        explanation: 'Runs Claude with --dangerously-skip-permissions flag to avoid interruptions'
+      },
+      {
+        description: 'Spawn Claude with custom tools',
+        command: 'claude-flow claude spawn "analyze codebase" --tools "View,Edit,GrepTool,LS"',
+        explanation: 'Specifies exactly which tools Claude can use for the task'
+      },
+      {
+        description: 'Spawn Claude with test coverage target',
+        command: 'claude-flow claude spawn "write unit tests" --coverage 95 --commit feature',
+        explanation: 'Sets test coverage goal to 95% and commits after each feature'
+      },
+      {
+        description: 'Dry run to preview command',
+        command: 'claude-flow claude spawn "build API" --mode backend-only --dry-run',
+        explanation: 'Shows what would be executed without actually running Claude'
+      }
+    ],
+    tutorial: [
+      'The claude spawn command launches Claude instances with specific configurations.',
+      '',
+      'Available Options:',
+      '• --tools, -t: Specify allowed tools (default: View,Edit,Replace,GlobTool,GrepTool,LS,Bash)',
+      '• --no-permissions: Skip permission prompts with --dangerously-skip-permissions',
+      '• --config, -c: Path to MCP configuration file',
+      '• --mode, -m: Development mode (full, backend-only, frontend-only, api-only)',
+      '• --parallel: Enable BatchTool and dispatch_agent for parallel execution',
+      '• --research: Enable WebFetchTool for web research capabilities',
+      '• --coverage: Test coverage target percentage (default: 80)',
+      '• --commit: Commit frequency (phase, feature, manual)',
+      '• --verbose, -v: Enable verbose output',
+      '• --dry-run, -d: Preview what would be executed',
+      '',
+      'Environment Variables Set:',
+      '• CLAUDE_INSTANCE_ID: Unique identifier for the Claude instance',
+      '• CLAUDE_FLOW_MODE: Development mode setting',
+      '• CLAUDE_FLOW_COVERAGE: Target test coverage percentage',
+      '• CLAUDE_FLOW_COMMIT: Commit frequency setting',
+      '',
+      'Common Use Cases:',
+      '• Full-stack development: --mode full --parallel',
+      '• API development: --mode backend-only --coverage 90',
+      '• Bug fixing: --no-permissions --verbose',
+      '• Research tasks: --research --parallel',
+      '• Test writing: --coverage 95 --commit feature'
+    ],
+    related: ['agents', 'tasks', 'workflows']
+  },
+  {
     name: 'workflows',
     description: 'Building complex multi-step workflows',
     category: 'workflow',

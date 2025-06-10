@@ -1,31 +1,18 @@
-# Agent Memory Storage
+# Agents Directory
 
-## Purpose
-This directory stores agent-specific memory data, configurations, and persistent state information for individual Claude agents in the orchestration system.
+This directory stores agent-specific memory and state information.
 
 ## Structure
-Each agent gets its own subdirectory for isolated memory storage:
+Each agent gets its own subdirectory named by agent ID:
+- `agent-001/`: First agent's memory
+- `agent-002/`: Second agent's memory
+- etc.
 
-```
-memory/agents/
-├── agent_001/
-│   ├── state.json           # Agent state and configuration
-│   ├── knowledge.md         # Agent-specific knowledge base
-│   ├── tasks.json          # Completed and active tasks
-│   └── calibration.json    # Agent-specific calibrations
-├── agent_002/
-│   └── ...
-└── shared/
-    ├── common_knowledge.md  # Shared knowledge across agents
-    └── global_config.json  # Global agent configurations
-```
+## Files per Agent
+- `profile.json`: Agent configuration and capabilities
+- `memory.md`: Agent's working memory
+- `tasks.json`: Assigned tasks and their status
+- `metrics.json`: Performance metrics
 
-## Usage Guidelines
-1. **Agent Isolation**: Each agent should only read/write to its own directory
-2. **Shared Resources**: Use the `shared/` directory for cross-agent information
-3. **State Persistence**: Update state.json whenever agent status changes
-4. **Knowledge Sharing**: Document discoveries in knowledge.md files
-5. **Cleanup**: Remove directories for terminated agents periodically
-
-## Last Updated
-2025-06-10T17:00:28.353Z
+## Usage
+Files in this directory are automatically managed by the Claude-Flow system.

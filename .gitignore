@@ -42,7 +42,7 @@ claude-flow.config.json
 *.temp
 .cache/
 
-bin
+package
 test-init
 test-full-init
 claude-flow-1.0.0
