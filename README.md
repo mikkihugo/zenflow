@@ -1,4 +1,4 @@
-# 🚀 Claude-Flow: Multi-Terminal Claude-Code Agent Orchestration Platform
+# 🚀 Claude-Flow: Claude-Code Agent Orchestration Platform
 
 <div align="center">
 
@@ -12,9 +12,6 @@
 
 </div>
 
-<div align="center">
-  <img src="https://github.com/ruvnet/claude-code-flow/raw/main/assets/claude-flow-banner.png" alt="Claude-Flow Banner" width="800" />
-</div>
 
 ## 🎯 **Transform Your Development Workflow**
 
@@ -31,14 +28,7 @@
 - **🔒 Enterprise Ready**: Production-grade security, monitoring, and scaling
 - **🌐 MCP Compatible**: Full Model Context Protocol support for tool integration
 
-## 🎬 **See It In Action**
-
-<div align="center">
-  
-[![Demo Video](https://img.shields.io/badge/🎥%20Watch%20Demo-Claude--Flow%20in%20Action-red?style=for-the-badge)](https://youtu.be/demo-video)
-[![Live Demo](https://img.shields.io/badge/🌐%20Try%20Live%20Demo-Interactive%20Playground-blue?style=for-the-badge)](https://demo.claude-flow.dev)
-
-</div>
+## 📦 **Installation**
 
 ```bash
 # 🚀 Get started in 30 seconds
