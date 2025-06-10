@@ -1,4 +1,4 @@
-# 🚀 Claude-Flow: Claude-Code Agent Orchestration Platform
+# 🌊 Claude-Flow: Claude-Code Agent Orchestration Platform
 
 <div align="center">
 
