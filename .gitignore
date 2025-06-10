@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.deno/
+
+# Build outputs
+dist/
+claude-flow
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Claude-Flow specific
+claude-flow.db
+claude-flow.config.json
+# memory/
+# sessions/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
