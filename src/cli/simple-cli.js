@@ -4,86 +4,63 @@
  * This version avoids TypeScript issues in node_modules
  */
 
-const VERSION = '1.0.28';
+import { 
+  executeCommand, 
+  hasCommand, 
+  showCommandHelp, 
+  showAllCommands,
+  listCommands 
+} from './command-registry.js';
+import { parseFlags } from './utils.js';
+
+const VERSION = '1.0.30';
 
 function printHelp() {
   console.log(`
 🧠 Claude-Flow v${VERSION} - Advanced AI Agent Orchestration System
 
 USAGE:
-  claude-flow [COMMAND] [OPTIONS]
+  claude-flow <command> [options]
 
-COMMANDS:
-  Core System:
-    init                Initialize Claude Code integration files
-    start               Start the orchestration system
-    status              Show system status
-    monitor             Monitor system in real-time
-    config              Manage configuration (show, get, set, init, validate)
-    repl                Start interactive REPL mode
-    
-  Agent & Task Management:
-    agent               Manage agents (spawn, list, terminate, info, hierarchy, ecosystem)
-    task                Manage tasks (create, list, status, cancel, workflow, coordination)
-    claude              Spawn Claude instances with enhanced configurations
-    workflow            Execute advanced workflow files and state machines
-    
-  Memory & Knowledge:
-    memory              Manage memory bank (query, export, import, stats, cleanup, namespaces)
-    
-  Enterprise Features:
-    project             Multi-project environments with isolation and federation
-    deploy              Production deployment (HA, scaling, auto-provisioning)
-    cloud               Multi-cloud integration (AWS, Azure, GCP, Kubernetes)
-    security            Enterprise security (RBAC, audit, compliance, circuit breakers)
-    analytics           AI-powered performance analytics and optimization
-    backup              Backup and disaster recovery management
-    
-  Infrastructure:
-    mcp                 Manage MCP server (status, tools, start, stop, auth)
-    terminal            Manage terminal pool and sessions
-    session             Manage terminal sessions
-    
-  Utilities:
-    version             Show version information
-    help                Show this help message
+KEY COMMANDS:
+  init [--sparc]                       Initialize project with Claude integration
+  agent spawn <type> [--name <name>]   Create AI agent (researcher, coder, analyst)
+  sparc <subcommand>                   SPARC-based TDD development
+  memory <subcommand>                  Manage persistent memory
+  start                                Start orchestration system
+  status                               Show system status
 
-GLOBAL OPTIONS:
-  -c, --config <path>   Path to configuration file
-  -v, --verbose         Enable verbose logging
-  --log-level <level>   Set log level (debug, info, warn, error)
-  --help               Show help for specific command
+COMMAND CATEGORIES:
+  Core:         init, start, status, config
+  Agents:       agent, task, claude
+  Development:  sparc, memory, workflow
+  Infrastructure: mcp, terminal, session
+  Enterprise:   project, deploy, cloud, security, analytics
 
-EXAMPLES:
-  Basic Operations:
-    claude-flow init                                   # Initialize Claude integration files
-    claude-flow start                                  # Start orchestrator
-    claude-flow status                                 # Show system status
-    claude-flow config init                           # Initialize configuration
-    
-  Agent & Task Management:
-    claude-flow agent spawn researcher --name "Bot"   # Spawn research agent
-    claude-flow agent hierarchy create enterprise     # Create agent hierarchy
-    claude-flow task create research "Analyze data"   # Create task
-    claude-flow claude spawn "implement auth" --research # Spawn Claude with research
-    
-  Enterprise Features:
-    claude-flow project create "microservices" --isolation strict # Create isolated project
-    claude-flow deploy ha-cluster --nodes 3 --regions "us-east-1,us-west-2" # HA deployment
-    claude-flow cloud aws deploy --services "ecs,lambda,rds" # Deploy to AWS
-    claude-flow security status                        # Check security status
-    claude-flow analytics performance --analysis-type "trend,optimization" # Performance analysis
-    
-  Advanced Workflows:
-    claude-flow workflow enterprise-lifecycle.yaml    # Execute enterprise workflow
-    claude-flow project federation create "dev-ecosystem" # Create project federation
-    claude-flow backup configure --strategy "3-2-1"   # Configure enterprise backup
+QUICK START:
+  claude-flow init --sparc             # Initialize with SPARC development
+  claude-flow agent spawn researcher   # Create research agent
+  claude-flow sparc modes              # List SPARC development modes
+  claude-flow sparc tdd "feature"      # Run TDD workflow
+  claude-flow memory store key "data"  # Store information
+  claude-flow status                   # Check system status
 
-For more detailed help on specific commands, use:
-  claude-flow [COMMAND] --help
+GET DETAILED HELP:
+  claude-flow help <command>           # Show command-specific help
+  claude-flow <command> --help         # Alternative help syntax
+  
+  Examples:
+    claude-flow help sparc             # SPARC development commands
+    claude-flow help agent             # Agent management commands
+    claude-flow help memory            # Memory operations
+    claude-flow agent --help           # Agent subcommands
+
+COMMON OPTIONS:
+  --verbose, -v                        Enable detailed output
+  --help                               Show command help
+  --config <path>                      Use custom config file
 
 Documentation: https://github.com/ruvnet/claude-code-flow
-Issues: https://github.com/ruvnet/claude-code-flow/issues
 
 Created by rUv - Built with ❤️ for the Claude community
 `);
@@ -105,6 +82,16 @@ function printWarning(message) {
   console.warn(`⚠️  Warning: ${message}`);
 }
 
+function showHelpWithCommands() {
+  printHelp();
+  console.log('\nRegistered Commands:');
+  const commands = listCommands();
+  for (const command of commands) {
+    console.log(`  ${command.name.padEnd(12)} ${command.description}`);
+  }
+  console.log('\nUse "claude-flow help <command>" for detailed usage information');
+}
+
 async function main() {
   const args = Deno.args;
   
@@ -114,418 +101,42 @@ async function main() {
   }
 
   const command = args[0];
-  const subArgs = args.slice(1);
+  const { flags, args: parsedArgs } = parseFlags(args.slice(1));
 
+  // Handle special commands first
   switch (command) {
     case 'version':
     case '--version':
     case '-v':
       printVersion();
-      break;
+      return;
       
     case 'help':
     case '--help':
     case '-h':
-      printHelp();
-      break;
-      
-    case 'init':
-      // Parse init options
-      const initForce = subArgs.includes('--force') || subArgs.includes('-f');
-      const initMinimal = subArgs.includes('--minimal') || subArgs.includes('-m');
-      
-      try {
-        printSuccess('Initializing Claude Code integration files...');
-        
-        // Check if files already exist
-        const files = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
-        const existingFiles = [];
-        
-        for (const file of files) {
-          try {
-            await Deno.stat(file);
-            existingFiles.push(file);
-          } catch {
-            // File doesn't exist, which is what we want
-          }
-        }
-        
-        if (existingFiles.length > 0 && !initForce) {
-          printWarning(`The following files already exist: ${existingFiles.join(', ')}`);
-          console.log('Use --force to overwrite existing files');
-          break;
-        }
-        
-        // Create CLAUDE.md
-        const claudeMd = initMinimal ? createMinimalClaudeMd() : createFullClaudeMd();
-        await Deno.writeTextFile('CLAUDE.md', claudeMd);
-        console.log('  ✓ Created CLAUDE.md');
-        
-        // Create memory-bank.md
-        const memoryBankMd = initMinimal ? createMinimalMemoryBankMd() : createFullMemoryBankMd();
-        await Deno.writeTextFile('memory-bank.md', memoryBankMd);
-        console.log('  ✓ Created memory-bank.md');
-        
-        // Create coordination.md
-        const coordinationMd = initMinimal ? createMinimalCoordinationMd() : createFullCoordinationMd();
-        await Deno.writeTextFile('coordination.md', coordinationMd);
-        console.log('  ✓ Created coordination.md');
-        
-        // Create directory structure
-        const directories = [
-          'memory',
-          'memory/agents',
-          'memory/sessions',
-          'coordination',
-          'coordination/memory_bank',
-          'coordination/subtasks',
-          'coordination/orchestration'
-        ];
-        
-        for (const dir of directories) {
-          try {
-            await Deno.mkdir(dir, { recursive: true });
-            console.log(`  ✓ Created ${dir}/ directory`);
-          } catch (err) {
-            if (!(err instanceof Deno.errors.AlreadyExists)) {
-              throw err;
-            }
-          }
-        }
-        
-        // Create placeholder files
-        const agentsReadme = createAgentsReadme();
-        await Deno.writeTextFile('memory/agents/README.md', agentsReadme);
-        console.log('  ✓ Created memory/agents/README.md');
-        
-        const sessionsReadme = createSessionsReadme();
-        await Deno.writeTextFile('memory/sessions/README.md', sessionsReadme);
-        console.log('  ✓ Created memory/sessions/README.md');
-        
-        // Initialize persistence database
-        const initialData = {
-          agents: [],
-          tasks: [],
-          lastUpdated: Date.now()
-        };
-        await Deno.writeTextFile('memory/claude-flow-data.json', JSON.stringify(initialData, null, 2));
-        console.log('  ✓ Created memory/claude-flow-data.json (persistence database)');
-        
-        printSuccess('Claude Code integration files initialized successfully!');
-        console.log('\nNext steps:');
-        console.log('1. Review and customize the generated files for your project');
-        console.log('2. Run \'npx claude-flow start\' to begin the orchestration system');
-        console.log('3. Use \'claude --dangerously-skip-permissions\' for unattended operation');
-        console.log('\nNote: Persistence database initialized at memory/claude-flow-data.json');
-        
-      } catch (err) {
-        printError(`Failed to initialize files: ${err.message}`);
+      if (parsedArgs.length > 0) {
+        showCommandHelp(parsedArgs[0]);
+      } else {
+        showHelpWithCommands();
       }
-      break;
-      
-    case 'start':
-      printSuccess('Starting Claude-Flow orchestration system...');
-      printWarning('Full orchestrator implementation coming soon!');
-      console.log('🚀 System would start with the following components:');
-      console.log('   - Event Bus');
-      console.log('   - Orchestrator Engine');
-      console.log('   - Memory Manager');
-      console.log('   - Terminal Pool');
-      console.log('   - MCP Server');
-      console.log('   - Coordination Manager');
-      break;
-      
-    case 'agent':
-      const agentCmd = subArgs[0];
-      switch (agentCmd) {
-        case 'spawn':
-          const agentType = subArgs[1] || 'researcher';
-          printSuccess(`Spawning ${agentType} agent...`);
-          console.log(`📝 Agent ID: agent-${Date.now()}`);
-          console.log(`🤖 Type: ${agentType}`);
-          console.log(`⚡ Status: Active`);
-          break;
-        case 'list':
-          printSuccess('Active agents:');
-          console.log('📋 No agents currently active (orchestrator not running)');
-          break;
-        case 'hierarchy':
-          const hierarchyAction = subArgs[1];
-          
-          if (hierarchyAction === 'create') {
-            const hierarchyName = subArgs[2];
-            if (!hierarchyName) {
-              printError('Usage: agent hierarchy create <name> [options]');
-              break;
-            }
-            
-            printSuccess(`Creating agent hierarchy: ${hierarchyName}`);
-            console.log('🏗️  Hierarchy Structure:');
-            console.log('   Level 1: Chief Architect (1 agent)');
-            console.log('   Level 2: Domain Architects (3 agents)');
-            console.log('   Level 3: Team Leads (6 agents)');
-            console.log('   Level 4: Senior Developers (12 agents)');
-            console.log('   Level 5: Developers (24 agents)');
-            console.log('   Total Agents: 46');
-            console.log('\n📊 Coordination:');
-            console.log('   Communication: Hierarchical');
-            console.log('   Decision Making: Level-appropriate');
-            console.log('   Escalation: Automatic');
-            console.log('\n✅ Hierarchy created successfully');
-          } else if (hierarchyAction === 'show') {
-            printSuccess('Agent Hierarchy: enterprise-development');
-            console.log('\n🏢 Organizational Structure:');
-            console.log('┌─ Chief Architect');
-            console.log('├── Frontend Architect');
-            console.log('│   ├── React Team Lead');
-            console.log('│   │   ├── Senior React Dev #1');
-            console.log('│   │   ├── Senior React Dev #2');
-            console.log('│   │   └── React Developers (4)');
-            console.log('│   └── Vue Team Lead');
-            console.log('│       └── Vue Developers (6)');
-            console.log('├── Backend Architect');
-            console.log('│   ├── Node.js Team Lead');
-            console.log('│   │   └── Node Developers (8)');
-            console.log('│   └── Python Team Lead');
-            console.log('│       └── Python Developers (6)');
-            console.log('└── Data Architect');
-            console.log('    └── Database Team Lead');
-            console.log('        └── Data Engineers (8)');
-          } else {
-            console.log('Hierarchy commands: create, show, modify');
-          }
-          break;
-          
-        case 'network':
-          const networkAction = subArgs[1];
-          
-          if (networkAction === 'create') {
-            const networkName = subArgs[2];
-            if (!networkName) {
-              printError('Usage: agent network create <name> [options]');
-              break;
-            }
-            
-            printSuccess(`Creating agent network: ${networkName}`);
-            console.log('🌐 Network Configuration:');
-            console.log('   Topology: Mesh');
-            console.log('   Specialization: AI/ML Research');
-            console.log('   Collaboration: Peer Review');
-            console.log('   Knowledge Sharing: Real-time');
-            console.log('\n👥 Network Members:');
-            console.log('   • ML Engineer Agents: 5');
-            console.log('   • Data Scientist Agents: 3');
-            console.log('   • Research Analyst Agents: 4');
-            console.log('   • Documentation Agents: 2');
-            console.log('\n✅ Network created successfully');
-          } else {
-            console.log('Network commands: create, list, status');
-          }
-          break;
-          
-        case 'ecosystem':
-          const ecosystemAction = subArgs[1];
-          
-          if (ecosystemAction === 'create') {
-            const ecosystemName = subArgs[2];
-            if (!ecosystemName) {
-              printError('Usage: agent ecosystem create <name> [options]');
-              break;
-            }
-            
-            printSuccess(`Creating specialized ecosystem: ${ecosystemName}`);
-            console.log('🌿 Ecosystem Configuration:');
-            console.log('   Type: AI/ML Specialists');
-            console.log('   Collaboration Model: Research Lab');
-            console.log('   Knowledge Base: Shared ML Knowledge');
-            console.log('   Tools: Jupyter, TensorFlow, PyTorch, MLflow');
-            console.log('\n🔬 Specialist Roles:');
-            console.log('   • ML Engineers: Model development & optimization');
-            console.log('   • Data Scientists: Analysis & experimentation');
-            console.log('   • MLOps Engineers: Deployment & monitoring');
-            console.log('   • Research Scientists: Algorithm development');
-            console.log('\n✅ Ecosystem created successfully');
-          } else {
-            console.log('Ecosystem commands: create, list, monitor');
-          }
-          break;
-          
-        case 'provision':
-          const provisionType = subArgs[1];
-          
-          if (provisionType === 'ml') {
-            printSuccess('ML-based Agent Provisioning Active');
-            console.log('🤖 Predictive Provisioning:');
-            console.log('   Model: LSTM Demand Forecasting');
-            console.log('   Lead Time: 2 minutes');
-            console.log('   Confidence: 0.87');
-            console.log('\n📊 Current Predictions:');
-            console.log('   Next 15m: +3 agents needed');
-            console.log('   Next 30m: +5 agents needed');
-            console.log('   Next 1h: +2 agents needed');
-            console.log('\n✅ Auto-provisioning enabled');
-          } else if (provisionType === 'optimized') {
-            printSuccess('Cost-Optimized Provisioning');
-            console.log('💰 Optimization Settings:');
-            console.log('   Budget Limit: $1,000/day');
-            console.log('   Cost Model: Agent-hours');
-            console.log('   Strategy: Cost-Performance balanced');
-            console.log('   Spot Instances: Enabled');
-            console.log('\n📈 Current Status:');
-            console.log('   Today\'s Spend: $487.23');
-            console.log('   Savings: $124.50 (20.3%)');
-            console.log('   Performance Impact: < 2%');
-          } else {
-            console.log('Provision commands: ml, events, optimized');
-          }
-          break;
-          
-        default:
-          console.log('Agent commands: spawn, list, terminate, info, hierarchy, network, ecosystem, provision');
-      }
-      break;
-      
-    case 'task':
-      const taskCmd = subArgs[0];
-      switch (taskCmd) {
-        case 'create':
-          const taskType = subArgs[1] || 'general';
-          const description = subArgs[2] || 'No description';
-          printSuccess(`Creating ${taskType} task: "${description}"`);
-          console.log(`📝 Task ID: task-${Date.now()}`);
-          console.log(`🎯 Type: ${taskType}`);
-          console.log(`📄 Description: ${description}`);
-          break;
-        case 'list':
-          printSuccess('Active tasks:');
-          console.log('📋 No tasks currently active (orchestrator not running)');
-          break;
-        default:
-          console.log('Task commands: create, list, status, cancel, workflow');
-      }
-      break;
-      
-    case 'config':
-      const configCmd = subArgs[0];
-      switch (configCmd) {
-        case 'init':
-          printSuccess('Initializing Claude-Flow configuration...');
-          // Create default configuration
-          const defaultConfig = {
-            terminal: {
-              poolSize: 10,
-              recycleAfter: 20,
-              healthCheckInterval: 30000,
-              type: "auto"
-            },
-            orchestrator: {
-              maxConcurrentTasks: 10,
-              taskTimeout: 300000
-            },
-            memory: {
-              backend: "json",
-              path: "./memory/claude-flow-data.json"
-            }
-          };
-          try {
-            await Deno.writeTextFile('claude-flow.config.json', JSON.stringify(defaultConfig, null, 2));
-            console.log('✓ Created claude-flow.config.json');
-          } catch (err) {
-            console.log('📝 Configuration file would be created at: claude-flow.config.json');
-          }
-          break;
-          
-        case 'show':
-          printSuccess('Current configuration:');
-          try {
-            const config = await Deno.readTextFile('claude-flow.config.json');
-            console.log(JSON.parse(config));
-          } catch {
-            console.log('📋 Default configuration (no config file found)');
-            console.log('   Terminal Pool Size: 10');
-            console.log('   Recycle After: 20 commands');
-            console.log('   Health Check Interval: 30s');
-          }
-          break;
-          
-        case 'get':
-          const getKey = subArgs[1];
-          if (!getKey) {
-            printError('Usage: config get <key>');
-            break;
-          }
-          try {
-            const config = JSON.parse(await Deno.readTextFile('claude-flow.config.json'));
-            const keys = getKey.split('.');
-            let value = config;
-            for (const k of keys) {
-              value = value[k];
-            }
-            console.log(`${getKey}: ${JSON.stringify(value)}`);
-          } catch {
-            console.log(`${getKey}: (not set)`);
-          }
-          break;
-          
-        case 'set':
-          const setKey = subArgs[1];
-          const setValue = subArgs[2];
-          if (!setKey || !setValue) {
-            printError('Usage: config set <key> <value>');
-            break;
-          }
-          try {
-            let config = {};
-            try {
-              config = JSON.parse(await Deno.readTextFile('claude-flow.config.json'));
-            } catch {
-              // Use default config if file doesn't exist
-            }
-            
-            // Set nested value
-            const keys = setKey.split('.');
-            let obj = config;
-            for (let i = 0; i < keys.length - 1; i++) {
-              if (!obj[keys[i]]) obj[keys[i]] = {};
-              obj = obj[keys[i]];
-            }
-            
-            // Parse value if it's a number or boolean
-            let parsedValue = setValue;
-            if (setValue === 'true') parsedValue = true;
-            else if (setValue === 'false') parsedValue = false;
-            else if (!isNaN(setValue)) parsedValue = Number(setValue);
-            
-            obj[keys[keys.length - 1]] = parsedValue;
-            
-            await Deno.writeTextFile('claude-flow.config.json', JSON.stringify(config, null, 2));
-            printSuccess(`Set ${setKey} = ${setValue}`);
-          } catch (err) {
-            printError(`Failed to set config: ${err.message}`);
-          }
-          break;
-          
-        case 'validate':
-          printSuccess('Validating configuration...');
-          try {
-            const config = JSON.parse(await Deno.readTextFile('claude-flow.config.json'));
-            console.log('✅ Configuration is valid');
-            console.log(`   Terminal pool size: ${config.terminal?.poolSize || 10}`);
-            console.log(`   Terminal type: ${config.terminal?.type || 'auto'}`);
-          } catch {
-            console.log('⚠️  No configuration file found, using defaults');
-          }
-          break;
-          
-        default:
-          console.log('Config commands: init, show, get, set, validate');
-          console.log('\nExamples:');
-          console.log('  config set terminal.poolSize 10');
-          console.log('  config set terminal.recycleAfter 20');
-          console.log('  config get terminal.poolSize');
-      }
-      break;
-      
+      return;
+  }
+
+  // Check if this is a registered modular command
+  if (hasCommand(command)) {
+    try {
+      await executeCommand(command, parsedArgs, flags);
+      return;
+    } catch (err) {
+      printError(err.message);
+      return;
+    }
+  }
+
+  // Legacy command handling (to be refactored)
+  const subArgs = parsedArgs; // Use parsed args for legacy commands
+  
+  switch (command) {
     case 'status':
       printSuccess('Claude-Flow System Status:');
       console.log('🟡 Status: Not Running (orchestrator not started)');
@@ -536,202 +147,6 @@ async function main() {
       console.log('🌐 MCP Server: Stopped');
       break;
       
-    case 'memory': {
-      const memorySubcommand = subArgs[0];
-      const memoryStore = './memory/memory-store.json';
-      
-      // Helper to load memory data
-      async function loadMemory() {
-        try {
-          const content = await Deno.readTextFile(memoryStore);
-          return JSON.parse(content);
-        } catch {
-          return {};
-        }
-      }
-      
-      // Helper to save memory data
-      async function saveMemory(data) {
-        await Deno.mkdir('./memory', { recursive: true });
-        await Deno.writeTextFile(memoryStore, JSON.stringify(data, null, 2));
-      }
-      
-      switch (memorySubcommand) {
-        case 'store': {
-          const key = subArgs[1];
-          const value = subArgs.slice(2).join(' ');
-          
-          if (!key || !value) {
-            printError('Usage: memory store <key> <value>');
-            break;
-          }
-          
-          try {
-            const data = await loadMemory();
-            const namespace = 'default';
-            
-            if (!data[namespace]) {
-              data[namespace] = [];
-            }
-            
-            // Remove existing entry with same key
-            data[namespace] = data[namespace].filter(e => e.key !== key);
-            
-            // Add new entry
-            data[namespace].push({
-              key,
-              value,
-              namespace,
-              timestamp: Date.now()
-            });
-            
-            await saveMemory(data);
-            printSuccess('Stored successfully');
-            console.log(`📝 Key: ${key}`);
-            console.log(`📦 Namespace: ${namespace}`);
-            console.log(`💾 Size: ${new TextEncoder().encode(value).length} bytes`);
-          } catch (err) {
-            printError(`Failed to store: ${err.message}`);
-          }
-          break;
-        }
-        
-        case 'query': {
-          const search = subArgs.slice(1).join(' ');
-          
-          if (!search) {
-            printError('Usage: memory query <search>');
-            break;
-          }
-          
-          try {
-            const data = await loadMemory();
-            const results = [];
-            
-            for (const [namespace, entries] of Object.entries(data)) {
-              for (const entry of entries) {
-                if (entry.key.includes(search) || entry.value.includes(search)) {
-                  results.push(entry);
-                }
-              }
-            }
-            
-            if (results.length === 0) {
-              printWarning('No results found');
-              return;
-            }
-            
-            printSuccess(`Found ${results.length} results:`);
-            
-            for (const entry of results.slice(0, 10)) {
-              console.log(`\n📌 ${entry.key}`);
-              console.log(`   Namespace: ${entry.namespace}`);
-              console.log(`   Value: ${entry.value.substring(0, 100)}${entry.value.length > 100 ? '...' : ''}`);
-              console.log(`   Stored: ${new Date(entry.timestamp).toLocaleString()}`);
-            }
-            
-            if (results.length > 10) {
-              console.log(`\n... and ${results.length - 10} more results`);
-            }
-          } catch (err) {
-            printError(`Failed to query: ${err.message}`);
-          }
-          break;
-        }
-        
-        case 'stats': {
-          try {
-            const data = await loadMemory();
-            let totalEntries = 0;
-            const namespaceStats = {};
-            
-            for (const [namespace, entries] of Object.entries(data)) {
-              namespaceStats[namespace] = entries.length;
-              totalEntries += entries.length;
-            }
-            
-            printSuccess('Memory Bank Statistics:');
-            console.log(`   Total Entries: ${totalEntries}`);
-            console.log(`   Namespaces: ${Object.keys(data).length}`);
-            console.log(`   Size: ${(new TextEncoder().encode(JSON.stringify(data)).length / 1024).toFixed(2)} KB`);
-            
-            if (Object.keys(data).length > 0) {
-              console.log('\n📁 Namespace Breakdown:');
-              for (const [namespace, count] of Object.entries(namespaceStats)) {
-                console.log(`   ${namespace}: ${count} entries`);
-              }
-            }
-          } catch (err) {
-            printError(`Failed to get stats: ${err.message}`);
-          }
-          break;
-        }
-        
-        default: {
-          console.log('Available subcommands: store, query, stats');
-          console.log('\nExamples:');
-          console.log('  memory store previous_work "Research findings from yesterday"');
-          console.log('  memory query research');
-          console.log('  memory stats');
-          break;
-        }
-      }
-      break;
-    }
-      
-    case 'mcp':
-      const mcpCmd = subArgs[0];
-      switch (mcpCmd) {
-        case 'status':
-          printSuccess('MCP Server Status:');
-          console.log('🌐 Status: Stopped (orchestrator not running)');
-          console.log('📍 Default port: 3000');
-          console.log('🔧 Transport: stdio');
-          console.log('🔐 Authentication: Disabled');
-          break;
-        case 'tools':
-          printSuccess('Available MCP Tools:');
-          console.log('  📊 Research Tools:');
-          console.log('    • web_search - Search the web for information');
-          console.log('    • web_fetch - Fetch content from URLs');
-          console.log('    • knowledge_query - Query knowledge base');
-          console.log('  💻 Code Tools:');
-          console.log('    • code_edit - Edit code files');
-          console.log('    • code_search - Search through codebase');
-          console.log('    • code_analyze - Analyze code quality');
-          console.log('  🖥️  Terminal Tools:');
-          console.log('    • terminal_execute - Execute shell commands');
-          console.log('    • terminal_session - Manage terminal sessions');
-          console.log('    • file_operations - File system operations');
-          console.log('  💾 Memory Tools:');
-          console.log('    • memory_store - Store information');
-          console.log('    • memory_query - Query stored information');
-          console.log('    • memory_index - Index and search content');
-          break;
-        case 'start':
-          printWarning('MCP server runs as part of the orchestrator.');
-          console.log('Use "claude-flow start" to start the entire system.');
-          break;
-        case 'stop':
-          printWarning('MCP server runs as part of the orchestrator.');
-          console.log('Use Ctrl+C to stop the system when running.');
-          break;
-        case 'serve':
-          printSuccess('Starting MCP server in stdio mode...');
-          console.log('🌐 MCP Server is starting...');
-          console.log('📡 Transport: stdio (for Claude Desktop integration)');
-          console.log('🔧 Available tools: agent, task, memory, terminal, workflow');
-          console.log('⚡ Ready to accept connections');
-          console.log('\n💡 To use with Claude Desktop:');
-          console.log('   1. Add this to Claude Desktop MCP settings');
-          console.log('   2. Use the mcp.json configuration in ./mcp_config/');
-          // Keep the process running for stdio mode
-          await new Promise(() => {});
-          break;
-        default:
-          console.log('MCP commands: status, tools, start, stop, serve');
-      }
-      break;
       
     case 'monitor':
       printSuccess('Starting system monitor...');
@@ -1943,6 +1358,7 @@ ${flags.mode === 'full' || !flags.mode ? `Full-stack development covering all as
           console.log('  claude-flow claude batch workflow.json --dry-run');
       }
       break;
+      
       
     case 'deploy':
       const deployCmd = subArgs[0];
@@ -3254,6 +2670,457 @@ Sessions are retained for 30 days by default, then archived or deleted based on 
 
 ## Usage
 The Claude-Flow system automatically manages session files. Do not modify these files manually.
+`;
+}
+
+// Helper function to create SPARC structure manually
+async function createSparcStructureManually() {
+  try {
+    // Create .roo directory structure
+    const rooDirectories = [
+      '.roo',
+      '.roo/templates',
+      '.roo/workflows',
+      '.roo/modes',
+      '.roo/configs'
+    ];
+    
+    for (const dir of rooDirectories) {
+      try {
+        await Deno.mkdir(dir, { recursive: true });
+        console.log(`  ✓ Created ${dir}/`);
+      } catch (err) {
+        if (!(err instanceof Deno.errors.AlreadyExists)) {
+          throw err;
+        }
+      }
+    }
+    
+    // Create .roomodes file (copy from existing if available, or create basic version)
+    let roomodesContent;
+    try {
+      // Check if .roomodes already exists and read it
+      roomodesContent = await Deno.readTextFile('.roomodes');
+      console.log('  ✓ Using existing .roomodes configuration');
+    } catch {
+      // Create basic .roomodes configuration
+      roomodesContent = createBasicRoomodesConfig();
+      await Deno.writeTextFile('.roomodes', roomodesContent);
+      console.log('  ✓ Created .roomodes configuration');
+    }
+    
+    // Create basic workflow templates
+    const basicWorkflow = createBasicSparcWorkflow();
+    await Deno.writeTextFile('.roo/workflows/basic-tdd.json', basicWorkflow);
+    console.log('  ✓ Created .roo/workflows/basic-tdd.json');
+    
+    // Create README for .roo directory
+    const rooReadme = createRooReadme();
+    await Deno.writeTextFile('.roo/README.md', rooReadme);
+    console.log('  ✓ Created .roo/README.md');
+    
+    console.log('  ✅ Basic SPARC structure created successfully');
+    
+  } catch (err) {
+    console.log(`  ❌ Failed to create SPARC structure: ${err.message}`);
+  }
+}
+
+function createBasicRoomodesConfig() {
+  return JSON.stringify({
+    "customModes": [
+      {
+        "slug": "architect",
+        "name": "🏗️ Architect", 
+        "roleDefinition": "You design scalable, secure, and modular architectures based on functional specs and user needs. You define responsibilities across services, APIs, and components.",
+        "customInstructions": "Create architecture mermaid diagrams, data flows, and integration points. Ensure no part of the design includes secrets or hardcoded env values. Emphasize modular boundaries and maintain extensibility.",
+        "groups": ["read", "edit"],
+        "source": "project"
+      },
+      {
+        "slug": "code",
+        "name": "🧠 Auto-Coder",
+        "roleDefinition": "You write clean, efficient, modular code based on pseudocode and architecture. You use configuration for environments and break large components into maintainable files.",
+        "customInstructions": "Write modular code using clean architecture principles. Never hardcode secrets or environment values. Split code into files < 500 lines. Use config files or environment abstractions. Use \\`new_task\\` for subtasks and finish with \\`attempt_completion\\`.",
+        "groups": ["read", "edit", "browser", "mcp", "command"],
+        "source": "project"
+      },
+      {
+        "slug": "tdd",
+        "name": "🧪 Tester (TDD)",
+        "roleDefinition": "You implement Test-Driven Development (TDD, London School), writing tests first and refactoring after minimal implementation passes.",
+        "customInstructions": "Write failing tests first. Implement only enough code to pass. Refactor after green. Ensure tests do not hardcode secrets. Keep files < 500 lines.",
+        "groups": ["read", "edit", "browser", "mcp", "command"],
+        "source": "project"
+      },
+      {
+        "slug": "spec-pseudocode",
+        "name": "📋 Specification Writer",
+        "roleDefinition": "You capture full project context—functional requirements, edge cases, constraints—and translate that into modular pseudocode with TDD anchors.",
+        "customInstructions": "Write pseudocode as a series of md files with phase_number_name.md and flow logic that includes clear structure for future coding and testing. Split complex logic across modules.",
+        "groups": ["read", "edit"],
+        "source": "project"
+      },
+      {
+        "slug": "integration",
+        "name": "🔗 System Integrator",
+        "roleDefinition": "You merge the outputs of all modes into a working, tested, production-ready system. You ensure consistency, cohesion, and modularity.",
+        "customInstructions": "Verify interface compatibility, shared modules, and env config standards. Split integration logic across domains as needed. Use \\`new_task\\` for preflight testing.",
+        "groups": ["read", "edit", "browser", "mcp", "command"],
+        "source": "project"
+      },
+      {
+        "slug": "debug",
+        "name": "🪲 Debugger",
+        "roleDefinition": "You troubleshoot runtime bugs, logic errors, or integration failures by tracing, inspecting, and analyzing behavior.",
+        "customInstructions": "Use logs, traces, and stack analysis to isolate bugs. Avoid changing env configuration directly. Keep fixes modular.",
+        "groups": ["read", "edit", "browser", "mcp", "command"],
+        "source": "project"
+      }
+    ]
+  }, null, 2);
+}
+
+function createBasicSparcWorkflow() {
+  return JSON.stringify({
+    "name": "Basic TDD Workflow",
+    "description": "A simple SPARC-based TDD workflow for development",
+    "sequential": true,
+    "steps": [
+      {
+        "mode": "spec-pseudocode",
+        "description": "Create detailed specifications and pseudocode",
+        "phase": "specification"
+      },
+      {
+        "mode": "tdd", 
+        "description": "Write failing tests (Red phase)",
+        "phase": "red"
+      },
+      {
+        "mode": "code",
+        "description": "Implement minimal code to pass tests (Green phase)", 
+        "phase": "green"
+      },
+      {
+        "mode": "tdd",
+        "description": "Refactor and optimize (Refactor phase)",
+        "phase": "refactor"
+      },
+      {
+        "mode": "integration",
+        "description": "Integrate and verify complete solution",
+        "phase": "integration"
+      }
+    ]
+  }, null, 2);
+}
+
+function createRooReadme() {
+  return `# .roo Directory - SPARC Development Environment
+
+This directory contains the SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) development environment configuration and templates.
+
+## Directory Structure
+
+\`\`\`
+.roo/
+├── README.md           # This file
+├── templates/          # Template files for common patterns
+├── workflows/          # Predefined SPARC workflows
+│   └── basic-tdd.json  # Basic TDD workflow
+├── modes/              # Custom mode definitions (optional)
+└── configs/            # Configuration files
+\`\`\`
+
+## SPARC Methodology
+
+SPARC is a systematic approach to software development:
+
+1. **Specification**: Define clear requirements and constraints
+2. **Pseudocode**: Create detailed logic flows and algorithms  
+3. **Architecture**: Design system structure and components
+4. **Refinement**: Implement, test, and optimize using TDD
+5. **Completion**: Integrate, document, and validate
+
+## Usage with Claude-Flow
+
+Use the claude-flow SPARC commands to leverage this environment:
+
+\`\`\`bash
+# List available modes
+claude-flow sparc modes
+
+# Run specific mode
+claude-flow sparc run code "implement user authentication"
+
+# Execute full TDD workflow  
+claude-flow sparc tdd "payment processing system"
+
+# Use custom workflow
+claude-flow sparc workflow .roo/workflows/basic-tdd.json
+\`\`\`
+
+## Configuration
+
+The main configuration is in \`.roomodes\` at the project root. This directory provides additional templates and workflows to support the SPARC development process.
+
+## Customization
+
+You can customize this environment by:
+- Adding new workflow templates to \`workflows/\`
+- Creating mode-specific templates in \`templates/\`
+- Adding project-specific configurations in \`configs/\`
+
+For more information, see: https://github.com/ruvnet/claude-code-flow/docs/sparc.md
+`;
+}
+
+function createSparcClaudeMd() {
+  return `# Claude Code Configuration - SPARC Development Environment
+
+## Project Overview
+This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development with AI assistance through Claude-Flow orchestration.
+
+## SPARC Development Commands
+
+### Core SPARC Commands
+- \`npx claude-flow sparc modes\`: List all available SPARC development modes
+- \`npx claude-flow sparc run <mode> "<task>"\`: Execute specific SPARC mode for a task
+- \`npx claude-flow sparc tdd "<feature>"\`: Run complete TDD workflow using SPARC methodology
+- \`npx claude-flow sparc info <mode>\`: Get detailed information about a specific mode
+
+### Standard Build Commands
+- \`npm run build\`: Build the project
+- \`npm run test\`: Run the test suite
+- \`npm run lint\`: Run linter and format checks
+- \`npm run typecheck\`: Run TypeScript type checking
+
+## SPARC Methodology Workflow
+
+### 1. Specification Phase
+\`\`\`bash
+# Create detailed specifications and requirements
+npx claude-flow sparc run spec-pseudocode "Define user authentication requirements"
+\`\`\`
+- Define clear functional requirements
+- Document edge cases and constraints
+- Create user stories and acceptance criteria
+- Establish non-functional requirements
+
+### 2. Pseudocode Phase
+\`\`\`bash
+# Develop algorithmic logic and data flows
+npx claude-flow sparc run spec-pseudocode "Create authentication flow pseudocode"
+\`\`\`
+- Break down complex logic into steps
+- Define data structures and interfaces
+- Plan error handling and edge cases
+- Create modular, testable components
+
+### 3. Architecture Phase
+\`\`\`bash
+# Design system architecture and component structure
+npx claude-flow sparc run architect "Design authentication service architecture"
+\`\`\`
+- Create system diagrams and component relationships
+- Define API contracts and interfaces
+- Plan database schemas and data flows
+- Establish security and scalability patterns
+
+### 4. Refinement Phase (TDD Implementation)
+\`\`\`bash
+# Execute Test-Driven Development cycle
+npx claude-flow sparc tdd "implement user authentication system"
+\`\`\`
+
+**TDD Cycle:**
+1. **Red**: Write failing tests first
+2. **Green**: Implement minimal code to pass tests
+3. **Refactor**: Optimize and clean up code
+4. **Repeat**: Continue until feature is complete
+
+### 5. Completion Phase
+\`\`\`bash
+# Integration, documentation, and validation
+npx claude-flow sparc run integration "integrate authentication with user management"
+\`\`\`
+- Integrate all components
+- Perform end-to-end testing
+- Create comprehensive documentation
+- Validate against original requirements
+
+## SPARC Mode Reference
+
+### Development Modes
+- **\`architect\`**: System design and architecture planning
+- **\`code\`**: Clean, modular code implementation
+- **\`tdd\`**: Test-driven development and testing
+- **\`spec-pseudocode\`**: Requirements and algorithmic planning
+- **\`integration\`**: System integration and coordination
+
+### Quality Assurance Modes
+- **\`debug\`**: Troubleshooting and bug resolution
+- **\`security-review\`**: Security analysis and vulnerability assessment
+- **\`refinement-optimization-mode\`**: Performance optimization and refactoring
+
+### Support Modes
+- **\`docs-writer\`**: Documentation creation and maintenance
+- **\`devops\`**: Deployment and infrastructure management
+- **\`mcp\`**: External service integration
+
+## Code Style and Best Practices
+
+### SPARC Development Principles
+- **Modular Design**: Keep files under 500 lines, break into logical components
+- **Environment Safety**: Never hardcode secrets or environment-specific values
+- **Test-First**: Always write tests before implementation (Red-Green-Refactor)
+- **Clean Architecture**: Separate concerns, use dependency injection
+- **Documentation**: Maintain clear, up-to-date documentation
+
+### Coding Standards
+- Use TypeScript for type safety and better tooling
+- Follow consistent naming conventions (camelCase for variables, PascalCase for classes)
+- Implement proper error handling and logging
+- Use async/await for asynchronous operations
+- Prefer composition over inheritance
+
+### Memory and State Management
+- Use claude-flow memory system for persistent state across sessions
+- Store progress and findings using namespaced keys
+- Query previous work before starting new tasks
+- Export/import memory for backup and sharing
+
+## SPARC Memory Integration
+
+### Memory Commands for SPARC Development
+\`\`\`bash
+# Store project specifications
+npx claude-flow memory store spec_auth "User authentication requirements and constraints"
+
+# Store architectural decisions
+npx claude-flow memory store arch_decisions "Database schema and API design choices"
+
+# Store test results and coverage
+npx claude-flow memory store test_coverage "Authentication module: 95% coverage, all tests passing"
+
+# Query previous work
+npx claude-flow memory query auth_implementation
+
+# Export project memory
+npx claude-flow memory export project_backup.json
+\`\`\`
+
+### Memory Namespaces
+- **\`spec\`**: Requirements and specifications
+- **\`arch\`**: Architecture and design decisions
+- **\`impl\`**: Implementation notes and code patterns
+- **\`test\`**: Test results and coverage reports
+- **\`debug\`**: Bug reports and resolution notes
+
+## Workflow Examples
+
+### Feature Development Workflow
+\`\`\`bash
+# 1. Start with specification
+npx claude-flow sparc run spec-pseudocode "User profile management feature"
+
+# 2. Design architecture
+npx claude-flow sparc run architect "Profile service architecture with data validation"
+
+# 3. Implement with TDD
+npx claude-flow sparc tdd "user profile CRUD operations"
+
+# 4. Security review
+npx claude-flow sparc run security-review "profile data access and validation"
+
+# 5. Integration testing
+npx claude-flow sparc run integration "profile service with authentication system"
+
+# 6. Documentation
+npx claude-flow sparc run docs-writer "profile service API documentation"
+\`\`\`
+
+### Bug Fix Workflow
+\`\`\`bash
+# 1. Debug and analyze
+npx claude-flow sparc run debug "authentication token expiration issue"
+
+# 2. Write regression tests
+npx claude-flow sparc run tdd "token refresh mechanism tests"
+
+# 3. Implement fix
+npx claude-flow sparc run code "fix token refresh in authentication service"
+
+# 4. Security review
+npx claude-flow sparc run security-review "token handling security implications"
+\`\`\`
+
+## Configuration Files
+
+### SPARC Configuration
+- **\`.roomodes\`**: SPARC mode definitions and configurations
+- **\`.roo/\`**: Templates, workflows, and mode-specific rules
+
+### Claude-Flow Configuration
+- **\`memory/\`**: Persistent memory and session data
+- **\`coordination/\`**: Multi-agent coordination settings
+
+## Git Workflow Integration
+
+### Commit Strategy with SPARC
+- **Specification commits**: After completing requirements analysis
+- **Architecture commits**: After design phase completion
+- **TDD commits**: After each Red-Green-Refactor cycle
+- **Integration commits**: After successful component integration
+- **Documentation commits**: After completing documentation updates
+
+### Branch Strategy
+- **\`feature/sparc-<feature-name>\`**: Feature development with SPARC methodology
+- **\`hotfix/sparc-<issue>\`**: Bug fixes using SPARC debugging workflow
+- **\`refactor/sparc-<component>\`**: Refactoring using optimization mode
+
+## Troubleshooting
+
+### Common SPARC Issues
+- **Mode not found**: Check \`.roomodes\` file exists and is valid JSON
+- **Memory persistence**: Ensure \`memory/\` directory has write permissions
+- **Tool access**: Verify required tools are available for the selected mode
+- **Namespace conflicts**: Use unique memory namespaces for different features
+
+### Debug Commands
+\`\`\`bash
+# Check SPARC configuration
+npx claude-flow sparc modes
+
+# Verify memory system
+npx claude-flow memory stats
+
+# Check system status
+npx claude-flow status
+
+# View detailed mode information
+npx claude-flow sparc info <mode-name>
+\`\`\`
+
+## Project Architecture
+
+This SPARC-enabled project follows a systematic development approach:
+- **Clear separation of concerns** through modular design
+- **Test-driven development** ensuring reliability and maintainability
+- **Iterative refinement** for continuous improvement
+- **Comprehensive documentation** for team collaboration
+- **AI-assisted development** through specialized SPARC modes
+
+## Important Notes
+
+- Always run tests before committing (\`npm run test\`)
+- Use SPARC memory system to maintain context across sessions
+- Follow the Red-Green-Refactor cycle during TDD phases
+- Document architectural decisions in memory for future reference
+- Regular security reviews for any authentication or data handling code
+
+For more information about SPARC methodology, see: https://github.com/ruvnet/claude-code-flow/docs/sparc.md
 `;
 }
 
