@@ -1,11 +1,11 @@
 #!/usr/bin/env -S deno run --allow-all
 /**
  * Claude-Flow CLI entry point
- * Advanced AI agent orchestration system
+ * This redirects to simple-cli.ts for remote execution compatibility
  */
 
-import { Command } from '@cliffy/command';
-import { colors } from '@cliffy/ansi/colors';
+// Import and run the simple CLI which doesn't have external dependencies
+import "./simple-cli.ts";
 // Spinner import removed - not available in current cliffy version
 import { logger } from '../core/logger.ts';
 import { configManager } from '../core/config.ts';
