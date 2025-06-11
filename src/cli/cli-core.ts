@@ -8,7 +8,7 @@ import { red, green, yellow, blue, bold, cyan } from "https://deno.land/std@0.22
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
-export const VERSION = "1.0.3";
+export const VERSION = "1.0.25";
 
 interface CommandContext {
   args: string[];
@@ -86,7 +86,7 @@ class CLI {
       string: this.getStringFlags(),
       alias: this.getAliases(),
       default: this.getDefaults(),
-      stopEarly: true,
+      stopEarly: false,
       unknown: () => true,
     });
 

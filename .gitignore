@@ -44,3 +44,5 @@ claude-flow.config.json
 package
 test-init
 test-full-init
+
+swarm-runs

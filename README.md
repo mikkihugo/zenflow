@@ -67,8 +67,8 @@ Advanced CRDT-based memory system with SQLite performance and Markdown readabili
 </td>
 <td width="33%" align="center">
 
-### ⚡ **Terminal Virtualization**
-Native VSCode integration with terminal pooling, session recycling, and cross-platform shell support (Bash, Zsh, PowerShell, CMD).
+### ⚡ **Enhanced Claude Integration**
+Spawn Claude instances with comprehensive Claude-Flow guidance, teaching them to use memory, coordination, and system commands effectively.
 
 </td>
 </tr>
@@ -139,7 +139,6 @@ Comprehensive documentation is available to help you get the most out of Claude-
 - **[Troubleshooting](./docs/09-troubleshooting.md)** - Common issues and solutions
 - **[Advanced Usage](./docs/10-advanced-usage.md)** - Power user features
 - **[Claude Spawning](./docs/11-claude-spawning.md)** - Spawning Claude instances
-- **[Swarm Mode](./docs/12-swarm.md)** - Self-orchestrating agent swarms 🐝
 - **[CLI Reference](./docs/cli-reference.md)** - Complete command documentation
 
 ## 💡 **Quick Start Guide**
@@ -163,56 +162,70 @@ npx claude-flow start --daemon
 
 ### 3. **Spawn Agents**
 ```bash
-# Spawn different agent types
-npx claude-flow agent spawn researcher --name "Research Assistant"
-npx claude-flow agent spawn implementer --name "Code Developer"
-npx claude-flow agent spawn coordinator --name "Project Manager"
+# Spawn different agent types with specific capabilities
+npx claude-flow agent spawn researcher --name "Research Assistant" --priority 8
+npx claude-flow agent spawn implementer --name "Code Developer" --priority 7
+npx claude-flow agent spawn analyst --name "Data Analyst" --priority 6
+npx claude-flow agent spawn coordinator --name "Project Manager" --priority 9
+
+# List all active agents
+npx claude-flow agent list
+
+# Get detailed information about an agent
+npx claude-flow agent info agent-123
 ```
 
-### 4. **Create and Execute Tasks**
+### 4. **Create and Manage Tasks**
 ```bash
-# Create tasks with priorities
-npx claude-flow task create research "Analyze market trends" --priority 8
-npx claude-flow task create code "Implement authentication" --priority 9
+# Create tasks with different priorities
+npx claude-flow task create research "Analyze authentication best practices" --priority 8
+npx claude-flow task create implementation "Build JWT authentication" --priority 9
+npx claude-flow task create analysis "Review security vulnerabilities" --priority 10
 
-# List active tasks
-npx claude-flow task list --verbose
+# Create task with dependencies
+npx claude-flow task create implementation "Build user management" \
+  --priority 7 --deps task-123,task-456
+
+# Assign tasks to agents
+npx claude-flow task assign task-123 agent-456
+
+# List all tasks
+npx claude-flow task list
+npx claude-flow task list --verbose  # Show detailed task information
+
+# Check specific task status
+npx claude-flow task status task-123
+
+# Cancel a task
+npx claude-flow task cancel task-789
 ```
 
 ### 5. **Spawn Claude Instances** 🆕
 ```bash
-# Spawn Claude with specific configuration
+# Spawn Claude with enhanced Claude-Flow guidance
 npx claude-flow claude spawn "implement user authentication" --research --parallel
 
-# Run with custom tools
-npx claude-flow claude spawn "fix payment bug" --tools "View,Edit,Bash" --no-permissions
+# Backend-only mode with high coverage
+npx claude-flow claude spawn "create REST API" --mode backend-only --coverage 95
+
+# Frontend development with feature commits
+npx claude-flow claude spawn "build React components" --mode frontend-only --commit feature
+
+# Full stack with all options
+npx claude-flow claude spawn "build complete app" --research --parallel --coverage 90 --verbose
 
 # Execute batch workflow
 npx claude-flow claude batch examples/claude-workflow.json --dry-run
 ```
 
-### 6. **Claude Swarm Mode** 🐝 🆕
-```bash
-# Create self-orchestrating agent swarms
-npx claude-flow swarm "Build a complete e-commerce platform"
+**Enhanced Claude Instances receive:**
+- Detailed Claude-Flow system guidance
+- Proper `npx claude-flow` command syntax
+- Mode-specific instructions (backend/frontend/api/full)
+- Memory bank operations with examples
+- Configuration-aware development guidance
 
-# Research-focused swarm
-npx claude-flow swarm "Research cloud architecture best practices" \
-  --strategy research --research --max-agents 8
-
-# Development swarm with review
-npx claude-flow swarm "Refactor authentication system" \
-  --strategy development --review --parallel
-
-# Complex project with coordinator
-npx claude-flow swarm "Migrate monolithic app to microservices" \
-  --coordinator --max-depth 4 --timeout 120
-
-# Preview swarm configuration
-npx claude-flow swarm "Create mobile app" --dry-run --verbose
-```
-
-### 7. **Monitor System Status**
+### 6. **Monitor System Status**
 ```bash
 # Check system health
 npx claude-flow status
@@ -383,15 +396,15 @@ npx claude-flow monitor [options]
   -f, --focus <component>   Focus on specific component
 ```
 
-#### `claude` - Spawn Claude Instances 🆕
+#### `claude` - Spawn Claude Instances with Enhanced Guidance 🆕
 ```bash
 npx claude-flow claude <subcommand>
-  spawn <task>              Spawn Claude with specific configuration
+  spawn <task>              Spawn Claude with enhanced Claude-Flow guidance
     -t, --tools <tools>     Allowed tools (comma-separated)
     --no-permissions        Use --dangerously-skip-permissions flag
     -c, --config <file>     MCP config file path
     -m, --mode <mode>       Development mode (full/backend-only/frontend-only/api-only)
-    --parallel              Enable parallel execution with BatchTool
+    --parallel              Enable parallel execution with multi-agent support
     --research              Enable web research with WebFetchTool
     --coverage <n>          Test coverage target percentage (default: 80)
     --commit <freq>         Commit frequency (phase/feature/manual)
@@ -401,6 +414,14 @@ npx claude-flow claude <subcommand>
   batch <workflow-file>     Execute multiple Claude instances from workflow
     --dry-run               Show what would be executed without running
 ```
+
+**Each spawned Claude instance receives comprehensive guidance including:**
+- Claude-Flow memory operations (`npx claude-flow memory store/query`)
+- System management commands (`npx claude-flow status/monitor`)
+- Agent coordination (when --parallel is used)
+- Mode-specific development focus
+- Coverage and commit strategy awareness
+- Example commands ready to use with the Bash tool
 
 #### `config` - Configuration Management
 ```bash
@@ -435,13 +456,32 @@ npx claude-flow help [command]
 
 ### 🎯 **Common Use Cases**
 
-**Research Project Setup:**
+**Complete Agent & Task Workflow:**
 ```bash
+# Initialize and start the system
 npx claude-flow init
 npx claude-flow start --daemon
+
+# Spawn a team of agents
 npx claude-flow agent spawn researcher --name "Senior Researcher" --priority 8
 npx claude-flow agent spawn analyst --name "Data Analyst" --priority 7
-npx claude-flow task create research "Analyze competitor landscape" --priority 9
+npx claude-flow agent spawn implementer --name "Lead Developer" --priority 9
+
+# Create research task
+TASK1=$(npx claude-flow task create research "Analyze authentication patterns" --priority 8 | grep "Task ID" | awk '{print $3}')
+
+# Create analysis task dependent on research
+TASK2=$(npx claude-flow task create analysis "Security audit findings" --priority 7 --deps $TASK1 | grep "Task ID" | awk '{print $3}')
+
+# Create implementation task dependent on analysis
+TASK3=$(npx claude-flow task create implementation "Build secure auth system" --priority 9 --deps $TASK2 | grep "Task ID" | awk '{print $3}')
+
+# Assign tasks to appropriate agents
+npx claude-flow task assign $TASK1 $(npx claude-flow agent list | grep researcher | awk '{print $2}')
+npx claude-flow task assign $TASK2 $(npx claude-flow agent list | grep analyst | awk '{print $2}')
+npx claude-flow task assign $TASK3 $(npx claude-flow agent list | grep implementer | awk '{print $2}')
+
+# Monitor the workflow
 npx claude-flow monitor
 ```
 
@@ -453,11 +493,35 @@ npx claude-flow agent spawn coordinator --name "Tech Lead"
 npx claude-flow workflow development-pipeline.json --watch
 ```
 
-**Memory Operations:**
+**Enhanced Claude Spawn Examples:**
 ```bash
-npx claude-flow memory store "project-requirements" "Authentication using JWT" --namespace project
-npx claude-flow memory query "authentication" --namespace project
-npx claude-flow memory export project-knowledge.json
+# Backend API development with high test coverage
+npx claude-flow claude spawn "build REST API with authentication" \
+  --mode backend-only --coverage 95 --commit feature
+
+# Frontend development with research capabilities
+npx claude-flow claude spawn "create responsive dashboard" \
+  --mode frontend-only --research --verbose
+
+# Full-stack development with parallel execution
+npx claude-flow claude spawn "implement user management system" \
+  --parallel --coverage 90 --commit phase
+
+# API design focus with custom tools
+npx claude-flow claude spawn "design GraphQL schema" \
+  --mode api-only --tools "View,Edit,GrepTool,LS"
+```
+
+**Workflow Execution:**
+```bash
+# Execute a predefined workflow
+npx claude-flow workflow examples/development-config.json
+
+# Execute workflow with monitoring
+npx claude-flow workflow examples/research-workflow.json --watch
+
+# Validate workflow before execution
+npx claude-flow workflow my-workflow.json --validate
 ```
 
 ## Workflow Example
@@ -562,6 +626,7 @@ Claude-Flow seamlessly integrates with Claude Code through the `CLAUDE.md` file 
 - **Automatic Context Loading**: Claude Code reads your project configuration
 - **Build Command Integration**: All build/test commands are available to Claude
 - **Memory Persistence**: Claude remembers context across sessions
+- **Enhanced Guidance**: Spawned Claude instances receive detailed Claude-Flow instructions
 - **SPARC Methodology**: Built-in support for structured AI development
 
 Use with Claude Code:
@@ -569,10 +634,14 @@ Use with Claude Code:
 # Initialize integration
 npx claude-flow init
 
-# Use with Claude Code SDK
-claude --dangerously-skip-permissions
+# Spawn Claude with enhanced Claude-Flow guidance
+npx claude-flow claude spawn "your task here" --research --parallel
 
-# Claude will automatically use the configuration from CLAUDE.md
+# Claude receives:
+# - Instructions on using npx claude-flow commands
+# - Memory operations (store/query)
+# - Agent coordination capabilities
+# - Mode-specific development guidance
 ```
 
 ## 🏢 **Enterprise Features**

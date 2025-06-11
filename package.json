@@ -1,11 +1,10 @@
 {
   "name": "claude-flow",
-  "version": "1.0.21",
+  "version": "1.0.25",
   "description": "Advanced AI agent orchestration system for Claude Code",
   "main": "src/cli/main.ts",
   "bin": {
-    "claude-flow": "./bin/claude-flow",
-    "claude-flow-swarm": "./bin/claude-flow-swarm"
+    "claude-flow": "./bin/claude-flow"
   },
   "scripts": {
     "postinstall": "node scripts/install.js",
@@ -38,11 +37,23 @@
   "files": [
     "bin/claude-flow",
     "bin/claude-flow-swarm",
+    "bin/claude-flow-swarm-ui",
+    "bin/claude-flow-swarm-monitor",
     "src/",
     "swarm-demo.ts",
+    "swarm-demo-enhanced.ts",
     "scripts/install.js",
+    "scripts/swarm-blessed-ui.js",
+    "scripts/swarm-simple.js",
+    "scripts/swarm-example.sh",
     "README.md",
     "LICENSE",
-    "deno.json"
-  ]
+    "deno.json",
+    "SWARM_TTY_SOLUTION.md",
+    "SWARM_VISIBILITY.md"
+  ],
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "node-pty": "^1.0.0"
+  }
 }

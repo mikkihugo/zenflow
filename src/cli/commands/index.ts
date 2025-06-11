@@ -8,6 +8,7 @@ import { EventBus } from "../../core/event-bus.ts";
 import { Logger } from "../../core/logger.ts";
 import { JsonPersistenceManager } from "../../core/json-persistence.ts";
 import { swarmAction } from "./swarm.ts";
+import { SimpleMemoryManager } from "./memory.ts";
 
 let orchestrator: Orchestrator | null = null;
 let configManager: ConfigManager | null = null;
@@ -608,6 +609,163 @@ export function setupCommands(cli: CLI): void {
     },
   });
 
+  // Memory command
+  cli.command({
+    name: "memory",
+    description: "Manage memory bank",
+    aliases: ["mem"],
+    action: async (ctx: CommandContext) => {
+      const subcommand = ctx.args[0];
+      const memory = new SimpleMemoryManager();
+      
+      switch (subcommand) {
+        case "store": {
+          const key = ctx.args[1];
+          const value = ctx.args.slice(2).join(" "); // Join all remaining args as value
+          
+          if (!key || !value) {
+            error("Usage: memory store <key> <value>");
+            break;
+          }
+          
+          try {
+            const namespace = ctx.flags.namespace as string || ctx.flags.n as string || "default";
+            await memory.store(key, value, namespace);
+            success("Stored successfully");
+            console.log(`📝 Key: ${key}`);
+            console.log(`📦 Namespace: ${namespace}`);
+            console.log(`💾 Size: ${new TextEncoder().encode(value).length} bytes`);
+          } catch (err) {
+            error(`Failed to store: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        case "query": {
+          const search = ctx.args.slice(1).join(" "); // Join all remaining args as search
+          
+          if (!search) {
+            error("Usage: memory query <search>");
+            break;
+          }
+          
+          try {
+            const namespace = ctx.flags.namespace as string || ctx.flags.n as string;
+            const limit = ctx.flags.limit as number || ctx.flags.l as number || 10;
+            const results = await memory.query(search, namespace);
+            
+            if (results.length === 0) {
+              warning("No results found");
+              return;
+            }
+            
+            success(`Found ${results.length} results:`);
+            
+            const limited = results.slice(0, limit);
+            for (const entry of limited) {
+              console.log(blue(`\n📌 ${entry.key}`));
+              console.log(`   Namespace: ${entry.namespace}`);
+              console.log(`   Value: ${entry.value.substring(0, 100)}${entry.value.length > 100 ? '...' : ''}`);
+              console.log(`   Stored: ${new Date(entry.timestamp).toLocaleString()}`);
+            }
+            
+            if (results.length > limit) {
+              console.log(`\n... and ${results.length - limit} more results`);
+            }
+          } catch (err) {
+            error(`Failed to query: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        case "export": {
+          const file = ctx.args[1];
+          
+          if (!file) {
+            error("Usage: memory export <file>");
+            break;
+          }
+          
+          try {
+            await memory.exportData(file);
+            const stats = await memory.getStats();
+            success("Memory exported successfully");
+            console.log(`📁 File: ${file}`);
+            console.log(`📊 Entries: ${stats.totalEntries}`);
+            console.log(`💾 Size: ${(stats.sizeBytes / 1024).toFixed(2)} KB`);
+          } catch (err) {
+            error(`Failed to export: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        case "import": {
+          const file = ctx.args[1];
+          
+          if (!file) {
+            error("Usage: memory import <file>");
+            break;
+          }
+          
+          try {
+            await memory.importData(file);
+            const stats = await memory.getStats();
+            success("Memory imported successfully");
+            console.log(`📁 File: ${file}`);
+            console.log(`📊 Entries: ${stats.totalEntries}`);
+            console.log(`🗂️  Namespaces: ${stats.namespaces}`);
+          } catch (err) {
+            error(`Failed to import: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        case "stats": {
+          try {
+            const stats = await memory.getStats();
+            
+            success("Memory Bank Statistics:");
+            console.log(`   Total Entries: ${stats.totalEntries}`);
+            console.log(`   Namespaces: ${stats.namespaces}`);
+            console.log(`   Size: ${(stats.sizeBytes / 1024).toFixed(2)} KB`);
+            
+            if (stats.namespaces > 0) {
+              console.log(blue("\n📁 Namespace Breakdown:"));
+              for (const [namespace, count] of Object.entries(stats.namespaceStats)) {
+                console.log(`   ${namespace}: ${count} entries`);
+              }
+            }
+          } catch (err) {
+            error(`Failed to get stats: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        case "cleanup": {
+          try {
+            const days = ctx.flags.days as number || ctx.flags.d as number || 30;
+            const removed = await memory.cleanup(days);
+            success("Cleanup completed");
+            console.log(`🗑️  Removed: ${removed} entries older than ${days} days`);
+          } catch (err) {
+            error(`Failed to cleanup: ${(err as Error).message}`);
+          }
+          break;
+        }
+        
+        default: {
+          console.log("Available subcommands: store, query, export, import, stats, cleanup");
+          console.log("\nExamples:");
+          console.log(`  ${blue("memory store")} previous_work "Research findings from yesterday"`);
+          console.log(`  ${blue("memory query")} research`);
+          console.log(`  ${blue("memory export")} backup.json`);
+          console.log(`  ${blue("memory stats")}`);
+          break;
+        }
+      }
+    },
+  });
+
   // Claude command
   cli.command({
     name: "claude",
@@ -706,8 +864,96 @@ export function setupCommands(cli: CLI): void {
               tools += ",WebFetchTool";
             }
             
-            // Build Claude command
-            const claudeCmd = ["claude", `"${task}"`];
+            const instanceId = `claude-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            // Build enhanced task with Claude-Flow guidance
+            let enhancedTask = `# Claude-Flow Enhanced Task
+
+## Your Task
+${task}
+
+## Claude-Flow System Context
+
+You are running within the Claude-Flow orchestration system, which provides powerful features for complex task management:
+
+### Available Features
+
+1. **Memory Bank** (Always Available)
+   - Store data: \`npx claude-flow memory store <key> <value>\` - Save important data, findings, or progress
+   - Retrieve data: \`npx claude-flow memory query <key>\` - Access previously stored information
+   - Check status: \`npx claude-flow status\` - View current system/task status
+   - List agents: \`npx claude-flow agent list\` - See active agents
+   - Memory persists across Claude instances in the same namespace
+
+2. **Tool Access**
+   - You have access to these tools: ${tools}`;
+
+            if (ctx.flags.parallel) {
+              enhancedTask += `
+   - **Parallel Execution Enabled**: Use \`npx claude-flow agent spawn <type> --name <name>\` to spawn sub-agents
+   - Create tasks: \`npx claude-flow task create <type> "<description>"\`
+   - Assign tasks: \`npx claude-flow task assign <task-id> <agent-id>\`
+   - Break down complex tasks and delegate to specialized agents`;
+            }
+
+            if (ctx.flags.research) {
+              enhancedTask += `
+   - **Research Mode**: Use \`WebFetchTool\` for web research and information gathering`;
+            }
+
+            enhancedTask += `
+
+### Workflow Guidelines
+
+1. **Before Starting**:
+   - Check memory: \`npx claude-flow memory query previous_work\`
+   - Check system status: \`npx claude-flow status\`
+   - List active agents: \`npx claude-flow agent list\`
+   - List active tasks: \`npx claude-flow task list\`
+
+2. **During Execution**:
+   - Store findings: \`npx claude-flow memory store findings "your data here"\`
+   - Save checkpoints: \`npx claude-flow memory store progress_${task.replace(/\s+/g, '_')} "current status"\`
+   ${ctx.flags.parallel ? '- Spawn agents: `npx claude-flow agent spawn researcher --name "research-agent"`' : ''}
+   ${ctx.flags.parallel ? '- Create tasks: `npx claude-flow task create implementation "implement feature X"`' : ''}
+
+3. **Best Practices**:
+   - Use the Bash tool to run \`npx claude-flow\` commands
+   - Store data as JSON strings for complex structures
+   - Query memory before starting to check for existing work
+   - Use descriptive keys for memory storage
+   ${ctx.flags.parallel ? '- Coordinate with other agents through shared memory' : ''}
+   ${ctx.flags.research ? '- Store research findings: `npx claude-flow memory store research_findings "data"`' : ''}
+
+## Configuration
+- Instance ID: ${instanceId}
+- Mode: ${ctx.flags.mode || 'full'}
+- Coverage Target: ${ctx.flags.coverage || 80}%
+- Commit Strategy: ${ctx.flags.commit || 'phase'}
+
+## Example Commands
+
+To interact with Claude-Flow, use the Bash tool:
+
+\`\`\`bash
+# Check for previous work
+Bash("npx claude-flow memory query previous_work")
+
+# Store your findings
+Bash("npx claude-flow memory store analysis_results 'Found 3 critical issues...'")
+
+# Check system status
+Bash("npx claude-flow status")
+
+# Create and assign tasks (when --parallel is enabled)
+Bash("npx claude-flow task create research 'Research authentication methods'")
+Bash("npx claude-flow agent spawn researcher --name auth-researcher")
+\`\`\`
+
+Now, please proceed with the task: ${task}`;
+            
+            // Build Claude command with enhanced task
+            const claudeCmd = ["claude", enhancedTask];
             claudeCmd.push("--allowedTools", tools);
             
             if (ctx.flags.noPermissions || ctx.flags["skip-permissions"]) {
@@ -722,22 +968,35 @@ export function setupCommands(cli: CLI): void {
               claudeCmd.push("--verbose");
             }
             
-            const instanceId = `claude-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            
             if (ctx.flags.dryRun || ctx.flags["dry-run"] || ctx.flags.d) {
               warning("DRY RUN - Would execute:");
-              console.log(`Command: ${claudeCmd.join(" ")}`);
+              console.log(`Command: claude "<enhanced task with guidance>" --allowedTools ${tools}`);
               console.log(`Instance ID: ${instanceId}`);
-              console.log(`Task: ${task}`);
+              console.log(`Original Task: ${task}`);
               console.log(`Tools: ${tools}`);
               console.log(`Mode: ${ctx.flags.mode || "full"}`);
+              console.log(`Coverage: ${ctx.flags.coverage || 80}%`);
+              console.log(`Commit: ${ctx.flags.commit || "phase"}`);
+              console.log(`\nEnhanced Features:`);
+              console.log(`  - Memory Bank enabled via: npx claude-flow memory commands`);
+              console.log(`  - Coordination ${ctx.flags.parallel ? 'enabled' : 'disabled'}`);
+              console.log(`  - Access Claude-Flow features through Bash tool`);
               return;
             }
             
             success(`Spawning Claude instance: ${instanceId}`);
-            console.log(`📝 Task: ${task}`);
+            console.log(`📝 Original Task: ${task}`);
             console.log(`🔧 Tools: ${tools}`);
             console.log(`⚙️  Mode: ${ctx.flags.mode || "full"}`);
+            console.log(`📊 Coverage: ${ctx.flags.coverage || 80}%`);
+            console.log(`💾 Commit: ${ctx.flags.commit || "phase"}`);
+            console.log(`✨ Enhanced with Claude-Flow guidance for memory and coordination`);
+            console.log('');
+            console.log('📋 Task will be enhanced with:');
+            console.log('  - Memory Bank instructions (store/retrieve)');
+            console.log('  - Coordination capabilities (swarm management)');
+            console.log('  - Best practices for multi-agent workflows');
+            console.log('');
             
             // Execute Claude command
             const command = new Deno.Command("claude", {
@@ -748,6 +1007,11 @@ export function setupCommands(cli: CLI): void {
                 CLAUDE_FLOW_MODE: ctx.flags.mode as string || "full",
                 CLAUDE_FLOW_COVERAGE: (ctx.flags.coverage || 80).toString(),
                 CLAUDE_FLOW_COMMIT: ctx.flags.commit as string || "phase",
+                // Add Claude-Flow specific features
+                CLAUDE_FLOW_MEMORY_ENABLED: 'true',
+                CLAUDE_FLOW_MEMORY_NAMESPACE: 'default',
+                CLAUDE_FLOW_COORDINATION_ENABLED: ctx.flags.parallel ? 'true' : 'false',
+                CLAUDE_FLOW_FEATURES: 'memory,coordination,swarm',
               },
               stdin: "inherit",
               stdout: "inherit",
@@ -1068,8 +1332,105 @@ export function setupCommands(cli: CLI): void {
         description: "Preview swarm configuration",
         type: "boolean",
       },
+      {
+        name: "vscode",
+        description: "Use VS Code terminal integration",
+        type: "boolean",
+      },
+      {
+        name: "monitor",
+        description: "Enable real-time monitoring",
+        type: "boolean",
+      },
+      {
+        name: "ui",
+        description: "Use blessed terminal UI (avoids TTY issues)",
+        type: "boolean",
+      },
     ],
     action: swarmAction,
+  });
+
+  // Swarm UI command (convenience wrapper)
+  cli.command({
+    name: "swarm-ui",
+    description: "Create self-orchestrating Claude agent swarms with blessed UI",
+    options: [
+      {
+        name: "strategy",
+        short: "s",
+        description: "Orchestration strategy (auto, research, development, analysis)",
+        type: "string",
+        default: "auto",
+      },
+      {
+        name: "max-agents",
+        description: "Maximum number of agents to spawn",
+        type: "number",
+        default: 5,
+      },
+      {
+        name: "max-depth",
+        description: "Maximum delegation depth",
+        type: "number",
+        default: 3,
+      },
+      {
+        name: "research",
+        description: "Enable research capabilities for all agents",
+        type: "boolean",
+      },
+      {
+        name: "parallel",
+        description: "Enable parallel execution",
+        type: "boolean",
+      },
+      {
+        name: "memory-namespace",
+        description: "Shared memory namespace",
+        type: "string",
+        default: "swarm",
+      },
+      {
+        name: "timeout",
+        description: "Swarm timeout in minutes",
+        type: "number",
+        default: 60,
+      },
+      {
+        name: "review",
+        description: "Enable peer review between agents",
+        type: "boolean",
+      },
+      {
+        name: "coordinator",
+        description: "Spawn dedicated coordinator agent",
+        type: "boolean",
+      },
+      {
+        name: "config",
+        short: "c",
+        description: "MCP config file",
+        type: "string",
+      },
+      {
+        name: "verbose",
+        short: "v",
+        description: "Enable verbose output",
+        type: "boolean",
+      },
+      {
+        name: "dry-run",
+        short: "d",
+        description: "Preview swarm configuration",
+        type: "boolean",
+      },
+    ],
+    action: async (ctx: CommandContext) => {
+      // Force UI mode
+      ctx.flags.ui = true;
+      await swarmAction(ctx);
+    },
   });
 
   // Help command
@@ -1106,13 +1467,14 @@ export function setupCommands(cli: CLI): void {
         console.log(`  ${blue("claude-flow claude batch")} workflow.json --dry-run`);
         console.log();
         console.log("For more information, see: https://github.com/ruvnet/claude-code-flow/docs/11-claude-spawning.md");
-      } else if (command === "swarm") {
+      } else if (command === "swarm" || command === "swarm-ui") {
         console.log(bold(blue("Claude Swarm Mode")));
         console.log();
         console.log("Create self-orchestrating Claude agent swarms to tackle complex objectives.");
         console.log();
         console.log(bold("Usage:"));
         console.log("  claude-flow swarm <objective> [options]");
+        console.log("  claude-flow swarm-ui <objective> [options]  # Uses blessed UI (avoids TTY issues)");
         console.log();
         console.log(bold("Options:"));
         console.log("  -s, --strategy <s>         Orchestration strategy (auto, research, development, analysis)");
@@ -1127,13 +1489,24 @@ export function setupCommands(cli: CLI): void {
         console.log("  -c, --config <file>        MCP config file");
         console.log("  -v, --verbose              Enable verbose output");
         console.log("  -d, --dry-run              Preview swarm configuration");
+        console.log("  --vscode                   Use VS Code terminal integration");
+        console.log("  --monitor                  Enable real-time monitoring");
+        console.log("  --ui                       Use blessed terminal UI (avoids TTY issues)");
         console.log();
         console.log(bold("Examples:"));
         console.log(`  ${blue("claude-flow swarm")} "Build a REST API"`);
+        console.log(`  ${blue("claude-flow swarm-ui")} "Build a REST API"  # Avoids TTY issues`);
         console.log(`  ${blue("claude-flow swarm")} "Research cloud architecture" --strategy research --research`);
-        console.log(`  ${blue("claude-flow swarm")} "Migrate app to microservices" --coordinator --review`);
+        console.log(`  ${blue("claude-flow swarm")} "Migrate app to microservices" --coordinator --review --ui`);
         console.log();
-        console.log("For more information, see: https://github.com/ruvnet/claude-code-flow/docs/12-swarm.md");
+        console.log(bold("TTY Issues?"));
+        console.log("If you encounter 'Raw mode is not supported' errors, use:");
+        console.log(`  - ${blue("claude-flow swarm-ui")} <objective>  # Recommended`);
+        console.log(`  - ${blue("claude-flow swarm")} <objective> --ui`);
+        console.log();
+        console.log("For more information, see:");
+        console.log("  - https://github.com/ruvnet/claude-code-flow/docs/12-swarm.md");
+        console.log("  - https://github.com/ruvnet/claude-code-flow/SWARM_TTY_SOLUTION.md");
       } else {
         // Show general help
         cli.showHelp();

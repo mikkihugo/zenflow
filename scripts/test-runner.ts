@@ -109,7 +109,7 @@ class TestRunner {
     const args = [
       "test",
       "--allow-all",
-      "--unstable-temporal-api",
+      "--unstable-temporal",
     ];
 
     // Add coverage if enabled
@@ -122,10 +122,7 @@ class TestRunner {
       args.push("--parallel");
     }
 
-    // Add timeout
-    if (suite.timeout) {
-      args.push("--timeout", suite.timeout.toString());
-    }
+    // Note: Deno test doesn't support --timeout flag directly
 
     // Add filter if specified
     if (this.options.filter) {

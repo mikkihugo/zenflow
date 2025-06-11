@@ -5,6 +5,20 @@
 // Utility helper functions
 
 /**
+ * Simple calculator function that adds two numbers
+ */
+export function add(a: number, b: number): number {
+  return a + b;
+}
+
+/**
+ * Simple hello world function
+ */
+export function helloWorld(): string {
+  return "Hello, World!";
+}
+
+/**
  * Generates a unique identifier
  */
 export function generateId(prefix?: string): string {
@@ -409,6 +423,34 @@ export interface CircuitBreaker {
 }
 
 /**
+ * Simple calculator function with basic operations
+ */
+export function calculator(a: number, b: number, operation: '+' | '-' | '*' | '/' | '^' | '%'): number {
+  switch (operation) {
+    case '+':
+      return a + b;
+    case '-':
+      return a - b;
+    case '*':
+      return a * b;
+    case '/':
+      if (b === 0) {
+        throw new Error('Division by zero');
+      }
+      return a / b;
+    case '^':
+      return Math.pow(a, b);
+    case '%':
+      if (b === 0) {
+        throw new Error('Modulo by zero');
+      }
+      return a % b;
+    default:
+      throw new Error(`Invalid operation: ${operation}`);
+  }
+}
+
+/**
  * Creates a circuit breaker
  */
 export function circuitBreaker(
@@ -474,3 +516,4 @@ export function circuitBreaker(
     },
   };
 }
+
