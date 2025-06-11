@@ -1,5 +1,76 @@
 {
-  "agents": [],
-  "tasks": [],
-  "lastUpdated": 1749595208016
+  "agents": [
+    {
+      "id": "agent-1749613592964-g0npi8ni4",
+      "type": "researcher",
+      "name": "Research Bot",
+      "status": "active",
+      "capabilities": [
+        "web-search",
+        "information-gathering",
+        "analysis"
+      ],
+      "systemPrompt": "You are a research agent specialized in gathering and analyzing information.",
+      "maxConcurrentTasks": 5,
+      "priority": 1,
+      "createdAt": 1749613592964
+    },
+    {
+      "id": "agent-1749613632456-gtndy9ddl",
+      "type": "implementer",
+      "name": "Code Developer",
+      "status": "active",
+      "capabilities": [
+        "code-generation",
+        "file-manipulation",
+        "testing"
+      ],
+      "systemPrompt": "You are an implementation agent focused on writing code and creating solutions.",
+      "maxConcurrentTasks": 5,
+      "priority": 7,
+      "createdAt": 1749613632456
+    },
+    {
+      "id": "agent-1749614777174-96e2hdm1c",
+      "type": "researcher",
+      "name": "Test Researcher",
+      "status": "active",
+      "capabilities": [
+        "research",
+        "web-search"
+      ],
+      "systemPrompt": "You are a research agent",
+      "maxConcurrentTasks": 5,
+      "priority": 1,
+      "createdAt": 1749614777174
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-1749613648853-m04joqfqj",
+      "type": "implementation",
+      "description": "Build authentication module",
+      "status": "pending",
+      "priority": 9,
+      "dependencies": [
+        "task-1749613600902-dfn3e8u8c"
+      ],
+      "metadata": {},
+      "progress": 0,
+      "createdAt": 1749613648853
+    },
+    {
+      "id": "task-1749613600902-dfn3e8u8c",
+      "type": "research",
+      "description": "Analyze authentication patterns",
+      "status": "assigned",
+      "priority": 8,
+      "dependencies": [],
+      "metadata": {},
+      "progress": 0,
+      "createdAt": 1749613600902,
+      "assignedAgent": "agent-1749613592964-g0npi8ni4"
+    }
+  ],
+  "lastUpdated": 1749614777174
 }

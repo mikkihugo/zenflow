@@ -4,7 +4,7 @@
  * This version avoids TypeScript issues in node_modules
  */
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.25';
 
 function printHelp() {
   console.log(`
@@ -19,6 +19,7 @@ COMMANDS:
   agent                 Manage agents (spawn, list, terminate, info)
   task                  Manage tasks (create, list, status, cancel, workflow)
   memory               Manage memory (query, export, import, stats, cleanup)
+  mcp                  Manage MCP server (status, tools, start, stop)
   config               Manage configuration (show, get, set, init, validate)
   status               Show system status
   monitor              Monitor system in real-time
@@ -267,9 +268,201 @@ async function main() {
       console.log('🌐 MCP Server: Stopped');
       break;
       
-    case 'memory':
-      printSuccess('Memory system ready');
-      console.log('💾 Memory operations would be handled here');
+    case 'memory': {
+      const memorySubcommand = subArgs[0];
+      const memoryStore = './memory/memory-store.json';
+      
+      // Helper to load memory data
+      async function loadMemory() {
+        try {
+          const content = await Deno.readTextFile(memoryStore);
+          return JSON.parse(content);
+        } catch {
+          return {};
+        }
+      }
+      
+      // Helper to save memory data
+      async function saveMemory(data) {
+        await Deno.mkdir('./memory', { recursive: true });
+        await Deno.writeTextFile(memoryStore, JSON.stringify(data, null, 2));
+      }
+      
+      switch (memorySubcommand) {
+        case 'store': {
+          const key = subArgs[1];
+          const value = subArgs.slice(2).join(' ');
+          
+          if (!key || !value) {
+            printError('Usage: memory store <key> <value>');
+            break;
+          }
+          
+          try {
+            const data = await loadMemory();
+            const namespace = 'default';
+            
+            if (!data[namespace]) {
+              data[namespace] = [];
+            }
+            
+            // Remove existing entry with same key
+            data[namespace] = data[namespace].filter(e => e.key !== key);
+            
+            // Add new entry
+            data[namespace].push({
+              key,
+              value,
+              namespace,
+              timestamp: Date.now()
+            });
+            
+            await saveMemory(data);
+            printSuccess('Stored successfully');
+            console.log(`📝 Key: ${key}`);
+            console.log(`📦 Namespace: ${namespace}`);
+            console.log(`💾 Size: ${new TextEncoder().encode(value).length} bytes`);
+          } catch (err) {
+            printError(`Failed to store: ${err.message}`);
+          }
+          break;
+        }
+        
+        case 'query': {
+          const search = subArgs.slice(1).join(' ');
+          
+          if (!search) {
+            printError('Usage: memory query <search>');
+            break;
+          }
+          
+          try {
+            const data = await loadMemory();
+            const results = [];
+            
+            for (const [namespace, entries] of Object.entries(data)) {
+              for (const entry of entries) {
+                if (entry.key.includes(search) || entry.value.includes(search)) {
+                  results.push(entry);
+                }
+              }
+            }
+            
+            if (results.length === 0) {
+              printWarning('No results found');
+              return;
+            }
+            
+            printSuccess(`Found ${results.length} results:`);
+            
+            for (const entry of results.slice(0, 10)) {
+              console.log(`\n📌 ${entry.key}`);
+              console.log(`   Namespace: ${entry.namespace}`);
+              console.log(`   Value: ${entry.value.substring(0, 100)}${entry.value.length > 100 ? '...' : ''}`);
+              console.log(`   Stored: ${new Date(entry.timestamp).toLocaleString()}`);
+            }
+            
+            if (results.length > 10) {
+              console.log(`\n... and ${results.length - 10} more results`);
+            }
+          } catch (err) {
+            printError(`Failed to query: ${err.message}`);
+          }
+          break;
+        }
+        
+        case 'stats': {
+          try {
+            const data = await loadMemory();
+            let totalEntries = 0;
+            const namespaceStats = {};
+            
+            for (const [namespace, entries] of Object.entries(data)) {
+              namespaceStats[namespace] = entries.length;
+              totalEntries += entries.length;
+            }
+            
+            printSuccess('Memory Bank Statistics:');
+            console.log(`   Total Entries: ${totalEntries}`);
+            console.log(`   Namespaces: ${Object.keys(data).length}`);
+            console.log(`   Size: ${(new TextEncoder().encode(JSON.stringify(data)).length / 1024).toFixed(2)} KB`);
+            
+            if (Object.keys(data).length > 0) {
+              console.log('\n📁 Namespace Breakdown:');
+              for (const [namespace, count] of Object.entries(namespaceStats)) {
+                console.log(`   ${namespace}: ${count} entries`);
+              }
+            }
+          } catch (err) {
+            printError(`Failed to get stats: ${err.message}`);
+          }
+          break;
+        }
+        
+        default: {
+          console.log('Available subcommands: store, query, stats');
+          console.log('\nExamples:');
+          console.log('  memory store previous_work "Research findings from yesterday"');
+          console.log('  memory query research');
+          console.log('  memory stats');
+          break;
+        }
+      }
+      break;
+    }
+      
+    case 'mcp':
+      const mcpCmd = subArgs[0];
+      switch (mcpCmd) {
+        case 'status':
+          printSuccess('MCP Server Status:');
+          console.log('🌐 Status: Stopped (orchestrator not running)');
+          console.log('📍 Default port: 3000');
+          console.log('🔧 Transport: stdio');
+          console.log('🔐 Authentication: Disabled');
+          break;
+        case 'tools':
+          printSuccess('Available MCP Tools:');
+          console.log('  📊 Research Tools:');
+          console.log('    • web_search - Search the web for information');
+          console.log('    • web_fetch - Fetch content from URLs');
+          console.log('    • knowledge_query - Query knowledge base');
+          console.log('  💻 Code Tools:');
+          console.log('    • code_edit - Edit code files');
+          console.log('    • code_search - Search through codebase');
+          console.log('    • code_analyze - Analyze code quality');
+          console.log('  🖥️  Terminal Tools:');
+          console.log('    • terminal_execute - Execute shell commands');
+          console.log('    • terminal_session - Manage terminal sessions');
+          console.log('    • file_operations - File system operations');
+          console.log('  💾 Memory Tools:');
+          console.log('    • memory_store - Store information');
+          console.log('    • memory_query - Query stored information');
+          console.log('    • memory_index - Index and search content');
+          break;
+        case 'start':
+          printWarning('MCP server runs as part of the orchestrator.');
+          console.log('Use "claude-flow start" to start the entire system.');
+          break;
+        case 'stop':
+          printWarning('MCP server runs as part of the orchestrator.');
+          console.log('Use Ctrl+C to stop the system when running.');
+          break;
+        case 'serve':
+          printSuccess('Starting MCP server in stdio mode...');
+          console.log('🌐 MCP Server is starting...');
+          console.log('📡 Transport: stdio (for Claude Desktop integration)');
+          console.log('🔧 Available tools: agent, task, memory, terminal, workflow');
+          console.log('⚡ Ready to accept connections');
+          console.log('\n💡 To use with Claude Desktop:');
+          console.log('   1. Add this to Claude Desktop MCP settings');
+          console.log('   2. Use the mcp.json configuration in ./mcp_config/');
+          // Keep the process running for stdio mode
+          await new Promise(() => {});
+          break;
+        default:
+          console.log('MCP commands: status, tools, start, stop, serve');
+      }
       break;
       
     case 'monitor':
@@ -357,25 +550,204 @@ async function main() {
           
           if (flags.dryRun) {
             printWarning('DRY RUN - Would execute:');
-            console.log(`Command: claude "${task}" --allowedTools ${tools}`);
+            console.log(`Command: claude "<enhanced task with guidance>" --allowedTools ${tools}`);
             console.log(`Instance ID: ${instanceId}`);
             console.log(`Task: ${task}`);
             console.log(`Tools: ${tools}`);
             console.log(`Mode: ${flags.mode || 'full'}`);
             console.log(`Coverage: ${flags.coverage || 80}%`);
             console.log(`Commit: ${flags.commit || 'phase'}`);
+            console.log(`\nEnhanced Features:`);
+            console.log(`  - Memory Bank enabled via: npx claude-flow memory commands`);
+            console.log(`  - Coordination ${flags.parallel ? 'enabled' : 'disabled'}`);
+            console.log(`  - Access Claude-Flow features through Bash tool`);
           } else {
             printSuccess(`Spawning Claude instance: ${instanceId}`);
-            console.log(`📝 Task: ${task}`);
+            console.log(`📝 Original Task: ${task}`);
             console.log(`🔧 Tools: ${tools}`);
             console.log(`⚙️  Mode: ${flags.mode || 'full'}`);
             console.log(`📊 Coverage: ${flags.coverage || 80}%`);
             console.log(`💾 Commit: ${flags.commit || 'phase'}`);
+            console.log(`✨ Enhanced with Claude-Flow guidance for memory and coordination`);
+            console.log('');
+            console.log('📋 Task will be enhanced with:');
+            console.log('  - Memory Bank instructions (store/retrieve)');
+            console.log('  - Coordination capabilities (swarm management)');
+            console.log('  - Best practices for multi-agent workflows');
             console.log('');
             
-            // Build the actual claude command
-            const claudeArgs = [task];
+            // Build the actual claude command with enhanced guidance
+            let enhancedTask = `# Claude-Flow Enhanced Task
+
+## Your Task
+${task}
+
+## Claude-Flow System Context
+
+You are running within the Claude-Flow orchestration system, which provides powerful features for complex task management.
+
+### Configuration
+- Instance ID: ${instanceId}
+- Mode: ${flags.mode || 'full'}
+- Coverage Target: ${flags.coverage || 80}%
+- Commit Strategy: ${flags.commit || 'phase'}
+${flags.config ? `- MCP Config: ${flags.config}` : ''}
+
+### Available Features
+
+1. **Memory Bank** (Always Available)
+   - Store data: \`npx claude-flow memory store <key> "<value>"\` - Save important data, findings, or progress
+   - Retrieve data: \`npx claude-flow memory query <key>\` - Access previously stored information
+   - Export memory: \`npx claude-flow memory export <file>\` - Export memory to file
+   - Import memory: \`npx claude-flow memory import <file>\` - Import memory from file
+   - Memory stats: \`npx claude-flow memory stats\` - Show memory usage statistics
+
+2. **System Management**
+   - Check status: \`npx claude-flow status\` - View current system/task status
+   - Monitor system: \`npx claude-flow monitor\` - Real-time system monitoring
+   - List agents: \`npx claude-flow agent list\` - See active agents
+   - List tasks: \`npx claude-flow task list\` - See active tasks
+
+3. **Tool Access**
+   - You have access to these tools: ${tools}
+   ${flags.tools ? `- Custom tools specified: ${flags.tools}` : ''}`;
+
+            if (flags.parallel) {
+              enhancedTask += `
+   - **Parallel Execution Enabled**: Use \`npx claude-flow agent spawn <type> --name <name>\` to spawn sub-agents
+   - Create tasks: \`npx claude-flow task create <type> "<description>"\`
+   - Assign tasks: \`npx claude-flow task assign <task-id> <agent-id>\`
+   - Break down complex tasks and delegate to specialized agents`;
+            }
+
+            if (flags.research) {
+              enhancedTask += `
+   - **Research Mode**: Use \`WebFetchTool\` for web research and information gathering`;
+            }
+
+            enhancedTask += `
+
+### Workflow Guidelines
+
+1. **Before Starting**:
+   - Check memory: \`npx claude-flow memory query previous_work\`
+   - Check memory stats: \`npx claude-flow memory stats\`
+   - Check system status: \`npx claude-flow status\`
+   - List active agents: \`npx claude-flow agent list\`
+   - List active tasks: \`npx claude-flow task list\`
+   ${flags.mode === 'backend-only' ? '- Focus on backend implementation without frontend concerns' : ''}
+   ${flags.mode === 'frontend-only' ? '- Focus on frontend implementation without backend concerns' : ''}
+   ${flags.mode === 'api-only' ? '- Focus on API design and implementation' : ''}
+
+2. **During Execution**:
+   - Store findings: \`npx claude-flow memory store findings "your data here"\`
+   - Save checkpoints: \`npx claude-flow memory store progress_${task.replace(/\s+/g, '_')} "current status"\`
+   ${flags.parallel ? '- Spawn agents: `npx claude-flow agent spawn researcher --name "research-agent"`' : ''}
+   ${flags.parallel ? '- Create tasks: `npx claude-flow task create implementation "implement feature X"`' : ''}
+   ${flags.parallel ? '- Assign tasks: `npx claude-flow task assign <task-id> <agent-id>`' : ''}
+   ${flags.coverage ? `- Ensure test coverage meets ${flags.coverage}% target` : ''}
+   ${flags.commit === 'phase' ? '- Commit changes after completing each major phase' : ''}
+   ${flags.commit === 'feature' ? '- Commit changes after each feature is complete' : ''}
+   ${flags.commit === 'manual' ? '- Only commit when explicitly requested' : ''}
+
+3. **Best Practices**:
+   - Use the Bash tool to run \`npx claude-flow\` commands
+   - Store data as JSON strings for complex structures
+   - Query memory before starting to check for existing work
+   - Use descriptive keys for memory storage
+   - Monitor progress: \`npx claude-flow monitor\`
+   ${flags.parallel ? '- Coordinate with other agents through shared memory' : ''}
+   ${flags.research ? '- Store research findings: `npx claude-flow memory store research_findings "data"`' : ''}
+   ${flags.noPermissions ? '- Running with --no-permissions, all operations will execute without prompts' : ''}
+   ${flags.verbose ? '- Verbose mode enabled, provide detailed output and explanations' : ''}
+
+## Configuration
+- Instance ID: ${instanceId}
+- Mode: ${flags.mode || 'full'}
+- Coverage Target: ${flags.coverage || 80}%
+- Commit Strategy: ${flags.commit || 'phase'}
+
+## Example Commands
+
+To interact with Claude-Flow, use the Bash tool:
+
+\`\`\`bash
+# Memory Operations
+Bash("npx claude-flow memory query previous_work")
+Bash("npx claude-flow memory store task_analysis '{\\"status\\": \\"completed\\", \\"findings\\": [...]}'")
+Bash("npx claude-flow memory stats")
+Bash("npx claude-flow memory export backup.json")
+
+# System Management
+Bash("npx claude-flow status")
+Bash("npx claude-flow monitor")  # Real-time monitoring
+Bash("npx claude-flow agent list")
+Bash("npx claude-flow task list --verbose")
+${flags.parallel ? `
+# Parallel Execution (enabled for this instance)
+Bash("npx claude-flow agent spawn researcher --name research-bot")
+Bash("npx claude-flow agent spawn coder --name code-bot")
+Bash("npx claude-flow task create research 'Analyze best practices'")
+Bash("npx claude-flow task create implementation 'Implement auth module'")
+Bash("npx claude-flow task assign task-123 agent-456")` : ''}
+${flags.research ? `
+# Research Operations (research mode enabled)
+# Use WebFetchTool for web research, then store findings
+Bash("npx claude-flow memory store web_research_urls '[\\"url1\\", \\"url2\\"]'")
+Bash("npx claude-flow memory store research_summary 'Key findings from research...'")` : ''}
+
+# Configuration Management
+Bash("npx claude-flow config show")
+Bash("npx claude-flow config get orchestrator.maxConcurrentTasks")
+Bash("npx claude-flow config set orchestrator.maxConcurrentTasks 20")
+
+# Workflow Execution
+Bash("npx claude-flow workflow examples/development-config.json")
+Bash("npx claude-flow workflow examples/research-workflow.json --async")
+\`\`\`
+
+## Mode-Specific Guidelines
+${flags.mode === 'backend-only' ? `
+### Backend-Only Mode
+- Focus exclusively on server-side implementation
+- Prioritize API design, database schemas, and business logic
+- Ignore frontend/UI considerations
+- Test coverage should emphasize unit and integration tests` : ''}
+${flags.mode === 'frontend-only' ? `
+### Frontend-Only Mode
+- Focus exclusively on client-side implementation
+- Prioritize UI/UX, component design, and user interactions
+- Assume backend APIs are already available
+- Test coverage should emphasize component and E2E tests` : ''}
+${flags.mode === 'api-only' ? `
+### API-Only Mode
+- Focus exclusively on API design and implementation
+- Prioritize RESTful principles, documentation, and contracts
+- Include comprehensive API documentation
+- Test coverage should emphasize API endpoint testing` : ''}
+${flags.mode === 'full' || !flags.mode ? `
+### Full Stack Mode (Default)
+- Consider both frontend and backend requirements
+- Ensure proper integration between all layers
+- Balance test coverage across all components
+- Document both API contracts and user interfaces` : ''}
+
+## Commit Strategy
+${flags.commit === 'phase' ? `- **Phase Commits**: Commit after completing major phases (planning, implementation, testing)` : ''}
+${flags.commit === 'feature' ? `- **Feature Commits**: Commit after each feature or module is complete` : ''}
+${flags.commit === 'manual' ? `- **Manual Commits**: Only commit when explicitly requested by the user` : ''}
+${!flags.commit ? `- **Default (Phase)**: Commit after completing major phases` : ''}
+
+Now, please proceed with the task: ${task}`;
+            
+            const claudeArgs = [enhancedTask];
             claudeArgs.push('--allowedTools', tools);
+            
+            // DEBUG: Log what we're about to pass
+            console.log('\n🔍 DEBUG - Command Construction:');
+            console.log(`First arg length: ${claudeArgs[0].length} chars`);
+            console.log(`First 100 chars: ${claudeArgs[0].substring(0, 100)}...`);
+            console.log(`Args count: ${claudeArgs.length}`);
             
             if (flags.noPermissions) {
               claudeArgs.push('--dangerously-skip-permissions');
@@ -391,6 +763,12 @@ async function main() {
             
             // Execute the actual claude command
             try {
+              // Debug: Log the actual command being executed
+              if (flags.verbose) {
+                console.log('Debug - Executing command:');
+                console.log(`claude ${claudeArgs.map(arg => arg.includes(' ') || arg.includes('\n') ? `"${arg}"` : arg).join(' ')}`);
+              }
+              
               const command = new Deno.Command('claude', {
                 args: claudeArgs,
                 env: {
@@ -399,6 +777,11 @@ async function main() {
                   CLAUDE_FLOW_MODE: flags.mode || 'full',
                   CLAUDE_FLOW_COVERAGE: (flags.coverage || 80).toString(),
                   CLAUDE_FLOW_COMMIT: flags.commit || 'phase',
+                  // Add claude-flow specific features
+                  CLAUDE_FLOW_MEMORY_ENABLED: 'true',
+                  CLAUDE_FLOW_MEMORY_NAMESPACE: 'default',
+                  CLAUDE_FLOW_COORDINATION_ENABLED: flags.parallel ? 'true' : 'false',
+                  CLAUDE_FLOW_FEATURES: 'memory,coordination,swarm',
                 },
                 stdin: 'inherit',
                 stdout: 'inherit',

@@ -4,7 +4,6 @@ node_modules/
 
 # Build outputs
 dist/
-claude-flow
 *.exe
 
 # IDE
@@ -45,4 +44,5 @@ claude-flow.config.json
 package
 test-init
 test-full-init
-claude-flow-1.0.0
+
+swarm-runs
