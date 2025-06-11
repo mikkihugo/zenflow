@@ -1752,168 +1752,115 @@ async function main() {
             console.log('');
             
             // Build the actual claude command with enhanced guidance
-            let enhancedTask = `# Claude-Flow Enhanced Task
+            let enhancedTask = `# Task Assignment
 
-## Your Task
+## Your Primary Task
 ${task}
 
-## Claude-Flow System Context
+## Development Environment
 
-You are running within the Claude-Flow orchestration system, which provides powerful features for complex task management.
+You are working in a development environment with advanced orchestration capabilities available if needed.
 
-### Configuration
+### Project Context
+- Working Directory: ${process.cwd()}
 - Instance ID: ${instanceId}
-- Mode: ${flags.mode || 'full'}
-- Coverage Target: ${flags.coverage || 80}%
-- Commit Strategy: ${flags.commit || 'phase'}
+- Development Mode: ${flags.mode || 'full'}
+${flags.coverage ? `- Test Coverage Target: ${flags.coverage}%` : ''}
+${flags.commit ? `- Git Commit Strategy: ${flags.commit}` : ''}
 ${flags.config ? `- MCP Config: ${flags.config}` : ''}
 
-### Available Features
+### Available Tools
+- You have access to these tools: ${tools}
+${flags.tools ? `- Custom tools specified: ${flags.tools}` : ''}
 
-1. **Memory Bank** (Always Available)
-   - Store data: \`npx claude-flow memory store <key> "<value>"\` - Save important data, findings, or progress
-   - Retrieve data: \`npx claude-flow memory query <key>\` - Access previously stored information
-   - Export memory: \`npx claude-flow memory export <file>\` - Export memory to file
-   - Import memory: \`npx claude-flow memory import <file>\` - Import memory from file
-   - Memory stats: \`npx claude-flow memory stats\` - Show memory usage statistics
+### Optional Orchestration Features
 
-2. **System Management**
-   - Check status: \`npx claude-flow status\` - View current system/task status
-   - Monitor system: \`npx claude-flow monitor\` - Real-time system monitoring
-   - List agents: \`npx claude-flow agent list\` - See active agents
-   - List tasks: \`npx claude-flow task list\` - See active tasks
+If this task requires complex coordination, memory persistence, or multi-agent collaboration, you can use the claude-flow system:
 
-3. **Tool Access**
-   - You have access to these tools: ${tools}
-   ${flags.tools ? `- Custom tools specified: ${flags.tools}` : ''}`;
+1. **Persistent Memory** (if needed for your task)
+   - Store project data: \`npx claude-flow memory store <key> "<value>"\`
+   - Retrieve stored data: \`npx claude-flow memory query <key>\`
+   - Export/Import memory: \`npx claude-flow memory export/import <file>\`
+
+2. **Task Coordination** (if working on complex multi-part tasks)
+   - Check task status: \`npx claude-flow status\`
+   - Monitor progress: \`npx claude-flow monitor\`
+   - List active tasks: \`npx claude-flow task list\`
+
+3. **Multi-Agent Collaboration** (if task benefits from parallelization)
+   - Spawn specialized agents: \`npx claude-flow agent spawn <type> --name <name>\`
+   - Create subtasks: \`npx claude-flow task create <type> "<description>"\`
+   - Coordinate work: \`npx claude-flow task assign <task-id> <agent-id>\``;
 
             if (flags.parallel) {
               enhancedTask += `
-   - **Parallel Execution Enabled**: Use \`npx claude-flow agent spawn <type> --name <name>\` to spawn sub-agents
-   - Create tasks: \`npx claude-flow task create <type> "<description>"\`
-   - Assign tasks: \`npx claude-flow task assign <task-id> <agent-id>\`
-   - Break down complex tasks and delegate to specialized agents`;
+
+   **Parallel Execution Enabled**: The orchestration system can help coordinate parallel work if needed.`;
             }
 
             if (flags.research) {
               enhancedTask += `
-   - **Research Mode**: Use \`WebFetchTool\` for web research and information gathering`;
+
+   **Research Mode**: Web research tools are available for information gathering.`;
             }
 
             enhancedTask += `
 
-### Workflow Guidelines
+### Task Execution Guidelines
 
-1. **Before Starting**:
-   - Check memory: \`npx claude-flow memory query previous_work\`
-   - Check memory stats: \`npx claude-flow memory stats\`
-   - Check system status: \`npx claude-flow status\`
-   - List active agents: \`npx claude-flow agent list\`
-   - List active tasks: \`npx claude-flow task list\`
-   ${flags.mode === 'backend-only' ? '- Focus on backend implementation without frontend concerns' : ''}
-   ${flags.mode === 'frontend-only' ? '- Focus on frontend implementation without backend concerns' : ''}
-   ${flags.mode === 'api-only' ? '- Focus on API design and implementation' : ''}
+1. **Focus on Your Primary Objective**:
+   - Understand the specific requirements of the task
+   - Plan your approach based on the project's needs
+   - Use appropriate tools and practices for the technology stack
+   ${flags.mode === 'backend-only' ? '   - Focus on backend implementation' : ''}
+   ${flags.mode === 'frontend-only' ? '   - Focus on frontend implementation' : ''}
+   ${flags.mode === 'api-only' ? '   - Focus on API design and implementation' : ''}
 
-2. **During Execution**:
-   - Store findings: \`npx claude-flow memory store findings "your data here"\`
-   - Save checkpoints: \`npx claude-flow memory store progress_${task.replace(/\s+/g, '_')} "current status"\`
-   ${flags.parallel ? '- Spawn agents: `npx claude-flow agent spawn researcher --name "research-agent"`' : ''}
-   ${flags.parallel ? '- Create tasks: `npx claude-flow task create implementation "implement feature X"`' : ''}
-   ${flags.parallel ? '- Assign tasks: `npx claude-flow task assign <task-id> <agent-id>`' : ''}
-   ${flags.coverage ? `- Ensure test coverage meets ${flags.coverage}% target` : ''}
-   ${flags.commit === 'phase' ? '- Commit changes after completing each major phase' : ''}
-   ${flags.commit === 'feature' ? '- Commit changes after each feature is complete' : ''}
-   ${flags.commit === 'manual' ? '- Only commit when explicitly requested' : ''}
+2. **Development Best Practices**:
+   - Write clean, maintainable code following project conventions
+   - Include appropriate tests and documentation
+   - Use version control effectively
+   ${flags.coverage ? `   - Ensure test coverage meets ${flags.coverage}% target` : ''}
+   ${flags.commit === 'phase' ? '   - Commit changes after completing major phases' : ''}
+   ${flags.commit === 'feature' ? '   - Commit changes after each feature is complete' : ''}
+   ${flags.commit === 'manual' ? '   - Only commit when explicitly requested' : ''}
 
-3. **Best Practices**:
-   - Use the Bash tool to run \`npx claude-flow\` commands
-   - Store data as JSON strings for complex structures
-   - Query memory before starting to check for existing work
-   - Use descriptive keys for memory storage
-   - Monitor progress: \`npx claude-flow monitor\`
-   ${flags.parallel ? '- Coordinate with other agents through shared memory' : ''}
-   ${flags.research ? '- Store research findings: `npx claude-flow memory store research_findings "data"`' : ''}
-   ${flags.noPermissions ? '- Running with --no-permissions, all operations will execute without prompts' : ''}
-   ${flags.verbose ? '- Verbose mode enabled, provide detailed output and explanations' : ''}
+3. **Leverage Orchestration When Beneficial**:
+   - For complex tasks requiring persistent state, use the memory bank
+   - For multi-part projects, use task coordination features
+   - For parallelizable work, consider multi-agent approaches
+   ${flags.parallel ? '   - Parallel capabilities are enabled for this task' : ''}
+   ${flags.research ? '   - Research tools are available if needed' : ''}
+   ${flags.noPermissions ? '   - Running with --no-permissions mode' : ''}
+   ${flags.verbose ? '   - Verbose mode enabled for detailed output' : ''}
 
-## Configuration
-- Instance ID: ${instanceId}
-- Mode: ${flags.mode || 'full'}
-- Coverage Target: ${flags.coverage || 80}%
-- Commit Strategy: ${flags.commit || 'phase'}
+## Getting Started
 
-## Example Commands
+Begin working on your task. The orchestration features are available as tools to help you be more effective, but your primary focus should be on delivering the requested functionality.
 
-To interact with Claude-Flow, use the Bash tool:
+### Quick Reference (if using orchestration features)
 
 \`\`\`bash
-# Memory Operations
-Bash("npx claude-flow memory query previous_work")
-Bash("npx claude-flow memory store task_analysis '{\\"status\\": \\"completed\\", \\"findings\\": [...]}'")
-Bash("npx claude-flow memory stats")
-Bash("npx claude-flow memory export backup.json")
+# Example: Storing project-specific data
+Bash("npx claude-flow memory store project_config '{\\"name\\": \\"my-app\\", \\"version\\": \\"1.0.0\\"}'")
 
-# System Management
-Bash("npx claude-flow status")
-Bash("npx claude-flow monitor")  # Real-time monitoring
-Bash("npx claude-flow agent list")
-Bash("npx claude-flow task list --verbose")
-${flags.parallel ? `
-# Parallel Execution (enabled for this instance)
-Bash("npx claude-flow agent spawn researcher --name research-bot")
-Bash("npx claude-flow agent spawn coder --name code-bot")
-Bash("npx claude-flow task create research 'Analyze best practices'")
-Bash("npx claude-flow task create implementation 'Implement auth module'")
-Bash("npx claude-flow task assign task-123 agent-456")` : ''}
-${flags.research ? `
-# Research Operations (research mode enabled)
-# Use WebFetchTool for web research, then store findings
-Bash("npx claude-flow memory store web_research_urls '[\\"url1\\", \\"url2\\"]'")
-Bash("npx claude-flow memory store research_summary 'Key findings from research...'")` : ''}
+# Example: Checking for previous work
+Bash("npx claude-flow memory query previous_implementation")
 
-# Configuration Management
-Bash("npx claude-flow config show")
-Bash("npx claude-flow config get orchestrator.maxConcurrentTasks")
-Bash("npx claude-flow config set orchestrator.maxConcurrentTasks 20")
-
-# Workflow Execution
-Bash("npx claude-flow workflow examples/development-config.json")
-Bash("npx claude-flow workflow examples/research-workflow.json --async")
+# Example: Creating subtasks for complex projects
+Bash("npx claude-flow task create frontend 'Build React components'")
+Bash("npx claude-flow task create backend 'Implement API endpoints'")
 \`\`\`
 
-## Mode-Specific Guidelines
-${flags.mode === 'backend-only' ? `
-### Backend-Only Mode
-- Focus exclusively on server-side implementation
-- Prioritize API design, database schemas, and business logic
-- Ignore frontend/UI considerations
-- Test coverage should emphasize unit and integration tests` : ''}
-${flags.mode === 'frontend-only' ? `
-### Frontend-Only Mode
-- Focus exclusively on client-side implementation
-- Prioritize UI/UX, component design, and user interactions
-- Assume backend APIs are already available
-- Test coverage should emphasize component and E2E tests` : ''}
-${flags.mode === 'api-only' ? `
-### API-Only Mode
-- Focus exclusively on API design and implementation
-- Prioritize RESTful principles, documentation, and contracts
-- Include comprehensive API documentation
-- Test coverage should emphasize API endpoint testing` : ''}
-${flags.mode === 'full' || !flags.mode ? `
-### Full Stack Mode (Default)
-- Consider both frontend and backend requirements
-- Ensure proper integration between all layers
-- Balance test coverage across all components
-- Document both API contracts and user interfaces` : ''}
+Remember: These are optional tools. Use them when they add value to your development process.
 
-## Commit Strategy
-${flags.commit === 'phase' ? `- **Phase Commits**: Commit after completing major phases (planning, implementation, testing)` : ''}
-${flags.commit === 'feature' ? `- **Feature Commits**: Commit after each feature or module is complete` : ''}
-${flags.commit === 'manual' ? `- **Manual Commits**: Only commit when explicitly requested by the user` : ''}
-${!flags.commit ? `- **Default (Phase)**: Commit after completing major phases` : ''}
+## Development Mode: ${flags.mode || 'full'}
+${flags.mode === 'backend-only' ? `Focus on server-side implementation, APIs, and business logic.` : ''}
+${flags.mode === 'frontend-only' ? `Focus on client-side implementation, UI/UX, and user interactions.` : ''}
+${flags.mode === 'api-only' ? `Focus on API design, documentation, and endpoint implementation.` : ''}
+${flags.mode === 'full' || !flags.mode ? `Full-stack development covering all aspects of the application.` : ''}
 
-Now, please proceed with the task: ${task}`;
+`;
             
             const claudeArgs = [enhancedTask];
             claudeArgs.push('--allowedTools', tools);
