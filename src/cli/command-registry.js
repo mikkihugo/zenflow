@@ -8,6 +8,7 @@ import { configCommand } from './simple-commands/config.js';
 import { statusCommand } from './simple-commands/status.js';
 import { mcpCommand } from './simple-commands/mcp.js';
 import { monitorCommand } from './simple-commands/monitor.js';
+import { startCommand } from './simple-commands/start.js';
 
 // Command registry for extensible CLI
 export const commandRegistry = new Map();
@@ -16,12 +17,33 @@ export const commandRegistry = new Map();
 export function registerCoreCommands() {
   commandRegistry.set('init', {
     handler: initCommand,
-    description: 'Initialize Claude Code integration files',
+    description: 'Initialize Claude Code integration files and SPARC development environment',
     usage: 'init [--force] [--minimal] [--sparc]',
     examples: [
-      'init --sparc',
-      'init --force --minimal',
-      'init --sparc --force'
+      'npx claude-flow@latest init --sparc  # Recommended: Full SPARC setup',
+      'init --sparc                         # Initialize with SPARC modes',
+      'init --force --minimal               # Minimal setup, overwrite existing',
+      'init --sparc --force                 # Force SPARC setup'
+    ],
+    details: `
+The --sparc flag creates a complete development environment:
+  • .roomodes file containing 17 specialized SPARC modes
+  • CLAUDE.md for AI-readable project instructions
+  • Pre-configured modes: architect, code, tdd, debug, security, and more
+  • Ready for TDD workflows and automated code generation
+  
+First-time users should run: npx claude-flow@latest init --sparc`
+  });
+
+  commandRegistry.set('start', {
+    handler: startCommand,
+    description: 'Start the Claude-Flow orchestration system',
+    usage: 'start [--daemon] [--port <port>] [--verbose]',
+    examples: [
+      'start                    # Start in interactive mode',
+      'start --daemon           # Start as background daemon',
+      'start --port 8080        # Use custom MCP port',
+      'start --verbose          # Show detailed system activity'
     ]
   });
 
@@ -40,12 +62,13 @@ export function registerCoreCommands() {
   commandRegistry.set('sparc', {
     handler: sparcCommand,
     description: 'SPARC development mode operations',
-    usage: 'sparc <subcommand> [options]',
+    usage: 'sparc [subcommand] [options]',
     examples: [
-      'sparc modes',
-      'sparc run code "implement feature"',
-      'sparc tdd "feature description"',
-      'sparc info architect'
+      'sparc "orchestrate full app development"  # Default: sparc orchestrator',
+      'sparc modes                               # List available modes',
+      'sparc run code "implement feature"        # Run specific mode',
+      'sparc tdd "feature description"           # TDD workflow',
+      'sparc info architect                      # Mode details'
     ]
   });
 
@@ -184,12 +207,20 @@ export function showCommandHelp(name) {
   
   console.log(`Command: ${name}`);
   console.log(`Description: ${command.description}`);
-  console.log(`Usage: ${command.usage}`);
+  console.log(`Usage: claude-flow ${command.usage}`);
+  
+  if (command.details) {
+    console.log(command.details);
+  }
   
   if (command.examples.length > 0) {
     console.log('\nExamples:');
     for (const example of command.examples) {
-      console.log(`  claude-flow ${example}`);
+      if (example.startsWith('npx')) {
+        console.log(`  ${example}`);
+      } else {
+        console.log(`  claude-flow ${example}`);
+      }
     }
   }
 }

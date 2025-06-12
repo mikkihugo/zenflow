@@ -2,21 +2,39 @@
 import { printSuccess, printError, printWarning } from '../utils.js';
 
 export async function initCommand(subArgs, flags) {
+  // Show help if requested
+  if (flags.help || flags.h || subArgs.includes('--help') || subArgs.includes('-h')) {
+    showInitHelp();
+    return;
+  }
+  
   // Parse init options
   const initForce = subArgs.includes('--force') || subArgs.includes('-f') || flags.force;
   const initMinimal = subArgs.includes('--minimal') || subArgs.includes('-m') || flags.minimal;
   const initSparc = subArgs.includes('--sparc') || subArgs.includes('-s') || flags.sparc;
   
+  // Get the actual working directory (where the command was run from)
+  // Use PWD environment variable which preserves the original directory
+  const workingDir = Deno.env.get('PWD') || Deno.cwd();
+  console.log(`📁 Initializing in: ${workingDir}`);
+  
+  // Change to the working directory to ensure all file operations happen there
+  try {
+    Deno.chdir(workingDir);
+  } catch (err) {
+    printWarning(`Could not change to directory ${workingDir}: ${err.message}`);
+  }
+  
   try {
     printSuccess('Initializing Claude Code integration files...');
     
-    // Check if files already exist
+    // Check if files already exist in the working directory
     const files = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
     const existingFiles = [];
     
     for (const file of files) {
       try {
-        await Deno.stat(file);
+        await Deno.stat(`${workingDir}/${file}`);
         existingFiles.push(file);
       } catch {
         // File doesn't exist, which is what we want
@@ -85,6 +103,9 @@ export async function initCommand(subArgs, flags) {
     await Deno.writeTextFile('memory/claude-flow-data.json', JSON.stringify(initialData, null, 2));
     console.log('  ✓ Created memory/claude-flow-data.json (persistence database)');
     
+    // Create local claude-flow executable wrapper
+    await createLocalExecutable(workingDir);
+    
     // SPARC initialization
     if (initSparc) {
       console.log('\n🚀 Initializing SPARC development environment...');
@@ -93,8 +114,13 @@ export async function initCommand(subArgs, flags) {
       try {
         const createSparcCommand = new Deno.Command('npx', {
           args: ['-y', 'create-sparc', 'init', '--force'],
+          cwd: workingDir, // Use the original working directory
           stdout: 'inherit',
           stderr: 'inherit',
+          env: {
+            ...Deno.env.toObject(),
+            PWD: workingDir, // Ensure PWD is set correctly
+          },
         });
         
         console.log('  🔄 Running: npx -y create-sparc init --force');
@@ -119,13 +145,15 @@ export async function initCommand(subArgs, flags) {
     printSuccess('Claude Code integration files initialized successfully!');
     console.log('\nNext steps:');
     console.log('1. Review and customize the generated files for your project');
-    console.log('2. Run \'npx claude-flow start\' to begin the orchestration system');
-    console.log('3. Use \'claude --dangerously-skip-permissions\' for unattended operation');
+    console.log('2. Run \'./claude-flow start\' to begin the orchestration system');
+    console.log('3. Use \'./claude-flow\' instead of \'npx claude-flow\' for all commands');
+    console.log('4. Use \'claude --dangerously-skip-permissions\' for unattended operation');
     if (initSparc) {
-      console.log('4. Explore SPARC modes with \'npx claude-flow sparc modes\'');
-      console.log('5. Try TDD workflow with \'npx claude-flow sparc tdd "your task"\'');
+      console.log('5. Explore SPARC modes with \'./claude-flow sparc modes\'');
+      console.log('6. Try TDD workflow with \'./claude-flow sparc tdd "your task"\'');
     }
-    console.log('\nNote: Persistence database initialized at memory/claude-flow-data.json');
+    console.log('\nNote: Local executable created at ./claude-flow');
+    console.log('Note: Persistence database initialized at memory/claude-flow-data.json');
     if (initSparc) {
       console.log('Note: SPARC development environment available in .roo/ directory');
     }
@@ -135,16 +163,131 @@ export async function initCommand(subArgs, flags) {
   }
 }
 
+// Create local executable wrapper
+async function createLocalExecutable(workingDir) {
+  try {
+    if (Deno.build.os === 'windows') {
+      // Create Windows batch file
+      const wrapperScript = `@echo off
+REM Claude-Flow local wrapper
+REM This script ensures claude-flow runs from your project directory
+
+set PROJECT_DIR=%CD%
+set PWD=%PROJECT_DIR%
+set CLAUDE_WORKING_DIR=%PROJECT_DIR%
+
+REM Try to find claude-flow binary
+REM Check common locations for npm/npx installations
+
+REM 1. Local node_modules (npm install claude-flow)
+if exist "%PROJECT_DIR%\\node_modules\\.bin\\claude-flow.cmd" (
+  cd /d "%PROJECT_DIR%"
+  "%PROJECT_DIR%\\node_modules\\.bin\\claude-flow.cmd" %*
+  exit /b %ERRORLEVEL%
+)
+
+REM 2. Parent directory node_modules (monorepo setup)
+if exist "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-flow.cmd" (
+  cd /d "%PROJECT_DIR%"
+  "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-flow.cmd" %*
+  exit /b %ERRORLEVEL%
+)
+
+REM 3. Global installation (npm install -g claude-flow)
+where claude-flow >nul 2>nul
+if %ERRORLEVEL% EQU 0 (
+  cd /d "%PROJECT_DIR%"
+  claude-flow %*
+  exit /b %ERRORLEVEL%
+)
+
+REM 4. Fallback to npx (will download if needed)
+cd /d "%PROJECT_DIR%"
+npx claude-flow %*
+`;
+
+      // Write the Windows batch file
+      await Deno.writeTextFile(`${workingDir}/claude-flow.cmd`, wrapperScript);
+      console.log('  ✓ Created local claude-flow.cmd executable wrapper');
+      console.log('    You can now use: claude-flow instead of npx claude-flow');
+      
+    } else {
+      // Check if we're in development mode (claude-code-flow repo)
+      const isDevelopment = workingDir.includes('claude-code-flow');
+      const devBinPath = isDevelopment ? 
+        workingDir.split('claude-code-flow')[0] + 'claude-code-flow/bin/claude-flow' : '';
+      
+      // Create Unix/Linux/Mac shell script
+      const wrapperScript = `#!/usr/bin/env bash
+# Claude-Flow local wrapper
+# This script ensures claude-flow runs from your project directory
+
+# Save the current directory
+PROJECT_DIR="\${PWD}"
+
+# Set environment to ensure correct working directory
+export PWD="\${PROJECT_DIR}"
+export CLAUDE_WORKING_DIR="\${PROJECT_DIR}"
+
+# Try to find claude-flow binary
+# Check common locations for npm/npx installations
+
+${isDevelopment ? `# Development mode - use local bin
+if [ -f "${devBinPath}" ]; then
+  cd "\${PROJECT_DIR}"
+  exec "${devBinPath}" "$@"
+fi
+
+` : ''}# 1. Local node_modules (npm install claude-flow)
+if [ -f "\${PROJECT_DIR}/node_modules/.bin/claude-flow" ]; then
+  cd "\${PROJECT_DIR}"
+  exec "\${PROJECT_DIR}/node_modules/.bin/claude-flow" "$@"
+
+# 2. Parent directory node_modules (monorepo setup)
+elif [ -f "\${PROJECT_DIR}/../node_modules/.bin/claude-flow" ]; then
+  cd "\${PROJECT_DIR}"
+  exec "\${PROJECT_DIR}/../node_modules/.bin/claude-flow" "$@"
+
+# 3. Global installation (npm install -g claude-flow)
+elif command -v claude-flow &> /dev/null; then
+  cd "\${PROJECT_DIR}"
+  exec claude-flow "$@"
+
+# 4. Fallback to npx (will download if needed)
+else
+  cd "\${PROJECT_DIR}"
+  exec npx claude-flow@latest "$@"
+fi
+`;
+
+      // Write the wrapper script
+      await Deno.writeTextFile(`${workingDir}/claude-flow`, wrapperScript);
+      
+      // Make it executable
+      await Deno.chmod(`${workingDir}/claude-flow`, 0o755);
+      
+      console.log('  ✓ Created local claude-flow executable wrapper');
+      console.log('    You can now use: ./claude-flow instead of npx claude-flow');
+    }
+    
+  } catch (err) {
+    console.log(`  ⚠️  Could not create local executable: ${err.message}`);
+  }
+}
+
 // Helper function to create SPARC structure manually
 async function createSparcStructureManually() {
   try {
-    // Create .roo directory structure
+    // Ensure we're in the working directory
+    const workingDir = Deno.env.get('PWD') || Deno.cwd();
+    
+    // Create .roo directory structure in working directory
     const rooDirectories = [
-      '.roo',
-      '.roo/templates',
-      '.roo/workflows',
-      '.roo/modes',
-      '.roo/configs'
+      `${workingDir}/.roo`,
+      `${workingDir}/.roo/templates`,
+      `${workingDir}/.roo/workflows`,
+      `${workingDir}/.roo/modes`,
+      `${workingDir}/.roo/configs`
     ];
     
     for (const dir of rooDirectories) {
@@ -162,23 +305,23 @@ async function createSparcStructureManually() {
     let roomodesContent;
     try {
       // Check if .roomodes already exists and read it
-      roomodesContent = await Deno.readTextFile('.roomodes');
+      roomodesContent = await Deno.readTextFile(`${workingDir}/.roomodes`);
       console.log('  ✓ Using existing .roomodes configuration');
     } catch {
       // Create basic .roomodes configuration
       roomodesContent = createBasicRoomodesConfig();
-      await Deno.writeTextFile('.roomodes', roomodesContent);
+      await Deno.writeTextFile(`${workingDir}/.roomodes`, roomodesContent);
       console.log('  ✓ Created .roomodes configuration');
     }
     
     // Create basic workflow templates
     const basicWorkflow = createBasicSparcWorkflow();
-    await Deno.writeTextFile('.roo/workflows/basic-tdd.json', basicWorkflow);
+    await Deno.writeTextFile(`${workingDir}/.roo/workflows/basic-tdd.json`, basicWorkflow);
     console.log('  ✓ Created .roo/workflows/basic-tdd.json');
     
     // Create README for .roo directory
     const rooReadme = createRooReadme();
-    await Deno.writeTextFile('.roo/README.md', rooReadme);
+    await Deno.writeTextFile(`${workingDir}/.roo/README.md`, rooReadme);
     console.log('  ✓ Created .roo/README.md');
     
     console.log('  ✅ Basic SPARC structure created successfully');
@@ -905,4 +1048,39 @@ You can customize this environment by:
 
 For more information, see: https://github.com/ruvnet/claude-code-flow/docs/sparc.md
 `;
+}
+
+function showInitHelp() {
+  console.log('Initialize Claude Code integration files');
+  console.log();
+  console.log('Usage: claude-flow init [options]');
+  console.log();
+  console.log('Options:');
+  console.log('  --sparc, -s     Initialize with SPARC development environment (recommended)');
+  console.log('  --minimal, -m   Create minimal configuration files');
+  console.log('  --force, -f     Overwrite existing files');
+  console.log('  --help, -h      Show this help message');
+  console.log();
+  console.log('Examples:');
+  console.log('  npx claude-flow@latest init --sparc   # Recommended first-time setup');
+  console.log('  claude-flow init --sparc              # Initialize with SPARC modes');
+  console.log('  claude-flow init --minimal            # Minimal setup');
+  console.log('  claude-flow init --force              # Overwrite existing files');
+  console.log();
+  console.log('What --sparc creates:');
+  console.log('  • .roomodes file with 17 specialized SPARC development modes');
+  console.log('  • CLAUDE.md with SPARC-enhanced project instructions');
+  console.log('  • memory/ directory for persistent context storage');
+  console.log('  • .roo/ directory with templates and workflows');
+  console.log('  • Pre-configured for TDD, architecture, and code generation');
+  console.log();
+  console.log('Available SPARC modes include:');
+  console.log('  - architect: System design and architecture');
+  console.log('  - code: Clean, modular implementation');
+  console.log('  - tdd: Test-driven development');
+  console.log('  - debug: Advanced debugging and optimization');
+  console.log('  - security-review: Security analysis and hardening');
+  console.log('  - And 12 more specialized modes...');
+  console.log();
+  console.log('Learn more: https://github.com/ruvnet/claude-code-flow');
 }

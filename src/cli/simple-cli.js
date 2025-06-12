@@ -13,7 +13,7 @@ import {
 } from './command-registry.js';
 import { parseFlags } from './utils.js';
 
-const VERSION = '1.0.30';
+const VERSION = '1.0.41';
 
 function printHelp() {
   console.log(`
@@ -22,10 +22,18 @@ function printHelp() {
 USAGE:
   claude-flow <command> [options]
 
+INSTALLATION & SETUP:
+  npx claude-flow@latest init --sparc  # Initialize SPARC development environment
+  
+  The --sparc flag creates:
+  • .roomodes file with 17 pre-configured SPARC modes
+  • CLAUDE.md for project instructions
+  • Ready-to-use TDD and code generation environment
+
 KEY COMMANDS:
   init [--sparc]                       Initialize project with Claude integration
   agent spawn <type> [--name <name>]   Create AI agent (researcher, coder, analyst)
-  sparc <subcommand>                   SPARC-based TDD development
+  sparc <subcommand>                   SPARC-based development modes
   memory <subcommand>                  Manage persistent memory
   start                                Start orchestration system
   status                               Show system status
@@ -38,10 +46,11 @@ COMMAND CATEGORIES:
   Enterprise:   project, deploy, cloud, security, analytics
 
 QUICK START:
-  claude-flow init --sparc             # Initialize with SPARC development
-  claude-flow agent spawn researcher   # Create research agent
-  claude-flow sparc modes              # List SPARC development modes
-  claude-flow sparc tdd "feature"      # Run TDD workflow
+  npx claude-flow@latest init --sparc  # First-time setup with SPARC modes
+  claude-flow sparc modes              # List available development modes
+  claude-flow sparc "build app"        # Run SPARC orchestrator (default)
+  claude-flow sparc run code "feature" # Run specific mode (auto-coder)
+  claude-flow sparc tdd "tests"        # Run test-driven development
   claude-flow memory store key "data"  # Store information
   claude-flow status                   # Check system status
 
