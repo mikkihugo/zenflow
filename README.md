@@ -12,6 +12,19 @@
 
 </div>
 
+## 🎉 **What's New in v1.0.41**
+
+- **🚀 Simplified SPARC Syntax**: `npx claude-flow sparc "build app"` (no more double sparc!)
+- **⚡ Auto-Skip Permissions**: `--dangerously-skip-permissions` by default (use `--enable-permissions` to restore prompts)
+- **🔄 BatchTool Integration**: Parallel execution with boomerang orchestration patterns
+- **📁 Directory Safety**: Enhanced guidance to prevent files in node_modules
+- **🤖 Non-Interactive Mode**: Full automation support with `--non-interactive` flag
+- **🎯 17+ SPARC Modes**: Including new `sparc-orchestrator` for complex workflows
+- **📂 Local Executable**: `init` now creates `./claude-flow` wrapper to ensure correct working directory
+- **🔧 Fixed SPARC Path Resolution**: `.roomodes` now correctly found in project directory
+- **🌐 Remote Environment Support**: Improved wrapper script for npm/npx installations
+- **📝 Better SPARC Error Messages**: Clear guidance when `.roomodes` is missing
+
 
 ## 🎯 **Transform Your Development Workflow**
 
@@ -23,8 +36,9 @@
 
 - **🚀 10x Faster Development**: Parallel AI agent execution with intelligent task distribution
 - **🧠 Persistent Memory**: Agents learn and share knowledge across sessions
+- **⚡ SPARC Methodology**: Systematic development with Specification → Pseudocode → Architecture → Refinement → Completion
 - **🔄 Zero Configuration**: Works out-of-the-box with sensible defaults
-- **⚡ VSCode Native**: Seamless integration with your favorite IDE
+- **🤖 VSCode Native**: Seamless integration with your favorite IDE
 - **🔒 Enterprise Ready**: Production-grade security, monitoring, and scaling
 - **🌐 MCP Compatible**: Full Model Context Protocol support for tool integration
 
@@ -32,8 +46,20 @@
 
 ```bash
 # 🚀 Get started in 30 seconds
-npx claude-flow init
+npx claude-flow@latest init --sparc      # Initialize with SPARC modes
 npx claude-flow start
+
+# ⚡ SPARC Development Workflow (NEW: Simplified!)
+npx claude-flow sparc "build a todo app" # Orchestrator mode (default)
+npx claude-flow sparc modes              # List 17+ development modes
+npx claude-flow sparc tdd "user auth"    # Run TDD workflow
+npx claude-flow sparc run code "API"     # Specific mode execution
+
+# 🚀 Parallel Execution with BatchTool
+batchtool run --parallel \
+  "npx claude-flow sparc run code 'frontend' --non-interactive" \
+  "npx claude-flow sparc run code 'backend' --non-interactive" \
+  "npx claude-flow sparc run tdd 'tests' --non-interactive"
 
 # 🤖 Spawn a research team
 npx claude-flow agent spawn researcher --name "Senior Researcher"
@@ -67,8 +93,8 @@ Advanced CRDT-based memory system with SQLite performance and Markdown readabili
 </td>
 <td width="33%" align="center">
 
-### ⚡ **Enhanced Claude Integration**
-Spawn Claude instances with comprehensive Claude-Flow guidance, teaching them to use memory, coordination, and system commands effectively.
+### ⚡ **SPARC Development**
+Systematic AI-assisted development using Specification → Pseudocode → Architecture → Refinement → Completion methodology with 16+ specialized modes.
 
 </td>
 </tr>
@@ -145,19 +171,31 @@ Comprehensive documentation is available to help you get the most out of Claude-
 
 ### 1. **Initialize Claude Code Integration**
 ```bash
+# Basic init (without SPARC modes)
 npx claude-flow init
+
+# Recommended: Initialize with SPARC development modes
+npx claude-flow init --sparc
 ```
-This creates:
-- `CLAUDE.md` - Claude Code configuration
+The `--sparc` flag creates:
+- `CLAUDE.md` - SPARC-enhanced Claude Code configuration
 - `memory-bank.md` - Memory system documentation
 - `coordination.md` - Agent coordination documentation
+- `.roomodes` - SPARC development mode configurations
+- `.roo/` - SPARC templates and workflows
 - Memory folder structure with placeholders
+- `./claude-flow` - Local executable wrapper (use instead of npx)
 
 ### 2. **Start the Orchestrator**
 ```bash
-npx claude-flow start
+# After init, use the local wrapper:
+./claude-flow start
+
 # Or run as daemon
-npx claude-flow start --daemon
+./claude-flow start --daemon
+
+# If not initialized yet, use npx:
+npx claude-flow start
 ```
 
 ### 3. **Spawn Agents**
@@ -236,6 +274,73 @@ npx claude-flow monitor
 # View MCP tools
 npx claude-flow mcp tools
 ```
+
+## 🚀 **SPARC Development Methodology**
+
+Claude-Flow integrates the **SPARC** (Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic AI-assisted development:
+
+### **Available SPARC Modes**
+```bash
+# List all development modes
+npx claude-flow sparc modes
+
+# Key modes include:
+# 🏗️ architect      - System design and architecture
+# 🧠 code           - Clean, modular implementation  
+# 🧪 tdd            - Test-driven development
+# 🛡️ security-review - Security analysis
+# 📚 docs-writer    - Documentation creation
+# 🔗 integration    - System integration
+```
+
+### **SPARC Workflow**
+```bash
+# Simplified orchestration (NEW!)
+npx claude-flow sparc "build complete authentication system"
+
+# Or use specific modes:
+# 1. Specification - Define requirements
+npx claude-flow sparc run spec-pseudocode "user authentication system"
+
+# 2. Architecture - Design system structure  
+npx claude-flow sparc run architect "auth service architecture"
+
+# 3. Refinement - TDD implementation
+npx claude-flow sparc tdd "implement JWT authentication"
+
+# 4. Integration - Connect components
+npx claude-flow sparc run integration "auth with user management"
+
+# 5. Completion - Documentation and validation
+npx claude-flow sparc run docs-writer "authentication API docs"
+```
+
+### **Parallel Execution with BatchTool**
+```bash
+# Run multiple SPARC modes concurrently
+batchtool run --parallel \
+  "npx claude-flow sparc run code 'user service' --non-interactive" \
+  "npx claude-flow sparc run code 'auth service' --non-interactive" \
+  "npx claude-flow sparc run tdd 'test suite' --non-interactive"
+
+# Boomerang orchestration pattern
+batchtool orchestrate --boomerang \
+  --research "npx claude-flow sparc run ask 'requirements' --non-interactive" \
+  --design "npx claude-flow sparc run architect 'system' --non-interactive" \
+  --implement "npx claude-flow sparc run code 'features' --non-interactive" \
+  --test "npx claude-flow sparc run tdd 'validation' --non-interactive"
+```
+
+### **SPARC Features**
+- **17+ Specialized AI Modes** for different development phases
+- **Memory Persistence** across SPARC sessions with namespaced storage
+- **TDD Enforcement** with Red-Green-Refactor cycle automation
+- **Modular Design** with <500 line file constraints
+- **Environment Safety** preventing credential exposure
+- **BatchTool Integration** for parallel and boomerang orchestration
+- **Non-Interactive Mode** for automation and CI/CD integration
+- **Auto-Skip Permissions** by default (use --enable-permissions to prompt)
+- **Quality Gates** with automated code analysis and security review
 
 ## Architecture
 
@@ -318,11 +423,23 @@ Claude-Flow provides a comprehensive CLI for managing your AI orchestration syst
 
 #### `init` - Initialize Claude Code Integration
 ```bash
-npx claude-flow init [options]
+npx claude-flow@latest init [options]
+  -s, --sparc               Initialize with SPARC development environment (recommended)
   -f, --force               Overwrite existing files
   -m, --minimal             Create minimal configuration files
 ```
-Creates CLAUDE.md, memory-bank.md, coordination.md, and folder structure.
+
+**Recommended first-time setup:**
+```bash
+npx claude-flow@latest init --sparc
+```
+
+Creates:
+- `CLAUDE.md` - AI-readable project instructions
+- `.roomodes` - 17 pre-configured SPARC development modes
+- `memory-bank.md` - Persistent memory documentation
+- `coordination.md` - Agent coordination guide
+- Complete folder structure for development
 
 #### `start` - Start Orchestration System
 ```bash
@@ -395,6 +512,26 @@ npx claude-flow monitor [options]
   -c, --compact             Compact view mode
   -f, --focus <component>   Focus on specific component
 ```
+
+#### `sparc` - SPARC Development Methodology 🆕
+```bash
+npx claude-flow sparc [subcommand] [options]
+  "<task>"                  Run SPARC orchestrator (default mode)
+  modes [--verbose]         List available SPARC development modes
+  info <mode>               Show detailed mode information
+  run <mode> "<task>"       Execute specific SPARC mode
+  tdd "<feature>"           Run full TDD workflow
+    --namespace <ns>        Use custom memory namespace
+    --dry-run               Show configuration without executing
+    --verbose               Show detailed output
+    --non-interactive       Run with stream-json output (for automation)
+    --enable-permissions    Enable permission prompts (default: skip)
+```
+
+**Default Behavior Updates:**
+- Simplified syntax: `npx claude-flow sparc "build app"` (no need for `run sparc`)
+- Permissions auto-skipped by default (use `--enable-permissions` to prompt)
+- Non-interactive mode for BatchTool orchestration
 
 #### `claude` - Spawn Claude Instances with Enhanced Guidance 🆕
 ```bash
@@ -491,6 +628,27 @@ npx claude-flow agent spawn implementer --name "Backend Dev" --max-tasks 3
 npx claude-flow agent spawn implementer --name "Frontend Dev" --max-tasks 3
 npx claude-flow agent spawn coordinator --name "Tech Lead"
 npx claude-flow workflow development-pipeline.json --watch
+```
+
+**SPARC Development Workflow:**
+```bash
+# Initialize SPARC environment
+npx claude-flow init --sparc
+
+# Complete feature development using SPARC methodology
+npx claude-flow sparc run spec-pseudocode "user authentication system"
+npx claude-flow sparc run architect "JWT auth service design"
+npx claude-flow sparc tdd "implement secure authentication"
+npx claude-flow sparc run security-review "auth vulnerability scan"
+npx claude-flow sparc run integration "connect auth to user service"
+
+# TDD-focused development
+npx claude-flow sparc tdd "payment processing system"
+npx claude-flow sparc tdd "real-time notifications"
+
+# Architecture and design
+npx claude-flow sparc run architect "microservices architecture"
+npx claude-flow sparc run docs-writer "API documentation"
 ```
 
 **Enhanced Claude Spawn Examples:**
@@ -627,7 +785,7 @@ Claude-Flow seamlessly integrates with Claude Code through the `CLAUDE.md` file 
 - **Build Command Integration**: All build/test commands are available to Claude
 - **Memory Persistence**: Claude remembers context across sessions
 - **Enhanced Guidance**: Spawned Claude instances receive detailed Claude-Flow instructions
-- **SPARC Methodology**: Built-in support for structured AI development
+- **SPARC Methodology**: Built-in support for systematic development with 16+ specialized AI modes
 
 Use with Claude Code:
 ```bash

@@ -9,6 +9,7 @@ import { Logger } from "../../core/logger.ts";
 import { JsonPersistenceManager } from "../../core/json-persistence.ts";
 import { swarmAction } from "./swarm.ts";
 import { SimpleMemoryManager } from "./memory.ts";
+import { sparcAction } from "./sparc.ts";
 
 let orchestrator: Orchestrator | null = null;
 let configManager: ConfigManager | null = null;
@@ -1351,6 +1352,51 @@ Now, please proceed with the task: ${task}`;
     action: swarmAction,
   });
 
+  // SPARC command
+  cli.command({
+    name: "sparc",
+    description: "SPARC-based TDD development with specialized modes",
+    options: [
+      {
+        name: "namespace",
+        short: "n",
+        description: "Memory namespace for this session",
+        type: "string",
+        default: "sparc",
+      },
+      {
+        name: "no-permissions",
+        description: "Skip permission prompts",
+        type: "boolean",
+      },
+      {
+        name: "config",
+        short: "c",
+        description: "MCP configuration file",
+        type: "string",
+      },
+      {
+        name: "verbose",
+        short: "v",
+        description: "Enable verbose output",
+        type: "boolean",
+      },
+      {
+        name: "dry-run",
+        short: "d",
+        description: "Preview what would be executed",
+        type: "boolean",
+      },
+      {
+        name: "sequential",
+        description: "Wait between workflow steps",
+        type: "boolean",
+        default: true,
+      },
+    ],
+    action: sparcAction,
+  });
+
   // Swarm UI command (convenience wrapper)
   cli.command({
     name: "swarm-ui",
@@ -1507,6 +1553,44 @@ Now, please proceed with the task: ${task}`;
         console.log("For more information, see:");
         console.log("  - https://github.com/ruvnet/claude-code-flow/docs/12-swarm.md");
         console.log("  - https://github.com/ruvnet/claude-code-flow/SWARM_TTY_SOLUTION.md");
+      } else if (command === "sparc") {
+        console.log(bold(blue("SPARC Development Mode")));
+        console.log();
+        console.log("SPARC (Specification, Pseudocode, Architecture, Refinement, Completion)");
+        console.log("TDD-based development with specialized AI modes from .roomodes configuration.");
+        console.log();
+        console.log(bold("Subcommands:"));
+        console.log("  modes                    List all available SPARC modes");
+        console.log("  info <mode>              Show detailed information about a mode");
+        console.log("  run <mode> <task>        Execute a task using a specific SPARC mode");
+        console.log("  tdd <task>               Run full TDD workflow using SPARC methodology");
+        console.log("  workflow <file>          Execute a custom SPARC workflow from JSON file");
+        console.log();
+        console.log(bold("Common Modes:"));
+        console.log("  spec-pseudocode          Create specifications and pseudocode");
+        console.log("  architect                Design system architecture");
+        console.log("  code                     Implement code solutions");
+        console.log("  tdd                      Test-driven development");
+        console.log("  debug                    Debug and troubleshoot issues");
+        console.log("  security-review          Security analysis and review");
+        console.log("  docs-writer              Documentation creation");
+        console.log("  integration              System integration and testing");
+        console.log();
+        console.log(bold("Options:"));
+        console.log("  -n, --namespace <ns>     Memory namespace for this session");
+        console.log("  --no-permissions         Skip permission prompts");
+        console.log("  -c, --config <file>      MCP configuration file");
+        console.log("  -v, --verbose            Enable verbose output");
+        console.log("  -d, --dry-run            Preview what would be executed");
+        console.log("  --sequential             Wait between workflow steps (default: true)");
+        console.log();
+        console.log(bold("Examples:"));
+        console.log(`  ${blue("claude-flow sparc modes")}                              # List all modes`);
+        console.log(`  ${blue("claude-flow sparc run code")} "implement user auth"      # Run specific mode`);
+        console.log(`  ${blue("claude-flow sparc tdd")} "payment processing system"    # Full TDD workflow`);
+        console.log(`  ${blue("claude-flow sparc workflow")} project-workflow.json     # Custom workflow`);
+        console.log();
+        console.log("For more information, see: https://github.com/ruvnet/claude-code-flow/docs/sparc.md");
       } else {
         // Show general help
         cli.showHelp();
