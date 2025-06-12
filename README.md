@@ -16,9 +16,8 @@
 
 - **🚀 Simplified SPARC Syntax**: `npx claude-flow sparc "build app"` (no more double sparc!)
 - **⚡ Auto-Skip Permissions**: `--dangerously-skip-permissions` by default (use `--enable-permissions` to restore prompts)
-- **🔄 BatchTool Integration**: Parallel execution with boomerang orchestration patterns
+- **🤖 Non-Interactive Mode**: JSON output with `--non-interactive` flag for automation and parallel execution
 - **📁 Directory Safety**: Enhanced guidance to prevent files in node_modules
-- **🤖 Non-Interactive Mode**: Full automation support with `--non-interactive` flag
 - **🎯 17+ SPARC Modes**: Including new `sparc-orchestrator` for complex workflows
 - **📂 Local Executable**: `init` now creates `./claude-flow` wrapper to ensure correct working directory
 - **🔧 Fixed SPARC Path Resolution**: `.roomodes` now correctly found in project directory
@@ -55,11 +54,10 @@ npx claude-flow sparc modes              # List 17+ development modes
 npx claude-flow sparc tdd "user auth"    # Run TDD workflow
 npx claude-flow sparc run code "API"     # Specific mode execution
 
-# 🚀 Parallel Execution with BatchTool
-batchtool run --parallel \
-  "npx claude-flow sparc run code 'frontend' --non-interactive" \
-  "npx claude-flow sparc run code 'backend' --non-interactive" \
-  "npx claude-flow sparc run tdd 'tests' --non-interactive"
+# 🚀 Parallel Execution (requires external tool)
+# Example with GNU Parallel:
+parallel -j 3 npx claude-flow sparc run {} --non-interactive ::: \
+  "code 'frontend'" "code 'backend'" "tdd 'tests'"
 
 # 🤖 Spawn a research team
 npx claude-flow agent spawn researcher --name "Senior Researcher"
@@ -315,21 +313,26 @@ npx claude-flow sparc run integration "auth with user management"
 npx claude-flow sparc run docs-writer "authentication API docs"
 ```
 
-### **Parallel Execution with BatchTool**
+### **Parallel Execution with External Tools**
+
+Claude-Flow's `--non-interactive` flag enables integration with external orchestration tools for parallel execution:
+
 ```bash
+# Example with hypothetical batchtool (external tool, not included)
 # Run multiple SPARC modes concurrently
 batchtool run --parallel \
   "npx claude-flow sparc run code 'user service' --non-interactive" \
   "npx claude-flow sparc run code 'auth service' --non-interactive" \
   "npx claude-flow sparc run tdd 'test suite' --non-interactive"
 
-# Boomerang orchestration pattern
-batchtool orchestrate --boomerang \
-  --research "npx claude-flow sparc run ask 'requirements' --non-interactive" \
-  --design "npx claude-flow sparc run architect 'system' --non-interactive" \
-  --implement "npx claude-flow sparc run code 'features' --non-interactive" \
-  --test "npx claude-flow sparc run tdd 'validation' --non-interactive"
+# Or use any parallel execution tool like GNU Parallel:
+parallel -j 3 npx claude-flow sparc run {} --non-interactive ::: \
+  "code 'user service'" \
+  "code 'auth service'" \
+  "tdd 'test suite'"
 ```
+
+**Note**: `batchtool` is not included with claude-flow. The `--non-interactive` flag outputs JSON for integration with your preferred orchestration tools.
 
 ### **SPARC Features**
 - **17+ Specialized AI Modes** for different development phases
@@ -337,7 +340,7 @@ batchtool orchestrate --boomerang \
 - **TDD Enforcement** with Red-Green-Refactor cycle automation
 - **Modular Design** with <500 line file constraints
 - **Environment Safety** preventing credential exposure
-- **BatchTool Integration** for parallel and boomerang orchestration
+- **External Tool Integration** via `--non-interactive` flag for parallel execution
 - **Non-Interactive Mode** for automation and CI/CD integration
 - **Auto-Skip Permissions** by default (use --enable-permissions to prompt)
 - **Quality Gates** with automated code analysis and security review
