@@ -19,7 +19,7 @@
 > 🔥 **One command to rule them all**: `npx claude-flow` - Deploy a full AI agent coordination system in seconds!
 
 
-## 🎉 **What's New in v1.0.43**
+## 🎉 **What's New in v1.0.49**
 
 ### 🚀 **Major Release: Enterprise-Grade Swarm System**
 - **🐝 Advanced Swarm Orchestration**: Complete multi-agent coordination system with timeout-free execution
