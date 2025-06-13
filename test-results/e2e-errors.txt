@@ -1,6 +1,7 @@
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/e2e/cli-commands.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/e2e/full-system-integration.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/e2e/full-workflow.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/e2e/start-command-e2e.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/e2e/workflow.test.ts
 [0m[1mTS2305 [0m[ERROR]: Module '"file:///workspaces/claude-code-flow/tests/test.utils.ts"' has no exported member 'assertStringIncludes'.
   assertStringIncludes,

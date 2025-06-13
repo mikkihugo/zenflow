@@ -213,7 +213,16 @@ async function runSparcMode(subArgs, flags) {
       printWarning('DRY RUN - SPARC Mode Configuration:');
       console.log(`Mode: ${mode.name} (${mode.slug})`);
       console.log(`Instance ID: ${instanceId}`);
-      console.log(`Tools: ${toolsList}`);
+      
+      const enablePermissions = subArgs.includes('--enable-permissions');
+      if (!enablePermissions) {
+        console.log(`Tools: ALL (via --dangerously-skip-permissions)`);
+        console.log(`Permissions: Will be auto-skipped`);
+      } else {
+        console.log(`Tools: ${toolsList}`);
+        console.log(`Permissions: Will prompt for actions`);
+      }
+      
       console.log(`Task: ${taskDescription}`);
       console.log();
       console.log('Enhanced prompt preview:');
@@ -224,17 +233,18 @@ async function runSparcMode(subArgs, flags) {
     printSuccess(`Starting SPARC mode: ${mode.name}`);
     console.log(`📝 Instance ID: ${instanceId}`);
     console.log(`🎯 Mode: ${mode.slug}`);
-    console.log(`🔧 Tools: ${toolsList}`);
-    console.log(`📋 Task: ${taskDescription}`);
     
     const isNonInteractive = subArgs.includes('--non-interactive') || subArgs.includes('-n');
     const enablePermissions = subArgs.includes('--enable-permissions');
     
     if (!enablePermissions) {
+      console.log(`🔧 Tools: ALL (including MCP and WebSearch via --dangerously-skip-permissions)`);
       console.log(`⚡ Permissions: Auto-skipped (--dangerously-skip-permissions)`);
     } else {
+      console.log(`🔧 Tools: ${toolsList}`);
       console.log(`✅ Permissions: Enabled (will prompt for actions)`);
     }
+    console.log(`📋 Task: ${taskDescription}`)
     
     if (isNonInteractive) {
       console.log(`🚀 Running in non-interactive mode with stream-json output`);
@@ -343,8 +353,12 @@ async function executeClaude(enhancedTask, toolsList, instanceId, memoryNamespac
     }
   }
   
-  // Add tools after other flags
-  claudeArgs.push('--allowedTools', toolsList);
+  // When using --dangerously-skip-permissions, we don't need to specify individual tools
+  // as it enables ALL tools including mcp and websearch
+  // Only add --allowedTools if permissions are enabled
+  if (enablePermissions) {
+    claudeArgs.push('--allowedTools', toolsList);
+  }
   
   if (subArgs.includes('--config')) {
     const configIndex = subArgs.indexOf('--config');
@@ -356,6 +370,7 @@ async function executeClaude(enhancedTask, toolsList, instanceId, memoryNamespac
     console.log('\n🔍 Debug: Executing claude with:');
     console.log('Command: claude');
     console.log('Permissions:', enablePermissions ? '✅ Enabled (will prompt)' : '⚡ Skipped (--dangerously-skip-permissions)');
+    console.log('Tools:', enablePermissions ? `Specified: ${toolsList}` : 'ALL tools enabled (MCP, WebSearch, etc.)');
     console.log('Mode:', isNonInteractive ? '🤖 Non-interactive' : '💬 Interactive');
     console.log('Args array length:', claudeArgs.length);
     console.log('First arg (prompt) length:', claudeArgs[0].length, 'characters');

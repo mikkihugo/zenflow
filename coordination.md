@@ -1,85 +1,88 @@
-# Coordination Center
+# Agent Coordination System
 
-Central coordination for multi-agent collaboration and task management.
+## Overview
+The Claude-Flow coordination system manages multiple AI agents working together on complex tasks. It provides intelligent task distribution, resource management, and inter-agent communication.
 
-## Active Agents
-| Agent ID | Type | Status | Assigned Tasks | Last Active |
-|----------|------|--------|----------------|-------------|
-| [ID] | [Type] | [Status] | [Tasks] | [Timestamp] |
+## Agent Types and Capabilities
+- **Researcher**: Web search, information gathering, knowledge synthesis
+- **Coder**: Code analysis, development, debugging, testing
+- **Analyst**: Data processing, pattern recognition, insights generation
+- **Coordinator**: Task planning, resource allocation, workflow management
+- **General**: Multi-purpose agent with balanced capabilities
 
-## Task Queue
-### High Priority
-1. **[Task Name]**
-   - Description: [What needs to be done]
-   - Assigned to: [Agent ID]
-   - Dependencies: [Other tasks]
-   - Deadline: [Date/Time]
+## Task Management
+- **Priority Levels**: 1 (lowest) to 10 (highest)
+- **Dependencies**: Tasks can depend on completion of other tasks
+- **Parallel Execution**: Independent tasks run concurrently
+- **Load Balancing**: Automatic distribution based on agent capacity
 
-### Medium Priority
-1. [Task details]
+## Coordination Commands
+```bash
+# Agent Management
+npx claude-flow agent spawn <type> --name <name> --priority <1-10>
+npx claude-flow agent list
+npx claude-flow agent info <agent-id>
+npx claude-flow agent terminate <agent-id>
 
-### Low Priority
-1. [Task details]
+# Task Management  
+npx claude-flow task create <type> <description> --priority <1-10> --deps <task-ids>
+npx claude-flow task list --verbose
+npx claude-flow task status <task-id>
+npx claude-flow task cancel <task-id>
 
-## Workflow Definitions
-### [Workflow Name]
-```yaml
-name: [Workflow Name]
-description: [What this workflow does]
-steps:
-  - name: [Step 1]
-    agent: [Agent type]
-    action: [What to do]
-  - name: [Step 2]
-    agent: [Agent type]
-    action: [What to do]
-    depends_on: [Step 1]
+# System Monitoring
+npx claude-flow status --verbose
+npx claude-flow monitor --interval 5000
 ```
 
-## Resource Allocation
-### Computational Resources
-- CPU: [Usage/Limits]
-- Memory: [Usage/Limits]
-- Storage: [Usage/Limits]
+## Workflow Execution
+Workflows are defined in JSON format and can orchestrate complex multi-agent operations:
+```bash
+npx claude-flow workflow examples/research-workflow.json
+npx claude-flow workflow examples/development-config.json --async
+```
 
-### External Resources
-- API Rate Limits: [Service: limit]
-- Database Connections: [Current/Max]
+## Advanced Features
+- **Circuit Breakers**: Automatic failure handling and recovery
+- **Work Stealing**: Dynamic load redistribution for efficiency
+- **Resource Limits**: Memory and CPU usage constraints
+- **Metrics Collection**: Performance monitoring and optimization
 
-## Communication Channels
-### Inter-Agent Messages
-- [Agent A → Agent B]: [Message type]
+## Configuration
+Coordination settings in `claude-flow.config.json`:
+```json
+{
+  "orchestrator": {
+    "maxConcurrentTasks": 10,
+    "taskTimeout": 300000,
+    "defaultPriority": 5
+  },
+  "agents": {
+    "maxAgents": 20,
+    "defaultCapabilities": ["research", "code", "terminal"],
+    "resourceLimits": {
+      "memory": "1GB",
+      "cpu": "50%"
+    }
+  }
+}
+```
 
-### External Communications
-- Webhooks: [Configured webhooks]
-- Notifications: [Notification settings]
+## Communication Patterns
+- **Direct Messaging**: Agent-to-agent communication
+- **Event Broadcasting**: System-wide notifications
+- **Shared Memory**: Common information access
+- **Task Handoff**: Seamless work transfer between agents
 
-## Synchronization Points
-- [Sync Point 1]: [Description]
-- [Sync Point 2]: [Description]
+## Best Practices
+- Start with general agents and specialize as needed
+- Use descriptive task names and clear requirements
+- Monitor system resources during heavy workloads
+- Implement proper error handling in workflows
+- Regular cleanup of completed tasks and inactive agents
 
-## Conflict Resolution
-### Strategy
-- [How conflicts are resolved]
-
-### Recent Conflicts
-- [Date]: [Conflict description] → [Resolution]
-
-## Performance Metrics
-### Task Completion
-- Average time: [Time]
-- Success rate: [Percentage]
-
-### Agent Efficiency
-- [Agent Type]: [Metrics]
-
-## Scheduled Maintenance
-- [Date/Time]: [What will be done]
-
-## Emergency Procedures
-### System Overload
-1. [Step 1]
-2. [Step 2]
-
-### Agent Failure
-1. [Recovery procedure]
+## Troubleshooting
+- Check agent health with `npx claude-flow status`
+- View detailed logs with `npx claude-flow monitor`
+- Restart stuck agents with terminate/spawn cycle
+- Use `--verbose` flags for detailed diagnostic information

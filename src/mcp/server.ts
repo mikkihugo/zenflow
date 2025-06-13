@@ -28,6 +28,7 @@ import { SessionManager, ISessionManager } from './session-manager.ts';
 import { AuthManager, IAuthManager } from './auth.ts';
 import { LoadBalancer, ILoadBalancer, RequestQueue } from './load-balancer.ts';
 import { createClaudeFlowTools, ClaudeFlowToolContext } from './claude-flow-tools.ts';
+import { createSwarmTools, SwarmToolContext } from './swarm-tools.ts';
 
 export interface IMCPServer {
   start(): Promise<void>;
@@ -90,6 +91,11 @@ export class MCPServer implements IMCPServer {
     private eventBus: IEventBus,
     private logger: ILogger,
     private orchestrator?: any, // Reference to orchestrator instance
+    private swarmCoordinator?: any, // Reference to swarm coordinator instance
+    private agentManager?: any, // Reference to agent manager instance
+    private resourceManager?: any, // Reference to resource manager instance
+    private messagebus?: any, // Reference to message bus instance
+    private monitor?: any, // Reference to real-time monitor instance
   ) {
     // Initialize transport
     this.transport = this.createTransport();
@@ -512,6 +518,34 @@ export class MCPServer implements IMCPServer {
       this.logger.info('Registered Claude-Flow tools', { count: claudeFlowTools.length });
     } else {
       this.logger.warn('Orchestrator not available - Claude-Flow tools not registered');
+    }
+
+    // Register Swarm-specific tools if swarm components are available
+    if (this.swarmCoordinator || this.agentManager || this.resourceManager) {
+      const swarmTools = createSwarmTools(this.logger);
+      
+      for (const tool of swarmTools) {
+        // Wrap the handler to inject swarm context
+        const originalHandler = tool.handler;
+        tool.handler = async (input: unknown, context?: MCPContext) => {
+          const swarmContext: SwarmToolContext = {
+            ...context,
+            swarmCoordinator: this.swarmCoordinator,
+            agentManager: this.agentManager,
+            resourceManager: this.resourceManager,
+            messageBus: this.messagebus,
+            monitor: this.monitor,
+          } as SwarmToolContext;
+          
+          return await originalHandler(input, swarmContext);
+        };
+        
+        this.registerTool(tool);
+      }
+      
+      this.logger.info('Registered Swarm tools', { count: swarmTools.length });
+    } else {
+      this.logger.warn('Swarm components not available - Swarm tools not registered');
     }
   }
 

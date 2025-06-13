@@ -69,23 +69,6 @@ export class StdioTransport implements ITransport {
     this.notificationHandler = handler;
   }
 
-  async sendNotification(notification: MCPNotification): Promise<void> {
-    try {
-      const json = JSON.stringify(notification);
-      const data = this.encoder.encode(json + '\n');
-      
-      await Deno.stdout.write(data);
-      this.notificationCount++;
-      
-      this.logger.debug('Notification sent', {
-        method: notification.method,
-        params: notification.params,
-      });
-    } catch (error) {
-      this.logger.error('Failed to send notification', { notification, error });
-      throw new MCPTransportError('Failed to send notification', { error });
-    }
-  }
 
   async getHealthStatus(): Promise<{ 
     healthy: boolean; 
@@ -249,6 +232,41 @@ export class StdioTransport implements ITransport {
       await Deno.stdout.write(data);
     } catch (error) {
       this.logger.error('Failed to send response', { response, error });
+    }
+  }
+
+  async connect(): Promise<void> {
+    // For STDIO transport, connect is handled by start()
+    if (!this.running) {
+      await this.start();
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    // For STDIO transport, disconnect is handled by stop()
+    await this.stop();
+  }
+
+  async sendRequest(request: MCPRequest): Promise<MCPResponse> {
+    // Send request to stdout
+    const json = JSON.stringify(request);
+    const data = this.encoder.encode(json + '\n');
+    await Deno.stdout.write(data);
+    
+    // In STDIO transport, responses are handled asynchronously
+    // This would need a proper request/response correlation mechanism
+    throw new Error('STDIO transport sendRequest requires request/response correlation');
+  }
+
+  async sendNotification(notification: MCPNotification): Promise<void> {
+    try {
+      const json = JSON.stringify(notification);
+      const data = this.encoder.encode(json + '\n');
+      await Deno.stdout.write(data);
+      this.notificationCount++;
+    } catch (error) {
+      this.logger.error('Failed to send notification', { notification, error });
+      throw error;
     }
   }
 }

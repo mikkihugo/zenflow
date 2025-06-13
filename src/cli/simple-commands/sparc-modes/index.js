@@ -16,6 +16,7 @@ import { getAskOrchestration } from './ask.js';
 import { getTutorialOrchestration } from './tutorial.js';
 import { getSparcOrchestratorOrchestration } from './sparc-orchestrator.js';
 import { getGenericOrchestration } from './generic.js';
+import { getSwarmOrchestration } from './swarm.js';
 
 // Mode orchestration mapping
 const modeOrchestrations = {
@@ -35,6 +36,7 @@ const modeOrchestrations = {
   'ask': getAskOrchestration,
   'tutorial': getTutorialOrchestration,
   'sparc': getSparcOrchestratorOrchestration,
+  'swarm': getSwarmOrchestration,
 };
 
 /**
