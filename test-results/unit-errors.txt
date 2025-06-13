@@ -1,4 +1,7 @@
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/cli-commands.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/start/process-manager.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/start/process-ui.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/start/system-monitor.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/coordination/coordination-system.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/coordination/coordination.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/core/config.test.ts
@@ -13,105 +16,6 @@
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/memory/memory-backends.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/terminal/terminal-manager.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/utils/helpers.test.ts
-[0m[1mTS2307 [0m[ERROR]: Cannot find module 'file:///workspaces/claude-code-flow/src/mcp/client.ts'.
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m12[0m:[0m[33m27[0m
-
-[0m[1mTS7053 [0m[ERROR]: Element implicitly has an 'any' type because expression of type '"spyMethod"' can't be used to index type '{}'.
-  Property 'spyMethod' does not exist on type '{}'.
-  mockObj[methodName] = implementation || (() => {});
-[0m[31m  ~~~~~~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m60[0m:[0m[33m3[0m
-
-[0m[1mTS2345 [0m[ERROR]: Argument of type '"spyMethod"' is not assignable to parameter of type 'never'.
-  return stub(mockObj, methodName) as any;
-[0m[31m                       ~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m61[0m:[0m[33m24[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'AgentProfile'.
-  private terminals = new Map<string, { profile: AgentProfile; output: string[] }>();
-[0m[31m                                                 ~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m156[0m:[0m[33m50[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'Task'.
-  private tasks = new Map<string, { task: Task; agentId: string }>();
-[0m[31m                                          ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m342[0m:[0m[33m43[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'Task'.
-  private agentTasks = new Map<string, Task[]>();
-[0m[31m                                       ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m343[0m:[0m[33m40[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  initialize = spy(async (): Promise<void> => {
-[0m[31m               ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m346[0m:[0m[33m16[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  shutdown = spy(async (): Promise<void> => {
-[0m[31m             ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m350[0m:[0m[33m14[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  assignTask = spy(async (task: Task, agentId: string): Promise<void> => {
-[0m[31m               ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m356[0m:[0m[33m16[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'Task'.
-  assignTask = spy(async (task: Task, agentId: string): Promise<void> => {
-[0m[31m                                ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m356[0m:[0m[33m33[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  getAgentTaskCount = spy(async (agentId: string): Promise<number> => {
-[0m[31m                      ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m363[0m:[0m[33m23[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  getAgentTasks = spy(async (agentId: string): Promise<Task[]> => {
-[0m[31m                  ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m368[0m:[0m[33m19[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'Task'.
-  getAgentTasks = spy(async (agentId: string): Promise<Task[]> => {
-[0m[31m                                                       ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m368[0m:[0m[33m56[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  cancelTask = spy(async (taskId: string): Promise<void> => {
-[0m[31m               ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m372[0m:[0m[33m16[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  getHealthStatus = spy(async (): Promise<{ healthy: boolean; error?: string; metrics?: Record<string, number> }> => {
-[0m[31m                    ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m379[0m:[0m[33m21[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  performMaintenance = spy(async (): Promise<void> => {
-[0m[31m                       ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m388[0m:[0m[33m24[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  start = spy(async (): Promise<void> => {
-[0m[31m          ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m408[0m:[0m[33m11[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  stop = spy(async (): Promise<void> => {
-[0m[31m         ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m412[0m:[0m[33m10[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  registerTool = spy((name: string, tool: any): void => {
-[0m[31m                 ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m417[0m:[0m[33m18[0m
-
-[0m[1mTS2304 [0m[ERROR]: Cannot find name 'spy'.
-  getHealthStatus = spy(async (): Promise<{ healthy: boolean; error?: string; metrics?: Record<string, number> }> => {
-[0m[31m                    ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/mocks/index.ts[0m:[0m[33m421[0m:[0m[33m21[0m
-
 [0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
       this.stderr(`Error: ${error.message}`);
 [0m[31m                            ~~~~~[0m
@@ -1141,415 +1045,95 @@ import { AdvancedScheduler } from '../../../src/coordination/advanced-scheduler.
     [0m[36m  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
         at [0m[36mfile:///workspaces/claude-code-flow/src/terminal/manager.ts[0m:[0m[33m20[0m:[0m[33m3[0m
 
-[0m[1mTS2724 [0m[ERROR]: '"file:///workspaces/claude-code-flow/src/mcp/transports/http.ts"' has no exported member named 'HTTPTransport'. Did you mean 'HttpTransport'?
-import { HTTPTransport } from '../../../src/mcp/transports/http.ts';
-[0m[31m         ~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m14[0m:[0m[33m10[0m
-
-    'HttpTransport' is declared here.
-    export class HttpTransport implements ITransport {
-    [0m[36m             ~~~~~~~~~~~~~[0m
-        at [0m[36mfile:///workspaces/claude-code-flow/src/mcp/transports/http.ts[0m:[0m[33m13[0m:[0m[33m14[0m
-
-[0m[1mTS2724 [0m[ERROR]: '"file:///workspaces/claude-code-flow/src/mcp/session-manager.ts"' has no exported member named 'MCPSessionManager'. Did you mean 'SessionManager'?
-import { MCPSessionManager } from '../../../src/mcp/session-manager.ts';
-[0m[31m         ~~~~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m15[0m:[0m[33m10[0m
-
-    'SessionManager' is declared here.
-    export class SessionManager implements ISessionManager {
-    [0m[36m             ~~~~~~~~~~~~~~[0m
-        at [0m[36mfile:///workspaces/claude-code-flow/src/mcp/session-manager.ts[0m:[0m[33m37[0m:[0m[33m14[0m
-
-[0m[1mTS2724 [0m[ERROR]: '"file:///workspaces/claude-code-flow/src/mcp/load-balancer.ts"' has no exported member named 'MCPLoadBalancer'. Did you mean 'LoadBalancer'?
-import { MCPLoadBalancer } from '../../../src/mcp/load-balancer.ts';
-[0m[31m         ~~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m16[0m:[0m[33m10[0m
-
-    'LoadBalancer' is declared here.
-    export class LoadBalancer implements ILoadBalancer {
-    [0m[36m             ~~~~~~~~~~~~[0m
-        at [0m[36mfile:///workspaces/claude-code-flow/src/mcp/load-balancer.ts[0m:[0m[33m168[0m:[0m[33m14[0m
-
-[0m[1mTS2724 [0m[ERROR]: '"file:///workspaces/claude-code-flow/src/mcp/auth.ts"' has no exported member named 'MCPAuthManager'. Did you mean 'AuthManager'?
-import { MCPAuthManager } from '../../../src/mcp/auth.ts';
-[0m[31m         ~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m17[0m:[0m[33m10[0m
-
-    'AuthManager' is declared here.
-    export class AuthManager implements IAuthManager {
-    [0m[36m             ~~~~~~~~~~~[0m
-        at [0m[36mfile:///workspaces/claude-code-flow/src/mcp/auth.ts[0m:[0m[33m37[0m:[0m[33m14[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-        command: 'node',
-[0m[31m        ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m176[0m:[0m[33m9[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'close' does not exist on type 'StdioTransport'.
-        await stdioTransport.close();
-[0m[31m                             ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m185[0m:[0m[33m30[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await stdioTransport.connect();
-[0m[31m                           ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m190[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'isConnected' does not exist on type 'StdioTransport'.
-      assertEquals(stdioTransport.isConnected(), true);
-[0m[31m                                  ~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m191[0m:[0m[33m35[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await stdioTransport.connect();
-[0m[31m                           ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m195[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'send' does not exist on type 'StdioTransport'.
-      const responsePromise = stdioTransport.send(testMessage);
-[0m[31m                                             ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m204[0m:[0m[33m46[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'id' does not exist on type '{}'.
-      assertEquals(response.id, testMessage.id);
-[0m[31m                            ~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m209[0m:[0m[33m29[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-        command: 'nonexistent-command',
-[0m[31m        ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m214[0m:[0m[33m9[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-        () => faultyTransport.connect(),
-[0m[31m                              ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m220[0m:[0m[33m31[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await stdioTransport.connect();
-[0m[31m                           ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m226[0m:[0m[33m28[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-        command: 'node',
-[0m[31m        ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m237[0m:[0m[33m9[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await slowTransport.connect();
-[0m[31m                          ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m242[0m:[0m[33m27[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'send' does not exist on type 'StdioTransport'.
-        () => slowTransport.send(timeoutMessage),
-[0m[31m                            ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m245[0m:[0m[33m29[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'close' does not exist on type 'StdioTransport'.
-      await slowTransport.close();
-[0m[31m                          ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m250[0m:[0m[33m27[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await stdioTransport.connect();
-[0m[31m                           ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m254[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'send' does not exist on type 'StdioTransport'.
-      const promises = messages.map(msg => stdioTransport.send(msg));
-[0m[31m                                                          ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m263[0m:[0m[33m59[0m
-
-[0m[1mTS7006 [0m[ERROR]: Parameter 'response' implicitly has an 'any' type.
-      responses.forEach((response, i) => {
-[0m[31m                         ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m267[0m:[0m[33m26[0m
-
-[0m[1mTS7006 [0m[ERROR]: Parameter 'i' implicitly has an 'any' type.
-      responses.forEach((response, i) => {
-[0m[31m                                   ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m267[0m:[0m[33m36[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await stdioTransport.connect();
-[0m[31m                           ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m273[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'send' does not exist on type 'StdioTransport'.
-      await stdioTransport.send(msg1);
-[0m[31m                           ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m277[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'close' does not exist on type 'StdioTransport'.
-      await stdioTransport.close();
-[0m[31m                           ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m280[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'isConnected' does not exist on type 'StdioTransport'.
-      assertEquals(stdioTransport.isConnected(), false);
-[0m[31m                                  ~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m281[0m:[0m[33m35[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'connect' does not exist on type 'StdioTransport'.
-      await stdioTransport.connect();
-[0m[31m                           ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m284[0m:[0m[33m28[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'isConnected' does not exist on type 'StdioTransport'.
-      assertEquals(stdioTransport.isConnected(), true);
-[0m[31m                                  ~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m285[0m:[0m[33m35[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'send' does not exist on type 'StdioTransport'.
-      const response = await stdioTransport.send(msg2);
-[0m[31m                                            ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m289[0m:[0m[33m45[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 3-4 arguments, but got 1.
-      mcpServer = new MCPServer({
-[0m[31m                  ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m473[0m:[0m[33m19[0m
-
-    An argument for 'eventBus' was not provided.
-        private eventBus: IEventBus,
-    [0m[36m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-        at [0m[36mfile:///workspaces/claude-code-flow/src/mcp/server.ts[0m:[0m[33m90[0m:[0m[33m5[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
-      mcpServer.registerTool('test-tool-1', {
-[0m[31m                                            ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m494[0m:[0m[33m45[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
-      mcpServer.registerTool('test-tool-2', {
-[0m[31m                                            ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m508[0m:[0m[33m45[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'listTools' does not exist on type 'MCPServer'.
-      const tools = await mcpServer.listTools();
-[0m[31m                                    ~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m522[0m:[0m[33m37[0m
-
-[0m[1mTS7006 [0m[ERROR]: Parameter 't' implicitly has an 'any' type.
-      assertEquals(tools.find(t => t.name === 'test-tool-1')?.description, 'A test tool');
-[0m[31m                              ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m525[0m:[0m[33m31[0m
-
-[0m[1mTS7006 [0m[ERROR]: Parameter 't' implicitly has an 'any' type.
-      assertEquals(tools.find(t => t.name === 'test-tool-2')?.description, 'Another test tool');
-[0m[31m                              ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m526[0m:[0m[33m31[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
-      mcpServer.registerTool('calculator', {
-[0m[31m                                           ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m532[0m:[0m[33m44[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'callTool' does not exist on type 'MCPServer'.
-        const result = await mcpServer.callTool('calculator', testCase);
-[0m[31m                                       ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m580[0m:[0m[33m40[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
-      mcpServer.registerTool('error-tool', {
-[0m[31m                                           ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m589[0m:[0m[33m44[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'callTool' does not exist on type 'MCPServer'.
-      const successResult = await mcpServer.callTool('error-tool', { shouldError: false });
-[0m[31m                                            ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m609[0m:[0m[33m45[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'callTool' does not exist on type 'MCPServer'.
-        () => mcpServer.callTool('error-tool', { shouldError: true }),
-[0m[31m                        ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m614[0m:[0m[33m25[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
-      mcpServer.registerTool('strict-tool', {
-[0m[31m                                            ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m623[0m:[0m[33m45[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'callTool' does not exist on type 'MCPServer'.
-      const validResult = await mcpServer.callTool('strict-tool', {
-[0m[31m                                          ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m641[0m:[0m[33m43[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'callTool' does not exist on type 'MCPServer'.
-          () => mcpServer.callTool('strict-tool', invalidInput),
-[0m[31m                          ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m657[0m:[0m[33m27[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'registerPrompt' does not exist on type 'MCPServer'.
-      mcpServer.registerPrompt('greeting', {
-[0m[31m                ~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m666[0m:[0m[33m17[0m
-
-[0m[1mTS7053 [0m[ERROR]: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ en: string; es: string; fr: string; }'.
-                  text: greetings[language] || greetings.en,
-[0m[31m                        ~~~~~~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m697[0m:[0m[33m25[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'listPrompts' does not exist on type 'MCPServer'.
-      const prompts = await mcpServer.listPrompts();
-[0m[31m                                      ~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m705[0m:[0m[33m39[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'getPrompt' does not exist on type 'MCPServer'.
-      const englishGreeting = await mcpServer.getPrompt('greeting', { name: 'Alice' });
-[0m[31m                                              ~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m710[0m:[0m[33m47[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'getPrompt' does not exist on type 'MCPServer'.
-      const spanishGreeting = await mcpServer.getPrompt('greeting', { name: 'Bob', language: 'es' });
-[0m[31m                                              ~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m713[0m:[0m[33m47[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 3-4 arguments, but got 1.
-      mockServer = new MCPServer({
-[0m[31m                   ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m724[0m:[0m[33m20[0m
-
-    An argument for 'eventBus' was not provided.
-        private eventBus: IEventBus,
-    [0m[36m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-        at [0m[36mfile:///workspaces/claude-code-flow/src/mcp/server.ts[0m:[0m[33m90[0m:[0m[33m5[0m
-
-[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
-      mockServer.registerTool('echo', {
-[0m[31m                                      ^[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m731[0m:[0m[33m39[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-          command: 'node',
-[0m[31m          ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m749[0m:[0m[33m11[0m
-
-[0m[1mTS7006 [0m[ERROR]: Parameter 'tool' implicitly has an 'any' type.
-      assertEquals(tools.some(tool => tool.name === 'echo'), true);
-[0m[31m                              ~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m791[0m:[0m[33m31[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-          command: 'node',
-[0m[31m          ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m801[0m:[0m[33m11[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-          command: 'node',
-[0m[31m          ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m835[0m:[0m[33m11[0m
-
-[0m[1mTS7006 [0m[ERROR]: Parameter 'response' implicitly has an 'any' type.
-      responses.forEach(response => {
-[0m[31m                        ~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m1001[0m:[0m[33m25[0m
-
-[0m[1mTS2339 [0m[ERROR]: Property 'delay' does not exist on type 'typeof AsyncTestUtils'.
-      await AsyncTestUtils.delay(1100);
-[0m[31m                           ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m1147[0m:[0m[33m28[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-        command: 'nonexistent-command',
-[0m[31m        ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m1209[0m:[0m[33m9[0m
-
-[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'command' does not exist in type 'ILogger'.
-          command: 'unreliable-server',
-[0m[31m          ~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m1244[0m:[0m[33m11[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-          if (error.message.includes('circuit breaker')) {
-[0m[31m              ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts[0m:[0m[33m1268[0m:[0m[33m15[0m
-
-[0m[1mTS2305 [0m[ERROR]: Module '"https://deno.land/std@0.208.0/testing/bdd.ts"' has no exported member 'expect'.
-import { describe, it, beforeEach, afterEach, expect } from 'https://deno.land/std@0.208.0/testing/bdd.ts';
-[0m[31m                                              ~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/server.test.ts[0m:[0m[33m5[0m:[0m[33m47[0m
-
-[0m[1mTS2673 [0m[ERROR]: Constructor of class 'EventBus' is private and only accessible within the class declaration.
-    eventBus = new EventBus(logger);
-[0m[31m               ~~~~~~~~~~~~~~~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/server.test.ts[0m:[0m[33m26[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('already running');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/server.test.ts[0m:[0m[33m75[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('already registered');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/server.test.ts[0m:[0m[33m121[0m:[0m[33m16[0m
-
-[0m[1mTS2305 [0m[ERROR]: Module '"https://deno.land/std@0.208.0/testing/bdd.ts"' has no exported member 'expect'.
-import { describe, it, beforeEach, expect } from 'https://deno.land/std@0.208.0/testing/bdd.ts';
-[0m[31m                                   ~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m5[0m:[0m[33m36[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('already registered');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m65[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('format: namespace/name');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m81[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toBe('Test error');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m215[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('Tool not found');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m224[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('Missing required property');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m233[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('Invalid type');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m242[0m:[0m[33m16[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('Tool not found');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m272[0m:[0m[33m16[0m
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<{ id: string; type: string; description: string; priority: number; dependencies: never[]; status: "pending"; input: { test: boolean; }; createdAt: Date; metadata: {}; }[]>>' is not assignable to type 'Spy<unknown, [agentId: string], Promise<Task[]>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<{ id: string; type: string; description: string; priority: number; dependencies: never[]; status: "pending"; input: { test: boolean; }; createdAt: Date; metadata: {}; }[]>>[]' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<Task[]>>[]'.
+      Type 'SpyCall<unknown, [], Promise<{ id: string; type: string; description: string; priority: number; dependencies: never[]; status: "pending"; input: { test: boolean; }; createdAt: Date; metadata: {}; }[]>>' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<Task[]>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[agentId: string]'.
+          Source has 0 element(s) but target requires 1.
+      mocks.coordinationManager.getAgentTasks = spy(async () => [
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m236[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<number>>' is not assignable to type 'Spy<unknown, [agentId: string], Promise<number>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<number>>[]' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>[]'.
+      Type 'SpyCall<unknown, [], Promise<number>>' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[agentId: string]'.
+          Source has 0 element(s) but target requires 1.
+      mocks.coordinationManager.getAgentTaskCount = spy(async () => 0);
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m330[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<number>>' is not assignable to type 'Spy<unknown, [agentId: string], Promise<number>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<number>>[]' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>[]'.
+      Type 'SpyCall<unknown, [], Promise<number>>' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[agentId: string]'.
+          Source has 0 element(s) but target requires 1.
+      mocks.coordinationManager.getAgentTaskCount = spy(async () => 0);
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m392[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<{ id: string; type: string; description: string; priority: number; dependencies: never[]; status: "pending"; input: { test: boolean; }; createdAt: Date; metadata: {}; }[]>>' is not assignable to type 'Spy<unknown, [agentId: string], Promise<Task[]>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<{ id: string; type: string; description: string; priority: number; dependencies: never[]; status: "pending"; input: { test: boolean; }; createdAt: Date; metadata: {}; }[]>>[]' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<Task[]>>[]'.
+      Type 'SpyCall<unknown, [], Promise<{ id: string; type: string; description: string; priority: number; dependencies: never[]; status: "pending"; input: { test: boolean; }; createdAt: Date; metadata: {}; }[]>>' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<Task[]>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[agentId: string]'.
+          Source has 0 element(s) but target requires 1.
+      mocks.coordinationManager.getAgentTasks = spy(async () => [
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m602[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<number>>' is not assignable to type 'Spy<unknown, [agentId: string], Promise<number>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<number>>[]' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>[]'.
+      Type 'SpyCall<unknown, [], Promise<number>>' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[agentId: string]'.
+          Source has 0 element(s) but target requires 1.
+      mocks.coordinationManager.getAgentTaskCount = spy(async () => 0);
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m643[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<never>>' is not assignable to type 'Spy<unknown, [task: Task, agentId: string], Promise<void>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<never>>[]' is not assignable to type 'SpyCall<unknown, [task: Task, agentId: string], Promise<void>>[]'.
+      Type 'SpyCall<unknown, [], Promise<never>>' is not assignable to type 'SpyCall<unknown, [task: Task, agentId: string], Promise<void>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[task: Task, agentId: string]'.
+          Source has 0 element(s) but target requires 2.
+      mocks.coordinationManager.assignTask = spy(async () => {
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m662[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'Spy<unknown, [], Promise<number>>' is not assignable to type 'Spy<unknown, [agentId: string], Promise<number>>'.
+  Types of property 'calls' are incompatible.
+    Type 'SpyCall<unknown, [], Promise<number>>[]' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>[]'.
+      Type 'SpyCall<unknown, [], Promise<number>>' is not assignable to type 'SpyCall<unknown, [agentId: string], Promise<number>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Type '[]' is not assignable to type '[agentId: string]'.
+          Source has 0 element(s) but target requires 1.
+      mocks.coordinationManager.getAgentTaskCount = spy(async () => 0);
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m665[0m:[0m[33m7[0m
 
 [0m[1mTS18046 [0m[ERROR]: 'result' is of type 'unknown'.
-      expect(result.name).toBe('John');
-[0m[31m             ~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m304[0m:[0m[33m14[0m
-
-[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
-        expect(error.message).toContain('Invalid type');
-[0m[31m               ~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m315[0m:[0m[33m16[0m
+      assertEquals(result.name, 'John');
+[0m[31m                   ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m305[0m:[0m[33m20[0m
 
 [0m[1mTS18046 [0m[ERROR]: 'result' is of type 'unknown'.
-      expect(result.active).toBe(true);
-[0m[31m             ~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m325[0m:[0m[33m14[0m
+      assertEquals(result.active, true);
+[0m[31m                   ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m326[0m:[0m[33m20[0m
 
 [0m[1mTS18046 [0m[ERROR]: 'result' is of type 'unknown'.
-      expect(result.tags).toEqual(['developer', 'typescript']);
-[0m[31m             ~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m334[0m:[0m[33m14[0m
+      assertEquals(result.tags, ['developer', 'typescript']);
+[0m[31m                   ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m335[0m:[0m[33m20[0m
 
 [0m[1mTS18046 [0m[ERROR]: 'result' is of type 'unknown'.
-      expect(result.metadata).toEqual({ department: 'engineering' });
-[0m[31m             ~~~~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m343[0m:[0m[33m14[0m
+      assertEquals(result.metadata, { department: 'engineering' });
+[0m[31m                   ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts[0m:[0m[33m344[0m:[0m[33m20[0m
 
 [0m[1mTS2724 [0m[ERROR]: '"file:///workspaces/claude-code-flow/src/memory/backends/sqlite.ts"' has no exported member named 'SQLiteMemoryBackend'. Did you mean 'SQLiteBackend'?
 import { SQLiteMemoryBackend } from '../../../src/memory/backends/sqlite.ts';
@@ -2129,7 +1713,7 @@ import { NativeTerminalAdapter } from '../../../src/terminal/adapters/native.ts'
 [0m[31m                                                                          ~~~~~[0m
     at [0m[36mfile:///workspaces/claude-code-flow/tests/utils/test-utils.ts[0m:[0m[33m632[0m:[0m[33m75[0m
 
-Found 359 errors.
+Found 274 errors.
 
 [0m[1m[31merror[0m: Type checking failed.
 

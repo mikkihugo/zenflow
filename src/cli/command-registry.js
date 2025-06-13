@@ -9,6 +9,7 @@ import { statusCommand } from './simple-commands/status.js';
 import { mcpCommand } from './simple-commands/mcp.js';
 import { monitorCommand } from './simple-commands/monitor.js';
 import { startCommand } from './simple-commands/start.js';
+import { swarmCommand } from './simple-commands/swarm.js';
 
 // Command registry for extensible CLI
 export const commandRegistry = new Map();
@@ -140,6 +141,18 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'monitor --watch',
       'monitor --interval 1000 --watch',
       'monitor --format json'
+    ]
+  });
+
+  commandRegistry.set('swarm', {
+    handler: swarmCommand,
+    description: 'Swarm-based AI agent coordination',
+    usage: 'swarm <objective> [options]',
+    examples: [
+      'swarm "Build a REST API"',
+      'swarm "Research cloud architecture" --strategy research',
+      'swarm "Analyze data" --max-agents 3 --parallel',
+      'swarm "Development task" --ui --monitor --background'
     ]
   });
 }

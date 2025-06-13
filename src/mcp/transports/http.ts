@@ -98,39 +98,6 @@ export class HttpTransport implements ITransport {
     this.notificationHandler = handler;
   }
 
-  async sendNotification(notification: MCPNotification): Promise<void> {
-    // Send notification to all connected WebSocket clients
-    const message = JSON.stringify(notification);
-    const promises: Promise<void>[] = [];
-
-    for (const ws of this.activeWebSockets) {
-      if (ws.readyState === WebSocket.OPEN) {
-        promises.push(
-          new Promise<void>((resolve, reject) => {
-            try {
-              ws.send(message);
-              resolve();
-            } catch (error) {
-              reject(error);
-            }
-          })
-        );
-      }
-    }
-
-    try {
-      await Promise.all(promises);
-      this.notificationCount++;
-      
-      this.logger.debug('Notification sent to WebSocket clients', {
-        method: notification.method,
-        clientCount: this.activeWebSockets.size,
-      });
-    } catch (error) {
-      this.logger.error('Failed to send notification to some clients', { error });
-      throw new MCPTransportError('Failed to send notification', { error });
-    }
-  }
 
   async getHealthStatus(): Promise<{ 
     healthy: boolean; 
@@ -453,5 +420,37 @@ export class HttpTransport implements ITransport {
       }),
       { status, headers: responseHeaders },
     );
+  }
+
+  async connect(): Promise<void> {
+    // For HTTP transport, connect is handled by start()
+    if (!this.running) {
+      await this.start();
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    // For HTTP transport, disconnect is handled by stop()
+    await this.stop();
+  }
+
+  async sendRequest(request: MCPRequest): Promise<MCPResponse> {
+    // HTTP transport is server-side, it doesn't send requests
+    throw new Error('HTTP transport does not support sending requests');
+  }
+
+  async sendNotification(notification: MCPNotification): Promise<void> {
+    // Broadcast notification to all connected WebSocket clients
+    const message = JSON.stringify(notification);
+    
+    for (const ws of this.activeWebSockets) {
+      try {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(message);
+        }
+      } catch (error) {
+        this.logger.error('Failed to send notification to WebSocket', error);
+      }
+    }
   }
 }

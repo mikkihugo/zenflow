@@ -2,8 +2,9 @@
  * Comprehensive mock implementations for testing
  */
 
-import { stub } from "https://deno.land/std@0.220.0/testing/mock.ts";
+import { stub, spy } from "https://deno.land/std@0.220.0/testing/mock.ts";
 import type { Spy } from "https://deno.land/std@0.220.0/testing/mock.ts";
+import type { AgentProfile, Task } from "../../src/utils/types.ts";
 
 // Since we can't import the actual interfaces yet, we'll define minimal interfaces
 interface IEventBus {
@@ -55,10 +56,10 @@ interface IMCPServer {
 
 // Helper function to create spy
 function createSpy<T extends (...args: any[]) => any>(implementation?: T): Spy<any, any> & T {
-  const mockObj = {};
+  const mockObj: Record<string, any> = {};
   const methodName = 'spyMethod';
   mockObj[methodName] = implementation || (() => {});
-  return stub(mockObj, methodName) as any;
+  return stub(mockObj, methodName as keyof typeof mockObj) as any;
 }
 
 /**

@@ -2,7 +2,8 @@
  * Unit tests for Tool Registry
  */
 
-import { describe, it, beforeEach, expect } from 'https://deno.land/std@0.208.0/testing/bdd.ts';
+import { describe, it, beforeEach } from 'https://deno.land/std@0.220.0/testing/bdd.ts';
+import { assertEquals, assertExists } from 'https://deno.land/std@0.220.0/assert/mod.ts';
 
 import { ToolRegistry } from '../../../src/mcp/tools.ts';
 import { MCPTool } from '../../../src/utils/types.ts';
@@ -43,9 +44,9 @@ describe('ToolRegistry', () => {
       registry.register(tool);
       
       const retrievedTool = registry.getTool('test/tool');
-      expect(retrievedTool).toBeDefined();
-      expect(retrievedTool?.name).toBe('test/tool');
-      expect(retrievedTool?.description).toBe('A test tool');
+      assertExists(retrievedTool);
+      assertEquals(retrievedTool?.name, 'test/tool');
+      assertEquals(retrievedTool?.description, 'A test tool');
     });
 
     it('should prevent duplicate tool registration', () => {
@@ -60,9 +61,9 @@ describe('ToolRegistry', () => {
       
       try {
         registry.register(tool);
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('already registered');
+        assertEquals((error as Error).message.includes('already registered'), true);
       }
     });
 
@@ -76,9 +77,9 @@ describe('ToolRegistry', () => {
 
       try {
         registry.register(invalidTool);
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('format: namespace/name');
+        assertEquals((error as Error).message.includes('format: namespace/name'), true);
       }
     });
 
@@ -113,9 +114,9 @@ describe('ToolRegistry', () => {
       for (const invalidTool of invalidTools) {
         try {
           registry.register(invalidTool as MCPTool);
-          expect.fail('Should have thrown an error');
+          throw new Error('Should have thrown an error');
         } catch (error) {
-          expect(error).toBeDefined();
+          assertExists(error);
         }
       }
     });
@@ -145,28 +146,28 @@ describe('ToolRegistry', () => {
 
     it('should retrieve a tool by name', () => {
       const tool = registry.getTool('test/tool1');
-      expect(tool).toBeDefined();
-      expect(tool?.name).toBe('test/tool1');
-      expect(tool?.description).toBe('First test tool');
+      assertExists(tool);
+      assertEquals(tool?.name, 'test/tool1');
+      assertEquals(tool?.description, 'First test tool');
     });
 
     it('should return undefined for non-existent tool', () => {
       const tool = registry.getTool('test/nonexistent');
-      expect(tool).toBeUndefined();
+      assertEquals(tool, undefined);
     });
 
     it('should list all tools', () => {
       const tools = registry.listTools();
-      expect(tools).toBeDefined();
-      expect(tools.length).toBe(2);
+      assertExists(tools);
+      assertEquals(tools.length, 2);
       
       const toolNames = tools.map(t => t.name);
-      expect(toolNames).toContain('test/tool1');
-      expect(toolNames).toContain('test/tool2');
+      assertEquals(toolNames.includes('test/tool1'), true);
+      assertEquals(toolNames.includes('test/tool2'), true);
     });
 
     it('should get tool count', () => {
-      expect(registry.getToolCount()).toBe(2);
+      assertEquals(registry.getToolCount(), 2);
     });
   });
 
@@ -204,42 +205,42 @@ describe('ToolRegistry', () => {
 
     it('should execute a tool successfully', async () => {
       const result = await registry.executeTool('test/echo', { message: 'Hello, World!' });
-      expect(result).toEqual({ echo: 'Hello, World!' });
+      assertEquals(result, { echo: 'Hello, World!' });
     });
 
     it('should handle tool execution errors', async () => {
       try {
         await registry.executeTool('test/error', {});
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toBe('Test error');
+        assertEquals((error as Error).message, 'Test error');
       }
     });
 
     it('should handle non-existent tool execution', async () => {
       try {
         await registry.executeTool('test/nonexistent', {});
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('Tool not found');
+        assertEquals((error as Error).message.includes('Tool not found'), true);
       }
     });
 
     it('should validate input against schema', async () => {
       try {
         await registry.executeTool('test/echo', {}); // Missing required 'message'
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('Missing required property');
+        assertEquals((error as Error).message.includes('Missing required property'), true);
       }
     });
 
     it('should validate input types', async () => {
       try {
         await registry.executeTool('test/echo', { message: 123 }); // Should be string
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('Invalid type');
+        assertEquals((error as Error).message.includes('Invalid type'), true);
       }
     });
   });
@@ -257,19 +258,19 @@ describe('ToolRegistry', () => {
     });
 
     it('should unregister a tool', () => {
-      expect(registry.getTool('test/removable')).toBeDefined();
+      assertExists(registry.getTool('test/removable'));
       
       registry.unregister('test/removable');
       
-      expect(registry.getTool('test/removable')).toBeUndefined();
+      assertEquals(registry.getTool('test/removable'), undefined);
     });
 
     it('should handle unregistering non-existent tool', () => {
       try {
         registry.unregister('test/nonexistent');
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('Tool not found');
+        assertEquals((error as Error).message.includes('Tool not found'), true);
       }
     });
   });
@@ -301,7 +302,7 @@ describe('ToolRegistry', () => {
         name: 'John',
         age: 30,
       });
-      expect(result.name).toBe('John');
+      assertEquals(result.name, 'John');
     });
 
     it('should validate number types', async () => {
@@ -310,9 +311,9 @@ describe('ToolRegistry', () => {
           name: 'John',
           age: 'thirty', // Should be number
         });
-        expect.fail('Should have thrown an error');
+        throw new Error('Should have thrown an error');
       } catch (error) {
-        expect(error.message).toContain('Invalid type');
+        assertEquals((error as Error).message.includes('Invalid type'), true);
       }
     });
 
@@ -322,7 +323,7 @@ describe('ToolRegistry', () => {
         age: 30,
         active: true,
       });
-      expect(result.active).toBe(true);
+      assertEquals(result.active, true);
     });
 
     it('should validate array types', async () => {
@@ -331,7 +332,7 @@ describe('ToolRegistry', () => {
         age: 30,
         tags: ['developer', 'typescript'],
       });
-      expect(result.tags).toEqual(['developer', 'typescript']);
+      assertEquals(result.tags, ['developer', 'typescript']);
     });
 
     it('should validate object types', async () => {
@@ -340,7 +341,7 @@ describe('ToolRegistry', () => {
         age: 30,
         metadata: { department: 'engineering' },
       });
-      expect(result.metadata).toEqual({ department: 'engineering' });
+      assertEquals(result.metadata, { department: 'engineering' });
     });
 
     it('should handle null input for non-object schema', async () => {
@@ -354,7 +355,7 @@ describe('ToolRegistry', () => {
       registry.register(tool);
 
       const result = await registry.executeTool('test/null', null);
-      expect(result).toEqual({ received: 'null' });
+      assertEquals(result, { received: 'null' });
     });
   });
 });

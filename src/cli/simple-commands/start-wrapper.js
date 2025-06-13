@@ -20,19 +20,25 @@ export async function startCommand(subArgs, flags) {
     
     // Check if we should launch the new UI mode
     if (ui) {
-      printInfo('Launching interactive process management UI...');
-      console.log('Note: This would launch the new text-based UI for process management');
-      console.log();
-      console.log('Available features in UI mode:');
-      console.log('  • Start/stop individual processes');
-      console.log('  • View real-time process status');
-      console.log('  • Monitor system health');
-      console.log('  • View process logs');
-      console.log('  • Restart failed processes');
-      console.log();
-      console.log('The full UI requires the TypeScript implementation.');
-      console.log('Use "claude-flow start --ui" with the main CLI.');
-      return;
+      try {
+        // Launch the enhanced JavaScript UI
+        const { launchEnhancedUI } = await import('./process-ui-enhanced.js');
+        await launchEnhancedUI();
+        return;
+      } catch (err) {
+        // Fallback to simple UI
+        try {
+          printWarning('Enhanced UI failed, launching simple UI...');
+          const { launchProcessUI } = await import('./process-ui.js');
+          await launchProcessUI();
+          return;
+        } catch (fallbackErr) {
+          // If both fail, show error
+          printError('Failed to launch UI: ' + err.message);
+          console.error(err.stack);
+          return;
+        }
+      }
     }
     
     // Check if required directories exist
@@ -196,13 +202,22 @@ function showStartHelp() {
   console.log('  claude-flow start --ui               # Launch process management UI');
   console.log('  claude-flow start --verbose          # Show detailed logs');
   console.log();
-  console.log('Process Management UI:');
-  console.log('  The --ui flag launches a text-based interface for managing processes');
-  console.log('  Features include:');
-  console.log('    - Start/stop individual components');
-  console.log('    - Real-time status monitoring');
-  console.log('    - Process health visualization');
-  console.log('    - Log viewing');
+  console.log('Enhanced Process Management UI:');
+  console.log('  The --ui flag launches an advanced multi-view interface with:');
+  console.log();
+  console.log('  Views (press 1-6 to switch):');
+  console.log('    1. Process Management - Start/stop individual components');
+  console.log('    2. System Status - Health metrics and resource usage');
+  console.log('    3. Orchestration - Agent and task management');
+  console.log('    4. Memory Bank - Namespace browser and operations');
+  console.log('    5. System Logs - Real-time log viewer with filters');
+  console.log('    6. Help - Comprehensive keyboard shortcuts');
+  console.log();
+  console.log('  Features:');
+  console.log('    - Color-coded status indicators');
+  console.log('    - Real-time updates and monitoring');
+  console.log('    - Context-sensitive controls');
+  console.log('    - Tab navigation between views');
   console.log();
   console.log('Notes:');
   console.log('  - Requires "claude-flow init" to be run first');

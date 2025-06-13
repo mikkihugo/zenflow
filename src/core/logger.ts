@@ -48,6 +48,11 @@ export class Logger implements ILogger {
     },
     context: Record<string, unknown> = {},
   ) {
+    // Validate file path if file destination
+    if ((config.destination === 'file' || config.destination === 'both') && !config.filePath) {
+      throw new Error('File path required for file logging');
+    }
+    
     this.config = config;
     this.context = context;
   }
@@ -57,6 +62,18 @@ export class Logger implements ILogger {
    */
   static getInstance(config?: LoggingConfig): Logger {
     if (!Logger.instance) {
+      if (!config) {
+        // Use default config if none provided and not in test environment
+        const isTestEnv = Deno.env.get('CLAUDE_FLOW_ENV') === 'test';
+        if (isTestEnv) {
+          throw new Error('Logger configuration required for initialization');
+        }
+        config = {
+          level: 'info',
+          format: 'json',
+          destination: 'console',
+        };
+      }
       Logger.instance = new Logger(config);
     }
     return Logger.instance;
@@ -130,7 +147,16 @@ export class Logger implements ILogger {
 
   private format(entry: LogEntry): string {
     if (this.config.format === 'json') {
-      return JSON.stringify(entry);
+      // Handle error serialization for JSON format
+      const jsonEntry = { ...entry };
+      if (jsonEntry.error instanceof Error) {
+        jsonEntry.error = {
+          name: jsonEntry.error.name,
+          message: jsonEntry.error.message,
+          stack: jsonEntry.error.stack,
+        };
+      }
+      return JSON.stringify(jsonEntry);
     }
 
     // Text format
@@ -258,5 +284,5 @@ export class Logger implements ILogger {
   }
 }
 
-// Export singleton instance
+// Export singleton instance with lazy initialization
 export const logger = Logger.getInstance();

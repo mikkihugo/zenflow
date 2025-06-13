@@ -136,6 +136,9 @@ describe('Logger', () => {
     });
 
     it('should respect log level hierarchy', () => {
+      // Force reset singleton to ensure clean state
+      (Logger as any).instance = undefined;
+      
       const config: LoggingConfig = {
         level: 'warn',
         format: 'text',
@@ -143,6 +146,10 @@ describe('Logger', () => {
       };
       
       logger = Logger.getInstance(config);
+      
+      // Clear any previous captures
+      consoleCapture.getOutput();
+      consoleCapture.getErrors();
       
       logger.debug('debug');
       logger.info('info');
@@ -335,8 +342,8 @@ describe('Logger', () => {
         logger.info('This is a long log message to fill up the file quickly');
       }
       
-      // Wait for file operations
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Wait for file operations to complete
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Check if rotation occurred
       const dir = tempLogFile.substring(0, tempLogFile.lastIndexOf('/'));
@@ -389,7 +396,15 @@ describe('Logger', () => {
       };
       
       logger = Logger.getInstance(config);
-      const fileHandleSpy = spy(logger['fileHandle']!, 'close');
+      
+      // Write something to ensure file handle is created
+      logger.info('test log');
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Now spy on the file handle
+      const fileHandle = logger['fileHandle'];
+      assertExists(fileHandle);
+      const fileHandleSpy = spy(fileHandle, 'close');
       
       await logger.configure({
         level: 'info',

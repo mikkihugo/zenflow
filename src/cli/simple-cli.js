@@ -32,7 +32,8 @@ INSTALLATION & SETUP:
 
 KEY COMMANDS:
   init [--sparc]                       Initialize project with Claude integration
-  start [--ui]                         Start orchestration system (--ui for interactive UI)
+  start [--ui]                         Start orchestration (--ui for enhanced UI)
+  spawn <type> [--name <name>]         Create AI agent (alias for agent spawn)
   agent spawn <type> [--name <name>]   Create AI agent (researcher, coder, analyst)
   sparc <subcommand>                   SPARC-based development modes
   memory <subcommand>                  Manage persistent memory
@@ -161,6 +162,20 @@ async function main() {
     case 'monitor':
       printSuccess('Starting system monitor...');
       console.log('📊 Real-time monitoring would display here');
+      break;
+      
+    case 'spawn':
+      // Convenience alias for agent spawn
+      const spawnType = subArgs[0] || 'general';
+      const spawnName = flags.name || `agent-${Date.now()}`;
+      
+      printSuccess(`Spawning ${spawnType} agent: ${spawnName}`);
+      console.log('🤖 Agent would be created with the following configuration:');
+      console.log(`   Type: ${spawnType}`);
+      console.log(`   Name: ${spawnName}`);
+      console.log('   Capabilities: Research, Analysis, Code Generation');
+      console.log('   Status: Ready');
+      console.log('\n📋 Note: Full agent spawning requires orchestrator to be running');
       break;
       
     case 'terminal':
@@ -1930,6 +1945,19 @@ ${flags.mode === 'full' || !flags.mode ? `Full-stack development covering all as
     default:
       printError(`Unknown command: ${command}`);
       console.log('Run "claude-flow help" for available commands');
+      
+      // Suggest similar commands
+      const commonCommands = ['agent', 'task', 'spawn', 'init', 'start', 'status', 'memory', 'sparc', 'help'];
+      const suggestions = commonCommands.filter(cmd => 
+        cmd.startsWith(command.toLowerCase()) || 
+        cmd.includes(command.toLowerCase())
+      );
+      
+      if (suggestions.length > 0) {
+        console.log('\nDid you mean:');
+        suggestions.forEach(cmd => console.log(`  claude-flow ${cmd}`));
+      }
+      
       Deno.exit(1);
   }
 }

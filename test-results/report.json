@@ -1,24 +1,14 @@
 {
-  "timestamp": "2025-06-11T03:56:28.399Z",
-  "total": 3,
+  "timestamp": "2025-06-13T03:49:16.750Z",
+  "total": 1,
   "passed": 0,
-  "failed": 3,
-  "duration": 11235,
+  "failed": 1,
+  "duration": 3943,
   "suites": [
     {
       "suite": "unit",
       "passed": false,
-      "duration": 5358
-    },
-    {
-      "suite": "integration",
-      "passed": false,
-      "duration": 4293
-    },
-    {
-      "suite": "e2e",
-      "passed": false,
-      "duration": 1584
+      "duration": 3943
     }
   ],
   "environment": {
@@ -30,9 +20,7 @@
   },
   "options": {
     "suites": [
-      "unit",
-      "integration",
-      "e2e"
+      "unit"
     ],
     "coverage": true,
     "watch": false,
