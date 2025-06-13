@@ -2,7 +2,7 @@
  * Process Manager - Handles lifecycle of system processes
  */
 
-import { EventEmitter } from 'https://deno.land/std@0.224.0/async/mod.ts';
+import { EventEmitter } from './event-emitter.ts';
 import { colors } from '@cliffy/ansi/colors';
 import { 
   ProcessInfo, 
@@ -22,11 +22,11 @@ import { configManager } from '../../../core/config.ts';
 
 export class ProcessManager extends EventEmitter {
   private processes: Map<string, ProcessInfo> = new Map();
-  private orchestrator?: Orchestrator;
-  private terminalManager?: TerminalManager;
-  private memoryManager?: MemoryManager;
-  private coordinationManager?: CoordinationManager;
-  private mcpServer?: MCPServer;
+  private orchestrator: Orchestrator | undefined;
+  private terminalManager: TerminalManager | undefined;
+  private memoryManager: MemoryManager | undefined;
+  private coordinationManager: CoordinationManager | undefined;
+  private mcpServer: MCPServer | undefined;
   private config: any;
 
   constructor() {
@@ -172,7 +172,7 @@ export class ProcessManager extends EventEmitter {
       this.updateProcessStatus(processId, ProcessStatus.ERROR);
       process.metrics = {
         ...process.metrics,
-        lastError: error.message
+        lastError: (error as Error).message
       };
       this.emit('processError', { processId, error });
       throw error;
@@ -256,7 +256,7 @@ export class ProcessManager extends EventEmitter {
       try {
         await this.startProcess(processId);
       } catch (error) {
-        console.error(colors.red(`Failed to start ${processId}:`), error.message);
+        console.error(colors.red(`Failed to start ${processId}:`), (error as Error).message);
         // Continue with other processes
       }
     }
@@ -279,7 +279,7 @@ export class ProcessManager extends EventEmitter {
         try {
           await this.stopProcess(processId);
         } catch (error) {
-          console.error(colors.red(`Failed to stop ${processId}:`), error.message);
+          console.error(colors.red(`Failed to stop ${processId}:`), (error as Error).message);
         }
       }
     }

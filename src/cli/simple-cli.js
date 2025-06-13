@@ -13,7 +13,7 @@ import {
 } from './command-registry.js';
 import { parseFlags } from './utils.js';
 
-const VERSION = '1.0.42';
+const VERSION = '1.0.43';
 
 function printHelp() {
   console.log(`
@@ -32,10 +32,10 @@ INSTALLATION & SETUP:
 
 KEY COMMANDS:
   init [--sparc]                       Initialize project with Claude integration
+  start [--ui]                         Start orchestration system (--ui for interactive UI)
   agent spawn <type> [--name <name>]   Create AI agent (researcher, coder, analyst)
   sparc <subcommand>                   SPARC-based development modes
   memory <subcommand>                  Manage persistent memory
-  start                                Start orchestration system
   status                               Show system status
 
 COMMAND CATEGORIES:
@@ -46,13 +46,14 @@ COMMAND CATEGORIES:
   Enterprise:   project, deploy, cloud, security, analytics
 
 QUICK START:
-  npx claude-flow@latest init --sparc  # First-time setup with SPARC modes
-  claude-flow sparc modes              # List available development modes
-  claude-flow sparc "build app"        # Run SPARC orchestrator (default)
-  claude-flow sparc run code "feature" # Run specific mode (auto-coder)
-  claude-flow sparc tdd "tests"        # Run test-driven development
-  claude-flow memory store key "data"  # Store information
-  claude-flow status                   # Check system status
+  npx -y claude-flow@latest init --sparc # First-time setup with SPARC modes
+  ./claude-flow start --ui              # Interactive process management UI
+  ./claude-flow sparc modes             # List available development modes
+  ./claude-flow sparc "build app"       # Run SPARC orchestrator (default)
+  ./claude-flow sparc run code "feature" # Run specific mode (auto-coder)
+  ./claude-flow sparc tdd "tests"       # Run test-driven development
+  ./claude-flow memory store key "data"  # Store information
+  ./claude-flow status                  # Check system status
 
 GET DETAILED HELP:
   claude-flow help <command>           # Show command-specific help

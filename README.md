@@ -12,16 +12,16 @@
 
 </div>
 
-## 🎉 **What's New in v1.0.41**
+## 🎉 **What's New in v1.0.43**
 
-- **🚀 Simplified SPARC Syntax**: `npx claude-flow sparc "build app"` (no more double sparc!)
+- **🚀 Text-Based Process Management UI**: New `--ui` flag for `start` command provides interactive process control
+- **🎯 Simplified SPARC Syntax**: `npx claude-flow sparc "build app"` (no more double sparc!)
 - **⚡ Auto-Skip Permissions**: `--dangerously-skip-permissions` by default (use `--enable-permissions` to restore prompts)
-- **🤖 Non-Interactive Mode**: JSON output with `--non-interactive` flag for automation and parallel execution
+- **🤖 Non-Interactive Mode**: JSON output with `--non-interactive` flag for automation
 - **📁 Directory Safety**: Enhanced guidance to prevent files in node_modules
 - **🎯 17+ SPARC Modes**: Including new `sparc-orchestrator` for complex workflows
 - **📂 Local Executable**: `init` now creates `./claude-flow` wrapper to ensure correct working directory
 - **🔧 Fixed SPARC Path Resolution**: `.roomodes` now correctly found in project directory
-- **🌐 Remote Environment Support**: Improved wrapper script for npm/npx installations
 - **📝 Better SPARC Error Messages**: Clear guidance when `.roomodes` is missing
 
 
@@ -44,36 +44,39 @@
 ## 📦 **Installation**
 
 
-# 🚀 Get started in 30 seconds
-- Step 1. Install Claude Code: ``` npm install -g @anthropic-ai/claude-code ```
-- Step 2. Install Claude-Flow ``` npx -y claude-flow@latest --version ```
-- Step 3. Initialize Claude-Flow ``` npx -y claude-flow@latest init --sparc ```
-- Step 4. Start the orchestrator ``` npx -y claude-flow@latest sparc "build and test my project" ```
+### 🚀 Get started in 30 seconds
+```bash
+# Initialize with SPARC development environment
+npx -y claude-flow@latest init --sparc
+
+# Use the local wrapper after init
+./claude-flow start --ui  # Interactive process management
+./claude-flow sparc "build and test my project"  # SPARC development
+```
 
 ```bash
 # ⚡ SPARC Development Workflow (NEW: Simplified!)
 npx claude-flow sparc "build a todo app" # Orchestrator mode (default)
 npx claude-flow sparc modes              # List 17+ development modes
 npx claude-flow sparc tdd "user auth"    # Run TDD workflow
-npx claude-flow sparc run code "API"     # Specific mode execution
 
-# 🚀 Parallel Execution (requires external tool)
-# Example with GNU Parallel:
-parallel -j 3 npx claude-flow sparc run {} --non-interactive ::: \
-  "code 'frontend'" "code 'backend'" "tdd 'tests'"
+# 🎯 Run specific SPARC modes
+npx claude-flow sparc run code "implement API"  # Code generation
+npx claude-flow sparc run tdd "auth tests"      # Test-driven development
+npx claude-flow sparc run architect "system"    # Architecture design
 
 # 🤖 Spawn a research team
-npx claude-flow agent spawn researcher --name "Senior Researcher"
-npx claude-flow agent spawn analyst --name "Data Analyst"
-npx claude-flow agent spawn implementer --name "Code Developer"
+./claude-flow agent spawn researcher --name "Senior Researcher"
+./claude-flow agent spawn analyst --name "Data Analyst"
+./claude-flow agent spawn implementer --name "Code Developer"
 
 # 📋 Create and execute tasks
-npx claude-flow task create research "Research AI optimization techniques"
-npx claude-flow task list
+./claude-flow task create research "Research AI optimization techniques"
+./claude-flow task list
 
 # 📊 Monitor in real-time
-npx claude-flow status
-npx claude-flow monitor
+./claude-flow status
+./claude-flow monitor
 ```
 
 ## 🏗️ **Core Features**
@@ -135,13 +138,10 @@ claude-flow --version
 
 ### 🦕 **Option 2: Deno (For Developers)**
 ```bash
-# Install via Deno
-deno install --allow-all --name claude-flow \
-  https://raw.githubusercontent.com/ruvnet/claude-code-flow/main/src/cli/index.ts
-
-# Or run directly
-deno run --allow-all \
-  https://raw.githubusercontent.com/ruvnet/claude-code-flow/main/src/cli/index.ts
+# Clone and run from source
+git clone https://github.com/ruvnet/claude-code-flow.git
+cd claude-code-flow
+./bin/claude-flow --version
 ```
 
 ### 🔧 **Option 3: From Source (For Contributors)**
@@ -195,66 +195,66 @@ The `--sparc` flag creates:
 # Or run as daemon
 ./claude-flow start --daemon
 
-# If not initialized yet, use npx:
-npx claude-flow start
+# With interactive UI
+./claude-flow start --ui
 ```
 
 ### 3. **Spawn Agents**
 ```bash
 # Spawn different agent types with specific capabilities
-npx claude-flow agent spawn researcher --name "Research Assistant" --priority 8
-npx claude-flow agent spawn implementer --name "Code Developer" --priority 7
-npx claude-flow agent spawn analyst --name "Data Analyst" --priority 6
-npx claude-flow agent spawn coordinator --name "Project Manager" --priority 9
+./claude-flow agent spawn researcher --name "Research Assistant" --priority 8
+./claude-flow agent spawn implementer --name "Code Developer" --priority 7
+./claude-flow agent spawn analyst --name "Data Analyst" --priority 6
+./claude-flow agent spawn coordinator --name "Project Manager" --priority 9
 
 # List all active agents
-npx claude-flow agent list
+./claude-flow agent list
 
 # Get detailed information about an agent
-npx claude-flow agent info agent-123
+./claude-flow agent info agent-123
 ```
 
 ### 4. **Create and Manage Tasks**
 ```bash
 # Create tasks with different priorities
-npx claude-flow task create research "Analyze authentication best practices" --priority 8
-npx claude-flow task create implementation "Build JWT authentication" --priority 9
-npx claude-flow task create analysis "Review security vulnerabilities" --priority 10
+./claude-flow task create research "Analyze authentication best practices" --priority 8
+./claude-flow task create implementation "Build JWT authentication" --priority 9
+./claude-flow task create analysis "Review security vulnerabilities" --priority 10
 
 # Create task with dependencies
-npx claude-flow task create implementation "Build user management" \
+./claude-flow task create implementation "Build user management" \
   --priority 7 --deps task-123,task-456
 
 # Assign tasks to agents
-npx claude-flow task assign task-123 agent-456
+./claude-flow task assign task-123 agent-456
 
 # List all tasks
-npx claude-flow task list
-npx claude-flow task list --verbose  # Show detailed task information
+./claude-flow task list
+./claude-flow task list --verbose  # Show detailed task information
 
 # Check specific task status
-npx claude-flow task status task-123
+./claude-flow task status task-123
 
 # Cancel a task
-npx claude-flow task cancel task-789
+./claude-flow task cancel task-789
 ```
 
 ### 5. **Spawn Claude Instances** 🆕
 ```bash
 # Spawn Claude with enhanced Claude-Flow guidance
-npx claude-flow claude spawn "implement user authentication" --research --parallel
+./claude-flow claude spawn "implement user authentication" --research --parallel
 
 # Backend-only mode with high coverage
-npx claude-flow claude spawn "create REST API" --mode backend-only --coverage 95
+./claude-flow claude spawn "create REST API" --mode backend-only --coverage 95
 
 # Frontend development with feature commits
-npx claude-flow claude spawn "build React components" --mode frontend-only --commit feature
+./claude-flow claude spawn "build React components" --mode frontend-only --commit feature
 
 # Full stack with all options
-npx claude-flow claude spawn "build complete app" --research --parallel --coverage 90 --verbose
+./claude-flow claude spawn "build complete app" --research --parallel --coverage 90 --verbose
 
-# Execute batch workflow
-npx claude-flow claude batch examples/claude-workflow.json --dry-run
+# Execute workflow
+./claude-flow claude batch workflow.json --dry-run
 ```
 
 **Enhanced Claude Instances receive:**
@@ -267,13 +267,13 @@ npx claude-flow claude batch examples/claude-workflow.json --dry-run
 ### 6. **Monitor System Status**
 ```bash
 # Check system health
-npx claude-flow status
+./claude-flow status
 
 # Real-time monitoring
-npx claude-flow monitor
+./claude-flow monitor
 
 # View MCP tools
-npx claude-flow mcp tools
+./claude-flow mcp tools
 ```
 
 ## 🚀 **SPARC Development Methodology**
@@ -283,7 +283,7 @@ Claude-Flow integrates the **SPARC** (Specification, Pseudocode, Architecture, R
 ### **Available SPARC Modes**
 ```bash
 # List all development modes
-npx claude-flow sparc modes
+./claude-flow sparc modes
 
 # Key modes include:
 # 🏗️ architect      - System design and architecture
@@ -297,45 +297,26 @@ npx claude-flow sparc modes
 ### **SPARC Workflow**
 ```bash
 # Simplified orchestration (NEW!)
-npx claude-flow sparc "build complete authentication system"
+./claude-flow sparc "build complete authentication system"
 
-# Or use specific modes:
-# 1. Specification - Define requirements
-npx claude-flow sparc run spec-pseudocode "user authentication system"
+# Run specific SPARC modes:
+./claude-flow sparc run code "implement API"  # Code generation
+./claude-flow sparc run tdd "auth tests"      # Test-driven development
+./claude-flow sparc run architect "system"    # Architecture design
 
-# 2. Architecture - Design system structure  
-npx claude-flow sparc run architect "auth service architecture"
-
-# 3. Refinement - TDD implementation
-npx claude-flow sparc tdd "implement JWT authentication"
-
-# 4. Integration - Connect components
-npx claude-flow sparc run integration "auth with user management"
-
-# 5. Completion - Documentation and validation
-npx claude-flow sparc run docs-writer "authentication API docs"
+# TDD shorthand
+./claude-flow sparc tdd "implement JWT authentication"
 ```
 
-### **Parallel Execution with External Tools**
+### **Non-Interactive Mode**
 
-Claude-Flow's `--non-interactive` flag enables integration with external orchestration tools for parallel execution:
+The `--non-interactive` flag outputs JSON for integration with CI/CD pipelines and automation tools:
 
 ```bash
-# Example with hypothetical batchtool (external tool, not included)
-# Run multiple SPARC modes concurrently
-batchtool run --parallel \
-  "npx claude-flow sparc run code 'user service' --non-interactive" \
-  "npx claude-flow sparc run code 'auth service' --non-interactive" \
-  "npx claude-flow sparc run tdd 'test suite' --non-interactive"
-
-# Or use any parallel execution tool like GNU Parallel:
-parallel -j 3 npx claude-flow sparc run {} --non-interactive ::: \
-  "code 'user service'" \
-  "code 'auth service'" \
-  "tdd 'test suite'"
+# Run SPARC modes with JSON output
+./claude-flow sparc run code "user service" --non-interactive
+./claude-flow sparc run tdd "test suite" --non-interactive
 ```
-
-**Note**: `batchtool` is not included with claude-flow. The `--non-interactive` flag outputs JSON for integration with your preferred orchestration tools.
 
 ### **SPARC Features**
 - **17+ Specialized AI Modes** for different development phases
@@ -343,7 +324,7 @@ parallel -j 3 npx claude-flow sparc run {} --non-interactive ::: \
 - **TDD Enforcement** with Red-Green-Refactor cycle automation
 - **Modular Design** with <500 line file constraints
 - **Environment Safety** preventing credential exposure
-- **External Tool Integration** via `--non-interactive` flag for parallel execution
+- **CI/CD Integration** via `--non-interactive` flag for automation
 - **Non-Interactive Mode** for automation and CI/CD integration
 - **Auto-Skip Permissions** by default (use --enable-permissions to prompt)
 - **Quality Gates** with automated code analysis and security review
@@ -437,7 +418,7 @@ npx claude-flow@latest init [options]
 
 **Recommended first-time setup:**
 ```bash
-npx claude-flow@latest init --sparc
+npx -y claude-flow@latest init --sparc
 ```
 
 Creates:
@@ -452,7 +433,15 @@ Creates:
 npx claude-flow start [options]
   -d, --daemon              Run as daemon in background
   -p, --port <port>         MCP server port (default: 3000)
+  -u, --ui                  Launch interactive process management UI
+  -v, --verbose             Show detailed system activity
 ```
+
+**Process Management UI Features (--ui flag):**
+- Start/stop individual components (press 1-6 to toggle)
+- Real-time status monitoring
+- Process health visualization
+- Commands: A (start all), Z (stop all), R (restart all), Q (quit)
 
 #### `status` - Show System Status
 ```bash
@@ -547,14 +536,14 @@ npx claude-flow claude <subcommand>
     --no-permissions        Use --dangerously-skip-permissions flag
     -c, --config <file>     MCP config file path
     -m, --mode <mode>       Development mode (full/backend-only/frontend-only/api-only)
-    --parallel              Enable parallel execution with multi-agent support
-    --research              Enable web research with WebFetchTool
+    --parallel              Enable multi-agent support
+    --research              Enable web research capabilities
     --coverage <n>          Test coverage target percentage (default: 80)
     --commit <freq>         Commit frequency (phase/feature/manual)
     -v, --verbose           Enable verbose output
     -d, --dry-run           Show what would be executed without running
     
-  batch <workflow-file>     Execute multiple Claude instances from workflow
+  batch <workflow-file>     Execute workflow configuration
     --dry-run               Show what would be executed without running
 ```
 
@@ -602,30 +591,21 @@ npx claude-flow help [command]
 **Complete Agent & Task Workflow:**
 ```bash
 # Initialize and start the system
-npx claude-flow init
-npx claude-flow start --daemon
+npx claude-flow init --sparc
+./claude-flow start --ui  # Use interactive UI for process management
 
-# Spawn a team of agents
-npx claude-flow agent spawn researcher --name "Senior Researcher" --priority 8
-npx claude-flow agent spawn analyst --name "Data Analyst" --priority 7
-npx claude-flow agent spawn implementer --name "Lead Developer" --priority 9
+# In another terminal, spawn agents
+./claude-flow agent spawn researcher --name "Senior Researcher" --priority 8
+./claude-flow agent spawn analyst --name "Data Analyst" --priority 7
+./claude-flow agent spawn implementer --name "Lead Developer" --priority 9
 
-# Create research task
-TASK1=$(npx claude-flow task create research "Analyze authentication patterns" --priority 8 | grep "Task ID" | awk '{print $3}')
-
-# Create analysis task dependent on research
-TASK2=$(npx claude-flow task create analysis "Security audit findings" --priority 7 --deps $TASK1 | grep "Task ID" | awk '{print $3}')
-
-# Create implementation task dependent on analysis
-TASK3=$(npx claude-flow task create implementation "Build secure auth system" --priority 9 --deps $TASK2 | grep "Task ID" | awk '{print $3}')
-
-# Assign tasks to appropriate agents
-npx claude-flow task assign $TASK1 $(npx claude-flow agent list | grep researcher | awk '{print $2}')
-npx claude-flow task assign $TASK2 $(npx claude-flow agent list | grep analyst | awk '{print $2}')
-npx claude-flow task assign $TASK3 $(npx claude-flow agent list | grep implementer | awk '{print $2}')
+# Create and manage tasks
+./claude-flow task create research "Analyze authentication patterns" --priority 8
+./claude-flow task create analysis "Security audit findings" --priority 7
+./claude-flow task create implementation "Build secure auth system" --priority 9
 
 # Monitor the workflow
-npx claude-flow monitor
+./claude-flow monitor
 ```
 
 **Code Development Workflow:**
@@ -660,32 +640,32 @@ npx claude-flow sparc run docs-writer "API documentation"
 **Enhanced Claude Spawn Examples:**
 ```bash
 # Backend API development with high test coverage
-npx claude-flow claude spawn "build REST API with authentication" \
+./claude-flow claude spawn "build REST API with authentication" \
   --mode backend-only --coverage 95 --commit feature
 
 # Frontend development with research capabilities
-npx claude-flow claude spawn "create responsive dashboard" \
+./claude-flow claude spawn "create responsive dashboard" \
   --mode frontend-only --research --verbose
 
 # Full-stack development with parallel execution
-npx claude-flow claude spawn "implement user management system" \
+./claude-flow claude spawn "implement user management system" \
   --parallel --coverage 90 --commit phase
 
 # API design focus with custom tools
-npx claude-flow claude spawn "design GraphQL schema" \
+./claude-flow claude spawn "design GraphQL schema" \
   --mode api-only --tools "View,Edit,GrepTool,LS"
 ```
 
 **Workflow Execution:**
 ```bash
-# Execute a predefined workflow
-npx claude-flow workflow examples/development-config.json
-
-# Execute workflow with monitoring
-npx claude-flow workflow examples/research-workflow.json --watch
+# Execute a workflow file
+./claude-flow workflow my-workflow.json
 
 # Validate workflow before execution
-npx claude-flow workflow my-workflow.json --validate
+./claude-flow workflow my-workflow.json --validate
+
+# Execute with monitoring
+./claude-flow workflow my-workflow.json --watch
 ```
 
 ## Workflow Example
@@ -722,20 +702,21 @@ Create a workflow file (`example-workflow.json`):
 
 Execute the workflow:
 ```bash
-claude-flow task workflow example-workflow.json
+./claude-flow workflow example-workflow.json
 ```
 
 ## Development
 
 ### Prerequisites
-- Deno 1.38+ or Node.js 16+ (Install Deno: https://deno.land/#installation)
+- Deno 1.40+ (Install: https://deno.land/#installation)
+- Node.js 16+ (for npm wrapper)
 - Git
 
 ### Setup
 ```bash
 git clone https://github.com/ruvnet/claude-code-flow.git
-cd claude-flow
-deno task dev
+cd claude-code-flow
+./bin/claude-flow --version  # Verify installation
 ```
 
 ### Testing
@@ -746,6 +727,11 @@ deno task test
 ### Building
 ```bash
 deno task build
+```
+
+### Running from source
+```bash
+./bin/claude-flow --help  # Use the binary wrapper
 ```
 
 ## API Usage
@@ -795,11 +781,14 @@ Claude-Flow seamlessly integrates with Claude Code through the `CLAUDE.md` file 
 
 Use with Claude Code:
 ```bash
-# Initialize integration
-npx claude-flow init
+# Initialize integration with SPARC
+npx -y claude-flow@latest init --sparc
 
-# Spawn Claude with enhanced Claude-Flow guidance
-npx claude-flow claude spawn "your task here" --research --parallel
+# Use local wrapper after initialization
+./claude-flow start --ui  # Interactive process management
+
+# Spawn Claude with enhanced guidance
+./claude-flow claude spawn "your task here" --research --parallel
 
 # Claude receives:
 # - Instructions on using npx claude-flow commands
@@ -827,37 +816,23 @@ npx claude-flow claude spawn "your task here" --research --parallel
 ### Community & Support
 - **[GitHub Issues](https://github.com/ruvnet/claude-code-flow/issues)** - Bug reports and feature requests
 - **[GitHub Discussions](https://github.com/ruvnet/claude-code-flow/discussions)** - Community forum
-- **[Discord Server](https://discord.gg/claude-flow)** - Real-time chat and support
-- **[Stack Overflow](https://stackoverflow.com/questions/tagged/claude-flow)** - Q&A
-
-### Tutorials & Guides
-- **[Video Tutorials](https://youtube.com/claude-flow)** - Step-by-step video guides
-- **[Blog Posts](https://claude-flow.dev/blog)** - Tips, tricks, and use cases
-- **[Case Studies](https://claude-flow.dev/case-studies)** - Real-world implementations
 
 ## 🚀 **Roadmap**
 
-### Q1 2025
-- [x] Initial release with core orchestration
-- [x] Memory bank implementation
-- [x] MCP integration
-- [x] Claude Code integration (`init` command)
-- [ ] Web UI for visual orchestration
-- [ ] Plugin system for custom agent types
+### Current Features
+- ✅ Core orchestration with multi-agent support
+- ✅ CRDT-based memory bank with SQLite backend
+- ✅ MCP server integration (stdio transport)
+- ✅ Claude Code integration via `init` command
+- ✅ Text-based process management UI
+- ✅ 17+ SPARC development modes
+- ✅ Comprehensive CLI with 10+ commands
 
-### Q2 2025
-- [ ] Distributed orchestration support
-- [ ] Enhanced monitoring dashboard
-- [ ] Integration with more AI models
-- [ ] Workflow templates library
-- [ ] Cloud deployment options
-
-### Q3 2025
-- [ ] Enterprise SSO integration
-- [ ] Advanced analytics and reporting
-- [ ] Multi-tenant support
-- [ ] GraphQL API
-- [ ] Mobile app for monitoring
+### Planned Features
+- Web UI for visual orchestration
+- Plugin system for custom agent types
+- Enhanced monitoring dashboard
+- Workflow templates library
 
 ## 🤝 **Contributing**
 

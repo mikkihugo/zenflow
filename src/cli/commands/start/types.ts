@@ -56,6 +56,7 @@ export interface StartOptions {
   config?: string;
   verbose?: boolean;
   ui?: boolean;
+  autoStart?: boolean;
 }
 
 export interface UIAction {

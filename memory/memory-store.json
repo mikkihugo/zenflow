@@ -41,6 +41,12 @@
       "value": "Created hello world shell script in /hello-world/hello.sh. Script is executable and displays hostname, date, and user info. Ready for SSH execution.",
       "namespace": "default",
       "timestamp": 1749674078738
+    },
+    {
+      "key": "test-key",
+      "value": "Testing memory storage",
+      "namespace": "default",
+      "timestamp": 1749772000742
     }
   ]
 }
