@@ -1,384 +1,268 @@
-# Claude Code Integration Guide
-
-This document provides comprehensive guidance to Claude when working with the Claude-Flow codebase - an advanced multi-agent orchestration platform for Claude Code.
+# Claude Code Configuration - SPARC Development Environment
 
 ## Project Overview
+This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development with AI assistance through Claude-Flow orchestration.
 
-**Claude-Flow** is the ultimate multi-terminal orchestration platform that revolutionizes how you work with Claude Code. It enables coordinating dozens of AI agents simultaneously, each working on different aspects of your project while sharing knowledge through an intelligent memory bank.
+## SPARC Development Commands
 
-### Key Features
-- **🐝 Advanced Swarm Orchestration**: Complete multi-agent coordination system with timeout-free execution
-- **🧠 Distributed Memory Sharing**: Cross-agent knowledge sharing with persistent state management
-- **⚡ SPARC Methodology**: Systematic development with 17+ specialized modes
-- **🔄 Intelligent Task Scheduling**: 7+ algorithms with dependency resolution and load balancing
-- **🛡️ Enterprise Security**: Encryption, access control, audit logging, and input validation
-- **📊 Real-Time Monitoring**: Comprehensive metrics, health checks, and performance tracking
+### Core SPARC Commands
+- `npx claude-flow sparc modes`: List all available SPARC development modes
+- `npx claude-flow sparc run <mode> "<task>"`: Execute specific SPARC mode for a task
+- `npx claude-flow sparc tdd "<feature>"`: Run complete TDD workflow using SPARC methodology
+- `npx claude-flow sparc info <mode>`: Get detailed information about a specific mode
 
-## Architecture
+### Standard Build Commands
+- `npm run build`: Build the project
+- `npm run test`: Run the test suite
+- `npm run lint`: Run linter and format checks
+- `npm run typecheck`: Run TypeScript type checking
 
-Claude-Flow uses a modular architecture with the following components:
+## SPARC Methodology Workflow
 
-### Core Systems
-- **Orchestrator**: Central coordinator managing all system components (`src/core/orchestrator.ts`)
-- **Swarm System**: Advanced multi-agent coordination with timeout-free execution (`src/swarm/`)
-- **Terminal Manager**: Handles terminal sessions with pooling and recycling (`src/terminal/`)
-- **Memory Manager**: Persistent storage with caching and indexing (`src/memory/`)
-- **Coordination Manager**: Task scheduling and resource management (`src/coordination/`)
-- **MCP Server**: Tool integration via Model Context Protocol (`src/mcp/`)
-
-### SPARC Modes
-Located in `src/cli/simple-commands/sparc-modes/`, includes:
-- **🏗️ architect**: System design and architecture
-- **🧠 code**: Clean, modular implementation
-- **🧪 tdd**: Test-driven development
-- **🛡️ security-review**: Security analysis
-- **📚 docs-writer**: Documentation creation
-- **🔗 integration**: System integration
-- **🐝 swarm**: Advanced multi-agent coordination (NEW!)
-
-## Code Conventions
-
-### Naming Conventions
-- **Files**: kebab-case (e.g., `swarm-coordinator.ts`)
-- **Functions**: camelCase (e.g., `createObjective`)
-- **Classes**: PascalCase (e.g., `SwarmCoordinator`)
-- **Constants**: UPPER_SNAKE_CASE (e.g., `SWARM_CONSTANTS`)
-- **Types/Interfaces**: PascalCase (e.g., `SwarmConfig`, `AgentState`)
-
-### Code Style
-- **TypeScript**: Strict mode enabled with comprehensive type checking
-- **Deno**: Native Deno runtime with modern ES modules
-- **File Size**: Keep files under 500 lines for maintainability
-- **Modularity**: Break complex components into smaller, focused modules
-- **Error Handling**: Comprehensive error handling with proper logging
-
-### Design Patterns
-- **Event-Driven Architecture**: Extensive use of EventEmitter for system communication
-- **Factory Pattern**: Agent and task creation with configurable types
-- **Observer Pattern**: Real-time monitoring and metrics collection
-- **Strategy Pattern**: Pluggable coordination and execution strategies
-- **Circuit Breaker**: Fault tolerance with automatic recovery
-
-### Testing Approach
-- **Unit Tests**: Located in `tests/unit/` directory
-- **Integration Tests**: Located in `tests/integration/` directory
-- **E2E Tests**: End-to-end testing of complete workflows
-- **Coverage Target**: Maintain 95%+ test coverage
-- **Test Framework**: Deno's built-in testing framework
-
-## Directory Structure
-
-```
-claude-code-flow/
-├── src/                          # Source code
-│   ├── cli/                      # CLI commands and interfaces
-│   │   └── simple-commands/      # Command implementations
-│   │       └── sparc-modes/      # SPARC development modes
-│   │           ├── swarm.js      # 🐝 Swarm coordination mode
-│   │           ├── architect.js  # 🏗️ Architecture mode
-│   │           ├── code.js       # 🧠 Code implementation mode
-│   │           └── index.js      # Mode orchestration loader
-│   ├── core/                     # Core system components
-│   │   ├── orchestrator.ts       # Main system orchestrator
-│   │   └── logger.ts             # Centralized logging
-│   ├── swarm/                    # Advanced swarm system
-│   │   ├── coordinator.ts        # Swarm coordination engine
-│   │   ├── types.ts              # Swarm type definitions
-│   │   └── agent-manager.ts      # Agent lifecycle management
-│   ├── terminal/                 # Terminal management
-│   ├── memory/                   # Memory bank system
-│   ├── coordination/             # Task coordination
-│   └── mcp/                      # MCP server integration
-├── tests/                        # Test files
-│   ├── unit/                     # Unit tests
-│   ├── integration/              # Integration tests
-│   └── e2e/                      # End-to-end tests
-├── docs/                         # Documentation
-├── .roomodes                     # SPARC mode configurations
-└── CLAUDE.md                     # This file
-```
-
-## Development Workflow
-
-### 1. SPARC Development Process
-Claude-Flow integrates the **SPARC** methodology (Specification, Pseudocode, Architecture, Refinement, Completion):
-
+### 1. Specification Phase
 ```bash
-# Simplified orchestration
-npx claude-flow sparc "build complete authentication system"
-
-# Run specific SPARC modes
-npx claude-flow sparc run code "implement API"
-npx claude-flow sparc run tdd "auth tests"
-npx claude-flow sparc run architect "system design"
+# Create detailed specifications and requirements
+npx claude-flow sparc run spec-pseudocode "Define user authentication requirements"
 ```
+- Define clear functional requirements
+- Document edge cases and constraints
+- Create user stories and acceptance criteria
+- Establish non-functional requirements
 
-### 2. Swarm Coordination Workflow
-For complex, long-running tasks that require multiple agents:
-
+### 2. Pseudocode Phase
 ```bash
-# Basic development swarm
-npx claude-flow swarm "Build a REST API" --strategy development --monitor
-
-# Research swarm with distributed coordination
-npx claude-flow swarm "Research AI trends" --strategy research --distributed --ui
-
-# Background optimization swarm (timeout-free)
-npx claude-flow swarm "Optimize performance" --strategy optimization --background --monitor
-
-# Enterprise swarm with all features
-npx claude-flow swarm "Complex project development" \
-  --strategy development \
-  --mode distributed \
-  --max-agents 10 \
-  --parallel \
-  --monitor \
-  --review \
-  --testing \
-  --encryption \
-  --verbose
+# Develop algorithmic logic and data flows
+npx claude-flow sparc run spec-pseudocode "Create authentication flow pseudocode"
 ```
+- Break down complex logic into steps
+- Define data structures and interfaces
+- Plan error handling and edge cases
+- Create modular, testable components
 
-### 3. Testing Process
+### 3. Architecture Phase
 ```bash
-# Run all tests
-deno task test
-
-# Run with coverage
-deno task test:coverage
-
-# Run specific test suite
-deno test tests/unit/swarm/
-
-# Run integration tests
-deno test tests/integration/
+# Design system architecture and component structure
+npx claude-flow sparc run architect "Design authentication service architecture"
 ```
+- Create system diagrams and component relationships
+- Define API contracts and interfaces
+- Plan database schemas and data flows
+- Establish security and scalability patterns
 
-### 4. Build and Deploy
+### 4. Refinement Phase (TDD Implementation)
 ```bash
-# Build the project
-deno task build
-
-# Install globally
-deno task install
-
-# Create distribution package
-deno task package
+# Execute Test-Driven Development cycle
+npx claude-flow sparc tdd "implement user authentication system"
 ```
 
-## 🐝 Swarm SPARC Mode
+**TDD Cycle:**
+1. **Red**: Write failing tests first
+2. **Green**: Implement minimal code to pass tests
+3. **Refactor**: Optimize and clean up code
+4. **Repeat**: Continue until feature is complete
 
-The swarm mode is designed for complex, long-running tasks that benefit from multi-agent coordination with timeout-free execution.
-
-### When to Use Swarm Mode
-- Complex multi-step projects requiring parallel processing
-- Large-scale development tasks that might timeout with single agents
-- Research projects needing multiple specialized agents
-- Long-running optimization and refactoring tasks
-- Comprehensive testing and quality assurance workflows
-- Documentation and analysis projects with multiple components
-
-### Swarm Strategies
-- **development**: Code implementation with quality checks
-- **research**: Information gathering and analysis
-- **analysis**: Data processing and insights
-- **testing**: Comprehensive quality assurance
-- **optimization**: Performance improvements
-- **maintenance**: System updates and fixes
-
-### Agent Types Available
-- **coordinator**: Plans and delegates tasks to other agents
-- **developer**: Writes code and implements solutions
-- **researcher**: Gathers and analyzes information
-- **analyzer**: Identifies patterns and generates insights
-- **tester**: Creates and runs tests for quality assurance
-- **reviewer**: Performs code and design reviews
-- **documenter**: Creates documentation and guides
-- **monitor**: Tracks performance and system health
-- **specialist**: Domain-specific expert agents
-
-### Coordination Modes
-- **centralized**: Single coordinator manages all agents (recommended for start)
-- **distributed**: Multiple coordinators share management
-- **hierarchical**: Tree structure with nested coordination
-- **mesh**: Peer-to-peer agent collaboration
-- **hybrid**: Mixed coordination strategies
-
-### Timeout Prevention Features
-- **Background Execution**: Use `--background` flag for tasks over 60 minutes
-- **State Persistence**: All progress saved continuously
-- **Task Chunking**: Large tasks automatically decomposed
-- **Memory Sharing**: Cross-agent collaboration through distributed memory
-- **Real-time Monitoring**: Track progress with `--monitor` flag
-
-## Important Considerations
-
-### Security Requirements
-- **Never hardcode secrets**: Use environment variables and config files
-- **Input validation**: All user inputs must be validated and sanitized
-- **Access control**: Role-based permissions for different agent types
-- **Audit logging**: All actions logged for security compliance
-- **Encryption**: Enable with `--encryption` flag for sensitive data
-
-### Performance Requirements
-- **File size limits**: Keep all files under 500 lines
-- **Memory management**: Efficient resource utilization with pooling
-- **Concurrent execution**: Support for up to 10 simultaneous agents
-- **Timeout handling**: Background mode for long-running tasks
-- **Circuit breakers**: Automatic failure recovery and retry mechanisms
-
-### Compatibility Requirements
-- **Deno 1.40+**: Native Deno runtime environment
-- **TypeScript**: Strict mode with comprehensive type checking
-- **Claude Code**: Full integration with Claude Code IDE
-- **MCP Protocol**: Model Context Protocol for tool integration
-- **Cross-platform**: Works on Linux, macOS, and Windows
-
-## Common Tasks
-
-### Add a New SPARC Mode
-1. Create new mode file in `src/cli/simple-commands/sparc-modes/`
-2. Implement mode configuration and orchestration function
-3. Add import and mapping in `index.js`
-4. Add mode entry to `.roomodes` file
-5. Test with `npx claude-flow sparc run <mode-name> "test task"`
-
-### Fix a Bug
-1. Identify the component using monitoring tools
-2. Create reproducer test case
-3. Use appropriate SPARC mode (debug/tdd) for fixing
-4. Ensure all tests pass before merging
-5. Update metrics and monitoring
-
-### Update Documentation
-1. Use `docs-writer` SPARC mode for consistency
-2. Keep documentation under 500 lines per file
-3. Include examples and use cases
-4. Update README.md and relevant guides
-5. Validate with `npx claude-flow sparc run docs-writer "update docs"`
-
-### Optimize Performance
-1. Use swarm mode with optimization strategy:
-   ```bash
-   npx claude-flow swarm "Optimize system performance" \
-     --strategy optimization --background --testing
-   ```
-2. Monitor with real-time metrics
-3. Use work stealing for load balancing
-4. Implement circuit breakers for fault tolerance
-
-## Dependencies
-
-### Core Dependencies
-- **Deno**: Runtime environment (1.40+)
-- **TypeScript**: Type system and compilation
-- **Node.js EventEmitter**: Event-driven architecture
-- **SQLite**: Memory bank persistence layer
-
-### Development Dependencies
-- **Deno Test**: Built-in testing framework
-- **Deno Lint**: Code quality and style checking
-- **Deno Format**: Code formatting
-- **Deno Bundle**: Build and packaging
-
-### Runtime Dependencies
-- **Claude Code**: IDE integration and spawning
-- **MCP Protocol**: Tool and service integration
-- **Terminal Emulation**: Cross-platform terminal support
-
-## Memory Operations
-
-Claude-Flow includes a sophisticated memory system for cross-agent collaboration:
-
+### 5. Completion Phase
 ```bash
-# Store information for agent sharing
-npx claude-flow memory store "swarm_findings" "key insights and decisions"
-
-# Store progress updates
-npx claude-flow memory store "swarm_progress" "current completion status"
-
-# Query shared knowledge
-npx claude-flow memory query "swarm" --limit 10
-
-# Export memory for backup
-npx claude-flow memory export swarm-backup.json
+# Integration, documentation, and validation
+npx claude-flow sparc run integration "integrate authentication with user management"
 ```
+- Integrate all components
+- Perform end-to-end testing
+- Create comprehensive documentation
+- Validate against original requirements
+
+## SPARC Mode Reference
+
+### Development Modes
+- **`architect`**: System design and architecture planning
+- **`code`**: Clean, modular code implementation
+- **`tdd`**: Test-driven development and testing
+- **`spec-pseudocode`**: Requirements and algorithmic planning
+- **`integration`**: System integration and coordination
+
+### Quality Assurance Modes
+- **`debug`**: Troubleshooting and bug resolution
+- **`security-review`**: Security analysis and vulnerability assessment
+- **`refinement-optimization-mode`**: Performance optimization and refactoring
+
+### Support Modes
+- **`docs-writer`**: Documentation creation and maintenance
+- **`devops`**: Deployment and infrastructure management
+- **`mcp`**: External service integration
+- **`swarm`**: Multi-agent coordination for complex tasks
+
+## Claude Code Slash Commands
+
+Claude Code slash commands are available in `.claude/commands/`:
+
+### Project Commands
+- `/sparc`: Execute SPARC methodology workflows
+- `/sparc-<mode>`: Run specific SPARC mode (e.g., /sparc-architect)
+- `/claude-flow-help`: Show all Claude-Flow commands
+- `/claude-flow-memory`: Interact with memory system
+- `/claude-flow-swarm`: Coordinate multi-agent swarms
+
+### Using Slash Commands
+1. Type `/` in Claude Code to see available commands
+2. Select a command or type its name
+3. Commands are context-aware and project-specific
+4. Custom commands can be added to `.claude/commands/`
+
+## Code Style and Best Practices
+
+### SPARC Development Principles
+- **Modular Design**: Keep files under 500 lines, break into logical components
+- **Environment Safety**: Never hardcode secrets or environment-specific values
+- **Test-First**: Always write tests before implementation (Red-Green-Refactor)
+- **Clean Architecture**: Separate concerns, use dependency injection
+- **Documentation**: Maintain clear, up-to-date documentation
+
+### Coding Standards
+- Use TypeScript for type safety and better tooling
+- Follow consistent naming conventions (camelCase for variables, PascalCase for classes)
+- Implement proper error handling and logging
+- Use async/await for asynchronous operations
+- Prefer composition over inheritance
+
+### Memory and State Management
+- Use claude-flow memory system for persistent state across sessions
+- Store progress and findings using namespaced keys
+- Query previous work before starting new tasks
+- Export/import memory for backup and sharing
+
+## SPARC Memory Integration
+
+### Memory Commands for SPARC Development
+```bash
+# Store project specifications
+npx claude-flow memory store spec_auth "User authentication requirements and constraints"
+
+# Store architectural decisions
+npx claude-flow memory store arch_decisions "Database schema and API design choices"
+
+# Store test results and coverage
+npx claude-flow memory store test_coverage "Authentication module: 95% coverage, all tests passing"
+
+# Query previous work
+npx claude-flow memory query auth_implementation
+
+# Export project memory
+npx claude-flow memory export project_backup.json
+```
+
+### Memory Namespaces
+- **`spec`**: Requirements and specifications
+- **`arch`**: Architecture and design decisions
+- **`impl`**: Implementation notes and code patterns
+- **`test`**: Test results and coverage reports
+- **`debug`**: Bug reports and resolution notes
+
+## Workflow Examples
+
+### Feature Development Workflow
+```bash
+# 1. Start with specification
+npx claude-flow sparc run spec-pseudocode "User profile management feature"
+
+# 2. Design architecture
+npx claude-flow sparc run architect "Profile service architecture with data validation"
+
+# 3. Implement with TDD
+npx claude-flow sparc tdd "user profile CRUD operations"
+
+# 4. Security review
+npx claude-flow sparc run security-review "profile data access and validation"
+
+# 5. Integration testing
+npx claude-flow sparc run integration "profile service with authentication system"
+
+# 6. Documentation
+npx claude-flow sparc run docs-writer "profile service API documentation"
+```
+
+### Bug Fix Workflow
+```bash
+# 1. Debug and analyze
+npx claude-flow sparc run debug "authentication token expiration issue"
+
+# 2. Write regression tests
+npx claude-flow sparc run tdd "token refresh mechanism tests"
+
+# 3. Implement fix
+npx claude-flow sparc run code "fix token refresh in authentication service"
+
+# 4. Security review
+npx claude-flow sparc run security-review "token handling security implications"
+```
+
+## Configuration Files
+
+### Claude Code Integration
+- **`.claude/commands/`**: Claude Code slash commands for all SPARC modes
+- **`.claude/logs/`**: Conversation and session logs
+
+### SPARC Configuration
+- **`.roomodes`**: SPARC mode definitions and configurations (auto-generated)
+- **`.roo/`**: SPARC templates and workflows (auto-generated)
+
+### Claude-Flow Configuration
+- **`memory/`**: Persistent memory and session data
+- **`coordination/`**: Multi-agent coordination settings
+- **`CLAUDE.md`**: Project instructions for Claude Code
+
+## Git Workflow Integration
+
+### Commit Strategy with SPARC
+- **Specification commits**: After completing requirements analysis
+- **Architecture commits**: After design phase completion
+- **TDD commits**: After each Red-Green-Refactor cycle
+- **Integration commits**: After successful component integration
+- **Documentation commits**: After completing documentation updates
+
+### Branch Strategy
+- **`feature/sparc-<feature-name>`**: Feature development with SPARC methodology
+- **`hotfix/sparc-<issue>`**: Bug fixes using SPARC debugging workflow
+- **`refactor/sparc-<component>`**: Refactoring using optimization mode
 
 ## Troubleshooting
 
-### Common Issues
-
-**Swarm fails to start**
-- Check if Claude-Flow is initialized: `npx claude-flow init --sparc`
-- Verify Deno version: `deno --version` (requires 1.40+)
-- Check system resources and permissions
-
-**Agents not coordinating**
-- Ensure memory namespace is consistent across agents
-- Check network connectivity for distributed coordination
-- Verify agent capabilities match task requirements
-
-**Timeout concerns**
-- Use `--background` flag for long tasks (>30 minutes)
-- Enable monitoring with `--monitor` flag
-- Break large tasks into smaller chunks
-
-**Performance issues**
-- Reduce `--max-agents` count for resource constraints
-- Use work stealing with `--parallel` flag
-- Monitor resource usage with `npx claude-flow monitor`
+### Common SPARC Issues
+- **Mode not found**: Check `.roomodes` file exists and is valid JSON
+- **Memory persistence**: Ensure `memory/` directory has write permissions
+- **Tool access**: Verify required tools are available for the selected mode
+- **Namespace conflicts**: Use unique memory namespaces for different features
 
 ### Debug Commands
 ```bash
+# Check SPARC configuration
+npx claude-flow sparc modes
+
+# Verify memory system
+npx claude-flow memory stats
+
 # Check system status
 npx claude-flow status
 
-# Monitor real-time activity
-npx claude-flow monitor
-
-# View agent information
-npx claude-flow agent list
-
-# Check memory statistics
-npx claude-flow memory stats
-
-# View MCP tools
-npx claude-flow mcp tools
+# View detailed mode information
+npx claude-flow sparc info <mode-name>
 ```
 
-### Best Practices
-- Start with centralized coordination mode for simplicity
-- Use dry-run first to validate configuration: `--dry-run`
-- Monitor resource usage with `--monitor` flag
-- Store important findings in memory for cross-agent access
-- Use background mode for tasks over 30 minutes
-- Break complex objectives into manageable tasks
-- Maintain quality thresholds with review processes
+## Project Architecture
 
-## Integration with Claude Code
+This SPARC-enabled project follows a systematic development approach:
+- **Clear separation of concerns** through modular design
+- **Test-driven development** ensuring reliability and maintainability
+- **Iterative refinement** for continuous improvement
+- **Comprehensive documentation** for team collaboration
+- **AI-assisted development** through specialized SPARC modes
 
-Claude-Flow provides seamless integration with Claude Code through:
+## Important Notes
 
-1. **Automatic Context Loading**: Claude Code reads project configuration
-2. **Enhanced Guidance**: Spawned Claude instances receive detailed instructions
-3. **Memory Persistence**: Context maintained across sessions
-4. **Build Command Integration**: All commands available to Claude
-5. **SPARC Support**: Built-in systematic development methodology
-6. **Swarm Access**: Multi-agent coordination for complex tasks
+- Always run tests before committing (`npm run test`)
+- Use SPARC memory system to maintain context across sessions
+- Follow the Red-Green-Refactor cycle during TDD phases
+- Document architectural decisions in memory for future reference
+- Regular security reviews for any authentication or data handling code
+- Claude Code slash commands provide quick access to SPARC modes
 
-Use with Claude Code:
-```bash
-# Initialize integration
-npx claude-flow init --sparc
-
-# Spawn Claude with enhanced guidance
-npx claude-flow claude spawn "your task here" --research --parallel
-
-# Claude receives comprehensive instructions on:
-# - Claude-Flow memory operations
-# - Agent coordination capabilities
-# - Swarm system access
-# - Mode-specific development guidance
-```
-
-This comprehensive setup ensures Claude has all the context needed to work effectively with the Claude-Flow orchestration platform.
+For more information about SPARC methodology, see: https://github.com/ruvnet/claude-code-flow/docs/sparc.md
