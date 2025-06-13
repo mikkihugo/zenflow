@@ -1,0 +1,11 @@
+{
+  "default_name": "World",
+  "default_language": "english",
+  "default_style": "simple",
+  "log_level": "INFO",
+  "enable_emoji": true,
+  "enable_colors": true,
+  "enable_sound": false,
+  "max_line_length": 80,
+  "indent_size": 4
+}

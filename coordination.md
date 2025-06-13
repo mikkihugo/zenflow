@@ -38,8 +38,8 @@ npx claude-flow monitor --interval 5000
 ## Workflow Execution
 Workflows are defined in JSON format and can orchestrate complex multi-agent operations:
 ```bash
-npx claude-flow workflow examples/research-workflow.json
-npx claude-flow workflow examples/development-config.json --async
+npx claude-flow workflow examples/02-workflows/research-workflow.json
+npx claude-flow workflow examples/01-configurations/development-config.json --async
 ```
 
 ## Advanced Features

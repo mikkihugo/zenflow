@@ -74,11 +74,11 @@ export class TaskExecutor extends EventEmitter {
   constructor(config: Partial<ExecutionConfig> = {}) {
     super();
     
+    this.config = this.mergeWithDefaults(config);
     this.logger = new Logger(
-      { level: 'info', format: 'json', destination: 'console' },
+      { level: this.config.logLevel || 'info', format: 'text', destination: 'console' },
       { component: 'TaskExecutor' }
     );
-    this.config = this.mergeWithDefaults(config);
     this.resourceMonitor = new ResourceMonitor();
     this.processPool = new ProcessPool(this.config);
     

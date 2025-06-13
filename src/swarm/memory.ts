@@ -99,11 +99,16 @@ export class SwarmMemoryManager extends EventEmitter {
   private backupTimer?: NodeJS.Timeout;
   private cleanupTimer?: NodeJS.Timeout;
 
-  constructor(config: Partial<MemoryConfig> = {}) {
+  constructor(config: Partial<MemoryConfig & { logging?: any }> = {}) {
     super();
     
+    // Configure logger based on config or default to quiet mode
+    const logLevel = config.logging?.level || 'error';
+    const logFormat = config.logging?.format || 'text';
+    const logDestination = config.logging?.destination || 'console';
+    
     this.logger = new Logger(
-      { level: 'info', format: 'json', destination: 'console' },
+      { level: logLevel, format: logFormat, destination: logDestination },
       { component: 'SwarmMemoryManager' }
     );
     this.config = this.mergeWithDefaults(config);

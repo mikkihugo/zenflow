@@ -1,0 +1,14 @@
+# Core dependencies
+# No external dependencies required for this example
+
+# Development dependencies
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=22.0.0
+flake8>=5.0.0
+mypy>=0.990
+isort>=5.10.0
+
+# Optional dependencies for enhanced features
+colorama>=0.4.6  # For cross-platform colored output
+python-dotenv>=0.19.0  # For environment variable management
