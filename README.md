@@ -40,6 +40,8 @@
 - **🎯 17+ SPARC Modes**: Including new `sparc-orchestrator` for complex workflows
 - **📂 Local Executable**: `init` now creates `./claude-flow` wrapper to ensure correct working directory
 - **🔧 Fixed SPARC Path Resolution**: `.roomodes` now correctly found in project directory
+- **📝 Claude Code Slash Commands**: `init --sparc` now creates `.claude/commands/` with slash commands for all SPARC modes
+- **🏗️ Modular Init Structure**: Refactored init command into clean, maintainable modules for better extensibility
 
 ### 🐝 **Swarm System Features**
 - **Timeout-Free Execution**: Background Claude processes that never timeout
@@ -274,12 +276,20 @@ npx claude-flow init --sparc
 ```
 The `--sparc` flag creates:
 - `CLAUDE.md` - SPARC-enhanced Claude Code configuration
+- `.claude/commands/` - Claude Code slash commands for all SPARC modes
 - `memory-bank.md` - Memory system documentation
 - `coordination.md` - Agent coordination documentation
 - `.roomodes` - SPARC development mode configurations
 - `.roo/` - SPARC templates and workflows
 - Memory folder structure with placeholders
 - `./claude-flow` - Local executable wrapper (use instead of npx)
+
+Claude Code slash commands available after init:
+- `/sparc` - Execute SPARC methodology workflows
+- `/sparc-<mode>` - Run specific SPARC modes (e.g., /sparc-architect)
+- `/claude-flow-help` - Show all claude-flow commands
+- `/claude-flow-memory` - Interact with memory system
+- `/claude-flow-swarm` - Coordinate multi-agent swarms
 
 ### 2. **Start the Orchestrator**
 ```bash
