@@ -13,7 +13,19 @@ fi
 
 # Get the directory of this script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-SWARM_DEMO="$SCRIPT_DIR/../swarm-demo.ts"
 
-# Run the swarm demo with all arguments
-exec "$DENO_PATH" run --allow-all "$SWARM_DEMO" "$@"
+# Try to find swarm implementation in different locations
+if [ -f "$SCRIPT_DIR/../swarm-demo.ts" ]; then
+    # Local development path
+    SWARM_IMPL="$SCRIPT_DIR/../swarm-demo.ts"
+elif [ -f "$SCRIPT_DIR/../src/cli/swarm-standalone.js" ]; then
+    # Installed via npm - use the standalone JavaScript version
+    SWARM_IMPL="$SCRIPT_DIR/../src/cli/swarm-standalone.js"
+else
+    echo "Error: Unable to find swarm implementation files"
+    echo "Please ensure claude-flow is properly installed"
+    exit 1
+fi
+
+# Run the swarm implementation with all arguments
+exec "$DENO_PATH" run --allow-all "$SWARM_IMPL" "$@"
