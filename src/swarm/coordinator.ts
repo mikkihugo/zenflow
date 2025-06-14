@@ -1459,6 +1459,48 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     }
   }
 
+  private getAgentTypeInstructions(agentType: string): string {
+    switch (agentType) {
+      case 'developer':
+        return '- Focus on implementation, code quality, and best practices\n- Create clean, maintainable code\n- Consider architecture and design patterns';
+      case 'tester':
+        return '- Focus on testing, edge cases, and quality assurance\n- Create comprehensive test suites\n- Identify potential bugs and issues';
+      case 'analyzer':
+        return '- Focus on analysis, research, and understanding\n- Break down complex problems\n- Provide insights and recommendations';
+      case 'researcher':
+        return '- Focus on gathering information and best practices\n- Research existing solutions and patterns\n- Document findings and recommendations';
+      case 'reviewer':
+        return '- Focus on code review and quality checks\n- Identify improvements and optimizations\n- Ensure standards compliance';
+      case 'coordinator':
+        return '- Focus on coordination and integration\n- Ensure all parts work together\n- Manage dependencies and interfaces';
+      case 'monitor':
+        return '- Focus on monitoring and observability\n- Set up logging and metrics\n- Ensure system health tracking';
+      default:
+        return '- Execute the task to the best of your ability\n- Follow best practices for your domain';
+    }
+  }
+
+  private getAgentCapabilities(agentType: string): string[] {
+    switch (agentType) {
+      case 'developer':
+        return ['code-generation', 'file-system', 'debugging'];
+      case 'tester':
+        return ['testing', 'code-generation', 'analysis'];
+      case 'analyzer':
+        return ['analysis', 'documentation', 'research'];
+      case 'researcher':
+        return ['research', 'documentation', 'analysis'];
+      case 'reviewer':
+        return ['code-review', 'analysis', 'documentation'];
+      case 'coordinator':
+        return ['coordination', 'analysis', 'documentation'];
+      case 'monitor':
+        return ['monitoring', 'analysis', 'documentation'];
+      default:
+        return ['analysis', 'documentation'];
+    }
+  }
+
   private async decomposeObjective(objective: SwarmObjective): Promise<TaskDefinition[]> {
     // Decompose objective into tasks with clear instructions for Claude
     this.logger.info('Decomposing objective', { 
@@ -1473,8 +1515,40 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     const targetDir = targetDirMatch ? targetDirMatch[1] || targetDirMatch[2] : null;
     const targetPath = targetDir ? (targetDir.startsWith('/') ? targetDir : `/workspaces/claude-code-flow/${targetDir}`) : null;
     
+    // Check if objective requests "each agent" or "each agent type" for parallel execution
+    const eachAgentPattern = /\beach\s+agent(?:\s+type)?\b/i;
+    const requestsParallelAgents = eachAgentPattern.test(objective.description);
+    
     // Create tasks with specific prompts for Claude
-    if (objective.strategy === 'development') {
+    if (requestsParallelAgents && this.config.mode === 'parallel') {
+      // Create parallel tasks for each agent type
+      const agentTypes = this.determineRequiredAgentTypes(objective.strategy);
+      this.logger.info('Creating parallel tasks for each agent type', { 
+        agentTypes,
+        mode: this.config.mode 
+      });
+      
+      for (const agentType of agentTypes) {
+        const taskId = this.createTaskForObjective(`${agentType}-task`, agentType as TaskType, {
+          title: `${agentType.charAt(0).toUpperCase() + agentType.slice(1)} Agent Task`,
+          description: `${agentType} agent executing: ${objective.description}`,
+          instructions: `You are a ${agentType} agent. Please execute the following task from your perspective:
+
+${objective.description}
+
+${targetPath ? `Target Directory: ${targetPath}` : ''}
+
+As a ${agentType} agent, focus on aspects relevant to your role:
+${this.getAgentTypeInstructions(agentType)}
+
+Work independently but be aware that other agents are working on this same objective from their perspectives.`,
+          priority: 'high' as TaskPriority,
+          estimatedDuration: 10 * 60 * 1000,
+          requiredCapabilities: this.getAgentCapabilities(agentType)
+        });
+        tasks.push(taskId);
+      }
+    } else if (objective.strategy === 'development') {
       // Task 1: Analyze and Plan
       const task1 = this.createTaskForObjective('analyze-requirements', 'analysis', {
         title: 'Analyze Requirements and Plan Implementation',
@@ -2788,7 +2862,7 @@ console.log('Tests completed for: ${task.name}');
 
   private processHeartbeats(): void {
     const now = new Date();
-    const timeout = this.config.monitoring.heartbeatInterval * 3;
+    const timeout = this.config.monitoring.heartbeatInterval * 10; // Increased multiplier for long-running Claude tasks
     
     for (const agent of this.agents.values()) {
       if (agent.status === 'offline' || agent.status === 'terminated') {

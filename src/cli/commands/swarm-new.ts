@@ -79,8 +79,8 @@ export async function swarmAction(ctx: CommandContext) {
         loggingEnabled: true,
         tracingEnabled: options.verbose,
         metricsInterval: 5000,
-        heartbeatInterval: 10000,
-        healthCheckInterval: 30000,
+        heartbeatInterval: 60000, // Increased to 60 seconds for long Claude executions
+        healthCheckInterval: 120000, // Increased to 2 minutes
         retentionPeriod: 24 * 60 * 60 * 1000,
         maxLogSize: 100 * 1024 * 1024,
         maxMetricPoints: 10000,
@@ -395,9 +395,15 @@ function parseSwarmOptions(flags: any) {
     strategy = 'auto';
   }
   
+  // Determine mode - if parallel flag is set, override mode to 'parallel'
+  let mode = flags.mode as SwarmMode || 'centralized';
+  if (flags.parallel) {
+    mode = 'parallel';
+  }
+  
   return {
     strategy: strategy as SwarmStrategy || 'auto',
-    mode: flags.mode as SwarmMode || 'centralized',
+    mode: mode,
     maxAgents: parseInt(flags.maxAgents || flags['max-agents'] || '5'),
     maxTasks: parseInt(flags.maxTasks || flags['max-tasks'] || '100'),
     timeout: parseInt(flags.timeout || '60'), // minutes
