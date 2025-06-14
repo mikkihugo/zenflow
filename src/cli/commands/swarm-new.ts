@@ -704,7 +704,9 @@ Agents: ${initialStatus.agents.active}/${initialStatus.agents.total} active
       
       // Write individual task files
       for (const task of tasks) {
-        const taskFile = `${tasksDir}/${task.id}.json`;
+        // Extract task ID string - handle both string and object IDs
+        const taskId = typeof task.id === 'string' ? task.id : task.id?.id || 'unknown';
+        const taskFile = `${tasksDir}/${taskId}.json`;
         await Deno.writeTextFile(taskFile, JSON.stringify({
           id: task.id,
           name: task.name,

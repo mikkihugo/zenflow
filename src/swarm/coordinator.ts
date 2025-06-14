@@ -12,6 +12,7 @@ import {
   SwarmEvent, EventType, SwarmEventEmitter, ValidationResult,
   SWARM_CONSTANTS
 } from './types.ts';
+import { AutoStrategy } from './strategies/auto.ts';
 
 export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter {
   private logger: Logger;
@@ -24,7 +25,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   private objectives: Map<string, SwarmObjective> = new Map();
   
   // Execution state
-  private isRunning: boolean = false;
+  private _isRunning: boolean = false;
   private status: SwarmStatus = 'planning';
   private startTime?: Date;
   private endTime?: Date;
@@ -39,6 +40,9 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   private monitoringTimer?: NodeJS.Timeout;
   private cleanupTimer?: NodeJS.Timeout;
   private executionIntervals?: Map<string, NodeJS.Timeout>;
+  
+  // Strategy instances
+  private autoStrategy: AutoStrategy;
   
   constructor(config: Partial<SwarmConfig> = {}) {
     super();
@@ -60,6 +64,9 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     // Initialize metrics
     this.metrics = this.initializeMetrics();
     
+    // Initialize strategy instances
+    this.autoStrategy = new AutoStrategy(config);
+    
     // Setup event handlers
     this.setupEventHandlers();
     
@@ -73,7 +80,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   // ===== LIFECYCLE MANAGEMENT =====
 
   async initialize(): Promise<void> {
-    if (this.isRunning) {
+    if (this._isRunning) {
       throw new Error('Swarm coordinator already running');
     }
 
@@ -93,7 +100,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
       // Start background processes
       this.startBackgroundProcesses();
       
-      this.isRunning = true;
+      this._isRunning = true;
       this.startTime = new Date();
       this.status = 'executing';
       
@@ -117,7 +124,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   }
 
   async shutdown(): Promise<void> {
-    if (!this.isRunning) {
+    if (!this._isRunning) {
       return;
     }
 
@@ -137,7 +144,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
       // Save final state
       await this.saveState();
       
-      this.isRunning = false;
+      this._isRunning = false;
       this.endTime = new Date();
       this.status = 'completed';
       
@@ -164,7 +171,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   }
 
   async pause(): Promise<void> {
-    if (!this.isRunning || this.status === 'paused') {
+    if (!this._isRunning || this.status === 'paused') {
       return;
     }
 
@@ -190,7 +197,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   }
 
   async resume(): Promise<void> {
-    if (!this.isRunning || this.status !== 'paused') {
+    if (!this._isRunning || this.status !== 'paused') {
       return;
     }
 
@@ -258,9 +265,15 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
       metrics: this.initializeMetrics()
     };
 
-    // Decompose objective into tasks
-    objective.tasks = await this.decomposeObjective(objective);
-    objective.dependencies = this.analyzeDependencies(objective.tasks);
+    // Decompose objective into tasks using optimized AUTO strategy
+    if (objective.strategy === 'auto') {
+      const decompositionResult = await this.autoStrategy.decomposeObjective(objective);
+      objective.tasks = decompositionResult.tasks;
+      objective.dependencies = this.convertDependenciesToTaskDependencies(decompositionResult.dependencies);
+    } else {
+      objective.tasks = await this.decomposeObjective(objective);
+      objective.dependencies = this.analyzeDependencies(objective.tasks);
+    }
     
     this.objectives.set(objectiveId, objective);
     
@@ -1049,6 +1062,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
       case 'api-integration': return caps.apiIntegration;
       case 'file-system': return caps.fileSystem;
       case 'terminal-access': return caps.terminalAccess;
+      case 'validation': return caps.testing; // Validation is part of testing capability
       default: 
         return caps.domains.includes(capability) ||
                caps.languages.includes(capability) ||
@@ -1338,7 +1352,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   }
 
   isRunning(): boolean {
-    return this.isRunning;
+    return this._isRunning;
   }
 
   getUptime(): number {
@@ -1347,7 +1361,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     return endTime.getTime() - this.startTime.getTime();
   }
 
-  getSwarmStatus(): SwarmStatus & { tasks: { completed: number; failed: number; total: number }; agents: { total: number } } {
+  getSwarmStatus(): { status: SwarmStatus; objectives: number; tasks: { completed: number; failed: number; total: number }; agents: { total: number } } {
     const tasks = Array.from(this.tasks.values());
     const completedTasks = tasks.filter(t => t.status === 'completed').length;
     const failedTasks = tasks.filter(t => t.status === 'failed').length;
@@ -1706,7 +1720,10 @@ Ensure your implementation is complete, well-structured, and follows best practi
         description: params.description,
         objective: params.description
       },
-      context: {},
+      context: {
+        objectiveId: id,
+        targetDir: params.targetDir
+      },
       examples: [],
       status: 'created',
       createdAt: new Date(),
@@ -1726,6 +1743,21 @@ Ensure your implementation is complete, well-structured, and follows best practi
     // Implementation needed - analyze task dependencies
     return [];
   }
+  
+  private convertDependenciesToTaskDependencies(dependencies: Map<string, string[]>): any[] {
+    // Convert decomposition dependencies to task dependencies format
+    const result: any[] = [];
+    dependencies.forEach((deps, taskId) => {
+      deps.forEach(dependsOn => {
+        result.push({
+          taskId,
+          dependsOn,
+          type: 'sequential'
+        });
+      });
+    });
+    return result;
+  }
 
   private async ensureRequiredAgents(objective: SwarmObjective): Promise<void> {
     // Implementation needed - ensure required agents are available
@@ -1737,9 +1769,30 @@ Ensure your implementation is complete, well-structured, and follows best practi
       taskCount: objective.tasks.length 
     });
     
+    // Extract target directory from objective description
+    const targetDirPatterns = [
+      /in\s+([^\s]+\/?)$/i,
+      /(?:in|to|at)\s+([^\s]+\/[^\s]+)/i,
+      /([^\s]+\/[^\s]+)$/,
+      /examples\/[^\s]+/i
+    ];
+    
+    let objectiveTargetDir = null;
+    for (const pattern of targetDirPatterns) {
+      const match = objective.description.match(pattern);
+      if (match) {
+        objectiveTargetDir = match[1] || match[0];
+        break;
+      }
+    }
+    
     // Add all tasks to the tasks map
     for (const task of objective.tasks) {
-      task.objectiveId = objective.id;
+      task.context.objectiveId = objective.id;
+      // Propagate target directory to all tasks
+      if (objectiveTargetDir && !task.context.targetDir) {
+        task.context.targetDir = objectiveTargetDir;
+      }
       this.tasks.set(task.id.id, task);
     }
     
@@ -1803,7 +1856,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
         // Find queued tasks
         const queuedTasks = Array.from(this.tasks.values())
           .filter(task => 
-            task.objectiveId === objective.id && 
+            task.context?.objectiveId === objective.id && 
             task.status === 'queued'
           );
         
@@ -1842,14 +1895,14 @@ Ensure your implementation is complete, well-structured, and follows best practi
         // Check for completed tasks and process dependencies
         const completedTasks = Array.from(this.tasks.values())
           .filter(task => 
-            task.objectiveId === objective.id && 
+            task.context?.objectiveId === objective.id && 
             task.status === 'completed'
           );
         
         // Find tasks that can now be queued (dependencies met)
         const pendingTasks = Array.from(this.tasks.values())
           .filter(task => 
-            task.objectiveId === objective.id && 
+            task.context?.objectiveId === objective.id && 
             task.status === 'created' &&
             this.taskDependenciesMet(task, completedTasks)
           );
@@ -1878,9 +1931,65 @@ Ensure your implementation is complete, well-structured, and follows best practi
           });
         }
         
+        // Check for stuck/timed out tasks
+        const runningTasks = Array.from(this.tasks.values())
+          .filter(task => 
+            task.context?.objectiveId === objective.id && 
+            task.status === 'running'
+          );
+        
+        const now = Date.now();
+        for (const task of runningTasks) {
+          if (task.startedAt) {
+            const runtime = now - task.startedAt.getTime();
+            const timeout = task.constraints?.timeoutAfter || SWARM_CONSTANTS.DEFAULT_TASK_TIMEOUT;
+            
+            if (runtime > timeout) {
+              this.logger.warn('Task timed out', { 
+                taskId: task.id.id, 
+                runtime: Math.round(runtime / 1000),
+                timeout: Math.round(timeout / 1000)
+              });
+              
+              // Mark task as failed due to timeout
+              task.status = 'failed';
+              task.completedAt = new Date();
+              task.error = {
+                type: 'TimeoutError',
+                message: `Task exceeded timeout of ${timeout}ms`,
+                code: 'TASK_TIMEOUT',
+                context: { taskId: task.id.id, runtime },
+                recoverable: true,
+                retryable: true
+              };
+              
+              // Update agent state if assigned
+              if (task.assignedTo) {
+                const agent = this.agents.get(task.assignedTo.id);
+                if (agent) {
+                  agent.status = 'idle';
+                  agent.currentTask = undefined;
+                  agent.metrics.tasksFailed++;
+                }
+              }
+              
+              // Emit timeout event
+              this.emitSwarmEvent({
+                id: generateId('event'),
+                timestamp: new Date(),
+                type: 'task.failed',
+                source: this.swarmId.id,
+                data: { task, reason: 'timeout' },
+                broadcast: false,
+                processed: false
+              });
+            }
+          }
+        }
+        
         // Update objective progress
         const allTasks = Array.from(this.tasks.values())
-          .filter(task => task.objectiveId === objective.id);
+          .filter(task => task.context?.objectiveId === objective.id);
         
         objective.progress.totalTasks = allTasks.length;
         objective.progress.completedTasks = allTasks.filter(t => t.status === 'completed').length;
@@ -1932,7 +2041,11 @@ Ensure your implementation is complete, well-structured, and follows best practi
     }
     
     const completedTaskIds = completedTasks.map(t => t.id.id);
-    return task.constraints.dependencies.every(depId => completedTaskIds.includes(depId));
+    return task.constraints.dependencies.every(dep => {
+      // Handle both string and TaskId object dependencies
+      const depId = typeof dep === 'string' ? dep : dep.id;
+      return completedTaskIds.includes(depId);
+    });
   }
 
   private getNextInstanceNumber(type: AgentType): number {
@@ -2116,12 +2229,33 @@ Ensure your implementation is complete, well-structured, and follows best practi
     ];
     
     let targetDir = null;
+    
+    // First check task description and input
     for (const pattern of patterns) {
       const descMatch = task.description.match(pattern);
       const inputMatch = task.input?.objective?.match(pattern);
       if (descMatch || inputMatch) {
         targetDir = (descMatch || inputMatch)[descMatch ? 1 : 0];
         break;
+      }
+    }
+    
+    // If not found and task has context with targetDir, use that
+    if (!targetDir && task.context?.targetDir) {
+      targetDir = task.context.targetDir;
+    }
+    
+    // If still not found, check objective description from context
+    if (!targetDir && task.context?.objectiveId) {
+      const objective = this.objectives.get(task.context.objectiveId);
+      if (objective) {
+        for (const pattern of patterns) {
+          const match = objective.description.match(pattern);
+          if (match) {
+            targetDir = match[1] || match[0];
+            break;
+          }
+        }
       }
     }
     
