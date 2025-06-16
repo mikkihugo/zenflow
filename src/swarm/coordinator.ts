@@ -2159,15 +2159,21 @@ Ensure your implementation is complete, well-structured, and follows best practi
       agentName: agent.name
     });
     
-    // Create execution prompt
-    const executionPrompt = this.createExecutionPrompt(task);
-    
     // Extract target directory from task
     const targetDir = this.extractTargetDirectory(task);
     
     try {
-      // Execute task using Claude - no fallback to templates
-      const result = await this.executeClaudeTask(task, agent, executionPrompt, targetDir);
+      // Use Claude Flow executor for full SPARC system in non-interactive mode
+      const { ClaudeFlowExecutor } = await import('./claude-flow-executor.ts');
+      const executor = new ClaudeFlowExecutor({ 
+        logger: this.logger,
+        claudeFlowPath: '/workspaces/claude-code-flow/bin/claude-flow',
+        enableSparc: true,
+        verbose: this.config.logging?.level === 'debug',
+        timeoutMinutes: this.config.taskTimeoutMinutes
+      });
+      
+      const result = await executor.executeTask(task, agent, targetDir);
       
       this.logger.info('Task execution completed', { 
         taskId: task.id.id,

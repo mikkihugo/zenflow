@@ -56,6 +56,7 @@ export async function swarmAction(ctx: CommandContext) {
       maxAgents: options.maxAgents,
       maxTasks: options.maxTasks,
       maxDuration: options.timeout * 60 * 1000,
+      taskTimeoutMinutes: options.taskTimeoutMinutes,
       qualityThreshold: options.qualityThreshold,
       reviewRequired: options.review,
       testingRequired: options.testing,
@@ -408,6 +409,7 @@ function parseSwarmOptions(flags: any) {
     maxTasks: parseInt(flags.maxTasks || flags['max-tasks'] || '100'),
     timeout: parseInt(flags.timeout || '60'), // minutes
     taskTimeout: parseInt(flags.taskTimeout || flags['task-timeout'] || '300000'), // ms
+    taskTimeoutMinutes: parseInt(flags.taskTimeoutMinutes || flags['task-timeout-minutes'] || '59'), // minutes
     maxRetries: parseInt(flags.maxRetries || flags['max-retries'] || '3'),
     qualityThreshold: parseFloat(flags.qualityThreshold || flags['quality-threshold'] || '0.8'),
     

@@ -55,6 +55,7 @@ OPTIONS:
   --mode <type>              Coordination mode (default: centralized)
   --max-agents <n>           Maximum agents (default: 5)
   --timeout <minutes>        Timeout in minutes (default: 60)
+  --task-timeout-minutes <n> Task execution timeout in minutes (default: 59)
   --parallel                 Enable parallel execution
   --distributed              Enable distributed coordination
   --monitor                  Enable real-time monitoring
@@ -287,14 +288,20 @@ exit 0
       // Try to use the swarm executor directly
       try {
         const { executeSwarm } = await import('./swarm-executor.js');
-        await executeSwarm(objective, flags);
-        return;
+        const result = await executeSwarm(objective, flags);
+        
+        // If execution was successful, exit
+        if (result && result.success) {
+          return;
+        }
       } catch (execError) {
+        console.log(`⚠️  Swarm executor error: ${execError.message}`);
         // If swarm executor fails, try to create files directly
         try {
           await createSwarmFiles(objective, flags);
           return;
         } catch (createError) {
+          console.log(`⚠️  Direct file creation error: ${createError.message}`);
           // Continue with fallback implementation
         }
       }
@@ -412,39 +419,79 @@ exit 0
         
         // Claude is available, use it to run swarm
         console.log('🚀 Launching swarm via Claude wrapper...');
+        if (flags.sparc !== false) {
+          console.log('🧪 SPARC methodology enabled - using full TDD workflow');
+        }
         
-        // Build the prompt for Claude
-        const swarmPrompt = `Execute a swarm coordination task with the following configuration:
+        // Build the prompt for Claude using SPARC methodology
+        const enableSparc = flags.sparc !== false;
+        const swarmPrompt = `Execute a swarm coordination task using ${enableSparc ? 'the full SPARC methodology' : 'standard approach'}:
 
-Objective: ${objective}
-Strategy: ${flags.strategy || 'auto'}
-Mode: ${flags.mode || 'centralized'}
-Max Agents: ${flags['max-agents'] || 5}
-Max Tasks: ${flags['max-tasks'] || 100}
-Timeout: ${flags.timeout || 60} minutes
-Parallel: ${flags.parallel || false}
-Distributed: ${flags.distributed || false}
-Monitor: ${flags.monitor || false}
-Review: ${flags.review || false}
-Testing: ${flags.testing || false}
-Memory Namespace: ${flags['memory-namespace'] || 'swarm'}
-Quality Threshold: ${flags['quality-threshold'] || 0.8}
+OBJECTIVE: ${objective}
 
-Coordination Strategy:
-- Agent Selection: ${flags['agent-selection'] || 'capability-based'}
-- Task Scheduling: ${flags['task-scheduling'] || 'priority'}
-- Load Balancing: ${flags['load-balancing'] || 'work-stealing'}
-- Fault Tolerance: ${flags['fault-tolerance'] || 'retry'}
-- Communication: ${flags.communication || 'event-driven'}
+CONFIGURATION:
+- Strategy: ${flags.strategy || 'auto'}
+- Mode: ${flags.mode || 'centralized'}
+- Max Agents: ${flags['max-agents'] || 5}
+- Memory Namespace: ${flags['memory-namespace'] || 'swarm'}
+- Quality Threshold: ${flags['quality-threshold'] || 0.8}
+${enableSparc ? '- SPARC Enabled: YES - Use full Specification, Pseudocode, Architecture, Refinement (TDD), Completion methodology' : ''}
 
-Please coordinate this swarm task by:
-1. Breaking down the objective into subtasks
-2. Assigning tasks to appropriate agent types
-3. Managing parallel execution where applicable
-4. Monitoring progress and handling failures
-5. Aggregating results and ensuring quality
+${enableSparc ? `
+SPARC METHODOLOGY REQUIREMENTS:
 
-Use all available tools including file operations, web search, and code execution as needed.`;
+1. SPECIFICATION PHASE:
+   - Create detailed requirements and acceptance criteria
+   - Define user stories with clear objectives
+   - Document functional and non-functional requirements
+   - Establish quality metrics and success criteria
+
+2. PSEUDOCODE PHASE:
+   - Design algorithms and data structures
+   - Create flow diagrams and logic patterns
+   - Define interfaces and contracts
+   - Plan error handling strategies
+
+3. ARCHITECTURE PHASE:
+   - Design system architecture with proper components
+   - Define APIs and service boundaries
+   - Plan database schemas if applicable
+   - Create deployment architecture
+
+4. REFINEMENT PHASE (TDD):
+   - RED: Write comprehensive failing tests first
+   - GREEN: Implement minimal code to pass tests
+   - REFACTOR: Optimize and clean up implementation
+   - Ensure >80% test coverage
+
+5. COMPLETION PHASE:
+   - Integrate all components
+   - Create comprehensive documentation
+   - Perform end-to-end testing
+   - Validate against original requirements
+` : ''}
+
+EXECUTION APPROACH:
+1. Analyze the objective and break it down into specific tasks
+2. Create a comprehensive implementation plan
+3. ${enableSparc ? 'Follow SPARC phases sequentially with proper artifacts for each phase' : 'Implement the solution directly'}
+4. Generate production-ready code with proper structure
+5. Include all necessary files (source code, tests, configs, documentation)
+6. Ensure the implementation is complete and functional
+
+TARGET DIRECTORY:
+Extract from the objective or use a sensible default. Create all files in the appropriate directory structure.
+
+IMPORTANT:
+- Create actual, working implementations - not templates or placeholders
+- Include comprehensive tests using appropriate testing frameworks
+- Add proper error handling and logging
+- Include configuration files (package.json, requirements.txt, etc.)
+- Create detailed README with setup and usage instructions
+- Follow best practices for the technology stack
+- Make the code production-ready, not just examples
+
+Begin execution now. Create all necessary files and provide a complete, working solution.`;
 
         // Execute Claude non-interactively by piping the prompt
         const { spawn } = await import('child_process');
@@ -546,6 +593,7 @@ OPTIONS:
   --mode <type>              Coordination mode (default: centralized)
   --max-agents <n>           Maximum agents (default: 5)
   --timeout <minutes>        Timeout in minutes (default: 60)
+  --task-timeout-minutes <n> Task execution timeout in minutes (default: 59)
   --parallel                 Enable parallel execution
   --distributed              Enable distributed coordination
   --monitor                  Enable real-time monitoring

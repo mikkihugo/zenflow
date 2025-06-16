@@ -1,0 +1,17 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "Hello World application created by Claude Flow Swarm",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "hello-world",
+    "swarm",
+    "claude-flow"
+  ],
+  "author": "Claude Flow Swarm",
+  "license": "MIT"
+}
