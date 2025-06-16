@@ -13,12 +13,6 @@
       "timestamp": 1749614509644
     },
     {
-      "key": "test_key",
-      "value": "This is a test value",
-      "namespace": "default",
-      "timestamp": 1749614834714
-    },
-    {
       "key": "code_requirements",
       "value": "Simple Calculator App Requirements:\n1. Basic arithmetic operations: addition (+), subtraction (-), multiplication (*), division (/)\n2. Support for decimal numbers\n3. Clear/reset functionality\n4. Error handling for division by zero\n5. Command-line interface for easy interaction\n6. Modular, testable code structure\n7. Support for operation chaining (e.g., 2 + 3 * 4)\n8. Memory functions (store, recall, clear)\nTarget: Node.js application with clean architecture",
       "namespace": "default",
@@ -89,6 +83,12 @@
       "value": "SPARC implementation roadmap created with 8 phases: 1) Core refactoring (code mode) - migrate to tasks resource, 2) Test suite (tdd mode) - Jest/Supertest tests, 3) Features (code mode) - query parameters, 4) Error handling (code mode) - consistent errors, 5) Security (security-review mode), 6) Optimization (refinement mode), 7) Documentation (docs-writer mode), 8) Integration testing. Can execute sequentially or use swarm mode for parallel execution.",
       "namespace": "default",
       "timestamp": 1749951017904
+    },
+    {
+      "key": "test_key",
+      "value": "test_value_1750109706",
+      "namespace": "default",
+      "timestamp": 1750109707314
     }
   ]
 }

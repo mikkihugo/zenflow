@@ -10,6 +10,7 @@ import { JsonPersistenceManager } from "../../core/json-persistence.ts";
 import { swarmAction } from "./swarm.ts";
 import { SimpleMemoryManager } from "./memory.ts";
 import { sparcAction } from "./sparc.ts";
+import { createMigrateCommand } from "./migrate.ts";
 
 let orchestrator: Orchestrator | null = null;
 let configManager: ConfigManager | null = null;
@@ -1396,6 +1397,10 @@ Now, please proceed with the task: ${task}`;
     ],
     action: sparcAction,
   });
+
+  // Migration command
+  const migrateCmd = createMigrateCommand();
+  cli.command(migrateCmd);
 
   // Swarm UI command (convenience wrapper)
   cli.command({

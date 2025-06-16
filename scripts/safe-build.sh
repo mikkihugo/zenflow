@@ -43,5 +43,21 @@ else
     exit 1
 fi
 
+# Build prompt copier CLI
+echo "🏗️  Building Prompt Copier CLI..."
+if deno compile --allow-all --no-check --output=bin/prompt-copier.tmp src/swarm/prompt-cli.ts 2>/dev/null; then
+    echo "✅ Prompt copier build successful!"
+    
+    if [ -f "bin/prompt-copier.tmp" ]; then
+        mv -f bin/prompt-copier.tmp bin/prompt-copier
+        chmod +x bin/prompt-copier
+        echo "✅ Prompt copier binary updated successfully!"
+    fi
+else
+    echo "⚠️  Prompt copier build failed - continuing without it"
+fi
+
 echo ""
-echo "✅ Build complete! Binary location: bin/claude-flow"
+echo "✅ Build complete!"
+echo "   Claude Flow binary: bin/claude-flow"
+echo "   Prompt Copier binary: bin/prompt-copier"
