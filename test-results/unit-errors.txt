@@ -1,4 +1,9 @@
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/cli-commands.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/commands/init/init-command.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/commands/init/rollback.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/commands/init/sparc-structure.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/commands/init/templates.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/commands/init/validation.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/start/process-manager.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/start/process-ui.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/cli/start/system-monitor.test.ts
@@ -10,12 +15,168 @@
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/core/event-bus.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/core/logger.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/example.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/mcp/mcp-interface.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/mcp/server.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/mcp/tools.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/memory/memory-backends.test.ts
+[0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/simple-example.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/terminal/terminal-manager.test.ts
 [0m[32mCheck[0m file:///workspaces/claude-code-flow/tests/unit/utils/helpers.test.ts
+[0m[1mTS2307 [0m[ERROR]: Cannot find module 'file:///workspaces/claude-code-flow/src/memory/backend.ts'.
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m10[0m:[0m[33m38[0m
+
+[0m[1mTS18046 [0m[ERROR]: 'data' is of type 'unknown'.
+      this.updateResourceUsage(data.resourceId, data.usage);
+[0m[31m                               ~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m389[0m:[0m[33m32[0m
+
+[0m[1mTS18046 [0m[ERROR]: 'data' is of type 'unknown'.
+      this.updateResourceUsage(data.resourceId, data.usage);
+[0m[31m                                                ~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m389[0m:[0m[33m49[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'Timeout' is not assignable to parameter of type 'number'.
+    if (this.monitoringInterval) clearInterval(this.monitoringInterval);
+[0m[31m                                               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m434[0m:[0m[33m48[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'Timeout' is not assignable to parameter of type 'number'.
+    if (this.cleanupInterval) clearInterval(this.cleanupInterval);
+[0m[31m                                            ~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m435[0m:[0m[33m45[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'Timeout' is not assignable to parameter of type 'number'.
+    if (this.scalingInterval) clearInterval(this.scalingInterval);
+[0m[31m                                            ~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m436[0m:[0m[33m45[0m
+
+[0m[1mTS2375 [0m[ERROR]: Type '{ id: string; resourceId: string; agentId: AgentId; taskId: TaskId | undefined; requirements: ResourceRequirements; status: "pending"; priority: ResourcePriority; createdAt: Date; expiresAt: Date; metadata: { ...; }; }' is not assignable to type 'ResourceReservation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'taskId' are incompatible.
+    Type 'TaskId | undefined' is not assignable to type 'TaskId'.
+      Type 'undefined' is not assignable to type 'TaskId'.
+    const reservation: ResourceReservation = {
+[0m[31m          ~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m534[0m:[0m[33m11[0m
+
+[0m[1mTS2375 [0m[ERROR]: Type '{ id: string; reservationId: string; resourceId: string; agentId: AgentId; taskId: TaskId | undefined; allocated: ResourceLimits; actualUsage: ResourceUsage; efficiency: number; startTime: Date; status: "active"; qosViolations: never[]; }' is not assignable to type 'ResourceAllocation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'taskId' are incompatible.
+    Type 'TaskId | undefined' is not assignable to type 'TaskId'.
+      Type 'undefined' is not assignable to type 'TaskId'.
+    const allocation: ResourceAllocation = {
+[0m[31m          ~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m615[0m:[0m[33m11[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'number' is not assignable to type 'Timeout'.
+    this.monitoringInterval = setInterval(() => {
+[0m[31m    ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m1086[0m:[0m[33m5[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'number' is not assignable to type 'Timeout'.
+    this.cleanupInterval = setInterval(() => {
+[0m[31m    ~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m1096[0m:[0m[33m5[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'number' is not assignable to type 'Timeout'.
+    this.scalingInterval = setInterval(() => {
+[0m[31m    ~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m1106[0m:[0m[33m5[0m
+
+[0m[1mTS2375 [0m[ERROR]: Type '{ id: string; key: string; value: any; type: MemoryType; tags: string[]; owner: AgentId; accessLevel: AccessLevel; createdAt: Date; updatedAt: Date; expiresAt: Date | undefined; version: number; references: never[]; dependencies: never[]; }' is not assignable to type 'MemoryEntry' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'expiresAt' are incompatible.
+    Type 'Date | undefined' is not assignable to type 'Date'.
+      Type 'undefined' is not assignable to type 'Date'.
+    const entry: MemoryEntry = {
+[0m[31m          ~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m246[0m:[0m[33m11[0m
+
+[0m[1mTS2375 [0m[ERROR]: Type '{ id: string; owner: AgentId; accessLevel: AccessLevel; createdAt: Date; updatedAt: Date; expiresAt: Date | undefined; references: string[]; key: string; ... 5 more ...; dependencies: string[]; }' is not assignable to type 'MemoryEntry' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'expiresAt' are incompatible.
+    Type 'Date | undefined' is not assignable to type 'Date'.
+      Type 'undefined' is not assignable to type 'Date'.
+    const sharedEntry: MemoryEntry = {
+[0m[31m          ~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m564[0m:[0m[33m11[0m
+
+[0m[1mTS2379 [0m[ERROR]: Argument of type '{ sharer: AgentId | undefined; partition?: string; broadcaster?: AgentId; accessLevel?: AccessLevel; }' is not assignable to parameter of type 'Partial<{ partition: string; sharer: AgentId; accessLevel: AccessLevel; expiresAt: Date; }>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'sharer' are incompatible.
+    Type 'AgentId | undefined' is not assignable to type 'AgentId'.
+      Type 'undefined' is not assignable to type 'AgentId'.
+        const sharedId = await this.shareMemory(key, targetAgent, {
+[0m[31m                                                                  ^[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m616[0m:[0m[33m67[0m
+
+[0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
+          error: error.message
+[0m[31m                 ~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m625[0m:[0m[33m18[0m
+
+[0m[1mTS2375 [0m[ERROR]: Type '{ id: string; name: string; type: MemoryType; entries: never[]; maxSize: number; ttl: number | undefined; readOnly: boolean; shared: true; indexed: boolean; compressed: boolean; }' is not assignable to type 'MemoryPartition' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'ttl' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+    const partition: MemoryPartition = {
+[0m[31m          ~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m686[0m:[0m[33m11[0m
+
+[0m[1mTS7053 [0m[ERROR]: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Record<MemoryType, number>'.
+  No index signature with a parameter of type 'string' was found on type 'Record<MemoryType, number>'.
+      entriesByType[entry.type]++;
+[0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m862[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'number' is not assignable to type 'Timeout'.
+      this.syncTimer = setInterval(() => {
+[0m[31m      ~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1206[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'number' is not assignable to type 'Timeout'.
+      this.backupTimer = setInterval(() => {
+[0m[31m      ~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1213[0m:[0m[33m7[0m
+
+[0m[1mTS2322 [0m[ERROR]: Type 'number' is not assignable to type 'Timeout'.
+    this.cleanupTimer = setInterval(() => {
+[0m[31m    ~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1221[0m:[0m[33m5[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'Timeout' is not assignable to parameter of type 'number'.
+      clearInterval(this.syncTimer);
+[0m[31m                    ~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1228[0m:[0m[33m21[0m
+
+[0m[1mTS2412 [0m[ERROR]: Type 'undefined' is not assignable to type 'Timeout' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+      this.syncTimer = undefined;
+[0m[31m      ~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1229[0m:[0m[33m7[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'Timeout' is not assignable to parameter of type 'number'.
+      clearInterval(this.backupTimer);
+[0m[31m                    ~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1233[0m:[0m[33m21[0m
+
+[0m[1mTS2412 [0m[ERROR]: Type 'undefined' is not assignable to type 'Timeout' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+      this.backupTimer = undefined;
+[0m[31m      ~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1234[0m:[0m[33m7[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'Timeout' is not assignable to parameter of type 'number'.
+      clearInterval(this.cleanupTimer);
+[0m[31m                    ~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1238[0m:[0m[33m21[0m
+
+[0m[1mTS2412 [0m[ERROR]: Type 'undefined' is not assignable to type 'Timeout' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+      this.cleanupTimer = undefined;
+[0m[31m      ~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1239[0m:[0m[33m7[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+      this.cache.delete(oldestKey);
+[0m[31m                        ~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/src/swarm/memory.ts[0m:[0m[33m1331[0m:[0m[33m25[0m
+
 [0m[1mTS18046 [0m[ERROR]: 'error' is of type 'unknown'.
       this.stderr(`Error: ${error.message}`);
 [0m[31m                            ~~~~~[0m
@@ -1115,6 +1276,253 @@ import { AdvancedScheduler } from '../../../src/coordination/advanced-scheduler.
 [0m[31m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
     at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/core/orchestrator.test.ts[0m:[0m[33m665[0m:[0m[33m7[0m
 
+[0m[1mTS2614 [0m[ERROR]: Module '"file:///workspaces/claude-code-flow/src/swarm/memory.ts"' has no exported member 'SwarmMemory'. Did you mean to use 'import SwarmMemory from "file:///workspaces/claude-code-flow/src/swarm/memory.ts"' instead?
+import { SwarmMemory } from '../../src/swarm/memory.ts';
+[0m[31m         ~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m11[0m:[0m[33m10[0m
+
+[0m[1mTS2305 [0m[ERROR]: Module '"file:///workspaces/claude-code-flow/src/core/config.ts"' has no exported member 'ConfigurationManager'.
+import { ConfigurationManager } from '../../src/core/config.ts';
+[0m[31m         ~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m12[0m:[0m[33m10[0m
+
+[0m[1mTS2305 [0m[ERROR]: Module '"file:///workspaces/claude-code-flow/src/memory/cache.ts"' has no exported member 'SimpleCache'.
+import { SimpleCache } from '../../src/memory/cache.ts';
+[0m[31m         ~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m15[0m:[0m[33m10[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'string' is not assignable to parameter of type 'string[]'.
+    await FileSystemTestUtils.cleanup(tempDir);
+[0m[31m                                      ~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m32[0m:[0m[33m39[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 3 arguments, but got 1.
+      memoryManager = new MemoryManager({ backend });
+[0m[31m                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m41[0m:[0m[33m23[0m
+
+    An argument for 'eventBus' was not provided.
+        private eventBus: IEventBus,
+    [0m[36m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+        at [0m[36mfile:///workspaces/claude-code-flow/src/memory/manager.ts[0m:[0m[33m53[0m:[0m[33m5[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 3.
+      await memoryManager.store('test-key', 'initial value', { namespace: 'test' });
+[0m[31m                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m47[0m:[0m[33m45[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const initial = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                               ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m48[0m:[0m[33m64[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const updated1 = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                                ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m53[0m:[0m[33m65[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const updated2 = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                                ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m59[0m:[0m[33m65[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 3.
+      await memoryManager.store('test-key', { a: 1, b: 2, c: 3 }, { namespace: 'test' });
+[0m[31m                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m65[0m:[0m[33m45[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const initial = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                               ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m66[0m:[0m[33m64[0m
+
+[0m[1mTS2698 [0m[ERROR]: Spread types may only be created from object types.
+        content: { ...initial!.content, b: 5 },
+[0m[31m                   ~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m70[0m:[0m[33m20[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const updated = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                               ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m74[0m:[0m[33m64[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type '{ a: number; b: number; c: number; }' is not assignable to parameter of type 'string'.
+      assertEquals(updated?.content, { a: 1, b: 5, c: 3 });
+[0m[31m                                     ~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m75[0m:[0m[33m38[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 3.
+      await memoryManager.store('test-key', 'value', { namespace: 'test' });
+[0m[31m                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m80[0m:[0m[33m45[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const initial = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                               ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m81[0m:[0m[33m64[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'createdAt' does not exist on type 'MemoryEntry'.
+      const createdAt = initial!.createdAt;
+[0m[31m                                 ~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m82[0m:[0m[33m34[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const updated = await memoryManager.retrieve('test-key', 'test');
+[0m[31m                                                               ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m88[0m:[0m[33m64[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'createdAt' does not exist on type 'MemoryEntry'.
+      assertEquals(updated?.createdAt, createdAt);
+[0m[31m                            ~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m90[0m:[0m[33m29[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'updatedAt' does not exist on type 'MemoryEntry'.
+      assert(updated!.updatedAt > createdAt);
+[0m[31m                      ~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m91[0m:[0m[33m23[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type '{ level1: { level2: { level3: { b: number; c: number; }; array: number[]; }; }; }' is not assignable to parameter of type 'Partial<{ level1: { level2: { level3: { a: number; b: number; }; array: number[]; }; keep: string; }; }>'.
+  Types of property 'level1' are incompatible.
+    Property 'keep' is missing in type '{ level2: { level3: { b: number; c: number; }; array: number[]; }; }' but required in type '{ level2: { level3: { a: number; b: number; }; array: number[]; }; keep: string; }'.
+      const result = deepMerge(original, update);
+[0m[31m                                         ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m252[0m:[0m[33m42[0m
+
+    'keep' is declared here.
+              keep: 'this'
+    [0m[36m          ~~~~~~~~~~~~[0m
+        at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m236[0m:[0m[33m11[0m
+
+[0m[1mTS2353 [0m[ERROR]: Object literal may only specify known properties, and 'c' does not exist in type '{ a: number; b: number; }'.
+              c: 3
+[0m[31m              ^[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m260[0m:[0m[33m15[0m
+
+    The expected type comes from property 'level3' which is declared here on type '{ level3: { a: number; b: number; }; array: number[]; }'
+                level3: {
+    [0m[36m            ^[0m
+        at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m230[0m:[0m[33m13[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'c' does not exist on type '{ b: number; }'.
+      assertEquals(result.nested.c, 4);
+[0m[31m                                 ^[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m277[0m:[0m[33m34[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 3 arguments, but got 1.
+      resourceManager = new ResourceManager({
+[0m[31m                        ^[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m285[0m:[0m[33m25[0m
+
+    An argument for 'logger' was not provided.
+        logger: ILogger,
+    [0m[36m    ~~~~~~~~~~~~~~~[0m
+        at [0m[36mfile:///workspaces/claude-code-flow/src/resources/resource-manager.ts[0m:[0m[33m337[0m:[0m[33m5[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'allocate' does not exist on type 'ResourceManager'.
+      const allocation1 = await resourceManager.allocate('task1', {
+[0m[31m                                                ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m293[0m:[0m[33m49[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'getUsage' does not exist on type 'ResourceManager'.
+      const usage1 = resourceManager.getUsage();
+[0m[31m                                     ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m301[0m:[0m[33m38[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'allocate' does not exist on type 'ResourceManager'.
+      const allocation2 = await resourceManager.allocate('task2', {
+[0m[31m                                                ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m306[0m:[0m[33m49[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'getUsage' does not exist on type 'ResourceManager'.
+      const usage2 = resourceManager.getUsage();
+[0m[31m                                     ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m314[0m:[0m[33m38[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'allocate' does not exist on type 'ResourceManager'.
+      await resourceManager.allocate('task1', {
+[0m[31m                            ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m321[0m:[0m[33m29[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'getUsage' does not exist on type 'ResourceManager'.
+      const usageBefore = resourceManager.getUsage();
+[0m[31m                                          ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m327[0m:[0m[33m43[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'deallocate' does not exist on type 'ResourceManager'.
+      resourceManager.deallocate('task1');
+[0m[31m                      ~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m330[0m:[0m[33m23[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'getUsage' does not exist on type 'ResourceManager'.
+      const usageAfter = resourceManager.getUsage();
+[0m[31m                                         ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m332[0m:[0m[33m42[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 3 arguments, but got 1.
+      const memoryManager = new MemoryManager({ backend });
+[0m[31m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m342[0m:[0m[33m29[0m
+
+    An argument for 'eventBus' was not provided.
+        private eventBus: IEventBus,
+    [0m[36m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+        at [0m[36mfile:///workspaces/claude-code-flow/src/memory/manager.ts[0m:[0m[33m53[0m:[0m[33m5[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 3.
+          memoryManager.store(`key-${i}`, i, { namespace: 'batch' })
+[0m[31m                                          ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m348[0m:[0m[33m43[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+          const entry = await memoryManager.retrieve(`key-${i}`, 'batch');
+[0m[31m                                                                 ~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m355[0m:[0m[33m66[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+        const updated = await memoryManager.retrieve(`key-${i}`, 'batch');
+[0m[31m                                                                 ~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m364[0m:[0m[33m66[0m
+
+[0m[1mTS2345 [0m[ERROR]: Argument of type 'number' is not assignable to parameter of type 'string'.
+        assertEquals(updated?.content, i + 10);
+[0m[31m                                       ~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m365[0m:[0m[33m40[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 3 arguments, but got 1.
+      const memoryManager = new MemoryManager({ backend });
+[0m[31m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m409[0m:[0m[33m29[0m
+
+    An argument for 'eventBus' was not provided.
+        private eventBus: IEventBus,
+    [0m[36m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+        at [0m[36mfile:///workspaces/claude-code-flow/src/memory/manager.ts[0m:[0m[33m53[0m:[0m[33m5[0m
+
+[0m[1mTS2339 [0m[ERROR]: Property 'on' does not exist on type 'MemoryManager'.
+      memoryManager.on('memory:updated', (event) => {
+[0m[31m                    ~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m413[0m:[0m[33m21[0m
+
+[0m[1mTS7006 [0m[ERROR]: Parameter 'event' implicitly has an 'any' type.
+      memoryManager.on('memory:updated', (event) => {
+[0m[31m                                          ~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m413[0m:[0m[33m43[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 3.
+      await memoryManager.store('event-key', 'initial', { namespace: 'events' });
+[0m[31m                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m417[0m:[0m[33m46[0m
+
+[0m[1mTS2554 [0m[ERROR]: Expected 1 arguments, but got 2.
+      const entry = await memoryManager.retrieve('event-key', 'events');
+[0m[31m                                                              ~~~~~~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m418[0m:[0m[33m63[0m
+
+[0m[1mTS2559 [0m[ERROR]: Type '100' has no properties in common with type '{ timeout?: number; interval?: number; message?: string; }'.
+      await AsyncTestUtils.waitFor(() => updateEvents.length > 0, 100);
+[0m[31m                                                                  ~~~[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/incremental-updates.test.ts[0m:[0m[33m423[0m:[0m[33m67[0m
+
 [0m[1mTS18046 [0m[ERROR]: 'result' is of type 'unknown'.
       assertEquals(result.name, 'John');
 [0m[31m                   ~~~~~~[0m
@@ -1652,7 +2060,7 @@ import { NativeTerminalAdapter } from '../../../src/terminal/adapters/native.ts'
     Type '{ c: number; }' is not assignable to type 'number'.
       const original = new Map([['a', 1], ['b', { c: 2 }]]);
 [0m[31m                           ~~~[0m
-    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/utils/helpers.test.ts[0m:[0m[33m292[0m:[0m[33m28[0m
+    at [0m[36mfile:///workspaces/claude-code-flow/tests/unit/utils/helpers.test.ts[0m:[0m[33m293[0m:[0m[33m28[0m
 
 [0m[1mTS2379 [0m[ERROR]: Argument of type '{ suffix: string; dir: string | undefined; }' is not assignable to parameter of type 'MakeTempOptions' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
   Types of property 'dir' are incompatible.
@@ -1713,7 +2121,7 @@ import { NativeTerminalAdapter } from '../../../src/terminal/adapters/native.ts'
 [0m[31m                                                                          ~~~~~[0m
     at [0m[36mfile:///workspaces/claude-code-flow/tests/utils/test-utils.ts[0m:[0m[33m632[0m:[0m[33m75[0m
 
-Found 274 errors.
+Found 344 errors.
 
 [0m[1m[31merror[0m: Type checking failed.
 

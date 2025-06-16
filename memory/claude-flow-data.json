@@ -1,5 +1,8 @@
 {
   "agents": [],
   "tasks": [],
-  "lastUpdated": 1749822174077
+  "environment": "dev",
+  "template": "web-api",
+  "customConfig": {},
+  "lastUpdated": 1750104289343
 }
