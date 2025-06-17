@@ -3,8 +3,8 @@
  * Executes tasks using the full claude-flow SPARC system in non-interactive mode
  */
 
-import { TaskDefinition, AgentState, TaskResult } from './types.ts';
-import { Logger } from '../core/logger.ts';
+import { TaskDefinition, AgentState, TaskResult } from './types.js';
+import { Logger } from '../core/logger.js';
 import * as path from 'node:path';
 import { spawn } from 'node:child_process';
 

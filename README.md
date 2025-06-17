@@ -1,40 +1,44 @@
-# 🌊 Claude-Flow v1.0.50: Advanced AI Agent Orchestration Platform
+# 🌊 Claude-Flow v1.0.66: Advanced AI Agent Orchestration Platform
 
 <div align="center">
 
 [![🌟 Star on GitHub](https://img.shields.io/github/stars/ruvnet/claude-code-flow?style=for-the-badge&logo=github&color=gold)](https://github.com/ruvnet/claude-code-flow)
-[![📦 NPX Ready](https://img.shields.io/npm/v/claude-flow?style=for-the-badge&logo=npm&color=blue&label=v1.0.50)](https://www.npmjs.com/package/claude-flow)
-[![⚡ BatchTool Ready](https://img.shields.io/badge/BatchTool-10%20Agents-green?style=for-the-badge&logo=terminal)](https://github.com/ruvnet/claude-code-flow)
-[![🦕 Deno Powered](https://img.shields.io/badge/deno-v1.40+-blue?style=for-the-badge&logo=deno)](https://deno.land/)
-[![⚡ TypeScript](https://img.shields.io/badge/TypeScript-Enhanced-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![📦 NPX Ready](https://img.shields.io/npm/v/claude-flow?style=for-the-badge&logo=npm&color=blue&label=v1.0.66)](https://www.npmjs.com/package/claude-flow)
+[![⚡ Claude Code](https://img.shields.io/badge/Claude%20Code-Ready-green?style=for-the-badge&logo=anthropic)](https://github.com/ruvnet/claude-code-flow)
+[![🦕 Multi-Runtime](https://img.shields.io/badge/Runtime-Node%20%7C%20Deno-blue?style=for-the-badge&logo=javascript)](https://github.com/ruvnet/claude-code-flow)
+[![⚡ TypeScript](https://img.shields.io/badge/TypeScript-Full%20Support-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![🛡️ MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
 
 </div>
 
 ## 🎯 **Transform Your Development Workflow**
 
-**Claude-Flow** is the ultimate multi-terminal orchestration platform that revolutionizes how you work with Claude Code. Coordinate **multiple AI agents** simultaneously, each working on different aspects of your project while sharing knowledge through an intelligent memory bank.
+**Claude-Flow** is the ultimate orchestration platform that revolutionizes how you work with Claude Code. Coordinate **multiple AI agents** simultaneously, manage complex workflows, and build sophisticated applications with AI-powered development.
 
-> 🔥 **One command to rule them all**: `npx claude-flow@latest` - Deploy a full AI agent coordination system in seconds!
+> 🔥 **One command to rule them all**: `npx claude-flow@latest init --sparc` - Deploy a full AI agent coordination system in seconds!
 
 
-## 🚀 **What's New in v1.0.50**
+## 🚀 **What's New in v1.0.66**
 
-### 🎯 **BatchTool Parallel Agent System**
-- **✅ Hundreds Concurrent Agents**: Deploy up to 100+ AI agents simultaneously via BatchTool
-- **✅ TypeScript Infrastructure Improvements**: 91% reduction in compilation errors (379→32)
-- **✅ Enhanced Test Framework**: Parallel testing with comprehensive coverage
-- **✅ Improved Build Process**: Streamlined Deno compilation with dependency fixes
-- **✅ Advanced Swarm Coordination**: Multi-agent task distribution and monitoring
+### 🎯 **Production-Ready Features**
+- **✅ NPM Publishing Ready**: Full support for `npx` and global installation
+- **✅ Local Wrapper Generation**: Auto-creates `./claude-flow` wrapper for easy project usage
+- **✅ Working Orchestrator**: Real MCP server, Web UI, and system monitoring
+- **✅ Fixed CLI Commands**: All agent, memory, and config commands fully functional
+- **✅ Enhanced SPARC Integration**: Full prompt loading from markdown files (2000+ chars)
 
 ### 🔧 **Core Improvements**
-- **Fixed** import path issues and dependency management
-- **Enhanced** error handling and type safety
-- **Improved** test utilities and async operations
-- **Optimized** parallel execution efficiency (71% faster)
-- **Maintained** full backward compatibility
+- **✅ Memory System**: Functional in-memory storage with export/import
+- **✅ Agent Management**: Added `info` and `terminate` commands
+- **✅ MCP Status Detection**: Real-time server status checking
+- **✅ UI Compatibility**: Graceful handling of terminal limitations
+- **✅ Error Recovery**: Better handling of port conflicts and missing dependencies
 
----
+### 🚀 **Developer Experience**
+- **✅ Simplified Setup**: One command initialization with local wrapper
+- **✅ Cross-Platform**: Windows, Mac, and Linux support
+- **✅ No Dependencies**: Works with just Node.js 18+
+- **✅ Backwards Compatible**: All existing commands preserved
 
 ---
 
@@ -45,11 +49,11 @@
 # Install and initialize with SPARC development environment
 npx claude-flow@latest init --sparc
 
-# Start the orchestration system
-./claude-flow start --ui
+# Use the local wrapper (created by init)
+./claude-flow start --ui --port 3000
 
-# Deploy multiple agents with BatchTool
-./claude-flow swarm "Build a REST API" --max-agents 5 --parallel
+# Run SPARC commands
+./claude-flow sparc "build a REST API"
 ```
 
 ### 🎛️ **SPARC Development Modes** (17 Specialized Agents)
@@ -58,10 +62,36 @@ npx claude-flow@latest init --sparc
 ./claude-flow sparc modes
 
 # Run specific development workflows
+./claude-flow sparc run coder "implement user authentication"
 ./claude-flow sparc run architect "design microservice architecture"
-./claude-flow sparc run tdd "create comprehensive test suite"
-./claude-flow sparc run security-review "audit authentication system"
+./claude-flow sparc tdd "create test suite for API"
 ```
+
+---
+
+## 🏢 **Enterprise Features**
+
+### 💼 **Enterprise-Grade Management**
+Claude-Flow v1.0.66 includes comprehensive enterprise features for production deployments:
+
+- **🗂️ Project Management**: Complete lifecycle tracking, team collaboration, and resource planning
+- **🚀 Deployment Automation**: Blue-green, canary, and rolling deployments with automated rollback
+- **☁️ Cloud Infrastructure**: Multi-cloud management with cost optimization (AWS, GCP, Azure)
+- **🔒 Security & Compliance**: Vulnerability scanning, compliance checking (SOC2, GDPR, HIPAA)
+- **📊 Analytics & Insights**: Performance monitoring, predictive optimization, and business intelligence
+- **📋 Audit & Compliance**: Enterprise-grade audit logging with cryptographic integrity
+
+```bash
+# Enterprise command examples
+claude-flow project create "E-commerce Platform" --type web-app --priority high
+claude-flow deploy create "v2.1.0" --environment production --strategy blue-green
+claude-flow cloud optimize --environment production
+claude-flow security scan "API Security Audit" ./api --type vulnerability
+claude-flow analytics insights --timerange 7d
+claude-flow audit report compliance --framework SOC2 --timerange 90d
+```
+
+> 📖 **[Complete Enterprise Documentation](./ENTERPRISE_FEATURES.md)** - Detailed feature guide with examples and configuration
 
 ---
 
@@ -89,34 +119,44 @@ npx claude-flow@latest init --sparc
 
 ## 🛠️ **Installation & Setup**
 
-### **Method 1: Quick Start (Recommended)**
+### **Method 1: Quick Start with NPX (Recommended)**
 ```bash
 # Initialize with full SPARC environment
 npx claude-flow@latest init --sparc
 
 # This creates:
-# ✓ CLAUDE.md (SPARC-enhanced configuration)
+# ✓ Local ./claude-flow wrapper script
+# ✓ .claude/ directory with configuration
+# ✓ CLAUDE.md (project instructions for Claude Code)
 # ✓ .roomodes (17 pre-configured SPARC modes)
-# ✓ Local ./claude-flow executable
-# ✓ Memory and coordination directories
-# ✓ Claude Code slash commands
+# ✓ Swarm command documentation
+
+# Start using immediately
+./claude-flow start --ui --port 3000
 ```
 
 ### **Method 2: Global Installation**
 ```bash
 # Install globally
-npm install -g claude-flow@latest
+npm install -g claude-flow
 
 # Initialize anywhere
 claude-flow init --sparc
+
+# Use directly
+claude-flow start --ui
 ```
 
-### **Method 3: Deno Direct**
+### **Method 3: Local Project Installation**
 ```bash
-# Clone and build from source
-git clone https://github.com/ruvnet/claude-code-flow.git
-cd claude-code-flow
-deno task build
+# Add to project
+npm install claude-flow --save-dev
+
+# Initialize
+npx claude-flow init --sparc
+
+# Use with local wrapper
+./claude-flow start --ui
 ```
 
 ---
@@ -128,12 +168,16 @@ deno task build
 # Check system status
 ./claude-flow status
 
-# Start orchestration with UI
-./claude-flow start --ui
+# Start orchestration with Web UI
+./claude-flow start --ui --port 3000
 
-# Spawn individual agents
+# Check MCP server status
+./claude-flow mcp status
+
+# Manage agents
 ./claude-flow agent spawn researcher --name "DataBot"
-./claude-flow agent spawn coder --name "DevBot"
+./claude-flow agent info agent-123
+./claude-flow agent terminate agent-123
 ```
 
 ### 🔥 **Advanced Workflows**
@@ -209,6 +253,16 @@ batchtool run --parallel \
 | `task create` | Create and manage tasks | `./claude-flow task create research "AI trends"` |
 | `monitor` | Real-time system monitoring | `./claude-flow monitor --dashboard` |
 
+### **Enterprise Commands**
+| Command | Description | Example |
+|---------|-------------|---------|
+| `project` | Project lifecycle management | `./claude-flow project create "API Project" --type web-app` |
+| `deploy` | Deployment automation & strategies | `./claude-flow deploy create "v1.2.0" --strategy blue-green` |
+| `cloud` | Multi-cloud infrastructure management | `./claude-flow cloud resources create "web-server" compute` |
+| `security` | Security scanning & compliance | `./claude-flow security scan "Vulnerability Check" ./src` |
+| `analytics` | Performance analytics & insights | `./claude-flow analytics insights --timerange 7d` |
+| `audit` | Enterprise audit logging | `./claude-flow audit report compliance --framework SOC2` |
+
 ---
 
 ## 🏗️ **Architecture Overview**
@@ -242,24 +296,28 @@ batchtool run --parallel \
 
 ### **Comprehensive Test Coverage**
 ```bash
-# Run full test suite with parallel agents
-deno task test
+# Run full test suite
+npm test
 
 # Run specific test categories
-deno task test:unit        # Unit tests
-deno task test:integration # Integration tests
-deno task test:e2e         # End-to-end tests
+npm run test:unit        # Unit tests
+npm run test:integration # Integration tests
+npm run test:e2e         # End-to-end tests
 
 # Generate coverage reports
-deno task test:coverage
+npm run test:coverage
+
+# Lint and typecheck
+npm run lint
+npm run typecheck
 ```
 
-### **Quality Metrics (v1.0.50)**
-- **✅ TypeScript Errors**: Reduced from 379 to 32 (91% improvement)
-- **✅ Build Process**: Streamlined and optimized
-- **✅ Test Coverage**: Comprehensive with parallel execution
-- **✅ Performance**: 71% faster parallel execution vs sequential
-- **✅ Stability**: Full backward compatibility maintained
+### **Quality Metrics (v1.0.66)**
+- **✅ NPM Publishing**: Fully compatible with npx and global installation
+- **✅ All CLI Commands**: 100% functional (agent, memory, config, etc.)
+- **✅ SPARC Integration**: Full prompt loading (2000+ characters)
+- **✅ Cross-Platform**: Windows, Mac, and Linux support
+- **✅ Zero Dependencies**: Works with just Node.js 18+
 
 ---
 
@@ -295,14 +353,17 @@ We welcome contributions! Here's how to get started:
 git clone https://github.com/ruvnet/claude-code-flow.git
 cd claude-code-flow
 
-# Install dependencies and setup
-deno cache --reload src/deps.ts
-
-# Run tests
-deno task test
+# Install dependencies
+npm install
 
 # Build the project
-deno task build
+npm run build
+
+# Run tests
+npm test
+
+# Link for local development
+npm link
 ```
 
 ### **Contributing Guidelines**
@@ -322,7 +383,7 @@ MIT License - see [LICENSE](./LICENSE) for details.
 ## 🎉 **Acknowledgments**
 
 - **Anthropic**: For the amazing Claude AI that powers this platform
-- **Deno Team**: For the excellent TypeScript runtime
+- **Node.js Team**: For the excellent JavaScript runtime
 - **Open Source Community**: For contributions and feedback
 - **SPARC Methodology**: For the structured development approach
 

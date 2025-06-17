@@ -3,13 +3,13 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import { CircularBuffer } from '../circular-buffer.ts';
-import { TTLMap } from '../ttl-map.ts';
-import { ClaudeConnectionPool } from '../connection-pool.ts';
-import { AsyncFileManager } from '../async-file-manager.ts';
-import { OptimizedExecutor } from '../optimized-executor.ts';
-import { generateId } from '../../../utils/helpers.ts';
-import type { TaskDefinition, AgentId } from '../../types.ts';
+import { CircularBuffer } from '../circular-buffer.js';
+import { TTLMap } from '../ttl-map.js';
+import { ClaudeConnectionPool } from '../connection-pool.js';
+import { AsyncFileManager } from '../async-file-manager.js';
+import { OptimizedExecutor } from '../optimized-executor.js';
+import { generateId } from '../../../utils/helpers.js';
+import type { TaskDefinition, AgentId } from '../../types.js';
 
 describe('Swarm Optimizations', () => {
   describe('CircularBuffer', () => {

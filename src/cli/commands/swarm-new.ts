@@ -2,13 +2,13 @@
  * Enhanced Swarm Command - Integration with new comprehensive swarm system
  */
 
-import { SwarmCoordinator } from '../../swarm/coordinator.ts';
-import { TaskExecutor } from '../../swarm/executor.ts';
-import { SwarmMemoryManager } from '../../swarm/memory.ts';
-import { generateId } from '../../utils/helpers.ts';
-import { success, error, warning, info } from "../cli-core.ts";
-import type { CommandContext } from "../cli-core.ts";
-import { SwarmStrategy, SwarmMode, AgentType } from '../../swarm/types.ts';
+import { SwarmCoordinator } from '../../swarm/coordinator.js';
+import { TaskExecutor } from '../../swarm/executor.js';
+import { SwarmMemoryManager } from '../../swarm/memory.js';
+import { generateId } from '../../utils/helpers.js';
+import { success, error, warning, info } from "../cli-core.js";
+import type { CommandContext } from "../cli-core.js";
+import { SwarmStrategy, SwarmMode, AgentType } from '../../swarm/types.js';
 
 export async function swarmAction(ctx: CommandContext) {
   // First check if help is requested

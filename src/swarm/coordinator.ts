@@ -3,16 +3,16 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { Logger } from '../core/logger.ts';
-import { generateId } from '../utils/helpers.ts';
+import { Logger } from '../core/logger.js';
+import { generateId } from '../utils/helpers.js';
 import {
   SwarmId, AgentId, TaskId, AgentState, TaskDefinition, SwarmObjective,
   SwarmConfig, SwarmStatus, SwarmProgress, SwarmResults, SwarmMetrics,
   SwarmMode, SwarmStrategy, AgentType, TaskType, TaskStatus, TaskPriority,
   SwarmEvent, EventType, SwarmEventEmitter, ValidationResult,
   SWARM_CONSTANTS
-} from './types.ts';
-import { AutoStrategy } from './strategies/auto.ts';
+} from './types.js';
+import { AutoStrategy } from './strategies/auto.js';
 
 export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter {
   private logger: Logger;
