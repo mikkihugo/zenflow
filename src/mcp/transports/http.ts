@@ -7,6 +7,8 @@ import { createServer, Server } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
 import cors from 'cors';
 import helmet from 'helmet';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ITransport, RequestHandler, NotificationHandler } from './base.js';
 import { MCPRequest, MCPResponse, MCPNotification, MCPConfig } from '../../utils/types.js';
 import { ILogger } from '../../core/logger.js';
@@ -161,6 +163,23 @@ export class HttpTransport implements ITransport {
   }
 
   private setupRoutes(): void {
+    // Get current file directory for static files
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const consoleDir = join(__dirname, '../../ui/console');
+
+    // Serve static files for the web console
+    this.app.use('/console', express.static(consoleDir));
+
+    // Web console route
+    this.app.get('/', (req, res) => {
+      res.redirect('/console');
+    });
+
+    this.app.get('/console', (req, res) => {
+      res.sendFile(join(consoleDir, 'index.html'));
+    });
+
     // Health check endpoint
     this.app.get('/health', (req, res) => {
       res.json({ status: 'ok', timestamp: new Date().toISOString() });
