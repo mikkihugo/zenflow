@@ -53,7 +53,7 @@ export async function createDirectoryStructure(): Promise<void> {
     tasks: [],
     swarms: [],
     lastUpdated: Date.now(),
-    version: "1.0.58"
+    version: "1.0.70"
   };
   
   await fs.writeFile('memory/claude-flow-data.json', JSON.stringify(initialData, null, 2));

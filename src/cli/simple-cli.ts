@@ -13,7 +13,7 @@ import chalk from 'chalk';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const VERSION = '1.0.58';
+const VERSION = '1.0.70';
 
 // Simple in-memory storage for the session
 const memoryStore: Map<string, any> = new Map();
@@ -193,81 +193,54 @@ async function launchSparcExecution(mode: string, prompt: string, options: any) 
   // Load the full SPARC prompt from .claude/commands/sparc/{mode}.md
   const sparcPrompt = await loadSparcPrompt(mode);
   
-  // Construct enhanced SPARC prompt with batch tool integration  
+  // Construct optimized SPARC prompt with clear action focus
   const fullPrompt = sparcPrompt ? 
     `${sparcPrompt}
 
-## Execution Configuration
-- Mode: ${mode}
-- Parallel Execution: ${options.parallel || false}
-- Batch Operations: ${options.batch || false}
+## TASK: ${prompt}
+
+## EXECUTION PLAN
+Execute this ${mode} task using coordinated agent patterns:
+
+**1. IMMEDIATE ACTION - TodoWrite Breakdown**
+- Create comprehensive TodoWrite with all subtasks
+- Set priorities, dependencies, and clear success criteria  
+- Track status: pending → in_progress → completed
+
+**2. COORDINATION STRATEGY**
+- Mode: ${mode} (${options.parallel ? 'parallel' : 'sequential'} execution)
 - Memory Key: ${options.memoryKey || 'sparc_' + mode + '_' + Date.now()}
-- Monitoring: ${options.monitor || false}
-- Timeout: ${options.timeout} minutes
+- ${options.batch ? 'Batch operations enabled' : 'Standard file operations'}${options.monitor ? '\n- Progress monitoring enabled' : ''}
 
-## Task Specification
-${prompt}
+**3. AGENT MANAGEMENT**${options.parallel ? `
+- Launch Task agents for independent work streams
+- Coordinate assignments via TodoWrite
+- Synchronize results through Memory` : `
+- Execute tasks sequentially with clear handoffs
+- Use Memory for state persistence`}${options.batch ? `
+- Use batch Read/Write/Edit for multiple files
+- Parallel Glob/Grep for comprehensive searches` : ''}
 
-## Enhanced Execution Instructions
-CRITICAL: You MUST use the following advanced coordination patterns:
+**4. COMPLETION REQUIREMENTS**
+- All TodoWrite tasks marked completed
+- Results stored in Memory for coordination
+- ${options.monitor ? 'Progress reported after each major step' : 'Final status reported'}
 
-1. **TODOWRITE COORDINATION**
-   - Immediately create a comprehensive TodoWrite with all subtasks
-   - Break down the task into specific, actionable items
-   - Set priority levels and dependencies
-   - Update task status in real-time (pending → in_progress → completed)
-
-2. **BATCH TOOL OPTIMIZATION**
-   ${options.batch ? `
-   - Use batch Read operations when reading multiple files
-   - Perform batch Write/Edit operations for multiple file changes
-   - Execute batch Glob/Grep operations for comprehensive searches
-   - Launch multiple Task agents simultaneously for parallel work` : ''}
-
-3. **MEMORY INTEGRATION**
-   ${options.memoryKey ? `
-   - Store all intermediate results in memory key: ${options.memoryKey}
-   - Query memory before starting work to avoid duplication
-   - Store key insights, decisions, and progress updates
-   - Use memory for cross-agent coordination` : ''}
-
-4. **PARALLEL AGENT COORDINATION**
-   ${options.parallel ? `
-   - Launch multiple Task agents for independent work streams
-   - Use TodoWrite to coordinate parallel agent assignments
-   - Store agent results in memory for synthesis
-   - Implement proper synchronization points` : ''}
-
-5. **MONITORING AND REPORTING**
-   ${options.monitor ? `
-   - Provide regular progress updates during execution
-   - Report completion status for each todo item
-   - Log key decisions and intermediate results
-   - Generate comprehensive final report` : ''}
-
-Execute this task using the SPARC ${mode} mode with the tools, methodologies, and coordination patterns specified above.` :
+**START NOW** with TodoWrite task breakdown and proceed systematically through execution.` :
     `SPARC: ${mode}
 
-## Task Configuration
-- Mode: ${mode}
-- Parallel: ${options.parallel || false}
-- Batch: ${options.batch || false}
-- Memory: ${options.memoryKey || 'sparc_session'}
-- Monitor: ${options.monitor || false}
+## TASK: ${prompt}
 
-## Task
-${prompt}
+## EXECUTION REQUIREMENTS
+Mode: ${mode} | ${options.parallel ? 'Parallel' : 'Sequential'} | Memory: ${options.memoryKey || 'sparc_session'}
 
-## Instructions
-Execute this task using SPARC ${mode} mode with the following requirements:
+**IMMEDIATE ACTIONS:**
+1. **TodoWrite** - Create comprehensive task breakdown with priorities
+2. **${options.parallel ? 'Task agents' : 'Sequential execution'}** - ${options.parallel ? 'Launch parallel agents for independent work' : 'Execute tasks with clear handoffs'}
+3. **Memory coordination** - Store results and progress in ${options.memoryKey || 'sparc_session'}
+4. **${options.batch ? 'Batch operations' : 'Standard operations'}** - ${options.batch ? 'Use batch Read/Write/Edit for efficiency' : 'Use standard file operations'}
 
-1. Use TodoWrite for comprehensive task breakdown
-2. ${options.batch ? 'Use batch operations for file handling' : 'Use standard file operations'}
-3. ${options.parallel ? 'Launch parallel agents for independent work' : 'Execute tasks sequentially'}
-4. ${options.memoryKey ? `Store results in memory key: ${options.memoryKey}` : 'Use standard memory coordination'}
-5. ${options.monitor ? 'Provide detailed progress monitoring' : 'Provide standard progress updates'}
-
-Begin with a comprehensive task analysis and todo breakdown.`;
+**START IMMEDIATELY** with TodoWrite breakdown and execute systematically.`;
   
   // Write the prompt to a temporary file
   const fs = await import('fs/promises');
@@ -1498,7 +1471,7 @@ async function createProgram() {
         
         // Create base configuration
         const claudeConfig = {
-          version: "1.0.58",
+          version: "1.0.70",
           project: {
             name: path.basename(process.cwd()),
             type: "claude-flow",
@@ -1664,15 +1637,8 @@ System maintenance and updates with coordinated agents.
         if (options.sparc) {
           console.log('\n📁 Creating SPARC development environment:');
           
-          // Use the modular SPARC environment creator
-          try {
-            const { createSparcEnvironment } = await import('./init/sparc-environment.js');
-            await createSparcEnvironment();
-          } catch (error) {
-            console.error('Error creating SPARC environment:', error);
-            // Fallback to comprehensive SPARC setup
-            await createComprehensiveSparcSetup();
-          }
+          // Create comprehensive SPARC setup directly
+          await createComprehensiveSparcSetup();
         } else {
           console.log('\n📁 Creating standard Claude-Flow project:');
           console.log('   ✅ Creating configuration file');
@@ -2784,132 +2750,82 @@ Run 'claude-flow swarm <subcommand> --help' for subcommand help.
       // Launch Claude Code with swarm configuration
       const { spawn } = await import('child_process');
       
-      // Construct the SPARC-style prompt for swarm execution
+      // Construct optimized swarm prompt with clear action focus
       const swarmPrompt = `SPARC: swarm-${options.strategy}
-Objective: ${objective}
 
-Configuration:
-- Strategy: ${options.strategy}
-- Coordination Mode: ${options.mode}
-- Max Agents: ${options.maxAgents}
-- Parallel Execution: ${options.parallel}
-- Timeout: ${options.timeout} minutes
+## OBJECTIVE: ${objective}
 
-IMPORTANT SWARM ORCHESTRATION INSTRUCTIONS:
+## SWARM CONFIGURATION
+Strategy: ${options.strategy} | Mode: ${options.mode} | Agents: ${options.maxAgents} | ${options.parallel ? 'Parallel' : 'Sequential'}
 
-1. TASK MANAGEMENT WITH TODOS:
-   - Use TodoWrite to create a comprehensive task list immediately
-   - Break down the objective into specific, actionable subtasks
-   - Assign priority levels (high/medium/low) based on dependencies
-   - Update task status in real-time (pending → in_progress → completed)
-   - Use TodoRead frequently to track progress and coordinate efforts
+## IMMEDIATE EXECUTION PLAN
 
-2. BATCH TOOL USAGE FOR PARALLEL EXECUTION:
-   - When multiple independent tasks exist, use batch tool calls
-   - Launch parallel agents by calling multiple tools in a single response
-   - Example: Search for files with Glob/Grep, read multiple files with Read, etc.
-   - Maximize parallelism: If 5 files need reading, read all 5 in one batch
-   - For agent tasks: Use Task tool to launch parallel agents simultaneously
+**1. START NOW - TodoWrite Task Breakdown**
+- Create comprehensive task list for: ${objective}
+- Set priorities and dependencies
+- Assign agent roles based on ${options.strategy} strategy
 
-3. MEMORY COORDINATION:
-   - Store key findings and intermediate results using memory tools
-   - Create a shared knowledge base for all agents to access
-   - Use memory namespaces to organize information by topic/agent
-   - Store: task results, discovered patterns, important decisions
-   - Query memory before starting new tasks to avoid duplication
+**2. COORDINATION MODE: ${options.mode.toUpperCase()}**${
+  options.mode === 'centralized' ? `
+- You coordinate all ${options.maxAgents} agents directly
+- Maintain central task queue in TodoWrite
+- Collect results before next phase` :
+  options.mode === 'distributed' ? `
+- Create coordinator agents for different aspects
+- Use Memory for inter-coordinator communication
+- Parallel independent execution` :
+  options.mode === 'hierarchical' ? `
+- Create team leads for major components
+- Team leads manage sub-agents
+- Report progress via Memory` :
+  options.mode === 'mesh' ? `
+- Agents self-organize via Memory
+- Claim tasks from shared TodoWrite
+- Peer-to-peer coordination` :
+  options.mode === 'hybrid' ? `
+- Start centralized, scale to distributed
+- Adapt coordination to task needs
+- Mix patterns for efficiency` : ''}
 
-4. COORDINATION PATTERNS BY MODE:
-   ${options.mode === 'centralized' ? `
-   CENTRALIZED MODE:
-   - You are the single coordinator for all agents
-   - Maintain a central task queue and assign work sequentially
-   - Use TodoWrite to track all agent assignments
-   - Collect all results before proceeding to next phase` : ''}
-   ${options.mode === 'distributed' ? `
-   DISTRIBUTED MODE:
-   - Create multiple coordinator agents for different aspects
-   - Use memory system for inter-coordinator communication
-   - Each coordinator manages a subset of tasks independently
-   - Synchronize through shared memory checkpoints` : ''}
-   ${options.mode === 'hierarchical' ? `
-   HIERARCHICAL MODE:
-   - Create team leads for each major component
-   - Team leads coordinate their own sub-agents
-   - Use TodoWrite to maintain hierarchy visibility
-   - Report progress up the chain via memory updates` : ''}
-   ${options.mode === 'mesh' ? `
-   MESH MODE:
-   - Agents communicate peer-to-peer via memory
-   - No central coordinator - self-organizing
-   - Agents claim tasks from shared todo list
-   - Use memory for discovering and coordinating with peers` : ''}
-   ${options.mode === 'hybrid' ? `
-   HYBRID MODE:
-   - Combine patterns as needed for efficiency
-   - Start centralized, transition to distributed for execution
-   - Use hierarchical for complex subtasks
-   - Adapt coordination based on task requirements` : ''}
+**3. ${options.strategy.toUpperCase()} STRATEGY PHASES**${
+  options.strategy === 'research' ? `
+- GATHER: Parallel WebSearch/WebFetch (batch operations)
+- ANALYZE: Process findings in Memory
+- SYNTHESIZE: Generate insights and report` :
+  options.strategy === 'development' ? `
+- DESIGN: Architecture in Memory
+- BUILD: Parallel file creation/editing
+- TEST: Batch test execution
+- DEPLOY: Coordinated deployment` :
+  options.strategy === 'analysis' ? `
+- COLLECT: Parallel data gathering
+- PROCESS: Batch analysis operations
+- INSIGHTS: Store results in Memory` :
+  options.strategy === 'testing' ? `
+- PLAN: Test matrix in TodoWrite
+- EXECUTE: Parallel test batches
+- ANALYZE: Aggregate results in Memory` :
+  options.strategy === 'optimization' ? `
+- PROFILE: Parallel performance measurements
+- IDENTIFY: Batch bottleneck analysis
+- OPTIMIZE: Parallel improvements` :
+  options.strategy === 'maintenance' ? `
+- AUDIT: Parallel system checks
+- PLAN: Prioritize updates in TodoWrite
+- EXECUTE: Batch implementations` : ''}
 
-5. STRATEGY-SPECIFIC EXECUTION:
-   ${options.strategy === 'research' ? `
-   RESEARCH STRATEGY:
-   - Phase 1: Information gathering (use WebSearch, WebFetch in parallel)
-   - Phase 2: Analysis and synthesis (batch process findings)
-   - Phase 3: Report generation (consolidate in memory)
-   - Use memory to build knowledge graph of findings` : ''}
-   ${options.strategy === 'development' ? `
-   DEVELOPMENT STRATEGY:
-   - Phase 1: Architecture design (store in memory)
-   - Phase 2: Parallel implementation (batch create/edit files)
-   - Phase 3: Testing and integration (run tests in parallel)
-   - Phase 4: Documentation (generate from memory/code)` : ''}
-   ${options.strategy === 'analysis' ? `
-   ANALYSIS STRATEGY:
-   - Phase 1: Data collection (parallel data gathering)
-   - Phase 2: Statistical analysis (batch processing)
-   - Phase 3: Visualization and insights (store results)
-   - Use memory for intermediate calculations` : ''}
-   ${options.strategy === 'testing' ? `
-   TESTING STRATEGY:
-   - Phase 1: Test planning (create test matrix in todos)
-   - Phase 2: Test execution (run tests in parallel batches)
-   - Phase 3: Result analysis (aggregate in memory)
-   - Phase 4: Report generation (from memory data)` : ''}
-   ${options.strategy === 'optimization' ? `
-   OPTIMIZATION STRATEGY:
-   - Phase 1: Performance profiling (parallel measurements)
-   - Phase 2: Bottleneck identification (analyze in batches)
-   - Phase 3: Optimization implementation (parallel updates)
-   - Phase 4: Validation (batch performance tests)` : ''}
-   ${options.strategy === 'maintenance' ? `
-   MAINTENANCE STRATEGY:
-   - Phase 1: System audit (parallel system checks)
-   - Phase 2: Update planning (prioritize in todos)
-   - Phase 3: Implementation (batch updates)
-   - Phase 4: Verification (parallel validation)` : ''}
+**4. BATCH EXECUTION PATTERNS**
+- Launch ${options.maxAgents} agents simultaneously with Task tool
+- Read/Write/Edit multiple files in single operations
+- Parallel Glob/Grep searches for efficiency
+- Store all results in Memory namespace: swarm_${swarmConfig.id}
 
-6. EXECUTION WORKFLOW:
-   a) Initialize with TodoWrite - create complete task breakdown
-   b) Set up memory structure for coordination
-   c) Launch initial batch of parallel agents/tasks
-   d) Monitor progress via TodoRead every few operations
-   e) Store intermediate results in memory
-   f) Coordinate next batch based on completed work
-   g) Repeat until all todos are completed
-   h) Synthesize final results from memory
+**5. SUCCESS CRITERIA**
+- All TodoWrite tasks completed
+- Results consolidated in Memory
+- Final report generated
 
-7. BEST PRACTICES:
-   - Always use batch operations when possible
-   - Update todos immediately when starting/completing tasks
-   - Store reusable information in memory
-   - Check memory before starting new research/analysis
-   - Use descriptive task names in todos for clarity
-   - Leverage parallel execution for independent tasks
-   - Maintain clear coordination through todos and memory
-
-Remember: The goal is efficient, coordinated execution. Use todos for task tracking, memory for information sharing, and batch operations for parallel execution.
-
-Begin the swarm orchestration now with a comprehensive task breakdown using TodoWrite.`;
+**BEGIN IMMEDIATELY** with TodoWrite breakdown for: ${objective}`;
 
       console.log('\n🚀 Launching swarm execution...\n');
       
@@ -3114,11 +3030,117 @@ Begin the swarm orchestration now with a comprehensive task breakdown using Todo
     await fs.writeFile('.roomodes', JSON.stringify(roomodes, null, 2));
     console.log('   ✅ Created comprehensive .roomodes file with 17 modes');
     
+    // Create SPARC command files directory
+    const path = await import('path');
+    const sparcDir = path.join('.claude', 'commands', 'sparc');
+    await fs.mkdir(sparcDir, { recursive: true });
+    
+    // Copy SPARC command files from the project template
+    const projectRoot = '/workspaces/claude-code-flow';
+    const sourceSparcDir = path.join(projectRoot, '.claude', 'commands', 'sparc');
+    
+    try {
+      const sparcFiles = await fs.readdir(sourceSparcDir);
+      
+      for (const file of sparcFiles) {
+        if (file.endsWith('.md')) {
+          try {
+            const content = await fs.readFile(path.join(sourceSparcDir, file), 'utf8');
+            await fs.writeFile(path.join(sparcDir, file), content);
+            console.log(`   ✅ Copied SPARC command file: ${file}`);
+          } catch (copyError) {
+            console.log(`   ⚠️  Could not copy ${file}: ${copyError.message}`);
+          }
+        }
+      }
+      
+      console.log('   ✅ SPARC command files copied successfully');
+    } catch (readError) {
+      console.log('   ⚠️  Could not read SPARC source directory, creating basic SPARC files');
+      
+      // Create basic SPARC command files as fallback
+      await createBasicSparcFiles(sparcDir, fs, path);
+    }
+    
     // Create comprehensive CLAUDE.md with all capabilities
     const claudeMd = generateComprehensiveClaudeMd();
     
     await fs.writeFile('CLAUDE.md', claudeMd);
     console.log('   ✅ Created comprehensive CLAUDE.md with all Claude-Flow capabilities');
+  }
+
+  // Helper function to create basic SPARC files as fallback
+  async function createBasicSparcFiles(sparcDir: string, fs: any, path: any) {
+    const basicSparcFiles = {
+      'orchestrator.md': `# Orchestrator Mode
+
+SPARC: orchestrator
+You are an AI orchestrator coordinating multiple specialized agents to complete complex tasks efficiently using TodoWrite, TodoRead, Task, and Memory tools.
+
+## Description
+Multi-agent task orchestration and coordination
+
+## Available Tools
+- **TodoWrite**: Task creation and coordination
+- **TodoRead**: Task status and progress reading
+- **Task**: Agent spawning and management
+- **Memory**: Persistent data storage and retrieval
+- **Bash**: Command line execution
+
+## Configuration
+- **Batch Optimized**: Yes
+- **Coordination Mode**: centralized
+- **Max Parallel Tasks**: 10
+
+## Instructions
+You MUST use the above tools, follow the best practices, and implement the usage patterns specified for the orchestrator mode. Execute all tasks using batch operations when possible and coordinate through TodoWrite/Memory as appropriate.
+`,
+      'coder.md': `# Coder Mode
+
+SPARC: coder
+You are an expert programmer focused on writing clean, efficient, and well-documented code using batch file operations.
+
+## Description
+Autonomous code generation and implementation
+
+## Available Tools
+- **Read**: File reading operations
+- **Write**: File writing operations
+- **Edit**: File editing operations
+- **Bash**: Command line execution
+- **Glob**: File pattern matching
+- **Grep**: Content searching
+- **TodoWrite**: Task management
+
+## Instructions
+You MUST use the above tools to write high-quality code with proper error handling, documentation, and testing.
+`,
+      'researcher.md': `# Researcher Mode
+
+SPARC: researcher
+You are a research specialist focused on gathering comprehensive information using parallel WebSearch/WebFetch and Memory coordination.
+
+## Description
+Deep research and comprehensive analysis
+
+## Available Tools
+- **WebSearch**: Web search capabilities
+- **WebFetch**: Web content fetching
+- **Read**: File reading operations
+- **Write**: File writing operations
+- **Memory**: Knowledge storage and retrieval
+- **TodoWrite**: Task coordination
+- **Task**: Agent spawning
+
+## Instructions
+You MUST use the above tools to conduct thorough research and store findings in Memory for future use.
+`
+    };
+
+    for (const [filename, content] of Object.entries(basicSparcFiles)) {
+      await fs.writeFile(path.join(sparcDir, filename), content);
+      console.log(`   ✅ Created basic SPARC file: ${filename}`);
+    }
   }
   
   // Helper function to generate comprehensive CLAUDE.md content

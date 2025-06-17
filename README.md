@@ -1,9 +1,9 @@
-# 🌊 Claude-Flow v1.0.66: Advanced AI Agent Orchestration Platform
+# 🌊 Claude-Flow v1.0.70: Advanced AI Agent Orchestration Platform
 
 <div align="center">
 
 [![🌟 Star on GitHub](https://img.shields.io/github/stars/ruvnet/claude-code-flow?style=for-the-badge&logo=github&color=gold)](https://github.com/ruvnet/claude-code-flow)
-[![📦 NPX Ready](https://img.shields.io/npm/v/claude-flow?style=for-the-badge&logo=npm&color=blue&label=v1.0.66)](https://www.npmjs.com/package/claude-flow)
+[![📦 NPX Ready](https://img.shields.io/npm/v/claude-flow?style=for-the-badge&logo=npm&color=blue&label=v1.0.70)](https://www.npmjs.com/package/claude-flow)
 [![⚡ Claude Code](https://img.shields.io/badge/Claude%20Code-Ready-green?style=for-the-badge&logo=anthropic)](https://github.com/ruvnet/claude-code-flow)
 [![🦕 Multi-Runtime](https://img.shields.io/badge/Runtime-Node%20%7C%20Deno-blue?style=for-the-badge&logo=javascript)](https://github.com/ruvnet/claude-code-flow)
 [![⚡ TypeScript](https://img.shields.io/badge/TypeScript-Full%20Support-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -18,14 +18,14 @@
 > 🔥 **One command to rule them all**: `npx claude-flow@latest init --sparc` - Deploy a full AI agent coordination system in seconds!
 
 
-## 🚀 **What's New in v1.0.66**
+## 🚀 **What's New in v1.0.70**
 
-### 🎯 **Production-Ready Features**
-- **✅ NPM Publishing Ready**: Full support for `npx` and global installation
-- **✅ Local Wrapper Generation**: Auto-creates `./claude-flow` wrapper for easy project usage
-- **✅ Working Orchestrator**: Real MCP server, Web UI, and system monitoring
-- **✅ Fixed CLI Commands**: All agent, memory, and config commands fully functional
-- **✅ Enhanced SPARC Integration**: Full prompt loading from markdown files (2000+ chars)
+### 🎯 **Critical Fix: SPARC File Initialization**
+- **✅ Fixed SPARC Files**: `init --sparc` now properly copies all SPARC mode files to `.claude/commands/sparc/`
+- **✅ Swarm Strategies**: Also copies swarm strategy files to `.claude/commands/swarm/`
+- **✅ Config File**: Creates `.claude/config.json` with proper configuration
+- **✅ Complete Setup**: All 18 SPARC modes and 7 swarm strategies now included
+- **✅ Project-Focused**: Maintains v1.0.70's clear project-building focus
 
 ### 🔧 **Core Improvements**
 - **✅ Memory System**: Functional in-memory storage with export/import
@@ -72,7 +72,7 @@ npx claude-flow@latest init --sparc
 ## 🏢 **Enterprise Features**
 
 ### 💼 **Enterprise-Grade Management**
-Claude-Flow v1.0.66 includes comprehensive enterprise features for production deployments:
+Claude-Flow v1.0.70 includes comprehensive enterprise features for production deployments:
 
 - **🗂️ Project Management**: Complete lifecycle tracking, team collaboration, and resource planning
 - **🚀 Deployment Automation**: Blue-green, canary, and rolling deployments with automated rollback
@@ -312,12 +312,12 @@ npm run lint
 npm run typecheck
 ```
 
-### **Quality Metrics (v1.0.66)**
+### **Quality Metrics (v1.0.70)**
+- **✅ Project-Focused**: CLAUDE.md explicitly guides building user applications
+- **✅ Clear Instructions**: No confusion about modifying claude-flow itself
+- **✅ Real Examples**: All documentation shows building actual applications
 - **✅ NPM Publishing**: Fully compatible with npx and global installation
-- **✅ All CLI Commands**: 100% functional (agent, memory, config, etc.)
-- **✅ SPARC Integration**: Full prompt loading (2000+ characters)
 - **✅ Cross-Platform**: Windows, Mac, and Linux support
-- **✅ Zero Dependencies**: Works with just Node.js 18+
 
 ---
 
