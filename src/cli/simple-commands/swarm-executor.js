@@ -3,8 +3,20 @@
  * Actual swarm executor that creates files
  */
 
-import { ensureDir } from "https://deno.land/std@0.208.0/fs/mod.ts";
-import { join } from "https://deno.land/std@0.208.0/path/mod.ts";
+// Node.js compatible imports
+import fs from 'fs';
+import path from 'path';
+
+// Polyfill for Deno's ensureDir using Node.js fs
+async function ensureDir(dirPath) {
+  try {
+    await fs.promises.mkdir(dirPath, { recursive: true });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+}
+
+const join = path.join;
 
 export async function executeSwarm(objective, options = {}) {
   const swarmId = `swarm_${Math.random().toString(36).substring(2, 11)}_${Math.random().toString(36).substring(2, 11)}`;
