@@ -1,668 +1,274 @@
 {
-  "version": "2.0",
-  "metadata": {
-    "lastUpdated": "2025-06-16",
-    "optimizationStatus": "enhanced",
-    "batchToolsEnabled": true,
-    "features": {
-      "parallelExecution": true,
-      "asyncProcessing": true,
-      "connectionPooling": true,
-      "intelligentCaching": true,
-      "resourceMonitoring": true,
-      "boomerangPattern": true,
-      "dependencyResolution": true
-    }
+  "orchestrator": {
+    "description": "Multi-agent task orchestration and coordination",
+    "prompt": "SPARC: orchestrator\\nYou are an AI orchestrator coordinating multiple specialized agents to complete complex tasks efficiently using TodoWrite, TodoRead, Task, and Memory tools.",
+    "tools": [
+      "TodoWrite",
+      "TodoRead",
+      "Task",
+      "Memory",
+      "Bash"
+    ],
+    "batchOptimized": true,
+    "coordinationMode": "centralized",
+    "maxParallelTasks": 10
   },
-  "globalConfig": {
-    "defaultExecutor": "optimized",
-    "maxConcurrency": 10,
-    "defaultTimeout": 300000,
-    "caching": {
-      "enabled": true,
-      "ttl": 3600000,
-      "maxSize": 1000
-    },
-    "monitoring": {
-      "enabled": true,
-      "metricsInterval": 30000,
-      "slowTaskThreshold": 60000
-    },
-    "fileOperations": {
-      "outputDir": ".sparc/outputs",
-      "concurrency": 20
-    }
+  "coder": {
+    "description": "Autonomous code generation and implementation",
+    "prompt": "SPARC: coder\\nYou are an expert programmer focused on writing clean, efficient, and well-documented code using batch file operations.",
+    "tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "Glob",
+      "Grep",
+      "TodoWrite"
+    ],
+    "batchOptimized": true,
+    "fileOperations": "parallel",
+    "codeStyle": "ES2022"
   },
-  "modeGroups": {
-    "core": {
-      "name": "Core Development",
-      "description": "Essential SPARC development modes",
-      "modes": ["spec-pseudocode", "architect", "code", "tdd", "integration"]
-    },
-    "quality": {
-      "name": "Quality Assurance",
-      "description": "Testing, security, and optimization modes",
-      "modes": ["debug", "security-review", "refinement-optimization-mode", "post-deployment-monitoring-mode"]
-    },
-    "support": {
-      "name": "Support & Documentation",
-      "description": "Documentation and auxiliary modes",
-      "modes": ["docs-writer", "tutorial", "ask"]
-    },
-    "infrastructure": {
-      "name": "Infrastructure & Integration",
-      "description": "DevOps and external service integration",
-      "modes": ["devops", "mcp", "supabase-admin"]
-    },
-    "orchestration": {
-      "name": "Advanced Orchestration",
-      "description": "Multi-agent coordination and complex workflows",
-      "modes": ["sparc", "swarm"]
-    }
+  "researcher": {
+    "description": "Deep research and comprehensive analysis",
+    "prompt": "SPARC: researcher\\nYou are a research specialist focused on gathering comprehensive information using parallel WebSearch/WebFetch and Memory coordination.",
+    "tools": [
+      "WebSearch",
+      "WebFetch",
+      "Read",
+      "Write",
+      "Memory",
+      "TodoWrite",
+      "Task"
+    ],
+    "batchOptimized": true,
+    "searchMode": "parallel",
+    "memoryIntegration": "automatic"
   },
-  "customModes": [
-    {
-      "slug": "architect",
-      "name": "🏗️ Architect",
-      "roleDefinition": "You design scalable, secure, and modular architectures based on functional specs and user needs. You define responsibilities across services, APIs, and components.",
-      "customInstructions": "Create architecture mermaid diagrams, data flows, and integration points. Ensure no part of the design includes secrets or hardcoded env values. Emphasize modular boundaries and maintain extensibility. All descriptions and diagrams must fit within a single file or modular folder.",
-      "groups": ["read", "edit"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": true,
-        "parallelizable": true,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 180000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit"],
-        "optional": ["browser", "mcp"],
-        "customTools": ["mermaid-generator", "architecture-validator"]
-      },
-      "tags": ["design", "planning", "architecture", "diagrams"]
-    },
-    {
-      "slug": "code",
-      "name": "🧠 Auto-Coder",
-      "roleDefinition": "You write clean, efficient, modular code based on pseudocode and architecture. You use configuration for environments and break large components into maintainable files.",
-      "customInstructions": "Write modular code using clean architecture principles. Never hardcode secrets or environment values. Split code into files < 500 lines. Use config files or environment abstractions. Use `new_task` for subtasks and finish with `attempt_completion`.\n\n## Tool Usage Guidelines:\n- Use `insert_content` when creating new files or when the target file is empty\n- Use `apply_diff` when modifying existing code, always with complete search and replace blocks\n- Only use `search_and_replace` as a last resort and always include both search and replace parameters\n- Always verify all required parameters are included before executing any tool",
-      "groups": ["read", "edit", "browser", "mcp", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": true,
-        "parallelizable": true,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit", "command"],
-        "optional": ["browser", "mcp"],
-        "customTools": ["code-formatter", "dependency-resolver", "lint-checker"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-files", "sequential-modules", "dependency-aware"],
-        "maxBatchSize": 10,
-        "errorHandling": "continue-on-error"
-      },
-      "tags": ["implementation", "coding", "development", "programming"]
-    },
-    {
-      "slug": "tdd",
-      "name": "🧪 Tester (TDD)",
-      "roleDefinition": "You implement Test-Driven Development (TDD, London School), writing tests first and refactoring after minimal implementation passes.",
-      "customInstructions": "Write failing tests first. Implement only enough code to pass. Refactor after green. Ensure tests do not hardcode secrets. Keep files < 500 lines. Validate modularity, test coverage, and clarity before using `attempt_completion`.",
-      "groups": ["read", "edit", "browser", "mcp", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": true,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit", "command"],
-        "optional": ["browser", "mcp"],
-        "customTools": ["test-runner", "coverage-analyzer", "mutation-tester"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-tests", "test-suites", "integration-tests"],
-        "maxBatchSize": 20,
-        "errorHandling": "fail-fast"
-      },
-      "tags": ["testing", "tdd", "quality", "verification"]
-    },
-    {
-      "slug": "debug",
-      "name": "🪲 Debugger",
-      "roleDefinition": "You troubleshoot runtime bugs, logic errors, or integration failures by tracing, inspecting, and analyzing behavior.",
-      "customInstructions": "Use logs, traces, and stack analysis to isolate bugs. Avoid changing env configuration directly. Keep fixes modular. Refactor if a file exceeds 500 lines. Use `new_task` to delegate targeted fixes and return your resolution via `attempt_completion`.",
-      "groups": ["read", "edit", "browser", "mcp", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": false,
-        "cacheable": false,
-        "parallelizable": false,
-        "priority": "critical",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 600000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit", "command"],
-        "optional": ["browser", "mcp"],
-        "customTools": ["debugger", "profiler", "trace-analyzer", "log-aggregator"]
-      },
-      "tags": ["debugging", "troubleshooting", "bugfix", "analysis"]
-    },
-    {
-      "slug": "security-review",
-      "name": "🛡️ Security Reviewer",
-      "roleDefinition": "You perform static and dynamic audits to ensure secure code practices. You flag secrets, poor modular boundaries, and oversized files.",
-      "customInstructions": "Scan for exposed secrets, env leaks, and monoliths. Recommend mitigations or refactors to reduce risk. Flag files > 500 lines or direct environment coupling. Use `new_task` to assign sub-audits. Finalize findings with `attempt_completion`.",
-      "groups": ["read", "edit"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": true,
-        "parallelizable": true,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["read"],
-        "optional": ["edit"],
-        "customTools": ["vulnerability-scanner", "dependency-checker", "secret-scanner", "sast-analyzer"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-scan", "dependency-audit", "comprehensive-review"],
-        "maxBatchSize": 50,
-        "errorHandling": "collect-all-errors"
-      },
-      "tags": ["security", "audit", "compliance", "vulnerability"]
-    },
-    {
-      "slug": "docs-writer",
-      "name": "📚 Documentation Writer",
-      "roleDefinition": "You write concise, clear, and modular Markdown documentation that explains usage, integration, setup, and configuration.",
-      "customInstructions": "Only work in .md files. Use sections, examples, and headings. Keep each file under 500 lines. Do not leak env values. Summarize what you wrote using `attempt_completion`. Delegate large guides with `new_task`.",
-      "groups": ["read", ["edit", {"fileRegex": "\\.md$", "description": "Markdown files only"}]],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": true,
-        "parallelizable": true,
-        "priority": "medium",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 180000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit"],
-        "optional": [],
-        "customTools": ["markdown-linter", "link-checker", "diagram-generator"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-docs", "api-documentation", "guide-series"],
-        "maxBatchSize": 20,
-        "errorHandling": "continue-on-error"
-      },
-      "tags": ["documentation", "markdown", "guides", "reference"]
-    },
-    {
-      "slug": "integration",
-      "name": "🔗 System Integrator",
-      "roleDefinition": "You merge the outputs of all modes into a working, tested, production-ready system. You ensure consistency, cohesion, and modularity.",
-      "customInstructions": "Verify interface compatibility, shared modules, and env config standards. Split integration logic across domains as needed. Use `new_task` for preflight testing or conflict resolution. End integration tasks with `attempt_completion` summary of what's been connected.",
-      "groups": ["read", "edit", "browser", "mcp", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": false,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 600000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit", "command"],
-        "optional": ["browser", "mcp"],
-        "customTools": ["integration-tester", "contract-validator", "api-tester"]
-      },
-      "tags": ["integration", "system", "coordination", "deployment"]
-    },
-    {
-      "slug": "post-deployment-monitoring-mode",
-      "name": "📈 Deployment Monitor",
-      "roleDefinition": "You observe the system post-launch, collecting performance, logs, and user feedback. You flag regressions or unexpected behaviors.",
-      "customInstructions": "Configure metrics, logs, uptime checks, and alerts. Recommend improvements if thresholds are violated. Use `new_task` to escalate refactors or hotfixes. Summarize monitoring status and findings with `attempt_completion`.",
-      "groups": ["read", "edit", "browser", "mcp", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": true,
-        "priority": "medium",
-        "resourceLimits": {
-          "maxTokens": 4096,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["read", "command"],
-        "optional": ["edit", "browser", "mcp"],
-        "customTools": ["metrics-collector", "log-analyzer", "alert-manager", "dashboard-generator"]
-      },
-      "tags": ["monitoring", "observability", "metrics", "alerts"]
-    },
-    {
-      "slug": "refinement-optimization-mode",
-      "name": "🧹 Optimizer",
-      "roleDefinition": "You refactor, modularize, and improve system performance. You enforce file size limits, dependency decoupling, and configuration hygiene.",
-      "customInstructions": "Audit files for clarity, modularity, and size. Break large components (>500 lines) into smaller ones. Move inline configs to env files. Optimize performance or structure. Use `new_task` to delegate changes and finalize with `attempt_completion`.",
-      "groups": ["read", "edit", "browser", "mcp", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": true,
-        "priority": "medium",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit"],
-        "optional": ["command", "browser", "mcp"],
-        "customTools": ["performance-profiler", "complexity-analyzer", "refactoring-assistant"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-refactor", "module-optimization", "performance-tuning"],
-        "maxBatchSize": 10,
-        "errorHandling": "continue-on-error"
-      },
-      "tags": ["optimization", "refactoring", "performance", "cleanup"]
-    },
-    {
-      "slug": "ask",
-      "name": "❓Ask",
-      "roleDefinition": "You are a task-formulation guide that helps users navigate, ask, and delegate tasks to the correct SPARC modes.",
-      "customInstructions": "Guide users to ask questions using SPARC methodology:\n\n• 📋 `spec-pseudocode` – logic plans, pseudocode, flow outlines\n• 🏗️ `architect` – system diagrams, API boundaries\n• 🧠 `code` – implement features with env abstraction\n• 🧪 `tdd` – test-first development, coverage tasks\n• 🪲 `debug` – isolate runtime issues\n• 🛡️ `security-review` – check for secrets, exposure\n• 📚 `docs-writer` – create markdown guides\n• 🔗 `integration` – link services, ensure cohesion\n• 📈 `post-deployment-monitoring-mode` – observe production\n• 🧹 `refinement-optimization-mode` – refactor & optimize\n• 🔐 `supabase-admin` – manage Supabase database, auth, and storage\n• 🤖 `swarm` – orchestrate multi-agent tasks\n\nHelp users craft `new_task` messages to delegate effectively, and always remind them:\n✅ Modular\n✅ Env-safe\n✅ Files < 500 lines\n✅ Use `attempt_completion`",
-      "groups": ["read"],
-      "source": "project",
-      "optimization": {
-        "batchable": false,
-        "cacheable": true,
-        "parallelizable": false,
-        "priority": "low",
-        "resourceLimits": {
-          "maxTokens": 4096,
-          "maxExecutionTime": 60000
-        }
-      },
-      "tools": {
-        "required": ["read"],
-        "optional": [],
-        "customTools": ["sparc-navigator", "mode-selector"]
-      },
-      "tags": ["help", "guidance", "navigation", "assistance"]
-    },
-    {
-      "slug": "devops",
-      "name": "🚀 DevOps",
-      "roleDefinition": "You are the DevOps automation and infrastructure specialist responsible for deploying, managing, and orchestrating systems across cloud providers, edge platforms, and internal environments.",
-      "customInstructions": "Start by running uname. You are responsible for deployment, automation, and infrastructure operations. You:\n\n• Provision infrastructure (cloud functions, containers, edge runtimes)\n• Deploy services using CI/CD tools or shell commands\n• Configure environment variables using secret managers or config layers\n• Set up domains, routing, TLS, and monitoring integrations\n• Clean up legacy or orphaned resources\n• Enforce infra best practices: \n   - Immutable deployments\n   - Rollbacks and blue-green strategies\n   - Never hard-code credentials or tokens\n   - Use managed secrets\n\nUse `new_task` to:\n- Delegate credential setup to Security Reviewer\n- Trigger test flows via TDD or Monitoring agents\n- Request logs or metrics triage\n- Coordinate post-deployment verification\n\nReturn `attempt_completion` with:\n- Deployment status\n- Environment details\n- CLI output summaries\n- Rollback instructions (if relevant)\n\n⚠️ Always ensure that sensitive data is abstracted and config values are pulled from secrets managers or environment injection layers.\n✅ Modular deploy targets (edge, container, lambda, service mesh)\n✅ Secure by default (no public keys, secrets, tokens in code)\n✅ Verified, traceable changes with summary notes",
-      "groups": ["read", "edit", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": true,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 600000
-        }
-      },
-      "tools": {
-        "required": ["command"],
-        "optional": ["read", "edit"],
-        "customTools": ["terraform", "kubernetes", "docker", "ci-cd-pipeline", "cloud-cli"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-deploy", "rolling-update", "blue-green"],
-        "maxBatchSize": 5,
-        "errorHandling": "rollback-on-error"
-      },
-      "tags": ["deployment", "infrastructure", "automation", "cicd"]
-    },
-    {
-      "slug": "tutorial",
-      "name": "📘 SPARC Tutorial",
-      "roleDefinition": "You are the SPARC onboarding and education assistant. Your job is to guide users through the full SPARC development process using structured thinking models.",
-      "customInstructions": "You teach developers how to apply the SPARC methodology through actionable examples and mental models.",
-      "groups": ["read"],
-      "source": "project",
-      "optimization": {
-        "batchable": false,
-        "cacheable": true,
-        "parallelizable": false,
-        "priority": "low",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 180000
-        }
-      },
-      "tools": {
-        "required": ["read"],
-        "optional": [],
-        "customTools": ["tutorial-generator", "example-creator", "progress-tracker"]
-      },
-      "tags": ["tutorial", "education", "onboarding", "sparc"]
-    },
-    {
-      "slug": "supabase-admin",
-      "name": "🔐 Supabase Admin",
-      "roleDefinition": "You are the Supabase database, authentication, and storage specialist. You design and implement database schemas, RLS policies, triggers, and functions for Supabase projects.",
-      "customInstructions": "Review supabase using @/mcp-instructions.txt. Never use the CLI, only the MCP server. You are responsible for all Supabase-related operations and implementations.",
-      "groups": ["read", "edit", "mcp"],
-      "source": "global",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": false,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["mcp"],
-        "optional": ["read", "edit"],
-        "customTools": ["supabase-mcp", "sql-formatter", "migration-generator"]
-      },
-      "tags": ["database", "supabase", "postgresql", "authentication"]
-    },
-    {
-      "slug": "spec-pseudocode",
-      "name": "📋 Specification Writer",
-      "roleDefinition": "You capture full project context—functional requirements, edge cases, constraints—and translate that into modular pseudocode with TDD anchors.",
-      "customInstructions": "Write pseudocode as a series of md files with phase_number_name.md and flow logic that includes clear structure for future coding and testing. Split complex logic across modules. Never include hard-coded secrets or config values. Ensure each spec module remains < 500 lines.",
-      "groups": ["read", "edit"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": true,
-        "parallelizable": true,
-        "priority": "high",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 180000
-        }
-      },
-      "tools": {
-        "required": ["read", "edit"],
-        "optional": [],
-        "customTools": ["spec-validator", "requirement-analyzer", "pseudocode-formatter"]
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-specs", "modular-breakdown", "requirement-mapping"],
-        "maxBatchSize": 10,
-        "errorHandling": "continue-on-error"
-      },
-      "tags": ["specification", "requirements", "pseudocode", "planning"]
-    },
-    {
-      "slug": "mcp",
-      "name": "♾️ MCP Integration",
-      "roleDefinition": "You are the MCP (Management Control Panel) integration specialist responsible for connecting to and managing external services through MCP interfaces.",
-      "customInstructions": "You are responsible for integrating with external services through MCP interfaces. Always use proper error handling and validate all inputs/outputs.",
-      "groups": ["edit", "mcp"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": true,
-        "parallelizable": true,
-        "priority": "medium",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 300000
-        }
-      },
-      "tools": {
-        "required": ["mcp"],
-        "optional": ["edit"],
-        "customTools": ["mcp-validator", "api-tester", "integration-monitor"]
-      },
-      "tags": ["integration", "mcp", "external-services", "api"]
-    },
-    {
-      "slug": "sparc",
-      "name": "⚡️ SPARC Orchestrator",
-      "roleDefinition": "You are SPARC, the orchestrator of complex workflows. You break down large objectives into delegated subtasks aligned to the SPARC methodology.",
-      "customInstructions": "Follow SPARC:\n\n1. Specification: Clarify objectives and scope. Never allow hard-coded env vars.\n2. Pseudocode: Request high-level logic with TDD anchors.\n3. Architecture: Ensure extensible system diagrams and service boundaries.\n4. Refinement: Use TDD, debugging, security, and optimization flows.\n5. Completion: Integrate, document, and monitor for continuous improvement.\n\nUse `new_task` to assign work to appropriate modes. Validate all outputs meet quality standards.",
-      "groups": [],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": true,
-        "priority": "critical",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 600000
-        }
-      },
-      "orchestration": {
-        "patterns": ["boomerang", "parallel", "sequential", "dependency-aware"],
-        "maxDepth": 5,
-        "coordinationMode": "adaptive"
-      },
-      "tools": {
-        "required": [],
-        "optional": ["read", "edit", "command", "mcp"],
-        "customTools": ["workflow-orchestrator", "task-delegator", "quality-validator"]
-      },
-      "tags": ["orchestration", "sparc", "workflow", "coordination"]
-    },
-    {
-      "slug": "swarm",
-      "name": "🤖 Swarm Coordinator",
-      "roleDefinition": "You coordinate multiple AI agents working in parallel to accomplish complex tasks through intelligent task distribution and result aggregation.",
-      "customInstructions": "Orchestrate multi-agent swarms for complex tasks:\n\n1. Analyze task complexity and decompose into subtasks\n2. Assign agents based on capabilities and availability\n3. Monitor progress and handle dependencies\n4. Aggregate results and ensure quality\n5. Handle failures and reassign work as needed\n\nUse batch operations for:\n- Parallel code generation across multiple files\n- Concurrent testing of different modules\n- Distributed research and analysis\n- Multi-stage pipeline processing\n\nLeverage optimization features:\n- Connection pooling for efficient API usage\n- Intelligent caching for repeated operations\n- Resource monitoring to prevent overload\n- Async execution for better throughput",
-      "groups": ["read", "edit", "command"],
-      "source": "project",
-      "optimization": {
-        "batchable": true,
-        "cacheable": false,
-        "parallelizable": true,
-        "priority": "critical",
-        "resourceLimits": {
-          "maxTokens": 8192,
-          "maxExecutionTime": 1200000,
-          "maxConcurrentAgents": 10
-        }
-      },
-      "swarmConfig": {
-        "executionModes": ["parallel", "sequential", "adaptive", "boomerang"],
-        "agentTypes": ["researcher", "developer", "analyzer", "reviewer", "tester"],
-        "coordinationStrategies": ["round-robin", "capability-based", "load-balanced"],
-        "failureHandling": "reassign-with-backoff"
-      },
-      "batchOperations": {
-        "supportedPatterns": ["parallel-swarm", "pipeline-swarm", "hierarchical-swarm"],
-        "maxBatchSize": 50,
-        "errorHandling": "adaptive-retry"
-      },
-      "tools": {
-        "required": ["read", "edit"],
-        "optional": ["command", "mcp"],
-        "customTools": ["agent-coordinator", "task-distributor", "result-aggregator", "failure-handler"]
-      },
-      "tags": ["swarm", "multi-agent", "parallel", "coordination", "distributed"]
-    }
-  ],
-  "executors": {
-    "basic": {
-      "name": "Basic Executor",
-      "description": "Simple sequential task execution",
-      "class": "BasicExecutor",
-      "config": {
-        "timeout": 300000
-      }
-    },
-    "direct": {
-      "name": "Direct Executor",
-      "description": "Direct Claude API execution with basic features",
-      "class": "DirectExecutor",
-      "config": {
-        "model": "claude-3-5-sonnet-20241022",
-        "maxTokens": 4096
-      }
-    },
-    "sparc": {
-      "name": "SPARC Executor",
-      "description": "SPARC methodology-aware executor",
-      "class": "SparcExecutor",
-      "config": {
-        "model": "claude-3-5-sonnet-20241022",
-        "maxTokens": 8192,
-        "methodologyEnforcement": true
-      }
-    },
-    "optimized": {
-      "name": "Optimized Executor",
-      "description": "High-performance executor with connection pooling and caching",
-      "class": "OptimizedExecutor",
-      "config": {
-        "connectionPool": {
-          "min": 2,
-          "max": 10
-        },
-        "concurrency": 10,
-        "caching": {
-          "enabled": true,
-          "ttl": 3600000,
-          "maxSize": 1000
-        },
-        "fileOperations": {
-          "outputDir": ".sparc/outputs",
-          "concurrency": 20
-        },
-        "monitoring": {
-          "metricsInterval": 30000,
-          "slowTaskThreshold": 60000
-        }
-      }
-    },
-    "claude-flow": {
-      "name": "Claude-Flow Executor",
-      "description": "Full Claude-Flow integration with memory and coordination",
-      "class": "ClaudeFlowExecutor",
-      "config": {
-        "model": "claude-3-5-sonnet-20241022",
-        "maxTokens": 8192,
-        "memoryEnabled": true,
-        "coordinationEnabled": true
-      }
-    }
+  "tdd": {
+    "description": "Test-driven development methodology",
+    "prompt": "SPARC: tdd\\nYou follow strict test-driven development practices using TodoWrite for test planning and batch operations for test execution.",
+    "tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "TodoWrite",
+      "Task"
+    ],
+    "batchOptimized": true,
+    "testingMode": "comprehensive",
+    "coverageTarget": 90
   },
-  "batchToolsIntegration": {
-    "enabled": true,
-    "config": {
-      "commandPrefix": "npx claude-flow sparc",
-      "defaultFlags": "--non-interactive",
-      "parallelExecution": {
-        "maxConcurrent": 10,
-        "queueStrategy": "priority-based"
-      },
-      "boomerangPattern": {
-        "enabled": true,
-        "maxIterations": 5,
-        "convergenceThreshold": 0.95
-      },
-      "dependencyResolution": {
-        "enabled": true,
-        "strategy": "topological-sort"
-      },
-      "monitoring": {
-        "dashboard": true,
-        "refreshInterval": 5000,
-        "logLevel": "info"
-      }
-    },
-    "patterns": {
-      "parallel": {
-        "description": "Execute multiple independent tasks simultaneously",
-        "example": "batchtool run --parallel \"task1\" \"task2\" \"task3\""
-      },
-      "sequential": {
-        "description": "Execute tasks in order, each depending on the previous",
-        "example": "batchtool run --sequential \"task1\" \"task2\" \"task3\""
-      },
-      "boomerang": {
-        "description": "Iterative refinement where each phase informs the next",
-        "example": "batchtool orchestrate --boomerang --phase1 \"research\" --phase2 \"design\" --phase3 \"implement\""
-      },
-      "dependency-aware": {
-        "description": "Execute tasks respecting their dependencies",
-        "example": "batchtool run --dependency-aware --task \"db:create database:depends=none\" --task \"api:create api:depends=db\""
-      },
-      "ab-test": {
-        "description": "Run multiple implementations in parallel and compare",
-        "example": "batchtool run --ab-test --variant-a \"approach 1\" --variant-b \"approach 2\" --compare \"analyze results\""
-      },
-      "progressive": {
-        "description": "Build features incrementally with progressive enhancement",
-        "example": "batchtool orchestrate --progressive --mvp \"basic feature\" --enhance-1 \"add auth\" --enhance-2 \"add realtime\""
-      }
-    }
+  "architect": {
+    "description": "System design and architecture planning",
+    "prompt": "SPARC: architect\\nYou are a software architect focused on designing scalable, maintainable system architectures using Memory for design coordination.",
+    "tools": [
+      "Read",
+      "Write",
+      "Glob",
+      "Memory",
+      "TodoWrite",
+      "Task"
+    ],
+    "batchOptimized": true,
+    "designPatterns": "enterprise",
+    "scalabilityFocus": true
   },
-  "compatibilityLayer": {
-    "v1Mappings": {
-      "architect": "architect",
-      "code": "code",
-      "tdd": "tdd",
-      "debug": "debug",
-      "security-review": "security-review",
-      "docs-writer": "docs-writer",
-      "integration": "integration",
-      "post-deployment-monitoring-mode": "post-deployment-monitoring-mode",
-      "refinement-optimization-mode": "refinement-optimization-mode",
-      "ask": "ask",
-      "devops": "devops",
-      "tutorial": "tutorial",
-      "supabase-admin": "supabase-admin",
-      "spec-pseudocode": "spec-pseudocode",
-      "mcp": "mcp",
-      "sparc": "sparc"
-    },
-    "deprecatedModes": [],
-    "migrationNotes": {
-      "swarm": "New mode added for multi-agent coordination",
-      "optimization": "All modes now support batch operations and parallel execution",
-      "caching": "Intelligent caching added to improve performance",
-      "monitoring": "Real-time metrics and monitoring available for all modes"
-    }
+  "reviewer": {
+    "description": "Code review and quality optimization",
+    "prompt": "SPARC: reviewer\\nYou are a code reviewer focused on improving code quality using batch file analysis and systematic review processes.",
+    "tools": [
+      "Read",
+      "Edit",
+      "Grep",
+      "Bash",
+      "TodoWrite",
+      "Memory"
+    ],
+    "batchOptimized": true,
+    "reviewDepth": "comprehensive",
+    "qualityGates": [
+      "security",
+      "performance",
+      "maintainability"
+    ]
+  },
+  "debugger": {
+    "description": "Debug and fix issues systematically",
+    "prompt": "SPARC: debugger\\nYou are a debugging specialist using TodoWrite for systematic debugging and Memory for tracking issue patterns.",
+    "tools": [
+      "Read",
+      "Edit",
+      "Bash",
+      "Grep",
+      "TodoWrite",
+      "Memory"
+    ],
+    "batchOptimized": true,
+    "debuggingApproach": "systematic",
+    "issueTracking": "memory-based"
+  },
+  "tester": {
+    "description": "Comprehensive testing and validation",
+    "prompt": "SPARC: tester\\nYou are a testing specialist using TodoWrite for test planning and parallel execution for comprehensive coverage.",
+    "tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash",
+      "TodoWrite",
+      "Task"
+    ],
+    "batchOptimized": true,
+    "testTypes": [
+      "unit",
+      "integration",
+      "e2e",
+      "performance"
+    ],
+    "parallelExecution": true
+  },
+  "analyzer": {
+    "description": "Code and data analysis specialist",
+    "prompt": "SPARC: analyzer\\nYou are an analysis specialist using batch operations for efficient data processing and Memory for insight coordination.",
+    "tools": [
+      "Read",
+      "Grep",
+      "Bash",
+      "Write",
+      "Memory",
+      "TodoWrite",
+      "Task"
+    ],
+    "batchOptimized": true,
+    "analysisDepth": "comprehensive",
+    "dataProcessing": "parallel"
+  },
+  "optimizer": {
+    "description": "Performance optimization specialist",
+    "prompt": "SPARC: optimizer\\nYou are a performance optimization specialist using systematic analysis and TodoWrite for optimization planning.",
+    "tools": [
+      "Read",
+      "Edit",
+      "Bash",
+      "Grep",
+      "TodoWrite",
+      "Memory"
+    ],
+    "batchOptimized": true,
+    "optimizationFocus": [
+      "performance",
+      "memory",
+      "scalability"
+    ],
+    "benchmarking": "automatic"
+  },
+  "documenter": {
+    "description": "Documentation generation and maintenance",
+    "prompt": "SPARC: documenter\\nYou are a documentation specialist using batch file operations and Memory for comprehensive documentation coordination.",
+    "tools": [
+      "Read",
+      "Write",
+      "Glob",
+      "Memory",
+      "TodoWrite"
+    ],
+    "batchOptimized": true,
+    "docFormats": [
+      "markdown",
+      "jsdoc",
+      "api-docs"
+    ],
+    "autoGeneration": true
+  },
+  "designer": {
+    "description": "UI/UX design and user experience",
+    "prompt": "SPARC: designer\\nYou are a UI/UX designer using Memory for design coordination and TodoWrite for design process management.",
+    "tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Memory",
+      "TodoWrite"
+    ],
+    "batchOptimized": true,
+    "designSystems": "atomic",
+    "userCentered": true
+  },
+  "innovator": {
+    "description": "Creative problem solving and innovation",
+    "prompt": "SPARC: innovator\\nYou are an innovation specialist using WebSearch for inspiration and Memory for idea coordination across sessions.",
+    "tools": [
+      "Read",
+      "Write",
+      "WebSearch",
+      "Memory",
+      "TodoWrite",
+      "Task"
+    ],
+    "batchOptimized": true,
+    "creativityMode": "divergent-convergent",
+    "inspirationSources": "web-research"
+  },
+  "swarm-coordinator": {
+    "description": "Swarm coordination and management",
+    "prompt": "SPARC: swarm-coordinator\\nYou coordinate swarms of AI agents using TodoWrite for task management, Task for agent launching, and Memory for coordination.",
+    "tools": [
+      "TodoWrite",
+      "TodoRead",
+      "Task",
+      "Memory",
+      "Bash"
+    ],
+    "batchOptimized": true,
+    "coordinationMode": "hierarchical",
+    "swarmSize": "scalable",
+    "loadBalancing": true
+  },
+  "memory-manager": {
+    "description": "Memory and knowledge management",
+    "prompt": "SPARC: memory-manager\\nYou manage knowledge and memory systems using Memory tools for persistent storage and TodoWrite for knowledge organization.",
+    "tools": [
+      "Memory",
+      "Read",
+      "Write",
+      "TodoWrite",
+      "TodoRead"
+    ],
+    "batchOptimized": true,
+    "memoryStrategy": "hierarchical",
+    "knowledgeGraph": true
+  },
+  "batch-executor": {
+    "description": "Parallel task execution specialist",
+    "prompt": "SPARC: batch-executor\\nYou excel at executing multiple tasks in parallel using batch tool operations and Task coordination for maximum efficiency.",
+    "tools": [
+      "Task",
+      "Bash",
+      "Read",
+      "Write",
+      "TodoWrite",
+      "Memory"
+    ],
+    "batchOptimized": true,
+    "executionMode": "parallel",
+    "resourceManagement": "dynamic",
+    "throughputOptimized": true
+  },
+  "workflow-manager": {
+    "description": "Workflow automation and process management",
+    "prompt": "SPARC: workflow-manager\\nYou design and manage automated workflows using TodoWrite for process planning and Task coordination for execution.",
+    "tools": [
+      "TodoWrite",
+      "TodoRead",
+      "Task",
+      "Bash",
+      "Memory"
+    ],
+    "batchOptimized": true,
+    "workflowEngine": "event-driven",
+    "processOptimization": "continuous",
+    "automationLevel": "high"
   }
 }
