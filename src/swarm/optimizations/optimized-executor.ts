@@ -4,11 +4,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { Logger } from '../../core/logger.ts';
-import { ClaudeConnectionPool } from './connection-pool.ts';
-import { AsyncFileManager } from './async-file-manager.ts';
-import { TTLMap } from './ttl-map.ts';
-import { CircularBuffer } from './circular-buffer.ts';
+import { Logger } from '../../core/logger.js';
+import { ClaudeConnectionPool } from './connection-pool.js';
+import { AsyncFileManager } from './async-file-manager.js';
+import { TTLMap } from './ttl-map.js';
+import { CircularBuffer } from './circular-buffer.js';
 import PQueue from 'p-queue';
 import { 
   TaskDefinition, 
@@ -17,7 +17,7 @@ import {
   TaskStatus,
   TaskType,
   TaskPriority
-} from '../types.ts';
+} from '../types.js';
 
 export interface ExecutorConfig {
   connectionPool?: {

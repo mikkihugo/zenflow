@@ -5,7 +5,7 @@
 import { Command } from '@cliffy/command';
 import { colors } from '@cliffy/ansi/colors';
 import { Table } from '@cliffy/table';
-import { formatProgressBar, formatDuration, formatStatusIndicator } from '../formatter.ts';
+import { formatProgressBar, formatDuration, formatStatusIndicator } from '../formatter.js';
 
 export const monitorCommand = new Command()
   .description('Start live monitoring dashboard')

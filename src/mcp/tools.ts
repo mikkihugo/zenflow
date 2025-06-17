@@ -2,9 +2,9 @@
  * Tool registry for MCP
  */
 
-import { MCPTool } from '../utils/types.ts';
-import { ILogger } from '../core/logger.ts';
-import { MCPError } from '../utils/errors.ts';
+import { MCPTool } from '../utils/types.js';
+import { ILogger } from '../core/logger.js';
+import { MCPError } from '../utils/errors.js';
 
 /**
  * Tool registry implementation

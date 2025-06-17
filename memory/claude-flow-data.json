@@ -1,8 +1,50 @@
 {
-  "agents": [],
-  "tasks": [],
+  "agents": [
+    {
+      "id": "agent-1750130170618-u1cooc1tc",
+      "type": "test",
+      "name": "Test Agent",
+      "status": "active",
+      "capabilities": [
+        "testing"
+      ],
+      "createdAt": 1750130170618
+    },
+    {
+      "id": "agent-1750130191292-1611sn95b",
+      "type": "test",
+      "name": "Test Agent",
+      "status": "active",
+      "capabilities": [
+        "testing"
+      ],
+      "createdAt": 1750130191292
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-1750130170626-80f7urx2w",
+      "type": "test-task",
+      "description": "Test task from orchestrator test",
+      "status": "assigned",
+      "priority": "medium",
+      "progress": 0,
+      "createdAt": 1750130170626,
+      "assignedAgent": "agent-1750130170618-u1cooc1tc"
+    },
+    {
+      "id": "task-1750130191296-xk1r0hzx3",
+      "type": "test-task",
+      "description": "Test task from orchestrator test",
+      "status": "assigned",
+      "priority": "medium",
+      "progress": 0,
+      "createdAt": 1750130191296,
+      "assignedAgent": "agent-1750130170618-u1cooc1tc"
+    }
+  ],
   "environment": "dev",
   "template": "web-api",
   "customConfig": {},
-  "lastUpdated": 1750104289343
+  "lastUpdated": 1750130191297
 }

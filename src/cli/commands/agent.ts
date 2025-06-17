@@ -5,8 +5,8 @@
 import { Command } from '@cliffy/command';
 import { Table } from '@cliffy/table';
 import { colors } from '@cliffy/ansi/colors';
-import { AgentProfile } from '../../utils/types.ts';
-import { generateId } from '../../utils/helpers.ts';
+import { AgentProfile } from '../../utils/types.js';
+import { generateId } from '../../utils/helpers.js';
 
 export const agentCommand = new Command()
   .description('Manage Claude-Flow agents')

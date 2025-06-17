@@ -4,8 +4,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { Logger } from '../../core/logger.ts';
-import { ClaudeAPI } from '../../services/claude/api.ts';
+import { Logger } from '../../core/logger.js';
+import { ClaudeAPI } from '../../services/claude/api.js';
 
 export interface PoolConfig {
   min: number;

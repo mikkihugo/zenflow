@@ -5,7 +5,7 @@
 import { Command } from '@cliffy/command';
 import { colors } from '@cliffy/ansi/colors';
 import { Table } from '@cliffy/table';
-import { formatHealthStatus, formatDuration, formatStatusIndicator } from '../formatter.ts';
+import { formatHealthStatus, formatDuration, formatStatusIndicator } from '../formatter.js';
 
 export const statusCommand = new Command()
   .description('Show Claude-Flow system status')

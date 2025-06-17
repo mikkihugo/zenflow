@@ -4,12 +4,12 @@
 
 import { Command } from '@cliffy/command';
 import { colors } from '@cliffy/ansi/colors';
-import { ProcessManager } from './process-manager.ts';
-import { ProcessUI } from './process-ui.ts';
-import { SystemMonitor } from './system-monitor.ts';
-import { StartOptions } from './types.ts';
-import { eventBus } from '../../../core/event-bus.ts';
-import { logger } from '../../../core/logger.ts';
+import { ProcessManager } from './process-manager.js';
+import { ProcessUI } from './process-ui.js';
+import { SystemMonitor } from './system-monitor.js';
+import { StartOptions } from './types.js';
+import { eventBus } from '../../../core/event-bus.js';
+import { logger } from '../../../core/logger.js';
 
 export const startCommand = new Command()
   .description('Start the Claude-Flow orchestration system')

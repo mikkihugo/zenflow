@@ -4,10 +4,10 @@
  * Works in both local development and npm installed environments
  */
 
-import { TaskDefinition, AgentState, TaskResult } from './types.ts';
+import { TaskDefinition, AgentState, TaskResult } from './types.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { Logger } from '../core/logger.ts';
+import { Logger } from '../core/logger.js';
 
 export interface DirectExecutorConfig {
   logger?: Logger;

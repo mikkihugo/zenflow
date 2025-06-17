@@ -8,7 +8,7 @@ import { pipeline } from 'node:stream/promises';
 import { createWriteStream, createReadStream, Readable } from 'node:stream';
 import { join, dirname } from 'node:path';
 import PQueue from 'p-queue';
-import { Logger } from '../../core/logger.ts';
+import { Logger } from '../../core/logger.js';
 
 export interface FileOperationResult {
   path: string;

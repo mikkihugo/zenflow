@@ -2,9 +2,12 @@
  * Configuration management for Claude-Flow
  */
 
-import { Config } from '../utils/types.ts';
-import { deepMerge, safeParseJSON } from '../utils/helpers.ts';
-import { ConfigError, ValidationError } from '../utils/errors.ts';
+import { promises as fs } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
+import { Config } from '../utils/types.js';
+import { deepMerge, safeParseJSON } from '../utils/helpers.js';
+import { ConfigError, ValidationError } from '../utils/errors.js';
 
 /**
  * Default configuration values
@@ -136,15 +139,15 @@ export class ConfigManager {
     }
 
     const content = JSON.stringify(this.config, null, 2);
-    await Deno.writeTextFile(savePath, content);
+    await fs.writeFile(savePath, content, 'utf8');
   }
 
   /**
    * Gets user configuration directory
    */
   private getUserConfigDir(): string {
-    const home = Deno.env.get('HOME') || Deno.env.get('USERPROFILE') || '/tmp';
-    return `${home}/.claude-flow`;
+    const home = homedir();
+    return join(home, '.claude-flow');
   }
 
   /**
@@ -152,9 +155,9 @@ export class ConfigManager {
    */
   private async ensureUserConfigDir(): Promise<void> {
     try {
-      await Deno.mkdir(this.userConfigDir, { recursive: true });
+      await fs.mkdir(this.userConfigDir, { recursive: true });
     } catch (error) {
-      if (!(error instanceof Deno.errors.AlreadyExists)) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
         throw new ConfigError(`Failed to create config directory: ${(error as Error).message}`);
       }
     }
@@ -164,16 +167,18 @@ export class ConfigManager {
    * Loads all profiles from the profiles directory
    */
   async loadProfiles(): Promise<void> {
-    const profilesDir = `${this.userConfigDir}/profiles`;
+    const profilesDir = join(this.userConfigDir, 'profiles');
     
     try {
-      for await (const entry of Deno.readDir(profilesDir)) {
-        if (entry.isFile && entry.name.endsWith('.json')) {
+      const entries = await fs.readdir(profilesDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile() && entry.name.endsWith('.json')) {
           const profileName = entry.name.replace('.json', '');
-          const profilePath = `${profilesDir}/${entry.name}`;
+          const profilePath = join(profilesDir, entry.name);
           
           try {
-            const content = await Deno.readTextFile(profilePath);
+            const content = await fs.readFile(profilePath, 'utf8');
             const profileConfig = safeParseJSON<Partial<Config>>(content);
             
             if (profileConfig) {
@@ -211,14 +216,14 @@ export class ConfigManager {
   async saveProfile(profileName: string, config?: Partial<Config>): Promise<void> {
     await this.ensureUserConfigDir();
     
-    const profilesDir = `${this.userConfigDir}/profiles`;
-    await Deno.mkdir(profilesDir, { recursive: true });
+    const profilesDir = join(this.userConfigDir, 'profiles');
+    await fs.mkdir(profilesDir, { recursive: true });
     
     const profileConfig = config || this.config;
-    const profilePath = `${profilesDir}/${profileName}.json`;
+    const profilePath = join(profilesDir, `${profileName}.json`);
     
     const content = JSON.stringify(profileConfig, null, 2);
-    await Deno.writeTextFile(profilePath, content);
+    await fs.writeFile(profilePath, content, 'utf8');
     
     this.profiles.set(profileName, profileConfig);
   }
@@ -227,13 +232,13 @@ export class ConfigManager {
    * Deletes a profile
    */
   async deleteProfile(profileName: string): Promise<void> {
-    const profilePath = `${this.userConfigDir}/profiles/${profileName}.json`;
+    const profilePath = join(this.userConfigDir, 'profiles', `${profileName}.json`);
     
     try {
-      await Deno.remove(profilePath);
+      await fs.unlink(profilePath);
       this.profiles.delete(profileName);
     } catch (error) {
-      if (error instanceof Deno.errors.NotFound) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         throw new ConfigError(`Profile '${profileName}' not found`);
       }
       throw new ConfigError(`Failed to delete profile: ${(error as Error).message}`);
@@ -453,7 +458,7 @@ export class ConfigManager {
    */
   private async loadFromFile(path: string): Promise<Partial<Config>> {
     try {
-      const content = await Deno.readTextFile(path);
+      const content = await fs.readFile(path, 'utf8');
       const config = safeParseJSON<Partial<Config>>(content);
       
       if (!config) {
@@ -462,7 +467,7 @@ export class ConfigManager {
 
       return config;
     } catch (error) {
-      if (error instanceof Deno.errors.NotFound) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         // File doesn't exist, use defaults
         return {};
       }
@@ -477,7 +482,7 @@ export class ConfigManager {
     const config: Partial<Config> = {};
 
     // Orchestrator settings
-    const maxAgents = Deno.env.get('CLAUDE_FLOW_MAX_AGENTS');
+    const maxAgents = process.env.CLAUDE_FLOW_MAX_AGENTS;
     if (maxAgents) {
       if (!config.orchestrator) {
         config.orchestrator = {} as any;
@@ -490,7 +495,7 @@ export class ConfigManager {
     }
 
     // Terminal settings
-    const terminalType = Deno.env.get('CLAUDE_FLOW_TERMINAL_TYPE');
+    const terminalType = process.env.CLAUDE_FLOW_TERMINAL_TYPE;
     if (terminalType === 'vscode' || terminalType === 'native' || terminalType === 'auto') {
       config.terminal = {
         ...DEFAULT_CONFIG.terminal,
@@ -500,7 +505,7 @@ export class ConfigManager {
     }
 
     // Memory settings
-    const memoryBackend = Deno.env.get('CLAUDE_FLOW_MEMORY_BACKEND');
+    const memoryBackend = process.env.CLAUDE_FLOW_MEMORY_BACKEND;
     if (memoryBackend === 'sqlite' || memoryBackend === 'markdown' || memoryBackend === 'hybrid') {
       config.memory = {
         ...DEFAULT_CONFIG.memory,
@@ -510,7 +515,7 @@ export class ConfigManager {
     }
 
     // MCP settings
-    const mcpTransport = Deno.env.get('CLAUDE_FLOW_MCP_TRANSPORT');
+    const mcpTransport = process.env.CLAUDE_FLOW_MCP_TRANSPORT;
     if (mcpTransport === 'stdio' || mcpTransport === 'http' || mcpTransport === 'websocket') {
       config.mcp = {
         ...DEFAULT_CONFIG.mcp,
@@ -519,7 +524,7 @@ export class ConfigManager {
       };
     }
 
-    const mcpPort = Deno.env.get('CLAUDE_FLOW_MCP_PORT');
+    const mcpPort = process.env.CLAUDE_FLOW_MCP_PORT;
     if (mcpPort) {
       config.mcp = {
         ...DEFAULT_CONFIG.mcp,
@@ -529,7 +534,7 @@ export class ConfigManager {
     }
 
     // Logging settings
-    const logLevel = Deno.env.get('CLAUDE_FLOW_LOG_LEVEL');
+    const logLevel = process.env.CLAUDE_FLOW_LOG_LEVEL;
     if (logLevel === 'debug' || logLevel === 'info' || logLevel === 'warn' || logLevel === 'error') {
       config.logging = {
         ...DEFAULT_CONFIG.logging,
