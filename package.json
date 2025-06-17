@@ -1,6 +1,6 @@
 {
   "name": "claude-flow",
-  "version": "1.0.70",
+  "version": "1.0.71",
   "description": "Advanced AI agent orchestration system for Claude Code",
   "main": "cli.js",
   "bin": {
@@ -18,7 +18,9 @@
     "test:deno": "deno task test",
     "lint": "eslint src --ext .ts,.js",
     "format": "prettier --write src",
-    "postinstall": "node scripts/install.js"
+    "postinstall": "node scripts/install.js",
+    "prepublishOnly": "node scripts/prepare-publish.js",
+    "prepare-publish": "node scripts/prepare-publish.js"
   },
   "keywords": [
     "claude",

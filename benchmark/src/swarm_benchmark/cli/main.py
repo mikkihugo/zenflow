@@ -9,6 +9,7 @@ from typing import Optional
 from swarm_benchmark import __version__
 from swarm_benchmark.core.models import StrategyType, CoordinationMode, BenchmarkConfig
 from swarm_benchmark.core.benchmark_engine import BenchmarkEngine
+from swarm_benchmark.core.real_benchmark_engine import RealBenchmarkEngine
 
 
 @click.group()
@@ -51,9 +52,10 @@ def cli(ctx, verbose, config):
               help='Output directory (default: ./reports)')
 @click.option('--name', help='Benchmark name')
 @click.option('--description', help='Benchmark description')
+@click.option('--real-metrics', is_flag=True, help='Use real metrics collection (default: False)')
 @click.pass_context
 def run(ctx, objective, strategy, mode, max_agents, max_tasks, timeout, task_timeout, 
-        max_retries, parallel, monitor, output_formats, output_dir, name, description):
+        max_retries, parallel, monitor, output_formats, output_dir, name, description, real_metrics):
     """Run a swarm benchmark with the specified objective.
     
     OBJECTIVE: The goal or task for the swarm to accomplish
@@ -87,16 +89,28 @@ def run(ctx, objective, strategy, mode, max_agents, max_tasks, timeout, task_tim
         click.echo(f"Objective: {objective}")
         click.echo(f"Strategy: {strategy}")
         click.echo(f"Mode: {mode}")
+        click.echo(f"Real metrics: {'Enabled' if real_metrics else 'Disabled'}")
     
     # Run the benchmark
     try:
-        result = asyncio.run(_run_benchmark(objective, config))
+        result = asyncio.run(_run_benchmark(objective, config, real_metrics))
         
         if result:
             click.echo(f"✅ Benchmark completed successfully!")
             click.echo(f"📊 Results saved to: {output_dir}")
             if ctx.obj.get('verbose'):
                 click.echo(f"📋 Summary: {result.get('summary', 'N/A')}")
+                
+            # Display metrics if available
+            if 'metrics' in result and real_metrics:
+                click.echo("\n📈 Performance Metrics:")
+                metrics = result['metrics']
+                click.echo(f"  • Wall clock time: {metrics.get('wall_clock_time', 0):.2f}s")
+                click.echo(f"  • Tasks per second: {metrics.get('tasks_per_second', 0):.2f}")
+                click.echo(f"  • Success rate: {metrics.get('success_rate', 0):.1%}")
+                click.echo(f"  • Peak memory: {metrics.get('peak_memory_mb', 0):.1f} MB")
+                click.echo(f"  • Average CPU: {metrics.get('average_cpu_percent', 0):.1f}%")
+                click.echo(f"  • Total output: {metrics.get('total_output_lines', 0)} lines")
         else:
             click.echo("❌ Benchmark failed!")
             return 1
@@ -207,9 +221,100 @@ def serve(ctx, port, host):
     return 0
 
 
-async def _run_benchmark(objective: str, config: BenchmarkConfig) -> Optional[dict]:
+@cli.command()
+@click.argument('objective')
+@click.option('--strategy', 
+              type=click.Choice(['auto', 'research', 'development', 'analysis', 'testing', 'optimization', 'maintenance']),
+              default='auto',
+              help='Execution strategy (default: auto)')
+@click.option('--mode',
+              type=click.Choice(['centralized', 'distributed', 'hierarchical', 'mesh', 'hybrid']),
+              default='centralized', 
+              help='Coordination mode (default: centralized)')
+@click.option('--sparc-mode',
+              help='Specific SPARC mode to test (e.g., coder, architect, reviewer)')
+@click.option('--all-modes', is_flag=True, help='Test all SPARC modes and swarm strategies')
+@click.option('--max-agents', type=int, default=5, help='Maximum agents (default: 5)')
+@click.option('--timeout', type=int, default=60, help='Timeout in minutes (default: 60)')
+@click.option('--task-timeout', type=int, default=300, help='Individual task timeout in seconds (default: 300)')
+@click.option('--parallel', is_flag=True, help='Enable parallel execution')
+@click.option('--monitor', is_flag=True, help='Enable monitoring')
+@click.option('--output', '-o', 'output_formats', multiple=True, 
+              type=click.Choice(['json', 'sqlite']),
+              help='Output formats (default: json)')
+@click.option('--output-dir', type=click.Path(), default='./reports', 
+              help='Output directory (default: ./reports)')
+@click.option('--name', help='Benchmark name')
+@click.option('--description', help='Benchmark description')
+@click.pass_context
+def real(ctx, objective, strategy, mode, sparc_mode, all_modes, max_agents, timeout, 
+         task_timeout, parallel, monitor, output_formats, output_dir, name, description):
+    """Run real claude-flow benchmarks with actual command execution.
+    
+    OBJECTIVE: The goal or task for claude-flow to accomplish
+    
+    Examples:
+      swarm-benchmark real "Build a REST API" --strategy development
+      swarm-benchmark real "Create a parser" --sparc-mode coder
+      swarm-benchmark real "Analyze code" --all-modes --parallel
+      swarm-benchmark real "Optimize performance" --mode distributed --monitor
+    """
+    # Create benchmark configuration
+    config = BenchmarkConfig(
+        name=name or f"real-benchmark-{strategy}-{mode}",
+        description=description or f"Real Benchmark: {objective}",
+        strategy=getattr(StrategyType, strategy.upper()),
+        mode=getattr(CoordinationMode, mode.upper()),
+        max_agents=max_agents,
+        timeout=timeout * 60,  # Convert to seconds
+        task_timeout=task_timeout,
+        parallel=parallel,
+        monitoring=monitor,
+        output_formats=list(output_formats) if output_formats else ['json'],
+        output_directory=output_dir,
+        verbose=ctx.obj.get('verbose', False)
+    )
+    
+    if ctx.obj.get('verbose'):
+        click.echo(f"Running real benchmark: {config.name}")
+        click.echo(f"Objective: {objective}")
+        click.echo(f"Strategy: {strategy}")
+        click.echo(f"Mode: {mode}")
+        if sparc_mode:
+            click.echo(f"SPARC Mode: {sparc_mode}")
+        if all_modes:
+            click.echo("Testing all modes: Yes")
+    
+    # Run the real benchmark
+    try:
+        result = asyncio.run(_run_real_benchmark(objective, config, sparc_mode, all_modes))
+        
+        if result:
+            click.echo(f"✅ Real benchmark completed successfully!")
+            click.echo(f"📊 Results saved to: {output_dir}")
+            if ctx.obj.get('verbose'):
+                click.echo(f"📋 Summary: {result.get('summary', 'N/A')}")
+        else:
+            click.echo("❌ Real benchmark failed!")
+            return 1
+            
+    except Exception as e:
+        click.echo(f"❌ Error running real benchmark: {e}")
+        if ctx.obj.get('verbose'):
+            import traceback
+            click.echo(traceback.format_exc())
+        return 1
+    
+    return 0
+
+
+async def _run_benchmark(objective: str, config: BenchmarkConfig, use_real_metrics: bool = False) -> Optional[dict]:
     """Run a benchmark with the given objective and configuration."""
-    engine = BenchmarkEngine(config)
+    # Choose engine based on metrics flag
+    if use_real_metrics:
+        engine = RealBenchmarkEngine(config)
+    else:
+        engine = BenchmarkEngine(config)
     
     try:
         result = await engine.run_benchmark(objective)
@@ -217,6 +322,33 @@ async def _run_benchmark(objective: str, config: BenchmarkConfig) -> Optional[di
     except Exception as e:
         click.echo(f"Error in benchmark execution: {e}")
         return None
+
+
+async def _run_real_benchmark(objective: str, config: BenchmarkConfig, 
+                              sparc_mode: Optional[str] = None,
+                              all_modes: bool = False) -> Optional[dict]:
+    """Run a real benchmark with actual claude-flow execution."""
+    engine = RealBenchmarkEngine(config)
+    
+    try:
+        if all_modes:
+            # Test all modes comprehensively
+            result = await engine.benchmark_all_modes(objective)
+        elif sparc_mode:
+            # Test specific SPARC mode
+            result = await engine._execute_sparc_mode(sparc_mode, objective)
+            result = {"sparc_mode": sparc_mode, "result": result}
+        else:
+            # Standard benchmark run
+            result = await engine.run_benchmark(objective)
+        
+        return result
+    except Exception as e:
+        click.echo(f"Error in real benchmark execution: {e}")
+        return None
+    finally:
+        # Ensure cleanup
+        engine.cleanup()
 
 
 def _get_recent_benchmarks(filter_strategy=None, filter_mode=None, limit=10):
