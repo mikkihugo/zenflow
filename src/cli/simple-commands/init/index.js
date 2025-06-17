@@ -154,6 +154,7 @@ export async function initCommand(subArgs, flags) {
       '.claude',
       '.claude/commands',
       '.claude/commands/sparc',
+      '.claude/commands/swarm',
       '.claude/logs'
     ];
     
@@ -169,6 +170,90 @@ export async function initCommand(subArgs, flags) {
         if (!(err instanceof Deno.errors.AlreadyExists)) {
           throw err;
         }
+      }
+    }
+    
+    // Copy SPARC command files if --sparc flag is used
+    if (initSparc && !initDryRun) {
+      try {
+        // Get the path to the source SPARC files
+        const modulePath = new URL(import.meta.url).pathname;
+        const moduleDir = modulePath.substring(0, modulePath.lastIndexOf('/'));
+        const projectRoot = moduleDir.split('/src/')[0];
+        const sparcSourceDir = `${projectRoot}/.claude/commands/sparc`;
+        const sparcTargetDir = `${workingDir}/.claude/commands/sparc`;
+        
+        // List of SPARC files to copy
+        const sparcFiles = [
+          'analyzer.md', 'architect.md', 'batch-executor.md', 'coder.md',
+          'debugger.md', 'designer.md', 'documenter.md', 'innovator.md',
+          'memory-manager.md', 'optimizer.md', 'orchestrator.md', 'researcher.md',
+          'reviewer.md', 'sparc-modes.md', 'swarm-coordinator.md', 'tdd.md',
+          'tester.md', 'workflow-manager.md'
+        ];
+        
+        console.log('  📁 Copying SPARC command files...');
+        
+        for (const file of sparcFiles) {
+          try {
+            const content = await Deno.readTextFile(`${sparcSourceDir}/${file}`);
+            await Deno.writeTextFile(`${sparcTargetDir}/${file}`, content);
+            console.log(`    ✓ Copied ${file}`);
+          } catch (err) {
+            console.log(`    ⚠️  Could not copy ${file}: ${err.message}`);
+          }
+        }
+        
+        console.log('  ✅ SPARC command files copied successfully');
+      } catch (err) {
+        console.log(`  ⚠️  Could not copy SPARC files: ${err.message}`);
+      }
+      
+      // Also copy swarm strategy files
+      try {
+        const swarmSourceDir = `${projectRoot}/.claude/commands/swarm`;
+        const swarmTargetDir = `${workingDir}/.claude/commands/swarm`;
+        
+        const swarmFiles = [
+          'analysis.md', 'development.md', 'examples.md', 
+          'maintenance.md', 'optimization.md', 'research.md', 'testing.md'
+        ];
+        
+        console.log('  📁 Copying swarm strategy files...');
+        
+        for (const file of swarmFiles) {
+          try {
+            const content = await Deno.readTextFile(`${swarmSourceDir}/${file}`);
+            await Deno.writeTextFile(`${swarmTargetDir}/${file}`, content);
+            console.log(`    ✓ Copied ${file}`);
+          } catch (err) {
+            console.log(`    ⚠️  Could not copy ${file}: ${err.message}`);
+          }
+        }
+        
+        console.log('  ✅ Swarm strategy files copied successfully');
+      } catch (err) {
+        console.log(`  ⚠️  Could not copy swarm files: ${err.message}`);
+      }
+      
+      // Create .claude/config.json
+      try {
+        const configContent = {
+          "version": "1.0",
+          "sparc": {
+            "enabled": true,
+            "modes": ["orchestrator", "coder", "researcher", "tdd", "architect", "reviewer", "debugger", "tester", "analyzer", "optimizer", "documenter", "designer", "innovator", "swarm-coordinator", "memory-manager", "batch-executor", "workflow-manager"]
+          },
+          "swarm": {
+            "enabled": true,
+            "strategies": ["research", "development", "analysis", "testing", "optimization", "maintenance"]
+          }
+        };
+        
+        await Deno.writeTextFile(`${workingDir}/.claude/config.json`, JSON.stringify(configContent, null, 2));
+        console.log('  ✓ Created .claude/config.json');
+      } catch (err) {
+        console.log(`  ⚠️  Could not create config.json: ${err.message}`);
       }
     }
     

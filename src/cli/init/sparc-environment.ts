@@ -106,388 +106,325 @@ function createRoomodes() {
 }
 
 function createClaudeMd(): string {
-  return `# Claude Code Configuration
+  return `# Claude Code Configuration for Your Project
 
-## Build Commands
-- \`npm run build\`: Build the project
-- \`npm run test\`: Run the full test suite
-- \`npm run lint\`: Run ESLint and format checks
-- \`npm run typecheck\`: Run TypeScript type checking
-- \`./claude-flow --help\`: Show all available commands
+## 🎯 Purpose of This Configuration
+This CLAUDE.md file configures Claude Code to help you BUILD YOUR OWN APPLICATIONS using the claude-flow orchestration system. Claude-flow is a tool to help you develop software - it is NOT the project you should be modifying.
 
-## Claude-Flow Complete Command Reference
+**IMPORTANT**: 
+- Use claude-flow commands to BUILD YOUR APPLICATION
+- DO NOT modify the claude-flow system itself
+- Focus on YOUR PROJECT'S code, not the orchestration tool
 
-### Core System Commands
-- \`./claude-flow start [--ui] [--port 3000] [--host localhost]\`: Start orchestration system with optional web UI
-- \`./claude-flow status\`: Show comprehensive system status
-- \`./claude-flow monitor\`: Real-time system monitoring dashboard
-- \`./claude-flow config <subcommand>\`: Configuration management (show, get, set, init, validate)
+## 📁 Project Structure
+When building your application, organize your code in:
+- \`src/\`: Your application source code
+- \`tests/\`: Your application tests
+- \`docs/\`: Your project documentation
+- \`config/\`: Your application configuration
 
-### Agent Management
-- \`./claude-flow agent spawn <type> [--name <name>]\`: Create AI agents (researcher, coder, analyst, etc.)
-- \`./claude-flow agent list\`: List all active agents
-- \`./claude-flow spawn <type>\`: Quick agent spawning (alias for agent spawn)
+## 🛠️ Your Project's Build Commands
+Configure these for YOUR application (not claude-flow):
+- \`npm run build\`: Build YOUR project
+- \`npm run test\`: Run YOUR project's test suite
+- \`npm run lint\`: Run linting on YOUR code
+- \`npm run typecheck\`: Type check YOUR TypeScript code
+- \`npm start\`: Start YOUR application
 
-### Task Orchestration
-- \`./claude-flow task create <type> [description]\`: Create and manage tasks
-- \`./claude-flow task list\`: View active task queue
-- \`./claude-flow workflow <file>\`: Execute workflow automation files
+## 🚀 Using Claude-Flow to Build Your Application
 
-### Memory Management
-- \`./claude-flow memory store <key> <data>\`: Store persistent data across sessions
-- \`./claude-flow memory get <key>\`: Retrieve stored information
-- \`./claude-flow memory list\`: List all memory keys
-- \`./claude-flow memory export <file>\`: Export memory to file
-- \`./claude-flow memory import <file>\`: Import memory from file
-- \`./claude-flow memory stats\`: Memory usage statistics
-- \`./claude-flow memory cleanup\`: Clean unused memory entries
+Claude-flow provides powerful AI orchestration tools to accelerate YOUR application development. Use these commands to build YOUR project:
 
-### SPARC Development Modes
-- \`./claude-flow sparc "<task>"\`: Run orchestrator mode (default)
-- \`./claude-flow sparc run <mode> "<task>"\`: Run specific SPARC mode
-- \`./claude-flow sparc tdd "<feature>"\`: Test-driven development mode
-- \`./claude-flow sparc modes\`: List all 17 available SPARC modes
+### 🎮 Getting Started with Your Project
+- \`./claude-flow start --ui\`: Start the AI orchestration system to help build YOUR app
+- \`./claude-flow sparc "Build a [YOUR APP TYPE] application"\`: Start building YOUR application
+- \`./claude-flow swarm "Create [YOUR FEATURE]"\`: Use multiple AI agents to build complex features
+- \`./claude-flow status\`: Check the status of YOUR development tasks
 
-Available SPARC modes: orchestrator, coder, researcher, tdd, architect, reviewer, debugger, tester, analyzer, optimizer, documenter, designer, innovator, swarm-coordinator, memory-manager, batch-executor, workflow-manager
+### 🤖 AI Agents to Build Your Application
+- \`./claude-flow agent spawn coder\`: Create a coding agent for YOUR project
+- \`./claude-flow agent spawn researcher\`: Research best practices for YOUR features
+- \`./claude-flow agent spawn tester\`: Create tests for YOUR application
+- \`./claude-flow agent list\`: See agents working on YOUR project
 
-### Swarm Coordination
-- \`./claude-flow swarm "<objective>" [options]\`: Multi-agent swarm coordination
-- \`--strategy\`: research, development, analysis, testing, optimization, maintenance
-- \`--mode\`: centralized, distributed, hierarchical, mesh, hybrid
-- \`--max-agents <n>\`: Maximum number of agents (default: 5)
-- \`--parallel\`: Enable parallel execution
-- \`--monitor\`: Real-time monitoring
-- \`--output <format>\`: json, sqlite, csv, html
+### 📋 Managing Your Development Tasks
+- \`./claude-flow task create feature "Add user authentication to my app"\`: Create development tasks
+- \`./claude-flow task list\`: View YOUR project's task queue
+- \`./claude-flow workflow my-app-workflow.json\`: Automate YOUR development workflow
 
-### MCP Server Integration
-- \`./claude-flow mcp start [--port 3000] [--host localhost]\`: Start MCP server
-- \`./claude-flow mcp status\`: Show MCP server status
-- \`./claude-flow mcp tools\`: List available MCP tools
+### 🧠 Project Knowledge Management
+- \`./claude-flow memory store "my_app_architecture" "REST API with React frontend"\`: Store YOUR project decisions
+- \`./claude-flow memory get "my_app_requirements"\`: Retrieve YOUR project information
+- \`./claude-flow memory list\`: See all stored knowledge about YOUR project
+- \`./claude-flow memory export my-project-knowledge.json\`: Export YOUR project knowledge
 
-### Claude Integration
-- \`./claude-flow claude auth\`: Authenticate with Claude API
-- \`./claude-flow claude models\`: List available Claude models
-- \`./claude-flow claude chat\`: Interactive chat mode
+### 🎯 SPARC Modes for Building Your Application
+- \`./claude-flow sparc "Create a todo list app with React"\`: Start building YOUR app
+- \`./claude-flow sparc run coder "Implement user login for my app"\`: Code YOUR features
+- \`./claude-flow sparc tdd "Shopping cart functionality"\`: Build YOUR features test-first
+- \`./claude-flow sparc run architect "Design my app's database schema"\`: Design YOUR architecture
 
-### Session Management
-- \`./claude-flow session\`: Manage terminal sessions
-- \`./claude-flow repl\`: Start interactive REPL mode
+**Available SPARC modes for YOUR project:**
+- **coder**: Write code for YOUR application
+- **architect**: Design YOUR system architecture
+- **tdd**: Test-driven development for YOUR features
+- **researcher**: Research solutions for YOUR requirements
+- **reviewer**: Review YOUR code quality
+- **debugger**: Debug issues in YOUR application
+- **tester**: Test YOUR application thoroughly
+- **documenter**: Document YOUR project
 
-### Enterprise Features
-- \`./claude-flow project <subcommand>\`: Project management (Enterprise)
-- \`./claude-flow deploy <subcommand>\`: Deployment operations (Enterprise)
-- \`./claude-flow cloud <subcommand>\`: Cloud infrastructure management (Enterprise)
-- \`./claude-flow security <subcommand>\`: Security and compliance tools (Enterprise)
-- \`./claude-flow analytics <subcommand>\`: Analytics and insights (Enterprise)
+### 🐝 Swarm Mode: Multiple AI Agents for Your Project
+\`./claude-flow swarm "Build a complete e-commerce website" --strategy development --parallel\`
 
-### Project Initialization
-- \`./claude-flow init\`: Initialize Claude-Flow project
-- \`./claude-flow init --sparc\`: Initialize with full SPARC development environment
+Options for YOUR project:
+- \`--strategy development\`: Build YOUR application features
+- \`--strategy testing\`: Comprehensive testing of YOUR app
+- \`--strategy optimization\`: Optimize YOUR application performance
+- \`--max-agents 8\`: Use up to 8 AI agents for YOUR project
+- \`--parallel\`: Build multiple features simultaneously
 
-## Quick Start Workflows
+## 💡 Example Workflows for Your Projects
 
-### Research Workflow
+### 🚀 Building a New Web Application
 \`\`\`bash
-# Start a research swarm with distributed coordination
-./claude-flow swarm "Research modern web frameworks" --strategy research --mode distributed --parallel --monitor
+# Example: Building a Task Management App
+./claude-flow sparc "Create a task management web app with React and Node.js"
 
-# Or use SPARC researcher mode for focused research
-./claude-flow sparc run researcher "Analyze React vs Vue vs Angular performance characteristics"
+# Add authentication to YOUR app
+./claude-flow sparc run coder "Add user authentication with JWT tokens to my task app"
 
-# Store findings in memory for later use
-./claude-flow memory store "research_findings" "Key insights from framework analysis"
+# Create tests for YOUR features
+./claude-flow sparc tdd "Task creation and assignment features"
+
+# Use multiple agents to build faster
+./claude-flow swarm "Build complete task management system" --strategy development --parallel
 \`\`\`
 
-### Development Workflow
+### 🔍 Research Phase for Your Project
 \`\`\`bash
-# Start orchestration system with web UI
-./claude-flow start --ui --port 3000
+# Research best practices for YOUR app type
+./claude-flow sparc run researcher "Research best practices for building SaaS applications"
 
-# Run TDD workflow for new feature
-./claude-flow sparc tdd "User authentication system with JWT tokens"
+# Store YOUR project's technical decisions
+./claude-flow memory store "tech_stack" "React, Node.js, PostgreSQL, Redis"
+./claude-flow memory store "auth_strategy" "JWT with refresh tokens"
 
-# Development swarm for complex projects
-./claude-flow swarm "Build e-commerce API with payment integration" --strategy development --mode hierarchical --max-agents 8 --monitor
-
-# Check system status
-./claude-flow status
+# Analyze similar applications
+./claude-flow sparc run analyzer "Analyze successful task management apps for feature ideas"
 \`\`\`
 
-### Analysis Workflow
+### 🏗️ Development Workflow for Your Application
 \`\`\`bash
-# Analyze codebase performance
-./claude-flow sparc run analyzer "Identify performance bottlenecks in current codebase"
+# Design YOUR application architecture
+./claude-flow sparc run architect "Design microservices architecture for my e-commerce platform"
 
-# Data analysis swarm
-./claude-flow swarm "Analyze user behavior patterns from logs" --strategy analysis --mode mesh --parallel --output sqlite
+# Implement YOUR features with TDD
+./claude-flow sparc tdd "Shopping cart with discount calculation"
 
-# Store analysis results
-./claude-flow memory store "performance_analysis" "Bottlenecks identified in database queries"
+# Multiple agents working on YOUR project
+./claude-flow swarm "Build user dashboard with analytics" --strategy development --max-agents 5
+
+# Review and optimize YOUR code
+./claude-flow sparc run reviewer "Review authentication implementation for security"
 \`\`\`
 
-### Maintenance Workflow
+### 🔧 Testing and Debugging Your Application
 \`\`\`bash
-# System maintenance with safety controls
-./claude-flow swarm "Update dependencies and security patches" --strategy maintenance --mode centralized --monitor
+# Comprehensive testing for YOUR app
+./claude-flow sparc run tester "Create comprehensive test suite for my API endpoints"
 
-# Security review
-./claude-flow sparc run reviewer "Security audit of authentication system"
+# Debug issues in YOUR application
+./claude-flow sparc run debugger "Debug why user login is failing in production"
 
-# Export maintenance logs
-./claude-flow memory export maintenance_log.json
+# Performance optimization for YOUR app
+./claude-flow sparc run optimizer "Optimize database queries in my application"
+
+# Security review for YOUR project
+./claude-flow sparc run reviewer "Security audit of my payment processing system"
 \`\`\`
 
-## Integration Patterns
-
-### Memory-Driven Coordination
-Use Memory to coordinate information across multiple SPARC modes and swarm operations:
-
+### 📚 Documentation for Your Project
 \`\`\`bash
-# Store architecture decisions
-./claude-flow memory store "system_architecture" "Microservices with API Gateway pattern"
+# Generate documentation for YOUR API
+./claude-flow sparc run documenter "Create API documentation for my REST endpoints"
 
-# All subsequent operations can reference this decision
-./claude-flow sparc run coder "Implement user service based on system_architecture in memory"
-./claude-flow sparc run tester "Create integration tests for microservices architecture"
+# Document YOUR project architecture
+./claude-flow sparc run documenter "Document the system architecture and design decisions"
+
+# Create user guides for YOUR application
+./claude-flow sparc run documenter "Write user guide for the admin dashboard"
 \`\`\`
 
-### Multi-Stage Development
-Coordinate complex development through staged execution:
+## 🎨 Building Your Application Step by Step
+
+### 📐 Planning Your Application
+Store YOUR project decisions and requirements:
 
 \`\`\`bash
-# Stage 1: Research and planning
-./claude-flow sparc run researcher "Research authentication best practices"
-./claude-flow sparc run architect "Design authentication system architecture"
+# Define YOUR application requirements
+./claude-flow memory store "app_type" "SaaS project management tool"
+./claude-flow memory store "target_users" "Small to medium development teams"
+./claude-flow memory store "core_features" "Task tracking, team collaboration, time tracking, reporting"
 
-# Stage 2: Implementation
-./claude-flow sparc tdd "User registration and login functionality"
-./claude-flow sparc run coder "Implement JWT token management"
+# Design YOUR architecture based on requirements
+./claude-flow sparc run architect "Design scalable SaaS architecture for project management tool"
 
-# Stage 3: Testing and deployment
-./claude-flow sparc run tester "Comprehensive security testing"
-./claude-flow swarm "Deploy authentication system" --strategy maintenance --mode centralized
+# Research best practices for YOUR app type
+./claude-flow sparc run researcher "Research best practices for multi-tenant SaaS applications"
 \`\`\`
 
-### Enterprise Integration
-For enterprise environments with additional tooling:
+### 🏗️ Building Your Application Features
+Implement YOUR application step by step:
 
 \`\`\`bash
-# Project management integration
-./claude-flow project create "authentication-system"
-./claude-flow project switch "authentication-system"
+# Phase 1: Core functionality
+./claude-flow sparc tdd "User registration and team creation"
+./claude-flow sparc run coder "Implement project and task management features"
 
-# Security compliance
-./claude-flow security scan
-./claude-flow security audit
+# Phase 2: Advanced features
+./claude-flow swarm "Build real-time collaboration features" --strategy development --parallel
+./claude-flow sparc run coder "Add time tracking and reporting dashboard"
 
-# Analytics and monitoring
-./claude-flow analytics dashboard
-./claude-flow deploy production --monitor
+# Phase 3: Polish and optimize
+./claude-flow sparc run optimizer "Optimize performance for 1000+ concurrent users"
+./claude-flow sparc run designer "Improve UI/UX for mobile responsiveness"
 \`\`\`
 
-## Batch Tools and Orchestration
-This project is configured for advanced Claude Code batch operations and swarm orchestration:
+### 🚀 Deploying Your Application
+Prepare YOUR application for production:
 
-### Batch Tool Usage Guidelines
-- **Always use TodoWrite** at the start of complex operations for task coordination
-- **Use Task tool** to launch parallel agents for independent work streams
-- **Store results in Memory** for cross-agent coordination and knowledge sharing
-- **Batch file operations** when reading/writing multiple files for efficiency
-- **Use parallel execution** whenever possible with batch tool coordination
+\`\`\`bash
+# Final testing and security review
+./claude-flow sparc run tester "Complete end-to-end testing suite"
+./claude-flow sparc run reviewer "Final security audit before launch"
 
-### Todo Tools for Advanced Orchestration
-TodoWrite and TodoRead are the foundation of all swarm operations:
+# Documentation for YOUR users
+./claude-flow sparc run documenter "Create user documentation and API guides"
+
+# Performance optimization
+./claude-flow sparc run optimizer "Optimize for production deployment"
+\`\`\`
+
+## 🛠️ How Claude Code Helps Build YOUR Application
+
+### 🤖 AI-Powered Development Assistance
+When you use claude-flow commands, Claude Code will help you:
+- **Write code** for YOUR application (not for claude-flow itself)
+- **Design architecture** for YOUR project requirements
+- **Create tests** for YOUR features
+- **Debug issues** in YOUR code
+- **Optimize performance** of YOUR application
+- **Document** YOUR project
+
+### 📋 Task Management for YOUR Project
+Claude Code uses TodoWrite and TodoRead to manage YOUR development tasks:
 
 \`\`\`javascript
-// Example: Comprehensive task breakdown for development
+// Example: Claude Code will create tasks for YOUR application development
 TodoWrite([
   {
-    id: "architecture_design",
-    content: "Design system architecture and component interfaces",
+    id: "create_user_model",
+    content: "Create User model for YOUR application",
     status: "pending",
-    priority: "high",
-    dependencies: [],
-    estimatedTime: "60min",
-    assignedAgent: "architect"
+    priority: "high"
   },
   {
-    id: "frontend_development", 
-    content: "Develop React components and user interface",
+    id: "implement_auth", 
+    content: "Implement authentication for YOUR app",
     status: "pending",
-    priority: "medium",
-    dependencies: ["architecture_design"],
-    estimatedTime: "120min",
-    assignedAgent: "frontend_team"
+    priority: "high"
   },
   {
-    id: "backend_services",
-    content: "Implement backend APIs and business logic",
+    id: "add_user_dashboard",
+    content: "Create user dashboard for YOUR application",
     status: "pending",
-    priority: "medium", 
-    dependencies: ["architecture_design"],
-    estimatedTime: "150min",
-    assignedAgent: "backend_team"
+    priority: "medium"
   },
   {
-    id: "integration_testing",
-    content: "Integration testing and system validation",
+    id: "write_tests",
+    content: "Write tests for YOUR new features",
     status: "pending",
-    priority: "high",
-    dependencies: ["frontend_development", "backend_services"],
-    estimatedTime: "90min",
-    assignedAgent: "testing_team"
+    priority: "high"
   }
 ]);
-
-// Launch coordinated parallel agents
-Task("System Architect", "Design scalable system architecture using Memory for component coordination");
-Task("Frontend Development Team", "Build React components based on architecture stored in Memory");
-Task("Backend Development Team", "Implement APIs according to architecture specifications in Memory");
 \`\`\`
 
-## SPARC Development Modes
-This project includes 17 specialized SPARC modes optimized for batch operations:
+## 🎯 SPARC Modes: Specialized AI Assistants for Your Project
 
-### Core Orchestration Modes
-- **orchestrator**: Multi-agent task orchestration with TodoWrite/TodoRead/Task/Memory
-- **swarm-coordinator**: Specialized swarm management with batch coordination
-- **workflow-manager**: Process automation with TodoWrite planning and Task execution
-- **batch-executor**: Parallel task execution specialist using batch operations
+Each SPARC mode is a specialized AI assistant that helps with different aspects of YOUR application development:
 
-### Development Modes
-- **coder**: Autonomous code generation with batch file operations
-- **architect**: System design with Memory-based coordination
-- **reviewer**: Code review using batch file analysis
-- **tdd**: Test-driven development with TodoWrite planning
+### 👨‍💻 Development Modes
+- **coder**: Writes code for YOUR application features
+- **architect**: Designs YOUR system architecture and database schemas
+- **tdd**: Helps you build YOUR features with test-driven development
+- **designer**: Creates UI/UX designs for YOUR application
 
-### Analysis and Research Modes  
-- **researcher**: Deep research with parallel WebSearch/WebFetch and Memory coordination
-- **analyzer**: Code and data analysis with batch processing
-- **optimizer**: Performance optimization with systematic analysis
+### 🔍 Analysis & Research Modes
+- **researcher**: Researches best practices for YOUR project needs
+- **analyzer**: Analyzes YOUR code for improvements
+- **optimizer**: Optimizes YOUR application's performance
+- **reviewer**: Reviews YOUR code for quality and security
 
-### Creative and Support Modes
-- **designer**: UI/UX design with Memory coordination
-- **innovator**: Creative problem solving with WebSearch and Memory
-- **documenter**: Documentation with batch file operations
-- **debugger**: Systematic debugging with TodoWrite and Memory
-- **tester**: Comprehensive testing with parallel execution
-- **memory-manager**: Knowledge management with Memory tools
+### 🛠️ Support Modes
+- **debugger**: Helps debug issues in YOUR application
+- **tester**: Creates comprehensive tests for YOUR features
+- **documenter**: Writes documentation for YOUR project
+- **innovator**: Suggests innovative features for YOUR application
 
-## Advanced Swarm Commands
-Multi-agent coordination with comprehensive batch tools integration:
+## 🐝 Swarm Mode: Multiple AI Agents for Complex Features
+
+Use swarm mode when building complex features that benefit from multiple specialized agents:
 
 \`\`\`bash
-# Research swarm with parallel execution and memory coordination
-claude-flow swarm "Research microservices architecture" \\
-  --strategy research --mode distributed --parallel --max-agents 6 --monitor
+# Example: Building a complete e-commerce platform
+./claude-flow swarm "Build complete e-commerce platform with payment integration" \\
+  --strategy development --parallel --max-agents 8
 
-# Development swarm with hierarchical coordination
-claude-flow swarm "Build e-commerce platform" \\
-  --strategy development --mode hierarchical --parallel --max-agents 10 --monitor
+# Example: Adding real-time features to YOUR app
+./claude-flow swarm "Add real-time chat and notifications to my app" \\
+  --strategy development --parallel --max-agents 5
 
-# Analysis swarm with mesh coordination for complex data processing
-claude-flow swarm "Analyze user behavior patterns" \\
-  --strategy analysis --mode mesh --parallel --max-agents 8 --output sqlite
-
-# Testing swarm with comprehensive parallel validation
-claude-flow swarm "Comprehensive security testing" \\
-  --strategy testing --mode distributed --parallel --max-agents 12 --monitor
-
-# Optimization swarm with hybrid adaptive coordination
-claude-flow swarm "Optimize system performance" \\
-  --strategy optimization --mode hybrid --parallel --monitor --timeout 180
-
-# Maintenance swarm with centralized safety controls
-claude-flow swarm "System maintenance and updates" \\
-  --strategy maintenance --mode centralized --monitor --output json
+# Example: Comprehensive testing of YOUR application
+./claude-flow swarm "Create comprehensive test suite for my API" \\
+  --strategy testing --parallel --max-agents 6
 \`\`\`
 
-### Automatic Batch Tool Integration
-Every swarm command automatically uses:
-- **TodoWrite**: Creates comprehensive task breakdowns with dependencies
-- **Task**: Launches specialized parallel agents for different components
-- **Memory**: Enables cross-agent knowledge sharing and coordination
-- **Batch File Ops**: Concurrent Read/Write/Edit operations for efficiency
-- **Parallel Search**: Simultaneous Glob/Grep operations for discovery
+## 💻 Code Style for YOUR Project
 
-## Code Style Preferences
-- Use ES modules (import/export) syntax
-- Destructure imports when possible
-- Use TypeScript for all new code
-- Follow existing naming conventions
-- Add JSDoc comments for public APIs
-- Use async/await instead of Promise chains
-- Prefer const/let over var
+When Claude Code writes code for YOUR application, it will follow these best practices:
+- Modern ES6+ JavaScript/TypeScript
+- Clean, readable code with proper naming
+- Comprehensive error handling
+- Security best practices
+- Performance optimization
+- Proper documentation
 
-## Workflow Guidelines
-- Always run typecheck after making code changes
-- Run tests before committing changes
-- Use meaningful commit messages
-- Create feature branches for new functionality
-- Ensure all tests pass before merging
+## 🚨 Important Reminders
 
-## Advanced Batch Tool Patterns
+### ✅ DO Use Claude-Flow For:
+- Building YOUR new application
+- Adding features to YOUR project
+- Writing tests for YOUR code
+- Debugging YOUR application
+- Optimizing YOUR performance
+- Documenting YOUR project
 
-### Research and Analysis Pattern
-\`\`\`javascript
-// 1. Research coordination
-TodoWrite([
-  {id: "domain_research", content: "Research domain patterns", status: "pending", priority: "high"},
-  {id: "competitive_analysis", content: "Analyze competitors", status: "pending", priority: "medium"},
-  {id: "synthesis", content: "Synthesize findings", status: "pending", priority: "high"}
-]);
+### ❌ DON'T Use Claude-Flow For:
+- Modifying the claude-flow system itself
+- Changing how claude-flow works internally
+- Updating claude-flow commands or features
+- Fixing claude-flow bugs (report them on GitHub instead)
 
-// 2. Parallel research agents
-Task("Domain Expert", "Research best practices using WebSearch and store in Memory");
-Task("Competitive Analyst", "Analyze competitor solutions using WebFetch");
-Task("Technology Evaluator", "Evaluate technology options using research coordination");
+## 🎉 Get Started Building YOUR Application!
 
-// 3. Knowledge synthesis
-Task("Research Synthesizer", "Combine all Memory findings into comprehensive recommendations");
+Remember: Claude-flow is a TOOL to help you build YOUR application faster and better. Focus on describing what YOU want to build, and let the AI agents help you create it.
+
+**Example first command for a new project:**
+\`\`\`bash
+./claude-flow sparc "Create a [YOUR APP TYPE] application with [YOUR MAIN FEATURES]"
 \`\`\`
 
-### Development Coordination Pattern
-\`\`\`javascript
-// 1. Development planning
-TodoWrite([
-  {id: "architecture", content: "System architecture design", status: "pending", priority: "high"},
-  {id: "frontend", content: "Frontend development", status: "pending", priority: "medium"},
-  {id: "backend", content: "Backend development", status: "pending", priority: "medium"},
-  {id: "integration", content: "System integration", status: "pending", priority: "high"}
-]);
-
-// 2. Coordinated development
-Task("System Architect", "Design architecture and store specs in Memory");
-Task("Frontend Team", "Develop UI components using Memory architecture specs");
-Task("Backend Team", "Implement APIs according to Memory specifications");
-Task("DevOps Team", "Setup deployment using coordinated specifications");
-\`\`\`
-
-### Analysis and Optimization Pattern
-\`\`\`javascript
-// 1. Analysis planning
-TodoWrite([
-  {id: "data_collection", content: "Collect performance data", status: "pending", priority: "high"},
-  {id: "pattern_analysis", content: "Analyze patterns", status: "pending", priority: "medium"},
-  {id: "optimization", content: "Implement optimizations", status: "pending", priority: "high"}
-]);
-
-// 2. Parallel analysis
-Task("Data Collector", "Gather performance metrics using batch Read operations");
-Task("Pattern Analyst", "Analyze patterns using Grep and statistical analysis");
-Task("Optimization Specialist", "Implement improvements using batch Edit operations");
-\`\`\`
-
-## Important Notes
-- **Use TodoWrite extensively** for all complex task coordination
-- **Leverage Task tool** for parallel agent execution on independent work
-- **Store all important information in Memory** for cross-agent coordination
-- **Use batch file operations** whenever reading/writing multiple files
-- **Check .claude/commands/swarm/** for detailed swarm documentation
-- **All swarm operations include automatic batch tool coordination**
-- **Monitor progress** with TodoRead during long-running operations
-- **Enable parallel execution** with --parallel flags for maximum efficiency
-
-This configuration ensures optimal use of Claude Code's batch tools for swarm orchestration and parallel task execution.
+Happy coding! 🚀
 `;
 }

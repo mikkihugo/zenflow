@@ -1,4 +1,4 @@
-# SPARC Coder Mode
+# 🔥 SPARC Coder Mode
 
 ## Description
 Autonomous code generation and implementation

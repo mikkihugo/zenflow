@@ -7,7 +7,7 @@ export async function createClaudeConfig(options: InitOptions): Promise<void> {
   
   // Create base configuration
   const claudeConfig = {
-    version: "1.0.58",
+    version: "1.0.70",
     project: {
       name: path.basename(process.cwd()),
       type: "claude-flow",
