@@ -1,9 +1,9 @@
 {
-  "version": "1.0.58",
+  "version": "1.0.70",
   "project": {
     "name": "claude-code-flow",
     "type": "claude-flow",
-    "created": "2025-06-17T04:59:51.868Z"
+    "created": "2025-06-17T20:40:36.847Z"
   },
   "features": {
     "swarm": true,

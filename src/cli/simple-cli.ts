@@ -13,7 +13,7 @@ import chalk from 'chalk';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const VERSION = '1.0.70';
+const VERSION = '1.0.71';
 
 // Simple in-memory storage for the session
 const memoryStore: Map<string, any> = new Map();
@@ -2825,7 +2825,32 @@ Strategy: ${options.strategy} | Mode: ${options.mode} | Agents: ${options.maxAge
 - Results consolidated in Memory
 - Final report generated
 
-**BEGIN IMMEDIATELY** with TodoWrite breakdown for: ${objective}`;
+**BEGIN IMMEDIATELY** with TodoWrite breakdown for: ${objective}
+
+## 📊 TASK TRACKING FORMAT
+Use this format when displaying task progress:
+
+📊 Progress Overview
+   ├── Total Tasks: X
+   ├── ✅ Completed: X (X%)
+   ├── 🔄 In Progress: X (X%)
+   ├── ⭕ Todo: X (X%)
+   └── ❌ Blocked: X (X%)
+
+📋 Todo (X)
+   └── 🔴 001: [Task description] [PRIORITY] ▶
+
+🔄 In progress (X)
+   ├── 🟡 002: [Task description] ↳ X deps ▶
+   └── 🔴 003: [Task description] [PRIORITY] ▶
+
+✅ Completed (X)
+   ├── ✅ 004: [Task description]
+   └── ... (more completed tasks)
+
+Use priority indicators: 🔴 HIGH/CRITICAL, 🟡 MEDIUM, 🟢 LOW
+Show dependencies with ↳ X deps notation
+Use ▶ to indicate actionable items`;
 
       console.log('\n🚀 Launching swarm execution...\n');
       

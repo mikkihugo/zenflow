@@ -9,8 +9,16 @@ from .models import (
     TaskStatus, AgentStatus, ResultStatus, StrategyType, CoordinationMode, AgentType
 )
 from .benchmark_engine import BenchmarkEngine
-from .task_scheduler import TaskScheduler
+from .optimized_benchmark_engine import OptimizedBenchmarkEngine
+from .task_scheduler import TaskScheduler, SchedulingAlgorithm, SchedulingMetrics
 from .result_aggregator import ResultAggregator
+from .parallel_executor import (
+    ParallelExecutor, BatchExecutor, ExecutionMode, 
+    ResourceLimits, ExecutionMetrics, ResourceMonitor
+)
+from .orchestration_manager import (
+    OrchestrationManager, OrchestrationConfig, ProgressTracker
+)
 
 __all__ = [
     # Core models
@@ -33,6 +41,20 @@ __all__ = [
     "AgentType",
     # Core components
     "BenchmarkEngine",
+    "OptimizedBenchmarkEngine",
     "TaskScheduler",
+    "SchedulingAlgorithm",
+    "SchedulingMetrics",
     "ResultAggregator",
+    # Parallel execution
+    "ParallelExecutor",
+    "BatchExecutor",
+    "ExecutionMode",
+    "ResourceLimits",
+    "ExecutionMetrics",
+    "ResourceMonitor",
+    # Orchestration
+    "OrchestrationManager",
+    "OrchestrationConfig",
+    "ProgressTracker",
 ]

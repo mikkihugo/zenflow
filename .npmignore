@@ -28,6 +28,10 @@ tsconfig.tsbuildinfo
 .gitignore
 .github/
 
+# TypeScript source files (we ship compiled JS)
+src/**/*.ts
+!src/**/*.d.ts
+
 # Documentation source files
 docs/
 *.md
