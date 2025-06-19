@@ -67,34 +67,6 @@ npx claude-flow@latest init --sparc
 ./claude-flow sparc tdd "create test suite for API"
 ```
 
----
-
-## 🏢 **Enterprise Features**
-
-### 💼 **Enterprise-Grade Management**
-Claude-Flow v1.0.72 includes comprehensive enterprise features for production deployments:
-
-- **🗂️ Project Management**: Complete lifecycle tracking, team collaboration, and resource planning
-- **🚀 Deployment Automation**: Blue-green, canary, and rolling deployments with automated rollback
-- **☁️ Cloud Infrastructure**: Multi-cloud management with cost optimization (AWS, GCP, Azure)
-- **🔒 Security & Compliance**: Vulnerability scanning, compliance checking (SOC2, GDPR, HIPAA)
-- **📊 Analytics & Insights**: Performance monitoring, predictive optimization, and business intelligence
-- **📋 Audit & Compliance**: Enterprise-grade audit logging with cryptographic integrity
-
-```bash
-# Enterprise command examples
-claude-flow project create "E-commerce Platform" --type web-app --priority high
-claude-flow deploy create "v2.1.0" --environment production --strategy blue-green
-claude-flow cloud optimize --environment production
-claude-flow security scan "API Security Audit" ./api --type vulnerability
-claude-flow analytics insights --timerange 7d
-claude-flow audit report compliance --framework SOC2 --timerange 90d
-```
-
-> 📖 **[Complete Enterprise Documentation](./ENTERPRISE_FEATURES.md)** - Detailed feature guide with examples and configuration
-
----
-
 ## 🏗️ **Core Features**
 
 ### 🤖 **Multi-Agent Orchestration**
