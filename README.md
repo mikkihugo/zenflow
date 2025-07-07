@@ -77,9 +77,11 @@ npx claude-flow@alpha cognitive analyze --behavior "development workflow"
 ### **💾 Distributed Memory Systems**
 ```bash
 # Cross-session memory management
-npx claude-flow@alpha memory store --key "project-context" --value "Full-stack app requirements"
-npx claude-flow@alpha memory search --pattern "authentication"
-npx claude-flow@alpha memory sync --target distributed-cluster
+npx claude-flow@alpha memory store "project-context" "Full-stack app requirements"
+npx claude-flow@alpha memory query "authentication" --namespace sparc
+npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory export backup.json --namespace default
+npx claude-flow@alpha memory import project-memory.json
 ```
 
 ### **🔄 Workflow Orchestration**
@@ -92,10 +94,13 @@ npx claude-flow@alpha pipeline create --config advanced-deployment.json
 
 ### **📊 GitHub Integration**
 ```bash
-# Automated repository management
-npx claude-flow@alpha github repo analyze --analysis-type security
-npx claude-flow@alpha github pr manage --action review --ai-powered
-npx claude-flow@alpha github release coord --version 2.0.0 --auto-changelog
+# GitHub workflow orchestration and coordination
+npx claude-flow@alpha github gh-coordinator analyze --analysis-type security
+npx claude-flow@alpha github pr-manager review --multi-reviewer --ai-powered
+npx claude-flow@alpha github release-manager coord --version 2.0.0 --auto-changelog
+npx claude-flow@alpha github repo-architect optimize --structure-analysis
+npx claude-flow@alpha github issue-tracker manage --project-coordination
+npx claude-flow@alpha github sync-coordinator align --multi-package
 ```
 
 ---
@@ -155,12 +160,18 @@ npx claude-flow@alpha bottleneck analyze --auto-optimize
 - **✅ 87 MCP Tools**: Most comprehensive AI tool suite available
 - **✅ Zero-Config Setup**: Automatic MCP integration with Claude Code
 
-### **🚀 Benchmark Comparisons**
+### **🚀 Available Capabilities**
 ```bash
-# Run performance benchmarks
-npx claude-flow@alpha benchmark run --suite comprehensive
-npx claude-flow@alpha metrics collect --components neural,memory,coordination
-npx claude-flow@alpha trend analysis --metric performance --period 30d
+# Check memory system performance
+npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory list
+
+# Test GitHub coordination modes
+npx claude-flow@alpha github gh-coordinator --help
+npx claude-flow@alpha github pr-manager --help
+
+# Workflow orchestration
+npx claude-flow@alpha workflow create --name "Development Pipeline" --parallel
 ```
 
 ---
@@ -196,8 +207,9 @@ npx claude-flow@alpha cognitive analyze --target research-results
 ### **🛡️ Security & Compliance**
 ```bash
 # Automated security analysis with AI coordination
-npx claude-flow@alpha security scan --target ./src --depth comprehensive --ai-powered
-npx claude-flow@alpha github workflow auto --security-focused --compliance SOC2
+npx claude-flow@alpha github gh-coordinator analyze --analysis-type security --target ./src
+npx claude-flow@alpha github repo-architect optimize --security-focused --compliance SOC2
+npx claude-flow@alpha hive-mind spawn "security audit and compliance review" --claude
 ```
 
 ---
@@ -278,16 +290,19 @@ npx claude-flow@alpha hive-mind test --agents 5 --coordination-test
 ### **💾 Memory Commands**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `memory store` | Store coordination context | `npx claude-flow@alpha memory store --key context --value data` |
-| `memory search` | Intelligent memory search | `npx claude-flow@alpha memory search --pattern auth` |
-| `memory sync` | Distributed synchronization | `npx claude-flow@alpha memory sync --target cluster` |
+| `memory store` | Store key-value pair | `npx claude-flow@alpha memory store "context" "data"` |
+| `memory query` | Search memory entries | `npx claude-flow@alpha memory query "auth" --namespace sparc` |
+| `memory stats` | Show memory statistics | `npx claude-flow@alpha memory stats` |
+| `memory export` | Export memory to file | `npx claude-flow@alpha memory export backup.json` |
+| `memory import` | Import memory from file | `npx claude-flow@alpha memory import project.json` |
+| `memory list` | List all namespaces | `npx claude-flow@alpha memory list` |
 
 ### **📊 Monitoring Commands**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `performance report` | Comprehensive metrics | `npx claude-flow@alpha performance report --format detailed` |
-| `bottleneck analyze` | Performance optimization | `npx claude-flow@alpha bottleneck analyze --auto-fix` |
-| `health check` | System diagnostics | `npx claude-flow@alpha health check --comprehensive` |
+| `memory stats` | Memory usage statistics | `npx claude-flow@alpha memory stats` |
+| `workflow create` | Create workflow pipelines | `npx claude-flow@alpha workflow create --name "CI/CD"` |
+| `github <mode>` | GitHub coordination modes | `npx claude-flow@alpha github gh-coordinator` |
 
 ---
 
@@ -303,25 +318,33 @@ Found issues with the alpha? We want to hear from you!
 
 ### **🔬 Testing the Alpha**
 ```bash
-# Comprehensive alpha testing suite
-npx claude-flow@alpha test alpha-suite --comprehensive
+# Test available GitHub modes
+npx claude-flow@alpha github gh-coordinator --help
+npx claude-flow@alpha github pr-manager --help  
+npx claude-flow@alpha github issue-tracker --help
+npx claude-flow@alpha github release-manager --help
+npx claude-flow@alpha github repo-architect --help
+npx claude-flow@alpha github sync-coordinator --help
 
-# Test specific alpha features
-npx claude-flow@alpha test hive-mind --coordination-patterns
-npx claude-flow@alpha test neural --pattern-recognition
-npx claude-flow@alpha test memory --distributed-sync
+# Test memory functionality
+npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory store "test" "alpha testing data"
+npx claude-flow@alpha memory query "test"
 
-# Performance benchmarking
-npx claude-flow@alpha benchmark alpha --compare-stable
+# Test workflow execution
+npx claude-flow@alpha workflow create --name "Test Pipeline" --parallel
 ```
 
 ### **📊 Alpha Metrics Dashboard**
 ```bash
-# Launch alpha metrics dashboard
-npx claude-flow@alpha dashboard --alpha-metrics --port 3000
+# Check memory usage and statistics
+npx claude-flow@alpha memory stats
 
-# Real-time alpha monitoring
-npx claude-flow@alpha monitor --alpha-features --live
+# View available GitHub coordination modes
+npx claude-flow@alpha github --help
+
+# Test workflow capabilities
+npx claude-flow@alpha workflow --help
 ```
 
 ---
