@@ -1,4 +1,4 @@
-# 🌊 Claude-Flow: Agent Orchestration Platform for Claude-Code 
+# 🌊 Claude-Flow: Advanced AI Agent Orchestration for Claude Code
 
 <div align="center">
 
@@ -12,11 +12,58 @@
 
 </div>
 
+---
+
+# 🚀 **Claude-Flow v2.0.0 Alpha - Next Generation AI Orchestration**
+
+## 🌟 **Experience the Future of AI Development**
+
+**Claude-Flow v2.0.0** represents a revolutionary leap in AI-powered development orchestration. Built from the ground up with enterprise-grade architecture, advanced swarm intelligence, and seamless Claude Code integration.
+
+> 🔥 **Revolutionary Features**: Hive-Mind AI coordination, 87 MCP tools, Neural pattern recognition, and Distributed memory systems
+
+## ⚡ **Quick Start - Try v2.0.0 Alpha Now**
+
+### 🎯 **Test the Alpha in 4 Commands**
+
+```bash
+# 1. Initialize with enhanced MCP setup
+npx --y claude-flow@alpha init --force
+
+# 2. Explore all capabilities  
+npx --y claude-flow@alpha --help
+
+# 3. Launch the interactive hive-mind wizard
+npx --y claude-flow@alpha hive-mind wizard
+
+# 4. Build something amazing with AI coordination
+npx claude-flow@alpha hive-mind spawn "build me something amazing" --claude
+```
+
+### 🧠 **What Makes v2.0.0 Revolutionary**
+
+- **🐝 Hive-Mind Intelligence**: Queen-led coordination with specialized worker AI agents
+- **⚡ 87 MCP Tools**: Complete Neural, Memory, GitHub, Workflow, and System tools
+- **🧠 Neural Pattern Recognition**: Adaptive learning and cognitive behavior analysis  
+- **💾 Distributed Memory**: Cross-session persistence with namespace management
+- **🔄 Auto-MCP Setup**: Automatic claude-flow and ruv-swarm MCP server integration
+- **🛡️ Seamless Permissions**: Auto-uses `--dangerously-skip-permissions` for smooth execution
+- **🎯 Enhanced SPARC**: Advanced specification, architecture, and refinement workflows
+
+### 🔧 **Alpha Testing & Development**
+
+- **🐛 Bug Reports**: Found issues? Report them in [GitHub Issues](https://github.com/ruvnet/claude-code-flow/issues)
+- **🛠️ Building from Source**: Use the [`claude-flow-v2.0.0`](https://github.com/ruvnet/claude-code-flow/tree/claude-flow-v2.0.0) branch for latest development
+- **📋 Alpha Features**: Currently testing hive-mind coordination, enhanced MCP integration, and neural pattern systems
+- **🚀 Production Ready**: Stable features remain available in the main v1.0.x release
+
+---
+
 ## 🎯 **Transform Your Development Workflow**
 
-**Claude-Flow** is the ultimate multi-terminal orchestration platform that revolutionizes how you work with Claude Code. Imagine coordinating **dozens of AI agents** simultaneously, each working on different aspects of your project while sharing knowledge through an intelligent memory bank.
+**Claude-Flow** is the ultimate AI orchestration platform that revolutionizes how you work with Claude Code. Coordinate **intelligent AI swarms** working simultaneously on different aspects of your project while sharing knowledge through distributed memory systems.
 
-> 🔥 **One command to rule them all**: `npx claude-flow` - Deploy a full AI agent coordination system in seconds!
+> 🔥 **One command to rule them all**: Deploy enterprise-grade AI coordination in seconds!
 
 
 ## 🎉 **What's New in v1.0.49**
