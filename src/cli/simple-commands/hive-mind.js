@@ -157,6 +157,10 @@ async function initHiveMind(flags) {
         confidence REAL DEFAULT 1.0,
         created_by TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        accessed_at DATETIME,
+        access_count INTEGER DEFAULT 0,
+        compressed INTEGER DEFAULT 0,
+        size INTEGER DEFAULT 0,
         FOREIGN KEY (swarm_id) REFERENCES swarms(id)
       );
       
@@ -427,7 +431,8 @@ async function spawnSwarm(args, flags) {
         objective TEXT,
         queen_type TEXT,
         status TEXT DEFAULT 'active',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME
       );
       
       CREATE TABLE IF NOT EXISTS agents (
@@ -448,8 +453,10 @@ async function spawnSwarm(args, flags) {
         agent_id TEXT,
         description TEXT,
         status TEXT DEFAULT 'pending',
+        priority INTEGER DEFAULT 5,
         result TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        completed_at DATETIME,
         FOREIGN KEY (swarm_id) REFERENCES swarms(id),
         FOREIGN KEY (agent_id) REFERENCES agents(id)
       );

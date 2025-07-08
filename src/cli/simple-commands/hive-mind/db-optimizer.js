@@ -260,7 +260,7 @@ function ensureRequiredColumns(db) {
   
   if (!hasUpdatedAt || hasUpdatedAt.count === 0) {
     try {
-      db.exec('ALTER TABLE swarms ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP');
+      db.exec('ALTER TABLE swarms ADD COLUMN updated_at DATETIME');
       console.log('Added missing updated_at column to swarms table');
     } catch (error) {
       if (!error.message.includes('duplicate column')) {
@@ -374,7 +374,7 @@ function addMemoryOptimization(db) {
     try {
       db.exec(`
         ALTER TABLE collective_memory 
-        ADD COLUMN accessed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        ADD COLUMN accessed_at DATETIME
       `);
       console.log('Added accessed_at column to collective_memory table');
     } catch (error) {
