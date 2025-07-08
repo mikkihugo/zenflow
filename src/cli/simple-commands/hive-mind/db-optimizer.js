@@ -380,20 +380,45 @@ export async function performMaintenance(dbPath, options = {}) {
         SELECT * FROM tasks WHERE 1=0
       `);
       
-      // Move old completed tasks
-      const archiveCutoff = new Date();
-      archiveCutoff.setDate(archiveCutoff.getDate() - (options.taskRetentionDays || 7));
+      // Check if completed_at column exists
+      const hasCompletedAt = db.prepare(`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+        WHERE name = 'completed_at'
+      `).get();
       
-      db.exec(`
-        INSERT INTO tasks_archive 
-        SELECT * FROM tasks 
-        WHERE status = 'completed' AND completed_at < '${archiveCutoff.toISOString()}'
-      `);
+      let archived = { changes: 0 };
       
-      const archived = db.prepare(`
-        DELETE FROM tasks 
-        WHERE status = 'completed' AND completed_at < ?
-      `).run(archiveCutoff.toISOString());
+      if (hasCompletedAt && hasCompletedAt.count > 0) {
+        // Move old completed tasks using completed_at
+        const archiveCutoff = new Date();
+        archiveCutoff.setDate(archiveCutoff.getDate() - (options.taskRetentionDays || 7));
+        
+        db.exec(`
+          INSERT INTO tasks_archive 
+          SELECT * FROM tasks 
+          WHERE status = 'completed' AND completed_at < '${archiveCutoff.toISOString()}'
+        `);
+        
+        archived = db.prepare(`
+          DELETE FROM tasks 
+          WHERE status = 'completed' AND completed_at < ?
+        `).run(archiveCutoff.toISOString());
+      } else {
+        // Use created_at as fallback
+        const archiveCutoff = new Date();
+        archiveCutoff.setDate(archiveCutoff.getDate() - (options.taskRetentionDays || 7));
+        
+        db.exec(`
+          INSERT INTO tasks_archive 
+          SELECT * FROM tasks 
+          WHERE status = 'completed' AND created_at < '${archiveCutoff.toISOString()}'
+        `);
+        
+        archived = db.prepare(`
+          DELETE FROM tasks 
+          WHERE status = 'completed' AND created_at < ?
+        `).run(archiveCutoff.toISOString());
+      }
       
       console.log(chalk.green(`✓ Archived ${archived.changes} completed tasks`));
     }
@@ -458,11 +483,25 @@ export async function generateOptimizationReport(dbPath) {
       SELECT name, tbl_name FROM sqlite_master WHERE type='index'
     `).all();
     
-    // Get performance metrics
-    const avgTaskTime = db.prepare(`
-      SELECT AVG(julianday(completed_at) - julianday(created_at)) * 24 * 60 as avg_minutes
-      FROM tasks WHERE completed_at IS NOT NULL
-    `).get();
+    // Get performance metrics (check if completed_at column exists)
+    let avgTaskTime = { avg_minutes: 0 };
+    try {
+      // First check if completed_at column exists
+      const hasCompletedAt = db.prepare(`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+        WHERE name = 'completed_at'
+      `).get();
+      
+      if (hasCompletedAt && hasCompletedAt.count > 0) {
+        avgTaskTime = db.prepare(`
+          SELECT AVG(julianday(completed_at) - julianday(created_at)) * 24 * 60 as avg_minutes
+          FROM tasks WHERE completed_at IS NOT NULL
+        `).get();
+      }
+    } catch (error) {
+      // If error, just use default value
+      console.warn('Could not calculate average task time:', error.message);
+    }
     
     report.performance.avgTaskCompletionMinutes = avgTaskTime?.avg_minutes || 0;
     
