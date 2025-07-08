@@ -507,7 +507,7 @@ npx claude-flow@alpha workflow --help
 - 🔜 Multi-cloud deployment automation
 - 🔜 Real-time collaboration features
 
-### **🏆 Stable v2.0.0 (Q2 2024)**
+### **🏆 Stable v2.0.0 (Q2 2025)**
 - 🎯 Production-ready hive-mind orchestration
 - 🎯 Complete neural computing suite
 - 🎯 Enterprise-grade security and monitoring
