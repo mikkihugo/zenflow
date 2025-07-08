@@ -1,11 +1,12 @@
+import { getErrorMessage, hasAgentId } from '../utils/type-guards.js';
 /**
  * Advanced messaging and communication layer for swarm coordination
  */
 
 import { EventEmitter } from 'node:events';
-import { ILogger } from '../core/logger.js';
-import { IEventBus } from '../core/event-bus.js';
-import { 
+import type { ILogger } from '../core/logger.js';
+import type { IEventBus } from '../core/event-bus.js';
+import type { 
   SwarmEvent, 
   EventType, 
   AgentId, 
@@ -56,6 +57,8 @@ export interface MessageMetadata {
   encoding: string;
   checksum?: string;
   route?: string[];
+  deadLetterReason?: string;
+  deadLetterTimestamp?: Date;
 }
 
 export interface MessageChannel {
@@ -277,11 +280,15 @@ export class MessageBus extends EventEmitter {
 
   private setupEventHandlers(): void {
     this.eventBus.on('agent:connected', (data) => {
-      this.handleAgentConnected(data.agentId);
+      if (hasAgentId(data)) {
+        this.handleAgentConnected(data.agentId);
+      }
     });
 
     this.eventBus.on('agent:disconnected', (data) => {
-      this.handleAgentDisconnected(data.agentId);
+      if (hasAgentId(data)) {
+        this.handleAgentDisconnected(data.agentId);
+      }
     });
 
     this.deliveryManager.on('delivery:success', (data) => {
@@ -1333,7 +1340,7 @@ class RetryManager extends EventEmitter {
     this.logger.debug('Retry scheduled', {
       messageId: message.id,
       target: target.id,
-      error: error.message
+      error: (error instanceof Error ? error.message : String(error))
     });
   }
 
@@ -1372,7 +1379,7 @@ class RetryManager extends EventEmitter {
           this.logger.warn('Retry attempt failed', {
             messageId: entry.message.id,
             attempt: entry.attempts,
-            error: error.message
+            error: (error instanceof Error ? error.message : String(error))
           });
         }
       }

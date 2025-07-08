@@ -1,15 +1,16 @@
+import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * Migration CLI Command Integration
  */
 
 import { Command } from 'commander';
-import { MigrationRunner } from '../../migration/migration-runner';
-import { MigrationAnalyzer } from '../../migration/migration-analyzer';
-import { RollbackManager } from '../../migration/rollback-manager';
-import { MigrationStrategy } from '../../migration/types';
-import { logger } from '../../migration/logger';
+import { MigrationRunner } from '../../migration/migration-runner.js';
+import { MigrationAnalyzer } from '../../migration/migration-analyzer.js';
+import { RollbackManager } from '../../migration/rollback-manager.js';
+import type { MigrationStrategy } from '../../migration/types.js';
+import { logger } from '../../migration/logger.js';
 import * as path from 'path';
-import chalk from "npm:chalk@^4.1.2";
+import chalk from "chalk";
 
 export function createMigrateCommand(): Command {
   const command = new Command('migrate');
@@ -59,6 +60,7 @@ export function createMigrateCommand(): Command {
     .option('-f, --force', 'Force rollback without prompts')
     .option('--list', 'List available backups')
     .action(async (projectPath = '.', options) => {
+      const { RollbackManager } = await import('../../migration/rollback-manager.js');
       const rollbackManager = new RollbackManager(path.resolve(projectPath), options.backup);
       
       if (options.list) {
@@ -75,6 +77,7 @@ export function createMigrateCommand(): Command {
     .description('Validate migration was successful')
     .option('-v, --verbose', 'Show detailed validation results')
     .action(async (projectPath = '.', options) => {
+      const { MigrationRunner } = await import('../../migration/migration-runner.js');
       const runner = new MigrationRunner({
         projectPath: path.resolve(projectPath),
         strategy: 'full'
@@ -97,6 +100,7 @@ export function createMigrateCommand(): Command {
 async function analyzeProject(projectPath: string, options: any): Promise<void> {
   logger.info(`Analyzing project at ${projectPath}...`);
   
+  const { MigrationAnalyzer } = await import('../../migration/migration-analyzer.js');
   const analyzer = new MigrationAnalyzer();
   const analysis = await analyzer.analyze(projectPath);
   
@@ -109,6 +113,7 @@ async function analyzeProject(projectPath: string, options: any): Promise<void> 
 }
 
 async function runMigration(projectPath: string, options: any): Promise<void> {
+  const { MigrationRunner } = await import('../../migration/migration-runner.js');
   const runner = new MigrationRunner({
     projectPath,
     strategy: options.strategy as MigrationStrategy,
@@ -131,6 +136,7 @@ async function showMigrationStatus(projectPath: string): Promise<void> {
   console.log(chalk.gray('─'.repeat(50)));
   
   // Project analysis
+  const { MigrationAnalyzer } = await import('../../migration/migration-analyzer.js');
   const analyzer = new MigrationAnalyzer();
   const analysis = await analyzer.analyze(projectPath);
   
@@ -140,6 +146,7 @@ async function showMigrationStatus(projectPath: string): Promise<void> {
   console.log(`${chalk.bold('Conflicts:')} ${analysis.conflictingFiles.length}`);
   
   // Backup status
+  const { RollbackManager } = await import('../../migration/rollback-manager.js');
   const rollbackManager = new RollbackManager(projectPath);
   const backups = await rollbackManager.listBackups();
   

@@ -1,9 +1,10 @@
+import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * Base Strategy Interface for Swarm Task Execution
  * Provides the foundation for different task execution strategies
  */
 
-import { TaskDefinition, SwarmObjective, AgentState, SwarmConfig } from '../types.js';
+import type { TaskDefinition, SwarmObjective, AgentState, SwarmConfig } from '../types.js';
 
 export interface StrategyMetrics {
   tasksCompleted: number;
@@ -13,6 +14,12 @@ export interface StrategyMetrics {
   parallelismEfficiency: number;
   cacheHitRate: number;
   predictionAccuracy: number;
+  // Additional metrics
+  queriesExecuted?: number;
+  averageResponseTime?: number;
+  cacheHits?: number;
+  cacheMisses?: number;
+  credibilityScores?: Record<string, number>;
 }
 
 export interface TaskPattern {
@@ -31,6 +38,19 @@ export interface DecompositionResult {
   recommendedStrategy: string;
   complexity: number;
   batchGroups: TaskBatch[];
+  // Additional properties for caching and memory
+  timestamp: Date;
+  ttl: number;
+  accessCount: number;
+  lastAccessed: Date;
+  data: any;
+  // Resource requirements
+  resourceRequirements?: {
+    memory?: number;
+    cpu?: number;
+    network?: string;
+    storage?: string;
+  };
 }
 
 export interface TaskBatch {

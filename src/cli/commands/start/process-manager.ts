@@ -1,9 +1,10 @@
+import { getErrorMessage } from '../../../utils/error-handler.js';
 /**
  * Process Manager - Handles lifecycle of system processes
  */
 
 import { EventEmitter } from './event-emitter.js';
-import { colors } from '@cliffy/ansi/colors';
+import chalk from 'chalk';
 import { 
   ProcessInfo, 
   ProcessType, 
@@ -256,7 +257,7 @@ export class ProcessManager extends EventEmitter {
       try {
         await this.startProcess(processId);
       } catch (error) {
-        console.error(colors.red(`Failed to start ${processId}:`), (error as Error).message);
+        console.error(chalk.red(`Failed to start ${processId}:`), (error as Error).message);
         // Continue with other processes
       }
     }
@@ -279,7 +280,7 @@ export class ProcessManager extends EventEmitter {
         try {
           await this.stopProcess(processId);
         } catch (error) {
-          console.error(colors.red(`Failed to stop ${processId}:`), (error as Error).message);
+          console.error(chalk.red(`Failed to stop ${processId}:`), (error as Error).message);
         }
       }
     }

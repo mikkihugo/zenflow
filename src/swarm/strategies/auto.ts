@@ -1,10 +1,30 @@
+
+// Extended TaskType for auto strategy (extends base TaskType)
+export type ExtendedTaskType = 
+  | 'data-analysis' | 'performance-analysis' | 'statistical-analysis'
+  | 'visualization' | 'predictive-modeling' | 'anomaly-detection'
+  | 'trend-analysis' | 'business-intelligence' | 'quality-analysis'
+  | 'system-design' | 'architecture-review' | 'api-design'
+  | 'cloud-architecture' | 'microservices-design' | 'security-architecture'
+  | 'scalability-design' | 'database-architecture'
+  | 'code-generation' | 'code-review' | 'refactoring' | 'debugging'
+  | 'api-development' | 'database-design' | 'performance-optimization'
+  | 'task-orchestration' | 'progress-tracking' | 'resource-allocation'
+  | 'workflow-management' | 'team-coordination' | 'status-reporting'
+  | 'fact-check' | 'literature-review' | 'market-analysis'
+  | 'unit-testing' | 'integration-testing' | 'e2e-testing'
+  | 'performance-testing' | 'security-testing' | 'api-testing'
+  | 'test-automation' | 'test-analysis';
+
+import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * Optimized AUTO Strategy Implementation
  * Uses machine learning-inspired heuristics and intelligent task decomposition
  */
 
-import { BaseStrategy, DecompositionResult, TaskBatch, AgentAllocation, TaskPattern } from './base.js';
-import { SwarmObjective, TaskDefinition, AgentState, TaskType, TaskPriority, TaskId, AgentType } from '../types.js';
+import { BaseStrategy } from './base.js';
+import type { DecompositionResult, TaskBatch, AgentAllocation, TaskPattern } from './base.js';
+import type { SwarmObjective, TaskDefinition, AgentState, TaskType, TaskPriority, TaskId, AgentType } from '../types.js';
 import { generateId } from '../../utils/helpers.js';
 
 interface MLHeuristics {
@@ -46,7 +66,7 @@ export class AutoStrategy extends BaseStrategy {
   /**
    * Enhanced objective decomposition with async processing and intelligent batching
    */
-  async decomposeObjective(objective: SwarmObjective): Promise<DecompositionResult> {
+  override async decomposeObjective(objective: SwarmObjective): Promise<DecompositionResult> {
     const startTime = Date.now();
     const cacheKey = this.getCacheKey(objective);
 
@@ -79,7 +99,12 @@ export class AutoStrategy extends BaseStrategy {
       estimatedDuration,
       recommendedStrategy: this.selectOptimalStrategy(objective, complexity),
       complexity,
-      batchGroups
+      batchGroups,
+      timestamp: new Date(),
+      ttl: 1800000, // 30 minutes
+      accessCount: 0,
+      lastAccessed: new Date(),
+      data: { objectiveId: objective.id, strategy: 'auto' }
     };
 
     // Cache the result
@@ -92,7 +117,7 @@ export class AutoStrategy extends BaseStrategy {
   /**
    * ML-inspired agent selection with performance history consideration
    */
-  async selectAgentForTask(task: TaskDefinition, availableAgents: AgentState[]): Promise<string | null> {
+  override async selectAgentForTask(task: TaskDefinition, availableAgents: AgentState[]): Promise<string | null> {
     if (availableAgents.length === 0) return null;
 
     // Score agents using ML heuristics
@@ -116,7 +141,7 @@ export class AutoStrategy extends BaseStrategy {
   /**
    * Predictive task scheduling with dynamic agent allocation
    */
-  async optimizeTaskSchedule(tasks: TaskDefinition[], agents: AgentState[]): Promise<AgentAllocation[]> {
+  override async optimizeTaskSchedule(tasks: TaskDefinition[], agents: AgentState[]): Promise<AgentAllocation[]> {
     const schedule = await this.createPredictiveSchedule(tasks, agents);
     
     return this.allocateAgentsOptimally(tasks, agents, schedule);
@@ -500,19 +525,19 @@ export class AutoStrategy extends BaseStrategy {
   }
 
   private getRequiredTools(type: TaskType): string[] {
-    const toolMap: Record<TaskType, string[]> = {
+    const toolMap: Record<string, string[]> = {
       'coding': ['file-system', 'terminal', 'editor'],
       'testing': ['test-runner', 'file-system', 'terminal'],
-      'analysis': ['analyzer', 'file-system', 'web-search'],
+      'analysis': ['analyst', 'file-system', 'web-search'],
       'documentation': ['editor', 'file-system'],
-      'research': ['web-search', 'analyzer', 'file-system'],
-      'review': ['analyzer', 'file-system'],
+      'research': ['web-search', 'analyst', 'file-system'],
+      'review': ['analyst', 'file-system'],
       'deployment': ['terminal', 'file-system', 'deployment-tools'],
-      'monitoring': ['monitoring-tools', 'analyzer'],
+      'monitoring': ['monitoring-tools', 'analyst'],
       'coordination': ['communication-tools'],
       'communication': ['communication-tools'],
       'maintenance': ['file-system', 'terminal', 'monitoring-tools'],
-      'optimization': ['analyzer', 'profiler', 'file-system'],
+      'optimization': ['analyst', 'profiler', 'file-system'],
       'validation': ['validator', 'test-runner'],
       'integration': ['integration-tools', 'file-system', 'terminal'],
       'custom': ['file-system']
@@ -696,9 +721,9 @@ export class AutoStrategy extends BaseStrategy {
     
     // Apply agent type bonus
     let bonus = 0;
-    if (agent.type === 'developer' && taskType === 'development') bonus = 0.2;
+    if (agent.type === 'coder' && taskType === 'development') bonus = 0.2;
     if (agent.type === 'tester' && taskType === 'testing') bonus = 0.2;
-    if (agent.type === 'analyzer' && taskType === 'analysis') bonus = 0.2;
+    if (agent.type === 'analyst' && taskType === 'analysis') bonus = 0.2;
 
     return Math.min(weight + bonus, 1.0);
   }
@@ -729,7 +754,7 @@ export class AutoStrategy extends BaseStrategy {
         endTime: currentTime + duration,
         tasks: [task.id.id],
         agents: [], // To be filled by allocation
-        dependencies: task.constraints.dependencies
+        dependencies: task.constraints.dependencies.map(dep => dep.id)
       });
       currentTime += duration;
     }

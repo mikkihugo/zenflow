@@ -1,10 +1,12 @@
+import chalk from 'chalk';
+import { getErrorMessage } from '../../utils/error-handler.js';
 import { CLI, success, error, warning, info, VERSION } from "../cli-core.js";
 import type { Command, CommandContext } from "../cli-core.js";
 import colors from "chalk";
 const { bold, blue, yellow } = colors;
 import { Orchestrator } from "../../core/orchestrator-fixed.js";
 import { ConfigManager } from "../../core/config.js";
-import { MemoryManager } from "../../memory/manager.js";
+import type { MemoryManager } from "../../memory/manager.js";
 import { EventBus } from "../../core/event-bus.js";
 import { Logger } from "../../core/logger.js";
 import { JsonPersistenceManager } from "../../core/json-persistence.js";
@@ -404,7 +406,7 @@ export function setupCommands(cli: CLI): void {
           case "pool":
           case "health":
             // Use the enhanced agent command system
-            console.log(colors.cyan('🚀 Using enhanced agent management system...'));
+            console.log(chalk.cyan('🚀 Using enhanced agent management system...'));
             
             // Create a simplified wrapper around the enhanced command
             const agentManager = await import("../../agents/agent-manager.js");
@@ -421,7 +423,7 @@ export function setupCommands(cli: CLI): void {
             break;
             
           default: {
-            console.log(colors.cyan("📋 Agent Management Commands:"));
+            console.log(chalk.cyan("📋 Agent Management Commands:"));
             console.log("Available subcommands:");
             console.log("  spawn      - Create and start new agents");
             console.log("  list       - Display all agents with status");
@@ -524,7 +526,7 @@ export function setupCommands(cli: CLI): void {
       };
       
       // Mock the enhanced status command action
-      console.log(colors.cyan('🔍 Enhanced Status Command'));
+      console.log(chalk.cyan('🔍 Enhanced Status Command'));
       console.log('For full enhanced functionality, use: claude-flow status [options]');
       console.log('Available options: --watch, --interval, --component, --json, --detailed, --health-check, --history');
       
@@ -1177,10 +1179,10 @@ Now, please proceed with the task: ${task}`;
               });
             });
             
-            if (status.success) {
+            if ((status as any).success) {
               success(`Claude instance ${instanceId} completed successfully`);
             } else {
-              error(`Claude instance ${instanceId} exited with code ${status.code}`);
+              error(`Claude instance ${instanceId} exited with code ${(status as any).code}`);
             }
             
           } catch (err) {
@@ -1262,8 +1264,8 @@ Now, please proceed with the task: ${task}`;
                     resolve({ success: code === 0, code });
                   });
                 });
-                if (!status.success) {
-                  error(`Task ${taskId} failed with code ${status.code}`);
+                if (!(status as any).success) {
+                  error(`Task ${taskId} failed with code ${(status as any).code}`);
                 }
               }
             }
@@ -1271,7 +1273,7 @@ Now, please proceed with the task: ${task}`;
             if (workflow.parallel && promises.length > 0) {
               success("All Claude instances spawned in parallel mode");
               const results = await Promise.all(promises);
-              const failed = results.filter(s => !s.success).length;
+              const failed = results.filter((s: any) => !s.success).length;
               if (failed > 0) {
                 warning(`${failed} tasks failed`);
               } else {
@@ -1312,7 +1314,7 @@ Now, please proceed with the task: ${task}`;
         noGraphs: ctx.flags.noGraphs || ctx.flags['no-graphs']
       };
       
-      console.log(colors.cyan('📊 Enhanced Monitor Command'));
+      console.log(chalk.cyan('📊 Enhanced Monitor Command'));
       console.log('For full enhanced functionality, use: claude-flow monitor [options]');
       console.log('Available options: --interval, --compact, --focus, --alerts, --export, --threshold, --log-level, --no-graphs');
       
@@ -1332,7 +1334,7 @@ Now, please proceed with the task: ${task}`;
         info("Starting enhanced monitoring dashboard...");
         console.log("Press Ctrl+C to exit");
         
-        const interval = options.interval * 1000;
+        const interval = Number(options.interval) * 1000;
         let running = true;
         
         const cleanup = () => {
@@ -1372,7 +1374,8 @@ Now, please proceed with the task: ${task}`;
             console.log("\n📊 System Overview:");
             const cpuUsage = Math.random() * 100;
             const memoryUsage = Math.random() * 1000;
-            const cpuColor = cpuUsage > options.threshold ? '🔴' : cpuUsage > options.threshold * 0.8 ? '🟡' : '🟢';
+            const threshold = Number(options.threshold || 80);
+            const cpuColor = cpuUsage > threshold ? '🔴' : cpuUsage > threshold * 0.8 ? '🟡' : '🟢';
             const memoryColor = memoryUsage > 800 ? '🔴' : memoryUsage > 600 ? '🟡' : '🟢';
             
             console.log(`   ${cpuColor} CPU: ${cpuUsage.toFixed(1)}%`);
@@ -1516,9 +1519,16 @@ Now, please proceed with the task: ${task}`;
       {
         name: "strategy",
         short: "s",
-        description: "Orchestration strategy (auto, research, development, analysis)",
+        description: "Orchestration strategy (auto, research, development, analysis, testing, optimization, maintenance)",
         type: "string",
         default: "auto",
+      },
+      {
+        name: "mode",
+        short: "m",
+        description: "Coordination mode (centralized, distributed, hierarchical, mesh, hybrid)",
+        type: "string",
+        default: "centralized",
       },
       {
         name: "max-agents",
@@ -1597,6 +1607,16 @@ Now, please proceed with the task: ${task}`;
         description: "Use blessed terminal UI (avoids TTY issues)",
         type: "boolean",
       },
+      {
+        name: "claude",
+        description: "Launch Claude Code with swarm coordination prompt",
+        type: "boolean",
+      },
+      {
+        name: "executor",
+        description: "Use built-in executor instead of Claude Code",
+        type: "boolean",
+      },
     ],
     action: swarmAction,
   });
@@ -1661,7 +1681,7 @@ Now, please proceed with the task: ${task}`;
     ],
     action: async (ctx: CommandContext) => {
       try {
-        console.log(colors.cyan('🚀 Enhanced SPARC Development Mode'));
+        console.log(chalk.cyan('🚀 Enhanced SPARC Development Mode'));
         console.log('Features: TDD + Orchestration + Batch Operations + Memory Management');
         
         if (ctx.flags.batch) {
@@ -1686,7 +1706,7 @@ Now, please proceed with the task: ${task}`;
 
   // Migration command
   const migrateCmd = createMigrateCommand();
-  cli.command(migrateCmd);
+  cli.command(migrateCmd as any);
 
   // Swarm UI command (convenience wrapper)
   cli.command({
@@ -1773,7 +1793,7 @@ Now, please proceed with the task: ${task}`;
   // Enhanced session command integration
   try {
     const enhancedSessionAction = async (ctx: CommandContext) => {
-      console.log(colors.cyan('💾 Enhanced Session Management'));
+      console.log(chalk.cyan('💾 Enhanced Session Management'));
       console.log('For full enhanced functionality, use: claude-flow session <command> [options]');
       console.log();
       console.log('Available commands:');
@@ -1817,7 +1837,7 @@ Now, please proceed with the task: ${task}`;
   // Enhanced orchestration start command integration
   try {
     const enhancedStartAction = async (ctx: CommandContext) => {
-      console.log(colors.cyan('🧠 Enhanced Claude-Flow Orchestration System'));
+      console.log(chalk.cyan('🧠 Enhanced Claude-Flow Orchestration System'));
       console.log('Features: Service Management + Health Checks + Auto-Recovery + Process UI');
       console.log();
       
@@ -2144,7 +2164,7 @@ Now, please proceed with the task: ${task}`;
   });
 
   // Add enhanced command documentation
-  console.log(colors.cyan('\n🚀 Enhanced Commands Loaded:'));
+  console.log(chalk.cyan('\n🚀 Enhanced Commands Loaded:'));
   console.log('  ✓ start    - Enhanced orchestration with service management');
   console.log('  ✓ status   - Comprehensive system status reporting');
   console.log('  ✓ monitor  - Real-time monitoring with metrics and alerts');
@@ -2152,6 +2172,118 @@ Now, please proceed with the task: ${task}`;
   console.log('  ✓ sparc    - Enhanced TDD with orchestration features');
   console.log();
   console.log('For detailed help on enhanced commands: claude-flow help <command>');
+
+  // Hive Mind command
+  cli.command({
+    name: "hive-mind",
+    description: "Collective intelligence swarm management",
+    aliases: ["hive", "swarm"],
+    options: [
+      {
+        name: "command",
+        description: "Hive Mind command (init, spawn, status, task, wizard)",
+        type: "string"
+      },
+      {
+        name: "swarm-id",
+        short: "s",
+        description: "Swarm ID to operate on",
+        type: "string"
+      },
+      {
+        name: "topology",
+        short: "t", 
+        description: "Swarm topology (mesh, hierarchical, ring, star)",
+        type: "string",
+        default: "hierarchical"
+      },
+      {
+        name: "max-agents",
+        short: "m",
+        description: "Maximum number of agents",
+        type: "number",
+        default: 8
+      },
+      {
+        name: "interactive",
+        short: "i",
+        description: "Run in interactive mode",
+        type: "boolean"
+      }
+    ],
+    action: async (ctx: CommandContext) => {
+      try {
+        const subcommand = ctx.args[0] || "wizard";
+        
+        // Import hive-mind commands dynamically
+        const { hiveMindCommand } = await import('./hive-mind/index.js');
+        
+        // Execute the appropriate subcommand
+        switch (subcommand) {
+          case "init":
+            const { initCommand } = await import('./hive-mind/init.js');
+            await initCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "spawn":
+            const { spawnCommand } = await import('./hive-mind/spawn.js');
+            await spawnCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "status":
+            const { statusCommand } = await import('./hive-mind/status.js');
+            await statusCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "task":
+            const { taskCommand } = await import('./hive-mind/task.js');
+            await taskCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "wizard":
+          default:
+            const { wizardCommand } = await import('./hive-mind/wizard.js');
+            await wizardCommand.parseAsync(process.argv.slice(3));
+            break;
+        }
+      } catch (err) {
+        error(`Hive Mind error: ${getErrorMessage(err)}`);
+      }
+    }
+  });
+
+  // Hook command for ruv-swarm integration
+  cli.command({
+    name: "hook",
+    description: "Execute ruv-swarm hooks for agent coordination",
+    action: async (ctx: CommandContext) => {
+      try {
+        const { spawn } = await import('child_process');
+        
+        // Pass all arguments to ruv-swarm hook command
+        const args = ctx.args.length > 0 ? ctx.args : ['--help'];
+        
+        const child = spawn('npx', ['ruv-swarm', 'hook', ...args], {
+          stdio: 'inherit',
+          shell: true
+        });
+        
+        await new Promise<void>((resolve, reject) => {
+          child.on('exit', (code) => {
+            if (code === 0) {
+              resolve();
+            } else {
+              // Don't throw error, just resolve to match expected behavior
+              resolve();
+            }
+          });
+          
+          child.on('error', (err) => {
+            error(`Failed to execute hook command: ${getErrorMessage(err)}`);
+            resolve();
+          });
+        });
+      } catch (err) {
+        error(`Hook command error: ${getErrorMessage(err)}`);
+      }
+    }
+  });
 
   // Add enterprise commands
   for (const command of enterpriseCommands) {

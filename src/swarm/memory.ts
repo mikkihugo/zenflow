@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Distributed Memory System with Cross-Agent Sharing
  */
@@ -622,7 +623,7 @@ export class SwarmMemoryManager extends EventEmitter {
         this.logger.warn('Failed to share memory with agent', {
           key,
           targetAgent: targetAgent.id,
-          error: error.message
+          error: (error instanceof Error ? error.message : String(error))
         });
       }
     }

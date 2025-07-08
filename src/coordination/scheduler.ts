@@ -1,10 +1,11 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Task scheduler implementation
  */
 
 import { Task, TaskStatus, CoordinationConfig, SystemEvents } from '../utils/types.js';
-import { IEventBus } from '../core/event-bus.js';
-import { ILogger } from '../core/logger.js';
+import type { IEventBus } from '../core/event-bus.js';
+import type { ILogger } from '../core/logger.js';
 import { TaskError, TaskTimeoutError, TaskDependencyError } from '../utils/errors.js';
 import { delay } from '../utils/helpers.js';
 

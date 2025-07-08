@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { getErrorMessage } from '../utils/error-handler.js';
 
 import { Command } from 'commander';
 import * as path from 'path';
-import { copyPrompts, copyPromptsEnhanced } from './prompt-copier-enhanced';
+import { copyPrompts, copyPromptsEnhanced } from './prompt-copier-enhanced.js';
 import { 
   PromptConfigManager, 
   PromptPathResolver, 
@@ -10,8 +11,8 @@ import {
   createProgressBar,
   formatFileSize,
   formatDuration
-} from './prompt-utils';
-import { logger } from '../logger';
+} from './prompt-utils.js';
+import { logger } from '../core/logger.js';
 
 const program = new Command();
 
@@ -135,9 +136,8 @@ program
   });
 
 program
-  .command('validate')
+  .command('validate <path>')
   .description('Validate prompt files')
-  .argument('<path>', 'Path to validate (file or directory)')
   .option('--recursive', 'Validate recursively')
   .action(async (filePath, options) => {
     try {
@@ -239,12 +239,11 @@ program
   });
 
 program
-  .command('rollback')
+  .command('rollback <manifest>')
   .description('Rollback from backup')
-  .argument('<manifest>', 'Path to backup manifest file')
   .action(async (manifestPath) => {
     try {
-      const { PromptCopier } = await import('./prompt-copier');
+      const { PromptCopier } = await import('./prompt-copier.js');
       const copier = new PromptCopier({
         source: '',
         destination: ''

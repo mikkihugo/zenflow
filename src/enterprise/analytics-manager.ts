@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 import { EventEmitter } from 'events';
 import { writeFile, readFile, mkdir, readdir } from 'fs/promises';
 import { join } from 'path';
@@ -102,7 +103,7 @@ export interface AnalyticsInsight {
   title: string;
   description: string;
   type: 'anomaly' | 'trend' | 'correlation' | 'prediction' | 'recommendation';
-  category: 'performance' | 'usage' | 'cost' | 'security' | 'quality';
+  category: 'performance' | 'usage' | 'business' | 'technical' | 'security' | 'cost';
   confidence: number; // 0-100
   impact: 'low' | 'medium' | 'high';
   priority: 'low' | 'medium' | 'high' | 'critical';

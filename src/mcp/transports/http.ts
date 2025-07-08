@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * HTTP transport for MCP
  */
@@ -9,9 +10,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ITransport, RequestHandler, NotificationHandler } from './base.js';
-import { MCPRequest, MCPResponse, MCPNotification, MCPConfig } from '../../utils/types.js';
-import { ILogger } from '../../core/logger.js';
+import type { ITransport, RequestHandler, NotificationHandler } from './base.js';
+import type { MCPRequest, MCPResponse, MCPNotification, MCPConfig } from '../../utils/types.js';
+import type { ILogger } from '../../core/logger.js';
 import { MCPTransportError } from '../../utils/errors.js';
 
 /**
@@ -164,7 +165,9 @@ export class HttpTransport implements ITransport {
 
   private setupRoutes(): void {
     // Get current file directory for static files
-    const __filename = fileURLToPath(import.meta.url);
+    const __filename = typeof import.meta?.url !== 'undefined' 
+      ? fileURLToPath(import.meta.url)
+      : __filename || __dirname + '/http.ts';
     const __dirname = dirname(__filename);
     const consoleDir = join(__dirname, '../../ui/console');
 

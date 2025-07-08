@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Simple MCP command implementation for Node.js compatibility
  */

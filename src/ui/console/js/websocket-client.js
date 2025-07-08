@@ -411,8 +411,8 @@ export class WebSocketClient {
     const params = {
       protocolVersion: { major: 2024, minor: 11, patch: 5 },
       clientInfo: {
-        name: 'Claude Code Console',
-        version: '1.0.0',
+        name: 'Claude Flow v2',
+        version: '2.0.0',
         ...clientInfo
       },
       capabilities: {
@@ -455,10 +455,12 @@ export class WebSocketClient {
    */
   async getAvailableTools() {
     try {
-      return await this.sendRequest('tools/list');
+      const result = await this.sendRequest('tools/list');
+      // The server returns { tools: [...] }, so we need to extract the tools array
+      return result && result.tools ? result.tools : [];
     } catch (error) {
       console.error('Failed to get tools:', error);
-      throw error;
+      return []; // Return empty array on error instead of throwing
     }
   }
   

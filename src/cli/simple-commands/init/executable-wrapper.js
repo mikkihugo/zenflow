@@ -1,8 +1,11 @@
 // executable-wrapper.js - Create local executable wrapper
 
-export async function createLocalExecutable(workingDir) {
+import { writeFile, chmod } from 'fs/promises';
+import { platform } from 'os';
+
+export async function createLocalExecutable(workingDir, dryRun = false) {
   try {
-    if (Deno.build.os === 'windows') {
+    if (platform() === 'win32') {
       // Create Windows batch file
       const wrapperScript = `@echo off
 REM Claude-Flow local wrapper
@@ -39,13 +42,15 @@ if %ERRORLEVEL% EQU 0 (
 
 REM 4. Fallback to npx (will download if needed)
 cd /d "%PROJECT_DIR%"
-npx claude-flow %*
+npx claude-flow@latest %*
 `;
 
       // Write the Windows batch file
-      await Deno.writeTextFile(`${workingDir}/claude-flow.cmd`, wrapperScript);
-      console.log('  ✓ Created local claude-flow.cmd executable wrapper');
-      console.log('    You can now use: claude-flow instead of npx claude-flow');
+      if (!dryRun) {
+        await writeFile(`${workingDir}/claude-flow.cmd`, wrapperScript, 'utf8');
+        console.log('  ✓ Created local claude-flow.cmd executable wrapper');
+        console.log('    You can now use: claude-flow instead of npx claude-flow');
+      }
       
     } else {
       // Check if we're in development mode (claude-code-flow repo)
@@ -97,13 +102,15 @@ fi
 `;
 
       // Write the wrapper script
-      await Deno.writeTextFile(`${workingDir}/claude-flow`, wrapperScript);
-      
-      // Make it executable
-      await Deno.chmod(`${workingDir}/claude-flow`, 0o755);
-      
-      console.log('  ✓ Created local claude-flow executable wrapper');
-      console.log('    You can now use: ./claude-flow instead of npx claude-flow');
+      if (!dryRun) {
+        await writeFile(`${workingDir}/claude-flow`, wrapperScript, 'utf8');
+        
+        // Make it executable
+        await chmod(`${workingDir}/claude-flow`, 0o755);
+        
+        console.log('  ✓ Created local claude-flow executable wrapper');
+        console.log('    You can now use: ./claude-flow instead of npx claude-flow');
+      }
     }
     
   } catch (err) {

@@ -1,14 +1,15 @@
 #!/usr/bin/env node
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Claude-Flow Migration Tool
  * Helps existing projects migrate to optimized prompts and configurations
  */
 
-import { Command } from 'commander';
-import { MigrationRunner } from './migration-runner';
-import { MigrationAnalyzer } from './migration-analyzer';
-import { MigrationStrategy } from './types';
-import { logger } from './logger';
+import { Command } from "@cliffy/command";
+import { MigrationRunner } from './migration-runner.js';
+import { MigrationAnalyzer } from './migration-analyzer.js';
+import type { MigrationStrategy } from './types.js';
+import { logger } from './logger.js';
 import * as chalk from 'chalk';
 import * as path from 'path';
 

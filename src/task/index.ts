@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Task Management System - Main Export
  * Comprehensive task management with orchestration features
@@ -6,17 +7,17 @@
 
 export {
   TaskEngine,
-  WorkflowTask,
-  TaskDependency,
-  ResourceRequirement,
-  TaskSchedule,
-  TaskExecution,
-  TaskMetrics,
-  TaskLog,
-  Workflow,
-  TaskFilter,
-  TaskSort,
-  TaskCheckpoint
+  type WorkflowTask,
+  type TaskDependency,
+  type ResourceRequirement,
+  type TaskSchedule,
+  type TaskExecution,
+  type TaskMetrics,
+  type TaskLog,
+  type Workflow,
+  type TaskFilter,
+  type TaskSort,
+  type TaskCheckpoint
 } from './engine.js';
 
 export {
@@ -24,15 +25,19 @@ export {
   createTaskListCommand,
   createTaskStatusCommand,
   createTaskCancelCommand,
-  createTaskWorkflowCommand,
-  TaskCommandContext
+  createTaskWorkflowCommand
 } from './commands.js';
 
 export {
-  TaskCoordinator,
-  TodoItem,
-  MemoryEntry,
-  CoordinationContext
+  type TaskCommandContext,
+  type TodoItem,
+  type MemoryEntry,
+  type CoordinationContext,
+  type TaskMetadata
+} from './types.js';
+
+export {
+  TaskCoordinator
 } from './coordination.js';
 
 /**
@@ -45,8 +50,8 @@ export async function initializeTaskManagement(
     logger?: any;
   } = {}
 ): Promise<{
-  taskEngine: TaskEngine;
-  taskCoordinator: TaskCoordinator;
+  taskEngine: any;
+  taskCoordinator: any;
   commands: {
     create: any;
     list: any;
@@ -55,6 +60,11 @@ export async function initializeTaskManagement(
     workflow: any;
   };
 }> {
+  // Import required classes dynamically to avoid circular dependencies
+  const { TaskEngine } = await import('./engine.js');
+  const { TaskCoordinator } = await import('./coordination.js');
+  const { createTaskCreateCommand, createTaskListCommand, createTaskStatusCommand, createTaskCancelCommand, createTaskWorkflowCommand } = await import('./commands.js');
+  
   const taskEngine = new TaskEngine(
     config.maxConcurrentTasks || 10,
     config.memoryManager
@@ -65,8 +75,9 @@ export async function initializeTaskManagement(
     config.memoryManager
   );
 
-  const commandContext: TaskCommandContext = {
+  const commandContext = {
     taskEngine,
+    taskCoordinator,
     memoryManager: config.memoryManager,
     logger: config.logger
   };
@@ -98,13 +109,13 @@ export async function createTaskTodos(
     parallelExecution?: boolean;
     memoryCoordination?: boolean;
   } = {},
-  coordinator?: TaskCoordinator
-): Promise<TodoItem[]> {
+  coordinator?: any
+): Promise<any[]> {
   if (!coordinator) {
     throw new Error('TaskCoordinator instance required for todo creation');
   }
 
-  const context: CoordinationContext = {
+  const context = {
     sessionId: `session-${Date.now()}`,
     coordinationMode: options.batchOptimized ? 'distributed' : 'centralized'
   };
@@ -124,13 +135,13 @@ export async function launchParallelAgents(
     memoryKey?: string;
     batchOptimized?: boolean;
   }>,
-  coordinator?: TaskCoordinator
+  coordinator?: any
 ): Promise<string[]> {
   if (!coordinator) {
     throw new Error('TaskCoordinator instance required for agent launching');
   }
 
-  const context: CoordinationContext = {
+  const context = {
     sessionId: `session-${Date.now()}`,
     coordinationMode: 'distributed'
   };
@@ -149,7 +160,7 @@ export async function storeCoordinationData(
     tags?: string[];
     expiresAt?: Date;
   } = {},
-  coordinator?: TaskCoordinator
+  coordinator?: any
 ): Promise<void> {
   if (!coordinator) {
     throw new Error('TaskCoordinator instance required for memory storage');
@@ -164,7 +175,7 @@ export async function storeCoordinationData(
 export async function retrieveCoordinationData(
   key: string,
   namespace?: string,
-  coordinator?: TaskCoordinator
+  coordinator?: any
 ): Promise<any | null> {
   if (!coordinator) {
     throw new Error('TaskCoordinator instance required for memory retrieval');
@@ -179,7 +190,7 @@ export async function retrieveCoordinationData(
 export const USAGE_EXAMPLES = {
   todoWrite: `
 // Example: Using TodoWrite for task coordination
-import { createTaskTodos } from './task';
+import { createTaskTodos } from './task.js';
 
 const todos = await createTaskTodos(
   "Build e-commerce platform",
@@ -201,7 +212,7 @@ const todos = await createTaskTodos(
 
   taskTool: `
 // Example: Using Task tool pattern for parallel agents
-import { launchParallelAgents } from './task';
+import { launchParallelAgents } from './task.js';
 
 const agentIds = await launchParallelAgents([
   {
@@ -230,7 +241,7 @@ const agentIds = await launchParallelAgents([
 
   memoryCoordination: `
 // Example: Using Memory for cross-agent coordination
-import { storeCoordinationData, retrieveCoordinationData } from './task';
+import { storeCoordinationData, retrieveCoordinationData } from './task.js';
 
 // Store research findings for other agents
 await storeCoordinationData(
@@ -257,7 +268,7 @@ const findings = await retrieveCoordinationData(
 
   batchOperations: `
 // Example: Coordinated batch operations
-import { TaskCoordinator } from './task';
+import { TaskCoordinator } from './task.js';
 
 const results = await coordinator.coordinateBatchOperations([
   {
@@ -280,8 +291,6 @@ const results = await coordinator.coordinateBatchOperations([
 
   swarmCoordination: `
 // Example: Swarm coordination patterns
-import { TaskCoordinator } from './task';
-
 await coordinator.coordinateSwarm(
   "Comprehensive system development",
   {
@@ -290,10 +299,10 @@ await coordinator.coordinateSwarm(
   },
   [
     { type: 'lead-architect', role: 'team-lead', capabilities: ['design', 'coordination'] },
-    { type: 'frontend-dev-1', role: 'developer', capabilities: ['react', 'ui'] },
-    { type: 'frontend-dev-2', role: 'developer', capabilities: ['react', 'testing'] },
-    { type: 'backend-dev-1', role: 'developer', capabilities: ['nodejs', 'api'] },
-    { type: 'backend-dev-2', role: 'developer', capabilities: ['database', 'scaling'] },
+    { type: 'frontend-dev-1', role: 'coder', capabilities: ['react', 'ui'] },
+    { type: 'frontend-dev-2', role: 'coder', capabilities: ['react', 'testing'] },
+    { type: 'backend-dev-1', role: 'coder', capabilities: ['nodejs', 'api'] },
+    { type: 'backend-dev-2', role: 'coder', capabilities: ['database', 'scaling'] },
     { type: 'devops-engineer', role: 'specialist', capabilities: ['deployment', 'monitoring'] }
   ]
 );
@@ -371,8 +380,6 @@ claude-flow task workflow visualize workflow-123 \\
 };
 
 export default {
-  TaskEngine,
-  TaskCoordinator,
   initializeTaskManagement,
   createTaskTodos,
   launchParallelAgents,

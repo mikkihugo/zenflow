@@ -36,7 +36,21 @@ export class CommandHandler {
       'sparc': this.executeSparc.bind(this)
     };
     
-    this.allCommands = { ...this.builtinCommands, ...this.claudeFlowCommands };
+    // Direct SPARC mode commands
+    this.sparcModeCommands = {
+      'coder': this.executeSparcMode.bind(this, 'coder'),
+      'architect': this.executeSparcMode.bind(this, 'architect'),
+      'analyst': this.executeSparcMode.bind(this, 'analyst'),
+      'researcher': this.executeSparcMode.bind(this, 'researcher'),
+      'reviewer': this.executeSparcMode.bind(this, 'reviewer'),
+      'tester': this.executeSparcMode.bind(this, 'tester'),
+      'debugger': this.executeSparcMode.bind(this, 'debugger'),
+      'documenter': this.executeSparcMode.bind(this, 'documenter'),
+      'optimizer': this.executeSparcMode.bind(this, 'optimizer'),
+      'designer': this.executeSparcMode.bind(this, 'designer')
+    };
+    
+    this.allCommands = { ...this.builtinCommands, ...this.claudeFlowCommands, ...this.sparcModeCommands };
   }
   
   /**
@@ -93,7 +107,7 @@ export class CommandHandler {
       return;
     }
     
-    this.terminal.writeInfo('Claude Code Console Commands:');
+    this.terminal.writeInfo('Claude Flow Console Commands:');
     this.terminal.writeLine('');
     
     this.terminal.writeInfo('Built-in Commands:');
@@ -106,6 +120,16 @@ export class CommandHandler {
     Object.keys(this.claudeFlowCommands).forEach(cmd => {
       this.terminal.writeLine(`  ${cmd.padEnd(12)} - ${this.getCommandDescription(cmd)}`);
     });
+    
+    this.terminal.writeLine('');
+    this.terminal.writeInfo('Tool Commands (from tools list):');
+    this.terminal.writeLine('  system/health        - Get system health status');
+    this.terminal.writeLine('  memory/manage        - Manage memory (list, store <key> <value>, retrieve <key>)');
+    this.terminal.writeLine('  agents/manage        - Manage agents (list, create <type>, status <id>)');
+    this.terminal.writeLine('  swarm/orchestrate    - Swarm operations (status, create, start, stop)');
+    this.terminal.writeLine('  sparc/execute        - Execute SPARC modes (coder, architect, etc.)');
+    this.terminal.writeLine('  benchmark/run        - Run benchmarks (default, memory, cpu, network)');
+    this.terminal.writeLine('  claude-flow/execute  - Execute Claude Flow commands');
     
     this.terminal.writeLine('');
     this.terminal.writeInfo('Use "help <command>" for detailed information about a specific command.');
@@ -413,8 +437,8 @@ Examples:
    * Show version information
    */
   async showVersion() {
-    this.terminal.writeInfo('Claude Code Console v1.0.0');
-    this.terminal.writeLine('Part of Claude Code CLI tool');
+    this.terminal.writeInfo('🌊 Claude Flow v2.0.0');
+    this.terminal.writeLine('Advanced swarm orchestration platform');
     this.terminal.writeLine('Built with modern web technologies');
   }
   
@@ -459,8 +483,23 @@ Examples:
       return;
     }
     
-    // Implementation would call the swarm coordination system
-    this.terminal.writeWarning('Swarm commands not yet implemented in web console');
+    try {
+      const action = args[0] || 'status';
+      this.terminal.writeInfo(`Executing swarm ${action}...`);
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: 'swarm/status',
+        arguments: { action, args: args.slice(1) }
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess('Swarm command executed successfully');
+      }
+    } catch (error) {
+      this.terminal.writeError(`Swarm command failed: ${error.message}`);
+    }
   }
   
   /**
@@ -491,7 +530,26 @@ Examples:
       return;
     }
     
-    this.terminal.writeWarning('Memory management not yet implemented in web console');
+    try {
+      const operation = args[0] || 'list';
+      const key = args[1];
+      const value = args.slice(2).join(' ');
+      
+      this.terminal.writeInfo(`Executing memory ${operation}...`);
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: 'memory/manage',
+        arguments: { operation, key, value }
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess('Memory operation completed successfully');
+      }
+    } catch (error) {
+      this.terminal.writeError(`Memory command failed: ${error.message}`);
+    }
   }
   
   /**
@@ -503,7 +561,26 @@ Examples:
       return;
     }
     
-    this.terminal.writeWarning('Agent management not yet implemented in web console');
+    try {
+      const action = args[0] || 'list';
+      const agentType = args[1];
+      const agentId = args[1];
+      
+      this.terminal.writeInfo(`Executing agents ${action}...`);
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: 'agents/manage',
+        arguments: { action, agentType, agentId }
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess('Agent operation completed successfully');
+      }
+    } catch (error) {
+      this.terminal.writeError(`Agent command failed: ${error.message}`);
+    }
   }
   
   /**
@@ -515,7 +592,25 @@ Examples:
       return;
     }
     
-    this.terminal.writeWarning('Benchmarking not yet implemented in web console');
+    try {
+      const suite = args[0] || 'default';
+      const iterations = parseInt(args[1]) || 10;
+      
+      this.terminal.writeInfo(`Running benchmark suite: ${suite}...`);
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: 'benchmark/run',
+        arguments: { suite, iterations }
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess('Benchmark completed successfully');
+      }
+    } catch (error) {
+      this.terminal.writeError(`Benchmark failed: ${error.message}`);
+    }
   }
   
   /**
@@ -529,7 +624,7 @@ Examples:
     
     if (args.length === 0) {
       this.terminal.writeInfo('Available SPARC modes:');
-      const modes = ['coder', 'architect', 'analyzer', 'researcher', 'reviewer', 
+      const modes = ['coder', 'architect', 'analyst', 'researcher', 'reviewer', 
                     'tester', 'debugger', 'documenter', 'optimizer', 'designer'];
       modes.forEach(mode => {
         this.terminal.writeLine(`  ${mode}`);
@@ -537,7 +632,56 @@ Examples:
       return;
     }
     
-    this.terminal.writeWarning('SPARC mode execution not yet implemented in web console');
+    try {
+      const mode = args[0];
+      const task = args.slice(1).join(' ') || 'General task execution';
+      const options = {};
+      
+      this.terminal.writeInfo(`Executing SPARC mode: ${mode}...`);
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: 'sparc/execute',
+        arguments: { mode, task, options }
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess(`SPARC ${mode} mode executed successfully`);
+      }
+    } catch (error) {
+      this.terminal.writeError(`SPARC execution failed: ${error.message}`);
+    }
+  }
+  
+  /**
+   * Execute specific SPARC mode
+   */
+  async executeSparcMode(mode, args) {
+    if (!this.wsClient.isConnected) {
+      this.terminal.writeError('Not connected to server');
+      return;
+    }
+    
+    try {
+      const task = args.join(' ') || `Execute ${mode} mode tasks`;
+      const options = {};
+      
+      this.terminal.writeInfo(`Executing SPARC ${mode} mode...`);
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: 'sparc/execute',
+        arguments: { mode, task, options }
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess(`SPARC ${mode} mode executed successfully`);
+      }
+    } catch (error) {
+      this.terminal.writeError(`SPARC ${mode} execution failed: ${error.message}`);
+    }
   }
   
   /**
@@ -550,6 +694,11 @@ Examples:
     }
     
     try {
+      // Check if this is a tool name (contains slash)
+      if (command.includes('/')) {
+        return await this.executeToolDirect(command, args);
+      }
+      
       this.terminal.writeInfo(`Executing remote command: ${command}`);
       
       const result = await this.wsClient.executeCommand(command, { args });
@@ -561,6 +710,85 @@ Examples:
       }
     } catch (error) {
       this.terminal.writeError(`Remote command failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Execute tool directly by name
+   */
+  async executeToolDirect(toolName, args) {
+    try {
+      this.terminal.writeInfo(`Executing tool: ${toolName}...`);
+      
+      // Prepare arguments based on tool
+      let toolArgs = {};
+      
+      switch (toolName) {
+        case 'system/health':
+          toolArgs = { detailed: args.includes('--detailed') };
+          break;
+          
+        case 'memory/manage':
+          toolArgs = {
+            operation: args[0] || 'list',
+            key: args[1],
+            value: args.slice(2).join(' ')
+          };
+          break;
+          
+        case 'agents/manage':
+          toolArgs = {
+            action: args[0] || 'list',
+            agentType: args[1],
+            agentId: args[1]
+          };
+          break;
+          
+        case 'swarm/orchestrate':
+          toolArgs = {
+            action: args[0] || 'status',
+            args: args.slice(1)
+          };
+          break;
+          
+        case 'sparc/execute':
+          toolArgs = {
+            mode: args[0] || 'coder',
+            task: args.slice(1).join(' ') || 'General task execution',
+            options: {}
+          };
+          break;
+          
+        case 'benchmark/run':
+          toolArgs = {
+            suite: args[0] || 'default',
+            iterations: parseInt(args[1]) || 10
+          };
+          break;
+          
+        case 'claude-flow/execute':
+          toolArgs = {
+            command: args[0] || 'status',
+            args: args.slice(1)
+          };
+          break;
+          
+        default:
+          toolArgs = { args };
+      }
+      
+      const result = await this.wsClient.sendRequest('tools/call', {
+        name: toolName,
+        arguments: toolArgs
+      });
+      
+      if (result && result.content && result.content[0]) {
+        this.terminal.writeSuccess(result.content[0].text);
+      } else {
+        this.terminal.writeSuccess(`Tool ${toolName} executed successfully`);
+      }
+    } catch (error) {
+      this.terminal.writeError(`Tool execution failed: ${error.message}`);
     }
   }
   

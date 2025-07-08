@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Logging infrastructure for Claude-Flow
  */
@@ -6,7 +7,7 @@ import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { Buffer } from 'node:buffer';
 import process from 'node:process';
-import { LoggingConfig } from '../utils/types.js';
+import type { LoggingConfig } from '../utils/types.js';
 import { formatBytes } from '../utils/helpers.js';
 
 export interface ILogger {

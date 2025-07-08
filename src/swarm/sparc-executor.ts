@@ -1,9 +1,10 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * SPARC-Enhanced Task Executor for Swarm
  * Implements the full SPARC methodology with TDD
  */
 
-import { TaskDefinition, AgentState, TaskResult } from './types.js';
+import type { TaskDefinition, AgentState, TaskResult } from './types.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { Logger } from '../core/logger.js';
@@ -122,7 +123,7 @@ export class SparcTaskExecutor {
     } catch (error) {
       this.logger.error('SPARC task execution failed', {
         taskId: task.id.id,
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -137,7 +138,7 @@ export class SparcTaskExecutor {
     
     // Map agent types to SPARC phases
     switch (agent.type) {
-      case 'analyzer':
+      case 'analyst':
         if (task.name.includes('Requirements') || task.name.includes('Plan')) {
           return this.executeSpecificationPhase(task, targetDir);
         }
@@ -153,7 +154,7 @@ export class SparcTaskExecutor {
         }
         return this.executeCoordinationPhase(task, targetDir);
       
-      case 'developer':
+      case 'coder':
         if (this.enableTDD && task.name.includes('Implement')) {
           return this.executeTDDPhase(task, targetDir);
         }

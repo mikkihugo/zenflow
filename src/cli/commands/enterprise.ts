@@ -1,4 +1,5 @@
-import { Command, CommandContext } from '../cli-core.js';
+import { getErrorMessage } from '../../utils/error-handler.js';
+import type { Command, CommandContext } from '../cli-core.js';
 import { success, error, warning, info } from '../cli-core.js';
 import colors from 'chalk';
 import { ProjectManager, Project } from '../../enterprise/project-manager.js';
@@ -8,7 +9,7 @@ import { SecurityManager, SecurityScan } from '../../enterprise/security-manager
 import { AnalyticsManager } from '../../enterprise/analytics-manager.js';
 import { AuditManager } from '../../enterprise/audit-manager.js';
 import { Logger } from '../../core/logger.js';
-import { ConfigManager } from '../../core/config.js';
+import type { ConfigManager } from '../../core/config.js';
 
 const { bold, blue, green, yellow, red, cyan, magenta } = colors;
 
@@ -483,7 +484,10 @@ export const enterpriseCommands: Command[] = [
                     region: ctx.flags.region as string || 'us-east-1',
                     provider: (ctx.flags.provider as any) || 'aws',
                     endpoints: ctx.flags.endpoints ? 
-                      (ctx.flags.endpoints as string).split(',') : []
+                      (ctx.flags.endpoints as string).split(',') : [],
+                    secrets: {},
+                    environment_variables: {},
+                    resources: { cpu: '1', memory: '1Gi', storage: '10Gi', replicas: 1 }
                   }
                 });
 
@@ -584,7 +588,10 @@ export const enterpriseCommands: Command[] = [
                   configuration: {
                     defaultRegion: ctx.flags.region as string || 'us-east-1',
                     availableRegions: ctx.flags.regions ? 
-                      (ctx.flags.regions as string).split(',') : []
+                      (ctx.flags.regions as string).split(',') : [],
+                    services: ['compute', 'storage', 'network'],
+                    endpoints: { api: 'https://api.example.com' },
+                    features: ['scaling', 'monitoring', 'backup']
                   }
                 });
 
@@ -1436,6 +1443,9 @@ export const enterpriseCommands: Command[] = [
               type: reportType,
               scope: {
                 timeRange: { start, end: now },
+                systems: ['all'],
+                users: ['all'],
+                events: ['all'],
                 compliance: ctx.flags.framework ? [ctx.flags.framework as string] : []
               }
             });

@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * Standard I/O transport for MCP
  */
@@ -5,9 +6,9 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { stdin, stdout } from 'node:process';
 import { createInterface, Interface } from 'node:readline';
-import { ITransport, RequestHandler, NotificationHandler } from './base.js';
-import { MCPRequest, MCPResponse, MCPNotification } from '../../utils/types.js';
-import { ILogger } from '../../core/logger.js';
+import type { ITransport, RequestHandler, NotificationHandler } from './base.js';
+import type { MCPRequest, MCPResponse, MCPNotification } from '../../utils/types.js';
+import type { ILogger } from '../../core/logger.js';
 import { MCPTransportError } from '../../utils/errors.js';
 
 /**

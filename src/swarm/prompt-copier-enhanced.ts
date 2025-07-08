@@ -1,8 +1,13 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getErrorMessage } from '../utils/error-handler.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { Worker } from 'worker_threads';
-import { PromptCopier, CopyOptions, CopyResult, FileInfo } from './prompt-copier';
-import { logger } from '../logger';
+import { PromptCopier } from './prompt-copier.js';
+import type { CopyOptions, CopyResult, FileInfo } from './prompt-copier.js';
+import { logger } from '../core/logger.js';
 
 interface WorkerPool {
   workers: Worker[];
@@ -59,7 +64,7 @@ export class EnhancedPromptCopier extends PromptCopier {
         logger.error(`Worker ${i} error:`, error);
         this.errors.push({
           file: 'worker',
-          error: error.message,
+          error: (error instanceof Error ? error.message : String(error)),
           phase: 'write'
         });
       });
@@ -220,7 +225,7 @@ export class EnhancedPromptCopier extends PromptCopier {
       } catch (error) {
         this.errors.push({
           file: file.path,
-          error: error.message,
+          error: (error instanceof Error ? error.message : String(error)),
           phase: 'verify'
         });
       }

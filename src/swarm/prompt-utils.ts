@@ -1,6 +1,7 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { logger } from '../logger';
+import { logger } from '../core/logger.js';
 
 export interface PromptConfig {
   sourceDirectories: string[];
@@ -262,7 +263,7 @@ export class PromptValidator {
     } catch (error) {
       return {
         valid: false,
-        issues: [`Failed to read file: ${error.message}`]
+        issues: [`Failed to read file: ${(error instanceof Error ? error.message : String(error))}`]
       };
     }
   }

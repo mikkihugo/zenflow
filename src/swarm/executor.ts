@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Advanced Task Executor with timeout handling and process management
  */
@@ -157,7 +158,7 @@ export class TaskExecutor extends EventEmitter {
     } catch (error) {
       this.logger.error('Task execution failed', {
         sessionId,
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         stack: error.stack
       });
 
@@ -210,7 +211,7 @@ export class TaskExecutor extends EventEmitter {
     } catch (error) {
       this.logger.error('Claude task execution failed', {
         sessionId,
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -423,7 +424,7 @@ export class TaskExecutor extends EventEmitter {
           clearTimeout(timeoutHandle);
           this.logger.error('Claude process error', {
             sessionId,
-            error: error.message
+            error: (error instanceof Error ? error.message : String(error))
           });
           reject(error);
         });
@@ -652,7 +653,7 @@ export class TaskExecutor extends EventEmitter {
     } catch (error) {
       this.logger.warn('Error during execution cleanup', {
         sessionId: session.id,
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -676,7 +677,7 @@ export class TaskExecutor extends EventEmitter {
     } catch (error) {
       this.logger.warn('Error collecting artifacts', {
         workingDir: context.workingDirectory,
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
     }
 

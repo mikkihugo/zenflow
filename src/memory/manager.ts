@@ -1,12 +1,13 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Memory manager interface and implementation
  */
 
-import { MemoryEntry, MemoryQuery, MemoryConfig } from '../utils/types.js';
-import { IEventBus } from '../core/event-bus.js';
-import { ILogger } from '../core/logger.js';
+import type { MemoryEntry, MemoryQuery, MemoryConfig } from '../utils/types.js';
+import type { IEventBus } from '../core/event-bus.js';
+import type { ILogger } from '../core/logger.js';
 import { MemoryError } from '../utils/errors.js';
-import { IMemoryBackend } from './backends/base.js';
+import type { IMemoryBackend } from './backends/base.js';
 import { SQLiteBackend } from './backends/sqlite.js';
 import { MarkdownBackend } from './backends/markdown.js';
 import { MemoryCache } from './cache.js';

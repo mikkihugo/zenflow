@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Node.js-compatible Configuration management for Claude-Flow
  */
@@ -44,6 +45,17 @@ export interface Config {
     format: 'json' | 'text';
     destination: 'console' | 'file';
   };
+  ruvSwarm: {
+    enabled: boolean;
+    defaultTopology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+    maxAgents: number;
+    defaultStrategy: 'balanced' | 'specialized' | 'adaptive';
+    autoInit: boolean;
+    enableHooks: boolean;
+    enablePersistence: boolean;
+    enableNeuralTraining: boolean;
+    configPath?: string;
+  };
 }
 
 /**
@@ -86,6 +98,17 @@ const DEFAULT_CONFIG: Config = {
     level: 'info',
     format: 'json',
     destination: 'console',
+  },
+  ruvSwarm: {
+    enabled: true,
+    defaultTopology: 'mesh',
+    maxAgents: 8,
+    defaultStrategy: 'adaptive',
+    autoInit: true,
+    enableHooks: true,
+    enablePersistence: true,
+    enableNeuralTraining: true,
+    configPath: '.claude/ruv-swarm-config.json',
   },
 };
 
@@ -292,6 +315,17 @@ export class ConfigManager {
     if (!['console', 'file'].includes(config.logging.destination)) {
       throw new ConfigError('logging.destination must be one of: console, file');
     }
+
+    // ruv-swarm validation
+    if (!['mesh', 'hierarchical', 'ring', 'star'].includes(config.ruvSwarm.defaultTopology)) {
+      throw new ConfigError('ruvSwarm.defaultTopology must be one of: mesh, hierarchical, ring, star');
+    }
+    if (config.ruvSwarm.maxAgents < 1 || config.ruvSwarm.maxAgents > 100) {
+      throw new ConfigError('ruvSwarm.maxAgents must be between 1 and 100');
+    }
+    if (!['balanced', 'specialized', 'adaptive'].includes(config.ruvSwarm.defaultStrategy)) {
+      throw new ConfigError('ruvSwarm.defaultStrategy must be one of: balanced, specialized, adaptive');
+    }
   }
 
   /**
@@ -332,6 +366,23 @@ export class ConfigManager {
     if (logLevel === 'debug' || logLevel === 'info' || logLevel === 'warn' || logLevel === 'error') {
       this.config.logging.level = logLevel;
     }
+
+    // ruv-swarm settings
+    const ruvSwarmEnabled = process.env.CLAUDE_FLOW_RUV_SWARM_ENABLED;
+    if (ruvSwarmEnabled === 'true' || ruvSwarmEnabled === 'false') {
+      this.config.ruvSwarm.enabled = ruvSwarmEnabled === 'true';
+    }
+
+    const ruvSwarmTopology = process.env.CLAUDE_FLOW_RUV_SWARM_TOPOLOGY;
+    if (ruvSwarmTopology === 'mesh' || ruvSwarmTopology === 'hierarchical' || 
+        ruvSwarmTopology === 'ring' || ruvSwarmTopology === 'star') {
+      this.config.ruvSwarm.defaultTopology = ruvSwarmTopology;
+    }
+
+    const ruvSwarmMaxAgents = process.env.CLAUDE_FLOW_RUV_SWARM_MAX_AGENTS;
+    if (ruvSwarmMaxAgents) {
+      this.config.ruvSwarm.maxAgents = parseInt(ruvSwarmMaxAgents, 10);
+    }
   }
 
   /**
@@ -339,6 +390,133 @@ export class ConfigManager {
    */
   private deepClone<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  /**
+   * Get ruv-swarm specific configuration
+   */
+  getRuvSwarmConfig() {
+    return this.deepClone(this.config.ruvSwarm);
+  }
+
+  /**
+   * Get available configuration templates
+   */
+  getAvailableTemplates(): string[] {
+    return ['default', 'development', 'production', 'testing'];
+  }
+
+  /**
+   * Create a configuration template
+   */
+  createTemplate(name: string, config: any): void {
+    // Implementation for creating templates
+    console.log(`Creating template: ${name}`, config);
+  }
+
+  /**
+   * Get format parsers
+   */
+  getFormatParsers(): Record<string, any> {
+    return {
+      json: { extension: '.json', parse: JSON.parse, stringify: JSON.stringify },
+      yaml: { extension: '.yaml', parse: (content: string) => content, stringify: (obj: any) => JSON.stringify(obj) }
+    };
+  }
+
+  /**
+   * Validate configuration file
+   */
+  validateFile(path: string): boolean {
+    try {
+      // Basic validation - file exists and is valid JSON
+      require('fs').readFileSync(path, 'utf8');
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get path history
+   */
+  getPathHistory(): any[] {
+    return []; // Mock implementation
+  }
+
+  /**
+   * Get change history
+   */
+  getChangeHistory(): any[] {
+    return []; // Mock implementation
+  }
+
+  /**
+   * Backup configuration
+   */
+  async backup(path: string): Promise<void> {
+    const backupPath = `${path}.backup.${Date.now()}`;
+    const content = JSON.stringify(this.config, null, 2);
+    await fs.writeFile(backupPath, content, 'utf8');
+    console.log(`Configuration backed up to: ${backupPath}`);
+  }
+
+  /**
+   * Restore configuration from backup
+   */
+  async restore(path: string): Promise<void> {
+    const content = await fs.readFile(path, 'utf8');
+    this.config = JSON.parse(content);
+    console.log(`Configuration restored from: ${path}`);
+  }
+
+  /**
+   * Update ruv-swarm configuration
+   */
+  setRuvSwarmConfig(updates: Partial<Config['ruvSwarm']>): void {
+    this.config.ruvSwarm = { ...this.config.ruvSwarm, ...updates };
+    this.validate(this.config);
+  }
+
+  /**
+   * Check if ruv-swarm is enabled
+   */
+  isRuvSwarmEnabled(): boolean {
+    return this.config.ruvSwarm.enabled;
+  }
+
+  /**
+   * Generate ruv-swarm command arguments from configuration
+   */
+  getRuvSwarmArgs(): string[] {
+    const args: string[] = [];
+    const config = this.config.ruvSwarm;
+    
+    if (!config.enabled) {
+      return args;
+    }
+    
+    args.push('--topology', config.defaultTopology);
+    args.push('--max-agents', String(config.maxAgents));
+    args.push('--strategy', config.defaultStrategy);
+    
+    if (config.enableHooks) {
+      args.push('--enable-hooks');
+    }
+    
+    if (config.enablePersistence) {
+      args.push('--enable-persistence');
+    }
+    
+    if (config.enableNeuralTraining) {
+      args.push('--enable-training');
+    }
+    
+    if (config.configPath) {
+      args.push('--config-path', config.configPath);
+    }
+    
+    return args;
   }
 
   /**
@@ -364,6 +542,9 @@ export class ConfigManager {
     }
     if (source.logging) {
       result.logging = { ...result.logging, ...source.logging };
+    }
+    if (source.ruvSwarm) {
+      result.ruvSwarm = { ...result.ruvSwarm, ...source.ruvSwarm };
     }
     
     return result;

@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * SQLite backend implementation for memory storage
  */
@@ -5,9 +6,9 @@
 import Database from 'better-sqlite3';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { IMemoryBackend } from './base.js';
-import { MemoryEntry, MemoryQuery } from '../../utils/types.js';
-import { ILogger } from '../../core/logger.js';
+import type { IMemoryBackend } from './base.js';
+import type { MemoryEntry, MemoryQuery } from '../../utils/types.js';
+import type { ILogger } from '../../core/logger.js';
 import { MemoryBackendError } from '../../utils/errors.js';
 
 /**

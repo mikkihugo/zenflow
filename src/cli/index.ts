@@ -1,4 +1,5 @@
 #!/usr/bin/env -S deno run --allow-all
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Claude-Flow CLI entry point
  * This redirects to simple-cli.ts for remote execution compatibility
@@ -7,6 +8,8 @@
 // Import and run the simple CLI which doesn't have external dependencies
 import "./simple-cli.ts";
 // Spinner import removed - not available in current cliffy version
+import { Command } from 'commander';
+import chalk from 'chalk';
 import { logger } from '../core/logger.js';
 import { configManager } from '../core/config.js';
 import { startCommand } from './commands/start.js';
@@ -46,13 +49,13 @@ const cli = new Command()
   .globalOption('--no-color', 'Disable colored output')
   .globalOption('--json', 'Output in JSON format where applicable')
   .globalOption('--profile <profile:string>', 'Use named configuration profile')
-  .action(async (options) => {
+  .action(async (options: any) => {
     // If no subcommand, show banner and start REPL
     await setupLogging(options);
     
     if (!options.quiet) {
       displayBanner(VERSION);
-      console.log(colors.gray('Type "help" for available commands or "exit" to quit.\n'));
+      console.log(chalk.gray('Type "help" for available commands or "exit" to quit.\n'));
     }
     
     await startREPL(options);
@@ -75,7 +78,7 @@ cli
     .description('Start interactive REPL mode with command completion')
     .option('--no-banner', 'Skip welcome banner')
     .option('--history-file <path:string>', 'Custom history file path')
-    .action(async (options) => {
+    .action(async (options: any) => {
       await setupLogging(options);
       if (options.banner !== false) {
         displayBanner(VERSION);
@@ -86,7 +89,7 @@ cli
   .command('version', new Command()
     .description('Show detailed version information')
     .option('--short', 'Show version number only')
-    .action(async (options) => {
+    .action(async (options: any) => {
       if (options.short) {
         console.log(VERSION);
       } else {
@@ -98,7 +101,7 @@ cli
     .description('Generate shell completion scripts')
     .arguments('[shell:string]')
     .option('--install', 'Install completion script automatically')
-    .action(async (options, shell) => {
+    .action(async (options: any, shell: any) => {
       const generator = new CompletionGenerator();
       await generator.generate(shell || 'detect', options.install === true);
     }),
@@ -115,22 +118,22 @@ async function handleError(error: unknown, options?: any): Promise<void> {
       timestamp: new Date().toISOString(),
     }));
   } else {
-    console.error(colors.red(colors.bold('✗ Error:')), formatted);
+    console.error(chalk.red(chalk.bold('✗ Error:')), formatted);
   }
   
   // Show stack trace in debug mode or verbose
-  if (Deno.env.get('CLAUDE_FLOW_DEBUG') === 'true' || options?.verbose) {
-    console.error(colors.gray('\nStack trace:'));
+  if (process.env['CLAUDE_FLOW_DEBUG'] === 'true' || options?.verbose) {
+    console.error(chalk.gray('\nStack trace:'));
     console.error(error);
   }
   
   // Suggest helpful actions
   if (!options?.quiet) {
-    console.error(colors.gray('\nTry running with --verbose for more details'));
-    console.error(colors.gray('Or use "claude-flow help" to see available commands'));
+    console.error(chalk.gray('\nTry running with --verbose for more details'));
+    console.error(chalk.gray('Or use "claude-flow help" to see available commands'));
   }
   
-  Deno.exit(1);
+  process.exit(1);
 }
 
 // Setup logging and configuration based on CLI options
@@ -174,8 +177,8 @@ async function setupLogging(options: any): Promise<void> {
 // Signal handlers for graceful shutdown
 function setupSignalHandlers(): void {
   const gracefulShutdown = () => {
-    console.log('\n' + colors.gray('Gracefully shutting down...'));
-    Deno.exit(0);
+    console.log('\n' + chalk.gray('Gracefully shutting down...'));
+    process.exit(0);
   };
   
   Deno.addSignalListener('SIGINT', gracefulShutdown);

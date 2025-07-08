@@ -1,14 +1,16 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 import { EventEmitter } from 'node:events';
 import { Logger } from '../core/logger.js';
+import { EventBus } from '../core/event-bus.js';
 import { generateId } from '../utils/helpers.js';
 import { SwarmMonitor } from './swarm-monitor.js';
-import { AdvancedTaskScheduler } from './advanced-scheduler.js';
+import type { AdvancedTaskScheduler } from './advanced-scheduler.js';
 import { MemoryManager } from '../memory/manager.js';
 
 export interface SwarmAgent {
   id: string;
   name: string;
-  type: 'researcher' | 'developer' | 'analyzer' | 'coordinator' | 'reviewer';
+  type: 'researcher' | 'coder' | 'analyst' | 'coordinator' | 'reviewer';
   status: 'idle' | 'busy' | 'failed' | 'completed';
   capabilities: string[];
   currentTask?: SwarmTask;
@@ -76,6 +78,8 @@ export class SwarmCoordinator extends EventEmitter {
   private memoryManager: MemoryManager;
   private backgroundWorkers: Map<string, NodeJS.Timeout>;
   private isRunning: boolean = false;
+  private workStealer?: any;
+  private circuitBreaker?: any;
 
   constructor(config: Partial<SwarmConfig> = {}) {
     super();
@@ -102,7 +106,15 @@ export class SwarmCoordinator extends EventEmitter {
     this.backgroundWorkers = new Map();
 
     // Initialize memory manager
-    this.memoryManager = new MemoryManager({ namespace: this.config.memoryNamespace });
+    const eventBus = EventBus.getInstance();
+    this.memoryManager = new MemoryManager({
+      backend: 'sqlite',
+      namespace: this.config.memoryNamespace,
+      cacheSizeMB: 50,
+      syncOnExit: true,
+      maxEntries: 10000,
+      ttlMinutes: 60
+    }, eventBus, this.logger);
 
     if (this.config.enableMonitoring) {
       this.monitor = new SwarmMonitor({
@@ -167,7 +179,7 @@ export class SwarmCoordinator extends EventEmitter {
     this.stopBackgroundWorkers();
 
     // Stop subsystems
-    await this.scheduler.stop();
+    await this.scheduler.shutdown();
     
     if (this.monitor) {
       this.monitor.stop();
@@ -231,10 +243,13 @@ export class SwarmCoordinator extends EventEmitter {
     objective.tasks = tasks;
 
     // Store in memory
-    await this.memoryManager.remember({
-      namespace: this.config.memoryNamespace,
-      key: `objective:${objectiveId}`,
+    await this.memoryManager.store({
+      id: `objective:${objectiveId}`,
+      agentId: 'swarm-coordinator',
+      type: 'objective',
       content: JSON.stringify(objective),
+      namespace: this.config.memoryNamespace,
+      timestamp: new Date(),
       metadata: {
         type: 'objective',
         strategy,
@@ -448,10 +463,13 @@ export class SwarmCoordinator extends EventEmitter {
     }
 
     // Store result in memory
-    await this.memoryManager.remember({
-      namespace: this.config.memoryNamespace,
-      key: `task:${taskId}:result`,
+    await this.memoryManager.store({
+      id: `task:${taskId}:result`,
+      agentId: agent?.id || 'unknown',
+      type: 'task-result',
       content: JSON.stringify(result),
+      namespace: this.config.memoryNamespace,
+      timestamp: new Date(),
       metadata: {
         type: 'task-result',
         taskType: task.type,
@@ -472,7 +490,7 @@ export class SwarmCoordinator extends EventEmitter {
 
     const agent = task.assignedTo ? this.agents.get(task.assignedTo) : null;
 
-    task.error = error.message || String(error);
+    task.error = (error instanceof Error ? error.message : String(error)) || String(error);
     task.retryCount++;
 
     if (agent) {
@@ -565,8 +583,8 @@ export class SwarmCoordinator extends EventEmitter {
     const compatibleAgents = availableAgents.filter(agent => {
       // Match task type to agent type
       if (task.type.includes('research') && agent.type === 'researcher') return true;
-      if (task.type.includes('implement') && agent.type === 'developer') return true;
-      if (task.type.includes('analysis') && agent.type === 'analyzer') return true;
+      if (task.type.includes('implement') && agent.type === 'coder') return true;
+      if (task.type.includes('analysis') && agent.type === 'analyst') return true;
       if (task.type.includes('review') && agent.type === 'reviewer') return true;
       return agent.type === 'coordinator'; // Coordinator can do any task
     });
@@ -650,10 +668,13 @@ export class SwarmCoordinator extends EventEmitter {
         timestamp: new Date()
       };
 
-      await this.memoryManager.remember({
-        namespace: this.config.memoryNamespace,
-        key: 'swarm:state',
+      await this.memoryManager.store({
+        id: 'swarm:state',
+        agentId: 'swarm-coordinator',
+        type: 'swarm-state',
         content: JSON.stringify(state),
+        namespace: this.config.memoryNamespace,
+        timestamp: new Date(),
         metadata: {
           type: 'swarm-state',
           objectiveCount: state.objectives.length,

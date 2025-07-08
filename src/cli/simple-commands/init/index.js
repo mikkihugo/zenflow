@@ -1,9 +1,13 @@
 // init/index.js - Initialize Claude Code integration files
 import { printSuccess, printError, printWarning } from '../../utils.js';
+import { Deno, cwd, exit, existsSync } from '../../node-compat.js';
+import process from 'process';
 import { createLocalExecutable } from './executable-wrapper.js';
 import { createSparcStructureManually } from './sparc-structure.js';
 import { createClaudeSlashCommands } from './claude-commands/slash-commands.js';
 import { createOptimizedClaudeSlashCommands } from './claude-commands/optimized-slash-commands.js';
+import { execSync } from 'child_process';
+import { promises as fs } from 'fs';
 import { 
   createSparcClaudeMd, 
   createFullClaudeMd, 
@@ -37,12 +41,82 @@ import {
 } from './batch-init.js';
 import { ValidationSystem, runFullValidation } from './validation/index.js';
 import { RollbackSystem, createAtomicOperation } from './rollback/index.js';
+import {
+  createEnhancedClaudeMd,
+  createEnhancedSettingsJson,
+  createWrapperScript,
+  createCommandDoc,
+  createHelperScript,
+  COMMAND_STRUCTURE
+} from './templates/enhanced-templates.js';
+
+/**
+ * Check if Claude Code CLI is installed
+ */
+function isClaudeCodeInstalled() {
+  try {
+    execSync('which claude', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Set up MCP servers in Claude Code
+ */
+async function setupMcpServers(dryRun = false) {
+  console.log('\n🔌 Setting up MCP servers for Claude Code...');
+  
+  const servers = [
+    {
+      name: 'claude-flow',
+      command: 'npx claude-flow@alpha mcp start',
+      description: 'Claude Flow MCP server with swarm orchestration (alpha)'
+    },
+    {
+      name: 'ruv-swarm',
+      command: 'npx ruv-swarm mcp start',
+      description: 'ruv-swarm MCP server for enhanced coordination'
+    }
+  ];
+  
+  for (const server of servers) {
+    try {
+      if (!dryRun) {
+        console.log(`  🔄 Adding ${server.name}...`);
+        execSync(`claude mcp add ${server.name} ${server.command}`, { stdio: 'inherit' });
+        console.log(`  ✅ Added ${server.name} - ${server.description}`);
+      } else {
+        console.log(`  [DRY RUN] Would add ${server.name} - ${server.description}`);
+      }
+    } catch (err) {
+      console.log(`  ⚠️  Failed to add ${server.name}: ${err.message}`);
+      console.log(`     You can add it manually with: claude mcp add ${server.name} ${server.command}`);
+    }
+  }
+  
+  if (!dryRun) {
+    console.log('\n  📋 Verifying MCP servers...');
+    try {
+      execSync('claude mcp list', { stdio: 'inherit' });
+    } catch (err) {
+      console.log('  ⚠️  Could not verify MCP servers');
+    }
+  }
+}
 
 export async function initCommand(subArgs, flags) {
   // Show help if requested
   if (flags.help || flags.h || subArgs.includes('--help') || subArgs.includes('-h')) {
     showInitHelp();
     return;
+  }
+  
+  // Default to enhanced Claude Flow v2 init
+  // Use --basic flag for old behavior
+  if (!flags.basic && !flags.minimal && !flags.sparc) {
+    return await enhancedClaudeFlowInit(flags, subArgs);
   }
   
   // Check for validation and rollback commands
@@ -83,12 +157,12 @@ export async function initCommand(subArgs, flags) {
   
   // Get the actual working directory (where the command was run from)
   // Use PWD environment variable which preserves the original directory
-  const workingDir = Deno.env.get('PWD') || Deno.cwd();
+  const workingDir = process.env.PWD || cwd();
   console.log(`📁 Initializing in: ${workingDir}`);
   
   // Change to the working directory to ensure all file operations happen there
   try {
-    Deno.chdir(workingDir);
+    process.chdir(workingDir);
   } catch (err) {
     printWarning(`Could not change to directory ${workingDir}: ${err.message}`);
   }
@@ -172,7 +246,7 @@ export async function initCommand(subArgs, flags) {
           console.log(`  [DRY RUN] Would create ${dir}/ directory`);
         }
       } catch (err) {
-        if (!(err instanceof Deno.errors.AlreadyExists)) {
+        if (err.code !== 'EEXIST') {
           throw err;
         }
       }
@@ -419,6 +493,24 @@ export async function initCommand(subArgs, flags) {
         console.log('  • Enable batch processing for multiple related tasks');
         console.log('  • Monitor performance with real-time metrics');
       }
+      
+      // Check for Claude Code and set up MCP servers (always enabled by default)
+      if (!initDryRun && isClaudeCodeInstalled()) {
+        console.log('\n🔍 Claude Code CLI detected!');
+        const skipMcp = subArgs && subArgs.includes && subArgs.includes('--skip-mcp');
+        
+        if (!skipMcp) {
+          await setupMcpServers(initDryRun);
+        } else {
+          console.log('  ℹ️  Skipping MCP setup (--skip-mcp flag used)');
+        }
+      } else if (!initDryRun && !isClaudeCodeInstalled()) {
+        console.log('\n⚠️  Claude Code CLI not detected!');
+        console.log('  📥 Install with: npm install -g @anthropics/claude-code');
+        console.log('  📋 Then add MCP servers manually with:');
+        console.log('     claude mcp add claude-flow claude-flow mcp start');
+        console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
+      }
     }
     
   } catch (err) {
@@ -499,6 +591,10 @@ async function handleBatchInit(subArgs, flags) {
 async function enhancedInitCommand(subArgs, flags) {
   console.log('🛡️  Starting enhanced initialization with validation and rollback...');
   
+  // Store parameters to avoid scope issues in async context
+  const args = subArgs || [];
+  const options = flags || {};
+  
   // Get the working directory
   const workingDir = Deno.env.get('PWD') || Deno.cwd();
   
@@ -510,19 +606,19 @@ async function enhancedInitCommand(subArgs, flags) {
   
   try {
     // Parse options
-    const options = {
-      force: subArgs.includes('--force') || subArgs.includes('-f') || flags.force,
-      minimal: subArgs.includes('--minimal') || subArgs.includes('-m') || flags.minimal,
-      sparc: subArgs.includes('--sparc') || subArgs.includes('-s') || flags.sparc,
-      skipPreValidation: subArgs.includes('--skip-pre-validation'),
-      skipBackup: subArgs.includes('--skip-backup'),
-      validateOnly: subArgs.includes('--validate-only')
+    const initOptions = {
+      force: args.includes('--force') || args.includes('-f') || options.force,
+      minimal: args.includes('--minimal') || args.includes('-m') || options.minimal,
+      sparc: args.includes('--sparc') || args.includes('-s') || options.sparc,
+      skipPreValidation: args.includes('--skip-pre-validation'),
+      skipBackup: args.includes('--skip-backup'),
+      validateOnly: args.includes('--validate-only')
     };
 
     // Phase 1: Pre-initialization validation
-    if (!options.skipPreValidation) {
+    if (!initOptions.skipPreValidation) {
       console.log('\n🔍 Phase 1: Pre-initialization validation...');
-      const preValidation = await validationSystem.validatePreInit(options);
+      const preValidation = await validationSystem.validatePreInit(initOptions);
       
       if (!preValidation.success) {
         printError('Pre-initialization validation failed:');
@@ -567,7 +663,7 @@ async function enhancedInitCommand(subArgs, flags) {
     }
 
     // Perform initialization steps with checkpoints
-    await performInitializationWithCheckpoints(rollbackSystem, options, workingDir);
+    await performInitializationWithCheckpoints(rollbackSystem, options, workingDir, dryRun);
 
     // Phase 4: Post-initialization validation
     console.log('\n✅ Phase 4: Post-initialization validation...');
@@ -777,13 +873,13 @@ async function handleListBackups(subArgs, flags) {
 /**
  * Perform initialization with checkpoints
  */
-async function performInitializationWithCheckpoints(rollbackSystem, options, workingDir) {
+async function performInitializationWithCheckpoints(rollbackSystem, options, workingDir, dryRun = false) {
   const phases = [
-    { name: 'file-creation', action: () => createInitialFiles(options, workingDir) },
-    { name: 'directory-structure', action: () => createDirectoryStructure(workingDir) },
-    { name: 'memory-setup', action: () => setupMemorySystem(workingDir) },
-    { name: 'coordination-setup', action: () => setupCoordinationSystem(workingDir) },
-    { name: 'executable-creation', action: () => createLocalExecutable(workingDir) }
+    { name: 'file-creation', action: () => createInitialFiles(options, workingDir, dryRun) },
+    { name: 'directory-structure', action: () => createDirectoryStructure(workingDir, dryRun) },
+    { name: 'memory-setup', action: () => setupMemorySystem(workingDir, dryRun) },
+    { name: 'coordination-setup', action: () => setupCoordinationSystem(workingDir, dryRun) },
+    { name: 'executable-creation', action: () => createLocalExecutable(workingDir, dryRun) }
   ];
   
   if (options.sparc) {
@@ -813,39 +909,269 @@ async function performInitializationWithCheckpoints(rollbackSystem, options, wor
 }
 
 // Helper functions for atomic initialization
-async function createInitialFiles(options, workingDir) {
-  const claudeMd = options.sparc ? createSparcClaudeMd() : 
-                   options.minimal ? createMinimalClaudeMd() : createFullClaudeMd();
-  await Deno.writeTextFile(`${workingDir}/CLAUDE.md`, claudeMd);
+async function createInitialFiles(options, workingDir, dryRun = false) {
+  if (!dryRun) {
+    const claudeMd = options.sparc ? createSparcClaudeMd() : 
+                     options.minimal ? createMinimalClaudeMd() : createFullClaudeMd();
+    await Deno.writeTextFile(`${workingDir}/CLAUDE.md`, claudeMd);
 
-  const memoryBankMd = options.minimal ? createMinimalMemoryBankMd() : createFullMemoryBankMd();
-  await Deno.writeTextFile(`${workingDir}/memory-bank.md`, memoryBankMd);
+    const memoryBankMd = options.minimal ? createMinimalMemoryBankMd() : createFullMemoryBankMd();
+    await Deno.writeTextFile(`${workingDir}/memory-bank.md`, memoryBankMd);
 
-  const coordinationMd = options.minimal ? createMinimalCoordinationMd() : createFullCoordinationMd();
-  await Deno.writeTextFile(`${workingDir}/coordination.md`, coordinationMd);
+    const coordinationMd = options.minimal ? createMinimalCoordinationMd() : createFullCoordinationMd();
+    await Deno.writeTextFile(`${workingDir}/coordination.md`, coordinationMd);
+  }
 }
 
-async function createDirectoryStructure(workingDir) {
+async function createDirectoryStructure(workingDir, dryRun = false) {
   const directories = [
     'memory', 'memory/agents', 'memory/sessions',
     'coordination', 'coordination/memory_bank', 'coordination/subtasks', 'coordination/orchestration',
     '.claude', '.claude/commands', '.claude/logs'
   ];
   
-  for (const dir of directories) {
-    await Deno.mkdir(`${workingDir}/${dir}`, { recursive: true });
+  if (!dryRun) {
+    for (const dir of directories) {
+      await Deno.mkdir(`${workingDir}/${dir}`, { recursive: true });
+    }
   }
 }
 
-async function setupMemorySystem(workingDir) {
-  const initialData = { agents: [], tasks: [], lastUpdated: Date.now() };
-  await Deno.writeTextFile(`${workingDir}/memory/claude-flow-data.json`, JSON.stringify(initialData, null, 2));
-  
-  await Deno.writeTextFile(`${workingDir}/memory/agents/README.md`, createAgentsReadme());
-  await Deno.writeTextFile(`${workingDir}/memory/sessions/README.md`, createSessionsReadme());
+async function setupMemorySystem(workingDir, dryRun = false) {
+  if (!dryRun) {
+    const initialData = { agents: [], tasks: [], lastUpdated: Date.now() };
+    await Deno.writeTextFile(`${workingDir}/memory/claude-flow-data.json`, JSON.stringify(initialData, null, 2));
+    
+    await Deno.writeTextFile(`${workingDir}/memory/agents/README.md`, createAgentsReadme());
+    await Deno.writeTextFile(`${workingDir}/memory/sessions/README.md`, createSessionsReadme());
+  }
 }
 
-async function setupCoordinationSystem(workingDir) {
+async function setupCoordinationSystem(workingDir, dryRun = false) {
   // Coordination system is already set up by createDirectoryStructure
   // This is a placeholder for future coordination setup logic
+}
+
+/**
+ * Enhanced Claude Flow v2.0.0 initialization
+ */
+async function enhancedClaudeFlowInit(flags, subArgs = []) {
+  console.log('🚀 Initializing Claude Flow v2.0.0 with enhanced features...');
+  
+  const workingDir = process.cwd();
+  const force = flags.force || flags.f;
+  const dryRun = flags.dryRun || flags['dry-run'] || flags.d;
+  
+  // Store parameters to avoid scope issues in async context
+  const args = subArgs || [];
+  const options = flags || {};
+  
+  // Import fs module for Node.js
+  const fs = await import('fs/promises');
+  const { chmod } = fs;
+  
+  try {
+    // Check existing files
+    const existingFiles = [];
+    const filesToCheck = ['CLAUDE.md', '.claude/settings.json'];
+    
+    for (const file of filesToCheck) {
+      if (existsSync(`${workingDir}/${file}`)) {
+        existingFiles.push(file);
+      }
+    }
+    
+    if (existingFiles.length > 0 && !force) {
+      printWarning(`The following files already exist: ${existingFiles.join(', ')}`);
+      console.log('Use --force to overwrite existing files');
+      return;
+    }
+    
+    // Create CLAUDE.md
+    if (!dryRun) {
+      await Deno.writeTextFile(`${workingDir}/CLAUDE.md`, createEnhancedClaudeMd());
+      printSuccess('✓ Created CLAUDE.md (Claude Flow v2.0.0)');
+    } else {
+      console.log('[DRY RUN] Would create CLAUDE.md (Claude Flow v2.0.0)');
+    }
+    
+    // Create .claude directory structure
+    const claudeDir = `${workingDir}/.claude`;
+    if (!dryRun) {
+      await Deno.mkdir(claudeDir, { recursive: true });
+      await Deno.mkdir(`${claudeDir}/commands`, { recursive: true });
+      await Deno.mkdir(`${claudeDir}/helpers`, { recursive: true });
+      printSuccess('✓ Created .claude directory structure');
+    } else {
+      console.log('[DRY RUN] Would create .claude directory structure');
+    }
+    
+    // Create settings.json
+    if (!dryRun) {
+      await Deno.writeTextFile(`${claudeDir}/settings.json`, createEnhancedSettingsJson());
+      printSuccess('✓ Created .claude/settings.json with hooks and MCP configuration');
+    } else {
+      console.log('[DRY RUN] Would create .claude/settings.json');
+    }
+    
+    // Create settings.local.json with default MCP permissions
+    const settingsLocal = {
+      "permissions": {
+        "allow": [
+          "mcp__ruv-swarm",
+          "mcp__claude-flow"
+        ],
+        "deny": []
+      }
+    };
+    
+    if (!dryRun) {
+      await Deno.writeTextFile(`${claudeDir}/settings.local.json`, JSON.stringify(settingsLocal, null, 2));
+      printSuccess('✓ Created .claude/settings.local.json with default MCP permissions');
+    } else {
+      console.log('[DRY RUN] Would create .claude/settings.local.json with default MCP permissions');
+    }
+    
+    // Create command documentation
+    for (const [category, commands] of Object.entries(COMMAND_STRUCTURE)) {
+      const categoryDir = `${claudeDir}/commands/${category}`;
+      
+      if (!dryRun) {
+        await Deno.mkdir(categoryDir, { recursive: true });
+        
+        // Create category README
+        const categoryReadme = `# ${category.charAt(0).toUpperCase() + category.slice(1)} Commands
+
+Commands for ${category} operations in Claude Flow.
+
+## Available Commands
+
+${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
+`;
+        await Deno.writeTextFile(`${categoryDir}/README.md`, categoryReadme);
+        
+        // Create individual command docs
+        for (const command of commands) {
+          const doc = createCommandDoc(category, command);
+          if (doc) {
+            await Deno.writeTextFile(`${categoryDir}/${command}.md`, doc);
+          }
+        }
+        
+        console.log(`  ✓ Created ${commands.length} ${category} command docs`);
+      } else {
+        console.log(`[DRY RUN] Would create ${commands.length} ${category} command docs`);
+      }
+    }
+    
+    // Create wrapper scripts
+    if (!dryRun) {
+      // Unix wrapper - now uses universal ES module compatible wrapper
+      const unixWrapper = createWrapperScript('unix');
+      await Deno.writeTextFile(`${workingDir}/claude-flow`, unixWrapper);
+      await fs.chmod(`${workingDir}/claude-flow`, 0o755);
+      
+      // Windows wrapper
+      await Deno.writeTextFile(`${workingDir}/claude-flow.bat`, createWrapperScript('windows'));
+      
+      // PowerShell wrapper
+      await Deno.writeTextFile(`${workingDir}/claude-flow.ps1`, createWrapperScript('powershell'));
+      
+      printSuccess('✓ Created platform-specific wrapper scripts');
+    } else {
+      console.log('[DRY RUN] Would create wrapper scripts');
+    }
+    
+    // Create helper scripts
+    const helpers = ['setup-mcp.sh', 'quick-start.sh', 'github-setup.sh'];
+    for (const helper of helpers) {
+      if (!dryRun) {
+        const content = createHelperScript(helper);
+        if (content) {
+          await Deno.writeTextFile(`${claudeDir}/helpers/${helper}`, content);
+          await fs.chmod(`${claudeDir}/helpers/${helper}`, 0o755);
+        }
+      }
+    }
+    
+    if (!dryRun) {
+      printSuccess(`✓ Created ${helpers.length} helper scripts`);
+    } else {
+      console.log(`[DRY RUN] Would create ${helpers.length} helper scripts`);
+    }
+    
+    // Create standard directories from original init
+    const standardDirs = [
+      'memory',
+      'memory/agents', 
+      'memory/sessions',
+      'coordination',
+      'coordination/memory_bank',
+      'coordination/subtasks',
+      'coordination/orchestration'
+    ];
+    
+    for (const dir of standardDirs) {
+      if (!dryRun) {
+        await fs.mkdir(`${workingDir}/${dir}`, { recursive: true });
+      }
+    }
+    
+    if (!dryRun) {
+      printSuccess('✓ Created standard directory structure');
+      
+      // Initialize memory system
+      const initialData = { agents: [], tasks: [], lastUpdated: Date.now() };
+      await fs.writeFile(`${workingDir}/memory/claude-flow-data.json`, JSON.stringify(initialData, null, 2));
+      
+      // Create README files
+      await fs.writeFile(`${workingDir}/memory/agents/README.md`, createAgentsReadme());
+      await fs.writeFile(`${workingDir}/memory/sessions/README.md`, createSessionsReadme());
+      
+      printSuccess('✓ Initialized memory system');
+    }
+    
+    // Check for Claude Code and set up MCP servers (always enabled by default)
+    if (!dryRun && isClaudeCodeInstalled()) {
+      console.log('\n🔍 Claude Code CLI detected!');
+      const skipMcp = (options && options['skip-mcp']) || (subArgs && subArgs.includes && subArgs.includes('--skip-mcp'));
+      
+      if (!skipMcp) {
+        await setupMcpServers(dryRun);
+      } else {
+        console.log('  ℹ️  Skipping MCP setup (--skip-mcp flag used)');
+        console.log('\n  📋 To add MCP servers manually:');
+        console.log('     claude mcp add claude-flow claude-flow mcp start');
+        console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
+      }
+    } else if (!dryRun && !isClaudeCodeInstalled()) {
+      console.log('\n⚠️  Claude Code CLI not detected!');
+      console.log('\n  📥 To install Claude Code:');
+      console.log('     npm install -g @anthropics/claude-code');
+      console.log('\n  📋 After installing, add MCP servers:');
+      console.log('     claude mcp add claude-flow claude-flow mcp start');
+      console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
+    }
+    
+    // Final instructions
+    console.log('\n🎉 Claude Flow v2.0.0 initialization complete!');
+    console.log('\n📚 Quick Start:');
+    if (isClaudeCodeInstalled()) {
+      console.log('1. View available commands: ls .claude/commands/');
+      console.log('2. Start a swarm: npx claude-flow swarm init');
+      console.log('3. Use MCP tools in Claude Code for enhanced coordination');
+    } else {
+      console.log('1. Install Claude Code: npm install -g @anthropics/claude-code');
+      console.log('2. Add MCP servers (see instructions above)');
+      console.log('3. View available commands: ls .claude/commands/');
+      console.log('4. Start a swarm: npx claude-flow swarm init');
+    }
+    console.log('\n💡 Tips:');
+    console.log('• Check .claude/commands/ for detailed documentation');
+    console.log('• Use --help with any command for options');
+    console.log('• Enable GitHub integration with .claude/helpers/github-setup.sh');
+    
+  } catch (err) {
+    printError(`Failed to initialize Claude Flow v2.0.0: ${err.message}`);
+  }
 }

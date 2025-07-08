@@ -1,12 +1,13 @@
+import { getErrorMessage, getErrorStack } from '../utils/type-guards.js';
 /**
  * Advanced task executor with timeout handling, retry logic, and resource management
  */
 
 import { EventEmitter } from 'node:events';
 import { spawn, ChildProcess } from 'node:child_process';
-import { TaskDefinition, TaskResult, TaskStatus, AgentState, TaskError } from '../swarm/types.js';
-import { ILogger } from '../core/logger.js';
-import { IEventBus } from '../core/event-bus.js';
+import type { TaskDefinition, TaskResult, TaskStatus, AgentState, TaskError } from '../swarm/types.js';
+import type { ILogger } from '../core/logger.js';
+import type { IEventBus } from '../core/event-bus.js';
 import { CircuitBreaker, CircuitBreakerManager } from './circuit-breaker.js';
 import { generateId } from '../utils/helpers.js';
 
@@ -214,15 +215,15 @@ export class AdvancedTaskExecutor extends EventEmitter {
           taskId: task.id.id,
           attempt: retryCount,
           maxRetries,
-          error: error.message
+          error: getErrorMessage(error)
         });
 
         // Check if we should retry
         if (retryCount > maxRetries) {
           const taskError: TaskError = {
             type: 'execution_failed',
-            message: error.message,
-            stack: error.stack,
+            message: getErrorMessage(error),
+            stack: getErrorStack(error),
             context: {
               retryCount,
               maxRetries,
@@ -374,7 +375,7 @@ export class AdvancedTaskExecutor extends EventEmitter {
       });
 
       childProcess.on('error', (error) => {
-        reject(new Error(`Process error: ${error.message}`));
+        reject(new Error(`Process error: ${getErrorMessage(error)}`));
       });
     });
 
@@ -490,7 +491,7 @@ export class AdvancedTaskExecutor extends EventEmitter {
     for (const [taskId, context] of this.runningTasks) {
       if (context.process) {
         try {
-          const usage = await this.getProcessResourceUsage(context.process.pid!);
+          const usage = await this.getProcessResourceUsage(context.process.pid);
           context.resources = {
             ...usage,
             lastUpdated: new Date()
@@ -501,14 +502,17 @@ export class AdvancedTaskExecutor extends EventEmitter {
         } catch (error) {
           this.logger.warn('Failed to get resource usage', {
             taskId,
-            error: error.message
+            error: getErrorMessage(error)
           });
         }
       }
     }
   }
 
-  private async getProcessResourceUsage(pid: number): Promise<ResourceUsage> {
+  private async getProcessResourceUsage(pid: number | undefined): Promise<ResourceUsage> {
+    if (!pid) {
+      throw new Error('Process ID is undefined');
+    }
     // In a real implementation, this would use system APIs
     // For now, return mock data
     return {

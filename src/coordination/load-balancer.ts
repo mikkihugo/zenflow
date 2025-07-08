@@ -1,11 +1,12 @@
+import { getErrorMessage, hasAgentLoad, hasAgentTask, hasWorkStealingData } from '../utils/type-guards.js';
 /**
  * Advanced load balancing and work stealing implementation
  */
 
 import { EventEmitter } from 'node:events';
-import { ILogger } from '../core/logger.js';
-import { IEventBus } from '../core/event-bus.js';
-import { 
+import type { ILogger } from '../core/logger.js';
+import type { IEventBus } from '../core/event-bus.js';
+import type { 
   AgentId, 
   AgentState, 
   TaskDefinition, 
@@ -152,19 +153,27 @@ export class LoadBalancer extends EventEmitter {
 
   private setupEventHandlers(): void {
     this.eventBus.on('agent:load-update', (data) => {
-      this.updateAgentLoad(data.agentId, data.load);
+      if (hasAgentLoad(data)) {
+        this.updateAgentLoad(data.agentId, data.load);
+      }
     });
 
     this.eventBus.on('task:queued', (data) => {
-      this.updateTaskQueue(data.agentId, data.task, 'add');
+      if (hasAgentTask(data)) {
+        this.updateTaskQueue(data.agentId, data.task, 'add');
+      }
     });
 
     this.eventBus.on('task:started', (data) => {
-      this.updateTaskQueue(data.agentId, data.task, 'remove');
+      if (hasAgentTask(data)) {
+        this.updateTaskQueue(data.agentId, data.task, 'remove');
+      }
     });
 
     this.eventBus.on('workstealing:request', (data) => {
-      this.executeWorkStealing(data.sourceAgent, data.targetAgent, data.taskCount);
+      if (hasWorkStealingData(data)) {
+        this.executeWorkStealing(data.sourceAgent, data.targetAgent, data.taskCount);
+      }
     });
 
     this.eventBus.on('agent:performance-update', (data) => {
@@ -706,8 +715,8 @@ export class LoadBalancer extends EventEmitter {
   private checkTypeCompatibility(agentType: string, taskType: string): boolean {
     const compatibilityMap: Record<string, string[]> = {
       'researcher': ['research', 'analysis', 'documentation'],
-      'developer': ['coding', 'testing', 'integration', 'deployment'],
-      'analyzer': ['analysis', 'validation', 'review'],
+      'coder': ['coding', 'testing', 'integration', 'deployment'],
+      'analyst': ['analysis', 'validation', 'review'],
       'reviewer': ['review', 'validation', 'documentation'],
       'coordinator': ['coordination', 'monitoring', 'management'],
       'tester': ['testing', 'validation', 'integration'],

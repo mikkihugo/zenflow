@@ -1,6 +1,8 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 import { EventEmitter } from 'node:events';
 import { Logger } from '../core/logger.js';
 import { MemoryManager } from './manager.js';
+import { EventBus } from '../core/event-bus.js';
 import { generateId } from '../utils/helpers.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -87,11 +89,15 @@ export class SwarmMemoryManager extends EventEmitter {
     this.knowledgeBases = new Map();
     this.agentMemories = new Map();
 
+    const eventBus = EventBus.getInstance();
     this.baseMemory = new MemoryManager({
+      backend: 'sqlite',
       namespace: this.config.namespace,
-      enableBackup: true,
-      backupInterval: 300000 // 5 minutes
-    });
+      cacheSizeMB: 50,
+      syncOnExit: true,
+      maxEntries: this.config.maxEntries,
+      ttlMinutes: 60
+    }, eventBus, this.logger);
   }
 
   async initialize(): Promise<void> {
@@ -596,5 +602,33 @@ export class SwarmMemoryManager extends EventEmitter {
     }
 
     this.emit('memory:cleared', { agentId });
+  }
+
+  // Compatibility methods for hive.ts
+  async store(key: string, value: any): Promise<void> {
+    // Extract namespace and actual key from the path
+    const parts = key.split('/');
+    const type = parts[0] as SwarmMemoryEntry['type'] || 'state';
+    const agentId = parts[1] || 'system';
+    
+    await this.remember(agentId, type, value, {
+      tags: [parts[0], parts[1]].filter(Boolean),
+      shareLevel: 'team'
+    });
+  }
+
+  async search(pattern: string, limit: number = 10): Promise<any[]> {
+    // Simple pattern matching on stored keys/content
+    const results: any[] = [];
+    
+    for (const entry of this.entries.values()) {
+      const entryString = JSON.stringify(entry);
+      if (entryString.includes(pattern.replace('*', ''))) {
+        results.push(entry.content);
+        if (results.length >= limit) break;
+      }
+    }
+    
+    return results;
   }
 }

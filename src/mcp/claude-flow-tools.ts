@@ -1,10 +1,11 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Claude-Flow specific MCP tools
  */
 
-import { MCPTool, MCPContext, AgentProfile, Task, MemoryEntry } from '../utils/types.js';
-import { ILogger } from '../core/logger.js';
-import { Permissions } from './auth.js';
+import type { MCPTool, MCPContext, AgentProfile, Task, MemoryEntry } from '../utils/types.js';
+import type { ILogger } from '../core/logger.js';
+import type { Permissions } from './auth.js';
 
 export interface ClaudeFlowToolContext extends MCPContext {
   orchestrator?: any; // Reference to orchestrator instance
@@ -66,7 +67,7 @@ function createSpawnAgentTool(logger: ILogger): MCPTool {
       properties: {
         type: {
           type: 'string',
-          enum: ['coordinator', 'researcher', 'implementer', 'analyst', 'custom'],
+          enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'],
           description: 'Type of agent to spawn',
         },
         name: {
@@ -149,7 +150,7 @@ function createListAgentsTool(logger: ILogger): MCPTool {
         },
         filterByType: {
           type: 'string',
-          enum: ['coordinator', 'researcher', 'implementer', 'analyst', 'custom'],
+          enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'],
           description: 'Filter agents by type',
         },
       },
@@ -293,7 +294,7 @@ function createCreateTaskTool(logger: ILogger): MCPTool {
         },
         assignToAgentType: {
           type: 'string',
-          enum: ['coordinator', 'researcher', 'implementer', 'analyst', 'custom'],
+          enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'],
           description: 'Type of agent to assign the task to',
         },
         input: {

@@ -1,3 +1,4 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 import { spawn, ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { Logger } from '../core/logger.js';

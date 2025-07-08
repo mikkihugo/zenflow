@@ -36,7 +36,7 @@
 ### 🎯 **Instant Alpha Testing**
 
 ```bash
-# 1. Initialize with enhanced MCP setup
+# 1. Initialize with enhanced MCP setup (auto-configures permissions!)
 npx --y claude-flow@alpha init --force
 
 # 2. Explore all revolutionary capabilities  
@@ -50,6 +50,60 @@ npx claude-flow@alpha hive-mind spawn "build me something amazing" --claude
 ```
 
 ---
+
+<<<<<<< HEAD
+## 🐝 **Revolutionary Hive-Mind Intelligence**
+
+### **Queen-Led AI Coordination**
+Claude-Flow v2.0.0 introduces groundbreaking hive-mind architecture where a **Queen AI** coordinates specialized worker agents in perfect harmony.
+
+```bash
+# Deploy intelligent swarm coordination
+npx claude-flow@alpha swarm "Build a full-stack application" --strategy development --claude
+
+# Launch hive-mind with specific specializations
+npx claude-flow@alpha hive-mind spawn "Create microservices architecture" --agents 8 --claude
+```
+
+### **🤖 Intelligent Agent Types**
+- **👑 Queen Agent**: Master coordinator and decision maker
+- **🏗️ Architect Agents**: System design and technical architecture
+- **💻 Coder Agents**: Implementation and development
+- **🧪 Tester Agents**: Quality assurance and validation
+- **📊 Analyst Agents**: Data analysis and insights
+- **🔍 Researcher Agents**: Information gathering and analysis
+- **🛡️ Security Agents**: Security auditing and compliance
+- **🚀 DevOps Agents**: Deployment and infrastructure
+
+---
+
+## ⚡ **87 Advanced MCP Tools**
+
+### **🧠 Neural & Cognitive Tools**
+```bash
+# Neural pattern recognition and training
+npx claude-flow@alpha neural train --pattern coordination --epochs 50
+npx claude-flow@alpha neural predict --model cognitive-analysis
+npx claude-flow@alpha cognitive analyze --behavior "development workflow"
+```
+
+### **💾 Distributed Memory Systems**
+```bash
+# Cross-session memory management
+npx claude-flow@alpha memory store "project-context" "Full-stack app requirements"
+npx claude-flow@alpha memory query "authentication" --namespace sparc
+npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory export backup.json --namespace default
+npx claude-flow@alpha memory import project-memory.json
+```
+
+### **🔄 Workflow Orchestration**
+```bash
+# Advanced workflow automation
+npx claude-flow@alpha workflow create --name "CI/CD Pipeline" --parallel
+npx claude-flow@alpha batch process --items "test,build,deploy" --concurrent
+npx claude-flow@alpha pipeline create --config advanced-deployment.json
+```
 
 ## 🪝 **Advanced Hooks System**
 
@@ -232,6 +286,7 @@ npx claude-flow@alpha memory import project-memory.json
 npx claude-flow@alpha workflow create --name "CI/CD Pipeline" --parallel
 npx claude-flow@alpha batch process --items "test,build,deploy" --concurrent
 npx claude-flow@alpha pipeline create --config advanced-deployment.json
+>>>>>>> origin/main
 ```
 
 ### **📊 GitHub Integration**

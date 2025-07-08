@@ -1,10 +1,14 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Direct Task Executor for Swarm
  * Executes tasks directly without relying on Claude CLI
  * Works in both local development and npm installed environments
  */
 
-import { TaskDefinition, AgentState, TaskResult } from './types.js';
+import type { TaskDefinition, AgentState, TaskResult } from './types.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { Logger } from '../core/logger.js';
@@ -77,7 +81,7 @@ export class DirectTaskExecutor {
     } catch (error) {
       this.logger.error('Task execution failed', {
         taskId: task.id.id,
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -102,10 +106,10 @@ export class DirectTaskExecutor {
 
     // Route to appropriate implementation based on agent type and task
     switch (agent.type) {
-      case 'analyzer':
+      case 'analyst':
         return this.executeAnalyzerTask(task, targetDir);
       
-      case 'developer':
+      case 'coder':
         if (isRestAPI) return this.createRestAPI(targetDir, task);
         if (isTodo) return this.createTodoApp(targetDir, task);
         if (isChat) return this.createChatApp(targetDir, task);
@@ -335,7 +339,7 @@ function prompt() {
           const result = calc.sqrt(parseFloat(num));
           console.log(\`Result: \${result}\\n\`);
         } catch (error) {
-          console.log(\`Error: \${error.message}\\n\`);
+          console.log(\`Error: \${(error instanceof Error ? error.message : String(error))}\\n\`);
         }
         prompt();
       });
@@ -371,7 +375,7 @@ function prompt() {
 
             console.log(\`Result: \${result}\\n\`);
           } catch (error) {
-            console.log(\`Error: \${error.message}\\n\`);
+            console.log(\`Error: \${(error instanceof Error ? error.message : String(error))}\\n\`);
           }
           prompt();
         });

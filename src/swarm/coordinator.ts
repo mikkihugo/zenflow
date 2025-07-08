@@ -1,8 +1,6 @@
-/**
- * Comprehensive Swarm Coordinator - Main orchestration engine
- */
-
-import { EventEmitter } from 'node:events';
+import { getErrorMessage } from '../utils/error-handler.js';
+import { EventEmitter } from 'events';
+import { promises as fs } from 'node:fs';
 import { Logger } from '../core/logger.js';
 import { generateId } from '../utils/helpers.js';
 import {
@@ -13,6 +11,7 @@ import {
   SWARM_CONSTANTS
 } from './types.js';
 import { AutoStrategy } from './strategies/auto.js';
+import { getClaudeFlowRoot, getClaudeFlowBin } from '../utils/paths.js';
 
 export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter {
   private logger: Logger;
@@ -508,7 +507,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
       agent.errorHistory.push({
         timestamp: new Date(),
         type: 'startup_error',
-        message: error.message,
+        message: (error instanceof Error ? error.message : String(error)),
         stack: error.stack,
         context: { agentId },
         severity: 'high',
@@ -850,11 +849,11 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
       throw new Error('Task not assigned to any agent');
     }
 
-    this.logger.warn('Task failed', { taskId, agentId: agent.id.id, error: error.message });
+    this.logger.warn('Task failed', { taskId, agentId: agent.id.id, error: (error instanceof Error ? error.message : String(error)) });
 
     task.error = {
       type: error.constructor.name,
-      message: error.message,
+      message: (error instanceof Error ? error.message : String(error)),
       code: error.code,
       stack: error.stack,
       context: { taskId, agentId: agent.id.id },
@@ -880,7 +879,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     agent.errorHistory.push({
       timestamp: new Date(),
       type: 'task_failure',
-      message: error.message,
+      message: (error instanceof Error ? error.message : String(error)),
       stack: error.stack,
       context: { taskId },
       severity: 'medium',
@@ -900,7 +899,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
         timestamp: new Date(),
         from: 'running',
         to: 'retrying',
-        reason: `Task failed, will retry: ${error.message}`,
+        reason: `Task failed, will retry: ${(error instanceof Error ? error.message : String(error))}`,
         triggeredBy: agent.id
       });
 
@@ -931,7 +930,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
         timestamp: new Date(),
         from: 'running',
         to: 'failed',
-        reason: `Task failed permanently: ${error.message}`,
+        reason: `Task failed permanently: ${(error instanceof Error ? error.message : String(error))}`,
         triggeredBy: agent.id
       });
 
@@ -1463,23 +1462,23 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
 
   private determineRequiredAgentTypes(strategy: SwarmStrategy): AgentType[] {
     switch (strategy) {
-      case 'research': return ['researcher', 'analyzer'];
-      case 'development': return ['developer', 'tester', 'reviewer'];
-      case 'analysis': return ['analyzer', 'researcher'];
-      case 'testing': return ['tester', 'developer'];
-      case 'optimization': return ['analyzer', 'developer'];
-      case 'maintenance': return ['developer', 'monitor'];
-      default: return ['coordinator', 'developer', 'analyzer'];
+      case 'research': return ['researcher', 'analyst'];
+      case 'development': return ['coder', 'tester', 'reviewer'];
+      case 'analysis': return ['analyst', 'researcher'];
+      case 'testing': return ['tester', 'coder'];
+      case 'optimization': return ['analyst', 'coder'];
+      case 'maintenance': return ['coder', 'monitor'];
+      default: return ['coordinator', 'coder', 'analyst'];
     }
   }
 
   private getAgentTypeInstructions(agentType: string): string {
     switch (agentType) {
-      case 'developer':
+      case 'coder':
         return '- Focus on implementation, code quality, and best practices\n- Create clean, maintainable code\n- Consider architecture and design patterns';
       case 'tester':
         return '- Focus on testing, edge cases, and quality assurance\n- Create comprehensive test suites\n- Identify potential bugs and issues';
-      case 'analyzer':
+      case 'analyst':
         return '- Focus on analysis, research, and understanding\n- Break down complex problems\n- Provide insights and recommendations';
       case 'researcher':
         return '- Focus on gathering information and best practices\n- Research existing solutions and patterns\n- Document findings and recommendations';
@@ -1496,11 +1495,11 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
 
   private getAgentCapabilities(agentType: string): string[] {
     switch (agentType) {
-      case 'developer':
+      case 'coder':
         return ['code-generation', 'file-system', 'debugging'];
       case 'tester':
         return ['testing', 'code-generation', 'analysis'];
-      case 'analyzer':
+      case 'analyst':
         return ['analysis', 'documentation', 'research'];
       case 'researcher':
         return ['research', 'documentation', 'analysis'];
@@ -1527,7 +1526,7 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     // Extract target directory from objective
     const targetDirMatch = objective.description.match(/(?:in|to|at)\s+([^\s]+\/[^\s]+)|([^\s]+\/[^\s]+)$/);
     const targetDir = targetDirMatch ? targetDirMatch[1] || targetDirMatch[2] : null;
-    const targetPath = targetDir ? (targetDir.startsWith('/') ? targetDir : `/workspaces/claude-code-flow/${targetDir}`) : null;
+    const targetPath = targetDir ? (targetDir.startsWith('/') ? targetDir : `${getClaudeFlowRoot()}/${targetDir}`) : null;
     
     // Check if objective requests "each agent" or "each agent type" for parallel execution
     const eachAgentPattern = /\beach\s+agent(?:\s+type)?\b/i;
@@ -2057,7 +2056,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
   private getDefaultPermissions(type: AgentType): string[] {
     switch (type) {
       case 'coordinator': return ['read', 'write', 'execute', 'admin'];
-      case 'developer': return ['read', 'write', 'execute'];
+      case 'coder': return ['read', 'write', 'execute'];
       case 'tester': return ['read', 'execute'];
       case 'reviewer': return ['read', 'write'];
       default: return ['read'];
@@ -2075,7 +2074,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
         agent.capabilities.research = true;
         agent.capabilities.analysis = true;
         break;
-      case 'developer':
+      case 'coder':
         agent.capabilities.codeGeneration = true;
         agent.capabilities.codeReview = true;
         agent.capabilities.testing = true;
@@ -2087,7 +2086,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
         agent.capabilities.webSearch = true;
         agent.capabilities.documentation = true;
         break;
-      case 'analyzer':
+      case 'analyst':
         agent.capabilities.analysis = true;
         agent.capabilities.research = true;
         agent.capabilities.documentation = true;
@@ -2167,7 +2166,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
       const { ClaudeFlowExecutor } = await import('./claude-flow-executor.ts');
       const executor = new ClaudeFlowExecutor({ 
         logger: this.logger,
-        claudeFlowPath: '/workspaces/claude-code-flow/bin/claude-flow',
+        claudeFlowPath: getClaudeFlowBin(),
         enableSparc: true,
         verbose: this.config.logging?.level === 'debug',
         timeoutMinutes: this.config.taskTimeoutMinutes
@@ -2186,7 +2185,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
     } catch (error) {
       this.logger.error('Task execution failed', { 
         taskId: task.id.id,
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -2270,7 +2269,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
       targetDir = targetDir.replace(/\s+.*$/, '');
       // Resolve relative to current directory
       if (!targetDir.startsWith('/')) {
-        targetDir = `/workspaces/claude-code-flow/${targetDir}`;
+        targetDir = `${getClaudeFlowRoot()}/${targetDir}`;
       }
     }
     
@@ -2322,7 +2321,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
       // Execute Claude with the prompt
       const command = new Deno.Command("claude", {
         args: claudeArgs,
-        cwd: targetDir || Deno.cwd(),
+        cwd: targetDir || process.cwd(),
         env: {
           ...Deno.env.toObject(),
           CLAUDE_INSTANCE_ID: instanceId,
@@ -2330,7 +2329,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
           CLAUDE_SWARM_ID: this.swarmId.id,
           CLAUDE_TASK_ID: task.id.id,
           CLAUDE_AGENT_ID: agent.id.id,
-          CLAUDE_WORKING_DIRECTORY: targetDir || Deno.cwd(),
+          CLAUDE_WORKING_DIRECTORY: targetDir || process.cwd(),
           CLAUDE_FLOW_MEMORY_ENABLED: "true",
           CLAUDE_FLOW_MEMORY_NAMESPACE: `swarm-${this.swarmId.id}`,
         },
@@ -2374,7 +2373,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
     } catch (error) {
       this.logger.error('Failed to execute Claude agent', { 
         taskId: task.id.id,
-        error: error.message 
+        error: (error instanceof Error ? error.message : String(error)) 
       });
       throw error;
     }
@@ -2463,7 +2462,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
       // Clean up the target directory (remove trailing words if needed)
       targetDir = targetDir.replace(/\s+.*$/, '');
       // Use absolute path or resolve relative to current directory
-      workDir = targetDir.startsWith('/') ? targetDir : `/workspaces/claude-code-flow/${targetDir}`;
+      workDir = targetDir.startsWith('/') ? targetDir : `${getClaudeFlowRoot()}/${targetDir}`;
       
       this.logger.debug('Extracted target directory', { 
         original: task.description,
@@ -2493,7 +2492,7 @@ Ensure your implementation is complete, well-structured, and follows best practi
           return await this.executeGenericTask(task, workDir, agent);
       }
     } catch (error) {
-      throw new Error(`Task execution failed: ${error.message}`);
+      throw new Error(`Task execution failed: ${(error instanceof Error ? error.message : String(error))}`);
     }
   }
   
@@ -2597,7 +2596,7 @@ app.listen(port, () => {
 module.exports = app;
 `;
       
-      await Deno.writeTextFile(`${projectDir}/server.js`, apiCode);
+      await fs.writeFile(`${projectDir}/server.js`, apiCode);
       
       // Create package.json
       const packageJson = {
@@ -2629,7 +2628,7 @@ module.exports = app;
         }
       };
       
-      await Deno.writeTextFile(
+      await fs.writeFile(
         `${projectDir}/package.json`, 
         JSON.stringify(packageJson, null, 2)
       );
@@ -2679,7 +2678,7 @@ ${task.description}
 Created by Claude Flow Swarm
 `;
       
-      await Deno.writeTextFile(`${projectDir}/README.md`, readme);
+      await fs.writeFile(`${projectDir}/README.md`, readme);
       
       // Create .gitignore
       const gitignore = `node_modules/
@@ -2689,7 +2688,7 @@ Created by Claude Flow Swarm
 coverage/
 `;
       
-      await Deno.writeTextFile(`${projectDir}/.gitignore`, gitignore);
+      await fs.writeFile(`${projectDir}/.gitignore`, gitignore);
       
       return {
         success: true,
@@ -2727,7 +2726,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 `;
       
-      await Deno.writeTextFile(`${projectDir}/index.js`, mainCode);
+      await fs.writeFile(`${projectDir}/index.js`, mainCode);
       
       // Create package.json
       const packageJson = {
@@ -2744,7 +2743,7 @@ if (typeof module !== 'undefined' && module.exports) {
         license: "MIT"
       };
       
-      await Deno.writeTextFile(
+      await fs.writeFile(
         `${projectDir}/package.json`, 
         JSON.stringify(packageJson, null, 2)
       );
@@ -2769,7 +2768,7 @@ npm start
 ${task.description}
 `;
       
-      await Deno.writeTextFile(`${projectDir}/README.md`, readme);
+      await fs.writeFile(`${projectDir}/README.md`, readme);
       
       return {
         success: true,
@@ -2801,7 +2800,7 @@ function main() {
 main();
 `;
     
-    await Deno.writeTextFile(`${projectDir}/main.js`, code);
+    await fs.writeFile(`${projectDir}/main.js`, code);
     
     return {
       success: true,
@@ -2835,7 +2834,7 @@ main();
       ]
     };
     
-    await Deno.writeTextFile(
+    await fs.writeFile(
       `${analysisDir}/analysis-report.json`,
       JSON.stringify(analysis, null, 2)
     );
@@ -2875,7 +2874,7 @@ ${task.instructions}
 - Further details would be added based on actual implementation
 `;
     
-    await Deno.writeTextFile(`${docsDir}/documentation.md`, documentation);
+    await fs.writeFile(`${docsDir}/documentation.md`, documentation);
     
     return {
       success: true,
@@ -2915,7 +2914,7 @@ describe('${task.name}', () => {
 console.log('Tests completed for: ${task.name}');
 `;
     
-    await Deno.writeTextFile(`${testDir}/test.js`, testCode);
+    await fs.writeFile(`${testDir}/test.js`, testCode);
     
     return {
       success: true,
@@ -2947,7 +2946,7 @@ console.log('Tests completed for: ${task.name}');
       result: 'Task executed successfully'
     };
     
-    await Deno.writeTextFile(
+    await fs.writeFile(
       `${outputDir}/result.json`,
       JSON.stringify(output, null, 2)
     );

@@ -1,10 +1,11 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Coordination manager for task scheduling and resource management
  */
 
 import { Task, CoordinationConfig, SystemEvents } from '../utils/types.js';
-import { IEventBus } from '../core/event-bus.js';
-import { ILogger } from '../core/logger.js';
+import type { IEventBus } from '../core/event-bus.js';
+import type { ILogger } from '../core/logger.js';
 import { CoordinationError, DeadlockError } from '../utils/errors.js';
 import { TaskScheduler } from './scheduler.js';
 import { ResourceManager } from './resources.js';

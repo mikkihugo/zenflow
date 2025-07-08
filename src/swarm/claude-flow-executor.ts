@@ -1,12 +1,14 @@
+import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Claude Flow SPARC Executor
  * Executes tasks using the full claude-flow SPARC system in non-interactive mode
  */
 
-import { TaskDefinition, AgentState, TaskResult } from './types.js';
+import type { TaskDefinition, AgentState, TaskResult } from './types.js';
 import { Logger } from '../core/logger.js';
 import * as path from 'node:path';
 import { spawn } from 'node:child_process';
+import { getClaudeFlowBin } from '../utils/paths.js';
 
 export interface ClaudeFlowExecutorConfig {
   logger?: Logger;
@@ -28,7 +30,7 @@ export class ClaudeFlowExecutor {
       { level: 'info', format: 'text', destination: 'console' },
       { component: 'ClaudeFlowExecutor' }
     );
-    this.claudeFlowPath = config.claudeFlowPath || '/workspaces/claude-code-flow/bin/claude-flow';
+    this.claudeFlowPath = config.claudeFlowPath || getClaudeFlowBin();
     this.enableSparc = config.enableSparc ?? true;
     this.verbose = config.verbose ?? false;
     this.timeoutMinutes = config.timeoutMinutes ?? 59;
@@ -81,7 +83,7 @@ export class ClaudeFlowExecutor {
       };
     } catch (error) {
       this.logger.error('Failed to execute Claude Flow SPARC command', { 
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         taskId: task.id.id 
       });
       
@@ -93,7 +95,7 @@ export class ClaudeFlowExecutor {
           quality: 0,
           completeness: 0
         },
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       };
     }
   }
@@ -113,9 +115,9 @@ export class ClaudeFlowExecutor {
       'integration': 'integration',
       
       // Agent type overrides
-      'developer': 'code',
+      'coder': 'code',
       'tester': 'tdd',
-      'analyzer': 'spec-pseudocode',
+      'analyst': 'spec-pseudocode',
       'documenter': 'docs-writer',
       'reviewer': 'refinement-optimization-mode',
       'researcher': 'spec-pseudocode',
