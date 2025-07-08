@@ -871,23 +871,52 @@ async function showMetrics(flags) {
       });
     }
     
-    // Get agent performance
-    const agentPerf = db.prepare(`
-      SELECT 
-        a.name,
-        a.type,
-        COUNT(t.id) as tasks_assigned,
-        SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as tasks_completed,
-        AVG(CASE WHEN t.completed_at IS NOT NULL 
-          THEN (julianday(t.completed_at) - julianday(t.created_at)) * 24 * 60 
-          ELSE NULL END) as avg_completion_minutes
-      FROM agents a
-      LEFT JOIN tasks t ON a.id = t.agent_id
-      GROUP BY a.id
-      HAVING tasks_assigned > 0
-      ORDER BY tasks_completed DESC
-      LIMIT 10
-    `).all();
+    // Get agent performance (check for completed_at column)
+    let agentPerf = [];
+    try {
+      // Check if completed_at exists
+      const hasCompletedAt = db.prepare(`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+        WHERE name = 'completed_at'
+      `).get();
+      
+      if (hasCompletedAt && hasCompletedAt.count > 0) {
+        agentPerf = db.prepare(`
+          SELECT 
+            a.name,
+            a.type,
+            COUNT(t.id) as tasks_assigned,
+            SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as tasks_completed,
+            AVG(CASE WHEN t.completed_at IS NOT NULL 
+              THEN (julianday(t.completed_at) - julianday(t.created_at)) * 24 * 60 
+              ELSE NULL END) as avg_completion_minutes
+          FROM agents a
+          LEFT JOIN tasks t ON a.id = t.agent_id
+          GROUP BY a.id
+          HAVING tasks_assigned > 0
+          ORDER BY tasks_completed DESC
+          LIMIT 10
+        `).all();
+      } else {
+        // Simpler query without completed_at
+        agentPerf = db.prepare(`
+          SELECT 
+            a.name,
+            a.type,
+            COUNT(t.id) as tasks_assigned,
+            SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as tasks_completed,
+            NULL as avg_completion_minutes
+          FROM agents a
+          LEFT JOIN tasks t ON a.id = t.agent_id
+          GROUP BY a.id
+          HAVING tasks_assigned > 0
+          ORDER BY tasks_completed DESC
+          LIMIT 10
+        `).all();
+      }
+    } catch (error) {
+      console.warn('Could not get agent performance:', error.message);
+    }
     
     if (agentPerf.length > 0) {
       console.log('\n' + chalk.cyan('Top Performing Agents:'));
@@ -933,29 +962,70 @@ async function showMetrics(flags) {
     }
     
     // Get performance insights
-    const avgTaskTime = db.prepare(`
-      SELECT 
-        AVG(CASE WHEN completed_at IS NOT NULL 
-          THEN (julianday(completed_at) - julianday(created_at)) * 24 * 60 
-          ELSE NULL END) as avg_minutes
-      FROM tasks
-      WHERE status = 'completed'
-    `).get();
+    let avgTaskTime = { avg_minutes: null };
+    try {
+      // Check if completed_at exists
+      const hasCompletedAt = db.prepare(`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+        WHERE name = 'completed_at'
+      `).get();
+      
+      if (hasCompletedAt && hasCompletedAt.count > 0) {
+        avgTaskTime = db.prepare(`
+          SELECT 
+            AVG(CASE WHEN completed_at IS NOT NULL 
+              THEN (julianday(completed_at) - julianday(created_at)) * 24 * 60 
+              ELSE NULL END) as avg_minutes
+          FROM tasks
+          WHERE status = 'completed'
+        `).get();
+      }
+    } catch (error) {
+      console.warn('Could not calculate average task time:', error.message);
+    }
     
-    const agentTypePerf = db.prepare(`
-      SELECT 
-        a.type,
-        COUNT(t.id) as total_tasks,
-        SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks,
-        AVG(CASE WHEN t.completed_at IS NOT NULL 
-          THEN (julianday(t.completed_at) - julianday(t.created_at)) * 24 * 60 
-          ELSE NULL END) as avg_completion_minutes
-      FROM agents a
-      LEFT JOIN tasks t ON a.id = t.agent_id
-      GROUP BY a.type
-      HAVING total_tasks > 0
-      ORDER BY completed_tasks DESC
-    `).all();
+    // Get agent type performance
+    let agentTypePerf = [];
+    try {
+      // Check if completed_at exists
+      const hasCompletedAt = db.prepare(`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+        WHERE name = 'completed_at'
+      `).get();
+      
+      if (hasCompletedAt && hasCompletedAt.count > 0) {
+        agentTypePerf = db.prepare(`
+          SELECT 
+            a.type,
+            COUNT(t.id) as total_tasks,
+            SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks,
+            AVG(CASE WHEN t.completed_at IS NOT NULL 
+              THEN (julianday(t.completed_at) - julianday(t.created_at)) * 24 * 60 
+              ELSE NULL END) as avg_completion_minutes
+          FROM agents a
+          LEFT JOIN tasks t ON a.id = t.agent_id
+          GROUP BY a.type
+          HAVING total_tasks > 0
+          ORDER BY completed_tasks DESC
+        `).all();
+      } else {
+        // Simpler query without completed_at
+        agentTypePerf = db.prepare(`
+          SELECT 
+            a.type,
+            COUNT(t.id) as total_tasks,
+            SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks,
+            NULL as avg_completion_minutes
+          FROM agents a
+          LEFT JOIN tasks t ON a.id = t.agent_id
+          GROUP BY a.type
+          HAVING total_tasks > 0
+          ORDER BY completed_tasks DESC
+        `).all();
+      }
+    } catch (error) {
+      console.warn('Could not get agent type performance:', error.message);
+    }
     
     if (avgTaskTime.avg_minutes) {
       console.log('\n' + chalk.cyan('Performance Insights:'));

@@ -165,6 +165,9 @@ function updateSchemaVersion(db, version, description = '') {
  * Apply basic performance indexes
  */
 function applyBasicIndexes(db) {
+  // First ensure all required columns exist
+  ensureRequiredColumns(db);
+  
   const indexes = [
     // Swarms indexes
     'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',
@@ -195,6 +198,79 @@ function applyBasicIndexes(db) {
 }
 
 /**
+ * Ensure all required columns exist
+ */
+function ensureRequiredColumns(db) {
+  // Check and add priority column to tasks table
+  const hasPriority = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+    WHERE name = 'priority'
+  `).get();
+  
+  if (!hasPriority || hasPriority.count === 0) {
+    try {
+      db.exec('ALTER TABLE tasks ADD COLUMN priority INTEGER DEFAULT 5');
+      console.log('Added missing priority column to tasks table');
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+  
+  // Check and add completed_at column to tasks table
+  const hasCompletedAt = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+    WHERE name = 'completed_at'
+  `).get();
+  
+  if (!hasCompletedAt || hasCompletedAt.count === 0) {
+    try {
+      db.exec('ALTER TABLE tasks ADD COLUMN completed_at DATETIME');
+      console.log('Added missing completed_at column to tasks table');
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+  
+  // Check and add result column to tasks table
+  const hasResult = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+    WHERE name = 'result'
+  `).get();
+  
+  if (!hasResult || hasResult.count === 0) {
+    try {
+      db.exec('ALTER TABLE tasks ADD COLUMN result TEXT');
+      console.log('Added missing result column to tasks table');
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+  
+  // Check and add updated_at column to swarms table
+  const hasUpdatedAt = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('swarms') 
+    WHERE name = 'updated_at'
+  `).get();
+  
+  if (!hasUpdatedAt || hasUpdatedAt.count === 0) {
+    try {
+      db.exec('ALTER TABLE swarms ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP');
+      console.log('Added missing updated_at column to swarms table');
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+}
+
+/**
  * Apply advanced performance indexes
  */
 function applyAdvancedIndexes(db) {
@@ -209,8 +285,8 @@ function applyAdvancedIndexes(db) {
     'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)',
     
     // Partial indexes for active records
-    'CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = "active"',
-    'CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = "pending"'
+    "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'",
+    "CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = 'pending'"
   ];
   
   indexes.forEach(sql => db.exec(sql));
@@ -268,16 +344,82 @@ function addPerformanceTracking(db) {
  * Add memory optimization features
  */
 function addMemoryOptimization(db) {
-  // Add memory access tracking
-  db.exec(`
-    ALTER TABLE collective_memory 
-    ADD COLUMN access_count INTEGER DEFAULT 0
-  `);
+  // Check and add access_count column
+  const hasAccessCount = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
+    WHERE name = 'access_count'
+  `).get();
   
-  db.exec(`
-    ALTER TABLE collective_memory 
-    ADD COLUMN last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP
-  `);
+  if (!hasAccessCount || hasAccessCount.count === 0) {
+    try {
+      db.exec(`
+        ALTER TABLE collective_memory 
+        ADD COLUMN access_count INTEGER DEFAULT 0
+      `);
+      console.log('Added access_count column to collective_memory table');
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+  
+  // Check and add accessed_at column (not last_accessed)
+  const hasAccessedAt = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
+    WHERE name = 'accessed_at'
+  `).get();
+  
+  if (!hasAccessedAt || hasAccessedAt.count === 0) {
+    try {
+      db.exec(`
+        ALTER TABLE collective_memory 
+        ADD COLUMN accessed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      `);
+      console.log('Added accessed_at column to collective_memory table');
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+  
+  // Add compressed and size columns if missing
+  const hasCompressed = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
+    WHERE name = 'compressed'
+  `).get();
+  
+  if (!hasCompressed || hasCompressed.count === 0) {
+    try {
+      db.exec(`
+        ALTER TABLE collective_memory 
+        ADD COLUMN compressed INTEGER DEFAULT 0
+      `);
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
+  
+  const hasSize = db.prepare(`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
+    WHERE name = 'size'
+  `).get();
+  
+  if (!hasSize || hasSize.count === 0) {
+    try {
+      db.exec(`
+        ALTER TABLE collective_memory 
+        ADD COLUMN size INTEGER DEFAULT 0
+      `);
+    } catch (error) {
+      if (!error.message.includes('duplicate column')) {
+        throw error;
+      }
+    }
+  }
   
   // Create memory usage summary view
   db.exec(`
