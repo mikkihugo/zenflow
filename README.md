@@ -321,7 +321,7 @@ npx claude-flow@alpha memory import project-memory.json
 npx claude-flow@alpha workflow create --name "CI/CD Pipeline" --parallel
 npx claude-flow@alpha batch process --items "test,build,deploy" --concurrent
 npx claude-flow@alpha pipeline create --config advanced-deployment.json
->>>>>>> origin/main
+
 ```
 
 ### **📊 GitHub Integration**
