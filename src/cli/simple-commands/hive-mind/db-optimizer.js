@@ -583,16 +583,30 @@ export async function performMaintenance(dbPath, options = {}) {
     
     // Clean up old memory entries
     if (options.cleanMemory) {
-      spinner.text = 'Cleaning old memory entries...';
-      const cutoffDate = new Date();
-      cutoffDate.setDate(cutoffDate.getDate() - (options.memoryRetentionDays || 30));
+      // Check if collective_memory table exists
+      const hasMemoryTable = db.prepare(`
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name='collective_memory'
+      `).get();
       
-      const result = db.prepare(`
-        DELETE FROM collective_memory 
-        WHERE last_accessed < ? AND access_count < 5
-      `).run(cutoffDate.toISOString());
-      
-      console.log(chalk.green(`✓ Removed ${result.changes} old memory entries`));
+      if (hasMemoryTable) {
+        spinner.text = 'Cleaning old memory entries...';
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - (options.memoryRetentionDays || 30));
+        
+        try {
+          const result = db.prepare(`
+            DELETE FROM collective_memory 
+            WHERE accessed_at < ? AND access_count < 5
+          `).run(cutoffDate.toISOString());
+          
+          console.log(chalk.green(`✓ Removed ${result.changes} old memory entries`));
+        } catch (error) {
+          console.warn(chalk.yellow(`⚠ Could not clean memory entries: ${error.message}`));
+        }
+      } else {
+        console.log(chalk.yellow('⚠ collective_memory table not found, skipping memory cleanup'));
+      }
     }
     
     // Archive completed tasks
