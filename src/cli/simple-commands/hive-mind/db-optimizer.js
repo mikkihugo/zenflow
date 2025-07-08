@@ -168,103 +168,147 @@ function applyBasicIndexes(db) {
   // First ensure all required columns exist
   ensureRequiredColumns(db);
   
-  const indexes = [
-    // Swarms indexes
-    'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',
-    'CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created_at)',
-    
-    // Agents indexes
-    'CREATE INDEX IF NOT EXISTS idx_agents_swarm ON agents(swarm_id)',
-    'CREATE INDEX IF NOT EXISTS idx_agents_type ON agents(type)',
-    'CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)',
-    
-    // Tasks indexes
-    'CREATE INDEX IF NOT EXISTS idx_tasks_swarm ON tasks(swarm_id)',
-    'CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(agent_id)',
-    'CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)',
-    'CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority DESC)',
-    
-    // Memory indexes
-    'CREATE INDEX IF NOT EXISTS idx_memory_swarm ON collective_memory(swarm_id)',
-    'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
-    'CREATE INDEX IF NOT EXISTS idx_memory_type ON collective_memory(type)',
-    
-    // Consensus indexes
-    'CREATE INDEX IF NOT EXISTS idx_consensus_swarm ON consensus_decisions(swarm_id)',
-    'CREATE INDEX IF NOT EXISTS idx_consensus_created ON consensus_decisions(created_at)'
-  ];
+  // Check which tables exist before creating indexes
+  const tables = db.prepare(`
+    SELECT name FROM sqlite_master 
+    WHERE type='table' AND name NOT LIKE 'sqlite_%'
+  `).all().map(row => row.name);
   
-  indexes.forEach(sql => db.exec(sql));
+  const tableSet = new Set(tables);
+  
+  const indexes = [];
+  
+  // Only create indexes for tables that exist
+  if (tableSet.has('swarms')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',
+      'CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created_at)'
+    );
+  }
+  
+  if (tableSet.has('agents')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_agents_swarm ON agents(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_agents_type ON agents(type)',
+      'CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)'
+    );
+  }
+  
+  if (tableSet.has('tasks')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_tasks_swarm ON tasks(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(agent_id)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority DESC)'
+    );
+  }
+  
+  if (tableSet.has('collective_memory')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_memory_swarm ON collective_memory(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
+      'CREATE INDEX IF NOT EXISTS idx_memory_type ON collective_memory(type)'
+    );
+  }
+  
+  if (tableSet.has('consensus_decisions')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_consensus_swarm ON consensus_decisions(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_consensus_created ON consensus_decisions(created_at)'
+    );
+  }
+  
+  indexes.forEach(sql => {
+    try {
+      db.exec(sql);
+    } catch (error) {
+      console.warn(`Warning: Could not create index: ${error.message}`);
+    }
+  });
 }
 
 /**
  * Ensure all required columns exist
  */
 function ensureRequiredColumns(db) {
-  // Check and add priority column to tasks table
-  const hasPriority = db.prepare(`
-    SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
-    WHERE name = 'priority'
-  `).get();
+  // First check which tables exist
+  const tables = db.prepare(`
+    SELECT name FROM sqlite_master 
+    WHERE type='table' AND name NOT LIKE 'sqlite_%'
+  `).all().map(row => row.name);
   
-  if (!hasPriority || hasPriority.count === 0) {
-    try {
-      db.exec('ALTER TABLE tasks ADD COLUMN priority INTEGER DEFAULT 5');
-      console.log('Added missing priority column to tasks table');
-    } catch (error) {
-      if (!error.message.includes('duplicate column')) {
-        throw error;
+  const tableSet = new Set(tables);
+  
+  // Only check columns for tables that exist
+  if (tableSet.has('tasks')) {
+    // Check and add priority column to tasks table
+    const hasPriority = db.prepare(`
+      SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+      WHERE name = 'priority'
+    `).get();
+    
+    if (!hasPriority || hasPriority.count === 0) {
+      try {
+        db.exec('ALTER TABLE tasks ADD COLUMN priority INTEGER DEFAULT 5');
+        console.log('Added missing priority column to tasks table');
+      } catch (error) {
+        if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+          throw error;
+        }
+      }
+    }
+  
+    // Check and add completed_at column to tasks table
+    const hasCompletedAt = db.prepare(`
+      SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+      WHERE name = 'completed_at'
+    `).get();
+    
+    if (!hasCompletedAt || hasCompletedAt.count === 0) {
+      try {
+        db.exec('ALTER TABLE tasks ADD COLUMN completed_at DATETIME');
+        console.log('Added missing completed_at column to tasks table');
+      } catch (error) {
+        if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+          throw error;
+        }
+      }
+    }
+    
+    // Check and add result column to tasks table
+    const hasResult = db.prepare(`
+      SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
+      WHERE name = 'result'
+    `).get();
+    
+    if (!hasResult || hasResult.count === 0) {
+      try {
+        db.exec('ALTER TABLE tasks ADD COLUMN result TEXT');
+        console.log('Added missing result column to tasks table');
+      } catch (error) {
+        if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+          throw error;
+        }
       }
     }
   }
   
-  // Check and add completed_at column to tasks table
-  const hasCompletedAt = db.prepare(`
-    SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
-    WHERE name = 'completed_at'
-  `).get();
   
-  if (!hasCompletedAt || hasCompletedAt.count === 0) {
-    try {
-      db.exec('ALTER TABLE tasks ADD COLUMN completed_at DATETIME');
-      console.log('Added missing completed_at column to tasks table');
-    } catch (error) {
-      if (!error.message.includes('duplicate column')) {
-        throw error;
-      }
-    }
-  }
-  
-  // Check and add result column to tasks table
-  const hasResult = db.prepare(`
-    SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
-    WHERE name = 'result'
-  `).get();
-  
-  if (!hasResult || hasResult.count === 0) {
-    try {
-      db.exec('ALTER TABLE tasks ADD COLUMN result TEXT');
-      console.log('Added missing result column to tasks table');
-    } catch (error) {
-      if (!error.message.includes('duplicate column')) {
-        throw error;
-      }
-    }
-  }
-  
-  // Check and add updated_at column to swarms table
-  const hasUpdatedAt = db.prepare(`
-    SELECT COUNT(*) as count FROM pragma_table_info('swarms') 
-    WHERE name = 'updated_at'
-  `).get();
-  
-  if (!hasUpdatedAt || hasUpdatedAt.count === 0) {
-    try {
-      db.exec('ALTER TABLE swarms ADD COLUMN updated_at DATETIME');
-      console.log('Added missing updated_at column to swarms table');
-    } catch (error) {
-      if (!error.message.includes('duplicate column')) {
-        throw error;
+  if (tableSet.has('swarms')) {
+    // Check and add updated_at column to swarms table
+    const hasUpdatedAt = db.prepare(`
+      SELECT COUNT(*) as count FROM pragma_table_info('swarms') 
+      WHERE name = 'updated_at'
+    `).get();
+    
+    if (!hasUpdatedAt || hasUpdatedAt.count === 0) {
+      try {
+        db.exec('ALTER TABLE swarms ADD COLUMN updated_at DATETIME');
+        console.log('Added missing updated_at column to swarms table');
+      } catch (error) {
+        if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+          throw error;
+        }
       }
     }
   }
@@ -274,22 +318,50 @@ function ensureRequiredColumns(db) {
  * Apply advanced performance indexes
  */
 function applyAdvancedIndexes(db) {
-  const indexes = [
-    // Composite indexes for common queries
-    'CREATE INDEX IF NOT EXISTS idx_tasks_swarm_status ON tasks(swarm_id, status)',
-    'CREATE INDEX IF NOT EXISTS idx_agents_swarm_type ON agents(swarm_id, type)',
-    'CREATE INDEX IF NOT EXISTS idx_memory_swarm_key ON collective_memory(swarm_id, key)',
-    
-    // Covering indexes for frequently accessed data
-    'CREATE INDEX IF NOT EXISTS idx_tasks_full ON tasks(swarm_id, agent_id, status, priority)',
-    'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)',
-    
-    // Partial indexes for active records
-    "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'",
-    "CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = 'pending'"
-  ];
+  // Check which tables exist
+  const tables = db.prepare(`
+    SELECT name FROM sqlite_master 
+    WHERE type='table' AND name NOT LIKE 'sqlite_%'
+  `).all().map(row => row.name);
   
-  indexes.forEach(sql => db.exec(sql));
+  const tableSet = new Set(tables);
+  const indexes = [];
+  
+  // Composite indexes for common queries
+  if (tableSet.has('tasks')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_tasks_swarm_status ON tasks(swarm_id, status)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_full ON tasks(swarm_id, agent_id, status, priority)',
+      "CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = 'pending'"
+    );
+  }
+  
+  if (tableSet.has('agents')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_agents_swarm_type ON agents(swarm_id, type)',
+      'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)'
+    );
+  }
+  
+  if (tableSet.has('collective_memory')) {
+    indexes.push(
+      'CREATE INDEX IF NOT EXISTS idx_memory_swarm_key ON collective_memory(swarm_id, key)'
+    );
+  }
+  
+  if (tableSet.has('swarms')) {
+    indexes.push(
+      "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'"
+    );
+  }
+  
+  indexes.forEach(sql => {
+    try {
+      db.exec(sql);
+    } catch (error) {
+      console.warn(`Warning: Could not create index: ${error.message}`);
+    }
+  });
 }
 
 /**
@@ -344,6 +416,17 @@ function addPerformanceTracking(db) {
  * Add memory optimization features
  */
 function addMemoryOptimization(db) {
+  // Check if collective_memory table exists
+  const tables = db.prepare(`
+    SELECT name FROM sqlite_master 
+    WHERE type='table' AND name = 'collective_memory'
+  `).all();
+  
+  if (tables.length === 0) {
+    console.log('collective_memory table does not exist, skipping memory optimization');
+    return;
+  }
+  
   // Check and add access_count column
   const hasAccessCount = db.prepare(`
     SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
@@ -358,7 +441,7 @@ function addMemoryOptimization(db) {
       `);
       console.log('Added access_count column to collective_memory table');
     } catch (error) {
-      if (!error.message.includes('duplicate column')) {
+      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       }
     }
@@ -378,7 +461,7 @@ function addMemoryOptimization(db) {
       `);
       console.log('Added accessed_at column to collective_memory table');
     } catch (error) {
-      if (!error.message.includes('duplicate column')) {
+      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       }
     }
@@ -397,7 +480,7 @@ function addMemoryOptimization(db) {
         ADD COLUMN compressed INTEGER DEFAULT 0
       `);
     } catch (error) {
-      if (!error.message.includes('duplicate column')) {
+      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       }
     }
@@ -415,7 +498,7 @@ function addMemoryOptimization(db) {
         ADD COLUMN size INTEGER DEFAULT 0
       `);
     } catch (error) {
-      if (!error.message.includes('duplicate column')) {
+      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       }
     }
