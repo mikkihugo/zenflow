@@ -79,49 +79,49 @@ npx claude-flow@2.0.0 coordination swarm-init --topology mesh --max-agents 6
 ### Available MCP Tools (87 Total)
 
 #### Core Coordination Tools (12)
-- `mcp__ruv-swarm__swarm_init` - Initialize swarm topology
-- `mcp__ruv-swarm__agent_spawn` - Create specialized agents
-- `mcp__ruv-swarm__task_orchestrate` - Coordinate complex workflows
-- `mcp__ruv-swarm__swarm_status` - Monitor swarm health
-- `mcp__ruv-swarm__agent_list` - List active agents
-- `mcp__ruv-swarm__agent_metrics` - Agent performance metrics
-- `mcp__ruv-swarm__swarm_monitor` - Real-time monitoring
-- `mcp__ruv-swarm__topology_optimize` - Auto-optimize topology
-- `mcp__ruv-swarm__load_balance` - Distribute tasks efficiently
-- `mcp__ruv-swarm__coordination_sync` - Sync agent coordination
-- `mcp__ruv-swarm__swarm_scale` - Auto-scale agent count
-- `mcp__ruv-swarm__swarm_destroy` - Graceful shutdown
+- `mcp__claude-flow__swarm_init` - Initialize swarm topology
+- `mcp__claude-flow__agent_spawn` - Create specialized agents
+- `mcp__claude-flow__task_orchestrate` - Coordinate complex workflows
+- `mcp__claude-flow__swarm_status` - Monitor swarm health
+- `mcp__claude-flow__agent_list` - List active agents
+- `mcp__claude-flow__agent_metrics` - Agent performance metrics
+- `mcp__claude-flow__swarm_monitor` - Real-time monitoring
+- `mcp__claude-flow__topology_optimize` - Auto-optimize topology
+- `mcp__claude-flow__load_balance` - Distribute tasks efficiently
+- `mcp__claude-flow__coordination_sync` - Sync agent coordination
+- `mcp__claude-flow__swarm_scale` - Auto-scale agent count
+- `mcp__claude-flow__swarm_destroy` - Graceful shutdown
 
 #### Neural Network Tools (15)
-- `mcp__ruv-swarm__neural_train` - Train patterns with WASM
-- `mcp__ruv-swarm__neural_predict` - AI predictions
-- `mcp__ruv-swarm__neural_status` - Network status
-- `mcp__ruv-swarm__neural_patterns` - Analyze cognitive patterns
-- `mcp__ruv-swarm__model_load` - Load pre-trained models
-- `mcp__ruv-swarm__model_save` - Save trained models
-- `mcp__ruv-swarm__wasm_optimize` - WASM SIMD optimization
-- `mcp__ruv-swarm__inference_run` - Neural inference
-- `mcp__ruv-swarm__pattern_recognize` - Pattern recognition
-- `mcp__ruv-swarm__cognitive_analyze` - Cognitive analysis
-- `mcp__ruv-swarm__learning_adapt` - Adaptive learning
-- `mcp__ruv-swarm__neural_compress` - Model compression
-- `mcp__ruv-swarm__ensemble_create` - Model ensembles
-- `mcp__ruv-swarm__transfer_learn` - Transfer learning
-- `mcp__ruv-swarm__neural_explain` - AI explainability
+- `mcp__claude-flow__neural_train` - Train patterns with WASM
+- `mcp__claude-flow__neural_predict` - AI predictions
+- `mcp__claude-flow__neural_status` - Network status
+- `mcp__claude-flow__neural_patterns` - Analyze cognitive patterns
+- `mcp__claude-flow__model_load` - Load pre-trained models
+- `mcp__claude-flow__model_save` - Save trained models
+- `mcp__claude-flow__wasm_optimize` - WASM SIMD optimization
+- `mcp__claude-flow__inference_run` - Neural inference
+- `mcp__claude-flow__pattern_recognize` - Pattern recognition
+- `mcp__claude-flow__cognitive_analyze` - Cognitive analysis
+- `mcp__claude-flow__learning_adapt` - Adaptive learning
+- `mcp__claude-flow__neural_compress` - Model compression
+- `mcp__claude-flow__ensemble_create` - Model ensembles
+- `mcp__claude-flow__transfer_learn` - Transfer learning
+- `mcp__claude-flow__neural_explain` - AI explainability
 
 #### Memory & Persistence Tools (12)
-- `mcp__ruv-swarm__memory_usage` - Store/retrieve data
-- `mcp__ruv-swarm__memory_search` - Search memory patterns
-- `mcp__ruv-swarm__memory_backup` - Backup memory stores
-- `mcp__ruv-swarm__memory_restore` - Restore from backups
-- `mcp__ruv-swarm__memory_compress` - Compress memory data
-- `mcp__ruv-swarm__memory_sync` - Sync across instances
-- `mcp__ruv-swarm__memory_persist` - Cross-session persistence
-- `mcp__ruv-swarm__memory_namespace` - Namespace management
-- `mcp__ruv-swarm__cache_manage` - Coordination cache
-- `mcp__ruv-swarm__state_snapshot` - Create snapshots
-- `mcp__ruv-swarm__context_restore` - Restore context
-- `mcp__ruv-swarm__memory_analytics` - Memory usage analysis
+- `mcp__claude-flow__memory_usage` - Store/retrieve data
+- `mcp__claude-flow__memory_search` - Search memory patterns
+- `mcp__claude-flow__memory_backup` - Backup memory stores
+- `mcp__claude-flow__memory_restore` - Restore from backups
+- `mcp__claude-flow__memory_compress` - Compress memory data
+- `mcp__claude-flow__memory_sync` - Sync across instances
+- `mcp__claude-flow__memory_persist` - Cross-session persistence
+- `mcp__claude-flow__memory_namespace` - Namespace management
+- `mcp__claude-flow__cache_manage` - Coordination cache
+- `mcp__claude-flow__state_snapshot` - Create snapshots
+- `mcp__claude-flow__context_restore` - Restore context
+- `mcp__claude-flow__memory_analytics` - Memory usage analysis
 
 ### Integration Examples
 

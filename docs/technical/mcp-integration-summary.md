@@ -58,37 +58,37 @@ The ruv-swarm MCP integration has been successfully implemented and tested. Here
 ## 🔧 AVAILABLE MCP TOOLS
 
 ### Core Swarm Tools (12)
-- `mcp__ruv-swarm__swarm_init` - Initialize swarms
-- `mcp__ruv-swarm__swarm_status` - Get swarm status
-- `mcp__ruv-swarm__swarm_monitor` - Monitor swarm activity
-- `mcp__ruv-swarm__agent_spawn` - Spawn new agents
-- `mcp__ruv-swarm__agent_list` - List active agents
-- `mcp__ruv-swarm__agent_metrics` - Agent performance metrics
-- `mcp__ruv-swarm__task_orchestrate` - Orchestrate tasks
-- `mcp__ruv-swarm__task_status` - Check task progress
-- `mcp__ruv-swarm__task_results` - Get task results
-- `mcp__ruv-swarm__memory_usage` - Memory management
-- `mcp__ruv-swarm__neural_status` - Neural network status
-- `mcp__ruv-swarm__neural_train` - Train neural agents
+- `mcp__claude-flow__swarm_init` - Initialize swarms
+- `mcp__claude-flow__swarm_status` - Get swarm status
+- `mcp__claude-flow__swarm_monitor` - Monitor swarm activity
+- `mcp__claude-flow__agent_spawn` - Spawn new agents
+- `mcp__claude-flow__agent_list` - List active agents
+- `mcp__claude-flow__agent_metrics` - Agent performance metrics
+- `mcp__claude-flow__task_orchestrate` - Orchestrate tasks
+- `mcp__claude-flow__task_status` - Check task progress
+- `mcp__claude-flow__task_results` - Get task results
+- `mcp__claude-flow__memory_usage` - Memory management
+- `mcp__claude-flow__neural_status` - Neural network status
+- `mcp__claude-flow__neural_train` - Train neural agents
 
 ### Neural & Advanced Tools (5)
-- `mcp__ruv-swarm__neural_patterns` - Cognitive patterns
-- `mcp__ruv-swarm__benchmark_run` - Performance benchmarks
-- `mcp__ruv-swarm__features_detect` - Feature detection
+- `mcp__claude-flow__neural_patterns` - Cognitive patterns
+- `mcp__claude-flow__benchmark_run` - Performance benchmarks
+- `mcp__claude-flow__features_detect` - Feature detection
 
 ### DAA (Decentralized Autonomous Agents) Tools (6)
-- `mcp__ruv-swarm__daa_init` - Initialize DAA service
-- `mcp__ruv-swarm__daa_agent_create` - Create autonomous agents
-- `mcp__ruv-swarm__daa_workflow_create` - Create DAA workflows
-- `mcp__ruv-swarm__daa_learning_status` - Learning progress
-- `mcp__ruv-swarm__daa_metrics` - DAA metrics
-- `mcp__ruv-swarm__daa_optimization` - DAA optimization
+- `mcp__claude-flow__daa_init` - Initialize DAA service
+- `mcp__claude-flow__daa_agent_create` - Create autonomous agents
+- `mcp__claude-flow__daa_workflow_create` - Create DAA workflows
+- `mcp__claude-flow__daa_learning_status` - Learning progress
+- `mcp__claude-flow__daa_metrics` - DAA metrics
+- `mcp__claude-flow__daa_optimization` - DAA optimization
 
 ### Performance Tools (4)
-- `mcp__ruv-swarm__performance_analyze` - Analyze performance
-- `mcp__ruv-swarm__performance_optimize` - Optimize performance
-- `mcp__ruv-swarm__performance_monitor` - Monitor performance
-- `mcp__ruv-swarm__performance_report` - Generate reports
+- `mcp__claude-flow__performance_analyze` - Analyze performance
+- `mcp__claude-flow__performance_optimize` - Optimize performance
+- `mcp__claude-flow__performance_monitor` - Monitor performance
+- `mcp__claude-flow__performance_report` - Generate reports
 
 ## 🚀 USAGE EXAMPLES
 
@@ -98,7 +98,7 @@ The ruv-swarm MCP integration has been successfully implemented and tested. Here
 npx ruv-swarm init mesh 5 --claude
 
 # Using MCP tools (when integrated with Claude Code)
-mcp__ruv-swarm__swarm_init {"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}
+mcp__claude-flow__swarm_init {"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}
 ```
 
 ### Spawn Agents
@@ -107,7 +107,7 @@ mcp__ruv-swarm__swarm_init {"topology": "mesh", "maxAgents": 5, "strategy": "bal
 npx ruv-swarm spawn researcher "Research-Agent-1"
 
 # MCP tool
-mcp__ruv-swarm__agent_spawn {"type": "researcher", "name": "Research-Agent-1"}
+mcp__claude-flow__agent_spawn {"type": "researcher", "name": "Research-Agent-1"}
 ```
 
 ### Task Orchestration
@@ -116,7 +116,7 @@ mcp__ruv-swarm__agent_spawn {"type": "researcher", "name": "Research-Agent-1"}
 npx ruv-swarm orchestrate "Analyze project structure and suggest improvements"
 
 # MCP tool
-mcp__ruv-swarm__task_orchestrate {"task": "Analyze project structure", "strategy": "parallel"}
+mcp__claude-flow__task_orchestrate {"task": "Analyze project structure", "strategy": "parallel"}
 ```
 
 ## 🔌 MCP SERVER CONFIGURATION

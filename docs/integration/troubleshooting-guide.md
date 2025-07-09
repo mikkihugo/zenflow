@@ -439,7 +439,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
 claude mcp list-tools ruv-swarm | wc -l  # Should be 87
 
 # Check specific tool
-claude mcp describe-tool ruv-swarm mcp__ruv-swarm__swarm_init
+claude mcp describe-tool ruv-swarm mcp__claude-flow__swarm_init
 
 # Verify tool registration
 claude mcp validate ruv-swarm

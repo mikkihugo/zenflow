@@ -14,7 +14,7 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
 // ✅ CORRECT: Everything in ONE message with BatchTool
 [BatchTool - Message 1]:
   // Initialize swarm with optimal topology
-  mcp__ruv-swarm__swarm_init({ 
+  mcp__claude-flow__swarm_init({ 
     topology: "hierarchical", 
     maxAgents: 8, 
     strategy: "parallel",
@@ -22,13 +22,13 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
   })
   
   // Spawn ALL agents simultaneously
-  mcp__ruv-swarm__agent_spawn({ type: "architect", name: "System Designer" })
-  mcp__ruv-swarm__agent_spawn({ type: "coder", name: "API Developer" })
-  mcp__ruv-swarm__agent_spawn({ type: "coder", name: "Auth Expert" })
-  mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "DB Designer" })
-  mcp__ruv-swarm__agent_spawn({ type: "tester", name: "QA Engineer" })
-  mcp__ruv-swarm__agent_spawn({ type: "researcher", name: "Tech Lead" })
-  mcp__ruv-swarm__agent_spawn({ type: "coordinator", name: "Project Manager" })
+  mcp__claude-flow__agent_spawn({ type: "architect", name: "System Designer" })
+  mcp__claude-flow__agent_spawn({ type: "coder", name: "API Developer" })
+  mcp__claude-flow__agent_spawn({ type: "coder", name: "Auth Expert" })
+  mcp__claude-flow__agent_spawn({ type: "analyst", name: "DB Designer" })
+  mcp__claude-flow__agent_spawn({ type: "tester", name: "QA Engineer" })
+  mcp__claude-flow__agent_spawn({ type: "researcher", name: "Tech Lead" })
+  mcp__claude-flow__agent_spawn({ type: "coordinator", name: "Project Manager" })
   
   // Create comprehensive todo list
   TodoWrite({ todos: [
@@ -42,14 +42,14 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
   ]})
   
   // Start orchestration
-  mcp__ruv-swarm__task_orchestrate({ 
+  mcp__claude-flow__task_orchestrate({ 
     task: "Build complete REST API system", 
     strategy: "parallel",
     dependencies: true 
   })
   
   // Store initial project context
-  mcp__ruv-swarm__memory_usage({ 
+  mcp__claude-flow__memory_usage({ 
     action: "store", 
     key: "project/api-system/init", 
     value: { 
@@ -79,7 +79,7 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
   Write("rest-api-system/src/config/auth.js", authConfigContent)
   
   // Store file creation progress
-  mcp__ruv-swarm__memory_usage({ 
+  mcp__claude-flow__memory_usage({ 
     action: "store", 
     key: "project/api-system/infrastructure", 
     value: { 
@@ -111,7 +111,7 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
   Write("rest-api-system/src/services/authService.js", authServiceContent)
   
   // Update coordination memory
-  mcp__ruv-swarm__memory_usage({ 
+  mcp__claude-flow__memory_usage({ 
     action: "store", 
     key: "project/api-system/components", 
     value: { 
@@ -144,7 +144,7 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
   Bash("cd rest-api-system && npm run build")
   
   // Final coordination update
-  mcp__ruv-swarm__memory_usage({ 
+  mcp__claude-flow__memory_usage({ 
     action: "store", 
     key: "project/api-system/completion", 
     value: { 
@@ -166,13 +166,13 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
 
 ```javascript
 [BatchTool]:
-  mcp__ruv-swarm__swarm_init({ topology: "mesh", maxAgents: 6, strategy: "research" })
-  mcp__ruv-swarm__agent_spawn({ type: "researcher", name: "Literature Review" })
-  mcp__ruv-swarm__agent_spawn({ type: "researcher", name: "Market Analysis" })
-  mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "Data Synthesizer" })
-  mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "Trend Analyzer" })
-  mcp__ruv-swarm__agent_spawn({ type: "reviewer", name: "Quality Checker" })
-  mcp__ruv-swarm__agent_spawn({ type: "coordinator", name: "Research Lead" })
+  mcp__claude-flow__swarm_init({ topology: "mesh", maxAgents: 6, strategy: "research" })
+  mcp__claude-flow__agent_spawn({ type: "researcher", name: "Literature Review" })
+  mcp__claude-flow__agent_spawn({ type: "researcher", name: "Market Analysis" })
+  mcp__claude-flow__agent_spawn({ type: "analyst", name: "Data Synthesizer" })
+  mcp__claude-flow__agent_spawn({ type: "analyst", name: "Trend Analyzer" })
+  mcp__claude-flow__agent_spawn({ type: "reviewer", name: "Quality Checker" })
+  mcp__claude-flow__agent_spawn({ type: "coordinator", name: "Research Lead" })
   
   TodoWrite({ todos: [
     { id: "literature", content: "Conduct comprehensive literature review", status: "in_progress", priority: "high" },
@@ -192,9 +192,9 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
   WebSearch("edge AI deployment strategies")
   
   // Store findings simultaneously
-  mcp__ruv-swarm__memory_usage({ action: "store", key: "research/nas/trends", value: searchResults1 })
-  mcp__ruv-swarm__memory_usage({ action: "store", key: "research/transformers/efficiency", value: searchResults2 })
-  mcp__ruv-swarm__memory_usage({ action: "store", key: "research/edge-ai/deployment", value: searchResults3 })
+  mcp__claude-flow__memory_usage({ action: "store", key: "research/nas/trends", value: searchResults1 })
+  mcp__claude-flow__memory_usage({ action: "store", key: "research/transformers/efficiency", value: searchResults2 })
+  mcp__claude-flow__memory_usage({ action: "store", key: "research/edge-ai/deployment", value: searchResults3 })
   
   // Create research documentation
   Write("research-output/literature-review.md", literatureContent)
@@ -208,45 +208,45 @@ This example demonstrates the complete ruv-swarm coordination pattern for a comp
 
 ```javascript
 // Initialize with hierarchical topology for complex systems
-mcp__ruv-swarm__swarm_init({ topology: "hierarchical", maxAgents: 12, strategy: "development" })
+mcp__claude-flow__swarm_init({ topology: "hierarchical", maxAgents: 12, strategy: "development" })
 
 // Service-specific agents
-mcp__ruv-swarm__agent_spawn({ type: "architect", name: "System Architect" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "User Service Dev" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "Payment Service Dev" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "Notification Service Dev" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "API Gateway Dev" })
-mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "Database Architect" })
-mcp__ruv-swarm__agent_spawn({ type: "tester", name: "Integration Tester" })
-mcp__ruv-swarm__agent_spawn({ type: "tester", name: "Performance Tester" })
+mcp__claude-flow__agent_spawn({ type: "architect", name: "System Architect" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "User Service Dev" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "Payment Service Dev" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "Notification Service Dev" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "API Gateway Dev" })
+mcp__claude-flow__agent_spawn({ type: "analyst", name: "Database Architect" })
+mcp__claude-flow__agent_spawn({ type: "tester", name: "Integration Tester" })
+mcp__claude-flow__agent_spawn({ type: "tester", name: "Performance Tester" })
 ```
 
 ### Pattern 2: Data Pipeline Development
 
 ```javascript
 // Mesh topology for data flow coordination
-mcp__ruv-swarm__swarm_init({ topology: "mesh", maxAgents: 8, strategy: "analysis" })
+mcp__claude-flow__swarm_init({ topology: "mesh", maxAgents: 8, strategy: "analysis" })
 
 // Data-focused agents
-mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "Data Architect" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "ETL Developer" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "Stream Processor" })
-mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "ML Pipeline Expert" })
-mcp__ruv-swarm__agent_spawn({ type: "tester", name: "Data Quality Tester" })
+mcp__claude-flow__agent_spawn({ type: "analyst", name: "Data Architect" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "ETL Developer" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "Stream Processor" })
+mcp__claude-flow__agent_spawn({ type: "analyst", name: "ML Pipeline Expert" })
+mcp__claude-flow__agent_spawn({ type: "tester", name: "Data Quality Tester" })
 ```
 
 ### Pattern 3: Frontend Application Development
 
 ```javascript
 // Star topology with central UI coordinator
-mcp__ruv-swarm__swarm_init({ topology: "star", maxAgents: 6, strategy: "development" })
+mcp__claude-flow__swarm_init({ topology: "star", maxAgents: 6, strategy: "development" })
 
 // Frontend-specific agents
-mcp__ruv-swarm__agent_spawn({ type: "designer", name: "UI/UX Designer" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "React Developer" })
-mcp__ruv-swarm__agent_spawn({ type: "coder", name: "State Manager" })
-mcp__ruv-swarm__agent_spawn({ type: "tester", name: "UI Tester" })
-mcp__ruv-swarm__agent_spawn({ type: "optimizer", name: "Performance Optimizer" })
+mcp__claude-flow__agent_spawn({ type: "designer", name: "UI/UX Designer" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "React Developer" })
+mcp__claude-flow__agent_spawn({ type: "coder", name: "State Manager" })
+mcp__claude-flow__agent_spawn({ type: "tester", name: "UI Tester" })
+mcp__claude-flow__agent_spawn({ type: "optimizer", name: "Performance Optimizer" })
 ```
 
 ## 📊 Memory Coordination Patterns
@@ -255,7 +255,7 @@ mcp__ruv-swarm__agent_spawn({ type: "optimizer", name: "Performance Optimizer" }
 
 ```javascript
 // Project-level memory
-mcp__ruv-swarm__memory_usage({
+mcp__claude-flow__memory_usage({
   action: "store",
   key: "project/microservices/architecture",
   value: {
@@ -267,7 +267,7 @@ mcp__ruv-swarm__memory_usage({
 })
 
 // Service-specific memory
-mcp__ruv-swarm__memory_usage({
+mcp__claude-flow__memory_usage({
   action: "store", 
   key: "project/microservices/services/user/api",
   value: {
@@ -279,7 +279,7 @@ mcp__ruv-swarm__memory_usage({
 })
 
 // Cross-service dependencies
-mcp__ruv-swarm__memory_usage({
+mcp__claude-flow__memory_usage({
   action: "store",
   key: "project/microservices/dependencies",
   value: {
@@ -294,7 +294,7 @@ mcp__ruv-swarm__memory_usage({
 
 ```javascript
 // Track individual agent progress
-mcp__ruv-swarm__memory_usage({
+mcp__claude-flow__memory_usage({
   action: "store",
   key: "swarm/agents/user-service-dev/progress",
   value: {
@@ -307,7 +307,7 @@ mcp__ruv-swarm__memory_usage({
 })
 
 // Track overall project status
-mcp__ruv-swarm__memory_usage({
+mcp__claude-flow__memory_usage({
   action: "store",
   key: "swarm/project/status",
   value: {
@@ -405,26 +405,26 @@ npx ruv-swarm hook session-end \
 ```javascript
 // ✅ Optimal: All agents spawned simultaneously with full coordination
 [BatchTool]:
-  mcp__ruv-swarm__swarm_init({ topology: "mesh", maxAgents: 8, strategy: "parallel" })
+  mcp__claude-flow__swarm_init({ topology: "mesh", maxAgents: 8, strategy: "parallel" })
   
   // Backend team
-  mcp__ruv-swarm__agent_spawn({ type: "architect", name: "Backend Architect" })
-  mcp__ruv-swarm__agent_spawn({ type: "coder", name: "API Developer" })
-  mcp__ruv-swarm__agent_spawn({ type: "analyst", name: "Database Designer" })
+  mcp__claude-flow__agent_spawn({ type: "architect", name: "Backend Architect" })
+  mcp__claude-flow__agent_spawn({ type: "coder", name: "API Developer" })
+  mcp__claude-flow__agent_spawn({ type: "analyst", name: "Database Designer" })
   
   // Frontend team  
-  mcp__ruv-swarm__agent_spawn({ type: "designer", name: "UI Designer" })
-  mcp__ruv-swarm__agent_spawn({ type: "coder", name: "Frontend Developer" })
+  mcp__claude-flow__agent_spawn({ type: "designer", name: "UI Designer" })
+  mcp__claude-flow__agent_spawn({ type: "coder", name: "Frontend Developer" })
   
   // Quality team
-  mcp__ruv-swarm__agent_spawn({ type: "tester", name: "QA Engineer" })
-  mcp__ruv-swarm__agent_spawn({ type: "reviewer", name: "Code Reviewer" })
+  mcp__claude-flow__agent_spawn({ type: "tester", name: "QA Engineer" })
+  mcp__claude-flow__agent_spawn({ type: "reviewer", name: "Code Reviewer" })
   
   // Coordination team
-  mcp__ruv-swarm__agent_spawn({ type: "coordinator", name: "Project Manager" })
+  mcp__claude-flow__agent_spawn({ type: "coordinator", name: "Project Manager" })
   
   // Initialize shared memory for all agents
-  mcp__ruv-swarm__memory_usage({ 
+  mcp__claude-flow__memory_usage({ 
     action: "store", 
     key: "swarm/shared/project-context",
     value: { initialized: Date.now(), agents: 8, strategy: "parallel" }
@@ -437,7 +437,7 @@ npx ruv-swarm hook session-end \
 
 ```javascript
 // Monitor swarm performance in real-time
-mcp__ruv-swarm__swarm_monitor({
+mcp__claude-flow__swarm_monitor({
   interval: "30s",
   metrics: ["task-completion", "agent-utilization", "memory-usage", "error-rates"],
   alerts: ["blocked-tasks", "performance-degradation", "memory-exhaustion"],
@@ -449,7 +449,7 @@ mcp__ruv-swarm__swarm_monitor({
 
 ```javascript
 // Generate performance reports
-mcp__ruv-swarm__benchmark_run({
+mcp__claude-flow__benchmark_run({
   duration: "1h",
   scenarios: ["development", "testing", "deployment"],
   metrics: ["throughput", "latency", "resource-utilization"],
