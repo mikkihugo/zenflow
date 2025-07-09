@@ -822,6 +822,18 @@ npx --y claude-flow@alpha init --force
 
 ---
 
+## Star History
+
+<a href="https://www.star-history.com/#ruvnet/claude-flow&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ruvnet/claude-flow&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ruvnet/claude-flow&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ruvnet/claude-flow&type=Date" />
+ </picture>
+</a>
+
+---
+
 **Built with ❤️ by [rUv](https://github.com/ruvnet) | Powered by Revolutionary AI**
 
 *v2.0.0 Alpha - The Future of AI Orchestration*
