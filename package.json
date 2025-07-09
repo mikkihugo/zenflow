@@ -46,7 +46,7 @@
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
     "health-check": "node -e \"import('./dist/monitoring/health-check.js').then(m => new m.HealthCheckManager().performHealthCheck().then(console.log))\"",
     "postinstall": "node scripts/install.js",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run update-version",
     "publish:alpha": "npm publish --tag alpha",
     "publish:major": "npm version major && npm publish",
     "publish:minor": "npm version minor && npm publish",
