@@ -48,7 +48,7 @@ Claude Flow v2.0.0 is designed to work seamlessly with Claude Code:
 
 ```bash
 # Install Claude Code if not already installed
-npm install -g @anthropic/claude-code
+npm install -g @anthropic-ai/claude-code
 
 # Add Claude Flow as an MCP server
 claude mcp add claude-flow npx claude-flow@2.0.0 mcp start
