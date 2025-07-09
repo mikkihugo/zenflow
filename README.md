@@ -38,10 +38,10 @@
 ⚠️ **IMPORTANT**: Claude Code must be installed first:
 
 ```bash
-# Install Claude Code (if not already installed)
-# Visit: https://github.com/anthropics/claude-code
+# 1. Install Claude Code globally
+npm install -g @anthropic-ai/claude-code
 
-# Activate Claude Code with permissions
+# 2. Activate Claude Code with permissions
 claude --dangerously-skip-permissions
 ```
 
