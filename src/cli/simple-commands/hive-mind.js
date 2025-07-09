@@ -13,6 +13,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { args, cwd, exit, writeTextFile, readTextFile, mkdirAsync } from '../node-compat.js';
 import { isInteractive, isRawModeSupported, warnNonInteractive, checkNonInteractiveAuth } from '../utils/interactive-detector.js';
+import { safeInteractive, nonInteractiveProgress, nonInteractiveSelect } from '../utils/safe-interactive.js';
 
 // Import SQLite for persistence
 import Database from 'better-sqlite3';
@@ -222,50 +223,87 @@ async function initHiveMind(flags) {
 /**
  * Interactive wizard for hive mind operations
  */
-async function hiveMindWizard() {
-  console.log(chalk.yellow('\n🧙 Hive Mind Interactive Wizard\n'));
-  
-  const { action } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'action',
-      message: 'What would you like to do?',
-      choices: [
-        { name: '🐝 Create new swarm', value: 'spawn' },
-        { name: '📊 View swarm status', value: 'status' },
-        { name: '🧠 Manage collective memory', value: 'memory' },
-        { name: '🤝 View consensus decisions', value: 'consensus' },
-        { name: '📈 Performance metrics', value: 'metrics' },
-        { name: '🔧 Configure hive mind', value: 'config' },
-        { name: '❌ Exit', value: 'exit' }
-      ]
+// Wrapped wizard function that handles non-interactive environments
+const hiveMindWizard = safeInteractive(
+  // Interactive version
+  async function(flags = {}) {
+    console.log(chalk.yellow('\n🧙 Hive Mind Interactive Wizard\n'));
+    
+    const { action } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: [
+          { name: '🐝 Create new swarm', value: 'spawn' },
+          { name: '📊 View swarm status', value: 'status' },
+          { name: '🧠 Manage collective memory', value: 'memory' },
+          { name: '🤝 View consensus decisions', value: 'consensus' },
+          { name: '📈 Performance metrics', value: 'metrics' },
+          { name: '🔧 Configure hive mind', value: 'config' },
+          { name: '❌ Exit', value: 'exit' }
+        ]
+      }
+    ]);
+    
+    switch (action) {
+      case 'spawn':
+        await spawnSwarmWizard();
+        break;
+      case 'status':
+        await showStatus({});
+        break;
+      case 'memory':
+        await manageMemoryWizard();
+        break;
+      case 'consensus':
+        await showConsensus({});
+        break;
+      case 'metrics':
+        await showMetrics({});
+        break;
+      case 'config':
+        await configureWizard();
+        break;
+      case 'exit':
+        console.log(chalk.gray('Exiting wizard...'));
+        break;
     }
-  ]);
-  
-  switch (action) {
-    case 'spawn':
-      await spawnSwarmWizard();
-      break;
-    case 'status':
-      await showStatus({});
-      break;
-    case 'memory':
-      await manageMemoryWizard();
-      break;
-    case 'consensus':
-      await showConsensus({});
-      break;
-    case 'metrics':
-      await showMetrics({});
-      break;
-    case 'config':
-      await configureWizard();
-      break;
-    case 'exit':
-      console.log(chalk.gray('Exiting wizard...'));
-      break;
+  },
+  // Non-interactive fallback
+  async function(flags = {}) {
+    console.log(chalk.yellow('\n🧙 Hive Mind - Non-Interactive Mode\n'));
+    
+    // Default to creating a swarm with sensible defaults
+    console.log(chalk.cyan('Creating new swarm with default settings...'));
+    console.log(chalk.gray('Use command-line flags to customize:'));
+    console.log(chalk.gray('  --objective "Your task"    Set swarm objective'));
+    console.log(chalk.gray('  --queen-type strategic     Set queen type'));
+    console.log(chalk.gray('  --max-workers 8            Set worker count'));
+    console.log();
+    
+    const objective = flags.objective || 'General task coordination';
+    const config = {
+      name: flags.name || `swarm-${Date.now()}`,
+      queenType: flags.queenType || flags['queen-type'] || 'strategic',
+      maxWorkers: parseInt(flags.maxWorkers || flags['max-workers'] || '8'),
+      consensusAlgorithm: flags.consensus || 'majority',
+      autoScale: flags.autoScale || flags['auto-scale'] || false,
+      encryption: flags.encryption || false
+    };
+    
+    await spawnSwarm([objective], {
+      ...flags,
+      name: config.name,
+      queenType: config.queenType,
+      maxWorkers: config.maxWorkers,
+      consensusAlgorithm: config.consensusAlgorithm,
+      autoScale: config.autoScale,
+      encryption: config.encryption,
+      nonInteractive: true
+    });
   }
-}
+);
 
 /**
  * Spawn swarm wizard
@@ -1179,7 +1217,7 @@ export async function hiveMindCommand(args, flags) {
       break;
       
     case 'wizard':
-      await hiveMindWizard();
+      await hiveMindWizard(flags);
       break;
       
     case 'help':

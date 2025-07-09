@@ -14,6 +14,8 @@ export interface ExecutionEnvironment {
   isSSH: boolean;
   isGitBash: boolean;
   isWindowsTerminal: boolean;
+  isWSL: boolean;
+  isWindows: boolean;
   supportsRawMode: boolean;
   supportsColor: boolean;
   terminalType: string;
@@ -40,6 +42,8 @@ export function detectExecutionEnvironment(options: EnvironmentOptions = {}): Ex
     isSSH: false,
     isGitBash: false,
     isWindowsTerminal: false,
+    isWSL: false,
+    isWindows: false,
     supportsRawMode: false,
     supportsColor: true,
     terminalType: 'unknown',
@@ -84,6 +88,16 @@ export function detectExecutionEnvironment(options: EnvironmentOptions = {}): Ex
   
   // Windows Terminal detection
   env.isWindowsTerminal = Boolean(process.env.WT_SESSION);
+  
+  // Windows detection
+  env.isWindows = process.platform === 'win32';
+  
+  // WSL detection
+  env.isWSL = Boolean(
+    process.env.WSL_DISTRO_NAME ||
+    process.env.WSL_INTEROP ||
+    (existsSync('/proc/version') && readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft'))
+  );
   
   // Raw mode support check
   env.supportsRawMode = checkRawModeSupport();
@@ -158,6 +172,21 @@ function generateRecommendations(env: ExecutionEnvironment): void {
   // Git Bash specific
   if (env.isGitBash) {
     env.warnings.push('Git Bash detected - some interactive features may not work correctly');
+  }
+  
+  // WSL specific recommendations
+  if (env.isWSL) {
+    env.recommendedFlags.push('--no-interactive');
+    env.warnings.push('WSL detected - raw mode may cause hangs, using non-interactive mode');
+    if (!env.supportsRawMode) {
+      env.warnings.push('WSL subprocess context detected - interactive features disabled');
+    }
+  }
+  
+  // Windows specific recommendations
+  if (env.isWindows && !env.isWSL) {
+    env.recommendedFlags.push('--compatible-ui');
+    env.warnings.push('Native Windows detected - using compatible UI mode');
   }
   
   // Raw mode not supported
@@ -242,6 +271,8 @@ export function getEnvironmentDescription(env?: ExecutionEnvironment): string {
   if (environment.isSSH) parts.push('SSH');
   if (environment.isGitBash) parts.push('Git Bash');
   if (environment.isWindowsTerminal) parts.push('Windows Terminal');
+  if (environment.isWSL) parts.push('WSL');
+  if (environment.isWindows && !environment.isWSL) parts.push('Windows');
   
   if (parts.length === 0) {
     parts.push(environment.terminalType);
@@ -265,6 +296,8 @@ export function shouldUseNonInteractiveMode(options?: { force?: boolean }): bool
   return !env.isInteractive || 
          env.isCI || 
          env.isVSCode || 
+         env.isWSL ||
+         env.isWindows ||
          !env.supportsRawMode;
 }
 

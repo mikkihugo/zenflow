@@ -36,6 +36,8 @@ export async function handleRawModeError(
   console.log();
   console.log(chalk.cyan('Common causes:'));
   console.log(chalk.gray('• VS Code integrated terminal'));
+  console.log(chalk.gray('• WSL (Windows Subsystem for Linux)'));
+  console.log(chalk.gray('• Native Windows terminals'));
   console.log(chalk.gray('• CI/CD environments'));
   console.log(chalk.gray('• Docker containers'));
   console.log(chalk.gray('• SSH sessions without TTY'));
