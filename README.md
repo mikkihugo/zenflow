@@ -143,7 +143,6 @@ npx claude-flow hooks session-end --generate-summary --persist-state
 ```
 
 ---
-
 ## 🐝 **Revolutionary Hive-Mind Intelligence**
 
 ### **Queen-Led AI Coordination**
