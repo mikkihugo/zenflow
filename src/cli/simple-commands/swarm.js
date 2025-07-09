@@ -115,7 +115,7 @@ export async function swarmCommand(args, flags) {
         claudeAvailable = true;
       } catch {
         console.log('⚠️  Claude Code CLI not found in PATH');
-        console.log('Install it with: npm install -g @anthropic/claude-code-cli');
+        console.log('Install it with: npm install -g @anthropic-ai/claude-code');
         console.log('\nWould spawn Claude Code with swarm objective:');
         console.log(`📋 Objective: ${objective}`);
         console.log('\nTo use the built-in executor instead: claude-flow swarm "objective" --executor');
