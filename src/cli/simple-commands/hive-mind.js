@@ -498,6 +498,34 @@ async function spawnSwarm(args, flags) {
         FOREIGN KEY (swarm_id) REFERENCES swarms(id),
         FOREIGN KEY (agent_id) REFERENCES agents(id)
       );
+      
+      CREATE TABLE IF NOT EXISTS collective_memory (
+        id TEXT PRIMARY KEY,
+        swarm_id TEXT,
+        key TEXT NOT NULL,
+        value TEXT,
+        type TEXT DEFAULT 'knowledge',
+        confidence REAL DEFAULT 1.0,
+        created_by TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        accessed_at DATETIME,
+        access_count INTEGER DEFAULT 0,
+        compressed INTEGER DEFAULT 0,
+        size INTEGER DEFAULT 0,
+        FOREIGN KEY (swarm_id) REFERENCES swarms(id)
+      );
+      
+      CREATE TABLE IF NOT EXISTS consensus_decisions (
+        id TEXT PRIMARY KEY,
+        swarm_id TEXT,
+        topic TEXT NOT NULL,
+        decision TEXT,
+        votes TEXT,
+        algorithm TEXT DEFAULT 'majority',
+        confidence REAL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (swarm_id) REFERENCES swarms(id)
+      );
     `);
       spinner.text = 'Database schema created successfully';
     } catch (error) {
