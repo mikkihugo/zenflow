@@ -95,7 +95,7 @@ This phase establishes the foundation for the Claude-Code-Flow CLI, a sophistica
 
 ### References
 - [VSCode Terminal API Documentation](https://code.visualstudio.com/api/references/vscode-api#Terminal)
-- [MCP Specification](https://github.com/anthropics/model-context-protocol)
+- [MCP Specification](https://github.com/modelcontextprotocol/modelcontextprotocol)
 - [Deno Manual](https://deno.land/manual)
 - [SPARC Methodology](https://github.com/ruvnet/sparc)
 

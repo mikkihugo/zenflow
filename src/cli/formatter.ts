@@ -256,7 +256,7 @@ export function displayVersion(version: string, buildDate: string): void {
     chalk.white('  • MCP Server'),
     chalk.white('  • Task Coordination'),
     '',
-    chalk.blue('Homepage: ') + chalk.underline('https://github.com/anthropics/claude-code-flow'),
+    chalk.blue('Homepage: ') + chalk.underline('https://github.com/ruvnet/claude-flow'),
   ];
   
   console.log(info.join('\n'));
