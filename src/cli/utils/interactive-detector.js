@@ -63,6 +63,9 @@ export function getEnvironmentType() {
   if (process.env.CI) return 'ci-environment';
   if (process.env.GITHUB_ACTIONS) return 'github-actions';
   if (process.env.DOCKER_CONTAINER) return 'docker';
+  if (process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP) return 'wsl';
+  if (process.platform === 'win32') return 'windows';
+  if (process.env.TERM_PROGRAM === 'vscode') return 'vscode';
   if (!isRawModeSupported()) return 'no-raw-mode';
   return 'interactive';
 }

@@ -3,7 +3,7 @@
  */
 
 import chalk from 'chalk';
-import { shouldUseNonInteractiveMode, detectExecutionEnvironment } from './environment-detector.js';
+import { isInteractive, isRawModeSupported, getEnvironmentType } from './interactive-detector.js';
 
 /**
  * Wraps an interactive function with safety checks
@@ -28,23 +28,24 @@ export function safeInteractive(interactiveFn, fallbackFn, options = {}) {
     }
     
     // Auto-detect if we should use non-interactive mode
-    if (shouldUseNonInteractiveMode()) {
-      const env = detectExecutionEnvironment({ skipWarnings: true });
+    if (!isInteractive() || !isRawModeSupported()) {
+      const envType = getEnvironmentType();
       
       if (!options.silent) {
         console.log(chalk.yellow('\n⚠️  Interactive mode not available'));
+        console.log(chalk.gray(`Detected environment: ${envType}`));
         
         // Provide specific message based on environment
-        if (env.isWSL) {
+        if (process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP) {
           console.log(chalk.gray('WSL detected - raw mode may cause process hangs'));
           console.log(chalk.cyan('💡 Tip: Use --no-interactive flag or run in native Linux'));
-        } else if (env.isWindows) {
+        } else if (process.platform === 'win32') {
           console.log(chalk.gray('Windows detected - terminal compatibility issues'));
           console.log(chalk.cyan('💡 Tip: Use Windows Terminal or WSL2 for better experience'));
-        } else if (env.isVSCode) {
+        } else if (process.env.TERM_PROGRAM === 'vscode') {
           console.log(chalk.gray('VS Code terminal detected - limited interactive support'));
           console.log(chalk.cyan('💡 Tip: Use external terminal for full functionality'));
-        } else if (!env.supportsRawMode) {
+        } else if (!isRawModeSupported()) {
           console.log(chalk.gray('Terminal does not support raw mode'));
         }
         
