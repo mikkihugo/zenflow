@@ -506,7 +506,7 @@ export async function initCommand(subArgs, flags) {
         }
       } else if (!initDryRun && !isClaudeCodeInstalled()) {
         console.log('\n⚠️  Claude Code CLI not detected!');
-        console.log('  📥 Install with: npm install -g @anthropics/claude-code');
+        console.log('  📥 Install with: npm install -g @anthropic-ai/claude-code');
         console.log('  📋 Then add MCP servers manually with:');
         console.log('     claude mcp add claude-flow claude-flow mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
@@ -1147,7 +1147,7 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
     } else if (!dryRun && !isClaudeCodeInstalled()) {
       console.log('\n⚠️  Claude Code CLI not detected!');
       console.log('\n  📥 To install Claude Code:');
-      console.log('     npm install -g @anthropics/claude-code');
+      console.log('     npm install -g @anthropic-ai/claude-code');
       console.log('\n  📋 After installing, add MCP servers:');
       console.log('     claude mcp add claude-flow claude-flow mcp start');
       console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
@@ -1161,7 +1161,7 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
       console.log('2. Start a swarm: npx claude-flow swarm init');
       console.log('3. Use MCP tools in Claude Code for enhanced coordination');
     } else {
-      console.log('1. Install Claude Code: npm install -g @anthropics/claude-code');
+      console.log('1. Install Claude Code: npm install -g @anthropic-ai/claude-code');
       console.log('2. Add MCP servers (see instructions above)');
       console.log('3. View available commands: ls .claude/commands/');
       console.log('4. Start a swarm: npx claude-flow swarm init');
