@@ -6,8 +6,10 @@
  * @module memory
  */
 
-export { SharedMemory } from './shared-memory.js';
-export { SwarmMemory, createSwarmMemory } from './swarm-memory.js';
+import SharedMemory from './shared-memory.js';
+import { SwarmMemory, createSwarmMemory } from './swarm-memory.js';
+
+export { SharedMemory, SwarmMemory, createSwarmMemory };
 
 // Re-export swarm namespaces for convenience
 export const SWARM_NAMESPACES = {

@@ -89,3 +89,6 @@ claude-flow-mcp-wrapper
 # Test artifacts
 test-output/
 test-reports/
+# SQLite Database Files
+.swarm/memory.db*
+.hive-mind/hive.db*

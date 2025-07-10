@@ -16,7 +16,7 @@
 
 ## 🌟 **Overview**
 
-**Claude-Flow v2.0.0 Alpha** is an enterprise-grade AI orchestration platform that revolutionizes how developers build with AI. By combining **hive-mind swarm intelligence**, **neural pattern recognition**, and **87 advanced MCP tools**, Claude-Flow enables unprecedented AI-powered development workflows.
+**Claude-Flow v2 Alpha** is an enterprise-grade AI orchestration platform that revolutionizes how developers build with AI. By combining **hive-mind swarm intelligence**, **neural pattern recognition**, and **87 advanced MCP tools**, Claude-Flow enables unprecedented AI-powered development workflows.
 
 ### 🎯 **Key Features**
 
@@ -24,7 +24,7 @@
 - **🧠 Neural Networks**: 27+ cognitive models with WASM SIMD acceleration
 - **🔧 87 MCP Tools**: Comprehensive toolkit for swarm orchestration, memory, and automation
 - **🔄 Dynamic Agent Architecture (DAA)**: Self-organizing agents with fault tolerance
-- **💾 Distributed Memory**: Cross-session persistence with namespace management
+- **💾 SQLite Memory System**: Persistent `.swarm/memory.db` with 12 specialized tables
 - **🪝 Advanced Hooks System**: Automated workflows with pre/post operation hooks
 - **📊 GitHub Integration**: 6 specialized modes for repository management
 - **⚡ Performance**: 84.8% SWE-Bench solve rate, 2.8-4.4x speed improvement
@@ -174,12 +174,12 @@ npx claude-flow@alpha neural predict --model cognitive-analysis
 npx claude-flow@alpha cognitive analyze --behavior "development workflow"
 ```
 
-### **💾 Distributed Memory Systems**
+### **💾 SQLite Memory Systems**
 ```bash
-# Cross-session memory management
+# Cross-session memory management with SQLite persistence
 npx claude-flow@alpha memory store "project-context" "Full-stack app requirements"
 npx claude-flow@alpha memory query "authentication" --namespace sparc
-npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory stats  # Shows 12 specialized tables
 npx claude-flow@alpha memory export backup.json --namespace default
 npx claude-flow@alpha memory import project-memory.json
 ```
@@ -258,6 +258,7 @@ npx claude-flow@alpha daa lifecycle-manage --agentId "agent-123" --action "scale
 - `memory_usage`, `memory_search`, `memory_persist`
 - `memory_namespace`, `memory_backup`, `memory_restore`
 - `memory_compress`, `memory_sync`, `memory_analytics`
+- **SQLite Backend**: Persistent `.swarm/memory.db` with 12 specialized tables
 
 #### **📊 Performance & Monitoring** (10 tools)
 - `performance_report`, `bottleneck_analyze`, `token_usage`
@@ -316,12 +317,12 @@ npx claude-flow@alpha neural predict --model cognitive-analysis
 npx claude-flow@alpha cognitive analyze --behavior "development workflow"
 ```
 
-### **💾 Distributed Memory Systems**
+### **💾 SQLite Memory Systems**
 ```bash
-# Cross-session memory management
+# Cross-session memory management with SQLite persistence
 npx claude-flow@alpha memory store "project-context" "Full-stack app requirements"
 npx claude-flow@alpha memory query "authentication" --namespace sparc
-npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory stats  # Shows 12 specialized tables
 npx claude-flow@alpha memory export backup.json --namespace default
 npx claude-flow@alpha memory import project-memory.json
 ```
@@ -387,8 +388,10 @@ npx claude-flow@alpha bottleneck analyze --auto-optimize
 ```
 
 ### **💾 Advanced Memory Architecture**
+- **SQLite Persistence**: Robust `.swarm/memory.db` storage with 12 specialized tables
 - **Cross-Session Persistence**: Remember context across Claude Code sessions
 - **Namespace Management**: Organized memory with hierarchical access
+- **Enhanced Schema**: Agent interactions, training data, performance metrics, and more
 - **Memory Compression**: Efficient storage of large coordination contexts
 - **Distributed Sync**: Share memory across multiple AI instances
 
