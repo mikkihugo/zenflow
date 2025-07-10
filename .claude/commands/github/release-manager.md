@@ -16,7 +16,7 @@ Automated release coordination and deployment with ruv-swarm orchestration for s
 - `mcp__github__create_branch`
 - `mcp__github__push_files`
 - `mcp__github__create_issue`
-- `mcp__ruv-swarm__*` (all swarm coordination tools)
+- `mcp__claude-flow__*` (all swarm coordination tools)
 - `TodoWrite`, `TodoRead`, `Task`, `Bash`, `Read`, `Write`, `Edit`
 
 ## Usage Patterns
@@ -24,12 +24,12 @@ Automated release coordination and deployment with ruv-swarm orchestration for s
 ### 1. Coordinated Release Preparation
 ```javascript
 // Initialize release management swarm
-mcp__ruv-swarm__swarm_init { topology: "hierarchical", maxAgents: 6 }
-mcp__ruv-swarm__agent_spawn { type: "coordinator", name: "Release Coordinator" }
-mcp__ruv-swarm__agent_spawn { type: "tester", name: "QA Engineer" }
-mcp__ruv-swarm__agent_spawn { type: "reviewer", name: "Release Reviewer" }
-mcp__ruv-swarm__agent_spawn { type: "coder", name: "Version Manager" }
-mcp__ruv-swarm__agent_spawn { type: "analyst", name: "Deployment Analyst" }
+mcp__claude-flow__swarm_init { topology: "hierarchical", maxAgents: 6 }
+mcp__claude-flow__agent_spawn { type: "coordinator", name: "Release Coordinator" }
+mcp__claude-flow__agent_spawn { type: "tester", name: "QA Engineer" }
+mcp__claude-flow__agent_spawn { type: "reviewer", name: "Release Reviewer" }
+mcp__claude-flow__agent_spawn { type: "coder", name: "Version Manager" }
+mcp__claude-flow__agent_spawn { type: "analyst", name: "Deployment Analyst" }
 
 // Create release preparation branch
 mcp__github__create_branch {
@@ -40,7 +40,7 @@ mcp__github__create_branch {
 }
 
 // Orchestrate release preparation
-mcp__ruv-swarm__task_orchestrate {
+mcp__claude-flow__task_orchestrate {
   task: "Prepare release v1.0.72 with comprehensive testing and validation",
   strategy: "sequential",
   priority: "critical"
@@ -177,13 +177,13 @@ This release is production-ready with comprehensive validation and testing.
 ```javascript
 [Single Message - Complete Release Management]:
   // Initialize comprehensive release swarm
-  mcp__ruv-swarm__swarm_init { topology: "star", maxAgents: 8 }
-  mcp__ruv-swarm__agent_spawn { type: "coordinator", name: "Release Director" }
-  mcp__ruv-swarm__agent_spawn { type: "tester", name: "QA Lead" }
-  mcp__ruv-swarm__agent_spawn { type: "reviewer", name: "Senior Reviewer" }
-  mcp__ruv-swarm__agent_spawn { type: "coder", name: "Version Controller" }
-  mcp__ruv-swarm__agent_spawn { type: "analyst", name: "Performance Analyst" }
-  mcp__ruv-swarm__agent_spawn { type: "researcher", name: "Compatibility Checker" }
+  mcp__claude-flow__swarm_init { topology: "star", maxAgents: 8 }
+  mcp__claude-flow__agent_spawn { type: "coordinator", name: "Release Director" }
+  mcp__claude-flow__agent_spawn { type: "tester", name: "QA Lead" }
+  mcp__claude-flow__agent_spawn { type: "reviewer", name: "Senior Reviewer" }
+  mcp__claude-flow__agent_spawn { type: "coder", name: "Version Controller" }
+  mcp__claude-flow__agent_spawn { type: "analyst", name: "Performance Analyst" }
+  mcp__claude-flow__agent_spawn { type: "researcher", name: "Compatibility Checker" }
   
   // Create release branch and prepare files
   mcp__github__create_branch { branch: "release/v1.0.72", from_branch: "main" }
@@ -222,7 +222,7 @@ This release is production-ready with comprehensive validation and testing.
   ]}
   
   // Store release state
-  mcp__ruv-swarm__memory_usage {
+  mcp__claude-flow__memory_usage {
     action: "store", 
     key: "release/v1.0.72/status",
     value: {

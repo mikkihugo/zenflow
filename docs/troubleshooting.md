@@ -684,7 +684,7 @@ cat .claude/settings.json >> debug-config.txt 2>&1
 
 3. **Community Resources**:
    - ruv-swarm documentation: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
-   - NPM package: https://www.npmjs.com/package/claude-flow
+   - NPM package: https://www.npmjs.com/package/claude-flow/v/alpha
 
 ---
 

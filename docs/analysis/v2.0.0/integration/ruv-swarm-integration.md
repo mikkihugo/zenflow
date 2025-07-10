@@ -41,7 +41,7 @@ The current integration consists of multiple layers:
 #### 2.1 Complexity and Duplication
 - **Two parallel swarm implementations**: Built-in swarm and ruv-swarm
 - **Redundant configuration systems**: Multiple config managers
-- **Confusing tool naming**: Both `swarm/*` and `mcp__ruv-swarm__*` tools
+- **Confusing tool naming**: Both `swarm/*` and `mcp__claude-flow__*` tools
 - **Command duplication**: CLI commands exist for both systems
 
 #### 2.2 Integration Challenges
@@ -61,9 +61,9 @@ The current integration consists of multiple layers:
 #### 3.1 MCP Tool Usage
 ```javascript
 // Current pattern - verbose and process-heavy
-mcp__ruv-swarm__swarm_init({ topology: "mesh", maxAgents: 6 })
-mcp__ruv-swarm__agent_spawn({ type: "researcher" })
-mcp__ruv-swarm__task_orchestrate({ task: "Research AI patterns" })
+mcp__claude-flow__swarm_init({ topology: "mesh", maxAgents: 6 })
+mcp__claude-flow__agent_spawn({ type: "researcher" })
+mcp__claude-flow__task_orchestrate({ task: "Research AI patterns" })
 ```
 
 #### 3.2 CLI Command Usage
@@ -252,9 +252,9 @@ class MCPBridge {
   
   private mapToMCPTool(sdkMethod: string): string {
     const mapping: Record<string, string> = {
-      'swarm.init': 'mcp__ruv-swarm__swarm_init',
-      'agent.spawn': 'mcp__ruv-swarm__agent_spawn',
-      'task.orchestrate': 'mcp__ruv-swarm__task_orchestrate',
+      'swarm.init': 'mcp__claude-flow__swarm_init',
+      'agent.spawn': 'mcp__claude-flow__agent_spawn',
+      'task.orchestrate': 'mcp__claude-flow__task_orchestrate',
       // ... more mappings
     };
     return mapping[sdkMethod] || sdkMethod;
