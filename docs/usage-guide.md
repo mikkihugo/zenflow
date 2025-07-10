@@ -545,7 +545,7 @@ npx claude-flow@2.0.0 swarm "implement critical payment processing" \
 - **GitHub Repository**: https://github.com/ruvnet/claude-code-flow
 - **Issue Tracker**: https://github.com/ruvnet/claude-code-flow/issues
 - **ruv-swarm Integration**: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
-- **NPM Package**: https://www.npmjs.com/package/claude-flow
+- **NPM Package**: https://www.npmjs.com/package/claude-flow/v/alpha
 
 ---
 
