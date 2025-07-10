@@ -235,7 +235,7 @@ export async function initCommand(subArgs, flags) {
       '.claude/commands/sparc',
       '.claude/commands/swarm',
       '.claude/logs',
-      '.swarm'  // Add .swarm directory for shared memory
+      '.swarm'  // Add .swarm directory for memory persistence (matching hive-mind pattern)
     ];
     
     for (const dir of directories) {
@@ -1132,16 +1132,16 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
       
       printSuccess('✓ Initialized memory system');
       
-      // Initialize shared memory database
+      // Initialize memory database
       try {
-        // Import and initialize SharedMemory to create the database
-        const { createSharedMemory } = await import('../../../memory/shared-memory.js');
-        const sharedMemory = createSharedMemory('shared');
-        await sharedMemory.initialize();
-        await sharedMemory.close();
-        printSuccess('✓ Initialized shared memory database (.swarm/shared-memory.db)');
+        // Import and initialize SqliteMemoryStore to create the database
+        const { SqliteMemoryStore } = await import('../../../memory/sqlite-store.js');
+        const memoryStore = new SqliteMemoryStore();
+        await memoryStore.initialize();
+        memoryStore.close();
+        printSuccess('✓ Initialized memory database (.swarm/memory.db)');
       } catch (err) {
-        console.log(`  ⚠️  Could not initialize shared memory database: ${err.message}`);
+        console.log(`  ⚠️  Could not initialize memory database: ${err.message}`);
         console.log('     The database will be created on first use');
       }
     }

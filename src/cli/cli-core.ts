@@ -8,7 +8,7 @@ import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
 
-export const VERSION = "1.0.44";
+export const VERSION = "1.0.45";
 
 interface CommandContext {
   args: string[];
