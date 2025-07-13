@@ -23,6 +23,8 @@ EXAMPLES:
   claude-flow swarm "Develop user registration feature" --mode distributed
   claude-flow swarm "Optimize React app performance" --strategy optimization
   claude-flow swarm "Create microservice" --executor  # Use built-in executor
+  claude-flow swarm "Build API endpoints" --output-format json  # Get JSON output
+  claude-flow swarm "Research AI trends" --output-format json --output-file results.json
 
 DEFAULT BEHAVIOR:
   Swarm now opens Claude Code by default with comprehensive MCP tool instructions
@@ -75,6 +77,9 @@ OPTIONS:
   --verbose                  Enable detailed logging
   --dry-run                  Show configuration without executing
   --executor                 Use built-in executor instead of Claude Code
+  --output-format <format>   Output format: json, text (default: text)
+  --output-file <path>       Save output to file instead of stdout
+  --no-interactive           Run in non-interactive mode (auto-enabled with --output-format json)
   --auto                     (Deprecated: auto-permissions enabled by default)
   --no-auto-permissions      Disable automatic --dangerously-skip-permissions
 
@@ -98,6 +103,17 @@ export async function swarmCommand(args, flags) {
     console.error("❌ Usage: swarm <objective>");
     showSwarmHelp();
     return;
+  }
+
+  // Handle JSON output format
+  const outputFormat = flags && flags['output-format'];
+  const outputFile = flags && flags['output-file'];
+  const isJsonOutput = outputFormat === 'json';
+  const isNonInteractive = isJsonOutput || (flags && flags['no-interactive']);
+
+  // For JSON output, we need to ensure executor mode since Claude Code doesn't return structured JSON
+  if (isJsonOutput && !(flags && flags.executor)) {
+    flags = { ...(flags || {}), executor: true };
   }
   
   // Check if we should use the old executor (opt-in with --executor flag)
@@ -1064,6 +1080,9 @@ OPTIONS:
   --verbose                  Enable detailed logging
   --dry-run                  Show configuration without executing
   --executor                 Use built-in executor instead of Claude Code
+  --output-format <format>   Output format: json, text (default: text)
+  --output-file <path>       Save output to file instead of stdout
+  --no-interactive           Run in non-interactive mode (auto-enabled with --output-format json)
   --auto                     (Deprecated: auto-permissions enabled by default)
   --no-auto-permissions      Disable automatic --dangerously-skip-permissions
 

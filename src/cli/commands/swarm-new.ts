@@ -471,6 +471,16 @@ export async function swarmAction(ctx: CommandContext) {
   const options = parseSwarmOptions(ctx.flags);
   const swarmId = generateId('swarm');
   
+  // Handle JSON output mode
+  const isJsonOutput = options.outputFormat === 'json';
+  const isNonInteractive = isJsonOutput || options.noInteractive;
+  
+  // For JSON output, force executor mode since Claude Code doesn't return structured JSON
+  if (isJsonOutput && !options.executor) {
+    options.executor = true;
+    options.claude = false;
+  }
+  
   if (options.dryRun) {
     showDryRunConfiguration(swarmId, objective, options);
     return;
@@ -488,11 +498,14 @@ export async function swarmAction(ctx: CommandContext) {
     return;
   }
   
-  success(`🐝 Initializing Advanced Swarm: ${swarmId}`);
-  console.log(`📋 Objective: ${objective}`);
-  console.log(`🎯 Strategy: ${options.strategy}`);
-  console.log(`🏗️  Mode: ${options.mode}`);
-  console.log(`🤖 Max Agents: ${options.maxAgents}`);
+  // Only show messages if not in JSON output mode
+  if (!isJsonOutput) {
+    success(`🐝 Initializing Advanced Swarm: ${swarmId}`);
+    console.log(`📋 Objective: ${objective}`);
+    console.log(`🎯 Strategy: ${options.strategy}`);
+    console.log(`🏗️  Mode: ${options.mode}`);
+    console.log(`🤖 Max Agents: ${options.maxAgents}`);
+  }
   
   try {
     // Initialize comprehensive swarm system
@@ -542,6 +555,11 @@ export async function swarmAction(ctx: CommandContext) {
     });
     
     await coordinator.initialize();
+    
+    // Enable JSON output collection if requested
+    if (isJsonOutput) {
+      coordinator.enableJsonOutput(objective);
+    }
     
     // Initialize Task Executor with enhanced options
     const executor = new TaskExecutor({
@@ -664,7 +682,9 @@ export async function swarmAction(ctx: CommandContext) {
     await setupIncrementalUpdates(coordinator, swarmDir);
 
     // Execute the objective
-    console.log(`\n🚀 Swarm execution started...`);
+    if (!isJsonOutput) {
+      console.log(`\n🚀 Swarm execution started...`);
+    }
     
     // Start the objective execution
     await coordinator.executeObjective(objectiveId);
@@ -684,17 +704,23 @@ export async function swarmAction(ctx: CommandContext) {
       console.log(`📁 Results: ${swarmDir}`);
       
       // Wait for completion in background with minimal output
-      console.log(`\n⏳ Processing tasks...`);
+      if (!isJsonOutput) {
+        console.log(`\n⏳ Processing tasks...`);
+      }
       
       // Background mode uses simple polling, no detailed progress
       await waitForSwarmCompletion(coordinator, objectiveId, options);
       
-      // Show final results
-      await showSwarmResults(coordinator, executor, memory, swarmDir);
+      // Show final results or output JSON
+      if (isJsonOutput) {
+        await outputJsonResults(coordinator, options);
+      } else {
+        await showSwarmResults(coordinator, executor, memory, swarmDir);
+      }
       
     } else if (!options.background) {
       // Wait for completion in foreground with detailed progress
-      if (!options.verbose) {
+      if (!options.verbose && !isJsonOutput) {
         console.log(`\n⏳ Processing tasks...`);
         
         // Track task states for detailed display
@@ -742,8 +768,12 @@ export async function swarmAction(ctx: CommandContext) {
         await waitForSwarmCompletion(coordinator, objectiveId, options);
       }
       
-      // Show final results
-      await showSwarmResults(coordinator, executor, memory, swarmDir);
+      // Show final results or output JSON
+      if (isJsonOutput) {
+        await outputJsonResults(coordinator, options);
+      } else {
+        await showSwarmResults(coordinator, executor, memory, swarmDir);
+      }
       
     } else {
       // Background mode requested - launch in background
@@ -853,7 +883,12 @@ function parseSwarmOptions(flags: any) {
     
     // Claude Code options
     claude: flags.claude || false,
-    executor: flags.executor || false
+    executor: flags.executor || false,
+    
+    // JSON output options
+    outputFormat: flags.outputFormat || flags['output-format'] || 'text',
+    outputFile: flags.outputFile || flags['output-file'],
+    noInteractive: flags.noInteractive || flags['no-interactive'] || false
   };
 }
 
@@ -1518,4 +1553,68 @@ ADVANCED OPTIONS:
 
 For more information, see: https://github.com/ruvnet/claude-flow
 `);
+}
+
+/**
+ * Output JSON results for non-interactive mode
+ */
+async function outputJsonResults(coordinator: SwarmCoordinator, options: any): Promise<void> {
+  try {
+    // Get the final status from coordinator
+    const swarmStatus = coordinator.getSwarmStatus();
+    const finalStatus = swarmStatus.status === 'completed' ? 'completed' : 
+                       swarmStatus.status === 'failed' ? 'failed' : 
+                       swarmStatus.status === 'timeout' ? 'timeout' : 'cancelled';
+    
+    // Get JSON output from coordinator
+    const jsonOutput = coordinator.getJsonOutput(finalStatus);
+    
+    if (!jsonOutput) {
+      // Fallback: create basic JSON structure if aggregator wasn't enabled
+      const basicOutput = {
+        swarmId: coordinator.getSwarmId(),
+        status: finalStatus,
+        timestamp: new Date().toISOString(),
+        error: 'JSON output aggregation was not properly enabled'
+      };
+      const fallbackJson = JSON.stringify(basicOutput, null, 2);
+      
+      if (options.outputFile) {
+        await fs.writeFile(options.outputFile, fallbackJson);
+      } else {
+        console.log(fallbackJson);
+      }
+      return;
+    }
+    
+    // Output to file or stdout
+    if (options.outputFile) {
+      await coordinator.saveJsonOutput(options.outputFile, finalStatus);
+    } else {
+      // Output to stdout for command capture
+      console.log(jsonOutput);
+    }
+    
+  } catch (error) {
+    // Even if there's an error, output a JSON structure
+    const errorOutput = {
+      swarmId: coordinator.getSwarmId(),
+      status: 'failed',
+      timestamp: new Date().toISOString(),
+      error: error instanceof Error ? error.message : String(error),
+      details: 'Failed to generate JSON output'
+    };
+    
+    const errorJson = JSON.stringify(errorOutput, null, 2);
+    
+    if (options.outputFile) {
+      try {
+        await fs.writeFile(options.outputFile, errorJson);
+      } catch (writeError) {
+        console.error(errorJson);
+      }
+    } else {
+      console.log(errorJson);
+    }
+  }
 }

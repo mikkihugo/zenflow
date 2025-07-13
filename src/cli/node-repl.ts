@@ -78,90 +78,6 @@ class CommandHistory {
   }
 }
 
-class CommandCompleter {
-  private commands: Map<string, REPLCommand> = new Map();
-  
-  setCommands(commands: REPLCommand[]): void {
-    this.commands.clear();
-    for (const cmd of commands) {
-      this.commands.set(cmd.name, cmd);
-      if (cmd.aliases) {
-        for (const alias of cmd.aliases) {
-          this.commands.set(alias, cmd);
-        }
-      }
-    }
-  }
-
-  complete(line: string): [string[], string] {
-    const parts = line.trim().split(/\s+/);
-    
-    if (parts.length === 1) {
-      // Complete command names
-      const prefix = parts[0];
-      const completions = Array.from(this.commands.keys())
-        .filter(name => name.startsWith(prefix))
-        .sort();
-      return [completions, prefix];
-    }
-    
-    // Complete subcommands and arguments
-    const commandName = parts[0];
-    const command = this.commands.get(commandName);
-    
-    if (command) {
-      const subCompletions = this.completeForCommand(command, parts.slice(1));
-      return [subCompletions, parts[parts.length - 1]];
-    }
-    
-    return [[], line];
-  }
-
-  private completeForCommand(command: REPLCommand, args: string[]): string[] {
-    // Basic completion for known commands
-    switch (command.name) {
-      case 'agent':
-        if (args.length === 1) {
-          return ['spawn', 'list', 'terminate', 'info'].filter(sub => 
-            sub.startsWith(args[0])
-          );
-        }
-        if (args[0] === 'spawn' && args.length === 2) {
-          return ['coordinator', 'researcher', 'implementer', 'analyst', 'custom']
-            .filter(type => type.startsWith(args[1]));
-        }
-        break;
-      
-      case 'task':
-        if (args.length === 1) {
-          return ['create', 'list', 'status', 'cancel', 'workflow'].filter(sub => 
-            sub.startsWith(args[0])
-          );
-        }
-        if (args[0] === 'create' && args.length === 2) {
-          return ['research', 'implementation', 'analysis', 'coordination']
-            .filter(type => type.startsWith(args[1]));
-        }
-        break;
-      
-      case 'session':
-        if (args.length === 1) {
-          return ['list', 'save', 'restore', 'delete', 'export', 'import']
-            .filter(sub => sub.startsWith(args[0]));
-        }
-        break;
-      
-      case 'workflow':
-        if (args.length === 1) {
-          return ['run', 'validate', 'list', 'status', 'stop', 'template']
-            .filter(sub => sub.startsWith(args[0]));
-        }
-        break;
-    }
-    
-    return [];
-  }
-}
 
 /**
  * Start the Node.js interactive REPL
@@ -172,7 +88,6 @@ export async function startNodeREPL(options: any = {}): Promise<void> {
     input: process.stdin,
     output: process.stdout,
     prompt: '',
-    completer: undefined, // Will be set later
   });
 
   const context: REPLContext = {
@@ -185,7 +100,6 @@ export async function startNodeREPL(options: any = {}): Promise<void> {
   };
 
   const history = new CommandHistory(options.historyFile);
-  const completer = new CommandCompleter();
   
   const commands: REPLCommand[] = [
     {
@@ -382,13 +296,6 @@ export async function startNodeREPL(options: any = {}): Promise<void> {
     },
   ];
 
-  // Set up command completion
-  completer.setCommands(commands);
-  
-  // Set completer function
-  // rl.completer = (line: string) => {
-    return completer.complete(line);
-  };
   
   // Show initial status
   if (options.banner !== false) {

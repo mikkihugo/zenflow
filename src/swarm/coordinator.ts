@@ -12,6 +12,7 @@ import {
 } from './types.js';
 import { AutoStrategy } from './strategies/auto.js';
 import { getClaudeFlowRoot, getClaudeFlowBin } from '../utils/paths.js';
+import { SwarmJsonOutputAggregator } from './json-output-aggregator.js';
 
 export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter {
   private logger: Logger;
@@ -33,6 +34,9 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
   private metrics: SwarmMetrics;
   private events: SwarmEvent[] = [];
   private lastHeartbeat: Date = new Date();
+  
+  // JSON output aggregation (optional)
+  private jsonOutputAggregator?: SwarmJsonOutputAggregator;
   
   // Background processes
   private heartbeatTimer?: NodeJS.Timeout;
@@ -414,6 +418,9 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
 
     this.agents.set(agentId.id, agentState);
     
+    // Track agent in JSON output if enabled
+    this.trackAgentInJsonOutput(agentState);
+    
     // Initialize agent capabilities based on type
     await this.initializeAgentCapabilities(agentState);
     
@@ -628,6 +635,9 @@ export class SwarmCoordinator extends EventEmitter implements SwarmEventEmitter 
     };
 
     this.tasks.set(taskId.id, task);
+    
+    // Track task in JSON output if enabled
+    this.trackTaskInJsonOutput(task);
     
     this.logger.info('Created task', { 
       taskId: taskId.id, 
@@ -1793,6 +1803,9 @@ Ensure your implementation is complete, well-structured, and follows best practi
         task.context.targetDir = objectiveTargetDir;
       }
       this.tasks.set(task.id.id, task);
+      
+      // Track task in JSON output if enabled
+      this.trackTaskInJsonOutput(task);
     }
     
     // Find tasks with no dependencies and queue them
@@ -3042,6 +3055,98 @@ console.log('Tests completed for: ${task.name}');
       agent.status = 'error';
       agent.health = 0;
       this.logger.error('Agent error', { agentId, error });
+      
+      // Track error in JSON output if enabled
+      if (this.jsonOutputAggregator) {
+        this.jsonOutputAggregator.addAgentError(
+          agentId, 
+          error instanceof Error ? error.message : String(error)
+        );
+      }
+    }
+  }
+
+  // ===== JSON OUTPUT METHODS =====
+
+  /**
+   * Enable JSON output collection for non-interactive mode
+   */
+  enableJsonOutput(objective: string): void {
+    if (!this.jsonOutputAggregator) {
+      this.jsonOutputAggregator = new SwarmJsonOutputAggregator(
+        this.swarmId.id,
+        objective,
+        this.config
+      );
+      this.logger.info('JSON output aggregation enabled', { swarmId: this.swarmId.id });
+    }
+  }
+
+  /**
+   * Get the final JSON output for the swarm
+   */
+  getJsonOutput(status: 'completed' | 'failed' | 'timeout' | 'cancelled' = 'completed'): string | null {
+    if (!this.jsonOutputAggregator) {
+      return null;
+    }
+    return this.jsonOutputAggregator.getJsonOutput(status);
+  }
+
+  /**
+   * Save JSON output to file
+   */
+  async saveJsonOutput(
+    filePath: string, 
+    status: 'completed' | 'failed' | 'timeout' | 'cancelled' = 'completed'
+  ): Promise<void> {
+    if (!this.jsonOutputAggregator) {
+      throw new Error('JSON output aggregation not enabled');
+    }
+    await this.jsonOutputAggregator.saveToFile(filePath, status);
+  }
+
+  /**
+   * Track agent activity in JSON output
+   */
+  private trackAgentInJsonOutput(agent: AgentState): void {
+    if (this.jsonOutputAggregator) {
+      this.jsonOutputAggregator.addAgent(agent);
+    }
+  }
+
+  /**
+   * Track task activity in JSON output
+   */
+  private trackTaskInJsonOutput(task: TaskDefinition): void {
+    if (this.jsonOutputAggregator) {
+      this.jsonOutputAggregator.addTask(task);
+    }
+  }
+
+  /**
+   * Add output to JSON aggregator
+   */
+  private addOutputToJsonAggregator(agentId: string, output: string): void {
+    if (this.jsonOutputAggregator) {
+      this.jsonOutputAggregator.addAgentOutput(agentId, output);
+    }
+  }
+
+  /**
+   * Add insight to JSON aggregator
+   */
+  addInsight(insight: string): void {
+    if (this.jsonOutputAggregator) {
+      this.jsonOutputAggregator.addInsight(insight);
+    }
+  }
+
+  /**
+   * Add artifact to JSON aggregator
+   */
+  addArtifact(key: string, artifact: any): void {
+    if (this.jsonOutputAggregator) {
+      this.jsonOutputAggregator.addArtifact(key, artifact);
     }
   }
 }
