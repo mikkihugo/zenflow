@@ -61,6 +61,89 @@ npx --y claude-flow@alpha hive-mind wizard
 npx claude-flow@alpha hive-mind spawn "build me something amazing" --claude
 ```
 
+## 🎯 **Typical Workflows - Your "Happy Path" Guide**
+
+### **New to Claude-Flow? Start Here!**
+
+Confused about `.hive-mind` and `.swarm` directories? Not sure when to create new hives? Here are the most common workflow patterns:
+
+#### **🚀 Pattern 1: Single Feature Development**
+```bash
+# Initialize once per feature/task
+npx claude-flow@alpha init --force
+npx claude-flow@alpha hive-mind spawn "Implement user authentication" --claude
+
+# Continue working on SAME feature (reuse existing hive)
+npx claude-flow@alpha hive-mind status
+npx claude-flow@alpha memory query "authentication" --recent
+npx claude-flow@alpha swarm "Add password reset functionality" --continue-session
+```
+
+#### **🏗️ Pattern 2: Multi-Feature Project**
+```bash
+# Project-level initialization (once per project)
+npx claude-flow@alpha init --force --project-name "my-app"
+
+# Feature 1: Authentication (new hive)
+npx claude-flow@alpha hive-mind spawn "auth-system" --namespace auth --claude
+
+# Feature 2: User management (separate hive)  
+npx claude-flow@alpha hive-mind spawn "user-management" --namespace users --claude
+
+# Resume Feature 1 later
+npx claude-flow@alpha hive-mind resume --namespace auth
+```
+
+#### **🔍 Pattern 3: Research & Analysis**
+```bash
+# Start research session
+npx claude-flow@alpha hive-mind spawn "Research microservices patterns" --agents researcher,analyst --claude
+
+# Continue research in SAME session
+npx claude-flow@alpha memory stats  # See what's been learned
+npx claude-flow@alpha swarm "Deep dive into API gateway patterns" --continue-session
+```
+
+### **🤔 When Should I Create a New Hive?**
+
+| Situation | Action | Command |
+|-----------|--------|---------|
+| **Same objective/feature** | Continue existing hive | `npx claude-flow@alpha hive-mind resume` |
+| **New feature in same project** | Create new hive with namespace | `npx claude-flow@alpha hive-mind spawn "new-feature" --namespace feature-name` |
+| **Completely different project** | New directory + init | `mkdir new-project && cd new-project && npx claude-flow@alpha init` |
+| **Experimenting/testing** | Temporary hive | `npx claude-flow@alpha hive-mind spawn "experiment" --temp` |
+
+### **📁 Understanding "Empty" Directories**
+
+**Don't panic if directories seem empty!** Claude-Flow uses SQLite databases that may not show files in directory listings:
+
+```bash
+# Check what's actually stored (even if directories look empty)
+npx claude-flow@alpha memory stats        # See memory data
+npx claude-flow@alpha memory list         # List all namespaces  
+npx claude-flow@alpha hive-mind status    # See active hives
+
+# Your project structure after initialization:
+# .hive-mind/     <- Contains config.json + SQLite session data
+# .swarm/         <- Contains memory.db (SQLite database)
+# memory/         <- Agent-specific memories (created when agents spawn)
+# coordination/   <- Active workflow files (created during tasks)
+```
+
+### **🔄 Continuing Previous Work**
+
+```bash
+# See what you were working on
+npx claude-flow@alpha hive-mind status
+npx claude-flow@alpha memory query --recent --limit 5
+
+# Resume the most recent hive
+npx claude-flow@alpha hive-mind resume
+
+# Or resume specific namespace
+npx claude-flow@alpha hive-mind resume --namespace auth
+```
+
 ---
 
 ## 🪝 **Advanced Hooks System**
