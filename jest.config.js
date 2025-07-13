@@ -31,7 +31,8 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^~/(.*)$': '<rootDir>/src/$1',
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@tests/(.*)$': '<rootDir>/tests/$1'
   },
   modulePathIgnorePatterns: [
     '<rootDir>/dist/',
@@ -55,5 +56,18 @@ export default {
   coverageReporters: ['text', 'lcov', 'html'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testTimeout: 30000,
-  verbose: true
+  verbose: true,
+  // Enhanced error handling
+  errorOnDeprecated: false,
+  // Better module resolution
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  // Clear mocks between tests
+  clearMocks: true,
+  restoreMocks: true,
+  // Enhanced globals
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
+  }
 };

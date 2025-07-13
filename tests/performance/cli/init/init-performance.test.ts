@@ -43,15 +43,15 @@ describe("Init Command Performance Tests", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
       
       // Should complete within 10 seconds for basic init
-      assertEquals(duration < 10000, true);
+      expect(duration < 10000).toBe(true);
       
       // Should create expected files
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
 
       console.log(`Basic init completed in ${duration.toFixed(2)}ms`);
     });
@@ -100,7 +100,7 @@ describe("Init Command Performance Tests", () => {
       const fullDuration = performance.now() - fullStartTime;
 
       // Minimal should be faster or comparable
-      assertEquals(minimalDuration <= fullDuration * 1.5, true); // Allow 50% tolerance
+      expect(minimalDuration <= fullDuration * 1.5).toBe(true); // Allow 50% tolerance
 
       console.log(`Minimal init: ${minimalDuration.toFixed(2)}ms`);
       console.log(`Full init: ${fullDuration.toFixed(2)}ms`);
@@ -128,14 +128,14 @@ describe("Init Command Performance Tests", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
       
       // SPARC init may take longer due to external processes
-      assertEquals(duration < 30000, true); // 30 seconds max
+      expect(duration < 30000).toBe(true); // 30 seconds max
       
       // Should create SPARC structure
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
 
       console.log(`SPARC init completed in ${duration.toFixed(2)}ms`);
     });
@@ -169,11 +169,11 @@ describe("Init Command Performance Tests", () => {
       const duration = endTime - startTime;
 
       // Should still complete successfully with fallback
-      assertEquals(duration < 15000, true); // Should be faster than full external process
+      expect(duration < 15000).toBe(true); // Should be faster than full external process
       
       // Should create basic SPARC structure manually
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
 
       console.log(`SPARC fallback completed in ${duration.toFixed(2)}ms`);
     });
@@ -214,18 +214,18 @@ describe("Init Command Performance Tests", () => {
 
       // All should succeed
       for (const result of results) {
-        assertEquals(result.success, true);
+        expect(result.success).toBe(true);
       }
 
       // Concurrent execution should be faster than sequential
       // (though this depends on system resources)
-      assertEquals(duration < 20000, true); // 20 seconds for 3 concurrent inits
+      expect(duration < 20000).toBe(true); // 20 seconds for 3 concurrent inits
 
       // Verify all directories were initialized
       for (const dir of testDirs) {
-        assertExists(await exists(join(dir, "CLAUDE.md")));
-        assertExists(await exists(join(dir, "memory-bank.md")));
-        assertExists(await exists(join(dir, "coordination.md")));
+        expect(await exists(join(dir, "CLAUDE.md").toBeDefined()));
+        expect(await exists(join(dir, "memory-bank.md").toBeDefined()));
+        expect(await exists(join(dir, "coordination.md").toBeDefined()));
       }
 
       // Cleanup
@@ -274,15 +274,15 @@ describe("Init Command Performance Tests", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
       
       // Should not be significantly slower due to existing files
-      assertEquals(duration < 15000, true);
+      expect(duration < 15000).toBe(true);
       
       // Should create init files
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
 
       console.log(`Init in large project (${numFiles} files) completed in ${duration.toFixed(2)}ms`);
     });
@@ -309,11 +309,11 @@ describe("Init Command Performance Tests", () => {
       const result = await command.output();
       const finalMemory = Deno.memoryUsage();
 
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Memory increase should be reasonable (less than 50MB)
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
-      assertEquals(memoryIncrease < 50 * 1024 * 1024, true);
+      expect(memoryIncrease < 50 * 1024 * 1024).toBe(true);
 
       console.log(`Memory usage increase: ${(memoryIncrease / 1024 / 1024).toFixed(2)}MB`);
     });
@@ -343,14 +343,14 @@ describe("Init Command Performance Tests", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
       
       // Force overwrite should not be significantly slower
-      assertEquals(duration < 10000, true);
+      expect(duration < 10000).toBe(true);
 
       // Files should be overwritten
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(claudeContent.includes("existing content"), false);
+      expect(claudeContent.includes("existing content")).toBe(false);
 
       console.log(`Force overwrite completed in ${duration.toFixed(2)}ms`);
     });
@@ -400,7 +400,7 @@ describe("Init Command Performance Tests", () => {
 
       // Should create directories efficiently
       const dirCreationRate = createdDirs / (duration / 1000); // dirs per second
-      assertEquals(dirCreationRate > 10, true); // Should create > 10 dirs/second
+      expect(dirCreationRate > 10).toBe(true); // Should create > 10 dirs/second
 
       console.log(`Created ${createdDirs} directories in ${duration.toFixed(2)}ms (${dirCreationRate.toFixed(2)} dirs/sec)`);
     });
@@ -452,7 +452,7 @@ describe("Init Command Performance Tests", () => {
 
       // Should write files efficiently
       const writeRate = totalSize / (duration / 1000); // bytes per second
-      assertEquals(writeRate > 1000, true); // Should write > 1KB/second
+      expect(writeRate > 1000).toBe(true); // Should write > 1KB/second
 
       console.log(`Created ${createdFiles} files (${totalSize} bytes) in ${duration.toFixed(2)}ms (${(writeRate / 1024).toFixed(2)} KB/sec)`);
     });

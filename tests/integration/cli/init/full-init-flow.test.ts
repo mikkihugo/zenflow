@@ -47,18 +47,18 @@ describe("Full Init Flow Integration Tests", () => {
       }
 
       // Check that key files were created
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
-      assertExists(await exists(join(testDir, "memory/claude-flow-data.json")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory/claude-flow-data.json").toBeDefined()));
 
       // Check directory structure
-      assertExists(await exists(join(testDir, "memory")));
-      assertExists(await exists(join(testDir, "memory/agents")));
-      assertExists(await exists(join(testDir, "memory/sessions")));
-      assertExists(await exists(join(testDir, "coordination")));
-      assertExists(await exists(join(testDir, ".claude")));
-      assertExists(await exists(join(testDir, ".claude/commands")));
+      expect(await exists(join(testDir, "memory").toBeDefined()));
+      expect(await exists(join(testDir, "memory/agents").toBeDefined()));
+      expect(await exists(join(testDir, "memory/sessions").toBeDefined()));
+      expect(await exists(join(testDir, "coordination").toBeDefined()));
+      expect(await exists(join(testDir, ".claude").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands").toBeDefined()));
     });
 
     it("should handle project with existing files", async () => {
@@ -87,7 +87,7 @@ describe("Full Init Flow Integration Tests", () => {
 
       // Should not overwrite without force
       const existingContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(existingContent, "existing content");
+      expect(existingContent).toBe("existing content");
     });
 
     it("should handle force overwrite correctly", async () => {
@@ -109,15 +109,15 @@ describe("Full Init Flow Integration Tests", () => {
       });
 
       const result = await command.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should overwrite files
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(claudeContent.includes("old content"), false);
+      expect(claudeContent.includes("old content")).toBe(false);
       assertStringIncludes(claudeContent, "Claude Code Configuration");
 
       const memoryContent = await Deno.readTextFile(join(testDir, "memory-bank.md"));
-      assertEquals(memoryContent.includes("old memory"), false);
+      expect(memoryContent.includes("old memory")).toBe(false);
       assertStringIncludes(memoryContent, "Memory Bank");
     });
   });
@@ -141,9 +141,9 @@ describe("Full Init Flow Integration Tests", () => {
       const output = new TextDecoder().decode(result.stdout);
 
       // Should create SPARC structure
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
 
       // Should have SPARC-enhanced CLAUDE.md
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
@@ -171,7 +171,7 @@ describe("Full Init Flow Integration Tests", () => {
       });
 
       const result = await command.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should preserve existing .roomodes (as per manual creation logic)
       const roomodesContent = await Deno.readTextFile(join(testDir, ".roomodes"));
@@ -195,12 +195,12 @@ describe("Full Init Flow Integration Tests", () => {
       });
 
       const result = await command.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should create basic files
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
 
       // Content should be minimal
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
@@ -233,15 +233,15 @@ describe("Full Init Flow Integration Tests", () => {
       });
 
       const result = await command.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should create SPARC structure
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
 
       // Should overwrite CLAUDE.md with SPARC content
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(claudeContent.includes("conflicting"), false);
+      expect(claudeContent.includes("conflicting")).toBe(false);
       assertStringIncludes(claudeContent, "SPARC Development Environment");
 
       // Memory should be minimal
@@ -271,9 +271,9 @@ describe("Full Init Flow Integration Tests", () => {
       const dataContent = await Deno.readTextFile(dataPath);
       const data = JSON.parse(dataContent);
 
-      assertEquals(Array.isArray(data.agents), true);
-      assertEquals(Array.isArray(data.tasks), true);
-      assertEquals(typeof data.lastUpdated, "number");
+      expect(Array.isArray(data.agents)).toBe(true);
+      expect(Array.isArray(data.tasks)).toBe(true);
+      expect(typeof data.lastUpdated).toBe("number");
     });
 
     it("should create valid SPARC JSON files", async () => {
@@ -330,8 +330,8 @@ describe("Full Init Flow Integration Tests", () => {
 
       for (const file of mdFiles) {
         const content = await Deno.readTextFile(join(testDir, file));
-        assertEquals(content.startsWith("#"), true);
-        assertEquals(content.includes("\r"), false); // No Windows line endings
+        expect(content.startsWith("#")).toBe(true);
+        expect(content.includes("\r")).toBe(false); // No Windows line endings
       }
     });
   });
@@ -353,12 +353,12 @@ describe("Full Init Flow Integration Tests", () => {
       await command.output();
 
       // Check executable was created
-      assertExists(await exists(join(testDir, "claude-flow")));
+      expect(await exists(join(testDir, "claude-flow").toBeDefined()));
 
       // Check it's executable (on Unix-like systems)
       try {
         const fileInfo = await Deno.stat(join(testDir, "claude-flow"));
-        assertEquals(fileInfo.isFile, true);
+        expect(fileInfo.isFile).toBe(true);
       } catch {
         // May not work on all systems
       }
@@ -416,9 +416,9 @@ describe("Full Init Flow Integration Tests", () => {
       await command.output();
 
       // Files should be created in subDir
-      assertExists(await exists(join(subDir, "CLAUDE.md")));
-      assertExists(await exists(join(subDir, "memory-bank.md")));
-      assertExists(await exists(join(subDir, "coordination.md")));
+      expect(await exists(join(subDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(subDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(subDir, "coordination.md").toBeDefined()));
     });
 
     it("should handle directory changes correctly", async () => {
@@ -441,9 +441,9 @@ describe("Full Init Flow Integration Tests", () => {
       await command.output();
 
       // Files should be in nested directory
-      assertExists(await exists(join(nestedDir, "CLAUDE.md")));
-      assertExists(await exists(join(nestedDir, "memory")));
-      assertExists(await exists(join(nestedDir, "coordination")));
+      expect(await exists(join(nestedDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(nestedDir, "memory").toBeDefined()));
+      expect(await exists(join(nestedDir, "coordination").toBeDefined()));
     });
   });
 });

@@ -3,10 +3,10 @@
  * Tests deadlock detection, task scheduling, and resource management
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists, assertRejects, assertThrows } from "https://deno.land/std@0.220.0/assert/mod.ts";
-import { FakeTime } from "https://deno.land/std@0.220.0/testing/time.ts";
-import { spy, stub } from "https://deno.land/std@0.220.0/testing/mock.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { expect } from "@jest/globals";
+// FakeTime equivalent available in test.utils.ts
+import { spy, stub  } from "../test.utils.ts";
 
 import { CoordinationManager } from '../../../src/coordination/manager.ts';
 import { TaskScheduler } from '../../../src/coordination/scheduler.ts';
@@ -88,9 +88,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // Verify all tasks completed
-      assertEquals(results.length, 4);
+      expect(results.length).toBe(4);
       tasks.forEach(task => {
-        assertEquals(task.execute.calls.length, 1);
+        expect(task.execute.calls.length).toBe(1);
       });
     });
 
@@ -137,9 +137,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       await Promise.all(promises);
       
       // Verify execution order respected dependencies
-      assertEquals(executionOrder[0], 'task-a');
-      assertEquals(executionOrder[1], 'task-b');
-      assertEquals(executionOrder[2], 'task-c');
+      expect(executionOrder[0]).toBe('task-a');
+      expect(executionOrder[1]).toBe('task-b');
+      expect(executionOrder[2]).toBe('task-c');
     });
 
     it('should detect and handle circular dependencies', async () => {
@@ -158,11 +158,11 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.allSettled(promises);
       const failures = results.filter(r => r.status === 'rejected');
       
-      assertEquals(failures.length >= 1, true);
+      expect(failures.length >= 1).toBe(true);
       
       // Verify circular dependency was detected
       const error = failures[0] as PromiseRejectedResult;
-      assertEquals(error.reason.message.includes('circular'), true);
+      expect(error.reason.message.includes('circular')).toBe(true);
     });
 
     it('should handle task timeouts correctly', async () => {
@@ -194,9 +194,9 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       const results = await Promise.all(promises);
       
-      assertEquals(results.length, 20);
+      expect(results.length).toBe(20);
       results.forEach((result, i) => {
-        assertEquals(result, `result-${tasks[i].id}`);
+        expect(result).toBe(`result-${tasks[i].id}`);
       });
     });
 
@@ -282,7 +282,7 @@ describe('Coordination System - Comprehensive Tests', () => {
       const failures = results.filter(r => r.status === 'rejected');
       
       // Deadlock detection should prevent both from hanging
-      assertEquals(successes.length + failures.length, 2);
+      expect(successes.length + failures.length).toBe(2);
     });
 
     it('should prevent resource starvation', async () => {
@@ -320,8 +320,8 @@ describe('Coordination System - Comprehensive Tests', () => {
       const successes = allResults.filter(r => r.status === 'fulfilled');
       
       // Low priority task should eventually complete (no starvation)
-      assertEquals(successes.length, 6);
-      assertEquals(lowPriorityTask.execute.calls.length, 1);
+      expect(successes.length).toBe(6);
+      expect(lowPriorityTask.execute.calls.length).toBe(1);
     });
 
     it('should handle complex dependency chains without deadlock', async () => {
@@ -342,9 +342,9 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       const results = await Promise.all(promises);
       
-      assertEquals(results.length, 7);
+      expect(results.length).toBe(7);
       tasks.forEach(task => {
-        assertEquals(task.execute.calls.length, 1);
+        expect(task.execute.calls.length).toBe(1);
       });
     });
 
@@ -381,8 +381,8 @@ describe('Coordination System - Comprehensive Tests', () => {
       const successes = results.filter(r => r.status === 'fulfilled');
       const failures = results.filter(r => r.status === 'rejected');
       
-      assertEquals(successes.length >= 1, true);
-      assertEquals(failures.length >= 1, true);
+      expect(successes.length >= 1).toBe(true);
+      expect(failures.length >= 1).toBe(true);
     });
   });
 
@@ -410,11 +410,11 @@ describe('Coordination System - Comprehensive Tests', () => {
       await AsyncTestUtils.delay(50);
       
       const resourceStatus = await resourceManager.getResourceStatus();
-      assertExists(resourceStatus);
+      expect(resourceStatus).toBeDefined();
       
       // Should track active resource usage
-      assertEquals(typeof resourceStatus.memoryUsage, 'number');
-      assertEquals(typeof resourceStatus.activeResources, 'object');
+      expect(typeof resourceStatus.memoryUsage).toBe('number');
+      expect(typeof resourceStatus.activeResources).toBe('object');
 
       await Promise.all(promises);
     });
@@ -466,9 +466,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // All tasks should complete, but serialized due to exclusive resource
-      assertEquals(results.length, 3);
+      expect(results.length).toBe(3);
       tasks.forEach(task => {
-        assertEquals(task.execute.calls.length, 1);
+        expect(task.execute.calls.length).toBe(1);
       });
     });
 
@@ -527,7 +527,7 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       // Resource should be cleaned up and available for next task
       const result = await coordinationManager.submitTask('followup-task', followupTask);
-      assertEquals(result, 'followup-complete');
+      expect(result).toBe('followup-complete');
     });
   });
 
@@ -565,9 +565,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // Both should complete, high priority first
-      assertEquals(results.length, 2);
-      assertEquals(results.includes('high-priority'), true);
-      assertEquals(results.includes('low-priority'), true);
+      expect(results.length).toBe(2);
+      expect(results.includes('high-priority')).toBe(true);
+      expect(results.includes('low-priority')).toBe(true);
     });
 
     it('should handle timestamp-based conflict resolution', async () => {
@@ -604,8 +604,8 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all([firstPromise, secondPromise]);
       
       // First submitted should win
-      assertEquals(results[0], 'first');
-      assertEquals(results[1], 'second');
+      expect(results[0]).toBe('first');
+      expect(results[1]).toBe('second');
     });
 
     it('should handle conflict escalation', async () => {
@@ -630,9 +630,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // All tasks should complete despite conflicts
-      assertEquals(results.length, 5);
+      expect(results.length).toBe(5);
       escalationTasks.forEach(task => {
-        assertEquals(task.execute.calls.length, 1);
+        expect(task.execute.calls.length).toBe(1);
       });
     });
 
@@ -671,9 +671,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // Should resolve conflicts and complete all tasks
-      assertEquals(results.length, 3);
+      expect(results.length).toBe(3);
       nestedConflictTasks.forEach(task => {
-        assertEquals(task.execute.calls.length, 1);
+        expect(task.execute.calls.length).toBe(1);
       });
     });
   });
@@ -729,14 +729,14 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // All tasks should complete
-      assertEquals(results.length, 12);
+      expect(results.length).toBe(12);
       
       // Work stealing should have balanced the load
       const agent1Results = results.filter(r => r.startsWith('agent1'));
       const agent2Results = results.filter(r => r.startsWith('agent2'));
       
-      assertEquals(agent1Results.length, 10);
-      assertEquals(agent2Results.length, 2);
+      expect(agent1Results.length).toBe(10);
+      expect(agent2Results.length).toBe(2);
     });
 
     it('should implement priority aging', async () => {
@@ -765,9 +765,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // Priority aging should eventually elevate old low priority task
-      assertEquals(results.length, 2);
-      assertEquals(oldLowPriorityTask.execute.calls.length, 1);
-      assertEquals(newHighPriorityTask.execute.calls.length, 1);
+      expect(results.length).toBe(2);
+      expect(oldLowPriorityTask.execute.calls.length).toBe(1);
+      expect(newHighPriorityTask.execute.calls.length).toBe(1);
     });
 
     it('should support dynamic priority adjustment', async () => {
@@ -790,7 +790,7 @@ describe('Coordination System - Comprehensive Tests', () => {
       await advancedScheduler.adjustTaskPriority('adjustable', 'critical');
 
       const result = await taskPromise;
-      assertEquals(result, 'adjustable-complete');
+      expect(result).toBe('adjustable-complete');
     });
 
     it('should handle load balancing across multiple schedulers', async () => {
@@ -817,9 +817,9 @@ describe('Coordination System - Comprehensive Tests', () => {
       const results = await Promise.all(promises);
       
       // Load balancing should distribute tasks across schedulers
-      assertEquals(results.length, 30);
+      expect(results.length).toBe(30);
       tasks.forEach(task => {
-        assertEquals(task.execute.calls.length, 1);
+        expect(task.execute.calls.length).toBe(1);
       });
     });
   });
@@ -860,7 +860,7 @@ describe('Coordination System - Comprehensive Tests', () => {
       
       const duration = Date.now() - startTime;
       
-      assertEquals(results.length, 1000);
+      expect(results.length).toBe(1000);
       TestAssertions.assertInRange(duration, 0, 10000); // Should complete within 10 seconds
       
       console.log(`Large batch (1000 tasks) completed in ${duration}ms`);
@@ -887,7 +887,7 @@ describe('Coordination System - Comprehensive Tests', () => {
         await Promise.all(promises);
       });
 
-      assertEquals(leaked, false);
+      expect(leaked).toBe(false);
     });
 
     it('should handle load testing scenario', async () => {
@@ -934,7 +934,7 @@ describe('Coordination System - Comprehensive Tests', () => {
             await coordinationManager.submitTask(`error-task-${scenario.name}`, failingTask);
           } catch (error) {
             // May still fail after retries
-            assertExists(error);
+            expect(error).toBeDefined();
           }
         } else {
           // Should fail fast for non-recoverable errors
@@ -967,8 +967,8 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       // Should eventually succeed after scheduler recovers
       const result = await coordinationManager.submitTask('resilient-task', resilientTask);
-      assertEquals(result, 'recovered');
-      assertEquals(failureCount, 3);
+      expect(result).toBe('recovered');
+      expect(failureCount).toBe(3);
     });
 
     it('should handle resource manager failures', async () => {
@@ -992,7 +992,7 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       // Should recover from resource manager failure
       const result = await coordinationManager.submitTask('resource-task', resourceTask);
-      assertEquals(result, 'resource-task-complete');
+      expect(result).toBe('resource-task-complete');
     });
 
     it('should handle partial system failures', async () => {
@@ -1017,12 +1017,12 @@ describe('Coordination System - Comprehensive Tests', () => {
       const failures = results.filter(r => r.status === 'rejected');
       
       // Should have partial success
-      assertEquals(successes.length, 7); // 7 out of 10 should succeed
-      assertEquals(failures.length, 3);
+      expect(successes.length).toBe(7); // 7 out of 10 should succeed
+      expect(failures.length).toBe(3);
       
       // System should remain functional
       const healthStatus = await coordinationManager.getHealthStatus();
-      assertEquals(healthStatus.healthy, true);
+      expect(healthStatus.healthy).toBe(true);
     });
 
     it('should implement circuit breaker pattern', async () => {
@@ -1051,7 +1051,7 @@ describe('Coordination System - Comprehensive Tests', () => {
       }
 
       // Circuit should be open now
-      assertEquals(circuitBreaker.getState().state, 'open');
+      expect(circuitBreaker.getState().state).toBe('open');
 
       // Should fail fast while open
       await TestAssertions.assertThrowsAsync(
@@ -1065,7 +1065,7 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       // Should succeed after circuit resets
       const result = await circuitBreaker.execute(flakyService);
-      assertEquals(result, 'service-success');
+      expect(result).toBe('service-success');
     });
   });
 
@@ -1089,13 +1089,13 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       const metrics = await coordinationManager.getMetrics();
       
-      assertExists(metrics);
-      assertEquals(typeof metrics.totalTasksSubmitted, 'number');
-      assertEquals(typeof metrics.totalTasksCompleted, 'number');
-      assertEquals(typeof metrics.averageExecutionTime, 'number');
-      assertEquals(typeof metrics.currentActiveTasks, 'number');
+      expect(metrics).toBeDefined();
+      expect(typeof metrics.totalTasksSubmitted).toBe('number');
+      expect(typeof metrics.totalTasksCompleted).toBe('number');
+      expect(typeof metrics.averageExecutionTime).toBe('number');
+      expect(typeof metrics.currentActiveTasks).toBe('number');
       
-      assertEquals(metrics.totalTasksCompleted, 10);
+      expect(metrics.totalTasksCompleted).toBe(10);
       TestAssertions.assertInRange(metrics.averageExecutionTime, 10, 100);
     });
 
@@ -1118,23 +1118,23 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       const resourceMetrics = await resourceManager.getMetrics();
       
-      assertExists(resourceMetrics);
-      assertEquals(typeof resourceMetrics.peakMemoryUsage, 'number');
-      assertEquals(typeof resourceMetrics.averageMemoryUsage, 'number');
-      assertEquals(typeof resourceMetrics.resourceUtilization, 'object');
+      expect(resourceMetrics).toBeDefined();
+      expect(typeof resourceMetrics.peakMemoryUsage).toBe('number');
+      expect(typeof resourceMetrics.averageMemoryUsage).toBe('number');
+      expect(typeof resourceMetrics.resourceUtilization).toBe('object');
     });
 
     it('should provide health status information', async () => {
       const healthStatus = await coordinationManager.getHealthStatus();
       
-      assertExists(healthStatus);
-      assertEquals(typeof healthStatus.healthy, 'boolean');
-      assertEquals(typeof healthStatus.components, 'object');
+      expect(healthStatus).toBeDefined();
+      expect(typeof healthStatus.healthy).toBe('boolean');
+      expect(typeof healthStatus.components).toBe('object');
       
       // Check individual component health
-      assertEquals(typeof healthStatus.components.scheduler, 'object');
-      assertEquals(typeof healthStatus.components.resourceManager, 'object');
-      assertEquals(typeof healthStatus.components.conflictResolver, 'object');
+      expect(typeof healthStatus.components.scheduler).toBe('object');
+      expect(typeof healthStatus.components.resourceManager).toBe('object');
+      expect(typeof healthStatus.components.conflictResolver).toBe('object');
     });
 
     it('should detect performance degradation', async () => {
@@ -1158,9 +1158,9 @@ describe('Coordination System - Comprehensive Tests', () => {
 
       const performanceMetrics = await coordinationManager.getPerformanceMetrics();
       
-      assertExists(performanceMetrics);
-      assertEquals(typeof performanceMetrics.throughput, 'number');
-      assertEquals(typeof performanceMetrics.latency, 'object');
+      expect(performanceMetrics).toBeDefined();
+      expect(typeof performanceMetrics.throughput).toBe('number');
+      expect(typeof performanceMetrics.latency).toBe('object');
       
       // Should detect degradation in throughput
       TestAssertions.assertInRange(performanceMetrics.throughput, 0.01, 1.0); // tasks per ms

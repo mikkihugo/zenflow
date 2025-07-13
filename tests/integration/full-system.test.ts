@@ -248,8 +248,8 @@ function solution() {
       };
 
       const researchResult = await orchestrator.executeTask(researchTask);
-      assertEquals(researchResult.status, 'completed');
-      assertExists(researchResult.output);
+      expect(researchResult.status).toBe('completed');
+      expect(researchResult.output).toBeDefined();
 
       // Step 2: Implementation task (depends on research)
       const implementTask: Task = {
@@ -272,8 +272,8 @@ function solution() {
       };
 
       const implementResult = await orchestrator.executeTask(implementTask);
-      assertEquals(implementResult.status, 'completed');
-      assertExists(implementResult.output);
+      expect(implementResult.status).toBe('completed');
+      expect(implementResult.output).toBeDefined();
 
       // Verify memory contains both research and implementation
       const allMemories = await memoryManager.queryEntries({
@@ -287,10 +287,10 @@ function solution() {
         m.type === 'artifact' && m.tags.includes('implementation')
       );
 
-      assertEquals(researchMemories.length, 1);
-      assertEquals(implementMemories.length, 1);
-      assertEquals(researchMemories[0].agentId, researcherProfile.id);
-      assertEquals(implementMemories[0].agentId, implementerProfile.id);
+      expect(researchMemories.length).toBe(1);
+      expect(implementMemories.length).toBe(1);
+      expect(researchMemories[0].agentId).toBe(researcherProfile.id);
+      expect(implementMemories[0].agentId).toBe(implementerProfile.id);
     });
 
     it('should handle complex multi-agent coordination scenario', async () => {
@@ -433,7 +433,7 @@ function solution() {
 
       // All coordination tasks should complete
       coordinationResults.forEach(result => {
-        assertEquals(result.status, 'completed');
+        expect(result.status).toBe('completed');
       });
 
       // Workers report their status
@@ -462,11 +462,11 @@ function solution() {
 
       // All status reports should complete
       statusResults.forEach(result => {
-        assertEquals(result.status, 'completed');
+        expect(result.status).toBe('completed');
       });
 
       // Verify coordination messages were sent
-      assertEquals(coordinationManager.sendMessage.calls.length, 3);
+      expect(coordinationManager.sendMessage.calls.length).toBe(3);
 
       // Verify status was stored in memory
       const statusMemories = await memoryManager.queryEntries({
@@ -474,10 +474,10 @@ function solution() {
         limit: 10,
       });
 
-      assertEquals(statusMemories.length, 3);
+      expect(statusMemories.length).toBe(3);
       statusMemories.forEach((memory, index) => {
-        assertEquals(memory.agentId, `worker-${index + 1}`);
-        assertEquals(memory.context.progress, (index + 1) * 25);
+        expect(memory.agentId).toBe(`worker-${index + 1}`);
+        expect(memory.context.progress).toBe((index + 1) * 25);
       });
     });
 
@@ -530,7 +530,7 @@ function solution() {
         stressAgents.map(agent => orchestrator.spawnAgent(agent))
       );
 
-      assertEquals(stressSessions.length, 5);
+      expect(stressSessions.length).toBe(5);
 
       // Create many concurrent heavy tasks
       const heavyTasks = stressAgents.flatMap((agent, agentIndex) =>
@@ -561,24 +561,24 @@ function solution() {
       const duration = Date.now() - startTime;
 
       // Verify all tasks completed
-      assertEquals(results.length, 15); // 5 agents × 3 tasks
+      expect(results.length).toBe(15); // 5 agents × 3 tasks
       results.forEach(result => {
-        assertEquals(result.status, 'completed');
+        expect(result.status).toBe('completed');
       });
 
       // System should handle the load reasonably well
-      assertEquals(duration < 30000, true); // Should complete within 30 seconds
+      expect(duration < 30000).toBe(true); // Should complete within 30 seconds
 
       // Check system health after stress test
       const orchestratorHealth = await orchestrator.getHealthStatus();
-      assertEquals(orchestratorHealth.healthy, true);
+      expect(orchestratorHealth.healthy).toBe(true);
 
       const terminalHealth = await terminalManager.getHealthStatus();
-      assertEquals(terminalHealth.healthy, true);
+      expect(terminalHealth.healthy).toBe(true);
 
       // Verify all agents are still active
       const activeSessions = orchestrator.getActiveSessions();
-      assertEquals(activeSessions.length, 5);
+      expect(activeSessions.length).toBe(5);
     });
   });
 
@@ -651,12 +651,12 @@ function solution() {
       const successfulTasks = results.filter(r => r.status === 'completed');
       const failedTasks = results.filter(r => r.status === 'failed');
 
-      assertEquals(successfulTasks.length > 0, true);
-      assertEquals(results.length, 10);
+      expect(successfulTasks.length > 0).toBe(true);
+      expect(results.length).toBe(10);
 
       // System should still be healthy
       const health = await orchestrator.getHealthStatus();
-      assertEquals(health.healthy, true);
+      expect(health.healthy).toBe(true);
     });
 
     it('should handle memory conflicts and coordination deadlocks', async () => {
@@ -767,17 +767,17 @@ function solution() {
 
       // All tasks should complete (conflicts resolved)
       results.forEach(result => {
-        assertEquals(result.status, 'completed');
+        expect(result.status).toBe('completed');
       });
 
       // Final entry should exist with one of the values
       const finalEntry = await memoryManager.getEntry(sharedEntryId);
-      assertExists(finalEntry);
-      assertEquals(finalEntry.version >= 1, true);
+      expect(finalEntry).toBeDefined();
+      expect(finalEntry.version >= 1).toBe(true);
 
       // Verify coordination prevented deadlocks
-      assertEquals(coordinationManager.acquireResource.calls.length, 3);
-      assertEquals(coordinationManager.releaseResource.calls.length, 3);
+      expect(coordinationManager.acquireResource.calls.length).toBe(3);
+      expect(coordinationManager.releaseResource.calls.length).toBe(3);
     });
   });
 
@@ -843,22 +843,22 @@ function solution() {
       const finalMetrics = await orchestrator.getMetrics();
 
       // Verify metrics structure
-      assertExists(finalMetrics.uptime);
-      assertExists(finalMetrics.totalAgents);
-      assertExists(finalMetrics.activeAgents);
-      assertExists(finalMetrics.totalTasks);
-      assertExists(finalMetrics.completedTasks);
-      assertExists(finalMetrics.memoryUsage);
-      assertExists(finalMetrics.cpuUsage);
+      expect(finalMetrics.uptime).toBeDefined();
+      expect(finalMetrics.totalAgents).toBeDefined();
+      expect(finalMetrics.activeAgents).toBeDefined();
+      expect(finalMetrics.totalTasks).toBeDefined();
+      expect(finalMetrics.completedTasks).toBeDefined();
+      expect(finalMetrics.memoryUsage).toBeDefined();
+      expect(finalMetrics.cpuUsage).toBeDefined();
 
       // Verify metric values make sense
-      assertEquals(finalMetrics.activeAgents, 1);
-      assertEquals(finalMetrics.completedTasks >= 5, true);
-      assertEquals(finalMetrics.totalTasks >= 5, true);
+      expect(finalMetrics.activeAgents).toBe(1);
+      expect(finalMetrics.completedTasks >= 5).toBe(true);
+      expect(finalMetrics.totalTasks >= 5).toBe(true);
 
       // Check memory and CPU usage are reasonable
-      assertEquals(finalMetrics.memoryUsage.rss > 0, true);
-      assertEquals(finalMetrics.cpuUsage.user >= 0, true);
+      expect(finalMetrics.memoryUsage.rss > 0).toBe(true);
+      expect(finalMetrics.cpuUsage.user >= 0).toBe(true);
     });
   });
 });

@@ -41,24 +41,24 @@ describe("Init Command Validation Tests", () => {
 
       // Validate claude-flow-data.json
       const dataPath = join(testDir, "memory/claude-flow-data.json");
-      assertExists(await exists(dataPath));
+      expect(await exists(dataPath).toBeDefined());
 
       const dataContent = await Deno.readTextFile(dataPath);
       const data = JSON.parse(dataContent);
 
       // Validate structure
-      assertEquals(Array.isArray(data.agents), true);
-      assertEquals(Array.isArray(data.tasks), true);
-      assertEquals(typeof data.lastUpdated, "number");
-      assertEquals(data.lastUpdated > 0, true);
+      expect(Array.isArray(data.agents)).toBe(true);
+      expect(Array.isArray(data.tasks)).toBe(true);
+      expect(typeof data.lastUpdated).toBe("number");
+      expect(data.lastUpdated > 0).toBe(true);
 
       // Validate arrays are initially empty
-      assertEquals(data.agents.length, 0);
-      assertEquals(data.tasks.length, 0);
+      expect(data.agents.length).toBe(0);
+      expect(data.tasks.length).toBe(0);
 
       // Validate timestamp is recent (within last minute)
       const now = Date.now();
-      assertEquals(Math.abs(now - data.lastUpdated) < 60000, true);
+      expect(Math.abs(now - data.lastUpdated) < 60000).toBe(true);
     });
 
     it("should create valid SPARC JSON files", async () => {
@@ -83,14 +83,14 @@ describe("Init Command Validation Tests", () => {
         const roomodesData = JSON.parse(roomodesContent);
 
         // Should have modes object
-        assertEquals(typeof roomodesData.modes, "object");
-        assertEquals(roomodesData.modes !== null, true);
+        expect(typeof roomodesData.modes).toBe("object");
+        expect(roomodesData.modes !== null).toBe(true);
 
         // Should have essential SPARC modes
         const requiredModes = ["architect", "code", "tdd", "spec-pseudocode", "integration"];
         for (const mode of requiredModes) {
-          assertExists(roomodesData.modes[mode]);
-          assertEquals(typeof roomodesData.modes[mode], "object");
+          expect(roomodesData.modes[mode]).toBeDefined();
+          expect(typeof roomodesData.modes[mode]).toBe("object");
         }
       }
 
@@ -101,14 +101,14 @@ describe("Init Command Validation Tests", () => {
         const workflowData = JSON.parse(workflowContent);
 
         // Should have workflow structure
-        assertEquals(typeof workflowData.name, "string");
-        assertEquals(Array.isArray(workflowData.steps), true);
-        assertEquals(workflowData.steps.length > 0, true);
+        expect(typeof workflowData.name).toBe("string");
+        expect(Array.isArray(workflowData.steps)).toBe(true);
+        expect(workflowData.steps.length > 0).toBe(true);
 
         // Validate step structure
         for (const step of workflowData.steps) {
-          assertEquals(typeof step.name, "string");
-          assertEquals(typeof step.description, "string");
+          expect(typeof step.name).toBe("string");
+          expect(typeof step.description).toBe("string");
         }
       }
     });
@@ -138,20 +138,20 @@ describe("Init Command Validation Tests", () => {
 
       for (const file of markdownFiles) {
         const filePath = join(testDir, file);
-        assertExists(await exists(filePath));
+        expect(await exists(filePath).toBeDefined());
 
         const content = await Deno.readTextFile(filePath);
 
         // Should start with header
-        assertEquals(content.startsWith("#"), true);
+        expect(content.startsWith("#")).toBe(true);
 
         // Should not have Windows line endings
-        assertEquals(content.includes("\r"), false);
+        expect(content.includes("\r")).toBe(false);
 
         // Should not have trailing spaces
         const lines = content.split("\n");
         for (const line of lines) {
-          assertEquals(line.endsWith(" "), false);
+          expect(line.endsWith(" ")).toBe(false);
         }
 
         // Should have consistent header levels (no skipping)
@@ -160,12 +160,12 @@ describe("Init Command Validation Tests", () => {
           .map(line => line.match(/^#+/)?.[0].length || 0);
 
         // First header should be level 1
-        assertEquals(headerLevels[0], 1);
+        expect(headerLevels[0]).toBe(1);
 
         // No skipping levels (can't go from # to ###)
         for (let i = 1; i < headerLevels.length; i++) {
           const diff = headerLevels[i] - headerLevels[i - 1];
-          assertEquals(diff <= 1, true); // Can only increase by 1 level at a time
+          expect(diff <= 1).toBe(true); // Can only increase by 1 level at a time
         }
       }
     });
@@ -186,17 +186,17 @@ describe("Init Command Validation Tests", () => {
       await command.output();
 
       const executablePath = join(testDir, "claude-flow");
-      assertExists(await exists(executablePath));
+      expect(await exists(executablePath).toBeDefined());
 
       // Check file stats
       const stat = await Deno.stat(executablePath);
-      assertEquals(stat.isFile, true);
+      expect(stat.isFile).toBe(true);
 
       // On Unix-like systems, check if it's executable
       if (Deno.build.os !== "windows") {
-        assertEquals(stat.mode !== null, true);
+        expect(stat.mode !== null).toBe(true);
         // Check if user execute bit is set (at least 0o100)
-        assertEquals((stat.mode! & 0o100) !== 0, true);
+        expect((stat.mode! & 0o100) !== 0).toBe(true);
       }
     });
   });
@@ -233,21 +233,21 @@ describe("Init Command Validation Tests", () => {
 
       for (const dir of requiredDirs) {
         const dirPath = join(testDir, dir);
-        assertExists(await exists(dirPath));
+        expect(await exists(dirPath).toBeDefined());
 
         const stat = await Deno.stat(dirPath);
-        assertEquals(stat.isDirectory, true);
+        expect(stat.isDirectory).toBe(true);
       }
 
       // Validate directory hierarchy
-      assertExists(await exists(join(testDir, "memory")));
-      assertExists(await exists(join(testDir, "memory/agents")));
-      assertExists(await exists(join(testDir, "memory/sessions")));
+      expect(await exists(join(testDir, "memory").toBeDefined()));
+      expect(await exists(join(testDir, "memory/agents").toBeDefined()));
+      expect(await exists(join(testDir, "memory/sessions").toBeDefined()));
       
-      assertExists(await exists(join(testDir, "coordination")));
-      assertExists(await exists(join(testDir, "coordination/memory_bank")));
-      assertExists(await exists(join(testDir, "coordination/subtasks")));
-      assertExists(await exists(join(testDir, "coordination/orchestration")));
+      expect(await exists(join(testDir, "coordination").toBeDefined()));
+      expect(await exists(join(testDir, "coordination/memory_bank").toBeDefined()));
+      expect(await exists(join(testDir, "coordination/subtasks").toBeDefined()));
+      expect(await exists(join(testDir, "coordination/orchestration").toBeDefined()));
     });
 
     it("should create SPARC configuration correctly", async () => {
@@ -276,16 +276,16 @@ describe("Init Command Validation Tests", () => {
       ];
 
       for (const dir of sparcDirs) {
-        assertExists(await exists(join(testDir, dir)));
+        expect(await exists(join(testDir, dir).toBeDefined()));
       }
 
       // Validate SPARC configuration files
-      assertExists(await exists(join(testDir, ".roomodes")));
-      assertExists(await exists(join(testDir, ".roo/README.md")));
-      assertExists(await exists(join(testDir, ".roo/workflows/basic-tdd.json")));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/README.md").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/workflows/basic-tdd.json").toBeDefined()));
 
       // Validate Claude commands for SPARC
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
     });
 
     it("should validate CLAUDE.md content structure", async () => {
@@ -545,10 +545,10 @@ describe("Init Command Validation Tests", () => {
 
       // SPARC references should point to existing paths
       if (claudeContent.includes(".roo/")) {
-        assertExists(await exists(join(testDir, ".roo")));
+        expect(await exists(join(testDir, ".roo").toBeDefined()));
       }
       if (claudeContent.includes(".roomodes")) {
-        assertExists(await exists(join(testDir, ".roomodes")));
+        expect(await exists(join(testDir, ".roomodes").toBeDefined()));
       }
     });
   });
@@ -573,13 +573,13 @@ describe("Init Command Validation Tests", () => {
       const data = JSON.parse(dataContent);
 
       // Validate timestamp format
-      assertEquals(typeof data.lastUpdated, "number");
-      assertEquals(data.lastUpdated > 1000000000000, true); // After year 2001
-      assertEquals(data.lastUpdated < 10000000000000, true); // Before year 2286
+      expect(typeof data.lastUpdated).toBe("number");
+      expect(data.lastUpdated > 1000000000000).toBe(true); // After year 2001
+      expect(data.lastUpdated < 10000000000000).toBe(true); // Before year 2286
 
       // Should be a valid Date
       const date = new Date(data.lastUpdated);
-      assertEquals(isNaN(date.getTime()), false);
+      expect(isNaN(date.getTime())).toBe(false);
     });
 
     it("should validate workflow step format", async () => {
@@ -604,16 +604,16 @@ describe("Init Command Validation Tests", () => {
         const workflow = JSON.parse(workflowContent);
 
         // Validate workflow structure
-        assertEquals(typeof workflow.name, "string");
-        assertEquals(workflow.name.length > 0, true);
-        assertEquals(Array.isArray(workflow.steps), true);
+        expect(typeof workflow.name).toBe("string");
+        expect(workflow.name.length > 0).toBe(true);
+        expect(Array.isArray(workflow.steps)).toBe(true);
 
         // Validate each step
         for (const step of workflow.steps) {
-          assertEquals(typeof step.name, "string");
-          assertEquals(step.name.length > 0, true);
-          assertEquals(typeof step.description, "string");
-          assertEquals(step.description.length > 0, true);
+          expect(typeof step.name).toBe("string");
+          expect(step.name.length > 0).toBe(true);
+          expect(typeof step.description).toBe("string");
+          expect(step.description.length > 0).toBe(true);
         }
       }
     });

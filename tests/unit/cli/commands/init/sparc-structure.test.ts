@@ -26,43 +26,43 @@ describe("SPARC Structure Creation Tests", () => {
       await createSparcStructureManually();
 
       // Check main directories
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roo/templates")));
-      assertExists(await exists(join(testDir, ".roo/workflows")));
-      assertExists(await exists(join(testDir, ".roo/modes")));
-      assertExists(await exists(join(testDir, ".roo/configs")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/templates").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/workflows").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/modes").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/configs").toBeDefined()));
     });
 
     it("should create .roomodes configuration file", async () => {
       await createSparcStructureManually();
 
-      assertExists(await exists(join(testDir, ".roomodes")));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
 
       // Check content is valid JSON
       const roomodesContent = await Deno.readTextFile(join(testDir, ".roomodes"));
       const roomodesData = JSON.parse(roomodesContent);
       
-      assertEquals(typeof roomodesData, "object");
-      assertEquals(roomodesData !== null, true);
+      expect(typeof roomodesData).toBe("object");
+      expect(roomodesData !== null).toBe(true);
     });
 
     it("should create workflow templates", async () => {
       await createSparcStructureManually();
 
-      assertExists(await exists(join(testDir, ".roo/workflows/basic-tdd.json")));
+      expect(await exists(join(testDir, ".roo/workflows/basic-tdd.json").toBeDefined()));
 
       // Check workflow is valid JSON
       const workflowContent = await Deno.readTextFile(join(testDir, ".roo/workflows/basic-tdd.json"));
       const workflowData = JSON.parse(workflowContent);
       
-      assertEquals(typeof workflowData, "object");
+      expect(typeof workflowData).toBe("object");
       assertStringIncludes(workflowContent, "tdd");
     });
 
     it("should create README for .roo directory", async () => {
       await createSparcStructureManually();
 
-      assertExists(await exists(join(testDir, ".roo/README.md")));
+      expect(await exists(join(testDir, ".roo/README.md").toBeDefined()));
 
       const readmeContent = await Deno.readTextFile(join(testDir, ".roo/README.md"));
       assertStringIncludes(readmeContent, "# SPARC Development Environment");
@@ -72,9 +72,9 @@ describe("SPARC Structure Creation Tests", () => {
     it("should create Claude commands directory", async () => {
       await createSparcStructureManually();
 
-      assertExists(await exists(join(testDir, ".claude")));
-      assertExists(await exists(join(testDir, ".claude/commands")));
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".claude").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
     });
   });
 
@@ -90,7 +90,7 @@ describe("SPARC Structure Creation Tests", () => {
       await createSparcStructureManually();
 
       const preservedContent = await Deno.readTextFile(join(testDir, ".roomodes"));
-      assertEquals(preservedContent, existingContent);
+      expect(preservedContent).toBe(existingContent);
     });
 
     it("should handle existing directories gracefully", async () => {
@@ -102,9 +102,9 @@ describe("SPARC Structure Creation Tests", () => {
       await createSparcStructureManually();
 
       // Should still create missing directories
-      assertExists(await exists(join(testDir, ".roo/workflows")));
-      assertExists(await exists(join(testDir, ".roo/modes")));
-      assertExists(await exists(join(testDir, ".roo/configs")));
+      expect(await exists(join(testDir, ".roo/workflows").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/modes").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/configs").toBeDefined()));
     });
   });
 
@@ -116,14 +116,14 @@ describe("SPARC Structure Creation Tests", () => {
       const roomodesData = JSON.parse(roomodesContent);
 
       // Should have SPARC modes
-      assertEquals(typeof roomodesData.modes, "object");
-      assertEquals(roomodesData.modes !== null, true);
+      expect(typeof roomodesData.modes).toBe("object");
+      expect(roomodesData.modes !== null).toBe(true);
 
       // Should have basic modes
-      assertExists(roomodesData.modes.architect);
-      assertExists(roomodesData.modes.code);
-      assertExists(roomodesData.modes.tdd);
-      assertExists(roomodesData.modes["spec-pseudocode"]);
+      expect(roomodesData.modes.architect).toBeDefined();
+      expect(roomodesData.modes.code).toBeDefined();
+      expect(roomodesData.modes.tdd).toBeDefined();
+      expect(roomodesData.modes["spec-pseudocode"]).toBeDefined();
     });
 
     it("should create valid workflow JSON", async () => {
@@ -133,9 +133,9 @@ describe("SPARC Structure Creation Tests", () => {
       const workflowData = JSON.parse(workflowContent);
 
       // Should have workflow structure
-      assertEquals(typeof workflowData.name, "string");
-      assertEquals(Array.isArray(workflowData.steps), true);
-      assertEquals(workflowData.steps.length > 0, true);
+      expect(typeof workflowData.name).toBe("string");
+      expect(Array.isArray(workflowData.steps)).toBe(true);
+      expect(workflowData.steps.length > 0).toBe(true);
     });
 
     it("should create proper README format", async () => {
@@ -211,7 +211,7 @@ describe("SPARC Structure Creation Tests", () => {
       await createSparcStructureManually();
 
       // Check for command files
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
       
       // Check for specific command files (they should be created by createClaudeSlashCommands)
       const commandsDir = join(testDir, ".claude/commands/sparc");
@@ -228,7 +228,7 @@ describe("SPARC Structure Creation Tests", () => {
       }
 
       // Should have created command files
-      assertEquals(commandFiles.length >= 0, true);
+      expect(commandFiles.length >= 0).toBe(true);
     });
   });
 
@@ -248,7 +248,7 @@ describe("SPARC Structure Creation Tests", () => {
       ];
 
       for (const dir of expectedDirs) {
-        assertExists(await exists(join(testDir, dir)));
+        expect(await exists(join(testDir, dir).toBeDefined()));
       }
     });
 
@@ -262,7 +262,7 @@ describe("SPARC Structure Creation Tests", () => {
       ];
 
       for (const file of expectedFiles) {
-        assertExists(await exists(join(testDir, file)));
+        expect(await exists(join(testDir, file).toBeDefined()));
       }
     });
 

@@ -85,7 +85,7 @@ describe('Memory-Coordination Integration', () => {
       }
 
       // Verify all entries were stored
-      assertEquals(memoryManager.storeEntry.calls.length, 3);
+      expect(memoryManager.storeEntry.calls.length).toBe(3);
 
       // Query memories across agents
       const query: MemoryQuery = {
@@ -95,11 +95,11 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const results = await memoryManager.queryEntries(query);
-      assertEquals(results.length, 3);
+      expect(results.length).toBe(3);
 
       // Verify entries from all agents
       const resultAgentIds = results.map(entry => entry.agentId).sort();
-      assertEquals(resultAgentIds, agentIds.sort());
+      expect(resultAgentIds).toBe(agentIds.sort());
     });
 
     it('should handle memory conflicts using coordination', async () => {
@@ -148,8 +148,8 @@ describe('Memory-Coordination Integration', () => {
 
       // Verify final state
       const finalEntry = await memoryManager.getEntry(initialEntry.id);
-      assertExists(finalEntry);
-      assertEquals(finalEntry.version, 3); // Should be incremented due to conflict
+      expect(finalEntry).toBeDefined();
+      expect(finalEntry.version).toBe(3); // Should be incremented due to conflict
     });
 
     it('should coordinate cross-agent memory queries', async () => {
@@ -190,11 +190,11 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const allMemories = await memoryManager.queryEntries(synthesisQuery);
-      assertEquals(allMemories.length, 3);
+      expect(allMemories.length).toBe(3);
 
       // Verify memories from all agents are accessible
       const agentTypes = allMemories.map(m => m.context.createdBy).sort();
-      assertEquals(agentTypes, ['coordinator', 'implementer', 'researcher']);
+      expect(agentTypes).toBe(['coordinator', 'implementer', 'researcher']);
     });
   });
 
@@ -246,11 +246,11 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const resourceHistory = await memoryManager.queryEntries(resourceQuery);
-      assertEquals(resourceHistory.length, 2);
+      expect(resourceHistory.length).toBe(2);
 
       const actions = resourceHistory.map(entry => entry.context.action);
-      assertEquals(actions.includes('acquire'), true);
-      assertEquals(actions.includes('acquired'), true);
+      expect(actions.includes('acquire')).toBe(true);
+      expect(actions.includes('acquired')).toBe(true);
 
       // Release resource
       await coordinationManager.releaseResource(resourceId, agentId);
@@ -294,7 +294,7 @@ describe('Memory-Coordination Integration', () => {
         { agentId: agents[1], resourceId: resources[0] },
       ]);
 
-      assertEquals(deadlockDetected, true);
+      expect(deadlockDetected).toBe(true);
 
       // Log deadlock detection in memory
       const deadlockEntry: MemoryEntry = {
@@ -322,8 +322,8 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const deadlockHistory = await memoryManager.queryEntries(deadlockQuery);
-      assertEquals(deadlockHistory.length, 1);
-      assertEquals(deadlockHistory[0].context.agents, agents);
+      expect(deadlockHistory.length).toBe(1);
+      expect(deadlockHistory[0].context.agents).toBe(agents);
 
       // Clean up resources
       await coordinationManager.releaseResource(resources[0], agents[0]);
@@ -400,16 +400,16 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const messageHistory = await memoryManager.queryEntries(messageQuery);
-      assertEquals(messageHistory.length, 2);
+      expect(messageHistory.length).toBe(2);
 
       const actions = messageHistory.map(entry => entry.context.action);
-      assertEquals(actions.includes('send'), true);
-      assertEquals(actions.includes('receive'), true);
+      expect(actions.includes('send')).toBe(true);
+      expect(actions.includes('receive')).toBe(true);
 
       // Verify message coordination worked
-      assertEquals(coordinationManager.sendMessage.calls.length, 1);
+      expect(coordinationManager.sendMessage.calls.length).toBe(1);
       const sentMessage = coordinationManager.sendMessage.calls[0].args[2];
-      assertEquals(sentMessage.id, message.id);
+      expect(sentMessage.id).toBe(message.id);
     });
 
     it('should handle message delivery failures with memory logging', async () => {
@@ -462,8 +462,8 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const failures = await memoryManager.queryEntries(failureQuery);
-      assertEquals(failures.length, 1);
-      assertEquals(failures[0].context.retryRequired, true);
+      expect(failures.length).toBe(1);
+      expect(failures[0].context.retryRequired).toBe(true);
     });
   });
 
@@ -504,7 +504,7 @@ describe('Memory-Coordination Integration', () => {
         try {
           // Get current state
           const currentEntry = await memoryManager.getEntry(entryId);
-          assertExists(currentEntry);
+          expect(currentEntry).toBeDefined();
 
           // Apply modification
           const updatedEntry = {
@@ -543,9 +543,9 @@ describe('Memory-Coordination Integration', () => {
 
       // Verify final state
       const finalEntry = await memoryManager.getEntry(entryId);
-      assertExists(finalEntry);
-      assertEquals(finalEntry.version, finalVersion);
-      assertEquals(finalEntry.context.priority, 1); // Last modification
+      expect(finalEntry).toBeDefined();
+      expect(finalEntry.version).toBe(finalVersion);
+      expect(finalEntry.context.priority).toBe(1); // Last modification
 
       // Verify modification history
       const modificationQuery: MemoryQuery = {
@@ -554,7 +554,7 @@ describe('Memory-Coordination Integration', () => {
       };
 
       const modificationHistory = await memoryManager.queryEntries(modificationQuery);
-      assertEquals(modificationHistory.length, 3);
+      expect(modificationHistory.length).toBe(3);
     });
 
     it('should coordinate distributed memory cleanup', async () => {
@@ -634,14 +634,14 @@ describe('Memory-Coordination Integration', () => {
         tags: ['temp'],
         limit: 50,
       });
-      assertEquals(remainingTemp.length, 0);
+      expect(remainingTemp.length).toBe(0);
 
       // Verify cleanup was logged
       const cleanupLogs = await memoryManager.queryEntries({
         tags: ['cleanup'],
         limit: 10,
       });
-      assertEquals(cleanupLogs.length, 3); // One per agent
+      expect(cleanupLogs.length).toBe(3); // One per agent
     });
   });
 
@@ -696,11 +696,11 @@ describe('Memory-Coordination Integration', () => {
         limit: 200,
       });
 
-      assertEquals(allEntries.length, agentCount * entriesPerAgent);
+      expect(allEntries.length).toBe(agentCount * entriesPerAgent);
 
       // Verify entries from all agents
       const uniqueAgents = new Set(allEntries.map(entry => entry.agentId));
-      assertEquals(uniqueAgents.size, agentCount);
+      expect(uniqueAgents.size).toBe(agentCount);
     });
   });
 });

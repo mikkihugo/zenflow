@@ -2,6 +2,8 @@
  * Test configuration for Claude-Flow
  */
 
+import * as fs from 'fs';
+
 export const TEST_CONFIG = {
   // Test timeouts
   timeout: {
@@ -71,7 +73,7 @@ export const TEST_CONFIG = {
 export function setupTestEnv(): void {
   // Set environment variables
   Object.entries(TEST_CONFIG.env).forEach(([key, value]) => {
-    Deno.env.set(key, value);
+    process.env[key] = value;
   });
 
   // Ensure test directories exist
@@ -81,7 +83,7 @@ export function setupTestEnv(): void {
 /**
  * Cleanup test environment
  */
-export async function cleanupTestEnv(): Promise<void> {
+export function cleanupTestEnv(): void {
   // Remove test data directory
   const cleanupPaths = [
     TEST_CONFIG.env.CLAUDE_FLOW_DATA_DIR,
@@ -92,7 +94,7 @@ export async function cleanupTestEnv(): Promise<void> {
 
   for (const path of cleanupPaths) {
     try {
-      await Deno.remove(path, { recursive: true });
+      fs.rmSync(path, { recursive: true, force: true });
     } catch {
       // Ignore if doesn't exist
     }
@@ -106,7 +108,7 @@ function ensureTestDirectories(): void {
   const directories = Object.values(TEST_CONFIG.directories);
   directories.forEach(dir => {
     try {
-      Deno.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true });
     } catch {
       // Directory already exists
     }
@@ -122,7 +124,7 @@ function ensureTestDirectories(): void {
 
   additionalDirs.forEach(dir => {
     try {
-      Deno.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true });
     } catch {
       // Directory already exists
     }
@@ -142,7 +144,7 @@ export function getTestTimeout(suiteType: keyof typeof TEST_CONFIG.timeout): num
 export function validateTestEnvironment(): boolean {
   // Check required environment variables
   const requiredEnvVars = Object.keys(TEST_CONFIG.env);
-  const missingVars = requiredEnvVars.filter(varName => !Deno.env.get(varName));
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
   
   if (missingVars.length > 0) {
     console.error(`Missing test environment variables: ${missingVars.join(', ')}`);
@@ -153,8 +155,8 @@ export function validateTestEnvironment(): boolean {
   const directories = Object.values(TEST_CONFIG.directories);
   for (const dir of directories) {
     try {
-      const stat = Deno.statSync(dir);
-      if (!stat.isDirectory) {
+      const stat = fs.statSync(dir);
+      if (!stat.isDirectory()) {
         console.error(`Test path is not a directory: ${dir}`);
         return false;
       }

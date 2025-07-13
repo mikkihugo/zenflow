@@ -34,7 +34,7 @@ describe('EventBus', () => {
   it('should be a singleton', () => {
     const instance1 = EventBus.getInstance();
     const instance2 = EventBus.getInstance();
-    assertEquals(instance1, instance2);
+    expect(instance1).toBe(instance2);
   });
 
   it('should emit and receive events', () => {
@@ -59,7 +59,7 @@ describe('EventBus', () => {
     eventBus.emit(SystemEvents.AGENT_SPAWNED as any, eventData);
 
     assertSpyCalls(handler, 1);
-    assertEquals(handler.calls[0].args[0], eventData);
+    expect(handler).toHaveBeenCalledWith(eventData);
   });
 
   it('should handle multiple listeners', () => {
@@ -105,7 +105,7 @@ describe('EventBus', () => {
     }, 100);
 
     const result = await promise as any;
-    assertEquals(result.timestamp instanceof Date, true);
+    expect(result.timestamp instanceof Date).toBe(true);
   });
 
   it('should timeout when waiting for event', async () => {
@@ -129,7 +129,7 @@ describe('EventBus', () => {
     eventBus.emit(SystemEvents.TASK_COMPLETED as any, { taskId: 'task-2', result: 'success' });
 
     assertSpyCalls(handler, 1);
-    assertEquals(handler.calls[0].args[0].taskId, 'task-1');
+    expect(handler).toHaveBeenCalledWith(expect.objectContaining({ taskId: 'task-1' }));
   });
 
   it('should remove event listeners', () => {
@@ -171,10 +171,10 @@ describe('EventBus', () => {
     const taskCreatedStat = stats.find(s => s.event === SystemEvents.TASK_CREATED);
     const taskCompletedStat = stats.find(s => s.event === SystemEvents.TASK_COMPLETED);
     
-    assertExists(taskCreatedStat);
-    assertExists(taskCompletedStat);
-    assertEquals(taskCreatedStat!.count, 2);
-    assertEquals(taskCompletedStat!.count, 1);
+    expect(taskCreatedStat).toBeDefined();
+    expect(taskCompletedStat).toBeDefined();
+    expect(taskCreatedStat!.count).toBe(2);
+    expect(taskCompletedStat!.count).toBe(1);
   });
 
   it('should reset event statistics', () => {
@@ -182,10 +182,10 @@ describe('EventBus', () => {
     
     debugBus.emit(SystemEvents.SYSTEM_ERROR as any, { error: new Error('test'), component: 'test' });
     let stats = debugBus.getEventStats();
-    assertEquals(stats.length > 0, true);
+    expect(stats.length > 0).toBe(true);
     
     debugBus.resetStats();
     stats = debugBus.getEventStats();
-    assertEquals(stats.length, 0);
+    expect(stats.length).toBe(0);
   });
 });

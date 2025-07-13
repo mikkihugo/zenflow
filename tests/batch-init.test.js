@@ -3,7 +3,7 @@
  * Test Suite for Batch Initialization Features
  */
 
-import { assertEquals, assert } from 'https://deno.land/std@0.208.0/assert/mod.ts';
+import { describe, it, beforeEach, afterEach, expect } from "../test.utils.ts";
 import { 
   batchInitCommand, 
   validateBatchOptions,
@@ -40,25 +40,25 @@ Deno.test('Batch Options Validation', () => {
     template: 'web-api',
     environments: ['dev', 'staging']
   });
-  assertEquals(errors.length, 0, 'Valid options should pass validation');
+  expect(errors.length).toBe(0, 'Valid options should pass validation');
   
   // Invalid max concurrency
   errors = validateBatchOptions({
     maxConcurrency: 25
   });
-  assert(errors.some(e => e.includes('maxConcurrency')), 'High concurrency should fail');
+  expect(errors.some(e => e.includes('maxConcurrency').toBeTruthy()), 'High concurrency should fail');
   
   // Invalid template
   errors = validateBatchOptions({
     template: 'invalid-template'
   });
-  assert(errors.some(e => e.includes('template')), 'Invalid template should fail');
+  expect(errors.some(e => e.includes('template').toBeTruthy()), 'Invalid template should fail');
   
   // Invalid environment
   errors = validateBatchOptions({
     environments: ['invalid-env']
   });
-  assert(errors.some(e => e.includes('environment')), 'Invalid environment should fail');
+  expect(errors.some(e => e.includes('environment').toBeTruthy()), 'Invalid environment should fail');
   
   console.log('✅ Batch options validation tests passed');
 });
@@ -69,17 +69,17 @@ Deno.test('Project Templates', () => {
   
   // Check that all templates have required properties
   for (const [key, template] of Object.entries(PROJECT_TEMPLATES)) {
-    assert(template.name, `Template ${key} should have a name`);
-    assert(template.description, `Template ${key} should have a description`);
-    assert(Array.isArray(template.extraDirs), `Template ${key} should have extraDirs array`);
-    assert(typeof template.extraFiles === 'object', `Template ${key} should have extraFiles object`);
+    expect(template.name, `Template ${key} should have a name`).toBeTruthy();
+    expect(template.description, `Template ${key} should have a description`).toBeTruthy();
+    expect(Array.isArray(template.extraDirs).toBeTruthy(), `Template ${key} should have extraDirs array`);
+    expect(typeof template.extraFiles === 'object', `Template ${key} should have extraFiles object`).toBeTruthy();
   }
   
   // Check specific templates
-  assert(PROJECT_TEMPLATES['web-api'], 'web-api template should exist');
-  assert(PROJECT_TEMPLATES['react-app'], 'react-app template should exist');
-  assert(PROJECT_TEMPLATES['microservice'], 'microservice template should exist');
-  assert(PROJECT_TEMPLATES['cli-tool'], 'cli-tool template should exist');
+  expect(PROJECT_TEMPLATES['web-api'], 'web-api template should exist').toBeTruthy();
+  expect(PROJECT_TEMPLATES['react-app'], 'react-app template should exist').toBeTruthy();
+  expect(PROJECT_TEMPLATES['microservice'], 'microservice template should exist').toBeTruthy();
+  expect(PROJECT_TEMPLATES['cli-tool'], 'cli-tool template should exist').toBeTruthy();
   
   console.log('✅ Project templates tests passed');
 });
@@ -90,15 +90,15 @@ Deno.test('Environment Configurations', () => {
   
   // Check that all environments have required properties
   for (const [key, env] of Object.entries(ENVIRONMENT_CONFIGS)) {
-    assert(env.name, `Environment ${key} should have a name`);
-    assert(Array.isArray(env.features), `Environment ${key} should have features array`);
-    assert(typeof env.config === 'object', `Environment ${key} should have config object`);
+    expect(env.name, `Environment ${key} should have a name`).toBeTruthy();
+    expect(Array.isArray(env.features).toBeTruthy(), `Environment ${key} should have features array`);
+    expect(typeof env.config === 'object', `Environment ${key} should have config object`).toBeTruthy();
   }
   
   // Check specific environments
-  assert(ENVIRONMENT_CONFIGS['dev'], 'dev environment should exist');
-  assert(ENVIRONMENT_CONFIGS['staging'], 'staging environment should exist');
-  assert(ENVIRONMENT_CONFIGS['prod'], 'prod environment should exist');
+  expect(ENVIRONMENT_CONFIGS['dev'], 'dev environment should exist').toBeTruthy();
+  expect(ENVIRONMENT_CONFIGS['staging'], 'staging environment should exist').toBeTruthy();
+  expect(ENVIRONMENT_CONFIGS['prod'], 'prod environment should exist').toBeTruthy();
   
   console.log('✅ Environment configurations tests passed');
 });
@@ -118,13 +118,13 @@ Deno.test('Batch Initialization - Minimal', async () => {
   
   const results = await batchInitCommand(projects, options);
   
-  assertEquals(results.length, 2, 'Should create 2 projects');
-  assert(results.every(r => r.success), 'All projects should be created successfully');
+  expect(results.length).toBe(2, 'Should create 2 projects');
+  expect(results.every(r => r.success).toBeTruthy(), 'All projects should be created successfully');
   
   // Check that projects were created
   for (const project of projects) {
     const stats = await Deno.stat(project);
-    assert(stats.isDirectory, `${project} should be a directory`);
+    expect(stats.isDirectory, `${project} should be a directory`).toBeTruthy();
     
     // Check for essential files
     await Deno.stat(`${project}/CLAUDE.md`);
@@ -152,8 +152,8 @@ Deno.test('Template-Based Initialization', async () => {
   
   const results = await batchInitCommand(projects, options);
   
-  assertEquals(results.length, 1, 'Should create 1 project');
-  assert(results[0].success, 'Project should be created successfully');
+  expect(results.length).toBe(1, 'Should create 1 project');
+  expect(results[0].success, 'Project should be created successfully').toBeTruthy();
   
   // Check template-specific files
   const projectDir = projects[0];
@@ -163,8 +163,8 @@ Deno.test('Template-Based Initialization', async () => {
   
   // Check package.json content
   const packageJson = JSON.parse(await Deno.readTextFile(`${projectDir}/package.json`));
-  assertEquals(packageJson.name, 'api-project');
-  assert(packageJson.dependencies.express, 'Should have Express dependency');
+  expect(packageJson.name).toBe('api-project');
+  expect(packageJson.dependencies.express, 'Should have Express dependency').toBeTruthy();
   
   console.log('✅ Template-based initialization tests passed');
   await cleanup();
@@ -185,8 +185,8 @@ Deno.test('Multi-Environment Initialization', async () => {
   
   const results = await batchInitCommand(projects, options);
   
-  assertEquals(results.length, 2, 'Should create 2 environment variants');
-  assert(results.every(r => r.success), 'All environments should be created successfully');
+  expect(results.length).toBe(2, 'Should create 2 environment variants');
+  expect(results.every(r => r.success).toBeTruthy(), 'All environments should be created successfully');
   
   // Check that both environments were created
   await Deno.stat('multi-env-app-dev');
@@ -196,8 +196,8 @@ Deno.test('Multi-Environment Initialization', async () => {
   const devData = JSON.parse(await Deno.readTextFile('multi-env-app-dev/memory/claude-flow-data.json'));
   const stagingData = JSON.parse(await Deno.readTextFile('multi-env-app-staging/memory/claude-flow-data.json'));
   
-  assertEquals(devData.environment, 'dev');
-  assertEquals(stagingData.environment, 'staging');
+  expect(devData.environment).toBe('dev');
+  expect(stagingData.environment).toBe('staging');
   
   console.log('✅ Multi-environment initialization tests passed');
   await cleanup();
@@ -218,9 +218,9 @@ Deno.test('Error Handling', async () => {
   
   const results = await batchInitCommand(projects, options);
   
-  assertEquals(results.length, 2, 'Should attempt to create 2 projects');
-  assert(results[0].success, 'Valid project should succeed');
-  assert(!results[1].success, 'Invalid project should fail');
+  expect(results.length).toBe(2, 'Should attempt to create 2 projects');
+  expect(results[0].success, 'Valid project should succeed').toBeTruthy();
+  expect(!results[1].success, 'Invalid project should fail').toBeTruthy();
   
   console.log('✅ Error handling tests passed');
   await cleanup();

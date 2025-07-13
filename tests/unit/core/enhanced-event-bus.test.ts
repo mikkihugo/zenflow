@@ -2,10 +2,10 @@
  * Enhanced comprehensive unit tests for EventBus
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists, assertThrows } from "https://deno.land/std@0.220.0/assert/mod.ts";
-import { FakeTime } from "https://deno.land/std@0.220.0/testing/time.ts";
-import { spy } from "https://deno.land/std@0.220.0/testing/mock.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { assertEquals, assertExists, assertThrows  } from "../test.utils.ts";
+// FakeTime equivalent available in test.utils.ts
+import { spy  } from "../test.utils.ts";
 
 import { EventBus } from '../../../src/core/event-bus.ts';
 import { 
@@ -40,8 +40,8 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.on('test.event', handler);
       eventBus.emit('test.event', { message: 'test data' });
       
-      assertEquals(handler.calls.length, 1);
-      assertEquals(handler.calls[0].args[0], { message: 'test data' });
+      expect(handler.calls.length).toBe(1);
+      expect(handler.calls[0].args[0]).toBe({ message: 'test data' });
     });
 
     it('should handle multiple handlers for same event', () => {
@@ -55,12 +55,12 @@ describe('EventBus - Enhanced Tests', () => {
       
       eventBus.emit('multi.event', { data: 'multi' });
       
-      assertEquals(handler1.calls.length, 1);
-      assertEquals(handler2.calls.length, 1);
-      assertEquals(handler3.calls.length, 1);
+      expect(handler1.calls.length).toBe(1);
+      expect(handler2.calls.length).toBe(1);
+      expect(handler3.calls.length).toBe(1);
       
       [handler1, handler2, handler3].forEach(handler => {
-        assertEquals(handler.calls[0].args[0], { data: 'multi' });
+        expect(handler.calls[0].args[0]).toBe({ data: 'multi' });
       });
     });
 
@@ -74,8 +74,8 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('task.completed', { taskId: '123' });
       eventBus.emit('task.started', { taskId: '456' });
       
-      assertEquals(wildHandler.calls.length, 2);
-      assertEquals(specificHandler.calls.length, 1);
+      expect(wildHandler.calls.length).toBe(2);
+      expect(specificHandler.calls.length).toBe(1);
     });
 
     it('should handle once listeners correctly', () => {
@@ -86,8 +86,8 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('once.event', { first: true });
       eventBus.emit('once.event', { second: true });
       
-      assertEquals(handler.calls.length, 1);
-      assertEquals(handler.calls[0].args[0], { first: true });
+      expect(handler.calls.length).toBe(1);
+      expect(handler.calls[0].args[0]).toBe({ first: true });
     });
 
     it('should remove event handlers correctly', () => {
@@ -99,8 +99,8 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.off('remove.event', handler);
       eventBus.emit('remove.event', { after: true });
       
-      assertEquals(handler.calls.length, 1);
-      assertEquals(handler.calls[0].args[0], { before: true });
+      expect(handler.calls.length).toBe(1);
+      expect(handler.calls[0].args[0]).toBe({ before: true });
     });
 
     it('should handle removing non-existent handlers gracefully', () => {
@@ -114,7 +114,7 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.on('test.event', handler);
       eventBus.emit('test.event', { data: 'test' });
       
-      assertEquals(handler.calls.length, 1);
+      expect(handler.calls.length).toBe(1);
     });
   });
 
@@ -132,9 +132,9 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('app.module.other', { data: 'branch' });
       eventBus.emit('app.other', { data: 'root' });
       
-      assertEquals(rootHandler.calls.length, 3);
-      assertEquals(branchHandler.calls.length, 2);
-      assertEquals(leafHandler.calls.length, 1);
+      expect(rootHandler.calls.length).toBe(3);
+      expect(branchHandler.calls.length).toBe(2);
+      expect(leafHandler.calls.length).toBe(1);
     });
 
     it('should handle complex pattern matching', () => {
@@ -166,11 +166,11 @@ describe('EventBus - Enhanced Tests', () => {
       });
       
       // Verify pattern matches
-      assertEquals(handlers[0].calls.length, 1); // user.*.created
-      assertEquals(handlers[1].calls.length, 1); // user.*.updated
-      assertEquals(handlers[2].calls.length, 2); // user.admin.*
-      assertEquals(handlers[3].calls.length, 1); // system.*.error
-      assertEquals(handlers[4].calls.length, 1); // system.*.warning
+      expect(handlers[0].calls.length).toBe(1); // user.*.created
+      expect(handlers[1].calls.length).toBe(1); // user.*.updated
+      expect(handlers[2].calls.length).toBe(2); // user.admin.*
+      expect(handlers[3].calls.length).toBe(1); // system.*.error
+      expect(handlers[4].calls.length).toBe(1); // system.*.warning
     });
 
     it('should handle event namespaces correctly', () => {
@@ -183,7 +183,7 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('namespace:other.event', { data: 3 });
       eventBus.emit('test.event', { data: 4 });
       
-      assertEquals(namespaceHandler.calls.length, 2);
+      expect(namespaceHandler.calls.length).toBe(2);
     });
   });
 
@@ -202,7 +202,7 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('priority.event', {});
       
       // Should be called in priority order: high (10), normal (5), low (1)
-      assertEquals(callOrder, [2, 3, 1]);
+      expect(callOrder).toBe([2, 3, 1]);
     });
 
     it('should handle async handlers in order', async () => {
@@ -229,10 +229,10 @@ describe('EventBus - Enhanced Tests', () => {
       await eventBus.emitAsync('async.event', {});
       
       // All handlers should complete, order depends on implementation
-      assertEquals(handler1.calls.length, 1);
-      assertEquals(handler2.calls.length, 1);
-      assertEquals(handler3.calls.length, 1);
-      assertEquals(callOrder.length, 3);
+      expect(handler1.calls.length).toBe(1);
+      expect(handler2.calls.length).toBe(1);
+      expect(handler3.calls.length).toBe(1);
+      expect(callOrder.length).toBe(3);
     });
 
     it('should handle handler errors gracefully', () => {
@@ -248,8 +248,8 @@ describe('EventBus - Enhanced Tests', () => {
       // Should not throw, but continue with other handlers
       eventBus.emit('error.event', {});
       
-      assertEquals(errorHandler.calls.length, 1);
-      assertEquals(successHandler.calls.length, 1);
+      expect(errorHandler.calls.length).toBe(1);
+      expect(successHandler.calls.length).toBe(1);
     });
   });
 
@@ -265,7 +265,7 @@ describe('EventBus - Enhanced Tests', () => {
         { iterations: 10000, concurrency: 1 }
       );
       
-      assertEquals(handler.calls.length, 10000);
+      expect(handler.calls.length).toBe(10000);
       TestAssertions.assertInRange(stats.mean, 0, 1); // Should be very fast
       
       console.log(`High-frequency event performance: ${stats.mean.toFixed(4)}ms per event`);
@@ -288,7 +288,7 @@ describe('EventBus - Enhanced Tests', () => {
       
       // Verify all handlers were called
       handlers.forEach(handler => {
-        assertEquals(handler.calls.length, 100);
+        expect(handler.calls.length).toBe(100);
       });
       
       TestAssertions.assertInRange(stats.mean, 0, 50); // Should complete within 50ms
@@ -312,8 +312,8 @@ describe('EventBus - Enhanced Tests', () => {
         eventBus.removeAllListeners();
       });
       
-      assertEquals(leaked, false);
-      assertEquals(handler.calls.length, 10000);
+      expect(leaked).toBe(false);
+      expect(handler.calls.length).toBe(10000);
     });
 
     it('should handle load testing scenario', async () => {
@@ -334,7 +334,7 @@ describe('EventBus - Enhanced Tests', () => {
         }
       );
       
-      assertEquals(results.failedRequests, 0);
+      expect(results.failedRequests).toBe(0);
       TestAssertions.assertInRange(results.successfulRequests, 4000, 6000); // ~5000 requests
       TestAssertions.assertInRange(results.averageResponseTime, 0, 5);
       
@@ -360,11 +360,11 @@ describe('EventBus - Enhanced Tests', () => {
       
       // Only remaining handlers should be called
       handlers.slice(0, 50).forEach(handler => {
-        assertEquals(handler.calls.length, 0);
+        expect(handler.calls.length).toBe(0);
       });
       
       handlers.slice(50).forEach(handler => {
-        assertEquals(handler.calls.length, 1);
+        expect(handler.calls.length).toBe(1);
       });
     });
 
@@ -383,7 +383,7 @@ describe('EventBus - Enhanced Tests', () => {
       }
       
       handlers.forEach(handler => {
-        assertEquals(handler.calls.length, 0);
+        expect(handler.calls.length).toBe(0);
       });
     });
 
@@ -405,11 +405,11 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('other.event', {});
       
       specificHandlers.forEach(handler => {
-        assertEquals(handler.calls.length, 0);
+        expect(handler.calls.length).toBe(0);
       });
       
       otherHandlers.forEach(handler => {
-        assertEquals(handler.calls.length, 1);
+        expect(handler.calls.length).toBe(1);
       });
     });
   });
@@ -441,7 +441,7 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.on('valid.event', handler);
       eventBus.emit('valid.event', {});
       
-      assertEquals(handler.calls.length >= 1, true);
+      expect(handler.calls.length >= 1).toBe(true);
     });
 
     it('should handle edge case data types', () => {
@@ -475,8 +475,8 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.on('recursive.event', recursiveHandler);
       eventBus.emit('recursive.event', { count: 0 });
       
-      assertEquals(recursiveHandler.calls.length, maxEmissions);
-      assertEquals(emissionCount, maxEmissions);
+      expect(recursiveHandler.calls.length).toBe(maxEmissions);
+      expect(emissionCount).toBe(maxEmissions);
     });
 
     it('should handle handler that modifies handler list', () => {
@@ -497,7 +497,7 @@ describe('EventBus - Enhanced Tests', () => {
       eventBus.emit('disruptive.event', {});
       
       // Disruptive handler should have been called
-      assertEquals(disruptiveHandler.calls.length, 1);
+      expect(disruptiveHandler.calls.length).toBe(1);
       
       // Some or all of the other handlers may have been called
       // depending on implementation details
@@ -522,8 +522,8 @@ describe('EventBus - Enhanced Tests', () => {
       // Should not throw, even with async errors
       await eventBus.emitAsync('async.error', {});
       
-      assertEquals(errorHandler.calls.length, 1);
-      assertEquals(successHandler.calls.length, 1);
+      expect(errorHandler.calls.length).toBe(1);
+      expect(successHandler.calls.length).toBe(1);
     });
 
     it('should handle timeout for slow async handlers', async () => {
@@ -546,8 +546,8 @@ describe('EventBus - Enhanced Tests', () => {
         2000
       );
       
-      assertEquals(slowHandler.calls.length, 1);
-      assertEquals(fastHandler.calls.length, 1);
+      expect(slowHandler.calls.length).toBe(1);
+      expect(fastHandler.calls.length).toBe(1);
     });
   });
 
@@ -565,11 +565,11 @@ describe('EventBus - Enhanced Tests', () => {
       });
       
       const history = eventBus.getEventHistory();
-      assertEquals(history.length, 50);
+      expect(history.length).toBe(50);
       
       // Most recent event should be last
-      assertEquals(history[49].event, 'history.event.49');
-      assertEquals(history[49].data, { index: 49 });
+      expect(history[49].event).toBe('history.event.49');
+      expect(history[49].data).toBe({ index: 49 });
     });
 
     it('should limit event history size', () => {
@@ -581,11 +581,11 @@ describe('EventBus - Enhanced Tests', () => {
       }
       
       const history = eventBus.getEventHistory();
-      assertEquals(history.length, 10);
+      expect(history.length).toBe(10);
       
       // Should contain only the last 10 events
-      assertEquals(history[0].event, 'limited.history.10');
-      assertEquals(history[9].event, 'limited.history.19');
+      expect(history[0].event).toBe('limited.history.10');
+      expect(history[9].event).toBe('limited.history.19');
     });
 
     it('should provide event statistics', () => {
@@ -600,12 +600,12 @@ describe('EventBus - Enhanced Tests', () => {
       
       const stats = eventBus.getEventStats();
       
-      assertEquals(typeof stats.totalEvents, 'number');
-      assertEquals(typeof stats.uniqueEventTypes, 'number');
-      assertEquals(typeof stats.totalHandlers, 'number');
+      expect(typeof stats.totalEvents).toBe('number');
+      expect(typeof stats.uniqueEventTypes).toBe('number');
+      expect(typeof stats.totalHandlers).toBe('number');
       
-      assertEquals(stats.totalEvents >= 4, true);
-      assertEquals(stats.uniqueEventTypes >= 3, true);
+      expect(stats.totalEvents >= 4).toBe(true);
+      expect(stats.uniqueEventTypes >= 3).toBe(true);
     });
   });
 });

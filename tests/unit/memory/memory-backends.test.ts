@@ -2,9 +2,9 @@
  * Comprehensive unit tests for Memory Backends (SQLite and Markdown)
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists, assertRejects, assertThrows } from "https://deno.land/std@0.220.0/assert/mod.ts";
-import { FakeTime } from "https://deno.land/std@0.220.0/testing/time.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { expect } from "@jest/globals";
+// FakeTime equivalent available in test.utils.ts
 
 import { SQLiteMemoryBackend } from '../../../src/memory/backends/sqlite.ts';
 import { MarkdownMemoryBackend } from '../../../src/memory/backends/markdown.ts';
@@ -68,11 +68,11 @@ describe('Memory Backends - Comprehensive Tests', () => {
         await backend.store(namespace, entry.key, entry.value, entry.tags, entry.metadata);
         const retrieved = await backend.retrieve(namespace, entry.key);
 
-        assertEquals(retrieved.value, entry.value);
-        assertEquals(retrieved.tags, entry.tags);
-        assertEquals(retrieved.metadata, entry.metadata);
-        assertExists(retrieved.createdAt);
-        assertExists(retrieved.updatedAt);
+        expect(retrieved.value).toBe(entry.value);
+        expect(retrieved.tags).toBe(entry.tags);
+        expect(retrieved.metadata).toBe(entry.metadata);
+        expect(retrieved.createdAt).toBeDefined();
+        expect(retrieved.updatedAt).toBeDefined();
       });
 
       it('should handle different data types', async () => {
@@ -94,7 +94,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
         // Retrieve and verify all test data
         for (const { key, value } of testData) {
           const retrieved = await backend.retrieve(namespace, key);
-          assertEquals(retrieved.value, value);
+          expect(retrieved.value).toBe(value);
         }
       });
 
@@ -110,9 +110,9 @@ describe('Memory Backends - Comprehensive Tests', () => {
         await backend.store(namespace, key, { version: 2 });
         const updated = await backend.retrieve(namespace, key);
         
-        assertEquals(updated.value, { version: 2 });
-        assertEquals(updated.createdAt, initial.createdAt); // Should not change
-        assertEquals(updated.updatedAt > initial.updatedAt, true); // Should be newer
+        expect(updated.value).toBe({ version: 2 });
+        expect(updated.createdAt).toBe(initial.createdAt); // Should not change
+        expect(updated.updatedAt > initial.updatedAt).toBe(true); // Should be newer
       });
 
       it('should delete entries', async () => {
@@ -122,7 +122,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
         await backend.store(namespace, key, { data: 'to be deleted' });
         const deleted = await backend.delete(namespace, key);
         
-        assertEquals(deleted, true);
+        expect(deleted).toBe(true);
         
         await assertRejects(
           () => backend.retrieve(namespace, key),
@@ -139,7 +139,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
         );
 
         const deleted = await backend.delete('nonexistent', 'key');
-        assertEquals(deleted, false);
+        expect(deleted).toBe(false);
       });
     });
 
@@ -160,11 +160,11 @@ describe('Memory Backends - Comprehensive Tests', () => {
 
       it('should list entries by namespace', async () => {
         const entries = await backend.list('test');
-        assertEquals(entries.length >= 1, true);
+        expect(entries.length >= 1).toBe(true);
         
         // All entries should be from 'test' namespace
         entries.forEach(entry => {
-          assertEquals(entry.namespace, 'test');
+          expect(entry.namespace).toBe('test');
         });
       });
 
@@ -179,14 +179,14 @@ describe('Memory Backends - Comprehensive Tests', () => {
           tags: ['important'],
         });
         
-        assertEquals(importantEntries.length, 2);
+        expect(importantEntries.length).toBe(2);
         
         const urgentEntries = await backend.search({
           namespace: 'search',
           tags: ['urgent'],
         });
         
-        assertEquals(urgentEntries.length, 2);
+        expect(urgentEntries.length).toBe(2);
         
         const bothTags = await backend.search({
           namespace: 'search',
@@ -194,7 +194,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
           tagMode: 'all',
         });
         
-        assertEquals(bothTags.length, 1);
+        expect(bothTags.length).toBe(1);
       });
 
       it('should search with pagination', async () => {
@@ -210,14 +210,14 @@ describe('Memory Backends - Comprehensive Tests', () => {
           offset: 10,
         });
         
-        assertEquals(page1.length, 10);
-        assertEquals(page2.length >= 1, true);
+        expect(page1.length).toBe(10);
+        expect(page2.length >= 1).toBe(true);
         
         // No overlap between pages
         const page1Keys = new Set(page1.map(e => e.key));
         const page2Keys = new Set(page2.map(e => e.key));
         const intersection = new Set([...page1Keys].filter(k => page2Keys.has(k)));
-        assertEquals(intersection.size, 0);
+        expect(intersection.size).toBe(0);
       });
 
       it('should search with date ranges', async () => {
@@ -230,14 +230,14 @@ describe('Memory Backends - Comprehensive Tests', () => {
         });
         
         // All entries should be recent (created in this test)
-        assertEquals(recentEntries.length >= 1, true);
+        expect(recentEntries.length >= 1).toBe(true);
         
         const futureEntries = await backend.search({
           namespace: 'test',
           createdAfter: new Date(now.getTime() + 60 * 60 * 1000),
         });
         
-        assertEquals(futureEntries.length, 0);
+        expect(futureEntries.length).toBe(0);
       });
 
       it('should search with complex queries', async () => {
@@ -263,7 +263,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
           // Note: actual content search would depend on backend implementation
         });
 
-        assertEquals(results.length, 2);
+        expect(results.length).toBe(2);
       });
     });
 
@@ -305,7 +305,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
 
         // Verify all operations completed successfully
         const allEntries = await backend.list('concurrent');
-        assertEquals(allEntries.length, 50);
+        expect(allEntries.length).toBe(50);
       });
 
       it('should maintain performance with large datasets', async () => {
@@ -348,7 +348,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
           }
         });
 
-        assertEquals(leaked, false);
+        expect(leaked).toBe(false);
       });
     });
 
@@ -387,7 +387,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
               
               // Some edge cases might be normalized (e.g., undefined -> null)
               // Just verify we can store and retrieve them
-              assertExists(retrieved);
+              expect(retrieved).toBeDefined();
             } catch (error) {
               // Some edge cases may legitimately fail
               console.log(`Edge case ${category}-${name} failed: ${error.message}`);
@@ -428,7 +428,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
         try {
           await backend.store('large-test', 'big-value', largeValue);
           const retrieved = await backend.retrieve('large-test', 'big-value');
-          assertEquals(retrieved.value.data.length, largeValue.data.length);
+          expect(retrieved.value.data.length).toBe(largeValue.data.length);
         } catch (error) {
           // May fail on systems with limited disk space
           console.log(`Large value test failed: ${error.message}`);
@@ -520,9 +520,9 @@ describe('Memory Backends - Comprehensive Tests', () => {
         await backend.store(namespace, entry.key, entry.value, entry.tags);
         const retrieved = await backend.retrieve(namespace, entry.key);
 
-        assertEquals(retrieved.value, entry.value);
-        assertEquals(retrieved.tags, entry.tags);
-        assertExists(retrieved.createdAt);
+        expect(retrieved.value).toBe(entry.value);
+        expect(retrieved.tags).toBe(entry.tags);
+        expect(retrieved.createdAt).toBeDefined();
       });
 
       it('should handle different content types', async () => {
@@ -557,7 +557,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
 
         for (const { key, value } of testContent) {
           const retrieved = await backend.retrieve(namespace, key);
-          assertEquals(retrieved.value, value);
+          expect(retrieved.value).toBe(value);
         }
       });
 
@@ -569,7 +569,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
         // Verify file was created in correct directory
         const filePath = `${tempDir}/markdown-memory/project/docs/readme.md`;
         const fileExists = await Deno.stat(filePath).then(() => true).catch(() => false);
-        assertEquals(fileExists, true);
+        expect(fileExists).toBe(true);
       });
 
       it('should handle file naming and escaping', async () => {
@@ -589,7 +589,7 @@ describe('Memory Backends - Comprehensive Tests', () => {
 
         for (const key of specialKeys) {
           const retrieved = await backend.retrieve('special', key);
-          assertEquals(retrieved.value.content, `Content for ${key}`);
+          expect(retrieved.value.content).toBe(`Content for ${key}`);
         }
       });
     });
@@ -634,7 +634,7 @@ function hello() {
         });
 
         const retrieved = await backend.retrieve('markdown', 'formatted-doc');
-        assertEquals(retrieved.value.content, markdownContent);
+        expect(retrieved.value.content).toBe(markdownContent);
       });
 
       it('should handle frontmatter metadata', async () => {
@@ -649,7 +649,7 @@ function hello() {
         await backend.store('frontmatter', 'meta-doc', contentWithFrontmatter);
         const retrieved = await backend.retrieve('frontmatter', 'meta-doc');
 
-        assertEquals(retrieved.value, contentWithFrontmatter);
+        expect(retrieved.value).toBe(contentWithFrontmatter);
       });
     });
 
@@ -697,11 +697,11 @@ function hello() {
           query: 'programming',
         });
 
-        assertEquals(results.length, 2);
+        expect(results.length).toBe(2);
         
         const titles = results.map(r => r.value.title);
-        assertEquals(titles.includes('JavaScript Guide'), true);
-        assertEquals(titles.includes('Python Tutorial'), true);
+        expect(titles.includes('JavaScript Guide')).toBe(true);
+        expect(titles.includes('Python Tutorial')).toBe(true);
       });
 
       it('should search by tags', async () => {
@@ -710,15 +710,15 @@ function hello() {
           tags: ['programming'],
         });
 
-        assertEquals(programmingDocs.length, 2);
+        expect(programmingDocs.length).toBe(2);
 
         const tutorialDocs = await backend.search({
           namespace: 'search-test',
           tags: ['tutorial'],
         });
 
-        assertEquals(tutorialDocs.length, 1);
-        assertEquals(tutorialDocs[0].value.title, 'Python Tutorial');
+        expect(tutorialDocs.length).toBe(1);
+        expect(tutorialDocs[0].value.title).toBe('Python Tutorial');
       });
 
       it('should search with complex queries', async () => {
@@ -728,7 +728,7 @@ function hello() {
           query: 'JavaScript OR Python',
         });
 
-        assertEquals(languageResults.length >= 2, true);
+        expect(languageResults.length >= 2).toBe(true);
 
         // Search for programming AND tutorial
         const tutorialResults = await backend.search({
@@ -736,8 +736,8 @@ function hello() {
           query: 'programming AND tutorial',
         });
 
-        assertEquals(tutorialResults.length, 1);
-        assertEquals(tutorialResults[0].value.title, 'Python Tutorial');
+        expect(tutorialResults.length).toBe(1);
+        expect(tutorialResults[0].value.title).toBe('Python Tutorial');
       });
     });
 
@@ -769,15 +769,15 @@ function hello() {
         // Verify file exists
         const filePath = `${tempDir}/markdown-memory/${namespace}/${key}.md`;
         const existsBefore = await Deno.stat(filePath).then(() => true).catch(() => false);
-        assertEquals(existsBefore, true);
+        expect(existsBefore).toBe(true);
 
         // Delete the entry
         const deleted = await backend.delete(namespace, key);
-        assertEquals(deleted, true);
+        expect(deleted).toBe(true);
 
         // Verify file is removed
         const existsAfter = await Deno.stat(filePath).then(() => true).catch(() => false);
-        assertEquals(existsAfter, false);
+        expect(existsAfter).toBe(false);
       });
 
       it('should handle directory cleanup', async () => {
@@ -821,7 +821,7 @@ function hello() {
           // If it succeeds, the backend handled it gracefully
         } catch (error) {
           // Expected to fail with non-serializable content
-          assertExists(error);
+          expect(error).toBeDefined();
         }
       });
 
@@ -841,11 +841,11 @@ function hello() {
         
         // At least one should succeed
         const successful = results.filter(r => r.status === 'fulfilled');
-        assertEquals(successful.length >= 1, true);
+        expect(successful.length >= 1).toBe(true);
 
         // Verify we can read the final state
         const final = await backend.retrieve(namespace, key);
-        assertExists(final);
+        expect(final).toBeDefined();
       });
     });
   });
@@ -901,8 +901,8 @@ function hello() {
       ]);
 
       // Values should be equivalent
-      assertEquals(sqliteResult.value, markdownResult.value);
-      assertEquals(sqliteResult.tags, markdownResult.tags);
+      expect(sqliteResult.value).toBe(markdownResult.value);
+      expect(sqliteResult.tags).toBe(markdownResult.tags);
     });
 
     it('should handle performance comparison', async () => {
@@ -962,7 +962,7 @@ function hello() {
 
       // Verify data integrity after migration
       const markdownEntries = await markdownBackend.list('test');
-      assertEquals(markdownEntries.length, sqliteEntries.length);
+      expect(markdownEntries.length).toBe(sqliteEntries.length);
       
       // Spot check a few entries
       for (let i = 0; i < Math.min(5, sqliteEntries.length); i++) {
@@ -972,8 +972,8 @@ function hello() {
           sqliteEntry.key
         );
         
-        assertEquals(markdownEntry.value, sqliteEntry.value);
-        assertEquals(markdownEntry.tags, sqliteEntry.tags);
+        expect(markdownEntry.value).toBe(sqliteEntry.value);
+        expect(markdownEntry.tags).toBe(sqliteEntry.tags);
       }
     });
   });

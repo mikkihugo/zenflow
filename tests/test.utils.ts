@@ -2,28 +2,69 @@
  * Test utilities for Claude-Flow
  */
 
-import { assertEquals, assertExists, assertRejects, assertThrows } from 'https://deno.land/std@0.220.0/assert/mod.ts';
-import { describe, it, beforeEach, afterEach, beforeAll, afterAll } from 'https://deno.land/std@0.220.0/testing/bdd.ts';
-import { spy, stub, assertSpyCall, assertSpyCalls } from 'https://deno.land/std@0.220.0/testing/mock.ts';
-import { FakeTime } from 'https://deno.land/std@0.220.0/testing/time.ts';
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect, jest } from '@jest/globals';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { spawn } from 'child_process';
 
+// Jest-compatible assertion helpers
+export function assertEquals<T>(actual: T, expected: T, message?: string): void {
+  expect(actual).toBe(expected);
+}
+
+export function assertExists<T>(value: T, message?: string): void {
+  expect(value).toBeDefined();
+}
+
+export function assertRejects(promise: Promise<any>, message?: string): void {
+  expect(promise).rejects.toThrow();
+}
+
+export function assertThrows(fn: () => any, message?: string): void {
+  expect(fn).toThrow();
+}
+
+// Re-export Jest testing utilities
 export {
-  assertEquals,
-  assertExists,
-  assertRejects,
-  assertThrows,
   describe,
   it,
   beforeEach,
   afterEach,
   beforeAll,
   afterAll,
-  spy,
-  stub,
-  assertSpyCall,
-  assertSpyCalls,
-  FakeTime,
+  expect,
+  jest,
 };
+
+// Mock Jest spy utilities for compatibility
+export const spy = jest.fn;
+export const stub = jest.fn;
+export function assertSpyCall(mockFn: jest.Mock, callIndex: number, expectedArgs?: any[]): void {
+  expect(mockFn).toHaveBeenNthCalledWith(callIndex + 1, ...(expectedArgs || []));
+}
+export function assertSpyCalls(mockFn: jest.Mock, expectedCalls: number): void {
+  expect(mockFn).toHaveBeenCalledTimes(expectedCalls);
+}
+
+// Simple FakeTime implementation for Jest
+export class FakeTime {
+  private originalNow = Date.now;
+  private currentTime: number;
+
+  constructor(time?: number | Date) {
+    this.currentTime = time instanceof Date ? time.getTime() : time || Date.now();
+    Date.now = () => this.currentTime;
+  }
+
+  tick(ms: number): void {
+    this.currentTime += ms;
+  }
+
+  restore(): void {
+    Date.now = this.originalNow;
+  }
+}
 
 /**
  * Creates a test fixture
@@ -125,58 +166,58 @@ export function captureConsole(): {
 /**
  * Creates a test file in a temporary directory
  */
-export async function createTestFile(
-  path: string,
+export function createTestFile(
+  filePath: string,
   content: string,
-): Promise<string> {
-  const tempDir = await Deno.makeTempDir();
-  const filePath = `${tempDir}/${path}`;
-  const dir = filePath.substring(0, filePath.lastIndexOf('/'));
+): string {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'claude-flow-'));
+  const fullPath = path.join(tempDir, filePath);
+  const dir = path.dirname(fullPath);
   
-  await Deno.mkdir(dir, { recursive: true });
-  await Deno.writeTextFile(filePath, content);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(fullPath, content);
   
-  return filePath;
+  return fullPath;
 }
 
 /**
  * Runs a CLI command and captures output
  */
-export async function runCommand(
+export function runCommand(
   args: string[],
   options: { stdin?: string; env?: Record<string, string> } = {},
 ): Promise<{ stdout: string; stderr: string; code: number }> {
-  const cmdOptions: Deno.CommandOptions = {
-    args: ['run', '--allow-all', 'src/cli/index.ts', ...args],
-    stdout: 'piped',
-    stderr: 'piped',
-  };
+  return new Promise((resolve, reject) => {
+    const env = { ...process.env, ...options.env };
+    const child = spawn('node', ['src/cli/index.ts', ...args], {
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env,
+    });
 
-  if (options.stdin) {
-    cmdOptions.stdin = 'piped';
-  }
+    let stdout = '';
+    let stderr = '';
 
-  if (options.env) {
-    cmdOptions.env = options.env;
-  }
+    child.stdout.on('data', (data) => {
+      stdout += data.toString();
+    });
 
-  const cmd = new Deno.Command(Deno.execPath(), cmdOptions);
+    child.stderr.on('data', (data) => {
+      stderr += data.toString();
+    });
 
-  const child = cmd.spawn();
+    child.on('close', (code) => {
+      resolve({ stdout, stderr, code: code || 0 });
+    });
 
-  if (options.stdin) {
-    const writer = child.stdin.getWriter();
-    await writer.write(new TextEncoder().encode(options.stdin));
-    await writer.close();
-  }
+    child.on('error', (error) => {
+      reject(error);
+    });
 
-  const output = await child.output();
-  
-  return {
-    stdout: new TextDecoder().decode(output.stdout),
-    stderr: new TextDecoder().decode(output.stderr),
-    code: output.code,
-  };
+    if (options.stdin) {
+      child.stdin.write(options.stdin);
+      child.stdin.end();
+    }
+  });
 }
 
 /**
@@ -277,9 +318,9 @@ export function assertEventEmitted(
   matcher?: (data: any) => boolean,
 ): void {
   const emitted = events.find((e) => e.event === eventName);
-  assertExists(emitted, `Expected event '${eventName}' to be emitted`);
+  expect(emitted).toBeDefined();
   
-  if (matcher && !matcher(emitted.data)) {
+  if (matcher && emitted && !matcher(emitted.data)) {
     throw new Error(`Event '${eventName}' data did not match expected criteria`);
   }
 }
@@ -289,5 +330,5 @@ export function assertNoEventEmitted(
   eventName: string,
 ): void {
   const emitted = events.find((e) => e.event === eventName);
-  assertEquals(emitted, undefined, `Expected event '${eventName}' not to be emitted`);
+  expect(emitted).toBeUndefined();
 }

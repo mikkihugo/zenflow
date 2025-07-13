@@ -2,8 +2,8 @@
  * End-to-end tests for the start command
  */
 
-import { assertEquals, assertExists } from 'https://deno.land/std@0.224.0/assert/mod.ts';
-import { describe, it } from 'https://deno.land/std@0.224.0/testing/bdd.ts';
+import { describe, it, beforeEach, afterEach, expect } from "../test.utils.ts";
+import { describe, it, beforeEach, afterEach, expect } from "../test.utils.ts";
 
 describe('Start Command E2E', () => {
   describe('JavaScript CLI', () => {
@@ -18,10 +18,10 @@ describe('Start Command E2E', () => {
       const output = new TextDecoder().decode(stdout);
       const error = new TextDecoder().decode(stderr);
 
-      assertEquals(success, true);
-      assertEquals(output.includes('--ui'), true);
-      assertEquals(output.includes('Launch interactive process management UI'), true);
-      assertEquals(output.includes('Process Management UI:'), true);
+      expect(success).toBe(true);
+      expect(output.includes('--ui')).toBe(true);
+      expect(output.includes('Launch interactive process management UI')).toBe(true);
+      expect(output.includes('Process Management UI:')).toBe(true);
     });
 
     it('should handle UI flag', async () => {
@@ -34,8 +34,8 @@ describe('Start Command E2E', () => {
       const { stdout, stderr, success } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(success, true);
-      assertEquals(output.includes('Launching interactive process management UI'), true);
+      expect(success).toBe(true);
+      expect(output.includes('Launching interactive process management UI')).toBe(true);
     });
   });
 
@@ -80,11 +80,11 @@ describe('Start Command E2E', () => {
 
       await Deno.remove(tempFile);
 
-      assertEquals(success, true);
-      assertEquals(output.includes('PROCESSES:6'), true);
-      assertEquals(output.includes('STATUS:running'), true);
-      assertEquals(output.includes('STOPPED:stopped'), true);
-      assertEquals(output.includes('STATS:6'), true);
+      expect(success).toBe(true);
+      expect(output.includes('PROCESSES:6')).toBe(true);
+      expect(output.includes('STATUS:running')).toBe(true);
+      expect(output.includes('STOPPED:stopped')).toBe(true);
+      expect(output.includes('STATS:6')).toBe(true);
     });
   });
 
@@ -124,10 +124,10 @@ describe('Start Command E2E', () => {
 
       await Deno.remove(tempFile);
 
-      assertEquals(success, true);
-      assertEquals(output.includes('EVENTS:2'), true);
-      assertEquals(output.includes('HAS_AGENT:true'), true);
-      assertEquals(output.includes('HAS_TASK:true'), true);
+      expect(success).toBe(true);
+      expect(output.includes('EVENTS:2')).toBe(true);
+      expect(output.includes('HAS_AGENT:true')).toBe(true);
+      expect(output.includes('HAS_TASK:true')).toBe(true);
     });
   });
 
@@ -140,13 +140,13 @@ describe('Start Command E2E', () => {
       });
       const { stdout: daemonOut } = await daemonTest.output();
       const daemonHelp = new TextDecoder().decode(daemonOut);
-      assertEquals(daemonHelp.includes('--daemon'), true);
+      expect(daemonHelp.includes('--daemon')).toBe(true);
 
       // Test port flag
-      assertEquals(daemonHelp.includes('--port'), true);
+      expect(daemonHelp.includes('--port')).toBe(true);
 
       // Test verbose flag
-      assertEquals(daemonHelp.includes('--verbose'), true);
+      expect(daemonHelp.includes('--verbose')).toBe(true);
     });
 
     it('should maintain existing functionality', async () => {
@@ -168,13 +168,13 @@ describe('Start Command E2E', () => {
         const { stdout, success } = await command.output();
         const output = new TextDecoder().decode(stdout);
 
-        assertEquals(success, true);
-        assertEquals(output.includes('Starting in daemon mode'), true);
-        assertEquals(output.includes('Process ID:'), true);
+        expect(success).toBe(true);
+        expect(output.includes('Starting in daemon mode')).toBe(true);
+        expect(output.includes('Process ID:')).toBe(true);
 
         // Check PID file was created
         const pidExists = await Deno.stat('.claude-flow.pid').then(() => true).catch(() => false);
-        assertEquals(pidExists, true);
+        expect(pidExists).toBe(true);
 
       } finally {
         Deno.chdir(originalCwd);

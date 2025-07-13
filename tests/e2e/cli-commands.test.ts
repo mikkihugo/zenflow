@@ -44,7 +44,7 @@ describe('CLI Commands E2E', () => {
       const output = new TextDecoder().decode(stdout);
       const errorOutput = new TextDecoder().decode(stderr);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Claude-Flow');
       assertStringIncludes(output, 'COMMANDS');
       assertStringIncludes(output, 'start');
@@ -67,27 +67,27 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Configuration file created');
 
       // Verify file was created with valid content
       const stat = await Deno.stat(configPath);
-      assertEquals(stat.isFile, true);
+      expect(stat.isFile).toBe(true);
 
       const content = await Deno.readTextFile(configPath);
       const config = JSON.parse(content);
 
-      assertExists(config.orchestrator);
-      assertExists(config.terminal);
-      assertExists(config.memory);
-      assertExists(config.coordination);
-      assertExists(config.mcp);
-      assertExists(config.logging);
+      expect(config.orchestrator).toBeDefined();
+      expect(config.terminal).toBeDefined();
+      expect(config.memory).toBeDefined();
+      expect(config.coordination).toBeDefined();
+      expect(config.mcp).toBeDefined();
+      expect(config.logging).toBeDefined();
 
       // Check specific default values
-      assertEquals(config.orchestrator.maxConcurrentAgents, 10);
-      assertEquals(config.terminal.type, 'auto');
-      assertEquals(config.memory.backend, 'hybrid');
+      expect(config.orchestrator.maxConcurrentAgents).toBe(10);
+      expect(config.terminal.type).toBe('auto');
+      expect(config.memory.backend).toBe('hybrid');
     });
 
     it('should validate configuration file', async () => {
@@ -145,7 +145,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Configuration is valid');
     });
 
@@ -180,7 +180,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 1); // Should exit with error code
+      expect(code).toBe(1); // Should exit with error code
       assertStringIncludes(output, 'Configuration validation failed');
     });
 
@@ -195,13 +195,13 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       
       // Should contain JSON configuration
       const config = JSON.parse(output);
-      assertExists(config.orchestrator);
-      assertExists(config.terminal);
-      assertExists(config.memory);
+      expect(config.orchestrator).toBeDefined();
+      expect(config.terminal).toBeDefined();
+      expect(config.memory).toBeDefined();
     });
   });
 
@@ -224,17 +224,17 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Agent profile created');
       
       // Parse JSON output to verify profile
       const profile = JSON.parse(output.split('\n').find(line => line.includes('"id"')) || '{}');
-      assertEquals(profile.name, 'Test Researcher');
-      assertEquals(profile.type, 'researcher');
-      assertEquals(profile.priority, 5);
-      assertEquals(profile.maxConcurrentTasks, 3);
-      assertEquals(profile.capabilities.includes('analysis'), true);
-      assertEquals(profile.capabilities.includes('research'), true);
+      expect(profile.name).toBe('Test Researcher');
+      expect(profile.type).toBe('researcher');
+      expect(profile.priority).toBe(5);
+      expect(profile.maxConcurrentTasks).toBe(3);
+      expect(profile.capabilities.includes('analysis')).toBe(true);
+      expect(profile.capabilities.includes('research')).toBe(true);
     });
 
     it('should list agent profiles', async () => {
@@ -263,7 +263,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await listCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Active Agents');
     });
 
@@ -301,7 +301,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await statusCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, agentId);
       assertStringIncludes(output, 'Status Test Agent');
     });
@@ -343,7 +343,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await terminateCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Agent terminated');
       assertStringIncludes(output, agentId);
     });
@@ -368,17 +368,17 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Task created');
       
       // Parse JSON output to verify task
       const task = JSON.parse(output.split('\n').find(line => line.includes('"id"')) || '{}');
-      assertEquals(task.type, 'analysis');
-      assertEquals(task.description, 'Analyze the test data for patterns');
-      assertEquals(task.priority, 8);
-      assertEquals(task.dependencies.includes('data-collection'), true);
-      assertEquals(task.dependencies.includes('preprocessing'), true);
-      assertEquals(task.input.dataset, 'test-data');
+      expect(task.type).toBe('analysis');
+      expect(task.description).toBe('Analyze the test data for patterns');
+      expect(task.priority).toBe(8);
+      expect(task.dependencies.includes('data-collection')).toBe(true);
+      expect(task.dependencies.includes('preprocessing')).toBe(true);
+      expect(task.input.dataset).toBe('test-data');
     });
 
     it('should list tasks', async () => {
@@ -407,7 +407,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await listCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Tasks');
     });
 
@@ -444,7 +444,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await statusCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, taskId);
       assertStringIncludes(output, 'status-test');
     });
@@ -483,7 +483,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await executeCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Task execution');
     });
 
@@ -524,7 +524,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await cancelCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Task cancelled');
       assertStringIncludes(output, taskId);
     });
@@ -548,7 +548,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Memory query results');
     });
 
@@ -573,7 +573,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Memory entry stored');
       assertStringIncludes(output, entryContent);
     });
@@ -614,7 +614,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await deleteCommand.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Memory entry deleted');
       assertStringIncludes(output, entryId);
     });
@@ -630,7 +630,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Memory synchronization');
     });
 
@@ -645,7 +645,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Memory Statistics');
     });
   });
@@ -667,7 +667,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Claude-Flow system');
     });
 
@@ -682,7 +682,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'System Status');
     });
 
@@ -697,7 +697,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       assertStringIncludes(output, 'Claude-Flow');
       assertStringIncludes(output, 'version');
     });
@@ -715,7 +715,7 @@ describe('CLI Commands E2E', () => {
       const { code, stderr } = await command.output();
       const errorOutput = new TextDecoder().decode(stderr);
 
-      assertEquals(code, 1);
+      expect(code).toBe(1);
       assertStringIncludes(errorOutput, 'Unknown command');
     });
 
@@ -733,7 +733,7 @@ describe('CLI Commands E2E', () => {
       const { code, stderr } = await command.output();
       const errorOutput = new TextDecoder().decode(stderr);
 
-      assertEquals(code, 1);
+      expect(code).toBe(1);
       assertStringIncludes(errorOutput, 'required');
     });
 
@@ -751,7 +751,7 @@ describe('CLI Commands E2E', () => {
       const { code, stderr } = await command.output();
       const errorOutput = new TextDecoder().decode(stderr);
 
-      assertEquals(code, 1);
+      expect(code).toBe(1);
       assertStringIncludes(errorOutput, 'not found');
     });
 
@@ -772,7 +772,7 @@ describe('CLI Commands E2E', () => {
       const { code, stderr } = await command.output();
       const errorOutput = new TextDecoder().decode(stderr);
 
-      assertEquals(code, 1);
+      expect(code).toBe(1);
       assertStringIncludes(errorOutput, 'JSON');
     });
   });
@@ -793,11 +793,11 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       
       // Should be valid JSON
       const config = JSON.parse(output);
-      assertExists(config.orchestrator);
+      expect(config.orchestrator).toBeDefined();
     });
 
     it('should support table output format', async () => {
@@ -815,7 +815,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       // Table format should contain headers and borders
       assertStringIncludes(output, '|');
     });
@@ -835,7 +835,7 @@ describe('CLI Commands E2E', () => {
       const { code, stdout } = await command.output();
       const output = new TextDecoder().decode(stdout);
 
-      assertEquals(code, 0);
+      expect(code).toBe(0);
       // YAML format should contain key-value pairs with colons
       assertStringIncludes(output, 'orchestrator:');
       assertStringIncludes(output, 'terminal:');
@@ -868,7 +868,7 @@ describe('CLI Commands E2E', () => {
       await writer.close();
 
       const { code } = await process.output();
-      assertEquals(code, 0);
+      expect(code).toBe(0);
     });
   });
 });

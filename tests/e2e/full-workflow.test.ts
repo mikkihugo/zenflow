@@ -94,7 +94,7 @@ describe('E2E Full Workflow', () => {
       });
 
       const { code: configCode } = await configCommand.output();
-      assertEquals(configCode, 0);
+      expect(configCode).toBe(0);
 
       // Step 2: Start system in background
       const startCommand = new Deno.Command(Deno.execPath(), {
@@ -133,11 +133,11 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: researcherCode, stdout: researcherOutput } = await researcherCommand.output();
-        assertEquals(researcherCode, 0);
+        expect(researcherCode).toBe(0);
         
         const researcherResult = new TextDecoder().decode(researcherOutput);
         const researcherMatch = researcherResult.match(/"id":\s*"([^"]+)"/);
-        assertExists(researcherMatch);
+        expect(researcherMatch).toBeDefined();
         const researcherId = researcherMatch[1];
 
         // Step 4: Create implementer agent
@@ -157,11 +157,11 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: implementerCode, stdout: implementerOutput } = await implementerCommand.output();
-        assertEquals(implementerCode, 0);
+        expect(implementerCode).toBe(0);
         
         const implementerResult = new TextDecoder().decode(implementerOutput);
         const implementerMatch = implementerResult.match(/"id":\s*"([^"]+)"/);
-        assertExists(implementerMatch);
+        expect(implementerMatch).toBeDefined();
         const implementerId = implementerMatch[1];
 
         // Step 5: Create research task
@@ -185,11 +185,11 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: researchTaskCode, stdout: researchTaskOutput } = await researchTaskCommand.output();
-        assertEquals(researchTaskCode, 0);
+        expect(researchTaskCode).toBe(0);
         
         const researchTaskResult = new TextDecoder().decode(researchTaskOutput);
         const researchTaskMatch = researchTaskResult.match(/"id":\s*"([^"]+)"/);
-        assertExists(researchTaskMatch);
+        expect(researchTaskMatch).toBeDefined();
         const researchTaskId = researchTaskMatch[1];
 
         // Step 6: Create implementation task (depends on research)
@@ -215,11 +215,11 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: implementTaskCode, stdout: implementTaskOutput } = await implementTaskCommand.output();
-        assertEquals(implementTaskCode, 0);
+        expect(implementTaskCode).toBe(0);
         
         const implementTaskResult = new TextDecoder().decode(implementTaskOutput);
         const implementTaskMatch = implementTaskResult.match(/"id":\s*"([^"]+)"/);
-        assertExists(implementTaskMatch);
+        expect(implementTaskMatch).toBeDefined();
         const implementTaskId = implementTaskMatch[1];
 
         // Step 7: Execute research task
@@ -235,7 +235,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: executeResearchCode } = await executeResearchCommand.output();
-        assertEquals(executeResearchCode, 0);
+        expect(executeResearchCode).toBe(0);
 
         // Step 8: Wait for research task to complete, then execute implementation
         await delay(3000);
@@ -252,7 +252,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: executeImplementCode } = await executeImplementCommand.output();
-        assertEquals(executeImplementCode, 0);
+        expect(executeImplementCode).toBe(0);
 
         // Step 9: Check task statuses
         const researchStatusCommand = new Deno.Command(Deno.execPath(), {
@@ -267,7 +267,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: researchStatusCode, stdout: researchStatusOutput } = await researchStatusCommand.output();
-        assertEquals(researchStatusCode, 0);
+        expect(researchStatusCode).toBe(0);
         
         const researchStatus = new TextDecoder().decode(researchStatusOutput);
         assertStringIncludes(researchStatus, researchTaskId);
@@ -288,7 +288,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: memoryQueryCode } = await memoryQueryCommand.output();
-        assertEquals(memoryQueryCode, 0);
+        expect(memoryQueryCode).toBe(0);
 
         // Step 11: Check system status
         const statusCommand = new Deno.Command(Deno.execPath(), {
@@ -303,7 +303,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: statusCode, stdout: statusOutput } = await statusCommand.output();
-        assertEquals(statusCode, 0);
+        expect(statusCode).toBe(0);
         
         const statusResult = new TextDecoder().decode(statusOutput);
         assertStringIncludes(statusResult, 'System Status');
@@ -321,7 +321,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: listAgentsCode } = await listAgentsCommand.output();
-        assertEquals(listAgentsCode, 0);
+        expect(listAgentsCode).toBe(0);
 
         const listTasksCommand = new Deno.Command(Deno.execPath(), {
           args: [
@@ -335,7 +335,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: listTasksCode } = await listTasksCommand.output();
-        assertEquals(listTasksCode, 0);
+        expect(listTasksCode).toBe(0);
 
       } finally {
         // Step 13: Shutdown system
@@ -399,7 +399,7 @@ describe('E2E Full Workflow', () => {
         const { stdout: coordinatorOutput } = await coordinatorCommand.output();
         const coordinatorResult = new TextDecoder().decode(coordinatorOutput);
         const coordinatorId = coordinatorResult.match(/"id":\s*"([^"]+)"/)?.[1];
-        assertExists(coordinatorId);
+        expect(coordinatorId).toBeDefined();
 
         // Create multiple worker agents
         const workerIds: string[] = [];
@@ -422,7 +422,7 @@ describe('E2E Full Workflow', () => {
           const { stdout: workerOutput } = await workerCommand.output();
           const workerResult = new TextDecoder().decode(workerOutput);
           const workerId = workerResult.match(/"id":\s*"([^"]+)"/)?.[1];
-          assertExists(workerId);
+          expect(workerId).toBeDefined();
           workerIds.push(workerId);
         }
 
@@ -449,7 +449,7 @@ describe('E2E Full Workflow', () => {
         const { stdout: coordinationTaskOutput } = await coordinationTaskCommand.output();
         const coordinationTaskResult = new TextDecoder().decode(coordinationTaskOutput);
         const coordinationTaskId = coordinationTaskResult.match(/"id":\s*"([^"]+)"/)?.[1];
-        assertExists(coordinationTaskId);
+        expect(coordinationTaskId).toBeDefined();
 
         // Create worker tasks
         const workerTaskIds: string[] = [];
@@ -477,7 +477,7 @@ describe('E2E Full Workflow', () => {
           const { stdout: workerTaskOutput } = await workerTaskCommand.output();
           const workerTaskResult = new TextDecoder().decode(workerTaskOutput);
           const workerTaskId = workerTaskResult.match(/"id":\s*"([^"]+)"/)?.[1];
-          assertExists(workerTaskId);
+          expect(workerTaskId).toBeDefined();
           workerTaskIds.push(workerTaskId);
         }
 
@@ -527,7 +527,7 @@ describe('E2E Full Workflow', () => {
           });
 
           const { code } = await statusCommand.output();
-          assertEquals(code, 0);
+          expect(code).toBe(0);
         }
 
         // Check memory for coordination events
@@ -546,7 +546,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: memoryCode } = await coordinationMemoryCommand.output();
-        assertEquals(memoryCode, 0);
+        expect(memoryCode).toBe(0);
 
       } finally {
         // Shutdown system
@@ -609,7 +609,7 @@ describe('E2E Full Workflow', () => {
         const { stdout: agentOutput } = await resilientAgentCommand.output();
         const agentResult = new TextDecoder().decode(agentOutput);
         const agentId = agentResult.match(/"id":\s*"([^"]+)"/)?.[1];
-        assertExists(agentId);
+        expect(agentId).toBeDefined();
 
         // Create task that may fail initially
         const unreliableTaskCommand = new Deno.Command(Deno.execPath(), {
@@ -635,7 +635,7 @@ describe('E2E Full Workflow', () => {
         const { stdout: taskOutput } = await unreliableTaskCommand.output();
         const taskResult = new TextDecoder().decode(taskOutput);
         const taskId = taskResult.match(/"id":\s*"([^"]+)"/)?.[1];
-        assertExists(taskId);
+        expect(taskId).toBeDefined();
 
         // Execute unreliable task
         const executeTaskCommand = new Deno.Command(Deno.execPath(), {
@@ -651,7 +651,7 @@ describe('E2E Full Workflow', () => {
 
         const { code: executeCode } = await executeTaskCommand.output();
         // Task may fail but system should handle it gracefully
-        assertEquals([0, 1].includes(executeCode), true);
+        expect([0).toBe(1].includes(executeCode), true);
 
         // Check task status to see retry attempts
         const statusCommand = new Deno.Command(Deno.execPath(), {
@@ -666,7 +666,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: statusCode } = await statusCommand.output();
-        assertEquals(statusCode, 0);
+        expect(statusCode).toBe(0);
 
         // Create recovery task
         const recoveryTaskCommand = new Deno.Command(Deno.execPath(), {
@@ -690,7 +690,7 @@ describe('E2E Full Workflow', () => {
         const { stdout: recoveryOutput } = await recoveryTaskCommand.output();
         const recoveryResult = new TextDecoder().decode(recoveryOutput);
         const recoveryTaskId = recoveryResult.match(/"id":\s*"([^"]+)"/)?.[1];
-        assertExists(recoveryTaskId);
+        expect(recoveryTaskId).toBeDefined();
 
         // Execute recovery task
         const executeRecoveryCommand = new Deno.Command(Deno.execPath(), {
@@ -705,7 +705,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: recoveryCode } = await executeRecoveryCommand.output();
-        assertEquals(recoveryCode, 0);
+        expect(recoveryCode).toBe(0);
 
         // Check system health after error scenarios
         const healthCommand = new Deno.Command(Deno.execPath(), {
@@ -720,7 +720,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: healthCode } = await healthCommand.output();
-        assertEquals(healthCode, 0);
+        expect(healthCode).toBe(0);
 
       } finally {
         // Shutdown system
@@ -808,7 +808,7 @@ describe('E2E Full Workflow', () => {
           const { stdout: agentOutput } = await agentCommand.output();
           const agentResult = new TextDecoder().decode(agentOutput);
           const agentId = agentResult.match(/"id":\s*"([^"]+)"/)?.[1];
-          assertExists(agentId);
+          expect(agentId).toBeDefined();
           agentIds.push(agentId);
         }
 
@@ -837,7 +837,7 @@ describe('E2E Full Workflow', () => {
           const { stdout: taskOutput } = await taskCommand.output();
           const taskResult = new TextDecoder().decode(taskOutput);
           const taskId = taskResult.match(/"id":\s*"([^"]+)"/)?.[1];
-          assertExists(taskId);
+          expect(taskId).toBeDefined();
           taskIds.push(taskId);
         }
 
@@ -881,7 +881,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: metricsCode, stdout: metricsOutput } = await metricsCommand.output();
-        assertEquals(metricsCode, 0);
+        expect(metricsCode).toBe(0);
         
         const metricsResult = new TextDecoder().decode(metricsOutput);
         assertStringIncludes(metricsResult, 'System Status');
@@ -899,7 +899,7 @@ describe('E2E Full Workflow', () => {
         });
 
         const { code: memoryStatsCode } = await memoryStatsCommand.output();
-        assertEquals(memoryStatsCode, 0);
+        expect(memoryStatsCode).toBe(0);
 
       } finally {
         // Shutdown system

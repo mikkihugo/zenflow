@@ -39,7 +39,7 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const initResult = await initCommand.output();
-      assertEquals(initResult.success, true);
+      expect(initResult.success).toBe(true);
 
       const initOutput = new TextDecoder().decode(initResult.stdout);
       assertStringIncludes(initOutput, "initialized successfully");
@@ -57,7 +57,7 @@ describe("End-to-End Init Workflow Tests", () => {
       ];
 
       for (const file of expectedFiles) {
-        assertExists(await exists(join(testDir, file)));
+        expect(await exists(join(testDir, file).toBeDefined()));
       }
 
       const expectedDirs = [
@@ -74,7 +74,7 @@ describe("End-to-End Init Workflow Tests", () => {
       ];
 
       for (const dir of expectedDirs) {
-        assertExists(await exists(join(testDir, dir)));
+        expect(await exists(join(testDir, dir).toBeDefined()));
       }
 
       // Step 2: Test that local executable works
@@ -86,7 +86,7 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const helpResult = await helpCommand.output();
-      assertEquals(helpResult.success, true);
+      expect(helpResult.success).toBe(true);
 
       const helpOutput = new TextDecoder().decode(helpResult.stdout);
       assertStringIncludes(helpOutput, "claude-flow");
@@ -120,15 +120,15 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const initResult = await initCommand.output();
-      assertEquals(initResult.success, true);
+      expect(initResult.success).toBe(true);
 
       const initOutput = new TextDecoder().decode(initResult.stdout);
       assertStringIncludes(initOutput, "SPARC development environment");
 
       // Verify SPARC structure
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
 
       // Step 2: Test SPARC commands
       const sparcModesCommand = new Deno.Command(join(testDir, "claude-flow"), {
@@ -149,7 +149,7 @@ describe("End-to-End Init Workflow Tests", () => {
       assertStringIncludes(claudeContent, "Test-Driven Development");
 
       // Step 4: Verify slash commands directory
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
     });
 
     it("should handle project upgrade workflow", async () => {
@@ -187,10 +187,10 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const fullResult = await fullCommand.output();
-      assertEquals(fullResult.success, true);
+      expect(fullResult.success).toBe(true);
 
       const fullClaude = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(fullClaude.length > minimalClaude.length, true);
+      expect(fullClaude.length > minimalClaude.length).toBe(true);
       assertStringIncludes(fullClaude, "## Project Overview");
 
       // Step 3: Upgrade to SPARC project
@@ -209,11 +209,11 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const sparcResult = await sparcCommand.output();
-      assertEquals(sparcResult.success, true);
+      expect(sparcResult.success).toBe(true);
 
       const sparcClaude = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
       assertStringIncludes(sparcClaude, "SPARC Development Environment");
-      assertExists(await exists(join(testDir, ".roo")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
     });
   });
 
@@ -248,24 +248,24 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const result = await initCommand.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should not interfere with existing project files
-      assertExists(await exists(join(testDir, "package.json")));
-      assertExists(await exists(join(testDir, "index.js")));
-      assertExists(await exists(join(testDir, "src/app.js")));
-      assertExists(await exists(join(testDir, "tests/app.test.js")));
+      expect(await exists(join(testDir, "package.json").toBeDefined()));
+      expect(await exists(join(testDir, "index.js").toBeDefined()));
+      expect(await exists(join(testDir, "src/app.js").toBeDefined()));
+      expect(await exists(join(testDir, "tests/app.test.js").toBeDefined()));
 
       // Should add Claude Flow files
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
-      assertExists(await exists(join(testDir, "claude-flow")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
+      expect(await exists(join(testDir, "claude-flow").toBeDefined()));
 
       // Verify package.json is unchanged
       const packageJson = JSON.parse(await Deno.readTextFile(join(testDir, "package.json")));
-      assertEquals(packageJson.name, "test-project");
-      assertEquals(packageJson.version, "1.0.0");
+      expect(packageJson.name).toBe("test-project");
+      expect(packageJson.version).toBe("1.0.0");
     });
 
     it("should initialize in Git repository", async () => {
@@ -315,16 +315,16 @@ describe("End-to-End Init Workflow Tests", () => {
       });
 
       const result = await initCommand.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should preserve git repository
-      assertExists(await exists(join(testDir, ".git")));
-      assertExists(await exists(join(testDir, "README.md")));
-      assertExists(await exists(join(testDir, ".gitignore")));
+      expect(await exists(join(testDir, ".git").toBeDefined()));
+      expect(await exists(join(testDir, "README.md").toBeDefined()));
+      expect(await exists(join(testDir, ".gitignore").toBeDefined()));
 
       // Should add Claude Flow files
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
 
       // Check git status
       const gitStatusCommand = new Deno.Command("git", {
@@ -387,21 +387,21 @@ describe("End-to-End Init Workflow Tests", () => {
       const result = await initCommand.output();
       const endTime = performance.now();
 
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should not take too long even with many files
-      assertEquals(endTime - startTime < 30000, true);
+      expect(endTime - startTime < 30000).toBe(true);
 
       // Should preserve all existing structure
       for (const dir of projectStructure) {
-        assertExists(await exists(join(testDir, dir)));
-        assertExists(await exists(join(testDir, dir, "index.js")));
+        expect(await exists(join(testDir, dir).toBeDefined()));
+        expect(await exists(join(testDir, dir, "index.js").toBeDefined()));
       }
 
       // Should add Claude Flow files
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
 
       console.log(`Large project init completed in ${(endTime - startTime).toFixed(2)}ms`);
     });
@@ -491,8 +491,8 @@ describe("End-to-End Init Workflow Tests", () => {
       assertStringIncludes(output, "--sparc");
 
       // Should not create any files
-      assertEquals(await exists(join(testDir, "CLAUDE.md")), false);
-      assertEquals(await exists(join(testDir, "memory-bank.md")), false);
+      expect(await exists(join(testDir).toBe("CLAUDE.md")), false);
+      expect(await exists(join(testDir).toBe("memory-bank.md")), false);
     });
 
     it("should handle error scenarios gracefully", async () => {
@@ -520,7 +520,7 @@ describe("End-to-End Init Workflow Tests", () => {
       console.log("Standard output:", output);
 
       // Should not leave the system in a bad state
-      assertEquals(await exists(join(testDir, "memory")), true); // Original file should remain
+      expect(await exists(join(testDir).toBe("memory")), true); // Original file should remain
     });
   });
 });

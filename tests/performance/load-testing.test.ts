@@ -2,8 +2,8 @@
  * Comprehensive performance and load testing suite
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists } from "https://deno.land/std@0.220.0/assert/mod.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { assertEquals, assertExists  } from "../test.utils.ts";
 
 import { 
   PerformanceTestUtils, 
@@ -118,7 +118,7 @@ describe('Performance and Load Testing Suite', () => {
       );
       
       TestAssertions.assertInRange(results.averageResponseTime, 0, 1000);
-      assertEquals(results.errors.length < results.totalRequests * 0.1, true); // Less than 10% errors
+      expect(results.errors.length < results.totalRequests * 0.1).toBe(true); // Less than 10% errors
 
       console.log(`Stress test results:
         - Total requests: ${results.totalRequests}
@@ -168,7 +168,7 @@ describe('Performance and Load Testing Suite', () => {
       );
 
       // Memory usage should be stable over time
-      assertEquals(leaked, false);
+      expect(leaked).toBe(false);
       
       // Analyze memory trend
       const firstSnapshot = snapshots[0];
@@ -262,8 +262,8 @@ describe('Performance and Load Testing Suite', () => {
       );
 
       // Should handle pressure without crashing
-      assertExists(finalChunks);
-      assertEquals(typeof finalChunks, 'number');
+      expect(finalChunks).toBeDefined();
+      expect(typeof finalChunks).toBe('number');
       
       console.log(`Memory pressure test completed with ${finalChunks} chunks`);
       console.log(`Memory increase: ${(memoryIncrease / 1024 / 1024).toFixed(2)}MB`);
@@ -309,11 +309,11 @@ describe('Performance and Load Testing Suite', () => {
       const analysisResults = await concurrentMemoryTest();
       
       // All operations should complete successfully
-      assertEquals(analysisResults.length, 20);
+      expect(analysisResults.length).toBe(20);
       
       analysisResults.forEach((result, i) => {
-        assertExists(result.result);
-        assertEquals(result.result.count, 1000);
+        expect(result.result).toBeDefined();
+        expect(result.result.count).toBe(1000);
         
         console.log(`Operation ${i}: peak=${(result.peakMemory / 1024 / 1024).toFixed(2)}MB, growth=${(result.memoryGrowth / 1024 / 1024).toFixed(2)}MB`);
       });
@@ -417,7 +417,7 @@ describe('Performance and Load Testing Suite', () => {
       const largeBatch = batchResults[batchResults.length - 1];
       
       // Time per item should decrease with larger batches
-      assertEquals(largeBatch.timePerItem < smallBatch.timePerItem, true);
+      expect(largeBatch.timePerItem < smallBatch.timePerItem).toBe(true);
     });
 
     it('should handle concurrent file operations', async () => {
@@ -569,7 +569,7 @@ describe('Performance and Load Testing Suite', () => {
       
       // Connection operations should be efficient
       TestAssertions.assertInRange(stats.mean, 0, 50);
-      assertEquals(connectionPool.connections.size <= connectionPool.maxConnections, true);
+      expect(connectionPool.connections.size <= connectionPool.maxConnections).toBe(true);
     });
 
     it('should handle event-driven communication patterns', async () => {
@@ -628,7 +628,7 @@ describe('Performance and Load Testing Suite', () => {
       
       // Verify all events were processed
       const totalEvents = Array.from(handlerStats.callCounts.values()).reduce((sum, count) => sum + count, 0);
-      assertEquals(totalEvents, 500);
+      expect(totalEvents).toBe(500);
     });
   });
 
@@ -871,7 +871,7 @@ describe('Performance and Load Testing Suite', () => {
       // Verify baselines are reasonable
       baselines.forEach(baseline => {
         TestAssertions.assertInRange(baseline.baseline, 0, 10); // Should be very fast
-        assertEquals(baseline.stdDev < baseline.baseline, true); // Low variance
+        expect(baseline.stdDev < baseline.baseline).toBe(true); // Low variance
       });
     });
 
@@ -919,8 +919,8 @@ describe('Performance and Load Testing Suite', () => {
       const regressions = regressionReport.filter(r => r.isRegression);
       const improvements = regressionReport.filter(r => r.isImprovement);
       
-      assertEquals(regressions.length, 1); // Operation B
-      assertEquals(improvements.length, 1); // Operation C
+      expect(regressions.length).toBe(1); // Operation B
+      expect(improvements.length).toBe(1); // Operation C
       
       // Report summary
       console.log(`Performance analysis: ${regressions.length} regressions, ${improvements.length} improvements`);

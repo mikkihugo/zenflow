@@ -2,10 +2,10 @@
  * Comprehensive unit tests for Terminal Manager
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists, assertRejects, assertThrows } from "https://deno.land/std@0.220.0/assert/mod.ts";
-import { FakeTime } from "https://deno.land/std@0.220.0/testing/time.ts";
-import { spy, stub } from "https://deno.land/std@0.220.0/testing/mock.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { expect } from "@jest/globals";
+// FakeTime equivalent available in test.utils.ts
+import { spy, stub  } from "../test.utils.ts";
 
 import { TerminalManager } from '../../../src/terminal/manager.ts';
 import { TerminalPool } from '../../../src/terminal/pool.ts';
@@ -61,8 +61,8 @@ describe('Terminal Manager - Comprehensive Tests', () => {
     it('should initialize successfully with valid configuration', async () => {
       await terminalManager.initialize();
       
-      assertEquals(mockPool.initialize.calls.length, 1);
-      assertEquals(terminalManager.isInitialized(), true);
+      expect(mockPool.initialize.calls.length).toBe(1);
+      expect(terminalManager.isInitialized()).toBe(true);
     });
 
     it('should validate configuration parameters', () => {
@@ -100,7 +100,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
         'Pool initialization failed'
       );
 
-      assertEquals(terminalManager.isInitialized(), false);
+      expect(terminalManager.isInitialized()).toBe(false);
     });
 
     it('should prevent double initialization', async () => {
@@ -122,7 +122,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       });
 
       await nativeManager.initialize();
-      assertEquals(nativeManager.isInitialized(), true);
+      expect(nativeManager.isInitialized()).toBe(true);
       await nativeManager.shutdown();
     });
   });
@@ -142,29 +142,29 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const sessionId = await terminalManager.spawnTerminal(profile);
       
-      assertExists(sessionId);
-      assertEquals(mockPool.createSession.calls.length, 1);
-      assertEquals(mockPool.createSession.calls[0].args[0], profile);
+      expect(sessionId).toBeDefined();
+      expect(mockPool.createSession.calls.length).toBe(1);
+      expect(mockPool.createSession.calls[0].args[0]).toBe(profile);
     });
 
     it('should handle session creation with default profile', async () => {
       const sessionId = await terminalManager.spawnTerminal();
       
-      assertExists(sessionId);
-      assertEquals(mockPool.createSession.calls.length, 1);
+      expect(sessionId).toBeDefined();
+      expect(mockPool.createSession.calls.length).toBe(1);
       
       // Should use default profile
       const passedProfile = mockPool.createSession.calls[0].args[0];
-      assertEquals(typeof passedProfile.id, 'string');
-      assertEquals(typeof passedProfile.name, 'string');
+      expect(typeof passedProfile.id).toBe('string');
+      expect(typeof passedProfile.name).toBe('string');
     });
 
     it('should terminate sessions correctly', async () => {
       const sessionId = await terminalManager.spawnTerminal();
       await terminalManager.terminateTerminal(sessionId);
       
-      assertEquals(mockPool.destroySession.calls.length, 1);
-      assertEquals(mockPool.destroySession.calls[0].args[0], sessionId);
+      expect(mockPool.destroySession.calls.length).toBe(1);
+      expect(mockPool.destroySession.calls[0].args[0]).toBe(sessionId);
     });
 
     it('should handle termination of non-existent session', async () => {
@@ -211,12 +211,12 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const sessionIds = await Promise.all(promises);
       
-      assertEquals(sessionIds.length, 5);
-      assertEquals(mockPool.createSession.calls.length, 5);
+      expect(sessionIds.length).toBe(5);
+      expect(mockPool.createSession.calls.length).toBe(5);
       
       // All session IDs should be unique
       const uniqueIds = new Set(sessionIds);
-      assertEquals(uniqueIds.size, 5);
+      expect(uniqueIds.size).toBe(5);
     });
 
     it('should handle session timeout cleanup', async () => {
@@ -231,7 +231,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       await terminalManager.performMaintenance();
       
       // Should clean up expired sessions
-      assertEquals(mockPool.performMaintenance.calls.length, 1);
+      expect(mockPool.performMaintenance.calls.length).toBe(1);
     });
   });
 
@@ -252,10 +252,10 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const result = await terminalManager.sendCommand(sessionId, command);
       
-      assertExists(result);
-      assertEquals(mockPool.executeCommand.calls.length, 1);
-      assertEquals(mockPool.executeCommand.calls[0].args[0], sessionId);
-      assertEquals(mockPool.executeCommand.calls[0].args[1], command);
+      expect(result).toBeDefined();
+      expect(mockPool.executeCommand.calls.length).toBe(1);
+      expect(mockPool.executeCommand.calls[0].args[0]).toBe(sessionId);
+      expect(mockPool.executeCommand.calls[0].args[1]).toBe(command);
     });
 
     it('should handle string commands', async () => {
@@ -263,8 +263,8 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       
       const result = await terminalManager.sendCommand(sessionId, command);
       
-      assertExists(result);
-      assertEquals(mockPool.executeCommand.calls.length, 1);
+      expect(result).toBeDefined();
+      expect(mockPool.executeCommand.calls.length).toBe(1);
     });
 
     it('should handle command timeout', async () => {
@@ -289,8 +289,8 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const results = await Promise.all(promises);
       
-      assertEquals(results.length, 10);
-      assertEquals(mockPool.executeCommand.calls.length, 10);
+      expect(results.length).toBe(10);
+      expect(mockPool.executeCommand.calls.length).toBe(10);
     });
 
     it('should handle command execution on multiple sessions', async () => {
@@ -306,8 +306,8 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const results = await Promise.all(promises);
       
-      assertEquals(results.length, 3);
-      assertEquals(mockPool.executeCommand.calls.length, 3);
+      expect(results.length).toBe(3);
+      expect(mockPool.executeCommand.calls.length).toBe(3);
     });
 
     it('should handle command execution errors', async () => {
@@ -356,7 +356,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       );
 
       TestAssertions.assertInRange(stats.mean, 0, 100); // Should be fast
-      assertEquals(mockPool.createSession.calls.length, 100);
+      expect(mockPool.createSession.calls.length).toBe(100);
       
       console.log(`Session creation performance: ${stats.mean.toFixed(2)}ms average`);
     });
@@ -370,7 +370,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       );
 
       TestAssertions.assertInRange(stats.mean, 0, 50); // Should be fast
-      assertEquals(mockPool.executeCommand.calls.length, 50);
+      expect(mockPool.executeCommand.calls.length).toBe(50);
       
       console.log(`Command execution performance: ${stats.mean.toFixed(2)}ms average`);
     });
@@ -395,7 +395,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
         );
       });
 
-      assertEquals(leaked, false);
+      expect(leaked).toBe(false);
     });
 
     it('should maintain performance under resource pressure', async () => {
@@ -445,10 +445,10 @@ describe('Terminal Manager - Comprehensive Tests', () => {
     it('should report health status correctly', async () => {
       const health = await terminalManager.getHealthStatus();
       
-      assertEquals(health.healthy, true);
-      assertExists(health.metrics);
-      assertEquals(typeof health.metrics.activeSessions, 'number');
-      assertEquals(typeof health.metrics.availableSlots, 'number');
+      expect(health.healthy).toBe(true);
+      expect(health.metrics).toBeDefined();
+      expect(typeof health.metrics.activeSessions).toBe('number');
+      expect(typeof health.metrics.availableSlots).toBe('number');
     });
 
     it('should detect unhealthy pool status', async () => {
@@ -458,14 +458,14 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const health = await terminalManager.getHealthStatus();
       
-      assertEquals(health.healthy, false);
-      assertExists(health.error);
+      expect(health.healthy).toBe(false);
+      expect(health.error).toBeDefined();
     });
 
     it('should perform maintenance operations', async () => {
       await terminalManager.performMaintenance();
       
-      assertEquals(mockPool.performMaintenance.calls.length, 1);
+      expect(mockPool.performMaintenance.calls.length).toBe(1);
     });
 
     it('should handle maintenance errors gracefully', async () => {
@@ -476,7 +476,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       // Should not throw, but log error
       await terminalManager.performMaintenance();
       
-      assertEquals(mockPool.performMaintenance.calls.length, 1);
+      expect(mockPool.performMaintenance.calls.length).toBe(1);
     });
 
     it('should track session metrics accurately', async () => {
@@ -496,7 +496,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       const health = await terminalManager.getHealthStatus();
       
-      assertExists(health.metrics);
+      expect(health.metrics).toBeDefined();
       TestAssertions.assertInRange(health.metrics.activeSessions, 0, 10);
       TestAssertions.assertInRange(health.metrics.totalCommands, 3, 100);
     });
@@ -543,7 +543,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       for (const profile of validProfiles) {
         try {
           const sessionId = await terminalManager.spawnTerminal(profile);
-          assertExists(sessionId);
+          expect(sessionId).toBeDefined();
         } catch (error) {
           // Some edge cases may be rejected, which is acceptable
         }
@@ -571,8 +571,8 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       const successes = results.filter(r => typeof r === 'string');
       const failures = results.filter(r => r instanceof Error);
       
-      assertEquals(successes.length >= 1, true);
-      assertEquals(failures.length >= 1, true);
+      expect(successes.length >= 1).toBe(true);
+      expect(failures.length >= 1).toBe(true);
     });
 
     it('should handle resource exhaustion scenarios', async () => {
@@ -606,10 +606,10 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       try {
         const result = await terminalManager.sendCommand(sessionId, 'test-command');
         // If retry logic is implemented, this should eventually succeed
-        assertExists(result);
+        expect(result).toBeDefined();
       } catch (error) {
         // If no retry logic, should fail on first attempt
-        assertEquals(error.message, 'Adapter temporarily unavailable');
+        expect(error.message).toBe('Adapter temporarily unavailable');
       }
     });
   });
@@ -626,8 +626,8 @@ describe('Terminal Manager - Comprehensive Tests', () => {
 
       await terminalManager.shutdown();
       
-      assertEquals(mockPool.shutdown.calls.length, 1);
-      assertEquals(terminalManager.isInitialized(), false);
+      expect(mockPool.shutdown.calls.length).toBe(1);
+      expect(terminalManager.isInitialized()).toBe(false);
     });
 
     it('should handle shutdown with active sessions', async () => {
@@ -644,7 +644,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       // Both should complete (command may be cancelled)
       await Promise.allSettled([commandPromise, shutdownPromise]);
       
-      assertEquals(terminalManager.isInitialized(), false);
+      expect(terminalManager.isInitialized()).toBe(false);
     });
 
     it('should timeout shutdown if pool hangs', async () => {
@@ -670,7 +670,7 @@ describe('Terminal Manager - Comprehensive Tests', () => {
       // Should complete shutdown despite pool error
       await terminalManager.shutdown();
       
-      assertEquals(terminalManager.isInitialized(), false);
+      expect(terminalManager.isInitialized()).toBe(false);
     });
 
     it('should prevent operations after shutdown', async () => {

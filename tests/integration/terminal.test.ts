@@ -2,7 +2,7 @@
  * Integration tests for terminal functionality
  */
 
-import { assertEquals, assertExists, assertRejects } from 'https://deno.land/std@0.220.0/assert/mod.ts';
+import { assertEquals, assertExists, assertRejects  } from "../test.utils.ts";
 import { TerminalManager } from '../../src/terminal/manager.ts';
 import { NativeAdapter } from '../../src/terminal/adapters/native.ts';
 import { VSCodeAdapter } from '../../src/terminal/adapters/vscode.ts';
@@ -50,17 +50,17 @@ Deno.test('NativeAdapter - creates and destroys terminals', async () => {
 
   // Create terminal
   const terminal = await adapter.createTerminal();
-  assertExists(terminal);
-  assertExists(terminal.id);
-  assertEquals(terminal.isAlive(), true);
+  expect(terminal).toBeDefined();
+  expect(terminal.id).toBeDefined();
+  expect(terminal.isAlive()).toBe(true);
 
   // Execute command
   const output = await terminal.executeCommand('echo "Hello World"');
-  assertEquals(output.trim(), 'Hello World');
+  expect(output.trim()).toBe('Hello World');
 
   // Destroy terminal
   await adapter.destroyTerminal(terminal);
-  assertEquals(terminal.isAlive(), false);
+  expect(terminal.isAlive()).toBe(false);
 
   await adapter.shutdown();
 });
@@ -78,11 +78,11 @@ Deno.test('NativeAdapter - handles multiple shells', async () => {
   if (platform === 'windows') {
     // Windows specific test
     const output = await terminal.executeCommand('echo %CLAUDE_FLOW_TERMINAL%');
-    assertEquals(output.trim(), 'true');
+    expect(output.trim()).toBe('true');
   } else {
     // Unix-like specific test
     const output = await terminal.executeCommand('echo $CLAUDE_FLOW_TERMINAL');
-    assertEquals(output.trim(), 'true');
+    expect(output.trim()).toBe('true');
   }
 
   await adapter.destroyTerminal(terminal);
@@ -104,9 +104,9 @@ Deno.test('TerminalPool - manages terminal lifecycle', async () => {
   const term1 = await pool.acquire();
   const term2 = await pool.acquire();
   
-  assertExists(term1);
-  assertExists(term2);
-  assertEquals(term1.id !== term2.id, true);
+  expect(term1).toBeDefined();
+  expect(term2).toBeDefined();
+  expect(term1.id !== term2.id).toBe(true);
 
   // Release terminals
   await pool.release(term1);
@@ -114,8 +114,8 @@ Deno.test('TerminalPool - manages terminal lifecycle', async () => {
 
   // Check health status
   const health = await pool.getHealthStatus();
-  assertEquals(health.healthy, true);
-  assertEquals(health.size >= 2, true);
+  expect(health.healthy).toBe(true);
+  expect(health.size >= 2).toBe(true);
 
   await pool.shutdown();
   await adapter.shutdown();
@@ -135,11 +135,11 @@ Deno.test('TerminalPool - recycles terminals after use count', async () => {
   // Use and release twice to trigger recycling
   await pool.release(terminal);
   const term2 = await pool.acquire();
-  assertEquals(term2.id, originalId); // Should get same terminal
+  expect(term2.id).toBe(originalId); // Should get same terminal
   
   await pool.release(term2);
   const term3 = await pool.acquire();
-  assertEquals(term3.id !== originalId, true); // Should get new terminal after recycling
+  expect(term3.id !== originalId).toBe(true); // Should get new terminal after recycling
 
   await pool.shutdown();
   await adapter.shutdown();
@@ -161,15 +161,15 @@ Deno.test('TerminalSession - manages command execution', async () => {
 
   // Execute command
   const output = await session.executeCommand('echo "Session test"');
-  assertEquals(output.trim(), 'Session test');
+  expect(output.trim()).toBe('Session test');
 
   // Check command history
   const history = session.getCommandHistory();
-  assertEquals(history.length, 1);
-  assertEquals(history[0], 'echo "Session test"');
+  expect(history.length).toBe(1);
+  expect(history[0]).toBe('echo "Session test"');
 
   // Check health
-  assertEquals(session.isHealthy(), true);
+  expect(session.isHealthy()).toBe(true);
 
   await session.cleanup();
   await adapter.destroyTerminal(terminal);
@@ -199,7 +199,7 @@ Deno.test('TerminalSession - handles output streaming', async () => {
 
   // Check streamed output
   await delay(100); // Allow output to be processed
-  assertEquals(outputs.length > 0, true);
+  expect(outputs.length > 0).toBe(true);
 
   unsubscribe();
   await session.cleanup();
@@ -221,28 +221,28 @@ Deno.test('TerminalManager - complete workflow', async () => {
   // Spawn terminal for agent
   const profile = createTestProfile('manager-test');
   const terminalId = await manager.spawnTerminal(profile);
-  assertExists(terminalId);
+  expect(terminalId).toBeDefined();
 
   // Execute command
   const output = await manager.executeCommand(terminalId, 'echo "Manager test"');
-  assertEquals(output.trim(), 'Manager test');
+  expect(output.trim()).toBe('Manager test');
 
   // Get active sessions
   const sessions = manager.getActiveSessions();
-  assertEquals(sessions.length, 1);
-  assertEquals(sessions[0].agentId, profile.id);
+  expect(sessions.length).toBe(1);
+  expect(sessions[0].agentId).toBe(profile.id);
 
   // Check health
   const health = await manager.getHealthStatus();
-  assertEquals(health.healthy, true);
-  assertEquals(health.metrics?.activeSessions, 1);
+  expect(health.healthy).toBe(true);
+  expect(health.metrics?.activeSessions).toBe(1);
 
   // Terminate terminal
   await manager.terminateTerminal(terminalId);
   
   // Verify cleanup
   const sessionsAfter = manager.getActiveSessions();
-  assertEquals(sessionsAfter.length, 0);
+  expect(sessionsAfter.length).toBe(0);
 
   await manager.shutdown();
 });
@@ -269,8 +269,8 @@ Deno.test('TerminalManager - handles maintenance', async () => {
   await manager.performMaintenance();
 
   // Check event was emitted
-  assertExists(maintenanceEvent);
-  assertEquals(maintenanceEvent.activeSessions, 1);
+  expect(maintenanceEvent).toBeDefined();
+  expect(maintenanceEvent.activeSessions).toBe(1);
 
   await manager.terminateTerminal(terminalId);
   await manager.shutdown();
@@ -341,9 +341,9 @@ Deno.test('Terminal - handles cross-platform commands', async () => {
     terminal.executeCommand('echo "Test 3"'),
   ]);
 
-  assertEquals(outputs[0].trim(), 'Test 1');
-  assertEquals(outputs[1].trim(), 'Test 2');
-  assertEquals(outputs[2].trim(), 'Test 3');
+  expect(outputs[0].trim()).toBe('Test 1');
+  expect(outputs[1].trim()).toBe('Test 2');
+  expect(outputs[2].trim()).toBe('Test 3');
 
   await adapter.destroyTerminal(terminal);
   await adapter.shutdown();
@@ -360,11 +360,11 @@ if (typeof (globalThis as any).vscode !== 'undefined') {
     await adapter.initialize();
 
     const terminal = await adapter.createTerminal();
-    assertExists(terminal);
-    assertExists(terminal.id);
+    expect(terminal).toBeDefined();
+    expect(terminal.id).toBeDefined();
 
     const output = await terminal.executeCommand('echo "VSCode test"');
-    assertEquals(output.trim(), 'VSCode test');
+    expect(output.trim()).toBe('VSCode test');
 
     await adapter.destroyTerminal(terminal);
     await adapter.shutdown();

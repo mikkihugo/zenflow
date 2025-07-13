@@ -2,26 +2,26 @@
  * Tests to ensure backward compatibility with existing start command functionality
  */
 
-import { assertEquals, assertExists } from 'https://deno.land/std@0.224.0/assert/mod.ts';
-import { describe, it } from 'https://deno.land/std@0.224.0/testing/bdd.ts';
+import { describe, it, beforeEach, afterEach, expect } from "../test.utils.ts";
+import { describe, it, beforeEach, afterEach, expect } from "../test.utils.ts";
 
 describe('Start Command Backward Compatibility', () => {
   describe('CLI imports', () => {
     it('should export startCommand from main CLI index', async () => {
       const module = await import('../../src/cli/index.ts');
       // The module imports startCommand, so it should work
-      assertExists(module);
+      expect(module).toBeDefined();
     });
 
     it('should export startCommand from commands/start.ts', async () => {
       const { startCommand } = await import('../../src/cli/commands/start.ts');
-      assertExists(startCommand);
+      expect(startCommand).toBeDefined();
     });
 
     it('should export startCommand from simple-commands', async () => {
       const { startCommand } = await import('../../src/cli/simple-commands/start.js');
-      assertExists(startCommand);
-      assertEquals(typeof startCommand, 'function');
+      expect(startCommand).toBeDefined();
+      expect(typeof startCommand).toBe('function');
     });
   });
 
@@ -39,7 +39,7 @@ describe('Start Command Backward Compatibility', () => {
       };
       
       await startCommand(['--help'], {});
-      assertEquals(helpShown, true);
+      expect(helpShown).toBe(true);
       
       // Restore
       console.log = originalLog;
@@ -59,7 +59,7 @@ describe('Start Command Backward Compatibility', () => {
       };
       
       await startCommand(['--help'], {});
-      assertEquals(uiOptionShown, true);
+      expect(uiOptionShown).toBe(true);
       
       // Restore
       console.log = originalLog;
@@ -97,7 +97,7 @@ describe('Start Command Backward Compatibility', () => {
       await startCommand(['--daemon'], { daemon: true });
       
       // Verify warning about missing dirs was shown
-      assertEquals(daemonMode || console.log.toString().includes('Missing required'), true);
+      expect(daemonMode || console.log.toString().includes('Missing required')).toBe(true);
       
       // Restore
       console.log = originalLog;
@@ -119,7 +119,7 @@ describe('Start Command Backward Compatibility', () => {
         options.some((o: any) => o.name === opt || o.flags?.includes(opt))
       );
       
-      assertEquals(hasAllOptions, true);
+      expect(hasAllOptions).toBe(true);
     });
   });
 
@@ -128,12 +128,12 @@ describe('Start Command Backward Compatibility', () => {
       // The setupEventListeners function was part of the original implementation
       // Verify the event handling is still in place by checking imports
       const module = await import('../../src/cli/commands/start/start-command.ts');
-      assertExists(module.startCommand);
+      expect(module.startCommand).toBeDefined();
       
       // Check that it imports eventBus
       const sourceCode = await Deno.readTextFile('src/cli/commands/start/start-command.ts');
-      assertEquals(sourceCode.includes('eventBus'), true);
-      assertEquals(sourceCode.includes('SystemEvents'), true);
+      expect(sourceCode.includes('eventBus')).toBe(true);
+      expect(sourceCode.includes('SystemEvents')).toBe(true);
     });
   });
 });

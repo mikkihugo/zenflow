@@ -66,13 +66,13 @@ describe("Selective Mode Initialization Tests", () => {
       const standardClaude = await Deno.readTextFile(join(standardDir, "CLAUDE.md"));
       const minimalClaude = await Deno.readTextFile(join(minimalDir, "CLAUDE.md"));
 
-      assertEquals(standardClaude.length > minimalClaude.length, true);
+      expect(standardClaude.length > minimalClaude.length).toBe(true);
       assertStringIncludes(minimalClaude, "Minimal project configuration");
 
       const standardMemory = await Deno.readTextFile(join(standardDir, "memory-bank.md"));
       const minimalMemory = await Deno.readTextFile(join(minimalDir, "memory-bank.md"));
 
-      assertEquals(standardMemory.length > minimalMemory.length, true);
+      expect(standardMemory.length > minimalMemory.length).toBe(true);
       assertStringIncludes(minimalMemory, "Simple memory tracking");
     });
 
@@ -113,7 +113,7 @@ describe("Selective Mode Initialization Tests", () => {
 
       for (const mode of dirs) {
         for (const dir of expectedDirs) {
-          assertExists(await exists(join(testDir, mode, dir)));
+          expect(await exists(join(testDir, mode, dir).toBeDefined()));
         }
       }
     });
@@ -159,19 +159,19 @@ describe("Selective Mode Initialization Tests", () => {
       await sparcCommand.output();
 
       // Check SPARC-specific files
-      assertEquals(await exists(join(regularDir, ".roo")), false);
-      assertEquals(await exists(join(regularDir, ".roomodes")), false);
-      assertEquals(await exists(join(regularDir, ".claude/commands/sparc")), false);
+      expect(await exists(join(regularDir).toBe(".roo")), false);
+      expect(await exists(join(regularDir).toBe(".roomodes")), false);
+      expect(await exists(join(regularDir).toBe(".claude/commands/sparc")), false);
 
-      assertExists(await exists(join(sparcDir, ".roo")));
-      assertExists(await exists(join(sparcDir, ".roomodes")));
-      assertExists(await exists(join(sparcDir, ".claude/commands/sparc")));
+      expect(await exists(join(sparcDir, ".roo").toBeDefined()));
+      expect(await exists(join(sparcDir, ".roomodes").toBeDefined()));
+      expect(await exists(join(sparcDir, ".claude/commands/sparc").toBeDefined()));
 
       // Check CLAUDE.md content differences
       const regularClaude = await Deno.readTextFile(join(regularDir, "CLAUDE.md"));
       const sparcClaude = await Deno.readTextFile(join(sparcDir, "CLAUDE.md"));
 
-      assertEquals(regularClaude.includes("SPARC Development Environment"), false);
+      expect(regularClaude.includes("SPARC Development Environment")).toBe(false);
       assertStringIncludes(sparcClaude, "SPARC Development Environment");
       assertStringIncludes(sparcClaude, "## SPARC Development Commands");
     });
@@ -202,15 +202,15 @@ describe("Selective Mode Initialization Tests", () => {
       ];
 
       for (const dir of sparcDirs) {
-        assertExists(await exists(join(testDir, dir)));
+        expect(await exists(join(testDir, dir).toBeDefined()));
       }
 
       // Check Claude commands
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
 
       // Check workflow files
-      assertExists(await exists(join(testDir, ".roo/workflows/basic-tdd.json")));
-      assertExists(await exists(join(testDir, ".roo/README.md")));
+      expect(await exists(join(testDir, ".roo/workflows/basic-tdd.json").toBeDefined()));
+      expect(await exists(join(testDir, ".roo/README.md").toBeDefined()));
     });
   });
 
@@ -233,9 +233,9 @@ describe("Selective Mode Initialization Tests", () => {
       await command.output();
 
       // Should have SPARC structure
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
 
       // Should have SPARC-enhanced CLAUDE.md (SPARC overrides minimal for CLAUDE.md)
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
@@ -290,9 +290,9 @@ describe("Selective Mode Initialization Tests", () => {
       const sparcMinimalClaude = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
 
       // SPARC version should be different from minimal-only
-      assertEquals(minimalClaude === sparcMinimalClaude, false);
+      expect(minimalClaude === sparcMinimalClaude).toBe(false);
       assertStringIncludes(sparcMinimalClaude, "SPARC Development Environment");
-      assertEquals(minimalClaude.includes("SPARC Development Environment"), false);
+      expect(minimalClaude.includes("SPARC Development Environment")).toBe(false);
     });
   });
 
@@ -337,10 +337,10 @@ describe("Selective Mode Initialization Tests", () => {
       const fullMemory = await Deno.readTextFile(join(testDir, "memory-bank.md"));
 
       // Should be different and longer
-      assertEquals(minimalClaude === fullClaude, false);
-      assertEquals(minimalMemory === fullMemory, false);
-      assertEquals(fullClaude.length > minimalClaude.length, true);
-      assertEquals(fullMemory.length > minimalMemory.length, true);
+      expect(minimalClaude === fullClaude).toBe(false);
+      expect(minimalMemory === fullMemory).toBe(false);
+      expect(fullClaude.length > minimalClaude.length).toBe(true);
+      expect(fullMemory.length > minimalMemory.length).toBe(true);
     });
 
     it("should support adding SPARC to existing project", async () => {
@@ -360,8 +360,8 @@ describe("Selective Mode Initialization Tests", () => {
       await regularCommand.output();
 
       // Verify no SPARC files
-      assertEquals(await exists(join(testDir, ".roo")), false);
-      assertEquals(await exists(join(testDir, ".roomodes")), false);
+      expect(await exists(join(testDir).toBe(".roo")), false);
+      expect(await exists(join(testDir).toBe(".roomodes")), false);
 
       // Add SPARC with force
       const sparcCommand = new Deno.Command("deno", {
@@ -381,9 +381,9 @@ describe("Selective Mode Initialization Tests", () => {
       await sparcCommand.output();
 
       // Should now have SPARC files
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
-      assertExists(await exists(join(testDir, ".claude/commands/sparc")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
+      expect(await exists(join(testDir, ".claude/commands/sparc").toBeDefined()));
 
       // CLAUDE.md should be SPARC-enhanced
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
@@ -414,9 +414,9 @@ describe("Selective Mode Initialization Tests", () => {
       const coordContent = await Deno.readTextFile(join(testDir, "coordination.md"));
 
       // Minimal files should be under reasonable size limits
-      assertEquals(claudeContent.length < 5000, true); // Should be much smaller than full
-      assertEquals(memoryContent.length < 2000, true);
-      assertEquals(coordContent.length < 2000, true);
+      expect(claudeContent.length < 5000).toBe(true); // Should be much smaller than full
+      expect(memoryContent.length < 2000).toBe(true);
+      expect(coordContent.length < 2000).toBe(true);
 
       // But should still have basic structure
       assertStringIncludes(claudeContent, "# Claude Code Configuration");
@@ -465,10 +465,10 @@ describe("Selective Mode Initialization Tests", () => {
         const roomodesContent = await Deno.readTextFile(join(testDir, ".roomodes"));
         const roomodesData = JSON.parse(roomodesContent);
         
-        assertEquals(typeof roomodesData.modes, "object");
-        assertExists(roomodesData.modes.architect);
-        assertExists(roomodesData.modes.tdd);
-        assertExists(roomodesData.modes.code);
+        expect(typeof roomodesData.modes).toBe("object");
+        expect(roomodesData.modes.architect).toBeDefined();
+        expect(roomodesData.modes.tdd).toBeDefined();
+        expect(roomodesData.modes.code).toBeDefined();
       }
     });
   });

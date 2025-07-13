@@ -48,7 +48,7 @@ describe("Init Command Rollback Tests", () => {
       console.error = originalError;
 
       // Should fail due to directory conflict
-      assertEquals(result.success, false);
+      expect(result.success).toBe(false);
 
       // Should not leave partial state (other files should not be created if first fails)
       // Note: This depends on the implementation - some files might be created before failure
@@ -75,7 +75,7 @@ describe("Init Command Rollback Tests", () => {
       const result = await command.output();
 
       // Should handle the error
-      assertEquals(result.success, false);
+      expect(result.success).toBe(false);
 
       // Should report the error appropriately
       const stderr = new TextDecoder().decode(result.stderr);
@@ -106,12 +106,12 @@ describe("Init Command Rollback Tests", () => {
       const output = new TextDecoder().decode(result.stdout);
 
       // Should fall back to manual creation
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
       console.log("SPARC fallback output:", output);
 
       // Should still create SPARC structure
-      assertExists(await exists(join(testDir, ".roo")));
-      assertExists(await exists(join(testDir, ".roomodes")));
+      expect(await exists(join(testDir, ".roo").toBeDefined()));
+      expect(await exists(join(testDir, ".roomodes").toBeDefined()));
     });
 
     it("should handle partial SPARC structure creation", async () => {
@@ -138,8 +138,8 @@ describe("Init Command Rollback Tests", () => {
       console.log("SPARC structure conflict:", stderr);
 
       // Basic init should still work
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
     });
   });
 
@@ -166,7 +166,7 @@ describe("Init Command Rollback Tests", () => {
       await Deno.chmod(testDir, 0o755);
 
       // Should fail due to permissions
-      assertEquals(result.success, false);
+      expect(result.success).toBe(false);
 
       const stderr = new TextDecoder().decode(result.stderr);
       console.log("Permission error:", stderr);
@@ -246,7 +246,7 @@ describe("Init Command Rollback Tests", () => {
       console.log("Init result:", result.success);
 
       // Original files should still exist
-      assertExists(await exists(join(testDir, "existing.txt")));
+      expect(await exists(join(testDir, "existing.txt").toBeDefined()));
     });
 
     it("should handle concurrent access conflicts", async () => {
@@ -283,11 +283,11 @@ describe("Init Command Rollback Tests", () => {
 
       // At least one should succeed
       const anySucceeded = result1.success || result2.success;
-      assertEquals(anySucceeded, true);
+      expect(anySucceeded).toBe(true);
 
       // Files should be created
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
 
       console.log("Concurrent init results:", result1.success, result2.success);
     });
@@ -315,17 +315,17 @@ describe("Init Command Rollback Tests", () => {
       });
 
       const result = await command.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should have complete structure now
-      assertExists(await exists(join(testDir, "CLAUDE.md")));
-      assertExists(await exists(join(testDir, "memory-bank.md")));
-      assertExists(await exists(join(testDir, "coordination.md")));
-      assertExists(await exists(join(testDir, "memory")));
+      expect(await exists(join(testDir, "CLAUDE.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory-bank.md").toBeDefined()));
+      expect(await exists(join(testDir, "coordination.md").toBeDefined()));
+      expect(await exists(join(testDir, "memory").toBeDefined()));
 
       // CLAUDE.md should be overwritten
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(claudeContent.includes("partial content"), false);
+      expect(claudeContent.includes("partial content")).toBe(false);
     });
 
     it("should handle recovery with existing directories", async () => {
@@ -351,16 +351,16 @@ describe("Init Command Rollback Tests", () => {
       });
 
       const result = await command.output();
-      assertEquals(result.success, true);
+      expect(result.success).toBe(true);
 
       // Should work with existing directories
-      assertExists(await exists(join(testDir, "memory")));
-      assertExists(await exists(join(testDir, "memory/agents")));
-      assertExists(await exists(join(testDir, "coordination")));
+      expect(await exists(join(testDir, "memory").toBeDefined()));
+      expect(await exists(join(testDir, "memory/agents").toBeDefined()));
+      expect(await exists(join(testDir, "coordination").toBeDefined()));
 
       // File should be overwritten
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(claudeContent.includes("old content"), false);
+      expect(claudeContent.includes("old content")).toBe(false);
     });
   });
 
@@ -413,7 +413,7 @@ describe("Init Command Rollback Tests", () => {
       console.log("Temp files:", tempFiles);
 
       // Should not create excessive temporary files
-      assertEquals(tempFiles.length === 0, true);
+      expect(tempFiles.length === 0).toBe(true);
     });
 
     it("should handle interrupted initialization", async () => {
@@ -442,12 +442,12 @@ describe("Init Command Rollback Tests", () => {
       const output = new TextDecoder().decode(result.stdout);
 
       // Should detect existing file and warn
-      assertEquals(output.includes("already exist"), true);
-      assertEquals(output.includes("--force"), true);
+      expect(output.includes("already exist")).toBe(true);
+      expect(output.includes("--force")).toBe(true);
 
       // Original file should be unchanged
       const claudeContent = await Deno.readTextFile(join(testDir, "CLAUDE.md"));
-      assertEquals(claudeContent.includes("Incomplete..."), true);
+      expect(claudeContent.includes("Incomplete...")).toBe(true);
     });
   });
 });

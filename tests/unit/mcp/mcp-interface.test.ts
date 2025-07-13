@@ -3,10 +3,10 @@
  * Tests stdio and HTTP transports, protocol compliance, and error handling
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists, assertRejects, assertThrows } from "https://deno.land/std@0.220.0/assert/mod.ts";
-import { FakeTime } from "https://deno.land/std@0.220.0/testing/time.ts";
-import { spy, stub } from "https://deno.land/std@0.220.0/testing/mock.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { expect } from "@jest/globals";
+// FakeTime equivalent available in test.utils.ts
+import { spy, stub  } from "../test.utils.ts";
 
 import { MCPServer } from '../../../src/mcp/server.ts';
 import { MCPClient } from '../../../src/mcp/client.ts';
@@ -84,12 +84,12 @@ describe('MCP Interface - Comprehensive Tests', () => {
       for (const message of validMessages) {
         // Test message validation
         const isValid = validateMCPMessage(message);
-        assertEquals(isValid, true);
+        expect(isValid).toBe(true);
         
         // Test serialization/deserialization
         const serialized = JSON.stringify(message);
         const deserialized = JSON.parse(serialized);
-        assertEquals(deserialized, message);
+        expect(deserialized).toBe(message);
       }
     });
 
@@ -104,7 +104,7 @@ describe('MCP Interface - Comprehensive Tests', () => {
 
       for (const message of invalidMessages) {
         const isValid = validateMCPMessage(message);
-        assertEquals(isValid, false);
+        expect(isValid).toBe(false);
       }
     });
 
@@ -154,10 +154,10 @@ describe('MCP Interface - Comprehensive Tests', () => {
 
       for (const message of mcpMessages) {
         const isValid = validateMCPMessage(message);
-        assertEquals(isValid, true);
+        expect(isValid).toBe(true);
         
         const messageType = getMCPMessageType(message);
-        assertExists(messageType);
+        expect(messageType).toBeDefined();
       }
     });
 
@@ -176,9 +176,9 @@ describe('MCP Interface - Comprehensive Tests', () => {
 
       const negotiatedCapabilities = negotiateCapabilities(serverCapabilities, clientCapabilities);
       
-      assertExists(negotiatedCapabilities);
-      assertEquals(typeof negotiatedCapabilities.server, 'object');
-      assertEquals(typeof negotiatedCapabilities.client, 'object');
+      expect(negotiatedCapabilities).toBeDefined();
+      expect(typeof negotiatedCapabilities.server).toBe('object');
+      expect(typeof negotiatedCapabilities.client).toBe('object');
     });
   });
 
@@ -196,15 +196,15 @@ describe('MCP Interface - Comprehensive Tests', () => {
     });
 
     it('should create stdio transport successfully', () => {
-      assertExists(stdioTransport);
+      expect(stdioTransport).toBeDefined();
     });
 
     it('should handle stdio start and stop', async () => {
       // Since we can't actually test stdin/stdout in tests, we'll just verify the methods exist
-      assertEquals(typeof stdioTransport.start, 'function');
-      assertEquals(typeof stdioTransport.stop, 'function');
-      assertEquals(typeof stdioTransport.connect, 'function');
-      assertEquals(typeof stdioTransport.disconnect, 'function');
+      expect(typeof stdioTransport.start).toBe('function');
+      expect(typeof stdioTransport.stop).toBe('function');
+      expect(typeof stdioTransport.connect).toBe('function');
+      expect(typeof stdioTransport.disconnect).toBe('function');
     });
   });
 
@@ -253,14 +253,14 @@ describe('MCP Interface - Comprehensive Tests', () => {
     });
 
     it('should create HTTP transport successfully', () => {
-      assertExists(httpTransport);
+      expect(httpTransport).toBeDefined();
     });
 
     it('should handle HTTP start and stop', async () => {
-      assertEquals(typeof httpTransport.start, 'function');
-      assertEquals(typeof httpTransport.stop, 'function');
-      assertEquals(typeof httpTransport.connect, 'function');
-      assertEquals(typeof httpTransport.disconnect, 'function');
+      expect(typeof httpTransport.start).toBe('function');
+      expect(typeof httpTransport.stop).toBe('function');
+      expect(typeof httpTransport.connect).toBe('function');
+      expect(typeof httpTransport.disconnect).toBe('function');
     });
   });
 
@@ -295,7 +295,7 @@ describe('MCP Interface - Comprehensive Tests', () => {
     });
 
     it('should create server correctly', () => {
-      assertExists(mcpServer);
+      expect(mcpServer).toBeDefined();
     });
 
     it('should register and list tools correctly', () => {
@@ -329,7 +329,7 @@ describe('MCP Interface - Comprehensive Tests', () => {
 
       // We can't test the actual listing without starting the server and having a proper transport
       // But we can verify the registration doesn't throw
-      assertEquals(true, true); // Registration successful
+      expect(true).toBe(true); // Registration successful
     });
   });
 
@@ -368,18 +368,18 @@ describe('MCP Interface - Comprehensive Tests', () => {
 
     it('should connect and disconnect correctly', async () => {
       await mcpClient.connect();
-      assertEquals(mcpClient.isConnected(), true);
+      expect(mcpClient.isConnected()).toBe(true);
       
       await mcpClient.disconnect();
-      assertEquals(mcpClient.isConnected(), false);
+      expect(mcpClient.isConnected()).toBe(false);
     });
 
     it('should send requests correctly', async () => {
       await mcpClient.connect();
       
       const result = await mcpClient.request('test_method', { param: 'value' });
-      assertExists(result);
-      assertEquals(result, { success: true });
+      expect(result).toBeDefined();
+      expect(result).toBe({ success: true });
     });
   });
 
@@ -414,13 +414,13 @@ describe('MCP Interface - Comprehensive Tests', () => {
     });
 
     it('should create session manager correctly', () => {
-      assertExists(sessionManager);
+      expect(sessionManager).toBeDefined();
     });
 
     it('should handle session operations', () => {
       // Session manager doesn't have start/stop methods but we can test basic functionality
-      assertEquals(typeof sessionManager.createSession, 'function');
-      assertEquals(typeof sessionManager.getSession, 'function');
+      expect(typeof sessionManager.createSession).toBe('function');
+      expect(typeof sessionManager.getSession).toBe('function');
     });
   });
 
@@ -446,7 +446,7 @@ describe('MCP Interface - Comprehensive Tests', () => {
     });
 
     it('should create load balancer correctly', () => {
-      assertExists(loadBalancer);
+      expect(loadBalancer).toBeDefined();
     });
   });
 
@@ -471,7 +471,7 @@ describe('MCP Interface - Comprehensive Tests', () => {
     });
 
     it('should create auth manager correctly', () => {
-      assertExists(authManager);
+      expect(authManager).toBeDefined();
     });
   });
 

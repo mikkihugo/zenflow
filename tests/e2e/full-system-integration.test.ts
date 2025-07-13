@@ -3,9 +3,9 @@
  * Tests complete workflows and system integration
  */
 
-import { describe, it, beforeEach, afterEach } from "https://deno.land/std@0.220.0/testing/bdd.ts";
-import { assertEquals, assertExists, assertStringIncludes } from "https://deno.land/std@0.220.0/assert/mod.ts";
-import { FakeTime } from "https://deno.land/std@0.220.0/testing/time.ts";
+import { describe, it, beforeEach, afterEach  } from "../test.utils.ts";
+import { assertEquals, assertExists, assertStringIncludes  } from "../test.utils.ts";
+// FakeTime equivalent available in test.utils.ts
 
 import { 
   AsyncTestUtils, 
@@ -143,7 +143,7 @@ describe('Full System Integration Tests', () => {
       };
 
       const result = await shutdownTest();
-      assertEquals(result, 'shutdown complete');
+      expect(result).toBe('shutdown complete');
     });
 
     it('should recover from component failures during startup', async () => {
@@ -174,11 +174,11 @@ describe('Full System Integration Tests', () => {
       };
 
       const results = await componentFailureTest();
-      assertEquals(results.length, 4);
+      expect(results.length).toBe(4);
       
       // All components should eventually be running
       results.forEach(result => {
-        assertEquals(['success', 'recovered'].includes(result.status), true);
+        expect(['success').toBe('recovered'].includes(result.status), true);
       });
     });
   });
@@ -233,11 +233,11 @@ describe('Full System Integration Tests', () => {
       const executionLog = await workflowTest();
       
       // Verify workflow executed correctly
-      assertEquals(executionLog.length >= 3, true); // At least some tasks completed
+      expect(executionLog.length >= 3).toBe(true); // At least some tasks completed
       
       // Verify agent participation
       const agentsUsed = new Set(executionLog.map(entry => entry.agent));
-      assertEquals(agentsUsed.size >= 2, true); // Multiple agents participated
+      expect(agentsUsed.size >= 2).toBe(true); // Multiple agents participated
       
       console.log(`Multi-agent workflow completed with ${executionLog.length} tasks`);
     });
@@ -338,7 +338,7 @@ describe('Full System Integration Tests', () => {
       const results = await concurrentWorkflowTest();
       
       // All workflows should complete
-      assertEquals(results.length, 8); // Total tasks across all workflows
+      expect(results.length).toBe(8); // Total tasks across all workflows
       
       // Verify each workflow completed
       const workflowResults = new Map();
@@ -349,10 +349,10 @@ describe('Full System Integration Tests', () => {
         workflowResults.get(result.workflowId).push(result);
       });
       
-      assertEquals(workflowResults.size, 3); // All 3 workflows
-      assertEquals(workflowResults.get('workflow-1').length, 3);
-      assertEquals(workflowResults.get('workflow-2').length, 3);
-      assertEquals(workflowResults.get('workflow-3').length, 2);
+      expect(workflowResults.size).toBe(3); // All 3 workflows
+      expect(workflowResults.get('workflow-1').length).toBe(3);
+      expect(workflowResults.get('workflow-2').length).toBe(3);
+      expect(workflowResults.get('workflow-3').length).toBe(2);
       
       console.log('Concurrent workflows completed successfully');
     });
@@ -384,8 +384,8 @@ describe('Full System Integration Tests', () => {
 
       const results = await persistenceTest();
       
-      assertEquals(results.stored, results.recovered);
-      assertEquals(results.dataIntegrity, true);
+      expect(results.stored).toBe(results.recovered);
+      expect(results.dataIntegrity).toBe(true);
       
       console.log(`Persistence test: ${results.stored} entries stored and recovered`);
     });
@@ -425,9 +425,9 @@ describe('Full System Integration Tests', () => {
         return memoryOperations.length;
       });
 
-      assertEquals(leaked, false);
-      assertEquals(typeof result, 'number');
-      assertEquals(result > 1000, true); // Many operations performed
+      expect(leaked).toBe(false);
+      expect(typeof result).toBe('number');
+      expect(result > 1000).toBe(true); // Many operations performed
       
       console.log(`Memory operations completed: ${result} operations, memory increase: ${(memoryIncrease / 1024 / 1024).toFixed(2)}MB`);
     });
@@ -480,8 +480,8 @@ describe('Full System Integration Tests', () => {
 
       const results = await synchronizationTest();
       
-      assertEquals(results.totalOperations, 50);
-      assertEquals(results.agentsParticipated, 3);
+      expect(results.totalOperations).toBe(50);
+      expect(results.agentsParticipated).toBe(3);
       TestAssertions.assertInRange(results.uniqueKeys, 10, 20); // Overlap expected
       
       console.log(`Memory synchronization: ${results.uniqueKeys} unique keys from ${results.totalOperations} operations`);
@@ -545,8 +545,8 @@ describe('Full System Integration Tests', () => {
 
       const results = await terminalTest();
       
-      assertEquals(results.totalCommands, 12); // 4 commands * 3 sessions
-      assertEquals(results.sessionsUsed, 3);
+      expect(results.totalCommands).toBe(12); // 4 commands * 3 sessions
+      expect(results.sessionsUsed).toBe(3);
       TestAssertions.assertInRange(results.successfulCommands / results.totalCommands, 0.8, 1.0);
       
       console.log(`Terminal test: ${results.successfulCommands}/${results.totalCommands} commands successful across ${results.sessionsUsed} sessions`);
@@ -599,18 +599,18 @@ describe('Full System Integration Tests', () => {
 
       const results = await timeoutTest();
       
-      assertEquals(results.length, 3);
+      expect(results.length).toBe(3);
       
       // First command should succeed quickly
-      assertEquals(results[0].success, true);
+      expect(results[0].success).toBe(true);
       TestAssertions.assertInRange(results[0].actualDuration, 0, 500);
       
       // Second command should succeed within timeout
-      assertEquals(results[1].success, true);
+      expect(results[1].success).toBe(true);
       TestAssertions.assertInRange(results[1].actualDuration, 1500, 3000);
       
       // Third command should timeout
-      assertEquals(results[2].success, false);
+      expect(results[2].success).toBe(false);
       TestAssertions.assertInRange(results[2].actualDuration, 900, 1100);
       
       console.log('Terminal timeout handling verified');
@@ -673,11 +673,11 @@ describe('Full System Integration Tests', () => {
 
       const responses = await mcpTest();
       
-      assertEquals(responses.length, 4);
+      expect(responses.length).toBe(4);
       
       // Verify specific responses
       const listToolsResponse = responses.find(r => r.request === 'list_tools');
-      assertEquals(listToolsResponse?.response.result?.tools.length, 3);
+      expect(listToolsResponse?.response.result?.tools.length).toBe(3);
       
       const calculatorResponse = responses.find(r => r.request === 'call_tool');
       assertStringIncludes(calculatorResponse?.response.result?.content[0].text, '5 + 3 = 8');
@@ -732,8 +732,8 @@ describe('Full System Integration Tests', () => {
 
       const results = await poolingTest();
       
-      assertEquals(results.totalRequests, results.routedRequests);
-      assertEquals(results.serverDistribution.length, 3);
+      expect(results.totalRequests).toBe(results.routedRequests);
+      expect(results.serverDistribution.length).toBe(3);
       
       // Load should be distributed across servers
       const totalLoad = results.serverDistribution.reduce((sum, s) => sum + s.finalLoad, 0);
@@ -769,7 +769,7 @@ describe('Full System Integration Tests', () => {
       // System should maintain good performance
       TestAssertions.assertInRange(throughputTest.successfulRequests / throughputTest.totalRequests, 0.9, 1.0);
       TestAssertions.assertInRange(throughputTest.averageResponseTime, 0, 100);
-      assertEquals(throughputTest.errors.length < throughputTest.totalRequests * 0.05, true); // Less than 5% errors
+      expect(throughputTest.errors.length < throughputTest.totalRequests * 0.05).toBe(true); // Less than 5% errors
       
       console.log(`High throughput test: ${throughputTest.successfulRequests}/${throughputTest.totalRequests} successful (${throughputTest.requestsPerSecond.toFixed(1)} req/sec)`);
     });
@@ -806,7 +806,7 @@ describe('Full System Integration Tests', () => {
         return workload.length;
       }, { threshold: 100 * 1024 * 1024 }); // 100MB threshold
 
-      assertEquals(leaked, false);
+      expect(leaked).toBe(false);
       
       console.log('Memory pressure test completed without leaks');
     });
@@ -869,10 +869,10 @@ describe('Full System Integration Tests', () => {
 
       const results = await overloadTest();
       
-      assertEquals(results.totalRequests, results.successfulRequests + results.rejectedRequests);
+      expect(results.totalRequests).toBe(results.successfulRequests + results.rejectedRequests);
       
       // System should have protected itself by rejecting excess requests
-      assertEquals(results.rejectedRequests > 0, true);
+      expect(results.rejectedRequests > 0).toBe(true);
       
       // But should have served a reasonable number of requests
       TestAssertions.assertInRange(results.successfulRequests / results.totalRequests, 0.3, 0.8);
@@ -951,8 +951,8 @@ describe('Full System Integration Tests', () => {
       const results = await cascadingFailureTest();
       
       // All components should eventually recover
-      assertEquals(results.recoveredComponents, 5);
-      assertEquals(results.recoveryEvents >= 6, true); // At least 3 failures + 3 recoveries
+      expect(results.recoveredComponents).toBe(5);
+      expect(results.recoveryEvents >= 6).toBe(true); // At least 3 failures + 3 recoveries
       
       console.log(`Cascading failure recovery: ${results.recoveredComponents}/5 components recovered`);
     });
