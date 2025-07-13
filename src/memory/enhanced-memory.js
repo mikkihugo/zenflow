@@ -1,348 +1,320 @@
 /**
  * Enhanced Memory Functions for Comprehensive Swarm Coordination
+ * Version 2: Works with both SQLite and in-memory fallback stores
  */
 
-import { SqliteMemoryStore } from './sqlite-store.js';
+import { FallbackMemoryStore } from './fallback-store.js';
 
-export class EnhancedMemory extends SqliteMemoryStore {
+export class EnhancedMemory extends FallbackMemoryStore {
   constructor(options = {}) {
     super(options);
   }
 
   async initialize() {
     await super.initialize();
-    // Apply enhanced schema
-    try {
-      const { readFileSync } = await import('fs');
-      const schemaPath = new URL('./enhanced-schema.sql', import.meta.url);
-      const schema = readFileSync(schemaPath, 'utf-8');
-      this.db.exec(schema);
-    } catch (error) {
-      console.error(`[${new Date().toISOString()}] ERROR [enhanced-memory] Failed to apply enhanced schema:`, error);
-      // Continue with basic schema only
+    
+    // If using SQLite, try to apply enhanced schema
+    if (!this.isUsingFallback() && this.primaryStore?.db) {
+      try {
+        const { readFileSync } = await import('fs');
+        const schemaPath = new URL('./enhanced-schema.sql', import.meta.url);
+        const schema = readFileSync(schemaPath, 'utf-8');
+        this.primaryStore.db.exec(schema);
+        console.error(`[${new Date().toISOString()}] INFO [enhanced-memory] Applied enhanced schema to SQLite`);
+      } catch (error) {
+        console.error(`[${new Date().toISOString()}] WARN [enhanced-memory] Could not apply enhanced schema:`, error.message);
+      }
     }
   }
 
   // === SESSION MANAGEMENT ===
   
   async saveSessionState(sessionId, state) {
-    const stmt = this.db.prepare(`
-      INSERT OR REPLACE INTO session_state 
-      (session_id, user_id, project_path, active_branch, last_activity, state, context, environment)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    return stmt.run(
+    const sessionData = {
       sessionId,
-      state.userId || process.env.USER,
-      state.projectPath || process.cwd(),
-      state.activeBranch || 'main',
-      Date.now(),
-      state.state || 'active',
-      JSON.stringify(state.context || {}),
-      JSON.stringify(state.environment || process.env)
-    );
+      userId: state.userId || process.env.USER,
+      projectPath: state.projectPath || process.cwd(),
+      activeBranch: state.activeBranch || 'main',
+      lastActivity: Date.now(),
+      state: state.state || 'active',
+      context: state.context || {},
+      environment: state.environment || process.env
+    };
+
+    return this.store(`session:${sessionId}`, sessionData, {
+      namespace: 'sessions',
+      metadata: { type: 'session_state' }
+    });
   }
 
   async resumeSession(sessionId) {
-    const stmt = this.db.prepare('SELECT * FROM session_state WHERE session_id = ?');
-    const session = stmt.get(sessionId);
-    if (session) {
-      session.context = JSON.parse(session.context);
-      session.environment = JSON.parse(session.environment);
-    }
-    return session;
+    return this.retrieve(`session:${sessionId}`, { namespace: 'sessions' });
   }
 
   async getActiveSessions() {
-    const stmt = this.db.prepare('SELECT * FROM active_sessions');
-    return stmt.all();
+    const sessions = await this.list({ namespace: 'sessions', limit: 100 });
+    return sessions
+      .map(item => item.value)
+      .filter(session => session.state === 'active');
   }
 
-  // === MCP TOOL TRACKING ===
+  // === WORKFLOW TRACKING ===
   
-  async trackToolUsage(toolName, args, result, executionTime, success = true, error = null) {
-    const stmt = this.db.prepare(`
-      INSERT INTO mcp_tool_usage 
-      (tool_name, session_id, arguments, result_summary, execution_time_ms, success, error_message)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    return stmt.run(
-      toolName,
-      this.currentSessionId,
-      JSON.stringify(args),
-      result ? JSON.stringify(result).substring(0, 500) : null,
-      executionTime,
-      success ? 1 : 0,
-      error
-    );
+  async trackWorkflow(workflowId, data) {
+    const workflowData = {
+      workflowId,
+      name: data.name,
+      steps: data.steps || [],
+      status: data.status || 'pending',
+      progress: data.progress || 0,
+      startTime: data.startTime || Date.now(),
+      endTime: data.endTime,
+      results: data.results || {}
+    };
+
+    return this.store(`workflow:${workflowId}`, workflowData, {
+      namespace: 'workflows',
+      metadata: { type: 'workflow' }
+    });
   }
 
-  async getToolStats() {
-    const stmt = this.db.prepare('SELECT * FROM tool_effectiveness');
-    return stmt.all();
+  async getWorkflowStatus(workflowId) {
+    return this.retrieve(`workflow:${workflowId}`, { namespace: 'workflows' });
   }
 
-  // === TRAINING DATA ===
+  // === METRICS COLLECTION ===
   
-  async recordTrainingExample(patternType, inputContext, actionTaken, outcome, score, feedback = null) {
-    const stmt = this.db.prepare(`
-      INSERT INTO training_data 
-      (pattern_type, input_context, action_taken, outcome, success_score, model_version, feedback)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
+  async recordMetric(metricName, value, metadata = {}) {
+    const timestamp = Date.now();
+    const metricKey = `metric:${metricName}:${timestamp}`;
     
-    return stmt.run(
-      patternType,
-      JSON.stringify(inputContext),
-      JSON.stringify(actionTaken),
-      JSON.stringify(outcome),
-      score,
-      this.modelVersion || '1.0',
-      feedback
-    );
+    return this.store(metricKey, {
+      name: metricName,
+      value,
+      timestamp,
+      metadata
+    }, {
+      namespace: 'metrics',
+      ttl: 86400 // 24 hours
+    });
   }
 
-  async getTrainingData(patternType, limit = 100) {
-    const stmt = this.db.prepare(`
-      SELECT * FROM training_data 
-      WHERE pattern_type = ? 
-      ORDER BY success_score DESC, timestamp DESC 
-      LIMIT ?
-    `);
-    return stmt.all(patternType, limit);
+  async getMetrics(metricName, timeRange = 3600000) { // Default 1 hour
+    const cutoff = Date.now() - timeRange;
+    const metrics = await this.search(`metric:${metricName}`, {
+      namespace: 'metrics',
+      limit: 1000
+    });
+    
+    return metrics
+      .map(item => item.value)
+      .filter(metric => metric.timestamp >= cutoff)
+      .sort((a, b) => a.timestamp - b.timestamp);
   }
 
-  // === CODE PATTERNS ===
+  // === AGENT COORDINATION ===
   
-  async recordCodePattern(filePath, patternName, content, language) {
-    const stmt = this.db.prepare(`
-      INSERT INTO code_patterns (file_path, pattern_name, pattern_content, language, last_used)
-      VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT(file_path, pattern_name) DO UPDATE SET
-        frequency = frequency + 1,
-        last_used = ?
-    `);
+  async registerAgent(agentId, config) {
+    const agentData = {
+      agentId,
+      type: config.type,
+      capabilities: config.capabilities || [],
+      status: 'active',
+      createdAt: Date.now(),
+      lastHeartbeat: Date.now(),
+      metrics: {
+        tasksCompleted: 0,
+        successRate: 1.0,
+        avgResponseTime: 0
+      }
+    };
+
+    return this.store(`agent:${agentId}`, agentData, {
+      namespace: 'agents',
+      metadata: { type: 'agent_registration' }
+    });
+  }
+
+  async updateAgentStatus(agentId, status, metrics = {}) {
+    const agent = await this.retrieve(`agent:${agentId}`, { namespace: 'agents' });
+    if (!agent) return null;
+
+    agent.status = status;
+    agent.lastHeartbeat = Date.now();
     
-    const now = Date.now();
-    return stmt.run(filePath, patternName, content, language, now, now);
+    if (metrics) {
+      Object.assign(agent.metrics, metrics);
+    }
+
+    return this.store(`agent:${agentId}`, agent, {
+      namespace: 'agents',
+      metadata: { type: 'agent_update' }
+    });
   }
 
-  async findSimilarPatterns(language, limit = 10) {
-    const stmt = this.db.prepare(`
-      SELECT * FROM code_patterns 
-      WHERE language = ? 
-      ORDER BY effectiveness_score DESC, frequency DESC 
-      LIMIT ?
-    `);
-    return stmt.all(language, limit);
+  async getActiveAgents() {
+    const agents = await this.list({ namespace: 'agents', limit: 100 });
+    const cutoff = Date.now() - 300000; // 5 minutes
+    
+    return agents
+      .map(item => item.value)
+      .filter(agent => agent.lastHeartbeat > cutoff && agent.status === 'active');
   }
 
-  // === AGENT COLLABORATION ===
+  // === KNOWLEDGE MANAGEMENT ===
   
-  async recordAgentInteraction(sourceAgent, targetAgent, messageType, content, taskId) {
-    const stmt = this.db.prepare(`
-      INSERT INTO agent_interactions 
-      (source_agent, target_agent, message_type, content, task_id, correlation_id)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
+  async storeKnowledge(domain, key, value, metadata = {}) {
+    return this.store(`knowledge:${domain}:${key}`, {
+      domain,
+      key,
+      value,
+      metadata,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    }, {
+      namespace: 'knowledge',
+      metadata: { domain }
+    });
+  }
+
+  async retrieveKnowledge(domain, key) {
+    return this.retrieve(`knowledge:${domain}:${key}`, { namespace: 'knowledge' });
+  }
+
+  async searchKnowledge(domain, pattern) {
+    const results = await this.search(`knowledge:${domain}:${pattern}`, {
+      namespace: 'knowledge',
+      limit: 50
+    });
     
-    const correlationId = `${taskId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    return stmt.run(sourceAgent, targetAgent, messageType, JSON.stringify(content), taskId, correlationId);
+    return results.map(item => item.value);
   }
 
-  async getAgentConversation(taskId) {
-    const stmt = this.db.prepare(`
-      SELECT * FROM agent_interactions 
-      WHERE task_id = ? 
-      ORDER BY timestamp ASC
-    `);
-    return stmt.all(taskId);
-  }
-
-  // === KNOWLEDGE GRAPH ===
+  // === LEARNING & ADAPTATION ===
   
-  async addKnowledgeEntity(entityType, entityName, entityPath, relationships = [], metadata = {}) {
-    const stmt = this.db.prepare(`
-      INSERT OR REPLACE INTO knowledge_graph 
-      (entity_type, entity_name, entity_path, relationships, metadata, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
+  async recordLearning(agentId, learning) {
+    const learningData = {
+      agentId,
+      timestamp: Date.now(),
+      type: learning.type,
+      input: learning.input,
+      output: learning.output,
+      feedback: learning.feedback,
+      improvement: learning.improvement
+    };
+
+    return this.store(`learning:${agentId}:${Date.now()}`, learningData, {
+      namespace: 'learning',
+      ttl: 604800 // 7 days
+    });
+  }
+
+  async getLearnings(agentId, limit = 100) {
+    const learnings = await this.search(`learning:${agentId}`, {
+      namespace: 'learning',
+      limit
+    });
     
-    return stmt.run(
-      entityType,
-      entityName,
-      entityPath,
-      JSON.stringify(relationships),
-      JSON.stringify(metadata),
-      Date.now()
-    );
-  }
-
-  async findRelatedEntities(entityName, depth = 1) {
-    // Simple implementation - could be enhanced with recursive CTEs
-    const stmt = this.db.prepare(`
-      SELECT * FROM knowledge_graph 
-      WHERE entity_name = ? OR relationships LIKE ?
-    `);
-    return stmt.all(entityName, `%"${entityName}"%`);
-  }
-
-  // === ERROR LEARNING ===
-  
-  async recordError(errorType, errorMessage, stackTrace, context, resolution = null) {
-    const stmt = this.db.prepare(`
-      INSERT INTO error_patterns 
-      (error_type, error_message, stack_trace, context, resolution)
-      VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT(error_type, error_message) DO UPDATE SET
-        occurrence_count = occurrence_count + 1,
-        last_seen = strftime('%s', 'now'),
-        resolution = COALESCE(?, resolution)
-    `);
-    
-    return stmt.run(
-      errorType,
-      errorMessage,
-      stackTrace,
-      JSON.stringify(context),
-      resolution,
-      resolution
-    );
-  }
-
-  async getErrorSolutions(errorType) {
-    const stmt = this.db.prepare(`
-      SELECT * FROM error_patterns 
-      WHERE error_type = ? AND resolution IS NOT NULL
-      ORDER BY occurrence_count DESC
-    `);
-    return stmt.all(errorType);
-  }
-
-  // === TASK DEPENDENCIES ===
-  
-  async addTaskDependency(taskId, dependsOn, dependencyType = 'blocking') {
-    const stmt = this.db.prepare(`
-      INSERT INTO task_dependencies 
-      (task_id, depends_on, dependency_type, status)
-      VALUES (?, ?, ?, 'pending')
-    `);
-    
-    return stmt.run(taskId, dependsOn, dependencyType);
-  }
-
-  async updateDependencyStatus(taskId, dependsOn, status) {
-    const stmt = this.db.prepare(`
-      UPDATE task_dependencies 
-      SET status = ? 
-      WHERE task_id = ? AND depends_on = ?
-    `);
-    
-    return stmt.run(status, taskId, dependsOn);
-  }
-
-  async getTaskDependencies(taskId) {
-    const stmt = this.db.prepare(`
-      SELECT * FROM task_dependencies 
-      WHERE task_id = ?
-    `);
-    return stmt.all(taskId);
+    return learnings
+      .map(item => item.value)
+      .sort((a, b) => b.timestamp - a.timestamp);
   }
 
   // === PERFORMANCE TRACKING ===
   
-  async recordPerformance(operationType, details, duration, memoryUsed, cpuPercent) {
-    const stmt = this.db.prepare(`
-      INSERT INTO performance_benchmarks 
-      (operation_type, operation_details, duration_ms, memory_used_mb, cpu_percent, session_id)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
-    
-    return stmt.run(
-      operationType,
-      JSON.stringify(details),
+  async trackPerformance(operation, duration, success = true, metadata = {}) {
+    const perfData = {
+      operation,
       duration,
-      memoryUsed,
-      cpuPercent,
-      this.currentSessionId
-    );
+      success,
+      timestamp: Date.now(),
+      metadata
+    };
+
+    // Store individual performance record
+    await this.store(`perf:${operation}:${Date.now()}`, perfData, {
+      namespace: 'performance',
+      ttl: 86400 // 24 hours
+    });
+
+    // Update aggregated stats
+    const statsKey = `stats:${operation}`;
+    const stats = await this.retrieve(statsKey, { namespace: 'performance' }) || {
+      count: 0,
+      successCount: 0,
+      totalDuration: 0,
+      avgDuration: 0,
+      minDuration: Infinity,
+      maxDuration: 0
+    };
+
+    stats.count++;
+    if (success) stats.successCount++;
+    stats.totalDuration += duration;
+    stats.avgDuration = stats.totalDuration / stats.count;
+    stats.minDuration = Math.min(stats.minDuration, duration);
+    stats.maxDuration = Math.max(stats.maxDuration, duration);
+    stats.successRate = stats.successCount / stats.count;
+
+    return this.store(statsKey, stats, { namespace: 'performance' });
   }
 
-  async getPerformanceTrends(operationType, days = 7) {
-    const stmt = this.db.prepare(`
-      SELECT DATE(timestamp, 'unixepoch') as date,
-             AVG(duration_ms) as avg_duration,
-             AVG(memory_used_mb) as avg_memory,
-             COUNT(*) as operation_count
-      FROM performance_benchmarks
-      WHERE operation_type = ? 
-        AND timestamp > strftime('%s', 'now', '-' || ? || ' days')
-      GROUP BY date
-      ORDER BY date DESC
-    `);
-    return stmt.all(operationType, days);
+  async getPerformanceStats(operation) {
+    return this.retrieve(`stats:${operation}`, { namespace: 'performance' });
   }
 
-  // === USER PREFERENCES ===
+  // === COORDINATION CACHE ===
   
-  async learnPreference(key, value, category, source = 'inferred', confidence = 0.8) {
-    const stmt = this.db.prepare(`
-      INSERT OR REPLACE INTO user_preferences 
-      (preference_key, preference_value, category, learned_from, confidence_score)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    
-    return stmt.run(key, value, category, source, confidence);
+  async cacheCoordination(key, value, ttl = 300) { // 5 minutes default
+    return this.store(`cache:${key}`, value, {
+      namespace: 'coordination',
+      ttl
+    });
   }
 
-  async getPreferences(category = null) {
-    if (category) {
-      const stmt = this.db.prepare('SELECT * FROM user_preferences WHERE category = ?');
-      return stmt.all(category);
-    } else {
-      const stmt = this.db.prepare('SELECT * FROM user_preferences');
-      return stmt.all();
-    }
+  async getCachedCoordination(key) {
+    return this.retrieve(`cache:${key}`, { namespace: 'coordination' });
   }
 
   // === UTILITY METHODS ===
   
-  async getDatabaseStats() {
-    const tables = [
-      'memory_entries', 'session_state', 'mcp_tool_usage', 'training_data',
-      'code_patterns', 'agent_interactions', 'knowledge_graph', 'error_patterns',
-      'task_dependencies', 'performance_benchmarks', 'user_preferences'
-    ];
+  async cleanupExpired() {
+    // Base cleanup handles TTL expiration
+    const cleaned = await this.cleanup();
     
-    const stats = {};
-    for (const table of tables) {
-      try {
-        const result = this.db.prepare(`SELECT COUNT(*) as count FROM ${table}`).get();
-        stats[table] = result.count;
-      } catch (e) {
-        stats[table] = 0;
-      }
+    // Additional cleanup for old performance data
+    if (!this.isUsingFallback()) {
+      // SQLite-specific cleanup can be added here
     }
     
-    return stats;
+    return cleaned;
   }
 
-  async exportSessionData(sessionId) {
-    const data = {
-      session: await this.resumeSession(sessionId),
-      tools: this.db.prepare('SELECT * FROM mcp_tool_usage WHERE session_id = ?').all(sessionId),
-      performance: this.db.prepare('SELECT * FROM performance_benchmarks WHERE session_id = ?').all(sessionId),
-      interactions: this.db.prepare('SELECT * FROM agent_interactions WHERE correlation_id LIKE ?').all(`${sessionId}%`),
-      timestamp: new Date().toISOString()
-    };
+  async exportData(namespace = null) {
+    const namespaces = namespace ? [namespace] : [
+      'sessions', 'workflows', 'metrics', 'agents', 
+      'knowledge', 'learning', 'performance', 'coordination'
+    ];
     
-    return data;
+    const exportData = {};
+    
+    for (const ns of namespaces) {
+      exportData[ns] = await this.list({ namespace: ns, limit: 10000 });
+    }
+    
+    return exportData;
+  }
+
+  async importData(data) {
+    for (const [namespace, items] of Object.entries(data)) {
+      for (const item of items) {
+        await this.store(item.key, item.value, {
+          namespace,
+          metadata: item.metadata
+        });
+      }
+    }
   }
 }
-
-// Singleton instance
-export const enhancedMemory = new EnhancedMemory();
 
 export default EnhancedMemory;

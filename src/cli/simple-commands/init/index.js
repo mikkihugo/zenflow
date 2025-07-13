@@ -1132,17 +1132,24 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
       
       printSuccess('✓ Initialized memory system');
       
-      // Initialize memory database
+      // Initialize memory database with fallback support
       try {
-        // Import and initialize SqliteMemoryStore to create the database
-        const { SqliteMemoryStore } = await import('../../../memory/sqlite-store.js');
-        const memoryStore = new SqliteMemoryStore();
+        // Import and initialize FallbackMemoryStore to create the database
+        const { FallbackMemoryStore } = await import('../../../memory/fallback-store.js');
+        const memoryStore = new FallbackMemoryStore();
         await memoryStore.initialize();
+        
+        if (memoryStore.isUsingFallback()) {
+          printSuccess('✓ Initialized memory system (in-memory fallback for npx compatibility)');
+          console.log('  💡 For persistent storage, install locally: npm install claude-flow@alpha');
+        } else {
+          printSuccess('✓ Initialized memory database (.swarm/memory.db)');
+        }
+        
         memoryStore.close();
-        printSuccess('✓ Initialized memory database (.swarm/memory.db)');
       } catch (err) {
-        console.log(`  ⚠️  Could not initialize memory database: ${err.message}`);
-        console.log('     The database will be created on first use');
+        console.log(`  ⚠️  Could not initialize memory system: ${err.message}`);
+        console.log('     Memory will be initialized on first use');
       }
     }
     
