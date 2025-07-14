@@ -10,7 +10,7 @@ export function showInitHelp() {
   console.log('                       Creates CLAUDE.md & .claude/commands for MCP integration');
   console.log();
   console.log('Standard Options:');
-  console.log('  --force, -f          Overwrite existing files');
+  console.log('  --force, -f          Overwrite existing files (also updates .gitignore)');
   console.log('  --dry-run, -d        Preview what would be created without making changes');
   console.log('  --help, -h           Show this help message');
   console.log();
@@ -60,11 +60,13 @@ export function showInitHelp() {
   console.log('What gets created:');
   console.log('  • .claude/settings.json - Global configuration with hooks and features');
   console.log('  • .claude/settings.local.json - Pre-approved MCP permissions (no prompts!)');
+  console.log('  • .claude/mcp.json - MCP server configuration for easy setup');
   console.log('  • .claude/commands/ directory with 20+ Claude Code slash commands');
   console.log('  • CLAUDE.md with project instructions (v2.0.0 enhanced by default)');
   console.log('  • memory/ directory for persistent context storage');
   console.log('  • coordination/ directory for agent orchestration');
   console.log('  • ./claude-flow local executable wrapper');
+  console.log('  • .gitignore entries for Claude Flow generated files');
   console.log('  • Automatic MCP server setup if Claude Code CLI is installed');
   console.log('  • Pre-configured for TDD, architecture, and code generation');
   console.log();

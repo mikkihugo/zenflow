@@ -50,6 +50,7 @@ import {
   COMMAND_STRUCTURE
 } from './templates/enhanced-templates.js';
 import { getIsolatedNpxEnv } from '../../../utils/npx-isolated-cache.js';
+import { updateGitignore, needsGitignoreUpdate } from './gitignore-updater.js';
 
 /**
  * Check if Claude Code CLI is installed
@@ -483,6 +484,18 @@ export async function initCommand(subArgs, flags) {
           console.log('9. Enable parallel processing with --parallel flags');
           console.log('10. Monitor performance with \'./claude-flow performance monitor\'');
         }
+      }
+      
+      // Update .gitignore
+      const gitignoreResult = await updateGitignore(workingDir, initForce, initDryRun);
+      if (gitignoreResult.success) {
+        if (!initDryRun) {
+          console.log(`  ✅ ${gitignoreResult.message}`);
+        } else {
+          console.log(`  ${gitignoreResult.message}`);
+        }
+      } else {
+        console.log(`  ⚠️  ${gitignoreResult.message}`);
       }
       
       console.log('\n💡 Tips:');
@@ -1175,6 +1188,18 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
         console.log(`  ⚠️  Could not initialize memory system: ${err.message}`);
         console.log('     Memory will be initialized on first use');
       }
+    }
+    
+    // Update .gitignore with Claude Flow entries
+    const gitignoreResult = await updateGitignore(workingDir, force, dryRun);
+    if (gitignoreResult.success) {
+      if (!dryRun) {
+        printSuccess(`✓ ${gitignoreResult.message}`);
+      } else {
+        console.log(gitignoreResult.message);
+      }
+    } else {
+      console.log(`  ⚠️  ${gitignoreResult.message}`);
     }
     
     // Check for Claude Code and set up MCP servers (always enabled by default)
