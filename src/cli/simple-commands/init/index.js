@@ -1034,6 +1034,29 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
       console.log('[DRY RUN] Would create .claude/settings.local.json with default MCP permissions');
     }
     
+    // Create mcp.json for easy MCP server configuration
+    const mcpConfig = {
+      "mcpServers": {
+        "claude-flow": {
+          "command": "npx",
+          "args": ["claude-flow@alpha", "mcp", "start"],
+          "type": "stdio"
+        },
+        "ruv-swarm": {
+          "command": "npx",
+          "args": ["ruv-swarm@latest", "mcp", "start"],
+          "type": "stdio"
+        }
+      }
+    };
+    
+    if (!dryRun) {
+      await Deno.writeTextFile(`${claudeDir}/mcp.json`, JSON.stringify(mcpConfig, null, 2));
+      printSuccess('✓ Created .claude/mcp.json for MCP server configuration');
+    } else {
+      console.log('[DRY RUN] Would create .claude/mcp.json for MCP server configuration');
+    }
+    
     // Create command documentation
     for (const [category, commands] of Object.entries(COMMAND_STRUCTURE)) {
       const categoryDir = `${claudeDir}/commands/${category}`;
@@ -1164,16 +1187,18 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
       } else {
         console.log('  ℹ️  Skipping MCP setup (--skip-mcp flag used)');
         console.log('\n  📋 To add MCP servers manually:');
-        console.log('     claude mcp add claude-flow claude-flow mcp start');
-        console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
+        console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
+        console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
+        console.log('\n  💡 Or copy .claude/mcp.json to your Claude Desktop config directory');
       }
     } else if (!dryRun && !isClaudeCodeInstalled()) {
       console.log('\n⚠️  Claude Code CLI not detected!');
       console.log('\n  📥 To install Claude Code:');
       console.log('     npm install -g @anthropic-ai/claude-code');
       console.log('\n  📋 After installing, add MCP servers:');
-      console.log('     claude mcp add claude-flow claude-flow mcp start');
-      console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
+      console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
+      console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
+      console.log('\n  💡 Or copy .claude/mcp.json to your Claude Desktop config directory');
     }
     
     // Final instructions
