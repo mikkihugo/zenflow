@@ -46,9 +46,9 @@ const VARIABLE_MAPPINGS = {
  * Detect which variable syntax works with current Claude Code version
  */
 async function detectWorkingSyntax() {
-  // This would ideally test different syntaxes
-  // For now, we'll assume environment variables work
-  return 'environment';
+  // Based on official Claude Code documentation and testing,
+  // JQ parsing is the recommended approach for Claude Code 1.0.51+
+  return 'jq';
 }
 
 /**
@@ -304,7 +304,7 @@ async function createTestHook() {
         matcher: "Write",
         hooks: [{
           type: "command",
-          command: "echo \"Hook test - File: $CLAUDE_EDITED_FILE\" >> .claude/hook-test.log"
+          command: "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} echo \"Hook test - File: {}\" >> .claude/hook-test.log"
         }]
       }]
     }
