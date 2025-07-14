@@ -21,7 +21,12 @@ const VARIABLE_SYNTAXES = {
   'environment': {
     pattern: /\$(\w+)/g,
     example: '$CLAUDE_FILE',
-    description: 'Environment variable syntax'
+    description: 'Environment variable syntax (unverified)'
+  },
+  'jq': {
+    pattern: null,
+    example: 'jq parsing of JSON input',
+    description: 'Official Claude Code approach using jq'
   },
   'wrapper': {
     pattern: null,
@@ -59,6 +64,26 @@ function transformHookCommand(command, fromSyntax, toSyntax) {
       }
       return match; // Keep unchanged if no mapping
     });
+  }
+  
+  if (fromSyntax === 'legacy' && toSyntax === 'jq') {
+    // Transform to use jq parsing of JSON input
+    // Extract the actual command and wrap it with jq parsing
+    const fileVarMatch = command.match(/\$\{file\}/);
+    const commandVarMatch = command.match(/\$\{command\}/);
+    
+    if (fileVarMatch) {
+      // Replace ${file} with jq extraction
+      const baseCommand = command.replace(/\$\{file\}/g, '{}');
+      return `cat | jq -r '.tool_input.file_path // .tool_input.path // ""' | xargs -I {} ${baseCommand}`;
+    } else if (commandVarMatch) {
+      // Replace ${command} with jq extraction
+      const baseCommand = command.replace(/\$\{command\}/g, '{}');
+      return `cat | jq -r '.tool_input.command // ""' | xargs -I {} ${baseCommand}`;
+    }
+    
+    // Fallback for other variables
+    return `cat | jq -r '.' | xargs -I {} ${command.replace(/\$\{(\w+)\}/g, '{}')}`; 
   }
   
   if (toSyntax === 'wrapper') {
@@ -302,7 +327,7 @@ export const fixHookVariablesCommandConfig = {
   usage: 'fix-hook-variables [settings-file...]',
   options: [
     { flag: '--no-backup', description: 'Skip creating backup files' },
-    { flag: '--syntax <type>', description: 'Force specific syntax: environment, wrapper' },
+    { flag: '--syntax <type>', description: 'Force specific syntax: environment, jq, wrapper' },
     { flag: '--test', description: 'Create test hook configuration' }
   ],
   examples: [
@@ -320,9 +345,13 @@ This command will:
   • Create wrapper scripts if needed
   • Backup original settings files
 
-Known working syntaxes:
-  • Environment variables: $CLAUDE_EDITED_FILE, $CLAUDE_COMMAND
-  • Wrapper scripts: Intercept and pass variables correctly
+Available syntaxes:
+  • environment: Use environment variables like $CLAUDE_EDITED_FILE (unverified)
+  • jq: Use official jq JSON parsing approach (recommended)
+  • wrapper: Create wrapper scripts to handle variables
+
+Note: The 'jq' syntax is based on official Claude Code documentation and is likely
+the most reliable approach for Claude Code 1.0.51+.
 
 For more information: https://github.com/ruvnet/claude-flow/issues/249`
 };

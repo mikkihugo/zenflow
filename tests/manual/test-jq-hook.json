@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"JQ TEST - Input: $(cat)\" >> .claude/jq-test.log && cat | jq -r '\"File: \\(.tool_input.file_path // .tool_input.path // .file_path // \"NONE\")\"' >> .claude/jq-test.log"
+          }
+        ]
+      }
+    ]
+  }
+}
