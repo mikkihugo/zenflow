@@ -235,6 +235,26 @@ npx claude-flow hooks post-edit --file "src/api.js" --format --train-neural
 npx claude-flow hooks session-end --generate-summary --persist-state
 ```
 
+### **Fixing Hook Variable Interpolation**
+
+If you're experiencing issues with `${file}` or `${command}` variables not working in your hooks (common with Claude Code 1.0.51+), use the `fix-hook-variables` command:
+
+```bash
+# Fix all found settings.json files
+npx claude-flow@alpha fix-hook-variables
+
+# Fix specific file
+npx claude-flow@alpha fix-hook-variables .claude/settings.json
+
+# Create test configuration
+npx claude-flow@alpha fix-hook-variables --test
+```
+
+This command automatically transforms legacy variable syntax to working environment variables:
+- `${file}` → `$CLAUDE_EDITED_FILE`
+- `${command}` → `$CLAUDE_COMMAND`
+- `${tool}` → `$CLAUDE_TOOL`
+
 ---
 ## 🐝 **Revolutionary Hive-Mind Intelligence**
 
