@@ -3,7 +3,7 @@
  * Provides clear, actionable command documentation
  */
 
-export const VERSION = '2.0.0-alpha.51';
+export const VERSION = '2.0.0-alpha.52';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
@@ -50,6 +50,7 @@ USAGE:
   analysis <command>       Performance & usage analytics (3 commands)
   automation <command>     Intelligent agent & workflow management (3 commands)
   hooks <command>          Lifecycle event management (5 commands)
+  migrate-hooks            Migrate settings.json to Claude Code 1.0.51+ format
   monitoring <command>     Real-time system monitoring (3 commands)
   optimization <command>   Performance & topology optimization (3 commands)
   
