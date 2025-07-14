@@ -1266,7 +1266,7 @@ function createEnhancedSettingsJsonFallback() {
           hooks: [
             {
               type: "command",
-              command: "npx claude-flow@alpha hooks pre-command --command \"${command}\" --validate-safety true --prepare-resources true"
+              command: "cat | jq -r '.tool_input.command // \"\"' | xargs -I {} npx claude-flow@alpha hooks pre-command --command \"{}\" --validate-safety true --prepare-resources true"
             }
           ]
         },
@@ -1275,7 +1275,7 @@ function createEnhancedSettingsJsonFallback() {
           hooks: [
             {
               type: "command",
-              command: "npx claude-flow@alpha hooks pre-edit --file \"${file}\" --auto-assign-agents true --load-context true"
+              command: "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} npx claude-flow@alpha hooks pre-edit --file \"{}\" --auto-assign-agents true --load-context true"
             }
           ]
         }
@@ -1286,7 +1286,7 @@ function createEnhancedSettingsJsonFallback() {
           hooks: [
             {
               type: "command",
-              command: "npx claude-flow@alpha hooks post-command --command \"${command}\" --track-metrics true --store-results true"
+              command: "cat | jq -r '.tool_input.command // \"\"' | xargs -I {} npx claude-flow@alpha hooks post-command --command \"{}\" --track-metrics true --store-results true"
             }
           ]
         },
@@ -1295,7 +1295,7 @@ function createEnhancedSettingsJsonFallback() {
           hooks: [
             {
               type: "command",
-              command: "npx claude-flow@alpha hooks post-edit --file \"${file}\" --format true --update-memory true --train-neural true"
+              command: "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} npx claude-flow@alpha hooks post-edit --file \"{}\" --format true --update-memory true --train-neural true"
             }
           ]
         }
