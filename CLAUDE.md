@@ -792,3 +792,5 @@ Message 3: TodoWrite { todos: [{ id: "3", content: "Task 3", ... }] }
 ---
 
 Remember: **Claude Flow coordinates, Claude Code creates!** Start with `mcp__claude-flow__swarm_init` to enhance your development workflow.
+
+don't save md or tests in root folder.
