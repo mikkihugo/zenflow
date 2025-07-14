@@ -82,6 +82,8 @@ OPTIONS:
   --no-interactive           Run in non-interactive mode (auto-enabled with --output-format json)
   --auto                     (Deprecated: auto-permissions enabled by default)
   --no-auto-permissions      Disable automatic --dangerously-skip-permissions
+  --analysis                 Enable analysis/read-only mode (no code changes)
+  --read-only                Enable read-only mode (alias for --analysis)
 
 ADVANCED OPTIONS:
   --quality-threshold <n>    Quality threshold 0-1 (default: 0.8)
@@ -110,6 +112,10 @@ export async function swarmCommand(args, flags) {
   const outputFile = flags && flags['output-file'];
   const isJsonOutput = outputFormat === 'json';
   const isNonInteractive = isJsonOutput || (flags && flags['no-interactive']);
+  
+  // Handle analysis/read-only mode
+  const isAnalysisMode = flags && (flags.analysis || flags['read-only']);
+  const analysisMode = isAnalysisMode ? 'analysis' : 'standard';
 
   // For JSON output, we need to ensure executor mode since Claude Code doesn't return structured JSON
   if (isJsonOutput && !(flags && flags.executor)) {
@@ -143,7 +149,11 @@ export async function swarmCommand(args, flags) {
       console.log(`📋 Objective: ${objective}`);
       console.log(`🎯 Strategy: ${flags.strategy || 'auto'}`);
       console.log(`🏗️  Mode: ${flags.mode || 'centralized'}`);
-      console.log(`🤖 Max Agents: ${flags['max-agents'] || 5}\n`);
+      console.log(`🤖 Max Agents: ${flags['max-agents'] || 5}`);
+      if (isAnalysisMode) {
+        console.log(`🔍 Analysis Mode: ENABLED (Read-Only - No Code Changes)`);
+      }
+      console.log();
       
       const strategy = flags.strategy || 'auto';
       const mode = flags.mode || 'centralized';
@@ -168,8 +178,42 @@ export async function swarmCommand(args, flags) {
 - Parallel Execution: MANDATORY (Always use BatchTool)
 - Review Mode: ${flags.review || false}
 - Testing Mode: ${flags.testing || false}
+- Analysis Mode: ${isAnalysisMode ? 'ENABLED (Read-Only)' : 'DISABLED'}
 
-🚨 CRITICAL: PARALLEL EXECUTION IS MANDATORY! 🚨
+${isAnalysisMode ? `🔍 ANALYSIS MODE CONSTRAINTS:
+
+⚠️  READ-ONLY MODE ACTIVE - NO CODE MODIFICATIONS ALLOWED
+
+REQUIRED BEHAVIORS:
+1. ✅ READ files for analysis (Read tool)
+2. ✅ SEARCH codebases (Glob, Grep tools)
+3. ✅ ANALYZE code structure and patterns
+4. ✅ GENERATE reports and documentation
+5. ✅ CREATE analysis summaries
+6. ✅ STORE findings in memory for collaboration
+7. ✅ COMMUNICATE between agents about findings
+
+FORBIDDEN OPERATIONS:
+1. ❌ NEVER use Write tool to modify files
+2. ❌ NEVER use Edit or MultiEdit tools
+3. ❌ NEVER use Bash to run commands that modify files
+4. ❌ NEVER create new files or directories
+5. ❌ NEVER install packages or dependencies
+6. ❌ NEVER modify configuration files
+7. ❌ NEVER execute code that changes system state
+
+ALL AGENTS MUST OPERATE IN READ-ONLY MODE. Focus on:
+- Code analysis and understanding
+- Security vulnerability assessment
+- Performance bottleneck identification
+- Architecture documentation
+- Technical debt analysis
+- Dependency mapping
+- Testing strategy recommendations
+
+Generate comprehensive reports instead of making changes.
+
+` : ''}🚨 CRITICAL: PARALLEL EXECUTION IS MANDATORY! 🚨
 
 📋 CLAUDE-FLOW SWARM BATCHTOOL INSTRUCTIONS
 
@@ -1085,6 +1129,8 @@ OPTIONS:
   --no-interactive           Run in non-interactive mode (auto-enabled with --output-format json)
   --auto                     (Deprecated: auto-permissions enabled by default)
   --no-auto-permissions      Disable automatic --dangerously-skip-permissions
+  --analysis                 Enable analysis/read-only mode (no code changes)
+  --read-only                Enable read-only mode (alias for --analysis)
 
 ADVANCED OPTIONS:
   --quality-threshold <n>    Quality threshold 0-1 (default: 0.8)

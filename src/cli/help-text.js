@@ -3,7 +3,7 @@
  * Provides clear, actionable command documentation
  */
 
-export const VERSION = '2.0.0-alpha.52';
+export const VERSION = '2.0.0-alpha.53';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
@@ -97,12 +97,16 @@ OPTIONS:
   --monitor            Real-time swarm monitoring
   --ui                 Interactive user interface
   --background         Run in background with progress tracking
+  --analysis           Enable analysis/read-only mode (no code changes)
+  --read-only          Enable read-only mode (alias for --analysis)
 
 EXAMPLES:
   claude-flow swarm "Build a REST API with authentication"
   claude-flow swarm "Research cloud architecture patterns" --strategy research
   claude-flow swarm "Optimize database queries" --max-agents 3 --parallel
   claude-flow swarm "Develop feature X" --strategy development --monitor --ui
+  claude-flow swarm "Analyze codebase for security issues" --analysis
+  claude-flow swarm "Review architecture patterns" --read-only --strategy research
 
 AGENT TYPES:
   researcher    Research with web access and data analysis
@@ -111,6 +115,20 @@ AGENT TYPES:
   architect     System design with enterprise patterns
   tester        Comprehensive testing with automation
   coordinator   Multi-agent orchestration
+
+ANALYSIS MODE:
+  When using --analysis or --read-only flags, the swarm operates in a safe
+  read-only mode that prevents all code modifications. Perfect for:
+  
+  • Code reviews and security audits
+  • Architecture analysis and documentation
+  • Performance bottleneck identification
+  • Technical debt assessment
+  • Dependency mapping and analysis
+  • "What-if" scenario exploration
+  
+  In analysis mode, agents can only read files, search codebases, and
+  generate reports - no Write, Edit, or system-modifying operations.
 `,
 
   github: `
