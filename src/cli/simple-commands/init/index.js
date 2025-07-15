@@ -988,7 +988,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
   try {
     // Check existing files
     const existingFiles = [];
-    const filesToCheck = ['CLAUDE.md', '.claude/settings.json'];
+    const filesToCheck = ['CLAUDE.md', '.claude/settings.json', '.mcp.json', 'claude-flow.config.json'];
     
     for (const file of filesToCheck) {
       if (existsSync(`${workingDir}/${file}`)) {
@@ -1047,7 +1047,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
       console.log('[DRY RUN] Would create .claude/settings.local.json with default MCP permissions');
     }
     
-    // Create mcp.json for easy MCP server configuration
+    // Create .mcp.json at project root for MCP server configuration
     const mcpConfig = {
       "mcpServers": {
         "claude-flow": {
@@ -1064,10 +1064,39 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
     };
     
     if (!dryRun) {
-      await Deno.writeTextFile(`${claudeDir}/mcp.json`, JSON.stringify(mcpConfig, null, 2));
-      printSuccess('✓ Created .claude/mcp.json for MCP server configuration');
+      await Deno.writeTextFile(`${workingDir}/.mcp.json`, JSON.stringify(mcpConfig, null, 2));
+      printSuccess('✓ Created .mcp.json at project root for MCP server configuration');
     } else {
-      console.log('[DRY RUN] Would create .claude/mcp.json for MCP server configuration');
+      console.log('[DRY RUN] Would create .mcp.json at project root for MCP server configuration');
+    }
+    
+    // Create claude-flow.config.json for Claude Flow specific settings
+    const claudeFlowConfig = {
+      "features": {
+        "autoTopologySelection": true,
+        "parallelExecution": true,
+        "neuralTraining": true,
+        "bottleneckAnalysis": true,
+        "smartAutoSpawning": true,
+        "selfHealingWorkflows": true,
+        "crossSessionMemory": true,
+        "githubIntegration": true
+      },
+      "performance": {
+        "maxAgents": 10,
+        "defaultTopology": "hierarchical",
+        "executionStrategy": "parallel",
+        "tokenOptimization": true,
+        "cacheEnabled": true,
+        "telemetryLevel": "detailed"
+      }
+    };
+    
+    if (!dryRun) {
+      await Deno.writeTextFile(`${workingDir}/claude-flow.config.json`, JSON.stringify(claudeFlowConfig, null, 2));
+      printSuccess('✓ Created claude-flow.config.json for Claude Flow settings');
+    } else {
+      console.log('[DRY RUN] Would create claude-flow.config.json for Claude Flow settings');
     }
     
     // Create command documentation
@@ -1214,7 +1243,7 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
         console.log('\n  📋 To add MCP servers manually:');
         console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
-        console.log('\n  💡 Or copy .claude/mcp.json to your Claude Desktop config directory');
+        console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
       }
     } else if (!dryRun && !isClaudeCodeInstalled()) {
       console.log('\n⚠️  Claude Code CLI not detected!');
@@ -1223,7 +1252,7 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
       console.log('\n  📋 After installing, add MCP servers:');
       console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
       console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
-      console.log('\n  💡 Or copy .claude/mcp.json to your Claude Desktop config directory');
+      console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
     }
     
     // Final instructions
