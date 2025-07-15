@@ -1259,6 +1259,10 @@ function createEnhancedSettingsJsonFallback() {
         "Bash(eval *)"
       ]
     },
+    enabledMcpjsonServers: [
+      "claude-flow",
+      "ruv-swarm"
+    ],
     hooks: {
       PreToolUse: [
         {
@@ -1311,36 +1315,6 @@ function createEnhancedSettingsJsonFallback() {
         }
       ]
     },
-    mcpServers: {
-      "claude-flow": {
-        command: "npx",
-        args: ["claude-flow", "mcp", "start"],
-        env: {
-          CLAUDE_FLOW_HOOKS_ENABLED: "true",
-          CLAUDE_FLOW_TELEMETRY_ENABLED: "true",
-          CLAUDE_FLOW_REMOTE_READY: "true",
-          CLAUDE_FLOW_GITHUB_INTEGRATION: "true"
-        }
-      }
-    },
-    includeCoAuthoredBy: true,
-    features: {
-      autoTopologySelection: true,
-      parallelExecution: true,
-      neuralTraining: true,
-      bottleneckAnalysis: true,
-      smartAutoSpawning: true,
-      selfHealingWorkflows: true,
-      crossSessionMemory: true,
-      githubIntegration: true
-    },
-    performance: {
-      maxAgents: 10,
-      defaultTopology: "hierarchical",
-      executionStrategy: "parallel",
-      tokenOptimization: true,
-      cacheEnabled: true,
-      telemetryLevel: "detailed"
-    }
+    includeCoAuthoredBy: true
   }, null, 2);
 }

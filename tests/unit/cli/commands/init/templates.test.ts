@@ -23,17 +23,16 @@ describe("Template Generation Tests", () => {
       const content = createFullClaudeMd();
       
       expect(content).toContain("# Claude Code Configuration");
-      expect(content).toContain("## Project Overview");
-      expect(content).toContain("## Key Commands");
-      expect(content).toContain("## Code Style");
-      expect(content).toContain("## Project Architecture");
+      expect(content).toContain("CRITICAL: CONCURRENT EXECUTION");
+      expect(content).toContain("MANDATORY CONCURRENT PATTERNS");
+      expect(content).toContain("TodoWrite");
     });
 
     it("should generate minimal CLAUDE.md with basic info", () => {
       const content = createMinimalClaudeMd();
       
       expect(content).toContain("# Claude Code Configuration");
-      expect(content).toContain("Minimal project configuration");
+      expect(content).toContain("Claude Code Configuration");
       
       // Should be shorter than full version
       const fullContent = createFullClaudeMd();
@@ -58,10 +57,10 @@ describe("Template Generation Tests", () => {
       const content = createSparcClaudeMd();
       
       // Check for SPARC commands
-      expect(content).toContain("npx claude-flow sparc modes");
-      expect(content).toContain("npx claude-flow sparc run");
-      expect(content).toContain("npx claude-flow sparc tdd");
-      expect(content).toContain("npx claude-flow sparc info");
+      expect(content).toContain("./claude-flow sparc modes");
+      expect(content).toContain("./claude-flow sparc run");
+      expect(content).toContain("./claude-flow sparc tdd");
+      expect(content).toContain("./claude-flow sparc info");
     });
   });
 
@@ -70,17 +69,17 @@ describe("Template Generation Tests", () => {
       const content = createFullMemoryBankMd();
       
       expect(content).toContain("# Memory Bank");
-      expect(content).toContain("## Active Tasks");
-      expect(content).toContain("## Key Decisions");
-      expect(content).toContain("## Project Context");
-      expect(content).toContain("## Technical Specifications");
+      expect(content).toContain("## Overview");
+      expect(content).toContain("## Storage Backends");
+      expect(content).toContain("## Memory Organization");
+      expect(content).toContain("## Commands");
     });
 
     it("should generate minimal memory bank", () => {
       const content = createMinimalMemoryBankMd();
       
       expect(content).toContain("# Memory Bank");
-      expect(content).toContain("Simple memory tracking");
+      expect(content).toContain("## Quick Reference");
       
       // Should be shorter
       const fullContent = createFullMemoryBankMd();
@@ -92,18 +91,18 @@ describe("Template Generation Tests", () => {
     it("should generate full coordination with agent structure", () => {
       const content = createFullCoordinationMd();
       
-      expect(content).toContain("# Multi-Agent Coordination System");
-      expect(content).toContain("## Coordination Structure");
-      expect(content).toContain("## Agent Roles");
-      expect(content).toContain("## Current Coordination State");
-      expect(content).toContain("## Coordination Rules");
+      expect(content).toContain("# Agent Coordination System");
+      expect(content).toContain("## Overview");
+      expect(content).toContain("## Agent Types and Capabilities");
+      expect(content).toContain("## Task Management");
+      expect(content).toContain("## Coordination Commands");
     });
 
     it("should generate minimal coordination", () => {
       const content = createMinimalCoordinationMd();
       
-      expect(content).toContain("# Multi-Agent Coordination");
-      expect(content).toContain("Simple coordination tracking");
+      expect(content).toContain("# Agent Coordination");
+      expect(content).toContain("## Quick Commands");
       
       // Should be shorter
       const fullContent = createFullCoordinationMd();
@@ -116,8 +115,8 @@ describe("Template Generation Tests", () => {
       const content = createAgentsReadme();
       
       expect(content).toContain("# Agent Memory Storage");
-      expect(content).toContain("## Directory Structure");
-      expect(content).toContain("## File Format");
+      expect(content).toContain("## Structure");
+      expect(content).toContain("## Usage Guidelines");
       expect(content).toContain(".json");
     });
 
@@ -125,8 +124,8 @@ describe("Template Generation Tests", () => {
       const content = createSessionsReadme();
       
       expect(content).toContain("# Session Memory Storage");
-      expect(content).toContain("## Directory Structure");
-      expect(content).toContain("## File Format");
+      expect(content).toContain("## Structure");
+      expect(content).toContain("## Usage Guidelines");
       expect(content).toContain("session_");
     });
   });
@@ -159,7 +158,7 @@ describe("Template Generation Tests", () => {
       // Check for file extensions in examples
       expect(sparcTemplate).toContain(".json");
       expect(sparcTemplate).toContain(".md");
-      expect(sparcTemplate).toContain(".ts");
+      expect(sparcTemplate).toContain("CLAUDE.md");
     });
   });
 

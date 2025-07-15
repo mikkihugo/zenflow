@@ -11,7 +11,8 @@ import { existsSync, readTextFile, writeTextFile } from '../../node-compat.js';
 const CLAUDE_FLOW_GITIGNORE_ENTRIES = `
 # Claude Flow generated files
 .claude/settings.local.json
-.claude/mcp.json
+.mcp.json
+claude-flow.config.json
 .swarm/
 .hive-mind/
 memory/claude-flow-data.json
