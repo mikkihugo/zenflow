@@ -26,25 +26,43 @@ export interface PreEditOptions extends BaseHookOptions {
   file: string;
   operation?: 'read' | 'write' | 'edit' | 'delete';
   validate?: boolean;
+  autoAssignAgents?: boolean;
+  'auto-assign-agents'?: boolean;
+  loadContext?: boolean;
+  'load-context'?: boolean;
 }
 
 export interface PostEditOptions extends BaseHookOptions {
   file: string;
   memoryKey?: string;
+  'memory-key'?: string;
   format?: boolean;
   analyze?: boolean;
+  updateMemory?: boolean;
+  'update-memory'?: boolean;
+  trainNeural?: boolean;
+  'train-neural'?: boolean;
 }
 
 export interface PreCommandOptions extends BaseHookOptions {
   command: string;
   validate?: boolean;
+  'validate-safety'?: boolean;
   sandbox?: boolean;
+  prepareResources?: boolean;
+  'prepare-resources'?: boolean;
 }
 
 export interface PostCommandOptions extends BaseHookOptions {
   command: string;
   exitCode?: number;
+  'exit-code'?: number;
   duration?: number;
+  trackMetrics?: boolean;
+  'track-metrics'?: boolean;
+  storeResults?: boolean;
+  'store-results'?: boolean;
+  output?: string;
 }
 
 export interface SessionStartOptions extends BaseHookOptions {
@@ -56,7 +74,11 @@ export interface SessionStartOptions extends BaseHookOptions {
 export interface SessionEndOptions extends BaseHookOptions {
   sessionId?: string;
   exportMetrics?: boolean;
+  'export-metrics'?: boolean;
   generateSummary?: boolean;
+  'generate-summary'?: boolean;
+  persistState?: boolean;
+  'persist-state'?: boolean;
   saveTo?: string;
 }
 
