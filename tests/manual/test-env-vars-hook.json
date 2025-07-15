@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"ENV TEST - CLAUDE_EDITED_FILE: $CLAUDE_EDITED_FILE, CLAUDE_FILE: $CLAUDE_FILE, FILE: $FILE\" >> .claude/env-test.log"
+          }
+        ]
+      }
+    ]
+  }
+}

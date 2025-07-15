@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"=== HOOK TEST $(date) ===\" >> .claude/hook-test-all.log"
+          },
+          {
+            "type": "command",
+            "command": "echo \"1. ENV VARS - CLAUDE_EDITED_FILE: '$CLAUDE_EDITED_FILE', CLAUDE_FILE: '$CLAUDE_FILE'\" >> .claude/hook-test-all.log"
+          },
+          {
+            "type": "command",
+            "command": "echo \"2. ALL ENV VARS:\" >> .claude/hook-test-all.log && env | grep -i claude >> .claude/hook-test-all.log || echo \"No CLAUDE env vars found\" >> .claude/hook-test-all.log"
+          },
+          {
+            "type": "command",
+            "command": "echo \"3. STDIN CONTENT:\" >> .claude/hook-test-all.log && cat >> .claude/hook-test-all.log"
+          }
+        ]
+      }
+    ]
+  }
+}
