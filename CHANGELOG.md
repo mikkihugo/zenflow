@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.56] - 2025-07-15
+
+### 🚀 Major Hook System Overhaul (Issue #280)
+
+#### **Complete Resolution of Hook Inconsistencies**
+- **Hook name compatibility**: Both `pre-command` and `pre-bash` work identically
+- **Parameter mapping**: All settings.json template parameters implemented
+- **Dual format support**: Both dash-case (`--validate-safety`) and camelCase (`validateSafety`) work
+- **100% settings.json compatibility**: All template commands work without modification
+
+#### **Enhanced Safety Features**
+- **Dangerous command blocking**: Prevents `rm -rf`, `format`, `del /f`, etc.
+- **Safety validation**: Real-time command analysis and blocking
+- **Resource preparation**: Automatic working directory setup
+- **Command logging**: Full audit trail in SQLite memory store
+
+#### **Intelligent Agent Assignment**
+- **File-type based recommendations**: `.js` → `javascript-developer`, `.py` → `python-developer`
+- **Context-aware assignment**: Automatic agent matching based on file extensions
+- **Load context functionality**: Pre-operation context loading for better decisions
+
+#### **Neural Pattern Training**
+- **Confidence scoring**: 70-100% confidence levels for pattern recognition
+- **Learning simulation**: Adaptive pattern training for syntax, structure, performance, security
+- **Memory persistence**: Cross-session learning data storage
+
+#### **Comprehensive Session Management**
+- **State persistence**: Full session state saved to SQLite database
+- **Metrics export**: Detailed session statistics and performance data
+- **Summary generation**: Automatic session summaries with key metrics
+- **Cross-session memory**: Persistent memory across development sessions
+
+#### **Technical Improvements**
+- **SQLite integration**: Robust memory store with error handling
+- **Performance tracking**: Real-time metrics collection and analysis
+- **Enhanced TypeScript types**: Complete interface coverage for all hook parameters
+- **Comprehensive testing**: Integration tests for all hook functionality
+
+### Fixed
+- **Issue #280**: Complete resolution of hook parameter inconsistencies
+- **Parameter validation**: All settings.json template parameters now work correctly
+- **Hook name aliases**: Pre-command/pre-bash and post-command/post-bash compatibility
+- **Memory storage**: Reliable SQLite-based persistence system
+
+### Dependencies
+- **Added**: `diskusage@1.1.3` for system resource monitoring
+- **Updated**: Package version to 2.0.0-alpha.56
+
+### Testing
+- **Integration tests**: Comprehensive test suite for hook consistency
+- **Template validation**: Settings.json command validation tests
+- **Manual testing**: All hook variations tested and verified
+- **NPM package**: Published and validated on npm registry
+
 ## [2.0.0-alpha.51] - 2025-01-14
 
 ### Changed
