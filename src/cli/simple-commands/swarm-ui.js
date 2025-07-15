@@ -23,6 +23,7 @@ class SwarmUI {
     this.updateInterval = null;
     this.logBuffer = [];
     this.maxLogLines = 100;
+    this.activeProcesses = new Map(); // Track active processes for cross-platform termination
   }
 
   async init() {
@@ -500,7 +501,7 @@ class SwarmUI {
       '',
       'Task Data:',
       JSON.stringify(task.task, null, 2)
-    ].join('\\n');
+    ].join('\n');
 
     this.taskDetails.setContent(details);
     this.screen.render();
@@ -550,7 +551,11 @@ class SwarmUI {
 
       process.unref();
       
-      this.log(`Launched swarm with PID: ${process.pid}`);
+      // Track the process for later termination
+      const processId = `swarm-${Date.now()}`;
+      this.activeProcesses.set(processId, process);
+      
+      this.log(`Launched swarm with PID: ${process.pid} (ID: ${processId})`);
       
       // Update data after a delay
       setTimeout(() => {
@@ -566,22 +571,82 @@ class SwarmUI {
     this.log('Stopping all swarm operations...');
     
     try {
-      // Kill all swarm processes (simplified)
-      const { exec } = require('child_process');
-      exec('pkill -f "claude-flow swarm"', (error) => {
-        if (error) {
-          this.log(`Error stopping swarm: ${error.message}`, 'error');
-        } else {
-          this.log('Swarm operations stopped');
+      // Cross-platform process termination
+      let stoppedCount = 0;
+      
+      // First, try to stop tracked processes
+      for (const [processId, process] of this.activeProcesses) {
+        try {
+          // Use process.kill() for cross-platform compatibility
+          if (process.pid && !process.killed) {
+            process.kill('SIGTERM');
+            stoppedCount++;
+            this.log(`Stopped process ${processId} (PID: ${process.pid})`);
+          }
+        } catch (err) {
+          // Process might already be dead
+          this.log(`Process ${processId} already terminated`, 'warn');
         }
-      });
-
+      }
+      
+      // Clear the tracked processes
+      this.activeProcesses.clear();
+      
+      // Also find and stop any orphaned processes
+      await this.stopOrphanedProcesses();
+      
+      this.log(`Swarm operations stopped (${stoppedCount} processes terminated)`);
+      
       // Update display
       this.swarmData.status = 'stopped';
       this.updateDisplay();
 
     } catch (error) {
       this.log(`Error stopping swarm: ${error.message}`, 'error');
+    }
+  }
+
+  async stopOrphanedProcesses() {
+    // Cross-platform approach to find and stop orphaned processes
+    const { exec } = require('child_process');
+    const os = require('os');
+    
+    if (os.platform() === 'win32') {
+      // Windows: Use wmic to find and kill processes
+      exec('wmic process where "commandline like \'%claude-flow swarm%\'" get processid', (error, stdout) => {
+        if (!error && stdout) {
+          const pids = stdout.split('\n')
+            .map(line => line.trim())
+            .filter(line => /^\d+$/.test(line));
+          
+          pids.forEach(pid => {
+            exec(`taskkill /F /PID ${pid}`, (killError) => {
+              if (!killError) {
+                this.log(`Stopped orphaned process PID: ${pid}`);
+              }
+            });
+          });
+        }
+      });
+    } else {
+      // Unix-like systems: Use ps and grep
+      exec('ps aux | grep "claude-flow swarm" | grep -v grep', (error, stdout) => {
+        if (!error && stdout) {
+          const lines = stdout.split('\n').filter(line => line.trim());
+          lines.forEach(line => {
+            const parts = line.split(/\s+/);
+            const pid = parts[1];
+            if (pid && /^\d+$/.test(pid)) {
+              try {
+                process.kill(parseInt(pid), 'SIGTERM');
+                this.log(`Stopped orphaned process PID: ${pid}`);
+              } catch (killError) {
+                // Process might not exist or no permission
+              }
+            }
+          });
+        }
+      });
     }
   }
 
@@ -629,6 +694,18 @@ class SwarmUI {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
     }
+    
+    // Clean up any remaining processes
+    for (const [processId, process] of this.activeProcesses) {
+      try {
+        if (process.pid && !process.killed) {
+          process.kill('SIGTERM');
+        }
+      } catch (err) {
+        // Ignore errors during cleanup
+      }
+    }
+    this.activeProcesses.clear();
   }
 }
 

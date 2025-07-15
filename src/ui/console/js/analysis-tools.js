@@ -535,81 +535,133 @@ class AnalysisTools {
 
     // Tool implementations
     async performanceReport() {
-        const report = await this.fetchAnalysisData('/api/analysis/performance-report');
-        this.displayReport('performance-report-output', report);
-        await this.notifyToolCompletion('performance_report');
+        try {
+            const report = await this.fetchAnalysisData('/api/analysis/performance-report');
+            this.displayReport('performance-report-output', report);
+            await this.notifyToolCompletion('performance_report');
+        } catch (error) {
+            this.displayError('performance-report-output', 'Unable to fetch performance report. Please ensure the analysis service is running.');
+        }
     }
 
     async bottleneckAnalyze() {
-        const analysis = await this.fetchAnalysisData('/api/analysis/bottleneck-analyze');
-        this.displayAnalysis('bottleneck-analysis-output', analysis);
-        await this.notifyToolCompletion('bottleneck_analyze');
+        try {
+            const analysis = await this.fetchAnalysisData('/api/analysis/bottleneck-analyze');
+            this.displayAnalysis('bottleneck-analysis-output', analysis);
+            await this.notifyToolCompletion('bottleneck_analyze');
+        } catch (error) {
+            this.displayError('bottleneck-analysis-output', 'Unable to fetch bottleneck analysis. Please ensure the analysis service is running.');
+        }
     }
 
     async tokenUsage() {
-        const usage = await this.fetchAnalysisData('/api/analysis/token-usage');
-        this.displayUsage('token-usage-output', usage);
-        await this.notifyToolCompletion('token_usage');
+        try {
+            const usage = await this.fetchAnalysisData('/api/analysis/token-usage');
+            this.displayUsage('token-usage-output', usage);
+            await this.notifyToolCompletion('token_usage');
+        } catch (error) {
+            this.displayError('token-usage-output', 'Unable to fetch token usage data. Please ensure the analysis service is running.');
+        }
     }
 
     async benchmarkRun() {
-        const benchmark = await this.fetchAnalysisData('/api/analysis/benchmark-run');
-        this.displayBenchmark('benchmark-output', benchmark);
-        await this.notifyToolCompletion('benchmark_run');
+        try {
+            const benchmark = await this.fetchAnalysisData('/api/analysis/benchmark-run');
+            this.displayBenchmark('benchmark-output', benchmark);
+            await this.notifyToolCompletion('benchmark_run');
+        } catch (error) {
+            this.displayError('benchmark-output', 'Unable to run benchmark. Please ensure the analysis service is running.');
+        }
     }
 
     async metricsCollect() {
-        const metrics = await this.fetchAnalysisData('/api/analysis/metrics-collect');
-        this.displayMetrics('metrics-output', metrics);
-        await this.notifyToolCompletion('metrics_collect');
+        try {
+            const metrics = await this.fetchAnalysisData('/api/analysis/metrics-collect');
+            this.displayMetrics('metrics-output', metrics);
+            await this.notifyToolCompletion('metrics_collect');
+        } catch (error) {
+            this.displayError('metrics-output', 'Unable to collect metrics. Please ensure the analysis service is running.');
+        }
     }
 
     async trendAnalysis() {
-        const trends = await this.fetchAnalysisData('/api/analysis/trend-analysis');
-        this.displayTrends('trends-output', trends);
-        await this.notifyToolCompletion('trend_analysis');
+        try {
+            const trends = await this.fetchAnalysisData('/api/analysis/trend-analysis');
+            this.displayTrends('trends-output', trends);
+            await this.notifyToolCompletion('trend_analysis');
+        } catch (error) {
+            this.displayError('trends-output', 'Unable to fetch trend analysis. Please ensure the analysis service is running.');
+        }
     }
 
     async costAnalysis() {
-        const costs = await this.fetchAnalysisData('/api/analysis/cost-analysis');
-        this.displayCosts('costs-output', costs);
-        await this.notifyToolCompletion('cost_analysis');
+        try {
+            const costs = await this.fetchAnalysisData('/api/analysis/cost-analysis');
+            this.displayCosts('costs-output', costs);
+            await this.notifyToolCompletion('cost_analysis');
+        } catch (error) {
+            this.displayError('costs-output', 'Unable to fetch cost analysis. Please ensure the analysis service is running.');
+        }
     }
 
     async qualityAssess() {
-        const quality = await this.fetchAnalysisData('/api/analysis/quality-assess');
-        this.displayQuality('quality-output', quality);
-        await this.notifyToolCompletion('quality_assess');
+        try {
+            const quality = await this.fetchAnalysisData('/api/analysis/quality-assess');
+            this.displayQuality('quality-output', quality);
+            await this.notifyToolCompletion('quality_assess');
+        } catch (error) {
+            this.displayError('quality-output', 'Unable to assess quality. Please ensure the analysis service is running.');
+        }
     }
 
     async errorAnalysis() {
-        const errors = await this.fetchAnalysisData('/api/analysis/error-analysis');
-        this.displayErrors('errors-output', errors);
-        await this.notifyToolCompletion('error_analysis');
+        try {
+            const errors = await this.fetchAnalysisData('/api/analysis/error-analysis');
+            this.displayErrors('errors-output', errors);
+            await this.notifyToolCompletion('error_analysis');
+        } catch (error) {
+            this.displayError('errors-output', 'Unable to fetch error analysis. Please ensure the analysis service is running.');
+        }
     }
 
     async usageStats() {
-        const stats = await this.fetchAnalysisData('/api/analysis/usage-stats');
-        this.displayStats('stats-output', stats);
-        await this.notifyToolCompletion('usage_stats');
+        try {
+            const stats = await this.fetchAnalysisData('/api/analysis/usage-stats');
+            this.displayStats('stats-output', stats);
+            await this.notifyToolCompletion('usage_stats');
+        } catch (error) {
+            this.displayError('stats-output', 'Unable to fetch usage statistics. Please ensure the analysis service is running.');
+        }
     }
 
     async healthCheck() {
-        const health = await this.fetchAnalysisData('/api/analysis/health-check');
-        this.displayHealth('health-output', health);
-        await this.notifyToolCompletion('health_check');
+        try {
+            const health = await this.fetchAnalysisData('/api/analysis/health-check');
+            this.displayHealth('health-output', health);
+            await this.notifyToolCompletion('health_check');
+        } catch (error) {
+            this.displayError('health-output', 'Unable to perform health check. Please ensure the analysis service is running.');
+        }
     }
 
     async loadMonitor() {
-        const load = await this.fetchAnalysisData('/api/analysis/load-monitor');
-        this.displayLoad('load-output', load);
-        await this.notifyToolCompletion('load_monitor');
+        try {
+            const load = await this.fetchAnalysisData('/api/analysis/load-monitor');
+            this.displayLoad('load-output', load);
+            await this.notifyToolCompletion('load_monitor');
+        } catch (error) {
+            this.displayError('load-output', 'Unable to monitor load. Please ensure the analysis service is running.');
+        }
     }
 
     async capacityPlan() {
-        const capacity = await this.fetchAnalysisData('/api/analysis/capacity-plan');
-        this.displayCapacity('capacity-output', capacity);
-        await this.notifyToolCompletion('capacity_plan');
+        try {
+            const capacity = await this.fetchAnalysisData('/api/analysis/capacity-plan');
+            this.displayCapacity('capacity-output', capacity);
+            await this.notifyToolCompletion('capacity_plan');
+        } catch (error) {
+            this.displayError('capacity-output', 'Unable to fetch capacity plan. Please ensure the analysis service is running.');
+        }
     }
 
     async fetchAnalysisData(endpoint) {
@@ -621,8 +673,9 @@ class AnalysisTools {
             return await response.json();
         } catch (error) {
             console.error('Fetch error:', error);
-            // Return mock data for development
-            return this.getMockData(endpoint);
+            // Show error message instead of falling back to mock data
+            this.showError(`Failed to fetch data from ${endpoint}: ${error.message}`);
+            throw error; // Re-throw to let calling functions handle the error
         }
     }
 
@@ -803,10 +856,11 @@ class AnalysisTools {
         const flatten = (obj, prefix = '') => {
             const flattened = {};
             for (const key in obj) {
-                if (typeof obj[key] === 'object' && obj[key] !== null) {
+                if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
                     Object.assign(flattened, flatten(obj[key], prefix + key + '.'));
                 } else {
-                    flattened[prefix + key] = obj[key];
+                    // Convert arrays to JSON strings for CSV
+                    flattened[prefix + key] = Array.isArray(obj[key]) ? JSON.stringify(obj[key]) : obj[key];
                 }
             }
             return flattened;
@@ -814,9 +868,20 @@ class AnalysisTools {
 
         const flattened = flatten(json);
         const headers = Object.keys(flattened);
-        const values = Object.values(flattened);
+        const valueRow = headers.map(header => {
+            const value = flattened[header];
+            if (value === null || value === undefined) {
+                return '';
+            }
+            let strValue = String(value);
+            // Escape CSV values that contain commas, quotes, or newlines
+            if (strValue.includes(',') || strValue.includes('"') || strValue.includes('\n')) {
+                strValue = '"' + strValue.replace(/"/g, '""') + '"';
+            }
+            return strValue;
+        }).join(',');
         
-        return [headers.join(','), values.join(',')].join('\n');
+        return [headers.join(','), valueRow].join('\n');
     }
 
     refreshSection(section) {
@@ -856,6 +921,25 @@ class AnalysisTools {
         setTimeout(() => {
             errorElement.remove();
         }, 5000);
+    }
+
+    displayError(containerId, message) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="error-container">
+                <div class="error-icon">❌</div>
+                <div class="error-message">
+                    <h4>Error</h4>
+                    <p>${message}</p>
+                </div>
+                <div class="error-actions">
+                    <button class="retry-btn" onclick="location.reload()">Retry</button>
+                    <button class="dismiss-btn" onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+                </div>
+            </div>
+        `;
     }
 
     async notifyToolCompletion(toolName) {

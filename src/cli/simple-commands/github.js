@@ -5,6 +5,61 @@
  */
 
 import { printSuccess, printError, printWarning } from '../utils.js';
+import { platform } from 'os';
+import { access, constants } from 'fs/promises';
+import { join } from 'path';
+
+/**
+ * Cross-platform check for executable availability
+ * @param {string} command - The command to check
+ * @returns {Promise<boolean>} - True if command is available
+ */
+async function checkCommandAvailable(command) {
+  const { execSync } = await import('child_process');
+  
+  if (platform() === 'win32') {
+    // Windows: Use 'where' command
+    try {
+      execSync(`where ${command}`, { stdio: 'ignore' });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  } else {
+    // Unix-like systems: Check common paths and use 'command -v'
+    try {
+      execSync(`command -v ${command}`, { stdio: 'ignore', shell: true });
+      return true;
+    } catch (e) {
+      // Fallback: Check common installation paths
+      const commonPaths = [
+        '/usr/local/bin',
+        '/usr/bin',
+        '/opt/homebrew/bin',
+        join(process.env.HOME || '', '.local', 'bin'),
+        join(process.env.HOME || '', 'bin')
+      ];
+      
+      for (const dir of commonPaths) {
+        try {
+          await access(join(dir, command), constants.X_OK);
+          return true;
+        } catch (e) {
+          // Continue checking other paths
+        }
+      }
+      return false;
+    }
+  }
+}
+
+/**
+ * Check if Claude CLI is available
+ * @returns {Promise<boolean>} - True if Claude is available
+ */
+async function checkClaudeAvailable() {
+  return checkCommandAvailable('claude');
+}
 
 const GITHUB_MODES = {
   'gh-coordinator': {
@@ -149,9 +204,9 @@ export async function githubCommand(args, flags) {
     // Check if Claude is available
     const { execSync } = await import('child_process');
     
-    try {
-      execSync('which claude', { stdio: 'ignore' });
-    } catch (e) {
+    // Cross-platform check for Claude CLI
+    const isClaudeAvailable = await checkClaudeAvailable();
+    if (!isClaudeAvailable) {
       printWarning('⚠️  Claude CLI not found. GitHub automation requires Claude.');
       console.log('Install Claude: https://claude.ai/code');
       console.log('\nAlternatively, this would execute:');

@@ -78,14 +78,58 @@ export class RuvSwarmWrapper {
         });
 
         rlErr.on('line', (line) => {
-          // Filter out known harmless errors
-          if (line.includes('logger.logMemoryUsage is not a function')) {
-            // This is a known issue in ruv-swarm v1.0.8
-            // The server continues to work despite this error
-            if (!this.options.silent) {
-              console.error('⚠️  Known ruv-swarm logger issue detected (continuing normally)');
+          // Parse structured error messages if available
+          try {
+            const errorData = JSON.parse(line);
+            if (errorData.error && errorData.error.code) {
+              // Handle specific error codes
+              switch (errorData.error.code) {
+                case 'LOGGER_METHOD_MISSING':
+                case 'ERR_LOGGER_MEMORY_USAGE':
+                  // Known issue with logger.logMemoryUsage in ruv-swarm
+                  if (!this.options.silent) {
+                    console.error('⚠️  Known ruv-swarm logger issue detected (continuing normally)');
+                  }
+                  return;
+                case 'ERR_INITIALIZATION':
+                  console.error('❌ RuvSwarm initialization error:', errorData.error.message);
+                  return;
+                default:
+                  // Unknown error code, log it
+                  if (!this.options.silent) {
+                    console.error(`RuvSwarm error [${errorData.error.code}]:`, errorData.error.message);
+                  }
+              }
+              return;
             }
-            return;
+          } catch (e) {
+            // Not JSON, check for known text patterns as fallback
+            const knownErrorPatterns = [
+              {
+                pattern: /logger\.logMemoryUsage is not a function/,
+                code: 'LOGGER_METHOD_MISSING',
+                message: 'Known ruv-swarm logger issue detected (continuing normally)'
+              },
+              {
+                pattern: /Cannot find module/,
+                code: 'MODULE_NOT_FOUND',
+                message: 'Module not found error'
+              },
+              {
+                pattern: /ECONNREFUSED/,
+                code: 'CONNECTION_REFUSED',
+                message: 'Connection refused error'
+              }
+            ];
+
+            for (const errorPattern of knownErrorPatterns) {
+              if (errorPattern.pattern.test(line)) {
+                if (!this.options.silent || errorPattern.code !== 'LOGGER_METHOD_MISSING') {
+                  console.error(`⚠️  ${errorPattern.message}`);
+                }
+                return;
+              }
+            }
           }
 
           // Filter out initialization messages if silent

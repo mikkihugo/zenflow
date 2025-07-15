@@ -1,5 +1,6 @@
-// task.js - Task management commands
+// task.js - Task management commands with improved argument parsing
 import { printSuccess, printError, printWarning } from '../utils.js';
+import { Command } from 'commander';
 
 export async function taskCommand(subArgs, flags) {
   const taskCmd = subArgs[0];
@@ -35,8 +36,32 @@ export async function taskCommand(subArgs, flags) {
 }
 
 async function createTask(subArgs, flags) {
-  const taskType = subArgs[1];
-  const description = subArgs.slice(2).join(' ');
+  // Use commander for robust argument parsing
+  const program = new Command()
+    .exitOverride()
+    .allowUnknownOption()
+    .option('--priority <value>', 'Set task priority (1-10)', '5');
+
+  try {
+    // Parse the arguments starting from the create command
+    program.parse(subArgs, { from: 'user' });
+  } catch (err) {
+    // Continue even if commander throws
+  }
+
+  const opts = program.opts();
+  const args = program.args;
+  
+  // Extract task type and description with proper quote handling
+  const taskType = args[1]; // First arg after 'create'
+  
+  // Join remaining args for description, handling quoted strings properly
+  let description = '';
+  if (args.length > 2) {
+    // If the description starts with a quote, find the matching end quote
+    const descriptionArgs = args.slice(2);
+    description = parseQuotedDescription(descriptionArgs);
+  }
   
   if (!taskType || !description) {
     printError('Usage: task create <type> "<description>"');
@@ -45,7 +70,7 @@ async function createTask(subArgs, flags) {
   }
   
   const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const priority = getFlag(subArgs, '--priority') || '5';
+  const priority = opts.priority || '5';
   
   printSuccess(`Creating ${taskType} task: ${taskId}`);
   console.log(`📋 Description: ${description}`);
@@ -55,9 +80,41 @@ async function createTask(subArgs, flags) {
   console.log('\n📋 Note: Task queued for execution when orchestrator starts');
 }
 
+function parseQuotedDescription(args) {
+  const fullString = args.join(' ');
+  
+  // Check if it starts with a quote
+  if (fullString.startsWith('"') || fullString.startsWith("'")) {
+    const quoteChar = fullString[0];
+    const endIndex = fullString.lastIndexOf(quoteChar);
+    
+    if (endIndex > 0) {
+      // Extract the quoted content
+      return fullString.substring(1, endIndex);
+    }
+  }
+  
+  // If not quoted or improperly quoted, return the full string
+  return fullString;
+}
+
 async function listTasks(subArgs, flags) {
-  const filter = getFlag(subArgs, '--filter');
-  const verbose = subArgs.includes('--verbose') || subArgs.includes('-v');
+  const program = new Command()
+    .exitOverride()
+    .allowUnknownOption()
+    .option('--filter <status>', 'Filter by task status')
+    .option('--verbose', 'Show detailed output')
+    .option('-v', 'Show detailed output');
+
+  try {
+    program.parse(subArgs, { from: 'user' });
+  } catch (err) {
+    // Continue
+  }
+
+  const opts = program.opts();
+  const filter = opts.filter;
+  const verbose = opts.verbose || opts.v;
   
   printSuccess('Task queue:');
   
@@ -140,11 +197,6 @@ async function manageCoordination(subArgs, flags) {
     default:
       console.log('Coordination commands: status, optimize');
   }
-}
-
-function getFlag(args, flagName) {
-  const index = args.indexOf(flagName);
-  return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
 }
 
 function showTaskHelp() {
