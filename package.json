@@ -19,7 +19,7 @@
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "dev:build": "tsc --watch",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --bail --maxWorkers=1 --forceExit",
     "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
     "test:unit": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/unit",
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/integration",
