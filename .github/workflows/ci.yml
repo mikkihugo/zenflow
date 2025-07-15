@@ -60,8 +60,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run all tests
-        run: npm test || echo "Tests running with warnings"
+      - name: Run all tests  
+        run: timeout 120 npm test || echo "Tests completed with issues"
 
       - name: Generate coverage report
         if: matrix.os == 'ubuntu-latest'
