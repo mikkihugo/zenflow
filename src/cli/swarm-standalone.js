@@ -1,4 +1,3 @@
-#!/usr/bin/env -S deno run --allow-all
 /**
  * Standalone swarm executable for npm package
  * This handles swarm execution when installed via npm
@@ -8,7 +7,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { existsSync } from 'node:fs';
-import { Deno, cwd, exit, existsSync } from '../node-compat.js';
+import { Deno, cwd, exit } from './node-compat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -224,11 +223,11 @@ Use all available tools including file operations, web search, and code executio
     }
   }
   
-  const deno = spawn(Deno.execPath(), ['run', '--allow-all', swarmPath, ...swarmArgs], {
+  const node = spawn('node', [swarmPath, ...swarmArgs], {
     stdio: 'inherit'
   });
   
-  deno.on('exit', (code) => {
-    Deno.exit(code || 0);
+  node.on('exit', (code) => {
+    exit(code || 0);
   });
 }

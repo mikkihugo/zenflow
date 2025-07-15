@@ -8,6 +8,7 @@ import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import process from 'process';
+import { spawn } from 'child_process';
 
 // Process arguments (remove first two: node executable and script path)
 export const args = process.argv.slice(2);
@@ -75,6 +76,53 @@ export const exit = (code = 0) => {
   process.exit(code);
 };
 
+export const execPath = () => process.execPath;
+
+// stdin/stdout/stderr support
+export const stdin = {
+  read: async (buffer) => {
+    return new Promise((resolve) => {
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(true);
+      }
+      process.stdin.resume();
+      process.stdin.once('data', (data) => {
+        const bytes = Math.min(data.length, buffer.length);
+        for (let i = 0; i < bytes; i++) {
+          buffer[i] = data[i];
+        }
+        if (process.stdin.isTTY) {
+          process.stdin.setRawMode(false);
+        }
+        process.stdin.pause();
+        resolve(bytes);
+      });
+    });
+  }
+};
+
+export const stdout = {
+  write: async (data) => {
+    return new Promise((resolve, reject) => {
+      process.stdout.write(data, (err) => {
+        if (err) reject(err);
+        else resolve(data.length);
+      });
+    });
+  }
+};
+
+export const stderr = {
+  write: async (data) => {
+    return new Promise((resolve, reject) => {
+      process.stderr.write(data, (err) => {
+        if (err) reject(err);
+        else resolve(data.length);
+      });
+    });
+  }
+};
+
 // Deno.errors compatibility
 export const errors = {
   NotFound: class NotFound extends Error {
@@ -130,6 +178,74 @@ export const build = {
   target: `${process.arch}-${process.platform}`
 };
 
+// Environment variables support
+export const env = {
+  get: (key) => process.env[key],
+  set: (key, value) => { process.env[key] = value; },
+  toObject: () => ({ ...process.env })
+};
+
+// Deno.Command compatibility
+export class Command {
+  constructor(command, options = {}) {
+    this.command = command;
+    this.options = options;
+  }
+
+  async output() {
+    return new Promise((resolve, reject) => {
+      const child = spawn(this.command, this.options.args || [], {
+        cwd: this.options.cwd,
+        env: this.options.env,
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+
+      let stdout = [];
+      let stderr = [];
+
+      child.stdout.on('data', (data) => {
+        stdout.push(data);
+      });
+
+      child.stderr.on('data', (data) => {
+        stderr.push(data);
+      });
+
+      child.on('close', (code) => {
+        resolve({
+          code,
+          success: code === 0,
+          stdout: Buffer.concat(stdout),
+          stderr: Buffer.concat(stderr)
+        });
+      });
+
+      child.on('error', (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  spawn() {
+    const child = spawn(this.command, this.options.args || [], {
+      cwd: this.options.cwd,
+      env: this.options.env,
+      stdio: this.options.stdio || 'inherit'
+    });
+
+    return {
+      status: new Promise((resolve) => {
+        child.on('close', (code) => {
+          resolve({ code, success: code === 0 });
+        });
+      }),
+      stdout: child.stdout,
+      stderr: child.stderr,
+      kill: (signal) => child.kill(signal)
+    };
+  }
+}
+
 // Export a Deno-like object for easier migration
 export const Deno = {
   args,
@@ -143,8 +259,14 @@ export const Deno = {
   pid,
   kill,
   exit,
+  execPath,
   errors,
-  build
+  build,
+  stdin,
+  stdout,
+  stderr,
+  env,
+  Command
 };
 
 export default Deno;

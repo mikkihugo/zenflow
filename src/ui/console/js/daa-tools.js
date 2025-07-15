@@ -190,7 +190,7 @@ class DAATools {
         this.communications.set(commId, communication);
         
         // Process communication
-        const result = this.processCommuncation(communication);
+        const result = this.processCommunication(communication);
         
         // Update communication flow diagrams
         this.updateCommunicationFlow();
@@ -594,7 +594,7 @@ class DAATools {
         }
     }
     
-    processCommuncation(communication) {
+    processCommunication(communication) {
         // Simulate communication processing
         const latency = Math.random() * 100; // 0-100ms
         communication.latency = latency;
