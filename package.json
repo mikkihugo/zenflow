@@ -41,7 +41,7 @@
     "test:health": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/integration/system-integration.test.ts --testNamePattern='Health'",
     "test:swarm": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/e2e/swarm-coordination.test.ts",
     "test:benchmark": "NODE_OPTIONS='--experimental-vm-modules' jest src/__tests__/performance/benchmark.test.ts",
-    "lint": "eslint src --ext .ts,.js",
+    "lint": "eslint src/",
     "format": "prettier --write src",
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
     "health-check": "node -e \"import('./dist/monitoring/health-check.js').then(m => new m.HealthCheckManager().performHealthCheck().then(console.log))\"",
@@ -142,14 +142,17 @@
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "babel-jest": "^29.7.0",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0",
     "jest": "^29.7.0",
     "pkg": "^5.8.1",
     "prettier": "^3.1.1",
     "puppeteer": "^24.11.2",
     "ts-jest": "^29.4.0",
     "tsx": "^4.6.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.37.0"
   },
   "pkg": {
     "targets": [
