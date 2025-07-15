@@ -14,6 +14,62 @@
   - `src/cli/simple-commands/config.js`
 - **Expected outcome**: Clean validation for minimal configurations
 
+#### **Issue #264 - Init Command Logic Inconsistency**
+- **Priority**: High (UX Impact)
+- **Problem**: Init command succeeds but validation still fails
+- **Impact**: Confusing user experience after successful init
+- **Solution**: Fix init command to generate all required sections OR update validation logic
+- **Files to modify**: 
+  - `src/cli/simple-commands/init/index.js`
+  - `src/cli/commands/config.ts`
+- **Expected outcome**: Clean validation after successful init
+
+### 🐛 CLI & System Fixes
+
+#### **Issue #212 - Hive-mind Parameter Bug**
+- **Priority**: Medium (Functionality Impact)
+- **Problem**: hive-mind spawn ignores user parameters (--agents, --queen-type, --consensus)
+- **Impact**: Always creates 4 agents with hardcoded defaults
+- **Solution**: Fix parameter parsing and handling in hive-mind spawn
+- **Files to modify**: 
+  - `src/cli/commands/hive-mind/spawn.ts`
+  - `src/cli/simple-commands/hive-mind.js`
+- **Expected outcome**: Proper parameter handling and agent count control
+
+#### **Issue #254 - JSON Output for Hive Functionality**
+- **Priority**: Medium (Developer Experience)
+- **Problem**: No JSON output option for hive-mind CLI operations
+- **Impact**: Difficult to integrate hive-mind into automated workflows
+- **Solution**: Add --output-format json flag to hive-mind commands
+- **Files to modify**: 
+  - `src/cli/commands/hive-mind/`
+  - `src/cli/simple-commands/hive-mind.js`
+- **Expected outcome**: Programmable hive-mind output for automation
+
+### 🔐 Security & Documentation
+
+#### **Issue #261 - WASM Security Documentation**
+- **Priority**: Low (Documentation)
+- **Problem**: Security concerns about WASM files and their inspection
+- **Impact**: Developer trust and security best practices
+- **Solution**: Document WASM security practices and container setup
+- **Files to modify**: 
+  - `docs/security/wasm-security.md`
+  - `docs/security/container-setup.md`
+- **Expected outcome**: Clear security guidelines for WASM usage
+
+### 🚀 Performance & Quality
+
+#### **Issue #274 - MCP Server Consolidation**
+- **Priority**: Low (Performance)
+- **Problem**: Too many MCP tools causing model confusion
+- **Impact**: Reduced performance and workflow confusion
+- **Solution**: Evaluate and consolidate related MCP tools
+- **Files to modify**: 
+  - `src/mcp/`
+  - Review all MCP tool definitions
+- **Expected outcome**: Streamlined MCP tool set
+
 ### 🚀 Planned Improvements
 
 #### **Configuration Schema Enhancements**
