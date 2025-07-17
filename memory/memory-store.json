@@ -1,0 +1,22 @@
+{
+  "default": [
+    {
+      "key": "test-key",
+      "value": "test-value-1752724151",
+      "namespace": "default",
+      "timestamp": 1752724152521
+    },
+    {
+      "key": "verification-test",
+      "value": "Thu Jul 17 03:59:02 UTC 2025",
+      "namespace": "default",
+      "timestamp": 1752724743925
+    },
+    {
+      "key": "alpha58-test",
+      "value": "MCP database persistence confirmed working 1752724792",
+      "namespace": "default",
+      "timestamp": 1752724794280
+    }
+  ]
+}

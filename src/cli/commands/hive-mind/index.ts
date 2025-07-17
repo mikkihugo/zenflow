@@ -11,6 +11,10 @@ import { spawnCommand } from './spawn.js';
 import { statusCommand } from './status.js';
 import { taskCommand } from './task.js';
 import { wizardCommand } from './wizard.js';
+import { stopCommand } from './stop.js';
+import { pauseCommand } from './pause.js';
+import { resumeCommand } from './resume.js';
+import { psCommand } from './ps.js';
 
 export const hiveMindCommand = new Command('hive-mind')
   .description('Hive Mind collective intelligence swarm management')
@@ -18,7 +22,11 @@ export const hiveMindCommand = new Command('hive-mind')
   .addCommand(spawnCommand)
   .addCommand(statusCommand)
   .addCommand(taskCommand)
-  .addCommand(wizardCommand);
+  .addCommand(wizardCommand)
+  .addCommand(stopCommand)
+  .addCommand(pauseCommand)
+  .addCommand(resumeCommand)
+  .addCommand(psCommand);
 
 // Export individual commands for testing
 export {
@@ -26,5 +34,9 @@ export {
   spawnCommand,
   statusCommand,
   taskCommand,
-  wizardCommand
+  wizardCommand,
+  stopCommand,
+  pauseCommand,
+  resumeCommand,
+  psCommand
 };

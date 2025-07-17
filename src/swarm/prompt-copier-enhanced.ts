@@ -23,7 +23,7 @@ export class EnhancedPromptCopier extends PromptCopier {
     super(options);
   }
 
-  protected async copyFilesParallel(): Promise<void> {
+  public async copyFilesParallel(): Promise<void> {
     const workerCount = Math.min((this as any).options.maxWorkers, (this as any).fileQueue.length);
     
     // Initialize worker pool
@@ -171,7 +171,10 @@ export class EnhancedPromptCopier extends PromptCopier {
       }
     }
     
-    this.reportProgress((this as any).copiedFiles.size);
+    // Report progress through the callback if available
+    if ((this as any).options.progressCallback) {
+      (this as any).options.progressCallback((this as any).copiedFiles.size, (this as any).totalFiles);
+    }
   }
 
   private handleWorkerResult(result: any, workerId: number, pool: WorkerPool): void {
@@ -191,7 +194,7 @@ export class EnhancedPromptCopier extends PromptCopier {
   }
 
   // Override verification to use worker results
-  protected async verifyFiles(): Promise<void> {
+  protected override async verifyFiles(): Promise<void> {
     logger.info('Verifying copied files...');
     
     for (const file of (this as any).fileQueue) {

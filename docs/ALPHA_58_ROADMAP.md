@@ -2,6 +2,55 @@
 
 ## 🎯 Priority Issues for Alpha 58
 
+### 🚨 Critical Bugs
+
+#### **Issue #312 - MCP Tools Don't Actually Write to Database (SHOWSTOPPER)**
+- **Priority**: CRITICAL - #1 PRIORITY
+- **Problem**: MCP tools return success but don't persist ANY data to SQLite
+- **Impact**: Users think work is saved but databases remain empty - complete data loss
+- **Root Cause**: MCP server returns mock responses without database integration
+- **Solution**:
+  - Connect all MCP tools to DatabaseManager
+  - Implement real database writes for every tool
+  - Add transaction support and error handling
+  - Create integration tests to verify persistence
+- **Files to modify**:
+  - `src/mcp/mcp-server.js` - Add database integration
+  - `src/hive-mind/core/DatabaseManager.ts` - Ensure proper APIs
+  - `src/mcp/claude-flow-tools.ts` - Update tool implementations
+- **Expected outcome**: All MCP operations actually persist data to SQLite
+
+#### **Issue #330 - Hive-mind Wizard Hangs and Never Creates Prompt File**
+- **Priority**: CRITICAL (Breaks Core Feature)
+- **Problem**: Wizard completes but work never starts, prompt file never saved
+- **Impact**: Users can't use hive-mind feature at all without manual workarounds
+- **Root Cause**: Prompt file only saved if Claude CLI is NOT installed (backwards logic)
+- **Solution**: 
+  - Always save prompt file regardless of Claude installation
+  - Fix stdio handling to prevent terminal conflicts
+  - Add clear instructions for two-terminal workflow
+  - Use proper non-interactive flags when spawning Claude
+- **Files to modify**: 
+  - `src/cli/simple-commands/hive-mind.js` (spawnClaudeCodeInstances function)
+  - `src/cli/commands/hive-mind/spawn.ts`
+- **Expected outcome**: Hive-mind wizard works seamlessly, saves prompt file, provides clear next steps
+
+#### **Issue #325 - Hive Session Management: Can't Stop or Resume Sessions**
+- **Priority**: HIGH (Core Feature Broken)
+- **Problem**: Ctrl+C leaves orphaned processes, sessions stay "active", can't resume
+- **Impact**: Users have zombie processes consuming resources, no clean shutdown
+- **Root Cause**: SIGINT handler doesn't terminate child processes
+- **Solution**:
+  - Add process tracking (store PIDs in database)
+  - Implement proper SIGINT handler that kills children
+  - Add `stop`, `pause`, and `ps` commands
+  - Fix session state transitions
+- **Files to modify**:
+  - `src/cli/simple-commands/hive-mind/auto-save-middleware.js`
+  - `src/cli/simple-commands/hive-mind.js`
+  - `src/cli/simple-commands/hive-mind/session-manager.js`
+- **Expected outcome**: Clean process lifecycle with stop/pause/resume commands
+
 ### 🤖 Claude API Integration
 
 #### **Issue #331 - Implement Temperature Control & Model Selection**
@@ -69,12 +118,29 @@
   - Add validation for unsupported options
 - **Expected outcome**: Honest, functional configuration system
 
+### 📚 Documentation & Help System
+
+#### **Issue #323 - CLI Help Text Improvements**
+- **Priority**: Low (Core Already Implemented)
+- **Problem**: Help text was decentralized and inconsistent
+- **Current Status**: ✅ Core implementation complete in `src/cli/help-text.js`
+- **Alpha 58 Refinements**:
+  - Remove legacy `show...Help()` functions from command files
+  - Add automated tests to verify help completeness
+  - Consider auto-generating help from command definitions
+  - Add `--json` output format for machine-readable help
+- **Files to modify**:
+  - Various command files to remove old help functions
+  - Add tests in `tests/unit/cli/help-text.test.js`
+- **Expected outcome**: 100% accurate, testable help documentation
+
 ## 🚀 Success Criteria for Alpha 58
 
 ### ✅ Must Have:
-1. **Claude API Integration**: Temperature, model selection, and token limits working
-2. **Clean TypeScript Build**: Zero compilation errors
-3. **Functional Configs**: All configuration options either work or are removed
+1. **FIX DATABASE PERSISTENCE**: MCP tools MUST write to SQLite (Issue #312)
+2. **Claude API Integration**: Temperature, model selection, and token limits working
+3. **Clean TypeScript Build**: Zero compilation errors
+4. **Functional Configs**: All configuration options either work or are removed
 
 ### 🎯 Should Have:
 4. **Stable Tests**: Passing test suite with reliable CI/CD

@@ -40,6 +40,7 @@ export class HiveMindSessionManager {
    * Initialize database schema for sessions
    */
   initializeSchema() {
+    // Create the base schema
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS sessions (
         id TEXT PRIMARY KEY,
@@ -77,6 +78,33 @@ export class HiveMindSessionManager {
         FOREIGN KEY (session_id) REFERENCES sessions(id)
       );
     `);
+    
+    // Run migrations to add new columns
+    this.runMigrations();
+  }
+
+  /**
+   * Run database migrations
+   */
+  runMigrations() {
+    try {
+      // Check if parent_pid column exists
+      const columns = this.db.prepare("PRAGMA table_info(sessions)").all();
+      const hasParentPid = columns.some(col => col.name === 'parent_pid');
+      const hasChildPids = columns.some(col => col.name === 'child_pids');
+      
+      if (!hasParentPid) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN parent_pid INTEGER');
+        console.log('Added parent_pid column to sessions table');
+      }
+      
+      if (!hasChildPids) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN child_pids TEXT');
+        console.log('Added child_pids column to sessions table');
+      }
+    } catch (error) {
+      console.error('Migration error:', error);
+    }
   }
 
   /**
@@ -86,17 +114,18 @@ export class HiveMindSessionManager {
     const sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     
     const stmt = this.db.prepare(`
-      INSERT INTO sessions (id, swarm_id, swarm_name, objective, metadata)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO sessions (id, swarm_id, swarm_name, objective, metadata, parent_pid)
+      VALUES (?, ?, ?, ?, ?, ?)
     `);
     
-    stmt.run(sessionId, swarmId, swarmName, objective, JSON.stringify(metadata));
+    stmt.run(sessionId, swarmId, swarmName, objective, JSON.stringify(metadata), process.pid);
     
     // Log session creation
     this.logSessionEvent(sessionId, 'info', 'Session created', null, {
       swarmId,
       swarmName,
-      objective
+      objective,
+      parentPid: process.pid
     });
     
     return sessionId;
@@ -266,7 +295,7 @@ export class HiveMindSessionManager {
   }
 
   /**
-   * Resume a paused session
+   * Resume any previous session (paused, stopped, or inactive)
    */
   async resumeSession(sessionId) {
     const session = this.getSession(sessionId);
@@ -275,8 +304,12 @@ export class HiveMindSessionManager {
       throw new Error(`Session ${sessionId} not found`);
     }
     
-    if (session.status !== 'paused') {
-      throw new Error(`Session ${sessionId} is not paused (status: ${session.status})`);
+    // Allow resuming any session regardless of status
+    console.log(`Resuming session ${sessionId} from status: ${session.status}`);
+    
+    // If session was stopped, log that we're restarting it
+    if (session.status === 'stopped') {
+      this.logSessionEvent(sessionId, 'info', `Restarting stopped session with original configuration`);
     }
     
     // Update session status
@@ -509,6 +542,164 @@ export class HiveMindSessionManager {
     }
     
     return newSessionId;
+  }
+
+  /**
+   * Add a child process PID to session
+   */
+  addChildPid(sessionId, pid) {
+    const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
+    if (!session) return false;
+    
+    const childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
+    if (!childPids.includes(pid)) {
+      childPids.push(pid);
+    }
+    
+    const stmt = this.db.prepare(`
+      UPDATE sessions 
+      SET child_pids = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `);
+    
+    stmt.run(JSON.stringify(childPids), sessionId);
+    
+    this.logSessionEvent(sessionId, 'info', 'Child process added', null, { pid });
+    return true;
+  }
+
+  /**
+   * Remove a child process PID from session
+   */
+  removeChildPid(sessionId, pid) {
+    const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
+    if (!session) return false;
+    
+    const childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
+    const index = childPids.indexOf(pid);
+    if (index > -1) {
+      childPids.splice(index, 1);
+    }
+    
+    const stmt = this.db.prepare(`
+      UPDATE sessions 
+      SET child_pids = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `);
+    
+    stmt.run(JSON.stringify(childPids), sessionId);
+    
+    this.logSessionEvent(sessionId, 'info', 'Child process removed', null, { pid });
+    return true;
+  }
+
+  /**
+   * Get all child PIDs for a session
+   */
+  getChildPids(sessionId) {
+    const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
+    if (!session || !session.child_pids) return [];
+    
+    return JSON.parse(session.child_pids);
+  }
+
+  /**
+   * Stop a session and terminate all child processes
+   */
+  async stopSession(sessionId) {
+    const session = this.getSession(sessionId);
+    if (!session) {
+      throw new Error(`Session ${sessionId} not found`);
+    }
+    
+    // Get child PIDs
+    const childPids = this.getChildPids(sessionId);
+    
+    // Terminate child processes
+    for (const pid of childPids) {
+      try {
+        process.kill(pid, 'SIGTERM');
+        this.logSessionEvent(sessionId, 'info', 'Child process terminated', null, { pid });
+      } catch (err) {
+        // Process might already be dead
+        this.logSessionEvent(sessionId, 'warning', 'Failed to terminate child process', null, { 
+          pid, 
+          error: err.message 
+        });
+      }
+    }
+    
+    // Update session status
+    const stmt = this.db.prepare(`
+      UPDATE sessions 
+      SET status = 'stopped', updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `);
+    
+    stmt.run(sessionId);
+    
+    // Update swarm status
+    this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('stopped', session.swarm_id);
+    
+    this.logSessionEvent(sessionId, 'info', 'Session stopped');
+    
+    return true;
+  }
+
+  /**
+   * Get active sessions with process information
+   */
+  getActiveSessionsWithProcessInfo() {
+    const sessions = this.getActiveSessions();
+    
+    // Add process info to each session
+    return sessions.map(session => {
+      const childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
+      const aliveChildPids = [];
+      
+      // Check which child processes are still alive
+      for (const pid of childPids) {
+        try {
+          process.kill(pid, 0); // Signal 0 just checks if process exists
+          aliveChildPids.push(pid);
+        } catch (err) {
+          // Process is dead
+        }
+      }
+      
+      return {
+        ...session,
+        parent_pid: session.parent_pid,
+        child_pids: aliveChildPids,
+        total_processes: 1 + aliveChildPids.length
+      };
+    });
+  }
+
+  /**
+   * Clean up orphaned processes
+   */
+  cleanupOrphanedProcesses() {
+    const sessions = this.db.prepare(`
+      SELECT * FROM sessions 
+      WHERE status IN ('active', 'paused')
+    `).all();
+    
+    let cleanedCount = 0;
+    
+    for (const session of sessions) {
+      // Check if parent process is still alive
+      try {
+        process.kill(session.parent_pid, 0);
+      } catch (err) {
+        // Parent is dead, clean up session
+        this.stopSession(session.id);
+        cleanedCount++;
+        this.logSessionEvent(session.id, 'info', 'Orphaned session cleaned up');
+      }
+    }
+    
+    return cleanedCount;
   }
 
   /**

@@ -2236,6 +2236,22 @@ Now, please proceed with the task: ${task}`;
             const { taskCommand } = await import('./hive-mind/task.js');
             await taskCommand.parseAsync(process.argv.slice(3));
             break;
+          case "stop":
+            const { stopCommand } = await import('./hive-mind/stop.js');
+            await stopCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "pause":
+            const { pauseCommand } = await import('./hive-mind/pause.js');
+            await pauseCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "resume":
+            const { resumeCommand } = await import('./hive-mind/resume.js');
+            await resumeCommand.parseAsync(process.argv.slice(3));
+            break;
+          case "ps":
+            const { psCommand } = await import('./hive-mind/ps.js');
+            await psCommand.parseAsync(process.argv.slice(3));
+            break;
           case "wizard":
           default:
             const { wizardCommand } = await import('./hive-mind/wizard.js');

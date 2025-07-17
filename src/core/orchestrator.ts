@@ -24,6 +24,8 @@ import { SystemError, InitializationError, ShutdownError } from '../utils/errors
 import { delay, retry, circuitBreaker, CircuitBreaker } from '../utils/helpers.js';
 import { mkdir, writeFile, readFile } from 'fs/promises';
 import { join, dirname } from 'path';
+import { ClaudeAPIClient } from '../api/claude-client.js';
+import { ConfigManager } from '../config/config-manager.js';
 
 export interface ISessionManager {
   createSession(profile: AgentProfile): Promise<AgentSession>;
@@ -295,6 +297,8 @@ export class Orchestrator implements IOrchestrator {
   private taskQueue: Task[] = [];
   private taskHistory = new Map<string, Task>();
   private startTime = Date.now();
+  private claudeClient?: ClaudeAPIClient;
+  private configManager: ConfigManager;
   
   // Metrics tracking
   private metrics = {
@@ -323,6 +327,8 @@ export class Orchestrator implements IOrchestrator {
       logger,
       config,
     );
+    
+    this.configManager = ConfigManager.getInstance();
     
     // Initialize circuit breakers
     this.healthCheckCircuitBreaker = circuitBreaker(
@@ -354,6 +360,19 @@ export class Orchestrator implements IOrchestrator {
       
       // MCP server needs to be started after other components
       await this.initializeComponent('MCP Server', () => this.mcpServer.start());
+
+      // Initialize Claude API client if configured
+      if (this.configManager.isClaudeAPIConfigured()) {
+        try {
+          this.claudeClient = new ClaudeAPIClient(this.logger, this.configManager);
+          this.logger.info('Claude API client initialized', {
+            model: this.claudeClient.getConfig().model,
+            temperature: this.claudeClient.getConfig().temperature,
+          });
+        } catch (error) {
+          this.logger.warn('Failed to initialize Claude API client', error);
+        }
+      }
 
       // Restore persisted sessions
       await this.sessionManager.restoreSessions();
@@ -1230,6 +1249,58 @@ export class Orchestrator implements IOrchestrator {
       this.logger.info('Processing critical tasks before shutdown', { count: criticalTasks.length });
       
       // TODO: Implement critical task processing
+    }
+  }
+
+  /**
+   * Get Claude API client instance
+   */
+  getClaudeClient(): ClaudeAPIClient | undefined {
+    return this.claudeClient;
+  }
+
+  /**
+   * Update Claude API configuration dynamically
+   */
+  updateClaudeConfig(config: Partial<Config['claude']>): void {
+    this.configManager.setClaudeConfig(config);
+    
+    if (this.claudeClient) {
+      this.claudeClient.updateConfig(config);
+    } else if (this.configManager.isClaudeAPIConfigured()) {
+      // Initialize Claude client with new config
+      try {
+        this.claudeClient = new ClaudeAPIClient(this.logger, this.configManager);
+        this.logger.info('Claude API client initialized with new configuration');
+      } catch (error) {
+        this.logger.error('Failed to initialize Claude API client', error);
+      }
+    }
+  }
+
+  /**
+   * Execute a Claude API request
+   */
+  async executeClaudeRequest(
+    prompt: string,
+    options?: {
+      model?: string;
+      temperature?: number;
+      maxTokens?: number;
+      systemPrompt?: string;
+    }
+  ): Promise<string | null> {
+    if (!this.claudeClient) {
+      this.logger.error('Claude API client not initialized');
+      return null;
+    }
+
+    try {
+      const response = await this.claudeClient.complete(prompt, options as any);
+      return response;
+    } catch (error) {
+      this.logger.error('Claude API request failed', error);
+      return null;
     }
   }
 }
