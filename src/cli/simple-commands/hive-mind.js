@@ -1685,7 +1685,11 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
     
     try {
       // ALWAYS save the prompt file first (fix for issue #330)
-      const promptFile = `hive-mind-prompt-${swarmId}.txt`;
+      // Ensure sessions directory exists
+      const sessionsDir = path.join('.hive-mind', 'sessions');
+      await mkdirAsync(sessionsDir, { recursive: true });
+      
+      const promptFile = path.join(sessionsDir, `hive-mind-prompt-${swarmId}.txt`);
       await writeFile(promptFile, hiveMindPrompt, 'utf8');
       console.log(chalk.green(`\n✓ Hive Mind prompt saved to: ${promptFile}`));
       
@@ -1705,8 +1709,8 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
       
       if (claudeAvailable && !flags.dryRun) {
         // Pass the prompt directly as an argument to claude
-        // Using non-interactive mode to prevent hanging
-        const claudeArgs = [hiveMindPrompt, '--no-interactive'];
+        // Remove --print to allow interactive session
+        const claudeArgs = [hiveMindPrompt];
         
         // Add auto-permission flag by default for hive-mind mode (unless explicitly disabled)
         if (flags['dangerously-skip-permissions'] !== false && !flags['no-auto-permissions']) {
@@ -1715,9 +1719,9 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
         }
         
         // Spawn claude with the prompt as the first argument
-        // Use 'pipe' instead of 'inherit' to prevent terminal conflicts
+        // Use 'inherit' to allow interactive session
         const claudeProcess = childSpawn('claude', claudeArgs, {
-          stdio: 'pipe',
+          stdio: 'inherit',
           shell: false
         });
         
@@ -2391,7 +2395,7 @@ async function launchClaudeWithContext(prompt, flags) {
     }
     
     if (claudeAvailable && !flags.dryRun) {
-      const claudeArgs = [prompt, '--no-interactive'];
+      const claudeArgs = [prompt, '--print'];
       
       if (flags['dangerously-skip-permissions'] !== false && !flags['no-auto-permissions']) {
         claudeArgs.push('--dangerously-skip-permissions');
