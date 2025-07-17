@@ -7,6 +7,7 @@ import { EventBus } from '../core/event-bus.js';
 import { Logger } from '../core/logger.js';
 import type { ConfigManager } from '../config/config-manager.js';
 import { MemoryManager } from '../memory/manager.js';
+import type { MemoryConfig } from '../utils/types.js';
 import { AgentManager } from '../agents/agent-manager.js';
 import { TaskEngine } from '../task/engine.js';
 import { RealTimeMonitor } from '../monitoring/real-time-monitor.js';
@@ -147,13 +148,35 @@ export class SystemIntegration {
       // Initialize memory manager
       try {
         const { MemoryManager } = await import('../memory/manager.js');
-        this.memoryManager = new MemoryManager();
+        
+        // Create default memory configuration
+        const memoryConfig: MemoryConfig = {
+          backend: 'sqlite',
+          cacheSizeMB: 50,
+          syncInterval: 30000, // 30 seconds
+          conflictResolution: 'last-write',
+          retentionDays: 30,
+          sqlitePath: './.swarm/memory.db'
+        };
+        
+        // Initialize MemoryManager with required parameters
+        this.memoryManager = new MemoryManager(
+          memoryConfig,
+          this.eventBus,
+          this.logger
+        );
+        
         if (typeof this.memoryManager.initialize === 'function') {
           await this.memoryManager.initialize();
         }
-        this.updateComponentStatus('memory', 'healthy', 'Memory manager initialized');
+        this.updateComponentStatus('memory', 'healthy', 'Memory manager initialized with SQLite backend');
+        this.logger.info('Memory manager initialized successfully', { 
+          backend: memoryConfig.backend,
+          cacheSizeMB: memoryConfig.cacheSizeMB,
+          sqlitePath: memoryConfig.sqlitePath 
+        });
       } catch (error) {
-        this.logger.warn('Memory manager not available:', getErrorMessage(error));
+        this.logger.warn('Memory manager initialization failed:', getErrorMessage(error));
         this.updateComponentStatus('memory', 'warning', 'Memory manager not available');
       }
       

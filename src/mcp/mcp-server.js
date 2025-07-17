@@ -855,10 +855,19 @@ class ClaudeFlowMCPServer {
         
         // Store agent data in memory store (same as npx commands)
         try {
-          await this.memoryStore.store(`agent:${agentId}`, JSON.stringify(agentData), {
-            namespace: 'agents',
-            metadata: { type: 'agent_data', swarmId: agentData.swarmId, sessionId: this.sessionId }
-          });
+          const swarmId = agentData.swarmId || await this.getActiveSwarmId();
+          if (swarmId) {
+            await this.memoryStore.store(`agent:${swarmId}:${agentId}`, JSON.stringify(agentData), {
+              namespace: 'agents',
+              metadata: { type: 'agent_data', swarmId: swarmId, sessionId: this.sessionId }
+            });
+          } else {
+            // Fallback to old format if no swarm ID
+            await this.memoryStore.store(`agent:${agentId}`, JSON.stringify(agentData), {
+              namespace: 'agents',
+              metadata: { type: 'agent_data', sessionId: this.sessionId }
+            });
+          }
           console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Agent persisted to memory: ${agentId}`);
         } catch (error) {
           console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist agent:`, error);
@@ -1176,56 +1185,117 @@ class ClaudeFlowMCPServer {
         };
 
       case 'swarm_status':
-        if (this.databaseManager) {
-          try {
-            const swarmId = args.swarmId || await this.getActiveSwarmId();
-            if (!swarmId) {
-              return {
-                success: false,
-                error: 'No active swarm found',
-                timestamp: new Date().toISOString()
-              };
-            }
-            
-            const swarm = await this.databaseManager.getSwarm(swarmId);
-            const agents = await this.databaseManager.getAgents(swarmId);
-            const tasks = await this.databaseManager.getTasks(swarmId);
-            const stats = await this.databaseManager.getSwarmStats(swarmId);
-            
-            return {
-              success: true,
-              swarmId: swarmId,
-              topology: swarm ? swarm.topology : 'unknown',
-              agentCount: agents.length,
-              activeAgents: agents.filter(a => a.status === 'active' || a.status === 'busy').length,
-              taskCount: tasks.length,
-              pendingTasks: tasks.filter(t => t.status === 'pending').length,
-              completedTasks: tasks.filter(t => t.status === 'completed').length,
-              stats: stats,
-              timestamp: new Date().toISOString()
-            };
-          } catch (error) {
-            console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get swarm status:`, error);
+        try {
+          // Get active swarm ID from memory store
+          let swarmId = args.swarmId;
+          if (!swarmId) {
+            swarmId = await this.memoryStore.retrieve('active_swarm', {
+              namespace: 'system'
+            });
+          }
+          
+          if (!swarmId) {
             return {
               success: false,
-              error: error.message,
+              error: 'No active swarm found',
               timestamp: new Date().toISOString()
             };
           }
+          
+          // Retrieve swarm data from memory store
+          const swarmDataRaw = await this.memoryStore.retrieve(`swarm:${swarmId}`, {
+            namespace: 'swarms'
+          });
+          
+          if (!swarmDataRaw) {
+            return {
+              success: false,
+              error: `Swarm ${swarmId} not found`,
+              timestamp: new Date().toISOString()
+            };
+          }
+          
+          const swarm = typeof swarmDataRaw === 'string' ? JSON.parse(swarmDataRaw) : swarmDataRaw;
+          
+          // Retrieve agents from memory
+          const agentsData = await this.memoryStore.list({
+            namespace: 'agents',
+            limit: 100
+          });
+          
+          // Filter agents for this swarm
+          const swarmAgents = agentsData
+            .filter(entry => entry.key.startsWith(`agent:${swarmId}:`))
+            .map(entry => {
+              try {
+                return JSON.parse(entry.value);
+              } catch (e) {
+                return null;
+              }
+            })
+            .filter(agent => agent !== null);
+          
+          // Retrieve tasks from memory
+          const tasksData = await this.memoryStore.list({
+            namespace: 'tasks',
+            limit: 100
+          });
+          
+          // Filter tasks for this swarm
+          const swarmTasks = tasksData
+            .filter(entry => entry.key.startsWith(`task:${swarmId}:`))
+            .map(entry => {
+              try {
+                return JSON.parse(entry.value);
+              } catch (e) {
+                return null;
+              }
+            })
+            .filter(task => task !== null);
+          
+          // Calculate stats
+          const activeAgents = swarmAgents.filter(a => a.status === 'active' || a.status === 'busy').length;
+          const pendingTasks = swarmTasks.filter(t => t.status === 'pending').length;
+          const completedTasks = swarmTasks.filter(t => t.status === 'completed').length;
+          
+          const response = {
+            success: true,
+            swarmId: swarmId,
+            topology: swarm.topology || 'hierarchical',
+            agentCount: swarmAgents.length,
+            activeAgents: activeAgents,
+            taskCount: swarmTasks.length,
+            pendingTasks: pendingTasks,
+            completedTasks: completedTasks,
+            timestamp: new Date().toISOString()
+          };
+          
+          // Add verbose details if requested
+          if (args.verbose === true || args.verbose === 'true') {
+            response.agents = swarmAgents;
+            response.tasks = swarmTasks;
+            response.swarmDetails = swarm;
+          }
+          
+          return response;
+          
+        } catch (error) {
+          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get swarm status:`, error);
+          
+          // Return a more informative fallback response
+          return {
+            success: false,
+            error: error.message || 'Failed to retrieve swarm status',
+            swarmId: args.swarmId || 'unknown',
+            topology: 'unknown',
+            agentCount: 0,
+            activeAgents: 0,
+            taskCount: 0,
+            pendingTasks: 0,
+            completedTasks: 0,
+            timestamp: new Date().toISOString()
+          };
         }
-        
-        // Fallback mock response if no database
-        return {
-          success: true,
-          swarmId: args.swarmId || 'mock-swarm',
-          topology: 'hierarchical',
-          agentCount: 5,
-          activeAgents: 3,
-          taskCount: 10,
-          pendingTasks: 4,
-          completedTasks: 6,
-          timestamp: new Date().toISOString()
-        };
 
       case 'task_orchestrate':
         const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -1249,14 +1319,17 @@ class ClaudeFlowMCPServer {
           })
         };
         
-        // Try to persist to database
-        if (this.databaseManager && swarmIdForTask) {
-          try {
-            await this.databaseManager.createTask(taskData);
-            console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Task persisted to database: ${taskId}`);
-          } catch (error) {
-            console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist task:`, error);
+        // Store task data in memory store
+        try {
+          if (swarmIdForTask) {
+            await this.memoryStore.store(`task:${swarmIdForTask}:${taskId}`, JSON.stringify(taskData), {
+              namespace: 'tasks',
+              metadata: { type: 'task_data', swarmId: swarmIdForTask, sessionId: this.sessionId }
+            });
+            console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Task persisted to memory: ${taskId}`);
           }
+        } catch (error) {
+          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist task:`, error);
         }
         
         return {
@@ -1266,7 +1339,7 @@ class ClaudeFlowMCPServer {
           strategy: taskData.strategy,
           priority: taskData.priority,
           status: 'pending',
-          persisted: !!this.databaseManager,
+          persisted: true,
           timestamp: new Date().toISOString()
         };
 
@@ -1483,14 +1556,15 @@ class ClaudeFlowMCPServer {
   }
 
   async getActiveSwarmId() {
-    if (this.databaseManager) {
-      try {
-        return await this.databaseManager.getActiveSwarmId();
-      } catch (error) {
-        console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get active swarm:`, error);
-      }
+    try {
+      const activeSwarmId = await this.memoryStore.retrieve('active_swarm', {
+        namespace: 'system'
+      });
+      return activeSwarmId || null;
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get active swarm:`, error);
+      return null;
     }
-    return null;
   }
   
   createErrorResponse(id, code, message, data = null) {
