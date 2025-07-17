@@ -22,6 +22,7 @@ export class HiveMindCore extends EventEmitter {
       consensusAlgorithm: 'majority',
       autoScale: true,
       encryption: false,
+      topology: 'hierarchical',
       memorySize: 100, // MB
       taskTimeout: 60, // minutes
       ...config
@@ -206,6 +207,11 @@ export class HiveMindCore extends EventEmitter {
    * Determine optimal topology based on objective
    */
   _determineTopology() {
+    // If user explicitly provided topology, use it
+    if (this.config.topology) {
+      return this.config.topology;
+    }
+    
     const objective = this.config.objective.toLowerCase();
     
     // Heuristic topology selection
