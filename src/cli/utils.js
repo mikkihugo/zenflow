@@ -89,6 +89,7 @@ export function formatBytes(bytes) {
 // Command execution helpers
 export function parseFlags(args) {
   const flags = {};
+  const providedFlags = new Set(); // Track explicitly provided flags
   const filteredArgs = [];
   
   for (let i = 0; i < args.length; i++) {
@@ -100,22 +101,104 @@ export function parseFlags(args) {
       
       if (nextArg && !nextArg.startsWith('--')) {
         flags[flagName] = nextArg;
+        providedFlags.add(flagName);
         i++; // Skip next arg since we consumed it
       } else {
         flags[flagName] = true;
+        providedFlags.add(flagName);
       }
     } else if (arg.startsWith('-') && arg.length > 1) {
       // Short flags
       const shortFlags = arg.substring(1);
       for (const flag of shortFlags) {
         flags[flag] = true;
+        providedFlags.add(flag);
       }
     } else {
       filteredArgs.push(arg);
     }
   }
   
-  return { flags, args: filteredArgs };
+  return { flags, args: filteredArgs, providedFlags };
+}
+
+// Flag normalization and validation helpers
+export function normalizeFlags(flags) {
+  const normalized = { ...flags };
+  
+  // Handle queen-type -> queenType
+  if (flags['queen-type'] && !flags.queenType) {
+    normalized.queenType = flags['queen-type'];
+  }
+  
+  // Handle max-workers -> maxWorkers
+  if (flags['max-workers'] && !flags.maxWorkers) {
+    normalized.maxWorkers = parseInt(flags['max-workers']);
+  }
+  
+  // Handle auto-scale -> autoScale
+  if (flags['auto-scale'] && !flags.autoScale) {
+    normalized.autoScale = flags['auto-scale'] === 'true';
+  }
+  
+  return normalized;
+}
+
+export function applySmartDefaults(flags, providedFlags, defaults) {
+  const result = { ...flags };
+  
+  for (const [key, defaultValue] of Object.entries(defaults)) {
+    // Check both camelCase and kebab-case variants
+    const kebabKey = camelToKebab(key);
+    
+    if (!providedFlags.has(key) && !providedFlags.has(kebabKey)) {
+      result[key] = defaultValue;
+    }
+  }
+  
+  return result;
+}
+
+function camelToKebab(str) {
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+// Flag validation system
+const FLAG_VALIDATORS = {
+  queenType: {
+    validValues: ['strategic', 'tactical', 'adaptive'],
+    aliases: ['queen-type']
+  },
+  topology: {
+    validValues: ['hierarchical', 'mesh', 'ring', 'star', 'centralized', 'distributed']
+  },
+  maxWorkers: {
+    validator: (value) => {
+      const num = parseInt(value);
+      return num > 0 && num <= 50;
+    },
+    errorMessage: 'Must be a number between 1 and 50'
+  }
+};
+
+export function validateFlags(flags) {
+  const errors = [];
+  
+  for (const [flagName, config] of Object.entries(FLAG_VALIDATORS)) {
+    const value = flags[flagName];
+    
+    if (value !== undefined) {
+      if (config.validValues && !config.validValues.includes(value)) {
+        errors.push(`Invalid ${flagName}: "${value}". Must be one of: ${config.validValues.join(', ')}`);
+      }
+      
+      if (config.validator && !config.validator(value)) {
+        errors.push(`Invalid ${flagName}: "${value}". ${config.errorMessage || 'Invalid value'}`);
+      }
+    }
+  }
+  
+  return errors;
 }
 
 // Process execution helpers
