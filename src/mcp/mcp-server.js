@@ -9,15 +9,16 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { EnhancedMemory } from '../memory/enhanced-memory.js';
-// Use the same memory system that npx commands use
+// Use the same memory system that npx commands use - singleton instance
+import { memoryStore } from '../memory/fallback-store.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class ClaudeFlowMCPServer {
   constructor() {
-    this.version = '2.0.0-alpha.56';
-    this.memoryStore = new EnhancedMemory();
+    this.version = '2.0.0-alpha.59';
+    this.memoryStore = memoryStore; // Use shared singleton instance
     // Use the same memory system that already works
     this.capabilities = {
       tools: {
@@ -32,17 +33,18 @@ class ClaudeFlowMCPServer {
     this.tools = this.initializeTools();
     this.resources = this.initializeResources();
     
-    // Initialize memory store and database
+    // Initialize shared memory store (same as npx commands)
     this.initializeMemory().catch(err => {
-      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to initialize memory:`, err);
+      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to initialize shared memory:`, err);
     });
     
-    // Database operations will use the same memory store as npx commands
+    // Database operations now use the same shared memory store as npx commands
   }
   
   async initializeMemory() {
     await this.memoryStore.initialize();
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Memory store initialized`);
+    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Shared memory store initialized (same as npx)`);
+    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Using ${this.memoryStore.isUsingFallback() ? 'in-memory' : 'SQLite'} storage`);
   }
   
   // Database operations now use the same memory store as working npx commands
@@ -1324,7 +1326,7 @@ class ClaudeFlowMCPServer {
     if (!this.memoryStore) {
       return {
         success: false,
-        error: 'Memory system not initialized',
+        error: 'Shared memory system not initialized',
         timestamp: new Date().toISOString()
       };
     }
@@ -1337,29 +1339,12 @@ class ClaudeFlowMCPServer {
             ttl: args.ttl,
             metadata: {
               sessionId: this.sessionId,
+              storedBy: 'mcp-server',
               type: 'knowledge'
             }
           });
           
-          // Also persist to database if available
-          if (this.databaseManager) {
-            try {
-              await this.databaseManager.storeMemory({
-                key: args.key,
-                namespace: args.namespace || 'default',
-                value: args.value,
-                ttl: args.ttl || null,
-                metadata: JSON.stringify({
-                  sessionId: this.sessionId,
-                  type: 'knowledge',
-                  storedBy: 'mcp-server'
-                })
-              });
-              console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Memory persisted to database: ${args.key}`);
-            } catch (error) {
-              console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist memory to database:`, error);
-            }
-          }
+          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Stored in shared memory: ${args.key} (namespace: ${args.namespace || 'default'})`);
           
           return {
             success: true,
@@ -1367,9 +1352,9 @@ class ClaudeFlowMCPServer {
             key: args.key,
             namespace: args.namespace || 'default',
             stored: true,
-            size: storeResult.size,
+            size: storeResult.size || args.value.length,
             id: storeResult.id,
-            persisted: !!this.databaseManager,
+            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1377,6 +1362,9 @@ class ClaudeFlowMCPServer {
           const value = await this.memoryStore.retrieve(args.key, {
             namespace: args.namespace || 'default'
           });
+          
+          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Retrieved from shared memory: ${args.key} (found: ${value !== null})`);
+          
           return {
             success: true,
             action: 'retrieve',
@@ -1384,6 +1372,7 @@ class ClaudeFlowMCPServer {
             value: value,
             found: value !== null,
             namespace: args.namespace || 'default',
+            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1392,12 +1381,16 @@ class ClaudeFlowMCPServer {
             namespace: args.namespace || 'default',
             limit: 100
           });
+          
+          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Listed shared memory entries: ${entries.length} (namespace: ${args.namespace || 'default'})`);
+          
           return {
             success: true,
             action: 'list',
             namespace: args.namespace || 'default',
             entries: entries,
             count: entries.length,
+            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1405,12 +1398,16 @@ class ClaudeFlowMCPServer {
           const deleted = await this.memoryStore.delete(args.key, {
             namespace: args.namespace || 'default'
           });
+          
+          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Deleted from shared memory: ${args.key} (success: ${deleted})`);
+          
           return {
             success: true,
             action: 'delete',
             key: args.key,
             namespace: args.namespace || 'default',
             deleted: deleted,
+            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1419,6 +1416,9 @@ class ClaudeFlowMCPServer {
             namespace: args.namespace || 'default',
             limit: 50
           });
+          
+          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Searched shared memory: ${results.length} results for "${args.value}"`);
+          
           return {
             success: true,
             action: 'search',
@@ -1426,6 +1426,7 @@ class ClaudeFlowMCPServer {
             namespace: args.namespace || 'default',
             results: results,
             count: results.length,
+            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1437,11 +1438,12 @@ class ClaudeFlowMCPServer {
           };
       }
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Memory operation failed:`, error);
+      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Shared memory operation failed:`, error);
       return {
         success: false,
         error: error.message,
         action: args.action,
+        storage_type: this.memoryStore?.isUsingFallback() ? 'in-memory' : 'sqlite',
         timestamp: new Date().toISOString()
       };
     }
