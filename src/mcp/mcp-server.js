@@ -1215,15 +1215,26 @@ class ClaudeFlowMCPServer {
         }
         
         // Fallback mock response if no database
+        const mockActiveAgents = 3;
+        const mockAgentCount = 5;
+        const mockPendingTasks = 4;
+        const mockBusyAgents = 2;
+        
         return {
           success: true,
           swarmId: args.swarmId || 'mock-swarm',
           topology: 'hierarchical',
-          agentCount: 5,
-          activeAgents: 3,
+          agentCount: mockAgentCount,
+          activeAgents: mockActiveAgents,
           taskCount: 10,
-          pendingTasks: 4,
+          pendingTasks: mockPendingTasks,
           completedTasks: 6,
+          stats: {
+            agentCount: mockAgentCount,
+            busyAgents: mockBusyAgents,
+            taskBacklog: mockPendingTasks,
+            agentUtilization: mockBusyAgents / mockAgentCount
+          },
           timestamp: new Date().toISOString()
         };
 
