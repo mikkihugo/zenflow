@@ -1,48 +1,30 @@
 import { getErrorMessage } from '../../utils/error-handler.js';
 /**
- * Comprehensive help system for Claude-Flow CLI
+ * Standardized help system for Claude-Flow CLI
+ * Follows Unix/Linux conventions for help output
  */
 
 import { Command } from 'commander';
+import { HelpFormatter, CommandInfo, CommandItem, OptionItem } from '../help-formatter.js';
 import chalk from 'chalk';
-import * as Table from 'cli-table3';
+import Table from 'cli-table3';
 import inquirer from 'inquirer';
 
 export const helpCommand = new Command()
-  .description('Comprehensive help system with examples and tutorials')
-  .argument('[topic:string]')
-  .option('-i, --interactive', 'Start interactive help mode')
-  .option('-e, --examples', 'Show examples for the topic')
-  .option('--tutorial', 'Show tutorial for the topic')
-  .option('--all', 'Show all available help topics')
-  .action(async (options: any, topic: string | undefined) => {
-    if (options.interactive) {
-      await startInteractiveHelp();
-    } else if (options.all) {
-      showAllTopics();
-    } else if (topic) {
-      await showTopicHelp(topic, options);
+  .name('help')
+  .description('Show help information')
+  .argument('[command]', 'Command to show help for')
+  .option('--all', 'Show all available commands')
+  .action(async (command?: string, options?: any) => {
+    if (command) {
+      showCommandHelp(command);
     } else {
       showMainHelp();
     }
   });
 
-interface HelpTopic {
-  name: string;
-  description: string;
-  category: 'basic' | 'advanced' | 'workflow' | 'configuration' | 'troubleshooting';
-  examples?: HelpExample[];
-  tutorial?: string[];
-  related?: string[];
-}
-
-interface HelpExample {
-  description: string;
-  command: string;
-  explanation?: string;
-}
-
-const HELP_TOPICS: HelpTopic[] = [
+// Command-specific help definitions will be added here as needed
+const HELP_TOPICS = [
   {
     name: 'getting-started',
     description: 'Basic introduction to Claude-Flow',
@@ -610,44 +592,198 @@ const HELP_TOPICS: HelpTopic[] = [
 ];
 
 function showMainHelp(): void {
-  console.log(chalk.cyan.bold('Claude-Flow Help System'));
-  console.log('─'.repeat(50));
-  console.log();
-  
-  console.log(chalk.white('Claude-Flow is an advanced AI agent orchestration system.'));
-  console.log(chalk.white('Use this help system to learn about features and best practices.'));
-  console.log();
-  
-  console.log(chalk.yellow.bold('Quick Start:'));
-  console.log(chalk.gray('  claude-flow help getting-started    # Beginner tutorial'));
-  console.log(chalk.gray('  claude-flow help --interactive      # Interactive help mode'));
-  console.log(chalk.gray('  claude-flow help <topic>            # Specific topic help'));
-  console.log();
-  
-  console.log(chalk.yellow.bold('Help Categories:'));
-  
-  const categories = {
-    basic: 'Essential concepts and commands',
-    workflow: 'Building and managing workflows',
-    configuration: 'System configuration and profiles',
-    advanced: 'Advanced features and monitoring',
-    troubleshooting: 'Problem diagnosis and solutions'
+  const mainHelp: CommandInfo = {
+    name: 'claude-flow',
+    description: 'Advanced AI agent orchestration system',
+    usage: `claude-flow <command> [<args>] [options]
+    claude-flow <command> --help
+    claude-flow --version`,
+    commands: [
+      {
+        name: 'hive-mind',
+        description: 'Manage hive mind swarm intelligence'
+      },
+      {
+        name: 'init',
+        description: 'Initialize Claude Flow configuration'
+      },
+      {
+        name: 'start',
+        description: 'Start orchestration system'
+      },
+      {
+        name: 'swarm',
+        description: 'Execute multi-agent swarm coordination'
+      },
+      {
+        name: 'agent',
+        description: 'Manage individual agents'
+      },
+      {
+        name: 'sparc',
+        description: 'Execute SPARC development modes'
+      },
+      {
+        name: 'memory',
+        description: 'Manage persistent memory operations'
+      },
+      {
+        name: 'github',
+        description: 'Automate GitHub workflows'
+      },
+      {
+        name: 'status',
+        description: 'Show system status and health'
+      },
+      {
+        name: 'config',
+        description: 'Manage configuration settings'
+      },
+      {
+        name: 'session',
+        description: 'Manage sessions and state persistence'
+      },
+      {
+        name: 'help',
+        description: 'Show help information'
+      }
+    ],
+    globalOptions: [
+      {
+        flags: '--config <path>',
+        description: 'Configuration file path',
+        defaultValue: '.claude/config.json'
+      },
+      {
+        flags: '--verbose',
+        description: 'Enable verbose output'
+      },
+      {
+        flags: '--quiet',
+        description: 'Suppress non-error output'
+      },
+      {
+        flags: '--json',
+        description: 'Output in JSON format'
+      },
+      {
+        flags: '--help',
+        description: 'Show help information'
+      },
+      {
+        flags: '--version',
+        description: 'Show version information'
+      }
+    ],
+    examples: [
+      'claude-flow init --sparc',
+      'claude-flow hive-mind wizard',
+      'claude-flow swarm "Build REST API"',
+      'claude-flow status --json'
+    ]
   };
-  
-  for (const [category, description] of Object.entries(categories)) {
-    console.log();
-    console.log(chalk.cyan.bold(`${category.toUpperCase()}:`));
-    console.log(chalk.white(`  ${description}`));
-    
-    const topics = HELP_TOPICS.filter(t => t.category === category);
-    for (const topic of topics) {
-      console.log(chalk.gray(`    ${topic.name.padEnd(20)} ${topic.description}`));
-    }
+
+  console.log(HelpFormatter.formatHelp(mainHelp));
+}
+
+function showCommandHelp(command: string): void {
+  const commandHelp = getCommandHelp(command);
+  if (commandHelp) {
+    console.log(HelpFormatter.formatHelp(commandHelp));
+  } else {
+    console.error(HelpFormatter.formatError(
+      `Unknown command: ${command}`,
+      'claude-flow help',
+      'claude-flow help [command]'
+    ));
   }
-  
-  console.log();
-  console.log(chalk.gray('Use "claude-flow help <topic>" for detailed information.'));
-  console.log(chalk.gray('Use "claude-flow help --all" to see all topics.'));
+}
+
+function getCommandHelp(command: string): CommandInfo | null {
+  const commandHelpMap: Record<string, CommandInfo> = {
+    'hive-mind': {
+      name: 'claude-flow hive-mind',
+      description: 'Manage hive mind swarm intelligence',
+      usage: 'claude-flow hive-mind <subcommand> [options]',
+      commands: [
+        { name: 'init', description: 'Initialize hive mind system' },
+        { name: 'spawn', description: 'Create intelligent swarm with objective' },
+        { name: 'status', description: 'View active swarms and metrics' },
+        { name: 'stop', description: 'Stop a running swarm' },
+        { name: 'ps', description: 'List all running processes' },
+        { name: 'resume', description: 'Resume a paused swarm' },
+        { name: 'wizard', description: 'Interactive setup wizard' }
+      ],
+      options: [
+        {
+          flags: '--queen-type <type>',
+          description: 'Queen coordination type',
+          defaultValue: 'adaptive',
+          validValues: ['strategic', 'tactical', 'adaptive']
+        },
+        {
+          flags: '--workers <count>',
+          description: 'Number of worker agents',
+          defaultValue: '5'
+        },
+        {
+          flags: '--timeout <seconds>',
+          description: 'Operation timeout',
+          defaultValue: '300'
+        },
+        {
+          flags: '--no-consensus',
+          description: 'Disable consensus requirements'
+        },
+        {
+          flags: '--help',
+          description: 'Show this help message'
+        }
+      ],
+      examples: [
+        'claude-flow hive-mind spawn "Build REST API" --queen-type strategic',
+        'claude-flow hive-mind status --json',
+        'claude-flow hive-mind stop swarm-123'
+      ]
+    },
+    'agent': {
+      name: 'claude-flow agent',
+      description: 'Manage individual agents',
+      usage: 'claude-flow agent <action> [options]',
+      commands: [
+        { name: 'spawn', description: 'Create a new agent' },
+        { name: 'list', description: 'List all active agents' },
+        { name: 'info', description: 'Show agent details' },
+        { name: 'terminate', description: 'Stop an agent' }
+      ],
+      options: [
+        {
+          flags: '--type <type>',
+          description: 'Agent type',
+          validValues: ['coordinator', 'researcher', 'coder', 'analyst', 'tester']
+        },
+        {
+          flags: '--name <name>',
+          description: 'Agent name'
+        },
+        {
+          flags: '--json',
+          description: 'Output in JSON format'
+        },
+        {
+          flags: '--help',
+          description: 'Show this help message'
+        }
+      ],
+      examples: [
+        'claude-flow agent spawn researcher --name "Research Bot"',
+        'claude-flow agent list --json',
+        'claude-flow agent terminate agent-123'
+      ]
+    }
+  };
+
+  return commandHelpMap[command] || null;
 }
 
 function showAllTopics(): void {
@@ -820,9 +956,13 @@ async function startInteractiveHelp(): Promise<void> {
     console.log();
     console.log(chalk.gray('Press Enter to continue...'));
     await new Promise(resolve => {
-      const stdin = Deno.stdin;
-      const buffer = new Uint8Array(1);
-      stdin.read(buffer).then(() => resolve(undefined));
+      process.stdin.setRawMode(true);
+      process.stdin.resume();
+      process.stdin.once('data', () => {
+        process.stdin.setRawMode(false);
+        process.stdin.pause();
+        resolve(undefined);
+      });
     });
     
     console.clear();

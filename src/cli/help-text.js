@@ -3,14 +3,16 @@
  * Provides clear, actionable command documentation
  */
 
-export const VERSION = '2.0.0-alpha.60';
+import { HelpFormatter } from './help-formatter.js';
+
+export const VERSION = '2.0.0-alpha.61';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
 
 🎯 ENTERPRISE FEATURES: Complete ruv-swarm integration with 87 MCP tools, neural networking, and production-ready infrastructure
 🐝 NEW: Advanced Hive Mind System with Queen-led coordination, collective intelligence, and unlimited scaling
-⚡ ALPHA 60: Fixed Claude Code integration with hive-mind spawn, proper session directory management, and improved coordination
+⚡ ALPHA 61: Neural training optimizations, enhanced help system, and improved MCP tool coordination
 
 USAGE:
   claude-flow <command> [options]
@@ -632,9 +634,265 @@ EXAMPLES:
 };
 
 export function getCommandHelp(command) {
+  // Return legacy format for now - to be updated
   return COMMAND_HELP[command] || `Help not available for command: ${command}`;
 }
 
-export function getMainHelp() {
-  return MAIN_HELP;
+export function getStandardizedCommandHelp(command) {
+  const commandConfigs = {
+    'agent': {
+      name: 'claude-flow agent',
+      description: 'Manage individual agents',
+      usage: 'claude-flow agent <action> [options]',
+      commands: [
+        { name: 'spawn', description: 'Create a new agent' },
+        { name: 'list', description: 'List all active agents' },
+        { name: 'info', description: 'Show agent details' },
+        { name: 'terminate', description: 'Stop an agent' },
+        { name: 'hierarchy', description: 'Manage agent hierarchies' },
+        { name: 'ecosystem', description: 'View agent ecosystem' }
+      ],
+      options: [
+        {
+          flags: '--type <type>',
+          description: 'Agent type',
+          validValues: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer']
+        },
+        {
+          flags: '--name <name>',
+          description: 'Agent name'
+        },
+        {
+          flags: '--verbose',
+          description: 'Detailed output'
+        },
+        {
+          flags: '--json',
+          description: 'Output in JSON format'
+        },
+        {
+          flags: '--help',
+          description: 'Show this help message'
+        }
+      ],
+      examples: [
+        'claude-flow agent spawn researcher --name "Research Bot"',
+        'claude-flow agent list --json',
+        'claude-flow agent terminate agent-123',
+        'claude-flow agent info agent-456 --verbose'
+      ]
+    },
+    'sparc': {
+      name: 'claude-flow sparc',
+      description: 'Execute SPARC development modes',
+      usage: 'claude-flow sparc <mode> [task] [options]',
+      commands: [
+        { name: 'spec', description: 'Specification mode - Requirements analysis' },
+        { name: 'architect', description: 'Architecture mode - System design' },
+        { name: 'tdd', description: 'Test-driven development mode' },
+        { name: 'integration', description: 'Integration mode - Component connection' },
+        { name: 'refactor', description: 'Refactoring mode - Code improvement' },
+        { name: 'modes', description: 'List all available SPARC modes' }
+      ],
+      options: [
+        {
+          flags: '--file <path>',
+          description: 'Input/output file path'
+        },
+        {
+          flags: '--format <type>',
+          description: 'Output format',
+          validValues: ['markdown', 'json', 'yaml']
+        },
+        {
+          flags: '--verbose',
+          description: 'Detailed output'
+        },
+        {
+          flags: '--help',
+          description: 'Show this help message'
+        }
+      ],
+      examples: [
+        'claude-flow sparc spec "User authentication system"',
+        'claude-flow sparc tdd "Payment processing module"',
+        'claude-flow sparc architect "Microservices architecture"',
+        'claude-flow sparc modes'
+      ]
+    },
+    'memory': {
+      name: 'claude-flow memory',
+      description: 'Manage persistent memory operations',
+      usage: 'claude-flow memory <action> [key] [value] [options]',
+      commands: [
+        { name: 'store', description: 'Store data in memory' },
+        { name: 'query', description: 'Search memory by pattern' },
+        { name: 'list', description: 'List memory namespaces' },
+        { name: 'export', description: 'Export memory to file' },
+        { name: 'import', description: 'Import memory from file' },
+        { name: 'clear', description: 'Clear memory namespace' }
+      ],
+      options: [
+        {
+          flags: '--namespace <name>',
+          description: 'Memory namespace',
+          defaultValue: 'default'
+        },
+        {
+          flags: '--ttl <seconds>',
+          description: 'Time to live in seconds'
+        },
+        {
+          flags: '--format <type>',
+          description: 'Export format',
+          validValues: ['json', 'yaml']
+        },
+        {
+          flags: '--help',
+          description: 'Show this help message'
+        }
+      ],
+      examples: [
+        'claude-flow memory store "api_design" "REST endpoints specification"',
+        'claude-flow memory query "authentication"',
+        'claude-flow memory export backup.json',
+        'claude-flow memory list --namespace project'
+      ]
+    }
+  };
+
+  const config = commandConfigs[command];
+  if (!config) {
+    return HelpFormatter.formatError(
+      `Unknown command: ${command}`,
+      'claude-flow',
+      'claude-flow <command> --help'
+    );
+  }
+
+  return HelpFormatter.formatHelp(config);
+}
+
+export function getMainHelp(plain = false) {
+  // Return the vibrant, emoji-rich version by default
+  if (!plain) {
+    return MAIN_HELP;
+  }
+  
+  // Return plain standardized format when requested
+  const helpInfo = {
+    name: 'claude-flow',
+    description: 'Advanced AI agent orchestration system',
+    usage: `claude-flow <command> [<args>] [options]
+    claude-flow <command> --help
+    claude-flow --version`,
+    commands: [
+      {
+        name: 'hive-mind',
+        description: 'Manage hive mind swarm intelligence',
+        aliases: ['hm']
+      },
+      {
+        name: 'init',
+        description: 'Initialize Claude Flow configuration'
+      },
+      {
+        name: 'start',
+        description: 'Start orchestration system'
+      },
+      {
+        name: 'swarm',
+        description: 'Execute multi-agent swarm coordination'
+      },
+      {
+        name: 'agent',
+        description: 'Manage individual agents'
+      },
+      {
+        name: 'sparc',
+        description: 'Execute SPARC development modes'
+      },
+      {
+        name: 'memory',
+        description: 'Manage persistent memory operations'
+      },
+      {
+        name: 'github',
+        description: 'Automate GitHub workflows'
+      },
+      {
+        name: 'status',
+        description: 'Show system status and health'
+      },
+      {
+        name: 'config',
+        description: 'Manage configuration settings'
+      },
+      {
+        name: 'session',
+        description: 'Manage sessions and state persistence'
+      },
+      {
+        name: 'terminal',
+        description: 'Terminal pool management'
+      },
+      {
+        name: 'workflow',
+        description: 'Manage automated workflows'
+      },
+      {
+        name: 'training',
+        description: 'Neural pattern training'
+      },
+      {
+        name: 'coordination',
+        description: 'Swarm coordination commands'
+      },
+      {
+        name: 'help',
+        description: 'Show help information'
+      }
+    ],
+    globalOptions: [
+      {
+        flags: '--config <path>',
+        description: 'Configuration file path',
+        defaultValue: '.claude/config.json'
+      },
+      {
+        flags: '--verbose',
+        description: 'Enable verbose output'
+      },
+      {
+        flags: '--quiet',
+        description: 'Suppress non-error output'
+      },
+      {
+        flags: '--json',
+        description: 'Output in JSON format'
+      },
+      {
+        flags: '--plain',
+        description: 'Show plain help without emojis'
+      },
+      {
+        flags: '--help',
+        description: 'Show help information'
+      },
+      {
+        flags: '--version',
+        description: 'Show version information'
+      }
+    ],
+    examples: [
+      'npx claude-flow@alpha init --sparc',
+      'claude-flow hive-mind wizard',
+      'claude-flow swarm "Build REST API"',
+      'claude-flow agent spawn researcher --name "Research Bot"',
+      'claude-flow status --json',
+      'claude-flow memory query "API design"'
+    ]
+  };
+
+  return HelpFormatter.formatHelp(helpInfo);
 }
