@@ -56,6 +56,18 @@ export interface Config {
     enableNeuralTraining: boolean;
     configPath?: string;
   };
+  claude?: {
+    apiKey?: string;
+    model?: 'claude-3-opus-20240229' | 'claude-3-sonnet-20240229' | 'claude-3-haiku-20240307' | 'claude-2.1' | 'claude-2.0' | 'claude-instant-1.2';
+    temperature?: number;
+    maxTokens?: number;
+    topP?: number;
+    topK?: number;
+    systemPrompt?: string;
+    timeout?: number;
+    retryAttempts?: number;
+    retryDelay?: number;
+  };
 }
 
 /**
@@ -109,6 +121,15 @@ const DEFAULT_CONFIG: Config = {
     enablePersistence: true,
     enableNeuralTraining: true,
     configPath: '.claude/ruv-swarm-config.json',
+  },
+  claude: {
+    model: 'claude-3-sonnet-20240229',
+    temperature: 0.7,
+    maxTokens: 4096,
+    topP: 1,
+    timeout: 60000,
+    retryAttempts: 3,
+    retryDelay: 1000,
   },
 };
 
@@ -326,6 +347,31 @@ export class ConfigManager {
     if (!['balanced', 'specialized', 'adaptive'].includes(config.ruvSwarm.defaultStrategy)) {
       throw new ConfigError('ruvSwarm.defaultStrategy must be one of: balanced, specialized, adaptive');
     }
+
+    // Claude API validation
+    if (config.claude) {
+      if (config.claude.model) {
+        const validModels = ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307', 'claude-2.1', 'claude-2.0', 'claude-instant-1.2'];
+        if (!validModels.includes(config.claude.model)) {
+          throw new ConfigError(`claude.model must be one of: ${validModels.join(', ')}`);
+        }
+      }
+      if (config.claude.temperature !== undefined) {
+        if (config.claude.temperature < 0 || config.claude.temperature > 1) {
+          throw new ConfigError('claude.temperature must be between 0 and 1');
+        }
+      }
+      if (config.claude.maxTokens !== undefined) {
+        if (config.claude.maxTokens < 1 || config.claude.maxTokens > 100000) {
+          throw new ConfigError('claude.maxTokens must be between 1 and 100000');
+        }
+      }
+      if (config.claude.topP !== undefined) {
+        if (config.claude.topP < 0 || config.claude.topP > 1) {
+          throw new ConfigError('claude.topP must be between 0 and 1');
+        }
+      }
+    }
   }
 
   /**
@@ -382,6 +428,46 @@ export class ConfigManager {
     const ruvSwarmMaxAgents = process.env.CLAUDE_FLOW_RUV_SWARM_MAX_AGENTS;
     if (ruvSwarmMaxAgents) {
       this.config.ruvSwarm.maxAgents = parseInt(ruvSwarmMaxAgents, 10);
+    }
+
+    // Claude API settings
+    if (!this.config.claude) {
+      this.config.claude = {};
+    }
+    
+    const claudeApiKey = process.env.ANTHROPIC_API_KEY;
+    if (claudeApiKey) {
+      this.config.claude.apiKey = claudeApiKey;
+    }
+
+    const claudeModel = process.env.CLAUDE_MODEL;
+    if (claudeModel) {
+      this.config.claude.model = claudeModel as any;
+    }
+
+    const claudeTemperature = process.env.CLAUDE_TEMPERATURE;
+    if (claudeTemperature) {
+      this.config.claude.temperature = parseFloat(claudeTemperature);
+    }
+
+    const claudeMaxTokens = process.env.CLAUDE_MAX_TOKENS;
+    if (claudeMaxTokens) {
+      this.config.claude.maxTokens = parseInt(claudeMaxTokens, 10);
+    }
+
+    const claudeTopP = process.env.CLAUDE_TOP_P;
+    if (claudeTopP) {
+      this.config.claude.topP = parseFloat(claudeTopP);
+    }
+
+    const claudeTopK = process.env.CLAUDE_TOP_K;
+    if (claudeTopK) {
+      this.config.claude.topK = parseInt(claudeTopK, 10);
+    }
+
+    const claudeSystemPrompt = process.env.CLAUDE_SYSTEM_PROMPT;
+    if (claudeSystemPrompt) {
+      this.config.claude.systemPrompt = claudeSystemPrompt;
     }
   }
 
@@ -520,6 +606,31 @@ export class ConfigManager {
   }
 
   /**
+   * Get Claude API configuration
+   */
+  getClaudeConfig() {
+    return this.deepClone(this.config.claude || {});
+  }
+
+  /**
+   * Update Claude API configuration
+   */
+  setClaudeConfig(updates: Partial<Config['claude']>): void {
+    if (!this.config.claude) {
+      this.config.claude = {};
+    }
+    this.config.claude = { ...this.config.claude, ...updates };
+    this.validate(this.config);
+  }
+
+  /**
+   * Check if Claude API is configured
+   */
+  isClaudeAPIConfigured(): boolean {
+    return !!(this.config.claude?.apiKey || process.env.ANTHROPIC_API_KEY);
+  }
+
+  /**
    * Deep merge helper
    */
   private deepMerge(target: Config, source: Partial<Config>): Config {
@@ -545,6 +656,9 @@ export class ConfigManager {
     }
     if (source.ruvSwarm) {
       result.ruvSwarm = { ...result.ruvSwarm, ...source.ruvSwarm };
+    }
+    if (source.claude) {
+      result.claude = { ...result.claude, ...source.claude };
     }
     
     return result;

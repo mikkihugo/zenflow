@@ -59,7 +59,7 @@ class CommandHistory {
 
   private async loadHistory(): Promise<void> {
     try {
-      const content = await fs.readFile(this.historyFile);
+      const content = await fs.readFile(this.historyFile, 'utf-8');
       this.history = content.split('\n').filter((line: string) => line.trim());
     } catch {
       // History file doesn't exist yet
@@ -495,9 +495,10 @@ function showHelp(commands: REPLCommand[]): void {
   console.log(chalk.white.bold('Available Commands:'));
   console.log();
   
-  const table = new Table()
-    .header(['Command', 'Aliases', 'Description'])
-    .border(false);
+  const table = new Table({
+    head: ['Command', 'Aliases', 'Description'],
+    style: { 'padding-left': 0, 'padding-right': 1, border: [] }
+  });
 
   for (const cmd of commands) {
     table.push([
@@ -643,9 +644,9 @@ async function showAgentList(): Promise<void> {
   console.log(chalk.cyan.bold(`Active Agents (${agents.length})`));
   console.log('─'.repeat(50));
   
-  const table = new Table()
-    .header(['ID', 'Name', 'Type', 'Status', 'Tasks'])
-    .border(true);
+  const table = new Table({
+    head: ['ID', 'Name', 'Type', 'Status', 'Tasks']
+  });
 
   for (const agent of agents) {
     const statusIcon = formatStatusIndicator(agent.status);
@@ -688,10 +689,12 @@ async function handleAgentSpawn(args: string[]): Promise<void> {
 }
 
 async function handleAgentTerminate(agentId: string): Promise<void> {
-  const confirmed = await confirm.prompt({
+  const { confirmed } = await inquirer.prompt([{
+    type: 'confirm',
+    name: 'confirmed',
     message: `Terminate agent ${agentId}?`,
     default: false,
-  });
+  }]);
   
   if (!confirmed) {
     console.log(chalk.gray('Termination cancelled'));
@@ -765,9 +768,9 @@ async function showTaskList(): Promise<void> {
   console.log(chalk.cyan.bold(`Tasks (${tasks.length})`));
   console.log('─'.repeat(60));
   
-  const table = new Table()
-    .header(['ID', 'Type', 'Description', 'Status', 'Agent'])
-    .border(true);
+  const table = new Table({
+    head: ['ID', 'Type', 'Description', 'Status', 'Agent']
+  });
 
   for (const task of tasks) {
     const statusIcon = formatStatusIndicator(task.status);
@@ -902,9 +905,9 @@ async function showSessionList(): Promise<void> {
   console.log(chalk.cyan.bold(`Saved Sessions (${sessions.length})`));
   console.log('─'.repeat(50));
   
-  const table = new Table()
-    .header(['ID', 'Name', 'Date', 'Agents', 'Tasks'])
-    .border(true);
+  const table = new Table({
+    head: ['ID', 'Name', 'Date', 'Agents', 'Tasks']
+  });
 
   for (const session of sessions) {
     table.push([

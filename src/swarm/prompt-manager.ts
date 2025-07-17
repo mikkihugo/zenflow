@@ -1,7 +1,8 @@
 import { getErrorMessage } from '../utils/error-handler.js';
 import * as path from 'path';
 import { EventEmitter } from 'events';
-import { copyPrompts, copyPromptsEnhanced, CopyOptions, CopyResult } from './prompt-copier-enhanced.js';
+import { copyPromptsEnhanced, EnhancedPromptCopier } from './prompt-copier-enhanced.js';
+import type { CopyOptions, CopyResult } from './prompt-copier.js';
 import { 
   PromptConfigManager, 
   PromptPathResolver, 

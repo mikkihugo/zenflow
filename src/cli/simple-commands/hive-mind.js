@@ -39,6 +39,7 @@ ${chalk.bold('SUBCOMMANDS:')}
   ${chalk.green('spawn')}        Spawn hive mind swarm for a task
   ${chalk.green('status')}       Show hive mind status
   ${chalk.green('resume')}       Resume a paused hive mind session
+  ${chalk.green('stop')}         Stop a running hive mind session
   ${chalk.green('sessions')}     List all hive mind sessions
   ${chalk.green('consensus')}    View consensus decisions
   ${chalk.green('memory')}       Manage collective memory
@@ -1290,6 +1291,10 @@ export async function hiveMindCommand(args, flags) {
       await resumeSession(subArgs, flags);
       break;
       
+    case 'stop':
+      await stopSession(subArgs, flags);
+      break;
+      
     case 'consensus':
       await showConsensus(flags);
       break;
@@ -1679,6 +1684,11 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
     console.log(chalk.cyan('MCP Tools:'), 'Full Claude-Flow integration enabled');
     
     try {
+      // ALWAYS save the prompt file first (fix for issue #330)
+      const promptFile = `hive-mind-prompt-${swarmId}.txt`;
+      await writeFile(promptFile, hiveMindPrompt, 'utf8');
+      console.log(chalk.green(`\n✓ Hive Mind prompt saved to: ${promptFile}`));
+      
       // Check if claude command exists
       const { spawn: childSpawn, execSync } = await import('child_process');
       let claudeAvailable = false;
@@ -1695,7 +1705,8 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
       
       if (claudeAvailable && !flags.dryRun) {
         // Pass the prompt directly as an argument to claude
-        const claudeArgs = [hiveMindPrompt];
+        // Using non-interactive mode to prevent hanging
+        const claudeArgs = [hiveMindPrompt, '--no-interactive'];
         
         // Add auto-permission flag by default for hive-mind mode (unless explicitly disabled)
         if (flags['dangerously-skip-permissions'] !== false && !flags['no-auto-permissions']) {
@@ -1704,31 +1715,49 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
         }
         
         // Spawn claude with the prompt as the first argument
+        // Use 'pipe' instead of 'inherit' to prevent terminal conflicts
         const claudeProcess = childSpawn('claude', claudeArgs, {
-          stdio: 'inherit',
+          stdio: 'pipe',
           shell: false
+        });
+        
+        // Handle stdout
+        if (claudeProcess.stdout) {
+          claudeProcess.stdout.on('data', (data) => {
+            console.log(data.toString());
+          });
+        }
+        
+        // Handle stderr
+        if (claudeProcess.stderr) {
+          claudeProcess.stderr.on('data', (data) => {
+            console.error(chalk.red(data.toString()));
+          });
+        }
+        
+        // Handle process exit
+        claudeProcess.on('exit', (code) => {
+          if (code === 0) {
+            console.log(chalk.green('\n✓ Claude Code completed successfully'));
+          } else {
+            console.log(chalk.red(`\n✗ Claude Code exited with code ${code}`));
+          }
         });
         
         console.log(chalk.green('\n✓ Claude Code launched with Hive Mind coordination'));
         console.log(chalk.blue('  The Queen coordinator will orchestrate all worker agents'));
         console.log(chalk.blue('  Use MCP tools for collective intelligence and task distribution'));
+        console.log(chalk.gray(`  Prompt file saved at: ${promptFile}`));
         
       } else if (flags.dryRun) {
         console.log(chalk.blue('\nDry run - would execute Claude Code with prompt:'));
         console.log(chalk.gray('Prompt length:'), hiveMindPrompt.length, 'characters');
         console.log(chalk.gray('\nFirst 500 characters of prompt:'));
         console.log(chalk.yellow(hiveMindPrompt.substring(0, 500) + '...'));
-        
-        // Save prompt to file for inspection
-        const promptFile = `hive-mind-prompt-${swarmId}.txt`;
-        await writeFile(promptFile, hiveMindPrompt, 'utf8');
-        console.log(chalk.green(`\n✓ Full prompt saved to: ${promptFile}`));
+        console.log(chalk.gray(`\nFull prompt saved to: ${promptFile}`));
         
       } else {
-        // Claude not available - save prompt and show instructions
-        const promptFile = `hive-mind-prompt-${swarmId}.txt`;
-        await writeFile(promptFile, hiveMindPrompt, 'utf8');
-        
+        // Claude not available - show instructions with already saved prompt
         console.log(chalk.yellow('\n📋 Manual Execution Instructions:'));
         console.log(chalk.gray('─'.repeat(50)));
         console.log(chalk.gray('1. Install Claude Code:'));
@@ -2158,10 +2187,11 @@ async function resumeSession(args, flags) {
       return;
     }
     
-    if (session.status !== 'paused') {
-      spinner.fail(`Session is not paused (status: ${session.status})`);
-      sessionManager.close();
-      return;
+    // Allow resuming any session regardless of status
+    spinner.text = `Resuming session from status: ${session.status}...`;
+    
+    if (session.status === 'stopped') {
+      spinner.text = 'Restarting stopped session with original configuration...';
     }
     
     // Resume the session
@@ -2219,6 +2249,60 @@ async function resumeSession(args, flags) {
     
   } catch (error) {
     spinner.fail('Failed to resume session');
+    console.error(chalk.red('Error:'), error.message);
+    exit(1);
+  }
+}
+
+/**
+ * Stop a hive mind session
+ */
+async function stopSession(args, flags) {
+  const sessionId = args[0];
+  
+  if (!sessionId) {
+    console.error(chalk.red('Error: Please provide a session ID'));
+    console.log('Usage: claude-flow hive-mind stop <session-id>');
+    console.log('Run "claude-flow hive-mind sessions" to see available sessions');
+    return;
+  }
+  
+  const spinner = ora('Stopping Hive Mind session...').start();
+  
+  try {
+    const sessionManager = new HiveMindSessionManager();
+    
+    // Get session details
+    const session = sessionManager.getSession(sessionId);
+    
+    if (!session) {
+      spinner.fail(`Session ${sessionId} not found`);
+      console.log('\nRun "claude-flow hive-mind sessions" to see available sessions');
+      sessionManager.close();
+      return;
+    }
+    
+    // Stop the session
+    await sessionManager.stopSession(sessionId);
+    
+    spinner.succeed('Session stopped successfully!');
+    
+    // Display session summary
+    console.log('\n' + chalk.bold('🛑 Stopped Session Summary:'));
+    console.log(chalk.gray('─'.repeat(50)));
+    console.log(chalk.cyan('Session ID:'), sessionId);
+    console.log(chalk.cyan('Swarm Name:'), session.swarm_name || 'Unknown');
+    console.log(chalk.cyan('Final Status:'), 'Stopped');
+    console.log(chalk.cyan('Active Agents:'), session.statistics ? session.statistics.activeAgents : 0);
+    console.log(chalk.gray('─'.repeat(50)));
+    
+    console.log('\n' + chalk.yellow('💡 Session has been stopped and all processes cleaned up.'));
+    console.log(chalk.gray('To resume this session later, use: claude-flow hive-mind resume ' + sessionId));
+    
+    sessionManager.close();
+    
+  } catch (error) {
+    spinner.fail('Failed to stop session');
     console.error(chalk.red('Error:'), error.message);
     exit(1);
   }
@@ -2288,6 +2372,11 @@ Resume the hive mind operation and continue working towards the objective.`;
  */
 async function launchClaudeWithContext(prompt, flags) {
   try {
+    // ALWAYS save the prompt file first (fix for issue #330)
+    const promptFile = `hive-mind-resume-${Date.now()}.txt`;
+    await writeFile(promptFile, prompt);
+    console.log(chalk.green(`\n✓ Session context saved to: ${promptFile}`));
+    
     const { spawn: childSpawn, execSync } = await import('child_process');
     let claudeAvailable = false;
     
@@ -2296,28 +2385,49 @@ async function launchClaudeWithContext(prompt, flags) {
       claudeAvailable = true;
     } catch {
       console.log(chalk.yellow('\n⚠️  Claude Code CLI not found'));
-      
-      // Save prompt to file
-      const promptFile = `hive-mind-resume-${Date.now()}.txt`;
-      await writeFile(promptFile, prompt);
-      console.log(chalk.green(`\n✓ Session context saved to: ${promptFile}`));
       console.log(chalk.gray('Install Claude Code: npm install -g @anthropic-ai/claude-code'));
+      console.log(chalk.gray(`Run with: claude < ${promptFile}`));
       return;
     }
     
     if (claudeAvailable && !flags.dryRun) {
-      const claudeArgs = [prompt];
+      const claudeArgs = [prompt, '--no-interactive'];
       
       if (flags['dangerously-skip-permissions'] !== false && !flags['no-auto-permissions']) {
         claudeArgs.push('--dangerously-skip-permissions');
       }
       
+      // Use 'pipe' instead of 'inherit' to prevent terminal conflicts
       const claudeProcess = childSpawn('claude', claudeArgs, {
-        stdio: 'inherit',
+        stdio: 'pipe',
         shell: false
       });
       
+      // Handle stdout
+      if (claudeProcess.stdout) {
+        claudeProcess.stdout.on('data', (data) => {
+          console.log(data.toString());
+        });
+      }
+      
+      // Handle stderr
+      if (claudeProcess.stderr) {
+        claudeProcess.stderr.on('data', (data) => {
+          console.error(chalk.red(data.toString()));
+        });
+      }
+      
+      // Handle process exit
+      claudeProcess.on('exit', (code) => {
+        if (code === 0) {
+          console.log(chalk.green('\n✓ Claude Code completed successfully'));
+        } else {
+          console.log(chalk.red(`\n✗ Claude Code exited with code ${code}`));
+        }
+      });
+      
       console.log(chalk.green('\n✓ Claude Code launched with restored session context'));
+      console.log(chalk.gray(`  Prompt file saved at: ${promptFile}`));
     }
   } catch (error) {
     console.error(chalk.red('Failed to launch Claude Code:'), error.message);

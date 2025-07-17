@@ -70,6 +70,15 @@ async function startMcpServer(subArgs, flags) {
       const __dirname = path.dirname(__filename);
       const mcpServerPath = path.join(__dirname, '../../mcp/mcp-server.js');
       
+      // Check if the file exists, and log the path for debugging
+      const fs = await import('fs');
+      if (!fs.existsSync(mcpServerPath)) {
+        console.error(`MCP server file not found at: ${mcpServerPath}`);
+        console.error(`Current directory: ${process.cwd()}`);
+        console.error(`Script directory: ${__dirname}`);
+        throw new Error(`MCP server file not found: ${mcpServerPath}`);
+      }
+      
       // Start the MCP server process
       const serverProcess = spawn('node', [mcpServerPath], {
         stdio: 'inherit',

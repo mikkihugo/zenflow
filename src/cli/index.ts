@@ -38,17 +38,13 @@ const cli = new Command()
   .description('Claude-Flow: Advanced AI agent orchestration system for multi-agent coordination')
   // .meta() commented out - not available
   // .meta() commented out - not available
-  .globalOption('-c, --config <path:string>', 'Path to configuration file', {
-    default: './claude-flow.config.json',
-  })
-  .globalOption('-v, --verbose', 'Enable verbose logging')
-  .globalOption('-q, --quiet', 'Suppress non-essential output')
-  .globalOption('--log-level <level:string>', 'Set log level (debug, info, warn, error)', {
-    default: 'info',
-  })
-  .globalOption('--no-color', 'Disable colored output')
-  .globalOption('--json', 'Output in JSON format where applicable')
-  .globalOption('--profile <profile:string>', 'Use named configuration profile')
+  .option('-c, --config <path>', 'Path to configuration file', './claude-flow.config.json')
+  .option('-v, --verbose', 'Enable verbose logging')
+  .option('-q, --quiet', 'Suppress non-essential output')
+  .option('--log-level <level>', 'Set log level (debug, info, warn, error)', 'info')
+  .option('--no-color', 'Disable colored output')
+  .option('--json', 'Output in JSON format where applicable')
+  .option('--profile <profile>', 'Use named configuration profile')
   .action(async (options: any) => {
     // If no subcommand, show banner and start REPL
     await setupLogging(options);
@@ -63,17 +59,17 @@ const cli = new Command()
 
 // Add subcommands
 cli
-  .command('start', startCommand)
-  .command('agent', agentCommand)
-  .command('task', taskCommand)
-  .command('memory', memoryCommand)
-  .command('config', configCommand)
-  .command('status', statusCommand)
-  .command('monitor', monitorCommand)
-  .command('session', sessionCommand)
-  .command('workflow', workflowCommand)
-  .command('mcp', mcpCommand)
-  .command('help', helpCommand)
+  .addCommand(startCommand)
+  .addCommand(agentCommand)
+  .addCommand(taskCommand)
+  .addCommand(memoryCommand)
+  .addCommand(configCommand)
+  .addCommand(statusCommand)
+  .addCommand(monitorCommand)
+  .addCommand(sessionCommand)
+  .addCommand(workflowCommand)
+  .addCommand(mcpCommand)
+  .addCommand(helpCommand)
   .command('repl', new Command()
     .description('Start interactive REPL mode with command completion')
     .option('--no-banner', 'Skip welcome banner')

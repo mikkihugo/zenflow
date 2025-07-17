@@ -13,6 +13,7 @@ export class AutoSaveMiddleware {
     this.saveTimer = null;
     this.pendingChanges = [];
     this.isActive = false;
+    this.childProcesses = new Set();
   }
 
   /**
@@ -37,14 +38,16 @@ export class AutoSaveMiddleware {
       this.performAutoSave();
     });
     
-    process.on('SIGINT', () => {
-      this.performAutoSave();
-      process.exit();
+    process.on('SIGINT', async () => {
+      console.log('\n\nReceived SIGINT, cleaning up...');
+      await this.cleanup();
+      process.exit(0);
     });
     
-    process.on('SIGTERM', () => {
-      this.performAutoSave();
-      process.exit();
+    process.on('SIGTERM', async () => {
+      console.log('\n\nReceived SIGTERM, cleaning up...');
+      await this.cleanup();
+      process.exit(0);
     });
   }
 
@@ -212,6 +215,77 @@ export class AutoSaveMiddleware {
    */
   isAutoSaveActive() {
     return this.isActive;
+  }
+
+  /**
+   * Register a child process
+   */
+  registerChildProcess(childProcess) {
+    if (childProcess && childProcess.pid) {
+      this.childProcesses.add(childProcess);
+      this.sessionManager.addChildPid(this.sessionId, childProcess.pid);
+      
+      // Remove from tracking when process exits
+      childProcess.on('exit', () => {
+        this.childProcesses.delete(childProcess);
+        this.sessionManager.removeChildPid(this.sessionId, childProcess.pid);
+      });
+    }
+  }
+
+  /**
+   * Clean up all resources and child processes
+   */
+  async cleanup() {
+    try {
+      // Stop the save timer
+      if (this.saveTimer) {
+        clearInterval(this.saveTimer);
+        this.saveTimer = null;
+      }
+      
+      // Perform final save
+      await this.performAutoSave();
+      
+      // Terminate all child processes
+      for (const childProcess of this.childProcesses) {
+        try {
+          if (childProcess.pid) {
+            console.log(`Terminating child process ${childProcess.pid}...`);
+            childProcess.kill('SIGTERM');
+            
+            // Give it a moment to terminate gracefully
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Force kill if still alive
+            try {
+              process.kill(childProcess.pid, 0); // Check if still alive
+              childProcess.kill('SIGKILL');
+            } catch (e) {
+              // Process already dead, good
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to terminate child process:`, error.message);
+        }
+      }
+      
+      // Clear the set
+      this.childProcesses.clear();
+      
+      // Stop the session if it's still active
+      const session = this.sessionManager.getSession(this.sessionId);
+      if (session && (session.status === 'active' || session.status === 'paused')) {
+        await this.sessionManager.stopSession(this.sessionId);
+      }
+      
+      // Close database connection
+      this.sessionManager.close();
+      
+      console.log('Cleanup completed successfully');
+    } catch (error) {
+      console.error('Error during cleanup:', error);
+    }
   }
 }
 

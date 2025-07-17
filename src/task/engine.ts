@@ -644,7 +644,7 @@ export class TaskEngine extends EventEmitter {
       task.description.toLowerCase().includes(searchLower) ||
       task.type.toLowerCase().includes(searchLower) ||
       task.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
-      (task.assignedAgent && task.assignedAgent.toLowerCase().includes(searchLower))
+      (task.assignedAgent ? task.assignedAgent.toLowerCase().includes(searchLower) : false)
     );
   }
 

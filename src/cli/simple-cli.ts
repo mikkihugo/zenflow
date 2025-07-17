@@ -1193,7 +1193,7 @@ async function main() {
           }
           
           // Parse flags
-          const flags = {};
+          const flags: Record<string, any> = {};
           for (let i = taskEndIndex; i < subArgs.length; i++) {
             const arg = subArgs[i];
             if (arg === '--tools' || arg === '-t') {

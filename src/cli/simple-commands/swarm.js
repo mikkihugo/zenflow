@@ -774,14 +774,9 @@ exit 0
       const module = await import(distPath);
       swarmAction = module.swarmAction;
     } catch (distError) {
-      // If dist version not found, try TypeScript version (for development)
-      try {
-        const module = await import('../commands/swarm-new.ts');
-        swarmAction = module.swarmAction;
-      } catch (tsError) {
-        // Neither version found, throw the original error
-        throw distError;
-      }
+      // Fallback to basic swarm functionality
+      console.log('🚀 Advanced swarm features not available, using basic mode');
+      return await basicSwarmNew(subArgs, flags);
     }
     
     // Create command context compatible with TypeScript version

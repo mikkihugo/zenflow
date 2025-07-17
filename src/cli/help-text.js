@@ -3,14 +3,14 @@
  * Provides clear, actionable command documentation
  */
 
-export const VERSION = '2.0.0-alpha.57';
+export const VERSION = '2.0.0-alpha.58';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
 
 🎯 ENTERPRISE FEATURES: Complete ruv-swarm integration with 87 MCP tools, neural networking, and production-ready infrastructure
 🐝 NEW: Advanced Hive Mind System with Queen-led coordination, collective intelligence, and unlimited scaling
-⚡ ALPHA 57: Complete Alpha 57 fixes - TypeScript refactoring, PR review system, and enhanced stability
+⚡ ALPHA 58: Hive-mind wizard prompt generation, session cleanup, Claude API config, and TypeScript fixes
 
 USAGE:
   claude-flow <command> [options]
