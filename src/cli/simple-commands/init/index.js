@@ -24,6 +24,20 @@ import {
 } from './templates/enhanced-templates.js';
 import { getIsolatedNpxEnv } from '../../../utils/npx-isolated-cache.js';
 import { updateGitignore, needsGitignoreUpdate } from './gitignore-updater.js';
+import {
+  createFullClaudeMd,
+  createSparcClaudeMd,
+  createMinimalClaudeMd,
+} from './templates/claude-md.js';
+import {
+  createFullMemoryBankMd,
+  createMinimalMemoryBankMd,
+} from './templates/memory-bank-md.js';
+import {
+  createFullCoordinationMd,
+  createMinimalCoordinationMd,
+} from './templates/coordination-md.js';
+import { createAgentsReadme, createSessionsReadme } from './templates/readme-files.js';
 
 /**
  * Check if Claude Code CLI is installed
@@ -1077,6 +1091,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       'coordination/subtasks',
       'coordination/orchestration',
       '.swarm', // Add .swarm directory for shared memory
+      '.hive-mind', // Add .hive-mind directory for hive-mind system
     ];
 
     for (const dir of standardDirs) {
@@ -1121,6 +1136,36 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       } catch (err) {
         console.log(`  ⚠️  Could not initialize memory system: ${err.message}`);
         console.log('     Memory will be initialized on first use');
+      }
+
+      // Initialize hive-mind configuration
+      try {
+        const hiveMindConfig = {
+          version: '2.0.0',
+          initialized: new Date().toISOString(),
+          defaults: {
+            queenType: 'strategic',
+            maxWorkers: 8,
+            consensusAlgorithm: 'majority',
+            memorySize: 100,
+            autoScale: true,
+            encryption: false,
+          },
+          mcpTools: {
+            enabled: true,
+            parallel: true,
+            timeout: 60000,
+          },
+        };
+
+        await fs.writeFile(
+          `${workingDir}/.hive-mind/config.json`,
+          JSON.stringify(hiveMindConfig, null, 2),
+        );
+        
+        printSuccess('✓ Initialized hive-mind system');
+      } catch (err) {
+        console.log(`  ⚠️  Could not initialize hive-mind system: ${err.message}`);
       }
     }
 
