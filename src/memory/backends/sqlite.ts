@@ -2,7 +2,6 @@
  * SQLite backend implementation for memory storage
  */
 
-import Database from 'better-sqlite3';
 import { promises as fs } from 'fs';
 import path from 'path';
 import type { IMemoryBackend } from './base.js';
@@ -10,11 +9,16 @@ import type { MemoryEntry, MemoryQuery } from '../../utils/types.js';
 import type { ILogger } from '../../core/logger.js';
 import { MemoryBackendError } from '../../utils/errors.js';
 
+// Dynamic imports for SQLite
+let createDatabase: any;
+let isSQLiteAvailable: any;
+
 /**
  * SQLite-based memory backend
  */
 export class SQLiteBackend implements IMemoryBackend {
-  private db?: Database.Database;
+  private db?: any;
+  private sqliteLoaded: boolean = false;
 
   constructor(
     private dbPath: string,
@@ -25,12 +29,26 @@ export class SQLiteBackend implements IMemoryBackend {
     this.logger.info('Initializing SQLite backend', { dbPath: this.dbPath });
 
     try {
+      // Load SQLite wrapper if not loaded
+      if (!this.sqliteLoaded) {
+        const module = await import('../sqlite-wrapper.js');
+        createDatabase = module.createDatabase;
+        isSQLiteAvailable = module.isSQLiteAvailable;
+        this.sqliteLoaded = true;
+      }
+
+      // Check if SQLite is available
+      const sqliteAvailable = await isSQLiteAvailable();
+      if (!sqliteAvailable) {
+        throw new Error('SQLite module not available');
+      }
+
       // Ensure directory exists
       const dir = path.dirname(this.dbPath);
       await fs.mkdir(dir, { recursive: true });
 
       // Open SQLite connection
-      this.db = new Database(this.dbPath);
+      this.db = await createDatabase(this.dbPath);
 
       // Enable WAL mode for better performance
       this.db.pragma('journal_mode = WAL');

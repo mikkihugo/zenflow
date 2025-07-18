@@ -5,7 +5,6 @@
  * using SQLite as the persistence layer.
  */
 
-import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs/promises';
 import { EventEmitter } from 'events';
@@ -15,11 +14,25 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Dynamic import for SQLite wrapper
+let createDatabase: any;
+let isSQLiteAvailable: any;
+let isWindows: any;
+
+async function loadSQLiteWrapper() {
+  const module = await import('../../memory/sqlite-wrapper.js');
+  createDatabase = module.createDatabase;
+  isSQLiteAvailable = module.isSQLiteAvailable;
+  isWindows = module.isWindows;
+}
+
 export class DatabaseManager extends EventEmitter {
   private static instance: DatabaseManager;
-  private db: Database.Database;
-  private statements: Map<string, Database.Statement>;
+  private db: any; // Database instance or in-memory fallback
+  private statements: Map<string, any>;
   private dbPath: string;
+  private isInMemory: boolean = false;
+  private memoryStore: any = null;
 
   private constructor() {
     super();
@@ -41,24 +54,70 @@ export class DatabaseManager extends EventEmitter {
    * Initialize database
    */
   async initialize(): Promise<void> {
-    // Ensure data directory exists
-    const dataDir = path.join(process.cwd(), 'data');
-    await fs.mkdir(dataDir, { recursive: true });
+    // Load SQLite wrapper functions
+    await loadSQLiteWrapper();
+    
+    // Check if SQLite is available
+    const sqliteAvailable = await isSQLiteAvailable();
+    
+    if (!sqliteAvailable) {
+      console.warn('SQLite not available, using in-memory storage for Hive Mind');
+      this.initializeInMemoryFallback();
+      return;
+    }
 
-    // Set database path
-    this.dbPath = path.join(dataDir, 'hive-mind.db');
+    try {
+      // Ensure data directory exists
+      const dataDir = path.join(process.cwd(), 'data');
+      await fs.mkdir(dataDir, { recursive: true });
 
-    // Open database
-    this.db = new Database(this.dbPath);
+      // Set database path
+      this.dbPath = path.join(dataDir, 'hive-mind.db');
 
-    // Enable foreign keys
-    this.db.pragma('foreign_keys = ON');
+      // Open database
+      this.db = await createDatabase(this.dbPath);
 
-    // Load schema
-    await this.loadSchema();
+      // Enable foreign keys
+      this.db.pragma('foreign_keys = ON');
 
-    // Prepare statements
-    this.prepareStatements();
+      // Load schema
+      await this.loadSchema();
+
+      // Prepare statements
+      this.prepareStatements();
+
+      this.emit('initialized');
+    } catch (error) {
+      console.error('Failed to initialize SQLite database:', error);
+      console.warn('Falling back to in-memory storage');
+      this.initializeInMemoryFallback();
+    }
+  }
+
+  /**
+   * Initialize in-memory fallback
+   */
+  private initializeInMemoryFallback(): void {
+    this.isInMemory = true;
+    this.memoryStore = {
+      swarms: new Map(),
+      agents: new Map(),
+      tasks: new Map(),
+      memory: new Map(),
+      communications: new Map(),
+      performance_metrics: new Map(),
+      consensus: new Map()
+    };
+
+    // Create mock statement methods
+    this.statements = new Map();
+    
+    if (isWindows && isWindows()) {
+      console.info(`
+Note: Hive Mind data will not persist between runs on Windows without SQLite.
+For persistent storage options, see: https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
+`);
+    }
 
     this.emit('initialized');
   }
