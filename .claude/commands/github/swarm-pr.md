@@ -7,11 +7,15 @@ Create and manage AI swarms directly from GitHub Pull Requests, enabling seamles
 
 ### 1. PR-Based Swarm Creation
 ```bash
-# Create swarm from PR description
-gh pr view 123 --json body | npx ruv-swarm swarm create-from-pr
+# Create swarm from PR description using gh CLI
+gh pr view 123 --json body,title,labels,files | npx ruv-swarm swarm create-from-pr
 
 # Auto-spawn agents based on PR labels
 gh pr view 123 --json labels | npx ruv-swarm swarm auto-spawn
+
+# Create swarm with PR context
+gh pr view 123 --json body,labels,author,assignees | \
+  npx ruv-swarm swarm init --from-pr-data
 ```
 
 ### 2. PR Comment Commands
@@ -79,27 +83,48 @@ npx ruv-swarm github pr-topology --pr 123
 
 ### Initialize from PR
 ```bash
-# Create swarm with PR context
+# Create swarm with PR context using gh CLI
+PR_DIFF=$(gh pr diff 123)
+PR_INFO=$(gh pr view 123 --json title,body,labels,files,reviews)
+
 npx ruv-swarm github pr-init 123 \
   --auto-agents \
-  --load-diff \
+  --pr-data "$PR_INFO" \
+  --diff "$PR_DIFF" \
   --analyze-impact
 ```
 
 ### Progress Updates
 ```bash
-# Post swarm progress to PR
-npx ruv-swarm github pr-update 123 \
-  --comment "🐝 Swarm Progress: 75% complete" \
-  --details
+# Post swarm progress to PR using gh CLI
+PROGRESS=$(npx ruv-swarm github pr-progress 123 --format markdown)
+
+gh pr comment 123 --body "$PROGRESS"
+
+# Update PR labels based on progress
+if [[ $(echo "$PROGRESS" | grep -o '[0-9]\+%' | sed 's/%//') -gt 90 ]]; then
+  gh pr edit 123 --add-label "ready-for-review"
+fi
 ```
 
 ### Code Review Integration
 ```bash
-# Create review agents
-npx ruv-swarm github pr-review 123 \
+# Create review agents with gh CLI integration
+PR_FILES=$(gh pr view 123 --json files --jq '.files[].path')
+
+# Run swarm review
+REVIEW_RESULTS=$(npx ruv-swarm github pr-review 123 \
   --agents "security,performance,style" \
-  --post-comments
+  --files "$PR_FILES")
+
+# Post review comments using gh CLI
+echo "$REVIEW_RESULTS" | jq -r '.comments[]' | while read -r comment; do
+  FILE=$(echo "$comment" | jq -r '.file')
+  LINE=$(echo "$comment" | jq -r '.line')
+  BODY=$(echo "$comment" | jq -r '.body')
+  
+  gh pr review 123 --comment --body "$BODY"
+done
 ```
 
 ## Advanced Features
@@ -157,10 +182,19 @@ required_status_checks:
 
 ### 3. PR Merge Automation
 ```bash
-# Auto-merge when swarm completes
-npx ruv-swarm github pr-automerge 123 \
-  --when "all-tasks-complete" \
-  --require-reviews 2
+# Auto-merge when swarm completes using gh CLI
+# Check swarm completion status
+SWARM_STATUS=$(npx ruv-swarm github pr-status 123)
+
+if [[ "$SWARM_STATUS" == "complete" ]]; then
+  # Check review requirements
+  REVIEWS=$(gh pr view 123 --json reviews --jq '.reviews | length')
+  
+  if [[ $REVIEWS -ge 2 ]]; then
+    # Enable auto-merge
+    gh pr merge 123 --auto --squash
+  fi
+fi
 ```
 
 ## Webhook Integration

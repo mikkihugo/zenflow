@@ -35,6 +35,10 @@
 
 ### 📋 **Prerequisites**
 
+- **Node.js 18+** (LTS recommended)
+- **npm 9+** or equivalent package manager
+- **Windows users**: See [Windows Installation Guide](https://github.com/ruvnet/claude-code-flow/blob/main/docs/windows-installation.md) for special instructions
+
 ⚠️ **IMPORTANT**: Claude Code must be installed first:
 
 ```bash
@@ -44,6 +48,8 @@ npm install -g @anthropic-ai/claude-code
 # 2. Activate Claude Code with permissions
 claude --dangerously-skip-permissions
 ```
+
+💡 **Windows Note**: If you encounter SQLite errors, Claude Flow will automatically use in-memory storage. For persistent storage options, see our [Windows guide](https://github.com/ruvnet/claude-code-flow/blob/main/docs/windows-installation.md).
 
 ### 🎯 **Instant Alpha Testing**
 
@@ -300,6 +306,8 @@ npx claude-flow@alpha memory stats  # Shows 12 specialized tables
 npx claude-flow@alpha memory export backup.json --namespace default
 npx claude-flow@alpha memory import project-memory.json
 ```
+
+> 🪟 **Windows Users**: SQLite will automatically fallback to in-memory storage if native modules fail. All features work normally, but data won't persist between sessions. See [Windows guide](https://github.com/ruvnet/claude-code-flow/blob/main/docs/windows-installation.md) for persistent storage options.
 
 ### **🔄 Workflow Orchestration**
 ```bash

@@ -185,32 +185,32 @@ This release is production-ready with comprehensive validation and testing.
   mcp__claude-flow__agent_spawn { type: "analyst", name: "Performance Analyst" }
   mcp__claude-flow__agent_spawn { type: "researcher", name: "Compatibility Checker" }
   
-  // Create release branch and prepare files
-  mcp__github__create_branch { branch: "release/v1.0.72", from_branch: "main" }
+  // Create release branch and prepare files using gh CLI
+  Bash("gh api repos/:owner/:repo/git/refs --method POST -f ref='refs/heads/release/v1.0.72' -f sha=$(gh api repos/:owner/:repo/git/refs/heads/main --jq '.object.sha')")
+  
+  // Clone and update release files
+  Bash("gh repo clone :owner/:repo /tmp/release-v1.0.72 -- --branch release/v1.0.72 --depth=1")
   
   // Update all release-related files
-  mcp__github__push_files {
-    branch: "release/v1.0.72",
-    files: [
-      { path: "claude-code-flow/claude-code-flow/package.json", content: "[updated package.json]" },
-      { path: "ruv-swarm/npm/package.json", content: "[updated package.json]" },
-      { path: "CHANGELOG.md", content: "[release changelog]" },
-      { path: "RELEASE_NOTES.md", content: "[detailed release notes]" }
-    ],
-    message: "release: Prepare v1.0.72 with comprehensive updates"
-  }
+  Write("/tmp/release-v1.0.72/claude-code-flow/claude-code-flow/package.json", "[updated package.json]")
+  Write("/tmp/release-v1.0.72/ruv-swarm/npm/package.json", "[updated package.json]")
+  Write("/tmp/release-v1.0.72/CHANGELOG.md", "[release changelog]")
+  Write("/tmp/release-v1.0.72/RELEASE_NOTES.md", "[detailed release notes]")
+  
+  Bash("cd /tmp/release-v1.0.72 && git add -A && git commit -m 'release: Prepare v1.0.72 with comprehensive updates' && git push")
   
   // Run comprehensive validation
   Bash("cd /workspaces/ruv-FANN/claude-code-flow/claude-code-flow && npm install && npm test && npm run lint && npm run build")
   Bash("cd /workspaces/ruv-FANN/ruv-swarm/npm && npm install && npm run test:all && npm run lint")
   
-  // Create release PR
-  mcp__github__create_pull_request {
-    title: "Release v1.0.72: GitHub Integration and Swarm Enhancements",
-    head: "release/v1.0.72",
-    base: "main",
-    body: "[comprehensive release description]"
-  }
+  // Create release PR using gh CLI
+  Bash(`gh pr create \
+    --repo :owner/:repo \
+    --title "Release v1.0.72: GitHub Integration and Swarm Enhancements" \
+    --head "release/v1.0.72" \
+    --base "main" \
+    --body "[comprehensive release description]"`)
+  
   
   // Track release progress
   TodoWrite { todos: [

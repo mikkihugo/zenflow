@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.64] - 2025-01-18
+
+### 🔧 Bug Fixes
+- Fixed wrapper script hardcoded to use outdated alpha-27 version
+- Updated wrapper to use `@alpha` tag for always getting latest alpha version
+- Ensures `./claude-flow` wrapper always uses the most recent alpha release
+
+### 📦 Dependencies
+- No dependency changes, only template fix
+
+## [2.0.0-alpha.63] - 2025-01-18
+
+### 🚀 Major Features
+- **MCP/NPX Fallback Pattern**: All 60+ command files now include both MCP tools (preferred) and NPX CLI (fallback)
+- **SPARC Included by Default**: No more `--sparc` flag needed, SPARC commands automatically initialized
+- **Complete Environment Init**: Creates 112+ files including both databases properly initialized
+
+### 🏗️ Infrastructure
+- **Template System**: Updated template generation to include MCP/NPX fallback patterns
+- **Init Command**: Fixed missing imports for createAgentsReadme and createSessionsReadme
+- **Database Init**: Added .hive-mind directory creation and hive.db initialization with schema
+- **SPARC Integration**: Made SPARC included by default in v2.0.0 flow
+
+### 🛠️ Improvements
+- Updated all 18 SPARC command files in .claude/commands/sparc/ with MCP/NPX fallback
+- Updated 5 swarm strategy files with MCP/NPX patterns
+- Enhanced init command to create complete environment with 113 files
+- Fixed copyRevisedTemplates to include SPARC files
+
+### 📚 Documentation
+- Updated CLAUDE.md template with comprehensive MCP/NPX usage examples
+- Added fallback guidance to all command documentation
+- Enhanced GitHub integration documentation with gh CLI usage
+
 ## [2.0.0-alpha.62] - 2025-01-18
 
 ### 🔒 Security Fixes

@@ -5,14 +5,14 @@
 
 import { HelpFormatter } from './help-formatter.js';
 
-export const VERSION = '2.0.0-alpha.61';
+export const VERSION = '2.0.0-alpha.64';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
 
 🎯 ENTERPRISE FEATURES: Complete ruv-swarm integration with 87 MCP tools, neural networking, and production-ready infrastructure
 🐝 NEW: Advanced Hive Mind System with Queen-led coordination, collective intelligence, and unlimited scaling
-⚡ ALPHA 61: Neural training optimizations, enhanced help system, and improved MCP tool coordination
+⚡ ALPHA 64: Fixed wrapper script to use @alpha tag, ensures latest version always used
 
 USAGE:
   claude-flow <command> [options]
@@ -458,7 +458,8 @@ SWARM-INIT OPTIONS:
 
 AGENT-SPAWN OPTIONS:
   --type <type>        Agent type (default: general)
-                       Options: coordinator, developer, researcher, analyzer, tester, general
+                       Options: coordinator, coder, developer, researcher, analyst, analyzer, 
+                       tester, architect, reviewer, optimizer, general
   --name <name>        Custom agent name (auto-generated if not provided)
   --swarm-id <id>      Target swarm for agent coordination
   --capabilities <cap> Custom capabilities specification

@@ -105,10 +105,11 @@ mcp__claude-flow__memory_usage {
   mcp__claude-flow__agent_spawn { type: "tester", name: "QA Engineer" }
   mcp__claude-flow__agent_spawn { type: "coordinator", name: "Merge Coordinator" }
   
-  // Create and manage PR
-  mcp__github__create_pull_request { title: "...", head: "...", base: "main" }
-  mcp__github__get_pull_request_files { pull_number: 54 }
-  mcp__github__create_pull_request_review { event: "APPROVE", body: "..." }
+  // Create and manage PR using gh CLI
+  Bash("gh pr create --repo :owner/:repo --title '...' --head '...' --base 'main'")
+  Bash("gh pr view 54 --repo :owner/:repo --json files")
+  Bash("gh pr review 54 --repo :owner/:repo --approve --body '...'")
+  
   
   // Execute tests and validation
   Bash("npm test")

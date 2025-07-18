@@ -3,12 +3,11 @@
  * Provides persistent storage that works with both local and remote npx execution
  */
 
-// @ts-ignore
-import Database from 'better-sqlite3';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
 import os from 'os';
+import { createDatabase } from './sqlite-wrapper.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,7 +53,7 @@ class SqliteMemoryStore {
 
       // Open database
       const dbPath = path.join(this.options.directory, this.options.dbName);
-      this.db = new Database(dbPath);
+      this.db = await createDatabase(dbPath);
 
       // Enable WAL mode for better concurrency
       this.db.pragma('journal_mode = WAL');
