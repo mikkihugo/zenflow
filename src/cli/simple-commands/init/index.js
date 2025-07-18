@@ -141,7 +141,7 @@ export async function initCommand(subArgs, flags) {
   // Parse init options
   const initForce = subArgs.includes('--force') || subArgs.includes('-f') || flags.force;
   const initMinimal = subArgs.includes('--minimal') || subArgs.includes('-m') || flags.minimal;
-  const initSparc = subArgs.includes('--sparc') || subArgs.includes('-s') || flags.sparc;
+  const initSparc = true; // SPARC is now included by default
   const initDryRun = subArgs.includes('--dry-run') || subArgs.includes('-d') || flags.dryRun;
   const initOptimized = initSparc && initForce; // Use optimized templates when both flags are present
   const selectedModes = flags.modes ? flags.modes.split(',') : null; // Support selective mode initialization
@@ -197,7 +197,8 @@ export async function initCommand(subArgs, flags) {
       const revisedResults = await copyRevisedTemplates(workingDir, {
         force: initForce,
         dryRun: initDryRun,
-        verbose: true
+        verbose: true,
+        sparc: initSparc
       });
 
       if (revisedResults.success) {
@@ -1163,6 +1164,54 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
           JSON.stringify(hiveMindConfig, null, 2),
         );
         
+        // Initialize hive.db
+        try {
+          const Database = (await import('better-sqlite3')).default;
+          const hivePath = `${workingDir}/.hive-mind/hive.db`;
+          const hiveDb = new Database(hivePath);
+          
+          // Create initial tables
+          hiveDb.exec(`
+            CREATE TABLE IF NOT EXISTS swarms (
+              id TEXT PRIMARY KEY,
+              name TEXT NOT NULL,
+              objective TEXT,
+              status TEXT DEFAULT 'active',
+              queen_type TEXT DEFAULT 'strategic',
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            CREATE TABLE IF NOT EXISTS agents (
+              id TEXT PRIMARY KEY,
+              swarm_id TEXT,
+              name TEXT NOT NULL,
+              type TEXT NOT NULL,
+              capabilities TEXT,
+              status TEXT DEFAULT 'active',
+              performance_score REAL DEFAULT 0.5,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY (swarm_id) REFERENCES swarms (id)
+            );
+            
+            CREATE TABLE IF NOT EXISTS messages (
+              id TEXT PRIMARY KEY,
+              swarm_id TEXT,
+              agent_id TEXT,
+              content TEXT NOT NULL,
+              type TEXT DEFAULT 'task',
+              timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY (swarm_id) REFERENCES swarms (id),
+              FOREIGN KEY (agent_id) REFERENCES agents (id)
+            );
+          `);
+          
+          hiveDb.close();
+          printSuccess('✓ Initialized hive-mind database (.hive-mind/hive.db)');
+        } catch (dbErr) {
+          console.log(`  ⚠️  Could not initialize hive-mind database: ${dbErr.message}`);
+        }
+        
         printSuccess('✓ Initialized hive-mind system');
       } catch (err) {
         console.log(`  ⚠️  Could not initialize hive-mind system: ${err.message}`);
@@ -1179,6 +1228,29 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       }
     } else {
       console.log(`  ⚠️  ${gitignoreResult.message}`);
+    }
+
+    // SPARC initialization (now included by default)
+    console.log('\n🚀 Initializing SPARC development environment...');
+    let sparcInitialized = false;
+    try {
+      // Run create-sparc
+      console.log('  🔄 Running: npx -y create-sparc init --force');
+      execSync('npx -y create-sparc init --force', {
+        cwd: workingDir,
+        stdio: 'inherit',
+      });
+      sparcInitialized = true;
+      printSuccess('✅ SPARC environment initialized successfully');
+    } catch (err) {
+      console.log(`  ⚠️  Could not run create-sparc: ${err.message}`);
+      console.log('     SPARC features will be limited to basic functionality');
+    }
+
+    // Create Claude slash commands for SPARC
+    if (sparcInitialized && !dryRun) {
+      console.log('\n📝 Creating Claude Code slash commands...');
+      await createClaudeSlashCommands(workingDir);
     }
 
     // Check for Claude Code and set up MCP servers (always enabled by default)
