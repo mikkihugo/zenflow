@@ -19,11 +19,11 @@ export const cwd = () => process.cwd();
 // File system operations
 export const readDir = async (path) => {
   const entries = await readdir(path, { withFileTypes: true });
-  return entries.map(entry => ({
+  return entries.map((entry) => ({
     name: entry.name,
     isFile: entry.isFile(),
     isDirectory: entry.isDirectory(),
-    isSymlink: entry.isSymbolicLink()
+    isSymlink: entry.isSymbolicLink(),
   }));
 };
 
@@ -35,7 +35,7 @@ export const statFile = async (path) => {
     size: stats.size,
     mtime: stats.mtime,
     atime: stats.atime,
-    birthtime: stats.birthtime
+    birthtime: stats.birthtime,
   };
 };
 
@@ -98,7 +98,7 @@ export const stdin = {
         resolve(bytes);
       });
     });
-  }
+  },
 };
 
 export const stdout = {
@@ -109,7 +109,7 @@ export const stdout = {
         else resolve(data.length);
       });
     });
-  }
+  },
 };
 
 export const stderr = {
@@ -120,7 +120,7 @@ export const stderr = {
         else resolve(data.length);
       });
     });
-  }
+  },
 };
 
 // Deno.errors compatibility
@@ -142,7 +142,7 @@ export const errors = {
       super(message);
       this.name = 'PermissionDenied';
     }
-  }
+  },
 };
 
 // import.meta compatibility
@@ -171,18 +171,25 @@ export { existsSync };
 
 // Build information (Node.js equivalent of Deno.build)
 export const build = {
-  os: process.platform === 'win32' ? 'windows' : 
-      process.platform === 'darwin' ? 'darwin' :
-      process.platform === 'linux' ? 'linux' : process.platform,
+  os:
+    process.platform === 'win32'
+      ? 'windows'
+      : process.platform === 'darwin'
+        ? 'darwin'
+        : process.platform === 'linux'
+          ? 'linux'
+          : process.platform,
   arch: process.arch,
-  target: `${process.arch}-${process.platform}`
+  target: `${process.arch}-${process.platform}`,
 };
 
 // Environment variables support
 export const env = {
   get: (key) => process.env[key],
-  set: (key, value) => { process.env[key] = value; },
-  toObject: () => ({ ...process.env })
+  set: (key, value) => {
+    process.env[key] = value;
+  },
+  toObject: () => ({ ...process.env }),
 };
 
 // Deno.Command compatibility
@@ -197,7 +204,7 @@ export class Command {
       const child = spawn(this.command, this.options.args || [], {
         cwd: this.options.cwd,
         env: this.options.env,
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
 
       let stdout = [];
@@ -216,7 +223,7 @@ export class Command {
           code,
           success: code === 0,
           stdout: Buffer.concat(stdout),
-          stderr: Buffer.concat(stderr)
+          stderr: Buffer.concat(stderr),
         });
       });
 
@@ -230,7 +237,7 @@ export class Command {
     const child = spawn(this.command, this.options.args || [], {
       cwd: this.options.cwd,
       env: this.options.env,
-      stdio: this.options.stdio || 'inherit'
+      stdio: this.options.stdio || 'inherit',
     });
 
     return {
@@ -241,7 +248,7 @@ export class Command {
       }),
       stdout: child.stdout,
       stderr: child.stderr,
-      kill: (signal) => child.kill(signal)
+      kill: (signal) => child.kill(signal),
     };
   }
 }
@@ -266,7 +273,7 @@ export const Deno = {
   stdout,
   stderr,
   env,
-  Command
+  Command,
 };
 
 export default Deno;

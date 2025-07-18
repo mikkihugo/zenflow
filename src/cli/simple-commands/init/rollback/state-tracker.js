@@ -12,18 +12,18 @@ export class StateTracker {
   async recordRollbackPoint(type, data) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
-      
+
       const rollbackPoint = {
         id: this.generateId(),
         type,
         timestamp: Date.now(),
         data,
-        ...data
+        ...data,
       };
 
       state.rollbackPoints = state.rollbackPoints || [];
@@ -35,7 +35,6 @@ export class StateTracker {
       }
 
       await this.saveState(state);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Failed to record rollback point: ${error.message}`);
@@ -51,18 +50,18 @@ export class StateTracker {
     const result = {
       success: true,
       id: null,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
-      
+
       const checkpoint = {
         id: this.generateId(),
         phase,
         timestamp: Date.now(),
         data,
-        status: 'active'
+        status: 'active',
       };
 
       result.id = checkpoint.id;
@@ -76,7 +75,6 @@ export class StateTracker {
       }
 
       await this.saveState(state);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Failed to create checkpoint: ${error.message}`);
@@ -91,14 +89,14 @@ export class StateTracker {
   async updateCheckpoint(checkpointId, updates) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
-      
+
       if (state.checkpoints) {
-        const checkpoint = state.checkpoints.find(cp => cp.id === checkpointId);
+        const checkpoint = state.checkpoints.find((cp) => cp.id === checkpointId);
         if (checkpoint) {
           Object.assign(checkpoint, updates);
           await this.saveState(state);
@@ -107,7 +105,6 @@ export class StateTracker {
           result.errors.push(`Checkpoint not found: ${checkpointId}`);
         }
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Failed to update checkpoint: ${error.message}`);
@@ -122,19 +119,19 @@ export class StateTracker {
   async recordRollback(targetId, rollbackType, phase = null) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
-      
+
       const rollbackRecord = {
         id: this.generateId(),
         targetId,
         rollbackType,
         phase,
         timestamp: Date.now(),
-        status: 'completed'
+        status: 'completed',
       };
 
       state.rollbackHistory = state.rollbackHistory || [];
@@ -146,7 +143,6 @@ export class StateTracker {
       }
 
       await this.saveState(state);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Failed to record rollback: ${error.message}`);
@@ -197,18 +193,18 @@ export class StateTracker {
   async trackFileOperation(operation, filePath, metadata = {}) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
-      
+
       const fileOp = {
         id: this.generateId(),
         operation, // 'create', 'modify', 'delete'
         filePath,
         timestamp: Date.now(),
-        metadata
+        metadata,
       };
 
       state.fileOperations = state.fileOperations || [];
@@ -220,7 +216,6 @@ export class StateTracker {
       }
 
       await this.saveState(state);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Failed to track file operation: ${error.message}`);
@@ -247,23 +242,22 @@ export class StateTracker {
   async setCurrentPhase(phase) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
       state.currentPhase = phase;
       state.phaseTimestamp = Date.now();
-      
+
       // Track phase transitions
       state.phaseHistory = state.phaseHistory || [];
       state.phaseHistory.push({
         phase,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       await this.saveState(state);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Failed to set phase: ${error.message}`);
@@ -278,7 +272,7 @@ export class StateTracker {
   async getInitializationStats() {
     try {
       const state = await this.loadState();
-      
+
       return {
         rollbackPoints: (state.rollbackPoints || []).length,
         checkpoints: (state.checkpoints || []).length,
@@ -286,7 +280,7 @@ export class StateTracker {
         fileOperations: (state.fileOperations || []).length,
         currentPhase: state.currentPhase || 'not-started',
         lastActivity: state.lastActivity || 0,
-        phaseHistory: state.phaseHistory || []
+        phaseHistory: state.phaseHistory || [],
       };
     } catch {
       return {
@@ -296,7 +290,7 @@ export class StateTracker {
         fileOperations: 0,
         currentPhase: 'not-started',
         lastActivity: 0,
-        phaseHistory: []
+        phaseHistory: [],
       };
     }
   }
@@ -308,42 +302,41 @@ export class StateTracker {
     const result = {
       success: true,
       cleaned: 0,
-      errors: []
+      errors: [],
     };
 
     try {
       const state = await this.loadState();
-      const cutoffTime = Date.now() - (daysToKeep * 24 * 60 * 60 * 1000);
-      
+      const cutoffTime = Date.now() - daysToKeep * 24 * 60 * 60 * 1000;
+
       let cleaned = 0;
 
       // Clean rollback points
       if (state.rollbackPoints) {
         const before = state.rollbackPoints.length;
-        state.rollbackPoints = state.rollbackPoints.filter(rp => rp.timestamp > cutoffTime);
+        state.rollbackPoints = state.rollbackPoints.filter((rp) => rp.timestamp > cutoffTime);
         cleaned += before - state.rollbackPoints.length;
       }
 
       // Clean checkpoints
       if (state.checkpoints) {
         const before = state.checkpoints.length;
-        state.checkpoints = state.checkpoints.filter(cp => cp.timestamp > cutoffTime);
+        state.checkpoints = state.checkpoints.filter((cp) => cp.timestamp > cutoffTime);
         cleaned += before - state.checkpoints.length;
       }
 
       // Clean file operations
       if (state.fileOperations) {
         const before = state.fileOperations.length;
-        state.fileOperations = state.fileOperations.filter(fo => fo.timestamp > cutoffTime);
+        state.fileOperations = state.fileOperations.filter((fo) => fo.timestamp > cutoffTime);
         cleaned += before - state.fileOperations.length;
       }
 
       result.cleaned = cleaned;
-      
+
       if (cleaned > 0) {
         await this.saveState(state);
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`State cleanup failed: ${error.message}`);
@@ -359,13 +352,13 @@ export class StateTracker {
     const result = {
       success: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
       // Test state file access
       const state = await this.loadState();
-      
+
       // Test write access
       state.lastValidation = Date.now();
       await this.saveState(state);
@@ -375,7 +368,6 @@ export class StateTracker {
       if (!validationResult.valid) {
         result.warnings.push(...validationResult.issues);
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`State tracking validation failed: ${error.message}`);
@@ -393,12 +385,12 @@ export class StateTracker {
       return {
         success: true,
         data: state,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -409,7 +401,7 @@ export class StateTracker {
   async importState(stateData) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
@@ -444,7 +436,7 @@ export class StateTracker {
         rollbackHistory: [],
         fileOperations: [],
         currentPhase: 'not-started',
-        phaseHistory: []
+        phaseHistory: [],
       };
     }
   }
@@ -452,11 +444,8 @@ export class StateTracker {
   async saveState(state) {
     state.lastActivity = Date.now();
     state.version = '1.0';
-    
-    await Deno.writeTextFile(
-      this.stateFile,
-      JSON.stringify(state, null, 2)
-    );
+
+    await Deno.writeTextFile(this.stateFile, JSON.stringify(state, null, 2));
   }
 
   generateId() {
@@ -466,7 +455,7 @@ export class StateTracker {
   validateStateStructure(state) {
     const result = {
       valid: true,
-      issues: []
+      issues: [],
     };
 
     if (!state || typeof state !== 'object') {

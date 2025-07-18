@@ -12,12 +12,7 @@ export class ValidationHelper {
   static validateEnum(value, paramName, validOptions, commandPath) {
     if (!validOptions.includes(value)) {
       console.error(
-        HelpFormatter.formatValidationError(
-          value,
-          paramName,
-          validOptions,
-          commandPath
-        )
+        HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath),
       );
       process.exit(1);
     }
@@ -28,13 +23,13 @@ export class ValidationHelper {
    */
   static validateNumber(value, paramName, min, max, commandPath) {
     const num = parseInt(value, 10);
-    
+
     if (isNaN(num)) {
       console.error(
         HelpFormatter.formatError(
           `'${value}' is not a valid number for ${paramName}.`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -43,8 +38,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `${paramName} must be at least ${min}. Got: ${num}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -53,8 +48,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `${paramName} must be at most ${max}. Got: ${num}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -70,8 +65,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `Missing required parameter: ${paramName}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -88,8 +83,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `File not found for ${paramName}: ${path}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -106,12 +101,12 @@ export class ValidationHelper {
     if (lowerValue === 'false' || lowerValue === '0' || lowerValue === 'no') {
       return false;
     }
-    
+
     console.error(
       HelpFormatter.formatError(
         `'${value}' is not a valid boolean for ${paramName}. Use: true, false, yes, no, 1, or 0.`,
-        commandPath || 'claude-flow'
-      )
+        commandPath || 'claude-flow',
+      ),
     );
     process.exit(1);
   }

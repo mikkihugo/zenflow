@@ -16,16 +16,25 @@ export class HealthChecker {
       modes: {
         total: 0,
         available: 0,
-        unavailable: []
-      }
+        unavailable: [],
+      },
     };
 
     try {
       // Get expected modes
       const expectedModes = [
-        'architect', 'code', 'tdd', 'spec-pseudocode', 'integration',
-        'debug', 'security-review', 'refinement-optimization-mode',
-        'docs-writer', 'devops', 'mcp', 'swarm'
+        'architect',
+        'code',
+        'tdd',
+        'spec-pseudocode',
+        'integration',
+        'debug',
+        'security-review',
+        'refinement-optimization-mode',
+        'docs-writer',
+        'devops',
+        'mcp',
+        'swarm',
       ];
 
       result.modes.total = expectedModes.length;
@@ -45,9 +54,10 @@ export class HealthChecker {
         result.success = false;
         result.errors.push('No SPARC modes are available');
       } else if (result.modes.unavailable.length > 0) {
-        result.warnings.push(`${result.modes.unavailable.length} modes unavailable: ${result.modes.unavailable.join(', ')}`);
+        result.warnings.push(
+          `${result.modes.unavailable.length} modes unavailable: ${result.modes.unavailable.join(', ')}`,
+        );
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Mode availability check failed: ${error.message}`);
@@ -67,20 +77,17 @@ export class HealthChecker {
       templates: {
         found: [],
         missing: [],
-        corrupted: []
-      }
+        corrupted: [],
+      },
     };
 
     try {
       // Check for template directories
-      const templateDirs = [
-        '.roo/templates',
-        '.claude/commands'
-      ];
+      const templateDirs = ['.roo/templates', '.claude/commands'];
 
       for (const dir of templateDirs) {
         const dirPath = `${this.workingDir}/${dir}`;
-        
+
         try {
           const stat = await Deno.stat(dirPath);
           if (stat.isDirectory) {
@@ -95,15 +102,11 @@ export class HealthChecker {
       }
 
       // Check core template files
-      const coreTemplates = [
-        'CLAUDE.md',
-        'memory-bank.md',
-        'coordination.md'
-      ];
+      const coreTemplates = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
 
       for (const template of coreTemplates) {
         const templatePath = `${this.workingDir}/${template}`;
-        
+
         try {
           const content = await Deno.readTextFile(templatePath);
           if (content.length < 50) {
@@ -125,7 +128,6 @@ export class HealthChecker {
       if (result.templates.missing.length > 0) {
         result.warnings.push(`Missing templates: ${result.templates.missing.join(', ')}`);
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Template integrity check failed: ${error.message}`);
@@ -142,7 +144,7 @@ export class HealthChecker {
       success: true,
       errors: [],
       warnings: [],
-      consistency: {}
+      consistency: {},
     };
 
     try {
@@ -166,7 +168,6 @@ export class HealthChecker {
       if (!memoryCheck.consistent) {
         result.warnings.push('Memory configuration inconsistency detected');
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Configuration consistency check failed: ${error.message}`);
@@ -183,7 +184,7 @@ export class HealthChecker {
       success: true,
       errors: [],
       warnings: [],
-      resources: {}
+      resources: {},
     };
 
     try {
@@ -214,7 +215,6 @@ export class HealthChecker {
       if (!processCheck.adequate) {
         result.warnings.push('Process limits may affect operation');
       }
-
     } catch (error) {
       result.warnings.push(`System resource check failed: ${error.message}`);
     }
@@ -231,7 +231,7 @@ export class HealthChecker {
       errors: [],
       warnings: [],
       diagnostics: {},
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     try {
@@ -263,7 +263,6 @@ export class HealthChecker {
       if (!integrationHealth.healthy) {
         result.warnings.push(...integrationHealth.warnings);
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Health diagnostics failed: ${error.message}`);
@@ -280,7 +279,7 @@ export class HealthChecker {
       const roomodesPath = `${this.workingDir}/.roomodes`;
       const content = await Deno.readTextFile(roomodesPath);
       const config = JSON.parse(content);
-      
+
       return !!(config.modes && config.modes[mode]);
     } catch {
       return false;
@@ -291,14 +290,14 @@ export class HealthChecker {
     const result = {
       found: [],
       missing: [],
-      corrupted: []
+      corrupted: [],
     };
 
     try {
       for await (const entry of Deno.readDir(dirPath)) {
         if (entry.isFile) {
           const filePath = `${dirPath}/${entry.name}`;
-          
+
           try {
             const stat = await Deno.stat(filePath);
             if (stat.size === 0) {
@@ -321,7 +320,7 @@ export class HealthChecker {
   async checkRoomodesConsistency() {
     const result = {
       consistent: true,
-      issues: []
+      issues: [],
     };
 
     try {
@@ -332,7 +331,7 @@ export class HealthChecker {
 
       if (config.modes) {
         const commandsDir = `${this.workingDir}/.claude/commands`;
-        
+
         try {
           const commandFiles = [];
           for await (const entry of Deno.readDir(commandsDir)) {
@@ -343,7 +342,7 @@ export class HealthChecker {
 
           const modeNames = Object.keys(config.modes);
           for (const mode of modeNames) {
-            if (!commandFiles.some(cmd => cmd.includes(mode))) {
+            if (!commandFiles.some((cmd) => cmd.includes(mode))) {
               result.consistent = false;
               result.issues.push(`Mode ${mode} has no corresponding command`);
             }
@@ -353,7 +352,6 @@ export class HealthChecker {
           result.issues.push('Cannot access commands directory');
         }
       }
-
     } catch {
       result.consistent = false;
       result.issues.push('Cannot read .roomodes file');
@@ -365,7 +363,7 @@ export class HealthChecker {
   async checkClaudeConfigConsistency() {
     const result = {
       consistent: true,
-      issues: []
+      issues: [],
     };
 
     try {
@@ -373,11 +371,7 @@ export class HealthChecker {
       const content = await Deno.readTextFile(claudePath);
 
       // Check if mentioned commands exist
-      const mentionedCommands = [
-        'claude-flow sparc',
-        'npm run build',
-        'npm run test'
-      ];
+      const mentionedCommands = ['claude-flow sparc', 'npm run build', 'npm run test'];
 
       for (const command of mentionedCommands) {
         if (content.includes(command)) {
@@ -394,7 +388,6 @@ export class HealthChecker {
           }
         }
       }
-
     } catch {
       result.consistent = false;
       result.issues.push('Cannot read CLAUDE.md');
@@ -406,7 +399,7 @@ export class HealthChecker {
   async checkMemoryConsistency() {
     const result = {
       consistent: true,
-      issues: []
+      issues: [],
     };
 
     try {
@@ -430,7 +423,6 @@ export class HealthChecker {
           result.issues.push(`Memory directory missing: ${dir}`);
         }
       }
-
     } catch {
       result.consistent = false;
       result.issues.push('Cannot validate memory structure');
@@ -443,21 +435,21 @@ export class HealthChecker {
     const result = {
       adequate: true,
       available: 0,
-      used: 0
+      used: 0,
     };
 
     try {
       const command = new Deno.Command('df', {
         args: ['-k', this.workingDir],
-        stdout: 'piped'
+        stdout: 'piped',
       });
 
       const { stdout, success } = await command.output();
-      
+
       if (success) {
         const output = new TextDecoder().decode(stdout);
         const lines = output.trim().split('\n');
-        
+
         if (lines.length >= 2) {
           const parts = lines[1].split(/\s+/);
           if (parts.length >= 4) {
@@ -479,22 +471,22 @@ export class HealthChecker {
     const result = {
       adequate: true,
       available: 0,
-      used: 0
+      used: 0,
     };
 
     try {
       // This is a simplified check - could be enhanced
       const command = new Deno.Command('free', {
         args: ['-m'],
-        stdout: 'piped'
+        stdout: 'piped',
       });
 
       const { stdout, success } = await command.output();
-      
+
       if (success) {
         const output = new TextDecoder().decode(stdout);
         const lines = output.trim().split('\n');
-        
+
         for (const line of lines) {
           if (line.startsWith('Mem:')) {
             const parts = line.split(/\s+/);
@@ -519,18 +511,18 @@ export class HealthChecker {
     const result = {
       adequate: true,
       open: 0,
-      limit: 0
+      limit: 0,
     };
 
     try {
       // Check current process file descriptors
       const command = new Deno.Command('sh', {
         args: ['-c', 'lsof -p $$ | wc -l'],
-        stdout: 'piped'
+        stdout: 'piped',
       });
 
       const { stdout, success } = await command.output();
-      
+
       if (success) {
         const count = parseInt(new TextDecoder().decode(stdout).trim());
         result.open = count;
@@ -547,17 +539,17 @@ export class HealthChecker {
   async checkProcessLimits() {
     const result = {
       adequate: true,
-      limits: {}
+      limits: {},
     };
 
     try {
       const command = new Deno.Command('ulimit', {
         args: ['-a'],
-        stdout: 'piped'
+        stdout: 'piped',
       });
 
       const { stdout, success } = await command.output();
-      
+
       if (success) {
         const output = new TextDecoder().decode(stdout);
         // Parse ulimit output for important limits
@@ -576,7 +568,7 @@ export class HealthChecker {
       healthy: true,
       errors: [],
       readWrite: true,
-      permissions: true
+      permissions: true,
     };
   }
 
@@ -584,7 +576,7 @@ export class HealthChecker {
     return {
       healthy: true,
       warnings: [],
-      processes: []
+      processes: [],
     };
   }
 
@@ -592,7 +584,7 @@ export class HealthChecker {
     return {
       healthy: true,
       warnings: [],
-      connectivity: true
+      connectivity: true,
     };
   }
 
@@ -600,7 +592,7 @@ export class HealthChecker {
     return {
       healthy: true,
       warnings: [],
-      integrations: {}
+      integrations: {},
     };
   }
 }

@@ -22,31 +22,38 @@ class ClaudeFlowMCPServer {
     // Use the same memory system that already works
     this.capabilities = {
       tools: {
-        listChanged: true
+        listChanged: true,
       },
       resources: {
         subscribe: true,
-        listChanged: true
-      }
+        listChanged: true,
+      },
     };
     this.sessionId = `session-cf-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
     this.tools = this.initializeTools();
     this.resources = this.initializeResources();
-    
+
     // Initialize shared memory store (same as npx commands)
-    this.initializeMemory().catch(err => {
-      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to initialize shared memory:`, err);
+    this.initializeMemory().catch((err) => {
+      console.error(
+        `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to initialize shared memory:`,
+        err,
+      );
     });
-    
+
     // Database operations now use the same shared memory store as npx commands
   }
-  
+
   async initializeMemory() {
     await this.memoryStore.initialize();
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Shared memory store initialized (same as npx)`);
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Using ${this.memoryStore.isUsingFallback() ? 'in-memory' : 'SQLite'} storage`);
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Shared memory store initialized (same as npx)`,
+    );
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) Using ${this.memoryStore.isUsingFallback() ? 'in-memory' : 'SQLite'} storage`,
+    );
   }
-  
+
   // Database operations now use the same memory store as working npx commands
 
   initializeTools() {
@@ -60,10 +67,10 @@ class ClaudeFlowMCPServer {
           properties: {
             topology: { type: 'string', enum: ['hierarchical', 'mesh', 'ring', 'star'] },
             maxAgents: { type: 'number', default: 8 },
-            strategy: { type: 'string', default: 'auto' }
+            strategy: { type: 'string', default: 'auto' },
           },
-          required: ['topology']
-        }
+          required: ['topology'],
+        },
       },
       agent_spawn: {
         name: 'agent_spawn',
@@ -71,13 +78,28 @@ class ClaudeFlowMCPServer {
         inputSchema: {
           type: 'object',
           properties: {
-            type: { type: 'string', enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'] },
+            type: {
+              type: 'string',
+              enum: [
+                'coordinator',
+                'researcher',
+                'coder',
+                'analyst',
+                'architect',
+                'tester',
+                'reviewer',
+                'optimizer',
+                'documenter',
+                'monitor',
+                'specialist',
+              ],
+            },
             name: { type: 'string' },
             capabilities: { type: 'array' },
-            swarmId: { type: 'string' }
+            swarmId: { type: 'string' },
           },
-          required: ['type']
-        }
+          required: ['type'],
+        },
       },
       task_orchestrate: {
         name: 'task_orchestrate',
@@ -88,10 +110,10 @@ class ClaudeFlowMCPServer {
             task: { type: 'string' },
             strategy: { type: 'string', enum: ['parallel', 'sequential', 'adaptive', 'balanced'] },
             priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'] },
-            dependencies: { type: 'array' }
+            dependencies: { type: 'array' },
           },
-          required: ['task']
-        }
+          required: ['task'],
+        },
       },
       swarm_status: {
         name: 'swarm_status',
@@ -99,11 +121,11 @@ class ClaudeFlowMCPServer {
         inputSchema: {
           type: 'object',
           properties: {
-            swarmId: { type: 'string' }
-          }
-        }
+            swarmId: { type: 'string' },
+          },
+        },
       },
-      
+
       // Neural Network Tools (15)
       neural_status: {
         name: 'neural_status',
@@ -111,9 +133,9 @@ class ClaudeFlowMCPServer {
         inputSchema: {
           type: 'object',
           properties: {
-            modelId: { type: 'string' }
-          }
-        }
+            modelId: { type: 'string' },
+          },
+        },
       },
       neural_train: {
         name: 'neural_train',
@@ -123,10 +145,10 @@ class ClaudeFlowMCPServer {
           properties: {
             pattern_type: { type: 'string', enum: ['coordination', 'optimization', 'prediction'] },
             training_data: { type: 'string' },
-            epochs: { type: 'number', default: 50 }
+            epochs: { type: 'number', default: 50 },
           },
-          required: ['pattern_type', 'training_data']
-        }
+          required: ['pattern_type', 'training_data'],
+        },
       },
       neural_patterns: {
         name: 'neural_patterns',
@@ -137,12 +159,12 @@ class ClaudeFlowMCPServer {
             action: { type: 'string', enum: ['analyze', 'learn', 'predict'] },
             operation: { type: 'string' },
             outcome: { type: 'string' },
-            metadata: { type: 'object' }
+            metadata: { type: 'object' },
           },
-          required: ['action']
-        }
+          required: ['action'],
+        },
       },
-      
+
       // Memory & Persistence Tools (12)
       memory_usage: {
         name: 'memory_usage',
@@ -154,10 +176,10 @@ class ClaudeFlowMCPServer {
             key: { type: 'string' },
             value: { type: 'string' },
             namespace: { type: 'string', default: 'default' },
-            ttl: { type: 'number' }
+            ttl: { type: 'number' },
           },
-          required: ['action']
-        }
+          required: ['action'],
+        },
       },
       memory_search: {
         name: 'memory_search',
@@ -167,12 +189,12 @@ class ClaudeFlowMCPServer {
           properties: {
             pattern: { type: 'string' },
             namespace: { type: 'string' },
-            limit: { type: 'number', default: 10 }
+            limit: { type: 'number', default: 10 },
           },
-          required: ['pattern']
-        }
+          required: ['pattern'],
+        },
       },
-      
+
       // Analysis & Monitoring Tools (13)
       performance_report: {
         name: 'performance_report',
@@ -181,9 +203,9 @@ class ClaudeFlowMCPServer {
           type: 'object',
           properties: {
             timeframe: { type: 'string', enum: ['24h', '7d', '30d'], default: '24h' },
-            format: { type: 'string', enum: ['summary', 'detailed', 'json'], default: 'summary' }
-          }
-        }
+            format: { type: 'string', enum: ['summary', 'detailed', 'json'], default: 'summary' },
+          },
+        },
       },
       bottleneck_analyze: {
         name: 'bottleneck_analyze',
@@ -192,9 +214,9 @@ class ClaudeFlowMCPServer {
           type: 'object',
           properties: {
             component: { type: 'string' },
-            metrics: { type: 'array' }
-          }
-        }
+            metrics: { type: 'array' },
+          },
+        },
       },
       token_usage: {
         name: 'token_usage',
@@ -203,11 +225,11 @@ class ClaudeFlowMCPServer {
           type: 'object',
           properties: {
             operation: { type: 'string' },
-            timeframe: { type: 'string', default: '24h' }
-          }
-        }
+            timeframe: { type: 'string', default: '24h' },
+          },
+        },
       },
-      
+
       // GitHub Integration Tools (8)
       github_repo_analyze: {
         name: 'github_repo_analyze',
@@ -216,10 +238,10 @@ class ClaudeFlowMCPServer {
           type: 'object',
           properties: {
             repo: { type: 'string' },
-            analysis_type: { type: 'string', enum: ['code_quality', 'performance', 'security'] }
+            analysis_type: { type: 'string', enum: ['code_quality', 'performance', 'security'] },
           },
-          required: ['repo']
-        }
+          required: ['repo'],
+        },
       },
       github_pr_manage: {
         name: 'github_pr_manage',
@@ -229,12 +251,12 @@ class ClaudeFlowMCPServer {
           properties: {
             repo: { type: 'string' },
             pr_number: { type: 'number' },
-            action: { type: 'string', enum: ['review', 'merge', 'close'] }
+            action: { type: 'string', enum: ['review', 'merge', 'close'] },
           },
-          required: ['repo', 'action']
-        }
+          required: ['repo', 'action'],
+        },
       },
-      
+
       // DAA Tools (8)
       daa_agent_create: {
         name: 'daa_agent_create',
@@ -244,10 +266,10 @@ class ClaudeFlowMCPServer {
           properties: {
             agent_type: { type: 'string' },
             capabilities: { type: 'array' },
-            resources: { type: 'object' }
+            resources: { type: 'object' },
           },
-          required: ['agent_type']
-        }
+          required: ['agent_type'],
+        },
       },
       daa_capability_match: {
         name: 'daa_capability_match',
@@ -256,12 +278,12 @@ class ClaudeFlowMCPServer {
           type: 'object',
           properties: {
             task_requirements: { type: 'array' },
-            available_agents: { type: 'array' }
+            available_agents: { type: 'array' },
           },
-          required: ['task_requirements']
-        }
+          required: ['task_requirements'],
+        },
       },
-      
+
       // Workflow Tools (11)
       workflow_create: {
         name: 'workflow_create',
@@ -271,10 +293,10 @@ class ClaudeFlowMCPServer {
           properties: {
             name: { type: 'string' },
             steps: { type: 'array' },
-            triggers: { type: 'array' }
+            triggers: { type: 'array' },
           },
-          required: ['name', 'steps']
-        }
+          required: ['name', 'steps'],
+        },
       },
       sparc_mode: {
         name: 'sparc_mode',
@@ -284,372 +306,576 @@ class ClaudeFlowMCPServer {
           properties: {
             mode: { type: 'string', enum: ['dev', 'api', 'ui', 'test', 'refactor'] },
             task_description: { type: 'string' },
-            options: { type: 'object' }
+            options: { type: 'object' },
           },
-          required: ['mode', 'task_description']
-        }
+          required: ['mode', 'task_description'],
+        },
       },
 
       // Additional Swarm Tools
       agent_list: {
         name: 'agent_list',
         description: 'List active agents & capabilities',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } } },
       },
       agent_metrics: {
         name: 'agent_metrics',
         description: 'Agent performance metrics',
-        inputSchema: { type: 'object', properties: { agentId: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { agentId: { type: 'string' } } },
       },
       swarm_monitor: {
         name: 'swarm_monitor',
         description: 'Real-time swarm monitoring',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' }, interval: { type: 'number' } } }
+        inputSchema: {
+          type: 'object',
+          properties: { swarmId: { type: 'string' }, interval: { type: 'number' } },
+        },
       },
       topology_optimize: {
         name: 'topology_optimize',
         description: 'Auto-optimize swarm topology',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } } },
       },
       load_balance: {
         name: 'load_balance',
         description: 'Distribute tasks efficiently',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' }, tasks: { type: 'array' } } }
+        inputSchema: {
+          type: 'object',
+          properties: { swarmId: { type: 'string' }, tasks: { type: 'array' } },
+        },
       },
       coordination_sync: {
         name: 'coordination_sync',
         description: 'Sync agent coordination',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } } },
       },
       swarm_scale: {
         name: 'swarm_scale',
         description: 'Auto-scale agent count',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' }, targetSize: { type: 'number' } } }
+        inputSchema: {
+          type: 'object',
+          properties: { swarmId: { type: 'string' }, targetSize: { type: 'number' } },
+        },
       },
       swarm_destroy: {
         name: 'swarm_destroy',
         description: 'Gracefully shutdown swarm',
-        inputSchema: { type: 'object', properties: { swarmId: { type: 'string' } }, required: ['swarmId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { swarmId: { type: 'string' } },
+          required: ['swarmId'],
+        },
       },
 
       // Additional Neural Tools
       neural_predict: {
         name: 'neural_predict',
         description: 'Make AI predictions',
-        inputSchema: { type: 'object', properties: { modelId: { type: 'string' }, input: { type: 'string' } }, required: ['modelId', 'input'] }
+        inputSchema: {
+          type: 'object',
+          properties: { modelId: { type: 'string' }, input: { type: 'string' } },
+          required: ['modelId', 'input'],
+        },
       },
       model_load: {
         name: 'model_load',
         description: 'Load pre-trained models',
-        inputSchema: { type: 'object', properties: { modelPath: { type: 'string' } }, required: ['modelPath'] }
+        inputSchema: {
+          type: 'object',
+          properties: { modelPath: { type: 'string' } },
+          required: ['modelPath'],
+        },
       },
       model_save: {
         name: 'model_save',
         description: 'Save trained models',
-        inputSchema: { type: 'object', properties: { modelId: { type: 'string' }, path: { type: 'string' } }, required: ['modelId', 'path'] }
+        inputSchema: {
+          type: 'object',
+          properties: { modelId: { type: 'string' }, path: { type: 'string' } },
+          required: ['modelId', 'path'],
+        },
       },
       wasm_optimize: {
         name: 'wasm_optimize',
         description: 'WASM SIMD optimization',
-        inputSchema: { type: 'object', properties: { operation: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { operation: { type: 'string' } } },
       },
       inference_run: {
         name: 'inference_run',
         description: 'Run neural inference',
-        inputSchema: { type: 'object', properties: { modelId: { type: 'string' }, data: { type: 'array' } }, required: ['modelId', 'data'] }
+        inputSchema: {
+          type: 'object',
+          properties: { modelId: { type: 'string' }, data: { type: 'array' } },
+          required: ['modelId', 'data'],
+        },
       },
       pattern_recognize: {
         name: 'pattern_recognize',
         description: 'Pattern recognition',
-        inputSchema: { type: 'object', properties: { data: { type: 'array' }, patterns: { type: 'array' } }, required: ['data'] }
+        inputSchema: {
+          type: 'object',
+          properties: { data: { type: 'array' }, patterns: { type: 'array' } },
+          required: ['data'],
+        },
       },
       cognitive_analyze: {
         name: 'cognitive_analyze',
         description: 'Cognitive behavior analysis',
-        inputSchema: { type: 'object', properties: { behavior: { type: 'string' } }, required: ['behavior'] }
+        inputSchema: {
+          type: 'object',
+          properties: { behavior: { type: 'string' } },
+          required: ['behavior'],
+        },
       },
       learning_adapt: {
         name: 'learning_adapt',
         description: 'Adaptive learning',
-        inputSchema: { type: 'object', properties: { experience: { type: 'object' } }, required: ['experience'] }
+        inputSchema: {
+          type: 'object',
+          properties: { experience: { type: 'object' } },
+          required: ['experience'],
+        },
       },
       neural_compress: {
         name: 'neural_compress',
         description: 'Compress neural models',
-        inputSchema: { type: 'object', properties: { modelId: { type: 'string' }, ratio: { type: 'number' } }, required: ['modelId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { modelId: { type: 'string' }, ratio: { type: 'number' } },
+          required: ['modelId'],
+        },
       },
       ensemble_create: {
         name: 'ensemble_create',
         description: 'Create model ensembles',
-        inputSchema: { type: 'object', properties: { models: { type: 'array' }, strategy: { type: 'string' } }, required: ['models'] }
+        inputSchema: {
+          type: 'object',
+          properties: { models: { type: 'array' }, strategy: { type: 'string' } },
+          required: ['models'],
+        },
       },
       transfer_learn: {
         name: 'transfer_learn',
         description: 'Transfer learning',
-        inputSchema: { type: 'object', properties: { sourceModel: { type: 'string' }, targetDomain: { type: 'string' } }, required: ['sourceModel', 'targetDomain'] }
+        inputSchema: {
+          type: 'object',
+          properties: { sourceModel: { type: 'string' }, targetDomain: { type: 'string' } },
+          required: ['sourceModel', 'targetDomain'],
+        },
       },
       neural_explain: {
         name: 'neural_explain',
         description: 'AI explainability',
-        inputSchema: { type: 'object', properties: { modelId: { type: 'string' }, prediction: { type: 'object' } }, required: ['modelId', 'prediction'] }
+        inputSchema: {
+          type: 'object',
+          properties: { modelId: { type: 'string' }, prediction: { type: 'object' } },
+          required: ['modelId', 'prediction'],
+        },
       },
 
       // Additional Memory Tools
       memory_persist: {
         name: 'memory_persist',
         description: 'Cross-session persistence',
-        inputSchema: { type: 'object', properties: { sessionId: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { sessionId: { type: 'string' } } },
       },
       memory_namespace: {
         name: 'memory_namespace',
         description: 'Namespace management',
-        inputSchema: { type: 'object', properties: { namespace: { type: 'string' }, action: { type: 'string' } }, required: ['namespace', 'action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { namespace: { type: 'string' }, action: { type: 'string' } },
+          required: ['namespace', 'action'],
+        },
       },
       memory_backup: {
         name: 'memory_backup',
         description: 'Backup memory stores',
-        inputSchema: { type: 'object', properties: { path: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { path: { type: 'string' } } },
       },
       memory_restore: {
         name: 'memory_restore',
         description: 'Restore from backups',
-        inputSchema: { type: 'object', properties: { backupPath: { type: 'string' } }, required: ['backupPath'] }
+        inputSchema: {
+          type: 'object',
+          properties: { backupPath: { type: 'string' } },
+          required: ['backupPath'],
+        },
       },
       memory_compress: {
         name: 'memory_compress',
         description: 'Compress memory data',
-        inputSchema: { type: 'object', properties: { namespace: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { namespace: { type: 'string' } } },
       },
       memory_sync: {
         name: 'memory_sync',
         description: 'Sync across instances',
-        inputSchema: { type: 'object', properties: { target: { type: 'string' } }, required: ['target'] }
+        inputSchema: {
+          type: 'object',
+          properties: { target: { type: 'string' } },
+          required: ['target'],
+        },
       },
       cache_manage: {
         name: 'cache_manage',
         description: 'Manage coordination cache',
-        inputSchema: { type: 'object', properties: { action: { type: 'string' }, key: { type: 'string' } }, required: ['action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { action: { type: 'string' }, key: { type: 'string' } },
+          required: ['action'],
+        },
       },
       state_snapshot: {
         name: 'state_snapshot',
         description: 'Create state snapshots',
-        inputSchema: { type: 'object', properties: { name: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { name: { type: 'string' } } },
       },
       context_restore: {
         name: 'context_restore',
         description: 'Restore execution context',
-        inputSchema: { type: 'object', properties: { snapshotId: { type: 'string' } }, required: ['snapshotId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { snapshotId: { type: 'string' } },
+          required: ['snapshotId'],
+        },
       },
       memory_analytics: {
         name: 'memory_analytics',
         description: 'Analyze memory usage',
-        inputSchema: { type: 'object', properties: { timeframe: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { timeframe: { type: 'string' } } },
       },
 
       // Additional Analysis Tools
       task_status: {
         name: 'task_status',
         description: 'Check task execution status',
-        inputSchema: { type: 'object', properties: { taskId: { type: 'string' } }, required: ['taskId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { taskId: { type: 'string' } },
+          required: ['taskId'],
+        },
       },
       task_results: {
         name: 'task_results',
         description: 'Get task completion results',
-        inputSchema: { type: 'object', properties: { taskId: { type: 'string' } }, required: ['taskId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { taskId: { type: 'string' } },
+          required: ['taskId'],
+        },
       },
       benchmark_run: {
         name: 'benchmark_run',
         description: 'Performance benchmarks',
-        inputSchema: { type: 'object', properties: { suite: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { suite: { type: 'string' } } },
       },
       metrics_collect: {
         name: 'metrics_collect',
         description: 'Collect system metrics',
-        inputSchema: { type: 'object', properties: { components: { type: 'array' } } }
+        inputSchema: { type: 'object', properties: { components: { type: 'array' } } },
       },
       trend_analysis: {
         name: 'trend_analysis',
         description: 'Analyze performance trends',
-        inputSchema: { type: 'object', properties: { metric: { type: 'string' }, period: { type: 'string' } }, required: ['metric'] }
+        inputSchema: {
+          type: 'object',
+          properties: { metric: { type: 'string' }, period: { type: 'string' } },
+          required: ['metric'],
+        },
       },
       cost_analysis: {
         name: 'cost_analysis',
         description: 'Cost and resource analysis',
-        inputSchema: { type: 'object', properties: { timeframe: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { timeframe: { type: 'string' } } },
       },
       quality_assess: {
         name: 'quality_assess',
         description: 'Quality assessment',
-        inputSchema: { type: 'object', properties: { target: { type: 'string' }, criteria: { type: 'array' } }, required: ['target'] }
+        inputSchema: {
+          type: 'object',
+          properties: { target: { type: 'string' }, criteria: { type: 'array' } },
+          required: ['target'],
+        },
       },
       error_analysis: {
         name: 'error_analysis',
         description: 'Error pattern analysis',
-        inputSchema: { type: 'object', properties: { logs: { type: 'array' } } }
+        inputSchema: { type: 'object', properties: { logs: { type: 'array' } } },
       },
       usage_stats: {
         name: 'usage_stats',
         description: 'Usage statistics',
-        inputSchema: { type: 'object', properties: { component: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { component: { type: 'string' } } },
       },
       health_check: {
         name: 'health_check',
         description: 'System health monitoring',
-        inputSchema: { type: 'object', properties: { components: { type: 'array' } } }
+        inputSchema: { type: 'object', properties: { components: { type: 'array' } } },
       },
 
       // Additional Workflow Tools
       workflow_execute: {
         name: 'workflow_execute',
         description: 'Execute predefined workflows',
-        inputSchema: { type: 'object', properties: { workflowId: { type: 'string' }, params: { type: 'object' } }, required: ['workflowId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { workflowId: { type: 'string' }, params: { type: 'object' } },
+          required: ['workflowId'],
+        },
       },
       workflow_export: {
         name: 'workflow_export',
         description: 'Export workflow definitions',
-        inputSchema: { type: 'object', properties: { workflowId: { type: 'string' }, format: { type: 'string' } }, required: ['workflowId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { workflowId: { type: 'string' }, format: { type: 'string' } },
+          required: ['workflowId'],
+        },
       },
       automation_setup: {
         name: 'automation_setup',
         description: 'Setup automation rules',
-        inputSchema: { type: 'object', properties: { rules: { type: 'array' } }, required: ['rules'] }
+        inputSchema: {
+          type: 'object',
+          properties: { rules: { type: 'array' } },
+          required: ['rules'],
+        },
       },
       pipeline_create: {
         name: 'pipeline_create',
         description: 'Create CI/CD pipelines',
-        inputSchema: { type: 'object', properties: { config: { type: 'object' } }, required: ['config'] }
+        inputSchema: {
+          type: 'object',
+          properties: { config: { type: 'object' } },
+          required: ['config'],
+        },
       },
       scheduler_manage: {
         name: 'scheduler_manage',
         description: 'Manage task scheduling',
-        inputSchema: { type: 'object', properties: { action: { type: 'string' }, schedule: { type: 'object' } }, required: ['action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { action: { type: 'string' }, schedule: { type: 'object' } },
+          required: ['action'],
+        },
       },
       trigger_setup: {
         name: 'trigger_setup',
         description: 'Setup event triggers',
-        inputSchema: { type: 'object', properties: { events: { type: 'array' }, actions: { type: 'array' } }, required: ['events', 'actions'] }
+        inputSchema: {
+          type: 'object',
+          properties: { events: { type: 'array' }, actions: { type: 'array' } },
+          required: ['events', 'actions'],
+        },
       },
       workflow_template: {
         name: 'workflow_template',
         description: 'Manage workflow templates',
-        inputSchema: { type: 'object', properties: { action: { type: 'string' }, template: { type: 'object' } }, required: ['action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { action: { type: 'string' }, template: { type: 'object' } },
+          required: ['action'],
+        },
       },
       batch_process: {
         name: 'batch_process',
         description: 'Batch processing',
-        inputSchema: { type: 'object', properties: { items: { type: 'array' }, operation: { type: 'string' } }, required: ['items', 'operation'] }
+        inputSchema: {
+          type: 'object',
+          properties: { items: { type: 'array' }, operation: { type: 'string' } },
+          required: ['items', 'operation'],
+        },
       },
       parallel_execute: {
         name: 'parallel_execute',
         description: 'Execute tasks in parallel',
-        inputSchema: { type: 'object', properties: { tasks: { type: 'array' } }, required: ['tasks'] }
+        inputSchema: {
+          type: 'object',
+          properties: { tasks: { type: 'array' } },
+          required: ['tasks'],
+        },
       },
 
       // GitHub Integration Tools
       github_issue_track: {
         name: 'github_issue_track',
         description: 'Issue tracking & triage',
-        inputSchema: { type: 'object', properties: { repo: { type: 'string' }, action: { type: 'string' } }, required: ['repo', 'action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { repo: { type: 'string' }, action: { type: 'string' } },
+          required: ['repo', 'action'],
+        },
       },
       github_release_coord: {
         name: 'github_release_coord',
         description: 'Release coordination',
-        inputSchema: { type: 'object', properties: { repo: { type: 'string' }, version: { type: 'string' } }, required: ['repo', 'version'] }
+        inputSchema: {
+          type: 'object',
+          properties: { repo: { type: 'string' }, version: { type: 'string' } },
+          required: ['repo', 'version'],
+        },
       },
       github_workflow_auto: {
         name: 'github_workflow_auto',
         description: 'Workflow automation',
-        inputSchema: { type: 'object', properties: { repo: { type: 'string' }, workflow: { type: 'object' } }, required: ['repo', 'workflow'] }
+        inputSchema: {
+          type: 'object',
+          properties: { repo: { type: 'string' }, workflow: { type: 'object' } },
+          required: ['repo', 'workflow'],
+        },
       },
       github_code_review: {
         name: 'github_code_review',
         description: 'Automated code review',
-        inputSchema: { type: 'object', properties: { repo: { type: 'string' }, pr: { type: 'number' } }, required: ['repo', 'pr'] }
+        inputSchema: {
+          type: 'object',
+          properties: { repo: { type: 'string' }, pr: { type: 'number' } },
+          required: ['repo', 'pr'],
+        },
       },
       github_sync_coord: {
         name: 'github_sync_coord',
         description: 'Multi-repo sync coordination',
-        inputSchema: { type: 'object', properties: { repos: { type: 'array' } }, required: ['repos'] }
+        inputSchema: {
+          type: 'object',
+          properties: { repos: { type: 'array' } },
+          required: ['repos'],
+        },
       },
       github_metrics: {
         name: 'github_metrics',
         description: 'Repository metrics',
-        inputSchema: { type: 'object', properties: { repo: { type: 'string' } }, required: ['repo'] }
+        inputSchema: {
+          type: 'object',
+          properties: { repo: { type: 'string' } },
+          required: ['repo'],
+        },
       },
 
       // Additional DAA Tools
       daa_resource_alloc: {
         name: 'daa_resource_alloc',
         description: 'Resource allocation',
-        inputSchema: { type: 'object', properties: { resources: { type: 'object' }, agents: { type: 'array' } }, required: ['resources'] }
+        inputSchema: {
+          type: 'object',
+          properties: { resources: { type: 'object' }, agents: { type: 'array' } },
+          required: ['resources'],
+        },
       },
       daa_lifecycle_manage: {
         name: 'daa_lifecycle_manage',
         description: 'Agent lifecycle management',
-        inputSchema: { type: 'object', properties: { agentId: { type: 'string' }, action: { type: 'string' } }, required: ['agentId', 'action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { agentId: { type: 'string' }, action: { type: 'string' } },
+          required: ['agentId', 'action'],
+        },
       },
       daa_communication: {
         name: 'daa_communication',
         description: 'Inter-agent communication',
-        inputSchema: { type: 'object', properties: { from: { type: 'string' }, to: { type: 'string' }, message: { type: 'object' } }, required: ['from', 'to', 'message'] }
+        inputSchema: {
+          type: 'object',
+          properties: {
+            from: { type: 'string' },
+            to: { type: 'string' },
+            message: { type: 'object' },
+          },
+          required: ['from', 'to', 'message'],
+        },
       },
       daa_consensus: {
         name: 'daa_consensus',
         description: 'Consensus mechanisms',
-        inputSchema: { type: 'object', properties: { agents: { type: 'array' }, proposal: { type: 'object' } }, required: ['agents', 'proposal'] }
+        inputSchema: {
+          type: 'object',
+          properties: { agents: { type: 'array' }, proposal: { type: 'object' } },
+          required: ['agents', 'proposal'],
+        },
       },
       daa_fault_tolerance: {
         name: 'daa_fault_tolerance',
         description: 'Fault tolerance & recovery',
-        inputSchema: { type: 'object', properties: { agentId: { type: 'string' }, strategy: { type: 'string' } }, required: ['agentId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { agentId: { type: 'string' }, strategy: { type: 'string' } },
+          required: ['agentId'],
+        },
       },
       daa_optimization: {
         name: 'daa_optimization',
         description: 'Performance optimization',
-        inputSchema: { type: 'object', properties: { target: { type: 'string' }, metrics: { type: 'array' } }, required: ['target'] }
+        inputSchema: {
+          type: 'object',
+          properties: { target: { type: 'string' }, metrics: { type: 'array' } },
+          required: ['target'],
+        },
       },
 
       // System & Utilities Tools
       terminal_execute: {
         name: 'terminal_execute',
         description: 'Execute terminal commands',
-        inputSchema: { type: 'object', properties: { command: { type: 'string' }, args: { type: 'array' } }, required: ['command'] }
+        inputSchema: {
+          type: 'object',
+          properties: { command: { type: 'string' }, args: { type: 'array' } },
+          required: ['command'],
+        },
       },
       config_manage: {
         name: 'config_manage',
         description: 'Configuration management',
-        inputSchema: { type: 'object', properties: { action: { type: 'string' }, config: { type: 'object' } }, required: ['action'] }
+        inputSchema: {
+          type: 'object',
+          properties: { action: { type: 'string' }, config: { type: 'object' } },
+          required: ['action'],
+        },
       },
       features_detect: {
         name: 'features_detect',
         description: 'Feature detection',
-        inputSchema: { type: 'object', properties: { component: { type: 'string' } } }
+        inputSchema: { type: 'object', properties: { component: { type: 'string' } } },
       },
       security_scan: {
         name: 'security_scan',
         description: 'Security scanning',
-        inputSchema: { type: 'object', properties: { target: { type: 'string' }, depth: { type: 'string' } }, required: ['target'] }
+        inputSchema: {
+          type: 'object',
+          properties: { target: { type: 'string' }, depth: { type: 'string' } },
+          required: ['target'],
+        },
       },
       backup_create: {
         name: 'backup_create',
         description: 'Create system backups',
-        inputSchema: { type: 'object', properties: { components: { type: 'array' }, destination: { type: 'string' } } }
+        inputSchema: {
+          type: 'object',
+          properties: { components: { type: 'array' }, destination: { type: 'string' } },
+        },
       },
       restore_system: {
         name: 'restore_system',
         description: 'System restoration',
-        inputSchema: { type: 'object', properties: { backupId: { type: 'string' } }, required: ['backupId'] }
+        inputSchema: {
+          type: 'object',
+          properties: { backupId: { type: 'string' } },
+          required: ['backupId'],
+        },
       },
       log_analysis: {
         name: 'log_analysis',
         description: 'Log analysis & insights',
-        inputSchema: { type: 'object', properties: { logFile: { type: 'string' }, patterns: { type: 'array' } }, required: ['logFile'] }
+        inputSchema: {
+          type: 'object',
+          properties: { logFile: { type: 'string' }, patterns: { type: 'array' } },
+          required: ['logFile'],
+        },
       },
       diagnostic_run: {
         name: 'diagnostic_run',
         description: 'System diagnostics',
-        inputSchema: { type: 'object', properties: { components: { type: 'array' } } }
-      }
+        inputSchema: { type: 'object', properties: { components: { type: 'array' } } },
+      },
     };
   }
 
@@ -659,26 +885,26 @@ class ClaudeFlowMCPServer {
         uri: 'claude-flow://swarms',
         name: 'Active Swarms',
         description: 'List of active swarm configurations and status',
-        mimeType: 'application/json'
+        mimeType: 'application/json',
       },
       'claude-flow://agents': {
         uri: 'claude-flow://agents',
         name: 'Agent Registry',
         description: 'Registry of available agents and their capabilities',
-        mimeType: 'application/json'
+        mimeType: 'application/json',
       },
       'claude-flow://models': {
         uri: 'claude-flow://models',
         name: 'Neural Models',
         description: 'Available neural network models and training status',
-        mimeType: 'application/json'
+        mimeType: 'application/json',
       },
       'claude-flow://performance': {
         uri: 'claude-flow://performance',
         name: 'Performance Metrics',
         description: 'Real-time performance metrics and benchmarks',
-        mimeType: 'application/json'
-      }
+        mimeType: 'application/json',
+      },
     };
   }
 
@@ -706,8 +932,10 @@ class ClaudeFlowMCPServer {
   }
 
   handleInitialize(id, params) {
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) 🔌 Connection established: ${this.sessionId}`);
-    
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) 🔌 Connection established: ${this.sessionId}`,
+    );
+
     return {
       jsonrpc: '2.0',
       id,
@@ -716,9 +944,9 @@ class ClaudeFlowMCPServer {
         capabilities: this.capabilities,
         serverInfo: {
           name: 'claude-flow',
-          version: this.version
-        }
-      }
+          version: this.version,
+        },
+      },
     };
   }
 
@@ -728,16 +956,18 @@ class ClaudeFlowMCPServer {
       jsonrpc: '2.0',
       id,
       result: {
-        tools: toolsList
-      }
+        tools: toolsList,
+      },
     };
   }
 
   async handleToolCall(id, params) {
     const { name, arguments: args } = params;
-    
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) 🔧 Tool called: ${name}`);
-    
+
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${this.sessionId}) 🔧 Tool called: ${name}`,
+    );
+
     try {
       const result = await this.executeTool(name, args);
       return {
@@ -747,10 +977,10 @@ class ClaudeFlowMCPServer {
           content: [
             {
               type: 'text',
-              text: JSON.stringify(result, null, 2)
-            }
-          ]
-        }
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        },
       };
     } catch (error) {
       return this.createErrorResponse(id, -32000, 'Tool execution failed', error.message);
@@ -763,14 +993,14 @@ class ClaudeFlowMCPServer {
       jsonrpc: '2.0',
       id,
       result: {
-        resources: resourcesList
-      }
+        resources: resourcesList,
+      },
     };
   }
 
   async handleResourceRead(id, params) {
     const { uri } = params;
-    
+
     try {
       const content = await this.readResource(uri);
       return {
@@ -781,10 +1011,10 @@ class ClaudeFlowMCPServer {
             {
               uri,
               mimeType: 'application/json',
-              text: JSON.stringify(content, null, 2)
-            }
-          ]
-        }
+              text: JSON.stringify(content, null, 2),
+            },
+          ],
+        },
       };
     } catch (error) {
       return this.createErrorResponse(id, -32000, 'Resource read failed', error.message);
@@ -807,25 +1037,30 @@ class ClaudeFlowMCPServer {
           config: JSON.stringify({
             strategy: args.strategy || 'auto',
             sessionId: this.sessionId,
-            createdBy: 'mcp-server'
-          })
+            createdBy: 'mcp-server',
+          }),
         };
-        
+
         // Store swarm data in memory store (same as npx commands)
         try {
           await this.memoryStore.store(`swarm:${swarmId}`, JSON.stringify(swarmData), {
             namespace: 'swarms',
-            metadata: { type: 'swarm_data', sessionId: this.sessionId }
+            metadata: { type: 'swarm_data', sessionId: this.sessionId },
           });
           await this.memoryStore.store('active_swarm', swarmId, {
             namespace: 'system',
-            metadata: { type: 'active_swarm', sessionId: this.sessionId }
+            metadata: { type: 'active_swarm', sessionId: this.sessionId },
           });
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Swarm persisted to memory: ${swarmId}`);
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Swarm persisted to memory: ${swarmId}`,
+          );
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist swarm:`, error);
+          console.error(
+            `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist swarm:`,
+            error,
+          );
         }
-        
+
         return {
           success: true,
           swarmId: swarmId,
@@ -834,14 +1069,14 @@ class ClaudeFlowMCPServer {
           strategy: args.strategy || 'auto',
           status: 'initialized',
           persisted: !!this.databaseManager,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'agent_spawn':
         const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
         const agentData = {
           id: agentId,
-          swarmId: args.swarmId || await this.getActiveSwarmId(),
+          swarmId: args.swarmId || (await this.getActiveSwarmId()),
           name: args.name || `${args.type}-${Date.now()}`,
           type: args.type,
           status: 'active',
@@ -849,30 +1084,35 @@ class ClaudeFlowMCPServer {
           metadata: JSON.stringify({
             sessionId: this.sessionId,
             createdBy: 'mcp-server',
-            spawnedAt: new Date().toISOString()
-          })
+            spawnedAt: new Date().toISOString(),
+          }),
         };
-        
+
         // Store agent data in memory store (same as npx commands)
         try {
-          const swarmId = agentData.swarmId || await this.getActiveSwarmId();
+          const swarmId = agentData.swarmId || (await this.getActiveSwarmId());
           if (swarmId) {
             await this.memoryStore.store(`agent:${swarmId}:${agentId}`, JSON.stringify(agentData), {
               namespace: 'agents',
-              metadata: { type: 'agent_data', swarmId: swarmId, sessionId: this.sessionId }
+              metadata: { type: 'agent_data', swarmId: swarmId, sessionId: this.sessionId },
             });
           } else {
             // Fallback to old format if no swarm ID
             await this.memoryStore.store(`agent:${agentId}`, JSON.stringify(agentData), {
               namespace: 'agents',
-              metadata: { type: 'agent_data', sessionId: this.sessionId }
+              metadata: { type: 'agent_data', sessionId: this.sessionId },
             });
           }
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Agent persisted to memory: ${agentId}`);
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Agent persisted to memory: ${agentId}`,
+          );
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist agent:`, error);
+          console.error(
+            `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist agent:`,
+            error,
+          );
         }
-        
+
         return {
           success: true,
           agentId: agentId,
@@ -881,24 +1121,24 @@ class ClaudeFlowMCPServer {
           status: 'active',
           capabilities: args.capabilities || [],
           persisted: !!this.databaseManager,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'neural_train':
         const epochs = args.epochs || 50;
         const baseAccuracy = 0.65;
         const maxAccuracy = 0.98;
-        
+
         // Realistic training progression: more epochs = better accuracy but with diminishing returns
         const epochFactor = Math.min(epochs / 100, 10); // Normalize epochs
         const accuracyGain = (maxAccuracy - baseAccuracy) * (1 - Math.exp(-epochFactor / 3));
         const finalAccuracy = baseAccuracy + accuracyGain + (Math.random() * 0.05 - 0.025); // Add some noise
-        
+
         // Training time increases with epochs but not linearly (parallel processing)
         const baseTime = 2;
         const timePerEpoch = 0.08;
-        const trainingTime = baseTime + (epochs * timePerEpoch) + (Math.random() * 2 - 1);
-        
+        const trainingTime = baseTime + epochs * timePerEpoch + (Math.random() * 2 - 1);
+
         return {
           success: true,
           modelId: `model_${args.pattern_type || 'general'}_${Date.now()}`,
@@ -909,7 +1149,7 @@ class ClaudeFlowMCPServer {
           status: 'completed',
           improvement_rate: epochFactor > 1 ? 'converged' : 'improving',
           data_source: args.training_data || 'recent',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'memory_usage':
@@ -926,9 +1166,9 @@ class ClaudeFlowMCPServer {
             avg_execution_time: Math.random() * 10 + 5,
             agents_spawned: Math.floor(Math.random() * 50) + 10,
             memory_efficiency: Math.random() * 0.3 + 0.7,
-            neural_events: Math.floor(Math.random() * 100) + 20
+            neural_events: Math.floor(Math.random() * 100) + 20,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       // Enhanced Neural Tools with Real Metrics
@@ -940,7 +1180,7 @@ class ClaudeFlowMCPServer {
           modelSize: `${Math.floor(Math.random() * 50 + 10)}MB`,
           version: `v${Math.floor(Math.random() * 10 + 1)}.${Math.floor(Math.random() * 20)}`,
           saved: true,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'model_load':
@@ -953,7 +1193,7 @@ class ClaudeFlowMCPServer {
           parameters: Math.floor(Math.random() * 1000000 + 500000),
           accuracy: Math.random() * 0.15 + 0.85,
           loaded: true,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'neural_predict':
@@ -965,10 +1205,10 @@ class ClaudeFlowMCPServer {
             outcome: Math.random() > 0.5 ? 'success' : 'optimization_needed',
             confidence: Math.random() * 0.3 + 0.7,
             alternatives: ['parallel_strategy', 'sequential_strategy', 'hybrid_strategy'],
-            recommended_action: 'proceed_with_coordination'
+            recommended_action: 'proceed_with_coordination',
           },
           inference_time_ms: Math.floor(Math.random() * 200 + 50),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'pattern_recognize':
@@ -978,16 +1218,16 @@ class ClaudeFlowMCPServer {
           patterns_detected: {
             coordination_patterns: Math.floor(Math.random() * 5 + 3),
             efficiency_patterns: Math.floor(Math.random() * 4 + 2),
-            success_indicators: Math.floor(Math.random() * 6 + 4)
+            success_indicators: Math.floor(Math.random() * 6 + 4),
           },
           pattern_confidence: Math.random() * 0.2 + 0.8,
           recommendations: [
             'optimize_agent_distribution',
             'enhance_communication_channels',
-            'implement_predictive_scaling'
+            'implement_predictive_scaling',
           ],
           processing_time_ms: Math.floor(Math.random() * 100 + 25),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'cognitive_analyze':
@@ -998,19 +1238,19 @@ class ClaudeFlowMCPServer {
             behavior_type: 'coordination_optimization',
             complexity_score: Math.random() * 10 + 1,
             efficiency_rating: Math.random() * 5 + 3,
-            improvement_potential: Math.random() * 100 + 20
+            improvement_potential: Math.random() * 100 + 20,
           },
           insights: [
             'Agent coordination shows high efficiency patterns',
             'Task distribution demonstrates optimal load balancing',
-            'Communication overhead is within acceptable parameters'
+            'Communication overhead is within acceptable parameters',
           ],
           neural_feedback: {
             pattern_strength: Math.random() * 0.4 + 0.6,
             learning_rate: Math.random() * 0.1 + 0.05,
-            adaptation_score: Math.random() * 100 + 70
+            adaptation_score: Math.random() * 100 + 70,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'learning_adapt':
@@ -1022,19 +1262,19 @@ class ClaudeFlowMCPServer {
             performance_delta: `+${Math.floor(Math.random() * 25 + 5)}%`,
             training_samples: Math.floor(Math.random() * 500 + 100),
             accuracy_improvement: `+${Math.floor(Math.random() * 10 + 2)}%`,
-            confidence_increase: `+${Math.floor(Math.random() * 15 + 5)}%`
+            confidence_increase: `+${Math.floor(Math.random() * 15 + 5)}%`,
           },
           learned_patterns: [
             'coordination_efficiency_boost',
             'agent_selection_optimization',
-            'task_distribution_enhancement'
+            'task_distribution_enhancement',
           ],
           next_learning_targets: [
             'memory_usage_optimization',
             'communication_latency_reduction',
-            'predictive_error_prevention'
+            'predictive_error_prevention',
           ],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'neural_compress':
@@ -1047,14 +1287,14 @@ class ClaudeFlowMCPServer {
             compressed_size: `${Math.floor(Math.random() * 35 + 15)}MB`,
             size_reduction: `${Math.floor((1 - (args.ratio || 0.7)) * 100)}%`,
             accuracy_retention: `${Math.floor(Math.random() * 5 + 95)}%`,
-            inference_speedup: `${Math.floor(Math.random() * 3 + 2)}x`
+            inference_speedup: `${Math.floor(Math.random() * 3 + 2)}x`,
           },
           optimization_details: {
             pruned_connections: Math.floor(Math.random() * 10000 + 5000),
             quantization_applied: true,
-            wasm_optimized: true
+            wasm_optimized: true,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'ensemble_create':
@@ -1068,11 +1308,11 @@ class ClaudeFlowMCPServer {
             combined_accuracy: Math.random() * 0.1 + 0.9,
             inference_time: `${Math.floor(Math.random() * 300 + 100)}ms`,
             memory_usage: `${Math.floor(Math.random() * 200 + 100)}MB`,
-            consensus_threshold: 0.75
+            consensus_threshold: 0.75,
           },
           model_weights: args.models.map(() => Math.random()),
           performance_gain: `+${Math.floor(Math.random() * 15 + 10)}%`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'transfer_learn':
@@ -1084,20 +1324,20 @@ class ClaudeFlowMCPServer {
             adaptation_rate: Math.random() * 0.3 + 0.7,
             knowledge_retention: Math.random() * 0.2 + 0.8,
             domain_fit_score: Math.random() * 0.25 + 0.75,
-            training_reduction: `${Math.floor(Math.random() * 60 + 40)}%`
+            training_reduction: `${Math.floor(Math.random() * 60 + 40)}%`,
           },
           transferred_features: [
             'coordination_patterns',
             'efficiency_heuristics',
-            'optimization_strategies'
+            'optimization_strategies',
           ],
           new_model_id: `transferred_${Date.now()}`,
           performance_metrics: {
             accuracy: Math.random() * 0.15 + 0.85,
             inference_speed: `${Math.floor(Math.random() * 150 + 50)}ms`,
-            memory_efficiency: `+${Math.floor(Math.random() * 20 + 10)}%`
+            memory_efficiency: `+${Math.floor(Math.random() * 20 + 10)}%`,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'neural_explain':
@@ -1109,79 +1349,94 @@ class ClaudeFlowMCPServer {
             decision_factors: [
               { factor: 'agent_availability', importance: Math.random() * 0.3 + 0.4 },
               { factor: 'task_complexity', importance: Math.random() * 0.25 + 0.3 },
-              { factor: 'coordination_history', importance: Math.random() * 0.2 + 0.25 }
+              { factor: 'coordination_history', importance: Math.random() * 0.2 + 0.25 },
             ],
             feature_importance: {
               topology_type: Math.random() * 0.3 + 0.5,
               agent_capabilities: Math.random() * 0.25 + 0.4,
-              resource_availability: Math.random() * 0.2 + 0.3
+              resource_availability: Math.random() * 0.2 + 0.3,
             },
             reasoning_path: [
               'Analyzed current swarm topology',
               'Evaluated agent performance history',
               'Calculated optimal task distribution',
-              'Applied coordination efficiency patterns'
-            ]
+              'Applied coordination efficiency patterns',
+            ],
           },
           confidence_breakdown: {
             model_certainty: Math.random() * 0.2 + 0.8,
             data_quality: Math.random() * 0.15 + 0.85,
-            pattern_match: Math.random() * 0.25 + 0.75
+            pattern_match: Math.random() * 0.25 + 0.75,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'agent_list':
         if (this.databaseManager) {
           try {
-            const swarmId = args.swarmId || await this.getActiveSwarmId();
+            const swarmId = args.swarmId || (await this.getActiveSwarmId());
             if (!swarmId) {
               return {
                 success: false,
                 error: 'No active swarm found',
                 agents: [],
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               };
             }
-            
+
             const agents = await this.databaseManager.getAgents(swarmId);
             return {
               success: true,
               swarmId: swarmId,
-              agents: agents.map(agent => ({
+              agents: agents.map((agent) => ({
                 id: agent.id,
                 name: agent.name,
                 type: agent.type,
                 status: agent.status,
                 capabilities: JSON.parse(agent.capabilities || '[]'),
                 created: agent.created_at,
-                lastActive: agent.last_active_at
+                lastActive: agent.last_active_at,
               })),
               count: agents.length,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             };
           } catch (error) {
-            console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to list agents:`, error);
+            console.error(
+              `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to list agents:`,
+              error,
+            );
             return {
               success: false,
               error: error.message,
               agents: [],
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             };
           }
         }
-        
+
         // Fallback mock response
         return {
           success: true,
           swarmId: args.swarmId || 'mock-swarm',
           agents: [
-            { id: 'agent-1', name: 'coordinator-1', type: 'coordinator', status: 'active', capabilities: [] },
-            { id: 'agent-2', name: 'researcher-1', type: 'researcher', status: 'active', capabilities: [] },
-            { id: 'agent-3', name: 'coder-1', type: 'coder', status: 'busy', capabilities: [] }
+            {
+              id: 'agent-1',
+              name: 'coordinator-1',
+              type: 'coordinator',
+              status: 'active',
+              capabilities: [],
+            },
+            {
+              id: 'agent-2',
+              name: 'researcher-1',
+              type: 'researcher',
+              status: 'active',
+              capabilities: [],
+            },
+            { id: 'agent-3', name: 'coder-1', type: 'coder', status: 'busy', capabilities: [] },
           ],
           count: 3,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       case 'swarm_status':
@@ -1190,74 +1445,76 @@ class ClaudeFlowMCPServer {
           let swarmId = args.swarmId;
           if (!swarmId) {
             swarmId = await this.memoryStore.retrieve('active_swarm', {
-              namespace: 'system'
+              namespace: 'system',
             });
           }
-          
+
           if (!swarmId) {
             return {
               success: false,
               error: 'No active swarm found',
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             };
           }
-          
+
           // Retrieve swarm data from memory store
           const swarmDataRaw = await this.memoryStore.retrieve(`swarm:${swarmId}`, {
-            namespace: 'swarms'
+            namespace: 'swarms',
           });
-          
+
           if (!swarmDataRaw) {
             return {
               success: false,
               error: `Swarm ${swarmId} not found`,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             };
           }
-          
+
           const swarm = typeof swarmDataRaw === 'string' ? JSON.parse(swarmDataRaw) : swarmDataRaw;
-          
+
           // Retrieve agents from memory
           const agentsData = await this.memoryStore.list({
             namespace: 'agents',
-            limit: 100
+            limit: 100,
           });
-          
+
           // Filter agents for this swarm
           const swarmAgents = agentsData
-            .filter(entry => entry.key.startsWith(`agent:${swarmId}:`))
-            .map(entry => {
+            .filter((entry) => entry.key.startsWith(`agent:${swarmId}:`))
+            .map((entry) => {
               try {
                 return JSON.parse(entry.value);
               } catch (e) {
                 return null;
               }
             })
-            .filter(agent => agent !== null);
-          
+            .filter((agent) => agent !== null);
+
           // Retrieve tasks from memory
           const tasksData = await this.memoryStore.list({
             namespace: 'tasks',
-            limit: 100
+            limit: 100,
           });
-          
+
           // Filter tasks for this swarm
           const swarmTasks = tasksData
-            .filter(entry => entry.key.startsWith(`task:${swarmId}:`))
-            .map(entry => {
+            .filter((entry) => entry.key.startsWith(`task:${swarmId}:`))
+            .map((entry) => {
               try {
                 return JSON.parse(entry.value);
               } catch (e) {
                 return null;
               }
             })
-            .filter(task => task !== null);
-          
+            .filter((task) => task !== null);
+
           // Calculate stats
-          const activeAgents = swarmAgents.filter(a => a.status === 'active' || a.status === 'busy').length;
-          const pendingTasks = swarmTasks.filter(t => t.status === 'pending').length;
-          const completedTasks = swarmTasks.filter(t => t.status === 'completed').length;
-          
+          const activeAgents = swarmAgents.filter(
+            (a) => a.status === 'active' || a.status === 'busy',
+          ).length;
+          const pendingTasks = swarmTasks.filter((t) => t.status === 'pending').length;
+          const completedTasks = swarmTasks.filter((t) => t.status === 'completed').length;
+
           const response = {
             success: true,
             swarmId: swarmId,
@@ -1267,21 +1524,23 @@ class ClaudeFlowMCPServer {
             taskCount: swarmTasks.length,
             pendingTasks: pendingTasks,
             completedTasks: completedTasks,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
-          
+
           // Add verbose details if requested
           if (args.verbose === true || args.verbose === 'true') {
             response.agents = swarmAgents;
             response.tasks = swarmTasks;
             response.swarmDetails = swarm;
           }
-          
+
           return response;
-          
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get swarm status:`, error);
-          
+          console.error(
+            `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get swarm status:`,
+            error,
+          );
+
           // Return a more informative fallback response
           return {
             success: false,
@@ -1293,13 +1552,13 @@ class ClaudeFlowMCPServer {
             taskCount: 0,
             pendingTasks: 0,
             completedTasks: 0,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
         }
 
       case 'task_orchestrate':
         const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const swarmIdForTask = args.swarmId || await this.getActiveSwarmId();
+        const swarmIdForTask = args.swarmId || (await this.getActiveSwarmId());
         const taskData = {
           id: taskId,
           swarmId: swarmIdForTask,
@@ -1315,23 +1574,32 @@ class ClaudeFlowMCPServer {
           metadata: JSON.stringify({
             sessionId: this.sessionId,
             createdBy: 'mcp-server',
-            orchestratedAt: new Date().toISOString()
-          })
+            orchestratedAt: new Date().toISOString(),
+          }),
         };
-        
+
         // Store task data in memory store
         try {
           if (swarmIdForTask) {
-            await this.memoryStore.store(`task:${swarmIdForTask}:${taskId}`, JSON.stringify(taskData), {
-              namespace: 'tasks',
-              metadata: { type: 'task_data', swarmId: swarmIdForTask, sessionId: this.sessionId }
-            });
-            console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Task persisted to memory: ${taskId}`);
+            await this.memoryStore.store(
+              `task:${swarmIdForTask}:${taskId}`,
+              JSON.stringify(taskData),
+              {
+                namespace: 'tasks',
+                metadata: { type: 'task_data', swarmId: swarmIdForTask, sessionId: this.sessionId },
+              },
+            );
+            console.error(
+              `[${new Date().toISOString()}] INFO [claude-flow-mcp] Task persisted to memory: ${taskId}`,
+            );
           }
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist task:`, error);
+          console.error(
+            `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to persist task:`,
+            error,
+          );
         }
-        
+
         return {
           success: true,
           taskId: taskId,
@@ -1340,7 +1608,7 @@ class ClaudeFlowMCPServer {
           priority: taskData.priority,
           status: 'pending',
           persisted: true,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
       default:
@@ -1349,7 +1617,7 @@ class ClaudeFlowMCPServer {
           tool: name,
           message: `Tool ${name} executed successfully`,
           args: args,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
     }
   }
@@ -1361,15 +1629,24 @@ class ClaudeFlowMCPServer {
           active_swarms: 3,
           total_agents: 15,
           topologies: ['hierarchical', 'mesh', 'ring', 'star'],
-          performance: '2.8-4.4x speedup'
+          performance: '2.8-4.4x speedup',
         };
 
       case 'claude-flow://agents':
         return {
           total_agents: 8,
-          types: ['researcher', 'coder', 'analyst', 'architect', 'tester', 'coordinator', 'reviewer', 'optimizer'],
+          types: [
+            'researcher',
+            'coder',
+            'analyst',
+            'architect',
+            'tester',
+            'coordinator',
+            'reviewer',
+            'optimizer',
+          ],
           active: 15,
-          capabilities: 127
+          capabilities: 127,
         };
 
       case 'claude-flow://models':
@@ -1378,7 +1655,7 @@ class ClaudeFlowMCPServer {
           wasm_enabled: true,
           simd_support: true,
           training_active: true,
-          accuracy_avg: 0.89
+          accuracy_avg: 0.89,
         };
 
       case 'claude-flow://performance':
@@ -1387,7 +1664,7 @@ class ClaudeFlowMCPServer {
           token_reduction: '32.3%',
           swe_bench_rate: '84.8%',
           speed_improvement: '2.8-4.4x',
-          memory_efficiency: '78%'
+          memory_efficiency: '78%',
         };
 
       default:
@@ -1400,7 +1677,7 @@ class ClaudeFlowMCPServer {
       return {
         success: false,
         error: 'Shared memory system not initialized',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
 
@@ -1413,12 +1690,14 @@ class ClaudeFlowMCPServer {
             metadata: {
               sessionId: this.sessionId,
               storedBy: 'mcp-server',
-              type: 'knowledge'
-            }
+              type: 'knowledge',
+            },
           });
-          
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Stored in shared memory: ${args.key} (namespace: ${args.namespace || 'default'})`);
-          
+
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Stored in shared memory: ${args.key} (namespace: ${args.namespace || 'default'})`,
+          );
+
           return {
             success: true,
             action: 'store',
@@ -1428,16 +1707,18 @@ class ClaudeFlowMCPServer {
             size: storeResult.size || args.value.length,
             id: storeResult.id,
             storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
 
         case 'retrieve':
           const value = await this.memoryStore.retrieve(args.key, {
-            namespace: args.namespace || 'default'
+            namespace: args.namespace || 'default',
           });
-          
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Retrieved from shared memory: ${args.key} (found: ${value !== null})`);
-          
+
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Retrieved from shared memory: ${args.key} (found: ${value !== null})`,
+          );
+
           return {
             success: true,
             action: 'retrieve',
@@ -1446,17 +1727,19 @@ class ClaudeFlowMCPServer {
             found: value !== null,
             namespace: args.namespace || 'default',
             storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
 
         case 'list':
           const entries = await this.memoryStore.list({
             namespace: args.namespace || 'default',
-            limit: 100
+            limit: 100,
           });
-          
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Listed shared memory entries: ${entries.length} (namespace: ${args.namespace || 'default'})`);
-          
+
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Listed shared memory entries: ${entries.length} (namespace: ${args.namespace || 'default'})`,
+          );
+
           return {
             success: true,
             action: 'list',
@@ -1464,16 +1747,18 @@ class ClaudeFlowMCPServer {
             entries: entries,
             count: entries.length,
             storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
 
         case 'delete':
           const deleted = await this.memoryStore.delete(args.key, {
-            namespace: args.namespace || 'default'
+            namespace: args.namespace || 'default',
           });
-          
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Deleted from shared memory: ${args.key} (success: ${deleted})`);
-          
+
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Deleted from shared memory: ${args.key} (success: ${deleted})`,
+          );
+
           return {
             success: true,
             action: 'delete',
@@ -1481,17 +1766,19 @@ class ClaudeFlowMCPServer {
             namespace: args.namespace || 'default',
             deleted: deleted,
             storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
 
         case 'search':
           const results = await this.memoryStore.search(args.value || '', {
             namespace: args.namespace || 'default',
-            limit: 50
+            limit: 50,
           });
-          
-          console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] Searched shared memory: ${results.length} results for "${args.value}"`);
-          
+
+          console.error(
+            `[${new Date().toISOString()}] INFO [claude-flow-mcp] Searched shared memory: ${results.length} results for "${args.value}"`,
+          );
+
           return {
             success: true,
             action: 'search',
@@ -1500,24 +1787,27 @@ class ClaudeFlowMCPServer {
             results: results,
             count: results.length,
             storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
 
         default:
           return {
             success: false,
             error: `Unknown memory action: ${args.action}`,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
       }
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Shared memory operation failed:`, error);
+      console.error(
+        `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Shared memory operation failed:`,
+        error,
+      );
       return {
         success: false,
         error: error.message,
         action: args.action,
         storage_type: this.memoryStore?.isUsingFallback() ? 'in-memory' : 'sqlite',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -1527,30 +1817,33 @@ class ClaudeFlowMCPServer {
       return {
         success: false,
         error: 'Memory system not initialized',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
 
     try {
       const results = await this.sharedMemory.search(args.pattern, {
         namespace: args.namespace || 'default',
-        limit: args.limit || 10
+        limit: args.limit || 10,
       });
-      
+
       return {
         success: true,
         pattern: args.pattern,
         namespace: args.namespace || 'default',
         results: results,
         count: results.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Memory search failed:`, error);
+      console.error(
+        `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Memory search failed:`,
+        error,
+      );
       return {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -1558,20 +1851,23 @@ class ClaudeFlowMCPServer {
   async getActiveSwarmId() {
     try {
       const activeSwarmId = await this.memoryStore.retrieve('active_swarm', {
-        namespace: 'system'
+        namespace: 'system',
       });
       return activeSwarmId || null;
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get active swarm:`, error);
+      console.error(
+        `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to get active swarm:`,
+        error,
+      );
       return null;
     }
   }
-  
+
   createErrorResponse(id, code, message, data = null) {
     const response = {
       jsonrpc: '2.0',
       id,
-      error: { code, message }
+      error: { code, message },
     };
     if (data) response.error.data = data;
     return response;
@@ -1581,8 +1877,10 @@ class ClaudeFlowMCPServer {
 // Main server execution
 async function startMCPServer() {
   const server = new ClaudeFlowMCPServer();
-  
-  console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) Claude-Flow MCP server starting in stdio mode`);
+
+  console.error(
+    `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) Claude-Flow MCP server starting in stdio mode`,
+  );
   console.error({
     arch: process.arch,
     mode: 'mcp-stdio',
@@ -1591,32 +1889,34 @@ async function startMCPServer() {
     platform: process.platform,
     protocol: 'stdio',
     sessionId: server.sessionId,
-    version: server.version
+    version: server.version,
   });
 
   // Send server capabilities
-  console.log(JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'server.initialized',
-    params: {
-      serverInfo: {
-        name: 'claude-flow',
-        version: server.version,
-        capabilities: server.capabilities
-      }
-    }
-  }));
+  console.log(
+    JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'server.initialized',
+      params: {
+        serverInfo: {
+          name: 'claude-flow',
+          version: server.version,
+          capabilities: server.capabilities,
+        },
+      },
+    }),
+  );
 
   // Handle stdin messages
   let buffer = '';
-  
+
   process.stdin.on('data', async (chunk) => {
     buffer += chunk.toString();
-    
+
     // Process complete JSON messages
     let lines = buffer.split('\n');
     buffer = lines.pop() || ''; // Keep incomplete line in buffer
-    
+
     for (const line of lines) {
       if (line.trim()) {
         try {
@@ -1626,21 +1926,30 @@ async function startMCPServer() {
             console.log(JSON.stringify(response));
           }
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to parse message:`, error.message);
+          console.error(
+            `[${new Date().toISOString()}] ERROR [claude-flow-mcp] Failed to parse message:`,
+            error.message,
+          );
         }
       }
     }
   });
 
   process.stdin.on('end', () => {
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) 🔌 Connection closed: ${server.sessionId}`);
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) MCP: stdin closed, shutting down...`);
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) 🔌 Connection closed: ${server.sessionId}`,
+    );
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) MCP: stdin closed, shutting down...`,
+    );
     process.exit(0);
   });
 
   // Handle process termination
   process.on('SIGINT', async () => {
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) Received SIGINT, shutting down gracefully...`);
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) Received SIGINT, shutting down gracefully...`,
+    );
     if (server.sharedMemory) {
       await server.sharedMemory.close();
     }
@@ -1648,7 +1957,9 @@ async function startMCPServer() {
   });
 
   process.on('SIGTERM', async () => {
-    console.error(`[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) Received SIGTERM, shutting down gracefully...`);
+    console.error(
+      `[${new Date().toISOString()}] INFO [claude-flow-mcp] (${server.sessionId}) Received SIGTERM, shutting down gracefully...`,
+    );
     if (server.sharedMemory) {
       await server.sharedMemory.close();
     }

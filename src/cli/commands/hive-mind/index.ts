@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Hive Mind CLI Commands Index
- * 
+ *
  * Main entry point for all Hive Mind CLI commands
  */
 
@@ -38,5 +38,5 @@ export {
   stopCommand,
   pauseCommand,
   resumeCommand,
-  psCommand
+  psCommand,
 };

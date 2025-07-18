@@ -2,31 +2,25 @@
 import { printSuccess, printError, printWarning, printInfo } from '../../utils.js';
 import { Deno, cwd, exit, existsSync } from '../../node-compat.js';
 import process from 'process';
-import { 
-  PerformanceMonitor, 
-  ResourceThresholdMonitor, 
-  BatchOptimizer 
+import {
+  PerformanceMonitor,
+  ResourceThresholdMonitor,
+  BatchOptimizer,
 } from './performance-monitor.js';
 import { initCommand } from './index.js';
 import { createSparcStructureManually } from './sparc-structure.js';
 import { createClaudeSlashCommands } from './claude-commands/slash-commands.js';
-import { 
-  createSparcClaudeMd, 
-  createFullClaudeMd, 
-  createMinimalClaudeMd 
+import {
+  createSparcClaudeMd,
+  createFullClaudeMd,
+  createMinimalClaudeMd,
 } from './templates/claude-md.js';
-import { 
-  createFullMemoryBankMd, 
-  createMinimalMemoryBankMd 
-} from './templates/memory-bank-md.js';
-import { 
-  createFullCoordinationMd, 
-  createMinimalCoordinationMd 
+import { createFullMemoryBankMd, createMinimalMemoryBankMd } from './templates/memory-bank-md.js';
+import {
+  createFullCoordinationMd,
+  createMinimalCoordinationMd,
 } from './templates/coordination-md.js';
-import { 
-  createAgentsReadme, 
-  createSessionsReadme 
-} from './templates/readme-files.js';
+import { createAgentsReadme, createSessionsReadme } from './templates/readme-files.js';
 
 // Progress tracking for batch operations
 class BatchProgressTracker {
@@ -56,7 +50,7 @@ class BatchProgressTracker {
   updateDisplay() {
     const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
     const progress = Math.floor(((this.completed + this.failed) / this.totalProjects) * 100);
-    
+
     console.clear();
     console.log('🚀 Batch Initialization Progress');
     console.log('================================');
@@ -66,7 +60,7 @@ class BatchProgressTracker {
     console.log(`In Progress: ${this.inProgress.size} 🔄`);
     console.log(`Progress: ${progress}% [${this.getProgressBar(progress)}]`);
     console.log(`Elapsed Time: ${elapsed}s`);
-    
+
     if (this.inProgress.size > 0) {
       console.log('\nActive Projects:');
       for (const [project, startTime] of this.inProgress) {
@@ -89,7 +83,8 @@ class BatchProgressTracker {
       completed: this.completed,
       failed: this.failed,
       elapsedTime: elapsed,
-      successRate: this.totalProjects > 0 ? (this.completed / this.totalProjects * 100).toFixed(1) : 0
+      successRate:
+        this.totalProjects > 0 ? ((this.completed / this.totalProjects) * 100).toFixed(1) : 0,
     };
   }
 }
@@ -105,7 +100,7 @@ class ResourceManager {
 
   async acquire() {
     while (this.currentTasks >= this.maxConcurrency) {
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         this.queue.push(resolve);
       });
     }
@@ -144,13 +139,13 @@ const PROJECT_TEMPLATES = {
         scripts: {
           start: 'node src/index.js',
           dev: 'nodemon src/index.js',
-          test: 'jest'
+          test: 'jest',
         },
         dependencies: {
           express: '^4.18.0',
           cors: '^2.8.5',
-          dotenv: '^16.0.0'
-        }
+          dotenv: '^16.0.0',
+        },
       },
       'src/index.js': `import express from 'express';
 import cors from 'cors';
@@ -168,8 +163,8 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(\`Server running on port \${PORT}\`);
 });
-`
-    }
+`,
+    },
   },
   'react-app': {
     name: 'React Application',
@@ -184,13 +179,13 @@ app.listen(PORT, () => {
           react: '^18.2.0',
           'react-dom': '^18.2.0',
           'react-scripts': '5.0.1',
-          typescript: '^4.9.5'
+          typescript: '^4.9.5',
         },
         scripts: {
           start: 'react-scripts start',
           build: 'react-scripts build',
-          test: 'react-scripts test'
-        }
+          test: 'react-scripts test',
+        },
       },
       'tsconfig.json': {
         compilerOptions: {
@@ -202,17 +197,17 @@ app.listen(PORT, () => {
           strict: true,
           esModuleInterop: true,
           skipLibCheck: true,
-          forceConsistentCasingInFileNames: true
-        }
-      }
-    }
+          forceConsistentCasingInFileNames: true,
+        },
+      },
+    },
   },
-  'microservice': {
+  microservice: {
     name: 'Microservice',
     description: 'Containerized microservice with Docker',
     extraDirs: ['src', 'config', 'tests', 'scripts'],
     extraFiles: {
-      'Dockerfile': `FROM node:18-alpine
+      Dockerfile: `FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
@@ -240,8 +235,8 @@ README.md
 .DS_Store
 coverage
 .nyc_output
-`
-    }
+`,
+    },
   },
   'cli-tool': {
     name: 'CLI Tool',
@@ -253,12 +248,12 @@ coverage
         version: '1.0.0',
         type: 'module',
         bin: {
-          '{{PROJECT_NAME}}': './src/cli.js'
+          '{{PROJECT_NAME}}': './src/cli.js',
         },
         scripts: {
           test: 'jest',
-          lint: 'eslint src/'
-        }
+          lint: 'eslint src/',
+        },
       },
       'src/cli.js': `#!/usr/bin/env node
 import { Command } from 'commander';
@@ -279,9 +274,9 @@ program
   });
 
 program.parse();
-`
-    }
-  }
+`,
+    },
+  },
 };
 
 // Environment configurations
@@ -292,8 +287,8 @@ const ENVIRONMENT_CONFIGS = {
     config: {
       NODE_ENV: 'development',
       DEBUG: 'true',
-      LOG_LEVEL: 'debug'
-    }
+      LOG_LEVEL: 'debug',
+    },
   },
   staging: {
     name: 'staging',
@@ -301,8 +296,8 @@ const ENVIRONMENT_CONFIGS = {
     config: {
       NODE_ENV: 'staging',
       DEBUG: 'false',
-      LOG_LEVEL: 'info'
-    }
+      LOG_LEVEL: 'info',
+    },
   },
   prod: {
     name: 'production',
@@ -310,9 +305,9 @@ const ENVIRONMENT_CONFIGS = {
     config: {
       NODE_ENV: 'production',
       DEBUG: 'false',
-      LOG_LEVEL: 'error'
-    }
-  }
+      LOG_LEVEL: 'error',
+    },
+  },
 };
 
 // Initialize a single project with options
@@ -323,17 +318,19 @@ async function initializeProject(projectPath, options = {}) {
     sparc = false,
     minimal = false,
     force = false,
-    customConfig = {}
+    customConfig = {},
   } = options;
 
   try {
     // Get absolute project path
     const currentDir = cwd();
-    const absoluteProjectPath = projectPath.startsWith('/') ? projectPath : `${currentDir}/${projectPath}`;
-    
+    const absoluteProjectPath = projectPath.startsWith('/')
+      ? projectPath
+      : `${currentDir}/${projectPath}`;
+
     // Create project directory
     await Deno.mkdir(absoluteProjectPath, { recursive: true });
-    
+
     // Change to project directory
     const originalDir = cwd();
     process.chdir(absoluteProjectPath);
@@ -350,7 +347,7 @@ async function initializeProject(projectPath, options = {}) {
       '.claude',
       '.claude/commands',
       '.claude/commands/sparc',
-      '.claude/logs'
+      '.claude/logs',
     ];
 
     // Add template-specific directories
@@ -362,16 +359,19 @@ async function initializeProject(projectPath, options = {}) {
     }
 
     // Create all directories in parallel
-    await Promise.all(directories.map(dir => 
-      Deno.mkdir(dir, { recursive: true }).catch(() => {})
-    ));
+    await Promise.all(
+      directories.map((dir) => Deno.mkdir(dir, { recursive: true }).catch(() => {})),
+    );
 
     // Create configuration files in parallel
     const fileCreationTasks = [];
 
     // CLAUDE.md
-    const claudeMd = sparc ? createSparcClaudeMd() : 
-                     minimal ? createMinimalClaudeMd() : createFullClaudeMd();
+    const claudeMd = sparc
+      ? createSparcClaudeMd()
+      : minimal
+        ? createMinimalClaudeMd()
+        : createFullClaudeMd();
     fileCreationTasks.push(Deno.writeTextFile('CLAUDE.md', claudeMd));
 
     // memory-bank.md
@@ -385,7 +385,7 @@ async function initializeProject(projectPath, options = {}) {
     // README files
     fileCreationTasks.push(
       Deno.writeTextFile('memory/agents/README.md', createAgentsReadme()),
-      Deno.writeTextFile('memory/sessions/README.md', createSessionsReadme())
+      Deno.writeTextFile('memory/sessions/README.md', createSessionsReadme()),
     );
 
     // Persistence database
@@ -395,10 +395,10 @@ async function initializeProject(projectPath, options = {}) {
       environment: environment,
       template: template,
       customConfig: customConfig,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     };
     fileCreationTasks.push(
-      Deno.writeTextFile('memory/claude-flow-data.json', JSON.stringify(initialData, null, 2))
+      Deno.writeTextFile('memory/claude-flow-data.json', JSON.stringify(initialData, null, 2)),
     );
 
     // Environment configuration
@@ -415,15 +415,15 @@ async function initializeProject(projectPath, options = {}) {
       const templateConfig = PROJECT_TEMPLATES[template];
       if (templateConfig.extraFiles) {
         for (const [filePath, content] of Object.entries(templateConfig.extraFiles)) {
-          let fileContent = typeof content === 'object' ? 
-            JSON.stringify(content, null, 2) : content;
-          
+          let fileContent =
+            typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
+
           // Replace template variables
           fileContent = fileContent
             .replace(/{{PROJECT_NAME}}/g, projectPath.split('/').pop())
             .replace(/{{PROJECT_DESCRIPTION}}/g, templateConfig.description)
             .replace(/{{ENVIRONMENT}}/g, environment);
-          
+
           fileCreationTasks.push(Deno.writeTextFile(filePath, fileContent));
         }
       }
@@ -458,7 +458,7 @@ export async function batchInitCommand(projects, options = {}) {
     minimal = false,
     force = false,
     progressTracking = true,
-    performanceMonitoring = true
+    performanceMonitoring = true,
   } = options;
 
   if (!projects || projects.length === 0) {
@@ -469,31 +469,33 @@ export async function batchInitCommand(projects, options = {}) {
   const totalProjects = projects.length * environments.length;
   const tracker = progressTracking ? new BatchProgressTracker(totalProjects) : null;
   const resourceManager = new ResourceManager(parallel ? maxConcurrency : 1);
-  
+
   // Initialize performance monitoring
-  const perfMonitor = new PerformanceMonitor({ 
+  const perfMonitor = new PerformanceMonitor({
     enabled: performanceMonitoring,
-    logLevel: 'info'
+    logLevel: 'info',
   });
-  
+
   const resourceMonitor = new ResourceThresholdMonitor({
     maxMemoryMB: 2048,
-    ...ResourceThresholdMonitor.createDefaultCallbacks()
+    ...ResourceThresholdMonitor.createDefaultCallbacks(),
   });
-  
+
   // Calculate optimal settings
   const optimalConcurrency = BatchOptimizer.calculateOptimalConcurrency(totalProjects);
   const timeEstimate = BatchOptimizer.estimateCompletionTime(totalProjects, options);
   const recommendations = BatchOptimizer.generateRecommendations(totalProjects, options);
-  
+
   if (maxConcurrency > optimalConcurrency) {
     printWarning(`Concurrency ${maxConcurrency} may be too high. Optimal: ${optimalConcurrency}`);
   }
-  
+
   perfMonitor.start();
   resourceMonitor.start();
 
-  printSuccess(`Starting batch initialization for ${projects.length} projects across ${environments.length} environments`);
+  printSuccess(
+    `Starting batch initialization for ${projects.length} projects across ${environments.length} environments`,
+  );
   console.log(`Template: ${template || 'default'}`);
   console.log(`Parallelism: ${parallel ? `Yes (max ${maxConcurrency} concurrent)` : 'No'}`);
   console.log(`SPARC: ${sparc ? 'Enabled' : 'Disabled'}\n`);
@@ -503,12 +505,15 @@ export async function batchInitCommand(projects, options = {}) {
 
   for (const project of projects) {
     for (const env of environments) {
-      const projectPath = environments.length > 1 ? 
-        `${project}-${env}` : project;
+      const projectPath = environments.length > 1 ? `${project}-${env}` : project;
 
       const initTask = async () => {
         if (tracker) tracker.startProject(projectPath);
-        perfMonitor.recordOperation('project-init-start', { projectPath, template, environment: env });
+        perfMonitor.recordOperation('project-init-start', {
+          projectPath,
+          template,
+          environment: env,
+        });
 
         const result = await resourceManager.withResource(async () => {
           return await initializeProject(projectPath, {
@@ -516,7 +521,7 @@ export async function batchInitCommand(projects, options = {}) {
             environment: env,
             sparc,
             minimal,
-            force
+            force,
           });
         });
 
@@ -545,7 +550,7 @@ export async function batchInitCommand(projects, options = {}) {
   // Final report
   console.log('\n\n📊 Batch Initialization Report');
   console.log('================================');
-  
+
   if (tracker) {
     const report = tracker.getReport();
     console.log(`Total Projects: ${report.total}`);
@@ -557,30 +562,30 @@ export async function batchInitCommand(projects, options = {}) {
   }
 
   // List successful projects
-  const successful = results.filter(r => r.success);
+  const successful = results.filter((r) => r.success);
   if (successful.length > 0) {
     console.log('\n✅ Successfully initialized:');
-    successful.forEach(r => console.log(`  - ${r.projectPath}`));
+    successful.forEach((r) => console.log(`  - ${r.projectPath}`));
   }
 
   // List failed projects
-  const failed = results.filter(r => !r.success);
+  const failed = results.filter((r) => !r.success);
   if (failed.length > 0) {
     console.log('\n❌ Failed to initialize:');
-    failed.forEach(r => console.log(`  - ${r.projectPath}: ${r.error}`));
+    failed.forEach((r) => console.log(`  - ${r.projectPath}: ${r.error}`));
   }
-  
+
   // Stop monitoring and generate performance report
   perfMonitor.stop();
   resourceMonitor.stop();
-  
+
   if (performanceMonitoring) {
     console.log(perfMonitor.generateReport());
-    
+
     // Show recommendations
     if (recommendations.length > 0) {
       console.log('\n💡 Recommendations:');
-      recommendations.forEach(rec => console.log(`  • ${rec}`));
+      recommendations.forEach((rec) => console.log(`  • ${rec}`));
     }
   }
 
@@ -603,11 +608,7 @@ export async function batchInitFromConfig(configFile, options = {}) {
   const config = await parseBatchConfig(configFile);
   if (!config) return;
 
-  const {
-    projects = [],
-    baseOptions = {},
-    projectConfigs = {}
-  } = config;
+  const { projects = [], baseOptions = {}, projectConfigs = {} } = config;
 
   // Merge options with config
   const mergedOptions = { ...baseOptions, ...options };
@@ -641,13 +642,17 @@ export function validateBatchOptions(options) {
   }
 
   if (options.template && !PROJECT_TEMPLATES[options.template]) {
-    errors.push(`Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`);
+    errors.push(
+      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,
+    );
   }
 
   if (options.environments) {
     for (const env of options.environments) {
       if (!ENVIRONMENT_CONFIGS[env]) {
-        errors.push(`Unknown environment: ${env}. Available: ${Object.keys(ENVIRONMENT_CONFIGS).join(', ')}`);
+        errors.push(
+          `Unknown environment: ${env}. Available: ${Object.keys(ENVIRONMENT_CONFIGS).join(', ')}`,
+        );
       }
     }
   }

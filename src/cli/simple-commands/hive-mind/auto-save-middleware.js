@@ -23,27 +23,27 @@ export class AutoSaveMiddleware {
     if (this.isActive) {
       return;
     }
-    
+
     this.isActive = true;
-    
+
     // Set up periodic saves
     this.saveTimer = setInterval(() => {
       if (this.pendingChanges.length > 0) {
         this.performAutoSave();
       }
     }, this.saveInterval);
-    
+
     // Also save on process exit
     process.on('beforeExit', () => {
       this.performAutoSave();
     });
-    
+
     process.on('SIGINT', async () => {
       console.log('\n\nReceived SIGINT, cleaning up...');
       await this.cleanup();
       process.exit(0);
     });
-    
+
     process.on('SIGTERM', async () => {
       console.log('\n\nReceived SIGTERM, cleaning up...');
       await this.cleanup();
@@ -60,12 +60,12 @@ export class AutoSaveMiddleware {
       this.saveTimer = null;
     }
     this.isActive = false;
-    
+
     // Final save
     if (this.pendingChanges.length > 0) {
       this.performAutoSave();
     }
-    
+
     this.sessionManager.close();
   }
 
@@ -76,11 +76,15 @@ export class AutoSaveMiddleware {
     this.pendingChanges.push({
       type: changeType,
       data: data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     // Trigger immediate save for critical changes
-    if (changeType === 'task_completed' || changeType === 'agent_spawned' || changeType === 'consensus_reached') {
+    if (
+      changeType === 'task_completed' ||
+      changeType === 'agent_spawned' ||
+      changeType === 'consensus_reached'
+    ) {
       this.performAutoSave();
     }
   }
@@ -92,7 +96,7 @@ export class AutoSaveMiddleware {
     this.trackChange('task_progress', {
       taskId,
       status,
-      result
+      result,
     });
   }
 
@@ -103,7 +107,7 @@ export class AutoSaveMiddleware {
     this.trackChange('agent_activity', {
       agentId,
       activity,
-      data
+      data,
     });
   }
 
@@ -114,7 +118,7 @@ export class AutoSaveMiddleware {
     this.trackChange('memory_update', {
       key,
       value,
-      type
+      type,
     });
   }
 
@@ -125,7 +129,7 @@ export class AutoSaveMiddleware {
     this.trackChange('consensus_reached', {
       topic,
       decision,
-      votes
+      votes,
     });
   }
 
@@ -136,7 +140,7 @@ export class AutoSaveMiddleware {
     if (this.pendingChanges.length === 0) {
       return;
     }
-    
+
     try {
       // Group changes by type
       const changesByType = this.pendingChanges.reduce((acc, change) => {
@@ -146,13 +150,14 @@ export class AutoSaveMiddleware {
         acc[change.type].push(change);
         return acc;
       }, {});
-      
+
       // Calculate progress
       const taskProgress = changesByType.task_progress || [];
-      const completedTasks = taskProgress.filter(t => t.data.status === 'completed').length;
+      const completedTasks = taskProgress.filter((t) => t.data.status === 'completed').length;
       const totalTasks = taskProgress.length;
-      const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-      
+      const completionPercentage =
+        totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
       // Create checkpoint data
       const checkpointData = {
         timestamp: new Date().toISOString(),
@@ -163,19 +168,19 @@ export class AutoSaveMiddleware {
           tasksCompleted: completedTasks,
           memoryUpdates: (changesByType.memory_update || []).length,
           agentActivities: (changesByType.agent_activity || []).length,
-          consensusDecisions: (changesByType.consensus_reached || []).length
-        }
+          consensusDecisions: (changesByType.consensus_reached || []).length,
+        },
       };
-      
+
       // Save checkpoint
       const checkpointName = `auto-save-${Date.now()}`;
       await this.sessionManager.saveCheckpoint(this.sessionId, checkpointName, checkpointData);
-      
+
       // Update session progress
       if (completionPercentage > 0) {
         this.sessionManager.updateSessionProgress(this.sessionId, completionPercentage);
       }
-      
+
       // Log all changes as session events
       for (const change of this.pendingChanges) {
         this.sessionManager.logSessionEvent(
@@ -183,13 +188,12 @@ export class AutoSaveMiddleware {
           'info',
           `Auto-save: ${change.type}`,
           change.data.agentId || null,
-          change.data
+          change.data,
         );
       }
-      
+
       // Clear pending changes
       this.pendingChanges = [];
-      
     } catch (error) {
       console.error('Auto-save failed:', error);
       // Keep changes for next attempt
@@ -224,7 +228,7 @@ export class AutoSaveMiddleware {
     if (childProcess && childProcess.pid) {
       this.childProcesses.add(childProcess);
       this.sessionManager.addChildPid(this.sessionId, childProcess.pid);
-      
+
       // Remove from tracking when process exits
       childProcess.on('exit', () => {
         this.childProcesses.delete(childProcess);
@@ -243,20 +247,20 @@ export class AutoSaveMiddleware {
         clearInterval(this.saveTimer);
         this.saveTimer = null;
       }
-      
+
       // Perform final save
       await this.performAutoSave();
-      
+
       // Terminate all child processes
       for (const childProcess of this.childProcesses) {
         try {
           if (childProcess.pid) {
             console.log(`Terminating child process ${childProcess.pid}...`);
             childProcess.kill('SIGTERM');
-            
+
             // Give it a moment to terminate gracefully
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
             // Force kill if still alive
             try {
               process.kill(childProcess.pid, 0); // Check if still alive
@@ -269,19 +273,19 @@ export class AutoSaveMiddleware {
           console.error(`Failed to terminate child process:`, error.message);
         }
       }
-      
+
       // Clear the set
       this.childProcesses.clear();
-      
+
       // Stop the session if it's still active
       const session = this.sessionManager.getSession(this.sessionId);
       if (session && (session.status === 'active' || session.status === 'paused')) {
         await this.sessionManager.stopSession(this.sessionId);
       }
-      
+
       // Close database connection
       this.sessionManager.close();
-      
+
       console.log('Cleanup completed successfully');
     } catch (error) {
       console.error('Error during cleanup:', error);
@@ -295,11 +299,11 @@ export class AutoSaveMiddleware {
 export function createAutoSaveMiddleware(sessionId, options = {}) {
   const saveInterval = options.saveInterval || 30000; // Default 30 seconds
   const middleware = new AutoSaveMiddleware(sessionId, saveInterval);
-  
+
   if (options.autoStart !== false) {
     middleware.start();
   }
-  
+
   return middleware;
 }
 

@@ -1,4 +1,3 @@
-import { getErrorMessage } from '../../utils/error-handler.js';
 /**
  * SQLite backend implementation for memory storage
  */
@@ -100,11 +99,11 @@ export class SQLiteBackend implements IMemoryBackend {
     }
 
     const sql = 'SELECT * FROM memory_entries WHERE id = ?';
-    
+
     try {
       const stmt = this.db.prepare(sql);
       const row = stmt.get(id);
-      
+
       if (!row) {
         return undefined;
       }
@@ -126,7 +125,7 @@ export class SQLiteBackend implements IMemoryBackend {
     }
 
     const sql = 'DELETE FROM memory_entries WHERE id = ?';
-    
+
     try {
       const stmt = this.db.prepare(sql);
       stmt.run(id);
@@ -194,7 +193,7 @@ export class SQLiteBackend implements IMemoryBackend {
     if (query.offset) {
       // SQLite requires LIMIT when using OFFSET
       if (!query.limit) {
-        sql += ' LIMIT -1';  // -1 means no limit in SQLite
+        sql += ' LIMIT -1'; // -1 means no limit in SQLite
       }
       sql += ' OFFSET ?';
       params.push(query.offset);
@@ -215,7 +214,7 @@ export class SQLiteBackend implements IMemoryBackend {
     }
 
     const sql = 'SELECT * FROM memory_entries ORDER BY timestamp DESC';
-    
+
     try {
       const stmt = this.db.prepare(sql);
       const rows = stmt.all();
@@ -225,9 +224,9 @@ export class SQLiteBackend implements IMemoryBackend {
     }
   }
 
-  async getHealthStatus(): Promise<{ 
-    healthy: boolean; 
-    error?: string; 
+  async getHealthStatus(): Promise<{
+    healthy: boolean;
+    error?: string;
     metrics?: Record<string, number>;
   }> {
     if (!this.db) {
@@ -242,10 +241,16 @@ export class SQLiteBackend implements IMemoryBackend {
       this.db.prepare('SELECT 1').get();
 
       // Get metrics
-      const countResult = this.db.prepare('SELECT COUNT(*) as count FROM memory_entries').get() as any;
+      const countResult = this.db
+        .prepare('SELECT COUNT(*) as count FROM memory_entries')
+        .get() as any;
       const entryCount = countResult.count;
 
-      const sizeResult = this.db.prepare('SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()').get() as any;
+      const sizeResult = this.db
+        .prepare(
+          'SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()',
+        )
+        .get() as any;
       const dbSize = sizeResult.size;
 
       return {
@@ -311,16 +316,15 @@ export class SQLiteBackend implements IMemoryBackend {
       tags: JSON.parse(row.tags as string),
       version: row.version as number,
     };
-    
+
     if (row.parent_id) {
       entry.parentId = row.parent_id as string;
     }
-    
+
     if (row.metadata) {
       entry.metadata = JSON.parse(row.metadata as string);
     }
-    
+
     return entry;
   }
 }
-

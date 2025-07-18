@@ -31,12 +31,14 @@ init/
 ### With `--sparc` flag:
 
 1. **Claude Code Configuration**:
+
    - `CLAUDE.md` - SPARC-enhanced project instructions
    - `.claude/` directory structure
    - `.claude/commands/` - Slash commands for Claude Code
    - `.claude/logs/` - Conversation logs directory
 
 2. **Memory System**:
+
    - `memory-bank.md` - Memory system documentation
    - `memory/` directory structure
    - `memory/agents/` - Agent-specific memory
@@ -44,14 +46,17 @@ init/
    - `memory/claude-flow-data.json` - Persistence database
 
 3. **Coordination System**:
+
    - `coordination.md` - Agent coordination documentation
    - `coordination/` directory structure
 
 4. **SPARC Environment**:
+
    - `.roomodes` - SPARC mode configurations (17+ modes)
    - `.roo/` directory with templates and workflows
 
 5. **Slash Commands Created**:
+
    - `/sparc` - Main SPARC command
    - `/sparc-<mode>` - Individual mode commands (architect, code, tdd, etc.)
    - `/claude-flow-help` - Help command
@@ -63,9 +68,11 @@ init/
    - `claude-flow.cmd` (Windows)
 
 ### With `--minimal` flag:
+
 Creates minimal versions of all configuration files without SPARC features.
 
 ### With `--force` flag:
+
 Overwrites existing files if they already exist.
 
 ## Usage

@@ -18,9 +18,9 @@ export class SparcRefinement extends SparcPhase {
    */
   async execute() {
     console.log('🔧 Starting Refinement Phase');
-    
+
     await this.initializePhase();
-    
+
     const result = {
       tddCycles: [],
       implementations: [],
@@ -31,7 +31,7 @@ export class SparcRefinement extends SparcPhase {
       security: {},
       documentation: {},
       refactoring: {},
-      validation: {}
+      validation: {},
     };
 
     try {
@@ -39,38 +39,43 @@ export class SparcRefinement extends SparcPhase {
       const specification = await this.retrieveFromMemory('specification_complete');
       const pseudocode = await this.retrieveFromMemory('pseudocode_complete');
       const architecture = await this.retrieveFromMemory('architecture_complete');
-      
+
       if (!specification || !pseudocode || !architecture) {
-        throw new Error('Specification, Pseudocode, and Architecture phases must be completed first');
+        throw new Error(
+          'Specification, Pseudocode, and Architecture phases must be completed first',
+        );
       }
 
       // Execute TDD cycles
       result.tddCycles = await this.executeTddCycles(specification, pseudocode, architecture);
-      
+
       // Generate implementations
       result.implementations = await this.generateImplementations(architecture);
-      
+
       // Run tests and collect results
       result.testResults = await this.runTests(result.tddCycles);
-      
+
       // Analyze code quality
       result.codeQuality = await this.analyzeCodeQuality(result.implementations);
-      
+
       // Apply optimizations
-      result.optimizations = await this.applyOptimizations(result.implementations, result.codeQuality);
-      
+      result.optimizations = await this.applyOptimizations(
+        result.implementations,
+        result.codeQuality,
+      );
+
       // Analyze performance
       result.performance = await this.analyzePerformance(result.implementations);
-      
+
       // Analyze security
       result.security = await this.analyzeSecurity(result.implementations);
-      
+
       // Generate documentation
       result.documentation = await this.generateDocumentation(result.implementations);
-      
+
       // Apply refactoring
       result.refactoring = await this.applyRefactoring(result.implementations, result.codeQuality);
-      
+
       // Final validation
       result.validation = await this.performFinalValidation(result);
 
@@ -82,7 +87,6 @@ export class SparcRefinement extends SparcPhase {
 
       console.log('✅ Refinement phase completed');
       return result;
-
     } catch (error) {
       console.error('❌ Refinement phase failed:', error.message);
       throw error;
@@ -95,10 +99,10 @@ export class SparcRefinement extends SparcPhase {
   async executeTddCycles(specification, pseudocode, architecture) {
     const cycles = [];
     const requirements = specification.requirements || [];
-    
+
     for (const [index, requirement] of requirements.entries()) {
       console.log(`🔄 TDD Cycle ${index + 1}: ${requirement}`);
-      
+
       const cycle = {
         id: `tdd-cycle-${index + 1}`,
         requirement: requirement,
@@ -106,31 +110,31 @@ export class SparcRefinement extends SparcPhase {
         greenPhase: null,
         refactorPhase: null,
         duration: 0,
-        success: false
+        success: false,
       };
 
       const startTime = Date.now();
-      
+
       try {
         // RED: Write failing test
         cycle.redPhase = await this.executeRedPhase(requirement, architecture);
-        
+
         // GREEN: Make test pass with minimal implementation
         cycle.greenPhase = await this.executeGreenPhase(cycle.redPhase, architecture);
-        
+
         // REFACTOR: Improve code while keeping tests green
         cycle.refactorPhase = await this.executeRefactorPhase(cycle.greenPhase, architecture);
-        
+
         cycle.success = true;
       } catch (error) {
         cycle.error = error.message;
         cycle.success = false;
       }
-      
+
       cycle.duration = Date.now() - startTime;
       cycles.push(cycle);
     }
-    
+
     return cycles;
   }
 
@@ -142,12 +146,12 @@ export class SparcRefinement extends SparcPhase {
       phase: 'red',
       requirement: requirement,
       tests: [],
-      status: 'completed'
+      status: 'completed',
     };
 
     // Generate test cases for the requirement
     const testCases = this.generateTestCases(requirement, architecture);
-    
+
     for (const testCase of testCases) {
       const test = {
         name: testCase.name,
@@ -155,9 +159,9 @@ export class SparcRefinement extends SparcPhase {
         code: this.generateTestCode(testCase),
         expected: 'fail',
         actual: 'fail',
-        passed: false
+        passed: false,
       };
-      
+
       redPhase.tests.push(test);
     }
 
@@ -173,26 +177,28 @@ export class SparcRefinement extends SparcPhase {
       phase: 'green',
       implementations: [],
       testResults: [],
-      status: 'completed'
+      status: 'completed',
     };
 
     // Generate minimal implementation for each test
     for (const test of redPhase.tests) {
       const implementation = this.generateMinimalImplementation(test, architecture);
       greenPhase.implementations.push(implementation);
-      
+
       // Simulate test run
       const testResult = {
         testName: test.name,
         passed: true,
         executionTime: Math.random() * 100 + 50, // 50-150ms
-        assertions: this.generateAssertions(test)
+        assertions: this.generateAssertions(test),
       };
-      
+
       greenPhase.testResults.push(testResult);
     }
 
-    console.log(`  🟢 GREEN: Made ${greenPhase.testResults.filter(t => t.passed).length} tests pass`);
+    console.log(
+      `  🟢 GREEN: Made ${greenPhase.testResults.filter((t) => t.passed).length} tests pass`,
+    );
     return greenPhase;
   }
 
@@ -205,14 +211,14 @@ export class SparcRefinement extends SparcPhase {
       refactorings: [],
       improvedImplementations: [],
       testResults: [],
-      status: 'completed'
+      status: 'completed',
     };
 
     // Apply refactoring to each implementation
     for (const implementation of greenPhase.implementations) {
       const refactoring = this.applyRefactoringTechniques(implementation);
       refactorPhase.refactorings.push(refactoring);
-      
+
       const improvedImplementation = this.generateRefactoredCode(implementation, refactoring);
       refactorPhase.improvedImplementations.push(improvedImplementation);
     }
@@ -222,13 +228,15 @@ export class SparcRefinement extends SparcPhase {
       const newTestResult = {
         ...testResult,
         passed: true, // Assume refactoring maintains functionality
-        executionTime: testResult.executionTime * (0.8 + Math.random() * 0.4) // Slight performance variation
+        executionTime: testResult.executionTime * (0.8 + Math.random() * 0.4), // Slight performance variation
       };
-      
+
       refactorPhase.testResults.push(newTestResult);
     }
 
-    console.log(`  🔵 REFACTOR: Applied ${refactorPhase.refactorings.length} refactoring techniques`);
+    console.log(
+      `  🔵 REFACTOR: Applied ${refactorPhase.refactorings.length} refactoring techniques`,
+    );
     return refactorPhase;
   }
 
@@ -238,14 +246,14 @@ export class SparcRefinement extends SparcPhase {
   generateTestCases(requirement, architecture) {
     const testCases = [];
     const reqLower = requirement.toLowerCase();
-    
+
     // Happy path test
     testCases.push({
       name: `test_${this.camelCase(requirement)}_success`,
       description: `Test successful execution of ${requirement}`,
       type: 'positive',
       scenario: 'valid input',
-      expected: 'success'
+      expected: 'success',
     });
 
     // Error cases
@@ -254,7 +262,7 @@ export class SparcRefinement extends SparcPhase {
       description: `Test ${requirement} with invalid input`,
       type: 'negative',
       scenario: 'invalid input',
-      expected: 'error'
+      expected: 'error',
     });
 
     // Edge cases
@@ -264,7 +272,7 @@ export class SparcRefinement extends SparcPhase {
         description: `Test ${requirement} with empty data`,
         type: 'edge',
         scenario: 'empty data',
-        expected: 'handled gracefully'
+        expected: 'handled gracefully',
       });
     }
 
@@ -275,7 +283,7 @@ export class SparcRefinement extends SparcPhase {
         description: `Test ${requirement} performance under load`,
         type: 'performance',
         scenario: 'high load',
-        expected: 'acceptable response time'
+        expected: 'acceptable response time',
       });
     }
 
@@ -287,7 +295,7 @@ export class SparcRefinement extends SparcPhase {
    */
   generateTestCode(testCase) {
     const functionName = this.extractFunctionName(testCase.name);
-    
+
     return `describe('${testCase.description}', () => {
   test('${testCase.name}', async () => {
     // Arrange
@@ -295,15 +303,19 @@ export class SparcRefinement extends SparcPhase {
     const expected = ${this.generateExpectedOutput(testCase)};
     
     // Act
-    ${testCase.type === 'negative' ? `
+    ${
+      testCase.type === 'negative'
+        ? `
     const action = () => ${functionName}(input);
     
     // Assert
-    expect(action).toThrow();` : `
+    expect(action).toThrow();`
+        : `
     const result = await ${functionName}(input);
     
     // Assert
-    expect(result).toEqual(expected);`}
+    expect(result).toEqual(expected);`
+    }
   });
 });`;
   }
@@ -314,14 +326,14 @@ export class SparcRefinement extends SparcPhase {
   generateMinimalImplementation(test, architecture) {
     const functionName = this.extractFunctionName(test.name);
     const component = this.findRelevantComponent(test, architecture);
-    
+
     return {
       name: functionName,
       component: component ? component.name : 'DefaultComponent',
       code: this.generateMinimalCode(test, functionName),
       dependencies: component ? component.dependencies : [],
       complexity: 'low',
-      testCoverage: 100
+      testCoverage: 100,
     };
   }
 
@@ -330,7 +342,7 @@ export class SparcRefinement extends SparcPhase {
    */
   generateMinimalCode(test, functionName) {
     const testType = test.expected;
-    
+
     if (testType === 'fail' || test.type === 'negative') {
       return `async function ${functionName}(input) {
   // Minimal implementation to make test pass
@@ -379,13 +391,13 @@ function processInput(input) {
    */
   applyRefactoringTechniques(implementation) {
     const refactorings = [];
-    
+
     // Extract method refactoring
     if (implementation.code.length > 500) {
       refactorings.push({
         technique: 'Extract Method',
         reason: 'Method too long',
-        description: 'Break down long method into smaller, focused methods'
+        description: 'Break down long method into smaller, focused methods',
       });
     }
 
@@ -393,28 +405,28 @@ function processInput(input) {
     refactorings.push({
       technique: 'Extract Variable',
       reason: 'Improve readability',
-      description: 'Extract complex expressions into well-named variables'
+      description: 'Extract complex expressions into well-named variables',
     });
 
     // Remove code duplication
     refactorings.push({
       technique: 'Remove Duplication',
       reason: 'DRY principle',
-      description: 'Extract common code into reusable functions'
+      description: 'Extract common code into reusable functions',
     });
 
     // Improve naming
     refactorings.push({
       technique: 'Rename Variables',
       reason: 'Clarity',
-      description: 'Use more descriptive variable and function names'
+      description: 'Use more descriptive variable and function names',
     });
 
     // Add error handling
     refactorings.push({
       technique: 'Improve Error Handling',
       reason: 'Robustness',
-      description: 'Add comprehensive error handling and logging'
+      description: 'Add comprehensive error handling and logging',
     });
 
     return refactorings;
@@ -430,7 +442,7 @@ function processInput(input) {
       code: this.improveCode(implementation.code, refactoring),
       complexity: this.reduceComplexity(implementation.complexity),
       maintainability: 'improved',
-      readability: 'improved'
+      readability: 'improved',
     };
   }
 
@@ -467,7 +479,7 @@ const ERROR_MESSAGES = {
    */
   async generateImplementations(architecture) {
     const implementations = [];
-    
+
     for (const component of architecture.components) {
       const implementation = {
         component: component.name,
@@ -477,7 +489,7 @@ const ERROR_MESSAGES = {
         interfaces: component.interfaces,
         patterns: component.patterns,
         size: 0,
-        complexity: component.complexity
+        complexity: component.complexity,
       };
 
       // Generate main implementation file
@@ -499,7 +511,7 @@ const ERROR_MESSAGES = {
 
       implementations.push(implementation);
     }
-    
+
     return implementations;
   }
 
@@ -508,8 +520,10 @@ const ERROR_MESSAGES = {
    */
   generateMainImplementationFile(component) {
     const className = component.name;
-    const dependencies = component.dependencies.map(dep => `import { ${dep} } from './${dep}';`).join('\n');
-    
+    const dependencies = component.dependencies
+      .map((dep) => `import { ${dep} } from './${dep}';`)
+      .join('\n');
+
     const code = `${dependencies}
 
 /**
@@ -517,8 +531,8 @@ const ERROR_MESSAGES = {
  * Patterns: ${component.patterns.join(', ')}
  */
 export class ${className} {
-  constructor(${component.dependencies.map(dep => dep.toLowerCase()).join(', ')}) {
-    ${component.dependencies.map(dep => `this.${dep.toLowerCase()} = ${dep.toLowerCase()};`).join('\n    ')}
+  constructor(${component.dependencies.map((dep) => dep.toLowerCase()).join(', ')}) {
+    ${component.dependencies.map((dep) => `this.${dep.toLowerCase()} = ${dep.toLowerCase()};`).join('\n    ')}
     this.initialized = false;
     this.startTime = Date.now();
   }
@@ -529,7 +543,7 @@ export class ${className} {
     }
     
     // Initialize dependencies
-    ${component.dependencies.map(dep => `await this.${dep.toLowerCase()}.initialize();`).join('\n    ')}
+    ${component.dependencies.map((dep) => `await this.${dep.toLowerCase()}.initialize();`).join('\n    ')}
     
     this.initialized = true;
     console.log('${className} initialized successfully');
@@ -577,7 +591,7 @@ export class ${className} {
 
   async cleanup() {
     // Cleanup resources
-    ${component.dependencies.map(dep => `await this.${dep.toLowerCase()}.cleanup();`).join('\n    ')}
+    ${component.dependencies.map((dep) => `await this.${dep.toLowerCase()}.cleanup();`).join('\n    ')}
     
     this.initialized = false;
     console.log('${className} cleanup completed');
@@ -588,7 +602,7 @@ export class ${className} {
       component: '${className}',
       initialized: this.initialized,
       uptime: Date.now() - this.startTime,
-      dependencies: [${component.dependencies.map(dep => `'${dep}'`).join(', ')}]
+      dependencies: [${component.dependencies.map((dep) => `'${dep}'`).join(', ')}]
     };
   }
 }
@@ -601,7 +615,7 @@ export default ${className};`;
       type: 'implementation',
       size: code.length,
       lines: code.split('\n').length,
-      code: code
+      code: code,
     };
   }
 
@@ -610,26 +624,26 @@ export default ${className};`;
    */
   generateComponentValidation(component) {
     const compType = component.type.toLowerCase();
-    
+
     switch (compType) {
       case 'controller':
         return `// Validate HTTP request structure
     if (!input.method || !input.path) {
       throw new Error('HTTP method and path required');
     }`;
-      
+
       case 'service':
         return `// Validate service input
     if (!input.data) {
       throw new Error('Service data required');
     }`;
-      
+
       case 'repository':
         return `// Validate data operations
     if (!input.operation || !input.entity) {
       throw new Error('Operation and entity required');
     }`;
-      
+
       default:
         return `// Generic validation
     if (Object.keys(input).length === 0) {
@@ -643,7 +657,7 @@ export default ${className};`;
    */
   generateComponentLogic(component) {
     const compType = component.type.toLowerCase();
-    
+
     switch (compType) {
       case 'controller':
         return `// Handle HTTP request
@@ -658,7 +672,7 @@ export default ${className};`;
       data: result,
       timestamp: new Date().toISOString()
     };`;
-      
+
       case 'service':
         return `// Process business logic
     const { data, operation } = input;
@@ -674,7 +688,7 @@ export default ${className};`;
       result: result,
       operation: operation
     };`;
-      
+
       case 'repository':
         return `// Handle data operations
     const { operation, entity, data } = input;
@@ -691,7 +705,7 @@ export default ${className};`;
       default:
         throw new Error(\`Unknown operation: \${operation}\`);
     }`;
-      
+
       default:
         return `// Generic processing
     const processedInput = await this.preProcess(input);
@@ -707,20 +721,20 @@ export default ${className};`;
    */
   generateTestFile(component) {
     const className = component.name;
-    
+
     const code = `import { ${className} } from '../${component.type}/${className}';
-${component.dependencies.map(dep => `import { Mock${dep} } from '../mocks/Mock${dep}';`).join('\n')}
+${component.dependencies.map((dep) => `import { Mock${dep} } from '../mocks/Mock${dep}';`).join('\n')}
 
 describe('${className}', () => {
   let ${className.toLowerCase()};
-  ${component.dependencies.map(dep => `let mock${dep};`).join('\n  ')}
+  ${component.dependencies.map((dep) => `let mock${dep};`).join('\n  ')}
 
   beforeEach(async () => {
     // Setup mocks
-    ${component.dependencies.map(dep => `mock${dep} = new Mock${dep}();`).join('\n    ')}
+    ${component.dependencies.map((dep) => `mock${dep} = new Mock${dep}();`).join('\n    ')}
     
     // Create instance
-    ${className.toLowerCase()} = new ${className}(${component.dependencies.map(dep => `mock${dep}`).join(', ')});
+    ${className.toLowerCase()} = new ${className}(${component.dependencies.map((dep) => `mock${dep}`).join(', ')});
     
     // Initialize
     await ${className.toLowerCase()}.initialize();
@@ -756,7 +770,7 @@ describe('${className}', () => {
     });
 
     test('should throw error when not initialized', async () => {
-      const uninitializedInstance = new ${className}(${component.dependencies.map(dep => `mock${dep}`).join(', ')});
+      const uninitializedInstance = new ${className}(${component.dependencies.map((dep) => `mock${dep}`).join(', ')});
       const input = ${this.generateValidTestInput(component)};
       
       await expect(uninitializedInstance.execute(input)).rejects.toThrow();
@@ -794,7 +808,7 @@ describe('${className}', () => {
       type: 'test',
       size: code.length,
       lines: code.split('\n').length,
-      code: code
+      code: code,
     };
   }
 
@@ -803,7 +817,7 @@ describe('${className}', () => {
    */
   generateValidTestInput(component) {
     const compType = component.type.toLowerCase();
-    
+
     switch (compType) {
       case 'controller':
         return `{
@@ -812,20 +826,20 @@ describe('${className}', () => {
         body: {},
         query: {}
       }`;
-      
+
       case 'service':
         return `{
         data: { id: 1, name: 'test' },
         operation: 'process'
       }`;
-      
+
       case 'repository':
         return `{
         operation: 'read',
         entity: 'User',
         data: { id: 1 }
       }`;
-      
+
       default:
         return `{
         id: 1,
@@ -847,7 +861,7 @@ describe('${className}', () => {
    */
   generateInterfaceFile(component) {
     const interfaceName = component.interfaces[0];
-    
+
     const code = `/**
  * ${interfaceName} - Interface for ${component.name}
  */
@@ -896,7 +910,7 @@ export default ${interfaceName};`;
       type: 'interface',
       size: code.length,
       lines: code.split('\n').length,
-      code: code
+      code: code,
     };
   }
 
@@ -911,7 +925,7 @@ export default ${interfaceName};`;
       skipped: 0,
       coverage: 0,
       duration: 0,
-      suites: []
+      suites: [],
     };
 
     for (const cycle of tddCycles) {
@@ -919,10 +933,10 @@ export default ${interfaceName};`;
         const suiteResult = {
           name: cycle.requirement,
           tests: cycle.refactorPhase.testResults.length,
-          passed: cycle.refactorPhase.testResults.filter(t => t.passed).length,
-          failed: cycle.refactorPhase.testResults.filter(t => !t.passed).length,
+          passed: cycle.refactorPhase.testResults.filter((t) => t.passed).length,
+          failed: cycle.refactorPhase.testResults.filter((t) => !t.passed).length,
           duration: cycle.duration,
-          coverage: 95 + Math.random() * 5 // 95-100% coverage
+          coverage: 95 + Math.random() * 5, // 95-100% coverage
         };
 
         testResults.suites.push(suiteResult);
@@ -932,7 +946,8 @@ export default ${interfaceName};`;
       }
     }
 
-    testResults.coverage = testResults.total > 0 ? (testResults.passed / testResults.total) * 100 : 0;
+    testResults.coverage =
+      testResults.total > 0 ? (testResults.passed / testResults.total) * 100 : 0;
     testResults.duration = tddCycles.reduce((total, cycle) => total + cycle.duration, 0);
 
     return testResults;
@@ -950,7 +965,7 @@ export default ${interfaceName};`;
       duplication: 0,
       testCoverage: 0,
       violations: [],
-      metrics: {}
+      metrics: {},
     };
 
     let totalSize = 0;
@@ -975,25 +990,37 @@ export default ${interfaceName};`;
       averageFileSize: totalFiles > 0 ? totalSize / totalFiles : 0,
       averageComplexity: implementations.length > 0 ? totalComplexity / implementations.length : 0,
       totalFiles: totalFiles,
-      totalLines: implementations.reduce((total, impl) => 
-        total + impl.files.reduce((fileTotal, file) => fileTotal + file.lines, 0), 0
+      totalLines: implementations.reduce(
+        (total, impl) => total + impl.files.reduce((fileTotal, file) => fileTotal + file.lines, 0),
+        0,
       ),
-      implementationFiles: implementations.reduce((total, impl) => 
-        total + impl.files.filter(f => f.type === 'implementation').length, 0
+      implementationFiles: implementations.reduce(
+        (total, impl) => total + impl.files.filter((f) => f.type === 'implementation').length,
+        0,
       ),
-      testFiles: implementations.reduce((total, impl) => 
-        total + impl.files.filter(f => f.type === 'test').length, 0
-      )
+      testFiles: implementations.reduce(
+        (total, impl) => total + impl.files.filter((f) => f.type === 'test').length,
+        0,
+      ),
     };
 
     // Calculate quality scores
-    quality.complexity = Math.max(0, 100 - (quality.metrics.averageComplexity * 10));
-    quality.maintainability = Math.max(0, 100 - (quality.violations.length * 5));
-    quality.readability = Math.max(0, 100 - (quality.metrics.averageFileSize / 20));
+    quality.complexity = Math.max(0, 100 - quality.metrics.averageComplexity * 10);
+    quality.maintainability = Math.max(0, 100 - quality.violations.length * 5);
+    quality.readability = Math.max(0, 100 - quality.metrics.averageFileSize / 20);
     quality.testCoverage = 95; // High coverage from TDD
-    quality.duplication = Math.max(0, 100 - (quality.violations.filter(v => v.type === 'duplication').length * 10));
+    quality.duplication = Math.max(
+      0,
+      100 - quality.violations.filter((v) => v.type === 'duplication').length * 10,
+    );
 
-    quality.overall = (quality.maintainability + quality.readability + quality.complexity + quality.testCoverage + quality.duplication) / 5;
+    quality.overall =
+      (quality.maintainability +
+        quality.readability +
+        quality.complexity +
+        quality.testCoverage +
+        quality.duplication) /
+      5;
 
     return quality;
   }
@@ -1019,7 +1046,7 @@ export default ${interfaceName};`;
           type: 'file_size',
           severity: 'warning',
           message: `File ${file.name} has ${file.lines} lines (>500)`,
-          file: file.name
+          file: file.name,
         });
       }
     }
@@ -1030,7 +1057,7 @@ export default ${interfaceName};`;
         type: 'complexity',
         severity: 'warning',
         message: `Component ${implementation.component} has high complexity`,
-        component: implementation.component
+        component: implementation.component,
       });
     }
 
@@ -1040,7 +1067,7 @@ export default ${interfaceName};`;
         type: 'dependencies',
         severity: 'info',
         message: `Component ${implementation.component} has ${implementation.dependencies.length} dependencies`,
-        component: implementation.component
+        component: implementation.component,
       });
     }
 
@@ -1060,7 +1087,7 @@ export default ${interfaceName};`;
         description: 'Apply caching to frequently accessed data',
         impact: 'Reduce response time by 30-50%',
         effort: 'medium',
-        implementation: 'Add Redis caching layer'
+        implementation: 'Add Redis caching layer',
       });
     }
 
@@ -1070,7 +1097,7 @@ export default ${interfaceName};`;
       description: 'Implement object pooling for heavy objects',
       impact: 'Reduce memory allocation overhead',
       effort: 'low',
-      implementation: 'Use object pools for database connections'
+      implementation: 'Use object pools for database connections',
     });
 
     // Database optimizations
@@ -1079,7 +1106,7 @@ export default ${interfaceName};`;
       description: 'Add database query optimization',
       impact: 'Reduce database load by 40%',
       effort: 'medium',
-      implementation: 'Add indexes and query optimization'
+      implementation: 'Add indexes and query optimization',
     });
 
     // Code structure optimizations
@@ -1089,7 +1116,7 @@ export default ${interfaceName};`;
         description: 'Refactor complex components',
         impact: 'Improve maintainability',
         effort: 'high',
-        implementation: 'Break down large classes into smaller ones'
+        implementation: 'Break down large classes into smaller ones',
       });
     }
 
@@ -1105,39 +1132,39 @@ export default ${interfaceName};`;
         average: 150,
         p95: 200,
         p99: 350,
-        max: 500
+        max: 500,
       },
       throughput: {
         requestsPerSecond: 1000,
         concurrent: 100,
-        peak: 1500
+        peak: 1500,
       },
       resource: {
         cpuUsage: 45,
         memoryUsage: 60,
         diskIO: 20,
-        networkIO: 30
+        networkIO: 30,
       },
       bottlenecks: [
         {
           component: 'Database queries',
           impact: 'High',
           description: 'Complex queries taking 100-200ms',
-          recommendation: 'Add indexes and query optimization'
+          recommendation: 'Add indexes and query optimization',
         },
         {
           component: 'External API calls',
           impact: 'Medium',
           description: 'Third-party API latency 50-100ms',
-          recommendation: 'Implement caching and connection pooling'
-        }
+          recommendation: 'Implement caching and connection pooling',
+        },
       ],
       recommendations: [
         'Implement caching for frequently accessed data',
         'Optimize database queries with proper indexing',
         'Use connection pooling for external services',
-        'Implement async processing for non-critical operations'
-      ]
+        'Implement async processing for non-critical operations',
+      ],
     };
 
     return performance;
@@ -1155,8 +1182,8 @@ export default ${interfaceName};`;
       compliance: {
         owasp: 'Partial',
         gdpr: 'Compliant',
-        iso27001: 'Partial'
-      }
+        iso27001: 'Partial',
+      },
     };
 
     // Check for common vulnerabilities
@@ -1166,15 +1193,15 @@ export default ${interfaceName};`;
         severity: 'Medium',
         description: 'Some inputs not fully validated',
         location: 'API endpoints',
-        remediation: 'Implement comprehensive input validation'
+        remediation: 'Implement comprehensive input validation',
       },
       {
         type: 'Error Handling',
         severity: 'Low',
         description: 'Error messages may leak sensitive information',
         location: 'Error handlers',
-        remediation: 'Sanitize error messages in production'
-      }
+        remediation: 'Sanitize error messages in production',
+      },
     ];
 
     // Security recommendations
@@ -1184,7 +1211,7 @@ export default ${interfaceName};`;
       'Use parameterized queries to prevent SQL injection',
       'Implement proper session management',
       'Add security headers (HSTS, CSP, etc.)',
-      'Regular security audits and penetration testing'
+      'Regular security audits and penetration testing',
     ];
 
     return security;
@@ -1199,21 +1226,23 @@ export default ${interfaceName};`;
       components: [],
       deployment: null,
       userGuide: null,
-      developerGuide: null
+      developerGuide: null,
     };
 
     // Generate API documentation
     documentation.api = this.generateApiDocumentation(implementations);
-    
+
     // Generate component documentation
-    documentation.components = implementations.map(impl => this.generateComponentDocumentation(impl));
-    
+    documentation.components = implementations.map((impl) =>
+      this.generateComponentDocumentation(impl),
+    );
+
     // Generate deployment documentation
     documentation.deployment = this.generateDeploymentDocumentation();
-    
+
     // Generate user guide
     documentation.userGuide = this.generateUserGuide();
-    
+
     // Generate developer guide
     documentation.developerGuide = this.generateDeveloperGuide();
 
@@ -1230,13 +1259,13 @@ export default ${interfaceName};`;
       description: 'RESTful API for the application',
       baseUrl: '/api/v1',
       endpoints: implementations
-        .filter(impl => impl.type === 'controller')
-        .map(impl => ({
+        .filter((impl) => impl.type === 'controller')
+        .map((impl) => ({
           path: `/api/${impl.component.toLowerCase()}`,
           methods: ['GET', 'POST', 'PUT', 'DELETE'],
           description: `${impl.component} operations`,
-          authentication: 'Bearer token required'
-        }))
+          authentication: 'Bearer token required',
+        })),
     };
   }
 
@@ -1248,15 +1277,15 @@ export default ${interfaceName};`;
       name: implementation.component,
       type: implementation.type,
       description: `${implementation.component} component documentation`,
-      files: implementation.files.map(file => ({
+      files: implementation.files.map((file) => ({
         name: file.name,
         path: file.path,
         type: file.type,
-        lines: file.lines
+        lines: file.lines,
       })),
       dependencies: implementation.dependencies,
       interfaces: implementation.interfaces,
-      usage: `Import and use ${implementation.component} for ${implementation.type} operations`
+      usage: `Import and use ${implementation.component} for ${implementation.type} operations`,
     };
   }
 
@@ -1270,17 +1299,17 @@ export default ${interfaceName};`;
         'Node.js 18+ installed',
         'npm or yarn package manager',
         'Database server configured',
-        'Environment variables set'
+        'Environment variables set',
       ],
       steps: [
         'Clone the repository',
         'Install dependencies: npm install',
         'Configure environment variables',
         'Run database migrations',
-        'Start the application: npm start'
+        'Start the application: npm start',
       ],
       environments: ['development', 'staging', 'production'],
-      monitoring: 'Use provided health check endpoints'
+      monitoring: 'Use provided health check endpoints',
     };
   }
 
@@ -1295,9 +1324,9 @@ export default ${interfaceName};`;
         'Basic Operations',
         'Advanced Features',
         'Troubleshooting',
-        'FAQ'
+        'FAQ',
       ],
-      description: 'Comprehensive guide for end users'
+      description: 'Comprehensive guide for end users',
     };
   }
 
@@ -1312,9 +1341,9 @@ export default ${interfaceName};`;
         'Development Setup',
         'Code Standards',
         'Testing Guidelines',
-        'Contribution Process'
+        'Contribution Process',
       ],
-      description: 'Guide for developers contributing to the project'
+      description: 'Guide for developers contributing to the project',
     };
   }
 
@@ -1326,7 +1355,7 @@ export default ${interfaceName};`;
       techniques: [],
       improvements: [],
       before: codeQuality,
-      after: null
+      after: null,
     };
 
     // Apply refactoring techniques based on quality issues
@@ -1334,7 +1363,7 @@ export default ${interfaceName};`;
       refactoring.techniques.push({
         name: 'Extract Method',
         description: 'Break down complex methods into smaller ones',
-        impact: 'Improved readability and testability'
+        impact: 'Improved readability and testability',
       });
     }
 
@@ -1342,7 +1371,7 @@ export default ${interfaceName};`;
       refactoring.techniques.push({
         name: 'Extract Common Code',
         description: 'Remove code duplication by extracting common functionality',
-        impact: 'Better maintainability and consistency'
+        impact: 'Better maintainability and consistency',
       });
     }
 
@@ -1350,7 +1379,7 @@ export default ${interfaceName};`;
       refactoring.techniques.push({
         name: 'Improve Naming',
         description: 'Use more descriptive variable and method names',
-        impact: 'Better code understanding'
+        impact: 'Better code understanding',
       });
     }
 
@@ -1360,7 +1389,7 @@ export default ${interfaceName};`;
       'Eliminated code duplication',
       'Improved variable naming consistency',
       'Enhanced error handling',
-      'Added comprehensive logging'
+      'Added comprehensive logging',
     ];
 
     // Simulate improved quality after refactoring
@@ -1370,16 +1399,16 @@ export default ${interfaceName};`;
       maintainability: Math.min(100, codeQuality.maintainability + 20),
       readability: Math.min(100, codeQuality.readability + 10),
       duplication: Math.min(100, codeQuality.duplication + 25),
-      overall: 0
+      overall: 0,
     };
-    
-    refactoring.after.overall = (
-      refactoring.after.complexity + 
-      refactoring.after.maintainability + 
-      refactoring.after.readability + 
-      refactoring.after.testCoverage + 
-      refactoring.after.duplication
-    ) / 5;
+
+    refactoring.after.overall =
+      (refactoring.after.complexity +
+        refactoring.after.maintainability +
+        refactoring.after.readability +
+        refactoring.after.testCoverage +
+        refactoring.after.duplication) /
+      5;
 
     return refactoring;
   }
@@ -1393,7 +1422,7 @@ export default ${interfaceName};`;
       score: 0,
       checks: [],
       issues: [],
-      recommendations: []
+      recommendations: [],
     };
 
     // Check test coverage
@@ -1402,7 +1431,7 @@ export default ${interfaceName};`;
       passed: result.testResults.coverage >= 80,
       score: result.testResults.coverage,
       threshold: 80,
-      message: `Test coverage: ${result.testResults.coverage.toFixed(1)}%`
+      message: `Test coverage: ${result.testResults.coverage.toFixed(1)}%`,
     };
     validation.checks.push(testCoverageCheck);
 
@@ -1412,7 +1441,7 @@ export default ${interfaceName};`;
       passed: result.codeQuality.overall >= 75,
       score: result.codeQuality.overall,
       threshold: 75,
-      message: `Code quality score: ${result.codeQuality.overall.toFixed(1)}/100`
+      message: `Code quality score: ${result.codeQuality.overall.toFixed(1)}/100`,
     };
     validation.checks.push(codeQualityCheck);
 
@@ -1422,7 +1451,7 @@ export default ${interfaceName};`;
       passed: result.performance.responseTime.average < 200,
       score: 200 - result.performance.responseTime.average,
       threshold: 200,
-      message: `Average response time: ${result.performance.responseTime.average}ms`
+      message: `Average response time: ${result.performance.responseTime.average}ms`,
     };
     validation.checks.push(performanceCheck);
 
@@ -1432,7 +1461,7 @@ export default ${interfaceName};`;
       passed: result.security.score >= 80,
       score: result.security.score,
       threshold: 80,
-      message: `Security score: ${result.security.score}/100`
+      message: `Security score: ${result.security.score}/100`,
     };
     validation.checks.push(securityCheck);
 
@@ -1442,21 +1471,21 @@ export default ${interfaceName};`;
       passed: result.documentation.components.length > 0,
       score: result.documentation.components.length > 0 ? 100 : 0,
       threshold: 1,
-      message: `Documentation: ${result.documentation.components.length} components documented`
+      message: `Documentation: ${result.documentation.components.length} components documented`,
     };
     validation.checks.push(documentationCheck);
 
     // Calculate overall score
     validation.score = validation.checks.reduce((sum, check) => sum + (check.passed ? 20 : 0), 0);
-    validation.passed = validation.checks.every(check => check.passed);
+    validation.passed = validation.checks.every((check) => check.passed);
 
     // Collect issues
     validation.issues = validation.checks
-      .filter(check => !check.passed)
-      .map(check => ({
+      .filter((check) => !check.passed)
+      .map((check) => ({
         category: check.name,
         severity: 'warning',
-        message: `${check.name} below threshold: ${check.score} < ${check.threshold}`
+        message: `${check.name} below threshold: ${check.score} < ${check.threshold}`,
       }));
 
     // Generate recommendations
@@ -1464,13 +1493,19 @@ export default ${interfaceName};`;
       validation.recommendations.push('Increase test coverage by adding more unit tests');
     }
     if (!codeQualityCheck.passed) {
-      validation.recommendations.push('Improve code quality by addressing complexity and maintainability issues');
+      validation.recommendations.push(
+        'Improve code quality by addressing complexity and maintainability issues',
+      );
     }
     if (!performanceCheck.passed) {
-      validation.recommendations.push('Optimize performance by implementing caching and database optimization');
+      validation.recommendations.push(
+        'Optimize performance by implementing caching and database optimization',
+      );
     }
     if (!securityCheck.passed) {
-      validation.recommendations.push('Address security vulnerabilities and implement security best practices');
+      validation.recommendations.push(
+        'Address security vulnerabilities and implement security best practices',
+      );
     }
 
     return validation;
@@ -1488,9 +1523,10 @@ export default ${interfaceName};`;
   }
 
   findRelevantComponent(test, architecture) {
-    return architecture.components.find(comp => 
-      test.name.toLowerCase().includes(comp.name.toLowerCase()) ||
-      test.description.toLowerCase().includes(comp.responsibility.toLowerCase())
+    return architecture.components.find(
+      (comp) =>
+        test.name.toLowerCase().includes(comp.name.toLowerCase()) ||
+        test.description.toLowerCase().includes(comp.responsibility.toLowerCase()),
     );
   }
 
@@ -1498,7 +1534,7 @@ export default ${interfaceName};`;
     return [
       { assertion: 'result is defined', passed: true },
       { assertion: 'result has expected structure', passed: true },
-      { assertion: 'result matches expected values', passed: true }
+      { assertion: 'result matches expected values', passed: true },
     ];
   }
 
@@ -1533,11 +1569,13 @@ export default ${interfaceName};`;
 
 ### Summary
 - **Total Cycles**: ${result.tddCycles.length}
-- **Successful**: ${result.tddCycles.filter(c => c.success).length}
-- **Failed**: ${result.tddCycles.filter(c => !c.success).length}
+- **Successful**: ${result.tddCycles.filter((c) => c.success).length}
+- **Failed**: ${result.tddCycles.filter((c) => !c.success).length}
 - **Average Duration**: ${(result.tddCycles.reduce((sum, c) => sum + c.duration, 0) / result.tddCycles.length / 1000).toFixed(2)}s
 
-${result.tddCycles.map((cycle, index) => `
+${result.tddCycles
+  .map(
+    (cycle, index) => `
 ### Cycle ${index + 1}: ${cycle.requirement}
 **Status**: ${cycle.success ? '✅ Success' : '❌ Failed'}
 **Duration**: ${(cycle.duration / 1000).toFixed(2)}s
@@ -1547,14 +1585,16 @@ ${result.tddCycles.map((cycle, index) => `
 - All Tests Failing: ${cycle.redPhase ? '✅' : '❌'}
 
 #### GREEN Phase
-- Tests Passing: ${cycle.greenPhase ? cycle.greenPhase.testResults.filter(t => t.passed).length : 0}
+- Tests Passing: ${cycle.greenPhase ? cycle.greenPhase.testResults.filter((t) => t.passed).length : 0}
 - Implementation Complete: ${cycle.greenPhase ? '✅' : '❌'}
 
 #### REFACTOR Phase
 - Refactoring Techniques: ${cycle.refactorPhase ? cycle.refactorPhase.refactorings.length : 0}
 - Tests Still Passing: ${cycle.refactorPhase ? '✅' : '❌'}
 - Code Quality Improved: ${cycle.refactorPhase ? '✅' : '❌'}
-`).join('\n')}
+`,
+  )
+  .join('\n')}
 
 ## Implementations
 
@@ -1563,7 +1603,9 @@ ${result.tddCycles.map((cycle, index) => `
 - **Total Files**: ${result.implementations.reduce((sum, impl) => sum + impl.files.length, 0)}
 - **Total Lines**: ${result.implementations.reduce((sum, impl) => sum + impl.files.reduce((fileSum, file) => fileSum + file.lines, 0), 0)}
 
-${result.implementations.map((impl, index) => `
+${result.implementations
+  .map(
+    (impl, index) => `
 ### ${index + 1}. ${impl.component}
 **Type**: ${impl.type}
 **Files**: ${impl.files.length}
@@ -1574,8 +1616,10 @@ ${result.implementations.map((impl, index) => `
 **Complexity**: ${impl.complexity}
 
 #### Files
-${impl.files.map(file => `- **${file.name}** (${file.type}): ${file.lines} lines`).join('\n')}
-`).join('\n')}
+${impl.files.map((file) => `- **${file.name}** (${file.type}): ${file.lines} lines`).join('\n')}
+`,
+  )
+  .join('\n')}
 
 ## Test Results
 
@@ -1587,14 +1631,18 @@ ${impl.files.map(file => `- **${file.name}** (${file.type}): ${file.lines} lines
 - **Duration**: ${(result.testResults.duration / 1000).toFixed(2)}s
 
 ### Test Suites
-${result.testResults.suites.map((suite, index) => `
+${result.testResults.suites
+  .map(
+    (suite, index) => `
 #### ${index + 1}. ${suite.name}
 - **Tests**: ${suite.tests}
 - **Passed**: ${suite.passed}
 - **Failed**: ${suite.failed}
 - **Coverage**: ${suite.coverage.toFixed(1)}%
 - **Duration**: ${(suite.duration / 1000).toFixed(2)}s
-`).join('\n')}
+`,
+  )
+  .join('\n')}
 
 ## Code Quality
 
@@ -1616,11 +1664,19 @@ ${result.testResults.suites.map((suite, index) => `
 - **Test Files**: ${result.codeQuality.metrics.testFiles}
 
 ### Quality Violations
-${result.codeQuality.violations.length > 0 ? result.codeQuality.violations.map((violation, index) => `
+${
+  result.codeQuality.violations.length > 0
+    ? result.codeQuality.violations
+        .map(
+          (violation, index) => `
 #### ${index + 1}. ${violation.type} (${violation.severity})
 - **Message**: ${violation.message}
 - **Location**: ${violation.file || violation.component || 'General'}
-`).join('\n') : 'No quality violations found ✅'}
+`,
+        )
+        .join('\n')
+    : 'No quality violations found ✅'
+}
 
 ## Performance Analysis
 
@@ -1642,12 +1698,16 @@ ${result.codeQuality.violations.length > 0 ? result.codeQuality.violations.map((
 - **Network I/O**: ${result.performance.resource.networkIO}%
 
 ### Bottlenecks
-${result.performance.bottlenecks.map((bottleneck, index) => `
+${result.performance.bottlenecks
+  .map(
+    (bottleneck, index) => `
 #### ${index + 1}. ${bottleneck.component}
 - **Impact**: ${bottleneck.impact}
 - **Description**: ${bottleneck.description}
 - **Recommendation**: ${bottleneck.recommendation}
-`).join('\n')}
+`,
+  )
+  .join('\n')}
 
 ### Performance Recommendations
 ${result.performance.recommendations.map((rec, index) => `${index + 1}. ${rec}`).join('\n')}
@@ -1662,25 +1722,37 @@ ${result.performance.recommendations.map((rec, index) => `${index + 1}. ${rec}`)
 - **ISO 27001**: ${result.security.compliance.iso27001}
 
 ### Vulnerabilities
-${result.security.vulnerabilities.length > 0 ? result.security.vulnerabilities.map((vuln, index) => `
+${
+  result.security.vulnerabilities.length > 0
+    ? result.security.vulnerabilities
+        .map(
+          (vuln, index) => `
 #### ${index + 1}. ${vuln.type} (${vuln.severity})
 - **Description**: ${vuln.description}
 - **Location**: ${vuln.location}
 - **Remediation**: ${vuln.remediation}
-`).join('\n') : 'No security vulnerabilities found ✅'}
+`,
+        )
+        .join('\n')
+    : 'No security vulnerabilities found ✅'
+}
 
 ### Security Recommendations
 ${result.security.recommendations.map((rec, index) => `${index + 1}. ${rec}`).join('\n')}
 
 ## Optimizations Applied
 
-${result.optimizations.map((opt, index) => `
+${result.optimizations
+  .map(
+    (opt, index) => `
 ### ${index + 1}. ${opt.type} Optimization
 - **Description**: ${opt.description}
 - **Impact**: ${opt.impact}
 - **Effort**: ${opt.effort}
 - **Implementation**: ${opt.implementation}
-`).join('\n')}
+`,
+  )
+  .join('\n')}
 
 ## Documentation Generated
 
@@ -1700,11 +1772,15 @@ ${result.optimizations.map((opt, index) => `
 ## Refactoring Results
 
 ### Techniques Applied
-${result.refactoring.techniques.map((technique, index) => `
+${result.refactoring.techniques
+  .map(
+    (technique, index) => `
 #### ${index + 1}. ${technique.name}
 - **Description**: ${technique.description}
 - **Impact**: ${technique.impact}
-`).join('\n')}
+`,
+  )
+  .join('\n')}
 
 ### Improvements Achieved
 ${result.refactoring.improvements.map((improvement, index) => `${index + 1}. ${improvement}`).join('\n')}
@@ -1719,38 +1795,56 @@ ${result.refactoring.improvements.map((improvement, index) => `${index + 1}. ${i
 ### Validation Score: ${result.validation.score}/100
 
 ### Checks Performed
-${result.validation.checks.map((check, index) => `
+${result.validation.checks
+  .map(
+    (check, index) => `
 #### ${index + 1}. ${check.name}
 - **Status**: ${check.passed ? '✅ Passed' : '❌ Failed'}
 - **Score**: ${check.score}/${check.threshold}
 - **Message**: ${check.message}
-`).join('\n')}
+`,
+  )
+  .join('\n')}
 
-${result.validation.issues.length > 0 ? `
+${
+  result.validation.issues.length > 0
+    ? `
 ### Issues Found
-${result.validation.issues.map((issue, index) => `
+${result.validation.issues
+  .map(
+    (issue, index) => `
 #### ${index + 1}. ${issue.category} (${issue.severity})
 ${issue.message}
-`).join('\n')}` : '### No Issues Found ✅'}
+`,
+  )
+  .join('\n')}`
+    : '### No Issues Found ✅'
+}
 
-${result.validation.recommendations.length > 0 ? `
+${
+  result.validation.recommendations.length > 0
+    ? `
 ### Recommendations
-${result.validation.recommendations.map((rec, index) => `${index + 1}. ${rec}`).join('\n')}` : ''}
+${result.validation.recommendations.map((rec, index) => `${index + 1}. ${rec}`).join('\n')}`
+    : ''
+}
 
 ## Summary
 
 The refinement phase has been completed with TDD methodology, resulting in:
 
-- ✅ **${result.tddCycles.filter(c => c.success).length}/${result.tddCycles.length}** successful TDD cycles
+- ✅ **${result.tddCycles.filter((c) => c.success).length}/${result.tddCycles.length}** successful TDD cycles
 - ✅ **${result.testResults.coverage.toFixed(1)}%** test coverage
 - ✅ **${result.codeQuality.overall.toFixed(1)}/100** code quality score
 - ✅ **${result.performance.responseTime.average}ms** average response time
 - ✅ **${result.security.score}/100** security score
 - ✅ **${result.validation.score}/100** final validation score
 
-${result.validation.passed ? 
-  '🎉 **All quality gates passed!** The implementation is ready for completion phase.' : 
-  '⚠️ **Some quality gates failed.** Please address the issues before proceeding to completion phase.'}
+${
+  result.validation.passed
+    ? '🎉 **All quality gates passed!** The implementation is ready for completion phase.'
+    : '⚠️ **Some quality gates failed.** Please address the issues before proceeding to completion phase.'
+}
 `;
 
     // Save document

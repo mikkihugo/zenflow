@@ -20,23 +20,23 @@ import { getSwarmOrchestration } from './swarm.js';
 
 // Mode orchestration mapping
 const modeOrchestrations = {
-  'architect': getArchitectOrchestration,
-  'code': getCodeOrchestration,
-  'tdd': getTddOrchestration,
-  'debug': getDebugOrchestration,
+  architect: getArchitectOrchestration,
+  code: getCodeOrchestration,
+  tdd: getTddOrchestration,
+  debug: getDebugOrchestration,
   'security-review': getSecurityReviewOrchestration,
   'docs-writer': getDocsWriterOrchestration,
-  'integration': getIntegrationOrchestration,
+  integration: getIntegrationOrchestration,
   'post-deployment-monitoring-mode': getMonitoringOrchestration,
   'refinement-optimization-mode': getOptimizationOrchestration,
   'supabase-admin': getSupabaseAdminOrchestration,
   'spec-pseudocode': getSpecPseudocodeOrchestration,
-  'mcp': getMcpOrchestration,
-  'devops': getDevOpsOrchestration,
-  'ask': getAskOrchestration,
-  'tutorial': getTutorialOrchestration,
-  'sparc': getSparcOrchestratorOrchestration,
-  'swarm': getSwarmOrchestration,
+  mcp: getMcpOrchestration,
+  devops: getDevOpsOrchestration,
+  ask: getAskOrchestration,
+  tutorial: getTutorialOrchestration,
+  sparc: getSparcOrchestratorOrchestration,
+  swarm: getSwarmOrchestration,
 };
 
 /**
@@ -48,11 +48,11 @@ const modeOrchestrations = {
  */
 export function getModeOrchestration(modeSlug, taskDescription, memoryNamespace) {
   const orchestrationFunction = modeOrchestrations[modeSlug];
-  
+
   if (orchestrationFunction) {
     return orchestrationFunction(taskDescription, memoryNamespace);
   }
-  
+
   // Return generic orchestration for unknown modes
   return getGenericOrchestration(taskDescription, memoryNamespace);
 }
@@ -68,7 +68,7 @@ export function createSparcPrompt(mode, taskDescription, memoryNamespace) {
   const orchestration = getModeOrchestration(mode.slug, taskDescription, memoryNamespace);
   // Get the actual working directory where the command was run from
   const cwd = Deno.env.get('PWD') || Deno.cwd();
-  
+
   return `# ${mode.name} - Task Execution
 
 ## 🎯 Your Mission

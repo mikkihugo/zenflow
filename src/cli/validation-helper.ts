@@ -13,16 +13,11 @@ export class ValidationHelper {
     value: string,
     paramName: string,
     validOptions: string[],
-    commandPath: string
+    commandPath: string,
   ): void {
     if (!validOptions.includes(value)) {
       console.error(
-        HelpFormatter.formatValidationError(
-          value,
-          paramName,
-          validOptions,
-          commandPath
-        )
+        HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath),
       );
       process.exit(1);
     }
@@ -36,16 +31,16 @@ export class ValidationHelper {
     paramName: string,
     min?: number,
     max?: number,
-    commandPath?: string
+    commandPath?: string,
   ): number {
     const num = parseInt(value, 10);
-    
+
     if (isNaN(num)) {
       console.error(
         HelpFormatter.formatError(
           `'${value}' is not a valid number for ${paramName}.`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -54,8 +49,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `${paramName} must be at least ${min}. Got: ${num}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -64,8 +59,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `${paramName} must be at most ${max}. Got: ${num}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -76,17 +71,13 @@ export class ValidationHelper {
   /**
    * Validate required parameter
    */
-  static validateRequired(
-    value: any,
-    paramName: string,
-    commandPath?: string
-  ): void {
+  static validateRequired(value: any, paramName: string, commandPath?: string): void {
     if (!value || (typeof value === 'string' && value.trim() === '')) {
       console.error(
         HelpFormatter.formatError(
           `Missing required parameter: ${paramName}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -98,7 +89,7 @@ export class ValidationHelper {
   static async validateFilePath(
     path: string,
     paramName: string,
-    commandPath?: string
+    commandPath?: string,
   ): Promise<void> {
     try {
       const fs = await import('fs/promises');
@@ -107,8 +98,8 @@ export class ValidationHelper {
       console.error(
         HelpFormatter.formatError(
           `File not found for ${paramName}: ${path}`,
-          commandPath || 'claude-flow'
-        )
+          commandPath || 'claude-flow',
+        ),
       );
       process.exit(1);
     }
@@ -117,11 +108,7 @@ export class ValidationHelper {
   /**
    * Validate boolean flag
    */
-  static validateBoolean(
-    value: string,
-    paramName: string,
-    commandPath?: string
-  ): boolean {
+  static validateBoolean(value: string, paramName: string, commandPath?: string): boolean {
     const lowerValue = value.toLowerCase();
     if (lowerValue === 'true' || lowerValue === '1' || lowerValue === 'yes') {
       return true;
@@ -129,12 +116,12 @@ export class ValidationHelper {
     if (lowerValue === 'false' || lowerValue === '0' || lowerValue === 'no') {
       return false;
     }
-    
+
     console.error(
       HelpFormatter.formatError(
         `'${value}' is not a valid boolean for ${paramName}. Use: true, false, yes, no, 1, or 0.`,
-        commandPath || 'claude-flow'
-      )
+        commandPath || 'claude-flow',
+      ),
     );
     process.exit(1);
   }

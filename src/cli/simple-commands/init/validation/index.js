@@ -28,7 +28,7 @@ export class ValidationSystem {
       success: true,
       checks: {},
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -71,7 +71,6 @@ export class ValidationSystem {
       if (!envCheck.success) {
         results.warnings.push(...envCheck.errors);
       }
-
     } catch (error) {
       results.success = false;
       results.errors.push(`Pre-initialization validation failed: ${error.message}`);
@@ -89,7 +88,7 @@ export class ValidationSystem {
       success: true,
       checks: {},
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -123,7 +122,6 @@ export class ValidationSystem {
       if (!permissionCheck.success) {
         results.warnings.push(...permissionCheck.errors);
       }
-
     } catch (error) {
       results.success = false;
       results.errors.push(`Post-initialization validation failed: ${error.message}`);
@@ -141,7 +139,7 @@ export class ValidationSystem {
       success: true,
       checks: {},
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -173,7 +171,6 @@ export class ValidationSystem {
       if (!coordinationCheck.success) {
         results.warnings.push(...coordinationCheck.errors);
       }
-
     } catch (error) {
       results.success = false;
       results.errors.push(`Configuration validation failed: ${error.message}`);
@@ -191,23 +188,22 @@ export class ValidationSystem {
       success: true,
       modes: {},
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
       // Test each SPARC mode
       const modeTests = await this.modeValidator.testAllModes();
       results.modes = modeTests.modes;
-      
+
       if (!modeTests.success) {
         results.success = false;
         results.errors.push(...modeTests.errors);
       }
-      
+
       if (modeTests.warnings.length > 0) {
         results.warnings.push(...modeTests.warnings);
       }
-
     } catch (error) {
       results.success = false;
       results.errors.push(`Mode functionality testing failed: ${error.message}`);
@@ -225,7 +221,7 @@ export class ValidationSystem {
       success: true,
       health: {},
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -257,7 +253,6 @@ export class ValidationSystem {
       if (!resourceHealth.success) {
         results.warnings.push(...resourceHealth.errors);
       }
-
     } catch (error) {
       results.success = false;
       results.errors.push(`Health check failed: ${error.message}`);
@@ -272,7 +267,7 @@ export class ValidationSystem {
   generateReport(validationResults) {
     const report = [];
     report.push('=== SPARC Initialization Validation Report ===\n');
-    
+
     // Summary
     const totalChecks = Object.keys(validationResults).reduce((acc, key) => {
       if (typeof validationResults[key] === 'object' && validationResults[key].checks) {
@@ -280,15 +275,15 @@ export class ValidationSystem {
       }
       return acc;
     }, 0);
-    
+
     const failedChecks = validationResults.errors?.length || 0;
     const warnings = validationResults.warnings?.length || 0;
-    
+
     report.push(`Summary: ${totalChecks} checks performed`);
     report.push(`Status: ${validationResults.success ? '✅ PASSED' : '❌ FAILED'}`);
     report.push(`Errors: ${failedChecks}`);
     report.push(`Warnings: ${warnings}\n`);
-    
+
     // Detailed results
     for (const [phase, results] of Object.entries(validationResults)) {
       if (typeof results === 'object' && results.checks) {
@@ -299,23 +294,23 @@ export class ValidationSystem {
         }
       }
     }
-    
+
     // Errors
     if (validationResults.errors?.length > 0) {
       report.push('\n❌ ERRORS:');
-      validationResults.errors.forEach(error => {
+      validationResults.errors.forEach((error) => {
         report.push(`  - ${error}`);
       });
     }
-    
+
     // Warnings
     if (validationResults.warnings?.length > 0) {
       report.push('\n⚠️  WARNINGS:');
-      validationResults.warnings.forEach(warning => {
+      validationResults.warnings.forEach((warning) => {
         report.push(`  - ${warning}`);
       });
     }
-    
+
     report.push('\n=== End of Report ===');
     return report.join('\n');
   }
@@ -329,7 +324,7 @@ export async function runFullValidation(workingDir, options = {}) {
   const results = {
     success: true,
     errors: [],
-    warnings: []
+    warnings: [],
   };
 
   // Pre-init validation

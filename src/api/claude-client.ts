@@ -22,9 +22,9 @@ export interface ClaudeAPIConfig {
   retryDelay?: number;
 }
 
-export type ClaudeModel = 
+export type ClaudeModel =
   | 'claude-3-opus-20240229'
-  | 'claude-3-sonnet-20240229' 
+  | 'claude-3-sonnet-20240229'
   | 'claude-3-haiku-20240307'
   | 'claude-2.1'
   | 'claude-2.0'
@@ -68,7 +68,15 @@ export interface ClaudeResponse {
 }
 
 export interface ClaudeStreamEvent {
-  type: 'message_start' | 'content_block_start' | 'content_block_delta' | 'content_block_stop' | 'message_delta' | 'message_stop' | 'ping' | 'error';
+  type:
+    | 'message_start'
+    | 'content_block_start'
+    | 'content_block_delta'
+    | 'content_block_stop'
+    | 'message_delta'
+    | 'message_stop'
+    | 'ping'
+    | 'error';
   message?: Partial<ClaudeResponse>;
   index?: number;
   delta?: {
@@ -102,7 +110,7 @@ export class ClaudeAPIClient extends EventEmitter {
     super();
     this.logger = logger;
     this.configManager = configManager;
-    
+
     // Load config from environment and merge with provided config
     this.config = this.loadConfiguration(config);
   }
@@ -191,10 +199,10 @@ export class ClaudeAPIClient extends EventEmitter {
   updateConfig(updates: Partial<ClaudeAPIConfig>): void {
     this.config = { ...this.config, ...updates };
     this.validateConfiguration(this.config);
-    this.logger.info('Claude API configuration updated', { 
+    this.logger.info('Claude API configuration updated', {
       model: this.config.model,
       temperature: this.config.temperature,
-      maxTokens: this.config.maxTokens 
+      maxTokens: this.config.maxTokens,
     });
   }
 
@@ -216,13 +224,13 @@ export class ClaudeAPIClient extends EventEmitter {
       maxTokens?: number;
       systemPrompt?: string;
       stream?: boolean;
-    }
+    },
   ): Promise<ClaudeResponse | AsyncIterable<ClaudeStreamEvent>> {
     const request: ClaudeRequest = {
-      model: options?.model || this.config.model!,
+      model: options?.model || this.config.model || 'claude-3-opus-20240229',
       messages,
       system: options?.systemPrompt || this.config.systemPrompt,
-      max_tokens: options?.maxTokens || this.config.maxTokens!,
+      max_tokens: options?.maxTokens || this.config.maxTokens || 4096,
       temperature: options?.temperature ?? this.config.temperature,
       top_p: this.config.topP,
       top_k: this.config.topK,
@@ -249,13 +257,13 @@ export class ClaudeAPIClient extends EventEmitter {
    */
   private async sendRequest(request: ClaudeRequest): Promise<ClaudeResponse> {
     let lastError: Error | undefined;
-    
-    for (let attempt = 0; attempt < this.config.retryAttempts!; attempt++) {
+
+    for (let attempt = 0; attempt < (this.config.retryAttempts || 3); attempt++) {
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), this.config.timeout!);
+        const timeout = setTimeout(() => controller.abort(), this.config.timeout || 30000);
 
-        const response = await fetch(this.config.apiUrl!, {
+        const response = await fetch(this.config.apiUrl || 'https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -273,8 +281,8 @@ export class ClaudeAPIClient extends EventEmitter {
           throw new Error(`Claude API error (${response.status}): ${error}`);
         }
 
-        const data = await response.json() as ClaudeResponse;
-        
+        const data = (await response.json()) as ClaudeResponse;
+
         this.logger.info('Claude API response received', {
           model: data.model,
           inputTokens: data.usage.input_tokens,
@@ -284,15 +292,17 @@ export class ClaudeAPIClient extends EventEmitter {
 
         this.emit('response', data);
         return data;
-
       } catch (error) {
         lastError = error as Error;
-        this.logger.warn(`Claude API request failed (attempt ${attempt + 1}/${this.config.retryAttempts})`, {
-          error: getErrorMessage(error),
-        });
+        this.logger.warn(
+          `Claude API request failed (attempt ${attempt + 1}/${this.config.retryAttempts})`,
+          {
+            error: getErrorMessage(error),
+          },
+        );
 
-        if (attempt < this.config.retryAttempts! - 1) {
-          await this.delay(this.config.retryDelay! * Math.pow(2, attempt));
+        if (attempt < (this.config.retryAttempts || 3) - 1) {
+          await this.delay((this.config.retryDelay || 1000) * Math.pow(2, attempt));
         }
       }
     }
@@ -306,10 +316,10 @@ export class ClaudeAPIClient extends EventEmitter {
    */
   private async *streamRequest(request: ClaudeRequest): AsyncIterable<ClaudeStreamEvent> {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.config.timeout! * 2); // Double timeout for streaming
+    const timeout = setTimeout(() => controller.abort(), (this.config.timeout || 30000) * 2); // Double timeout for streaming
 
     try {
-      const response = await fetch(this.config.apiUrl!, {
+      const response = await fetch(this.config.apiUrl || 'https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -325,7 +335,10 @@ export class ClaudeAPIClient extends EventEmitter {
         throw new Error(`Claude API error (${response.status}): ${error}`);
       }
 
-      const reader = response.body!.getReader();
+      if (!response.body) {
+        throw new Error('Response body is null');
+      }
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
 
@@ -341,7 +354,7 @@ export class ClaudeAPIClient extends EventEmitter {
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
             if (data === '[DONE]') continue;
-            
+
             try {
               const event = JSON.parse(data) as ClaudeStreamEvent;
               this.emit('stream_event', event);
@@ -367,10 +380,10 @@ export class ClaudeAPIClient extends EventEmitter {
       temperature?: number;
       maxTokens?: number;
       systemPrompt?: string;
-    }
+    },
   ): Promise<string> {
     const messages: ClaudeMessage[] = [{ role: 'user', content: prompt }];
-    const response = await this.sendMessage(messages, options) as ClaudeResponse;
+    const response = (await this.sendMessage(messages, options)) as ClaudeResponse;
     return response.content[0].text;
   }
 
@@ -384,11 +397,14 @@ export class ClaudeAPIClient extends EventEmitter {
       temperature?: number;
       maxTokens?: number;
       systemPrompt?: string;
-    }
+    },
   ): AsyncIterable<string> {
     const messages: ClaudeMessage[] = [{ role: 'user', content: prompt }];
-    const stream = await this.sendMessage(messages, { ...options, stream: true }) as AsyncIterable<ClaudeStreamEvent>;
-    
+    const stream = (await this.sendMessage(messages, {
+      ...options,
+      stream: true,
+    })) as AsyncIterable<ClaudeStreamEvent>;
+
     for await (const event of stream) {
       if (event.type === 'content_block_delta' && event.delta?.text) {
         yield event.delta.text;
@@ -418,7 +434,10 @@ export class ClaudeAPIClient extends EventEmitter {
     contextWindow: number;
     description: string;
   } {
-    const modelInfo: Record<ClaudeModel, { name: string; contextWindow: number; description: string }> = {
+    const modelInfo: Record<
+      ClaudeModel,
+      { name: string; contextWindow: number; description: string }
+    > = {
       'claude-3-opus-20240229': {
         name: 'Claude 3 Opus',
         contextWindow: 200000,
@@ -451,17 +470,19 @@ export class ClaudeAPIClient extends EventEmitter {
       },
     };
 
-    return modelInfo[model] || {
-      name: model,
-      contextWindow: 100000,
-      description: 'Unknown model',
-    };
+    return (
+      modelInfo[model] || {
+        name: model,
+        contextWindow: 100000,
+        description: 'Unknown model',
+      }
+    );
   }
 
   /**
    * Delay helper for retries
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

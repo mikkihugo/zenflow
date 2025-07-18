@@ -73,11 +73,8 @@ export class HiveDashboard {
   private protocol: HiveCommunicationProtocol;
   private refreshInterval: number = 1000; // 1 second
   private updateCallback?: (data: HiveDashboardData) => void;
-  
-  constructor(
-    orchestrator: HiveOrchestrator,
-    protocol: HiveCommunicationProtocol
-  ) {
+
+  constructor(orchestrator: HiveOrchestrator, protocol: HiveCommunicationProtocol) {
     this.orchestrator = orchestrator;
     this.protocol = protocol;
   }
@@ -88,12 +85,12 @@ export class HiveDashboard {
   startMonitoring(callback: (data: HiveDashboardData) => void) {
     this.updateCallback = callback;
     this.update();
-    
+
     // Set up periodic updates
     const interval = setInterval(() => {
       this.update();
     }, this.refreshInterval);
-    
+
     return () => clearInterval(interval);
   }
 
@@ -113,7 +110,7 @@ export class HiveDashboard {
   private collectDashboardData(): HiveDashboardData {
     const perfMetrics = this.orchestrator.getPerformanceMetrics();
     const commStats = this.protocol.getStatistics();
-    
+
     return {
       swarmId: 'current-swarm',
       status: this.determineSwarmStatus(perfMetrics),
@@ -122,7 +119,7 @@ export class HiveDashboard {
       consensus: this.getConsensusMetrics(),
       communication: this.getCommunicationStats(commStats),
       performance: this.getPerformanceMetrics(perfMetrics),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -149,7 +146,7 @@ export class HiveDashboard {
         status: 'thinking',
         workload: 85,
         votes: 15,
-        contributions: 42
+        contributions: 42,
       },
       {
         id: 'architect-1',
@@ -159,7 +156,7 @@ export class HiveDashboard {
         currentTask: 'Design system architecture',
         workload: 70,
         votes: 8,
-        contributions: 23
+        contributions: 23,
       },
       {
         id: 'worker-1',
@@ -168,8 +165,8 @@ export class HiveDashboard {
         status: 'voting',
         workload: 45,
         votes: 12,
-        contributions: 31
-      }
+        contributions: 31,
+      },
     ];
   }
 
@@ -178,14 +175,14 @@ export class HiveDashboard {
    */
   private getTaskProgress(): TaskProgress[] {
     const taskGraph = this.orchestrator.getTaskGraph();
-    return taskGraph.nodes.map(node => ({
+    return taskGraph.nodes.map((node) => ({
       id: node.id,
       type: node.type,
       description: `${node.type} task`,
       status: node.status,
       assignedTo: node.assignedTo,
       progress: this.calculateTaskProgress(node.status),
-      dependencies: []
+      dependencies: [],
     }));
   }
 
@@ -194,12 +191,18 @@ export class HiveDashboard {
    */
   private calculateTaskProgress(status: string): number {
     switch (status) {
-      case 'completed': return 100;
-      case 'executing': return 50;
-      case 'assigned': return 25;
-      case 'voting': return 10;
-      case 'pending': return 0;
-      default: return 0;
+      case 'completed':
+        return 100;
+      case 'executing':
+        return 50;
+      case 'assigned':
+        return 25;
+      case 'voting':
+        return 10;
+      case 'pending':
+        return 0;
+      default:
+        return 0;
     }
   }
 
@@ -213,7 +216,7 @@ export class HiveDashboard {
       approvedDecisions: metrics.approvedDecisions,
       rejectedDecisions: metrics.totalDecisions - metrics.approvedDecisions,
       averageConsensus: metrics.consensusRate,
-      currentVotes: [] // Would be populated from active votes
+      currentVotes: [], // Would be populated from active votes
     };
   }
 
@@ -225,7 +228,7 @@ export class HiveDashboard {
       totalMessages: stats.totalMessages,
       messageRate: stats.totalMessages / 10, // Approximate rate
       channelActivity: stats.messagesByType,
-      knowledgeShared: stats.knowledgeEntries
+      knowledgeShared: stats.knowledgeEntries,
     };
   }
 
@@ -237,9 +240,8 @@ export class HiveDashboard {
       tasksCompleted: metrics.completedTasks,
       tasksPending: metrics.pendingTasks,
       avgExecutionTime: metrics.avgExecutionTime,
-      successRate: metrics.totalTasks > 0 ? 
-        metrics.completedTasks / metrics.totalTasks : 0,
-      qualityScore: 0.85 // Would be calculated from quality reports
+      successRate: metrics.totalTasks > 0 ? metrics.completedTasks / metrics.totalTasks : 0,
+      qualityScore: 0.85, // Would be calculated from quality reports
     };
   }
 
@@ -248,13 +250,15 @@ export class HiveDashboard {
    */
   static formatConsoleOutput(data: HiveDashboardData): string {
     const output = [];
-    
+
     // Header
     output.push('🐝 Hive Mind Dashboard');
     output.push('═══════════════════════════════════════════════════════════════');
-    output.push(`Status: ${data.status.toUpperCase()} | Time: ${new Date(data.timestamp).toLocaleTimeString()}`);
+    output.push(
+      `Status: ${data.status.toUpperCase()} | Time: ${new Date(data.timestamp).toLocaleTimeString()}`,
+    );
     output.push('');
-    
+
     // Agents Section
     output.push('👥 Agent Status');
     output.push('───────────────────────────────────────────────────────────────');
@@ -269,7 +273,7 @@ export class HiveDashboard {
       output.push(`   Votes: ${agent.votes} | Contributions: ${agent.contributions}`);
       output.push('');
     }
-    
+
     // Tasks Section
     output.push('📋 Task Progress');
     output.push('───────────────────────────────────────────────────────────────');
@@ -283,31 +287,35 @@ export class HiveDashboard {
       }
       output.push('');
     }
-    
+
     // Consensus Section
     output.push('🗳️ Consensus Metrics');
     output.push('───────────────────────────────────────────────────────────────');
     output.push(`Total Decisions: ${data.consensus.totalDecisions}`);
-    output.push(`Approved: ${data.consensus.approvedDecisions} | Rejected: ${data.consensus.rejectedDecisions}`);
+    output.push(
+      `Approved: ${data.consensus.approvedDecisions} | Rejected: ${data.consensus.rejectedDecisions}`,
+    );
     output.push(`Average Consensus: ${(data.consensus.averageConsensus * 100).toFixed(1)}%`);
     output.push('');
-    
+
     // Performance Section
     output.push('📊 Performance');
     output.push('───────────────────────────────────────────────────────────────');
-    output.push(`Tasks: ${data.performance.tasksCompleted}/${data.performance.tasksCompleted + data.performance.tasksPending} completed`);
+    output.push(
+      `Tasks: ${data.performance.tasksCompleted}/${data.performance.tasksCompleted + data.performance.tasksPending} completed`,
+    );
     output.push(`Success Rate: ${(data.performance.successRate * 100).toFixed(1)}%`);
     output.push(`Quality Score: ${(data.performance.qualityScore * 100).toFixed(1)}%`);
     output.push(`Avg Execution Time: ${(data.performance.avgExecutionTime / 1000).toFixed(1)}s`);
     output.push('');
-    
+
     // Communication Section
     output.push('💬 Communication');
     output.push('───────────────────────────────────────────────────────────────');
     output.push(`Total Messages: ${data.communication.totalMessages}`);
     output.push(`Message Rate: ${data.communication.messageRate.toFixed(1)}/min`);
     output.push(`Knowledge Shared: ${data.communication.knowledgeShared} entries`);
-    
+
     return output.join('\\n');
   }
 
@@ -316,12 +324,18 @@ export class HiveDashboard {
    */
   private static getStatusIcon(status: AgentStatus['status']): string {
     switch (status) {
-      case 'idle': return '😴';
-      case 'thinking': return '🤔';
-      case 'voting': return '🗳️';
-      case 'executing': return '⚡';
-      case 'communicating': return '💬';
-      default: return '❓';
+      case 'idle':
+        return '😴';
+      case 'thinking':
+        return '🤔';
+      case 'voting':
+        return '🗳️';
+      case 'executing':
+        return '⚡';
+      case 'communicating':
+        return '💬';
+      default:
+        return '❓';
     }
   }
 
@@ -330,14 +344,22 @@ export class HiveDashboard {
    */
   private static getTaskStatusIcon(status: string): string {
     switch (status) {
-      case 'pending': return '⭕';
-      case 'voting': return '🗳️';
-      case 'assigned': return '📌';
-      case 'executing': return '🔄';
-      case 'reviewing': return '🔍';
-      case 'completed': return '✅';
-      case 'failed': return '❌';
-      default: return '❓';
+      case 'pending':
+        return '⭕';
+      case 'voting':
+        return '🗳️';
+      case 'assigned':
+        return '📌';
+      case 'executing':
+        return '🔄';
+      case 'reviewing':
+        return '🔍';
+      case 'completed':
+        return '✅';
+      case 'failed':
+        return '❌';
+      default:
+        return '❓';
     }
   }
 
@@ -366,7 +388,7 @@ export class HiveDashboard {
     return (async function* () {
       while (true) {
         yield { type: 'update', timestamp: Date.now() };
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     })();
   }

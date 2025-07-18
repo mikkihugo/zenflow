@@ -18,9 +18,9 @@ class SqliteMemoryStore {
     this.options = {
       dbName: options.dbName || 'memory.db',
       directory: options.directory || this._getMemoryDirectory(),
-      ...options
+      ...options,
     };
-    
+
     this.db = null;
     this.statements = new Map();
     this.isInitialized = false;
@@ -51,27 +51,31 @@ class SqliteMemoryStore {
     try {
       // Ensure directory exists
       await fs.mkdir(this.options.directory, { recursive: true });
-      
+
       // Open database
       const dbPath = path.join(this.options.directory, this.options.dbName);
       this.db = new Database(dbPath);
-      
+
       // Enable WAL mode for better concurrency
       this.db.pragma('journal_mode = WAL');
       this.db.pragma('synchronous = NORMAL');
-      
+
       // Create tables
       this._createTables();
-      
+
       // Prepare statements
       this._prepareStatements();
-      
+
       this.isInitialized = true;
-      
-      console.error(`[${new Date().toISOString()}] INFO [memory-store] Initialized SQLite at: ${dbPath}`);
-      
+
+      console.error(
+        `[${new Date().toISOString()}] INFO [memory-store] Initialized SQLite at: ${dbPath}`,
+      );
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] ERROR [memory-store] Failed to initialize:`, error);
+      console.error(
+        `[${new Date().toISOString()}] ERROR [memory-store] Failed to initialize:`,
+        error,
+      );
       throw error;
     }
   }
@@ -101,7 +105,9 @@ class SqliteMemoryStore {
 
   _prepareStatements() {
     // Store/update statement
-    this.statements.set('upsert', this.db.prepare(`
+    this.statements.set(
+      'upsert',
+      this.db.prepare(`
       INSERT INTO memory_entries (key, value, namespace, metadata, ttl, expires_at)
       VALUES (?, ?, ?, ?, ?, ?)
       ON CONFLICT(key, namespace) DO UPDATE SET
@@ -111,72 +117,86 @@ class SqliteMemoryStore {
         expires_at = excluded.expires_at,
         updated_at = strftime('%s', 'now'),
         access_count = memory_entries.access_count + 1
-    `));
+    `),
+    );
 
     // Retrieve statement
-    this.statements.set('get', this.db.prepare(`
+    this.statements.set(
+      'get',
+      this.db.prepare(`
       SELECT * FROM memory_entries 
       WHERE key = ? AND namespace = ? AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'))
-    `));
+    `),
+    );
 
     // List statement
-    this.statements.set('list', this.db.prepare(`
+    this.statements.set(
+      'list',
+      this.db.prepare(`
       SELECT * FROM memory_entries 
       WHERE namespace = ? AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'))
       ORDER BY updated_at DESC
       LIMIT ?
-    `));
+    `),
+    );
 
     // Delete statement
-    this.statements.set('delete', this.db.prepare(`
+    this.statements.set(
+      'delete',
+      this.db.prepare(`
       DELETE FROM memory_entries WHERE key = ? AND namespace = ?
-    `));
+    `),
+    );
 
     // Search statement
-    this.statements.set('search', this.db.prepare(`
+    this.statements.set(
+      'search',
+      this.db.prepare(`
       SELECT * FROM memory_entries 
       WHERE namespace = ? AND (key LIKE ? OR value LIKE ?) 
       AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'))
       ORDER BY access_count DESC, updated_at DESC
       LIMIT ?
-    `));
+    `),
+    );
 
     // Cleanup statement
-    this.statements.set('cleanup', this.db.prepare(`
+    this.statements.set(
+      'cleanup',
+      this.db.prepare(`
       DELETE FROM memory_entries WHERE expires_at IS NOT NULL AND expires_at <= strftime('%s', 'now')
-    `));
+    `),
+    );
 
     // Update access statement
-    this.statements.set('updateAccess', this.db.prepare(`
+    this.statements.set(
+      'updateAccess',
+      this.db.prepare(`
       UPDATE memory_entries 
       SET accessed_at = strftime('%s', 'now'), access_count = access_count + 1
       WHERE key = ? AND namespace = ?
-    `));
+    `),
+    );
   }
 
   async store(key, value, options = {}) {
     await this.initialize();
-    
+
     const namespace = options.namespace || 'default';
     const metadata = options.metadata ? JSON.stringify(options.metadata) : null;
     const ttl = options.ttl || null;
     const expiresAt = ttl ? Math.floor(Date.now() / 1000) + ttl : null;
     const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-    
+
     try {
-      const result = this.statements.get('upsert').run(
-        key,
-        valueStr,
-        namespace,
-        metadata,
-        ttl,
-        expiresAt
-      );
+      const result = this.statements
+        .get('upsert')
+        .run(key, valueStr, namespace, metadata, ttl, expiresAt);
 
       return {
         success: true,
         id: result.lastInsertRowid,
-        size: valueStr.length
+        size: valueStr.length,
       };
     } catch (error) {
       console.error(`[${new Date().toISOString()}] ERROR [memory-store] Store failed:`, error);
@@ -186,12 +206,12 @@ class SqliteMemoryStore {
 
   async retrieve(key, options = {}) {
     await this.initialize();
-    
+
     const namespace = options.namespace || 'default';
-    
+
     try {
       const row = this.statements.get('get').get(key, namespace);
-      
+
       if (!row) {
         return null;
       }
@@ -213,21 +233,21 @@ class SqliteMemoryStore {
 
   async list(options = {}) {
     await this.initialize();
-    
+
     const namespace = options.namespace || 'default';
     const limit = options.limit || 100;
-    
+
     try {
       const rows = this.statements.get('list').all(namespace, limit);
-      
-      return rows.map(row => ({
+
+      return rows.map((row) => ({
         key: row.key,
         value: this._tryParseJson(row.value),
         namespace: row.namespace,
         metadata: row.metadata ? JSON.parse(row.metadata) : null,
         createdAt: new Date(row.created_at * 1000),
         updatedAt: new Date(row.updated_at * 1000),
-        accessCount: row.access_count
+        accessCount: row.access_count,
       }));
     } catch (error) {
       console.error(`[${new Date().toISOString()}] ERROR [memory-store] List failed:`, error);
@@ -237,9 +257,9 @@ class SqliteMemoryStore {
 
   async delete(key, options = {}) {
     await this.initialize();
-    
+
     const namespace = options.namespace || 'default';
-    
+
     try {
       const result = this.statements.get('delete').run(key, namespace);
       return result.changes > 0;
@@ -251,25 +271,22 @@ class SqliteMemoryStore {
 
   async search(pattern, options = {}) {
     await this.initialize();
-    
+
     const namespace = options.namespace || 'default';
     const limit = options.limit || 50;
     const searchPattern = `%${pattern}%`;
-    
+
     try {
-      const rows = this.statements.get('search').all(
-        namespace,
-        searchPattern,
-        searchPattern,
-        limit
-      );
-      
-      return rows.map(row => ({
+      const rows = this.statements
+        .get('search')
+        .all(namespace, searchPattern, searchPattern, limit);
+
+      return rows.map((row) => ({
         key: row.key,
         value: this._tryParseJson(row.value),
         namespace: row.namespace,
         score: row.access_count,
-        updatedAt: new Date(row.updated_at * 1000)
+        updatedAt: new Date(row.updated_at * 1000),
       }));
     } catch (error) {
       console.error(`[${new Date().toISOString()}] ERROR [memory-store] Search failed:`, error);
@@ -279,7 +296,7 @@ class SqliteMemoryStore {
 
   async cleanup() {
     await this.initialize();
-    
+
     try {
       const result = this.statements.get('cleanup').run();
       return result.changes;

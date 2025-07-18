@@ -16,17 +16,17 @@ export class SparcMethodology {
       swarmEnabled: options.swarmEnabled || false,
       neuralLearning: options.neuralLearning || false,
       verbose: options.verbose || false,
-      ...options
+      ...options,
     };
-    
+
     this.phases = {
       specification: new SparcSpecification(this.taskDescription, this.options),
       pseudocode: new SparcPseudocode(this.taskDescription, this.options),
       architecture: new SparcArchitecture(this.taskDescription, this.options),
       refinement: new SparcRefinement(this.taskDescription, this.options),
-      completion: new SparcCompletion(this.taskDescription, this.options)
+      completion: new SparcCompletion(this.taskDescription, this.options),
     };
-    
+
     this.coordinator = new SparcCoordinator(this.phases, this.options);
     this.currentPhase = 'specification';
     this.phaseOrder = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
@@ -52,26 +52,26 @@ export class SparcMethodology {
     // Execute each phase in order
     for (const phaseName of this.phaseOrder) {
       console.log(`\n📍 Phase: ${phaseName.toUpperCase()}`);
-      
+
       try {
         // Pre-phase coordination
         await this.coordinator.prePhase(phaseName);
-        
+
         // Execute phase
         const phase = this.phases[phaseName];
         const result = await phase.execute();
-        
+
         // Store artifacts
         this.artifacts[phaseName] = result;
-        
+
         // Quality gate validation
         const qualityGate = await this.validateQualityGate(phaseName, result);
         this.qualityGates[phaseName] = qualityGate;
-        
+
         if (!qualityGate.passed) {
           console.log(`❌ Quality Gate Failed for ${phaseName}`);
           console.log(`Reasons: ${qualityGate.reasons.join(', ')}`);
-          
+
           // Attempt auto-remediation
           if (this.options.autoRemediation) {
             await this.autoRemediate(phaseName, qualityGate);
@@ -79,27 +79,26 @@ export class SparcMethodology {
             throw new Error(`Quality gate failed for phase: ${phaseName}`);
           }
         }
-        
+
         // Post-phase coordination
         await this.coordinator.postPhase(phaseName, result);
-        
+
         console.log(`✅ ${phaseName} completed successfully`);
-        
       } catch (error) {
         console.error(`❌ Error in ${phaseName}: ${error.message}`);
-        
+
         // Neural learning from failures
         if (this.options.neuralLearning) {
           await this.learnFromFailure(phaseName, error);
         }
-        
+
         throw error;
       }
     }
 
     // Final coordination and cleanup
     await this.coordinator.finalize();
-    
+
     console.log('\n🎉 SPARC Methodology Execution Complete');
     return this.generateSummary();
   }
@@ -113,10 +112,10 @@ export class SparcMethodology {
     }
 
     console.log(`📍 Executing Phase: ${phaseName.toUpperCase()}`);
-    
+
     const phase = this.phases[phaseName];
     const result = await phase.execute();
-    
+
     this.artifacts[phaseName] = result;
     return result;
   }
@@ -127,7 +126,7 @@ export class SparcMethodology {
   async validateQualityGate(phaseName, result) {
     const qualityGate = {
       passed: true,
-      reasons: []
+      reasons: [],
     };
 
     switch (phaseName) {
@@ -195,27 +194,32 @@ export class SparcMethodology {
    */
   async autoRemediate(phaseName, qualityGate) {
     console.log(`🔄 Attempting auto-remediation for ${phaseName}`);
-    
+
     // Neural learning can inform remediation strategies
     if (this.options.neuralLearning) {
-      await this.learnFromFailure(phaseName, new Error(`Quality gate failed: ${qualityGate.reasons.join(', ')}`));
+      await this.learnFromFailure(
+        phaseName,
+        new Error(`Quality gate failed: ${qualityGate.reasons.join(', ')}`),
+      );
     }
 
     // Re-execute the phase with enhanced context
     const phase = this.phases[phaseName];
     phase.setRemediationContext(qualityGate);
-    
+
     const result = await phase.execute();
     this.artifacts[phaseName] = result;
-    
+
     // Re-validate
     const newQualityGate = await this.validateQualityGate(phaseName, result);
     this.qualityGates[phaseName] = newQualityGate;
-    
+
     if (!newQualityGate.passed) {
-      throw new Error(`Auto-remediation failed for ${phaseName}: ${newQualityGate.reasons.join(', ')}`);
+      throw new Error(
+        `Auto-remediation failed for ${phaseName}: ${newQualityGate.reasons.join(', ')}`,
+      );
     }
-    
+
     console.log(`✅ Auto-remediation successful for ${phaseName}`);
   }
 
@@ -228,7 +232,7 @@ export class SparcMethodology {
       task: this.taskDescription,
       error: error.message,
       timestamp: new Date().toISOString(),
-      context: this.artifacts
+      context: this.artifacts,
     };
 
     // Store learning data for neural network training
@@ -244,14 +248,14 @@ export class SparcMethodology {
     const summary = {
       taskDescription: this.taskDescription,
       executionTime: Date.now() - this.startTime,
-      phases: this.phaseOrder.map(phase => ({
+      phases: this.phaseOrder.map((phase) => ({
         name: phase,
         status: this.qualityGates[phase]?.passed ? 'passed' : 'failed',
-        artifacts: this.artifacts[phase]
+        artifacts: this.artifacts[phase],
       })),
       qualityGates: this.qualityGates,
       artifacts: this.artifacts,
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     return summary;
@@ -269,7 +273,7 @@ export class SparcMethodology {
         recommendations.push({
           type: 'quality_improvement',
           phase: phase,
-          message: `Improve ${phase} quality: ${gate.reasons.join(', ')}`
+          message: `Improve ${phase} quality: ${gate.reasons.join(', ')}`,
         });
       }
     }
@@ -278,7 +282,7 @@ export class SparcMethodology {
     if (this.artifacts.architecture && this.artifacts.architecture.components.length > 10) {
       recommendations.push({
         type: 'architecture_optimization',
-        message: 'Consider breaking down architecture into smaller, more manageable components'
+        message: 'Consider breaking down architecture into smaller, more manageable components',
       });
     }
 
@@ -293,7 +297,7 @@ export class SparcMethodology {
       name: phaseName,
       completed: !!this.artifacts[phaseName],
       qualityGate: this.qualityGates[phaseName],
-      artifacts: this.artifacts[phaseName]
+      artifacts: this.artifacts[phaseName],
     };
   }
 
@@ -303,13 +307,13 @@ export class SparcMethodology {
   getProgress() {
     const completedPhases = Object.keys(this.artifacts).length;
     const totalPhases = this.phaseOrder.length;
-    
+
     return {
       completed: completedPhases,
       total: totalPhases,
       percentage: (completedPhases / totalPhases) * 100,
       currentPhase: this.currentPhase,
-      phases: this.phaseOrder.map(phase => this.getPhaseStatus(phase))
+      phases: this.phaseOrder.map((phase) => this.getPhaseStatus(phase)),
     };
   }
 }

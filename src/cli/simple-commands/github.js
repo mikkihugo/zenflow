@@ -16,7 +16,7 @@ import { join } from 'path';
  */
 async function checkCommandAvailable(command) {
   const { execSync } = await import('child_process');
-  
+
   if (platform() === 'win32') {
     // Windows: Use 'where' command
     try {
@@ -37,9 +37,9 @@ async function checkCommandAvailable(command) {
         '/usr/bin',
         '/opt/homebrew/bin',
         join(process.env.HOME || '', '.local', 'bin'),
-        join(process.env.HOME || '', 'bin')
+        join(process.env.HOME || '', 'bin'),
       ];
-      
+
       for (const dir of commonPaths) {
         try {
           await access(join(dir, command), constants.X_OK);
@@ -66,44 +66,44 @@ const GITHUB_MODES = {
     description: 'GitHub workflow orchestration and coordination',
     examples: [
       'github gh-coordinator "setup CI/CD pipeline"',
-      'github gh-coordinator "coordinate release process" --auto-approve'
-    ]
+      'github gh-coordinator "coordinate release process" --auto-approve',
+    ],
   },
   'pr-manager': {
     description: 'Pull request management with multi-reviewer coordination',
     examples: [
       'github pr-manager "create feature PR with automated testing"',
-      'github pr-manager "coordinate code review for security update"'
-    ]
+      'github pr-manager "coordinate code review for security update"',
+    ],
   },
   'issue-tracker': {
     description: 'Issue management and project coordination',
     examples: [
       'github issue-tracker "analyze project roadmap issues"',
-      'github issue-tracker "coordinate bug triage process"'
-    ]
+      'github issue-tracker "coordinate bug triage process"',
+    ],
   },
   'release-manager': {
     description: 'Release coordination and deployment pipelines',
     examples: [
       'github release-manager "prepare v2.0.0 release"',
-      'github release-manager "coordinate hotfix deployment"'
-    ]
+      'github release-manager "coordinate hotfix deployment"',
+    ],
   },
   'repo-architect': {
     description: 'Repository structure optimization',
     examples: [
       'github repo-architect "optimize repository structure"',
-      'github repo-architect "setup monorepo architecture"'
-    ]
+      'github repo-architect "setup monorepo architecture"',
+    ],
   },
   'sync-coordinator': {
     description: 'Multi-package synchronization and version alignment',
     examples: [
       'github sync-coordinator "sync package versions across repos"',
-      'github sync-coordinator "coordinate dependency updates"'
-    ]
-  }
+      'github sync-coordinator "coordinate dependency updates"',
+    ],
+  },
 };
 
 function showGitHubHelp() {
@@ -161,7 +161,7 @@ export async function githubCommand(args, flags) {
 
   if (!objective) {
     printError(`❌ Usage: github ${mode} <objective>`);
-    
+
     if (GITHUB_MODES[mode]) {
       console.log(`\nExamples for ${mode}:`);
       for (const example of GITHUB_MODES[mode].examples) {
@@ -187,7 +187,7 @@ export async function githubCommand(args, flags) {
 
   printSuccess(`🐙 GitHub ${mode} mode activated`);
   console.log(`📋 Objective: ${objective}`);
-  
+
   if (flags['dry-run']) {
     console.log('\n🎛️  Configuration:');
     console.log(`  Mode: ${mode}`);
@@ -203,7 +203,7 @@ export async function githubCommand(args, flags) {
   try {
     // Check if Claude is available
     const { execSync } = await import('child_process');
-    
+
     // Cross-platform check for Claude CLI
     const isClaudeAvailable = await checkClaudeAvailable();
     if (!isClaudeAvailable) {
@@ -285,27 +285,27 @@ IMPORTANT:
 Begin execution now. Create all necessary GitHub workflow files and configuration.`;
 
     console.log('🚀 Launching GitHub automation via Claude...');
-    
+
     // Execute Claude with the GitHub prompt
     const { spawn } = await import('child_process');
-    
+
     const claudeArgs = [];
-    
+
     // Add auto-permission flag if requested
     if (flags['auto-approve'] || flags['dangerously-skip-permissions']) {
       claudeArgs.push('--dangerously-skip-permissions');
     }
-    
+
     // Spawn claude process
     const claudeProcess = spawn('claude', claudeArgs, {
       stdio: ['pipe', 'inherit', 'inherit'],
-      shell: false
+      shell: false,
     });
-    
+
     // Write the prompt to stdin and close it
     claudeProcess.stdin.write(githubPrompt);
     claudeProcess.stdin.end();
-    
+
     // Wait for the process to complete
     await new Promise((resolve, reject) => {
       claudeProcess.on('close', (code) => {
@@ -316,15 +316,14 @@ Begin execution now. Create all necessary GitHub workflow files and configuratio
           reject(new Error(`Claude process exited with code ${code}`));
         }
       });
-      
+
       claudeProcess.on('error', (err) => {
         reject(err);
       });
     });
-
   } catch (error) {
     printError(`❌ GitHub automation failed: ${error.message}`);
-    
+
     // Fallback implementation details
     console.log('\n📋 Fallback execution plan:');
     console.log(`1. ${mode} workflow would be configured for: ${objective}`);
@@ -332,7 +331,7 @@ Begin execution now. Create all necessary GitHub workflow files and configuratio
     console.log('3. Repository settings would be configured');
     console.log('4. Automation rules would be established');
     console.log('5. Monitoring and reporting would be set up');
-    
+
     printWarning('\n⚠️  Note: Full GitHub automation requires Claude CLI.');
     console.log('Install Claude: https://claude.ai/code');
   }
@@ -342,7 +341,7 @@ Begin execution now. Create all necessary GitHub workflow files and configuratio
 if (import.meta.main) {
   const args = [];
   const flags = {};
-  
+
   // Parse arguments and flags from Deno.args if available
   if (typeof Deno !== 'undefined' && Deno.args) {
     for (let i = 0; i < Deno.args.length; i++) {
@@ -350,7 +349,7 @@ if (import.meta.main) {
       if (arg.startsWith('--')) {
         const flagName = arg.substring(2);
         const nextArg = Deno.args[i + 1];
-        
+
         if (nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
@@ -362,6 +361,6 @@ if (import.meta.main) {
       }
     }
   }
-  
+
   await githubCommand(args, flags);
 }

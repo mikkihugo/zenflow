@@ -7,6 +7,7 @@ The Claude Flow Workflow Designer is a comprehensive visual workflow builder tha
 ## Features
 
 ### 🎨 Visual Interface
+
 - **Drag-and-Drop Canvas**: Intuitive node-based workflow construction
 - **Zoom & Pan**: Navigate large workflows with ease
 - **Grid Snap**: Precision alignment for professional layouts
@@ -14,6 +15,7 @@ The Claude Flow Workflow Designer is a comprehensive visual workflow builder tha
 - **Responsive Design**: Works on desktop and mobile devices
 
 ### 🧩 Component Library
+
 - **Input Components**: File Input, Text Input, URL Input, API Input
 - **Processing Components**: Transform, Filter, Aggregate, Sort
 - **Output Components**: File Output, Display, API Output, Notification
@@ -21,24 +23,28 @@ The Claude Flow Workflow Designer is a comprehensive visual workflow builder tha
 - **AI Operations**: AI Analyze, AI Generate, AI Classify, AI Summarize
 
 ### 🔗 Connection System
+
 - **Visual Connections**: Drag between input/output ports
 - **Type Validation**: Ensures compatible connections
 - **Connection Management**: Easy editing and removal
 - **Flow Visualization**: Clear data flow representation
 
 ### 🚀 Execution Engine
+
 - **Real-time Execution**: Watch workflows run in real-time
 - **Status Tracking**: Visual indicators for node states
 - **Progress Monitoring**: Detailed execution logs
 - **Error Handling**: Comprehensive error reporting
 
 ### ✅ Validation System
+
 - **Workflow Validation**: Checks for errors and warnings
 - **Circular Dependency Detection**: Prevents infinite loops
 - **Required Property Validation**: Ensures complete configuration
 - **Connection Validation**: Verifies proper data flow
 
 ### 📚 Template Gallery
+
 - **Pre-built Workflows**: Common patterns and examples
 - **Template Categories**: Organized by use case
 - **Quick Start**: Load templates to get started quickly
@@ -61,25 +67,29 @@ The Claude Flow Workflow Designer is a comprehensive visual workflow builder tha
 ### Basic Usage
 
 1. **Open the Designer**
+
    ```html
    <div id="workflowDesigner"></div>
    <script src="js/workflow-designer.js"></script>
    <script>
-       const designer = new WorkflowDesigner('workflowDesigner');
+     const designer = new WorkflowDesigner('workflowDesigner');
    </script>
    ```
 
 2. **Add Components**
+
    - Drag components from the left palette
    - Drop them onto the canvas
    - Components automatically snap to grid
 
 3. **Create Connections**
+
    - Click and drag from output ports (blue circles)
    - Connect to input ports (green circles)
    - Connections validate automatically
 
 4. **Configure Properties**
+
    - Select any node to see its properties
    - Edit values in the right panel
    - Changes apply immediately
@@ -92,28 +102,31 @@ The Claude Flow Workflow Designer is a comprehensive visual workflow builder tha
 ### Advanced Features
 
 #### Custom Node Types
+
 ```javascript
 // Add custom node type
 designer.nodeTypes.custom = {
-    inputs: [{ name: 'data', type: 'any' }],
-    outputs: [{ name: 'result', type: 'any' }],
-    properties: { customProp: 'defaultValue' }
+  inputs: [{ name: 'data', type: 'any' }],
+  outputs: [{ name: 'result', type: 'any' }],
+  properties: { customProp: 'defaultValue' },
 };
 ```
 
 #### Event Handling
+
 ```javascript
 // Listen for workflow events
 designer.addEventListener('nodeAdded', (node) => {
-    console.log('Node added:', node);
+  console.log('Node added:', node);
 });
 
 designer.addEventListener('executionComplete', (results) => {
-    console.log('Execution complete:', results);
+  console.log('Execution complete:', results);
 });
 ```
 
 #### Save/Load Workflows
+
 ```javascript
 // Save workflow
 const workflow = designer.exportWorkflow();
@@ -129,13 +142,15 @@ designer.importWorkflow(saved);
 ### Input Components
 
 #### File Input
+
 - **Purpose**: Read data from files
-- **Properties**: 
+- **Properties**:
   - `path`: File path
   - `format`: File format (auto, json, csv, txt)
 - **Outputs**: File data
 
 #### Text Input
+
 - **Purpose**: Manual text input
 - **Properties**:
   - `value`: Text content
@@ -143,6 +158,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Text string
 
 #### URL Input
+
 - **Purpose**: Fetch data from URLs
 - **Properties**:
   - `url`: Target URL
@@ -151,6 +167,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Response data
 
 #### API Input
+
 - **Purpose**: Connect to APIs
 - **Properties**:
   - `endpoint`: API endpoint
@@ -162,6 +179,7 @@ designer.importWorkflow(saved);
 ### Processing Components
 
 #### Transform
+
 - **Purpose**: Transform data using custom expressions
 - **Properties**:
   - `expression`: JavaScript expression
@@ -170,6 +188,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Transformed data
 
 #### Filter
+
 - **Purpose**: Filter data based on conditions
 - **Properties**:
   - `condition`: Filter condition
@@ -178,6 +197,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Filtered data
 
 #### Aggregate
+
 - **Purpose**: Aggregate data collections
 - **Properties**:
   - `operation`: Aggregation operation (sum, avg, count, etc.)
@@ -186,6 +206,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Aggregated result
 
 #### Sort
+
 - **Purpose**: Sort data collections
 - **Properties**:
   - `field`: Sort field
@@ -196,6 +217,7 @@ designer.importWorkflow(saved);
 ### Output Components
 
 #### File Output
+
 - **Purpose**: Write data to files
 - **Properties**:
   - `path`: Output file path
@@ -203,6 +225,7 @@ designer.importWorkflow(saved);
 - **Inputs**: Data to write
 
 #### Display
+
 - **Purpose**: Display data in UI
 - **Properties**:
   - `format`: Display format (table, json, text)
@@ -210,6 +233,7 @@ designer.importWorkflow(saved);
 - **Inputs**: Data to display
 
 #### API Output
+
 - **Purpose**: Send data to APIs
 - **Properties**:
   - `endpoint`: Target API endpoint
@@ -219,6 +243,7 @@ designer.importWorkflow(saved);
 - **Outputs**: API response
 
 #### Notification
+
 - **Purpose**: Show user notifications
 - **Properties**:
   - `type`: Notification type (info, warning, error)
@@ -228,6 +253,7 @@ designer.importWorkflow(saved);
 ### Control Flow Components
 
 #### Condition
+
 - **Purpose**: Conditional data routing
 - **Properties**:
   - `expression`: Condition expression
@@ -236,6 +262,7 @@ designer.importWorkflow(saved);
 - **Outputs**: True path, false path
 
 #### Loop
+
 - **Purpose**: Iterate over data
 - **Properties**:
   - `type`: Loop type (forEach, while, for)
@@ -244,6 +271,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Iteration results
 
 #### Delay
+
 - **Purpose**: Add delays to workflow
 - **Properties**:
   - `duration`: Delay duration
@@ -252,6 +280,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Delayed data
 
 #### Parallel
+
 - **Purpose**: Parallel execution
 - **Properties**:
   - `maxConcurrency`: Maximum concurrent operations
@@ -261,6 +290,7 @@ designer.importWorkflow(saved);
 ### AI Components
 
 #### AI Analyze
+
 - **Purpose**: Analyze data using AI
 - **Properties**:
   - `model`: AI model (gpt-4, claude, etc.)
@@ -269,6 +299,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Analysis results
 
 #### AI Generate
+
 - **Purpose**: Generate content using AI
 - **Properties**:
   - `model`: AI model
@@ -278,6 +309,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Generated content
 
 #### AI Classify
+
 - **Purpose**: Classify data using AI
 - **Properties**:
   - `model`: AI model
@@ -286,6 +318,7 @@ designer.importWorkflow(saved);
 - **Outputs**: Classification results
 
 #### AI Summarize
+
 - **Purpose**: Summarize content using AI
 - **Properties**:
   - `model`: AI model
@@ -298,36 +331,42 @@ designer.importWorkflow(saved);
 ### WorkflowDesigner Class
 
 #### Constructor
+
 ```javascript
-new WorkflowDesigner(containerId, options)
+new WorkflowDesigner(containerId, options);
 ```
 
 #### Methods
 
 ##### Node Management
+
 - `createNode(type, x, y)`: Create new node
 - `deleteNode(node)`: Delete node
 - `duplicateNode(node)`: Duplicate node
 - `getNodeAt(x, y)`: Get node at coordinates
 
 ##### Connection Management
+
 - `createConnection(start, end)`: Create connection
 - `deleteConnection(connection)`: Delete connection
 - `getConnectionPointAt(x, y)`: Get connection point
 
 ##### Workflow Operations
+
 - `validateWorkflow()`: Validate workflow
 - `executeWorkflow()`: Execute workflow
 - `stopWorkflow()`: Stop execution
 - `clearCanvas()`: Clear all nodes
 
 ##### Import/Export
+
 - `exportWorkflow()`: Export workflow data
 - `importWorkflow(data)`: Import workflow data
 - `saveWorkflow()`: Save to localStorage
 - `loadWorkflow()`: Load from localStorage
 
 ##### View Management
+
 - `setZoom(zoom)`: Set zoom level
 - `pan(x, y)`: Pan canvas
 - `draw()`: Redraw canvas
@@ -335,22 +374,26 @@ new WorkflowDesigner(containerId, options)
 ### Events
 
 #### Node Events
+
 - `nodeAdded`: Node added to canvas
 - `nodeDeleted`: Node deleted from canvas
 - `nodeSelected`: Node selected
 - `nodePropertyChanged`: Node property changed
 
 #### Connection Events
+
 - `connectionCreated`: Connection created
 - `connectionDeleted`: Connection deleted
 
 #### Workflow Events
+
 - `workflowValidated`: Workflow validation complete
 - `executionStarted`: Workflow execution started
 - `executionComplete`: Workflow execution complete
 - `executionError`: Workflow execution error
 
 #### Canvas Events
+
 - `canvasPan`: Canvas panned
 - `canvasZoom`: Canvas zoomed
 - `canvasClick`: Canvas clicked
@@ -360,6 +403,7 @@ new WorkflowDesigner(containerId, options)
 ### CSS Classes
 
 #### Layout
+
 - `.workflow-designer`: Main container
 - `.toolbar`: Top toolbar
 - `.designer-body`: Main body area
@@ -369,12 +413,14 @@ new WorkflowDesigner(containerId, options)
 - `.bottom-panel`: Bottom panel with tabs
 
 #### Components
+
 - `.palette-item`: Draggable palette items
 - `.btn`: Button styling
 - `.tab-button`: Tab navigation buttons
 - `.context-menu`: Right-click context menu
 
 #### States
+
 - `.selected`: Selected node state
 - `.executing`: Executing node state
 - `.error`: Error state
@@ -383,35 +429,38 @@ new WorkflowDesigner(containerId, options)
 ### Customization
 
 #### Custom Themes
+
 ```css
 /* Dark theme example */
 .workflow-designer.dark-theme {
-    background: #1a1a1a;
-    color: #ffffff;
+  background: #1a1a1a;
+  color: #ffffff;
 }
 
 .workflow-designer.dark-theme .node-palette {
-    background: #2d2d2d;
-    border-color: #444444;
+  background: #2d2d2d;
+  border-color: #444444;
 }
 ```
 
 #### Custom Node Styles
+
 ```css
 /* Custom node type styling */
-.palette-item[data-node-type="custom"] {
-    border-color: #purple;
-    background: #f3e5f5;
+.palette-item[data-node-type='custom'] {
+  border-color: #purple;
+  background: #f3e5f5;
 }
 
-.palette-item[data-node-type="custom"] i {
-    color: #purple;
+.palette-item[data-node-type='custom'] i {
+  color: #purple;
 }
 ```
 
 ## Examples
 
 ### Basic Data Processing
+
 ```javascript
 // Create a simple data processing workflow
 const fileInput = designer.createNode('file-input', 100, 150);
@@ -425,16 +474,17 @@ display.properties.format = 'table';
 
 // Connect nodes
 designer.createConnection(
-    { node: fileInput, type: 'output', index: 0 },
-    { node: transform, type: 'input', index: 0 }
+  { node: fileInput, type: 'output', index: 0 },
+  { node: transform, type: 'input', index: 0 },
 );
 designer.createConnection(
-    { node: transform, type: 'output', index: 0 },
-    { node: display, type: 'input', index: 0 }
+  { node: transform, type: 'output', index: 0 },
+  { node: display, type: 'input', index: 0 },
 );
 ```
 
 ### AI Content Pipeline
+
 ```javascript
 // Create an AI content processing workflow
 const textInput = designer.createNode('text-input', 100, 150);
@@ -452,6 +502,7 @@ aiSummarize.properties.length = 'short';
 ```
 
 ### API Integration
+
 ```javascript
 // Create an API integration workflow
 const apiInput = designer.createNode('api-input', 100, 150);
@@ -471,6 +522,7 @@ apiOutput.properties.endpoint = 'https://api.example.com/results';
 ## Best Practices
 
 ### Workflow Design
+
 1. **Start Simple**: Begin with basic workflows and add complexity gradually
 2. **Use Templates**: Leverage pre-built templates for common patterns
 3. **Validate Early**: Validate workflows before execution
@@ -478,6 +530,7 @@ apiOutput.properties.endpoint = 'https://api.example.com/results';
 5. **Document**: Use descriptive names and comments
 
 ### Performance
+
 1. **Minimize Connections**: Reduce unnecessary data passing
 2. **Use Parallel**: Leverage parallel processing where possible
 3. **Cache Results**: Cache expensive operations
@@ -485,6 +538,7 @@ apiOutput.properties.endpoint = 'https://api.example.com/results';
 5. **Monitor Resources**: Watch memory and CPU usage
 
 ### Security
+
 1. **Validate Inputs**: Always validate external data
 2. **Sanitize**: Clean user inputs before processing
 3. **Secure APIs**: Use proper authentication
@@ -496,26 +550,31 @@ apiOutput.properties.endpoint = 'https://api.example.com/results';
 ### Common Issues
 
 #### Nodes Not Connecting
+
 - Check port compatibility
 - Ensure proper drag direction
 - Verify node positions
 
 #### Execution Errors
+
 - Validate workflow first
 - Check node properties
 - Review execution logs
 
 #### Performance Issues
+
 - Reduce workflow complexity
 - Use parallel processing
 - Optimize AI calls
 
 #### UI Problems
+
 - Clear browser cache
 - Check browser compatibility
 - Verify CSS/JS loading
 
 ### Debug Mode
+
 ```javascript
 // Enable debug mode
 designer.debug = true;

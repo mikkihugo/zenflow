@@ -23,19 +23,16 @@ export class SwarmCoordinator {
     console.log(`🎯 Strategy: ${this.config.strategy}`);
     console.log(`🏗️  Mode: ${this.config.mode}`);
     console.log(`🤖 Max Agents: ${this.config.maxAgents}`);
-    
+
     this.status = 'active';
-    
+
     // Create swarm directory
     const swarmDir = `./swarm-runs/${this.id}`;
     await fs.mkdir(swarmDir, { recursive: true });
-    
+
     // Save configuration
-    await fs.writeFile(
-      path.join(swarmDir, 'config.json'),
-      JSON.stringify(this.config, null, 2)
-    );
-    
+    await fs.writeFile(path.join(swarmDir, 'config.json'), JSON.stringify(this.config, null, 2));
+
     return this;
   }
 
@@ -45,12 +42,12 @@ export class SwarmCoordinator {
       type,
       name: name || `${type}-${this.agents.length + 1}`,
       status: 'active',
-      tasks: []
+      tasks: [],
     };
-    
+
     this.agents.push(agent);
     console.log(`  🤖 Agent spawned: ${agent.name} (${agent.type})`);
-    
+
     return agent;
   }
 
@@ -59,15 +56,15 @@ export class SwarmCoordinator {
       id: generateId('task'),
       description: task,
       status: 'in_progress',
-      startTime: Date.now()
+      startTime: Date.now(),
     };
-    
+
     this.tasks.push(taskObj);
     console.log(`\n📌 Executing task: ${task}`);
-    
+
     // Simulate task execution with progress
     console.log(`  ⏳ Processing...`);
-    
+
     // Simulate different types of tasks
     if (task.toLowerCase().includes('api')) {
       await this.createAPIProject();
@@ -76,21 +73,21 @@ export class SwarmCoordinator {
     } else {
       await this.genericTaskExecution(task);
     }
-    
+
     taskObj.status = 'completed';
     taskObj.endTime = Date.now();
-    
+
     console.log(`  ✅ Task completed in ${(taskObj.endTime - taskObj.startTime) / 1000}s`);
-    
+
     return taskObj;
   }
 
   async createAPIProject() {
     console.log(`  🏗️  Creating API project structure...`);
-    
+
     const projectDir = './api-project';
     await fs.mkdir(projectDir, { recursive: true });
-    
+
     // Create basic Express server
     const serverCode = `const express = require('express');
 const app = express();
@@ -112,32 +109,29 @@ app.listen(port, () => {
 
 module.exports = app;
 `;
-    
+
     await fs.writeFile(path.join(projectDir, 'server.js'), serverCode);
-    
+
     // Create package.json
     const packageJson = {
-      name: "api-project",
-      version: "1.0.0",
-      description: "API created by Claude Flow Swarm",
-      main: "server.js",
+      name: 'api-project',
+      version: '1.0.0',
+      description: 'API created by Claude Flow Swarm',
+      main: 'server.js',
       scripts: {
-        start: "node server.js",
-        dev: "nodemon server.js"
+        start: 'node server.js',
+        dev: 'nodemon server.js',
       },
       dependencies: {
-        express: "^4.18.2"
+        express: '^4.18.2',
       },
       devDependencies: {
-        nodemon: "^3.0.1"
-      }
+        nodemon: '^3.0.1',
+      },
     };
-    
-    await fs.writeFile(
-      path.join(projectDir, 'package.json'),
-      JSON.stringify(packageJson, null, 2)
-    );
-    
+
+    await fs.writeFile(path.join(projectDir, 'package.json'), JSON.stringify(packageJson, null, 2));
+
     console.log(`  ✅ Created API project in ${projectDir}`);
   }
 
@@ -148,10 +142,10 @@ module.exports = app;
 
   async genericTaskExecution(task) {
     console.log(`  🔄 Executing: ${task}`);
-    
+
     // Simulate work being done
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     console.log(`  ✅ Generic task completed`);
   }
 
@@ -162,16 +156,16 @@ module.exports = app;
       agents: this.agents.length,
       tasks: {
         total: this.tasks.length,
-        completed: this.tasks.filter(t => t.status === 'completed').length,
-        in_progress: this.tasks.filter(t => t.status === 'in_progress').length
+        completed: this.tasks.filter((t) => t.status === 'completed').length,
+        in_progress: this.tasks.filter((t) => t.status === 'in_progress').length,
       },
-      runtime: Math.floor((Date.now() - this.startTime) / 1000)
+      runtime: Math.floor((Date.now() - this.startTime) / 1000),
     };
   }
 
   async complete() {
     this.status = 'completed';
-    
+
     const summary = await this.getStatus();
     console.log(`\n✅ Swarm completed successfully!`);
     console.log(`📊 Summary:`);
@@ -179,14 +173,11 @@ module.exports = app;
     console.log(`  • Total Agents: ${summary.agents}`);
     console.log(`  • Tasks Completed: ${summary.tasks.completed}`);
     console.log(`  • Runtime: ${summary.runtime}s`);
-    
+
     // Save summary
     const swarmDir = `./swarm-runs/${this.id}`;
-    await fs.writeFile(
-      path.join(swarmDir, 'summary.json'),
-      JSON.stringify(summary, null, 2)
-    );
-    
+    await fs.writeFile(path.join(swarmDir, 'summary.json'), JSON.stringify(summary, null, 2));
+
     return summary;
   }
 }
@@ -208,15 +199,15 @@ export async function executeSwarm(objective, flags = {}) {
       reviewRequired: flags.review || false,
       testingRequired: flags.testing || false,
       monitoring: {
-        enabled: flags.monitor || false
+        enabled: flags.monitor || false,
       },
       memory: {
         namespace: flags['memory-namespace'] || 'swarm',
-        persistent: flags.persistence !== false
+        persistent: flags.persistence !== false,
       },
       security: {
-        encryptionEnabled: flags.encryption || false
-      }
+        encryptionEnabled: flags.encryption || false,
+      },
     };
 
     // Initialize swarm coordinator
@@ -245,9 +236,8 @@ export async function executeSwarm(objective, flags = {}) {
 
     // Complete and return summary
     const summary = await coordinator.complete();
-    
-    return { success: true, summary };
 
+    return { success: true, summary };
   } catch (error) {
     console.error(`❌ Swarm execution failed: ${error.message}`);
     return { success: false, error: error.message };
