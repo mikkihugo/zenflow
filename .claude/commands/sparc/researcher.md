@@ -1,15 +1,35 @@
 # SPARC Researcher Mode
 
 ## Purpose
-Deep research with parallel WebSearch/WebFetch and Memory coordination using MCP tools.
+Deep research with parallel WebSearch/WebFetch and Memory coordination.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "researcher",
+  task_description: "research AI trends 2024",
+  options: {
+    depth: "comprehensive",
+    sources: ["academic", "industry", "news"]
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run researcher "research AI trends 2024"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="researcher" task_description="research AI trends 2024"
+# For alpha features
+npx claude-flow@alpha sparc run researcher "research AI trends 2024"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run researcher "research AI trends 2024"
 ```
 
 ## Core Capabilities
@@ -18,18 +38,6 @@ mcp__claude-flow__sparc_mode mode="researcher" task_description="research AI tre
 - Trend analysis
 - Competitive research
 - Technology assessment
-
-## MCP Integration
-```javascript
-// Initialize research swarm
-mcp__claude-flow__swarm_init topology="mesh" strategy="adaptive"
-
-// Spawn researcher agents
-mcp__claude-flow__agent_spawn type="researcher" capabilities=["web-research", "analysis"]
-
-// Execute research mode
-mcp__claude-flow__sparc_mode mode="researcher" task_description="research latest trends"
-```
 
 ## Research Methods
 - Parallel web searches
@@ -44,18 +52,3 @@ mcp__claude-flow__sparc_mode mode="researcher" task_description="research latest
 - Track information sources
 - Cross-reference insights
 - Maintain research history
-
-## Workflow Example
-```bash
-# 1. Initialize research swarm
-mcp__claude-flow__swarm_init topology="mesh" maxAgents=8 strategy="adaptive"
-
-# 2. Conduct research
-mcp__claude-flow__sparc_mode mode="researcher" options={"depth": "comprehensive", "sources": "academic,industry"} task_description="research quantum computing applications"
-
-# 3. Store findings
-mcp__claude-flow__memory_usage action="store" key="research-quantum" value="findings-2024" namespace="research"
-
-# 4. Search and analyze
-mcp__claude-flow__memory_search pattern="quantum" namespace="research" limit=50
-```

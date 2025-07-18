@@ -1,15 +1,35 @@
 # SPARC TDD Mode
 
 ## Purpose
-Test-driven development with TodoWrite planning and comprehensive testing using MCP tools.
+Test-driven development with TodoWrite planning and comprehensive testing.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "tdd",
+  task_description: "shopping cart feature",
+  options: {
+    coverage_target: 90,
+    test_framework: "jest"
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run tdd "shopping cart feature"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="tdd" task_description="shopping cart feature"
+# For alpha features
+npx claude-flow@alpha sparc run tdd "shopping cart feature"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run tdd "shopping cart feature"
 ```
 
 ## Core Capabilities
@@ -18,19 +38,6 @@ mcp__claude-flow__sparc_mode mode="tdd" task_description="shopping cart feature"
 - Test suite design
 - Coverage optimization
 - Continuous testing
-
-## MCP Integration
-```javascript
-// Initialize TDD swarm
-mcp__claude-flow__swarm_init topology="hierarchical" strategy="auto"
-
-// Spawn TDD agents
-mcp__claude-flow__agent_spawn type="tester" capabilities=["unit-testing", "integration-testing"]
-mcp__claude-flow__agent_spawn type="coder" capabilities=["implementation", "refactoring"]
-
-// Execute TDD mode
-mcp__claude-flow__sparc_mode mode="tdd" task_description="implement shopping cart"
-```
 
 ## TDD Workflow
 1. Write failing tests
@@ -45,18 +52,3 @@ mcp__claude-flow__sparc_mode mode="tdd" task_description="implement shopping car
 - End-to-end testing
 - Performance testing
 - Security testing
-
-## Workflow Example
-```bash
-# 1. Initialize TDD swarm
-mcp__claude-flow__swarm_init topology="star" maxAgents=6
-
-# 2. Create test plan
-mcp__claude-flow__workflow_create name="tdd-cycle" steps=["write-tests", "implement", "refactor"]
-
-# 3. Execute TDD cycle
-mcp__claude-flow__sparc_mode mode="tdd" options={"coverage": "100%", "parallel-tests": true} task_description="implement user authentication with JWT"
-
-# 4. Validate quality
-mcp__claude-flow__quality_assess target="authentication" criteria=["test-coverage", "code-quality", "performance"]
-```

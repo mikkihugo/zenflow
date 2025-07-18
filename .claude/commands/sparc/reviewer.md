@@ -1,15 +1,35 @@
 # SPARC Reviewer Mode
 
 ## Purpose
-Code review using batch file analysis for comprehensive reviews using MCP tools.
+Code review using batch file analysis for comprehensive reviews.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "reviewer",
+  task_description: "review pull request #123",
+  options: {
+    security_check: true,
+    performance_check: true
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run reviewer "review pull request #123"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="reviewer" task_description="review pull request #123"
+# For alpha features
+npx claude-flow@alpha sparc run reviewer "review pull request #123"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run reviewer "review pull request #123"
 ```
 
 ## Core Capabilities
@@ -18,18 +38,6 @@ mcp__claude-flow__sparc_mode mode="reviewer" task_description="review pull reque
 - Performance analysis
 - Best practices check
 - Documentation review
-
-## MCP Integration
-```javascript
-// Initialize review swarm
-mcp__claude-flow__swarm_init topology="hierarchical" strategy="auto"
-
-// Spawn reviewer agents
-mcp__claude-flow__agent_spawn type="reviewer" capabilities=["code-quality", "security-analysis"]
-
-// Execute review mode
-mcp__claude-flow__sparc_mode mode="reviewer" task_description="review codebase"
-```
 
 ## Review Criteria
 - Code correctness
@@ -44,18 +52,3 @@ mcp__claude-flow__sparc_mode mode="reviewer" task_description="review codebase"
 - Dependency checking
 - Consistency validation
 - Automated reporting
-
-## Workflow Example
-```bash
-# 1. Initialize review swarm
-mcp__claude-flow__swarm_init topology="hierarchical" maxAgents=6
-
-# 2. Perform code review
-mcp__claude-flow__sparc_mode mode="reviewer" options={"depth": "comprehensive", "security": true} task_description="review authentication module"
-
-# 3. GitHub integration
-mcp__claude-flow__github_code_review repo="owner/repo" pr=123
-
-# 4. Quality assessment
-mcp__claude-flow__quality_assess target="pull-request-123" criteria=["code-quality", "security", "performance"]
-```

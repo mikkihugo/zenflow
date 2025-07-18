@@ -1,15 +1,35 @@
 # SPARC Designer Mode
 
 ## Purpose
-UI/UX design with Memory coordination for consistent experiences using MCP tools.
+UI/UX design with Memory coordination for consistent experiences.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "designer",
+  task_description: "create dashboard UI",
+  options: {
+    design_system: true,
+    responsive: true
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run designer "create dashboard UI"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="designer" task_description="create dashboard UI"
+# For alpha features
+npx claude-flow@alpha sparc run designer "create dashboard UI"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run designer "create dashboard UI"
 ```
 
 ## Core Capabilities
@@ -18,18 +38,6 @@ mcp__claude-flow__sparc_mode mode="designer" task_description="create dashboard 
 - Design system creation
 - Accessibility planning
 - Responsive layouts
-
-## MCP Integration
-```javascript
-// Initialize design swarm
-mcp__claude-flow__swarm_init topology="star" strategy="auto"
-
-// Spawn designer agents
-mcp__claude-flow__agent_spawn type="specialist" capabilities=["ui-design", "ux-research"]
-
-// Execute design mode
-mcp__claude-flow__sparc_mode mode="designer" task_description="design responsive dashboard"
-```
 
 ## Design Process
 - User research insights
@@ -43,18 +51,3 @@ mcp__claude-flow__sparc_mode mode="designer" task_description="design responsive
 - Share component specs
 - Maintain consistency
 - Track design evolution
-
-## Workflow Example
-```bash
-# 1. Initialize design swarm
-mcp__claude-flow__swarm_init topology="star" maxAgents=5
-
-# 2. Create design system
-mcp__claude-flow__sparc_mode mode="designer" options={"system": true, "responsive": true} task_description="create comprehensive design system"
-
-# 3. Store design tokens
-mcp__claude-flow__memory_usage action="store" key="design-tokens" value="color-typography-spacing" namespace="design"
-
-# 4. Share across teams
-mcp__claude-flow__memory_sync target="frontend-team"
-```

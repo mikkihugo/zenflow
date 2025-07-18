@@ -1,15 +1,35 @@
 # SPARC Coder Mode
 
 ## Purpose
-Autonomous code generation with batch file operations using MCP tools.
+Autonomous code generation with batch file operations.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "coder",
+  task_description: "implement user authentication",
+  options: {
+    test_driven: true,
+    parallel_edits: true
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run coder "implement user authentication"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="coder" task_description="implement user authentication"
+# For alpha features
+npx claude-flow@alpha sparc run coder "implement user authentication"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run coder "implement user authentication"
 ```
 
 ## Core Capabilities
@@ -18,18 +38,6 @@ mcp__claude-flow__sparc_mode mode="coder" task_description="implement user authe
 - Bug fixes
 - API development
 - Algorithm implementation
-
-## MCP Integration
-```javascript
-// Initialize coding swarm
-mcp__claude-flow__swarm_init topology="mesh" strategy="auto"
-
-// Spawn coder agents
-mcp__claude-flow__agent_spawn type="coder" capabilities=["feature-implementation", "refactoring"]
-
-// Execute coding mode
-mcp__claude-flow__sparc_mode mode="coder" task_description="implement authentication"
-```
 
 ## Batch Operations
 - Parallel file creation
@@ -44,15 +52,3 @@ mcp__claude-flow__sparc_mode mode="coder" task_description="implement authentica
 - Comprehensive error handling
 - Performance optimization
 - Security best practices
-
-## Workflow Example
-```bash
-# 1. Initialize coding swarm
-mcp__claude-flow__swarm_init topology="hierarchical" maxAgents=6
-
-# 2. Implement feature with parallel processing
-mcp__claude-flow__sparc_mode mode="coder" options={"parallel": true, "test": true} task_description="implement JWT authentication with refresh tokens"
-
-# 3. Run code quality checks
-mcp__claude-flow__quality_assess target="authentication-module" criteria=["security", "performance", "maintainability"]
-```

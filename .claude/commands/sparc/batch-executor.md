@@ -1,15 +1,35 @@
 # SPARC Batch Executor Mode
 
 ## Purpose
-Parallel task execution specialist using batch operations with MCP tools.
+Parallel task execution specialist using batch operations.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "batch-executor",
+  task_description: "process multiple files",
+  options: {
+    parallel: true,
+    batch_size: 10
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run batch-executor "process multiple files"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="batch-executor" task_description="process multiple files"
+# For alpha features
+npx claude-flow@alpha sparc run batch-executor "process multiple files"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run batch-executor "process multiple files"
 ```
 
 ## Core Capabilities
@@ -18,19 +38,6 @@ mcp__claude-flow__sparc_mode mode="batch-executor" task_description="process mul
 - Resource optimization
 - Load balancing
 - Progress tracking
-
-## MCP Integration
-```javascript
-// Initialize batch execution swarm
-mcp__claude-flow__swarm_init topology="mesh" strategy="balanced"
-
-// Spawn batch executor agents
-mcp__claude-flow__agent_spawn type="specialist" capabilities=["batch-processing", "parallel-execution"]
-
-// Execute batch operations
-mcp__claude-flow__batch_process items=["file1", "file2", "file3"] operation="transform"
-mcp__claude-flow__parallel_execute tasks=["task1", "task2", "task3"]
-```
 
 ## Execution Patterns
 - Parallel Read/Write operations
@@ -45,18 +52,3 @@ mcp__claude-flow__parallel_execute tasks=["task1", "task2", "task3"]
 - Progress monitoring
 - Error recovery
 - Result aggregation
-
-## Workflow Example
-```bash
-# 1. Initialize batch processing swarm
-mcp__claude-flow__swarm_init topology="mesh" maxAgents=10 strategy="balanced"
-
-# 2. Execute batch operations
-mcp__claude-flow__sparc_mode mode="batch-executor" options={"parallel": true, "batch-size": 50} task_description="process 1000 log files"
-
-# 3. Load balance work
-mcp__claude-flow__load_balance swarmId="current" tasks=["parse", "analyze", "report"]
-
-# 4. Monitor execution
-mcp__claude-flow__swarm_monitor swarmId="current" interval=1000
-```

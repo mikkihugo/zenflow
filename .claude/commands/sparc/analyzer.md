@@ -1,15 +1,35 @@
 # SPARC Analyzer Mode
 
 ## Purpose
-Deep code and data analysis with batch processing capabilities using MCP tools and swarm coordination.
+Deep code and data analysis with batch processing capabilities.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "analyzer",
+  task_description: "analyze codebase performance",
+  options: {
+    parallel: true,
+    detailed: true
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run analyzer "analyze codebase performance"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="analyzer" task_description="analyze codebase performance"
+# For alpha features
+npx claude-flow@alpha sparc run analyzer "analyze codebase performance"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run analyzer "analyze codebase performance"
 ```
 
 ## Core Capabilities
@@ -19,35 +39,11 @@ mcp__claude-flow__sparc_mode mode="analyzer" task_description="analyze codebase 
 - Memory usage analysis
 - Dependency mapping
 
-## MCP Integration
-```javascript
-// Initialize swarm for analysis
-mcp__claude-flow__swarm_init topology="mesh" strategy="auto"
-
-// Spawn analysis agents
-mcp__claude-flow__agent_spawn type="analyst" capabilities=["code-analysis", "performance-profiling"]
-
-// Execute analysis
-mcp__claude-flow__sparc_mode mode="analyzer" task_description="analyze codebase"
-```
-
 ## Batch Operations
 - Parallel file analysis using concurrent Read operations
 - Batch pattern matching with Grep tool
 - Simultaneous metric collection
 - Aggregated reporting
-
-## Workflow Example
-```bash
-# 1. Initialize analysis swarm
-mcp__claude-flow__swarm_init topology="hierarchical" maxAgents=5
-
-# 2. Run comprehensive analysis
-mcp__claude-flow__sparc_mode mode="analyzer" options={"parallel": true} task_description="analyze performance bottlenecks"
-
-# 3. Collect results
-mcp__claude-flow__performance_report format="detailed" timeframe="24h"
-```
 
 ## Output Format
 - Detailed analysis reports

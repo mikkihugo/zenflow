@@ -1,15 +1,35 @@
 # SPARC Memory Manager Mode
 
 ## Purpose
-Knowledge management with Memory tools for persistent insights using MCP tools.
+Knowledge management with Memory tools for persistent insights.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "memory-manager",
+  task_description: "organize project knowledge",
+  options: {
+    namespace: "project",
+    auto_organize: true
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run memory-manager "organize project knowledge"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="memory-manager" task_description="organize project knowledge"
+# For alpha features
+npx claude-flow@alpha sparc run memory-manager "organize project knowledge"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run memory-manager "organize project knowledge"
 ```
 
 ## Core Capabilities
@@ -18,17 +38,6 @@ mcp__claude-flow__sparc_mode mode="memory-manager" task_description="organize pr
 - Context management
 - Insight preservation
 - Cross-session persistence
-
-## MCP Integration
-```javascript
-// Initialize memory management
-mcp__claude-flow__swarm_init topology="star" strategy="auto"
-
-// Memory operations
-mcp__claude-flow__memory_usage action="store" key="project-insights" value="architecture-decisions" namespace="knowledge"
-mcp__claude-flow__memory_search pattern="design-patterns" namespace="knowledge" limit=20
-mcp__claude-flow__memory_persist sessionId="knowledge-session"
-```
 
 ## Memory Strategies
 - Hierarchical organization
@@ -43,19 +52,3 @@ mcp__claude-flow__memory_persist sessionId="knowledge-session"
 - Update knowledge base
 - Merge related information
 - Archive obsolete data
-
-## Workflow Example
-```bash
-# 1. Initialize knowledge swarm
-mcp__claude-flow__swarm_init topology="hierarchical" maxAgents=4
-
-# 2. Organize knowledge
-mcp__claude-flow__sparc_mode mode="memory-manager" options={"organize": true, "index": true} task_description="organize project documentation and decisions"
-
-# 3. Create knowledge namespaces
-mcp__claude-flow__memory_namespace action="create" namespace="architecture"
-mcp__claude-flow__memory_namespace action="create" namespace="implementation"
-
-# 4. Backup knowledge base
-mcp__claude-flow__memory_backup path="/backups/knowledge-base"
-```

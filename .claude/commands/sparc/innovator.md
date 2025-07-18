@@ -1,15 +1,35 @@
 # SPARC Innovator Mode
 
 ## Purpose
-Creative problem solving with WebSearch and Memory integration using MCP tools.
+Creative problem solving with WebSearch and Memory integration.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "innovator",
+  task_description: "innovative solutions for scaling",
+  options: {
+    research_depth: "comprehensive",
+    creativity_level: "high"
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run innovator "innovative solutions for scaling"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="innovator" task_description="innovative solutions for scaling"
+# For alpha features
+npx claude-flow@alpha sparc run innovator "innovative solutions for scaling"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run innovator "innovative solutions for scaling"
 ```
 
 ## Core Capabilities
@@ -18,18 +38,6 @@ mcp__claude-flow__sparc_mode mode="innovator" task_description="innovative solut
 - Technology exploration
 - Pattern innovation
 - Proof of concept
-
-## MCP Integration
-```javascript
-// Initialize innovation swarm
-mcp__claude-flow__swarm_init topology="mesh" strategy="adaptive"
-
-// Spawn innovator agents
-mcp__claude-flow__agent_spawn type="specialist" capabilities=["creative-thinking", "research"]
-
-// Execute innovation mode
-mcp__claude-flow__sparc_mode mode="innovator" task_description="innovative scaling solutions"
-```
 
 ## Innovation Process
 - Divergent thinking phase
@@ -44,18 +52,3 @@ mcp__claude-flow__sparc_mode mode="innovator" task_description="innovative scali
 - Cross-domain insights
 - Pattern recognition
 - Analogical reasoning
-
-## Workflow Example
-```bash
-# 1. Initialize innovation swarm
-mcp__claude-flow__swarm_init topology="mesh" maxAgents=8 strategy="adaptive"
-
-# 2. Research current trends
-mcp__claude-flow__sparc_mode mode="innovator" options={"research": true, "brainstorm": true} task_description="explore AI-driven optimization techniques"
-
-# 3. Store innovative ideas
-mcp__claude-flow__memory_usage action="store" key="innovation-ideas" value="ai-optimization-concepts" namespace="innovation"
-
-# 4. Generate innovation report
-mcp__claude-flow__performance_report format="detailed" timeframe="7d"
-```

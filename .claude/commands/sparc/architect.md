@@ -1,15 +1,35 @@
 # SPARC Architect Mode
 
 ## Purpose
-System design with Memory-based coordination for scalable architectures using MCP tools.
+System design with Memory-based coordination for scalable architectures.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "architect",
+  task_description: "design microservices architecture",
+  options: {
+    detailed: true,
+    memory_enabled: true
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run architect "design microservices architecture"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="architect" task_description="design microservices architecture"
+# For alpha features
+npx claude-flow@alpha sparc run architect "design microservices architecture"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run architect "design microservices architecture"
 ```
 
 ## Core Capabilities
@@ -19,26 +39,11 @@ mcp__claude-flow__sparc_mode mode="architect" task_description="design microserv
 - API contract specification
 - Infrastructure planning
 
-## MCP Integration
-```javascript
-// Initialize architecture swarm
-mcp__claude-flow__swarm_init topology="hierarchical" strategy="auto"
-
-// Spawn architect agents
-mcp__claude-flow__agent_spawn type="architect" capabilities=["system-design", "api-design"]
-
-// Execute architecture mode
-mcp__claude-flow__sparc_mode mode="architect" task_description="design system"
-```
-
 ## Memory Integration
-```javascript
-// Store architecture decisions
-mcp__claude-flow__memory_usage action="store" key="architecture-decisions" value="microservices-design" namespace="architecture"
-
-// Share component specifications
-mcp__claude-flow__memory_usage action="store" key="component-specs" value="api-contracts" namespace="architecture"
-```
+- Store architecture decisions in Memory
+- Share component specifications across agents
+- Maintain design consistency
+- Track architectural evolution
 
 ## Design Patterns
 - Microservices
@@ -46,15 +51,3 @@ mcp__claude-flow__memory_usage action="store" key="component-specs" value="api-c
 - Domain-driven design
 - Hexagonal architecture
 - CQRS and Event Sourcing
-
-## Workflow Example
-```bash
-# 1. Initialize architecture swarm
-mcp__claude-flow__swarm_init topology="star" maxAgents=8
-
-# 2. Design system architecture
-mcp__claude-flow__sparc_mode mode="architect" options={"patterns": ["microservices", "event-driven"]} task_description="design scalable e-commerce platform"
-
-# 3. Store architecture in memory
-mcp__claude-flow__memory_persist sessionId="architecture-session"
-```

@@ -1,15 +1,35 @@
 # SPARC Swarm Coordinator Mode
 
 ## Purpose
-Specialized swarm management with batch coordination capabilities using MCP tools.
+Specialized swarm management with batch coordination capabilities.
 
 ## Activation
+
+### Option 1: Using MCP Tools (Preferred in Claude Code)
+```javascript
+mcp__claude-flow__sparc_mode {
+  mode: "swarm-coordinator",
+  task_description: "manage development swarm",
+  options: {
+    topology: "hierarchical",
+    max_agents: 10
+  }
+}
+```
+
+### Option 2: Using NPX CLI (Fallback when MCP not available)
 ```bash
-# Using CLI
+# Use when running from terminal or MCP tools unavailable
 npx claude-flow sparc run swarm-coordinator "manage development swarm"
 
-# Using MCP tools
-mcp__claude-flow__sparc_mode mode="swarm-coordinator" task_description="manage development swarm"
+# For alpha features
+npx claude-flow@alpha sparc run swarm-coordinator "manage development swarm"
+```
+
+### Option 3: Local Installation
+```bash
+# If claude-flow is installed locally
+./claude-flow sparc run swarm-coordinator "manage development swarm"
 ```
 
 ## Core Capabilities
@@ -18,18 +38,6 @@ mcp__claude-flow__sparc_mode mode="swarm-coordinator" task_description="manage d
 - Task distribution
 - Load balancing
 - Result collection
-
-## MCP Integration
-```javascript
-// Initialize swarm
-mcp__claude-flow__swarm_init topology="mesh" strategy="balanced" maxAgents=8
-
-// Spawn coordinator
-mcp__claude-flow__agent_spawn type="coordinator" capabilities=["swarm-management", "load-balancing"]
-
-// Coordinate swarm
-mcp__claude-flow__coordination_sync swarmId="development-swarm"
-```
 
 ## Coordination Modes
 - Hierarchical swarms
@@ -44,21 +52,3 @@ mcp__claude-flow__coordination_sync swarmId="development-swarm"
 - Failure recovery
 - Performance monitoring
 - Quality assurance
-
-## Workflow Example
-```bash
-# 1. Initialize advanced swarm
-mcp__claude-flow__swarm_init topology="hierarchical" maxAgents=12 strategy="adaptive"
-
-# 2. Spawn specialized agents
-mcp__claude-flow__agent_spawn type="researcher" capabilities=["analysis"]
-mcp__claude-flow__agent_spawn type="coder" capabilities=["implementation"]
-mcp__claude-flow__agent_spawn type="tester" capabilities=["validation"]
-
-# 3. Coordinate swarm execution
-mcp__claude-flow__sparc_mode mode="swarm-coordinator" options={"auto-scale": true} task_description="coordinate full-stack development"
-
-# 4. Monitor and optimize
-mcp__claude-flow__topology_optimize swarmId="current"
-mcp__claude-flow__swarm_status swarmId="current"
-```
