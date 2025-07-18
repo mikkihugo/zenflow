@@ -1,4 +1,3 @@
-import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * MCP (Model Context Protocol) Module
  * Export all MCP components for easy integration
@@ -8,32 +7,32 @@ import { getErrorMessage } from '../utils/error-handler.js';
 export { MCPServer, type IMCPServer } from './server.js';
 
 // Lifecycle Management
-export { 
-  MCPLifecycleManager, 
+export {
+  MCPLifecycleManager,
   LifecycleState,
   type LifecycleEvent,
   type HealthCheckResult,
-  type LifecycleManagerConfig 
+  type LifecycleManagerConfig,
 } from './lifecycle-manager.js';
 
 // Tool Registry and Management
-export { 
+export {
   ToolRegistry,
   type ToolCapability,
   type ToolMetrics,
-  type ToolDiscoveryQuery 
+  type ToolDiscoveryQuery,
 } from './tools.js';
 
 // Protocol Management
-export { 
+export {
   MCPProtocolManager,
   type ProtocolVersionInfo,
   type CompatibilityResult,
-  type NegotiationResult 
+  type NegotiationResult,
 } from './protocol-manager.js';
 
 // Authentication and Authorization
-export { 
+export {
   AuthManager,
   type IAuthManager,
   type AuthContext,
@@ -41,25 +40,25 @@ export {
   type TokenInfo,
   type TokenGenerationOptions,
   type AuthSession,
-  Permissions 
+  Permissions,
 } from './auth.js';
 
 // Performance Monitoring
-export { 
+export {
   MCPPerformanceMonitor,
   type PerformanceMetrics,
   type RequestMetrics,
   type AlertRule,
   type Alert,
-  type OptimizationSuggestion 
+  type OptimizationSuggestion,
 } from './performance-monitor.js';
 
 // Orchestration Integration
-export { 
+export {
   MCPOrchestrationIntegration,
   type OrchestrationComponents,
   type MCPOrchestrationConfig,
-  type IntegrationStatus 
+  type IntegrationStatus,
 } from './orchestration-integration.js';
 
 // Transport Implementations
@@ -136,11 +135,11 @@ export class MCPIntegrationFactory {
     lifecycleManager?: MCPLifecycleManager;
     performanceMonitor?: MCPPerformanceMonitor;
   }> {
-    const { 
-      mcpConfig, 
-      logger, 
+    const {
+      mcpConfig,
+      logger,
       enableLifecycleManagement = true,
-      enablePerformanceMonitoring = true 
+      enablePerformanceMonitoring = true,
     } = config;
 
     const eventBus = new (await import('node:events')).EventEmitter();
@@ -150,11 +149,7 @@ export class MCPIntegrationFactory {
     let performanceMonitor: MCPPerformanceMonitor | undefined;
 
     if (enableLifecycleManagement) {
-      lifecycleManager = new MCPLifecycleManager(
-        mcpConfig,
-        logger,
-        () => server,
-      );
+      lifecycleManager = new MCPLifecycleManager(mcpConfig, logger, () => server);
     }
 
     if (enablePerformanceMonitoring) {
@@ -276,7 +271,7 @@ export const MCPUtils = {
    */
   compareVersions(
     a: import('../utils/types.js').MCPProtocolVersion,
-    b: import('../utils/types.js').MCPProtocolVersion
+    b: import('../utils/types.js').MCPProtocolVersion,
   ): number {
     if (a.major !== b.major) return a.major - b.major;
     if (a.minor !== b.minor) return a.minor - b.minor;
@@ -294,8 +289,8 @@ export const MCPUtils = {
    * Parse protocol version from string
    */
   parseVersion(versionString: string): import('../utils/types.js').MCPProtocolVersion {
-    const parts = versionString.split('.').map(p => parseInt(p, 10));
-    if (parts.length !== 3 || parts.some(p => isNaN(p))) {
+    const parts = versionString.split('.').map((p) => parseInt(p, 10));
+    if (parts.length !== 3 || parts.some((p) => isNaN(p))) {
       throw new Error(`Invalid version string: ${versionString}`);
     }
     return {

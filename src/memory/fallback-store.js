@@ -23,18 +23,27 @@ class FallbackMemoryStore {
     try {
       this.primaryStore = new SqliteMemoryStore(this.options);
       await this.primaryStore.initialize();
-      console.error(`[${new Date().toISOString()}] INFO [fallback-store] Successfully initialized SQLite store`);
+      console.error(
+        `[${new Date().toISOString()}] INFO [fallback-store] Successfully initialized SQLite store`,
+      );
       this.useFallback = false;
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] WARN [fallback-store] SQLite initialization failed, falling back to in-memory store:`, error.message);
-      
+      console.error(
+        `[${new Date().toISOString()}] WARN [fallback-store] SQLite initialization failed, falling back to in-memory store:`,
+        error.message,
+      );
+
       // Fall back to in-memory store
       this.fallbackStore = new InMemoryStore(this.options);
       await this.fallbackStore.initialize();
       this.useFallback = true;
-      
-      console.error(`[${new Date().toISOString()}] INFO [fallback-store] Using in-memory store (data will not persist across sessions)`);
-      console.error(`[${new Date().toISOString()}] INFO [fallback-store] To enable persistent storage, install the package locally: npm install claude-flow@alpha`);
+
+      console.error(
+        `[${new Date().toISOString()}] INFO [fallback-store] Using in-memory store (data will not persist across sessions)`,
+      );
+      console.error(
+        `[${new Date().toISOString()}] INFO [fallback-store] To enable persistent storage, install the package locally: npm install claude-flow@alpha`,
+      );
     }
   }
 

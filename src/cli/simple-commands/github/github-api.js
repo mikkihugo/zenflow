@@ -55,7 +55,7 @@ class GitHubAPIClient {
       const resetTime = new Date(this.rateLimitResetTime);
       const now = new Date();
       const waitTime = resetTime.getTime() - now.getTime();
-      
+
       if (waitTime > 0) {
         printWarning(`Rate limit exceeded. Waiting ${Math.ceil(waitTime / 1000)}s...`);
         await this.sleep(waitTime);
@@ -65,9 +65,7 @@ class GitHubAPIClient {
 
   updateRateLimitInfo(headers) {
     this.rateLimitRemaining = parseInt(headers['x-ratelimit-remaining'] || '0');
-    this.rateLimitResetTime = new Date(
-      (parseInt(headers['x-ratelimit-reset']) || 0) * 1000
-    );
+    this.rateLimitResetTime = new Date((parseInt(headers['x-ratelimit-reset']) || 0) * 1000);
   }
 
   /**
@@ -78,16 +76,16 @@ class GitHubAPIClient {
 
     const url = endpoint.startsWith('http') ? endpoint : `${GITHUB_API_BASE}${endpoint}`;
     const headers = {
-      'Authorization': `token ${this.token}`,
-      'Accept': 'application/vnd.github.v3+json',
+      Authorization: `token ${this.token}`,
+      Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'Claude-Flow-GitHub-Integration',
-      ...options.headers
+      ...options.headers,
     };
 
     const requestOptions = {
       method: options.method || 'GET',
       headers,
-      ...options
+      ...options,
     };
 
     if (options.body) {
@@ -109,13 +107,13 @@ class GitHubAPIClient {
         success: true,
         data,
         headers: response.headers,
-        status: response.status
+        status: response.status,
       };
     } catch (error) {
       return {
         success: false,
         error: error.message,
-        status: error.status || 500
+        status: error.status || 500,
       };
     }
   }
@@ -132,7 +130,7 @@ class GitHubAPIClient {
       sort: options.sort || 'updated',
       direction: options.direction || 'desc',
       per_page: options.perPage || 30,
-      page: options.page || 1
+      page: options.page || 1,
     });
 
     return await this.request(`/user/repos?${params}`);
@@ -141,7 +139,7 @@ class GitHubAPIClient {
   async createRepository(repoData) {
     return await this.request('/user/repos', {
       method: 'POST',
-      body: repoData
+      body: repoData,
     });
   }
 
@@ -154,7 +152,7 @@ class GitHubAPIClient {
       sort: options.sort || 'created',
       direction: options.direction || 'desc',
       per_page: options.perPage || 30,
-      page: options.page || 1
+      page: options.page || 1,
     });
 
     return await this.request(`/repos/${owner}/${repo}/pulls?${params}`);
@@ -163,28 +161,28 @@ class GitHubAPIClient {
   async createPullRequest(owner, repo, prData) {
     return await this.request(`/repos/${owner}/${repo}/pulls`, {
       method: 'POST',
-      body: prData
+      body: prData,
     });
   }
 
   async updatePullRequest(owner, repo, prNumber, prData) {
     return await this.request(`/repos/${owner}/${repo}/pulls/${prNumber}`, {
       method: 'PATCH',
-      body: prData
+      body: prData,
     });
   }
 
   async mergePullRequest(owner, repo, prNumber, mergeData) {
     return await this.request(`/repos/${owner}/${repo}/pulls/${prNumber}/merge`, {
       method: 'PUT',
-      body: mergeData
+      body: mergeData,
     });
   }
 
   async requestPullRequestReview(owner, repo, prNumber, reviewData) {
     return await this.request(`/repos/${owner}/${repo}/pulls/${prNumber}/requested_reviewers`, {
       method: 'POST',
-      body: reviewData
+      body: reviewData,
     });
   }
 
@@ -197,7 +195,7 @@ class GitHubAPIClient {
       sort: options.sort || 'created',
       direction: options.direction || 'desc',
       per_page: options.perPage || 30,
-      page: options.page || 1
+      page: options.page || 1,
     });
 
     if (options.labels) {
@@ -210,28 +208,28 @@ class GitHubAPIClient {
   async createIssue(owner, repo, issueData) {
     return await this.request(`/repos/${owner}/${repo}/issues`, {
       method: 'POST',
-      body: issueData
+      body: issueData,
     });
   }
 
   async updateIssue(owner, repo, issueNumber, issueData) {
     return await this.request(`/repos/${owner}/${repo}/issues/${issueNumber}`, {
       method: 'PATCH',
-      body: issueData
+      body: issueData,
     });
   }
 
   async addIssueLabels(owner, repo, issueNumber, labels) {
     return await this.request(`/repos/${owner}/${repo}/issues/${issueNumber}/labels`, {
       method: 'POST',
-      body: { labels }
+      body: { labels },
     });
   }
 
   async assignIssue(owner, repo, issueNumber, assignees) {
     return await this.request(`/repos/${owner}/${repo}/issues/${issueNumber}/assignees`, {
       method: 'POST',
-      body: { assignees }
+      body: { assignees },
     });
   }
 
@@ -241,7 +239,7 @@ class GitHubAPIClient {
   async listReleases(owner, repo, options = {}) {
     const params = new URLSearchParams({
       per_page: options.perPage || 30,
-      page: options.page || 1
+      page: options.page || 1,
     });
 
     return await this.request(`/repos/${owner}/${repo}/releases?${params}`);
@@ -250,20 +248,20 @@ class GitHubAPIClient {
   async createRelease(owner, repo, releaseData) {
     return await this.request(`/repos/${owner}/${repo}/releases`, {
       method: 'POST',
-      body: releaseData
+      body: releaseData,
     });
   }
 
   async updateRelease(owner, repo, releaseId, releaseData) {
     return await this.request(`/repos/${owner}/${repo}/releases/${releaseId}`, {
       method: 'PATCH',
-      body: releaseData
+      body: releaseData,
     });
   }
 
   async deleteRelease(owner, repo, releaseId) {
     return await this.request(`/repos/${owner}/${repo}/releases/${releaseId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
   }
 
@@ -275,16 +273,19 @@ class GitHubAPIClient {
   }
 
   async triggerWorkflow(owner, repo, workflowId, ref = 'main', inputs = {}) {
-    return await this.request(`/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`, {
-      method: 'POST',
-      body: { ref, inputs }
-    });
+    return await this.request(
+      `/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`,
+      {
+        method: 'POST',
+        body: { ref, inputs },
+      },
+    );
   }
 
   async listWorkflowRuns(owner, repo, options = {}) {
     const params = new URLSearchParams({
       per_page: options.perPage || 30,
-      page: options.page || 1
+      page: options.page || 1,
     });
 
     if (options.status) {
@@ -306,8 +307,8 @@ class GitHubAPIClient {
       method: 'POST',
       body: {
         ref: `refs/heads/${branchName}`,
-        sha
-      }
+        sha,
+      },
     });
   }
 
@@ -318,7 +319,7 @@ class GitHubAPIClient {
   async updateBranchProtection(owner, repo, branch, protection) {
     return await this.request(`/repos/${owner}/${repo}/branches/${branch}/protection`, {
       method: 'PUT',
-      body: protection
+      body: protection,
     });
   }
 
@@ -332,20 +333,20 @@ class GitHubAPIClient {
   async createWebhook(owner, repo, webhookData) {
     return await this.request(`/repos/${owner}/${repo}/hooks`, {
       method: 'POST',
-      body: webhookData
+      body: webhookData,
     });
   }
 
   async updateWebhook(owner, repo, hookId, webhookData) {
     return await this.request(`/repos/${owner}/${repo}/hooks/${hookId}`, {
       method: 'PATCH',
-      body: webhookData
+      body: webhookData,
     });
   }
 
   async deleteWebhook(owner, repo, hookId) {
     return await this.request(`/repos/${owner}/${repo}/hooks/${hookId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
   }
 
@@ -358,7 +359,7 @@ class GitHubAPIClient {
     }
 
     const eventData = JSON.parse(payload);
-    
+
     switch (event) {
       case 'push':
         return this.handlePushEvent(eventData);
@@ -386,11 +387,8 @@ class GitHubAPIClient {
     const hmac = crypto.createHmac('sha256', GITHUB_WEBHOOK_SECRET);
     hmac.update(payload);
     const expectedSignature = `sha256=${hmac.digest('hex')}`;
-    
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
+
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
   }
 
   /**
@@ -433,7 +431,7 @@ class GitHubAPIClient {
    * Utility Methods
    */
   async sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   parseRepository(repoString) {
@@ -452,12 +450,12 @@ class GitHubAPIClient {
     const units = ['B', 'KB', 'MB', 'GB'];
     let size = bytes;
     let unitIndex = 0;
-    
+
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
     }
-    
+
     return `${size.toFixed(2)} ${units[unitIndex]}`;
   }
 }

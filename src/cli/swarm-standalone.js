@@ -21,7 +21,7 @@ for (let i = 0; i < Deno.args.length; i++) {
   if (arg.startsWith('--')) {
     const flagName = arg.substring(2);
     const nextArg = Deno.args[i + 1];
-    
+
     if (nextArg && !nextArg.startsWith('--')) {
       flags[flagName] = nextArg;
       i++; // Skip the next argument
@@ -36,7 +36,7 @@ for (let i = 0; i < Deno.args.length; i++) {
 const objective = args.join(' ');
 
 if (!objective && !flags.help) {
-  console.error("❌ Usage: swarm <objective>");
+  console.error('❌ Usage: swarm <objective>');
   console.log(`
 🐝 Claude Flow Advanced Swarm System
 
@@ -77,10 +77,10 @@ if (!swarmPath) {
   console.log(`🏗️  Mode: ${flags.mode || 'centralized'}`);
   console.log(`🤖 Max Agents: ${flags['max-agents'] || 5}`);
   console.log();
-  
+
   // Generate swarm ID
   const swarmId = `swarm_${Math.random().toString(36).substring(2, 11)}_${Math.random().toString(36).substring(2, 11)}`;
-  
+
   if (flags['dry-run']) {
     console.log(`🆔 Swarm ID: ${swarmId}`);
     console.log(`📊 Max Tasks: ${flags['max-tasks'] || 100}`);
@@ -104,11 +104,11 @@ if (!swarmPath) {
     console.log('⚠️  DRY RUN - Advanced Swarm Configuration');
     Deno.exit(0);
   }
-  
+
   // Try to use Claude wrapper approach
   try {
     const { execSync } = await import('child_process');
-    
+
     // Check if claude command exists
     try {
       execSync('which claude', { stdio: 'ignore' });
@@ -126,10 +126,10 @@ if (!swarmPath) {
       console.log('5. Result aggregation and quality checks');
       Deno.exit(0);
     }
-    
+
     // Claude is available, use it to run swarm
     console.log('🚀 Launching swarm via Claude wrapper...');
-    
+
     // Build the prompt for Claude
     const swarmPrompt = `Execute a swarm coordination task with the following configuration:
 
@@ -165,24 +165,24 @@ Use all available tools including file operations, web search, and code executio
 
     // Execute Claude non-interactively by piping the prompt
     const { spawn } = await import('child_process');
-    
+
     const claudeArgs = [];
-    
+
     // Add auto-permission flag if requested
     if (flags.auto || flags['dangerously-skip-permissions']) {
       claudeArgs.push('--dangerously-skip-permissions');
     }
-    
+
     // Spawn claude process
     const claudeProcess = spawn('claude', claudeArgs, {
       stdio: ['pipe', 'inherit', 'inherit'],
-      shell: false
+      shell: false,
     });
-    
+
     // Write the prompt to stdin and close it
     claudeProcess.stdin.write(swarmPrompt);
     claudeProcess.stdin.end();
-    
+
     // Wait for the process to complete
     await new Promise((resolve, reject) => {
       claudeProcess.on('close', (code) => {
@@ -192,12 +192,11 @@ Use all available tools including file operations, web search, and code executio
           reject(new Error(`Claude process exited with code ${code}`));
         }
       });
-      
+
       claudeProcess.on('error', (err) => {
         reject(err);
       });
     });
-    
   } catch (error) {
     // Fallback if Claude execution fails
     console.log(`✅ Swarm initialized with ID: ${swarmId}`);
@@ -211,7 +210,7 @@ Use all available tools including file operations, web search, and code executio
     console.log('4. Progress monitoring and reporting');
     console.log('5. Result aggregation and quality checks');
   }
-  
+
   Deno.exit(0);
 } else {
   // Run the swarm demo directly
@@ -222,11 +221,11 @@ Use all available tools including file operations, web search, and code executio
       swarmArgs.push(String(value));
     }
   }
-  
+
   const node = spawn('node', [swarmPath, ...swarmArgs], {
-    stdio: 'inherit'
+    stdio: 'inherit',
   });
-  
+
   node.on('exit', (code) => {
     exit(code || 0);
   });

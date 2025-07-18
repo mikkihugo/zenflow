@@ -27,24 +27,24 @@ export class ClaudeCodeWebServer {
   async createAPIRoutes() {
     const express = await import('express');
     const router = express.Router();
-    
+
     // Health check endpoint
     router.get('/health', (req, res) => {
       res.json({ status: 'ok', uptime: process.uptime() });
     });
-    
+
     // System status endpoint
     router.get('/status', (req, res) => {
       res.json({
         connections: this.connections.size,
         isRunning: this.isRunning,
-        port: this.port
+        port: this.port,
       });
     });
-    
+
     return router;
   }
-  
+
   /**
    * Start the web server
    */
@@ -58,7 +58,7 @@ export class ClaudeCodeWebServer {
       // Create HTTP server with express
       const express = await import('express');
       const app = express.default();
-      
+
       // Enable CORS
       app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
@@ -66,22 +66,22 @@ export class ClaudeCodeWebServer {
         res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         next();
       });
-      
+
       // Serve static files
       app.use('/console', express.static(this.uiPath));
       app.use('/api', await this.createAPIRoutes());
-      
+
       // Default route redirects to console
       app.get('/', (req, res) => {
         res.redirect('/console');
       });
-      
+
       this.server = createServer(app);
 
       // Create WebSocket server
-      this.wss = new WebSocketServer({ 
+      this.wss = new WebSocketServer({
         server: this.server,
-        path: '/ws'
+        path: '/ws',
       });
 
       this.setupWebSocketServer();
@@ -103,7 +103,6 @@ export class ClaudeCodeWebServer {
       console.log(`🔗 WebSocket: ws://localhost:${this.port}/ws`);
       console.log(`📁 Serving UI from: ${this.uiPath}`);
       console.log();
-
     } catch (error) {
       printError(`Failed to start web server: ${error.message}`);
       throw error;
@@ -117,7 +116,7 @@ export class ClaudeCodeWebServer {
     if (!this.isRunning) return;
 
     // Close all WebSocket connections
-    this.connections.forEach(ws => {
+    this.connections.forEach((ws) => {
       if (ws.readyState === ws.OPEN) {
         ws.close(1000, 'Server shutting down');
       }
@@ -144,7 +143,7 @@ export class ClaudeCodeWebServer {
    */
   handleRequest(req, res) {
     const url = req.url;
-    
+
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -179,7 +178,7 @@ export class ClaudeCodeWebServer {
    */
   serveConsoleHTML(res) {
     const filePath = join(this.uiPath, 'index.html');
-    
+
     if (!existsSync(filePath)) {
       this.handle404(res);
       return;
@@ -187,11 +186,11 @@ export class ClaudeCodeWebServer {
 
     try {
       let content = readFileSync(filePath, 'utf8');
-      
+
       // Fix relative paths to be relative to /console/
       content = content.replace(/href="styles\//g, 'href="/console/styles/');
       content = content.replace(/src="js\//g, 'src="/console/js/');
-      
+
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(content);
     } catch (error) {
@@ -204,7 +203,7 @@ export class ClaudeCodeWebServer {
    */
   serveFile(res, filename, contentType) {
     const filePath = join(this.uiPath, filename);
-    
+
     if (!existsSync(filePath)) {
       this.handle404(res);
       return;
@@ -230,7 +229,7 @@ export class ClaudeCodeWebServer {
     }
 
     const filePath = join(this.uiPath, requestPath);
-    
+
     if (!existsSync(filePath)) {
       this.handle404(res);
       return;
@@ -238,7 +237,7 @@ export class ClaudeCodeWebServer {
 
     // Determine content type
     const contentType = this.getContentType(requestPath);
-    
+
     try {
       const content = readFileSync(filePath);
       res.writeHead(200, { 'Content-Type': contentType });
@@ -253,22 +252,22 @@ export class ClaudeCodeWebServer {
    */
   getContentType(filePath) {
     const ext = filePath.split('.').pop().toLowerCase();
-    
+
     const contentTypes = {
-      'html': 'text/html',
-      'css': 'text/css',
-      'js': 'application/javascript',
-      'json': 'application/json',
-      'png': 'image/png',
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'gif': 'image/gif',
-      'svg': 'image/svg+xml',
-      'ico': 'image/x-icon',
-      'woff': 'font/woff',
-      'woff2': 'font/woff2',
-      'ttf': 'font/ttf',
-      'eot': 'application/vnd.ms-fontobject'
+      html: 'text/html',
+      css: 'text/css',
+      js: 'application/javascript',
+      json: 'application/json',
+      png: 'image/png',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      gif: 'image/gif',
+      svg: 'image/svg+xml',
+      ico: 'image/x-icon',
+      woff: 'font/woff',
+      woff2: 'font/woff2',
+      ttf: 'font/ttf',
+      eot: 'application/vnd.ms-fontobject',
     };
 
     return contentTypes[ext] || 'text/plain';
@@ -284,7 +283,7 @@ export class ClaudeCodeWebServer {
       uptime: process.uptime(),
       connections: this.connections.size,
       memory: process.memoryUsage(),
-      platform: compat.platform
+      platform: compat.platform,
     };
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -299,14 +298,14 @@ export class ClaudeCodeWebServer {
       server: {
         running: this.isRunning,
         port: this.port,
-        connections: this.connections.size
+        connections: this.connections.size,
       },
       claudeFlow: {
         initialized: true,
-        version: '1.0.72'
+        version: '1.0.72',
       },
       runtime: compat.runtime,
-      platform: compat.platform
+      platform: compat.platform,
     };
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -322,7 +321,7 @@ export class ClaudeCodeWebServer {
       <rect width="32" height="32" fill="#1f6feb"/>
       <text x="16" y="20" text-anchor="middle" fill="white" font-family="monospace" font-size="18">⚡</text>
     </svg>`;
-    
+
     res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
     res.end(favicon);
   }
@@ -371,7 +370,7 @@ export class ClaudeCodeWebServer {
   handleWebSocketConnection(ws, req) {
     const clientIP = req.socket.remoteAddress;
     console.log(`🔗 New WebSocket connection from ${clientIP}`);
-    
+
     this.connections.add(ws);
 
     // Send welcome message
@@ -381,8 +380,8 @@ export class ClaudeCodeWebServer {
       params: {
         server: 'claude-flow-web-server',
         version: '2.0.0',
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
 
     // Handle messages
@@ -415,31 +414,30 @@ export class ClaudeCodeWebServer {
     try {
       const message = JSON.parse(data.toString());
       console.log('Received WebSocket message:', message.method, message.id);
-      
+
       // Handle different message types
       switch (message.method) {
         case 'initialize':
           this.handleInitialize(ws, message);
           break;
-          
+
         case 'ping':
           this.handlePing(ws, message);
           break;
-          
+
         case 'tools/call':
           this.handleToolCall(ws, message);
           break;
-          
+
         case 'tools/list':
           console.log('Handling tools/list request');
           this.handleToolsList(ws, message);
           break;
-          
+
         default:
           console.log('Unknown method:', message.method);
           this.handleUnknownMethod(ws, message);
       }
-      
     } catch (error) {
       console.error('Error processing WebSocket message:', error);
       this.sendError(ws, null, 'Invalid JSON message');
@@ -457,15 +455,15 @@ export class ClaudeCodeWebServer {
         protocolVersion: { major: 2024, minor: 11, patch: 5 },
         serverInfo: {
           name: 'claude-flow-web-server',
-          version: '2.0.0'
+          version: '2.0.0',
         },
         capabilities: {
           logging: { level: 'info' },
           tools: { listChanged: true },
           resources: { listChanged: false, subscribe: false },
-          prompts: { listChanged: false }
-        }
-      }
+          prompts: { listChanged: false },
+        },
+      },
     };
 
     this.sendMessage(ws, response);
@@ -480,8 +478,8 @@ export class ClaudeCodeWebServer {
       method: 'pong',
       params: {
         timestamp: Date.now(),
-        original: message.params
-      }
+        original: message.params,
+      },
     });
   }
 
@@ -490,10 +488,10 @@ export class ClaudeCodeWebServer {
    */
   handleToolCall(ws, message) {
     const { name, arguments: args } = message.params;
-    
+
     // Mock tool execution for demonstration
     const result = this.executeMockTool(name, args);
-    
+
     const response = {
       jsonrpc: '2.0',
       id: message.id,
@@ -501,10 +499,10 @@ export class ClaudeCodeWebServer {
         content: [
           {
             type: 'text',
-            text: result
-          }
-        ]
-      }
+            text: result,
+          },
+        ],
+      },
     };
 
     this.sendMessage(ws, response);
@@ -522,10 +520,10 @@ export class ClaudeCodeWebServer {
           type: 'object',
           properties: {
             command: { type: 'string', description: 'Command to execute' },
-            args: { type: 'object', description: 'Command arguments' }
+            args: { type: 'object', description: 'Command arguments' },
           },
-          required: ['command']
-        }
+          required: ['command'],
+        },
       },
       {
         name: 'swarm/orchestrate',
@@ -534,10 +532,10 @@ export class ClaudeCodeWebServer {
           type: 'object',
           properties: {
             action: { type: 'string', description: 'Action to perform' },
-            args: { type: 'array', description: 'Action arguments' }
+            args: { type: 'array', description: 'Action arguments' },
           },
-          required: ['action']
-        }
+          required: ['action'],
+        },
       },
       {
         name: 'system/health',
@@ -545,9 +543,9 @@ export class ClaudeCodeWebServer {
         inputSchema: {
           type: 'object',
           properties: {
-            detailed: { type: 'boolean', description: 'Include detailed metrics' }
-          }
-        }
+            detailed: { type: 'boolean', description: 'Include detailed metrics' },
+          },
+        },
       },
       {
         name: 'memory/manage',
@@ -557,10 +555,10 @@ export class ClaudeCodeWebServer {
           properties: {
             operation: { type: 'string', description: 'Operation: store, retrieve, list, delete' },
             key: { type: 'string', description: 'Memory key' },
-            value: { type: 'string', description: 'Value to store' }
+            value: { type: 'string', description: 'Value to store' },
           },
-          required: ['operation']
-        }
+          required: ['operation'],
+        },
       },
       {
         name: 'agents/manage',
@@ -570,10 +568,10 @@ export class ClaudeCodeWebServer {
           properties: {
             action: { type: 'string', description: 'Action: list, create, start, stop, status' },
             agentType: { type: 'string', description: 'Agent type for creation' },
-            agentId: { type: 'string', description: 'Agent ID for operations' }
+            agentId: { type: 'string', description: 'Agent ID for operations' },
           },
-          required: ['action']
-        }
+          required: ['action'],
+        },
       },
       {
         name: 'sparc/execute',
@@ -583,10 +581,10 @@ export class ClaudeCodeWebServer {
           properties: {
             mode: { type: 'string', description: 'SPARC mode: coder, architect, analyzer, etc.' },
             task: { type: 'string', description: 'Task description' },
-            options: { type: 'object', description: 'Additional options' }
+            options: { type: 'object', description: 'Additional options' },
           },
-          required: ['mode']
-        }
+          required: ['mode'],
+        },
       },
       {
         name: 'benchmark/run',
@@ -595,16 +593,16 @@ export class ClaudeCodeWebServer {
           type: 'object',
           properties: {
             suite: { type: 'string', description: 'Benchmark suite to run' },
-            iterations: { type: 'number', description: 'Number of iterations' }
-          }
-        }
-      }
+            iterations: { type: 'number', description: 'Number of iterations' },
+          },
+        },
+      },
     ];
 
     const response = {
       jsonrpc: '2.0',
       id: message.id,
-      result: { tools }
+      result: { tools },
     };
 
     this.sendMessage(ws, response);
@@ -624,7 +622,7 @@ export class ClaudeCodeWebServer {
     switch (name) {
       case 'claude-flow/execute':
         return this.executeClaudeFlowCommand(args.command, args.args);
-        
+
       case 'system/health':
         const healthData = {
           status: 'healthy',
@@ -632,39 +630,39 @@ export class ClaudeCodeWebServer {
           memory: process.memoryUsage(),
           connections: this.connections.size,
           platform: compat.platform,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
-        
+
         if (args.detailed) {
           healthData.detailed = {
             nodeVersion: process.version,
             architecture: process.arch,
             pid: process.pid,
             cpuUsage: process.cpuUsage(),
-            resourceUsage: process.resourceUsage ? process.resourceUsage() : 'N/A'
+            resourceUsage: process.resourceUsage ? process.resourceUsage() : 'N/A',
           };
         }
-        
+
         return JSON.stringify(healthData, null, 2);
-        
+
       case 'swarm/orchestrate':
         return this.executeSwarmCommand(args.action, args.args);
-        
+
       case 'swarm/status':
         return this.executeSwarmCommand('status', args.args);
-        
+
       case 'memory/manage':
         return this.executeMemoryCommand(args.operation, args.key, args.value);
-        
+
       case 'agents/manage':
         return this.executeAgentsCommand(args.action, args.agentType, args.agentId);
-        
+
       case 'sparc/execute':
         return this.executeSPARCCommand(args.mode, args.task, args.options);
-        
+
       case 'benchmark/run':
         return this.executeBenchmarkCommand(args.suite, args.iterations);
-        
+
       default:
         return `Tool '${name}' executed successfully with args: ${JSON.stringify(args)}`;
     }
@@ -753,16 +751,16 @@ export class ClaudeCodeWebServer {
     switch (operation) {
       case 'store':
         return `Memory stored successfully:\n  Key: ${key}\n  Value: ${value}\n  Timestamp: ${new Date().toISOString()}`;
-      
+
       case 'retrieve':
         return `Memory retrieved:\n  Key: ${key}\n  Value: "example stored value"\n  Last Modified: ${new Date().toISOString()}`;
-      
+
       case 'list':
         return `Memory Keys:\n  • project/settings\n  • swarm/topology\n  • agents/coordination\n  • session/state\n  • benchmark/results\n  \n  Total: 5 entries`;
-      
+
       case 'delete':
         return `Memory deleted:\n  Key: ${key}\n  Status: Success`;
-      
+
       default:
         return `Memory operation '${operation}' completed`;
     }
@@ -775,19 +773,23 @@ export class ClaudeCodeWebServer {
     switch (action) {
       case 'list':
         return `Active Agents:\n  🟢 agent-001 (architect) - Designing system components\n  🟢 agent-002 (coder) - Implementing features\n  🟡 agent-003 (analyst) - Analyzing performance\n  🔴 agent-004 (tester) - Waiting for code\n  🟢 agent-005 (coordinator) - Managing workflow\n  \n  Total: 5 agents`;
-      
+
       case 'create':
-        return `Agent created successfully:\n  Type: ${agentType}\n  ID: agent-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}\n  Status: Active\n  Capabilities: Full ${agentType} functionality`;
-      
+        return `Agent created successfully:\n  Type: ${agentType}\n  ID: agent-${Math.floor(
+          Math.random() * 1000,
+        )
+          .toString()
+          .padStart(3, '0')}\n  Status: Active\n  Capabilities: Full ${agentType} functionality`;
+
       case 'start':
         return `Agent started:\n  ID: ${agentId}\n  Status: Running\n  Tasks: Ready to accept work`;
-      
+
       case 'stop':
         return `Agent stopped:\n  ID: ${agentId}\n  Status: Stopped\n  Tasks: Completed gracefully`;
-      
+
       case 'status':
         return `Agent Status:\n  ID: ${agentId}\n  Status: Active\n  Type: researcher\n  Current Task: Data analysis\n  Uptime: 2h 15m\n  Tasks Completed: 12\n  Efficiency: 92%`;
-      
+
       default:
         return `Agent ${action} completed for ${agentId || agentType}`;
     }
@@ -807,7 +809,7 @@ export class ClaudeCodeWebServer {
       debugger: 'Bug finding and resolution',
       documenter: 'Documentation and specifications',
       optimizer: 'Performance optimization',
-      designer: 'UI/UX design and prototyping'
+      designer: 'UI/UX design and prototyping',
     };
 
     return `SPARC Mode Execution:\n  Mode: ${mode} (${modes[mode] || 'Unknown mode'})\n  Task: ${task || 'No task specified'}\n  Status: Initialized\n  Estimated Duration: 15-30 minutes\n  Resources Allocated: 2 agents\n  Options: ${JSON.stringify(options)}\n  \n  Ready to begin execution...`;
@@ -822,7 +824,7 @@ export class ClaudeCodeWebServer {
       memory: 'Memory usage and allocation',
       cpu: 'CPU intensive operations',
       network: 'Network communication speed',
-      swarm: 'Swarm coordination efficiency'
+      swarm: 'Swarm coordination efficiency',
     };
 
     return `Benchmark Results:\n  Suite: ${suite} (${suites[suite] || 'Custom suite'})\n  Iterations: ${iterations}\n  \n  📊 Results:\n  • Average Response Time: 245ms\n  • Memory Usage: 128MB\n  • CPU Utilization: 15%\n  • Success Rate: 98.5%\n  • Throughput: 420 ops/sec\n  \n  🏆 Performance Grade: A+\n  ⚡ Optimization Suggestions: Enable caching for 12% improvement`;
@@ -846,8 +848,8 @@ export class ClaudeCodeWebServer {
       id,
       error: {
         code: -32600,
-        message: errorMessage
-      }
+        message: errorMessage,
+      },
     };
 
     this.sendMessage(ws, response);
@@ -857,7 +859,7 @@ export class ClaudeCodeWebServer {
    * Broadcast message to all connected clients
    */
   broadcast(message) {
-    this.connections.forEach(ws => {
+    this.connections.forEach((ws) => {
       this.sendMessage(ws, message);
     });
   }
@@ -867,7 +869,7 @@ export class ClaudeCodeWebServer {
    */
   startHeartbeat() {
     setInterval(() => {
-      this.connections.forEach(ws => {
+      this.connections.forEach((ws) => {
         if (ws.isAlive === false) {
           ws.terminate();
           this.connections.delete(ws);
@@ -888,7 +890,7 @@ export class ClaudeCodeWebServer {
       running: this.isRunning,
       port: this.port,
       connections: this.connections.size,
-      uiPath: this.uiPath
+      uiPath: this.uiPath,
     };
   }
 }
@@ -898,10 +900,10 @@ export class ClaudeCodeWebServer {
  */
 export async function startWebServer(port = 3000) {
   const server = new ClaudeCodeWebServer(port);
-  
+
   try {
     await server.start();
-    
+
     // Setup graceful shutdown
     const shutdown = async () => {
       console.log('\n⏹️  Shutting down web server...');
@@ -914,7 +916,6 @@ export async function startWebServer(port = 3000) {
 
     // Keep server running
     return server;
-    
   } catch (error) {
     printError(`Failed to start web server: ${error.message}`);
     process.exit(1);

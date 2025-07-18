@@ -1,4 +1,3 @@
-import { getErrorMessage } from '../utils/error-handler.js';
 /**
  * Claude-Flow specific MCP tools
  */
@@ -67,7 +66,19 @@ function createSpawnAgentTool(logger: ILogger): MCPTool {
       properties: {
         type: {
           type: 'string',
-          enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'],
+          enum: [
+            'coordinator',
+            'researcher',
+            'coder',
+            'analyst',
+            'architect',
+            'tester',
+            'reviewer',
+            'optimizer',
+            'documenter',
+            'monitor',
+            'specialist',
+          ],
           description: 'Type of agent to spawn',
         },
         name: {
@@ -150,7 +161,19 @@ function createListAgentsTool(logger: ILogger): MCPTool {
         },
         filterByType: {
           type: 'string',
-          enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'],
+          enum: [
+            'coordinator',
+            'researcher',
+            'coder',
+            'analyst',
+            'architect',
+            'tester',
+            'reviewer',
+            'optimizer',
+            'documenter',
+            'monitor',
+            'specialist',
+          ],
           description: 'Filter agents by type',
         },
       },
@@ -163,13 +186,13 @@ function createListAgentsTool(logger: ILogger): MCPTool {
       }
 
       const agents = await context.orchestrator.listAgents();
-      
+
       let filteredAgents = agents;
-      
+
       if (!input.includeTerminated) {
         filteredAgents = filteredAgents.filter((agent: any) => agent.status !== 'terminated');
       }
-      
+
       if (input.filterByType) {
         filteredAgents = filteredAgents.filter((agent: any) => agent.type === input.filterByType);
       }
@@ -294,7 +317,19 @@ function createCreateTaskTool(logger: ILogger): MCPTool {
         },
         assignToAgentType: {
           type: 'string',
-          enum: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer', 'documenter', 'monitor', 'specialist'],
+          enum: [
+            'coordinator',
+            'researcher',
+            'coder',
+            'analyst',
+            'architect',
+            'tester',
+            'reviewer',
+            'optimizer',
+            'documenter',
+            'monitor',
+            'specialist',
+          ],
           description: 'Type of agent to assign the task to',
         },
         input: {
@@ -950,7 +985,7 @@ function createUpdateConfigTool(logger: ILogger): MCPTool {
       const result = await context.orchestrator.updateConfig(
         input.section,
         input.config,
-        input.restart || false
+        input.restart || false,
       );
 
       return {
@@ -1270,10 +1305,14 @@ function createCreateTerminalTool(logger: ILogger): MCPTool {
 
 function getDefaultSystemPrompt(type: string): string {
   const prompts = {
-    coordinator: 'You are a coordinator agent responsible for planning, delegating, and orchestrating tasks across multiple agents.',
-    researcher: 'You are a research agent specialized in gathering, analyzing, and synthesizing information from various sources.',
-    implementer: 'You are an implementation agent focused on writing code, creating solutions, and executing technical tasks.',
-    analyst: 'You are an analysis agent that identifies patterns, generates insights, and provides data-driven recommendations.',
+    coordinator:
+      'You are a coordinator agent responsible for planning, delegating, and orchestrating tasks across multiple agents.',
+    researcher:
+      'You are a research agent specialized in gathering, analyzing, and synthesizing information from various sources.',
+    implementer:
+      'You are an implementation agent focused on writing code, creating solutions, and executing technical tasks.',
+    analyst:
+      'You are an analysis agent that identifies patterns, generates insights, and provides data-driven recommendations.',
     custom: 'You are a specialized agent with custom capabilities defined by your configuration.',
   };
 

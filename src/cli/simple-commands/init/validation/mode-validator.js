@@ -13,7 +13,7 @@ export class ModeValidator {
       success: true,
       errors: [],
       warnings: [],
-      modes: {}
+      modes: {},
     };
 
     try {
@@ -35,13 +35,12 @@ export class ModeValidator {
       for (const mode of availableModes) {
         const modeTest = await this.testMode(mode);
         result.modes[mode] = modeTest;
-        
+
         if (!modeTest.success) {
           result.success = false;
           result.errors.push(`Mode ${mode} failed testing: ${modeTest.error}`);
         }
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Mode testing failed: ${error.message}`);
@@ -60,8 +59,8 @@ export class ModeValidator {
       checks: {
         accessible: false,
         configValid: false,
-        executable: false
-      }
+        executable: false,
+      },
     };
 
     try {
@@ -91,7 +90,6 @@ export class ModeValidator {
         result.error = execTest.error;
         return result;
       }
-
     } catch (error) {
       result.success = false;
       result.error = error.message;
@@ -108,7 +106,7 @@ export class ModeValidator {
       initialized: false,
       hasRoomodes: false,
       hasExecutable: false,
-      error: null
+      error: null,
     };
 
     try {
@@ -129,7 +127,6 @@ export class ModeValidator {
       }
 
       result.initialized = result.hasRoomodes && result.hasExecutable;
-
     } catch (error) {
       result.error = error.message;
     }
@@ -152,17 +149,16 @@ export class ModeValidator {
       if (config.modes && typeof config.modes === 'object') {
         modes.push(...Object.keys(config.modes));
       }
-
     } catch (error) {
       // Fallback to common modes
       modes.push(
         'architect',
-        'code', 
+        'code',
         'tdd',
         'spec-pseudocode',
         'integration',
         'debug',
-        'docs-writer'
+        'docs-writer',
       );
     }
 
@@ -175,7 +171,7 @@ export class ModeValidator {
   async testModeAccess(modeName) {
     const result = {
       success: false,
-      error: null
+      error: null,
     };
 
     try {
@@ -184,18 +180,17 @@ export class ModeValidator {
         args: ['sparc', 'info', modeName],
         cwd: this.workingDir,
         stdout: 'piped',
-        stderr: 'piped'
+        stderr: 'piped',
       });
 
       const { success, stdout, stderr } = await command.output();
-      
+
       if (success) {
         result.success = true;
       } else {
         const errorOutput = new TextDecoder().decode(stderr);
         result.error = `Mode not accessible: ${errorOutput}`;
       }
-
     } catch (error) {
       result.error = `Failed to test mode access: ${error.message}`;
     }
@@ -209,7 +204,7 @@ export class ModeValidator {
   async testModeConfig(modeName) {
     const result = {
       success: false,
-      error: null
+      error: null,
     };
 
     try {
@@ -241,7 +236,6 @@ export class ModeValidator {
       }
 
       result.success = true;
-
     } catch (error) {
       result.error = `Configuration validation failed: ${error.message}`;
     }
@@ -255,7 +249,7 @@ export class ModeValidator {
   async testModeExecution(modeName) {
     const result = {
       success: false,
-      error: null
+      error: null,
     };
 
     try {
@@ -264,11 +258,11 @@ export class ModeValidator {
         args: ['sparc', 'run', modeName, 'test validation', '--dry-run'],
         cwd: this.workingDir,
         stdout: 'piped',
-        stderr: 'piped'
+        stderr: 'piped',
       });
 
       const { success, stdout, stderr } = await command.output();
-      
+
       if (success) {
         result.success = true;
       } else {
@@ -280,7 +274,7 @@ export class ModeValidator {
             args: ['sparc', 'modes'],
             cwd: this.workingDir,
             stdout: 'piped',
-            stderr: 'piped'
+            stderr: 'piped',
           });
 
           const testResult = await testCommand.output();
@@ -297,7 +291,6 @@ export class ModeValidator {
           result.error = `Mode execution failed: ${errorOutput}`;
         }
       }
-
     } catch (error) {
       result.error = `Execution test failed: ${error.message}`;
     }
@@ -313,13 +306,13 @@ export class ModeValidator {
       success: true,
       errors: [],
       warnings: [],
-      workflows: {}
+      workflows: {},
     };
 
     try {
       // Check for workflow files
       const workflowDir = `${this.workingDir}/.roo/workflows`;
-      
+
       try {
         const entries = [];
         for await (const entry of Deno.readDir(workflowDir)) {
@@ -332,7 +325,7 @@ export class ModeValidator {
         for (const workflowFile of entries) {
           const workflowTest = await this.testWorkflowFile(workflowFile);
           result.workflows[workflowFile] = workflowTest;
-          
+
           if (!workflowTest.success) {
             result.warnings.push(`Workflow ${workflowFile} has issues: ${workflowTest.error}`);
           }
@@ -341,11 +334,9 @@ export class ModeValidator {
         if (entries.length === 0) {
           result.warnings.push('No workflow files found');
         }
-
       } catch {
         result.warnings.push('Workflow directory not accessible');
       }
-
     } catch (error) {
       result.errors.push(`Workflow testing failed: ${error.message}`);
     }
@@ -359,16 +350,16 @@ export class ModeValidator {
   async testWorkflowFile(filename) {
     const result = {
       success: true,
-      error: null
+      error: null,
     };
 
     try {
       const workflowPath = `${this.workingDir}/.roo/workflows/${filename}`;
       const content = await Deno.readTextFile(workflowPath);
-      
+
       // Parse JSON
       const workflow = JSON.parse(content);
-      
+
       // Basic validation
       if (typeof workflow !== 'object' || workflow === null) {
         result.success = false;
@@ -385,7 +376,6 @@ export class ModeValidator {
           return result;
         }
       }
-
     } catch (error) {
       result.success = false;
       result.error = `Workflow validation failed: ${error.message}`;

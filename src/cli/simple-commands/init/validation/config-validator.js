@@ -13,7 +13,7 @@ export class ConfigValidator {
       success: true,
       errors: [],
       warnings: [],
-      config: null
+      config: null,
     };
 
     const roomodesPath = `${this.workingDir}/.roomodes`;
@@ -29,7 +29,7 @@ export class ConfigValidator {
 
       // Read and parse JSON
       const content = await Deno.readTextFile(roomodesPath);
-      
+
       try {
         const config = JSON.parse(content);
         result.config = config;
@@ -41,12 +41,10 @@ export class ConfigValidator {
           result.errors.push(...validationResult.errors);
         }
         result.warnings.push(...validationResult.warnings);
-
       } catch (jsonError) {
         result.success = false;
         result.errors.push(`Invalid JSON in .roomodes: ${jsonError.message}`);
       }
-
     } catch (error) {
       if (error instanceof Deno.errors.NotFound) {
         result.warnings.push('.roomodes file not found - SPARC features may not be available');
@@ -67,7 +65,7 @@ export class ConfigValidator {
       success: true,
       errors: [],
       warnings: [],
-      content: null
+      content: null,
     };
 
     const claudeMdPath = `${this.workingDir}/CLAUDE.md`;
@@ -80,7 +78,7 @@ export class ConfigValidator {
       const requiredSections = [
         '# Claude Code Configuration',
         '## Project Overview',
-        '## SPARC Development Commands'
+        '## SPARC Development Commands',
       ];
 
       for (const section of requiredSections) {
@@ -90,11 +88,7 @@ export class ConfigValidator {
       }
 
       // Check for important command patterns
-      const importantCommands = [
-        'npx claude-flow sparc',
-        'npm run build',
-        'npm run test'
-      ];
+      const importantCommands = ['npx claude-flow sparc', 'npm run build', 'npm run test'];
 
       for (const command of importantCommands) {
         if (!content.includes(command)) {
@@ -107,7 +101,6 @@ export class ConfigValidator {
         result.success = false;
         result.errors.push('CLAUDE.md appears to be too short or empty');
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Could not read CLAUDE.md: ${error.message}`);
@@ -124,14 +117,14 @@ export class ConfigValidator {
       success: true,
       errors: [],
       warnings: [],
-      data: null
+      data: null,
     };
 
     const memoryDataPath = `${this.workingDir}/memory/claude-flow-data.json`;
 
     try {
       const content = await Deno.readTextFile(memoryDataPath);
-      
+
       try {
         const data = JSON.parse(content);
         result.data = data;
@@ -143,12 +136,10 @@ export class ConfigValidator {
           result.errors.push(...validationResult.errors);
         }
         result.warnings.push(...validationResult.warnings);
-
       } catch (jsonError) {
         result.success = false;
         result.errors.push(`Invalid JSON in memory data: ${jsonError.message}`);
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Could not read memory data: ${error.message}`);
@@ -165,7 +156,7 @@ export class ConfigValidator {
       success: true,
       errors: [],
       warnings: [],
-      content: null
+      content: null,
     };
 
     const coordinationPath = `${this.workingDir}/coordination.md`;
@@ -178,7 +169,7 @@ export class ConfigValidator {
       const requiredSections = [
         '# Multi-Agent Coordination',
         '## Agent Coordination Patterns',
-        '## Memory Management'
+        '## Memory Management',
       ];
 
       for (const section of requiredSections) {
@@ -191,7 +182,6 @@ export class ConfigValidator {
       if (content.length < 50) {
         result.warnings.push('coordination.md appears to be very short');
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Could not read coordination.md: ${error.message}`);
@@ -207,14 +197,14 @@ export class ConfigValidator {
     const result = {
       success: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     const executablePath = `${this.workingDir}/claude-flow`;
 
     try {
       const stat = await Deno.stat(executablePath);
-      
+
       if (!stat.isFile) {
         result.success = false;
         result.errors.push('claude-flow executable is not a file');
@@ -231,7 +221,7 @@ export class ConfigValidator {
 
       // Read and validate content
       const content = await Deno.readTextFile(executablePath);
-      
+
       // Check for required elements
       if (content.includes('#!/usr/bin/env')) {
         // Script file
@@ -241,7 +231,6 @@ export class ConfigValidator {
       } else {
         result.warnings.push('Executable may not have proper shebang');
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Could not validate executable: ${error.message}`);
@@ -256,7 +245,7 @@ export class ConfigValidator {
     const result = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     // Check top-level structure
@@ -284,7 +273,7 @@ export class ConfigValidator {
         for (const [modeName, modeConfig] of Object.entries(config.modes)) {
           const modeValidation = this.validateModeConfig(modeName, modeConfig);
           if (!modeValidation.valid) {
-            result.warnings.push(...modeValidation.errors.map(err => `Mode ${modeName}: ${err}`));
+            result.warnings.push(...modeValidation.errors.map((err) => `Mode ${modeName}: ${err}`));
           }
         }
       }
@@ -296,7 +285,7 @@ export class ConfigValidator {
   validateModeConfig(modeName, modeConfig) {
     const result = {
       valid: true,
-      errors: []
+      errors: [],
     };
 
     if (typeof modeConfig !== 'object' || modeConfig === null) {
@@ -329,7 +318,7 @@ export class ConfigValidator {
     const result = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     if (typeof data !== 'object' || data === null) {

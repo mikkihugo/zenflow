@@ -54,7 +54,7 @@ export function createSwarmStrategyTemplates() {
     'maintenance.md': createMaintenanceStrategy(),
     'optimization.md': createOptimizationStrategy(),
     'research.md': createResearchStrategy(),
-    'testing.md': createTestingStrategy()
+    'testing.md': createTestingStrategy(),
   };
 }
 
@@ -245,7 +245,7 @@ export function createSparcModeTemplates() {
     'swarm-coordinator.md': createSwarmCoordinatorMode(),
     'tdd.md': createTddMode(),
     'tester.md': createTesterMode(),
-    'workflow-manager.md': createWorkflowManagerMode()
+    'workflow-manager.md': createWorkflowManagerMode(),
   };
 }
 

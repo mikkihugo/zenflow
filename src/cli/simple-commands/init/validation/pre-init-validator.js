@@ -14,7 +14,7 @@ export class PreInitValidator {
     const result = {
       success: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -27,7 +27,6 @@ export class PreInitValidator {
       const testDir = `${this.workingDir}/.claude-flow-dir-test`;
       await Deno.mkdir(testDir);
       await Deno.remove(testDir);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Insufficient permissions in ${this.workingDir}: ${error.message}`);
@@ -43,7 +42,7 @@ export class PreInitValidator {
     const result = {
       success: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -51,27 +50,29 @@ export class PreInitValidator {
       const command = new Deno.Command('df', {
         args: ['-k', this.workingDir],
         stdout: 'piped',
-        stderr: 'piped'
+        stderr: 'piped',
       });
 
       const { stdout, success } = await command.output();
-      
+
       if (success) {
         const output = new TextDecoder().decode(stdout);
         const lines = output.trim().split('\n');
-        
+
         if (lines.length >= 2) {
           const dataLine = lines[1];
           const parts = dataLine.split(/\s+/);
-          
+
           if (parts.length >= 4) {
             const availableKB = parseInt(parts[3]);
             const availableMB = availableKB / 1024;
-            
+
             // Require at least 100MB free space
             if (availableMB < 100) {
               result.success = false;
-              result.errors.push(`Insufficient disk space: ${availableMB.toFixed(2)}MB available (minimum 100MB required)`);
+              result.errors.push(
+                `Insufficient disk space: ${availableMB.toFixed(2)}MB available (minimum 100MB required)`,
+              );
             } else if (availableMB < 500) {
               result.warnings.push(`Low disk space: ${availableMB.toFixed(2)}MB available`);
             }
@@ -94,7 +95,7 @@ export class PreInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      conflicts: []
+      conflicts: [],
     };
 
     const criticalFiles = [
@@ -102,15 +103,10 @@ export class PreInitValidator {
       'memory-bank.md',
       'coordination.md',
       '.roomodes',
-      'memory/claude-flow-data.json'
+      'memory/claude-flow-data.json',
     ];
 
-    const criticalDirs = [
-      '.roo',
-      '.claude',
-      'memory',
-      'coordination'
-    ];
+    const criticalDirs = ['.roo', '.claude', 'memory', 'coordination'];
 
     // Check critical files
     for (const file of criticalFiles) {
@@ -140,7 +136,7 @@ export class PreInitValidator {
           for await (const entry of Deno.readDir(`${this.workingDir}/${dir}`)) {
             entries.push(entry.name);
           }
-          
+
           if (entries.length > 0) {
             result.conflicts.push(`${dir}/ (${entries.length} items)`);
             if (!force) {
@@ -164,14 +160,14 @@ export class PreInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      dependencies: {}
+      dependencies: {},
     };
 
     const dependencies = [
       { name: 'node', command: 'node', args: ['--version'], required: true },
       { name: 'npm', command: 'npm', args: ['--version'], required: true },
       { name: 'git', command: 'git', args: ['--version'], required: false },
-      { name: 'npx', command: 'npx', args: ['--version'], required: true }
+      { name: 'npx', command: 'npx', args: ['--version'], required: true },
     ];
 
     for (const dep of dependencies) {
@@ -179,16 +175,16 @@ export class PreInitValidator {
         const command = new Deno.Command(dep.command, {
           args: dep.args,
           stdout: 'piped',
-          stderr: 'piped'
+          stderr: 'piped',
         });
 
         const { stdout, success } = await command.output();
-        
+
         if (success) {
           const version = new TextDecoder().decode(stdout).trim();
           result.dependencies[dep.name] = {
             available: true,
-            version
+            version,
           };
         } else {
           throw new Error('Command failed');
@@ -196,7 +192,7 @@ export class PreInitValidator {
       } catch (error) {
         result.dependencies[dep.name] = {
           available: false,
-          error: error.message
+          error: error.message,
         };
 
         if (dep.required) {
@@ -219,7 +215,7 @@ export class PreInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      environment: {}
+      environment: {},
     };
 
     // Check for important environment variables
@@ -227,17 +223,17 @@ export class PreInitValidator {
       { name: 'HOME', required: false },
       { name: 'PATH', required: true },
       { name: 'PWD', required: false },
-      { name: 'CLAUDE_FLOW_DEBUG', required: false }
+      { name: 'CLAUDE_FLOW_DEBUG', required: false },
     ];
 
     for (const envVar of envVars) {
       const value = Deno.env.get(envVar.name);
-      
+
       if (value) {
         result.environment[envVar.name] = 'set';
       } else {
         result.environment[envVar.name] = 'not set';
-        
+
         if (envVar.required) {
           result.success = false;
           result.errors.push(`Required environment variable ${envVar.name} is not set`);
@@ -251,12 +247,12 @@ export class PreInitValidator {
         args: ['rev-parse', '--git-dir'],
         cwd: this.workingDir,
         stdout: 'piped',
-        stderr: 'piped'
+        stderr: 'piped',
       });
 
       const { success } = await command.output();
       result.environment.gitRepo = success;
-      
+
       if (!success) {
         result.warnings.push('Not in a git repository - version control recommended');
       }
@@ -277,18 +273,18 @@ export class PreInitValidator {
       diskSpace: await this.checkDiskSpace(),
       conflicts: await this.checkConflicts(options.force),
       dependencies: await this.checkDependencies(),
-      environment: await this.checkEnvironment()
+      environment: await this.checkEnvironment(),
     };
 
-    const overallSuccess = Object.values(results).every(r => r.success);
-    const allErrors = Object.values(results).flatMap(r => r.errors || []);
-    const allWarnings = Object.values(results).flatMap(r => r.warnings || []);
+    const overallSuccess = Object.values(results).every((r) => r.success);
+    const allErrors = Object.values(results).flatMap((r) => r.errors || []);
+    const allWarnings = Object.values(results).flatMap((r) => r.warnings || []);
 
     return {
       success: overallSuccess,
       results,
       errors: allErrors,
-      warnings: allWarnings
+      warnings: allWarnings,
     };
   }
 }
