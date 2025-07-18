@@ -6,10 +6,10 @@
 import { HiveMindSessionManager } from './session-manager.js';
 
 export class AutoSaveMiddleware {
-  constructor(sessionId, saveInterval = 30000) {
+  constructor(sessionId, sessionManager, saveInterval = 30000) {
     this.sessionId = sessionId;
     this.saveInterval = saveInterval;
-    this.sessionManager = new HiveMindSessionManager();
+    this.sessionManager = sessionManager; // Use provided session manager
     this.saveTimer = null;
     this.pendingChanges = [];
     this.isActive = false;
@@ -178,7 +178,7 @@ export class AutoSaveMiddleware {
 
       // Update session progress
       if (completionPercentage > 0) {
-        this.sessionManager.updateSessionProgress(this.sessionId, completionPercentage);
+        await this.sessionManager.updateSessionProgress(this.sessionId, completionPercentage);
       }
 
       // Log all changes as session events
@@ -278,7 +278,7 @@ export class AutoSaveMiddleware {
       this.childProcesses.clear();
 
       // Stop the session if it's still active
-      const session = this.sessionManager.getSession(this.sessionId);
+      const session = await this.sessionManager.getSession(this.sessionId);
       if (session && (session.status === 'active' || session.status === 'paused')) {
         await this.sessionManager.stopSession(this.sessionId);
       }
@@ -296,9 +296,9 @@ export class AutoSaveMiddleware {
 /**
  * Create auto-save middleware for a session
  */
-export function createAutoSaveMiddleware(sessionId, options = {}) {
+export function createAutoSaveMiddleware(sessionId, sessionManager, options = {}) {
   const saveInterval = options.saveInterval || 30000; // Default 30 seconds
-  const middleware = new AutoSaveMiddleware(sessionId, saveInterval);
+  const middleware = new AutoSaveMiddleware(sessionId, sessionManager, saveInterval);
 
   if (options.autoStart !== false) {
     middleware.start();

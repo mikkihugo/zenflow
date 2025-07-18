@@ -308,8 +308,10 @@ const hiveMindWizard = safeInteractive(
       name: flags.name || `swarm-${Date.now()}`,
       queenType: flags.queenType || flags['queen-type'] || 'strategic',
       maxWorkers: parseInt(flags.maxWorkers || flags['max-workers'] || '8'),
-      consensusAlgorithm: flags.consensus || 'majority',
+      consensusAlgorithm: flags.consensus || flags.consensusAlgorithm || 'majority',
       autoScale: flags.autoScale || flags['auto-scale'] || false,
+      namespace: flags.namespace || 'default',
+      verbose: flags.verbose || false,
       encryption: flags.encryption || false,
     };
 
@@ -405,11 +407,16 @@ async function spawnSwarmWizard() {
   await spawnSwarm([answers.objective], {
     name: answers.name,
     queenType: answers.queenType,
+    'queen-type': answers.queenType,
     maxWorkers: answers.maxWorkers,
+    'max-workers': answers.maxWorkers,
     workerTypes: answers.workerTypes.join(','),
     consensus: answers.consensusAlgorithm,
     autoScale: answers.autoScale,
+    'auto-scale': answers.autoScale,
     monitor: answers.monitor,
+    namespace: answers.namespace || 'default',
+    verbose: answers.verbose || false,
   });
 }
 
@@ -425,6 +432,35 @@ async function spawnSwarm(args, flags) {
     return;
   }
 
+  // Validate parameters
+  if (flags.verbose) {
+    console.log(chalk.gray('🔍 Debug: Parsed flags:'));
+    console.log(chalk.gray(JSON.stringify(flags, null, 2)));
+  }
+
+  // Validate queen type
+  const validQueenTypes = ['strategic', 'tactical', 'adaptive'];
+  const queenType = flags.queenType || flags['queen-type'] || 'strategic';
+  if (!validQueenTypes.includes(queenType)) {
+    console.error(chalk.red(`Error: Invalid queen type '${queenType}'. Must be one of: ${validQueenTypes.join(', ')}`));
+    return;
+  }
+
+  // Validate max workers
+  const maxWorkers = parseInt(flags.maxWorkers || flags['max-workers'] || '8');
+  if (isNaN(maxWorkers) || maxWorkers < 1 || maxWorkers > 20) {
+    console.error(chalk.red('Error: max-workers must be a number between 1 and 20'));
+    return;
+  }
+
+  // Validate consensus algorithm
+  const validConsensusTypes = ['majority', 'weighted', 'byzantine'];
+  const consensusAlgorithm = flags.consensus || flags.consensusAlgorithm || 'majority';
+  if (!validConsensusTypes.includes(consensusAlgorithm)) {
+    console.error(chalk.red(`Error: Invalid consensus algorithm '${consensusAlgorithm}'. Must be one of: ${validConsensusTypes.join(', ')}`));
+    return;
+  }
+
   const spinner = ora('Spawning Hive Mind swarm...').start();
 
   try {
@@ -435,10 +471,11 @@ async function spawnSwarm(args, flags) {
       hiveMind = new HiveMindCore({
         objective,
         name: flags.name || `hive-${Date.now()}`,
-        queenType: flags.queenType || 'strategic',
-        maxWorkers: flags.maxWorkers || 8,
-        consensusAlgorithm: flags.consensus || 'majority',
-        autoScale: flags.autoScale !== false,
+        queenType: flags.queenType || flags['queen-type'] || 'strategic',
+        maxWorkers: parseInt(flags.maxWorkers || flags['max-workers'] || '8'),
+        consensusAlgorithm: flags.consensus || flags.consensusAlgorithm || 'majority',
+        autoScale: flags.autoScale !== undefined ? flags.autoScale : (flags['auto-scale'] !== undefined ? flags['auto-scale'] : true),
+        namespace: flags.namespace || 'default',
         encryption: flags.encryption || false,
       });
     } catch (error) {
@@ -574,7 +611,7 @@ async function spawnSwarm(args, flags) {
     // Create session for this swarm
     spinner.text = 'Creating session tracking...';
     const sessionManager = new HiveMindSessionManager();
-    const sessionId = sessionManager.createSession(swarmId, hiveMind.config.name, objective, {
+    const sessionId = await sessionManager.createSession(swarmId, hiveMind.config.name, objective, {
       queenType: hiveMind.config.queenType,
       maxWorkers: hiveMind.config.maxWorkers,
       consensusAlgorithm: hiveMind.config.consensusAlgorithm,
@@ -584,13 +621,15 @@ async function spawnSwarm(args, flags) {
     });
 
     spinner.text = 'Session tracking established...';
-    sessionManager.close();
 
-    // Initialize auto-save middleware
-    const autoSave = createAutoSaveMiddleware(sessionId, {
+    // Initialize auto-save middleware (use the same session manager)
+    const autoSave = createAutoSaveMiddleware(sessionId, sessionManager, {
       saveInterval: 30000, // Save every 30 seconds
       autoStart: true,
     });
+
+    // Close session manager after auto-save is set up
+    // sessionManager.close(); // Don't close yet as auto-save needs it
 
     // Track initial swarm creation
     autoSave.trackChange('swarm_created', {
@@ -718,6 +757,59 @@ async function spawnSwarm(args, flags) {
     console.log(chalk.gray('Session auto-save enabled - progress saved every 30 seconds'));
     console.log(chalk.blue('💡 To pause:') + ' Press Ctrl+C to safely pause and resume later');
     console.log(chalk.blue('💡 To resume:') + ' claude-flow hive-mind resume ' + sessionId);
+
+    // Set up SIGINT handler for automatic session pausing
+    let isExiting = false;
+    const sigintHandler = async () => {
+      if (isExiting) return;
+      isExiting = true;
+
+      console.log('\n\n' + chalk.yellow('⏸️  Pausing session...'));
+      
+      try {
+        // Save current checkpoint using the existing session manager
+        // const sessionManager = new HiveMindSessionManager(); // Use existing one
+        
+        // Create checkpoint data
+        const checkpointData = {
+          timestamp: new Date().toISOString(),
+          swarmId,
+          objective,
+          workerCount: workers.length,
+          workerTypes,
+          status: 'paused_by_user',
+          reason: 'User pressed Ctrl+C',
+        };
+        
+        // Save checkpoint
+        await sessionManager.saveCheckpoint(sessionId, 'auto-pause', checkpointData);
+        
+        // Pause the session
+        await sessionManager.pauseSession(sessionId);
+        
+        // Close session manager
+        sessionManager.close();
+        
+        console.log(chalk.green('✓') + ' Session paused successfully');
+        console.log(chalk.cyan('\nTo resume this session, run:'));
+        console.log(chalk.bold(`  claude-flow hive-mind resume ${sessionId}`));
+        console.log();
+        
+        // Clean up auto-save if active
+        if (global.autoSaveInterval) {
+          clearInterval(global.autoSaveInterval);
+        }
+        
+        process.exit(0);
+      } catch (error) {
+        console.error(chalk.red('Error pausing session:'), error.message);
+        process.exit(1);
+      }
+    };
+
+    // Register SIGINT handler
+    process.on('SIGINT', sigintHandler);
+    process.on('SIGTERM', sigintHandler);
 
     // Offer to spawn Claude Code instances with coordination instructions
     if (flags.claude || flags.spawn) {
@@ -1772,6 +1864,20 @@ async function exportMemoryBackup() {
 }
 
 /**
+ * Get active session ID for a swarm
+ */
+async function getActiveSessionId(swarmId) {
+  const sessionManager = new HiveMindSessionManager();
+  try {
+    const sessions = sessionManager.getActiveSessions();
+    const activeSession = sessions.find(s => s.swarm_id === swarmId && s.status === 'active');
+    return activeSession ? activeSession.id : null;
+  } finally {
+    sessionManager.close();
+  }
+}
+
+/**
  * Spawn Claude Code with Hive Mind coordination instructions
  */
 async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, flags) {
@@ -1850,6 +1956,59 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
           shell: false,
         });
 
+        // Track child process PID in session
+        const sessionManager = new HiveMindSessionManager();
+        const sessionId = await getActiveSessionId(swarmId);
+        if (sessionId && claudeProcess.pid) {
+          sessionManager.addChildPid(sessionId, claudeProcess.pid);
+        }
+
+        // Set up SIGINT handler for automatic session pausing
+        let isExiting = false;
+        const sigintHandler = async () => {
+          if (isExiting) return;
+          isExiting = true;
+
+          console.log('\n\n' + chalk.yellow('⏸️  Pausing session and terminating Claude Code...'));
+          
+          try {
+            // Terminate Claude Code process
+            if (claudeProcess && !claudeProcess.killed) {
+              claudeProcess.kill('SIGTERM');
+            }
+
+            // Save checkpoint and pause session
+            if (sessionId) {
+              const checkpointData = {
+                timestamp: new Date().toISOString(),
+                swarmId,
+                objective,
+                status: 'paused_by_user',
+                reason: 'User pressed Ctrl+C during Claude Code execution',
+                claudePid: claudeProcess.pid,
+              };
+              
+              await sessionManager.saveCheckpoint(sessionId, 'auto-pause-claude', checkpointData);
+              await sessionManager.pauseSession(sessionId);
+              
+              console.log(chalk.green('✓') + ' Session paused successfully');
+              console.log(chalk.cyan('\nTo resume this session, run:'));
+              console.log(chalk.bold(`  claude-flow hive-mind resume ${sessionId}`));
+            }
+            
+            sessionManager.close();
+            process.exit(0);
+          } catch (error) {
+            console.error(chalk.red('Error pausing session:'), error.message);
+            sessionManager.close();
+            process.exit(1);
+          }
+        };
+
+        // Register SIGINT handler
+        process.on('SIGINT', sigintHandler);
+        process.on('SIGTERM', sigintHandler);
+
         // Handle stdout
         if (claudeProcess.stdout) {
           claudeProcess.stdout.on('data', (data) => {
@@ -1866,9 +2025,15 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
 
         // Handle process exit
         claudeProcess.on('exit', (code) => {
+          // Remove child PID from session
+          if (sessionId && claudeProcess.pid) {
+            sessionManager.removeChildPid(sessionId, claudeProcess.pid);
+            sessionManager.close();
+          }
+
           if (code === 0) {
             console.log(chalk.green('\n✓ Claude Code completed successfully'));
-          } else {
+          } else if (code !== null) {
             console.log(chalk.red(`\n✗ Claude Code exited with code ${code}`));
           }
         });
@@ -2574,6 +2739,18 @@ async function launchClaudeWithContext(prompt, flags) {
         shell: false,
       });
 
+      // Set up SIGINT handler for clean termination (no session pausing here since we're resuming)
+      const sigintHandler = () => {
+        console.log('\n\n' + chalk.yellow('⏹️  Terminating Claude Code...'));
+        if (claudeProcess && !claudeProcess.killed) {
+          claudeProcess.kill('SIGTERM');
+        }
+        process.exit(0);
+      };
+
+      process.on('SIGINT', sigintHandler);
+      process.on('SIGTERM', sigintHandler);
+
       // Handle stdout
       if (claudeProcess.stdout) {
         claudeProcess.stdout.on('data', (data) => {
@@ -2592,9 +2769,13 @@ async function launchClaudeWithContext(prompt, flags) {
       claudeProcess.on('exit', (code) => {
         if (code === 0) {
           console.log(chalk.green('\n✓ Claude Code completed successfully'));
-        } else {
+        } else if (code !== null) {
           console.log(chalk.red(`\n✗ Claude Code exited with code ${code}`));
         }
+        
+        // Clean up signal handlers
+        process.removeListener('SIGINT', sigintHandler);
+        process.removeListener('SIGTERM', sigintHandler);
       });
 
       console.log(chalk.green('\n✓ Claude Code launched with restored session context'));
