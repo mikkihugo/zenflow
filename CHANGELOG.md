@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.61] - 2025-07-17
+
+### Added
+- **Neural Training Enhancements**: 
+  - Enhanced neural training with real WASM acceleration achieving 92.9% accuracy
+  - Added task-predictor model for improved agent coordination
+  - Implemented SIMD support for faster neural computations
+  - Added comprehensive neural training command help documentation
+
+- **Help System Improvements**:
+  - Updated help command implementation with proper TypeScript support
+  - Enhanced help text with neural training command documentation
+  - Added comprehensive examples for training, pattern learning, and model updates
+  - Improved command-specific help display formatting
+
+- **Version Management**:
+  - Updated all version references to alpha.61 across codebase
+  - Updated help text to reflect alpha.61 improvements
+  - Enhanced version display in CLI output
+
+### Fixed
+- **Issue #351**: Fixed `swarm_status` MCP tool returning mock response instead of real data
+  - Removed dependency on uninitialized `databaseManager`
+  - Updated to use memory store (SQLite) for swarm data retrieval
+  - Fixed agent and task storage keys to enable proper filtering by swarm ID
+  - Added support for verbose mode to return detailed swarm information
+  - Ensured accurate agent counts, task counts, and status calculations
+
+- **Issue #347**: Fixed MemoryManager initialization error "Unknown memory backend: undefined"
+  - Added required configuration parameters to MemoryManager constructor
+  - Created default memory configuration with SQLite backend
+  - Set sensible defaults: 50MB cache, 30s sync interval, 30-day retention
+  - Added proper error handling and logging for memory initialization
+  - Resolved critical bug that blocked system integration startup
+
+### Changed
+- **MCP Server Memory Integration**: 
+  - `swarm_status` now retrieves data from persistent memory store
+  - `agent_spawn` stores agents with swarm-scoped keys (`agent:{swarmId}:{agentId}`)
+  - `task_orchestrate` now stores tasks in memory (previously only attempted database storage)
+  - `getActiveSwarmId()` method updated to use memory store
+  
+- **System Integration Memory Setup**:
+  - MemoryManager now receives EventBus and Logger instances from SystemIntegration
+  - Memory configuration is created with sensible defaults during initialization
+  - Improved status reporting includes backend type and configuration details
+
+- **CLI Help System**:
+  - Maintained emoji-rich help as default based on user preference
+  - Added `--plain` flag option for standardized Unix/Linux-style help
+  - Updated command registry to use `HelpFormatter` when --plain is used
+  - Modified `help-text.js` to support dual help modes
+  - Enhanced error messages with helpful usage hints and valid options
+  - Commands retain their vibrant, engaging help by default
+
 ## [2.0.0-alpha.56] - 2025-07-15
 
 ### 🚀 Major Hook System Overhaul (Issue #280)

@@ -16,17 +16,24 @@ import { args, cwd, isMainModule, exit, readTextFile, writeTextFile, mkdirAsync,
 import { spawn } from 'child_process';
 import process from 'process';
 import readline from 'readline';
-import { getMainHelp, getCommandHelp } from './help-text.js';
+import { getMainHelp, getCommandHelp, getStandardizedCommandHelp } from './help-text.js';
 
-const VERSION = '2.0.0-alpha.56';
+const VERSION = '2.0.0-alpha.61';
 
-function printHelp() {
-  console.log(getMainHelp());
+function printHelp(plain = false) {
+  console.log(getMainHelp(plain));
 }
 
 function printCommandHelp(command) {
-  const help = getCommandHelp(command);
-  console.log(help);
+  // Try standardized help first
+  const standardCommands = ['agent', 'sparc', 'memory'];
+  if (standardCommands.includes(command)) {
+    const help = getStandardizedCommandHelp(command);
+    console.log(help);
+  } else {
+    const help = getCommandHelp(command);
+    console.log(help);
+  }
 }
 
 // Legacy help function for backward compatibility
@@ -173,8 +180,8 @@ function printWarning(message) {
   console.warn(`⚠️  Warning: ${message}`);
 }
 
-function showHelpWithCommands() {
-  printHelp();
+function showHelpWithCommands(plain = false) {
+  printHelp(plain);
   console.log('\nRegistered Commands:');
   const commands = listCommands();
   for (const command of commands) {
@@ -187,12 +194,15 @@ async function main() {
   // args is imported from node-compat.js
   
   if (args.length === 0) {
-    printHelp();
+    printHelp(usePlainHelp);
     return;
   }
 
   const command = args[0];
   const { flags, args: parsedArgs } = parseFlags(args.slice(1));
+  
+  // Check for --plain flag for help early
+  const usePlainHelp = args.includes('--plain');
   
   // Apply environment-based smart defaults
   let enhancedFlags = flags;
@@ -264,7 +274,7 @@ async function main() {
           showCommandHelp(parsedArgs[0]);
         }
       } else {
-        printHelp();
+        printHelp(usePlainHelp);
       }
       return;
   }

@@ -20,6 +20,7 @@ import { coordinationAction } from './simple-commands/coordination.js';
 import { hooksAction } from './simple-commands/hooks.js';
 import { hookSafetyCommand } from './simple-commands/hook-safety.js';
 import { hiveMindCommand } from './simple-commands/hive-mind.js';
+import { HelpFormatter } from './help-formatter.js';
 import hiveMindOptimizeCommand from './simple-commands/hive-mind-optimize.js';
 import { showUnifiedMetrics, fixTaskAttribution } from './simple-commands/swarm-metrics-integration.js';
 import { migrateHooksCommand, migrateHooksCommandConfig } from './simple-commands/migrate-hooks.js';
@@ -195,7 +196,7 @@ First-time users should run: npx claude-flow@latest init --sparc`
 
   commandRegistry.set('hive-mind', {
     handler: hiveMindCommand,
-    description: 'Advanced Hive Mind swarm intelligence with collective decision-making',
+    description: '🧠 Advanced Hive Mind swarm intelligence with collective decision-making',
     usage: 'hive-mind <subcommand> [options]',
     examples: [
       'hive-mind init                          # Initialize hive mind system',
@@ -205,6 +206,7 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'hive-mind consensus                     # View consensus decisions',
       'hive-mind metrics                       # Performance analytics'
     ],
+    customHelp: true,  // Use command's own help function
     details: `
 Hive Mind System Features:
   • Queen-led coordination with specialized worker agents
@@ -707,28 +709,69 @@ export async function executeCommand(name, subArgs, flags) {
 export function showCommandHelp(name) {
   const command = commandRegistry.get(name);
   if (!command) {
-    console.log(`Unknown command: ${name}`);
+    console.log(HelpFormatter.formatError(
+      `Unknown command: ${name}`,
+      'claude-flow',
+      'claude-flow <command> [options]'
+    ));
     return;
   }
   
-  console.log(`Command: ${name}`);
-  console.log(`Description: ${command.description}`);
-  console.log(`Usage: claude-flow ${command.usage}`);
-  
-  if (command.details) {
-    console.log(command.details);
+  // If command has custom help, call it with help flag
+  if (command.customHelp) {
+    command.handler(['--help'], { help: true });
+    return;
   }
   
-  if (command.examples.length > 0) {
-    console.log('\nExamples:');
-    for (const example of command.examples) {
-      if (example.startsWith('npx')) {
-        console.log(`  ${example}`);
-      } else {
-        console.log(`  claude-flow ${example}`);
+  // Convert command info to standardized format
+  const helpInfo = {
+    name: `claude-flow ${name}`,
+    description: HelpFormatter.stripFormatting(command.description),
+    usage: `claude-flow ${command.usage}`
+  };
+  
+  // Parse examples
+  if (command.examples && command.examples.length > 0) {
+    helpInfo.examples = command.examples.map(ex => {
+      if (ex.startsWith('npx')) {
+        return ex;
+      }
+      return `claude-flow ${ex}`;
+    });
+  }
+  
+  // Parse options from details if available
+  if (command.details) {
+    const optionsMatch = command.details.match(/Options:([\s\S]*?)(?=\n\n|$)/);
+    if (optionsMatch) {
+      const optionsText = optionsMatch[1];
+      const options = [];
+      const optionLines = optionsText.split('\n').filter(line => line.trim());
+      
+      for (const line of optionLines) {
+        const match = line.match(/^\s*(--.+?)\s{2,}(.+)$/);
+        if (match) {
+          let [_, flags, description] = match;
+          // Check for default value in description
+          const defaultMatch = description.match(/\(default: (.+?)\)/);
+          const option = {
+            flags: flags.trim(),
+            description: description.replace(/\(default: .+?\)/, '').trim()
+          };
+          if (defaultMatch) {
+            option.defaultValue = defaultMatch[1];
+          }
+          options.push(option);
+        }
+      }
+      
+      if (options.length > 0) {
+        helpInfo.options = options;
       }
     }
   }
+  
+  console.log(HelpFormatter.formatHelp(helpInfo));
 }
 
 // Helper to show all commands

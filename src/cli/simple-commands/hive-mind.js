@@ -19,6 +19,9 @@ import { parseFlags, normalizeFlags, applySmartDefaults, validateFlags } from '.
 // Import SQLite for persistence
 import Database from 'better-sqlite3';
 
+// Import help formatter
+import { HelpFormatter } from '../help-formatter.js';
+
 // Import MCP tool wrappers
 import { MCPToolWrapper } from './hive-mind/mcp-wrapper.js';
 import { HiveMindCore } from './hive-mind/core.js';
@@ -98,8 +101,6 @@ ${chalk.bold('OPTIONS:')}
   --spawn                Alias for --claude
   --auto-spawn           Automatically spawn Claude Code instances
   --execute              Execute Claude Code spawn commands immediately
-  --auto                 (Deprecated: auto-permissions enabled by default)
-  --no-auto-permissions  Disable automatic --dangerously-skip-permissions
 
 ${chalk.bold('For more information:')}
 ${chalk.blue('https://github.com/ruvnet/claude-flow/tree/main/docs/hive-mind')}
@@ -1304,8 +1305,8 @@ export async function hiveMindCommand(args, flags) {
   const subcommand = args[0];
   const subArgs = args.slice(1);
   
-  // If no subcommand, show help
-  if (!subcommand) {
+  // Handle help flags
+  if (!subcommand || subcommand === '--help' || subcommand === '-h' || subcommand === 'help' || flags.help) {
     showHiveMindHelp();
     return;
   }
