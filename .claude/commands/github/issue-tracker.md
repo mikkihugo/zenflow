@@ -130,22 +130,25 @@ mcp__github__update_issue {
   mcp__claude-flow__agent_spawn { type: "analyst", name: "Progress Tracker" }
   mcp__claude-flow__agent_spawn { type: "researcher", name: "Context Gatherer" }
   
-  // Create multiple related issues
-  mcp__github__create_issue {
-    title: "Feature: Advanced GitHub Integration",
-    body: "Implement comprehensive GitHub workflow automation...",
-    labels: ["feature", "github", "high-priority"]
-  }
-  mcp__github__create_issue {
-    title: "Bug: PR merge conflicts in integration branch", 
-    body: "Resolve merge conflicts in integration/claude-code-flow-ruv-swarm...",
-    labels: ["bug", "integration", "urgent"]
-  }
-  mcp__github__create_issue {
-    title: "Documentation: Update integration guides",
-    body: "Update all documentation to reflect new GitHub workflows...",
-    labels: ["documentation", "integration"]
-  }
+  // Create multiple related issues using gh CLI
+  Bash(`gh issue create \
+    --repo :owner/:repo \
+    --title "Feature: Advanced GitHub Integration" \
+    --body "Implement comprehensive GitHub workflow automation..." \
+    --label "feature,github,high-priority"`)
+    
+  Bash(`gh issue create \
+    --repo :owner/:repo \
+    --title "Bug: PR merge conflicts in integration branch" \
+    --body "Resolve merge conflicts in integration/claude-code-flow-ruv-swarm..." \
+    --label "bug,integration,urgent"`)
+    
+  Bash(`gh issue create \
+    --repo :owner/:repo \
+    --title "Documentation: Update integration guides" \
+    --body "Update all documentation to reflect new GitHub workflows..." \
+    --label "documentation,integration"`)
+  
   
   // Set up coordinated tracking
   TodoWrite { todos: [

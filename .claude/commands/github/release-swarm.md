@@ -7,8 +7,19 @@ Orchestrate complex software releases using AI swarms that handle everything fro
 
 ### 1. Release Planning
 ```bash
-# Plan next release
+# Plan next release using gh CLI
+# Get commit history since last release
+LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName')
+COMMITS=$(gh api repos/:owner/:repo/compare/${LAST_TAG}...HEAD --jq '.commits')
+
+# Get merged PRs
+MERGED_PRS=$(gh pr list --state merged --base main --json number,title,labels,mergedAt \
+  --jq ".[] | select(.mergedAt > \"$(gh release view $LAST_TAG --json publishedAt -q .publishedAt)\")")  
+
+# Plan release with commit analysis
 npx ruv-swarm github release-plan \
+  --commits "$COMMITS" \
+  --merged-prs "$MERGED_PRS" \
   --analyze-commits \
   --suggest-version \
   --identify-breaking \
@@ -27,13 +38,34 @@ npx ruv-swarm github release-version \
 
 ### 3. Release Orchestration
 ```bash
-# Full release automation
+# Full release automation with gh CLI
+# Generate changelog from PRs and commits
+CHANGELOG=$(gh api repos/:owner/:repo/compare/${LAST_TAG}...HEAD \
+  --jq '.commits[].commit.message' | \
+  npx ruv-swarm github generate-changelog)
+
+# Create release draft
+gh release create v2.0.0 \
+  --draft \
+  --title "Release v2.0.0" \
+  --notes "$CHANGELOG" \
+  --target main
+
+# Run release orchestration
 npx ruv-swarm github release-create \
   --version "2.0.0" \
-  --generate-changelog \
+  --changelog "$CHANGELOG" \
   --build-artifacts \
-  --deploy-targets "npm,docker,github" \
-  --notify-stakeholders
+  --deploy-targets "npm,docker,github"
+
+# Publish release after validation
+gh release edit v2.0.0 --draft=false
+
+# Create announcement issue
+gh issue create \
+  --title "🎉 Released v2.0.0" \
+  --body "$CHANGELOG" \
+  --label "announcement,release"
 ```
 
 ## Release Configuration
@@ -89,13 +121,36 @@ release:
 
 ### Changelog Agent
 ```bash
-# Generate intelligent changelog
-npx ruv-swarm github changelog \
+# Generate intelligent changelog with gh CLI
+# Get all merged PRs between versions
+PRS=$(gh pr list --state merged --base main --json number,title,labels,author,mergedAt \
+  --jq ".[] | select(.mergedAt > \"$(gh release view v1.0.0 --json publishedAt -q .publishedAt)\")")  
+
+# Get contributors
+CONTRIBUTORS=$(echo "$PRS" | jq -r '[.author.login] | unique | join(", ")')
+
+# Get commit messages
+COMMITS=$(gh api repos/:owner/:repo/compare/v1.0.0...HEAD \
+  --jq '.commits[].commit.message')
+
+# Generate categorized changelog
+CHANGELOG=$(npx ruv-swarm github changelog \
+  --prs "$PRS" \
+  --commits "$COMMITS" \
+  --contributors "$CONTRIBUTORS" \
   --from v1.0.0 \
   --to HEAD \
   --categorize \
-  --include-contributors \
-  --add-migration-guide
+  --add-migration-guide)
+
+# Save changelog
+echo "$CHANGELOG" > CHANGELOG.md
+
+# Create PR with changelog update
+gh pr create \
+  --title "docs: Update changelog for v2.0.0" \
+  --body "Automated changelog update" \
+  --base main
 ```
 
 **Capabilities:**
@@ -222,25 +277,59 @@ jobs:
         with:
           fetch-depth: 0
           
+      - name: Setup GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          
       - name: Initialize Release Swarm
         run: |
+          # Get release tag and previous tag
+          RELEASE_TAG=${{ github.ref_name }}
+          PREV_TAG=$(gh release list --limit 2 --json tagName -q '.[1].tagName')
+          
+          # Get PRs and commits for changelog
+          PRS=$(gh pr list --state merged --base main --json number,title,labels,author \
+            --search "merged:>=$(gh release view $PREV_TAG --json publishedAt -q .publishedAt)")
+          
           npx ruv-swarm github release-init \
-            --tag ${{ github.ref_name }} \
+            --tag $RELEASE_TAG \
+            --previous-tag $PREV_TAG \
+            --prs "$PRS" \
             --spawn-agents "changelog,version,build,test,deploy"
             
       - name: Generate Release Assets
         run: |
+          # Generate changelog from PR data
+          CHANGELOG=$(npx ruv-swarm github release-changelog \
+            --format markdown)
+          
+          # Update release notes
+          gh release edit ${{ github.ref_name }} \
+            --notes "$CHANGELOG"
+          
+          # Generate and upload assets
           npx ruv-swarm github release-assets \
             --changelog \
             --binaries \
             --documentation
             
+      - name: Upload Release Assets
+        run: |
+          # Upload generated assets to GitHub release
+          for file in dist/*; do
+            gh release upload ${{ github.ref_name }} "$file"
+          done
+          
       - name: Publish Release
         run: |
+          # Publish to package registries
           npx ruv-swarm github release-publish \
-            --platforms all \
-            --notify \
-            --update-docs
+            --platforms all
+          
+          # Create announcement issue
+          gh issue create \
+            --title "🚀 Released ${{ github.ref_name }}" \
+            --body "See [release notes](https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }})" \
+            --label "announcement"
 ```
 
 ### Continuous Deployment

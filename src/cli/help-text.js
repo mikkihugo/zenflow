@@ -458,7 +458,8 @@ SWARM-INIT OPTIONS:
 
 AGENT-SPAWN OPTIONS:
   --type <type>        Agent type (default: general)
-                       Options: coordinator, developer, researcher, analyzer, tester, general
+                       Options: coordinator, coder, developer, researcher, analyst, analyzer, 
+                       tester, architect, reviewer, optimizer, general
   --name <name>        Custom agent name (auto-generated if not provided)
   --swarm-id <id>      Target swarm for agent coordination
   --capabilities <cap> Custom capabilities specification

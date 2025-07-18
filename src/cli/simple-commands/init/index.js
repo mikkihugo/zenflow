@@ -8,28 +8,8 @@ import { createClaudeSlashCommands } from './claude-commands/slash-commands.js';
 import { createOptimizedClaudeSlashCommands } from './claude-commands/optimized-slash-commands.js';
 import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
-import {
-  createSparcClaudeMd,
-  createFullClaudeMd,
-  createMinimalClaudeMd,
-  createOptimizedSparcClaudeMd,
-} from './templates/claude-md.js';
-import {
-  createFullMemoryBankMd,
-  createMinimalMemoryBankMd,
-  createOptimizedMemoryBankMd,
-} from './templates/memory-bank-md.js';
-import {
-  createFullCoordinationMd,
-  createMinimalCoordinationMd,
-  createOptimizedCoordinationMd,
-} from './templates/coordination-md.js';
-import { createAgentsReadme, createSessionsReadme } from './templates/readme-files.js';
-import {
-  createSparcModeTemplates,
-  createSparcModesOverview,
-  createSwarmStrategyTemplates,
-} from './templates/sparc-modes.js';
+import { copyTemplates } from './template-copier.js';
+import { copyRevisedTemplates, validateTemplatesExist } from './copy-revised-templates.js';
 import { showInitHelp } from './help.js';
 import { batchInitCommand, batchInitFromConfig, validateBatchOptions } from './batch-init.js';
 import { ValidationSystem, runFullValidation } from './validation/index.js';
@@ -186,228 +166,52 @@ export async function initCommand(subArgs, flags) {
       return;
     }
 
-    // Create CLAUDE.md
-    const claudeMd = initOptimized
-      ? await createOptimizedSparcClaudeMd()
-      : initSparc
-        ? createSparcClaudeMd()
-        : initMinimal
-          ? createMinimalClaudeMd()
-          : createFullClaudeMd();
-
-    if (!initDryRun) {
-      await Deno.writeTextFile('CLAUDE.md', claudeMd);
-      console.log(
-        `  ✓ Created CLAUDE.md${initOptimized ? ' (Batchtools-optimized SPARC)' : initSparc ? ' (SPARC-enhanced)' : ''}`,
-      );
-    } else {
-      console.log(
-        `  [DRY RUN] Would create CLAUDE.md${initOptimized ? ' (Batchtools-optimized SPARC)' : initSparc ? ' (SPARC-enhanced)' : ''}`,
-      );
-    }
-
-    // Create memory-bank.md
-    const memoryBankMd = initOptimized
-      ? await createOptimizedMemoryBankMd()
-      : initMinimal
-        ? createMinimalMemoryBankMd()
-        : createFullMemoryBankMd();
-    if (!initDryRun) {
-      await Deno.writeTextFile('memory-bank.md', memoryBankMd);
-      console.log(
-        '  ✓ Created memory-bank.md' +
-          (initOptimized ? ' (Optimized for parallel operations)' : ''),
-      );
-    } else {
-      console.log(
-        '  [DRY RUN] Would create memory-bank.md' +
-          (initOptimized ? ' (Optimized for parallel operations)' : ''),
-      );
-    }
-
-    // Create coordination.md
-    const coordinationMd = initOptimized
-      ? await createOptimizedCoordinationMd()
-      : initMinimal
-        ? createMinimalCoordinationMd()
-        : createFullCoordinationMd();
-    if (!initDryRun) {
-      await Deno.writeTextFile('coordination.md', coordinationMd);
-      console.log(
-        '  ✓ Created coordination.md' + (initOptimized ? ' (Enhanced with batchtools)' : ''),
-      );
-    } else {
-      console.log(
-        '  [DRY RUN] Would create coordination.md' +
-          (initOptimized ? ' (Enhanced with batchtools)' : ''),
-      );
-    }
-
-    // Create directory structure
-    const directories = [
-      'memory',
-      'memory/agents',
-      'memory/sessions',
-      'coordination',
-      'coordination/memory_bank',
-      'coordination/subtasks',
-      'coordination/orchestration',
-      '.claude',
-      '.claude/commands',
-      '.claude/commands/sparc',
-      '.claude/commands/swarm',
-      '.claude/logs',
-      '.swarm', // Add .swarm directory for memory persistence (matching hive-mind pattern)
-    ];
-
-    for (const dir of directories) {
-      try {
-        if (!initDryRun) {
-          await Deno.mkdir(dir, { recursive: true });
-          console.log(`  ✓ Created ${dir}/ directory`);
-        } else {
-          console.log(`  [DRY RUN] Would create ${dir}/ directory`);
-        }
-      } catch (err) {
-        if (err.code !== 'EEXIST') {
-          throw err;
-        }
-      }
-    }
-
-    // Create SPARC command files if --sparc flag is used
-    if (initSparc && !initDryRun) {
-      try {
-        const sparcTargetDir = `${workingDir}/.claude/commands/sparc`;
-
-        // Get SPARC mode templates
-        const sparcTemplates = createSparcModeTemplates();
-
-        console.log('  📁 Creating SPARC command files...');
-
-        for (const [filename, content] of Object.entries(sparcTemplates)) {
-          try {
-            await Deno.writeTextFile(`${sparcTargetDir}/${filename}`, content);
-            console.log(`    ✓ Created ${filename}`);
-          } catch (err) {
-            console.log(`    ⚠️  Could not create ${filename}: ${err.message}`);
-          }
-        }
-
-        // Also create sparc-modes.md overview file
-        const sparcModesOverview = createSparcModesOverview();
-        await Deno.writeTextFile(`${sparcTargetDir}/sparc-modes.md`, sparcModesOverview);
-        console.log(`    ✓ Created sparc-modes.md`);
-
-        console.log('  ✅ SPARC command files created successfully');
-      } catch (err) {
-        console.log(`  ⚠️  Could not create SPARC files: ${err.message}`);
-      }
-
-      // Also create swarm strategy files
-      try {
-        const swarmTargetDir = `${workingDir}/.claude/commands/swarm`;
-
-        // Get swarm strategy templates
-        const swarmTemplates = createSwarmStrategyTemplates();
-
-        console.log('  📁 Creating swarm strategy files...');
-
-        for (const [filename, content] of Object.entries(swarmTemplates)) {
-          try {
-            await Deno.writeTextFile(`${swarmTargetDir}/${filename}`, content);
-            console.log(`    ✓ Created ${filename}`);
-          } catch (err) {
-            console.log(`    ⚠️  Could not create ${filename}: ${err.message}`);
-          }
-        }
-
-        console.log('  ✅ Swarm strategy files created successfully');
-      } catch (err) {
-        console.log(`  ⚠️  Could not create swarm files: ${err.message}`);
-      }
-
-      // Create .claude/config.json
-      try {
-        const configContent = {
-          version: '1.0',
-          sparc: {
-            enabled: true,
-            modes: [
-              'orchestrator',
-              'coder',
-              'researcher',
-              'tdd',
-              'architect',
-              'reviewer',
-              'debugger',
-              'tester',
-              'analyzer',
-              'optimizer',
-              'documenter',
-              'designer',
-              'innovator',
-              'swarm-coordinator',
-              'memory-manager',
-              'batch-executor',
-              'workflow-manager',
-            ],
-          },
-          swarm: {
-            enabled: true,
-            strategies: [
-              'research',
-              'development',
-              'analysis',
-              'testing',
-              'optimization',
-              'maintenance',
-            ],
-          },
-        };
-
-        await Deno.writeTextFile(
-          `${workingDir}/.claude/config.json`,
-          JSON.stringify(configContent, null, 2),
-        );
-        console.log('  ✓ Created .claude/config.json');
-      } catch (err) {
-        console.log(`  ⚠️  Could not create config.json: ${err.message}`);
-      }
-    }
-
-    // Create placeholder files for memory directories
-    const agentsReadme = createAgentsReadme();
-    if (!initDryRun) {
-      await Deno.writeTextFile('memory/agents/README.md', agentsReadme);
-      console.log('  ✓ Created memory/agents/README.md');
-    } else {
-      console.log('  [DRY RUN] Would create memory/agents/README.md');
-    }
-
-    const sessionsReadme = createSessionsReadme();
-    if (!initDryRun) {
-      await Deno.writeTextFile('memory/sessions/README.md', sessionsReadme);
-      console.log('  ✓ Created memory/sessions/README.md');
-    } else {
-      console.log('  [DRY RUN] Would create memory/sessions/README.md');
-    }
-
-    // Initialize persistence database
-    const initialData = {
-      agents: [],
-      tasks: [],
-      lastUpdated: Date.now(),
+    // Use template copier to copy all template files
+    const templateOptions = {
+      sparc: initSparc,
+      minimal: initMinimal,
+      optimized: initOptimized,
+      dryRun: initDryRun,
+      force: initForce,
+      selectedModes: selectedModes,
     };
-    if (!initDryRun) {
-      await Deno.writeTextFile(
-        'memory/claude-flow-data.json',
-        JSON.stringify(initialData, null, 2),
-      );
-      console.log('  ✓ Created memory/claude-flow-data.json (persistence database)');
+
+    // First try to copy revised templates from repository
+    const validation = validateTemplatesExist();
+    if (validation.valid) {
+      console.log('  📁 Copying revised template files...');
+      const revisedResults = await copyRevisedTemplates(workingDir, {
+        force: initForce,
+        dryRun: initDryRun,
+        verbose: true
+      });
+
+      if (revisedResults.success) {
+        console.log(`  ✅ Copied ${revisedResults.copiedFiles.length} template files`);
+        if (revisedResults.skippedFiles.length > 0) {
+          console.log(`  ⏭️  Skipped ${revisedResults.skippedFiles.length} existing files`);
+        }
+      } else {
+        console.log('  ⚠️  Some template files could not be copied:');
+        revisedResults.errors.forEach(err => console.log(`    - ${err}`));
+      }
     } else {
-      console.log('  [DRY RUN] Would create memory/claude-flow-data.json (persistence database)');
+      // Fall back to generated templates
+      console.log('  ⚠️  Revised templates not available, using generated templates');
+      const copyResults = await copyTemplates(workingDir, templateOptions);
+
+      if (!copyResults.success) {
+        printError('Failed to copy templates:');
+        copyResults.errors.forEach(err => console.log(`  ❌ ${err}`));
+        return;
+      }
     }
+
+    // Directory structure is created by template copier
+
+    // SPARC files are created by template copier when --sparc flag is used
+
+    // Memory README files and persistence database are created by template copier
 
     // Create local claude-flow executable wrapper
     if (!initDryRun) {

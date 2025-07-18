@@ -93,10 +93,21 @@ jobs:
     steps:
       - name: Security Analysis Swarm
         run: |
-          npx ruv-swarm actions security \
+          # Use gh CLI for issue creation
+          SECURITY_ISSUES=$(npx ruv-swarm actions security \
             --deep-scan \
-            --auto-fix-simple \
-            --create-issues-complex
+            --format json)
+          
+          # Create issues for complex security problems
+          echo "$SECURITY_ISSUES" | jq -r '.issues[]? | @base64' | while read -r issue; do
+            _jq() {
+              echo ${issue} | base64 --decode | jq -r ${1}
+            }
+            gh issue create \
+              --title "$(_jq '.title')" \
+              --body "$(_jq '.body')" \
+              --label "security,critical"
+          done
 ```
 
 ## Action Commands
@@ -113,11 +124,19 @@ npx ruv-swarm actions optimize \
 
 ### Failure Analysis
 ```bash
-# Analyze failed runs
-npx ruv-swarm actions analyze-failure \
-  --run-id ${{ github.run_id }} \
-  --suggest-fixes \
-  --auto-retry-flaky
+# Analyze failed runs using gh CLI
+gh run view ${{ github.run_id }} --json jobs,conclusion | \
+  npx ruv-swarm actions analyze-failure \
+    --suggest-fixes \
+    --auto-retry-flaky
+
+# Create issue for persistent failures
+if [ $? -ne 0 ]; then
+  gh issue create \
+    --title "CI Failure: Run ${{ github.run_id }}" \
+    --body "Automated analysis detected persistent failures" \
+    --label "ci-failure"
+fi
 ```
 
 ### Resource Management
@@ -297,10 +316,18 @@ jobs:
     steps:
       - name: Multi-Agent Validation
         run: |
-          npx ruv-swarm actions pr-validate \
+          # Get PR details using gh CLI
+          PR_DATA=$(gh pr view ${{ github.event.pull_request.number }} --json files,labels)
+          
+          # Run validation with swarm
+          RESULTS=$(npx ruv-swarm actions pr-validate \
             --spawn-agents "linter,tester,security,docs" \
             --parallel \
-            --post-results
+            --pr-data "$PR_DATA")
+          
+          # Post results as PR comment
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "$RESULTS"
 ```
 
 ### 2. Release Automation

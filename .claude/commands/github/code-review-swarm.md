@@ -7,24 +7,48 @@ Deploy specialized AI agents to perform comprehensive, intelligent code reviews 
 
 ### 1. Multi-Agent Review System
 ```bash
-# Initialize code review swarm
+# Initialize code review swarm with gh CLI
+# Get PR details
+PR_DATA=$(gh pr view 123 --json files,additions,deletions,title,body)
+PR_DIFF=$(gh pr diff 123)
+
+# Initialize swarm with PR context
 npx ruv-swarm github review-init \
   --pr 123 \
+  --pr-data "$PR_DATA" \
+  --diff "$PR_DIFF" \
   --agents "security,performance,style,architecture,accessibility" \
-  --depth comprehensive \
-  --post-comments
+  --depth comprehensive
+
+# Post initial review status
+gh pr comment 123 --body "🔍 Multi-agent code review initiated"
 ```
 
 ### 2. Specialized Review Agents
 
 #### Security Agent
 ```bash
-# Security-focused review
-npx ruv-swarm github review-security \
+# Security-focused review with gh CLI
+# Get changed files
+CHANGED_FILES=$(gh pr view 123 --json files --jq '.files[].path')
+
+# Run security review
+SECURITY_RESULTS=$(npx ruv-swarm github review-security \
   --pr 123 \
+  --files "$CHANGED_FILES" \
   --check "owasp,cve,secrets,permissions" \
-  --suggest-fixes \
-  --block-if-critical
+  --suggest-fixes)
+
+# Post security findings
+if echo "$SECURITY_RESULTS" | grep -q "critical"; then
+  # Request changes for critical issues
+  gh pr review 123 --request-changes --body "$SECURITY_RESULTS"
+  # Add security label
+  gh pr edit 123 --add-label "security-review-required"
+else
+  # Post as comment for non-critical issues
+  gh pr comment 123 --body "$SECURITY_RESULTS"
+fi
 ```
 
 #### Performance Agent
@@ -223,12 +247,30 @@ jobs:
         with:
           fetch-depth: 0
           
+      - name: Setup GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          
       - name: Run Review Swarm
-        uses: ruvnet/review-swarm-action@v1
-        with:
-          agents: all
-          post-comments: true
-          update-status: true
+        run: |
+          # Get PR context with gh CLI
+          PR_NUM=${{ github.event.pull_request.number }}
+          PR_DATA=$(gh pr view $PR_NUM --json files,title,body,labels)
+          
+          # Run swarm review
+          REVIEW_OUTPUT=$(npx ruv-swarm github review-all \
+            --pr $PR_NUM \
+            --pr-data "$PR_DATA" \
+            --agents "security,performance,style,architecture")
+          
+          # Post review results
+          echo "$REVIEW_OUTPUT" | gh pr review $PR_NUM --comment -F -
+          
+          # Update PR status
+          if echo "$REVIEW_OUTPUT" | grep -q "approved"; then
+            gh pr review $PR_NUM --approve
+          elif echo "$REVIEW_OUTPUT" | grep -q "changes-requested"; then
+            gh pr review $PR_NUM --request-changes -b "See review comments above"
+          fi
 ```
 
 ### Review Triggers
@@ -259,12 +301,35 @@ jobs:
 
 ### Intelligent Comment Generation
 ```bash
-# Generate contextual review comments
-npx ruv-swarm github review-comment \
+# Generate contextual review comments with gh CLI
+# Get PR diff with context
+PR_DIFF=$(gh pr diff 123 --color never)
+PR_FILES=$(gh pr view 123 --json files)
+
+# Generate review comments
+COMMENTS=$(npx ruv-swarm github review-comment \
   --pr 123 \
+  --diff "$PR_DIFF" \
+  --files "$PR_FILES" \
   --style "constructive" \
   --include-examples \
-  --suggest-fixes
+  --suggest-fixes)
+
+# Post comments using gh CLI
+echo "$COMMENTS" | jq -c '.[]' | while read -r comment; do
+  FILE=$(echo "$comment" | jq -r '.path')
+  LINE=$(echo "$comment" | jq -r '.line')
+  BODY=$(echo "$comment" | jq -r '.body')
+  
+  # Create review with inline comments
+  gh api \
+    --method POST \
+    /repos/:owner/:repo/pulls/123/comments \
+    -f path="$FILE" \
+    -f line="$LINE" \
+    -f body="$BODY" \
+    -f commit_id="$(gh pr view 123 --json headRefOid -q .headRefOid)"
+done
 ```
 
 ### Comment Templates
