@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.65] - 2025-01-20
+
+### 🔧 Bug Fixes
+- **CRITICAL**: Fixed "table agents has no column named role" error in hive-mind wizard (#403)
+- Added missing `role` column to agents table schema in init/index.js
+- Fixed TypeScript build errors preventing compilation
+- Resolved ILogger interface issues and async/await problems
+- Fixed missing type definitions in multiple modules
+
+### 🏗️ Infrastructure
+- **Database Schema**: Synchronized agents table schema across all modules
+- **Build System**: Fixed critical TypeScript compilation errors
+- **Type Safety**: Added proper type annotations throughout codebase
+
+### 📚 Documentation
+- Added migration instructions for existing databases
+- Updated test suite with schema validation tests
+
 ## [2.0.0-alpha.64] - 2025-01-18
 
 ### 🔧 Bug Fixes

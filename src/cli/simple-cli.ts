@@ -232,7 +232,7 @@ async function main() {
     case 'spawn':
       // Convenience alias for agent spawn
       const spawnType = subArgs[0] || 'general';
-      const spawnName = flags.name || `agent-${Date.now()}`;
+      const spawnName = (flags as any).name || `agent-${Date.now()}`;
 
       printSuccess(`Spawning ${spawnType} agent: ${spawnName}`);
       console.log('🤖 Agent would be created with the following configuration:');
@@ -2070,14 +2070,14 @@ async function startRepl() {
   console.log('Type "help" for available commands, "exit" to quit\n');
 
   const replState = {
-    history: [],
+    history: [] as string[],
     historyIndex: -1,
     currentSession: null,
     context: {
-      agents: [],
-      tasks: [],
-      terminals: [],
-      memory: {},
+      agents: [] as any[],
+      tasks: [] as any[],
+      terminals: [] as any[],
+      memory: {} as Record<string, any>,
     },
   };
 
@@ -2147,7 +2147,7 @@ Shortcuts:
 
     config: async (key: string) => {
       try {
-        const config = JSON.parse(await fs.readFile('claude-flow.config.json'));
+        const config = JSON.parse(await fs.readFile('claude-flow.config.json', 'utf-8'));
         if (key) {
           const keys = key.split('.');
           let value = config;
@@ -2220,8 +2220,8 @@ Shortcuts:
     const args = parts.slice(1);
 
     // Handle built-in REPL commands
-    if (replCommands[command]) {
-      await replCommands[command](...args);
+    if (command in replCommands) {
+      await (replCommands as any)[command](...args);
       return true;
     }
 
@@ -3289,6 +3289,7 @@ For more information about SPARC methodology, see: https://github.com/ruvnet/cla
 `;
 }
 
-if (import.meta.main) {
+// Run main if executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   await main();
 }

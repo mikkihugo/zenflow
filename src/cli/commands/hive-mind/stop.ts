@@ -99,7 +99,7 @@ export const stopCommand = new Command('stop')
             type: 'list',
             name: 'sessionId',
             message: 'Select session to stop:',
-            choices: sessions.map((s) => ({
+            choices: sessions.map((s: any) => ({
               name: `${s.swarm_name} (${s.id}) - ${s.total_processes} process(es)`,
               value: s.id,
             })),
