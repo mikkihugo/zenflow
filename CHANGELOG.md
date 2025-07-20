@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.66] - 2025-01-20
+
+### 🔧 Bug Fixes
+- **Hooks Command**: Fixed "command.toLowerCase is not a function" error in hooks pre-command
+- **ARM64 Support**: Improved ARM64 compatibility for better-sqlite3 on macOS (#378)
+- Added type checking for command parameter in hooks to handle empty/missing values
+- Enhanced postinstall script with ARM64 detection and automatic rebuild
+
+### 🚀 New Features
+- Automatic SQLite binding verification and rebuild for Apple Silicon Macs
+- Graceful fallback to in-memory storage if SQLite bindings fail
+- Better error handling and user feedback during installation
+
+### 🏗️ Infrastructure
+- Added `node20-macos-arm64` target to pkg configuration
+- Improved boolean parameter parsing in hooks commands
+- Enhanced platform detection for ARM64 architecture
+
+### 📚 Documentation
+- Added ARM64 troubleshooting guide
+- Updated hooks command usage examples
+
 ## [2.0.0-alpha.65] - 2025-01-20
 
 ### 🔧 Bug Fixes
