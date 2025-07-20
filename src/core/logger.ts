@@ -15,6 +15,7 @@ export interface ILogger {
   warn(message: string, meta?: unknown): void;
   error(message: string, error?: unknown): void;
   configure(config: LoggingConfig): Promise<void>;
+  level?: string;
 }
 
 export enum LogLevel {
@@ -44,6 +45,10 @@ export class Logger implements ILogger {
   private currentFileSize = 0;
   private currentFileIndex = 0;
   private isClosing = false;
+
+  get level(): string {
+    return this.config.level;
+  }
 
   constructor(
     config: LoggingConfig = {

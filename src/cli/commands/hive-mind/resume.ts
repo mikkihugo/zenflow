@@ -30,9 +30,10 @@ export const resumeCommand = new Command('resume')
         console.log(chalk.gray(`Progress: ${session.statistics.completionPercentage}%`));
       } else {
         // Interactive selection
-        const sessions = sessionManager.getActiveSessions().filter((s) => s.status === 'paused');
+        const sessions = await sessionManager.getActiveSessions();
+        const pausedSessions = sessions.filter((s: any) => s.status === 'paused');
 
-        if (sessions.length === 0) {
+        if (pausedSessions.length === 0) {
           console.log(chalk.yellow('No paused sessions found to resume'));
           return;
         }
@@ -42,7 +43,7 @@ export const resumeCommand = new Command('resume')
             type: 'list',
             name: 'sessionId',
             message: 'Select session to resume:',
-            choices: sessions.map((s) => ({
+            choices: pausedSessions.map((s: any) => ({
               name: `${s.swarm_name} (${s.id}) - ${s.completion_percentage}% complete`,
               value: s.id,
             })),

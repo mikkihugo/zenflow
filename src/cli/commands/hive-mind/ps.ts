@@ -22,7 +22,7 @@ export const psCommand = new Command('ps')
         ? sessionManager.getActiveSessionsWithProcessInfo()
         : sessionManager
             .getActiveSessionsWithProcessInfo()
-            .filter((s) => s.status === 'active' || s.status === 'paused');
+            .filter((s: any) => s.status === 'active' || s.status === 'paused');
 
       if (sessions.length === 0) {
         console.log(chalk.yellow('No sessions found'));
@@ -108,9 +108,9 @@ export const psCommand = new Command('ps')
       }
 
       // Summary
-      const activeSessions = sessions.filter((s) => s.status === 'active').length;
-      const pausedSessions = sessions.filter((s) => s.status === 'paused').length;
-      const totalProcesses = sessions.reduce((sum, s) => sum + s.total_processes, 0);
+      const activeSessions = sessions.filter((s: any) => s.status === 'active').length;
+      const pausedSessions = sessions.filter((s: any) => s.status === 'paused').length;
+      const totalProcesses = sessions.reduce((sum: any, s: any) => sum + s.total_processes, 0);
 
       console.log('\n' + chalk.bold('Summary:'));
       console.log(chalk.gray(`  Active sessions: ${activeSessions}`));

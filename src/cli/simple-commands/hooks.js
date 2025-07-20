@@ -297,10 +297,10 @@ async function preEditCommand(subArgs, flags) {
 
 async function preBashCommand(subArgs, flags) {
   const options = flags;
-  const command = options.command || subArgs.slice(1).join(' ');
+  const command = options.command || subArgs.slice(1).join(' ') || '';
   const workingDir = options.cwd || process.cwd();
-  const validateSafety = options['validate-safety'] || options.validate || false;
-  const prepareResources = options['prepare-resources'] || false;
+  const validateSafety = options['validate-safety'] === true || options['validate-safety'] === 'true' || options.validate === true || options.validate === 'true' || false;
+  const prepareResources = options['prepare-resources'] === true || options['prepare-resources'] === 'true' || false;
 
   console.log(`🔧 Executing pre-bash hook...`);
   console.log(`📜 Command: ${command}`);
@@ -328,9 +328,11 @@ async function preBashCommand(subArgs, flags) {
         'chmod 777',
       ];
 
-      const isDangerous = dangerousCommands.some((dangerous) =>
-        command.toLowerCase().includes(dangerous.toLowerCase()),
-      );
+      const isDangerous = command && typeof command === 'string' && command.length > 0 
+        ? dangerousCommands.some((dangerous) =>
+            command.toLowerCase().includes(dangerous.toLowerCase()),
+          )
+        : false;
 
       safetyResult = isDangerous ? 'dangerous' : 'safe';
 

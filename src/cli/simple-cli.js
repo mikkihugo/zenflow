@@ -27,7 +27,7 @@ import process from 'process';
 import readline from 'readline';
 import { getMainHelp, getCommandHelp, getStandardizedCommandHelp } from './help-text.js';
 
-const VERSION = '2.0.0-alpha.64';
+const VERSION = '2.0.0-alpha.66';
 
 function printHelp(plain = false) {
   console.log(getMainHelp(plain));

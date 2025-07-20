@@ -1,6 +1,6 @@
 {
   "name": "claude-flow",
-  "version": "2.0.0-alpha.64",
+  "version": "2.0.0-alpha.66",
   "description": "Enterprise-grade AI agent orchestration with ruv-swarm integration (Alpha Release)",
   "main": "cli.mjs",
   "bin": {
@@ -45,7 +45,7 @@
     "format": "prettier --write 'src/**/*.{ts,js,json}'",
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
     "health-check": "node -e \"import('./dist/monitoring/health-check.js').then(m => new m.HealthCheckManager().performHealthCheck().then(console.log))\"",
-    "postinstall": "node scripts/install.js",
+    "postinstall": "node scripts/install.js && node scripts/install-arm64.js",
     "prepublishOnly": "npm run update-version",
     "publish:alpha": "npm publish --tag alpha",
     "publish:major": "npm version major && npm publish",

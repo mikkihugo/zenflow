@@ -223,10 +223,10 @@ function showEnvironmentWarnings(env: ExecutionEnvironment): void {
 export function applySmartDefaults<T extends Record<string, any>>(
   options: T,
   env?: ExecutionEnvironment,
-): T & { appliedDefaults: string[] } {
+): T & { appliedDefaults: string[]; skipPermissions?: boolean; dangerouslySkipPermissions?: boolean; nonInteractive?: boolean; json?: boolean; noColor?: boolean; } {
   const environment = env || detectExecutionEnvironment({ skipWarnings: true });
   const appliedDefaults: string[] = [];
-  const enhanced = { ...options, appliedDefaults };
+  const enhanced = { ...options, appliedDefaults } as T & { appliedDefaults: string[]; skipPermissions?: boolean; dangerouslySkipPermissions?: boolean; nonInteractive?: boolean; json?: boolean; noColor?: boolean; };
 
   // Apply defaults based on environment
   if (

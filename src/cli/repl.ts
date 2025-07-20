@@ -378,11 +378,15 @@ export async function startREPL(options: any = {}): Promise<void> {
   // Main REPL loop
   while (true) {
     try {
-      const prompt = createPrompt(context);
-      const input = await prompt.prompt({
-        message: prompt,
-        suggestions: (input: string) => completer.complete(input),
-      });
+      const promptString = createPrompt(context);
+      const { input } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'input',
+          message: promptString,
+          transformer: (input: string) => input,
+        },
+      ]);
 
       if (!input.trim()) {
         continue;
@@ -682,10 +686,14 @@ async function handleAgentSpawn(args: string[]): Promise<void> {
   const type = args[0];
   const name =
     args[1] ||
-    (await prompt.prompt({
-      message: 'Agent name:',
-      default: `${type}-agent`,
-    }));
+    (await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Agent name:',
+        default: `${type}-agent`,
+      },
+    ])).name;
 
   console.log(chalk.yellow('Spawning agent...'));
 
@@ -849,10 +857,14 @@ async function showTaskStatus(taskId: string): Promise<void> {
 }
 
 async function handleTaskCancel(taskId: string): Promise<void> {
-  const confirmed = await confirm.prompt({
-    message: `Cancel task ${taskId}?`,
-    default: false,
-  });
+  const { confirmed } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'confirmed',
+      message: `Cancel task ${taskId}?`,
+      default: false,
+    },
+  ]);
 
   if (!confirmed) {
     console.log(chalk.gray('Cancellation cancelled'));
@@ -957,10 +969,14 @@ async function handleSessionSave(args: string[]): Promise<void> {
   const name =
     args.length > 0
       ? args.join(' ')
-      : await prompt.prompt({
-          message: 'Session name:',
-          default: `session-${new Date().toISOString().split('T')[0]}`,
-        });
+      : (await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'name',
+            message: 'Session name:',
+            default: `session-${new Date().toISOString().split('T')[0]}`,
+          },
+        ])).name;
 
   console.log(chalk.yellow('Saving session...'));
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -972,10 +988,14 @@ async function handleSessionSave(args: string[]): Promise<void> {
 }
 
 async function handleSessionRestore(sessionId: string): Promise<void> {
-  const confirmed = await confirm.prompt({
-    message: `Restore session ${sessionId}?`,
-    default: false,
-  });
+  const { confirmed } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'confirmed',
+      message: `Restore session ${sessionId}?`,
+      default: false,
+    },
+  ]);
 
   if (!confirmed) {
     console.log(chalk.gray('Restore cancelled'));
@@ -1032,7 +1052,9 @@ async function showWorkflowList(): Promise<void> {
   console.log(chalk.cyan.bold(`Workflows (${workflows.length})`));
   console.log('─'.repeat(50));
 
-  const table = new Table().header(['ID', 'Name', 'Status', 'Progress']).border(true);
+  const table = new Table({
+    head: ['ID', 'Name', 'Status', 'Progress'],
+  });
 
   for (const workflow of workflows) {
     const statusIcon = formatStatusIndicator(workflow.status);

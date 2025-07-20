@@ -40,7 +40,7 @@ export const pauseCommand = new Command('pause')
         }
 
         console.log(chalk.cyan(`Pausing session ${sessionId}...`));
-        const result = sessionManager.pauseSession(sessionId);
+        const result = await sessionManager.pauseSession(sessionId);
 
         if (result) {
           console.log(chalk.green(`✓ Session ${sessionId} paused successfully`));
@@ -50,9 +50,10 @@ export const pauseCommand = new Command('pause')
         }
       } else {
         // Interactive selection
-        const sessions = sessionManager.getActiveSessions().filter((s) => s.status === 'active');
+        const sessions = await sessionManager.getActiveSessions();
+        const activeSessions = sessions.filter((s: any) => s.status === 'active');
 
-        if (sessions.length === 0) {
+        if (activeSessions.length === 0) {
           console.log(chalk.yellow('No active sessions found to pause'));
           return;
         }
@@ -62,7 +63,7 @@ export const pauseCommand = new Command('pause')
             type: 'list',
             name: 'sessionId',
             message: 'Select session to pause:',
-            choices: sessions.map((s) => ({
+            choices: activeSessions.map((s: any) => ({
               name: `${s.swarm_name} (${s.id}) - ${s.completion_percentage}% complete`,
               value: s.id,
             })),
@@ -70,7 +71,7 @@ export const pauseCommand = new Command('pause')
         ]);
 
         console.log(chalk.cyan(`Pausing session ${sessionId}...`));
-        const result = sessionManager.pauseSession(sessionId);
+        const result = await sessionManager.pauseSession(sessionId);
 
         if (result) {
           console.log(chalk.green(`✓ Session paused successfully`));
