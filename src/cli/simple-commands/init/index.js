@@ -1187,6 +1187,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
               swarm_id TEXT,
               name TEXT NOT NULL,
               type TEXT NOT NULL,
+              role TEXT,
               capabilities TEXT,
               status TEXT DEFAULT 'active',
               performance_score REAL DEFAULT 0.5,
