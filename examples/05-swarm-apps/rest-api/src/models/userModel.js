@@ -1,6 +1,6 @@
 // In-memory data store for demo purposes
 // In production, this would connect to a real database
-let users = [
+const users = [
   { id: 1, name: 'John Doe', email: 'john@example.com', age: 30, createdAt: new Date() },
   { id: 2, name: 'Jane Smith', email: 'jane@example.com', age: 25, createdAt: new Date() },
   { id: 3, name: 'Bob Johnson', email: 'bob@example.com', age: 35, createdAt: new Date() }

@@ -36,7 +36,7 @@
     "test:health": "echo 'Health tests converted to JS'",
     "test:swarm": "echo 'Swarm tests converted to JS'",
     "test:benchmark": "echo 'Benchmark tests converted to JS'",
-    "lint": "echo 'Linting disabled for alpha 56 - will be fixed in next version'",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write src",
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
     "health-check": "node -e \"import('./dist/monitoring/health-check.js').then(m => new m.HealthCheckManager().performHealthCheck().then(console.log))\"",

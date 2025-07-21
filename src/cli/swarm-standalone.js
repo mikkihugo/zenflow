@@ -7,7 +7,6 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { existsSync } from 'node:fs';
-import { node, cwd, exit } from './node-compat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,16 +19,6 @@ for (let i = 0; i < process.args.length; i++) {
   const arg = process.args[i];
   if (arg.startsWith('--')) {
     const flagName = arg.substring(2);
-<<<<<<< HEAD
-    const nextArg = process.args[i + 1];
-    
-||||||| 47d5ef4
-    const nextArg = Deno.args[i + 1];
-    
-=======
-    const nextArg = Deno.args[i + 1];
-
->>>>>>> origin/main
     if (nextArg && !nextArg.startsWith('--')) {
       flags[flagName] = nextArg;
       i++; // Skip the next argument
@@ -218,16 +207,6 @@ Use all available tools including file operations, web search, and code executio
     console.log('4. Progress monitoring and reporting');
     console.log('5. Result aggregation and quality checks');
   }
-<<<<<<< HEAD
-  
-  process.exit(0);
-||||||| 47d5ef4
-  
-  Deno.exit(0);
-=======
-
-  Deno.exit(0);
->>>>>>> origin/main
 } else {
   // Run the swarm demo directly
   const swarmArgs = [objective];

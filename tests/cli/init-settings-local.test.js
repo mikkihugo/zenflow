@@ -115,6 +115,6 @@ describe('Init Command - settings.local.json Creation', () => {
     expect(() => JSON.parse(content)).not.toThrow();
 
     // Check formatting (2-space indentation)
-    expect(content).toMatch(/^{\n  "permissions": {\n    "allow": \[/);
+    expect(content).toMatch(/^{\n {2}"permissions": {\n {4}"allow": \[/);
   });
 });

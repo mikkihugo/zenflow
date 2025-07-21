@@ -1,36 +1,36 @@
 // command-registry.js - Extensible command registration system
 import process from 'process';
-import { initCommand } from './simple-commands/init/index.js';
-import { memoryCommand } from './simple-commands/memory.js';
+import { initCommand } from './command-handlers/init-command.js';
+import { memoryCommand } from './command-handlers/memory-command.js';
 // SPARC removed - using Hive Mind for AI orchestration
-import { agentCommand } from './simple-commands/agent.js';
-import { taskCommand } from './simple-commands/task.js';
-import { configCommand } from './simple-commands/config.js';
-import { statusCommand } from './simple-commands/status.js';
-import { mcpCommand } from './simple-commands/mcp.js';
-import { monitorCommand } from './simple-commands/monitor.js';
-import { startCommand } from './simple-commands/start.js';
-import { swarmCommand } from './simple-commands/swarm.js';
-import { batchManagerCommand } from './simple-commands/batch-manager.js';
-import { githubCommand } from './simple-commands/github.js';
-import { trainingAction } from './simple-commands/training.js';
-import { analysisAction } from './simple-commands/analysis.js';
-import { automationAction } from './simple-commands/automation.js';
-import { coordinationAction } from './simple-commands/coordination.js';
-import { hooksAction } from './simple-commands/hooks.js';
-import { hookSafetyCommand } from './simple-commands/hook-safety.js';
-import { hiveMindCommand } from './simple-commands/hive-mind.js';
+import { agentCommand } from './command-handlers/agent-command.js';
+import { taskCommand } from './command-handlers/task-command.js';
+import { configCommand } from './command-handlers/config-command.js';
+import { statusCommand } from './command-handlers/status-command.js';
+import { mcpCommand } from './command-handlers/mcp-command.js';
+import { monitorCommand } from './command-handlers/monitor-command.js';
+import { startCommand } from './command-handlers/start-command.js';
+import { swarmCommand } from './command-handlers/swarm-command.js';
+import { batchManagerCommand } from './command-handlers/batch-manager-command.js';
+import { githubCommand } from './command-handlers/github-command.js';
+import { trainingAction } from './command-handlers/training-command.js';
+import { analysisAction } from './command-handlers/analysis-command.js';
+import { automationAction } from './command-handlers/automation-command.js';
+import { coordinationAction } from './command-handlers/coordination-command.js';
+import { hooksAction } from './command-handlers/hooks-command.js';
+import { hookSafetyCommand } from './command-handlers/hook-safety-command.js';
+import { hiveMindCommand } from './command-handlers/hive-mind-command.js';
 import { HelpFormatter } from './help-formatter.js';
-import hiveMindOptimizeCommand from './simple-commands/hive-mind-optimize.js';
+import hiveMindOptimizeCommand from './command-handlers/hive-mind-optimize-command.js';
 import {
   showUnifiedMetrics,
   fixTaskAttribution,
-} from './simple-commands/swarm-metrics-integration.js';
-import { migrateHooksCommand, migrateHooksCommandConfig } from './simple-commands/migrate-hooks.js';
+} from './command-handlers/swarm-metrics-integration-command.js';
+import { migrateHooksCommand, migrateHooksCommandConfig } from './command-handlers/migrate-hooks-command.js';
 import {
   fixHookVariablesCommand,
   fixHookVariablesCommandConfig,
-} from './simple-commands/fix-hook-variables.js';
+} from './command-handlers/fix-hook-variables-command.js';
 // Note: TypeScript imports commented out for Node.js compatibility
 // import { ruvSwarmAction } from './commands/ruv-swarm.ts';
 // import { configIntegrationAction } from './commands/config-integration.ts';
@@ -78,7 +78,7 @@ First-time users should run: npx claude-flow@latest init --sparc`,
   commandRegistry.set('start-ui', {
     handler: async (args, flags) => {
       // Import and use the direct UI launcher
-      const { launchUI } = await import('./simple-commands/start-ui.js');
+      const { launchUI } = await import('./command-handlers/simple-commands/start-ui.js');
       // Pass the full raw arguments from process.argv
       const fullArgs = process.argv.slice(3); // Skip node, script, and command
       return launchUI(fullArgs);
@@ -104,35 +104,7 @@ First-time users should run: npx claude-flow@latest init --sparc`,
     ],
   });
 
-<<<<<<< HEAD
-  // SPARC command removed - replaced by Hive Mind system
-||||||| 47d5ef4
-  commandRegistry.set('sparc', {
-    handler: sparcCommand,
-    description: 'SPARC development mode operations',
-    usage: 'sparc [subcommand] [options]',
-    examples: [
-      'sparc "orchestrate full app development"  # Default: sparc orchestrator',
-      'sparc modes                               # List available modes',
-      'sparc run code "implement feature"        # Run specific mode',
-      'sparc tdd "feature description"           # TDD workflow',
-      'sparc info architect                      # Mode details'
-    ]
-  });
-=======
-  commandRegistry.set('sparc', {
-    handler: sparcCommand,
-    description: 'SPARC development mode operations',
-    usage: 'sparc [subcommand] [options]',
-    examples: [
-      'sparc "orchestrate full app development"  # Default: sparc orchestrator',
-      'sparc modes                               # List available modes',
-      'sparc run code "implement feature"        # Run specific mode',
-      'sparc tdd "feature description"           # TDD workflow',
-      'sparc info architect                      # Mode details',
-    ],
-  });
->>>>>>> origin/main
+  // SPARC command removed as requested - using Hive Mind for AI orchestration
 
   commandRegistry.set('agent', {
     handler: agentCommand,

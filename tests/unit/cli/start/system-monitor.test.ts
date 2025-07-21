@@ -240,7 +240,7 @@ describe('SystemMonitor', () => {
       
       // Mock console output
       const originalLog = console.log;
-      let logOutput: string[] = [];
+      const logOutput: string[] = [];
       console.log = (...args) => {
         logOutput.push(args.join(' '));
       };
@@ -265,7 +265,7 @@ describe('SystemMonitor', () => {
       
       // Mock console output
       const originalLog = console.log;
-      let logOutput: string[] = [];
+      const logOutput: string[] = [];
       console.log = (...args) => {
         logOutput.push(args.join(' '));
       };
@@ -293,7 +293,7 @@ describe('SystemMonitor', () => {
       
       // Mock console output
       const originalLog = console.log;
-      let logOutput: string[] = [];
+      const logOutput: string[] = [];
       console.log = (...args) => {
         logOutput.push(args.join(' '));
       };

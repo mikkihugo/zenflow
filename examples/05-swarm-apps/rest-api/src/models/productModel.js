@@ -1,6 +1,6 @@
 // In-memory data store for demo purposes
 // In production, this would connect to a real database
-let products = [
+const products = [
   { 
     id: 1, 
     name: 'Laptop', 

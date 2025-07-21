@@ -1,6 +1,5 @@
 // utils.js - Shared CLI utility functions
 
-import { node, existsSync } from './node-compat.js';
 
 // Color formatting functions
 export function printSuccess(message) {
@@ -118,95 +117,6 @@ export function parseFlags(args) {
       filteredArgs.push(arg);
     }
   }
-<<<<<<< HEAD
-  
-  return { flags, args: filteredArgs, providedFlags };
-}
-
-// Flag normalization and validation helpers
-export function normalizeFlags(flags) {
-  const normalized = { ...flags };
-  
-  // Handle queen-type -> queenType
-  if (flags['queen-type'] && !flags.queenType) {
-    normalized.queenType = flags['queen-type'];
-  }
-  
-  // Handle max-workers -> maxWorkers
-  if (flags['max-workers'] && !flags.maxWorkers) {
-    normalized.maxWorkers = parseInt(flags['max-workers']);
-  }
-  
-  // Handle auto-scale -> autoScale
-  if (flags['auto-scale'] && !flags.autoScale) {
-    normalized.autoScale = flags['auto-scale'] === 'true';
-  }
-  
-  return normalized;
-}
-
-export function applySmartDefaults(flags, providedFlags, defaults) {
-  const result = { ...flags };
-  
-  for (const [key, defaultValue] of Object.entries(defaults)) {
-    // Check both camelCase and kebab-case variants
-    const kebabKey = camelToKebab(key);
-    
-    if (!providedFlags.has(key) && !providedFlags.has(kebabKey)) {
-      result[key] = defaultValue;
-    }
-  }
-  
-  return result;
-}
-
-function camelToKebab(str) {
-  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-}
-
-// Flag validation system
-const FLAG_VALIDATORS = {
-  queenType: {
-    validValues: ['strategic', 'tactical', 'adaptive'],
-    aliases: ['queen-type']
-  },
-  topology: {
-    validValues: ['hierarchical', 'mesh', 'ring', 'star', 'centralized', 'distributed']
-  },
-  maxWorkers: {
-    validator: (value) => {
-      const num = parseInt(value);
-      return num > 0 && num <= 50;
-    },
-    errorMessage: 'Must be a number between 1 and 50'
-  }
-};
-
-export function validateFlags(flags) {
-  const errors = [];
-  
-  for (const [flagName, config] of Object.entries(FLAG_VALIDATORS)) {
-    const value = flags[flagName];
-    
-    if (value !== undefined) {
-      if (config.validValues && !config.validValues.includes(value)) {
-        errors.push(`Invalid ${flagName}: "${value}". Must be one of: ${config.validValues.join(', ')}`);
-      }
-      
-      if (config.validator && !config.validator(value)) {
-        errors.push(`Invalid ${flagName}: "${value}". ${config.errorMessage || 'Invalid value'}`);
-      }
-    }
-  }
-  
-  return errors;
-||||||| 47d5ef4
-  
-  return { flags, args: filteredArgs };
-=======
-
-  return { flags, args: filteredArgs };
->>>>>>> origin/main
 }
 
 // Process execution helpers
@@ -415,33 +325,10 @@ export async function callRuvSwarmMCP(tool, params = {}) {
 
     // Write messages to temp file
     const messages = JSON.stringify(initMessage) + '\n' + JSON.stringify(toolMessage);
-<<<<<<< HEAD
-    await process.writeTextFile(tempFile, messages);
-    
-||||||| 47d5ef4
-    await Deno.writeTextFile(tempFile, messages);
-    
-=======
-    await Deno.writeTextFile(tempFile, messages);
-
->>>>>>> origin/main
     // Create a script that feeds the file to the REAL ruv-swarm MCP server
     const script = `#!/bin/bash
 timeout 30s npx ruv-swarm mcp start --stdio < "${tempFile}" 2>/dev/null | tail -1
 `;
-<<<<<<< HEAD
-    await process.writeTextFile(tempScript, script);
-    await process.chmod(tempScript, 0o755);
-    
-||||||| 47d5ef4
-    await Deno.writeTextFile(tempScript, script);
-    await Deno.chmod(tempScript, 0o755);
-    
-=======
-    await Deno.writeTextFile(tempScript, script);
-    await Deno.chmod(tempScript, 0o755);
-
->>>>>>> origin/main
     const result = await runCommand('bash', [tempScript], {
       stdout: 'piped',
       stderr: 'piped',
@@ -573,63 +460,6 @@ export async function callRuvSwarmDirectNeural(params = {}) {
         });
       });
     } else {
-<<<<<<< HEAD
-      // node environment - fallback to regular command
-      result = await runCommand('npx', [
-        'ruv-swarm', 
-        'neural', 
-        'train',
-        '--model', modelName,
-        '--iterations', epochs.toString(),
-        '--data-source', dataSource,
-        '--output-format', 'json'
-      ], {
-        stdout: 'piped',
-        stderr: 'piped'
-      });
-      
-      // Show the output manually in node
-||||||| 47d5ef4
-      // Deno environment - fallback to regular command
-      result = await runCommand('npx', [
-        'ruv-swarm', 
-        'neural', 
-        'train',
-        '--model', modelName,
-        '--iterations', epochs.toString(),
-        '--data-source', dataSource,
-        '--output-format', 'json'
-      ], {
-        stdout: 'piped',
-        stderr: 'piped'
-      });
-      
-      // Show the output manually in Deno
-=======
-      // Deno environment - fallback to regular command
-      result = await runCommand(
-        'npx',
-        [
-          'ruv-swarm',
-          'neural',
-          'train',
-          '--model',
-          modelName,
-          '--iterations',
-          epochs.toString(),
-          '--data-source',
-          dataSource,
-          '--output-format',
-          'json',
-        ],
-        {
-          stdout: 'piped',
-          stderr: 'piped',
-        },
-      );
-
-      // Show the output manually in Deno
->>>>>>> origin/main
       if (result.stdout) {
         console.log(result.stdout);
       }
