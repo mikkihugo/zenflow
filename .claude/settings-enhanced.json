@@ -11,6 +11,44 @@
     "CLAUDE_FLOW_NEURAL_OPTIMIZATION": "true",
     "CLAUDE_FLOW_AUTO_LEARNING": "true"
   },
+  "checkpoints": {
+    "enabled": true,
+    "interval": 300,
+    "auto_commit": true,
+    "commit_message_prefix": "🔄 Checkpoint:",
+    "include_metrics": true,
+    "branch_strategy": "checkpoint/{timestamp}",
+    "max_checkpoints": 20
+  },
+  "memory": {
+    "auto_persist": true,
+    "compression": true,
+    "sync_interval": 60,
+    "namespaces": ["swarm", "tasks", "patterns", "errors", "optimizations"],
+    "retention_days": 30,
+    "backup_to_github": true
+  },
+  "neural": {
+    "auto_optimize": true,
+    "optimization_triggers": ["error", "success", "pattern", "performance"],
+    "models": {
+      "task_predictor": {
+        "enabled": true,
+        "learning_rate": 0.001,
+        "update_frequency": 100
+      },
+      "error_preventer": {
+        "enabled": true,
+        "threshold": 0.85,
+        "block_risky_operations": true
+      },
+      "performance_optimizer": {
+        "enabled": true,
+        "target_metrics": ["speed", "accuracy", "efficiency"],
+        "auto_tune": true
+      }
+    }
+  },
   "permissions": {
     "allow": [
       "Bash(npx claude-flow *)",
@@ -166,7 +204,7 @@
         ]
       }
     ],
-    "UserPromptSubmit": [
+    "user-prompt-submit": [
       {
         "hooks": [
           {
@@ -179,7 +217,61 @@
           }
         ]
       }
+    ],
+    "checkpoint": [
+      {
+        "interval": 300,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha checkpoint create --message \"Auto-checkpoint: $CLAUDE_OPERATIONS_COUNT operations\" --include-memory true"
+          },
+          {
+            "type": "command",
+            "command": "git add -A && git commit -m \"🔄 Auto-checkpoint: $(date +%Y%m%d-%H%M%S)\" || true"
+          },
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha memory sync --remote true --compress true"
+          }
+        ]
+      }
+    ],
+    "error": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha memory store --key \"error/$CLAUDE_ERROR_ID\" --value \"{\\\"error\\\": \\\"$CLAUDE_ERROR\\\", \\\"context\\\": \\\"$CLAUDE_ERROR_CONTEXT\\\"}\" --namespace \"errors\""
+          },
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha neural train --model \"error_preventer\" --data \"{\\\"error_type\\\": \\\"$CLAUDE_ERROR_TYPE\\\", \\\"operation\\\": \\\"$CLAUDE_OPERATION\\\", \\\"prevent\\\": true}\""
+          },
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha analysis error-pattern --error \"$CLAUDE_ERROR\" --suggest-fix true --store-pattern true"
+          }
+        ]
+      }
     ]
+  },
+  "github": {
+    "checkpoint_branch": "checkpoints",
+    "memory_backup_gists": true,
+    "auto_issue_on_error": true,
+    "pr_on_major_improvement": true,
+    "sync_learnings": true
+  },
+  "optimization": {
+    "continuous_improvement": true,
+    "performance_targets": {
+      "command_execution": "< 500ms overhead",
+      "memory_operations": "< 100ms",
+      "neural_predictions": "< 50ms"
+    },
+    "auto_tune_parameters": true,
+    "share_anonymized_patterns": true
   },
   "includeCoAuthoredBy": true,
   "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"]

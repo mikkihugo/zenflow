@@ -1869,7 +1869,7 @@ async function exportMemoryBackup() {
 async function getActiveSessionId(swarmId) {
   const sessionManager = new HiveMindSessionManager();
   try {
-    const sessions = sessionManager.getActiveSessions();
+    const sessions = await sessionManager.getActiveSessions();
     const activeSession = sessions.find(s => s.swarm_id === swarmId && s.status === 'active');
     return activeSession ? activeSession.id : null;
   } finally {

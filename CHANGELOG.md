@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.67] - 2025-01-21
+
+### 🐝 Hive Mind Enhancement
+- **Hive Mind Integration**: Fixed settings.json validation errors for Claude Code compatibility
+- **Configuration Fix**: Removed unrecognized fields (checkpoints, memory, neural, github, optimization)
+- **Hook Names**: Corrected invalid hook names to match Claude Code 1.0.51+ format
+  - `user-prompt-submit` → `UserPromptSubmit`
+  - Removed invalid `checkpoint` and `error` hooks
+
+### 🔧 Infrastructure
+- **Settings Validation**: Now passes `/doctor` command validation
+- **Claude Code Compatibility**: Full compatibility with Claude Code 1.0.51+ settings format
+- **Version Update**: Bumped to alpha.67 across all version references
+
+### 📚 Documentation
+- Updated version references in help text and CLI commands
+- Enhanced hive-mind documentation with corrected hook configurations
+
 ## [2.0.0-alpha.66] - 2025-01-20
 
 ### 🔧 Bug Fixes
