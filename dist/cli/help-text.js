@@ -5,14 +5,14 @@
 
 import { HelpFormatter } from './help-formatter.js';
 
-export const VERSION = '2.0.0-alpha.61';
+export const VERSION = '2.0.0-alpha.67';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
 
 🎯 ENTERPRISE FEATURES: Complete ruv-swarm integration with 87 MCP tools, neural networking, and production-ready infrastructure
 🐝 NEW: Advanced Hive Mind System with Queen-led coordination, collective intelligence, and unlimited scaling
-⚡ ALPHA 61: Neural training optimizations, enhanced help system, and improved MCP tool coordination
+⚡ ALPHA 64: Fixed wrapper script to use @alpha tag, ensures latest version always used
 
 USAGE:
   claude-flow <command> [options]
@@ -458,7 +458,8 @@ SWARM-INIT OPTIONS:
 
 AGENT-SPAWN OPTIONS:
   --type <type>        Agent type (default: general)
-                       Options: coordinator, developer, researcher, analyzer, tester, general
+                       Options: coordinator, coder, developer, researcher, analyst, analyzer, 
+                       tester, architect, reviewer, optimizer, general
   --name <name>        Custom agent name (auto-generated if not provided)
   --swarm-id <id>      Target swarm for agent coordination
   --capabilities <cap> Custom capabilities specification
@@ -630,7 +631,7 @@ EXAMPLES:
   • Coordination synchronization
   • Error prevention
   • Insight generation
-`
+`,
 };
 
 export function getCommandHelp(command) {
@@ -640,7 +641,7 @@ export function getCommandHelp(command) {
 
 export function getStandardizedCommandHelp(command) {
   const commandConfigs = {
-    'agent': {
+    agent: {
       name: 'claude-flow agent',
       description: 'Manage individual agents',
       usage: 'claude-flow agent <action> [options]',
@@ -650,39 +651,48 @@ export function getStandardizedCommandHelp(command) {
         { name: 'info', description: 'Show agent details' },
         { name: 'terminate', description: 'Stop an agent' },
         { name: 'hierarchy', description: 'Manage agent hierarchies' },
-        { name: 'ecosystem', description: 'View agent ecosystem' }
+        { name: 'ecosystem', description: 'View agent ecosystem' },
       ],
       options: [
         {
           flags: '--type <type>',
           description: 'Agent type',
-          validValues: ['coordinator', 'researcher', 'coder', 'analyst', 'architect', 'tester', 'reviewer', 'optimizer']
+          validValues: [
+            'coordinator',
+            'researcher',
+            'coder',
+            'analyst',
+            'architect',
+            'tester',
+            'reviewer',
+            'optimizer',
+          ],
         },
         {
           flags: '--name <name>',
-          description: 'Agent name'
+          description: 'Agent name',
         },
         {
           flags: '--verbose',
-          description: 'Detailed output'
+          description: 'Detailed output',
         },
         {
           flags: '--json',
-          description: 'Output in JSON format'
+          description: 'Output in JSON format',
         },
         {
           flags: '--help',
-          description: 'Show this help message'
-        }
+          description: 'Show this help message',
+        },
       ],
       examples: [
         'claude-flow agent spawn researcher --name "Research Bot"',
         'claude-flow agent list --json',
         'claude-flow agent terminate agent-123',
-        'claude-flow agent info agent-456 --verbose'
-      ]
+        'claude-flow agent info agent-456 --verbose',
+      ],
     },
-    'sparc': {
+    sparc: {
       name: 'claude-flow sparc',
       description: 'Execute SPARC development modes',
       usage: 'claude-flow sparc <mode> [task] [options]',
@@ -692,35 +702,35 @@ export function getStandardizedCommandHelp(command) {
         { name: 'tdd', description: 'Test-driven development mode' },
         { name: 'integration', description: 'Integration mode - Component connection' },
         { name: 'refactor', description: 'Refactoring mode - Code improvement' },
-        { name: 'modes', description: 'List all available SPARC modes' }
+        { name: 'modes', description: 'List all available SPARC modes' },
       ],
       options: [
         {
           flags: '--file <path>',
-          description: 'Input/output file path'
+          description: 'Input/output file path',
         },
         {
           flags: '--format <type>',
           description: 'Output format',
-          validValues: ['markdown', 'json', 'yaml']
+          validValues: ['markdown', 'json', 'yaml'],
         },
         {
           flags: '--verbose',
-          description: 'Detailed output'
+          description: 'Detailed output',
         },
         {
           flags: '--help',
-          description: 'Show this help message'
-        }
+          description: 'Show this help message',
+        },
       ],
       examples: [
         'claude-flow sparc spec "User authentication system"',
         'claude-flow sparc tdd "Payment processing module"',
         'claude-flow sparc architect "Microservices architecture"',
-        'claude-flow sparc modes'
-      ]
+        'claude-flow sparc modes',
+      ],
     },
-    'memory': {
+    memory: {
       name: 'claude-flow memory',
       description: 'Manage persistent memory operations',
       usage: 'claude-flow memory <action> [key] [value] [options]',
@@ -730,35 +740,35 @@ export function getStandardizedCommandHelp(command) {
         { name: 'list', description: 'List memory namespaces' },
         { name: 'export', description: 'Export memory to file' },
         { name: 'import', description: 'Import memory from file' },
-        { name: 'clear', description: 'Clear memory namespace' }
+        { name: 'clear', description: 'Clear memory namespace' },
       ],
       options: [
         {
           flags: '--namespace <name>',
           description: 'Memory namespace',
-          defaultValue: 'default'
+          defaultValue: 'default',
         },
         {
           flags: '--ttl <seconds>',
-          description: 'Time to live in seconds'
+          description: 'Time to live in seconds',
         },
         {
           flags: '--format <type>',
           description: 'Export format',
-          validValues: ['json', 'yaml']
+          validValues: ['json', 'yaml'],
         },
         {
           flags: '--help',
-          description: 'Show this help message'
-        }
+          description: 'Show this help message',
+        },
       ],
       examples: [
         'claude-flow memory store "api_design" "REST endpoints specification"',
         'claude-flow memory query "authentication"',
         'claude-flow memory export backup.json',
-        'claude-flow memory list --namespace project'
-      ]
-    }
+        'claude-flow memory list --namespace project',
+      ],
+    },
   };
 
   const config = commandConfigs[command];
@@ -766,7 +776,7 @@ export function getStandardizedCommandHelp(command) {
     return HelpFormatter.formatError(
       `Unknown command: ${command}`,
       'claude-flow',
-      'claude-flow <command> --help'
+      'claude-flow <command> --help',
     );
   }
 
@@ -778,7 +788,7 @@ export function getMainHelp(plain = false) {
   if (!plain) {
     return MAIN_HELP;
   }
-  
+
   // Return plain standardized format when requested
   const helpInfo = {
     name: 'claude-flow',
@@ -790,99 +800,99 @@ export function getMainHelp(plain = false) {
       {
         name: 'hive-mind',
         description: 'Manage hive mind swarm intelligence',
-        aliases: ['hm']
+        aliases: ['hm'],
       },
       {
         name: 'init',
-        description: 'Initialize Claude Flow configuration'
+        description: 'Initialize Claude Flow configuration',
       },
       {
         name: 'start',
-        description: 'Start orchestration system'
+        description: 'Start orchestration system',
       },
       {
         name: 'swarm',
-        description: 'Execute multi-agent swarm coordination'
+        description: 'Execute multi-agent swarm coordination',
       },
       {
         name: 'agent',
-        description: 'Manage individual agents'
+        description: 'Manage individual agents',
       },
       {
         name: 'sparc',
-        description: 'Execute SPARC development modes'
+        description: 'Execute SPARC development modes',
       },
       {
         name: 'memory',
-        description: 'Manage persistent memory operations'
+        description: 'Manage persistent memory operations',
       },
       {
         name: 'github',
-        description: 'Automate GitHub workflows'
+        description: 'Automate GitHub workflows',
       },
       {
         name: 'status',
-        description: 'Show system status and health'
+        description: 'Show system status and health',
       },
       {
         name: 'config',
-        description: 'Manage configuration settings'
+        description: 'Manage configuration settings',
       },
       {
         name: 'session',
-        description: 'Manage sessions and state persistence'
+        description: 'Manage sessions and state persistence',
       },
       {
         name: 'terminal',
-        description: 'Terminal pool management'
+        description: 'Terminal pool management',
       },
       {
         name: 'workflow',
-        description: 'Manage automated workflows'
+        description: 'Manage automated workflows',
       },
       {
         name: 'training',
-        description: 'Neural pattern training'
+        description: 'Neural pattern training',
       },
       {
         name: 'coordination',
-        description: 'Swarm coordination commands'
+        description: 'Swarm coordination commands',
       },
       {
         name: 'help',
-        description: 'Show help information'
-      }
+        description: 'Show help information',
+      },
     ],
     globalOptions: [
       {
         flags: '--config <path>',
         description: 'Configuration file path',
-        defaultValue: '.claude/config.json'
+        defaultValue: '.claude/config.json',
       },
       {
         flags: '--verbose',
-        description: 'Enable verbose output'
+        description: 'Enable verbose output',
       },
       {
         flags: '--quiet',
-        description: 'Suppress non-error output'
+        description: 'Suppress non-error output',
       },
       {
         flags: '--json',
-        description: 'Output in JSON format'
+        description: 'Output in JSON format',
       },
       {
         flags: '--plain',
-        description: 'Show plain help without emojis'
+        description: 'Show plain help without emojis',
       },
       {
         flags: '--help',
-        description: 'Show help information'
+        description: 'Show help information',
       },
       {
         flags: '--version',
-        description: 'Show version information'
-      }
+        description: 'Show version information',
+      },
     ],
     examples: [
       'npx claude-flow@alpha init --sparc',
@@ -890,8 +900,8 @@ export function getMainHelp(plain = false) {
       'claude-flow swarm "Build REST API"',
       'claude-flow agent spawn researcher --name "Research Bot"',
       'claude-flow status --json',
-      'claude-flow memory query "API design"'
-    ]
+      'claude-flow memory query "API design"',
+    ],
   };
 
   return HelpFormatter.formatHelp(helpInfo);

@@ -3,25 +3,77 @@
  * Handles session persistence and resume functionality for swarms
  */
 
-import Database from 'better-sqlite3';
 import path from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import chalk from 'chalk';
 import { cwd } from '../../node-compat.js';
+import { createDatabase, isSQLiteAvailable, isWindows } from '../../../memory/sqlite-wrapper.js';
 
 export class HiveMindSessionManager {
   constructor(hiveMindDir = null) {
     this.hiveMindDir = hiveMindDir || path.join(cwd(), '.hive-mind');
     this.sessionsDir = path.join(this.hiveMindDir, 'sessions');
     this.dbPath = path.join(this.hiveMindDir, 'hive.db');
-    
+    this.db = null;
+    this.isInMemory = false;
+    this.memoryStore = null;
+
     // Ensure directories exist
     this.ensureDirectories();
-    
+
     // Initialize database connection
-    this.db = new Database(this.dbPath);
-    this.initializeSchema();
+    this.initializeDatabase();
+  }
+
+  /**
+   * Initialize database with fallback support
+   */
+  async initializeDatabase() {
+    try {
+      const sqliteAvailable = await isSQLiteAvailable();
+      
+      if (!sqliteAvailable) {
+        console.warn('SQLite not available, using in-memory session storage');
+        this.initializeInMemoryFallback();
+        return;
+      }
+
+      this.db = await createDatabase(this.dbPath);
+      this.initializeSchema();
+    } catch (error) {
+      console.error('Failed to create SQLite database:', error.message);
+      console.warn('Falling back to in-memory session storage');
+      this.initializeInMemoryFallback();
+    }
+  }
+
+  /**
+   * Ensure database is initialized before use
+   */
+  async ensureInitialized() {
+    if (this.db === null && !this.isInMemory) {
+      await this.initializeDatabase();
+    }
+  }
+
+  /**
+   * Initialize in-memory fallback for session storage
+   */
+  initializeInMemoryFallback() {
+    this.isInMemory = true;
+    this.memoryStore = {
+      sessions: new Map(),
+      checkpoints: new Map(),
+      logs: new Map()
+    };
+    
+    if (isWindows()) {
+      console.info(`
+Note: Session data will not persist between runs on Windows without SQLite.
+To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
+`);
+    }
   }
 
   /**
@@ -78,7 +130,7 @@ export class HiveMindSessionManager {
         FOREIGN KEY (session_id) REFERENCES sessions(id)
       );
     `);
-    
+
     // Run migrations to add new columns
     this.runMigrations();
   }
@@ -89,15 +141,15 @@ export class HiveMindSessionManager {
   runMigrations() {
     try {
       // Check if parent_pid column exists
-      const columns = this.db.prepare("PRAGMA table_info(sessions)").all();
-      const hasParentPid = columns.some(col => col.name === 'parent_pid');
-      const hasChildPids = columns.some(col => col.name === 'child_pids');
-      
+      const columns = this.db.prepare('PRAGMA table_info(sessions)').all();
+      const hasParentPid = columns.some((col) => col.name === 'parent_pid');
+      const hasChildPids = columns.some((col) => col.name === 'child_pids');
+
       if (!hasParentPid) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN parent_pid INTEGER');
         console.log('Added parent_pid column to sessions table');
       }
-      
+
       if (!hasChildPids) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN child_pids TEXT');
         console.log('Added child_pids column to sessions table');
@@ -110,24 +162,44 @@ export class HiveMindSessionManager {
   /**
    * Create a new session for a swarm
    */
-  createSession(swarmId, swarmName, objective, metadata = {}) {
+  async createSession(swarmId, swarmName, objective, metadata = {}) {
+    await this.ensureInitialized();
+    
     const sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-    
-    const stmt = this.db.prepare(`
-      INSERT INTO sessions (id, swarm_id, swarm_name, objective, metadata, parent_pid)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
-    
-    stmt.run(sessionId, swarmId, swarmName, objective, JSON.stringify(metadata), process.pid);
-    
+
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const sessionData = {
+        id: sessionId,
+        swarm_id: swarmId,
+        swarm_name: swarmName,
+        objective,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        metadata: JSON.stringify(metadata),
+        parent_pid: process.pid,
+        child_pids: '[]'
+      };
+      this.memoryStore.sessions.set(sessionId, sessionData);
+    } else {
+      // Use SQLite
+      const stmt = this.db.prepare(`
+        INSERT INTO sessions (id, swarm_id, swarm_name, objective, metadata, parent_pid)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `);
+
+      stmt.run(sessionId, swarmId, swarmName, objective, JSON.stringify(metadata), process.pid);
+    }
+
     // Log session creation
-    this.logSessionEvent(sessionId, 'info', 'Session created', null, {
+    await this.logSessionEvent(sessionId, 'info', 'Session created', null, {
       swarmId,
       swarmName,
       objective,
-      parentPid: process.pid
+      parentPid: process.pid,
     });
-    
+
     return sessionId;
   }
 
@@ -135,114 +207,224 @@ export class HiveMindSessionManager {
    * Save session checkpoint
    */
   async saveCheckpoint(sessionId, checkpointName, checkpointData) {
+    await this.ensureInitialized();
+    
     const checkpointId = `checkpoint-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-    
-    // Save to database
-    const stmt = this.db.prepare(`
-      INSERT INTO session_checkpoints (id, session_id, checkpoint_name, checkpoint_data)
-      VALUES (?, ?, ?, ?)
-    `);
-    
-    stmt.run(checkpointId, sessionId, checkpointName, JSON.stringify(checkpointData));
-    
-    // Update session checkpoint data and timestamp
-    const updateStmt = this.db.prepare(`
-      UPDATE sessions 
-      SET checkpoint_data = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `);
-    
-    updateStmt.run(JSON.stringify(checkpointData), sessionId);
-    
+
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const checkpointEntry = {
+        id: checkpointId,
+        session_id: sessionId,
+        checkpoint_name: checkpointName,
+        checkpoint_data: JSON.stringify(checkpointData),
+        created_at: new Date().toISOString()
+      };
+      
+      if (!this.memoryStore.checkpoints.has(sessionId)) {
+        this.memoryStore.checkpoints.set(sessionId, []);
+      }
+      this.memoryStore.checkpoints.get(sessionId).push(checkpointEntry);
+      
+      // Update session data
+      const session = this.memoryStore.sessions.get(sessionId);
+      if (session) {
+        session.checkpoint_data = JSON.stringify(checkpointData);
+        session.updated_at = new Date().toISOString();
+      }
+    } else {
+      // Save to database
+      const stmt = this.db.prepare(`
+        INSERT INTO session_checkpoints (id, session_id, checkpoint_name, checkpoint_data)
+        VALUES (?, ?, ?, ?)
+      `);
+
+      stmt.run(checkpointId, sessionId, checkpointName, JSON.stringify(checkpointData));
+
+      // Update session checkpoint data and timestamp
+      const updateStmt = this.db.prepare(`
+        UPDATE sessions 
+        SET checkpoint_data = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `);
+
+      updateStmt.run(JSON.stringify(checkpointData), sessionId);
+    }
+
     // Save checkpoint file for backup
     const checkpointFile = path.join(this.sessionsDir, `${sessionId}-${checkpointName}.json`);
-    await writeFile(checkpointFile, JSON.stringify({
-      sessionId,
+    await writeFile(
+      checkpointFile,
+      JSON.stringify(
+        {
+          sessionId,
+          checkpointId,
+          checkpointName,
+          timestamp: new Date().toISOString(),
+          data: checkpointData,
+        },
+        null,
+        2,
+      ),
+    );
+
+    await this.logSessionEvent(sessionId, 'info', `Checkpoint saved: ${checkpointName}`, null, {
       checkpointId,
-      checkpointName,
-      timestamp: new Date().toISOString(),
-      data: checkpointData
-    }, null, 2));
-    
-    this.logSessionEvent(sessionId, 'info', `Checkpoint saved: ${checkpointName}`, null, {
-      checkpointId
     });
-    
+
     return checkpointId;
   }
 
   /**
    * Get active sessions
    */
-  getActiveSessions() {
-    const stmt = this.db.prepare(`
-      SELECT s.*, 
-             COUNT(DISTINCT a.id) as agent_count,
-             COUNT(DISTINCT t.id) as task_count,
-             SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
-      FROM sessions s
-      LEFT JOIN agents a ON s.swarm_id = a.swarm_id
-      LEFT JOIN tasks t ON s.swarm_id = t.swarm_id
-      WHERE s.status = 'active' OR s.status = 'paused'
-      GROUP BY s.id
-      ORDER BY s.updated_at DESC
-    `);
+  async getActiveSessions() {
+    await this.ensureInitialized();
     
-    const sessions = stmt.all();
-    
-    // Parse JSON fields
-    return sessions.map(session => ({
-      ...session,
-      metadata: session.metadata ? JSON.parse(session.metadata) : {},
-      checkpoint_data: session.checkpoint_data ? JSON.parse(session.checkpoint_data) : null,
-      completion_percentage: session.task_count > 0 
-        ? Math.round((session.completed_tasks / session.task_count) * 100)
-        : 0
-    }));
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const sessions = [];
+      for (const [sessionId, session] of this.memoryStore.sessions) {
+        if (session.status === 'active' || session.status === 'paused') {
+          sessions.push({
+            ...session,
+            metadata: session.metadata ? JSON.parse(session.metadata) : {},
+            checkpoint_data: session.checkpoint_data ? JSON.parse(session.checkpoint_data) : null,
+            agent_count: 0, // Not tracked in memory mode
+            task_count: 0,  // Not tracked in memory mode
+            completed_tasks: 0, // Not tracked in memory mode
+            completion_percentage: 0
+          });
+        }
+      }
+      return sessions.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    } else {
+      // Use SQLite
+      const stmt = this.db.prepare(`
+        SELECT s.*, 
+               COUNT(DISTINCT a.id) as agent_count,
+               COUNT(DISTINCT t.id) as task_count,
+               SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
+        FROM sessions s
+        LEFT JOIN agents a ON s.swarm_id = a.swarm_id
+        LEFT JOIN tasks t ON s.swarm_id = t.swarm_id
+        WHERE s.status = 'active' OR s.status = 'paused'
+        GROUP BY s.id
+        ORDER BY s.updated_at DESC
+      `);
+
+      const sessions = stmt.all();
+
+      // Parse JSON fields
+      return sessions.map((session) => ({
+        ...session,
+        metadata: session.metadata ? JSON.parse(session.metadata) : {},
+        checkpoint_data: session.checkpoint_data ? JSON.parse(session.checkpoint_data) : null,
+        completion_percentage:
+          session.task_count > 0
+            ? Math.round((session.completed_tasks / session.task_count) * 100)
+            : 0,
+      }));
+    }
   }
 
   /**
    * Get session by ID with full details
    */
-  getSession(sessionId) {
-    const session = this.db.prepare(`
-      SELECT * FROM sessions WHERE id = ?
-    `).get(sessionId);
+  async getSession(sessionId) {
+    await this.ensureInitialized();
     
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const session = this.memoryStore.sessions.get(sessionId);
+      if (!session) {
+        return null;
+      }
+      
+      // Return simplified session data for in-memory mode
+      return {
+        ...session,
+        metadata: session.metadata ? JSON.parse(session.metadata) : {},
+        checkpoint_data: session.checkpoint_data ? JSON.parse(session.checkpoint_data) : null,
+        swarm: null, // Not available in memory mode
+        agents: [], // Not available in memory mode
+        tasks: [], // Not available in memory mode
+        checkpoints: this.memoryStore.checkpoints.get(sessionId) || [],
+        recentLogs: this.memoryStore.logs.get(sessionId) || [],
+        statistics: {
+          totalAgents: 0,
+          activeAgents: 0,
+          totalTasks: 0,
+          completedTasks: 0,
+          pendingTasks: 0,
+          inProgressTasks: 0,
+          completionPercentage: session.completion_percentage || 0,
+        },
+      };
+    }
+
+    const session = this.db
+      .prepare(
+        `
+      SELECT * FROM sessions WHERE id = ?
+    `,
+      )
+      .get(sessionId);
+
     if (!session) {
       return null;
     }
-    
+
     // Get associated swarm data
-    const swarm = this.db.prepare(`
+    const swarm = this.db
+      .prepare(
+        `
       SELECT * FROM swarms WHERE id = ?
-    `).get(session.swarm_id);
-    
+    `,
+      )
+      .get(session.swarm_id);
+
     // Get agents
-    const agents = this.db.prepare(`
+    const agents = this.db
+      .prepare(
+        `
       SELECT * FROM agents WHERE swarm_id = ?
-    `).all(session.swarm_id);
-    
+    `,
+      )
+      .all(session.swarm_id);
+
     // Get tasks
-    const tasks = this.db.prepare(`
+    const tasks = this.db
+      .prepare(
+        `
       SELECT * FROM tasks WHERE swarm_id = ?
-    `).all(session.swarm_id);
-    
+    `,
+      )
+      .all(session.swarm_id);
+
     // Get checkpoints
-    const checkpoints = this.db.prepare(`
+    const checkpoints = this.db
+      .prepare(
+        `
       SELECT * FROM session_checkpoints 
       WHERE session_id = ? 
       ORDER BY created_at DESC
-    `).all(sessionId);
-    
+    `,
+      )
+      .all(sessionId);
+
     // Get recent logs
-    const recentLogs = this.db.prepare(`
+    const recentLogs = this.db
+      .prepare(
+        `
       SELECT * FROM session_logs 
       WHERE session_id = ? 
       ORDER BY timestamp DESC 
       LIMIT 50
-    `).all(sessionId);
-    
+    `,
+      )
+      .all(sessionId);
+
     return {
       ...session,
       metadata: session.metadata ? JSON.parse(session.metadata) : {},
@@ -250,48 +432,70 @@ export class HiveMindSessionManager {
       swarm,
       agents,
       tasks,
-      checkpoints: checkpoints.map(cp => ({
+      checkpoints: checkpoints.map((cp) => ({
         ...cp,
-        checkpoint_data: JSON.parse(cp.checkpoint_data)
+        checkpoint_data: JSON.parse(cp.checkpoint_data),
       })),
       recentLogs,
       statistics: {
         totalAgents: agents.length,
-        activeAgents: agents.filter(a => a.status === 'active' || a.status === 'busy').length,
+        activeAgents: agents.filter((a) => a.status === 'active' || a.status === 'busy').length,
         totalTasks: tasks.length,
-        completedTasks: tasks.filter(t => t.status === 'completed').length,
-        pendingTasks: tasks.filter(t => t.status === 'pending').length,
-        inProgressTasks: tasks.filter(t => t.status === 'in_progress').length,
-        completionPercentage: tasks.length > 0 
-          ? Math.round((tasks.filter(t => t.status === 'completed').length / tasks.length) * 100)
-          : 0
-      }
+        completedTasks: tasks.filter((t) => t.status === 'completed').length,
+        pendingTasks: tasks.filter((t) => t.status === 'pending').length,
+        inProgressTasks: tasks.filter((t) => t.status === 'in_progress').length,
+        completionPercentage:
+          tasks.length > 0
+            ? Math.round(
+                (tasks.filter((t) => t.status === 'completed').length / tasks.length) * 100,
+              )
+            : 0,
+      },
     };
   }
 
   /**
    * Pause a session
    */
-  pauseSession(sessionId) {
-    const stmt = this.db.prepare(`
-      UPDATE sessions 
-      SET status = 'paused', paused_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `);
+  async pauseSession(sessionId) {
+    await this.ensureInitialized();
     
-    const result = stmt.run(sessionId);
-    
-    if (result.changes > 0) {
-      this.logSessionEvent(sessionId, 'info', 'Session paused');
-      
-      // Update swarm status
-      const session = this.db.prepare('SELECT swarm_id FROM sessions WHERE id = ?').get(sessionId);
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const session = this.memoryStore.sessions.get(sessionId);
       if (session) {
-        this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('paused', session.swarm_id);
+        session.status = 'paused';
+        session.paused_at = new Date().toISOString();
+        session.updated_at = new Date().toISOString();
+        
+        await this.logSessionEvent(sessionId, 'info', 'Session paused');
+        return true;
       }
+      return false;
+    } else {
+      // Use SQLite
+      const stmt = this.db.prepare(`
+        UPDATE sessions 
+        SET status = 'paused', paused_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `);
+
+      const result = stmt.run(sessionId);
+
+      if (result.changes > 0) {
+        await this.logSessionEvent(sessionId, 'info', 'Session paused');
+
+        // Update swarm status
+        const session = this.db.prepare('SELECT swarm_id FROM sessions WHERE id = ?').get(sessionId);
+        if (session) {
+          this.db
+            .prepare('UPDATE swarms SET status = ? WHERE id = ?')
+            .run('paused', session.swarm_id);
+        }
+      }
+
+      return result.changes > 0;
     }
-    
-    return result.changes > 0;
   }
 
   /**
@@ -299,47 +503,53 @@ export class HiveMindSessionManager {
    */
   async resumeSession(sessionId) {
     const session = this.getSession(sessionId);
-    
+
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
     }
-    
+
     // Allow resuming any session regardless of status
     console.log(`Resuming session ${sessionId} from status: ${session.status}`);
-    
+
     // If session was stopped, log that we're restarting it
     if (session.status === 'stopped') {
-      this.logSessionEvent(sessionId, 'info', `Restarting stopped session with original configuration`);
+      this.logSessionEvent(
+        sessionId,
+        'info',
+        `Restarting stopped session with original configuration`,
+      );
     }
-    
+
     // Update session status
     const stmt = this.db.prepare(`
       UPDATE sessions 
       SET status = 'active', resumed_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `);
-    
+
     stmt.run(sessionId);
-    
+
     // Update swarm status
     this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('active', session.swarm_id);
-    
+
     // Update agent statuses
-    this.db.prepare(`
+    this.db
+      .prepare(
+        `
       UPDATE agents 
       SET status = CASE 
         WHEN role = 'queen' THEN 'active'
         ELSE 'idle'
       END
       WHERE swarm_id = ?
-    `).run(session.swarm_id);
-    
+    `,
+      )
+      .run(session.swarm_id);
+
     this.logSessionEvent(sessionId, 'info', 'Session resumed', null, {
-      pausedDuration: session.paused_at 
-        ? new Date() - new Date(session.paused_at)
-        : null
+      pausedDuration: session.paused_at ? new Date() - new Date(session.paused_at) : null,
     });
-    
+
     return session;
   }
 
@@ -352,19 +562,21 @@ export class HiveMindSessionManager {
       SET status = 'completed', updated_at = CURRENT_TIMESTAMP, completion_percentage = 100
       WHERE id = ?
     `);
-    
+
     const result = stmt.run(sessionId);
-    
+
     if (result.changes > 0) {
       this.logSessionEvent(sessionId, 'info', 'Session completed');
-      
+
       // Update swarm status
       const session = this.db.prepare('SELECT swarm_id FROM sessions WHERE id = ?').get(sessionId);
       if (session) {
-        this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('completed', session.swarm_id);
+        this.db
+          .prepare('UPDATE swarms SET status = ? WHERE id = ?')
+          .run('completed', session.swarm_id);
       }
     }
-    
+
     return result.changes > 0;
   }
 
@@ -374,42 +586,68 @@ export class HiveMindSessionManager {
   async archiveSessions(daysOld = 30) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
-    
-    const sessionsToArchive = this.db.prepare(`
+
+    const sessionsToArchive = this.db
+      .prepare(
+        `
       SELECT * FROM sessions 
       WHERE status = 'completed' AND updated_at < ?
-    `).all(cutoffDate.toISOString());
-    
+    `,
+      )
+      .all(cutoffDate.toISOString());
+
     const archiveDir = path.join(this.sessionsDir, 'archive');
     if (!existsSync(archiveDir)) {
       mkdirSync(archiveDir, { recursive: true });
     }
-    
+
     for (const session of sessionsToArchive) {
       const sessionData = this.getSession(session.id);
       const archiveFile = path.join(archiveDir, `${session.id}-archive.json`);
-      
+
       await writeFile(archiveFile, JSON.stringify(sessionData, null, 2));
-      
+
       // Remove from database
       this.db.prepare('DELETE FROM session_logs WHERE session_id = ?').run(session.id);
       this.db.prepare('DELETE FROM session_checkpoints WHERE session_id = ?').run(session.id);
       this.db.prepare('DELETE FROM sessions WHERE id = ?').run(session.id);
     }
-    
+
     return sessionsToArchive.length;
   }
 
   /**
    * Log session event
    */
-  logSessionEvent(sessionId, logLevel, message, agentId = null, data = null) {
-    const stmt = this.db.prepare(`
-      INSERT INTO session_logs (session_id, log_level, message, agent_id, data)
-      VALUES (?, ?, ?, ?, ?)
-    `);
+  async logSessionEvent(sessionId, logLevel, message, agentId = null, data = null) {
+    await this.ensureInitialized();
     
-    stmt.run(sessionId, logLevel, message, agentId, data ? JSON.stringify(data) : null);
+    if (this.isInMemory) {
+      // Use in-memory storage for logs
+      const logId = `log-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+      const logEntry = {
+        id: logId,
+        session_id: sessionId,
+        timestamp: new Date().toISOString(),
+        log_level: logLevel,
+        message,
+        agent_id: agentId,
+        data: data ? JSON.stringify(data) : null
+      };
+      
+      if (!this.memoryStore.logs.has(sessionId)) {
+        this.memoryStore.logs.set(sessionId, []);
+      }
+      this.memoryStore.logs.get(sessionId).push(logEntry);
+    } else {
+      // Use SQLite
+      const stmt = this.db.prepare(`
+        INSERT INTO session_logs (session_id, log_level, message, agent_id, data)
+        VALUES (?, ?, ?, ?, ?)
+      `);
+
+      stmt.run(sessionId, logLevel, message, agentId, data ? JSON.stringify(data) : null);
+    }
   }
 
   /**
@@ -422,26 +660,38 @@ export class HiveMindSessionManager {
       ORDER BY timestamp DESC 
       LIMIT ? OFFSET ?
     `);
-    
+
     const logs = stmt.all(sessionId, limit, offset);
-    
-    return logs.map(log => ({
+
+    return logs.map((log) => ({
       ...log,
-      data: log.data ? JSON.parse(log.data) : null
+      data: log.data ? JSON.parse(log.data) : null,
     }));
   }
 
   /**
    * Update session progress
    */
-  updateSessionProgress(sessionId, completionPercentage) {
-    const stmt = this.db.prepare(`
-      UPDATE sessions 
-      SET completion_percentage = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `);
+  async updateSessionProgress(sessionId, completionPercentage) {
+    await this.ensureInitialized();
     
-    stmt.run(completionPercentage, sessionId);
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const session = this.memoryStore.sessions.get(sessionId);
+      if (session) {
+        session.completion_percentage = completionPercentage;
+        session.updated_at = new Date().toISOString();
+      }
+    } else {
+      // Use SQLite
+      const stmt = this.db.prepare(`
+        UPDATE sessions 
+        SET completion_percentage = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `);
+
+      stmt.run(completionPercentage, sessionId);
+    }
   }
 
   /**
@@ -449,32 +699,35 @@ export class HiveMindSessionManager {
    */
   generateSessionSummary(sessionId) {
     const session = this.getSession(sessionId);
-    
+
     if (!session) {
       return null;
     }
-    
-    const duration = session.paused_at && session.resumed_at
-      ? new Date(session.updated_at) - new Date(session.created_at) - (new Date(session.resumed_at) - new Date(session.paused_at))
-      : new Date(session.updated_at) - new Date(session.created_at);
-    
+
+    const duration =
+      session.paused_at && session.resumed_at
+        ? new Date(session.updated_at) -
+          new Date(session.created_at) -
+          (new Date(session.resumed_at) - new Date(session.paused_at))
+        : new Date(session.updated_at) - new Date(session.created_at);
+
     const tasksByType = session.agents.reduce((acc, agent) => {
-      const agentTasks = session.tasks.filter(t => t.agent_id === agent.id);
+      const agentTasks = session.tasks.filter((t) => t.agent_id === agent.id);
       if (!acc[agent.type]) {
         acc[agent.type] = {
           total: 0,
           completed: 0,
           inProgress: 0,
-          pending: 0
+          pending: 0,
         };
       }
       acc[agent.type].total += agentTasks.length;
-      acc[agent.type].completed += agentTasks.filter(t => t.status === 'completed').length;
-      acc[agent.type].inProgress += agentTasks.filter(t => t.status === 'in_progress').length;
-      acc[agent.type].pending += agentTasks.filter(t => t.status === 'pending').length;
+      acc[agent.type].completed += agentTasks.filter((t) => t.status === 'completed').length;
+      acc[agent.type].inProgress += agentTasks.filter((t) => t.status === 'in_progress').length;
+      acc[agent.type].pending += agentTasks.filter((t) => t.status === 'pending').length;
       return acc;
     }, {});
-    
+
     return {
       sessionId: session.id,
       swarmName: session.swarm_name,
@@ -489,8 +742,8 @@ export class HiveMindSessionManager {
         created: session.created_at,
         lastUpdated: session.updated_at,
         paused: session.paused_at,
-        resumed: session.resumed_at
-      }
+        resumed: session.resumed_at,
+      },
     };
   }
 
@@ -499,15 +752,15 @@ export class HiveMindSessionManager {
    */
   async exportSession(sessionId, exportPath = null) {
     const session = this.getSession(sessionId);
-    
+
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
     }
-    
+
     const exportFile = exportPath || path.join(this.sessionsDir, `${sessionId}-export.json`);
-    
+
     await writeFile(exportFile, JSON.stringify(session, null, 2));
-    
+
     return exportFile;
   }
 
@@ -516,20 +769,24 @@ export class HiveMindSessionManager {
    */
   async importSession(importPath) {
     const sessionData = JSON.parse(await readFile(importPath, 'utf8'));
-    
+
     // Create new session with imported data
     const newSessionId = this.createSession(
       sessionData.swarm_id,
       sessionData.swarm_name,
       sessionData.objective,
-      sessionData.metadata
+      sessionData.metadata,
     );
-    
+
     // Import checkpoints
     for (const checkpoint of sessionData.checkpoints || []) {
-      await this.saveCheckpoint(newSessionId, checkpoint.checkpoint_name, checkpoint.checkpoint_data);
+      await this.saveCheckpoint(
+        newSessionId,
+        checkpoint.checkpoint_name,
+        checkpoint.checkpoint_data,
+      );
     }
-    
+
     // Import logs
     for (const log of sessionData.recentLogs || []) {
       this.logSessionEvent(
@@ -537,10 +794,10 @@ export class HiveMindSessionManager {
         log.log_level,
         log.message,
         log.agent_id,
-        log.data ? JSON.parse(log.data) : null
+        log.data ? JSON.parse(log.data) : null,
       );
     }
-    
+
     return newSessionId;
   }
 
@@ -550,20 +807,20 @@ export class HiveMindSessionManager {
   addChildPid(sessionId, pid) {
     const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
     if (!session) return false;
-    
+
     const childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
     if (!childPids.includes(pid)) {
       childPids.push(pid);
     }
-    
+
     const stmt = this.db.prepare(`
       UPDATE sessions 
       SET child_pids = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `);
-    
+
     stmt.run(JSON.stringify(childPids), sessionId);
-    
+
     this.logSessionEvent(sessionId, 'info', 'Child process added', null, { pid });
     return true;
   }
@@ -574,21 +831,21 @@ export class HiveMindSessionManager {
   removeChildPid(sessionId, pid) {
     const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
     if (!session) return false;
-    
+
     const childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
     const index = childPids.indexOf(pid);
     if (index > -1) {
       childPids.splice(index, 1);
     }
-    
+
     const stmt = this.db.prepare(`
       UPDATE sessions 
       SET child_pids = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `);
-    
+
     stmt.run(JSON.stringify(childPids), sessionId);
-    
+
     this.logSessionEvent(sessionId, 'info', 'Child process removed', null, { pid });
     return true;
   }
@@ -596,53 +853,72 @@ export class HiveMindSessionManager {
   /**
    * Get all child PIDs for a session
    */
-  getChildPids(sessionId) {
-    const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
-    if (!session || !session.child_pids) return [];
+  async getChildPids(sessionId) {
+    await this.ensureInitialized();
     
-    return JSON.parse(session.child_pids);
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const session = this.memoryStore.sessions.get(sessionId);
+      if (!session || !session.child_pids) return [];
+      return JSON.parse(session.child_pids);
+    } else {
+      // Use SQLite
+      const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
+      if (!session || !session.child_pids) return [];
+      return JSON.parse(session.child_pids);
+    }
   }
 
   /**
    * Stop a session and terminate all child processes
    */
   async stopSession(sessionId) {
-    const session = this.getSession(sessionId);
+    const session = await this.getSession(sessionId);
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
     }
-    
+
     // Get child PIDs
-    const childPids = this.getChildPids(sessionId);
-    
+    const childPids = await this.getChildPids(sessionId);
+
     // Terminate child processes
     for (const pid of childPids) {
       try {
         process.kill(pid, 'SIGTERM');
-        this.logSessionEvent(sessionId, 'info', 'Child process terminated', null, { pid });
+        await this.logSessionEvent(sessionId, 'info', 'Child process terminated', null, { pid });
       } catch (err) {
         // Process might already be dead
-        this.logSessionEvent(sessionId, 'warning', 'Failed to terminate child process', null, { 
-          pid, 
-          error: err.message 
+        await this.logSessionEvent(sessionId, 'warning', 'Failed to terminate child process', null, {
+          pid,
+          error: err.message,
         });
       }
     }
-    
+
     // Update session status
-    const stmt = this.db.prepare(`
-      UPDATE sessions 
-      SET status = 'stopped', updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `);
-    
-    stmt.run(sessionId);
-    
-    // Update swarm status
-    this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('stopped', session.swarm_id);
-    
-    this.logSessionEvent(sessionId, 'info', 'Session stopped');
-    
+    if (this.isInMemory) {
+      // Use in-memory storage
+      const sessionData = this.memoryStore.sessions.get(sessionId);
+      if (sessionData) {
+        sessionData.status = 'stopped';
+        sessionData.updated_at = new Date().toISOString();
+      }
+    } else {
+      // Use SQLite
+      const stmt = this.db.prepare(`
+        UPDATE sessions 
+        SET status = 'stopped', updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `);
+
+      stmt.run(sessionId);
+
+      // Update swarm status
+      this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('stopped', session.swarm_id);
+    }
+
+    await this.logSessionEvent(sessionId, 'info', 'Session stopped');
+
     return true;
   }
 
@@ -651,12 +927,12 @@ export class HiveMindSessionManager {
    */
   getActiveSessionsWithProcessInfo() {
     const sessions = this.getActiveSessions();
-    
+
     // Add process info to each session
-    return sessions.map(session => {
+    return sessions.map((session) => {
       const childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
       const aliveChildPids = [];
-      
+
       // Check which child processes are still alive
       for (const pid of childPids) {
         try {
@@ -666,12 +942,12 @@ export class HiveMindSessionManager {
           // Process is dead
         }
       }
-      
+
       return {
         ...session,
         parent_pid: session.parent_pid,
         child_pids: aliveChildPids,
-        total_processes: 1 + aliveChildPids.length
+        total_processes: 1 + aliveChildPids.length,
       };
     });
   }
@@ -680,13 +956,17 @@ export class HiveMindSessionManager {
    * Clean up orphaned processes
    */
   cleanupOrphanedProcesses() {
-    const sessions = this.db.prepare(`
+    const sessions = this.db
+      .prepare(
+        `
       SELECT * FROM sessions 
       WHERE status IN ('active', 'paused')
-    `).all();
-    
+    `,
+      )
+      .all();
+
     let cleanedCount = 0;
-    
+
     for (const session of sessions) {
       // Check if parent process is still alive
       try {
@@ -698,7 +978,7 @@ export class HiveMindSessionManager {
         this.logSessionEvent(session.id, 'info', 'Orphaned session cleaned up');
       }
     }
-    
+
     return cleanedCount;
   }
 
@@ -706,7 +986,9 @@ export class HiveMindSessionManager {
    * Clean up and close database connection
    */
   close() {
-    this.db.close();
+    if (this.db && !this.isInMemory) {
+      this.db.close();
+    }
   }
 }
 

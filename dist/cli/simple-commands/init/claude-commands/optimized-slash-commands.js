@@ -1,12 +1,19 @@
 // optimized-slash-commands.js - Create batchtools-optimized Claude Code slash commands
 
-import { createOptimizedSparcSlashCommand, createOptimizedMainSparcCommand } from './optimized-sparc-commands.js';
+import {
+  createOptimizedSparcSlashCommand,
+  createOptimizedMainSparcCommand,
+} from './optimized-sparc-commands.js';
 import { createOptimizedClaudeFlowCommands } from './optimized-claude-flow-commands.js';
+import { copyTemplates } from '../template-copier.js';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 
 // Create batchtools-optimized Claude Code slash commands for SPARC modes
 export async function createOptimizedClaudeSlashCommands(workingDir, selectedModes = null) {
   try {
     console.log('\n🚀 Creating batchtools-optimized Claude Code slash commands...');
+<<<<<<< HEAD
     
     // Parse .roomodes to get all SPARC modes
     const roomodesContent = await node.readTextFile(`${workingDir}/.roomodes`);
@@ -23,7 +30,73 @@ export async function createOptimizedClaudeSlashCommands(workingDir, selectedMod
     const commandPromises = modesToCreate.map(async (mode) => {
       const commandPath = `${workingDir}/.claude/commands/sparc/${mode.slug}.md`;
       const commandContent = createOptimizedSparcSlashCommand(mode);
+||||||| 47d5ef4
+    
+    // Parse .roomodes to get all SPARC modes
+    const roomodesContent = await Deno.readTextFile(`${workingDir}/.roomodes`);
+    const roomodes = JSON.parse(roomodesContent);
+    
+    // Filter modes if selective initialization is requested
+    const modesToCreate = selectedModes 
+      ? roomodes.customModes.filter(mode => selectedModes.includes(mode.slug))
+      : roomodes.customModes;
+    
+    console.log(`  📝 Creating optimized commands for ${modesToCreate.length} modes...`);
+    
+    // Create slash commands for each SPARC mode with batchtools optimization
+    const commandPromises = modesToCreate.map(async (mode) => {
+      const commandPath = `${workingDir}/.claude/commands/sparc/${mode.slug}.md`;
+      const commandContent = createOptimizedSparcSlashCommand(mode);
+=======
+
+    // Use template copier with optimized flag
+    const optimizedOptions = {
+      sparc: true,
+      optimized: true,
+      force: true,
+      dryRun: false,
+      selectedModes: selectedModes,
+    };
+
+    // Check if .roomodes exists for dynamic generation
+    const roomodesPath = `${workingDir}/.roomodes`;
+    try {
+      const roomodesContent = await fs.readFile(roomodesPath, 'utf8');
+      const roomodes = JSON.parse(roomodesContent);
+
+      // Filter modes if selective initialization is requested
+      const modesToCreate = selectedModes
+        ? roomodes.customModes.filter((mode) => selectedModes.includes(mode.slug))
+        : roomodes.customModes;
+
+      console.log(`  📝 Creating optimized commands for ${modesToCreate.length} modes...`);
+
+      // Create slash commands for each SPARC mode with batchtools optimization
+      const commandPromises = modesToCreate.map(async (mode) => {
+        const commandPath = join(workingDir, '.claude', 'commands', 'sparc', `${mode.slug}.md`);
+        const commandContent = createOptimizedSparcSlashCommand(mode);
+
+        await fs.mkdir(join(workingDir, '.claude', 'commands', 'sparc'), { recursive: true });
+        await fs.writeFile(commandPath, commandContent);
+        console.log(`  ✓ Created optimized slash command: /sparc-${mode.slug} (Batchtools enhanced)`);
+      });
+
+      // Execute all command creations in parallel
+      await Promise.all(commandPromises);
+
+      // Create main SPARC command with batchtools optimization
+      const mainSparcCommand = createOptimizedMainSparcCommand(roomodes.customModes);
+      await fs.writeFile(join(workingDir, '.claude', 'commands', 'sparc.md'), mainSparcCommand);
+      console.log('  ✅ Created optimized main slash command: /sparc (Batchtools enhanced)');
+
+      console.log(`  🎯 Total optimized commands created: ${modesToCreate.length + 5}`);
+    } catch (err) {
+      // Fallback to template copier if .roomodes doesn't exist
+      console.log('  🔄 Using template copier for optimized SPARC commands...');
+      const copyResults = await copyTemplates(workingDir, optimizedOptions);
+>>>>>>> origin/main
       
+<<<<<<< HEAD
       await node.writeTextFile(commandPath, commandContent);
       console.log(`  ✓ Created optimized slash command: /sparc-${mode.slug} (Batchtools enhanced)`);
     });
@@ -36,15 +109,33 @@ export async function createOptimizedClaudeSlashCommands(workingDir, selectedMod
     await node.writeTextFile(`${workingDir}/.claude/commands/sparc.md`, mainSparcCommand);
     console.log('  ✅ Created optimized main slash command: /sparc (Batchtools enhanced)');
     
+||||||| 47d5ef4
+      await Deno.writeTextFile(commandPath, commandContent);
+      console.log(`  ✓ Created optimized slash command: /sparc-${mode.slug} (Batchtools enhanced)`);
+    });
+    
+    // Execute all command creations in parallel
+    await Promise.all(commandPromises);
+    
+    // Create main SPARC command with batchtools optimization
+    const mainSparcCommand = createOptimizedMainSparcCommand(roomodes.customModes);
+    await Deno.writeTextFile(`${workingDir}/.claude/commands/sparc.md`, mainSparcCommand);
+    console.log('  ✅ Created optimized main slash command: /sparc (Batchtools enhanced)');
+    
+=======
+      if (!copyResults.success) {
+        console.log(`  ⚠️  Template copier failed: ${copyResults.errors.join(', ')}`);
+      }
+    }
+
+>>>>>>> origin/main
     // Create claude-flow specific commands with batchtools optimization
     await createOptimizedClaudeFlowCommands(workingDir);
-    
+
     // Create batchtools-specific commands
     await createBatchtoolsCommands(workingDir);
-    
-    console.log(`  🎯 Total optimized commands created: ${modesToCreate.length + 5}`);
+
     console.log('  💡 All commands include parallel processing and performance optimizations');
-    
   } catch (err) {
     console.log(`  ⚠️  Could not create optimized Claude Code slash commands: ${err.message}`);
   }
@@ -220,10 +311,18 @@ Chain operations with parallel execution at each stage:
 
 For detailed documentation, see: https://github.com/ruvnet/claude-code-flow/docs/batchtools.md
 `;
+<<<<<<< HEAD
   
   await node.writeTextFile(`${workingDir}/.claude/commands/batchtools.md`, batchtoolsCommand);
-  console.log('  ✓ Created slash command: /batchtools');
+||||||| 47d5ef4
   
+  await Deno.writeTextFile(`${workingDir}/.claude/commands/batchtools.md`, batchtoolsCommand);
+=======
+
+  await Deno.writeTextFile(`${workingDir}/.claude/commands/batchtools.md`, batchtoolsCommand);
+>>>>>>> origin/main
+  console.log('  ✓ Created slash command: /batchtools');
+
   // Performance monitoring command
   const performanceCommand = `---
 name: performance
@@ -318,7 +417,15 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 
 For comprehensive performance guides, see: https://github.com/ruvnet/claude-code-flow/docs/performance.md
 `;
+<<<<<<< HEAD
   
   await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
+||||||| 47d5ef4
+  
+  await Deno.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
+=======
+
+  await Deno.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
+>>>>>>> origin/main
   console.log('  ✓ Created slash command: /performance');
 }

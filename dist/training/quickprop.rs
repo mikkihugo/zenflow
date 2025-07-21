@@ -99,6 +99,7 @@ impl<T: Float + Send + Default> Quickprop<T> {
         }
     }
 
+    #[allow(dead_code)]
     fn calculate_quickprop_delta(
         &self,
         gradient: T,
@@ -134,6 +135,42 @@ impl<T: Float + Send + Default> Quickprop<T> {
 
         // Add decay term
         delta + self.decay * weight
+    }
+
+    /// Calculate quickprop delta for bias (no weight decay)
+    fn calculate_quickprop_delta_bias(
+        &self,
+        gradient: T,
+        previous_gradient: T,
+        previous_delta: T,
+    ) -> T {
+        if previous_gradient == T::zero() {
+            // First epoch or no previous gradient: use standard gradient descent
+            return -self.learning_rate * gradient;
+        }
+
+        let gradient_diff = gradient - previous_gradient;
+
+        if gradient_diff == T::zero() {
+            // No change in gradient: use momentum-like update
+            return -self.learning_rate * gradient;
+        }
+
+        // Quickprop formula: delta = (gradient / (previous_gradient - gradient)) * previous_delta
+        let factor = gradient / gradient_diff;
+        let mut delta = factor * previous_delta;
+
+        // Limit the maximum step size
+        let max_delta = self.mu * previous_delta.abs();
+        if delta.abs() > max_delta {
+            delta = if delta > T::zero() {
+                max_delta
+            } else {
+                -max_delta
+            };
+        }
+
+        delta
     }
 }
 
@@ -236,40 +273,12 @@ impl<T: Float + Send + Default> TrainingAlgorithm<T> for Quickprop<T> {
                     T::zero()
                 };
 
-                let delta = if previous_gradient == T::zero() {
-                    // First epoch or no previous gradient: use standard gradient descent with decay
-                    -self.learning_rate * current_gradient + self.decay * weight
-                } else {
-                    let gradient_diff = previous_gradient - current_gradient;
-
-                    if gradient_diff.abs() < T::from(1e-15).unwrap() {
-                        // Gradient difference too small: use momentum-like update with decay
-                        -self.learning_rate * current_gradient + self.decay * weight
-                    } else {
-                        // Quickprop formula: delta = (gradient / (previous_gradient - gradient)) * previous_delta
-                        let mut quickprop_delta =
-                            (current_gradient / gradient_diff) * previous_delta;
-
-                        // Apply maximum growth factor constraint
-                        let max_delta = self.mu * previous_delta.abs();
-                        if quickprop_delta.abs() > max_delta && previous_delta != T::zero() {
-                            quickprop_delta = if quickprop_delta > T::zero() {
-                                max_delta
-                            } else {
-                                -max_delta
-                            };
-                        }
-
-                        // Conditional gradient addition (if moving in same direction)
-                        if quickprop_delta * current_gradient > T::zero() {
-                            quickprop_delta =
-                                quickprop_delta - self.learning_rate * current_gradient;
-                        }
-
-                        // Add decay term
-                        quickprop_delta + self.decay * weight
-                    }
-                };
+                let delta = self.calculate_quickprop_delta(
+                    current_gradient,
+                    previous_gradient,
+                    previous_delta,
+                    weight,
+                );
 
                 layer_weight_updates.push(delta);
 
@@ -290,39 +299,11 @@ impl<T: Float + Send + Default> TrainingAlgorithm<T> for Quickprop<T> {
                 let previous_gradient = self.previous_bias_gradients[layer_idx][i];
                 let previous_delta = self.previous_bias_deltas[layer_idx][i];
 
-                let delta = if previous_gradient == T::zero() {
-                    // First epoch or no previous gradient: use standard gradient descent
-                    -self.learning_rate * current_gradient
-                } else {
-                    let gradient_diff = previous_gradient - current_gradient;
-
-                    if gradient_diff.abs() < T::from(1e-15).unwrap() {
-                        // Gradient difference too small: use momentum-like update
-                        -self.learning_rate * current_gradient
-                    } else {
-                        // Quickprop formula
-                        let mut quickprop_delta =
-                            (current_gradient / gradient_diff) * previous_delta;
-
-                        // Apply maximum growth factor constraint
-                        let max_delta = self.mu * previous_delta.abs();
-                        if quickprop_delta.abs() > max_delta && previous_delta != T::zero() {
-                            quickprop_delta = if quickprop_delta > T::zero() {
-                                max_delta
-                            } else {
-                                -max_delta
-                            };
-                        }
-
-                        // Conditional gradient addition
-                        if quickprop_delta * current_gradient > T::zero() {
-                            quickprop_delta =
-                                quickprop_delta - self.learning_rate * current_gradient;
-                        }
-
-                        quickprop_delta
-                    }
-                };
+                let delta = self.calculate_quickprop_delta_bias(
+                    current_gradient,
+                    previous_gradient,
+                    previous_delta,
+                );
 
                 layer_bias_updates.push(delta);
 

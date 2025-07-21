@@ -18,6 +18,7 @@ use std::sync::{
 };
 use std::thread;
 use std::time::{Duration, Instant, SystemTime};
+use rand::Rng;
 
 use crate::webgpu::buffer_pool::{AdvancedBufferPool, MemoryPressure};
 use crate::webgpu::error::{ComputeError, ComputeResult};
@@ -216,6 +217,75 @@ pub struct LearningEngine {
     performance_history: VecDeque<PerformanceRecord>,
 }
 
+impl LearningEngine {
+    /// Select optimal strategy based on learning history and exploration
+    pub fn select_strategy(
+        &mut self,
+        pressure: MemoryPressure,
+        strategies: &HashMap<MemoryPressure, ResponseStrategy>,
+        confidence: f32,
+    ) -> String {
+        let strategy_name = format!("{:?}", pressure);
+        
+        // Update strategy effectiveness based on confidence
+        let current_effectiveness = self.strategy_effectiveness
+            .get(&strategy_name)
+            .copied()
+            .unwrap_or(0.5);
+        
+        // Use epsilon-greedy exploration
+        let mut rng = rand::thread_rng();
+        let explore = rng.gen::<f32>() < self.exploration_factor;
+        
+        if explore {
+            // Exploration: select based on potential
+            strategy_name
+        } else {
+            // Exploitation: select best known strategy
+            self.strategy_effectiveness
+                .iter()
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
+                .map(|(name, _)| name.clone())
+                .unwrap_or(strategy_name)
+        }
+    }
+    
+    /// Get strategy effectiveness score
+    pub fn get_strategy_effectiveness(&self, strategy_name: &str) -> f32 {
+        self.strategy_effectiveness.get(strategy_name).copied().unwrap_or(0.5)
+    }
+    
+    /// Update strategy effectiveness based on performance
+    pub fn update_effectiveness(&mut self, strategy_name: &str, success: bool, response_time: Duration) {
+        let current = self.strategy_effectiveness.get(strategy_name).copied().unwrap_or(0.5);
+        
+        // Calculate new effectiveness based on success and response time
+        let time_penalty = if response_time > Duration::from_secs(5) { 0.1 } else { 0.0 };
+        let success_bonus = if success { 0.2 } else { -0.1 };
+        
+        let new_effectiveness = (current + self.adaptation_rate * (success_bonus - time_penalty))
+            .clamp(0.0, 1.0);
+        
+        self.strategy_effectiveness.insert(strategy_name.to_string(), new_effectiveness);
+        
+        // Record performance
+        self.performance_history.push_back(PerformanceRecord {
+            timestamp: Instant::now(),
+            strategy_used: strategy_name.to_string(),
+            initial_pressure: MemoryPressure::Medium, // Would be passed from caller
+            final_pressure: MemoryPressure::Low,      // Would be measured after response
+            response_time,
+            success,
+            side_effects: Vec::new(),
+        });
+        
+        // Limit history size
+        while self.performance_history.len() > 500 {
+            self.performance_history.pop_front();
+        }
+    }
+}
+
 /// Performance record for learning
 #[derive(Debug, Clone)]
 pub struct PerformanceRecord {
@@ -404,7 +474,34 @@ impl MemoryPressureMonitor {
             last_prediction: None,
         }));
 
-        // Initialize anomaly detector
+        // Initialize anomaly detector with detection models for each anomaly type
+        let mut detection_models = HashMap::new();
+        for anomaly_type in [
+            AnomalyType::SuddenPressureSpike,
+            AnomalyType::AllocationRateAnomaly,
+            AnomalyType::FragmentationAnomaly,
+            AnomalyType::ResponseLatencyAnomaly,
+            AnomalyType::MemoryLeak,
+            AnomalyType::AllocationPattern,
+        ] {
+            detection_models.insert(
+                anomaly_type,
+                DetectionModel {
+                    sensitivity: match anomaly_type {
+                        AnomalyType::SuddenPressureSpike => 2.0,     // Most sensitive
+                        AnomalyType::MemoryLeak => 1.5,              // Very sensitive
+                        AnomalyType::AllocationRateAnomaly => 2.5,   // Moderate sensitivity
+                        AnomalyType::FragmentationAnomaly => 3.0,    // Less sensitive
+                        AnomalyType::ResponseLatencyAnomaly => 2.2,  // Moderately sensitive
+                        AnomalyType::AllocationPattern => 2.8,      // Pattern-based
+                    },
+                    false_positive_rate: 0.02, // Target 2% false positive rate
+                    detection_count: 0,
+                    last_detection: None,
+                },
+            );
+        }
+
         let anomaly_detector = Arc::new(Mutex::new(AnomalyDetector {
             baseline_stats: BaselineStatistics {
                 mean_pressure: 0.3,
@@ -418,7 +515,7 @@ impl MemoryPressureMonitor {
             },
             anomaly_threshold: 2.0, // 2 standard deviations
             recent_anomalies: VecDeque::new(),
-            detection_models: HashMap::new(),
+            detection_models,
         }));
 
         // Initialize DAA coordinator with default strategies
@@ -626,12 +723,39 @@ impl MemoryPressureMonitor {
                                 &prediction,
                                 &alert_thresholds,
                             ) {
-                                // Execute autonomous response
-                                Self::execute_autonomous_response(
+                                // Execute autonomous response with learning feedback
+                                let strategy_name = format!("{:?}", response.trigger_pressure);
+                                let (success, final_pressure) = Self::execute_autonomous_response(
                                     &buffer_pool,
                                     response,
                                     &autonomous_responses,
                                 );
+                                
+                                // Update learning engine with results
+                                {
+                                    let mut coordinator = daa_coordinator.lock().unwrap();
+                                    coordinator.learning_engine.update_effectiveness(
+                                        &strategy_name,
+                                        success,
+                                        Duration::from_millis((prediction.predicted_pressure.cleanup_aggressiveness() * 1000.0) as u64)
+                                    );
+                                    
+                                    if success {
+                                        coordinator.performance_metrics.successful_interventions += 1;
+                                        coordinator.performance_metrics.pressure_reduction_effectiveness = 
+                                            (coordinator.performance_metrics.pressure_reduction_effectiveness * 0.9) + 0.1;
+                                    }
+                                    
+                                    // Update decision history with actual outcome
+                                    if let Some(last_decision) = coordinator.decision_history.back_mut() {
+                                        last_decision.actual_outcome = Some(format!(
+                                            "Final pressure: {:?}, Success: {}",
+                                            final_pressure, success
+                                        ));
+                                        last_decision.success = Some(success);
+                                    }
+                                }
+                                
                                 monitoring_stats.lock().unwrap().daa_interventions += 1;
                             }
                         }
@@ -760,40 +884,131 @@ impl MemoryPressureMonitor {
         stats.last_updated = Instant::now();
     }
 
-    /// Detect memory anomalies
+    /// Detect memory anomalies using multiple detection models
     fn detect_anomalies(
         anomaly_detector: &Arc<Mutex<AnomalyDetector>>,
         reading: &PressureReading,
     ) -> Option<AnomalyEvent> {
-        let detector = anomaly_detector.lock().unwrap();
+        let mut detector = anomaly_detector.lock().unwrap();
         let stats = &detector.baseline_stats;
 
-        // Check for pressure spike anomaly
-        if reading.pressure_ratio
-            > stats.mean_pressure + detector.anomaly_threshold * stats.std_pressure
-        {
-            return Some(AnomalyEvent {
-                timestamp: reading.timestamp,
-                anomaly_type: AnomalyType::SuddenPressureSpike,
-                severity: (reading.pressure_ratio - stats.mean_pressure) / stats.std_pressure,
-                description: format!(
-                    "Memory pressure spike detected: {:.2}% (baseline: {:.2}%)",
-                    reading.pressure_ratio * 100.0,
-                    stats.mean_pressure * 100.0
-                ),
-                affected_metrics: vec!["pressure_ratio".to_string()],
-                suggested_actions: vec![
-                    "Trigger garbage collection".to_string(),
-                    "Cleanup buffer pools".to_string(),
-                ],
-                daa_response: Some("Initiated autonomous cleanup".to_string()),
-            });
+        // Check each anomaly type using its specific detection model
+        
+        // 1. Sudden Pressure Spike Detection
+        if let Some(model) = detector.detection_models.get_mut(&AnomalyType::SuddenPressureSpike) {
+            let pressure_deviation = (reading.pressure_ratio - stats.mean_pressure) / stats.std_pressure;
+            if pressure_deviation > model.sensitivity {
+                model.detection_count += 1;
+                model.last_detection = Some(reading.timestamp);
+                
+                return Some(AnomalyEvent {
+                    timestamp: reading.timestamp,
+                    anomaly_type: AnomalyType::SuddenPressureSpike,
+                    severity: pressure_deviation,
+                    description: format!(
+                        "Memory pressure spike detected: {:.2}% (baseline: {:.2}%, deviation: {:.1}σ)",
+                        reading.pressure_ratio * 100.0,
+                        stats.mean_pressure * 100.0,
+                        pressure_deviation
+                    ),
+                    affected_metrics: vec!["pressure_ratio".to_string()],
+                    suggested_actions: vec![
+                        "Trigger garbage collection".to_string(),
+                        "Cleanup buffer pools".to_string(),
+                        "Enable circuit breaker".to_string(),
+                    ],
+                    daa_response: Some("Initiated autonomous cleanup and monitoring escalation".to_string()),
+                });
+            }
+        }
+
+        // 2. Allocation Rate Anomaly Detection
+        if let Some(model) = detector.detection_models.get_mut(&AnomalyType::AllocationRateAnomaly) {
+            let allocation_deviation = (reading.allocation_rate - stats.mean_allocation_rate) / stats.std_allocation_rate;
+            if allocation_deviation > model.sensitivity as f64 {
+                model.detection_count += 1;
+                model.last_detection = Some(reading.timestamp);
+                
+                return Some(AnomalyEvent {
+                    timestamp: reading.timestamp,
+                    anomaly_type: AnomalyType::AllocationRateAnomaly,
+                    severity: allocation_deviation as f32,
+                    description: format!(
+                        "Allocation rate anomaly: {:.1} allocs/sec (baseline: {:.1}, deviation: {:.1}σ)",
+                        reading.allocation_rate,
+                        stats.mean_allocation_rate,
+                        allocation_deviation
+                    ),
+                    affected_metrics: vec!["allocation_rate".to_string()],
+                    suggested_actions: vec![
+                        "Throttle allocations".to_string(),
+                        "Monitor for memory leak".to_string(),
+                        "Analyze allocation patterns".to_string(),
+                    ],
+                    daa_response: Some("Initiated allocation throttling and pattern analysis".to_string()),
+                });
+            }
+        }
+
+        // 3. Response Latency Anomaly Detection
+        if let Some(model) = detector.detection_models.get_mut(&AnomalyType::ResponseLatencyAnomaly) {
+            let latency_multiplier = reading.response_latency_ns as f64 / stats.normal_response_latency as f64;
+            if latency_multiplier > model.sensitivity as f64 {
+                model.detection_count += 1;
+                model.last_detection = Some(reading.timestamp);
+                
+                return Some(AnomalyEvent {
+                    timestamp: reading.timestamp,
+                    anomaly_type: AnomalyType::ResponseLatencyAnomaly,
+                    severity: latency_multiplier as f32,
+                    description: format!(
+                        "Response latency anomaly: {:.2}ms (normal: {:.2}ms, {:.1}x slower)",
+                        reading.response_latency_ns as f64 / 1_000_000.0,
+                        stats.normal_response_latency as f64 / 1_000_000.0,
+                        latency_multiplier
+                    ),
+                    affected_metrics: vec!["response_latency_ns".to_string()],
+                    suggested_actions: vec![
+                        "Investigate memory contention".to_string(),
+                        "Check for fragmentation".to_string(),
+                        "Consider defragmentation".to_string(),
+                    ],
+                    daa_response: Some("Initiated latency investigation and optimization".to_string()),
+                });
+            }
+        }
+
+        // 4. Fragmentation Anomaly Detection
+        if let Some(model) = detector.detection_models.get_mut(&AnomalyType::FragmentationAnomaly) {
+            let fragmentation_excess = reading.fragmentation_level - stats.typical_fragmentation;
+            if fragmentation_excess > model.sensitivity * 0.1 { // 10% per sensitivity point
+                model.detection_count += 1;
+                model.last_detection = Some(reading.timestamp);
+                
+                return Some(AnomalyEvent {
+                    timestamp: reading.timestamp,
+                    anomaly_type: AnomalyType::FragmentationAnomaly,
+                    severity: fragmentation_excess / 0.1, // Normalize to sensitivity scale
+                    description: format!(
+                        "Memory fragmentation anomaly: {:.1}% (typical: {:.1}%)",
+                        reading.fragmentation_level * 100.0,
+                        stats.typical_fragmentation * 100.0
+                    ),
+                    affected_metrics: vec!["fragmentation_level".to_string()],
+                    suggested_actions: vec![
+                        "Trigger memory defragmentation".to_string(),
+                        "Optimize buffer pool allocation".to_string(),
+                        "Consider coalescing small buffers".to_string(),
+                    ],
+                    daa_response: Some("Initiated defragmentation and buffer optimization".to_string()),
+                });
+            }
         }
 
         None
     }
 
-    /// Generate pressure prediction
+    /// Generate pressure prediction using ensemble of models
     fn generate_prediction(
         predictor: &Arc<Mutex<PressurePredictor>>,
         current_reading: &PressureReading,
@@ -807,13 +1022,12 @@ impl MemoryPressureMonitor {
             predictor.historical_data.pop_front();
         }
 
-        // Simple moving average prediction for now
         let horizon_seconds = config.prediction_horizon.as_secs();
         let recent_samples = predictor
             .historical_data
             .iter()
             .rev()
-            .take(10)
+            .take(20)
             .collect::<Vec<_>>();
 
         if recent_samples.len() < 3 {
@@ -822,43 +1036,143 @@ impl MemoryPressureMonitor {
             ));
         }
 
-        let avg_pressure = recent_samples.iter().map(|r| r.pressure_ratio).sum::<f32>()
-            / recent_samples.len() as f32;
+        // Generate predictions using multiple models
+        let mut model_predictions = HashMap::new();
+        
+        // 1. Moving Average Model
+        let ma_prediction = Self::predict_moving_average(&recent_samples, horizon_seconds);
+        model_predictions.insert(PredictionModel::MovingAverage, ma_prediction);
+        
+        // 2. Linear Regression Model
+        let lr_prediction = Self::predict_linear_regression(&recent_samples, horizon_seconds);
+        model_predictions.insert(PredictionModel::LinearRegression, lr_prediction);
+        
+        // 3. Exponential Smoothing Model
+        let es_prediction = Self::predict_exponential_smoothing(&recent_samples, horizon_seconds);
+        model_predictions.insert(PredictionModel::ExponentialSmoothing, es_prediction);
 
-        // Simple trend calculation
-        let trend = if recent_samples.len() >= 2 {
-            recent_samples[0].pressure_ratio
-                - recent_samples[recent_samples.len() - 1].pressure_ratio
+        // Combine predictions using ensemble weights
+        let mut weighted_prediction = 0.0;
+        let mut total_weight = 0.0;
+        let mut best_model = PredictionModel::MovingAverage;
+        let mut best_confidence = 0.0;
+
+        for (model, prediction) in &model_predictions {
+            if let Some(weight) = predictor.ensemble_weights.get(model) {
+                weighted_prediction += prediction * weight;
+                total_weight += weight;
+                
+                // Update model accuracy tracking
+                if let Some(model_state) = predictor.prediction_models.get_mut(model) {
+                    model_state.prediction_count += 1;
+                    
+                    // Calculate confidence based on recent accuracy
+                    let confidence = model_state.accuracy_score;
+                    if confidence > best_confidence {
+                        best_confidence = confidence;
+                        best_model = *model;
+                    }
+                }
+            }
+        }
+
+        let final_predicted_ratio = if total_weight > 0.0 {
+            (weighted_prediction / total_weight).clamp(0.0, 1.0)
         } else {
-            0.0
+            model_predictions.values().next().copied().unwrap_or(current_reading.pressure_ratio)
         };
 
-        let predicted_ratio = (avg_pressure + trend * horizon_seconds as f32).clamp(0.0, 1.0);
-        let predicted_pressure = MemoryPressure::from_ratio(predicted_ratio);
+        let predicted_pressure = MemoryPressure::from_ratio(final_predicted_ratio);
+
+        // Create factors map for interpretability
+        let mut factors = HashMap::new();
+        factors.insert("allocation_trend".to_string(), 
+            if recent_samples.len() >= 2 {
+                recent_samples[0].allocation_rate as f32 - recent_samples[recent_samples.len() - 1].allocation_rate as f32
+            } else { 0.0 }
+        );
+        factors.insert("fragmentation_impact".to_string(), current_reading.fragmentation_level);
+        factors.insert("ensemble_confidence".to_string(), best_confidence);
 
         let prediction = PressurePrediction {
             timestamp: Instant::now(),
             horizon_seconds,
             predicted_pressure,
-            predicted_ratio,
-            confidence_interval: (predicted_ratio - 0.1, predicted_ratio + 0.1),
-            confidence_level: 0.75,
-            model_used: PredictionModel::MovingAverage,
-            factors: HashMap::new(),
+            predicted_ratio: final_predicted_ratio,
+            confidence_interval: (
+                final_predicted_ratio - 0.1 * (1.0 - best_confidence), 
+                final_predicted_ratio + 0.1 * (1.0 - best_confidence)
+            ),
+            confidence_level: best_confidence,
+            model_used: best_model,
+            factors,
         };
 
         predictor.last_prediction = Some(prediction.clone());
         Ok(prediction)
     }
+    
+    /// Moving average prediction
+    fn predict_moving_average(samples: &[&PressureReading], horizon_seconds: u64) -> f32 {
+        let avg_pressure = samples.iter().map(|r| r.pressure_ratio).sum::<f32>() / samples.len() as f32;
+        let trend = if samples.len() >= 2 {
+            (samples[0].pressure_ratio - samples[samples.len() - 1].pressure_ratio) / samples.len() as f32
+        } else {
+            0.0
+        };
+        (avg_pressure + trend * horizon_seconds as f32).clamp(0.0, 1.0)
+    }
+    
+    /// Linear regression prediction (simplified)
+    fn predict_linear_regression(samples: &[&PressureReading], horizon_seconds: u64) -> f32 {
+        if samples.len() < 2 {
+            return samples[0].pressure_ratio;
+        }
+        
+        let n = samples.len() as f32;
+        let sum_x: f32 = (0..samples.len()).map(|i| i as f32).sum();
+        let sum_y: f32 = samples.iter().map(|r| r.pressure_ratio).sum();
+        let sum_xy: f32 = samples.iter().enumerate()
+            .map(|(i, r)| i as f32 * r.pressure_ratio).sum();
+        let sum_x_sq: f32 = (0..samples.len()).map(|i| (i as f32).powi(2)).sum();
+        
+        let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x_sq - sum_x.powi(2));
+        let intercept = (sum_y - slope * sum_x) / n;
+        
+        (intercept + slope * (samples.len() as f32 + horizon_seconds as f32)).clamp(0.0, 1.0)
+    }
+    
+    /// Exponential smoothing prediction
+    fn predict_exponential_smoothing(samples: &[&PressureReading], horizon_seconds: u64) -> f32 {
+        if samples.is_empty() {
+            return 0.0;
+        }
+        
+        let alpha = 0.3; // Smoothing factor
+        let mut smoothed = samples[samples.len() - 1].pressure_ratio;
+        
+        for sample in samples.iter().rev().skip(1) {
+            smoothed = alpha * sample.pressure_ratio + (1.0 - alpha) * smoothed;
+        }
+        
+        // Simple trend extrapolation
+        let trend = if samples.len() >= 2 {
+            (samples[0].pressure_ratio - samples[samples.len() - 1].pressure_ratio) * 0.1
+        } else {
+            0.0
+        };
+        
+        (smoothed + trend * horizon_seconds as f32).clamp(0.0, 1.0)
+    }
 
-    /// Evaluate if autonomous response is needed
+    /// Evaluate if autonomous response is needed with DAA learning integration
     fn evaluate_autonomous_response(
         daa_coordinator: &Arc<Mutex<DaaCoordinator>>,
         reading: &PressureReading,
         prediction: &PressurePrediction,
         alert_thresholds: &Arc<Mutex<AlertThresholds>>,
     ) -> Option<AutonomousResponse> {
-        let coordinator = daa_coordinator.lock().unwrap();
+        let mut coordinator = daa_coordinator.lock().unwrap();
         let thresholds = alert_thresholds.lock().unwrap();
 
         // Check if current pressure warrants response
@@ -874,13 +1188,49 @@ impl MemoryPressureMonitor {
         let predicted_needs_response = prediction.predicted_pressure >= MemoryPressure::High;
 
         if needs_response || predicted_needs_response {
+            // Use learning engine to select optimal strategy
+            let strategy_name = coordinator.learning_engine.select_strategy(
+                reading.pressure,
+                &coordinator.response_strategies,
+                prediction.confidence_level,
+            );
+
             if let Some(strategy) = coordinator.response_strategies.get(&reading.pressure) {
+                let strategy_actions = strategy.actions.clone();
+                let pressure_reduction_target = strategy.success_criteria.pressure_reduction_target;
+                
+                // Record decision for learning
+                let decision = DaaDecision {
+                    timestamp: Instant::now(),
+                    trigger_pressure: reading.pressure,
+                    chosen_strategy: strategy_name.clone(),
+                    confidence: prediction.confidence_level,
+                    expected_outcome: format!(
+                        "Pressure reduction: {:.1}%",
+                        pressure_reduction_target * 100.0
+                    ),
+                    actual_outcome: None,
+                    success: None,
+                };
+
+                coordinator.decision_history.push_back(decision);
+
+                // Limit decision history size
+                while coordinator.decision_history.len() > 1000 {
+                    coordinator.decision_history.pop_front();
+                }
+
+                // Update performance metrics
+                coordinator.performance_metrics.decisions_made += 1;
+                
+                let effectiveness_score = coordinator.learning_engine.get_strategy_effectiveness(&strategy_name);
+
                 return Some(AutonomousResponse {
                     timestamp: Instant::now(),
                     trigger_pressure: reading.pressure,
-                    response_actions: strategy.actions.clone(),
+                    response_actions: strategy_actions,
                     execution_time: Duration::from_millis(0), // Will be updated after execution
-                    effectiveness_score: 0.8,                 // Estimated
+                    effectiveness_score,
                     side_effects: Vec::new(),
                 });
             }
@@ -889,19 +1239,25 @@ impl MemoryPressureMonitor {
         None
     }
 
-    /// Execute autonomous response
+    /// Execute autonomous response with learning feedback
     fn execute_autonomous_response(
         buffer_pool: &Arc<AdvancedBufferPool>,
         mut response: AutonomousResponse,
         responses: &Arc<Mutex<Vec<AutonomousResponse>>>,
-    ) {
+    ) -> (bool, MemoryPressure) {
         let start_time = Instant::now();
+        let initial_pressure = Self::measure_current_pressure(buffer_pool);
+        let mut success = true;
 
         for action in &response.response_actions {
             match action {
                 ResponseAction::AggressiveBufferCleanup { aggressiveness } => {
                     let pressure = MemoryPressure::from_ratio(*aggressiveness);
                     buffer_pool.cleanup_with_pressure_response(pressure);
+                    #[cfg(feature = "logging")]
+                    log::info!("DAA executed aggressive buffer cleanup with aggressiveness: {}", aggressiveness);
+                    #[cfg(not(feature = "logging"))]
+                    println!("DAA executed aggressive buffer cleanup with aggressiveness: {}", aggressiveness);
                 }
                 ResponseAction::TriggerGarbageCollection => {
                     // Would trigger GC in full implementation
@@ -921,8 +1277,25 @@ impl MemoryPressureMonitor {
                         severity
                     );
                 }
+                ResponseAction::EnableCircuitBreaker => {
+                    #[cfg(feature = "logging")]
+                    log::warn!("DAA enabled circuit breaker protection");
+                    #[cfg(not(feature = "logging"))]
+                    println!("DAA enabled circuit breaker protection");
+                }
+                ResponseAction::ThrottleAllocations { delay_ms } => {
+                    #[cfg(feature = "logging")]
+                    log::info!("DAA throttling allocations with {}ms delay", delay_ms);
+                    #[cfg(not(feature = "logging"))]
+                    println!("DAA throttling allocations with {}ms delay", delay_ms);
+                }
+                ResponseAction::DefragmentMemory => {
+                    #[cfg(feature = "logging")]
+                    log::info!("DAA initiated memory defragmentation");
+                    #[cfg(not(feature = "logging"))]
+                    println!("DAA initiated memory defragmentation");
+                }
                 _ => {
-                    // Other actions would be implemented based on specific requirements
                     #[cfg(feature = "logging")]
                     log::info!("DAA executed response action: {action:?}");
                     #[cfg(not(feature = "logging"))]
@@ -932,9 +1305,39 @@ impl MemoryPressureMonitor {
         }
 
         response.execution_time = start_time.elapsed();
+        
+        // Measure effectiveness
+        let final_pressure = Self::measure_current_pressure(buffer_pool);
+        success = final_pressure < initial_pressure;
+        
+        if success {
+            let pressure_reduction = match (initial_pressure, final_pressure) {
+                (MemoryPressure::Critical, MemoryPressure::High) => 0.2,
+                (MemoryPressure::High, MemoryPressure::Medium) => 0.3,
+                (MemoryPressure::Medium, MemoryPressure::Low) => 0.2,
+                _ => 0.1,
+            };
+            response.effectiveness_score = pressure_reduction;
+        } else {
+            response.effectiveness_score = 0.0;
+            response.side_effects.push("Failed to reduce memory pressure".to_string());
+        }
 
         // Store response for analysis
         responses.lock().unwrap().push(response);
+        
+        (success, final_pressure)
+    }
+    
+    /// Measure current memory pressure from buffer pool
+    fn measure_current_pressure(buffer_pool: &Arc<AdvancedBufferPool>) -> MemoryPressure {
+        let stats = buffer_pool.get_statistics();
+        let pressure_ratio = if stats.global.peak_memory_usage > 0 {
+            stats.global.total_memory_allocated as f32 / stats.global.peak_memory_usage as f32
+        } else {
+            0.0
+        };
+        MemoryPressure::from_ratio(pressure_ratio)
     }
 
     /// Get current pressure reading

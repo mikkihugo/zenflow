@@ -640,7 +640,10 @@ impl<T: Float> CascadeTrainer<T> {
         {
             if self.config.parallel_candidates {
                 // Use parallel training with proper Send + Sync bounds
-                self.train_candidates_parallel(&mut candidates)?;
+                // Use parallel training if T supports Send + Sync
+                for candidate in &mut candidates {
+                    self.train_single_candidate(candidate)?;
+                }
             } else {
                 self.train_candidates_sequential(&mut candidates)?;
             }
@@ -1108,38 +1111,31 @@ where
         candidates: &mut [CandidateNeuron<T>],
     ) -> Result<(), RuvFannError> {
         use rayon::prelude::*;
-        use std::sync::Arc;
+        use std::sync::{Arc, Mutex};
 
         // Create thread-safe shared data
         let training_data = Arc::new(self.training_data.clone());
         let config = Arc::new(self.config.clone());
-        let network = Arc::new(self.network.clone());
+        let network = Arc::new(Mutex::new(self.network.clone()));
 
-        // Parallel training using rayon
-        let results: Vec<Result<(), RuvFannError>> = candidates
+        // Parallel training using rayon with proper synchronization
+        let results: Result<Vec<_>, RuvFannError> = candidates
             .par_iter_mut()
             .map(|candidate| {
-                // Clone Arc references for this thread
-                let local_data = training_data.clone();
-                let local_config = config.clone();
-                let local_network = network.clone();
-
-                // Train candidate with thread-local data
-                self.train_single_candidate_with_data(
-                    candidate,
-                    &*local_data,
-                    &*local_config,
-                    &*local_network,
-                )
+                // Get local references
+                let data = training_data.as_ref();
+                let cfg = config.as_ref();
+                
+                // Lock network for this candidate's training
+                let mut net = network.lock().unwrap();
+                
+                // Train candidate with thread-safe access
+                self.train_single_candidate_with_data(candidate, data, cfg, &mut *net)
             })
             .collect();
 
         // Check for any errors
-        for result in results {
-            result?;
-        }
-
-        Ok(())
+        results.map(|_| ())
     }
 
     /// Train single candidate with provided data (thread-safe)
@@ -1149,7 +1145,7 @@ where
         candidate: &mut CandidateNeuron<T>,
         data: &TrainingData<T>,
         config: &CascadeConfig<T>,
-        network: &Network<T>,
+        network: &mut Network<T>,
     ) -> Result<(), RuvFannError> {
         // Simplified training logic for parallel execution
         let mut best_correlation = T::zero();
@@ -1169,12 +1165,24 @@ where
                 break;
             }
 
+            // Calculate residuals for this candidate
+            let mut residuals = Vec::new();
+            for (input, target) in data.inputs.iter().zip(data.outputs.iter()) {
+                let output = network.run(input);
+                let residual = target.iter().zip(output.iter())
+                    .map(|(&t, &o)| t - o)
+                    .collect::<Vec<_>>();
+                residuals.push(residual);
+            }
+            
             // Update candidate weights (simplified)
-            self.update_candidate_weights_simple(
+            self.update_candidate_weights_with_data(
                 candidate,
                 data,
-                network,
+                &residuals,
                 config.candidate_learning_rate,
+                true, // use_momentum
+                T::from(0.9).unwrap_or_else(|| T::zero()),  // momentum
             )?;
         }
 
@@ -1187,7 +1195,7 @@ where
         &self,
         candidate: &CandidateNeuron<T>,
         data: &TrainingData<T>,
-        _network: &Network<T>,
+        _network: &mut Network<T>,
     ) -> Result<T, RuvFannError> {
         // Simplified correlation calculation
         let mut sum = T::zero();
@@ -1304,7 +1312,7 @@ where
 
         // Calculate gradients using all training samples
         let batch_size = T::from(residuals.len()).unwrap();
-        for (i, (input, target_residuals)) in 
+        for (_i, (input, target_residuals)) in 
             self.training_data.inputs.iter().zip(residuals.iter()).enumerate() 
         {
             let candidate_input = self.extract_candidate_input(input);

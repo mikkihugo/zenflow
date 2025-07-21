@@ -341,7 +341,12 @@ pub trait StreamingTrainingAlgorithm<T: Float>: TrainingAlgorithm<T> {
                 };
                 
                 // Train on this batch
-                match self.train_epoch(network, &batch_data) {
+                // Cast batch_data to the correct type
+                let typed_batch = TrainingData {
+                    inputs: batch_data.inputs.iter().map(|row| row.iter().map(|&x| T::from(x).unwrap_or_else(|| T::zero())).collect()).collect(),
+                    outputs: batch_data.outputs.iter().map(|row| row.iter().map(|&x| T::from(x).unwrap_or_else(|| T::zero())).collect()).collect(),
+                };
+                match self.train_epoch(network, &typed_batch) {
                     Ok(batch_error) => {
                         total_error = total_error + batch_error;
                         Ok(())

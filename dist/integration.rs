@@ -689,6 +689,7 @@ impl<T: Float + Send + Default> IntegrationTestSuite<T> {
 /// FANN compatibility validator
 pub struct FannCompatibilityValidator<T: Float> {
     compatibility_tests: Vec<CompatibilityTest<T>>,
+    #[allow(dead_code)]
     api_coverage: HashMap<String, bool>,
 }
 

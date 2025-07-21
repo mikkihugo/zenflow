@@ -890,7 +890,8 @@ impl MemoryPressureMonitor {
         reading: &PressureReading,
     ) -> Option<AnomalyEvent> {
         let mut detector = anomaly_detector.lock().unwrap();
-        let stats = &detector.baseline_stats;
+        // Clone the stats to avoid borrowing conflicts
+        let stats = detector.baseline_stats.clone();
 
         // Check each anomaly type using its specific detection model
         
@@ -1023,11 +1024,13 @@ impl MemoryPressureMonitor {
         }
 
         let horizon_seconds = config.prediction_horizon.as_secs();
+        // Clone recent samples to avoid borrowing conflicts
         let recent_samples = predictor
             .historical_data
             .iter()
             .rev()
             .take(20)
+            .cloned()
             .collect::<Vec<_>>();
 
         if recent_samples.len() < 3 {
@@ -1039,16 +1042,19 @@ impl MemoryPressureMonitor {
         // Generate predictions using multiple models
         let mut model_predictions = HashMap::new();
         
+        // Convert to references for the prediction methods
+        let recent_sample_refs: Vec<&PressureReading> = recent_samples.iter().collect();
+        
         // 1. Moving Average Model
-        let ma_prediction = Self::predict_moving_average(&recent_samples, horizon_seconds);
+        let ma_prediction = Self::predict_moving_average(&recent_sample_refs, horizon_seconds);
         model_predictions.insert(PredictionModel::MovingAverage, ma_prediction);
         
         // 2. Linear Regression Model
-        let lr_prediction = Self::predict_linear_regression(&recent_samples, horizon_seconds);
+        let lr_prediction = Self::predict_linear_regression(&recent_sample_refs, horizon_seconds);
         model_predictions.insert(PredictionModel::LinearRegression, lr_prediction);
         
         // 3. Exponential Smoothing Model
-        let es_prediction = Self::predict_exponential_smoothing(&recent_samples, horizon_seconds);
+        let es_prediction = Self::predict_exponential_smoothing(&recent_sample_refs, horizon_seconds);
         model_predictions.insert(PredictionModel::ExponentialSmoothing, es_prediction);
 
         // Combine predictions using ensemble weights
@@ -1188,10 +1194,13 @@ impl MemoryPressureMonitor {
         let predicted_needs_response = prediction.predicted_pressure >= MemoryPressure::High;
 
         if needs_response || predicted_needs_response {
+            // Clone strategies to avoid borrowing conflicts
+            let response_strategies = coordinator.response_strategies.clone();
+            
             // Use learning engine to select optimal strategy
             let strategy_name = coordinator.learning_engine.select_strategy(
                 reading.pressure,
-                &coordinator.response_strategies,
+                &response_strategies,
                 prediction.confidence_level,
             );
 

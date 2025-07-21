@@ -41,11 +41,10 @@ export function createWrapperScript(type = 'unix') {
       return universalTemplate;
     }
   }
-  
-  const filename = type === 'unix' ? 'claude-flow' : 
-                   type === 'windows' ? 'claude-flow.bat' : 
-                   'claude-flow.ps1';
-  
+
+  const filename =
+    type === 'unix' ? 'claude-flow' : type === 'windows' ? 'claude-flow.bat' : 'claude-flow.ps1';
+
   const template = loadTemplate(filename);
   if (!template) {
     return createWrapperScriptFallback(type);
@@ -143,7 +142,7 @@ npx claude-flow analysis performance-report --compare swarm-123
 # Full metrics report
 npx claude-flow analysis performance-report --include-metrics --format markdown
 \`\`\`
-`
+`,
     },
     automation: {
       'auto-agent': `# auto-agent
@@ -223,7 +222,7 @@ npx claude-flow automation workflow-select --constraints "no-downtime,rollback"
 # Preview mode
 npx claude-flow automation workflow-select --task "Database migration" --preview
 \`\`\`
-`
+`,
     },
     coordination: {
       'swarm-init': `# swarm-init
@@ -303,7 +302,7 @@ npx claude-flow task orchestrate --task "Fix production bug" --priority critical
 # With specific strategy
 npx claude-flow task orchestrate --task "Refactor codebase" --strategy parallel
 \`\`\`
-`
+`,
     },
     github: {
       'github-swarm': `# github-swarm
@@ -436,7 +435,7 @@ npx claude-flow github code-review --pr-number 456 --focus security
 # With fix suggestions
 npx claude-flow github code-review --pr-number 456 --suggest-fixes
 \`\`\`
-`
+`,
     },
     hooks: {
       'pre-task': `# pre-task
@@ -568,7 +567,7 @@ npx claude-flow hook session-end --export-metrics
 # Full closure
 npx claude-flow hook session-end --export-metrics --generate-summary --persist-state
 \`\`\`
-`
+`,
     },
     memory: {
       'memory-usage': `# memory-usage
@@ -648,7 +647,7 @@ npx claude-flow memory search --pattern "api-.*"
 # Limited results
 npx claude-flow memory search --query "config" --limit 10
 \`\`\`
-`
+`,
     },
     monitoring: {
       'swarm-monitor': `# swarm-monitor
@@ -728,7 +727,7 @@ npx claude-flow monitoring real-time-view --filter errors
 # Highlight pattern
 npx claude-flow monitoring real-time-view --highlight "API"
 \`\`\`
-`
+`,
     },
     optimization: {
       'topology-optimize': `# topology-optimize
@@ -808,7 +807,7 @@ npx claude-flow optimization cache-manage --action clear
 # Set limits
 npx claude-flow optimization cache-manage --max-size 100 --ttl 3600
 \`\`\`
-`
+`,
     },
     training: {
       'neural-train': `# neural-train
@@ -888,7 +887,7 @@ npx claude-flow training model-update --model agent-selector
 # Incremental with validation
 npx claude-flow training model-update --incremental --validate
 \`\`\`
-`
+`,
     },
     workflows: {
       'workflow-create': `# workflow-create
@@ -968,11 +967,14 @@ npx claude-flow workflow export --name "test-suite" --format yaml
 # With history
 npx claude-flow workflow export --name "deploy-api" --include-history
 \`\`\`
-`
-    }
+`,
+    },
   };
 
-  return docs[category]?.[command] || `# ${command}\n\nCommand documentation for ${command} in category ${category}.\n\nUsage:\n\`\`\`bash\nnpx claude-flow ${category} ${command} [options]\n\`\`\`\n`;
+  return (
+    docs[category]?.[command] ||
+    `# ${command}\n\nCommand documentation for ${command} in category ${category}.\n\nUsage:\n\`\`\`bash\nnpx claude-flow ${category} ${command} [options]\n\`\`\`\n`
+  );
 }
 
 // Command categories and their commands
@@ -986,7 +988,7 @@ export const COMMAND_STRUCTURE = {
   monitoring: ['swarm-monitor', 'agent-metrics', 'real-time-view'],
   optimization: ['topology-optimize', 'parallel-execute', 'cache-manage'],
   training: ['neural-train', 'pattern-learn', 'model-update'],
-  workflows: ['workflow-create', 'workflow-execute', 'workflow-export']
+  workflows: ['workflow-create', 'workflow-execute', 'workflow-export'],
 };
 
 // Helper script content
@@ -1059,9 +1061,9 @@ echo "  - npx claude-flow github swarm"
 echo "  - npx claude-flow repo analyze"
 echo "  - npx claude-flow pr enhance"
 echo "  - npx claude-flow issue triage"
-`
+`,
   };
-  
+
   return scripts[name] || '';
 }
 
@@ -1224,97 +1226,98 @@ See full documentation in \`.claude/commands/\`
 }
 
 function createEnhancedSettingsJsonFallback() {
-  return JSON.stringify({
-    env: {
-      CLAUDE_FLOW_AUTO_COMMIT: "false",
-      CLAUDE_FLOW_AUTO_PUSH: "false",
-      CLAUDE_FLOW_HOOKS_ENABLED: "true",
-      CLAUDE_FLOW_TELEMETRY_ENABLED: "true",
-      CLAUDE_FLOW_REMOTE_EXECUTION: "true",
-      CLAUDE_FLOW_GITHUB_INTEGRATION: "true"
+  return JSON.stringify(
+    {
+      env: {
+        CLAUDE_FLOW_AUTO_COMMIT: 'false',
+        CLAUDE_FLOW_AUTO_PUSH: 'false',
+        CLAUDE_FLOW_HOOKS_ENABLED: 'true',
+        CLAUDE_FLOW_TELEMETRY_ENABLED: 'true',
+        CLAUDE_FLOW_REMOTE_EXECUTION: 'true',
+        CLAUDE_FLOW_GITHUB_INTEGRATION: 'true',
+      },
+      permissions: {
+        allow: [
+          'Bash(npx claude-flow *)',
+          'Bash(npm run lint)',
+          'Bash(npm run test:*)',
+          'Bash(npm test *)',
+          'Bash(git status)',
+          'Bash(git diff *)',
+          'Bash(git log *)',
+          'Bash(git add *)',
+          'Bash(git commit *)',
+          'Bash(git push)',
+          'Bash(git config *)',
+          'Bash(gh *)',
+          'Bash(node *)',
+          'Bash(which *)',
+          'Bash(pwd)',
+          'Bash(ls *)',
+        ],
+        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],
+      },
+      enabledMcpjsonServers: ['claude-flow', 'ruv-swarm'],
+      hooks: {
+        PreToolUse: [
+          {
+            matcher: 'Bash',
+            hooks: [
+              {
+                type: 'command',
+                command:
+                  'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-flow@alpha hooks pre-command --command "{}" --validate-safety true --prepare-resources true',
+              },
+            ],
+          },
+          {
+            matcher: 'Write|Edit|MultiEdit',
+            hooks: [
+              {
+                type: 'command',
+                command:
+                  'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-flow@alpha hooks pre-edit --file "{}" --auto-assign-agents true --load-context true',
+              },
+            ],
+          },
+        ],
+        PostToolUse: [
+          {
+            matcher: 'Bash',
+            hooks: [
+              {
+                type: 'command',
+                command:
+                  'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-flow@alpha hooks post-command --command "{}" --track-metrics true --store-results true',
+              },
+            ],
+          },
+          {
+            matcher: 'Write|Edit|MultiEdit',
+            hooks: [
+              {
+                type: 'command',
+                command:
+                  'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-flow@alpha hooks post-edit --file "{}" --format true --update-memory true --train-neural true',
+              },
+            ],
+          },
+        ],
+        Stop: [
+          {
+            hooks: [
+              {
+                type: 'command',
+                command:
+                  'npx claude-flow@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true',
+              },
+            ],
+          },
+        ],
+      },
+      includeCoAuthoredBy: true,
     },
-    permissions: {
-      allow: [
-        "Bash(npx claude-flow *)",
-        "Bash(npm run lint)",
-        "Bash(npm run test:*)",
-        "Bash(npm test *)",
-        "Bash(git status)",
-        "Bash(git diff *)",
-        "Bash(git log *)",
-        "Bash(git add *)",
-        "Bash(git commit *)",
-        "Bash(git push)",
-        "Bash(git config *)",
-        "Bash(gh *)",
-        "Bash(node *)",
-        "Bash(which *)",
-        "Bash(pwd)",
-        "Bash(ls *)"
-      ],
-      deny: [
-        "Bash(rm -rf /)",
-        "Bash(curl * | bash)",
-        "Bash(wget * | sh)",
-        "Bash(eval *)"
-      ]
-    },
-    enabledMcpjsonServers: [
-      "claude-flow",
-      "ruv-swarm"
-    ],
-    hooks: {
-      PreToolUse: [
-        {
-          matcher: "Bash",
-          hooks: [
-            {
-              type: "command",
-              command: "cat | jq -r '.tool_input.command // \"\"' | xargs -I {} npx claude-flow@alpha hooks pre-command --command \"{}\" --validate-safety true --prepare-resources true"
-            }
-          ]
-        },
-        {
-          matcher: "Write|Edit|MultiEdit",
-          hooks: [
-            {
-              type: "command",
-              command: "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} npx claude-flow@alpha hooks pre-edit --file \"{}\" --auto-assign-agents true --load-context true"
-            }
-          ]
-        }
-      ],
-      PostToolUse: [
-        {
-          matcher: "Bash",
-          hooks: [
-            {
-              type: "command",
-              command: "cat | jq -r '.tool_input.command // \"\"' | xargs -I {} npx claude-flow@alpha hooks post-command --command \"{}\" --track-metrics true --store-results true"
-            }
-          ]
-        },
-        {
-          matcher: "Write|Edit|MultiEdit",
-          hooks: [
-            {
-              type: "command",
-              command: "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} npx claude-flow@alpha hooks post-edit --file \"{}\" --format true --update-memory true --train-neural true"
-            }
-          ]
-        }
-      ],
-      Stop: [
-        {
-          hooks: [
-            {
-              type: "command",
-              command: "npx claude-flow@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true"
-            }
-          ]
-        }
-      ]
-    },
-    includeCoAuthoredBy: true
-  }, null, 2);
+    null,
+    2,
+  );
 }

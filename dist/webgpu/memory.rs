@@ -743,29 +743,30 @@ impl EnhancedGpuMemoryManager {
 
     #[cfg(feature = "gpu")]
     fn initialize_advanced_features(&mut self) -> ComputeResult<()> {
-        // TODO: Properly initialize advanced buffer pool with device reference
-        // For now, skip advanced pool initialization to avoid compilation issues
-        // self.advanced_pool = Some(pool.clone());
+        // Initialize advanced buffer pool with WebGPU device
+        let webgpu_device = Arc::new(self.device.device.clone());
+        let pool = Arc::new(AdvancedBufferPool::new(webgpu_device));
+        self.advanced_pool = Some(pool.clone());
 
         // Create pressure monitor if monitoring enabled
         if self.config.enable_monitoring {
-            let monitor = MemoryPressureMonitor::new(self.config.monitor_config.clone());
+            let mut monitor = MemoryPressureMonitor::new(self.config.monitor_config.clone());
 
             // Start monitoring if auto-start enabled
             if self.config.auto_start_monitoring {
-                // TODO: Start monitoring when pool is properly initialized
-                // monitor.start_monitoring(pool.clone())?;
+                monitor.start_monitoring(pool.clone())?;
+                log::info!("Memory pressure monitoring started automatically");
             }
 
             self.pressure_monitor = Some(monitor);
         }
 
-        log::info!("Enhanced GPU memory manager initialized with advanced features");
+        log::info!("Enhanced GPU memory manager initialized with advanced features and pressure monitoring");
         Ok(())
     }
 
     /// Allocate buffer with enhanced allocation strategy
-    pub fn allocate_buffer(&self, size: usize) -> ComputeResult<BufferHandle> {
+    pub fn allocate_buffer(&self, _size: usize) -> ComputeResult<BufferHandle> {
         #[cfg(feature = "gpu")]
         if let Some(ref pool) = self.advanced_pool {
             // Use advanced buffer pool
@@ -835,7 +836,7 @@ impl EnhancedGpuMemoryManager {
     }
 
     /// Deallocate buffer
-    pub fn deallocate_buffer(&self, handle: BufferHandle) -> ComputeResult<()> {
+    pub fn deallocate_buffer(&self, _handle: BufferHandle) -> ComputeResult<()> {
         #[cfg(feature = "gpu")]
         if let Some(ref _pool) = self.advanced_pool {
             // Look up buffer from our allocated buffers map

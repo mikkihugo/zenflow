@@ -30,6 +30,7 @@ where
 
 /// Binary format configuration
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct BinaryConfig {
     /// Use little endian byte order
     pub little_endian: bool,
@@ -47,6 +48,7 @@ impl BinaryConfig {
     }
 
     /// Create a config optimized for size (variable length encoding)
+    #[allow(dead_code)]
     pub fn compact() -> Self {
         Self {
             little_endian: true,
@@ -55,6 +57,7 @@ impl BinaryConfig {
     }
 
     /// Create a config optimized for speed (fixed length encoding)
+    #[allow(dead_code)]
     pub fn fast() -> Self {
         Self {
             little_endian: true,
@@ -71,6 +74,7 @@ impl Default for BinaryConfig {
 
 /// Binary reader with configuration
 pub struct BinaryReader {
+    #[allow(dead_code)]
     config: BinaryConfig,
 }
 

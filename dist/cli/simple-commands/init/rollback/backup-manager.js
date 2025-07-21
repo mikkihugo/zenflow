@@ -28,7 +28,7 @@ export class BackupManager {
       location: null,
       errors: [],
       warnings: [],
-      files: []
+      files: [],
     };
 
     try {
@@ -52,7 +52,7 @@ export class BackupManager {
         timestamp: Date.now(),
         workingDir: this.workingDir,
         files: [],
-        directories: []
+        directories: [],
       };
 
       // Backup critical files
@@ -79,27 +79,44 @@ export class BackupManager {
       }
 
       // Save manifest
+<<<<<<< HEAD
       await node.writeTextFile(
         `${backupPath}/manifest.json`,
         JSON.stringify(manifest, null, 2)
       );
+||||||| 47d5ef4
+      await Deno.writeTextFile(
+        `${backupPath}/manifest.json`,
+        JSON.stringify(manifest, null, 2)
+      );
+=======
+      await Deno.writeTextFile(`${backupPath}/manifest.json`, JSON.stringify(manifest, null, 2));
+>>>>>>> origin/main
 
       // Create backup metadata
       const metadata = {
         created: Date.now(),
         size: await this.calculateBackupSize(backupPath),
         fileCount: manifest.files.length,
-        dirCount: manifest.directories.length
+        dirCount: manifest.directories.length,
       };
 
+<<<<<<< HEAD
       await node.writeTextFile(
         `${backupPath}/metadata.json`,
         JSON.stringify(metadata, null, 2)
       );
+||||||| 47d5ef4
+      await Deno.writeTextFile(
+        `${backupPath}/metadata.json`,
+        JSON.stringify(metadata, null, 2)
+      );
+=======
+      await Deno.writeTextFile(`${backupPath}/metadata.json`, JSON.stringify(metadata, null, 2));
+>>>>>>> origin/main
 
       console.log(`  ✓ Backup created: ${backupId}`);
       console.log(`  📁 Files backed up: ${result.files.length}`);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Backup creation failed: ${error.message}`);
@@ -116,12 +133,12 @@ export class BackupManager {
       success: true,
       errors: [],
       warnings: [],
-      restored: []
+      restored: [],
     };
 
     try {
       const backupPath = `${this.backupDir}/${backupId}`;
-      
+
       // Check if backup exists
       try {
         await node.stat(backupPath);
@@ -158,7 +175,6 @@ export class BackupManager {
 
       console.log(`  ✓ Backup restored: ${backupId}`);
       console.log(`  📁 Items restored: ${result.restored.length}`);
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Backup restoration failed: ${error.message}`);
@@ -175,16 +191,36 @@ export class BackupManager {
 
     try {
       await this.ensureBackupDir();
+<<<<<<< HEAD
       
       for await (const entry of node.readDir(this.backupDir)) {
+||||||| 47d5ef4
+      
+      for await (const entry of Deno.readDir(this.backupDir)) {
+=======
+
+      for await (const entry of Deno.readDir(this.backupDir)) {
+>>>>>>> origin/main
         if (entry.isDirectory) {
           try {
             const metadataPath = `${this.backupDir}/${entry.name}/metadata.json`;
             const manifestPath = `${this.backupDir}/${entry.name}/manifest.json`;
+<<<<<<< HEAD
             
             const metadata = JSON.parse(await node.readTextFile(metadataPath));
             const manifest = JSON.parse(await node.readTextFile(manifestPath));
             
+||||||| 47d5ef4
+            
+            const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
+            const manifest = JSON.parse(await Deno.readTextFile(manifestPath));
+            
+=======
+
+            const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
+            const manifest = JSON.parse(await Deno.readTextFile(manifestPath));
+
+>>>>>>> origin/main
             backups.push({
               id: entry.name,
               type: manifest.type,
@@ -192,7 +228,7 @@ export class BackupManager {
               created: metadata.created,
               size: metadata.size,
               fileCount: metadata.fileCount,
-              dirCount: metadata.dirCount
+              dirCount: metadata.dirCount,
             });
           } catch {
             // Skip invalid backup directories
@@ -212,7 +248,7 @@ export class BackupManager {
   async deleteBackup(backupId) {
     const result = {
       success: true,
-      errors: []
+      errors: [],
     };
 
     try {
@@ -234,15 +270,15 @@ export class BackupManager {
     const result = {
       success: true,
       cleaned: [],
-      errors: []
+      errors: [],
     };
 
     try {
       const backups = await this.listBackups();
-      
+
       if (backups.length > keepCount) {
         const toDelete = backups.slice(keepCount);
-        
+
         for (const backup of toDelete) {
           const deleteResult = await this.deleteBackup(backup.id);
           if (deleteResult.success) {
@@ -252,7 +288,6 @@ export class BackupManager {
           }
         }
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Cleanup failed: ${error.message}`);
@@ -268,13 +303,13 @@ export class BackupManager {
     const result = {
       success: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     try {
       // Check backup directory
       await this.ensureBackupDir();
-      
+
       // Test backup creation
       const testBackup = await this.createTestBackup();
       if (!testBackup.success) {
@@ -290,7 +325,6 @@ export class BackupManager {
       if (!spaceCheck.adequate) {
         result.warnings.push('Low disk space for backups');
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Backup system validation failed: ${error.message}`);
@@ -321,7 +355,7 @@ export class BackupManager {
       'package-lock.json',
       '.roomodes',
       'claude-flow',
-      'memory/claude-flow-data.json'
+      'memory/claude-flow-data.json',
     ];
 
     for (const file of potentialFiles) {
@@ -340,13 +374,7 @@ export class BackupManager {
 
   async getCriticalDirectories() {
     const dirs = [];
-    const potentialDirs = [
-      '.claude',
-      '.roo',
-      'memory/agents',
-      'memory/sessions',
-      'coordination'
-    ];
+    const potentialDirs = ['.claude', '.roo', 'memory/agents', 'memory/sessions', 'coordination'];
 
     for (const dir of potentialDirs) {
       try {
@@ -365,29 +393,44 @@ export class BackupManager {
   async backupFile(relativePath, backupPath) {
     const result = {
       success: true,
-      fileInfo: null
+      fileInfo: null,
     };
 
     try {
       const sourcePath = `${this.workingDir}/${relativePath}`;
       const destPath = `${backupPath}/${relativePath}`;
-      
+
       // Ensure destination directory exists
       const destDir = destPath.split('/').slice(0, -1).join('/');
+<<<<<<< HEAD
       await node.mkdir(destDir, { recursive: true });
       
+||||||| 47d5ef4
+      await Deno.mkdir(destDir, { recursive: true });
+      
+=======
+      await Deno.mkdir(destDir, { recursive: true });
+
+>>>>>>> origin/main
       // Copy file
+<<<<<<< HEAD
       await node.copyFile(sourcePath, destPath);
       
+||||||| 47d5ef4
+      await Deno.copyFile(sourcePath, destPath);
+      
+=======
+      await Deno.copyFile(sourcePath, destPath);
+
+>>>>>>> origin/main
       // Get file info
       const stat = await node.stat(sourcePath);
       result.fileInfo = {
         originalPath: relativePath,
         backupPath: destPath,
         size: stat.size,
-        modified: stat.mtime?.getTime() || 0
+        modified: stat.mtime?.getTime() || 0,
       };
-
     } catch (error) {
       result.success = false;
       result.error = error.message;
@@ -399,24 +442,31 @@ export class BackupManager {
   async backupDirectory(relativePath, backupPath) {
     const result = {
       success: true,
-      dirInfo: null
+      dirInfo: null,
     };
 
     try {
       const sourcePath = `${this.workingDir}/${relativePath}`;
       const destPath = `${backupPath}/${relativePath}`;
-      
+
       // Create destination directory
+<<<<<<< HEAD
       await node.mkdir(destPath, { recursive: true });
       
+||||||| 47d5ef4
+      await Deno.mkdir(destPath, { recursive: true });
+      
+=======
+      await Deno.mkdir(destPath, { recursive: true });
+
+>>>>>>> origin/main
       // Copy directory contents recursively
       await this.copyDirectoryRecursive(sourcePath, destPath);
-      
+
       result.dirInfo = {
         originalPath: relativePath,
-        backupPath: destPath
+        backupPath: destPath,
       };
-
     } catch (error) {
       result.success = false;
       result.error = error.message;
@@ -429,7 +479,7 @@ export class BackupManager {
     for await (const entry of node.readDir(source)) {
       const sourcePath = `${source}/${entry.name}`;
       const destPath = `${dest}/${entry.name}`;
-      
+
       if (entry.isFile) {
         await node.copyFile(sourcePath, destPath);
       } else if (entry.isDirectory) {
@@ -441,20 +491,35 @@ export class BackupManager {
 
   async restoreFile(fileInfo, backupPath) {
     const result = {
-      success: true
+      success: true,
     };
 
     try {
       const sourcePath = fileInfo.backupPath;
       const destPath = `${this.workingDir}/${fileInfo.originalPath}`;
-      
+
       // Ensure destination directory exists
       const destDir = destPath.split('/').slice(0, -1).join('/');
+<<<<<<< HEAD
       await node.mkdir(destDir, { recursive: true });
       
+||||||| 47d5ef4
+      await Deno.mkdir(destDir, { recursive: true });
+      
+=======
+      await Deno.mkdir(destDir, { recursive: true });
+
+>>>>>>> origin/main
       // Copy file back
+<<<<<<< HEAD
       await node.copyFile(sourcePath, destPath);
 
+||||||| 47d5ef4
+      await Deno.copyFile(sourcePath, destPath);
+
+=======
+      await Deno.copyFile(sourcePath, destPath);
+>>>>>>> origin/main
     } catch (error) {
       result.success = false;
       result.error = error.message;
@@ -465,26 +530,33 @@ export class BackupManager {
 
   async restoreDirectory(dirInfo, backupPath) {
     const result = {
-      success: true
+      success: true,
     };
 
     try {
       const sourcePath = dirInfo.backupPath;
       const destPath = `${this.workingDir}/${dirInfo.originalPath}`;
-      
+
       // Remove existing directory if it exists
       try {
         await node.remove(destPath, { recursive: true });
       } catch {
         // Directory might not exist
       }
-      
+
       // Create destination directory
+<<<<<<< HEAD
       await node.mkdir(destPath, { recursive: true });
       
+||||||| 47d5ef4
+      await Deno.mkdir(destPath, { recursive: true });
+      
+=======
+      await Deno.mkdir(destPath, { recursive: true });
+
+>>>>>>> origin/main
       // Copy directory contents back
       await this.copyDirectoryRecursive(sourcePath, destPath);
-
     } catch (error) {
       result.success = false;
       result.error = error.message;
@@ -499,8 +571,16 @@ export class BackupManager {
     try {
       for await (const entry of node.readDir(backupPath)) {
         const entryPath = `${backupPath}/${entry.name}`;
+<<<<<<< HEAD
         const stat = await node.stat(entryPath);
         
+||||||| 47d5ef4
+        const stat = await Deno.stat(entryPath);
+        
+=======
+        const stat = await Deno.stat(entryPath);
+
+>>>>>>> origin/main
         if (stat.isFile) {
           totalSize += stat.size;
         } else if (stat.isDirectory) {
@@ -520,7 +600,7 @@ export class BackupManager {
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -528,21 +608,21 @@ export class BackupManager {
   async checkBackupDiskSpace() {
     const result = {
       adequate: true,
-      available: 0
+      available: 0,
     };
 
     try {
       const command = new node.Command('df', {
         args: ['-k', this.backupDir],
-        stdout: 'piped'
+        stdout: 'piped',
       });
 
       const { stdout, success } = await command.output();
-      
+
       if (success) {
         const output = new TextDecoder().decode(stdout);
         const lines = output.trim().split('\n');
-        
+
         if (lines.length >= 2) {
           const parts = lines[1].split(/\s+/);
           if (parts.length >= 4) {

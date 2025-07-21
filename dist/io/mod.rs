@@ -3,20 +3,21 @@
 #[cfg(feature = "binary")]
 mod binary;
 #[cfg(feature = "compression")]
-mod compression;
+pub mod compression;
 mod dot_export;
 mod error;
 mod fann_format;
 #[cfg(feature = "serde")]
 mod json;
-mod streaming;
+pub mod streaming;
 mod training_data;
 
 // Re-export types
 pub use dot_export::DotExporter;
 pub use error::{IoError, IoResult};
 pub use fann_format::{FannReader, FannWriter};
-pub use training_data::{TrainingDataReader, TrainingDataStreamReader, TrainingDataWriter};
+pub use streaming::{TrainingDataStreamReader, StreamStats, BufferedStreamReader, memory};
+pub use training_data::{TrainingDataReader, TrainingDataWriter};
 
 #[cfg(feature = "serde")]
 pub use json::{read_json, write_json};
@@ -25,7 +26,7 @@ pub use json::{read_json, write_json};
 pub use binary::{read_binary, write_binary};
 
 #[cfg(feature = "compression")]
-pub use compression::{compress_data, decompress_data};
+pub use compression::{compress_data, decompress_data, compress_bytes, decompress_bytes, analyze::CompressionStats};
 
 /// Supported file formats
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

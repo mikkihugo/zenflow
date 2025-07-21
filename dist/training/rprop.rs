@@ -113,6 +113,7 @@ impl<T: Float + Send + Default> Rprop<T> {
         }
     }
 
+    #[allow(dead_code)]
     fn update_step_size(&self, step_size: T, gradient: T, previous_gradient: T) -> T {
         let sign_change = gradient * previous_gradient;
 

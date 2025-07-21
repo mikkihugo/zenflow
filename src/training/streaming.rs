@@ -5,7 +5,7 @@
 //! training effectiveness.
 
 use super::*;
-use crate::io::streaming::{TrainingDataStreamReader, StreamStats, memory};
+use crate::io::streaming::{StreamStats, memory};
 use num_traits::Float;
 use std::io::BufRead;
 
@@ -246,13 +246,14 @@ pub mod utils {
             let mut reader = BufReader::new(file);
 
             let (error, stats) = trainer.train_streaming(network, &mut reader)?;
-            results.push((error, stats));
-
+            
             println!("Epoch {}: Error = {:.6}, Samples = {}, Bytes = {}", 
                      epoch + 1, 
                      error.to_f64().unwrap_or(0.0), 
                      stats.samples_processed, 
                      stats.bytes_read);
+            
+            results.push((error, stats));
 
             // Call callback if training should stop
             if !trainer.call_callback(epoch, network, &TrainingData { inputs: vec![], outputs: vec![] }) {

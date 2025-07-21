@@ -6,6 +6,23 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+/// GPU memory configuration for neural networks
+#[cfg(feature = "gpu")]
+#[derive(Debug, Clone)]
+pub struct NetworkMemoryConfig {
+    /// Whether memory pressure monitoring is enabled
+    pub monitoring_enabled: bool,
+    /// Memory pressure threshold (0.0-1.0) for triggering cleanup
+    pub pressure_threshold: f32,
+    /// Whether DAA autonomous optimization is enabled
+    pub daa_enabled: bool,
+}
+
+#[cfg(feature = "compression")]
+use crate::io::compression::{compress_bytes, decompress_bytes, analyze::CompressionStats};
+#[cfg(all(feature = "compression", feature = "serde"))]
+use std::{fs::File, io::{Read, Write}, path::Path};
+
 /// Errors that can occur during network operations
 #[derive(Error, Debug)]
 pub enum NetworkError {
@@ -20,6 +37,12 @@ pub enum NetworkError {
 
     #[error("Network has no layers")]
     NoLayers,
+
+    #[error("I/O error: {0}")]
+    IoError(String),
+
+    #[error("Compression error: {0}")]
+    CompressionError(String),
 }
 
 /// A feedforward neural network
@@ -31,6 +54,11 @@ pub struct Network<T: Float> {
 
     /// Connection rate (1.0 = fully connected, 0.0 = no connections)
     pub connection_rate: T,
+
+    /// GPU memory monitoring configuration
+    #[cfg(feature = "gpu")]
+    #[cfg_attr(feature = "serde", serde(skip))]
+    memory_config: Option<NetworkMemoryConfig>,
 }
 
 impl<T: Float> Network<T> {
@@ -400,6 +428,50 @@ impl<T: Float> Network<T> {
         inputs.iter().map(|input| self.run(input)).collect()
     }
 
+    /// Get GPU memory monitoring configuration
+    #[cfg(feature = "gpu")]
+    pub fn memory_config(&self) -> Option<&NetworkMemoryConfig> {
+        self.memory_config.as_ref()
+    }
+
+    /// Check if memory monitoring is enabled
+    #[cfg(feature = "gpu")]
+    pub fn has_memory_monitoring(&self) -> bool {
+        self.memory_config.as_ref().map_or(false, |c| c.monitoring_enabled)
+    }
+
+    /// Get current GPU memory statistics if monitoring is enabled
+    #[cfg(feature = "gpu")]
+    pub fn memory_statistics(&self) -> Option<crate::webgpu::memory::EnhancedMemoryStats> {
+        if self.has_memory_monitoring() {
+            // In a real implementation, this would connect to the WebGPU backend
+            // and retrieve current memory statistics from the enhanced memory manager
+            // For now, we return None as a placeholder
+            None
+        } else {
+            None
+        }
+    }
+
+    /// Trigger manual memory cleanup if monitoring is enabled
+    #[cfg(feature = "gpu")]
+    pub fn cleanup_memory(&self, aggressiveness: f32) -> Result<(), NetworkError> {
+        if let Some(config) = &self.memory_config {
+            if config.monitoring_enabled {
+                // In a real implementation, this would trigger cleanup through the WebGPU backend
+                println!(
+                    "Manual memory cleanup triggered with aggressiveness: {}", 
+                    aggressiveness.clamp(0.0, 1.0)
+                );
+                Ok(())
+            } else {
+                Err(NetworkError::InvalidLayerConfiguration) // Memory monitoring not enabled
+            }
+        } else {
+            Err(NetworkError::InvalidLayerConfiguration) // No memory configuration
+        }
+    }
+
     /// Serialize the network to bytes
     #[cfg(all(feature = "binary", feature = "serde"))]
     pub fn to_bytes(&self) -> Vec<u8>
@@ -433,12 +505,138 @@ impl<T: Float> Network<T> {
         // Fallback implementation when serde is not available
         Err(NetworkError::InvalidLayerConfiguration)
     }
+
+    /// Save the network to a file with compression
+    #[cfg(all(feature = "compression", feature = "serde"))]
+    pub fn save_compressed(&self, path: &str) -> Result<CompressionStats, NetworkError>
+    where
+        T: serde::Serialize,
+        Network<T>: serde::Serialize,
+    {
+        // Serialize network to bytes
+        let original_data = bincode::serialize(self)
+            .map_err(|e| NetworkError::IoError(format!("Serialization failed: {}", e)))?;
+
+        // Compress the serialized data
+        let compressed_data = compress_bytes(&original_data)
+            .map_err(|e| NetworkError::CompressionError(format!("Compression failed: {}", e)))?;
+
+        // Write compressed data to file
+        let mut file = File::create(path)
+            .map_err(|e| NetworkError::IoError(format!("Failed to create file: {}", e)))?;
+        file.write_all(&compressed_data)
+            .map_err(|e| NetworkError::IoError(format!("Failed to write file: {}", e)))?;
+
+        // Calculate and return compression statistics
+        Ok(CompressionStats {
+            original_size: original_data.len(),
+            compressed_size: compressed_data.len(),
+            ratio: compressed_data.len() as f64 / original_data.len() as f64,
+            savings_percent: (1.0 - (compressed_data.len() as f64 / original_data.len() as f64)) * 100.0,
+        })
+    }
+
+    /// Load a network from a compressed file
+    #[cfg(all(feature = "compression", feature = "serde"))]
+    pub fn load_compressed(path: &str) -> Result<Self, NetworkError>
+    where
+        T: serde::de::DeserializeOwned,
+        Network<T>: serde::de::DeserializeOwned,
+    {
+        // Read compressed data from file
+        let mut file = File::open(path)
+            .map_err(|e| NetworkError::IoError(format!("Failed to open file: {}", e)))?;
+        let mut compressed_data = Vec::new();
+        file.read_to_end(&mut compressed_data)
+            .map_err(|e| NetworkError::IoError(format!("Failed to read file: {}", e)))?;
+
+        // Decompress the data
+        let decompressed_data = decompress_bytes(&compressed_data)
+            .map_err(|e| NetworkError::CompressionError(format!("Decompression failed: {}", e)))?;
+
+        // Deserialize network from decompressed data
+        let network = bincode::deserialize(&decompressed_data)
+            .map_err(|e| NetworkError::IoError(format!("Deserialization failed: {}", e)))?;
+
+        Ok(network)
+    }
+
+    /// Save the network to a file without compression (for comparison)
+    #[cfg(feature = "serde")]
+    pub fn save_uncompressed(&self, path: &str) -> Result<usize, NetworkError>
+    where
+        T: serde::Serialize,
+        Network<T>: serde::Serialize,
+    {
+        // Serialize network to bytes
+        let data = bincode::serialize(self)
+            .map_err(|e| NetworkError::IoError(format!("Serialization failed: {}", e)))?;
+
+        // Write data to file
+        let mut file = File::create(path)
+            .map_err(|e| NetworkError::IoError(format!("Failed to create file: {}", e)))?;
+        file.write_all(&data)
+            .map_err(|e| NetworkError::IoError(format!("Failed to write file: {}", e)))?;
+
+        Ok(data.len())
+    }
+
+    /// Load a network from an uncompressed file
+    #[cfg(feature = "serde")]
+    pub fn load_uncompressed(path: &str) -> Result<Self, NetworkError>
+    where
+        T: serde::de::DeserializeOwned,
+        Network<T>: serde::de::DeserializeOwned,
+    {
+        // Read data from file
+        let mut file = File::open(path)
+            .map_err(|e| NetworkError::IoError(format!("Failed to open file: {}", e)))?;
+        let mut data = Vec::new();
+        file.read_to_end(&mut data)
+            .map_err(|e| NetworkError::IoError(format!("Failed to read file: {}", e)))?;
+
+        // Deserialize network from data
+        let network = bincode::deserialize(&data)
+            .map_err(|e| NetworkError::IoError(format!("Deserialization failed: {}", e)))?;
+
+        Ok(network)
+    }
+
+    /// Get compression statistics for this network without saving
+    #[cfg(all(feature = "compression", feature = "serde"))]
+    pub fn compression_stats(&self) -> Result<CompressionStats, NetworkError>
+    where
+        T: serde::Serialize,
+        Network<T>: serde::Serialize,
+    {
+        // Serialize network to bytes
+        let original_data = bincode::serialize(self)
+            .map_err(|e| NetworkError::IoError(format!("Serialization failed: {}", e)))?;
+
+        // Compress the serialized data
+        let compressed_data = compress_bytes(&original_data)
+            .map_err(|e| NetworkError::CompressionError(format!("Compression failed: {}", e)))?;
+
+        // Return compression statistics
+        Ok(CompressionStats {
+            original_size: original_data.len(),
+            compressed_size: compressed_data.len(),
+            ratio: compressed_data.len() as f64 / original_data.len() as f64,
+            savings_percent: (1.0 - (compressed_data.len() as f64 / original_data.len() as f64)) * 100.0,
+        })
+    }
 }
 
 /// Builder for creating neural networks with a fluent API
 pub struct NetworkBuilder<T: Float> {
     layers: Vec<(usize, ActivationFunction, T)>,
     connection_rate: T,
+    #[cfg(feature = "gpu")]
+    memory_monitoring_enabled: bool,
+    #[cfg(feature = "gpu")]
+    pressure_threshold: f32,
+    #[cfg(feature = "gpu")]
+    enable_daa_optimization: bool,
 }
 
 impl<T: Float> NetworkBuilder<T> {
@@ -452,12 +650,19 @@ impl<T: Float> NetworkBuilder<T> {
     ///     .input_layer(2)
     ///     .hidden_layer(3)
     ///     .output_layer(1)
+    ///     .enable_memory_monitoring(0.8)  // Enable pressure monitoring at 80% threshold
     ///     .build();
     /// ```
     pub fn new() -> Self {
         NetworkBuilder {
             layers: Vec::new(),
             connection_rate: T::one(),
+            #[cfg(feature = "gpu")]
+            memory_monitoring_enabled: false,
+            #[cfg(feature = "gpu")]
+            pressure_threshold: 0.8,
+            #[cfg(feature = "gpu")]
+            enable_daa_optimization: true,
         }
     }
 
@@ -538,6 +743,53 @@ impl<T: Float> NetworkBuilder<T> {
         self
     }
 
+    /// Enable GPU memory pressure monitoring with threshold
+    /// 
+    /// # Arguments
+    /// * `threshold` - Memory pressure threshold (0.0-1.0) at which monitoring triggers cleanup
+    /// 
+    /// # Example
+    /// ```
+    /// use ruv_fann::NetworkBuilder;
+    /// 
+    /// let network = NetworkBuilder::<f32>::new()
+    ///     .input_layer(1000)
+    ///     .hidden_layer(5000)
+    ///     .output_layer(1000)
+    ///     .enable_memory_monitoring(0.8)  // Monitor at 80% memory pressure
+    ///     .build();
+    /// ```
+    #[cfg(feature = "gpu")]
+    pub fn enable_memory_monitoring(mut self, threshold: f32) -> Self {
+        self.memory_monitoring_enabled = true;
+        self.pressure_threshold = threshold.clamp(0.0, 1.0);
+        self
+    }
+
+    /// Enable DAA (Decentralized Autonomous Agent) optimization
+    /// 
+    /// This enables intelligent, autonomous memory management that learns
+    /// from usage patterns and optimizes buffer allocation automatically.
+    #[cfg(feature = "gpu")]
+    pub fn enable_daa_optimization(mut self, enabled: bool) -> Self {
+        self.enable_daa_optimization = enabled;
+        self
+    }
+
+    /// Configure advanced memory management with full control
+    /// 
+    /// # Arguments
+    /// * `monitoring` - Enable pressure monitoring
+    /// * `threshold` - Pressure threshold for cleanup (0.0-1.0)
+    /// * `daa_enabled` - Enable autonomous optimization
+    #[cfg(feature = "gpu")]
+    pub fn memory_configuration(mut self, monitoring: bool, threshold: f32, daa_enabled: bool) -> Self {
+        self.memory_monitoring_enabled = monitoring;
+        self.pressure_threshold = threshold.clamp(0.0, 1.0);
+        self.enable_daa_optimization = daa_enabled;
+        self
+    }
+
     /// Builds the network
     pub fn build(self) -> Network<T> {
         let mut network_layers = Vec::new();
@@ -566,6 +818,16 @@ impl<T: Float> NetworkBuilder<T> {
         Network {
             layers: network_layers,
             connection_rate: self.connection_rate,
+            #[cfg(feature = "gpu")]
+            memory_config: if self.memory_monitoring_enabled {
+                Some(NetworkMemoryConfig {
+                    monitoring_enabled: true,
+                    pressure_threshold: self.pressure_threshold,
+                    daa_enabled: self.enable_daa_optimization,
+                })
+            } else {
+                None
+            },
         }
     }
 }

@@ -1,4 +1,3 @@
-import { getErrorMessage } from '../../../utils/error-handler.js';
 /**
  * System Monitor - Real-time monitoring of system processes
  */
@@ -23,7 +22,7 @@ export class SystemMonitor {
         type: 'agent_spawned',
         timestamp: Date.now(),
         data,
-        level: 'info'
+        level: 'info',
       });
     });
 
@@ -32,7 +31,7 @@ export class SystemMonitor {
         type: 'agent_terminated',
         timestamp: Date.now(),
         data,
-        level: 'warning'
+        level: 'warning',
       });
     });
 
@@ -41,7 +40,7 @@ export class SystemMonitor {
         type: 'task_assigned',
         timestamp: Date.now(),
         data,
-        level: 'info'
+        level: 'info',
       });
     });
 
@@ -50,7 +49,7 @@ export class SystemMonitor {
         type: 'task_completed',
         timestamp: Date.now(),
         data,
-        level: 'success'
+        level: 'success',
       });
     });
 
@@ -59,7 +58,7 @@ export class SystemMonitor {
         type: 'task_failed',
         timestamp: Date.now(),
         data,
-        level: 'error'
+        level: 'error',
       });
     });
 
@@ -68,7 +67,7 @@ export class SystemMonitor {
         type: 'system_error',
         timestamp: Date.now(),
         data,
-        level: 'error'
+        level: 'error',
       });
     });
 
@@ -78,7 +77,7 @@ export class SystemMonitor {
         type: 'process_started',
         timestamp: Date.now(),
         data: { processId, processName: process.name },
-        level: 'success'
+        level: 'success',
       });
     });
 
@@ -87,7 +86,7 @@ export class SystemMonitor {
         type: 'process_stopped',
         timestamp: Date.now(),
         data: { processId },
-        level: 'warning'
+        level: 'warning',
       });
     });
 
@@ -95,8 +94,16 @@ export class SystemMonitor {
       this.addEvent({
         type: 'process_error',
         timestamp: Date.now(),
+<<<<<<< HEAD:src/cli/commands/start/system-monitor.js
         data: { processId, error: error instanceof Error ? error.message : String(error) },
         level: 'error'
+||||||| 47d5ef4:src/cli/commands/start/system-monitor.ts
+        data: { processId, error: (error instanceof Error ? error.message : String(error)) },
+        level: 'error'
+=======
+        data: { processId, error: error instanceof Error ? error.message : String(error) },
+        level: 'error',
+>>>>>>> origin/main:src/cli/commands/start/system-monitor.ts
       });
     });
   }
@@ -124,7 +131,7 @@ export class SystemMonitor {
   collectMetrics() {
     // Collect system metrics
     const processes = this.processManager.getAllProcesses();
-    
+
     for (const process of processes) {
       if (process.status === 'running') {
         // Simulate metrics collection (would integrate with actual monitoring)
@@ -132,7 +139,7 @@ export class SystemMonitor {
           ...process.metrics,
           cpu: Math.random() * 50,
           memory: Math.random() * 200,
-          uptime: process.startTime ? Date.now() - process.startTime : 0
+          uptime: process.startTime ? Date.now() - process.startTime : 0,
         };
       }
     }
@@ -145,19 +152,15 @@ export class SystemMonitor {
   printEventLog(count = 20) {
     console.log(chalk.cyan.bold('📊 Recent System Events'));
     console.log(chalk.gray('─'.repeat(80)));
-    
+
     const events = this.getRecentEvents(count);
-    
+
     for (const event of events) {
       const timestamp = new Date(event.timestamp).toLocaleTimeString();
       const icon = this.getEventIcon(event.type);
       const color = this.getEventColor(event.level);
-      
-      console.log(
-        chalk.gray(timestamp),
-        icon,
-        color(this.formatEventMessage(event))
-      );
+
+      console.log(chalk.gray(timestamp), icon, color(this.formatEventMessage(event)));
     }
   }
 
@@ -171,9 +174,9 @@ export class SystemMonitor {
       system_error: '⚠️',
       process_started: '▶️',
       process_stopped: '⏹️',
-      process_error: '🚨'
+      process_error: '🚨',
     };
-    
+
     return icons[type] || '•';
   }
 
@@ -220,47 +223,46 @@ export class SystemMonitor {
   printSystemHealth() {
     const stats = this.processManager.getSystemStats();
     const processes = this.processManager.getAllProcesses();
-    
+
     console.log(chalk.cyan.bold('🏥 System Health'));
     console.log(chalk.gray('─'.repeat(60)));
-    
+
     // Overall status
-    const healthStatus = stats.errorProcesses === 0 ? 
-      chalk.green('● Healthy') : 
-      chalk.red(`● Unhealthy (${stats.errorProcesses} errors)`);
-    
+    const healthStatus =
+      stats.errorProcesses === 0
+        ? chalk.green('● Healthy')
+        : chalk.red(`● Unhealthy (${stats.errorProcesses} errors)`);
+
     console.log('Status:', healthStatus);
     console.log('Uptime:', this.formatUptime(stats.systemUptime));
     console.log();
-    
+
     // Process status
     console.log(chalk.white.bold('Process Status:'));
     for (const process of processes) {
       const status = this.getProcessStatusIcon(process.status);
       const metrics = process.metrics;
-      
+
       let line = `  ${status} ${process.name.padEnd(20)}`;
-      
+
       if (metrics && process.status === 'running') {
         line += chalk.gray(` CPU: ${metrics.cpu?.toFixed(1)}% `);
         line += chalk.gray(` MEM: ${metrics.memory?.toFixed(0)}MB`);
       }
-      
+
       console.log(line);
     }
-    
+
     console.log();
-    
+
     // System metrics
     console.log(chalk.white.bold('System Metrics:'));
     console.log(`  Active Processes: ${stats.runningProcesses}/${stats.totalProcesses}`);
     console.log(`  Recent Events: ${this.events.length}`);
-    
+
     // Recent errors
-    const recentErrors = this.events
-      .filter(e => e.level === 'error')
-      .slice(0, 3);
-    
+    const recentErrors = this.events.filter((e) => e.level === 'error').slice(0, 3);
+
     if (recentErrors.length > 0) {
       console.log();
       console.log(chalk.red.bold('Recent Errors:'));

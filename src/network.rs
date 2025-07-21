@@ -21,7 +21,7 @@ pub struct NetworkMemoryConfig {
 #[cfg(feature = "compression")]
 use crate::io::compression::{compress_bytes, decompress_bytes, analyze::CompressionStats};
 #[cfg(all(feature = "compression", feature = "serde"))]
-use std::{fs::File, io::{Read, Write}, path::Path};
+use std::{fs::File, io::{Read, Write}};
 
 /// Errors that can occur during network operations
 #[derive(Error, Debug)]

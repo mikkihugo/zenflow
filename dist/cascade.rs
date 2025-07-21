@@ -26,6 +26,9 @@ use crate::{
     ActivationFunction, Network, TrainingData,
 };
 
+#[cfg(feature = "simd")]
+use crate::simd::{CpuSimdOps, SimdConfig, SimdMatrixOps};
+
 // Rayon imports are done locally in the parallel functions
 
 #[cfg(feature = "logging")]
@@ -156,6 +159,12 @@ pub struct CascadeConfig<T: Float> {
     /// Whether to enable parallel candidate training
     pub parallel_candidates: bool,
 
+    /// Whether to use SIMD optimizations for matrix operations
+    pub use_simd: bool,
+
+    /// SIMD block size for cache-friendly operations
+    pub simd_block_size: usize,
+
     /// Random seed for reproducible results
     pub random_seed: Option<u64>,
 
@@ -187,6 +196,8 @@ impl<T: Float> Default for CascadeConfig<T> {
             use_momentum: true,
             momentum: T::from(0.9).unwrap(),
             parallel_candidates: true,
+            use_simd: true,
+            simd_block_size: 64,
             random_seed: None,
             verbose: false,
         }
@@ -373,6 +384,10 @@ pub struct CascadeTrainer<T: Float> {
 
     /// Performance metrics
     pub metrics: CascadeMetrics,
+
+    /// SIMD operations for optimized matrix computations
+    #[cfg(feature = "simd")]
+    pub simd_ops: Option<CpuSimdOps>,
 }
 
 /// Training record for cascade correlation
@@ -436,6 +451,20 @@ impl<T: Float> CascadeTrainer<T> {
             StdRng::from_entropy()
         };
 
+        // Initialize SIMD operations if both enabled and feature is available
+        #[cfg(feature = "simd")]
+        let simd_ops = if config.use_simd {
+            let simd_config = SimdConfig {
+                use_avx2: true,
+                use_avx512: true,
+                block_size: config.simd_block_size,
+                num_threads: num_cpus::get(),
+            };
+            Some(CpuSimdOps::new(simd_config))
+        } else {
+            None
+        };
+
         Ok(Self {
             config,
             network: initial_network,
@@ -446,6 +475,8 @@ impl<T: Float> CascadeTrainer<T> {
             best_error: T::infinity(),
             rng,
             metrics: CascadeMetrics::default(),
+            #[cfg(feature = "simd")]
+            simd_ops,
         })
     }
 
@@ -608,9 +639,8 @@ impl<T: Float> CascadeTrainer<T> {
         #[cfg(feature = "parallel")]
         {
             if self.config.parallel_candidates {
-                // Note: parallel training requires T: Send + Sync
-                // For now, fallback to sequential
-                self.train_candidates_sequential(&mut candidates)?;
+                // Use parallel training with proper Send + Sync bounds
+                self.train_candidates_parallel(&mut candidates)?;
             } else {
                 self.train_candidates_sequential(&mut candidates)?;
             }
@@ -976,6 +1006,7 @@ impl<T: Float> CascadeTrainer<T> {
 
     // Parallel training helper
     #[cfg(feature = "parallel")]
+    #[allow(dead_code)]
     fn train_single_candidate_parallel(
         &self,
         _candidate: &mut CandidateNeuron<T>,
@@ -1071,6 +1102,7 @@ where
     T::FromStrRadixErr: Send + Sync,
 {
     /// Train candidates in parallel
+    #[allow(dead_code)]
     fn train_candidates_parallel(
         &mut self,
         candidates: &mut [CandidateNeuron<T>],
@@ -1111,6 +1143,7 @@ where
     }
 
     /// Train single candidate with provided data (thread-safe)
+    #[allow(dead_code)]
     fn train_single_candidate_with_data(
         &self,
         candidate: &mut CandidateNeuron<T>,
@@ -1149,6 +1182,7 @@ where
     }
 
     /// Calculate correlation with provided data
+    #[allow(dead_code)]
     fn calculate_candidate_correlation_with_data(
         &self,
         candidate: &CandidateNeuron<T>,
@@ -1176,21 +1210,182 @@ where
         }
     }
 
-    /// Update candidate weights (simplified for parallel)
-    fn update_candidate_weights_simple(
+    /// Calculate residuals with provided data (thread-safe helper)
+    fn calculate_residuals_with_data(
+        &self,
+        data: &TrainingData<T>,
+        network: &Network<T>,
+    ) -> Result<Vec<Vec<T>>, RuvFannError> {
+        let mut residuals = Vec::with_capacity(data.inputs.len());
+        let mut network_clone = network.clone();
+
+        for (input, target) in data.inputs.iter().zip(data.outputs.iter()) {
+            let output = network_clone.run(input);
+            let residual: Vec<T> = output
+                .iter()
+                .zip(target.iter())
+                .map(|(&o, &t)| t - o)
+                .collect();
+            residuals.push(residual);
+        }
+
+        Ok(residuals)
+    }
+
+    /// Calculate residuals in parallel for large datasets
+    #[cfg(feature = "parallel")]
+    fn calculate_residuals_parallel(&mut self) -> Result<Vec<Vec<T>>, RuvFannError> {
+        use rayon::prelude::*;
+        
+        if self.training_data.inputs.len() < 100 {
+            // For small datasets, use sequential processing
+            return self.calculate_residuals();
+        }
+
+        let network = self.network.clone();
+        let residuals: Result<Vec<_>, RuvFannError> = self.training_data.inputs
+            .par_iter()
+            .zip(self.training_data.outputs.par_iter())
+            .map(|(input, target)| {
+                let mut network_clone = network.clone();
+                let output = network_clone.run(input);
+                let residual: Vec<T> = output
+                    .iter()
+                    .zip(target.iter())
+                    .map(|(&o, &t)| t - o)
+                    .collect();
+                Ok(residual)
+            })
+            .collect();
+
+        residuals
+    }
+
+    /// Calculate correlation with residuals (thread-safe)
+    fn calculate_candidate_correlation_with_residuals(
+        &self,
+        candidate: &CandidateNeuron<T>,
+        data: &TrainingData<T>,
+        residuals: &[Vec<T>],
+        _hidden_count: usize,
+    ) -> Result<T, RuvFannError> {
+        // Calculate candidate outputs for all training samples
+        let mut candidate_outputs = Vec::with_capacity(data.inputs.len());
+
+        for input in &data.inputs {
+            let candidate_input = self.extract_candidate_input(input);
+            let output = candidate.calculate_output(&candidate_input);
+            candidate_outputs.push(output);
+        }
+
+        // Calculate correlation with each output dimension and sum
+        let mut total_correlation = T::zero();
+        let num_outputs = data.outputs[0].len();
+
+        for output_idx in 0..num_outputs {
+            let residual_values: Vec<T> = residuals.iter().map(|r| r[output_idx]).collect();
+            let correlation = self.pearson_correlation(&candidate_outputs, &residual_values)?;
+            total_correlation = total_correlation + correlation.abs();
+        }
+
+        Ok(total_correlation)
+    }
+
+    /// Train candidate for one epoch with parallel processing
+    #[cfg(feature = "parallel")]
+    fn train_candidate_epoch_parallel(
+        &mut self,
+        candidate: &mut CandidateNeuron<T>,
+        residuals: &[Vec<T>],
+    ) -> Result<(), RuvFannError> {
+        // Reset gradients
+        candidate.weight_gradients.fill(T::zero());
+        candidate.bias_gradient = T::zero();
+
+        // Calculate gradients using all training samples
+        let batch_size = T::from(residuals.len()).unwrap();
+        for (i, (input, target_residuals)) in 
+            self.training_data.inputs.iter().zip(residuals.iter()).enumerate() 
+        {
+            let candidate_input = self.extract_candidate_input(input);
+            let output = candidate.calculate_output(&candidate_input);
+            let derivative = candidate.activation_derivative(output);
+
+            // Calculate error signal for this candidate
+            let mut error_signal = T::zero();
+            for &residual in target_residuals {
+                error_signal = error_signal + residual;
+            }
+            error_signal = error_signal * derivative;
+
+            // Accumulate gradients
+            for (j, &input_val) in candidate_input.iter().enumerate() {
+                candidate.weight_gradients[j] = 
+                    candidate.weight_gradients[j] + error_signal * input_val;
+            }
+            candidate.bias_gradient = candidate.bias_gradient + error_signal;
+        }
+
+        // Average gradients
+        for gradient in &mut candidate.weight_gradients {
+            *gradient = *gradient / batch_size;
+        }
+        candidate.bias_gradient = candidate.bias_gradient / batch_size;
+
+        // Update weights using gradients
+        candidate.update_weights(
+            self.config.candidate_learning_rate,
+            self.config.use_momentum,
+            self.config.momentum,
+        );
+
+        Ok(())
+    }
+
+    /// Update candidate weights with proper gradient calculation
+    fn update_candidate_weights_with_data(
         &self,
         candidate: &mut CandidateNeuron<T>,
-        _data: &TrainingData<T>,
-        _network: &Network<T>,
+        data: &TrainingData<T>,
+        residuals: &[Vec<T>],
         learning_rate: T,
+        use_momentum: bool,
+        momentum: T,
     ) -> Result<(), RuvFannError> {
-        // Simplified weight update
-        for i in 0..candidate.weights.len() {
-            // In real implementation, would calculate gradients
-            // For now, just apply small random change
-            let delta = T::from(0.01).unwrap() * learning_rate;
-            candidate.weights[i] = candidate.weights[i] - delta;
+        // Reset gradients
+        candidate.weight_gradients.fill(T::zero());
+        candidate.bias_gradient = T::zero();
+
+        // Calculate gradients using all training samples
+        let batch_size = T::from(data.inputs.len()).unwrap();
+        for (input, target_residuals) in data.inputs.iter().zip(residuals.iter()) {
+            let candidate_input = self.extract_candidate_input(input);
+            let output = candidate.calculate_output(&candidate_input);
+            let derivative = candidate.activation_derivative(output);
+
+            // Calculate error signal for this candidate
+            let mut error_signal = T::zero();
+            for &residual in target_residuals {
+                error_signal = error_signal + residual;
+            }
+            error_signal = error_signal * derivative;
+
+            // Accumulate gradients
+            for (j, &input_val) in candidate_input.iter().enumerate() {
+                candidate.weight_gradients[j] = 
+                    candidate.weight_gradients[j] + error_signal * input_val;
+            }
+            candidate.bias_gradient = candidate.bias_gradient + error_signal;
         }
+
+        // Average gradients
+        for gradient in &mut candidate.weight_gradients {
+            *gradient = *gradient / batch_size;
+        }
+        candidate.bias_gradient = candidate.bias_gradient / batch_size;
+
+        // Update weights using gradients
+        candidate.update_weights(learning_rate, use_momentum, momentum);
 
         Ok(())
     }

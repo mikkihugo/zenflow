@@ -35,6 +35,46 @@ export interface ProcessInfo {
   metrics?: ProcessMetrics;
 }
 
+<<<<<<< HEAD:src/cli/commands/start/types.js
+||||||| 47d5ef4:src/cli/commands/start/types.ts
+export enum ProcessType {
+  ORCHESTRATOR = 'orchestrator',
+  MCP_SERVER = 'mcp-server',
+  MEMORY_MANAGER = 'memory-manager',
+  TERMINAL_POOL = 'terminal-pool',
+  COORDINATOR = 'coordinator',
+  EVENT_BUS = 'event-bus'
+}
+
+export enum ProcessStatus {
+  STOPPED = 'stopped',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  STOPPING = 'stopping',
+  ERROR = 'error',
+  CRASHED = 'crashed'
+}
+
+=======
+export enum ProcessType {
+  ORCHESTRATOR = 'orchestrator',
+  MCP_SERVER = 'mcp-server',
+  MEMORY_MANAGER = 'memory-manager',
+  TERMINAL_POOL = 'terminal-pool',
+  COORDINATOR = 'coordinator',
+  EVENT_BUS = 'event-bus',
+}
+
+export enum ProcessStatus {
+  STOPPED = 'stopped',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  STOPPING = 'stopping',
+  ERROR = 'error',
+  CRASHED = 'crashed',
+}
+
+>>>>>>> origin/main:src/cli/commands/start/types.ts
 export interface ProcessMetrics {
   cpu?: number;
   memory?: number;
@@ -71,5 +111,11 @@ export interface UIAction {
   type: 'start' | 'stop' | 'restart' | 'logs' | 'status' | 'exit';
   processId?: string;
   options?: Record<string, any>;
+<<<<<<< HEAD:src/cli/commands/start/types.js
 }
 */
+||||||| 47d5ef4:src/cli/commands/start/types.ts
+}
+=======
+}
+>>>>>>> origin/main:src/cli/commands/start/types.ts

@@ -20,7 +20,7 @@ class GitHubCoordinator {
    */
   async initialize(options = {}) {
     printInfo('🚀 Initializing GitHub Coordinator...');
-    
+
     // Authenticate with GitHub
     const authenticated = await this.api.authenticate(options.token);
     if (!authenticated) {
@@ -31,7 +31,7 @@ class GitHubCoordinator {
     try {
       const remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf8' }).trim();
       const repoMatch = remoteUrl.match(/github\.com[:/]([^/]+)\/([^/]+?)(?:\.git)?$/);
-      
+
       if (repoMatch) {
         this.currentRepo = { owner: repoMatch[1], repo: repoMatch[2] };
         printSuccess(`Connected to repository: ${this.currentRepo.owner}/${this.currentRepo.repo}`);
@@ -53,11 +53,13 @@ class GitHubCoordinator {
     try {
       // Check if ruv-swarm is available
       execSync('npx ruv-swarm --version', { stdio: 'pipe' });
-      
+
       // Initialize swarm for GitHub coordination
-      const swarmInit = execSync('npx ruv-swarm hook pre-task --description "GitHub workflow coordination"', 
-        { encoding: 'utf8' });
-      
+      const swarmInit = execSync(
+        'npx ruv-swarm hook pre-task --description "GitHub workflow coordination"',
+        { encoding: 'utf8' },
+      );
+
       if (swarmInit.includes('continue')) {
         printSuccess('🐝 Swarm integration initialized for GitHub coordination');
         this.swarmEnabled = true;
@@ -73,7 +75,7 @@ class GitHubCoordinator {
    */
   async coordinateCIPipeline(options = {}) {
     printInfo('🔄 Coordinating CI/CD pipeline setup...');
-    
+
     if (!this.currentRepo) {
       throw new Error('No GitHub repository context available');
     }
@@ -94,9 +96,9 @@ class GitHubCoordinator {
         'setup_environment_secrets',
         'configure_branch_protection',
         'test_pipeline_execution',
-        'setup_notifications'
+        'setup_notifications',
       ],
-      status: 'planning'
+      status: 'planning',
     };
 
     this.activeCoordinations.set(coordinationPlan.id, coordinationPlan);
@@ -116,27 +118,33 @@ class GitHubCoordinator {
    */
   async executeWithSwarm(coordinationPlan) {
     printInfo('🐝 Executing coordination with swarm...');
-    
+
     // Store coordination plan in swarm memory
     const memoryKey = `github-coordination/${coordinationPlan.id}`;
-    execSync(`npx ruv-swarm hook notification --message "GitHub Coordination: ${coordinationPlan.type} started" --telemetry true`);
-    
+    execSync(
+      `npx ruv-swarm hook notification --message "GitHub Coordination: ${coordinationPlan.type} started" --telemetry true`,
+    );
+
     // Execute each step with swarm coordination
     for (const step of coordinationPlan.steps) {
       printInfo(`Executing step: ${step}`);
-      
+
       // Pre-step hook
       execSync(`npx ruv-swarm hook pre-task --description "GitHub step: ${step}"`);
-      
+
       // Execute step
       await this.executeCoordinationStep(coordinationPlan, step);
-      
+
       // Post-step hook
-      execSync(`npx ruv-swarm hook post-edit --file "github-coordination" --memory-key "${memoryKey}/${step}"`);
+      execSync(
+        `npx ruv-swarm hook post-edit --file "github-coordination" --memory-key "${memoryKey}/${step}"`,
+      );
     }
 
     // Final coordination notification
-    execSync(`npx ruv-swarm hook notification --message "GitHub Coordination: ${coordinationPlan.type} completed" --telemetry true`);
+    execSync(
+      `npx ruv-swarm hook notification --message "GitHub Coordination: ${coordinationPlan.type} completed" --telemetry true`,
+    );
   }
 
   /**
@@ -144,7 +152,7 @@ class GitHubCoordinator {
    */
   async executeCoordination(coordinationPlan) {
     printInfo('⚡ Executing coordination...');
-    
+
     for (const step of coordinationPlan.steps) {
       printInfo(`Executing step: ${step}`);
       await this.executeCoordinationStep(coordinationPlan, step);
@@ -156,7 +164,7 @@ class GitHubCoordinator {
    */
   async executeCoordinationStep(coordinationPlan, step) {
     const { owner, repo } = this.currentRepo;
-    
+
     switch (step) {
       case 'analyze_repository_structure':
         await this.analyzeRepositoryStructure(owner, repo);
@@ -186,7 +194,7 @@ class GitHubCoordinator {
    */
   async analyzeRepositoryStructure(owner, repo) {
     printInfo('📊 Analyzing repository structure...');
-    
+
     const response = await this.api.getRepository(owner, repo);
     if (!response.success) {
       throw new Error(`Failed to get repository info: ${response.error}`);
@@ -199,7 +207,7 @@ class GitHubCoordinator {
       defaultBranch: repoData.default_branch,
       hasWorkflows: false,
       hasTests: false,
-      hasPackageJson: false
+      hasPackageJson: false,
     };
 
     // Check for existing workflows
@@ -210,7 +218,9 @@ class GitHubCoordinator {
 
     // Check for package.json (Node.js projects)
     try {
-      const packageResponse = await this.api.request(`/repos/${owner}/${repo}/contents/package.json`);
+      const packageResponse = await this.api.request(
+        `/repos/${owner}/${repo}/contents/package.json`,
+      );
       analysis.hasPackageJson = packageResponse.success;
     } catch (error) {
       // package.json doesn't exist
@@ -225,15 +235,15 @@ class GitHubCoordinator {
    */
   async createWorkflowFiles(owner, repo, pipeline) {
     printInfo('📝 Creating workflow files...');
-    
+
     const workflowContent = this.generateWorkflowContent(pipeline);
     const workflowPath = `.github/workflows/${pipeline}-ci.yml`;
-    
+
     // Create workflow file content
     const createFileData = {
       message: `Add ${pipeline} CI workflow`,
       content: Buffer.from(workflowContent).toString('base64'),
-      path: workflowPath
+      path: workflowPath,
     };
 
     // Check if file exists
@@ -246,7 +256,7 @@ class GitHubCoordinator {
 
     const response = await this.api.request(`/repos/${owner}/${repo}/contents/${workflowPath}`, {
       method: 'PUT',
-      body: createFileData
+      body: createFileData,
     });
 
     if (response.success) {
@@ -309,7 +319,7 @@ jobs:
     - name: Check for vulnerabilities
       run: npm audit --audit-level high
 `,
-      
+
       python: `name: Python CI
 
 on:
@@ -348,7 +358,7 @@ jobs:
       with:
         file: ./coverage.xml
 `,
-      
+
       docker: `name: Docker CI
 
 on:
@@ -376,7 +386,7 @@ jobs:
         image-ref: 'app'
         format: 'sarif'
         output: 'trivy-results.sarif'
-`
+`,
     };
 
     return templates[pipeline] || templates.nodejs;
@@ -387,15 +397,15 @@ jobs:
    */
   async setupEnvironmentSecrets(owner, repo) {
     printInfo('🔐 Setting up environment secrets...');
-    
+
     const secrets = [
       { name: 'NODE_ENV', description: 'Node.js environment' },
       { name: 'DATABASE_URL', description: 'Database connection string' },
-      { name: 'API_KEY', description: 'API authentication key' }
+      { name: 'API_KEY', description: 'API authentication key' },
     ];
 
     printInfo('Recommended secrets to configure:');
-    secrets.forEach(secret => {
+    secrets.forEach((secret) => {
       console.log(`  - ${secret.name}: ${secret.description}`);
     });
 
@@ -408,22 +418,22 @@ jobs:
    */
   async configureBranchProtection(owner, repo) {
     printInfo('🛡️  Configuring branch protection...');
-    
+
     const protectionConfig = {
       required_status_checks: {
         strict: true,
-        contexts: ['test']
+        contexts: ['test'],
       },
       enforce_admins: true,
       required_pull_request_reviews: {
         required_approving_review_count: 1,
-        dismiss_stale_reviews: true
+        dismiss_stale_reviews: true,
       },
-      restrictions: null
+      restrictions: null,
     };
 
     const response = await this.api.updateBranchProtection(owner, repo, 'main', protectionConfig);
-    
+
     if (response.success) {
       printSuccess('✅ Branch protection configured for main branch');
     } else {
@@ -436,7 +446,7 @@ jobs:
    */
   async testPipelineExecution(owner, repo) {
     printInfo('🧪 Testing pipeline execution...');
-    
+
     const workflows = await this.api.listWorkflows(owner, repo);
     if (!workflows.success) {
       printWarning('No workflows found to test');
@@ -446,7 +456,7 @@ jobs:
     const recentRuns = await this.api.listWorkflowRuns(owner, repo, { per_page: 5 });
     if (recentRuns.success) {
       printInfo(`Found ${recentRuns.data.total_count} recent workflow runs`);
-      
+
       const latestRun = recentRuns.data.workflow_runs[0];
       if (latestRun) {
         printInfo(`Latest run: ${latestRun.conclusion} (${latestRun.status})`);
@@ -461,7 +471,7 @@ jobs:
    */
   async setupNotifications(owner, repo) {
     printInfo('📢 Setting up notifications...');
-    
+
     const webhookConfig = {
       name: 'web',
       active: true,
@@ -469,13 +479,13 @@ jobs:
       config: {
         url: 'https://your-webhook-url.com/github',
         content_type: 'json',
-        insecure_ssl: '0'
-      }
+        insecure_ssl: '0',
+      },
     };
 
     printInfo('Webhook configuration template:');
     console.log(JSON.stringify(webhookConfig, null, 2));
-    
+
     printWarning('Note: Webhook URL must be configured with your actual endpoint');
     printSuccess('✅ Notification setup guidance provided');
   }
@@ -485,7 +495,7 @@ jobs:
    */
   async coordinateRelease(options = {}) {
     printInfo('🚀 Coordinating release process...');
-    
+
     if (!this.currentRepo) {
       throw new Error('No GitHub repository context available');
     }
@@ -506,9 +516,9 @@ jobs:
         'run_release_tests',
         'create_release_tag',
         'publish_release',
-        'notify_stakeholders'
+        'notify_stakeholders',
       ],
-      status: 'planning'
+      status: 'planning',
     };
 
     this.activeCoordinations.set(coordinationPlan.id, coordinationPlan);
@@ -554,12 +564,12 @@ jobs:
 // Export coordination function
 export async function coordinateGitHubWorkflow(args, flags = {}) {
   const coordinator = new GitHubCoordinator();
-  
+
   try {
     await coordinator.initialize(flags);
-    
+
     const objective = args.join(' ').trim();
-    
+
     if (objective.includes('CI/CD') || objective.includes('pipeline')) {
       return await coordinator.coordinateCIPipeline(flags);
     } else if (objective.includes('release')) {
@@ -567,17 +577,17 @@ export async function coordinateGitHubWorkflow(args, flags = {}) {
     } else {
       // General coordination
       printInfo(`🎯 Coordinating: ${objective}`);
-      
+
       const coordinationPlan = {
         id: `general-${Date.now()}`,
         type: 'general_coordination',
         objective,
         steps: ['analyze_requirements', 'create_action_plan', 'execute_plan'],
-        status: 'planning'
+        status: 'planning',
       };
 
       coordinator.activeCoordinations.set(coordinationPlan.id, coordinationPlan);
-      
+
       if (coordinator.swarmEnabled) {
         await coordinator.executeWithSwarm(coordinationPlan);
       } else {

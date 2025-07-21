@@ -17,6 +17,10 @@ pub use training::{
     TrainingError, TrainingState,
 };
 
+// Re-export compression utilities when available
+#[cfg(all(feature = "io", feature = "compression"))]
+pub use io::compression::{compress_bytes, decompress_bytes, CompressionConfig};
+
 /// Enumeration of available training algorithms
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TrainingAlgorithm {
@@ -49,6 +53,10 @@ pub mod training;
 // Optional I/O module
 #[cfg(feature = "io")]
 pub mod io;
+
+// Re-export compression types when available
+#[cfg(all(feature = "io", feature = "compression"))]
+pub use io::compression::analyze::CompressionStats;
 
 // WebGPU acceleration module
 pub mod webgpu;

@@ -458,6 +458,16 @@ impl From<NetworkError> for RuvFannError {
                 message: "Network has no layers".to_string(),
                 context: None,
             },
+            NetworkError::IoError(msg) => RuvFannError::Io {
+                category: IoErrorCategory::FileSystem,
+                message: format!("I/O error: {}", msg),
+                context: None,
+            },
+            NetworkError::CompressionError(msg) => RuvFannError::Io {
+                category: IoErrorCategory::FileSystem,
+                message: format!("Compression error: {}", msg),
+                context: None,
+            },
         }
     }
 }

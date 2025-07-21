@@ -200,6 +200,19 @@ pub struct TrainingState<T: Float> {
     pub algorithm_specific: HashMap<String, Vec<T>>,
 }
 
+/// Streaming training configuration
+#[derive(Debug, Clone)]
+pub struct StreamingConfig {
+    /// Buffer size for reading chunks
+    pub buffer_size: usize,
+    /// Batch size for processing
+    pub batch_size: usize,
+    /// Memory limit in bytes for batch processing
+    pub memory_limit_bytes: usize,
+    /// Enable adaptive batch sizing
+    pub adaptive_batching: bool,
+}
+
 /// Stop criteria trait
 pub trait StopCriteria<T: Float> {
     fn should_stop(
@@ -283,6 +296,84 @@ pub trait TrainingAlgorithm<T: Float>: Send {
     /// Call the callback if set
     fn call_callback(&mut self, epoch: usize, network: &Network<T>, data: &TrainingData<T>)
         -> bool;
+
+}
+
+/// Extended trait for streaming training capabilities
+pub trait StreamingTrainingAlgorithm<T: Float>: TrainingAlgorithm<T> {
+    /// Train with streaming data from a reader
+    fn train_streaming_epoch<R: std::io::BufRead>(
+        &mut self,
+        network: &mut Network<T>,
+        reader: &mut R,
+        config: StreamingConfig,
+    ) -> Result<(T, crate::io::streaming::StreamStats), TrainingError>
+    where
+        T: Default + Copy,
+    {
+        use crate::io::streaming::{memory, TrainingDataStreamReader};
+        
+        let stream_reader = TrainingDataStreamReader::with_buffer_size(config.buffer_size);
+        let mut total_error = T::zero();
+        
+        // Calculate optimal batch size based on memory constraints
+        let initial_batch_size = if config.adaptive_batching {
+            // Use optimal batch sizing from streaming module
+            let estimated_size = memory::optimal_batch_size(
+                config.memory_limit_bytes,
+                128, // Default input size estimate
+                10,  // Default output size estimate
+            );
+            std::cmp::min(estimated_size, config.batch_size)
+        } else {
+            config.batch_size
+        };
+        
+        // Process data in batches using streaming reader
+        let stats = stream_reader.read_batches(
+            reader,
+            initial_batch_size,
+            |input_batch: &[Vec<f32>], output_batch: &[Vec<f32>]| -> Result<(), crate::io::IoError> {
+                // Convert batches to TrainingData format
+                let batch_data = TrainingData {
+                    inputs: input_batch.to_vec(),
+                    outputs: output_batch.to_vec(),
+                };
+                
+                // Train on this batch
+                match self.train_epoch(network, &batch_data) {
+                    Ok(batch_error) => {
+                        total_error = total_error + batch_error;
+                        Ok(())
+                    }
+                    Err(e) => Err(crate::io::IoError::InvalidTrainingData(
+                        format!("Training failed: {}", e)
+                    ))
+                }
+            },
+        ).map_err(|e| TrainingError::TrainingFailed(format!("Streaming error: {}", e)))?;
+        
+        // Average error across all batches
+        let avg_error = if stats.samples_processed > 0 {
+            total_error / T::from(stats.samples_processed).unwrap()
+        } else {
+            total_error
+        };
+        
+        Ok((avg_error, stats))
+    }
+
+    /// Calculate streaming statistics for memory planning
+    fn estimate_streaming_memory(&self, num_input: usize, num_output: usize, batch_size: usize) -> usize {
+        use crate::io::streaming::memory;
+        memory::estimate_batch_memory(batch_size, num_input, num_output)
+    }
+
+    /// Get optimal batch size for streaming given memory constraints
+    fn get_optimal_batch_size(&self, memory_limit_bytes: usize, num_input: usize, num_output: usize) -> usize {
+        use crate::io::streaming::memory;
+        memory::optimal_batch_size(memory_limit_bytes, num_input, num_output)
+    }
 }
 
 // Module declarations for specific algorithms
@@ -290,6 +381,7 @@ mod adam;
 mod backprop;
 mod quickprop;
 mod rprop;
+mod streaming;
 
 // GPU training module (when GPU features are enabled)
 #[cfg(feature = "gpu")]
@@ -304,6 +396,8 @@ pub use adam::{Adam, AdamW};
 pub use backprop::{BatchBackprop, IncrementalBackprop};
 pub use quickprop::Quickprop;
 pub use rprop::Rprop;
+pub use streaming::{StreamingBatchBackprop, MemoryRequirements};
+
 
 // Re-export GPU training types when available
 #[cfg(feature = "gpu")]

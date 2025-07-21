@@ -459,14 +459,14 @@ impl From<NetworkError> for RuvFannError {
                 context: None,
             },
             NetworkError::IoError(msg) => RuvFannError::Io {
-                category: IoErrorCategory::FileSystem,
+                category: IoErrorCategory::FileAccess,
                 message: format!("I/O error: {}", msg),
-                context: None,
+                source: Some(Box::new(std::io::Error::new(std::io::ErrorKind::Other, msg))),
             },
             NetworkError::CompressionError(msg) => RuvFannError::Io {
-                category: IoErrorCategory::FileSystem,
+                category: IoErrorCategory::Format,
                 message: format!("Compression error: {}", msg),
-                context: None,
+                source: Some(Box::new(std::io::Error::new(std::io::ErrorKind::Other, msg))),
             },
         }
     }
