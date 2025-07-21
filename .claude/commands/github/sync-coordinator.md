@@ -34,15 +34,17 @@ mcp__claude-flow__agent_spawn { type: "tester", name: "Validation Engineer" }
 Read("/workspaces/ruv-FANN/claude-code-flow/claude-code-flow/package.json")
 Read("/workspaces/ruv-FANN/ruv-swarm/npm/package.json")
 
-// Synchronize versions and dependencies
-mcp__github__create_or_update_file {
-  owner: "ruvnet",
-  repo: "ruv-FANN",
-  path: "claude-code-flow/claude-code-flow/package.json",
-  content: "{ updated package.json with aligned versions }",
-  message: "feat: Align Node.js version requirements across packages",
-  branch: "sync/package-alignment"
-}
+// Synchronize versions and dependencies using gh CLI
+// First create branch
+Bash("gh api repos/:owner/:repo/git/refs -f ref='refs/heads/sync/package-alignment' -f sha=$(gh api repos/:owner/:repo/git/refs/heads/main --jq '.object.sha')")
+
+// Update file using gh CLI
+Bash(`gh api repos/:owner/:repo/contents/claude-code-flow/claude-code-flow/package.json \
+  --method PUT \
+  -f message="feat: Align Node.js version requirements across packages" \
+  -f branch="sync/package-alignment" \
+  -f content="$(echo '{ updated package.json with aligned versions }' | base64)" \
+  -f sha="$(gh api repos/:owner/:repo/contents/claude-code-flow/claude-code-flow/package.json?ref=sync/package-alignment --jq '.sha')")`)
 
 // Orchestrate validation
 mcp__claude-flow__task_orchestrate {
@@ -54,22 +56,21 @@ mcp__claude-flow__task_orchestrate {
 
 ### 2. Documentation Synchronization
 ```javascript
-// Synchronize CLAUDE.md files across packages
-mcp__github__get_file_contents {
-  owner: "ruvnet",
-  repo: "ruv-FANN", 
-  path: "ruv-swarm/docs/CLAUDE.md"
-}
+// Synchronize CLAUDE.md files across packages using gh CLI
+// Get file contents
+CLAUDE_CONTENT=$(Bash("gh api repos/:owner/:repo/contents/ruv-swarm/docs/CLAUDE.md --jq '.content' | base64 -d"))
 
-// Update claude-code-flow CLAUDE.md to match
-mcp__github__create_or_update_file {
-  owner: "ruvnet",
-  repo: "ruv-FANN",
-  path: "claude-code-flow/claude-code-flow/CLAUDE.md",
-  content: "# Claude Code Configuration for ruv-swarm\n\n[synchronized content]",
-  message: "docs: Synchronize CLAUDE.md with ruv-swarm integration patterns",
-  branch: "sync/documentation"
-}
+// Update claude-code-flow CLAUDE.md to match using gh CLI
+// Create or update branch
+Bash("gh api repos/:owner/:repo/git/refs -f ref='refs/heads/sync/documentation' -f sha=$(gh api repos/:owner/:repo/git/refs/heads/main --jq '.object.sha') 2>/dev/null || gh api repos/:owner/:repo/git/refs/heads/sync/documentation --method PATCH -f sha=$(gh api repos/:owner/:repo/git/refs/heads/main --jq '.object.sha')")
+
+// Update file
+Bash(`gh api repos/:owner/:repo/contents/claude-code-flow/claude-code-flow/CLAUDE.md \
+  --method PUT \
+  -f message="docs: Synchronize CLAUDE.md with ruv-swarm integration patterns" \
+  -f branch="sync/documentation" \
+  -f content="$(echo '# Claude Code Configuration for ruv-swarm\n\n[synchronized content]' | base64)" \
+  -f sha="$(gh api repos/:owner/:repo/contents/claude-code-flow/claude-code-flow/CLAUDE.md?ref=sync/documentation --jq '.sha' 2>/dev/null || echo '')")`)
 
 // Store sync state in memory
 mcp__claude-flow__memory_usage {
@@ -103,14 +104,13 @@ mcp__github__push_files {
   message: "feat: Add comprehensive GitHub workflow integration"
 }
 
-// Create coordinated pull request
-mcp__github__create_pull_request {
-  owner: "ruvnet",
-  repo: "ruv-FANN",
-  title: "Feature: GitHub Workflow Integration with Swarm Coordination",
-  head: "feature/github-commands",
-  base: "main",
-  body: `## 🚀 GitHub Workflow Integration
+// Create coordinated pull request using gh CLI
+Bash(`gh pr create \
+  --repo :owner/:repo \
+  --title "Feature: GitHub Workflow Integration with Swarm Coordination" \
+  --head "feature/github-commands" \
+  --base "main" \
+  --body "## 🚀 GitHub Workflow Integration
 
 ### Features Added
 - ✅ Comprehensive GitHub command modes

@@ -10,7 +10,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Coordination Mode**: Hierarchical
 - **Max Parallel Operations**: 10
 - **Batch Optimized**: Yes
-- **Tools**: mcp__github__*, TodoWrite, TodoRead, Task, Memory, Bash
+- **Tools**: gh CLI commands, TodoWrite, TodoRead, Task, Memory, Bash
 - **Usage**: `/github gh-coordinator <GitHub workflow description>`
 - **Best For**: Complex GitHub workflows, multi-repo coordination
 
@@ -19,7 +19,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Review Mode**: Automated
 - **Multi-reviewer**: Yes
 - **Conflict Resolution**: Intelligent
-- **Tools**: mcp__github__create_pull_request, mcp__github__get_pull_request*, TodoWrite, Task
+- **Tools**: gh pr create, gh pr view, gh pr review, gh pr merge, TodoWrite, Task
 - **Usage**: `/github pr-manager <PR management task>`
 - **Best For**: PR reviews, merge coordination, conflict resolution
 
@@ -28,7 +28,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Issue Workflow**: Automated
 - **Label Management**: Smart
 - **Progress Tracking**: Real-time
-- **Tools**: mcp__github__create_issue, mcp__github__update_issue, mcp__github__add_issue_comment, TodoWrite
+- **Tools**: gh issue create, gh issue edit, gh issue comment, gh issue list, TodoWrite
 - **Usage**: `/github issue-tracker <issue management task>`
 - **Best For**: Project management, issue coordination, progress tracking
 
@@ -37,7 +37,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Release Pipeline**: Automated
 - **Versioning**: Semantic
 - **Deployment**: Multi-stage
-- **Tools**: mcp__github__create_pull_request, mcp__github__merge_pull_request, Bash, TodoWrite
+- **Tools**: gh pr create, gh pr merge, gh release create, Bash, TodoWrite
 - **Usage**: `/github release-manager <release task>`
 - **Best For**: Release management, version coordination, deployment pipelines
 
@@ -48,7 +48,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Structure Optimization**: Yes
 - **Multi-repo**: Support
 - **Template Management**: Advanced
-- **Tools**: mcp__github__create_repository, mcp__github__push_files, Write, Read, Bash
+- **Tools**: gh repo create, gh repo clone, git commands, Write, Read, Bash
 - **Usage**: `/github repo-architect <repository management task>`
 - **Best For**: Repository setup, structure optimization, multi-repo management
 
@@ -57,7 +57,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Review Quality**: Deep
 - **Security Analysis**: Yes
 - **Performance Check**: Automated
-- **Tools**: mcp__github__get_pull_request_files, mcp__github__create_pull_request_review, Read, Write
+- **Tools**: gh pr view --json files, gh pr review, gh pr comment, Read, Write
 - **Usage**: `/github code-reviewer <review task>`
 - **Best For**: Code quality, security reviews, performance analysis
 
@@ -66,7 +66,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Branch Strategy**: GitFlow
 - **Merge Strategy**: Intelligent
 - **Conflict Prevention**: Proactive
-- **Tools**: mcp__github__create_branch, mcp__github__update_pull_request_branch, Bash
+- **Tools**: gh api (for branch operations), git commands, Bash
 - **Usage**: `/github branch-manager <branch management task>`
 - **Best For**: Branch coordination, merge strategies, workflow management
 
@@ -77,7 +77,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Package Sync**: Intelligent
 - **Version Alignment**: Automatic
 - **Dependency Resolution**: Advanced
-- **Tools**: mcp__github__push_files, mcp__github__create_pull_request, Read, Write, Bash
+- **Tools**: git commands, gh pr create, Read, Write, Bash
 - **Usage**: `/github sync-coordinator <sync task>`
 - **Best For**: Package synchronization, version management, dependency updates
 
@@ -86,7 +86,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Pipeline Management**: Advanced
 - **Test Coordination**: Parallel
 - **Deployment**: Automated
-- **Tools**: mcp__github__get_pull_request_status, Bash, TodoWrite, Task
+- **Tools**: gh pr checks, gh workflow list, gh run list, Bash, TodoWrite, Task
 - **Usage**: `/github ci-orchestrator <CI/CD task>`
 - **Best For**: CI/CD coordination, test management, deployment automation
 
@@ -95,7 +95,7 @@ This document describes all GitHub integration modes available in Claude-Flow wi
 - **Security Scan**: Automated
 - **Compliance Check**: Continuous
 - **Vulnerability Management**: Proactive
-- **Tools**: mcp__github__search_code, mcp__github__create_issue, Read, Write
+- **Tools**: gh search code, gh issue create, gh secret list, Read, Write
 - **Usage**: `/github security-guardian <security task>`
 - **Best For**: Security audits, compliance checks, vulnerability management
 
@@ -123,10 +123,10 @@ All GitHub modes support batch operations for maximum efficiency:
 ### Parallel GitHub Operations Example:
 ```javascript
 [Single Message with BatchTool]:
-  mcp__github__create_issue { title: "Feature A", body: "..." }
-  mcp__github__create_issue { title: "Feature B", body: "..." }
-  mcp__github__create_pull_request { title: "PR 1", head: "feature-a", base: "main" }
-  mcp__github__create_pull_request { title: "PR 2", head: "feature-b", base: "main" }
+  Bash("gh issue create --title 'Feature A' --body '...'")
+  Bash("gh issue create --title 'Feature B' --body '...'")
+  Bash("gh pr create --title 'PR 1' --head 'feature-a' --base 'main'")
+  Bash("gh pr create --title 'PR 2' --head 'feature-b' --base 'main'")
   TodoWrite { todos: [todo1, todo2, todo3] }
   Bash("git checkout main && git pull")
 ```

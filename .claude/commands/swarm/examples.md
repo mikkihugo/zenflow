@@ -1,63 +1,168 @@
-# Claude-Flow Swarm Examples
+# Examples Swarm Strategy
 
-## Quick Start Commands
+## Common Swarm Patterns
 
-### Research Tasks
-```bash
-claude-flow swarm "Research modern web frameworks" --strategy research --mode distributed
-claude-flow swarm "Analyze market trends in AI" --strategy research --parallel --max-agents 6
+### Research Swarm
+
+#### Using MCP Tools
+```javascript
+// Initialize research swarm
+mcp__claude-flow__swarm_init({
+  "topology": "mesh",
+  "maxAgents": 6,
+  "strategy": "adaptive"
+})
+
+// Spawn research agents
+mcp__claude-flow__agent_spawn({
+  "type": "researcher",
+  "name": "AI Trends Researcher",
+  "capabilities": ["web-search", "analysis", "synthesis"]
+})
+
+// Orchestrate research
+mcp__claude-flow__task_orchestrate({
+  "task": "research AI trends",
+  "strategy": "parallel",
+  "priority": "medium"
+})
+
+// Monitor progress
+mcp__claude-flow__swarm_status({
+  "swarmId": "research-swarm"
+})
 ```
 
-### Development Tasks
+#### Using CLI (Fallback)
 ```bash
-claude-flow swarm "Build a microservice API" --strategy development --mode hierarchical
-claude-flow swarm "Create React dashboard" --strategy development --parallel --max-agents 8
+npx claude-flow swarm "research AI trends" \
+  --strategy research \
+  --mode distributed \
+  --max-agents 6 \
+  --parallel
 ```
 
-### Analysis Tasks
-```bash
-claude-flow swarm "Analyze user behavior data" --strategy analysis --mode mesh
-claude-flow swarm "Performance analysis of application" --strategy analysis --monitor
+### Development Swarm
+
+#### Using MCP Tools
+```javascript
+// Initialize development swarm
+mcp__claude-flow__swarm_init({
+  "topology": "hierarchical",
+  "maxAgents": 8,
+  "strategy": "balanced"
+})
+
+// Spawn development team
+const devAgents = [
+  { type: "architect", name: "API Designer" },
+  { type: "coder", name: "Backend Developer" },
+  { type: "tester", name: "API Tester" },
+  { type: "documenter", name: "API Documenter" }
+]
+
+devAgents.forEach(agent => {
+  mcp__claude-flow__agent_spawn({
+    "type": agent.type,
+    "name": agent.name,
+    "swarmId": "dev-swarm"
+  })
+})
+
+// Orchestrate development
+mcp__claude-flow__task_orchestrate({
+  "task": "build REST API",
+  "strategy": "sequential",
+  "dependencies": ["design", "implement", "test", "document"]
+})
+
+// Enable monitoring
+mcp__claude-flow__swarm_monitor({
+  "swarmId": "dev-swarm",
+  "interval": 5000
+})
 ```
 
-### Testing Tasks
+#### Using CLI (Fallback)
 ```bash
-claude-flow swarm "Comprehensive testing suite" --strategy testing --parallel
-claude-flow swarm "Security testing analysis" --strategy testing --mode distributed
+npx claude-flow swarm "build REST API" \
+  --strategy development \
+  --mode hierarchical \
+  --monitor \
+  --output sqlite
 ```
 
-### Optimization Tasks
-```bash
-claude-flow swarm "Optimize database queries" --strategy optimization --mode hybrid
-claude-flow swarm "Frontend performance optimization" --strategy optimization --monitor
+### Analysis Swarm
+
+#### Using MCP Tools
+```javascript
+// Initialize analysis swarm
+mcp__claude-flow__swarm_init({
+  "topology": "mesh",
+  "maxAgents": 5,
+  "strategy": "adaptive"
+})
+
+// Spawn analysis agents
+mcp__claude-flow__agent_spawn({
+  "type": "analyst",
+  "name": "Code Analyzer",
+  "capabilities": ["static-analysis", "complexity-analysis"]
+})
+
+mcp__claude-flow__agent_spawn({
+  "type": "analyst",
+  "name": "Security Analyzer",
+  "capabilities": ["security-scan", "vulnerability-detection"]
+})
+
+// Parallel analysis execution
+mcp__claude-flow__parallel_execute({
+  "tasks": [
+    { "id": "analyze-code", "command": "analyze codebase structure" },
+    { "id": "analyze-security", "command": "scan for vulnerabilities" },
+    { "id": "analyze-performance", "command": "identify bottlenecks" }
+  ]
+})
+
+// Generate comprehensive report
+mcp__claude-flow__performance_report({
+  "format": "detailed",
+  "timeframe": "current"
+})
 ```
 
-### Maintenance Tasks
+#### Using CLI (Fallback)
 ```bash
-claude-flow swarm "Update dependencies safely" --strategy maintenance --mode centralized
-claude-flow swarm "System health check" --strategy maintenance --monitor
+npx claude-flow swarm "analyze codebase" \
+  --strategy analysis \
+  --mode mesh \
+  --parallel \
+  --timeout 300
 ```
 
-## Advanced Usage
+## Error Handling Examples
 
-### Custom Output and Monitoring
-```bash
-# Save results in different formats
-claude-flow swarm "Research task" --output sqlite --output-dir ./results
+```javascript
+// Setup fault tolerance
+mcp__claude-flow__daa_fault_tolerance({
+  "agentId": "all",
+  "strategy": "auto-recovery"
+})
 
-# Enable real-time monitoring
-claude-flow swarm "Long task" --monitor --timeout 120
-
-# Dry run to see configuration
-claude-flow swarm "Any task" --dry-run
+// Handle errors gracefully
+try {
+  await mcp__claude-flow__task_orchestrate({
+    "task": "complex operation",
+    "strategy": "parallel"
+  })
+} catch (error) {
+  // Check swarm health
+  const status = await mcp__claude-flow__swarm_status({})
+  
+  // Log error patterns
+  await mcp__claude-flow__error_analysis({
+    "logs": [error.message]
+  })
+}
 ```
-
-### Coordination Modes
-
-- **centralized**: Single coordinator (best for simple tasks)
-- **distributed**: Multiple coordinators (best for complex, parallelizable tasks)
-- **hierarchical**: Tree structure (best for organized, structured work)
-- **mesh**: Peer-to-peer (best for dynamic, adaptive tasks)
-- **hybrid**: Mixed patterns (best for complex workflows)
-
-See .claude/commands/swarm/ for detailed documentation on each strategy.

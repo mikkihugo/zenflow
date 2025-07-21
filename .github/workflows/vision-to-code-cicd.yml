@@ -1,0 +1,461 @@
+name: Vision-to-Code CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/vision-to-code
+  ELIXIR_VERSION: '1.15.7'
+  OTP_VERSION: '26.1'
+  NODE_VERSION: '20'
+  TERRAFORM_VERSION: '1.6.5'
+  HELM_VERSION: '3.13.2'
+  KUBECTL_VERSION: '1.28.4'
+
+jobs:
+  # Code Quality and Security Scanning
+  quality-check:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Cache Elixir dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Install dependencies
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+
+      - name: Run static analysis
+        run: |
+          mix compile --warnings-as-errors
+          mix format --check-formatted
+          mix credo --strict
+          mix dialyzer
+
+      - name: Security scanning with Sobelow
+        run: mix sobelow --config
+
+      - name: Dependency vulnerability check
+        run: mix deps.audit
+
+      - name: Container scanning with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Unit and Integration Tests
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    needs: quality-check
+    strategy:
+      matrix:
+        service:
+          - business-service
+          - core-service
+          - swarm-service
+          - development-service
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Install dependencies
+        working-directory: ./services/${{ matrix.service }}
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+
+      - name: Run tests
+        working-directory: ./services/${{ matrix.service }}
+        env:
+          MIX_ENV: test
+          DATABASE_URL: postgres://test:test@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379
+        run: |
+          mix ecto.create
+          mix ecto.migrate
+          mix test --cover --warnings-as-errors
+
+      - name: Generate coverage report
+        if: matrix.service == 'core-service'
+        working-directory: ./services/${{ matrix.service }}
+        run: mix coveralls.json
+
+      - name: Upload coverage to Codecov
+        if: matrix.service == 'core-service'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./services/${{ matrix.service }}/cover/excoveralls.json
+          flags: ${{ matrix.service }}
+          name: ${{ matrix.service }}
+
+  # Build and Push Docker Images
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service:
+          - business-service
+          - core-service
+          - swarm-service
+          - development-service
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/${{ matrix.service }}
+          file: ./services/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            ELIXIR_VERSION=${{ env.ELIXIR_VERSION }}
+            OTP_VERSION=${{ env.OTP_VERSION }}
+
+  # Integration Tests
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Kind cluster
+        uses: helm/kind-action@v1.8.0
+        with:
+          cluster_name: vision-to-code-test
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Deploy services to Kind
+        run: |
+          helm dependency update ./infrastructure/helm/vision-to-code
+          helm install vision-to-code ./infrastructure/helm/vision-to-code \
+            --values ./infrastructure/helm/vision-to-code/values.yaml \
+            --set global.imageRegistry=${{ env.REGISTRY }} \
+            --set global.environment=test \
+            --wait --timeout 10m
+
+      - name: Run integration tests
+        run: |
+          kubectl wait --for=condition=ready pod -l app.kubernetes.io/instance=vision-to-code --timeout=300s
+          npm run test:integration
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          kubectl logs -l app.kubernetes.io/instance=vision-to-code --all-containers=true
+          kubectl describe pods -l app.kubernetes.io/instance=vision-to-code
+
+  # Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build, integration-test]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.vision-to-code.example.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --region us-east-1 --name vision-to-code-staging
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Deploy to staging
+        run: |
+          helm upgrade --install vision-to-code ./infrastructure/helm/vision-to-code \
+            --namespace vision-to-code-staging \
+            --create-namespace \
+            --values ./infrastructure/helm/vision-to-code/values.yaml \
+            --values ./infrastructure/helm/vision-to-code/values-staging.yaml \
+            --set global.imageRegistry=${{ env.REGISTRY }} \
+            --set businessService.image.tag=${{ github.sha }} \
+            --set coreService.image.tag=${{ github.sha }} \
+            --set swarmService.image.tag=${{ github.sha }} \
+            --set developmentService.image.tag=${{ github.sha }} \
+            --wait --timeout 15m
+
+      - name: Run smoke tests
+        run: |
+          ./scripts/smoke-tests.sh staging
+
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v1
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: staging
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+  # Deploy to Production
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://api.vision-to-code.example.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --region us-east-1 --name vision-to-code-production
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Deploy to production (Blue-Green)
+        run: |
+          # Deploy to green environment
+          helm upgrade --install vision-to-code-green ./infrastructure/helm/vision-to-code \
+            --namespace vision-to-code-production \
+            --create-namespace \
+            --values ./infrastructure/helm/vision-to-code/values.yaml \
+            --values ./infrastructure/helm/vision-to-code/values-production.yaml \
+            --set global.imageRegistry=${{ env.REGISTRY }} \
+            --set global.deploymentColor=green \
+            --set businessService.image.tag=${{ github.sha }} \
+            --set coreService.image.tag=${{ github.sha }} \
+            --set swarmService.image.tag=${{ github.sha }} \
+            --set developmentService.image.tag=${{ github.sha }} \
+            --wait --timeout 20m
+
+      - name: Run production tests
+        run: |
+          ./scripts/production-tests.sh green
+
+      - name: Switch traffic to green
+        run: |
+          kubectl patch service vision-to-code-gateway \
+            -n vision-to-code-production \
+            -p '{"spec":{"selector":{"deployment-color":"green"}}}'
+
+      - name: Monitor deployment
+        run: |
+          ./scripts/monitor-deployment.sh production 600
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            ## Vision-to-Code System Release
+            
+            **Commit**: ${{ github.sha }}
+            **Deployed to**: Production
+            **Deployment Time**: ${{ github.event.head_commit.timestamp }}
+            
+            ### Services Deployed:
+            - Business Service
+            - Core Service
+            - Swarm Service
+            - Development Service
+          draft: false
+          prerelease: false
+
+  # Rollback Job
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    needs: [deploy-staging, deploy-production]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Rollback deployment
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            CLUSTER="vision-to-code-production"
+            NAMESPACE="vision-to-code-production"
+          else
+            CLUSTER="vision-to-code-staging"
+            NAMESPACE="vision-to-code-staging"
+          fi
+          
+          aws eks update-kubeconfig --region us-east-1 --name $CLUSTER
+          helm rollback vision-to-code -n $NAMESPACE
+
+      - name: Notify rollback
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              text: "Deployment Rollback",
+              attachments: [{
+                color: 'warning',
+                title: 'Rollback Executed',
+                fields: [
+                  { title: 'Environment', value: '${{ github.ref == "refs/heads/main" && "Production" || "Staging" }}', short: true },
+                  { title: 'Commit', value: '${{ github.sha }}', short: true },
+                  { title: 'Actor', value: '${{ github.actor }}', short: true },
+                  { title: 'Workflow', value: '${{ github.workflow }}', short: true }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

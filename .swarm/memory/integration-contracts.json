@@ -1,0 +1,134 @@
+{
+  "services": {
+    "vision-service": {
+      "base_url": "http://localhost:3001",
+      "endpoints": {
+        "analyze": {
+          "method": "POST",
+          "path": "/api/vision/analyze",
+          "request": {
+            "image": "string (base64 or URL)",
+            "options": {
+              "extract_features": "boolean",
+              "detect_objects": "boolean",
+              "describe_scene": "boolean"
+            }
+          },
+          "response": {
+            "features": "array",
+            "objects": "array",
+            "description": "string",
+            "metadata": "object"
+          }
+        }
+      }
+    },
+    "language-service": {
+      "base_url": "http://localhost:3002",
+      "endpoints": {
+        "analyze": {
+          "method": "POST",
+          "path": "/api/language/analyze",
+          "request": {
+            "text": "string",
+            "options": {
+              "extract_entities": "boolean",
+              "analyze_sentiment": "boolean",
+              "extract_requirements": "boolean"
+            }
+          },
+          "response": {
+            "entities": "array",
+            "sentiment": "object",
+            "requirements": "array",
+            "metadata": "object"
+          }
+        }
+      }
+    },
+    "code-service": {
+      "base_url": "http://localhost:3003",
+      "endpoints": {
+        "generate": {
+          "method": "POST",
+          "path": "/api/code/generate",
+          "request": {
+            "specifications": "object",
+            "language": "string",
+            "framework": "string (optional)",
+            "options": "object"
+          },
+          "response": {
+            "code": "string",
+            "files": "array",
+            "language": "string",
+            "metadata": "object"
+          }
+        }
+      }
+    },
+    "orchestrator": {
+      "base_url": "http://localhost:3000",
+      "endpoints": {
+        "process": {
+          "method": "POST",
+          "path": "/api/orchestrate/process",
+          "request": {
+            "input": {
+              "image": "string (optional)",
+              "text": "string (optional)",
+              "requirements": "object (optional)"
+            },
+            "output_format": "string",
+            "options": "object"
+          },
+          "response": {
+            "request_id": "string",
+            "status": "string",
+            "results": "object",
+            "generated_code": "object"
+          }
+        },
+        "status": {
+          "method": "GET",
+          "path": "/api/orchestrate/status/:request_id",
+          "response": {
+            "request_id": "string",
+            "status": "string",
+            "progress": "number",
+            "steps_completed": "array",
+            "current_step": "string"
+          }
+        }
+      }
+    }
+  },
+  "shared_types": {
+    "ServiceResponse": {
+      "success": "boolean",
+      "data": "any",
+      "error": "object (optional)",
+      "metadata": {
+        "timestamp": "string",
+        "service": "string",
+        "version": "string"
+      }
+    },
+    "ErrorResponse": {
+      "success": false,
+      "error": {
+        "code": "string",
+        "message": "string",
+        "details": "object (optional)"
+      }
+    }
+  },
+  "communication": {
+    "protocol": "HTTP/REST",
+    "authentication": "API_KEY",
+    "retry_policy": {
+      "max_retries": 3,
+      "backoff": "exponential"
+    }
+  }
+}

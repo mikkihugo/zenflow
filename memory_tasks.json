@@ -1,0 +1,143 @@
+{
+  "tasks": [
+    {
+      "id": "MEM-003",
+      "title": "Replace stub in rust_memory_pool:36",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/rust_memory_pool.erl",
+      "line": 36,
+      "description": "Replace stub: {reply, {error, unknown_request}, State}.",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 4
+    },
+    {
+      "id": "MEM-005",
+      "title": "Replace stub in memory_registry:35",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_registry.erl",
+      "line": 35,
+      "description": "Replace stub: {reply, {error, unknown_request}, State}.",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 4
+    },
+    {
+      "id": "MEM-008",
+      "title": "Replace stub in memory_gossip:37",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_gossip.erl",
+      "line": 37,
+      "description": "Replace stub: {reply, {error, unknown_request}, State}.",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 4
+    },
+    {
+      "id": "MEM-011",
+      "title": "Replace stub in memory_monitor:33",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_monitor.erl",
+      "line": 33,
+      "description": "Replace stub: {reply, {error, unknown_request}, State}.",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 4
+    },
+    {
+      "id": "MEM-014",
+      "title": "Replace stub in memory_rebalancer:39",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_rebalancer.erl",
+      "line": 39,
+      "description": "Replace stub: {reply, {error, unknown_request}, State}.",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 4
+    },
+    {
+      "id": "MEM-001",
+      "title": "Implement TODO in rust_memory_pool:20",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/rust_memory_pool.erl",
+      "line": 20,
+      "description": "%% TODO: Initialize Rust NIF pool",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 3
+    },
+    {
+      "id": "MEM-002",
+      "title": "Implement TODO in rust_memory_pool:25",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/rust_memory_pool.erl",
+      "line": 25,
+      "description": "%% TODO: Create new NIF connection",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 3
+    },
+    {
+      "id": "MEM-004",
+      "title": "Implement TODO in memory_registry:19",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_registry.erl",
+      "line": 19,
+      "description": "%% TODO: Initialize consistent hash ring",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 3
+    },
+    {
+      "id": "MEM-006",
+      "title": "Implement TODO in memory_gossip:25",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_gossip.erl",
+      "line": 25,
+      "description": "%% TODO: Implement gossip broadcast",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 3
+    },
+    {
+      "id": "MEM-007",
+      "title": "Implement TODO in memory_gossip:33",
+      "file": "/home/mhugo/code/singularity-engine/platform/memory-service/erlang/src/memory_gossip.erl",
+      "line": 33,
+      "description": "%% TODO: Implement cluster leave",
+      "type": "implementation",
+      "priority": "high",
+      "hours": 3
+    }
+  ],
+  "adrs": [
+    {
+      "id": "ADR-001",
+      "title": "Supervision Strategy for Memory Components",
+      "decision": "Use one_for_one supervision for memory shards",
+      "rationale": "Shards should be independent - failure of one shouldn't affect others",
+      "status": "needs_approval"
+    },
+    {
+      "id": "ADR-002",
+      "title": "Rust NIF Integration Pattern",
+      "decision": "Use resource pools for Rust NIFs",
+      "rationale": "Prevents memory leaks and provides timeout handling",
+      "status": "needs_approval"
+    },
+    {
+      "id": "ADR-003",
+      "title": "Consistent Hashing Algorithm",
+      "decision": "Implement ring-based consistent hashing",
+      "rationale": "Enables smooth rebalancing when shards are added/removed",
+      "status": "needs_approval"
+    },
+    {
+      "id": "ADR-004",
+      "title": "ML Integration Architecture",
+      "decision": "Use pgml for in-database ML operations",
+      "rationale": "Reduces data movement and leverages PostgreSQL's ecosystem",
+      "status": "needs_approval"
+    },
+    {
+      "id": "ADR-005",
+      "title": "Cross-DC Federation Protocol",
+      "decision": "Use vector clocks for conflict resolution",
+      "rationale": "Handles network partitions and provides eventual consistency",
+      "status": "needs_approval"
+    }
+  ],
+  "analysis_date": "2025-06-19",
+  "system_complexity": "enterprise_grade"
+}

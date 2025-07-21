@@ -1,0 +1,115 @@
+{
+  "tasks": [
+    {
+      "id": "foundation-001",
+      "type": "foundation",
+      "title": "Create base project structure and dependencies",
+      "assigned_to": ["all"],
+      "status": "pending",
+      "priority": "high",
+      "subtasks": [
+        "Create package.json for each service",
+        "Set up TypeScript configuration",
+        "Create base API structure",
+        "Set up shared utilities"
+      ]
+    },
+    {
+      "id": "vision-service-001",
+      "type": "implementation",
+      "title": "Implement Vision Service Core",
+      "assigned_to": ["vision"],
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["foundation-001"],
+      "subtasks": [
+        "Create vision analysis endpoints",
+        "Integrate image processing",
+        "Implement feature extraction",
+        "Create response schemas"
+      ]
+    },
+    {
+      "id": "language-service-001",
+      "type": "implementation",
+      "title": "Implement Language Service Core",
+      "assigned_to": ["language"],
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["foundation-001"],
+      "subtasks": [
+        "Create text analysis endpoints",
+        "Implement NLP processing",
+        "Extract semantic features",
+        "Create response schemas"
+      ]
+    },
+    {
+      "id": "codegen-service-001",
+      "type": "implementation",
+      "title": "Implement Code Generation Service Core",
+      "assigned_to": ["codegen"],
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["foundation-001"],
+      "subtasks": [
+        "Create code generation endpoints",
+        "Implement template system",
+        "Build generation algorithms",
+        "Support multiple languages"
+      ]
+    },
+    {
+      "id": "orchestrator-service-001",
+      "type": "implementation",
+      "title": "Implement Orchestrator Service Core",
+      "assigned_to": ["orchestrator"],
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["foundation-001"],
+      "subtasks": [
+        "Create orchestration endpoints",
+        "Implement workflow engine",
+        "Build service communication",
+        "Manage request state"
+      ]
+    },
+    {
+      "id": "testing-001",
+      "type": "testing",
+      "title": "Create Testing Framework",
+      "assigned_to": ["testing"],
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["foundation-001"],
+      "subtasks": [
+        "Set up test infrastructure",
+        "Create unit test templates",
+        "Build integration test framework",
+        "Set up E2E test environment"
+      ]
+    },
+    {
+      "id": "integration-001",
+      "type": "integration",
+      "title": "Service Integration",
+      "assigned_to": ["queen", "orchestrator", "testing"],
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": ["vision-service-001", "language-service-001", "codegen-service-001", "orchestrator-service-001"],
+      "subtasks": [
+        "Define service contracts",
+        "Implement service discovery",
+        "Create integration tests",
+        "Validate end-to-end flow"
+      ]
+    }
+  ],
+  "queue_metadata": {
+    "total_tasks": 7,
+    "pending": 7,
+    "in_progress": 0,
+    "completed": 0,
+    "blocked": 0
+  }
+}

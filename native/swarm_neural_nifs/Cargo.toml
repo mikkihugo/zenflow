@@ -1,0 +1,29 @@
+[package]
+name = "swarm_neural_nifs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "swarm_neural_nifs"
+crate-type = ["cdylib"]
+
+[dependencies]
+rustler = "0.32"
+lazy_static = "1.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["rt", "sync", "time"] }
+uuid = { version = "1.0", features = ["v4"] }
+
+# ruv-FANN neural network core
+ruv-fann = { path = "../../", features = ["std", "parallel", "gpu"] }
+
+# ruv-swarm integration
+ruv-swarm-core = { path = "../../ruv-swarm/crates/ruv-swarm-core" }
+ruv-swarm-agents = { path = "../../ruv-swarm/crates/ruv-swarm-agents" }
+ruv-swarm-daa = { path = "../../ruv-swarm/crates/ruv-swarm-daa" }
+
+[features]
+default = ["gpu"]
+gpu = ["ruv-fann/gpu"]
+wasm = ["ruv-fann/wasm"]
