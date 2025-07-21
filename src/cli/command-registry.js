@@ -22,9 +22,15 @@ import { hookSafetyCommand } from './simple-commands/hook-safety.js';
 import { hiveMindCommand } from './simple-commands/hive-mind.js';
 import { HelpFormatter } from './help-formatter.js';
 import hiveMindOptimizeCommand from './simple-commands/hive-mind-optimize.js';
-import { showUnifiedMetrics, fixTaskAttribution } from './simple-commands/swarm-metrics-integration.js';
+import {
+  showUnifiedMetrics,
+  fixTaskAttribution,
+} from './simple-commands/swarm-metrics-integration.js';
 import { migrateHooksCommand, migrateHooksCommandConfig } from './simple-commands/migrate-hooks.js';
-import { fixHookVariablesCommand, fixHookVariablesCommandConfig } from './simple-commands/fix-hook-variables.js';
+import {
+  fixHookVariablesCommand,
+  fixHookVariablesCommandConfig,
+} from './simple-commands/fix-hook-variables.js';
 // Note: TypeScript imports commented out for Node.js compatibility
 // import { ruvSwarmAction } from './commands/ruv-swarm.ts';
 // import { configIntegrationAction } from './commands/config-integration.ts';
@@ -42,7 +48,7 @@ export function registerCoreCommands() {
       'npx claude-flow@latest init --sparc  # Recommended: Full SPARC setup',
       'init --sparc                         # Initialize with SPARC modes',
       'init --force --minimal               # Minimal setup, overwrite existing',
-      'init --sparc --force                 # Force SPARC setup'
+      'init --sparc --force                 # Force SPARC setup',
     ],
     details: `
 The --sparc flag creates a complete development environment:
@@ -51,7 +57,7 @@ The --sparc flag creates a complete development environment:
   • Pre-configured modes: architect, code, tdd, debug, security, and more
   • Ready for TDD workflows and automated code generation
   
-First-time users should run: npx claude-flow@latest init --sparc`
+First-time users should run: npx claude-flow@latest init --sparc`,
   });
 
   commandRegistry.set('start', {
@@ -64,8 +70,8 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'start --port 8080        # Use custom MCP port',
       'start --verbose          # Show detailed system activity',
       'start --ui               # Launch terminal-based UI',
-      'start --web              # Launch web-based UI'
-    ]
+      'start --web              # Launch web-based UI',
+    ],
   });
 
   // Add start-ui as a convenient alias for launching the UI
@@ -82,8 +88,8 @@ First-time users should run: npx claude-flow@latest init --sparc`
     examples: [
       'start-ui                 # Launch web-based UI (default)',
       'start-ui --port 3000     # Use custom port',
-      'start-ui --terminal      # Launch terminal-based UI instead'
-    ]
+      'start-ui --terminal      # Launch terminal-based UI instead',
+    ],
   });
 
   commandRegistry.set('memory', {
@@ -94,11 +100,39 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'memory store key "value"',
       'memory query search_term',
       'memory stats',
-      'memory export backup.json'
-    ]
+      'memory export backup.json',
+    ],
   });
 
+<<<<<<< HEAD
   // SPARC command removed - replaced by Hive Mind system
+||||||| 47d5ef4
+  commandRegistry.set('sparc', {
+    handler: sparcCommand,
+    description: 'SPARC development mode operations',
+    usage: 'sparc [subcommand] [options]',
+    examples: [
+      'sparc "orchestrate full app development"  # Default: sparc orchestrator',
+      'sparc modes                               # List available modes',
+      'sparc run code "implement feature"        # Run specific mode',
+      'sparc tdd "feature description"           # TDD workflow',
+      'sparc info architect                      # Mode details'
+    ]
+  });
+=======
+  commandRegistry.set('sparc', {
+    handler: sparcCommand,
+    description: 'SPARC development mode operations',
+    usage: 'sparc [subcommand] [options]',
+    examples: [
+      'sparc "orchestrate full app development"  # Default: sparc orchestrator',
+      'sparc modes                               # List available modes',
+      'sparc run code "implement feature"        # Run specific mode',
+      'sparc tdd "feature description"           # TDD workflow',
+      'sparc info architect                      # Mode details',
+    ],
+  });
+>>>>>>> origin/main
 
   commandRegistry.set('agent', {
     handler: agentCommand,
@@ -108,8 +142,8 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'agent spawn researcher --name "DataBot"',
       'agent list --verbose',
       'agent hierarchy create enterprise',
-      'agent ecosystem status'
-    ]
+      'agent ecosystem status',
+    ],
   });
 
   commandRegistry.set('task', {
@@ -120,8 +154,8 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'task create research "Market analysis"',
       'task list --filter running',
       'task workflow examples/dev-flow.json',
-      'task coordination status'
-    ]
+      'task coordination status',
+    ],
   });
 
   commandRegistry.set('config', {
@@ -132,31 +166,22 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'config init',
       'config set terminal.poolSize 15',
       'config get orchestrator.maxConcurrentTasks',
-      'config validate'
-    ]
+      'config validate',
+    ],
   });
 
   commandRegistry.set('status', {
     handler: statusCommand,
     description: 'Show system status and health',
     usage: 'status [--verbose] [--json]',
-    examples: [
-      'status',
-      'status --verbose',
-      'status --json'
-    ]
+    examples: ['status', 'status --verbose', 'status --json'],
   });
 
   commandRegistry.set('mcp', {
     handler: mcpCommand,
     description: 'Manage MCP server and tools',
     usage: 'mcp <subcommand> [options]',
-    examples: [
-      'mcp status',
-      'mcp start --port 8080',
-      'mcp tools --verbose',
-      'mcp auth setup'
-    ]
+    examples: ['mcp status', 'mcp start --port 8080', 'mcp tools --verbose', 'mcp auth setup'],
   });
 
   commandRegistry.set('monitor', {
@@ -167,8 +192,8 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'monitor',
       'monitor --watch',
       'monitor --interval 1000 --watch',
-      'monitor --format json'
-    ]
+      'monitor --format json',
+    ],
   });
 
   commandRegistry.set('swarm', {
@@ -179,8 +204,8 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'swarm "Build a REST API"',
       'swarm "Research cloud architecture" --strategy research',
       'swarm "Analyze data" --max-agents 3 --parallel',
-      'swarm "Development task" --ui --monitor --background'
-    ]
+      'swarm "Development task" --ui --monitor --background',
+    ],
   });
 
   commandRegistry.set('hive-mind', {
@@ -193,9 +218,9 @@ First-time users should run: npx claude-flow@latest init --sparc`
       'hive-mind wizard                        # Interactive setup wizard',
       'hive-mind status                        # View active swarms',
       'hive-mind consensus                     # View consensus decisions',
-      'hive-mind metrics                       # Performance analytics'
+      'hive-mind metrics                       # Performance analytics',
     ],
-    customHelp: true,  // Use command's own help function
+    customHelp: true, // Use command's own help function
     details: `
 Hive Mind System Features:
   • Queen-led coordination with specialized worker agents
@@ -216,7 +241,7 @@ Worker Types:
   • Researcher, Coder, Analyst, Tester
   • Architect, Reviewer, Optimizer, Documenter
 
-Use 'hive-mind wizard' for interactive setup or 'hive-mind help' for full documentation.`
+Use 'hive-mind wizard' for interactive setup or 'hive-mind help' for full documentation.`,
   });
 
   commandRegistry.set('hive-mind-optimize', {
@@ -228,7 +253,7 @@ Use 'hive-mind wizard' for interactive setup or 'hive-mind help' for full docume
       'hive-mind-optimize --auto               # Auto-optimize with defaults',
       'hive-mind-optimize --report             # Generate optimization report',
       'hive-mind-optimize --clean-memory --memory-days 60',
-      'hive-mind-optimize --auto --vacuum --archive-tasks'
+      'hive-mind-optimize --auto --vacuum --archive-tasks',
     ],
     details: `
 Hive Mind Database Optimization Features:
@@ -250,7 +275,7 @@ Safety Features:
   • Automatic backups before major operations
   • All changes are backward-compatible
   • Existing data is always preserved
-  • Rollback capability on errors`
+  • Rollback capability on errors`,
   });
 
   commandRegistry.set('swarm-metrics', {
@@ -266,7 +291,7 @@ Safety Features:
     usage: 'swarm-metrics [fix] [options]',
     examples: [
       'swarm-metrics                    # Show unified metrics from all swarm systems',
-      'swarm-metrics fix                # Fix task attribution issues between systems'
+      'swarm-metrics fix                # Fix task attribution issues between systems',
     ],
     details: `
 Swarm Metrics Integration Features:
@@ -281,7 +306,7 @@ This command helps resolve issues where:
   • Multiple swarm systems are not properly integrated
   • Task assignments are missing or incorrectly attributed
 
-Use 'swarm-metrics fix' to automatically repair attribution issues.`
+Use 'swarm-metrics fix' to automatically repair attribution issues.`,
   });
 
   commandRegistry.set('batch', {
@@ -294,7 +319,7 @@ Use 'swarm-metrics fix' to automatically repair attribution issues.`
       'batch validate-config my-batch.json',
       'batch estimate my-batch.json',
       'batch list-templates',
-      'batch list-environments'
+      'batch list-environments',
     ],
     details: `
 Batch operations support:
@@ -306,7 +331,7 @@ Batch operations support:
   
 Use with init command:
   claude-flow init --batch-init project1,project2,project3
-  claude-flow init --config batch-config.json --parallel`
+  claude-flow init --config batch-config.json --parallel`,
   });
 
   commandRegistry.set('github', {
@@ -319,7 +344,7 @@ Use with init command:
       'github release-manager "prepare v2.0.0 release"',
       'github repo-architect "optimize repository structure"',
       'github issue-tracker "analyze project roadmap issues"',
-      'github sync-coordinator "sync package versions across repos"'
+      'github sync-coordinator "sync package versions across repos"',
     ],
     details: `
 GitHub automation modes:
@@ -334,7 +359,7 @@ Advanced features:
   • Multi-reviewer coordination with automated scheduling
   • Intelligent issue categorization and assignment
   • Automated testing integration and quality gates
-  • Release pipeline orchestration with rollback capabilities`
+  • Release pipeline orchestration with rollback capabilities`,
   });
 
   commandRegistry.set('training', {
@@ -344,7 +369,7 @@ Advanced features:
     examples: [
       'training neural-train --data recent --model task-predictor',
       'training pattern-learn --operation "file-creation" --outcome "success"',
-      'training model-update --agent-type coordinator --operation-result "efficient"'
+      'training model-update --agent-type coordinator --operation-result "efficient"',
     ],
     details: `
 Neural training commands:
@@ -352,7 +377,7 @@ Neural training commands:
   • pattern-learn: Learn from specific operation outcomes
   • model-update: Update agent models with new insights
   
-Improves task selection accuracy, agent performance prediction, and coordination efficiency.`
+Improves task selection accuracy, agent performance prediction, and coordination efficiency.`,
   });
 
   commandRegistry.set('analysis', {
@@ -362,7 +387,7 @@ Improves task selection accuracy, agent performance prediction, and coordination
     examples: [
       'analysis bottleneck-detect --scope system',
       'analysis performance-report --timeframe 7d --format detailed',
-      'analysis token-usage --breakdown --cost-analysis'
+      'analysis token-usage --breakdown --cost-analysis',
     ],
     details: `
 Analysis commands:
@@ -370,7 +395,7 @@ Analysis commands:
   • performance-report: Generate comprehensive performance reports
   • token-usage: Analyze token consumption and costs
   
-Helps with performance optimization, cost management, and resource allocation.`
+Helps with performance optimization, cost management, and resource allocation.`,
   });
 
   commandRegistry.set('automation', {
@@ -380,7 +405,7 @@ Helps with performance optimization, cost management, and resource allocation.`
     examples: [
       'automation auto-agent --task-complexity enterprise --swarm-id swarm-123',
       'automation smart-spawn --requirement "web-development" --max-agents 8',
-      'automation workflow-select --project-type api --priority speed'
+      'automation workflow-select --project-type api --priority speed',
     ],
     details: `
 Automation commands:
@@ -388,7 +413,7 @@ Automation commands:
   • smart-spawn: Intelligently spawn agents based on specific requirements
   • workflow-select: Select and configure optimal workflows for project types
   
-Provides optimal resource allocation and intelligent agent selection.`
+Provides optimal resource allocation and intelligent agent selection.`,
   });
 
   commandRegistry.set('coordination', {
@@ -398,7 +423,7 @@ Provides optimal resource allocation and intelligent agent selection.`
     examples: [
       'coordination swarm-init --topology hierarchical --max-agents 8',
       'coordination agent-spawn --type developer --name "api-dev" --swarm-id swarm-123',
-      'coordination task-orchestrate --task "Build REST API" --strategy parallel'
+      'coordination task-orchestrate --task "Build REST API" --strategy parallel',
     ],
     details: `
 Coordination commands:
@@ -406,7 +431,7 @@ Coordination commands:
   • agent-spawn: Spawn and coordinate new agents
   • task-orchestrate: Orchestrate task execution across agents
   
-Enables intelligent task distribution, agent synchronization, and shared memory coordination.`
+Enables intelligent task distribution, agent synchronization, and shared memory coordination.`,
   });
 
   commandRegistry.set('hooks', {
@@ -416,7 +441,7 @@ Enables intelligent task distribution, agent synchronization, and shared memory 
     examples: [
       'hooks pre-task --description "Build API" --task-id task-123',
       'hooks post-task --task-id task-123 --analyze-performance --generate-insights',
-      'hooks session-end --export-metrics --generate-summary'
+      'hooks session-end --export-metrics --generate-summary',
     ],
     details: `
 Hooks commands:
@@ -426,7 +451,7 @@ Hooks commands:
   • post-edit: Execute after file modifications (tracking & coordination)
   • session-end: Execute at session termination (cleanup & export)
   
-Enables automated preparation & cleanup, performance tracking, and coordination synchronization.`
+Enables automated preparation & cleanup, performance tracking, and coordination synchronization.`,
   });
 
   commandRegistry.set('hook-safety', {
@@ -438,7 +463,7 @@ Enables automated preparation & cleanup, performance tracking, and coordination 
       'hook-safety validate --config ~/.claude/settings.json',
       'hook-safety status                             # View safety status and context',
       'hook-safety reset                              # Reset circuit breakers',
-      'hook-safety safe-mode                          # Enable safe mode (skip all hooks)'
+      'hook-safety safe-mode                          # Enable safe mode (skip all hooks)',
     ],
     details: `
 🚨 CRITICAL: Stop hooks calling 'claude' commands create INFINITE LOOPS that can:
@@ -458,14 +483,14 @@ SAFE ALTERNATIVES:
   • Use 'claude --skip-hooks' for manual updates
   • Create conditional execution scripts
 
-For more information: https://github.com/ruvnet/claude-flow/issues/166`
+For more information: https://github.com/ruvnet/claude-flow/issues/166`,
   });
 
   commandRegistry.set('migrate-hooks', migrateHooksCommandConfig);
 
   commandRegistry.set('fix-hook-variables', {
     handler: fixHookVariablesCommand,
-    ...fixHookVariablesCommandConfig
+    ...fixHookVariablesCommandConfig,
   });
 
   commandRegistry.set('hive', {
@@ -496,7 +521,7 @@ For more information: https://github.com/ruvnet/claude-flow/issues/166`
       'hive "Optimize database performance" --consensus unanimous',
       'hive "Develop ML pipeline" --topology mesh --monitor',
       'hive "Create REST API" --sparc --max-agents 8',
-      'hive "Research cloud patterns" --background --quality-threshold 0.9'
+      'hive "Research cloud patterns" --background --quality-threshold 0.9',
     ],
     details: `
 Hive Mind features:
@@ -521,7 +546,7 @@ Options:
   --quality-threshold <n>   Min quality 0-1 (default: 0.8)
   --sparc                   Use SPARC methodology
   --monitor                 Real-time monitoring
-  --background              Run in background`
+  --background              Run in background`,
   });
 
   // Temporarily commented out for Node.js compatibility
@@ -646,13 +671,13 @@ export function registerCommand(name, command) {
   if (commandRegistry.has(name)) {
     console.warn(`Command '${name}' already exists and will be overwritten`);
   }
-  
+
   commandRegistry.set(name, {
     handler: command.handler,
     description: command.description || 'No description available',
     usage: command.usage || `${name} [options]`,
     examples: command.examples || [],
-    hidden: command.hidden || false
+    hidden: command.hidden || false,
   });
 }
 
@@ -668,7 +693,7 @@ export function listCommands(includeHidden = false) {
     if (includeHidden || !command.hidden) {
       commands.push({
         name,
-        ...command
+        ...command,
       });
     }
   }
@@ -686,7 +711,7 @@ export async function executeCommand(name, subArgs, flags) {
   if (!command) {
     throw new Error(`Unknown command: ${name}`);
   }
-  
+
   try {
     await command.handler(subArgs, flags);
   } catch (err) {
@@ -698,45 +723,47 @@ export async function executeCommand(name, subArgs, flags) {
 export function showCommandHelp(name) {
   const command = commandRegistry.get(name);
   if (!command) {
-    console.log(HelpFormatter.formatError(
-      `Unknown command: ${name}`,
-      'claude-flow',
-      'claude-flow <command> [options]'
-    ));
+    console.log(
+      HelpFormatter.formatError(
+        `Unknown command: ${name}`,
+        'claude-flow',
+        'claude-flow <command> [options]',
+      ),
+    );
     return;
   }
-  
+
   // If command has custom help, call it with help flag
   if (command.customHelp) {
     command.handler(['--help'], { help: true });
     return;
   }
-  
+
   // Convert command info to standardized format
   const helpInfo = {
     name: `claude-flow ${name}`,
     description: HelpFormatter.stripFormatting(command.description),
-    usage: `claude-flow ${command.usage}`
+    usage: `claude-flow ${command.usage}`,
   };
-  
+
   // Parse examples
   if (command.examples && command.examples.length > 0) {
-    helpInfo.examples = command.examples.map(ex => {
+    helpInfo.examples = command.examples.map((ex) => {
       if (ex.startsWith('npx')) {
         return ex;
       }
       return `claude-flow ${ex}`;
     });
   }
-  
+
   // Parse options from details if available
   if (command.details) {
     const optionsMatch = command.details.match(/Options:([\s\S]*?)(?=\n\n|$)/);
     if (optionsMatch) {
       const optionsText = optionsMatch[1];
       const options = [];
-      const optionLines = optionsText.split('\n').filter(line => line.trim());
-      
+      const optionLines = optionsText.split('\n').filter((line) => line.trim());
+
       for (const line of optionLines) {
         const match = line.match(/^\s*(--.+?)\s{2,}(.+)$/);
         if (match) {
@@ -745,7 +772,7 @@ export function showCommandHelp(name) {
           const defaultMatch = description.match(/\(default: (.+?)\)/);
           const option = {
             flags: flags.trim(),
-            description: description.replace(/\(default: .+?\)/, '').trim()
+            description: description.replace(/\(default: .+?\)/, '').trim(),
           };
           if (defaultMatch) {
             option.defaultValue = defaultMatch[1];
@@ -753,27 +780,27 @@ export function showCommandHelp(name) {
           options.push(option);
         }
       }
-      
+
       if (options.length > 0) {
         helpInfo.options = options;
       }
     }
   }
-  
+
   console.log(HelpFormatter.formatHelp(helpInfo));
 }
 
 // Helper to show all commands
 export function showAllCommands() {
   const commands = listCommands();
-  
+
   console.log('Available commands:');
   console.log();
-  
+
   for (const command of commands) {
     console.log(`  ${command.name.padEnd(12)} ${command.description}`);
   }
-  
+
   console.log();
   console.log('Use "claude-flow help <command>" for detailed usage information');
 }

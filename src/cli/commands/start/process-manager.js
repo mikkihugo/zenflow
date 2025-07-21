@@ -1,14 +1,25 @@
-import { getErrorMessage } from '../../../utils/error-handler.js';
 /**
  * Process Manager - Handles lifecycle of system processes
  */
 
 import { EventEmitter } from './event-emitter.js';
 import chalk from 'chalk';
+<<<<<<< HEAD:src/cli/commands/start/process-manager.js
 import { 
   ProcessType, 
   ProcessStatus 
 } from './types.js';
+||||||| 47d5ef4:src/cli/commands/start/process-manager.ts
+import { 
+  ProcessInfo, 
+  ProcessType, 
+  ProcessStatus, 
+  ProcessMetrics,
+  SystemStats 
+} from './types.js';
+=======
+import { ProcessInfo, ProcessType, ProcessStatus, ProcessMetrics, SystemStats } from './types.js';
+>>>>>>> origin/main:src/cli/commands/start/process-manager.ts
 import { Orchestrator } from '../../../core/orchestrator.js';
 import { TerminalManager } from '../../../terminal/manager.js';
 import { MemoryManager } from '../../../memory/manager.js';
@@ -38,38 +49,38 @@ export class ProcessManager extends EventEmitter {
         id: 'event-bus',
         name: 'Event Bus',
         type: ProcessType.EVENT_BUS,
-        status: ProcessStatus.STOPPED
+        status: ProcessStatus.STOPPED,
       },
       {
         id: 'orchestrator',
         name: 'Orchestrator Engine',
         type: ProcessType.ORCHESTRATOR,
-        status: ProcessStatus.STOPPED
+        status: ProcessStatus.STOPPED,
       },
       {
         id: 'memory-manager',
         name: 'Memory Manager',
         type: ProcessType.MEMORY_MANAGER,
-        status: ProcessStatus.STOPPED
+        status: ProcessStatus.STOPPED,
       },
       {
         id: 'terminal-pool',
         name: 'Terminal Pool',
         type: ProcessType.TERMINAL_POOL,
-        status: ProcessStatus.STOPPED
+        status: ProcessStatus.STOPPED,
       },
       {
         id: 'mcp-server',
         name: 'MCP Server',
         type: ProcessType.MCP_SERVER,
-        status: ProcessStatus.STOPPED
+        status: ProcessStatus.STOPPED,
       },
       {
         id: 'coordinator',
         name: 'Coordination Manager',
         type: ProcessType.COORDINATOR,
-        status: ProcessStatus.STOPPED
-      }
+        status: ProcessStatus.STOPPED,
+      },
     ];
 
     for (const process of processDefinitions) {
@@ -107,20 +118,12 @@ export class ProcessManager extends EventEmitter {
           break;
 
         case ProcessType.MEMORY_MANAGER:
-          this.memoryManager = new MemoryManager(
-            this.config.memory,
-            eventBus,
-            logger
-          );
+          this.memoryManager = new MemoryManager(this.config.memory, eventBus, logger);
           await this.memoryManager.initialize();
           break;
 
         case ProcessType.TERMINAL_POOL:
-          this.terminalManager = new TerminalManager(
-            this.config.terminal,
-            eventBus,
-            logger
-          );
+          this.terminalManager = new TerminalManager(this.config.terminal, eventBus, logger);
           await this.terminalManager.initialize();
           break;
 
@@ -128,26 +131,26 @@ export class ProcessManager extends EventEmitter {
           this.coordinationManager = new CoordinationManager(
             this.config.coordination,
             eventBus,
-            logger
+            logger,
           );
           await this.coordinationManager.initialize();
           break;
 
         case ProcessType.MCP_SERVER:
-          this.mcpServer = new MCPServer(
-            this.config.mcp,
-            eventBus,
-            logger
-          );
+          this.mcpServer = new MCPServer(this.config.mcp, eventBus, logger);
           await this.mcpServer.start();
           break;
 
         case ProcessType.ORCHESTRATOR:
-          if (!this.terminalManager || !this.memoryManager || 
-              !this.coordinationManager || !this.mcpServer) {
+          if (
+            !this.terminalManager ||
+            !this.memoryManager ||
+            !this.coordinationManager ||
+            !this.mcpServer
+          ) {
             throw new Error('Required components not initialized');
           }
-          
+
           this.orchestrator = new Orchestrator(
             this.config,
             this.terminalManager,
@@ -155,7 +158,7 @@ export class ProcessManager extends EventEmitter {
             this.coordinationManager,
             this.mcpServer,
             eventBus,
-            logger
+            logger,
           );
           await this.orchestrator.initialize();
           break;
@@ -164,12 +167,17 @@ export class ProcessManager extends EventEmitter {
       process.startTime = Date.now();
       this.updateProcessStatus(processId, ProcessStatus.RUNNING);
       this.emit('processStarted', { processId, process });
-
     } catch (error) {
       this.updateProcessStatus(processId, ProcessStatus.ERROR);
       process.metrics = {
         ...process.metrics,
+<<<<<<< HEAD:src/cli/commands/start/process-manager.js
         lastError: error.message
+||||||| 47d5ef4:src/cli/commands/start/process-manager.ts
+        lastError: (error as Error).message
+=======
+        lastError: (error as Error).message,
+>>>>>>> origin/main:src/cli/commands/start/process-manager.ts
       };
       this.emit('processError', { processId, error });
       throw error;
@@ -224,7 +232,6 @@ export class ProcessManager extends EventEmitter {
 
       this.updateProcessStatus(processId, ProcessStatus.STOPPED);
       this.emit('processStopped', { processId });
-
     } catch (error) {
       this.updateProcessStatus(processId, ProcessStatus.ERROR);
       this.emit('processError', { processId, error });
@@ -234,7 +241,7 @@ export class ProcessManager extends EventEmitter {
 
   async restartProcess(processId) {
     await this.stopProcess(processId);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Brief delay
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Brief delay
     await this.startProcess(processId);
   }
 
@@ -246,7 +253,7 @@ export class ProcessManager extends EventEmitter {
       'terminal-pool',
       'coordinator',
       'mcp-server',
-      'orchestrator'
+      'orchestrator',
     ];
 
     for (const processId of startOrder) {
@@ -267,7 +274,7 @@ export class ProcessManager extends EventEmitter {
       'coordinator',
       'terminal-pool',
       'memory-manager',
-      'event-bus'
+      'event-bus',
     ];
 
     for (const processId of stopOrder) {
@@ -292,9 +299,9 @@ export class ProcessManager extends EventEmitter {
 
   getSystemStats() {
     const processes = this.getAllProcesses();
-    const runningProcesses = processes.filter(p => p.status === ProcessStatus.RUNNING);
-    const stoppedProcesses = processes.filter(p => p.status === ProcessStatus.STOPPED);
-    const errorProcesses = processes.filter(p => p.status === ProcessStatus.ERROR);
+    const runningProcesses = processes.filter((p) => p.status === ProcessStatus.RUNNING);
+    const stoppedProcesses = processes.filter((p) => p.status === ProcessStatus.STOPPED);
+    const errorProcesses = processes.filter((p) => p.status === ProcessStatus.ERROR);
 
     return {
       totalProcesses: processes.length,
@@ -303,7 +310,7 @@ export class ProcessManager extends EventEmitter {
       errorProcesses: errorProcesses.length,
       systemUptime: this.getSystemUptime(),
       totalMemory: this.getTotalMemoryUsage(),
-      totalCpu: this.getTotalCpuUsage()
+      totalCpu: this.getTotalCpuUsage(),
     };
   }
 
@@ -337,7 +344,7 @@ export class ProcessManager extends EventEmitter {
     // Placeholder - would integrate with actual logging system
     return [
       `[${new Date().toISOString()}] Process ${processId} started`,
-      `[${new Date().toISOString()}] Process ${processId} is running normally`
+      `[${new Date().toISOString()}] Process ${processId} is running normally`,
     ];
   }
 }

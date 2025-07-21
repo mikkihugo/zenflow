@@ -7,8 +7,19 @@ Coordinate AI swarms across multiple repositories, enabling organization-wide au
 
 ### 1. Cross-Repo Initialization
 ```bash
-# Initialize multi-repo swarm
+# Initialize multi-repo swarm with gh CLI
+# List organization repositories
+REPOS=$(gh repo list org --limit 100 --json name,description,languages \
+  --jq '.[] | select(.name | test("frontend|backend|shared"))')
+
+# Get repository details
+REPO_DETAILS=$(echo "$REPOS" | jq -r '.name' | while read -r repo; do
+  gh api repos/org/$repo --jq '{name, default_branch, languages, topics}'
+done | jq -s '.')
+
+# Initialize swarm with repository context
 npx ruv-swarm github multi-repo-init \
+  --repo-details "$REPO_DETAILS" \
   --repos "org/frontend,org/backend,org/shared" \
   --topology hierarchical \
   --shared-memory \
@@ -17,22 +28,68 @@ npx ruv-swarm github multi-repo-init \
 
 ### 2. Repository Discovery
 ```bash
-# Auto-discover related repositories
+# Auto-discover related repositories with gh CLI
+# Search organization repositories
+REPOS=$(gh repo list my-organization --limit 100 \
+  --json name,description,languages,topics \
+  --jq '.[] | select(.languages | keys | contains(["TypeScript"]))')
+
+# Analyze repository dependencies
+DEPS=$(echo "$REPOS" | jq -r '.name' | while read -r repo; do
+  # Get package.json if it exists
+  if gh api repos/my-organization/$repo/contents/package.json --jq '.content' 2>/dev/null; then
+    gh api repos/my-organization/$repo/contents/package.json \
+      --jq '.content' | base64 -d | jq '{name, dependencies, devDependencies}'
+  fi
+done | jq -s '.')
+
+# Discover and analyze
 npx ruv-swarm github discover-repos \
-  --org "my-organization" \
-  --filter "language:typescript" \
+  --repos "$REPOS" \
+  --dependencies "$DEPS" \
   --analyze-dependencies \
   --suggest-swarm-topology
 ```
 
 ### 3. Synchronized Operations
 ```bash
-# Execute synchronized changes across repos
-npx ruv-swarm github multi-repo-execute \
-  --task "update-dependencies" \
-  --repos "org/*-service" \
-  --create-prs \
-  --link-prs
+# Execute synchronized changes across repos with gh CLI
+# Get matching repositories
+MATCHING_REPOS=$(gh repo list org --limit 100 --json name \
+  --jq '.[] | select(.name | test("-service$")) | .name')
+
+# Execute task and create PRs
+echo "$MATCHING_REPOS" | while read -r repo; do
+  # Clone repo
+  gh repo clone org/$repo /tmp/$repo -- --depth=1
+  
+  # Execute task
+  cd /tmp/$repo
+  npx ruv-swarm github task-execute \
+    --task "update-dependencies" \
+    --repo "org/$repo"
+  
+  # Create PR if changes exist
+  if [[ -n $(git status --porcelain) ]]; then
+    git checkout -b update-dependencies-$(date +%Y%m%d)
+    git add -A
+    git commit -m "chore: Update dependencies"
+    
+    # Push and create PR
+    git push origin HEAD
+    PR_URL=$(gh pr create \
+      --title "Update dependencies" \
+      --body "Automated dependency update across services" \
+      --label "dependencies,automated")
+    
+    echo "$PR_URL" >> /tmp/created-prs.txt
+  fi
+  cd -
+done
+
+# Link related PRs
+PR_URLS=$(cat /tmp/created-prs.txt)
+npx ruv-swarm github link-prs --urls "$PR_URLS"
 ```
 
 ## Configuration
@@ -95,12 +152,53 @@ dependencies:
 
 ### Dependency Management
 ```bash
-# Update dependencies across all repos
-npx ruv-swarm github multi-repo-deps \
-  --update "typescript@5.0.0" \
-  --test-each \
-  --rollback-on-failure \
-  --create-tracking-issue
+# Update dependencies across all repos with gh CLI
+# Create tracking issue first
+TRACKING_ISSUE=$(gh issue create \
+  --title "Dependency Update: typescript@5.0.0" \
+  --body "Tracking issue for updating TypeScript across all repositories" \
+  --label "dependencies,tracking" \
+  --json number -q .number)
+
+# Get all repos with TypeScript
+TS_REPOS=$(gh repo list org --limit 100 --json name | jq -r '.[].name' | \
+  while read -r repo; do
+    if gh api repos/org/$repo/contents/package.json 2>/dev/null | \
+       jq -r '.content' | base64 -d | grep -q '"typescript"'; then
+      echo "$repo"
+    fi
+  done)
+
+# Update each repository
+echo "$TS_REPOS" | while read -r repo; do
+  # Clone and update
+  gh repo clone org/$repo /tmp/$repo -- --depth=1
+  cd /tmp/$repo
+  
+  # Update dependency
+  npm install --save-dev typescript@5.0.0
+  
+  # Test changes
+  if npm test; then
+    # Create PR
+    git checkout -b update-typescript-5
+    git add package.json package-lock.json
+    git commit -m "chore: Update TypeScript to 5.0.0
+
+Part of #$TRACKING_ISSUE"
+    
+    git push origin HEAD
+    gh pr create \
+      --title "Update TypeScript to 5.0.0" \
+      --body "Updates TypeScript to version 5.0.0\n\nTracking: #$TRACKING_ISSUE" \
+      --label "dependencies"
+  else
+    # Report failure
+    gh issue comment $TRACKING_ISSUE \
+      --body "❌ Failed to update $repo - tests failing"
+  fi
+  cd -
+done
 ```
 
 ### Refactoring Operations

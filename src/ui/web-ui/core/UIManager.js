@@ -21,47 +21,99 @@ export const VIEW_CATEGORIES = {
   DAA: 'daa',
   SYSTEM: 'system',
   CLI: 'cli',
-  HELP: 'help'
+  HELP: 'help',
 };
 
 // MCP Tool Categories mapping
 export const MCP_TOOL_CATEGORIES = {
   NEURAL: [
-    'neural_train', 'neural_predict', 'neural_status', 'neural_patterns',
-    'model_load', 'model_save', 'pattern_recognize', 'cognitive_analyze',
-    'learning_adapt', 'neural_compress', 'ensemble_create', 'transfer_learn',
-    'neural_explain', 'wasm_optimize', 'inference_run'
+    'neural_train',
+    'neural_predict',
+    'neural_status',
+    'neural_patterns',
+    'model_load',
+    'model_save',
+    'pattern_recognize',
+    'cognitive_analyze',
+    'learning_adapt',
+    'neural_compress',
+    'ensemble_create',
+    'transfer_learn',
+    'neural_explain',
+    'wasm_optimize',
+    'inference_run',
   ],
   MEMORY: [
-    'memory_usage', 'memory_backup', 'memory_restore', 'memory_compress',
-    'memory_sync', 'cache_manage', 'state_snapshot', 'context_restore',
-    'memory_analytics', 'memory_persist', 'memory_namespace'
+    'memory_usage',
+    'memory_backup',
+    'memory_restore',
+    'memory_compress',
+    'memory_sync',
+    'cache_manage',
+    'state_snapshot',
+    'context_restore',
+    'memory_analytics',
+    'memory_persist',
+    'memory_namespace',
   ],
   MONITORING: [
-    'performance_report', 'bottleneck_analyze', 'token_usage', 'benchmark_run',
-    'metrics_collect', 'trend_analysis', 'cost_analysis', 'quality_assess',
-    'error_analysis', 'usage_stats', 'health_check', 'swarm_monitor',
-    'agent_metrics'
+    'performance_report',
+    'bottleneck_analyze',
+    'token_usage',
+    'benchmark_run',
+    'metrics_collect',
+    'trend_analysis',
+    'cost_analysis',
+    'quality_assess',
+    'error_analysis',
+    'usage_stats',
+    'health_check',
+    'swarm_monitor',
+    'agent_metrics',
   ],
   WORKFLOW: [
-    'workflow_create', 'workflow_execute', 'automation_setup', 'pipeline_create',
-    'scheduler_manage', 'trigger_setup', 'workflow_template', 'batch_process',
-    'parallel_execute', 'sparc_mode', 'task_orchestrate'
+    'workflow_create',
+    'workflow_execute',
+    'automation_setup',
+    'pipeline_create',
+    'scheduler_manage',
+    'trigger_setup',
+    'workflow_template',
+    'batch_process',
+    'parallel_execute',
+    'sparc_mode',
+    'task_orchestrate',
   ],
   GITHUB: [
-    'github_repo_analyze', 'github_pr_manage', 'github_issue_track',
-    'github_release_coord', 'github_workflow_auto', 'github_code_review',
-    'github_sync_coord', 'github_metrics'
+    'github_repo_analyze',
+    'github_pr_manage',
+    'github_issue_track',
+    'github_release_coord',
+    'github_workflow_auto',
+    'github_code_review',
+    'github_sync_coord',
+    'github_metrics',
   ],
   DAA: [
-    'daa_agent_create', 'daa_capability_match', 'daa_resource_alloc',
-    'daa_lifecycle_manage', 'daa_communication', 'daa_consensus',
-    'daa_fault_tolerance', 'daa_optimization'
+    'daa_agent_create',
+    'daa_capability_match',
+    'daa_resource_alloc',
+    'daa_lifecycle_manage',
+    'daa_communication',
+    'daa_consensus',
+    'daa_fault_tolerance',
+    'daa_optimization',
   ],
   SYSTEM: [
-    'security_scan', 'backup_create', 'restore_system', 'log_analysis',
-    'diagnostic_run', 'config_manage', 'features_detect', 'terminal_execute'
-  ]
+    'security_scan',
+    'backup_create',
+    'restore_system',
+    'log_analysis',
+    'diagnostic_run',
+    'config_manage',
+    'features_detect',
+    'terminal_execute',
+  ],
 };
 
 export class UIManager {
@@ -71,13 +123,13 @@ export class UIManager {
     this.viewManager = new ViewManager(this.eventBus);
     this.stateManager = new StateManager(this.eventBus);
     this.componentLibrary = new ComponentLibrary();
-    
+
     this.currentView = VIEW_CATEGORIES.OVERVIEW;
     this.viewHistory = [];
     this.shortcuts = new Map();
     this.theme = 'dark';
     this.isResponsive = true;
-    
+
     this.initializeEventHandlers();
     this.setupKeyboardShortcuts();
   }
@@ -91,22 +143,21 @@ export class UIManager {
       await this.stateManager.initialize();
       await this.mcpIntegration.initialize();
       await this.viewManager.initialize();
-      
+
       // Load user preferences
       await this.loadUserPreferences();
-      
+
       // Register all views
       await this.registerAllViews();
-      
+
       // Set up real-time updates
       this.setupRealTimeUpdates();
-      
+
       // Initialize component library
       this.componentLibrary.initialize();
-      
+
       this.eventBus.emit('ui:initialized');
       console.log('🎨 UI Manager initialized successfully');
-      
     } catch (error) {
       console.error('❌ Failed to initialize UI Manager:', error);
       throw error;
@@ -124,7 +175,7 @@ export class UIManager {
         icon: '🏠',
         description: 'System overview and quick actions',
         component: 'OverviewView',
-        shortcut: '1'
+        shortcut: '1',
       },
       {
         id: VIEW_CATEGORIES.PROCESSES,
@@ -132,7 +183,7 @@ export class UIManager {
         icon: '⚙️',
         description: 'Process management and monitoring',
         component: 'ProcessView',
-        shortcut: '2'
+        shortcut: '2',
       },
       {
         id: VIEW_CATEGORIES.NEURAL,
@@ -141,7 +192,7 @@ export class UIManager {
         description: 'AI model training and neural operations',
         component: 'NeuralNetworkView',
         shortcut: '3',
-        toolCount: MCP_TOOL_CATEGORIES.NEURAL.length
+        toolCount: MCP_TOOL_CATEGORIES.NEURAL.length,
       },
       {
         id: VIEW_CATEGORIES.MEMORY,
@@ -150,7 +201,7 @@ export class UIManager {
         description: 'Memory management and persistence',
         component: 'MemoryManagementView',
         shortcut: '4',
-        toolCount: MCP_TOOL_CATEGORIES.MEMORY.length
+        toolCount: MCP_TOOL_CATEGORIES.MEMORY.length,
       },
       {
         id: VIEW_CATEGORIES.MONITORING,
@@ -159,7 +210,7 @@ export class UIManager {
         description: 'Performance monitoring and analysis',
         component: 'MonitoringView',
         shortcut: '5',
-        toolCount: MCP_TOOL_CATEGORIES.MONITORING.length
+        toolCount: MCP_TOOL_CATEGORIES.MONITORING.length,
       },
       {
         id: VIEW_CATEGORIES.WORKFLOW,
@@ -168,7 +219,7 @@ export class UIManager {
         description: 'Automation and workflow management',
         component: 'WorkflowAutomationView',
         shortcut: '6',
-        toolCount: MCP_TOOL_CATEGORIES.WORKFLOW.length
+        toolCount: MCP_TOOL_CATEGORIES.WORKFLOW.length,
       },
       {
         id: VIEW_CATEGORIES.GITHUB,
@@ -177,7 +228,7 @@ export class UIManager {
         description: 'GitHub integration and operations',
         component: 'GitHubIntegrationView',
         shortcut: '7',
-        toolCount: MCP_TOOL_CATEGORIES.GITHUB.length
+        toolCount: MCP_TOOL_CATEGORIES.GITHUB.length,
       },
       {
         id: VIEW_CATEGORIES.DAA,
@@ -186,7 +237,7 @@ export class UIManager {
         description: 'Dynamic agent architecture',
         component: 'DAAView',
         shortcut: '8',
-        toolCount: MCP_TOOL_CATEGORIES.DAA.length
+        toolCount: MCP_TOOL_CATEGORIES.DAA.length,
       },
       {
         id: VIEW_CATEGORIES.SYSTEM,
@@ -195,7 +246,7 @@ export class UIManager {
         description: 'System utilities and diagnostics',
         component: 'SystemUtilitiesView',
         shortcut: '9',
-        toolCount: MCP_TOOL_CATEGORIES.SYSTEM.length
+        toolCount: MCP_TOOL_CATEGORIES.SYSTEM.length,
       },
       {
         id: VIEW_CATEGORIES.CLI,
@@ -203,7 +254,7 @@ export class UIManager {
         icon: '⌨️',
         description: 'Command-line interface bridge',
         component: 'CLICommandView',
-        shortcut: '0'
+        shortcut: '0',
       },
       {
         id: VIEW_CATEGORIES.HELP,
@@ -211,8 +262,8 @@ export class UIManager {
         icon: '❓',
         description: 'Documentation and help',
         component: 'HelpView',
-        shortcut: '?'
-      }
+        shortcut: '?',
+      },
     ];
 
     for (const config of viewConfigs) {
@@ -233,24 +284,24 @@ export class UIManager {
       this.viewHistory.push({
         viewId: this.currentView,
         timestamp: Date.now(),
-        params: this.stateManager.getViewState(this.currentView)
+        params: this.stateManager.getViewState(this.currentView),
       });
     }
 
     // Update current view
     this.currentView = viewId;
-    
+
     // Load view with parameters
     await this.viewManager.loadView(viewId, params);
-    
+
     // Update browser history if available
     if (typeof window !== 'undefined' && window.history) {
       window.history.pushState({ viewId, params }, '', `#${viewId}`);
     }
-    
+
     // Update state
     await this.stateManager.setViewState(viewId, params);
-    
+
     // Emit navigation event
     this.eventBus.emit('ui:navigation', { viewId, params });
   }
@@ -260,7 +311,7 @@ export class UIManager {
    */
   async goBack() {
     if (this.viewHistory.length === 0) return;
-    
+
     const previousView = this.viewHistory.pop();
     await this.navigateToView(previousView.viewId, previousView.params);
   }
@@ -272,18 +323,17 @@ export class UIManager {
     try {
       // Show loading indicator
       this.eventBus.emit('ui:loading', { tool: toolName, params });
-      
+
       // Execute tool through MCP integration layer
       const result = await this.mcpIntegration.executeTool(toolName, params);
-      
+
       // Handle result based on tool type
       await this.handleToolResult(toolName, result, params);
-      
+
       // Hide loading indicator
       this.eventBus.emit('ui:loading:complete', { tool: toolName, result });
-      
+
       return result;
-      
     } catch (error) {
       this.eventBus.emit('ui:error', { tool: toolName, error, params });
       throw error;
@@ -296,23 +346,23 @@ export class UIManager {
   async handleToolResult(toolName, result, originalParams) {
     // Update relevant views with new data
     const category = this.getToolCategory(toolName);
-    
+
     if (category) {
       this.eventBus.emit(`view:${category}:update`, {
         tool: toolName,
         result,
-        params: originalParams
+        params: originalParams,
       });
     }
-    
+
     // Store result in state for persistence
     await this.stateManager.setToolResult(toolName, result);
-    
+
     // Log execution
     this.eventBus.emit('ui:log', {
       level: 'info',
       message: `Executed ${toolName}`,
-      data: { result, params: originalParams }
+      data: { result, params: originalParams },
     });
   }
 
@@ -347,7 +397,7 @@ export class UIManager {
     this.shortcuts.set('ctrl+b', () => this.goBack());
     this.shortcuts.set('ctrl+r', () => this.refreshCurrentView());
     this.shortcuts.set('ctrl+t', () => this.toggleTheme());
-    
+
     // Setup event listener for keyboard events
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', (event) => {
@@ -370,13 +420,13 @@ export class UIManager {
     if (event.shiftKey) parts.push('shift');
     if (event.altKey) parts.push('alt');
     if (event.metaKey) parts.push('meta');
-    
+
     if (event.key.length === 1) {
       parts.push(event.key.toLowerCase());
     } else {
       parts.push(event.key.toLowerCase());
     }
-    
+
     return parts.join('+');
   }
 
@@ -417,7 +467,7 @@ export class UIManager {
     setInterval(() => {
       this.eventBus.emit('ui:real-time:update');
     }, 5000);
-    
+
     // Setup MCP tool result streaming
     this.mcpIntegration.on('tool:result', (result) => {
       this.eventBus.emit('ui:real-time:tool-result', result);
@@ -432,17 +482,17 @@ export class UIManager {
     this.eventBus.on('tool:execute', async (data) => {
       await this.executeMCPTool(data.tool, data.params);
     });
-    
+
     // Handle view navigation requests
     this.eventBus.on('view:navigate', async (data) => {
       await this.navigateToView(data.viewId, data.params);
     });
-    
+
     // Handle state persistence
     this.eventBus.on('state:persist', async (data) => {
       await this.stateManager.persistState(data);
     });
-    
+
     // Handle errors
     this.eventBus.on('ui:error', (error) => {
       console.error('UI Error:', error);
@@ -471,9 +521,9 @@ export class UIManager {
       memoryUsage: await this.mcpIntegration.getMemoryUsage(),
       swarmStatus: await this.mcpIntegration.getSwarmStatus(),
       toolsAvailable: Object.values(MCP_TOOL_CATEGORIES).flat().length,
-      viewsRegistered: this.viewManager.getViewCount()
+      viewsRegistered: this.viewManager.getViewCount(),
     };
-    
+
     return status;
   }
 

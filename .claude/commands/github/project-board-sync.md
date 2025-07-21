@@ -7,11 +7,22 @@ Synchronize AI swarms with GitHub Projects for visual task management, progress 
 
 ### 1. Board Initialization
 ```bash
-# Connect swarm to GitHub Project
+# Connect swarm to GitHub Project using gh CLI
+# Get project details
+PROJECT_ID=$(gh project list --owner @me --format json | \
+  jq -r '.projects[] | select(.title == "Development Board") | .id')
+
+# Initialize swarm with project
 npx ruv-swarm github board-init \
-  --project "Development Board" \
+  --project-id "$PROJECT_ID" \
   --sync-mode "bidirectional" \
   --create-views "swarm-status,agent-workload,priority"
+
+# Create project fields for swarm tracking
+gh project field-create $PROJECT_ID --owner @me \
+  --name "Swarm Status" \
+  --data-type "SINGLE_SELECT" \
+  --single-select-options "pending,in_progress,completed"
 ```
 
 ### 2. Task Synchronization
@@ -149,9 +160,18 @@ npx ruv-swarm github board-smart-move \
 
 ### Create Cards from Issues
 ```bash
-# Convert issues to project cards
+# Convert issues to project cards using gh CLI
+# List issues with label
+ISSUES=$(gh issue list --label "enhancement" --json number,title,body)
+
+# Add issues to project
+echo "$ISSUES" | jq -r '.[].number' | while read -r issue; do
+  gh project item-add $PROJECT_ID --owner @me --url "https://github.com/$GITHUB_REPOSITORY/issues/$issue"
+done
+
+# Process with swarm
 npx ruv-swarm github board-import-issues \
-  --label "enhancement" \
+  --issues "$ISSUES" \
   --add-to-column "Backlog" \
   --parse-checklist \
   --assign-agents
@@ -216,8 +236,21 @@ npx ruv-swarm github board-integrate \
 
 ### Board Analytics
 ```bash
-# Generate board analytics
+# Generate board analytics using gh CLI data
+# Fetch project data
+PROJECT_DATA=$(gh project item-list $PROJECT_ID --owner @me --format json)
+
+# Get issue metrics
+ISSUE_METRICS=$(echo "$PROJECT_DATA" | jq -r '.items[] | select(.content.type == "Issue")' | \
+  while read -r item; do
+    ISSUE_NUM=$(echo "$item" | jq -r '.content.number')
+    gh issue view $ISSUE_NUM --json createdAt,closedAt,labels,assignees
+  done)
+
+# Generate analytics with swarm
 npx ruv-swarm github board-analytics \
+  --project-data "$PROJECT_DATA" \
+  --issue-metrics "$ISSUE_METRICS" \
   --metrics "throughput,cycle-time,wip" \
   --group-by "agent,priority,type" \
   --time-range "30d" \

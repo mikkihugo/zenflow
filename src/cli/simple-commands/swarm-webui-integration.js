@@ -29,17 +29,16 @@ export class SwarmWebUIIntegration {
 
       // Initialize actual swarm
       this.ui.addLog('info', `Initializing ${topology} swarm with ${maxAgents} agents...`);
-      
+
       // This would integrate with actual ruv-swarm MCP tools
       // For now, simulate swarm initialization
       this.swarmActive = true;
       this.swarmId = `swarm-${Date.now()}`;
-      
+
       this.ui.addLog('success', `Swarm ${this.swarmId} initialized successfully`);
-      
+
       // Update UI with swarm status
       this.updateSwarmStatus();
-      
     } catch (err) {
       this.ui.addLog('error', `Failed to initialize swarm: ${err.message}`);
     }
@@ -64,7 +63,7 @@ export class SwarmWebUIIntegration {
   initializeMockSwarm() {
     this.swarmActive = true;
     this.swarmId = 'mock-swarm';
-    
+
     // Create mock agents
     const agentTypes = ['researcher', 'coder', 'analyst', 'coordinator', 'tester'];
     agentTypes.forEach((type, index) => {
@@ -76,17 +75,29 @@ export class SwarmWebUIIntegration {
         status: 'idle',
         tasks: 0,
         capabilities: this.getAgentCapabilities(type),
-        spawnTime: new Date()
+        spawnTime: new Date(),
       });
     });
 
     // Create mock tasks
     const mockTasks = [
-      { description: 'Analyze system requirements', priority: 'high', assignedTo: 'agent-researcher-0' },
-      { description: 'Implement authentication module', priority: 'high', assignedTo: 'agent-coder-1' },
+      {
+        description: 'Analyze system requirements',
+        priority: 'high',
+        assignedTo: 'agent-researcher-0',
+      },
+      {
+        description: 'Implement authentication module',
+        priority: 'high',
+        assignedTo: 'agent-coder-1',
+      },
       { description: 'Performance analysis', priority: 'medium', assignedTo: 'agent-analyst-2' },
-      { description: 'Coordinate deployment', priority: 'medium', assignedTo: 'agent-coordinator-3' },
-      { description: 'Run integration tests', priority: 'low', assignedTo: 'agent-tester-4' }
+      {
+        description: 'Coordinate deployment',
+        priority: 'medium',
+        assignedTo: 'agent-coordinator-3',
+      },
+      { description: 'Run integration tests', priority: 'low', assignedTo: 'agent-tester-4' },
     ];
 
     mockTasks.forEach((task, index) => {
@@ -96,7 +107,7 @@ export class SwarmWebUIIntegration {
         ...task,
         status: index < 2 ? 'in_progress' : 'pending',
         created: new Date(),
-        swarmId: this.swarmId
+        swarmId: this.swarmId,
       });
     });
 
@@ -112,7 +123,7 @@ export class SwarmWebUIIntegration {
       coder: ['javascript', 'python', 'typescript', 'git'],
       analyst: ['performance', 'metrics', 'optimization'],
       coordinator: ['task_management', 'scheduling', 'communication'],
-      tester: ['unit_testing', 'integration_testing', 'qa']
+      tester: ['unit_testing', 'integration_testing', 'qa'],
     };
     return capabilities[type] || [];
   }
@@ -128,9 +139,11 @@ export class SwarmWebUIIntegration {
     this.ui.tasks = Array.from(this.tasks.values());
 
     // Update system stats
-    this.ui.systemStats.activeAgents = this.ui.agents.filter(a => a.status === 'working').length;
+    this.ui.systemStats.activeAgents = this.ui.agents.filter((a) => a.status === 'working').length;
     this.ui.systemStats.totalTasks = this.ui.tasks.length;
-    this.ui.systemStats.completedTasks = this.ui.tasks.filter(t => t.status === 'completed').length;
+    this.ui.systemStats.completedTasks = this.ui.tasks.filter(
+      (t) => t.status === 'completed',
+    ).length;
   }
 
   /**
@@ -150,12 +163,12 @@ export class SwarmWebUIIntegration {
       status: 'idle',
       tasks: 0,
       capabilities: this.getAgentCapabilities(type),
-      spawnTime: new Date()
+      spawnTime: new Date(),
     };
 
     this.agents.set(agentId, agent);
     this.updateSwarmStatus();
-    
+
     this.ui.addLog('success', `Spawned ${type} agent: ${agent.name}`);
     return agentId;
   }
@@ -177,12 +190,12 @@ export class SwarmWebUIIntegration {
       assignedTo,
       status: 'pending',
       created: new Date(),
-      swarmId: this.swarmId
+      swarmId: this.swarmId,
     };
 
     this.tasks.set(taskId, task);
     this.updateSwarmStatus();
-    
+
     this.ui.addLog('success', `Created task: ${description}`);
     return taskId;
   }
@@ -246,28 +259,36 @@ export class SwarmWebUIIntegration {
     }
 
     const totalAgents = this.agents.size;
-    const activeAgents = Array.from(this.agents.values()).filter(a => a.status === 'working').length;
+    const activeAgents = Array.from(this.agents.values()).filter(
+      (a) => a.status === 'working',
+    ).length;
     const idleAgents = totalAgents - activeAgents;
-    
+
     const totalTasks = this.tasks.size;
-    const completedTasks = Array.from(this.tasks.values()).filter(t => t.status === 'completed').length;
-    const pendingTasks = Array.from(this.tasks.values()).filter(t => t.status === 'pending').length;
-    const inProgressTasks = Array.from(this.tasks.values()).filter(t => t.status === 'in_progress').length;
+    const completedTasks = Array.from(this.tasks.values()).filter(
+      (t) => t.status === 'completed',
+    ).length;
+    const pendingTasks = Array.from(this.tasks.values()).filter(
+      (t) => t.status === 'pending',
+    ).length;
+    const inProgressTasks = Array.from(this.tasks.values()).filter(
+      (t) => t.status === 'in_progress',
+    ).length;
 
     return {
       swarmId: this.swarmId,
       agents: {
         total: totalAgents,
         active: activeAgents,
-        idle: idleAgents
+        idle: idleAgents,
       },
       tasks: {
         total: totalTasks,
         completed: completedTasks,
         inProgress: inProgressTasks,
-        pending: pendingTasks
+        pending: pendingTasks,
       },
-      efficiency: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+      efficiency: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
     };
   }
 

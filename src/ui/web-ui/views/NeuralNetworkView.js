@@ -61,7 +61,7 @@ export default class NeuralNetworkView {
       { label: '🔮 Prediction', content: this.createPredictionTab() },
       { label: '🎯 Patterns', content: this.createPatternsTab() },
       { label: '💾 Models', content: this.createModelsTab() },
-      { label: '⚡ Optimization', content: this.createOptimizationTab() }
+      { label: '⚡ Optimization', content: this.createOptimizationTab() },
     ];
 
     if (this.componentLibrary) {
@@ -507,7 +507,7 @@ export default class NeuralNetworkView {
     console.log('  🚀 wasm_optimize    - WASM optimization');
     console.log('  🔮 inference_run    - Neural inference');
     console.log('═'.repeat(50));
-    
+
     if (params.tool) {
       console.log(`\n🔧 Executing: ${params.tool}`);
       this.quickAction(params.tool, params);
@@ -520,14 +520,14 @@ export default class NeuralNetworkView {
   async quickAction(toolName, params = {}) {
     try {
       console.log(`🔧 Executing ${toolName}...`);
-      
+
       // Emit tool execution event
       this.eventBus.emit('tool:execute', {
         tool: toolName,
         params: params,
-        source: 'neural-view'
+        source: 'neural-view',
       });
-      
+
       // Handle specific tool actions
       switch (toolName) {
         case 'neural_train':
@@ -542,7 +542,6 @@ export default class NeuralNetworkView {
         default:
           console.log(`Tool ${toolName} executed`);
       }
-      
     } catch (error) {
       console.error(`❌ Error executing ${toolName}:`, error);
     }
@@ -555,11 +554,11 @@ export default class NeuralNetworkView {
     const trainingParams = {
       pattern_type: params.pattern_type || 'coordination',
       training_data: params.training_data || 'sample_data',
-      epochs: params.epochs || 50
+      epochs: params.epochs || 50,
     };
-    
+
     console.log('🧠 Training neural network with parameters:', trainingParams);
-    
+
     // Update UI if in browser mode
     if (this.container) {
       const statusEl = document.getElementById('training-status');
@@ -575,11 +574,11 @@ export default class NeuralNetworkView {
   async handlePrediction(params) {
     const predictionParams = {
       modelId: params.modelId || 'default_model',
-      input: params.input || 'sample_input'
+      input: params.input || 'sample_input',
     };
-    
+
     console.log('🔮 Running prediction with parameters:', predictionParams);
-    
+
     // Update UI if in browser mode
     if (this.container) {
       const outputEl = document.getElementById('prediction-output');
@@ -596,11 +595,11 @@ export default class NeuralNetworkView {
     const analysisParams = {
       action: params.action || 'analyze',
       operation: params.operation || 'sample_operation',
-      outcome: params.outcome || 'sample_outcome'
+      outcome: params.outcome || 'sample_outcome',
     };
-    
+
     console.log('🎯 Analyzing patterns with parameters:', analysisParams);
-    
+
     // Update UI if in browser mode
     if (this.container) {
       const insightsEl = document.getElementById('pattern-insights');
@@ -620,12 +619,12 @@ export default class NeuralNetworkView {
         this.handleToolResult(data);
       }
     });
-    
+
     // Listen for real-time updates
     this.eventBus.on('ui:real-time:update', () => {
       this.updateStats();
     });
-    
+
     // Listen for theme changes
     this.eventBus.on('ui:theme:changed', (theme) => {
       this.updateTheme(theme);
@@ -637,7 +636,7 @@ export default class NeuralNetworkView {
    */
   handleToolResult(data) {
     console.log(`✅ Tool ${data.tool} completed:`, data.result);
-    
+
     // Update UI based on result
     if (this.container) {
       this.updateUIWithResult(data.tool, data.result);
@@ -694,7 +693,7 @@ export default class NeuralNetworkView {
         </div>
       `;
     }
-    
+
     // Update confidence bar
     const confidenceBar = document.querySelector('.confidence-fill');
     const confidenceText = document.querySelector('.confidence-text');
@@ -733,7 +732,7 @@ export default class NeuralNetworkView {
       const valueEl = modelsStatEl.querySelector('.stat-value');
       if (valueEl) valueEl.textContent = this.models.size;
     }
-    
+
     // Update training jobs count
     const trainingStatEl = document.getElementById('training-stat');
     if (trainingStatEl) {

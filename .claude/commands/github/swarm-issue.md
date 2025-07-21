@@ -7,15 +7,26 @@ Transform GitHub Issues into intelligent swarm tasks, enabling automatic task de
 
 ### 1. Issue-to-Swarm Conversion
 ```bash
+# Create swarm from issue using gh CLI
+# Get issue details
+ISSUE_DATA=$(gh issue view 456 --json title,body,labels,assignees,comments)
+
 # Create swarm from issue
 npx ruv-swarm github issue-to-swarm 456 \
+  --issue-data "$ISSUE_DATA" \
   --auto-decompose \
   --assign-agents
 
 # Batch process multiple issues
+ISSUES=$(gh issue list --label "swarm-ready" --json number,title,body,labels)
 npx ruv-swarm github issues-batch \
-  --label "swarm-ready" \
+  --issues "$ISSUES" \
   --parallel
+
+# Update issues with swarm status
+echo "$ISSUES" | jq -r '.[].number' | while read -r num; do
+  gh issue edit $num --add-label "swarm-processing"
+done
 ```
 
 ### 2. Issue Comment Commands
@@ -99,29 +110,106 @@ npx ruv-swarm github issue-analyze 456 \
 
 ### Initialize from Issue
 ```bash
-# Create swarm with full issue context
+# Create swarm with full issue context using gh CLI
+# Get complete issue data
+ISSUE=$(gh issue view 456 --json title,body,labels,assignees,comments,projectItems)
+
+# Get referenced issues and PRs
+REFERENCES=$(gh issue view 456 --json body --jq '.body' | \
+  grep -oE '#[0-9]+' | while read -r ref; do
+    NUM=${ref#\#}
+    gh issue view $NUM --json number,title,state 2>/dev/null || \
+    gh pr view $NUM --json number,title,state 2>/dev/null
+  done | jq -s '.')
+
+# Initialize swarm
 npx ruv-swarm github issue-init 456 \
+  --issue-data "$ISSUE" \
+  --references "$REFERENCES" \
   --load-comments \
   --analyze-references \
   --auto-topology
+
+# Add swarm initialization comment
+gh issue comment 456 --body "🐝 Swarm initialized for this issue"
 ```
 
 ### Task Decomposition
 ```bash
-# Break down issue into subtasks
-npx ruv-swarm github issue-decompose 456 \
+# Break down issue into subtasks with gh CLI
+# Get issue body
+ISSUE_BODY=$(gh issue view 456 --json body --jq '.body')
+
+# Decompose into subtasks
+SUBTASKS=$(npx ruv-swarm github issue-decompose 456 \
+  --body "$ISSUE_BODY" \
   --max-subtasks 10 \
-  --create-checklist \
-  --assign-priorities
+  --assign-priorities)
+
+# Update issue with checklist
+CHECKLIST=$(echo "$SUBTASKS" | jq -r '.tasks[] | "- [ ] " + .description')
+UPDATED_BODY="$ISSUE_BODY
+
+## Subtasks
+$CHECKLIST"
+
+gh issue edit 456 --body "$UPDATED_BODY"
+
+# Create linked issues for major subtasks
+echo "$SUBTASKS" | jq -r '.tasks[] | select(.priority == "high")' | while read -r task; do
+  TITLE=$(echo "$task" | jq -r '.title')
+  BODY=$(echo "$task" | jq -r '.description')
+  
+  gh issue create \
+    --title "$TITLE" \
+    --body "$BODY
+
+Parent issue: #456" \
+    --label "subtask"
+done
 ```
 
 ### Progress Tracking
 ```bash
-# Update issue with swarm progress
-npx ruv-swarm github issue-progress 456 \
-  --update-checklist \
-  --post-summary \
-  --eta
+# Update issue with swarm progress using gh CLI
+# Get current issue state
+CURRENT=$(gh issue view 456 --json body,labels)
+
+# Get swarm progress
+PROGRESS=$(npx ruv-swarm github issue-progress 456)
+
+# Update checklist in issue body
+UPDATED_BODY=$(echo "$CURRENT" | jq -r '.body' | \
+  npx ruv-swarm github update-checklist --progress "$PROGRESS")
+
+# Edit issue with updated body
+gh issue edit 456 --body "$UPDATED_BODY"
+
+# Post progress summary as comment
+SUMMARY=$(echo "$PROGRESS" | jq -r '
+"## 📊 Progress Update
+
+**Completion**: \(.completion)%
+**ETA**: \(.eta)
+
+### Completed Tasks
+\(.completed | map("- ✅ " + .) | join("\n"))
+
+### In Progress
+\(.in_progress | map("- 🔄 " + .) | join("\n"))
+
+### Remaining
+\(.remaining | map("- ⏳ " + .) | join("\n"))
+
+---
+🤖 Automated update by swarm agent"')
+
+gh issue comment 456 --body "$SUMMARY"
+
+# Update labels based on progress
+if [[ $(echo "$PROGRESS" | jq -r '.completion') -eq 100 ]]; then
+  gh issue edit 456 --add-label "ready-for-review" --remove-label "in-progress"
+fi
 ```
 
 ## Advanced Features
@@ -224,12 +312,46 @@ npx ruv-swarm github debt-swarm 456 \
 
 ### Auto-Close Stale Issues
 ```bash
-# Process stale issues with swarm
-npx ruv-swarm github stale-issues \
-  --days 30 \
-  --analyze-each \
-  --suggest-action \
-  --auto-close-if "no-activity"
+# Process stale issues with swarm using gh CLI
+# Find stale issues
+STALE_DATE=$(date -d '30 days ago' --iso-8601)
+STALE_ISSUES=$(gh issue list --state open --json number,title,updatedAt,labels \
+  --jq ".[] | select(.updatedAt < \"$STALE_DATE\")")
+
+# Analyze each stale issue
+echo "$STALE_ISSUES" | jq -r '.number' | while read -r num; do
+  # Get full issue context
+  ISSUE=$(gh issue view $num --json title,body,comments,labels)
+  
+  # Analyze with swarm
+  ACTION=$(npx ruv-swarm github analyze-stale \
+    --issue "$ISSUE" \
+    --suggest-action)
+  
+  case "$ACTION" in
+    "close")
+      # Add stale label and warning comment
+      gh issue comment $num --body "This issue has been inactive for 30 days and will be closed in 7 days if there's no further activity."
+      gh issue edit $num --add-label "stale"
+      ;;
+    "keep")
+      # Remove stale label if present
+      gh issue edit $num --remove-label "stale" 2>/dev/null || true
+      ;;
+    "needs-info")
+      # Request more information
+      gh issue comment $num --body "This issue needs more information. Please provide additional context or it may be closed as stale."
+      gh issue edit $num --add-label "needs-info"
+      ;;
+  esac
+done
+
+# Close issues that have been stale for 37+ days
+gh issue list --label stale --state open --json number,updatedAt \
+  --jq ".[] | select(.updatedAt < \"$(date -d '37 days ago' --iso-8601)\") | .number" | \
+  while read -r num; do
+    gh issue close $num --comment "Closing due to inactivity. Feel free to reopen if this is still relevant."
+  done
 ```
 
 ### Issue Triage

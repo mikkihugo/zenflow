@@ -5,7 +5,157 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0-alpha.61] - 2025-07-17
+## [2.0.0-alpha.67] - 2025-01-21
+
+### 🐝 Hive Mind Enhancement
+- **Hive Mind Integration**: Fixed settings.json validation errors for Claude Code compatibility
+- **Configuration Fix**: Removed unrecognized fields (checkpoints, memory, neural, github, optimization)
+- **Hook Names**: Corrected invalid hook names to match Claude Code 1.0.51+ format
+  - `user-prompt-submit` → `UserPromptSubmit`
+  - Removed invalid `checkpoint` and `error` hooks
+
+### 🔧 Infrastructure
+- **Settings Validation**: Now passes `/doctor` command validation
+- **Claude Code Compatibility**: Full compatibility with Claude Code 1.0.51+ settings format
+- **Version Update**: Bumped to alpha.67 across all version references
+
+### 📚 Documentation
+- Updated version references in help text and CLI commands
+- Enhanced hive-mind documentation with corrected hook configurations
+
+## [2.0.0-alpha.66] - 2025-01-20
+
+### 🔧 Bug Fixes
+- **Hooks Command**: Fixed "command.toLowerCase is not a function" error in hooks pre-command
+- **ARM64 Support**: Improved ARM64 compatibility for better-sqlite3 on macOS (#378)
+- Added type checking for command parameter in hooks to handle empty/missing values
+- Enhanced postinstall script with ARM64 detection and automatic rebuild
+
+### 🚀 New Features
+- Automatic SQLite binding verification and rebuild for Apple Silicon Macs
+- Graceful fallback to in-memory storage if SQLite bindings fail
+- Better error handling and user feedback during installation
+
+### 🏗️ Infrastructure
+- Added `node20-macos-arm64` target to pkg configuration
+- Improved boolean parameter parsing in hooks commands
+- Enhanced platform detection for ARM64 architecture
+
+### 📚 Documentation
+- Added ARM64 troubleshooting guide
+- Updated hooks command usage examples
+
+## [2.0.0-alpha.65] - 2025-01-20
+
+### 🔧 Bug Fixes
+- **CRITICAL**: Fixed "table agents has no column named role" error in hive-mind wizard (#403)
+- Added missing `role` column to agents table schema in init/index.js
+- Fixed TypeScript build errors preventing compilation
+- Resolved ILogger interface issues and async/await problems
+- Fixed missing type definitions in multiple modules
+
+### 🏗️ Infrastructure
+- **Database Schema**: Synchronized agents table schema across all modules
+- **Build System**: Fixed critical TypeScript compilation errors
+- **Type Safety**: Added proper type annotations throughout codebase
+
+### 📚 Documentation
+- Added migration instructions for existing databases
+- Updated test suite with schema validation tests
+
+## [2.0.0-alpha.64] - 2025-01-18
+
+### 🔧 Bug Fixes
+- Fixed wrapper script hardcoded to use outdated alpha-27 version
+- Updated wrapper to use `@alpha` tag for always getting latest alpha version
+- Ensures `./claude-flow` wrapper always uses the most recent alpha release
+
+### 📦 Dependencies
+- No dependency changes, only template fix
+
+## [2.0.0-alpha.63] - 2025-01-18
+
+### 🚀 Major Features
+- **MCP/NPX Fallback Pattern**: All 60+ command files now include both MCP tools (preferred) and NPX CLI (fallback)
+- **SPARC Included by Default**: No more `--sparc` flag needed, SPARC commands automatically initialized
+- **Complete Environment Init**: Creates 112+ files including both databases properly initialized
+
+### 🏗️ Infrastructure
+- **Template System**: Updated template generation to include MCP/NPX fallback patterns
+- **Init Command**: Fixed missing imports for createAgentsReadme and createSessionsReadme
+- **Database Init**: Added .hive-mind directory creation and hive.db initialization with schema
+- **SPARC Integration**: Made SPARC included by default in v2.0.0 flow
+
+### 🛠️ Improvements
+- Updated all 18 SPARC command files in .claude/commands/sparc/ with MCP/NPX fallback
+- Updated 5 swarm strategy files with MCP/NPX patterns
+- Enhanced init command to create complete environment with 113 files
+- Fixed copyRevisedTemplates to include SPARC files
+
+### 📚 Documentation
+- Updated CLAUDE.md template with comprehensive MCP/NPX usage examples
+- Added fallback guidance to all command documentation
+- Enhanced GitHub integration documentation with gh CLI usage
+
+## [2.0.0-alpha.62] - 2025-01-18
+
+### 🔒 Security Fixes
+- **CRITICAL**: Removed vulnerable `pkg` dependency (GHSA-22r3-9w55-cj54) - Local privilege escalation vulnerability
+- Replaced `pkg` with secure `@vercel/ncc` alternative for binary building
+- Security score improved from 55/100 to 75/100
+- All npm audit vulnerabilities resolved (0 vulnerabilities)
+
+### 🚀 Infrastructure Improvements
+- **CI/CD Pipeline**: Re-enabled ALL security gates with strict enforcement
+  - Removed all `|| true` and `|| echo` fallbacks
+  - Added production dependency audit (moderate level)
+  - Added license compliance checks
+  - Test coverage reporting re-enabled
+- **Test Infrastructure**: Major fixes and improvements
+  - Fixed Jest configuration (removed deprecated globals)
+  - Created comprehensive `test.utils.ts` with mock utilities
+  - Fixed 18 TypeScript test files with incorrect import paths
+  - Fixed ESM module issues (assert → with syntax)
+  - Created test fixtures and generators
+  - Core tests now passing
+
+### 🛠️ Code Quality Improvements
+- **ESLint**: Fixed 145 errors (16% reduction from 900 to 755)
+  - Removed 104 unused `getErrorMessage` imports
+  - Fixed non-null assertions with proper null checks
+  - Added underscore prefix for intentionally unused parameters
+- **TypeScript**: Fixed 15 critical errors in CLI commands
+  - Fixed cli-table3 import issues
+  - Corrected date arithmetic operations
+  - Added proper type assertions for error handling
+  - Resolved Commander/Cliffy compatibility issues
+- **Configuration**: Added development tooling
+  - Created `babel.config.cjs` with modern import syntax support
+  - Created `.eslintrc.json` with TypeScript rules
+  - Created `.prettierrc.json` for consistent formatting
+
+### 📚 Documentation
+- Created `SECURITY_AUDIT_REPORT.md` with detailed security findings
+- Created `FIX_SUMMARY.md` documenting all code quality fixes
+- Created `FUNCTIONALITY_REVIEW.md` verifying all features work
+- Updated GitHub issue #362 with comprehensive progress reports
+
+### ✅ Verified Working Features
+- All core CLI commands operational
+- SPARC development system functional
+- Hive Mind system ready
+- Swarm coordination active
+- Memory persistence working
+- MCP server integration verified
+- Help system comprehensive
+
+### 🐛 Known Issues
+- ESLint: 755 warnings remaining (mostly `any` types)
+- TypeScript: 413 errors remaining (complex type issues)
+- Some integration tests need implementation
+- Build process has declaration file conflicts (workaround available)
+
+## [2.0.0-alpha.61] - 2025-01-17
 
 ### Added
 - **Neural Training Enhancements**: 

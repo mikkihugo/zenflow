@@ -13,7 +13,7 @@ export class PostInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      files: {}
+      files: {},
     };
 
     const expectedFiles = [
@@ -23,15 +23,23 @@ export class PostInitValidator {
       { path: 'memory/claude-flow-data.json', minSize: 10 },
       { path: 'memory/agents/README.md', minSize: 10 },
       { path: 'memory/sessions/README.md', minSize: 10 },
-      { path: 'claude-flow', minSize: 50, executable: true }
+      { path: 'claude-flow', minSize: 50, executable: true },
     ];
 
     for (const file of expectedFiles) {
       const filePath = `${this.workingDir}/${file.path}`;
-      
+
       try {
+<<<<<<< HEAD
         const stat = await node.stat(filePath);
         
+||||||| 47d5ef4
+        const stat = await Deno.stat(filePath);
+        
+=======
+        const stat = await Deno.stat(filePath);
+
+>>>>>>> origin/main
         // Check if it exists and is a file
         if (!stat.isFile) {
           result.success = false;
@@ -43,7 +51,9 @@ export class PostInitValidator {
         // Check file size
         if (stat.size < file.minSize) {
           result.success = false;
-          result.errors.push(`File too small: ${file.path} (${stat.size} bytes, expected >= ${file.minSize})`);
+          result.errors.push(
+            `File too small: ${file.path} (${stat.size} bytes, expected >= ${file.minSize})`,
+          );
           result.files[file.path] = { status: 'too_small', size: stat.size };
           continue;
         }
@@ -67,7 +77,6 @@ export class PostInitValidator {
           result.errors.push(`Cannot read file: ${file.path} - ${readError.message}`);
           result.files[file.path] = { status: 'unreadable', size: stat.size };
         }
-
       } catch (error) {
         result.success = false;
         result.errors.push(`File not found: ${file.path}`);
@@ -86,7 +95,7 @@ export class PostInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      missing: []
+      missing: [],
     };
 
     const requiredDirs = [
@@ -99,7 +108,7 @@ export class PostInitValidator {
       'coordination/orchestration',
       '.claude',
       '.claude/commands',
-      '.claude/logs'
+      '.claude/logs',
     ];
 
     const optionalDirs = [
@@ -108,13 +117,13 @@ export class PostInitValidator {
       '.roo/workflows',
       '.roo/modes',
       '.roo/configs',
-      '.claude/commands/sparc'
+      '.claude/commands/sparc',
     ];
 
     // Check required directories
     for (const dir of requiredDirs) {
       const dirPath = `${this.workingDir}/${dir}`;
-      
+
       try {
         const stat = await node.stat(dirPath);
         if (!stat.isDirectory) {
@@ -132,7 +141,7 @@ export class PostInitValidator {
     // Check optional directories (SPARC-related)
     for (const dir of optionalDirs) {
       const dirPath = `${this.workingDir}/${dir}`;
-      
+
       try {
         await node.stat(dirPath);
       } catch {
@@ -153,7 +162,7 @@ export class PostInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      structure: {}
+      structure: {},
     };
 
     try {
@@ -187,7 +196,6 @@ export class PostInitValidator {
           result.warnings.push('SPARC structure is incomplete');
         }
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push(`Structure validation failed: ${error.message}`);
@@ -204,7 +212,7 @@ export class PostInitValidator {
       success: true,
       errors: [],
       warnings: [],
-      permissions: {}
+      permissions: {},
     };
 
     const itemsToCheck = [
@@ -214,7 +222,7 @@ export class PostInitValidator {
       { path: 'claude-flow', type: 'file', requiredMode: 0o755 },
       { path: 'memory', type: 'dir', requiredMode: 0o755 },
       { path: 'coordination', type: 'dir', requiredMode: 0o755 },
-      { path: '.claude', type: 'dir', requiredMode: 0o755 }
+      { path: '.claude', type: 'dir', requiredMode: 0o755 },
     ];
 
     // Skip permission checks on Windows
@@ -225,25 +233,24 @@ export class PostInitValidator {
 
     for (const item of itemsToCheck) {
       const itemPath = `${this.workingDir}/${item.path}`;
-      
+
       try {
         const stat = await node.stat(itemPath);
         const actualMode = stat.mode & 0o777;
         const expectedMode = item.requiredMode;
-        
+
         result.permissions[item.path] = {
           actual: actualMode.toString(8),
           expected: expectedMode.toString(8),
-          correct: actualMode === expectedMode
+          correct: actualMode === expectedMode,
         };
 
         if (actualMode !== expectedMode) {
           result.warnings.push(
             `Incorrect permissions on ${item.path}: ` +
-            `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`
+              `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`,
           );
         }
-
       } catch (error) {
         result.warnings.push(`Could not check permissions for ${item.path}: ${error.message}`);
       }
@@ -258,7 +265,7 @@ export class PostInitValidator {
     const structure = {
       valid: true,
       dirs: [],
-      files: []
+      files: [],
     };
 
     const expectedDirs = ['agents', 'sessions'];
@@ -288,7 +295,7 @@ export class PostInitValidator {
   async validateCoordinationStructure() {
     const structure = {
       valid: true,
-      dirs: []
+      dirs: [],
     };
 
     const expectedDirs = ['memory_bank', 'subtasks', 'orchestration'];
@@ -309,7 +316,7 @@ export class PostInitValidator {
     const structure = {
       valid: true,
       dirs: [],
-      hasCommands: false
+      hasCommands: false,
     };
 
     const expectedDirs = ['commands', 'logs'];
@@ -354,7 +361,7 @@ export class PostInitValidator {
       valid: true,
       hasRoomodes: false,
       hasRooDir: false,
-      dirs: []
+      dirs: [],
     };
 
     // Check .roomodes file
@@ -369,7 +376,7 @@ export class PostInitValidator {
     try {
       const stat = await node.stat(`${this.workingDir}/.roo`);
       structure.hasRooDir = stat.isDirectory;
-      
+
       if (structure.hasRooDir) {
         const expectedDirs = ['templates', 'workflows', 'modes', 'configs'];
         for (const dir of expectedDirs) {

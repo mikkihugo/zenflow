@@ -182,12 +182,12 @@ jobs:
   Read("/workspaces/ruv-FANN/claude-code-flow/claude-code-flow/package.json")
   Read("/workspaces/ruv-FANN/ruv-swarm/npm/package.json")
   
-  // Search for architectural patterns
-  mcp__github__search_repositories {
-    query: "language:javascript template architecture",
-    sort: "stars",
-    order: "desc"
-  }
+  // Search for architectural patterns using gh CLI
+  ARCH_PATTERNS=$(Bash(`gh search repos "language:javascript template architecture" \
+    --limit 10 \
+    --json fullName,description,stargazersCount \
+    --sort stars \
+    --order desc`))
   
   // Create optimized structure files
   mcp__github__push_files {

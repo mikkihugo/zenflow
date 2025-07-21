@@ -1,4 +1,3 @@
-import { getErrorMessage } from '../../../utils/error-handler.js';
 /**
  * Simplified Process UI without keypress dependency
  * Uses basic stdin reading for compatibility
@@ -15,23 +14,63 @@ export class ProcessUI {
     this.setupEventListeners();
   }
 
+<<<<<<< HEAD:src/cli/commands/start/process-ui-simple.js
   setupEventListeners() {
     this.processManager.on('statusChanged', ({ processId, status }) => {
       if (this.running) {
         this.render();
       }
     });
+||||||| 47d5ef4:src/cli/commands/start/process-ui-simple.ts
+  private setupEventListeners(): void {
+    this.processManager.on('statusChanged', ({ processId, status }: { processId: string; status: ProcessStatus }) => {
+      if (this.running) {
+        this.render();
+      }
+    });
+=======
+  private setupEventListeners(): void {
+    this.processManager.on(
+      'statusChanged',
+      ({ processId, status }: { processId: string; status: ProcessStatus }) => {
+        if (this.running) {
+          this.render();
+        }
+      },
+    );
+>>>>>>> origin/main:src/cli/commands/start/process-ui-simple.ts
 
+<<<<<<< HEAD:src/cli/commands/start/process-ui-simple.js
     this.processManager.on('processError', ({ processId, error }) => {
       if (this.running) {
         console.log(chalk.red(`\nProcess ${processId} error: ${error instanceof Error ? error.message : String(error)}`));
       }
     });
+||||||| 47d5ef4:src/cli/commands/start/process-ui-simple.ts
+    this.processManager.on('processError', ({ processId, error }: { processId: string; error: Error }) => {
+      if (this.running) {
+        console.log(chalk.red(`\nProcess ${processId} error: ${(error instanceof Error ? error.message : String(error))}`));
+      }
+    });
+=======
+    this.processManager.on(
+      'processError',
+      ({ processId, error }: { processId: string; error: Error }) => {
+        if (this.running) {
+          console.log(
+            chalk.red(
+              `\nProcess ${processId} error: ${error instanceof Error ? error.message : String(error)}`,
+            ),
+          );
+        }
+      },
+    );
+>>>>>>> origin/main:src/cli/commands/start/process-ui-simple.ts
   }
 
   async start() {
     this.running = true;
-    
+
     // Clear screen
     console.clear();
 
@@ -41,9 +80,10 @@ export class ProcessUI {
     // Simple input loop
     const decoder = new TextDecoder();
     const encoder = new TextEncoder();
-    
+
     while (this.running) {
       // Show prompt
+<<<<<<< HEAD:src/cli/commands/start/process-ui-simple.js
       if (typeof node !== 'undefined' && node.stdout) {
         await node.stdout.write(encoder.encode('\nCommand: '));
         
@@ -64,6 +104,31 @@ export class ProcessUI {
         if (input.length > 0) {
           await this.handleCommand(input);
         }
+||||||| 47d5ef4:src/cli/commands/start/process-ui-simple.ts
+      await Deno.stdout.write(encoder.encode('\nCommand: '));
+      
+      // Read single character
+      const buf = new Uint8Array(1024);
+      const n = await Deno.stdin.read(buf);
+      if (n === null) break;
+      
+      const input = decoder.decode(buf.subarray(0, n)).trim();
+      
+      if (input.length > 0) {
+        await this.handleCommand(input);
+=======
+      await Deno.stdout.write(encoder.encode('\nCommand: '));
+
+      // Read single character
+      const buf = new Uint8Array(1024);
+      const n = await Deno.stdin.read(buf);
+      if (n === null) break;
+
+      const input = decoder.decode(buf.subarray(0, n)).trim();
+
+      if (input.length > 0) {
+        await this.handleCommand(input);
+>>>>>>> origin/main:src/cli/commands/start/process-ui-simple.ts
       }
     }
   }
@@ -83,35 +148,35 @@ export class ProcessUI {
 
   async handleCommand(input) {
     const processes = this.processManager.getAllProcesses();
-    
+
     switch (input.toLowerCase()) {
       case 'q':
       case 'quit':
       case 'exit':
         await this.handleExit();
         break;
-        
+
       case 'a':
       case 'all':
         await this.startAll();
         break;
-        
+
       case 'z':
       case 'stop-all':
         await this.stopAll();
         break;
-        
+
       case 'r':
       case 'refresh':
         this.render();
         break;
-        
+
       case 'h':
       case 'help':
       case '?':
         this.showHelp();
         break;
-        
+
       default:
         // Check if it's a number (process selection)
         const num = parseInt(input);
@@ -133,28 +198,30 @@ export class ProcessUI {
     // Header
     console.log(chalk.cyan.bold('🧠 Claude-Flow Process Manager'));
     console.log(chalk.gray('─'.repeat(60)));
-    
+
     // System stats
-    console.log(chalk.white('System Status:'), 
-      chalk.green(`${stats.runningProcesses}/${stats.totalProcesses} running`));
-    
+    console.log(
+      chalk.white('System Status:'),
+      chalk.green(`${stats.runningProcesses}/${stats.totalProcesses} running`),
+    );
+
     if (stats.errorProcesses > 0) {
       console.log(chalk.red(`⚠️  ${stats.errorProcesses} processes with errors`));
     }
-    
+
     console.log();
 
     // Process list
     console.log(chalk.white.bold('Processes:'));
     console.log(chalk.gray('─'.repeat(60)));
-    
+
     processes.forEach((process, index) => {
       const num = `[${index + 1}]`.padEnd(4);
       const status = this.getStatusDisplay(process.status);
       const name = process.name.padEnd(25);
-      
+
       console.log(`${chalk.gray(num)} ${status} ${chalk.white(name)}`);
-      
+
       if (process.metrics?.lastError) {
         console.log(chalk.red(`       Error: ${process.metrics.lastError}`));
       }
@@ -170,19 +237,47 @@ export class ProcessUI {
     console.log();
     console.log(chalk.cyan.bold(`Selected: ${process.name}`));
     console.log(chalk.gray('─'.repeat(40)));
-    
+
     if (process.status === ProcessStatus.STOPPED) {
       console.log('[s] Start');
     } else if (process.status === ProcessStatus.RUNNING) {
       console.log('[x] Stop');
       console.log('[r] Restart');
     }
-    
+
     console.log('[d] Details');
     console.log('[c] Cancel');
+<<<<<<< HEAD:src/cli/commands/start/process-ui-simple.js
     
     const action = await this.getActionInput();
     
+||||||| 47d5ef4:src/cli/commands/start/process-ui-simple.ts
+    
+    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+    
+    await Deno.stdout.write(encoder.encode('\nAction: '));
+    
+    const buf = new Uint8Array(1024);
+    const n = await Deno.stdin.read(buf);
+    if (n === null) return;
+    
+    const action = decoder.decode(buf.subarray(0, n)).trim().toLowerCase();
+    
+=======
+
+    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+
+    await Deno.stdout.write(encoder.encode('\nAction: '));
+
+    const buf = new Uint8Array(1024);
+    const n = await Deno.stdin.read(buf);
+    if (n === null) return;
+
+    const action = decoder.decode(buf.subarray(0, n)).trim().toLowerCase();
+
+>>>>>>> origin/main:src/cli/commands/start/process-ui-simple.ts
     switch (action) {
       case 's':
         if (process.status === ProcessStatus.STOPPED) {
@@ -204,7 +299,7 @@ export class ProcessUI {
         await this.waitForKey();
         break;
     }
-    
+
     this.render();
   }
 
@@ -230,20 +325,20 @@ export class ProcessUI {
     console.log();
     console.log(chalk.cyan.bold(`📋 Process Details: ${process.name}`));
     console.log(chalk.gray('─'.repeat(60)));
-    
+
     console.log(chalk.white('ID:'), process.id);
     console.log(chalk.white('Type:'), process.type);
     console.log(chalk.white('Status:'), this.getStatusDisplay(process.status), process.status);
-    
+
     if (process.pid) {
       console.log(chalk.white('PID:'), process.pid);
     }
-    
+
     if (process.startTime) {
       const uptime = Date.now() - process.startTime;
       console.log(chalk.white('Uptime:'), this.formatUptime(uptime));
     }
-    
+
     if (process.metrics) {
       console.log();
       console.log(chalk.white.bold('Metrics:'));
@@ -260,7 +355,7 @@ export class ProcessUI {
         console.log(chalk.red('Last Error:'), process.metrics.lastError);
       }
     }
-    
+
     console.log();
     console.log(chalk.gray('Press any key to continue...'));
   }
@@ -393,20 +488,36 @@ export class ProcessUI {
 
   async handleExit() {
     const processes = this.processManager.getAllProcesses();
-    const hasRunning = processes.some(p => p.status === ProcessStatus.RUNNING);
-    
+    const hasRunning = processes.some((p) => p.status === ProcessStatus.RUNNING);
+
     if (hasRunning) {
       console.log();
       console.log(chalk.yellow('⚠️  Some processes are still running.'));
       console.log('Stop all processes before exiting? [y/N]: ');
+<<<<<<< HEAD:src/cli/commands/start/process-ui-simple.js
       
       const response = await this.getActionInput();
       
       if (response === 'y') {
+||||||| 47d5ef4:src/cli/commands/start/process-ui-simple.ts
+      
+      const decoder = new TextDecoder();
+      const buf = new Uint8Array(1024);
+      const n = await Deno.stdin.read(buf);
+      
+      if (n && decoder.decode(buf.subarray(0, n)).trim().toLowerCase() === 'y') {
+=======
+
+      const decoder = new TextDecoder();
+      const buf = new Uint8Array(1024);
+      const n = await Deno.stdin.read(buf);
+
+      if (n && decoder.decode(buf.subarray(0, n)).trim().toLowerCase() === 'y') {
+>>>>>>> origin/main:src/cli/commands/start/process-ui-simple.ts
         await this.stopAll();
       }
     }
-    
+
     await this.stop();
   }
 }

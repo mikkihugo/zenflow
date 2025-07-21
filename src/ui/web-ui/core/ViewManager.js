@@ -35,7 +35,6 @@ export class ViewManager {
       this.eventBus.emit('view-manager:initialized');
 
       console.log('🖼️ View Manager initialized');
-
     } catch (error) {
       console.error('❌ Failed to initialize View Manager:', error);
       throw error;
@@ -47,9 +46,9 @@ export class ViewManager {
    */
   setupDOMContainer() {
     // Create main container
-    this.containerElement = document.getElementById('claude-flow-ui') || 
-                           document.createElement('div');
-    
+    this.containerElement =
+      document.getElementById('claude-flow-ui') || document.createElement('div');
+
     if (!this.containerElement.id) {
       this.containerElement.id = 'claude-flow-ui';
       this.containerElement.className = 'claude-flow-main-container';
@@ -164,7 +163,7 @@ export class ViewManager {
         }
       }
     `;
-    
+
     document.head.appendChild(styles);
   }
 
@@ -188,7 +187,7 @@ export class ViewManager {
       preload: viewConfig.preload || false,
       permissions: viewConfig.permissions || [],
       dependencies: viewConfig.dependencies || [],
-      metadata: viewConfig.metadata || {}
+      metadata: viewConfig.metadata || {},
     };
 
     this.registeredViews.set(viewConfig.id, config);
@@ -240,13 +239,12 @@ export class ViewManager {
       this.viewStates.set(viewId, {
         params,
         loadTime: Date.now(),
-        lastAccess: Date.now()
+        lastAccess: Date.now(),
       });
 
       this.eventBus.emit('view:loaded', { viewId, params });
 
       console.log(`🖼️ Loaded view: ${viewConfig.name}`);
-
     } catch (error) {
       this.eventBus.emit('view:error', { viewId, error: error.message, params });
       throw error;
@@ -274,9 +272,8 @@ export class ViewManager {
         config: viewConfig,
         element: ViewComponent.element || null,
         instance: ViewComponent.instance || null,
-        loadTime: Date.now()
+        loadTime: Date.now(),
       });
-
     } catch (error) {
       console.error(`❌ Failed to load view component ${viewId}:`, error);
       throw error;
@@ -294,16 +291,16 @@ export class ViewManager {
     // Create view header
     const header = document.createElement('div');
     header.className = 'claude-flow-header';
-    
+
     const titleSection = document.createElement('div');
     const title = document.createElement('h1');
     title.className = 'claude-flow-title';
     title.textContent = `${viewConfig.icon} ${viewConfig.name}`;
-    
+
     const breadcrumb = document.createElement('div');
     breadcrumb.className = 'claude-flow-breadcrumb';
     breadcrumb.textContent = viewConfig.description;
-    
+
     titleSection.appendChild(title);
     titleSection.appendChild(breadcrumb);
     header.appendChild(titleSection);
@@ -332,7 +329,7 @@ export class ViewManager {
       element,
       instance,
       render: (params) => instance.render(params),
-      destroy: () => instance.destroy?.()
+      destroy: () => instance.destroy?.(),
     };
   }
 
@@ -353,7 +350,7 @@ export class ViewManager {
       element: null,
       instance,
       render: (params) => instance.render(params),
-      destroy: () => instance.destroy?.()
+      destroy: () => instance.destroy?.(),
     };
   }
 
@@ -390,7 +387,7 @@ export class ViewManager {
       },
       destroy: () => {
         container.innerHTML = '';
-      }
+      },
     };
   }
 
@@ -408,7 +405,7 @@ export class ViewManager {
         console.log(`   Params:`, params);
         console.log(`   [This view is under development]\n`);
       },
-      destroy: () => {}
+      destroy: () => {},
     };
   }
 
@@ -595,7 +592,7 @@ export class ViewManager {
       registeredViews: this.registeredViews.size,
       loadedViews: this.loadedViews.size,
       viewStates: this.viewStates.size,
-      currentView: this.currentView
+      currentView: this.currentView,
     };
   }
 
