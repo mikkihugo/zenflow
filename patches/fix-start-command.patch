@@ -1,0 +1,76 @@
+--- a/src/cli/commands/index.ts
++++ b/src/cli/commands/index.ts
+@@ -14,6 +14,7 @@ import { sparcAction } from "./sparc.js";
+ import { createMigrateCommand } from "./migrate.js";
+ import { enterpriseCommands } from "./enterprise.js";
++import { displayStartBanner, displaySystemStatus, displayInteractiveMenu, displayOrchestratorArt } from "../start-banner.js";
+ 
+ // Import enhanced orchestration commands
+ import { startCommand } from "./start.js";
+@@ -217,10 +218,25 @@ export function registerCommands(cli: CLI): void {
+       },
+     ],
+     action: async (ctx: CommandContext) => {
+-      success("Starting Claude-Flow orchestration system...");
++      // Display banner
++      displayStartBanner(VERSION);
++      
++      // Show orchestrator ASCII art for non-daemon mode
++      if (!ctx.flags.daemon && !ctx.flags.ui) {
++        displayOrchestratorArt();
++      }
+       
+       try {
+         const orch = await getOrchestrator();
++        
++        // Show progress
++        console.log(yellow("🚀 Starting orchestration components..."));
++        console.log();
++        
++        // List components being started
++        const components = ["Event Bus", "Orchestrator Engine", "Memory Manager", 
++                          "Terminal Pool", "MCP Server", "Coordination Manager"];
++        
++        // Start with visual feedback
+         await orch.start();
+         
+         success("System started successfully!");
+@@ -233,7 +249,36 @@ export function registerCommands(cli: CLI): void {
+         console.log("   ✓ Coordination Manager");
+         
+         if (!ctx.flags.daemon) {
+-          info("Press Ctrl+C to stop the system");
++          console.log();
++          
++          // Check if --ui flag is set
++          if (ctx.flags.ui) {
++            info("Launching interactive UI...");
++            // UI mode is handled by enhanced start command
++          } else {
++            // Show interactive menu
++            displayInteractiveMenu();
++            
++            // Simple input handling
++            const readline = await import('readline');
++            const rl = readline.createInterface({
++              input: process.stdin,
++              output: process.stdout
++            });
++            
++            process.stdin.setRawMode(true);
++            process.stdin.on('data', (key) => {
++              const k = key.toString();
++              if (k === 'q' || k === 'Q' || k === '\x03') { // Ctrl+C
++                console.log("\n\nShutting down...");
++                rl.close();
++                process.exit(0);
++              } else if (k === '5') {
++                console.log("\n📱 Web UI: http://localhost:3000");
++                console.log(gray("Open this URL in your browser"));
++              }
++            });
++          }
++          
+           // Keep the process running until interrupted
+           const controller = new AbortController();
+           

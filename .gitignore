@@ -1,119 +1,27 @@
-# Dependencies
-node_modules/
-.deno/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Build outputs
-dist/
-build/
-out/
-*.exe
-*.tsbuildinfo
-.turbo/
-
-# Binaries
-bin/claude-flow-*
-!bin/claude-flow
-
-# IDE
-.vscode/
-.idea/
+/target
+target 
+.env
+.env.*
+node_modules
+.DS_Store
+.vscode
+.idea
+*.log
 *.swp
 *.swo
-*~
-.DS_Store
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Testing
-coverage/
-.nyc_output/
-tests/results/
-tests/logs/
-*.lcov
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Temp files
+*.bak
 *.tmp
-*.temp
-.cache/
-tmp/
-
-# Claude-Flow specific
-claude-flow.db
-claude-flow.config.json
-# memory/
-# sessions/
-
-# MCP/Swarm
-.ruv-swarm/
-mcp-server.log
-swarm-debug.log
-memory/backups/
-ui_*.log
-init-output.log
-
-# Development
 *.pid
-*.seed
-*.pid.lock
-package
-test-init
-test-full-init
-swarm-runs
+*.orig
+*.rej
+*.swp
+*.swo
+*.swn
+.venv/
 
-# Temporary files
-analyzing
-the
-claude-flow-mcp-wrapper
+# Ignore polyglot benchmark directories
+polyglot-benchmark/
+polyglot-benchmarks/
 
-# Test artifacts
-test-output/
-test-reports/
-# SQLite Database Files
-.swarm/memory.db*
-.hive-mind/hive.db*
-
-# Claude Flow generated files
-.claude/settings.local.json
-.mcp.json
-claude-flow.config.json
-.swarm/
-.hive-mind/
-memory/claude-flow-data.json
-memory/sessions/*
-!memory/sessions/README.md
-memory/agents/*
-!memory/agents/README.md
-coordination/memory_bank/*
-coordination/subtasks/*
-coordination/orchestration/*
-*.db
-*.db-journal
-*.db-wal
-*.sqlite
-*.sqlite-journal
-*.sqlite-wal
-claude-flow
-claude-flow.bat
-claude-flow.ps1
-hive-mind-prompt-*.txt
+# Ignore merge script
+merge_script.sh

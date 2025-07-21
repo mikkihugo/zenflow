@@ -1,0 +1,9 @@
+name = "claude-flow-mcp"
+main = "cloudflare-mcp-worker.js"
+compatibility_date = "2025-07-17"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+routes = [
+  { pattern = "fra-d1.in.centralcloud.net/mcp", custom_domain = true }
+]

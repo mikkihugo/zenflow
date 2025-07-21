@@ -1,0 +1,215 @@
+# Staging Environment Overrides for Vision-to-Code
+
+global:
+  environment: staging
+  imageRegistry: "staging-registry.vision-to-code.com"
+  
+# Staging-specific service configurations
+businessService:
+  replicaCount: 2
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+  
+  env:
+    - name: LOG_LEVEL
+      value: "debug"
+    - name: ENABLE_DEBUG_ENDPOINTS
+      value: "true"
+    - name: RATE_LIMIT_REQUESTS
+      value: "1000"
+
+coreService:
+  replicaCount: 2
+  
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
+
+swarmService:
+  replicaCount: 1
+  
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+  
+  autoscaling:
+    enabled: false  # Manual scaling in staging
+  
+  env:
+    - name: MAX_AGENTS
+      value: "100"  # Reduced for staging
+    - name: NEURAL_NETWORK_ENABLED
+      value: "true"
+    - name: ENABLE_PROFILING
+      value: "true"
+
+developmentService:
+  replicaCount: 1
+  
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  
+  autoscaling:
+    enabled: false
+
+# Staging ingress configuration
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    nginx.ingress.kubernetes.io/rate-limit: "50"  # Lower rate limit for staging
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+  hosts:
+    - host: staging-api.vision-to-code.com
+      paths:
+        - path: /api/v1/business
+          pathType: Prefix
+          service: business-service
+        - path: /api/v1/core
+          pathType: Prefix
+          service: core-service
+        - path: /api/v1/swarm
+          pathType: Prefix
+          service: swarm-service
+        - path: /api/v1/development
+          pathType: Prefix
+          service: development-service
+  tls:
+    - secretName: vision-to-code-staging-tls
+      hosts:
+        - staging-api.vision-to-code.com
+
+# Reduced monitoring for staging
+monitoring:
+  prometheus:
+    retention: 7d  # Shorter retention
+    storageSize: 20Gi  # Smaller storage
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 512Mi
+  
+  grafana:
+    adminPassword: staging-changeme
+    persistence:
+      size: 5Gi
+    resources:
+      limits:
+        cpu: 250m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+# Relaxed service mesh settings for staging
+serviceMesh:
+  istio:
+    mtls:
+      mode: PERMISSIVE  # Allow both encrypted and plain text
+    tracing:
+      sampling: 0.1  # 10% sampling rate
+    circuitBreaker:
+      consecutiveErrors: 10  # More tolerant
+      interval: 60s
+      baseEjectionTime: 15s
+
+# Staging database backup
+backup:
+  schedule: "0 3 * * *"  # Daily at 3 AM
+  retention:
+    days: 7  # Keep only 1 week
+  s3:
+    bucket: vision-to-code-staging-backups
+
+# Relaxed security for staging
+securityPolicies:
+  podSecurityPolicy:
+    enabled: false  # Disabled for easier debugging
+  networkPolicy:
+    enabled: false  # Allow all traffic in staging
+
+# Higher resource quotas for testing
+resourceQuota:
+  limits:
+    requests.cpu: "50"
+    requests.memory: "100Gi"
+    persistentvolumeclaims: "10"
+
+# Testing features enabled
+testingFeatures:
+  enabled: true
+  mockExternalServices: true
+  debugEndpoints: true
+  performanceTracing: true
+  chaosEngineering:
+    enabled: true
+    experiments:
+      - podFailure:
+          probability: 0.1
+          interval: 3600
+      - networkLatency:
+          probability: 0.2
+          latency: 100ms
+          jitter: 50ms
+
+# Feature flags for staging
+featureFlags:
+  enableBetaFeatures: true
+  enableExperimentalAPIs: true
+  enableDebugLogging: true
+  enableMetricsCollection: true
+  enableDistributedTracing: true
+
+# External service endpoints (staging versions)
+externalServices:
+  geminiApi:
+    endpoint: "https://staging-api.gemini.example.com"
+    timeout: 30s
+    retries: 3
+  claudeCode:
+    endpoint: "http://claude-code-staging:8080"
+    timeout: 60s
+  
+# Staging-specific secrets
+secrets:
+  geminiApiKey:
+    secretName: "gemini-staging-credentials"
+    key: "api-key"
+  databaseCredentials:
+    secretName: "staging-db-credentials"
+    key: "connection-string"

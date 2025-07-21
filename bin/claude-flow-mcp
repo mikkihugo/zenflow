@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+/**
+ * Claude Flow MCP Server Executable
+ * Uses the official TypeScript SDK implementation
+ */
+
+import('../src/mcp/claude-flow-mcp-server.ts')
+  .then(() => {
+    // Server starts automatically via CLI handling in the module
+  })
+  .catch(error => {
+    console.error('Failed to start Claude Flow MCP Server:', error);
+    process.exit(1);
+  });

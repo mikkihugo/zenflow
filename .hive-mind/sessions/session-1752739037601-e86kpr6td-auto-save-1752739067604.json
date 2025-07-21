@@ -1,0 +1,81 @@
+{
+  "sessionId": "session-1752739037601-e86kpr6td",
+  "checkpointId": "checkpoint-1752739067604-383fik0ie",
+  "checkpointName": "auto-save-1752739067604",
+  "timestamp": "2025-07-17T07:57:47.606Z",
+  "data": {
+    "timestamp": "2025-07-17T07:57:47.604Z",
+    "changeCount": 5,
+    "changesByType": {
+      "swarm_created": [
+        {
+          "type": "swarm_created",
+          "data": {
+            "swarmId": "swarm-1752739037593-elctvlq8k",
+            "swarmName": "hive-1752739037581",
+            "objective": "Build API",
+            "workerCount": 8
+          },
+          "timestamp": "2025-07-17T07:57:17.604Z"
+        }
+      ],
+      "agent_activity": [
+        {
+          "type": "agent_activity",
+          "data": {
+            "agentId": "worker-swarm-1752739037593-elctvlq8k-0",
+            "activity": "spawned",
+            "data": {
+              "type": "researcher",
+              "name": "Researcher Worker 1"
+            }
+          },
+          "timestamp": "2025-07-17T07:57:17.607Z"
+        },
+        {
+          "type": "agent_activity",
+          "data": {
+            "agentId": "worker-swarm-1752739037593-elctvlq8k-1",
+            "activity": "spawned",
+            "data": {
+              "type": "coder",
+              "name": "Coder Worker 2"
+            }
+          },
+          "timestamp": "2025-07-17T07:57:17.608Z"
+        },
+        {
+          "type": "agent_activity",
+          "data": {
+            "agentId": "worker-swarm-1752739037593-elctvlq8k-2",
+            "activity": "spawned",
+            "data": {
+              "type": "analyst",
+              "name": "Analyst Worker 3"
+            }
+          },
+          "timestamp": "2025-07-17T07:57:17.609Z"
+        },
+        {
+          "type": "agent_activity",
+          "data": {
+            "agentId": "worker-swarm-1752739037593-elctvlq8k-3",
+            "activity": "spawned",
+            "data": {
+              "type": "tester",
+              "name": "Tester Worker 4"
+            }
+          },
+          "timestamp": "2025-07-17T07:57:17.610Z"
+        }
+      ]
+    },
+    "statistics": {
+      "tasksProcessed": 0,
+      "tasksCompleted": 0,
+      "memoryUpdates": 0,
+      "agentActivities": 4,
+      "consensusDecisions": 0
+    }
+  }
+}
