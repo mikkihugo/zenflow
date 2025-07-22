@@ -261,9 +261,10 @@ npx ruv-swarm github pr-report 123 \
 ### Dashboard Integration
 ```bash
 # Export to GitHub Insights
-npx ruv-swarm github export-metrics \
-  --pr 123 \
-  --to-insights
+mcp__github__export_metrics {
+  pr: 123,
+  to_insights: true
+}
 ```
 
 ## Security Considerations

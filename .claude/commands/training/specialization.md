@@ -14,11 +14,10 @@ Agents automatically specialize based on file extensions:
 
 ### 2. By Task Type
 ```
-Tool: mcp__claude-zen__agent_spawn
+Tool: mcp__ruv-swarm__agent_spawn
 Parameters: {
   "type": "coder",
-  "capabilities": ["react", "typescript", "testing"],
-  "name": "React Specialist"
+  "capabilities": ["react", "typescript", "testing"]
 }
 ```
 
@@ -32,8 +31,8 @@ The system trains through:
 ### 4. Specialization Benefits
 ```
 # Check agent specializations
-Tool: mcp__claude-zen__agent_list
-Parameters: {"swarmId": "current"}
+Tool: mcp__ruv-swarm__agent_list
+Parameters: {"filter": "active"}
 
 Result shows expertise levels:
 {
@@ -52,12 +51,3 @@ Result shows expertise levels:
 
 ## Continuous Improvement
 Agents share learnings across sessions for cumulative expertise!
-
-## CLI Usage
-```bash
-# Train agent specialization via CLI
-npx claude-zen train agent --type coder --capabilities "react,typescript"
-
-# Check specializations
-npx claude-zen agent list --specializations
-```

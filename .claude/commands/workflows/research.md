@@ -7,41 +7,26 @@ Coordinate Claude Code's research activities for comprehensive, systematic explo
 
 ### 1. Initialize Research Framework
 ```
-Tool: mcp__claude-zen__swarm_init
+Tool: mcp__ruv-swarm__swarm_init
 Parameters: {"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}
 ```
 Creates a mesh topology for comprehensive exploration from multiple angles.
 
 ### 2. Define Research Perspectives
 ```
-Tool: mcp__claude-zen__agent_spawn
+Tool: mcp__ruv-swarm__agent_spawn
 Parameters: {"type": "researcher", "name": "Literature Review"}
 ```
 ```
-Tool: mcp__claude-zen__agent_spawn  
+Tool: mcp__ruv-swarm__agent_spawn  
 Parameters: {"type": "analyst", "name": "Data Analysis"}
 ```
 Sets up different analytical approaches for Claude Code to use.
 
 ### 3. Execute Coordinated Research
 ```
-Tool: mcp__claude-zen__task_orchestrate
-Parameters: {
-  "task": "Research modern web frameworks performance",
-  "strategy": "adaptive",
-  "priority": "medium"
-}
-```
-
-### 4. Store Research Findings
-```
-Tool: mcp__claude-zen__memory_usage
-Parameters: {
-  "action": "store",
-  "key": "research_findings",
-  "value": "framework performance analysis results",
-  "namespace": "research"
-}
+Tool: mcp__ruv-swarm__task_orchestrate
+Parameters: {"task": "Research modern web frameworks performance", "strategy": "adaptive"}
 ```
 
 ## What Claude Code Actually Does
@@ -52,12 +37,3 @@ Parameters: {
 5. Stores insights in memory for future reference
 
 Remember: The swarm coordinates HOW Claude Code researches, not WHAT it finds.
-
-## CLI Usage
-```bash
-# Start research workflow via CLI
-npx claude-zen workflow research "modern web frameworks"
-
-# Export research workflow
-npx claude-zen workflow export research --format json
-```

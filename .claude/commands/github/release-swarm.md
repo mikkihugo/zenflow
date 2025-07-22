@@ -17,23 +17,25 @@ MERGED_PRS=$(gh pr list --state merged --base main --json number,title,labels,me
   --jq ".[] | select(.mergedAt > \"$(gh release view $LAST_TAG --json publishedAt -q .publishedAt)\")")  
 
 # Plan release with commit analysis
-npx ruv-swarm github release-plan \
-  --commits "$COMMITS" \
-  --merged-prs "$MERGED_PRS" \
-  --analyze-commits \
-  --suggest-version \
-  --identify-breaking \
-  --generate-timeline
+mcp__github__release_plan {
+  commits: "$COMMITS",
+  merged_prs: "$MERGED_PRS",
+  analyze_commits: true,
+  suggest_version: true,
+  identify_breaking: true,
+  generate_timeline: true
+}
 ```
 
 ### 2. Automated Versioning
 ```bash
 # Smart version bumping
-npx ruv-swarm github release-version \
-  --strategy "semantic" \
-  --analyze-changes \
-  --check-breaking \
-  --update-files
+mcp__github__release_version {
+  strategy: "semantic",
+  analyze_changes: true,
+  check_breaking: true,
+  update_files: true
+}
 ```
 
 ### 3. Release Orchestration
@@ -42,7 +44,7 @@ npx ruv-swarm github release-version \
 # Generate changelog from PRs and commits
 CHANGELOG=$(gh api repos/:owner/:repo/compare/${LAST_TAG}...HEAD \
   --jq '.commits[].commit.message' | \
-  npx ruv-swarm github generate-changelog)
+  mcp__github__generate_changelog {})
 
 # Create release draft
 gh release create v2.0.0 \
@@ -52,11 +54,12 @@ gh release create v2.0.0 \
   --target main
 
 # Run release orchestration
-npx ruv-swarm github release-create \
-  --version "2.0.0" \
-  --changelog "$CHANGELOG" \
-  --build-artifacts \
-  --deploy-targets "npm,docker,github"
+mcp__github__release_create {
+  version: "2.0.0",
+  changelog: "$CHANGELOG",
+  build_artifacts: true,
+  deploy_targets: "npm,docker,github"
+}
 
 # Publish release after validation
 gh release edit v2.0.0 --draft=false
@@ -134,14 +137,15 @@ COMMITS=$(gh api repos/:owner/:repo/compare/v1.0.0...HEAD \
   --jq '.commits[].commit.message')
 
 # Generate categorized changelog
-CHANGELOG=$(npx ruv-swarm github changelog \
-  --prs "$PRS" \
-  --commits "$COMMITS" \
-  --contributors "$CONTRIBUTORS" \
-  --from v1.0.0 \
-  --to HEAD \
-  --categorize \
-  --add-migration-guide)
+CHANGELOG=$(mcp__github__changelog {
+  prs: "$PRS",
+  commits: "$COMMITS",
+  contributors: "$CONTRIBUTORS",
+  from: "v1.0.0",
+  to: "HEAD",
+  categorize: true,
+  add_migration_guide: true
+})
 
 # Save changelog
 echo "$CHANGELOG" > CHANGELOG.md
@@ -163,11 +167,12 @@ gh pr create \
 ### Version Agent
 ```bash
 # Determine next version
-npx ruv-swarm github version-suggest \
-  --current v1.2.3 \
-  --analyze-commits \
-  --check-compatibility \
-  --suggest-pre-release
+mcp__github__version_suggest {
+  current: "v1.2.3",
+  analyze_commits: true,
+  check_compatibility: true,
+  suggest_pre_release: true
+}
 ```
 
 **Logic:**
@@ -180,11 +185,12 @@ npx ruv-swarm github version-suggest \
 ### Build Agent
 ```bash
 # Coordinate multi-platform builds
-npx ruv-swarm github release-build \
-  --platforms "linux,macos,windows" \
-  --architectures "x64,arm64" \
-  --parallel \
-  --optimize-size
+mcp__github__release_build {
+  platforms: "linux,macos,windows",
+  architectures: "x64,arm64",
+  parallel: true,
+  optimize_size: true
+}
 ```
 
 **Features:**
@@ -197,21 +203,23 @@ npx ruv-swarm github release-build \
 ### Test Agent
 ```bash
 # Pre-release testing
-npx ruv-swarm github release-test \
-  --suites "unit,integration,e2e,performance" \
-  --environments "node:16,node:18,node:20" \
-  --fail-fast false \
-  --generate-report
+mcp__github__release_test {
+  suites: "unit,integration,e2e,performance",
+  environments: "node:16,node:18,node:20",
+  fail_fast: false,
+  generate_report: true
+}
 ```
 
 ### Deploy Agent
 ```bash
 # Multi-target deployment
-npx ruv-swarm github release-deploy \
-  --targets "npm,docker,github,s3" \
-  --staged-rollout \
-  --monitor-metrics \
-  --auto-rollback
+mcp__github__release_deploy {
+  targets: "npm,docker,github,s3",
+  staged_rollout: true,
+  monitor_metrics: true,
+  auto_rollback: true
+}
 ```
 
 ## Advanced Features
@@ -242,21 +250,23 @@ deployment:
 ### 2. Multi-Repo Releases
 ```bash
 # Coordinate releases across repos
-npx ruv-swarm github multi-release \
-  --repos "frontend:v2.0.0,backend:v2.1.0,cli:v1.5.0" \
-  --ensure-compatibility \
-  --atomic-release \
-  --synchronized
+mcp__github__multi_release {
+  repos: "frontend:v2.0.0,backend:v2.1.0,cli:v1.5.0",
+  ensure_compatibility: true,
+  atomic_release: true,
+  synchronized: true
+}
 ```
 
 ### 3. Hotfix Automation
 ```bash
 # Emergency hotfix process
-npx ruv-swarm github hotfix \
-  --issue 789 \
-  --target-version v1.2.4 \
-  --cherry-pick-commits \
-  --fast-track-deploy
+mcp__github__hotfix {
+  issue: 789,
+  target_version: "v1.2.4",
+  cherry_pick_commits: true,
+  fast_track_deploy: true
+}
 ```
 
 ## Release Workflows
@@ -288,29 +298,32 @@ jobs:
           
           # Get PRs and commits for changelog
           PRS=$(gh pr list --state merged --base main --json number,title,labels,author \
-            --search "merged:>=$(gh release view $PREV_TAG --json publishedAt -q .publishedAt)")
+            --search "merged:>=\"$(gh release view $PREV_TAG --json publishedAt -q .publishedAt)\"")
           
-          npx ruv-swarm github release-init \
-            --tag $RELEASE_TAG \
-            --previous-tag $PREV_TAG \
-            --prs "$PRS" \
-            --spawn-agents "changelog,version,build,test,deploy"
+          mcp__github__release_init {
+            tag: "$RELEASE_TAG",
+            previous_tag: "$PREV_TAG",
+            prs: "$PRS",
+            spawn_agents: "changelog,version,build,test,deploy"
+          }
             
       - name: Generate Release Assets
         run: |
           # Generate changelog from PR data
-          CHANGELOG=$(npx ruv-swarm github release-changelog \
-            --format markdown)
+          CHANGELOG=$(mcp__github__release_changelog {
+            format: "markdown"
+          })
           
           # Update release notes
           gh release edit ${{ github.ref_name }} \
             --notes "$CHANGELOG"
           
           # Generate and upload assets
-          npx ruv-swarm github release-assets \
-            --changelog \
-            --binaries \
-            --documentation
+          mcp__github__release_assets {
+            changelog: true,
+            binaries: true,
+            documentation: true
+          }
             
       - name: Upload Release Assets
         run: |
@@ -322,8 +335,9 @@ jobs:
       - name: Publish Release
         run: |
           # Publish to package registries
-          npx ruv-swarm github release-publish \
-            --platforms all
+          mcp__github__release_publish {
+            platforms: "all"
+          }
           
           # Create announcement issue
           gh issue create \
@@ -335,11 +349,12 @@ jobs:
 ### Continuous Deployment
 ```bash
 # Automated deployment pipeline
-npx ruv-swarm github cd-pipeline \
-  --trigger "merge-to-main" \
-  --auto-version \
-  --deploy-on-success \
-  --rollback-on-failure
+mcp__github__cd_pipeline {
+  trigger: "merge-to-main",
+  auto_version: true,
+  deploy_on_success: true,
+  rollback_on_failure: true
+}
 ```
 
 ## Release Validation
@@ -347,36 +362,32 @@ npx ruv-swarm github cd-pipeline \
 ### Pre-Release Checks
 ```bash
 # Comprehensive validation
-npx ruv-swarm github release-validate \
-  --checks "
-    version-conflicts,
-    dependency-compatibility,
-    api-breaking-changes,
-    security-vulnerabilities,
-    performance-regression,
-    documentation-completeness
-  " \
-  --block-on-failure
+mcp__github__release_validate {
+  checks: "version-conflicts,dependency-compatibility,api-breaking-changes,security-vulnerabilities,performance-regression,documentation-completeness",
+  block_on_failure: true
+}
 ```
 
 ### Compatibility Testing
 ```bash
 # Test backward compatibility
-npx ruv-swarm github compat-test \
-  --previous-versions "v1.0,v1.1,v1.2" \
-  --api-contracts \
-  --data-migrations \
-  --generate-report
+mcp__github__compat_test {
+  previous_versions: "v1.0,v1.1,v1.2",
+  api_contracts: true,
+  data_migrations: true,
+  generate_report: true
+}
 ```
 
 ### Security Scanning
 ```bash
 # Security validation
-npx ruv-swarm github release-security \
-  --scan-dependencies \
-  --check-secrets \
-  --audit-permissions \
-  --sign-artifacts
+mcp__github__release_security {
+  scan_dependencies: true,
+  check_secrets: true,
+  audit_permissions: true,
+  sign_artifacts: true
+}
 ```
 
 ## Monitoring & Rollback
@@ -384,34 +395,37 @@ npx ruv-swarm github release-security \
 ### Release Monitoring
 ```bash
 # Monitor release health
-npx ruv-swarm github release-monitor \
-  --version v2.0.0 \
-  --metrics "error-rate,latency,throughput" \
-  --alert-thresholds \
-  --duration 24h
+mcp__github__release_monitor {
+  version: "v2.0.0",
+  metrics: "error-rate,latency,throughput",
+  alert_thresholds: true,
+  duration: "24h"
+}
 ```
 
 ### Automated Rollback
 ```bash
 # Configure auto-rollback
-npx ruv-swarm github rollback-config \
-  --triggers '{
+mcp__github__rollback_config {
+  triggers: '{
     "error-rate": ">5%",
     "latency-p99": ">1000ms",
     "availability": "<99.9%"
-  }' \
-  --grace-period 5m \
-  --notify-on-rollback
+  }',
+  grace_period: "5m",
+  notify_on_rollback: true
+}
 ```
 
 ### Release Analytics
 ```bash
 # Analyze release performance
-npx ruv-swarm github release-analytics \
-  --version v2.0.0 \
-  --compare-with v1.9.0 \
-  --metrics "adoption,performance,stability" \
-  --generate-insights
+mcp__github__release_analytics {
+  version: "v2.0.0",
+  compare_with: "v1.9.0",
+  metrics: "adoption,performance,stability",
+  generate_insights: true
+}
 ```
 
 ## Documentation
@@ -419,11 +433,12 @@ npx ruv-swarm github release-analytics \
 ### Auto-Generated Docs
 ```bash
 # Update documentation
-npx ruv-swarm github release-docs \
-  --api-changes \
-  --migration-guide \
-  --example-updates \
-  --publish-to "docs-site,wiki"
+mcp__github__release_docs {
+  api_changes: true,
+  migration_guide: true,
+  example_updates: true,
+  publish_to: "docs-site,wiki"
+}
 ```
 
 ### Release Notes
@@ -492,31 +507,34 @@ Thanks to all contributors who made this release possible!
 ### NPM Package Release
 ```bash
 # NPM package release
-npx ruv-swarm github npm-release \
-  --version patch \
-  --test-all \
-  --publish-beta \
-  --tag-latest-on-success
+mcp__github__npm_release {
+  version: "patch",
+  test_all: true,
+  publish_beta: true,
+  tag_latest_on_success: true
+}
 ```
 
 ### Docker Image Release
 ```bash
 # Docker multi-arch release
-npx ruv-swarm github docker-release \
-  --platforms "linux/amd64,linux/arm64" \
-  --tags "latest,v2.0.0,stable" \
-  --scan-vulnerabilities \
-  --push-to "dockerhub,gcr,ecr"
+mcp__github__docker_release {
+  platforms: "linux/amd64,linux/arm64",
+  tags: "latest,v2.0.0,stable",
+  scan_vulnerabilities: true,
+  push_to: "dockerhub,gcr,ecr"
+}
 ```
 
 ### Mobile App Release
 ```bash
 # Mobile app store release
-npx ruv-swarm github mobile-release \
-  --platforms "ios,android" \
-  --build-release \
-  --submit-review \
-  --staged-rollout
+mcp__github__mobile_release {
+  platforms: "ios,android",
+  build_release: true,
+  submit_review: true,
+  staged_rollout: true
+}
 ```
 
 ## Emergency Procedures
@@ -524,21 +542,23 @@ npx ruv-swarm github mobile-release \
 ### Hotfix Process
 ```bash
 # Emergency hotfix
-npx ruv-swarm github emergency-release \
-  --severity critical \
-  --bypass-checks security-only \
-  --fast-track \
-  --notify-all
+mcp__github__emergency_release {
+  severity: "critical",
+  bypass_checks: "security-only",
+  fast_track: true,
+  notify_all: true
+}
 ```
 
 ### Rollback Procedure
 ```bash
 # Immediate rollback
-npx ruv-swarm github rollback \
-  --to-version v1.9.9 \
-  --reason "Critical bug in v2.0.0" \
-  --preserve-data \
-  --notify-users
+mcp__github__rollback {
+  to_version: "v1.9.9",
+  reason: "Critical bug in v2.0.0",
+  preserve_data: true,
+  notify_users: true
+}
 ```
 
 See also: [workflow-automation.md](./workflow-automation.md), [multi-repo-swarm.md](./multi-repo-swarm.md)

@@ -3,7 +3,7 @@ import {
   printSuccess,
   printError,
   printWarning,
-  callRuvSwarmMCP,
+  callRuvSwarmLibrary,
   spawnSwarmAgent,
   checkRuvSwarmAvailable,
 } from '../utils.js';
@@ -101,7 +101,7 @@ async function spawnCoordinatedAgent(agentType, agentName, swarmId, capabilities
     try {
       console.log(`🔄 Spawning agent with ruv-swarm coordination...`);
       
-      const spawnResult = await callRuvSwarmMCP('agent_spawn', {
+      const spawnResult = await callRuvSwarmLibrary('agent_spawn', {
         type: agentType,
         name: agentName,
         swarmId: swarmId,

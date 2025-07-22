@@ -4,7 +4,7 @@ import {
   printWarning,
   trainNeuralModel,
   updateNeuralPattern,
-  callRuvSwarmMCP,
+  callRuvSwarmLibrary,
   checkRuvSwarmAvailable,
 } from '../utils.js';
 

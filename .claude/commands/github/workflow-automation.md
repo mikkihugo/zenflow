@@ -25,10 +25,11 @@ jobs:
           
       - name: Analyze Changes
         run: |
-          npx ruv-swarm actions analyze \
-            --commit ${{ github.sha }} \
-            --suggest-tests \
-            --optimize-pipeline
+          mcp__github__actions_analyze {
+  commit: "${{ github.sha }}",
+  suggest_tests: true,
+  optimize_pipeline: true
+}
 ```
 
 ### 2. Dynamic Workflow Generation
@@ -433,10 +434,11 @@ npx ruv-swarm actions auto-optimize \
 ### Performance Profiling
 ```bash
 # Profile workflow performance
-npx ruv-swarm actions profile \
-  --workflow "ci.yml" \
-  --identify-slow-steps \
-  --suggest-optimizations
+mcp__github__actions_profile {
+  workflow: "ci.yml",
+  identify_slow_steps: true,
+  suggest_optimizations: true
+}
 ```
 
 See also: [swarm-pr.md](./swarm-pr.md), [release-swarm.md](./release-swarm.md)

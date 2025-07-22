@@ -14,23 +14,12 @@ At session end, automatically saves:
 - Knowledge base updates
 
 ### 2. Session Restoration
-```javascript
-// Using MCP tools for memory operations
-mcp__claude-zen__memory_usage({
-  "action": "retrieve",
-  "key": "session-state",
-  "namespace": "sessions"
-})
-
-// Restore swarm state
-mcp__claude-zen__context_restore({
-  "snapshotId": "sess-123"
-})
-```
-
-**Fallback with npx:**
 ```bash
-npx claude-zen hook session-restore --session-id "sess-123"
+# New session automatically loads previous state
+claude "Continue where we left off"
+
+# Or manually restore specific session
+npx ruv-swarm hook session-restore --session-id "sess-123"
 ```
 
 ### 3. Memory Types
@@ -54,33 +43,15 @@ npx claude-zen hook session-restore --session-id "sess-123"
 - Efficiency trends
 
 ### 4. Privacy & Control
-```javascript
-// List memory contents
-mcp__claude-zen__memory_usage({
-  "action": "list",
-  "namespace": "sessions"
-})
-
-// Delete specific memory
-mcp__claude-zen__memory_usage({
-  "action": "delete",
-  "key": "session-123",
-  "namespace": "sessions"
-})
-
-// Backup memory
-mcp__claude-zen__memory_backup({
-  "path": "./backups/memory-backup.json"
-})
-```
-
-**Manual control:**
 ```bash
 # View stored memory
-ls .claude-zen/memory/
+ls .ruv-swarm/
+
+# Clear specific memory
+rm .ruv-swarm/session-*.json
 
 # Disable memory
-export CLAUDE_FLOW_MEMORY_PERSIST=false
+export RUV_SWARM_MEMORY_PERSIST=false
 ```
 
 ## Benefits

@@ -1,4 +1,4 @@
-# Claude Code Hooks for claude-zen
+# Claude Code Hooks for ruv-swarm
 
 ## Purpose
 Automatically coordinate, format, and learn from Claude Code operations using hooks.
@@ -37,7 +37,7 @@ Hooks are configured in `.claude/settings.json`:
         "matcher": "^(Write|Edit|MultiEdit)$",
         "hooks": [{
           "type": "command",
-          "command": "npx claude-zen hook pre-edit --file '${tool.params.file_path}'"
+          "command": "npx ruv-swarm hook pre-edit --file '${tool.params.file_path}'"
         }]
       }
     ]

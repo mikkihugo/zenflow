@@ -5,14 +5,11 @@
 
 ## MCP Tool Usage in Claude Code
 
-**Tool:** `mcp__claude-zen__memory_usage`
+**Tool:** `mcp__ruv-swarm__memory_usage`
 
 ## Parameters
 ```json
-{
-  "action": "retrieve",
-  "namespace": "default"
-}
+{"detail": "detailed"}
 ```
 
 ## Description
@@ -28,10 +25,9 @@ Memory helps Claude Code:
 ## Example Usage
 
 **In Claude Code:**
-1. Store memory: Use tool `mcp__claude-zen__memory_usage` with parameters `{"action": "store", "key": "project_context", "value": "authentication system design"}`
-2. Retrieve memory: Use tool `mcp__claude-zen__memory_usage` with parameters `{"action": "retrieve", "key": "project_context"}`
-3. List memories: Use tool `mcp__claude-zen__memory_usage` with parameters `{"action": "list", "namespace": "default"}`
-4. Search memories: Use tool `mcp__claude-zen__memory_search` with parameters `{"pattern": "auth*"}`
+1. Use the tool: `mcp__ruv-swarm__memory_usage`
+2. With parameters: `{"detail": "detailed"}`
+3. Claude Code then executes the coordinated plan using its native tools
 
 ## Important Reminders
 - ✅ This tool provides coordination and structure
@@ -41,6 +37,6 @@ Memory helps Claude Code:
 - ❌ The tool does NOT execute commands
 
 ## See Also
-- Main documentation: /CLAUDE.md
+- Main documentation: /claude.md
 - Other commands in this category
 - Workflow examples in /workflows/

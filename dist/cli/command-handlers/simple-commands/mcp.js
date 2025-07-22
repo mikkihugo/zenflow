@@ -9,14 +9,6 @@ export async function mcpCommand(subArgs, flags) {
       await showMcpStatus(subArgs, flags);
       break;
 
-    case 'start':
-      await startMcpServer(subArgs, flags);
-      break;
-
-    case 'stop':
-      await stopMcpServer(subArgs, flags);
-      break;
-
     case 'tools':
       await listMcpTools(subArgs, flags);
       break;
@@ -408,12 +400,13 @@ function showMcpHelp() {
   console.log('  system       ⚙️ System & utilities (8 tools)');
   console.log();
   console.log('EXAMPLES:');
-  console.log('  claude-zen mcp status');
-  console.log('  claude-zen mcp start --auto-orchestrator --daemon');
-  console.log('  claude-zen mcp tools --category=neural --verbose');
-  console.log('  claude-zen mcp tools --category=swarm');
-  console.log('  claude-zen mcp config');
-  console.log('  claude-zen mcp auth setup');
+  console.log('  claude-zen mcp status                    # Check MCP server status');
+  console.log('  claude-zen mcp tools --category=neural   # List neural tools');
+  console.log('  claude-zen mcp tools --verbose           # Detailed tool list');
+  console.log('  claude-zen mcp config                    # Show MCP configuration');
+  console.log('  claude-zen mcp auth setup                # Setup MCP authentication');
+  console.log();
+  console.log('NOTE: Use "claude-zen start --daemon" to start MCP server');
   console.log();
   console.log('🎯 Total: 87 tools & resources available');
   console.log('🔗 Full ruv-swarm + DAA + Claude-Flow integration');

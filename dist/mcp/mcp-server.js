@@ -6,16 +6,28 @@
  */
 
 import { fileURLToPath } from 'url';
-// Use the same memory system that npx commands use - singleton instance
-import { memoryStore } from '../memory/fallback-store.js';
+// Use SQLite memory store for persistence
+import { SqliteMemoryStore } from '../memory/sqlite-store.js';
+// Use ruv-swarm as a library directly instead of external process calls
+import { RuvSwarm, Swarm, Agent, Task } from 'ruv-swarm';
+
+// Create singleton memory store instance
+const memoryStore = new SqliteMemoryStore({ dbName: 'claude-zen-mcp.db' });
 
 const __filename = fileURLToPath(import.meta.url);
 
 class ClaudeFlowMCPServer {
   constructor() {
-    this.version = '2.0.0-alpha.59';
+    this.version = '2.0.0-alpha.67';
     this.memoryStore = memoryStore; // Use shared singleton instance
-    // Use the same memory system that already works
+    // Initialize ruv-swarm library directly
+    this.ruvSwarm = new RuvSwarm({
+      memoryStore: this.memoryStore,
+      telemetryEnabled: true,
+      hooksEnabled: false
+    });
+    this.swarms = new Map(); // Active swarms by ID
+    
     this.capabilities = {
       tools: {
         listChanged: true
@@ -40,7 +52,7 @@ class ClaudeFlowMCPServer {
   async initializeMemory() {
     await this.memoryStore.initialize();
     console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] (${this.sessionId}) Shared memory store initialized (same as npx)`);
-    console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] (${this.sessionId}) Using ${this.memoryStore.isUsingFallback() ? 'in-memory' : 'SQLite'} storage`);
+    console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] (${this.sessionId}) Using SQLite storage`);
   }
   
   // Database operations now use the same memory store as working npx commands
@@ -850,83 +862,97 @@ class ClaudeFlowMCPServer {
     // Simulate tool execution based on the tool name
     switch (name) {
       case 'swarm_init':
-        const swarmId = `swarm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const swarmData = {
-          id: swarmId,
-          name: `Swarm-${new Date().toISOString().split('T')[0]}`,
+        // Use ruv-swarm library directly
+        const swarmConfig = {
           topology: args.topology || 'hierarchical',
-          queenMode: 'collaborative',
           maxAgents: args.maxAgents || 8,
-          consensusThreshold: 0.7,
-          memoryTTL: 86400, // 24 hours
-          config: JSON.stringify({
-            strategy: args.strategy || 'auto',
-            sessionId: this.sessionId,
-            createdBy: 'mcp-server'
-          })
+          strategy: args.strategy || 'auto',
+          memoryStore: this.memoryStore
         };
         
-        // Store swarm data in memory store (same as npx commands)
-        try {
-          await this.memoryStore.store(`swarm:${swarmId}`, JSON.stringify(swarmData), {
-            namespace: 'swarms',
-            metadata: { type: 'swarm_data', sessionId: this.sessionId }
-          });
-          await this.memoryStore.store('active_swarm', swarmId, {
-            namespace: 'system',
-            metadata: { type: 'active_swarm', sessionId: this.sessionId }
-          });
-          console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] Swarm persisted to memory: ${swarmId}`);
-        } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-zen-mcp] Failed to persist swarm:`, error);
-        }
+        const swarm = new Swarm(swarmConfig);
+        const swarmId = swarm.id;
+        
+        // Store swarm instance
+        this.swarms.set(swarmId, swarm);
+        
+        // Persist to memory store
+        await this.memoryStore.store(`swarm:${swarmId}`, JSON.stringify({
+          id: swarmId,
+          topology: swarmConfig.topology,
+          maxAgents: swarmConfig.maxAgents,
+          strategy: swarmConfig.strategy,
+          status: 'initialized',
+          createdAt: new Date().toISOString()
+        }), {
+          namespace: 'swarms',
+          metadata: { type: 'swarm_data', sessionId: this.sessionId }
+        });
+        
+        await this.memoryStore.store('active_swarm', swarmId, {
+          namespace: 'system',
+          metadata: { type: 'active_swarm', sessionId: this.sessionId }
+        });
+        
+        console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] Real swarm initialized: ${swarmId}`);
         
         return {
           success: true,
           swarmId: swarmId,
-          topology: swarmData.topology,
-          maxAgents: swarmData.maxAgents,
-          strategy: args.strategy || 'auto',
+          topology: swarmConfig.topology,
+          maxAgents: swarmConfig.maxAgents,
+          strategy: swarmConfig.strategy,
           status: 'initialized',
-          persisted: !!this.databaseManager,
+          agents: [],
           timestamp: new Date().toISOString()
         };
 
       case 'agent_spawn':
-        const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-        const agentData = {
-          id: agentId,
-          swarmId: args.swarmId || await this.getActiveSwarmId(),
-          name: args.name || `${args.type}-${Date.now()}`,
+        // Use ruv-swarm library directly
+        const targetSwarmId = args.swarmId || await this.getActiveSwarmId();
+        const targetSwarm = this.swarms.get(targetSwarmId);
+        
+        if (!targetSwarm) {
+          throw new Error(`Swarm not found: ${targetSwarmId}. Initialize a swarm first with swarm_init.`);
+        }
+        
+        const agentConfig = {
           type: args.type,
-          status: 'active',
-          capabilities: JSON.stringify(args.capabilities || []),
-          metadata: JSON.stringify({
-            sessionId: this.sessionId,
-            createdBy: 'mcp-server',
-            spawnedAt: new Date().toISOString()
-          })
+          name: args.name || `${args.type}-${Date.now()}`,
+          capabilities: args.capabilities || [],
+          swarm: targetSwarm
         };
         
-        // Store agent data in memory store (same as npx commands)
-        try {
-          await this.memoryStore.store(`agent:${agentId}`, JSON.stringify(agentData), {
-            namespace: 'agents',
-            metadata: { type: 'agent_data', swarmId: agentData.swarmId, sessionId: this.sessionId }
-          });
-          console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] Agent persisted to memory: ${agentId}`);
-        } catch (error) {
-          console.error(`[${new Date().toISOString()}] ERROR [claude-zen-mcp] Failed to persist agent:`, error);
-        }
+        const agent = new Agent(agentConfig);
+        const agentId = agent.id;
+        
+        // Add agent to swarm
+        targetSwarm.addAgent(agent);
+        
+        // Persist to memory store
+        await this.memoryStore.store(`agent:${agentId}`, JSON.stringify({
+          id: agentId,
+          swarmId: targetSwarmId,
+          type: args.type,
+          name: agentConfig.name,
+          status: 'active',
+          capabilities: agentConfig.capabilities,
+          createdAt: new Date().toISOString()
+        }), {
+          namespace: 'agents',
+          metadata: { type: 'agent_data', swarmId: targetSwarmId, sessionId: this.sessionId }
+        });
+        
+        console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] Real agent spawned: ${agentId} in swarm ${targetSwarmId}`);
         
         return {
           success: true,
           agentId: agentId,
+          swarmId: targetSwarmId,
           type: args.type,
-          name: agentData.name,
+          name: agentConfig.name,
           status: 'active',
-          capabilities: args.capabilities || [],
-          persisted: !!this.databaseManager,
+          capabilities: agentConfig.capabilities,
           timestamp: new Date().toISOString()
         };
 
@@ -1294,45 +1320,56 @@ class ClaudeFlowMCPServer {
         };
 
       case 'task_orchestrate':
-        const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        // Use ruv-swarm library directly
         const swarmIdForTask = args.swarmId || await this.getActiveSwarmId();
-        const taskData = {
+        const swarmForTask = this.swarms.get(swarmIdForTask);
+        
+        if (!swarmForTask) {
+          throw new Error(`Swarm not found: ${swarmIdForTask}. Initialize a swarm first with swarm_init.`);
+        }
+        
+        const taskConfig = {
+          description: args.task,
+          strategy: args.strategy || 'adaptive', 
+          priority: args.priority || 'medium',
+          dependencies: args.dependencies || []
+        };
+        
+        const task = new Task(taskConfig);
+        const taskId = task.id;
+        
+        // Orchestrate task through swarm
+        const orchestrationResult = await swarmForTask.orchestrateTask(task);
+        
+        // Persist to memory store
+        await this.memoryStore.store(`task:${taskId}`, JSON.stringify({
           id: taskId,
           swarmId: swarmIdForTask,
           description: args.task,
-          priority: args.priority || 'medium',
-          strategy: args.strategy || 'auto',
-          status: 'pending',
-          dependencies: JSON.stringify(args.dependencies || []),
-          assignedAgents: JSON.stringify([]),
-          requireConsensus: false,
-          maxAgents: 5,
-          requiredCapabilities: JSON.stringify([]),
-          metadata: JSON.stringify({
-            sessionId: this.sessionId,
-            createdBy: 'mcp-server',
-            orchestratedAt: new Date().toISOString()
-          })
-        };
+          strategy: taskConfig.strategy,
+          priority: taskConfig.priority,
+          status: 'orchestrating',
+          dependencies: taskConfig.dependencies,
+          assignedAgents: orchestrationResult.assignedAgents || [],
+          createdAt: new Date().toISOString()
+        }), {
+          namespace: 'tasks',
+          metadata: { type: 'task_data', swarmId: swarmIdForTask, sessionId: this.sessionId }
+        });
         
-        // Try to persist to database
-        if (this.databaseManager && swarmIdForTask) {
-          try {
-            await this.databaseManager.createTask(taskData);
-            console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] Task persisted to database: ${taskId}`);
-          } catch (error) {
-            console.error(`[${new Date().toISOString()}] ERROR [claude-zen-mcp] Failed to persist task:`, error);
-          }
-        }
+        console.error(`[${new Date().toISOString()}] INFO [claude-zen-mcp] Real task orchestrated: ${taskId} in swarm ${swarmIdForTask}`);
         
         return {
           success: true,
           taskId: taskId,
           task: args.task,
-          strategy: taskData.strategy,
-          priority: taskData.priority,
-          status: 'pending',
-          persisted: !!this.databaseManager,
+          swarmId: swarmIdForTask,
+          strategy: taskConfig.strategy,
+          priority: taskConfig.priority,
+          status: 'orchestrating',
+          assignedAgents: orchestrationResult.assignedAgents || [],
+          dependencies: taskConfig.dependencies,
+          estimatedCompletion: orchestrationResult.estimatedCompletion,
           timestamp: new Date().toISOString()
         };
 
@@ -1430,7 +1467,7 @@ class ClaudeFlowMCPServer {
             stored: true,
             size: storeResult.size || args.value.length,
             id: storeResult.id,
-            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
+            storage_type: 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1448,7 +1485,7 @@ class ClaudeFlowMCPServer {
             value: value,
             found: value !== null,
             namespace: args.namespace || 'default',
-            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
+            storage_type: 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1466,7 +1503,7 @@ class ClaudeFlowMCPServer {
             namespace: args.namespace || 'default',
             entries: entries,
             count: entries.length,
-            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
+            storage_type: 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1483,7 +1520,7 @@ class ClaudeFlowMCPServer {
             key: args.key,
             namespace: args.namespace || 'default',
             deleted: deleted,
-            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
+            storage_type: 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1502,7 +1539,7 @@ class ClaudeFlowMCPServer {
             namespace: args.namespace || 'default',
             results: results,
             count: results.length,
-            storage_type: this.memoryStore.isUsingFallback() ? 'in-memory' : 'sqlite',
+            storage_type: 'sqlite',
             timestamp: new Date().toISOString()
           };
 
@@ -1519,7 +1556,7 @@ class ClaudeFlowMCPServer {
         success: false,
         error: error.message,
         action: args.action,
-        storage_type: this.memoryStore?.isUsingFallback() ? 'in-memory' : 'sqlite',
+        storage_type: 'sqlite',
         timestamp: new Date().toISOString()
       };
     }
@@ -1559,14 +1596,13 @@ class ClaudeFlowMCPServer {
   }
 
   async getActiveSwarmId() {
-    if (this.databaseManager) {
-      try {
-        return await this.databaseManager.getActiveSwarmId();
-      } catch (error) {
-        console.error(`[${new Date().toISOString()}] ERROR [claude-zen-mcp] Failed to get active swarm:`, error);
-      }
+    try {
+      const activeSwarmId = await this.memoryStore.retrieve('active_swarm', { namespace: 'system' });
+      return activeSwarmId || null;
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] ERROR [claude-zen-mcp] Failed to get active swarm:`, error);
+      return null;
     }
-    return null;
   }
 
   async handleServiceDocumentManager(args) {

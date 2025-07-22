@@ -13,12 +13,13 @@ PR_DATA=$(gh pr view 123 --json files,additions,deletions,title,body)
 PR_DIFF=$(gh pr diff 123)
 
 # Initialize swarm with PR context
-npx ruv-swarm github review-init \
-  --pr 123 \
-  --pr-data "$PR_DATA" \
-  --diff "$PR_DIFF" \
-  --agents "security,performance,style,architecture,accessibility" \
-  --depth comprehensive
+mcp__github__review_init {
+  pr: 123,
+  pr_data: "$PR_DATA",
+  diff: "$PR_DIFF",
+  agents: "security,performance,style,architecture,accessibility",
+  depth: "comprehensive"
+}
 
 # Post initial review status
 gh pr comment 123 --body "🔍 Multi-agent code review initiated"
@@ -358,11 +359,12 @@ done
 ### Batch Comment Management
 ```bash
 # Manage review comments efficiently
-npx ruv-swarm github review-comments \
-  --pr 123 \
-  --group-by "agent,severity" \
-  --summarize \
-  --resolve-outdated
+mcp__github__review_comments {
+  pr: 123,
+  group_by: "agent,severity",
+  summarize: true,
+  resolve_outdated: true
+}
 ```
 
 ## Integration with CI/CD

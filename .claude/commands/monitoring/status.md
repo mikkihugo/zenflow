@@ -5,13 +5,11 @@
 
 ## MCP Tool Usage in Claude Code
 
-**Tool:** `mcp__claude-zen__swarm_status`
+**Tool:** `mcp__ruv-swarm__swarm_status`
 
 ## Parameters
 ```json
-{
-  "swarmId": "current"
-}
+{"verbose": true}
 ```
 
 ## Description
@@ -28,10 +26,9 @@ Shows:
 ## Example Usage
 
 **In Claude Code:**
-1. Check swarm status: Use tool `mcp__claude-zen__swarm_status`
-2. Monitor in real-time: Use tool `mcp__claude-zen__swarm_monitor` with parameters `{"interval": 1000}`
-3. Get agent metrics: Use tool `mcp__claude-zen__agent_metrics` with parameters `{"agentId": "agent-123"}`
-4. Health check: Use tool `mcp__claude-zen__health_check` with parameters `{"components": ["swarm", "memory", "neural"]}`
+1. Use the tool: `mcp__ruv-swarm__swarm_status`
+2. With parameters: `{"verbose": true}`
+3. Claude Code then executes the coordinated plan using its native tools
 
 ## Important Reminders
 - ✅ This tool provides coordination and structure
@@ -41,6 +38,6 @@ Shows:
 - ❌ The tool does NOT execute commands
 
 ## See Also
-- Main documentation: /CLAUDE.md
+- Main documentation: /claude.md
 - Other commands in this category
 - Workflow examples in /workflows/

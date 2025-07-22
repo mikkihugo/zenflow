@@ -13,8 +13,15 @@ export async function startCommand(subArgs, flags) {
   const daemon = subArgs.includes('--daemon') || subArgs.includes('-d') || flags.daemon;
   const port = flags.port || getArgValue(subArgs, '--port') || getArgValue(subArgs, '-p') || 3000;
   const verbose = subArgs.includes('--verbose') || subArgs.includes('-v') || flags.verbose;
-  const ui = subArgs.includes('--ui') || subArgs.includes('-u') || flags.ui;
+  
+  // UI defaults to ON, can be disabled with --no-ui
+  const noUi = subArgs.includes('--no-ui') || flags['no-ui'];
+  const ui = !noUi && (subArgs.includes('--ui') || subArgs.includes('-u') || flags.ui || !daemon);
   const web = subArgs.includes('--web') || subArgs.includes('-w') || flags.web;
+  
+  // Swarm defaults to ON, can be disabled with --no-swarm  
+  const noSwarm = subArgs.includes('--no-swarm') || flags['no-swarm'];
+  const swarm = !noSwarm && (subArgs.includes('--swarm') || subArgs.includes('-s') || flags.swarm || !daemon);
 
   try {
     printSuccess('Starting Claude-Flow Orchestration System...');
@@ -42,31 +49,42 @@ export async function startCommand(subArgs, flags) {
       }
     }
 
-    // Check if we should launch the UI mode (web UI by default)
+    // Check if we should launch the UI mode
     if (ui && !web) {
       try {
-        // Launch the web UI by default when --ui is used
-        const { ClaudeCodeWebServer } = await import('./web-server.js');
-        const webServer = new ClaudeCodeWebServer(port);
-        await webServer.start();
-
-        printSuccess('🌐 Claude Flow Web UI is running!');
-        console.log(`📍 Open your browser to: http://localhost:${port}/console`);
-        console.log('   Press Ctrl+C to stop the server');
+        // Launch new unified Ink-based dashboard
+        printSuccess('🎨 Launching Unified Dashboard...');
+        console.log('   Features: Vision roadmaps, swarm monitoring, system metrics');
+        console.log('   Press Ctrl+C to stop');
         console.log();
+        
+        const { spawn } = await import('child_process');
+        const dashboardProcess = spawn('node', ['src/ui/unified-dashboard.js'], {
+          stdio: 'inherit',
+          cwd: process.cwd()
+        });
+
+        dashboardProcess.on('close', (code) => {
+          if (code !== 0) {
+            printWarning('Dashboard exited, falling back to enhanced UI...');
+            // Fallback to existing UI
+            import('./process-ui-enhanced.js').then(({ launchEnhancedUI }) => {
+              launchEnhancedUI();
+            });
+          }
+        });
 
         // Keep process running
         await new Promise(() => {});
         return;
       } catch (err) {
-        // If web UI fails, fall back to terminal UI
-        printWarning('Web UI failed, launching terminal UI...');
+        // If unified UI fails, fall back to existing terminal UI
+        printWarning('Unified UI failed, launching fallback UI...');
         try {
           const { launchEnhancedUI } = await import('./process-ui-enhanced.js');
           await launchEnhancedUI();
           return;
         } catch (fallbackErr) {
-          // If both fail, show error
           printError('Failed to launch UI: ' + err.message);
           console.error(err.stack);
           return;
@@ -229,26 +247,28 @@ async function cleanup() {
 }
 
 function showStartHelp() {
-  console.log('Start the Claude-Flow orchestration system');
-  console.log();
-  console.log('Usage: claude-zen start [options]');
-  console.log();
-  console.log('Options:');
-  console.log('  -d, --daemon        Run as daemon in background');
-  console.log('  -p, --port <port>   Server port (default: 3000)');
-  console.log('  -u, --ui            Launch terminal-based process management UI');
-  console.log('  -w, --web           Launch web-based UI server');
-  console.log('  -v, --verbose       Show detailed system activity');
-  console.log('  -h, --help          Show this help message');
-  console.log();
-  console.log('Examples:');
-  console.log('  claude-zen start                    # Start in interactive mode');
-  console.log('  claude-zen start --daemon           # Start as background daemon');
-  console.log('  claude-zen start --port 8080        # Use custom server port');
-  console.log('  claude-zen start --ui               # Launch terminal-based UI');
-  console.log('  claude-zen start --web              # Launch web-based UI');
-  console.log('  claude-zen start --verbose          # Show detailed logs');
-  console.log();
+  console.log('🚀 START COMMAND - Start Orchestration System\n');
+  console.log('USAGE:');
+  console.log('  claude-zen start [options]\n');
+  console.log('DESCRIPTION:');
+  console.log('  Start Claude-Zen orchestration with UI and swarm intelligence enabled by');
+  console.log('  default. Runs dual MCP architecture for both external and internal coordination.\n');
+  console.log('OPTIONS:');
+  console.log('  -d, --daemon         Run as background daemon (disables UI/swarm)');
+  console.log('  -p, --port <port>    HTTP MCP server port for Claude Desktop (default: 3000)');
+  console.log('  --no-ui              Disable interactive user interface');
+  console.log('  --no-swarm           Disable swarm intelligence features');
+  console.log('  -w, --web            Force web-based UI (default when UI enabled)');
+  console.log('  -v, --verbose        Detailed logging');
+  console.log('  -h, --help           Show this help message\n');
+  console.log('MCP ARCHITECTURE:');
+  console.log('  • HTTP MCP (--port): External Claude Desktop, vision roadmaps');
+  console.log('  • STDIO MCP: Internal claude-zen swarm coordination (automatic)\n');
+  console.log('EXAMPLES:');
+  console.log('  claude-zen start                         # Default: UI + swarm + HTTP MCP');
+  console.log('  claude-zen start --no-swarm              # UI + HTTP MCP only');
+  console.log('  claude-zen start --no-ui                 # Swarm + HTTP MCP only'); 
+  console.log('  claude-zen start --daemon --port 4106    # Background HTTP MCP only');
   console.log('Web-based UI:');
   console.log('  The --web flag starts a web server with:');
   console.log('    - Full-featured web console at http://localhost:3000/console');

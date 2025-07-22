@@ -7,53 +7,26 @@ Structure Claude Code's approach to complex development tasks for maximum effici
 
 ### 1. Initialize Development Framework
 ```
-Tool: mcp__claude-zen__swarm_init
+Tool: mcp__ruv-swarm__swarm_init
 Parameters: {"topology": "hierarchical", "maxAgents": 8, "strategy": "specialized"}
 ```
 Creates hierarchical structure for organized, top-down development.
 
 ### 2. Define Development Perspectives
 ```
-Tool: mcp__claude-zen__agent_spawn
-Parameters: {
-  "type": "architect",
-  "name": "System Design",
-  "capabilities": ["api-design", "database-schema"]
-}
+Tool: mcp__ruv-swarm__agent_spawn
+Parameters: {"type": "architect", "name": "System Design"}
 ```
 ```
-Tool: mcp__claude-zen__agent_spawn
-Parameters: {
-  "type": "coder",
-  "name": "Implementation Focus",
-  "capabilities": ["nodejs", "typescript", "express"]
-}
-```
-```
-Tool: mcp__claude-zen__agent_spawn
-Parameters: {
-  "type": "tester",
-  "name": "Quality Assurance",
-  "capabilities": ["unit-testing", "integration-testing"]
-}
+Tool: mcp__ruv-swarm__agent_spawn
+Parameters: {"type": "coder", "name": "Implementation Focus"}
 ```
 Sets up architectural and implementation thinking patterns.
 
 ### 3. Coordinate Implementation
 ```
-Tool: mcp__claude-zen__task_orchestrate
-Parameters: {
-  "task": "Build REST API with authentication",
-  "strategy": "parallel",
-  "priority": "high",
-  "dependencies": ["database setup", "auth system"]
-}
-```
-
-### 4. Monitor Progress
-```
-Tool: mcp__claude-zen__task_status
-Parameters: {"taskId": "api-build-task-123"}
+Tool: mcp__ruv-swarm__task_orchestrate
+Parameters: {"task": "Build REST API with authentication", "strategy": "parallel", "priority": "high"}
 ```
 
 ## What Claude Code Actually Does
@@ -64,15 +37,3 @@ Parameters: {"taskId": "api-build-task-123"}
 5. Follows coordination patterns for systematic implementation
 
 Remember: All code is written by Claude Code using its native tools!
-
-## CLI Usage
-```bash
-# Start development workflow via CLI
-npx claude-zen workflow dev "REST API with auth"
-
-# Create custom workflow
-npx claude-zen workflow create --name "api-dev" --steps "design,implement,test,deploy"
-
-# Execute saved workflow
-npx claude-zen workflow execute api-dev
-```

@@ -2,7 +2,9 @@ import {
   printSuccess,
   printError,
   printWarning,
-  callRuvSwarmMCP,
+  callRuvSwarmLibrary,
+  initializeSwarm,
+  orchestrateTask,
   spawnSwarmAgent,
   getSwarmStatus,
   checkRuvSwarmAvailable,
@@ -62,7 +64,7 @@ async function swarmInitCommand(subArgs, flags) {
       console.log(`\n🔄 Initializing real swarm with ruv-swarm...`);
 
       // Use real ruv-swarm initialization
-      const swarmResult = await callRuvSwarmMCP('swarm_init', {
+      const swarmResult = await initializeSwarm({
         swarmId: swarmId,
         topology: topology,
         maxAgents: maxAgents,

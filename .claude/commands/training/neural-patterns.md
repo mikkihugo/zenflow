@@ -14,12 +14,8 @@ Every successful operation trains the neural networks:
 
 ### 2. Manual Training
 ```
-Tool: mcp__claude-zen__neural_train
-Parameters: {
-  "pattern_type": "coordination",
-  "training_data": "successful task patterns",
-  "epochs": 50
-}
+Tool: mcp__ruv-swarm__neural_train
+Parameters: {"iterations": 20}
 ```
 
 ### 3. Pattern Types
@@ -34,7 +30,7 @@ Parameters: {
 
 ### 4. Improvement Tracking
 ```
-Tool: mcp__claude-zen__neural_status
+Tool: mcp__ruv-swarm__neural_status
 Result: {
   "patterns": {
     "convergent": 0.92,
@@ -46,29 +42,8 @@ Result: {
 }
 ```
 
-## Pattern Analysis
-```
-Tool: mcp__claude-zen__neural_patterns
-Parameters: {
-  "action": "analyze",
-  "operation": "recent_edits"
-}
-```
-
 ## Benefits
 - 🧠 Learns your coding style
 - 📈 Improves with each use
 - 🎯 Better task predictions
 - ⚡ Faster coordination
-
-## CLI Usage
-```bash
-# Train neural patterns via CLI
-npx claude-zen neural train --type coordination --epochs 50
-
-# Check neural status
-npx claude-zen neural status
-
-# Analyze patterns
-npx claude-zen neural patterns --analyze
-```

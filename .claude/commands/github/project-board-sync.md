@@ -13,10 +13,11 @@ PROJECT_ID=$(gh project list --owner @me --format json | \
   jq -r '.projects[] | select(.title == "Development Board") | .id')
 
 # Initialize swarm with project
-npx ruv-swarm github board-init \
-  --project-id "$PROJECT_ID" \
-  --sync-mode "bidirectional" \
-  --create-views "swarm-status,agent-workload,priority"
+mcp__github__board_init {
+  project_id: "$PROJECT_ID",
+  sync_mode: "bidirectional",
+  create_views: "swarm-status,agent-workload,priority"
+}
 
 # Create project fields for swarm tracking
 gh project field-create $PROJECT_ID --owner @me \
@@ -461,11 +462,12 @@ npx ruv-swarm github board-kpis \
 ### Team Metrics
 ```bash
 # Track team performance
-npx ruv-swarm github team-metrics \
-  --board "Development" \
-  --per-member \
-  --include "velocity,quality,collaboration" \
-  --anonymous-option
+mcp__github__team_metrics {
+  board: "Development",
+  per_member: true,
+  include: "velocity,quality,collaboration",
+  anonymous_option: true
+}
 ```
 
 See also: [swarm-issue.md](./swarm-issue.md), [multi-repo-swarm.md](./multi-repo-swarm.md)

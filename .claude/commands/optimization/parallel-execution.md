@@ -7,7 +7,7 @@ Execute independent subtasks in parallel for maximum efficiency.
 
 ### 1. Task Decomposition
 ```
-Tool: mcp__claude-zen__task_orchestrate
+Tool: mcp__ruv-swarm__task_orchestrate
 Parameters: {
   "task": "Build complete REST API with auth, CRUD operations, and tests",
   "strategy": "parallel",
@@ -29,12 +29,6 @@ For the REST API task:
 - **Agent 4 (Tester)**: Write tests as features complete
 - **Agent 5 (Documenter)**: Update docs continuously
 
-## CLI Usage
-```bash
-# Execute parallel tasks via CLI
-npx claude-zen parallel "Build REST API" --max-agents 8
-```
-
 ## Performance Gains
 - 🚀 2.8-4.4x faster execution
 - 💪 Optimal CPU utilization
@@ -43,8 +37,8 @@ npx claude-zen parallel "Build REST API" --max-agents 8
 
 ## Monitoring
 ```
-Tool: mcp__claude-zen__swarm_monitor
-Parameters: {"interval": 1000, "swarmId": "current"}
+Tool: mcp__ruv-swarm__swarm_monitor
+Parameters: {"interval": 1, "duration": 10}
 ```
 
 Watch real-time parallel execution progress!

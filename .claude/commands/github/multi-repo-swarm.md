@@ -18,12 +18,13 @@ REPO_DETAILS=$(echo "$REPOS" | jq -r '.name' | while read -r repo; do
 done | jq -s '.')
 
 # Initialize swarm with repository context
-npx ruv-swarm github multi-repo-init \
-  --repo-details "$REPO_DETAILS" \
-  --repos "org/frontend,org/backend,org/shared" \
-  --topology hierarchical \
-  --shared-memory \
-  --sync-strategy eventual
+mcp__github__multi_repo_init {
+  repo_details: "$REPO_DETAILS",
+  repos: "org/frontend,org/backend,org/shared",
+  topology: "hierarchical",
+  shared_memory: true,
+  sync_strategy: "eventual"
+}
 ```
 
 ### 2. Repository Discovery
@@ -509,11 +510,12 @@ npx ruv-swarm github fullstack-update \
 ### Cross-Team Collaboration
 ```bash
 # Facilitate cross-team work
-npx ruv-swarm github cross-team \
-  --teams "frontend,backend,devops" \
-  --task "implement-feature-x" \
-  --assign-by-expertise \
-  --track-progress
+mcp__github__cross_team {
+  teams: "frontend,backend,devops",
+  task: "implement-feature-x",
+  assign_by_expertise: true,
+  track_progress: true
+}
 ```
 
 See also: [swarm-pr.md](./swarm-pr.md), [project-board-sync.md](./project-board-sync.md)

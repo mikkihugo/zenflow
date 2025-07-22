@@ -3,7 +3,13 @@
  * Organized by category with enable/disable configuration
  */
 
+import { githubSwarmTools } from './github-swarm-tools.js';
+
 export const toolCategories = {
+  github: {
+    name: '🐙 GITHUB INTEGRATION',
+    tools: githubSwarmTools,
+  },
   swarm: {
     name: '🐝 SWARM COORDINATION',
     tools: {
@@ -31,7 +37,18 @@ export const toolCategories = {
           },
           required: ['topology']
         },
-        handler: (args) => `✅ Swarm initialized with ${args.topology} topology, ${args.maxAgents || 8} max agents, ${args.strategy || 'auto'} strategy`
+        handler: async (args) => {
+          const command = `npx ruv-swarm init --topology ${args.topology} --max-agents ${args.maxAgents || 8} --strategy ${args.strategy || 'auto'}`;
+          return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return reject(`Failed to initialize swarm: ${stderr}`);
+              }
+              resolve(stdout);
+            });
+          });
+        }
       },
       agent_spawn: {
         description: 'Create specialized AI agents',
@@ -150,7 +167,18 @@ export const toolCategories = {
             }
           }
         },
-        handler: (args) => `⚖️ Load balanced using ${args.algorithm || 'weighted'}\n├── Tasks redistributed: 12\n├── Load variance: reduced 34%\n└── Status: Balanced`
+        handler: async (args) => {
+          const command = `npx ruv-swarm load-balance --algorithm ${args.algorithm || 'weighted'}`;
+          return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return reject(`Failed to load balance: ${stderr}`);
+              }
+              resolve(stdout);
+            });
+          });
+        }
       },
       coordination_sync: {
         description: 'Sync agent coordination',
@@ -160,7 +188,18 @@ export const toolCategories = {
             force: { type: 'boolean', default: false, description: 'Force sync' }
           }
         },
-        handler: (args) => `🔄 Coordination ${args.force ? 'force ' : ''}synced\n├── Agents synchronized: 6\n├── State conflicts resolved: 2\n└── Status: In sync`
+        handler: async (args) => {
+          const command = `npx ruv-swarm coordination sync ${args.force ? '--force' : ''}`;
+          return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return reject(`Failed to sync coordination: ${stderr}`);
+              }
+              resolve(stdout);
+            });
+          });
+        }
       },
       swarm_scale: {
         description: 'Auto-scale agent count',
@@ -171,7 +210,18 @@ export const toolCategories = {
             auto: { type: 'boolean', default: true, description: 'Auto-scaling enabled' }
           }
         },
-        handler: (args) => `📈 Swarm scaled to ${args.targetSize || 'auto'}\n├── Current: 6 agents\n├── Target: ${args.targetSize || 8} agents\n├── Auto-scaling: ${args.auto ? 'enabled' : 'disabled'}\n└── Status: Scaling`
+        handler: async (args) => {
+          const command = `npx ruv-swarm scale --target-size ${args.targetSize || 'auto'} ${args.auto ? '--auto' : ''}`;
+          return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return reject(`Failed to scale swarm: ${stderr}`);
+              }
+              resolve(stdout);
+            });
+          });
+        }
       },
       swarm_destroy: {
         description: 'Gracefully shutdown swarm',
@@ -182,7 +232,18 @@ export const toolCategories = {
             timeout: { type: 'number', default: 30, description: 'Shutdown timeout (seconds)' }
           }
         },
-        handler: (args) => `🛑 Swarm shutdown initiated\n├── Mode: ${args.force ? 'force' : 'graceful'}\n├── Timeout: ${args.timeout || 30}s\n├── Agents stopped: 6/6\n└── Status: Destroyed`
+        handler: async (args) => {
+          const command = `npx ruv-swarm destroy ${args.force ? '--force' : ''} --timeout ${args.timeout || 30}`;
+          return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return reject(`Failed to destroy swarm: ${stderr}`);
+              }
+              resolve(stdout);
+            });
+          });
+        }
       }
     }
   },

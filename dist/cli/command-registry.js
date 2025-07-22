@@ -617,6 +617,7 @@ For more information: https://github.com/ruvnet/claude-zen/issues/166`,
     ...fixHookVariablesCommandConfig,
   });
 
+
   commandRegistry.set('hive', {
     handler: async (args, flags) => {
       try {

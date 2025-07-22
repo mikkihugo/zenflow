@@ -12,10 +12,12 @@ Transform GitHub Issues into intelligent swarm tasks, enabling automatic task de
 ISSUE_DATA=$(gh issue view 456 --json title,body,labels,assignees,comments)
 
 # Create swarm from issue
-npx ruv-swarm github issue-to-swarm 456 \
-  --issue-data "$ISSUE_DATA" \
-  --auto-decompose \
-  --assign-agents
+mcp__github__issue_to_swarm {
+  issue_number: 456,
+  issue_data: "$ISSUE_DATA",
+  auto_decompose: true,
+  assign_agents: true
+}
 
 # Batch process multiple issues
 ISSUES=$(gh issue list --label "swarm-ready" --json number,title,body,labels)
@@ -472,11 +474,13 @@ npx ruv-swarm github issue-init 234 \
 ### Documentation Update
 ```bash
 # Issue #567: Update API documentation
-npx ruv-swarm github issue-init 567 \
-  --topology ring \
-  --agents "researcher,writer,reviewer" \
-  --check-links \
-  --validate-examples
+mcp__github__issue_init {
+  issue_number: 567,
+  topology: "ring",
+  agents: "researcher,writer,reviewer",
+  check_links: true,
+  validate_examples: true
+}
 ```
 
 See also: [swarm-pr.md](./swarm-pr.md), [project-board-sync.md](./project-board-sync.md)

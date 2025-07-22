@@ -4,7 +4,7 @@
 
 ### 1. Initialize with Hooks
 ```bash
-npx claude-zen init --hooks
+npx ruv-swarm init --claude --force
 ```
 
 This automatically creates:
@@ -15,10 +15,10 @@ This automatically creates:
 ### 2. Test Hook Functionality
 ```bash
 # Test pre-edit hook
-npx claude-zen hook pre-edit --file test.js
+npx ruv-swarm hook pre-edit --file test.js --ensure-coordination
 
 # Test session summary
-npx claude-zen hook session-end --summary
+npx ruv-swarm hook session-end --generate-summary
 ```
 
 ### 3. Customize Hooks
@@ -33,7 +33,7 @@ Edit `.claude/settings.json` to customize:
         "matcher": "^Write$",
         "hooks": [{
           "type": "command",
-          "command": "npx claude-zen hook pre-write --file '${tool.params.file_path}'"
+          "command": "npx ruv-swarm hook custom-pre-write --file '${tool.params.file_path}'"
         }]
       }
     ]
@@ -69,10 +69,10 @@ Example blocking response:
 ## Debugging Hooks
 ```bash
 # Enable debug output
-export CLAUDE_FLOW_DEBUG=true
+export RUV_SWARM_HOOK_DEBUG=true
 
 # Test specific hook
-npx claude-zen hook pre-edit --file app.js --debug
+npx ruv-swarm hook pre-edit --file app.js --debug
 ```
 
 ## Common Patterns
@@ -86,7 +86,7 @@ Already configured by default for common file types.
   "matcher": "^(Write|Edit)$",
   "hooks": [{
     "type": "command",
-    "command": "npx claude-zen hook check-protected --file '${tool.params.file_path}'"
+    "command": "npx ruv-swarm hook check-protected --file '${tool.params.file_path}'"
   }]
 }
 ```

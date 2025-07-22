@@ -52,13 +52,8 @@ class GitHubCoordinator {
   async initializeSwarmIntegration() {
     try {
       // Check if ruv-swarm is available
-      execSync('npx ruv-swarm --version', { stdio: 'pipe' });
-
-      // Initialize swarm for GitHub coordination
-      const swarmInit = execSync(
-        'npx ruv-swarm hook pre-task --description "GitHub workflow coordination"',
-        { encoding: 'utf8' },
-      );
+      // Use claude-zen hooks instead of ruv-swarm hooks
+      execSync('npx claude-zen hooks pre-task --description "GitHub workflow coordination"', { stdio: 'pipe' });
 
       if (swarmInit.includes('continue')) {
         printSuccess('🐝 Swarm integration initialized for GitHub coordination');
@@ -122,7 +117,7 @@ class GitHubCoordinator {
     // Store coordination plan in swarm memory
     const memoryKey = `github-coordination/${coordinationPlan.id}`;
     execSync(
-      `npx ruv-swarm hook notification --message "GitHub Coordination: ${coordinationPlan.type} started" --telemetry true`,
+      `npx claude-zen hooks notification --message "GitHub Coordination: ${coordinationPlan.type} started" --telemetry true`,
     );
 
     // Execute each step with swarm coordination
@@ -130,20 +125,20 @@ class GitHubCoordinator {
       printInfo(`Executing step: ${step}`);
 
       // Pre-step hook
-      execSync(`npx ruv-swarm hook pre-task --description "GitHub step: ${step}"`);
+      execSync(`npx claude-zen hooks pre-task --description "GitHub step: ${step}"`);
 
       // Execute step
       await this.executeCoordinationStep(coordinationPlan, step);
 
       // Post-step hook
       execSync(
-        `npx ruv-swarm hook post-edit --file "github-coordination" --memory-key "${memoryKey}/${step}"`,
+        `npx claude-zen hooks post-edit --file "github-coordination" --memory-key "${memoryKey}/${step}"`,
       );
     }
 
     // Final coordination notification
     execSync(
-      `npx ruv-swarm hook notification --message "GitHub Coordination: ${coordinationPlan.type} completed" --telemetry true`,
+      `npx claude-zen hooks notification --message "GitHub Coordination: ${coordinationPlan.type} completed" --telemetry true`,
     );
   }
 
