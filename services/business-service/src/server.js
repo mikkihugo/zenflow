@@ -3,10 +3,10 @@
  * Handles strategic vision creation, approval, and roadmap generation
  */
 
-const BaseServer = require('../../shared/base-server');
-const visionRoutes = require('./routes/visions');
-const roadmapRoutes = require('./routes/roadmaps');
-const { EventBus } = require('../../shared/events/bus');
+import BaseServer from '../../shared/base-server.js';
+import visionRoutes from './routes/visions.js';
+import roadmapRoutes from './routes/roadmaps.js';
+import { EventBus } from '../../shared/events/bus.js';
 
 class BusinessService extends BaseServer {
   constructor(config = {}) {
@@ -128,8 +128,10 @@ class BusinessService extends BaseServer {
   }
 }
 
+export default BusinessService;
+
 // Start service if run directly
-if (require.main === module) {
+if (process.argv[1] === new URL(import.meta.url).pathname) {
   const service = new BusinessService();
   
   // Graceful shutdown
@@ -151,5 +153,3 @@ if (require.main === module) {
     process.exit(1);
   });
 }
-
-export default BusinessService;

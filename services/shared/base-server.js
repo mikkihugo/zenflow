@@ -3,20 +3,20 @@
  * Provides common middleware and configuration for all services
  */
 
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const compression = require('compression');
-const morgan = require('morgan');
-const { getJWTManager } = require('./auth/src/jwt');
-const { getPermissionManager } = require('./auth/src/permissions');
-const { createRateLimiter } = require('./middleware/src/rateLimiter');
-const { registry: circuitBreakerRegistry } = require('./middleware/src/circuitBreaker');
-const { 
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import { getJWTManager } from './auth/src/jwt.js';
+import { getPermissionManager } from './auth/src/permissions.js';
+import { createRateLimiter } from './middleware/src/rateLimiter.js';
+import { registry as circuitBreakerRegistry } from './middleware/src/circuitBreaker.js';
+import { 
   requestIdMiddleware, 
   errorHandler, 
   notFoundHandler 
-} = require('./middleware/src/errorHandler');
+} from './middleware/src/errorHandler.js';
 
 class BaseServer {
   constructor(config = {}) {

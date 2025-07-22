@@ -3,9 +3,9 @@
  * Implements pub/sub pattern using Redis for inter-service communication
  */
 
-const Redis = require('ioredis');
-const EventEmitter = require('events');
-const crypto = require('crypto');
+import Redis from 'ioredis';
+import { EventEmitter } from 'events';
+import crypto from 'crypto';
 
 class EventBus extends EventEmitter {
   constructor(config = {}) {
@@ -336,7 +336,4 @@ export const EVENT_TYPES = {
   SQUAD_DISBANDED: 'squad:disbanded'
 };
 
-module.exports = {
-  EventBus,
-  EVENT_TYPES
-};
+export { EventBus };

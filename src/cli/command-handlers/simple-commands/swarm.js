@@ -121,6 +121,7 @@ export async function swarmCommand(args, flags) {
     flags = { ...(flags || {}), executor: true };
   }
 
+
   // Check if we should use the old executor (opt-in with --executor flag)
   if (flags && flags.executor) {
     // Continue with the old swarm executor implementation below
