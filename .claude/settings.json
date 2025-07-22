@@ -1,7 +1,7 @@
 {
   "env": {
     "CLAUDE_ZEN_HOOKS_ENABLED": "true",
-    "CLAUDE_ZEN_TELEMETRY_ENABLED": "true",
+    "CLAUDE_ZEN_TELEMETRY_ENABLED": "true", 
     "CLAUDE_ZEN_REMOTE_EXECUTION": "true",
     "CLAUDE_ZEN_GITHUB_INTEGRATION": "true"
   },
@@ -58,8 +58,18 @@
         "hooks": [
           {
             "type": "command",
-            "comment": "Post-edit processing with auto-formatting",
+            "comment": "Post-edit processing with auto-formatting", 
             "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-zen@alpha hooks post-edit --file '{}' --format --update-memory"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true"
           }
         ]
       }

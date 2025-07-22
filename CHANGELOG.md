@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-alpha.70] - 2025-01-22
+
+### 🔧 Critical Quote Handling Fix
+- **Hook Commands**: Fixed "Unterminated quoted string" errors in all hook commands
+  - Replaced complex `printf` and nested quotes with simpler `cat | jq | tr | xargs` pipeline
+  - Used `jq -r '.field // empty'` instead of problematic `'.field // ""'` syntax
+  - All hook commands now use consistent: `cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {}`
+  - Fixed both init template and current settings.json files
+
+### 🛠️ Command Improvements  
+- **Simplified Pipeline**: More reliable command parsing without quote conflicts
+- **Better Error Handling**: Clean failures instead of shell syntax errors
+- **Consistent Syntax**: All hook commands use identical, tested patterns
+
+## [2.0.0-alpha.69] - 2025-01-22
+
+### 🔧 Critical Fix
+- **Init Template**: Fixed `claude-flow init` creating broken settings.json with xargs quote errors
+  - Updated template to use `printf '%s\0'` instead of problematic `cat | jq | xargs -I` pipeline
+  - Changed to `xargs -0` with single quotes around `{}` placeholders  
+  - Removed non-existent `--train-neural` flag from post-edit hooks
+  - All new projects initialized with `claude-flow init` now have working hooks
+
+### 🛠️ Template Improvements
+- **Safer Command Execution**: Printf-based approach prevents quote parsing issues
+- **Better Error Handling**: Commands fail gracefully instead of breaking xargs
+- **Cleaner Syntax**: Simplified hook commands for better reliability
+
+## [2.0.0-alpha.68] - 2025-01-22
+
+### 🔧 Critical Bug Fixes
+- **Hook Execution**: Fixed xargs unmatched quote error in PreToolUse:Bash and PostToolUse:Bash hooks
+  - Updated to use `xargs -0` with null-delimited input to properly handle commands with quotes
+  - Changed from double quotes to single quotes around command placeholders
+  - Added `tr '\n' '\0'` to convert newlines to null characters for safe processing
+- **Neural Command**: Identified missing neural command implementation (created issue #444)
+  - Affects error prevention, performance optimization, and session training
+  - Temporary workaround: hooks fail gracefully with non-blocking errors
+
+### 🛠️ Improvements
+- **Hook Reliability**: Enhanced quote and special character handling in all hook commands
+- **Error Handling**: Improved error reporting for missing commands
+- **Settings Format**: Updated .claude/settings.json with fixed hook configurations
+
+### 📝 Known Issues
+- Neural commands (`neural predict`, `neural train`, etc.) are not yet implemented in alpha version
+- Memory store command requires proper key-value syntax
+
 ## [2.0.0-alpha.67] - 2025-01-21
 
 ### 🐝 Hive Mind Enhancement
