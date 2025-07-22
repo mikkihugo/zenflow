@@ -24,20 +24,20 @@ cd claude-code-flow
 npm install
 
 # Local wrapper
-./claude-flow --help
+./claude-zen --help
 ```
 
 #### NPX Execution (Recommended)
 ```bash
 # Direct execution without installation
-npx claude-flow@2.0.0 init --sparc
+npx claude-zen@2.0.0 init --sparc
 npx ruv-swarm@latest init hierarchical 8 --claude
 ```
 
 #### Docker Execution
 ```bash
 # Run in container
-docker run --rm node:20-alpine npx claude-flow@2.0.0 status
+docker run --rm node:20-alpine npx claude-zen@2.0.0 status
 docker run --rm node:20-alpine npx ruv-swarm@latest status --verbose
 ```
 

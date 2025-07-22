@@ -92,7 +92,7 @@ Based on your needs, select the best installation approach:
         <li>⚠️ Requires internet for each run</li>
       </ul>
       <div class="command-preview">
-        <code>npx claude-flow@2.0.0</code>
+        <code>npx claude-zen@2.0.0</code>
       </div>
     </div>
 
@@ -106,7 +106,7 @@ Based on your needs, select the best installation approach:
         <li>⚠️ Potential version conflicts</li>
       </ul>
       <div class="command-preview">
-        <code>npm install -g claude-flow@2.0.0</code>
+        <code>npm install -g claude-zen@2.0.0</code>
       </div>
     </div>
 
@@ -120,7 +120,7 @@ Based on your needs, select the best installation approach:
         <li>⚠️ Requires Docker installed</li>
       </ul>
       <div class="command-preview">
-        <code>docker run --rm node:20-alpine npx claude-flow@2.0.0</code>
+        <code>docker run --rm node:20-alpine npx claude-zen@2.0.0</code>
       </div>
     </div>
   </div>
@@ -148,15 +148,15 @@ After installation, verify it worked:
 
 ```bash
 # For NPX method
-npx claude-flow@2.0.0 --version
+npx claude-zen@2.0.0 --version
 # Expected: Claude Flow v2.0.0
 
 # For global install
-claude-flow --version
+claude-zen --version
 # Expected: Claude Flow v2.0.0
 
 # For Docker
-docker run --rm node:20-alpine npx claude-flow@2.0.0 --version
+docker run --rm node:20-alpine npx claude-zen@2.0.0 --version
 # Expected: Claude Flow v2.0.0
 ```
 
@@ -446,7 +446,7 @@ Congratulations! You've successfully:
     <a href="https://github.com/ruvnet/claude-code-flow" class="community-button">
       📦 GitHub Repository
     </a>
-    <a href="https://discord.gg/claude-flow" class="community-button">
+    <a href="https://discord.gg/claude-zen" class="community-button">
       💬 Discord Server
     </a>
     <a href="/docs" class="community-button">
@@ -495,9 +495,9 @@ async function testNode() {
 function selectMethod(method) {
   wizardState.installMethod = method;
   const commands = {
-    npx: 'npx claude-flow@2.0.0',
-    global: 'npm install -g claude-flow@2.0.0',
-    docker: 'docker run --rm node:20-alpine npx claude-flow@2.0.0'
+    npx: 'npx claude-zen@2.0.0',
+    global: 'npm install -g claude-zen@2.0.0',
+    docker: 'docker run --rm node:20-alpine npx claude-zen@2.0.0'
   };
   
   document.getElementById('selected-command').textContent = commands[method];

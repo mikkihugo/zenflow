@@ -30,9 +30,11 @@ export default {
   },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^axios$': 'axios',
     '^~/(.*)$': '<rootDir>/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@tests/(.*)$': '<rootDir>/tests/$1'
+    '^@tests/(.*)$': '<rootDir>/tests/$1',
+    '^test\\.utils$': '<rootDir>/tests/test.utils.ts'
   },
   modulePathIgnorePatterns: [
     '<rootDir>/dist/',
@@ -40,7 +42,7 @@ export default {
     '<rootDir>/node_modules/'
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(chalk|ora|inquirer|nanoid|fs-extra|ansi-styles|ruv-swarm|@modelcontextprotocol)/)'
+    'node_modules/(?!(chalk|ora|inquirer|nanoid|fs-extra|ansi-styles|ruv-swarm|@modelcontextprotocol|better-sqlite3)/)'
   ],
   resolver: undefined,
   collectCoverageFrom: [
@@ -57,13 +59,8 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testTimeout: 30000,
   verbose: true,
-  // Enhanced error handling
   errorOnDeprecated: false,
-  // Better module resolution
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  // Clear mocks between tests
   clearMocks: true,
-  restoreMocks: true,
-  // Remove deprecated globals configuration
-  // ts-jest configuration moved to transform options above
+  restoreMocks: true
 };

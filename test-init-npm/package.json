@@ -10,6 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "claude-flow": "file:../claude-flow-1.0.70.tgz"
+    "claude-zen": "file:../claude-zen-1.0.70.tgz"
   }
 }

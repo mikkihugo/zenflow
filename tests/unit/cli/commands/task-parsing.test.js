@@ -16,7 +16,7 @@ describe('Task Command Argument Parsing', () => {
     }));
     
     // Dynamic import to avoid module caching issues
-    const taskModule = await import('../../../../src/cli/simple-commands/task.js');
+    const taskModule = await import('../../../../src/cli/command-handlers/simple-commands/task.js');
     taskCommand = taskModule.taskCommand;
   });
   

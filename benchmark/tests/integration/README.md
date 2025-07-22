@@ -1,6 +1,6 @@
 # Claude-Flow Integration Tests
 
-This directory contains comprehensive integration tests for benchmarking claude-flow's SPARC modes and swarm strategies.
+This directory contains comprehensive integration tests for benchmarking claude-zen's SPARC modes and swarm strategies.
 
 ## Test Files
 
@@ -111,5 +111,5 @@ Tests will fail if these thresholds are exceeded.
 - Python 3.8+
 - pytest
 - psutil (for performance monitoring)
-- claude-flow installed and accessible
-- Non-interactive mode support in claude-flow
+- claude-zen installed and accessible
+- Non-interactive mode support in claude-zen

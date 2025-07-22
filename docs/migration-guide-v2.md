@@ -12,16 +12,16 @@ Claude Flow v2.0.0 introduces significant improvements and integrations with ruv
 ### 2. Command Structure Changes
 ```bash
 # Old (v1.x)
-claude-flow init
-claude-flow swarm create mesh 5
+claude-zen init
+claude-zen swarm create mesh 5
 
 # New (v2.0.0)
-npx claude-flow init --topology=mesh --agents=5
+npx claude-zen init --topology=mesh --agents=5
 npx ruv-swarm init mesh 5 --claude
 ```
 
 ### 3. Configuration File Format
-- Configuration moved from `.claude-flow.json` to `.claude/settings.json`
+- Configuration moved from `.claude-zen.json` to `.claude/settings.json`
 - New hook-based architecture for automation
 
 ## 📦 Installation
@@ -29,22 +29,22 @@ npx ruv-swarm init mesh 5 --claude
 ### Fresh Installation
 ```bash
 # Global installation
-npm install -g claude-flow@2.0.0
+npm install -g claude-zen@2.0.0
 
 # Or use npx (recommended)
-npx claude-flow@latest init
+npx claude-zen@latest init
 ```
 
 ### Upgrading from v1.x
 ```bash
 # Backup your configuration
-cp .claude-flow.json .claude-flow.json.backup
+cp .claude-zen.json .claude-zen.json.backup
 
 # Upgrade
-npm update -g claude-flow
+npm update -g claude-zen
 
 # Migrate configuration
-npx claude-flow migrate-config
+npx claude-zen migrate-config
 ```
 
 ## 🛠️ New Features
@@ -57,10 +57,10 @@ npx claude-flow migrate-config
 ### 2. Enhanced CLI
 ```bash
 # New wizard mode
-npx claude-flow init --wizard
+npx claude-zen init --wizard
 
 # Preset configurations
-npx claude-flow swarm create --preset=development
+npx claude-zen swarm create --preset=development
 ```
 
 ### 3. Automated Hooks
@@ -71,7 +71,7 @@ npx claude-flow swarm create --preset=development
 
 ## 🔧 Configuration Migration
 
-### Old Format (.claude-flow.json)
+### Old Format (.claude-zen.json)
 ```json
 {
   "swarm": {

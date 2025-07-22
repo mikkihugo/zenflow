@@ -35,7 +35,7 @@ Successfully completed comprehensive analysis of Claude Flow v2.0.0 functionalit
 
 #### Integration Expert
 - **Output**: `/docs/analysis/v2.0.0/integration/ruv-swarm-integration.md`
-- **Design**: New `@claude-flow/ruv-swarm-sdk` package with type-safe API
+- **Design**: New `@claude-zen/ruv-swarm-sdk` package with type-safe API
 - **GitHub Comment**: Posted showing 70% process reduction, 5x batch improvement
 
 #### Documentation Curator

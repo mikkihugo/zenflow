@@ -76,7 +76,7 @@ export async function startCommand(subArgs, flags) {
 
     // Check if required directories exist
     const requiredDirs = ['memory', 'coordination'];
-    let missingDirs = [];
+    const missingDirs = [];
 
     for (const dir of requiredDirs) {
       try {
@@ -88,7 +88,7 @@ export async function startCommand(subArgs, flags) {
 
     if (missingDirs.length > 0) {
       printWarning('Missing required directories: ' + missingDirs.join(', '));
-      console.log('Run "claude-flow init" first to create the necessary structure');
+      console.log('Run "claude-zen init" first to create the necessary structure');
       return;
     }
 
@@ -106,7 +106,7 @@ export async function startCommand(subArgs, flags) {
 
     // Memory system
     console.log('   ✓ Memory Bank: Ready');
-    console.log('     - Backend: JSON file (memory/claude-flow-data.json)');
+    console.log('     - Backend: JSON file (memory/claude-zen-data.json)');
     console.log('     - Namespaces: Enabled');
 
     // Terminal pool
@@ -136,29 +136,29 @@ export async function startCommand(subArgs, flags) {
       const pid = compat.terminal.getPid();
       await compat.safeCall(async () => {
         if (compat.runtime === 'node') {
-          await node.writeTextFile('.claude-flow.pid', pid.toString());
+          await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
           const fs = await import('fs/promises');
-          await fs.writeFile('.claude-flow.pid', pid.toString());
+          await fs.writeFile('.claude-zen.pid', pid.toString());
         }
       });
-      console.log(`Process ID: ${pid} (saved to .claude-flow.pid)`);
+      console.log(`Process ID: ${pid} (saved to .claude-zen.pid)`);
     } else {
       // Interactive mode
       printSuccess('Orchestration system started!');
       console.log();
       console.log('🎯 Available Actions:');
       console.log('   • Open another terminal and run:');
-      console.log('     - claude-flow agent spawn researcher');
-      console.log('     - claude-flow task create "your task"');
-      console.log('     - claude-flow sparc "build feature"');
-      console.log('     - claude-flow monitor');
+      console.log('     - claude-zen agent spawn researcher');
+      console.log('     - claude-zen task create "your task"');
+      console.log('     - claude-zen sparc "build feature"');
+      console.log('     - claude-zen monitor');
       console.log();
       console.log('   • View system status:');
-      console.log('     - claude-flow status');
+      console.log('     - claude-zen status');
       console.log();
       console.log('   • Launch process management UI:');
-      console.log('     - claude-flow start --ui');
+      console.log('     - claude-zen start --ui');
       console.log();
       console.log('   • Press Ctrl+C to stop the orchestrator');
       console.log();
@@ -212,10 +212,10 @@ async function cleanup() {
   try {
     await compat.safeCall(async () => {
       if (compat.runtime === 'node') {
-        await node.remove('.claude-flow.pid');
+        await node.remove('.claude-zen.pid');
       } else {
         const fs = await import('fs/promises');
-        await fs.unlink('.claude-flow.pid');
+        await fs.unlink('.claude-zen.pid');
       }
     });
   } catch {
@@ -231,7 +231,7 @@ async function cleanup() {
 function showStartHelp() {
   console.log('Start the Claude-Flow orchestration system');
   console.log();
-  console.log('Usage: claude-flow start [options]');
+  console.log('Usage: claude-zen start [options]');
   console.log();
   console.log('Options:');
   console.log('  -d, --daemon        Run as daemon in background');
@@ -242,12 +242,12 @@ function showStartHelp() {
   console.log('  -h, --help          Show this help message');
   console.log();
   console.log('Examples:');
-  console.log('  claude-flow start                    # Start in interactive mode');
-  console.log('  claude-flow start --daemon           # Start as background daemon');
-  console.log('  claude-flow start --port 8080        # Use custom server port');
-  console.log('  claude-flow start --ui               # Launch terminal-based UI');
-  console.log('  claude-flow start --web              # Launch web-based UI');
-  console.log('  claude-flow start --verbose          # Show detailed logs');
+  console.log('  claude-zen start                    # Start in interactive mode');
+  console.log('  claude-zen start --daemon           # Start as background daemon');
+  console.log('  claude-zen start --port 8080        # Use custom server port');
+  console.log('  claude-zen start --ui               # Launch terminal-based UI');
+  console.log('  claude-zen start --web              # Launch web-based UI');
+  console.log('  claude-zen start --verbose          # Show detailed logs');
   console.log();
   console.log('Web-based UI:');
   console.log('  The --web flag starts a web server with:');
@@ -275,9 +275,9 @@ function showStartHelp() {
   console.log('    - Tab navigation between views');
   console.log();
   console.log('Notes:');
-  console.log('  - Requires "claude-flow init" to be run first');
+  console.log('  - Requires "claude-zen init" to be run first');
   console.log('  - Interactive mode shows real-time system status');
   console.log('  - Daemon mode runs in background (check logs)');
-  console.log('  - Use "claude-flow status" to check if running');
-  console.log('  - Use Ctrl+C or "claude-flow stop" to shutdown');
+  console.log('  - Use "claude-zen status" to check if running');
+  console.log('  - Use Ctrl+C or "claude-zen stop" to shutdown');
 }

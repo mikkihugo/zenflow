@@ -19,12 +19,12 @@ monorepo/
 │   │   └── CLAUDE.md        # Auth service instructions
 │   └── database/
 │       └── CLAUDE.md        # Database instructions
-└── .claude-flow/
+└── .claude-zen/
     ├── workspaces.json      # Define workspace boundaries
     └── memory/              # Shared memory across workspaces
 ```
 
-## Workspace Configuration (.claude-flow/workspaces.json)
+## Workspace Configuration (.claude-zen/workspaces.json)
 
 ```json
 {
@@ -61,33 +61,33 @@ monorepo/
 ### 1. **Work on Specific Package**
 ```bash
 # Focus on frontend only
-claude-flow workspace frontend
-claude-flow swarm "Implement new UI components" --workspace frontend
+claude-zen workspace frontend
+claude-zen swarm "Implement new UI components" --workspace frontend
 
 # Focus on backend
-claude-flow workspace backend  
-claude-flow swarm "Add authentication endpoints" --workspace backend
+claude-zen workspace backend  
+claude-zen swarm "Add authentication endpoints" --workspace backend
 ```
 
 ### 2. **Cross-Package Operations**
 ```bash
 # Work across multiple packages
-claude-flow swarm "Refactor shared types" --workspaces frontend,backend,shared
+claude-zen swarm "Refactor shared types" --workspaces frontend,backend,shared
 
 # Full monorepo analysis
-claude-flow swarm "Analyze dependencies and suggest improvements" --all-workspaces
+claude-zen swarm "Analyze dependencies and suggest improvements" --all-workspaces
 ```
 
 ### 3. **Parallel Development**
 ```bash
 # Terminal 1: Frontend development
-claude-flow swarm "Build dashboard" --workspace frontend --ui
+claude-zen swarm "Build dashboard" --workspace frontend --ui
 
 # Terminal 2: Backend development  
-claude-flow swarm "Create REST API" --workspace backend --ui
+claude-zen swarm "Create REST API" --workspace backend --ui
 
 # Terminal 3: Monitoring all
-claude-flow monitor --all-workspaces
+claude-zen monitor --all-workspaces
 ```
 
 ## Memory Strategies for Monorepo
@@ -95,22 +95,22 @@ claude-flow monitor --all-workspaces
 ### Namespace Isolation
 ```bash
 # Store frontend-specific knowledge
-claude-flow memory store --namespace frontend "component:Button" "uses Material-UI"
+claude-zen memory store --namespace frontend "component:Button" "uses Material-UI"
 
 # Store backend-specific knowledge  
-claude-flow memory store --namespace backend "auth:strategy" "JWT with refresh tokens"
+claude-zen memory store --namespace backend "auth:strategy" "JWT with refresh tokens"
 
 # Store shared knowledge
-claude-flow memory store --namespace shared "types:User" "interface User { id, email, name }"
+claude-zen memory store --namespace shared "types:User" "interface User { id, email, name }"
 ```
 
 ### Cross-Reference Memory
 ```bash
 # Query across namespaces
-claude-flow memory query "User type" --all-namespaces
+claude-zen memory query "User type" --all-namespaces
 
 # Link related memories
-claude-flow memory link frontend:UserComponent backend:UserAPI
+claude-zen memory link frontend:UserComponent backend:UserAPI
 ```
 
 ## Best Practices for Large Monorepos
@@ -118,23 +118,23 @@ claude-flow memory link frontend:UserComponent backend:UserAPI
 1. **Incremental Analysis**
    ```bash
    # Analyze only changed packages
-   claude-flow analyze --changed-only
+   claude-zen analyze --changed-only
    ```
 
 2. **Dependency Tracking**
    ```bash
    # Track cross-package dependencies
-   claude-flow deps --graph
+   claude-zen deps --graph
    ```
 
 3. **Focused Agents**
    ```bash
    # Spawn agents with package context
-   claude-flow agent spawn coder --context packages/frontend
+   claude-zen agent spawn coder --context packages/frontend
    ```
 
 4. **Shared Standards**
    ```bash
    # Enforce monorepo-wide standards
-   claude-flow sparc lint --all-workspaces
+   claude-zen sparc lint --all-workspaces
    ```

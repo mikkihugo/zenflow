@@ -5,7 +5,7 @@
 ### **System-wide .swarm Directories Found:**
 ```
 /home/mhugo/.swarm                                    # Global user swarm
-/home/mhugo/code/claude-code-flow/.swarm             # Main claude-flow project
+/home/mhugo/code/claude-code-flow/.swarm             # Main claude-zen project
 /home/mhugo/code/singularity-engine/.swarm          # Singularity Engine root
 /home/mhugo/code/singularity-engine/services/.swarm # Services directory swarm
 /home/mhugo/code/singularity-engine/active-services/.swarm  # Active services swarm
@@ -25,8 +25,8 @@
 /home/mhugo/code/singularity-engine/active-services/.legacy/development-service/.swarm
 
 # Package Cache Swarms:
-/home/mhugo/.cache/pnpm/dlx/*/node_modules/claude-flow/docker-test/.swarm
-/home/mhugo/.pnpm-global/5/.pnpm/claude-flow@*/node_modules/claude-flow/docker-test/.swarm
+/home/mhugo/.cache/pnpm/dlx/*/node_modules/claude-zen/docker-test/.swarm
+/home/mhugo/.pnpm-global/5/.pnpm/claude-zen@*/node_modules/claude-zen/docker-test/.swarm
 ```
 
 ## 🎯 **Swarm Creation Pattern**

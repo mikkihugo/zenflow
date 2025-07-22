@@ -121,13 +121,13 @@ Store memories with rich metadata:
 
 ```bash
 # Simple memory storage
-claude-flow memory store \
+claude-zen memory store \
   --category "research" \
   --content "Claude-3 shows significant improvements in reasoning capabilities" \
   --tags "ai,claude,reasoning"
 
 # Advanced storage with metadata
-claude-flow memory store \
+claude-zen memory store \
   --category "implementation" \
   --content "Implemented OAuth2 authentication with PKCE flow" \
   --tags "auth,oauth,security" \
@@ -138,7 +138,7 @@ claude-flow memory store \
 **Programmatic API:**
 
 ```typescript
-import { MemoryManager } from 'claude-flow';
+import { MemoryManager } from 'claude-zen';
 
 const memory = new MemoryManager(config);
 
@@ -164,17 +164,17 @@ Multiple retrieval methods for different use cases:
 
 ```bash
 # Retrieve by ID
-claude-flow memory get memory_1704123456789
+claude-zen memory get memory_1704123456789
 
 # Query by criteria
-claude-flow memory query \
+claude-zen memory query \
   --category research \
   --tags "ai,claude" \
   --since "2024-01-01" \
   --limit 10
 
 # Semantic search
-claude-flow memory search \
+claude-zen memory search \
   --text "machine learning optimization techniques" \
   --similarity-threshold 0.7 \
   --limit 5
@@ -276,10 +276,10 @@ Automatic embedding generation for all stored content:
 
 ```bash
 # Generate embeddings for existing memories
-claude-flow memory embed --regenerate --batch-size 50
+claude-zen memory embed --regenerate --batch-size 50
 
 # Check embedding status
-claude-flow memory stats --embeddings
+claude-zen memory stats --embeddings
 ```
 
 ### Similarity Search Examples
@@ -356,22 +356,22 @@ Organize memories into isolated namespaces:
 
 ```bash
 # List namespaces
-claude-flow memory namespace list
+claude-zen memory namespace list
 
 # Create namespace
-claude-flow memory namespace create research-2024 \
+claude-zen memory namespace create research-2024 \
   --description "Research memories for 2024" \
   --quota-items 20000 \
   --quota-size 200
 
 # Set permissions
-claude-flow memory namespace permissions research-2024 \
+claude-zen memory namespace permissions research-2024 \
   --read "research-team" \
   --write "senior-researchers" \
   --admin "research-lead"
 
 # Query specific namespace
-claude-flow memory query --namespace research-2024 --category findings
+claude-zen memory query --namespace research-2024 --category findings
 ```
 
 ## Conflict Resolution
@@ -470,16 +470,16 @@ Intelligent caching for optimal performance:
 
 ```bash
 # View cache statistics
-claude-flow memory cache stats
+claude-zen memory cache stats
 
 # Clear cache
-claude-flow memory cache clear --layer l1
+claude-zen memory cache clear --layer l1
 
 # Optimize cache
-claude-flow memory cache optimize
+claude-zen memory cache optimize
 
 # Preload cache
-claude-flow memory cache preload --category research --namespace project-alpha
+claude-zen memory cache preload --category research --namespace project-alpha
 ```
 
 ## Full-Text Search
@@ -513,13 +513,13 @@ Powerful full-text search capabilities:
 
 ```bash
 # Basic text search
-claude-flow memory search --text "machine learning algorithms"
+claude-zen memory search --text "machine learning algorithms"
 
 # Advanced search with operators
-claude-flow memory search --text "neural AND network NOT simple" --fuzzy
+claude-zen memory search --text "neural AND network NOT simple" --fuzzy
 
 # Search with filters
-claude-flow memory search \
+claude-zen memory search \
   --text "optimization techniques" \
   --category "implementation" \
   --tags "performance" \
@@ -562,16 +562,16 @@ Comprehensive analytics and insights:
 
 ```bash
 # Memory usage statistics
-claude-flow memory stats
+claude-zen memory stats
 
 # Detailed analytics
-claude-flow memory analytics \
+claude-zen memory analytics \
   --breakdown category,namespace \
   --timerange "last-30-days" \
   --format json
 
 # Growth analysis
-claude-flow memory growth \
+claude-zen memory growth \
   --period daily \
   --start "2024-01-01" \
   --metrics items,size,categories
@@ -608,25 +608,25 @@ console.log({
 
 ```bash
 # Export memories
-claude-flow memory export backup.json \
+claude-zen memory export backup.json \
   --format json \
   --include-vectors \
   --compress
 
 # Export specific data
-claude-flow memory export research-backup.json \
+claude-zen memory export research-backup.json \
   --category research \
   --namespace project-alpha \
   --since "2024-01-01"
 
 # Import memories
-claude-flow memory import backup.json \
+claude-zen memory import backup.json \
   --format json \
   --merge-strategy "update" \
   --validate
 
 # Restore from backup
-claude-flow memory restore backup.json \
+claude-zen memory restore backup.json \
   --namespace project-alpha \
   --overwrite
 ```
@@ -635,14 +635,14 @@ claude-flow memory restore backup.json \
 
 ```bash
 # Migrate from SQLite to Markdown
-claude-flow memory migrate \
+claude-zen memory migrate \
   --from sqlite \
   --to markdown \
   --preserve-ids \
   --include-vectors
 
 # Validate migration
-claude-flow memory migrate-verify \
+claude-zen memory migrate-verify \
   --source ./data/memory.db \
   --target ./data/memory-docs
 ```
@@ -761,16 +761,16 @@ Common issues and solutions:
 
 ```bash
 # Check memory system health
-claude-flow memory health
+claude-zen memory health
 
 # Repair corrupted data
-claude-flow memory repair --fix-checksums --rebuild-indexes
+claude-zen memory repair --fix-checksums --rebuild-indexes
 
 # Optimize performance
-claude-flow memory optimize --vacuum --reindex
+claude-zen memory optimize --vacuum --reindex
 
 # Debug query performance
-claude-flow memory debug-query --explain --profile
+claude-zen memory debug-query --explain --profile
 ```
 
 This comprehensive memory system guide covers all aspects of Claude-Flow's advanced memory capabilities, from basic storage to sophisticated semantic search and collaborative memory management.

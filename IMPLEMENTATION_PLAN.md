@@ -14,7 +14,7 @@ We now have a **comprehensive AI agent orchestration platform** with:
 5. **agent-execution-service** (Rust + Python + Erlang) - Universal agent execution with framework compatibility
 
 ### ✅ **Agnstik Plugin Integration**
-6. **claude-flow plugin** - Seamless SPARC orchestration with multi-provider switching
+6. **claude-zen plugin** - Seamless SPARC orchestration with multi-provider switching
 
 ## Implementation Phases
 
@@ -208,15 +208,15 @@ impl ClaudeFlowPlugin {
 **Multi-Provider Swarm Coordination:**
 ```bash
 # Create swarm with provider optimization
-agnstik claude-flow swarm "Build enterprise authentication system" \
+agnstik claude-zen swarm "Build enterprise authentication system" \
   --providers claude-3-5-sonnet,gpt-4-turbo,local-llama \
   --coordination hierarchical \
   --optimization performance \
   --fallback-strategy automatic
 
 # Workflow-driven development with BPMN
-agnstik claude-flow workflow deploy enterprise-development.bpmn
-agnstik claude-flow workflow start enterprise-development \
+agnstik claude-zen workflow deploy enterprise-development.bpmn
+agnstik claude-zen workflow start enterprise-development \
   --variables project_name=auth_system,complexity=high \
   --providers claude-3-5-sonnet,gpt-4-turbo \
   --agents 8 \
@@ -242,7 +242,7 @@ agnstik claude-flow workflow start enterprise-development \
 ### 1. Native High-Performance SPARC
 ```bash
 # Blazing fast native execution
-agnstik claude-flow sparc architect "Design microservices platform" \
+agnstik claude-zen sparc architect "Design microservices platform" \
   --execution native \
   --optimization aggressive \
   --provider claude-3-5-sonnet
@@ -253,7 +253,7 @@ agnstik claude-flow sparc architect "Design microservices platform" \
 ### 2. Framework-Enhanced SPARC
 ```bash
 # Rich LangChain ecosystem + native performance
-agnstik claude-flow sparc researcher "Analyze market trends" \
+agnstik claude-zen sparc researcher "Analyze market trends" \
   --execution framework=langchain \
   --tools native_enhanced \
   --providers claude-3-5-sonnet,gpt-4-turbo
@@ -264,7 +264,7 @@ agnstik claude-flow sparc researcher "Analyze market trends" \
 ### 3. Multi-Agent CrewAI + Native Coordination
 ```bash
 # CrewAI multi-agent + native fault tolerance
-agnstik claude-flow sparc orchestrator "Coordinate development team" \
+agnstik claude-zen sparc orchestrator "Coordinate development team" \
   --execution framework=crewai \
   --coordination bastion_supervised \
   --agents architect,coder,tester,reviewer \
@@ -276,8 +276,8 @@ agnstik claude-flow sparc orchestrator "Coordinate development team" \
 ### 4. Hybrid Workflow-Driven Development
 ```bash
 # BPMN workflow + SPARC agents + provider optimization
-agnstik claude-flow workflow create development-pipeline.bpmn
-agnstik claude-flow workflow execute development-pipeline \
+agnstik claude-zen workflow create development-pipeline.bpmn
+agnstik claude-zen workflow execute development-pipeline \
   --sparc-modes architect,coder,tester \
   --provider-strategy quality_optimized \
   --coordination hierarchical \
@@ -288,7 +288,7 @@ agnstik claude-flow workflow execute development-pipeline \
 ### 5. Enterprise Swarm Coordination
 ```bash
 # Large-scale coordinated development
-agnstik claude-flow swarm "Build complete e-commerce platform" \
+agnstik claude-zen swarm "Build complete e-commerce platform" \
   --strategy development \
   --coordination mesh \
   --agents 20 \

@@ -11,7 +11,7 @@
 - **MCP Integration**: Full MCP server with 50+ tools
 - **Swarm Pattern**: Distributed `.swarm/memory.db` per microservice
 - **Memory System**: SQLite with persistent cross-session state
-- **CLI Interface**: Mature CLI with `npx claude-flow@alpha` commands
+- **CLI Interface**: Mature CLI with `npx claude-zen@alpha` commands
 
 **Key Strengths**:
 - ✅ **Immediate productivity** - Ready to use now

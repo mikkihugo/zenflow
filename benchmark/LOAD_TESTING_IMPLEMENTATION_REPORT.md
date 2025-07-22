@@ -156,7 +156,7 @@ As the **Benchmark-Tester** agent in the Hive Mind benchmark swarm, I have succe
 ### Mandatory Agent Coordination
 ✅ **Pre-task Hook**: Used `npx ruv-swarm hook pre-task` for initialization  
 ✅ **Post-edit Hooks**: Stored progress after each script creation  
-✅ **Memory Storage**: Used `mcp__claude-flow__memory_usage` for coordination  
+✅ **Memory Storage**: Used `mcp__claude-zen__memory_usage` for coordination  
 ✅ **Progress Notifications**: Used `npx ruv-swarm hook notification` for updates  
 ✅ **Post-task Hook**: Will use `npx ruv-swarm hook post-task` upon completion  
 

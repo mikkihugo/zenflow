@@ -284,4 +284,4 @@ class BaseServer {
   }
 }
 
-module.exports = BaseServer;
+export default BaseServer;

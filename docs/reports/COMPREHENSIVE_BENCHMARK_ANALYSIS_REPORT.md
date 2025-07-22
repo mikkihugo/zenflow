@@ -101,7 +101,7 @@ Claude-Flow's swarm benchmarking system demonstrates **exceptional performance a
 
 ## 📊 Detailed Benchmark Results
 
-### Real Execution Performance (claude-flow v1.0.70)
+### Real Execution Performance (claude-zen v1.0.70)
 
 #### ✅ Successful Operations
 - **Version Check**: 5.86ms (✅ Success)
@@ -182,7 +182,7 @@ Claude-Flow's swarm benchmarking system demonstrates **exceptional performance a
 ### Development Workflow
 ```bash
 # Optimal settings for development tasks
-claude-flow swarm "Build REST API" \
+claude-zen swarm "Build REST API" \
   --strategy development \
   --mode hierarchical \
   --max-agents 6 \
@@ -192,7 +192,7 @@ claude-flow swarm "Build REST API" \
 ### Research Operations
 ```bash
 # Optimal settings for research tasks  
-claude-flow swarm "Research ML algorithms" \
+claude-zen swarm "Research ML algorithms" \
   --strategy research \
   --mode distributed \
   --max-agents 5 \
@@ -202,7 +202,7 @@ claude-flow swarm "Research ML algorithms" \
 ### Performance Optimization
 ```bash
 # Optimal settings for optimization tasks
-claude-flow swarm "Optimize database queries" \
+claude-zen swarm "Optimize database queries" \
   --strategy optimization \
   --mode hybrid \
   --max-agents 7 \
@@ -307,7 +307,7 @@ The benchmark results validate Claude-Flow as a **premier solution** for AI agen
 ## 📊 Raw Data Sources
 
 **Benchmark Reports Analyzed**: 25+ individual execution reports  
-**Test Execution Logs**: Real claude-flow v1.0.70 command execution  
+**Test Execution Logs**: Real claude-zen v1.0.70 command execution  
 **Performance Databases**: SQLite and JSON format benchmark results  
 **Strategy Coverage**: All 7 strategies × 5 coordination modes tested  
 **Time Period**: Multiple benchmark executions over recent development cycles

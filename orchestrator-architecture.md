@@ -92,10 +92,10 @@ export class HiveOrchestrator extends EventEmitter {
 ### **Starting the Orchestrator**
 ```bash
 # Start the orchestrator service
-claude-flow start
+claude-zen start
 
 # With options
-claude-flow start --ui --swarm --daemon --port 8080
+claude-zen start --ui --swarm --daemon --port 8080
 ```
 
 **What happens during start:**
@@ -109,7 +109,7 @@ claude-flow start --ui --swarm --daemon --port 8080
 ### **Orchestrator Status Check**
 ```bash
 # Check orchestrator status
-claude-flow mcp status
+claude-zen mcp status
 
 # Expected output when running:
 ✅ MCP Server Status:
@@ -147,7 +147,7 @@ External Data → MCP Tools → Orchestrator → Swarms → Agents
 ### **Swarm Creation Flow**
 ```bash
 # User command
-claude-flow hive-mind spawn "Build REST API"
+claude-zen hive-mind spawn "Build REST API"
 
 # Orchestrator actions:
 1. Parse command and objective
@@ -219,7 +219,7 @@ storage-service ADR         routes to         storage-service     context and
 ### **Document Management Flow**
 ```javascript
 // User in storage-service directory
-mcp__claude-flow__service_document_manager({
+mcp__claude-zen__service_document_manager({
   action: "create",
   documentType: "service-adr",
   serviceName: "storage-service"  // Auto-detected from working directory

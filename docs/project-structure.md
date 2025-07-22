@@ -18,7 +18,7 @@ The root directory has been cleaned and organized to contain only essential file
 - **CHANGELOG.md** - Version history
 - **CLAUDE.md** - Claude Code integration instructions (required in root)
 - **cli.js** - Main CLI entry point
-- **claude-flow** - Executable wrapper script
+- **claude-zen** - Executable wrapper script
 - **start-web-ui.js** - WebUI launcher
 
 ## 📚 Documentation Structure (docs/)

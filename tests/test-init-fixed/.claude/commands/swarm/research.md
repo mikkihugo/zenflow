@@ -2,7 +2,7 @@
 
 ## Usage
 ```bash
-claude-flow swarm "Research objective" --strategy research --mode distributed
+claude-zen swarm "Research objective" --strategy research --mode distributed
 ```
 
 ## Description

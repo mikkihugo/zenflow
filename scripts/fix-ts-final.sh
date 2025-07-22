@@ -4,7 +4,7 @@ echo "🔧 Final TypeScript fixes..."
 
 # Fix 1: Move shebang to first line
 echo "📝 Fixing shebang placement..."
-for file in src/cli/cli-core.ts src/cli/index-remote.ts src/cli/index.ts src/cli/main.ts src/cli/simple-cli.ts src/swarm/prompt-cli.ts; do
+for file in src/cli/cli-core.ts src/cli/index-remote.ts src/cli/index.ts src/cli/main.ts src/swarm/prompt-cli.ts; do
   if [ -f "$file" ]; then
     # Extract shebang if it exists anywhere
     shebang=$(grep -m1 '^#!/usr/bin/env' "$file" || echo "")

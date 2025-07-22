@@ -9,29 +9,29 @@ This comprehensive troubleshooting guide addresses common issues, performance pr
 ### System Health Check
 ```bash
 # Complete system diagnostics
-npx claude-flow@2.0.0 health-check --comprehensive
+npx claude-zen@2.0.0 health-check --comprehensive
 
 # Check all integrations
-npx claude-flow@2.0.0 diagnostic run --components "swarm,neural,memory,mcp"
+npx claude-zen@2.0.0 diagnostic run --components "swarm,neural,memory,mcp"
 
 # Verify MCP tools
 claude mcp status ruv-swarm
 claude mcp test ruv-swarm
 
 # Check neural networks
-npx claude-flow@2.0.0 neural status --detailed
+npx claude-zen@2.0.0 neural status --detailed
 ```
 
 ### Performance Analysis
 ```bash
 # Performance overview
-npx claude-flow@2.0.0 performance report --timeframe 24h --format detailed
+npx claude-zen@2.0.0 performance report --timeframe 24h --format detailed
 
 # Identify bottlenecks
-npx claude-flow@2.0.0 bottleneck analyze --all-components
+npx claude-zen@2.0.0 bottleneck analyze --all-components
 
 # Memory analysis
-npx claude-flow@2.0.0 memory analytics --real-time
+npx claude-zen@2.0.0 memory analytics --real-time
 ```
 
 ---
@@ -48,7 +48,7 @@ npx claude-flow@2.0.0 memory analytics --real-time
 **Diagnosis:**
 ```bash
 # Check swarm initialization
-npx claude-flow@2.0.0 swarm status --verbose
+npx claude-zen@2.0.0 swarm status --verbose
 
 # Verify coordination hooks
 npx ruv-swarm hook pre-task --test
@@ -61,12 +61,12 @@ claude mcp status ruv-swarm
 **Solutions:**
 ```bash
 # Solution 1: Reset swarm completely
-npx claude-flow@2.0.0 swarm destroy --force --all
-npx claude-flow@2.0.0 coordination swarm-init --topology mesh --max-agents 8
+npx claude-zen@2.0.0 swarm destroy --force --all
+npx claude-zen@2.0.0 coordination swarm-init --topology mesh --max-agents 8
 
 # Solution 2: Clear coordination cache
 rm -rf ./memory/coordination-cache/
-npx claude-flow@2.0.0 coordination sync --force
+npx claude-zen@2.0.0 coordination sync --force
 
 # Solution 3: Restart MCP server
 claude mcp restart ruv-swarm
@@ -91,24 +91,24 @@ npm install -g ruv-swarm@1.0.14 --force
 **Diagnosis:**
 ```bash
 # Analyze coordination metrics
-npx claude-flow@2.0.0 agent metrics --all
-npx claude-flow@2.0.0 coordination sync --analyze
+npx claude-zen@2.0.0 agent metrics --all
+npx claude-zen@2.0.0 coordination sync --analyze
 
 # Check task distribution
-npx claude-flow@2.0.0 task status --detailed
+npx claude-zen@2.0.0 task status --detailed
 ```
 
 **Solutions:**
 ```bash
 # Solution 1: Optimize topology
-npx claude-flow@2.0.0 topology optimize --swarm-id current
+npx claude-zen@2.0.0 topology optimize --swarm-id current
 
 # Solution 2: Adjust agent allocation
-npx claude-flow@2.0.0 load balance --strategy adaptive
+npx claude-zen@2.0.0 load balance --strategy adaptive
 
 # Solution 3: Clear memory bottlenecks
-npx claude-flow@2.0.0 memory compress --ratio 0.8
-npx claude-flow@2.0.0 memory backup --cleanup-old
+npx claude-zen@2.0.0 memory compress --ratio 0.8
+npx claude-zen@2.0.0 memory backup --cleanup-old
 
 # Solution 4: Tune batch operations
 export CLAUDE_BATCH_SIZE=16
@@ -125,26 +125,26 @@ export CLAUDE_PARALLEL_LIMIT=8
 **Diagnosis:**
 ```bash
 # Check memory sync status
-npx claude-flow@2.0.0 memory sync --status
-npx claude-flow@2.0.0 swarm monitor --memory-focus
+npx claude-zen@2.0.0 memory sync --status
+npx claude-zen@2.0.0 swarm monitor --memory-focus
 
 # Analyze sync performance
-npx claude-flow@2.0.0 memory analytics --sync-metrics
+npx claude-zen@2.0.0 memory analytics --sync-metrics
 ```
 
 **Solutions:**
 ```bash
 # Solution 1: Force memory synchronization
-npx claude-flow@2.0.0 memory sync --force --all-agents
+npx claude-zen@2.0.0 memory sync --force --all-agents
 
 # Solution 2: Rebuild memory index
-npx claude-flow@2.0.0 memory usage --action rebuild-index
+npx claude-zen@2.0.0 memory usage --action rebuild-index
 
 # Solution 3: Increase sync timeout
 export MEMORY_SYNC_TIMEOUT=60000  # 60 seconds
 
 # Solution 4: Clean corrupted entries
-npx claude-flow@2.0.0 memory usage --action cleanup --corrupted-only
+npx claude-zen@2.0.0 memory usage --action cleanup --corrupted-only
 ```
 
 ---
@@ -165,11 +165,11 @@ node -e "console.log('WASM support:', typeof WebAssembly !== 'undefined')"
 
 # Validate WASM module
 ls -la node_modules/ruv-swarm/dist/neural/
-file node_modules/ruv-swarm/dist/neural/claude-flow-neural.wasm
-wasm-validate node_modules/ruv-swarm/dist/neural/claude-flow-neural.wasm
+file node_modules/ruv-swarm/dist/neural/claude-zen-neural.wasm
+wasm-validate node_modules/ruv-swarm/dist/neural/claude-zen-neural.wasm
 
 # Check for corruption
-shasum -a 256 node_modules/ruv-swarm/dist/neural/claude-flow-neural.wasm
+shasum -a 256 node_modules/ruv-swarm/dist/neural/claude-zen-neural.wasm
 ```
 
 **Solutions:**
@@ -180,11 +180,11 @@ npm install -g ruv-swarm@1.0.14 --build-from-source
 
 # Solution 2: Clear neural cache
 rm -rf ./memory/neural-cache/
-npx claude-flow@2.0.0 neural train --reset-cache
+npx claude-zen@2.0.0 neural train --reset-cache
 
 # Solution 3: Download fresh WASM module
-curl -L https://github.com/ruvnet/ruv-FANN/releases/latest/download/claude-flow-neural.wasm \
-  -o node_modules/ruv-swarm/dist/neural/claude-flow-neural.wasm
+curl -L https://github.com/ruvnet/ruv-FANN/releases/latest/download/claude-zen-neural.wasm \
+  -o node_modules/ruv-swarm/dist/neural/claude-zen-neural.wasm
 
 # Solution 4: Use Node.js with WASM support
 node --experimental-wasm-modules --experimental-wasm-bigint
@@ -200,20 +200,20 @@ node --experimental-wasm-modules --experimental-wasm-bigint
 **Diagnosis:**
 ```bash
 # Check training performance
-npx claude-flow@2.0.0 neural status --training-metrics
-npx claude-flow@2.0.0 benchmark run --category neural
+npx claude-zen@2.0.0 neural status --training-metrics
+npx claude-zen@2.0.0 benchmark run --category neural
 
 # Monitor resource usage
-npx claude-flow@2.0.0 neural profile --real-time
+npx claude-zen@2.0.0 neural profile --real-time
 ```
 
 **Solutions:**
 ```bash
 # Solution 1: Enable SIMD optimization
-npx claude-flow@2.0.0 wasm optimize --enable-simd
+npx claude-zen@2.0.0 wasm optimize --enable-simd
 
 # Solution 2: Adjust training parameters
-npx claude-flow@2.0.0 neural train \
+npx claude-zen@2.0.0 neural train \
   --pattern-type coordination \
   --epochs 50 \
   --batch-size 16 \
@@ -224,7 +224,7 @@ export UV_THREADPOOL_SIZE=16
 node --max-old-space-size=4096
 
 # Solution 4: Use distributed training
-npx claude-flow@2.0.0 neural train \
+npx claude-zen@2.0.0 neural train \
   --distributed \
   --workers 4
 ```
@@ -239,10 +239,10 @@ npx claude-flow@2.0.0 neural train \
 **Diagnosis:**
 ```bash
 # Validate model integrity
-npx claude-flow@2.0.0 neural validate --model-id coordination-v1
+npx claude-zen@2.0.0 neural validate --model-id coordination-v1
 
 # Check input data format
-npx claude-flow@2.0.0 neural predict \
+npx claude-zen@2.0.0 neural predict \
   --model-id coordination-v1 \
   --input "test data" \
   --debug
@@ -251,24 +251,24 @@ npx claude-flow@2.0.0 neural predict \
 **Solutions:**
 ```bash
 # Solution 1: Retrain model with better data
-npx claude-flow@2.0.0 neural train \
+npx claude-zen@2.0.0 neural train \
   --pattern-type coordination \
   --training-data "./data/validated-patterns.json" \
   --epochs 100
 
 # Solution 2: Compress and optimize model
-npx claude-flow@2.0.0 neural compress \
+npx claude-zen@2.0.0 neural compress \
   --model-id coordination-v1 \
   --ratio 0.7
 
 # Solution 3: Use ensemble prediction
-npx claude-flow@2.0.0 ensemble create \
+npx claude-zen@2.0.0 ensemble create \
   --models "coord-v1,coord-v2,coord-v3" \
   --strategy voting
 
 # Solution 4: Clear model cache
 rm -rf ./models/cache/
-npx claude-flow@2.0.0 model reload --all
+npx claude-zen@2.0.0 model reload --all
 ```
 
 ---
@@ -285,32 +285,32 @@ npx claude-flow@2.0.0 model reload --all
 **Diagnosis:**
 ```bash
 # Check memory integrity
-npx claude-flow@2.0.0 memory usage --action validate --all-namespaces
+npx claude-zen@2.0.0 memory usage --action validate --all-namespaces
 
 # Analyze corruption patterns
-npx claude-flow@2.0.0 memory analytics --corruption-analysis
+npx claude-zen@2.0.0 memory analytics --corruption-analysis
 
 # Check file system status
 df -h .
-fsck -n ./memory/claude-flow-data.json
+fsck -n ./memory/claude-zen-data.json
 ```
 
 **Solutions:**
 ```bash
 # Solution 1: Restore from backup
-npx claude-flow@2.0.0 memory backup --list
-npx claude-flow@2.0.0 memory restore --backup-path ./backups/latest
+npx claude-zen@2.0.0 memory backup --list
+npx claude-zen@2.0.0 memory restore --backup-path ./backups/latest
 
 # Solution 2: Rebuild memory database
-npx claude-flow@2.0.0 memory usage --action rebuild --force
-npx claude-flow@2.0.0 memory compress --optimize
+npx claude-zen@2.0.0 memory usage --action rebuild --force
+npx claude-zen@2.0.0 memory compress --optimize
 
 # Solution 3: Check and fix permissions
 chmod 755 ./memory/
 chown -R $USER:$USER ./memory/
 
 # Solution 4: Emergency data recovery
-npx claude-flow@2.0.0 memory backup --emergency --format json
+npx claude-zen@2.0.0 memory backup --emergency --format json
 ```
 
 ### Issue 2: High Memory Usage
@@ -323,8 +323,8 @@ npx claude-flow@2.0.0 memory backup --emergency --format json
 **Diagnosis:**
 ```bash
 # Monitor memory usage
-npx claude-flow@2.0.0 memory analytics --real-time
-npx claude-flow@2.0.0 memory usage --action stats
+npx claude-zen@2.0.0 memory analytics --real-time
+npx claude-zen@2.0.0 memory usage --action stats
 
 # Check for memory leaks
 node --trace-gc
@@ -334,16 +334,16 @@ node --heap-prof
 **Solutions:**
 ```bash
 # Solution 1: Compress existing data
-npx claude-flow@2.0.0 memory compress --all-namespaces --ratio 0.8
+npx claude-zen@2.0.0 memory compress --all-namespaces --ratio 0.8
 
 # Solution 2: Clean old entries
-npx claude-flow@2.0.0 memory usage \
+npx claude-zen@2.0.0 memory usage \
   --action delete \
   --older-than "7d" \
   --exclude-important
 
 # Solution 3: Optimize storage
-npx claude-flow@2.0.0 memory usage --action optimize-storage
+npx claude-zen@2.0.0 memory usage --action optimize-storage
 
 # Solution 4: Increase memory limits
 export NODE_OPTIONS="--max-old-space-size=8192"
@@ -359,28 +359,28 @@ export NODE_OPTIONS="--max-old-space-size=8192"
 **Diagnosis:**
 ```bash
 # Check persistence mechanisms
-npx claude-flow@2.0.0 memory persist --test
+npx claude-zen@2.0.0 memory persist --test
 ls -la ./memory/sessions/
 
 # Verify database connectivity
-sqlite3 ./memory/claude-flow-data.json ".schema"
+sqlite3 ./memory/claude-zen-data.json ".schema"
 ```
 
 **Solutions:**
 ```bash
 # Solution 1: Repair persistence layer
-npx claude-flow@2.0.0 memory persist --repair
+npx claude-zen@2.0.0 memory persist --repair
 
 # Solution 2: Reinitialize session storage
 rm -rf ./memory/sessions/
-npx claude-flow@2.0.0 init --claude --force
+npx claude-zen@2.0.0 init --claude --force
 
 # Solution 3: Check disk space and permissions
 df -h .
 chmod 755 ./memory/sessions/
 
 # Solution 4: Use alternative backend
-npx claude-flow@2.0.0 config update \
+npx claude-zen@2.0.0 config update \
   --section memory \
   --config '{"backend": "postgresql"}'
 ```
@@ -439,7 +439,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
 claude mcp list-tools ruv-swarm | wc -l  # Should be 87
 
 # Check specific tool
-claude mcp describe-tool ruv-swarm mcp__claude-flow__swarm_init
+claude mcp describe-tool ruv-swarm mcp__claude-zen__swarm_init
 
 # Verify tool registration
 claude mcp validate ruv-swarm
@@ -477,7 +477,7 @@ claude mcp batch-test ruv-swarm --operations 5
 claude mcp config ruv-swarm | grep batch
 
 # Monitor batch performance
-npx claude-flow@2.0.0 performance report --mcp-focus
+npx claude-zen@2.0.0 performance report --mcp-focus
 ```
 
 **Solutions:**
@@ -510,11 +510,11 @@ export CLAUDE_BATCH_FALLBACK=sequential
 **Diagnosis:**
 ```bash
 # Check WebUI server status
-npx claude-flow@2.0.0 start --ui --test-mode
+npx claude-zen@2.0.0 start --ui --test-mode
 curl -f http://localhost:3000/health
 
 # Check logs
-npx claude-flow@2.0.0 logs --component webui --tail 50
+npx claude-zen@2.0.0 logs --component webui --tail 50
 
 # Verify port availability
 netstat -tulpn | grep :3000
@@ -523,14 +523,14 @@ netstat -tulpn | grep :3000
 **Solutions:**
 ```bash
 # Solution 1: Restart WebUI server
-npx claude-flow@2.0.0 stop
-npx claude-flow@2.0.0 start --ui --port 3000
+npx claude-zen@2.0.0 stop
+npx claude-zen@2.0.0 start --ui --port 3000
 
 # Solution 2: Clear browser cache
 # In browser: Clear cache and hard reload (Ctrl+Shift+R)
 
 # Solution 3: Use different port
-npx claude-flow@2.0.0 start --ui --port 3001
+npx claude-zen@2.0.0 start --ui --port 3001
 
 # Solution 4: Check firewall settings
 sudo ufw allow 3000
@@ -547,10 +547,10 @@ sudo ufw allow 3000
 **Diagnosis:**
 ```bash
 # Check WebSocket connectivity
-npx claude-flow@2.0.0 websocket test
+npx claude-zen@2.0.0 websocket test
 
 # Monitor WebSocket traffic
-npx claude-flow@2.0.0 logs --component websocket --real-time
+npx claude-zen@2.0.0 logs --component websocket --real-time
 
 # Test browser WebSocket support
 # In browser console: typeof WebSocket
@@ -559,13 +559,13 @@ npx claude-flow@2.0.0 logs --component websocket --real-time
 **Solutions:**
 ```bash
 # Solution 1: Enable WebSocket explicitly
-npx claude-flow@2.0.0 start --ui --websockets --port 3000
+npx claude-zen@2.0.0 start --ui --websockets --port 3000
 
 # Solution 2: Check proxy settings
 # Disable proxy for localhost in browser settings
 
 # Solution 3: Use polling fallback
-npx claude-flow@2.0.0 config update \
+npx claude-zen@2.0.0 config update \
   --section webui \
   --config '{"realtime": "polling", "polling_interval": 2000}'
 
@@ -584,28 +584,28 @@ telnet localhost 3000
 **Diagnosis:**
 ```bash
 # Check metrics collection
-npx claude-flow@2.0.0 metrics collect --test
+npx claude-zen@2.0.0 metrics collect --test
 
 # Verify data pipeline
-npx claude-flow@2.0.0 performance report --format json
+npx claude-zen@2.0.0 performance report --format json
 
 # Test chart rendering
-npx claude-flow@2.0.0 webui validate --charts
+npx claude-zen@2.0.0 webui validate --charts
 ```
 
 **Solutions:**
 ```bash
 # Solution 1: Reset metrics database
-npx claude-flow@2.0.0 metrics reset --confirm
+npx claude-zen@2.0.0 metrics reset --confirm
 
 # Solution 2: Force metrics refresh
-npx claude-flow@2.0.0 metrics collect --force --all-components
+npx claude-zen@2.0.0 metrics collect --force --all-components
 
 # Solution 3: Check browser compatibility
 # Ensure browser supports modern JavaScript and Canvas
 
 # Solution 4: Use simplified dashboard
-npx claude-flow@2.0.0 start --ui --simple-mode
+npx claude-zen@2.0.0 start --ui --simple-mode
 ```
 
 ---
@@ -622,16 +622,16 @@ npx claude-flow@2.0.0 start --ui --simple-mode
 **Diagnosis:**
 ```bash
 # Check container status
-docker ps -a | grep claude-flow
-kubectl get pods -n claude-flow
+docker ps -a | grep claude-zen
+kubectl get pods -n claude-zen
 
 # View container logs
-docker logs claude-flow-container
-kubectl logs -f deployment/claude-flow-v2 -n claude-flow
+docker logs claude-zen-container
+kubectl logs -f deployment/claude-zen-v2 -n claude-zen
 
 # Check resource usage
-docker stats claude-flow-container
-kubectl top pods -n claude-flow
+docker stats claude-zen-container
+kubectl top pods -n claude-zen
 ```
 
 **Solutions:**
@@ -645,15 +645,15 @@ kubectl top pods -n claude-flow
 #       cpus: '2.0'
 
 # Solution 2: Fix environment variables
-docker run -e NODE_ENV=production -e CLAUDE_FLOW_VERSION=2.0.0 claude-flow:2.0.0
+docker run -e NODE_ENV=production -e CLAUDE_FLOW_VERSION=2.0.0 claude-zen:2.0.0
 
 # Solution 3: Check volume mounts
-docker run -v ./data:/app/data -v ./memory:/app/memory claude-flow:2.0.0
+docker run -v ./data:/app/data -v ./memory:/app/memory claude-zen:2.0.0
 
 # Solution 4: Use health checks
 # Add to Dockerfile:
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-#   CMD npx claude-flow health-check || exit 1
+#   CMD npx claude-zen health-check || exit 1
 ```
 
 ### Issue 2: Load Balancing Problems
@@ -666,11 +666,11 @@ docker run -v ./data:/app/data -v ./memory:/app/memory claude-flow:2.0.0
 **Diagnosis:**
 ```bash
 # Check load balancer status
-kubectl get services -n claude-flow
-kubectl describe service claude-flow-service
+kubectl get services -n claude-zen
+kubectl describe service claude-zen-service
 
 # Monitor request distribution
-kubectl logs -f deployment/nginx-lb -n claude-flow
+kubectl logs -f deployment/nginx-lb -n claude-zen
 
 # Test load balancing
 for i in {1..10}; do curl -s http://your-domain.com/health; done
@@ -689,13 +689,13 @@ for i in {1..10}; do curl -s http://your-domain.com/health; done
 # In nginx.conf:
 # upstream claude_flow {
 #   least_conn;
-#   server claude-flow-1:3000;
-#   server claude-flow-2:3000;
+#   server claude-zen-1:3000;
+#   server claude-zen-2:3000;
 # }
 
 # Solution 3: Implement health checks
 # In nginx.conf:
-# server claude-flow-1:3000 max_fails=3 fail_timeout=30s;
+# server claude-zen-1:3000 max_fails=3 fail_timeout=30s;
 
 # Solution 4: Use sticky sessions for coordination
 # Add to nginx:
@@ -715,7 +715,7 @@ for i in {1..10}; do curl -s http://your-domain.com/health; done
 psql -h postgres-host -U claude_flow -d claude_flow -c "SELECT 1;"
 
 # Monitor connection pool
-npx claude-flow@2.0.0 database status --connections
+npx claude-zen@2.0.0 database status --connections
 
 # Check for locks
 psql -c "SELECT * FROM pg_locks WHERE NOT granted;"
@@ -751,7 +751,7 @@ psql -c "SELECT * FROM pg_locks WHERE NOT granted;"
 # }
 
 # Solution 4: Implement connection health checks
-npx claude-flow@2.0.0 database migrate --check-health
+npx claude-zen@2.0.0 database migrate --check-health
 ```
 
 ---
@@ -762,10 +762,10 @@ npx claude-flow@2.0.0 database migrate --check-health
 
 ```bash
 # Optimize memory usage across all components
-npx claude-flow@2.0.0 memory compress --all-components --ratio 0.8
+npx claude-zen@2.0.0 memory compress --all-components --ratio 0.8
 
 # Clean up old data
-npx claude-flow@2.0.0 memory usage \
+npx claude-zen@2.0.0 memory usage \
   --action cleanup \
   --older-than "7d" \
   --backup-first
@@ -778,17 +778,17 @@ export NODE_OPTIONS="--max-old-space-size=4096 --optimize-for-size"
 
 ```bash
 # Enable compression
-npx claude-flow@2.0.0 config update \
+npx claude-zen@2.0.0 config update \
   --section network \
   --config '{"compression": true, "compression_level": 6}'
 
 # Tune connection pooling
-npx claude-flow@2.0.0 config update \
+npx claude-zen@2.0.0 config update \
   --section mcp \
   --config '{"pool_size": 20, "keep_alive": true}'
 
 # Enable caching
-npx claude-flow@2.0.0 cache manage --action enable-all
+npx claude-zen@2.0.0 cache manage --action enable-all
 ```
 
 ### CPU Optimization
@@ -798,12 +798,12 @@ npx claude-flow@2.0.0 cache manage --action enable-all
 export UV_THREADPOOL_SIZE=16
 
 # Use worker threads for heavy operations
-npx claude-flow@2.0.0 config update \
+npx claude-zen@2.0.0 config update \
   --section workers \
   --config '{"neural_workers": 4, "coordination_workers": 8}'
 
 # Enable SIMD optimization
-npx claude-flow@2.0.0 wasm optimize --enable-simd
+npx claude-zen@2.0.0 wasm optimize --enable-simd
 ```
 
 ---
@@ -822,26 +822,26 @@ npx claude-flow@2.0.0 wasm optimize --enable-simd
 When reporting issues, include:
 ```bash
 # Generate diagnostic report
-npx claude-flow@2.0.0 diagnostic export --format comprehensive
+npx claude-zen@2.0.0 diagnostic export --format comprehensive
 
 # Include system information
-npx claude-flow@2.0.0 env-info
+npx claude-zen@2.0.0 env-info
 
 # Attach relevant logs
-npx claude-flow@2.0.0 logs --all-components --last 1h
+npx claude-zen@2.0.0 logs --all-components --last 1h
 ```
 
 ### Emergency Recovery
 
 ```bash
 # Complete system reset (use with caution)
-npx claude-flow@2.0.0 emergency-reset --backup-first
+npx claude-zen@2.0.0 emergency-reset --backup-first
 
 # Factory reset while preserving data
-npx claude-flow@2.0.0 reset --keep-data --keep-models
+npx claude-zen@2.0.0 reset --keep-data --keep-models
 
 # Restore from backup
-npx claude-flow@2.0.0 restore --backup-path ./emergency-backup/
+npx claude-zen@2.0.0 restore --backup-path ./emergency-backup/
 ```
 
 This comprehensive troubleshooting guide should help resolve most issues encountered with Claude Flow v2.0.0. For persistent problems, refer to the diagnostic tools and support channels mentioned above.

@@ -249,9 +249,9 @@ def serve(ctx, port, host):
 @click.pass_context
 def real(ctx, objective, strategy, mode, sparc_mode, all_modes, max_agents, timeout, 
          task_timeout, parallel, monitor, output_formats, output_dir, name, description):
-    """Run real claude-flow benchmarks with actual command execution.
+    """Run real claude-zen benchmarks with actual command execution.
     
-    OBJECTIVE: The goal or task for claude-flow to accomplish
+    OBJECTIVE: The goal or task for claude-zen to accomplish
     
     Examples:
       swarm-benchmark real "Build a REST API" --strategy development
@@ -327,7 +327,7 @@ async def _run_benchmark(objective: str, config: BenchmarkConfig, use_real_metri
 async def _run_real_benchmark(objective: str, config: BenchmarkConfig, 
                               sparc_mode: Optional[str] = None,
                               all_modes: bool = False) -> Optional[dict]:
-    """Run a real benchmark with actual claude-flow execution."""
+    """Run a real benchmark with actual claude-zen execution."""
     engine = RealBenchmarkEngine(config)
     
     try:

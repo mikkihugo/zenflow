@@ -93,8 +93,8 @@ Missing Documentation:
 #### 01-getting-started.md - CRITICAL UPDATE NEEDED ⭐
 - **Current**: Deno-based installation, old CLI patterns
 - **V2.0.0 Missing**: 
-  - NPX installation (`npx claude-flow@2.0.0`)
-  - MCP server setup (`claude mcp add claude-flow`)
+  - NPX installation (`npx claude-zen@2.0.0`)
+  - MCP server setup (`claude mcp add claude-zen`)
   - Neural network initialization
   - WebUI startup (`start --ui`)
   - Hive Mind wizard (`hive-mind wizard`)

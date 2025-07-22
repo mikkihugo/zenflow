@@ -242,7 +242,7 @@ export async function fixHookVariablesCommand(args = [], flags = {}) {
   };
 
   // Find files to fix
-  let files = args.length > 0 ? args : await findSettingsFiles();
+  const files = args.length > 0 ? args : await findSettingsFiles();
 
   if (files.length === 0) {
     printError('No settings.json files found');
@@ -285,7 +285,7 @@ export async function fixHookVariablesCommand(args = [], flags = {}) {
     console.log(chalk.yellow('\n⚠️  Important:'));
     console.log('  1. Restart Claude Code for changes to take effect');
     console.log('  2. Test your hooks to ensure they work correctly');
-    console.log('  3. Report any issues to: https://github.com/ruvnet/claude-flow/issues');
+    console.log('  3. Report any issues to: https://github.com/ruvnet/claude-zen/issues');
   }
 
   // Test mode
@@ -337,10 +337,10 @@ export const fixHookVariablesCommandConfig = {
     { flag: '--test', description: 'Create test hook configuration' },
   ],
   examples: [
-    'claude-flow fix-hook-variables',
-    'claude-flow fix-hook-variables .claude/settings.json',
-    'claude-flow fix-hook-variables --syntax wrapper',
-    'claude-flow fix-hook-variables --test',
+    'claude-zen fix-hook-variables',
+    'claude-zen fix-hook-variables .claude/settings.json',
+    'claude-zen fix-hook-variables --syntax wrapper',
+    'claude-zen fix-hook-variables --test',
   ],
   details: `
 Fixes the \${file} and \${command} variable interpolation issue in Claude Code hooks.
@@ -359,5 +359,5 @@ Available syntaxes:
 Note: The 'jq' syntax is based on official Claude Code documentation and is likely
 the most reliable approach for Claude Code 1.0.51+.
 
-For more information: https://github.com/ruvnet/claude-flow/issues/249`,
+For more information: https://github.com/ruvnet/claude-zen/issues/249`,
 };

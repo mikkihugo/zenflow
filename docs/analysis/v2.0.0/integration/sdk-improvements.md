@@ -28,7 +28,7 @@ npx ruv-swarm@latest orchestrate "Complex task description"
 
 ### 2.1 Package Structure
 ```
-@claude-flow/ruv-swarm
+@claude-zen/ruv-swarm
 ├── src/
 │   ├── index.ts          # Main exports
 │   ├── swarm.ts          # Swarm class
@@ -47,7 +47,7 @@ npx ruv-swarm@latest orchestrate "Complex task description"
 
 ### 2.2 Modern API Design
 ```typescript
-import { Swarm, SwarmPreset } from '@claude-flow/ruv-swarm';
+import { Swarm, SwarmPreset } from '@claude-zen/ruv-swarm';
 
 // Simple preset usage
 const swarm = await Swarm.create(SwarmPreset.Development);
@@ -171,13 +171,13 @@ const task = await swarm.orchestrate({
 npx ruv-swarm@latest init hierarchical 8 --claude --force
 
 # Improved (simple)
-npx claude-flow swarm create --preset=development
-npx claude-flow swarm create -p dev  # short alias
+npx claude-zen swarm create --preset=development
+npx claude-zen swarm create -p dev  # short alias
 ```
 
 ### 4.2 Interactive Mode
 ```bash
-npx claude-flow swarm create --interactive
+npx claude-zen swarm create --interactive
 
 ? Choose a preset or custom configuration:
   ❯ Development Team (5 agents)
@@ -193,23 +193,23 @@ npx claude-flow swarm create --interactive
 ✓ Creating development swarm...
 ✓ Spawning 5 agents...
 ✓ Configuring neural networks...
-✓ Ready! Run 'claude-flow swarm status' to view your team.
+✓ Ready! Run 'claude-zen swarm status' to view your team.
 ```
 
 ### 4.3 Consistent Parameter Format
 ```bash
 # All commands follow noun-verb-options pattern
-claude-flow swarm create --preset=dev
-claude-flow swarm status --detailed
-claude-flow swarm monitor --duration=60
+claude-zen swarm create --preset=dev
+claude-zen swarm status --detailed
+claude-zen swarm monitor --duration=60
 
-claude-flow agent spawn --type=coder --name="John"
-claude-flow agent list --swarm=my-swarm
-claude-flow agent terminate --id=agent-123
+claude-zen agent spawn --type=coder --name="John"
+claude-zen agent list --swarm=my-swarm
+claude-zen agent terminate --id=agent-123
 
-claude-flow task run --file=tasks.json
-claude-flow task status --id=task-456
-claude-flow task cancel --all
+claude-zen task run --file=tasks.json
+claude-zen task status --id=task-456
+claude-zen task cancel --all
 ```
 
 ## 5. Advanced Features
@@ -273,7 +273,7 @@ class SwarmCompat {
 
 ### 6.2 Migration Wizard
 ```bash
-npx claude-flow migrate
+npx claude-zen migrate
 
 ? Detected v1.x configuration. Migrate to v2.0?
 ? Select target preset based on your setup:
@@ -283,7 +283,7 @@ npx claude-flow migrate
 
 ✓ Configuration migrated
 ✓ Updated 5 script references
-✓ Created backup at .claude-flow-backup/
+✓ Created backup at .claude-zen-backup/
 ```
 
 ## 7. Performance Optimizations
@@ -319,7 +319,7 @@ try {
 } catch (error) {
   // SwarmError: Invalid agent type 'invalid'
   // Valid types: researcher, coder, analyst, tester, coordinator
-  // See: https://docs.claude-flow.ai/agents/types
+  // See: https://docs.claude-zen.ai/agents/types
 }
 ```
 

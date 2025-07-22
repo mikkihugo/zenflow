@@ -4,7 +4,6 @@
  */
 
 const { spawn } = require('child_process');
-const readline = require('readline');
 
 // ANSI colors for pretty output
 const colors = {
@@ -185,7 +184,7 @@ This document outlines security requirements for PCI DSS Level 1 compliance for 
   }
 ];
 
-async function createDocumentViaMCP(doc) {
+async function _createDocumentViaMCP(doc) {
   return new Promise((resolve, reject) => {
     console.log(`\n${colors.cyan}📄 Creating ${doc.docType} for ${doc.service}...${colors.reset}`);
     

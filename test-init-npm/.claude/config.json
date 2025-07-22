@@ -2,7 +2,7 @@
   "version": "1.0.70",
   "project": {
     "name": "test-init-npm",
-    "type": "claude-flow",
+    "type": "claude-zen",
     "created": "2025-06-19T05:26:43.487Z"
   },
   "features": {

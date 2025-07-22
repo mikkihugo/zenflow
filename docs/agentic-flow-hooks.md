@@ -37,7 +37,7 @@ The Agentic Flow Hook System provides a comprehensive integration layer between 
 ### Installation
 
 ```bash
-npm install @claude-flow/agentic-hooks
+npm install @claude-zen/agentic-hooks
 ```
 
 ### Basic Usage
@@ -47,7 +47,7 @@ import {
   initializeAgenticFlowHooks, 
   createHookContext,
   agenticHookManager 
-} from '@claude-flow/agentic-hooks';
+} from '@claude-zen/agentic-hooks';
 
 // Initialize the hook system
 await initializeAgenticFlowHooks();
@@ -486,7 +486,7 @@ The hook system integrates seamlessly with Claude Flow's existing infrastructure
 
 ```typescript
 // In your Claude Flow command
-import { AgenticFlowHooks } from '@claude-flow/agentic-hooks';
+import { AgenticFlowHooks } from '@claude-zen/agentic-hooks';
 
 export const myCommand = {
   name: 'my-command',
@@ -526,7 +526,7 @@ export const myCommand = {
 Enable debug logging:
 
 ```typescript
-import { Logger } from '@claude-flow/core';
+import { Logger } from '@claude-zen/core';
 
 Logger.setLevel('debug');
 

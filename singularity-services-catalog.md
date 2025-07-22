@@ -162,13 +162,13 @@ Validate that our "Small Singularity" can handle the core workflows:
 
 ```bash
 # Test service document creation
-npx claude-flow@alpha service document create auth-service service-description
+npx claude-zen@alpha service document create auth-service service-description
 
 # Test cross-service coordination
-npx claude-flow@alpha swarm init --services auth-service,user-service,api-service
+npx claude-zen@alpha swarm init --services auth-service,user-service,api-service
 
 # Test approval workflows
-npx claude-flow@alpha service document approve auth-service service-adr --approver tech-lead
+npx claude-zen@alpha service document approve auth-service service-adr --approver tech-lead
 ```
 
 ---

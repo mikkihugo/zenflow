@@ -8,7 +8,7 @@ services:
       dockerfile: docker-test/test-pr228.dockerfile
       args:
         NODE_VERSION: 18
-    container_name: claude-flow-test-node18
+    container_name: claude-zen-test-node18
     environment:
       - NODE_ENV=test
       - CI=true
@@ -34,7 +34,7 @@ services:
       dockerfile: docker-test/test-pr228.dockerfile
       args:
         NODE_VERSION: 20
-    container_name: claude-flow-test-node20
+    container_name: claude-zen-test-node20
     environment:
       - NODE_ENV=test
       - CI=true
@@ -60,7 +60,7 @@ services:
       dockerfile: docker-test/test-pr228.dockerfile
       args:
         NODE_VERSION: 22
-    container_name: claude-flow-test-node22
+    container_name: claude-zen-test-node22
     environment:
       - NODE_ENV=test
       - CI=true  
@@ -82,7 +82,7 @@ services:
   # Summary service to aggregate results
   test-summary:
     image: node:20-alpine
-    container_name: claude-flow-test-summary
+    container_name: claude-zen-test-summary
     depends_on:
       - test-node18
       - test-node20

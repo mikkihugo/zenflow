@@ -20,7 +20,7 @@ describe('Hive Mind Database Schema - Issue #403', () => {
 
   beforeEach(async () => {
     // Create temporary test directory
-    testDir = path.join(os.tmpdir(), `claude-flow-hive-test-${Date.now()}`);
+    testDir = path.join(os.tmpdir(), `claude-zen-hive-test-${Date.now()}`);
     await fs.mkdir(testDir, { recursive: true });
     process.chdir(testDir);
     
@@ -42,10 +42,10 @@ describe('Hive Mind Database Schema - Issue #403', () => {
   describe('Database Initialization via Init Command', () => {
     it('should create database with correct schema through init command', async () => {
       // Run init command
-      execSync('npx claude-flow init', {
+      execSync('node /home/mhugo/code/claude-code-flow/src/cli/cli-main.js init', {
         cwd: testDir,
         stdio: 'pipe',
-        env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+        env: { ...process.env }
       });
 
       // Verify database file exists
@@ -71,10 +71,10 @@ describe('Hive Mind Database Schema - Issue #403', () => {
 
     it('should allow inserting agents without role value', async () => {
       // Run init command
-      execSync('npx claude-flow init', {
+      execSync('node /home/mhugo/code/claude-code-flow/src/cli/cli-main.js init', {
         cwd: testDir,
         stdio: 'pipe',
-        env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+        env: { ...process.env }
       });
 
       // Open database
@@ -108,10 +108,10 @@ describe('Hive Mind Database Schema - Issue #403', () => {
 
     it('should allow inserting agents with role value', async () => {
       // Run init command
-      execSync('npx claude-flow init', {
+      execSync('node /home/mhugo/code/claude-code-flow/src/cli/cli-main.js init', {
         cwd: testDir,
         stdio: 'pipe',
-        env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+        env: { ...process.env }
       });
 
       // Open database
@@ -216,10 +216,10 @@ describe('Hive Mind Database Schema - Issue #403', () => {
       db.close();
       
       // Now run init command which should handle the existing schema
-      execSync('npx claude-flow init --force', {
+      execSync('node /home/mhugo/code/claude-code-flow/src/cli/cli-main.js init --force', {
         cwd: testDir,
         stdio: 'pipe',
-        env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+        env: { ...process.env }
       });
       
       // Reopen and check if it was fixed
@@ -249,10 +249,10 @@ describe('Hive Mind Database Schema - Issue #403', () => {
   describe('Schema Consistency Tests', () => {
     it('should have consistent schema across all database creation paths', async () => {
       // Test schema from init command
-      execSync('npx claude-flow init', {
+      execSync('node /home/mhugo/code/claude-code-flow/src/cli/cli-main.js init', {
         cwd: testDir,
         stdio: 'pipe',
-        env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
+        env: { ...process.env }
       });
       
       db = new Database(dbPath);

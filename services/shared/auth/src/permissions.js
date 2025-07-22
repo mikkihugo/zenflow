@@ -4,7 +4,7 @@
  */
 
 // Permission definitions
-const PERMISSIONS = {
+export const PERMISSIONS = {
   // Vision permissions
   VISION_CREATE: 'vision:create',
   VISION_READ: 'vision:read',
@@ -41,7 +41,7 @@ const PERMISSIONS = {
 };
 
 // Role definitions with associated permissions
-const ROLES = {
+export const ROLES = {
   // Service roles
   SERVICE_BUSINESS: {
     name: 'service:business',
@@ -137,14 +137,14 @@ const ROLES = {
 };
 
 // Service to role mapping
-const SERVICE_ROLE_MAP = {
+export const SERVICE_ROLE_MAP = {
   'business-service': ROLES.SERVICE_BUSINESS,
   'core-service': ROLES.SERVICE_CORE,
   'swarm-service': ROLES.SERVICE_SWARM,
   'development-service': ROLES.SERVICE_DEVELOPMENT
 };
 
-class PermissionManager {
+export class PermissionManager {
   constructor() {
     this.permissions = PERMISSIONS;
     this.roles = ROLES;
@@ -292,20 +292,11 @@ class PermissionManager {
   }
 }
 
-// Singleton instance
 let instance;
 
-function getPermissionManager() {
+export function getPermissionManager() {
   if (!instance) {
     instance = new PermissionManager();
   }
   return instance;
 }
-
-module.exports = {
-  PERMISSIONS,
-  ROLES,
-  SERVICE_ROLE_MAP,
-  PermissionManager,
-  getPermissionManager
-};

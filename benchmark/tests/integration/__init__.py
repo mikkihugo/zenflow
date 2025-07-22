@@ -1,1 +1,1 @@
-"""Integration tests for claude-flow benchmarking"""
+"""Integration tests for claude-zen benchmarking"""

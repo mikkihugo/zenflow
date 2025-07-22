@@ -1,7 +1,7 @@
 # NPX SQLite Fallback Solution
 
 ## Issue
-When running `npx -y claude-flow@alpha init` in remote environments (GitHub Codespaces, Docker containers, CI/CD), the better-sqlite3 native module fails to load with binding errors.
+When running `npx -y claude-zen@alpha init` in remote environments (GitHub Codespaces, Docker containers, CI/CD), the better-sqlite3 native module fails to load with binding errors.
 
 ## Root Cause
 - `npx` creates temporary directories for package execution
@@ -78,7 +78,7 @@ The fallback is triggered by these errors:
 # If SQLite fails (npx environment)
 [WARN] SQLite initialization failed, falling back to in-memory store
 [INFO] Using in-memory store (data will not persist across sessions)
-[INFO] To enable persistent storage, install locally: npm install claude-flow@alpha
+[INFO] To enable persistent storage, install locally: npm install claude-zen@alpha
 ```
 
 ## Testing

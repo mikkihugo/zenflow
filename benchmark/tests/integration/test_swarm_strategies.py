@@ -197,7 +197,7 @@ class TestSwarmStrategies:
     
     def __init__(self):
         """Initialize test suite"""
-        self.claude_flow_path = Path(__file__).parent.parent.parent.parent / "claude-flow"
+        self.claude_zen_path = Path(__file__).parent.parent.parent.parent / "claude-zen"
         self.results: List[SwarmTestResult] = []
         self.temp_dirs: List[Path] = []
         self.process_monitor = None

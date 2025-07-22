@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Claude-Flow Root Directory Cleanup Script
+# Claude-Zen Root Directory Cleanup Script
 # This script organizes test files and documentation into appropriate directories
 
-echo "🧹 Starting Claude-Flow root directory cleanup..."
+echo "🧹 Starting Claude-Zen root directory cleanup..."
 
 # Create archive directories if they don't exist
 mkdir -p archive/reports
@@ -51,7 +51,7 @@ echo "- CLAUDE.md (Claude Code integration)"
 echo "- LICENSE"
 echo "- package.json & package-lock.json"
 echo "- Configuration files (.gitignore, .npmignore, etc.)"
-echo "- Main entry points (cli.js, claude-flow)"
+echo "- Main entry points (cli.js, claude-zen)"
 
 echo ""
 echo "📊 Cleanup Summary:"

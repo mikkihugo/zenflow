@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Deploy Claude Flow MCP Server to Cloudflare Workers
+# Deploy Claude Zen MCP Server to Cloudflare Workers
 
-echo "🚀 Deploying Claude Flow MCP Server to Cloudflare..."
+echo "🚀 Deploying Claude Zen MCP Server to Cloudflare..."
 
 # Check if API token is set
 if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
@@ -19,7 +19,7 @@ wrangler deploy
 if [ $? -eq 0 ]; then
     echo "✅ Deployment successful!"
     echo "🌍 Your MCP server is now available at:"
-    echo "   https://claude-flow-mcp.your-subdomain.workers.dev/mcp"
+    echo "   https://claude-zen-mcp.your-subdomain.workers.dev/mcp"
     echo "   https://fra-d1.in.centralcloud.net/mcp"
     echo ""
     echo "🔗 Add this to your Claude.ai configuration:"

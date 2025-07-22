@@ -9,45 +9,45 @@ This comprehensive troubleshooting guide covers common issues, diagnostic proced
 **Issue: Command not found after installation**
 ```bash
 # Diagnosis
-which claude-flow
+which claude-zen
 echo $PATH
-npm list -g claude-flow
+npm list -g claude-zen
 
 # Solutions
 # For NPM global installation
-npm install -g claude-flow
+npm install -g claude-zen
 npm bin -g  # Check global bin directory
 
 # For Deno installation
-deno info claude-flow
+deno info claude-zen
 export PATH="$HOME/.deno/bin:$PATH"
 echo 'export PATH="$HOME/.deno/bin:$PATH"' >> ~/.bashrc
 
 # Verify installation
-claude-flow --version
-claude-flow help
+claude-zen --version
+claude-zen help
 ```
 
 **Issue: Permission denied errors**
 ```bash
 # Diagnosis
-ls -la $(which claude-flow)
+ls -la $(which claude-zen)
 id
 groups
 
 # Solutions
 # Fix executable permissions
-chmod +x $(which claude-flow)
+chmod +x $(which claude-zen)
 
 # For NPM permission issues
 npm config set prefix ~/.npm-global
 export PATH=~/.npm-global/bin:$PATH
 
 # Use sudo for global installation (not recommended)
-sudo npm install -g claude-flow
+sudo npm install -g claude-zen
 
 # Alternative: Use npx without global installation
-npx claude-flow --version
+npx claude-zen --version
 ```
 
 **Issue: Deno compilation failures**
@@ -65,7 +65,7 @@ curl -fsSL https://deno.land/x/install/install.sh | sh
 deno cache --reload src/cli/index.ts
 
 # Manual compilation
-deno compile --allow-all --output bin/claude-flow src/cli/index.ts
+deno compile --allow-all --output bin/claude-zen src/cli/index.ts
 
 # Check dependencies
 deno info src/cli/index.ts
@@ -76,22 +76,22 @@ deno info src/cli/index.ts
 **Issue: Configuration file not found or invalid**
 ```bash
 # Diagnosis
-claude-flow config show
-ls -la claude-flow.config.json
-claude-flow config validate
+claude-zen config show
+ls -la claude-zen.config.json
+claude-zen config validate
 
 # Solutions
 # Initialize default configuration
-claude-flow config init
+claude-zen config init
 
 # Validate existing configuration
-claude-flow config validate --fix-issues
+claude-zen config validate --fix-issues
 
 # Use custom configuration path
-claude-flow --config /path/to/config.json start
+claude-zen --config /path/to/config.json start
 
 # Reset to defaults
-claude-flow config init --force --backup-existing
+claude-zen config init --force --backup-existing
 ```
 
 **Issue: Environment variable conflicts**
@@ -110,7 +110,7 @@ export CLAUDE_FLOW_CONFIG_PATH=/path/to/config.json
 export CLAUDE_FLOW_LOG_LEVEL=debug
 
 # Verify environment
-claude-flow config show --include-env
+claude-zen config show --include-env
 ```
 
 ## Agent Management Issues
@@ -120,9 +120,9 @@ claude-flow config show --include-env
 **Issue: Agents fail to spawn**
 ```bash
 # Diagnosis
-claude-flow agent list --all
-claude-flow system resources
-claude-flow logs --component orchestrator --level error
+claude-zen agent list --all
+claude-zen system resources
+claude-zen logs --component orchestrator --level error
 
 # Check system limits
 ulimit -a
@@ -131,55 +131,55 @@ df -h
 
 # Solutions
 # Increase resource limits
-claude-flow config set orchestrator.maxConcurrentAgents 5
-claude-flow config set memory.cacheSizeMB 256
+claude-zen config set orchestrator.maxConcurrentAgents 5
+claude-zen config set memory.cacheSizeMB 256
 
 # Clear stuck agent processes
-claude-flow agent cleanup --force
-claude-flow system reset --soft
+claude-zen agent cleanup --force
+claude-zen system reset --soft
 
 # Check for resource constraints
-claude-flow system optimize --free-memory
+claude-zen system optimize --free-memory
 ```
 
 **Issue: Agent communication failures**
 ```bash
 # Diagnosis
-claude-flow agent health --all
-claude-flow network diagnose
-claude-flow coordination queue status
+claude-zen agent health --all
+claude-zen network diagnose
+claude-zen coordination queue status
 
 # Solutions
 # Restart coordination manager
-claude-flow coordination restart
+claude-zen coordination restart
 
 # Clear message queues
-claude-flow coordination queue clear --confirm
+claude-zen coordination queue clear --confirm
 
 # Reset agent communication
-claude-flow agent reset-communication --all
+claude-zen agent reset-communication --all
 
 # Check network connectivity
-claude-flow network test --internal --external
+claude-zen network test --internal --external
 ```
 
 **Issue: Agents consuming excessive resources**
 ```bash
 # Diagnosis
-claude-flow agent resources --top 10
-claude-flow agent monitor <agent-id> --metrics memory,cpu
-top -p $(pgrep -f claude-flow)
+claude-zen agent resources --top 10
+claude-zen agent monitor <agent-id> --metrics memory,cpu
+top -p $(pgrep -f claude-zen)
 
 # Solutions
 # Set resource limits
-claude-flow agent update <agent-id> --memory-limit 1GB --cpu-limit 2
+claude-zen agent update <agent-id> --memory-limit 1GB --cpu-limit 2
 
 # Enable agent recycling
-claude-flow config set orchestrator.agentRecycling true
-claude-flow config set orchestrator.recycleThreshold 100
+claude-zen config set orchestrator.agentRecycling true
+claude-zen config set orchestrator.recycleThreshold 100
 
 # Restart resource-heavy agents
-claude-flow agent restart <agent-id> --graceful
+claude-zen agent restart <agent-id> --graceful
 ```
 
 ### Agent Performance Issues
@@ -187,20 +187,20 @@ claude-flow agent restart <agent-id> --graceful
 **Issue: Agents responding slowly**
 ```bash
 # Diagnosis
-claude-flow agent performance-analysis --all
-claude-flow task queue-analysis
-claude-flow system performance --detailed
+claude-zen agent performance-analysis --all
+claude-zen task queue-analysis
+claude-zen system performance --detailed
 
 # Solutions
 # Optimize task distribution
-claude-flow task rebalance --strategy performance
-claude-flow coordination optimize
+claude-zen task rebalance --strategy performance
+claude-zen coordination optimize
 
 # Increase parallelism
-claude-flow config set coordination.maxConcurrentTasks 10
+claude-zen config set coordination.maxConcurrentTasks 10
 
 # Clear performance bottlenecks
-claude-flow performance optimize --focus agents
+claude-zen performance optimize --focus agents
 ```
 
 ## Task Coordination Problems
@@ -210,59 +210,59 @@ claude-flow performance optimize --focus agents
 **Issue: Tasks stuck in pending state**
 ```bash
 # Diagnosis
-claude-flow task list --status pending --detailed
-claude-flow coordination deadlock-check
-claude-flow task dependencies --check-cycles
+claude-zen task list --status pending --detailed
+claude-zen coordination deadlock-check
+claude-zen task dependencies --check-cycles
 
 # Solutions
 # Resolve deadlocks automatically
-claude-flow coordination deadlock-resolve --auto
+claude-zen coordination deadlock-resolve --auto
 
 # Manual task intervention
-claude-flow task force-assign <task-id> --agent <agent-id>
-claude-flow task clear-dependencies <task-id> --unsafe
+claude-zen task force-assign <task-id> --agent <agent-id>
+claude-zen task clear-dependencies <task-id> --unsafe
 
 # Reset task queue
-claude-flow coordination queue reset --type pending --backup
+claude-zen coordination queue reset --type pending --backup
 ```
 
 **Issue: Task execution timeouts**
 ```bash
 # Diagnosis
-claude-flow task logs <task-id> --tail 100
-claude-flow agent info <agent-id> --current-task
-claude-flow coordination timeout-analysis
+claude-zen task logs <task-id> --tail 100
+claude-zen agent info <agent-id> --current-task
+claude-zen coordination timeout-analysis
 
 # Solutions
 # Increase timeouts
-claude-flow config set coordination.resourceTimeout 300000
-claude-flow task update <task-id> --timeout 600s
+claude-zen config set coordination.resourceTimeout 300000
+claude-zen task update <task-id> --timeout 600s
 
 # Optimize task execution
-claude-flow task optimize <task-id> --strategy speed
-claude-flow task split <task-id> --subtasks 3
+claude-zen task optimize <task-id> --strategy speed
+claude-zen task split <task-id> --subtasks 3
 
 # Force task completion
-claude-flow task force-complete <task-id> --with-partial-results
+claude-zen task force-complete <task-id> --with-partial-results
 ```
 
 **Issue: Dependency resolution failures**
 ```bash
 # Diagnosis
-claude-flow task dependencies <task-id> --validate
-claude-flow task dependency-graph --check-cycles
-claude-flow coordination dependency-analysis
+claude-zen task dependencies <task-id> --validate
+claude-zen task dependency-graph --check-cycles
+claude-zen coordination dependency-analysis
 
 # Solutions
 # Fix circular dependencies
-claude-flow task fix-dependencies <task-id> --break-cycles
+claude-zen task fix-dependencies <task-id> --break-cycles
 
 # Manual dependency override
-claude-flow task clear-dependencies <task-id> --selective
-claude-flow task add-dependency <task-id> --depends-on <other-task-id>
+claude-zen task clear-dependencies <task-id> --selective
+claude-zen task add-dependency <task-id> --depends-on <other-task-id>
 
 # Reset dependency graph
-claude-flow coordination reset-dependencies --rebuild
+claude-zen coordination reset-dependencies --rebuild
 ```
 
 ### Workflow Execution Issues
@@ -270,20 +270,20 @@ claude-flow coordination reset-dependencies --rebuild
 **Issue: Workflows failing to start**
 ```bash
 # Diagnosis
-claude-flow task workflow validate <workflow-file>
-claude-flow task workflow simulate <workflow-file> --dry-run
-claude-flow coordination workflow-analysis
+claude-zen task workflow validate <workflow-file>
+claude-zen task workflow simulate <workflow-file> --dry-run
+claude-zen coordination workflow-analysis
 
 # Solutions
 # Fix workflow definition
-claude-flow task workflow fix <workflow-file> --auto-correct
-claude-flow task workflow validate <workflow-file> --strict
+claude-zen task workflow fix <workflow-file> --auto-correct
+claude-zen task workflow validate <workflow-file> --strict
 
 # Manual workflow execution
-claude-flow task workflow execute <workflow-file> --force --ignore-warnings
+claude-zen task workflow execute <workflow-file> --force --ignore-warnings
 
 # Workflow debugging
-claude-flow task workflow debug <workflow-id> --step-by-step
+claude-zen task workflow debug <workflow-id> --step-by-step
 ```
 
 ## Memory System Issues
@@ -293,61 +293,61 @@ claude-flow task workflow debug <workflow-id> --step-by-step
 **Issue: Memory conflicts between agents**
 ```bash
 # Diagnosis
-claude-flow memory conflicts --check-all
-claude-flow memory integrity-check --detailed
-claude-flow memory sync-status
+claude-zen memory conflicts --check-all
+claude-zen memory integrity-check --detailed
+claude-zen memory sync-status
 
 # Solutions
 # Resolve conflicts automatically
-claude-flow memory resolve-conflicts --strategy crdt
-claude-flow memory rebuild-index --force
+claude-zen memory resolve-conflicts --strategy crdt
+claude-zen memory rebuild-index --force
 
 # Manual conflict resolution
-claude-flow memory conflicts list --unresolved
-claude-flow memory resolve-conflict <conflict-id> --manual
+claude-zen memory conflicts list --unresolved
+claude-zen memory resolve-conflict <conflict-id> --manual
 
 # Reset memory synchronization
-claude-flow memory sync-reset --full-rebuild
+claude-zen memory sync-reset --full-rebuild
 ```
 
 **Issue: Memory usage growing unchecked**
 ```bash
 # Diagnosis
-claude-flow memory stats --detailed --breakdown
-claude-flow memory analyze --size-distribution
-du -sh ~/.claude-flow/memory/*
+claude-zen memory stats --detailed --breakdown
+claude-zen memory analyze --size-distribution
+du -sh ~/.claude-zen/memory/*
 
 # Solutions
 # Immediate cleanup
-claude-flow memory cleanup --aggressive
-claude-flow memory compact --force
+claude-zen memory cleanup --aggressive
+claude-zen memory compact --force
 
 # Configure retention
-claude-flow config set memory.retentionDays 14
-claude-flow config set memory.compressionEnabled true
+claude-zen config set memory.retentionDays 14
+claude-zen config set memory.compressionEnabled true
 
 # Archive old data
-claude-flow memory archive --older-than 30d --compress
+claude-zen memory archive --older-than 30d --compress
 ```
 
 **Issue: Memory corruption or data loss**
 ```bash
 # Diagnosis
-claude-flow memory integrity-check --full
-claude-flow memory validate --all-entries
-claude-flow memory backup-status
+claude-zen memory integrity-check --full
+claude-zen memory validate --all-entries
+claude-zen memory backup-status
 
 # Solutions
 # Restore from backup
-claude-flow memory restore --backup latest --verify
-claude-flow memory rebuild-from-logs --since last-good-backup
+claude-zen memory restore --backup latest --verify
+claude-zen memory rebuild-from-logs --since last-good-backup
 
 # Repair corrupted data
-claude-flow memory repair --fix-corruption --backup-first
-claude-flow memory rebuild-index --verify-integrity
+claude-zen memory repair --fix-corruption --backup-first
+claude-zen memory rebuild-index --verify-integrity
 
 # Emergency data recovery
-claude-flow memory emergency-recovery --from-fragments
+claude-zen memory emergency-recovery --from-fragments
 ```
 
 ### Memory Performance Issues
@@ -355,22 +355,22 @@ claude-flow memory emergency-recovery --from-fragments
 **Issue: Slow memory operations**
 ```bash
 # Diagnosis
-claude-flow memory performance-analysis
-claude-flow memory cache-analysis
-claude-flow memory index-analysis
+claude-zen memory performance-analysis
+claude-zen memory cache-analysis
+claude-zen memory index-analysis
 
 # Solutions
 # Optimize cache settings
-claude-flow config set memory.cacheSizeMB 512
-claude-flow memory cache-optimize --preload frequently-accessed
+claude-zen config set memory.cacheSizeMB 512
+claude-zen memory cache-optimize --preload frequently-accessed
 
 # Rebuild indexes
-claude-flow memory rebuild-indexes --parallel
-claude-flow memory optimize-queries --create-missing-indexes
+claude-zen memory rebuild-indexes --parallel
+claude-zen memory optimize-queries --create-missing-indexes
 
 # Database optimization
-claude-flow memory vacuum --full
-claude-flow memory analyze-statistics
+claude-zen memory vacuum --full
+claude-zen memory analyze-statistics
 ```
 
 ## Terminal Management Issues
@@ -380,60 +380,60 @@ claude-flow memory analyze-statistics
 **Issue: Terminal sessions not starting**
 ```bash
 # Diagnosis
-claude-flow terminal pool status
-claude-flow terminal diagnose --all
-claude-flow system check --terminal
+claude-zen terminal pool status
+claude-zen terminal diagnose --all
+claude-zen system check --terminal
 
 # Solutions
 # Reset terminal pool
-claude-flow terminal pool reset --force
-claude-flow terminal pool initialize --rebuild
+claude-zen terminal pool reset --force
+claude-zen terminal pool initialize --rebuild
 
 # Check shell availability
 which bash zsh sh
 echo $SHELL
 
 # Fix terminal configuration
-claude-flow config set terminal.type auto
-claude-flow config set terminal.shellPreference '["bash","zsh","sh"]'
+claude-zen config set terminal.type auto
+claude-zen config set terminal.shellPreference '["bash","zsh","sh"]'
 ```
 
 **Issue: Commands hanging or timing out**
 ```bash
 # Diagnosis
-claude-flow terminal logs <session-id> --tail 50
-claude-flow terminal performance <session-id>
-ps aux | grep claude-flow
+claude-zen terminal logs <session-id> --tail 50
+claude-zen terminal performance <session-id>
+ps aux | grep claude-zen
 
 # Solutions
 # Increase command timeout
-claude-flow config set terminal.commandTimeout 600000
+claude-zen config set terminal.commandTimeout 600000
 
 # Kill hanging processes
-claude-flow terminal kill-hanging --force
-pkill -f "claude-flow.*terminal"
+claude-zen terminal kill-hanging --force
+pkill -f "claude-zen.*terminal"
 
 # Restart terminal session
-claude-flow terminal restart <session-id> --clean-state
+claude-zen terminal restart <session-id> --clean-state
 ```
 
 **Issue: Terminal pool exhaustion**
 ```bash
 # Diagnosis
-claude-flow terminal pool stats --utilization
-claude-flow terminal list --status all
-claude-flow system resources --terminals
+claude-zen terminal pool stats --utilization
+claude-zen terminal list --status all
+claude-zen system resources --terminals
 
 # Solutions
 # Increase pool size
-claude-flow config set terminal.poolSize 20
+claude-zen config set terminal.poolSize 20
 
 # Clean up idle sessions
-claude-flow terminal cleanup --idle-timeout 30m
-claude-flow terminal pool recycle --force
+claude-zen terminal cleanup --idle-timeout 30m
+claude-zen terminal pool recycle --force
 
 # Optimize session reuse
-claude-flow config set terminal.recycleAfter 50
+claude-zen config set terminal.recycleAfter 50
 ```
 
 ### Multi-Terminal Coordination Issues
@@ -441,21 +441,21 @@ claude-flow config set terminal.recycleAfter 50
 **Issue: Multi-terminal workflows failing**
 ```bash
 # Diagnosis
-claude-flow terminal multi-status <workflow-name>
-claude-flow terminal dependency-check <workflow-name>
-claude-flow terminal logs-aggregate <workflow-name>
+claude-zen terminal multi-status <workflow-name>
+claude-zen terminal dependency-check <workflow-name>
+claude-zen terminal logs-aggregate <workflow-name>
 
 # Solutions
 # Fix dependency issues
-claude-flow terminal multi-fix-dependencies <workflow-name>
-claude-flow terminal restart-failed <workflow-name>
+claude-zen terminal multi-fix-dependencies <workflow-name>
+claude-zen terminal restart-failed <workflow-name>
 
 # Manual workflow recovery
-claude-flow terminal multi-recover <workflow-name> --from-checkpoint
-claude-flow terminal multi-restart <workflow-name> --selective
+claude-zen terminal multi-recover <workflow-name> --from-checkpoint
+claude-zen terminal multi-restart <workflow-name> --selective
 
 # Simplify workflow
-claude-flow terminal multi-optimize <workflow-name> --reduce-dependencies
+claude-zen terminal multi-optimize <workflow-name> --reduce-dependencies
 ```
 
 ## MCP Integration Issues
@@ -465,60 +465,60 @@ claude-flow terminal multi-optimize <workflow-name> --reduce-dependencies
 **Issue: MCP server not starting**
 ```bash
 # Diagnosis
-claude-flow mcp status --detailed
-claude-flow mcp logs --tail 100
+claude-zen mcp status --detailed
+claude-zen mcp logs --tail 100
 netstat -tulpn | grep 3000
 
 # Solutions
 # Change MCP port
-claude-flow config set mcp.port 3001
-claude-flow mcp restart
+claude-zen config set mcp.port 3001
+claude-zen mcp restart
 
 # Fix port conflicts
 lsof -i :3000
 kill -9 $(lsof -t -i:3000)
 
 # Validate MCP configuration
-claude-flow mcp validate-config --fix-issues
+claude-zen mcp validate-config --fix-issues
 ```
 
 **Issue: Tools not responding or timing out**
 ```bash
 # Diagnosis
-claude-flow mcp tools list --health
-claude-flow mcp tools test <tool-name> --verbose
-claude-flow mcp monitor --tools all
+claude-zen mcp tools list --health
+claude-zen mcp tools test <tool-name> --verbose
+claude-zen mcp monitor --tools all
 
 # Solutions
 # Restart MCP tools
-claude-flow mcp tools restart <tool-name>
-claude-flow mcp tools refresh-registry
+claude-zen mcp tools restart <tool-name>
+claude-zen mcp tools refresh-registry
 
 # Increase timeouts
-claude-flow config set mcp.requestTimeout 60000
+claude-zen config set mcp.requestTimeout 60000
 
 # Tool debugging
-claude-flow mcp tools debug <tool-name> --trace
+claude-zen mcp tools debug <tool-name> --trace
 ```
 
 **Issue: Tool authentication failures**
 ```bash
 # Diagnosis
-claude-flow mcp auth status
-claude-flow mcp tools permissions check <tool-name>
-claude-flow mcp audit --auth-failures
+claude-zen mcp auth status
+claude-zen mcp tools permissions check <tool-name>
+claude-zen mcp audit --auth-failures
 
 # Solutions
 # Regenerate tokens
-claude-flow mcp auth regenerate-tokens --all
-claude-flow mcp auth refresh-permissions
+claude-zen mcp auth regenerate-tokens --all
+claude-zen mcp auth refresh-permissions
 
 # Fix permission issues
-claude-flow mcp permissions repair <tool-name>
-claude-flow mcp auth validate --fix-invalid
+claude-zen mcp permissions repair <tool-name>
+claude-zen mcp auth validate --fix-invalid
 
 # Reset authentication
-claude-flow mcp auth reset --confirm
+claude-zen mcp auth reset --confirm
 ```
 
 ### Tool Integration Issues
@@ -526,21 +526,21 @@ claude-flow mcp auth reset --confirm
 **Issue: Custom tools not loading**
 ```bash
 # Diagnosis
-claude-flow mcp tools validate <tool-path>
-claude-flow mcp tools registry status
+claude-zen mcp tools validate <tool-path>
+claude-zen mcp tools registry status
 ls -la /path/to/tools/
 
 # Solutions
 # Reinstall tools
-claude-flow mcp tools reinstall <tool-name>
-claude-flow mcp tools register --force <tool-path>
+claude-zen mcp tools reinstall <tool-name>
+claude-zen mcp tools register --force <tool-path>
 
 # Fix tool permissions
 chmod +x /path/to/tools/*
-claude-flow mcp tools fix-permissions --all
+claude-zen mcp tools fix-permissions --all
 
 # Rebuild tool registry
-claude-flow mcp tools rebuild-registry
+claude-zen mcp tools rebuild-registry
 ```
 
 ## Network and Connectivity Issues
@@ -550,13 +550,13 @@ claude-flow mcp tools rebuild-registry
 **Issue: Network connectivity problems**
 ```bash
 # Diagnosis
-claude-flow network test --comprehensive
+claude-zen network test --comprehensive
 ping -c 4 8.8.8.8
 curl -I https://api.github.com
 
 # Solutions
 # Configure proxy settings
-claude-flow config set network.proxy "http://proxy.company.com:8080"
+claude-zen config set network.proxy "http://proxy.company.com:8080"
 export HTTP_PROXY=http://proxy.company.com:8080
 export HTTPS_PROXY=http://proxy.company.com:8080
 
@@ -581,11 +581,11 @@ sudo apt-get update && sudo apt-get install ca-certificates
 sudo update-ca-certificates
 
 # Disable SSL verification (development only)
-claude-flow config set network.verifySSL false
+claude-zen config set network.verifySSL false
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # Custom certificate handling
-claude-flow config set network.customCA "/path/to/ca-cert.pem"
+claude-zen config set network.customCA "/path/to/ca-cert.pem"
 ```
 
 ## Performance and Resource Issues
@@ -595,41 +595,41 @@ claude-flow config set network.customCA "/path/to/ca-cert.pem"
 **Issue: High CPU or memory usage**
 ```bash
 # Diagnosis
-claude-flow system resources --detailed
-top -p $(pgrep -f claude-flow)
+claude-zen system resources --detailed
+top -p $(pgrep -f claude-zen)
 htop
 
 # Solutions
 # Optimize performance settings
-claude-flow performance optimize --profile production
-claude-flow config set orchestrator.resourceAllocationStrategy memory-optimized
+claude-zen performance optimize --profile production
+claude-zen config set orchestrator.resourceAllocationStrategy memory-optimized
 
 # Limit resource usage
-claude-flow config set orchestrator.maxConcurrentAgents 5
-claude-flow config set memory.cacheSizeMB 128
+claude-zen config set orchestrator.maxConcurrentAgents 5
+claude-zen config set memory.cacheSizeMB 128
 
 # Enable resource monitoring
-claude-flow monitoring enable --alerts true
+claude-zen monitoring enable --alerts true
 ```
 
 **Issue: Slow response times**
 ```bash
 # Diagnosis
-claude-flow performance analyze --duration 5m
-claude-flow benchmark --comprehensive
-claude-flow bottleneck-analysis
+claude-zen performance analyze --duration 5m
+claude-zen benchmark --comprehensive
+claude-zen bottleneck-analysis
 
 # Solutions
 # Performance tuning
-claude-flow performance tune --aggressive
-claude-flow cache optimize --preload
+claude-zen performance tune --aggressive
+claude-zen cache optimize --preload
 
 # Parallel processing optimization
-claude-flow config set coordination.maxConcurrentTasks 8
-claude-flow config set terminal.maxConcurrentCommands 10
+claude-zen config set coordination.maxConcurrentTasks 8
+claude-zen config set terminal.maxConcurrentCommands 10
 
 # Database optimization
-claude-flow memory optimize --rebuild-indexes
+claude-zen memory optimize --rebuild-indexes
 ```
 
 ### Resource Exhaustion
@@ -638,13 +638,13 @@ claude-flow memory optimize --rebuild-indexes
 ```bash
 # Diagnosis
 free -h
-claude-flow memory usage --breakdown
+claude-zen memory usage --breakdown
 dmesg | grep -i "out of memory"
 
 # Solutions
 # Free memory immediately
-claude-flow memory cleanup --emergency
-claude-flow cache clear --all
+claude-zen memory cleanup --emergency
+claude-zen cache clear --all
 
 # Increase swap space
 sudo fallocate -l 2G /swapfile
@@ -653,29 +653,29 @@ sudo mkswap /swapfile
 sudo swapon /swapfile
 
 # Optimize memory settings
-claude-flow config set memory.cacheSizeMB 64
-claude-flow config set orchestrator.maxConcurrentAgents 3
+claude-zen config set memory.cacheSizeMB 64
+claude-zen config set orchestrator.maxConcurrentAgents 3
 ```
 
 **Issue: Disk space exhaustion**
 ```bash
 # Diagnosis
 df -h
-du -sh ~/.claude-flow/*
-claude-flow disk-usage --analyze
+du -sh ~/.claude-zen/*
+claude-zen disk-usage --analyze
 
 # Solutions
 # Clean up immediately
-claude-flow cleanup --aggressive --logs --cache --temp
-claude-flow memory archive --compress --older-than 7d
+claude-zen cleanup --aggressive --logs --cache --temp
+claude-zen memory archive --compress --older-than 7d
 
 # Configure retention policies
-claude-flow config set logging.maxFileSize "5MB"
-claude-flow config set logging.maxFiles 3
-claude-flow config set memory.retentionDays 7
+claude-zen config set logging.maxFileSize "5MB"
+claude-zen config set logging.maxFiles 3
+claude-zen config set memory.retentionDays 7
 
 # Move data to larger disk
-claude-flow migrate --data-directory /mnt/large-disk/claude-flow
+claude-zen migrate --data-directory /mnt/large-disk/claude-zen
 ```
 
 ## Debugging and Diagnostic Tools
@@ -685,24 +685,24 @@ claude-flow migrate --data-directory /mnt/large-disk/claude-flow
 **Comprehensive System Check:**
 ```bash
 # Full system diagnostic
-claude-flow diagnose --comprehensive --output diagnostic-report.json
+claude-zen diagnose --comprehensive --output diagnostic-report.json
 
 # Component-specific diagnostics
-claude-flow diagnose --component orchestrator --verbose
-claude-flow diagnose --component memory --include-performance
-claude-flow diagnose --component terminal --check-compatibility
-claude-flow diagnose --component mcp --test-tools
+claude-zen diagnose --component orchestrator --verbose
+claude-zen diagnose --component memory --include-performance
+claude-zen diagnose --component terminal --check-compatibility
+claude-zen diagnose --component mcp --test-tools
 ```
 
 **Performance Diagnostics:**
 ```bash
 # Performance profiling
-claude-flow profile --duration 10m --output performance-profile.json
-claude-flow benchmark --save-baseline baseline-$(date +%Y%m%d).json
+claude-zen profile --duration 10m --output performance-profile.json
+claude-zen benchmark --save-baseline baseline-$(date +%Y%m%d).json
 
 # Resource monitoring
-claude-flow monitor --real-time --all-components
-claude-flow resources --continuous --alert-thresholds "cpu:80,memory:90"
+claude-zen monitor --real-time --all-components
+claude-zen resources --continuous --alert-thresholds "cpu:80,memory:90"
 ```
 
 ### Log Analysis
@@ -710,16 +710,16 @@ claude-flow resources --continuous --alert-thresholds "cpu:80,memory:90"
 **Centralized Log Analysis:**
 ```bash
 # View all system logs
-claude-flow logs --all-components --since 1h
-claude-flow logs --level error --grep "failed\|timeout\|error"
+claude-zen logs --all-components --since 1h
+claude-zen logs --level error --grep "failed\|timeout\|error"
 
 # Export logs for analysis
-claude-flow logs export --format json --output logs-$(date +%Y%m%d).json
-claude-flow logs aggregate --time-range 24h --analysis true
+claude-zen logs export --format json --output logs-$(date +%Y%m%d).json
+claude-zen logs aggregate --time-range 24h --analysis true
 
 # Search and filter logs
-claude-flow logs search "memory" --component orchestrator --time-range 6h
-claude-flow logs pattern-analysis --detect-anomalies
+claude-zen logs search "memory" --component orchestrator --time-range 6h
+claude-zen logs pattern-analysis --detect-anomalies
 ```
 
 ### Debug Information Collection
@@ -727,7 +727,7 @@ claude-flow logs pattern-analysis --detect-anomalies
 **Collecting Debug Information:**
 ```bash
 # Generate comprehensive debug package
-claude-flow debug-info collect \
+claude-zen debug-info collect \
   --include-system \
   --include-logs \
   --include-configs \
@@ -735,7 +735,7 @@ claude-flow debug-info collect \
   --output debug-package-$(date +%Y%m%d).tar.gz
 
 # Privacy-safe debug collection
-claude-flow debug-info collect \
+claude-zen debug-info collect \
   --sanitize-sensitive \
   --exclude-data \
   --include-structure-only \
@@ -749,30 +749,30 @@ claude-flow debug-info collect \
 **System Recovery Procedures:**
 ```bash
 # Safe mode startup
-claude-flow start --safe-mode --minimal-agents --read-only-memory
+claude-zen start --safe-mode --minimal-agents --read-only-memory
 
 # System reset (soft)
-claude-flow reset --soft --backup-data --preserve-config
+claude-zen reset --soft --backup-data --preserve-config
 
 # System reset (hard) - use with caution
-claude-flow reset --hard --confirm --backup-location /tmp/claude-flow-backup
+claude-zen reset --hard --confirm --backup-location /tmp/claude-zen-backup
 
 # Restore from backup
-claude-flow restore --backup claude-flow-backup-20241215.tar.gz --verify
+claude-zen restore --backup claude-zen-backup-20241215.tar.gz --verify
 ```
 
 **Data Recovery:**
 ```bash
 # Memory data recovery
-claude-flow memory recover --from-logs --since last-backup
-claude-flow memory rebuild --verify-integrity
+claude-zen memory recover --from-logs --since last-backup
+claude-zen memory rebuild --verify-integrity
 
 # Configuration recovery
-claude-flow config restore --from-backup --merge-with-current
-claude-flow config repair --fix-corruption
+claude-zen config restore --from-backup --merge-with-current
+claude-zen config repair --fix-corruption
 
 # Emergency data export
-claude-flow export --emergency --all-data --output emergency-export.json
+claude-zen export --emergency --all-data --output emergency-export.json
 ```
 
 ## Getting Additional Help
@@ -782,14 +782,14 @@ claude-flow export --emergency --all-data --output emergency-export.json
 **Interactive Help:**
 ```bash
 # General help
-claude-flow help
-claude-flow <command> --help
+claude-zen help
+claude-zen <command> --help
 
 # Interactive troubleshooting wizard
-claude-flow troubleshoot --interactive --guided
+claude-zen troubleshoot --interactive --guided
 
 # Self-diagnostic with auto-fix
-claude-flow self-check --fix-issues --report-problems
+claude-zen self-check --fix-issues --report-problems
 ```
 
 ### Support Resources
@@ -797,19 +797,19 @@ claude-flow self-check --fix-issues --report-problems
 **Community Support:**
 - **GitHub Issues**: https://github.com/ruvnet/claude-code-flow/issues
 - **Discussions**: https://github.com/ruvnet/claude-code-flow/discussions
-- **Discord Community**: https://discord.gg/claude-flow
+- **Discord Community**: https://discord.gg/claude-zen
 
 **Professional Support:**
-- **Enterprise Support**: support@claude-flow.dev
-- **Consulting Services**: consulting@claude-flow.dev
-- **Training Programs**: training@claude-flow.dev
+- **Enterprise Support**: support@claude-zen.dev
+- **Consulting Services**: consulting@claude-zen.dev
+- **Training Programs**: training@claude-zen.dev
 
 ### Reporting Issues
 
 **Issue Reporting:**
 ```bash
 # Generate issue report
-claude-flow report-issue \
+claude-zen report-issue \
   --title "Agent communication failures" \
   --description "Detailed problem description" \
   --include-diagnostics \
@@ -824,8 +824,8 @@ gh issue create \
 ```
 
 **Best Practices for Issue Reporting:**
-1. Include Claude-Flow version: `claude-flow --version`
-2. Provide system information: `claude-flow system-info`
+1. Include Claude-Flow version: `claude-zen --version`
+2. Provide system information: `claude-zen system-info`
 3. Include relevant logs and error messages
 4. Describe steps to reproduce the issue
 5. Mention any recent configuration changes

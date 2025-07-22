@@ -38,12 +38,12 @@ your-project/
 ├── memory/
 │   ├── agents/           # Agent-specific memory
 │   ├── sessions/         # Session storage
-│   └── claude-flow-data.json
+│   └── claude-zen-data.json
 ├── coordination/
 │   ├── memory_bank/      # Shared memory
 │   ├── subtasks/         # Task breakdown
 │   └── orchestration/    # Workflow coordination
-└── ./claude-flow         # Local executable wrapper
+└── ./claude-zen         # Local executable wrapper
 ```
 
 ## Template Types
@@ -58,7 +58,7 @@ your-project/
 - Standard performance optimizations
 
 ```bash
-npx claude-flow init --sparc
+npx claude-zen init --sparc
 ```
 
 **Generated CLAUDE.md includes:**
@@ -77,7 +77,7 @@ npx claude-flow init --sparc
 - Stricter best practices enforcement
 
 ```bash
-npx claude-flow init --sparc --force
+npx claude-zen init --sparc --force
 ```
 
 **Enhanced features:**
@@ -96,7 +96,7 @@ npx claude-flow init --sparc --force
 - Faster initialization
 
 ```bash
-npx claude-flow init --minimal
+npx claude-zen init --minimal
 ```
 
 **Minimal set includes:**
@@ -241,16 +241,16 @@ For complex projects requiring multiple configurations:
 
 ```bash
 # Initialize base structure
-npx claude-flow init --sparc --force
+npx claude-zen init --sparc --force
 
 # Add frontend-specific configuration
-npx claude-flow template add frontend --type react
+npx claude-zen template add frontend --type react
 
 # Add backend-specific configuration  
-npx claude-flow template add backend --type nodejs-api
+npx claude-zen template add backend --type nodejs-api
 
 # Add mobile configuration
-npx claude-flow template add mobile --type react-native
+npx claude-zen template add mobile --type react-native
 ```
 
 ### Template Inheritance
@@ -372,7 +372,7 @@ registerTemplate('my-custom', {
 
 ### Step 3: Use Custom Template
 ```bash
-npx claude-flow init --template my-custom --project-type web --framework react
+npx claude-zen init --template my-custom --project-type web --framework react
 ```
 
 ## Template Validation
@@ -426,11 +426,11 @@ Create npm packages for reusable templates:
 
 ```json
 {
-  "name": "@company/claude-flow-templates",
+  "name": "@company/claude-zen-templates",
   "version": "1.0.0",
   "description": "Company-specific Claude-Flow templates",
   "main": "index.js",
-  "keywords": ["claude-flow", "templates", "development"],
+  "keywords": ["claude-zen", "templates", "development"],
   "files": ["templates/", "README.md"]
 }
 ```
@@ -440,10 +440,10 @@ Contribute to the community template registry:
 
 ```bash
 # Submit template for review
-npx claude-flow template submit my-template.js
+npx claude-zen template submit my-template.js
 
 # Install community template
-npx claude-flow template install @community/react-template
+npx claude-zen template install @community/react-template
 ```
 
 ## Migration and Updates
@@ -460,7 +460,7 @@ When updating templates:
 ### Automated Migration
 ```bash
 # Migrate to new template version
-npx claude-flow template migrate --from 1.0 --to 2.0 --preserve-custom
+npx claude-zen template migrate --from 1.0 --to 2.0 --preserve-custom
 ```
 
 ## Troubleshooting Templates
@@ -485,7 +485,7 @@ npx claude-flow template migrate --from 1.0 --to 2.0 --preserve-custom
 ### Debug Mode
 ```bash
 # Debug template generation
-npx claude-flow init --template custom --debug --verbose
+npx claude-zen init --template custom --debug --verbose
 ```
 
 ## Contributing Templates

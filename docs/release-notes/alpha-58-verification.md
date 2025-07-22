@@ -45,7 +45,7 @@
 - Hive-mind specific tests: No dedicated tests found
 
 ### Integration Testing
-- CLI commands functional via `./bin/claude-flow`
+- CLI commands functional via `./bin/claude-zen`
 - Hive-mind wizard runs but shows database schema warning
 - Core functionality operational
 

@@ -70,7 +70,7 @@ class BuildMonitor {
     try {
       // Check for swarm agent updates
       const result = await new Promise((resolve) => {
-        exec('npx ruv-swarm hook pre-search --query "agent-progress" --cache-results true', 
+        exec('npx claude-zen hooks pre-search --query "agent-progress" --cache-results true', 
           (error, stdout) => {
             resolve(stdout || '');
           }
@@ -136,7 +136,7 @@ class BuildMonitor {
 
   async storeProgress(buildResult) {
     try {
-      exec(`npx ruv-swarm hook notification --message "BUILD PROGRESS: ${buildResult.errorCount} errors remaining (${this.errorCount - buildResult.errorCount} fixed)" --telemetry true`);
+      exec(`npx claude-zen hooks notification --message "BUILD PROGRESS: ${buildResult.errorCount} errors remaining (${this.errorCount - buildResult.errorCount} fixed)" --telemetry true`);
     } catch (error) {
       console.error('Failed to store progress:', error.message);
     }
@@ -147,7 +147,7 @@ class BuildMonitor {
     console.log(message);
     
     try {
-      exec(`npx ruv-swarm hook notification --message "${message}" --telemetry true`);
+      exec(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
       console.error('Failed to alert swarm:', error.message);
     }
@@ -158,7 +158,7 @@ class BuildMonitor {
     console.log(message);
     
     try {
-      exec(`npx ruv-swarm hook notification --message "${message}" --telemetry true`);
+      exec(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
       console.error('Failed to alert regression:', error.message);
     }
@@ -179,8 +179,8 @@ class BuildMonitor {
     console.log('✅ Ready for alpha release');
     
     try {
-      exec(`npx ruv-swarm hook notification --message "🏆 ALPHA CERTIFICATION: Zero errors achieved! Build ready for alpha release." --telemetry true`);
-      exec(`npx ruv-swarm hook post-task --task-id "alpha-build-verification" --analyze-performance true`);
+      exec(`npx claude-zen hooks notification --message "🏆 ALPHA CERTIFICATION: Zero errors achieved! Build ready for alpha release." --telemetry true`);
+      exec(`npx claude-zen hooks post-task --task-id "alpha-build-verification" --analyze-performance true`);
     } catch (error) {
       console.error('Failed to certify alpha:', error.message);
     }

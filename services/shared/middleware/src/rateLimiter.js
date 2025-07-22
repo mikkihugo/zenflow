@@ -282,8 +282,4 @@ const presets = {
   }
 };
 
-module.exports = {
-  RateLimiter,
-  createRateLimiter,
-  presets
-};
+export { RateLimiter, createRateLimiter, presets };

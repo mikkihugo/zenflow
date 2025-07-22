@@ -3,17 +3,17 @@
  * Tests for vision-to-code execution, Claude Code integration, and implementation workflows
  */
 
-const { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } = require('@jest/globals');
-const axios = require('axios');
-const fs = require('fs').promises;
-const path = require('path');
-const { 
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } from '@jest/globals';
+import axios from 'axios';
+import fs from 'fs/promises';
+import path from 'path';
+import { 
   SERVICE_URLS, 
   mockVisions,
   mockAgentConfigurations,
   performanceBenchmarks,
   testHelpers
-} = require('../fixtures/vision-workflow-fixtures');
+} from '../fixtures/vision-workflow-fixtures.js';
 
 describe('Development Service Integration Tests', () => {
   let developmentServiceClient;

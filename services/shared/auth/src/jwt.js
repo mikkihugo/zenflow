@@ -268,16 +268,4 @@ class JWTManager {
 }
 
 // Singleton instance
-let instance;
-
-function getJWTManager(config) {
-  if (!instance) {
-    instance = new JWTManager(config);
-  }
-  return instance;
-}
-
-module.exports = {
-  JWTManager,
-  getJWTManager
-};
+export default JWTManager;

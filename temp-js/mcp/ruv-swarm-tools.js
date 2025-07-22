@@ -481,7 +481,7 @@ export async function getRuvSwarmCapabilities(logger) {
 export async function initializeRuvSwarmIntegration(workingDirectory, logger) {
     const context = {
         workingDirectory,
-        sessionId: `claude-flow-${Date.now()}`
+        sessionId: `claude-zen-${Date.now()}`
     };
     logger?.info('Initializing ruv-swarm integration', { workingDirectory });
     // Check if ruv-swarm is available

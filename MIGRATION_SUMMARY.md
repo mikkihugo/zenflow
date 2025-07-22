@@ -112,7 +112,7 @@ These services now form the foundation for implementing the advanced SPARC syste
 
 ```bash
 # Example: Coordinated development workflow
-claude-flow swarm "Implement user authentication" \
+claude-zen swarm "Implement user authentication" \
   --actor-system bastion-engine-service \
   --research-tools fact-execution-service \
   --mcp-federation mcp-federation-service \

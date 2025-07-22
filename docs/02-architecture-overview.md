@@ -198,7 +198,7 @@ sequenceDiagram
     participant Memory
     participant Terminal
     
-    User->>CLI: claude-flow task create
+    User->>CLI: claude-zen task create
     CLI->>Orchestrator: Create task request
     Orchestrator->>Memory: Store task definition
     Orchestrator->>Agent: Assign task
@@ -217,13 +217,13 @@ Claude-Flow supports multiple communication patterns between agents:
 ### 1. Direct Communication
 Agents can send messages directly to specific agents:
 ```bash
-claude-flow agent message <target-agent-id> "Please prioritize API implementation"
+claude-zen agent message <target-agent-id> "Please prioritize API implementation"
 ```
 
 ### 2. Broadcast Communication
 Agents can broadcast information to all active agents:
 ```bash
-claude-flow agent broadcast "System maintenance scheduled in 30 minutes"
+claude-zen agent broadcast "System maintenance scheduled in 30 minutes"
 ```
 
 ### 3. Pub/Sub Pattern
@@ -243,10 +243,10 @@ Agents can subscribe to specific event types or topics:
 Agents access shared state through the memory manager:
 ```bash
 # Agent writes discovery
-claude-flow memory store --type "discovery" --content "Found optimal algorithm"
+claude-zen memory store --type "discovery" --content "Found optimal algorithm"
 
 # Other agents can query
-claude-flow memory query --type "discovery" --recent
+claude-zen memory query --type "discovery" --recent
 ```
 
 ## Scalability Design

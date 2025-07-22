@@ -51,7 +51,7 @@ const checkpointData = {
 ✓ Session paused successfully
 
 To resume this session, run:
-  claude-flow hive-mind resume session-1234567890-abc123
+  claude-zen hive-mind resume session-1234567890-abc123
 ```
 
 ### Process Tracking
@@ -64,10 +64,10 @@ To resume this session, run:
 ### Basic Usage
 ```bash
 # Start a hive-mind session
-$ claude-flow hive-mind spawn "Build a REST API"
+$ claude-zen hive-mind spawn "Build a REST API"
 ✓ Swarm is ready for coordination
 💡 To pause: Press Ctrl+C to safely pause and resume later
-💡 To resume: claude-flow hive-mind resume session-123
+💡 To resume: claude-zen hive-mind resume session-123
 
 # Press Ctrl+C
 ^C
@@ -75,13 +75,13 @@ $ claude-flow hive-mind spawn "Build a REST API"
 ✓ Session paused successfully
 
 To resume this session, run:
-  claude-flow hive-mind resume session-123
+  claude-zen hive-mind resume session-123
 ```
 
 ### With Claude Code Integration
 ```bash
 # Start with Claude Code
-$ claude-flow hive-mind spawn "Research AI trends" --claude
+$ claude-zen hive-mind spawn "Research AI trends" --claude
 ✓ Claude Code launched with Hive Mind coordination
 
 # Press Ctrl+C
@@ -90,7 +90,7 @@ $ claude-flow hive-mind spawn "Research AI trends" --claude
 ✓ Session paused successfully
 
 To resume this session, run:
-  claude-flow hive-mind resume session-123
+  claude-zen hive-mind resume session-123
 ```
 
 ## Technical Implementation

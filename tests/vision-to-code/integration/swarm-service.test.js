@@ -3,16 +3,16 @@
  * Tests for Queen Agent coordination, MRAP system, and agent team management
  */
 
-const { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } = require('@jest/globals');
-const axios = require('axios');
-const WebSocket = require('ws');
-const { 
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } from '@jest/globals';
+import axios from 'axios';
+import WebSocket from 'ws';
+import { 
   SERVICE_URLS, 
   mockAgentConfigurations,
   mockWorkflowEvents,
   performanceBenchmarks,
   testHelpers
-} = require('../fixtures/vision-workflow-fixtures');
+} from '../fixtures/vision-workflow-fixtures.js';
 
 describe('Swarm Service Integration Tests', () => {
   let swarmServiceClient;

@@ -2,7 +2,7 @@
 
 ## Usage
 ```bash
-claude-flow swarm "System maintenance" --strategy maintenance --mode centralized
+claude-zen swarm "System maintenance" --strategy maintenance --mode centralized
 ```
 
 ## Description

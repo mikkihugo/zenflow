@@ -21,12 +21,12 @@
       "Bash(rg:*)",
       "Bash(mise list:*)",
       "Bash(mise exec deno:*)",
-      "Bash(./bin/claude-flow:*)",
+      "Bash(./bin/claude-zen:*)",
       "Bash(mise use:*)",
-      "Bash(RUST_MIN_STACK=8388608 mise exec deno -- deno compile --allow-all --no-check --output bin/claude-flow-stack-test src/cli/main.ts)",
-      "Bash(claude-flow --version)",
+      "Bash(RUST_MIN_STACK=8388608 mise exec deno -- deno compile --allow-all --no-check --output bin/claude-zen-stack-test src/cli/main.ts)",
+      "Bash(claude-zen --version)",
       "Bash(md5sum:*)",
-      "Bash(claude-flow:*)",
+      "Bash(claude-zen:*)",
       "Bash(find:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.roocode.com)",
@@ -69,7 +69,7 @@
       "WebFetch(domain:www.creative-tim.com)",
       "WebFetch(domain:tanstack.com)",
       "Bash(git rebase:*)",
-      "mcp__claude-flow__swarm_init"
+      "mcp__claude-zen__swarm_init"
     ],
     "deny": []
   }

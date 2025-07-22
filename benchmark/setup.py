@@ -10,11 +10,11 @@ setup(
     name="swarm-benchmark",
     version="1.0.0",
     author="Claude Flow Team",
-    author_email="support@claude-flow.dev",
+    author_email="support@claude-zen.dev",
     description="Agent swarm benchmarking tool for Claude Flow",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/claude-flow/swarm-benchmark",
+    url="https://github.com/claude-zen/swarm-benchmark",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[

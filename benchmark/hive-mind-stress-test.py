@@ -74,18 +74,18 @@ class HiveMindStressTester:
         self.system_monitor = StressSystemMonitor()
         
     def _find_cli_path(self) -> Path:
-        """Find the claude-flow CLI executable"""
+        """Find the claude-zen CLI executable"""
         possible_paths = [
-            Path("../src/cli/simple-cli.js"),
-            Path("./src/cli/simple-cli.js"),
-            Path("./claude-flow"),
-            Path("../claude-flow")
+            Path("../bin/claude-zen"),
+            Path("bin/claude-zen"),
+            Path("./claude-zen"),
+            Path("../claude-zen")
         ]
         
         for path in possible_paths:
             if path.exists():
                 return path
-        return Path("claude-flow")
+        return Path("claude-zen")
 
     def create_stress_test_scenarios(self) -> List[StressTestConfig]:
         """Create comprehensive stress testing scenarios"""

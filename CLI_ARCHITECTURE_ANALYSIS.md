@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The current claude-flow CLI shows sophisticated functionality but suffers from architectural inconsistencies and complex user experience patterns. This analysis provides concrete recommendations for a modernized CLI architecture that balances power with usability, inspired by fish shell and starship prompt aesthetics.
+The current claude-zen CLI shows sophisticated functionality but suffers from architectural inconsistencies and complex user experience patterns. This analysis provides concrete recommendations for a modernized CLI architecture that balances power with usability, inspired by fish shell and starship prompt aesthetics.
 
 ## Current State Analysis
 
@@ -324,7 +324,7 @@ src/cli/
 
 ## Conclusion
 
-The recommended architecture transforms claude-flow from a complex but powerful CLI into an intuitive, modern tool that adapts to user needs. By implementing progressive enhancement, smart completion, and unified command structure, we can deliver the functional yet engaging experience requested while maintaining the sophisticated underlying capabilities.
+The recommended architecture transforms claude-zen from a complex but powerful CLI into an intuitive, modern tool that adapts to user needs. By implementing progressive enhancement, smart completion, and unified command structure, we can deliver the functional yet engaging experience requested while maintaining the sophisticated underlying capabilities.
 
 The fish shell and starship-inspired design patterns ensure the CLI feels modern and responsive, while the superstructured variant system allows users to choose their preferred complexity level. This approach balances power user needs with accessibility for new users.
 

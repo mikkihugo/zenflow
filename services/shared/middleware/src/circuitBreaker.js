@@ -347,7 +347,7 @@ class CircuitBreaker extends EventEmitter {
 /**
  * Create a circuit breaker registry for managing multiple breakers
  */
-class CircuitBreakerRegistry {
+export class CircuitBreakerRegistry {
   constructor() {
     this.breakers = new Map();
   }

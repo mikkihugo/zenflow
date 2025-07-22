@@ -164,7 +164,7 @@ This phase outlines the step-by-step implementation of the Claude-Flow system, b
 
 #### Project Structure
 ```
-claude-flow/
+claude-zen/
 ├── src/
 │   ├── core/
 │   │   ├── orchestrator.ts
@@ -476,7 +476,7 @@ deno compile \
   --allow-net \
   --allow-run \
   --allow-env \
-  --output=claude-flow \
+  --output=claude-zen \
   src/cli/index.ts
 ```
 
@@ -484,10 +484,10 @@ deno compile \
 ```json
 // package.json for NPX support
 {
-  "name": "claude-flow",
+  "name": "claude-zen",
   "version": "1.0.0",
   "bin": {
-    "claude-flow": "./claude-flow"
+    "claude-zen": "./claude-zen"
   },
   "scripts": {
     "postinstall": "node scripts/install.js"
@@ -504,10 +504,10 @@ COPY . .
 
 RUN deno compile \
   --allow-all \
-  --output=claude-flow \
+  --output=claude-zen \
   src/cli/index.ts
 
-ENTRYPOINT ["./claude-flow"]
+ENTRYPOINT ["./claude-zen"]
 ```
 
 ### Success Metrics

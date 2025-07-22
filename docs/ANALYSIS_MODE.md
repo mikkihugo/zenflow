@@ -18,29 +18,29 @@ Claude Flow's Analysis Mode implements a read-only/planning permission mode that
 
 ```bash
 # Enable analysis mode with --analysis flag
-claude-flow swarm "Analyze codebase for security vulnerabilities" --analysis
+claude-zen swarm "Analyze codebase for security vulnerabilities" --analysis
 
 # Enable analysis mode with --read-only flag (alias)
-claude-flow swarm "Review architecture patterns" --read-only
+claude-zen swarm "Review architecture patterns" --read-only
 
 # Combine with other flags
-claude-flow swarm "Assess technical debt" --analysis --strategy research --max-agents 3
+claude-zen swarm "Assess technical debt" --analysis --strategy research --max-agents 3
 ```
 
 ### Example Commands
 
 ```bash
 # Security audit
-claude-flow swarm "Identify security vulnerabilities in authentication system" --analysis
+claude-zen swarm "Identify security vulnerabilities in authentication system" --analysis
 
 # Performance analysis
-claude-flow swarm "Analyze database query performance bottlenecks" --read-only --strategy analysis
+claude-zen swarm "Analyze database query performance bottlenecks" --read-only --strategy analysis
 
 # Architecture review
-claude-flow swarm "Document microservices architecture patterns" --analysis --strategy research
+claude-zen swarm "Document microservices architecture patterns" --analysis --strategy research
 
 # Code quality assessment
-claude-flow swarm "Evaluate code quality and technical debt" --read-only --max-agents 5
+claude-zen swarm "Evaluate code quality and technical debt" --read-only --max-agents 5
 ```
 
 ## Analysis Mode Constraints

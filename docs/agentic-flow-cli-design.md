@@ -586,7 +586,7 @@ agentic-flow completion powershell > $PROFILE
 curl -fsSL https://get.agentic-flow.mastra.ai/migrate | bash
 
 # Or manual migration
-agentic-flow migrate from-claude-flow [options]
+agentic-flow migrate from-claude-zen [options]
   --backup               # Create backup
   --dry-run             # Preview changes
   --config <file>       # Claude Flow config

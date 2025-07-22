@@ -3,13 +3,13 @@
  * Handles creation, retrieval, update, and approval of strategic visions
  */
 
-const express = require('express');
-const { body, param, query, validationResult } = require('express-validator');
-const { asyncHandler, errors, ApiError } = require('../../../shared/middleware/src/errorHandler');
-const { PERMISSIONS } = require('../../../shared/auth/src/permissions');
-const VisionService = require('../services/visionService');
+import express from 'express';
+import { body, param, query, validationResult } from 'express-validator';
+import { asyncHandler, errors, ApiError } from '../../../shared/middleware/src/errorHandler.js';
+import { PERMISSIONS } from '../../../shared/auth/src/permissions.js';
+import VisionService from '../services/visionService.js';
 
-module.exports = (server) => {
+export default (server) => {
   const router = express.Router();
   const visionService = new VisionService(server);
 

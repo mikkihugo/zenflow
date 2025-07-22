@@ -8,7 +8,7 @@ This directory contains comprehensive integration guides and technical documenta
 
 ### 🚀 Core Integration Guides
 
-#### [Complete Integration Guide](./claude-flow-v2-integration-guide.md)
+#### [Complete Integration Guide](./claude-zen-v2-integration-guide.md)
 Comprehensive setup and configuration guide covering:
 - ruv-swarm MCP integration (87 tools)
 - QUDAG/DAA WASM neural networks
@@ -52,29 +52,29 @@ Comprehensive problem-solving resource:
 ### Basic Integration
 ```bash
 # Install and initialize Claude Flow v2.0.0
-npm install -g claude-flow@2.0.0
-npx claude-flow@2.0.0 init --claude --webui
+npm install -g claude-zen@2.0.0
+npx claude-zen@2.0.0 init --claude --webui
 
 # Add ruv-swarm MCP server
 claude mcp add ruv-swarm npx ruv-swarm mcp start
 
 # Initialize swarm coordination
-npx claude-flow@2.0.0 coordination swarm-init --topology mesh --max-agents 8
+npx claude-zen@2.0.0 coordination swarm-init --topology mesh --max-agents 8
 ```
 
 ### Verification Commands
 ```bash
 # Check system health
-npx claude-flow@2.0.0 health-check --comprehensive
+npx claude-zen@2.0.0 health-check --comprehensive
 
 # Verify MCP integration
 claude mcp list-tools ruv-swarm | wc -l  # Should show 87 tools
 
 # Test neural networks
-npx claude-flow@2.0.0 neural status --detailed
+npx claude-zen@2.0.0 neural status --detailed
 
 # Start WebUI
-npx claude-flow@2.0.0 start --ui --port 3000
+npx claude-zen@2.0.0 start --ui --port 3000
 ```
 
 ---
@@ -173,11 +173,11 @@ npx claude-flow@2.0.0 start --ui --port 3000
 - Docker (optional, for containerized deployment)
 
 ### Installation Process
-1. **Install Claude Flow**: `npm install -g claude-flow@2.0.0`
-2. **Initialize Integration**: `npx claude-flow@2.0.0 init --claude --webui`
+1. **Install Claude Flow**: `npm install -g claude-zen@2.0.0`
+2. **Initialize Integration**: `npx claude-zen@2.0.0 init --claude --webui`
 3. **Configure MCP**: `claude mcp add ruv-swarm npx ruv-swarm mcp start`
-4. **Verify Setup**: `npx claude-flow@2.0.0 health-check --comprehensive`
-5. **Start Coordination**: `npx claude-flow@2.0.0 start --ui`
+4. **Verify Setup**: `npx claude-zen@2.0.0 health-check --comprehensive`
+5. **Start Coordination**: `npx claude-zen@2.0.0 start --ui`
 
 ### First Steps
 1. **Initialize Swarm**: Create your first coordination topology
@@ -191,7 +191,7 @@ npx claude-flow@2.0.0 start --ui --port 3000
 ## 📖 Learning Path
 
 ### Beginner (First Week)
-1. Read [Complete Integration Guide](./claude-flow-v2-integration-guide.md)
+1. Read [Complete Integration Guide](./claude-zen-v2-integration-guide.md)
 2. Follow quick setup commands
 3. Explore basic swarm coordination
 4. Try simple neural training

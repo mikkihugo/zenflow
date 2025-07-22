@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple test of real claude-flow benchmark execution
+Simple test of real claude-zen benchmark execution
 """
 
 import subprocess
@@ -9,8 +9,8 @@ import json
 from pathlib import Path
 
 def test_real_claude_flow():
-    """Test actual claude-flow command execution"""
-    claude_flow_path = Path(__file__).parent.parent / "claude-flow"
+    """Test actual claude-zen command execution"""
+    claude_flow_path = Path(__file__).parent.parent / "claude-zen"
     
     print("🧠 Testing Real Claude-Flow Benchmark System")
     print("=" * 60)
@@ -25,7 +25,7 @@ def test_real_claude_flow():
     )
     duration = time.time() - start
     
-    print(f"   Command: claude-flow --version")
+    print(f"   Command: claude-zen --version")
     print(f"   Success: {result.returncode == 0}")
     print(f"   Output: {result.stdout.strip()}")
     print(f"   Duration: {duration:.3f}s")
@@ -40,7 +40,7 @@ def test_real_claude_flow():
     )
     duration = time.time() - start
     
-    print(f"   Command: claude-flow sparc list")
+    print(f"   Command: claude-zen sparc list")
     print(f"   Success: {result.returncode == 0}")
     print(f"   Duration: {duration:.3f}s")
     if result.returncode == 0:
@@ -58,7 +58,7 @@ def test_real_claude_flow():
     )
     duration = time.time() - start
     
-    print(f"   Command: claude-flow sparc coder 'Write hello world' --dry-run")
+    print(f"   Command: claude-zen sparc coder 'Write hello world' --dry-run")
     print(f"   Success: {result.returncode == 0}")
     print(f"   Duration: {duration:.3f}s")
     
@@ -73,7 +73,7 @@ def test_real_claude_flow():
     )
     duration = time.time() - start
     
-    print(f"   Command: claude-flow swarm 'Build a calculator' --strategy development --mode centralized --dry-run")
+    print(f"   Command: claude-zen swarm 'Build a calculator' --strategy development --mode centralized --dry-run")
     print(f"   Success: {result.returncode == 0}")
     print(f"   Duration: {duration:.3f}s")
     

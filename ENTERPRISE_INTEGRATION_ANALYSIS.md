@@ -214,7 +214,7 @@ platform/memory-services/
 ├── neural-symbolic-memory/         # ✅ PRODUCTION (LTN integration)
 ├── multi-tier-memory/              # ✅ PRODUCTION (Working/short/long-term)
 ├── vector-embeddings/              # ✅ PRODUCTION (pgvector integration)
-└── claude-flow-integration/        # NEW (Connect Claude-Flow to existing memory)
+└── claude-zen-integration/        # NEW (Connect Claude-Flow to existing memory)
 ```
 
 ### **Phase 3: gRPC Communication Layer (Lab Mode)**
@@ -460,7 +460,7 @@ This gRPC lab mode approach provides:
 ```yaml
 # Claude-Flow automated development integration
 development-automation/
-├── claude-flow-engine/             # Core automation engine
+├── claude-zen-engine/             # Core automation engine
 ├── multi-agent-support/           # Claude-CI and other AI agents
 ├── sparc-automation/              # Automated SPARC workflows
 ├── ci-cd-integration/             # Development pipeline automation

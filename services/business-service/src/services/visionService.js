@@ -383,4 +383,4 @@ class VisionService {
   }
 }
 
-module.exports = VisionService;
+export default VisionService;

@@ -87,6 +87,6 @@ describe('NPX Cache Isolation Integration', () => {
     expect(isolatedEnv.PWD).toBe('/some/working/dir');
     expect(isolatedEnv.CUSTOM_VAR).toBe('test-value');
     expect(isolatedEnv.NPM_CONFIG_CACHE).toBeDefined();
-    expect(isolatedEnv.NPM_CONFIG_CACHE).toContain('claude-flow-');
+    expect(isolatedEnv.NPM_CONFIG_CACHE).toContain('claude-zen-');
   });
 });

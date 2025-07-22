@@ -2,7 +2,7 @@
 
 ## Usage
 ```bash
-claude-flow swarm "Optimize performance" --strategy optimization --mode hybrid
+claude-zen swarm "Optimize performance" --strategy optimization --mode hybrid
 ```
 
 ## Description

@@ -2,7 +2,7 @@
 node = "20"
 npm = "9"
 
-# Align with ruvnet's claude-flow strategy:
+# Align with ruvnet's claude-zen strategy:
 # - Node 20+ (their engines requirement)  
 # - npm 9+ (their engines requirement)
 # - Matches their GitHub CI configuration

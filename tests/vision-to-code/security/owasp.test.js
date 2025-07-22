@@ -1,8 +1,8 @@
-const request = require('supertest');
-const TestHelpers = require('../utils/test-helpers');
+import request from 'supertest';
+import TestHelpers from '../utils/test-helpers.js';
 
 // Mock the API Gateway for security testing
-const app = require('@/services/api-gateway/app');
+import app from '@/services/api-gateway/app.js';
 
 describe('OWASP Top 10 Security Tests', () => {
   let server;

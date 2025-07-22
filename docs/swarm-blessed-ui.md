@@ -23,7 +23,7 @@ The UI automatically installs its dependencies when first run:
 ### Basic Usage
 ```bash
 # Using the UI wrapper (automatically adds --ui flag)
-./bin/claude-flow-swarm-ui "Your objective here"
+./bin/claude-zen-swarm-ui "Your objective here"
 
 # Or directly with the enhanced demo
 ./swarm-demo-enhanced.ts "Your objective here" --ui
@@ -107,7 +107,7 @@ swarm-demo-enhanced.ts
    - Manages pseudo-terminal processes
    - Handles agent spawn detection
 
-3. **bin/claude-flow-swarm-ui**
+3. **bin/claude-zen-swarm-ui**
    - Convenience wrapper that automatically adds --ui flag
    - Makes it easier to use the UI mode
 
@@ -131,7 +131,7 @@ const orchestratorPty = pty.spawn('claude', [
 
 The UI monitors the orchestrator output for patterns like:
 ```
-claude-flow agent spawn <type> --name "<name>" --task "<task>"
+claude-zen agent spawn <type> --name "<name>" --task "<task>"
 ```
 
 When detected, it creates a new agent pane in the UI.
@@ -186,7 +186,7 @@ The UI requires at least 80x24 terminal size. Resize your terminal window.
 
 ### Research Task
 ```bash
-./bin/claude-flow-swarm-ui "Research best practices for microservices" \
+./bin/claude-zen-swarm-ui "Research best practices for microservices" \
   --strategy research \
   --research \
   --max-agents 4
@@ -194,7 +194,7 @@ The UI requires at least 80x24 terminal size. Resize your terminal window.
 
 ### Development Task
 ```bash
-./bin/claude-flow-swarm-ui "Build a user authentication system" \
+./bin/claude-zen-swarm-ui "Build a user authentication system" \
   --strategy development \
   --parallel \
   --review
@@ -202,7 +202,7 @@ The UI requires at least 80x24 terminal size. Resize your terminal window.
 
 ### Analysis Task
 ```bash
-./bin/claude-flow-swarm-ui "Analyze this codebase for performance issues" \
+./bin/claude-zen-swarm-ui "Analyze this codebase for performance issues" \
   --strategy analysis \
   --coordinator
 ```

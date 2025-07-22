@@ -11,10 +11,10 @@ const CLAUDE_FLOW_GITIGNORE_ENTRIES = `
 # Claude Flow generated files
 .claude/settings.local.json
 .mcp.json
-claude-flow.config.json
+claude-zen.config.json
 .swarm/
 .hive-mind/
-memory/claude-flow-data.json
+memory/claude-zen-data.json
 memory/sessions/*
 !memory/sessions/README.md
 memory/agents/*
@@ -28,9 +28,9 @@ coordination/orchestration/*
 *.sqlite
 *.sqlite-journal
 *.sqlite-wal
-claude-flow
-claude-flow.bat
-claude-flow.ps1
+claude-zen
+claude-zen.bat
+claude-zen.ps1
 hive-mind-prompt-*.txt
 `;
 

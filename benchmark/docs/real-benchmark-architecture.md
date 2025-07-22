@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Real Benchmark Engine is a comprehensive system designed to execute and measure actual `claude-flow` commands, capturing detailed performance metrics, resource usage, and quality assessments. This architecture enables systematic testing of all 17 SPARC modes and 6 swarm strategies across 5 coordination modes.
+The Real Benchmark Engine is a comprehensive system designed to execute and measure actual `claude-zen` commands, capturing detailed performance metrics, resource usage, and quality assessments. This architecture enables systematic testing of all 17 SPARC modes and 6 swarm strategies across 5 coordination modes.
 
 ## Architecture Components
 
@@ -12,7 +12,7 @@ The main orchestrator that manages the entire benchmarking lifecycle:
 
 ```python
 class RealBenchmarkEngine:
-    - Locates claude-flow executable
+    - Locates claude-zen executable
     - Manages benchmark execution
     - Coordinates resource monitoring
     - Handles result aggregation
@@ -20,7 +20,7 @@ class RealBenchmarkEngine:
 ```
 
 **Key Features:**
-- Automatic claude-flow discovery across multiple paths
+- Automatic claude-zen discovery across multiple paths
 - Subprocess-based execution with full isolation
 - Configurable parallelism and timeout handling
 - Comprehensive error handling and recovery
@@ -108,7 +108,7 @@ Seamless integration with existing benchmark models:
 - `Task`: Enhanced with real execution parameters
 - `Result`: Populated with actual metrics
 - `Benchmark`: Comprehensive execution records
-- `Agent`: Real claude-flow process representation
+- `Agent`: Real claude-zen process representation
 
 ## Execution Modes
 
@@ -315,4 +315,4 @@ results = await engine.run_benchmark("Create a web scraper")
 
 ## Conclusion
 
-The Real Benchmark Engine provides a robust, extensible framework for systematically evaluating claude-flow performance across all supported modes and strategies. Its modular architecture enables easy extension while maintaining reliability and accuracy in measurements.
+The Real Benchmark Engine provides a robust, extensible framework for systematically evaluating claude-zen performance across all supported modes and strategies. Its modular architecture enables easy extension while maintaining reliability and accuracy in measurements.

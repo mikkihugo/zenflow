@@ -327,7 +327,7 @@
         "hash": "4670535044090468278"
       },
       {
-        "file": "agnstik-claude-flow-plugin.md",
+        "file": "agnstik-claude-zen-plugin.md",
         "hash": "9242438976539527482"
       },
       {
@@ -1071,63 +1071,63 @@
         "hash": "887628356030908194"
       },
       {
-        "file": "bin/claude-flow",
+        "file": "bin/claude-zen",
         "hash": "1142880917388944035"
       },
       {
-        "file": "bin/claude-flow-backup",
+        "file": "bin/claude-zen-backup",
         "hash": "6433989530618483822"
       },
       {
-        "file": "bin/claude-flow-dev",
+        "file": "bin/claude-zen-dev",
         "hash": "10838170773514727102"
       },
       {
-        "file": "bin/claude-flow-node-pkg",
+        "file": "bin/claude-zen-node-pkg",
         "hash": "5921224783389141456"
       },
       {
-        "file": "bin/claude-flow-pkg.js",
+        "file": "bin/claude-zen-pkg.js",
         "hash": "8543188244982989107"
       },
       {
-        "file": "bin/claude-flow-swarm",
+        "file": "bin/claude-zen-swarm",
         "hash": "6024877633000665421"
       },
       {
-        "file": "bin/claude-flow-swarm-background",
+        "file": "bin/claude-zen-swarm-background",
         "hash": "3481386867297177405"
       },
       {
-        "file": "bin/claude-flow-swarm-bg",
+        "file": "bin/claude-zen-swarm-bg",
         "hash": "6265771768440044373"
       },
       {
-        "file": "bin/claude-flow-swarm-monitor",
+        "file": "bin/claude-zen-swarm-monitor",
         "hash": "12567912588104174740"
       },
       {
-        "file": "bin/claude-flow-swarm-ui",
+        "file": "bin/claude-zen-swarm-ui",
         "hash": "18006609562962535529"
       },
       {
-        "file": "bin/claude-flow.tmp-bfe5f82837b009c0",
+        "file": "bin/claude-zen.tmp-bfe5f82837b009c0",
         "hash": "3244421341483603138"
       },
       {
-        "file": "bin/claude-flow.tmp.tmp-1f0523bf293bc9ab",
+        "file": "bin/claude-zen.tmp.tmp-1f0523bf293bc9ab",
         "hash": "3244421341483603138"
       },
       {
-        "file": "bin/claude-flow.working-backup",
+        "file": "bin/claude-zen.working-backup",
         "hash": "6433989530618483822"
       },
       {
-        "file": "claude-flow",
+        "file": "claude-zen",
         "hash": "15113749183869654950"
       },
       {
-        "file": "claude-flow-1.0.70.tgz",
+        "file": "claude-zen-1.0.70.tgz",
         "hash": "13239178748347735292"
       },
       {
@@ -2607,7 +2607,7 @@
         "hash": "4598128056961389121"
       },
       {
-        "file": "init-test/claude-flow",
+        "file": "init-test/claude-zen",
         "hash": "15201967045778686590"
       },
       {
@@ -2631,7 +2631,7 @@
         "hash": "10697074680570292582"
       },
       {
-        "file": "memory/claude-flow-data.json",
+        "file": "memory/claude-zen-data.json",
         "hash": "8528607413559104520"
       },
       {
@@ -9595,11 +9595,11 @@
         "hash": "476918621695576043"
       },
       {
-        "file": "src/cli/simple-commands/init/claude-commands/claude-flow-commands.js",
+        "file": "src/cli/simple-commands/init/claude-commands/claude-zen-commands.js",
         "hash": "1970048280795559709"
       },
       {
-        "file": "src/cli/simple-commands/init/claude-commands/optimized-claude-flow-commands.js",
+        "file": "src/cli/simple-commands/init/claude-commands/optimized-claude-zen-commands.js",
         "hash": "9333320203959824991"
       },
       {
@@ -10023,7 +10023,7 @@
         "hash": "8592514593903271492"
       },
       {
-        "file": "src/mcp/claude-flow-tools.ts",
+        "file": "src/mcp/claude-zen-tools.ts",
         "hash": "715660678361165015"
       },
       {
@@ -10195,7 +10195,7 @@
         "hash": "12073151425382101447"
       },
       {
-        "file": "src/swarm/claude-flow-executor.ts",
+        "file": "src/swarm/claude-zen-executor.ts",
         "hash": "14107620793748411725"
       },
       {
@@ -10343,15 +10343,15 @@
         "hash": "5810680369946769279"
       },
       {
-        "file": "src/templates/claude-optimized/.claude/commands/claude-flow-help.md",
+        "file": "src/templates/claude-optimized/.claude/commands/claude-zen-help.md",
         "hash": "8834342317537870481"
       },
       {
-        "file": "src/templates/claude-optimized/.claude/commands/claude-flow-memory.md",
+        "file": "src/templates/claude-optimized/.claude/commands/claude-zen-memory.md",
         "hash": "5844885054723192186"
       },
       {
-        "file": "src/templates/claude-optimized/.claude/commands/claude-flow-swarm.md",
+        "file": "src/templates/claude-optimized/.claude/commands/claude-zen-swarm.md",
         "hash": "5284804955211649996"
       },
       {
@@ -10679,7 +10679,7 @@
         "hash": "4598128056961389121"
       },
       {
-        "file": "test-init-npm/claude-flow",
+        "file": "test-init-npm/claude-zen",
         "hash": "15201967045778686590"
       },
       {
@@ -10851,7 +10851,7 @@
         "hash": "4598128056961389121"
       },
       {
-        "file": "test-sparc-init/claude-flow",
+        "file": "test-sparc-init/claude-zen",
         "hash": "15201967045778686590"
       },
       {

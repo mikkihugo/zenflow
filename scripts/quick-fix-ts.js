@@ -7,9 +7,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Fix swarm-new.ts
+// Fix swarm-new.ts (if it exists)
 const swarmNewPath = path.join(__dirname, '../src/cli/commands/swarm-new.ts');
-let swarmNewContent = fs.readFileSync(swarmNewPath, 'utf8');
+if (fs.existsSync(swarmNewPath)) {
+  let swarmNewContent = fs.readFileSync(swarmNewPath, 'utf8');
 
 // Fix exportPath issue - remove it as it's not in MonitoringConfig type
 swarmNewContent = swarmNewContent.replace(
@@ -42,11 +43,13 @@ swarmNewContent = swarmNewContent.replace(
   "execution.status === 'cancelled'"
 );
 
-fs.writeFileSync(swarmNewPath, swarmNewContent);
+  fs.writeFileSync(swarmNewPath, swarmNewContent);
+}
 
-// Fix cli-core.ts
+// Fix cli-core.ts (if it exists)
 const cliCorePath = path.join(__dirname, '../src/cli/cli-core.ts');
-let cliCoreContent = fs.readFileSync(cliCorePath, 'utf8');
+if (fs.existsSync(cliCorePath)) {
+  let cliCoreContent = fs.readFileSync(cliCorePath, 'utf8');
 
 // Add proper typing for the problematic line
 cliCoreContent = cliCoreContent.replace(
@@ -54,23 +57,27 @@ cliCoreContent = cliCoreContent.replace(
   "const commandModule = await (commandModules[commandName] as any)();"
 );
 
-fs.writeFileSync(cliCorePath, cliCoreContent);
+  fs.writeFileSync(cliCorePath, cliCoreContent);
+}
 
-// Fix simple-cli.ts
-const simpleCliPath = path.join(__dirname, '../src/cli/simple-cli.ts');
-let simpleCliContent = fs.readFileSync(simpleCliPath, 'utf8');
+// Fix cli-main.js (formerly simple-cli.ts)
+const cliMainPath = path.join(__dirname, '../src/cli/cli-main.js');
+if (fs.existsSync(cliMainPath)) {
+  let cliMainContent = fs.readFileSync(cliMainPath, 'utf8');
 
-// Fix options type issues
-simpleCliContent = simpleCliContent.replace(
-  /options\.(\w+)/g,
-  "(options as any).$1"
-);
+  // Fix options type issues (if any JavaScript equivalent exists)
+  cliMainContent = cliMainContent.replace(
+    /options\.(\w+)/g,
+    "options.$1"
+  );
 
-fs.writeFileSync(simpleCliPath, simpleCliContent);
+  fs.writeFileSync(cliMainPath, cliMainContent);
+}
 
-// Fix index.ts meta issue
+// Fix index.ts meta issue (if it exists)
 const indexPath = path.join(__dirname, '../src/cli/index.ts');
-let indexContent = fs.readFileSync(indexPath, 'utf8');
+if (fs.existsSync(indexPath)) {
+  let indexContent = fs.readFileSync(indexPath, 'utf8');
 
 // Comment out meta property
 indexContent = indexContent.replace(
@@ -90,18 +97,21 @@ indexContent = indexContent.replace(
   "// colors."
 );
 
-fs.writeFileSync(indexPath, indexContent);
+  fs.writeFileSync(indexPath, indexContent);
+}
 
-// Fix swarm.ts strategy type
+// Fix swarm.ts strategy type (if it exists)
 const swarmPath = path.join(__dirname, '../src/cli/commands/swarm.ts');
-let swarmContent = fs.readFileSync(swarmPath, 'utf8');
+if (fs.existsSync(swarmPath)) {
+  let swarmContent = fs.readFileSync(swarmPath, 'utf8');
 
 swarmContent = swarmContent.replace(
   /strategy: options\.strategy,/g,
   "strategy: options.strategy as any,"
 );
 
-fs.writeFileSync(swarmPath, swarmContent);
+  fs.writeFileSync(swarmPath, swarmContent);
+}
 
 // Fix repl.ts issues
 const replPath = path.join(__dirname, '../src/cli/repl.ts');

@@ -14,7 +14,7 @@ import { SecurityService } from './security-service/service.js';
 export class ServicesOrchestrator extends EventEmitter {
   constructor(options = {}) {
     super();
-    this.name = 'claude-flow-orchestrator';
+    this.name = 'claude-zen-orchestrator';
     this.version = '2.0.0-alpha.61';
     this.services = new Map();
     this.status = 'stopped';
@@ -227,7 +227,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     
     // Test document creation
     const docResult = await orchestrator.createDocument(
-      'claude-flow-core',
+      'claude-zen-core',
       'service-description',
       {
         name: 'Claude-Flow Core',

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Demo script for the new real claude-flow benchmark system
-Shows how to benchmark actual claude-flow commands with real metrics
+Demo script for the new real claude-zen benchmark system
+Shows how to benchmark actual claude-zen commands with real metrics
 """
 
 import asyncio
@@ -22,7 +22,7 @@ from swarm_benchmark.core.orchestration_manager import OrchestrationManager
 
 
 async def demo_basic_benchmark():
-    """Demonstrate basic benchmarking with real claude-flow execution"""
+    """Demonstrate basic benchmarking with real claude-zen execution"""
     print("\n🚀 Demo 1: Basic Real Benchmark")
     print("=" * 60)
     
@@ -192,7 +192,7 @@ async def main():
     print("🧠 Claude-Flow Real Benchmark System Demo")
     print("=" * 60)
     print("This demo showcases the new benchmark system that executes")
-    print("real claude-flow commands and measures actual performance.")
+    print("real claude-zen commands and measures actual performance.")
     
     try:
         # Run demos
@@ -202,7 +202,7 @@ async def main():
         
         print("\n\n✅ All demos completed successfully!")
         print("\nKey Features Demonstrated:")
-        print("  • Real claude-flow command execution")
+        print("  • Real claude-zen command execution")
         print("  • Accurate performance metrics collection")
         print("  • Parallel benchmark execution")
         print("  • Resource monitoring and limits")

@@ -28,7 +28,7 @@ The best way to use Claude Flow v2.0.0 is through Claude Code's MCP system:
 
 ```bash
 # Add Claude Flow MCP server to Claude Code
-claude mcp add claude-flow npx claude-flow mcp start
+claude mcp add claude-zen npx claude-zen mcp start
 
 # Verify integration
 claude mcp list
@@ -38,10 +38,10 @@ claude mcp list
 
 ```bash
 # Global installation
-npm install -g claude-flow@2.0.0
+npm install -g claude-zen@2.0.0
 
 # Or use directly with npx
-npx claude-flow@2.0.0 --version
+npx claude-zen@2.0.0 --version
 ```
 
 ### Option 3: Development Setup
@@ -62,10 +62,10 @@ Claude Flow v2.0.0 introduces the Hive Mind - an intelligent coordination system
 
 ```bash
 # Interactive wizard (recommended for first-time users)
-claude-flow hive-mind wizard
+claude-zen hive-mind wizard
 
 # Or direct initialization
-claude-flow hive-mind init --topology mesh --agents 6
+claude-zen hive-mind init --topology mesh --agents 6
 ```
 
 The wizard will guide you through:
@@ -77,7 +77,7 @@ The wizard will guide you through:
 ### 2. Verify Hive Mind Status
 
 ```bash
-claude-flow hive-mind status
+claude-zen hive-mind status
 ```
 
 Expected output:
@@ -107,12 +107,12 @@ With v2.0.0, agents are truly intelligent and specialized:
 
 ```bash
 # Auto-spawn optimal agent constellation
-claude-flow swarm auto-spawn --task "build REST API" --complexity high
+claude-zen swarm auto-spawn --task "build REST API" --complexity high
 
 # Or manual agent creation
-claude-flow agent spawn researcher --specialty "api-design" --neural-model "coordination"
-claude-flow agent spawn coder --specialty "node-backend" --neural-model "optimization"
-claude-flow agent spawn tester --specialty "api-testing" --neural-model "prediction"
+claude-zen agent spawn researcher --specialty "api-design" --neural-model "coordination"
+claude-zen agent spawn coder --specialty "node-backend" --neural-model "optimization"
+claude-zen agent spawn tester --specialty "api-testing" --neural-model "prediction"
 ```
 
 ### 2. Orchestrate Complex Tasks
@@ -121,13 +121,13 @@ The new orchestration engine coordinates multiple agents intelligently:
 
 ```bash
 # Intelligent task orchestration
-claude-flow task orchestrate "Build a complete user authentication system with JWT, password hashing, and rate limiting" \
+claude-zen task orchestrate "Build a complete user authentication system with JWT, password hashing, and rate limiting" \
   --strategy parallel \
   --priority high \
   --auto-assign
 
 # Monitor real-time progress
-claude-flow swarm monitor --live --neural-insights
+claude-zen swarm monitor --live --neural-insights
 ```
 
 ### 3. Neural Pattern Training
@@ -136,10 +136,10 @@ v2.0.0 includes real neural networks that learn from your workflows:
 
 ```bash
 # Train neural patterns from successful tasks
-claude-flow neural train --pattern coordination --data "recent-tasks" --epochs 50
+claude-zen neural train --pattern coordination --data "recent-tasks" --epochs 50
 
 # View neural insights
-claude-flow neural analyze --pattern optimization --show-weights
+claude-zen neural analyze --pattern optimization --show-weights
 ```
 
 ## Hive Mind Collective Memory
@@ -150,23 +150,23 @@ The Hive Mind maintains persistent collective memory across all sessions:
 
 ```bash
 # Store strategic decisions in collective memory
-claude-flow memory store --key "project/architecture" --value '{"pattern":"microservices","auth":"jwt","db":"postgresql"}' --collective
+claude-zen memory store --key "project/architecture" --value '{"pattern":"microservices","auth":"jwt","db":"postgresql"}' --collective
 
 # Query collective intelligence
-claude-flow memory search --pattern "authentication" --collective --limit 10
+claude-zen memory search --pattern "authentication" --collective --limit 10
 
 # Memory analytics and insights  
-claude-flow memory analytics --timeframe 7d --show-patterns
+claude-zen memory analytics --timeframe 7d --show-patterns
 ```
 
 ### Cross-Session Learning
 
 ```bash
 # Export learnings for backup
-claude-flow memory export --collective --format enhanced-json --file hive-learnings.json
+claude-zen memory export --collective --format enhanced-json --file hive-learnings.json
 
 # Restore from previous sessions
-claude-flow memory restore --file hive-learnings.json --merge-strategy intelligent
+claude-zen memory restore --file hive-learnings.json --merge-strategy intelligent
 ```
 
 ## MCP Tools Integration (87 Tools Available)
@@ -175,39 +175,39 @@ claude-flow memory restore --file hive-learnings.json --merge-strategy intellige
 
 ```bash
 # Initialize swarm coordination
-claude-flow mcp swarm-init --topology hierarchical --max-agents 8
+claude-zen mcp swarm-init --topology hierarchical --max-agents 8
 
 # Spawn and coordinate agents
-claude-flow mcp agent-spawn --type architect --capabilities '["system-design","api-architecture"]'
+claude-zen mcp agent-spawn --type architect --capabilities '["system-design","api-architecture"]'
 
 # Advanced task orchestration
-claude-flow mcp task-orchestrate --task "implement microservice" --strategy adaptive
+claude-zen mcp task-orchestrate --task "implement microservice" --strategy adaptive
 ```
 
 ### Neural and Memory Tools
 
 ```bash
 # Neural network operations
-claude-flow mcp neural-train --pattern-type coordination --training-data ./workflow-logs
+claude-zen mcp neural-train --pattern-type coordination --training-data ./workflow-logs
 
 # Memory management
-claude-flow mcp memory-usage --action store --key "optimization/results" --ttl 3600
+claude-zen mcp memory-usage --action store --key "optimization/results" --ttl 3600
 
 # Performance monitoring
-claude-flow mcp performance-report --format detailed --timeframe 24h
+claude-zen mcp performance-report --format detailed --timeframe 24h
 ```
 
 ### GitHub Integration Tools
 
 ```bash
 # Repository analysis with AI
-claude-flow mcp github-repo-analyze --repo "myorg/myrepo" --analysis-type code-quality
+claude-zen mcp github-repo-analyze --repo "myorg/myrepo" --analysis-type code-quality
 
 # Intelligent PR management
-claude-flow mcp github-pr-manage --repo "myorg/myrepo" --action review --pr-number 42
+claude-zen mcp github-pr-manage --repo "myorg/myrepo" --action review --pr-number 42
 
 # Automated workflow management
-claude-flow mcp github-workflow-auto --repo "myorg/myrepo" --workflow-type ci-cd
+claude-zen mcp github-workflow-auto --repo "myorg/myrepo" --workflow-type ci-cd
 ```
 
 ## Real-World Example: Full-Stack Application
@@ -218,19 +218,19 @@ Let's build a complete application using Claude Flow v2.0.0's new capabilities:
 
 ```bash
 # Start with intelligent project analysis
-claude-flow hive-mind wizard --project-type "full-stack-app" --complexity enterprise
+claude-zen hive-mind wizard --project-type "full-stack-app" --complexity enterprise
 
 # Configure for development workflow
-claude-flow config set --key "development.auto-testing" --value true
-claude-flow config set --key "development.neural-assistance" --value true
-claude-flow config set --key "development.collective-memory" --value true
+claude-zen config set --key "development.auto-testing" --value true
+claude-zen config set --key "development.neural-assistance" --value true
+claude-zen config set --key "development.collective-memory" --value true
 ```
 
 ### 2. Create Intelligent Swarm
 
 ```bash
 # Auto-spawn optimal agent constellation for full-stack development
-claude-flow swarm auto-spawn \
+claude-zen swarm auto-spawn \
   --task "Build enterprise todo app with React frontend, Node.js backend, PostgreSQL database" \
   --agents architect,frontend-dev,backend-dev,db-specialist,tester,devops \
   --topology hierarchical \
@@ -241,7 +241,7 @@ claude-flow swarm auto-spawn \
 
 ```bash
 # Intelligent task orchestration with dependency management
-claude-flow task orchestrate \
+claude-zen task orchestrate \
   --workflow-file enterprise-todo-workflow.json \
   --strategy adaptive \
   --parallel-execution true \
@@ -253,7 +253,7 @@ claude-flow task orchestrate \
 
 ```bash
 # Real-time monitoring with AI insights
-claude-flow swarm monitor \
+claude-zen swarm monitor \
   --live \
   --neural-insights \
   --performance-analysis \
@@ -265,13 +265,13 @@ claude-flow swarm monitor \
 
 ```bash
 # Train neural networks from project patterns
-claude-flow neural train \
+claude-zen neural train \
   --pattern-type development \
   --training-data "project-logs,git-history,performance-metrics" \
   --auto-improve true
 
 # Analyze and optimize swarm performance
-claude-flow swarm optimize \
+claude-zen swarm optimize \
   --analyze-patterns \
   --suggest-improvements \
   --auto-apply-safe
@@ -281,7 +281,7 @@ claude-flow swarm optimize \
 
 ### Neural Network Configuration
 
-Create `claude-flow.neural.json`:
+Create `claude-zen.neural.json`:
 
 ```json
 {
@@ -312,7 +312,7 @@ Create `claude-flow.neural.json`:
 
 ### Hive Mind Collective Memory
 
-Configure `claude-flow.memory.json`:
+Configure `claude-zen.memory.json`:
 
 ```json
 {
@@ -335,7 +335,7 @@ Configure `claude-flow.memory.json`:
 
 ### Swarm Coordination Settings
 
-Configure `claude-flow.swarm.json`:
+Configure `claude-zen.swarm.json`:
 
 ```json
 {
@@ -372,55 +372,55 @@ Claude Flow v2.0.0 delivers significant performance improvements:
 
 ```bash
 # Run comprehensive benchmarks
-claude-flow benchmark run --suite comprehensive --neural-optimization true
+claude-zen benchmark run --suite comprehensive --neural-optimization true
 
 # Performance analysis
-claude-flow benchmark analyze --timeframe 30d --compare-baseline
+claude-zen benchmark analyze --timeframe 30d --compare-baseline
 
 # Optimization recommendations
-claude-flow benchmark optimize --auto-apply-safe --neural-insights
+claude-zen benchmark optimize --auto-apply-safe --neural-insights
 ```
 
 ## Common Commands Reference (v2.0.0)
 
 ### Hive Mind Operations
 ```bash
-claude-flow hive-mind wizard              # Interactive setup
-claude-flow hive-mind status              # System status
-claude-flow hive-mind optimize            # Auto-optimization
-claude-flow hive-mind backup              # Backup collective memory
+claude-zen hive-mind wizard              # Interactive setup
+claude-zen hive-mind status              # System status
+claude-zen hive-mind optimize            # Auto-optimization
+claude-zen hive-mind backup              # Backup collective memory
 ```
 
 ### Intelligent Swarm Management
 ```bash
-claude-flow swarm auto-spawn              # Intelligent agent spawning
-claude-flow swarm monitor --live          # Real-time monitoring
-claude-flow swarm optimize                # Performance optimization
-claude-flow swarm coordinate              # Manual coordination
+claude-zen swarm auto-spawn              # Intelligent agent spawning
+claude-zen swarm monitor --live          # Real-time monitoring
+claude-zen swarm optimize                # Performance optimization
+claude-zen swarm coordinate              # Manual coordination
 ```
 
 ### Neural Network Operations
 ```bash
-claude-flow neural train                  # Train neural models
-claude-flow neural predict                # Make predictions
-claude-flow neural analyze                # Analyze patterns
-claude-flow neural optimize               # Optimize models
+claude-zen neural train                  # Train neural models
+claude-zen neural predict                # Make predictions
+claude-zen neural analyze                # Analyze patterns
+claude-zen neural optimize               # Optimize models
 ```
 
 ### Advanced Memory Operations
 ```bash
-claude-flow memory search --collective    # Collective memory search
-claude-flow memory analytics              # Memory analytics
-claude-flow memory compress               # Intelligent compression
-claude-flow memory sync                   # Cross-session sync
+claude-zen memory search --collective    # Collective memory search
+claude-zen memory analytics              # Memory analytics
+claude-zen memory compress               # Intelligent compression
+claude-zen memory sync                   # Cross-session sync
 ```
 
 ### MCP Tools (87 Available)
 ```bash
-claude-flow mcp list-tools                # List all MCP tools
-claude-flow mcp swarm-init                # Initialize swarm coordination
-claude-flow mcp neural-train              # Neural network training
-claude-flow mcp github-repo-analyze       # GitHub repository analysis
+claude-zen mcp list-tools                # List all MCP tools
+claude-zen mcp swarm-init                # Initialize swarm coordination
+claude-zen mcp neural-train              # Neural network training
+claude-zen mcp github-repo-analyze       # GitHub repository analysis
 ```
 
 ## Getting Help & Troubleshooting
@@ -429,26 +429,26 @@ claude-flow mcp github-repo-analyze       # GitHub repository analysis
 
 ```bash
 # Comprehensive system health check
-claude-flow health-check --comprehensive --neural-analysis
+claude-zen health-check --comprehensive --neural-analysis
 
 # Auto-diagnosis and repair
-claude-flow diagnose --auto-repair --neural-assistance
+claude-zen diagnose --auto-repair --neural-assistance
 
 # Performance bottleneck analysis
-claude-flow bottleneck-analysis --real-time --suggestions
+claude-zen bottleneck-analysis --real-time --suggestions
 ```
 
 ### Debug Mode with Neural Insights
 
 ```bash
 # Enable comprehensive debugging
-DEBUG=claude-flow:* claude-flow swarm monitor --neural-debug
+DEBUG=claude-zen:* claude-zen swarm monitor --neural-debug
 
 # Neural pattern analysis
-claude-flow neural debug --pattern coordination --visualize
+claude-zen neural debug --pattern coordination --visualize
 
 # Memory access patterns
-claude-flow memory debug --access-patterns --optimization-hints
+claude-zen memory debug --access-patterns --optimization-hints
 ```
 
 ### Community and Support

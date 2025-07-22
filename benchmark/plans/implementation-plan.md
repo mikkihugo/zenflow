@@ -32,7 +32,7 @@ benchmark/
 
 ### Phase 1: Specification
 - Define comprehensive requirements
-- Map all claude-flow swarm commands to benchmark tests
+- Map all claude-zen swarm commands to benchmark tests
 - Create detailed user stories and acceptance criteria
 - Establish performance metrics and KPIs
 

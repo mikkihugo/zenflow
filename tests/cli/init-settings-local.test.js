@@ -14,7 +14,7 @@ describe('Init Command - settings.local.json Creation', () => {
 
   beforeEach(async () => {
     // Create temporary test directory
-    testDir = path.join(os.tmpdir(), `claude-flow-test-${Date.now()}`);
+    testDir = path.join(os.tmpdir(), `claude-zen-test-${Date.now()}`);
     await fs.mkdir(testDir, { recursive: true });
     process.chdir(testDir);
   });
@@ -27,7 +27,7 @@ describe('Init Command - settings.local.json Creation', () => {
 
   it('should create .claude/settings.local.json with default MCP permissions', async () => {
     // Run init command
-    execSync('npx claude-flow init', {
+    execSync('npx claude-zen init', {
       cwd: testDir,
       stdio: 'pipe',
       env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
@@ -49,13 +49,13 @@ describe('Init Command - settings.local.json Creation', () => {
 
     // Verify default MCP permissions
     expect(settings.permissions.allow).toContain('mcp__ruv-swarm');
-    expect(settings.permissions.allow).toContain('mcp__claude-flow');
+    expect(settings.permissions.allow).toContain('mcp__claude-zen');
     expect(settings.permissions.deny).toEqual([]);
   });
 
   it('should not create settings.local.json in dry-run mode', async () => {
     // Run init command with --dry-run
-    execSync('npx claude-flow init --dry-run', {
+    execSync('npx claude-zen init --dry-run', {
       cwd: testDir,
       stdio: 'pipe',
       env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
@@ -83,7 +83,7 @@ describe('Init Command - settings.local.json Creation', () => {
     await fs.writeFile(settingsLocalPath, JSON.stringify(customSettings, null, 2));
 
     // Run init command with --force
-    execSync('npx claude-flow init --force', {
+    execSync('npx claude-zen init --force', {
       cwd: testDir,
       stdio: 'pipe',
       env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }
@@ -95,14 +95,14 @@ describe('Init Command - settings.local.json Creation', () => {
 
     // Should have default MCP permissions, not custom ones
     expect(settings.permissions.allow).toContain('mcp__ruv-swarm');
-    expect(settings.permissions.allow).toContain('mcp__claude-flow');
+    expect(settings.permissions.allow).toContain('mcp__claude-zen');
     expect(settings.permissions.allow).not.toContain('custom-tool');
     expect(settings.permissions.deny).toEqual([]);
   });
 
   it('should create valid JSON format', async () => {
     // Run init command
-    execSync('npx claude-flow init', {
+    execSync('npx claude-zen init', {
       cwd: testDir,
       stdio: 'pipe',
       env: { ...process.env, PATH: `/workspaces/claude-code-flow/node_modules/.bin:${process.env.PATH}` }

@@ -33,7 +33,7 @@ export async function optimizeHiveMindDatabase(dbPath, options = {}) {
     spinner.text = `Current schema version: ${schemaVersion}`;
 
     // Apply optimizations based on version
-    let optimizationsApplied = [];
+    const optimizationsApplied = [];
 
     // Version 1.0 -> 1.1: Add basic indexes
     if (schemaVersion < 1.1) {

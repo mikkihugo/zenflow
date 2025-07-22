@@ -39,7 +39,7 @@ class ResearchStrategy(BaseStrategy):
         start_time = datetime.now()
         
         try:
-            # Execute research through claude-flow swarm
+            # Execute research through claude-zen swarm
             if self.claude_flow_client:
                 swarm_result = await self.claude_flow_client.execute_swarm(
                     objective=task.objective,
@@ -58,7 +58,7 @@ class ResearchStrategy(BaseStrategy):
                         output={
                             "research_findings": swarm_result.get("output", ""),
                             "sources": swarm_result.get("sources", []),
-                            "methodology": "claude-flow swarm research"
+                            "methodology": "claude-zen swarm research"
                         },
                         performance_metrics=PerformanceMetrics(
                             execution_time=execution_time,

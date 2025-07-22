@@ -1,12 +1,12 @@
 # Claude-Flow Integration Guide
 
-This guide explains how to use the claude-flow integration layer for benchmark testing and automation.
+This guide explains how to use the claude-zen integration layer for benchmark testing and automation.
 
 ## Overview
 
-The integration layer provides a robust Python interface to execute claude-flow commands with:
+The integration layer provides a robust Python interface to execute claude-zen commands with:
 
-- **Command Construction**: Build valid claude-flow commands with proper validation
+- **Command Construction**: Build valid claude-zen commands with proper validation
 - **Subprocess Execution**: Execute commands with timeout and error handling
 - **Output Capture**: Comprehensive capture and parsing of command output
 - **Performance Monitoring**: Track CPU, memory, disk, and network usage
@@ -19,7 +19,7 @@ The integration layer is part of the benchmark suite. Ensure you have:
 
 ```bash
 # Claude-flow installed and accessible
-claude-flow --version
+claude-zen --version
 
 # Python dependencies
 pip install psutil
@@ -29,7 +29,7 @@ pip install psutil
 
 ### 1. ClaudeFlowExecutor
 
-The main executor class for running claude-flow commands:
+The main executor class for running claude-zen commands:
 
 ```python
 from swarm_benchmark.core.claude_flow_executor import (
@@ -346,7 +346,7 @@ for attempt in range(max_attempts):
 ```python
 # Specify explicit path
 executor = ClaudeFlowExecutor(
-    claude_flow_path="/path/to/claude-flow"
+    claude_flow_path="/path/to/claude-zen"
 )
 ```
 

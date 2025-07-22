@@ -26,15 +26,15 @@ console.log(`📦 Package version: ${version}\n`);
 
 // 2. Files that need version updates
 const versionFiles = [
-  { path: 'src/cli/simple-cli.ts', pattern: /const VERSION = '[^']+';/, replacement: `const VERSION = '${version}';` },
-  { path: 'src/cli/simple-cli.js', pattern: /const VERSION = '[^']+';/, replacement: `const VERSION = '${version}';` },
+  { path: 'src/cli/cli-main.ts', pattern: /const VERSION = '[^']+';/, replacement: `const VERSION = '${version}';` },
+  { path: 'src/cli/cli-main.js', pattern: /const VERSION = '[^']+';/, replacement: `const VERSION = '${version}';` },
   { path: 'src/cli/index.ts', pattern: /const VERSION = '[^']+';/, replacement: `const VERSION = '${version}';` },
   { path: 'src/cli/index-remote.ts', pattern: /const VERSION = '[^']+';/, replacement: `const VERSION = '${version}';` },
-  { path: 'bin/claude-flow', pattern: /VERSION="[^"]+"/, replacement: `VERSION="${version}"` },
+  { path: 'bin/claude-zen', pattern: /VERSION="[^"]+"/, replacement: `VERSION="${version}"` },
   { path: 'src/cli/commands/status.ts', pattern: /version: '[^']+'/g, replacement: `version: '${version}'` },
   { path: 'src/cli/simple-commands/status.js', pattern: /version: '[^']+'/g, replacement: `version: '${version}'` },
   { path: 'src/cli/simple-commands/config.js', pattern: /version: "[^"]+"/g, replacement: `version: "${version}"` },
-  { path: 'src/cli/simple-commands/process-ui-enhanced.js', pattern: /Claude-Flow Process Management UI v[0-9.]+/, replacement: `Claude-Flow Process Management UI v${version}` },
+  { path: 'src/cli/simple-commands/process-ui-enhanced.js', pattern: /Claude-Zen Process Management UI v[0-9.]+/, replacement: `Claude-Zen Process Management UI v${version}` },
   { path: 'src/cli/init/claude-config.ts', pattern: /version: "[^"]+"/g, replacement: `version: "${version}"` },
   { path: 'src/cli/init/directory-structure.ts', pattern: /version: "[^"]+"/g, replacement: `version: "${version}"` }
 ];
@@ -91,7 +91,7 @@ try {
 // 6. Verify dist files have correct version
 console.log('\n🔍 Verifying dist files...');
 const distFiles = [
-  'dist/cli/simple-cli.js',
+  'dist/cli/cli-main.js',
   'dist/cli/index.js'
 ];
 
@@ -124,7 +124,7 @@ try {
   if (packInfo[0] && packInfo[0].files) {
     const importantFiles = packInfo[0].files.filter(f => 
       f.path.includes('cli.js') || 
-      f.path.includes('simple-cli') ||
+      f.path.includes('cli-main') ||
       f.path.includes('package.json') ||
       f.path.includes('README.md')
     );

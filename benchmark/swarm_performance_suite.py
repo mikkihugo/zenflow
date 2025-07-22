@@ -494,13 +494,13 @@ class SwarmPerformanceBenchmark:
             )
             
     def _run_claude_flow_command(self, args: List[str], clear_cache: bool = False) -> str:
-        """Run a claude-flow command and return output."""
+        """Run a claude-zen command and return output."""
         if clear_cache:
             # Clear any potential cache
             cache_dirs = [
-                Path.home() / ".claude-flow" / "cache",
+                Path.home() / ".claude-zen" / "cache",
                 Path.cwd() / ".cache",
-                Path("/tmp/claude-flow-cache")
+                                Path("/tmp/claude-zen-cache")
             ]
             for cache_dir in cache_dirs:
                 if cache_dir.exists():

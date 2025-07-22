@@ -3,7 +3,7 @@
  */
 
 // Sample images for different test scenarios
-const mockImages = {
+export const mockImages = {
   valid: {
     small: {
       name: 'small-ui.png',
@@ -168,7 +168,7 @@ export default {
 };
 
 // Mock user data
-const mockUsers = {
+export const mockUsers = {
   authenticated: {
     id: 'user_123',
     email: 'test@example.com',
@@ -198,7 +198,7 @@ const mockUsers = {
 };
 
 // Mock API responses
-const mockApiResponses = {
+const mockImages = {
   success: {
     upload: {
       status: 'success',
@@ -263,7 +263,7 @@ const mockApiResponses = {
 };
 
 // Performance test data
-const performanceTestData = {
+const mockImages = {
   loadTestScenarios: [
     {
       name: 'Normal Load',
@@ -305,7 +305,7 @@ const performanceTestData = {
 };
 
 // Export all mock data
-module.exports = {
+export {
   mockImages,
   mockVisionResults,
   mockCodeTemplates,

@@ -38,14 +38,14 @@ The fastest way to get started with Claude Flow v2.0.0:
 
 ```bash
 # One-command setup with full enterprise features
-npx claude-flow@2.0.0 init --sparc
+npx claude-zen@2.0.0 init --sparc
 
 # Start orchestration immediately
-./claude-flow start --ui --port 3000
+./claude-zen start --ui --port 3000
 ```
 
 This creates a complete enterprise environment with:
-- ✅ Local `./claude-flow` wrapper script
+- ✅ Local `./claude-zen` wrapper script
 - ✅ `.claude/` configuration directory
 - ✅ `CLAUDE.md` with ruv-swarm integration docs
 - ✅ 27 MCP tools for swarm intelligence
@@ -57,55 +57,55 @@ This creates a complete enterprise environment with:
 ### Method 1: NPX Quick Start (Recommended)
 ```bash
 # Initialize with enterprise features and ruv-swarm
-npx claude-flow@2.0.0 init --sparc
+npx claude-zen@2.0.0 init --sparc
 
 # Or minimal setup
-npx claude-flow@2.0.0 init --minimal
+npx claude-zen@2.0.0 init --minimal
 
 # With Docker support
-npx claude-flow@2.0.0 init --docker
+npx claude-zen@2.0.0 init --docker
 ```
 
 ### Method 2: Global Installation
 ```bash
 # Install globally
-npm install -g claude-flow@2.0.0
+npm install -g claude-zen@2.0.0
 
 # Verify installation
-claude-flow --version
+claude-zen --version
 
 # Initialize in any directory
-claude-flow init --sparc
+claude-zen init --sparc
 ```
 
 ### Method 3: Project Installation
 ```bash
 # Add to existing project
-npm install claude-flow@2.0.0 --save-dev
+npm install claude-zen@2.0.0 --save-dev
 
 # Add to package.json scripts
-npm pkg set scripts.flow="claude-flow"
-npm pkg set scripts.flow:start="claude-flow start --ui"
-npm pkg set scripts.flow:swarm="claude-flow swarm"
+npm pkg set scripts.flow="claude-zen"
+npm pkg set scripts.flow:start="claude-zen start --ui"
+npm pkg set scripts.flow:swarm="claude-zen swarm"
 
 # Initialize
-npx claude-flow init --sparc
+npx claude-zen init --sparc
 ```
 
 ### Method 4: Docker Installation
 ```bash
 # Pull official image
-docker pull ruvnet/claude-flow:2.0.0
+docker pull ruvnet/claude-zen:2.0.0
 
 # Run with volume mapping
-docker run -it -v $(pwd):/app -p 3000:3000 ruvnet/claude-flow:2.0.0 init --sparc
+docker run -it -v $(pwd):/app -p 3000:3000 ruvnet/claude-zen:2.0.0 init --sparc
 ```
 
 ## ⚙️ Initial Configuration
 
 ### 1. Run Initialization
 ```bash
-./claude-flow init --sparc
+./claude-zen init --sparc
 ```
 
 You'll be prompted for:
@@ -119,7 +119,7 @@ You'll be prompted for:
 After initialization, your project will have:
 ```
 your-project/
-├── claude-flow          # Executable wrapper script
+├── claude-zen          # Executable wrapper script
 ├── .claude/             # Configuration directory
 │   ├── config.json      # Main configuration
 │   ├── settings.json    # User preferences
@@ -189,12 +189,12 @@ OPENAI_API_KEY=your_openai_key
 Add to `~/.bashrc` or `~/.zshrc`:
 ```bash
 # Claude Flow aliases
-alias cf="./claude-flow"
-alias cfs="./claude-flow start --ui"
-alias cfswarm="./claude-flow swarm"
-alias cfsparc="./claude-flow sparc"
+alias cf="./claude-zen"
+alias cfs="./claude-zen start --ui"
+alias cfswarm="./claude-zen swarm"
+alias cfsparc="./claude-zen sparc"
 
-# Add current directory to PATH for claude-flow
+# Add current directory to PATH for claude-zen
 export PATH="$PATH:."
 ```
 
@@ -202,10 +202,10 @@ export PATH="$PATH:."
 Add to PowerShell profile:
 ```powershell
 # Claude Flow aliases
-Set-Alias cf ".\claude-flow"
-Set-Alias cfs ".\claude-flow start --ui"
-Set-Alias cfswarm ".\claude-flow swarm"
-Set-Alias cfsparc ".\claude-flow sparc"
+Set-Alias cf ".\claude-zen"
+Set-Alias cfs ".\claude-zen start --ui"
+Set-Alias cfswarm ".\claude-zen swarm"
+Set-Alias cfsparc ".\claude-zen sparc"
 ```
 
 ### 3. IDE Configuration
@@ -214,9 +214,9 @@ Set-Alias cfsparc ".\claude-flow sparc"
 Create `.vscode/settings.json`:
 ```json
 {
-  "claude-flow.enable": true,
-  "claude-flow.ui.port": 3000,
-  "claude-flow.swarm.autoStart": true,
+  "claude-zen.enable": true,
+  "claude-zen.ui.port": 3000,
+  "claude-zen.swarm.autoStart": true,
   "terminal.integrated.env.linux": {
     "CLAUDE_FLOW_CONFIG": "${workspaceFolder}/.claude"
   }
@@ -228,34 +228,34 @@ Create `.vscode/settings.json`:
 ### 1. Check Installation
 ```bash
 # Verify version
-./claude-flow --version
-# Expected: claude-flow/2.0.0 darwin-arm64 node-v22.11.0
+./claude-zen --version
+# Expected: claude-zen/2.0.0 darwin-arm64 node-v22.11.0
 
 # Check system status
-./claude-flow status
+./claude-zen status
 # Should show all components as "Ready"
 ```
 
 ### 2. Test Core Features
 ```bash
 # Start UI
-./claude-flow start --ui
+./claude-zen start --ui
 # Visit http://localhost:3000
 
 # Spawn test agent
-./claude-flow agent spawn researcher --name "TestBot"
+./claude-zen agent spawn researcher --name "TestBot"
 
 # Run simple SPARC command
-./claude-flow sparc run code "create hello world function"
+./claude-zen sparc run code "create hello world function"
 ```
 
 ### 3. Verify MCP Integration
 ```bash
 # Check MCP server
-./claude-flow mcp status
+./claude-zen mcp status
 
 # List available tools
-./claude-flow mcp tools
+./claude-zen mcp tools
 
 # Should show 27+ tools including:
 # - swarm_init
@@ -268,10 +268,10 @@ Create `.vscode/settings.json`:
 ### 4. Test Swarm Features
 ```bash
 # Initialize swarm
-./claude-flow swarm init --topology mesh --max-agents 3
+./claude-zen swarm init --topology mesh --max-agents 3
 
 # Run test swarm
-./claude-flow swarm "analyze this codebase" --monitor
+./claude-zen swarm "analyze this codebase" --monitor
 ```
 
 ## 🔧 Advanced Setup
@@ -297,37 +297,37 @@ EOF
 ### 2. Memory Bank Configuration
 ```bash
 # Initialize memory with custom settings
-./claude-flow memory init --size 100mb --compression gzip
+./claude-zen memory init --size 100mb --compression gzip
 
 # Configure auto-backup
-./claude-flow memory config --auto-backup --interval 1h
+./claude-zen memory config --auto-backup --interval 1h
 ```
 
 ### 3. Performance Optimization
 ```bash
 # Enable performance features
-./claude-flow config set performance.cache true
-./claude-flow config set performance.parallelAgents 8
-./claude-flow config set performance.tokenOptimization true
+./claude-zen config set performance.cache true
+./claude-zen config set performance.parallelAgents 8
+./claude-zen config set performance.tokenOptimization true
 ```
 
 ### 4. Security Configuration
 ```bash
 # Set up access control
-./claude-flow security init
+./claude-zen security init
 
 # Configure audit logging
-./claude-flow audit config --enable --retention 90d
+./claude-zen audit config --enable --retention 90d
 
 # Set up API key encryption
-./claude-flow security encrypt-keys
+./claude-zen security encrypt-keys
 ```
 
 ### 5. CI/CD Integration
 
 #### GitHub Actions
 ```yaml
-# .github/workflows/claude-flow.yml
+# .github/workflows/claude-zen.yml
 name: Claude Flow CI
 on: [push, pull_request]
 
@@ -339,9 +339,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - run: npx claude-flow@2.0.0 init --ci
-      - run: ./claude-flow test
-      - run: ./claude-flow swarm "run tests" --parallel
+      - run: npx claude-zen@2.0.0 init --ci
+      - run: ./claude-zen test
+      - run: ./claude-zen swarm "run tests" --parallel
 ```
 
 ## 🔍 Troubleshooting
@@ -351,16 +351,16 @@ jobs:
 #### 1. Permission Denied
 ```bash
 # Solution: Make wrapper executable
-chmod +x claude-flow
+chmod +x claude-zen
 
 # Or use npm/npx
-npx claude-flow start
+npx claude-zen start
 ```
 
 #### 2. Port Already in Use
 ```bash
 # Change port
-./claude-flow start --ui --port 3001
+./claude-zen start --ui --port 3001
 
 # Or kill existing process
 lsof -ti:3000 | xargs kill -9  # macOS/Linux
@@ -370,10 +370,10 @@ netstat -ano | findstr :3000   # Windows
 #### 3. MCP Connection Failed
 ```bash
 # Check MCP server
-./claude-flow mcp diagnose
+./claude-zen mcp diagnose
 
 # Restart MCP
-./claude-flow mcp restart
+./claude-zen mcp restart
 
 # Check logs
 tail -f logs/mcp-server.log
@@ -382,27 +382,27 @@ tail -f logs/mcp-server.log
 #### 4. Memory Issues
 ```bash
 # Clear memory cache
-./claude-flow memory clear --cache
+./claude-zen memory clear --cache
 
 # Rebuild memory index
-./claude-flow memory rebuild
+./claude-zen memory rebuild
 
 # Check memory usage
-./claude-flow memory stats
+./claude-zen memory stats
 ```
 
 ### Diagnostic Commands
 ```bash
 # Full system diagnostic
-./claude-flow diagnose --full
+./claude-zen diagnose --full
 
 # Component-specific checks
-./claude-flow diagnose --mcp
-./claude-flow diagnose --swarm
-./claude-flow diagnose --memory
+./claude-zen diagnose --mcp
+./claude-zen diagnose --swarm
+./claude-zen diagnose --memory
 
 # Generate diagnostic report
-./claude-flow diagnose --report > diagnostic-report.txt
+./claude-zen diagnose --report > diagnostic-report.txt
 ```
 
 ## 📚 Next Steps
@@ -415,32 +415,32 @@ tail -f logs/mcp-server.log
 2. **Try Example Workflows**
    ```bash
    # Development workflow
-   ./claude-flow sparc run architect "design REST API"
+   ./claude-zen sparc run architect "design REST API"
    
    # Testing workflow
-   ./claude-flow swarm "comprehensive test suite" --strategy testing
+   ./claude-zen swarm "comprehensive test suite" --strategy testing
    
    # Deployment workflow
-   ./claude-flow sparc run devops "setup CI/CD pipeline"
+   ./claude-zen sparc run devops "setup CI/CD pipeline"
    ```
 
 3. **Join the Community**
    - [GitHub Discussions](https://github.com/ruvnet/claude-code-flow/discussions)
-   - [Discord Server](https://discord.gg/claude-flow)
-   - [YouTube Tutorials](https://youtube.com/@claude-flow)
+   - [Discord Server](https://discord.gg/claude-zen)
+   - [YouTube Tutorials](https://youtube.com/@claude-zen)
 
 ## 🎯 Quick Reference Card
 
 ```bash
 # Essential Commands
-./claude-flow init --sparc        # Initialize with all features
-./claude-flow start --ui          # Start with web interface
-./claude-flow status              # Check system health
-./claude-flow swarm "task"        # Run multi-agent task
-./claude-flow sparc run code      # SPARC code generation
-./claude-flow agent spawn type    # Create new agent
-./claude-flow memory store/query  # Memory operations
-./claude-flow monitor             # Real-time monitoring
+./claude-zen init --sparc        # Initialize with all features
+./claude-zen start --ui          # Start with web interface
+./claude-zen status              # Check system health
+./claude-zen swarm "task"        # Run multi-agent task
+./claude-zen sparc run code      # SPARC code generation
+./claude-zen agent spawn type    # Create new agent
+./claude-zen memory store/query  # Memory operations
+./claude-zen monitor             # Real-time monitoring
 
 # Keyboard Shortcuts (in UI)
 Ctrl/Cmd + K    # Command palette
@@ -453,4 +453,4 @@ Ctrl/Cmd + S    # Save current state
 
 **🎉 Setup Complete! You're ready to use Claude Flow v2.0.0**
 
-For additional help, run: `./claude-flow help` or visit our [documentation](https://github.com/ruvnet/claude-code-flow/docs).
+For additional help, run: `./claude-zen help` or visit our [documentation](https://github.com/ruvnet/claude-code-flow/docs).

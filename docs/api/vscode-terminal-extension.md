@@ -20,7 +20,7 @@ In your VSCode extension's activation function:
 
 ```typescript
 import * as vscode from 'vscode';
-import { initializeTerminalBridge } from './claude-flow/terminal/vscode-bridge';
+import { initializeTerminalBridge } from './claude-zen/terminal/vscode-bridge';
 
 export function activate(context: vscode.ExtensionContext) {
   // Initialize the terminal bridge
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 When initializing Claude-Flow, configure it to use VSCode terminals:
 
 ```typescript
-import { ClaudeFlow } from './claude-flow';
+import { ClaudeFlow } from './claude-zen';
 
 const config = {
   terminal: {
@@ -212,8 +212,8 @@ Here's a complete example of a VSCode extension using Claude-Flow terminals:
 
 ```typescript
 import * as vscode from 'vscode';
-import { ClaudeFlow } from './claude-flow';
-import { initializeTerminalBridge } from './claude-flow/terminal/vscode-bridge';
+import { ClaudeFlow } from './claude-zen';
+import { initializeTerminalBridge } from './claude-zen/terminal/vscode-bridge';
 
 let claudeFlow: ClaudeFlow;
 let outputChannel: vscode.OutputChannel;
@@ -240,7 +240,7 @@ export async function activate(context: vscode.ExtensionContext) {
   
   // Register commands
   context.subscriptions.push(
-    vscode.commands.registerCommand('claude-flow.runTask', async () => {
+    vscode.commands.registerCommand('claude-zen.runTask', async () => {
       const task = await vscode.window.showInputBox({
         prompt: 'Enter task description',
       });

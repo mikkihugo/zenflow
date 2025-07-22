@@ -56,7 +56,7 @@ class HiveMindBenchmarkRunner:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
         self.results: List[BenchmarkResult] = []
-        self.cli_path = Path("../src/cli/simple-cli.js")
+        self.cli_path = Path("../../bin/claude-zen")
         
     def create_benchmark_configs(self) -> List[BenchmarkConfig]:
         """Create comprehensive benchmark configurations"""
@@ -109,7 +109,7 @@ class HiveMindBenchmarkRunner:
         try:
             # Run the command with timeout
             result = subprocess.run(
-                ["node", str(self.cli_path)] + command,
+                [str(self.cli_path)] + command,
                 capture_output=True,
                 text=True,
                 timeout=timeout,
@@ -385,9 +385,9 @@ class HiveMindBenchmarkRunner:
                 "successful_tests": len(successful_results),
                 "failed_tests": len(failed_results),
                 "success_rate": len(successful_results) / len(results) if results else 0,
-                "avg_initialization_time": avg([r for r in successful_results], "initialization_time"),
-                "avg_coordination_latency": avg([r for r in successful_results], "coordination_latency"),
-                "avg_memory_usage": avg([r for r in successful_results], "memory_usage_mb")
+                "avg_initialization_time": sum(r.initialization_time for r in successful_results) / len(successful_results) if successful_results else 0,
+                "avg_coordination_latency": sum(r.coordination_latency for r in successful_results) / len(successful_results) if successful_results else 0,
+                "avg_memory_usage": sum(r.memory_usage_mb for r in successful_results) / len(successful_results) if successful_results else 0
             },
             "topology_performance": topology_avg,
             "coordination_performance": coordination_avg,

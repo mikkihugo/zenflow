@@ -8,14 +8,14 @@ The Claude-Flow MCP Wrapper is a new architecture that replaces the templated ap
 
 ### Previous Architecture (Templated)
 ```
-User → claude-flow MCP → Template Engine → File Generation
+User → claude-zen MCP → Template Engine → File Generation
                       ↓
                     Claude CLI (optional)
 ```
 
 ### New Architecture (Wrapper)
 ```
-User → claude-flow MCP Wrapper → Claude Code MCP Tools
+User → claude-zen MCP Wrapper → Claude Code MCP Tools
            ↓                           ↑
     Prompt Injection              Native Tools
 ```
@@ -97,7 +97,7 @@ Autonomous code generation and implementation
 npm run mcp:wrapper
 
 # Or use the executable
-./claude-flow-mcp-wrapper
+./claude-zen-mcp-wrapper
 
 # Build and run compiled version
 npm run mcp:wrapper:build
@@ -106,11 +106,11 @@ npm run mcp:wrapper:serve
 
 ### Configuration
 
-The wrapper is configured via `claude-flow-wrapper.mcp.json`:
+The wrapper is configured via `claude-zen-wrapper.mcp.json`:
 
 ```json
 {
-  "name": "claude-flow-wrapper",
+  "name": "claude-zen-wrapper",
   "tools": {
     "sparc_coder": {
       "passThrough": "Task",
@@ -127,8 +127,8 @@ Add to your Claude desktop configuration:
 ```json
 {
   "servers": {
-    "claude-flow": {
-      "command": "/path/to/claude-flow-mcp-wrapper"
+    "claude-zen": {
+      "command": "/path/to/claude-zen-mcp-wrapper"
     }
   }
 }

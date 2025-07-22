@@ -152,4 +152,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = BusinessService;
+export default BusinessService;

@@ -15,10 +15,10 @@ npm --version
 npx --version
 
 # Check Claude-Flow version
-npx claude-flow@latest --version
+npx claude-zen@latest --version
 
 # Check network connectivity
-curl -I https://registry.npmjs.org/claude-flow
+curl -I https://registry.npmjs.org/claude-zen
 
 # Check directory permissions
 ls -la
@@ -55,7 +55,7 @@ chmod 755 .
 chmod 644 package.json 2>/dev/null || true
 
 # Retry initialization
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 **Solution 2: Use Different Directory**
@@ -65,13 +65,13 @@ mkdir ~/my-project
 cd ~/my-project
 
 # Initialize there
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 **Solution 3: Run with Sudo (NOT recommended)**
 ```bash
 # Only if other solutions fail and you understand the security implications
-sudo npx claude-flow@latest init --sparc --force
+sudo npx claude-zen@latest init --sparc --force
 sudo chown -R $USER:$USER .
 ```
 
@@ -79,7 +79,7 @@ sudo chown -R $USER:$USER .
 
 #### Symptoms
 ```
-npm ERR! network request to https://registry.npmjs.org/claude-flow failed
+npm ERR! network request to https://registry.npmjs.org/claude-zen failed
 Error: create-sparc failed, creating basic SPARC structure manually...
 ```
 
@@ -95,7 +95,7 @@ Error: create-sparc failed, creating basic SPARC structure manually...
 ```bash
 # Test connectivity
 ping registry.npmjs.org
-curl -I https://registry.npmjs.org/claude-flow
+curl -I https://registry.npmjs.org/claude-zen
 
 # Check npm configuration
 npm config list
@@ -115,7 +115,7 @@ npm cache clean --force
 rm -rf ~/.npm/_npx/
 
 # Retry initialization
-npx -y claude-flow@latest init --sparc --force
+npx -y claude-zen@latest init --sparc --force
 ```
 
 **Solution 3: Use Alternative Registry**
@@ -124,8 +124,8 @@ npx -y claude-flow@latest init --sparc --force
 npm config set registry https://registry.yarnpkg.com/
 
 # Or use yarn
-yarn global add claude-flow
-claude-flow init --sparc --force
+yarn global add claude-zen
+claude-zen init --sparc --force
 
 # Restore original registry
 npm config set registry https://registry.npmjs.org/
@@ -154,7 +154,7 @@ cp CLAUDE.md .roomodes backup-$(date +%Y%m%d-%H%M%S)/ 2>/dev/null || true
 cp -r .claude backup-$(date +%Y%m%d-%H%M%S)/ 2>/dev/null || true
 
 # Force overwrite with optimized templates
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 
 # Review and merge important customizations
 # Compare backup files with new versions
@@ -168,7 +168,7 @@ rm CLAUDE.md .roomodes
 rm -rf .claude/commands/
 
 # Initialize (will only create missing files)
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 **Solution 3: Clean Slate Approach**
@@ -180,10 +180,10 @@ cp -r . ../project-backup-$(date +%Y%m%d)/
 # Remove Claude-Flow related files
 rm -f CLAUDE.md memory-bank.md coordination.md .roomodes
 rm -rf .claude/ memory/ coordination/
-rm -f ./claude-flow
+rm -f ./claude-zen
 
 # Fresh initialization
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 ### 4. Template Generation Errors
@@ -204,23 +204,23 @@ TypeError: Cannot read property 'generateOptimizedTemplate' of undefined
 **Solution 1: Force Fresh Installation**
 ```bash
 # Uninstall any global installation
-npm uninstall -g claude-flow
+npm uninstall -g claude-zen
 
 # Clear all caches
 npm cache clean --force
 rm -rf ~/.npm/
 
 # Use latest version with -y flag
-npx -y claude-flow@latest init --sparc --force
+npx -y claude-zen@latest init --sparc --force
 ```
 
 **Solution 2: Check Version Compatibility**
 ```bash
 # Check what version is being used
-npx claude-flow@latest --version
+npx claude-zen@latest --version
 
 # If version is outdated, force latest
-npx claude-flow@$(npm show claude-flow version) init --sparc --force
+npx claude-zen@$(npm show claude-zen version) init --sparc --force
 ```
 
 **Solution 3: Manual Template Generation**
@@ -236,9 +236,9 @@ cat > CLAUDE.md << 'EOF'
 This project uses Claude-Flow with SPARC methodology for AI-assisted development.
 
 ## Quick Start
-- Use `./claude-flow sparc "your task"` for development
+- Use `./claude-zen sparc "your task"` for development
 - Available modes: architect, code, tdd, debug, security-review
-- Memory system: `./claude-flow memory store/query`
+- Memory system: `./claude-zen memory store/query`
 
 ## Best Practices
 - Write tests first (TDD)
@@ -273,8 +273,8 @@ echo "✅ Basic structure created manually"
 #### Symptoms
 ```
 Error: SPARC modes not found
-./claude-flow sparc modes returns empty list
-Command not found: ./claude-flow
+./claude-zen sparc modes returns empty list
+Command not found: ./claude-zen
 ```
 
 #### Causes
@@ -287,18 +287,18 @@ Command not found: ./claude-flow
 **Solution 1: Verify Complete Installation**
 ```bash
 # Check for required files
-ls -la | grep -E "(CLAUDE.md|\.roomodes|claude-flow)"
+ls -la | grep -E "(CLAUDE.md|\.roomodes|claude-zen)"
 
-# If claude-flow executable missing, recreate it
-if [ ! -f "./claude-flow" ]; then
-  npx claude-flow@latest init --sparc --force
+# If claude-zen executable missing, recreate it
+if [ ! -f "./claude-zen" ]; then
+  npx claude-zen@latest init --sparc --force
 fi
 
 # Make executable if needed
-chmod +x ./claude-flow
+chmod +x ./claude-zen
 
 # Test SPARC modes
-./claude-flow sparc modes
+./claude-zen sparc modes
 ```
 
 **Solution 2: Fix Path and Working Directory**
@@ -311,7 +311,7 @@ ls -la CLAUDE.md || echo "Not in project directory"
 cd /path/to/your/project
 
 # Verify initialization
-./claude-flow --version
+./claude-zen --version
 ```
 
 **Solution 3: Regenerate SPARC Configuration**
@@ -321,10 +321,10 @@ rm -f .roomodes
 rm -rf .claude/
 
 # Reinitialize SPARC components
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 
 # Verify modes are loaded
-./claude-flow sparc modes --verbose
+./claude-zen sparc modes --verbose
 ```
 
 ### 6. Memory System Initialization Issues
@@ -333,7 +333,7 @@ npx claude-flow@latest init --sparc --force
 ```
 Error: Cannot initialize memory system
 Memory directory not accessible
-./claude-flow memory stats fails
+./claude-zen memory stats fails
 ```
 
 #### Causes
@@ -358,10 +358,10 @@ chmod 755 memory/agents/
 chmod 755 memory/sessions/
 
 # Initialize memory database
-echo '{"agents":[],"tasks":[],"lastUpdated":'$(date +%s)'}' > memory/claude-flow-data.json
+echo '{"agents":[],"tasks":[],"lastUpdated":'$(date +%s)'}' > memory/claude-zen-data.json
 
 # Test memory system
-./claude-flow memory stats
+./claude-zen memory stats
 ```
 
 **Solution 2: Check Disk Space**
@@ -375,7 +375,7 @@ rm -rf node_modules/
 rm -rf .git/logs/ 2>/dev/null || true
 
 # Retry initialization
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 ### 7. Claude Code Integration Issues
@@ -400,7 +400,7 @@ Claude Code slash commands not appearing
 rm -rf .claude/commands/
 
 # Force regeneration
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 
 # Verify slash commands created
 ls -la .claude/commands/
@@ -442,7 +442,7 @@ Use this command to run SPARC development tasks with AI assistance.
 - `/sparc "design database schema"`
 
 ## Available Modes
-Run `./claude-flow sparc modes` to see all available development modes.
+Run `./claude-zen sparc modes` to see all available development modes.
 EOF
 
 echo "✅ Basic slash commands created"
@@ -474,28 +474,28 @@ grep -q "systemPrompt.*focus" .roomodes && echo "✅ Optimized prompts" || echo 
 
 # Reinitialize if needed
 if ! grep -q "optimized" CLAUDE.md; then
-  npx claude-flow@latest init --sparc --force
+  npx claude-zen@latest init --sparc --force
 fi
 ```
 
 **Solution 2: Monitor Performance**
 ```bash
 # Enable performance monitoring
-./claude-flow config set monitoring.enabled true
-./claude-flow config set logging.level debug
+./claude-zen config set monitoring.enabled true
+./claude-zen config set logging.level debug
 
 # Test with timing
-time ./claude-flow sparc "simple hello world function"
+time ./claude-zen sparc "simple hello world function"
 
 # Check memory usage
-./claude-flow memory stats
+./claude-zen memory stats
 ```
 
 **Solution 3: Optimize for Your Use Case**
 ```bash
 # Customize for your project type
-./claude-flow config set project.type "web-app"  # or "api", "mobile", etc.
-./claude-flow config set team.experience "senior"  # or "junior", "mixed"
+./claude-zen config set project.type "web-app"  # or "api", "mobile", etc.
+./claude-zen config set team.experience "senior"  # or "junior", "mixed"
 
 # Update prompts for your domain
 # Edit .roomodes to include domain-specific context
@@ -510,14 +510,14 @@ time ./claude-flow sparc "simple hello world function"
 # PowerShell execution policy
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Path issues with ./claude-flow
-# Use .\claude-flow.cmd instead
-npx claude-flow@latest init --sparc --force
-.\claude-flow.cmd sparc modes
+# Path issues with ./claude-zen
+# Use .\claude-zen.cmd instead
+npx claude-zen@latest init --sparc --force
+.\claude-zen.cmd sparc modes
 
 # If .cmd file missing, create it
 @echo off
-npx claude-flow %*
+npx claude-zen %*
 ```
 
 ### macOS Users
@@ -558,11 +558,11 @@ nvm use --lts
 
 ```bash
 # Enable comprehensive debugging
-export DEBUG=claude-flow:*
+export DEBUG=claude-zen:*
 export NODE_ENV=development
 
 # Run with debug output
-npx claude-flow@latest init --sparc --force --verbose
+npx claude-zen@latest init --sparc --force --verbose
 
 # Check debug logs
 ls -la .claude/logs/
@@ -573,16 +573,16 @@ tail -f .claude/logs/debug.log
 
 ```bash
 # Test in completely clean environment
-mkdir /tmp/claude-flow-test
-cd /tmp/claude-flow-test
+mkdir /tmp/claude-zen-test
+cd /tmp/claude-zen-test
 
 # Initialize fresh
-npx -y claude-flow@latest init --sparc --force
+npx -y claude-zen@latest init --sparc --force
 
 # Test basic functionality
-./claude-flow --version
-./claude-flow sparc modes
-./claude-flow status
+./claude-zen --version
+./claude-zen sparc modes
+./claude-zen status
 ```
 
 ### System Requirements Verification
@@ -621,10 +621,10 @@ When reporting issues, include:
 
 ```bash
 # Generate diagnostic report
-./claude-flow diagnostic > claude-flow-diagnostic.txt
+./claude-zen diagnostic > claude-zen-diagnostic.txt
 
 # Include this information:
-echo "Claude-Flow Version: $(npx claude-flow --version)"
+echo "Claude-Flow Version: $(npx claude-zen --version)"
 echo "Node.js Version: $(node --version)"
 echo "npm Version: $(npm --version)"
 echo "Operating System: $(uname -a)"
@@ -648,13 +648,13 @@ if [ "$confirm" = "yes" ]; then
   # Remove all Claude-Flow files
   rm -f CLAUDE.md memory-bank.md coordination.md .roomodes
   rm -rf .claude/ memory/ coordination/
-  rm -f claude-flow claude-flow.cmd
+  rm -f claude-zen claude-zen.cmd
   
   # Clear npm cache
   npm cache clean --force
   
   # Fresh start
-  npx -y claude-flow@latest init --sparc --force
+  npx -y claude-zen@latest init --sparc --force
   
   echo "✅ Emergency recovery complete"
 else

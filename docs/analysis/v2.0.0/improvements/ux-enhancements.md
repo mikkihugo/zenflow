@@ -12,7 +12,7 @@ This document outlines critical user experience improvements for Claude Flow v2.
 - **Severity**: CRITICAL - Blocks user progress
 
 ### 1.2 Inconsistent Command Syntax
-- **Issue**: Mixed patterns between local (`./claude-flow`) and NPX (`npx claude-flow@2.0.0`) execution
+- **Issue**: Mixed patterns between local (`./claude-zen`) and NPX (`npx claude-zen@2.0.0`) execution
 - **Impact**: Confusion about proper command usage
 - **Severity**: HIGH - Affects all users
 
@@ -36,34 +36,34 @@ This document outlines critical user experience improvements for Claude Flow v2.
 ### 2.1 Unified Command Structure
 ```bash
 # Current (Inconsistent)
-./claude-flow --help
-npx claude-flow@2.0.0 init --sparc
+./claude-zen --help
+npx claude-zen@2.0.0 init --sparc
 npx ruv-swarm@latest init hierarchical 8
 
 # Proposed (Consistent)
-claude-flow help
-claude-flow init sparc
-claude-flow swarm init hierarchical 8
+claude-zen help
+claude-zen init sparc
+claude-zen swarm init hierarchical 8
 ```
 
 ### 2.2 Command Aliases
 ```bash
 # Short aliases for common commands
-cf init         # claude-flow init
-cf start        # claude-flow start
-cf status       # claude-flow status
-cf swarm        # claude-flow swarm
+cf init         # claude-zen init
+cf start        # claude-zen start
+cf status       # claude-zen status
+cf swarm        # claude-zen swarm
 ```
 
 ### 2.3 Contextual Help
 ```bash
 # Current
-claude-flow --help  # Generic help
+claude-zen --help  # Generic help
 
 # Proposed
-claude-flow help init        # Command-specific help
-claude-flow init --help      # Same result
-claude-flow init --examples  # Show usage examples
+claude-zen help init        # Command-specific help
+claude-zen init --help      # Same result
+claude-zen init --examples  # Show usage examples
 ```
 
 ## 3. Interactive Wizard Design
@@ -112,7 +112,7 @@ interface SetupWizard {
 
 ### 3.2 Implementation Example
 ```bash
-$ claude-flow init
+$ claude-zen init
 
 🚀 Welcome to Claude Flow v2.0.0 Setup
 
@@ -157,11 +157,11 @@ Press Ctrl+C at any time to exit.
   ✓ Initialized swarm (hierarchical, 4 agents)
 
 🎉 Claude Flow is ready! Next steps:
-  1. Run 'claude-flow start' to launch the system
-  2. Try 'claude-flow sparc architect "design a user auth system"'
-  3. View status with 'claude-flow status'
+  1. Run 'claude-zen start' to launch the system
+  2. Try 'claude-zen sparc architect "design a user auth system"'
+  3. View status with 'claude-zen status'
 
-Need help? Run 'claude-flow help' or visit docs.claude-flow.com
+Need help? Run 'claude-zen help' or visit docs.claude-zen.com
 ```
 
 ## 4. Progress Indicator Implementations
@@ -188,7 +188,7 @@ class ProgressIndicator {
   
   error(message: string, suggestion?: string): void {
     // ❌ Error: Command failed
-    // 💡 Try: claude-flow status --verbose
+    // 💡 Try: claude-zen status --verbose
   }
 }
 ```
@@ -196,11 +196,11 @@ class ProgressIndicator {
 ### 4.2 Long Operation Feedback
 ```bash
 # Current (No feedback)
-$ claude-flow swarm orchestrate "complex task"
+$ claude-zen swarm orchestrate "complex task"
 [waits silently...]
 
 # Proposed (Rich feedback)
-$ claude-flow swarm orchestrate "complex task"
+$ claude-zen swarm orchestrate "complex task"
 
 🔄 Initializing swarm orchestration...
   ⠸ Spawning 4 agents... (2/4)
@@ -231,7 +231,7 @@ $ claude-flow swarm orchestrate "complex task"
   • Files created: 12
   • Tests passed: 24/24
 
-View detailed results: claude-flow task results --id=task-1234
+View detailed results: claude-zen task results --id=task-1234
 ```
 
 ## 5. Error Message Enhancements
@@ -262,11 +262,11 @@ Error: ECONNREFUSED
 The Claude Flow server is not running on port 3000.
 
 Possible solutions:
-  1. Start the server: claude-flow start
+  1. Start the server: claude-zen start
   2. Check if another process is using port 3000: lsof -i :3000
-  3. Verify your configuration: claude-flow config show
+  3. Verify your configuration: claude-zen config show
 
-Need more help? Visit: docs.claude-flow.com/errors/ECONNREFUSED
+Need more help? Visit: docs.claude-zen.com/errors/ECONNREFUSED
 ```
 
 ### 5.3 Common Error Templates
@@ -277,7 +277,7 @@ Need more help? Visit: docs.claude-flow.com/errors/ECONNREFUSED
 Found 149 errors in the source code that prevent building.
 
 Quick fix:
-  • Use NPX to run pre-built version: npx claude-flow@2.0.0
+  • Use NPX to run pre-built version: npx claude-zen@2.0.0
   • Report issue: github.com/ruvnet/claude-code-flow/issues
 
 # Missing Dependencies
@@ -304,7 +304,7 @@ This may cause unexpected behavior. Please upgrade Node.js:
 
 ### 6.1 First-Run Experience
 ```bash
-$ claude-flow
+$ claude-zen
 
 🎉 Welcome to Claude Flow v2.0.0!
 
@@ -324,7 +324,7 @@ Choose an option (1-4): 1
 
 ### 6.2 Interactive Tutorial
 ```bash
-$ claude-flow tutorial
+$ claude-zen tutorial
 
 🎓 Claude Flow Interactive Tutorial
 
@@ -333,13 +333,13 @@ We'll create a simple task together to show you the basics.
 📝 Lesson 1: Creating Your First Swarm
 
 Let's spawn a simple research agent:
-> claude-flow swarm spawn researcher "AI assistant"
+> claude-zen swarm spawn researcher "AI assistant"
 
 ✅ Great! You've created your first agent.
 
 The agent is now ready to help with research tasks.
 Try giving it a task:
-> claude-flow task create "Research best practices for API design"
+> claude-zen task create "Research best practices for API design"
 
 [Continue tutorial...]
 ```
@@ -348,10 +348,10 @@ Try giving it a task:
 ```bash
 # Show tips based on user behavior
 💡 Pro tip: You're using sequential commands. Try batch mode for 3x faster execution:
-   claude-flow batch --file=commands.txt
+   claude-zen batch --file=commands.txt
 
 💡 Hint: Enable shell completion for faster command entry:
-   claude-flow completion install
+   claude-zen completion install
 
 💡 Performance tip: Your swarm has 8 agents but low task complexity. 
    Consider using 3-4 agents for optimal performance.

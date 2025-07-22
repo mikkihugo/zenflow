@@ -31,7 +31,7 @@ async def test_basic_metrics():
     engine = RealBenchmarkEngine(config)
     
     # Run a simple benchmark
-    result = await engine.run_benchmark("Show claude-flow status")
+    result = await engine.run_benchmark("Show claude-zen status")
     
     print("\nBenchmark Results:")
     print(f"Status: {result['status']}")

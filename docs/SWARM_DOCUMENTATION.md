@@ -36,27 +36,27 @@ The Claude Flow Swarm Mode enables self-orchestrating agent swarms that can work
 
 ### Basic Usage
 ```bash
-claude-flow swarm "Your objective here"
+claude-zen swarm "Your objective here"
 ```
 
 ### With Options
 Due to CLI parsing limitations, flags must come AFTER the objective:
 ```bash
-claude-flow swarm "Research cloud architectures" --strategy research --max-agents 5 --monitor
+claude-zen swarm "Research cloud architectures" --strategy research --max-agents 5 --monitor
 ```
 
 ### Dry Run
 ```bash
-claude-flow swarm "Test objective" --dry-run
+claude-zen swarm "Test objective" --dry-run
 ```
 
 ### VS Code Integration
 ```bash
 # Automatically detects VS Code environment
-claude-flow swarm "Build a feature" --vscode
+claude-zen swarm "Build a feature" --vscode
 
 # Force VS Code mode
-claude-flow swarm "Create API" --vscode
+claude-zen swarm "Create API" --vscode
 ```
 
 ## Options
@@ -99,17 +99,17 @@ claude-flow swarm "Create API" --vscode
 
 ### Research Task
 ```bash
-claude-flow swarm --strategy research --research "Research best practices for microservices"
+claude-zen swarm --strategy research --research "Research best practices for microservices"
 ```
 
 ### Development Task
 ```bash
-claude-flow swarm --strategy development --max-agents 3 "Build a REST API with authentication"
+claude-zen swarm --strategy development --max-agents 3 "Build a REST API with authentication"
 ```
 
 ### Complex Project
 ```bash
-claude-flow swarm --parallel --review --coordinator "Design and implement a real-time chat system"
+claude-zen swarm --parallel --review --coordinator "Design and implement a real-time chat system"
 ```
 
 ## Monitoring
@@ -117,7 +117,7 @@ claude-flow swarm --parallel --review --coordinator "Design and implement a real
 Use the `--monitor` flag to enable real-time monitoring of swarm progress:
 
 ```bash
-claude-flow swarm --monitor "Your task"
+claude-zen swarm --monitor "Your task"
 ```
 
 This displays:

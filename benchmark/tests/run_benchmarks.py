@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Comprehensive benchmark runner for claude-flow.
+Comprehensive benchmark runner for claude-zen.
 Executes all test suites and generates consolidated reports.
 """
 
@@ -15,7 +15,7 @@ import argparse
 
 
 class BenchmarkRunner:
-    """Main benchmark runner for claude-flow tests"""
+    """Main benchmark runner for claude-zen tests"""
     
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
@@ -271,7 +271,7 @@ class BenchmarkRunner:
 
 def main():
     """Main entry point"""
-    parser = argparse.ArgumentParser(description="Run claude-flow benchmarks")
+    parser = argparse.ArgumentParser(description="Run claude-zen benchmarks")
     parser.add_argument("-v", "--verbose", action="store_true", 
                       help="Verbose output")
     parser.add_argument("--suite", choices=["all", "unit", "integration", "performance"],

@@ -6,7 +6,7 @@ The optimized initialization (`--sparc --force`) is the recommended way to set u
 
 ```bash
 # ⭐ Recommended setup for new projects
-npx -y claude-flow@latest init --sparc --force
+npx -y claude-zen@latest init --sparc --force
 ```
 
 ## Complete Usage Guide
@@ -31,24 +31,24 @@ ls -la           # Verify write permissions
 #### Recommended Optimized Setup
 ```bash
 # For new projects (recommended)
-npx -y claude-flow@latest init --sparc --force
+npx -y claude-zen@latest init --sparc --force
 
 # For existing projects with customizations
 # (Backup first)
 cp CLAUDE.md CLAUDE.md.backup 2>/dev/null || true
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 #### Alternative Setups
 ```bash
 # Standard SPARC (without optimizations)
-npx claude-flow@latest init --sparc
+npx claude-zen@latest init --sparc
 
 # Minimal setup (basic features only)
-npx claude-flow@latest init --minimal
+npx claude-zen@latest init --minimal
 
 # Preview what will be created (dry run)
-npx claude-flow@latest init --sparc --force --dry-run
+npx claude-zen@latest init --sparc --force --dry-run
 ```
 
 ### 3. Post-Installation Verification
@@ -57,19 +57,19 @@ After initialization, verify everything is working:
 
 ```bash
 # Test local executable
-./claude-flow --version
+./claude-zen --version
 
 # Check SPARC modes are available
-./claude-flow sparc modes
+./claude-zen sparc modes
 
 # Verify memory system
-./claude-flow memory stats
+./claude-zen memory stats
 
 # Test a simple SPARC command
-./claude-flow sparc "create a hello world function"
+./claude-zen sparc "create a hello world function"
 
 # Check system status
-./claude-flow status
+./claude-zen status
 ```
 
 ### 4. Understanding What Gets Created
@@ -81,7 +81,7 @@ your-project/
 ├── memory-bank.md           # Memory system documentation
 ├── coordination.md          # Agent coordination guide
 ├── .roomodes               # SPARC mode definitions (optimized prompts)
-├── ./claude-flow           # Local executable wrapper
+├── ./claude-zen           # Local executable wrapper
 ├── .claude/
 │   ├── commands/           # Claude Code slash commands
 │   │   ├── sparc/         # SPARC-specific commands
@@ -93,7 +93,7 @@ your-project/
 ├── memory/
 │   ├── agents/           # Agent-specific memory
 │   ├── sessions/         # Session storage
-│   └── claude-flow-data.json # Persistence database
+│   └── claude-zen-data.json # Persistence database
 └── coordination/
     ├── memory_bank/      # Shared memory
     ├── subtasks/         # Task breakdown
@@ -136,32 +136,32 @@ echo "
 " >> CLAUDE.md
 
 # Configure project settings
-./claude-flow config set project.type "web-app"
-./claude-flow config set team.size 5
-./claude-flow config set team.experience "mixed"
+./claude-zen config set project.type "web-app"
+./claude-zen config set team.size 5
+./claude-zen config set team.experience "mixed"
 ```
 
 #### Step 2: Test Core Functionality
 ```bash
 # Start with a simple task
-./claude-flow sparc "create a simple calculator function with tests"
+./claude-zen sparc "create a simple calculator function with tests"
 
 # Try different modes
-./claude-flow sparc run architect "design user authentication system"
-./claude-flow sparc run tdd "implement user registration"
-./claude-flow sparc run security-review "review authentication code"
+./claude-zen sparc run architect "design user authentication system"
+./claude-zen sparc run tdd "implement user registration"
+./claude-zen sparc run security-review "review authentication code"
 ```
 
 #### Step 3: Set Up Team Collaboration
 ```bash
 # Initialize shared memory
-./claude-flow memory store "project-start" "Project initialized with optimized Claude-Flow setup"
+./claude-zen memory store "project-start" "Project initialized with optimized Claude-Flow setup"
 
 # Create team guidelines
-./claude-flow sparc run docs-writer "create team development guidelines"
+./claude-zen sparc run docs-writer "create team development guidelines"
 
 # Set up monitoring
-./claude-flow start --daemon  # Optional: run orchestrator in background
+./claude-zen start --daemon  # Optional: run orchestrator in background
 ```
 
 ### 6. Performance Optimization Tips
@@ -169,29 +169,29 @@ echo "
 #### Monitor Performance
 ```bash
 # Enable performance monitoring
-./claude-flow config set monitoring.enabled true
+./claude-zen config set monitoring.enabled true
 
 # Track response times
-./claude-flow monitor --focus performance
+./claude-zen monitor --focus performance
 
 # Analyze token usage
-./claude-flow memory query --stats
+./claude-zen memory query --stats
 ```
 
 #### Optimize for Your Use Case
 ```bash
 # Web development optimization
-./claude-flow config set focus "frontend,backend,api-design"
-./claude-flow config set testing.coverage 85
-./claude-flow config set security.level "high"
+./claude-zen config set focus "frontend,backend,api-design"
+./claude-zen config set testing.coverage 85
+./claude-zen config set security.level "high"
 
 # Mobile development optimization
-./claude-flow config set platform "mobile"
-./claude-flow config set performance.priority "battery-life"
+./claude-zen config set platform "mobile"
+./claude-zen config set performance.priority "battery-life"
 
 # API development optimization
-./claude-flow config set api.style "RESTful"
-./claude-flow config set documentation.auto true
+./claude-zen config set api.style "RESTful"
+./claude-zen config set documentation.auto true
 ```
 
 ### 7. Advanced Configuration
@@ -239,7 +239,7 @@ cat > team-config.json << 'EOF'
 EOF
 
 # Apply team configuration
-./claude-flow config import team-config.json
+./claude-zen config import team-config.json
 ```
 
 ### 8. Integration with Development Workflow
@@ -259,7 +259,7 @@ git commit -m "feat: Add optimized Claude-Flow configuration
 # Create .gitignore entries
 echo "
 # Claude-Flow
-memory/claude-flow-data.json
+memory/claude-zen-data.json
 .claude/logs/
 coordination/memory_bank/*.temp
 " >> .gitignore
@@ -267,7 +267,7 @@ coordination/memory_bank/*.temp
 
 #### CI/CD Integration
 ```yaml
-# .github/workflows/claude-flow-quality.yml
+# .github/workflows/claude-zen-quality.yml
 name: Claude-Flow Quality Check
 on: [push, pull_request]
 
@@ -281,17 +281,17 @@ jobs:
           node-version: '18'
       
       - name: Install Claude-Flow
-        run: npm install -g claude-flow
+        run: npm install -g claude-zen
       
       - name: Validate Configuration
         run: |
-          ./claude-flow config validate
-          ./claude-flow sparc modes --validate
+          ./claude-zen config validate
+          ./claude-zen sparc modes --validate
       
       - name: Run Quality Gates
         run: |
-          ./claude-flow sparc run security-review "automated security scan"
-          ./claude-flow sparc run code-review "automated code quality check"
+          ./claude-zen sparc run security-review "automated security scan"
+          ./claude-zen sparc run code-review "automated code quality check"
 ```
 
 ### 9. Team Onboarding
@@ -307,34 +307,34 @@ git clone <project-repo>
 cd <project-directory>
 
 # Verify Claude-Flow setup
-if [ ! -f "./claude-flow" ]; then
+if [ ! -f "./claude-zen" ]; then
   echo "⚠️  Claude-Flow not initialized. Running setup..."
-  npx -y claude-flow@latest init --sparc --force
+  npx -y claude-zen@latest init --sparc --force
 fi
 
 # Test functionality
-./claude-flow --version
-./claude-flow sparc modes
+./claude-zen --version
+./claude-zen sparc modes
 
 # Set up personal configuration
-./claude-flow config set user.name "$(git config user.name)"
-./claude-flow config set user.experience "junior"  # or senior/intermediate
+./claude-zen config set user.name "$(git config user.name)"
+./claude-zen config set user.experience "junior"  # or senior/intermediate
 
 echo "✅ Claude-Flow setup complete!"
-echo "Try: ./claude-flow sparc 'hello world function'"
+echo "Try: ./claude-zen sparc 'hello world function'"
 ```
 
 #### Team Training Materials
 ```bash
 # Generate training documentation
-./claude-flow sparc run docs-writer "create Claude-Flow training guide for new developers"
+./claude-zen sparc run docs-writer "create Claude-Flow training guide for new developers"
 
 # Create example tasks
-./claude-flow memory store "training-examples" "
-1. Basic function: ./claude-flow sparc 'create utility function'
-2. TDD workflow: ./claude-flow sparc tdd 'user validation'
-3. Architecture: ./claude-flow sparc run architect 'system design'
-4. Review process: ./claude-flow sparc run review 'code quality check'
+./claude-zen memory store "training-examples" "
+1. Basic function: ./claude-zen sparc 'create utility function'
+2. TDD workflow: ./claude-zen sparc tdd 'user validation'
+3. Architecture: ./claude-zen sparc run architect 'system design'
+4. Review process: ./claude-zen sparc run review 'code quality check'
 "
 ```
 
@@ -347,16 +347,16 @@ echo "Try: ./claude-flow sparc 'hello world function'"
 echo "🔧 Claude-Flow weekly maintenance..."
 
 # Update to latest version
-npx claude-flow@latest --version
+npx claude-zen@latest --version
 
 # Clean up old memory entries
-./claude-flow memory cleanup --days 30
+./claude-zen memory cleanup --days 30
 
 # Backup configuration
-./claude-flow memory export backup-$(date +%Y%m%d).json
+./claude-zen memory export backup-$(date +%Y%m%d).json
 
 # Check system health
-./claude-flow status
+./claude-zen status
 
 echo "✅ Maintenance complete"
 ```
@@ -364,16 +364,16 @@ echo "✅ Maintenance complete"
 #### Update Process
 ```bash
 # Before updating
-./claude-flow memory export pre-update-backup.json
+./claude-zen memory export pre-update-backup.json
 cp CLAUDE.md CLAUDE.md.backup
 cp .roomodes .roomodes.backup
 
 # Update to latest version
-npm uninstall -g claude-flow
-npm install -g claude-flow@latest
+npm uninstall -g claude-zen
+npm install -g claude-zen@latest
 
 # Reinitialize with latest optimizations
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 
 # Merge customizations from backup
 # (Manual review recommended)
@@ -384,27 +384,27 @@ npx claude-flow@latest init --sparc --force
 #### Performance Issues
 ```bash
 # Debug slow responses
-./claude-flow config set logging.level debug
-./claude-flow monitor --performance
+./claude-zen config set logging.level debug
+./claude-zen monitor --performance
 
 # Check token usage
-./claude-flow memory stats --verbose
+./claude-zen memory stats --verbose
 
 # Optimize prompts
-./claude-flow config set prompts.optimize true
+./claude-zen config set prompts.optimize true
 ```
 
 #### Configuration Issues
 ```bash
 # Reset to defaults
-./claude-flow config reset
+./claude-zen config reset
 
 # Validate configuration
-./claude-flow config validate
+./claude-zen config validate
 
 # Regenerate corrupted files
 rm .roomodes CLAUDE.md
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 ```
 
 ### 12. Best Practices Summary
@@ -429,13 +429,13 @@ npx claude-flow@latest init --sparc --force
 #### Built-in Help
 ```bash
 # Command help
-./claude-flow init --help
-./claude-flow sparc --help
-./claude-flow --help
+./claude-zen init --help
+./claude-zen sparc --help
+./claude-zen --help
 
 # Mode information
-./claude-flow sparc info architect
-./claude-flow sparc modes --verbose
+./claude-zen sparc info architect
+./claude-zen sparc modes --verbose
 ```
 
 #### Community Resources

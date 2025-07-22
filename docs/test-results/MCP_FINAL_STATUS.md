@@ -8,7 +8,7 @@ The Claude-Flow MCP server is now working correctly with all SPARC modes loaded.
 
 ### MCP Server
 - **Location**: `src/cli/mcp-stdio-server.ts`
-- **Configuration**: `claude-flow.mcp.json`
+- **Configuration**: `claude-zen.mcp.json`
 - **Modes**: All 17 SPARC modes + 3 meta tools = 20 total tools
 
 ### Available Tools
@@ -43,7 +43,7 @@ Add to your Claude Desktop configuration:
 ```json
 {
   "servers": {
-    "claude-flow": {
+    "claude-zen": {
       "command": "npx",
       "args": ["tsx", "src/cli/mcp-stdio-server.ts"]
     }
@@ -84,4 +84,4 @@ This will:
 
 ## Note on CLI Integration
 
-While the MCP server is fully functional, the `./claude-flow mcp start` command integration has some complexities due to multiple CLI implementations in the project. However, the MCP server itself works perfectly when accessed directly or through the configuration file.
+While the MCP server is fully functional, the `./claude-zen mcp start` command integration has some complexities due to multiple CLI implementations in the project. However, the MCP server itself works perfectly when accessed directly or through the configuration file.

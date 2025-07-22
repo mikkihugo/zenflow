@@ -7,10 +7,10 @@ The Claude Code Web UI from v1.0.72 has been successfully ported and is now full
 ### Method 1: Using the Start Command (Recommended)
 ```bash
 # Start the web server
-claude-flow start --web
+claude-zen start --web
 
 # Or with custom port
-claude-flow start --web --port 8080
+claude-zen start --web --port 8080
 ```
 
 ### Method 2: Direct Script Execution
@@ -67,7 +67,7 @@ Once started, open your web browser and navigate to:
 - `connect [url] [token]` - Connect to Claude Code server
 - `status` - Show connection and system status
 - `clear` - Clear console output
-- `claude-flow <command>` - Execute Claude Flow commands
+- `claude-zen <command>` - Execute Claude Flow commands
 - `swarm <action>` - Manage swarms
 - `tools` - List available tools
 
@@ -133,7 +133,7 @@ The web UI includes full integration with Claude Flow's swarm orchestration:
 ### Common Issues
 
 **Connection Failed**
-- Ensure the server is running with `claude-flow start --web`
+- Ensure the server is running with `claude-zen start --web`
 - Check the server URL in settings (default: `ws://localhost:3000/ws`)
 - Verify firewall settings allow connections to the port
 
@@ -195,7 +195,7 @@ window.claudeConsole.wsClient.debugMode = true;
 
 1. **Start the server**:
    ```bash
-   claude-flow start --web
+   claude-zen start --web
    ```
 
 2. **Open your browser** to: `http://localhost:3000/console`

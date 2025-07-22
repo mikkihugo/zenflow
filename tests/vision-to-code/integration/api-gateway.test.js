@@ -1,9 +1,9 @@
-const request = require('supertest');
-const { mockApiResponses, mockUsers } = require('../fixtures/mock-data');
-const TestHelpers = require('../utils/test-helpers');
+import request from 'supertest';
+import { mockApiResponses, mockUsers } from '../fixtures/mock-data.js';
+import TestHelpers from '../utils/test-helpers.js';
 
 // Mock the API Gateway
-const app = require('@/services/api-gateway/app');
+import app from '@/services/api-gateway/app.js';
 
 describe('API Gateway Integration Tests', () => {
   let server;

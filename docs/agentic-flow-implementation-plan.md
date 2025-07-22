@@ -58,7 +58,7 @@ agentic-flow/
 │   │   ├── transfer-learning.ts   # Knowledge transfer
 │   │   └── meta-learning.ts       # Learning to learn
 │   ├── integration/
-│   │   ├── claude-flow-bridge.ts  # Claude Flow integration
+│   │   ├── claude-zen-bridge.ts  # Claude Flow integration
 │   │   ├── mcp-adapter.ts         # MCP tool adaptation
 │   │   ├── hive-mind-adapter.ts   # Hive Mind integration
 │   │   └── external-apis.ts       # External service integration
@@ -271,7 +271,7 @@ class AgentCommunicationProtocol {
 
 ### 3.1 Claude Flow Bridge
 ```typescript
-// claude-flow-bridge.ts
+// claude-zen-bridge.ts
 class ClaudeFlowBridge {
   private orchestrator: ClaudeFlowOrchestrator;
   private mcpServer: MCPServer;
@@ -602,18 +602,18 @@ async function main() {
 ### 7.1 With Existing Claude Flow Commands
 ```bash
 # Use agentic mode with existing commands
-claude-flow task "Build e-commerce platform" --agentic --autonomous
+claude-zen task "Build e-commerce platform" --agentic --autonomous
 
 # Spawn autonomous swarm
-claude-flow swarm spawn --mode agentic --goal "Optimize application performance"
+claude-zen swarm spawn --mode agentic --goal "Optimize application performance"
 
 # Convert existing swarm to agentic
-claude-flow swarm upgrade <swarm-id> --to-agentic
+claude-zen swarm upgrade <swarm-id> --to-agentic
 ```
 
 ### 7.2 Programmatic Integration
 ```typescript
-import { ClaudeFlow } from 'claude-flow';
+import { ClaudeFlow } from 'claude-zen';
 import { AgenticFlow } from 'agentic-flow';
 
 // Enhance Claude Flow with agentic capabilities

@@ -144,7 +144,7 @@ export class MCPToolWrapper {
    */
   async initializeMemoryStorage() {
     try {
-      const { createDatabase, isSQLiteAvailable } = await import('../../../memory/sqlite-wrapper.js');
+      const { createDatabase, isSQLiteAvailable } = await import('../../../../memory/sqlite-wrapper.js');
       const path = await import('path');
       const fs = await import('fs');
 
@@ -418,7 +418,7 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
     }
 
     // For other tools, use mock responses
-    console.log(`Executing MCP tool: mcp__claude-flow__${toolName} with params:`, params);
+    console.log(`Executing MCP tool: mcp__claude-zen__${toolName} with params:`, params);
 
     // Simulate async execution for non-memory tools
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 500));
@@ -1175,7 +1175,7 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
           const swarmData = metadataQuery.all(swarmId);
 
           // Parse swarm information
-          let swarmInfo = {
+          const swarmInfo = {
             id: swarmId,
             name: swarmId,
             status: 'unknown',

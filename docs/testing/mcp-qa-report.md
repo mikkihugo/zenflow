@@ -23,13 +23,13 @@
 
 ## Installation Method Validation
 
-### NPX Installation (`npx claude-flow@2.0.0`)
+### NPX Installation (`npx claude-zen@2.0.0`)
 - ✅ All 87 tools functional
 - ✅ MCP server starts correctly
 - ✅ JSON-RPC protocol compliance
 - ✅ Performance within targets
 
-### NPM Installation (`npm install claude-flow@2.0.0`)
+### NPM Installation (`npm install claude-zen@2.0.0`)
 - ✅ All 87 tools functional  
 - ✅ Local binary execution working
 - ✅ Package dependencies resolved

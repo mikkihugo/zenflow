@@ -151,11 +151,11 @@ CLAUDE_FLOW_CONFIG # Optional configuration path
 
 **SPARC Workaround**:
 ```bash
-# Instead of: npx claude-flow@2.0.0 sparc modes (fails)
+# Instead of: npx claude-zen@2.0.0 sparc modes (fails)
 # Use individual modes:
-npx claude-flow@2.0.0 sparc architect "design system"
-npx claude-flow@2.0.0 sparc code "implement feature"
-npx claude-flow@2.0.0 sparc tdd "test workflow"
+npx claude-zen@2.0.0 sparc architect "design system"
+npx claude-zen@2.0.0 sparc code "implement feature"
+npx claude-zen@2.0.0 sparc tdd "test workflow"
 ```
 
 ### ✅ GitHub Integration: **ENTERPRISE READY**
@@ -217,17 +217,17 @@ npx claude-flow@2.0.0 sparc tdd "test workflow"
 **Recommended Command Pattern**:
 ```bash
 # Enterprise initialization
-npx claude-flow@2.0.0 init --sparc
+npx claude-zen@2.0.0 init --sparc
 
 # Production swarm operations
-npx claude-flow@2.0.0 swarm "production objective" \
+npx claude-zen@2.0.0 swarm "production objective" \
   --strategy development \
   --parallel \
   --monitor \
   --quality-threshold 0.9
 
 # GitHub enterprise workflows
-npx claude-flow@2.0.0 github pr-manager "enterprise code review"
+npx claude-zen@2.0.0 github pr-manager "enterprise code review"
 ```
 
 ### 📊 **ENTERPRISE READINESS CHECKLIST**
@@ -244,7 +244,7 @@ npx claude-flow@2.0.0 github pr-manager "enterprise code review"
 ### 🚨 **DEPLOYMENT CONSTRAINTS**
 
 **✅ RECOMMENDED**:
-- NPX execution: `npx claude-flow@2.0.0`
+- NPX execution: `npx claude-zen@2.0.0`
 - Node.js 20+ environment
 - GitHub CLI for integration features
 - Environment variables for secrets
@@ -324,7 +324,7 @@ npx claude-flow@2.0.0 github pr-manager "enterprise code review"
 **Documentation & QA Lead Approval**: ✅ **APPROVED**
 
 **Scope of Approval**:
-- ✅ NPX version (`npx claude-flow@2.0.0`) for all production use
+- ✅ NPX version (`npx claude-zen@2.0.0`) for all production use
 - ✅ All documented features and capabilities
 - ✅ Enterprise deployment with provided documentation
 - ✅ GitHub integration and workflow automation

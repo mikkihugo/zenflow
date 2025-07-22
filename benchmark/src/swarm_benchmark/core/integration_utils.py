@@ -1,5 +1,5 @@
 """
-Integration utilities for claude-flow command execution.
+Integration utilities for claude-zen command execution.
 
 Provides helper functions and classes for:
 - Command construction and validation
@@ -145,7 +145,7 @@ def performance_monitoring(interval: float = 1.0):
 
 
 class OutputParser:
-    """Parse and extract information from claude-flow output."""
+    """Parse and extract information from claude-zen output."""
     
     # Regex patterns for common output elements
     PATTERNS = {
@@ -168,10 +168,10 @@ class OutputParser:
     @classmethod
     def parse_output(cls, output: str) -> Dict[str, Any]:
         """
-        Parse claude-flow output and extract structured information.
+        Parse claude-zen output and extract structured information.
         
         Args:
-            output: Raw output from claude-flow command
+            output: Raw output from claude-zen command
             
         Returns:
             Dictionary with parsed information
@@ -277,7 +277,7 @@ class OutputParser:
 
 
 class CommandBuilder:
-    """Build claude-flow commands with validation."""
+    """Build claude-zen commands with validation."""
     
     VALID_STRATEGIES = {
         "auto", "research", "development", "analysis", 
@@ -407,7 +407,7 @@ class CommandBuilder:
 
 
 class ErrorHandler:
-    """Handle and categorize errors from claude-flow execution."""
+    """Handle and categorize errors from claude-zen execution."""
     
     ERROR_CATEGORIES = {
         "installation": [
@@ -470,9 +470,9 @@ class ErrorHandler:
     def get_recovery_suggestion(cls, category: str) -> str:
         """Get recovery suggestion for error category."""
         suggestions = {
-            "installation": "Check claude-flow installation and permissions",
+            "installation": "Check claude-zen installation and permissions",
             "configuration": "Verify command syntax and options",
-            "runtime": "Check system resources and claude-flow logs",
+            "runtime": "Check system resources and claude-zen logs",
             "timeout": "Increase timeout or reduce workload",
             "resource": "Free up system resources",
             "network": "Check network connectivity and firewall settings",
@@ -489,7 +489,7 @@ class ErrorHandler:
 
 
 class ProgressTracker:
-    """Track progress of claude-flow execution."""
+    """Track progress of claude-zen execution."""
     
     def __init__(self):
         self.events = []
@@ -563,7 +563,7 @@ class ProgressTracker:
 
 def create_workspace(base_dir: str = None) -> Path:
     """
-    Create a temporary workspace for claude-flow execution.
+    Create a temporary workspace for claude-zen execution.
     
     Args:
         base_dir: Base directory for workspace (uses temp if None)

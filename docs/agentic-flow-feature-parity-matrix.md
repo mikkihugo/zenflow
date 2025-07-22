@@ -117,8 +117,8 @@ agentic-flow-migrate execute --backup
 
 ### Configuration Mapping
 ```yaml
-# claude-flow.config.yaml -> agentic-flow.config.yaml
-claude-flow:
+# claude-zen.config.yaml -> agentic-flow.config.yaml
+claude-zen:
   swarm:
     max-agents: 5
     strategy: hierarchical

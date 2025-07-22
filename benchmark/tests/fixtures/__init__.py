@@ -1,4 +1,4 @@
-"""Test fixtures for claude-flow benchmarking"""
+"""Test fixtures for claude-zen benchmarking"""
 
 from .test_data import (
     TestDataGenerator,

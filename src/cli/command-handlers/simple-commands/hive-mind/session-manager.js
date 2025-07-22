@@ -7,7 +7,8 @@ import path from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import chalk from 'chalk';
-import { createDatabase, isSQLiteAvailable, isWindows } from '../../../memory/sqlite-wrapper.js';
+import { cwd } from 'process';
+import { createDatabase, isSQLiteAvailable, isWindows } from '../../../../memory/sqlite-wrapper.js';
 
 export class HiveMindSessionManager {
   constructor(hiveMindDir = null) {

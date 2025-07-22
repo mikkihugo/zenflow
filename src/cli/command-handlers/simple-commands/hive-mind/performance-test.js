@@ -322,7 +322,7 @@ export class PerformanceTest {
     console.log('='.repeat(80));
 
     let totalPassed = 0;
-    let totalTests = this.results.length;
+    const totalTests = this.results.length;
 
     this.results.forEach((result, index) => {
       console.log(`\n${index + 1}. ${result.test}`);

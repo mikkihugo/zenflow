@@ -21,8 +21,8 @@ This guide helps you resolve common issues with the Hive Mind system. Each issue
 
 **Symptoms**:
 ```bash
-$ npx claude-flow@2.0.0 hive-mind
-Command not found: claude-flow
+$ npx claude-zen@2.0.0 hive-mind
+Command not found: claude-zen
 ```
 
 **Solutions**:
@@ -40,13 +40,13 @@ npm cache clean --force
 
 3. **Try direct execution**:
 ```bash
-npx --yes claude-flow@2.0.0 hive-mind
+npx --yes claude-zen@2.0.0 hive-mind
 ```
 
 4. **Global installation**:
 ```bash
-npm install -g claude-flow@2.0.0
-claude-flow hive-mind
+npm install -g claude-zen@2.0.0
+claude-zen hive-mind
 ```
 
 ### Issue: Permission Denied
@@ -62,7 +62,7 @@ Error: EACCES: permission denied
 ```bash
 npm config set prefix ~/.npm-global
 export PATH=~/.npm-global/bin:$PATH
-npm install -g claude-flow@2.0.0
+npm install -g claude-zen@2.0.0
 ```
 
 2. **Fix npm permissions**:
@@ -72,7 +72,7 @@ sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
 
 3. **Use npx (recommended)**:
 ```bash
-npx claude-flow@2.0.0 hive-mind
+npx claude-zen@2.0.0 hive-mind
 ```
 
 ## Wizard Problems
@@ -93,14 +93,14 @@ echo $TERM  # Should not be "dumb"
 
 2. **Use non-interactive mode**:
 ```bash
-npx claude-flow@2.0.0 hive-mind --non-interactive \
+npx claude-zen@2.0.0 hive-mind --non-interactive \
   --task "Your task here" \
   --complexity medium
 ```
 
 3. **Try web UI**:
 ```bash
-npx claude-flow@2.0.0 start --ui
+npx claude-zen@2.0.0 start --ui
 # Navigate to http://localhost:3000
 ```
 
@@ -132,7 +132,7 @@ export TERM=xterm-256color
 3. **Use Git Bash on Windows**:
 ```bash
 # Run in Git Bash, not cmd.exe
-winpty npx claude-flow@2.0.0 hive-mind
+winpty npx claude-zen@2.0.0 hive-mind
 ```
 
 ## Agent Coordination Issues
@@ -149,23 +149,23 @@ winpty npx claude-flow@2.0.0 hive-mind
 
 1. **Check swarm status**:
 ```bash
-npx claude-flow@2.0.0 hive-mind swarm status
+npx claude-zen@2.0.0 hive-mind swarm status
 ```
 
 2. **Force synchronization**:
 ```bash
-npx claude-flow@2.0.0 hive-mind swarm sync
+npx claude-zen@2.0.0 hive-mind swarm sync
 ```
 
 3. **Verify memory system**:
 ```bash
-npx claude-flow@2.0.0 hive-mind memory status
+npx claude-zen@2.0.0 hive-mind memory status
 ```
 
 4. **Reset swarm**:
 ```bash
-npx claude-flow@2.0.0 hive-mind swarm reset
-npx claude-flow@2.0.0 hive-mind init --topology mesh
+npx claude-zen@2.0.0 hive-mind swarm reset
+npx claude-zen@2.0.0 hive-mind init --topology mesh
 ```
 
 ### Issue: Agent Spawn Failures
@@ -179,19 +179,19 @@ Error: Failed to spawn agent: coordinator-001
 
 1. **Check agent limits**:
 ```bash
-npx claude-flow@2.0.0 hive-mind config get max-agents
+npx claude-zen@2.0.0 hive-mind config get max-agents
 # Increase if needed
-npx claude-flow@2.0.0 hive-mind config set max-agents 12
+npx claude-zen@2.0.0 hive-mind config set max-agents 12
 ```
 
 2. **Verify resources**:
 ```bash
-npx claude-flow@2.0.0 hive-mind monitor --metrics "resources"
+npx claude-zen@2.0.0 hive-mind monitor --metrics "resources"
 ```
 
 3. **Manual spawn**:
 ```bash
-npx claude-flow@2.0.0 hive-mind agents spawn \
+npx claude-zen@2.0.0 hive-mind agents spawn \
   --type coordinator \
   --name "Manual-Coord"
 ```
@@ -209,28 +209,28 @@ npx claude-flow@2.0.0 hive-mind agents spawn \
 
 1. **Analyze bottlenecks**:
 ```bash
-npx claude-flow@2.0.0 hive-mind monitor \
+npx claude-zen@2.0.0 hive-mind monitor \
   --metrics "bottlenecks,performance"
 ```
 
 2. **Optimize topology**:
 ```bash
-npx claude-flow@2.0.0 hive-mind swarm optimize
+npx claude-zen@2.0.0 hive-mind swarm optimize
 ```
 
 3. **Adjust agent count**:
 ```bash
 # Reduce for simpler tasks
-npx claude-flow@2.0.0 hive-mind swarm scale --target 4
+npx claude-zen@2.0.0 hive-mind swarm scale --target 4
 
 # Increase for complex tasks
-npx claude-flow@2.0.0 hive-mind swarm scale --target 10
+npx claude-zen@2.0.0 hive-mind swarm scale --target 10
 ```
 
 4. **Enable caching**:
 ```bash
-npx claude-flow@2.0.0 hive-mind config set cache.enabled true
-npx claude-flow@2.0.0 hive-mind config set cache.ttl 3600
+npx claude-zen@2.0.0 hive-mind config set cache.enabled true
+npx claude-zen@2.0.0 hive-mind config set cache.ttl 3600
 ```
 
 ### Issue: High Token Usage
@@ -244,20 +244,20 @@ npx claude-flow@2.0.0 hive-mind config set cache.ttl 3600
 
 1. **Monitor token usage**:
 ```bash
-npx claude-flow@2.0.0 hive-mind report performance \
+npx claude-zen@2.0.0 hive-mind report performance \
   --metrics "token-usage" \
   --timeframe 24h
 ```
 
 2. **Set token limits**:
 ```bash
-npx claude-flow@2.0.0 hive-mind config set \
+npx claude-zen@2.0.0 hive-mind config set \
   limits.maxTokensPerAgent 5000
 ```
 
 3. **Use efficient strategies**:
 ```bash
-npx claude-flow@2.0.0 hive-mind orchestrate \
+npx claude-zen@2.0.0 hive-mind orchestrate \
   --strategy adaptive \
   --share-memory true
 ```
@@ -275,27 +275,27 @@ Error: Memory limit exceeded (27.3 MB)
 
 1. **Clear old entries**:
 ```bash
-npx claude-flow@2.0.0 hive-mind memory clear \
+npx claude-zen@2.0.0 hive-mind memory clear \
   --older-than 7d
 ```
 
 2. **Increase memory size**:
 ```bash
-npx claude-flow@2.0.0 hive-mind config set \
+npx claude-zen@2.0.0 hive-mind config set \
   memory.size 64
 ```
 
 3. **Enable compression**:
 ```bash
-npx claude-flow@2.0.0 hive-mind config set \
+npx claude-zen@2.0.0 hive-mind config set \
   memory.compress true
 ```
 
 4. **Backup and reset**:
 ```bash
-npx claude-flow@2.0.0 hive-mind memory backup \
+npx claude-zen@2.0.0 hive-mind memory backup \
   --path ./backup.json
-npx claude-flow@2.0.0 hive-mind memory clear --all
+npx claude-zen@2.0.0 hive-mind memory clear --all
 ```
 
 ### Issue: Memory Corruption
@@ -309,18 +309,18 @@ npx claude-flow@2.0.0 hive-mind memory clear --all
 
 1. **Verify memory integrity**:
 ```bash
-npx claude-flow@2.0.0 hive-mind memory verify
+npx claude-zen@2.0.0 hive-mind memory verify
 ```
 
 2. **Restore from backup**:
 ```bash
-npx claude-flow@2.0.0 hive-mind memory restore \
+npx claude-zen@2.0.0 hive-mind memory restore \
   --path ./last-good-backup.json
 ```
 
 3. **Rebuild memory index**:
 ```bash
-npx claude-flow@2.0.0 hive-mind memory rebuild-index
+npx claude-zen@2.0.0 hive-mind memory rebuild-index
 ```
 
 ## Task Execution Errors
@@ -336,19 +336,19 @@ Error: Unable to analyze task complexity
 
 1. **Provide more detail**:
 ```bash
-npx claude-flow@2.0.0 hive-mind --task \
+npx claude-zen@2.0.0 hive-mind --task \
   "Build REST API with user auth, PostgreSQL database, and JWT tokens" \
   --context "Using Express.js framework"
 ```
 
 2. **Use templates**:
 ```bash
-npx claude-flow@2.0.0 hive-mind template use rest-api
+npx claude-zen@2.0.0 hive-mind template use rest-api
 ```
 
 3. **Manual complexity**:
 ```bash
-npx claude-flow@2.0.0 hive-mind \
+npx claude-zen@2.0.0 hive-mind \
   --task "Your task" \
   --complexity medium \
   --no-analysis
@@ -365,22 +365,22 @@ npx claude-flow@2.0.0 hive-mind \
 
 1. **Check task status**:
 ```bash
-npx claude-flow@2.0.0 hive-mind task status
+npx claude-zen@2.0.0 hive-mind task status
 ```
 
 2. **Review agent logs**:
 ```bash
-npx claude-flow@2.0.0 hive-mind agents list --with-logs
+npx claude-zen@2.0.0 hive-mind agents list --with-logs
 ```
 
 3. **Re-run failed tasks**:
 ```bash
-npx claude-flow@2.0.0 hive-mind task retry --failed-only
+npx claude-zen@2.0.0 hive-mind task retry --failed-only
 ```
 
 4. **Generate report**:
 ```bash
-npx claude-flow@2.0.0 hive-mind report tasks \
+npx claude-zen@2.0.0 hive-mind report tasks \
   --format detailed \
   --include-errors
 ```
@@ -399,13 +399,13 @@ Error: MCP tool 'swarm_init' not found
 1. **Verify MCP setup**:
 ```bash
 claude mcp list
-# Should show claude-flow with 87 tools
+# Should show claude-zen with 87 tools
 ```
 
 2. **Re-add MCP server**:
 ```bash
-claude mcp remove claude-flow
-claude mcp add claude-flow npx claude-flow@2.0.0 mcp start --stdio
+claude mcp remove claude-zen
+claude mcp add claude-zen npx claude-zen@2.0.0 mcp start --stdio
 ```
 
 3. **Check permissions**:
@@ -425,13 +425,13 @@ ls -la ~/.claude/
 
 1. **Verify GitHub token**:
 ```bash
-npx claude-flow@2.0.0 hive-mind integrate github \
+npx claude-zen@2.0.0 hive-mind integrate github \
   --test-connection
 ```
 
 2. **Update credentials**:
 ```bash
-npx claude-flow@2.0.0 hive-mind config set \
+npx claude-zen@2.0.0 hive-mind config set \
   github.token "your-new-token"
 ```
 
@@ -455,7 +455,7 @@ npx claude-flow@2.0.0 hive-mind config set \
 
 2. **Non-interactive mode**:
 ```bash
-npx claude-flow@2.0.0 hive-mind \
+npx claude-zen@2.0.0 hive-mind \
   --non-interactive \
   --dangerously-skip-permissions
 ```
@@ -463,7 +463,7 @@ npx claude-flow@2.0.0 hive-mind \
 3. **Environment variable**:
 ```bash
 export CLAUDE_NON_INTERACTIVE=1
-npx claude-flow@2.0.0 hive-mind
+npx claude-zen@2.0.0 hive-mind
 ```
 
 ### Issue: Docker Container Issues
@@ -477,12 +477,12 @@ npx claude-flow@2.0.0 hive-mind
 
 1. **Run with TTY**:
 ```bash
-docker run -it claude-flow:2.0.0 hive-mind
+docker run -it claude-zen:2.0.0 hive-mind
 ```
 
 2. **Without TTY**:
 ```bash
-docker run claude-flow:2.0.0 hive-mind \
+docker run claude-zen:2.0.0 hive-mind \
   --non-interactive \
   --no-color \
   --task "Your task"
@@ -492,7 +492,7 @@ docker run claude-flow:2.0.0 hive-mind \
 ```yaml
 services:
   hive-mind:
-    image: claude-flow:2.0.0
+    image: claude-zen:2.0.0
     tty: true
     stdin_open: true
 ```
@@ -508,7 +508,7 @@ services:
 
 1. **CI mode**:
 ```bash
-npx claude-flow@2.0.0 hive-mind \
+npx claude-zen@2.0.0 hive-mind \
   --ci \
   --non-interactive \
   --task "$BUILD_TASK"
@@ -521,7 +521,7 @@ npx claude-flow@2.0.0 hive-mind \
     CI: true
     CLAUDE_NON_INTERACTIVE: 1
   run: |
-    npx claude-flow@2.0.0 hive-mind \
+    npx claude-zen@2.0.0 hive-mind \
       --task "${{ github.event.inputs.task }}" \
       --timeout 600000
 ```
@@ -533,10 +533,10 @@ npx claude-flow@2.0.0 hive-mind \
 ```bash
 # Set debug environment
 export HIVE_MIND_DEBUG=true
-export DEBUG=claude-flow:*
+export DEBUG=claude-zen:*
 
 # Run with verbose output
-npx claude-flow@2.0.0 hive-mind \
+npx claude-zen@2.0.0 hive-mind \
   --verbose \
   --log-level debug \
   --task "Your task"
@@ -546,23 +546,23 @@ npx claude-flow@2.0.0 hive-mind \
 
 ```bash
 # Check debug logs
-ls ~/.claude-flow/logs/
-cat ~/.claude-flow/logs/hive-mind-debug.log
+ls ~/.claude-zen/logs/
+cat ~/.claude-zen/logs/hive-mind-debug.log
 
 # Agent specific logs
-cat ~/.claude-flow/logs/agents/*.log
+cat ~/.claude-zen/logs/agents/*.log
 ```
 
 ### Performance Profiling
 
 ```bash
 # Enable profiling
-npx claude-flow@2.0.0 hive-mind \
+npx claude-zen@2.0.0 hive-mind \
   --profile \
   --task "Your task"
 
 # View profile results
-npx claude-flow@2.0.0 hive-mind report profile \
+npx claude-zen@2.0.0 hive-mind report profile \
   --last-run
 ```
 
@@ -571,21 +571,21 @@ npx claude-flow@2.0.0 hive-mind report profile \
 ### 1. Built-in Help
 
 ```bash
-npx claude-flow@2.0.0 hive-mind --help
-npx claude-flow@2.0.0 hive-mind <command> --help
+npx claude-zen@2.0.0 hive-mind --help
+npx claude-zen@2.0.0 hive-mind <command> --help
 ```
 
 ### 2. Diagnostics
 
 ```bash
-npx claude-flow@2.0.0 hive-mind diagnostic run
+npx claude-zen@2.0.0 hive-mind diagnostic run
 ```
 
 ### 3. Support Channels
 
-- GitHub Issues: https://github.com/ruvnet/claude-flow/issues
-- Documentation: https://github.com/ruvnet/claude-flow/docs
-- Discord: https://discord.gg/claude-flow
+- GitHub Issues: https://github.com/ruvnet/claude-zen/issues
+- Documentation: https://github.com/ruvnet/claude-zen/docs
+- Discord: https://discord.gg/claude-zen
 
 ### 4. Report Template
 
@@ -600,7 +600,7 @@ When reporting issues, include:
 
 **Command Run:**
 ```bash
-npx claude-flow@2.0.0 hive-mind --task "..."
+npx claude-zen@2.0.0 hive-mind --task "..."
 ```
 
 **Expected Behavior:**
@@ -624,13 +624,13 @@ Attach relevant portions of debug log
 
 1. **Keep Updated**:
 ```bash
-npm update -g claude-flow
+npm update -g claude-zen
 ```
 
 2. **Regular Backups**:
 ```bash
 # Automated daily backups
-npx claude-flow@2.0.0 hive-mind config set \
+npx claude-zen@2.0.0 hive-mind config set \
   backup.auto true \
   backup.interval 24h
 ```
@@ -638,7 +638,7 @@ npx claude-flow@2.0.0 hive-mind config set \
 3. **Monitor Resources**:
 ```bash
 # Set up alerts
-npx claude-flow@2.0.0 hive-mind monitor \
+npx claude-zen@2.0.0 hive-mind monitor \
   --alert-on "memory>80%,errors>5"
 ```
 

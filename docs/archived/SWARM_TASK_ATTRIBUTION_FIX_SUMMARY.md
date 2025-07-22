@@ -51,10 +51,10 @@ Created `/src/cli/simple-commands/swarm-metrics-integration.js` providing:
 #### New CLI Command: `swarm-metrics`
 ```bash
 # View unified metrics from both systems
-claude-flow swarm-metrics
+claude-zen swarm-metrics
 
 # Fix task attribution issues automatically  
-claude-flow swarm-metrics fix
+claude-zen swarm-metrics fix
 ```
 
 #### Features:
@@ -116,8 +116,8 @@ Used ruv-swarm coordination hooks throughout:
 ## Testing & Validation
 
 ### Test Results:
-✅ **Unified Metrics Command**: `claude-flow swarm-metrics`
-✅ **Task Attribution Fix**: `claude-flow swarm-metrics fix`  
+✅ **Unified Metrics Command**: `claude-zen swarm-metrics`
+✅ **Task Attribution Fix**: `claude-zen swarm-metrics fix`  
 ✅ **Cross-System Integration**: Both databases accessible
 ✅ **Per-Swarm Statistics**: All swarms now show proper task counts
 ✅ **Agent Assignment**: Realistic agent distribution
@@ -134,17 +134,17 @@ Used ruv-swarm coordination hooks throughout:
 ### For Users Experiencing This Issue:
 1. **Diagnose the problem**:
    ```bash
-   claude-flow swarm-metrics
+   claude-zen swarm-metrics
    ```
 
 2. **Fix attribution issues automatically**:
    ```bash
-   claude-flow swarm-metrics fix
+   claude-zen swarm-metrics fix
    ```
 
 3. **Verify the fix**:
    ```bash
-   claude-flow swarm-metrics
+   claude-zen swarm-metrics
    ```
 
 ### For System Integration:
@@ -166,5 +166,5 @@ The swarm task attribution issue has been **completely resolved**. The solution 
 The implementation follows enterprise patterns with proper error handling, comprehensive testing, and maintains backward compatibility while resolving the core attribution issue.
 
 **Status**: ✅ COMPLETE - Task attribution fix implemented and validated
-**Command**: `claude-flow swarm-metrics` for ongoing monitoring
-**Fix Command**: `claude-flow swarm-metrics fix` for automatic repair
+**Command**: `claude-zen swarm-metrics` for ongoing monitoring
+**Fix Command**: `claude-zen swarm-metrics fix` for automatic repair

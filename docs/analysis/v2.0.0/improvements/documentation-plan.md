@@ -55,7 +55,7 @@ docs/
 │   └── video-tutorials.md           # Embedded video guides
 │
 ├── core-concepts/
-│   ├── what-is-claude-flow.md      # High-level overview
+│   ├── what-is-claude-zen.md      # High-level overview
 │   ├── swarm-intelligence.md       # ruv-swarm explained
 │   ├── neural-architecture.md      # Neural networks guide
 │   └── mcp-tools-catalog.md        # All 27 tools detailed

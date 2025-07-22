@@ -2,7 +2,7 @@
   "version": "1.0.70",
   "project": {
     "name": "test-init-fixed",
-    "type": "claude-flow",
+    "type": "claude-zen",
     "created": "2025-07-01T23:22:02.593Z"
   },
   "features": {

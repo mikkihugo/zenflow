@@ -5,7 +5,7 @@ The Claude-Flow REPL (Read-Eval-Print Loop) provides an interactive shell for ma
 ## Starting the REPL
 
 ```bash
-claude-flow repl
+claude-zen repl
 ```
 
 ## Available Commands
@@ -100,35 +100,35 @@ terminal detach
 ## Interactive Example Session
 
 ```
-$ claude-flow repl
+$ claude-zen repl
 🧠 Claude-Flow Interactive Shell v1.0.26
 Type "help" for available commands, "exit" to quit
 
-claude-flow> status
+claude-zen> status
 🟢 Claude-Flow Status:
   Agents: 0 active
   Tasks: 0 in queue
   Terminals: 0 active
   Memory Keys: 0
 
-claude-flow> agent spawn researcher ai-bot
+claude-zen> agent spawn researcher ai-bot
 ✅ Spawned researcher agent: ai-bot (agent-1234567890)
 
-claude-flow> task create research "Analyze code patterns"
+claude-zen> task create research "Analyze code patterns"
 ✅ Created task: task-1234567891
   Type: research
   Description: Analyze code patterns
 
-claude-flow> task assign task-1234567891 ai-bot
+claude-zen> task assign task-1234567891 ai-bot
 ✅ Assigned task task-1234567891 to agent ai-bot
 
-claude-flow> memory store current_project "claude-flow"
-✅ Stored: current_project = claude-flow
+claude-zen> memory store current_project "claude-zen"
+✅ Stored: current_project = claude-zen
 
-claude-flow> !echo "Running shell command"
+claude-zen> !echo "Running shell command"
 Running shell command
 
-claude-flow> exit
+claude-zen> exit
 👋 Exiting Claude-Flow REPL...
 ```
 

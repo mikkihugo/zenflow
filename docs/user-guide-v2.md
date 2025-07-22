@@ -51,20 +51,20 @@ Claude Flow v2.0.0 is designed to work seamlessly with Claude Code:
 npm install -g @anthropic-ai/claude-code
 
 # Add Claude Flow as an MCP server
-claude mcp add claude-flow npx claude-flow@2.0.0 mcp start
+claude mcp add claude-zen npx claude-zen@2.0.0 mcp start
 
 # Verify installation
-claude mcp list | grep claude-flow
+claude mcp list | grep claude-zen
 ```
 
 #### Option 2: Standalone Installation
 
 ```bash
 # Global installation for system-wide access
-npm install -g claude-flow@2.0.0
+npm install -g claude-zen@2.0.0
 
 # Verify installation
-claude-flow --version
+claude-zen --version
 ```
 
 #### Option 3: Development Installation
@@ -92,7 +92,7 @@ The Hive Mind is the heart of Claude Flow v2.0.0. It provides intelligent coordi
 
 ```bash
 # Interactive wizard for first-time setup
-claude-flow hive-mind wizard
+claude-zen hive-mind wizard
 ```
 
 The wizard will guide you through:
@@ -109,7 +109,7 @@ For advanced users who prefer manual setup:
 
 ```bash
 # Initialize with specific parameters
-claude-flow hive-mind init \
+claude-zen hive-mind init \
   --topology adaptive \
   --max-agents 12 \
   --neural-acceleration true \
@@ -121,7 +121,7 @@ claude-flow hive-mind init \
 
 Claude Flow v2.0.0 uses intelligent configuration management:
 
-#### Main Configuration (`claude-flow.config.json`)
+#### Main Configuration (`claude-zen.config.json`)
 
 ```json
 {
@@ -193,35 +193,35 @@ Shared intelligence that persists across sessions:
 
 ```bash
 # Check Hive Mind status
-claude-flow hive-mind status
+claude-zen hive-mind status
 
 # View collective memory
-claude-flow hive-mind memory --show-patterns
+claude-zen hive-mind memory --show-patterns
 
 # Analyze swarm performance
-claude-flow hive-mind analyze --timeframe 7d
+claude-zen hive-mind analyze --timeframe 7d
 
 # Optimize coordination
-claude-flow hive-mind optimize --auto-apply
+claude-zen hive-mind optimize --auto-apply
 ```
 
 #### Advanced Operations
 
 ```bash
 # Create custom agent constellation
-claude-flow hive-mind constellation create \
+claude-zen hive-mind constellation create \
   --name "microservice-development" \
   --agents '["architect","backend-dev","frontend-dev","tester","devops"]' \
   --coordination-pattern hierarchical
 
 # Train coordination patterns
-claude-flow hive-mind train \
+claude-zen hive-mind train \
   --pattern "parallel-development" \
   --data "project-logs" \
   --epochs 100
 
 # Export knowledge base
-claude-flow hive-mind export \
+claude-zen hive-mind export \
   --format enhanced-json \
   --include-neural-weights \
   --file hive-knowledge-$(date +%Y%m%d).json
@@ -260,16 +260,16 @@ claude-flow hive-mind export \
 
 ```bash
 # View current topology
-claude-flow topology status
+claude-zen topology status
 
 # Switch topology
-claude-flow topology switch --type mesh --preserve-agents
+claude-zen topology switch --type mesh --preserve-agents
 
 # Optimize current topology
-claude-flow topology optimize --neural-analysis
+claude-zen topology optimize --neural-analysis
 
 # Analyze topology performance
-claude-flow topology analyze --metrics '["throughput","latency","efficiency"]'
+claude-zen topology analyze --metrics '["throughput","latency","efficiency"]'
 ```
 
 ## 🤖 Neural Networks and AI
@@ -302,20 +302,20 @@ Claude Flow v2.0.0 includes three specialized neural networks:
 
 ```bash
 # Train coordination patterns
-claude-flow neural train coordination \
+claude-zen neural train coordination \
   --data "swarm-logs" \
   --epochs 100 \
   --learning-rate 0.001 \
   --validation-split 0.2
 
 # Train optimization patterns
-claude-flow neural train optimization \
+claude-zen neural train optimization \
   --data "performance-metrics" \
   --reinforcement-learning true \
   --reward-function "efficiency-improvement"
 
 # Train prediction patterns
-claude-flow neural train prediction \
+claude-zen neural train prediction \
   --data "project-timelines" \
   --sequence-length 30 \
   --prediction-horizon 7
@@ -325,17 +325,17 @@ claude-flow neural train prediction \
 
 ```bash
 # Get coordination recommendations
-claude-flow neural predict coordination \
+claude-zen neural predict coordination \
   --input '{"task":"build-api","agents":6,"complexity":"high"}' \
   --confidence-threshold 0.8
 
 # Analyze optimization opportunities
-claude-flow neural predict optimization \
+claude-zen neural predict optimization \
   --input "current-performance-metrics" \
   --suggest-actions
 
 # Predict project timeline
-claude-flow neural predict timeline \
+claude-zen neural predict timeline \
   --input "project-scope" \
   --uncertainty-quantification
 ```
@@ -344,21 +344,21 @@ claude-flow neural predict timeline \
 
 ```bash
 # List available models
-claude-flow neural models list
+claude-zen neural models list
 
 # Load pre-trained model
-claude-flow neural models load \
+claude-zen neural models load \
   --model-id coordination-v3.2 \
   --source "./models/coordination-enterprise.wasm"
 
 # Export trained model
-claude-flow neural models export \
+claude-zen neural models export \
   --model-id coordination-v3.2 \
   --format wasm \
   --optimization-level 3
 
 # Compress model for deployment
-claude-flow neural models compress \
+claude-zen neural models compress \
   --model-id coordination-v3.2 \
   --compression-ratio 0.5 \
   --preserve-accuracy 0.95
@@ -378,14 +378,14 @@ Claude Flow v2.0.0 leverages WebAssembly SIMD for neural processing:
 
 ```bash
 # Enable WASM acceleration
-claude-flow neural wasm enable --simd-level 256
+claude-zen neural wasm enable --simd-level 256
 
 # Benchmark WASM performance
-claude-flow neural wasm benchmark \
+claude-zen neural wasm benchmark \
   --operations '["matrix-multiply","convolution","attention"]'
 
 # Optimize WASM modules
-claude-flow neural wasm optimize \
+claude-zen neural wasm optimize \
   --target "coordination-v3.2" \
   --optimization-passes 3
 ```
@@ -443,31 +443,31 @@ MCP tools are designed to work together. Here are common patterns:
 **Development Workflow:**
 ```bash
 # Initialize -> Spawn -> Orchestrate -> Monitor -> Optimize
-claude-flow mcp swarm-init --topology adaptive
-claude-flow mcp agent-spawn --type architect
-claude-flow mcp task-orchestrate --task "build-app"
-claude-flow mcp swarm-monitor --live
-claude-flow mcp performance-report --optimize
+claude-zen mcp swarm-init --topology adaptive
+claude-zen mcp agent-spawn --type architect
+claude-zen mcp task-orchestrate --task "build-app"
+claude-zen mcp swarm-monitor --live
+claude-zen mcp performance-report --optimize
 ```
 
 **Neural Training Pipeline:**
 ```bash
 # Collect -> Train -> Validate -> Deploy -> Monitor
-claude-flow mcp memory-usage --action retrieve --pattern "training-data"
-claude-flow mcp neural-train --pattern coordination --epochs 50
-claude-flow mcp neural-predict --validate --test-data "validation-set"
-claude-flow mcp model-save --model-id trained-coordination
-claude-flow mcp neural-status --monitor-performance
+claude-zen mcp memory-usage --action retrieve --pattern "training-data"
+claude-zen mcp neural-train --pattern coordination --epochs 50
+claude-zen mcp neural-predict --validate --test-data "validation-set"
+claude-zen mcp model-save --model-id trained-coordination
+claude-zen mcp neural-status --monitor-performance
 ```
 
 **GitHub Automation:**
 ```bash
 # Analyze -> Setup -> Execute -> Monitor -> Report
-claude-flow mcp github-repo-analyze --repo "myorg/project"
-claude-flow mcp github-workflow-auto --setup ci-cd
-claude-flow mcp workflow-execute --workflow-id github-ci-cd
-claude-flow mcp github-pr-manage --auto-review
-claude-flow mcp github-metrics --generate-report
+claude-zen mcp github-repo-analyze --repo "myorg/project"
+claude-zen mcp github-workflow-auto --setup ci-cd
+claude-zen mcp workflow-execute --workflow-id github-ci-cd
+claude-zen mcp github-pr-manage --auto-review
+claude-zen mcp github-metrics --generate-report
 ```
 
 #### Advanced Tool Usage
@@ -475,7 +475,7 @@ claude-flow mcp github-metrics --generate-report
 **Parallel Tool Execution:**
 ```bash
 # Execute multiple tools simultaneously
-claude-flow mcp parallel-execute --tools '[
+claude-zen mcp parallel-execute --tools '[
   {"tool":"swarm-init","params":{"topology":"mesh"}},
   {"tool":"memory-backup","params":{"destination":"./backups"}},
   {"tool":"neural-train","params":{"pattern":"optimization"}}
@@ -485,7 +485,7 @@ claude-flow mcp parallel-execute --tools '[
 **Conditional Tool Chains:**
 ```bash
 # Execute tools based on conditions
-claude-flow mcp workflow-create --name "conditional-optimization" --steps '[
+claude-zen mcp workflow-create --name "conditional-optimization" --steps '[
   {"tool":"performance-report","condition":"always"},
   {"tool":"bottleneck-analyze","condition":"performance < 0.8"},
   {"tool":"topology-optimize","condition":"bottlenecks > 2"},
@@ -529,21 +529,21 @@ Key metrics tracked by Claude Flow v2.0.0:
 
 ```bash
 # Comprehensive performance analysis
-claude-flow performance analyze \
+claude-zen performance analyze \
   --timeframe 30d \
   --include-neural \
   --compare-baseline \
   --generate-recommendations
 
 # Real-time performance monitoring
-claude-flow performance monitor \
+claude-zen performance monitor \
   --live \
   --alerts-enabled \
   --optimization-threshold 0.7 \
   --auto-adjust
 
 # Performance optimization
-claude-flow performance optimize \
+claude-zen performance optimize \
   --target "throughput" \
   --constraints "memory<8GB,cpu<80%" \
   --neural-assistance \
@@ -555,13 +555,13 @@ claude-flow performance optimize \
 #### Memory Optimization
 ```bash
 # Analyze memory usage patterns
-claude-flow memory analyze \
+claude-zen memory analyze \
   --pattern-recognition \
   --compression-opportunities \
   --cleanup-suggestions
 
 # Optimize memory allocation
-claude-flow memory optimize \
+claude-zen memory optimize \
   --strategy "neural-guided" \
   --compression-level "intelligent" \
   --cache-tuning "adaptive"
@@ -570,7 +570,7 @@ claude-flow memory optimize \
 #### Neural Optimization
 ```bash
 # Optimize neural network performance
-claude-flow neural optimize \
+claude-zen neural optimize \
   --models "all" \
   --wasm-acceleration \
   --quantization-level "dynamic" \
@@ -580,7 +580,7 @@ claude-flow neural optimize \
 #### Swarm Optimization
 ```bash
 # Optimize swarm coordination
-claude-flow swarm optimize \
+claude-zen swarm optimize \
   --topology-tuning \
   --load-balancing "neural-weighted" \
   --communication-efficiency \
@@ -676,20 +676,20 @@ Claude Flow v2.0.0 supports advanced workflow definitions:
 
 ```bash
 # Create workflow from template
-claude-flow workflow create \
+claude-zen workflow create \
   --template "enterprise-development" \
   --customize-agents \
   --neural-optimization
 
 # Execute workflow with monitoring
-claude-flow workflow execute \
+claude-zen workflow execute \
   --workflow-id "enterprise-dev-001" \
   --parallel-execution \
   --neural-coordination \
   --real-time-monitoring
 
 # Analyze workflow performance
-claude-flow workflow analyze \
+claude-zen workflow analyze \
   --workflow-id "enterprise-dev-001" \
   --neural-insights \
   --optimization-suggestions
@@ -701,13 +701,13 @@ claude-flow workflow analyze \
 
 ```bash
 # Setup Claude Code MCP integration
-claude mcp add claude-flow npx claude-flow@2.0.0 mcp start
+claude mcp add claude-zen npx claude-zen@2.0.0 mcp start
 
 # Use Claude Flow tools within Claude Code
 # (These commands work within Claude Code interface)
-claude-flow mcp swarm-init --topology adaptive
-claude-flow mcp agent-spawn --type researcher
-claude-flow mcp task-orchestrate --task "analyze codebase"
+claude-zen mcp swarm-init --topology adaptive
+claude-zen mcp agent-spawn --type researcher
+claude-zen mcp task-orchestrate --task "analyze codebase"
 ```
 
 #### GitHub Actions Integration
@@ -721,32 +721,32 @@ on:
     branches: [main]
 
 jobs:
-  claude-flow-analysis:
+  claude-zen-analysis:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       
       - name: Setup Claude Flow
         run: |
-          npm install -g claude-flow@2.0.0
-          claude-flow hive-mind init --ci-mode
+          npm install -g claude-zen@2.0.0
+          claude-zen hive-mind init --ci-mode
           
       - name: Analyze Repository
         run: |
-          claude-flow mcp github-repo-analyze \
+          claude-zen mcp github-repo-analyze \
             --repo "${{ github.repository }}" \
             --analysis-type comprehensive
             
       - name: Automated Code Review
         if: github.event_name == 'pull_request'
         run: |
-          claude-flow mcp github-code-review \
+          claude-zen mcp github-code-review \
             --repo "${{ github.repository }}" \
             --pr ${{ github.event.number }}
             
       - name: Performance Optimization
         run: |
-          claude-flow mcp task-orchestrate \
+          claude-zen mcp task-orchestrate \
             --task "optimize-codebase" \
             --strategy neural-guided
 ```
@@ -759,7 +759,7 @@ jobs:
     {
       "label": "Claude Flow: Initialize Hive Mind",
       "type": "shell",
-      "command": "claude-flow",
+      "command": "claude-zen",
       "args": ["hive-mind", "wizard"],
       "group": "build",
       "presentation": {
@@ -770,7 +770,7 @@ jobs:
     {
       "label": "Claude Flow: Optimize Project",
       "type": "shell",
-      "command": "claude-flow",
+      "command": "claude-zen",
       "args": ["mcp", "task-orchestrate", "--task", "optimize-project", "--neural-assistance"],
       "group": "build"
     }
@@ -788,14 +788,14 @@ Claude Flow v2.0.0 includes comprehensive diagnostic capabilities:
 
 ```bash
 # Comprehensive system health check
-claude-flow health-check \
+claude-zen health-check \
   --comprehensive \
   --neural-analysis \
   --performance-assessment \
   --security-scan
 
 # Specific component health
-claude-flow health-check \
+claude-zen health-check \
   --component "hive-mind" \
   --detailed-report \
   --recommendations
@@ -805,13 +805,13 @@ claude-flow health-check \
 
 ```bash
 # Bottleneck analysis
-claude-flow diagnose bottlenecks \
+claude-zen diagnose bottlenecks \
   --real-time-analysis \
   --neural-insights \
   --optimization-suggestions
 
 # Memory diagnostic
-claude-flow diagnose memory \
+claude-zen diagnose memory \
   --leak-detection \
   --fragmentation-analysis \
   --optimization-opportunities
@@ -821,14 +821,14 @@ claude-flow diagnose memory \
 
 ```bash
 # Neural model health
-claude-flow neural diagnose \
+claude-zen neural diagnose \
   --models "all" \
   --accuracy-assessment \
   --performance-metrics \
   --improvement-suggestions
 
 # Training diagnostics
-claude-flow neural diagnose training \
+claude-zen neural diagnose training \
   --convergence-analysis \
   --loss-visualization \
   --optimization-recommendations
@@ -841,17 +841,17 @@ claude-flow neural diagnose training \
 **Issue: Slow task execution**
 ```bash
 # Diagnose and fix
-claude-flow diagnose performance --auto-fix
-claude-flow topology optimize --neural-guided
-claude-flow swarm optimize --load-balancing
+claude-zen diagnose performance --auto-fix
+claude-zen topology optimize --neural-guided
+claude-zen swarm optimize --load-balancing
 ```
 
 **Issue: High memory usage**
 ```bash
 # Memory optimization
-claude-flow memory optimize --strategy aggressive
-claude-flow memory compress --intelligent-compression
-claude-flow garbage-collect --neural-guided
+claude-zen memory optimize --strategy aggressive
+claude-zen memory compress --intelligent-compression
+claude-zen garbage-collect --neural-guided
 ```
 
 #### Neural Network Issues
@@ -859,17 +859,17 @@ claude-flow garbage-collect --neural-guided
 **Issue: Poor prediction accuracy**
 ```bash
 # Retrain with more data
-claude-flow neural train --additional-data "new-training-set"
-claude-flow neural validate --cross-validation
-claude-flow neural tune-hyperparameters --auto-optimization
+claude-zen neural train --additional-data "new-training-set"
+claude-zen neural validate --cross-validation
+claude-zen neural tune-hyperparameters --auto-optimization
 ```
 
 **Issue: Slow neural inference**
 ```bash
 # Optimize neural processing
-claude-flow neural optimize --wasm-acceleration
-claude-flow neural compress --preserve-accuracy 0.95
-claude-flow neural quantize --dynamic-quantization
+claude-zen neural optimize --wasm-acceleration
+claude-zen neural compress --preserve-accuracy 0.95
+claude-zen neural quantize --dynamic-quantization
 ```
 
 #### Coordination Issues
@@ -877,9 +877,9 @@ claude-flow neural quantize --dynamic-quantization
 **Issue: Agent coordination problems**
 ```bash
 # Reset and re-optimize coordination
-claude-flow swarm reset --preserve-memory
-claude-flow swarm init --topology adaptive
-claude-flow coordination sync --force-resync
+claude-zen swarm reset --preserve-memory
+claude-zen swarm init --topology adaptive
+claude-zen coordination sync --force-resync
 ```
 
 ### Debug Mode
@@ -888,15 +888,15 @@ Enable comprehensive debugging for development:
 
 ```bash
 # Enable debug mode
-export DEBUG=claude-flow:*
+export DEBUG=claude-zen:*
 export CLAUDE_FLOW_LOG_LEVEL=debug
 export CLAUDE_FLOW_NEURAL_DEBUG=true
 
 # Run with debug output
-claude-flow hive-mind init --debug --verbose
+claude-zen hive-mind init --debug --verbose
 
 # Analyze debug logs
-claude-flow logs analyze \
+claude-zen logs analyze \
   --pattern "error|warning|performance" \
   --neural-insights \
   --suggestions
@@ -934,7 +934,7 @@ claude-flow logs analyze \
 
 ```bash
 # Production configuration
-claude-flow config production \
+claude-zen config production \
   --max-agents 50 \
   --neural-acceleration true \
   --redundancy-level high \
@@ -942,7 +942,7 @@ claude-flow config production \
   --auto-scaling enabled
 
 # Load balancing setup
-claude-flow swarm init \
+claude-zen swarm init \
   --topology distributed \
   --load-balancing neural-weighted \
   --fault-tolerance redundant \
@@ -953,14 +953,14 @@ claude-flow swarm init \
 
 ```bash
 # Production monitoring
-claude-flow monitor setup \
+claude-zen monitor setup \
   --real-time-alerts \
   --performance-thresholds \
   --neural-anomaly-detection \
   --automated-responses
 
 # Alert configuration
-claude-flow alerts configure \
+claude-zen alerts configure \
   --performance-degradation 0.8 \
   --memory-usage 85% \
   --neural-accuracy 0.9 \

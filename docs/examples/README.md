@@ -8,28 +8,28 @@ This directory contains practical examples and real-world use cases for Claude-F
 
 ```bash
 # 1. Start Claude-Flow
-npx claude-flow start
+npx claude-zen start
 
 # 2. Create a research agent
-claude-flow agent spawn researcher --name "AI Research Assistant"
+claude-zen agent spawn researcher --name "AI Research Assistant"
 
 # 3. Assign a research task
-claude-flow task create research "Analyze the latest developments in Large Language Models"
+claude-zen task create research "Analyze the latest developments in Large Language Models"
 
 # 4. Monitor progress
-claude-flow task list --watch
+claude-zen task list --watch
 ```
 
 ### Multi-Agent Collaboration
 
 ```bash
 # Spawn specialized agents
-claude-flow agent spawn researcher --name "Data Researcher"
-claude-flow agent spawn analyst --name "Data Analyst"
-claude-flow agent spawn coordinator --name "Project Manager"
+claude-zen agent spawn researcher --name "Data Researcher"
+claude-zen agent spawn analyst --name "Data Analyst"
+claude-zen agent spawn coordinator --name "Project Manager"
 
 # Create coordinated workflow
-claude-flow workflow execute ./examples/research-analysis-workflow.json
+claude-zen workflow execute ./examples/research-analysis-workflow.json
 ```
 
 ## Example Categories
@@ -152,7 +152,7 @@ Ready-to-use workflow templates for common scenarios:
 ```typescript
 // VSCode extension integration example
 import { workspace, window } from 'vscode';
-import { ClaudeFlow } from 'claude-flow';
+import { ClaudeFlow } from 'claude-zen';
 
 export class ClaudeFlowExtension {
   private claudeFlow: ClaudeFlow;
@@ -171,7 +171,7 @@ export class ClaudeFlowExtension {
     await this.claudeFlow.start();
     
     // Register commands
-    vscode.commands.registerCommand('claude-flow.analyzeCode', 
+    vscode.commands.registerCommand('claude-zen.analyzeCode', 
       () => this.analyzeCurrentFile());
   }
 
@@ -206,7 +206,7 @@ export class ClaudeFlowExtension {
 ```typescript
 // Express.js API integration
 import express from 'express';
-import { ClaudeFlow } from 'claude-flow';
+import { ClaudeFlow } from 'claude-zen';
 
 const app = express();
 const claudeFlow = new ClaudeFlow();
@@ -287,7 +287,7 @@ app.listen(3000, () => {
 
 ```typescript
 // Efficient batch processing
-import { ClaudeFlow } from 'claude-flow';
+import { ClaudeFlow } from 'claude-zen';
 
 async function processBatch(items: any[]) {
   const claudeFlow = new ClaudeFlow();
@@ -403,7 +403,7 @@ class DistributedClaudeFlow {
 ```typescript
 // Testing Claude-Flow workflows
 import { describe, it, expect } from 'vitest';
-import { ClaudeFlow, MockAgent } from 'claude-flow/testing';
+import { ClaudeFlow, MockAgent } from 'claude-zen/testing';
 
 describe('Research Workflow', () => {
   let claudeFlow: ClaudeFlow;

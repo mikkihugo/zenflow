@@ -119,7 +119,7 @@ interface CapturedProcess {
 
 #### CLI Integration Points
 
-1. **Wrapper Script**: Create `claude-flow-web` wrapper that:
+1. **Wrapper Script**: Create `claude-zen-web` wrapper that:
    - Launches regular CLI with output capture
    - Starts WebSocket server
    - Manages process lifecycle
@@ -501,4 +501,4 @@ This architecture provides:
 7. **Performance Optimized**: Efficient resource usage
 8. **Backward Compatible**: Existing CLI unchanged
 
-The design ensures that claude-flow settings integration, real-time CLI streaming, and console-style web interface work together seamlessly while maintaining the robustness and functionality of the existing CLI system.
+The design ensures that claude-zen settings integration, real-time CLI streaming, and console-style web interface work together seamlessly while maintaining the robustness and functionality of the existing CLI system.

@@ -773,7 +773,7 @@ async function postSearchCommand(subArgs, flags) {
 
 async function mcpInitializedCommand(subArgs, flags) {
   const options = flags;
-  const serverName = options.server || 'claude-flow';
+  const serverName = options.server || 'claude-zen';
   const sessionId = options['session-id'] || generateId('mcp-session');
 
   console.log(`🔌 Executing mcp-initialized hook...`);
@@ -1161,7 +1161,7 @@ function showHooksHelp() {
   console.log('  hooks post-edit --file "src/app.js" --format true --train-neural true');
   console.log('  hooks session-end --generate-summary true --export-metrics true');
   console.log('  hooks agent-spawned --name "CodeReviewer" --type "reviewer"');
-  console.log('  hooks notify --message "Build completed" --level "success"');
+  console.log('  hooks post-task --task-id "build-task" --analyze-performance true');
 
   console.log('\nCompatibility:');
   console.log('  • pre-command and pre-bash are aliases');

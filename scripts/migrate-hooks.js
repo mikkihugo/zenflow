@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Migration script to update Claude Flow settings.json to new hooks format
+ * Migration script to update Claude Zen settings.json to new hooks format
  * Compatible with Claude Code 1.0.51+
  */
 
@@ -41,7 +41,7 @@ async function migrateSettingsFile(settingsPath) {
         matcher: "Bash",
         hooks: [{
           type: "command",
-          command: `npx claude-flow@alpha hooks pre-command --command "\${command}" --validate-safety true --prepare-resources true`
+          command: `npx claude-zen@alpha hooks pre-command --command "\${command}" --validate-safety true --prepare-resources true`
         }]
       });
     }
@@ -52,7 +52,7 @@ async function migrateSettingsFile(settingsPath) {
         matcher: "Write|Edit|MultiEdit",
         hooks: [{
           type: "command",
-          command: `npx claude-flow@alpha hooks pre-edit --file "\${file}" --auto-assign-agents true --load-context true`
+          command: `npx claude-zen@alpha hooks pre-edit --file "\${file}" --auto-assign-agents true --load-context true`
         }]
       });
     }
@@ -63,7 +63,7 @@ async function migrateSettingsFile(settingsPath) {
         matcher: "Bash",
         hooks: [{
           type: "command",
-          command: `npx claude-flow@alpha hooks post-command --command "\${command}" --track-metrics true --store-results true`
+          command: `npx claude-zen@alpha hooks post-command --command "\${command}" --track-metrics true --store-results true`
         }]
       });
     }
@@ -74,7 +74,7 @@ async function migrateSettingsFile(settingsPath) {
         matcher: "Write|Edit|MultiEdit",
         hooks: [{
           type: "command",
-          command: `npx claude-flow@alpha hooks post-edit --file "\${file}" --format true --update-memory true --train-neural true`
+          command: `npx claude-zen@alpha hooks post-edit --file "\${file}" --format true --update-memory true --train-neural true`
         }]
       });
     }
@@ -84,7 +84,7 @@ async function migrateSettingsFile(settingsPath) {
       newHooks.Stop.push({
         hooks: [{
           type: "command",
-          command: `npx claude-flow@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true`
+          command: `npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true`
         }]
       });
     }
@@ -166,7 +166,7 @@ async function main() {
   console.log('\n✨ Migration complete!');
   console.log('\nNext steps:');
   console.log('1. Restart Claude Code to apply changes');
-  console.log('2. Run "claude mcp add claude-flow npx claude-flow@alpha mcp start" to add MCP server');
+  console.log('2. Run "claude mcp add claude-zen npx claude-zen@alpha mcp start" to add MCP server');
   console.log('3. Check /doctor in Claude Code to verify settings are valid');
 }
 

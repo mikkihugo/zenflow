@@ -3,16 +3,16 @@
  * Tests for workflow registry, circuit breakers, and distributed infrastructure
  */
 
-const { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } = require('@jest/globals');
-const axios = require('axios');
-const { 
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } from '@jest/globals';
+import axios from 'axios';
+import { 
   SERVICE_URLS, 
   WORKFLOW_STAGES,
   mockWorkflowEvents,
   errorScenarios,
   performanceBenchmarks,
   testHelpers
-} = require('../fixtures/vision-workflow-fixtures');
+} from '../fixtures/vision-workflow-fixtures.js';
 
 describe('Core Service Integration Tests', () => {
   let coreServiceClient;

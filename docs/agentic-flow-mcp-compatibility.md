@@ -7,133 +7,133 @@
 #### Swarm Intelligence Tools (8)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__swarm_init` | `@mastra/mcp-swarm::init` | Kubernetes-native orchestration |
-| `mcp__claude-flow__agent_spawn` | `@mastra/mcp-agent::create` | Container-based isolation |
-| `mcp__claude-flow__task_orchestrate` | `@mastra/mcp-orchestrator::deploy` | Event-driven architecture |
-| `mcp__claude-flow__swarm_status` | `@mastra/mcp-monitor::cluster-status` | Prometheus metrics |
-| `mcp__claude-flow__agent_list` | `@mastra/mcp-agent::list` | GraphQL API |
-| `mcp__claude-flow__agent_metrics` | `@mastra/mcp-monitor::agent-metrics` | OpenTelemetry support |
-| `mcp__claude-flow__swarm_monitor` | `@mastra/mcp-monitor::realtime` | WebSocket streaming |
-| `mcp__claude-flow__swarm_destroy` | `@mastra/mcp-swarm::terminate` | Graceful shutdown |
+| `mcp__claude-zen__swarm_init` | `@mastra/mcp-swarm::init` | Kubernetes-native orchestration |
+| `mcp__claude-zen__agent_spawn` | `@mastra/mcp-agent::create` | Container-based isolation |
+| `mcp__claude-zen__task_orchestrate` | `@mastra/mcp-orchestrator::deploy` | Event-driven architecture |
+| `mcp__claude-zen__swarm_status` | `@mastra/mcp-monitor::cluster-status` | Prometheus metrics |
+| `mcp__claude-zen__agent_list` | `@mastra/mcp-agent::list` | GraphQL API |
+| `mcp__claude-zen__agent_metrics` | `@mastra/mcp-monitor::agent-metrics` | OpenTelemetry support |
+| `mcp__claude-zen__swarm_monitor` | `@mastra/mcp-monitor::realtime` | WebSocket streaming |
+| `mcp__claude-zen__swarm_destroy` | `@mastra/mcp-swarm::terminate` | Graceful shutdown |
 
 #### Neural Network Tools (15)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__neural_status` | `@mastra/mcp-ml::model-status` | Model registry integration |
-| `mcp__claude-flow__neural_train` | `@mastra/mcp-ml::train` | MLflow tracking |
-| `mcp__claude-flow__neural_patterns` | `@mastra/mcp-ml::analyze-patterns` | TensorBoard visualization |
-| `mcp__claude-flow__neural_predict` | `@mastra/mcp-ml::inference` | Batch prediction support |
-| `mcp__claude-flow__model_load` | `@mastra/mcp-ml::load-model` | Model versioning |
-| `mcp__claude-flow__model_save` | `@mastra/mcp-ml::save-model` | S3/GCS/Azure storage |
-| `mcp__claude-flow__wasm_optimize` | `@mastra/mcp-optimize::wasm` | WebAssembly runtime |
-| `mcp__claude-flow__inference_run` | `@mastra/mcp-ml::batch-inference` | GPU acceleration |
-| `mcp__claude-flow__pattern_recognize` | `@mastra/mcp-ml::pattern-match` | Real-time processing |
-| `mcp__claude-flow__cognitive_analyze` | `@mastra/mcp-ai::behavior-analysis` | Explainable AI |
-| `mcp__claude-flow__learning_adapt` | `@mastra/mcp-ml::online-learning` | Continuous learning |
-| `mcp__claude-flow__neural_compress` | `@mastra/mcp-ml::model-compression` | Quantization support |
-| `mcp__claude-flow__ensemble_create` | `@mastra/mcp-ml::ensemble` | AutoML integration |
-| `mcp__claude-flow__transfer_learn` | `@mastra/mcp-ml::transfer-learning` | Pre-trained models |
-| `mcp__claude-flow__neural_explain` | `@mastra/mcp-ai::explainability` | SHAP/LIME integration |
+| `mcp__claude-zen__neural_status` | `@mastra/mcp-ml::model-status` | Model registry integration |
+| `mcp__claude-zen__neural_train` | `@mastra/mcp-ml::train` | MLflow tracking |
+| `mcp__claude-zen__neural_patterns` | `@mastra/mcp-ml::analyze-patterns` | TensorBoard visualization |
+| `mcp__claude-zen__neural_predict` | `@mastra/mcp-ml::inference` | Batch prediction support |
+| `mcp__claude-zen__model_load` | `@mastra/mcp-ml::load-model` | Model versioning |
+| `mcp__claude-zen__model_save` | `@mastra/mcp-ml::save-model` | S3/GCS/Azure storage |
+| `mcp__claude-zen__wasm_optimize` | `@mastra/mcp-optimize::wasm` | WebAssembly runtime |
+| `mcp__claude-zen__inference_run` | `@mastra/mcp-ml::batch-inference` | GPU acceleration |
+| `mcp__claude-zen__pattern_recognize` | `@mastra/mcp-ml::pattern-match` | Real-time processing |
+| `mcp__claude-zen__cognitive_analyze` | `@mastra/mcp-ai::behavior-analysis` | Explainable AI |
+| `mcp__claude-zen__learning_adapt` | `@mastra/mcp-ml::online-learning` | Continuous learning |
+| `mcp__claude-zen__neural_compress` | `@mastra/mcp-ml::model-compression` | Quantization support |
+| `mcp__claude-zen__ensemble_create` | `@mastra/mcp-ml::ensemble` | AutoML integration |
+| `mcp__claude-zen__transfer_learn` | `@mastra/mcp-ml::transfer-learning` | Pre-trained models |
+| `mcp__claude-zen__neural_explain` | `@mastra/mcp-ai::explainability` | SHAP/LIME integration |
 
 #### Memory & State Tools (10)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__memory_usage` | `@mastra/mcp-state::manage` | Redis Cluster support |
-| `mcp__claude-flow__memory_search` | `@mastra/mcp-state::search` | Elasticsearch backend |
-| `mcp__claude-flow__memory_persist` | `@mastra/mcp-state::persist` | Multi-region replication |
-| `mcp__claude-flow__memory_namespace` | `@mastra/mcp-state::namespace` | Tenant isolation |
-| `mcp__claude-flow__memory_backup` | `@mastra/mcp-backup::create` | Incremental backups |
-| `mcp__claude-flow__memory_restore` | `@mastra/mcp-backup::restore` | Point-in-time recovery |
-| `mcp__claude-flow__memory_compress` | `@mastra/mcp-optimize::compress` | Zstandard compression |
-| `mcp__claude-flow__memory_sync` | `@mastra/mcp-state::sync` | Conflict resolution |
-| `mcp__claude-flow__cache_manage` | `@mastra/mcp-cache::manage` | TTL policies |
-| `mcp__claude-flow__memory_analytics` | `@mastra/mcp-analytics::memory` | Usage insights |
+| `mcp__claude-zen__memory_usage` | `@mastra/mcp-state::manage` | Redis Cluster support |
+| `mcp__claude-zen__memory_search` | `@mastra/mcp-state::search` | Elasticsearch backend |
+| `mcp__claude-zen__memory_persist` | `@mastra/mcp-state::persist` | Multi-region replication |
+| `mcp__claude-zen__memory_namespace` | `@mastra/mcp-state::namespace` | Tenant isolation |
+| `mcp__claude-zen__memory_backup` | `@mastra/mcp-backup::create` | Incremental backups |
+| `mcp__claude-zen__memory_restore` | `@mastra/mcp-backup::restore` | Point-in-time recovery |
+| `mcp__claude-zen__memory_compress` | `@mastra/mcp-optimize::compress` | Zstandard compression |
+| `mcp__claude-zen__memory_sync` | `@mastra/mcp-state::sync` | Conflict resolution |
+| `mcp__claude-zen__cache_manage` | `@mastra/mcp-cache::manage` | TTL policies |
+| `mcp__claude-zen__memory_analytics` | `@mastra/mcp-analytics::memory` | Usage insights |
 
 #### Performance & Monitoring Tools (12)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__performance_report` | `@mastra/mcp-monitor::performance` | APM integration |
-| `mcp__claude-flow__bottleneck_analyze` | `@mastra/mcp-analyze::bottlenecks` | AI-driven insights |
-| `mcp__claude-flow__token_usage` | `@mastra/mcp-billing::usage` | Cost optimization |
-| `mcp__claude-flow__benchmark_run` | `@mastra/mcp-test::benchmark` | Continuous benchmarking |
-| `mcp__claude-flow__metrics_collect` | `@mastra/mcp-monitor::collect` | Custom metrics |
-| `mcp__claude-flow__trend_analysis` | `@mastra/mcp-analytics::trends` | Predictive analytics |
-| `mcp__claude-flow__cost_analysis` | `@mastra/mcp-billing::analyze` | Budget alerts |
-| `mcp__claude-flow__quality_assess` | `@mastra/mcp-qa::assess` | Code quality gates |
-| `mcp__claude-flow__error_analysis` | `@mastra/mcp-debug::analyze` | Error clustering |
-| `mcp__claude-flow__usage_stats` | `@mastra/mcp-analytics::usage` | Dashboard generation |
-| `mcp__claude-flow__health_check` | `@mastra/mcp-monitor::health` | SLA monitoring |
-| `mcp__claude-flow__diagnostic_run` | `@mastra/mcp-debug::diagnose` | Root cause analysis |
+| `mcp__claude-zen__performance_report` | `@mastra/mcp-monitor::performance` | APM integration |
+| `mcp__claude-zen__bottleneck_analyze` | `@mastra/mcp-analyze::bottlenecks` | AI-driven insights |
+| `mcp__claude-zen__token_usage` | `@mastra/mcp-billing::usage` | Cost optimization |
+| `mcp__claude-zen__benchmark_run` | `@mastra/mcp-test::benchmark` | Continuous benchmarking |
+| `mcp__claude-zen__metrics_collect` | `@mastra/mcp-monitor::collect` | Custom metrics |
+| `mcp__claude-zen__trend_analysis` | `@mastra/mcp-analytics::trends` | Predictive analytics |
+| `mcp__claude-zen__cost_analysis` | `@mastra/mcp-billing::analyze` | Budget alerts |
+| `mcp__claude-zen__quality_assess` | `@mastra/mcp-qa::assess` | Code quality gates |
+| `mcp__claude-zen__error_analysis` | `@mastra/mcp-debug::analyze` | Error clustering |
+| `mcp__claude-zen__usage_stats` | `@mastra/mcp-analytics::usage` | Dashboard generation |
+| `mcp__claude-zen__health_check` | `@mastra/mcp-monitor::health` | SLA monitoring |
+| `mcp__claude-zen__diagnostic_run` | `@mastra/mcp-debug::diagnose` | Root cause analysis |
 
 #### GitHub Integration Tools (6)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__github_repo_analyze` | `@mastra/mcp-vcs::analyze` | Multi-VCS support |
-| `mcp__claude-flow__github_pr_manage` | `@mastra/mcp-vcs::pr-manage` | GitLab/Bitbucket support |
-| `mcp__claude-flow__github_issue_track` | `@mastra/mcp-vcs::issues` | Jira integration |
-| `mcp__claude-flow__github_release_coord` | `@mastra/mcp-cicd::release` | Semantic versioning |
-| `mcp__claude-flow__github_workflow_auto` | `@mastra/mcp-cicd::workflow` | Multi-platform CI/CD |
-| `mcp__claude-flow__github_code_review` | `@mastra/mcp-qa::review` | AI-powered reviews |
+| `mcp__claude-zen__github_repo_analyze` | `@mastra/mcp-vcs::analyze` | Multi-VCS support |
+| `mcp__claude-zen__github_pr_manage` | `@mastra/mcp-vcs::pr-manage` | GitLab/Bitbucket support |
+| `mcp__claude-zen__github_issue_track` | `@mastra/mcp-vcs::issues` | Jira integration |
+| `mcp__claude-zen__github_release_coord` | `@mastra/mcp-cicd::release` | Semantic versioning |
+| `mcp__claude-zen__github_workflow_auto` | `@mastra/mcp-cicd::workflow` | Multi-platform CI/CD |
+| `mcp__claude-zen__github_code_review` | `@mastra/mcp-qa::review` | AI-powered reviews |
 
 #### Dynamic Agent Architecture Tools (6)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__daa_agent_create` | `@mastra/mcp-daa::create` | Capability registry |
-| `mcp__claude-flow__daa_capability_match` | `@mastra/mcp-daa::match` | ML-based matching |
-| `mcp__claude-flow__daa_resource_alloc` | `@mastra/mcp-resource::allocate` | Kubernetes resources |
-| `mcp__claude-flow__daa_lifecycle_manage` | `@mastra/mcp-lifecycle::manage` | State machines |
-| `mcp__claude-flow__daa_communication` | `@mastra/mcp-messaging::send` | Message queuing |
-| `mcp__claude-flow__daa_consensus` | `@mastra/mcp-consensus::vote` | Blockchain integration |
+| `mcp__claude-zen__daa_agent_create` | `@mastra/mcp-daa::create` | Capability registry |
+| `mcp__claude-zen__daa_capability_match` | `@mastra/mcp-daa::match` | ML-based matching |
+| `mcp__claude-zen__daa_resource_alloc` | `@mastra/mcp-resource::allocate` | Kubernetes resources |
+| `mcp__claude-zen__daa_lifecycle_manage` | `@mastra/mcp-lifecycle::manage` | State machines |
+| `mcp__claude-zen__daa_communication` | `@mastra/mcp-messaging::send` | Message queuing |
+| `mcp__claude-zen__daa_consensus` | `@mastra/mcp-consensus::vote` | Blockchain integration |
 
 #### Workflow & Automation Tools (9)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__workflow_create` | `@mastra/mcp-workflow::design` | Visual designer |
-| `mcp__claude-flow__workflow_execute` | `@mastra/mcp-workflow::run` | Parallel execution |
-| `mcp__claude-flow__workflow_export` | `@mastra/mcp-workflow::export` | Multiple formats |
-| `mcp__claude-flow__automation_setup` | `@mastra/mcp-automation::configure` | Rule engine |
-| `mcp__claude-flow__pipeline_create` | `@mastra/mcp-cicd::pipeline` | GitOps support |
-| `mcp__claude-flow__scheduler_manage` | `@mastra/mcp-schedule::manage` | Cron expressions |
-| `mcp__claude-flow__trigger_setup` | `@mastra/mcp-events::trigger` | Webhook support |
-| `mcp__claude-flow__workflow_template` | `@mastra/mcp-template::manage` | Template marketplace |
-| `mcp__claude-flow__batch_process` | `@mastra/mcp-batch::process` | Distributed processing |
+| `mcp__claude-zen__workflow_create` | `@mastra/mcp-workflow::design` | Visual designer |
+| `mcp__claude-zen__workflow_execute` | `@mastra/mcp-workflow::run` | Parallel execution |
+| `mcp__claude-zen__workflow_export` | `@mastra/mcp-workflow::export` | Multiple formats |
+| `mcp__claude-zen__automation_setup` | `@mastra/mcp-automation::configure` | Rule engine |
+| `mcp__claude-zen__pipeline_create` | `@mastra/mcp-cicd::pipeline` | GitOps support |
+| `mcp__claude-zen__scheduler_manage` | `@mastra/mcp-schedule::manage` | Cron expressions |
+| `mcp__claude-zen__trigger_setup` | `@mastra/mcp-events::trigger` | Webhook support |
+| `mcp__claude-zen__workflow_template` | `@mastra/mcp-template::manage` | Template marketplace |
+| `mcp__claude-zen__batch_process` | `@mastra/mcp-batch::process` | Distributed processing |
 
 #### SPARC Development Tools (1)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__sparc_mode` | `@mastra/mcp-methodology::sparc` | Multiple methodologies |
+| `mcp__claude-zen__sparc_mode` | `@mastra/mcp-methodology::sparc` | Multiple methodologies |
 
 #### Task Management Tools (2)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__task_status` | `@mastra/mcp-task::status` | Real-time updates |
-| `mcp__claude-flow__task_results` | `@mastra/mcp-task::results` | Result streaming |
+| `mcp__claude-zen__task_status` | `@mastra/mcp-task::status` | Real-time updates |
+| `mcp__claude-zen__task_results` | `@mastra/mcp-task::results` | Result streaming |
 
 #### Coordination Tools (5)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__topology_optimize` | `@mastra/mcp-optimize::topology` | Graph algorithms |
-| `mcp__claude-flow__load_balance` | `@mastra/mcp-lb::distribute` | Smart routing |
-| `mcp__claude-flow__coordination_sync` | `@mastra/mcp-sync::coordinate` | Distributed locks |
-| `mcp__claude-flow__swarm_scale` | `@mastra/mcp-scale::auto` | Predictive scaling |
-| `mcp__claude-flow__parallel_execute` | `@mastra/mcp-parallel::run` | Map-reduce support |
+| `mcp__claude-zen__topology_optimize` | `@mastra/mcp-optimize::topology` | Graph algorithms |
+| `mcp__claude-zen__load_balance` | `@mastra/mcp-lb::distribute` | Smart routing |
+| `mcp__claude-zen__coordination_sync` | `@mastra/mcp-sync::coordinate` | Distributed locks |
+| `mcp__claude-zen__swarm_scale` | `@mastra/mcp-scale::auto` | Predictive scaling |
+| `mcp__claude-zen__parallel_execute` | `@mastra/mcp-parallel::run` | Map-reduce support |
 
 #### System Management Tools (7)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__terminal_execute` | `@mastra/mcp-shell::exec` | Sandboxed execution |
-| `mcp__claude-flow__config_manage` | `@mastra/mcp-config::manage` | Version control |
-| `mcp__claude-flow__features_detect` | `@mastra/mcp-discover::features` | Auto-discovery |
-| `mcp__claude-flow__security_scan` | `@mastra/mcp-security::scan` | CVE database |
-| `mcp__claude-flow__backup_create` | `@mastra/mcp-backup::snapshot` | Incremental backups |
-| `mcp__claude-flow__restore_system` | `@mastra/mcp-backup::restore` | Disaster recovery |
-| `mcp__claude-flow__log_analysis` | `@mastra/mcp-logs::analyze` | Log aggregation |
+| `mcp__claude-zen__terminal_execute` | `@mastra/mcp-shell::exec` | Sandboxed execution |
+| `mcp__claude-zen__config_manage` | `@mastra/mcp-config::manage` | Version control |
+| `mcp__claude-zen__features_detect` | `@mastra/mcp-discover::features` | Auto-discovery |
+| `mcp__claude-zen__security_scan` | `@mastra/mcp-security::scan` | CVE database |
+| `mcp__claude-zen__backup_create` | `@mastra/mcp-backup::snapshot` | Incremental backups |
+| `mcp__claude-zen__restore_system` | `@mastra/mcp-backup::restore` | Disaster recovery |
+| `mcp__claude-zen__log_analysis` | `@mastra/mcp-logs::analyze` | Log aggregation |
 
 #### State Management Tools (2)
 | Claude Flow MCP Tool | Agentic Flow Equivalent | Enhancement |
 |---------------------|------------------------|-------------|
-| `mcp__claude-flow__state_snapshot` | `@mastra/mcp-state::snapshot` | Versioned snapshots |
-| `mcp__claude-flow__context_restore` | `@mastra/mcp-state::restore` | Context switching |
+| `mcp__claude-zen__state_snapshot` | `@mastra/mcp-state::snapshot` | Versioned snapshots |
+| `mcp__claude-zen__context_restore` | `@mastra/mcp-state::restore` | Context switching |
 
 ## New Agentic Flow MCP Tools
 
@@ -252,7 +252,7 @@ interface MCPSecurityLayer {
 npm install -g @mastra/agentic-flow-mcp-migrate
 
 # Analyze current MCP usage
-agentic-flow-mcp-migrate analyze --source claude-flow
+agentic-flow-mcp-migrate analyze --source claude-zen
 
 # Generate migration plan
 agentic-flow-mcp-migrate plan --compatibility-mode strict

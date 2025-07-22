@@ -4,7 +4,7 @@
  */
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, _env, _ctx) {
     // Enable CORS for Claude.ai
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -37,7 +37,7 @@ export default {
               resources: {}
             },
             serverInfo: {
-              name: 'claude-flow-cloudflare',
+              name: 'claude-zen-cloudflare',
               version: '1.0.0'
             }
           }

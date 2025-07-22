@@ -20,7 +20,7 @@
 
 ```bash
 # Test Results:
-npx claude-flow@2.0.0 coordination swarm-init --topology hierarchical
+npx claude-zen@2.0.0 coordination swarm-init --topology hierarchical
 # ✅ Neural patterns guide topology selection
 # ✅ Agent capacity optimization based on learned patterns
 # ✅ Performance prediction models active
@@ -36,11 +36,11 @@ npx claude-flow@2.0.0 coordination swarm-init --topology hierarchical
 
 ```bash
 # Test Results:
-npx claude-flow@2.0.0 training neural-train --data recent --model coordination-predictor
+npx claude-zen@2.0.0 training neural-train --data recent --model coordination-predictor
 # ✅ Neural training completed successfully
 # ✅ Model updated with coordination patterns
 
-npx claude-flow@2.0.0 training pattern-learn --operation "swarm_coordination" --outcome "success"
+npx claude-zen@2.0.0 training pattern-learn --operation "swarm_coordination" --outcome "success"
 # ✅ Pattern learning completed
 # ✅ Neural patterns updated with operation insights
 ```
@@ -95,7 +95,7 @@ MCP Tool: pattern_recognize
 
 ```bash
 # Test Results:
-npx claude-flow@2.0.0 coordination task-orchestrate --task "test coordination"
+npx claude-zen@2.0.0 coordination task-orchestrate --task "test coordination"
 # ✅ Neural-guided task decomposition
 # ✅ AI-enhanced agent assignment
 # ✅ Adaptive coordination strategies

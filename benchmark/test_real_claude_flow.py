@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Real Claude-Flow Benchmark Test
-Tests actual claude-flow execution with --non-interactive flag
+Tests actual claude-zen execution with --non-interactive flag
 """
 
 import subprocess
@@ -11,16 +11,16 @@ import os
 from pathlib import Path
 import sys
 
-# Add parent directory to path to access claude-flow
+# Add parent directory to path to access claude-zen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 class RealClaudeFlowBenchmark:
     def __init__(self):
-        self.claude_flow_path = Path(__file__).parent.parent / "claude-flow"
+        self.claude_flow_path = Path(__file__).parent.parent / "claude-zen"
         self.results = []
         
     def run_command(self, command, description):
-        """Execute a claude-flow command and measure performance"""
+        """Execute a claude-zen command and measure performance"""
         print(f"\n{'='*60}")
         print(f"Running: {description}")
         print(f"Command: {' '.join(command)}")
@@ -84,7 +84,7 @@ class RealClaudeFlowBenchmark:
             }
     
     def test_basic_commands(self):
-        """Test basic claude-flow commands"""
+        """Test basic claude-zen commands"""
         print("\n🧪 Testing Basic Claude-Flow Commands")
         
         # Test 1: Version check

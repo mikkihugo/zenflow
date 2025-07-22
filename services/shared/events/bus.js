@@ -299,7 +299,7 @@ class EventBus extends EventEmitter {
 }
 
 // Event type constants
-const EVENT_TYPES = {
+export const EVENT_TYPES = {
   // Vision events
   VISION_CREATED: 'vision:created',
   VISION_UPDATED: 'vision:updated',

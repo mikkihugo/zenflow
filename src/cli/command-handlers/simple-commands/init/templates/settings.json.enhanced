@@ -8,16 +8,16 @@
     "session-end": ".claude/commands/hooks/session-end.md"
   },
   "permissions": {
-    "allow": ["mcp__ruv-swarm", "mcp__claude-flow"],
+    "allow": ["mcp__ruv-swarm", "mcp__claude-zen"],
     "autoApprove": {
       "mcp__ruv-swarm": ["*"],
-      "mcp__claude-flow": ["*"]
+      "mcp__claude-zen": ["*"]
     }
   },
   "mcpServers": {
-    "claude-flow": {
+    "claude-zen": {
       "command": "npx",
-      "args": ["claude-flow@alpha", "mcp", "start"],
+      "args": ["claude-zen@alpha", "mcp", "start"],
       "type": "stdio"
     },
     "ruv-swarm": {

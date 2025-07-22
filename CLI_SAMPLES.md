@@ -5,12 +5,12 @@
 ### 1. Basic Command with Smart Completion
 
 ```bash
-$ claude-flow sw[TAB]
+$ claude-zen sw[TAB]
 swarm    # Multi-agent swarm coordination
 start    # Start orchestration system  
 status   # System status and health
 
-$ claude-flow swarm [TAB]
+$ claude-zen swarm [TAB]
 "build REST API"           # Common: API development
 "analyze codebase"         # Common: Code analysis  
 "research architecture"    # Common: Research tasks
@@ -24,14 +24,14 @@ $ claude-flow swarm [TAB]
 ### 2. Context-Aware Sub-Command Completion
 
 ```bash
-$ claude-flow agent [TAB]
+$ claude-zen agent [TAB]
 spawn       # Create new agent
 list        # List all agents
 info        # Agent details
 terminate   # Stop agent
 health      # Agent health
 
-$ claude-flow agent spawn [TAB]
+$ claude-zen agent spawn [TAB]
 researcher     # Research and analysis agent
 coder         # Code development agent
 analyst       # Performance analysis agent
@@ -44,14 +44,14 @@ coordinator   # Task coordination agent
 ### 3. Intelligent Parameter Completion
 
 ```bash
-$ claude-flow swarm "build API" --strategy [TAB]
+$ claude-zen swarm "build API" --strategy [TAB]
 research      # Research-focused approach
 development   # Development-focused approach  
 analysis      # Analysis-focused approach
 optimization  # Performance optimization
 maintenance   # Maintenance and fixes
 
-$ claude-flow config set [TAB]
+$ claude-zen config set [TAB]
 orchestrator.maxAgents        # Maximum concurrent agents
 memory.backend               # Storage backend type
 mcp.transport               # Communication transport
@@ -152,14 +152,14 @@ terminal.type               # Terminal integration
 
 ```bash
 # Clean CLI mode (default)
-$ claude-flow swarm "build API"
+$ claude-zen swarm "build API"
 🚀 Starting swarm with 5 agents...
 ✅ architect-01: Planning phase complete
 ✅ coder-01: Auth middleware implemented
 🔄 In progress... (use --ui for interactive mode)
 
 # Enhanced TUI mode
-$ claude-flow swarm "build API" --ui
+$ claude-zen swarm "build API" --ui
 [Opens full TUI interface above]
 ```
 
@@ -167,20 +167,20 @@ $ claude-flow swarm "build API" --ui
 
 ```bash
 # Auto-detects terminal capabilities
-$ claude-flow start
+$ claude-zen start
 🚀 Claude Flow v2.0.0 (TUI mode available)
    Press 'u' for UI mode, 'c' for CLI mode, or continue...
 
 # Force modes
-$ claude-flow start --cli    # Force clean CLI
-$ claude-flow start --tui    # Force TUI mode
+$ claude-zen start --cli    # Force clean CLI
+$ claude-zen start --tui    # Force TUI mode
 ```
 
 ### 3. Context-Sensitive Help
 
 ```bash
-$ claude-flow help
-Usage: claude-flow <command> [options]
+$ claude-zen help
+Usage: claude-zen <command> [options]
 
 🎯 Quick Start:
   swarm "objective"          # Start multi-agent swarm
@@ -198,17 +198,17 @@ Usage: claude-flow <command> [options]
   • Add --ui for interactive mode
   • Try --help with any command
 
-$ claude-flow swarm --help
+$ claude-zen swarm --help
 🐝 SWARM - Multi-Agent Coordination
 
-Usage: claude-flow swarm <objective> [options]
+Usage: claude-zen swarm <objective> [options]
 
 Deploy intelligent swarms to accomplish complex tasks.
 
 Examples:
-  claude-flow swarm "build REST API"
-  claude-flow swarm "analyze codebase" --strategy research
-  claude-flow swarm "optimize performance" --parallel --ui
+  claude-zen swarm "build REST API"
+  claude-zen swarm "analyze codebase" --strategy research
+  claude-zen swarm "optimize performance" --parallel --ui
 
 Options:
   --strategy     Strategy type (research, development, analysis)

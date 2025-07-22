@@ -1,6 +1,6 @@
-# 📚 Claude Flow v2.0.0 Documentation
+# 📚 Claude Zen v2.0.0 Documentation
 
-Welcome to the comprehensive documentation for Claude Flow v2.0.0 - Intelligent AI Agent Coordination Platform!
+Welcome to the comprehensive documentation for Claude Zen v2.0.0 - Intelligent AI Agent Coordination Platform!
 
 ## 🚀 Getting Started
 

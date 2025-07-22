@@ -1,4 +1,4 @@
-"""Process tracking for claude-flow executions."""
+"""Process tracking for claude-zen executions."""
 
 from __future__ import annotations
 import subprocess
@@ -49,13 +49,13 @@ class CommandMetrics:
     
 
 class ProcessTracker:
-    """Tracks claude-flow process executions with metrics."""
+    """Tracks claude-zen process executions with metrics."""
     
-    def __init__(self, claude_flow_path: str = "claude-flow"):
+    def __init__(self, claude_flow_path: str = "claude-zen"):
         """Initialize process tracker.
         
         Args:
-            claude_flow_path: Path to claude-flow executable
+            claude_flow_path: Path to claude-zen executable
         """
         self.claude_flow_path = claude_flow_path
         self._command_metrics: Dict[str, CommandMetrics] = {}
@@ -68,10 +68,10 @@ class ProcessTracker:
         env: Optional[Dict[str, str]] = None,
         cwd: Optional[str] = None
     ) -> ProcessExecutionResult:
-        """Execute a claude-flow command and collect metrics.
+        """Execute a claude-zen command and collect metrics.
         
         Args:
-            command: Command arguments (without claude-flow prefix)
+            command: Command arguments (without claude-zen prefix)
             timeout: Command timeout in seconds
             env: Environment variables
             cwd: Working directory

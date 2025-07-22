@@ -40,7 +40,7 @@ const hookTemplates = {
     "matcher": "Write|Edit|MultiEdit",
     "hooks": [{
       "type": "command",
-      "command": "npx claude-flow@alpha hooks post-edit --file \"${CLAUDE_HOOK_FILE}\" --format true"
+      "command": "npx claude-zen@alpha hooks post-edit --file \"${CLAUDE_HOOK_FILE}\" --format true"
     }]
   }]
 };
@@ -59,7 +59,7 @@ COMMAND=$(echo "$HOOK_DATA" | jq -r '.command // empty')
 
 # Execute actual hook with parsed values
 if [ -n "$FILE" ]; then
-  npx claude-flow@alpha hooks post-edit --file "$FILE" --format true
+  npx claude-zen@alpha hooks post-edit --file "$FILE" --format true
 fi
 ```
 
@@ -286,7 +286,7 @@ If you're experiencing issues with hook variables not working:
 
 2. **Run the variable fix script**
    ```bash
-   npx claude-flow@alpha fix-hook-variables
+   npx claude-zen@alpha fix-hook-variables
    ```
 
 3. **Verify your syntax**
@@ -295,7 +295,7 @@ If you're experiencing issues with hook variables not working:
 
 4. **Test your hooks**
    ```bash
-   npx claude-flow@alpha test-hooks
+   npx claude-zen@alpha test-hooks
    ```
 ```
 

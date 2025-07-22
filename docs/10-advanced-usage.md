@@ -11,13 +11,13 @@ Claude-Flow supports sophisticated multi-project environments with strong isolat
 **Creating Isolated Project Environments:**
 ```bash
 # Create project with strict isolation
-claude-flow project create "microservices-platform" \
+claude-zen project create "microservices-platform" \
   --isolation strict \
   --resource-quota "agents:15,memory:4GB,storage:20GB,network:100Mbps" \
   --security-profile enterprise
 
 # Project with custom configuration
-claude-flow project create "ai-research" \
+claude-zen project create "ai-research" \
   --template research-project \
   --config ai-research-config.json \
   --data-classification confidential
@@ -71,21 +71,21 @@ claude-flow project create "ai-research" \
 **Project Management Operations:**
 ```bash
 # Switch between projects
-claude-flow project switch "microservices-platform"
-claude-flow project list --active --with-stats
+claude-zen project switch "microservices-platform"
+claude-zen project list --active --with-stats
 
 # Project-specific configuration
-claude-flow project config set "microservices-platform" \
+claude-zen project config set "microservices-platform" \
   orchestrator.maxConcurrentAgents 20 \
   memory.cacheSizeMB 1024
 
 # Monitor project resources
-claude-flow project monitor "microservices-platform" \
+claude-zen project monitor "microservices-platform" \
   --metrics "resource-usage,agent-performance,costs" \
   --real-time true
 
 # Project backup and archival
-claude-flow project backup "microservices-platform" \
+claude-zen project backup "microservices-platform" \
   --include-data --include-config --include-history \
   --output "microservices-backup-$(date +%Y%m%d).tar.gz"
 ```
@@ -95,19 +95,19 @@ claude-flow project backup "microservices-platform" \
 **Project Federation:**
 ```bash
 # Create project federation
-claude-flow federation create "development-ecosystem" \
+claude-zen federation create "development-ecosystem" \
   --projects "backend-services,frontend-apps,infrastructure,security" \
   --coordination-model "hierarchical" \
   --shared-resources "knowledge-base,artifact-registry"
 
 # Configure cross-project agent sharing
-claude-flow project share "backend-services" "frontend-apps" \
+claude-zen project share "backend-services" "frontend-apps" \
   --agents "senior-architect,security-specialist" \
   --permissions "read,consult" \
   --duration "project-lifetime"
 
 # Federated workflow execution
-claude-flow federation workflow "full-stack-deployment" \
+claude-zen federation workflow "full-stack-deployment" \
   --projects "backend-services,frontend-apps,infrastructure" \
   --coordination "sequential" \
   --rollback-strategy "cascade"
@@ -156,7 +156,7 @@ claude-flow federation workflow "full-stack-deployment" \
 **Multi-Node HA Deployment:**
 ```bash
 # Deploy HA cluster
-claude-flow deploy ha-cluster \
+claude-zen deploy ha-cluster \
   --nodes 3 \
   --regions "us-east-1,us-west-2,eu-west-1" \
   --replication-factor 2 \
@@ -164,7 +164,7 @@ claude-flow deploy ha-cluster \
   --health-checks comprehensive
 
 # Configure automatic failover
-claude-flow ha configure-failover \
+claude-zen ha configure-failover \
   --detection-threshold 30s \
   --recovery-strategy "immediate" \
   --backup-instances 2 \
@@ -173,7 +173,7 @@ claude-flow ha configure-failover \
 
 **HA Configuration Template:**
 ```yaml
-apiVersion: claude-flow.dev/v1
+apiVersion: claude-zen.dev/v1
 kind: HAConfiguration
 metadata:
   name: production-ha
@@ -220,7 +220,7 @@ spec:
 **Auto-Scaling Configuration:**
 ```bash
 # Configure horizontal auto-scaling
-claude-flow scaling configure \
+claude-zen scaling configure \
   --min-instances 2 \
   --max-instances 50 \
   --scale-up-threshold "cpu:70%,memory:80%,queue:100" \
@@ -229,7 +229,7 @@ claude-flow scaling configure \
   --scale-down-cooldown 600s
 
 # Predictive scaling
-claude-flow scaling predictive \
+claude-zen scaling predictive \
   --enable true \
   --forecast-horizon 1h \
   --learning-period 7d \
@@ -304,7 +304,7 @@ claude-flow scaling predictive \
 **Enterprise Security Configuration:**
 ```bash
 # Enable comprehensive security
-claude-flow security harden \
+claude-zen security harden \
   --profile enterprise \
   --encryption all \
   --authentication multi-factor \
@@ -313,13 +313,13 @@ claude-flow security harden \
   --compliance "soc2,gdpr,hipaa"
 
 # Configure security policies
-claude-flow security policy create enterprise-policy.yaml
-claude-flow security rbac configure \
+claude-zen security policy create enterprise-policy.yaml
+claude-zen security rbac configure \
   --roles "admin,developer,operator,auditor" \
   --permissions enterprise-permissions.yaml
 
 # Security monitoring
-claude-flow security monitor \
+claude-zen security monitor \
   --real-time true \
   --threat-detection ml-based \
   --incident-response automated
@@ -327,7 +327,7 @@ claude-flow security monitor \
 
 **Enterprise Security Policy:**
 ```yaml
-apiVersion: security.claude-flow.dev/v1
+apiVersion: security.claude-zen.dev/v1
 kind: SecurityPolicy
 metadata:
   name: enterprise-security
@@ -386,13 +386,13 @@ spec:
 **Creating Complex Agent Hierarchies:**
 ```bash
 # Define enterprise agent hierarchy
-claude-flow agent hierarchy create "enterprise-development" \
+claude-zen agent hierarchy create "enterprise-development" \
   --structure enterprise-hierarchy.yaml \
   --coordination-protocol "command-chain" \
   --escalation-policy "auto-escalate"
 
 # Specialized agent networks
-claude-flow agent network create "ai-research-network" \
+claude-zen agent network create "ai-research-network" \
   --topology "mesh" \
   --specialization "artificial-intelligence" \
   --collaboration-protocol "peer-review" \
@@ -401,7 +401,7 @@ claude-flow agent network create "ai-research-network" \
 
 **Enterprise Hierarchy Structure:**
 ```yaml
-apiVersion: agents.claude-flow.dev/v1
+apiVersion: agents.claude-zen.dev/v1
 kind: AgentHierarchy
 metadata:
   name: enterprise-development
@@ -451,20 +451,20 @@ spec:
 **Intelligent Agent Provisioning:**
 ```bash
 # ML-based demand prediction
-claude-flow agent provision-ml \
+claude-zen agent provision-ml \
   --model demand-prediction \
   --features "queue-length,time-of-day,project-type,complexity" \
   --lead-time 2m \
   --confidence-threshold 0.85
 
 # Event-driven provisioning
-claude-flow agent provision-events \
+claude-zen agent provision-events \
   --triggers "git-push,pr-created,deployment-started" \
   --agent-types "implementer,tester,reviewer" \
   --scaling-policy "burst-capacity"
 
 # Cost-optimized provisioning
-claude-flow agent provision-optimized \
+claude-zen agent provision-optimized \
   --budget-limit 1000 \
   --cost-model "agent-hours" \
   --optimization-strategy "cost-performance" \
@@ -534,14 +534,14 @@ claude-flow agent provision-optimized \
 **AI/ML Agent Ecosystem:**
 ```bash
 # Create ML specialist network
-claude-flow ecosystem create "ai-ml-specialists" \
+claude-zen ecosystem create "ai-ml-specialists" \
   --agents "ml-engineer,data-scientist,mlops-engineer" \
   --collaboration-model "research-lab" \
   --knowledge-base "shared-ml-knowledge" \
   --tools "jupyter,tensorflow,pytorch,mlflow"
 
 # Research agent network
-claude-flow ecosystem create "research-network" \
+claude-zen ecosystem create "research-network" \
   --agents "literature-reviewer,experiment-designer,paper-writer" \
   --methodology "scientific-method" \
   --peer-review true \
@@ -554,7 +554,7 @@ claude-flow ecosystem create "research-network" \
 
 **Advanced State Machine Definition:**
 ```yaml
-apiVersion: workflows.claude-flow.dev/v1
+apiVersion: workflows.claude-zen.dev/v1
 kind: StateMachineWorkflow
 metadata:
   name: enterprise-software-lifecycle
@@ -805,13 +805,13 @@ spec:
 **Complex Event Processing:**
 ```bash
 # Set up event-driven orchestration
-claude-flow events configure \
+claude-zen events configure \
   --streams "git-events,deployment-events,monitoring-events" \
   --processors "correlation,aggregation,pattern-detection" \
   --actions "workflow-trigger,alert-generation,auto-scaling"
 
 # Real-time event processing
-claude-flow events processor create "intelligent-responder" \
+claude-zen events processor create "intelligent-responder" \
   --type "ml-based" \
   --model "anomaly-detection" \
   --actions "auto-remediation,escalation,learning"
@@ -882,14 +882,14 @@ claude-flow events processor create "intelligent-responder" \
 **Enterprise Monitoring Setup:**
 ```bash
 # Deploy comprehensive monitoring
-claude-flow monitoring deploy \
+claude-zen monitoring deploy \
   --stack "prometheus,grafana,jaeger,elasticsearch,kibana" \
   --config production-monitoring.yaml \
   --alerts production-alerts.yaml \
   --dashboards production-dashboards.json
 
 # AI-powered monitoring
-claude-flow monitoring ai-enable \
+claude-zen monitoring ai-enable \
   --anomaly-detection true \
   --predictive-alerts true \
   --auto-remediation selective \
@@ -898,7 +898,7 @@ claude-flow monitoring ai-enable \
 
 **Production Monitoring Configuration:**
 ```yaml
-apiVersion: monitoring.claude-flow.dev/v1
+apiVersion: monitoring.claude-zen.dev/v1
 kind: MonitoringStack
 metadata:
   name: production-monitoring
@@ -927,7 +927,7 @@ spec:
     elasticsearch:
       nodes: 3
       retention: 90d
-      indexTemplate: claude-flow-logs
+      indexTemplate: claude-zen-logs
       pipelines: [enrichment, anonymization, correlation]
     
     logAggregation:
@@ -994,20 +994,20 @@ spec:
 **Advanced Performance Analysis:**
 ```bash
 # ML-powered performance analysis
-claude-flow analytics performance \
+claude-zen analytics performance \
   --analysis-type "trend,anomaly,prediction,optimization" \
   --time-range "30d" \
   --ml-models "prophet,lstm,isolation-forest" \
   --output performance-insights.json
 
 # Business impact analysis
-claude-flow analytics business-impact \
+claude-zen analytics business-impact \
   --metrics "productivity,efficiency,cost,quality" \
   --correlation "performance,business-outcomes" \
   --roi-calculation true
 
 # Capacity planning
-claude-flow analytics capacity-planning \
+claude-zen analytics capacity-planning \
   --growth-scenarios "conservative,moderate,aggressive" \
   --resource-types "compute,storage,network" \
   --planning-horizon "12m" \
@@ -1019,21 +1019,21 @@ claude-flow analytics capacity-planning \
 **Enterprise Cost Management:**
 ```bash
 # Cost analysis and optimization
-claude-flow cost analyze \
+claude-zen cost analyze \
   --granularity "project,team,agent-type,resource-type" \
   --optimization-recommendations true \
   --budget-tracking true \
   --cost-allocation "chargeback"
 
 # Budget management
-claude-flow budget configure \
+claude-zen budget configure \
   --total-budget 100000 \
   --allocation "project-based" \
   --alerts "80%,90%,95%" \
   --auto-optimization true
 
 # Resource optimization
-claude-flow optimize resources \
+claude-zen optimize resources \
   --strategy "cost-performance" \
   --constraints "sla-compliance,security-requirements" \
   --automation-level "supervised"
@@ -1046,13 +1046,13 @@ claude-flow optimize resources \
 **ERP and Business System Integration:**
 ```bash
 # Enterprise service bus integration
-claude-flow integration enterprise \
+claude-zen integration enterprise \
   --systems "sap,salesforce,jira,confluence,slack" \
   --patterns "event-driven,api-gateway,message-queue" \
   --security "oauth2,saml,mutual-tls"
 
 # Legacy system integration
-claude-flow integration legacy \
+claude-zen integration legacy \
   --systems "mainframe-cobol,oracle-db,file-based" \
   --adapters "file-watcher,database-polling,message-bridge" \
   --transformation "etl,data-mapping,format-conversion"
@@ -1063,20 +1063,20 @@ claude-flow integration legacy \
 **Multi-Cloud Deployment:**
 ```bash
 # AWS integration
-claude-flow cloud aws deploy \
+claude-zen cloud aws deploy \
   --services "ecs,lambda,rds,s3,cloudwatch" \
   --regions "us-east-1,us-west-2,eu-west-1" \
   --ha-configuration true \
   --cost-optimization true
 
 # Azure integration
-claude-flow cloud azure deploy \
+claude-zen cloud azure deploy \
   --services "aks,functions,cosmos-db,blob-storage" \
   --regions "eastus,westus2,westeurope" \
   --integration-with-aws true
 
 # Google Cloud integration
-claude-flow cloud gcp deploy \
+claude-zen cloud gcp deploy \
   --services "gke,cloud-functions,cloud-sql,cloud-storage" \
   --regions "us-central1,us-west1,europe-west1" \
   --multi-cloud-networking true
@@ -1087,21 +1087,21 @@ claude-flow cloud gcp deploy \
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: claude-flow-orchestrator
-  namespace: claude-flow
+  name: claude-zen-orchestrator
+  namespace: claude-zen
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: claude-flow-orchestrator
+      app: claude-zen-orchestrator
   template:
     metadata:
       labels:
-        app: claude-flow-orchestrator
+        app: claude-zen-orchestrator
     spec:
       containers:
       - name: orchestrator
-        image: claude-flow/orchestrator:latest
+        image: claude-zen/orchestrator:latest
         ports:
         - containerPort: 3000
         env:
@@ -1110,7 +1110,7 @@ spec:
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: claude-flow-secrets
+              name: claude-zen-secrets
               key: database-url
         resources:
           requests:
@@ -1135,11 +1135,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: claude-flow-orchestrator-service
-  namespace: claude-flow
+  name: claude-zen-orchestrator-service
+  namespace: claude-zen
 spec:
   selector:
-    app: claude-flow-orchestrator
+    app: claude-zen-orchestrator
   ports:
   - protocol: TCP
     port: 80
@@ -1154,7 +1154,7 @@ spec:
 **Enterprise Backup Configuration:**
 ```bash
 # Configure comprehensive backup
-claude-flow backup configure \
+claude-zen backup configure \
   --strategy "3-2-1" \
   --locations "local,aws-s3,azure-blob" \
   --encryption "aes-256" \
@@ -1162,7 +1162,7 @@ claude-flow backup configure \
   --verification "automatic"
 
 # Disaster recovery setup
-claude-flow dr configure \
+claude-zen dr configure \
   --rpo "1h" \
   --rto "15m" \
   --replication "real-time" \
@@ -1172,7 +1172,7 @@ claude-flow dr configure \
 
 **Backup Strategy Configuration:**
 ```yaml
-apiVersion: backup.claude-flow.dev/v1
+apiVersion: backup.claude-zen.dev/v1
 kind: BackupStrategy
 metadata:
   name: enterprise-backup
@@ -1191,19 +1191,19 @@ spec:
   storage:
     primary:
       type: s3
-      bucket: claude-flow-backups-primary
+      bucket: claude-zen-backups-primary
       region: us-east-1
       encryption: AES256
     
     secondary:
       type: azure-blob
-      container: claude-flow-backups
+      container: claude-zen-backups
       region: eastus
       encryption: customer-managed
     
     tertiary:
       type: local
-      path: /backup/claude-flow
+      path: /backup/claude-zen
       encryption: gpg
   
   verification:

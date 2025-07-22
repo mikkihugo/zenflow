@@ -2,7 +2,7 @@
 
 ## ⚠️ CRITICAL: Published Before Full Verification
 
-**Status**: Published to npm as `claude-flow@2.0.0-alpha.58` before completing verification.
+**Status**: Published to npm as `claude-zen@2.0.0-alpha.58` before completing verification.
 
 ## 🔍 Actual Verification Results
 
@@ -119,5 +119,5 @@
 ---
 
 **Report Generated**: 2025-07-17T03:49:00Z  
-**Version Verified**: claude-flow@2.0.0-alpha.58  
+**Version Verified**: claude-zen@2.0.0-alpha.58  
 **Verification Status**: Post-publish assessment complete

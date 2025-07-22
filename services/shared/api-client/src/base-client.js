@@ -234,4 +234,4 @@ class BaseApiClient {
   }
 }
 
-module.exports = BaseApiClient;
+export default BaseApiClient;

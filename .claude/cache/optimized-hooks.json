@@ -8,9 +8,9 @@
           "parallel": true,
           "cache": true,
           "commands": [
-            "npx claude-flow@alpha hooks pre-command --batch true",
-            "npx claude-flow@alpha memory store --batch true",
-            "npx claude-flow@alpha neural predict --cache true"
+            "npx claude-zen@alpha hooks pre-command --batch true",
+            "npx claude-zen@alpha memory store --batch true",
+            "npx claude-zen@alpha neural predict --cache true"
           ]
         }
       ]

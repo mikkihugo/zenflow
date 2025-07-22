@@ -26,7 +26,7 @@
       {
         "assets": [
           {
-            "path": "dist/claude-flow-*",
+            "path": "dist/claude-zen-*",
             "label": "CLI Binary (${nextRelease.gitTag})"
           },
           {

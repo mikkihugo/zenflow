@@ -1,5 +1,5 @@
 /**
- * Build Configuration for Claude Flow
+ * Build Configuration for Claude Zen
  * 
  * This configuration handles module resolution for dual Node.js/Deno support
  */

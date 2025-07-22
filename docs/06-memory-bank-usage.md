@@ -24,14 +24,14 @@ The memory bank consists of several interconnected layers:
 **Simple Memory Storage:**
 ```bash
 # Store a discovery
-claude-flow memory store \
+claude-zen memory store \
   --agent-id <agent-id> \
   --type "discovery" \
   --content "Found optimal caching strategy that improves API response time by 40%" \
   --tags "performance,caching,optimization,api"
 
 # Store structured data
-claude-flow memory store \
+claude-zen memory store \
   --agent-id <agent-id> \
   --type "technical-solution" \
   --title "Redis Caching Implementation" \
@@ -69,20 +69,20 @@ claude-flow memory store \
 **Basic Queries:**
 ```bash
 # Query by agent
-claude-flow memory query \
+claude-zen memory query \
   --agent-id <agent-id> \
   --type "discovery" \
   --limit 10 \
   --sort-by "timestamp:desc"
 
 # Query by tags
-claude-flow memory query \
+claude-zen memory query \
   --tags "performance,optimization" \
   --time-range "last-7d" \
   --format "detailed"
 
 # Search across all memory
-claude-flow memory search "caching strategy" \
+claude-zen memory search "caching strategy" \
   --fuzzy true \
   --min-relevance 0.7 \
   --include-metadata
@@ -91,7 +91,7 @@ claude-flow memory search "caching strategy" \
 **Advanced Query Patterns:**
 ```bash
 # Complex query with multiple filters
-claude-flow memory query \
+claude-zen memory query \
   --agent-type "implementer" \
   --created-after "2024-12-01" \
   --content-contains "database optimization" \
@@ -101,14 +101,14 @@ claude-flow memory query \
   --format "summary"
 
 # Aggregate queries
-claude-flow memory aggregate \
+claude-zen memory aggregate \
   --metric "discoveries-per-day" \
   --time-range "30d" \
   --group-by "agent-type,tags" \
   --output-format "chart"
 
 # Relationship queries
-claude-flow memory related <memory-id> \
+claude-zen memory related <memory-id> \
   --depth 3 \
   --relationship-types "builds-upon,contradicts,validates" \
   --min-confidence 0.6
@@ -121,18 +121,18 @@ claude-flow memory related <memory-id> \
 **Category Management:**
 ```bash
 # Create knowledge categories
-claude-flow memory category create "machine-learning" \
+claude-zen memory category create "machine-learning" \
   --description "ML algorithms, models, and best practices" \
   --schema ml-schema.json \
   --validation-rules ml-validation.json
 
 # List categories with statistics
-claude-flow memory category list \
+claude-zen memory category list \
   --include-stats true \
   --sort-by "entry-count:desc"
 
 # Update category schema
-claude-flow memory category update "machine-learning" \
+claude-zen memory category update "machine-learning" \
   --schema updated-ml-schema.json \
   --migrate-existing true
 ```
@@ -292,19 +292,19 @@ claude-flow memory category update "machine-learning" \
 **Creating Memory Links:**
 ```bash
 # Link related memories
-claude-flow memory link <memory-id-1> <memory-id-2> \
+claude-zen memory link <memory-id-1> <memory-id-2> \
   --relationship "builds-upon" \
   --confidence 0.9 \
   --description "Performance optimization builds upon caching strategy"
 
 # Create contradiction link
-claude-flow memory link <memory-id-1> <memory-id-2> \
+claude-zen memory link <memory-id-1> <memory-id-2> \
   --relationship "contradicts" \
   --confidence 0.8 \
   --resolution-required true
 
 # Validation link
-claude-flow memory link <memory-id-1> <memory-id-2> \
+claude-zen memory link <memory-id-1> <memory-id-2> \
   --relationship "validates" \
   --confidence 0.95 \
   --evidence "production-metrics.json"
@@ -313,20 +313,20 @@ claude-flow memory link <memory-id-1> <memory-id-2> \
 **Exploring Memory Networks:**
 ```bash
 # Find related memories
-claude-flow memory related <memory-id> \
+claude-zen memory related <memory-id> \
   --depth 3 \
   --min-confidence 0.5 \
   --relationship-types "all"
 
 # Visualize memory graph
-claude-flow memory graph \
+claude-zen memory graph \
   --agent-id <agent-id> \
   --output "memory-graph.svg" \
   --layout "hierarchical" \
   --include-metadata
 
 # Analyze memory clusters
-claude-flow memory cluster-analysis \
+claude-zen memory cluster-analysis \
   --algorithm "community-detection" \
   --min-cluster-size 5 \
   --output "memory-clusters.json"
@@ -337,18 +337,18 @@ claude-flow memory cluster-analysis \
 **Knowledge Validation:**
 ```bash
 # Validate memory entry
-claude-flow memory validate <memory-id> \
+claude-zen memory validate <memory-id> \
   --validator "peer-review" \
   --criteria "accuracy,relevance,completeness,clarity" \
   --reviewers "senior-dev-1,architect-2"
 
 # Automated validation
-claude-flow memory validate <memory-id> \
+claude-zen memory validate <memory-id> \
   --validator "automated" \
   --checks "link-verification,data-consistency,format-compliance"
 
 # Cross-validation
-claude-flow memory cross-validate \
+claude-zen memory cross-validate \
   --memories "memory-1,memory-2,memory-3" \
   --method "consensus-scoring"
 ```
@@ -356,20 +356,20 @@ claude-flow memory cross-validate \
 **Scoring and Ranking:**
 ```bash
 # Score memory entry
-claude-flow memory score <memory-id> \
+claude-zen memory score <memory-id> \
   --metric "usefulness" \
   --score 8.5 \
   --reviewer <agent-id> \
   --justification "Significant performance improvement with clear implementation"
 
 # Bulk scoring
-claude-flow memory bulk-score \
+claude-zen memory bulk-score \
   --category "performance-optimizations" \
   --metric "impact" \
   --algorithm "ml-based"
 
 # Get top-ranked memories
-claude-flow memory rank \
+claude-zen memory rank \
   --category "architecture-patterns" \
   --metric "composite-score" \
   --limit 20 \
@@ -383,15 +383,15 @@ claude-flow memory rank \
 **Detecting Conflicts:**
 ```bash
 # Check for conflicts
-claude-flow memory conflicts --check-all
+claude-zen memory conflicts --check-all
 
 # Specific conflict detection
-claude-flow memory conflicts \
+claude-zen memory conflicts \
   --memory-id <memory-id> \
   --check-type "content,metadata,relationships"
 
 # Automated conflict detection
-claude-flow memory conflicts monitor \
+claude-zen memory conflicts monitor \
   --real-time true \
   --alert-on "high-confidence-conflicts"
 ```
@@ -399,18 +399,18 @@ claude-flow memory conflicts monitor \
 **Resolving Conflicts:**
 ```bash
 # Manual conflict resolution
-claude-flow memory resolve-conflict <conflict-id> \
+claude-zen memory resolve-conflict <conflict-id> \
   --strategy "merge" \
   --resolution-data resolution.json \
   --reviewer <agent-id>
 
 # Automated resolution
-claude-flow memory resolve-conflict <conflict-id> \
+claude-zen memory resolve-conflict <conflict-id> \
   --strategy "last-write-wins" \
   --confidence-threshold 0.8
 
 # CRDT-based resolution
-claude-flow memory resolve-conflict <conflict-id> \
+claude-zen memory resolve-conflict <conflict-id> \
   --strategy "crdt" \
   --merge-algorithm "semantic-merge"
 ```
@@ -443,16 +443,16 @@ claude-flow memory resolve-conflict <conflict-id> \
 **Sync Configuration:**
 ```bash
 # Configure sync settings
-claude-flow config set memory.syncInterval 3000
-claude-flow config set memory.conflictResolution crdt
+claude-zen config set memory.syncInterval 3000
+claude-zen config set memory.conflictResolution crdt
 
 # Manual sync trigger
-claude-flow memory sync \
+claude-zen memory sync \
   --scope "agent-sessions" \
   --force true
 
 # Cross-agent synchronization
-claude-flow memory sync-agents \
+claude-zen memory sync-agents \
   --agents "agent-1,agent-2,agent-3" \
   --merge-strategy "consensus"
 ```
@@ -460,13 +460,13 @@ claude-flow memory sync-agents \
 **Distributed Memory Management:**
 ```bash
 # Set up distributed memory
-claude-flow memory distributed configure \
+claude-zen memory distributed configure \
   --nodes "node-1,node-2,node-3" \
   --replication-factor 2 \
   --consistency "eventual"
 
 # Monitor sync status
-claude-flow memory sync-status \
+claude-zen memory sync-status \
   --show-lag true \
   --show-conflicts true \
   --format "dashboard"
@@ -479,19 +479,19 @@ claude-flow memory sync-status \
 **Memory Usage Patterns:**
 ```bash
 # Analyze memory usage
-claude-flow memory analytics usage \
+claude-zen memory analytics usage \
   --time-range "30d" \
   --group-by "agent-type,category,time-of-day" \
   --output "usage-report.json"
 
 # Growth analysis
-claude-flow memory analytics growth \
+claude-zen memory analytics growth \
   --metrics "entry-count,storage-size,query-frequency" \
   --trend-analysis true \
   --forecast "30d"
 
 # Access patterns
-claude-flow memory analytics access-patterns \
+claude-zen memory analytics access-patterns \
   --analyze "hot-data,cold-data,query-patterns" \
   --recommendations true
 ```
@@ -499,19 +499,19 @@ claude-flow memory analytics access-patterns \
 **Knowledge Discovery:**
 ```bash
 # Discover knowledge gaps
-claude-flow memory analytics gaps \
+claude-zen memory analytics gaps \
   --domain "web-development" \
   --compare-with "industry-standards.json" \
   --output "knowledge-gaps.json"
 
 # Trend analysis
-claude-flow memory analytics trends \
+claude-zen memory analytics trends \
   --categories "all" \
   --time-window "weekly" \
   --trending-topics 10
 
 # Impact analysis
-claude-flow memory analytics impact \
+claude-zen memory analytics impact \
   --memories "high-scored" \
   --trace-usage true \
   --roi-calculation true
@@ -522,19 +522,19 @@ claude-flow memory analytics impact \
 **Agent Learning Progression:**
 ```bash
 # Analyze learning progression
-claude-flow memory learning-analysis <agent-id> \
+claude-zen memory learning-analysis <agent-id> \
   --metrics "knowledge-acquisition-rate,topic-coverage,depth-improvement" \
   --time-range "90d" \
   --output "learning-report.pdf"
 
 # Cross-agent learning comparison
-claude-flow memory learning-compare \
+claude-zen memory learning-compare \
   --agents "team-members" \
   --metrics "learning-velocity,knowledge-sharing" \
   --benchmark "team-average"
 
 # Learning effectiveness
-claude-flow memory learning-effectiveness \
+claude-zen memory learning-effectiveness \
   --interventions "training,mentoring,documentation" \
   --outcome-metrics "performance,quality,speed"
 ```
@@ -546,7 +546,7 @@ claude-flow memory learning-effectiveness \
 **Creating Backups:**
 ```bash
 # Full memory backup
-claude-flow memory backup \
+claude-zen memory backup \
   --scope "all" \
   --output "memory-backup-$(date +%Y%m%d).tar.gz" \
   --compress true \
@@ -554,13 +554,13 @@ claude-flow memory backup \
   --password-file ".backup-key"
 
 # Incremental backup
-claude-flow memory backup \
+claude-zen memory backup \
   --incremental true \
   --since "2024-12-01" \
   --output "incremental-backup-$(date +%Y%m%d).tar.gz"
 
 # Selective backup
-claude-flow memory backup \
+claude-zen memory backup \
   --agents "critical-agents" \
   --categories "production-knowledge" \
   --high-value-only true
@@ -594,19 +594,19 @@ claude-flow memory backup \
 **Restore from Backup:**
 ```bash
 # Full restore
-claude-flow memory restore \
+claude-zen memory restore \
   --backup "memory-backup-20241201.tar.gz" \
   --strategy "replace" \
   --confirm true
 
 # Selective restore
-claude-flow memory restore \
+claude-zen memory restore \
   --backup "memory-backup-20241201.tar.gz" \
   --filter "agent-id:critical-agent,category:production" \
   --strategy "merge"
 
 # Point-in-time recovery
-claude-flow memory restore \
+claude-zen memory restore \
   --backup "memory-backup-20241201.tar.gz" \
   --point-in-time "2024-12-01T15:30:00Z" \
   --validate true
@@ -615,13 +615,13 @@ claude-flow memory restore \
 **Recovery Validation:**
 ```bash
 # Validate restored data
-claude-flow memory validate-restore \
+claude-zen memory validate-restore \
   --backup-file "memory-backup-20241201.tar.gz" \
   --check-integrity true \
   --check-consistency true
 
 # Recovery testing
-claude-flow memory test-recovery \
+claude-zen memory test-recovery \
   --backup "test-backup.tar.gz" \
   --sandbox true \
   --validation-script "recovery-test.sh"
@@ -634,19 +634,19 @@ claude-flow memory test-recovery \
 **Cache Optimization:**
 ```bash
 # Analyze cache performance
-claude-flow memory cache-analysis \
+claude-zen memory cache-analysis \
   --metrics "hit-rate,miss-rate,eviction-rate" \
   --time-range "24h" \
   --recommendations true
 
 # Optimize cache configuration
-claude-flow memory optimize-cache \
+claude-zen memory optimize-cache \
   --target-hit-rate 0.9 \
   --memory-limit "500MB" \
   --eviction-policy "lru-with-frequency"
 
 # Warm cache
-claude-flow memory warm-cache \
+claude-zen memory warm-cache \
   --preload "frequently-accessed" \
   --priority "high-value-memories"
 ```
@@ -654,19 +654,19 @@ claude-flow memory warm-cache \
 **Storage Optimization:**
 ```bash
 # Analyze storage usage
-claude-flow memory storage-analysis \
+claude-zen memory storage-analysis \
   --breakdown "by-agent,by-category,by-age" \
   --identify-duplicates true \
   --compression-analysis true
 
 # Optimize storage
-claude-flow memory optimize-storage \
+claude-zen memory optimize-storage \
   --compress-old-entries "90d" \
   --deduplicate true \
   --archive-inactive "180d"
 
 # Cleanup operations
-claude-flow memory cleanup \
+claude-zen memory cleanup \
   --remove-orphaned true \
   --compact-indices true \
   --verify-integrity true
@@ -677,19 +677,19 @@ claude-flow memory cleanup \
 **Index Management:**
 ```bash
 # Analyze query performance
-claude-flow memory query-analysis \
+claude-zen memory query-analysis \
   --slow-queries true \
   --index-usage true \
   --optimization-suggestions true
 
 # Create custom indexes
-claude-flow memory create-index \
+claude-zen memory create-index \
   --fields "tags,timestamp,agent-type" \
   --type "composite" \
   --name "performance-queries"
 
 # Rebuild indexes
-claude-flow memory rebuild-indexes \
+claude-zen memory rebuild-indexes \
   --parallel true \
   --verify true
 ```

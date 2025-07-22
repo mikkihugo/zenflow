@@ -26,9 +26,9 @@ The `--dangerously-skip-permissions` flag only bypasses permission prompts but d
 
 ```bash
 # Current workaround attempts
-claude-flow init --dangerously-skip-permissions  # Still fails in VS Code
-claude-flow init --force --yes  # Inconsistent behavior
-claude-flow init < /dev/null  # Breaks on some operations
+claude-zen init --dangerously-skip-permissions  # Still fails in VS Code
+claude-zen init --force --yes  # Inconsistent behavior
+claude-zen init < /dev/null  # Breaks on some operations
 ```
 
 ## Proposed Solution for v2.0.0
@@ -116,24 +116,24 @@ interface ExecutionEnvironment {
 
 ```bash
 # Old (v1) - Often failed
-npx claude-flow init --dangerously-skip-permissions
+npx claude-zen init --dangerously-skip-permissions
 
 # New (v2) - Just works
-npx claude-flow@2.0.0 init
+npx claude-zen@2.0.0 init
 ```
 
 ### For CI/CD
 
 ```yaml
 # Automatic CI detection, no flags needed
-- run: npx claude-flow@2.0.0 init
+- run: npx claude-zen@2.0.0 init
 ```
 
 ### For Docker
 
 ```dockerfile
 # Automatic Docker detection
-RUN npx claude-flow@2.0.0 init
+RUN npx claude-zen@2.0.0 init
 ```
 
 ## Success Metrics

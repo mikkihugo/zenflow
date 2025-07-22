@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Build script for Claude-Flow Migration System
+# Build script for Claude-Zen Migration System
 
 set -e
 
-echo "🚀 Building Claude-Flow Migration System..."
+echo "🚀 Building Claude-Zen Migration System..."
 
 # Check if we're in the right directory
 if [ ! -f "package.json" ]; then
@@ -51,7 +51,7 @@ chmod +x dist/migration/index.js
 # Create symlink for global usage
 echo "🔗 Creating symlinks..."
 mkdir -p bin
-ln -sf ../dist/migration/index.js bin/claude-flow-migrate
+ln -sf ../dist/migration/index.js bin/claude-zen-migrate
 
 # Run tests
 echo "🧪 Running tests..."
@@ -62,7 +62,7 @@ cd ../..
 # Create package info
 echo "📄 Creating package information..."
 cat > dist/migration/INSTALL.md << 'EOF'
-# Claude-Flow Migration System Installation
+# Claude-Zen Migration System Installation
 
 ## Quick Install
 
@@ -71,20 +71,20 @@ cat > dist/migration/INSTALL.md << 'EOF'
 npm install -g ./dist/migration
 
 # Or use directly
-./bin/claude-flow-migrate --help
+./bin/claude-zen-migrate --help
 ```
 
 ## Usage
 
 ```bash
 # Analyze project
-claude-flow-migrate analyze
+claude-zen-migrate analyze
 
 # Migrate with selective strategy
-claude-flow-migrate --strategy selective --preserve-custom
+claude-zen-migrate --strategy selective --preserve-custom
 
 # Rollback if needed
-claude-flow-migrate rollback
+claude-zen-migrate rollback
 ```
 
 ## Documentation
@@ -95,11 +95,11 @@ EOF
 echo "✅ Build completed successfully!"
 echo ""
 echo "📋 Next steps:"
-echo "   1. Test installation: ./bin/claude-flow-migrate --help"
-echo "   2. Run on test project: ./bin/claude-flow-migrate analyze /path/to/project"
+echo "   1. Test installation: ./bin/claude-zen-migrate --help"
+echo "   2. Run on test project: ./bin/claude-zen-migrate analyze /path/to/project"
 echo "   3. Create distribution: npm pack dist/migration"
 echo ""
 echo "📦 Built files:"
 echo "   - dist/migration/ - Complete migration system"
-echo "   - bin/claude-flow-migrate - Executable symlink"
+echo "   - bin/claude-zen-migrate - Executable symlink"
 echo ""

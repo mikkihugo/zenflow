@@ -27,7 +27,7 @@ class RealBenchmarkTester:
         self.system_monitor = SystemMonitor()
         
     async def test_basic_execution(self):
-        """Test basic claude-flow execution"""
+        """Test basic claude-zen execution"""
         print("\n🧪 Testing Basic Execution")
         print("=" * 60)
         

@@ -101,7 +101,7 @@ The Claude Flow Web UI provides a comprehensive browser-based interface for orch
 ### 1. Start the Web Server
 ```bash
 # Using the start command with UI flag
-claude-flow start --ui --port 3000
+claude-zen start --ui --port 3000
 
 # Or using the standalone script
 node start-web-ui.js 3000
@@ -118,13 +118,13 @@ The WebSocket connection will establish automatically. Look for the green connec
 ### 4. Execute Your First Command
 ```bash
 # In the web console
-claude-flow> help
+claude-zen> help
 
 # Check system status
-claude-flow> status
+claude-zen> status
 
 # View available agents
-claude-flow> agents list
+claude-zen> agents list
 ```
 
 ## 📊 Current Implementation Status
@@ -162,9 +162,9 @@ Claude Flow is licensed under the MIT License. See [LICENSE](../../LICENSE) for 
 ## 🆘 Support
 
 - **Documentation**: This directory
-- **Issues**: [GitHub Issues](https://github.com/ruvnet/claude-flow/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ruvnet/claude-flow/discussions)
-- **Email**: support@claude-flow.ai
+- **Issues**: [GitHub Issues](https://github.com/ruvnet/claude-zen/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ruvnet/claude-zen/discussions)
+- **Email**: support@claude-zen.ai
 
 ---
 

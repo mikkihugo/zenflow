@@ -96,14 +96,14 @@ graph TD
 #### 3. **Claude-Flow Integration Points**
 ```bash
 # Workflow-driven SPARC execution
-agnstik claude-flow sparc architect "Design auth system" \
+agnstik claude-zen sparc architect "Design auth system" \
   --workflow customer-onboarding \
   --actors bastion-engine-service \
   --tools fact-execution-service \
   --providers mcp-federation-service
 
 # Multi-provider swarm with workflow orchestration
-agnstik claude-flow swarm "Complete project delivery" \
+agnstik claude-zen swarm "Complete project delivery" \
   --bpmn-workflow enterprise-delivery.xml \
   --coordination-actors bastion-engine \
   --execution-tools fact-service \
@@ -113,7 +113,7 @@ agnstik claude-flow swarm "Complete project delivery" \
 ## Agnstik Plugin Integration
 
 ### Enhanced Plugin Architecture
-The migrated services enable the agnstik claude-flow plugin to provide:
+The migrated services enable the agnstik claude-zen plugin to provide:
 
 #### **Multi-Provider SPARC Modes**
 ```rust
@@ -187,11 +187,11 @@ SupervisionStrategy::OneForAll => {
 ### Basic SPARC with Provider Selection
 ```bash
 # Research with optimal provider
-agnstik claude-flow sparc researcher "Analyze market trends" \
+agnstik claude-zen sparc researcher "Analyze market trends" \
   --provider claude-3-5-sonnet
 
 # Architecture with workflow integration  
-agnstik claude-flow sparc architect "Design payment system" \
+agnstik claude-zen sparc architect "Design payment system" \
   --workflow payment-processing.bpmn \
   --provider claude-3-opus
 ```
@@ -199,7 +199,7 @@ agnstik claude-flow sparc architect "Design payment system" \
 ### Advanced Swarm Coordination
 ```bash
 # Multi-service swarm with workflow orchestration
-agnstik claude-flow swarm "Build enterprise platform" \
+agnstik claude-zen swarm "Build enterprise platform" \
   --workflow enterprise-development.bpmn \
   --actors bastion-engine-service \
   --tools fact-execution-service \
@@ -211,12 +211,12 @@ agnstik claude-flow swarm "Build enterprise platform" \
 ### Workflow-Driven Development
 ```bash
 # Deploy and execute BPMN workflow
-agnstik claude-flow workflow deploy customer-onboarding.bpmn
-agnstik claude-flow workflow start customer-onboarding \
+agnstik claude-zen workflow deploy customer-onboarding.bpmn
+agnstik claude-zen workflow start customer-onboarding \
   --variables customer_id=12345,verification_level=standard
 
 # Monitor workflow execution
-agnstik claude-flow workflow monitor customer-onboarding-instance-789
+agnstik claude-zen workflow monitor customer-onboarding-instance-789
 ```
 
 ## Next Steps
@@ -224,7 +224,7 @@ agnstik claude-flow workflow monitor customer-onboarding-instance-789
 ### Immediate Integration
 1. **Nx workspace optimization**: Run `npx nx reset` in singularity-engine
 2. **Service testing**: Verify each service builds and runs correctly
-3. **Agnstik plugin development**: Implement the full claude-flow plugin
+3. **Agnstik plugin development**: Implement the full claude-zen plugin
 
 ### Advanced Features
 1. **Cross-service communication**: Implement service mesh integration
@@ -250,4 +250,4 @@ agnstik claude-flow workflow monitor customer-onboarding-instance-789
 ✅ **Full backward compatibility** (symlinked references)  
 ✅ **Nx workspace integration** (unified build system)  
 
-**Ready for agnstik claude-flow plugin development and enterprise deployment.**
+**Ready for agnstik claude-zen plugin development and enterprise deployment.**

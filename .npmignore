@@ -56,8 +56,8 @@ deno.json
 deno.lock
 
 # Local files
-claude-flow
-claude-flow.cmd
+claude-zen
+claude-zen.cmd
 init-test/
 exported-memory.json
 test-memory.json
@@ -71,7 +71,7 @@ reports/
 !.claude/config.json
 
 # Binary builds (we don't need prebuilt binaries for npm)
-bin/claude-flow-*
+bin/claude-zen-*
 bin/*.exe
 
 # Example and demo files

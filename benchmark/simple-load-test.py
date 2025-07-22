@@ -18,7 +18,7 @@ class SimpleLoadTester:
     """Simple load tester for basic validation"""
     
     def __init__(self):
-        self.cli_path = Path("../src/cli/simple-cli.js")
+        self.cli_path = Path("../bin/claude-zen")
         self.results = []
         
     def run_cli_command(self, command: List[str], timeout: int = 30) -> Dict[str, Any]:
@@ -27,7 +27,7 @@ class SimpleLoadTester:
         
         try:
             result = subprocess.run(
-                ["node", str(self.cli_path)] + command,
+                [str(self.cli_path)] + command,
                 capture_output=True,
                 text=True,
                 timeout=timeout,

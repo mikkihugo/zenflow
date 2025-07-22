@@ -2,7 +2,7 @@
 
 ## Usage
 ```bash
-claude-flow swarm "Build application" --strategy development --mode hierarchical
+claude-zen swarm "Build application" --strategy development --mode hierarchical
 ```
 
 ## Description

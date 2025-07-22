@@ -81,7 +81,7 @@ export class ConfigError extends Error {
 export class ConfigManager {
     constructor() {
         this.config = this.deepClone(DEFAULT_CONFIG);
-        this.userConfigDir = path.join(os.homedir(), '.claude-flow');
+        this.userConfigDir = path.join(os.homedir(), '.claude-zen');
     }
     /**
      * Gets the singleton instance
@@ -95,7 +95,7 @@ export class ConfigManager {
     /**
      * Initialize configuration from file or create default
      */
-    async init(configPath = 'claude-flow.config.json') {
+    async init(configPath = 'claude-zen.config.json') {
         try {
             await this.load(configPath);
             console.log(`✅ Configuration loaded from: ${configPath}`);

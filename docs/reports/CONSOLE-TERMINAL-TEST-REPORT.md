@@ -85,7 +85,7 @@ The console is built with a modular architecture:
 ### Command System
 The console supports three types of commands:
 1. **Built-in Commands**: help, clear, status, connect, disconnect, etc.
-2. **Claude Flow Commands**: claude-flow, swarm, init, config, memory, agents
+2. **Claude Flow Commands**: claude-zen, swarm, init, config, memory, agents
 3. **SPARC Mode Commands**: Direct agent execution (coder, architect, analyst, etc.)
 
 ### Key Features Verified

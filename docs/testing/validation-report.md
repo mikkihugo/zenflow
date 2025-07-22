@@ -60,9 +60,9 @@ src/terminal/adapters/native.ts(1,33): error TS2307: Cannot find module '../util
 
 - ❌ `npm run typecheck` - 269 errors
 - ❌ `npm test` - Module resolution failures
-- ✅ `./claude-flow --help` - Help text displays
-- ❌ `./claude-flow status` - No output
-- ❌ `./claude-flow init` - No output/action
+- ✅ `./claude-zen --help` - Help text displays
+- ❌ `./claude-zen status` - No output
+- ❌ `./claude-zen init` - No output/action
 - ❌ MCP tools accessibility - Not tested due to CLI issues
 - ❌ End-to-end workflows - Not tested due to compilation failures
 

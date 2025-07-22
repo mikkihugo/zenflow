@@ -4,11 +4,11 @@ A comprehensive Python-based benchmarking tool for agent swarms that interfaces 
 
 ## 🚀 Features
 
-- **Complete Strategy Coverage**: Supports all claude-flow swarm strategies (auto, research, development, analysis, testing, optimization, maintenance)
+- **Complete Strategy Coverage**: Supports all claude-zen swarm strategies (auto, research, development, analysis, testing, optimization, maintenance)
 - **Multiple Coordination Modes**: Tests centralized, distributed, hierarchical, mesh, and hybrid coordination patterns
 - **Comprehensive Metrics**: Tracks performance, resource usage, quality metrics, and coordination efficiency
 - **Multiple Output Formats**: Exports results to JSON, SQLite, CSV, and HTML formats
-- **CLI Interface**: Command-line interface matching claude-flow swarm command structure
+- **CLI Interface**: Command-line interface matching claude-zen swarm command structure
 - **Test-Driven Development**: Built using TDD methodology with comprehensive test coverage
 - **Modular Architecture**: Clean, extensible design with pluggable components
 

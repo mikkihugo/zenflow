@@ -2,15 +2,15 @@
 
 ## Overview
 
-The Real Benchmark Engine executes actual `claude-flow` commands and captures comprehensive performance metrics, resource usage, and quality assessments. This guide helps you get started quickly.
+The Real Benchmark Engine executes actual `claude-zen` commands and captures comprehensive performance metrics, resource usage, and quality assessments. This guide helps you get started quickly.
 
 ## Installation
 
-1. Ensure `claude-flow` is installed and accessible:
+1. Ensure `claude-zen` is installed and accessible:
 ```bash
-which claude-flow
+which claude-zen
 # or
-claude-flow --version
+claude-zen --version
 ```
 
 2. Install benchmark dependencies:
@@ -251,13 +251,13 @@ asyncio.run(profile_task())
 
 ## Troubleshooting
 
-### Issue: claude-flow not found
+### Issue: claude-zen not found
 ```bash
 # Check installation
-which claude-flow
+which claude-zen
 
 # Add to PATH if needed
-export PATH="$PATH:/path/to/claude-flow"
+export PATH="$PATH:/path/to/claude-zen"
 ```
 
 ### Issue: Timeout errors

@@ -1,42 +1,42 @@
 #!/bin/bash
 # Safe build script that preserves the existing binary
 
-echo "🔨 Safe Build Script for Claude Flow"
+echo "🔨 Safe Build Script for Claude Zen"
 echo "===================================="
 
 # Create bin directory if it doesn't exist
 mkdir -p bin
 
 # Backup existing binary if it exists
-if [ -f "bin/claude-flow" ]; then
+if [ -f "bin/claude-zen" ]; then
     echo "📦 Backing up existing binary..."
-    cp bin/claude-flow bin/claude-flow.backup
+    cp bin/claude-zen bin/claude-zen.backup
 fi
 
 # Set Deno path
 export PATH="/home/codespace/.deno/bin:$PATH"
 
 # Build to a temporary file first
-echo "🏗️  Building Claude Flow..."
-if deno compile --allow-all --no-check --output=bin/claude-flow.tmp src/cli/main.ts 2>/dev/null; then
+echo "🏗️  Building Claude Zen..."
+if deno compile --allow-all --no-check --output=bin/claude-zen.tmp src/cli/main.ts 2>/dev/null; then
     echo "✅ Build successful!"
     
     # Remove old binary and move new one
-    if [ -f "bin/claude-flow.tmp" ]; then
-        mv -f bin/claude-flow.tmp bin/claude-flow
-        chmod +x bin/claude-flow
+    if [ -f "bin/claude-zen.tmp" ]; then
+        mv -f bin/claude-zen.tmp bin/claude-zen
+        chmod +x bin/claude-zen
         echo "✅ Binary updated successfully!"
         
         # Remove backup since build was successful
-        rm -f bin/claude-flow.backup
+        rm -f bin/claude-zen.backup
     fi
 else
     echo "❌ Build failed!"
     
     # Restore backup if build failed
-    if [ -f "bin/claude-flow.backup" ]; then
+    if [ -f "bin/claude-zen.backup" ]; then
         echo "🔄 Restoring backup..."
-        mv bin/claude-flow.backup bin/claude-flow
+        mv bin/claude-zen.backup bin/claude-zen
         echo "✅ Backup restored!"
     fi
     
@@ -59,5 +59,5 @@ fi
 
 echo ""
 echo "✅ Build complete!"
-echo "   Claude Flow binary: bin/claude-flow"
+echo "   Claude Zen binary: bin/claude-zen"
 echo "   Prompt Copier binary: bin/prompt-copier"

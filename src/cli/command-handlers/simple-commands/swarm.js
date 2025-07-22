@@ -13,17 +13,17 @@ function showSwarmHelp() {
 🐝 Claude Flow Advanced Swarm System
 
 USAGE:
-  claude-flow swarm <objective> [options]
+  claude-zen swarm <objective> [options]
 
 EXAMPLES:
-  claude-flow swarm "Build a REST API with authentication"
-  claude-flow swarm "Research cloud architecture patterns" --strategy research
-  claude-flow swarm "Analyze database performance" --max-agents 3 --parallel
-  claude-flow swarm "Develop user registration feature" --mode distributed
-  claude-flow swarm "Optimize React app performance" --strategy optimization
-  claude-flow swarm "Create microservice" --executor  # Use built-in executor
-  claude-flow swarm "Build API endpoints" --output-format json  # Get JSON output
-  claude-flow swarm "Research AI trends" --output-format json --output-file results.json
+  claude-zen swarm "Build a REST API with authentication"
+  claude-zen swarm "Research cloud architecture patterns" --strategy research
+  claude-zen swarm "Analyze database performance" --max-agents 3 --parallel
+  claude-zen swarm "Develop user registration feature" --mode distributed
+  claude-zen swarm "Optimize React app performance" --strategy optimization
+  claude-zen swarm "Create microservice" --executor  # Use built-in executor
+  claude-zen swarm "Build API endpoints" --output-format json  # Get JSON output
+  claude-zen swarm "Research AI trends" --output-format json --output-file results.json
 
 DEFAULT BEHAVIOR:
   Swarm now opens Claude Code by default with comprehensive MCP tool instructions
@@ -140,7 +140,7 @@ export async function swarmCommand(args, flags) {
         console.log('\nWould spawn Claude Code with swarm objective:');
         console.log(`📋 Objective: ${objective}`);
         console.log(
-          '\nTo use the built-in executor instead: claude-flow swarm "objective" --executor',
+          '\nTo use the built-in executor instead: claude-zen swarm "objective" --executor',
         );
         return;
       }
@@ -231,21 +231,21 @@ If you need to do X operations, they should be in 1 message, not X messages.
 \`\`\`javascript
 [Single Message with Multiple Tools]:
   // Spawn ALL agents at once
-  mcp__claude-flow__agent_spawn {"type": "coordinator", "name": "SwarmLead"}
-  mcp__claude-flow__agent_spawn {"type": "researcher", "name": "DataAnalyst"}
-  mcp__claude-flow__agent_spawn {"type": "coder", "name": "BackendDev"}
-  mcp__claude-flow__agent_spawn {"type": "coder", "name": "FrontendDev"}
-  mcp__claude-flow__agent_spawn {"type": "tester", "name": "QAEngineer"}
+  mcp__claude-zen__agent_spawn {"type": "coordinator", "name": "SwarmLead"}
+  mcp__claude-zen__agent_spawn {"type": "researcher", "name": "DataAnalyst"}
+  mcp__claude-zen__agent_spawn {"type": "coder", "name": "BackendDev"}
+  mcp__claude-zen__agent_spawn {"type": "coder", "name": "FrontendDev"}
+  mcp__claude-zen__agent_spawn {"type": "tester", "name": "QAEngineer"}
   
   // Initialize ALL memory keys
-  mcp__claude-flow__memory_store {"key": "swarm/objective", "value": "${objective}"}
-  mcp__claude-flow__memory_store {"key": "swarm/config", "value": {"strategy": "${strategy}", "mode": "${mode}"}}
+  mcp__claude-zen__memory_store {"key": "swarm/objective", "value": "${objective}"}
+  mcp__claude-zen__memory_store {"key": "swarm/config", "value": {"strategy": "${strategy}", "mode": "${mode}"}}
   
   // Create task hierarchy
-  mcp__claude-flow__task_create {"name": "${objective}", "type": "parent", "id": "main"}
-  mcp__claude-flow__task_create {"name": "Research Phase", "parent": "main"}
-  mcp__claude-flow__task_create {"name": "Design Phase", "parent": "main"}
-  mcp__claude-flow__task_create {"name": "Implementation", "parent": "main"}
+  mcp__claude-zen__task_create {"name": "${objective}", "type": "parent", "id": "main"}
+  mcp__claude-zen__task_create {"name": "Research Phase", "parent": "main"}
+  mcp__claude-zen__task_create {"name": "Design Phase", "parent": "main"}
+  mcp__claude-zen__task_create {"name": "Implementation", "parent": "main"}
   
   // Initialize comprehensive todo list
   TodoWrite {"todos": [
@@ -261,30 +261,30 @@ If you need to do X operations, they should be in 1 message, not X messages.
 \`\`\`javascript
 [Single Message]:
   // Assign all tasks
-  mcp__claude-flow__task_assign {"taskId": "research-1", "agentId": "researcher-1"}
-  mcp__claude-flow__task_assign {"taskId": "design-1", "agentId": "architect-1"}
-  mcp__claude-flow__task_assign {"taskId": "code-1", "agentId": "coder-1"}
-  mcp__claude-flow__task_assign {"taskId": "code-2", "agentId": "coder-2"}
+  mcp__claude-zen__task_assign {"taskId": "research-1", "agentId": "researcher-1"}
+  mcp__claude-zen__task_assign {"taskId": "design-1", "agentId": "architect-1"}
+  mcp__claude-zen__task_assign {"taskId": "code-1", "agentId": "coder-1"}
+  mcp__claude-zen__task_assign {"taskId": "code-2", "agentId": "coder-2"}
   
   // Communicate to all agents
-  mcp__claude-flow__agent_communicate {"to": "all", "message": "Begin phase 1"}
+  mcp__claude-zen__agent_communicate {"to": "all", "message": "Begin phase 1"}
   
   // Update multiple task statuses
-  mcp__claude-flow__task_update {"taskId": "research-1", "status": "in_progress"}
-  mcp__claude-flow__task_update {"taskId": "design-1", "status": "pending"}
+  mcp__claude-zen__task_update {"taskId": "research-1", "status": "in_progress"}
+  mcp__claude-zen__task_update {"taskId": "design-1", "status": "pending"}
 \`\`\`
 
 3️⃣ **MEMORY COORDINATION** - Store/retrieve in batches:
 \`\`\`javascript
 [Single Message]:
   // Store multiple findings
-  mcp__claude-flow__memory_store {"key": "research/requirements", "value": {...}}
-  mcp__claude-flow__memory_store {"key": "research/constraints", "value": {...}}
-  mcp__claude-flow__memory_store {"key": "architecture/decisions", "value": {...}}
+  mcp__claude-zen__memory_store {"key": "research/requirements", "value": {...}}
+  mcp__claude-zen__memory_store {"key": "research/constraints", "value": {...}}
+  mcp__claude-zen__memory_store {"key": "architecture/decisions", "value": {...}}
   
   // Retrieve related data
-  mcp__claude-flow__memory_retrieve {"key": "research/*"}
-  mcp__claude-flow__memory_search {"pattern": "architecture"}
+  mcp__claude-zen__memory_retrieve {"key": "research/*"}
+  mcp__claude-zen__memory_search {"pattern": "architecture"}
 \`\`\`
 
 4️⃣ **FILE & CODE OPERATIONS** - Parallel execution:
@@ -301,27 +301,27 @@ If you need to do X operations, they should be in 1 message, not X messages.
   Write {"file_path": "/tests/auth.test.js", "content": "..."}
   
   // Update memory with results
-  mcp__claude-flow__memory_store {"key": "code/api/auth", "value": "implemented"}
-  mcp__claude-flow__memory_store {"key": "code/api/users", "value": "implemented"}
+  mcp__claude-zen__memory_store {"key": "code/api/auth", "value": "implemented"}
+  mcp__claude-zen__memory_store {"key": "code/api/users", "value": "implemented"}
 \`\`\`
 
 5️⃣ **MONITORING & STATUS** - Combined checks:
 \`\`\`javascript
 [Single Message]:
-  mcp__claude-flow__swarm_monitor {}
-  mcp__claude-flow__swarm_status {}
-  mcp__claude-flow__agent_list {"status": "active"}
-  mcp__claude-flow__task_status {"includeCompleted": false}
+  mcp__claude-zen__swarm_monitor {}
+  mcp__claude-zen__swarm_status {}
+  mcp__claude-zen__agent_list {"status": "active"}
+  mcp__claude-zen__task_status {"includeCompleted": false}
   TodoRead {}
 \`\`\`
 
 ❌ NEVER DO THIS (Sequential = SLOW):
 \`\`\`
-Message 1: mcp__claude-flow__agent_spawn
-Message 2: mcp__claude-flow__agent_spawn
+Message 1: mcp__claude-zen__agent_spawn
+Message 2: mcp__claude-zen__agent_spawn
 Message 3: TodoWrite (one todo)
 Message 4: Read file
-Message 5: mcp__claude-flow__memory_store
+Message 5: mcp__claude-zen__memory_store
 \`\`\`
 
 ✅ ALWAYS DO THIS (Batch = FAST):
@@ -353,13 +353,13 @@ ${agentRecommendations}
    Example:
    \`\`\`
    [BatchTool]:
-     mcp__claude-flow__agent_spawn (coordinator)
-     mcp__claude-flow__agent_spawn (architect)
-     mcp__claude-flow__agent_spawn (coder-1)
-     mcp__claude-flow__agent_spawn (coder-2)
-     mcp__claude-flow__agent_spawn (tester)
-     mcp__claude-flow__memory_store { key: "init", value: {...} }
-     mcp__claude-flow__task_create { name: "Main", subtasks: [...] }
+     mcp__claude-zen__agent_spawn (coordinator)
+     mcp__claude-zen__agent_spawn (architect)
+     mcp__claude-zen__agent_spawn (coder-1)
+     mcp__claude-zen__agent_spawn (coder-2)
+     mcp__claude-zen__agent_spawn (tester)
+     mcp__claude-zen__memory_store { key: "init", value: {...} }
+     mcp__claude-zen__task_create { name: "Main", subtasks: [...] }
      TodoWrite { todos: [5-10 todos at once] }
    \`\`\`
 
@@ -376,28 +376,28 @@ ${agentRecommendations}
 🔧 AVAILABLE MCP TOOLS FOR SWARM COORDINATION:
 
 📊 MONITORING & STATUS:
-- mcp__claude-flow__swarm_status - Check current swarm status and agent activity
-- mcp__claude-flow__swarm_monitor - Real-time monitoring of swarm execution
-- mcp__claude-flow__agent_list - List all active agents and their capabilities
-- mcp__claude-flow__task_status - Check task progress and dependencies
+- mcp__claude-zen__swarm_status - Check current swarm status and agent activity
+- mcp__claude-zen__swarm_monitor - Real-time monitoring of swarm execution
+- mcp__claude-zen__agent_list - List all active agents and their capabilities
+- mcp__claude-zen__task_status - Check task progress and dependencies
 
 🧠 MEMORY & KNOWLEDGE:
-- mcp__claude-flow__memory_store - Store knowledge in swarm collective memory
-- mcp__claude-flow__memory_retrieve - Retrieve shared knowledge from memory
-- mcp__claude-flow__memory_search - Search collective memory by pattern
-- mcp__claude-flow__memory_sync - Synchronize memory across agents
+- mcp__claude-zen__memory_store - Store knowledge in swarm collective memory
+- mcp__claude-zen__memory_retrieve - Retrieve shared knowledge from memory
+- mcp__claude-zen__memory_search - Search collective memory by pattern
+- mcp__claude-zen__memory_sync - Synchronize memory across agents
 
 🤖 AGENT MANAGEMENT:
-- mcp__claude-flow__agent_spawn - Spawn specialized agents for tasks
-- mcp__claude-flow__agent_assign - Assign tasks to specific agents
-- mcp__claude-flow__agent_communicate - Send messages between agents
-- mcp__claude-flow__agent_coordinate - Coordinate agent activities
+- mcp__claude-zen__agent_spawn - Spawn specialized agents for tasks
+- mcp__claude-zen__agent_assign - Assign tasks to specific agents
+- mcp__claude-zen__agent_communicate - Send messages between agents
+- mcp__claude-zen__agent_coordinate - Coordinate agent activities
 
 📋 TASK ORCHESTRATION:
-- mcp__claude-flow__task_create - Create new tasks with dependencies
-- mcp__claude-flow__task_assign - Assign tasks to agents
-- mcp__claude-flow__task_update - Update task status and progress
-- mcp__claude-flow__task_complete - Mark tasks as complete with results
+- mcp__claude-zen__task_create - Create new tasks with dependencies
+- mcp__claude-zen__task_assign - Assign tasks to agents
+- mcp__claude-zen__task_update - Update task status and progress
+- mcp__claude-zen__task_complete - Mark tasks as complete with results
 
 🎛️ COORDINATION MODES:
 1. CENTRALIZED (default): Single coordinator manages all agents
@@ -423,27 +423,27 @@ ${agentRecommendations}
    Initial Setup (Single BatchTool):
    \`\`\`
    [BatchTool]:
-     mcp__claude-flow__task_create { name: "Main", subtasks: [...] }
-     mcp__claude-flow__agent_spawn { type: "coordinator" }
-     mcp__claude-flow__agent_spawn { type: "coder" }
-     mcp__claude-flow__agent_spawn { type: "tester" }
-     mcp__claude-flow__memory_store { key: "init", value: {...} }
+     mcp__claude-zen__task_create { name: "Main", subtasks: [...] }
+     mcp__claude-zen__agent_spawn { type: "coordinator" }
+     mcp__claude-zen__agent_spawn { type: "coder" }
+     mcp__claude-zen__agent_spawn { type: "tester" }
+     mcp__claude-zen__memory_store { key: "init", value: {...} }
    \`\`\`
    
    Task Assignment (Single BatchTool):
    \`\`\`
    [BatchTool]:
-     mcp__claude-flow__task_assign { taskId: "1", agentId: "agent-1" }
-     mcp__claude-flow__task_assign { taskId: "2", agentId: "agent-2" }
-     mcp__claude-flow__task_assign { taskId: "3", agentId: "agent-3" }
+     mcp__claude-zen__task_assign { taskId: "1", agentId: "agent-1" }
+     mcp__claude-zen__task_assign { taskId: "2", agentId: "agent-2" }
+     mcp__claude-zen__task_assign { taskId: "3", agentId: "agent-3" }
    \`\`\`
    
    Monitoring & Updates (Single BatchTool):
    \`\`\`
    [BatchTool]:
-     mcp__claude-flow__swarm_monitor {}
-     mcp__claude-flow__agent_communicate { to: "all", message: "Status update" }
-     mcp__claude-flow__memory_store { key: "progress", value: {...} }
+     mcp__claude-zen__swarm_monitor {}
+     mcp__claude-zen__agent_communicate { to: "all", message: "Status update" }
+     mcp__claude-zen__memory_store { key: "progress", value: {...} }
    \`\`\`
 
 🤝 AGENT TYPES & THEIR MCP TOOL USAGE:
@@ -476,24 +476,24 @@ TESTER:
 📝 EXAMPLE MCP TOOL USAGE PATTERNS:
 
 1. Starting a swarm:
-   mcp__claude-flow__agent_spawn {"type": "coordinator", "name": "SwarmLead"}
-   mcp__claude-flow__memory_store {"key": "objective", "value": "${objective}"}
-   mcp__claude-flow__task_create {"name": "Main Objective", "type": "parent"}
+   mcp__claude-zen__agent_spawn {"type": "coordinator", "name": "SwarmLead"}
+   mcp__claude-zen__memory_store {"key": "objective", "value": "${objective}"}
+   mcp__claude-zen__task_create {"name": "Main Objective", "type": "parent"}
 
 2. Spawning worker agents:
-   mcp__claude-flow__agent_spawn {"type": "researcher", "capabilities": ["web-search"]}
-   mcp__claude-flow__agent_spawn {"type": "coder", "capabilities": ["python", "testing"]}
-   mcp__claude-flow__task_assign {"taskId": "task-123", "agentId": "agent-456"}
+   mcp__claude-zen__agent_spawn {"type": "researcher", "capabilities": ["web-search"]}
+   mcp__claude-zen__agent_spawn {"type": "coder", "capabilities": ["python", "testing"]}
+   mcp__claude-zen__task_assign {"taskId": "task-123", "agentId": "agent-456"}
 
 3. Coordinating work:
-   mcp__claude-flow__agent_communicate {"to": "agent-123", "message": "Begin phase 2"}
-   mcp__claude-flow__memory_store {"key": "phase1/results", "value": {...}}
-   mcp__claude-flow__task_update {"taskId": "task-123", "progress": 75}
+   mcp__claude-zen__agent_communicate {"to": "agent-123", "message": "Begin phase 2"}
+   mcp__claude-zen__memory_store {"key": "phase1/results", "value": {...}}
+   mcp__claude-zen__task_update {"taskId": "task-123", "progress": 75}
 
 4. Monitoring progress:
-   mcp__claude-flow__swarm_monitor {}
-   mcp__claude-flow__task_status {"includeCompleted": true}
-   mcp__claude-flow__agent_list {"status": "active"}
+   mcp__claude-zen__swarm_monitor {}
+   mcp__claude-zen__task_status {"includeCompleted": true}
+   mcp__claude-zen__agent_list {"status": "active"}
 
 💾 MEMORY PATTERNS:
 
@@ -715,12 +715,12 @@ function getAgentRecommendations(strategy, maxAgents, objective) {
 
 \`\`\`
 [BatchTool - Single Message]:
-  mcp__claude-flow__agent_spawn {"type": "coordinator", "name": "SwarmLead"}
-  mcp__claude-flow__agent_spawn {"type": "researcher", "name": "RequirementsAnalyst"}
-  mcp__claude-flow__agent_spawn {"type": "architect", "name": "SystemDesigner"}
-  mcp__claude-flow__memory_store {"key": "swarm/objective", "value": "${objective}"}
-  mcp__claude-flow__task_create {"name": "Analyze Requirements", "assignTo": "RequirementsAnalyst"}
-  mcp__claude-flow__task_create {"name": "Design Architecture", "assignTo": "SystemDesigner", "dependsOn": ["Analyze Requirements"]}
+  mcp__claude-zen__agent_spawn {"type": "coordinator", "name": "SwarmLead"}
+  mcp__claude-zen__agent_spawn {"type": "researcher", "name": "RequirementsAnalyst"}
+  mcp__claude-zen__agent_spawn {"type": "architect", "name": "SystemDesigner"}
+  mcp__claude-zen__memory_store {"key": "swarm/objective", "value": "${objective}"}
+  mcp__claude-zen__task_create {"name": "Analyze Requirements", "assignTo": "RequirementsAnalyst"}
+  mcp__claude-zen__task_create {"name": "Design Architecture", "assignTo": "SystemDesigner", "dependsOn": ["Analyze Requirements"]}
   TodoWrite {"todos": [
     {"id": "1", "content": "Initialize swarm coordination", "status": "completed", "priority": "high"},
     {"id": "2", "content": "Analyze objective requirements", "status": "in_progress", "priority": "high"},
@@ -735,16 +735,16 @@ function getAgentRecommendations(strategy, maxAgents, objective) {
 
 \`\`\`
 [BatchTool - Single Message]:
-  mcp__claude-flow__agent_spawn {"type": "coordinator", "name": "TechLead"}
-  mcp__claude-flow__agent_spawn {"type": "architect", "name": "SystemArchitect"}
-  mcp__claude-flow__agent_spawn {"type": "coder", "name": "BackendDev"}
-  mcp__claude-flow__agent_spawn {"type": "coder", "name": "FrontendDev"}
-  mcp__claude-flow__agent_spawn {"type": "tester", "name": "QAEngineer"}
-  mcp__claude-flow__memory_store {"key": "dev/objective", "value": "${objective}"}
-  mcp__claude-flow__task_create {"name": "System Architecture", "assignTo": "SystemArchitect"}
-  mcp__claude-flow__task_create {"name": "Backend Implementation", "assignTo": "BackendDev", "dependsOn": ["System Architecture"]}
-  mcp__claude-flow__task_create {"name": "Frontend Implementation", "assignTo": "FrontendDev", "dependsOn": ["System Architecture"]}
-  mcp__claude-flow__task_create {"name": "Testing Suite", "assignTo": "QAEngineer", "dependsOn": ["Backend Implementation", "Frontend Implementation"]}
+  mcp__claude-zen__agent_spawn {"type": "coordinator", "name": "TechLead"}
+  mcp__claude-zen__agent_spawn {"type": "architect", "name": "SystemArchitect"}
+  mcp__claude-zen__agent_spawn {"type": "coder", "name": "BackendDev"}
+  mcp__claude-zen__agent_spawn {"type": "coder", "name": "FrontendDev"}
+  mcp__claude-zen__agent_spawn {"type": "tester", "name": "QAEngineer"}
+  mcp__claude-zen__memory_store {"key": "dev/objective", "value": "${objective}"}
+  mcp__claude-zen__task_create {"name": "System Architecture", "assignTo": "SystemArchitect"}
+  mcp__claude-zen__task_create {"name": "Backend Implementation", "assignTo": "BackendDev", "dependsOn": ["System Architecture"]}
+  mcp__claude-zen__task_create {"name": "Frontend Implementation", "assignTo": "FrontendDev", "dependsOn": ["System Architecture"]}
+  mcp__claude-zen__task_create {"name": "Testing Suite", "assignTo": "QAEngineer", "dependsOn": ["Backend Implementation", "Frontend Implementation"]}
   TodoWrite {"todos": [
     {"id": "1", "content": "Initialize development swarm", "status": "completed", "priority": "high"},
     {"id": "2", "content": "Design system architecture", "status": "in_progress", "priority": "high"},

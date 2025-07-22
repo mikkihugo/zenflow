@@ -1,5 +1,5 @@
-// Agnstik Claude-Flow Plugin - Complete Implementation
-// Integrates claude-flow SPARC orchestration with agnstik's multi-provider AI system
+// Agnstik Claude-Zen Plugin - Complete Implementation
+// Integrates claude-zen SPARC orchestration with agnstik's multi-provider AI system
 
 use agnstik::{Provider, ProviderConfig, Message as AgnstikMessage, Response, Client};
 use anyhow::{Result, Context};
@@ -142,7 +142,7 @@ pub enum CoordinationMode {
 }
 
 impl ClaudeFlowPlugin {
-    /// Create new claude-flow plugin instance
+    /// Create new claude-zen plugin instance
     pub async fn new(config: ClaudeFlowConfig) -> Result<Self> {
         // Initialize agnstik client
         let agnstik_client = Client::new().await
@@ -615,5 +615,5 @@ pub struct SwarmExecutionResult {
 }
 
 // Additional implementation details would continue...
-// This provides the core structure for the agnstik claude-flow plugin
+// This provides the core structure for the agnstik claude-zen plugin
 // with native performance and framework compatibility.

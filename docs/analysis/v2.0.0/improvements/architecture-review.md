@@ -384,19 +384,19 @@ class ZeroTrustGateway {
 
 #### 8.1 Core Modules
 ```
-@claude-flow/core
+@claude-zen/core
 ├── kernel/           # Microkernel implementation
 ├── events/           # Event bus and messaging
 ├── lifecycle/        # Component lifecycle management
 └── plugins/          # Plugin system
 
-@claude-flow/orchestration
+@claude-zen/orchestration
 ├── scheduler/        # Task scheduling algorithms
 ├── coordinator/      # Agent coordination
 ├── state/           # State management
 └── patterns/        # Orchestration patterns
 
-@claude-flow/mcp
+@claude-zen/mcp
 ├── protocol/        # MCP protocol implementation
 ├── gateway/         # Protocol gateway
 ├── tools/           # Tool registry
@@ -405,13 +405,13 @@ class ZeroTrustGateway {
 
 #### 8.2 Integration Modules
 ```
-@claude-flow/swarm-adapter
+@claude-zen/swarm-adapter
 ├── ruv-swarm/       # ruv-swarm integration
 ├── abstract/        # Swarm abstraction layer
 ├── simulators/      # Local swarm simulators
 └── strategies/      # Swarm strategies
 
-@claude-flow/github
+@claude-zen/github
 ├── workflows/       # GitHub workflow automation
 ├── pr-manager/      # Pull request management
 ├── release/         # Release orchestration
@@ -420,13 +420,13 @@ class ZeroTrustGateway {
 
 #### 8.3 Infrastructure Modules
 ```
-@claude-flow/infra
+@claude-zen/infra
 ├── docker/          # Docker configurations
 ├── k8s/            # Kubernetes manifests
 ├── terraform/       # Infrastructure as code
 └── monitoring/      # Observability stack
 
-@claude-flow/enterprise
+@claude-zen/enterprise
 ├── auth/           # Authentication/authorization
 ├── audit/          # Audit logging
 ├── compliance/     # Compliance tools

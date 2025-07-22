@@ -185,7 +185,7 @@ class AutomatedTestRunner:
             issues.append("Node.js not found in PATH")
             
         # Check CLI script
-        cli_path = Path("../src/cli/simple-cli.js")
+        cli_path = Path("../../bin/claude-zen")
         if not cli_path.exists():
             issues.append(f"CLI script not found: {cli_path}")
             

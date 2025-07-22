@@ -1,0 +1,73 @@
+#!/bin/sh
+# Claude-Zen Smart Dispatcher - Detects and uses the best available runtime
+
+VERSION="2.0.0-alpha.67-singularity"
+
+# Determine the correct path based on how the script is invoked
+if [ -L "$0" ]; then
+  # Script is a symlink (npm global install)
+  REAL_PATH=$(readlink -f "$0" 2>/dev/null || readlink "$0")
+  SCRIPT_DIR=$(dirname "$REAL_PATH")
+else
+  # Script is executed directly
+  SCRIPT_DIR=$(dirname "$0")
+fi
+
+# Handle global npm installation vs local execution
+if [ -f "$SCRIPT_DIR/../src/cli/cli-main.js" ]; then
+  # Local development or properly structured installation
+  ROOT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+else
+  # Global npm installation - files might be in different location
+  # Try to find the module root
+  NODE_ROOT=$(npm root -g 2>/dev/null)
+  if [ -n "$NODE_ROOT" ] && [ -f "$NODE_ROOT/claude-zen/src/cli/cli-main.js" ]; then
+    ROOT_DIR="$NODE_ROOT/claude-zen"
+  else
+    # Fallback to relative path
+    ROOT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+  fi
+fi
+
+# Show help if no arguments provided
+if [ $# -eq 0 ]; then
+  set -- "--help"
+fi
+
+# Special handling for help command to ensure it passes through
+if [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  # Let the actual CLI handle help display
+  :  # no-op, just pass through
+fi
+
+# Quick version check only - let the actual CLI handle help
+for arg in "$@"; do
+  if [ "$arg" = "--version" ] || [ "$arg" = "-v" ]; then
+    echo "v$VERSION"
+    exit 0
+  fi
+done
+
+# Use Node.js with Google Code Standard architecture
+if [ -f "$ROOT_DIR/dist/cli/cli-main.js" ]; then
+  # Use built JavaScript version (preferred)
+  exec node "$ROOT_DIR/dist/cli/cli-main.js" "$@"
+elif [ -f "$ROOT_DIR/src/cli/cli-main.js" ]; then
+  # Use source version
+  exec node "$ROOT_DIR/src/cli/cli-main.js" "$@"
+else
+  # No runtime available, show help
+  echo "🧠 Claude-Flow v$VERSION - Advanced AI Agent Orchestration System"
+  echo ""
+  echo "⚠️  No compatible runtime found."
+  echo ""
+  echo "To install and run:"
+  echo "  1. Build project: npm run build"
+  echo "  2. Run: claude-zen <command>"
+  echo ""
+  echo "Or use node directly:"
+  echo "  node src/cli/cli-main.js <command>"
+  echo ""
+  echo "Documentation: https://github.com/ruvnet/claude-zen"
+  exit 1
+fi

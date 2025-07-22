@@ -1,4 +1,4 @@
-# Claude Code Hooks for claude-flow
+# Claude Code Hooks for claude-zen
 
 ## Purpose
 Automatically coordinate, format, and learn from Claude Code operations using hooks.
@@ -37,7 +37,7 @@ Hooks are configured in `.claude/settings.json`:
         "matcher": "^(Write|Edit|MultiEdit)$",
         "hooks": [{
           "type": "command",
-          "command": "npx claude-flow hook pre-edit --file '${tool.params.file_path}'"
+          "command": "npx claude-zen hook pre-edit --file '${tool.params.file_path}'"
         }]
       }
     ]

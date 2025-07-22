@@ -289,12 +289,12 @@ export class MemoryManager {
     createBackend() {
         switch (this.config.backend) {
             case 'sqlite':
-                return new SQLiteBackend(this.config.sqlitePath || './claude-flow.db', this.logger);
+                return new SQLiteBackend(this.config.sqlitePath || './claude-zen.db', this.logger);
             case 'markdown':
                 return new MarkdownBackend(this.config.markdownDir || './memory', this.logger);
             case 'hybrid':
                 // Use SQLite for structured data and Markdown for human-readable backup
-                return new HybridBackend(new SQLiteBackend(this.config.sqlitePath || './claude-flow.db', this.logger), new MarkdownBackend(this.config.markdownDir || './memory', this.logger), this.logger);
+                return new HybridBackend(new SQLiteBackend(this.config.sqlitePath || './claude-zen.db', this.logger), new MarkdownBackend(this.config.markdownDir || './memory', this.logger), this.logger);
             default:
                 throw new MemoryError(`Unknown memory backend: ${this.config.backend}`);
         }

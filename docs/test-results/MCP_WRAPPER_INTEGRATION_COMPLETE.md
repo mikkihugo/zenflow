@@ -2,7 +2,7 @@
 
 ## Summary
 
-The claude-flow MCP server now uses the Claude Code wrapper by default when you run `claude-flow mcp start` or `npm run mcp`.
+The claude-zen MCP server now uses the Claude Code wrapper by default when you run `claude-zen mcp start` or `npm run mcp`.
 
 ## What Changed
 
@@ -12,7 +12,7 @@ The claude-flow MCP server now uses the Claude Code wrapper by default when you 
 
 ### 2. **Updated Files**
 - `package.json`: Updated `mcp` script to use wrapper entry point
-- `claude-flow.mcp.json`: Updated to use wrapper server
+- `claude-zen.mcp.json`: Updated to use wrapper server
 - `src/mcp/server-with-wrapper.ts`: New entry point with mode selection
 
 ### 3. **Backward Compatibility**
@@ -25,8 +25,8 @@ The claude-flow MCP server now uses the Claude Code wrapper by default when you 
 ```bash
 # These all use the wrapper now:
 npm run mcp
-claude-flow mcp start
-claude mcp serve claude-flow.mcp.json
+claude-zen mcp start
+claude mcp serve claude-zen.mcp.json
 ```
 
 ### Use Legacy Mode (If Needed)
@@ -76,7 +76,7 @@ sparc_coder("Create REST API")
 
 ## Configuration
 
-The `claude-flow.mcp.json` now includes:
+The `claude-zen.mcp.json` now includes:
 ```json
 {
   "command": "node",

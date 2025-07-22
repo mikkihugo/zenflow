@@ -387,7 +387,7 @@ Examples:
     try {
         // Parse options
         const options = {};
-        let cleanArgs = [];
+        const cleanArgs = [];
         
         for (let i = 0; i < args.length; i++) {
             if (args[i].startsWith('--')) {

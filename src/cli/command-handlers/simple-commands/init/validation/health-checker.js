@@ -371,14 +371,14 @@ export class HealthChecker {
       const content = await node.readTextFile(claudePath);
 
       // Check if mentioned commands exist
-      const mentionedCommands = ['claude-flow sparc', 'npm run build', 'npm run test'];
+      const mentionedCommands = ['claude-zen sparc', 'npm run build', 'npm run test'];
 
       for (const command of mentionedCommands) {
         if (content.includes(command)) {
           // Check if the command is actually available
           const parts = command.split(' ');
-          if (parts[0] === 'claude-flow') {
-            const executablePath = `${this.workingDir}/claude-flow`;
+          if (parts[0] === 'claude-zen') {
+            const executablePath = `${this.workingDir}/claude-zen`;
             try {
               await node.stat(executablePath);
             } catch {
@@ -404,7 +404,7 @@ export class HealthChecker {
 
     try {
       // Check if memory structure matches documentation
-      const memoryDataPath = `${this.workingDir}/memory/claude-flow-data.json`;
+      const memoryDataPath = `${this.workingDir}/memory/claude-zen-data.json`;
       const data = JSON.parse(await node.readTextFile(memoryDataPath));
 
       // Basic structure validation

@@ -36,14 +36,14 @@ export function createEnhancedSettingsJson() {
 export function createWrapperScript(type = 'unix') {
   // For unix, use the universal wrapper that works in both CommonJS and ES modules
   if (type === 'unix') {
-    const universalTemplate = loadTemplate('claude-flow-universal');
+    const universalTemplate = loadTemplate('claude-zen-universal');
     if (universalTemplate) {
       return universalTemplate;
     }
   }
 
   const filename =
-    type === 'unix' ? 'claude-flow' : type === 'windows' ? 'claude-flow.bat' : 'claude-flow.ps1';
+    type === 'unix' ? 'claude-zen' : type === 'windows' ? 'claude-zen.bat' : 'claude-zen.ps1';
 
   const template = loadTemplate(filename);
   if (!template) {
@@ -71,7 +71,7 @@ Automatically detect performance bottlenecks in your swarm operations.
 
 ## Usage
 \`\`\`bash
-npx claude-flow analysis bottleneck-detect [options]
+npx claude-zen analysis bottleneck-detect [options]
 \`\`\`
 
 ## Options
@@ -82,13 +82,13 @@ npx claude-flow analysis bottleneck-detect [options]
 ## Examples
 \`\`\`bash
 # Detect bottlenecks in current swarm
-npx claude-flow analysis bottleneck-detect
+npx claude-zen analysis bottleneck-detect
 
 # Set custom threshold
-npx claude-flow analysis bottleneck-detect --threshold 500
+npx claude-zen analysis bottleneck-detect --threshold 500
 
 # Export results
-npx claude-flow analysis bottleneck-detect --export bottlenecks.json
+npx claude-zen analysis bottleneck-detect --export bottlenecks.json
 \`\`\`
 `,
       'token-usage': `# token-usage
@@ -97,7 +97,7 @@ Analyze token usage patterns and optimize for efficiency.
 
 ## Usage
 \`\`\`bash
-npx claude-flow analysis token-usage [options]
+npx claude-zen analysis token-usage [options]
 \`\`\`
 
 ## Options
@@ -108,13 +108,13 @@ npx claude-flow analysis token-usage [options]
 ## Examples
 \`\`\`bash
 # Last 24 hours token usage
-npx claude-flow analysis token-usage --period 24h
+npx claude-zen analysis token-usage --period 24h
 
 # By agent breakdown
-npx claude-flow analysis token-usage --by-agent
+npx claude-zen analysis token-usage --by-agent
 
 # Export detailed report
-npx claude-flow analysis token-usage --period 7d --export tokens.csv
+npx claude-zen analysis token-usage --period 7d --export tokens.csv
 \`\`\`
 `,
       'performance-report': `# performance-report
@@ -123,7 +123,7 @@ Generate comprehensive performance reports for swarm operations.
 
 ## Usage
 \`\`\`bash
-npx claude-flow analysis performance-report [options]
+npx claude-zen analysis performance-report [options]
 \`\`\`
 
 ## Options
@@ -134,13 +134,13 @@ npx claude-flow analysis performance-report [options]
 ## Examples
 \`\`\`bash
 # Generate HTML report
-npx claude-flow analysis performance-report --format html
+npx claude-zen analysis performance-report --format html
 
 # Compare swarms
-npx claude-flow analysis performance-report --compare swarm-123
+npx claude-zen analysis performance-report --compare swarm-123
 
 # Full metrics report
-npx claude-flow analysis performance-report --include-metrics --format markdown
+npx claude-zen analysis performance-report --include-metrics --format markdown
 \`\`\`
 `,
     },
@@ -151,7 +151,7 @@ Automatically assign agents based on task analysis.
 
 ## Usage
 \`\`\`bash
-npx claude-flow automation auto-agent [options]
+npx claude-zen automation auto-agent [options]
 \`\`\`
 
 ## Options
@@ -162,13 +162,13 @@ npx claude-flow automation auto-agent [options]
 ## Examples
 \`\`\`bash
 # Auto-assign for task
-npx claude-flow automation auto-agent --task "Build REST API"
+npx claude-zen automation auto-agent --task "Build REST API"
 
 # Limit agents
-npx claude-flow automation auto-agent --task "Fix bugs" --max-agents 3
+npx claude-zen automation auto-agent --task "Fix bugs" --max-agents 3
 
 # Use specific strategy
-npx claude-flow automation auto-agent --strategy specialized
+npx claude-zen automation auto-agent --strategy specialized
 \`\`\`
 `,
       'smart-spawn': `# smart-spawn
@@ -177,7 +177,7 @@ Intelligently spawn agents based on workload analysis.
 
 ## Usage
 \`\`\`bash
-npx claude-flow automation smart-spawn [options]
+npx claude-zen automation smart-spawn [options]
 \`\`\`
 
 ## Options
@@ -188,13 +188,13 @@ npx claude-flow automation smart-spawn [options]
 ## Examples
 \`\`\`bash
 # Smart spawn with analysis
-npx claude-flow automation smart-spawn --analyze
+npx claude-zen automation smart-spawn --analyze
 
 # Set spawn threshold
-npx claude-flow automation smart-spawn --threshold 5
+npx claude-zen automation smart-spawn --threshold 5
 
 # Force topology
-npx claude-flow automation smart-spawn --topology hierarchical
+npx claude-zen automation smart-spawn --topology hierarchical
 \`\`\`
 `,
       'workflow-select': `# workflow-select
@@ -203,7 +203,7 @@ Automatically select optimal workflow based on task type.
 
 ## Usage
 \`\`\`bash
-npx claude-flow automation workflow-select [options]
+npx claude-zen automation workflow-select [options]
 \`\`\`
 
 ## Options
@@ -214,13 +214,13 @@ npx claude-flow automation workflow-select [options]
 ## Examples
 \`\`\`bash
 # Select workflow for task
-npx claude-flow automation workflow-select --task "Deploy to production"
+npx claude-zen automation workflow-select --task "Deploy to production"
 
 # With constraints
-npx claude-flow automation workflow-select --constraints "no-downtime,rollback"
+npx claude-zen automation workflow-select --constraints "no-downtime,rollback"
 
 # Preview mode
-npx claude-flow automation workflow-select --task "Database migration" --preview
+npx claude-zen automation workflow-select --task "Database migration" --preview
 \`\`\`
 `,
     },
@@ -231,7 +231,7 @@ Initialize a new agent swarm with specified topology.
 
 ## Usage
 \`\`\`bash
-npx claude-flow swarm init [options]
+npx claude-zen swarm init [options]
 \`\`\`
 
 ## Options
@@ -242,13 +242,13 @@ npx claude-flow swarm init [options]
 ## Examples
 \`\`\`bash
 # Initialize hierarchical swarm
-npx claude-flow swarm init --topology hierarchical
+npx claude-zen swarm init --topology hierarchical
 
 # With agent limit
-npx claude-flow swarm init --topology mesh --max-agents 8
+npx claude-zen swarm init --topology mesh --max-agents 8
 
 # Parallel execution
-npx claude-flow swarm init --strategy parallel
+npx claude-zen swarm init --strategy parallel
 \`\`\`
 `,
       'agent-spawn': `# agent-spawn
@@ -257,7 +257,7 @@ Spawn a new agent in the current swarm.
 
 ## Usage
 \`\`\`bash
-npx claude-flow agent spawn [options]
+npx claude-zen agent spawn [options]
 \`\`\`
 
 ## Options
@@ -268,13 +268,13 @@ npx claude-flow agent spawn [options]
 ## Examples
 \`\`\`bash
 # Spawn coder agent
-npx claude-flow agent spawn --type coder
+npx claude-zen agent spawn --type coder
 
 # With custom name
-npx claude-flow agent spawn --type researcher --name "API Expert"
+npx claude-zen agent spawn --type researcher --name "API Expert"
 
 # With specific skills
-npx claude-flow agent spawn --type coder --skills "python,fastapi,testing"
+npx claude-zen agent spawn --type coder --skills "python,fastapi,testing"
 \`\`\`
 `,
       'task-orchestrate': `# task-orchestrate
@@ -283,7 +283,7 @@ Orchestrate complex tasks across the swarm.
 
 ## Usage
 \`\`\`bash
-npx claude-flow task orchestrate [options]
+npx claude-zen task orchestrate [options]
 \`\`\`
 
 ## Options
@@ -294,13 +294,13 @@ npx claude-flow task orchestrate [options]
 ## Examples
 \`\`\`bash
 # Orchestrate development task
-npx claude-flow task orchestrate --task "Implement user authentication"
+npx claude-zen task orchestrate --task "Implement user authentication"
 
 # High priority task
-npx claude-flow task orchestrate --task "Fix production bug" --priority critical
+npx claude-zen task orchestrate --task "Fix production bug" --priority critical
 
 # With specific strategy
-npx claude-flow task orchestrate --task "Refactor codebase" --strategy parallel
+npx claude-zen task orchestrate --task "Refactor codebase" --strategy parallel
 \`\`\`
 `,
     },
@@ -311,7 +311,7 @@ Create a specialized swarm for GitHub repository management.
 
 ## Usage
 \`\`\`bash
-npx claude-flow github swarm [options]
+npx claude-zen github swarm [options]
 \`\`\`
 
 ## Options
@@ -322,13 +322,13 @@ npx claude-flow github swarm [options]
 ## Examples
 \`\`\`bash
 # Create GitHub swarm
-npx claude-flow github swarm --repository myorg/myrepo
+npx claude-zen github swarm --repository myorg/myrepo
 
 # With specific focus
-npx claude-flow github swarm --repository myorg/myrepo --focus security
+npx claude-zen github swarm --repository myorg/myrepo --focus security
 
 # Custom agent count
-npx claude-flow github swarm --repository myorg/myrepo --agents 6
+npx claude-zen github swarm --repository myorg/myrepo --agents 6
 \`\`\`
 `,
       'repo-analyze': `# repo-analyze
@@ -337,7 +337,7 @@ Deep analysis of GitHub repository with AI insights.
 
 ## Usage
 \`\`\`bash
-npx claude-flow github repo-analyze [options]
+npx claude-zen github repo-analyze [options]
 \`\`\`
 
 ## Options
@@ -348,13 +348,13 @@ npx claude-flow github repo-analyze [options]
 ## Examples
 \`\`\`bash
 # Basic analysis
-npx claude-flow github repo-analyze --repository myorg/myrepo
+npx claude-zen github repo-analyze --repository myorg/myrepo
 
 # Deep analysis
-npx claude-flow github repo-analyze --repository myorg/myrepo --deep
+npx claude-zen github repo-analyze --repository myorg/myrepo --deep
 
 # Specific areas
-npx claude-flow github repo-analyze --repository myorg/myrepo --include issues,prs
+npx claude-zen github repo-analyze --repository myorg/myrepo --include issues,prs
 \`\`\`
 `,
       'pr-enhance': `# pr-enhance
@@ -363,7 +363,7 @@ AI-powered pull request enhancements.
 
 ## Usage
 \`\`\`bash
-npx claude-flow github pr-enhance [options]
+npx claude-zen github pr-enhance [options]
 \`\`\`
 
 ## Options
@@ -375,13 +375,13 @@ npx claude-flow github pr-enhance [options]
 ## Examples
 \`\`\`bash
 # Enhance PR
-npx claude-flow github pr-enhance --pr-number 123
+npx claude-zen github pr-enhance --pr-number 123
 
 # Add tests
-npx claude-flow github pr-enhance --pr-number 123 --add-tests
+npx claude-zen github pr-enhance --pr-number 123 --add-tests
 
 # Full enhancement
-npx claude-flow github pr-enhance --pr-number 123 --add-tests --improve-docs
+npx claude-zen github pr-enhance --pr-number 123 --add-tests --improve-docs
 \`\`\`
 `,
       'issue-triage': `# issue-triage
@@ -390,7 +390,7 @@ Intelligent issue classification and triage.
 
 ## Usage
 \`\`\`bash
-npx claude-flow github issue-triage [options]
+npx claude-zen github issue-triage [options]
 \`\`\`
 
 ## Options
@@ -401,13 +401,13 @@ npx claude-flow github issue-triage [options]
 ## Examples
 \`\`\`bash
 # Triage issues
-npx claude-flow github issue-triage --repository myorg/myrepo
+npx claude-zen github issue-triage --repository myorg/myrepo
 
 # With auto-labeling
-npx claude-flow github issue-triage --repository myorg/myrepo --auto-label
+npx claude-zen github issue-triage --repository myorg/myrepo --auto-label
 
 # Full automation
-npx claude-flow github issue-triage --repository myorg/myrepo --auto-label --assign
+npx claude-zen github issue-triage --repository myorg/myrepo --auto-label --assign
 \`\`\`
 `,
       'code-review': `# code-review
@@ -416,7 +416,7 @@ Automated code review with swarm intelligence.
 
 ## Usage
 \`\`\`bash
-npx claude-flow github code-review [options]
+npx claude-zen github code-review [options]
 \`\`\`
 
 ## Options
@@ -427,13 +427,13 @@ npx claude-flow github code-review [options]
 ## Examples
 \`\`\`bash
 # Review PR
-npx claude-flow github code-review --pr-number 456
+npx claude-zen github code-review --pr-number 456
 
 # Security focus
-npx claude-flow github code-review --pr-number 456 --focus security
+npx claude-zen github code-review --pr-number 456 --focus security
 
 # With fix suggestions
-npx claude-flow github code-review --pr-number 456 --suggest-fixes
+npx claude-zen github code-review --pr-number 456 --suggest-fixes
 \`\`\`
 `,
     },
@@ -444,7 +444,7 @@ Hook executed before task execution.
 
 ## Usage
 \`\`\`bash
-npx claude-flow hook pre-task [options]
+npx claude-zen hook pre-task [options]
 \`\`\`
 
 ## Options
@@ -455,13 +455,13 @@ npx claude-flow hook pre-task [options]
 ## Examples
 \`\`\`bash
 # Basic pre-task hook
-npx claude-flow hook pre-task --description "Building API endpoints"
+npx claude-zen hook pre-task --description "Building API endpoints"
 
 # With auto-spawn
-npx claude-flow hook pre-task --description "Complex refactoring" --auto-spawn-agents
+npx claude-zen hook pre-task --description "Complex refactoring" --auto-spawn-agents
 
 # Load context
-npx claude-flow hook pre-task --description "Continue feature" --load-context
+npx claude-zen hook pre-task --description "Continue feature" --load-context
 \`\`\`
 `,
       'post-task': `# post-task
@@ -470,7 +470,7 @@ Hook executed after task completion.
 
 ## Usage
 \`\`\`bash
-npx claude-flow hook post-task [options]
+npx claude-zen hook post-task [options]
 \`\`\`
 
 ## Options
@@ -481,13 +481,13 @@ npx claude-flow hook post-task [options]
 ## Examples
 \`\`\`bash
 # Basic post-task
-npx claude-flow hook post-task --task-id task-123
+npx claude-zen hook post-task --task-id task-123
 
 # With performance analysis
-npx claude-flow hook post-task --task-id task-123 --analyze-performance
+npx claude-zen hook post-task --task-id task-123 --analyze-performance
 
 # Update memory
-npx claude-flow hook post-task --task-id task-123 --update-memory
+npx claude-zen hook post-task --task-id task-123 --update-memory
 \`\`\`
 `,
       'pre-edit': `# pre-edit
@@ -496,7 +496,7 @@ Hook executed before file edits.
 
 ## Usage
 \`\`\`bash
-npx claude-flow hook pre-edit [options]
+npx claude-zen hook pre-edit [options]
 \`\`\`
 
 ## Options
@@ -507,13 +507,13 @@ npx claude-flow hook pre-edit [options]
 ## Examples
 \`\`\`bash
 # Pre-edit hook
-npx claude-flow hook pre-edit --file src/api.js
+npx claude-zen hook pre-edit --file src/api.js
 
 # With validation
-npx claude-flow hook pre-edit --file src/api.js --validate-syntax
+npx claude-zen hook pre-edit --file src/api.js --validate-syntax
 
 # Create backup
-npx claude-flow hook pre-edit --file src/api.js --backup
+npx claude-zen hook pre-edit --file src/api.js --backup
 \`\`\`
 `,
       'post-edit': `# post-edit
@@ -522,7 +522,7 @@ Hook executed after file edits.
 
 ## Usage
 \`\`\`bash
-npx claude-flow hook post-edit [options]
+npx claude-zen hook post-edit [options]
 \`\`\`
 
 ## Options
@@ -533,13 +533,13 @@ npx claude-flow hook post-edit [options]
 ## Examples
 \`\`\`bash
 # Post-edit hook
-npx claude-flow hook post-edit --file src/api.js
+npx claude-zen hook post-edit --file src/api.js
 
 # Store in memory
-npx claude-flow hook post-edit --file src/api.js --memory-key "api-changes"
+npx claude-zen hook post-edit --file src/api.js --memory-key "api-changes"
 
 # With formatting
-npx claude-flow hook post-edit --file src/api.js --format
+npx claude-zen hook post-edit --file src/api.js --format
 \`\`\`
 `,
       'session-end': `# session-end
@@ -548,7 +548,7 @@ Hook executed at session end.
 
 ## Usage
 \`\`\`bash
-npx claude-flow hook session-end [options]
+npx claude-zen hook session-end [options]
 \`\`\`
 
 ## Options
@@ -559,13 +559,13 @@ npx claude-flow hook session-end [options]
 ## Examples
 \`\`\`bash
 # End session
-npx claude-flow hook session-end
+npx claude-zen hook session-end
 
 # Export metrics
-npx claude-flow hook session-end --export-metrics
+npx claude-zen hook session-end --export-metrics
 
 # Full closure
-npx claude-flow hook session-end --export-metrics --generate-summary --persist-state
+npx claude-zen hook session-end --export-metrics --generate-summary --persist-state
 \`\`\`
 `,
     },
@@ -576,7 +576,7 @@ Manage persistent memory storage.
 
 ## Usage
 \`\`\`bash
-npx claude-flow memory usage [options]
+npx claude-zen memory usage [options]
 \`\`\`
 
 ## Options
@@ -587,13 +587,13 @@ npx claude-flow memory usage [options]
 ## Examples
 \`\`\`bash
 # Store memory
-npx claude-flow memory usage --action store --key "project-config" --value '{"api": "v2"}'
+npx claude-zen memory usage --action store --key "project-config" --value '{"api": "v2"}'
 
 # Retrieve memory
-npx claude-flow memory usage --action retrieve --key "project-config"
+npx claude-zen memory usage --action retrieve --key "project-config"
 
 # List all keys
-npx claude-flow memory usage --action list
+npx claude-zen memory usage --action list
 \`\`\`
 `,
       'memory-persist': `# memory-persist
@@ -602,7 +602,7 @@ Persist memory across sessions.
 
 ## Usage
 \`\`\`bash
-npx claude-flow memory persist [options]
+npx claude-zen memory persist [options]
 \`\`\`
 
 ## Options
@@ -613,13 +613,13 @@ npx claude-flow memory persist [options]
 ## Examples
 \`\`\`bash
 # Export memory
-npx claude-flow memory persist --export memory-backup.json
+npx claude-zen memory persist --export memory-backup.json
 
 # Import memory
-npx claude-flow memory persist --import memory-backup.json
+npx claude-zen memory persist --import memory-backup.json
 
 # Compressed export
-npx claude-flow memory persist --export memory.gz --compress
+npx claude-zen memory persist --export memory.gz --compress
 \`\`\`
 `,
       'memory-search': `# memory-search
@@ -628,7 +628,7 @@ Search through stored memory.
 
 ## Usage
 \`\`\`bash
-npx claude-flow memory search [options]
+npx claude-zen memory search [options]
 \`\`\`
 
 ## Options
@@ -639,13 +639,13 @@ npx claude-flow memory search [options]
 ## Examples
 \`\`\`bash
 # Search memory
-npx claude-flow memory search --query "authentication"
+npx claude-zen memory search --query "authentication"
 
 # Pattern search
-npx claude-flow memory search --pattern "api-.*"
+npx claude-zen memory search --pattern "api-.*"
 
 # Limited results
-npx claude-flow memory search --query "config" --limit 10
+npx claude-zen memory search --query "config" --limit 10
 \`\`\`
 `,
     },
@@ -656,7 +656,7 @@ Real-time swarm monitoring.
 
 ## Usage
 \`\`\`bash
-npx claude-flow swarm monitor [options]
+npx claude-zen swarm monitor [options]
 \`\`\`
 
 ## Options
@@ -667,13 +667,13 @@ npx claude-flow swarm monitor [options]
 ## Examples
 \`\`\`bash
 # Start monitoring
-npx claude-flow swarm monitor
+npx claude-zen swarm monitor
 
 # Custom interval
-npx claude-flow swarm monitor --interval 5000
+npx claude-zen swarm monitor --interval 5000
 
 # With metrics
-npx claude-flow swarm monitor --metrics
+npx claude-zen swarm monitor --metrics
 \`\`\`
 `,
       'agent-metrics': `# agent-metrics
@@ -682,7 +682,7 @@ View agent performance metrics.
 
 ## Usage
 \`\`\`bash
-npx claude-flow agent metrics [options]
+npx claude-zen agent metrics [options]
 \`\`\`
 
 ## Options
@@ -693,13 +693,13 @@ npx claude-flow agent metrics [options]
 ## Examples
 \`\`\`bash
 # All agents metrics
-npx claude-flow agent metrics
+npx claude-zen agent metrics
 
 # Specific agent
-npx claude-flow agent metrics --agent-id agent-001
+npx claude-zen agent metrics --agent-id agent-001
 
 # Last hour
-npx claude-flow agent metrics --period 1h
+npx claude-zen agent metrics --period 1h
 \`\`\`
 `,
       'real-time-view': `# real-time-view
@@ -708,7 +708,7 @@ Real-time view of swarm activity.
 
 ## Usage
 \`\`\`bash
-npx claude-flow monitoring real-time-view [options]
+npx claude-zen monitoring real-time-view [options]
 \`\`\`
 
 ## Options
@@ -719,13 +719,13 @@ npx claude-flow monitoring real-time-view [options]
 ## Examples
 \`\`\`bash
 # Start real-time view
-npx claude-flow monitoring real-time-view
+npx claude-zen monitoring real-time-view
 
 # Filter errors
-npx claude-flow monitoring real-time-view --filter errors
+npx claude-zen monitoring real-time-view --filter errors
 
 # Highlight pattern
-npx claude-flow monitoring real-time-view --highlight "API"
+npx claude-zen monitoring real-time-view --highlight "API"
 \`\`\`
 `,
     },
@@ -736,7 +736,7 @@ Optimize swarm topology for current workload.
 
 ## Usage
 \`\`\`bash
-npx claude-flow optimization topology-optimize [options]
+npx claude-zen optimization topology-optimize [options]
 \`\`\`
 
 ## Options
@@ -747,13 +747,13 @@ npx claude-flow optimization topology-optimize [options]
 ## Examples
 \`\`\`bash
 # Analyze and suggest
-npx claude-flow optimization topology-optimize --analyze-first
+npx claude-zen optimization topology-optimize --analyze-first
 
 # Optimize for speed
-npx claude-flow optimization topology-optimize --target speed
+npx claude-zen optimization topology-optimize --target speed
 
 # Apply changes
-npx claude-flow optimization topology-optimize --target efficiency --apply
+npx claude-zen optimization topology-optimize --target efficiency --apply
 \`\`\`
 `,
       'parallel-execute': `# parallel-execute
@@ -762,7 +762,7 @@ Execute tasks in parallel for maximum efficiency.
 
 ## Usage
 \`\`\`bash
-npx claude-flow optimization parallel-execute [options]
+npx claude-zen optimization parallel-execute [options]
 \`\`\`
 
 ## Options
@@ -773,13 +773,13 @@ npx claude-flow optimization parallel-execute [options]
 ## Examples
 \`\`\`bash
 # Execute task list
-npx claude-flow optimization parallel-execute --tasks tasks.json
+npx claude-zen optimization parallel-execute --tasks tasks.json
 
 # Limit parallelism
-npx claude-flow optimization parallel-execute --tasks tasks.json --max-parallel 5
+npx claude-zen optimization parallel-execute --tasks tasks.json --max-parallel 5
 
 # Custom strategy
-npx claude-flow optimization parallel-execute --strategy adaptive
+npx claude-zen optimization parallel-execute --strategy adaptive
 \`\`\`
 `,
       'cache-manage': `# cache-manage
@@ -788,7 +788,7 @@ Manage operation cache for performance.
 
 ## Usage
 \`\`\`bash
-npx claude-flow optimization cache-manage [options]
+npx claude-zen optimization cache-manage [options]
 \`\`\`
 
 ## Options
@@ -799,13 +799,13 @@ npx claude-flow optimization cache-manage [options]
 ## Examples
 \`\`\`bash
 # View cache stats
-npx claude-flow optimization cache-manage --action view
+npx claude-zen optimization cache-manage --action view
 
 # Clear cache
-npx claude-flow optimization cache-manage --action clear
+npx claude-zen optimization cache-manage --action clear
 
 # Set limits
-npx claude-flow optimization cache-manage --max-size 100 --ttl 3600
+npx claude-zen optimization cache-manage --max-size 100 --ttl 3600
 \`\`\`
 `,
     },
@@ -816,7 +816,7 @@ Train neural patterns from operations.
 
 ## Usage
 \`\`\`bash
-npx claude-flow training neural-train [options]
+npx claude-zen training neural-train [options]
 \`\`\`
 
 ## Options
@@ -827,13 +827,13 @@ npx claude-flow training neural-train [options]
 ## Examples
 \`\`\`bash
 # Train from recent ops
-npx claude-flow training neural-train --data recent
+npx claude-zen training neural-train --data recent
 
 # Specific model
-npx claude-flow training neural-train --model task-predictor
+npx claude-zen training neural-train --model task-predictor
 
 # Custom epochs
-npx claude-flow training neural-train --epochs 100
+npx claude-zen training neural-train --epochs 100
 \`\`\`
 `,
       'pattern-learn': `# pattern-learn
@@ -842,7 +842,7 @@ Learn patterns from successful operations.
 
 ## Usage
 \`\`\`bash
-npx claude-flow training pattern-learn [options]
+npx claude-zen training pattern-learn [options]
 \`\`\`
 
 ## Options
@@ -853,13 +853,13 @@ npx claude-flow training pattern-learn [options]
 ## Examples
 \`\`\`bash
 # Learn from all ops
-npx claude-flow training pattern-learn
+npx claude-zen training pattern-learn
 
 # High success only
-npx claude-flow training pattern-learn --threshold 0.9
+npx claude-zen training pattern-learn --threshold 0.9
 
 # Save patterns
-npx claude-flow training pattern-learn --save optimal-patterns
+npx claude-zen training pattern-learn --save optimal-patterns
 \`\`\`
 `,
       'model-update': `# model-update
@@ -868,7 +868,7 @@ Update neural models with new data.
 
 ## Usage
 \`\`\`bash
-npx claude-flow training model-update [options]
+npx claude-zen training model-update [options]
 \`\`\`
 
 ## Options
@@ -879,13 +879,13 @@ npx claude-flow training model-update [options]
 ## Examples
 \`\`\`bash
 # Update all models
-npx claude-flow training model-update
+npx claude-zen training model-update
 
 # Specific model
-npx claude-flow training model-update --model agent-selector
+npx claude-zen training model-update --model agent-selector
 
 # Incremental with validation
-npx claude-flow training model-update --incremental --validate
+npx claude-zen training model-update --incremental --validate
 \`\`\`
 `,
     },
@@ -896,7 +896,7 @@ Create reusable workflow templates.
 
 ## Usage
 \`\`\`bash
-npx claude-flow workflow create [options]
+npx claude-zen workflow create [options]
 \`\`\`
 
 ## Options
@@ -907,13 +907,13 @@ npx claude-flow workflow create [options]
 ## Examples
 \`\`\`bash
 # Create workflow
-npx claude-flow workflow create --name "deploy-api"
+npx claude-zen workflow create --name "deploy-api"
 
 # From history
-npx claude-flow workflow create --name "test-suite" --from-history
+npx claude-zen workflow create --name "test-suite" --from-history
 
 # Interactive mode
-npx claude-flow workflow create --interactive
+npx claude-zen workflow create --interactive
 \`\`\`
 `,
       'workflow-execute': `# workflow-execute
@@ -922,7 +922,7 @@ Execute saved workflows.
 
 ## Usage
 \`\`\`bash
-npx claude-flow workflow execute [options]
+npx claude-zen workflow execute [options]
 \`\`\`
 
 ## Options
@@ -933,13 +933,13 @@ npx claude-flow workflow execute [options]
 ## Examples
 \`\`\`bash
 # Execute workflow
-npx claude-flow workflow execute --name "deploy-api"
+npx claude-zen workflow execute --name "deploy-api"
 
 # With parameters
-npx claude-flow workflow execute --name "test-suite" --params '{"env": "staging"}'
+npx claude-zen workflow execute --name "test-suite" --params '{"env": "staging"}'
 
 # Dry run
-npx claude-flow workflow execute --name "deploy-api" --dry-run
+npx claude-zen workflow execute --name "deploy-api" --dry-run
 \`\`\`
 `,
       'workflow-export': `# workflow-export
@@ -948,7 +948,7 @@ Export workflows for sharing.
 
 ## Usage
 \`\`\`bash
-npx claude-flow workflow export [options]
+npx claude-zen workflow export [options]
 \`\`\`
 
 ## Options
@@ -959,13 +959,13 @@ npx claude-flow workflow export [options]
 ## Examples
 \`\`\`bash
 # Export workflow
-npx claude-flow workflow export --name "deploy-api"
+npx claude-zen workflow export --name "deploy-api"
 
 # As YAML
-npx claude-flow workflow export --name "test-suite" --format yaml
+npx claude-zen workflow export --name "test-suite" --format yaml
 
 # With history
-npx claude-flow workflow export --name "deploy-api" --include-history
+npx claude-zen workflow export --name "deploy-api" --include-history
 \`\`\`
 `,
     },
@@ -973,7 +973,7 @@ npx claude-flow workflow export --name "deploy-api" --include-history
 
   return (
     docs[category]?.[command] ||
-    `# ${command}\n\nCommand documentation for ${command} in category ${category}.\n\nUsage:\n\`\`\`bash\nnpx claude-flow ${category} ${command} [options]\n\`\`\`\n`
+    `# ${command}\n\nCommand documentation for ${command} in category ${category}.\n\nUsage:\n\`\`\`bash\nnpx claude-zen ${category} ${command} [options]\n\`\`\`\n`
   );
 }
 
@@ -1008,10 +1008,10 @@ fi
 
 # Add MCP server
 echo "📦 Adding Claude Flow MCP server..."
-claude mcp add claude-flow npx claude-flow mcp start
+claude mcp add claude-zen npx claude-zen mcp start
 
 echo "✅ MCP server setup complete!"
-echo "🎯 You can now use mcp__claude-flow__ tools in Claude Code"
+echo "🎯 You can now use mcp__claude-zen__ tools in Claude Code"
 `,
     'quick-start.sh': `#!/bin/bash
 # Quick start guide for Claude Flow
@@ -1020,16 +1020,16 @@ echo "🚀 Claude Flow Quick Start"
 echo "=========================="
 echo ""
 echo "1. Initialize a swarm:"
-echo "   npx claude-flow swarm init --topology hierarchical"
+echo "   npx claude-zen swarm init --topology hierarchical"
 echo ""
 echo "2. Spawn agents:"
-echo "   npx claude-flow agent spawn --type coder --name \"API Developer\""
+echo "   npx claude-zen agent spawn --type coder --name \"API Developer\""
 echo ""
 echo "3. Orchestrate tasks:"
-echo "   npx claude-flow task orchestrate --task \"Build REST API\""
+echo "   npx claude-zen task orchestrate --task \"Build REST API\""
 echo ""
 echo "4. Monitor progress:"
-echo "   npx claude-flow swarm monitor"
+echo "   npx claude-zen swarm monitor"
 echo ""
 echo "📚 For more examples, see .claude/commands/"
 `,
@@ -1057,10 +1057,10 @@ fi
 
 echo ""
 echo "📦 GitHub swarm commands available:"
-echo "  - npx claude-flow github swarm"
-echo "  - npx claude-flow repo analyze"
-echo "  - npx claude-flow pr enhance"
-echo "  - npx claude-flow issue triage"
+echo "  - npx claude-zen github swarm"
+echo "  - npx claude-zen repo analyze"
+echo "  - npx claude-zen pr enhance"
+echo "  - npx claude-zen issue triage"
 `,
   };
 
@@ -1092,12 +1092,12 @@ function createWrapperScriptFallback(type) {
     // Fallback for CommonJS
   }
 
-  // Try multiple strategies to find claude-flow
+  // Try multiple strategies to find claude-zen
   const strategies = [
     // 1. Local node_modules
     async () => {
       try {
-        const localPath = resolve(process.cwd(), 'node_modules/.bin/claude-flow');
+        const localPath = resolve(process.cwd(), 'node_modules/.bin/claude-zen');
         const { existsSync } = await import('fs');
         if (existsSync(localPath)) {
           return spawn(localPath, process.argv.slice(2), { stdio: 'inherit' });
@@ -1108,7 +1108,7 @@ function createWrapperScriptFallback(type) {
     // 2. Parent node_modules (monorepo)
     async () => {
       try {
-        const parentPath = resolve(process.cwd(), '../node_modules/.bin/claude-flow');
+        const parentPath = resolve(process.cwd(), '../node_modules/.bin/claude-zen');
         const { existsSync } = await import('fs');
         if (existsSync(parentPath)) {
           return spawn(parentPath, process.argv.slice(2), { stdio: 'inherit' });
@@ -1118,7 +1118,7 @@ function createWrapperScriptFallback(type) {
     
     // 3. NPX with latest alpha version (prioritized over global)
     async () => {
-      return spawn('npx', ['claude-flow@2.0.0-alpha.25', ...process.argv.slice(2)], { stdio: 'inherit' });
+      return spawn('npx', ['claude-zen@2.0.0-alpha.25', ...process.argv.slice(2)], { stdio: 'inherit' });
     }
   ];
 
@@ -1139,7 +1139,7 @@ function createWrapperScriptFallback(type) {
     } catch {}
   }
   
-  console.error('Could not find claude-flow. Please install it with: npm install claude-flow');
+  console.error('Could not find claude-zen. Please install it with: npm install claude-zen');
   process.exit(1);
 })();`;
   } else if (type === 'windows') {
@@ -1149,8 +1149,8 @@ rem Claude Flow wrapper script for Windows
 rem Check if package.json exists in current directory
 if exist "%~dp0package.json" (
     rem Local development mode
-    if exist "%~dp0src\\cli\\simple-cli.js" (
-        node "%~dp0src\\cli\\simple-cli.js" %*
+    if exist "%~dp0src\\cli\\cli-main.js" (
+        node "%~dp0src\\cli\\cli-main.js" %*
     ) else if exist "%~dp0dist\\cli.js" (
         node "%~dp0dist\\cli.js" %*
     ) else (
@@ -1159,7 +1159,7 @@ if exist "%~dp0package.json" (
     )
 ) else (
     rem Production mode - use npx alpha
-    npx claude-flow@alpha %*
+    npx claude-zen@alpha %*
 )`;
   } else if (type === 'powershell') {
     return `# Claude Flow wrapper script for PowerShell
@@ -1168,8 +1168,8 @@ $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 if (Test-Path "$scriptPath\\package.json") {
     # Local development mode
-    if (Test-Path "$scriptPath\\src\\cli\\simple-cli.js") {
-        & node "$scriptPath\\src\\cli\\simple-cli.js" $args
+    if (Test-Path "$scriptPath\\src\\cli\\cli-main.js") {
+        & node "$scriptPath\\src\\cli\\cli-main.js" $args
     } elseif (Test-Path "$scriptPath\\dist\\cli.js") {
         & node "$scriptPath\\dist\\cli.js" $args
     } else {
@@ -1178,7 +1178,7 @@ if (Test-Path "$scriptPath\\package.json") {
     }
 } else {
     # Production mode - use npx alpha
-    & npx claude-flow@alpha $args
+    & npx claude-zen@alpha $args
 }`;
   }
   return '';
@@ -1215,10 +1215,10 @@ function createEnhancedClaudeMdFallback() {
 
 ## Quick Start
 
-1. Add MCP server: \`claude mcp add claude-flow npx claude-flow mcp start\`
-2. Initialize swarm: \`mcp__claude-flow__swarm_init { topology: "hierarchical" }\`
-3. Spawn agents: \`mcp__claude-flow__agent_spawn { type: "coder" }\`
-4. Orchestrate: \`mcp__claude-flow__task_orchestrate { task: "Build feature" }\`
+1. Add MCP server: \`claude mcp add claude-zen npx claude-zen mcp start\`
+2. Initialize swarm: \`mcp__claude-zen__swarm_init { topology: "hierarchical" }\`
+3. Spawn agents: \`mcp__claude-zen__agent_spawn { type: "coder" }\`
+4. Orchestrate: \`mcp__claude-zen__task_orchestrate { task: "Build feature" }\`
 
 See full documentation in \`.claude/commands/\`
 `;
@@ -1238,7 +1238,7 @@ function createEnhancedSettingsJsonFallback() {
       },
       permissions: {
         allow: [
-          'Bash(npx claude-flow *)',
+          'Bash(npx claude-zen *)',
           'Bash(npm run lint)',
           'Bash(npm run test:*)',
           'Bash(npm test *)',
@@ -1257,7 +1257,7 @@ function createEnhancedSettingsJsonFallback() {
         ],
         deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],
       },
-      enabledMcpjsonServers: ['claude-flow', 'ruv-swarm'],
+      enabledMcpjsonServers: ['claude-zen', 'ruv-swarm'],
       hooks: {
         PreToolUse: [
           {
@@ -1266,7 +1266,7 @@ function createEnhancedSettingsJsonFallback() {
               {
                 type: 'command',
                 command:
-                  'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-flow@alpha hooks pre-command --command "{}" --validate-safety true --prepare-resources true',
+                  'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-command --command "{}" --validate-safety true --prepare-resources true',
               },
             ],
           },
@@ -1276,7 +1276,7 @@ function createEnhancedSettingsJsonFallback() {
               {
                 type: 'command',
                 command:
-                  'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-flow@alpha hooks pre-edit --file "{}" --auto-assign-agents true --load-context true',
+                  'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-edit --file "{}" --auto-assign-agents true --load-context true',
               },
             ],
           },
@@ -1288,7 +1288,7 @@ function createEnhancedSettingsJsonFallback() {
               {
                 type: 'command',
                 command:
-                  'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-flow@alpha hooks post-command --command "{}" --track-metrics true --store-results true',
+                  'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks post-command --command "{}" --track-metrics true --store-results true',
               },
             ],
           },
@@ -1298,7 +1298,7 @@ function createEnhancedSettingsJsonFallback() {
               {
                 type: 'command',
                 command:
-                  'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-flow@alpha hooks post-edit --file "{}" --format true --update-memory true --train-neural true',
+                  'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks post-edit --file "{}" --format true --update-memory true --train-neural true',
               },
             ],
           },
@@ -1309,7 +1309,7 @@ function createEnhancedSettingsJsonFallback() {
               {
                 type: 'command',
                 command:
-                  'npx claude-flow@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true',
+                  'npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true',
               },
             ],
           },

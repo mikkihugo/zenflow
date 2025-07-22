@@ -86,11 +86,11 @@ All Claude Flow hooks successfully persist to SQLite:
 
 ```bash
 # Test notification persistence
-npx claude-flow@alpha hooks notify --message "Test" --level "info"
+npx claude-zen@alpha hooks notify --message "Test" --level "info"
 ✅ Result: Saved to .swarm/memory.db
 
 # Test edit tracking
-npx claude-flow@alpha hooks post-edit --file "test.js" --memory-key "test/edit"
+npx claude-zen@alpha hooks post-edit --file "test.js" --memory-key "test/edit"
 ✅ Result: Post-edit data saved to .swarm/memory.db
 ```
 
@@ -116,7 +116,7 @@ npx claude-flow@alpha hooks post-edit --file "test.js" --memory-key "test/edit"
 
 ### MCP Tool Integration Issue
 
-The direct MCP tool invocation (`npx claude-flow@alpha mcp call memory_usage`) appears to have a CLI parsing issue, but the underlying storage mechanism is working correctly through:
+The direct MCP tool invocation (`npx claude-zen@alpha mcp call memory_usage`) appears to have a CLI parsing issue, but the underlying storage mechanism is working correctly through:
 - Hooks system
 - Internal MCP server usage
 - Direct orchestrator integration
@@ -145,7 +145,7 @@ sqlite3 .swarm/memory.db "SELECT COUNT(*) FROM memory_entries;"
 sqlite3 .swarm/memory.db "SELECT * FROM memory_entries WHERE namespace LIKE 'hooks:%' ORDER BY created_at DESC LIMIT 5;"
 
 # Test persistence with hooks
-npx claude-flow@alpha hooks notify --message "Persistence test $(date)" --level "test"
+npx claude-zen@alpha hooks notify --message "Persistence test $(date)" --level "test"
 ```
 
 ## Conclusion

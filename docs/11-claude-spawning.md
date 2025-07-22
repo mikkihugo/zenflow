@@ -18,7 +18,7 @@ Claude-Flow provides powerful capabilities to spawn and manage Claude Code insta
 ### Spawn Individual Claude Instance
 
 ```bash
-npx claude-flow claude spawn <task> [options]
+npx claude-zen claude spawn <task> [options]
 ```
 
 #### Options
@@ -40,25 +40,25 @@ npx claude-flow claude spawn <task> [options]
 
 ```bash
 # Basic task with default tools
-npx claude-flow claude spawn "implement user authentication system"
+npx claude-zen claude spawn "implement user authentication system"
 
 # Research task with web capabilities
-npx claude-flow claude spawn "research best practices for microservices" --research --parallel
+npx claude-zen claude spawn "research best practices for microservices" --research --parallel
 
 # Backend development with specific tools
-npx claude-flow claude spawn "create REST API endpoints" --mode backend-only --tools "View,Edit,Replace,Bash"
+npx claude-zen claude spawn "create REST API endpoints" --mode backend-only --tools "View,Edit,Replace,Bash"
 
 # Frontend task with no permission prompts
-npx claude-flow claude spawn "build React dashboard" --mode frontend-only --no-permissions
+npx claude-zen claude spawn "build React dashboard" --mode frontend-only --no-permissions
 
 # Dry run to preview command
-npx claude-flow claude spawn "refactor payment module" --coverage 95 --dry-run
+npx claude-zen claude spawn "refactor payment module" --coverage 95 --dry-run
 ```
 
 ### Batch Workflow Execution
 
 ```bash
-npx claude-flow claude batch <workflow-file> [options]
+npx claude-zen claude batch <workflow-file> [options]
 ```
 
 Execute multiple Claude instances based on a JSON workflow file.
@@ -110,10 +110,10 @@ Execute multiple Claude instances based on a JSON workflow file.
 
 ```bash
 # Execute workflow with dry run
-npx claude-flow claude batch development-workflow.json --dry-run
+npx claude-zen claude batch development-workflow.json --dry-run
 
 # Execute workflow in production
-npx claude-flow claude batch production-tasks.json
+npx claude-zen claude batch production-tasks.json
 ```
 
 ## Environment Variables
@@ -202,7 +202,7 @@ DEV_TOOLS="View,Edit,Replace,GlobTool,GrepTool,LS,Bash,BatchTool"
 # Minimal preset
 MIN_TOOLS="View,Edit"
 
-npx claude-flow claude spawn "research task" --tools "$RESEARCH_TOOLS"
+npx claude-zen claude spawn "research task" --tools "$RESEARCH_TOOLS"
 ```
 
 ### Integration with CI/CD
@@ -213,7 +213,7 @@ Use Claude spawning in CI/CD pipelines:
 # GitHub Actions example
 - name: Run Claude Development Task
   run: |
-    npx claude-flow claude spawn \
+    npx claude-zen claude spawn \
       "implement feature from issue #123" \
       --mode backend-only \
       --coverage 90 \
@@ -243,7 +243,7 @@ Use Claude spawning in CI/CD pipelines:
 Enable verbose logging for troubleshooting:
 
 ```bash
-npx claude-flow claude spawn "debug task" --verbose --dry-run
+npx claude-zen claude spawn "debug task" --verbose --dry-run
 ```
 
 ## Security Considerations

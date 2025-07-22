@@ -7,16 +7,16 @@ Successfully tested **Claude Flow v2.0.0** branch with comprehensive validation 
 ## ✅ Test Results
 
 ### 🚀 Remote NPX (Primary Feature) - **FULLY WORKING**
-- **NPX Execution**: ✅ `npx claude-flow@2.0.0` commands working perfectly
+- **NPX Execution**: ✅ `npx claude-zen@2.0.0` commands working perfectly
 - **ruv-swarm Integration**: ✅ Full WASM neural network capabilities
 - **Swarm Creation**: ✅ Successfully created 3-agent parallel swarm
 - **Performance**: ✅ Excellent (5.2ms init, 3.4ms spawn, 80% benchmark score)
 - **Docker Support**: ✅ Verified working (with Node 18 warnings)
 
 ### 🏗️ Local Installation - **PARTIALLY WORKING**
-- **CLI Help**: ✅ `./claude-flow --help` displays correctly
+- **CLI Help**: ✅ `./claude-zen --help` displays correctly
 - **Version Check**: ✅ Reports v2.0.0 correctly
-- **Status Command**: ✅ Works via NPX (`npx claude-flow@2.0.0 status`)
+- **Status Command**: ✅ Works via NPX (`npx claude-zen@2.0.0 status`)
 - **Build**: ❌ TypeScript compilation errors (149+ errors)
 - **Some Commands**: ⚠️ Silent failures on some local commands
 
@@ -63,8 +63,8 @@ Successfully tested **Claude Flow v2.0.0** branch with comprehensive validation 
 ## 🎯 Recommendations
 
 ### For Users
-- **Use NPX**: `npx claude-flow@2.0.0` for all operations
-- **Initialize with**: `npx claude-flow@2.0.0 init --sparc`
+- **Use NPX**: `npx claude-zen@2.0.0` for all operations
+- **Initialize with**: `npx claude-zen@2.0.0 init --sparc`
 - **Full swarm power**: All features available via remote execution
 
 ### For Development
@@ -86,7 +86,7 @@ npx ruv-swarm@latest init hierarchical 8 --claude --force
 npx ruv-swarm@latest spawn researcher "Agent Name"
 
 # Check status
-npx claude-flow@2.0.0 status
+npx claude-zen@2.0.0 status
 
 # Run benchmarks
 npx ruv-swarm@latest benchmark run --iterations 5

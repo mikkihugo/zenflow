@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Example usage of the claude-flow integration layer.
+Example usage of the claude-zen integration layer.
 
 This script demonstrates how to use the ClaudeFlowExecutor for various tasks.
 """
@@ -101,7 +101,7 @@ def example_sparc_modes():
     )
     
     print("\n1. TDD Mode:")
-    print(f"   Command: claude-flow sparc run {tdd_config.mode.value} \"{tdd_config.prompt}\"")
+    print(f"   Command: claude-zen sparc run {tdd_config.mode.value} \"{tdd_config.prompt}\"")
     
     # Example 2: Optimizer mode
     optimizer_config = SparcConfig(
@@ -112,7 +112,7 @@ def example_sparc_modes():
     )
     
     print("\n2. Optimizer Mode:")
-    print(f"   Command: claude-flow sparc run {optimizer_config.mode.value} \"{optimizer_config.prompt}\"")
+    print(f"   Command: claude-zen sparc run {optimizer_config.mode.value} \"{optimizer_config.prompt}\"")
     
     # Example 3: Workflow manager
     workflow_config = SparcConfig(
@@ -122,7 +122,7 @@ def example_sparc_modes():
     )
     
     print("\n3. Workflow Manager Mode:")
-    print(f"   Command: claude-flow sparc run {workflow_config.mode.value} \"{workflow_config.prompt}\"")
+    print(f"   Command: claude-zen sparc run {workflow_config.mode.value} \"{workflow_config.prompt}\"")
 
 
 def example_error_handling():
@@ -193,7 +193,7 @@ def example_memory_operations():
     
     # Store data in memory
     test_data = {
-        "project": "claude-flow-benchmark",
+        "project": "claude-zen-benchmark",
         "metrics": {
             "performance": 95,
             "reliability": 98,

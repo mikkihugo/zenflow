@@ -35,8 +35,8 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Claude Flow Team",
-    author_email="support@claude-flow.dev",
-    url="https://github.com/claude-flow/swarm-benchmark",
+    author_email="support@claude-zen.dev",
+    url="https://github.com/claude-zen/swarm-benchmark",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -107,7 +107,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Claude Flow Team", email = "support@claude-flow.dev"},
+    {name = "Claude Flow Team", email = "support@claude-zen.dev"},
 ]
 keywords = ["benchmark", "swarm", "agents", "performance", "testing"]
 classifiers = [
@@ -149,10 +149,10 @@ swarm-benchmark = "swarm_benchmark.__main__:main"
 swarm-bench = "swarm_benchmark.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/claude-flow/swarm-benchmark"
+Homepage = "https://github.com/claude-zen/swarm-benchmark"
 Documentation = "https://swarm-benchmark.readthedocs.io"
-Repository = "https://github.com/claude-flow/swarm-benchmark"
-Issues = "https://github.com/claude-flow/swarm-benchmark/issues"
+Repository = "https://github.com/claude-zen/swarm-benchmark"
+Issues = "https://github.com/claude-zen/swarm-benchmark/issues"
 ```
 
 ## 🐳 Docker Deployment
@@ -463,7 +463,7 @@ pip install swarm-benchmark
 pip install swarm-benchmark[dev,viz]
 
 # Install from source
-pip install git+https://github.com/claude-flow/swarm-benchmark.git
+pip install git+https://github.com/claude-zen/swarm-benchmark.git
 ```
 
 ### Conda Installation
@@ -505,8 +505,8 @@ test:
 # Formula/swarm-benchmark.rb
 class SwarmBenchmark < Formula
   desc "Agent swarm benchmarking tool for Claude Flow"
-  homepage "https://github.com/claude-flow/swarm-benchmark"
-  url "https://github.com/claude-flow/swarm-benchmark/archive/v1.0.0.tar.gz"
+  homepage "https://github.com/claude-zen/swarm-benchmark"
+  url "https://github.com/claude-zen/swarm-benchmark/archive/v1.0.0.tar.gz"
   sha256 "<hash>"
   license "MIT"
 
@@ -563,7 +563,7 @@ export BENCHMARK_LOG_LEVEL=WARNING
     "max_size": "100MB"
   },
   "claude_flow": {
-    "endpoint": "https://api.claude-flow.com",
+    "endpoint": "https://api.claude-zen.com",
     "timeout": 300,
     "max_concurrent": 10
   }

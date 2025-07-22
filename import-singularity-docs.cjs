@@ -104,7 +104,7 @@ async function importDocuments() {
       
       // Determine dependencies from content
       const dependencies = [];
-      if (content.includes('claude-flow')) dependencies.push('claude-flow-core');
+      if (content.includes('claude-zen')) dependencies.push('claude-zen-core');
       if (content.includes('swarm')) dependencies.push('swarm-engine');
       if (content.includes('MCP')) dependencies.push('mcp-protocol');
       if (content.includes('memory')) dependencies.push('memory-store');

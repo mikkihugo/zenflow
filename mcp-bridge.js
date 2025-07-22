@@ -30,12 +30,12 @@ class MCPBridge {
     
     console.log('\n🔗 MCP Bridge Ready!');
     console.log('📡 Available MCP Tools:');
-    console.log('   • mcp__claude-flow__service_document_manager');
-    console.log('   • mcp__claude-flow__service_approval_workflow');
-    console.log('   • mcp__claude-flow__service_document_validator');
-    console.log('   • mcp__claude-flow__swarm_init');
-    console.log('   • mcp__claude-flow__agent_spawn');
-    console.log('   • mcp__claude-flow__memory_usage');
+    console.log('   • mcp__claude-zen__service_document_manager');
+    console.log('   • mcp__claude-zen__service_approval_workflow');
+    console.log('   • mcp__claude-zen__service_document_validator');
+    console.log('   • mcp__claude-zen__swarm_init');
+    console.log('   • mcp__claude-zen__agent_spawn');
+    console.log('   • mcp__claude-zen__memory_usage');
     console.log('\n🎯 Ready for Claude Desktop integration!');
     
     return this;
@@ -155,7 +155,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log('📝 Approval queued:', approvalResult.success ? '✅' : '❌');
     
     console.log('\n✨ MCP Bridge fully operational!');
-    console.log('🔌 Connect Claude Desktop with: npx claude-flow@alpha mcp start');
+    console.log('🔌 Connect Claude Desktop with: npx claude-zen@alpha mcp start');
     
   } catch (error) {
     console.error('❌ Failed to start MCP Bridge:', error);

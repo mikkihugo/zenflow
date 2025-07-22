@@ -47,7 +47,7 @@ describe('NPX Isolated Cache', () => {
       const cacheDir = env.NPM_CONFIG_CACHE;
       
       expect(cacheDir).toContain(path.join(os.tmpdir(), '.npm-cache'));
-      expect(cacheDir).toContain('claude-flow-');
+      expect(cacheDir).toContain('claude-zen-');
       expect(cacheDir).toContain(process.pid.toString());
     });
 
@@ -90,8 +90,8 @@ describe('NPX Isolated Cache', () => {
       const cache1 = path.basename(env1.NPM_CONFIG_CACHE);
       const cache2 = path.basename(env2.NPM_CONFIG_CACHE);
 
-      // Both should start with claude-flow-{pid}
-      const pidPrefix = `claude-flow-${process.pid}-`;
+      // Both should start with claude-zen-{pid}
+      const pidPrefix = `claude-zen-${process.pid}-`;
       expect(cache1).toMatch(new RegExp(`^${pidPrefix}\\d+-[a-z0-9]+$`));
       expect(cache2).toMatch(new RegExp(`^${pidPrefix}\\d+-[a-z0-9]+$`));
       

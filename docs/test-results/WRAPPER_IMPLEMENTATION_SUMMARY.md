@@ -24,11 +24,11 @@ I've successfully implemented a new MCP wrapper architecture that replaces the t
 - Handles tool forwarding
 
 ### 4. Launcher Scripts
-- `claude-flow-mcp-wrapper` - Executable wrapper launcher
+- `claude-zen-mcp-wrapper` - Executable wrapper launcher
 - `src/mcp/server-wrapper-mode.ts` - Dual-mode server supporting both wrapper and direct modes
 
 ### 5. Configuration
-**File:** `claude-flow-wrapper.mcp.json`
+**File:** `claude-zen-wrapper.mcp.json`
 - Defines tool mappings and prompt injection settings
 - Configures pass-through behavior
 - Lists all available SPARC tools
@@ -72,7 +72,7 @@ sparc_coder → Inject SPARC prompt → Forward to Claude Code Task → AI gener
 npm run mcp:wrapper
 
 # Or use executable
-./claude-flow-mcp-wrapper
+./claude-zen-mcp-wrapper
 
 # Or enable wrapper mode in existing server
 CLAUDE_FLOW_WRAPPER_MODE=true npm run mcp

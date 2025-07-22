@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Test script for claude-flow integration.
+Test script for claude-zen integration.
 
 This script tests the integration layer to ensure proper execution
-of claude-flow commands with comprehensive error handling and output capture.
+of claude-zen commands with comprehensive error handling and output capture.
 """
 
 import sys
@@ -181,7 +181,7 @@ def test_error_handling():
     print("\n=== Testing Error Handling ===")
     
     test_errors = [
-        "command not found: claude-flow",
+        "command not found: claude-zen",
         "Error: invalid option --invalid",
         "Process terminated with signal 11",
         "Connection refused while fetching data",

@@ -7,8 +7,6 @@
  */
 
 const { spawn } = require('child_process');
-const fs = require('fs').promises;
-const path = require('path');
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store

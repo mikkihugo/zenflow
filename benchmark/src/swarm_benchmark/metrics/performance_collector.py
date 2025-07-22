@@ -1,4 +1,4 @@
-"""Real-time performance metrics collector for claude-flow benchmarks."""
+"""Real-time performance metrics collector for claude-zen benchmarks."""
 
 from __future__ import annotations
 import asyncio
@@ -38,7 +38,7 @@ class CollectionInterval:
     
 
 class PerformanceCollector:
-    """Collects real performance metrics from claude-flow executions."""
+    """Collects real performance metrics from claude-zen executions."""
     
     def __init__(self, sample_interval: float = 0.1):
         """Initialize the performance collector.

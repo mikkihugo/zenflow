@@ -15,7 +15,7 @@ async function testServiceDocumentTools() {
   console.log('Test 1: Creating service document...');
   const createResult = await server.handleServiceDocumentManager({
     action: 'create',
-    serviceName: 'claude-flow-core',
+    serviceName: 'claude-zen-core',
     documentType: 'service-description',
     content: {
       name: 'Claude-Flow Core Service',
@@ -30,7 +30,7 @@ async function testServiceDocumentTools() {
   console.log('\nTest 2: Listing service documents...');
   const listResult = await server.handleServiceDocumentManager({
     action: 'list',
-    serviceName: 'claude-flow-core',
+    serviceName: 'claude-zen-core',
     documentType: 'service-description'
   });
   console.log('List result:', JSON.stringify(listResult, null, 2));
@@ -48,7 +48,7 @@ async function testServiceDocumentTools() {
   console.log('\nTest 4: Testing document validator...');
   const validationResult = await server.handleServiceDocumentValidator({
     validateType: 'single-document',
-    serviceName: 'claude-flow-core',
+    serviceName: 'claude-zen-core',
     documentType: 'service-description'
   });
   console.log('Validation result:', JSON.stringify(validationResult, null, 2));

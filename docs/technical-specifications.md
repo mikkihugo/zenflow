@@ -904,4 +904,4 @@ This comprehensive technical specification provides:
 6. **Maintainable**: Clear interfaces and modular design
 7. **Testable**: Comprehensive testing strategy and coverage requirements
 
-The architecture ensures that the console-style web UI provides an authentic terminal experience while maintaining the full functionality and reliability of the existing claude-flow CLI system. The design supports real-time collaboration, file handling, and multi-session management while preserving security and performance standards.
+The architecture ensures that the console-style web UI provides an authentic terminal experience while maintaining the full functionality and reliability of the existing claude-zen CLI system. The design supports real-time collaboration, file handling, and multi-session management while preserving security and performance standards.

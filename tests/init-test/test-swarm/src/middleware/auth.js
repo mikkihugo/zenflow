@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const { logger } = require('../utils/logger');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import { logger } from '../utils/logger.js';
 
 const generateToken = (userId) => {
   return jwt.sign(
@@ -44,4 +44,4 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-module.exports = { generateToken, verifyToken, authenticate };
+export { generateToken, verifyToken, authenticate };

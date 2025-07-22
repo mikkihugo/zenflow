@@ -31,7 +31,7 @@ The primary Claude instance that:
 
 ### Basic Syntax
 ```bash
-claude-flow swarm <objective> [options]
+claude-zen swarm <objective> [options]
 ```
 
 ### Options
@@ -55,12 +55,12 @@ claude-flow swarm <objective> [options]
 
 ### Basic Swarm
 ```bash
-claude-flow swarm "Build a complete e-commerce platform with React and Node.js"
+claude-zen swarm "Build a complete e-commerce platform with React and Node.js"
 ```
 
 ### Research-Focused Swarm
 ```bash
-claude-flow swarm "Research and document best practices for microservices architecture" \
+claude-zen swarm "Research and document best practices for microservices architecture" \
   --strategy research \
   --research \
   --max-agents 8
@@ -68,7 +68,7 @@ claude-flow swarm "Research and document best practices for microservices archit
 
 ### Development Swarm with Review
 ```bash
-claude-flow swarm "Refactor the authentication system with modern security practices" \
+claude-zen swarm "Refactor the authentication system with modern security practices" \
   --strategy development \
   --review \
   --parallel \
@@ -77,7 +77,7 @@ claude-flow swarm "Refactor the authentication system with modern security pract
 
 ### Complex Project with Coordinator
 ```bash
-claude-flow swarm "Migrate monolithic application to microservices" \
+claude-zen swarm "Migrate monolithic application to microservices" \
   --coordinator \
   --max-depth 4 \
   --timeout 120 \
@@ -86,7 +86,7 @@ claude-flow swarm "Migrate monolithic application to microservices" \
 
 ### Dry Run to Preview
 ```bash
-claude-flow swarm "Create mobile app" --dry-run --verbose
+claude-zen swarm "Create mobile app" --dry-run --verbose
 ```
 
 ## How It Works
@@ -239,14 +239,14 @@ Swarm mode integrates seamlessly with other Claude-Flow features:
 ### Debug Mode
 Use `--verbose` for detailed logging:
 ```bash
-claude-flow swarm "debug task" --verbose --dry-run
+claude-zen swarm "debug task" --verbose --dry-run
 ```
 
 ## Example Workflows
 
 ### Full Stack Application
 ```bash
-claude-flow swarm "Create a full-stack task management app with React, Node.js, PostgreSQL" \
+claude-zen swarm "Create a full-stack task management app with React, Node.js, PostgreSQL" \
   --strategy development \
   --max-agents 8 \
   --parallel \
@@ -256,7 +256,7 @@ claude-flow swarm "Create a full-stack task management app with React, Node.js, 
 
 ### Research Project
 ```bash
-claude-flow swarm "Research and compare top 10 JavaScript frameworks for enterprise applications" \
+claude-zen swarm "Research and compare top 10 JavaScript frameworks for enterprise applications" \
   --strategy research \
   --research \
   --max-agents 10 \
@@ -265,7 +265,7 @@ claude-flow swarm "Research and compare top 10 JavaScript frameworks for enterpr
 
 ### Code Migration
 ```bash
-claude-flow swarm "Migrate legacy jQuery application to modern React with TypeScript" \
+claude-zen swarm "Migrate legacy jQuery application to modern React with TypeScript" \
   --strategy development \
   --review \
   --max-depth 4 \

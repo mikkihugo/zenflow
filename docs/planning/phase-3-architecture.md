@@ -570,20 +570,20 @@ services:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: claude-flow-orchestrator
+  name: claude-zen-orchestrator
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: claude-flow
+      app: claude-zen
   template:
     metadata:
       labels:
-        app: claude-flow
+        app: claude-zen
     spec:
       containers:
       - name: orchestrator
-        image: claude-flow:latest
+        image: claude-zen:latest
         env:
         - name: MODE
           value: production

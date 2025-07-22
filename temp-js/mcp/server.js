@@ -6,7 +6,7 @@ import { RequestRouter } from './router.js';
 import { SessionManager } from './session-manager.js';
 import { AuthManager } from './auth.js';
 import { LoadBalancer, RequestQueue } from './load-balancer.js';
-import { createClaudeFlowTools } from './claude-flow-tools.js';
+import { createClaudeFlowTools } from './claude-zen-tools.js';
 import { createSwarmTools } from './swarm-tools.js';
 import { createRuvSwarmTools, isRuvSwarmAvailable, initializeRuvSwarmIntegration } from './ruv-swarm-tools.js';
 import { platform, arch } from 'node:os';

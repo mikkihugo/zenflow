@@ -2,7 +2,7 @@
 
 ## Overview
 
-I have created a comprehensive migration system for existing claude-flow projects to adopt optimized prompts and configurations. This system provides multiple migration strategies, automatic backups, rollback capabilities, and handles edge cases gracefully.
+I have created a comprehensive migration system for existing claude-zen projects to adopt optimized prompts and configurations. This system provides multiple migration strategies, automatic backups, rollback capabilities, and handles edge cases gracefully.
 
 ## 📁 System Architecture
 
@@ -62,86 +62,86 @@ scripts/build-migration.sh       # Build and distribution script
 ### Analysis Commands
 ```bash
 # Basic analysis
-npx claude-flow migrate analyze
+npx claude-zen migrate analyze
 
 # Detailed analysis with output
-npx claude-flow migrate analyze --detailed --output analysis.json
+npx claude-zen migrate analyze --detailed --output analysis.json
 
 # Check specific project
-npx claude-flow migrate analyze /path/to/project
+npx claude-zen migrate analyze /path/to/project
 ```
 
 ### Migration Commands
 ```bash
 # Preview changes (safe)
-npx claude-flow migrate --dry-run --verbose
+npx claude-zen migrate --dry-run --verbose
 
 # Selective migration (recommended)
-npx claude-flow migrate --strategy selective --preserve-custom
+npx claude-zen migrate --strategy selective --preserve-custom
 
 # Full migration
-npx claude-flow migrate --strategy full
+npx claude-zen migrate --strategy full
 
 # Merge migration for complex projects
-npx claude-flow migrate --strategy merge
+npx claude-zen migrate --strategy merge
 
 # Force migration without prompts
-npx claude-flow migrate --force
+npx claude-zen migrate --force
 ```
 
 ### Backup & Rollback Commands
 ```bash
 # List available backups
-npx claude-flow migrate rollback --list
+npx claude-zen migrate rollback --list
 
 # Rollback to latest backup
-npx claude-flow migrate rollback
+npx claude-zen migrate rollback
 
 # Rollback to specific backup
-npx claude-flow migrate rollback --timestamp 2024-01-01T12:00:00
+npx claude-zen migrate rollback --timestamp 2024-01-01T12:00:00
 
 # Force rollback without confirmation
-npx claude-flow migrate rollback --force
+npx claude-zen migrate rollback --force
 ```
 
 ### Validation Commands
 ```bash
 # Validate migration
-npx claude-flow migrate validate
+npx claude-zen migrate validate
 
 # Detailed validation report
-npx claude-flow migrate validate --verbose
+npx claude-zen migrate validate --verbose
 
 # Check project status
-npx claude-flow migrate status
+npx claude-zen migrate status
 ```
 
 ## 🎯 Usage Scenarios
 
 ### Scenario 1: Fresh Project Setup
 ```bash
-npx claude-flow migrate --strategy full
+npx claude-zen migrate --strategy full
 ```
 **Result**: Clean installation of all optimized prompts and configurations.
 
 ### Scenario 2: Existing Project with Custom Commands
 ```bash
-npx claude-flow migrate analyze --detailed
-npx claude-flow migrate --strategy selective --preserve-custom
+npx claude-zen migrate analyze --detailed
+npx claude-zen migrate --strategy selective --preserve-custom
 ```
 **Result**: Core files updated, custom commands preserved.
 
 ### Scenario 3: Complex Project with Configurations
 ```bash
-npx claude-flow migrate --strategy merge --preserve-custom
-npx claude-flow migrate validate --verbose
+npx claude-zen migrate --strategy merge --preserve-custom
+npx claude-zen migrate validate --verbose
 ```
 **Result**: Configurations merged, custom content preserved.
 
 ### Scenario 4: Safe Preview Before Migration
 ```bash
-npx claude-flow migrate --dry-run --verbose
-npx claude-flow migrate --strategy selective
+npx claude-zen migrate --dry-run --verbose
+npx claude-zen migrate --strategy selective
 ```
 **Result**: Risk-free preview of all changes before applying.
 
@@ -150,7 +150,7 @@ npx claude-flow migrate --strategy selective
 find . -name ".claude" -type d | while read dir; do
   project_path=$(dirname "$dir")
   echo "Migrating $project_path"
-  npx claude-flow migrate "$project_path" --strategy selective --force
+  npx claude-zen migrate "$project_path" --strategy selective --force
 done
 ```
 **Result**: Multiple projects migrated with consistent strategy.
@@ -159,7 +159,7 @@ done
 
 ### Programmatic Migration
 ```typescript
-import { MigrationRunner, MigrationAnalyzer } from 'claude-flow/migration';
+import { MigrationRunner, MigrationAnalyzer } from 'claude-zen/migration';
 
 // Analyze project
 const analyzer = new MigrationAnalyzer();
@@ -179,7 +179,7 @@ console.log(`Migration ${result.success ? 'succeeded' : 'failed'}`);
 
 ### Backup Management
 ```typescript
-import { RollbackManager } from 'claude-flow/migration';
+import { RollbackManager } from 'claude-zen/migration';
 
 const rollback = new RollbackManager('./my-project');
 
@@ -341,9 +341,9 @@ The Claude-Flow Migration System provides a robust, safe, and user-friendly way 
 - ✅ Extensive test coverage and validation
 - ✅ Professional CLI interface with progress reporting
 - ✅ Detailed documentation and usage examples
-- ✅ Integration with existing claude-flow ecosystem
+- ✅ Integration with existing claude-zen ecosystem
 - ✅ Performance optimized for various project sizes
 - ✅ Edge case handling for real-world scenarios
 - ✅ Extensible architecture for future enhancements
 
-The system is production-ready and can be immediately deployed to help existing claude-flow users migrate to optimized prompts with confidence and safety.
+The system is production-ready and can be immediately deployed to help existing claude-zen users migrate to optimized prompts with confidence and safety.

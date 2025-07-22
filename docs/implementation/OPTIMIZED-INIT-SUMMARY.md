@@ -148,14 +148,14 @@ This document summarizes the comprehensive documentation created for the new opt
 ### For New Projects
 ```bash
 # Single command for optimal setup
-npx -y claude-flow@latest init --sparc --force
+npx -y claude-zen@latest init --sparc --force
 ```
 
 ### For Existing Projects
 ```bash
 # Backup and migrate
 cp CLAUDE.md CLAUDE.md.backup
-npx claude-flow@latest init --sparc --force
+npx claude-zen@latest init --sparc --force
 # Review and merge customizations
 ```
 

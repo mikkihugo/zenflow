@@ -1,5 +1,5 @@
 """
-Test data and fixtures for realistic claude-flow benchmarking.
+Test data and fixtures for realistic claude-zen benchmarking.
 Provides sample projects, code snippets, and scenarios for testing.
 """
 

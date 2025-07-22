@@ -8,11 +8,11 @@ This is a working demonstration of the swarm mode feature that bypasses the Clif
 # Direct usage
 ./swarm-demo.ts <objective> [options]
 
-# Using claude-flow wrapper
-./bin/claude-flow swarm <objective> [options]
+# Using claude-zen wrapper
+./bin/claude-zen swarm <objective> [options]
 
 # Or if installed globally
-claude-flow swarm <objective> [options]
+claude-zen swarm <objective> [options]
 ```
 
 ## Options
@@ -30,22 +30,22 @@ claude-flow swarm <objective> [options]
 
 ```bash
 # Basic swarm
-./bin/claude-flow swarm "Build a REST API"
+./bin/claude-zen swarm "Build a REST API"
 
 # Complex migration with coordinator
-./bin/claude-flow swarm "Migrate monolithic app to microservices" \
+./bin/claude-zen swarm "Migrate monolithic app to microservices" \
   --coordinator --max-agents 10 --review
 
 # Research swarm
-./bin/claude-flow swarm "Research best practices for cloud architecture" \
+./bin/claude-zen swarm "Research best practices for cloud architecture" \
   --strategy research --research --max-agents 8
 
 # Development swarm with parallel execution
-./bin/claude-flow swarm "Implement user authentication system" \
+./bin/claude-zen swarm "Implement user authentication system" \
   --strategy development --parallel --review
 
 # Preview configuration
-./bin/claude-flow swarm "Create mobile app" --dry-run --verbose
+./bin/claude-zen swarm "Create mobile app" --dry-run --verbose
 ```
 
 ## Requirements

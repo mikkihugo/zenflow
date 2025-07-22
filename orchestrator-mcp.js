@@ -57,7 +57,7 @@ setupDefaultRules(documentStack);
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    service: 'claude-flow-mcp',
+    service: 'claude-zen-mcp',
     version: '2.0.0-alpha.61',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()

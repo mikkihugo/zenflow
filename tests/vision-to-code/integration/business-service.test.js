@@ -3,15 +3,15 @@
  * Tests for vision management, stakeholder workflows, and ROI analysis
  */
 
-const { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } = require('@jest/globals');
-const axios = require('axios');
-const { 
+import { describe, it, beforeEach, afterEach, beforeAll, afterAll, expect } from '@jest/globals';
+import axios from 'axios';
+import { 
   SERVICE_URLS, 
   mockVisions, 
   mockStakeholders, 
   apiResponseTemplates,
   testHelpers
-} = require('../fixtures/vision-workflow-fixtures');
+} from '../fixtures/vision-workflow-fixtures.js';
 
 describe('Business Service Integration Tests', () => {
   let businessServiceClient;

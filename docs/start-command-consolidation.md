@@ -64,16 +64,16 @@ start-command/
 ### Basic Usage
 ```bash
 # Start in interactive mode
-claude-flow start
+claude-zen start
 
 # Start with UI
-claude-flow start --ui
+claude-zen start --ui
 
 # Start as daemon
-claude-flow start --daemon
+claude-zen start --daemon
 
 # Start with custom port
-claude-flow start --port 8080
+claude-zen start --port 8080
 ```
 
 ### Process Management UI

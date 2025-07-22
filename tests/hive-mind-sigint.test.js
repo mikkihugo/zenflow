@@ -67,7 +67,7 @@ describe('Hive Mind SIGINT Handler', () => {
       expect(code).toBe(0);
       expect(output).toContain('Pausing session...');
       expect(output).toContain('Session paused successfully');
-      expect(output).toContain(`claude-flow hive-mind resume ${sessionId}`);
+      expect(output).toContain(`claude-zen hive-mind resume ${sessionId}`);
 
       // Verify session was paused in database
       if (existsSync(dbPath)) {
@@ -127,7 +127,7 @@ describe('Hive Mind SIGINT Handler', () => {
 
   it('should terminate Claude Code process when SIGINT is received', (done) => {
     // This test requires claude command to be available
-    const { execSync } = require('child_process');
+    
     let claudeAvailable = false;
     
     try {

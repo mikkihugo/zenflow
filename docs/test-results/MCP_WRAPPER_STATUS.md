@@ -19,8 +19,8 @@ The Claude Code MCP wrapper has been successfully implemented and integrated, bu
 - `npm run mcp:wrapper` runs the wrapper directly
 
 ### ✅ MCP Configuration
-- `claude-flow.mcp.json` updated to use the wrapper
-- Can be served with: `claude mcp serve claude-flow.mcp.json`
+- `claude-zen.mcp.json` updated to use the wrapper
+- Can be served with: `claude mcp serve claude-zen.mcp.json`
 
 ## What Needs Work
 
@@ -31,7 +31,7 @@ The project has multiple CLI implementations:
 3. **Compiled versions** - Out of date due to TypeScript errors
 
 ### Current Behavior
-- `./claude-flow` uses the binary script which falls back to `simple-cli.ts`
+- `./claude-zen` uses the binary script which falls back to `simple-cli.ts`
 - `simple-cli.ts` was updated but has a different command structure
 - The `mcp start` command in simple-cli.ts doesn't match our updates
 
@@ -52,7 +52,7 @@ Add to Claude Desktop config:
 ```json
 {
   "servers": {
-    "claude-flow": {
+    "claude-zen": {
       "command": "node",
       "args": ["node_modules/.bin/tsx", "src/mcp/server-with-wrapper.ts"]
     }
@@ -62,7 +62,7 @@ Add to Claude Desktop config:
 
 ## Next Steps
 
-To fully integrate `./claude-flow mcp start`:
+To fully integrate `./claude-zen mcp start`:
 1. Fix TypeScript compilation errors to rebuild the project
 2. Update all CLI entry points to use the wrapper
 3. Ensure consistent command structure across all CLIs

@@ -15,20 +15,20 @@ export const MAIN_HELP = `
 ⚡ ALPHA 64: Fixed wrapper script to use @alpha tag, ensures latest version always used
 
 USAGE:
-  claude-flow <command> [options]
-  claude-flow <command> --help    # Get detailed help for any command
+  claude-zen <command> [options]
+  claude-zen <command> --help    # Get detailed help for any command
 
 🚀 QUICK START:
   # First time setup (creates CLAUDE.md & .claude/commands)
-  npx claude-flow@alpha init --sparc
+  npx claude-zen@alpha init --sparc
   
   # 🐝 HIVE MIND QUICK START (NEW!):
-  claude-flow hive-mind wizard          # Interactive setup wizard
-  claude-flow hive-mind spawn "objective"  # Create intelligent swarm
+  claude-zen hive-mind wizard          # Interactive setup wizard
+  claude-zen hive-mind spawn "objective"  # Create intelligent swarm
   
   # After setup, use without npx:
-  claude-flow start --ui --swarm         # Start with swarm intelligence UI
-  claude-flow swarm "build REST API"     # Deploy multi-agent workflow
+  claude-zen start --ui --swarm         # Start with swarm intelligence UI
+  claude-zen swarm "build REST API"     # Deploy multi-agent workflow
 
 🐝 HIVE MIND COMMANDS (NEW!):
   hive-mind wizard         🎯 Interactive setup wizard (RECOMMENDED)
@@ -64,18 +64,18 @@ USAGE:
   batch <action>           Batch operations
 
 🔍 GET HELP:
-  claude-flow --help                Show this help
-  claude-flow help                  Show this help
-  claude-flow help <command>        Detailed command help
-  claude-flow <command> --help      Detailed command help
+  claude-zen --help                Show this help
+  claude-zen help                  Show this help
+  claude-zen help <command>        Detailed command help
+  claude-zen <command> --help      Detailed command help
 
 🎯 RECOMMENDED FOR NEW USERS:
-  claude-flow hive-mind wizard     # Start here! Interactive guided setup
-  claude-flow init --sparc         # Initialize with SPARC methodology
-  claude-flow help hive-mind       # Learn about Hive Mind features
+  claude-zen hive-mind wizard     # Start here! Interactive guided setup
+  claude-zen init --sparc         # Initialize with SPARC methodology
+  claude-zen help hive-mind       # Learn about Hive Mind features
 
-📚 Documentation: https://github.com/ruvnet/claude-flow
-🐝 Hive Mind Guide: https://github.com/ruvnet/claude-flow/tree/main/docs/hive-mind
+📚 Documentation: https://github.com/ruvnet/claude-zen
+🐝 Hive Mind Guide: https://github.com/ruvnet/claude-zen/tree/main/docs/hive-mind
 🐝 ruv-swarm: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
 `;
 
@@ -84,7 +84,7 @@ export const COMMAND_HELP = {
 🧠 SWARM COMMAND - Multi-Agent AI Coordination
 
 USAGE:
-  claude-flow swarm <objective> [options]
+  claude-zen swarm <objective> [options]
 
 DESCRIPTION:
   Deploy intelligent multi-agent swarms to accomplish complex objectives.
@@ -104,12 +104,12 @@ OPTIONS:
   --read-only          Enable read-only mode (alias for --analysis)
 
 EXAMPLES:
-  claude-flow swarm "Build a REST API with authentication"
-  claude-flow swarm "Research cloud architecture patterns" --strategy research
-  claude-flow swarm "Optimize database queries" --max-agents 3 --parallel
-  claude-flow swarm "Develop feature X" --strategy development --monitor --ui
-  claude-flow swarm "Analyze codebase for security issues" --analysis
-  claude-flow swarm "Review architecture patterns" --read-only --strategy research
+  claude-zen swarm "Build a REST API with authentication"
+  claude-zen swarm "Research cloud architecture patterns" --strategy research
+  claude-zen swarm "Optimize database queries" --max-agents 3 --parallel
+  claude-zen swarm "Develop feature X" --strategy development --monitor --ui
+  claude-zen swarm "Analyze codebase for security issues" --analysis
+  claude-zen swarm "Review architecture patterns" --read-only --strategy research
 
 AGENT TYPES:
   researcher    Research with web access and data analysis
@@ -138,7 +138,7 @@ ANALYSIS MODE:
 🐙 GITHUB COMMAND - Workflow Automation
 
 USAGE:
-  claude-flow github <mode> <objective> [options]
+  claude-zen github <mode> <objective> [options]
 
 DESCRIPTION:
   Automate GitHub workflows with 6 specialized AI-powered modes.
@@ -159,19 +159,19 @@ OPTIONS:
   --config <file>     Custom configuration file
 
 EXAMPLES:
-  claude-flow github pr-manager "create feature PR with tests"
-  claude-flow github gh-coordinator "setup CI/CD pipeline" --auto-approve
-  claude-flow github release-manager "prepare v2.0.0 release"
-  claude-flow github repo-architect "optimize monorepo structure"
-  claude-flow github issue-tracker "analyze and label issues"
-  claude-flow github sync-coordinator "sync versions across packages"
+  claude-zen github pr-manager "create feature PR with tests"
+  claude-zen github gh-coordinator "setup CI/CD pipeline" --auto-approve
+  claude-zen github release-manager "prepare v2.0.0 release"
+  claude-zen github repo-architect "optimize monorepo structure"
+  claude-zen github issue-tracker "analyze and label issues"
+  claude-zen github sync-coordinator "sync versions across packages"
 `,
 
   agent: `
 🤖 AGENT COMMAND - AI Agent Management
 
 USAGE:
-  claude-flow agent <action> [options]
+  claude-zen agent <action> [options]
 
 ACTIONS:
   spawn <type>      Create new AI agent
@@ -197,18 +197,18 @@ AGENT TYPES:
   optimizer        Performance optimization
 
 EXAMPLES:
-  claude-flow agent spawn researcher --name "DataBot"
-  claude-flow agent list --verbose
-  claude-flow agent terminate agent-123
-  claude-flow agent hierarchy create enterprise
-  claude-flow agent ecosystem status
+  claude-zen agent spawn researcher --name "DataBot"
+  claude-zen agent list --verbose
+  claude-zen agent terminate agent-123
+  claude-zen agent hierarchy create enterprise
+  claude-zen agent ecosystem status
 `,
 
   memory: `
 💾 MEMORY COMMAND - Persistent Memory Management
 
 USAGE:
-  claude-flow memory <action> [options]
+  claude-zen memory <action> [options]
 
 ACTIONS:
   store <key> <value>     Store data in memory
@@ -227,20 +227,20 @@ OPTIONS:
   --verbose               Detailed output
 
 EXAMPLES:
-  claude-flow memory store architecture "microservices pattern"
-  claude-flow memory get architecture
-  claude-flow memory query "API design"
-  claude-flow memory stats
-  claude-flow memory export backup.json
-  claude-flow memory cleanup --older-than 30d
+  claude-zen memory store architecture "microservices pattern"
+  claude-zen memory get architecture
+  claude-zen memory query "API design"
+  claude-zen memory stats
+  claude-zen memory export backup.json
+  claude-zen memory cleanup --older-than 30d
 `,
 
   sparc: `
 🚀 SPARC COMMAND - Development Mode Operations
 
 USAGE:
-  claude-flow sparc [mode] [objective]
-  claude-flow sparc <action>
+  claude-zen sparc [mode] [objective]
+  claude-zen sparc <action>
 
 DESCRIPTION:
   SPARC provides 17 specialized development modes for different workflows.
@@ -271,18 +271,18 @@ ACTIONS:
   run <mode>     Run specific mode
 
 EXAMPLES:
-  claude-flow sparc "design authentication system"    # Auto-select mode
-  claude-flow sparc architect "design microservices"  # Use architect mode
-  claude-flow sparc tdd "user registration feature"   # TDD workflow
-  claude-flow sparc modes                            # List all modes
-  claude-flow sparc info security                    # Mode details
+  claude-zen sparc "design authentication system"    # Auto-select mode
+  claude-zen sparc architect "design microservices"  # Use architect mode
+  claude-zen sparc tdd "user registration feature"   # TDD workflow
+  claude-zen sparc modes                            # List all modes
+  claude-zen sparc info security                    # Mode details
 `,
 
   init: `
 🎯 INIT COMMAND - Initialize Claude Flow Environment
 
 USAGE:
-  claude-flow init [options]
+  claude-zen init [options]
 
 DESCRIPTION:
   Initialize Claude Flow v2.0.0 in your project with full MCP integration.
@@ -296,7 +296,7 @@ OPTIONS:
   --minimal        Minimal setup without examples
   --template <t>   Use specific project template
 
-WHAT claude-flow init CREATES (DEFAULT):
+WHAT claude-zen init CREATES (DEFAULT):
   📄 CLAUDE.md          AI-readable project instructions & context
   📁 .claude/           Enterprise configuration directory containing:
     └── commands/       Custom commands and automation scripts
@@ -327,19 +327,19 @@ WHAT claude-flow init CREATES (DEFAULT):
   • Enterprise security features
 
 EXAMPLES:
-  npx claude-flow@2.0.0 init              # Default: Full v2.0.0 setup
-  claude-flow init                        # Initialize with enhanced features
-  claude-flow init --force                # Overwrite existing configuration
-  claude-flow init --dry-run              # Preview what will be created
-  claude-flow init --sparc                # SPARC enterprise setup
-  claude-flow init --minimal              # Basic setup only
+  npx claude-zen@2.0.0 init              # Default: Full v2.0.0 setup
+  claude-zen init                        # Initialize with enhanced features
+  claude-zen init --force                # Overwrite existing configuration
+  claude-zen init --dry-run              # Preview what will be created
+  claude-zen init --sparc                # SPARC enterprise setup
+  claude-zen init --minimal              # Basic setup only
 `,
 
   start: `
 🚀 START COMMAND - Start Orchestration System
 
 USAGE:
-  claude-flow start [options]
+  claude-zen start [options]
 
 DESCRIPTION:
   Start the Claude Flow orchestration system with optional UI and swarm intelligence.
@@ -353,18 +353,18 @@ OPTIONS:
   --config <file>  Custom configuration file
 
 EXAMPLES:
-  claude-flow start                      # Basic start
-  claude-flow start --ui --swarm         # Full UI with swarm features
-  claude-flow start --daemon             # Background daemon
-  claude-flow start --port 8080          # Custom MCP port
-  claude-flow start --config prod.json   # Production config
+  claude-zen start                      # Basic start
+  claude-zen start --ui --swarm         # Full UI with swarm features
+  claude-zen start --daemon             # Background daemon
+  claude-zen start --port 8080          # Custom MCP port
+  claude-zen start --config prod.json   # Production config
 `,
 
   status: `
 📊 STATUS COMMAND - System Status
 
 USAGE:
-  claude-flow status [options]
+  claude-zen status [options]
 
 DESCRIPTION:
   Show comprehensive system status including agents, tasks, and resources.
@@ -385,17 +385,17 @@ OUTPUT INCLUDES:
   • Performance metrics
 
 EXAMPLES:
-  claude-flow status                     # Basic status
-  claude-flow status --verbose           # Detailed information
-  claude-flow status --json              # Machine-readable format
-  claude-flow status --watch             # Live monitoring
+  claude-zen status                     # Basic status
+  claude-zen status --verbose           # Detailed information
+  claude-zen status --json              # Machine-readable format
+  claude-zen status --watch             # Live monitoring
 `,
 
   training: `
 🧠 TRAINING COMMAND - Neural Pattern Learning & Model Updates
 
 USAGE:
-  claude-flow training <command> [options]
+  claude-zen training <command> [options]
 
 DESCRIPTION:
   Train neural patterns from operations, learn from outcomes, and update agent models 
@@ -422,10 +422,10 @@ MODEL UPDATE OPTIONS:
   --operation-result <res> Result from operation execution
 
 EXAMPLES:
-  claude-flow training neural-train --data recent --model task-predictor
-  claude-flow training pattern-learn --operation "file-creation" --outcome "success"
-  claude-flow training model-update --agent-type coordinator --operation-result "efficient"
-  claude-flow training neural-train --data "swarm-123" --epochs 100 --model "coordinator-predictor"
+  claude-zen training neural-train --data recent --model task-predictor
+  claude-zen training pattern-learn --operation "file-creation" --outcome "success"
+  claude-zen training model-update --agent-type coordinator --operation-result "efficient"
+  claude-zen training neural-train --data "swarm-123" --epochs 100 --model "coordinator-predictor"
 
 🎯 Neural training improves:
   • Task selection accuracy
@@ -438,7 +438,7 @@ EXAMPLES:
 🐝 COORDINATION COMMAND - Swarm & Agent Orchestration
 
 USAGE:
-  claude-flow coordination <command> [options]
+  claude-zen coordination <command> [options]
 
 DESCRIPTION:
   Initialize swarms, spawn coordinated agents, and orchestrate task execution 
@@ -472,10 +472,10 @@ TASK-ORCHESTRATE OPTIONS:
   --share-results      Enable result sharing across swarm
 
 EXAMPLES:
-  claude-flow coordination swarm-init --topology hierarchical --max-agents 8
-  claude-flow coordination agent-spawn --type developer --name "api-dev" --swarm-id swarm-123
-  claude-flow coordination task-orchestrate --task "Build REST API" --strategy parallel --share-results
-  claude-flow coordination swarm-init --topology mesh --max-agents 12
+  claude-zen coordination swarm-init --topology hierarchical --max-agents 8
+  claude-zen coordination agent-spawn --type developer --name "api-dev" --swarm-id swarm-123
+  claude-zen coordination task-orchestrate --task "Build REST API" --strategy parallel --share-results
+  claude-zen coordination swarm-init --topology mesh --max-agents 12
 
 🎯 Coordination enables:
   • Intelligent task distribution
@@ -489,7 +489,7 @@ EXAMPLES:
 📊 ANALYSIS COMMAND - Performance & Usage Analytics
 
 USAGE:
-  claude-flow analysis <command> [options]
+  claude-zen analysis <command> [options]
 
 DESCRIPTION:
   Detect performance bottlenecks, generate comprehensive reports, and analyze 
@@ -518,11 +518,11 @@ TOKEN USAGE OPTIONS:
   --cost-analysis      Include cost projections and optimization
 
 EXAMPLES:
-  claude-flow analysis bottleneck-detect --scope system
-  claude-flow analysis bottleneck-detect --scope agent --target coordinator-1
-  claude-flow analysis performance-report --timeframe 7d --format detailed
-  claude-flow analysis token-usage --breakdown --cost-analysis
-  claude-flow analysis bottleneck-detect --scope swarm --target swarm-123
+  claude-zen analysis bottleneck-detect --scope system
+  claude-zen analysis bottleneck-detect --scope agent --target coordinator-1
+  claude-zen analysis performance-report --timeframe 7d --format detailed
+  claude-zen analysis token-usage --breakdown --cost-analysis
+  claude-zen analysis bottleneck-detect --scope swarm --target swarm-123
 
 🎯 Analysis helps with:
   • Performance optimization
@@ -536,7 +536,7 @@ EXAMPLES:
 🤖 AUTOMATION COMMAND - Intelligent Agent & Workflow Management
 
 USAGE:
-  claude-flow automation <command> [options]
+  claude-zen automation <command> [options]
 
 DESCRIPTION:
   Automatically spawn optimal agents, intelligently manage workflows, and select 
@@ -564,10 +564,10 @@ WORKFLOW-SELECT OPTIONS:
                            Options: speed, quality, cost, balanced
 
 EXAMPLES:
-  claude-flow automation auto-agent --task-complexity enterprise --swarm-id swarm-123
-  claude-flow automation smart-spawn --requirement "web-development" --max-agents 8
-  claude-flow automation workflow-select --project-type api --priority speed
-  claude-flow automation auto-agent --task-complexity low
+  claude-zen automation auto-agent --task-complexity enterprise --swarm-id swarm-123
+  claude-zen automation smart-spawn --requirement "web-development" --max-agents 8
+  claude-zen automation workflow-select --project-type api --priority speed
+  claude-zen automation auto-agent --task-complexity low
 
 🎯 Automation benefits:
   • Optimal resource allocation
@@ -581,7 +581,7 @@ EXAMPLES:
 🔗 HOOKS COMMAND - Lifecycle Event Management
 
 USAGE:
-  claude-flow hooks <command> [options]
+  claude-zen hooks <command> [options]
 
 DESCRIPTION:
   Execute lifecycle hooks before and after tasks, edits, and sessions with 
@@ -619,11 +619,11 @@ SESSION-END OPTIONS:
   --generate-summary      Create comprehensive session summary
 
 EXAMPLES:
-  claude-flow hooks pre-task --description "Build API" --task-id task-123 --agent-id agent-456
-  claude-flow hooks post-task --task-id task-123 --analyze-performance --generate-insights
-  claude-flow hooks pre-edit --file "src/api.js" --operation edit
-  claude-flow hooks post-edit --file "src/api.js" --memory-key "swarm/123/edits/timestamp"
-  claude-flow hooks session-end --export-metrics --generate-summary --swarm-id swarm-123
+  claude-zen hooks pre-task --description "Build API" --task-id task-123 --agent-id agent-456
+  claude-zen hooks post-task --task-id task-123 --analyze-performance --generate-insights
+  claude-zen hooks pre-edit --file "src/api.js" --operation edit
+  claude-zen hooks post-edit --file "src/api.js" --memory-key "swarm/123/edits/timestamp"
+  claude-zen hooks session-end --export-metrics --generate-summary --swarm-id swarm-123
 
 🎯 Hooks enable:
   • Automated preparation & cleanup
@@ -642,9 +642,9 @@ export function getCommandHelp(command) {
 export function getStandardizedCommandHelp(command) {
   const commandConfigs = {
     agent: {
-      name: 'claude-flow agent',
+      name: 'claude-zen agent',
       description: 'Manage individual agents',
-      usage: 'claude-flow agent <action> [options]',
+      usage: 'claude-zen agent <action> [options]',
       commands: [
         { name: 'spawn', description: 'Create a new agent' },
         { name: 'list', description: 'List all active agents' },
@@ -686,16 +686,16 @@ export function getStandardizedCommandHelp(command) {
         },
       ],
       examples: [
-        'claude-flow agent spawn researcher --name "Research Bot"',
-        'claude-flow agent list --json',
-        'claude-flow agent terminate agent-123',
-        'claude-flow agent info agent-456 --verbose',
+        'claude-zen agent spawn researcher --name "Research Bot"',
+        'claude-zen agent list --json',
+        'claude-zen agent terminate agent-123',
+        'claude-zen agent info agent-456 --verbose',
       ],
     },
     sparc: {
-      name: 'claude-flow sparc',
+      name: 'claude-zen sparc',
       description: 'Execute SPARC development modes',
-      usage: 'claude-flow sparc <mode> [task] [options]',
+      usage: 'claude-zen sparc <mode> [task] [options]',
       commands: [
         { name: 'spec', description: 'Specification mode - Requirements analysis' },
         { name: 'architect', description: 'Architecture mode - System design' },
@@ -724,16 +724,16 @@ export function getStandardizedCommandHelp(command) {
         },
       ],
       examples: [
-        'claude-flow sparc spec "User authentication system"',
-        'claude-flow sparc tdd "Payment processing module"',
-        'claude-flow sparc architect "Microservices architecture"',
-        'claude-flow sparc modes',
+        'claude-zen sparc spec "User authentication system"',
+        'claude-zen sparc tdd "Payment processing module"',
+        'claude-zen sparc architect "Microservices architecture"',
+        'claude-zen sparc modes',
       ],
     },
     memory: {
-      name: 'claude-flow memory',
+      name: 'claude-zen memory',
       description: 'Manage persistent memory operations',
-      usage: 'claude-flow memory <action> [key] [value] [options]',
+      usage: 'claude-zen memory <action> [key] [value] [options]',
       commands: [
         { name: 'store', description: 'Store data in memory' },
         { name: 'query', description: 'Search memory by pattern' },
@@ -763,10 +763,10 @@ export function getStandardizedCommandHelp(command) {
         },
       ],
       examples: [
-        'claude-flow memory store "api_design" "REST endpoints specification"',
-        'claude-flow memory query "authentication"',
-        'claude-flow memory export backup.json',
-        'claude-flow memory list --namespace project',
+        'claude-zen memory store "api_design" "REST endpoints specification"',
+        'claude-zen memory query "authentication"',
+        'claude-zen memory export backup.json',
+        'claude-zen memory list --namespace project',
       ],
     },
   };
@@ -775,8 +775,8 @@ export function getStandardizedCommandHelp(command) {
   if (!config) {
     return HelpFormatter.formatError(
       `Unknown command: ${command}`,
-      'claude-flow',
-      'claude-flow <command> --help',
+      'claude-zen',
+      'claude-zen <command> --help',
     );
   }
 
@@ -791,11 +791,11 @@ export function getMainHelp(plain = false) {
 
   // Return plain standardized format when requested
   const helpInfo = {
-    name: 'claude-flow',
+    name: 'claude-zen',
     description: 'Advanced AI agent orchestration system',
-    usage: `claude-flow <command> [<args>] [options]
-    claude-flow <command> --help
-    claude-flow --version`,
+    usage: `claude-zen <command> [<args>] [options]
+    claude-zen <command> --help
+    claude-zen --version`,
     commands: [
       {
         name: 'hive-mind',
@@ -895,12 +895,12 @@ export function getMainHelp(plain = false) {
       },
     ],
     examples: [
-      'npx claude-flow@alpha init --sparc',
-      'claude-flow hive-mind wizard',
-      'claude-flow swarm "Build REST API"',
-      'claude-flow agent spawn researcher --name "Research Bot"',
-      'claude-flow status --json',
-      'claude-flow memory query "API design"',
+      'npx claude-zen@alpha init --sparc',
+      'claude-zen hive-mind wizard',
+      'claude-zen swarm "Build REST API"',
+      'claude-zen agent spawn researcher --name "Research Bot"',
+      'claude-zen status --json',
+      'claude-zen memory query "API design"',
     ],
   };
 

@@ -9,7 +9,7 @@ Claude Flow uses SQLite for persistent storage, which requires native bindings t
 The easiest way to use Claude Flow on Windows is with the automatic fallback mode:
 
 ```bash
-npx -y claude-flow@alpha init
+npx -y claude-zen@alpha init
 ```
 
 This will automatically use in-memory storage if SQLite fails to load. Your data won't persist between sessions, but all features will work.
@@ -41,8 +41,8 @@ Install the necessary build tools to compile native modules:
 
 4. **Install Claude Flow locally**
    ```bash
-   npm install claude-flow@alpha
-   npx claude-flow init
+   npm install claude-zen@alpha
+   npx claude-zen init
    ```
 
 ### Option 2: Pre-built Binaries
@@ -54,7 +54,7 @@ Use pre-built SQLite binaries to avoid compilation:
 npm config set build-from-source false
 
 # Install with pre-built binaries
-npm install claude-flow@alpha --build-from-source=false
+npm install claude-zen@alpha --build-from-source=false
 ```
 
 ### Option 3: Windows Subsystem for Linux (WSL)
@@ -77,7 +77,7 @@ WSL provides a full Linux environment on Windows:
 
 3. **Use Claude Flow in WSL**
    ```bash
-   npx -y claude-flow@alpha init
+   npx -y claude-zen@alpha init
    ```
 
 ### Option 4: Docker
@@ -89,7 +89,7 @@ Use Claude Flow in a containerized environment:
 
 2. **Run Claude Flow in Docker**
    ```bash
-   docker run -it node:18 npx -y claude-flow@alpha init
+   docker run -it node:18 npx -y claude-zen@alpha init
    ```
 
 ## Troubleshooting
@@ -159,7 +159,7 @@ Set a custom path for the SQLite database:
 {
   "memory": {
     "type": "sqlite",
-    "path": "C:\\Users\\YourName\\AppData\\Local\\claude-flow\\memory.db"
+    "path": "C:\\Users\\YourName\\AppData\\Local\\claude-zen\\memory.db"
   }
 }
 ```
@@ -187,7 +187,7 @@ Always use in-memory storage:
 
 - GitHub Issues: https://github.com/ruvnet/claude-code-flow/issues
 - Discord: [Join our community]
-- Documentation: https://claude-flow.dev/docs
+- Documentation: https://claude-zen.dev/docs
 
 ## Summary
 

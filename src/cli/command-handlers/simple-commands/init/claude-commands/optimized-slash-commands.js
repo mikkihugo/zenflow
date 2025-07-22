@@ -4,7 +4,7 @@ import {
   createOptimizedSparcSlashCommand,
   createOptimizedMainSparcCommand,
 } from './optimized-sparc-commands.js';
-import { createOptimizedClaudeFlowCommands } from './optimized-claude-flow-commands.js';
+import { createOptimizedClaudeFlowCommands } from './optimized-claude-zen-commands.js';
 import { copyTemplates } from '../template-copier.js';
 import { promises as fs } from 'fs';
 import { join } from 'path';
@@ -13,22 +13,6 @@ import { join } from 'path';
 export async function createOptimizedClaudeSlashCommands(workingDir, selectedModes = null) {
   try {
     console.log('\n🚀 Creating batchtools-optimized Claude Code slash commands...');
-    
-    // Parse .roomodes to get all SPARC modes
-    const roomodesContent = await node.readTextFile(`${workingDir}/.roomodes`);
-    const roomodes = JSON.parse(roomodesContent);
-    
-    // Filter modes if selective initialization is requested
-    const modesToCreate = selectedModes 
-      ? roomodes.customModes.filter(mode => selectedModes.includes(mode.slug))
-      : roomodes.customModes;
-    
-    console.log(`  📝 Creating optimized commands for ${modesToCreate.length} modes...`);
-    
-    // Create slash commands for each SPARC mode with batchtools optimization
-    const commandPromises = modesToCreate.map(async (mode) => {
-      const commandPath = `${workingDir}/.claude/commands/sparc/${mode.slug}.md`;
-      const commandContent = createOptimizedSparcSlashCommand(mode);
 
     // Use template copier with optimized flag
     const optimizedOptions = {
@@ -80,16 +64,8 @@ export async function createOptimizedClaudeSlashCommands(workingDir, selectedMod
         console.log(`  ⚠️  Template copier failed: ${copyResults.errors.join(', ')}`);
       }
     }
-    
-    // Execute all command creations in parallel
-    await Promise.all(commandPromises);
-    
-    // Create main SPARC command with batchtools optimization
-    const mainSparcCommand = createOptimizedMainSparcCommand(roomodes.customModes);
-    await node.writeTextFile(`${workingDir}/.claude/commands/sparc.md`, mainSparcCommand);
-    console.log('  ✅ Created optimized main slash command: /sparc (Batchtools enhanced)');
 
-    // Create claude-flow specific commands with batchtools optimization
+    // Create claude-zen specific commands with batchtools optimization
     await createOptimizedClaudeFlowCommands(workingDir);
 
     // Create batchtools-specific commands
@@ -248,25 +224,25 @@ Chain operations with parallel execution at each stage:
 ### Full SPARC Pipeline with Batchtools
 \`\`\`bash
 # Execute complete SPARC workflow with parallel processing
-./claude-flow sparc pipeline "authentication system" --batch-optimize
+./claude-zen sparc pipeline "authentication system" --batch-optimize
 
 # Run multiple SPARC modes concurrently
-./claude-flow sparc batch architect,code,tdd "user management" --parallel
+./claude-zen sparc batch architect,code,tdd "user management" --parallel
 
 # Concurrent project analysis
-./claude-flow sparc concurrent-analyze project-requirements.json --parallel
+./claude-zen sparc concurrent-analyze project-requirements.json --parallel
 \`\`\`
 
 ### Performance Monitoring
 \`\`\`bash
 # Monitor batch operation performance
-./claude-flow batchtools monitor --real-time
+./claude-zen batchtools monitor --real-time
 
 # Analyze parallel processing metrics
-./claude-flow batchtools analyze --performance --detailed
+./claude-zen batchtools analyze --performance --detailed
 
 # Check system resource utilization
-./claude-flow batchtools resources --concurrent --verbose
+./claude-zen batchtools resources --concurrent --verbose
 \`\`\`
 
 For detailed documentation, see: https://github.com/ruvnet/claude-code-flow/docs/batchtools.md
@@ -306,25 +282,25 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 ### Real-time Monitoring
 \`\`\`bash
 # Monitor all system performance
-./claude-flow performance monitor --real-time --all
+./claude-zen performance monitor --real-time --all
 
 # Focus on parallel operations
-./claude-flow performance monitor --parallel --batchtools
+./claude-zen performance monitor --parallel --batchtools
 
 # Monitor specific components
-./claude-flow performance monitor --focus sparc --concurrent
+./claude-zen performance monitor --focus sparc --concurrent
 \`\`\`
 
 ### Performance Analysis
 \`\`\`bash
 # Generate performance report
-./claude-flow performance report --detailed --timeframe 24h
+./claude-zen performance report --detailed --timeframe 24h
 
 # Analyze batch operation efficiency
-./claude-flow performance analyze --batchtools --optimization
+./claude-zen performance analyze --batchtools --optimization
 
 # Compare performance across different modes
-./claude-flow performance compare --modes architect,code,tdd
+./claude-zen performance compare --modes architect,code,tdd
 \`\`\`
 
 ## Optimization Recommendations

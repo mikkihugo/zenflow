@@ -3,7 +3,7 @@
  * Comprehensive test data for Vision-to-Code integration tests
  */
 
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 
 // Vision workflow stages
 const WORKFLOW_STAGES = {
@@ -374,7 +374,7 @@ const apiResponseTemplates = {
 };
 
 // Test helper functions
-const testHelpers = {
+export const testHelpers = {
   createVisionWorkflow: (complexity = 'simple') => ({
     ...mockVisions[complexity],
     id: `vision_${complexity}_${Date.now()}`,
@@ -404,15 +404,4 @@ const testHelpers = {
     })
 };
 
-module.exports = {
-  WORKFLOW_STAGES,
-  SERVICE_URLS,
-  mockVisions,
-  mockStakeholders,
-  mockAgentConfigurations,
-  mockWorkflowEvents,
-  performanceBenchmarks,
-  errorScenarios,
-  apiResponseTemplates,
-  testHelpers
-};
+export default testHelpers;

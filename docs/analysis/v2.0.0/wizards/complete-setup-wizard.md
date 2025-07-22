@@ -140,7 +140,7 @@ Checking environment...
 │    Skip for now                                             │
 │                                                             │
 │  Note: You can always add GitHub later with:               │
-│  claude-flow github setup                                   │
+│  claude-zen github setup                                   │
 │                                                             │
 ╰─────────────────────────────────────────────────────────────╯
 ```
@@ -163,7 +163,7 @@ Checking environment...
 │  This will create:                                          │
 │  • .claude/ directory with configuration                    │
 │  • CLAUDE.md with project instructions                      │
-│  • Local wrapper script (./claude-flow)                     │
+│  • Local wrapper script (./claude-zen)                     │
 │  • Initialize swarm with 5 agents                           │
 │                                                             │
 │  Proceed? [Y/n]                                             │
@@ -214,21 +214,21 @@ Checking environment...
 │  Quick Start Commands:                                      │
 │  ┌─────────────────────────────────────────────┐           │
 │  │ # Check status                              │           │
-│  │ ./claude-flow status                        │           │
+│  │ ./claude-zen status                        │           │
 │  │                                             │           │
 │  │ # Start development                         │           │
-│  │ ./claude-flow task "Build user auth"       │           │
+│  │ ./claude-zen task "Build user auth"       │           │
 │  │                                             │           │
 │  │ # Open dashboard                           │           │
-│  │ ./claude-flow start --ui                   │           │
+│  │ ./claude-zen start --ui                   │           │
 │  └─────────────────────────────────────────────┘           │
 │                                                             │
 │  📚 Next steps:                                             │
-│  1. Run './claude-flow tutorial' for interactive guide     │
+│  1. Run './claude-zen tutorial' for interactive guide     │
 │  2. Read CLAUDE.md for project-specific instructions       │
-│  3. Visit https://docs.claude-flow.ai for full docs        │
+│  3. Visit https://docs.claude-zen.ai for full docs        │
 │                                                             │
-│  Need help? Run './claude-flow help' or visit our Discord  │
+│  Need help? Run './claude-zen help' or visit our Discord  │
 │                                                             │
 ╰─────────────────────────────────────────────────────────────╯
 ```

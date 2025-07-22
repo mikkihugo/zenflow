@@ -65,7 +65,7 @@ The Neural Networks interface demonstrates the full potential of the Web UI:
 class NeuralNetworksPanel extends EventEmitter {
     async executeTool(toolName, params) {
         const response = await this.ws.sendRequest('tools/call', {
-            name: `mcp__claude-flow__${toolName}`,
+            name: `mcp__claude-zen__${toolName}`,
             arguments: params
         });
         return response;

@@ -68,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔧 Bug Fixes
 - Fixed wrapper script hardcoded to use outdated alpha-27 version
 - Updated wrapper to use `@alpha` tag for always getting latest alpha version
-- Ensures `./claude-flow` wrapper always uses the most recent alpha release
+- Ensures `./claude-zen` wrapper always uses the most recent alpha release
 
 ### 📦 Dependencies
 - No dependency changes, only template fix
@@ -336,7 +336,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Security hardening** with non-root containers and best practices implementation
 
 #### **Enhanced CLI Capabilities**
-- **Advanced swarm coordination commands** with `npx claude-flow swarm`
+- **Advanced swarm coordination commands** with `npx claude-zen swarm`
 - **GitHub integration commands** accessible through enhanced CLI interface
 - **Improved error handling** and validation with detailed error messages
 - **Enhanced UI** with `--ui` flag support for interactive management
@@ -471,35 +471,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1. **Uninstall previous version** (if installed globally):
    ```bash
-   npm uninstall -g claude-flow
+   npm uninstall -g claude-zen
    ```
 
 2. **Install v2.0.0**:
    ```bash
-   npm install -g claude-flow@2.0.0
+   npm install -g claude-zen@2.0.0
    ```
 
 3. **Verify installation**:
    ```bash
-   claude-flow --version  # Should show 2.0.0
-   claude-flow --help     # Verify all commands available
+   claude-zen --version  # Should show 2.0.0
+   claude-zen --help     # Verify all commands available
    ```
 
 ### Configuration Updates
 
 1. **Initialize new features**:
    ```bash
-   npx claude-flow init --sparc
+   npx claude-zen init --sparc
    ```
 
 2. **Test swarm capabilities**:
    ```bash
-   npx claude-flow swarm init
+   npx claude-zen swarm init
    ```
 
 3. **Explore GitHub integration**:
    ```bash
-   npx claude-flow github --help
+   npx claude-zen github --help
    ```
 
 ### Breaking Changes
@@ -525,26 +525,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Swarm Coordination
 ```bash
 # Initialize swarm
-npx claude-flow swarm init
+npx claude-zen swarm init
 
 # Spawn agents
-npx claude-flow agent spawn researcher
-npx claude-flow agent spawn coder
+npx claude-zen agent spawn researcher
+npx claude-zen agent spawn coder
 
 # Orchestrate tasks
-npx claude-flow task orchestrate "complex development task"
+npx claude-zen task orchestrate "complex development task"
 ```
 
 #### GitHub Integration
 ```bash
 # Automated PR management
-npx claude-flow github pr-manager "review and merge feature branch"
+npx claude-zen github pr-manager "review and merge feature branch"
 
 # Issue tracking
-npx claude-flow github issue-tracker "manage project issues"
+npx claude-zen github issue-tracker "manage project issues"
 
 # Release coordination
-npx claude-flow github release-manager "prepare v2.0.0 release"
+npx claude-zen github release-manager "prepare v2.0.0 release"
 ```
 
 #### Docker Development
@@ -562,16 +562,16 @@ After migration, verify functionality:
 
 ```bash
 # Basic functionality
-claude-flow --version
-claude-flow --help
-claude-flow status
+claude-zen --version
+claude-zen --help
+claude-zen status
 
 # Swarm features
-claude-flow swarm init
-claude-flow agent list
+claude-zen swarm init
+claude-zen agent list
 
 # GitHub integration
-claude-flow github --help
+claude-zen github --help
 
 # Docker testing
 cd infrastructure/docker && docker-compose up
@@ -596,7 +596,7 @@ cd infrastructure/docker && docker-compose up
 ## [1.0.0] - 2025-01-01
 
 ### Added
-- Initial release of claude-flow
+- Initial release of claude-zen
 - Basic AI agent orchestration
 - CLI interface for agent management
 - Core workflow automation

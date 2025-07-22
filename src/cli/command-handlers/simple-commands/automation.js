@@ -250,7 +250,7 @@ function showAutomationHelp() {
 🤖 Automation Commands - Intelligent Agent & Workflow Management
 
 USAGE:
-  claude-flow automation <command> [options]
+  claude-zen automation <command> [options]
 
 COMMANDS:
   auto-agent        Automatically spawn optimal agents based on task complexity
@@ -275,16 +275,16 @@ WORKFLOW-SELECT OPTIONS:
 
 EXAMPLES:
   # Auto-spawn for complex enterprise task
-  claude-flow automation auto-agent --task-complexity enterprise --swarm-id swarm-123
+  claude-zen automation auto-agent --task-complexity enterprise --swarm-id swarm-123
 
   # Smart spawn for web development
-  claude-flow automation smart-spawn --requirement "web-development" --max-agents 8
+  claude-zen automation smart-spawn --requirement "web-development" --max-agents 8
 
   # Select workflow for API project optimized for speed
-  claude-flow automation workflow-select --project-type api --priority speed
+  claude-zen automation workflow-select --project-type api --priority speed
 
   # Auto-spawn for simple task
-  claude-flow automation auto-agent --task-complexity low
+  claude-zen automation auto-agent --task-complexity low
 
 🎯 Automation benefits:
   • Optimal resource allocation

@@ -12,7 +12,7 @@ Claude-Flow provides a rich TypeScript/JavaScript API for programmatic control o
 
 ```bash
 # Install Claude-Flow as a dependency
-npm install claude-flow
+npm install claude-zen
 
 # Or for Deno
 import { ClaudeFlow } from 'https://deno.land/x/claude_flow@latest/mod.ts';
@@ -21,7 +21,7 @@ import { ClaudeFlow } from 'https://deno.land/x/claude_flow@latest/mod.ts';
 ### Basic Initialization
 
 ```typescript
-import { ClaudeFlow, ClaudeFlowConfig } from 'claude-flow';
+import { ClaudeFlow, ClaudeFlowConfig } from 'claude-zen';
 
 // Basic configuration
 const config: ClaudeFlowConfig = {
@@ -646,7 +646,7 @@ interface TestingUtils {
 
 ```typescript
 import express from 'express';
-import { ClaudeFlow } from 'claude-flow';
+import { ClaudeFlow } from 'claude-zen';
 
 const app = express();
 const claudeFlow = new ClaudeFlow();
@@ -683,7 +683,7 @@ app.listen(3000);
 
 ```typescript
 import React, { useEffect, useState } from 'react';
-import { ClaudeFlow } from 'claude-flow';
+import { ClaudeFlow } from 'claude-zen';
 
 export const ClaudeFlowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [claudeFlow, setClaudeFlow] = useState<ClaudeFlow | null>(null);

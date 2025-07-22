@@ -130,8 +130,8 @@ jobs:
 
       - name: Test CLI binary
         run: |
-          chmod +x ./bin/claude-flow
-          ./bin/claude-flow --version
+          chmod +x ./bin/claude-zen
+          ./bin/claude-zen --version
 
       - name: Package build
         run: |

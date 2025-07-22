@@ -69,14 +69,14 @@ All neural networks are compiled to WebAssembly with SIMD optimizations:
 #### Data Collection
 ```bash
 # Collect training data from swarm operations
-claude-flow neural data collect \
+claude-zen neural data collect \
   --source "swarm-logs" \
   --timeframe "30d" \
   --quality-filter "high" \
   --anonymize-sensitive true
 
 # Validate data quality
-claude-flow neural data validate \
+claude-zen neural data validate \
   --dataset "swarm-training-data" \
   --completeness-check \
   --consistency-check \
@@ -86,7 +86,7 @@ claude-flow neural data validate \
 #### Data Preprocessing
 ```bash
 # Preprocess collected data
-claude-flow neural data preprocess \
+claude-zen neural data preprocess \
   --dataset "swarm-training-data" \
   --normalization "z-score" \
   --feature-extraction "automated" \
@@ -131,7 +131,7 @@ claude-flow neural data preprocess \
 #### Training Execution
 ```bash
 # Train coordination network
-claude-flow neural train coordination \
+claude-zen neural train coordination \
   --config "coordination-training-config.json" \
   --data "preprocessed-coordination-data" \
   --validation-split 0.2 \
@@ -140,7 +140,7 @@ claude-flow neural train coordination \
   --distributed-training auto
 
 # Monitor training progress
-claude-flow neural monitor training \
+claude-zen neural monitor training \
   --model "coordination-v3" \
   --metrics '["loss","accuracy","coordination-efficiency","attention-weights"]' \
   --visualization "real-time" \
@@ -152,7 +152,7 @@ claude-flow neural monitor training \
 #### Transfer Learning
 ```bash
 # Transfer learning from pre-trained models
-claude-flow neural transfer \
+claude-zen neural transfer \
   --source-model "coordination-v2-general" \
   --target-domain "microservice-development" \
   --freeze-layers "embedding,attention-0,attention-1" \
@@ -164,7 +164,7 @@ claude-flow neural transfer \
 #### Reinforcement Learning
 ```bash
 # Train with reinforcement learning
-claude-flow neural train reinforcement \
+claude-zen neural train reinforcement \
   --environment "swarm-coordination-env" \
   --agent "coordination-network" \
   --reward-function "efficiency-improvement" \
@@ -176,7 +176,7 @@ claude-flow neural train reinforcement \
 #### Federated Learning
 ```bash
 # Federated learning across multiple swarms
-claude-flow neural train federated \
+claude-zen neural train federated \
   --participants '["swarm-1","swarm-2","swarm-3"]' \
   --aggregation-strategy "weighted-average" \
   --rounds 50 \
@@ -189,14 +189,14 @@ claude-flow neural train federated \
 #### Cross-Validation
 ```bash
 # K-fold cross-validation
-claude-flow neural validate cross-fold \
+claude-zen neural validate cross-fold \
   --model "coordination-v3" \
   --k-folds 5 \
   --metrics '["accuracy","f1-score","coordination-efficiency"]' \
   --statistical-significance true
 
 # Time-series validation
-claude-flow neural validate time-series \
+claude-zen neural validate time-series \
   --model "prediction-v2" \
   --validation-strategy "walk-forward" \
   --horizon "7d" \
@@ -206,7 +206,7 @@ claude-flow neural validate time-series \
 #### Benchmarking
 ```bash
 # Benchmark against baseline models
-claude-flow neural benchmark \
+claude-zen neural benchmark \
   --model "coordination-v3" \
   --baselines '["random","rule-based","coordination-v2"]' \
   --test-scenarios "standard-benchmark-suite" \
@@ -220,7 +220,7 @@ claude-flow neural benchmark \
 #### Coordination Inference
 ```bash
 # Get coordination recommendations
-claude-flow neural infer coordination \
+claude-zen neural infer coordination \
   --input '{
     "current-agents": [
       {"id":"arch-001","type":"architect","load":0.6,"capabilities":["design","analysis"]},
@@ -239,7 +239,7 @@ claude-flow neural infer coordination \
 #### Optimization Inference
 ```bash
 # Get optimization recommendations
-claude-flow neural infer optimization \
+claude-zen neural infer optimization \
   --current-performance '{
     "throughput": 45.2,
     "latency": 120,
@@ -257,7 +257,7 @@ claude-flow neural infer optimization \
 #### Prediction Inference
 ```bash
 # Predict task completion
-claude-flow neural infer prediction \
+claude-zen neural infer prediction \
   --task-description "implement authentication microservice" \
   --historical-context "similar-tasks-last-6-months" \
   --current-team-capacity '{
@@ -274,7 +274,7 @@ claude-flow neural infer prediction \
 #### Batch Inference
 ```bash
 # Process multiple inference requests
-claude-flow neural infer batch \
+claude-zen neural infer batch \
   --input-file "inference-requests.jsonl" \
   --model-ensemble '["coordination-v3","optimization-v2","prediction-v2"]' \
   --batch-size 16 \
@@ -285,7 +285,7 @@ claude-flow neural infer batch \
 #### Distributed Inference
 ```bash
 # Distributed inference across multiple nodes
-claude-flow neural infer distributed \
+claude-zen neural infer distributed \
   --input-data "large-inference-dataset" \
   --nodes '["node-1","node-2","node-3"]' \
   --load-balancing "neural-weighted" \
@@ -300,7 +300,7 @@ claude-flow neural infer distributed \
 #### Quantization
 ```bash
 # Quantize models for deployment
-claude-flow neural optimize quantize \
+claude-zen neural optimize quantize \
   --model "coordination-v3" \
   --precision "int8" \
   --calibration-data "representative-dataset" \
@@ -308,7 +308,7 @@ claude-flow neural optimize quantize \
   --output-format "optimized-wasm"
 
 # Dynamic quantization
-claude-flow neural optimize quantize-dynamic \
+claude-zen neural optimize quantize-dynamic \
   --model "coordination-v3" \
   --target-device "cpu" \
   --performance-mode "balanced" \
@@ -318,7 +318,7 @@ claude-flow neural optimize quantize-dynamic \
 #### Pruning
 ```bash
 # Prune unnecessary connections
-claude-flow neural optimize prune \
+claude-zen neural optimize prune \
   --model "coordination-v3" \
   --pruning-ratio 0.3 \
   --importance-metric "gradient-magnitude" \
@@ -329,7 +329,7 @@ claude-flow neural optimize prune \
 #### Knowledge Distillation
 ```bash
 # Create smaller, faster models
-claude-flow neural optimize distill \
+claude-zen neural optimize distill \
   --teacher-model "coordination-v3-large" \
   --student-architecture "coordination-v3-small" \
   --temperature 3.0 \
@@ -342,7 +342,7 @@ claude-flow neural optimize distill \
 #### SIMD Optimization
 ```bash
 # Optimize for SIMD instructions
-claude-flow neural wasm optimize-simd \
+claude-zen neural wasm optimize-simd \
   --model "coordination-v3" \
   --target-architecture "avx2" \
   --vector-width 256 \
@@ -350,7 +350,7 @@ claude-flow neural wasm optimize-simd \
   --instruction-scheduling "aggressive"
 
 # Profile SIMD performance
-claude-flow neural wasm profile-simd \
+claude-zen neural wasm profile-simd \
   --model "coordination-v3-simd" \
   --workload "typical-coordination-tasks" \
   --metrics '["throughput","latency","cache-misses","instruction-efficiency"]'
@@ -359,7 +359,7 @@ claude-flow neural wasm profile-simd \
 #### Memory Optimization
 ```bash
 # Optimize memory layout
-claude-flow neural wasm optimize-memory \
+claude-zen neural wasm optimize-memory \
   --model "coordination-v3" \
   --memory-layout "cache-friendly" \
   --tensor-fusion true \
@@ -372,7 +372,7 @@ claude-flow neural wasm optimize-memory \
 #### Inference Acceleration
 ```bash
 # Setup inference acceleration
-claude-flow neural runtime setup-acceleration \
+claude-zen neural runtime setup-acceleration \
   --backend "wasm-simd" \
   --thread-pool-size 8 \
   --batch-processing true \
@@ -380,7 +380,7 @@ claude-flow neural runtime setup-acceleration \
   --memory-mapping true
 
 # Benchmark inference performance
-claude-flow neural runtime benchmark \
+claude-zen neural runtime benchmark \
   --model "coordination-v3" \
   --workload-types '["single-request","batch-processing","streaming"]' \
   --concurrency-levels '[1,4,8,16]' \
@@ -394,7 +394,7 @@ claude-flow neural runtime benchmark \
 #### Automated Architecture Discovery
 ```bash
 # Search for optimal architectures
-claude-flow neural nas search \
+claude-zen neural nas search \
   --task "coordination-optimization" \
   --search-space "transformer-variants" \
   --search-strategy "evolutionary" \
@@ -403,7 +403,7 @@ claude-flow neural nas search \
   --fitness-metric "efficiency-accuracy-tradeoff"
 
 # Evaluate discovered architectures
-claude-flow neural nas evaluate \
+claude-zen neural nas evaluate \
   --candidate-architectures "nas-results-top10" \
   --validation-data "holdout-dataset" \
   --metrics '["accuracy","latency","memory","flops"]' \
@@ -413,7 +413,7 @@ claude-flow neural nas evaluate \
 #### Architecture Optimization
 ```bash
 # Optimize existing architectures
-claude-flow neural nas optimize \
+claude-zen neural nas optimize \
   --base-architecture "coordination-v3" \
   --optimization-target "reduce-latency" \
   --constraints '{"accuracy-loss":"<2%","memory-increase":"<10%"}' \
@@ -425,7 +425,7 @@ claude-flow neural nas optimize \
 #### Vision-Language Integration
 ```bash
 # Train multi-modal coordination
-claude-flow neural train multimodal \
+claude-zen neural train multimodal \
   --modalities '["text","code","diagrams"]' \
   --fusion-strategy "late-fusion" \
   --alignment-loss "contrastive" \
@@ -436,7 +436,7 @@ claude-flow neural train multimodal \
 #### Cross-Modal Transfer
 ```bash
 # Transfer between modalities
-claude-flow neural transfer cross-modal \
+claude-zen neural transfer cross-modal \
   --source-modality "text-coordination" \
   --target-modality "visual-coordination" \
   --alignment-technique "canonical-correlation" \
@@ -448,7 +448,7 @@ claude-flow neural transfer cross-modal \
 #### Incremental Learning
 ```bash
 # Learn from new data without forgetting
-claude-flow neural train incremental \
+claude-zen neural train incremental \
   --model "coordination-v3" \
   --new-data "recent-coordination-patterns" \
   --forgetting-prevention "elastic-weight-consolidation" \
@@ -459,7 +459,7 @@ claude-flow neural train incremental \
 #### Meta-Learning
 ```bash
 # Learn how to learn faster
-claude-flow neural train meta \
+claude-zen neural train meta \
   --base-model "coordination-v3" \
   --meta-algorithm "maml" \
   --task-distribution "coordination-variants" \
@@ -475,7 +475,7 @@ claude-flow neural train meta \
 #### Attention Visualization
 ```bash
 # Visualize attention patterns
-claude-flow neural explain attention \
+claude-zen neural explain attention \
   --model "coordination-v3" \
   --input "complex-coordination-scenario" \
   --layer-range "2-4" \
@@ -483,7 +483,7 @@ claude-flow neural explain attention \
   --visualization "interactive-heatmap"
 
 # Analyze attention evolution
-claude-flow neural explain attention-evolution \
+claude-zen neural explain attention-evolution \
   --model "coordination-v3" \
   --sequence "task-coordination-timeline" \
   --temporal-analysis true \
@@ -493,7 +493,7 @@ claude-flow neural explain attention-evolution \
 #### Feature Importance
 ```bash
 # Identify important features
-claude-flow neural explain features \
+claude-zen neural explain features \
   --model "coordination-v3" \
   --method "integrated-gradients" \
   --baseline "average-input" \
@@ -504,7 +504,7 @@ claude-flow neural explain features \
 #### Decision Boundary Analysis
 ```bash
 # Analyze decision boundaries
-claude-flow neural explain boundaries \
+claude-zen neural explain boundaries \
   --model "coordination-v3" \
   --input-space "coordination-decisions" \
   --perturbation-method "adversarial" \
@@ -517,7 +517,7 @@ claude-flow neural explain boundaries \
 #### Activation Analysis
 ```bash
 # Analyze internal activations
-claude-flow neural debug activations \
+claude-zen neural debug activations \
   --model "coordination-v3" \
   --layer-analysis "all" \
   --activation-patterns true \
@@ -525,7 +525,7 @@ claude-flow neural debug activations \
   --saturation-analysis true
 
 # Compare activations across inputs
-claude-flow neural debug activation-comparison \
+claude-zen neural debug activation-comparison \
   --model "coordination-v3" \
   --input-pairs "successful-vs-failed-coordination" \
   --statistical-tests true \
@@ -535,7 +535,7 @@ claude-flow neural debug activation-comparison \
 #### Gradient Analysis
 ```bash
 # Analyze gradient flow
-claude-flow neural debug gradients \
+claude-zen neural debug gradients \
   --model "coordination-v3" \
   --gradient-magnitude true \
   --vanishing-gradient-detection true \
@@ -548,7 +548,7 @@ claude-flow neural debug gradients \
 #### Computational Profiling
 ```bash
 # Profile computational performance
-claude-flow neural profile computation \
+claude-zen neural profile computation \
   --model "coordination-v3" \
   --operation-breakdown true \
   --memory-profiling true \
@@ -556,7 +556,7 @@ claude-flow neural profile computation \
   --optimization-suggestions true
 
 # Profile inference latency
-claude-flow neural profile latency \
+claude-zen neural profile latency \
   --model "coordination-v3" \
   --input-variations "typical-workload" \
   --percentile-analysis "50,90,95,99" \
@@ -570,14 +570,14 @@ claude-flow neural profile latency \
 #### Interactive Development
 ```bash
 # Launch neural development environment
-claude-flow neural dev-env launch \
+claude-zen neural dev-env launch \
   --environment "jupyter-neural" \
   --gpu-support true \
   --visualization-tools true \
   --debugging-enabled true
 
 # Neural network playground
-claude-flow neural playground \
+claude-zen neural playground \
   --models '["coordination","optimization","prediction"]' \
   --interactive-tuning true \
   --real-time-feedback true
@@ -586,14 +586,14 @@ claude-flow neural playground \
 #### Experiment Tracking
 ```bash
 # Setup experiment tracking
-claude-flow neural experiments setup \
+claude-zen neural experiments setup \
   --tracking-backend "mlflow" \
   --metrics-logging "comprehensive" \
   --artifact-storage "s3" \
   --collaboration-features true
 
 # Log experiment
-claude-flow neural experiments log \
+claude-zen neural experiments log \
   --experiment-name "coordination-optimization-v4" \
   --parameters "training-config.json" \
   --metrics "training-results.json" \
@@ -606,14 +606,14 @@ claude-flow neural experiments log \
 #### Unit Testing for Neural Components
 ```bash
 # Test neural network components
-claude-flow neural test unit \
+claude-zen neural test unit \
   --component "attention-mechanism" \
   --test-cases "standard-attention-tests" \
   --numerical-precision 1e-6 \
   --gradient-checking true
 
 # Integration testing
-claude-flow neural test integration \
+claude-zen neural test integration \
   --models '["coordination","optimization"]' \
   --test-scenarios "end-to-end-coordination" \
   --performance-benchmarks true
@@ -622,7 +622,7 @@ claude-flow neural test integration \
 #### Regression Testing
 ```bash
 # Test for model regression
-claude-flow neural test regression \
+claude-zen neural test regression \
   --baseline-model "coordination-v2" \
   --candidate-model "coordination-v3" \
   --test-dataset "regression-test-suite" \
@@ -637,7 +637,7 @@ claude-flow neural test regression \
 #### Model Performance Monitoring
 ```bash
 # Setup production monitoring
-claude-flow neural monitor production \
+claude-zen neural monitor production \
   --models '["coordination-v3","optimization-v2","prediction-v2"]' \
   --metrics '["accuracy","latency","throughput","drift"]' \
   --alert-thresholds '{
@@ -651,7 +651,7 @@ claude-flow neural monitor production \
 #### Data Drift Detection
 ```bash
 # Monitor for data drift
-claude-flow neural monitor drift \
+claude-zen neural monitor drift \
   --reference-data "training-distribution" \
   --streaming-data "production-inputs" \
   --drift-detection-method "kolmogorov-smirnov" \
@@ -664,7 +664,7 @@ claude-flow neural monitor drift \
 #### Automated Retraining
 ```bash
 # Setup automated retraining
-claude-flow neural maintain retrain-schedule \
+claude-zen neural maintain retrain-schedule \
   --models '["coordination-v3"]' \
   --trigger-conditions '{
     "data-drift": 0.15,
@@ -679,7 +679,7 @@ claude-flow neural maintain retrain-schedule \
 #### Model Versioning
 ```bash
 # Version control for models
-claude-flow neural version create \
+claude-zen neural version create \
   --model "coordination-v3" \
   --version "3.2.1" \
   --changes "improved attention mechanism, reduced latency" \
@@ -687,7 +687,7 @@ claude-flow neural version create \
   --backward-compatibility true
 
 # Model rollback
-claude-flow neural version rollback \
+claude-zen neural version rollback \
   --model "coordination" \
   --target-version "3.1.0" \
   --reason "performance-regression" \

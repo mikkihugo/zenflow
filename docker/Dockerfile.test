@@ -1,4 +1,4 @@
-# Test container for claude-flow feature system
+# Test container for claude-zen feature system
 # Tests across multiple Node.js versions and platforms
 
 # Base stage for common dependencies
@@ -22,7 +22,7 @@ RUN npm run build
 
 # Simulate npx execution
 FROM node:18-alpine AS npx-test
-RUN npm install -g claude-flow@latest || echo "Package not yet published"
+RUN npm install -g claude-zen@latest || echo "Package not yet published"
 WORKDIR /test
 COPY --from=test /app/dist ./dist
 COPY --from=test /app/package.json ./

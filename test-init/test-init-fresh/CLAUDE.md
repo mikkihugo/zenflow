@@ -6,10 +6,10 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ## SPARC Development Commands
 
 ### Core SPARC Commands
-- `./claude-flow sparc modes`: List all available SPARC development modes
-- `./claude-flow sparc run <mode> "<task>"`: Execute specific SPARC mode for a task
-- `./claude-flow sparc tdd "<feature>"`: Run complete TDD workflow using SPARC methodology
-- `./claude-flow sparc info <mode>`: Get detailed information about a specific mode
+- `./claude-zen sparc modes`: List all available SPARC development modes
+- `./claude-zen sparc run <mode> "<task>"`: Execute specific SPARC mode for a task
+- `./claude-zen sparc tdd "<feature>"`: Run complete TDD workflow using SPARC methodology
+- `./claude-zen sparc info <mode>`: Get detailed information about a specific mode
 
 ### Standard Build Commands
 - `npm run build`: Build the project
@@ -22,7 +22,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 1. Specification Phase
 ```bash
 # Create detailed specifications and requirements
-./claude-flow sparc run spec-pseudocode "Define user authentication requirements"
+./claude-zen sparc run spec-pseudocode "Define user authentication requirements"
 ```
 - Define clear functional requirements
 - Document edge cases and constraints
@@ -32,7 +32,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 2. Pseudocode Phase
 ```bash
 # Develop algorithmic logic and data flows
-./claude-flow sparc run spec-pseudocode "Create authentication flow pseudocode"
+./claude-zen sparc run spec-pseudocode "Create authentication flow pseudocode"
 ```
 - Break down complex logic into steps
 - Define data structures and interfaces
@@ -42,7 +42,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 3. Architecture Phase
 ```bash
 # Design system architecture and component structure
-./claude-flow sparc run architect "Design authentication service architecture"
+./claude-zen sparc run architect "Design authentication service architecture"
 ```
 - Create system diagrams and component relationships
 - Define API contracts and interfaces
@@ -52,7 +52,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 4. Refinement Phase (TDD Implementation)
 ```bash
 # Execute Test-Driven Development cycle
-./claude-flow sparc tdd "implement user authentication system"
+./claude-zen sparc tdd "implement user authentication system"
 ```
 
 **TDD Cycle:**
@@ -64,7 +64,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 5. Completion Phase
 ```bash
 # Integration, documentation, and validation
-./claude-flow sparc run integration "integrate authentication with user management"
+./claude-zen sparc run integration "integrate authentication with user management"
 ```
 - Integrate all components
 - Perform end-to-end testing
@@ -98,9 +98,9 @@ Claude Code slash commands are available in `.claude/commands/`:
 ### Project Commands
 - `/sparc`: Execute SPARC methodology workflows
 - `/sparc-<mode>`: Run specific SPARC mode (e.g., /sparc-architect)
-- `/claude-flow-help`: Show all Claude-Flow commands
-- `/claude-flow-memory`: Interact with memory system
-- `/claude-flow-swarm`: Coordinate multi-agent swarms
+- `/claude-zen-help`: Show all Claude-Flow commands
+- `/claude-zen-memory`: Interact with memory system
+- `/claude-zen-swarm`: Coordinate multi-agent swarms
 
 ### Using Slash Commands
 1. Type `/` in Claude Code to see available commands
@@ -125,7 +125,7 @@ Claude Code slash commands are available in `.claude/commands/`:
 - Prefer composition over inheritance
 
 ### Memory and State Management
-- Use claude-flow memory system for persistent state across sessions
+- Use claude-zen memory system for persistent state across sessions
 - Store progress and findings using namespaced keys
 - Query previous work before starting new tasks
 - Export/import memory for backup and sharing
@@ -135,19 +135,19 @@ Claude Code slash commands are available in `.claude/commands/`:
 ### Memory Commands for SPARC Development
 ```bash
 # Store project specifications
-./claude-flow memory store spec_auth "User authentication requirements and constraints"
+./claude-zen memory store spec_auth "User authentication requirements and constraints"
 
 # Store architectural decisions
-./claude-flow memory store arch_decisions "Database schema and API design choices"
+./claude-zen memory store arch_decisions "Database schema and API design choices"
 
 # Store test results and coverage
-./claude-flow memory store test_coverage "Authentication module: 95% coverage, all tests passing"
+./claude-zen memory store test_coverage "Authentication module: 95% coverage, all tests passing"
 
 # Query previous work
-./claude-flow memory query auth_implementation
+./claude-zen memory query auth_implementation
 
 # Export project memory
-./claude-flow memory export project_backup.json
+./claude-zen memory export project_backup.json
 ```
 
 ### Memory Namespaces
@@ -162,37 +162,37 @@ Claude Code slash commands are available in `.claude/commands/`:
 ### Feature Development Workflow
 ```bash
 # 1. Start with specification
-./claude-flow sparc run spec-pseudocode "User profile management feature"
+./claude-zen sparc run spec-pseudocode "User profile management feature"
 
 # 2. Design architecture
-./claude-flow sparc run architect "Profile service architecture with data validation"
+./claude-zen sparc run architect "Profile service architecture with data validation"
 
 # 3. Implement with TDD
-./claude-flow sparc tdd "user profile CRUD operations"
+./claude-zen sparc tdd "user profile CRUD operations"
 
 # 4. Security review
-./claude-flow sparc run security-review "profile data access and validation"
+./claude-zen sparc run security-review "profile data access and validation"
 
 # 5. Integration testing
-./claude-flow sparc run integration "profile service with authentication system"
+./claude-zen sparc run integration "profile service with authentication system"
 
 # 6. Documentation
-./claude-flow sparc run docs-writer "profile service API documentation"
+./claude-zen sparc run docs-writer "profile service API documentation"
 ```
 
 ### Bug Fix Workflow
 ```bash
 # 1. Debug and analyze
-./claude-flow sparc run debug "authentication token expiration issue"
+./claude-zen sparc run debug "authentication token expiration issue"
 
 # 2. Write regression tests
-./claude-flow sparc run tdd "token refresh mechanism tests"
+./claude-zen sparc run tdd "token refresh mechanism tests"
 
 # 3. Implement fix
-./claude-flow sparc run code "fix token refresh in authentication service"
+./claude-zen sparc run code "fix token refresh in authentication service"
 
 # 4. Security review
-./claude-flow sparc run security-review "token handling security implications"
+./claude-zen sparc run security-review "token handling security implications"
 ```
 
 ## Configuration Files
@@ -235,16 +235,16 @@ Claude Code slash commands are available in `.claude/commands/`:
 ### Debug Commands
 ```bash
 # Check SPARC configuration
-./claude-flow sparc modes
+./claude-zen sparc modes
 
 # Verify memory system
-./claude-flow memory stats
+./claude-zen memory stats
 
 # Check system status
-./claude-flow status
+./claude-zen status
 
 # View detailed mode information
-./claude-flow sparc info <mode-name>
+./claude-zen sparc info <mode-name>
 ```
 
 ## Project Architecture

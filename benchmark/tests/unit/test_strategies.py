@@ -98,7 +98,7 @@ class TestResearchStrategy:
         strategy = ResearchStrategy()
         task = Task(objective="Research microservices architecture")
         
-        # Mock the claude-flow client
+        # Mock the claude-zen client
         strategy.claude_flow_client = AsyncMock()
         strategy.claude_flow_client.execute_swarm.return_value = {
             "status": "success",
@@ -137,7 +137,7 @@ class TestDevelopmentStrategy:
         strategy = DevelopmentStrategy()
         task = Task(objective="Build user authentication API")
         
-        # Mock the claude-flow client
+        # Mock the claude-zen client
         strategy.claude_flow_client = AsyncMock()
         strategy.claude_flow_client.execute_swarm.return_value = {
             "status": "success",

@@ -10,7 +10,7 @@ This guide provides practical examples demonstrating how to use the Claude Flow 
 
 ```bash
 # Terminal 1: Start the web server
-$ claude-flow start --ui --port 3000
+$ claude-zen start --ui --port 3000
 
 🚀 Starting Claude Code Web UI...
 🌐 Claude Code Web UI started successfully
@@ -21,7 +21,7 @@ $ claude-flow start --ui --port 3000
 
 ```javascript
 // In the Web Console
-claude-flow> help
+claude-zen> help
 Available commands:
   help                Show this help message
   status              Display system status
@@ -31,7 +31,7 @@ Available commands:
   memory list         Show memory entries
   clear               Clear the console
 
-claude-flow> status
+claude-zen> status
 Claude Flow Status:
   Version: 2.0.0
   Mode: Web Console
@@ -44,7 +44,7 @@ Claude Flow Status:
 
 ```javascript
 // Spawn a research agent
-claude-flow> agent spawn researcher
+claude-zen> agent spawn researcher
 ✅ Agent spawned successfully
   ID: agent_1736201234567_abc123
   Type: researcher
@@ -52,14 +52,14 @@ claude-flow> agent spawn researcher
   Status: active
 
 // List all agents
-claude-flow> agent list
+claude-zen> agent list
 Active Agents:
   • agent_1736201234567_abc123 (researcher) - idle - 0 tasks
   
 Total: 1 agent
 
 // Check agent status
-claude-flow> agent status agent_1736201234567_abc123
+claude-zen> agent status agent_1736201234567_abc123
 Agent Status:
   ID: agent_1736201234567_abc123
   Type: researcher
@@ -75,7 +75,7 @@ Agent Status:
 
 ```javascript
 // Open Neural Networks panel (click 🧠 Neural button or type)
-claude-flow> neural status
+claude-zen> neural status
 Neural System Status:
   Models Loaded: 0
   Training Active: false
@@ -83,7 +83,7 @@ Neural System Status:
   Memory Usage: 12MB
 
 // Start training a coordination pattern
-claude-flow> neural train --pattern coordination --data "task allocation strategies" --epochs 50
+claude-zen> neural train --pattern coordination --data "task allocation strategies" --epochs 50
 🚀 Training Started
   Model ID: model_coordination_1736201345678
   Pattern: coordination
@@ -103,11 +103,11 @@ Training Progress:
 
 ```javascript
 // Load a trained model
-claude-flow> model load model_coordination_1736201345678
+claude-zen> model load model_coordination_1736201345678
 ✅ Model loaded successfully
 
 // Make a prediction
-claude-flow> neural predict --model model_coordination_1736201345678 --input "distribute tasks across 5 agents"
+claude-zen> neural predict --model model_coordination_1736201345678 --input "distribute tasks across 5 agents"
 Prediction Results:
   Strategy: hierarchical
   Confidence: 87.3%
@@ -123,7 +123,7 @@ Prediction Results:
 
 ```javascript
 // Initialize a swarm
-claude-flow> swarm init --topology hierarchical --agents 5
+claude-zen> swarm init --topology hierarchical --agents 5
 🐝 Swarm Initialization Complete
   Swarm ID: swarm_1736201456789
   Topology: hierarchical
@@ -131,14 +131,14 @@ claude-flow> swarm init --topology hierarchical --agents 5
   Status: active
 
 // Spawn agents for the swarm
-claude-flow> swarm spawn coordinator --name "Lead"
-claude-flow> swarm spawn coder --name "Backend Dev"
-claude-flow> swarm spawn coder --name "Frontend Dev"
-claude-flow> swarm spawn tester --name "QA Engineer"
-claude-flow> swarm spawn analyst --name "Data Analyst"
+claude-zen> swarm spawn coordinator --name "Lead"
+claude-zen> swarm spawn coder --name "Backend Dev"
+claude-zen> swarm spawn coder --name "Frontend Dev"
+claude-zen> swarm spawn tester --name "QA Engineer"
+claude-zen> swarm spawn analyst --name "Data Analyst"
 
 // Check swarm status
-claude-flow> swarm status
+claude-zen> swarm status
 Swarm Status:
   🐝 Swarm: ACTIVE
   🏗️ Topology: hierarchical
@@ -159,7 +159,7 @@ Agent Activity:
 
 ```javascript
 // Orchestrate a task across the swarm
-claude-flow> task orchestrate "Build a REST API with authentication, database, and tests"
+claude-zen> task orchestrate "Build a REST API with authentication, database, and tests"
 📋 Task Created
   Task ID: task_1736201567890
   Strategy: adaptive
@@ -189,7 +189,7 @@ claude-flow> task orchestrate "Build a REST API with authentication, database, a
 
 ```javascript
 // Open Analytics Dashboard or use commands
-claude-flow> benchmark run --type swarm --iterations 10
+claude-zen> benchmark run --type swarm --iterations 10
 Running Benchmark: swarm
 Iterations: 10
 
@@ -209,7 +209,7 @@ Iterations: 10
 ### Example 8: Token Usage Analysis
 
 ```javascript
-claude-flow> token usage --period 24h
+claude-zen> token usage --period 24h
 Token Usage Report (Last 24 Hours):
   Total Tokens: 125,847
   Input Tokens: 45,231
@@ -232,14 +232,14 @@ Efficiency Score: 87/100
 
 ```javascript
 // Store important data
-claude-flow> memory store --key "project/api/config" --value '{"database": "postgres", "port": 5432}'
+claude-zen> memory store --key "project/api/config" --value '{"database": "postgres", "port": 5432}'
 ✅ Memory stored successfully
   Key: project/api/config
   Namespace: default
   Timestamp: 2025-07-06T10:30:45Z
 
 // Search memory
-claude-flow> memory search "project/*"
+claude-zen> memory search "project/*"
 Memory Search Results:
   • project/api/config - API configuration
   • project/api/routes - Route definitions
@@ -248,7 +248,7 @@ Memory Search Results:
 Total: 3 entries found
 
 // Create a memory backup
-claude-flow> memory backup --path "./backups/project-backup.json"
+claude-zen> memory backup --path "./backups/project-backup.json"
 ✅ Backup created successfully
   File: ./backups/project-backup.json
   Entries: 15
@@ -261,20 +261,20 @@ claude-flow> memory backup --path "./backups/project-backup.json"
 
 ```javascript
 // Create a workflow
-claude-flow> workflow create "Daily Analysis Pipeline"
+claude-zen> workflow create "Daily Analysis Pipeline"
 📋 Workflow Created
   ID: workflow_1736201678901
   Name: Daily Analysis Pipeline
   Status: draft
 
 // Add workflow steps
-claude-flow> workflow add-step "Collect metrics" --tool "metrics_collect"
-claude-flow> workflow add-step "Analyze performance" --tool "performance_report"
-claude-flow> workflow add-step "Check errors" --tool "error_analysis"
-claude-flow> workflow add-step "Generate report" --tool "quality_assess"
+claude-zen> workflow add-step "Collect metrics" --tool "metrics_collect"
+claude-zen> workflow add-step "Analyze performance" --tool "performance_report"
+claude-zen> workflow add-step "Check errors" --tool "error_analysis"
+claude-zen> workflow add-step "Generate report" --tool "quality_assess"
 
 // Set up scheduling
-claude-flow> scheduler create --workflow workflow_1736201678901 --cron "0 9 * * *"
+claude-zen> scheduler create --workflow workflow_1736201678901 --cron "0 9 * * *"
 ⏰ Schedule Created
   Workflow: Daily Analysis Pipeline
   Schedule: Every day at 9:00 AM
@@ -288,14 +288,14 @@ claude-flow> scheduler create --workflow workflow_1736201678901 --cron "0 9 * * 
 
 ```javascript
 // Create a code review swarm
-claude-flow> swarm init --topology mesh --agents 4
-claude-flow> swarm spawn reviewer --name "Senior Reviewer"
-claude-flow> swarm spawn analyzer --name "Code Analyzer"
-claude-flow> swarm spawn tester --name "Test Validator"
-claude-flow> swarm spawn documenter --name "Doc Checker"
+claude-zen> swarm init --topology mesh --agents 4
+claude-zen> swarm spawn reviewer --name "Senior Reviewer"
+claude-zen> swarm spawn analyzer --name "Code Analyzer"
+claude-zen> swarm spawn tester --name "Test Validator"
+claude-zen> swarm spawn documenter --name "Doc Checker"
 
 // Submit code for review
-claude-flow> task orchestrate "Review pull request #123 for security, performance, and code quality"
+claude-zen> task orchestrate "Review pull request #123 for security, performance, and code quality"
 
 🔍 Code Review in Progress:
   Senior Reviewer: Checking design patterns...
@@ -319,7 +319,7 @@ claude-flow> task orchestrate "Review pull request #123 for security, performanc
 
 ```javascript
 // Start real-time monitoring
-claude-flow> monitor start --interval 5s --duration 5m
+claude-zen> monitor start --interval 5s --duration 5m
 
 📊 Real-time System Monitor
 ═══════════════════════════════════════════
@@ -346,7 +346,7 @@ Live Agent Status:
 
 ```javascript
 // Check connection status
-claude-flow> connection status
+claude-zen> connection status
 WebSocket Connection:
   Status: 🔴 Disconnected
   Last Connected: 2 minutes ago
@@ -354,7 +354,7 @@ WebSocket Connection:
   Error: Connection timeout
 
 // Manually reconnect
-claude-flow> connection reconnect --server ws://localhost:3000/ws
+claude-zen> connection reconnect --server ws://localhost:3000/ws
 🔄 Attempting to reconnect...
 ✅ Connection established
   Latency: 12ms
@@ -366,7 +366,7 @@ claude-flow> connection reconnect --server ws://localhost:3000/ws
 
 ```javascript
 // Run system diagnostics
-claude-flow> diagnostic run --comprehensive
+claude-zen> diagnostic run --comprehensive
 
 🔍 Running System Diagnostics...
 

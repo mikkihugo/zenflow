@@ -2,11 +2,11 @@
 
 ## Summary
 
-Yes! `./claude-flow mcp start` now uses the Claude Code MCP wrapper by default.
+Yes! `./claude-zen mcp start` now uses the Claude Code MCP wrapper by default.
 
 ## What Changed
 
-The `claude-flow mcp start` command has been updated to:
+The `claude-zen mcp start` command has been updated to:
 1. **Default to wrapper mode** with stdio transport
 2. **Use Claude Code MCP** with automatic SPARC prompt injection
 3. **Fall back to legacy mode** only when explicitly requested
@@ -16,8 +16,8 @@ The `claude-flow mcp start` command has been updated to:
 ### Default Behavior (Wrapper Mode)
 ```bash
 # These all use the wrapper now:
-./claude-flow mcp start
-./claude-flow mcp start --transport stdio
+./claude-zen mcp start
+./claude-zen mcp start --transport stdio
 ```
 
 When you run this, you'll see:
@@ -32,13 +32,13 @@ When you run this, you'll see:
 If you need the old template-based server:
 ```bash
 # Option 1: Use --legacy flag
-./claude-flow mcp start --legacy
+./claude-zen mcp start --legacy
 
 # Option 2: Set environment variable
-CLAUDE_FLOW_LEGACY_MCP=true ./claude-flow mcp start
+CLAUDE_FLOW_LEGACY_MCP=true ./claude-zen mcp start
 
 # Option 3: Use HTTP transport (requires legacy mode)
-./claude-flow mcp start --transport http
+./claude-zen mcp start --transport http
 ```
 
 ## Benefits
@@ -56,7 +56,7 @@ CLAUDE_FLOW_LEGACY_MCP=true ./claude-flow mcp start
 ## Command Options
 
 ```bash
-./claude-flow mcp start [options]
+./claude-zen mcp start [options]
   -p, --port <port>         Port for MCP server (default: 3000)
   -h, --host <host>         Host for MCP server (default: localhost)
   --transport <transport>   Transport type: stdio, http (default: stdio)
@@ -65,7 +65,7 @@ CLAUDE_FLOW_LEGACY_MCP=true ./claude-flow mcp start
 
 ## What This Means
 
-When you use `./claude-flow mcp start`:
+When you use `./claude-zen mcp start`:
 - All SPARC tools (sparc_coder, sparc_researcher, etc.) get enhanced with SPARC prompts
 - Requests forward to Claude Code's Task tool
 - You get AI-generated responses instead of template-based ones
@@ -76,7 +76,7 @@ When you use `./claude-flow mcp start`:
 To verify it's working:
 ```bash
 # Start the server
-./claude-flow mcp start
+./claude-zen mcp start
 
 # In another terminal, test with the MCP client
 node test-mcp-wrapper.js

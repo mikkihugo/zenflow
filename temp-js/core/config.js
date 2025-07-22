@@ -432,7 +432,7 @@ export class ConfigManager {
      */
     getUserConfigDir() {
         const home = homedir();
-        return join(home, '.claude-flow');
+        return join(home, '.claude-zen');
     }
     /**
      * Creates user config directory if it doesn't exist

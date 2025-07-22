@@ -1,5 +1,5 @@
-const client = require('prom-client');
-const { logger } = require('../utils/logger');
+import client from 'prom-client';
+import { logger } from '../utils/logger.js';
 
 const register = new client.Registry();
 
@@ -52,4 +52,4 @@ const registerMetrics = (app) => {
   logger.info(`Metrics endpoint available at /metrics`);
 };
 
-module.exports = { metricsMiddleware, registerMetrics };
+export { metricsMiddleware, registerMetrics };

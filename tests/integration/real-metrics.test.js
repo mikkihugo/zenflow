@@ -37,7 +37,7 @@ describe('Real Metrics Integration Tests', () => {
       
       // Check for orchestrator metrics
       expect(content).toContain('async function getOrchestratorMetrics()');
-      expect(content).toContain('.claude-flow');
+      expect(content).toContain('.claude-zen');
       expect(content).toContain('metrics.json');
       
       // Ensure no Math.random() calls for fake data
@@ -209,7 +209,7 @@ describe('Security and Safety Tests', () => {
     
     // Should use process.cwd() and relative paths safely
     expect(content).toContain('process.cwd()');
-    expect(content).toContain('.claude-flow');
+    expect(content).toContain('.claude-zen');
     expect(content).not.toMatch(/\.\.\/.*\.\.\//); // No directory traversal
     
     console.log('✓ File access is handled safely');

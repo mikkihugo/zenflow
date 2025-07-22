@@ -77,20 +77,20 @@ class HiveMindLoadTester:
         self.system_monitor = SystemMonitor()
         
     def _find_cli_path(self) -> Path:
-        """Find the claude-flow CLI executable"""
+        """Find the claude-zen CLI executable"""
         possible_paths = [
-            Path("../src/cli/simple-cli.js"),
-            Path("./src/cli/simple-cli.js"),
-            Path("./claude-flow"),
-            Path("../claude-flow")
+            Path("../bin/claude-zen"),
+            Path("bin/claude-zen"),
+            Path("./claude-zen"),
+            Path("../claude-zen")
         ]
         
         for path in possible_paths:
             if path.exists():
                 return path
         
-        # Fallback to system claude-flow
-        return Path("claude-flow")
+        # Fallback to system claude-zen
+        return Path("claude-zen")
 
     def create_load_test_scenarios(self) -> List[LoadTestConfig]:
         """Create comprehensive load testing scenarios"""

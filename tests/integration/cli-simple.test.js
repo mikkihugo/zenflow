@@ -5,7 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import packageJson from '../../package.json' with { type: 'json' };
+import packageJson from '../../package.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,12 +16,12 @@ describe('CLI Basic Tests', () => {
   });
 
   test('should verify CLI exists', () => {
-    const cliPath = path.resolve(__dirname, '../../claude-flow');
+    const cliPath = path.resolve(__dirname, '../../claude-zen');
     expect(fs.existsSync(cliPath)).toBe(true);
   });
 
   test('should verify package.json version', () => {
     expect(packageJson.version).toBe('2.0.0-alpha.54');
-    expect(packageJson.name).toBe('claude-flow');
+    expect(packageJson.name).toBe('claude-zen');
   });
 });

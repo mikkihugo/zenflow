@@ -5,7 +5,7 @@ Execute pre-command validations and safety checks before running shell commands.
 ## Usage
 
 ```bash
-npx claude-flow hook pre-command [options]
+npx claude-zen hook pre-command [options]
 ```
 
 ## Options
@@ -21,25 +21,25 @@ npx claude-flow hook pre-command [options]
 ### Basic pre-command hook
 
 ```bash
-npx claude-flow hook pre-command --command "npm install express"
+npx claude-zen hook pre-command --command "npm install express"
 ```
 
 ### Safety validation
 
 ```bash
-npx claude-flow hook pre-command -c "rm -rf node_modules" --validate-safety
+npx claude-zen hook pre-command -c "rm -rf node_modules" --validate-safety
 ```
 
 ### Permission check
 
 ```bash
-npx claude-flow hook pre-command -c "sudo apt update" --check-permissions
+npx claude-zen hook pre-command -c "sudo apt update" --check-permissions
 ```
 
 ### Dry run preview
 
 ```bash
-npx claude-flow hook pre-command -c "git push origin main" --dry-run
+npx claude-zen hook pre-command -c "git push origin main" --dry-run
 ```
 
 ## Features
@@ -85,7 +85,7 @@ Manual usage in agents:
 
 ```bash
 # Before running commands
-npx claude-flow hook pre-command --command "your command here" --validate-safety
+npx claude-zen hook pre-command --command "your command here" --validate-safety
 ```
 
 ## Output

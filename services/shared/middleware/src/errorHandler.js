@@ -236,7 +236,7 @@ function validationErrorFormatter({ location, msg, param, value, nestedErrors })
   };
 }
 
-module.exports = {
+export {
   ApiError,
   ERROR_CODES,
   errors,

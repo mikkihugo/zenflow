@@ -24,13 +24,13 @@ describe('monitor.js - Real Metrics Implementation', () => {
 
   describe('Basic Functionality', () => {
     test('should import without errors', async () => {
-      const monitor = await import('../../../../src/cli/simple-commands/monitor.js');
+      const monitor = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
       expect(monitor.monitorCommand).toBeDefined();
       expect(monitor.showMonitorHelp).toBeDefined();
     });
 
     test('should collect and display metrics', async () => {
-      const { monitorCommand } = await import('../../../../src/cli/simple-commands/monitor.js');
+      const { monitorCommand } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
       
       await monitorCommand([], {});
 
@@ -40,7 +40,7 @@ describe('monitor.js - Real Metrics Implementation', () => {
     });
 
     test('should show help information', async () => {
-      const { showMonitorHelp } = await import('../../../../src/cli/simple-commands/monitor.js');
+      const { showMonitorHelp } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
       
       showMonitorHelp();
 
@@ -53,7 +53,7 @@ describe('monitor.js - Real Metrics Implementation', () => {
 
   describe('Output Formats', () => {
     test('should output JSON format when specified', async () => {
-      const { monitorCommand } = await import('../../../../src/cli/simple-commands/monitor.js');
+      const { monitorCommand } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
       
       await monitorCommand(['--format', 'json'], {});
 
@@ -76,7 +76,7 @@ describe('monitor.js - Real Metrics Implementation', () => {
     });
 
     test('should output pretty format by default', async () => {
-      const { monitorCommand } = await import('../../../../src/cli/simple-commands/monitor.js');
+      const { monitorCommand } = await import('../../../../src/cli/command-handlers/simple-commands/monitor.js');
       
       await monitorCommand([], {});
 

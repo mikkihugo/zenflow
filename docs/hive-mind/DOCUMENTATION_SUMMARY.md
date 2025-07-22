@@ -114,7 +114,7 @@ All documentation follows:
 ## Usage
 
 Users can now:
-1. Start immediately with `npx claude-flow@2.0.0 hive-mind`
+1. Start immediately with `npx claude-zen@2.0.0 hive-mind`
 2. Follow the wizard for guided setup
 3. Use CLI commands for advanced control
 4. Integrate programmatically with the API

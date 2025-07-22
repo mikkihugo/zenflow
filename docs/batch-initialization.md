@@ -42,52 +42,52 @@ Batch initialization enables you to:
 ### Basic Batch Initialization
 ```bash
 # Initialize multiple projects with default settings
-claude-flow init --batch-init project1,project2,project3
+claude-zen init --batch-init project1,project2,project3
 
 # With SPARC development environment
-claude-flow init --batch-init api-v1,api-v2 --sparc
+claude-zen init --batch-init api-v1,api-v2 --sparc
 ```
 
 ### Template-Based Initialization
 ```bash
 # Web API template
-claude-flow init --batch-init api-service,user-service --template web-api
+claude-zen init --batch-init api-service,user-service --template web-api
 
 # React application template
-claude-flow init --batch-init admin-portal,customer-portal --template react-app
+claude-zen init --batch-init admin-portal,customer-portal --template react-app
 
 # Microservice template with SPARC
-claude-flow init --batch-init auth-service,payment-service --template microservice --sparc
+claude-zen init --batch-init auth-service,payment-service --template microservice --sparc
 ```
 
 ### Multi-Environment Setup
 ```bash
 # Create dev, staging, and prod versions
-claude-flow init --batch-init myapp --environments dev,staging,prod
+claude-zen init --batch-init myapp --environments dev,staging,prod
 
 # Multiple projects across environments
-claude-flow init --batch-init api,web --environments dev,staging --template web-api
+claude-zen init --batch-init api,web --environments dev,staging --template web-api
 ```
 
 ### Configuration File Mode
 ```bash
 # Use JSON configuration file
-claude-flow init --config batch-config.json
+claude-zen init --config batch-config.json
 
 # With custom concurrency
-claude-flow init --config enterprise-setup.json --max-concurrent 8
+claude-zen init --config enterprise-setup.json --max-concurrent 8
 ```
 
 ### Performance Optimization
 ```bash
 # Disable parallel processing
-claude-flow init --batch-init projects --no-parallel
+claude-zen init --batch-init projects --no-parallel
 
 # Custom concurrency limit
-claude-flow init --batch-init projects --max-concurrent 3
+claude-zen init --batch-init projects --max-concurrent 3
 
 # Force overwrite with minimal setup
-claude-flow init --batch-init projects --force --minimal
+claude-zen init --batch-init projects --force --minimal
 ```
 
 ## Configuration Files
@@ -141,31 +141,31 @@ claude-flow init --batch-init projects --force --minimal
 ### Create Configuration
 ```bash
 # Basic template
-claude-flow batch create-config my-batch.json
+claude-zen batch create-config my-batch.json
 
 # Interactive mode
-claude-flow batch create-config --interactive
+claude-zen batch create-config --interactive
 ```
 
 ### Validate Configuration
 ```bash
 # Validate before running
-claude-flow batch validate-config my-batch.json
+claude-zen batch validate-config my-batch.json
 ```
 
 ### List Available Options
 ```bash
 # Show all project templates
-claude-flow batch list-templates
+claude-zen batch list-templates
 
 # Show all environment configurations
-claude-flow batch list-environments
+claude-zen batch list-environments
 ```
 
 ### Estimate Operations
 ```bash
 # Estimate time and resources
-claude-flow batch estimate my-batch.json
+claude-zen batch estimate my-batch.json
 ```
 
 ## Project Templates
@@ -371,20 +371,20 @@ All batch operations support SPARC development environment:
 ### Debug Options
 ```bash
 # Verbose output
-claude-flow init --batch-init projects --verbose
+claude-zen init --batch-init projects --verbose
 
 # Disable parallel processing for debugging
-claude-flow init --batch-init projects --no-parallel
+claude-zen init --batch-init projects --no-parallel
 
 # Force operation
-claude-flow init --batch-init projects --force
+claude-zen init --batch-init projects --force
 ```
 
 ## Command Reference
 
 ### Init Command Options
 ```bash
-claude-flow init [options]
+claude-zen init [options]
 
 Options:
   --batch-init <projects>     Initialize multiple projects
@@ -400,7 +400,7 @@ Options:
 
 ### Batch Manager Commands
 ```bash
-claude-flow batch <command> [options]
+claude-zen batch <command> [options]
 
 Commands:
   create-config [file]      Create batch configuration template

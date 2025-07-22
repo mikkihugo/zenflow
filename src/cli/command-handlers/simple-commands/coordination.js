@@ -109,12 +109,12 @@ async function swarmInitCommand(subArgs, flags) {
 
   console.log(`\n📋 NEXT STEPS:`);
   console.log(
-    `  1. Spawn agents: claude-flow coordination agent-spawn --type <type> --swarm-id ${swarmId}`,
+    `  1. Spawn agents: claude-zen coordination agent-spawn --type <type> --swarm-id ${swarmId}`,
   );
   console.log(
-    `  2. Orchestrate tasks: claude-flow coordination task-orchestrate --task "<description>" --swarm-id ${swarmId}`,
+    `  2. Orchestrate tasks: claude-zen coordination task-orchestrate --task "<description>" --swarm-id ${swarmId}`,
   );
-  console.log(`  3. Monitor swarm: claude-flow monitoring swarm-monitor --swarm-id ${swarmId}`);
+  console.log(`  3. Monitor swarm: claude-zen monitoring swarm-monitor --swarm-id ${swarmId}`);
 }
 
 async function agentSpawnCommand(subArgs, flags) {
@@ -244,7 +244,7 @@ function showCoordinationHelp() {
 🐝 Coordination Commands - Swarm & Agent Orchestration
 
 USAGE:
-  claude-flow coordination <command> [options]
+  claude-zen coordination <command> [options]
 
 COMMANDS:
   swarm-init        Initialize swarm coordination infrastructure
@@ -274,16 +274,16 @@ TASK-ORCHESTRATE OPTIONS:
 
 EXAMPLES:
   # Initialize hierarchical swarm
-  claude-flow coordination swarm-init --topology hierarchical --max-agents 8
+  claude-zen coordination swarm-init --topology hierarchical --max-agents 8
 
   # Spawn coordinated developer agent
-  claude-flow coordination agent-spawn --type developer --name "api-dev" --swarm-id swarm-123
+  claude-zen coordination agent-spawn --type developer --name "api-dev" --swarm-id swarm-123
 
   # Orchestrate complex task
-  claude-flow coordination task-orchestrate --task "Build REST API" --strategy parallel --share-results
+  claude-zen coordination task-orchestrate --task "Build REST API" --strategy parallel --share-results
 
   # Initialize mesh topology for parallel work
-  claude-flow coordination swarm-init --topology mesh --max-agents 12
+  claude-zen coordination swarm-init --topology mesh --max-agents 12
 
 🎯 Coordination enables:
   • Intelligent task distribution

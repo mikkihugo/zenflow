@@ -167,23 +167,23 @@ interface MCPServer {
 #### CLI Command Structure
 ```bash
 # Basic Commands
-claude-flow init                    # Initialize new project
-claude-flow spawn <count>           # Spawn agent terminals
-claude-flow exec <command>          # Execute in all terminals
-claude-flow target <agent> <cmd>    # Target specific agent
-claude-flow status                  # Show system status
-claude-flow shutdown               # Graceful shutdown
+claude-zen init                    # Initialize new project
+claude-zen spawn <count>           # Spawn agent terminals
+claude-zen exec <command>          # Execute in all terminals
+claude-zen target <agent> <cmd>    # Target specific agent
+claude-zen status                  # Show system status
+claude-zen shutdown               # Graceful shutdown
 
 # Advanced Commands
-claude-flow workflow <file>         # Run workflow file
-claude-flow memory export <file>    # Export memory bank
-claude-flow replay <session>        # Replay session
-claude-flow monitor                 # Live monitoring UI
+claude-zen workflow <file>         # Run workflow file
+claude-zen memory export <file>    # Export memory bank
+claude-zen replay <session>        # Replay session
+claude-zen monitor                 # Live monitoring UI
 
 # Configuration Commands
-claude-flow config set <key> <val>  # Set configuration
-claude-flow config get <key>        # Get configuration
-claude-flow profile create <name>   # Create agent profile
+claude-zen config set <key> <val>  # Set configuration
+claude-zen config get <key>        # Get configuration
+claude-zen profile create <name>   # Create agent profile
 ```
 
 ### Data Models

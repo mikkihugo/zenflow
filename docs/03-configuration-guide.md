@@ -4,7 +4,7 @@ Claude-Flow uses a comprehensive configuration system that allows fine-tuning of
 
 ## Configuration File Structure
 
-The main configuration file is `claude-flow.config.json`, located in your project root or specified via the `--config` flag.
+The main configuration file is `claude-zen.config.json`, located in your project root or specified via the `--config` flag.
 
 ### Default Configuration
 
@@ -57,7 +57,7 @@ The main configuration file is `claude-flow.config.json`, located in your projec
     "level": "info",
     "format": "json",
     "destination": "console",
-    "fileOutput": "logs/claude-flow.log",
+    "fileOutput": "logs/claude-zen.log",
     "maxFileSize": "10MB",
     "maxFiles": 5
   }
@@ -324,7 +324,7 @@ Controls system logging and audit trails.
     "level": "info",
     "format": "json",
     "destination": "console",
-    "fileOutput": "logs/claude-flow.log",
+    "fileOutput": "logs/claude-zen.log",
     "maxFileSize": "10MB",
     "maxFiles": 5,
     "components": {
@@ -401,7 +401,7 @@ Optimized for production environments:
   "logging": {
     "level": "info",
     "destination": "file",
-    "fileOutput": "/var/log/claude-flow/app.log"
+    "fileOutput": "/var/log/claude-zen/app.log"
   }
 }
 ```
@@ -444,22 +444,22 @@ For enterprise deployments with redundancy:
 
 ```bash
 # Show current configuration
-claude-flow config show
+claude-zen config show
 
 # Get specific value
-claude-flow config get orchestrator.maxConcurrentAgents
+claude-zen config get orchestrator.maxConcurrentAgents
 
 # Set configuration value
-claude-flow config set memory.cacheSizeMB 200
+claude-zen config set memory.cacheSizeMB 200
 
 # Validate configuration file
-claude-flow config validate
+claude-zen config validate
 
 # Initialize with defaults
-claude-flow config init
+claude-zen config init
 
 # Use custom config file
-claude-flow --config /path/to/custom-config.json start
+claude-zen --config /path/to/custom-config.json start
 ```
 
 ### Environment Variables
@@ -486,13 +486,13 @@ Create configuration hierarchies for different environments:
 
 ```bash
 # Base configuration
-claude-flow config create base --template base-config.json
+claude-zen config create base --template base-config.json
 
 # Development inherits from base
-claude-flow config create development --inherit base --override dev-overrides.json
+claude-zen config create development --inherit base --override dev-overrides.json
 
 # Production inherits from base
-claude-flow config create production --inherit base --override prod-overrides.json
+claude-zen config create production --inherit base --override prod-overrides.json
 ```
 
 ## Advanced Configuration Patterns
@@ -558,13 +558,13 @@ Validate configuration against schema:
 
 ```bash
 # Validate current configuration
-claude-flow config validate
+claude-zen config validate
 
 # Validate specific file
-claude-flow config validate --file custom-config.json
+claude-zen config validate --file custom-config.json
 
 # Validate with strict mode
-claude-flow config validate --strict
+claude-zen config validate --strict
 ```
 
 ### Common Validation Errors

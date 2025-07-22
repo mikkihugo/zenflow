@@ -1,20 +1,20 @@
 # CLI Reference
 
-Complete reference for all Claude-Flow command-line interface commands, options, and usage patterns.
+Complete reference for all Claude Zen command-line interface commands, options, and usage patterns.
 
 ## Global Options
 
 These options can be used with any command:
 
 ```bash
-claude-flow [global-options] <command> [command-options]
+claude-zen [global-options] <command> [command-options]
 ```
 
 ### Global Flags
 
 | Option | Short | Description | Default |
 |--------|-------|-------------|---------|
-| `--config <path>` | `-c` | Path to configuration file | `./claude-flow.config.json` |
+| `--config <path>` | `-c` | Path to configuration file | `./claude-zen.config.json` |
 | `--verbose` | `-v` | Enable verbose logging | `false` |
 | `--quiet` | `-q` | Suppress non-essential output | `false` |
 | `--log-level <level>` | | Set log level (debug, info, warn, error) | `info` |
@@ -28,13 +28,13 @@ claude-flow [global-options] <command> [command-options]
 
 ```bash
 # Use custom config with verbose output
-claude-flow --config ./my-config.json --verbose agent list
+claude-zen --config ./my-config.json --verbose agent list
 
 # JSON output with debug logging
-claude-flow --json --log-level debug task list
+claude-zen --json --log-level debug task list
 
 # Quiet mode for scripts
-claude-flow --quiet --no-color start --daemon
+claude-zen --quiet --no-color start --daemon
 ```
 
 ## Core Commands
@@ -44,7 +44,7 @@ claude-flow --quiet --no-color start --daemon
 Start the Claude-Flow orchestration system.
 
 ```bash
-claude-flow start [options]
+claude-zen start [options]
 ```
 
 #### Options
@@ -64,16 +64,16 @@ claude-flow start [options]
 
 ```bash
 # Start with default settings
-claude-flow start
+claude-zen start
 
 # Start as daemon with custom port
-claude-flow start --daemon --port 3001
+claude-zen start --daemon --port 3001
 
 # Start with HTTP MCP transport
-claude-flow start --mcp-transport http --port 8000
+claude-zen start --mcp-transport http --port 8000
 
 # Start with custom worker count
-claude-flow start --workers 4 --memory-limit 1024
+claude-zen start --workers 4 --memory-limit 1024
 ```
 
 #### Output
@@ -81,7 +81,7 @@ claude-flow start --workers 4 --memory-limit 1024
 ```
 🧠 Claude-Flow v1.0.0 - Advanced AI Agent Orchestration System
 
-✅ Configuration loaded: ./claude-flow.config.json
+✅ Configuration loaded: ./claude-zen.config.json
 ✅ Memory system initialized (SQLite backend)
 ✅ Terminal pool created (3 terminals)
 ✅ MCP server started on stdio transport
@@ -98,7 +98,7 @@ Press Ctrl+C to stop
 Manage AI agents in the system.
 
 ```bash
-claude-flow agent <subcommand> [options]
+claude-zen agent <subcommand> [options]
 ```
 
 #### Subcommands
@@ -106,7 +106,7 @@ claude-flow agent <subcommand> [options]
 #### `spawn` - Create New Agent
 
 ```bash
-claude-flow agent spawn <type> [options]
+claude-zen agent spawn <type> [options]
 ```
 
 **Agent Types:**
@@ -134,10 +134,10 @@ claude-flow agent spawn <type> [options]
 
 ```bash
 # Basic researcher agent
-claude-flow agent spawn researcher --name "Research Bot"
+claude-zen agent spawn researcher --name "Research Bot"
 
 # Advanced analyst with custom config
-claude-flow agent spawn analyst \
+claude-zen agent spawn analyst \
   --name "Data Analyst" \
   --description "Specializes in statistical analysis" \
   --capabilities "statistics,visualization,reporting" \
@@ -145,7 +145,7 @@ claude-flow agent spawn analyst \
   --max-tasks 3
 
 # Custom agent with JSON config
-claude-flow agent spawn custom \
+claude-zen agent spawn custom \
   --name "Special Agent" \
   --config '{"model":"claude-3-opus","temperature":0.7}'
 ```
@@ -153,7 +153,7 @@ claude-flow agent spawn custom \
 #### `list` - List Agents
 
 ```bash
-claude-flow agent list [options]
+claude-zen agent list [options]
 ```
 
 **Options:**
@@ -171,19 +171,19 @@ claude-flow agent list [options]
 
 ```bash
 # List all agents
-claude-flow agent list
+claude-zen agent list
 
 # List only active researchers
-claude-flow agent list --status active --type researcher
+claude-zen agent list --status active --type researcher
 
 # JSON output sorted by creation time
-claude-flow agent list --format json --sort created
+claude-zen agent list --format json --sort created
 ```
 
 #### `info` - Agent Information
 
 ```bash
-claude-flow agent info <agent-id> [options]
+claude-zen agent info <agent-id> [options]
 ```
 
 **Options:**
@@ -198,13 +198,13 @@ claude-flow agent info <agent-id> [options]
 **Example:**
 
 ```bash
-claude-flow agent info agent_1704123456789_researcher --detailed --stats
+claude-zen agent info agent_1704123456789_researcher --detailed --stats
 ```
 
 #### `terminate` - Stop Agent
 
 ```bash
-claude-flow agent terminate <agent-id> [options]
+claude-zen agent terminate <agent-id> [options]
 ```
 
 **Options:**
@@ -218,13 +218,13 @@ claude-flow agent terminate <agent-id> [options]
 **Example:**
 
 ```bash
-claude-flow agent terminate agent_123 --reason "Task completed"
+claude-zen agent terminate agent_123 --reason "Task completed"
 ```
 
 #### `update` - Update Agent
 
 ```bash
-claude-flow agent update <agent-id> [options]
+claude-zen agent update <agent-id> [options]
 ```
 
 **Options:**
@@ -244,13 +244,13 @@ claude-flow agent update <agent-id> [options]
 Manage tasks and workflows.
 
 ```bash
-claude-flow task <subcommand> [options]
+claude-zen task <subcommand> [options]
 ```
 
 #### `create` - Create Task
 
 ```bash
-claude-flow task create <type> <description> [options]
+claude-zen task create <type> <description> [options]
 ```
 
 **Task Types:**
@@ -283,16 +283,16 @@ claude-flow task create <type> <description> [options]
 
 ```bash
 # Simple research task
-claude-flow task create research "Research quantum computing trends"
+claude-zen task create research "Research quantum computing trends"
 
 # High-priority analysis with deadline
-claude-flow task create analysis "Analyze user behavior data" \
+claude-zen task create analysis "Analyze user behavior data" \
   --priority high \
   --deadline "2024-01-15T17:00:00Z" \
   --assign-to agent_123
 
 # Implementation task with dependencies
-claude-flow task create implementation "Implement user authentication" \
+claude-zen task create implementation "Implement user authentication" \
   --dependencies "task_1,task_2" \
   --timeout 600000 \
   --tags "backend,auth,security"
@@ -301,7 +301,7 @@ claude-flow task create implementation "Implement user authentication" \
 #### `list` - List Tasks
 
 ```bash
-claude-flow task list [options]
+claude-zen task list [options]
 ```
 
 **Options:**
@@ -322,7 +322,7 @@ claude-flow task list [options]
 #### `status` - Task Status
 
 ```bash
-claude-flow task status <task-id> [options]
+claude-zen task status <task-id> [options]
 ```
 
 **Options:**
@@ -337,7 +337,7 @@ claude-flow task status <task-id> [options]
 #### `cancel` - Cancel Task
 
 ```bash
-claude-flow task cancel <task-id> [options]
+claude-zen task cancel <task-id> [options]
 ```
 
 **Options:**
@@ -350,7 +350,7 @@ claude-flow task cancel <task-id> [options]
 #### `retry` - Retry Failed Task
 
 ```bash
-claude-flow task retry <task-id> [options]
+claude-zen task retry <task-id> [options]
 ```
 
 **Options:**
@@ -367,13 +367,13 @@ claude-flow task retry <task-id> [options]
 Manage agent memory and knowledge base.
 
 ```bash
-claude-flow memory <subcommand> [options]
+claude-zen memory <subcommand> [options]
 ```
 
 #### `query` - Query Memory
 
 ```bash
-claude-flow memory query [options]
+claude-zen memory query [options]
 ```
 
 **Options:**
@@ -396,13 +396,13 @@ claude-flow memory query [options]
 
 ```bash
 # Query by category
-claude-flow memory query --category research --limit 10
+claude-zen memory query --category research --limit 10
 
 # Semantic search
-claude-flow memory query --vector-search "machine learning algorithms"
+claude-zen memory query --vector-search "machine learning algorithms"
 
 # Complex query with filters
-claude-flow memory query \
+claude-zen memory query \
   --category analysis \
   --tags "data,statistics" \
   --since "2024-01-01" \
@@ -412,7 +412,7 @@ claude-flow memory query \
 #### `stats` - Memory Statistics
 
 ```bash
-claude-flow memory stats [options]
+claude-zen memory stats [options]
 ```
 
 **Options:**
@@ -427,7 +427,7 @@ claude-flow memory stats [options]
 #### `export` - Export Memory
 
 ```bash
-claude-flow memory export <file> [options]
+claude-zen memory export <file> [options]
 ```
 
 **Options:**
@@ -443,7 +443,7 @@ claude-flow memory export <file> [options]
 #### `import` - Import Memory
 
 ```bash
-claude-flow memory import <file> [options]
+claude-zen memory import <file> [options]
 ```
 
 **Options:**
@@ -458,7 +458,7 @@ claude-flow memory import <file> [options]
 #### `cleanup` - Clean Memory
 
 ```bash
-claude-flow memory cleanup [options]
+claude-zen memory cleanup [options]
 ```
 
 **Options:**
@@ -477,13 +477,13 @@ claude-flow memory cleanup [options]
 Manage system configuration.
 
 ```bash
-claude-flow config <subcommand> [options]
+claude-zen config <subcommand> [options]
 ```
 
 #### `init` - Initialize Configuration
 
 ```bash
-claude-flow config init [file] [options]
+claude-zen config init [file] [options]
 ```
 
 **Options:**
@@ -497,7 +497,7 @@ claude-flow config init [file] [options]
 #### `show` - Show Configuration
 
 ```bash
-claude-flow config show [options]
+claude-zen config show [options]
 ```
 
 **Options:**
@@ -510,33 +510,33 @@ claude-flow config show [options]
 #### `get` - Get Config Value
 
 ```bash
-claude-flow config get <path> [options]
+claude-zen config get <path> [options]
 ```
 
 **Examples:**
 
 ```bash
-claude-flow config get orchestrator.maxConcurrentAgents
-claude-flow config get memory.backend
+claude-zen config get orchestrator.maxConcurrentAgents
+claude-zen config get memory.backend
 ```
 
 #### `set` - Set Config Value
 
 ```bash
-claude-flow config set <path> <value> [options]
+claude-zen config set <path> <value> [options]
 ```
 
 **Examples:**
 
 ```bash
-claude-flow config set orchestrator.maxConcurrentAgents 10
-claude-flow config set memory.cacheSizeMB 200
+claude-zen config set orchestrator.maxConcurrentAgents 10
+claude-zen config set memory.cacheSizeMB 200
 ```
 
 #### `validate` - Validate Configuration
 
 ```bash
-claude-flow config validate [file] [options]
+claude-zen config validate [file] [options]
 ```
 
 ---
@@ -546,13 +546,13 @@ claude-flow config validate [file] [options]
 Manage complex multi-task workflows.
 
 ```bash
-claude-flow workflow <subcommand> [options]
+claude-zen workflow <subcommand> [options]
 ```
 
 #### `execute` - Execute Workflow
 
 ```bash
-claude-flow workflow execute <file> [options]
+claude-zen workflow execute <file> [options]
 ```
 
 **Options:**
@@ -568,19 +568,19 @@ claude-flow workflow execute <file> [options]
 #### `status` - Workflow Status
 
 ```bash
-claude-flow workflow status <workflow-id> [options]
+claude-zen workflow status <workflow-id> [options]
 ```
 
 #### `list` - List Workflows
 
 ```bash
-claude-flow workflow list [options]
+claude-zen workflow list [options]
 ```
 
 #### `template` - Workflow Templates
 
 ```bash
-claude-flow workflow template <subcommand>
+claude-zen workflow template <subcommand>
 ```
 
 **Subcommands:**
@@ -595,7 +595,7 @@ claude-flow workflow template <subcommand>
 Show system status and health information.
 
 ```bash
-claude-flow status [options]
+claude-zen status [options]
 ```
 
 **Options:**
@@ -614,7 +614,7 @@ claude-flow status [options]
 Start the real-time monitoring dashboard to track system performance and activity.
 
 ```bash
-claude-flow monitor [options]
+claude-zen monitor [options]
 ```
 
 **Options:**
@@ -629,16 +629,16 @@ claude-flow monitor [options]
 
 ```bash
 # Start monitor with default settings
-claude-flow monitor
+claude-zen monitor
 
 # Monitor with 5-second updates
-claude-flow monitor --interval 5
+claude-zen monitor --interval 5
 
 # Compact mode for smaller screens
-claude-flow monitor --compact
+claude-zen monitor --compact
 
 # Focus on specific component
-claude-flow monitor --focus orchestrator
+claude-zen monitor --focus orchestrator
 ```
 
 ---
@@ -648,13 +648,13 @@ claude-flow monitor --focus orchestrator
 Spawn and manage Claude Code instances with specific configurations, similar to claude-sparc.sh but integrated into the orchestration system.
 
 ```bash
-claude-flow claude <subcommand> [options]
+claude-zen claude <subcommand> [options]
 ```
 
 #### `spawn` - Spawn Single Claude Instance
 
 ```bash
-claude-flow claude spawn <task> [options]
+claude-zen claude spawn <task> [options]
 ```
 
 **Options:**
@@ -676,25 +676,25 @@ claude-flow claude spawn <task> [options]
 
 ```bash
 # Basic task
-claude-flow claude spawn "implement user authentication"
+claude-zen claude spawn "implement user authentication"
 
 # Research task
-claude-flow claude spawn "research microservices patterns" --research --parallel
+claude-zen claude spawn "research microservices patterns" --research --parallel
 
 # Backend development
-claude-flow claude spawn "create REST API" --mode backend-only --coverage 90
+claude-zen claude spawn "create REST API" --mode backend-only --coverage 90
 
 # Frontend with no permissions
-claude-flow claude spawn "build dashboard" --mode frontend-only --no-permissions
+claude-zen claude spawn "build dashboard" --mode frontend-only --no-permissions
 
 # Dry run
-claude-flow claude spawn "refactor code" --dry-run
+claude-zen claude spawn "refactor code" --dry-run
 ```
 
 #### `batch` - Execute Workflow File
 
 ```bash
-claude-flow claude batch <workflow-file> [options]
+claude-zen claude batch <workflow-file> [options]
 ```
 
 Execute multiple Claude instances from a JSON workflow file.
@@ -718,10 +718,10 @@ Execute multiple Claude instances from a JSON workflow file.
 
 ```bash
 # Execute workflow
-claude-flow claude batch workflow.json
+claude-zen claude batch workflow.json
 
 # Dry run
-claude-flow claude batch workflow.json --dry-run
+claude-zen claude batch workflow.json --dry-run
 ```
 
 ---
@@ -731,25 +731,25 @@ claude-flow claude batch workflow.json --dry-run
 Manage terminal sessions and REPL.
 
 ```bash
-claude-flow session <subcommand> [options]
+claude-zen session <subcommand> [options]
 ```
 
 #### `list` - List Sessions
 
 ```bash
-claude-flow session list
+claude-zen session list
 ```
 
 #### `attach` - Attach to Session
 
 ```bash
-claude-flow session attach <session-id>
+claude-zen session attach <session-id>
 ```
 
 #### `terminate` - Terminate Session
 
 ```bash
-claude-flow session terminate <session-id>
+claude-zen session terminate <session-id>
 ```
 
 ---
@@ -759,7 +759,7 @@ claude-flow session terminate <session-id>
 Start interactive REPL mode.
 
 ```bash
-claude-flow repl [options]
+claude-zen repl [options]
 ```
 
 **Options:**
@@ -772,14 +772,14 @@ claude-flow repl [options]
 
 **REPL Commands:**
 
-In REPL mode, you can use any command without the `claude-flow` prefix:
+In REPL mode, you can use any command without the `claude-zen` prefix:
 
 ```
-claude-flow> agent list
-claude-flow> task create research "AI trends"
-claude-flow> memory query --category research
-claude-flow> help agent
-claude-flow> exit
+claude-zen> agent list
+claude-zen> task create research "AI trends"
+claude-zen> memory query --category research
+claude-zen> help agent
+claude-zen> exit
 ```
 
 ## Environment Variables
@@ -788,11 +788,11 @@ Claude-Flow recognizes these environment variables:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_CONFIG` | Default configuration file path | `./claude-flow.config.json` |
+| `CLAUDE_FLOW_CONFIG` | Default configuration file path | `./claude-zen.config.json` |
 | `CLAUDE_FLOW_LOG_LEVEL` | Default log level | `info` |
 | `CLAUDE_FLOW_NO_COLOR` | Disable colored output | `false` |
 | `CLAUDE_FLOW_DEBUG` | Enable debug mode | `false` |
-| `CLAUDE_FLOW_HOME` | Application home directory | `~/.claude-flow` |
+| `CLAUDE_FLOW_HOME` | Application home directory | `~/.claude-zen` |
 | `CLAUDE_FLOW_CACHE_DIR` | Cache directory | `$CLAUDE_FLOW_HOME/cache` |
 | `CLAUDE_FLOW_DATA_DIR` | Data directory | `$CLAUDE_FLOW_HOME/data` |
 
@@ -817,22 +817,22 @@ Generate shell completion scripts:
 
 ```bash
 # Bash
-claude-flow completion bash > /usr/local/etc/bash_completion.d/claude-flow
+claude-zen completion bash > /usr/local/etc/bash_completion.d/claude-zen
 
 # Zsh
-claude-flow completion zsh > /usr/local/share/zsh/site-functions/_claude-flow
+claude-zen completion zsh > /usr/local/share/zsh/site-functions/_claude-zen
 
 # Fish
-claude-flow completion fish > ~/.config/fish/completions/claude-flow.fish
+claude-zen completion fish > ~/.config/fish/completions/claude-zen.fish
 
 # PowerShell
-claude-flow completion powershell > $PROFILE
+claude-zen completion powershell > $PROFILE
 ```
 
 Or install automatically:
 
 ```bash
-claude-flow completion --install
+claude-zen completion --install
 ```
 
 ## Tips and Best Practices
@@ -842,11 +842,11 @@ claude-flow completion --install
 Create helpful aliases:
 
 ```bash
-alias cf='claude-flow'
-alias cfs='claude-flow status'
-alias cfa='claude-flow agent'
-alias cft='claude-flow task'
-alias cfm='claude-flow memory'
+alias cf='claude-zen'
+alias cfs='claude-zen status'
+alias cfa='claude-zen agent'
+alias cft='claude-zen task'
+alias cfm='claude-zen memory'
 ```
 
 ### Script Integration
@@ -858,10 +858,10 @@ For use in scripts:
 set -e
 
 # Use quiet mode and JSON output
-claude-flow --quiet --json agent list > agents.json
+claude-zen --quiet --json agent list > agents.json
 
 # Check exit code
-if claude-flow --quiet task status $TASK_ID; then
+if claude-zen --quiet task status $TASK_ID; then
     echo "Task completed successfully"
 else
     echo "Task failed"
@@ -875,13 +875,13 @@ Use different configs for different environments:
 
 ```bash
 # Development
-claude-flow --config dev.config.json start
+claude-zen --config dev.config.json start
 
 # Production
-claude-flow --config prod.config.json start --daemon
+claude-zen --config prod.config.json start --daemon
 
 # Testing
-claude-flow --config test.config.json task create test "Run tests"
+claude-zen --config test.config.json task create test "Run tests"
 ```
 
 ### Performance Tips

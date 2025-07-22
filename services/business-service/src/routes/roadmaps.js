@@ -3,13 +3,13 @@
  * Handles roadmap generation and management for approved visions
  */
 
-const express = require('express');
-const { param, body, validationResult } = require('express-validator');
-const { asyncHandler, errors, ApiError } = require('../../../shared/middleware/src/errorHandler');
-const { PERMISSIONS } = require('../../../shared/auth/src/permissions');
-const RoadmapService = require('../services/roadmapService');
+import express from 'express';
+import { param, body, validationResult } from 'express-validator';
+import { asyncHandler, errors, ApiError } from '../../../shared/middleware/src/errorHandler.js';
+import { PERMISSIONS } from '../../../shared/auth/src/permissions.js';
+import RoadmapService from '../services/roadmapService.js';
 
-module.exports = (server) => {
+export default (server) => {
   const router = express.Router();
   const roadmapService = new RoadmapService(server);
 

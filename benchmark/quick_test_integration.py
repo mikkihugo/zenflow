@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quick test of claude-flow integration."""
+"""Quick test of claude-zen integration."""
 
 import sys
 from pathlib import Path

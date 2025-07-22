@@ -51,7 +51,7 @@ async function runTest() {
     };
     
     const storeResult = execSync(
-      `npx claude-flow@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,
+      `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
     
@@ -76,7 +76,7 @@ async function runTest() {
     const testKey = fs.existsSync('.test-key') ? fs.readFileSync('.test-key', 'utf8') : `verify_test_${Date.now()}`;
     
     const retrieveResult = execSync(
-      `npx claude-flow@alpha mcp call memory_usage '{"action": "retrieve", "key": "${testKey}", "namespace": "verification"}'`,
+      `npx claude-zen@alpha mcp call memory_usage '{"action": "retrieve", "key": "${testKey}", "namespace": "verification"}'`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
     
@@ -96,7 +96,7 @@ async function runTest() {
   log('\n4️⃣ Testing memory_usage list operation...', 'yellow');
   try {
     const listResult = execSync(
-      `npx claude-flow@alpha mcp call memory_usage '{"action": "list", "namespace": "verification"}'`,
+      `npx claude-zen@alpha mcp call memory_usage '{"action": "list", "namespace": "verification"}'`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
     
@@ -126,7 +126,7 @@ async function runTest() {
   try {
     const message = `Persistence test ${Date.now()}`;
     const hookResult = execSync(
-      `npx claude-flow@alpha hooks notify --message "${message}" --level "test"`,
+      `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,
       { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
     );
     

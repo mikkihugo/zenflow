@@ -24,22 +24,22 @@ The MCP server now supports flexible port configuration with multiple options:
 **1. Using MCP Command (Recommended):**
 ```bash
 # Start MCP server on port 3001
-./claude-flow mcp start --port 3001
+./claude-zen mcp start --port 3001
 
 # Start on different host and port
-./claude-flow mcp start --port 8080 --host 0.0.0.0
+./claude-zen mcp start --port 8080 --host 0.0.0.0
 
 # Check MCP configuration
-./claude-flow mcp config
+./claude-zen mcp config
 ```
 
 **2. Using Start Command:**
 ```bash
 # Start orchestration with custom port
-./claude-flow start --port 8080
+./claude-zen start --port 8080
 
 # Start with UI on custom port
-./claude-flow start --ui --port 3001
+./claude-zen start --ui --port 3001
 ```
 
 **3. Using Node.js Compatible Mode:**
@@ -64,10 +64,10 @@ lsof -i :3000
 sudo kill -9 $(lsof -t -i:3000)
 
 # Start on alternative port
-./claude-flow mcp start --port 3001
+./claude-zen mcp start --port 3001
 
 # Verify server is running
-./claude-flow mcp status
+./claude-zen mcp status
 ```
 
 ### v2.0.0 Improvements:
@@ -91,7 +91,7 @@ The MCP command structure has been completely redesigned in v2.0.0 to eliminate 
 #### ✅ New MCP Command Structure:
 ```bash
 # Main MCP command with subcommands
-claude-flow mcp <subcommand> [options]
+claude-zen mcp <subcommand> [options]
 
 Available subcommands:
   status                           # Show MCP server status
@@ -103,33 +103,33 @@ Available subcommands:
 ```
 
 #### ✅ No More Command Conflicts:
-- **Clear Namespace**: All MCP operations under `claude-flow mcp`
+- **Clear Namespace**: All MCP operations under `claude-zen mcp`
 - **Subcommand Structure**: No ambiguous command paths
 - **Help System**: Built-in help for each subcommand
 - **Validation**: Input validation prevents invalid commands
 
 #### ✅ Examples of Resolved Conflicts:
 ```bash
-# OLD (conflicting): claude-flow /mcp
-# NEW (clear):       claude-flow mcp status
+# OLD (conflicting): claude-zen /mcp
+# NEW (clear):       claude-zen mcp status
 
-# OLD (ambiguous):   claude-flow start-mcp
-# NEW (structured):  claude-flow mcp start
+# OLD (ambiguous):   claude-zen start-mcp
+# NEW (structured):  claude-zen mcp start
 
-# OLD (unclear):     claude-flow tools
-# NEW (specific):    claude-flow mcp tools
+# OLD (unclear):     claude-zen tools
+# NEW (specific):    claude-zen mcp tools
 ```
 
 #### ✅ Alternative Command Access:
 ```bash
 # Direct orchestration start (includes MCP)
-./claude-flow start --swarm
+./claude-zen start --swarm
 
 # GitHub integration (bypasses MCP conflicts)
-./claude-flow github pr-manager
+./claude-zen github pr-manager
 
 # Swarm intelligence (independent of MCP)
-./claude-flow swarm "objective" --strategy development
+./claude-zen swarm "objective" --strategy development
 ```
 
 ### v2.0.0 Improvements:
@@ -156,46 +156,46 @@ These issues were related to:
 #### ✅ Port Binding Fixes:
 ```bash
 # Smart port detection
-./claude-flow mcp start --port auto
+./claude-zen mcp start --port auto
 
 # Bind to all interfaces
-./claude-flow mcp start --host 0.0.0.0 --port 3000
+./claude-zen mcp start --host 0.0.0.0 --port 3000
 
 # Use privileged ports (if needed)
-sudo ./claude-flow mcp start --port 80
+sudo ./claude-zen mcp start --port 80
 
 # Check port availability
-./claude-flow mcp status --check-ports
+./claude-zen mcp status --check-ports
 ```
 
 #### ✅ Startup Improvements:
 ```bash
 # Runtime detection and fallback
-./claude-flow start --check-runtime
+./claude-zen start --check-runtime
 
 # Force specific runtime
-./claude-flow start --runtime node
+./claude-zen start --runtime node
 
 # Verbose startup diagnostics
-./claude-flow start --verbose --debug
+./claude-zen start --verbose --debug
 
 # Enterprise initialization
-./claude-flow init --sparc --force
+./claude-zen init --sparc --force
 ```
 
 #### ✅ Configuration Management:
 ```bash
 # Generate default configuration
-./claude-flow config generate
+./claude-zen config generate
 
 # Validate current configuration  
-./claude-flow config validate
+./claude-zen config validate
 
 # Show all configuration options
-./claude-flow config show --all
+./claude-zen config show --all
 
 # Reset to defaults
-./claude-flow config reset --confirm
+./claude-zen config reset --confirm
 ```
 
 ### v2.0.0 Infrastructure Features:
@@ -216,47 +216,47 @@ sudo ./claude-flow mcp start --port 80
 **1. Port Configuration Testing:**
 ```bash
 # Test default port
-./claude-flow mcp start
+./claude-zen mcp start
 
 # Test custom port
-./claude-flow mcp start --port 3001
+./claude-zen mcp start --port 3001
 
 # Test port conflict resolution
-./claude-flow mcp start --port 3000 &
-./claude-flow mcp start --port auto
+./claude-zen mcp start --port 3000 &
+./claude-zen mcp start --port auto
 ```
 
 **2. Command Structure Testing:**
 ```bash
 # Test all MCP subcommands
-./claude-flow mcp status
-./claude-flow mcp tools
-./claude-flow mcp config
-./claude-flow mcp auth status
+./claude-zen mcp status
+./claude-zen mcp tools
+./claude-zen mcp config
+./claude-zen mcp auth status
 ```
 
 **3. Configuration Testing:**
 ```bash
 # Test configuration generation
-./claude-flow config generate --test
+./claude-zen config generate --test
 
 # Test configuration validation
-./claude-flow config validate --verbose
+./claude-zen config validate --verbose
 
 # Test startup with custom config
-./claude-flow start --config ./custom-config.json
+./claude-zen start --config ./custom-config.json
 ```
 
 **4. Runtime Compatibility Testing:**
 ```bash
 # Test Deno runtime (if available)
-deno --version && ./claude-flow start
+deno --version && ./claude-zen start
 
 # Test Node.js runtime
 node --version && npx tsx src/cli/simple-cli.ts start
 
 # Test fallback behavior
-./claude-flow start --runtime-fallback
+./claude-zen start --runtime-fallback
 ```
 
 ---
@@ -266,13 +266,13 @@ node --version && npx tsx src/cli/simple-cli.ts start
 ### ✅ Automated Migration:
 ```bash
 # Migrate from v1.x to v2.0.0
-./claude-flow migrate --from v1.x --backup
+./claude-zen migrate --from v1.x --backup
 
 # Update configuration format
-./claude-flow config migrate --format v2
+./claude-zen config migrate --format v2
 
 # Verify migration success
-./claude-flow config validate --version v2.0.0
+./claude-zen config validate --version v2.0.0
 ```
 
 ### ✅ Breaking Changes Handled:
@@ -318,7 +318,7 @@ All infrastructure issues (#87, #91, #21, #19, #57) have been **comprehensively 
 ✅ **Issues #21, #19, #57**: Startup, binding, and configuration issues resolved
 
 ### ✅ Recommended Actions:
-1. **Upgrade to v2.0.0**: `npx claude-flow@2.0.0 init --sparc`
+1. **Upgrade to v2.0.0**: `npx claude-zen@2.0.0 init --sparc`
 2. **Test Port Configuration**: Use examples above to verify functionality
 3. **Explore New Features**: Try GitHub automation and swarm intelligence
 4. **Report Any Issues**: Use GitHub issue tracker for any remaining problems

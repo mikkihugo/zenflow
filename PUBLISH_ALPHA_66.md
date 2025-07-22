@@ -38,11 +38,11 @@ git push origin alpha-66
 npm publish --tag alpha
 
 # 5. Verify publication
-npm view claude-flow@alpha version
+npm view claude-zen@alpha version
 # Should show: 2.0.0-alpha.66
 
 # 6. Test the fixes
-npx claude-flow@alpha hooks pre-command --command "test" --validate-safety true
+npx claude-zen@alpha hooks pre-command --command "test" --validate-safety true
 # Should work without toLowerCase error
 ```
 
@@ -51,16 +51,16 @@ npx claude-flow@alpha hooks pre-command --command "test" --validate-safety true
 ### Test Hooks Fix:
 ```bash
 # Test with empty command
-npx claude-flow@alpha hooks pre-command --command "" --validate-safety true
+npx claude-zen@alpha hooks pre-command --command "" --validate-safety true
 
 # Test with valid command
-npx claude-flow@alpha hooks pre-command --command "echo test" --validate-safety true
+npx claude-zen@alpha hooks pre-command --command "echo test" --validate-safety true
 ```
 
 ### Test ARM64 Support:
 On Apple Silicon Mac:
 ```bash
-npm install -g claude-flow@alpha
+npm install -g claude-zen@alpha
 # Should detect ARM64 and attempt to rebuild SQLite bindings
 ```
 

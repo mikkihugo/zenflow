@@ -43,7 +43,7 @@ All swarms are automatically resumable:
 
 ```bash
 # Spawn a new swarm (automatically creates a session)
-claude-flow hive-mind spawn "Build a REST API with authentication"
+claude-zen hive-mind spawn "Build a REST API with authentication"
 
 # Output includes Session ID
 # Session ID: session-1234567890-abc123def
@@ -54,7 +54,7 @@ claude-flow hive-mind spawn "Build a REST API with authentication"
 List all active and paused sessions:
 
 ```bash
-claude-flow hive-mind sessions
+claude-zen hive-mind sessions
 
 # Output:
 # 🗂️  Hive Mind Sessions
@@ -88,13 +88,13 @@ Resume a paused session with full context:
 
 ```bash
 # Basic resume
-claude-flow hive-mind resume session-1234567890-abc123def
+claude-zen hive-mind resume session-1234567890-abc123def
 
 # Resume with Claude Code launch
-claude-flow hive-mind resume session-1234567890-abc123def --claude
+claude-zen hive-mind resume session-1234567890-abc123def --claude
 
 # Resume with auto-permissions
-claude-flow hive-mind resume session-1234567890-abc123def --claude --dangerously-skip-permissions
+claude-zen hive-mind resume session-1234567890-abc123def --claude --dangerously-skip-permissions
 ```
 
 ## Architecture
@@ -167,18 +167,18 @@ await sessionManager.saveCheckpoint(sessionId, 'milestone-auth-complete', {
 ```
 
 ### 2. Session Hygiene
-- Archive old sessions: `claude-flow hive-mind archive --days-old 30`
-- Export important sessions: `claude-flow hive-mind export session-id`
+- Archive old sessions: `claude-zen hive-mind archive --days-old 30`
+- Export important sessions: `claude-zen hive-mind export session-id`
 - Clean up completed sessions periodically
 
 ### 3. Monitoring Progress
 Use session tracking to monitor long-running operations:
 ```bash
 # Check specific session progress
-claude-flow hive-mind session-status session-1234567890-abc123def
+claude-zen hive-mind session-status session-1234567890-abc123def
 
 # View session metrics
-claude-flow hive-mind session-metrics session-1234567890-abc123def
+claude-zen hive-mind session-metrics session-1234567890-abc123def
 ```
 
 ## Technical Details
@@ -232,35 +232,35 @@ Planned improvements include:
 ### Example 1: Long-Running Development Task
 ```bash
 # Start a complex development task
-claude-flow hive-mind spawn "Build microservices architecture" --max-workers 8
+claude-zen hive-mind spawn "Build microservices architecture" --max-workers 8
 
 # Work for a while, then pause (Ctrl+C)
 # ... later ...
 
 # Resume where you left off
-claude-flow hive-mind resume session-xxx --claude
+claude-zen hive-mind resume session-xxx --claude
 ```
 
 ### Example 2: Multiple Concurrent Projects
 ```bash
 # List all your sessions
-claude-flow hive-mind sessions
+claude-zen hive-mind sessions
 
 # Resume specific project
-claude-flow hive-mind resume session-project-a
+claude-zen hive-mind resume session-project-a
 
 # Switch to another project
-claude-flow hive-mind resume session-project-b
+claude-zen hive-mind resume session-project-b
 ```
 
 ### Example 3: Disaster Recovery
 ```bash
 # System crashed? No problem!
 # List sessions to find the one you were working on
-claude-flow hive-mind sessions
+claude-zen hive-mind sessions
 
 # Resume with full context
-claude-flow hive-mind resume session-xxx --claude --verbose
+claude-zen hive-mind resume session-xxx --claude --verbose
 ```
 
 ## Conclusion

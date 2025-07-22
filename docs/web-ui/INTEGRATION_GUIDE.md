@@ -38,7 +38,7 @@ This guide provides comprehensive instructions for integrating all 71+ Claude Fl
 #### Current Web Server Tools (7/71+)
 ```javascript
 // Currently exposed in web-server.js
-1. claude-flow/execute
+1. claude-zen/execute
 2. swarm/orchestrate
 3. system/health
 4. memory/manage
@@ -145,12 +145,12 @@ export const CLAUDE_FLOW_TOOLS = {
   neural: [
     {
       name: 'neural/status',
-      handler: 'mcp__claude-flow__neural_status',
+      handler: 'mcp__claude-zen__neural_status',
       description: 'Check neural network status'
     },
     {
       name: 'neural/train',
-      handler: 'mcp__claude-flow__neural_train',
+      handler: 'mcp__claude-zen__neural_train',
       description: 'Train neural patterns with WASM'
     },
     // ... all 15 neural tools
@@ -160,7 +160,7 @@ export const CLAUDE_FLOW_TOOLS = {
   memory: [
     {
       name: 'memory/search',
-      handler: 'mcp__claude-flow__memory_search',
+      handler: 'mcp__claude-zen__memory_search',
       description: 'Search memory patterns'
     },
     // ... all 10 memory tools
@@ -170,7 +170,7 @@ export const CLAUDE_FLOW_TOOLS = {
   analytics: [
     {
       name: 'analytics/performance',
-      handler: 'mcp__claude-flow__performance_report',
+      handler: 'mcp__claude-zen__performance_report',
       description: 'Generate performance reports'
     },
     // ... all 13 analytics tools
@@ -232,7 +232,7 @@ export class MCPToolBridge {
   async executeTool(toolName, args) {
     return new Promise((resolve, reject) => {
       const mcpProcess = spawn('npx', [
-        'claude-flow',
+        'claude-zen',
         'mcp',
         'call',
         toolName,

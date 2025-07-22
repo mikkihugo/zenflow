@@ -7,13 +7,13 @@ The Hive Mind system provides a comprehensive programmatic API for integrating i
 ## Installation
 
 ```bash
-npm install claude-flow@2.0.0
+npm install claude-zen@2.0.0
 ```
 
 ## Basic Usage
 
 ```javascript
-const { HiveMind } = require('claude-flow');
+const { HiveMind } = require('claude-zen');
 
 // Initialize Hive Mind
 const hiveMind = new HiveMind({
@@ -535,7 +535,7 @@ await hiveMind.applyPattern(pattern, currentTask);
 
 ```javascript
 const express = require('express');
-const { HiveMind } = require('claude-flow');
+const { HiveMind } = require('claude-zen');
 
 const app = express();
 const hiveMind = new HiveMind();
@@ -585,7 +585,7 @@ jobs:
     
     - name: Run Hive Mind
       run: |
-        npx claude-flow@2.0.0 hive-mind \
+        npx claude-zen@2.0.0 hive-mind \
           --task "${{ github.event.issue.title }}" \
           --complexity high \
           --non-interactive
@@ -601,7 +601,7 @@ jobs:
 
 ```javascript
 const vscode = require('vscode');
-const { HiveMind } = require('claude-flow');
+const { HiveMind } = require('claude-zen');
 
 function activate(context) {
   const hiveMind = new HiveMind();
@@ -718,7 +718,7 @@ hiveMind.enableCache({
 ### Unit Testing
 
 ```javascript
-const { HiveMind, MockAgent } = require('claude-flow/testing');
+const { HiveMind, MockAgent } = require('claude-zen/testing');
 
 describe('HiveMind', () => {
   it('should execute simple task', async () => {
@@ -738,7 +738,7 @@ describe('HiveMind', () => {
 ### Integration Testing
 
 ```javascript
-const { TestHarness } = require('claude-flow/testing');
+const { TestHarness } = require('claude-zen/testing');
 
 const harness = new TestHarness();
 
@@ -779,6 +779,6 @@ const result = await hiveMind.execute(task);
 
 ## Support
 
-- GitHub Issues: https://github.com/ruvnet/claude-flow/issues
-- Documentation: https://github.com/ruvnet/claude-flow/docs
-- Examples: https://github.com/ruvnet/claude-flow/examples
+- GitHub Issues: https://github.com/ruvnet/claude-zen/issues
+- Documentation: https://github.com/ruvnet/claude-zen/docs
+- Examples: https://github.com/ruvnet/claude-zen/examples

@@ -11,19 +11,19 @@ The terminal manager maintains a sophisticated pool of reusable terminal session
 **Pool Configuration:**
 ```bash
 # Configure terminal pool size
-claude-flow config set terminal.poolSize 10
+claude-zen config set terminal.poolSize 10
 
 # Set recycling threshold
-claude-flow config set terminal.recycleAfter 20
+claude-zen config set terminal.recycleAfter 20
 
 # Configure health check interval
-claude-flow config set terminal.healthCheckInterval 30000
+claude-zen config set terminal.healthCheckInterval 30000
 
 # Monitor pool status
-claude-flow terminal pool status --detailed
+claude-zen terminal pool status --detailed
 
 # View pool statistics
-claude-flow terminal pool stats \
+claude-zen terminal pool stats \
   --metrics "utilization,performance,recycling" \
   --time-range "24h"
 ```
@@ -53,19 +53,19 @@ graph TB
 **Supported Terminal Types:**
 ```bash
 # Auto-detection (recommended)
-claude-flow config set terminal.type auto
+claude-zen config set terminal.type auto
 
 # Integrated terminals (VS Code, IDEs)
-claude-flow config set terminal.type integrated
+claude-zen config set terminal.type integrated
 
 # External terminal applications
-claude-flow config set terminal.type external
+claude-zen config set terminal.type external
 
 # Headless terminals for automation
-claude-flow config set terminal.type headless
+claude-zen config set terminal.type headless
 
 # Container-based terminals
-claude-flow config set terminal.type container
+claude-zen config set terminal.type container
 ```
 
 **Advanced Terminal Configuration:**
@@ -112,20 +112,20 @@ claude-flow config set terminal.type container
 **Basic Session Creation:**
 ```bash
 # Create new terminal session
-claude-flow terminal create \
+claude-zen terminal create \
   --name "development-session" \
   --shell bash \
   --working-directory "/project"
 
 # Create session with environment variables
-claude-flow terminal create \
+claude-zen terminal create \
   --name "node-development" \
   --shell bash \
   --env "NODE_ENV=development,DEBUG=true,PORT=3000" \
   --working-directory "/project/web"
 
 # Create persistent session
-claude-flow terminal create \
+claude-zen terminal create \
   --name "persistent-session" \
   --persistent true \
   --auto-restart true \
@@ -135,7 +135,7 @@ claude-flow terminal create \
 **Advanced Session Configuration:**
 ```bash
 # Create session with resource limits
-claude-flow terminal create \
+claude-zen terminal create \
   --name "limited-session" \
   --memory-limit "512MB" \
   --cpu-limit "1.0" \
@@ -143,7 +143,7 @@ claude-flow terminal create \
   --max-processes 10
 
 # Create containerized session
-claude-flow terminal create \
+claude-zen terminal create \
   --name "docker-session" \
   --type "container" \
   --image "node:18-alpine" \
@@ -151,7 +151,7 @@ claude-flow terminal create \
   --working-directory "/workspace"
 
 # Create SSH session
-claude-flow terminal create \
+claude-zen terminal create \
   --name "remote-session" \
   --type "ssh" \
   --host "server.example.com" \
@@ -164,28 +164,28 @@ claude-flow terminal create \
 **Session Lifecycle Management:**
 ```bash
 # List all active sessions
-claude-flow terminal list --detailed
+claude-zen terminal list --detailed
 
 # Get comprehensive session information
-claude-flow terminal info <session-id> \
+claude-zen terminal info <session-id> \
   --include-stats true \
   --include-history true
 
 # Attach to running session
-claude-flow terminal attach <session-id> --interactive
+claude-zen terminal attach <session-id> --interactive
 
 # Detach from session (keep running)
-claude-flow terminal detach <session-id>
+claude-zen terminal detach <session-id>
 
 # Pause session execution
-claude-flow terminal pause <session-id> \
+claude-zen terminal pause <session-id> \
   --reason "maintenance-window"
 
 # Resume paused session
-claude-flow terminal resume <session-id>
+claude-zen terminal resume <session-id>
 
 # Gracefully terminate session
-claude-flow terminal terminate <session-id> \
+claude-zen terminal terminate <session-id> \
   --graceful true \
   --timeout 30s
 ```
@@ -193,17 +193,17 @@ claude-flow terminal terminate <session-id> \
 **Batch Session Operations:**
 ```bash
 # Create multiple sessions
-claude-flow terminal batch-create \
+claude-zen terminal batch-create \
   --config "session-configs.json" \
   --parallel true
 
 # Terminate idle sessions
-claude-flow terminal cleanup \
+claude-zen terminal cleanup \
   --idle-longer-than "30m" \
   --exclude-persistent
 
 # Restart all sessions of specific type
-claude-flow terminal batch-restart \
+claude-zen terminal batch-restart \
   --filter "type:development" \
   --graceful true
 ```
@@ -257,18 +257,18 @@ claude-flow terminal batch-restart \
 **Single Command Execution:**
 ```bash
 # Execute single command
-claude-flow terminal exec "ls -la" \
+claude-zen terminal exec "ls -la" \
   --session <session-id> \
   --timeout 30s
 
 # Execute with environment override
-claude-flow terminal exec "npm test" \
+claude-zen terminal exec "npm test" \
   --session <session-id> \
   --env "NODE_ENV=test,CI=true" \
   --timeout 300s
 
 # Execute in background
-claude-flow terminal exec "npm run build" \
+claude-zen terminal exec "npm run build" \
   --session <session-id> \
   --background true \
   --log-output "build.log"
@@ -277,14 +277,14 @@ claude-flow terminal exec "npm run build" \
 **Command with Input/Output Handling:**
 ```bash
 # Execute command with input file
-claude-flow terminal exec "python script.py" \
+claude-zen terminal exec "python script.py" \
   --session <session-id> \
   --input-file "input-data.txt" \
   --output-file "results.txt" \
   --error-file "errors.txt"
 
 # Execute with streaming output
-claude-flow terminal exec "docker build ." \
+claude-zen terminal exec "docker build ." \
   --session <session-id> \
   --stream-output true \
   --real-time true
@@ -295,14 +295,14 @@ claude-flow terminal exec "docker build ." \
 **Sequential Command Execution:**
 ```bash
 # Execute commands in sequence
-claude-flow terminal batch-exec \
+claude-zen terminal batch-exec \
   --session <session-id> \
   --commands "cd /project,npm install,npm test,npm run build" \
   --stop-on-error true \
   --log-each-command
 
 # Execute from command file
-claude-flow terminal batch-exec \
+claude-zen terminal batch-exec \
   --session <session-id> \
   --file "deployment-commands.txt" \
   --variables "ENV=production,VERSION=2.1.0"
@@ -311,14 +311,14 @@ claude-flow terminal batch-exec \
 **Parallel Command Execution:**
 ```bash
 # Execute commands in parallel
-claude-flow terminal parallel-exec \
+claude-zen terminal parallel-exec \
   --session <session-id> \
   --commands "npm run lint,npm run test,npm run build" \
   --max-parallel 3 \
   --collect-results true
 
 # Parallel execution across sessions
-claude-flow terminal multi-session-exec \
+claude-zen terminal multi-session-exec \
   --sessions "backend,frontend,testing" \
   --command "git pull origin main" \
   --parallel true
@@ -346,19 +346,19 @@ echo "Deployment complete"
 **Interactive Session Management:**
 ```bash
 # Start interactive Python session
-claude-flow terminal exec-interactive "python3" \
+claude-zen terminal exec-interactive "python3" \
   --session <session-id> \
   --input-file "python-commands.txt" \
   --expect-prompts ">>>"
 
 # Interactive database session
-claude-flow terminal exec-interactive "psql -h localhost -d app" \
+claude-zen terminal exec-interactive "psql -h localhost -d app" \
   --session <session-id> \
   --input-file "sql-commands.sql" \
   --expect-prompts "app=#"
 
 # Interactive shell with command history
-claude-flow terminal shell <session-id> \
+claude-zen terminal shell <session-id> \
   --interactive true \
   --history-file ".terminal-history" \
   --completion true
@@ -383,12 +383,12 @@ exit()
 **Creating Multi-Terminal Workflows:**
 ```bash
 # Create multi-terminal configuration
-claude-flow terminal multi-config create \
+claude-zen terminal multi-config create \
   --name "fullstack-development" \
   --config "multi-terminal-config.json"
 
 # Launch complete development environment
-claude-flow terminal multi-launch "fullstack-development" \
+claude-zen terminal multi-launch "fullstack-development" \
   --start-order "sequential" \
   --monitor true
 ```
@@ -526,25 +526,25 @@ claude-flow terminal multi-launch "fullstack-development" \
 **Coordinated Operations:**
 ```bash
 # Start terminals in dependency order
-claude-flow terminal multi-start "fullstack-development" \
+claude-zen terminal multi-start "fullstack-development" \
   --respect-dependencies true \
   --wait-for-health-checks true \
   --timeout 10m
 
 # Monitor all terminals with dashboard
-claude-flow terminal multi-monitor "fullstack-development" \
+claude-zen terminal multi-monitor "fullstack-development" \
   --dashboard true \
   --refresh-rate 2s \
   --show-logs true
 
 # Send command to multiple terminals
-claude-flow terminal multi-exec "fullstack-development" \
+claude-zen terminal multi-exec "fullstack-development" \
   --command "git status" \
   --terminals "backend-api,frontend-app" \
   --parallel true
 
 # Graceful shutdown of entire environment
-claude-flow terminal multi-shutdown "fullstack-development" \
+claude-zen terminal multi-shutdown "fullstack-development" \
   --graceful true \
   --save-state true \
   --cleanup true
@@ -553,17 +553,17 @@ claude-flow terminal multi-shutdown "fullstack-development" \
 **Dynamic Terminal Management:**
 ```bash
 # Add terminal to running configuration
-claude-flow terminal multi-add "fullstack-development" \
+claude-zen terminal multi-add "fullstack-development" \
   --terminal-config "new-service.json" \
   --start-immediately false
 
 # Remove terminal from configuration
-claude-flow terminal multi-remove "fullstack-development" \
+claude-zen terminal multi-remove "fullstack-development" \
   --terminal "testing-runner" \
   --graceful-shutdown true
 
 # Scale terminal instances
-claude-flow terminal multi-scale "fullstack-development" \
+claude-zen terminal multi-scale "fullstack-development" \
   --terminal "worker-processes" \
   --instances 5 \
   --load-balance true
@@ -576,14 +576,14 @@ claude-flow terminal multi-scale "fullstack-development" \
 **Session Recording:**
 ```bash
 # Start recording terminal session
-claude-flow terminal record <session-id> \
+claude-zen terminal record <session-id> \
   --output "session-recording-$(date +%Y%m%d-%H%M).json" \
   --include-timing true \
   --include-environment true \
   --compress true
 
 # Record with filters
-claude-flow terminal record <session-id> \
+claude-zen terminal record <session-id> \
   --output "filtered-recording.json" \
   --exclude-commands "cat,ls,pwd" \
   --mask-secrets true \
@@ -593,19 +593,19 @@ claude-flow terminal record <session-id> \
 **Session Playback:**
 ```bash
 # Replay terminal session
-claude-flow terminal replay "session-recording.json" \
+claude-zen terminal replay "session-recording.json" \
   --session <new-session-id> \
   --speed 2.0 \
   --interactive-pause true
 
 # Replay with modifications
-claude-flow terminal replay "session-recording.json" \
+claude-zen terminal replay "session-recording.json" \
   --session <new-session-id> \
   --substitute-vars "OLD_PATH:/project,NEW_PATH:/new-project" \
   --skip-failed-commands
 
 # Export recording to executable script
-claude-flow terminal export-script "session-recording.json" \
+claude-zen terminal export-script "session-recording.json" \
   --output "replay-script.sh" \
   --include-error-handling \
   --add-logging
@@ -616,21 +616,21 @@ claude-flow terminal export-script "session-recording.json" \
 **Session Sharing:**
 ```bash
 # Share terminal session with read-only access
-claude-flow terminal share <session-id> \
+claude-zen terminal share <session-id> \
   --access-level "read" \
   --permissions "view-output,view-commands" \
   --expiry "2h" \
   --generate-url
 
 # Share with write access
-claude-flow terminal share <session-id> \
+claude-zen terminal share <session-id> \
   --access-level "write" \
   --permissions "execute-commands,view-output" \
   --collaborators "user1,user2" \
   --session-recording true
 
 # Create collaborative session
-claude-flow terminal collaborate \
+claude-zen terminal collaborate \
   --session <session-id> \
   --agents "agent-1,agent-2,agent-3" \
   --coordination-mode "turn-based" \
@@ -640,12 +640,12 @@ claude-flow terminal collaborate \
 **Join Shared Sessions:**
 ```bash
 # Join shared session with token
-claude-flow terminal join \
+claude-zen terminal join \
   --token <share-token> \
   --mode "observer"
 
 # Join collaborative session
-claude-flow terminal join \
+claude-zen terminal join \
   --session-id <session-id> \
   --collaborator-id "agent-2" \
   --request-control true
@@ -656,20 +656,20 @@ claude-flow terminal join \
 **Automated Terminal Workflows:**
 ```bash
 # Create automation script
-claude-flow terminal automation create \
+claude-zen terminal automation create \
   --name "deployment-automation" \
   --triggers "git-push:main,schedule:daily-2am" \
   --actions "deployment-actions.json"
 
 # Schedule recurring commands
-claude-flow terminal schedule \
+claude-zen terminal schedule \
   --command "npm run backup-database" \
   --cron "0 2 * * *" \
   --session <session-id> \
   --notification "email:admin@company.com"
 
 # Conditional execution
-claude-flow terminal conditional-exec \
+claude-zen terminal conditional-exec \
   --condition "file-exists:package.json AND git-status:clean" \
   --command "npm audit fix" \
   --session <session-id> \
@@ -738,19 +738,19 @@ claude-flow terminal conditional-exec \
 **VS Code Terminal Management:**
 ```bash
 # Launch VS Code with integrated terminals
-claude-flow terminal vscode-launch \
+claude-zen terminal vscode-launch \
   --config "vscode-terminals.json" \
   --workspace "/project" \
   --layout "split-screen"
 
 # Send commands to VS Code terminal
-claude-flow terminal vscode-exec \
+claude-zen terminal vscode-exec \
   --terminal-name "Backend Development" \
   --command "npm run dev" \
   --focus-terminal true
 
 # Create VS Code terminal layout
-claude-flow terminal vscode-layout \
+claude-zen terminal vscode-layout \
   --layout "custom" \
   --terminals "backend:bottom-left,frontend:bottom-right,testing:side-panel"
 ```
@@ -806,7 +806,7 @@ claude-flow terminal vscode-layout \
 **Container-Based Terminals:**
 ```bash
 # Create containerized terminal
-claude-flow terminal docker-create \
+claude-zen terminal docker-create \
   --image "node:18-alpine" \
   --name "nodejs-dev" \
   --volume "/project:/workspace" \
@@ -814,14 +814,14 @@ claude-flow terminal docker-create \
   --env "NODE_ENV=development"
 
 # Execute commands in container
-claude-flow terminal docker-exec \
+claude-zen terminal docker-exec \
   --container <container-id> \
   --command "npm install && npm test" \
   --user "node" \
   --interactive true
 
 # Multi-container terminal setup
-claude-flow terminal docker-compose \
+claude-zen terminal docker-compose \
   --file "docker-compose.dev.yml" \
   --services "web,db,redis" \
   --follow-logs true
@@ -832,7 +832,7 @@ claude-flow terminal docker-compose \
 **Remote Terminal Management:**
 ```bash
 # Create SSH terminal session
-claude-flow terminal ssh-create \
+claude-zen terminal ssh-create \
   --host "server.example.com" \
   --user "developer" \
   --key-file "~/.ssh/id_rsa" \
@@ -840,14 +840,14 @@ claude-flow terminal ssh-create \
   --port 22
 
 # SSH tunnel for local development
-claude-flow terminal ssh-tunnel \
+claude-zen terminal ssh-tunnel \
   --local-session <local-session-id> \
   --remote-host "server.example.com" \
   --remote-path "/project" \
   --tunnel-ports "3000:3000,5432:5432"
 
 # Multi-server terminal coordination
-claude-flow terminal ssh-multi \
+claude-zen terminal ssh-multi \
   --servers "web1.example.com,web2.example.com,db.example.com" \
   --user "admin" \
   --command "sudo service nginx reload" \
@@ -861,21 +861,21 @@ claude-flow terminal ssh-multi \
 **Real-time Terminal Metrics:**
 ```bash
 # Monitor terminal performance
-claude-flow terminal monitor \
+claude-zen terminal monitor \
   --session <session-id> \
   --metrics "cpu,memory,io,network" \
   --interval 5s \
   --alert-thresholds "cpu:80%,memory:512MB"
 
 # System-wide terminal monitoring
-claude-flow terminal system-monitor \
+claude-zen terminal system-monitor \
   --all-sessions true \
   --dashboard true \
   --export-metrics "prometheus" \
   --endpoint "/metrics"
 
 # Performance analysis
-claude-flow terminal performance-analysis \
+claude-zen terminal performance-analysis \
   --session <session-id> \
   --time-range "1h" \
   --report "performance-report.json" \
@@ -887,19 +887,19 @@ claude-flow terminal performance-analysis \
 **Terminal Health Management:**
 ```bash
 # Comprehensive health check
-claude-flow terminal health-check \
+claude-zen terminal health-check \
   --session <session-id> \
   --detailed true \
   --fix-issues true
 
 # System diagnostics
-claude-flow terminal diagnose \
+claude-zen terminal diagnose \
   --all-sessions true \
   --check-dependencies true \
   --verify-configuration true
 
 # Network connectivity testing
-claude-flow terminal network-test \
+claude-zen terminal network-test \
   --session <session-id> \
   --targets "google.com,github.com,api.company.com" \
   --protocols "http,https,ssh"
@@ -910,21 +910,21 @@ claude-flow terminal network-test \
 **Terminal Logging:**
 ```bash
 # View terminal logs
-claude-flow terminal logs <session-id> \
+claude-zen terminal logs <session-id> \
   --tail 100 \
   --follow true \
   --level "info" \
   --format "json"
 
 # Search command history
-claude-flow terminal search-history \
+claude-zen terminal search-history \
   --session <session-id> \
   --pattern "npm.*install" \
   --time-range "7d" \
   --context 2
 
 # Export terminal history
-claude-flow terminal export-history \
+claude-zen terminal export-history \
   --session <session-id> \
   --format "json" \
   --include-output true \
@@ -936,19 +936,19 @@ claude-flow terminal export-history \
 **Terminal Debugging:**
 ```bash
 # Debug terminal session
-claude-flow terminal debug <session-id> \
+claude-zen terminal debug <session-id> \
   --verbose true \
   --trace-commands true \
   --monitor-resources true
 
 # Session recovery
-claude-flow terminal recover <session-id> \
+claude-zen terminal recover <session-id> \
   --backup-file "session-backup.json" \
   --restore-state true \
   --verify-integrity true
 
 # Performance optimization
-claude-flow terminal optimize \
+claude-zen terminal optimize \
   --session <session-id> \
   --cleanup-history true \
   --compress-logs true \

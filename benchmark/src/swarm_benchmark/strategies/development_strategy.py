@@ -40,7 +40,7 @@ class DevelopmentStrategy(BaseStrategy):
         start_time = datetime.now()
         
         try:
-            # Execute development through claude-flow swarm
+            # Execute development through claude-zen swarm
             if self.claude_flow_client:
                 swarm_result = await self.claude_flow_client.execute_swarm(
                     objective=task.objective,
