@@ -12,10 +12,26 @@ export async function scanJsonYamlFiles(flags) {
     const content = await readFile(file, 'utf8');
 
     try {
+      let parsedContent;
+      let formattedContent;
+
       if (file.endsWith('.json')) {
-        jsonlint.parse(content);
+        parsedContent = jsonlint.parse(content);
+        formattedContent = JSON.stringify(parsedContent, null, 2);
       } else {
-        yaml.load(content);
+        parsedContent = yaml.load(content);
+        formattedContent = yaml.dump(parsedContent, { indent: 2 });
+      }
+
+      if (content.trim() !== formattedContent.trim()) {
+        suggestions.push({
+          id: `formatting-issue-${file}`,
+          description: `Formatting issue detected in ${file}. Please reformat.`, // AI can suggest reformat
+          action: 'fix_formatting',
+          file: file,
+          originalContent: content,
+          formattedContent: formattedContent,
+        });
       }
     } catch (error) {
       suggestions.push({

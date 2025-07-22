@@ -5,6 +5,11 @@ import { scanForUnmappedServices } from '../scanners/service-scanner.js';
 import { scanForMissingScopeFiles } from '../scanners/scope-scanner.js';
 import inquirer from 'inquirer';
 import { generateText } from '../ai-service.js';
+import { scanMarkdownFiles } from '../scanners/markdown-scanner.js';
+import { scanForDependencyConflicts } from '../scanners/dependency-scanner.js';
+import { scanJsonYamlFiles } from '../scanners/json-yaml-scanner.js';
+import { scanForCodeComplexity } from '../scanners/code-complexity-scanner.js';
+import { scanForDocumentationLinks } from '../scanners/documentation-linker.js';
 
 const HIVE_MIND_DIR = path.join(process.cwd(), '.hive-mind');
 const HIVE_REGISTRY_FILE = path.join(HIVE_MIND_DIR, 'registry.json');
@@ -81,7 +86,8 @@ async function scanCommand(args, flags) {
   const dependencySuggestions = await scanForDependencyConflicts(flags);
   const jsonYamlSuggestions = await scanJsonYamlFiles(flags);
   const codeComplexitySuggestions = await scanForCodeComplexity(flags);
-  const suggestions = [...serviceSuggestions, ...scopeSuggestions, ...markdownSuggestions, ...dependencySuggestions, ...jsonYamlSuggestions, ...codeComplexitySuggestions];
+  const documentationLinkSuggestions = await scanForDocumentationLinks(flags);
+  const suggestions = [...serviceSuggestions, ...scopeSuggestions, ...markdownSuggestions, ...dependencySuggestions, ...jsonYamlSuggestions, ...codeComplexitySuggestions, ...documentationLinkSuggestions];
 
   for (const suggestion of suggestions) {
     console.log(`\n[Suggestion ${suggestion.id}/${suggestions.length}]`);
@@ -132,15 +138,20 @@ async function scanCommand(args, flags) {
         case 'fix_syntax':
           console.log(`Please manually fix syntax error in ${suggestion.file}: ${suggestion.errorMessage}`);
           break;
-        case 'suggest_refactor':
-          console.log(`Refactoring suggestion for ${suggestion.file} - ${suggestion.methodName} (Complexity: ${suggestion.complexity}):`);
-          console.log(suggestion.refactorSuggestion);
-          console.log(`Please review and apply manually.`);
+        case 'fix_formatting':
+          await writeFile(suggestion.file, suggestion.formattedContent);
+          console.log(`Fixed formatting in ${suggestion.file}`);
           break;
         case 'suggest_refactor':
           console.log(`Refactoring suggestion for ${suggestion.file} - ${suggestion.methodName} (Complexity: ${suggestion.complexity}):`);
           console.log(suggestion.refactorSuggestion);
           console.log(`Please review and apply manually.`);
+          break;
+        case 'suggest_doc_link':
+          console.log(`Documentation linking suggestion: ${suggestion.description}`);
+          console.log(`Files: ${suggestion.files.join(', ')}`);
+          console.log(`Common Keywords: ${suggestion.commonKeywords.join(', ')}`);
+          console.log(`Please review and add links manually.`);
           break;
         default:
           console.error(`Unknown action: ${suggestion.action}`);
