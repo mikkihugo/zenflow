@@ -376,7 +376,15 @@ export async function retry(fn, maxAttempts = 3, delay = 1000) {
 }
 
 // Claude Flow MCP integration helpers
+// LEGACY: Redirect to new library integration
 export async function callRuvSwarmMCP(tool, params = {}) {
+  // Redirect to the new library-based implementation
+  const { callRuvSwarmLibrary } = await import('./utils.js');
+  return await callRuvSwarmLibrary(tool, params);
+}
+
+// DEPRECATED: Use callRuvSwarmLibrary instead
+export async function callRuvSwarmMCP_DEPRECATED(tool, params = {}) {
   try {
     // First try real ruv-swarm MCP server
     const tempFile = `/tmp/mcp_request_${Date.now()}.json`;
@@ -683,7 +691,8 @@ export async function checkRuvSwarmAvailable() {
 
 // Neural training specific helpers
 export async function trainNeuralModel(modelName, dataSource, epochs = 50) {
-  return await callRuvSwarmMCP('neural_train', {
+  const { callRuvSwarmLibrary } = await import('./utils.js');
+  return await callRuvSwarmLibrary('neural_train', {
     model: modelName,
     data: dataSource,
     epochs: epochs,
@@ -692,7 +701,8 @@ export async function trainNeuralModel(modelName, dataSource, epochs = 50) {
 }
 
 export async function updateNeuralPattern(operation, outcome, metadata = {}) {
-  return await callRuvSwarmMCP('neural_patterns', {
+  const { callRuvSwarmLibrary } = await import('./utils.js');
+  return await callRuvSwarmLibrary('neural_patterns', {
     action: 'learn',
     operation: operation,
     outcome: outcome,
@@ -702,13 +712,15 @@ export async function updateNeuralPattern(operation, outcome, metadata = {}) {
 }
 
 export async function getSwarmStatus(swarmId = null) {
-  return await callRuvSwarmMCP('swarm_status', {
+  const { callRuvSwarmLibrary } = await import('./utils.js');
+  return await callRuvSwarmLibrary('swarm_status', {
     swarmId: swarmId,
   });
 }
 
 export async function spawnSwarmAgent(agentType, config = {}) {
-  return await callRuvSwarmMCP('agent_spawn', {
+  const { callRuvSwarmLibrary } = await import('./utils.js');
+  return await callRuvSwarmLibrary('agent_spawn', {
     type: agentType,
     config: config,
     timestamp: Date.now(),

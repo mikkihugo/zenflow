@@ -8,8 +8,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, existsSync } from 'fs';
 import { WebSocketServer } from 'ws';
-import { printSuccess, printError, printWarning, printInfo } from '../utils.js';
-import { compat } from '../runtime-detector.js';
+import { printSuccess, printError, printWarning, printInfo } from '../../utils.js';
+import { compat } from '../../runtime-detector.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

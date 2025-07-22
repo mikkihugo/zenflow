@@ -338,13 +338,7 @@ export async function callRuvSwarmLibrary(operation, params = {}) {
     
     switch (operation) {
       case 'swarm_init':
-        const swarm = new Swarm({
-          id: `swarm-${Date.now()}`,
-          topology: params.topology || 'hierarchical',
-          maxAgents: params.maxAgents || 8,
-          strategy: params.strategy || 'adaptive',
-          memoryStore: memoryStoreInstance
-        });
+        const swarm = await ruvSwarm.createSwarm(params);
         return {
           success: true,
           swarmId: swarm.id,
@@ -353,13 +347,7 @@ export async function callRuvSwarmLibrary(operation, params = {}) {
         };
         
       case 'agent_spawn':
-        const agent = new Agent({
-          id: `agent-${Date.now()}`,
-          type: params.type || 'general',
-          name: params.name || params.type,
-          capabilities: params.capabilities || [],
-          swarmId: params.swarmId
-        });
+        const agent = await ruvSwarm.spawnAgent(params);
         return {
           success: true,
           agentId: agent.id,
@@ -368,12 +356,7 @@ export async function callRuvSwarmLibrary(operation, params = {}) {
         };
         
       case 'task_orchestrate':
-        const task = new Task({
-          id: `task-${Date.now()}`,
-          description: params.task || params.description,
-          priority: params.priority || 'medium',
-          strategy: params.strategy || 'adaptive'
-        });
+        const task = await ruvSwarm.orchestrateTask(params);
         return {
           success: true,
           taskId: task.id,
@@ -385,11 +368,12 @@ export async function callRuvSwarmLibrary(operation, params = {}) {
         return await callRuvSwarmDirectNeural(params);
         
       case 'swarm_status':
+        const status = await ruvSwarm.getStatus();
         return {
           success: true,
-          totalSwarms: 1,
-          totalAgents: params.agentCount || 0,
-          status: 'active',
+          totalSwarms: status.totalSwarms,
+          totalAgents: status.totalAgents,
+          status: status.status,
           memoryEntries: await memoryStoreInstance.count() || 0
         };
         

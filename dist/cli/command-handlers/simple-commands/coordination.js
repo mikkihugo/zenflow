@@ -2,7 +2,7 @@ import {
   printSuccess,
   printError,
   printWarning,
-  callRuvSwarmMCP,
+  callRuvSwarmLibrary,
   spawnSwarmAgent,
   getSwarmStatus,
   checkRuvSwarmAvailable,

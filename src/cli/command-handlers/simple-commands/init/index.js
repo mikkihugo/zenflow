@@ -8,7 +8,7 @@ import { printSuccess, printError } from '../../../utils.js';
 /**
  * Initialize a new Claude Flow project
  */
-export async function initCommand(args = [], options = {}) {
+export async function initCommand(input, flags) {
   // Handle different argument formats
   const projectPath = Array.isArray(args) ? (args[0] || '.') : (args || '.');
   try {

@@ -1,5 +1,6 @@
-// command-registry.js - Extensible command registration system
+// command-registry.js - Extensible command registration system with meow integration
 import process from 'process';
+import meow from 'meow';
 import { initCommand } from './command-handlers/init-command.js';
 import { memoryCommand } from './command-handlers/memory-command.js';
 // SPARC removed - using Hive Mind for AI orchestration
@@ -49,6 +50,143 @@ import {
 
 // Command registry for extensible CLI
 export const commandRegistry = new Map();
+
+// Meow CLI configuration
+export const createMeowCLI = () => {
+  return meow(`
+	Usage
+	  $ claude-zen <command> [options]
+
+	Commands
+	  init           Initialize Claude Code integration files
+	  start          Start the Claude-Flow orchestration system
+	  start-ui       Start the UI interface (web UI by default)
+	  swarm          Swarm-based AI agent coordination
+	  spawn          Spawn AI agents with various coordination modes
+	  agent          Manage AI agents and hierarchies
+	  task           Manage tasks and workflows
+	  workflow       Advanced workflow management with SPARC methodology
+	  memory         Memory management operations
+	  config         Manage system configuration
+	  status         Show system status and health
+	  mcp            Manage MCP server and tools
+	  monitor        Real-time system monitoring
+	  hive-mind      Advanced Hive Mind swarm intelligence
+	  coordination   Swarm and agent orchestration
+	  training       Neural pattern learning and model updates
+	  analysis       Performance and usage analytics
+	  automation     Intelligent agent and workflow management
+	  hooks          Lifecycle event management
+	  security       Enterprise security management and monitoring
+	  backup         Data backup and disaster recovery management
+	  github         GitHub workflow automation
+
+	Options
+	  --help         Show help
+	  --version      Show version
+	  --verbose      Enable verbose output
+	  --json         Output in JSON format
+	  --debug        Enable debug mode
+
+	Examples
+	  $ claude-zen init --sparc
+	  $ claude-zen start --ui
+	  $ claude-zen swarm "Build a REST API"
+	  $ claude-zen spawn researcher --coordinated
+	  $ claude-zen hive-mind spawn "Build microservices"
+	  $ claude-zen status --verbose
+	  $ claude-zen github pr-manager "create feature PR"
+`, {
+    importMeta: import.meta,
+    flags: {
+      verbose: {
+        type: 'boolean',
+        shortFlag: 'v',
+        default: false
+      },
+      json: {
+        type: 'boolean',
+        default: false
+      },
+      debug: {
+        type: 'boolean',
+        default: false
+      },
+      help: {
+        type: 'boolean',
+        shortFlag: 'h',
+        default: false
+      },
+      version: {
+        type: 'boolean',
+        default: false
+      },
+      // Swarm-specific flags
+      strategy: {
+        type: 'string',
+        choices: ['adaptive', 'parallel', 'sequential'],
+        default: 'adaptive'
+      },
+      topology: {
+        type: 'string',
+        choices: ['hierarchical', 'mesh', 'ring', 'star'],
+        default: 'hierarchical'
+      },
+      maxAgents: {
+        type: 'number',
+        default: 5
+      },
+      coordinated: {
+        type: 'boolean',
+        default: false
+      },
+      enhanced: {
+        type: 'boolean',
+        shortFlag: 'e',
+        default: false
+      },
+      // UI flags
+      port: {
+        type: 'number',
+        default: 3000
+      },
+      daemon: {
+        type: 'boolean',
+        default: false
+      },
+      ui: {
+        type: 'boolean',
+        default: false
+      },
+      web: {
+        type: 'boolean',
+        default: false
+      },
+      terminal: {
+        type: 'boolean',
+        default: false
+      },
+      // Analysis flags
+      timeframe: {
+        type: 'string',
+        default: '24h'
+      },
+      format: {
+        type: 'string',
+        choices: ['summary', 'detailed'],
+        default: 'summary'
+      },
+      breakdown: {
+        type: 'boolean',
+        default: false
+      },
+      costAnalysis: {
+        type: 'boolean',
+        default: false
+      }
+    }
+  });
+};
 
 // Register core commands
 export function registerCoreCommands() {
@@ -618,6 +756,7 @@ For more information: https://github.com/ruvnet/claude-zen/issues/166`,
   });
 
 
+
   commandRegistry.set('hive', {
     handler: async (args, flags) => {
       try {
@@ -675,40 +814,40 @@ Options:
   });
 
   // Temporarily commented out for Node.js compatibility
-  /*
   commandRegistry.set('ruv-swarm', {
-    handler: ruvSwarmAction,
-    description: 'Advanced AI swarm coordination with neural capabilities',
-    usage: 'ruv-swarm <command> [options]',
-    examples: [
-      'ruv-swarm init --topology mesh --max-agents 8',
-      'ruv-swarm spawn researcher --name "AI Researcher"',
-      'ruv-swarm orchestrate "Build a REST API"',
-      'ruv-swarm neural train --iterations 20',
-      'ruv-swarm benchmark --type swarm',
-      'ruv-swarm config show',
-      'ruv-swarm status --verbose'
-    ],
-    details: `
+  handler: async (args, flags) => {
+    console.log('🐝 ruv-swarm command placeholder - integration in progress');
+  },
+  description: 'Advanced AI swarm coordination with neural capabilities',
+  usage: 'ruv-swarm <command> [options]',
+  hidden: true,
+  examples: [
+    'ruv-swarm init --topology mesh --max-agents 8',
+    'ruv-swarm spawn researcher --name "AI Researcher"',
+    'ruv-swarm orchestrate "Build a REST API"',
+    'ruv-swarm neural train --iterations 20',
+    'ruv-swarm benchmark --type swarm',
+    'ruv-swarm config show',
+    'ruv-swarm status --verbose'
+  ],
+  help: `
 Advanced swarm coordination features:
-  • 84.8% SWE-Bench solve rate
-  • 32.3% token reduction through coordination
-  • 2.8-4.4x speed improvement via parallel execution
-  • 27+ neural models for cognitive approaches
-  • Persistent memory across sessions
-  • Automatic topology optimization
-  
-Commands:
+
+- Neural network integration for intelligent agent behavior
+- Multiple coordination topologies (mesh, hierarchical, ring, star)
+- Real-time performance monitoring and metrics
+- WASM-based optimization for high-performance tasks
+
+COMMANDS:
   init        - Initialize swarm with specified topology
+  spawn       - Spawn new agents with specific capabilities
+  orchestrate - Orchestrate complex tasks across the swarm
   status      - Get current swarm status and metrics
-  spawn       - Spawn specialized agents (researcher, coder, analyst, etc.)
-  orchestrate - Coordinate complex tasks across agents
-  neural      - Neural pattern training and management
-  benchmark   - Performance testing and optimization
-  config      - Configuration management
-  memory      - Memory usage and coordination data`
-  });
-  */
+  neural      - Manage neural network training and patterns
+  benchmark   - Run performance benchmarks
+  config      - Manage ruv-swarm configuration
+`
+});
 
   // Additional ruv-swarm coordination commands - temporarily commented out
   /*
@@ -929,6 +1068,77 @@ export function showAllCommands() {
   console.log();
   console.log('Use "claude-zen help <command>" for detailed usage information');
 }
+
+// Parse command line with meow
+export const parseCLI = () => {
+  const cli = createMeowCLI();
+  return {
+    command: cli.input[0],
+    args: cli.input.slice(1),
+    flags: cli.flags
+  };
+};
+
+// Generate API endpoints from meow command definitions
+export const generateAPIEndpoints = () => {
+  const commands = listCommands();
+  const endpoints = {};
+  
+  for (const command of commands) {
+    // Generate REST endpoints for each command
+    const commandName = command.name;
+    const endpoint = `/api/${commandName.replace(/-/g, '/')}`;
+    
+    endpoints[endpoint] = {
+      post: {
+        summary: command.description,
+        operationId: `${commandName}Command`,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  args: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    description: 'Command arguments'
+                  },
+                  flags: {
+                    type: 'object',
+                    description: 'Command flags and options'
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Command executed successfully',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean' },
+                    result: { type: 'object' },
+                    timestamp: { type: 'string' }
+                  }
+                }
+              }
+            }
+          },
+          400: { description: 'Invalid request' },
+          500: { description: 'Internal server error' }
+        }
+      }
+    };
+  }
+  
+  return endpoints;
+};
 
 // Initialize the command registry
 registerCoreCommands();
