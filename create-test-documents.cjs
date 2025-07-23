@@ -37,7 +37,7 @@ async function createTestDocuments() {
   console.log('🚀 Creating test documents for Claude Desktop access...\n');
   
   // Document 1: Architecture Decision Record
-  const _adr = await docStack.createDocument(
+  await docStack.createDocument(
     'service-adr',
     'user-service',
     'use-redis-for-sessions',
@@ -78,7 +78,7 @@ We will use Redis as our session storage backend for the user service.
   );
 
   // Document 2: API Documentation
-  const _api = await docStack.createDocument(
+  await docStack.createDocument(
     'api-documentation',
     'payment-service',
     'payment-api-v2',
@@ -178,7 +178,7 @@ Process a refund
   );
 
   // Document 3: Security Specification
-  const _security = await docStack.createDocument(
+  await docStack.createDocument(
     'security-spec',
     'auth-service',
     'oauth2-implementation',

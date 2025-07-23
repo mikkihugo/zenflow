@@ -356,8 +356,6 @@ export class ModeValidator {
     try {
       const workflowPath = `${this.workingDir}/.roo/workflows/${filename}`;
       const content = await node.readTextFile(workflowPath);
-      
-      const content = await node.readTextFile(workflowPath);
 
       // Parse JSON
       const workflow = JSON.parse(content);

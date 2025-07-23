@@ -84,19 +84,13 @@ export class SwarmWebUIIntegration {
       {
         description: 'Analyze system requirements',
         priority: 'high',
-        assignedTo: 'agent-researcher-0',
       },
       {
-        description: 'Implement authentication module',
-        priority: 'high',
-        assignedTo: 'agent-coder-1',
+        { description: 'Implement authentication module', priority: 'high' },
       },
       { description: 'Performance analysis', priority: 'medium', assignedTo: 'agent-analyst-2' },
       {
-        description: 'Coordinate deployment',
-        priority: 'medium',
-        assignedTo: 'agent-coordinator-3',
-      },
+              { description: 'Coordinate deployment', priority: 'medium' },,
       { description: 'Run integration tests', priority: 'low', assignedTo: 'agent-tester-4' },
     ];
 

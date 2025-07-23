@@ -31,8 +31,6 @@ export class PostInitValidator {
 
       try {
         const stat = await node.stat(filePath);
-        
-        const stat = await node.stat(filePath);
 
         // Check if it exists and is a file
         if (!stat.isFile) {

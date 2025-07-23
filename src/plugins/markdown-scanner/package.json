@@ -1,0 +1,44 @@
+{
+  "name": "@claude-zen/markdown-scanner-plugin",
+  "version": "1.0.0",
+  "description": "Markdown validation plugin with linting and structure analysis",
+  "main": "index.js", 
+  "type": "module",
+  "keywords": ["claude-zen", "plugin", "markdown", "validation", "linting", "documentation"],
+  "author": "Claude Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^10.0.0",
+    "markdownlint": "^0.32.0",
+    "gray-matter": "^4.0.3"
+  },
+  "peerDependencies": {
+    "@claude-zen/core": "^2.1.0"
+  },
+  "claudeZenPlugin": {
+    "name": "markdown-scanner", 
+    "category": "scanner",
+    "capabilities": [
+      "markdownlint-validation",
+      "frontmatter-analysis",
+      "heading-hierarchy-check",
+      "link-validation", 
+      "structure-analysis",
+      "word-count"
+    ],
+    "fileTypes": [".md", ".markdown"],
+    "config": {
+      "filePatterns": ["**/*.md"],
+      "ignorePatterns": ["node_modules/**", ".git/**", ".hive-mind/**", "dist/**"],
+      "requireFrontmatter": true,
+      "requiredFields": ["title"],
+      "optionalFields": ["author", "date", "description", "tags"],
+      "generateMissingHeaders": true,
+      "lintConfig": {
+        "MD013": false,
+        "MD033": false,
+        "MD041": false
+      }
+    }
+  }
+}

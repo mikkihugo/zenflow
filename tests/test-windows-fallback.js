@@ -36,7 +36,7 @@ console.log(chalk.yellow('\nTest 2: Fallback Memory Store'));
 try {
   // FallbackMemoryStore has been migrated to new architecture
   console.log('⚠️ FallbackMemoryStore has been migrated to new memory architecture');
-  return;
+  console.log('✅ Test skipped - migration complete');
   
   const store = new FallbackMemoryStore();
   await store.initialize();

@@ -1,0 +1,93 @@
+{
+  "name": "@claude-zen/documentation-linker-plugin",
+  "version": "1.0.0",
+  "description": "Documentation cross-reference validation, broken link detection, and intelligent linking suggestions",
+  "main": "index.js",
+  "type": "module",
+  "keywords": ["claude-zen", "plugin", "documentation", "linking", "cross-reference", "markdown", "validation"],
+  "author": "Claude Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^10.0.0",
+    "gray-matter": "^4.0.3"
+  },
+  "peerDependencies": {
+    "@claude-zen/core": "^2.1.0"
+  },
+  "claudeZenPlugin": {
+    "name": "documentation-linker",
+    "category": "documentation",
+    "capabilities": [
+      "cross-reference-validation",
+      "broken-link-detection",
+      "intelligent-linking",
+      "documentation-analysis",
+      "keyword-extraction",
+      "similarity-matching",
+      "link-optimization",
+      "content-relationships"
+    ],
+    "documentTypes": [
+      {
+        "type": "markdown",
+        "extensions": [".md", ".mdx"],
+        "frontMatter": true,
+        "linkSupport": true
+      },
+      {
+        "type": "restructuredtext",
+        "extensions": [".rst"],
+        "linkSupport": true
+      },
+      {
+        "type": "asciidoc",
+        "extensions": [".adoc", ".asciidoc"],
+        "linkSupport": true
+      }
+    ],
+    "features": {
+      "crossReferenceValidation": true,
+      "brokenLinkDetection": true,
+      "intelligentLinking": true,
+      "keywordExtraction": true,
+      "semanticAnalysis": true,
+      "linkOptimization": true,
+      "documentClustering": true,
+      "contentSimilarity": true
+    },
+    "linkTypes": [
+      "internal", "external", "relative", "absolute", "anchor", "image", "reference"
+    ],
+    "config": {
+      "documentPaths": ["**/*.md", "docs/**/*", "README*"],
+      "ignorePaths": ["node_modules/**", ".git/**", ".hive-mind/**", "dist/**"],
+      "linkCheckTimeout": 5000,
+      "similarityThreshold": 0.7,
+      "keywordMinLength": 3,
+      "maxKeywords": 20,
+      "linkSuggestionThreshold": 2
+    },
+    "analysis": {
+      "keywordExtraction": {
+        "method": "tfidf",
+        "minOccurrence": 2,
+        "stopWords": true
+      },
+      "similarity": {
+        "algorithm": "cosine",
+        "threshold": 0.7
+      },
+      "linkValidation": {
+        "checkExternal": true,
+        "checkInternal": true,
+        "checkAnchors": true
+      }
+    },
+    "output": {
+      "suggestions": true,
+      "reports": true,
+      "linkMap": true,
+      "brokenLinks": true
+    }
+  }
+}

@@ -44,7 +44,7 @@ export async function analyticsCommand(args, flags) {
             printSuccess('Cost Analysis Report');
             console.log('\n💰 Cost Breakdown:');
             console.log('   By Project:');
-            console.log('     • microservices-platform: $8,234 (41%)');
+            console.log('     • development-platform: $8,234 (41%)');
             console.log('     • ai-research: $5,123 (26%)');
             console.log('     • frontend-apps: $3,456 (17%)');
             console.log('     • other: $3,187 (16%)');

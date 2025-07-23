@@ -53,9 +53,9 @@ ${(projectJson.implicitDependencies || []).map(dep => `- ${dep}`).join('\n')}
   // This is a placeholder for the interactive prompt
   const answer = await new Promise(resolve => {
     const readline = import('readline').then(rl => {
-      const interface = rl.createInterface({ input: process.stdin, output: process.stdout });
-      interface.question('Create hive and scope.md? (y/n/r/s/q): ', answer => {
-        interface.close();
+      const rlInterface = rl.createInterface({ input: process.stdin, output: process.stdout });
+      rlInterface.question('Create hive and scope.md? (y/n/r/s/q): ', answer => {
+        rlInterface.close();
         resolve(answer);
       });
     });

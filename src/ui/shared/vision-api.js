@@ -96,8 +96,8 @@ export class VisionAPI {
     }
   }
 
-  async getSwarmStatus() {
-    // Mock swarm data - would connect to real swarm API
+  async getHiveStatus() {
+    // Mock hive-mind data - would connect to real hive-mind API
     return {
       active: true,
       agents: [

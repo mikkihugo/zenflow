@@ -25,11 +25,11 @@ export async function executeUnifiedCommand(commandName, args = [], options = {}
     throw new Error(`Unknown command: ${commandName}`);
   }
 
-  const interface = context.interface || 'cli';
+  const userClientInterface = context.interface || 'cli';
   const startTime = Date.now();
 
   try {
-    printInfo(`⚡ Executing ${commandName} via ${interface}`);
+    printInfo(`⚡ Executing ${commandName} via ${userClientInterface}`);
 
     // Validate arguments and options against schema
     const validatedArgs = validateArgs(args, schema.args);
@@ -44,11 +44,11 @@ export async function executeUnifiedCommand(commandName, args = [], options = {}
     const result = await routeCommand(commandName, validatedArgs, validatedOptions, context);
     
     // Format response based on interface
-    const formattedResult = formatResponse(result, interface, schema);
+    const formattedResult = formatResponse(result, userClientInterface, schema);
     
     // Log execution metrics
     const executionTime = Date.now() - startTime;
-    printInfo(`✅ ${commandName} completed in ${executionTime}ms via ${interface}`);
+    printInfo(`✅ ${commandName} completed in ${executionTime}ms via ${userClientInterface}`);
 
     return formattedResult;
 
@@ -236,8 +236,8 @@ function validateOptions(options, schemaOptions) {
 /**
  * Format response based on interface type
  */
-function formatResponse(result, interface, schema) {
-  switch (interface) {
+function formatResponse(result, clientInterface, schema) {
+  switch (clientInterface) {
     case 'web':
       return {
         success: true,

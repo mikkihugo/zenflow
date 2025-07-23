@@ -198,7 +198,7 @@ export const mockUsers = {
 };
 
 // Mock API responses
-const mockImages = {
+const mockApiResponses = {
   success: {
     upload: {
       status: 'success',
@@ -263,7 +263,7 @@ const mockImages = {
 };
 
 // Performance test data
-const mockImages = {
+const performanceTestData = {
   loadTestScenarios: [
     {
       name: 'Normal Load',
@@ -306,10 +306,8 @@ const mockImages = {
 
 // Export all mock data
 export {
-  mockImages,
   mockVisionResults,
   mockCodeTemplates,
-  mockUsers,
   mockApiResponses,
   performanceTestData
 };

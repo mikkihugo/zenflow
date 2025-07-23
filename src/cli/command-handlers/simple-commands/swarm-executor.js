@@ -7,7 +7,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 // Simple SwarmCoordinator implementation
-export class SwarmCoordinator {
+class SwarmCoordinator {
   constructor(config) {
     this.config = config;
     this.id = config.name || generateId('swarm');
@@ -183,7 +183,7 @@ export default app;
 }
 
 // Main execution function
-export async function executeSwarm(objective, flags = {}) {
+async function executeSwarm(objective, flags = {}) {
   try {
     // Parse configuration from flags
     const config = {
@@ -245,4 +245,4 @@ export async function executeSwarm(objective, flags = {}) {
 }
 
 // Export for use in swarm.js
-export { SwarmCoordinator, executeSwarm };
+export { SwarmCoordinator };

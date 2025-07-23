@@ -66,7 +66,7 @@ ${chalk.bold('EXAMPLES:')}
   claude-zen hive-mind spawn
 
   ${chalk.gray('# Quick spawn with objective')}
-  claude-zen hive-mind spawn "Build microservices architecture"
+  claude-zen hive-mind spawn "Build a scalable application"
 
   ${chalk.gray('# View current status')}
   claude-zen hive-mind status

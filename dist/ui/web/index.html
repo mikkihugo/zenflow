@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Zen - Web TUI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #21262d;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #58a6ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #7d8590;
+            font-size: 0.9rem;
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .hive-item {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hive-item:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+        }
+
+        .hive-item.active {
+            background: #0d419d;
+            border-color: #58a6ff;
+        }
+
+        .hive-name {
+            font-weight: bold;
+            color: #f0f6fc;
+            margin-bottom: 0.25rem;
+        }
+
+        .hive-path {
+            font-size: 0.8rem;
+            color: #7d8590;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+
+        .stat-label {
+            color: #7d8590;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            color: #7d8590;
+            padding: 2rem;
+        }
+
+        .error {
+            color: #f85149;
+            background: #490202;
+            border: 1px solid #f85149;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .command-panel {
+            background: #161b22;
+            border-top: 1px solid #30363d;
+            padding: 1rem;
+        }
+
+        .command-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .command-input input {
+            flex: 1;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 0.5rem;
+            color: #c9d1d9;
+            font-family: inherit;
+        }
+
+        .command-input button {
+            background: #238636;
+            border: 1px solid #2ea043;
+            border-radius: 6px;
+            color: white;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .command-input button:hover {
+            background: #2ea043;
+        }
+
+        .output {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: inherit;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐝 Claude Zen Web TUI</h1>
+        <p>Älskar dig mer än igår ❤️</p>
+    </div>
+
+    <div class="main">
+        <div class="sidebar">
+            <h3>🏠 Hives</h3>
+            <div id="hive-list">
+                <div class="loading">Loading hives...</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="hive-details">
+                <div class="loading">Select a hive to view details</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="command-panel">
+        <div class="command-input">
+            <input type="text" id="command" placeholder="Enter claude-zen command..." />
+            <button onclick="executeCommand()">Execute</button>
+        </div>
+        <div id="output" class="output" style="display: none;"></div>
+    </div>
+
+    <script>
+        let selectedHive = null;
+
+        async function loadHives() {
+            try {
+                const response = await fetch('/api/hives');
+                const hives = await response.json();
+                
+                const hiveList = document.getElementById('hive-list');
+                if (Object.keys(hives).length === 0) {
+                    hiveList.innerHTML = '<div class="loading">No hives found</div>';
+                    return;
+                }
+
+                hiveList.innerHTML = Object.entries(hives).map(([name, info]) => `
+                    <div class="hive-item" onclick="selectHive('${name}', '${info.path}')">
+                        <div class="hive-name">${name}</div>
+                        <div class="hive-path">${info.path}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('hive-list').innerHTML = 
+                    `<div class="error">Failed to load hives: ${error.message}</div>`;
+            }
+        }
+
+        async function selectHive(name, path) {
+            // Update UI
+            document.querySelectorAll('.hive-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.hive-item').classList.add('active');
+            
+            selectedHive = { name, path };
+            
+            try {
+                const response = await fetch(`/hive-mind/${name}`);
+                const data = await response.json();
+                
+                const details = document.getElementById('hive-details');
+                details.innerHTML = `
+                    <h2>🐝 ${name}</h2>
+                    <p><strong>Path:</strong> ${path}</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">${data.stats?.totalVisions || 0}</div>
+                            <div class="stat-label">Visions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.stats?.totalEpics || 0}</div>
+                            <div class="stat-label">Epics</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.stats?.totalFeatures || 0}</div>
+                            <div class="stat-label">Features</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.stats?.totalPrds || 0}</div>
+                            <div class="stat-label">PRDs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.stats?.totalUserStories || 0}</div>
+                            <div class="stat-label">User Stories</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.stats?.totalTasks || 0}</div>
+                            <div class="stat-label">Tasks</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('hive-details').innerHTML = 
+                    `<div class="error">Failed to load hive details: ${error.message}</div>`;
+            }
+        }
+
+        async function executeCommand() {
+            const commandInput = document.getElementById('command');
+            const output = document.getElementById('output');
+            const command = commandInput.value.trim();
+            
+            if (!command) return;
+            
+            // Show output panel
+            output.style.display = 'block';
+            output.textContent = 'Executing command...';
+            
+            try {
+                const parts = command.split(' ');
+                const cmd = parts[0];
+                const args = parts.slice(1);
+                
+                const response = await fetch(`/${cmd}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ args, flags: {} })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    output.textContent = `✅ Success:\n${JSON.stringify(result.result, null, 2)}`;
+                } else {
+                    output.textContent = `❌ Error:\n${result.error}`;
+                }
+            } catch (error) {
+                output.textContent = `❌ Failed to execute command:\n${error.message}`;
+            }
+            
+            // Clear command input
+            commandInput.value = '';
+        }
+
+        // Allow Enter key to execute command
+        document.getElementById('command').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                executeCommand();
+            }
+        });
+
+        // Load hives on page load
+        loadHives();
+
+        // Auto-refresh hives every 30 seconds
+        setInterval(loadHives, 30000);
+    </script>
+</body>
+</html>

@@ -1,15 +1,22 @@
 import { writeFile, readFile, mkdir } from 'fs/promises';
 import path from 'path';
-import { swarmCommand } from './swarm-command.js';
+import { SwarmOrchestrator } from './swarm-orchestrator.js';
 import { scanForUnmappedServices } from '../scanners/service-scanner.js';
 import { scanForMissingScopeFiles } from '../scanners/scope-scanner.js';
 import inquirer from 'inquirer';
 import { generateText } from '../ai-service.js';
-import { scanMarkdownFiles } from '../scanners/markdown-scanner.js';
-import { scanForDependencyConflicts } from '../scanners/dependency-scanner.js';
-import { scanJsonYamlFiles } from '../scanners/json-yaml-scanner.js';
-import { scanForCodeComplexity } from '../scanners/code-complexity-scanner.js';
+// New plugin system imports
+import { PluginManager } from '../../plugins/plugin-manager.js';
 import { scanForDocumentationLinks } from '../scanners/documentation-linker.js';
+import { printSuccess, printError, printWarning, printInfo } from '../utils.js';
+
+// ruv-swarm library integration for persistent hives
+import { 
+  isRuvSwarmAvailable, 
+  initializePersistentHive, 
+  restorePersistentHive,
+  getServiceHivePath 
+} from './ruv-swarm-integration.js';
 
 const HIVE_MIND_DIR = path.join(process.cwd(), '.hive-mind');
 const HIVE_REGISTRY_FILE = path.join(HIVE_MIND_DIR, 'registry.json');
@@ -73,21 +80,42 @@ async function assignTask(args, flags) {
     return;
   }
 
-  const swarmArgs = [objective];
-  const swarmFlags = { ...flags, internal: true, dbPath: hiveInfo.path };
-  await swarmCommand(swarmArgs, swarmFlags);
+  // Use persistent service-level hive instead of basic swarm
+  await launchServiceHive(objective, { ...flags, hiveName, dbPath: hiveInfo.path });
 }
 
 async function scanCommand(args, flags) {
   console.log('Scanning project...');
+  
+  // Initialize plugin manager
+  const pluginManager = new PluginManager();
+  await pluginManager.initialize();
+  
+  // Use new plugin system for scanning
   const serviceSuggestions = await scanForUnmappedServices(flags);
   const scopeSuggestions = await scanForMissingScopeFiles(flags);
-  const markdownSuggestions = await scanMarkdownFiles(flags);
-  const dependencySuggestions = await scanForDependencyConflicts(flags);
-  const jsonYamlSuggestions = await scanJsonYamlFiles(flags);
-  const codeComplexitySuggestions = await scanForCodeComplexity(flags);
   const documentationLinkSuggestions = await scanForDocumentationLinks(flags);
-  const suggestions = [...serviceSuggestions, ...scopeSuggestions, ...markdownSuggestions, ...dependencySuggestions, ...jsonYamlSuggestions, ...codeComplexitySuggestions, ...documentationLinkSuggestions];
+  
+  // Plugin-based scanning
+  const pluginSuggestions = [];
+  
+  // Run scanner plugins
+  const scannerPlugins = ['code-complexity-scanner', 'dependency-scanner', 'markdown-scanner'];
+  for (const pluginName of scannerPlugins) {
+    try {
+      const plugin = pluginManager.getPlugin(pluginName);
+      if (plugin) {
+        const results = await plugin.scan(process.cwd(), flags);
+        if (results && results.suggestions) {
+          pluginSuggestions.push(...results.suggestions);
+        }
+      }
+    } catch (error) {
+      console.warn(`⚠️ Plugin ${pluginName} failed: ${error.message}`);
+    }
+  }
+  
+  const suggestions = [...serviceSuggestions, ...scopeSuggestions, ...documentationLinkSuggestions, ...pluginSuggestions];
 
   for (const suggestion of suggestions) {
     console.log(`\n[Suggestion ${suggestion.id}/${suggestions.length}]`);
@@ -181,9 +209,116 @@ async function scanCommand(args, flags) {
   }
 }
 
+/**
+ * Launch persistent service-level hive swarm
+ */
+async function launchServiceHive(objective, flags = {}) {
+  const serviceName = flags.hiveName || flags.service || 'default';
+  
+  printInfo(`🏗️ Launching persistent hive for service: ${serviceName}`);
+  printInfo(`🎯 Objective: "${objective}"`);
+  
+  const hiveConfig = {
+    serviceName,
+    strategy: flags.strategy || 'adaptive',
+    topology: flags.topology || 'hierarchical',
+    maxAgents: flags['max-agents'] || flags.agents || 8,
+    persistenceDb: flags.dbPath || getServiceHivePath(serviceName),
+    readOnly: flags.analysis || flags['read-only'],
+    enableMonitoring: flags.monitor || flags.monitoring,
+    background: flags.background
+  };
+
+  try {
+    let hive;
+    
+    // Try to restore existing persistent hive first
+    hive = await restorePersistentHive(serviceName);
+    
+    if (!hive) {
+      // Create new persistent hive if restoration failed
+      if (await isRuvSwarmAvailable()) {
+        printInfo('🚀 Creating new persistent hive with ruv-swarm library');
+        hive = await initializePersistentHive(hiveConfig);
+      } else {
+        // Fallback to local orchestrator for basic functionality
+        printInfo('🔄 Using local orchestrator (ruv-swarm library unavailable)');
+        const orchestrator = new SwarmOrchestrator();
+        await orchestrator.initialize();
+        return await orchestrator.launchSwarm(objective, hiveConfig);
+      }
+    }
+    
+    // Execute objective with persistent hive
+    printInfo('🎯 Executing objective with persistent hive coordination');
+    const result = await hive.executeObjective(objective, {
+      priority: flags.priority || 'high',
+      qualityThreshold: flags['quality-threshold'] || 0.8,
+      parallel: flags.parallel !== false
+    });
+    
+    printSuccess(`✅ Hive execution completed for service: ${serviceName}`);
+    return result;
+    
+  } catch (error) {
+    printError(`Persistent hive failed: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
+ * Show hive mind help
+ */
+function showHiveMindHelp() {
+  console.log(`
+🧠 HIVE MIND - Advanced AI Orchestration with Collective Intelligence
+
+USAGE:
+  claude-zen hive-mind <command> [options]
+  claude-zen hive-mind spawn <objective> [options]
+
+COMMANDS:
+  create <name>              Create new hive
+  assign <objective>         Assign task to hive
+  spawn <objective>          Launch swarm with objective (integrated)
+  scan                       Scan project for optimization
+  status                     Show hive status
+  list                       List all hives
+  consensus                  View consensus decisions
+  metrics                    Performance analytics
+
+OPTIONS:
+  --strategy <type>          Execution strategy: research, development, analysis
+  --topology <type>          Coordination topology: hierarchical, mesh, ring, star
+  --max-agents <n>           Maximum number of agents (default: 5)
+  --parallel                 Enable parallel execution
+  --monitor                  Real-time monitoring
+  --background               Run in background
+  --analysis                 Read-only analysis mode
+  --quality-threshold <n>    Minimum quality threshold (0-1)
+
+EXAMPLES:
+  claude-zen hive-mind create my-project
+  claude-zen hive-mind spawn "Build a REST API" --strategy development
+  claude-zen hive-mind assign "Research architecture" --name my-hive
+  claude-zen hive-mind status --verbose
+
+INTEGRATION:
+  • Direct ruv-swarm NPM library integration for high performance
+  • Fallback to local orchestrator if ruv-swarm unavailable
+  • Unified command interface for all swarm operations
+`);
+}
+
 export async function hiveMindCommand(input, flags) {
   const subcommand = input[0];
   const subArgs = input.slice(1);
+
+  // Handle help
+  if (flags.help || flags.h || subcommand === 'help' || (!subcommand)) {
+    showHiveMindHelp();
+    return;
+  }
 
   switch (subcommand) {
     case 'create':
@@ -192,16 +327,105 @@ export async function hiveMindCommand(input, flags) {
     case 'assign':
       await assignTask(subArgs, flags);
       break;
+    case 'spawn':
+      // Launch persistent service-level hive
+      const objective = subArgs.join(' ').trim();
+      if (!objective) {
+        printError('Objective required for hive spawn');
+        printInfo('Usage: claude-zen hive-mind spawn "Your objective here" --service my-service');
+        return;
+      }
+      await launchServiceHive(objective, flags);
+      break;
     case 'scan':
       await scanCommand(subArgs, flags);
+      break;
+    case 'status':
+      await showHiveStatus(flags);
+      break;
+    case 'list':
+      await listHives(flags);
+      break;
+    case 'consensus':
+      await showConsensus(flags);
+      break;
+    case 'metrics':
+      await showHiveMetrics(flags);
       break;
     case 'import':
       await importCommand(subArgs, flags);
       break;
-    // Add other hive-mind subcommands here
     default:
       console.error(`Error: Unknown hive-mind command "${subcommand}"`);
-      // You might want to show help here
+      showHiveMindHelp();
       break;
   }
 }
+
+/**
+ * Show hive status
+ */
+async function showHiveStatus(flags) {
+  const registry = await readHiveRegistry();
+  const hiveNames = Object.keys(registry);
+  
+  printInfo('🐝 Hive Mind Status');
+  console.log('━'.repeat(60));
+  console.log(`📊 Total Hives: ${hiveNames.length}`);
+  
+  if (hiveNames.length === 0) {
+    console.log('No hives found. Create one with: claude-zen hive-mind create <name>');
+    return;
+  }
+  
+  for (const [name, info] of Object.entries(registry)) {
+    console.log(`\n🏠 ${name}`);
+    console.log(`   Path: ${info.path}`);
+    // Add more status info as needed
+  }
+}
+
+/**
+ * List all hives
+ */
+async function listHives(flags) {
+  const registry = await readHiveRegistry();
+  
+  if (flags.json) {
+    console.log(JSON.stringify(registry, null, 2));
+  } else {
+    printInfo('🐝 Available Hives');
+    console.log('━'.repeat(40));
+    
+    if (Object.keys(registry).length === 0) {
+      console.log('No hives found.');
+    } else {
+      Object.entries(registry).forEach(([name, info]) => {
+        console.log(`• ${name} → ${info.path}`);
+      });
+    }
+  }
+}
+
+/**
+ * Show consensus decisions (placeholder)
+ */
+async function showConsensus(flags) {
+  printInfo('🗳️ Consensus Decisions');
+  console.log('━'.repeat(50));
+  console.log('Consensus tracking not yet implemented.');
+  console.log('This will show collective decisions made by hive agents.');
+}
+
+/**
+ * Show hive metrics (placeholder)
+ */
+async function showHiveMetrics(flags) {
+  printInfo('📊 Hive Mind Metrics');
+  console.log('━'.repeat(50));
+  console.log('Metrics tracking not yet implemented.');
+  console.log('This will show performance analytics across all hives.');
+}
+
+// Export functions for direct CLI use
+export { createHive, listHives, showHiveStatus, launchServiceHive };

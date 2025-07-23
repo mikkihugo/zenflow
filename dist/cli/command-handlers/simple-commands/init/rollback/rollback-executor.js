@@ -124,8 +124,6 @@ export class RollbackExecutor {
 
         try {
           const stat = await node.stat(itemPath);
-          
-          const stat = await node.stat(itemPath);
 
           if (stat.isFile) {
             await node.remove(itemPath);
@@ -205,8 +203,6 @@ export class RollbackExecutor {
         const itemPath = `${this.workingDir}/${item}`;
 
         try {
-          const stat = await node.stat(itemPath);
-          
           const stat = await node.stat(itemPath);
 
           if (stat.isFile) {
@@ -362,8 +358,6 @@ export class RollbackExecutor {
 
         try {
           const stat = await node.stat(artifactPath);
-          
-          const stat = await node.stat(artifactPath);
 
           if (stat.isFile) {
             await node.remove(artifactPath);
@@ -465,8 +459,6 @@ export class RollbackExecutor {
       const claudePath = `${this.workingDir}/CLAUDE.md`;
 
       try {
-        const content = await node.readTextFile(claudePath);
-        
         const content = await node.readTextFile(claudePath);
 
         // Remove SPARC-specific sections

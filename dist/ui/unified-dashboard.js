@@ -6,28 +6,24 @@
 import React, { useState, useEffect } from 'react';
 import { render, Box, Text, useInput } from 'ink';
 import VisionDashboard from './components/VisionDashboard.js';
-import SwarmPanel from './components/SwarmPanel.js';
+import HiveMindPanel from './components/SwarmPanel.js';
 
 const TABS = [
   { id: 'visions', name: 'Visions', icon: '🎯', component: VisionDashboard },
-  { id: 'swarm', name: 'Swarm', icon: '🐝', component: SwarmPanel },
+  { id: 'hive-mind', name: 'Hive-Mind', icon: '🐝', component: HiveMindPanel },
   { id: 'memory', name: 'Memory', icon: '💾', component: MemoryBrowser },
   { id: 'logs', name: 'Logs', icon: '📝', component: LogViewer }
 ];
 
 // Placeholder components for other tabs
-const MemoryBrowser = () => (
-  <Box flexDirection="column">
-    <Text color="cyan" bold>💾 Memory Browser</Text>
-    <Text color="gray" marginTop={1}>Coming soon - Namespace and memory management</Text>
-  </Box>
+const MemoryBrowser = () => React.createElement(Box, { flexDirection: "column" },
+  React.createElement(Text, { color: "cyan", bold: true }, "💾 Memory Browser"),
+  React.createElement(Text, { color: "gray", marginTop: 1 }, "Coming soon - Namespace and memory management")
 );
 
-const LogViewer = () => (
-  <Box flexDirection="column">
-    <Text color="cyan" bold>📝 System Logs</Text>
-    <Text color="gray" marginTop={1}>Coming soon - Real-time log streaming</Text>
-  </Box>
+const LogViewer = () => React.createElement(Box, { flexDirection: "column" },
+  React.createElement(Text, { color: "cyan", bold: true }, "📝 System Logs"),
+  React.createElement(Text, { color: "gray", marginTop: 1 }, "Coming soon - Real-time log streaming")
 );
 
 const UnifiedDashboard = () => {
@@ -77,66 +73,58 @@ const UnifiedDashboard = () => {
     return `${minutes}m ${seconds}s`;
   };
 
-  return (
-    <Box flexDirection="column" height="100%">
-      {/* Header */}
-      <Box 
-        borderStyle="double" 
-        borderColor="cyan" 
-        paddingX={1} 
-        marginBottom={1}
-      >
-        <Box justifyContent="space-between" width="100%">
-          <Box>
-            <Text color="cyan" bold>🚀 Claude-Zen Control Center</Text>
-            <Text color="gray"> v2.0.0-alpha.67</Text>
-          </Box>
-          <Box>
-            <Text color="green">⏰ Uptime: {getUptime()}</Text>
-          </Box>
-        </Box>
-      </Box>
+  return React.createElement(Box, { flexDirection: "column", height: "100%" },
+    React.createElement(Box, { 
+      borderStyle: "double", 
+      borderColor: "cyan", 
+      paddingX: 1, 
+      marginBottom: 1
+    },
+      React.createElement(Box, { justifyContent: "space-between", width: "100%" },
+        React.createElement(Box, null,
+          React.createElement(Text, { color: "cyan", bold: true }, "🚀 Claude-Zen Control Center"),
+          React.createElement(Text, { color: "gray" }, " v2.0.0-alpha.67")
+        ),
+        React.createElement(Box, null,
+          React.createElement(Text, { color: "green" }, `⏰ Uptime: ${getUptime()}`)
+        )
+      )
+    ),
 
-      {/* Tab Navigation */}
-      <Box marginBottom={1}>
-        {TABS.map((tab, index) => {
-          const isActive = tab.id === activeTab;
-          return (
-            <Box key={tab.id} marginRight={2}>
-              <Text color={isActive ? 'cyan' : 'gray'} bold={isActive}>
-                [{index + 1}] {tab.icon} {tab.name}
-              </Text>
-            </Box>
-          );
-        })}
-      </Box>
+    React.createElement(Box, { marginBottom: 1 },
+      TABS.map((tab, index) => {
+        const isActive = tab.id === activeTab;
+        return React.createElement(Box, { key: tab.id, marginRight: 2 },
+          React.createElement(Text, { color: isActive ? 'cyan' : 'gray', bold: isActive },
+            `[${index + 1}] ${tab.icon} ${tab.name}`
+          )
+        );
+      })
+    ),
 
-      {/* Main Content Area */}
-      <Box flexGrow={1} paddingX={1}>
-        <ActiveComponent key={startTime.getTime()} />
-      </Box>
+    React.createElement(Box, { flexGrow: 1, paddingX: 1 },
+      React.createElement(ActiveComponent, { key: startTime.getTime() })
+    ),
 
-      {/* Footer with Controls */}
-      <Box 
-        borderStyle="single" 
-        borderColor="gray" 
-        paddingX={1} 
-        marginTop={1}
-      >
-        <Box justifyContent="space-between" width="100%">
-          <Box>
-            <Text color="gray">
-              Navigation: [1-4] Switch tabs • [←→] Arrow keys • [R] Refresh
-            </Text>
-          </Box>
-          <Box>
-            <Text color="gray">
-              [Ctrl+C] Exit
-            </Text>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+    React.createElement(Box, { 
+      borderStyle: "single", 
+      borderColor: "gray", 
+      paddingX: 1, 
+      marginTop: 1
+    },
+      React.createElement(Box, { justifyContent: "space-between", width: "100%" },
+        React.createElement(Box, null,
+          React.createElement(Text, { color: "gray" },
+            "Navigation: [1-4] Switch tabs • [←→] Arrow keys • [R] Refresh"
+          )
+        ),
+        React.createElement(Box, null,
+          React.createElement(Text, { color: "gray" },
+            "[Ctrl+C] Exit"
+          )
+        )
+      )
+    )
   );
 };
 
@@ -148,14 +136,14 @@ const main = async () => {
   if (isTTY && !isWeb) {
     // Terminal UI mode
     console.log('🚀 Starting Claude-Zen TUI Dashboard...');
-    render(<UnifiedDashboard />);
+    render(React.createElement(UnifiedDashboard, null));
   } else {
     // Web mode - would integrate with existing web server
     console.log('🌐 Web mode detected - integrate with web server');
     console.log('Use: claude-zen start --web for full web interface');
     
     // For now, still show TUI but with different styling
-    render(<UnifiedDashboard />);
+    render(React.createElement(UnifiedDashboard, null));
   }
 };
 

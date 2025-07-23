@@ -41,7 +41,7 @@ USAGE:
   claude-zen swarm <objective> [options]
 
 EXAMPLES:
-  claude-zen swarm "Build a REST API" --strategy development
+  claude-zen swarm "Build a web application" --strategy development
   claude-zen swarm "Research cloud architecture" --strategy research --ui
   claude-zen swarm "Analyze data trends" --strategy analysis --parallel
   claude-zen swarm "Optimize performance" --distributed --monitor

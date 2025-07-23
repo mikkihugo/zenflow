@@ -3,7 +3,7 @@
  * Live Demo: Creating documents through the MCP document stack
  */
 
-const { spawn } = require('child_process');
+
 
 // ANSI colors for pretty output
 const colors = {
@@ -19,7 +19,7 @@ const colors = {
 // Document examples to create
 const documentExamples = [
   {
-    service: 'storage-service',
+    service: 'unified-storage',
     docType: 'service-adr',
     docId: 'use-postgres-for-storage',
     content: `# ADR: Use PostgreSQL for Primary Storage
@@ -184,60 +184,7 @@ This document outlines security requirements for PCI DSS Level 1 compliance for 
   }
 ];
 
-async function _createDocumentViaMCP(doc) {
-  return new Promise((resolve, reject) => {
-    console.log(`\n${colors.cyan}📄 Creating ${doc.docType} for ${doc.service}...${colors.reset}`);
-    
-    // Build the MCP command
-    const args = [
-      'src/mcp/mcp-server.js'
-    ];
-    
-    const mcp = spawn('node', args, {
-      stdio: ['pipe', 'pipe', 'pipe']
-    });
-    
-    let output = '';
-    let errorOutput = '';
-    
-    mcp.stdout.on('data', (data) => {
-      output += data.toString();
-    });
-    
-    mcp.stderr.on('data', (data) => {
-      errorOutput += data.toString();
-    });
-    
-    mcp.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`MCP process exited with code ${code}: ${errorOutput}`));
-      } else {
-        resolve({ output, errorOutput });
-      }
-    });
-    
-    // Send MCP request
-    const request = {
-      jsonrpc: '2.0',
-      id: Date.now(),
-      method: 'tools/call',
-      params: {
-        name: 'service_document_manager',
-        arguments: {
-          action: 'create',
-          service: doc.service,
-          docType: doc.docType,
-          docId: doc.docId,
-          content: doc.content,
-          metadata: doc.metadata
-        }
-      }
-    };
-    
-    mcp.stdin.write(JSON.stringify(request) + '\n');
-    mcp.stdin.end();
-  });
-}
+
 
 async function simulateDocumentCreation() {
   console.log(`${colors.bright}${colors.green}🚀 Document Stack Live Demo${colors.reset}\n`);

@@ -123,7 +123,7 @@ export class QueenCoordinator extends EventEmitter {
       'enterprise',
       'distributed',
       'scalable',
-      'microservices',
+      'modular',
       'architecture',
       'integration',
       'optimization',

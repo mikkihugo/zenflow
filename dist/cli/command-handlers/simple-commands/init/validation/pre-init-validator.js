@@ -231,8 +231,6 @@ export class PreInitValidator {
 
     for (const envVar of envVars) {
       const value = node.env.get(envVar.name);
-      
-      const value = node.env.get(envVar.name);
 
       if (value) {
         result.environment[envVar.name] = 'set';

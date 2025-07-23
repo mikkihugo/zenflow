@@ -66,10 +66,8 @@ export class SwarmOrchestrator {
     }
 
     try {
-      // Pre-task hook using claude-zen
-      if (this.config.enableHooks) {
-        execSync(`npx claude-zen hooks pre-task --description "Swarm launch: ${objective}"`, { stdio: 'pipe' });
-      }
+      // Pre-task coordination using ruv-swarm + optional hooks
+      await this.executePreTaskCoordination(objective, options);
 
       const swarmConfig = this.buildSwarmConfig(objective, options);
       
@@ -77,14 +75,15 @@ export class SwarmOrchestrator {
       printInfo(`📋 Configuration: ${swarmConfig.topology} topology, ${swarmConfig.maxAgents} max agents`);
 
       // Create swarm using ruv-swarm library
-      const swarm = new Swarm({
-        ...swarmConfig,
-        memoryStore: this.memoryStore,
-        orchestrator: this
-      });
+      const swarm = new Swarm(swarmConfig);
+      
+      // Store swarm config on swarm object for reference
+      swarm._config = swarmConfig;
+      swarm._name = swarmConfig.name;
+      swarm._id = swarmConfig.id;
 
       // Store swarm
-      this.activeSwarms.set(swarm.id, swarm);
+      this.activeSwarms.set(swarmConfig.id, swarm);
       
       // Spawn agents based on objective analysis
       const agentPlan = this.analyzeObjectiveForAgents(objective, options);
@@ -103,26 +102,24 @@ export class SwarmOrchestrator {
         priority: options.priority || 'high',
         complexity: options.complexity || 'medium',
         requirements: options.requirements || [],
-        swarmId: swarm.id,
+        swarmId: swarm._id,
         strategy: options.strategy || swarmConfig.strategy
       });
 
       // Begin orchestration
-      const orchestrationResult = await swarm.orchestrateTask(task);
+      const orchestrationResult = await swarm.orchestrate(task);
       
       // Store results in memory
-      await this.storeOrchestrationResult(swarm.id, task.id, orchestrationResult);
+      await this.storeOrchestrationResult(swarm._id, task.id, orchestrationResult);
 
-      // Post-task hook using claude-zen
-      if (this.config.enableHooks) {
-        execSync(`npx claude-zen hooks post-task --task-id "${task.id}" --swarm-id "${swarm.id}" --analyze-performance`, { stdio: 'pipe' });
-      }
+      // Post-task coordination using ruv-swarm + optional hooks
+      await this.executePostTaskCoordination(task.id, swarm._id, orchestrationResult);
 
-      printSuccess(`✅ Swarm launched successfully: ${swarm.id}`);
+      printSuccess(`✅ Swarm launched successfully: ${swarm._id}`);
       printInfo(`👥 Spawned ${spawnedAgents.length} agents: ${spawnedAgents.map(a => a.type).join(', ')}`);
       
       return {
-        swarmId: swarm.id,
+        swarmId: swarm._id,
         taskId: task.id,
         agents: spawnedAgents.map(a => ({ id: a.id, type: a.type, name: a.name })),
         orchestrationResult,
@@ -242,28 +239,23 @@ export class SwarmOrchestrator {
    * Spawn individual agent using ruv-swarm library
    */
   async spawnAgent(swarm, agentSpec) {
-    const agent = new Agent({
+    const agent = await swarm.spawn(agentSpec.type, {
       id: `agent-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-      type: agentSpec.type,
       name: agentSpec.name || agentSpec.type,
       capabilities: agentSpec.capabilities || [],
       priority: agentSpec.priority || 'medium',
-      swarmId: swarm.id,
-      config: {
-        neuralLearning: this.config.enableNeuralLearning,
-        memoryAccess: true,
-        coordinationEnabled: true
-      }
+      swarmId: swarm._id,
+      neuralLearning: this.config.enableNeuralLearning,
+      memoryAccess: true,
+      coordinationEnabled: true
     });
-
-    swarm.addAgent(agent);
     
     // Store agent spawn in memory for coordination
     await this.memoryStore.store(
       `agent/${agent.id}/spawn`,
       JSON.stringify({
         agentId: agent.id,
-        swarmId: swarm.id,
+        swarmId: swarm._id,
         type: agentSpec.type,
         capabilities: agentSpec.capabilities,
         spawnedAt: new Date().toISOString()
@@ -303,7 +295,7 @@ export class SwarmOrchestrator {
    */
   analyzeComplexity(objective) {
     const indicators = {
-      high: ['enterprise', 'complex', 'advanced', 'comprehensive', 'full-stack', 'distributed', 'microservices', 'architecture'],
+      high: ['enterprise', 'complex', 'advanced', 'comprehensive', 'full-stack', 'distributed', 'modular', 'architecture'],
       medium: ['build', 'create', 'implement', 'develop', 'integrate', 'optimize', 'coordinate'],
       simple: ['simple', 'basic', 'quick', 'small', 'minor', 'fix']
     };
@@ -399,11 +391,11 @@ export class SwarmOrchestrator {
     const agents = swarm.getAgents();
     
     return {
-      id: swarm.id,
-      name: swarm.name,
-      objective: swarm.objective,
-      topology: swarm.topology,
-      strategy: swarm.strategy,
+      id: swarm._id,
+      name: swarm._name,
+      objective: swarm._config.objective,
+      topology: swarm._config.topology,
+      strategy: swarm._config.strategy,
       status: swarm.status || 'active',
       agents: agents.map(agent => ({
         id: agent.id,
@@ -412,8 +404,8 @@ export class SwarmOrchestrator {
         status: agent.status || 'active',
         capabilities: agent.capabilities
       })),
-      metrics: await this.getSwarmMetrics(swarm.id),
-      created: swarm.metadata?.created
+      metrics: await this.getSwarmMetrics(swarm._id),
+      created: swarm._config.metadata?.created
     };
   }
 
@@ -487,15 +479,194 @@ export class SwarmOrchestrator {
   }
 
   /**
+   * Execute pre-task coordination using ruv-swarm + optional hooks
+   */
+  async executePreTaskCoordination(objective, options) {
+    try {
+      // Use ruv-swarm's built-in coordination
+      if (this.ruvSwarm && this.ruvSwarm.coordination) {
+        await this.ruvSwarm.coordination.prepareTask({
+          description: `Swarm launch: ${objective}`,
+          options,
+          timestamp: Date.now()
+        });
+      }
+
+      // Store coordination context in memory
+      await this.memoryStore.store(
+        `coordination/pre-task/${Date.now()}`,
+        JSON.stringify({
+          objective,
+          options,
+          timestamp: new Date().toISOString()
+        })
+      );
+
+      // Optional hooks (non-blocking)
+      if (this.config.enableHooks) {
+        this.executeHooksAsync('pre-task', { description: `Swarm launch: ${objective}` });
+      }
+
+      printInfo('🎯 Pre-task coordination completed');
+    } catch (error) {
+      printWarning(`Pre-task coordination warning: ${error.message}`);
+      // Continue execution - coordination is enhancement, not requirement
+    }
+  }
+
+  /**
+   * Execute post-task coordination using ruv-swarm + optional hooks  
+   */
+  async executePostTaskCoordination(taskId, swarmId, result) {
+    try {
+      // Use ruv-swarm's built-in analytics
+      if (this.ruvSwarm && this.ruvSwarm.analytics) {
+        await this.ruvSwarm.analytics.analyzePerformance({
+          taskId,
+          swarmId,
+          result,
+          timestamp: Date.now()
+        });
+      }
+
+      // Store performance metrics
+      await this.memoryStore.store(
+        `coordination/post-task/${taskId}`,
+        JSON.stringify({
+          taskId,
+          swarmId,
+          result,
+          success: result.success !== false,
+          timestamp: new Date().toISOString()
+        })
+      );
+
+      // Optional hooks (non-blocking)
+      if (this.config.enableHooks) {
+        this.executeHooksAsync('post-task', { 
+          taskId, 
+          swarmId, 
+          'analyze-performance': true 
+        });
+      }
+
+      printInfo('📊 Post-task coordination completed');
+    } catch (error) {
+      printWarning(`Post-task coordination warning: ${error.message}`);
+      // Continue execution
+    }
+  }
+
+  /**
+   * Execute session-end coordination
+   */
+  async executeSessionEndCoordination() {
+    try {
+      // Generate summary using ruv-swarm
+      const metrics = await this.generateSessionMetrics();
+      
+      // Store session summary
+      await this.memoryStore.store(
+        `coordination/session-end/${Date.now()}`,
+        JSON.stringify({
+          sessionEndedAt: new Date().toISOString(),
+          totalSwarms: this.activeSwarms.size,
+          totalAgents: this.globalAgents.size,
+          metrics
+        })
+      );
+
+      // Optional hooks (non-blocking)
+      if (this.config.enableHooks) {
+        this.executeHooksAsync('session-end', { 
+          'export-metrics': true, 
+          'generate-summary': true 
+        });
+      }
+
+      printInfo('📋 Session-end coordination completed');
+    } catch (error) {
+      printWarning(`Session-end coordination warning: ${error.message}`);
+    }
+  }
+
+  /**
+   * Execute hooks asynchronously (non-blocking)
+   */
+  executeHooksAsync(hookType, options = {}) {
+    // Fire and forget - don't block main execution
+    setTimeout(async () => {
+      try {
+        const optionsStr = Object.entries(options)
+          .map(([key, value]) => `--${key} "${value}"`)
+          .join(' ');
+        
+        execSync(`npx claude-zen hooks ${hookType} ${optionsStr}`, { 
+          stdio: 'ignore',  // Don't capture output
+          timeout: 30000    // 30 second timeout
+        });
+      } catch (error) {
+        // Silently fail - hooks are optional enhancements
+        console.debug(`Hook ${hookType} failed: ${error.message}`);
+      }
+    }, 100); // Small delay to not block
+  }
+
+  /**
+   * Generate session metrics summary
+   */
+  async generateSessionMetrics() {
+    return {
+      swarms: {
+        total: this.activeSwarms.size,
+        active: Array.from(this.activeSwarms.values()).filter(s => s.status === 'active').length
+      },
+      agents: {
+        total: this.globalAgents.size,
+        byType: this.getAgentsByType()
+      },
+      performance: {
+        avgTaskTime: await this.calculateAverageTaskTime(),
+        successRate: await this.calculateSuccessRate()
+      }
+    };
+  }
+
+  /**
+   * Get agents grouped by type
+   */
+  getAgentsByType() {
+    const byType = {};
+    for (const agent of this.globalAgents.values()) {
+      byType[agent.type] = (byType[agent.type] || 0) + 1;
+    }
+    return byType;
+  }
+
+  /**
+   * Calculate average task completion time
+   */
+  async calculateAverageTaskTime() {
+    // This would analyze stored task data
+    return 0; // Placeholder
+  }
+
+  /**
+   * Calculate success rate
+   */
+  async calculateSuccessRate() {
+    // This would analyze stored task results
+    return 0.85; // Placeholder
+  }
+
+  /**
    * Cleanup and shutdown
    */
   async shutdown() {
     printInfo('🔄 Shutting down swarm orchestrator...');
     
-    // Execute session-end hooks
-    if (this.config.enableHooks) {
-      execSync('npx claude-zen hooks session-end --export-metrics --generate-summary', { stdio: 'pipe' });
-    }
+    // Execute session-end coordination
+    await this.executeSessionEndCoordination();
     
     // Save active swarms state
     for (const [id, swarm] of this.activeSwarms.entries()) {

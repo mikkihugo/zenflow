@@ -438,8 +438,6 @@ export class ValidationTestRunner {
       };
       
       await node.writeTextFile(
-
-      await node.writeTextFile(
         `${this.workingDir}/test-roomodes`,
         JSON.stringify(testConfig, null, 2),
       );

@@ -1,0 +1,34 @@
+{
+  "name": "@claude-zen/memory-backend-plugin",
+  "version": "1.0.0",
+  "description": "Pluggable memory/storage backends for Claude Zen",
+  "main": "index.js",
+  "type": "module",
+  "keywords": ["claude-zen", "plugin", "storage", "memory", "backend"],
+  "author": "Claude Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "chromadb": "^1.7.0",
+    "better-sqlite3": "^9.0.0",
+    "fs-extra": "^11.0.0"
+  },
+  "optionalDependencies": {
+    "pg": "^8.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/core": "^2.1.0"
+  },
+  "claudeZenPlugin": {
+    "name": "memory-backend",
+    "category": "storage",
+    "capabilities": ["key-value-storage", "namespacing", "search", "persistence"],
+    "backends": ["chroma", "sqlite", "json", "postgresql"],
+    "config": {
+      "backend": "chroma", 
+      "path": "./memory",
+      "maxSize": 1000000,
+      "compression": false,
+      "note": "ChromaDB file-based is default - NO Redis support"
+    }
+  }
+}

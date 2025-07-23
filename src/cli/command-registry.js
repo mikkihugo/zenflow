@@ -18,12 +18,13 @@ import { cloudCommand } from './command-handlers/cloud-command.js';
 import { projectCommand } from './command-handlers/project-command.js';
 import { replCommand } from './command-handlers/repl-command.js';
 import { workflowCommand } from './command-handlers/workflow-command.js';
+// import { visionToCodeWorkflowHandler } from './command-handlers/vision-to-code-workflow-handler.js'; // Temporarily disabled due to missing dependencies
 import { sessionCommand } from './command-handlers/session-command.js';
 import { terminalCommand } from './command-handlers/terminal-command.js';
 import { mcpCommand } from './command-handlers/mcp-command.js';
 import { monitorCommand } from './command-handlers/monitor-command.js';
 import { startCommand } from './command-handlers/start-command.js';
-import { swarmCommand } from './command-handlers/swarm-command.js';
+// swarmCommand moved to hive-mind integration
 import { batchManagerCommand } from './command-handlers/batch-manager-command.js';
 import { githubCommand } from './command-handlers/github-command.js';
 import { trainingAction } from './command-handlers/training-command.js';
@@ -93,7 +94,7 @@ export const createMeowCLI = () => {
 	  $ claude-zen start --ui
 	  $ claude-zen swarm "Build a REST API"
 	  $ claude-zen spawn researcher --coordinated
-	  $ claude-zen hive-mind spawn "Build microservices"
+	  $ claude-zen hive-mind spawn "Build a scalable application"
 	  $ claude-zen status --verbose
 	  $ claude-zen github pr-manager "create feature PR"
 `, {
@@ -322,58 +323,8 @@ Examples:
     ],
   });
 
-  commandRegistry.set('workflow', {
-    handler: workflowCommand,
-    description: 'Advanced workflow management with SPARC methodology integration',
-    usage: 'workflow <command> [options]',
-    examples: [
-      'workflow create "api-development" --template development',
-      'workflow list --verbose',
-      'workflow run "api-development" --phase implementation',
-      'workflow templates',
-      'workflow modes',
-      'workflow status "api-development"',
-    ],
-    details: `
-Advanced Workflow Features:
-  • SPARC methodology integration with all phases
-  • Template-based workflow creation (sparc-basic, tdd-cycle, research, development)
-  • Phase-by-phase execution control
-  • Task orchestration with SPARC modes
-  • Workflow status tracking and monitoring
-  • Integration with existing task management
-
-Workflow Commands:
-  create <name>           Create new workflow from template or custom
-  list                    List all available workflows
-  run <name-or-id>        Execute complete workflow or specific phase
-  status [name-or-id]     Show workflow execution status
-  stop <name-or-id>       Stop currently running workflow
-  templates               Show available workflow templates
-  modes                   Show available SPARC modes
-  info <target>           Show detailed workflow or template information
-
-Template Options:
-  --template <name>       Use predefined template (sparc-basic, tdd-cycle, research, development)
-  --interactive           Interactive workflow creation wizard
-
-Execution Options:
-  --phase <phase>         Execute specific workflow phase only
-  --dry-run              Simulate execution without making changes
-  --verbose              Show detailed execution information
-
-SPARC Integration:
-  Workflows integrate seamlessly with SPARC methodology modes:
-  • spec-pseudocode: Requirements and detailed specifications
-  • architect: System design and architecture planning
-  • code: Implementation with clean architecture principles
-  • tdd: Test-driven development and comprehensive testing
-  • integration: System integration and validation
-  • debug: Troubleshooting and error resolution
-  • devops: Deployment, operations, and monitoring
-  
-Use 'workflow templates --verbose' for detailed template information.`,
-  });
+  // commandRegistry.set('workflow', {    handler: visionToCodeWorkflowHandler,    description: 'Manage Vision-to-Code workflows, including strategic visions, ADRs, squads, swarms, and VTC execution.',    usage: 'workflow <command> <subcommand> [options]',    examples: [      'workflow vision create --title "New Product Idea" --description "A great idea" --timeline 6',      'workflow vision approve vis_123 --approver "user@example.com"',      'workflow adr create --title "Microservices Decision" --decision "Use microservices" --vision-id vis_123',      'workflow squad assign-task squad_alpha --title "Implement Auth" --type feature_implementation',      'workflow swarm coordinate vis_123 --optimization-goals speed,quality',      'workflow vtc execute tech_plan_456',    ],    details: `Vision-to-Code Workflow Commands:  vision    Manage strategic visions (create, approve, roadmap, list)  adr       Manage Architectural Decision Records (create, list)  squad     Manage development squads (assign-task)  swarm     Manage swarm coordination (coordinate, agents, mrap)  vtc       Execute Vision-to-Code workflows (execute, progress)This command provides a unified interface for managing the entire Vision-to-Code lifecycle within claude-zen.`,
+  // });
 
   commandRegistry.set('config', {
     handler: configCommand,
@@ -413,52 +364,62 @@ Use 'workflow templates --verbose' for detailed template information.`,
     ],
   });
 
+  // Direct swarm command with ruv-swarm integration
   commandRegistry.set('swarm', {
-    handler: swarmCommand,
-    description: 'Swarm-based AI agent coordination',
+    handler: async (args, flags) => {
+      const objective = args.join(' ').trim();
+      if (!objective) {
+        console.error('❌ Objective required for swarm');
+        console.log('Usage: claude-zen swarm "Your objective here" --service my-service');
+        return;
+      }
+      
+      // Use the service hive functionality directly
+      const { launchServiceHive } = await import('./command-handlers/hive-mind-command.js');
+      return launchServiceHive(objective, flags);
+    },
+    description: '🐝 Launch swarm with ruv-swarm coordination',
     usage: 'swarm <objective> [options]',
     examples: [
-      'swarm "Build a REST API"',
-      'swarm "Research cloud architecture" --strategy research',
-      'swarm "Analyze data" --max-agents 3 --parallel',
-      'swarm "Development task" --ui --monitor --background',
+      'swarm "Build a REST API" --service api-service',
+      'swarm "Create user interface" --service frontend',
+      'swarm "Research architecture patterns" --max-agents 5',
     ],
   });
 
-  commandRegistry.set('hive-mind', {
-    handler: hiveMindCommand,
-    description: '🧠 Advanced Hive Mind swarm intelligence with collective decision-making',
-    usage: 'hive-mind <subcommand> [options]',
+  // Service management commands (promoted from hive-mind)
+  commandRegistry.set('create', {
+    handler: async (args, flags) => {
+      const serviceName = args[0];
+      if (!serviceName) {
+        console.error('❌ Service name required');
+        console.log('Usage: claude-zen create <service-name>');
+        return;
+      }
+      
+      const { createHive } = await import('./command-handlers/hive-mind-command.js');
+      return createHive([serviceName], flags);
+    },
+    description: '🏗️ Create new service with persistent coordination',
+    usage: 'create <service-name> [options]',
     examples: [
-      'hive-mind init                          # Initialize hive mind system',
-      'hive-mind spawn "Build microservices"   # Create swarm with objective',
-      'hive-mind wizard                        # Interactive setup wizard',
-      'hive-mind status                        # View active swarms',
-      'hive-mind consensus                     # View consensus decisions',
-      'hive-mind metrics                       # Performance analytics',
+      'create api-service',
+      'create frontend-service',
+      'create database-service',
     ],
-    customHelp: true, // Use command's own help function
-    details: `
-Hive Mind System Features:
-  • Queen-led coordination with specialized worker agents
-  • Collective memory and knowledge sharing
-  • Consensus building for critical decisions  
-  • Auto-scaling based on workload
-  • Parallel task execution with work stealing
-  • Real-time monitoring and metrics
-  • SQLite-backed persistence
-  • MCP tool integration for 87+ operations
+  });
 
-Queen Types:
-  • Strategic - Long-term planning and optimization
-  • Tactical - Task prioritization and rapid response
-  • Adaptive - Learning and strategy evolution
-
-Worker Types:
-  • Researcher, Coder, Analyst, Tester
-  • Architect, Reviewer, Optimizer, Documenter
-
-Use 'hive-mind wizard' for interactive setup or 'hive-mind help' for full documentation.`,
+  commandRegistry.set('list', {
+    handler: async (args, flags) => {
+      const { listHives } = await import('./command-handlers/hive-mind-command.js');
+      return listHives(flags);
+    },
+    description: '📋 List all services and their coordination status',
+    usage: 'list [options]',
+    examples: [
+      'list',
+      'list --verbose',
+    ],
   });
 
   commandRegistry.set('hive-mind-optimize', {

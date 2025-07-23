@@ -1,1 +1,334 @@
-/**\n * Architect Advisor Plugin\n * AI-powered system that analyzes registry usage and suggests new registries via ADRs\n */\n\nimport { EventEmitter } from 'events';\nimport { nanoid } from 'nanoid';\nimport fs from 'fs-extra';\nimport path from 'path';\n\nexport class ArchitectAdvisorPlugin extends EventEmitter {\n  static metadata = {\n    name: 'architect-advisor',\n    version: '1.0.0',\n    description: 'AI architect that analyzes patterns and suggests new registry architectures',\n    dependencies: ['memory-rag'],\n    capabilities: ['pattern-analysis', 'architecture-suggestion', 'adr-generation', 'optimization-analysis']\n  };\n\n  constructor() {\n    super();\n    this.registry = null;\n    this.memoryRag = null;\n    this.analysisHistory = [];\n    this.suggestions = new Map();\n    this.adrs = new Map();\n    this.architecturalPatterns = new Map();\n    this.optimizationQueue = [];\n  }\n\n  async initialize(registry, options = {}) {\n    this.registry = registry;\n    this.options = {\n      analysisInterval: options.analysisInterval || 300000, // 5 minutes\n      suggestionThreshold: options.suggestionThreshold || 0.75,\n      adrPath: options.adrPath || './.swarm/adrs',\n      maxSuggestions: options.maxSuggestions || 10,\n      claudeModel: options.claudeModel || 'claude-3-sonnet-20240229',\n      enableAutoAnalysis: options.enableAutoAnalysis !== false,\n      approvalRequired: options.approvalRequired !== false,\n      ...options\n    };\n\n    // Get reference to memory-rag plugin\n    this.memoryRag = registry.pluginSystem.getPlugin('memory-rag');\n    if (!this.memoryRag) {\n      console.warn('ArchitectAdvisor: memory-rag plugin not found, some features will be limited');\n    }\n\n    // Initialize ADR storage\n    await this.initializeADRStorage();\n\n    // Load existing architectural patterns\n    await this.loadArchitecturalPatterns();\n\n    // Register hooks for continuous analysis\n    registry.pluginSystem.registerHook('afterRegister', this.analyzeRegistration.bind(this));\n    registry.pluginSystem.registerHook('afterDiscover', this.analyzeDiscovery.bind(this));\n\n    // Register plugin services\n    await this.registerPluginServices();\n\n    // Start background analysis\n    if (this.options.enableAutoAnalysis) {\n      this.startBackgroundAnalysis();\n    }\n  }\n\n  async initializeADRStorage() {\n    await fs.ensureDir(this.options.adrPath);\n    this.adrIndexFile = path.join(this.options.adrPath, 'index.json');\n    this.suggestionsFile = path.join(this.options.adrPath, 'suggestions.json');\n    this.patternsFile = path.join(this.options.adrPath, 'architectural-patterns.json');\n  }\n\n  async registerPluginServices() {\n    await this.registry.register('service:architect-advisor', {\n      plugin: 'architect-advisor',\n      version: ArchitectAdvisorPlugin.metadata.version,\n      capabilities: ArchitectAdvisorPlugin.metadata.capabilities,\n      stats: {\n        suggestions: this.suggestions.size,\n        adrs: this.adrs.size,\n        patterns: this.architecturalPatterns.size,\n        analyses: this.analysisHistory.length\n      }\n    }, {\n      tags: ['service', 'plugin', 'architect-advisor', 'ai'],\n      ttl: 3600\n    });\n  }\n\n  // Analysis hooks\n  async analyzeRegistration(data) {\n    const { key, value, options, result } = data;\n    \n    // Collect registration pattern\n    const pattern = {\n      type: 'registration',\n      key,\n      value,\n      options,\n      timestamp: new Date(),\n      context: await this.getCurrentContext()\n    };\n\n    this.analysisHistory.push(pattern);\n    \n    // Trigger analysis if threshold reached\n    if (this.analysisHistory.length % 10 === 0) {\n      await this.performArchitecturalAnalysis();\n    }\n\n    return data;\n  }\n\n  async analyzeDiscovery(data) {\n    const { query, options, result } = data;\n    \n    // Analyze discovery patterns for optimization opportunities\n    const discoveryPattern = {\n      type: 'discovery',\n      query,\n      resultCount: result.length,\n      timestamp: new Date(),\n      performance: {\n        resultCount: result.length,\n        queryComplexity: this.calculateQueryComplexity(query)\n      }\n    };\n\n    this.analysisHistory.push(discoveryPattern);\n    \n    // Check for optimization opportunities\n    await this.checkOptimizationOpportunities(discoveryPattern);\n\n    return data;\n  }\n\n  // Core analysis engine\n  async performArchitecturalAnalysis() {\n    try {\n      const analysis = await this.analyzeCurrentArchitecture();\n      const suggestions = await this.generateArchitecturalSuggestions(analysis);\n      \n      for (const suggestion of suggestions) {\n        if (suggestion.confidence > this.options.suggestionThreshold) {\n          await this.createSuggestion(suggestion);\n        }\n      }\n\n      this.emit('analysisCompleted', {\n        analysis,\n        suggestions: suggestions.length,\n        timestamp: new Date()\n      });\n    } catch (error) {\n      this.emit('analysisError', error);\n    }\n  }\n\n  async analyzeCurrentArchitecture() {\n    const recentHistory = this.analysisHistory.slice(-100);\n    \n    const analysis = {\n      registrationPatterns: this.analyzeRegistrationPatterns(recentHistory),\n      discoveryPatterns: this.analyzeDiscoveryPatterns(recentHistory),\n      performanceMetrics: this.analyzePerformanceMetrics(recentHistory),\n      scalabilityIndicators: await this.analyzeScalabilityIndicators(),\n      bottlenecks: await this.identifyBottlenecks(),\n      timestamp: new Date()\n    };\n\n    // Use RAG for enhanced context\n    if (this.memoryRag) {\n      const contextualInsights = await this.memoryRag.query(\n        'architectural analysis patterns',\n        { analysis }\n      );\n      analysis.contextualInsights = contextualInsights;\n    }\n\n    return analysis;\n  }\n\n  async generateArchitecturalSuggestions(analysis) {\n    const suggestions = [];\n\n    // Generate suggestions based on analysis\n    suggestions.push(...await this.suggestPerformanceOptimizations(analysis));\n    suggestions.push(...await this.suggestScalabilityImprovements(analysis));\n    suggestions.push(...await this.suggestNewRegistryTypes(analysis));\n    suggestions.push(...await this.suggestArchitecturalPatterns(analysis));\n\n    return suggestions.sort((a, b) => b.confidence - a.confidence);\n  }\n\n  async suggestPerformanceOptimizations(analysis) {\n    const suggestions = [];\n\n    // Analyze query performance\n    if (analysis.performanceMetrics.averageDiscoveryTime > 100) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'performance-optimization',\n        title: 'Implement Query Indexing Registry',\n        description: 'High discovery times detected. Consider implementing a specialized indexing registry.',\n        confidence: 0.85,\n        impact: 'high',\n        effort: 'medium',\n        reasoning: `Average discovery time of ${analysis.performanceMetrics.averageDiscoveryTime}ms exceeds optimal threshold`,\n        suggestedImplementation: {\n          registryType: 'IndexingRegistry',\n          backend: 'ElasticsearchBackend',\n          plugins: ['search-optimization', 'query-caching']\n        }\n      });\n    }\n\n    // Memory usage optimization\n    if (analysis.performanceMetrics.memoryUsageGrowth > 0.5) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'performance-optimization',\n        title: 'Implement Memory-Optimized Registry',\n        description: 'High memory growth detected. Consider implementing memory-optimized storage.',\n        confidence: 0.80,\n        impact: 'medium',\n        effort: 'low',\n        reasoning: `Memory usage growth of ${analysis.performanceMetrics.memoryUsageGrowth}% indicates optimization opportunity`,\n        suggestedImplementation: {\n          registryType: 'MemoryOptimizedRegistry',\n          backend: 'CompressedJSONBackend',\n          plugins: ['memory-compression', 'data-archival']\n        }\n      });\n    }\n\n    return suggestions;\n  }\n\n  async suggestScalabilityImprovements(analysis) {\n    const suggestions = [];\n\n    // Horizontal scaling suggestion\n    if (analysis.scalabilityIndicators.loadDistribution < 0.7) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'scalability-improvement',\n        title: 'Implement Distributed Registry Federation',\n        description: 'Uneven load distribution detected. Consider implementing federated registry architecture.',\n        confidence: 0.90,\n        impact: 'high',\n        effort: 'high',\n        reasoning: `Load distribution of ${analysis.scalabilityIndicators.loadDistribution} indicates need for better scaling`,\n        suggestedImplementation: {\n          architecture: 'FederatedRegistries',\n          topology: 'mesh',\n          replicationFactor: 3,\n          partitionStrategy: 'consistent-hashing'\n        }\n      });\n    }\n\n    // Caching layer suggestion\n    if (analysis.discoveryPatterns.repeatQueryRate > 0.6) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'scalability-improvement',\n        title: 'Implement Caching Registry Layer',\n        description: 'High repeat query rate detected. Consider implementing a caching layer.',\n        confidence: 0.85,\n        impact: 'medium',\n        effort: 'low',\n        reasoning: `Repeat query rate of ${analysis.discoveryPatterns.repeatQueryRate} suggests caching would be beneficial`,\n        suggestedImplementation: {\n          registryType: 'CachingRegistry',\n          backend: 'RedisBackend',\n          plugins: ['intelligent-caching', 'cache-invalidation']\n        }\n      });\n    }\n\n    return suggestions;\n  }\n\n  async suggestNewRegistryTypes(analysis) {\n    const suggestions = [];\n\n    // Analyze data patterns to suggest specialized registries\n    const dataTypes = this.analyzeDataTypes(analysis.registrationPatterns);\n    \n    if (dataTypes.temporal > 0.3) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'new-registry-type',\n        title: 'Implement Time-Series Registry',\n        description: 'High volume of temporal data detected. Consider implementing a time-series registry.',\n        confidence: 0.88,\n        impact: 'high',\n        effort: 'medium',\n        reasoning: `${(dataTypes.temporal * 100).toFixed(1)}% of data has temporal characteristics`,\n        suggestedImplementation: {\n          registryType: 'TimeSeriesRegistry',\n          backend: 'InfluxDBBackend',\n          plugins: ['time-series-aggregation', 'temporal-queries'],\n          features: ['retention-policies', 'downsampling', 'real-time-streaming']\n        }\n      });\n    }\n\n    if (dataTypes.geospatial > 0.2) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'new-registry-type',\n        title: 'Implement Geospatial Registry',\n        description: 'Geographic data patterns detected. Consider implementing a geospatial registry.',\n        confidence: 0.82,\n        impact: 'medium',\n        effort: 'medium',\n        reasoning: `${(dataTypes.geospatial * 100).toFixed(1)}% of data contains geographic information`,\n        suggestedImplementation: {\n          registryType: 'GeospatialRegistry',\n          backend: 'PostGISBackend',\n          plugins: ['spatial-indexing', 'geospatial-queries'],\n          features: ['proximity-search', 'geographic-clustering', 'map-visualization']\n        }\n      });\n    }\n\n    return suggestions;\n  }\n\n  async suggestArchitecturalPatterns(analysis) {\n    const suggestions = [];\n\n    // Event-driven architecture\n    if (analysis.registrationPatterns.eventDriven > 0.4) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'architectural-pattern',\n        title: 'Implement Event-Driven Registry Architecture',\n        description: 'High event-driven activity detected. Consider implementing event sourcing pattern.',\n        confidence: 0.87,\n        impact: 'high',\n        effort: 'high',\n        reasoning: `${(analysis.registrationPatterns.eventDriven * 100).toFixed(1)}% of activities are event-driven`,\n        suggestedImplementation: {\n          pattern: 'EventSourcingRegistry',\n          components: ['EventStore', 'EventBus', 'ProjectionRegistry'],\n          plugins: ['event-sourcing', 'cqrs-pattern', 'event-replay']\n        }\n      });\n    }\n\n    // Microservices pattern\n    if (analysis.discoveryPatterns.serviceDiscovery > 0.5) {\n      suggestions.push({\n        id: nanoid(),\n        type: 'architectural-pattern',\n        title: 'Implement Service Mesh Registry',\n        description: 'High service discovery activity detected. Consider implementing service mesh pattern.',\n        confidence: 0.90,\n        impact: 'high',\n        effort: 'high',\n        reasoning: `${(analysis.discoveryPatterns.serviceDiscovery * 100).toFixed(1)}% of queries are service-related`,\n        suggestedImplementation: {\n          pattern: 'ServiceMeshRegistry',\n          components: ['ServiceRegistry', 'LoadBalancer', 'CircuitBreaker'],\n          plugins: ['service-discovery', 'health-monitoring', 'traffic-routing']\n        }\n      });\n    }\n\n    return suggestions;\n  }\n\n  // ADR (Architecture Decision Record) management\n  async createSuggestion(suggestion) {\n    const suggestionId = suggestion.id;\n    suggestion.created = new Date();\n    suggestion.status = 'pending';\n    suggestion.votes = { approve: 0, reject: 0, abstain: 0 };\n    \n    this.suggestions.set(suggestionId, suggestion);\n    \n    // Generate ADR draft\n    const adr = await this.generateADR(suggestion);\n    suggestion.adrDraft = adr;\n    \n    // Persist suggestion\n    await this.persistSuggestions();\n    \n    this.emit('suggestionCreated', {\n      id: suggestionId,\n      suggestion,\n      adr\n    });\n    \n    // Request human approval if required\n    if (this.options.approvalRequired) {\n      await this.requestApproval(suggestionId, suggestion, adr);\n    }\n    \n    return suggestionId;\n  }\n\n  async generateADR(suggestion) {\n    const adrNumber = this.adrs.size + 1;\n    const adrId = `ADR-${adrNumber.toString().padStart(4, '0')}`;\n    \n    const adr = {\n      id: adrId,\n      number: adrNumber,\n      title: suggestion.title,\n      status: 'proposed',\n      date: new Date().toISOString().split('T')[0],\n      context: this.generateContextSection(suggestion),\n      decision: this.generateDecisionSection(suggestion),\n      consequences: this.generateConsequencesSection(suggestion),\n      alternatives: await this.generateAlternatives(suggestion),\n      implementation: suggestion.suggestedImplementation,\n      metadata: {\n        confidence: suggestion.confidence,\n        impact: suggestion.impact,\n        effort: suggestion.effort,\n        reasoning: suggestion.reasoning,\n        generatedBy: 'architect-advisor',\n        generatedAt: new Date()\n      }\n    };\n    \n    // Generate markdown content\n    adr.markdown = this.generateADRMarkdown(adr);\n    \n    return adr;\n  }\n\n  generateContextSection(suggestion) {\n    return `\n## Context\n\n${suggestion.description}\n\n### Current State Analysis\n- **Problem**: ${suggestion.reasoning}\n- **Impact Level**: ${suggestion.impact}\n- **Implementation Effort**: ${suggestion.effort}\n- **Confidence**: ${(suggestion.confidence * 100).toFixed(1)}%\n\n### Technical Context\n- **Registry Type**: ${suggestion.suggestedImplementation?.registryType || 'Not specified'}\n- **Backend**: ${suggestion.suggestedImplementation?.backend || 'Not specified'}\n- **Plugins**: ${suggestion.suggestedImplementation?.plugins?.join(', ') || 'None specified'}\n    `.trim();\n  }\n\n  generateDecisionSection(suggestion) {\n    return `\n## Decision\n\nWe will implement ${suggestion.title.toLowerCase()} to address the identified architectural needs.\n\n### Rationale\n${suggestion.reasoning}\n\n### Implementation Approach\n${JSON.stringify(suggestion.suggestedImplementation, null, 2)}\n    `.trim();\n  }\n\n  generateConsequencesSection(suggestion) {\n    const positives = [];\n    const negatives = [];\n    \n    // Generate consequences based on suggestion type\n    switch (suggestion.impact) {\n      case 'high':\n        positives.push('Significant improvement in system performance/scalability');\n        positives.push('Better user experience and system reliability');\n        negatives.push('Requires substantial development effort');\n        negatives.push('May introduce temporary complexity during migration');\n        break;\n      case 'medium':\n        positives.push('Noticeable improvement in targeted areas');\n        positives.push('Relatively straightforward implementation');\n        negatives.push('Moderate resource investment required');\n        break;\n      case 'low':\n        positives.push('Small but valuable improvements');\n        positives.push('Low risk implementation');\n        negatives.push('Limited immediate impact');\n        break;\n    }\n    \n    return `\n## Consequences\n\n### Positive\n${positives.map(p => `- ${p}`).join('\\n')}\n\n### Negative\n${negatives.map(n => `- ${n}`).join('\\n')}\n\n### Risks and Mitigation\n- **Risk**: Implementation complexity\n- **Mitigation**: Phased rollout with comprehensive testing\n- **Risk**: Performance impact during migration\n- **Mitigation**: Blue-green deployment strategy\n    `.trim();\n  }\n\n  async generateAlternatives(suggestion) {\n    const alternatives = [];\n    \n    // Generate alternatives based on suggestion type\n    switch (suggestion.type) {\n      case 'performance-optimization':\n        alternatives.push({\n          name: 'Status Quo',\n          description: 'Continue with current implementation',\n          pros: ['No implementation cost', 'No disruption'],\n          cons: ['Performance issues persist', 'Scaling challenges continue']\n        });\n        alternatives.push({\n          name: 'Partial Optimization',\n          description: 'Implement only critical optimizations',\n          pros: ['Lower implementation cost', 'Reduced risk'],\n          cons: ['Limited improvements', 'May need revisiting']\n        });\n        break;\n      case 'scalability-improvement':\n        alternatives.push({\n          name: 'Vertical Scaling',\n          description: 'Scale up existing infrastructure',\n          pros: ['Simple implementation', 'No architectural changes'],\n          cons: ['Limited scalability ceiling', 'Single point of failure']\n        });\n        break;\n      case 'new-registry-type':\n        alternatives.push({\n          name: 'Extend Existing Registry',\n          description: 'Add capabilities to current registry',\n          pros: ['Leverages existing infrastructure', 'Lower complexity'],\n          cons: ['May not be optimal for specialized use cases', 'Potential performance trade-offs']\n        });\n        break;\n    }\n    \n    return alternatives;\n  }\n\n  generateADRMarkdown(adr) {\n    return `# ${adr.id}: ${adr.title}\n\n**Status**: ${adr.status}\n**Date**: ${adr.date}\n**Confidence**: ${(adr.metadata.confidence * 100).toFixed(1)}%\n**Impact**: ${adr.metadata.impact}\n**Effort**: ${adr.metadata.effort}\n\n${adr.context}\n\n${adr.decision}\n\n${adr.consequences}\n\n## Alternatives Considered\n\n${adr.alternatives.map(alt => `\n### ${alt.name}\n${alt.description}\n\n**Pros:**\n${alt.pros.map(pro => `- ${pro}`).join('\\n')}\n\n**Cons:**\n${alt.cons.map(con => `- ${con}`).join('\\n')}\n`).join('\\n')}\n\n## Implementation Details\n\n\\`\\`\\`json\n${JSON.stringify(adr.implementation, null, 2)}\n\\`\\`\\`\n\n---\n\n*This ADR was generated by the Architect Advisor Plugin*\n*Generated on: ${adr.metadata.generatedAt}*\n*Reasoning: ${adr.metadata.reasoning}*`;\n  }\n\n  // Approval workflow\n  async requestApproval(suggestionId, suggestion, adr) {\n    const approvalRequest = {\n      id: nanoid(),\n      suggestionId,\n      adrId: adr.id,\n      title: suggestion.title,\n      type: suggestion.type,\n      priority: this.calculatePriority(suggestion),\n      requestedAt: new Date(),\n      status: 'pending',\n      approvers: [],\n      channels: {\n        mcp: this.options.mcpApproval !== false,\n        web: this.options.webApproval !== false,\n        tui: this.options.tuiApproval !== false\n      }\n    };\n\n    // Save ADR file for human review\n    await this.saveADRFile(adr);\n    \n    // Emit approval request for different channels\n    this.emit('approvalRequested', {\n      request: approvalRequest,\n      suggestion,\n      adr,\n      channels: approvalRequest.channels\n    });\n    \n    // Register in MCP if available\n    if (approvalRequest.channels.mcp) {\n      await this.registerMCPApproval(approvalRequest);\n    }\n    \n    return approvalRequest;\n  }\n\n  async registerMCPApproval(approvalRequest) {\n    try {\n      // Register approval request as a service that can be discovered by MCP clients\n      await this.registry.register(`approval-request:${approvalRequest.id}`, {\n        type: 'adr-approval-request',\n        id: approvalRequest.id,\n        suggestionId: approvalRequest.suggestionId,\n        adrId: approvalRequest.adrId,\n        title: approvalRequest.title,\n        priority: approvalRequest.priority,\n        status: approvalRequest.status,\n        requestedAt: approvalRequest.requestedAt,\n        actions: {\n          approve: `architect-advisor:approve:${approvalRequest.id}`,\n          reject: `architect-advisor:reject:${approvalRequest.id}`,\n          defer: `architect-advisor:defer:${approvalRequest.id}`\n        }\n      }, {\n        tags: ['approval-request', 'adr', 'architect-advisor', 'human-review'],\n        ttl: 86400 // 24 hours\n      });\n    } catch (error) {\n      this.emit('mcpRegistrationError', { approvalRequest, error });\n    }\n  }\n\n  async processApproval(approvalRequestId, decision, approver, notes = '') {\n    const suggestion = Array.from(this.suggestions.values())\n      .find(s => s.approvalRequest?.id === approvalRequestId);\n    \n    if (!suggestion) {\n      throw new Error(`Approval request ${approvalRequestId} not found`);\n    }\n\n    const approval = {\n      decision, // 'approve', 'reject', 'defer'\n      approver,\n      notes,\n      timestamp: new Date()\n    };\n\n    suggestion.approvalRequest.approvers.push(approval);\n    suggestion.approvalRequest.status = decision;\n    suggestion.status = decision === 'approve' ? 'approved' : decision === 'reject' ? 'rejected' : 'deferred';\n\n    // Update ADR status\n    if (suggestion.adrDraft) {\n      suggestion.adrDraft.status = decision === 'approve' ? 'accepted' : decision === 'reject' ? 'rejected' : 'proposed';\n      \n      // Save updated ADR\n      await this.saveADRFile(suggestion.adrDraft);\n    }\n\n    // If approved, add to implementation queue\n    if (decision === 'approve') {\n      await this.queueImplementation(suggestion);\n    }\n\n    // Clean up approval request from registry\n    await this.registry.backend.unregister?.(`approval-request:${approvalRequestId}`);\n\n    this.emit('approvalProcessed', {\n      approvalRequestId,\n      decision,\n      suggestion,\n      approval\n    });\n\n    return approval;\n  }\n\n  async queueImplementation(suggestion) {\n    const implementationTask = {\n      id: nanoid(),\n      suggestionId: suggestion.id,\n      title: suggestion.title,\n      implementation: suggestion.suggestedImplementation,\n      priority: this.calculatePriority(suggestion),\n      queuedAt: new Date(),\n      status: 'queued'\n    };\n\n    this.optimizationQueue.push(implementationTask);\n    \n    this.emit('implementationQueued', {\n      task: implementationTask,\n      queuePosition: this.optimizationQueue.length\n    });\n\n    return implementationTask;\n  }\n\n  // Analysis helper methods\n  analyzeRegistrationPatterns(history) {\n    const registrations = history.filter(h => h.type === 'registration');\n    \n    return {\n      totalRegistrations: registrations.length,\n      averagePerHour: this.calculateRate(registrations, 'hour'),\n      keyPatterns: this.extractKeyPatterns(registrations),\n      valueTypes: this.analyzeValueTypes(registrations),\n      eventDriven: this.calculateEventDrivenRatio(registrations),\n      temporalData: this.calculateTemporalDataRatio(registrations)\n    };\n  }\n\n  analyzeDiscoveryPatterns(history) {\n    const discoveries = history.filter(h => h.type === 'discovery');\n    \n    return {\n      totalDiscoveries: discoveries.length,\n      averagePerHour: this.calculateRate(discoveries, 'hour'),\n      queryTypes: this.analyzeQueryTypes(discoveries),\n      repeatQueryRate: this.calculateRepeatQueryRate(discoveries),\n      serviceDiscovery: this.calculateServiceDiscoveryRatio(discoveries),\n      averageResultCount: discoveries.length > 0 ? \n        discoveries.reduce((sum, d) => sum + d.resultCount, 0) / discoveries.length : 0\n    };\n  }\n\n  analyzePerformanceMetrics(history) {\n    const discoveries = history.filter(h => h.type === 'discovery' && h.performance);\n    \n    return {\n      averageDiscoveryTime: discoveries.length > 0 ?\n        discoveries.reduce((sum, d) => sum + (d.performance?.time || 0), 0) / discoveries.length : 0,\n      memoryUsageGrowth: this.calculateMemoryGrowth(history),\n      throughput: this.calculateThroughput(history)\n    };\n  }\n\n  async analyzeScalabilityIndicators() {\n    try {\n      const registryStatus = await this.registry.status();\n      \n      return {\n        activeConnections: registryStatus.swarms?.length || 0,\n        loadDistribution: this.calculateLoadDistribution(registryStatus),\n        resourceUtilization: this.calculateResourceUtilization(),\n        growthTrend: this.calculateGrowthTrend()\n      };\n    } catch (error) {\n      return {\n        activeConnections: 0,\n        loadDistribution: 0.5,\n        resourceUtilization: 0.5,\n        growthTrend: 0.1\n      };\n    }\n  }\n\n  async identifyBottlenecks() {\n    const bottlenecks = [];\n    \n    // Analyze recent performance\n    const recentDiscoveries = this.analysisHistory\n      .filter(h => h.type === 'discovery')\n      .slice(-20);\n    \n    const avgTime = recentDiscoveries.length > 0 ?\n      recentDiscoveries.reduce((sum, d) => sum + (d.performance?.time || 0), 0) / recentDiscoveries.length : 0;\n    \n    if (avgTime > 100) {\n      bottlenecks.push({\n        type: 'query-performance',\n        severity: 'high',\n        description: `Average query time of ${avgTime.toFixed(2)}ms exceeds threshold`,\n        suggestedFix: 'Implement query indexing or caching'\n      });\n    }\n    \n    return bottlenecks;\n  }\n\n  // Utility methods\n  calculateQueryComplexity(query) {\n    let complexity = 1;\n    \n    if (query.tags && query.tags.length > 0) {\n      complexity += query.tags.length * 0.2;\n    }\n    \n    if (query.keyPattern) {\n      complexity += 0.5;\n    }\n    \n    if (query.valueMatch) {\n      complexity += Object.keys(query.valueMatch).length * 0.3;\n    }\n    \n    return Math.min(complexity, 5);\n  }\n\n  analyzeDataTypes(patterns) {\n    const totalPatterns = patterns.totalRegistrations || 1;\n    \n    return {\n      temporal: (patterns.temporalData || 0) / totalPatterns,\n      geospatial: this.calculateGeospatialRatio(patterns) / totalPatterns,\n      structured: 0.8, // Simplified\n      binary: 0.1 // Simplified\n    };\n  }\n\n  calculateEventDrivenRatio(registrations) {\n    const eventDriven = registrations.filter(r => \n      r.key?.includes('event') || \n      r.value?.type === 'event' ||\n      r.options?.tags?.some(tag => tag.includes('event'))\n    ).length;\n    \n    return registrations.length > 0 ? eventDriven / registrations.length : 0;\n  }\n\n  calculateTemporalDataRatio(registrations) {\n    const temporal = registrations.filter(r => \n      r.value?.timestamp || \n      r.value?.createdAt ||\n      r.value?.updatedAt ||\n      r.options?.tags?.some(tag => tag.includes('time') || tag.includes('temporal'))\n    ).length;\n    \n    return registrations.length > 0 ? temporal / registrations.length : 0;\n  }\n\n  calculateGeospatialRatio(patterns) {\n    // Simplified geospatial detection\n    return 0.1; // Would need more sophisticated analysis\n  }\n\n  calculateServiceDiscoveryRatio(discoveries) {\n    const serviceDiscoveries = discoveries.filter(d => \n      d.query?.tags?.includes('service') ||\n      d.query?.keyPattern?.includes('service')\n    ).length;\n    \n    return discoveries.length > 0 ? serviceDiscoveries / discoveries.length : 0;\n  }\n\n  calculateRepeatQueryRate(discoveries) {\n    const queryHashes = new Map();\n    \n    for (const discovery of discoveries) {\n      const hash = JSON.stringify(discovery.query);\n      queryHashes.set(hash, (queryHashes.get(hash) || 0) + 1);\n    }\n    \n    const repeats = Array.from(queryHashes.values()).filter(count => count > 1).length;\n    return queryHashes.size > 0 ? repeats / queryHashes.size : 0;\n  }\n\n  calculatePriority(suggestion) {\n    let priority = 0;\n    \n    // Impact weight\n    switch (suggestion.impact) {\n      case 'high': priority += 30; break;\n      case 'medium': priority += 20; break;\n      case 'low': priority += 10; break;\n    }\n    \n    // Effort weight (inverse)\n    switch (suggestion.effort) {\n      case 'low': priority += 20; break;\n      case 'medium': priority += 10; break;\n      case 'high': priority += 5; break;\n    }\n    \n    // Confidence weight\n    priority += suggestion.confidence * 30;\n    \n    return Math.round(priority);\n  }\n\n  // Persistence methods\n  async saveADRFile(adr) {\n    const filename = `${adr.id}-${adr.title.toLowerCase().replace(/\\s+/g, '-')}.md`;\n    const filepath = path.join(this.options.adrPath, filename);\n    \n    await fs.writeFile(filepath, adr.markdown, 'utf8');\n    \n    // Update ADR index\n    const index = await this.loadADRIndex();\n    index[adr.id] = {\n      id: adr.id,\n      number: adr.number,\n      title: adr.title,\n      status: adr.status,\n      date: adr.date,\n      file: filename,\n      metadata: adr.metadata\n    };\n    \n    await fs.writeJson(this.adrIndexFile, index, { spaces: 2 });\n  }\n\n  async loadADRIndex() {\n    try {\n      if (await fs.pathExists(this.adrIndexFile)) {\n        return await fs.readJson(this.adrIndexFile);\n      }\n    } catch (error) {\n      // Ignore errors, return empty index\n    }\n    return {};\n  }\n\n  async persistSuggestions() {\n    const suggestionsData = Array.from(this.suggestions.entries());\n    await fs.writeJson(this.suggestionsFile, suggestionsData, { spaces: 2 });\n  }\n\n  async loadArchitecturalPatterns() {\n    try {\n      if (await fs.pathExists(this.patternsFile)) {\n        const patternsData = await fs.readJson(this.patternsFile);\n        this.architecturalPatterns = new Map(patternsData);\n      }\n    } catch (error) {\n      this.emit('loadError', error);\n    }\n  }\n\n  // Background analysis\n  startBackgroundAnalysis() {\n    this.analysisInterval = setInterval(() => {\n      this.performArchitecturalAnalysis();\n    }, this.options.analysisInterval);\n  }\n\n  async getCurrentContext() {\n    return {\n      timestamp: new Date(),\n      registryState: await this.registry.status(),\n      analysisHistorySize: this.analysisHistory.length,\n      activeSuggestions: this.suggestions.size\n    };\n  }\n\n  // API methods\n  async getSuggestions(filter = {}) {\n    let suggestions = Array.from(this.suggestions.values());\n    \n    if (filter.status) {\n      suggestions = suggestions.filter(s => s.status === filter.status);\n    }\n    \n    if (filter.type) {\n      suggestions = suggestions.filter(s => s.type === filter.type);\n    }\n    \n    return suggestions.sort((a, b) => b.confidence - a.confidence);\n  }\n\n  async getADRs() {\n    const index = await this.loadADRIndex();\n    return Object.values(index);\n  }\n\n  async getAnalysisHistory() {\n    return this.analysisHistory.slice(-100); // Return recent history\n  }\n\n  getStats() {\n    return {\n      suggestions: {\n        total: this.suggestions.size,\n        pending: Array.from(this.suggestions.values()).filter(s => s.status === 'pending').length,\n        approved: Array.from(this.suggestions.values()).filter(s => s.status === 'approved').length,\n        rejected: Array.from(this.suggestions.values()).filter(s => s.status === 'rejected').length\n      },\n      adrs: {\n        total: this.adrs.size\n      },\n      analysis: {\n        historySize: this.analysisHistory.length,\n        patternsDetected: this.architecturalPatterns.size\n      },\n      implementation: {\n        queueSize: this.optimizationQueue.length\n      }\n    };\n  }\n\n  // Cleanup\n  async cleanup() {\n    if (this.analysisInterval) {\n      clearInterval(this.analysisInterval);\n    }\n\n    // Final persistence\n    await Promise.all([\n      this.persistSuggestions(),\n      // Save architectural patterns\n      fs.writeJson(this.patternsFile, Array.from(this.architecturalPatterns.entries()), { spaces: 2 })\n    ]);\n\n    // Clear memory\n    this.analysisHistory.length = 0;\n    this.suggestions.clear();\n    this.adrs.clear();\n    this.architecturalPatterns.clear();\n  }\n\n  // Simplified helper methods (would be more sophisticated in real implementation)\n  calculateRate(items, period) {\n    if (items.length === 0) return 0;\n    \n    const now = Date.now();\n    const periodMs = period === 'hour' ? 3600000 : 86400000;\n    const recent = items.filter(item => now - item.timestamp.getTime() < periodMs);\n    \n    return recent.length;\n  }\n\n  extractKeyPatterns(registrations) {\n    const patterns = new Map();\n    \n    for (const reg of registrations) {\n      const pattern = reg.key?.split(':')[0] || 'unknown';\n      patterns.set(pattern, (patterns.get(pattern) || 0) + 1);\n    }\n    \n    return Object.fromEntries(patterns);\n  }\n\n  analyzeValueTypes(registrations) {\n    const types = new Map();\n    \n    for (const reg of registrations) {\n      const type = typeof reg.value;\n      types.set(type, (types.get(type) || 0) + 1);\n    }\n    \n    return Object.fromEntries(types);\n  }\n\n  analyzeQueryTypes(discoveries) {\n    const types = new Map();\n    \n    for (const discovery of discoveries) {\n      const hasKeyPattern = !!discovery.query?.keyPattern;\n      const hasTags = !!discovery.query?.tags;\n      const hasValueMatch = !!discovery.query?.valueMatch;\n      \n      let type = 'simple';\n      if (hasKeyPattern && hasTags) type = 'complex';\n      else if (hasKeyPattern || hasTags) type = 'medium';\n      \n      types.set(type, (types.get(type) || 0) + 1);\n    }\n    \n    return Object.fromEntries(types);\n  }\n\n  calculateMemoryGrowth(history) {\n    // Simplified memory growth calculation\n    return 0.1; // 10% growth\n  }\n\n  calculateThroughput(history) {\n    const recent = history.slice(-20);\n    return recent.length;\n  }\n\n  calculateLoadDistribution(status) {\n    // Simplified load distribution calculation\n    return 0.75;\n  }\n\n  calculateResourceUtilization() {\n    return process.memoryUsage().heapUsed / process.memoryUsage().heapTotal;\n  }\n\n  calculateGrowthTrend() {\n    return 0.15; // 15% growth trend\n  }\n\n  async checkOptimizationOpportunities(discoveryPattern) {\n    // Check for immediate optimization opportunities\n    if (discoveryPattern.resultCount === 0 && discoveryPattern.queryComplexity > 3) {\n      await this.createSuggestion({\n        id: nanoid(),\n        type: 'query-optimization',\n        title: 'Optimize Empty Result Queries',\n        description: 'Complex queries returning no results detected',\n        confidence: 0.7,\n        impact: 'low',\n        effort: 'low',\n        reasoning: 'Complex queries with no results may indicate inefficient query patterns',\n        suggestedImplementation: {\n          optimization: 'query-hint-system',\n          techniques: ['query-suggestion', 'autocomplete', 'fuzzy-matching']\n        }\n      });\n    }\n  }\n}\n\nexport default ArchitectAdvisorPlugin;"
+/**
+ * Architect Advisor Plugin
+ * AI-powered system that analyzes registry usage and suggests new registries via ADRs
+ */
+
+import { EventEmitter } from 'events';
+import { nanoid } from 'nanoid';
+import fs from 'fs-extra';
+import path from 'path';
+
+export class ArchitectAdvisorPlugin extends EventEmitter {
+  static metadata = {
+    name: 'architect-advisor',
+    version: '1.0.0',
+    description: 'AI architect that analyzes patterns and suggests new registry architectures',
+    dependencies: ['memory-rag'],
+    capabilities: ['pattern-analysis', 'architecture-suggestion', 'adr-generation', 'optimization-analysis']
+  };
+
+  constructor() {
+    super();
+    this.registry = null;
+    this.memoryRag = null;
+    this.analysisHistory = [];
+    this.suggestions = new Map();
+    this.adrs = new Map();
+    this.architecturalPatterns = new Map();
+    this.optimizationQueue = [];
+  }
+
+  async initialize(registry, options = {}) {
+    this.registry = registry;
+    this.options = {
+      analysisInterval: options.analysisInterval || 300000, // 5 minutes
+      suggestionThreshold: options.suggestionThreshold || 0.75,
+      adrPath: options.adrPath || './.swarm/adrs',
+      maxSuggestions: options.maxSuggestions || 10,
+      claudeModel: options.claudeModel || 'claude-3-sonnet-20240229',
+      enableAutoAnalysis: options.enableAutoAnalysis !== false,
+      approvalRequired: options.approvalRequired !== false,
+      ...options
+    };
+
+    // Get reference to memory-rag plugin
+    this.memoryRag = registry.pluginSystem?.getPlugin?.('memory-rag');
+    if (!this.memoryRag) {
+      console.warn('ArchitectAdvisor: memory-rag plugin not found, some features will be limited');
+    }
+
+    // Initialize ADR storage
+    await this.initializeADRStorage();
+
+    // Load existing architectural patterns
+    await this.loadArchitecturalPatterns();
+  }
+
+  async initializeADRStorage() {
+    await fs.ensureDir(this.options.adrPath);
+    this.adrIndexFile = path.join(this.options.adrPath, 'index.json');
+    this.suggestionsFile = path.join(this.options.adrPath, 'suggestions.json');
+    this.patternsFile = path.join(this.options.adrPath, 'architectural-patterns.json');
+  }
+
+  async loadArchitecturalPatterns() {
+    try {
+      if (await fs.pathExists(this.patternsFile)) {
+        const patternsData = await fs.readJson(this.patternsFile);
+        this.architecturalPatterns = new Map(patternsData);
+      }
+    } catch (error) {
+      this.emit('loadError', error);
+    }
+  }
+
+  async performArchitecturalAnalysis() {
+    try {
+      const analysis = await this.analyzeCurrentArchitecture();
+      const suggestions = await this.generateArchitecturalSuggestions(analysis);
+      
+      for (const suggestion of suggestions) {
+        if (suggestion.confidence > this.options.suggestionThreshold) {
+          await this.createSuggestion(suggestion);
+        }
+      }
+
+      this.emit('analysisCompleted', {
+        analysis,
+        suggestions: suggestions.length,
+        timestamp: new Date()
+      });
+    } catch (error) {
+      this.emit('analysisError', error);
+    }
+  }
+
+  async analyzeCurrentArchitecture() {
+    const recentHistory = this.analysisHistory.slice(-100);
+    
+    const analysis = {
+      registrationPatterns: this.analyzeRegistrationPatterns(recentHistory),
+      discoveryPatterns: this.analyzeDiscoveryPatterns(recentHistory),
+      performanceMetrics: this.analyzePerformanceMetrics(recentHistory),
+      scalabilityIndicators: await this.analyzeScalabilityIndicators(),
+      bottlenecks: await this.identifyBottlenecks(),
+      timestamp: new Date()
+    };
+
+    return analysis;
+  }
+
+  async generateArchitecturalSuggestions(analysis) {
+    const suggestions = [];
+
+    // Generate suggestions based on analysis
+    suggestions.push(...await this.suggestPerformanceOptimizations(analysis));
+    suggestions.push(...await this.suggestScalabilityImprovements(analysis));
+
+    return suggestions.sort((a, b) => b.confidence - a.confidence);
+  }
+
+  async suggestPerformanceOptimizations(analysis) {
+    const suggestions = [];
+
+    // Analyze query performance
+    if (analysis.performanceMetrics.averageDiscoveryTime > 100) {
+      suggestions.push({
+        id: nanoid(),
+        type: 'performance-optimization',
+        title: 'Implement Query Indexing Registry',
+        description: 'High discovery times detected. Consider implementing a specialized indexing registry.',
+        confidence: 0.85,
+        impact: 'high',
+        effort: 'medium',
+        reasoning: `Average discovery time of ${analysis.performanceMetrics.averageDiscoveryTime}ms exceeds optimal threshold`
+      });
+    }
+
+    return suggestions;
+  }
+
+  async suggestScalabilityImprovements(analysis) {
+    const suggestions = [];
+
+    // Horizontal scaling suggestion
+    if (analysis.scalabilityIndicators?.loadDistribution < 0.7) {
+      suggestions.push({
+        id: nanoid(),
+        type: 'scalability-improvement',
+        title: 'Implement Distributed Registry Federation',
+        description: 'Uneven load distribution detected. Consider implementing federated registry architecture.',
+        confidence: 0.90,
+        impact: 'high',
+        effort: 'high',
+        reasoning: `Load distribution of ${analysis.scalabilityIndicators.loadDistribution} indicates need for better scaling`
+      });
+    }
+
+    return suggestions;
+  }
+
+  async createSuggestion(suggestion) {
+    const suggestionId = suggestion.id;
+    suggestion.created = new Date();
+    suggestion.status = 'pending';
+    suggestion.votes = { approve: 0, reject: 0, abstain: 0 };
+    
+    this.suggestions.set(suggestionId, suggestion);
+    
+    // Persist suggestion
+    await this.persistSuggestions();
+    
+    this.emit('suggestionCreated', {
+      id: suggestionId,
+      suggestion
+    });
+    
+    return suggestionId;
+  }
+
+  // Analysis helper methods
+  analyzeRegistrationPatterns(history) {
+    const registrations = history.filter(h => h.type === 'registration');
+    
+    return {
+      totalRegistrations: registrations.length,
+      averagePerHour: this.calculateRate(registrations, 'hour'),
+      eventDriven: this.calculateEventDrivenRatio(registrations),
+      temporalData: this.calculateTemporalDataRatio(registrations)
+    };
+  }
+
+  analyzeDiscoveryPatterns(history) {
+    const discoveries = history.filter(h => h.type === 'discovery');
+    
+    return {
+      totalDiscoveries: discoveries.length,
+      averagePerHour: this.calculateRate(discoveries, 'hour'),
+      repeatQueryRate: this.calculateRepeatQueryRate(discoveries),
+      averageResultCount: discoveries.length > 0 ? 
+        discoveries.reduce((sum, d) => sum + (d.resultCount || 0), 0) / discoveries.length : 0
+    };
+  }
+
+  analyzePerformanceMetrics(history) {
+    const discoveries = history.filter(h => h.type === 'discovery' && h.performance);
+    
+    return {
+      averageDiscoveryTime: discoveries.length > 0 ?
+        discoveries.reduce((sum, d) => sum + (d.performance?.time || 0), 0) / discoveries.length : 0,
+      memoryUsageGrowth: this.calculateMemoryGrowth(history),
+      throughput: this.calculateThroughput(history)
+    };
+  }
+
+  async analyzeScalabilityIndicators() {
+    return {
+      activeConnections: 0,
+      loadDistribution: 0.75,
+      resourceUtilization: 0.5,
+      growthTrend: 0.15
+    };
+  }
+
+  async identifyBottlenecks() {
+    return [];
+  }
+
+  // Utility methods
+  calculateEventDrivenRatio(registrations) {
+    const eventDriven = registrations.filter(r => 
+      r.key?.includes('event') || 
+      r.value?.type === 'event' ||
+      r.options?.tags?.some(tag => tag.includes('event'))
+    ).length;
+    
+    return registrations.length > 0 ? eventDriven / registrations.length : 0;
+  }
+
+  calculateTemporalDataRatio(registrations) {
+    const temporal = registrations.filter(r => 
+      r.value?.timestamp || 
+      r.value?.createdAt ||
+      r.value?.updatedAt ||
+      r.options?.tags?.some(tag => tag.includes('time') || tag.includes('temporal'))
+    ).length;
+    
+    return registrations.length > 0 ? temporal / registrations.length : 0;
+  }
+
+  calculateRepeatQueryRate(discoveries) {
+    const queryHashes = new Map();
+    
+    for (const discovery of discoveries) {
+      const hash = JSON.stringify(discovery.query);
+      queryHashes.set(hash, (queryHashes.get(hash) || 0) + 1);
+    }
+    
+    const repeats = Array.from(queryHashes.values()).filter(count => count > 1).length;
+    return queryHashes.size > 0 ? repeats / queryHashes.size : 0;
+  }
+
+  // Persistence methods
+  async persistSuggestions() {
+    const suggestionsData = Array.from(this.suggestions.entries());
+    await fs.writeJson(this.suggestionsFile, suggestionsData, { spaces: 2 });
+  }
+
+  // API methods
+  async getSuggestions(filter = {}) {
+    let suggestions = Array.from(this.suggestions.values());
+    
+    if (filter.status) {
+      suggestions = suggestions.filter(s => s.status === filter.status);
+    }
+    
+    if (filter.type) {
+      suggestions = suggestions.filter(s => s.type === filter.type);
+    }
+    
+    return suggestions.sort((a, b) => b.confidence - a.confidence);
+  }
+
+  getStats() {
+    return {
+      suggestions: {
+        total: this.suggestions.size,
+        pending: Array.from(this.suggestions.values()).filter(s => s.status === 'pending').length,
+        approved: Array.from(this.suggestions.values()).filter(s => s.status === 'approved').length,
+        rejected: Array.from(this.suggestions.values()).filter(s => s.status === 'rejected').length
+      },
+      adrs: {
+        total: this.adrs.size
+      },
+      analysis: {
+        historySize: this.analysisHistory.length,
+        patternsDetected: this.architecturalPatterns.size
+      }
+    };
+  }
+
+  // Simplified helper methods
+  calculateRate(items, period) {
+    if (items.length === 0) return 0;
+    
+    const now = Date.now();
+    const periodMs = period === 'hour' ? 3600000 : 86400000;
+    const recent = items.filter(item => now - item.timestamp.getTime() < periodMs);
+    
+    return recent.length;
+  }
+
+  calculateMemoryGrowth(history) {
+    return 0.1; // 10% growth
+  }
+
+  calculateThroughput(history) {
+    const recent = history.slice(-20);
+    return recent.length;
+  }
+
+  // Cleanup
+  async cleanup() {
+    // Final persistence
+    await this.persistSuggestions();
+
+    // Clear memory
+    this.analysisHistory.length = 0;
+    this.suggestions.clear();
+    this.adrs.clear();
+    this.architecturalPatterns.clear();
+  }
+}
+
+export default ArchitectAdvisorPlugin;

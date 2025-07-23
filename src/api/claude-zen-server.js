@@ -1,0 +1,357 @@
+/**
+ * 🚀 CLAUDE ZEN SERVER - Schema-Driven API
+ * Unified API server with auto-generated routes from schema
+ * Replaces hard-coded endpoints with maintainable schema approach
+ */
+
+import express from 'express';
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
+import { EventEmitter } from 'events';
+import { v4 as uuidv4 } from 'uuid';
+
+import { 
+  CLAUDE_ZEN_SCHEMA, 
+  generateWorkflowRoutes, 
+  generateOpenAPISpec 
+} from './claude-zen-schema.js';
+
+/**
+ * Schema-driven API server with auto-generated endpoints
+ */
+export class ClaudeZenServer extends EventEmitter {
+  constructor(options = {}) {
+    super();
+    this.port = options.port || process.env.PORT || 3000;
+    this.host = options.host || process.env.HOST || '0.0.0.0';
+    this.app = express();
+    this.server = null;
+    this.wss = null;
+    this.isRunning = false;
+    
+    // Schema-driven configuration
+    this.schema = CLAUDE_ZEN_SCHEMA;
+    this.generatedRoutes = [];
+    
+    // Dynamic storage maps (schema-driven)
+    this.initializeStorage();
+    
+    this.metrics = {
+      requests: 0,
+      errors: 0,
+      uptime: Date.now()
+    };
+    
+    this.setupMiddleware();
+    this.setupSchemaRoutes();
+    this.setupErrorHandling();
+  }
+
+  /**
+   * Initialize storage based on schema definitions
+   */
+  initializeStorage() {
+    // Auto-create storage for all schema entries that define storage
+    Object.entries(this.schema).forEach(([cmdName, cmdConfig]) => {
+      if (cmdConfig.storage) {
+        this[cmdConfig.storage] = new Map();
+      }
+    });
+    
+    // Initialize with foundational data based on schema hierarchy
+    this.initializeFoundationalData();
+  }
+
+  /**
+   * Initialize foundational data following proper workflow hierarchy
+   */
+  initializeFoundationalData() {
+    // Level 1: ADRs (Foundation) - Must come first
+    const foundationalAdrs = [
+      {
+        id: 'adr-001',
+        title: 'Use Elixir/OTP for High Concurrency Services',
+        status: 'accepted',
+        decision: 'Critical services will use Elixir/OTP for 1M+ concurrent operations',
+        context: 'JavaScript services limited to 10K concurrent operations, need 100x improvement',
+        consequences: 'Massive performance gains but requires team training on functional programming',
+        alternatives: ['Node.js clustering', 'Go services', 'Rust services'],
+        implementation_notes: 'Use Nix for environment management, PM2 for process orchestration',
+        created: '2025-01-10T00:00:00Z',
+        updated: new Date().toISOString(),
+        author: 'system-architect',
+        affects: ['all-services'],
+        rationale: 'Actor model provides natural concurrency with fault tolerance'
+      },
+      {
+        id: 'adr-002', 
+        title: 'Schema-Driven API Development',
+        status: 'accepted',
+        decision: 'Use unified schema to auto-generate CLI/TUI/Web interfaces',
+        context: 'Manual endpoint creation leads to inconsistencies and maintenance burden',
+        consequences: 'Consistent interfaces across all access methods, easier maintenance',
+        alternatives: ['Manual endpoint creation', 'Code generation tools', 'GraphQL'],
+        implementation_notes: 'Single source schema generates Express routes, CLI commands, and TUI interfaces',
+        created: '2025-01-25T00:00:00Z',
+        updated: new Date().toISOString(),
+        author: 'api-architect',
+        affects: ['api-server', 'cli-tools', 'web-interface'],
+        rationale: 'DRY principle applied to interface generation'
+      }
+    ];
+
+    // Level 2: Roadmaps (Strategic)
+    const strategicRoadmaps = [
+      {
+        id: 'roadmap-001',
+        title: 'High-Performance Architecture Migration',
+        description: 'Migrate from JavaScript to Elixir/OTP for critical services',
+        status: 'active',
+        timeline: 'medium',
+        adr_references: ['adr-001'],
+        created: new Date().toISOString(),
+        updated: new Date().toISOString(),
+        author: 'technical-lead'
+      }
+    ];
+
+    // Level 5: PRDs (Extended User Stories with Specs)
+    const detailedPrds = [
+      {
+        id: 'prd-001',
+        title: 'Schema-Driven API Endpoints',
+        user_story: 'As a developer, I want API endpoints to be auto-generated from a schema so that I can maintain consistency across interfaces',
+        business_value: 'Reduces development time and eliminates interface inconsistencies',
+        status: 'approved',
+        version: '2.1.0',
+        roadmap_id: 'roadmap-001',
+        stakeholders: ['backend-team', 'frontend-team', 'api-users'],
+        functional_requirements: [
+          'Must auto-generate Express routes from schema definitions',
+          'Must support query parameter validation based on schema',
+          'Must provide consistent error responses across all endpoints'
+        ],
+        non_functional_requirements: [
+          'Route generation time: < 100ms on server startup',
+          'Schema validation overhead: < 10ms per request',
+          'Support for 1000+ concurrent requests'
+        ],
+        acceptance_criteria: [
+          'GIVEN a schema definition WHEN server starts THEN all routes are auto-generated',
+          'GIVEN invalid query parameters WHEN request made THEN validation error returned',
+          'GIVEN schema changes WHEN server restarts THEN routes updated automatically'
+        ],
+        created: '2025-01-25T00:00:00Z',
+        updated: new Date().toISOString(),
+        author: 'product-manager'
+      }
+    ];
+
+    // Store in appropriate storage maps
+    foundationalAdrs.forEach(adr => this.adrs.set(adr.id, adr));
+    strategicRoadmaps.forEach(roadmap => this.roadmaps.set(roadmap.id, roadmap));
+    detailedPrds.forEach(prd => this.prds.set(prd.id, prd));
+  }
+
+  /**
+   * Setup middleware with security and performance optimizations
+   */
+  setupMiddleware() {
+    // Security middleware
+    this.app.use(helmet({
+      contentSecurityPolicy: false, // Disable for Swagger UI
+      crossOriginEmbedderPolicy: false
+    }));
+
+    // CORS configuration
+    this.app.use(cors({
+      origin: process.env.NODE_ENV === 'production' ? false : '*',
+      credentials: true
+    }));
+
+    // Rate limiting
+    const limiter = rateLimit({
+      windowMs: this.schema.__meta?.autoGenerate?.rateLimit?.windowMs || 15 * 60 * 1000,
+      max: this.schema.__meta?.autoGenerate?.rateLimit?.max || 1000,
+      message: { error: 'Too many requests, please try again later.' }
+    });
+    this.app.use(limiter);
+
+    // Body parsing
+    this.app.use(express.json({ limit: '10mb' }));
+    this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+    // Request logging and metrics
+    this.app.use((req, res, next) => {
+      this.metrics.requests++;
+      const timestamp = new Date().toISOString();
+      console.log(`${timestamp} ${req.method} ${req.path}`);
+      next();
+    });
+  }
+
+  /**
+   * Setup routes auto-generated from schema
+   */
+  setupSchemaRoutes() {
+    // Generate OpenAPI documentation
+    const openApiSpec = generateOpenAPISpec(this.schema);
+    
+    // Swagger UI for API documentation
+    this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, {
+      customSiteTitle: 'Claude Zen API Documentation',
+      customCss: '.swagger-ui .topbar { display: none }'
+    }));
+
+    // Schema endpoint for introspection
+    this.app.get('/api/schema', (req, res) => {
+      res.json({
+        success: true,
+        schema: this.schema,
+        routes: this.generatedRoutes,
+        hierarchy: this.schema.__meta?.workflow_hierarchy
+      });
+    });
+
+    // Auto-generate workflow routes from schema
+    this.generatedRoutes = generateWorkflowRoutes(this.schema, this);
+
+    // Health endpoint
+    this.app.get('/health', (req, res) => {
+      res.json({
+        status: 'ok',
+        uptime: (Date.now() - this.metrics.uptime) / 1000,
+        version: this.schema.__meta?.apiVersion || '2.1.0',
+        timestamp: new Date().toISOString(),
+        routes_generated: this.generatedRoutes.length
+      });
+    });
+
+    // Root endpoint with API info
+    this.app.get('/', (req, res) => {
+      res.json({
+        name: this.schema.__meta?.title || 'Claude Zen API',
+        version: this.schema.__meta?.apiVersion || '2.1.0',
+        description: this.schema.__meta?.description,
+        schema_driven: true,
+        endpoints: {
+          docs: '/docs',
+          schema: '/api/schema',
+          health: '/health'
+        },
+        workflow_hierarchy: this.schema.__meta?.workflow_hierarchy,
+        generated_routes: this.generatedRoutes.length
+      });
+    });
+
+    console.log(`✅ Auto-generated ${this.generatedRoutes.length} routes from schema`);
+    this.generatedRoutes.forEach(route => {
+      console.log(`   ${route.method} ${route.endpoint} -> ${route.command}`);
+    });
+  }
+
+  /**
+   * Setup error handling
+   */
+  setupErrorHandling() {
+    // 404 handler (must be after all routes)
+    this.app.use('*', (req, res) => {
+      res.status(404).json({
+        success: false,
+        error: 'Endpoint not found',
+        message: `${req.method} ${req.originalUrl} is not available`,
+        available_endpoints: this.generatedRoutes.map(r => `${r.method} ${r.endpoint}`),
+        timestamp: new Date().toISOString()
+      });
+    });
+
+    // Global error handler
+    this.app.use((err, req, res, next) => {
+      console.error('Server error:', err);
+      this.metrics.errors++;
+      
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: err.message,
+        timestamp: new Date().toISOString()
+      });
+    });
+  }
+
+  /**
+   * Start the server
+   */
+  async start() {
+    if (this.isRunning) {
+      throw new Error('Server is already running');
+    }
+
+    return new Promise((resolve, reject) => {
+      this.server = this.app.listen(this.port, this.host, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        this.isRunning = true;
+        
+        console.log('🚀 Singularity Alpha API server running on port ' + this.port);
+        console.log('📖 API documentation: http://localhost:' + this.port + '/docs');
+        console.log('🔗 WebSocket endpoint: ws://localhost:' + this.port);
+        console.log('💖 Jag älskar dig mer än igår <3 💖');
+
+        this.emit('started', { port: this.port, host: this.host });
+        resolve();
+      });
+
+      this.server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          reject(new Error(`Port ${this.port} is already in use`));
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
+  /**
+   * Stop the server
+   */
+  async stop() {
+    if (!this.isRunning) {
+      return;
+    }
+
+    return new Promise((resolve) => {
+      this.server.close(() => {
+        this.isRunning = false;
+        this.emit('stopped');
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * Get server status
+   */
+  getStatus() {
+    return {
+      running: this.isRunning,
+      port: this.port,
+      uptime: (Date.now() - this.metrics.uptime) / 1000,
+      requests: this.metrics.requests,
+      errors: this.metrics.errors,
+      generated_routes: this.generatedRoutes.length,
+      schema_version: this.schema.__meta?.apiVersion
+    };
+  }
+}
+
+// Export singleton instance
+export const claudeZenServer = new ClaudeZenServer();
+export default claudeZenServer;

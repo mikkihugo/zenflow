@@ -29,8 +29,6 @@ export class ConfigValidator {
 
       // Read and parse JSON
       const content = await node.readTextFile(roomodesPath);
-      
-      const content = await node.readTextFile(roomodesPath);
 
       try {
         const config = JSON.parse(content);
@@ -126,8 +124,6 @@ export class ConfigValidator {
 
     try {
       const content = await node.readTextFile(memoryDataPath);
-      
-      const content = await node.readTextFile(memoryDataPath);
 
       try {
         const data = JSON.parse(content);
@@ -208,8 +204,6 @@ export class ConfigValidator {
 
     try {
       const stat = await node.stat(executablePath);
-      
-      const stat = await node.stat(executablePath);
 
       if (!stat.isFile) {
         result.success = false;
@@ -226,8 +220,6 @@ export class ConfigValidator {
       }
 
       // Read and validate content
-      const content = await node.readTextFile(executablePath);
-      
       const content = await node.readTextFile(executablePath);
 
       // Check for required elements

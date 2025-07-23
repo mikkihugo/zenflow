@@ -104,7 +104,7 @@ const mockVisions = {
   complex: {
     id: 'vision_complex_001',
     title: 'Multi-tenant SaaS Platform',
-    description: 'Complete SaaS platform with tenant isolation, billing, API gateway, and microservices architecture',
+    description: 'Complete SaaS platform with tenant isolation, billing, API gateway, and unified architecture',
     stakeholder: 'engineering_team',
     priority: 'critical',
     complexity: 'complex',

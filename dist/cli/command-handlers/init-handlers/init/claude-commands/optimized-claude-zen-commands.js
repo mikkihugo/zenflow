@@ -263,7 +263,7 @@ The memory system provides persistent storage for cross-session and cross-agent 
 ./claude-zen memory store "key" "value"
 
 # Store with specific namespace
-./claude-zen memory store "architecture_decisions" "microservices with API gateway" --namespace arch
+./claude-zen memory store "architecture_decisions" "modular architecture with unified API" --namespace arch
 \`\`\`
 
 ### Batch Storage (Optimized)

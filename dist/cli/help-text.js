@@ -20,7 +20,7 @@ USAGE:
 
 🚀 QUICK START:
   # First time setup (creates CLAUDE.md & .claude/commands)
-  npx claude-zen@alpha init --sparc
+  claude-zen init                 # Initialize with enhanced features
   
   # 🐝 HIVE MIND QUICK START (NEW!):
   claude-zen hive-mind wizard          # Interactive setup wizard
@@ -227,7 +227,7 @@ OPTIONS:
   --verbose               Detailed output
 
 EXAMPLES:
-  claude-zen memory store architecture "microservices pattern"
+  claude-zen memory store architecture "modular pattern"
   claude-zen memory get architecture
   claude-zen memory query "API design"
   claude-zen memory stats

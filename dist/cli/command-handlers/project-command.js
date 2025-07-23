@@ -68,7 +68,7 @@ export async function projectCommand(args, flags) {
 
           printSuccess('Available projects:');
           const projects = [
-            { name: 'microservices-platform', status: 'active', agents: 12, tasks: 45 },
+            { name: 'unified-platform', status: 'active', agents: 12, tasks: 45 },
             { name: 'ai-research', status: 'idle', agents: 3, tasks: 8 },
             { name: 'frontend-apps', status: 'archived', agents: 0, tasks: 0 },
           ];
@@ -229,9 +229,9 @@ export async function projectCommand(args, flags) {
           console.log('  federation - Manage project federations');
           console.log('\nExamples:');
           console.log(
-            '  project create "microservices" --isolation strict --resource-quota "agents:15,memory:4GB"',
+            '  project create "unified-app" --isolation strict --resource-quota "agents:15,memory:4GB"',
           );
-          console.log('  project switch "microservices"');
+          console.log('  project switch "unified-app"');
           console.log('  project monitor "microservices" --real-time');
       }
 }

@@ -2,6 +2,7 @@
 
 // Node.js compatible import
 import fs from 'fs';
+import * as node from 'fs/promises';
 
 // Polyfill for node's ensureDirSync
 
@@ -167,11 +168,14 @@ export class BackupManager {
     try {
       await this.ensureBackupDir();
       
+      const entries = await node.readDir(this.backupDir);
+      for (const entry of entries) {
         if (entry.isDirectory) {
           try {
             const metadataPath = `${this.backupDir}/${entry.name}/metadata.json`;
             const manifestPath = `${this.backupDir}/${entry.name}/manifest.json`;
             
+            const metadata = JSON.parse(await node.readTextFile(metadataPath));
             const manifest = JSON.parse(await node.readTextFile(manifestPath));
 
             backups.push({
@@ -355,10 +359,10 @@ export class BackupManager {
 
       // Ensure destination directory exists
       const destDir = destPath.split('/').slice(0, -1).join('/');
-      
+      await node.mkdir(destDir, { recursive: true });
 
       // Copy file
-      
+      await node.copyFile(sourcePath, destPath);
 
       // Get file info
       const stat = await node.stat(sourcePath);
@@ -387,7 +391,7 @@ export class BackupManager {
       const destPath = `${backupPath}/${relativePath}`;
 
       // Create destination directory
-      
+      await node.mkdir(destPath, { recursive: true });
 
       // Copy directory contents recursively
       await this.copyDirectoryRecursive(sourcePath, destPath);
@@ -409,6 +413,7 @@ export class BackupManager {
       const sourcePath = `${source}/${entry.name}`;
       const destPath = `${dest}/${entry.name}`;
 
+      if (entry.isFile) {
         await node.copyFile(sourcePath, destPath);
       } else if (entry.isDirectory) {
         await this.copyDirectoryRecursive(sourcePath, destPath);
@@ -427,9 +432,10 @@ export class BackupManager {
 
       // Ensure destination directory exists
       const destDir = destPath.split('/').slice(0, -1).join('/');
-      
+      await node.mkdir(destDir, { recursive: true });
 
       // Copy file back
+      await node.copyFile(sourcePath, destPath);
 
     } catch (error) {
       result.success = false;
@@ -456,7 +462,7 @@ export class BackupManager {
       }
 
       // Create destination directory
-      
+      await node.mkdir(destPath, { recursive: true });
 
       // Copy directory contents back
       await this.copyDirectoryRecursive(sourcePath, destPath);
@@ -474,7 +480,7 @@ export class BackupManager {
     try {
       for await (const entry of node.readDir(backupPath)) {
         const entryPath = `${backupPath}/${entry.name}`;
-        
+        const stat = await node.stat(entryPath);
 
         if (stat.isFile) {
           totalSize += stat.size;

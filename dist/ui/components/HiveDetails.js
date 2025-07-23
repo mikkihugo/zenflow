@@ -1,50 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Text } from 'ink';
-import Database from 'better-sqlite3';
 
-const HiveDetails = ({ hive }) => {
-  const [stats, setStats] = useState(null);
-  const [error, setError] = useState(null);
+const HiveDetails = ({ hive, hiveName }) => {
+  if (!hive) {
+    return React.createElement(Box, { padding: 1, flexDirection: "column" },
+      React.createElement(Text, { color: "red" }, "❌ Failed to load hive details"),
+      React.createElement(Box, { justifyContent: "center", marginTop: 1 },
+        React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+      )
+    );
+  }
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const db = new Database(hive.path);
-        const result = db.prepare(`
-          SELECT
-            (SELECT COUNT(*) FROM visions) as totalVisions,
-            (SELECT COUNT(*) FROM epics) as totalEpics,
-            (SELECT COUNT(*) FROM features) as totalFeatures,
-            (SELECT COUNT(*) FROM prds) as totalPrds,
-            (SELECT COUNT(*) FROM user_stories) as totalUserStories,
-            (SELECT COUNT(*) FROM tasks) as totalTasks
-        `).get();
-        setStats(result);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchStats();
-  }, [hive.path]);
+  const stats = hive.stats || {};
+  const error = hive.error;
 
-  return (
-    <Box borderStyle="round" padding={2} flexDirection="column">
-      <Text bold>Hive Details: {hive.name}</Text>
-      <Text>Path: {hive.path}</Text>
-      {error && <Text color="red">Error: {error}</Text>}
-      {stats ? (
-        <Box flexDirection="column" marginTop={1}>
-          <Text>Visions: {stats.totalVisions}</Text>
-          <Text>Epics: {stats.totalEpics}</Text>
-          <Text>Features: {stats.totalFeatures}</Text>
-          <Text>PRDs: {stats.totalPrds}</Text>
-          <Text>User Stories: {stats.totalUserStories}</Text>
-          <Text>Tasks: {stats.totalTasks}</Text>
-        </Box>
-      ) : (
-        <Text>Loading stats...</Text>
-      )}
-    </Box>
+  const totalItems = (stats.totalVisions || 0) + (stats.totalEpics || 0) + 
+                     (stats.totalFeatures || 0) + (stats.totalPrds || 0) + 
+                     (stats.totalUserStories || 0) + (stats.totalTasks || 0);
+
+  return React.createElement(Box, { borderStyle: "round", padding: 2, flexDirection: "column" },
+    React.createElement(Text, { bold: true, color: "cyan" }, `🐝 Service Details: ${hiveName || 'Unknown'}`),
+    React.createElement(Text, { color: "gray" }, `Path: ${hive.path || 'Not specified'}`),
+    React.createElement(Box, { justifyContent: "center", marginTop: 1 },
+      React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+    ),
+    
+    error && React.createElement(Box, { marginTop: 1 },
+      React.createElement(Text, { color: "red" }, `❌ Error: ${error}`)
+    ),
+    
+    React.createElement(Box, { flexDirection: "column", marginTop: 1 },
+      React.createElement(Text, { bold: true, color: "yellow" }, "📊 Statistics:"),
+      
+      React.createElement(Box, { flexDirection: "row", marginTop: 1 },
+        React.createElement(Box, { flexDirection: "column", width: 30 },
+          React.createElement(Text, null, "🎯 Visions: ", React.createElement(Text, { color: "green" }, stats.totalVisions || 0)),
+          React.createElement(Text, null, "📚 Epics: ", React.createElement(Text, { color: "blue" }, stats.totalEpics || 0)),
+          React.createElement(Text, null, "⚡ Features: ", React.createElement(Text, { color: "magenta" }, stats.totalFeatures || 0))
+        ),
+        
+        React.createElement(Box, { flexDirection: "column", width: 30 },
+          React.createElement(Text, null, "📋 PRDs: ", React.createElement(Text, { color: "cyan" }, stats.totalPrds || 0)),
+          React.createElement(Text, null, "👤 User Stories: ", React.createElement(Text, { color: "yellow" }, stats.totalUserStories || 0)),
+          React.createElement(Text, null, "✅ Tasks: ", React.createElement(Text, { color: "green" }, stats.totalTasks || 0))
+        )
+      ),
+      
+      React.createElement(Box, { marginTop: 2 },
+        React.createElement(Text, { color: "gray" }, `Total Items: ${totalItems}`)
+      )
+    )
   );
 };
 

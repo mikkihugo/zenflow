@@ -89,7 +89,7 @@ export function demonstrateTimezonefix() {
   console.log(`⏰ UTC offset: ${tz.offset > 0 ? '+' : ''}${tz.offset} hours\n`);
 
   // Create sample session
-  const session = createSessionWithProperTimezone('Build microservices API', {
+  const session = createSessionWithProperTimezone('Build scalable application', {
     queenType: 'strategic',
     maxWorkers: 6,
   });

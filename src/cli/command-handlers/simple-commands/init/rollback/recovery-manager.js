@@ -350,8 +350,6 @@ export class RecoveryManager {
         if (node.build.os !== 'windows') {
           try {
             const command = new node.Command('chmod', {
-              args: ['+x', executablePath]
-            const command = new node.Command('chmod', {
               args: ['+x', executablePath],
             });
             await command.output();

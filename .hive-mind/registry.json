@@ -1,1 +1,8 @@
-{}
+{
+  "test-service": {
+    "path": "/home/mhugo/code/claude-code-flow/services/test-service/.hive/test-service.db"
+  },
+  "test-hive": {
+    "path": "/home/mhugo/code/claude-code-flow/services/test-hive/.hive/test-hive.db"
+  }
+}

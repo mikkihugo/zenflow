@@ -2,7 +2,15 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import Database from 'better-sqlite3';
+import { MetaRegistryManager } from '../../../../coordination/meta-registry/meta-manager.js';
+import MetaRegistry from '../../../../coordination/meta-registry/index.js';
+import MemoryBackend from '../../../../coordination/meta-registry/backends/memory-backend.js';
+import HierarchicalTaskManagerPlugin from '../../../../coordination/meta-registry/plugins/hierarchical-task-manager.js';
+import ArchitectAdvisorPlugin from '../../../../coordination/meta-registry/plugins/architect-advisor.js';
+import MemoryRAGPlugin from '../../../../coordination/meta-registry/plugins/memory-rag.js';
+import PortDiscoveryPlugin from '../../../../coordination/meta-registry/plugins/port-discovery.js';
+import PubSubPlugin from '../../../../coordination/meta-registry/plugins/pubsub.js';
+import NATTraversalPlugin from '../../../../coordination/meta-registry/plugins/nat-traversal.js';
 import { printSuccess, printError } from '../../../utils.js';
 
 /**
@@ -72,18 +80,36 @@ This project uses Claude Flow v2.0.0 for enhanced development workflows.
     const dbPath = path.join(hiveMindDir, 'hive.db');
     
     try {
-      // Create the database with proper schema
+      // Initialize Meta Registry Manager
+      const manager = new MetaRegistryManager();
+      await manager.initialize();
+
+      // Create a default registry (e.g., in-memory for quick start)
+      const registry = await manager.createRegistry('default', new MemoryBackend());
+
+      // Register core plugins
+      await registry.use('hierarchical-task-manager', new HierarchicalTaskManagerPlugin());
+      await registry.use('architect-advisor', new ArchitectAdvisorPlugin());
+      await registry.use('memory-rag', new MemoryRAGPlugin());
+      await registry.use('port-discovery', new PortDiscoveryPlugin());
+      await registry.use('pubsub', new PubSubPlugin());
+      await registry.use('nat-traversal', new NATTraversalPlugin());
+
+      printSuccess('Meta Registry initialized and core plugins registered!');
+
+      // The database creation for these entities is now handled by HierarchicalTaskManagerPlugin
+      // No need for explicit CREATE TABLE statements here for visions, adrs, squads, etc.
+      // The Hive Mind tables (swarms, agents, tasks, collective_memory, consensus_decisions) are still created here.
       const db = new Database(dbPath);
-      
-      // Create hive-mind database tables with corrected schema
       db.exec(`
         CREATE TABLE IF NOT EXISTS swarms (
           id TEXT PRIMARY KEY,
           name TEXT NOT NULL,
           objective TEXT,
-          topology TEXT DEFAULT 'mesh',
+          queen_type TEXT,
           status TEXT DEFAULT 'active',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
         
         CREATE TABLE IF NOT EXISTS agents (
@@ -92,11 +118,10 @@ This project uses Claude Flow v2.0.0 for enhanced development workflows.
           name TEXT NOT NULL,
           type TEXT NOT NULL,
           role TEXT,
+          status TEXT DEFAULT 'idle',
           capabilities TEXT,
-          status TEXT DEFAULT 'active',
-          performance_score REAL DEFAULT 0.5,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (swarm_id) REFERENCES swarms (id)
+          FOREIGN KEY (swarm_id) REFERENCES swarms(id)
         );
         
         CREATE TABLE IF NOT EXISTS tasks (
@@ -120,16 +145,31 @@ This project uses Claude Flow v2.0.0 for enhanced development workflows.
           value TEXT,
           type TEXT DEFAULT 'knowledge',
           confidence REAL DEFAULT 1.0,
+          created_by TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          expires_at DATETIME,
+          accessed_at DATETIME,
+          access_count INTEGER DEFAULT 0,
+          compressed INTEGER DEFAULT 0,
+          size INTEGER DEFAULT 0,
+          FOREIGN KEY (swarm_id) REFERENCES swarms(id)
+        );
+        
+        CREATE TABLE IF NOT EXISTS consensus_decisions (
+          id TEXT PRIMARY KEY,
+          swarm_id TEXT,
+          topic TEXT NOT NULL,
+          decision TEXT,
+          votes TEXT,
+          algorithm TEXT DEFAULT 'majority',
+          confidence REAL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (swarm_id) REFERENCES swarms(id)
         );
       `);
-      
       db.close();
       printSuccess('Hive-mind database initialized successfully!');
     } catch (dbError) {
-      printError(`Warning: Could not initialize hive-mind database: ${dbError.message}`);
+      printError(`Warning: Could not initialize meta-registry or hive-mind database: ${dbError.message}`);
     }
 
     printSuccess('Project initialized successfully!');

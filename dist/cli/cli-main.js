@@ -9,8 +9,10 @@ const cli = meow(`
     $ claude-zen <command> [options]
 
   Commands
-    hive-mind    Queen-led swarms with collective intelligence
-    swarm        (Internal) Multi-agent coordination
+    create       Create new service with persistent coordination
+    list         List all services and their coordination status  
+    swarm        Launch swarm with ruv-swarm coordination
+    spawn        Spawn AI agents with coordination modes
     init         Initialize project with enterprise environment
     start        Start orchestration with swarm intelligence
     status       Comprehensive system status

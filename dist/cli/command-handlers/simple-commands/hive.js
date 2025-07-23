@@ -93,7 +93,7 @@ DESCRIPTION:
   distributed decision-making, and quality-driven execution.
 
 EXAMPLES:
-  claude-zen hive "Build microservices architecture"
+  claude-zen hive "Build a scalable web application"
   claude-zen hive "Optimize database performance" --consensus unanimous
   claude-zen hive "Develop ML pipeline" --topology mesh --monitor
 

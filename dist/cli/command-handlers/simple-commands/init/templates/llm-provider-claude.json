@@ -1,0 +1,34 @@
+{
+  "providers": {
+    "claude": {
+      "enabled": true,
+      "priority": 1,
+      "modelId": "sonnet",
+      "maxTurns": 5,
+      "permissionMode": "default",
+      "customSystemPrompt": "You are an expert AI assistant helping with software development tasks. Focus on providing clear, actionable insights.",
+      "appendSystemPrompt": "Always follow best practices and consider security implications.",
+      "commandSpecific": {
+        "parse-prd": {
+          "maxTurns": 10,
+          "customSystemPrompt": "You are a task breakdown specialist. Analyze requirements and create clear, actionable tasks."
+        },
+        "analyze-complexity": {
+          "maxTurns": 3,
+          "appendSystemPrompt": "Focus on identifying bottlenecks and technical debt."
+        },
+        "expand-task": {
+          "maxTurns": 5,
+          "customSystemPrompt": "Break down tasks into manageable subtasks with clear dependencies."
+        }
+      }
+    },
+    "google": {
+      "apiKey": null,
+      "priority": 2,
+      "modelId": "gemini-2.5-flash-latest"
+    }
+  },
+  "defaultProvider": "claude",
+  "fallbackProvider": "google"
+}

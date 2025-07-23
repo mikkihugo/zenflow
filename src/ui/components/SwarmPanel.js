@@ -1,26 +1,26 @@
 /**
- * Swarm Status Panel - Unified TUI/Web Component
+ * Hive-Mind Status Panel - Unified TUI/Web Component
  */
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Static } from 'ink';
 import { visionAPI } from '../shared/vision-api.js';
 
-const SwarmPanel = () => {
-  const [swarmData, setSwarmData] = useState(null);
+const HiveMindPanel = () => {
+  const [hiveData, setHiveData] = useState(null);
   const [systemMetrics, setSystemMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const updateData = async () => {
       try {
-        const [swarm, metrics] = await Promise.all([
-          visionAPI.getSwarmStatus(),
+        const [hive, metrics] = await Promise.all([
+          visionAPI.getHiveStatus(),
           visionAPI.getSystemMetrics()
         ]);
-        setSwarmData(swarm);
+        setHiveData(hive);
         setSystemMetrics(metrics);
       } catch (error) {
-        console.error('Failed to update swarm data:', error);
+        console.error('Failed to update hive data:', error);
       } finally {
         setLoading(false);
       }
@@ -34,10 +34,8 @@ const SwarmPanel = () => {
   }, []);
 
   if (loading) {
-    return (
-      <Box justifyContent="center">
-        <Text color="yellow">🔄 Loading swarm status...</Text>
-      </Box>
+    return React.createElement(Box, { justifyContent: "center" },
+      React.createElement(Text, { color: "yellow" }, "🔄 Loading hive-mind status...")
     );
   }
 
@@ -61,99 +59,88 @@ const SwarmPanel = () => {
     }
   };
 
-  return (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text color="cyan" bold>🐝 Swarm Intelligence Center</Text>
-      </Box>
+  return React.createElement(Box, { flexDirection: "column" },
+    React.createElement(Box, { marginBottom: 1 },
+      React.createElement(Text, { color: "cyan", bold: true }, "🐝 Hive-Mind Intelligence Center")
+    ),
 
-      {/* System Metrics */}
-      <Box borderStyle="round" borderColor="blue" paddingX={1} marginBottom={1}>
-        <Box flexDirection="column" width="100%">
-          <Text color="blue" bold>⚡ System Performance</Text>
-          <Box justifyContent="space-between" marginTop={0}>
-            <Box>
-              <Text color="white">🖥️  CPU: </Text>
-              <Text color={systemMetrics.cpu > 80 ? 'red' : systemMetrics.cpu > 60 ? 'yellow' : 'green'} bold>
-                {systemMetrics.cpu}%
-              </Text>
-            </Box>
-            <Box>
-              <Text color="white">💾 Memory: </Text>
-              <Text color="white" bold>{systemMetrics.memory}MB</Text>
-            </Box>
-            <Box>
-              <Text color="white">⏰ Uptime: </Text>
-              <Text color="green" bold>{systemMetrics.uptime}</Text>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
+    React.createElement(Box, { borderStyle: "round", borderColor: "blue", paddingX: 1, marginBottom: 1 },
+      React.createElement(Box, { flexDirection: "column", width: "100%" },
+        React.createElement(Text, { color: "blue", bold: true }, "⚡ System Performance"),
+        React.createElement(Box, { justifyContent: "space-between", marginTop: 0 },
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "white" }, "🖥️  CPU: "),
+            React.createElement(Text, { 
+              color: systemMetrics.cpu > 80 ? 'red' : systemMetrics.cpu > 60 ? 'yellow' : 'green', 
+              bold: true 
+            }, `${systemMetrics.cpu}%`)
+          ),
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "white" }, "💾 Memory: "),
+            React.createElement(Text, { color: "white", bold: true }, `${systemMetrics.memory}MB`)
+          ),
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "white" }, "⏰ Uptime: "),
+            React.createElement(Text, { color: "green", bold: true }, systemMetrics.uptime)
+          )
+        )
+      )
+    ),
 
-      {/* Agent Status */}
-      <Box borderStyle="round" borderColor="green" paddingX={1} marginBottom={1}>
-        <Box flexDirection="column" width="100%">
-          <Text color="green" bold>🤖 Active Agents ({swarmData.agents?.length || 0})</Text>
-          
-          {swarmData.agents && swarmData.agents.length > 0 ? (
-            <Static items={swarmData.agents}>
-              {(agent, index) => (
-                <Box key={agent.id} justifyContent="space-between" marginTop={index === 0 ? 0 : 0}>
-                  <Box>
-                    <Text>{getAgentIcon(agent.name)} </Text>
-                    <Text color="white" bold>{agent.name}</Text>
-                  </Box>
-                  <Box>
-                    <Text color={getAgentStatusColor(agent.status)} bold>
-                      {agent.status.toUpperCase()}
-                    </Text>
-                    {agent.task && (
-                      <Text color="gray"> • {agent.task}</Text>
-                    )}
-                  </Box>
-                </Box>
-              )}
-            </Static>
-          ) : (
-            <Text color="gray" marginTop={0}>No active agents</Text>
-          )}
-        </Box>
-      </Box>
+    React.createElement(Box, { borderStyle: "round", borderColor: "green", paddingX: 1, marginBottom: 1 },
+      React.createElement(Box, { flexDirection: "column", width: "100%" },
+        React.createElement(Text, { color: "green", bold: true }, `🤖 Active Agents (${hiveData.agents?.length || 0})`),
+        
+        hiveData.agents && hiveData.agents.length > 0 ? 
+          React.createElement(Static, { items: hiveData.agents }, (agent, index) => 
+            React.createElement(Box, { key: agent.id, justifyContent: "space-between", marginTop: index === 0 ? 0 : 0 },
+              React.createElement(Box, null,
+                React.createElement(Text, null, `${getAgentIcon(agent.name)} `),
+                React.createElement(Text, { color: "white", bold: true }, agent.name)
+              ),
+              React.createElement(Box, null,
+                React.createElement(Text, { color: getAgentStatusColor(agent.status), bold: true },
+                  agent.status.toUpperCase()
+                ),
+                agent.task && React.createElement(Text, { color: "gray" }, ` • ${agent.task}`)
+              )
+            )
+          ) :
+          React.createElement(Text, { color: "gray", marginTop: 0 }, "No active agents")
+      )
+    ),
 
-      {/* Task Summary */}
-      <Box borderStyle="round" borderColor="yellow" paddingX={1} marginBottom={1}>
-        <Box flexDirection="column" width="100%">
-          <Text color="yellow" bold>📋 Task Overview</Text>
-          <Box justifyContent="space-between" marginTop={0}>
-            <Box>
-              <Text color="green">✅ Done: </Text>
-              <Text color="white" bold>{swarmData.tasks?.completed || 0}</Text>
-            </Box>
-            <Box>
-              <Text color="yellow">🔄 Active: </Text>
-              <Text color="white" bold>{swarmData.tasks?.inProgress || 0}</Text>
-            </Box>
-            <Box>
-              <Text color="gray">⏳ Queue: </Text>
-              <Text color="white" bold>{swarmData.tasks?.pending || 0}</Text>
-            </Box>
-            <Box>
-              <Text color="blue">📊 Total: </Text>
-              <Text color="white" bold>{swarmData.tasks?.total || 0}</Text>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
+    React.createElement(Box, { borderStyle: "round", borderColor: "yellow", paddingX: 1, marginBottom: 1 },
+      React.createElement(Box, { flexDirection: "column", width: "100%" },
+        React.createElement(Text, { color: "yellow", bold: true }, "📋 Task Overview"),
+        React.createElement(Box, { justifyContent: "space-between", marginTop: 0 },
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "green" }, "✅ Done: "),
+            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.completed || 0)
+          ),
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "yellow" }, "🔄 Active: "),
+            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.inProgress || 0)
+          ),
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "gray" }, "⏳ Queue: "),
+            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.pending || 0)
+          ),
+          React.createElement(Box, null,
+            React.createElement(Text, { color: "blue" }, "📊 Total: "),
+            React.createElement(Text, { color: "white", bold: true }, hiveData.tasks?.total || 0)
+          )
+        )
+      )
+    ),
 
-      {/* Status Indicator */}
-      <Box justifyContent="center" marginTop={1}>
-        <Text color={swarmData.active ? 'green' : 'red'} bold>
-          {swarmData.active ? '🟢 SWARM ACTIVE' : '🔴 SWARM INACTIVE'}
-        </Text>
-        <Text color="gray"> • Last update: {new Date().toLocaleTimeString()}</Text>
-      </Box>
-    </Box>
+    React.createElement(Box, { justifyContent: "center", marginTop: 1 },
+      React.createElement(Text, { color: hiveData.active ? 'green' : 'red', bold: true },
+        hiveData.active ? '🟢 HIVE-MIND ACTIVE' : '🔴 HIVE-MIND INACTIVE'
+      ),
+      React.createElement(Text, { color: "gray" }, ` • Last update: ${new Date().toLocaleTimeString()}`)
+    )
   );
 };
 
-export default SwarmPanel;
+export default HiveMindPanel;
