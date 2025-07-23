@@ -53,7 +53,9 @@
     "prepack": "echo 'Alpha release - skipping build for now'",
     "preflight": "npm run build && npm run test && npm run typecheck && npm run lint",
     "postpack": "echo 'Package created successfully'",
-    "prepare-publish": "node scripts/prepare-publish.js"
+    "prepare-publish": "node scripts/prepare-publish.js",
+    "sync:check": "node scripts/sync-check.js",
+    "sync:quick": "node scripts/sync-check.js quick"
   },
   "keywords": [
     "claude",
