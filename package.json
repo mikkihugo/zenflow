@@ -79,12 +79,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikkihugo/claude-code-flow.git"
+    "url": "https://github.com/mikkihugo/claude-code-zen.git"
   },
   "bugs": {
-    "url": "https://github.com/mikkihugo/claude-code-flow/issues"
+    "url": "https://github.com/mikkihugo/claude-code-zen/issues"
   },
-  "homepage": "https://github.com/mikkihugo/claude-code-flow#readme",
+  "homepage": "https://github.com/mikkihugo/claude-code-zen#readme",
   "engines": {
     "node": ">=22.0.0",
     "npm": ">=10.0.0"
