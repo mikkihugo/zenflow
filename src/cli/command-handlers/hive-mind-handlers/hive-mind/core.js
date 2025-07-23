@@ -69,19 +69,20 @@ export class HiveMindCore extends EventEmitter {
    * Initialize event handlers
    */
   _initializeEventHandlers() {
-    this.on('task:created', (task) => {
+    this.on('task:created', async (task) => {
       this.state.metrics.tasksCreated++;
-      this._checkAutoScale();
+      // Auto-scaling check will now query ruv-swarm for pending tasks and idle workers
+      await this._checkAutoScale();
     });
 
-    this.on('task:completed', (task) => {
+    this.on('task:completed', async (task) => {
       this.state.metrics.tasksCompleted++;
-      this._updatePerformanceMetrics();
+      await this._updatePerformanceMetrics();
     });
 
-    this.on('task:failed', (data) => {
+    this.on('task:failed', async (data) => {
       console.warn(`Task failed: ${data.task.id}`, data.error);
-      this._handleTaskFailure(data.task, data.error);
+      await this._handleTaskFailure(data.task, data.error);
     });
 
     this.on('decision:reached', (decision) => {
@@ -89,7 +90,8 @@ export class HiveMindCore extends EventEmitter {
     });
 
     this.on('worker:idle', (workerId) => {
-      this._assignNextTask(workerId);
+      // This event is now largely handled by ruv-swarm's internal task assignment
+      console.warn('[HiveMindCore] worker:idle event is deprecated. RuvSwarm handles task assignment.');
     });
 
     this.on('error', (error) => {
@@ -136,30 +138,31 @@ export class HiveMindCore extends EventEmitter {
     // Update metrics
     this.state.metrics.tasksFailed = (this.state.metrics.tasksFailed || 0) + 1;
 
-    // Attempt task retry for recoverable failures
-    if (task.retryCount < 2 && this._isRecoverableError(error)) {
-      task.retryCount = (task.retryCount || 0) + 1;
-      task.status = 'pending';
+    // Ruv-swarm handles task retry and recovery internally
+    console.warn('[HiveMindCore] Task failure handling is deprecated. RuvSwarm handles recovery.');
 
-      // Find another worker for retry
-      setTimeout(() => {
-        const worker = this._findBestWorker(task);
-        if (worker) {
-          this._assignTask(worker.id, task.id);
-        }
-      }, 5000); // Wait 5 seconds before retry
-
-      console.log(`Retrying task ${task.id} (attempt ${task.retryCount})`);
-    }
+    // Log the failure to memory via mcpWrapper
+    this.mcpWrapper.executeTool('memory_usage', {
+      action: 'store',
+      namespace: this.state.swarmId,
+      key: `task_failure-${task.id}`,
+      value: {
+        taskId: task.id,
+        error: error.message,
+        stack: error.stack,
+        timestamp: Date.now(),
+      },
+      type: 'error',
+    }).catch(console.error);
   }
 
   /**
    * Check if error is recoverable
    */
   _isRecoverableError(error) {
-    const recoverableErrors = ['timeout', 'network', 'temporary', 'connection'];
-
-    return recoverableErrors.some((type) => error.message.toLowerCase().includes(type));
+    // Ruv-swarm handles error recovery internally
+    console.warn('[HiveMindCore] _isRecoverableError is deprecated. RuvSwarm handles error recovery.');
+    return false;
   }
 
   /**

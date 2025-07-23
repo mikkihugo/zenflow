@@ -2,15 +2,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { MetaRegistryManager } from '../../../../coordination/meta-registry/meta-manager.js';
-import MetaRegistry from '../../../../coordination/meta-registry/index.js';
-import MemoryBackend from '../../../../coordination/meta-registry/backends/memory-backend.js';
-import HierarchicalTaskManagerPlugin from '../../../../coordination/meta-registry/plugins/hierarchical-task-manager.js';
-import ArchitectAdvisorPlugin from '../../../../coordination/meta-registry/plugins/architect-advisor.js';
-import MemoryRAGPlugin from '../../../../coordination/meta-registry/plugins/memory-rag.js';
-import PortDiscoveryPlugin from '../../../../coordination/meta-registry/plugins/port-discovery.js';
-import PubSubPlugin from '../../../../coordination/meta-registry/plugins/pubsub.js';
-import NATTraversalPlugin from '../../../../coordination/meta-registry/plugins/nat-traversal.js';
+import Database from 'better-sqlite3';
 import { printSuccess, printError } from '../../../utils.js';
 
 /**
