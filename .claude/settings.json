@@ -1,28 +1,26 @@
 {
   "env": {
-    "RUV_SWARM_AUTO_COMMIT": "false",
-    "RUV_SWARM_AUTO_PUSH": "false",
-    "RUV_SWARM_HOOKS_ENABLED": "false",
-    "RUV_SWARM_TELEMETRY_ENABLED": "true",
-    "RUV_SWARM_REMOTE_EXECUTION": "true"
+    "CLAUDE_ZEN_HOOKS_ENABLED": "true",
+    "CLAUDE_ZEN_TELEMETRY_ENABLED": "true",
+    "CLAUDE_ZEN_REMOTE_EXECUTION": "true",
+    "CLAUDE_ZEN_GITHUB_INTEGRATION": "true"
   },
   "permissions": {
     "allow": [
-      "Bash(npx ruv-swarm *)",
-      "Bash(npm run lint)",
-      "Bash(npm run test:*)",
-      "Bash(npm test *)",
-      "Bash(git status)",
-      "Bash(git diff *)",
-      "Bash(git log *)",
-      "Bash(git add *)",
-      "Bash(git commit *)",
-      "Bash(git push)",
-      "Bash(git config *)",
+      "Bash(npx claude-zen *)",
+      "Bash(npm run *)",
       "Bash(node *)",
+      "Bash(git *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(rm *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(curl *)",
       "Bash(which *)",
-      "Bash(pwd)",
-      "Bash(ls *)"
+      "Bash(pwd)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -31,19 +29,49 @@
       "Bash(eval *)"
     ]
   },
-  "hooks": {},
+  "hooks": {
+    "tool_call": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Pre-command validation and preparation",
+            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-zen@alpha hooks pre-command --command '{}' --validate-safety true"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Pre-edit file preparation and context loading",
+            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-zen@alpha hooks pre-edit --file '{}' --load-context"
+          }
+        ]
+      }
+    ],
+    "tool_result": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Post-edit processing with auto-formatting",
+            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-zen@alpha hooks post-edit --file '{}' --format --update-memory"
+          }
+        ]
+      }
+    ]
+  },
   "mcpServers": {
     "ruv-swarm": {
       "command": "npx",
-      "args": [
-        "ruv-swarm",
-        "mcp",
-        "start"
-      ],
+      "args": ["ruv-swarm", "mcp", "start"],
       "env": {
-        "RUV_SWARM_HOOKS_ENABLED": "false",
-        "RUV_SWARM_TELEMETRY_ENABLED": "true",
-        "RUV_SWARM_REMOTE_READY": "true"
+        "RUV_SWARM_HOOKS_ENABLED": "true",
+        "RUV_SWARM_TELEMETRY_ENABLED": "true"
       }
     }
   },

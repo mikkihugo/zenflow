@@ -1,6 +1,6 @@
 {
   "name": "claude-zen",
-  "version": "2.0.0-alpha.67-singularity",
+  "version": "2.0.0-alpha.70",
   "description": "Enterprise-grade AI agent orchestration with neural networks and ruv-swarm integration (Claude Zen)",
   "main": "src/cli/cli-main.js",
   "bin": {

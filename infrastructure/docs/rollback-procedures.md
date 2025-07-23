@@ -59,7 +59,7 @@ This document outlines the procedures for rolling back deployments of the Vision
 ./infrastructure/scripts/rollback-service.sh <service-name> <environment>
 
 # Example
-./infrastructure/scripts/rollback-service.sh swarm-service production
+
 ```
 
 ### 2. Full System Rollback

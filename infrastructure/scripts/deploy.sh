@@ -122,7 +122,7 @@ run_health_checks() {
     
     log "INFO" "Running health checks..."
     
-    local services=("business-service" "core-service" "swarm-service" "development-service")
+    local services=("business-service" "core-service" "development-service")
     local all_healthy=true
     
     for service in "${services[@]}"; do
@@ -160,7 +160,7 @@ switch_traffic() {
     log "INFO" "Switching traffic to $new_color deployment..."
     
     # Update service selectors
-    local services=("business-service" "core-service" "swarm-service" "development-service")
+    local services=("business-service" "core-service" "development-service")
     
     for service in "${services[@]}"; do
         kubectl patch service $service -n $namespace -p "{\"spec\":{\"selector\":{\"deployment-color\":\"$new_color\"}}}"

@@ -47,27 +47,7 @@ coreService:
     maxReplicas: 4
     targetCPUUtilizationPercentage: 80
 
-swarmService:
-  replicaCount: 1
-  
-  resources:
-    limits:
-      cpu: 2000m
-      memory: 4Gi
-    requests:
-      cpu: 1000m
-      memory: 2Gi
-  
-  autoscaling:
-    enabled: false  # Manual scaling in staging
-  
-  env:
-    - name: MAX_AGENTS
-      value: "100"  # Reduced for staging
-    - name: NEURAL_NETWORK_ENABLED
-      value: "true"
-    - name: ENABLE_PROFILING
-      value: "true"
+
 
 developmentService:
   replicaCount: 1
@@ -100,9 +80,7 @@ ingress:
         - path: /api/v1/core
           pathType: Prefix
           service: core-service
-        - path: /api/v1/swarm
-          pathType: Prefix
-          service: swarm-service
+        
         - path: /api/v1/development
           pathType: Prefix
           service: development-service

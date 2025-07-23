@@ -4,7 +4,7 @@
 
 | Metric | Our Version | Upstream Version | Status | Gap |
 |--------|-------------|------------------|---------|-----|
-| **Version** | `2.0.0-alpha.67-singularity` | `2.0.0-alpha.70` | 🟡 Behind | 3 versions |
+| **Version** | `2.0.0-alpha.70` | `2.0.0-alpha.70` | 🟢 Synced | 0 versions |
 | **Last Sync** | 2025-01-15 | 2025-01-23 | 🟡 8 days behind | - |
 | **Commits Behind** | - | ~15 commits | 🟡 Behind | Multiple fixes |
 | **Architecture** | JavaScript/Plugin-based | TypeScript transition | 🟢 Divergent | Intentional |

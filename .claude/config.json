@@ -1,36 +1,23 @@
 {
-  "version": "1.0",
-  "sparc": {
-    "enabled": true,
-    "modes": [
-      "orchestrator",
-      "coder",
-      "researcher",
-      "tdd",
-      "architect",
-      "reviewer",
-      "debugger",
-      "tester",
-      "analyzer",
-      "optimizer",
-      "documenter",
-      "designer",
-      "innovator",
-      "swarm-coordinator",
-      "memory-manager",
-      "batch-executor",
-      "workflow-manager"
-    ]
+  "projectName": "claude-zen-plugin-ecosystem",
+  "projectType": "plugin-development",
+  "version": "2.0.0-alpha.67-singularity",
+  "description": "Claude Zen plugin ecosystem development project",
+  "features": {
+    "plugins": true,
+    "swarmIntegration": true,
+    "upstreamSync": true,
+    "templateSystem": true
   },
-  "swarm": {
-    "enabled": true,
-    "strategies": [
-      "research",
-      "development",
-      "analysis",
-      "testing",
-      "optimization",
-      "maintenance"
-    ]
+  "paths": {
+    "plugins": "src/plugins/",
+    "templates": "templates/",
+    "scripts": "scripts/",
+    "tests": "tests/"
+  },
+  "development": {
+    "autoFormat": true,
+    "upstreamSyncEnabled": true,
+    "hookSystemEnabled": true
   }
 }

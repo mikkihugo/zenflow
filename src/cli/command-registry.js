@@ -45,6 +45,7 @@ import {
   fixHookVariablesCommand,
   fixHookVariablesCommandConfig,
 } from './command-handlers/fix-hook-variables-command.js';
+import { templateCommand } from './command-handlers/template-command.js';
 // Note: TypeScript imports commented out for Node.js compatibility
 // import { ruvSwarmAction } from './commands/ruv-swarm.ts';
 // import { configIntegrationAction } from './commands/config-integration.ts';
@@ -81,6 +82,7 @@ export const createMeowCLI = () => {
 	  security       Enterprise security management and monitoring
 	  backup         Data backup and disaster recovery management
 	  github         GitHub workflow automation
+	  template       Template management (list, create, install)
 
 	Options
 	  --help         Show help
@@ -193,22 +195,31 @@ export const createMeowCLI = () => {
 export function registerCoreCommands() {
   commandRegistry.set('init', {
     handler: initCommand,
-    description: 'Initialize Claude Code integration files and SPARC development environment',
-    usage: 'init [--force] [--minimal] [--sparc]',
+    description: 'Initialize Claude Zen project with template support',
+    usage: 'init [directory] [options]',
     examples: [
-      'npx claude-zen@latest init --sparc  # Recommended: Full SPARC setup',
-      'init --sparc                         # Initialize with SPARC modes',
-      'init --force --minimal               # Minimal setup, overwrite existing',
-      'init --sparc --force                 # Force SPARC setup',
+      'init',
+      'init my-project',
+      'init --template claude-zen',
+      'init --list-templates',
+      'init --minimal',
+      'init --force',
     ],
     details: `
-The --sparc flag creates a complete development environment:
-  • .roomodes file containing 17 specialized SPARC modes
-  • CLAUDE.md for AI-readable project instructions
-  • Pre-configured modes: architect, code, tdd, debug, security, and more
-  • Ready for TDD workflows and automated code generation
-  
-First-time users should run: npx claude-zen@latest init --sparc`,
+Initialize Claude Zen project with template system support.
+
+Options:
+  --template <name>    Use specific template (default: claude-zen)
+  --list-templates     Show all available templates
+  --force              Force overwrite existing files
+  --minimal            Minimal setup with basic files only
+
+Templates:
+  claude-zen     Full plugin ecosystem with swarm integration
+  basic          Minimal Claude Zen project structure
+
+The init command now supports a comprehensive template system for rapid
+project setup with pre-configured plugins and development workflows.`,
   });
 
   commandRegistry.set('start', {
@@ -716,7 +727,44 @@ For more information: https://github.com/ruvnet/claude-zen/issues/166`,
     ...fixHookVariablesCommandConfig,
   });
 
+  commandRegistry.set('template', {
+    handler: templateCommand,
+    description: 'Template management system for Claude Zen projects',
+    usage: 'template <command> [options]',
+    examples: [
+      'template list',
+      'template info claude-zen',
+      'template create my-template --description "Custom template"',
+      'template install claude-zen ./my-project --force'
+    ],
+    details: `
+Template Management Commands:
+  • list                     Show all available templates
+  • info <template-name>      Display detailed template information
+  • create <template-name>    Create new template from current directory
+  • install <template-name>   Install template to target directory
 
+Template Features:
+  📦 Plugin ecosystem templates with pre-configured components
+  🔧 Automated setup and post-install configuration
+  📋 Comprehensive documentation and examples
+  🎯 Category-based organization and discovery
+  ✨ Feature-rich templates with validation
+
+Available Templates:
+  • claude-zen: Full plugin ecosystem with swarm integration
+  • basic: Minimal Claude Zen project structure
+
+Options:
+  --force                    Force overwrite existing files
+  --minimal                  Install only required files
+  --description <text>       Template description
+  --version <version>        Template version
+  --category <category>      Template category
+
+The template system enables rapid project initialization with pre-configured
+plugins, settings, and development workflows.`
+  });
 
   commandRegistry.set('hive', {
     handler: async (args, flags) => {

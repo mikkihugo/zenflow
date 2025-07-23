@@ -104,48 +104,7 @@ coreService:
       value: "info"
 
 # Swarm Service Configuration
-swarmService:
-  enabled: true
-  name: swarm-service
-  replicaCount: 2
-  
-  image:
-    repository: vision-to-code/swarm-service
-    tag: "1.0.0"
-    pullPolicy: IfNotPresent
-  
-  service:
-    type: ClusterIP
-    port: 4003
-    targetPort: 4003
-  
-  resources:
-    limits:
-      cpu: 4000m
-      memory: 8Gi
-    requests:
-      cpu: 2000m
-      memory: 4Gi
-  
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 60
-    targetMemoryUtilizationPercentage: 70
-  
-  env:
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: swarm-service-db
-          key: url
-    - name: MAX_AGENTS
-      value: "1000"
-    - name: NEURAL_NETWORK_ENABLED
-      value: "true"
-    - name: LOG_LEVEL
-      value: "info"
+
 
 # Development Service Configuration
 developmentService:
@@ -207,9 +166,7 @@ ingress:
         - path: /api/v1/core
           pathType: Prefix
           service: core-service
-        - path: /api/v1/swarm
-          pathType: Prefix
-          service: swarm-service
+        
         - path: /api/v1/development
           pathType: Prefix
           service: development-service
