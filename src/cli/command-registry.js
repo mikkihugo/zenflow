@@ -14,7 +14,7 @@ import { analyticsCommand } from './command-handlers/analytics-command.js';
 import { backupCommand } from './command-handlers/backup-command.js';
 import { deployCommand } from './command-handlers/deploy-command.js';
 import { claudeCommand } from './command-handlers/claude-command.js';
-import { cloudCommand } from './command-handlers/cloud-command.js';
+// import { cloudCommand } from './command-handlers/cloud-command.js'; // Temporarily disabled - missing file
 import { projectCommand } from './command-handlers/project-command.js';
 import { replCommand } from './command-handlers/repl-command.js';
 import { workflowCommand } from './command-handlers/workflow-command.js';
@@ -46,6 +46,12 @@ import {
   fixHookVariablesCommandConfig,
 } from './command-handlers/fix-hook-variables-command.js';
 import { templateCommand } from './command-handlers/template-command.js';
+import { queenCouncilCommand } from './command-handlers/queen-council.js';
+import websocketCommand from './command-handlers/websocket-command.js';
+import { systemConsolidationCommand, systemConsolidationCommandConfig } from './command-handlers/system-consolidation-command.js';
+import { pluginStatusCommand, pluginStatusCommandConfig } from './command-handlers/plugin-status-command.js';
+import { serverCommand, serverCommandConfig } from './command-handlers/server-command.js';
+import { dashboardCommand, dashboardCommandConfig } from './command-handlers/dashboard-command.js';
 // Note: TypeScript imports commented out for Node.js compatibility
 // import { ruvSwarmAction } from './commands/ruv-swarm.ts';
 // import { configIntegrationAction } from './commands/config-integration.ts';
@@ -74,6 +80,10 @@ export const createMeowCLI = () => {
 	  mcp            Manage MCP server and tools
 	  monitor        Real-time system monitoring
 	  hive-mind      Advanced Hive Mind swarm intelligence
+	  queen-council  Multi-queen strategic coordination with document integration
+	  websocket      WebSocket client/server management with Node.js 22 native support
+	  system         Unified system control and consolidation
+	  dashboard      Unified dashboard interface with React/Ink support
 	  coordination   Swarm and agent orchestration
 	  training       Neural pattern learning and model updates
 	  analysis       Performance and usage analytics
@@ -83,6 +93,8 @@ export const createMeowCLI = () => {
 	  backup         Data backup and disaster recovery management
 	  github         GitHub workflow automation
 	  template       Template management (list, create, install)
+	  plugin         Plugin system status and management
+	  server         Schema-driven API server with WebSocket support
 
 	Options
 	  --help         Show help
@@ -92,7 +104,8 @@ export const createMeowCLI = () => {
 	  --debug        Enable debug mode
 
 	Examples
-	  $ claude-zen init --sparc
+	  $ claude-zen init
+	  $ claude-zen init . --force
 	  $ claude-zen start --ui
 	  $ claude-zen swarm "Build a REST API"
 	  $ claude-zen spawn researcher --coordinated
@@ -186,6 +199,16 @@ export const createMeowCLI = () => {
       costAnalysis: {
         type: 'boolean',
         default: false
+      },
+      force: {
+        type: 'boolean',
+        default: false
+      },
+      description: {
+        type: 'string'
+      },
+      category: {
+        type: 'string'
       }
     }
   });
@@ -195,31 +218,21 @@ export const createMeowCLI = () => {
 export function registerCoreCommands() {
   commandRegistry.set('init', {
     handler: initCommand,
-    description: 'Initialize Claude Zen project with template support',
+    description: 'Initialize Claude Zen project',
     usage: 'init [directory] [options]',
     examples: [
       'init',
       'init my-project',
-      'init --template claude-zen',
-      'init --list-templates',
-      'init --minimal',
-      'init --force',
+      'init --force'
     ],
     details: `
-Initialize Claude Zen project with template system support.
+Initialize Claude Zen project with pre-configured plugins and development workflows.
 
 Options:
-  --template <name>    Use specific template (default: claude-zen)
-  --list-templates     Show all available templates
   --force              Force overwrite existing files
-  --minimal            Minimal setup with basic files only
 
-Templates:
-  claude-zen     Full plugin ecosystem with swarm integration
-  basic          Minimal Claude Zen project structure
-
-The init command now supports a comprehensive template system for rapid
-project setup with pre-configured plugins and development workflows.`,
+Creates a complete Claude Zen project with swarm integration, hooks,
+and all necessary configuration files for enhanced development.`,
   });
 
   commandRegistry.set('start', {
@@ -765,6 +778,118 @@ Options:
 The template system enables rapid project initialization with pre-configured
 plugins, settings, and development workflows.`
   });
+
+  commandRegistry.set('system', {
+    handler: systemConsolidationCommand,
+    description: 'Unified system control and consolidation',
+    usage: 'system <action> [options]',
+    examples: [
+      'system start',
+      'system status',
+      'system consolidate'
+    ],
+    details: `Unified System Control:
+  start        Start integrated system (API + Dashboard + Queen Council)
+  stop         Stop all components
+  restart      Restart entire system  
+  status       Comprehensive system status
+  consolidate  Show command consolidation analysis`
+  });
+
+  commandRegistry.set('queen-council', {
+    handler: queenCouncilCommand,
+    description: 'Multi-queen strategic coordination with document integration',
+    usage: 'queen-council <command> [options]',
+    examples: [
+      'queen-council convene "Implement multi-tenant architecture"',
+      'queen-council convene --auto --silent',
+      'queen-council status',
+      'queen-council decisions --recent'
+    ],
+    details: `
+Multi-Queen Strategic Coordination:
+  👑 7 specialized queens for comprehensive strategic analysis
+  📚 Full document integration (PRDs, Roadmaps, Architecture, ADRs)
+  🏛️ Democratic consensus with confidence weighting
+  📋 Automatic document updates and ADR creation
+
+Queen Specializations:
+  👑 Roadmap Queen       Strategic planning and timeline coordination
+  👑 PRD Queen           Product requirements and feature coordination  
+  👑 Architecture Queen  Technical design and system coordination
+  👑 Development Queen   Implementation and code coordination
+  👑 Research Queen      Information gathering and analysis
+  👑 Integration Queen   System integration coordination
+  👑 Performance Queen   Optimization and efficiency coordination
+
+Commands:
+  convene "<objective>"   Convene queen council for strategic decision
+  status                  Show council status and queen health
+  decisions               Show decision history and consensus logs
+
+Document Integration:
+  • Roadmaps: docs/strategic/roadmaps/*.md
+  • PRDs: docs/strategic/prds/*.md
+  • Architecture: docs/strategic/architecture/*.md
+  • ADRs: docs/strategic/adrs/*.md (auto-generated)
+  • Strategy: docs/strategic/strategy/*.md
+
+Features:
+  🗳️ Democratic voting with 67% consensus threshold
+  📝 Automatic ADR creation for architectural decisions
+  🔄 Real-time document updates based on decisions
+  ⚖️ Conflict resolution and human escalation
+  📊 Decision tracking and audit logs
+
+This system provides strategic intelligence for complex decisions while
+maintaining full documentation and decision audit trails.`
+  });
+
+  commandRegistry.set('websocket', {
+    handler: websocketCommand,
+    description: 'WebSocket client/server management with Node.js 22 native support',
+    usage: 'websocket <command> [options]',
+    examples: [
+      'websocket support',
+      'websocket test ws://localhost:3000/ws',
+      'websocket connect ws://localhost:3000/ws --name my-client',
+      'websocket status --verbose --stats',
+      'websocket send "Hello WebSocket" --type greeting',
+      'websocket monitor ws://localhost:3000/ws --stats',
+      'websocket benchmark --messages 5000 --concurrency 10',
+    ],
+    details: `WebSocket Commands:
+
+  support                    Show WebSocket support information and Node.js 22 features
+  test [url]                Test WebSocket connectivity
+  connect <url>             Connect and maintain WebSocket connection  
+  status                     Show WebSocket service status
+  send <message>            Send message via WebSocket
+  monitor [urls...]         Monitor multiple WebSocket connections
+  benchmark [url]           Benchmark WebSocket performance
+
+NODE.JS 22 FEATURES:
+  • Native WebSocket client (use --experimental-websocket flag)
+  • Standards-compliant implementation (RFC 6455)
+  • Better performance than external libraries
+  • Built-in ping/pong support
+  • Automatic connection management
+
+INTEGRATION:
+  • Real-time updates for claude-zen UI
+  • Queen Council decision broadcasting
+  • Swarm orchestration status updates  
+  • Neural network training progress
+  • Memory operation notifications
+
+The WebSocket system provides high-performance, real-time communication capabilities using Node.js 22's native WebSocket implementation with automatic reconnection, message queuing, and comprehensive monitoring.`,
+  });
+
+  commandRegistry.set('plugin', pluginStatusCommandConfig);
+
+  commandRegistry.set('server', serverCommandConfig);
+
+  commandRegistry.set('dashboard', dashboardCommandConfig);
 
   commandRegistry.set('hive', {
     handler: async (args, flags) => {

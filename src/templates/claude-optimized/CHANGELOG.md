@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - architect - System design and architecture
   - code - Clean code implementation
   - debug - Debugging and troubleshooting
-  - devops - Deployment and infrastructure
+  - devops - Deployment
   - docs-writer - Documentation creation
   - integration - System integration
   - mcp - MCP service integration

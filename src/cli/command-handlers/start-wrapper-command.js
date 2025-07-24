@@ -23,29 +23,48 @@ export async function startCommand(subArgs, flags) {
     printSuccess('Starting Claude-Flow Orchestration System...');
     console.log();
 
-    // Start Claude Zen API server (schema-driven)
+    // Start integrated services (API + Dashboard + Queen Council)
+    const services = [];
+    
+    // 1. Start Claude Zen API server (schema-driven)
     try {
       const { claudeZenServer } = await import('../../api/claude-zen-server.js');
-      
-      // Configure server port
       claudeZenServer.port = apiPort;
-      
       await claudeZenServer.start();
-      printSuccess(`🚀 Claude Zen API server started on port ${apiPort}`);
-      printInfo(`📖 API Documentation: http://localhost:${apiPort}/docs`);
-      printInfo(`🔗 Schema Introspection: http://localhost:${apiPort}/api/schema`);
-      printInfo(`📊 Health Check: http://localhost:${apiPort}/health`);
-      
-      if (daemon) {
-        printSuccess('🔄 Running in daemon mode - server will continue in background');
-        return; // Return to shell but keep server running
-      }
-      
+      services.push('API Server');
+      printSuccess(`🚀 API Server started on port ${apiPort}`);
+      printInfo(`📖 Documentation: http://localhost:${apiPort}/docs`);
     } catch (error) {
-      printError(`❌ API server failed to start: ${error.message}`);
-      if (error.message.includes('EADDRINUSE')) {
-        printWarning(`Port ${apiPort} is already in use. Try: claude-zen start --api-port ${apiPort + 1}`);
+      printError(`❌ API server failed: ${error.message}`);
+      return;
+    }
+    
+    // 2. Auto-start Dashboard if UI requested or not daemon mode
+    if (ui || !daemon) {
+      try {
+        const { startDashboard } = await import('./dashboard-command.js');
+        await startDashboard({ api: `http://localhost:${apiPort}` });
+        services.push('Dashboard');
+        printSuccess(`🎨 Dashboard integrated with API`);
+      } catch (error) {
+        printWarning(`Dashboard auto-start failed: ${error.message}`);
       }
+    }
+    
+    // 3. Auto-convene Queen Council for strategic oversight
+    try {
+      const { queenCouncilCommand } = await import('./queen-council.js');
+      await queenCouncilCommand(['convene', '--auto', '--silent'], {});
+      services.push('Queen Council');
+      printSuccess(`👑 Queen Council convened for strategic oversight`);
+    } catch (error) {
+      printWarning(`Queen Council auto-convene failed: ${error.message}`);
+    }
+    
+    printSuccess(`🎯 Integrated system ready! Active: ${services.join(', ')}`);
+    
+    if (daemon) {
+      printSuccess('🔄 Running in daemon mode - system will continue in background');
       return;
     }
 

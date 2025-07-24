@@ -8,13 +8,6 @@ import { render, Box, Text, useInput } from 'ink';
 import VisionDashboard from './components/VisionDashboard.js';
 import HiveMindPanel from './components/SwarmPanel.js';
 
-const TABS = [
-  { id: 'visions', name: 'Visions', icon: '🎯', component: VisionDashboard },
-  { id: 'hive-mind', name: 'Hive-Mind', icon: '🐝', component: HiveMindPanel },
-  { id: 'memory', name: 'Memory', icon: '💾', component: MemoryBrowser },
-  { id: 'logs', name: 'Logs', icon: '📝', component: LogViewer }
-];
-
 // Placeholder components for other tabs
 const MemoryBrowser = () => React.createElement(Box, { flexDirection: "column" },
   React.createElement(Text, { color: "cyan", bold: true }, "💾 Memory Browser"),
@@ -25,6 +18,13 @@ const LogViewer = () => React.createElement(Box, { flexDirection: "column" },
   React.createElement(Text, { color: "cyan", bold: true }, "📝 System Logs"),
   React.createElement(Text, { color: "gray", marginTop: 1 }, "Coming soon - Real-time log streaming")
 );
+
+const TABS = [
+  { id: 'visions', name: 'Visions', icon: '🎯', component: VisionDashboard },
+  { id: 'hive-mind', name: 'Hive-Mind', icon: '🐝', component: HiveMindPanel },
+  { id: 'memory', name: 'Memory', icon: '💾', component: MemoryBrowser },
+  { id: 'logs', name: 'Logs', icon: '📝', component: LogViewer }
+];
 
 const UnifiedDashboard = () => {
   const [activeTab, setActiveTab] = useState('visions');

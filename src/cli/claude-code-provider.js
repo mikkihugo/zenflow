@@ -12,7 +12,7 @@ import path from 'path';
 const execAsync = promisify(exec);
 
 // Claude Code module will be loaded dynamically if needed
-let claudeCodeModule = null;
+const claudeCodeModule = null;
 
 export class ClaudeCodeProvider {
   constructor(config = {}) {

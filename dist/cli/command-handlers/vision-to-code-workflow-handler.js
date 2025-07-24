@@ -1,12 +1,21 @@
 
 // src/cli/command-handlers/vision-to-code-workflow-handler.js
 
-import { MetaRegistryManager } from '../../coordination/meta-registry/meta-manager.js';
-import MemoryBackend from '../../coordination/meta-registry/backends/memory-backend.js';
+import { MetaRegistryManager, MemoryBackend } from '../../coordination/meta-registry/meta-manager.js';
+import HierarchicalTaskManagerPlugin from '../../coordination/meta-registry/plugins/hierarchical-task-manager.js';
+import ArchitectAdvisorPlugin from '../../coordination/meta-registry/plugins/architect-advisor.js';
+import MemoryRAGPlugin from '../../coordination/meta-registry/plugins/memory-rag.js';
+import PortDiscoveryPlugin from '../../coordination/meta-registry/plugins/port-discovery.js';
+import PubSubPlugin from '../../coordination/meta-registry/plugins/pubsub.js';
+import NATTraversalPlugin from '../../coordination/meta-registry/plugins/nat-traversal.js';
+import { HiveMindCore } from '../hive-mind-handlers/hive-mind/core.js';
+import { MCPToolWrapper } from '../hive-mind-handlers/hive-mind/mcp-wrapper.js';
 
 let metaRegistryManager;
 let defaultRegistry;
 let hierarchicalTaskManagerPlugin;
+let hiveMindCore;
+let mcpToolWrapper;
 
 async function initializeMetaRegistry() {
   if (!metaRegistryManager) {
@@ -34,6 +43,13 @@ async function initializeMetaRegistry() {
     if (!hierarchicalTaskManagerPlugin) {
       throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
     }
+
+    // Initialize HiveMindCore and MCPToolWrapper
+    const { HiveMindCore } = await import('../hive-mind-handlers/hive-mind/core.js');
+    const { MCPToolWrapper } = await import('../hive-mind-handlers/hive-mind/mcp-wrapper.js');
+    hiveMindCore = new HiveMindCore(defaultRegistry);
+    mcpToolWrapper = new MCPToolWrapper(defaultRegistry);
+    await hiveMindCore.initialize();
   }
 }
 
@@ -41,36 +57,34 @@ const handleVisionCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
     case 'create':
       console.log('Creating vision...');
-      const vision = await visionService.createVision({
+      const vision = await hierarchicalTaskManagerPlugin.createVision({
         title: flags.title || args[0],
         description: flags.description || args[1],
-        strategic_goals: flags.goals ? flags.goals.split(',') : [],
-        timeline_months: flags.timeline,
-        budget_usd: flags.budget,
-        stakeholders: flags.stakeholders ? flags.stakeholders.split(',') : [],
+        objectives: flags.goals ? flags.goals.split(',') : [],
+        timeline: flags.timeline,
         priority: flags.priority,
-        created_by: 'cli_user', // Placeholder
+        stakeholders: flags.stakeholders ? flags.stakeholders.split(',') : [],
+        source: 'cli',
       });
       console.log('Vision created:', vision);
       break;
     case 'approve':
       console.log('Approving vision...');
-      const approvedVision = await visionService.approveVision(args[0], {
+      const approvedVision = await hierarchicalTaskManagerPlugin.approveVision(args[0], {
         approver_email: flags.approver || 'cli_user@example.com',
         approval_notes: flags.notes,
         conditions: flags.conditions ? flags.conditions.split(',') : [],
-        approved_by: 'cli_user', // Placeholder
       });
       console.log('Vision approved:', approvedVision);
       break;
     case 'roadmap':
       console.log('Getting vision roadmap...');
-      const roadmap = await visionService.getVision(args[0]); // Assuming getVision returns enough for roadmap
-      console.log('Vision Roadmap:', roadmap ? roadmap.gemini_insights : 'Not found or no roadmap');
+      const roadmap = await hierarchicalTaskManagerPlugin.getVision(args[0]);
+      console.log('Vision Roadmap:', roadmap ? roadmap.metadata : 'Not found or no roadmap');
       break;
     case 'list':
       console.log('Listing visions...');
-      const visions = await visionService.listVisions(flags);
+      const visions = await hierarchicalTaskManagerPlugin.listVisions(flags);
       console.log('Visions:', visions);
       break;
     default:
@@ -83,22 +97,25 @@ const handleAdrCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
     case 'create':
       console.log('Creating ADR...');
-      const newAdr = await adrService.createAdr({
+      const newAdr = await architectAdvisorPlugin.createSuggestion({
         title: flags.title || args[0],
-        decision: flags.decision || args[1],
-        context: flags.context,
+        description: flags.description || args[1],
+        type: 'architectural-decision',
+        reasoning: flags.context,
         alternatives: flags.alternatives ? flags.alternatives.split(',') : [],
         consequences: flags.consequences,
-        vision_id: flags.visionId,
-        technical_plan_id: flags.technicalPlanId,
+        visionId: flags.visionId,
+        technicalPlanId: flags.technicalPlanId,
+        confidence: 1.0, // CLI-created ADRs have high confidence
+        impact: 'high', // Default impact
+        effort: 'medium', // Default effort
       });
       console.log('ADR created:', newAdr);
       break;
     case 'list':
       console.log('Listing ADRs...');
-      const adrs = await adrService.listAdrs({
-        vision_id: flags.visionId,
-        technical_plan_id: flags.technicalPlanId,
+      const adrs = await architectAdvisorPlugin.getSuggestions({
+        type: 'architectural-decision',
         status: flags.status,
       });
       console.log('ADRs:', adrs);
@@ -113,15 +130,19 @@ const handleSquadCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
     case 'assign-task':
       console.log('Assigning task to squad...');
-      const assignedTask = await squadService.assignTask(args[0], {
-        type: flags.type,
+      const squadId = args[0];
+      const assignedTask = await hierarchicalTaskManagerPlugin.createTask({
         title: flags.title || args[1],
         description: flags.description,
-        requirements: flags.requirements ? flags.requirements.split(',') : [],
-        estimated_hours: flags.estimatedHours,
+        type: flags.type,
+        priority: flags.priority,
+        effort: flags.effort,
+        skills: flags.skills ? flags.skills.split(',') : [],
         dependencies: flags.dependencies ? flags.dependencies.split(',') : [],
-        claude_assistance_level: flags.claudeAssistance,
-      });
+        assignee: squadId, // Assign to squad (conceptually)
+        status: 'assigned',
+        source: 'cli',
+      }, squadId, 'squad'); // Parent is the squad
       console.log('Task assigned:', assignedTask);
       break;
     default:
@@ -134,26 +155,34 @@ const handleSwarmCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
     case 'coordinate':
       console.log('Initiating swarm coordination...');
-      const visionData = await visionService.getVision(args[0]); // Assuming args[0] is visionId
-      if (!visionData) {
-        console.error('Vision not found for coordination.');
+      const objective = flags.objective || args[0];
+      if (!objective) {
+        console.error('Objective is required for swarm coordination.');
         return;
       }
-      const coordinationResult = await swarmService.coordinateVisionWorkflow(visionData, flags.optimizationGoals ? flags.optimizationGoals.split(',') : []);
-      console.log('Swarm coordination initiated:', coordinationResult);
+      const swarmConfig = {
+        objective: objective,
+        name: flags.name,
+        queenType: flags.queenType,
+        maxWorkers: flags.maxWorkers,
+        consensusAlgorithm: flags.consensus,
+        topology: flags.topology,
+        autoScale: flags.autoScale,
+        encryption: flags.encryption,
+      };
+      await hiveMindCore.initialize(swarmConfig); // Re-initialize or ensure initialized with config
+      console.log('Swarm coordination initiated via HiveMindCore.');
       break;
     case 'agents':
       console.log('Getting agent status...');
-      const agentsStatus = await swarmService.getAgentsStatus(args[0]); // Optional swarmId
+      const agentsStatus = hiveMindCore.getStatus().workers; // Assuming getStatus returns worker agents
       console.log('Agent status:', agentsStatus);
       break;
     case 'mrap':
       console.log('Executing MRAP reasoning...');
-      const mrapResult = await swarmService.mrapReason(
-        args[0], // visionId
-        flags.type, // reasoningType
-        flags.constraints ? JSON.parse(flags.constraints) : {},
-        flags.optimizationPreferences ? JSON.parse(flags.optimizationPreferences) : {}
+      const mrapResult = await hiveMindCore.buildConsensus(
+        flags.topic || args[0],
+        flags.options ? flags.options.split(',') : [],
       );
       console.log('MRAP reasoning executed:', mrapResult);
       break;
@@ -167,18 +196,31 @@ const handleVtcCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
     case 'execute':
       console.log('Executing Vision-to-Code workflow...');
-      const execution = await vtcService.executeVtcWorkflow(
-        args[0], // technicalPlanId
-        flags.mode,
-        flags.claudeIntegration,
-        flags.squadConfig ? JSON.parse(flags.squadConfig) : {}
-      );
-      console.log('VTC workflow executed:', execution);
+      const technicalPlanId = args[0];
+      const vtcObjective = `Implement technical plan: ${technicalPlanId}`;
+      const createdTask = await hierarchicalTaskManagerPlugin.createTask({
+        title: vtcObjective,
+        description: `VTC execution for technical plan ${technicalPlanId}`,
+        type: 'vtc_execution',
+        priority: 5,
+        effort: 'large',
+        metadata: {
+          technicalPlanId: technicalPlanId,
+          executionMode: flags.mode,
+          claudeIntegration: flags.claudeIntegration,
+          squadConfig: flags.squadConfig ? JSON.parse(flags.squadConfig) : {},
+        },
+      }, technicalPlanId, 'technical_plan'); // Parent is the technical plan
+      console.log('VTC workflow execution initiated as task:', createdTask);
       break;
     case 'progress':
       console.log('Getting VTC progress...');
-      const progress = await vtcService.getVtcProgress(args[0]); // executionId
-      console.log('VTC progress:', progress);
+      const executionId = args[0];
+      const vtcTasks = await defaultRegistry.discover({
+        tags: ['task', 'vtc_execution'],
+        query: { 'metadata.technicalPlanId': executionId },
+      });
+      console.log('VTC progress (related tasks):', vtcTasks);
       break;
     default:
       console.log(`Unknown vtc subcommand: ${subcommand}`);

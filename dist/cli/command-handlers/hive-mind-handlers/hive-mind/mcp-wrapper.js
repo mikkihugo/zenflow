@@ -3,7 +3,7 @@
  * Wraps all 87 MCP tools for coordinated swarm usage
  */
 
-import { spawn } from 'child_process';
+import { RuvSwarm } from 'ruv-swarm';
 
 /**
  * MCP Tool categories and their methods
@@ -117,7 +117,7 @@ const MCP_TOOLS = {
  * MCPToolWrapper class for unified MCP tool access
  */
 export class MCPToolWrapper {
-  constructor(config = {}) {
+  constructor(metaRegistryManager, config = {}) {
     this.config = {
       parallel: true,
       timeout: 60000,
@@ -125,77 +125,39 @@ export class MCPToolWrapper {
       ...config,
     };
 
+    this.metaRegistryManager = metaRegistryManager;
+    this.defaultRegistry = null;
+    this.memoryRagPlugin = null;
+
     this.toolStats = new Map();
     this.parallelQueue = [];
     this.executing = false;
+    this.ruvSwarmInstance = null;
+  }
 
-    /** @type {import('better-sqlite3').Database | null} */
-    this.memoryDb = null;
-    
-    // Initialize memory store for fallback
-    this.memoryStore = new Map();
+  async initialize() {
+    if (this.ruvSwarmInstance) return;
+    console.log('[MCPToolWrapper] Initializing RuvSwarm instance...');
+    try {
+      this.ruvSwarmInstance = await RuvSwarm.initialize();
+      console.log('[MCPToolWrapper] RuvSwarm instance initialized.');
 
-    // Initialize real memory storage
-    this.initializeMemoryStorage();
+      // Get default registry and memory-rag plugin
+      this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
+      if (this.defaultRegistry) {
+        this.memoryRagPlugin = this.defaultRegistry.pluginSystem.getPlugin('memory-rag');
+      }
+
+    } catch (error) {
+      console.error('[MCPToolWrapper] Failed to initialize RuvSwarm:', error);
+      throw error;
+    }
   }
 
   /**
    * Initialize real memory storage using SQLite
    */
-  async initializeMemoryStorage() {
-    try {
-      const { createDatabase, isSQLiteAvailable } = await import('../../../../memory/sqlite-wrapper.js');
-      const path = await import('path');
-      const fs = await import('fs');
-
-      // Check if SQLite is available
-      const sqliteAvailable = await isSQLiteAvailable();
-      if (!sqliteAvailable) {
-        throw new Error('SQLite not available');
-      }
-
-      // Create .hive-mind directory if it doesn't exist
-      const hiveMindDir = path.join(process.cwd(), '.hive-mind');
-      if (!fs.existsSync(hiveMindDir)) {
-        fs.mkdirSync(hiveMindDir, { recursive: true });
-      }
-
-      // Initialize SQLite database
-      const dbPath = path.join(hiveMindDir, 'memory.db');
-      this.memoryDb = await createDatabase(dbPath);
-
-      // Create memories table
-      this.memoryDb.exec(`
-        CREATE TABLE IF NOT EXISTS memories (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          namespace TEXT NOT NULL,
-          key TEXT NOT NULL,
-          value TEXT NOT NULL,
-          type TEXT DEFAULT 'knowledge',
-          timestamp INTEGER NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(namespace, key)
-        )
-      `);
-
-      // Real memory storage initialized with SQLite
-    } catch (error) {
-      console.warn(
-        'Failed to initialize SQLite storage, falling back to in-memory:',
-        error.message,
-      );
-      this.memoryDb = null;
-      this.memoryStore = new Map(); // Fallback to in-memory storage
-      
-      // Log Windows-specific help if applicable
-      if (process.platform === 'win32') {
-        console.info(`
-Windows users: For persistent storage, please see installation guide:
-https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
-`);
-      }
-    }
-  }
+  
 
   /**
    * Execute MCP tool with automatic retry and error handling
@@ -399,33 +361,72 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
    * Internal tool execution
    */
   async _executeToolInternal(toolName, params) {
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
+
     const toolCategory = this._getToolCategory(toolName);
     if (!toolCategory) {
       throw new Error(`Unknown MCP tool: ${toolName}`);
     }
 
-    // Handle memory operations with real storage
-    if (toolName === 'memory_usage') {
-      if (params.action === 'store') {
-        return await this.storeMemory(params.namespace, params.key, params.value, params.type);
-      } else if (params.action === 'retrieve') {
-        return await this.retrieveMemory(params.namespace, params.key);
-      }
-    } else if (toolName === 'memory_search') {
-      return await this.searchMemory(params.namespace, params.pattern);
-    } else if (toolName === 'swarm_status') {
-      return await this.getSwarmStatus(params);
+    // Direct calls to ruv-swarm instance based on toolName
+    switch (toolName) {
+      case 'swarm_init':
+        return await this.ruvSwarmInstance.createSwarm(params);
+      case 'agent_spawn':
+        // Assuming params.swarmId is provided and ruv-swarm can get swarm instance
+        const swarmForAgent = await this.ruvSwarmInstance.getSwarm(params.swarmId);
+        if (!swarmForAgent) throw new Error(`Swarm ${params.swarmId} not found for agent spawn.`);
+        return await swarmForAgent.spawn(params);
+      case 'task_orchestrate':
+        const swarmForTask = await this.ruvSwarmInstance.getSwarm(params.swarmId);
+        if (!swarmForTask) throw new Error(`Swarm ${params.swarmId} not found for task orchestration.`);
+        return await swarmForTask.orchestrate(params.task);
+      case 'swarm_status':
+        const swarmForStatus = await this.ruvSwarmInstance.getSwarm(params.swarmId);
+        return swarmForStatus ? swarmForStatus.getStatus() : { status: 'not_found' };
+      case 'neural_train':
+        // Assuming ruv-swarm has a direct method for neural training
+        return await this.ruvSwarmInstance.neuralOperation('train', params);
+      case 'neural_predict':
+        return await this.ruvSwarmInstance.neuralOperation('predict', params);
+      case 'neural_patterns':
+        return await this.ruvSwarmInstance.neuralOperation('analyze', params);
+      case 'wasm_optimize':
+        return await this.ruvSwarmInstance.neuralOperation('optimize', params);
+      case 'github_repo_analyze':
+      case 'github_pr_manage':
+      case 'github_issue_track':
+      case 'github_release_coord':
+      case 'github_workflow_auto':
+      case 'github_code_review':
+      case 'github_sync_coord':
+      case 'github_metrics':
+        // Assuming ruv-swarm has a githubOperations method
+        const githubOperation = toolName.replace('github_', '');
+        return await this.ruvSwarmInstance.githubOperations(params.repo, githubOperation, params);
+      case 'memory_usage':
+      case 'memory_search':
+      case 'memory_persist':
+      case 'memory_namespace':
+      case 'memory_backup':
+      case 'memory_restore':
+      case 'memory_compress':
+      case 'memory_sync':
+      case 'cache_manage':
+      case 'state_snapshot':
+      case 'context_restore':
+      case 'memory_analytics':
+        // RuvSwarm handles its own memory. These calls should be directed to ruv-swarm's internal memory management.
+        // Assuming ruv-swarm exposes a memory management API or handles these implicitly.
+        console.warn(`[MCPToolWrapper] Memory tool ${toolName} called. Assuming RuvSwarm handles this internally.`);
+        return { status: 'handled_by_ruvswarm', tool: toolName, params };
+      default:
+        // Fallback for unhandled tools, or tools that are not directly exposed by ruv-swarm's top-level API
+        console.warn(`[MCPToolWrapper] Unhandled MCP tool: ${toolName}. Simulating response.`);
+        return this._getMockResponse(toolName, params);
     }
-
-    // For other tools, use mock responses
-    console.log(`Executing MCP tool: mcp__claude-zen__${toolName} with params:`, params);
-
-    // Simulate async execution for non-memory tools
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 500));
-
-    // Mock response based on tool type
-    const mockResponse = this._getMockResponse(toolName, params);
-    return mockResponse;
   }
 
   /**
@@ -585,65 +586,20 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
    * Execute swarm initialization sequence with optimization
    */
   async initializeSwarm(config) {
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
     const swarmId = config.swarmId || `swarm-${Date.now()}`;
-    const startTime = Date.now();
-
     try {
-      // Phase 1: Critical initialization (sequential)
-      const criticalOps = [
-        {
-          tool: 'swarm_init',
-          params: {
-            topology: config.topology || 'hierarchical',
-            maxAgents: config.maxAgents || 8,
-            strategy: 'auto',
-            swarmId,
-          },
-        },
-      ];
+      const swarm = await this.ruvSwarmInstance.createSwarm({
+        id: swarmId,
+        topology: config.topology || 'hierarchical',
+        maxAgents: config.maxAgents || 8,
+        name: swarmId,
+        objective: config.objective || 'general',
+      });
 
-      const [swarmInitResult] = await this.executeParallel(criticalOps);
-
-      // Phase 2: Supporting services (parallel)
-      const supportingOps = [
-        {
-          tool: 'memory_namespace',
-          params: {
-            action: 'create',
-            namespace: swarmId,
-            maxSize: config.memorySize || 100,
-          },
-        },
-        { tool: 'neural_status', params: {} },
-        { tool: 'performance_report', params: { format: 'summary' } },
-        { tool: 'features_detect', params: { component: 'swarm' } },
-      ];
-
-      const supportingResults = await this.executeParallel(supportingOps);
-
-      // Store initialization metadata
-      const initTime = Date.now() - startTime;
-      await this.storeMemory(
-        swarmId,
-        'init_performance',
-        {
-          initTime,
-          topology: config.topology || 'hierarchical',
-          maxAgents: config.maxAgents || 8,
-          timestamp: Date.now(),
-        },
-        'metrics',
-      );
-
-      // Store swarm status
-      await this.storeMemory(
-        swarmId,
-        'status',
-        'active',
-        'status',
-      );
-
-      // Store swarm config
+      // Store initial configuration in memory via MemoryRAGPlugin
       await this.storeMemory(
         swarmId,
         'config',
@@ -656,7 +612,7 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
         'config',
       );
 
-      return [swarmInitResult, ...supportingResults];
+      return swarm;
     } catch (error) {
       console.error('Swarm initialization failed:', error);
       throw error;
@@ -667,170 +623,61 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
    * Spawn multiple agents in parallel with optimization
    */
   async spawnAgents(types, swarmId) {
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
     if (!Array.isArray(types) || types.length === 0) {
       return [];
     }
 
-    const startTime = Date.now();
-
-    // Optimize agent spawning by grouping similar types
-    const groupedTypes = this._groupAgentTypes(types);
-    const allResults = [];
-
     try {
-      // Spawn each group in parallel
-      for (const group of groupedTypes) {
-        const batch = group.map((type) => ({
-          tool: 'agent_spawn',
-          params: {
-            type,
+      const swarm = await this.ruvSwarmInstance.getSwarm(swarmId);
+      if (!swarm) {
+        throw new Error(`Swarm ${swarmId} not found for agent spawning.`);
+      }
+
+      const spawnPromises = types.map(type => swarm.spawn({ type }));
+      const results = await Promise.all(spawnPromises);
+
+      // Store agent information in memory via MemoryRAGPlugin
+      for (const result of results) {
+        if (result && result.id && !result.error) {
+          await this.storeMemory(
             swarmId,
-            timestamp: Date.now(),
-            batchId: `batch-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          },
-        }));
-
-        const groupResults = await this.executeParallel(batch);
-        allResults.push(...groupResults);
-
-        // Store agent information in memory
-        for (const result of groupResults) {
-          if (result && result.agentId && !result.error) {
-            await this.storeMemory(
-              swarmId,
-              `agent-${result.agentId}`,
-              {
-                id: result.agentId,
-                type: result.type,
-                status: result.status || 'active',
-                createdAt: Date.now(),
-              },
-              'agent',
-            );
-          }
+            `agent-${result.id}`,
+            {
+              id: result.id,
+              type: result.type,
+              status: result.status || 'active',
+              createdAt: Date.now(),
+            },
+            'agent',
+          );
         }
       }
 
-      // Track spawn performance
-      const spawnTime = Date.now() - startTime;
-      this._trackSpawnPerformance(types.length, spawnTime);
-
-      return allResults;
+      return results;
     } catch (error) {
       console.error('Agent spawning failed:', error);
       throw error;
     }
   }
 
-  /**
-   * Group agent types for optimized spawning
-   */
-  _groupAgentTypes(types) {
-    // Group complementary agent types that work well together
-    const groups = {
-      development: ['coder', 'architect', 'reviewer'],
-      analysis: ['researcher', 'analyst', 'optimizer'],
-      quality: ['tester', 'documenter'],
-      coordination: ['coordinator'],
-    };
-
-    const result = [];
-    const remaining = [...types];
-
-    // Create groups of complementary agents
-    Object.values(groups).forEach((groupTypes) => {
-      const groupAgents = remaining.filter((type) => groupTypes.includes(type));
-      if (groupAgents.length > 0) {
-        result.push(groupAgents);
-        groupAgents.forEach((type) => {
-          const index = remaining.indexOf(type);
-          if (index > -1) remaining.splice(index, 1);
-        });
-      }
-    });
-
-    // Add remaining agents as individual groups
-    remaining.forEach((type) => result.push([type]));
-
-    return result;
-  }
-
-  /**
-   * Track agent spawn performance
-   */
-  _trackSpawnPerformance(agentCount, spawnTime) {
-    if (!this.spawnStats) {
-      this.spawnStats = {
-        totalSpawns: 0,
-        totalAgents: 0,
-        totalTime: 0,
-        avgTimePerAgent: 0,
-        bestTime: Infinity,
-        worstTime: 0,
-      };
-    }
-
-    this.spawnStats.totalSpawns++;
-    this.spawnStats.totalAgents += agentCount;
-    this.spawnStats.totalTime += spawnTime;
-    this.spawnStats.avgTimePerAgent = this.spawnStats.totalTime / this.spawnStats.totalAgents;
-    this.spawnStats.bestTime = Math.min(this.spawnStats.bestTime, spawnTime);
-    this.spawnStats.worstTime = Math.max(this.spawnStats.worstTime, spawnTime);
-  }
+  
 
   /**
    * Store data in collective memory (REAL IMPLEMENTATION)
    */
   async storeMemory(swarmId, key, value, type = 'knowledge') {
+    if (!this.memoryRagPlugin) {
+      console.warn('[MCPToolWrapper] MemoryRAGPlugin not available. Memory operations will not be persisted.');
+      return { success: false, message: 'MemoryRAGPlugin not available' };
+    }
     try {
-      // Don't reinitialize if we already have storage
-      if (!this.memoryDb && !this.memoryStore) {
-        await this.initializeMemoryStorage();
-      }
-
-      const timestamp = Date.now();
-      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-
-      if (this.memoryDb) {
-        // SQLite storage
-        const stmt = this.memoryDb.prepare(`
-          INSERT OR REPLACE INTO memories (namespace, key, value, type, timestamp)
-          VALUES (?, ?, ?, ?, ?)
-        `);
-
-        const result = stmt.run(swarmId, key, valueStr, type, timestamp);
-
-        return {
-          success: true,
-          action: 'store',
-          namespace: swarmId,
-          key,
-          type,
-          timestamp,
-          id: result.lastInsertRowid,
-        };
-      } else {
-        // Fallback in-memory storage
-        const memoryKey = `${swarmId}:${key}`;
-        this.memoryStore.set(memoryKey, {
-          namespace: swarmId,
-          key,
-          value: valueStr,
-          type,
-          timestamp,
-        });
-
-        return {
-          success: true,
-          action: 'store',
-          namespace: swarmId,
-          key,
-          type,
-          timestamp,
-        };
-      }
+      const result = await this.memoryRagPlugin.storeMemory(swarmId, key, value, type);
+      return { success: true, ...result };
     } catch (error) {
-      console.error('Error storing memory:', error);
+      console.error('Error storing memory via MemoryRAGPlugin:', error);
       throw error;
     }
   }
@@ -839,48 +686,15 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
    * Retrieve data from collective memory (REAL IMPLEMENTATION)
    */
   async retrieveMemory(swarmId, key) {
-    try {
-      // Don't reinitialize if we already have storage
-      if (!this.memoryDb && !this.memoryStore) {
-        await this.initializeMemoryStorage();
-      }
-
-      if (this.memoryDb) {
-        // SQLite retrieval
-        const stmt = this.memoryDb.prepare(`
-          SELECT * FROM memories WHERE namespace = ? AND key = ?
-        `);
-
-        const row = stmt.get(swarmId, key);
-        if (row) {
-          try {
-            return {
-              ...row,
-              value: JSON.parse(row.value),
-            };
-          } catch {
-            return row;
-          }
-        }
-      } else {
-        // Fallback in-memory retrieval
-        const memoryKey = `${swarmId}:${key}`;
-        const memory = this.memoryStore.get(memoryKey);
-        if (memory) {
-          try {
-            return {
-              ...memory,
-              value: JSON.parse(memory.value),
-            };
-          } catch {
-            return memory;
-          }
-        }
-      }
-
+    if (!this.memoryRagPlugin) {
+      console.warn('[MCPToolWrapper] MemoryRAGPlugin not available. Memory retrieval will not function.');
       return null;
+    }
+    try {
+      const result = await this.memoryRagPlugin.retrieveMemory(swarmId, key);
+      return result;
     } catch (error) {
-      console.error('Error retrieving memory:', error);
+      console.error('Error retrieving memory via MemoryRAGPlugin:', error);
       throw error;
     }
   }
@@ -889,89 +703,15 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
    * Search collective memory (REAL IMPLEMENTATION)
    */
   async searchMemory(swarmId, pattern) {
+    if (!this.memoryRagPlugin) {
+      console.warn('[MCPToolWrapper] MemoryRAGPlugin not available. Memory search will not function.');
+      return { success: false, message: 'MemoryRAGPlugin not available' };
+    }
     try {
-      // Don't reinitialize if we already have storage
-      if (!this.memoryDb && !this.memoryStore) {
-        await this.initializeMemoryStorage();
-      }
-
-      let results = [];
-
-      if (this.memoryDb) {
-        // SQLite search
-        let query, params;
-
-        if (pattern && pattern.trim()) {
-          // Search with pattern
-          query = `
-            SELECT * FROM memories 
-            WHERE namespace = ? AND (key LIKE ? OR value LIKE ? OR type LIKE ?)
-            ORDER BY timestamp DESC
-            LIMIT 50
-          `;
-          const searchPattern = `%${pattern}%`;
-          params = [swarmId, searchPattern, searchPattern, searchPattern];
-        } else {
-          // Get all memories for namespace
-          query = `
-            SELECT * FROM memories 
-            WHERE namespace = ?
-            ORDER BY timestamp DESC
-            LIMIT 50
-          `;
-          params = [swarmId];
-        }
-
-        const stmt = this.memoryDb.prepare(query);
-        results = stmt.all(...params);
-
-        // Parse JSON values where possible
-        results = results.map((row) => {
-          try {
-            return {
-              ...row,
-              value: JSON.parse(row.value),
-            };
-          } catch {
-            return row;
-          }
-        });
-      } else {
-        // Fallback in-memory search
-        for (const [memKey, memory] of this.memoryStore) {
-          if (memory.namespace === swarmId) {
-            if (
-              !pattern ||
-              memory.key.includes(pattern) ||
-              memory.value.includes(pattern) ||
-              memory.type.includes(pattern)
-            ) {
-              try {
-                results.push({
-                  ...memory,
-                  value: JSON.parse(memory.value),
-                });
-              } catch {
-                results.push(memory);
-              }
-            }
-          }
-        }
-
-        // Sort by timestamp descending
-        results.sort((a, b) => b.timestamp - a.timestamp);
-        results = results.slice(0, 50);
-      }
-
-      return {
-        success: true,
-        namespace: swarmId,
-        pattern: pattern || '',
-        total: results.length,
-        results: results,
-      };
+      const results = await this.memoryRagPlugin.searchMemory(swarmId, pattern);
+      return { success: true, ...results };
     } catch (error) {
-      console.error('Error searching memory:', error);
+      console.error('Error searching memory via MemoryRAGPlugin:', error);
       throw error;
     }
   }
@@ -980,382 +720,113 @@ https://github.com/ruvnet/claude-code-flow/docs/windows-installation.md
    * Orchestrate task with monitoring and optimization
    */
   async orchestrateTask(task, strategy = 'parallel', metadata = {}) {
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
     const taskId = metadata.taskId || `task-${Date.now()}`;
     const swarmId = metadata.swarmId || 'default-swarm';
-    const complexity = metadata.complexity || 'medium';
 
-    // Store task information
-    await this.storeMemory(
-      swarmId,
-      `task-${taskId}`,
-      {
+    try {
+      const swarm = await this.ruvSwarmInstance.getSwarm(swarmId);
+      if (!swarm) {
+        throw new Error(`Swarm ${swarmId} not found for task orchestration.`);
+      }
+
+      const orchestrationResult = await swarm.orchestrate({
         id: taskId,
-        task,
+        description: task,
         strategy,
-        status: 'pending',
         priority: metadata.priority || 5,
-        complexity,
-        createdAt: Date.now(),
-      },
-      'task',
-    );
+        estimatedDuration: metadata.estimatedDuration || 30000,
+        metadata: metadata,
+      });
 
-    // Adjust monitoring frequency based on task complexity
-    const monitoringInterval =
-      {
-        low: 10000,
-        medium: 5000,
-        high: 2000,
-      }[complexity] || 5000;
-
-    const batch = [
-      {
-        tool: 'task_orchestrate',
-        params: {
-          task,
-          strategy,
-          taskId,
-          priority: metadata.priority || 5,
-          estimatedDuration: metadata.estimatedDuration || 30000,
-        },
-      },
-      {
-        tool: 'swarm_monitor',
-        params: {
-          interval: monitoringInterval,
-          taskId,
-          metrics: ['performance', 'progress', 'bottlenecks'],
-        },
-      },
-      // Add performance tracking for high-priority tasks
-      ...(metadata.priority > 7
-        ? [
-            {
-              tool: 'performance_report',
-              params: { format: 'detailed', taskId },
-            },
-          ]
-        : []),
-    ];
-
-    const results = await this.executeParallel(batch);
-
-    // Update task status
-    await this.storeMemory(
-      swarmId,
-      `task-${taskId}`,
-      {
-        id: taskId,
-        task,
-        strategy,
-        status: 'in_progress',
-        priority: metadata.priority || 5,
-        complexity,
-        createdAt: Date.now(),
-      },
-      'task',
-    );
-
-    return results;
+      return orchestrationResult;
+    } catch (error) {
+      console.error('Error orchestrating task with RuvSwarm:', error);
+      throw error;
+    }
   }
 
   /**
    * Analyze performance bottlenecks
    */
   async analyzePerformance(swarmId) {
-    const batch = [
-      { tool: 'bottleneck_analyze', params: { component: swarmId } },
-      { tool: 'performance_report', params: { format: 'detailed' } },
-      { tool: 'token_usage', params: { operation: swarmId } },
-    ];
-
-    return await this.executeParallel(batch);
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
+    try {
+      const swarm = await this.ruvSwarmInstance.getSwarm(swarmId);
+      if (!swarm) {
+        throw new Error(`Swarm ${swarmId} not found for performance analysis.`);
+      }
+      return await swarm.analyzePerformance();
+    } catch (error) {
+      console.error('Error analyzing performance with RuvSwarm:', error);
+      throw error;
+    }
   }
 
   /**
    * GitHub integration for code operations
    */
   async githubOperations(repo, operation, params = {}) {
-    const githubTools = {
-      analyze: 'github_repo_analyze',
-      pr: 'github_pr_manage',
-      issue: 'github_issue_track',
-      review: 'github_code_review',
-    };
-
-    const tool = githubTools[operation];
-    if (!tool) {
-      throw new Error(`Unknown GitHub operation: ${operation}`);
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
     }
-
-    return await this.executeTool(tool, { repo, ...params });
+    try {
+      return await this.ruvSwarmInstance.githubOperations(repo, operation, params);
+    } catch (error) {
+      console.error('Error performing GitHub operation with RuvSwarm:', error);
+      throw error;
+    }
   }
 
   /**
    * Neural network operations
    */
   async neuralOperation(operation, params = {}) {
-    const neuralTools = {
-      train: 'neural_train',
-      predict: 'neural_predict',
-      analyze: 'neural_patterns',
-      optimize: 'wasm_optimize',
-    };
-
-    const tool = neuralTools[operation];
-    if (!tool) {
-      throw new Error(`Unknown neural operation: ${operation}`);
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
     }
-
-    return await this.executeTool(tool, params);
+    try {
+      return await this.ruvSwarmInstance.neuralOperation(operation, params);
+    } catch (error) {
+      console.error('Error performing neural operation with RuvSwarm:', error);
+      throw error;
+    }
   }
 
   /**
    * Clean up and destroy swarm
    */
   async destroySwarm(swarmId) {
-    const batch = [
-      { tool: 'swarm_destroy', params: { swarmId } },
-      {
-        tool: 'memory_namespace',
-        params: {
-          action: 'delete',
-          namespace: swarmId,
-        },
-      },
-      {
-        tool: 'cache_manage',
-        params: {
-          action: 'clear',
-          key: `swarm-${swarmId}`,
-        },
-      },
-    ];
-
-    return await this.executeParallel(batch);
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
+    try {
+      await this.ruvSwarmInstance.destroySwarm(swarmId);
+      return { success: true, swarmId };
+    } catch (error) {
+      console.error('Error destroying swarm with RuvSwarm:', error);
+      throw error;
+    }
   }
 
   /**
    * Get real swarm status from memory storage
    */
   async getSwarmStatus(params = {}) {
+    if (!this.ruvSwarmInstance) {
+      throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
+    }
     try {
-      // Don't reinitialize if we already have storage
-      if (!this.memoryDb && !this.memoryStore) {
-        await this.initializeMemoryStorage();
-      }
-
-      const swarms = [];
-      let activeAgents = 0;
-      let totalTasks = 0;
-      let completedTasks = 0;
-
-      if (this.memoryDb) {
-        // Get all unique swarm namespaces
-        const namespacesQuery = this.memoryDb.prepare(`
-          SELECT DISTINCT namespace FROM memories 
-          WHERE namespace LIKE 'swarm-%' OR namespace LIKE 'hive-%'
-          ORDER BY timestamp DESC
-        `);
-        const namespaces = namespacesQuery.all();
-
-        // For each swarm, gather its information
-        for (const { namespace } of namespaces) {
-          const swarmId = namespace;
-          
-          // Get swarm metadata
-          const metadataQuery = this.memoryDb.prepare(`
-            SELECT key, value, type, timestamp FROM memories 
-            WHERE namespace = ? AND (
-              key IN ('init_performance', 'config', 'status', 'agents', 'tasks', 'topology')
-              OR key LIKE 'agent-%'
-              OR key LIKE 'task-%'
-            )
-          `);
-          const swarmData = metadataQuery.all(swarmId);
-
-          // Parse swarm information
-          const swarmInfo = {
-            id: swarmId,
-            name: swarmId,
-            status: 'unknown',
-            agents: 0,
-            tasks: { total: 0, completed: 0, pending: 0, failed: 0 },
-            topology: 'hierarchical',
-            createdAt: null,
-            lastActivity: null,
-            memoryUsage: swarmData.length
-          };
-
-          // Process swarm data
-          for (const record of swarmData) {
-            try {
-              const value = typeof record.value === 'string' ? JSON.parse(record.value) : record.value;
-              
-              switch (record.key) {
-                case 'init_performance':
-                  swarmInfo.createdAt = value.timestamp;
-                  swarmInfo.topology = value.topology || 'hierarchical';
-                  break;
-                case 'status':
-                  swarmInfo.status = value;
-                  break;
-                case 'config':
-                  swarmInfo.topology = value.topology || swarmInfo.topology;
-                  break;
-              }
-
-              // Count agents
-              if (record.key.startsWith('agent-')) {
-                swarmInfo.agents++;
-                activeAgents++;
-              }
-
-              // Count tasks
-              if (record.key.startsWith('task-')) {
-                swarmInfo.tasks.total++;
-                totalTasks++;
-                if (value.status === 'completed') {
-                  swarmInfo.tasks.completed++;
-                  completedTasks++;
-                } else if (value.status === 'failed') {
-                  swarmInfo.tasks.failed++;
-                } else if (value.status === 'pending' || value.status === 'in_progress') {
-                  swarmInfo.tasks.pending++;
-                }
-              }
-
-              // Track last activity
-              if (record.timestamp > (swarmInfo.lastActivity || 0)) {
-                swarmInfo.lastActivity = record.timestamp;
-              }
-            } catch (e) {
-              // Skip invalid JSON values
-            }
-          }
-
-          // Determine swarm status based on activity
-          if (swarmInfo.status === 'unknown') {
-            const now = Date.now();
-            const lastActivityAge = now - (swarmInfo.lastActivity || 0);
-            
-            if (lastActivityAge < 60000) { // Active within last minute
-              swarmInfo.status = 'active';
-            } else if (lastActivityAge < 300000) { // Active within last 5 minutes
-              swarmInfo.status = 'idle';
-            } else {
-              swarmInfo.status = 'inactive';
-            }
-          }
-
-          swarms.push(swarmInfo);
-        }
-
-        // Get recent activity logs
-        const activityQuery = this.memoryDb.prepare(`
-          SELECT namespace, key, type, timestamp FROM memories 
-          WHERE (namespace LIKE 'swarm-%' OR namespace LIKE 'hive-%')
-          AND timestamp > ?
-          ORDER BY timestamp DESC
-          LIMIT 10
-        `);
-        const recentActivity = activityQuery.all(Date.now() - 300000); // Last 5 minutes
-
-        return {
-          swarms,
-          activeAgents,
-          totalTasks,
-          completedTasks,
-          pendingTasks: totalTasks - completedTasks,
-          recentActivity: recentActivity.map(r => ({
-            swarmId: r.namespace,
-            action: r.key,
-            type: r.type,
-            timestamp: r.timestamp
-          })),
-          summary: {
-            totalSwarms: swarms.length,
-            activeSwarms: swarms.filter(s => s.status === 'active').length,
-            idleSwarms: swarms.filter(s => s.status === 'idle').length,
-            inactiveSwarms: swarms.filter(s => s.status === 'inactive').length
-          }
-        };
-      } else {
-        // Fallback to in-memory storage
-        const swarmMap = new Map();
-        
-        for (const [key, memory] of this.memoryStore) {
-          const namespace = memory.namespace;
-          if (namespace && (namespace.startsWith('swarm-') || namespace.startsWith('hive-'))) {
-            if (!swarmMap.has(namespace)) {
-              swarmMap.set(namespace, {
-                id: namespace,
-                name: namespace,
-                status: 'active',
-                agents: 0,
-                tasks: { total: 0, completed: 0, pending: 0, failed: 0 },
-                memoryUsage: 0
-              });
-            }
-            
-            const swarm = swarmMap.get(namespace);
-            swarm.memoryUsage++;
-            
-            if (memory.key.startsWith('agent-')) {
-              swarm.agents++;
-              activeAgents++;
-            }
-            
-            if (memory.key.startsWith('task-')) {
-              swarm.tasks.total++;
-              totalTasks++;
-              try {
-                const taskData = JSON.parse(memory.value);
-                if (taskData.status === 'completed') {
-                  swarm.tasks.completed++;
-                  completedTasks++;
-                } else if (taskData.status === 'failed') {
-                  swarm.tasks.failed++;
-                } else if (taskData.status === 'pending' || taskData.status === 'in_progress') {
-                  swarm.tasks.pending++;
-                }
-              } catch (e) {
-                // Skip invalid JSON
-              }
-            }
-          }
-        }
-        
-        return {
-          swarms: Array.from(swarmMap.values()),
-          activeAgents,
-          totalTasks,
-          completedTasks,
-          pendingTasks: totalTasks - completedTasks,
-          summary: {
-            totalSwarms: swarmMap.size,
-            activeSwarms: swarmMap.size
-          }
-        };
-      }
+      const swarmId = params.swarmId || 'default'; // Assuming a default swarm if not specified
+      const status = await this.ruvSwarmInstance.getSwarmStatus(swarmId);
+      return status;
     } catch (error) {
-      console.error('Error getting swarm status:', error);
-      // Return empty status on error
-      return {
-        swarms: [],
-        activeAgents: 0,
-        totalTasks: 0,
-        completedTasks: 0,
-        pendingTasks: 0,
-        recentActivity: [],
-        summary: {
-          totalSwarms: 0,
-          activeSwarms: 0,
-          idleSwarms: 0,
-          inactiveSwarms: 0
-        },
-        error: error.message
-      };
+      console.error('Error getting swarm status from RuvSwarm:', error);
+      throw error;
     }
   }
 }

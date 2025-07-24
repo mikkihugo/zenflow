@@ -214,7 +214,7 @@ npx claude-zen swarm full-stack --project "e-commerce" --parallel-components '{
   "frontend": { "framework": "react", "agents": 3 },
   "backend": { "framework": "node", "agents": 4 },
   "mobile": { "platforms": ["ios", "android"], "agents": 4 },
-  "infrastructure": { "provider": "aws", "agents": 2 },
+  
   "testing": { "coverage": "95%", "agents": 3 },
   "documentation": { "types": ["api", "user", "dev"], "agents": 2 }
 }' --integrated --continuous
@@ -238,7 +238,7 @@ npx claude-zen swarm data-pipeline --config '{
 # Comprehensive security analysis
 npx claude-zen swarm security-audit --parallel-scans '{
   "code": { "tools": ["sast", "dependencies"], "agents": 5 },
-  "infrastructure": { "tools": ["network", "config"], "agents": 3 },
+  
   "runtime": { "tools": ["dast", "fuzzing"], "agents": 4 },
   "compliance": { "standards": ["owasp", "pci"], "agents": 2 }
 }' --report --remediate

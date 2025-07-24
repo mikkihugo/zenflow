@@ -1,7 +1,7 @@
 #!/bin/sh
 # Claude-Zen Smart Dispatcher - Detects and uses the best available runtime
 
-VERSION="2.0.0-alpha.67-singularity"
+VERSION="2.0.0-alpha.70"
 
 # Determine the correct path based on how the script is invoked
 if [ -L "$0" ]; then
@@ -48,13 +48,13 @@ for arg in "$@"; do
   fi
 done
 
-# Use Node.js with Google Code Standard architecture
+# Use Node.js 22 via mise with Google Code Standard architecture
 if [ -f "$ROOT_DIR/dist/cli/cli-main.js" ]; then
   # Use built JavaScript version (preferred)
-  exec node "$ROOT_DIR/dist/cli/cli-main.js" "$@"
+  cd "$ROOT_DIR" && exec ./scripts/node22.sh node dist/cli/cli-main.js "$@"
 elif [ -f "$ROOT_DIR/src/cli/cli-main.js" ]; then
   # Use source version
-  exec node "$ROOT_DIR/src/cli/cli-main.js" "$@"
+  cd "$ROOT_DIR" && exec ./scripts/node22.sh node src/cli/cli-main.js "$@"
 else
   # No runtime available, show help
   echo "🧠 Claude-Flow v$VERSION - Advanced AI Agent Orchestration System"

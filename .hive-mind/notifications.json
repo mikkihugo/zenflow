@@ -1,0 +1,116 @@
+{
+  "providers": {
+    "email": {
+      "enabled": false,
+      "type": "smtp",
+      "config": {
+        "host": "smtp.gmail.com",
+        "port": 587,
+        "secure": false,
+        "auth": {},
+        "from": "claude-zen@example.com",
+        "to": "admin@example.com"
+      }
+    },
+    "webhook": {
+      "enabled": true,
+      "type": "webhook",
+      "config": {
+        "urls": [],
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "User-Agent": "Claude-Zen-Notifications/1.0"
+        },
+        "timeout": 10000,
+        "retryAttempts": 2
+      }
+    },
+    "console": {
+      "enabled": true,
+      "type": "console",
+      "config": {
+        "colorize": true,
+        "timestamp": true,
+        "level": "info"
+      }
+    }
+  },
+  "events": {
+    "task.completed": {
+      "enabled": true,
+      "providers": [
+        "console",
+        "webhook"
+      ],
+      "template": "task_completed"
+    },
+    "task.failed": {
+      "enabled": true,
+      "providers": [
+        "console",
+        "email",
+        "webhook"
+      ],
+      "template": "task_failed",
+      "priority": "high"
+    },
+    "swarm.created": {
+      "enabled": true,
+      "providers": [
+        "console"
+      ],
+      "template": "swarm_created"
+    },
+    "agent.spawned": {
+      "enabled": false,
+      "providers": [
+        "console"
+      ],
+      "template": "agent_spawned"
+    },
+    "system.error": {
+      "enabled": true,
+      "providers": [
+        "console",
+        "email",
+        "webhook"
+      ],
+      "template": "system_error",
+      "priority": "critical"
+    },
+    "health.check": {
+      "enabled": false,
+      "providers": [
+        "webhook"
+      ],
+      "template": "health_check"
+    }
+  },
+  "templates": {
+    "task_completed": {
+      "subject": "✅ Task Completed - {{task.name}}",
+      "body": "Task \"{{task.name}}\" has been completed successfully.\n\nDetails:\n- Duration: {{task.duration}}\n- Status: {{task.status}}\n- Results: {{task.results}}"
+    },
+    "task_failed": {
+      "subject": "❌ Task Failed - {{task.name}}",
+      "body": "Task \"{{task.name}}\" has failed.\n\nError: {{error.message}}\nStack: {{error.stack}}\n\nPlease investigate and resolve the issue."
+    },
+    "swarm_created": {
+      "subject": "🐝 Swarm Created - {{swarm.name}}",
+      "body": "New swarm \"{{swarm.name}}\" has been created.\n\nConfiguration:\n- Topology: {{swarm.topology}}\n- Max Agents: {{swarm.maxAgents}}\n- Strategy: {{swarm.strategy}}"
+    },
+    "agent_spawned": {
+      "subject": "🤖 Agent Spawned - {{agent.name}}",
+      "body": "New agent \"{{agent.name}}\" has been spawned.\n\nType: {{agent.type}}\nCapabilities: {{agent.capabilities}}"
+    },
+    "system_error": {
+      "subject": "🚨 System Error - {{error.type}}",
+      "body": "A system error has occurred.\n\nError: {{error.message}}\nStack: {{error.stack}}\nTimestamp: {{timestamp}}\n\nImmediate attention required."
+    },
+    "health_check": {
+      "subject": "🏥 Health Check - {{system.status}}",
+      "body": "System health check completed.\n\nStatus: {{system.status}}\nServices: {{system.services}}\nMetrics: {{system.metrics}}"
+    }
+  }
+}

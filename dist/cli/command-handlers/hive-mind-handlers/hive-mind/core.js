@@ -11,8 +11,12 @@ import { PerformanceOptimizer } from './performance-optimizer.js';
  * HiveMindCore - Main orchestration class
  */
 export class HiveMindCore extends EventEmitter {
-  constructor(config = {}) {
+  constructor(metaRegistryManager, config = {}) {
     super();
+
+    this.metaRegistryManager = metaRegistryManager;
+    this.defaultRegistry = null;
+    this.hierarchicalTaskManagerPlugin = null;
 
     this.config = {
       objective: '',
@@ -32,10 +36,7 @@ export class HiveMindCore extends EventEmitter {
       status: 'initializing',
       swarmId: null,
       queen: null,
-      workers: new Map(),
-      tasks: new Map(),
-      memory: new Map(),
-      decisions: new Map(),
+      // Workers, tasks, memory, decisions are now managed by ruv-swarm and accessed via mcpWrapper
       metrics: {
         tasksCreated: 0,
         tasksCompleted: 0,
@@ -48,6 +49,7 @@ export class HiveMindCore extends EventEmitter {
       parallel: true,
       timeout: this.config.taskTimeout * 60 * 1000,
     });
+    this.mcpWrapper.initialize();
 
     // Initialize performance optimizer
     this.performanceOptimizer = new PerformanceOptimizer({
@@ -67,19 +69,20 @@ export class HiveMindCore extends EventEmitter {
    * Initialize event handlers
    */
   _initializeEventHandlers() {
-    this.on('task:created', (task) => {
+    this.on('task:created', async (task) => {
       this.state.metrics.tasksCreated++;
-      this._checkAutoScale();
+      // Auto-scaling check will now query ruv-swarm for pending tasks and idle workers
+      await this._checkAutoScale();
     });
 
-    this.on('task:completed', (task) => {
+    this.on('task:completed', async (task) => {
       this.state.metrics.tasksCompleted++;
-      this._updatePerformanceMetrics();
+      await this._updatePerformanceMetrics();
     });
 
-    this.on('task:failed', (data) => {
+    this.on('task:failed', async (data) => {
       console.warn(`Task failed: ${data.task.id}`, data.error);
-      this._handleTaskFailure(data.task, data.error);
+      await this._handleTaskFailure(data.task, data.error);
     });
 
     this.on('decision:reached', (decision) => {
@@ -87,7 +90,8 @@ export class HiveMindCore extends EventEmitter {
     });
 
     this.on('worker:idle', (workerId) => {
-      this._assignNextTask(workerId);
+      // This event is now largely handled by ruv-swarm's internal task assignment
+      console.warn('[HiveMindCore] worker:idle event is deprecated. RuvSwarm handles task assignment.');
     });
 
     this.on('error', (error) => {
@@ -134,30 +138,31 @@ export class HiveMindCore extends EventEmitter {
     // Update metrics
     this.state.metrics.tasksFailed = (this.state.metrics.tasksFailed || 0) + 1;
 
-    // Attempt task retry for recoverable failures
-    if (task.retryCount < 2 && this._isRecoverableError(error)) {
-      task.retryCount = (task.retryCount || 0) + 1;
-      task.status = 'pending';
+    // Ruv-swarm handles task retry and recovery internally
+    console.warn('[HiveMindCore] Task failure handling is deprecated. RuvSwarm handles recovery.');
 
-      // Find another worker for retry
-      setTimeout(() => {
-        const worker = this._findBestWorker(task);
-        if (worker) {
-          this._assignTask(worker.id, task.id);
-        }
-      }, 5000); // Wait 5 seconds before retry
-
-      console.log(`Retrying task ${task.id} (attempt ${task.retryCount})`);
-    }
+    // Log the failure to memory via mcpWrapper
+    this.mcpWrapper.executeTool('memory_usage', {
+      action: 'store',
+      namespace: this.state.swarmId,
+      key: `task_failure-${task.id}`,
+      value: {
+        taskId: task.id,
+        error: error.message,
+        stack: error.stack,
+        timestamp: Date.now(),
+      },
+      type: 'error',
+    }).catch(console.error);
   }
 
   /**
    * Check if error is recoverable
    */
   _isRecoverableError(error) {
-    const recoverableErrors = ['timeout', 'network', 'temporary', 'connection'];
-
-    return recoverableErrors.some((type) => error.message.toLowerCase().includes(type));
+    // Ruv-swarm handles error recovery internally
+    console.warn('[HiveMindCore] _isRecoverableError is deprecated. RuvSwarm handles error recovery.');
+    return false;
   }
 
   /**
@@ -167,17 +172,36 @@ export class HiveMindCore extends EventEmitter {
     try {
       this.state.status = 'initializing';
 
-      // Initialize swarm with MCP tools
-      const [swarmInit, memoryInit, neuralInit] = await this.mcpWrapper.initializeSwarm({
+      // Get default registry and hierarchical task manager plugin
+      this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
+      if (!this.defaultRegistry) {
+        throw new Error('Default MetaRegistry not found.');
+      }
+      this.hierarchicalTaskManagerPlugin = this.defaultRegistry.pluginSystem.getPlugin('hierarchical-task-manager');
+      if (!this.hierarchicalTaskManagerPlugin) {
+        throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
+      }
+
+      // Initialize ruv-swarm via mcpWrapper
+      await this.mcpWrapper.initialize();
+
+      // Initialize swarm with MCP tools (now directly using ruv-swarm via mcpWrapper)
+      const swarmInitResult = await this.mcpWrapper.executeTool('swarm_init', {
         topology: this._determineTopology(),
         maxAgents: this.config.maxWorkers + 1, // +1 for queen
         swarmId: this.config.name,
       });
 
-      this.state.swarmId = swarmInit.swarmId;
+      this.state.swarmId = swarmInitResult.swarmId;
 
-      // Store initial configuration in memory
-      await this.mcpWrapper.storeMemory(this.state.swarmId, 'config', this.config, 'system');
+      // Store initial configuration in memory (via mcpWrapper, which uses ruv-swarm's memory)
+      await this.mcpWrapper.executeTool('memory_usage', {
+        action: 'store',
+        namespace: this.state.swarmId,
+        key: 'config',
+        value: this.config,
+        type: 'system',
+      });
 
       this.state.status = 'ready';
       this.emit('initialized', { swarmId: this.state.swarmId });
@@ -219,19 +243,31 @@ export class HiveMindCore extends EventEmitter {
    * Spawn the queen coordinator
    */
   async spawnQueen(queenData) {
-    const [spawnResult] = await this.mcpWrapper.spawnAgents(['coordinator'], this.state.swarmId);
+    const spawnResult = await this.mcpWrapper.executeTool('agent_spawn', {
+      type: 'coordinator',
+      name: 'Queen Coordinator',
+      swarmId: this.state.swarmId,
+      role: 'queen',
+      capabilities: ['coordination', 'planning', 'decision-making'],
+    });
 
     this.state.queen = {
       id: queenData.id,
       agentId: spawnResult.agentId,
-      type: this.config.queenType,
+      type: 'coordinator',
       status: 'active',
       decisions: 0,
       tasks: 0,
     };
 
-    // Store queen info in memory
-    await this.mcpWrapper.storeMemory(this.state.swarmId, 'queen', this.state.queen, 'system');
+    // Store queen info in memory (via mcpWrapper, which uses ruv-swarm's memory)
+    await this.mcpWrapper.executeTool('memory_usage', {
+      action: 'store',
+      namespace: this.state.swarmId,
+      key: 'queen',
+      value: this.state.queen,
+      type: 'system',
+    });
 
     this.emit('queen:spawned', this.state.queen);
     return this.state.queen;
@@ -245,76 +281,63 @@ export class HiveMindCore extends EventEmitter {
 
     try {
       // Batch spawn agents in parallel with optimized chunking
-      const chunkSize = Math.min(workerTypes.length, 5); // Optimal batch size
-      const chunks = [];
+      const groupedTypes = this._groupAgentTypes(workerTypes);
+      const allResults = [];
 
-      for (let i = 0; i < workerTypes.length; i += chunkSize) {
-        chunks.push(workerTypes.slice(i, i + chunkSize));
+      for (const group of groupedTypes) {
+        const batch = group.map((type) => ({
+          tool: 'agent_spawn',
+          params: {
+            type,
+            swarmId: this.state.swarmId,
+            timestamp: Date.now(),
+            batchId: `batch-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          },
+        }));
+
+        const groupResults = await this.mcpWrapper.executeParallel(batch);
+        allResults.push(...groupResults);
+
+        // Store agent information in memory (via mcpWrapper)
+        for (const result of groupResults) {
+          if (result && result.agentId && !result.error) {
+            await this.mcpWrapper.executeTool('memory_usage', {
+              action: 'store',
+              namespace: this.state.swarmId,
+              key: `agent-${result.agentId}`,
+              value: {
+                id: result.agentId,
+                type: result.type,
+                status: result.status || 'active',
+                createdAt: Date.now(),
+              },
+              type: 'agent',
+            });
+          }
+        }
       }
 
-      // Process chunks in parallel with Promise.all
-      const allResults = await Promise.all(
-        chunks.map((chunk) => this.mcpWrapper.spawnAgents(chunk, this.state.swarmId)),
-      );
+      // Track spawn performance
+      const spawnTime = Date.now() - startTime;
+      this._trackSpawnPerformance(workerTypes.length, spawnTime);
 
-      // Flatten results
-      const spawnResults = allResults.flat();
-
-      // Batch create worker objects
-      const workers = [];
-      const workerUpdates = [];
-
-      spawnResults.forEach((result, index) => {
-        const worker = {
-          id: `worker-${index}`,
-          agentId: result.agentId,
-          type: workerTypes[index],
-          status: 'idle',
-          tasksCompleted: 0,
-          currentTask: null,
-          spawnedAt: Date.now(),
-          performance: {
-            avgTaskTime: 0,
-            successRate: 1.0,
-          },
-        };
-
-        workers.push(worker);
-        this.state.workers.set(worker.id, worker);
-
-        workerUpdates.push({
-          type: 'worker_spawned',
-          workerId: worker.id,
-          workerType: worker.type,
-          timestamp: worker.spawnedAt,
-        });
+      // Store worker info in memory (via mcpWrapper)
+      await this.mcpWrapper.executeTool('memory_usage', {
+        action: 'store',
+        namespace: this.state.swarmId,
+        key: 'workers',
+        value: allResults.map(r => ({ id: r.agentId, type: r.type, status: r.status })),
+        type: 'system',
       });
 
-      // Batch memory operations
-      await Promise.all([
-        this.mcpWrapper.storeMemory(this.state.swarmId, 'workers', workers, 'system'),
-        this.mcpWrapper.storeMemory(
-          this.state.swarmId,
-          'worker_spawn_batch',
-          {
-            count: workers.length,
-            types: workerTypes,
-            spawnTime: Date.now() - startTime,
-            updates: workerUpdates,
-          },
-          'metrics',
-        ),
-      ]);
-
-      // Emit batch completion event
       this.emit('workers:spawned', {
-        count: this.state.workers.size,
-        batchSize: workers.length,
+        count: allResults.length,
+        batchSize: allResults.length,
         spawnTime: Date.now() - startTime,
-        workers: workers,
+        workers: allResults,
       });
 
-      return workers;
+      return allResults;
     } catch (error) {
       this.emit('error', {
         type: 'spawn_batch_failed',
@@ -352,25 +375,25 @@ export class HiveMindCore extends EventEmitter {
     };
 
     // Parallel operations: task storage, orchestration, and worker finding
-    const [orchestrateResult, bestWorker] = await Promise.all([
-      this.mcpWrapper.orchestrateTask(description, 'adaptive'),
-      this._findBestWorkerAsync(task),
-      // Store task immediately in parallel
-      (async () => {
-        this.state.tasks.set(task.id, task);
-        await this.mcpWrapper.storeMemory(this.state.swarmId, `task-${task.id}`, task, 'task');
-      })(),
+    const [orchestrateResult] = await this.mcpWrapper.executeParallel([
+      {
+        tool: 'task_orchestrate',
+        params: {
+          task: description,
+          strategy: 'adaptive',
+          taskId,
+          priority,
+          estimatedDuration: task.metadata.estimatedDuration,
+        },
+      },
     ]);
 
-    task.orchestrationId = orchestrateResult[0].taskId;
+    task.orchestrationId = orchestrateResult.taskId;
 
     this.emit('task:created', task);
 
-    // Assign task if worker available
-    if (bestWorker) {
-      // Use non-blocking assignment
-      setImmediate(() => this._assignTask(bestWorker.id, task.id));
-    }
+    // Assign task if worker available (ruv-swarm handles assignment internally)
+    console.log(`[HiveMindCore] Task ${taskId} created and orchestrated. RuvSwarm will handle assignment.`);
 
     return task;
   }
@@ -419,289 +442,43 @@ export class HiveMindCore extends EventEmitter {
   /**
    * Find best worker for task (optimized async version)
    */
-  async _findBestWorkerAsync(task) {
-    const availableWorkers = Array.from(this.state.workers.values()).filter(
-      (w) => w.status === 'idle',
-    );
-
-    if (availableWorkers.length === 0) {
-      return null;
-    }
-
-    // Use cached analysis if available
-    const cacheKey = `worker_match_${task.description.substring(0, 50)}`;
-    const cachedMatch = await this.mcpWrapper.retrieveMemory(this.state.swarmId, cacheKey);
-
-    if (cachedMatch && cachedMatch.timestamp > Date.now() - 300000) {
-      // 5 min cache
-      const cachedWorker = availableWorkers.find((w) => w.type === cachedMatch.workerType);
-      if (cachedWorker) return cachedWorker;
-    }
-
-    // Enhanced matching algorithm with performance scoring
-    const taskLower = task.description.toLowerCase();
-    const taskWords = taskLower.split(/\s+/);
-
-    // Enhanced priority mapping with weights
-    const priorityMap = {
-      researcher: {
-        keywords: ['research', 'investigate', 'analyze', 'study', 'explore'],
-        weight: 1.2,
-      },
-      coder: {
-        keywords: ['code', 'implement', 'build', 'develop', 'fix', 'create', 'program'],
-        weight: 1.0,
-      },
-      analyst: {
-        keywords: ['analyze', 'data', 'metrics', 'performance', 'report', 'statistics'],
-        weight: 1.1,
-      },
-      tester: { keywords: ['test', 'validate', 'check', 'verify', 'quality', 'qa'], weight: 1.0 },
-      architect: {
-        keywords: ['design', 'architecture', 'structure', 'plan', 'system'],
-        weight: 1.3,
-      },
-      reviewer: { keywords: ['review', 'feedback', 'improve', 'refactor', 'audit'], weight: 1.0 },
-      optimizer: {
-        keywords: ['optimize', 'performance', 'speed', 'efficiency', 'enhance'],
-        weight: 1.4,
-      },
-      documenter: { keywords: ['document', 'explain', 'write', 'describe', 'manual'], weight: 0.9 },
-    };
-
-    // Calculate scores for each worker
-    const workerScores = availableWorkers.map((worker) => {
-      const typeInfo = priorityMap[worker.type] || { keywords: [], weight: 1.0 };
-
-      // Keyword matching score
-      const keywordScore = typeInfo.keywords.reduce((score, keyword) => {
-        return score + (taskWords.includes(keyword) ? 1 : 0);
-      }, 0);
-
-      // Performance history score
-      const performanceScore = worker.performance
-        ? worker.performance.successRate * 0.5 + (1 / (worker.performance.avgTaskTime + 1)) * 0.5
-        : 0.5;
-
-      // Task completion rate
-      const completionScore =
-        worker.tasksCompleted > 0 ? Math.min(worker.tasksCompleted / 10, 1) : 0;
-
-      // Combined score
-      const totalScore =
-        (keywordScore * 2 + // Keyword relevance
-          performanceScore * 1.5 + // Historical performance
-          completionScore * 1.0) * // Experience
-        typeInfo.weight;
-
-      return {
-        worker,
-        score: totalScore,
-        breakdown: {
-          keyword: keywordScore,
-          performance: performanceScore,
-          completion: completionScore,
-          weight: typeInfo.weight,
-        },
-      };
-    });
-
-    // Sort by score and select best
-    workerScores.sort((a, b) => b.score - a.score);
-    const bestMatch = workerScores[0];
-
-    // Cache the result for future use
-    if (bestMatch.score > 0) {
-      setImmediate(async () => {
-        await this.mcpWrapper.storeMemory(
-          this.state.swarmId,
-          cacheKey,
-          {
-            workerType: bestMatch.worker.type,
-            score: bestMatch.score,
-            timestamp: Date.now(),
-          },
-          'cache',
-        );
-      });
-    }
-
-    return bestMatch ? bestMatch.worker : availableWorkers[0];
+  _findBestWorkerAsync(task) {
+    // Ruv-swarm handles worker assignment internally via task orchestration
+    console.warn('[HiveMindCore] _findBestWorkerAsync is deprecated. RuvSwarm handles worker assignment.');
+    return null;
   }
 
   /**
    * Synchronous version for backward compatibility
    */
   _findBestWorker(task) {
-    const availableWorkers = Array.from(this.state.workers.values()).filter(
-      (w) => w.status === 'idle',
-    );
-
-    if (availableWorkers.length === 0) {
-      return null;
-    }
-
-    // Simplified scoring for sync version
-    const taskLower = task.description.toLowerCase();
-    const priorityMap = {
-      researcher: ['research', 'investigate', 'analyze', 'study'],
-      coder: ['code', 'implement', 'build', 'develop', 'fix', 'create'],
-      analyst: ['analyze', 'data', 'metrics', 'performance', 'report'],
-      tester: ['test', 'validate', 'check', 'verify', 'quality'],
-      architect: ['design', 'architecture', 'structure', 'plan'],
-      reviewer: ['review', 'feedback', 'improve', 'refactor'],
-      optimizer: ['optimize', 'performance', 'speed', 'efficiency'],
-      documenter: ['document', 'explain', 'write', 'describe'],
-    };
-
-    let bestWorker = null;
-    let bestScore = 0;
-
-    for (const worker of availableWorkers) {
-      const keywords = priorityMap[worker.type] || [];
-      const keywordScore = keywords.filter((k) => taskLower.includes(k)).length;
-      const performanceBonus = worker.performance ? worker.performance.successRate * 0.5 : 0;
-      const totalScore = keywordScore + performanceBonus;
-
-      if (totalScore > bestScore) {
-        bestScore = totalScore;
-        bestWorker = worker;
-      }
-    }
-
-    return bestWorker || availableWorkers[0];
+    // Ruv-swarm handles worker assignment internally via task orchestration
+    console.warn('[HiveMindCore] _findBestWorker is deprecated. RuvSwarm handles worker assignment.');
+    return null;
   }
 
   /**
    * Assign task to worker
    */
   async _assignTask(workerId, taskId) {
-    const worker = this.state.workers.get(workerId);
-    const task = this.state.tasks.get(taskId);
-
-    if (!worker || !task) return;
-
-    worker.status = 'busy';
-    worker.currentTask = taskId;
-    task.status = 'in_progress';
-    task.assignedTo = workerId;
-
-    // Store assignment in memory
-    await this.mcpWrapper.storeMemory(
-      this.state.swarmId,
-      `assignment-${taskId}`,
-      { workerId, taskId, timestamp: Date.now() },
-      'task',
-    );
-
-    this.emit('task:assigned', { workerId, taskId });
-
-    // Simulate task execution
-    this._executeTask(workerId, taskId);
+    // Ruv-swarm handles task assignment internally
+    console.warn('[HiveMindCore] _assignTask is deprecated. RuvSwarm handles task assignment.');
   }
 
   /**
    * Execute task with performance optimization
    */
-  async _executeTask(workerId, taskId) {
-    const worker = this.state.workers.get(workerId);
-    const task = this.state.tasks.get(taskId);
-    const startTime = Date.now();
-
-    try {
-      // Use performance optimizer for async execution
-      const result = await this.performanceOptimizer.optimizeAsyncOperation(
-        async () => {
-          // Simulate task execution based on complexity
-          const baseDuration = {
-            low: 5000,
-            medium: 15000,
-            high: 30000,
-          }[task.metadata?.complexity || 'medium'];
-
-          const duration = baseDuration + Math.random() * baseDuration * 0.5;
-
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve({
-                status: 'completed',
-                result: `Task completed by ${worker.type} worker`,
-                processingTime: Date.now() - startTime,
-                complexity: task.metadata?.complexity || 'medium',
-              });
-            }, duration);
-          });
-        },
-        { priority: task.priority },
-      );
-
-      // Update task and worker
-      task.status = 'completed';
-      task.completedAt = new Date().toISOString();
-      task.result = result.result;
-      task.actualDuration = result.processingTime;
-
-      worker.status = 'idle';
-      worker.currentTask = null;
-      worker.tasksCompleted++;
-
-      // Update worker performance metrics
-      if (!worker.performance.avgTaskTime) {
-        worker.performance.avgTaskTime = result.processingTime;
-      } else {
-        worker.performance.avgTaskTime =
-          (worker.performance.avgTaskTime * (worker.tasksCompleted - 1) + result.processingTime) /
-          worker.tasksCompleted;
-      }
-
-      // Batch store results for better performance
-      await this.performanceOptimizer.optimizeBatchOperation(
-        'task_results',
-        {
-          key: `result-${taskId}`,
-          value: task,
-          type: 'result',
-        },
-        async (items) => {
-          // Batch store all results
-          await Promise.all(
-            items.map((item) =>
-              this.mcpWrapper.storeMemory(this.state.swarmId, item.key, item.value, item.type),
-            ),
-          );
-          return items.map(() => ({ success: true }));
-        },
-      );
-
-      this.emit('task:completed', task);
-      this.emit('worker:idle', workerId);
-    } catch (error) {
-      // Handle task failure
-      task.status = 'failed';
-      task.error = error.message;
-      task.failedAt = new Date().toISOString();
-
-      worker.status = 'idle';
-      worker.currentTask = null;
-      worker.performance.successRate =
-        (worker.performance.successRate * worker.tasksCompleted) / (worker.tasksCompleted + 1);
-
-      this.emit('task:failed', { task, error });
-      this.emit('worker:idle', workerId);
-    }
+  _executeTask(workerId, taskId) {
+    // Ruv-swarm handles task execution internally
+    console.warn('[HiveMindCore] _executeTask is deprecated. RuvSwarm handles task execution.');
   }
 
   /**
    * Assign next task to idle worker
    */
   _assignNextTask(workerId) {
-    const pendingTasks = Array.from(this.state.tasks.values())
-      .filter((t) => t.status === 'pending')
-      .sort((a, b) => b.priority - a.priority);
-
-    if (pendingTasks.length > 0) {
-      this._assignTask(workerId, pendingTasks[0].id);
-    }
+    // Ruv-swarm handles task assignment internally
+    console.warn('[HiveMindCore] _assignNextTask is deprecated. RuvSwarm handles task assignment.');
   }
 
   /**
@@ -749,13 +526,14 @@ export class HiveMindCore extends EventEmitter {
       votes: decision.votes instanceof Map ? Object.fromEntries(decision.votes) : decision.votes,
     };
 
-    // Store decision in memory
-    await this.mcpWrapper.storeMemory(
-      this.state.swarmId,
-      `decision-${decision.id}`,
-      decisionForStorage,
-      'consensus',
-    );
+    // Store decision in memory (via mcpWrapper, which uses ruv-swarm's memory)
+    await this.mcpWrapper.executeTool('memory_usage', {
+      action: 'store',
+      namespace: this.state.swarmId,
+      key: `decision-${decision.id}`,
+      value: decisionForStorage,
+      type: 'consensus',
+    });
 
     this.emit('decision:reached', decision);
     return decision;
@@ -827,13 +605,9 @@ export class HiveMindCore extends EventEmitter {
   async _checkAutoScale() {
     if (!this.config.autoScale) return;
 
-    const pendingTasks = Array.from(this.state.tasks.values()).filter(
-      (t) => t.status === 'pending',
-    ).length;
+    const pendingTasks = (await this.mcpWrapper.executeTool('swarm_status', { swarmId: this.state.swarmId })).tasks.pending;
 
-    const idleWorkers = Array.from(this.state.workers.values()).filter(
-      (w) => w.status === 'idle',
-    ).length;
+    const idleWorkers = (await this.mcpWrapper.executeTool('swarm_status', { swarmId: this.state.swarmId })).agents.idle;
 
     // Scale up if too many pending tasks
     if (pendingTasks > idleWorkers * 2 && this.state.workers.size < this.config.maxWorkers) {
@@ -853,29 +627,13 @@ export class HiveMindCore extends EventEmitter {
    */
   _determineWorkerType() {
     // Analyze pending tasks to determine needed worker type
-    const pendingTasks = Array.from(this.state.tasks.values()).filter(
-      (t) => t.status === 'pending',
-    );
+    const pendingTasks = (await this.mcpWrapper.executeTool('swarm_status', { swarmId: this.state.swarmId })).tasks.pending;
 
-    // Simple heuristic based on task descriptions
     const typeScores = {};
 
-    pendingTasks.forEach((task) => {
-      const taskLower = task.description.toLowerCase();
-
-      if (taskLower.includes('code') || taskLower.includes('implement')) {
-        typeScores.coder = (typeScores.coder || 0) + 1;
-      }
-      if (taskLower.includes('test') || taskLower.includes('validate')) {
-        typeScores.tester = (typeScores.tester || 0) + 1;
-      }
-      if (taskLower.includes('analyze') || taskLower.includes('data')) {
-        typeScores.analyst = (typeScores.analyst || 0) + 1;
-      }
-      if (taskLower.includes('research') || taskLower.includes('investigate')) {
-        typeScores.researcher = (typeScores.researcher || 0) + 1;
-      }
-    });
+    // Analyze pending tasks to determine needed worker type (simulated for now)
+    // In a real scenario, ruv-swarm's neural capabilities would inform this.
+    typeScores.coder = 1; // Default to coder for now
 
     // Return type with highest score
     const sorted = Object.entries(typeScores).sort((a, b) => b[1] - a[1]);
@@ -890,18 +648,19 @@ export class HiveMindCore extends EventEmitter {
     const completionRate = this.state.metrics.tasksCompleted / this.state.metrics.tasksCreated;
     const avgTasksPerWorker = this.state.metrics.tasksCompleted / this.state.workers.size;
 
-    // Store metrics in memory
-    await this.mcpWrapper.storeMemory(
-      this.state.swarmId,
-      'metrics',
-      {
+    // Store metrics in memory (via mcpWrapper, which uses ruv-swarm's memory)
+    await this.mcpWrapper.executeTool('memory_usage', {
+      action: 'store',
+      namespace: this.state.swarmId,
+      key: 'metrics',
+      value: {
         ...this.state.metrics,
         completionRate,
         avgTasksPerWorker,
         timestamp: Date.now(),
       },
-      'metrics',
-    );
+      type: 'metrics',
+    });
 
     // Analyze performance if needed
     if (this.state.metrics.tasksCompleted % 10 === 0) {
@@ -913,47 +672,39 @@ export class HiveMindCore extends EventEmitter {
    * Handle errors
    */
   _handleError(error) {
-    // Log error to memory
-    this.mcpWrapper
-      .storeMemory(
-        this.state.swarmId,
-        `error-${Date.now()}`,
-        {
-          message: error.message,
-          stack: error.stack,
-          timestamp: Date.now(),
-        },
-        'error',
-      )
-      .catch(console.error);
+    // Log error to memory (via mcpWrapper, which uses ruv-swarm's memory)
+    this.mcpWrapper.executeTool('memory_usage', {
+      action: 'store',
+      namespace: this.state.swarmId,
+      key: `error-${Date.now()}`,
+      value: {
+        message: error.message,
+        stack: error.stack,
+        timestamp: Date.now(),
+      },
+      type: 'error',
+    }).catch(console.error);
   }
 
   /**
    * Get current status with performance metrics
    */
   getStatus() {
-    const tasks = Array.from(this.state.tasks.values());
-    const workers = Array.from(this.state.workers.values());
+    const swarmStatus = await this.mcpWrapper.executeTool('swarm_status', { swarmId: this.state.swarmId });
 
     return {
       swarmId: this.state.swarmId,
       status: this.state.status,
       queen: this.state.queen,
-      workers: workers,
-      tasks: {
-        total: this.state.tasks.size,
-        pending: tasks.filter((t) => t.status === 'pending').length,
-        inProgress: tasks.filter((t) => t.status === 'in_progress').length,
-        completed: tasks.filter((t) => t.status === 'completed').length,
-        failed: tasks.filter((t) => t.status === 'failed').length,
-      },
+      workers: swarmStatus.agents.filter(a => a.role === 'worker'), // Filter for workers
+      tasks: swarmStatus.tasks,
       metrics: {
         ...this.state.metrics,
-        averageTaskTime: this._calculateAverageTaskTime(tasks),
-        workerEfficiency: this._calculateWorkerEfficiency(workers),
-        throughput: this._calculateThroughput(tasks),
+        averageTaskTime: swarmStatus.metrics.averageTaskTime,
+        workerEfficiency: swarmStatus.metrics.workerEfficiency,
+        throughput: swarmStatus.metrics.throughput,
       },
-      decisions: this.state.decisions.size,
+      decisions: swarmStatus.decisions.total,
       performance: this.performanceOptimizer.getPerformanceStats(),
     };
   }
@@ -962,35 +713,27 @@ export class HiveMindCore extends EventEmitter {
    * Calculate average task completion time
    */
   _calculateAverageTaskTime(tasks) {
-    const completedTasks = tasks.filter((t) => t.status === 'completed' && t.actualDuration);
-    if (completedTasks.length === 0) return 0;
-
-    const totalTime = completedTasks.reduce((sum, task) => sum + task.actualDuration, 0);
-    return Math.round(totalTime / completedTasks.length);
+    // Ruv-swarm handles this internally
+    console.warn('[HiveMindCore] _calculateAverageTaskTime is deprecated. RuvSwarm handles this.');
+    return 0;
   }
 
   /**
    * Calculate worker efficiency
    */
   _calculateWorkerEfficiency(workers) {
-    if (workers.length === 0) return 0;
-
-    const efficiencies = workers.map((worker) => worker.performance?.successRate || 1.0);
-    return ((efficiencies.reduce((sum, eff) => sum + eff, 0) / workers.length) * 100).toFixed(2);
+    // Ruv-swarm handles this internally
+    console.warn('[HiveMindCore] _calculateWorkerEfficiency is deprecated. RuvSwarm handles this.');
+    return 0;
   }
 
   /**
    * Calculate system throughput (tasks per minute)
    */
   _calculateThroughput(tasks) {
-    const completedTasks = tasks.filter((t) => t.status === 'completed' && t.completedAt);
-    if (completedTasks.length < 2) return 0;
-
-    const firstCompleted = new Date(completedTasks[0].completedAt).getTime();
-    const lastCompleted = new Date(completedTasks[completedTasks.length - 1].completedAt).getTime();
-    const timeSpanMinutes = (lastCompleted - firstCompleted) / (1000 * 60);
-
-    return timeSpanMinutes > 0 ? (completedTasks.length / timeSpanMinutes).toFixed(2) : 0;
+    // Ruv-swarm handles this internally
+    console.warn('[HiveMindCore] _calculateThroughput is deprecated. RuvSwarm handles this.');
+    return 0;
   }
 
   /**
@@ -1003,22 +746,27 @@ export class HiveMindCore extends EventEmitter {
       // Generate final performance report
       const performanceReport = this.performanceOptimizer.generatePerformanceReport();
 
-      // Save final state and performance report
-      await Promise.all([
-        this.mcpWrapper.storeMemory(this.state.swarmId, 'final_state', this.getStatus(), 'system'),
-        this.mcpWrapper.storeMemory(
-          this.state.swarmId,
-          'final_performance_report',
-          performanceReport,
-          'metrics',
-        ),
-      ]);
+      // Save final state and performance report (via mcpWrapper, which uses ruv-swarm's memory)
+      await this.mcpWrapper.executeTool('memory_usage', {
+        action: 'store',
+        namespace: this.state.swarmId,
+        key: 'final_state',
+        value: this.getStatus(),
+        type: 'system',
+      });
+      await this.mcpWrapper.executeTool('memory_usage', {
+        action: 'store',
+        namespace: this.state.swarmId,
+        key: 'final_performance_report',
+        value: performanceReport,
+        type: 'metrics',
+      });
 
       // Close performance optimizer
       await this.performanceOptimizer.close();
 
-      // Destroy swarm
-      await this.mcpWrapper.destroySwarm(this.state.swarmId);
+      // Destroy swarm (via mcpWrapper, which uses ruv-swarm's destroySwarm)
+      await this.mcpWrapper.executeTool('swarm_destroy', { swarmId: this.state.swarmId });
 
       this.state.status = 'shutdown';
       this.emit('shutdown', { performanceReport });

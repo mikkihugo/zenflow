@@ -57,7 +57,7 @@ const DirectorySelector = ({ currentPath, onSelect, onCancel }) => {
     React.createElement(Text, { color: "gray" }, `Current: ${currentDir}`),
     
     React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-      React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+      React.createElement(Text, { bold: true, color: "magenta" }, "Directory Navigation")
     ),
     
     React.createElement(Box, { flexDirection: "column", marginTop: 1 },

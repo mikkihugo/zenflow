@@ -32,7 +32,7 @@ const CommandInput = ({ onExecute, result }) => {
   return React.createElement(Box, { flexDirection: "column", padding: 1 },
     React.createElement(Text, { bold: true, color: "yellow" }, "🛠️ Command Execution"),
     React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-      React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+      React.createElement(Text, { bold: true, color: "magenta" }, "Claude Zen Command Interface")
     ),
     
     React.createElement(Box, { marginTop: 1 },

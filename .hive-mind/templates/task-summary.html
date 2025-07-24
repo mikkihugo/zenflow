@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Summary</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .task { border: 1px solid #ddd; margin: 20px 0; padding: 20px; border-radius: 5px; }
+        .success { border-left: 5px solid #4CAF50; }
+        .failed { border-left: 5px solid #f44336; }
+        .pending { border-left: 5px solid #ff9800; }
+    </style>
+</head>
+<body>
+    <h1>📋 Task Summary</h1>
+    <p><strong>Generated:</strong> {{timestamp}}</p>
+    
+    {{#each tasks}}
+    <div class="task {{status}}">
+        <h3>{{name}}</h3>
+        <p><strong>Status:</strong> {{status}} | <strong>Duration:</strong> {{duration}}</p>
+        <p><strong>Description:</strong> {{description}}</p>
+        {{#if error}}
+        <p><strong>Error:</strong> {{error}}</p>
+        {{/if}}
+    </div>
+    {{/each}}
+</body>
+</html>

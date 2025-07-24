@@ -174,7 +174,7 @@ const SingularityAlpha = ({ cli }) => {
     ),
     
     React.createElement(Box, { justifyContent: "center", paddingY: 1 },
-      React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+      React.createElement(Text, { bold: true, color: "magenta" }, "Claude Zen Terminal Interface")
     ),
     
     currentView === 'hives' && React.createElement(Box, { flexDirection: "column" },
@@ -245,7 +245,7 @@ const SingularityAlpha = ({ cli }) => {
         React.createElement(Text, { color: "gray" }, " (press Enter to create, ESC to cancel)")
       ),
       React.createElement(Box, { justifyContent: "center", marginTop: 2 },
-        React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+        React.createElement(Text, { bold: true, color: "magenta" }, "Welcome to Claude Zen")
       )
     ),
     

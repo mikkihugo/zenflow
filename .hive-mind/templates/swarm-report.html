@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swarm Report - {{swarm.name}}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .header { border-bottom: 2px solid #333; padding-bottom: 20px; }
+        .section { margin: 30px 0; }
+        .agent { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .metric { display: inline-block; margin: 10px 20px 10px 0; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐝 Swarm Report: {{swarm.name}}</h1>
+        <p><strong>Generated:</strong> {{timestamp}}</p>
+        <p><strong>Topology:</strong> {{swarm.topology}} | <strong>Status:</strong> {{swarm.status}}</p>
+    </div>
+    
+    <div class="section">
+        <h2>📊 Overview</h2>
+        <div class="metric"><strong>Total Agents:</strong> {{agents.total}}</div>
+        <div class="metric"><strong>Active Tasks:</strong> {{tasks.active}}</div>
+        <div class="metric"><strong>Completed Tasks:</strong> {{tasks.completed}}</div>
+        <div class="metric"><strong>Success Rate:</strong> {{performance.successRate}}%</div>
+    </div>
+    
+    <div class="section">
+        <h2>🤖 Agents</h2>
+        {{#each agents.list}}
+        <div class="agent">
+            <h3>{{name}} ({{type}})</h3>
+            <p><strong>Status:</strong> {{status}} | <strong>Tasks:</strong> {{tasksCompleted}}</p>
+            <p><strong>Capabilities:</strong> {{capabilities}}</p>
+        </div>
+        {{/each}}
+    </div>
+    
+    <div class="section">
+        <h2>📈 Performance Metrics</h2>
+        <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Total Execution Time</td><td>{{performance.totalTime}}</td></tr>
+            <tr><td>Average Task Duration</td><td>{{performance.avgTaskTime}}</td></tr>
+            <tr><td>Memory Usage</td><td>{{performance.memoryUsage}}</td></tr>
+            <tr><td>Success Rate</td><td>{{performance.successRate}}%</td></tr>
+        </table>
+    </div>
+</body>
+</html>

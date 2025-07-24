@@ -55,7 +55,7 @@ I have successfully created a comprehensive optimized .claude folder template st
 - `architect.md` - System design and architecture
 - `code.md` - Clean code implementation
 - `debug.md` - Debugging and troubleshooting
-- `devops.md` - Deployment and infrastructure
+- `devops.md` - Deployment
 - `docs-writer.md` - Documentation creation
 - `integration.md` - System integration
 - `mcp.md` - MCP service integration

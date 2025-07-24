@@ -136,11 +136,11 @@ Use Memory to coordinate information across multiple SPARC modes and swarm opera
 
 ```bash
 # Store architecture decisions
-./claude-zen memory store "system_architecture" "Microservices with API Gateway pattern"
+./claude-zen memory store "system_architecture" "Unified monolithic application"
 
 # All subsequent operations can reference this decision
 ./claude-zen sparc run coder "Implement user service based on system_architecture in memory"
-./claude-zen sparc run tester "Create integration tests for microservices architecture"
+./claude-zen sparc run tester "Create integration tests for unified application"
 ```
 
 ### Multi-Stage Development

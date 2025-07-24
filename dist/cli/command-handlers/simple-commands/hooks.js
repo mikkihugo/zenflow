@@ -438,7 +438,16 @@ async function postTaskCommand(subArgs, flags) {
 async function postEditCommand(subArgs, flags) {
   const options = flags;
   const file = options.file || 'unknown-file';
-  const memoryKey = options['memory-key'] || options.memoryKey;
+  let memoryKey = options['memory-key'] || options.memoryKey;
+  
+  // Handle case where memory-key is passed as a boolean flag without value
+  if (memoryKey === true) {
+    // Generate a default memory key based on the file path and timestamp
+    const path = await import('path');
+    const basename = path.basename(file);
+    memoryKey = `edit:${basename}:${Date.now()}`;
+  }
+  
   const format = options.format || false;
   const updateMemory = options['update-memory'] || false;
   const trainNeural = options['train-neural'] || false;

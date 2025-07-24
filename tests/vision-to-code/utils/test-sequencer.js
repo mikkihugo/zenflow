@@ -13,10 +13,7 @@ class VisionToCodeTestSequencer extends Sequencer {
       'unit',
       
       // 2. Individual service integration tests
-      'business-service.test.js',
-      'core-service.test.js', 
-      'swarm-service.test.js',
-      'development-service.test.js',
+      'claude-zen-service.test.js',
       
       // 3. Service communication tests
       'api-gateway.test.js',

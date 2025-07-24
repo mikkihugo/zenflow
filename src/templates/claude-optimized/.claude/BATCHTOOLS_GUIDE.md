@@ -772,11 +772,7 @@ const swarmExecution = async (task) => {
       agents: 4,
       parallel: true,
     },
-    infrastructure: {
-      modes: ['devops', 'security-review'],
-      agents: 2,
-      parallel: true,
-    },
+    
     documentation: {
       modes: ['docs-writer'],
       agents: 1,

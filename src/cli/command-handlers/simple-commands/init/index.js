@@ -14,7 +14,7 @@ import { printSuccess, printError, printWarning } from '../../../utils.js';
 import TemplateManager from '../../../template-manager.js';
 
 /**
- * Initialize a new Claude Zen project with template support
+ * Initialize a new Claude Zen project
  */
 export async function initCommand(input, flags) {
   const args = Array.isArray(input) ? input : [input];
@@ -23,70 +23,41 @@ export async function initCommand(input, flags) {
   
   try {
     const {
-      template = 'claude-zen',
       force = false,
-      minimal = false,
-      listTemplates = false,
     } = options;
 
     const templateManager = new TemplateManager();
 
-    // Handle template listing
-    if (listTemplates) {
-      await templateManager.listTemplates();
-      return;
-    }
-
     printSuccess(`🚀 Initializing Claude Zen project in: ${projectPath}`);
-    console.log(`📦 Using template: ${template}`);
-
-    // Use template system for initialization
+    
+    // Allow template selection or default to claude-zen
+    const template = options.template || flags.template || 'claude-zen';
+    
+    // Validate template exists
+    const availableTemplates = await templateManager.listTemplates();
+    if (!availableTemplates.find(t => t.name === template)) {
+      printWarning(`Template '${template}' not found. Available templates:`);
+      availableTemplates.forEach(t => console.log(`  - ${t.name}: ${t.description || 'No description'}`));
+      return { success: false, error: `Template '${template}' not found` };
+    }
+    
     try {
       await templateManager.installTemplate(template, projectPath, {
-        force,
-        minimal
+        force
       });
 
-      // Additional setup for claude-zen projects
-      await this.setupClaudeZenProject(projectPath, template);
-
       printSuccess(`✅ Claude Zen project initialized successfully!`);
-      console.log(`\n🎯 Project ready at: ${path.resolve(projectPath)}`);
+      console.log(`🎯 Project ready at: ${path.resolve(projectPath)}`);
+      console.log(`📚 Run 'claude-zen --help' to see available commands`);
       
     } catch (templateError) {
-      // Fallback to basic initialization if template not found
-      printWarning(`Template '${template}' not found. Creating basic project structure.`);
-      await this.createBasicProject(projectPath, { force, minimal });
+      printError(`Failed to install template: ${templateError.message}`);
+      throw templateError;
     }
-
-This project is configured for Claude Code integration.
-
-## Getting Started
-
-Run \`claude-zen --help\` to see available commands.
-
-## Commands
-
-- \`claude-zen init\` - Initialize project
-- \`claude-zen status\` - Show project status
-- \`claude-zen help\` - Show help
-
-## Configuration
-
-This project uses Claude Flow v2.0.0 for enhanced development workflows.
-`;
-
-    await fs.writeFile(path.join(absolutePath, 'CLAUDE.md'), claudeMdContent, 'utf8');
-
-    
-    
-    
-
-    printSuccess('Project initialized successfully!');
     
     return {
       success: true,
-      path: absolutePath,
+      path: path.resolve(projectPath),
       message: 'Project initialized successfully'
     };
 

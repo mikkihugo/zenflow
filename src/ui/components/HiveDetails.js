@@ -6,7 +6,7 @@ const HiveDetails = ({ hive, hiveName }) => {
     return React.createElement(Box, { padding: 1, flexDirection: "column" },
       React.createElement(Text, { color: "red" }, "❌ Failed to load hive details"),
       React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-        React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+        React.createElement(Text, { bold: true, color: "magenta" }, "Service Details")
       )
     );
   }
@@ -22,7 +22,7 @@ const HiveDetails = ({ hive, hiveName }) => {
     React.createElement(Text, { bold: true, color: "cyan" }, `🐝 Service Details: ${hiveName || 'Unknown'}`),
     React.createElement(Text, { color: "gray" }, `Path: ${hive.path || 'Not specified'}`),
     React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-      React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+      React.createElement(Text, { bold: true, color: "magenta" }, "Service Information")
     ),
     
     error && React.createElement(Box, { marginTop: 1 },

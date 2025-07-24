@@ -1,0 +1,41 @@
+{
+  "providers": {
+    "claude": {
+      "enabled": true,
+      "priority": 1,
+      "type": "claude-code",
+      "config": {
+        "modelId": "sonnet",
+        "maxTurns": 5,
+        "permissionMode": "default"
+      }
+    },
+    "openrouter": {
+      "enabled": false,
+      "priority": 2,
+      "type": "openrouter",
+      "config": {
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "model": "meta-llama/llama-3.1-8b-instruct:free",
+        "maxTokens": 4000,
+        "temperature": 0.7
+      }
+    },
+    "google": {
+      "enabled": true,
+      "priority": 3,
+      "type": "google-ai",
+      "config": {
+        "model": "gemini-2.5-flash-latest",
+        "safetySettings": "default"
+      }
+    }
+  },
+  "defaultProvider": "claude",
+  "fallbackEnabled": true,
+  "loadBalancing": {
+    "enabled": false,
+    "strategy": "round-robin",
+    "healthCheck": true
+  }
+}

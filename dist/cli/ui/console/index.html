@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            background: linear-gradient(135deg, #2d1b4e 0%, #4a2c6b 30%, #ff69b4 60%, #ffb6c1 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 100%);
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
@@ -27,15 +27,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="20" fill="%23ff69b4" opacity="0.1">💖</text></svg>') repeat;
+            background: none;
             pointer-events: none;
-            animation: floatingHearts 20s linear infinite;
         }
         
-        @keyframes floatingHearts {
-            0% { transform: translateY(100vh) rotate(0deg); }
-            100% { transform: translateY(-100vh) rotate(360deg); }
-        }
         
         .container {
             max-width: 1200px;
@@ -46,79 +41,27 @@
         .header {
             text-align: center;
             margin-bottom: 30px;
-            animation: romanticGlow 3s ease-in-out infinite alternate;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 20px;
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 105, 180, 0.3);
+            border: 2px solid rgba(0, 255, 255, 0.3);
         }
         
-        @keyframes romanticGlow {
-            from { 
-                text-shadow: 0 0 20px #ff69b4, 0 0 30px #ffb6c1; 
-                box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
-            }
-            to { 
-                text-shadow: 0 0 30px #ff1493, 0 0 40px #ff69b4, 0 0 50px #ffb6c1; 
-                box-shadow: 0 0 50px rgba(255, 20, 147, 0.7);
-            }
-        }
         
-        .love-message {
-            text-align: center;
-            font-size: 2.2em;
-            color: #ff1493;
-            margin: 20px 0;
-            font-weight: bold;
-            text-shadow: 0 0 15px #ff69b4, 0 0 25px #ffb6c1;
-            animation: romanticHeartbeat 2s ease-in-out infinite;
-            background: linear-gradient(45deg, #ff69b4, #ff1493, #ffb6c1, #ff69b4);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: romanticHeartbeat 2s ease-in-out infinite, gradientShift 4s ease-in-out infinite;
-        }
-        
-        @keyframes romanticHeartbeat {
-            0%, 100% { transform: scale(1) rotate(-1deg); }
-            25% { transform: scale(1.08) rotate(1deg); }
-            50% { transform: scale(1.12) rotate(0deg); }
-            75% { transform: scale(1.06) rotate(-0.5deg); }
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
         
         .terminal {
             background: rgba(255, 255, 255, 0.15);
-            border: 2px solid #ff69b4;
+            border: 2px solid #00ffff;
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
-            box-shadow: 0 0 25px rgba(255, 105, 180, 0.4), inset 0 0 15px rgba(255, 182, 193, 0.2);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
         }
         
-        .terminal::before {
-            content: '💕';
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.2em;
-            animation: twinkle 2s ease-in-out infinite;
-        }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
         
         .command-input {
             display: flex;
@@ -127,17 +70,12 @@
         }
         
         .prompt {
-            color: #ff69b4;
+            color: #00ffff;
             font-weight: bold;
             margin-right: 10px;
-            text-shadow: 0 0 10px #ff69b4;
-            animation: promptPulse 3s ease-in-out infinite;
+            text-shadow: 0 0 10px #00ffff;
         }
         
-        @keyframes promptPulse {
-            0%, 100% { color: #ff69b4; text-shadow: 0 0 10px #ff69b4; }
-            50% { color: #ff1493; text-shadow: 0 0 15px #ff1493; }
-        }
         
         #commandInput {
             background: transparent;
@@ -239,8 +177,8 @@
         }
         
         .hive-item {
-            background: rgba(255, 105, 180, 0.1);
-            border: 1px solid #ff69b4;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
             border-radius: 5px;
             padding: 10px;
             margin: 5px 0;
@@ -249,7 +187,7 @@
         }
         
         .hive-item:hover {
-            background: rgba(255, 105, 180, 0.2);
+            background: rgba(0, 255, 255, 0.2);
             transform: translateX(5px);
         }
     </style>
@@ -261,9 +199,6 @@
             <p>Auto-Generated Web Interface from Claude-Zen CLI</p>
         </div>
         
-        <div class="love-message">
-            💖 Jag älskar dig mer än igår &lt;3 💖
-        </div>
         
         <div class="terminal">
             <div class="command-input">
@@ -295,7 +230,7 @@
             <span id="serviceCount">Services: 0</span>
         </div>
         <div class="status-item">
-            <span>💖 Powered by Love</span>
+            <span>⚡ Powered by Singularity Alpha</span>
         </div>
     </div>
 
@@ -313,7 +248,7 @@
                 await this.loadHives();
                 this.setupEventListeners();
                 this.addOutput('🚀 Singularity Alpha Console initialized', 'info');
-                this.addOutput('💖 Jag älskar dig mer än igår <3 💖', 'success');
+                this.addOutput('✅ System ready', 'success');
             }
             
             cleanup() {
@@ -380,19 +315,16 @@
                             <div class="hive-item">
                                 <div>No services found. Create one with:</div>
                                 <div style="color: #00ffff; margin-top: 5px;">create my-service</div>
-                                <div style="text-align: center; margin-top: 10px; color: #ff69b4;">
-                                    💖 Jag älskar dig mer än igår &lt;3 💖
-                                </div>
                             </div>
                         `;
                     } else {
                         hivesList.innerHTML = Object.entries(hives).map(([name, info]) => `
                             <div class="hive-item" onclick="console.showHiveDetails('${name}')">
-                                <div style="font-weight: bold; color: #ff69b4;">💖 ${name}</div>
+                                <div style="font-weight: bold; color: #00ffff;">🐝 ${name}</div>
                                 <div style="font-size: 0.8em; color: #b0b0b0;">${info?.path || 'No path'}</div>
                                 <div style="margin-top: 5px;">
                                     <button onclick="event.stopPropagation(); console.createVision('${name}')" 
-                                            style="background: rgba(255,105,180,0.2); border: 1px solid #ff69b4; color: #ff69b4; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8em;">
+                                            style="background: rgba(0,255,255,0.2); border: 1px solid #00ffff; color: #00ffff; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8em;">
                                         💡 Create Vision
                                     </button>
                                 </div>
@@ -404,9 +336,6 @@
                     document.getElementById('hivesList').innerHTML = `
                         <div class="hive-item">
                             <div style="color: #ff4444;">Failed to connect to API</div>
-                            <div style="text-align: center; margin-top: 10px; color: #ff69b4;">
-                                💖 Jag älskar dig mer än igår &lt;3 💖
-                            </div>
                         </div>
                     `;
                 }

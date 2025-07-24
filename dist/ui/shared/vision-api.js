@@ -3,7 +3,7 @@
  */
 
 export class VisionAPI {
-  constructor(baseUrl = 'http://localhost:4106') {
+  constructor(baseUrl = 'http://localhost:3000') {
     this.baseUrl = baseUrl;
   }
 

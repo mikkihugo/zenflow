@@ -7,11 +7,11 @@
     "claude-zen": "./bin/claude-zen"
   },
   "scripts": {
-    "start": "node src/api/start-server.js",
-    "dev": "node src/cli/cli-main.js",
-    "api": "node src/api/start-server.js",
+    "start": "scripts/node22.sh node src/api/start-server.js",
+    "dev": "scripts/node22.sh node src/cli/cli-main.js",
+    "api": "scripts/node22.sh node src/api/start-server.js",
     "build": "npm run clean && npm run update-version && npm run build:js && npm run build:binary",
-    "update-version": "node scripts/update-bin-version.js",
+    "update-version": "scripts/node22.sh node scripts/update-bin-version.js",
     "clean": "rm -rf dist",
     "build:js": "mkdir -p dist && cp -r src/* dist/",
     "build:binary": "echo 'Using shell script binary - no compilation needed'",
@@ -106,6 +106,7 @@
   ],
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@lancedb/lancedb": "^0.21.1",
     "@modelcontextprotocol/sdk": "^1.16.0",
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.2.0",
@@ -128,7 +129,8 @@
     "ink": "^6.0.1",
     "inquirer": "^9.3.7",
     "js-yaml": "^4.1.0",
-    "jsonlint": "^1.6.3",
+    "jsonlint-mod": "^1.7.6",
+    "kuzu": "^0.11.0",
     "markdownlint": "^0.38.0",
     "meow": "^13.2.0",
     "nanoid": "^5.1.5",
@@ -137,9 +139,9 @@
     "p-queue": "^8.1.0",
     "react": "^19.1.0",
     "read-pkg-up": "^10.1.0",
+    "ruv-swarm": "^1.0.18",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
-    "ruv-swarm": "^1.0.18",
     "ws": "^8.18.3"
   },
   "devDependencies": {
@@ -181,9 +183,9 @@
   },
   "pkg": {
     "targets": [
-      "node20-linux-x64",
-      "node20-macos-x64",
-      "node20-win-x64"
+      "node22-linux-x64",
+      "node22-macos-x64",
+      "node22-win-x64"
     ],
     "scripts": "dist/**/*.js",
     "outputPath": "bin",

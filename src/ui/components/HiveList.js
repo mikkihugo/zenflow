@@ -30,7 +30,7 @@ const HiveList = ({ hives, onSelect }) => {
       React.createElement(Text, { color: "gray" }, "No services found. Create one with:"),
       React.createElement(Text, { color: "cyan" }, "create my-service"),
       React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-        React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+        React.createElement(Text, { bold: true, color: "magenta" }, "Service Management")
       )
     );
   }
@@ -39,7 +39,7 @@ const HiveList = ({ hives, onSelect }) => {
     React.createElement(Text, { bold: true, color: "yellow" }, `🐝 Services (${hiveNames.length})`),
     React.createElement(Text, { color: "gray" }, "Use ↑↓ arrows to navigate, Enter to select"),
     React.createElement(Box, { justifyContent: "center", marginTop: 1 },
-      React.createElement(Text, { bold: true, color: "magenta" }, "💖 Jag älskar dig mer än igår <3 💖")
+      React.createElement(Text, { bold: true, color: "magenta" }, "Service Management")
     ),
     
     React.createElement(Box, { flexDirection: "column", marginTop: 1 },
