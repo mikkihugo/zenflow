@@ -990,8 +990,10 @@ class PerformanceQueen extends BaseQueen {
 export async function queenCouncilCommand(input, flags) {
   const subcommand = input[0];
   const subArgs = input.slice(1);
+  const auto = subArgs.includes('--auto') || flags.auto;
+  const silent = subArgs.includes('--silent') || flags.silent;
 
-  if (flags.help || flags.h || !subcommand) {
+  if (flags.help || flags.h || (!subcommand && !auto)) {
     showQueenCouncilHelp();
     return;
   }
@@ -1001,13 +1003,25 @@ export async function queenCouncilCommand(input, flags) {
 
   switch (subcommand) {
     case 'convene':
-      const objective = subArgs.join(' ').trim();
-      if (!objective) {
-        printError('Objective required for queen council');
+      const objective = subArgs.filter(arg => !arg.startsWith('--')).join(' ').trim();
+      if (!objective && !auto) {
+        printError('Objective required for queen council (or use --auto for continuous oversight)');
         return;
       }
-      const consensus = await council.makeStrategicDecision(objective, flags);
-      console.log('\n🏛️ Council Decision:', JSON.stringify(consensus, null, 2));
+      
+      if (auto) {
+        // Auto-convene for continuous strategic oversight
+        if (!silent) printSuccess('👑 Queen Council auto-convened for strategic oversight');
+        const autoObjective = objective || 'Continuous strategic system oversight and optimization';
+        const consensus = await council.makeStrategicDecision(autoObjective, { ...flags, silent: true });
+        if (!silent) {
+          console.log('🎯 Strategic Focus:', autoObjective);
+          console.log('✅ Council Status: Active with', Object.keys(council.queens).length, 'queens');
+        }
+      } else {
+        const consensus = await council.makeStrategicDecision(objective, flags);
+        console.log('\n🏛️ Council Decision:', JSON.stringify(consensus, null, 2));
+      }
       break;
       
     case 'status':
@@ -1018,9 +1032,24 @@ export async function queenCouncilCommand(input, flags) {
       await showDecisionHistory(flags);
       break;
       
+    case 'auto-convene':
+      // Continuous oversight mode
+      await council.startContinuousOversight();
+      break;
+      
     default:
-      printError(`Unknown queen-council command: ${subcommand}`);
-      showQueenCouncilHelp();
+      if (auto) {
+        // Default to auto-convene if --auto flag is used
+        const autoObjective = (subcommand ? [subcommand, ...subArgs] : []).join(' ').trim() || 'Strategic system oversight';
+        const consensus = await council.makeStrategicDecision(autoObjective, { ...flags, silent: true });
+        if (!silent) {
+          printSuccess('👑 Queen Council auto-convened');
+          console.log('🎯 Strategic Focus:', autoObjective);
+        }
+      } else {
+        printError(`Unknown queen-council command: ${subcommand}`);
+        showQueenCouncilHelp();
+      }
   }
 }
 

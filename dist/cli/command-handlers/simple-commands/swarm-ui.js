@@ -10,6 +10,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { spawn, exec } from 'child_process';
 import os from 'os';
+import { validatePID } from '../../../utils/security.js';
 
 class SwarmUI {
   constructor() {
@@ -620,11 +621,17 @@ class SwarmUI {
               .filter((line) => /^\d+$/.test(line));
 
             pids.forEach((pid) => {
-              exec(`taskkill /F /PID ${pid}`, (killError) => {
-                if (!killError) {
-                  this.log(`Stopped orphaned process PID: ${pid}`);
-                }
-              });
+              // Validate PID before using in command
+              const validatedPID = validatePID(pid);
+              if (validatedPID) {
+                exec(`taskkill /F /PID ${validatedPID}`, (killError) => {
+                  if (!killError) {
+                    this.log(`Stopped orphaned process PID: ${validatedPID}`);
+                  }
+                });
+              } else {
+                this.log(`Invalid PID detected and rejected: ${pid}`, 'warn');
+              }
             });
           }
         },
@@ -637,13 +644,16 @@ class SwarmUI {
           lines.forEach((line) => {
             const parts = line.split(/\s+/);
             const pid = parts[1];
-            if (pid && /^\d+$/.test(pid)) {
+            const validatedPID = validatePID(pid);
+            if (validatedPID) {
               try {
-                process.kill(parseInt(pid), 'SIGTERM');
-                this.log(`Stopped orphaned process PID: ${pid}`);
+                process.kill(validatedPID, 'SIGTERM');
+                this.log(`Stopped orphaned process PID: ${validatedPID}`);
               } catch (killError) {
                 // Process might not exist or no permission
               }
+            } else if (pid) {
+              this.log(`Invalid PID detected and rejected: ${pid}`, 'warn');
             }
           });
         }

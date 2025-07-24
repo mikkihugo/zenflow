@@ -15,11 +15,9 @@ export class HealthMonitor {
     this.monitoringInterval = null;
     this.monitoringEnabled = false;
     
-    // Circular buffer for health history to prevent memory leaks
-    this.maxHistorySize = 100;
-    this.healthHistory = new Array(this.maxHistorySize);
-    this.historyIndex = 0;
-    this.historyCount = 0;
+    // Simple bounded array for health history
+    this.maxHistorySize = 50; // Smaller, more reasonable limit
+    this.healthHistory = [];
     
     // Memory management
     this.maxMemoryUsageMB = 50; // Alert if health monitor uses more than 50MB
@@ -302,7 +300,7 @@ export class HealthMonitor {
   }
 
   /**
-   * Start continuous monitoring
+   * Start continuous monitoring with error recovery
    */
   startMonitoring(intervalMs = 60000) { // Default: 1 minute
     if (this.monitoringEnabled) {
@@ -315,19 +313,25 @@ export class HealthMonitor {
       try {
         const health = await this.performHealthCheck();
         
-        // Log unhealthy status
-        if (health.status !== 'healthy') {
+        // Simplified logging - only log degraded/unhealthy status
+        if (health.status === 'unhealthy') {
           console.warn(`🚨 System health: ${health.status.toUpperCase()}`);
           
-          // Log specific issues
+          // Log only critical issues to reduce noise
           for (const [name, check] of Object.entries(health.checks)) {
-            if (check.status !== 'healthy') {
-              console.warn(`  ⚠️  ${name}: ${check.status} - ${check.reason || 'See details'}`);
+            if (check.status === 'unhealthy') {
+              console.warn(`  ❌ ${name}: ${check.reason || 'Check failed'}`);
             }
           }
         }
       } catch (error) {
+        // Simple error handling - log and continue
         console.error('Health monitoring error:', error.message);
+        
+        // Reset health history on repeated errors to prevent memory issues
+        if (this.healthHistory.length > this.maxHistorySize * 2) {
+          this.healthHistory = this.healthHistory.slice(-this.maxHistorySize);
+        }
       }
     }, intervalMs);
 
@@ -389,39 +393,44 @@ export class HealthMonitor {
   }
 
   /**
-   * Add health check result to circular buffer
+   * Add health check result with bounds checking and memory cleanup
    */
   addToHistory(result) {
-    // Add to circular buffer
-    this.healthHistory[this.historyIndex] = {
-      timestamp: result.timestamp,
-      status: result.status,
-      summary: result.summary, // Only store summary to save memory
-      checkCount: Object.keys(result.checks).length
-    };
-    
-    this.historyIndex = (this.historyIndex + 1) % this.maxHistorySize;
-    
-    if (this.historyCount < this.maxHistorySize) {
-      this.historyCount++;
+    try {
+      // Add new entry
+      this.healthHistory.push({
+        timestamp: result.timestamp,
+        status: result.status,
+        healthy: result.summary.healthy,
+        unhealthy: result.summary.unhealthy,
+        degraded: result.summary.degraded
+      });
+      
+      // Keep only the last N entries (simple slice)
+      if (this.healthHistory.length > this.maxHistorySize) {
+        this.healthHistory = this.healthHistory.slice(-this.maxHistorySize);
+      }
+      
+      // Additional cleanup for very old entries
+      const cutoff = Date.now() - (24 * 60 * 60 * 1000); // 24 hours
+      this.healthHistory = this.healthHistory.filter(h => 
+        new Date(h.timestamp).getTime() > cutoff
+      );
+    } catch (error) {
+      console.warn('Health history cleanup failed:', error.message);
+      // Reset on error to prevent memory issues
+      this.healthHistory = [];
     }
   }
 
   /**
-   * Get health history with efficient circular buffer access
+   * Get health history (simple array slice)
    */
   getHealthHistory(maxItems = null) {
-    const itemCount = maxItems ? Math.min(maxItems, this.historyCount) : this.historyCount;
-    const history = [];
-    
-    for (let i = 0; i < itemCount; i++) {
-      const index = (this.historyIndex - 1 - i + this.maxHistorySize) % this.maxHistorySize;
-      if (this.healthHistory[index]) {
-        history.push(this.healthHistory[index]);
-      }
+    if (maxItems) {
+      return this.healthHistory.slice(-maxItems);
     }
-    
-    return history.reverse(); // Return in chronological order
+    return [...this.healthHistory]; // Return copy
   }
 
   /**

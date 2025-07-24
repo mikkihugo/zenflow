@@ -30,8 +30,16 @@ export async function initCommand(input, flags) {
 
     printSuccess(`🚀 Initializing Claude Zen project in: ${projectPath}`);
     
-    // Always use the claude-zen template (our only template)
-    const template = 'claude-zen';
+    // Allow template selection or default to claude-zen
+    const template = options.template || flags.template || 'claude-zen';
+    
+    // Validate template exists
+    const availableTemplates = await templateManager.listTemplates();
+    if (!availableTemplates.find(t => t.name === template)) {
+      printWarning(`Template '${template}' not found. Available templates:`);
+      availableTemplates.forEach(t => console.log(`  - ${t.name}: ${t.description || 'No description'}`));
+      return { success: false, error: `Template '${template}' not found` };
+    }
     
     try {
       await templateManager.installTemplate(template, projectPath, {

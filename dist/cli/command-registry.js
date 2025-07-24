@@ -48,6 +48,7 @@ import {
 import { templateCommand } from './command-handlers/template-command.js';
 import { queenCouncilCommand } from './command-handlers/queen-council.js';
 import websocketCommand from './command-handlers/websocket-command.js';
+import { systemConsolidationCommand, systemConsolidationCommandConfig } from './command-handlers/system-consolidation-command.js';
 import { pluginStatusCommand, pluginStatusCommandConfig } from './command-handlers/plugin-status-command.js';
 import { serverCommand, serverCommandConfig } from './command-handlers/server-command.js';
 import { dashboardCommand, dashboardCommandConfig } from './command-handlers/dashboard-command.js';
@@ -81,6 +82,7 @@ export const createMeowCLI = () => {
 	  hive-mind      Advanced Hive Mind swarm intelligence
 	  queen-council  Multi-queen strategic coordination with document integration
 	  websocket      WebSocket client/server management with Node.js 22 native support
+	  system         Unified system control and consolidation
 	  dashboard      Unified dashboard interface with React/Ink support
 	  coordination   Swarm and agent orchestration
 	  training       Neural pattern learning and model updates
@@ -777,13 +779,30 @@ The template system enables rapid project initialization with pre-configured
 plugins, settings, and development workflows.`
   });
 
+  commandRegistry.set('system', {
+    handler: systemConsolidationCommand,
+    description: 'Unified system control and consolidation',
+    usage: 'system <action> [options]',
+    examples: [
+      'system start',
+      'system status',
+      'system consolidate'
+    ],
+    details: `Unified System Control:
+  start        Start integrated system (API + Dashboard + Queen Council)
+  stop         Stop all components
+  restart      Restart entire system  
+  status       Comprehensive system status
+  consolidate  Show command consolidation analysis`
+  });
+
   commandRegistry.set('queen-council', {
     handler: queenCouncilCommand,
     description: 'Multi-queen strategic coordination with document integration',
     usage: 'queen-council <command> [options]',
     examples: [
       'queen-council convene "Implement multi-tenant architecture"',
-      'queen-council convene "Add real-time collaboration features" --consensus-threshold 0.8',
+      'queen-council convene --auto --silent',
       'queen-council status',
       'queen-council decisions --recent'
     ],

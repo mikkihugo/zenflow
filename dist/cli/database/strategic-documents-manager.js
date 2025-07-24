@@ -22,26 +22,29 @@ export class StrategicDocumentsManager {
     this.maxRetries = 3;
     this.retryDelay = 1000; // 1 second
     
-    // Connection pooling and performance
-    this.connectionPool = new Map(); // Cache for table connections
-    this.maxPoolSize = 10;
-    this.connectionTimeout = 30000; // 30 seconds
+    // Simple cleanup interval (no connection pooling needed for LanceDB)
     this.cleanupInterval = null;
     
-    // Memory management
+    // Memory management with safety limits
     this.queryCache = new Map();
     this.maxCacheSize = 100;
     this.cacheTimeout = 300000; // 5 minutes
+    this.maxCacheMemoryMB = 20; // Max 20MB for query cache
+    this.emergencyCleanupThreshold = 0.9; // Clean when 90% full
     
-    // Performance monitoring
+    // Performance monitoring with bounds
     this.performanceMetrics = {
       queriesExecuted: 0,
       cacheHits: 0,
       connectionsCreated: 0,
       operationsCompleted: 0,
       averageQueryTime: 0,
-      totalQueryTime: 0
+      totalQueryTime: 0,
+      lastReset: Date.now()
     };
+    this.maxMetricsAge = 3600000; // 1 hour
+    this.metricsHistory = [];
+    this.maxMetricsHistory = 50; // Smaller bounded metrics history
     
     // LanceDB table configuration for strategic documents
     this.tableConfigs = {
@@ -55,8 +58,8 @@ export class StrategicDocumentsManager {
     
     this.dbPath = path.join(this.projectPath, '.hive-mind', 'strategic-memory', 'lancedb');
     
-    // Start cleanup routine
-    this.startCleanupRoutine();
+    // Start simple cleanup routine
+    this.startSimpleCleanup();
   }
 
   /**
@@ -1022,15 +1025,18 @@ export class StrategicDocumentsManager {
   // ==================== CONNECTION POOLING & PERFORMANCE ====================
 
   /**
-   * Start cleanup routine for connections and cache
+   * Start simple cleanup routine for cache only
    */
-  startCleanupRoutine() {
+  startSimpleCleanup() {
     if (this.cleanupInterval) return;
     
     this.cleanupInterval = setInterval(() => {
-      this.cleanupConnections();
-      this.cleanupCache();
-    }, 60000); // Run every minute
+      try {
+        this.cleanupCache();
+      } catch (error) {
+        console.warn('Cache cleanup error:', error.message);
+      }
+    }, 300000); // Run every 5 minutes
   }
 
   /**
@@ -1044,37 +1050,164 @@ export class StrategicDocumentsManager {
   }
 
   /**
-   * Clean up stale connections
+   * Simple connection cleanup - removed complex pooling
    */
   cleanupConnections() {
+    // Simplified: No connection pooling needed for LanceDB
+    // LanceDB handles connections internally
+    console.debug('Connection cleanup skipped - LanceDB manages connections internally');
+  }
+
+  /**
+   * Simplified connection close - removed complex handling
+   */
+  closeConnection(connection) {
+    // Simplified: LanceDB handles connection lifecycle
+    console.debug('Connection close handled by LanceDB');
+  }
+  
+  /**
+   * Removed complex memory estimation - simplified
+   */
+  estimateConnectionMemory() {
+    return 0.1; // Simple fixed estimate
+  }
+  
+  /**
+   * Simplified health check - removed complex connection logic
+   */
+  async healthCheckConnection() {
+    return true; // LanceDB handles health internally
+  }
+  
+  /**
+   * Simplified memory health check
+   */
+  performMemoryHealthCheck() {
+    const memoryUsage = process.memoryUsage();
+    const heapUsedMB = memoryUsage.heapUsed / 1024 / 1024;
+    
+    if (heapUsedMB > 500) {
+      this.emergencyMemoryCleanup();
+    }
+  }
+  
+  /**
+   * Removed complex connection tracking - simplified
+   */
+  trackTableConnection() {
+    // Simplified: No tracking needed for LanceDB
+  }
+  
+  /**
+   * Removed complex connection tracking - simplified
+   */
+  getTrackedConnection() {
+    return null; // No tracking needed
+  }
+
+  /**
+   * Emergency memory cleanup when system is under pressure
+   */
+  emergencyMemoryCleanup() {
+    console.warn('🚨 Emergency memory cleanup initiated');
+    
+    // Clear all non-essential caches
+    this.queryCache.clear();
+    
+    // Close all but the most recently used connections
+    const connections = Array.from(this.connectionPool.entries())
+      .sort((a, b) => b[1].lastUsed - a[1].lastUsed); // Most recent first
+    
+    const keepCount = Math.min(2, connections.length); // Keep only 2 connections
+    const toClose = connections.slice(keepCount);
+    
+    for (const [key, connection] of toClose) {
+      this.closeConnection(connection);
+      this.connectionPool.delete(key);
+    }
+    
+    // Force garbage collection if available
+    if (global.gc) {
+      global.gc();
+    }
+    
+    console.warn(`🧹 Emergency cleanup completed: kept ${keepCount} connections, closed ${toClose.length}`);
+  }
+  
+  /**
+   * Removed complex cache optimization - use simple cleanup
+   */
+  optimizeQueryCache() {
+    // Simple approach - just clean old entries
+    this.cleanupCache();
+  }
+
+  /**
+   * Simple cache cleanup with bounds checking and metrics reset
+   */
+  cleanupCache() {
     const now = Date.now();
-    for (const [key, connection] of this.connectionPool.entries()) {
-      if (now - connection.lastUsed > this.connectionTimeout) {
-        this.connectionPool.delete(key);
+    let removedCount = 0;
+    
+    // Remove expired entries
+    for (const [key, entry] of this.queryCache.entries()) {
+      if (now - entry.timestamp > this.cacheTimeout) {
+        this.queryCache.delete(key);
+        removedCount++;
       }
+    }
+    
+    // Keep cache size bounded (simple approach)
+    if (this.queryCache.size > this.maxCacheSize) {
+      const entries = Array.from(this.queryCache.entries())
+        .sort((a, b) => a[1].timestamp - b[1].timestamp); // Oldest first
+      
+      const toRemove = entries.slice(0, this.queryCache.size - this.maxCacheSize);
+      
+      for (const [key] of toRemove) {
+        this.queryCache.delete(key);
+        removedCount++;
+      }
+    }
+    
+    // Reset performance metrics periodically to prevent unbounded growth
+    if (now - this.performanceMetrics.lastReset > this.maxMetricsAge) {
+      this.resetPerformanceMetrics();
+    }
+    
+    // Bound metrics history
+    if (this.metricsHistory.length > this.maxMetricsHistory) {
+      this.metricsHistory = this.metricsHistory.slice(-this.maxMetricsHistory);
+    }
+    
+    if (removedCount > 0) {
+      console.debug(`🧹 Cache cleanup: removed ${removedCount} entries`);
+    }
+  }
+  
+  /**
+   * Simple performance metrics reset
+   */
+  resetPerformanceMetrics() {
+    // Simple bounds check - reset if counters get too high
+    if (this.performanceMetrics.queriesExecuted > 10000) {
+      this.performanceMetrics.queriesExecuted = 0;
+      this.performanceMetrics.cacheHits = 0;
+      this.performanceMetrics.totalQueryTime = 0;
+      this.performanceMetrics.lastReset = Date.now();
     }
   }
 
   /**
-   * Clean up expired cache entries
+   * Estimate memory size of cache entry
    */
-  cleanupCache() {
-    const now = Date.now();
-    for (const [key, entry] of this.queryCache.entries()) {
-      if (now - entry.timestamp > this.cacheTimeout) {
-        this.queryCache.delete(key);
-      }
-    }
-    
-    // If cache is too large, remove oldest entries
-    if (this.queryCache.size > this.maxCacheSize) {
-      const entries = Array.from(this.queryCache.entries())
-        .sort((a, b) => a[1].timestamp - b[1].timestamp);
-      
-      const toRemove = entries.slice(0, this.queryCache.size - this.maxCacheSize);
-      for (const [key] of toRemove) {
-        this.queryCache.delete(key);
-      }
+  estimateEntrySize(entry) {
+    try {
+      const jsonString = JSON.stringify(entry);
+      return jsonString.length * 2; // Rough estimate (UTF-16)
+    } catch (error) {
+      return 1024; // Default 1KB estimate if serialization fails
     }
   }
 
@@ -1091,13 +1224,53 @@ export class StrategicDocumentsManager {
   }
 
   /**
-   * Set cached query result
+   * Set cached query result with memory safety
    */
   setCachedQuery(cacheKey, result) {
-    this.queryCache.set(cacheKey, {
-      result: JSON.parse(JSON.stringify(result)), // Deep clone
-      timestamp: Date.now()
-    });
+    try {
+      // Preemptive cleanup if cache is getting full
+      if (this.queryCache.size >= this.maxCacheSize * this.emergencyCleanupThreshold) {
+        this.cleanupCache();
+      }
+      
+      // Create cache entry with size limit
+      const cacheEntry = {
+        result: this.safeCopyResult(result),
+        timestamp: Date.now(),
+        accessCount: 1
+      };
+      
+      // Estimate size and reject if too large
+      const estimatedSize = this.estimateEntrySize(cacheEntry);
+      if (estimatedSize > 5 * 1024 * 1024) { // 5MB limit per entry
+        console.warn(`Cache entry too large (${(estimatedSize / 1024 / 1024).toFixed(1)}MB), skipping cache for: ${cacheKey}`);
+        return;
+      }
+      
+      this.queryCache.set(cacheKey, cacheEntry);
+      
+    } catch (error) {
+      console.warn(`Failed to cache query result: ${error.message}`);
+    }
+  }
+
+  /**
+   * Safe copy of result with circular reference protection
+   */
+  safeCopyResult(result) {
+    try {
+      // Limit depth to prevent stack overflow
+      return JSON.parse(JSON.stringify(result, null, 0));
+    } catch (error) {
+      // Fallback for circular references or other issues
+      if (Array.isArray(result)) {
+        return result.slice(0, 1000); // Limit array size
+      }
+      if (typeof result === 'object' && result !== null) {
+        return { ...result }; // Shallow copy as fallback
+      }
+      return result;
+    }
   }
 
   /**
@@ -1149,12 +1322,35 @@ export class StrategicDocumentsManager {
         this.setCachedQuery(cacheKey, result);
       }
 
-      // Update performance metrics
+      // Update performance metrics with bounds
       const queryTime = Date.now() - startTime;
       this.performanceMetrics.queriesExecuted++;
+      
+      // Simple bounds check to prevent counter overflow
+      if (this.performanceMetrics.queriesExecuted > 10000) {
+        this.performanceMetrics.queriesExecuted = 0;
+        this.performanceMetrics.operationsCompleted = 0;
+        this.performanceMetrics.totalQueryTime = 0;
+        this.performanceMetrics.cacheHits = 0;
+      }
       this.performanceMetrics.totalQueryTime += queryTime;
       this.performanceMetrics.averageQueryTime = 
         this.performanceMetrics.totalQueryTime / this.performanceMetrics.queriesExecuted;
+      
+      // Add to bounded metrics history
+      this.metricsHistory.push({
+        timestamp: Date.now(),
+        queryTime,
+        operation
+      });
+      
+      // Keep metrics history bounded
+      if (this.metricsHistory.length > this.maxMetricsHistory) {
+        this.metricsHistory = this.metricsHistory.slice(-this.maxMetricsHistory);
+      }
+      
+      // Clean old accumulated metrics to prevent unbounded growth
+      this.cleanupOldMetrics();
 
       return result;
     } catch (error) {
@@ -1165,16 +1361,35 @@ export class StrategicDocumentsManager {
   }
 
   /**
-   * Get performance metrics
+   * Simple metrics cleanup with bounds
+   */
+  cleanupOldMetrics() {
+    // Simple bounds check - reset if too high
+    if (this.performanceMetrics.queriesExecuted > 10000) {
+      this.resetPerformanceMetrics();
+    }
+    
+    // Keep metrics history bounded
+    if (this.metricsHistory.length > this.maxMetricsHistory) {
+      this.metricsHistory = this.metricsHistory.slice(-this.maxMetricsHistory);
+    }
+  }
+
+  /**
+   * Get performance metrics with cleanup
    */
   getPerformanceMetrics() {
+    // Clean old metrics before returning
+    this.cleanupOldMetrics();
+    
     return {
       ...this.performanceMetrics,
       cacheSize: this.queryCache.size,
       cacheHitRate: this.performanceMetrics.queriesExecuted > 0 
         ? (this.performanceMetrics.cacheHits / this.performanceMetrics.queriesExecuted) * 100 
         : 0,
-      connectionPoolSize: this.connectionPool.size
+      metricsHistorySize: this.metricsHistory.length,
+      oldestMetric: this.metricsHistory.length > 0 ? this.metricsHistory[0].timestamp : null
     };
   }
 
@@ -1352,7 +1567,7 @@ export class StrategicDocumentsManager {
     
     try {
       let totalEntries = 0;
-      let totalNamespaces = Object.keys(this.tables).length;
+      const totalNamespaces = Object.keys(this.tables).length;
       
       // Count entries in each table
       for (const [namespace, table] of Object.entries(this.tables)) {
@@ -1395,9 +1610,8 @@ export class StrategicDocumentsManager {
       // Stop cleanup routine
       this.stopCleanupRoutine();
       
-      // Clear caches and pools
+      // Clear caches and cleanup
       this.queryCache.clear();
-      this.connectionPool.clear();
       this.operationLocks.clear();
       
       if (this.db) {

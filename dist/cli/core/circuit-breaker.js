@@ -13,18 +13,12 @@ export class CircuitBreaker {
     this.timeout = options.timeout || 60000; // 60 seconds
     this.monitor = options.monitor || console;
     
-    // Atomic state management
-    this._stateData = {
-      state: 'CLOSED', // CLOSED, OPEN, HALF_OPEN
-      failureCount: 0,
-      successCount: 0,
-      nextAttempt: Date.now(),
-      lastStateChange: Date.now()
-    };
-    
-    // Mutex for atomic operations
-    this._stateLock = false;
-    this._pendingOperations = [];
+    // Simple state management (no locks needed for single-threaded Node.js)
+    this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
+    this.failureCount = 0;
+    this.successCount = 0;
+    this.nextAttempt = Date.now();
+    this.lastStateChange = Date.now();
     
     // Statistics
     this.stats = {
@@ -38,55 +32,46 @@ export class CircuitBreaker {
   }
 
   /**
-   * Atomic state operation wrapper
+   * Simple state change (synchronous, no locking needed)
    */
-  async _withStateLock(operation) {
-    // Simple spin-lock implementation for Node.js single-threaded environment
-    while (this._stateLock) {
-      await new Promise(resolve => setImmediate(resolve));
-    }
+  _changeState(newState, updates = {}) {
+    const oldState = this.state;
+    this.state = newState;
     
-    this._stateLock = true;
-    try {
-      return await operation();
-    } finally {
-      this._stateLock = false;
+    // Apply any additional updates
+    Object.assign(this, updates);
+    
+    if (newState !== oldState) {
+      this.lastStateChange = Date.now();
       
-      // Process pending operations
-      if (this._pendingOperations.length > 0) {
-        const pending = this._pendingOperations.shift();
-        setImmediate(() => pending());
+      // Bound the state changes array to prevent memory leaks
+      this.stats.stateChanges.push({
+        from: oldState,
+        to: newState,
+        timestamp: Date.now(),
+        reason: this.getStateChangeReason(oldState, newState)
+      });
+      
+      // Keep only last 50 state changes to prevent memory leak
+      if (this.stats.stateChanges.length > 50) {
+        this.stats.stateChanges = this.stats.stateChanges.slice(-50);
       }
+      
+      this.monitor.info(`⚡ Circuit breaker ${this.name}: ${oldState} → ${newState}`);
     }
   }
 
   /**
-   * Get current state atomically
+   * Get current state (simple read, no locking needed)
    */
   _getState() {
-    return { ...this._stateData };
-  }
-
-  /**
-   * Update state atomically
-   */
-  async _updateState(updates) {
-    return this._withStateLock(async () => {
-      const oldState = this._stateData.state;
-      Object.assign(this._stateData, updates);
-      
-      if (updates.state && updates.state !== oldState) {
-        this._stateData.lastStateChange = Date.now();
-        this.stats.stateChanges.push({
-          from: oldState,
-          to: updates.state,
-          timestamp: Date.now(),
-          reason: this.getStateChangeReason(oldState, updates.state)
-        });
-        
-        this.monitor.info(`⚡ Circuit breaker ${this.name}: ${oldState} → ${updates.state}`);
-      }
-    });
+    return {
+      state: this.state,
+      failureCount: this.failureCount,
+      successCount: this.successCount,
+      nextAttempt: this.nextAttempt,
+      lastStateChange: this.lastStateChange
+    };
   }
 
   /**
@@ -95,11 +80,9 @@ export class CircuitBreaker {
   async execute(operation, operationName = 'operation') {
     this.stats.totalRequests++;
     
-    // Atomically check and update state
-    const currentState = this._getState();
-    
-    if (currentState.state === 'OPEN') {
-      if (Date.now() < currentState.nextAttempt) {
+    // Simple state check (no race conditions in single-threaded Node.js)
+    if (this.state === 'OPEN') {
+      if (Date.now() < this.nextAttempt) {
         const error = new CliError(
           `Circuit breaker ${this.name} is OPEN for ${operationName}`,
           'CIRCUIT_BREAKER_OPEN'
@@ -107,11 +90,8 @@ export class CircuitBreaker {
         this.stats.totalFailures++;
         throw error;
       } else {
-        // Atomically transition to half-open
-        await this._updateState({ 
-          state: 'HALF_OPEN',
-          successCount: 0 
-        });
+        // Transition to half-open
+        this._changeState('HALF_OPEN', { successCount: 0 });
       }
     }
 
@@ -131,72 +111,64 @@ export class CircuitBreaker {
   async onSuccess() {
     this.stats.totalSuccesses++;
     this.stats.lastSuccessTime = Date.now();
-
-    const currentState = this._getState();
     
-    if (currentState.state === 'HALF_OPEN') {
-      const newSuccessCount = currentState.successCount + 1;
+    // Simple bounds check to prevent counter overflow
+    if (this.stats.totalRequests > 10000) {
+      this.stats.totalRequests = 0;
+      this.stats.totalFailures = 0;
+      this.stats.totalSuccesses = 0;
+    }
+    
+    if (this.state === 'HALF_OPEN') {
+      this.successCount++;
       
-      if (newSuccessCount >= this.successThreshold) {
-        await this._updateState({
-          state: 'CLOSED',
-          failureCount: 0,
-          successCount: 0
-        });
-      } else {
-        await this._updateState({
-          successCount: newSuccessCount
+      if (this.successCount >= this.successThreshold) {
+        this._changeState('CLOSED', { 
+          failureCount: 0, 
+          successCount: 0 
         });
       }
     } else {
       // Reset failure count on success in CLOSED state
-      await this._updateState({
-        failureCount: 0
-      });
+      this.failureCount = 0;
     }
   }
 
   /**
-   * Handle failed operation
+   * Handle failed operation with simplified error handling
    */
   async onFailure(error, operationName = 'operation') {
     this.stats.totalFailures++;
     this.stats.lastFailureTime = Date.now();
     
-    const currentState = this._getState();
-    const newFailureCount = currentState.failureCount + 1;
+    this.failureCount++;
     
-    this.monitor.warn(`🔧 Circuit breaker ${this.name}: ${operationName} failed (${newFailureCount}/${this.failureThreshold})`);
+    // Simple bounds check to prevent counter overflow
+    if (this.stats.totalRequests > 10000) {
+      this.stats.totalRequests = 0;
+      this.stats.totalFailures = 0;
+      this.stats.totalSuccesses = 0;
+    }
+    
+    // Simplified logging - only warn on threshold approach
+    if (this.failureCount >= this.failureThreshold - 1) {
+      this.monitor.warn(`🔧 Circuit breaker ${this.name}: ${operationName} failed (${this.failureCount}/${this.failureThreshold})`);
+    }
 
-    if (currentState.state === 'HALF_OPEN') {
-      // Immediately open on any failure in half-open state
-      await this._updateState({
-        state: 'OPEN',
-        failureCount: newFailureCount,
+    if (this.state === 'HALF_OPEN' || this.failureCount >= this.failureThreshold) {
+      // Open circuit on any failure in half-open state or when threshold reached
+      this._changeState('OPEN', {
         successCount: 0,
         nextAttempt: Date.now() + this.timeout
-      });
-    } else if (newFailureCount >= this.failureThreshold) {
-      // Open circuit when threshold reached
-      await this._updateState({
-        state: 'OPEN',
-        failureCount: newFailureCount,
-        nextAttempt: Date.now() + this.timeout
-      });
-    } else {
-      // Just increment failure count
-      await this._updateState({
-        failureCount: newFailureCount
       });
     }
   }
 
   /**
-   * Change circuit breaker state (deprecated - use _updateState)
+   * Manually set circuit breaker state
    */
-  async setState(newState) {
-    await this._updateState({
-      state: newState,
+  setState(newState) {
+    this._changeState(newState, {
       nextAttempt: Date.now() + this.timeout
     });
   }
@@ -223,9 +195,8 @@ export class CircuitBreaker {
   /**
    * Reset circuit breaker to closed state
    */
-  async reset() {
-    await this._updateState({
-      state: 'CLOSED',
+  reset() {
+    this._changeState('CLOSED', {
       failureCount: 0,
       successCount: 0,
       nextAttempt: Date.now()

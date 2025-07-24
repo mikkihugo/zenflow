@@ -6,6 +6,7 @@
 import { readFile, writeFile, mkdir, access } from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
+import { safeRegexExec } from '../../utils/security.js';
 
 export class DocumentationLinkerPlugin {
   constructor(config = {}) {
@@ -189,11 +190,11 @@ export class DocumentationLinkerPlugin {
   extractMarkdownLinks(content) {
     const links = [];
     
-    // Markdown links: [text](url)
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    let match;
+    // Markdown links: [text](url) - using safe regex execution
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/;
+    const linkMatches = safeRegexExec(linkRegex, content, 500);
     
-    while ((match = linkRegex.exec(content)) !== null) {
+    for (const match of linkMatches) {
       links.push({
         type: 'markdown',
         text: match[1],
@@ -204,9 +205,11 @@ export class DocumentationLinkerPlugin {
       });
     }
     
-    // Reference links: [text][ref]
-    const refLinkRegex = /\[([^\]]+)\]\[([^\]]+)\]/g;
-    while ((match = refLinkRegex.exec(content)) !== null) {
+    // Reference links: [text][ref] - using safe regex execution
+    const refLinkRegex = /\[([^\]]+)\]\[([^\]]+)\]/;
+    const refLinkMatches = safeRegexExec(refLinkRegex, content, 500);
+    
+    for (const match of refLinkMatches) {
       links.push({
         type: 'reference',
         text: match[1],
@@ -216,9 +219,11 @@ export class DocumentationLinkerPlugin {
       });
     }
     
-    // Auto links: <url>
-    const autoLinkRegex = /<(https?:\/\/[^>]+)>/g;
-    while ((match = autoLinkRegex.exec(content)) !== null) {
+    // Auto links: <url> - using safe regex execution
+    const autoLinkRegex = /<(https?:\/\/[^>]+)>/;
+    const autoLinkMatches = safeRegexExec(autoLinkRegex, content, 500);
+    
+    for (const match of autoLinkMatches) {
       links.push({
         type: 'auto',
         text: match[1],
@@ -233,10 +238,10 @@ export class DocumentationLinkerPlugin {
 
   extractMarkdownImages(content) {
     const images = [];
-    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
-    let match;
+    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/;
+    const imageMatches = safeRegexExec(imageRegex, content, 500);
     
-    while ((match = imageRegex.exec(content)) !== null) {
+    for (const match of imageMatches) {
       images.push({
         alt: match[1],
         src: match[2],
@@ -250,10 +255,10 @@ export class DocumentationLinkerPlugin {
 
   extractMarkdownAnchors(content) {
     const anchors = [];
-    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-    let match;
+    const headingRegex = /^(#{1,6})\s+(.+)$/m;
+    const headingMatches = safeRegexExec(headingRegex, content, 200);
     
-    while ((match = headingRegex.exec(content)) !== null) {
+    for (const match of headingMatches) {
       const level = match[1].length;
       const text = match[2].trim();
       const slug = this.createSlug(text);
@@ -272,11 +277,11 @@ export class DocumentationLinkerPlugin {
   extractRstLinks(content) {
     const links = [];
     
-    // RST external links: `text <url>`_
-    const externalLinkRegex = /`([^`]+)\s+<([^>]+)>`_/g;
-    let match;
+    // RST external links: `text <url>`_ - using safe regex execution
+    const externalLinkRegex = /`([^`]+)\s+<([^>]+)>`_/;
+    const externalLinkMatches = safeRegexExec(externalLinkRegex, content, 500);
     
-    while ((match = externalLinkRegex.exec(content)) !== null) {
+    for (const match of externalLinkMatches) {
       links.push({
         type: 'rst_external',
         text: match[1],
@@ -327,11 +332,11 @@ export class DocumentationLinkerPlugin {
   extractAsciidocLinks(content) {
     const links = [];
     
-    // AsciiDoc links: link:url[text]
-    const linkRegex = /link:([^\[]+)\[([^\]]*)\]/g;
-    let match;
+    // AsciiDoc links: link:url[text] - using safe regex execution
+    const linkRegex = /link:([^\[]+)\[([^\]]*)\]/;
+    const linkMatches = safeRegexExec(linkRegex, content, 500);
     
-    while ((match = linkRegex.exec(content)) !== null) {
+    for (const match of linkMatches) {
       links.push({
         type: 'asciidoc',
         text: match[2] || match[1],
@@ -351,10 +356,10 @@ export class DocumentationLinkerPlugin {
 
   extractAsciidocAnchors(content) {
     const anchors = [];
-    const headingRegex = /^(={1,6})\s+(.+)$/gm;
-    let match;
+    const headingRegex = /^(={1,6})\s+(.+)$/m;
+    const headingMatches = safeRegexExec(headingRegex, content, 200);
     
-    while ((match = headingRegex.exec(content)) !== null) {
+    for (const match of headingMatches) {
       const level = match[1].length;
       const text = match[2].trim();
       
@@ -371,10 +376,10 @@ export class DocumentationLinkerPlugin {
 
   extractGenericLinks(content) {
     const links = [];
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    let match;
+    const urlRegex = /(https?:\/\/[^\s]+)/;
+    const urlMatches = safeRegexExec(urlRegex, content, 500);
     
-    while ((match = urlRegex.exec(content)) !== null) {
+    for (const match of urlMatches) {
       links.push({
         type: 'url',
         text: match[1],
