@@ -4,7 +4,9 @@
  */
 
 import chalk from 'chalk';
-import { nanoid } from 'nanoid';
+import { randomUUID } from 'crypto';
+// TODO: Fix nanoid dependency resolution and switch back
+// import { nanoid } from 'nanoid';
 import { LogLevel, LogEntry } from '@shared/types';
 
 // ==================== LOGGING UTILITIES ====================
@@ -85,7 +87,8 @@ export class Logger {
 // ==================== ID GENERATION ====================
 
 export function generateId(prefix?: string): string {
-  const id = nanoid(12);
+  // Using crypto.randomUUID as temporary workaround for nanoid dependency issue
+  const id = randomUUID().replace(/-/g, '').substring(0, 12);
   return prefix ? `${prefix}-${id}` : id;
 }
 

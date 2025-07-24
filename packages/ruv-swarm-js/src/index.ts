@@ -3,7 +3,7 @@
  * @module ruv-swarm-js
  */
 
-import { RuvSwarm, Swarm, Agent, NeuralAgent } from 'ruv-swarm';
+import { RuvSwarm } from 'ruv-swarm';
 import { SwarmConfig, AgentConfig, TaskConfig } from '@shared/types';
 import { Logger } from '@shared/utils';
 
@@ -22,7 +22,7 @@ export class RuvSwarmBridge {
    */
   private async initializeRuvSwarm(config: SwarmConfig) {
     try {
-      this.ruvSwarm = new RuvSwarm();
+      this.ruvSwarm = await RuvSwarm.initialize();
       this.logger.info('✅ ruv-swarm engine initialized');
     } catch (error) {
       this.logger.error('❌ Failed to initialize ruv-swarm:', error);
@@ -259,7 +259,7 @@ export class RuvSwarmBridge {
 
 // Export the main bridge class and re-export ruv-swarm types
 export default RuvSwarmBridge;
-export { RuvSwarm, Swarm, Agent, NeuralAgent };
+export { RuvSwarm };
 
 // Export convenience functions
 export async function createServiceSwarm(serviceName: string, config?: SwarmConfig): Promise<RuvSwarmBridge> {

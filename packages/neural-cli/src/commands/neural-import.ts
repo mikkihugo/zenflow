@@ -11,7 +11,7 @@ import chalk from 'chalk';
 
 export class NeuralImportCommand {
   private logger: Logger;
-  private swarmBridge: RuvSwarmBridge;
+  private swarmBridge!: RuvSwarmBridge;
 
   constructor() {
     this.logger = new Logger('NeuralImport');
@@ -128,7 +128,7 @@ export class NeuralImportCommand {
       return analysis;
 
     } catch (error) {
-      spinner.fail(`❌ Neural import failed: ${error.message}`);
+      spinner.fail(`❌ Neural import failed: ${error instanceof Error ? error.message : String(error)}`);
       this.logger.error('Neural import error:', error);
       throw error;
     } finally {
@@ -139,7 +139,7 @@ export class NeuralImportCommand {
     }
   }
 
-  private async spawnAnalysisAgents(swarmId: string, spinner: ora.Ora): Promise<string[]> {
+  private async spawnAnalysisAgents(swarmId: string, spinner: any): Promise<string[]> {
     const agentTypes = [
       { type: 'researcher', name: 'ServiceDiscoverer' },
       { type: 'analyst', name: 'DependencyAnalyzer' },
@@ -166,7 +166,7 @@ export class NeuralImportCommand {
   }
 
   private getAgentCapabilities(agentType: string): string[] {
-    const capabilities = {
+    const capabilities: Record<string, string[]> = {
       researcher: ['service_discovery', 'file_analysis', 'pattern_recognition'],
       analyst: ['dependency_mapping', 'relationship_analysis', 'impact_assessment'],
       architect: ['pattern_detection', 'architecture_evaluation', 'design_principles'],

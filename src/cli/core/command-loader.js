@@ -204,6 +204,16 @@ async function registerDevelopmentCommands(router) {
     usage: 'analytics [report] [options]',
     examples: ['analytics performance', 'analytics usage', 'analytics export']
   });
+
+  // Neural command (AI-powered development tools)
+  const { neuralCommand } = await import('../command-handlers/neural-command.js');
+  router.register('neural', {
+    handler: neuralCommand,
+    description: '🧠 Neural AI development tools with ruv-FANN intelligence',
+    usage: 'neural <subcommand> [options]',
+    examples: ['neural import /path/to/monorepo', 'neural analyze .', 'neural optimize --verbose'],
+    aliases: ['ai', 'brain']
+  });
 }
 
 /**

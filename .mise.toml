@@ -1,2 +1,59 @@
 [tools]
-node = "22"
+node = "22.17.1"  # Latest Node.js with ES modules and crypto.randomUUID
+rust = "1.84"     # Latest Rust for ruv-FANN neural networks
+
+[env]
+NODE_OPTIONS = "--experimental-vm-modules --experimental-wasm-modules"
+NPM_CONFIG_ENGINE_STRICT = "true"
+RUST_BACKTRACE = "1"
+RUSTFLAGS = "-C target-cpu=native"  # Optimize for local CPU
+
+[tasks.install]
+run = "pnpm install"
+description = "Install workspace dependencies"
+
+[tasks.install-rust]
+run = "cd ruv-FANN && cargo build --release"
+description = "Build Rust neural network crates"
+
+[tasks.install-all]
+run = ["mise run install", "mise run install-rust"]
+description = "Install all dependencies (Node.js + Rust)"
+
+[tasks.build]
+run = "pnpm -r build"
+description = "Build all workspace packages"
+
+[tasks.build-rust]
+run = [
+  "cd ruv-FANN && cargo build --release",
+  "cd ruv-FANN/neuro-divergent && cargo build --release"
+]
+description = "Build all Rust neural network crates"
+
+[tasks.build-all]
+run = ["mise run build", "mise run build-rust"]
+description = "Build all packages (Node.js + Rust)"
+
+[tasks.test-rust]
+run = [
+  "cd ruv-FANN && cargo test",
+  "cd ruv-FANN/neuro-divergent && cargo test"
+]
+description = "Run Rust neural network tests"
+
+[tasks.neural]
+run = "./bin/claude-zen neural help"
+description = "Show neural AI commands"
+
+[tasks.rust-info]
+run = [
+  "echo '🦀 Rust Neural Network Components:'",
+  "echo '  • ruv-FANN Core: Neural networks and training'", 
+  "echo '  • Neuro-Divergent: Advanced cognitive models'",
+  "echo '  • CUDA-WASM: GPU acceleration'",
+  "echo '  • OpenCV-Rust: Computer vision'",
+  "cargo --version",
+  "rustc --version"
+]
+description = "Show Rust component information"

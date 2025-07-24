@@ -3,16 +3,16 @@
  * @module neural-cli
  */
 
-export { NeuralImportCommand } from './commands/neural-import';
+export { NeuralImportCommand } from './commands/neural-import.js';
 
 // Re-export neural command handlers
-export * from './commands/neural-import';
+export * from './commands/neural-import.js';
 
 // CLI command registration helper
 export function registerNeuralCommands(commandRegistry: Map<string, any>): void {
   commandRegistry.set('neural-import', {
     handler: async (args: string[], flags: any) => {
-      const { NeuralImportCommand } = await import('./commands/neural-import');
+      const { NeuralImportCommand } = await import('./commands/neural-import.js');
       const command = new NeuralImportCommand();
       
       const monorepoPath = args[0] || process.cwd();
