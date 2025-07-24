@@ -1,0 +1,45 @@
+# Claude Zen + ruv-FANN Unified Workspace
+# Modular integration architecture for neural development platform
+
+packages:
+  # Core Claude Zen packages  
+  - "packages/claude-zen-core"
+  - "packages/claude-zen-cli" 
+  - "packages/claude-zen-api"
+  - "packages/claude-zen-ui"
+  
+  # ruv-FANN Neural Engine packages
+  - "packages/ruv-swarm-js"           # JavaScript bindings for ruv-swarm
+  - "packages/neural-engine"          # FANN + Neuro-Divergent integration
+  - "packages/gpu-acceleration"       # CUDA-WASM integration  
+  - "packages/computer-vision"        # OpenCV-Rust integration
+  
+  # Shared utilities
+  - "packages/shared-types"           # TypeScript definitions
+  - "packages/shared-utils"           # Common utilities
+  - "packages/performance-monitor"    # Benchmarking and metrics
+  
+  # Integration packages
+  - "packages/neural-cli"             # Neural-enhanced CLI commands
+  - "packages/swarm-coordination"     # Advanced coordination protocols
+  - "packages/graph-intelligence"     # Neural graph database integration
+
+# External dependencies that are part of our workspace  
+externals:
+  - "../ruv-FANN/ruv-swarm/npm"      # Link to ruv-swarm npm package
+  
+# Workspace configuration
+workspace:
+  shared-workspace-lockfile: true
+  prefer-workspace-packages: true
+  save-workspace-protocol: false
+  
+# Development configuration  
+dev:
+  auto-install-peers: true
+  strict-peer-dependencies: true
+  
+# Build configuration
+build:
+  dependencies: true
+  dev-dependencies: false

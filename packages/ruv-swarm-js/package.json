@@ -1,0 +1,39 @@
+{
+  "name": "@claude-zen/ruv-swarm-js",
+  "version": "1.0.0",
+  "description": "JavaScript bindings and integration for ruv-swarm neural coordination engine",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && npm run build:rust-bindings",
+    "build:rust-bindings": "node scripts/build-rust-bindings.js",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:integration": "jest --testPathPattern=integration",
+    "link-ruv-swarm": "npm link ../../ruv-FANN/ruv-swarm/npm"
+  },
+  "dependencies": {
+    "ruv-swarm": "workspace:../../../ruv-FANN/ruv-swarm/npm",
+    "@shared/types": "workspace:*",
+    "@shared/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9",
+    "typescript": "^5.8.3",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.14"
+  },
+  "keywords": [
+    "ruv-swarm",
+    "neural-networks", 
+    "swarm-intelligence",
+    "coordination",
+    "javascript-bindings"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikkihugo/claude-code-zen.git",
+    "directory": "packages/ruv-swarm-js"
+  }
+}

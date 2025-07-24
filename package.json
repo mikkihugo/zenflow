@@ -7,11 +7,11 @@
     "claude-zen": "./bin/claude-zen"
   },
   "scripts": {
-    "start": "scripts/node22.sh node src/api/start-server.js",
-    "dev": "scripts/node22.sh node src/cli/cli-main.js",
-    "api": "scripts/node22.sh node src/api/start-server.js",
+    "start": "node src/api/claude-zen-server.js",
+    "dev": "node src/cli/cli-main.js",
+    "api": "node src/api/claude-zen-server.js",
     "build": "npm run clean && npm run update-version && npm run build:js && npm run build:binary",
-    "update-version": "scripts/node22.sh node scripts/update-bin-version.js",
+    "update-version": "node scripts/update-bin-version.js",
     "clean": "rm -rf dist",
     "build:js": "mkdir -p dist && cp -r src/* dist/",
     "build:binary": "echo 'Using shell script binary - no compilation needed'",
@@ -105,6 +105,10 @@
     "DOCKER_TEST_REPORT.md"
   ],
   "dependencies": {
+    "@claude-zen/neural-cli": "workspace:*",
+    "@claude-zen/ruv-swarm-js": "workspace:*",
+    "@shared/types": "workspace:*",
+    "@shared/utils": "workspace:*",
     "@google/generative-ai": "^0.24.1",
     "@lancedb/lancedb": "^0.21.1",
     "@modelcontextprotocol/sdk": "^1.16.0",
