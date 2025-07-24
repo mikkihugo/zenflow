@@ -1,6 +1,7 @@
 // batch-manager.js - Batch configuration management utility
 import { printSuccess, printError, printInfo, printWarning } from '../utils.js';
-import { PROJECT_TEMPLATES, ENVIRONMENT_CONFIGS } from './init-handlers/init/batch-init.js';
+import { PROJECT_TEMPLATES, ENVIRONMENT_CONFIGS } from './batch-constants.js';
+import { promises as fs } from 'fs';
 
 export async function batchManagerCommand(subArgs, flags) {
   const command = subArgs[0];
@@ -43,7 +44,7 @@ async function createBatchConfig(args, flags) {
   };
 
   try {
-    await node.writeTextFile(outputFile, JSON.stringify(config, null, 2));
+    await fs.writeFile(outputFile, JSON.stringify(config, null, 2));
     printSuccess(`Created batch configuration template: ${outputFile}`);
     console.log('Edit the file to customize your batch initialization setup.');
   } catch (error) {
@@ -97,7 +98,7 @@ async function createInteractiveConfig(outputFile) {
   };
 
   try {
-    await node.writeTextFile(outputFile, JSON.stringify(config, null, 2));
+    await fs.writeFile(outputFile, JSON.stringify(config, null, 2));
     printSuccess(`Created interactive batch configuration: ${outputFile}`);
     console.log('\nNext steps:');
     console.log('1. Edit the configuration file to match your needs');
@@ -118,7 +119,7 @@ async function validateBatchConfig(args, flags) {
   }
 
   try {
-    const content = await node.readTextFile(configFile);
+    const content = await fs.readFile(configFile, 'utf8');
     const config = JSON.parse(content);
 
     console.log(`📋 Validating batch configuration: ${configFile}`);
@@ -210,7 +211,7 @@ async function validateBatchConfig(args, flags) {
       }
     }
   } catch (error) {
-    if (error instanceof node.errors.NotFound) {
+    if (error.code === 'ENOENT') {
       printError(`Configuration file not found: ${configFile}`);
     } else if (error instanceof SyntaxError) {
       printError(`Invalid JSON in configuration file: ${error.message}`);
@@ -258,7 +259,7 @@ async function estimateBatchOperation(args, flags) {
   }
 
   try {
-    const content = await node.readTextFile(configFile);
+    const content = await fs.readFile(configFile, 'utf8');
     const config = JSON.parse(content);
 
     console.log('⏱️  Batch Operation Estimation');

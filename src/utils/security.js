@@ -118,7 +118,9 @@ export function createSafeRegex(pattern, flags = '') {
  */
 export function safeRegexExec(regex, content, maxIterations = 1000) {
   const matches = [];
-  const globalRegex = new RegExp(regex.source, regex.flags + 'g');
+  // Ensure global flag is set correctly (avoid duplicate 'g')
+  const flags = regex.flags.includes('g') ? regex.flags : regex.flags + 'g';
+  const globalRegex = new RegExp(regex.source, flags);
   let iterations = 0;
   let match;
   

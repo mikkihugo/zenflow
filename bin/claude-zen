@@ -48,13 +48,13 @@ for arg in "$@"; do
   fi
 done
 
-# Use Node.js 22 via mise with Google Code Standard architecture
+# Use Node.js directly (assuming Node 22 is default)
 if [ -f "$ROOT_DIR/dist/cli/cli-main.js" ]; then
   # Use built JavaScript version (preferred)
-  cd "$ROOT_DIR" && exec ./scripts/node22.sh node dist/cli/cli-main.js "$@"
+  cd "$ROOT_DIR" && exec node dist/cli/cli-main.js "$@"
 elif [ -f "$ROOT_DIR/src/cli/cli-main.js" ]; then
   # Use source version
-  cd "$ROOT_DIR" && exec ./scripts/node22.sh node src/cli/cli-main.js "$@"
+  cd "$ROOT_DIR" && exec node src/cli/cli-main.js "$@"
 else
   # No runtime available, show help
   echo "🧠 Claude-Flow v$VERSION - Advanced AI Agent Orchestration System"

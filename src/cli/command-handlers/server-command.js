@@ -3,7 +3,6 @@
  * Manages the Claude Zen API server lifecycle
  */
 
-import { claudeZenServer } from '../../api/claude-zen-server.js';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -68,6 +67,9 @@ async function startServerForeground(port, flags) {
   console.log(`📡 Port: ${port}`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('');
+
+  // Lazy import the server only when needed
+  const { claudeZenServer } = await import('../../api/claude-zen-server.js');
 
   // Configure server options
   claudeZenServer.port = port;

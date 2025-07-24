@@ -11,41 +11,48 @@ async function main() {
   const { input, flags } = cli;
   const command = input[0];
 
-  // Initialize plugin system first (before processing any commands)
-  let pluginManager = null;
-  try {
-    pluginManager = await initializePlugins({
-      errorHandling: 'graceful', // Continue even if some plugins fail
-      verboseErrors: flags.debug || flags.verbose
-    });
-    
-    // Register plugin commands with the command registry
-    if (pluginManager) {
-      const { registerPluginCommands } = await import('./plugin-activation.js');
-      registerPluginCommands(commandRegistry);
-    }
-  } catch (error) {
-    if (flags.debug) {
-      console.error('🔌 Plugin initialization failed:', error.message);
-    }
-    // Continue without plugins - core commands will still work
-  }
-
-  // Handle version flag
+  // Handle version flag first (no plugins needed)
   if (flags.version || flags.v) {
     console.log(cli.pkg.version);
     return;
   }
 
-  // Handle UI flag
-  if (flags.ui) {
-    renderTui(cli);
+  // Handle help or no command first (no plugins needed)
+  if (!command || flags.help || flags.h) {
+    cli.showHelp(0);
     return;
   }
 
-  // Handle help or no command
-  if (!command || flags.help || flags.h) {
-    cli.showHelp(0);
+  // Commands that don't need plugins (lightweight commands)
+  const lightweightCommands = [
+    'init', 'status', 'config', 'help', 'template', '--help', '--version'
+  ];
+
+  // Initialize plugin system only for commands that need it
+  let pluginManager = null;
+  if (!lightweightCommands.includes(command)) {
+    try {
+      pluginManager = await initializePlugins({
+        errorHandling: 'graceful', // Continue even if some plugins fail
+        verboseErrors: flags.debug || flags.verbose
+      });
+      
+      // Register plugin commands with the command registry
+      if (pluginManager) {
+        const { registerPluginCommands } = await import('./plugin-activation.js');
+        registerPluginCommands(commandRegistry);
+      }
+    } catch (error) {
+      if (flags.debug) {
+        console.error('🔌 Plugin initialization failed:', error.message);
+      }
+      // Continue without plugins - core commands will still work
+    }
+  }
+
+  // Handle UI flag (needs plugins)
+  if (flags.ui) {
+    renderTui(cli);
     return;
   }
 
