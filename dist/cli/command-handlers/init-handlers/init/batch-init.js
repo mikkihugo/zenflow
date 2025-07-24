@@ -8,7 +8,7 @@ import {
   ResourceThresholdMonitor,
   BatchOptimizer,
 } from './performance-monitor.js';
-import { initCommand } from '../../simple-commands/init/index.js';
+import { initCommand } from './index.js';
 import { createClaudeSlashCommands } from './claude-commands/slash-commands.js';
 import {
   createFullClaudeMd,
