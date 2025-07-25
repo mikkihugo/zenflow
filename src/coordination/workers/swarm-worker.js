@@ -613,10 +613,24 @@ worker.initialize();
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   console.error(`Uncaught exception in worker ${workerData.workerId}:`, error);
-  process.exit(1);
+  if (parentPort) {
+    parentPort.postMessage({
+      type: 'worker-error',
+      error: error.message,
+      fatal: true
+    });
+  }
+  setTimeout(() => process.exit(1), 100); // Brief delay to send message
 });
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(`Unhandled rejection in worker ${workerData.workerId}:`, reason);
-  process.exit(1);
+  if (parentPort) {
+    parentPort.postMessage({
+      type: 'worker-error',
+      error: reason.toString(),
+      fatal: true
+    });
+  }
+  setTimeout(() => process.exit(1), 100); // Brief delay to send message
 });
