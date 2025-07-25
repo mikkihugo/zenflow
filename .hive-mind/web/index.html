@@ -14,8 +14,22 @@
                 <span class="version">v2.0.0</span>
             </div>
             <div class="nav-controls">
-                <button id="theme-toggle" class="btn btn-icon">🎨</button>
-                <button id="refresh-btn" class="btn btn-icon">🔄</button>
+                <!-- Global Project Filter -->
+                <div class="global-project-filter" style="display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem;">
+                    <label for="global-project-filter" style="font-weight: 600; color: var(--text-primary);">🗂️ Project:</label>
+                    <select id="global-project-filter" class="form-select" onchange="setGlobalProjectFilter(this.value)" style="min-width: 180px; font-size: 0.85rem;">
+                        <option value="">All Projects</option>
+                    </select>
+                </div>
+                
+                <button id="theme-toggle" class="btn btn-icon" title="Toggle Theme">
+                    <span class="icon">🎨</span>
+                    <span class="btn-text">Theme</span>
+                </button>
+                <button id="refresh-btn" class="btn btn-icon" title="Refresh Data">
+                    <span class="icon">🔄</span>
+                    <span class="btn-text">Refresh</span>
+                </button>
                 <div class="status-indicator" id="status">
                     <span class="status-dot"></span>
                     <span class="status-text">Connected</span>
@@ -26,42 +40,218 @@
         <div class="main-container">
             <aside class="sidebar">
                 <div class="sidebar-menu">
-                    <button class="menu-item active" data-tab="dashboard">
-                        📊 Dashboard
-                    </button>
-                    <button class="menu-item" data-tab="hives">
-                        🐝 Hives
-                    </button>
-                    <button class="menu-item" data-tab="plugins">
-                        🔌 Plugins
-                    </button>
-                    <button class="menu-item" data-tab="settings">
-                        ⚙️ Settings
-                    </button>
+                    <!-- OVERVIEW SECTION -->
+                    <div class="menu-section">
+                        <div class="menu-section-header">
+                            <span class="menu-section-title">OVERVIEW</span>
+                        </div>
+                        <button class="menu-item active" data-tab="dashboard">
+                            <span class="menu-item-icon">📊</span>
+                            <span class="menu-item-text">Dashboard</span>
+                        </button>
+                    </div>
+                    
+                    <!-- PRODUCT MANAGEMENT SECTION -->
+                    <div class="menu-section collapsible" data-section="product">
+                        <div class="menu-section-header" onclick="toggleSection('product')">
+                            <span class="menu-section-title">PRODUCT MANAGEMENT</span>
+                            <span class="collapse-icon">▼</span>
+                        </div>
+                        <div class="menu-section-content">
+                            <button class="menu-item priority-high" data-tab="projects">
+                                <span class="menu-item-icon">🚀</span>
+                                <span class="menu-item-text">Projects</span>
+                                <span class="menu-item-badge">Primary</span>
+                            </button>
+                            <button class="menu-item priority-high" data-tab="features">
+                                <span class="menu-item-icon">⭐</span>
+                                <span class="menu-item-text">Features</span>
+                            </button>
+                            <button class="menu-item priority-high" data-tab="tasks">
+                                <span class="menu-item-icon">✅</span>
+                                <span class="menu-item-text">Tasks</span>
+                            </button>
+                            <button class="menu-item priority-medium" data-tab="visions">
+                                <span class="menu-item-icon">🎯</span>
+                                <span class="menu-item-text">Visions</span>
+                            </button>
+                            <button class="menu-item priority-medium" data-tab="prds">
+                                <span class="menu-item-icon">📋</span>
+                                <span class="menu-item-text">PRDs</span>
+                            </button>
+                            <button class="menu-item priority-medium" data-tab="epics">
+                                <span class="menu-item-icon">📚</span>
+                                <span class="menu-item-text">Epics</span>
+                            </button>
+                            <button class="menu-item priority-low" data-tab="roadmaps">
+                                <span class="menu-item-icon">🗺️</span>
+                                <span class="menu-item-text">Roadmaps</span>
+                            </button>
+                            <button class="menu-item priority-low" data-tab="adrs">
+                                <span class="menu-item-icon">📜</span>
+                                <span class="menu-item-text">ADRs</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- SYSTEM MANAGEMENT SECTION -->
+                    <div class="menu-section collapsible" data-section="system">
+                        <div class="menu-section-header" onclick="toggleSection('system')">
+                            <span class="menu-section-title">SYSTEM MANAGEMENT</span>
+                            <span class="collapse-icon">▼</span>
+                        </div>
+                        <div class="menu-section-content">
+                            <button class="menu-item priority-high" data-tab="queens">
+                                <span class="menu-item-icon">👑</span>
+                                <span class="menu-item-text">AI Agents</span>
+                            </button>
+                            <button class="menu-item priority-medium" data-tab="hives">
+                                <span class="menu-item-icon">🐝</span>
+                                <span class="menu-item-text">Services</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- MONITORING SECTION -->
+                    <div class="menu-section collapsible" data-section="monitoring">
+                        <div class="menu-section-header" onclick="toggleSection('monitoring')">
+                            <span class="menu-section-title">MONITORING</span>
+                            <span class="collapse-icon">▼</span>
+                        </div>
+                        <div class="menu-section-content">
+                            <button class="menu-item priority-medium" data-tab="logs">
+                                <span class="menu-item-icon">📜</span>
+                                <span class="menu-item-text">Task Logs</span>
+                            </button>
+                            <button class="menu-item priority-low" data-tab="analytics">
+                                <span class="menu-item-icon">📈</span>
+                                <span class="menu-item-text">Analytics</span>
+                            </button>
+                            <button class="menu-item priority-low" data-tab="plugins">
+                                <span class="menu-item-icon">🔌</span>
+                                <span class="menu-item-text">Plugins</span>
+                            </button>
+                            <button class="menu-item priority-low" data-tab="settings">
+                                <span class="menu-item-icon">⚙️</span>
+                                <span class="menu-item-text">Settings</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </aside>
 
             <main class="content">
                 <div id="dashboard" class="tab-content active">
-                    <h2>📊 System Overview</h2>
+                    <h2>📊 Real-Time System Dashboard</h2>
+                    
+                    <!-- System Performance Stats -->
                     <div class="stats-grid" id="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number" id="hive-count">0</div>
-                            <div class="stat-label">Hives</div>
+                            <div class="stat-number" id="total-tasks">0</div>
+                            <div class="stat-label">Total Tasks</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="plugin-count">0</div>
-                            <div class="stat-label">Plugins</div>
+                            <div class="stat-number" id="recent-tasks">0</div>
+                            <div class="stat-label">Recent Tasks (1h)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="session-count">0</div>
-                            <div class="stat-label">Sessions</div>
+                            <div class="stat-number" id="success-rate">0%</div>
+                            <div class="stat-label">Success Rate</div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="avg-response">0ms</div>
+                            <div class="stat-label">Avg Response Time</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="system-uptime">0s</div>
+                            <div class="stat-label">System Uptime</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="memory-usage">0MB</div>
+                            <div class="stat-label">Memory Usage</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Real-Time Activity Feed -->
+                    <div class="dashboard-section">
+                        <h3>🔄 Real-Time Activity Feed</h3>
+                        <div id="activity-feed" class="activity-feed">
+                            <div class="loading">Loading recent activity...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Queen Performance Overview -->
+                    <div class="dashboard-section">
+                        <h3>👑 Queen Performance Overview</h3>
+                        <div id="queen-performance" class="queen-performance-grid">
+                            <div class="loading">Loading queen performance data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="queens" class="tab-content">
+                    <h2>👑 Queen Council Status</h2>
+                    <div id="queen-overview" class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-queens">0</div>
+                            <div class="stat-label">Total Queens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="active-queens">0</div>
+                            <div class="stat-label">Active Queens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="queen-tasks">0</div>
+                            <div class="stat-label">Current Tasks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="queen-success-rate">0%</div>
+                            <div class="stat-label">Avg Success Rate</div>
+                        </div>
+                    </div>
+                    <div id="queen-list" class="item-list">
+                        <div class="loading">Loading queens...</div>
                     </div>
                 </div>
 
                 <div id="hives" class="tab-content">
                     <h2>🐝 Hive Management</h2>
+                    
+                    <!-- Create Hive Form -->
+                    <div class="create-hive-form" style="background: var(--bg-secondary); padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 1rem; color: var(--accent-color);">🆕 Create New Hive</h3>
+                        <div style="display: grid; gap: 1rem;">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                                <input type="text" id="hive-name" placeholder="Hive Name" required style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                                <select id="hive-type" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                                    <option value="development">Development</option>
+                                    <option value="research">Research</option>
+                                    <option value="analysis">Analysis</option>
+                                    <option value="testing">Testing</option>
+                                    <option value="general">General</option>
+                                </select>
+                            </div>
+                            <textarea id="hive-description" placeholder="Description (optional)" rows="2" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); resize: vertical;"></textarea>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;">
+                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; align-items: center;">
+                                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Max Agents:</label>
+                                    <input type="number" id="hive-max-agents" value="5" min="1" max="20" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                                </div>
+                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; align-items: center;">
+                                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Coordination:</label>
+                                    <select id="hive-coordination" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                                        <option value="hierarchical">Hierarchical</option>
+                                        <option value="mesh">Mesh</option>
+                                        <option value="ring">Ring</option>
+                                        <option value="star">Star</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="createHive()" style="padding: 0.75rem 1.5rem; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: background-color 0.2s;">🐝 Create Hive</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Existing Hives List -->
                     <div id="hive-list" class="item-list">
                         <div class="loading">Loading hives...</div>
                     </div>
@@ -71,6 +261,89 @@
                     <h2>🔌 Plugin Status</h2>
                     <div id="plugin-list" class="item-list">
                         <div class="loading">Loading plugins...</div>
+                    </div>
+                </div>
+
+                <!-- PRODUCT MANAGEMENT TABS -->
+                <div id="visions" class="tab-content">
+                    <h2>🎯 Strategic Visions</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('visions')">➕ Create Vision</button>
+                    <div id="vision-list" class="item-list">
+                        <div class="loading">Loading visions...</div>
+                    </div>
+                </div>
+
+                <div id="projects" class="tab-content">
+                    <h2>🚀 Watertight Project Management</h2>
+                    
+                    <!-- Project Filter Controls -->
+                    <div class="filter-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <label for="project-filter" style="font-weight: 600;">🗂️ Current Project:</label>
+                            <select id="project-filter" class="form-select" onchange="filterByProject(this.value)" style="min-width: 200px;">
+                                <option value="">All Projects</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="showCreateForm('projects')">➕ Create Project</button>
+                        <button class="btn btn-secondary" onclick="resetProjectFilter()">🔄 Reset Filter</button>
+                    </div>
+                    
+                    <!-- Global Project Filter Notice -->
+                    <div id="project-filter-notice" style="display: none; background: var(--accent-color); color: white; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
+                        <strong>🔍 Project Filter Active:</strong> <span id="active-project-name"></span>
+                        <button onclick="resetProjectFilter()" style="background: none; border: none; color: white; float: right; cursor: pointer;">✖ Clear</button>
+                    </div>
+                    
+                    <div id="project-list" class="item-list">
+                        <div class="loading">Loading projects...</div>
+                    </div>
+                </div>
+
+                <div id="prds" class="tab-content">
+                    <h2>📋 Product Requirements Documents</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('prds')">➕ Create PRD</button>
+                    <div id="prd-list" class="item-list">
+                        <div class="loading">Loading PRDs...</div>
+                    </div>
+                </div>
+
+                <div id="features" class="tab-content">
+                    <h2>⭐ Features & Capabilities</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('features')">➕ Create Feature</button>
+                    <div id="feature-list" class="item-list">
+                        <div class="loading">Loading features...</div>
+                    </div>
+                </div>
+
+                <div id="epics" class="tab-content">
+                    <h2>🚀 Epic Initiatives</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('epics')">➕ Create Epic</button>
+                    <div id="epic-list" class="item-list">
+                        <div class="loading">Loading epics...</div>
+                    </div>
+                </div>
+
+                <div id="roadmaps" class="tab-content">
+                    <h2>🗺️ Strategic Roadmaps</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('roadmaps')">➕ Create Roadmap</button>
+                    <div id="roadmap-list" class="item-list">
+                        <div class="loading">Loading roadmaps...</div>
+                    </div>
+                </div>
+
+                <div id="adrs" class="tab-content">
+                    <h2>📜 Architectural Decision Records</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('adrs')">➕ Create ADR</button>
+                    <div id="adr-list" class="item-list">
+                        <div class="loading">Loading ADRs...</div>
+                    </div>
+                </div>
+
+                <div id="tasks" class="tab-content">
+                    <h2>✅ Implementation Tasks</h2>
+                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('tasks')">➕ Create Task</button>
+                    <div id="task-list" class="item-list">
+                        <div class="loading">Loading tasks...</div>
                     </div>
                 </div>
 
