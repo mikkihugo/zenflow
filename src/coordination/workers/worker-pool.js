@@ -427,8 +427,9 @@ export class WorkerThreadPool extends EventEmitter {
       if (this.isShuttingDown) return;
       
       for (const [workerId, stats] of this.workerStats.entries()) {
-        // Check for stuck tasks
-        if (stats.currentTask && Date.now() - stats.currentTask.startTime > 300000) { // 5 minutes
+        // Check for stuck tasks with configurable timeout
+        const taskTimeout = stats.currentTask.timeout || this.defaultTaskTimeout || 60000; // Default 1 minute
+        if (stats.currentTask && Date.now() - stats.currentTask.startTime > taskTimeout) {
           console.warn(`⚠️ Worker ${workerId} appears stuck on task ${stats.currentTask.id}`);
           this.restartWorker(workerId);
         }
