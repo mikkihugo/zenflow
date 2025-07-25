@@ -75,7 +75,8 @@
     "docs:schema": "node scripts/generate-schema-docs.js",
     "docs:build": "npm run docs:generate && npm run docs:api && npm run docs:mcp && npm run docs:schema",
     "docs:serve": "node scripts/serve-docs.js",
-    "docs:watch": "node scripts/watch-docs.js"
+    "docs:watch": "node scripts/watch-docs.js",
+    "docs:validate": "node scripts/validate-docs.js"
   },
   "keywords": [
     "claude",
