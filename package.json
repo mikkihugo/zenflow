@@ -4,6 +4,7 @@
   "description": "Hive-Mind Primary System: Integrated hybrid memory + simple ruv-swarm + plugin coordination (Claude Zen)",
   "workspaces": [
     "src",
+    "src/bindings",
     "ruv-FANN/ruv-swarm/npm",
     "vision-to-code/*",
     "benchmark",
@@ -49,6 +50,10 @@
     "test:health": "echo 'Health tests converted to JS'",
     "test:swarm": "echo 'Swarm tests converted to JS'",
     "test:benchmark": "echo 'Benchmark tests converted to JS'",
+    "test:neural": "node src/bindings/test/test.js",
+    "test:neural:integration": "node src/neural/test/integration.test.js",
+    "build:neural": "cd src/bindings && ./build.sh",
+    "example:neural": "node examples/neural-integration-example.js",
     "lint": "eslint . --cache --fix",
     "format": "prettier --write src",
     "diagnostics": "node -e \"import('./dist/monitoring/diagnostics.js').then(m => m.DiagnosticManager.quickDiagnostic().then(console.log))\"",
