@@ -272,14 +272,14 @@ async function testTUIComponents() {
     };
     
     // Test progress bar rendering
-    let progressBar = mockProgressBar(50, 20);
+    const progressBar = mockProgressBar(50, 20);
     assert(progressBar.includes('50.0%'), 'Progress bar should show percentage');
     assert(progressBar.includes('█'), 'Progress bar should have filled sections');
     assert(progressBar.includes('░'), 'Progress bar should have empty sections');
     
     // Test command completion
     const commands = await mockListCommands();
-    let completions = mockCommandCompletion('s', commands);
+    const completions = mockCommandCompletion('s', commands);
     assert(completions.length === 2, 'Should find 2 commands starting with "s"');
     assert(completions.some(cmd => cmd.name === 'status'), 'Should include status command');
     assert(completions.some(cmd => cmd.name === 'swarm'), 'Should include swarm command');

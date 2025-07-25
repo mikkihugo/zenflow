@@ -435,7 +435,7 @@ export async function cleanMemories() {
     }
   ]);
 
-  let cleanupCriteria = {};
+  const cleanupCriteria = {};
   
   if (answers.strategy === 'age') {
     const ageAnswer = await inquirer.prompt([

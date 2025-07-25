@@ -194,7 +194,7 @@ export class MCPErrorHandler {
    */
   createErrorResponse(id, error, context = {}) {
     let errorCode = -32603; // Internal error default
-    let errorMessage = error.message;
+    const errorMessage = error.message;
     
     // Map common errors to appropriate codes
     if (error.message.includes('Method not found')) {
