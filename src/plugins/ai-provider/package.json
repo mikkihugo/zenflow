@@ -4,22 +4,39 @@
   "description": "Pluggable AI/LLM providers for Claude Zen",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "ai", "llm", "claude", "openai"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "ai",
+    "llm",
+    "claude",
+    "openai"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^4.0.0"
+    "nanoid": "^5.1.5"
   },
   "optionalDependencies": {
     "@anthropic-ai/sdk": "^0.20.0",
-    "openai": "^4.0.0",
-    "ollama": "^0.5.0"
+    "ollama": "^0.5.0",
+    "openai": "^4.0.0"
   },
   "claudeZenPlugin": {
     "name": "ai-provider",
     "category": "ai",
-    "capabilities": ["text-generation", "structured-output", "code-analysis", "adr-generation"],
-    "providers": ["claude", "openai", "local", "ollama"],
+    "capabilities": [
+      "text-generation",
+      "structured-output",
+      "code-analysis",
+      "adr-generation"
+    ],
+    "providers": [
+      "claude",
+      "openai",
+      "local",
+      "ollama"
+    ],
     "config": {
       "provider": "claude",
       "maxTokens": 4000,
