@@ -1,0 +1,3 @@
+[submodule "ruv-FANN"]
+	path = ruv-FANN
+	url = https://github.com/mikkihugo/ruv-FANN.git
