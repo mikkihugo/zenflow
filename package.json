@@ -68,7 +68,14 @@
     "sync:quick": "node scripts/sync-check.js quick",
     "benchmark:sqlite": "node tests/performance/sqlite-benchmark.js",
     "validate:sqlite": "node scripts/validate-sqlite-optimizations.js",
-    "test:sqlite-performance": "NODE_OPTIONS='--experimental-vm-modules' jest tests/integration/sqlite-performance.test.js"
+    "test:sqlite-performance": "NODE_OPTIONS='--experimental-vm-modules' jest tests/integration/sqlite-performance.test.js",
+    "docs:generate": "node scripts/generate-docs.js",
+    "docs:api": "node scripts/generate-api-docs.js",
+    "docs:mcp": "node scripts/generate-mcp-docs.js",
+    "docs:schema": "node scripts/generate-schema-docs.js",
+    "docs:build": "npm run docs:generate && npm run docs:api && npm run docs:mcp && npm run docs:schema",
+    "docs:serve": "node scripts/serve-docs.js",
+    "docs:watch": "node scripts/watch-docs.js"
   },
   "keywords": [
     "claude",
