@@ -50,15 +50,22 @@ export class StdioOptimizer extends EventEmitter {
    * Setup stdin/stdout handlers with optimization
    */
   setupStdioHandlers() {
-    // Handle stdin data with buffering
-    process.stdin.on('data', this.handleIncomingData.bind(this));
-    
-    // Handle connection errors
-    process.stdin.on('error', this.handleConnectionError.bind(this));
-    process.stdout.on('error', this.handleConnectionError.bind(this));
-    
-    // Handle close events
-    process.stdin.on('close', this.handleConnectionClose.bind(this));
+    try {
+      // Handle stdin data with buffering
+      if (process.stdin && process.stdin.readable) {
+        process.stdin.on('data', this.handleIncomingData.bind(this));
+        process.stdin.on('error', this.handleConnectionError.bind(this));
+        process.stdin.on('close', this.handleConnectionClose.bind(this));
+      }
+  
+      // Handle connection errors
+      if (process.stdout && process.stdout.writable) {
+        process.stdout.on('error', this.handleConnectionError.bind(this));
+      }
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] ERROR [StdioOptimizer] Failed to setup stdio handlers:`, error);
+      this.isConnected = false;
+    }
     
     console.error(`[${new Date().toISOString()}] INFO [StdioOptimizer] Initialized with batch size: ${this.batchSize}, timeout: ${this.batchTimeout}ms`);
   }
