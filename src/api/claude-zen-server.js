@@ -19,6 +19,7 @@ import {
   generateWorkflowRoutes, 
   generateOpenAPISpec 
 } from './claude-zen-schema.js';
+import { integrateAGUIWithWebSocket } from './agui-websocket-middleware.js';
 
 /**
  * Schema-driven API server with auto-generated endpoints
@@ -48,6 +49,7 @@ export class ClaudeZenServer extends EventEmitter {
     
     this.setupMiddleware();
     this.setupSchemaRoutes();
+    this.setupAGUIIntegration();
     this.setupErrorHandling();
   }
 
@@ -365,9 +367,13 @@ export class ClaudeZenServer extends EventEmitter {
 
         this.isRunning = true;
         
+        // Initialize WebSocket with AG-UI after HTTP server starts
+        this.setupWebSocketWithAGUI();
+        
         console.log('🚀 Singularity Alpha API server running on port ' + this.port);
         console.log('📖 API documentation: http://localhost:' + this.port + '/docs');
-        console.log('🔗 WebSocket endpoint: ws://localhost:' + this.port);
+        console.log('🔗 WebSocket endpoint: ws://localhost:' + this.port + '/ws');
+        console.log('🌟 AG-UI protocol: http://localhost:' + this.port + '/agui/status');
         console.log('✅ Server started successfully');
 
         this.emit('started', { port: this.port, host: this.host });
@@ -399,6 +405,120 @@ export class ClaudeZenServer extends EventEmitter {
         resolve();
       });
     });
+  }
+
+  /**
+   * Setup AG-UI protocol integration
+   */
+  setupAGUIIntegration() {
+    // AG-UI will be initialized when WebSocket server starts
+    this.aguiMiddleware = null;
+    
+    // Add AG-UI status endpoint
+    this.app.get('/agui/status', (req, res) => {
+      if (this.aguiMiddleware) {
+        res.json({
+          enabled: true,
+          stats: this.aguiMiddleware.getStats(),
+          adapters: {
+            global: this.aguiMiddleware.getGlobalAdapter().getStats()
+          }
+        });
+      } else {
+        res.json({
+          enabled: false,
+          message: 'AG-UI middleware not initialized'
+        });
+      }
+    });
+    
+    // Add AG-UI events endpoint for testing
+    this.app.post('/agui/emit', (req, res) => {
+      if (!this.aguiMiddleware) {
+        return res.status(400).json({ error: 'AG-UI not initialized' });
+      }
+      
+      const { type, data } = req.body;
+      const globalAdapter = this.aguiMiddleware.getGlobalAdapter();
+      
+      try {
+        switch (type) {
+          case 'text_message':
+            globalAdapter.startTextMessage();
+            globalAdapter.addTextContent(data.content || 'Test message');
+            globalAdapter.endTextMessage();
+            break;
+            
+          case 'tool_call':
+            const toolCallId = globalAdapter.startToolCall(data.name || 'test_tool');
+            globalAdapter.addToolCallArgs(JSON.stringify(data.args || {}));
+            globalAdapter.endToolCall(toolCallId);
+            globalAdapter.emitToolCallResult(data.result || 'Test result', toolCallId);
+            break;
+            
+          case 'queen_action':
+            globalAdapter.emitQueenEvent(data.queenId || 'queen-1', data.action || 'test', data.data || {});
+            break;
+            
+          case 'hive_mind':
+            globalAdapter.emitHiveMindEvent(data.action || 'test', data.data || {});
+            break;
+            
+          default:
+            globalAdapter.emitCustomEvent(type, data);
+        }
+        
+        res.json({ success: true, message: 'AG-UI event emitted' });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
+  /**
+   * Initialize WebSocket server with AG-UI integration
+   */
+  setupWebSocketWithAGUI() {
+    if (this.wss) return; // Already initialized
+    
+    this.wss = new WebSocketServer({ 
+      server: this.server,
+      path: '/ws'
+    });
+    
+    // Initialize AG-UI middleware
+    this.aguiMiddleware = integrateAGUIWithWebSocket(this.wss, {
+      enableBroadcast: true,
+      enableFiltering: true
+    });
+    
+    // Setup connection handling
+    this.wss.on('connection', (ws, request) => {
+      console.log('🔗 New WebSocket connection established');
+      
+      // Send welcome message via AG-UI
+      const adapter = this.aguiMiddleware.getClientAdapter(ws);
+      if (adapter) {
+        setTimeout(() => {
+          adapter.emitCustomEvent('welcome', {
+            message: 'Connected to Claude Code Zen with AG-UI support',
+            serverVersion: this.getStatus().schema_version,
+            timestamp: Date.now()
+          });
+        }, 100);
+      }
+      
+      // Handle client disconnect
+      ws.on('close', () => {
+        console.log('🔗 WebSocket connection closed');
+      });
+      
+      ws.on('error', (error) => {
+        console.error('🔗 WebSocket error:', error);
+      });
+    });
+    
+    console.log('🚀 WebSocket server initialized with AG-UI protocol support');
   }
 
   /**

@@ -114,6 +114,7 @@
     "CHANGELOG.md"
   ],
   "dependencies": {
+    "@ag-ui/core": "^0.0.35",
     "@google/generative-ai": "^0.24.1",
     "@lancedb/lancedb": "^0.21.1",
     "@modelcontextprotocol/sdk": "^1.17.0",
@@ -136,6 +137,7 @@
     "ora": "^8.2.0",
     "react": "^19.1.0",
     "read-pkg-up": "^10.1.0",
+    "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "ws": "^8.18.3"
