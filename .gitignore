@@ -1,3 +1,10 @@
+# Analysis outputs and temporary files
+tmp/analysis-results/
+analysis-reports/
+graph-db/
+test-analysis-integration.js
+test-simple-analysis.js
+
 /target
 target 
 .env
