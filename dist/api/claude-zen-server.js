@@ -22,8 +22,43 @@ import {
 
 /**
  * Schema-driven API server with auto-generated endpoints
+ * 
+ * @description Claude Zen Server provides a unified API with routes auto-generated
+ * from the schema definition. Supports REST endpoints, WebSocket connections, 
+ * OpenAPI documentation, and real-time metrics.
+ * 
+ * @example
+ * const server = new ClaudeZenServer({
+ *   port: 3000,
+ *   host: '0.0.0.0'
+ * });
+ * await server.start();
+ * 
+ * @since 2.0.0-alpha.70
+ * @author Claude Zen Team
  */
 export class ClaudeZenServer extends EventEmitter {
+  /**
+   * Create a new Claude Zen Server instance
+   * 
+   * @param {Object} options - Server configuration options
+   * @param {number} [options.port=3000] - Server port number
+   * @param {string} [options.host='0.0.0.0'] - Server host address
+   * @param {Object} [options.schema] - Schema for route generation
+   * @param {boolean} [options.enableWebSocket=true] - Enable WebSocket support
+   * @param {boolean} [options.enableMetrics=true] - Enable metrics collection
+   * @param {Object} [options.cors] - CORS configuration
+   * @param {Object} [options.rateLimit] - Rate limiting configuration
+   * 
+   * @example
+   * const server = new ClaudeZenServer({
+   *   port: 8080,
+   *   host: 'localhost',
+   *   enableMetrics: true,
+   *   cors: { origin: '*' },
+   *   rateLimit: { windowMs: 60000, max: 100 }
+   * });
+   */
   constructor(options = {}) {
     super();
     this.port = options.port || process.env.PORT || 3000;
@@ -53,6 +88,21 @@ export class ClaudeZenServer extends EventEmitter {
 
   /**
    * Initialize storage based on schema definitions
+   * 
+   * @description Automatically creates storage maps for all schema entities
+   * that define storage requirements. Each entity gets its own storage
+   * with appropriate data structures and indexing.
+   * 
+   * @private
+   * @returns {void}
+   * 
+   * @example
+   * // Schema entity with storage
+   * visions: {
+   *   storage: 'visions',
+   *   // ... other config
+   * }
+   * // Creates: this.storage.visions = new Map()
    */
   initializeStorage() {
     // Auto-create storage for all schema entries that define storage

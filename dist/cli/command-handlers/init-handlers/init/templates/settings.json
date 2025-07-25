@@ -49,13 +49,7 @@
         "hooks": [
           {
             "type": "command",
-<<<<<<< HEAD:dist/cli/command-handlers/init-handlers/init/templates/settings.json
-            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} npx claude-zen hooks pre-edit --file \"{}\" --auto-assign-agents true --load-context true"
-||||||| parent of 519b6e36 (fix: resolve hook quote handling causing "Unterminated quoted string" errors):src/cli/simple-commands/init/templates/settings.json
-            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // \"\"' | xargs -I {} npx claude-flow@alpha hooks pre-edit --file \"{}\" --auto-assign-agents true --load-context true"
-=======
-            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\n' '\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-edit --file '{}' --auto-assign-agents true --load-context true"
->>>>>>> 519b6e36 (fix: resolve hook quote handling causing "Unterminated quoted string" errors):src/cli/simple-commands/init/templates/settings.json
+            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-zen hooks pre-edit --file '{}' --auto-assign-agents true --load-context true"
           }
         ]
       }
@@ -66,13 +60,7 @@
         "hooks": [
           {
             "type": "command",
-<<<<<<< HEAD:dist/cli/command-handlers/init-handlers/init/templates/settings.json
-            "command": "cat | jq -r '.tool_input.command // \"\"' | xargs -I {} npx claude-zen hooks post-command --command \"{}\" --track-metrics true --store-results true"
-||||||| parent of 519b6e36 (fix: resolve hook quote handling causing "Unterminated quoted string" errors):src/cli/simple-commands/init/templates/settings.json
-            "command": "cat | jq -r '.tool_input.command // \"\"' | xargs -I {} npx claude-flow@alpha hooks post-command --command \"{}\" --track-metrics true --store-results true"
-=======
-            "command": "cat | jq -r '.tool_input.command // empty' | tr '\n' '\0' | xargs -0 -I {} npx claude-flow@alpha hooks post-command --command '{}' --track-metrics true --store-results true"
->>>>>>> 519b6e36 (fix: resolve hook quote handling causing "Unterminated quoted string" errors):src/cli/simple-commands/init/templates/settings.json
+            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-zen hooks post-command --command '{}' --track-metrics true --store-results true"
           }
         ]
       },

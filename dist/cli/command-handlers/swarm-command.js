@@ -3,6 +3,7 @@
  */
 
 import { SwarmOrchestrator } from './swarm-orchestrator.js';
+import { ParallelSwarmOrchestrator } from '../../coordination/parallel-swarm-orchestrator.js';
 import { printSuccess, printError, printWarning, printInfo } from '../utils.js';
 import { spawn, execSync } from 'child_process';
 import process from 'process';
@@ -32,7 +33,9 @@ OPTIONS:
                        testing, optimization, maintenance
   --topology <type>    Coordination topology: hierarchical, mesh, ring, star
   --max-agents <n>     Maximum number of agents (default: 5)
-  --parallel           Enable parallel execution (2.8-4.4x speed improvement)
+  --parallel           Enable parallel execution with worker threads (2.8-4.4x speed improvement)
+  --workers <n>        Number of worker threads (default: auto-detect from CPU cores)
+  --load-balancing <type> Load balancing strategy: round-robin, least-busy, performance-based
   --monitor            Real-time swarm monitoring
   --background         Run in background with progress tracking
   --analysis           Enable analysis/read-only mode (no code changes)
@@ -90,7 +93,15 @@ export async function swarmCommand(args, flags) {
   }
 
   try {
-    const orchestrator = new SwarmOrchestrator();
+    // Choose orchestrator based on parallel flag
+    const useParallel = flags.parallel !== false;
+    const orchestrator = useParallel ? 
+      new ParallelSwarmOrchestrator({
+        maxWorkers: flags.workers,
+        loadBalancingStrategy: flags['load-balancing']
+      }) : 
+      new SwarmOrchestrator();
+      
     await orchestrator.initialize();
 
     switch (subcommand) {
@@ -147,7 +158,15 @@ async function launchSwarmWithObjective(objective, flags = {}, orchestrator = nu
     return;
   }
 
-  const orch = orchestrator || new SwarmOrchestrator();
+  // Choose orchestrator based on parallel flag
+  const useParallel = flags.parallel !== false;
+  const orch = orchestrator || (useParallel ? 
+    new ParallelSwarmOrchestrator({
+      maxWorkers: flags.workers,
+      loadBalancingStrategy: flags['load-balancing']
+    }) : 
+    new SwarmOrchestrator());
+    
   if (!orchestrator) {
     await orch.initialize();
   }
@@ -171,10 +190,16 @@ async function launchSwarmWithObjective(objective, flags = {}, orchestrator = nu
   if (isAnalysisMode) {
     printWarning('🔍 Analysis mode: Read-only, no code modifications');
   }
+  if (useParallel) {
+    printInfo('🧵 Using parallel execution with worker threads');
+  }
 
   const result = await orch.launchSwarm(objective, swarmOptions);
   
   printSuccess(`✅ Swarm launched: ${result.swarmId}`);
+  if (result.mode === 'parallel' && result.parallelExecutionStats) {
+    printInfo(`🧵 Parallel execution: ${result.parallelExecutionStats.totalTasks} tasks, ${result.parallelExecutionStats.parallelGroups} groups, ${result.parallelExecutionStats.workersUsed} workers`);
+  }
   printInfo(`👥 Agents: ${result.agents.map(a => a.type).join(', ')}`);
   
   if (flags['output-format'] === 'json') {

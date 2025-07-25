@@ -2,7 +2,7 @@
 
 > Advanced AI orchestration platform combining JavaScript/TypeScript coordination with high-performance Rust neural networks, featuring multi-Queen hive intelligence, vector/graph databases, and GPU acceleration.
 
-[![Node.js](https://img.shields.io/badge/Node.js-22%2B-green)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20%2B-green)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
 [![Rust](https://img.shields.io/badge/Rust-Neural%20Engine-orange)](https://www.rust-lang.org/)
 [![SQLite](https://img.shields.io/badge/SQLite-Memory-lightgrey)](https://www.sqlite.org/)
@@ -85,7 +85,7 @@ claude mcp add claude-flow npx claude-flow mcp start
 ## 🛠️ Technology Stack
 
 ### Languages & Runtimes
-- **Node.js 22+** - Primary runtime
+- **Node.js 20+** - Primary runtime (22+ recommended)
 - **TypeScript 5+** - Type-safe JavaScript
 - **Rust** - Neural network performance
 - **WebAssembly** - Edge deployment
