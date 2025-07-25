@@ -64,7 +64,10 @@
     "postpack": "echo 'Package created successfully'",
     "prepare-publish": "node scripts/prepare-publish.js",
     "sync:check": "node scripts/sync-check.js",
-    "sync:quick": "node scripts/sync-check.js quick"
+    "sync:quick": "node scripts/sync-check.js quick",
+    "benchmark:sqlite": "node tests/performance/sqlite-benchmark.js",
+    "validate:sqlite": "node scripts/validate-sqlite-optimizations.js",
+    "test:sqlite-performance": "NODE_OPTIONS='--experimental-vm-modules' jest tests/integration/sqlite-performance.test.js"
   },
   "keywords": [
     "claude",
