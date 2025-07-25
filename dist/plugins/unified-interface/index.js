@@ -42,7 +42,6 @@ export class UnifiedInterfacePlugin {
     this.tuiInstance = null;
     this.sessions = new Map();
     this.mcpServer = null;
-    this.sessionStore = new Map(); // Simple in-memory session store
     this.themes = {
       dark: {
         primary: '#58a6ff',
@@ -458,35 +457,15 @@ export class UnifiedInterfacePlugin {
     // Create Express app
     const app = express();
     
-    // Basic middleware
+    // Middleware
     app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    
-    // Simple session middleware
-    const sessionStore = this.sessionStore;
-    app.use((req, res, next) => {
-      const sessionId = req.headers['x-session-id'] || req.query.sessionId || 
-                        `session-${Date.now()}-${Math.random()}`;
-      
-      req.sessionId = sessionId;
-      req.session = sessionStore.get(sessionId) || {};
-      
-      // Store session after response ends
-      res.on('finish', () => {
-        if (req.session) {
-          req.session.lastAccess = Date.now();
-          sessionStore.set(sessionId, req.session);
-        }
-      });
-      
-      next();
-    });
+    app.use(express.static(this.config.staticDir));
     
     // Generate web assets
     await this.generateWebAssets();
     
     // API Routes
-    await this.setupWebRoutes(app);
+    this.setupWebRoutes(app);
     
     // MCP Server Setup
     if (this.config.enableMCP) {
@@ -577,22 +556,8 @@ export class UnifiedInterfacePlugin {
                 <span class="version">v2.0.0</span>
             </div>
             <div class="nav-controls">
-                <!-- Global Project Filter -->
-                <div class="global-project-filter" style="display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem;">
-                    <label for="global-project-filter" style="font-weight: 600; color: var(--text-primary);">🗂️ Project:</label>
-                    <select id="global-project-filter" class="form-select" onchange="setGlobalProjectFilter(this.value)" style="min-width: 180px; font-size: 0.85rem;">
-                        <option value="">All Projects</option>
-                    </select>
-                </div>
-                
-                <button id="theme-toggle" class="btn btn-icon" title="Toggle Theme">
-                    <span class="icon">🎨</span>
-                    <span class="btn-text">Theme</span>
-                </button>
-                <button id="refresh-btn" class="btn btn-icon" title="Refresh Data">
-                    <span class="icon">🔄</span>
-                    <span class="btn-text">Refresh</span>
-                </button>
+                <button id="theme-toggle" class="btn btn-icon">🎨</button>
+                <button id="refresh-btn" class="btn btn-icon">🔄</button>
                 <div class="status-indicator" id="status">
                     <span class="status-dot"></span>
                     <span class="status-text">Connected</span>
@@ -603,151 +568,39 @@ export class UnifiedInterfacePlugin {
         <div class="main-container">
             <aside class="sidebar">
                 <div class="sidebar-menu">
-                    <!-- OVERVIEW SECTION -->
-                    <div class="menu-section">
-                        <div class="menu-section-header">
-                            <span class="menu-section-title">OVERVIEW</span>
-                        </div>
-                        <button class="menu-item active" data-tab="dashboard">
-                            <span class="menu-item-icon">📊</span>
-                            <span class="menu-item-text">Dashboard</span>
-                        </button>
-                    </div>
-                    
-                    <!-- PRODUCT MANAGEMENT SECTION -->
-                    <div class="menu-section collapsible" data-section="product">
-                        <div class="menu-section-header" onclick="toggleSection('product')">
-                            <span class="menu-section-title">PRODUCT MANAGEMENT</span>
-                            <span class="collapse-icon">▼</span>
-                        </div>
-                        <div class="menu-section-content">
-                            <button class="menu-item priority-high" data-tab="projects">
-                                <span class="menu-item-icon">🚀</span>
-                                <span class="menu-item-text">Projects</span>
-                                <span class="menu-item-badge">Primary</span>
-                            </button>
-                            <button class="menu-item priority-high" data-tab="features">
-                                <span class="menu-item-icon">⭐</span>
-                                <span class="menu-item-text">Features</span>
-                            </button>
-                            <button class="menu-item priority-high" data-tab="tasks">
-                                <span class="menu-item-icon">✅</span>
-                                <span class="menu-item-text">Tasks</span>
-                            </button>
-                            <button class="menu-item priority-medium" data-tab="visions">
-                                <span class="menu-item-icon">🎯</span>
-                                <span class="menu-item-text">Visions</span>
-                            </button>
-                            <button class="menu-item priority-medium" data-tab="prds">
-                                <span class="menu-item-icon">📋</span>
-                                <span class="menu-item-text">PRDs</span>
-                            </button>
-                            <button class="menu-item priority-medium" data-tab="epics">
-                                <span class="menu-item-icon">📚</span>
-                                <span class="menu-item-text">Epics</span>
-                            </button>
-                            <button class="menu-item priority-low" data-tab="roadmaps">
-                                <span class="menu-item-icon">🗺️</span>
-                                <span class="menu-item-text">Roadmaps</span>
-                            </button>
-                            <button class="menu-item priority-low" data-tab="adrs">
-                                <span class="menu-item-icon">📜</span>
-                                <span class="menu-item-text">ADRs</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- SYSTEM MANAGEMENT SECTION -->
-                    <div class="menu-section collapsible" data-section="system">
-                        <div class="menu-section-header" onclick="toggleSection('system')">
-                            <span class="menu-section-title">SYSTEM MANAGEMENT</span>
-                            <span class="collapse-icon">▼</span>
-                        </div>
-                        <div class="menu-section-content">
-                            <button class="menu-item priority-high" data-tab="queens">
-                                <span class="menu-item-icon">👑</span>
-                                <span class="menu-item-text">AI Agents</span>
-                            </button>
-                            <button class="menu-item priority-medium" data-tab="hives">
-                                <span class="menu-item-icon">🐝</span>
-                                <span class="menu-item-text">Services</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- MONITORING SECTION -->
-                    <div class="menu-section collapsible" data-section="monitoring">
-                        <div class="menu-section-header" onclick="toggleSection('monitoring')">
-                            <span class="menu-section-title">MONITORING</span>
-                            <span class="collapse-icon">▼</span>
-                        </div>
-                        <div class="menu-section-content">
-                            <button class="menu-item priority-medium" data-tab="logs">
-                                <span class="menu-item-icon">📜</span>
-                                <span class="menu-item-text">Task Logs</span>
-                            </button>
-                            <button class="menu-item priority-low" data-tab="analytics">
-                                <span class="menu-item-icon">📈</span>
-                                <span class="menu-item-text">Analytics</span>
-                            </button>
-                            <button class="menu-item priority-low" data-tab="plugins">
-                                <span class="menu-item-icon">🔌</span>
-                                <span class="menu-item-text">Plugins</span>
-                            </button>
-                            <button class="menu-item priority-low" data-tab="settings">
-                                <span class="menu-item-icon">⚙️</span>
-                                <span class="menu-item-text">Settings</span>
-                            </button>
-                        </div>
-                    </div>
+                    <button class="menu-item active" data-tab="dashboard">
+                        📊 Dashboard
+                    </button>
+                    <button class="menu-item" data-tab="queens">
+                        👑 Queens
+                    </button>
+                    <button class="menu-item" data-tab="hives">
+                        🐝 Hives
+                    </button>
+                    <button class="menu-item" data-tab="plugins">
+                        🔌 Plugins
+                    </button>
+                    <button class="menu-item" data-tab="settings">
+                        ⚙️ Settings
+                    </button>
                 </div>
             </aside>
 
             <main class="content">
                 <div id="dashboard" class="tab-content active">
-                    <h2>📊 Real-Time System Dashboard</h2>
-                    
-                    <!-- System Performance Stats -->
+                    <h2>📊 System Overview</h2>
                     <div class="stats-grid" id="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number" id="total-tasks">0</div>
-                            <div class="stat-label">Total Tasks</div>
+                            <div class="stat-number" id="hive-count">0</div>
+                            <div class="stat-label">Hives</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="recent-tasks">0</div>
-                            <div class="stat-label">Recent Tasks (1h)</div>
+                            <div class="stat-number" id="plugin-count">0</div>
+                            <div class="stat-label">Plugins</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="success-rate">0%</div>
-                            <div class="stat-label">Success Rate</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="avg-response">0ms</div>
-                            <div class="stat-label">Avg Response Time</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="system-uptime">0s</div>
-                            <div class="stat-label">System Uptime</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="memory-usage">0MB</div>
-                            <div class="stat-label">Memory Usage</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Real-Time Activity Feed -->
-                    <div class="dashboard-section">
-                        <h3>🔄 Real-Time Activity Feed</h3>
-                        <div id="activity-feed" class="activity-feed">
-                            <div class="loading">Loading recent activity...</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Queen Performance Overview -->
-                    <div class="dashboard-section">
-                        <h3>👑 Queen Performance Overview</h3>
-                        <div id="queen-performance" class="queen-performance-grid">
-                            <div class="loading">Loading queen performance data...</div>
+                            <div class="stat-number" id="session-count">0</div>
+                            <div class="stat-label">Sessions</div>
                         </div>
                     </div>
                 </div>
@@ -779,42 +632,6 @@ export class UnifiedInterfacePlugin {
 
                 <div id="hives" class="tab-content">
                     <h2>🐝 Hive Management</h2>
-                    
-                    <!-- Create Hive Form -->
-                    <div class="create-hive-form" style="background: var(--bg-secondary); padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <h3 style="margin-bottom: 1rem; color: var(--accent-color);">🆕 Create New Hive</h3>
-                        <div style="display: grid; gap: 1rem;">
-                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
-                                <input type="text" id="hive-name" placeholder="Hive Name" required style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                                <select id="hive-type" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                                    <option value="development">Development</option>
-                                    <option value="research">Research</option>
-                                    <option value="analysis">Analysis</option>
-                                    <option value="testing">Testing</option>
-                                    <option value="general">General</option>
-                                </select>
-                            </div>
-                            <textarea id="hive-description" placeholder="Description (optional)" rows="2" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); resize: vertical;"></textarea>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center;">
-                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; align-items: center;">
-                                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Max Agents:</label>
-                                    <input type="number" id="hive-max-agents" value="5" min="1" max="20" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                                </div>
-                                <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; align-items: center;">
-                                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Coordination:</label>
-                                    <select id="hive-coordination" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                                        <option value="hierarchical">Hierarchical</option>
-                                        <option value="mesh">Mesh</option>
-                                        <option value="ring">Ring</option>
-                                        <option value="star">Star</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" onclick="createHive()" style="padding: 0.75rem 1.5rem; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: background-color 0.2s;">🐝 Create Hive</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Existing Hives List -->
                     <div id="hive-list" class="item-list">
                         <div class="loading">Loading hives...</div>
                     </div>
@@ -824,89 +641,6 @@ export class UnifiedInterfacePlugin {
                     <h2>🔌 Plugin Status</h2>
                     <div id="plugin-list" class="item-list">
                         <div class="loading">Loading plugins...</div>
-                    </div>
-                </div>
-
-                <!-- PRODUCT MANAGEMENT TABS -->
-                <div id="visions" class="tab-content">
-                    <h2>🎯 Strategic Visions</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('visions')">➕ Create Vision</button>
-                    <div id="vision-list" class="item-list">
-                        <div class="loading">Loading visions...</div>
-                    </div>
-                </div>
-
-                <div id="projects" class="tab-content">
-                    <h2>🚀 Watertight Project Management</h2>
-                    
-                    <!-- Project Filter Controls -->
-                    <div class="filter-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <label for="project-filter" style="font-weight: 600;">🗂️ Current Project:</label>
-                            <select id="project-filter" class="form-select" onchange="filterByProject(this.value)" style="min-width: 200px;">
-                                <option value="">All Projects</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="showCreateForm('projects')">➕ Create Project</button>
-                        <button class="btn btn-secondary" onclick="resetProjectFilter()">🔄 Reset Filter</button>
-                    </div>
-                    
-                    <!-- Global Project Filter Notice -->
-                    <div id="project-filter-notice" style="display: none; background: var(--accent-color); color: white; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
-                        <strong>🔍 Project Filter Active:</strong> <span id="active-project-name"></span>
-                        <button onclick="resetProjectFilter()" style="background: none; border: none; color: white; float: right; cursor: pointer;">✖ Clear</button>
-                    </div>
-                    
-                    <div id="project-list" class="item-list">
-                        <div class="loading">Loading projects...</div>
-                    </div>
-                </div>
-
-                <div id="prds" class="tab-content">
-                    <h2>📋 Product Requirements Documents</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('prds')">➕ Create PRD</button>
-                    <div id="prd-list" class="item-list">
-                        <div class="loading">Loading PRDs...</div>
-                    </div>
-                </div>
-
-                <div id="features" class="tab-content">
-                    <h2>⭐ Features & Capabilities</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('features')">➕ Create Feature</button>
-                    <div id="feature-list" class="item-list">
-                        <div class="loading">Loading features...</div>
-                    </div>
-                </div>
-
-                <div id="epics" class="tab-content">
-                    <h2>🚀 Epic Initiatives</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('epics')">➕ Create Epic</button>
-                    <div id="epic-list" class="item-list">
-                        <div class="loading">Loading epics...</div>
-                    </div>
-                </div>
-
-                <div id="roadmaps" class="tab-content">
-                    <h2>🗺️ Strategic Roadmaps</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('roadmaps')">➕ Create Roadmap</button>
-                    <div id="roadmap-list" class="item-list">
-                        <div class="loading">Loading roadmaps...</div>
-                    </div>
-                </div>
-
-                <div id="adrs" class="tab-content">
-                    <h2>📜 Architectural Decision Records</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('adrs')">➕ Create ADR</button>
-                    <div id="adr-list" class="item-list">
-                        <div class="loading">Loading ADRs...</div>
-                    </div>
-                </div>
-
-                <div id="tasks" class="tab-content">
-                    <h2>✅ Implementation Tasks</h2>
-                    <button class="btn btn-primary" style="margin-bottom: 1rem;" onclick="showCreateForm('tasks')">➕ Create Task</button>
-                    <div id="task-list" class="item-list">
-                        <div class="loading">Loading tasks...</div>
                     </div>
                 </div>
 
@@ -1066,68 +800,11 @@ body {
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-}
-
-/* Menu Sections */
-.menu-section {
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.menu-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-}
-
-.menu-section-header:hover {
-    background: var(--accent-color);
-    color: white;
-}
-
-.menu-section-title {
-    flex: 1;
-}
-
-.collapse-icon {
-    transition: transform 0.3s ease;
-    font-size: 0.7rem;
-}
-
-.menu-section.collapsed .collapse-icon {
-    transform: rotate(-90deg);
-}
-
-.menu-section.collapsed .menu-section-content {
-    max-height: 0;
-    opacity: 0;
-    padding: 0;
-}
-
-.menu-section-content {
-    max-height: 1000px;
-    opacity: 1;
-    transition: all 0.3s ease;
-    border-left: 3px solid var(--accent-color);
-    background: var(--bg-secondary);
 }
 
 .menu-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
     padding: 0.75rem 1rem;
     background: none;
     border: none;
@@ -1136,72 +813,17 @@ body {
     transition: all 0.2s;
     text-align: left;
     font-size: 0.9rem;
-    border-radius: 6px;
-    margin: 0.125rem 0.5rem;
-    position: relative;
-}
-
-.menu-item-icon {
-    font-size: 1rem;
-    width: 20px;
-    text-align: center;
-}
-
-.menu-item-text {
-    flex: 1;
-    font-weight: 500;
-}
-
-.menu-item-badge {
-    font-size: 0.7rem;
-    background: var(--accent-color);
-    color: white;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    font-weight: 600;
 }
 
 .menu-item:hover {
     background: var(--bg-primary);
     color: var(--text-primary);
-    transform: translateX(4px);
 }
 
 .menu-item.active {
     background: var(--accent-color);
     color: white;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-}
-
-.menu-item.active .menu-item-badge {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Priority-based styling */
-.menu-item.priority-high {
-    border-left: 3px solid var(--accent-color);
-}
-
-.menu-item.priority-medium {
-    border-left: 3px solid var(--warning-color);
-}
-
-.menu-item.priority-low {
-    border-left: 3px solid var(--text-secondary);
-    opacity: 0.8;
-}
-
-.menu-separator {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-top: 1px solid var(--border-color);
-    margin: 0.5rem 0;
-    background: var(--bg-secondary);
+    font-weight: 500;
 }
 
 .content {
@@ -1257,88 +879,9 @@ body {
 }
 
 .loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
     text-align: center;
     color: var(--text-secondary);
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.loading::before {
-    content: '';
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--border-color);
-    border-top: 3px solid var(--accent-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.loading-subtitle {
-    font-size: 0.85rem;
-    opacity: 0.7;
-}
-
-.error-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    text-align: center;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--error-color);
-    color: var(--error-color);
-}
-
-.error-state::before {
-    content: '⚠️';
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-.error-title {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--error-color);
-}
-
-.error-message {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.retry-button {
-    background: var(--error-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: opacity 0.2s;
-}
-
-.retry-button:hover {
-    opacity: 0.9;
+    padding: 2rem;
 }
 
 .btn {
@@ -1360,31 +903,14 @@ body {
 }
 
 .btn-icon {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--bg-secondary);
+    background: none;
     color: var(--text-secondary);
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
-
-.btn-icon .icon {
-    font-size: 1rem;
-}
-
-.btn-icon .btn-text {
-    font-weight: 500;
+    padding: 0.5rem;
 }
 
 .btn-icon:hover {
     color: var(--text-primary);
     background: var(--bg-primary);
-    border-color: var(--accent-color);
-    transform: translateY(-1px);
 }
 
 .command-panel {
@@ -1572,431 +1098,7 @@ body {
 #queen-list {
     margin-top: 2rem;
 }
-
-/* Project and status badges */
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-active {
-    background: #22c55e;
-    color: white;
-}
-
-.status-inactive {
-    background: #ef4444;
-    color: white;
-}
-
-.status-pending {
-    background: #f59e0b;
-    color: white;
-}
-
-.status-completed {
-    background: #06b6d4;
-    color: white;
-}
-
-.status-unknown {
-    background: #6b7280;
-    color: white;
-}
-
-.priority-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.priority-high {
-    background: #dc2626;
-    color: white;
-}
-
-.priority-medium {
-    background: #f59e0b;
-    color: white;
-}
-
-.priority-low {
-    background: #10b981;
-    color: white;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 1rem;
-        flex-wrap: wrap;
-    }
-    
-    .nav-brand h1 {
-        font-size: 1.2rem;
-    }
-    
-    .nav-controls {
-        gap: 0.5rem;
-    }
-    
-    .global-project-filter {
-        order: 3;
-        flex-basis: 100%;
-        margin-top: 0.5rem;
-        margin-right: 0 !important;
-    }
-    
-    .main-container {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        width: 100%;
-        max-height: 60vh;
-        overflow-y: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    .content {
-        padding: 1rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 0.75rem;
-    }
-    
-    .stat-card {
-        padding: 1rem;
-    }
-    
-    .stat-number {
-        font-size: 1.8rem;
-    }
-    
-    .btn-icon .btn-text {
-        display: none;
-    }
-    
-    .btn-icon {
-        padding: 0.5rem;
-        min-width: unset;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar {
-        padding: 0.75rem;
-    }
-    
-    .nav-brand h1 {
-        font-size: 1rem;
-    }
-    
-    .version {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.4rem;
-    }
-    
-    .sidebar {
-        max-height: 50vh;
-    }
-    
-    .menu-item {
-        padding: 0.5rem 0.75rem;
-        margin: 0.1rem 0.25rem;
-    }
-    
-    .menu-item-text {
-        font-size: 0.85rem;
-    }
-    
-    .content {
-        padding: 0.75rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    
-    .stat-number {
-        font-size: 1.5rem;
-    }
-    
-    .stat-label {
-        font-size: 0.8rem;
-    }
-}
-
-/* Form select styling */
-.form-select {
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    cursor: pointer;
-}
-
-.form-select:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-}
-
-/* Button size variants */
-.btn-sm {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.8rem;
-}
-
-.btn-accent {
-    background: var(--accent-color);
-    color: white;
-}
-
-.btn-accent:hover {
-    background: #1d4ed8;
-}
-
-.btn-secondary {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background: var(--bg-secondary);
-}
 `;
-  }
-
-  createLoginPage() {
-    return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Zen - Login</title>
-    <style>
-        :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --border-color: #334155;
-            --accent-color: #3b82f6;
-            --error-color: #ef4444;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .login-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 3rem;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-        
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .login-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .login-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        
-        .login-button {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        
-        .login-button:hover {
-            opacity: 0.9;
-        }
-        
-        .login-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .error-message {
-            background: var(--error-color);
-            color: white;
-            padding: 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        
-        .version-info {
-            text-align: center;
-            margin-top: 2rem;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1 class="login-title">🚀 Claude Zen</h1>
-            <p class="login-subtitle">Secure Access Required</p>
-        </div>
-        
-        <form id="loginForm">
-            <div id="errorMessage" class="error-message" style="display: none;"></div>
-            
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    class="form-input" 
-                    placeholder="Enter your password"
-                    required
-                    autocomplete="current-password"
-                >
-            </div>
-            
-            <button type="submit" class="login-button" id="loginButton">
-                Access Dashboard
-            </button>
-        </form>
-        
-        <div class="version-info">
-            Claude Zen v2.0.0 - AI-Driven Development Platform
-        </div>
-    </div>
-    
-    <script>
-        const form = document.getElementById('loginForm');
-        const errorDiv = document.getElementById('errorMessage');
-        const button = document.getElementById('loginButton');
-        const passwordInput = document.getElementById('password');
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const password = passwordInput.value;
-            button.disabled = true;
-            button.textContent = 'Authenticating...';
-            errorDiv.style.display = 'none';
-            
-            try {
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ password }),
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Store password for subsequent API requests
-                    sessionStorage.setItem('claudeZenPassword', password);
-                    window.location.href = '/?password=' + encodeURIComponent(password);
-                } else {
-                    showError(data.message || 'Invalid password');
-                }
-            } catch (error) {
-                showError('Authentication failed. Please try again.');
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Access Dashboard';
-            }
-        });
-        
-        function showError(message) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            passwordInput.value = '';
-            passwordInput.focus();
-        }
-        
-        // Focus password input on load
-        passwordInput.focus();
-    </script>
-</body>
-</html>
-    `;
   }
 
   createWebScript() {
@@ -2015,58 +1117,13 @@ class ClaudeZenDashboard {
         this.setupEventListeners();
         this.connectWebSocket();
         this.loadData();
-        
-        // Start periodic check to populate global project filter
-        this.startGlobalFilterCheck();
-    }
-    
-    startGlobalFilterCheck() {
-        // Check every 1 second if projects data is available and populate global dropdown
-        const checkInterval = setInterval(() => {
-            if (this.data && this.data.projects && this.data.projects.length > 0) {
-                updateGlobalProjectFilter();
-                clearInterval(checkInterval); // Stop checking once populated
-            }
-        }, 1000);
-        
-        // Stop checking after 10 seconds to avoid infinite loops
-        setTimeout(() => {
-            clearInterval(checkInterval);
-        }, 10000);
-    }
-    
-    initCollapsibleSections() {
-        // Set initial state - expand product management by default
-        const productSection = document.querySelector('[data-section="product"]');
-        if (productSection) {
-            productSection.classList.add('expanded');
-        }
-        
-        // Collapse others by default
-        const systemSection = document.querySelector('[data-section="system"]');
-        const monitoringSection = document.querySelector('[data-section="monitoring"]');
-        if (systemSection) systemSection.classList.add('collapsed');
-        if (monitoringSection) monitoringSection.classList.add('collapsed');
-    }
-    
-    toggleSection(sectionName) {
-        const section = document.querySelector('[data-section="' + sectionName + '"]');
-        if (!section) return;
-        
-        section.classList.toggle('collapsed');
-        section.classList.toggle('expanded');
     }
     
     setupEventListeners() {
         // Tab switching
-        const menuItems = document.querySelectorAll('.menu-item');
-        console.log('Setting up event listeners for', menuItems.length, 'menu items');
-        
-        menuItems.forEach(item => {
-            console.log('Adding listener to:', item.dataset.tab);
+        document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 const tab = e.target.dataset.tab;
-                console.log('Tab clicked:', tab);
                 this.switchTab(tab);
             });
         });
@@ -2075,9 +1132,6 @@ class ClaudeZenDashboard {
         document.getElementById('theme-toggle').addEventListener('click', () => {
             this.toggleTheme();
         });
-        
-        // Initialize collapsible sections
-        this.initCollapsibleSections();
         
         // Refresh button
         document.getElementById('refresh-btn').addEventListener('click', () => {
@@ -2136,34 +1190,16 @@ class ClaudeZenDashboard {
         }
     }
     
-    getAuthHeaders() {
-        const password = sessionStorage.getItem('claudeZenPassword') || 
-                        new URLSearchParams(window.location.search).get('password');
-        return password ? { 'X-Password': password } : {};
-    }
-    
-    async authenticatedFetch(url, options = {}) {
-        const headers = { ...this.getAuthHeaders(), ...options.headers };
-        return fetch(url, { ...options, headers });
-    }
-    
     async loadData() {
         try {
-            const [realTimeStats, queens, visions, projects, prds, features, epics, roadmaps, adrs, tasks, logs] = await Promise.all([
-                this.authenticatedFetch('/api/v1/stats/realtime').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/queens').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/visions').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/projects').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/prds').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/features').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/epics').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/roadmaps').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/adrs').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/tasks').then(r => r.json()),
-                this.authenticatedFetch('/api/v1/logs/tasks?limit=10').then(r => r.json())
+            const [hives, plugins, stats, queens] = await Promise.all([
+                fetch('/api/hives').then(r => r.json()),
+                fetch('/api/plugins').then(r => r.json()),
+                fetch('/api/stats').then(r => r.json()),
+                fetch('/api/queens/status').then(r => r.json())
             ]);
             
-            this.data = { realTimeStats, queens, visions, projects, prds, features, epics, roadmaps, adrs, tasks, logs };
+            this.data = { hives, plugins, stats, queens };
             this.updateUI();
         } catch (error) {
             console.error('Failed to load data:', error);
@@ -2171,133 +1207,30 @@ class ClaudeZenDashboard {
     }
     
     updateUI() {
-        // Helper function to safely update element text
-        const safeUpdateElement = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.textContent = value;
-            }
-        };
-        
-        // Update real-time dashboard stats (only if dashboard elements exist)
-        if (this.data.realTimeStats?.stats) {
-            const stats = this.data.realTimeStats.stats;
-            const system = stats.system || {};
-            
-            // Dashboard stats
-            safeUpdateElement('total-tasks', system.totalTasks || 0);
-            safeUpdateElement('recent-tasks', system.recentTasks || 0);
-            safeUpdateElement('system-uptime', Math.floor(system.systemUptime || 0) + 's');
-            safeUpdateElement('memory-usage', Math.floor((system.memoryUsage?.heapUsed || 0) / 1024 / 1024) + 'MB');
-            
-            // Calculate success rate from recent activity
-            const recentActivity = stats.recentActivity || [];
-            const successRate = recentActivity.length > 0 ? 
-                (recentActivity.filter(log => log.status === 'completed').length / recentActivity.length * 100).toFixed(1) : 0;
-            safeUpdateElement('success-rate', successRate + '%');
-            
-            // Calculate average response time
-            const avgResponse = stats.performance?.avgResponseTime || 0;
-            safeUpdateElement('avg-response', Math.floor(avgResponse) + 'ms');
-            
-            // Update activity feed
-            this.updateActivityFeed(recentActivity);
-        }
-        
-        // Update queens stats (only if queens elements exist)
-        if (this.data.queens) {
-            const totalQueens = this.data.queens.length || 0;
-            const activeQueens = this.data.queens.filter(q => q.status === 'active').length || 0;
-            const currentTasks = this.data.queens.reduce((sum, q) => sum + (q.currentTasks || 0), 0);
-            const avgSuccessRate = totalQueens > 0 ? 
-                (this.data.queens.reduce((sum, q) => sum + (q.successRate || 0), 0) / totalQueens).toFixed(1) : 0;
-            
-            safeUpdateElement('total-queens', totalQueens);
-            safeUpdateElement('active-queens', activeQueens);
-            safeUpdateElement('queen-tasks', currentTasks);
-            safeUpdateElement('queen-success-rate', avgSuccessRate + '%');
-        }
+        // Update stats
+        document.getElementById('hive-count').textContent = 
+            Object.keys(this.data.hives || {}).length;
+        document.getElementById('plugin-count').textContent = 
+            (this.data.plugins || []).length;
+        document.getElementById('session-count').textContent = 
+            this.data.stats?.sessions || 0;
         
         // Update current tab content
         this.updateTabContent(this.currentTab);
     }
     
-    updateActivityFeed(recentActivity) {
-        const feedContainer = document.getElementById('activity-feed');
-        if (!feedContainer) return;
-        
-        if (!recentActivity || recentActivity.length === 0) {
-            feedContainer.innerHTML = '<div class="no-activity">No recent activity</div>';
-            return;
-        }
-        
-        const feedHtml = recentActivity.slice(0, 5).map(log => {
-            const timestamp = new Date(log.timestamp).toLocaleTimeString();
-            const statusColor = log.status === 'completed' ? '#10b981' : 
-                               log.status === 'failed' ? '#ef4444' : '#f59e0b';
-            return '<div class="activity-item" style="padding: 0.5rem; border-left: 3px solid ' + statusColor + '; margin-bottom: 0.5rem; background: var(--bg-secondary);">' +
-                   '<div style="font-weight: bold; color: var(--text-primary);">' + (log.queenId || 'System') + '</div>' +
-                   '<div style="font-size: 0.9em; color: var(--text-secondary);">' + (log.taskType || 'Task') + ' - ' + log.status + '</div>' +
-                   '<div style="font-size: 0.8em; color: var(--text-tertiary);">' + timestamp + '</div>' +
-                   '</div>';
-        }).join('');
-        
-        feedContainer.innerHTML = feedHtml;
-    }
-    
-    updateQueenPerformance(queensStats) {
-        const performanceContainer = document.getElementById('queen-performance');
-        if (!performanceContainer) return;
-        
-        const queens = this.data.queens || [];
-        if (queens.length === 0) {
-            performanceContainer.innerHTML = '<div class="no-data">No queen data available</div>';
-            return;
-        }
-        
-        const performanceHtml = queens.slice(0, 4).map(queen => {
-            const stats = queensStats[queen.id] || {};
-            return '<div class="queen-performance-card" style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">' +
-                   '<h4 style="margin: 0 0 0.5rem 0; color: var(--text-primary);">👑 ' + queen.name + '</h4>' +
-                   '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.9em;">' +
-                   '<div><strong>Tasks:</strong> ' + (queen.currentTasks || 0) + '</div>' +
-                   '<div><strong>Success:</strong> ' + (queen.successRate || 0).toFixed(1) + '%</div>' +
-                   '<div><strong>Avg Time:</strong> ' + Math.floor(queen.avgDuration || 0) + 'ms</div>' +
-                   '<div><strong>Status:</strong> ' + queen.status + '</div>' +
-                   '</div></div>';
-        }).join('');
-        
-        performanceContainer.innerHTML = performanceHtml;
-    }
-    
     switchTab(tabName) {
-        console.log('Switching to tab:', tabName);
-        
         // Update menu
         document.querySelectorAll('.menu-item').forEach(item => {
             item.classList.remove('active');
         });
-        
-        const tabButton = document.querySelector('[data-tab="' + tabName + '"]');
-        if (tabButton) {
-            tabButton.classList.add('active');
-            console.log('Tab button found and activated:', tabName);
-        } else {
-            console.error('Tab button not found:', tabName);
-        }
+        document.querySelector(\`[data-tab="\${tabName}"]\`).classList.add('active');
         
         // Update content
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
         });
-        
-        const tabContent = document.getElementById(tabName);
-        if (tabContent) {
-            tabContent.classList.add('active');
-            console.log('Tab content found and activated:', tabName);
-        } else {
-            console.error('Tab content not found:', tabName);
-        }
+        document.getElementById(tabName).classList.add('active');
         
         this.currentTab = tabName;
         this.updateTabContent(tabName);
@@ -2305,30 +1238,6 @@ class ClaudeZenDashboard {
     
     updateTabContent(tabName) {
         switch (tabName) {
-            case 'visions':
-                this.updateVisionsList();
-                break;
-            case 'projects':
-                this.updateProjectsList();
-                break;
-            case 'prds':
-                this.updatePrdsList();
-                break;
-            case 'features':
-                this.updateFeaturesList();
-                break;
-            case 'epics':
-                this.updateEpicsList();
-                break;
-            case 'roadmaps':
-                this.updateRoadmapsList();
-                break;
-            case 'adrs':
-                this.updateAdrsList();
-                break;
-            case 'tasks':
-                this.updateTasksList();
-                break;
             case 'hives':
                 this.updateHivesList();
                 break;
@@ -2336,224 +1245,9 @@ class ClaudeZenDashboard {
                 this.updatePluginsList();
                 break;
             case 'queens':
-                this.updateQueensList();
+                this.updateQueenStatus();
                 break;
         }
-    }
-
-    // Product Management Update Methods
-    updateVisionsList() {
-        this.updateDataList('vision-list', this.data.visions, ['title', 'status', 'priority'], 'visions');
-    }
-
-    updateProjectsList() {
-        console.log('updateProjectsList called, data.projects:', this.data.projects);
-        
-        if (!this.data.projects || this.data.projects.length === 0) {
-            const container = document.getElementById('project-list');
-            if (container) {
-                container.innerHTML = '<div class="loading">No projects found</div>';
-            }
-            return;
-        }
-
-        const projects = this.data.projects;
-        const container = document.getElementById('project-list');
-        
-        if (!container) return;
-
-        // Update project filter dropdown (on Projects tab)
-        this.updateProjectFilter(projects);
-        
-        // Update global project filter dropdown (in header)
-        updateGlobalProjectFilter();
-
-        container.innerHTML = projects.map(project => {
-            const milestonesHtml = project.milestones && project.milestones.length > 0 ? 
-                '<div style="margin-bottom: 1rem;">' +
-                    '<strong style="display: block; margin-bottom: 0.5rem;">🎯 Milestones:</strong>' +
-                    '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem;">' +
-                        project.milestones.map(milestone => 
-                            '<div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: var(--bg-primary); border-radius: 4px;">' +
-                                '<span style="font-size: 0.9rem;">' + (milestone.status === 'completed' ? '✅' : milestone.status === 'in-progress' ? '🔄' : '⭕') + '</span>' +
-                                '<span style="font-size: 0.9rem;">' + milestone.name + '</span>' +
-                                '<small style="color: var(--text-secondary); margin-left: auto;">' + milestone.date + '</small>' +
-                            '</div>'
-                        ).join('') +
-                    '</div>' +
-                '</div>' : '';
-            
-            return '<div class="project-card" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; background: var(--bg-secondary);">' +
-                '<div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 1rem;">' +
-                    '<div style="flex: 1;">' +
-                        '<h3 style="margin: 0 0 0.5rem 0; color: var(--accent-color);">' + (project.name || 'Unnamed Project') + '</h3>' +
-                        '<p style="margin: 0 0 1rem 0; color: var(--text-secondary);">' + (project.description || 'No description available') + '</p>' +
-                    '</div>' +
-                    '<div style="display: flex; gap: 0.5rem; align-items: center;">' +
-                        '<span class="status-badge status-' + (project.status || 'unknown') + '" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">' + (project.status || 'Unknown') + '</span>' +
-                        '<span class="priority-badge priority-' + (project.priority || 'medium') + '" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">' + (project.priority || 'Medium') + '</span>' +
-                    '</div>' +
-                '</div>' +
-                
-                '<!-- Progress Bar -->' +
-                '<div style="margin-bottom: 1rem;">' +
-                    '<div style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">' +
-                        '<span style="font-weight: 600;">Progress</span>' +
-                        '<span style="font-weight: 600; color: var(--accent-color);">' + (project.progress || 0) + '%</span>' +
-                    '</div>' +
-                    '<div style="background: var(--bg-primary); border-radius: 10px; height: 8px; overflow: hidden;">' +
-                        '<div style="background: var(--accent-color); height: 100%; width: ' + (project.progress || 0) + '%; transition: width 0.3s ease;"></div>' +
-                    '</div>' +
-                '</div>' +
-                
-                '<!-- Project Details -->' +
-                '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">' +
-                    '<div>' +
-                        '<strong>👤 Owner:</strong><br>' +
-                        '<span style="color: var(--text-secondary);">' + (project.owner || 'Unassigned') + '</span>' +
-                    '</div>' +
-                    '<div>' +
-                        '<strong>📅 Duration:</strong><br>' +
-                        '<span style="color: var(--text-secondary);">' + (project.startDate || 'TBD') + ' → ' + (project.dueDate || 'TBD') + '</span>' +
-                    '</div>' +
-                    '<div>' +
-                        '<strong>🏷️ Tags:</strong><br>' +
-                        '<span style="color: var(--text-secondary);">' + ((project.tags || []).join(', ') || 'None') + '</span>' +
-                    '</div>' +
-                '</div>' +
-                
-                '<!-- Milestones -->' +
-                milestonesHtml +
-                
-                '<!-- Actions -->' +
-                '<div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">' +
-                    '<button class="btn btn-sm btn-primary" onclick="editProject(\\"' + project.id + '\\")">✏️ Edit</button>' +
-                    '<button class="btn btn-sm btn-secondary" onclick="viewProjectDetails(\\"' + project.id + '\\")">👁️ View Details</button>' +
-                    '<button class="btn btn-sm btn-accent" onclick="filterByProject(\\"' + project.id + '\\")">🔍 Filter All Data</button>' +
-                '</div>' +
-            '</div>';
-        }).join('');
-    }
-
-    updateProjectFilter(projects) {
-        const filterSelect = document.getElementById('project-filter');
-        if (!filterSelect) return;
-
-        // Clear existing options except "All Projects"
-        filterSelect.innerHTML = '<option value="">All Projects</option>';
-        
-        // Add project options
-        projects.forEach(project => {
-            const option = document.createElement('option');
-            option.value = project.id;
-            option.textContent = project.name || 'Unnamed Project';
-            filterSelect.appendChild(option);
-        });
-    }
-
-    updatePrdsList() {
-        this.updateDataList('prd-list', this.data.prds, ['title', 'status', 'version'], 'prds');
-    }
-
-    updateFeaturesList() {
-        this.updateDataList('feature-list', this.data.features, ['title', 'status', 'priority'], 'features');
-    }
-
-    updateEpicsList() {
-        this.updateDataList('epic-list', this.data.epics, ['title', 'status'], 'epics');
-    }
-
-    updateRoadmapsList() {
-        this.updateDataList('roadmap-list', this.data.roadmaps, ['title', 'status', 'timeline'], 'roadmaps');
-    }
-
-    updateAdrsList() {
-        this.updateDataList('adr-list', this.data.adrs, ['title', 'status', 'author'], 'adrs');
-    }
-
-    updateTasksList() {
-        this.updateDataList('task-list', this.data.tasks, ['title', 'status', 'assignee'], 'tasks');
-    }
-
-    updateQueensList() {
-        console.log('updateQueensList called, data.queens:', this.data.queens);
-        
-        // Update queens stats using already-loaded data
-        if (this.data.queens && this.data.queens.length > 0) {
-            const queens = this.data.queens;
-            const totalQueens = queens.length || 0;
-            const activeQueens = queens.filter(q => q.status === 'active').length || 0;
-            const currentTasks = queens.reduce((sum, q) => sum + (q.currentTasks || 0), 0);
-            const avgSuccessRate = totalQueens > 0 ? 
-                (queens.reduce((sum, q) => sum + (q.successRate || 0), 0) / totalQueens).toFixed(1) : 0;
-            
-            console.log('Queens stats:', {totalQueens, activeQueens, currentTasks, avgSuccessRate});
-            
-            // Update stats safely
-            const safeUpdateElement = (id, value) => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.textContent = value;
-                    console.log('Updated ' + id + ' to:', value);
-                } else {
-                    console.error('Element ' + id + ' not found');
-                }
-            };
-            
-            safeUpdateElement('total-queens', totalQueens);
-            safeUpdateElement('active-queens', activeQueens);
-            safeUpdateElement('queen-tasks', currentTasks);
-            safeUpdateElement('queen-success-rate', avgSuccessRate + '%');
-            
-            // Update queens list
-            console.log('Calling updateDataList with queens data:', queens.length, 'items');
-            this.updateDataList('queen-list', this.data.queens, ['name', 'type', 'status', 'successRate'], 'queens');
-        } else {
-            console.error('No queens data available:', this.data.queens);
-            
-            // Show no data message
-            const container = document.getElementById('queen-list');
-            if (container) {
-                container.innerHTML = '<div class="loading">No queens data available</div>';
-            }
-        }
-    }
-
-    // Generic data list updater
-    updateDataList(containerId, data, fields, dataType) {
-        console.log('updateDataList called for ' + containerId + ' with ' + dataType + ':', data);
-        
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.error('Container ' + containerId + ' not found');
-            return;
-        }
-        
-        if (!data || data.length === 0) {
-            console.log('No data for ' + dataType + ', showing no data message');
-            container.innerHTML = \`<div class="loading">No \${dataType} found</div>\`;
-            return;
-        }
-        
-        console.log('Processing ' + data.length + ' items for ' + dataType);
-        
-        container.innerHTML = data.map((item, index) => \`
-            <div class="data-item" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                    <h4 style="margin: 0; color: var(--text-primary); font-size: 1.1rem;">\${item.title || item.name}</h4>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <span style="background: var(--accent-color); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500; text-transform: uppercase;">\${item.status || 'active'}</span>
-                        <button onclick="editItem('\${dataType}', '\${item.id}')" style="background: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">✏️ Edit</button>
-                        <button onclick="deleteItem('\${dataType}', '\${item.id}')" style="background: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">🗑️ Delete</button>
-                    </div>
-                </div>
-                <p style="margin: 0 0 0.75rem 0; color: var(--text-secondary); font-size: 0.9rem;">\${item.description || ''}</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; font-size: 0.85rem;">
-                    \${fields.map(field => item[field] ? \`<div><strong style="color: var(--text-primary);">\${field}:</strong> <span style="color: var(--text-secondary);">\${item[field]}</span></div>\` : '').join('')}
-                    <div><strong style="color: var(--text-primary);">Created:</strong> <span style="color: var(--text-secondary);">\${item.created ? new Date(item.created).toLocaleDateString() : 'N/A'}</span></div>
-                </div>
-            </div>
-        \`).join('');
     }
     
     updateHivesList() {
@@ -2565,24 +1259,10 @@ class ClaudeZenDashboard {
             return;
         }
         
-        container.innerHTML = Object.entries(hives).map(([id, hive]) => \`
-            <div class="hive-item" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; transition: transform 0.2s, border-color 0.2s;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                    <h4 style="margin: 0; color: var(--text-primary); font-size: 1.1rem;">🐝 \${hive.name}</h4>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <span style="background: var(--accent-color); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500; text-transform: uppercase;">\${hive.status}</span>
-                        <button onclick="deleteHive('\${id}')" style="background: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">🗑️ Delete</button>
-                    </div>
-                </div>
-                <p style="margin: 0 0 0.75rem 0; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">\${hive.description}</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; font-size: 0.85rem;">
-                    <div><strong style="color: var(--text-primary);">Type:</strong> <span style="color: var(--text-secondary);">\${hive.type}</span></div>
-                    <div><strong style="color: var(--text-primary);">Agents:</strong> <span style="color: var(--text-secondary);">\${hive.agents || 0}</span></div>
-                    <div><strong style="color: var(--text-primary);">Tasks:</strong> <span style="color: var(--text-secondary);">\${hive.tasks || 0}</span></div>
-                    <div><strong style="color: var(--text-primary);">Max Agents:</strong> <span style="color: var(--text-secondary);">\${hive.config?.maxAgents || 5}</span></div>
-                    <div><strong style="color: var(--text-primary);">Coordination:</strong> <span style="color: var(--text-secondary);">\${hive.config?.coordination || 'hierarchical'}</span></div>
-                    <div><strong style="color: var(--text-primary);">Created:</strong> <span style="color: var(--text-secondary);">\${new Date(hive.created).toLocaleDateString()}</span></div>
-                </div>
+        container.innerHTML = Object.entries(hives).map(([name, info]) => \`
+            <div class="hive-item">
+                <h4>\${name}</h4>
+                <p>\${info.path}</p>
             </div>
         \`).join('');
     }
@@ -2740,216 +1420,6 @@ function executeCommand() {
     window.dashboard.executeCommand();
 }
 
-// COMPREHENSIVE CRUD FUNCTIONS - SWARM IMPLEMENTATION
-async function editItem(dataType, itemId) {
-    try {
-        console.log('🔄 Editing ' + dataType + ' item:', itemId);
-        
-        // Get current item data
-        const response = await fetch('/api/v1/' + dataType);
-        const items = await response.json();
-        const item = Array.isArray(items) ? items.find(i => i.id === itemId) : 
-                     items[dataType] ? items[dataType].find(i => i.id === itemId) : null;
-        
-        if (!item) {
-            alert('Item not found!');
-            return;
-        }
-        
-        // Create edit form
-        const formData = await showEditForm(dataType, item);
-        if (!formData) return; // User cancelled
-        
-        // Send update request
-        const updateResponse = await fetch('/api/v1/' + dataType + '/' + itemId, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        
-        const result = await updateResponse.json();
-        
-        if (result.success) {
-            alert('✅ Item updated successfully!');
-            // Refresh the current tab
-            window.dashboard.loadData();
-        } else {
-            alert('❌ Failed to update item: ' + result.error);
-        }
-        
-    } catch (error) {
-        console.error('Error editing item:', error);
-        alert('❌ Error editing item: ' + error.message);
-    }
-}
-
-async function deleteItem(dataType, itemId) {
-    try {
-        console.log('🗑️ Deleting ' + dataType + ' item:', itemId);
-        
-        // Confirm deletion
-        if (!confirm('Are you sure you want to delete this ' + dataType + '?')) {
-            return;
-        }
-        
-        // Send delete request
-        const response = await fetch('/api/v1/' + dataType + '/' + itemId, {
-            method: 'DELETE'
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('✅ Item deleted successfully!');
-            // Refresh the current tab
-            window.dashboard.loadData();
-        } else {
-            alert('❌ Failed to delete item: ' + result.error);
-        }
-        
-    } catch (error) {
-        console.error('Error deleting item:', error);
-        alert('❌ Error deleting item: ' + error.message);
-    }
-}
-
-async function showCreateForm(dataType) {
-    try {
-        console.log('➕ Creating new ' + dataType);
-        
-        // Create form based on data type
-        const formData = await showCreateFormDialog(dataType);
-        if (!formData) return; // User cancelled
-        
-        // Send create request
-        const response = await fetch('/api/v1/' + dataType, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('✅ Item created successfully!');
-            // Refresh the current tab
-            window.dashboard.loadData();
-        } else {
-            alert('❌ Failed to create item: ' + result.error);
-        }
-        
-    } catch (error) {
-        console.error('Error creating item:', error);
-        alert('❌ Error creating item: ' + error.message);
-    }
-}
-
-// SIMPLIFIED FORM FUNCTIONS WITHOUT TEMPLATE LITERALS
-async function showEditForm(dataType, item) {
-    return new Promise((resolve) => {
-        const title = dataType.charAt(0).toUpperCase() + dataType.slice(1);
-        const value = prompt('Enter new title for ' + title + ':', item.title || item.name || '');
-        if (value === null) {
-            resolve(null);
-        } else {
-            resolve({
-                title: value,
-                name: value,
-                description: item.description || '',
-                status: item.status || 'active'
-            });
-        }
-    });
-}
-
-async function showCreateFormDialog(dataType) {
-    return new Promise((resolve) => {
-        const title = dataType.charAt(0).toUpperCase() + dataType.slice(1);
-        const value = prompt('Enter title for new ' + title + ':');
-        if (value === null || value.trim() === '') {
-            resolve(null);
-        } else {
-            resolve({
-                title: value.trim(),
-                name: value.trim(),
-                description: '',
-                status: dataType === 'visions' ? 'draft' : 
-                        dataType === 'prds' ? 'draft' :
-                        dataType === 'features' ? 'planned' :
-                        dataType === 'epics' ? 'planning' :
-                        dataType === 'tasks' ? 'todo' : 'active',
-                priority: 'medium'
-            });
-        }
-    });
-}
-
-// FORM FIELD DEFINITIONS FOR ALL DATA TYPES
-function getFormFields(dataType) {
-    const fieldDefinitions = {
-        visions: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter vision title' },
-            { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the vision in detail' },
-            { name: 'status', label: 'Status', type: 'select', options: ['draft', 'approved', 'in_progress', 'completed', 'cancelled'], default: 'draft' },
-            { name: 'priority', label: 'Priority', type: 'select', options: ['low', 'medium', 'high', 'critical'], default: 'medium' },
-            { name: 'expected_roi', label: 'Expected ROI', type: 'text', placeholder: '$1.5M' },
-            { name: 'category', label: 'Category', type: 'text', placeholder: 'AI/ML, Blockchain, etc.' }
-        ],
-        prds: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter PRD title' },
-            { name: 'user_story', label: 'User Story', type: 'textarea', placeholder: 'As a user, I want...' },
-            { name: 'business_value', label: 'Business Value', type: 'textarea', placeholder: 'Describe the business value' },
-            { name: 'status', label: 'Status', type: 'select', options: ['draft', 'approved', 'in_development', 'completed'], default: 'draft' },
-            { name: 'version', label: 'Version', type: 'text', placeholder: '1.0.0', default: '1.0.0' }
-        ],
-        features: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter feature title' },
-            { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the feature' },
-            { name: 'status', label: 'Status', type: 'select', options: ['planned', 'in_progress', 'completed', 'cancelled'], default: 'planned' },
-            { name: 'priority', label: 'Priority', type: 'select', options: ['low', 'medium', 'high', 'critical'], default: 'medium' },
-            { name: 'owner', label: 'Owner', type: 'text', placeholder: 'Feature owner' }
-        ],
-        epics: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter epic title' },
-            { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the epic' },
-            { name: 'status', label: 'Status', type: 'select', options: ['planning', 'in_progress', 'completed', 'cancelled'], default: 'planning' },
-            { name: 'priority', label: 'Priority', type: 'select', options: ['low', 'medium', 'high', 'critical'], default: 'medium' },
-            { name: 'owner', label: 'Owner', type: 'text', placeholder: 'Epic owner' }
-        ],
-        roadmaps: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter roadmap title' },
-            { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the roadmap' },
-            { name: 'status', label: 'Status', type: 'select', options: ['draft', 'active', 'completed', 'archived'], default: 'draft' },
-            { name: 'timeline', label: 'Timeline', type: 'text', placeholder: 'Q1 2024, 6 months, etc.' }
-        ],
-        adrs: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter ADR title' },
-            { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the architectural decision' },
-            { name: 'status', label: 'Status', type: 'select', options: ['proposed', 'accepted', 'deprecated', 'superseded'], default: 'proposed' },
-            { name: 'impact', label: 'Impact', type: 'select', options: ['low', 'medium', 'high', 'critical'], default: 'medium' }
-        ],
-        tasks: [
-            { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter task title' },
-            { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the task' },
-            { name: 'status', label: 'Status', type: 'select', options: ['todo', 'in_progress', 'completed', 'cancelled'], default: 'todo' },
-            { name: 'priority', label: 'Priority', type: 'select', options: ['low', 'medium', 'high', 'critical'], default: 'medium' },
-            { name: 'assignee', label: 'Assignee', type: 'text', placeholder: 'Task assignee' }
-        ],
-        queens: [
-            { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Enter queen name' },
-            { name: 'type', label: 'Type', type: 'select', options: ['Strategic Planning', 'Execution', 'Analysis', 'Coordination'], default: 'Strategic Planning' },
-            { name: 'specialization', label: 'Specialization', type: 'textarea', placeholder: 'Describe the queen specialization' },
-            { name: 'status', label: 'Status', type: 'select', options: ['active', 'inactive', 'maintenance'], default: 'active' }
-        ]
-    };
-    
-    return fieldDefinitions[dataType] || [
-        { name: 'title', label: 'Title', type: 'text', required: true },
-        { name: 'description', label: 'Description', type: 'textarea' },
-        { name: 'status', label: 'Status', type: 'text', default: 'active' }
-    ];
-}
-
 function saveSettings() {
     const theme = document.getElementById('theme-select').value;
     const refreshInterval = parseInt(document.getElementById('refresh-interval').value);
@@ -2967,269 +1437,11 @@ function saveSettings() {
     
     alert('Settings saved successfully!');
 }
-
-async function createHive() {
-    const name = document.getElementById('hive-name').value.trim();
-    const type = document.getElementById('hive-type').value;
-    const description = document.getElementById('hive-description').value.trim();
-    const maxAgents = parseInt(document.getElementById('hive-max-agents').value);
-    const coordination = document.getElementById('hive-coordination').value;
-    
-    if (!name) {
-        alert('Please enter a hive name');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/api/hives', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name,
-                description,
-                type,
-                config: {
-                    maxAgents,
-                    coordination,
-                    autoSpawn: true
-                }
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert(\`Hive "\${name}" created successfully!\`);
-            // Clear form
-            document.getElementById('hive-name').value = '';
-            document.getElementById('hive-description').value = '';
-            document.getElementById('hive-max-agents').value = '5';
-            // Refresh hives list
-            window.dashboard.loadData();
-        } else {
-            alert(\`Error creating hive: \${result.error}\`);
-        }
-    } catch (error) {
-        alert(\`Failed to create hive: \${error.message}\`);
-    }
-}
-
-async function deleteHive(hiveId) {
-    if (!confirm(\`Are you sure you want to delete hive "\${hiveId}"?\`)) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(\`/api/hives/\${hiveId}\`, {
-            method: 'DELETE'
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert(\`Hive "\${hiveId}" deleted successfully!\`);
-            // Refresh hives list
-            window.dashboard.loadData();
-        } else {
-            alert(\`Error deleting hive: \${result.error}\`);
-        }
-    } catch (error) {
-        alert(\`Failed to delete hive: \${error.message}\`);
-    }
-}
-
-// Global project filtering functionality
-let globalProjectFilter = '';
-let currentProjectFilter = '';
-
-function setGlobalProjectFilter(projectId) {
-    globalProjectFilter = projectId;
-    
-    // Update all tabs with the new filter
-    const projectName = projectId ? 
-        (window.dashboard.data.projects.find(p => p.id === projectId)?.name || 'Unknown Project') : 
-        'All Projects';
-    
-    console.log('🌐 Global project filter set to:', projectName);
-    
-    // Apply filter to current tab data
-    if (window.dashboard) {
-        // Filter all data arrays based on project
-        if (projectId) {
-            // TODO: Implement actual filtering logic here
-            // This would filter visions, prds, features, etc. by project association
-            alert('🌐 Global Project Filter: ' + projectName + '\\n\\nNow showing only data associated with this project across ALL tabs!');
-        } else {
-            alert('🌐 Global Project Filter cleared\\n\\nShowing all data across ALL tabs');
-        }
-        
-        // Refresh current tab
-        window.dashboard.refreshData();
-    }
-}
-
-function updateGlobalProjectFilter() {
-    const globalSelect = document.getElementById('global-project-filter');
-    if (!globalSelect || !window.dashboard.data.projects) return;
-
-    // Clear existing options except "All Projects"
-    globalSelect.innerHTML = '<option value="">All Projects</option>';
-    
-    // Add project options
-    window.dashboard.data.projects.forEach(project => {
-        const option = document.createElement('option');
-        option.value = project.id;
-        option.textContent = project.name || 'Unnamed Project';
-        if (project.id === globalProjectFilter) {
-            option.selected = true;
-        }
-        globalSelect.appendChild(option);
-    });
-}
-
-function filterByProject(projectId) {
-    currentProjectFilter = projectId;
-    
-    const filterSelect = document.getElementById('project-filter');
-    const filterNotice = document.getElementById('project-filter-notice');
-    const activeProjectName = document.getElementById('active-project-name');
-    
-    if (projectId) {
-        // Find project name
-        const project = window.dashboard.data.projects.find(p => p.id === projectId);
-        const projectName = project ? project.name : 'Unknown Project';
-        
-        // Update UI to show filter is active
-        if (filterSelect) filterSelect.value = projectId;
-        if (filterNotice) filterNotice.style.display = 'block';
-        if (activeProjectName) activeProjectName.textContent = projectName;
-        
-        console.log('🔍 Filtering all data by project:', projectName);
-        
-        // Here you would implement the actual filtering logic for all data types
-        // For now, we'll just show a notification
-        alert('🔍 Project filter active: ' + projectName + '\\n\\nThis will filter all visions, PRDs, features, epics, roadmaps, ADRs, and tasks to show only items associated with this project.');
-    } else {
-        resetProjectFilter();
-    }
-}
-
-function resetProjectFilter() {
-    currentProjectFilter = '';
-    
-    const filterSelect = document.getElementById('project-filter');
-    const filterNotice = document.getElementById('project-filter-notice');
-    
-    if (filterSelect) filterSelect.value = '';
-    if (filterNotice) filterNotice.style.display = 'none';
-    
-    console.log('🔄 Reset project filter - showing all data');
-    
-    // Here you would implement the logic to show all data again
-    alert('🔄 Project filter cleared - showing all data');
-}
-
-function editProject(projectId) {
-    console.log('✏️ Edit project:', projectId);
-    alert('✏️ Project editing functionality coming soon!');
-}
-
-function viewProjectDetails(projectId) {
-    const project = window.dashboard.data.projects.find(p => p.id === projectId);
-    if (!project) {
-        alert('❌ Project not found');
-        return;
-    }
-    
-    console.log('👁️ View project details:', project);
-    
-    // Create detailed view modal/dialog
-    const milestonesText = project.milestones ? 
-        project.milestones.map(function(m) {
-            const icon = m.status === 'completed' ? '✅' : m.status === 'in-progress' ? '🔄' : '⭕';
-            return '  ' + icon + ' ' + m.name + ' (' + m.date + ')';
-        }).join('\\n') : 'No milestones defined';
-    
-    const details = '🚀 Project Details: ' + project.name + '\\n\\n' +
-        '📋 Description: ' + project.description + '\\n' +
-        '📊 Progress: ' + project.progress + '%\\n' +
-        '🏷️ Status: ' + project.status + '\\n' +
-        '⭐ Priority: ' + project.priority + '\\n' +
-        '👤 Owner: ' + project.owner + '\\n' +
-        '📅 Start Date: ' + project.startDate + '\\n' +
-        '📅 Due Date: ' + project.dueDate + '\\n' +
-        '🏷️ Tags: ' + (project.tags ? project.tags.join(', ') : 'None') + '\\n\\n' +
-        '🎯 Milestones:\\n' + milestonesText + '\\n\\n' +
-        '🔧 Resources:\\n' + (project.resources ? project.resources.join(', ') : 'No resources listed');
-    
-    alert(details);
-}
-
-// Global function for HTML onclick handlers
-function toggleSection(sectionName) {
-    if (window.dashboard) {
-        window.dashboard.toggleSection(sectionName);
-    }
-}
-
-// Initialize dashboard when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    window.dashboard = new ClaudeZenDashboard();
-});
 `;
   }
 
-  async setupWebRoutes(app) {
-    // Password authentication setup
-    const PASSWORD = 'BNgh9981';
-    
-    const requireAuth = (req, res, next) => {
-      // Check if user is authenticated
-      if (req.session && req.session.authenticated) {
-        return next();
-      }
-      
-      // Check for password in header or query
-      const providedPassword = req.headers['x-password'] || req.query.password;
-      if (providedPassword === PASSWORD) {
-        if (!req.session) req.session = {};
-        req.session.authenticated = true;
-        return next();
-      }
-      
-      // Return login page for GET requests to root
-      if (req.method === 'GET' && req.path === '/') {
-        return res.send(this.createLoginPage());
-      }
-      
-      // Return 401 for API requests
-      return res.status(401).json({ 
-        error: 'Authentication required',
-        message: 'Please provide password via X-Password header or ?password= query parameter'
-      });
-    };
-    
-    // Login endpoint
-    app.post('/login', (req, res) => {
-      const { password } = req.body;
-      if (password === PASSWORD) {
-        if (!req.session) req.session = {};
-        req.session.authenticated = true;
-        res.json({ success: true, message: 'Authentication successful' });
-      } else {
-        res.status(401).json({ success: false, message: 'Invalid password' });
-      }
-    });
-    
-    // Logout endpoint
-    app.post('/logout', (req, res) => {
-      if (req.session) {
-        req.session.authenticated = false;
-      }
-      res.json({ success: true, message: 'Logged out successfully' });
-    });
-    
-    // UNIFIED HEALTH ENDPOINT - Combines system health and MCP status (no auth required)
+  setupWebRoutes(app) {
+    // UNIFIED HEALTH ENDPOINT - Combines system health and MCP status
     app.get('/health', (req, res) => {
       res.json({
         status: 'healthy',
@@ -3260,32 +1472,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     
-    // Apply authentication to all routes except login, logout and health
-    app.use((req, res, next) => {
-      if (req.path === '/login' || req.path === '/logout' || req.path === '/health') {
-        return next();
-      }
-      return requireAuth(req, res, next);
-    });
-    
-    // Serve static files AFTER authentication
-    app.use(express.static(this.config.staticDir));
-    
-    // AUTOMATIC API GENERATION FROM SCHEMA
-    await this.generateAllAPIs(app);
-    
-    // OPENAPI 3.0 DOCUMENTATION ENDPOINT  
-    app.get('/api/v1/openapi.json', (req, res) => {
-      res.json(this.getOpenAPISpec());
-    });
-    
-    // API DOCUMENTATION UI
-    app.get('/api/v1/docs', (req, res) => {
-      res.send(this.getSwaggerUI());
-    });
-    
-    // UNIFIED SWARM API v1 - Direct integration without separate MCP
-    app.post('/api/v1/swarm/init', async (req, res) => {
+    // UNIFIED SWARM API - Direct integration without separate MCP
+    app.post('/api/swarm/init', async (req, res) => {
       try {
         const result = await this.handleSwarmInit(req.body);
         res.json(result);
@@ -3294,7 +1482,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.post('/api/v1/swarm/spawn', async (req, res) => {
+    app.post('/api/swarm/spawn', async (req, res) => {
       try {
         const result = await this.handleSwarmSpawn(req.body);
         res.json(result);
@@ -3303,7 +1491,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.post('/api/v1/swarm/execute', async (req, res) => {
+    app.post('/api/swarm/execute', async (req, res) => {
       try {
         const result = await this.handleSwarmExecute(req.body);
         res.json(result);
@@ -3312,7 +1500,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.get('/api/v1/swarm/status', async (req, res) => {
+    app.get('/api/swarm/status', async (req, res) => {
       try {
         const result = await this.handleSwarmStatus(req.query);
         res.json(result);
@@ -3321,8 +1509,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // UNIFIED MEMORY API v1 - Direct integration without separate MCP
-    app.post('/api/v1/memory/search', async (req, res) => {
+    // UNIFIED MEMORY API - Direct integration without separate MCP
+    app.post('/api/memory/search', async (req, res) => {
       try {
         const result = await this.handleMemorySearch(req.body);
         res.json(result);
@@ -3331,7 +1519,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.post('/api/v1/memory/store', async (req, res) => {
+    app.post('/api/memory/store', async (req, res) => {
       try {
         const result = await this.handleMemoryStore(req.body);
         res.json(result);
@@ -3340,7 +1528,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.get('/api/v1/memory/retrieve/:key', async (req, res) => {
+    app.get('/api/memory/retrieve/:key', async (req, res) => {
       try {
         const result = await this.handleMemoryRetrieve({ key: req.params.key, ...req.query });
         res.json(result);
@@ -3349,81 +1537,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // REAL-TIME STATS AND LOGGING API v1 ENDPOINTS
-    app.get('/api/v1/stats/realtime', async (req, res) => {
-      try {
-        const stats = await this.calculateRealTimeStats();
-        res.json({ success: true, stats });
-      } catch (error) {
-        console.error('Error getting real-time stats:', error);
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-    
-    app.get('/api/v1/stats/queens', async (req, res) => {
-      try {
-        const stats = await this.calculateRealTimeStats();
-        res.json({ success: true, queens: stats.queens });
-      } catch (error) {
-        console.error('Error getting queen stats:', error);
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-    
-    app.get('/api/v1/logs/tasks', async (req, res) => {
-      try {
-        await this.initializeSchemaData();
-        const limit = parseInt(req.query.limit) || 50;
-        const queenId = req.query.queenId;
-        
-        let logs = this.schemaData.taskLogs || [];
-        
-        if (queenId) {
-          logs = logs.filter(log => log.queenId === queenId);
-        }
-        
-        // Sort by timestamp desc and limit
-        logs = logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, limit);
-        
-        res.json({ success: true, logs });
-      } catch (error) {
-        console.error('Error getting task logs:', error);
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-    
-    app.post('/api/v1/logs/task', async (req, res) => {
-      try {
-        const { queenId, taskId, taskType, status, metrics } = req.body;
-        const logEntry = await this.logTaskExecution(queenId, taskId, taskType, status, metrics);
-        res.json({ success: true, logEntry });
-      } catch (error) {
-        console.error('Error logging task execution:', error);
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-    
-    app.get('/api/v1/stats/performance', async (req, res) => {
-      try {
-        const stats = await this.calculateRealTimeStats();
-        res.json({ 
-          success: true, 
-          performance: {
-            ...stats.performance,
-            system: stats.system,
-            uptime: process.uptime(),
-            memory: process.memoryUsage(),
-            timestamp: new Date().toISOString()
-          }
-        });
-      } catch (error) {
-        console.error('Error getting performance stats:', error);
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // UNIFIED NLP API v1 - Direct integration without separate MCP
-    app.post('/api/v1/nlp/process', async (req, res) => {
+    // UNIFIED NLP API - Direct integration without separate MCP
+    app.post('/api/nlp/process', async (req, res) => {
       try {
         const result = await this.handleNaturalLanguage(req.body);
         res.json(result);
@@ -3432,262 +1547,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // HIVE MANAGEMENT API v1 ROUTES
-    app.get('/api/v1/hives', async (req, res) => {
+    // STANDARD API ROUTES
+    app.get('/api/hives', async (req, res) => {
       try {
-        const hives = await this.getHivesData();
+        // Get hives data - this would integrate with your hive system
+        const hives = {}; // await this.getHivesData();
         res.json(hives);
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
     });
-
-    app.post('/api/v1/hives', async (req, res) => {
-      try {
-        const { name, description, type, config } = req.body;
-        const result = await this.createHive(name, description, type, config);
-        res.json({ success: true, hive: result });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/hives/:name', async (req, res) => {
-      try {
-        const { name } = req.params;
-        await this.deleteHive(name);
-        res.json({ success: true, message: `Hive ${name} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // COMPREHENSIVE PRODUCT MANAGEMENT APIs - CRUD for all data types
-    // Visions CRUD
-    app.post('/api/v1/visions', async (req, res) => {
-      try {
-        const vision = await this.createVision(req.body);
-        res.json({ success: true, vision });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/visions/:id', async (req, res) => {
-      try {
-        const vision = await this.updateVision(req.params.id, req.body);
-        res.json({ success: true, vision });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/visions/:id', async (req, res) => {
-      try {
-        await this.deleteVision(req.params.id);
-        res.json({ success: true, message: `Vision ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // PRDs CRUD
-    app.post('/api/v1/prds', async (req, res) => {
-      try {
-        const prd = await this.createPrd(req.body);
-        res.json({ success: true, prd });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/prds/:id', async (req, res) => {
-      try {
-        const prd = await this.updatePrd(req.params.id, req.body);
-        res.json({ success: true, prd });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/prds/:id', async (req, res) => {
-      try {
-        await this.deletePrd(req.params.id);
-        res.json({ success: true, message: `PRD ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // Features CRUD  
-    app.post('/api/v1/features', async (req, res) => {
-      try {
-        const feature = await this.createFeature(req.body);
-        res.json({ success: true, feature });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/features/:id', async (req, res) => {
-      try {
-        const feature = await this.updateFeature(req.params.id, req.body);
-        res.json({ success: true, feature });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/features/:id', async (req, res) => {
-      try {
-        await this.deleteFeature(req.params.id);
-        res.json({ success: true, message: `Feature ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // Epics CRUD
-    app.post('/api/v1/epics', async (req, res) => {
-      try {
-        const epic = await this.createEpic(req.body);
-        res.json({ success: true, epic });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/epics/:id', async (req, res) => {
-      try {
-        const epic = await this.updateEpic(req.params.id, req.body);
-        res.json({ success: true, epic });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/epics/:id', async (req, res) => {
-      try {
-        await this.deleteEpic(req.params.id);
-        res.json({ success: true, message: `Epic ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // Roadmaps CRUD
-    app.post('/api/v1/roadmaps', async (req, res) => {
-      try {
-        const roadmap = await this.createRoadmap(req.body);
-        res.json({ success: true, roadmap });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/roadmaps/:id', async (req, res) => {
-      try {
-        const roadmap = await this.updateRoadmap(req.params.id, req.body);
-        res.json({ success: true, roadmap });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/roadmaps/:id', async (req, res) => {
-      try {
-        await this.deleteRoadmap(req.params.id);
-        res.json({ success: true, message: `Roadmap ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // ADRs CRUD
-    app.post('/api/v1/adrs', async (req, res) => {
-      try {
-        const adr = await this.createAdr(req.body);
-        res.json({ success: true, adr });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/adrs/:id', async (req, res) => {
-      try {
-        const adr = await this.updateAdr(req.params.id, req.body);
-        res.json({ success: true, adr });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/adrs/:id', async (req, res) => {
-      try {
-        await this.deleteAdr(req.params.id);
-        res.json({ success: true, message: `ADR ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // Tasks CRUD
-    app.post('/api/v1/tasks', async (req, res) => {
-      try {
-        const task = await this.createTask(req.body);
-        res.json({ success: true, task });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/tasks/:id', async (req, res) => {
-      try {
-        const task = await this.updateTask(req.params.id, req.body);
-        res.json({ success: true, task });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/tasks/:id', async (req, res) => {
-      try {
-        await this.deleteTask(req.params.id);
-        res.json({ success: true, message: `Task ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    // Queens CRUD
-    app.post('/api/v1/queens', async (req, res) => {
-      try {
-        const queen = await this.createQueen(req.body);
-        res.json({ success: true, queen });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.put('/api/v1/queens/:id', async (req, res) => {
-      try {
-        const queen = await this.updateQueen(req.params.id, req.body);
-        res.json({ success: true, queen });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-
-    app.delete('/api/v1/queens/:id', async (req, res) => {
-      try {
-        await this.deleteQueen(req.params.id);
-        res.json({ success: true, message: `Queen ${req.params.id} deleted` });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
     
-    app.get('/api/v1/plugins', async (req, res) => {
+    app.get('/api/plugins', async (req, res) => {
       try {
         // Get actual plugins data from the system
         const plugins = await this.getPluginsData();
@@ -3697,7 +1568,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.get('/api/v1/stats', async (req, res) => {
+    app.get('/api/stats', async (req, res) => {
       try {
         const stats = {
           sessions: this.sessions.size,
@@ -3716,7 +1587,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.post('/api/v1/execute', async (req, res) => {
+    app.post('/api/execute', async (req, res) => {
       try {
         const { command } = req.body;
         // Execute command - this would integrate with your command system
@@ -3727,7 +1598,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    app.post('/api/v1/settings', async (req, res) => {
+    app.post('/api/settings', async (req, res) => {
       try {
         const settings = req.body;
         // Save settings
@@ -3750,111 +1621,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    app.get('/api/v1/projects', async (req, res) => {
-      try {
-        const projects = await this.getProjectsData();
-        res.json(projects);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    // POST - Create new project
-    app.post('/api/v1/projects', async (req, res) => {
-      try {
-        const projectData = req.body;
-        
-        // Generate unique ID if not provided
-        if (!projectData.id) {
-          projectData.id = 'project-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-        }
-        
-        // Add timestamp
-        projectData.createdAt = new Date().toISOString();
-        projectData.updatedAt = new Date().toISOString();
-        
-        // Initialize schema data if needed
-        if (!this.schemaData) {
-          await this.initializeSchemaData();
-        }
-        
-        // Add to projects array
-        this.schemaData.projects.push(projectData);
-        
-        res.status(201).json({ 
-          success: true, 
-          project: projectData,
-          message: 'Project created successfully'
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    // PUT - Update existing project
-    app.put('/api/v1/projects/:id', async (req, res) => {
-      try {
-        const projectId = req.params.id;
-        const updateData = req.body;
-        
-        // Initialize schema data if needed
-        if (!this.schemaData) {
-          await this.initializeSchemaData();
-        }
-        
-        // Find and update project
-        const projectIndex = this.schemaData.projects.findIndex(p => p.id === projectId);
-        if (projectIndex === -1) {
-          return res.status(404).json({ error: 'Project not found' });
-        }
-        
-        // Update project with new data
-        this.schemaData.projects[projectIndex] = {
-          ...this.schemaData.projects[projectIndex],
-          ...updateData,
-          id: projectId, // Preserve original ID
-          updatedAt: new Date().toISOString()
-        };
-        
-        res.json({ 
-          success: true, 
-          project: this.schemaData.projects[projectIndex],
-          message: 'Project updated successfully'
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    // DELETE - Remove project
-    app.delete('/api/v1/projects/:id', async (req, res) => {
-      try {
-        const projectId = req.params.id;
-        
-        // Initialize schema data if needed
-        if (!this.schemaData) {
-          await this.initializeSchemaData();
-        }
-        
-        // Find and remove project
-        const projectIndex = this.schemaData.projects.findIndex(p => p.id === projectId);
-        if (projectIndex === -1) {
-          return res.status(404).json({ error: 'Project not found' });
-        }
-        
-        const deletedProject = this.schemaData.projects.splice(projectIndex, 1)[0];
-        
-        res.json({ 
-          success: true, 
-          project: deletedProject,
-          message: 'Project deleted successfully'
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    app.get('/api/v1/prds', async (req, res) => {
+    app.get('/api/prds', async (req, res) => {
       try {
         const prds = await this.getPrdsData();
         res.json(prds);
@@ -3863,7 +1630,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    app.get('/api/v1/features', async (req, res) => {
+    app.get('/api/features', async (req, res) => {
       try {
         const features = await this.getFeaturesData();
         res.json(features);
@@ -3872,7 +1639,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    app.get('/api/v1/epics', async (req, res) => {
+    app.get('/api/epics', async (req, res) => {
       try {
         const epics = await this.getEpicsData();
         res.json(epics);
@@ -3881,7 +1648,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    app.get('/api/v1/roadmaps', async (req, res) => {
+    app.get('/api/roadmaps', async (req, res) => {
       try {
         const roadmaps = await this.getRoadmapsData();
         res.json(roadmaps);
@@ -3890,7 +1657,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    app.get('/api/v1/adrs', async (req, res) => {
+    app.get('/api/adrs', async (req, res) => {
       try {
         const adrs = await this.getAdrsData();
         res.json(adrs);
@@ -3899,7 +1666,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    app.get('/api/v1/tasks', async (req, res) => {
+    app.get('/api/tasks', async (req, res) => {
       try {
         const tasks = await this.getTasksData();
         res.json(tasks);
@@ -4315,136 +2082,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async executeCommand(command) {
-    const cmd = command.trim().toLowerCase();
-    const args = cmd.split(' ');
-    const baseCmd = args[0];
-
-    try {
-      switch (baseCmd) {
-        case 'help':
-          return this.getHelpText();
-        
-        case 'visions':
-          const visions = await this.getVisionsData();
-          return this.formatDataOutput('Visions', visions, ['id', 'title', 'status', 'priority']);
-        
-        case 'prds':
-          const prds = await this.getPrdsData();
-          return this.formatDataOutput('PRDs', prds, ['id', 'title', 'status', 'version']);
-        
-        case 'features':
-          const features = await this.getFeaturesData();
-          return this.formatDataOutput('Features', features, ['id', 'title', 'status', 'priority']);
-        
-        case 'epics':
-          const epics = await this.getEpicsData();
-          return this.formatDataOutput('Epics', epics, ['id', 'title', 'status']);
-        
-        case 'roadmaps':
-          const roadmaps = await this.getRoadmapsData();
-          return this.formatDataOutput('Roadmaps', roadmaps, ['id', 'title', 'status', 'timeline']);
-        
-        case 'adrs':
-          const adrs = await this.getAdrsData();
-          return this.formatDataOutput('ADRs', adrs, ['id', 'title', 'status', 'author']);
-        
-        case 'tasks':
-          const tasks = await this.getTasksData();
-          return this.formatDataOutput('Tasks', tasks, ['id', 'title', 'status', 'assignee']);
-        
-        case 'plugins':
-          const plugins = await this.getPluginsData();
-          return this.formatDataOutput('Plugins', plugins, ['name', 'status', 'version']);
-        
-        case 'queens':
-          const queens = await this.getQueensData();
-          return this.formatDataOutput('Queens', queens, ['name', 'type', 'status', 'successRate']);
-        
-        case 'hives':
-          const hives = await this.getHivesData();
-          const hivesArray = Object.values(hives);
-          return this.formatDataOutput('Hives', hivesArray, ['name', 'type', 'status', 'agents']);
-        
-        case 'status':
-          return this.getSystemStatus();
-        
-        case 'stats':
-          return this.getSystemStats();
-        
-        case 'clear':
-          return '';
-        
-        default:
-          return `Unknown command: ${baseCmd}\nType 'help' for available commands.`;
-      }
-    } catch (error) {
-      return `Error executing command: ${error.message}`;
-    }
-  }
-
-  getHelpText() {
-    return `🚀 Claude Zen Commands:
-
-PRODUCT MANAGEMENT:
-  visions    - List strategic visions
-  prds       - List Product Requirements Documents  
-  features   - List features and capabilities
-  epics      - List epic initiatives
-  roadmaps   - List strategic roadmaps
-  adrs       - List Architectural Decision Records
-  tasks      - List implementation tasks
-
-SYSTEM MANAGEMENT:
-  hives      - List active hives
-  queens     - List queen council status
-  plugins    - List active plugins
-  status     - Show system status
-  stats      - Show system statistics
-  help       - Show this help message
-  clear      - Clear output
-
-Usage: Type any command and press Enter or click Execute.`;
-  }
-
-  formatDataOutput(title, data, fields) {
-    if (!data || data.length === 0) {
-      return `📊 ${title}: No items found`;
-    }
-
-    let output = `📊 ${title} (${data.length} items):\n\n`;
-    
-    data.forEach((item, index) => {
-      output += `${index + 1}. `;
-      fields.forEach((field, fieldIndex) => {
-        if (item[field] !== undefined) {
-          output += `${fieldIndex > 0 ? ' | ' : ''}${field}: ${item[field]}`;
-        }
-      });
-      output += '\n';
-    });
-    
-    return output;
-  }
-
-  getSystemStatus() {
-    return `🔧 System Status:
-• Server: Running on port ${this.config.webPort}
-• WebSocket: ${this.wsServer ? 'Connected' : 'Disconnected'}
-• Sessions: ${this.sessions.size} active
-• Theme: ${this.config.theme}
-• Auto-refresh: ${this.config.autoRefresh ? 'Enabled' : 'Disabled'}
-• Uptime: ${Math.floor(process.uptime())}s`;
-  }
-
-  getSystemStats() {
-    const memory = process.memoryUsage();
-    return `📊 System Statistics:
-• Memory Usage: ${Math.round(memory.heapUsed / 1024 / 1024)}MB
-• Total Memory: ${Math.round(memory.heapTotal / 1024 / 1024)}MB
-• CPU Time: ${process.cpuUsage().user}μs
-• Node Version: ${process.version}
-• Platform: ${process.platform}
-• Architecture: ${process.arch}`;
+    // This would integrate with your existing command system
+    return `Executed: ${command}`;
   }
 
   async getPluginsData() {
@@ -4518,19 +2157,6 @@ Usage: Type any command and press Enter or click Execute.`;
     }
   }
 
-  async getProjectsData() {
-    try {
-      if (!this.schemaData) {
-        await this.initializeSchemaData();
-      }
-      
-      return this.schemaData?.projects || [];
-    } catch (error) {
-      console.error('Error getting real projects data:', error);
-      return [];
-    }
-  }
-
   async getPrdsData() {
     try {
       if (!this.schemaData) {
@@ -4555,7 +2181,6 @@ Usage: Type any command and press Enter or click Execute.`;
       // Extract the initialized data
       this.schemaData = {
         visions: tempServer.visions ? Array.from(tempServer.visions.values()) : [],
-        projects: this.generateInitialProjects(), // Generate watertight projects
         prds: tempServer.prds ? Array.from(tempServer.prds.values()) : [],
         features: tempServer.features ? Array.from(tempServer.features.values()) : [],
         epics: tempServer.epics ? Array.from(tempServer.epics.values()) : [],
@@ -4582,106 +2207,6 @@ Usage: Type any command and press Enter or click Execute.`;
         tasks: []
       };
     }
-  }
-
-  generateInitialProjects() {
-    return [
-      {
-        id: 'claude-zen-core',
-        name: 'Claude Zen Core Platform',
-        description: 'Central hub for AI-driven development with MCP integration',
-        status: 'active',
-        priority: 'high',
-        owner: 'System Architecture Team',
-        startDate: '2024-01-01',
-        dueDate: '2024-12-31',
-        progress: 85,
-        tags: ['core', 'platform', 'mcp'],
-        resources: ['Claude Code', 'MCP Tools', 'WebSocket API'],
-        milestones: [
-          { name: 'API Foundation', status: 'completed', date: '2024-03-01' },
-          { name: 'Web Interface', status: 'completed', date: '2024-06-01' },
-          { name: 'MCP Integration', status: 'in-progress', date: '2024-09-01' },
-          { name: 'Production Release', status: 'pending', date: '2024-12-01' }
-        ]
-      },
-      {
-        id: 'watertight-isolation',
-        name: 'Watertight Project Isolation',
-        description: 'Ensure complete separation between projects with zero cross-contamination',
-        status: 'active',
-        priority: 'high',
-        owner: 'Security & Architecture Team',
-        startDate: '2024-07-01',
-        dueDate: '2024-10-31',
-        progress: 65,
-        tags: ['security', 'isolation', 'architecture'],
-        resources: ['Database Namespacing', 'API Filtering', 'Memory Isolation'],
-        milestones: [
-          { name: 'Schema Design', status: 'completed', date: '2024-07-15' },
-          { name: 'API Implementation', status: 'in-progress', date: '2024-08-15' },
-          { name: 'Testing & Validation', status: 'pending', date: '2024-09-15' },
-          { name: 'Security Audit', status: 'pending', date: '2024-10-15' }
-        ]
-      },
-      {
-        id: 'unified-interface',
-        name: 'Unified Web Interface',
-        description: 'Single-page application for managing all system entities and workflows',
-        status: 'active',
-        priority: 'medium',
-        owner: 'Frontend Development Team',
-        startDate: '2024-05-01',
-        dueDate: '2024-11-30',
-        progress: 75,
-        tags: ['frontend', 'web', 'user-interface'],
-        resources: ['React Components', 'REST APIs', 'WebSocket Client'],
-        milestones: [
-          { name: 'Core Components', status: 'completed', date: '2024-06-01' },
-          { name: 'Tab Navigation', status: 'completed', date: '2024-07-01' },
-          { name: 'Real-time Updates', status: 'in-progress', date: '2024-08-01' },
-          { name: 'Mobile Responsive', status: 'pending', date: '2024-10-01' }
-        ]
-      },
-      {
-        id: 'queen-council-system',
-        name: 'Queen Council AI Coordination',
-        description: 'Multi-agent AI system for coordinated task execution and decision making',
-        status: 'active',
-        priority: 'high',
-        owner: 'AI Research Team',
-        startDate: '2024-04-01',
-        dueDate: '2024-12-31',
-        progress: 70,
-        tags: ['ai', 'coordination', 'agents'],
-        resources: ['Agent Framework', 'Communication Protocol', 'Task Orchestration'],
-        milestones: [
-          { name: 'Agent Architecture', status: 'completed', date: '2024-05-01' },
-          { name: 'Communication Layer', status: 'completed', date: '2024-06-15' },
-          { name: 'Task Coordination', status: 'in-progress', date: '2024-08-01' },
-          { name: 'Learning System', status: 'pending', date: '2024-11-01' }
-        ]
-      },
-      {
-        id: 'plugin-ecosystem',
-        name: 'Extensible Plugin Ecosystem',
-        description: 'Modular plugin system for extending functionality and integrations',
-        status: 'active',
-        priority: 'medium',
-        owner: 'Platform Team',
-        startDate: '2024-06-01',
-        dueDate: '2024-12-31',
-        progress: 50,
-        tags: ['plugins', 'extensibility', 'integrations'],
-        resources: ['Plugin API', 'Registry System', 'Documentation'],
-        milestones: [
-          { name: 'Plugin Framework', status: 'completed', date: '2024-07-01' },
-          { name: 'Core Plugins', status: 'in-progress', date: '2024-09-01' },
-          { name: 'Third-party SDK', status: 'pending', date: '2024-11-01' },
-          { name: 'Marketplace', status: 'pending', date: '2024-12-15' }
-        ]
-      }
-    ];
   }
 
   async getFeaturesData() {
@@ -4749,341 +2274,13 @@ Usage: Type any command and press Enter or click Execute.`;
     }
   }
 
-  // REAL-TIME TASK LOGGING SYSTEM
-  async logTaskExecution(queenId, taskId, taskType, status, metrics = {}) {
-    try {
-      const logEntry = {
-        id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        queenId,
-        taskId,
-        taskType,
-        status, // 'started', 'completed', 'failed', 'paused'
-        metrics: {
-          startTime: metrics.startTime || new Date().toISOString(),
-          endTime: metrics.endTime,
-          duration: metrics.duration,
-          memoryUsage: process.memoryUsage(),
-          cpuTime: process.cpuUsage?.() || null,
-          ...metrics
-        },
-        timestamp: new Date().toISOString()
-      };
-
-      // Store in schema data
-      if (!this.schemaData.taskLogs) this.schemaData.taskLogs = [];
-      this.schemaData.taskLogs.push(logEntry);
-      
-      // Keep only last 1000 log entries for performance
-      if (this.schemaData.taskLogs.length > 1000) {
-        this.schemaData.taskLogs = this.schemaData.taskLogs.slice(-1000);
-      }
-      
-      // Broadcast to WebSocket clients
-      this.broadcastTaskUpdate(logEntry);
-      
-      return logEntry;
-    } catch (error) {
-      console.error('Error logging task execution:', error);
-      return null;
-    }
-  }
-
-  // REAL-TIME STATS CALCULATION
-  async calculateRealTimeStats() {
-    try {
-      await this.initializeSchemaData();
-      
-      const now = new Date();
-      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-      
-      const taskLogs = this.schemaData.taskLogs || [];
-      const recentLogs = taskLogs.filter(log => new Date(log.timestamp) > oneHourAgo);
-      const dailyLogs = taskLogs.filter(log => new Date(log.timestamp) > oneDayAgo);
-      
-      // Calculate queen performance stats
-      const queenStats = {};
-      taskLogs.forEach(log => {
-        if (!queenStats[log.queenId]) {
-          queenStats[log.queenId] = {
-            totalTasks: 0,
-            completedTasks: 0,
-            failedTasks: 0,
-            avgDuration: 0,
-            totalDuration: 0,
-            recentActivity: 0
-          };
-        }
-        
-        const stats = queenStats[log.queenId];
-        stats.totalTasks++;
-        
-        if (log.status === 'completed') stats.completedTasks++;
-        if (log.status === 'failed') stats.failedTasks++;
-        if (log.metrics.duration) stats.totalDuration += log.metrics.duration;
-        if (recentLogs.includes(log)) stats.recentActivity++;
-      });
-      
-      // Calculate averages
-      Object.keys(queenStats).forEach(queenId => {
-        const stats = queenStats[queenId];
-        stats.successRate = stats.totalTasks > 0 ? (stats.completedTasks / stats.totalTasks) * 100 : 0;
-        stats.avgDuration = stats.completedTasks > 0 ? stats.totalDuration / stats.completedTasks : 0;
-      });
-      
-      return {
-        system: {
-          totalTasks: taskLogs.length,
-          recentTasks: recentLogs.length,
-          dailyTasks: dailyLogs.length,
-          systemUptime: process.uptime(),
-          memoryUsage: process.memoryUsage(),
-          timestamp: now.toISOString()
-        },
-        queens: queenStats,
-        recentActivity: recentLogs.slice(-20), // Last 20 activities
-        performance: {
-          avgResponseTime: recentLogs.reduce((sum, log) => sum + (log.metrics.duration || 0), 0) / Math.max(recentLogs.length, 1),
-          errorRate: recentLogs.filter(log => log.status === 'failed').length / Math.max(recentLogs.length, 1) * 100,
-          throughput: recentLogs.length // tasks per hour
-        }
-      };
-    } catch (error) {
-      console.error('Error calculating real-time stats:', error);
-      return { error: 'Failed to calculate stats' };
-    }
-  }
-
-  // BROADCAST TASK UPDATES VIA WEBSOCKET
-  broadcastTaskUpdate(logEntry) {
-    try {
-      if (this.wss) {
-        const message = JSON.stringify({
-          type: 'taskUpdate',
-          data: logEntry,
-          timestamp: new Date().toISOString()
-        });
-        
-        this.wss.clients.forEach(client => {
-          if (client.readyState === 1) { // WebSocket.OPEN
-            client.send(message);
-          }
-        });
-      }
-    } catch (error) {
-      console.error('Error broadcasting task update:', error);
-    }
-  }
-
-  // QUEEN COUNCIL DATA METHODS WITH REAL STATS
-  getOpenAPISpec() {
-    return {
-      openapi: '3.0.0',
-      info: {
-        title: 'Claude Flow Unified API',
-        version: '1.0.0',
-        description: 'Comprehensive API for Claude Flow system with swarm orchestration, real-time stats, and product management'
-      },
-      servers: [
-        {
-          url: `http://localhost:${this.config.webPort}/api/v1`,
-          description: 'Local development server'
-        }
-      ],
-      paths: {
-        '/visions': {
-          get: { summary: 'Get all visions', tags: ['Product Management'] },
-          post: { summary: 'Create new vision', tags: ['Product Management'] }
-        },
-        '/visions/{id}': {
-          put: { summary: 'Update vision', tags: ['Product Management'] },
-          delete: { summary: 'Delete vision', tags: ['Product Management'] }
-        },
-        '/prds': {
-          get: { summary: 'Get all PRDs', tags: ['Product Management'] },
-          post: { summary: 'Create new PRD', tags: ['Product Management'] }
-        },
-        '/features': {
-          get: { summary: 'Get all features', tags: ['Product Management'] },
-          post: { summary: 'Create new feature', tags: ['Product Management'] }
-        },
-        '/queens': {
-          get: { summary: 'Get all queens', tags: ['Queen Council'] },
-          post: { summary: 'Create new queen', tags: ['Queen Council'] }
-        },
-        '/stats/realtime': {
-          get: { summary: 'Get real-time system statistics', tags: ['Monitoring'] }
-        },
-        '/logs/tasks': {
-          get: { summary: 'Get task execution logs', tags: ['Monitoring'] }
-        },
-        '/swarm/init': {
-          post: { summary: 'Initialize swarm coordination', tags: ['Swarm'] }
-        }
-      },
-      components: {
-        schemas: {
-          Vision: {
-            type: 'object',
-            properties: {
-              id: { type: 'string' },
-              title: { type: 'string' },
-              description: { type: 'string' },
-              status: { type: 'string', enum: ['draft', 'approved', 'in_progress', 'completed'] },
-              priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'] }
-            }
-          }
-        }
-      }
-    };
-  }
-
-  getSwaggerUI() {
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <title>Claude Flow API Documentation</title>
-  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3.25.0/swagger-ui.css" />
-</head>
-<body>
-  <div id="swagger-ui"></div>
-  <script src="https://unpkg.com/swagger-ui-dist@3.25.0/swagger-ui-bundle.js"></script>
-  <script>
-    SwaggerUIBundle({
-      url: '/api/v1/openapi.json',
-      dom_id: '#swagger-ui',
-      presets: [
-        SwaggerUIBundle.presets.apis,
-        SwaggerUIBundle.presets.standalone
-      ]
-    });
-  </script>
-</body>
-</html>`;
-  }
-
-  async generateAllAPIs(app) {
-    console.log('🔄 Auto-generating RESTful APIs from schema...');
-    
-    // Define data types with their schema info
-    const dataTypes = [
-      'visions', 'prds', 'features', 'epics', 'roadmaps', 'adrs', 'tasks', 'queens', 'hives'
-    ];
-    
-    let generatedCount = 0;
-    
-    for (const dataType of dataTypes) {
-      // GET all items
-      app.get(`/api/v1/${dataType}`, async (req, res) => {
-        try {
-          const method = `get${dataType.charAt(0).toUpperCase() + dataType.slice(1)}Data`;
-          const data = await this[method]?.() || [];
-          res.json(data);
-        } catch (error) {
-          console.error(`Error getting ${dataType}:`, error);
-          res.status(500).json({ success: false, error: error.message });
-        }
-      });
-      
-      // GET single item by ID  
-      app.get(`/api/v1/${dataType}/:id`, async (req, res) => {
-        try {
-          const method = `get${dataType.charAt(0).toUpperCase() + dataType.slice(1)}Data`;
-          const data = await this[method]?.() || [];
-          const item = data.find(item => item.id === req.params.id);
-          if (!item) {
-            return res.status(404).json({ success: false, error: 'Item not found' });
-          }
-          res.json(item);
-        } catch (error) {
-          console.error(`Error getting ${dataType} by ID:`, error);
-          res.status(500).json({ success: false, error: error.message });
-        }
-      });
-
-      // POST create new item
-      app.post(`/api/v1/${dataType}`, async (req, res) => {
-        try {
-          const method = `create${dataType.charAt(0).toUpperCase() + dataType.slice(1, -1)}`; // Remove 's'
-          const item = await this[method]?.(req.body);
-          if (!item) {
-            throw new Error(`Create method ${method} not found`);
-          }
-          res.json({ success: true, [dataType.slice(0, -1)]: item });
-        } catch (error) {
-          console.error(`Error creating ${dataType}:`, error);
-          res.status(500).json({ success: false, error: error.message });
-        }
-      });
-
-      // PUT update item
-      app.put(`/api/v1/${dataType}/:id`, async (req, res) => {
-        try {
-          const method = `update${dataType.charAt(0).toUpperCase() + dataType.slice(1, -1)}`; // Remove 's'
-          const item = await this[method]?.(req.params.id, req.body);
-          if (!item) {
-            throw new Error(`Update method ${method} not found`);
-          }
-          res.json({ success: true, [dataType.slice(0, -1)]: item });
-        } catch (error) {
-          console.error(`Error updating ${dataType}:`, error);
-          res.status(500).json({ success: false, error: error.message });
-        }
-      });
-
-      // DELETE item
-      app.delete(`/api/v1/${dataType}/:id`, async (req, res) => {
-        try {
-          const method = `delete${dataType.charAt(0).toUpperCase() + dataType.slice(1, -1)}`; // Remove 's'
-          await this[method]?.(req.params.id);
-          res.json({ success: true, message: `${dataType.slice(0, -1)} deleted successfully` });
-        } catch (error) {
-          console.error(`Error deleting ${dataType}:`, error);
-          res.status(500).json({ success: false, error: error.message });
-        }
-      });
-      
-      generatedCount += 5; // 5 endpoints per data type
-    }
-    
-    // Add specialized endpoints
-    app.get('/api/v1/stats/realtime', async (req, res) => {
-      try {
-        const stats = await this.calculateRealTimeStats();
-        res.json({ success: true, stats });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-    
-    app.get('/api/v1/logs/tasks', async (req, res) => {
-      try {
-        await this.initializeSchemaData();
-        const limit = parseInt(req.query.limit) || 50;
-        const logs = (this.schemaData.taskLogs || [])
-          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-          .slice(0, limit);
-        res.json({ success: true, logs });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    });
-    
-    generatedCount += 2;
-    
-    console.log(`✅ Auto-generated ${generatedCount} RESTful API endpoints`);
-    console.log(`📖 API Documentation: http://localhost:${this.config.webPort}/api/v1/docs`);
-  }
-
+  // QUEEN COUNCIL DATA METHODS
   async getQueensData() {
     try {
-      // Calculate real-time stats first
-      const realTimeStats = await this.calculateRealTimeStats();
-      
       // Import queen council system
       const { QueenCouncil } = await import('../../cli/command-handlers/queen-council.js');
       
-      // Enhanced queen data with real stats
+      // Mock data based on the actual queen system structure
       const queensData = [
         {
           id: 'roadmap',
@@ -5093,18 +2290,9 @@ Usage: Type any command and press Enter or click Execute.`;
           health: 'healthy',
           specialization: 'Strategic roadmaps and timeline planning',
           capabilities: ['roadmap generation', 'timeline analysis', 'milestone tracking'],
-          currentTasks: realTimeStats.queens.roadmap?.recentActivity || 0,
-          successRate: realTimeStats.queens.roadmap?.successRate || 94.5,
-          avgDuration: realTimeStats.queens.roadmap?.avgDuration || 1250,
-          totalTasks: realTimeStats.queens.roadmap?.totalTasks || 47,
-          completedTasks: realTimeStats.queens.roadmap?.completedTasks || 44,
-          failedTasks: realTimeStats.queens.roadmap?.failedTasks || 1,
-          lastActive: new Date().toISOString(),
-          performance: {
-            uptime: process.uptime(),
-            memoryUsage: process.memoryUsage().heapUsed,
-            responseTime: realTimeStats.queens.roadmap?.avgDuration || 1250
-          }
+          currentTasks: 2,
+          successRate: 94.5,
+          lastActive: new Date().toISOString()
         },
         {
           id: 'prd',
@@ -5114,18 +2302,9 @@ Usage: Type any command and press Enter or click Execute.`;
           health: 'healthy',
           specialization: 'Product Requirements Documents',
           capabilities: ['requirements analysis', 'user story creation', 'acceptance criteria'],
-          currentTasks: realTimeStats.queens.prd?.recentActivity || 0,
-          successRate: realTimeStats.queens.prd?.successRate || 97.2,
-          avgDuration: realTimeStats.queens.prd?.avgDuration || 890,
-          totalTasks: realTimeStats.queens.prd?.totalTasks || 23,
-          completedTasks: realTimeStats.queens.prd?.completedTasks || 22,
-          failedTasks: realTimeStats.queens.prd?.failedTasks || 0,
-          lastActive: new Date().toISOString(),
-          performance: {
-            uptime: process.uptime(),
-            memoryUsage: process.memoryUsage().heapUsed,
-            responseTime: realTimeStats.queens.prd?.avgDuration || 890
-          }
+          currentTasks: 1,
+          successRate: 97.2,
+          lastActive: new Date().toISOString()
         },
         {
           id: 'architecture',
@@ -5135,18 +2314,9 @@ Usage: Type any command and press Enter or click Execute.`;
           health: 'healthy',
           specialization: 'System architecture and technical design',
           capabilities: ['system design', 'architecture decisions', 'technical specifications'],
-          currentTasks: realTimeStats.queens.architecture?.recentActivity || 1,
-          successRate: realTimeStats.queens.architecture?.successRate || 91.8,
-          avgDuration: realTimeStats.queens.architecture?.avgDuration || 2140,
-          totalTasks: realTimeStats.queens.architecture?.totalTasks || 56,
-          completedTasks: realTimeStats.queens.architecture?.completedTasks || 51,
-          failedTasks: realTimeStats.queens.architecture?.failedTasks || 3,
-          lastActive: new Date().toISOString(),
-          performance: {
-            uptime: process.uptime(),
-            memoryUsage: process.memoryUsage().heapUsed,
-            responseTime: realTimeStats.queens.architecture?.avgDuration || 2140
-          }
+          currentTasks: 3,
+          successRate: 91.8,
+          lastActive: new Date().toISOString()
         },
         {
           id: 'development',
@@ -5156,18 +2326,9 @@ Usage: Type any command and press Enter or click Execute.`;
           health: 'healthy',
           specialization: 'Code development and implementation',
           capabilities: ['code generation', 'implementation planning', 'development coordination'],
-          currentTasks: realTimeStats.queens.development?.recentActivity || 2,
-          successRate: realTimeStats.queens.development?.successRate || 89.3,
-          avgDuration: realTimeStats.queens.development?.avgDuration || 3250,
-          totalTasks: realTimeStats.queens.development?.totalTasks || 89,
-          completedTasks: realTimeStats.queens.development?.completedTasks || 79,
-          failedTasks: realTimeStats.queens.development?.failedTasks || 7,
-          lastActive: new Date().toISOString(),
-          performance: {
-            uptime: process.uptime(),
-            memoryUsage: process.memoryUsage().heapUsed,
-            responseTime: realTimeStats.queens.development?.avgDuration || 3250
-          }
+          currentTasks: 4,
+          successRate: 89.3,
+          lastActive: new Date().toISOString()
         },
         {
           id: 'research',
@@ -5267,604 +2428,6 @@ Usage: Type any command and press Enter or click Execute.`;
         },
         error: error.message
       };
-    }
-  }
-
-  // HIVE MANAGEMENT METHODS
-  async getHivesData() {
-    try {
-      // In-memory hive storage for web interface
-      if (!this.hives) {
-        this.hives = new Map();
-        
-        // Add some default hives
-        this.hives.set('main-hive', {
-          id: 'main-hive',
-          name: 'Main Hive',
-          description: 'Primary development hive',
-          type: 'development',
-          status: 'active',
-          created: new Date().toISOString(),
-          agents: 3,
-          tasks: 12,
-          config: {
-            maxAgents: 10,
-            autoSpawn: true,
-            coordination: 'hierarchical'
-          }
-        });
-
-        this.hives.set('research-hive', {
-          id: 'research-hive',
-          name: 'Research Hive',
-          description: 'Research and analysis hive',
-          type: 'research',
-          status: 'active',
-          created: new Date().toISOString(),
-          agents: 2,
-          tasks: 5,
-          config: {
-            maxAgents: 5,
-            autoSpawn: false,
-            coordination: 'mesh'
-          }
-        });
-      }
-
-      // Convert Map to object for JSON response
-      const hivesObject = {};
-      for (const [key, value] of this.hives.entries()) {
-        hivesObject[key] = value;
-      }
-      
-      return hivesObject;
-    } catch (error) {
-      console.error('Error getting hives data:', error);
-      return {};
-    }
-  }
-
-  async createHive(name, description, type, config = {}) {
-    try {
-      if (!this.hives) {
-        this.hives = new Map();
-      }
-
-      const hiveId = name.toLowerCase().replace(/\s+/g, '-');
-      
-      if (this.hives.has(hiveId)) {
-        throw new Error(`Hive ${name} already exists`);
-      }
-
-      const newHive = {
-        id: hiveId,
-        name: name,
-        description: description || `${name} hive`,
-        type: type || 'general',
-        status: 'active',
-        created: new Date().toISOString(),
-        agents: 0,
-        tasks: 0,
-        config: {
-          maxAgents: config.maxAgents || 5,
-          autoSpawn: config.autoSpawn !== false,
-          coordination: config.coordination || 'hierarchical',
-          ...config
-        }
-      };
-
-      this.hives.set(hiveId, newHive);
-      
-      console.log(`✅ Created hive: ${name} (${hiveId})`);
-      return newHive;
-    } catch (error) {
-      console.error('Error creating hive:', error);
-      throw error;
-    }
-  }
-
-  async deleteHive(hiveId) {
-    try {
-      if (!this.hives || !this.hives.has(hiveId)) {
-        throw new Error(`Hive ${hiveId} not found`);
-      }
-
-      this.hives.delete(hiveId);
-      console.log(`🗑️ Deleted hive: ${hiveId}`);
-    } catch (error) {
-      console.error('Error deleting hive:', error);
-      throw error;
-    }
-  }
-
-  // COMPREHENSIVE CRUD METHODS FOR ALL DATA TYPES
-  // Visions CRUD
-  async createVision(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.visions) this.schemaData.visions = [];
-      
-      const vision = {
-        id: `vision-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'draft',
-        priority: data.priority || 'medium',
-        owner: data.owner || 'system',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.visions.push(vision);
-      return vision;
-    } catch (error) {
-      console.error('Error creating vision:', error);
-      throw error;
-    }
-  }
-
-  async updateVision(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const visionIndex = this.schemaData.visions?.findIndex(v => v.id === id);
-      
-      if (visionIndex === -1) {
-        throw new Error(`Vision ${id} not found`);
-      }
-      
-      this.schemaData.visions[visionIndex] = {
-        ...this.schemaData.visions[visionIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.visions[visionIndex];
-    } catch (error) {
-      console.error('Error updating vision:', error);
-      throw error;
-    }
-  }
-
-  async deleteVision(id) {
-    try {
-      await this.initializeSchemaData();
-      const visionIndex = this.schemaData.visions?.findIndex(v => v.id === id);
-      
-      if (visionIndex === -1) {
-        throw new Error(`Vision ${id} not found`);
-      }
-      
-      this.schemaData.visions.splice(visionIndex, 1);
-    } catch (error) {
-      console.error('Error deleting vision:', error);
-      throw error;
-    }
-  }
-
-  // PRDs CRUD
-  async createPrd(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.prds) this.schemaData.prds = [];
-      
-      const prd = {
-        id: `prd-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'draft',
-        version: data.version || '1.0.0',
-        owner: data.owner || 'system',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.prds.push(prd);
-      return prd;
-    } catch (error) {
-      console.error('Error creating PRD:', error);
-      throw error;
-    }
-  }
-
-  async updatePrd(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const prdIndex = this.schemaData.prds?.findIndex(p => p.id === id);
-      
-      if (prdIndex === -1) {
-        throw new Error(`PRD ${id} not found`);
-      }
-      
-      this.schemaData.prds[prdIndex] = {
-        ...this.schemaData.prds[prdIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.prds[prdIndex];
-    } catch (error) {
-      console.error('Error updating PRD:', error);
-      throw error;
-    }
-  }
-
-  async deletePrd(id) {
-    try {
-      await this.initializeSchemaData();
-      const prdIndex = this.schemaData.prds?.findIndex(p => p.id === id);
-      
-      if (prdIndex === -1) {
-        throw new Error(`PRD ${id} not found`);
-      }
-      
-      this.schemaData.prds.splice(prdIndex, 1);
-    } catch (error) {
-      console.error('Error deleting PRD:', error);
-      throw error;
-    }
-  }
-
-  // Features CRUD
-  async createFeature(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.features) this.schemaData.features = [];
-      
-      const feature = {
-        id: `feature-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'planned',
-        priority: data.priority || 'medium',
-        owner: data.owner || 'system',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.features.push(feature);
-      return feature;
-    } catch (error) {
-      console.error('Error creating feature:', error);
-      throw error;
-    }
-  }
-
-  async updateFeature(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const featureIndex = this.schemaData.features?.findIndex(f => f.id === id);
-      
-      if (featureIndex === -1) {
-        throw new Error(`Feature ${id} not found`);
-      }
-      
-      this.schemaData.features[featureIndex] = {
-        ...this.schemaData.features[featureIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.features[featureIndex];
-    } catch (error) {
-      console.error('Error updating feature:', error);
-      throw error;
-    }
-  }
-
-  async deleteFeature(id) {
-    try {
-      await this.initializeSchemaData();
-      const featureIndex = this.schemaData.features?.findIndex(f => f.id === id);
-      
-      if (featureIndex === -1) {
-        throw new Error(`Feature ${id} not found`);
-      }
-      
-      this.schemaData.features.splice(featureIndex, 1);
-    } catch (error) {
-      console.error('Error deleting feature:', error);
-      throw error;
-    }
-  }
-
-  // Epic CRUD methods
-  async createEpic(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.epics) this.schemaData.epics = [];
-      
-      const epic = {
-        id: `epic-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'planned',
-        owner: data.owner || 'system',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.epics.push(epic);
-      return epic;
-    } catch (error) {
-      console.error('Error creating epic:', error);
-      throw error;
-    }
-  }
-
-  async updateEpic(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const epicIndex = this.schemaData.epics?.findIndex(e => e.id === id);
-      
-      if (epicIndex === -1) {
-        throw new Error(`Epic ${id} not found`);
-      }
-      
-      this.schemaData.epics[epicIndex] = {
-        ...this.schemaData.epics[epicIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.epics[epicIndex];
-    } catch (error) {
-      console.error('Error updating epic:', error);
-      throw error;
-    }
-  }
-
-  async deleteEpic(id) {
-    try {
-      await this.initializeSchemaData();
-      const epicIndex = this.schemaData.epics?.findIndex(e => e.id === id);
-      
-      if (epicIndex === -1) {
-        throw new Error(`Epic ${id} not found`);
-      }
-      
-      this.schemaData.epics.splice(epicIndex, 1);
-    } catch (error) {
-      console.error('Error deleting epic:', error);
-      throw error;
-    }
-  }
-
-  // Roadmap CRUD methods
-  async createRoadmap(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.roadmaps) this.schemaData.roadmaps = [];
-      
-      const roadmap = {
-        id: `roadmap-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'draft',
-        timeline: data.timeline || 'Q1 2024',
-        owner: data.owner || 'system',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.roadmaps.push(roadmap);
-      return roadmap;
-    } catch (error) {
-      console.error('Error creating roadmap:', error);
-      throw error;
-    }
-  }
-
-  async updateRoadmap(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const roadmapIndex = this.schemaData.roadmaps?.findIndex(r => r.id === id);
-      
-      if (roadmapIndex === -1) {
-        throw new Error(`Roadmap ${id} not found`);
-      }
-      
-      this.schemaData.roadmaps[roadmapIndex] = {
-        ...this.schemaData.roadmaps[roadmapIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.roadmaps[roadmapIndex];
-    } catch (error) {
-      console.error('Error updating roadmap:', error);
-      throw error;
-    }
-  }
-
-  async deleteRoadmap(id) {
-    try {
-      await this.initializeSchemaData();
-      const roadmapIndex = this.schemaData.roadmaps?.findIndex(r => r.id === id);
-      
-      if (roadmapIndex === -1) {
-        throw new Error(`Roadmap ${id} not found`);
-      }
-      
-      this.schemaData.roadmaps.splice(roadmapIndex, 1);
-    } catch (error) {
-      console.error('Error deleting roadmap:', error);
-      throw error;
-    }
-  }
-
-  // ADR CRUD methods
-  async createAdr(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.adrs) this.schemaData.adrs = [];
-      
-      const adr = {
-        id: `adr-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'proposed',
-        author: data.author || 'system',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.adrs.push(adr);
-      return adr;
-    } catch (error) {
-      console.error('Error creating ADR:', error);
-      throw error;
-    }
-  }
-
-  async updateAdr(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const adrIndex = this.schemaData.adrs?.findIndex(a => a.id === id);
-      
-      if (adrIndex === -1) {
-        throw new Error(`ADR ${id} not found`);
-      }
-      
-      this.schemaData.adrs[adrIndex] = {
-        ...this.schemaData.adrs[adrIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.adrs[adrIndex];
-    } catch (error) {
-      console.error('Error updating ADR:', error);
-      throw error;
-    }
-  }
-
-  async deleteAdr(id) {
-    try {
-      await this.initializeSchemaData();
-      const adrIndex = this.schemaData.adrs?.findIndex(a => a.id === id);
-      
-      if (adrIndex === -1) {
-        throw new Error(`ADR ${id} not found`);
-      }
-      
-      this.schemaData.adrs.splice(adrIndex, 1);
-    } catch (error) {
-      console.error('Error deleting ADR:', error);
-      throw error;
-    }
-  }
-
-  // Task CRUD methods
-  async createTask(data) {
-    try {
-      await this.initializeSchemaData();
-      if (!this.schemaData.tasks) this.schemaData.tasks = [];
-      
-      const task = {
-        id: `task-${Date.now()}`,
-        title: data.title,
-        description: data.description || '',
-        status: data.status || 'todo',
-        assignee: data.assignee || 'unassigned',
-        priority: data.priority || 'medium',
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      
-      this.schemaData.tasks.push(task);
-      return task;
-    } catch (error) {
-      console.error('Error creating task:', error);
-      throw error;
-    }
-  }
-
-  async updateTask(id, data) {
-    try {
-      await this.initializeSchemaData();
-      const taskIndex = this.schemaData.tasks?.findIndex(t => t.id === id);
-      
-      if (taskIndex === -1) {
-        throw new Error(`Task ${id} not found`);
-      }
-      
-      this.schemaData.tasks[taskIndex] = {
-        ...this.schemaData.tasks[taskIndex],
-        ...data,
-        updated: new Date().toISOString()
-      };
-      
-      return this.schemaData.tasks[taskIndex];
-    } catch (error) {
-      console.error('Error updating task:', error);
-      throw error;
-    }
-  }
-
-  async deleteTask(id) {
-    try {
-      await this.initializeSchemaData();
-      const taskIndex = this.schemaData.tasks?.findIndex(t => t.id === id);
-      
-      if (taskIndex === -1) {
-        throw new Error(`Task ${id} not found`);
-      }
-      
-      this.schemaData.tasks.splice(taskIndex, 1);
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      throw error;
-    }
-  }
-
-  // Queen CRUD methods
-  async createQueen(data) {
-    try {
-      const queen = {
-        id: `queen-${Date.now()}`,
-        name: data.name,
-        type: data.type || 'Execution',
-        status: data.status || 'active',
-        health: data.health || 'healthy',
-        successRate: data.successRate || 90.0,
-        currentTasks: data.currentTasks || 0,
-        lastActive: new Date().toISOString(),
-        created: new Date().toISOString()
-      };
-      
-      // Add to queens data - this would integrate with the Queen Council system
-      console.log(`✅ Created queen: ${queen.name}`);
-      return queen;
-    } catch (error) {
-      console.error('Error creating queen:', error);
-      throw error;
-    }
-  }
-
-  async updateQueen(id, data) {
-    try {
-      // This would integrate with the Queen Council system
-      const updatedQueen = {
-        id,
-        ...data,
-        lastActive: new Date().toISOString()
-      };
-      
-      console.log(`📝 Updated queen: ${id}`);
-      return updatedQueen;
-    } catch (error) {
-      console.error('Error updating queen:', error);
-      throw error;
-    }
-  }
-
-  async deleteQueen(id) {
-    try {
-      // This would integrate with the Queen Council system
-      console.log(`🗑️ Deleted queen: ${id}`);
-    } catch (error) {
-      console.error('Error deleting queen:', error);
-      throw error;
     }
   }
 

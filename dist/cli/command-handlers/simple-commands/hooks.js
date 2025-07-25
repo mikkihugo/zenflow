@@ -575,7 +575,7 @@ async function postEditCommand(subArgs, flags) {
       metadata: { hookType: 'post-edit', file, formatted: formatResult?.attempted || false },
     });
 
-    if (memoryKey && typeof memoryKey === 'string') {
+    if (memoryKey) {
       await store.store(
         memoryKey,
         {
