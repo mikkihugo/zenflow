@@ -403,7 +403,7 @@ export const toolCategories = {
           },
           required: ['target']
         },
-        handler: (args) => `🔒 Security scan (${args.depth || 'basic'}) on ${args.target}:\n├── Vulnerabilities: None detected\n├── Security score: 9.2/10\n├── Recommendations: 2 minor\n└── Status: Secure`
+        handler: (args) => `🔒 Security scan (${args.depth || 'basic'}) on ${args.target}:\n├── Vulnerabilities: None detected\n├── Security score: 9/10\n├── Recommendations: 2 minor\n└── Status: Secure`
       },
       backup_create: {
         description: 'Create system backups',
@@ -844,7 +844,7 @@ export const toolCategories = {
           },
           required: ['repo']
         },
-        handler: (args) => `📈 Repository metrics (${args.repo}):\n├── Stars: 1,234\n├── Forks: 567\n├── Contributors: 89\n├── Activity: High\n└── Health score: 9.2/10`
+        handler: (args) => `📈 Repository metrics (${args.repo}):\n├── Stars: 1,234\n├── Forks: 567\n├── Contributors: 89\n├── Activity: High\n└── Health score: 9/10`
       }
     }
   },
