@@ -245,3 +245,247 @@ export async function getRegistryStats() {
     aliasCount: commands.reduce((count, cmd) => count + cmd.aliases.length, 0)
   };
 }
+
+/**
+ * Generate API endpoints from command registry
+ * @returns {Promise<Object>} Generated endpoints configuration
+ */
+export async function generateAPIEndpoints() {
+  await initializeCommandRegistry();
+  
+  const commands = commandRouter.list(true);
+  const endpoints = {};
+  const openApiPaths = {};
+  
+  commands.forEach(cmd => {
+    const endpoint = `/api/execute/${cmd.name}`;
+    
+    // REST endpoint configuration
+    endpoints[endpoint] = {
+      method: 'POST',
+      command: cmd.name,
+      description: cmd.description,
+      usage: cmd.usage,
+      examples: cmd.examples || [],
+      validation: cmd.validation || {},
+      category: cmd.category || 'general',
+      flags: cmd.flags || {},
+      aliases: cmd.aliases || []
+    };
+    
+    // OpenAPI path specification
+    openApiPaths[endpoint] = {
+      post: {
+        summary: cmd.description,
+        description: `Execute the '${cmd.name}' command via API`,
+        operationId: `execute_${cmd.name.replace(/-/g, '_')}`,
+        tags: [cmd.category || 'general'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  args: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    description: 'Command arguments',
+                    example: cmd.examples?.[0]?.split(' ').slice(1) || []
+                  },
+                  flags: {
+                    type: 'object',
+                    description: 'Command flags and options',
+                    properties: generateFlagSchema(cmd.flags || {})
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Command executed successfully',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    result: { type: 'object', description: 'Command execution result' },
+                    sessionId: { type: 'string', format: 'uuid' },
+                    duration: { type: 'number', description: 'Execution time in milliseconds' },
+                    timestamp: { type: 'string', format: 'date-time' }
+                  }
+                }
+              }
+            }
+          },
+          400: {
+            description: 'Invalid request or command validation failed',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
+              }
+            }
+          },
+          404: {
+            description: 'Command not found',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
+              }
+            }
+          },
+          500: {
+            description: 'Command execution failed',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
+              }
+            }
+          }
+        }
+      }
+    };
+  });
+  
+  return {
+    endpoints,
+    openApiPaths,
+    totalEndpoints: Object.keys(endpoints).length,
+    categories: getCategoryCounts(commands),
+    generatedAt: new Date().toISOString()
+  };
+}
+
+/**
+ * Generate OpenAPI flag schema from command flags
+ */
+function generateFlagSchema(flags) {
+  const schema = {};
+  
+  Object.entries(flags).forEach(([flagName, flagConfig]) => {
+    if (typeof flagConfig === 'object') {
+      schema[flagName] = {
+        type: flagConfig.type || 'string',
+        description: flagConfig.description || `${flagName} flag`,
+        default: flagConfig.default
+      };
+      
+      if (flagConfig.choices) {
+        schema[flagName].enum = flagConfig.choices;
+      }
+    } else {
+      schema[flagName] = {
+        type: 'string',
+        description: `${flagName} flag`
+      };
+    }
+  });
+  
+  return schema;
+}
+
+/**
+ * Get command counts by category
+ */
+function getCategoryCounts(commands) {
+  const categories = {};
+  
+  commands.forEach(cmd => {
+    const category = cmd.category || 'general';
+    categories[category] = (categories[category] || 0) + 1;
+  });
+  
+  return categories;
+}
+
+/**
+ * Validate command arguments and flags
+ * @param {string} commandName - Command name
+ * @param {Array} args - Command arguments  
+ * @param {Object} flags - Command flags
+ * @returns {Promise<Object>} Validation result
+ */
+export async function validateCommandInput(commandName, args = [], flags = {}) {
+  await initializeCommandRegistry();
+  
+  const command = await getCommand(commandName);
+  if (!command) {
+    return {
+      valid: false,
+      errors: [`Command '${commandName}' not found`],
+      warnings: []
+    };
+  }
+  
+  const validation = {
+    valid: true,
+    errors: [],
+    warnings: []
+  };
+  
+  // Validate arguments
+  if (command.validation) {
+    const { minArgs, maxArgs, requiredArgs } = command.validation;
+    
+    if (minArgs && args.length < minArgs) {
+      validation.valid = false;
+      validation.errors.push(`Minimum ${minArgs} arguments required, got ${args.length}`);
+    }
+    
+    if (maxArgs && args.length > maxArgs) {
+      validation.valid = false;
+      validation.errors.push(`Maximum ${maxArgs} arguments allowed, got ${args.length}`);
+    }
+    
+    if (requiredArgs) {
+      requiredArgs.forEach((reqArg, index) => {
+        if (!args[index] || args[index].trim() === '') {
+          validation.valid = false;
+          validation.errors.push(`Required argument '${reqArg}' at position ${index + 1} is missing`);
+        }
+      });
+    }
+  }
+  
+  // Validate flags
+  if (command.flags) {
+    Object.entries(flags).forEach(([flagName, flagValue]) => {
+      if (!command.flags[flagName]) {
+        validation.warnings.push(`Unknown flag '${flagName}' for command '${commandName}'`);
+        return;
+      }
+      
+      const flagConfig = command.flags[flagName];
+      
+      // Type validation
+      if (flagConfig.type === 'boolean' && typeof flagValue !== 'boolean') {
+        validation.valid = false;
+        validation.errors.push(`Flag '${flagName}' must be a boolean`);
+      }
+      
+      if (flagConfig.type === 'number' && isNaN(Number(flagValue))) {
+        validation.valid = false;
+        validation.errors.push(`Flag '${flagName}' must be a number`);
+      }
+      
+      // Choice validation
+      if (flagConfig.choices && !flagConfig.choices.includes(flagValue)) {
+        validation.valid = false;
+        validation.errors.push(`Flag '${flagName}' must be one of: ${flagConfig.choices.join(', ')}`);
+      }
+    });
+    
+    // Required flags validation
+    Object.entries(command.flags).forEach(([flagName, flagConfig]) => {
+      if (flagConfig.required && !(flagName in flags)) {
+        validation.valid = false;
+        validation.errors.push(`Required flag '${flagName}' is missing`);
+      }
+    });
+  }
+  
+  return validation;
+}

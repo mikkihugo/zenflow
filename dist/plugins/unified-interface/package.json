@@ -1,0 +1,111 @@
+{
+  "name": "@claude-zen/unified-interface-plugin",
+  "version": "1.0.0",
+  "description": "Unified interface system supporting CLI, TUI, and Web modes with seamless switching",
+  "main": "index.js",
+  "type": "module",
+  "keywords": ["claude-zen", "plugin", "interface", "ui", "tui", "web", "cli", "unified"],
+  "author": "Claude Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "ink": "^4.4.1",
+    "express": "^4.18.2",
+    "ws": "^8.14.0",
+    "chalk": "^5.3.0",
+    "boxen": "^7.1.1",
+    "inquirer": "^9.2.0",
+    "cli-table3": "^0.6.3",
+    "ora": "^7.0.0"
+  },
+  "claudeZenPlugin": {
+    "name": "unified-interface",
+    "category": "interface",
+    "capabilities": [
+      "multi-mode-interface",
+      "cli-commands",
+      "terminal-ui",
+      "web-dashboard",
+      "real-time-updates",
+      "session-management",
+      "theme-switching",
+      "responsive-design"
+    ],
+    "interfaceModes": [
+      {
+        "mode": "cli",
+        "description": "Command-line interface with rich formatting",
+        "features": ["colored-output", "progress-bars", "interactive-prompts", "table-formatting"]
+      },
+      {
+        "mode": "tui",
+        "description": "Terminal user interface with React/Ink",
+        "features": ["real-time-updates", "keyboard-navigation", "multi-panel-layout", "status-bars"]
+      },
+      {
+        "mode": "web",
+        "description": "Web-based dashboard with WebSocket updates",
+        "features": ["responsive-design", "real-time-sync", "mobile-friendly", "dark-light-themes"]
+      }
+    ],
+    "features": {
+      "autoModeDetection": true,
+      "seamlessSwitching": true,
+      "realTimeSync": true,
+      "sessionPersistence": true,
+      "themeSupport": true,
+      "mobileResponsive": true,
+      "keyboardShortcuts": true,
+      "webSocketUpdates": true,
+      "daemonMode": true,
+      "backgroundService": true,
+      "processManagement": true,
+      "logManagement": true
+    },
+    "config": {
+      "defaultMode": "auto",
+      "webPort": 3000,
+      "webSocketPort": 3001,
+      "theme": "dark",
+      "autoRefresh": true,
+      "refreshInterval": 5000,
+      "sessionTimeout": 3600000,
+      "daemonMode": false,
+      "pidFile": ".hive-mind/claude-zen.pid",
+      "logFile": ".hive-mind/claude-zen.log"
+    },
+    "commands": {
+      "start": "Start unified interface",
+      "daemon": "Start as background daemon service",
+      "stop": "Stop daemon service",
+      "restart": "Restart daemon service",
+      "status": "Check daemon status",
+      "web": "Launch web interface",
+      "tui": "Launch terminal interface", 
+      "switch": "Switch interface mode",
+      "theme": "Change interface theme",
+      "logs": "View daemon logs"
+    },
+    "themes": {
+      "dark": {
+        "primary": "#58a6ff",
+        "secondary": "#7d8590",
+        "background": "#0d1117",
+        "surface": "#21262d",
+        "accent": "#238636"
+      },
+      "light": {
+        "primary": "#0969da",
+        "secondary": "#656d76",
+        "background": "#ffffff",
+        "surface": "#f6f8fa",
+        "accent": "#1a7f37"
+      }
+    },
+    "layouts": {
+      "cli": ["header", "content", "footer"],
+      "tui": ["header", "sidebar", "main", "status"],
+      "web": ["navbar", "sidebar", "main", "footer"]
+    }
+  }
+}

@@ -75,7 +75,7 @@ export class KuzuGraphInterface {
   }
 
   /**
-   * Initialize database schema for microservices
+   * Initialize database schema for microservices and code analysis
    */
   async initializeSchema() {
     this.schema = {
@@ -134,6 +134,101 @@ export class KuzuGraphInterface {
             last_active: 'TIMESTAMP'
           },
           primaryKey: 'hive_id'
+        },
+        // Code Analysis Nodes
+        SourceFile: {
+          properties: {
+            id: 'STRING',
+            path: 'STRING',
+            service_name: 'STRING',
+            language: 'STRING',
+            size_bytes: 'INT64',
+            line_count: 'INT64',
+            complexity_score: 'DOUBLE',
+            maintainability_index: 'DOUBLE',
+            hash: 'STRING',
+            last_analyzed: 'TIMESTAMP'
+          },
+          primaryKey: 'id'
+        },
+        Function: {
+          properties: {
+            id: 'STRING',
+            name: 'STRING',
+            file_id: 'STRING',
+            start_line: 'INT64',
+            end_line: 'INT64',
+            cyclomatic_complexity: 'INT64',
+            cognitive_complexity: 'INT64',
+            parameter_count: 'INT64',
+            return_type: 'STRING',
+            is_async: 'BOOLEAN',
+            is_exported: 'BOOLEAN'
+          },
+          primaryKey: 'id'
+        },
+        Class: {
+          properties: {
+            id: 'STRING',
+            name: 'STRING',
+            file_id: 'STRING',
+            start_line: 'INT64',
+            end_line: 'INT64',
+            method_count: 'INT64',
+            property_count: 'INT64',
+            is_exported: 'BOOLEAN',
+            extends_class: 'STRING',
+            implements_interfaces: 'STRING[]'
+          },
+          primaryKey: 'id'
+        },
+        Variable: {
+          properties: {
+            id: 'STRING',
+            name: 'STRING',
+            file_id: 'STRING',
+            scope: 'STRING',
+            type: 'STRING',
+            is_constant: 'BOOLEAN',
+            is_exported: 'BOOLEAN',
+            line_number: 'INT64'
+          },
+          primaryKey: 'id'
+        },
+        Import: {
+          properties: {
+            id: 'STRING',
+            file_id: 'STRING',
+            module_name: 'STRING',
+            imported_names: 'STRING[]',
+            import_type: 'STRING',
+            line_number: 'INT64'
+          },
+          primaryKey: 'id'
+        },
+        DuplicateCode: {
+          properties: {
+            id: 'STRING',
+            hash: 'STRING',
+            token_count: 'INT64',
+            line_count: 'INT64',
+            similarity_score: 'DOUBLE',
+            first_occurrence_file: 'STRING',
+            first_occurrence_line: 'INT64'
+          },
+          primaryKey: 'id'
+        },
+        TypeDefinition: {
+          properties: {
+            id: 'STRING',
+            name: 'STRING',
+            file_id: 'STRING',
+            kind: 'STRING',
+            properties: 'STRING[]',
+            methods: 'STRING[]',
+            is_exported: 'BOOLEAN'
+          },
+          primaryKey: 'id'
         }
       },
       relationships: {
@@ -185,6 +280,108 @@ export class KuzuGraphInterface {
           properties: {
             management_type: 'STRING',
             priority: 'STRING'
+          }
+        },
+        // Code Analysis Relationships
+        CONTAINS_FILE: {
+          from: 'Service',
+          to: 'SourceFile',
+          properties: {
+            role: 'STRING'
+          }
+        },
+        DEFINES_FUNCTION: {
+          from: 'SourceFile',
+          to: 'Function',
+          properties: {
+            visibility: 'STRING'
+          }
+        },
+        DEFINES_CLASS: {
+          from: 'SourceFile',
+          to: 'Class',
+          properties: {
+            visibility: 'STRING'
+          }
+        },
+        DECLARES_VARIABLE: {
+          from: 'SourceFile',
+          to: 'Variable',
+          properties: {
+            scope: 'STRING'
+          }
+        },
+        HAS_IMPORT: {
+          from: 'SourceFile',
+          to: 'Import',
+          properties: {
+            line_number: 'INT64'
+          }
+        },
+        IMPORTS_FROM: {
+          from: 'Import',
+          to: 'SourceFile',
+          properties: {
+            dependency_type: 'STRING'
+          }
+        },
+        CALLS_FUNCTION: {
+          from: 'Function',
+          to: 'Function',
+          properties: {
+            call_count: 'INT64',
+            line_number: 'INT64'
+          }
+        },
+        ACCESSES_VARIABLE: {
+          from: 'Function',
+          to: 'Variable',
+          properties: {
+            access_type: 'STRING',
+            line_number: 'INT64'
+          }
+        },
+        MEMBER_OF_CLASS: {
+          from: 'Function',
+          to: 'Class',
+          properties: {
+            method_type: 'STRING'
+          }
+        },
+        EXTENDS_CLASS: {
+          from: 'Class',
+          to: 'Class',
+          properties: {
+            inheritance_type: 'STRING'
+          }
+        },
+        IMPLEMENTS_INTERFACE: {
+          from: 'Class',
+          to: 'TypeDefinition',
+          properties: {
+            implementation_completeness: 'STRING'
+          }
+        },
+        DUPLICATES: {
+          from: 'DuplicateCode',
+          to: 'SourceFile',
+          properties: {
+            start_line: 'INT64',
+            end_line: 'INT64'
+          }
+        },
+        USES_TYPE: {
+          from: 'Function',
+          to: 'TypeDefinition',
+          properties: {
+            usage_context: 'STRING'
+          }
+        },
+        DEFINES_TYPE: {
+          from: 'SourceFile',
+          to: 'TypeDefinition',
+          properties: {
+            definition_type: 'STRING'
           }
         }
       }
@@ -485,6 +682,270 @@ export class KuzuGraphInterface {
     results.sort((a, b) => a.properties.name.localeCompare(b.properties.name));
     
     return results;
+  }
+
+  /**
+   * Insert generic nodes into the graph
+   */
+  async insertNodes(nodeType, nodes) {
+    if (!this.schema.nodes[nodeType]) {
+      throw new Error(`Unknown node type: ${nodeType}`);
+    }
+
+    printInfo(`📦 Inserting ${nodes.length} ${nodeType} nodes...`);
+    
+    let inserted = 0;
+    const batch = [];
+    
+    for (const node of nodes) {
+      const nodeId = node.id || `${nodeType.toLowerCase()}:${Math.random().toString(36).substring(7)}`;
+      const nodeData = {
+        id: nodeId,
+        type: nodeType,
+        properties: {
+          ...node,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      };
+      
+      this.nodes.set(nodeId, nodeData);
+      batch.push(nodeData);
+      inserted++;
+      
+      // Process batch
+      if (batch.length >= this.config.batchSize) {
+        await this.processBatch(batch, 'nodes');
+        batch.length = 0;
+      }
+    }
+    
+    // Process remaining batch
+    if (batch.length > 0) {
+      await this.processBatch(batch, 'nodes');
+    }
+    
+    this.stats.nodeCount = this.nodes.size;
+    this.stats.lastUpdate = new Date().toISOString();
+    
+    printSuccess(`✅ Inserted ${inserted} ${nodeType} nodes`);
+    return inserted;
+  }
+
+  /**
+   * Query functions by complexity
+   */
+  async queryFunctionsByComplexity(minComplexity = 10) {
+    this.stats.queryCount++;
+    
+    let results = Array.from(this.nodes.values())
+      .filter(node => node.type === 'Function' && 
+                     node.properties.cyclomatic_complexity >= minComplexity);
+    
+    // Sort by complexity descending
+    results.sort((a, b) => 
+      b.properties.cyclomatic_complexity - a.properties.cyclomatic_complexity
+    );
+    
+    return results;
+  }
+
+  /**
+   * Query files by complexity score
+   */
+  async queryFilesByComplexity(minScore = 5.0) {
+    this.stats.queryCount++;
+    
+    let results = Array.from(this.nodes.values())
+      .filter(node => node.type === 'SourceFile' && 
+                     node.properties.complexity_score >= minScore);
+    
+    // Sort by complexity score descending
+    results.sort((a, b) => 
+      b.properties.complexity_score - a.properties.complexity_score
+    );
+    
+    return results;
+  }
+
+  /**
+   * Find functions that call each other (call graph)
+   */
+  async findFunctionCallGraph() {
+    const callRelationships = Array.from(this.relationships.values())
+      .filter(rel => rel.type === 'CALLS_FUNCTION');
+    
+    const callGraph = {
+      nodes: new Set(),
+      edges: []
+    };
+    
+    for (const rel of callRelationships) {
+      const fromFunc = this.nodes.get(rel.from);
+      const toFunc = this.nodes.get(rel.to);
+      
+      if (fromFunc && toFunc) {
+        callGraph.nodes.add(fromFunc);
+        callGraph.nodes.add(toFunc);
+        callGraph.edges.push({
+          from: fromFunc.properties.name,
+          to: toFunc.properties.name,
+          file_from: fromFunc.properties.file_id,
+          file_to: toFunc.properties.file_id,
+          call_count: rel.properties.call_count || 1
+        });
+      }
+    }
+    
+    return {
+      nodes: Array.from(callGraph.nodes),
+      edges: callGraph.edges,
+      statistics: {
+        totalFunctions: callGraph.nodes.size,
+        totalCalls: callGraph.edges.length
+      }
+    };
+  }
+
+  /**
+   * Find duplicate code patterns
+   */
+  async findDuplicatePatterns(minSimilarity = 80) {
+    this.stats.queryCount++;
+    
+    const duplicates = Array.from(this.nodes.values())
+      .filter(node => node.type === 'DuplicateCode' && 
+                     node.properties.similarity_score >= minSimilarity);
+    
+    const duplicateRelationships = Array.from(this.relationships.values())
+      .filter(rel => rel.type === 'DUPLICATES');
+    
+    const patterns = [];
+    
+    for (const duplicate of duplicates) {
+      const occurrences = duplicateRelationships
+        .filter(rel => rel.from === duplicate.id)
+        .map(rel => {
+          const file = this.nodes.get(rel.to);
+          return {
+            file: file?.properties.path || 'unknown',
+            start_line: rel.properties.start_line,
+            end_line: rel.properties.end_line
+          };
+        });
+      
+      patterns.push({
+        id: duplicate.id,
+        similarity: duplicate.properties.similarity_score,
+        lines: duplicate.properties.line_count,
+        tokens: duplicate.properties.token_count,
+        occurrences
+      });
+    }
+    
+    // Sort by similarity and impact
+    patterns.sort((a, b) => {
+      const impactA = a.similarity * a.occurrences.length;
+      const impactB = b.similarity * b.occurrences.length;
+      return impactB - impactA;
+    });
+    
+    return patterns;
+  }
+
+  /**
+   * Find files with high import coupling
+   */
+  async findHighlyCoupledFiles() {
+    const importCounts = new Map();
+    const exportCounts = new Map();
+    
+    // Count imports per file
+    for (const rel of this.relationships.values()) {
+      if (rel.type === 'IMPORTS_FROM') {
+        const fromFile = rel.from;
+        const toFile = rel.to;
+        
+        importCounts.set(fromFile, (importCounts.get(fromFile) || 0) + 1);
+        exportCounts.set(toFile, (exportCounts.get(toFile) || 0) + 1);
+      }
+    }
+    
+    const coupledFiles = [];
+    
+    for (const [fileId, importCount] of importCounts.entries()) {
+      const exportCount = exportCounts.get(fileId) || 0;
+      const file = this.nodes.get(fileId);
+      
+      if (file && (importCount > 10 || exportCount > 5)) {
+        coupledFiles.push({
+          file: file.properties.path,
+          imports: importCount,
+          exports: exportCount,
+          coupling_score: importCount + (exportCount * 2)
+        });
+      }
+    }
+    
+    return coupledFiles.sort((a, b) => b.coupling_score - a.coupling_score);
+  }
+
+  /**
+   * Generate Cypher-like query for common patterns
+   */
+  generateCommonQueries() {
+    return {
+      highComplexityFunctions: `
+        MATCH (f:Function) 
+        WHERE f.cyclomatic_complexity > 10 
+        RETURN f.name, f.file_id, f.cyclomatic_complexity 
+        ORDER BY f.cyclomatic_complexity DESC
+      `,
+      
+      circularDependencies: `
+        MATCH (f1:SourceFile)-[:IMPORTS_FROM]->(f2:SourceFile)-[:IMPORTS_FROM*]->(f1) 
+        RETURN f1.path, f2.path
+      `,
+      
+      deadCode: `
+        MATCH (f:Function) 
+        WHERE NOT EXISTS((f)<-[:CALLS_FUNCTION]-()) 
+        AND f.is_exported = false 
+        RETURN f.name, f.file_id
+      `,
+      
+      duplicateHotspots: `
+        MATCH (d:DuplicateCode)-[:DUPLICATES]->(f:SourceFile) 
+        WHERE d.similarity_score > 85 
+        RETURN f.path, COUNT(d) as duplicate_count 
+        ORDER BY duplicate_count DESC
+      `,
+      
+      complexFiles: `
+        MATCH (f:SourceFile) 
+        WHERE f.complexity_score > 8.0 
+        RETURN f.path, f.complexity_score, f.line_count 
+        ORDER BY f.complexity_score DESC
+      `,
+      
+      heavyImporters: `
+        MATCH (f1:SourceFile)-[r:IMPORTS_FROM]->(f2:SourceFile) 
+        RETURN f1.path, COUNT(r) as import_count 
+        ORDER BY import_count DESC 
+        LIMIT 20
+      `,
+      
+      classHierarchy: `
+        MATCH (c1:Class)-[:EXTENDS_CLASS]->(c2:Class) 
+        RETURN c1.name, c2.name, c1.file_id
+      `,
+      
+      typeUsage: `
+        MATCH (f:Function)-[:USES_TYPE]->(t:TypeDefinition) 
+        RETURN t.name, COUNT(f) as usage_count 
+        ORDER BY usage_count DESC
+      `
+    };
   }
 
   /**
