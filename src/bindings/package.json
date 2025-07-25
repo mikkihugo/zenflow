@@ -1,0 +1,30 @@
+{
+  "name": "@claude-zen/ruv-fann-bindings",
+  "version": "1.0.0", 
+  "description": "Node.js bindings for ruv-FANN neural network library",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "neon build --release",
+    "build:debug": "neon build",
+    "clean": "neon clean",
+    "test": "node test/test.js"
+  },
+  "dependencies": {
+    "@neon-rs/load": "^0.0.4"
+  },
+  "devDependencies": {
+    "@neon-rs/cli": "^0.1.81"
+  },
+  "neon": {
+    "type": "library",
+    "org": "@claude-zen"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "fallback/",
+    "native/"
+  ]
+}
