@@ -1,0 +1,142 @@
+{
+  "summary": {
+    "overview": {
+      "total_files": 1,
+      "total_functions": 1,
+      "total_classes": 1,
+      "total_lines": 24,
+      "average_complexity": null,
+      "analysis_timestamp": "2025-07-25T20:37:34.897Z"
+    },
+    "quality_metrics": {
+      "high_complexity_functions": 0,
+      "circular_dependencies": 0,
+      "duplicate_blocks": 0,
+      "orphan_files": 1
+    },
+    "recommendations": [],
+    "top_issues": []
+  },
+  "ast": {
+    "files": [
+      {
+        "id": "file:537c8900bc2b3100",
+        "path": "tmp/test-analysis/calculator.js",
+        "language": "javascript",
+        "size_bytes": 390,
+        "line_count": 24,
+        "hash": "f59b178e1739386d864a0c3768818f85f48a6f45e1dbd6673e4697aebee380ef",
+        "last_analyzed": "2025-07-25T20:37:34.901Z"
+      }
+    ],
+    "functions": [
+      {
+        "id": "func:537c8900bc2b3100:0",
+        "name": "calculateSum",
+        "line_start": 3,
+        "line_end": 8,
+        "complexity_cyclomatic": 1,
+        "complexity_cognitive": 1,
+        "parameter_count": 0,
+        "file_id": "537c8900bc2b3100",
+        "file_path": "tmp/test-analysis/calculator.js"
+      }
+    ],
+    "classes": [
+      {
+        "id": "class:537c8900bc2b3100:0",
+        "name": "Calculator",
+        "line_start": 10,
+        "line_end": 20,
+        "method_count": 0,
+        "property_count": 0,
+        "file_id": "537c8900bc2b3100",
+        "file_path": "tmp/test-analysis/calculator.js"
+      }
+    ],
+    "variables": [],
+    "imports": [],
+    "exports": [],
+    "types": [],
+    "metrics": {
+      "totalFiles": 1,
+      "totalFunctions": 1,
+      "totalClasses": 1,
+      "averageComplexity": null,
+      "highComplexityFunctions": []
+    }
+  },
+  "dependencies": {
+    "dependencies": [],
+    "circularDependencies": [],
+    "orphanFiles": [
+      "tmp/test-analysis/calculator.js"
+    ],
+    "metrics": {
+      "totalFiles": 0,
+      "totalDependencies": 0,
+      "circularCount": 0,
+      "orphanCount": 1,
+      "maxDepth": 0,
+      "avgDependenciesPerFile": 0
+    },
+    "circular": {
+      "cycles": [],
+      "count": 0,
+      "totalFilesInvolved": 0
+    },
+    "structure": {
+      "nodes": {},
+      "edges": {},
+      "metrics": {
+        "density": 0,
+        "clustering": 0,
+        "diameter": 0,
+        "centralFiles": []
+      }
+    }
+  },
+  "duplicates": {
+    "duplicates": [],
+    "metrics": {
+      "total_duplicates": 0,
+      "total_duplicate_lines": 0,
+      "total_duplicate_tokens": 0,
+      "files_affected": 0,
+      "severity_breakdown": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      },
+      "average_similarity": 0,
+      "largest_duplicate": null
+    },
+    "summary": {
+      "overview": {
+        "total_duplicates": 0,
+        "files_affected": 0,
+        "total_duplicate_lines": 0,
+        "average_similarity": 0
+      },
+      "severity_distribution": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      },
+      "top_duplicates": [],
+      "recommendations": []
+    }
+  },
+  "graph": {
+    "nodes_inserted": 3,
+    "relationships_inserted": 2,
+    "operations": [
+      "source_files",
+      "functions",
+      "classes"
+    ]
+  },
+  "timestamp": "2025-07-25T20:37:34.897Z"
+}
