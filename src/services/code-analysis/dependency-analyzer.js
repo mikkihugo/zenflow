@@ -610,8 +610,14 @@ export class DependencyAnalyzer {
       }
     }
     
+    // Create dependency tree in expected format
+    const dependencyTree = {};
+    for (const [filePath, fileInfo] of fileMap) {
+      dependencyTree[filePath] = fileInfo.imports.map(imp => imp.source);
+    }
+    
     return {
-      tree: Object.fromEntries(fileMap),
+      tree: dependencyTree,
       circular: [], // Simple fallback doesn't detect circular deps
       orphans: this.findOrphanFiles(files, dependencies),
       leaves: this.findLeafFiles(files, dependencies),

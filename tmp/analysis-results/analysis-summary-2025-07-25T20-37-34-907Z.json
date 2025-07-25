@@ -1,0 +1,18 @@
+{
+  "overview": {
+    "total_files": 1,
+    "total_functions": 1,
+    "total_classes": 1,
+    "total_lines": 24,
+    "average_complexity": null,
+    "analysis_timestamp": "2025-07-25T20:37:34.897Z"
+  },
+  "quality_metrics": {
+    "high_complexity_functions": 0,
+    "circular_dependencies": 0,
+    "duplicate_blocks": 0,
+    "orphan_files": 1
+  },
+  "recommendations": [],
+  "top_issues": []
+}
