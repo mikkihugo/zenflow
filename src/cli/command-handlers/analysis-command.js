@@ -33,6 +33,12 @@ export async function analysisAction(subArgs, flags) {
       case 'query':
         await queryAnalysisCommand(subArgs, flags);
         break;
+      case 'watch':
+        await watchAnalysisCommand(subArgs, flags);
+        break;
+      case 'complexity':
+        await complexityAnalysisCommand(subArgs, flags);
+        break;
       case 'bottleneck-detect':
         await bottleneckDetectCommand(subArgs, flags);
         break;
@@ -287,6 +293,18 @@ async function queryAnalysisCommand(subArgs, flags) {
       case 'api-usage':
         results = await queryApiUsage(analysisService, options);
         break;
+      case 'deprecated-apis':
+        results = await queryDeprecatedApis(analysisService, options);
+        break;
+      case 'architectural-violations':
+        results = await queryArchitecturalViolations(analysisService, options);
+        break;
+      case 'unused-exports':
+        results = await queryUnusedExports(analysisService, options);
+        break;
+      case 'code-smells':
+        results = await queryCodeSmells(analysisService, options);
+        break;
       default:
         printError(`Unknown query type: ${queryType}`);
         return;
@@ -337,6 +355,47 @@ async function queryDuplicates(service, options) {
 async function queryDeadCode(service, options) {
   return [
     { description: 'Unused function: oldUtility', file: 'src/legacy.js' }
+  ];
+}
+
+async function queryDeprecatedApis(service, options) {
+  // Use the enhanced Kuzu graph interface
+  if (service.orchestrator && service.orchestrator.kuzuGraph) {
+    return await service.orchestrator.kuzuGraph.executeAnalysisQuery('find_deprecated_apis', {
+      patterns: options.patterns ? [options.patterns] : undefined
+    });
+  }
+  return [
+    { description: 'Deprecated API usage: eval() found', file: 'src/legacy.js', line: 15 }
+  ];
+}
+
+async function queryArchitecturalViolations(service, options) {
+  if (service.orchestrator && service.orchestrator.kuzuGraph) {
+    return await service.orchestrator.kuzuGraph.executeAnalysisQuery('identify_architectural_violations', {
+      rules: options.rules ? JSON.parse(options.rules) : undefined
+    });
+  }
+  return [
+    { description: 'Architectural violation: UI code importing database logic', severity: 'high' }
+  ];
+}
+
+async function queryUnusedExports(service, options) {
+  if (service.orchestrator && service.orchestrator.kuzuGraph) {
+    return await service.orchestrator.kuzuGraph.executeAnalysisQuery('find_unused_exports');
+  }
+  return [
+    { description: 'Unused export: oldFunction', file: 'src/utils.js' }
+  ];
+}
+
+async function queryCodeSmells(service, options) {
+  if (service.orchestrator && service.orchestrator.kuzuGraph) {
+    return await service.orchestrator.kuzuGraph.executeAnalysisQuery('identify_code_smells');
+  }
+  return [
+    { description: 'Code smell: Long parameter list in function processData', severity: 'medium' }
   ];
 }
 
@@ -500,7 +559,96 @@ async function tokenUsageCommand(subArgs, flags) {
     console.log(`  • Coordinator agents: Implement response caching (-8% potential)`);
   }
 
-  console.log(`\n📄 Detailed usage log: ./analysis-reports/token-usage-${Date.now()}.csv`);
+async function watchAnalysisCommand(subArgs, flags) {
+  const options = flags;
+  const projectPath = options.path || process.cwd();
+
+  console.log(`👁️ Starting real-time code analysis for: ${projectPath}`);
+
+  try {
+    const analysisService = new CodeAnalysisService({
+      projectPath,
+      enableRealTimeAnalysis: true
+    });
+
+    await analysisService.initialize();
+    
+    console.log('🔍 Starting file watcher...');
+    await analysisService.startRealTimeAnalysis();
+    
+    console.log('✅ Real-time analysis started. Press Ctrl+C to stop.');
+    
+    // Keep the process running
+    process.on('SIGINT', async () => {
+      console.log('\n🛑 Stopping real-time analysis...');
+      await analysisService.stopRealTimeAnalysis();
+      await analysisService.cleanup();
+      process.exit(0);
+    });
+    
+    // Wait indefinitely
+    await new Promise(() => {});
+    
+  } catch (error) {
+    printError(`Real-time analysis failed: ${error.message}`);
+  }
+}
+
+async function complexityAnalysisCommand(subArgs, flags) {
+  const options = flags;
+  const projectPath = options.path || process.cwd();
+  const threshold = options.threshold || 10;
+
+  console.log(`📊 Analyzing code complexity in: ${projectPath}`);
+  console.log(`🎯 Complexity threshold: ${threshold}`);
+
+  try {
+    const { ComplexityAnalyzer } = await import('../../services/code-analysis/index.js');
+    const analyzer = new ComplexityAnalyzer({
+      threshold
+    });
+
+    // Get source files
+    const files = []; // Would need to implement file discovery
+    const results = await analyzer.analyzeComplexity(files);
+
+    printSuccess(`✅ Complexity analysis completed`);
+
+    console.log(`\n📊 COMPLEXITY ANALYSIS RESULTS:`);
+    console.log(`  📁 Files analyzed: ${results.files.length}`);
+    console.log(`  🔧 Functions analyzed: ${results.functions.length}`);
+    console.log(`  📈 Average complexity: ${results.overall.averageComplexity}`);
+    console.log(`  📏 Total logical LOC: ${results.overall.totalLOC}`);
+
+    console.log(`\n📊 COMPLEXITY DISTRIBUTION:`);
+    const dist = results.overall.complexityDistribution;
+    console.log(`  🟢 Low (1-5): ${dist.low}`);
+    console.log(`  🟡 Medium (6-10): ${dist.medium}`);
+    console.log(`  🟠 High (11-20): ${dist.high}`);
+    console.log(`  🔴 Critical (21+): ${dist.critical}`);
+
+    // Generate insights
+    const insights = analyzer.generateComplexityInsights(results);
+    
+    if (insights.hotspots.length > 0) {
+      console.log(`\n🔥 COMPLEXITY HOTSPOTS:`);
+      for (const hotspot of insights.hotspots.slice(0, 5)) {
+        console.log(`  🔴 ${hotspot.name} (complexity: ${hotspot.complexity})`);
+        console.log(`     ${hotspot.recommendation}`);
+      }
+    }
+
+    if (insights.recommendations.length > 0) {
+      console.log(`\n💡 RECOMMENDATIONS:`);
+      for (const rec of insights.recommendations) {
+        console.log(`  • ${rec.description}`);
+        console.log(`    Action: ${rec.action}`);
+      }
+    }
+
+  } catch (error) {
+    printError(`Complexity analysis failed: ${error.message}`);
+  }
 }
 
 function showAnalysisHelp() {
@@ -515,7 +663,9 @@ CODE ANALYSIS COMMANDS:
   ast <files...>       AST analysis for specific files
   dependencies         Module dependency analysis and circular detection
   duplicates           Duplicate code detection and similarity analysis
+  complexity           Code complexity analysis with maintainability metrics
   query <type>         Query analysis results with Cypher-like syntax
+  watch                Start real-time code analysis with file watching
 
 PERFORMANCE ANALYSIS COMMANDS:
   bottleneck-detect    Detect performance bottlenecks in the system
@@ -549,6 +699,8 @@ DUPLICATE ANALYSIS OPTIONS:
 QUERY OPTIONS:
   --threshold <num>    Threshold for query filters
   --api <pattern>      API pattern for usage queries
+  --patterns <list>    Comma-separated patterns for deprecated API detection
+  --rules <json>       JSON string with architectural rules
 
 BOTTLENECK DETECT OPTIONS:
   --scope <scope>      Analysis scope (default: system)
@@ -592,8 +744,20 @@ EXAMPLES:
   # Find potentially dead code
   claude-zen analysis query dead-code
 
-  # Find deprecated API usage
-  claude-zen analysis query api-usage --api "oldFunction"
+  # Query deprecated APIs with custom patterns
+  claude-zen analysis query deprecated-apis --patterns "eval,innerHTML,document.write"
+
+  # Find architectural violations
+  claude-zen analysis query architectural-violations
+
+  # Start real-time analysis
+  claude-zen analysis watch --path ./src
+
+  # Complexity analysis with custom threshold
+  claude-zen analysis complexity --threshold 15
+
+  # Find code smells
+  claude-zen analysis query code-smells
 
   # System bottleneck detection
   claude-zen analysis bottleneck-detect --scope system

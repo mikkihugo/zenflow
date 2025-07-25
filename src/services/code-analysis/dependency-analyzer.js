@@ -12,7 +12,7 @@ let madge, cruise;
 
 try {
   const madgeModule = await import('madge');
-  madge = madgeModule.default;
+  madge = madgeModule.default || madgeModule;
 } catch (e) {
   console.warn('Madge dependency analyzer not available, using fallback');
   madge = null;
@@ -20,7 +20,7 @@ try {
 
 try {
   const cruiserModule = await import('dependency-cruiser');
-  cruise = cruiserModule.cruise;
+  cruise = cruiserModule.cruise || cruiserModule.default;
 } catch (e) {
   console.warn('Dependency-cruiser not available, using fallback');
   cruise = null;
