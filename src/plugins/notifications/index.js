@@ -592,6 +592,48 @@ export class NotificationPlugin {
     return stats;
   }
 
+  startEventProcessing() {
+    if (this.processing) return;
+    
+    this.processing = true;
+    
+    // Process event queue every 1 second
+    setInterval(async () => {
+      if (this.eventQueue.length > 0) {
+        const event = this.eventQueue.shift();
+        try {
+          await this.processNotification(event.notification, event.providers);
+        } catch (error) {
+          console.warn('📧 Event processing error:', error.message);
+        }
+      }
+    }, 1000);
+  }
+
+  async processNotification(notification, providers) {
+    const results = [];
+    
+    for (const providerName of providers) {
+      const providerInfo = this.providers.get(providerName);
+      if (!providerInfo || !providerInfo.enabled) {
+        continue;
+      }
+      
+      try {
+        const result = await providerInfo.instance.send(notification);
+        results.push({ provider: providerName, ...result });
+      } catch (error) {
+        results.push({ 
+          provider: providerName, 
+          success: false, 
+          error: error.message 
+        });
+      }
+    }
+    
+    return results;
+  }
+
   async cleanup() {
     // Clear event queue
     this.eventQueue = [];
