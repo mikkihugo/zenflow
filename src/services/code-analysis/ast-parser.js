@@ -4,10 +4,33 @@
  */
 
 import { readFile } from 'fs/promises';
-import { parse as parseTypeScript } from '@typescript-eslint/parser';
-import { parse as parseJavaScript } from 'esprima';
-import * as acorn from 'acorn';
 import { createHash } from 'crypto';
+
+// Try to import optional dependencies with fallbacks
+let parseTypeScript, parseJavaScript, acorn;
+
+try {
+  const tsModule = await import('@typescript-eslint/parser');
+  parseTypeScript = tsModule.parse;
+} catch (e) {
+  console.warn('TypeScript parser not available, using fallback');
+  parseTypeScript = null;
+}
+
+try {
+  const jsModule = await import('esprima');
+  parseJavaScript = jsModule.parse;
+} catch (e) {
+  console.warn('Esprima parser not available, using fallback');
+  parseJavaScript = null;
+}
+
+try {
+  acorn = await import('acorn');
+} catch (e) {
+  console.warn('Acorn parser not available, using fallback');
+  acorn = null;
+}
 
 export class ASTParser {
   constructor(config = {}) {
@@ -81,6 +104,11 @@ export class ASTParser {
    * Parse TypeScript/TSX content
    */
   parseTypeScript(content, filePath) {
+    if (!parseTypeScript) {
+      // Fallback to basic analysis
+      return this.createFallbackAnalysis(content, filePath, 'typescript');
+    }
+
     const ast = parseTypeScript(content, {
       ...this.config.typeScriptOptions,
       filePath,
@@ -94,26 +122,44 @@ export class ASTParser {
    * Parse JavaScript/JSX content
    */
   parseJavaScript(content, filePath) {
-    try {
-      // Try with esprima first (more complete)
-      const ast = parseJavaScript(content, {
-        sourceType: this.config.parseOptions.sourceType,
-        ecmaVersion: 2022,
-        jsx: true,
-        attachComments: true,
-        range: true,
-        loc: true
-      });
-      return this.extractASTData(ast, filePath, 'javascript');
-    } catch (error) {
-      // Fallback to acorn
-      const ast = acorn.parse(content, {
-        ...this.config.parseOptions,
-        locations: true,
-        ranges: true
-      });
-      return this.extractASTData(ast, filePath, 'javascript');
+    if (!parseJavaScript && !acorn) {
+      // Fallback to basic analysis
+      return this.createFallbackAnalysis(content, filePath, 'javascript');
     }
+
+    try {
+      if (parseJavaScript) {
+        // Try with esprima first (more complete)
+        const ast = parseJavaScript(content, {
+          sourceType: this.config.parseOptions.sourceType,
+          ecmaVersion: 2022,
+          jsx: true,
+          attachComments: true,
+          range: true,
+          loc: true
+        });
+        return this.extractASTData(ast, filePath, 'javascript');
+      }
+    } catch (error) {
+      console.warn(`Esprima failed for ${filePath}, trying fallback`);
+    }
+
+    try {
+      if (acorn) {
+        // Fallback to acorn
+        const ast = acorn.parse(content, {
+          ...this.config.parseOptions,
+          locations: true,
+          ranges: true
+        });
+        return this.extractASTData(ast, filePath, 'javascript');
+      }
+    } catch (error) {
+      console.warn(`Acorn failed for ${filePath}, using basic analysis`);
+    }
+
+    // Final fallback
+    return this.createFallbackAnalysis(content, filePath, 'javascript');
   }
 
   /**
@@ -581,6 +627,105 @@ export class ASTParser {
     }
     
     return methods;
+  }
+
+  /**
+   * Create fallback analysis when parsers are not available
+   */
+  createFallbackAnalysis(content, filePath, language) {
+    const fileId = this.generateFileId(filePath);
+    const lines = content.split('\n');
+    
+    // Basic regex-based analysis
+    const functionPattern = /(?:function\s+\w+|const\s+\w+\s*=\s*(?:\([^)]*\)\s*=>|\bfunction\b)|\w+\s*:\s*(?:\([^)]*\)\s*=>|function))/g;
+    const classPattern = /class\s+(\w+)/g;
+    const importPattern = /import\s+.*?from\s+['"`]([^'"`]+)['"`]/g;
+    const exportPattern = /export\s+(?:default\s+)?(?:const|let|var|function|class|interface|type)\s+(\w+)/g;
+    
+    const functions = [];
+    const classes = [];
+    const imports = [];
+    const exports = [];
+    
+    // Extract functions
+    let match;
+    while ((match = functionPattern.exec(content)) !== null) {
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      functions.push({
+        id: `func:${fileId}:${functions.length}`,
+        name: this.extractNameFromMatch(match[0]) || `<anonymous_${functions.length}>`,
+        line_start: lineNumber,
+        line_end: lineNumber + 5, // Estimate
+        complexity_cyclomatic: 1, // Basic fallback
+        complexity_cognitive: 1, // Basic fallback
+        parameter_count: this.countParameters(match[0]),
+        file_id: fileId,
+        file_path: filePath
+      });
+    }
+    
+    // Extract classes
+    while ((match = classPattern.exec(content)) !== null) {
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      classes.push({
+        id: `class:${fileId}:${classes.length}`,
+        name: match[1],
+        line_start: lineNumber,
+        line_end: lineNumber + 10, // Estimate
+        method_count: 0, // Basic fallback
+        property_count: 0, // Basic fallback
+        file_id: fileId,
+        file_path: filePath
+      });
+    }
+    
+    // Extract imports
+    while ((match = importPattern.exec(content)) !== null) {
+      imports.push({
+        id: `import:${fileId}:${imports.length}`,
+        source: match[1],
+        type: match[1].startsWith('.') ? 'relative' : 'external',
+        file_id: fileId,
+        file_path: filePath
+      });
+    }
+    
+    // Extract exports
+    while ((match = exportPattern.exec(content)) !== null) {
+      exports.push({
+        id: `export:${fileId}:${exports.length}`,
+        name: match[1],
+        type: 'named',
+        file_id: fileId,
+        file_path: filePath
+      });
+    }
+    
+    return {
+      functions,
+      classes,
+      variables: [], // Not easily detectable with basic regex
+      imports,
+      exports,
+      types: [] // TypeScript-specific, skip in fallback
+    };
+  }
+  
+  /**
+   * Extract name from function match
+   */
+  extractNameFromMatch(match) {
+    const nameMatch = match.match(/(?:function\s+(\w+)|const\s+(\w+)|(\w+)\s*:)/);
+    return nameMatch ? (nameMatch[1] || nameMatch[2] || nameMatch[3]) : null;
+  }
+  
+  /**
+   * Count parameters in function signature
+   */
+  countParameters(funcString) {
+    const paramMatch = funcString.match(/\(([^)]*)\)/);
+    if (!paramMatch || !paramMatch[1].trim()) return 0;
+    return paramMatch[1].split(',').filter(p => p.trim()).length;
   }
 }
 

@@ -3,13 +3,21 @@
  * Coordinates AST parsing, dependency analysis, duplicate detection and Kuzu graph storage
  */
 
-import { glob } from 'glob';
 import { readFile, mkdir, writeFile } from 'fs/promises';
 import path from 'path';
 import ASTParser from './ast-parser.js';
 import DependencyAnalyzer from './dependency-analyzer.js';
 import DuplicateCodeDetector from './duplicate-detector.js';
-import KuzuGraphInterface from '../../cli/database/kuzu-graph-interface.js';
+
+// Try to import optional Kuzu integration
+let KuzuGraphInterface;
+try {
+  const kuzuModule = await import('../../cli/database/kuzu-graph-interface.js');
+  KuzuGraphInterface = kuzuModule.default;
+} catch (e) {
+  console.warn('Kuzu graph interface not available, graph storage disabled');
+  KuzuGraphInterface = null;
+}
 
 export class CodeAnalysisOrchestrator {
   constructor(config = {}) {
@@ -40,7 +48,8 @@ export class CodeAnalysisOrchestrator {
     this.astParser = new ASTParser();
     this.dependencyAnalyzer = new DependencyAnalyzer(this.config);
     this.duplicateDetector = new DuplicateCodeDetector(this.config);
-    this.kuzuGraph = new KuzuGraphInterface(this.config.kuzu);
+    // Initialize Kuzu graph interface if available
+    this.kuzuGraph = KuzuGraphInterface ? new KuzuGraphInterface(this.config.kuzu) : null;
     
     this.isInitialized = false;
   }
@@ -56,7 +65,12 @@ export class CodeAnalysisOrchestrator {
       await mkdir(this.config.outputDir, { recursive: true });
       
       // Initialize Kuzu graph database
-      await this.kuzuGraph.initialize();
+      // Initialize Kuzu graph if available
+      if (this.kuzuGraph) {
+        await this.kuzuGraph.initialize();
+      } else {
+        console.warn('Graph storage disabled - Kuzu interface not available');
+      }
       
       this.isInitialized = true;
       console.log('✅ Code analysis system initialized');
@@ -147,19 +161,51 @@ export class CodeAnalysisOrchestrator {
    * Discover source files for analysis
    */
   async discoverSourceFiles() {
-    const files = await glob(this.config.filePatterns, {
-      cwd: this.config.projectPath,
-      ignore: this.config.ignorePatterns,
-      absolute: true
-    });
+    const files = await this.getAllFiles(this.config.projectPath);
     
     return files.filter(file => {
       // Additional filtering
       const relativePath = path.relative(this.config.projectPath, file);
       return !relativePath.includes('node_modules') && 
              !relativePath.startsWith('.') &&
+             ['.js', '.jsx', '.ts', '.tsx'].some(ext => file.endsWith(ext)) &&
              relativePath.length > 0;
     });
+  }
+
+  /**
+   * Get all files recursively
+   */
+  async getAllFiles(dirPath) {
+    const { readdir, stat } = await import('fs/promises');
+    const { join } = await import('path');
+    
+    const files = [];
+    
+    async function walk(currentPath) {
+      try {
+        const entries = await readdir(currentPath);
+        
+        for (const entry of entries) {
+          const fullPath = join(currentPath, entry);
+          const stats = await stat(fullPath);
+          
+          if (stats.isDirectory()) {
+            // Skip common ignored directories
+            if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
+              await walk(fullPath);
+            }
+          } else {
+            files.push(fullPath);
+          }
+        }
+      } catch (error) {
+        console.warn(`Skipping directory ${currentPath}: ${error.message}`);
+      }
+    }
+    
+    await walk(dirPath);
+    return files;
   }
 
   /**
@@ -333,7 +379,10 @@ export class CodeAnalysisOrchestrator {
       // 8. Insert relationships
       const relationships = await this.generateAllRelationships(results);
       if (relationships.length > 0) {
+      // Store graph relationships if Kuzu available
+      if (this.kuzuGraph && relationships.length > 0) {
         await this.kuzuGraph.insertRelationships(relationships);
+      }
         graphResults.relationships_inserted = relationships.length;
       }
       
@@ -351,55 +400,64 @@ export class CodeAnalysisOrchestrator {
    * Insert source files into graph
    */
   async insertSourceFiles(files) {
+    if (!this.kuzuGraph) {
+      console.warn('Graph storage disabled, skipping source file insertion');
+      return { count: 0 };
+    }
+    
     const nodes = files.map(file => ({
       ...file,
       complexity_score: this.calculateFileComplexity(file, this.ast?.functions || []),
       maintainability_index: this.calculateMaintainabilityIndex(file)
     }));
     
-    return await this.kuzuGraph.insertNodes('SourceFile', nodes);
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('SourceFile', nodes);
   }
 
   /**
    * Insert functions into graph
    */
   async insertFunctions(functions) {
-    return await this.kuzuGraph.insertNodes('Function', functions);
+    if (!this.kuzuGraph) {
+      console.warn('Graph storage disabled, skipping function insertion');
+      return { count: 0 };
+    }
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('Function', functions);
   }
 
   /**
    * Insert classes into graph
    */
   async insertClasses(classes) {
-    return await this.kuzuGraph.insertNodes('Class', classes);
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('Class', classes);
   }
 
   /**
    * Insert variables into graph
    */
   async insertVariables(variables) {
-    return await this.kuzuGraph.insertNodes('Variable', variables);
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('Variable', variables);
   }
 
   /**
    * Insert imports into graph
    */
   async insertImports(imports) {
-    return await this.kuzuGraph.insertNodes('Import', imports);
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('Import', imports);
   }
 
   /**
    * Insert TypeScript types into graph
    */
   async insertTypes(types) {
-    return await this.kuzuGraph.insertNodes('TypeDefinition', types);
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('TypeDefinition', types);
   }
 
   /**
    * Insert duplicate code blocks into graph
    */
   async insertDuplicates(duplicates) {
-    return await this.kuzuGraph.insertNodes('DuplicateCode', duplicates);
+    if (!this.kuzuGraph) { console.warn("Graph storage disabled, skipping insertion"); return { count: 0 }; } return await this.kuzuGraph.insertNodes('DuplicateCode', duplicates);
   }
 
   /**
@@ -620,7 +678,10 @@ export class CodeAnalysisOrchestrator {
     await writeFile(summaryPath, JSON.stringify(results.summary, null, 2));
     
     // Export for Kuzu
-    await this.kuzuGraph.exportForKuzu();
+    // Export to Kuzu if available
+    if (this.kuzuGraph) {
+      await this.kuzuGraph.exportForKuzu();
+    }
     
     console.log(`📄 Results saved to: ${resultsPath}`);
     console.log(`📄 Summary saved to: ${summaryPath}`);
@@ -671,6 +732,10 @@ export class CodeAnalysisOrchestrator {
    * Query the analysis graph
    */
   async queryAnalysis(query) {
+    if (!this.kuzuGraph) {
+      console.warn('Graph storage disabled, query not available');
+      return { error: 'Graph storage not available' };
+    }
     // Delegate to Kuzu graph interface
     return await this.kuzuGraph.query(query);
   }
@@ -679,6 +744,10 @@ export class CodeAnalysisOrchestrator {
    * Get analysis statistics
    */
   async getAnalysisStats() {
+    if (!this.kuzuGraph) {
+      console.warn('Graph storage disabled, stats not available');
+      return { error: 'Graph storage not available' };
+    }
     return await this.kuzuGraph.getStats();
   }
 

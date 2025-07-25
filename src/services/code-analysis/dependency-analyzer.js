@@ -3,11 +3,28 @@
  * Analyzes module dependencies using madge and dependency-cruiser
  */
 
-import madge from 'madge';
-import { cruise } from 'dependency-cruiser';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { createHash } from 'crypto';
+
+// Try to import optional dependencies with fallbacks
+let madge, cruise;
+
+try {
+  const madgeModule = await import('madge');
+  madge = madgeModule.default;
+} catch (e) {
+  console.warn('Madge dependency analyzer not available, using fallback');
+  madge = null;
+}
+
+try {
+  const cruiserModule = await import('dependency-cruiser');
+  cruise = cruiserModule.cruise;
+} catch (e) {
+  console.warn('Dependency-cruiser not available, using fallback');
+  cruise = null;
+}
 
 export class DependencyAnalyzer {
   constructor(config = {}) {
@@ -71,6 +88,11 @@ export class DependencyAnalyzer {
    * Analyze dependencies using madge
    */
   async analyzeMadge(targetPath) {
+    if (!madge) {
+      console.warn('Madge not available, using fallback dependency analysis');
+      return this.createFallbackDependencyAnalysis(targetPath);
+    }
+
     const madgeConfig = {
       fileExtensions: ['js', 'jsx', 'ts', 'tsx'],
       excludeRegExp: this.config.ignorePatterns.map(p => new RegExp(p.replace('**/', '.*/'))),
@@ -95,6 +117,10 @@ export class DependencyAnalyzer {
    * Analyze dependencies using dependency-cruiser
    */
   async analyzeCruiser(targetPath) {
+    if (!cruise) {
+      console.warn('Dependency-cruiser not available, using fallback analysis');
+      return { dependencies: [] };
+    }
     const cruiserConfig = {
       validate: true,
       ruleSet: {
@@ -262,6 +288,11 @@ export class DependencyAnalyzer {
    * Find circular dependencies
    */
   async findCircularDependencies(targetPath = '.') {
+    if (!madge) {
+      console.warn('Madge not available, circular dependency detection limited');
+      return { cycles: [], count: 0, totalFilesInvolved: 0 };
+    }
+
     try {
       const tree = await madge(targetPath, {
         fileExtensions: ['js', 'jsx', 'ts', 'tsx'],
@@ -538,6 +569,152 @@ export class DependencyAnalyzer {
         value: 1
       }))
     };
+  }
+
+  /**
+   * Create fallback dependency analysis when tools aren't available
+   */
+  async createFallbackDependencyAnalysis(targetPath) {
+    console.log('Using fallback dependency analysis with regex patterns');
+    
+    const { readFile, readdir, stat } = await import('fs/promises');
+    const { join } = await import('path');
+    
+    const files = await this.getAllJSFiles(targetPath);
+    
+    const dependencies = [];
+    const fileMap = new Map();
+    
+    for (const filePath of files) {
+      try {
+        const content = await readFile(filePath, 'utf8');
+        const imports = this.extractImportsRegex(content, filePath);
+        
+        fileMap.set(filePath, {
+          imports,
+          exports: this.extractExportsRegex(content)
+        });
+        
+        // Create dependencies
+        for (const imp of imports) {
+          dependencies.push({
+            id: `dep:${dependencies.length}`,
+            from: filePath,
+            to: imp.source,
+            type: imp.type,
+            specifiers: imp.specifiers
+          });
+        }
+      } catch (error) {
+        console.warn(`Failed to analyze ${filePath}: ${error.message}`);
+      }
+    }
+    
+    return {
+      tree: Object.fromEntries(fileMap),
+      circular: [], // Simple fallback doesn't detect circular deps
+      orphans: this.findOrphanFiles(files, dependencies),
+      leaves: this.findLeafFiles(files, dependencies),
+      summary: {
+        totalFiles: files.length,
+        totalDependencies: dependencies.length
+      }
+    };
+  }
+
+  /**
+   * Get all JS/TS files recursively
+   */
+  async getAllJSFiles(dirPath) {
+    const { readdir, stat } = await import('fs/promises');
+    const { join } = await import('path');
+    
+    const files = [];
+    const extensions = ['.js', '.jsx', '.ts', '.tsx'];
+    
+    async function walk(currentPath) {
+      try {
+        const entries = await readdir(currentPath);
+        
+        for (const entry of entries) {
+          const fullPath = join(currentPath, entry);
+          const stats = await stat(fullPath);
+          
+          if (stats.isDirectory()) {
+            // Skip common ignored directories
+            if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
+              await walk(fullPath);
+            }
+          } else if (extensions.some(ext => entry.endsWith(ext))) {
+            files.push(fullPath);
+          }
+        }
+      } catch (error) {
+        console.warn(`Skipping directory ${currentPath}: ${error.message}`);
+      }
+    }
+    
+    await walk(dirPath);
+    return files;
+  }
+  
+  /**
+   * Extract imports using regex
+   */
+  extractImportsRegex(content, filePath) {
+    const imports = [];
+    const importPattern = /import\s+(?:(?:\{[^}]*\}|\w+|\*\s+as\s+\w+)\s+from\s+)?['"`]([^'"`]+)['"`]/g;
+    const requirePattern = /require\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;
+    
+    let match;
+    while ((match = importPattern.exec(content)) !== null) {
+      imports.push({
+        source: match[1],
+        type: match[1].startsWith('.') ? 'relative' : 'external',
+        specifiers: []
+      });
+    }
+    
+    while ((match = requirePattern.exec(content)) !== null) {
+      imports.push({
+        source: match[1],
+        type: match[1].startsWith('.') ? 'relative' : 'external',
+        specifiers: []
+      });
+    }
+    
+    return imports;
+  }
+  
+  /**
+   * Extract exports using regex
+   */
+  extractExportsRegex(content) {
+    const exports = [];
+    const exportPattern = /export\s+(?:default\s+)?(?:const|let|var|function|class|interface|type)\s+(\w+)/g;
+    
+    let match;
+    while ((match = exportPattern.exec(content)) !== null) {
+      exports.push(match[1]);
+    }
+    
+    return exports;
+  }
+  
+  /**
+   * Find orphan files (no imports)
+   */
+  findOrphanFiles(files, dependencies) {
+    const referencedFiles = new Set(dependencies.map(d => d.to));
+    return files.filter(file => !referencedFiles.has(file));
+  }
+  
+  /**
+   * Find leaf files (no exports used)
+   */
+  findLeafFiles(files, dependencies) {
+    const importingFiles = new Set(dependencies.map(d => d.from));
+    return files.filter(file => !importingFiles.has(file));
   }
 }
 

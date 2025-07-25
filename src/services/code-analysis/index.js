@@ -3,10 +3,15 @@
  * Professional code analysis tools integrated with Kuzu graph storage
  */
 
-export { default as ASTParser } from './ast-parser.js';
-export { default as DependencyAnalyzer } from './dependency-analyzer.js';
-export { default as DuplicateCodeDetector } from './duplicate-detector.js';
-export { default as CodeAnalysisOrchestrator } from './orchestrator.js';
+import ASTParser from './ast-parser.js';
+import DependencyAnalyzer from './dependency-analyzer.js';
+import DuplicateCodeDetector from './duplicate-detector.js';
+import { CodeAnalysisOrchestrator } from './orchestrator.js';
+
+export { ASTParser };
+export { DependencyAnalyzer };
+export { DuplicateCodeDetector };
+export { CodeAnalysisOrchestrator };
 
 // Main service interface
 export class CodeAnalysisService {

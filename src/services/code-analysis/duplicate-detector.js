@@ -8,9 +8,19 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
 import path from 'path';
-import { glob } from 'glob';
 
 const execAsync = promisify(exec);
+
+// Check if jscpd is available
+let jscpdAvailable = false;
+
+try {
+  await execAsync('which jscpd', { timeout: 5000 });
+  jscpdAvailable = true;
+} catch (e) {
+  console.warn('jscpd not available, using fallback duplicate detection');
+  jscpdAvailable = false;
+}
 
 export class DuplicateCodeDetector {
   constructor(config = {}) {
@@ -69,6 +79,11 @@ export class DuplicateCodeDetector {
    * Run jscpd analysis
    */
   async runJSCPD(targetPath) {
+    if (!jscpdAvailable) {
+      console.warn('JSCPD not available, using fallback duplicate detection');
+      return await this.createFallbackDuplicateAnalysis(targetPath);
+    }
+
     const configPath = await this.createJSCPDConfig();
     
     try {
@@ -558,6 +573,136 @@ export class DuplicateCodeDetector {
    */
   generateFileId(filePath) {
     return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
+  }
+
+  /**
+   * Create fallback duplicate analysis when JSCPD isn't available
+   */
+  async createFallbackDuplicateAnalysis(targetPath) {
+    console.log('Using fallback duplicate detection with basic hashing');
+    
+    const { readFile, readdir, stat } = await import('fs/promises');
+    const { join } = await import('path');
+    
+    const files = await this.getAllJSFiles(targetPath);
+    
+    const duplicates = [];
+    const fileHashes = new Map();
+    const lineHashes = new Map();
+    
+    // Analyze each file
+    for (const filePath of files) {
+      try {
+        const content = await readFile(filePath, 'utf8');
+        const lines = content.split('\n');
+        
+        // Hash each significant line
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (line.length < 20 || line.startsWith('//') || line.startsWith('/*')) {
+            continue; // Skip short lines and comments
+          }
+          
+          const lineHash = createHash('md5').update(line).digest('hex');
+          
+          if (!lineHashes.has(lineHash)) {
+            lineHashes.set(lineHash, []);
+          }
+          
+          lineHashes.get(lineHash).push({
+            file: filePath,
+            line: i + 1,
+            content: line
+          });
+        }
+        
+        // Hash blocks of lines
+        for (let i = 0; i < lines.length - this.config.minLines; i++) {
+          const block = lines.slice(i, i + this.config.minLines).join('\n');
+          const blockHash = createHash('md5').update(block).digest('hex');
+          
+          if (!fileHashes.has(blockHash)) {
+            fileHashes.set(blockHash, []);
+          }
+          
+          fileHashes.get(blockHash).push({
+            file: filePath,
+            startLine: i + 1,
+            endLine: i + this.config.minLines,
+            content: block
+          });
+        }
+      } catch (error) {
+        console.warn(`Failed to analyze ${filePath}: ${error.message}`);
+      }
+    }
+    
+    // Find duplicates
+    for (const [hash, occurrences] of fileHashes) {
+      if (occurrences.length > 1) {
+        const duplicateGroup = {
+          id: `dup:${duplicates.length}`,
+          hash,
+          occurrences: occurrences.length,
+          similarity: 100, // Exact match in fallback
+          lines: this.config.minLines,
+          files: occurrences.map(occ => ({
+            file: occ.file,
+            start_line: occ.startLine,
+            end_line: occ.endLine
+          }))
+        };
+        
+        duplicates.push(duplicateGroup);
+      }
+    }
+    
+    return {
+      duplicates,
+      statistics: {
+        total: {
+          files: files.length,
+          duplicates: duplicates.length
+        },
+        formats: {}
+      }
+    };
+  }
+
+  /**
+   * Get all JS/TS files recursively
+   */
+  async getAllJSFiles(dirPath) {
+    const { readdir, stat } = await import('fs/promises');
+    const { join } = await import('path');
+    
+    const files = [];
+    const extensions = ['.js', '.jsx', '.ts', '.tsx'];
+    
+    async function walk(currentPath) {
+      try {
+        const entries = await readdir(currentPath);
+        
+        for (const entry of entries) {
+          const fullPath = join(currentPath, entry);
+          const stats = await stat(fullPath);
+          
+          if (stats.isDirectory()) {
+            // Skip common ignored directories
+            if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
+              await walk(fullPath);
+            }
+          } else if (extensions.some(ext => entry.endsWith(ext))) {
+            files.push(fullPath);
+          }
+        }
+      } catch (error) {
+        console.warn(`Skipping directory ${currentPath}: ${error.message}`);
+      }
+    }
+    
+    await walk(dirPath);
+    return files;
   }
 }
 
