@@ -117,7 +117,7 @@ class SqliteMemoryStore {
       CREATE INDEX IF NOT EXISTS idx_memory_namespace_updated ON memory_entries(namespace, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_memory_namespace_access_count ON memory_entries(namespace, access_count DESC);
       CREATE INDEX IF NOT EXISTS idx_memory_active_entries ON memory_entries(namespace, expires_at) 
-        WHERE expires_at IS NULL OR expires_at > strftime('%s', 'now');
+        WHERE expires_at IS NULL;
       
       -- Search optimization indexes
       CREATE INDEX IF NOT EXISTS idx_memory_key_search ON memory_entries(key) WHERE key LIKE '%';

@@ -127,7 +127,15 @@ export class SQLiteConnectionPool {
     const connection = await this.acquire();
     try {
       const stmt = connection.db.prepare(query);
-      return stmt.all(...params);
+      
+      // Determine if this is a SELECT query (returns data) or not (INSERT/UPDATE/DELETE)
+      const isSelectQuery = query.trim().toUpperCase().startsWith('SELECT');
+      
+      if (isSelectQuery) {
+        return stmt.all(...params);
+      } else {
+        return stmt.run(...params);
+      }
     } finally {
       this.release(connection);
     }

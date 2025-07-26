@@ -1065,9 +1065,415 @@ export class KuzuGraphInterface {
   }
 
   /**
-   * Generate Cypher queries for Kuzu
+   * Execute advanced analysis queries
    */
-  generateCypherQueries() {
+  async executeAnalysisQuery(queryType, parameters = {}) {
+    this.stats.queryCount++;
+    
+    switch (queryType) {
+      case 'find_deprecated_apis':
+        return this.findDeprecatedApiUsage(parameters);
+      case 'identify_architectural_violations':
+        return this.identifyArchitecturalViolations(parameters);
+      case 'find_unused_exports':
+        return this.findUnusedExports(parameters);
+      case 'analyze_complexity_trends':
+        return this.analyzeComplexityTrends(parameters);
+      case 'find_tightly_coupled_modules':
+        return this.findTightlyCoupledModules(parameters);
+      case 'identify_code_smells':
+        return this.identifyCodeSmells(parameters);
+      default:
+        throw new Error(`Unknown query type: ${queryType}`);
+    }
+  }
+
+  /**
+   * Find deprecated API usage patterns
+   */
+  async findDeprecatedApiUsage(parameters = {}) {
+    const deprecatedPatterns = parameters.patterns || [
+      'require(',
+      'var ',
+      'eval(',
+      'document.write',
+      'innerHTML',
+      'setInterval',
+      'setTimeout'
+    ];
+    
+    const results = [];
+    
+    // Find function calls that match deprecated patterns
+    const functionCalls = Array.from(this.relationships.values())
+      .filter(rel => rel.type === 'CALLS_FUNCTION');
+    
+    for (const call of functionCalls) {
+      const calledFunc = this.nodes.get(call.to);
+      if (calledFunc) {
+        const funcName = calledFunc.properties.name;
+        for (const pattern of deprecatedPatterns) {
+          if (funcName.includes(pattern.replace('(', ''))) {
+            results.push({
+              type: 'deprecated_api',
+              function: funcName,
+              file: calledFunc.properties.file_id,
+              pattern: pattern,
+              severity: this.getDeprecationSeverity(pattern),
+              recommendation: this.getDeprecationRecommendation(pattern)
+            });
+          }
+        }
+      }
+    }
+    
+    return results;
+  }
+
+  /**
+   * Identify architectural violations
+   */
+  async identifyArchitecturalViolations(parameters = {}) {
+    const rules = parameters.rules || [
+      { name: 'no_ui_in_logic', pattern: 'ui/', forbidden_in: 'logic/' },
+      { name: 'no_db_in_ui', pattern: 'database/', forbidden_in: 'ui/' },
+      { name: 'no_circular_deps', type: 'circular' }
+    ];
+    
+    const violations = [];
+    
+    for (const rule of rules) {
+      if (rule.type === 'circular') {
+        // Find circular dependencies
+        const circular = await this.findCircularDependencies();
+        for (const cycle of circular.cycles) {
+          violations.push({
+            type: 'circular_dependency',
+            rule: rule.name,
+            files: cycle.files,
+            severity: cycle.severity,
+            description: `Circular dependency: ${cycle.files.join(' → ')}`
+          });
+        }
+      } else {
+        // Find pattern violations
+        const importRelationships = Array.from(this.relationships.values())
+          .filter(rel => rel.type === 'IMPORTS_FROM');
+        
+        for (const rel of importRelationships) {
+          const fromFile = this.nodes.get(rel.from);
+          const toFile = this.nodes.get(rel.to);
+          
+          if (fromFile && toFile) {
+            const fromPath = fromFile.properties.path || '';
+            const toPath = toFile.properties.path || '';
+            
+            if (fromPath.includes(rule.forbidden_in) && toPath.includes(rule.pattern)) {
+              violations.push({
+                type: 'architectural_violation',
+                rule: rule.name,
+                from: fromPath,
+                to: toPath,
+                severity: 'high',
+                description: `${rule.pattern} imported in ${rule.forbidden_in}`
+              });
+            }
+          }
+        }
+      }
+    }
+    
+    return violations;
+  }
+
+  /**
+   * Find unused exports
+   */
+  async findUnusedExports(parameters = {}) {
+    const exports = new Map();
+    const imports = new Set();
+    
+    // Collect all exports
+    for (const node of this.nodes.values()) {
+      if (node.type === 'Export') {
+        for (const exportName of node.properties.exported_names || []) {
+          exports.set(`${node.properties.file_id}:${exportName}`, {
+            name: exportName,
+            file: node.properties.file_id,
+            type: node.properties.export_type
+          });
+        }
+      }
+    }
+    
+    // Collect all imports
+    for (const node of this.nodes.values()) {
+      if (node.type === 'Import') {
+        for (const importName of node.properties.imported_names || []) {
+          imports.add(importName);
+        }
+      }
+    }
+    
+    // Find exports that are never imported
+    const unusedExports = [];
+    for (const [key, exportInfo] of exports) {
+      if (!imports.has(exportInfo.name) && exportInfo.name !== 'default') {
+        unusedExports.push({
+          name: exportInfo.name,
+          file: exportInfo.file,
+          type: exportInfo.type,
+          severity: exportInfo.type === 'default' ? 'medium' : 'low'
+        });
+      }
+    }
+    
+    return unusedExports;
+  }
+
+  /**
+   * Analyze complexity trends
+   */
+  async analyzeComplexityTrends(parameters = {}) {
+    const functions = Array.from(this.nodes.values())
+      .filter(node => node.type === 'Function');
+    
+    const complexityDistribution = {
+      low: { count: 0, range: '1-5', functions: [] },
+      medium: { count: 0, range: '6-10', functions: [] },
+      high: { count: 0, range: '11-20', functions: [] },
+      critical: { count: 0, range: '21+', functions: [] }
+    };
+    
+    let totalComplexity = 0;
+    const fileComplexity = new Map();
+    
+    for (const func of functions) {
+      const complexity = func.properties.cyclomatic_complexity || 0;
+      totalComplexity += complexity;
+      
+      // Categorize complexity
+      let category;
+      if (complexity <= 5) category = 'low';
+      else if (complexity <= 10) category = 'medium';
+      else if (complexity <= 20) category = 'high';
+      else category = 'critical';
+      
+      complexityDistribution[category].count++;
+      complexityDistribution[category].functions.push({
+        name: func.properties.name,
+        file: func.properties.file_id,
+        complexity
+      });
+      
+      // Track file complexity
+      const fileId = func.properties.file_id;
+      if (!fileComplexity.has(fileId)) {
+        fileComplexity.set(fileId, { total: 0, count: 0 });
+      }
+      const fileData = fileComplexity.get(fileId);
+      fileData.total += complexity;
+      fileData.count++;
+      fileComplexity.set(fileId, fileData);
+    }
+    
+    // Calculate file average complexities
+    const fileAverages = [];
+    for (const [fileId, data] of fileComplexity) {
+      const file = this.nodes.get(fileId);
+      if (file) {
+        fileAverages.push({
+          file: file.properties.path,
+          averageComplexity: Math.round((data.total / data.count) * 100) / 100,
+          functionCount: data.count,
+          totalComplexity: data.total
+        });
+      }
+    }
+    
+    fileAverages.sort((a, b) => b.averageComplexity - a.averageComplexity);
+    
+    return {
+      overview: {
+        totalFunctions: functions.length,
+        averageComplexity: functions.length > 0 ? 
+          Math.round((totalComplexity / functions.length) * 100) / 100 : 0,
+        distribution: complexityDistribution
+      },
+      topComplexFiles: fileAverages.slice(0, 10),
+      recommendations: this.generateComplexityRecommendations(complexityDistribution)
+    };
+  }
+
+  /**
+   * Find tightly coupled modules
+   */
+  async findTightlyCoupledModules(parameters = {}) {
+    const threshold = parameters.threshold || 5;
+    const couplingMap = new Map();
+    
+    // Count dependencies between files
+    const importRelationships = Array.from(this.relationships.values())
+      .filter(rel => rel.type === 'IMPORTS_FROM');
+    
+    for (const rel of importRelationships) {
+      const fromFile = this.nodes.get(rel.from);
+      const toFile = this.nodes.get(rel.to);
+      
+      if (fromFile && toFile) {
+        const key = `${rel.from}-${rel.to}`;
+        couplingMap.set(key, {
+          from: fromFile.properties.path,
+          to: toFile.properties.path,
+          strength: (couplingMap.get(key)?.strength || 0) + 1
+        });
+      }
+    }
+    
+    // Find highly coupled pairs
+    const tightlyCoupled = [];
+    for (const [key, coupling] of couplingMap) {
+      if (coupling.strength >= threshold) {
+        tightlyCoupled.push({
+          ...coupling,
+          severity: coupling.strength > 10 ? 'critical' : 
+                   coupling.strength > 7 ? 'high' : 'medium'
+        });
+      }
+    }
+    
+    return tightlyCoupled.sort((a, b) => b.strength - a.strength);
+  }
+
+  /**
+   * Identify code smells
+   */
+  async identifyCodeSmells(parameters = {}) {
+    const smells = [];
+    
+    // Long parameter lists
+    const functions = Array.from(this.nodes.values())
+      .filter(node => node.type === 'Function' && node.properties.parameter_count > 5);
+    
+    for (const func of functions) {
+      smells.push({
+        type: 'long_parameter_list',
+        severity: func.properties.parameter_count > 8 ? 'high' : 'medium',
+        function: func.properties.name,
+        file: func.properties.file_id,
+        parameterCount: func.properties.parameter_count,
+        description: `Function has ${func.properties.parameter_count} parameters`
+      });
+    }
+    
+    // Large classes
+    const classes = Array.from(this.nodes.values())
+      .filter(node => node.type === 'Class' && node.properties.method_count > 15);
+    
+    for (const cls of classes) {
+      smells.push({
+        type: 'large_class',
+        severity: cls.properties.method_count > 25 ? 'high' : 'medium',
+        class: cls.properties.name,
+        file: cls.properties.file_id,
+        methodCount: cls.properties.method_count,
+        description: `Class has ${cls.properties.method_count} methods`
+      });
+    }
+    
+    // Feature envy (high coupling)
+    const highCoupling = await this.findTightlyCoupledModules({ threshold: 8 });
+    for (const coupling of highCoupling.slice(0, 5)) {
+      smells.push({
+        type: 'feature_envy',
+        severity: 'medium',
+        from: coupling.from,
+        to: coupling.to,
+        couplingStrength: coupling.strength,
+        description: `High coupling between modules (${coupling.strength} dependencies)`
+      });
+    }
+    
+    return smells.sort((a, b) => {
+      const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+      return severityOrder[b.severity] - severityOrder[a.severity];
+    });
+  }
+
+  /**
+   * Generate complexity recommendations
+   */
+  generateComplexityRecommendations(distribution) {
+    const recommendations = [];
+    
+    if (distribution.critical.count > 0) {
+      recommendations.push({
+        priority: 'critical',
+        type: 'refactor_complex_functions',
+        description: `${distribution.critical.count} functions have critical complexity (>20)`,
+        action: 'Break down into smaller, focused functions immediately',
+        functions: distribution.critical.functions.slice(0, 5)
+      });
+    }
+    
+    if (distribution.high.count > 5) {
+      recommendations.push({
+        priority: 'high',
+        type: 'reduce_complexity',
+        description: `${distribution.high.count} functions have high complexity (11-20)`,
+        action: 'Consider refactoring to reduce cyclomatic complexity',
+        functions: distribution.high.functions.slice(0, 3)
+      });
+    }
+    
+    const totalComplex = distribution.high.count + distribution.critical.count;
+    const totalFunctions = Object.values(distribution).reduce((sum, cat) => sum + cat.count, 0);
+    
+    if (totalComplex / totalFunctions > 0.2) {
+      recommendations.push({
+        priority: 'medium',
+        type: 'architectural_review',
+        description: `${Math.round((totalComplex / totalFunctions) * 100)}% of functions are highly complex`,
+        action: 'Consider architectural refactoring to reduce overall complexity'
+      });
+    }
+    
+    return recommendations;
+  }
+
+  /**
+   * Get deprecation severity
+   */
+  getDeprecationSeverity(pattern) {
+    const severityMap = {
+      'eval(': 'critical',
+      'innerHTML': 'high',
+      'document.write': 'high',
+      'var ': 'medium',
+      'require(': 'medium',
+      'setInterval': 'low',
+      'setTimeout': 'low'
+    };
+    
+    return severityMap[pattern] || 'low';
+  }
+
+  /**
+   * Get deprecation recommendation
+   */
+  getDeprecationRecommendation(pattern) {
+    const recommendations = {
+      'eval(': 'Use safer alternatives like JSON.parse() or Function constructor',
+      'innerHTML': 'Use textContent, createElement, or template literals',
+      'document.write': 'Use modern DOM manipulation methods',
+      'var ': 'Use const or let for block scoping',
+      'require(': 'Use ES6 import/export statements',
+      'setInterval': 'Consider requestAnimationFrame for animations',
+      'setTimeout': 'Consider using Promises or async/await'
+    };
+    
+    return recommendations[pattern] || 'Consider using modern alternatives';
+  }
     const queries = {
       createNodes: [],
       createRelationships: [],

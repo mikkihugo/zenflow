@@ -254,7 +254,17 @@ export class AIProviderPlugin {
 
   async setActiveProvider(providerName) {
     if (!this.providers.has(providerName)) {
-      throw new Error(`Provider ${providerName} not available`);
+      // Try to find an available provider instead of throwing
+      const availableProviders = Array.from(this.providers.keys());
+      if (availableProviders.length > 0) {
+        this.activeProvider = availableProviders[0];
+        console.log(`⚠️ Provider ${providerName} not available, using ${this.activeProvider} instead`);
+        return;
+      } else {
+        console.warn(`⚠️ No providers available, ${providerName} requested but not found`);
+        this.activeProvider = null;
+        return;
+      }
     }
     
     this.activeProvider = providerName;

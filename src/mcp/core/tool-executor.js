@@ -148,7 +148,7 @@ export class MCPToolExecutor {
     
     try {
       // Build command line arguments
-      let cmdArgs = [];
+      const cmdArgs = [];
       
       // Handle different argument patterns for each command
       switch (command) {
