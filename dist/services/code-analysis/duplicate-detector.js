@@ -9,6 +9,17 @@ import { promisify } from 'util';
 import { createHash } from 'crypto';
 import path from 'path';
 
+// Import glob using dynamic import to avoid ESM issues
+let glob;
+
+try {
+  const globModule = await import('glob');
+  glob = globModule.glob || globModule.default;
+} catch (e) {
+  console.warn('Glob not available, using fallback file discovery');
+  glob = null;
+}
+
 const execAsync = promisify(exec);
 
 // Check if jscpd is available
@@ -145,7 +156,7 @@ export class DuplicateCodeDetector {
     const lines = output.split('\n');
     const duplicates = [];
     
-    let currentDuplicate = null;
+    const currentDuplicate = null;
     for (const line of lines) {
       if (line.includes('Found') && line.includes('clones')) {
         // Parse clone information
@@ -165,11 +176,13 @@ export class DuplicateCodeDetector {
   async manualDuplicateDetection(targetPath) {
     console.log('🔧 Running manual duplicate detection...');
     
-    const files = await glob(this.config.filePatterns, {
-      cwd: targetPath,
-      ignore: this.config.ignorePatterns,
-      absolute: true
-    });
+    const files = glob ? 
+      await glob(this.config.filePatterns, {
+        cwd: targetPath,
+        ignore: this.config.ignorePatterns,
+        absolute: true
+      }) :
+      await this.getAllJSFiles(targetPath);
     
     const duplicates = [];
     const codeBlocks = new Map();

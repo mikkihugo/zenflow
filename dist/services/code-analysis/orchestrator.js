@@ -8,6 +8,8 @@ import path from 'path';
 import ASTParser from './ast-parser.js';
 import DependencyAnalyzer from './dependency-analyzer.js';
 import DuplicateCodeDetector from './duplicate-detector.js';
+import ComplexityAnalyzer from './complexity-analyzer.js';
+import TreeSitterParser from './tree-sitter-parser.js';
 
 // Try to import optional Kuzu integration
 let KuzuGraphInterface;
@@ -48,6 +50,8 @@ export class CodeAnalysisOrchestrator {
     this.astParser = new ASTParser();
     this.dependencyAnalyzer = new DependencyAnalyzer(this.config);
     this.duplicateDetector = new DuplicateCodeDetector(this.config);
+    this.complexityAnalyzer = new ComplexityAnalyzer(this.config);
+    this.treeSitterParser = new TreeSitterParser(this.config);
     // Initialize Kuzu graph interface if available
     this.kuzuGraph = KuzuGraphInterface ? new KuzuGraphInterface(this.config.kuzu) : null;
     
@@ -71,6 +75,9 @@ export class CodeAnalysisOrchestrator {
       } else {
         console.warn('Graph storage disabled - Kuzu interface not available');
       }
+      
+      // Initialize tree-sitter parser
+      await this.treeSitterParser.initialize();
       
       this.isInitialized = true;
       console.log('✅ Code analysis system initialized');
@@ -110,6 +117,7 @@ export class CodeAnalysisOrchestrator {
       ast: {},
       dependencies: {},
       duplicates: {},
+      complexity: {},
       graph: {},
       timestamp: new Date().toISOString()
     };
@@ -136,13 +144,19 @@ export class CodeAnalysisOrchestrator {
         results.duplicates = await this.performDuplicateAnalysis();
       }
       
-      // 5. Store in Kuzu Graph
+      // 5. Complexity Analysis
+      if (analysisOptions.includeComplexity) {
+        console.log('📊 Analyzing complexity...');
+        results.complexity = await this.performComplexityAnalysis(sourceFiles);
+      }
+      
+      // 6. Store in Kuzu Graph
       if (analysisOptions.storeInGraph) {
         console.log('📊 Storing in graph database...');
         results.graph = await this.storeInGraph(results);
       }
       
-      // 6. Generate summary
+      // 7. Generate summary
       results.summary = await this.generateAnalysisSummary(results);
       
       // 7. Save results
@@ -314,6 +328,13 @@ export class CodeAnalysisOrchestrator {
    */
   async performDuplicateAnalysis() {
     return await this.duplicateDetector.detectDuplicates(this.config.projectPath);
+  }
+
+  /**
+   * Perform complexity analysis
+   */
+  async performComplexityAnalysis(sourceFiles) {
+    return await this.complexityAnalyzer.analyzeComplexity(sourceFiles);
   }
 
   /**
