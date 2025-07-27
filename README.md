@@ -20,7 +20,7 @@ Claude-Zen is the **first production-ready AI development platform** built on co
 ### 🏆 Key Achievements
 - **84.8% SWE-Bench Score** - Outperforming GPT-4 and Claude 3.7 through swarm intelligence
 - **668 Source Files** - Comprehensive platform with 17,500+ lines of production code
-- **Complete Lifecycle** - Design → Code → Test → Deploy in one integrated platform
+- **Complete Lifecycle** - Strategic Vision → Implementation → Test → Deploy in one integrated platform
 - **Neural-First Architecture** - Custom ruv-FANN networks vs generic LLM dependence
 
 ### 👑 Multi-Queen Collaborative Intelligence
@@ -31,7 +31,7 @@ Claude-Zen is the **first production-ready AI development platform** built on co
 - **Persistent Learning** - Cross-session memory and pattern recognition
 
 ### 🎯 Production-Ready Features
-- **Vision-to-Code Pipeline** - Complete workflow from designs to deployments
+- **Strategic Vision Pipeline** - Complete workflow from strategic visions to deployments
 - **Neural Integration** - ClaudeZenNeuralService with 27+ forecasting models
 - **Universal UI** - TUI, Web, and CLI interfaces for all user preferences
 - **Comprehensive Testing** - Unit, integration, e2e, performance, and security suites
@@ -46,7 +46,7 @@ Claude-Zen is the **first production-ready AI development platform** built on co
 │  👑 Enhanced Queen Coordinator (Rust + TypeScript)          │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
 │  │ Code Queen  │  │Vision Queen │  │Neural Queen │  ...    │
-│  │ (Generate)  │  │(Design→Code)│  │ (Analyze)   │         │
+│  │ (Generate)  │  │(Vision→Task)│  │ (Analyze)   │         │
 │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘         │
 │         └─────────────────┼─────────────────┘               │
 │                    Democratic Consensus                      │
@@ -120,7 +120,7 @@ claude-zen neural analyze --model lstm --data timeseries.csv
   - `hive/` - Multi-Queen hive intelligence coordination
   - `queens/` - Specialized Queen implementations (Code, Vision, Neural, Debug)
   - `memory/` - SQLite + vector + graph database integration
-  - `cli/command-handlers/` - Integrated vision-to-code workflow (270-line pipeline)
+  - `cli/command-handlers/` - Integrated strategic vision-to-task workflow (270-line pipeline)
   - `ui/shared/` - Vision API components and interfaces
   - `neural/` - ClaudeZenNeuralService integration (223 lines)
   - `plugins/` - 6 production plugins with error recovery
@@ -280,18 +280,18 @@ claude-zen neural optimize --target latency --threshold 10ms
 claude-zen neural export --format wasm --optimize
 ```
 
-## 🎨 Complete Vision-to-Code Pipeline
+## 🎨 Complete Strategic Vision-to-Implementation Pipeline
 
-Claude-Zen includes a **production-ready 270-line vision-to-code workflow** that converts designs directly into deployable code.
+Claude-Zen includes a **production-ready 270-line strategic workflow** that breaks down high-level visions into executable implementation tasks.
 
 ### 🔄 Full Lifecycle Automation
 
 ```typescript
-// Production vision workflow
-class VisionWorkflowHandler {
-  async processDesignToCode(designInput: DesignInput): Promise<CodeOutput> {
-    // 1. Design Analysis (Vision Queen)
-    const analysis = await this.visionQueen.analyzeDesign(designInput);
+// Production strategic workflow
+class StrategicWorkflowHandler {
+  async processVisionToImplementation(visionInput: VisionInput): Promise<TaskOutput> {
+    // 1. Vision Analysis (Strategic Queen)
+    const analysis = await this.strategicQueen.analyzeVision(visionInput);
     
     // 2. Architecture Planning (Strategic Queens)
     const architecture = await this.queenCouncil.planArchitecture(analysis);
@@ -310,12 +310,13 @@ class VisionWorkflowHandler {
 }
 ```
 
-### 🎯 Supported Workflows
-- **Figma → React Components** - Direct conversion with state management
-- **Sketch → Vue.js Applications** - Full SPA generation
-- **Adobe XD → Angular Projects** - Enterprise-ready applications
-- **Hand-drawn → HTML/CSS** - Sketch-to-website pipeline
-- **Wireframes → Full-Stack Apps** - Backend + Frontend generation
+### 🎯 Core Capabilities
+- **Multi-Agent AI Coordination** - Specialized Queen agents for distributed problem-solving
+- **Microservice Development** - Complete lifecycle management for distributed systems
+- **Code Analysis & Intelligence** - AST parsing, complexity analysis, dependency mapping
+- **Neural Network Integration** - ruv-FANN framework with 27+ forecasting models
+- **Database Orchestration** - SQLite, LanceDB, and Kuzu multi-modal intelligence
+- **Task Hierarchy Management** - Vision → Epic → Feature → Task breakdown automation
 
 ## 📊 Production Metrics & Benchmarks
 
@@ -370,16 +371,16 @@ claude-zen neural train --data data.csv # Train custom models
 claude-zen neural benchmark --compare   # Compare model performance
 ```
 
-### 🎨 Vision & Code Generation
+### 🎨 Strategic Vision & Task Management
 
 ```bash
-# Vision-to-code pipeline
-claude-zen vision analyze design.png --output ./src
-claude-zen generate --from wireframe.jpg --target react
-claude-zen convert --design figma-export/ --framework vue
+# Strategic vision-to-implementation pipeline
+claude-zen vision create "AI Platform Development" --objectives "intelligent code generation, automated testing"
+claude-zen breakdown vision-123 --generate-epics --create-tasks
+claude-zen assign tasks --queen-specialist frontend --priority high
 
-# Full-stack generation
-claude-zen scaffold --design ui.png --backend node --db postgres
+# Microservice coordination
+claude-zen scaffold microservice auth-service --architecture distributed --db postgres
 ```
 
 ## 🐝 Multi-Queen Swarm Operations
@@ -416,7 +417,7 @@ await swarm.execute({
 - **[Architecture Guide](./docs/architecture.md)** - System design and data flow
 - **[Queen Coordinator System](./docs/queens.md)** - Multi-Queen collaboration patterns
 - **[Neural Networks](./ruv-FANN/README.md)** - ruv-FANN framework documentation
-- **[Vision Pipeline](./docs/vision-to-code.md)** - Design-to-code workflow
+- **[Strategic Vision Pipeline](./docs/vision-to-task.md)** - Strategic vision-to-implementation workflow
 - **[API Reference](./docs/api.md)** - Complete API documentation
 - **[CLI Reference](./docs/cli.md)** - Command-line interface guide
 
@@ -439,7 +440,7 @@ Claude-Zen uses an innovative **swarm-based contribution system** powered by ruv
 
 1. **Enhanced Queen Coordination** - Advanced consensus algorithms and performance optimization
 2. **Neural Model Development** - New architectures in ruv-FANN framework  
-3. **Vision Pipeline Enhancement** - Improved design-to-code accuracy and speed
+3. **Strategic Vision Pipeline Enhancement** - Improved vision-to-implementation accuracy and speed
 4. **Database Optimization** - Vector search and graph query performance
 5. **Enterprise Features** - Scaling, security, and deployment tools
 
@@ -480,7 +481,7 @@ Contributors work alongside our Queen system and are recognized in our Enhanced 
 |---------|------------|----------------|--------|-------|
 | **Collaborative AI** | ✅ Multi-Queen | ❌ Single agent | ❌ Single agent | ❌ Single agent |
 | **Custom Neural Networks** | ✅ ruv-FANN | ❌ Generic LLM | ❌ Generic LLM | ❌ Generic LLM |
-| **Complete Lifecycle** | ✅ Design→Deploy | ❌ Code only | ❌ Code only | ❌ Code only |
+| **Complete Lifecycle** | ✅ Vision→Deploy | ❌ Code only | ❌ Code only | ❌ Code only |
 | **Democratic Decisions** | ✅ Queen consensus | ❌ N/A | ❌ N/A | ❌ N/A |
 | **Persistent Learning** | ✅ Cross-session | ❌ Stateless | ❌ Limited | ❌ Limited |
 | **Vision Integration** | ✅ Production pipeline | ❌ No | ❌ Basic | ❌ No |
@@ -499,7 +500,7 @@ MIT License - see [LICENSE](./LICENSE) for details
 - **[@ruvnet](https://github.com/ruvnet)** - Original claude-code-flow foundation and ruv-FANN neural framework
 - **Enhanced Queen Coordinator Development** - Strategic orchestration and swarm intelligence
 - **ruv-FANN Neural Framework** - 27+ models, CUDA-WASM, and 84.8% SWE-Bench achievement
-- **Vision-to-Code Pipeline** - Complete design-to-deployment automation
+- **Strategic Vision Pipeline** - Complete strategic vision-to-deployment automation
 - **Multi-Database Integration** - SQLite, LanceDB, and Kuzu coordination
 
 ### 🤖 AI Foundation

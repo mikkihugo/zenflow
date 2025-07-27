@@ -21,22 +21,30 @@ export class BazelMonorepoPlugin {
       aspectsEnabled: true,
       incrementalEnabled: true,
       parallelJobs: 4,
+      enableKuzuIntegration: true, // Enable graph database integration
       ...config
     };
     
     this.workspace = null;
     this.modules = new Map();
     this.buildGraph = new Map();
+    this.graphBackend = null; // Kuzu graph database backend
+    this.hiveMind = null; // Hive-mind integration
     this.stats = {
       modulesFound: 0,
       buildRulesFound: 0,
       dependenciesAnalyzed: 0,
-      cacheHitRate: 0
+      cacheHitRate: 0,
+      graphNodesStored: 0,
+      graphRelationshipsStored: 0
     };
   }
 
   async initialize() {
     console.log('🏗️ Bazel Monorepo Plugin initialized');
+    
+    // Initialize Kuzu graph database integration if available
+    await this.initializeGraphBackend();
     
     // Check if Bazel is available
     await this.checkBazelInstallation();
@@ -49,6 +57,95 @@ export class BazelMonorepoPlugin {
     
     // Build dependency graph
     await this.buildDependencyGraph();
+
+    // Store dependency graph in Kuzu if enabled
+    if (this.graphBackend) {
+      await this.storeGraphInKuzu();
+    }
+  }
+
+  async initializeGraphBackend() {
+    if (!this.config.enableKuzuIntegration) {
+      console.log('📊 Kuzu integration disabled');
+      return;
+    }
+
+    try {
+      // Initialize graph backend through hive-mind if available
+      if (this.config.hiveMindIntegration) {
+        this.hiveMind = this.config.hiveMindIntegration;
+        this.graphBackend = this.config.hybridMemory;
+        console.log('✅ Connected to Kuzu graph database via hive-mind');
+      } else {
+        // Fallback: Initialize Kuzu backend directly
+        const { MemoryBackendPlugin } = await import('../memory-backend/index.js');
+        this.graphBackend = new MemoryBackendPlugin({
+          backend: 'kuzu',
+          kuzuConfig: {
+            persistDirectory: `${this.config.workspaceRoot}/.bazel-graph`,
+            enableRelationships: true
+          }
+        });
+        await this.graphBackend.initialize();
+        console.log('✅ Initialized standalone Kuzu graph database');
+      }
+
+      // Initialize Bazel-specific schema in Kuzu
+      await this.initializeBazelSchema();
+      
+    } catch (error) {
+      console.warn('⚠️ Failed to initialize Kuzu integration:', error.message);
+      console.log('📝 Falling back to in-memory dependency graph');
+      this.config.enableKuzuIntegration = false;
+    }
+  }
+
+  async initializeBazelSchema() {
+    if (!this.graphBackend?.storage?.conn) {
+      return;
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Create node table for Bazel targets
+      await conn.query(`
+        CREATE NODE TABLE IF NOT EXISTS BazelTarget(
+          id STRING,
+          workspace STRING,
+          package STRING,
+          name STRING,
+          rule_type STRING,
+          module_type STRING,
+          source_files STRING,
+          metadata STRING,
+          timestamp INT64,
+          PRIMARY KEY(id)
+        )
+      `);
+
+      // Create relationship table for dependencies
+      await conn.query(`
+        CREATE REL TABLE IF NOT EXISTS Depends(FROM BazelTarget TO BazelTarget,
+          dependency_type STRING,
+          strength DOUBLE,
+          is_direct BOOLEAN,
+          created_at INT64
+        )
+      `);
+
+      // Create relationship table for module containment
+      await conn.query(`
+        CREATE REL TABLE IF NOT EXISTS Contains(FROM BazelTarget TO BazelTarget,
+          containment_type STRING,
+          created_at INT64
+        )
+      `);
+
+      console.log('📊 Bazel schema initialized in Kuzu graph database');
+    } catch (error) {
+      console.warn(`Bazel schema initialization warning: ${error.message}`);
+    }
   }
 
   async checkBazelInstallation() {
@@ -379,6 +476,99 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
     }
   }
 
+  async storeGraphInKuzu() {
+    if (!this.graphBackend?.storage?.conn) {
+      console.log('📊 No Kuzu connection available for graph storage');
+      return;
+    }
+
+    console.log('📊 Storing Bazel dependency graph in Kuzu...');
+    
+    try {
+      const conn = this.graphBackend.storage.conn;
+      const timestamp = Date.now();
+      let nodesStored = 0;
+      let relationshipsStored = 0;
+
+      // Store build targets as nodes
+      for (const [modulePath, module] of this.modules) {
+        for (const target of module.targets) {
+          const targetId = target.target || `//${modulePath}:${target.name}`;
+          
+          await conn.query(`
+            MERGE (t:BazelTarget {id: $id})
+            SET t.workspace = $workspace,
+                t.package = $package,
+                t.name = $name,
+                t.rule_type = $rule_type,
+                t.module_type = $module_type,
+                t.source_files = $source_files,
+                t.metadata = $metadata,
+                t.timestamp = $timestamp
+          `, {
+            id: targetId,
+            workspace: this.workspace?.name || 'unknown',
+            package: modulePath,
+            name: target.name,
+            rule_type: target.type,
+            module_type: module.type,
+            source_files: JSON.stringify(module.metadata?.packageJson?.files || []),
+            metadata: JSON.stringify({
+              module: module,
+              target: target,
+              buildFile: module.buildFile
+            }),
+            timestamp: timestamp
+          });
+          
+          nodesStored++;
+        }
+      }
+
+      // Store dependencies as relationships
+      for (const [modulePath, node] of this.buildGraph) {
+        const sourceTargets = this.modules.get(modulePath)?.targets || [];
+        
+        for (const dependency of node.dependencies) {
+          const depTargets = this.modules.get(dependency)?.targets || [];
+          
+          // Create relationships between all targets in source module to all targets in dependency module
+          for (const sourceTarget of sourceTargets) {
+            const sourceId = sourceTarget.target || `//${modulePath}:${sourceTarget.name}`;
+            
+            for (const depTarget of depTargets) {
+              const depId = depTarget.target || `//${dependency}:${depTarget.name}`;
+              
+              await conn.query(`
+                MATCH (source:BazelTarget {id: $sourceId}), (dep:BazelTarget {id: $depId})
+                CREATE (source)-[:Depends {
+                  dependency_type: 'module_dependency',
+                  strength: 1.0,
+                  is_direct: true,
+                  created_at: $timestamp
+                }]->(dep)
+              `, {
+                sourceId: sourceId,
+                depId: depId,
+                timestamp: timestamp
+              });
+              
+              relationshipsStored++;
+            }
+          }
+        }
+      }
+
+      this.stats.graphNodesStored = nodesStored;
+      this.stats.graphRelationshipsStored = relationshipsStored;
+      
+      console.log(`✅ Stored ${nodesStored} targets and ${relationshipsStored} dependencies in Kuzu`);
+      
+    } catch (error) {
+      console.error('❌ Failed to store graph in Kuzu:', error.message);
+    }
+  }
+
   // Build Operations
   async build(targets = this.config.buildTargets, options = {}) {
     console.log(`🔨 Building targets: ${targets.join(', ')}`);
@@ -465,7 +655,277 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
     }
   }
 
-  // Analysis Operations
+  // Graph-based Analysis Operations
+  async analyzeChangeImpactGraph(changedFiles) {
+    if (!this.graphBackend?.storage?.conn) {
+      // Fallback to original analysis
+      return this.analyzeChangeImpact(changedFiles);
+    }
+
+    console.log(`🔍 Analyzing impact of ${changedFiles.length} changed files using graph database`);
+    
+    try {
+      const conn = this.graphBackend.storage.conn;
+      const affectedTargets = new Set();
+      
+      // Find targets that contain or depend on changed files
+      for (const file of changedFiles) {
+        // Find direct targets affected by file changes
+        const directTargets = await conn.query(`
+          MATCH (t:BazelTarget)
+          WHERE t.source_files CONTAINS $file OR t.package CONTAINS $file
+          RETURN t.id
+        `, { file: file });
+        
+        for (const target of directTargets) {
+          affectedTargets.add(target['t.id']);
+        }
+        
+        // Find transitive dependencies using graph traversal
+        const transitiveTargets = await conn.query(`
+          MATCH (changed:BazelTarget)-[:Depends*1..5]-(affected:BazelTarget)
+          WHERE changed.source_files CONTAINS $file OR changed.package CONTAINS $file
+          RETURN DISTINCT affected.id, length(path) as distance
+          ORDER BY distance
+        `, { file: file });
+        
+        for (const target of transitiveTargets) {
+          affectedTargets.add(target['affected.id']);
+        }
+      }
+
+      const result = {
+        changedFiles: changedFiles,
+        affectedTargets: Array.from(affectedTargets),
+        buildRecommendation: this.generateBuildRecommendation(affectedTargets),
+        testRecommendation: this.generateTestRecommendation(affectedTargets),
+        analysisMethod: 'graph_traversal',
+        graphMetrics: {
+          directlyAffected: directTargets?.length || 0,
+          transitivelyAffected: affectedTargets.size
+        }
+      };
+      
+      console.log(`📊 Graph impact analysis: ${result.affectedTargets.length} targets affected`);
+      return result;
+      
+    } catch (error) {
+      console.warn('⚠️ Graph impact analysis failed, falling back to basic analysis:', error.message);
+      return this.analyzeChangeImpact(changedFiles);
+    }
+  }
+
+  async findTransitiveDependencies(targetId, maxDepth = 5) {
+    if (!this.graphBackend?.storage?.conn) {
+      console.warn('Graph backend not available for transitive dependency analysis');
+      return [];
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      const result = await conn.query(`
+        MATCH (source:BazelTarget {id: $targetId})-[:Depends*1..${maxDepth}]->(dep:BazelTarget)
+        RETURN DISTINCT dep.id, dep.name, dep.package, dep.rule_type, 
+               length(path) as distance
+        ORDER BY distance, dep.package, dep.name
+      `, { targetId: targetId });
+
+      return result.map(row => ({
+        id: row['dep.id'],
+        name: row['dep.name'],
+        package: row['dep.package'],
+        ruleType: row['dep.rule_type'],
+        distance: row.distance
+      }));
+      
+    } catch (error) {
+      console.warn(`Failed to find transitive dependencies: ${error.message}`);
+      return [];
+    }
+  }
+
+  async findDependents(targetId, maxDepth = 3) {
+    if (!this.graphBackend?.storage?.conn) {
+      console.warn('Graph backend not available for dependent analysis');
+      return [];
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      const result = await conn.query(`
+        MATCH (dependent:BazelTarget)-[:Depends*1..${maxDepth}]->(target:BazelTarget {id: $targetId})
+        RETURN DISTINCT dependent.id, dependent.name, dependent.package, dependent.rule_type,
+               length(path) as distance
+        ORDER BY distance, dependent.package, dependent.name
+      `, { targetId: targetId });
+
+      return result.map(row => ({
+        id: row['dependent.id'],
+        name: row['dependent.name'],
+        package: row['dependent.package'],
+        ruleType: row['dependent.rule_type'],
+        distance: row.distance
+      }));
+      
+    } catch (error) {
+      console.warn(`Failed to find dependents: ${error.message}`);
+      return [];
+    }
+  }
+
+  async detectCircularDependenciesGraph() {
+    if (!this.graphBackend?.storage?.conn) {
+      // Fallback to original detection
+      return this.detectCircularDependencies();
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Find cycles using graph algorithms
+      const cycles = await conn.query(`
+        MATCH path = (a:BazelTarget)-[:Depends*2..10]->(a)
+        WHERE length(path) >= 2
+        RETURN [node in nodes(path) | node.id] as cycle_nodes,
+               length(path) as cycle_length
+        ORDER BY cycle_length
+        LIMIT 50
+      `);
+
+      return cycles.map(row => ({
+        nodes: row.cycle_nodes,
+        length: row.cycle_length,
+        severity: row.cycle_length <= 3 ? 'high' : 'medium'
+      }));
+      
+    } catch (error) {
+      console.warn('Graph-based cycle detection failed, using fallback:', error.message);
+      return this.detectCircularDependencies();
+    }
+  }
+
+  async analyzeModuleComplexity(packagePath) {
+    if (!this.graphBackend?.storage?.conn) {
+      console.warn('Graph backend not available for complexity analysis');
+      return null;
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Analyze complexity metrics using graph properties
+      const complexity = await conn.query(`
+        MATCH (pkg:BazelTarget {package: $package})
+        OPTIONAL MATCH (pkg)-[:Depends]->(out:BazelTarget)
+        OPTIONAL MATCH (in:BazelTarget)-[:Depends]->(pkg)
+        RETURN 
+          count(DISTINCT pkg) as target_count,
+          count(DISTINCT out) as outgoing_deps,
+          count(DISTINCT in) as incoming_deps,
+          avg(length((pkg)-[:Depends*1..3]->(:BazelTarget))) as avg_dep_depth
+      `, { package: packagePath });
+
+      if (complexity.length > 0) {
+        const metrics = complexity[0];
+        return {
+          package: packagePath,
+          targetCount: metrics.target_count,
+          outgoingDependencies: metrics.outgoing_deps,
+          incomingDependencies: metrics.incoming_deps,
+          averageDependencyDepth: metrics.avg_dep_depth || 0,
+          complexityScore: this.calculateComplexityScore(metrics)
+        };
+      }
+      
+      return null;
+      
+    } catch (error) {
+      console.warn(`Failed to analyze module complexity: ${error.message}`);
+      return null;
+    }
+  }
+
+  calculateComplexityScore(metrics) {
+    // Simple complexity scoring based on graph metrics
+    const targetWeight = metrics.target_count * 2;
+    const depWeight = (metrics.outgoing_deps + metrics.incoming_deps) * 1.5;
+    const depthWeight = metrics.avg_dep_depth * 3;
+    
+    return Math.round(targetWeight + depWeight + depthWeight);
+  }
+
+  // Time-based tracking methods
+  async trackDependencyChanges(changeType = 'build') {
+    if (!this.graphBackend?.storage?.conn) {
+      console.log('📊 Time-based tracking requires Kuzu integration');
+      return;
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      const timestamp = Date.now();
+      
+      // Create snapshot node for this build/analysis
+      await conn.query(`
+        CREATE (:DependencySnapshot {
+          id: $snapshotId,
+          workspace: $workspace,
+          change_type: $changeType,
+          timestamp: $timestamp,
+          target_count: $targetCount,
+          relationship_count: $relationshipCount
+        })
+      `, {
+        snapshotId: `snapshot_${timestamp}`,
+        workspace: this.workspace?.name || 'unknown',
+        changeType: changeType,
+        timestamp: timestamp,
+        targetCount: this.stats.graphNodesStored,
+        relationshipCount: this.stats.graphRelationshipsStored
+      });
+      
+      console.log(`📊 Tracked dependency changes at ${new Date(timestamp).toISOString()}`);
+      
+    } catch (error) {
+      console.warn('Failed to track dependency changes:', error.message);
+    }
+  }
+
+  async getDependencyHistory(targetId, daysBack = 30) {
+    if (!this.graphBackend?.storage?.conn) {
+      return [];
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      const cutoffTime = Date.now() - (daysBack * 24 * 60 * 60 * 1000);
+      
+      const history = await conn.query(`
+        MATCH (snapshot:DependencySnapshot)-[:ANALYZED]->(target:BazelTarget {id: $targetId})
+        WHERE snapshot.timestamp >= $cutoffTime
+        RETURN snapshot.timestamp, snapshot.change_type, target.name
+        ORDER BY snapshot.timestamp DESC
+      `, { 
+        targetId: targetId,
+        cutoffTime: cutoffTime 
+      });
+
+      return history.map(row => ({
+        timestamp: row['snapshot.timestamp'],
+        changeType: row['snapshot.change_type'],
+        targetName: row['target.name'],
+        date: new Date(row['snapshot.timestamp']).toISOString()
+      }));
+      
+    } catch (error) {
+      console.warn(`Failed to get dependency history: ${error.message}`);
+      return [];
+    }
+  }
+
+  // Original analyzeChangeImpact method (fallback)
   async analyzeChangeImpact(changedFiles) {
     console.log(`🔍 Analyzing impact of ${changedFiles.length} changed files`);
     
@@ -504,17 +964,144 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
     }
   }
 
+  // Code complexity integration
+  async integrateComplexityAnalysis() {
+    if (!this.hiveMind) {
+      console.log('🔍 Complexity integration requires hive-mind connection');
+      return null;
+    }
+
+    try {
+      // Request complexity analysis from code complexity scanner plugin
+      const complexityResults = await this.hiveMind.coordinate({
+        type: 'plugin',
+        plugin: 'code-complexity-scanner',
+        operation: 'scanWorkspace',
+        params: {
+          workspaceRoot: this.config.workspaceRoot,
+          includePatterns: ['**/*.js', '**/*.ts', '**/*.py', '**/*.java'],
+          excludePatterns: ['**/node_modules/**', '**/bazel-*/**']
+        }
+      });
+
+      if (complexityResults?.success && this.graphBackend?.storage?.conn) {
+        await this.storeComplexityInGraph(complexityResults.result);
+        return complexityResults.result;
+      }
+
+      return complexityResults?.result || null;
+      
+    } catch (error) {
+      console.warn('Failed to integrate complexity analysis:', error.message);
+      return null;
+    }
+  }
+
+  async storeComplexityInGraph(complexityData) {
+    if (!this.graphBackend?.storage?.conn || !complexityData?.files) {
+      return;
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Store complexity metrics for each file and link to Bazel targets
+      for (const file of complexityData.files) {
+        // Find Bazel targets that include this file
+        const targets = await conn.query(`
+          MATCH (t:BazelTarget)
+          WHERE t.source_files CONTAINS $filePath OR t.package CONTAINS $packagePath
+          RETURN t.id
+        `, { 
+          filePath: file.path,
+          packagePath: file.path.split('/').slice(0, -1).join('/')
+        });
+
+        // Update targets with complexity metrics
+        for (const target of targets) {
+          await conn.query(`
+            MATCH (t:BazelTarget {id: $targetId})
+            SET t.complexity_score = $complexity,
+                t.complexity_details = $details,
+                t.complexity_updated = $timestamp
+          `, {
+            targetId: target['t.id'],
+            complexity: file.complexity?.score || 0,
+            details: JSON.stringify(file.complexity || {}),
+            timestamp: Date.now()
+          });
+        }
+      }
+      
+      console.log(`📊 Stored complexity data for ${complexityData.files.length} files`);
+      
+    } catch (error) {
+      console.warn('Failed to store complexity in graph:', error.message);
+    }
+  }
+
+  async findComplexityHotspots(complexityThreshold = 50) {
+    if (!this.graphBackend?.storage?.conn) {
+      console.warn('Graph backend required for hotspot detection');
+      return [];
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      const hotspots = await conn.query(`
+        MATCH (t:BazelTarget)
+        WHERE t.complexity_score >= $threshold
+        OPTIONAL MATCH (t)-[:Depends]->(dep:BazelTarget)
+        OPTIONAL MATCH (dependent:BazelTarget)-[:Depends]->(t)
+        RETURN t.id, t.name, t.package, t.complexity_score,
+               count(DISTINCT dep) as outgoing_deps,
+               count(DISTINCT dependent) as incoming_deps
+        ORDER BY t.complexity_score DESC, incoming_deps DESC
+        LIMIT 20
+      `, { threshold: complexityThreshold });
+
+      return hotspots.map(row => ({
+        targetId: row['t.id'],
+        name: row['t.name'],
+        package: row['t.package'],
+        complexityScore: row['t.complexity_score'],
+        outgoingDeps: row.outgoing_deps,
+        incomingDeps: row.incoming_deps,
+        riskLevel: this.calculateRiskLevel(row['t.complexity_score'], row.incoming_deps)
+      }));
+      
+    } catch (error) {
+      console.warn('Failed to find complexity hotspots:', error.message);
+      return [];
+    }
+  }
+
+  calculateRiskLevel(complexityScore, incomingDeps) {
+    const score = complexityScore + (incomingDeps * 5);
+    if (score >= 100) return 'critical';
+    if (score >= 75) return 'high';
+    if (score >= 50) return 'medium';
+    return 'low';
+  }
+
   async generateModuleReport() {
     const report = {
       summary: {
         totalModules: this.modules.size,
         moduleTypes: {},
         totalTargets: this.stats.buildRulesFound,
-        totalDependencies: this.stats.dependenciesAnalyzed
+        totalDependencies: this.stats.dependenciesAnalyzed,
+        graphStorage: {
+          enabled: this.config.enableKuzuIntegration,
+          nodesStored: this.stats.graphNodesStored,
+          relationshipsStored: this.stats.graphRelationshipsStored
+        }
       },
       modules: [],
       dependencyGraph: {},
-      recommendations: []
+      recommendations: [],
+      graphAnalysis: {}
     };
     
     // Count module types
@@ -543,14 +1130,226 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
         type: node.type
       };
     }
+
+    // Add graph-based analysis if available
+    if (this.config.enableKuzuIntegration && this.graphBackend?.storage?.conn) {
+      report.graphAnalysis = await this.generateGraphAnalysis();
+    }
     
     // Generate recommendations
-    report.recommendations = this.generateRecommendations();
+    report.recommendations = await this.generateRecommendations();
     
     return report;
   }
 
-  generateRecommendations() {
+  async generateGraphAnalysis() {
+    if (!this.graphBackend?.storage?.conn) {
+      return {};
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Get graph statistics
+      const stats = await conn.query(`
+        MATCH (t:BazelTarget)
+        OPTIONAL MATCH (t)-[:Depends]->(dep:BazelTarget)
+        RETURN 
+          count(DISTINCT t) as total_targets,
+          count(DISTINCT dep) as total_dependencies,
+          avg(count(dep)) as avg_dependencies_per_target
+      `);
+
+      // Find most connected targets
+      const hubs = await conn.query(`
+        MATCH (t:BazelTarget)
+        OPTIONAL MATCH (t)-[:Depends]->(out:BazelTarget)
+        OPTIONAL MATCH (in:BazelTarget)-[:Depends]->(t)
+        RETURN t.id, t.name, t.package,
+               count(DISTINCT out) as outgoing,
+               count(DISTINCT in) as incoming,
+               (count(DISTINCT out) + count(DISTINCT in)) as total_connections
+        ORDER BY total_connections DESC
+        LIMIT 10
+      `);
+
+      // Detect circular dependencies
+      const cycles = await this.detectCircularDependenciesGraph();
+
+      return {
+        statistics: stats[0] || {},
+        topConnectedTargets: hubs.map(row => ({
+          id: row['t.id'],
+          name: row['t.name'],
+          package: row['t.package'],
+          outgoing: row.outgoing,
+          incoming: row.incoming,
+          totalConnections: row.total_connections
+        })),
+        circularDependencies: cycles,
+        analysisTimestamp: Date.now()
+      };
+      
+    } catch (error) {
+      console.warn('Failed to generate graph analysis:', error.message);
+      return { error: error.message };
+    }
+  }
+
+  async generateGraphAnalysis() {
+    if (!this.graphBackend?.storage?.conn) {
+      return {};
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Get graph statistics
+      const stats = await conn.query(`
+        MATCH (t:BazelTarget)
+        OPTIONAL MATCH (t)-[:Depends]->(dep:BazelTarget)
+        RETURN 
+          count(DISTINCT t) as total_targets,
+          count(DISTINCT dep) as total_dependencies,
+          avg(count(dep)) as avg_dependencies_per_target
+      `);
+
+      // Find most connected targets
+      const hubs = await conn.query(`
+        MATCH (t:BazelTarget)
+        OPTIONAL MATCH (t)-[:Depends]->(out:BazelTarget)
+        OPTIONAL MATCH (in:BazelTarget)-[:Depends]->(t)
+        RETURN t.id, t.name, t.package,
+               count(DISTINCT out) as outgoing,
+               count(DISTINCT in) as incoming,
+               (count(DISTINCT out) + count(DISTINCT in)) as total_connections
+        ORDER BY total_connections DESC
+        LIMIT 10
+      `);
+
+      // Detect circular dependencies
+      const cycles = await this.detectCircularDependenciesGraph();
+
+      return {
+        statistics: stats[0] || {},
+        topConnectedTargets: hubs.map(row => ({
+          id: row['t.id'],
+          name: row['t.name'],
+          package: row['t.package'],
+          outgoing: row.outgoing,
+          incoming: row.incoming,
+          totalConnections: row.total_connections
+        })),
+        circularDependencies: cycles,
+        analysisTimestamp: Date.now()
+      };
+      
+    } catch (error) {
+      console.warn('Failed to generate graph analysis:', error.message);
+      return { error: error.message };
+    }
+  }
+
+  async generateRecommendations() {
+    const recommendations = [];
+    
+    // Use graph-based analysis if available, otherwise fallback to memory-based
+    if (this.config.enableKuzuIntegration && this.graphBackend?.storage?.conn) {
+      return this.generateGraphRecommendations();
+    }
+    
+    // Fallback to original recommendation logic
+    return this.generateBasicRecommendations();
+  }
+
+  async generateGraphRecommendations() {
+    const recommendations = [];
+    
+    try {
+      // Check for circular dependencies using graph queries
+      const cycles = await this.detectCircularDependenciesGraph();
+      if (cycles.length > 0) {
+        recommendations.push({
+          type: 'circular_dependency',
+          severity: 'high',
+          message: `Found ${cycles.length} circular dependencies using graph analysis`,
+          details: cycles,
+          analysisMethod: 'graph'
+        });
+      }
+
+      // Find complexity hotspots
+      const hotspots = await this.findComplexityHotspots();
+      if (hotspots.length > 0) {
+        recommendations.push({
+          type: 'complexity_hotspots',
+          severity: 'medium',
+          message: `Found ${hotspots.length} complexity hotspots`,
+          details: hotspots,
+          analysisMethod: 'graph'
+        });
+      }
+
+      // Check for highly connected targets (potential architecture issues)
+      const conn = this.graphBackend.storage.conn;
+      const hubs = await conn.query(`
+        MATCH (t:BazelTarget)
+        OPTIONAL MATCH (t)-[:Depends]->(out:BazelTarget)
+        OPTIONAL MATCH (in:BazelTarget)-[:Depends]->(t)
+        WITH t, count(DISTINCT out) as outgoing, count(DISTINCT in) as incoming
+        WHERE outgoing > 15 OR incoming > 20
+        RETURN t.id, t.name, t.package, outgoing, incoming
+        ORDER BY (outgoing + incoming) DESC
+        LIMIT 10
+      `);
+
+      if (hubs.length > 0) {
+        recommendations.push({
+          type: 'architecture_hubs',
+          severity: 'medium',
+          message: `Found ${hubs.length} highly connected targets that may need refactoring`,
+          details: hubs.map(row => ({
+            id: row['t.id'],
+            name: row['t.name'],
+            package: row['t.package'],
+            outgoing: row.outgoing,
+            incoming: row.incoming
+          })),
+          analysisMethod: 'graph'
+        });
+      }
+
+      // Check for isolated components
+      const isolated = await conn.query(`
+        MATCH (t:BazelTarget)
+        WHERE NOT EXISTS((t)-[:Depends]-()) AND NOT EXISTS(()-[:Depends]->(t))
+        RETURN t.id, t.name, t.package
+        LIMIT 20
+      `);
+
+      if (isolated.length > 0) {
+        recommendations.push({
+          type: 'isolated_targets',
+          severity: 'low',
+          message: `Found ${isolated.length} isolated targets with no dependencies`,
+          details: isolated.map(row => ({
+            id: row['t.id'],
+            name: row['t.name'],
+            package: row['t.package']
+          })),
+          analysisMethod: 'graph'
+        });
+      }
+
+    } catch (error) {
+      console.warn('Graph recommendations failed, using fallback:', error.message);
+      return this.generateBasicRecommendations();
+    }
+    
+    return recommendations;
+  }
+
+  generateBasicRecommendations() {
     const recommendations = [];
     
     // Check for circular dependencies
@@ -591,6 +1390,216 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
     }
     
     return recommendations;
+  }
+
+  // Visualization capabilities
+  async generateDependencyGraphVisualization(format = 'json') {
+    if (!this.graphBackend?.storage?.conn) {
+      console.warn('Graph visualization requires Kuzu integration');
+      return this.generateBasicVisualization(format);
+    }
+
+    try {
+      const conn = this.graphBackend.storage.conn;
+      
+      // Get all nodes and relationships for visualization
+      const nodes = await conn.query(`
+        MATCH (t:BazelTarget)
+        RETURN t.id, t.name, t.package, t.rule_type, t.module_type
+      `);
+
+      const edges = await conn.query(`
+        MATCH (source:BazelTarget)-[r:Depends]->(target:BazelTarget)
+        RETURN source.id as source, target.id as target, 
+               r.dependency_type as type, r.strength as weight
+      `);
+
+      const graphData = {
+        nodes: nodes.map(row => ({
+          id: row['t.id'],
+          name: row['t.name'],
+          package: row['t.package'],
+          ruleType: row['t.rule_type'],
+          moduleType: row['t.module_type']
+        })),
+        edges: edges.map(row => ({
+          source: row.source,
+          target: row.target,
+          type: row.type,
+          weight: row.weight
+        })),
+        metadata: {
+          generated: new Date().toISOString(),
+          totalNodes: nodes.length,
+          totalEdges: edges.length,
+          workspace: this.workspace?.name || 'unknown'
+        }
+      };
+
+      // Format output based on requested format
+      switch (format) {
+        case 'graphviz':
+          return this.formatGraphviz(graphData);
+        case 'cytoscape':
+          return this.formatCytoscape(graphData);
+        case 'mermaid':
+          return this.formatMermaid(graphData);
+        default:
+          return graphData;
+      }
+      
+    } catch (error) {
+      console.warn('Graph visualization failed:', error.message);
+      return this.generateBasicVisualization(format);
+    }
+  }
+
+  formatGraphviz(graphData) {
+    let dotContent = 'digraph BazelDependencies {\n';
+    dotContent += '  rankdir=TB;\n';
+    dotContent += '  node [shape=box];\n\n';
+    
+    // Add nodes
+    for (const node of graphData.nodes) {
+      const label = `${node.package}:${node.name}`;
+      const color = this.getNodeColor(node.moduleType);
+      dotContent += `  "${node.id}" [label="${label}" fillcolor="${color}" style=filled];\n`;
+    }
+    
+    dotContent += '\n';
+    
+    // Add edges
+    for (const edge of graphData.edges) {
+      dotContent += `  "${edge.source}" -> "${edge.target}";\n`;
+    }
+    
+    dotContent += '}\n';
+    
+    return {
+      format: 'graphviz',
+      content: dotContent,
+      metadata: graphData.metadata
+    };
+  }
+
+  formatMermaid(graphData) {
+    let mermaidContent = 'graph TD\n';
+    
+    // Add nodes and edges
+    for (const edge of graphData.edges) {
+      const sourceLabel = this.getNodeLabel(edge.source, graphData.nodes);
+      const targetLabel = this.getNodeLabel(edge.target, graphData.nodes);
+      mermaidContent += `  ${this.sanitizeNodeId(edge.source)}[${sourceLabel}] --> ${this.sanitizeNodeId(edge.target)}[${targetLabel}]\n`;
+    }
+    
+    return {
+      format: 'mermaid',
+      content: mermaidContent,
+      metadata: graphData.metadata
+    };
+  }
+
+  formatCytoscape(graphData) {
+    return {
+      format: 'cytoscape',
+      elements: [
+        ...graphData.nodes.map(node => ({
+          data: {
+            id: node.id,
+            label: `${node.package}:${node.name}`,
+            package: node.package,
+            ruleType: node.ruleType,
+            moduleType: node.moduleType
+          }
+        })),
+        ...graphData.edges.map(edge => ({
+          data: {
+            source: edge.source,
+            target: edge.target,
+            type: edge.type,
+            weight: edge.weight
+          }
+        }))
+      ],
+      metadata: graphData.metadata
+    };
+  }
+
+  generateBasicVisualization(format) {
+    // Fallback visualization using in-memory build graph
+    const nodes = [];
+    const edges = [];
+    
+    for (const [modulePath, module] of this.modules) {
+      for (const target of module.targets) {
+        const targetId = target.target || `//${modulePath}:${target.name}`;
+        nodes.push({
+          id: targetId,
+          name: target.name,
+          package: modulePath,
+          ruleType: target.type,
+          moduleType: module.type
+        });
+      }
+    }
+    
+    for (const [modulePath, node] of this.buildGraph) {
+      for (const dep of node.dependencies) {
+        edges.push({
+          source: modulePath,
+          target: dep,
+          type: 'dependency',
+          weight: 1.0
+        });
+      }
+    }
+    
+    const graphData = {
+      nodes: nodes,
+      edges: edges,
+      metadata: {
+        generated: new Date().toISOString(),
+        totalNodes: nodes.length,
+        totalEdges: edges.length,
+        workspace: this.workspace?.name || 'unknown',
+        method: 'basic'
+      }
+    };
+    
+    // Apply same formatting as graph version
+    switch (format) {
+      case 'graphviz':
+        return this.formatGraphviz(graphData);
+      case 'mermaid':
+        return this.formatMermaid(graphData);
+      case 'cytoscape':
+        return this.formatCytoscape(graphData);
+      default:
+        return graphData;
+    }
+  }
+
+  getNodeColor(moduleType) {
+    const colors = {
+      'nodejs': '#68CC99',
+      'python': '#3776AB',
+      'java': '#ED8B00',
+      'go': '#00ADD8',
+      'docker': '#2496ED',
+      'service': '#FF6B6B',
+      'library': '#4ECDC4',
+      'unknown': '#95A5A6'
+    };
+    return colors[moduleType] || colors.unknown;
+  }
+
+  getNodeLabel(nodeId, nodes) {
+    const node = nodes.find(n => n.id === nodeId);
+    return node ? `${node.package}:${node.name}` : nodeId;
+  }
+
+  sanitizeNodeId(nodeId) {
+    return nodeId.replace(/[^a-zA-Z0-9]/g, '_');
   }
 
   detectCircularDependencies() {
@@ -788,13 +1797,42 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
   }
 
   async getStats() {
-    return {
+    const baseStats = {
       ...this.stats,
       workspace: this.workspace?.name || 'unknown',
       modules: this.modules.size,
       buildGraph: this.buildGraph.size,
-      bazelVersion: await this.getBazelVersion()
+      bazelVersion: await this.getBazelVersion(),
+      graphIntegration: {
+        enabled: this.config.enableKuzuIntegration,
+        connected: !!this.graphBackend
+      }
     };
+
+    // Add graph database statistics if available
+    if (this.graphBackend?.storage?.conn) {
+      try {
+        const conn = this.graphBackend.storage.conn;
+        const graphStats = await conn.query(`
+          MATCH (t:BazelTarget)
+          OPTIONAL MATCH (t)-[:Depends]->(dep:BazelTarget)
+          RETURN count(DISTINCT t) as target_count,
+                 count(dep) as dependency_count
+        `);
+
+        if (graphStats.length > 0) {
+          baseStats.graphDatabase = {
+            targetsInGraph: graphStats[0].target_count,
+            dependenciesInGraph: graphStats[0].dependency_count,
+            lastUpdated: new Date().toISOString()
+          };
+        }
+      } catch (error) {
+        console.warn('Failed to get graph database stats:', error.message);
+      }
+    }
+
+    return baseStats;
   }
 
   async getBazelVersion() {
@@ -807,8 +1845,20 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
   }
 
   async cleanup() {
+    // Clean up graph backend if it was initialized standalone
+    if (this.graphBackend && !this.config.hiveMindIntegration) {
+      try {
+        await this.graphBackend.cleanup();
+      } catch (error) {
+        console.warn('Failed to cleanup graph backend:', error.message);
+      }
+    }
+
     this.modules.clear();
     this.buildGraph.clear();
+    this.graphBackend = null;
+    this.hiveMind = null;
+    
     console.log('🏗️ Bazel Monorepo Plugin cleaned up');
   }
 }
