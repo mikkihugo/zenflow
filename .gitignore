@@ -1,9 +1,20 @@
 # Analysis outputs and temporary files
 tmp/analysis-results/
+tmp/bazel-*
 analysis-reports/
 graph-db/
 test-analysis-integration.js
 test-simple-analysis.js
+test-bazel-kuzu-integration.js
+
+# Bazel cache and output directories
+.bazel-cache/
+.bazel-graph/
+bazel-*/
+
+# Kuzu database files
+*.kuzu/
+*.kuzu-wal
 
 /target
 target 
