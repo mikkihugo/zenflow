@@ -2,6 +2,8 @@
 
 > Production-ready AI development platform featuring multi-Queen collaborative intelligence, comprehensive neural networks, and full-stack automation from design to deployment.
 
+**Built upon the excellent foundation of [@ruvnet](https://github.com/ruvnet)'s [claude-code-flow](https://github.com/ruvnet/claude-code-flow)**, Claude-Zen extends the original vision with enhanced multi-Queen orchestration, enterprise-scale features, and comprehensive neural network integration.
+
 [![Node.js](https://img.shields.io/badge/Node.js-22%2B-green)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
 [![Rust](https://img.shields.io/badge/Rust-Neural%20Engine-orange)](https://www.rust-lang.org/)
@@ -118,7 +120,8 @@ claude-zen neural analyze --model lstm --data timeseries.csv
   - `hive/` - Multi-Queen hive intelligence coordination
   - `queens/` - Specialized Queen implementations (Code, Vision, Neural, Debug)
   - `memory/` - SQLite + vector + graph database integration
-  - `vision/` - Complete vision-to-code workflow (270-line pipeline)
+  - `cli/command-handlers/` - Integrated vision-to-code workflow (270-line pipeline)
+  - `ui/shared/` - Vision API components and interfaces
   - `neural/` - ClaudeZenNeuralService integration (223 lines)
   - `plugins/` - 6 production plugins with error recovery
 
@@ -489,7 +492,11 @@ MIT License - see [LICENSE](./LICENSE) for details
 
 ## 🙏 Acknowledgments
 
+### 🌟 Foundational Attribution
+**This project is built upon the excellent foundation created by [@ruvnet](https://github.com/ruvnet).** Claude-Zen extends and evolves the original [claude-code-flow](https://github.com/ruvnet/claude-code-flow) project with enhanced multi-Queen collaborative intelligence, comprehensive neural networks, and production-ready enterprise features.
+
 ### 🎯 Core Team & Contributors
+- **[@ruvnet](https://github.com/ruvnet)** - Original claude-code-flow foundation and ruv-FANN neural framework
 - **Enhanced Queen Coordinator Development** - Strategic orchestration and swarm intelligence
 - **ruv-FANN Neural Framework** - 27+ models, CUDA-WASM, and 84.8% SWE-Bench achievement
 - **Vision-to-Code Pipeline** - Complete design-to-deployment automation
@@ -498,7 +505,7 @@ MIT License - see [LICENSE](./LICENSE) for details
 ### 🤖 AI Foundation
 - **Claude Code CLI** - Primary AI engine with advanced reasoning capabilities
 - **Gemini Integration** - Backup AI provider in fallback chain
-- **ruv-FANN Framework** - Custom neural networks vs generic LLM dependence
+- **ruv-FANN Framework** - Custom neural networks vs generic LLM dependence ([@ruvnet](https://github.com/ruvnet))
 - **MCP Protocol** - Model Context Protocol for seamless integration
 
 ### 🌍 Open Source Community
@@ -508,7 +515,7 @@ MIT License - see [LICENSE](./LICENSE) for details
 - **TypeScript Community** - Type-safe development and advanced tooling
 
 ### 🏆 Special Recognition
-Built on the principle that **collaborative AI intelligence** surpasses single-agent limitations. Claude-Zen represents the evolution from isolated AI tools to democratic, multi-Queen collaborative systems.
+Built on the principle that **collaborative AI intelligence** surpasses single-agent limitations. Claude-Zen represents the evolution from isolated AI tools to democratic, multi-Queen collaborative systems, extending [@ruvnet](https://github.com/ruvnet)'s foundational work with enterprise-scale multi-Queen orchestration.
 
 ---
 

@@ -1,12 +1,11 @@
 {
   "name": "@claude-zen/monorepo",
   "version": "2.0.0-alpha.70",
-  "description": "Hive-Mind Primary System: Integrated hybrid memory + simple ruv-swarm + plugin coordination (Claude Zen)",
+  "description": "Enhanced multi-Queen AI platform built on @ruvnet's claude-code-flow foundation with comprehensive neural networks and enterprise features",
   "workspaces": [
     "src",
     "src/bindings",
     "ruv-FANN/ruv-swarm/npm",
-    "vision-to-code/*",
     "benchmark",
     "src/plugins/*"
   ],
