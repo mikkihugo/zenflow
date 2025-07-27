@@ -1,5 +1,5 @@
 /**
- * 🚀 CLAUDE ZEN NATIVE SWARM INTEGRATION
+ * ROCKET CLAUDE ZEN NATIVE SWARM INTEGRATION
  * 
  * REVOLUTIONARY REPLACEMENT for MCP + Plugin architecture
  * 
@@ -19,4 +19,642 @@
  * - Neural pattern learning
  */
 
-import { NativeHiveMind } from '../../ruv-FANN/ruv-swarm/npm/src/native-hive-mind.js';\nimport { printSuccess, printError, printInfo, printWarning } from './utils.js';\nimport { EventEmitter } from 'events';\n\nexport class ClaudeZenNativeSwarm extends EventEmitter {\n  constructor(options = {}) {\n    super();\n    \n    this.options = {\n      // Native integration settings\n      enableAutoSpawn: options.enableAutoSpawn !== false,\n      defaultAgentTypes: options.defaultAgentTypes || ['researcher', 'coder', 'analyst', 'coordinator'],\n      maxConcurrentOperations: options.maxConcurrentOperations || 8,\n      \n      // Hive-mind configuration\n      enableSemanticMemory: options.enableSemanticMemory !== false,\n      enableGraphRelationships: options.enableGraphRelationships !== false,\n      enableNeuralLearning: options.enableNeuralLearning !== false,\n      \n      // Performance settings\n      batchOperations: options.batchOperations !== false,\n      cacheResults: options.cacheResults !== false,\n      optimizeQueries: options.optimizeQueries !== false,\n      \n      ...options\n    };\n    \n    // Core components\n    this.nativeHiveMind = null;\n    this.initialized = false;\n    \n    // Active operations tracking\n    this.activeOperations = new Map();\n    this.operationQueue = [];\n    \n    // Performance metrics\n    this.metrics = {\n      totalOperations: 0,\n      avgResponseTime: 0,\n      successRate: 1.0,\n      cacheHitRate: 0.0,\n      batchEfficiency: 1.0\n    };\n    \n    // Result cache\n    this.resultCache = new Map();\n    this.cacheExpiry = 5 * 60 * 1000; // 5 minutes\n  }\n  \n  async initialize() {\n    if (this.initialized) return;\n    \n    printInfo('🚀 Initializing Claude Zen Native Swarm Integration...');\n    \n    try {\n      // Initialize native hive-mind\n      this.nativeHiveMind = new NativeHiveMind({\n        enableSemanticMemory: this.options.enableSemanticMemory,\n        enableGraphRelationships: this.options.enableGraphRelationships,\n        enableNeuralLearning: this.options.enableNeuralLearning,\n        maxAgents: 12,\n        defaultTopology: 'hierarchical'\n      });\n      \n      await this.nativeHiveMind.initialize();\n      \n      // Hook events for coordination\n      this.hookNativeEvents();\n      \n      // Auto-spawn default agents if enabled\n      if (this.options.enableAutoSpawn) {\n        await this.autoSpawnDefaultAgents();\n      }\n      \n      this.initialized = true;\n      \n      printSuccess('✅ Claude Zen Native Swarm Integration initialized');\n      printInfo(`🎯 Features: Semantic=${this.options.enableSemanticMemory}, Graph=${this.options.enableGraphRelationships}, Neural=${this.options.enableNeuralLearning}`);\n      \n      this.emit('initialized');\n      \n    } catch (error) {\n      printError(`❌ Failed to initialize Native Swarm Integration: ${error.message}`);\n      throw error;\n    }\n  }\n  \n  hookNativeEvents() {\n    this.nativeHiveMind.on('ready', () => {\n      printSuccess('🧠 Native Hive-Mind ready for coordination');\n    });\n    \n    this.nativeHiveMind.on('swarm:created', (data) => {\n      printInfo(`🐝 Swarm created: ${data.swarm.id}`);\n      this.emit('swarm:created', data);\n    });\n    \n    this.nativeHiveMind.on('agent:spawned', (data) => {\n      printInfo(`🤖 Agent spawned: ${data.agent.name} (${data.agent.type})`);\n      this.emit('agent:spawned', data);\n    });\n    \n    this.nativeHiveMind.on('task:orchestrated', (data) => {\n      printInfo(`📋 Task orchestrated: ${data.task.id}`);\n      this.emit('task:orchestrated', data);\n    });\n  }\n  \n  async autoSpawnDefaultAgents() {\n    printInfo('🤖 Auto-spawning default agent team...');\n    \n    const agentConfigs = [\n      {\n        type: 'researcher',\n        name: 'Research-Coordinator',\n        capabilities: ['research', 'analysis', 'data-gathering', 'web-search']\n      },\n      {\n        type: 'coder',\n        name: 'Development-Expert',\n        capabilities: ['coding', 'debugging', 'architecture', 'testing']\n      },\n      {\n        type: 'analyst',\n        name: 'Strategic-Analyst',\n        capabilities: ['analysis', 'planning', 'optimization', 'problem-solving']\n      },\n      {\n        type: 'coordinator',\n        name: 'Task-Coordinator',\n        capabilities: ['coordination', 'project-management', 'workflow', 'communication']\n      }\n    ];\n    \n    const spawnPromises = agentConfigs.map(config => \n      this.nativeHiveMind.spawnAgent(config)\n    );\n    \n    const agents = await Promise.all(spawnPromises);\n    \n    printSuccess(`✅ Auto-spawned ${agents.length} default agents`);\n    return agents;\n  }\n  \n  // NATIVE COORDINATION METHODS (Direct replacements for MCP tools)\n  \n  /**\n   * NATIVE: Initialize swarm coordination\n   * Direct replacement for: mcp__ruv-swarm__swarm_init\n   */\n  async initializeSwarmCoordination(options = {}) {\n    await this.ensureInitialized();\n    \n    const operation = this.trackOperation('swarm_init');\n    \n    try {\n      // Check cache first\n      const cacheKey = `swarm_init_${JSON.stringify(options)}`;\n      const cached = this.getCachedResult(cacheKey);\n      if (cached) {\n        this.metrics.cacheHitRate++;\n        return cached;\n      }\n      \n      // Direct native call (no MCP overhead)\n      const result = await this.nativeHiveMind.initializeSwarm({\n        topology: options.topology || 'hierarchical',\n        maxAgents: options.maxAgents || 8,\n        strategy: options.strategy || 'adaptive',\n        name: options.name || `claude-zen-${Date.now()}`\n      });\n      \n      // Cache result\n      this.cacheResult(cacheKey, result);\n      \n      this.completeOperation(operation, true);\n      \n      return {\n        ...result,\n        performance: {\n          nativeCall: true,\n          responseTime: operation.duration,\n          cached: false\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(operation, false, error);\n      throw error;\n    }\n  }\n  \n  /**\n   * NATIVE: Spawn specialized agent\n   * Direct replacement for: mcp__ruv-swarm__agent_spawn\n   */\n  async spawnSpecializedAgent(options = {}) {\n    await this.ensureInitialized();\n    \n    const operation = this.trackOperation('agent_spawn');\n    \n    try {\n      const result = await this.nativeHiveMind.spawnAgent({\n        type: options.type || 'researcher',\n        name: options.name,\n        capabilities: options.capabilities || [],\n        enableNeuralNetwork: options.enableNeuralNetwork !== false,\n        cognitivePattern: options.cognitivePattern || 'adaptive'\n      });\n      \n      this.completeOperation(operation, true);\n      \n      return {\n        ...result,\n        performance: {\n          nativeCall: true,\n          responseTime: operation.duration\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(operation, false, error);\n      throw error;\n    }\n  }\n  \n  /**\n   * NATIVE: Orchestrate complex task\n   * Direct replacement for: mcp__ruv-swarm__task_orchestrate\n   */\n  async orchestrateComplexTask(options = {}) {\n    await this.ensureInitialized();\n    \n    const operation = this.trackOperation('task_orchestrate');\n    \n    try {\n      const result = await this.nativeHiveMind.orchestrateTask({\n        task: options.task || options.description,\n        strategy: options.strategy || 'adaptive',\n        priority: options.priority || 'medium',\n        maxAgents: options.maxAgents,\n        requiredCapabilities: options.requiredCapabilities || []\n      });\n      \n      this.completeOperation(operation, true);\n      \n      return {\n        ...result,\n        performance: {\n          nativeCall: true,\n          responseTime: operation.duration\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(operation, false, error);\n      throw error;\n    }\n  }\n  \n  /**\n   * NATIVE: Get coordination status\n   * Direct replacement for: mcp__ruv-swarm__swarm_status\n   */\n  async getCoordinationStatus(swarmId = null) {\n    await this.ensureInitialized();\n    \n    const operation = this.trackOperation('swarm_status');\n    \n    try {\n      const result = await this.nativeHiveMind.getSwarmStatus(swarmId);\n      const hiveMindStats = this.nativeHiveMind.getHiveMindStats();\n      \n      this.completeOperation(operation, true);\n      \n      return {\n        ...result,\n        claudeZenIntegration: {\n          activeOperations: this.activeOperations.size,\n          queuedOperations: this.operationQueue.length,\n          metrics: this.metrics,\n          hiveMindStats\n        },\n        performance: {\n          nativeCall: true,\n          responseTime: operation.duration\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(operation, false, error);\n      throw error;\n    }\n  }\n  \n  /**\n   * REVOLUTIONARY: Semantic memory search (Not available in MCP)\n   * This is a completely new capability enabled by native integration\n   */\n  async semanticMemorySearch(query, options = {}) {\n    await this.ensureInitialized();\n    \n    if (!this.options.enableSemanticMemory) {\n      throw new Error('Semantic memory search is disabled');\n    }\n    \n    const operation = this.trackOperation('semantic_search');\n    \n    try {\n      printInfo(`🔍 Performing semantic search: \"${query}\"`);\n      \n      const result = await this.nativeHiveMind.semanticSearch(query, {\n        vectorLimit: options.vectorLimit || 10,\n        relationalLimit: options.relationalLimit || 20,\n        maxDepth: options.maxDepth || 2,\n        entityType: options.entityType,\n        filters: options.filters,\n        rankingWeights: options.rankingWeights\n      });\n      \n      this.completeOperation(operation, true);\n      \n      printSuccess(`✅ Found ${result.totalResults} semantic matches`);\n      \n      return {\n        ...result,\n        revolutionary: {\n          nativeSemanticSearch: true,\n          vectorEmbeddings: true,\n          graphTraversal: true,\n          neuralRanking: this.options.enableNeuralLearning\n        },\n        performance: {\n          nativeCall: true,\n          responseTime: operation.duration\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(operation, false, error);\n      throw error;\n    }\n  }\n  \n  /**\n   * REVOLUTIONARY: Neural pattern learning (Not available in MCP)\n   * Learn from user interactions and improve coordination over time\n   */\n  async learnFromUserInteraction(interactionData) {\n    await this.ensureInitialized();\n    \n    if (!this.options.enableNeuralLearning) {\n      return { success: false, reason: 'Neural learning disabled' };\n    }\n    \n    const operation = this.trackOperation('neural_learning');\n    \n    try {\n      await this.nativeHiveMind.learnFromCoordination({\n        operation: interactionData.operation || 'user_interaction',\n        outcome: interactionData.outcome,\n        context: {\n          command: interactionData.command,\n          userIntent: interactionData.userIntent,\n          agentType: interactionData.agentType,\n          complexity: interactionData.complexity || 'medium'\n        },\n        success: interactionData.success !== false\n      });\n      \n      this.completeOperation(operation, true);\n      \n      return {\n        success: true,\n        learned: true,\n        neuralPatternStored: true,\n        performance: {\n          nativeCall: true,\n          responseTime: operation.duration\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(operation, false, error);\n      return {\n        success: false,\n        error: error.message\n      };\n    }\n  }\n  \n  /**\n   * BATCH OPERATIONS: Execute multiple coordination tasks in parallel\n   * This provides massive performance improvements over sequential MCP calls\n   */\n  async batchCoordinationOperations(operations) {\n    await this.ensureInitialized();\n    \n    if (!this.options.batchOperations) {\n      // Fallback to sequential execution\n      const results = [];\n      for (const op of operations) {\n        results.push(await this.executeSingleOperation(op));\n      }\n      return results;\n    }\n    \n    const batchOperation = this.trackOperation('batch_operations');\n    \n    try {\n      printInfo(`⚡ Executing ${operations.length} operations in parallel...`);\n      \n      // Group operations by type for optimal batching\n      const groupedOps = this.groupOperationsByType(operations);\n      \n      // Execute each group in parallel\n      const groupPromises = Object.entries(groupedOps).map(([type, ops]) => \n        this.executeBatchGroup(type, ops)\n      );\n      \n      const groupResults = await Promise.all(groupPromises);\n      \n      // Flatten results maintaining original order\n      const results = this.flattenBatchResults(groupResults, operations);\n      \n      this.completeOperation(batchOperation, true);\n      \n      const batchEfficiency = operations.length / batchOperation.duration * 1000;\n      this.metrics.batchEfficiency = (this.metrics.batchEfficiency + batchEfficiency) / 2;\n      \n      printSuccess(`✅ Completed ${operations.length} operations in ${batchOperation.duration}ms (${batchEfficiency.toFixed(1)} ops/sec)`);\n      \n      return {\n        results,\n        batchPerformance: {\n          totalOperations: operations.length,\n          executionTime: batchOperation.duration,\n          operationsPerSecond: batchEfficiency,\n          parallelGroups: Object.keys(groupedOps).length,\n          nativeBatching: true\n        }\n      };\n      \n    } catch (error) {\n      this.completeOperation(batchOperation, false, error);\n      throw error;\n    }\n  }\n  \n  groupOperationsByType(operations) {\n    const groups = {};\n    \n    operations.forEach((op, index) => {\n      const type = op.type || 'unknown';\n      if (!groups[type]) {\n        groups[type] = [];\n      }\n      groups[type].push({ ...op, originalIndex: index });\n    });\n    \n    return groups;\n  }\n  \n  async executeBatchGroup(type, operations) {\n    const promises = operations.map(op => this.executeSingleOperation(op));\n    const results = await Promise.all(promises);\n    \n    return {\n      type,\n      results: results.map((result, index) => ({\n        ...result,\n        originalIndex: operations[index].originalIndex\n      }))\n    };\n  }\n  \n  async executeSingleOperation(operation) {\n    switch (operation.type) {\n      case 'swarm_init':\n        return this.initializeSwarmCoordination(operation.params);\n      case 'agent_spawn':\n        return this.spawnSpecializedAgent(operation.params);\n      case 'task_orchestrate':\n        return this.orchestrateComplexTask(operation.params);\n      case 'swarm_status':\n        return this.getCoordinationStatus(operation.params?.swarmId);\n      case 'semantic_search':\n        return this.semanticMemorySearch(operation.params?.query, operation.params?.options);\n      default:\n        throw new Error(`Unknown operation type: ${operation.type}`);\n    }\n  }\n  \n  flattenBatchResults(groupResults, originalOperations) {\n    const results = new Array(originalOperations.length);\n    \n    groupResults.forEach(group => {\n      group.results.forEach(result => {\n        results[result.originalIndex] = result;\n      });\n    });\n    \n    return results;\n  }\n  \n  // PERFORMANCE TRACKING\n  \n  trackOperation(type) {\n    const operation = {\n      id: `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,\n      type,\n      startTime: Date.now(),\n      duration: 0\n    };\n    \n    this.activeOperations.set(operation.id, operation);\n    this.metrics.totalOperations++;\n    \n    return operation;\n  }\n  \n  completeOperation(operation, success, error = null) {\n    operation.duration = Date.now() - operation.startTime;\n    operation.success = success;\n    operation.error = error;\n    \n    this.activeOperations.delete(operation.id);\n    \n    // Update metrics\n    this.metrics.avgResponseTime = \n      (this.metrics.avgResponseTime + operation.duration) / 2;\n    \n    const successCount = success ? 1 : 0;\n    this.metrics.successRate = \n      (this.metrics.successRate * (this.metrics.totalOperations - 1) + successCount) / this.metrics.totalOperations;\n    \n    return operation;\n  }\n  \n  // RESULT CACHING\n  \n  getCachedResult(key) {\n    if (!this.options.cacheResults) return null;\n    \n    const cached = this.resultCache.get(key);\n    if (!cached) return null;\n    \n    if (Date.now() - cached.timestamp > this.cacheExpiry) {\n      this.resultCache.delete(key);\n      return null;\n    }\n    \n    return cached.result;\n  }\n  \n  cacheResult(key, result) {\n    if (!this.options.cacheResults) return;\n    \n    this.resultCache.set(key, {\n      result,\n      timestamp: Date.now()\n    });\n    \n    // Cleanup old cache entries\n    if (this.resultCache.size > 1000) {\n      const cutoff = Date.now() - this.cacheExpiry;\n      for (const [k, v] of this.resultCache.entries()) {\n        if (v.timestamp < cutoff) {\n          this.resultCache.delete(k);\n        }\n      }\n    }\n  }\n  \n  // UTILITY METHODS\n  \n  async ensureInitialized() {\n    if (!this.initialized) {\n      await this.initialize();\n    }\n  }\n  \n  getPerformanceMetrics() {\n    return {\n      ...this.metrics,\n      activeOperations: this.activeOperations.size,\n      queuedOperations: this.operationQueue.length,\n      cacheSize: this.resultCache.size,\n      nativeIntegration: true,\n      revolutionaryArchitecture: true,\n      performanceGain: '10x faster than MCP'\n    };\n  }\n  \n  async cleanup() {\n    printInfo('🧹 Cleaning up Claude Zen Native Swarm Integration...');\n    \n    if (this.nativeHiveMind) {\n      await this.nativeHiveMind.cleanup();\n    }\n    \n    this.activeOperations.clear();\n    this.operationQueue.length = 0;\n    this.resultCache.clear();\n    \n    printSuccess('✅ Claude Zen Native Swarm Integration cleaned up');\n  }\n}\n\n// Singleton instance for global access\nlet globalNativeSwarm = null;\n\nexport async function getClaudeZenNativeSwarm(options = {}) {\n  if (!globalNativeSwarm) {\n    globalNativeSwarm = new ClaudeZenNativeSwarm(options);\n    await globalNativeSwarm.initialize();\n  }\n  return globalNativeSwarm;\n}\n\nexport async function initializeNativeSwarmIntegration(options = {}) {\n  printInfo('🚀 Initializing Claude Zen Native Swarm Integration...');\n  \n  const nativeSwarm = await getClaudeZenNativeSwarm(options);\n  \n  printSuccess('✅ Native Swarm Integration ready for revolutionary coordination!');\n  printInfo('🎯 Available capabilities:');\n  printInfo('   • Direct ruv-swarm function calls (no MCP overhead)');\n  printInfo('   • Unified LanceDB + SQLite backend');\n  printInfo('   • Real-time semantic search');\n  printInfo('   • Graph relationship traversal');\n  printInfo('   • Neural pattern learning');\n  printInfo('   • Batch operation processing');\n  printInfo('   • Result caching and optimization');\n  \n  return nativeSwarm;\n}\n\nexport default ClaudeZenNativeSwarm;
+import { NativeHiveMind } from '../../ruv-FANN/ruv-swarm/npm/src/native-hive-mind.js';
+import { printSuccess, printError, printInfo } from './utils.js';
+import { EventEmitter } from 'events';
+
+export class ClaudeZenNativeSwarm extends EventEmitter {
+  constructor(options = {}) {
+    super();
+    
+    this.options = {
+      // Native integration settings
+      enableAutoSpawn: options.enableAutoSpawn !== false,
+      defaultAgentTypes: options.defaultAgentTypes || ['researcher', 'coder', 'analyst', 'coordinator'],
+      maxConcurrentOperations: options.maxConcurrentOperations || 8,
+      
+      // Hive-mind configuration
+      enableSemanticMemory: options.enableSemanticMemory !== false,
+      enableGraphRelationships: options.enableGraphRelationships !== false,
+      enableNeuralLearning: options.enableNeuralLearning !== false,
+      
+      // Performance settings
+      batchOperations: options.batchOperations !== false,
+      cacheResults: options.cacheResults !== false,
+      optimizeQueries: options.optimizeQueries !== false,
+      
+      ...options
+    };
+    
+    // Core components
+    this.nativeHiveMind = null;
+    this.initialized = false;
+    
+    // Active operations tracking
+    this.activeOperations = new Map();
+    this.operationQueue = [];
+    
+    // Performance metrics
+    this.metrics = {
+      totalOperations: 0,
+      avgResponseTime: 0,
+      successRate: 1.0,
+      cacheHitRate: 0.0,
+      batchEfficiency: 1.0
+    };
+    
+    // Result cache
+    this.resultCache = new Map();
+    this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
+  }
+  
+  async initialize() {
+    if (this.initialized) return;
+    
+    printInfo('ROCKET Initializing Claude Zen Native Swarm Integration...');
+    
+    try {
+      // Initialize native hive-mind
+      this.nativeHiveMind = new NativeHiveMind({
+        enableSemanticMemory: this.options.enableSemanticMemory,
+        enableGraphRelationships: this.options.enableGraphRelationships,
+        enableNeuralLearning: this.options.enableNeuralLearning,
+        maxAgents: 12,
+        defaultTopology: 'hierarchical'
+      });
+      
+      await this.nativeHiveMind.initialize();
+      
+      // Hook events for coordination
+      this.hookNativeEvents();
+      
+      // Auto-spawn default agents if enabled
+      if (this.options.enableAutoSpawn) {
+        await this.autoSpawnDefaultAgents();
+      }
+      
+      this.initialized = true;
+      
+      printSuccess('CHECK Claude Zen Native Swarm Integration initialized');
+      printInfo(`TARGET Features: Semantic=${this.options.enableSemanticMemory}, Graph=${this.options.enableGraphRelationships}, Neural=${this.options.enableNeuralLearning}`);
+      
+      this.emit('initialized');
+      
+    } catch (error) {
+      printError(`X Failed to initialize Native Swarm Integration: ${error.message}`);
+      throw error;
+    }
+  }
+  
+  hookNativeEvents() {
+    this.nativeHiveMind.on('ready', () => {
+      printSuccess('BRAIN Native Hive-Mind ready for coordination');
+    });
+    
+    this.nativeHiveMind.on('swarm:created', (data) => {
+      printInfo(`BEE Swarm created: ${data.swarm.id}`);
+      this.emit('swarm:created', data);
+    });
+    
+    this.nativeHiveMind.on('agent:spawned', (data) => {
+      printInfo(`ROBOT Agent spawned: ${data.agent.name} (${data.agent.type})`);
+      this.emit('agent:spawned', data);
+    });
+    
+    this.nativeHiveMind.on('task:orchestrated', (data) => {
+      printInfo(`CLIPBOARD Task orchestrated: ${data.task.id}`);
+      this.emit('task:orchestrated', data);
+    });
+  }
+  
+  async autoSpawnDefaultAgents() {
+    printInfo('ROBOT Auto-spawning default agent team...');
+    
+    const agentConfigs = [
+      {
+        type: 'researcher',
+        name: 'Research-Coordinator',
+        capabilities: ['research', 'analysis', 'data-gathering', 'web-search']
+      },
+      {
+        type: 'coder',
+        name: 'Development-Expert',
+        capabilities: ['coding', 'debugging', 'architecture', 'testing']
+      },
+      {
+        type: 'analyst',
+        name: 'Strategic-Analyst',
+        capabilities: ['analysis', 'planning', 'optimization', 'problem-solving']
+      },
+      {
+        type: 'coordinator',
+        name: 'Task-Coordinator',
+        capabilities: ['coordination', 'project-management', 'workflow', 'communication']
+      }
+    ];
+    
+    const spawnPromises = agentConfigs.map(config => 
+      this.nativeHiveMind.spawnAgent(config)
+    );
+    
+    const agents = await Promise.all(spawnPromises);
+    
+    printSuccess(`CHECK Auto-spawned ${agents.length} default agents`);
+    return agents;
+  }
+  
+  // NATIVE COORDINATION METHODS (Direct replacements for MCP tools)
+  
+  /**
+   * NATIVE: Initialize swarm coordination
+   * Direct replacement for: mcp__ruv-swarm__swarm_init
+   */
+  async initializeSwarmCoordination(options = {}) {
+    await this.ensureInitialized();
+    
+    const operation = this.trackOperation('swarm_init');
+    
+    try {
+      // Check cache first
+      const cacheKey = `swarm_init_${JSON.stringify(options)}`;
+      const cached = this.getCachedResult(cacheKey);
+      if (cached) {
+        this.metrics.cacheHitRate++;
+        return cached;
+      }
+      
+      // Direct native call (no MCP overhead)
+      const result = await this.nativeHiveMind.initializeSwarm({
+        topology: options.topology || 'hierarchical',
+        maxAgents: options.maxAgents || 8,
+        strategy: options.strategy || 'adaptive',
+        name: options.name || `claude-zen-${Date.now()}`
+      });
+      
+      // Cache result
+      this.cacheResult(cacheKey, result);
+      
+      this.completeOperation(operation, true);
+      
+      return {
+        ...result,
+        performance: {
+          nativeCall: true,
+          responseTime: operation.duration,
+          cached: false
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(operation, false, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * NATIVE: Spawn specialized agent
+   * Direct replacement for: mcp__ruv-swarm__agent_spawn
+   */
+  async spawnSpecializedAgent(options = {}) {
+    await this.ensureInitialized();
+    
+    const operation = this.trackOperation('agent_spawn');
+    
+    try {
+      const result = await this.nativeHiveMind.spawnAgent({
+        type: options.type || 'researcher',
+        name: options.name,
+        capabilities: options.capabilities || [],
+        enableNeuralNetwork: options.enableNeuralNetwork !== false,
+        cognitivePattern: options.cognitivePattern || 'adaptive'
+      });
+      
+      this.completeOperation(operation, true);
+      
+      return {
+        ...result,
+        performance: {
+          nativeCall: true,
+          responseTime: operation.duration
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(operation, false, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * NATIVE: Orchestrate complex task
+   * Direct replacement for: mcp__ruv-swarm__task_orchestrate
+   */
+  async orchestrateComplexTask(options = {}) {
+    await this.ensureInitialized();
+    
+    const operation = this.trackOperation('task_orchestrate');
+    
+    try {
+      const result = await this.nativeHiveMind.orchestrateTask({
+        task: options.task || options.description,
+        strategy: options.strategy || 'adaptive',
+        priority: options.priority || 'medium',
+        maxAgents: options.maxAgents,
+        requiredCapabilities: options.requiredCapabilities || []
+      });
+      
+      this.completeOperation(operation, true);
+      
+      return {
+        ...result,
+        performance: {
+          nativeCall: true,
+          responseTime: operation.duration
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(operation, false, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * NATIVE: Get coordination status
+   * Direct replacement for: mcp__ruv-swarm__swarm_status
+   */
+  async getCoordinationStatus(swarmId = null) {
+    await this.ensureInitialized();
+    
+    const operation = this.trackOperation('swarm_status');
+    
+    try {
+      const result = await this.nativeHiveMind.getSwarmStatus(swarmId);
+      const hiveMindStats = this.nativeHiveMind.getHiveMindStats();
+      
+      this.completeOperation(operation, true);
+      
+      return {
+        ...result,
+        claudeZenIntegration: {
+          activeOperations: this.activeOperations.size,
+          queuedOperations: this.operationQueue.length,
+          metrics: this.metrics,
+          hiveMindStats
+        },
+        performance: {
+          nativeCall: true,
+          responseTime: operation.duration
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(operation, false, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * REVOLUTIONARY: Semantic memory search (Not available in MCP)
+   * This is a completely new capability enabled by native integration
+   */
+  async semanticMemorySearch(query, options = {}) {
+    await this.ensureInitialized();
+    
+    if (!this.options.enableSemanticMemory) {
+      throw new Error('Semantic memory search is disabled');
+    }
+    
+    const operation = this.trackOperation('semantic_search');
+    
+    try {
+      printInfo(`SEARCH Performing semantic search: \"${query}\"`);
+      
+      const result = await this.nativeHiveMind.semanticSearch(query, {
+        vectorLimit: options.vectorLimit || 10,
+        relationalLimit: options.relationalLimit || 20,
+        maxDepth: options.maxDepth || 2,
+        entityType: options.entityType,
+        filters: options.filters,
+        rankingWeights: options.rankingWeights
+      });
+      
+      this.completeOperation(operation, true);
+      
+      printSuccess(`CHECK Found ${result.totalResults} semantic matches`);
+      
+      return {
+        ...result,
+        revolutionary: {
+          nativeSemanticSearch: true,
+          vectorEmbeddings: true,
+          graphTraversal: true,
+          neuralRanking: this.options.enableNeuralLearning
+        },
+        performance: {
+          nativeCall: true,
+          responseTime: operation.duration
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(operation, false, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * REVOLUTIONARY: Neural pattern learning (Not available in MCP)
+   * Learn from user interactions and improve coordination over time
+   */
+  async learnFromUserInteraction(interactionData) {
+    await this.ensureInitialized();
+    
+    if (!this.options.enableNeuralLearning) {
+      return { success: false, reason: 'Neural learning disabled' };
+    }
+    
+    const operation = this.trackOperation('neural_learning');
+    
+    try {
+      await this.nativeHiveMind.learnFromCoordination({
+        operation: interactionData.operation || 'user_interaction',
+        outcome: interactionData.outcome,
+        context: {
+          command: interactionData.command,
+          userIntent: interactionData.userIntent,
+          agentType: interactionData.agentType,
+          complexity: interactionData.complexity || 'medium'
+        },
+        success: interactionData.success !== false
+      });
+      
+      this.completeOperation(operation, true);
+      
+      return {
+        success: true,
+        learned: true,
+        neuralPatternStored: true,
+        performance: {
+          nativeCall: true,
+          responseTime: operation.duration
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(operation, false, error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+  
+  /**
+   * BATCH OPERATIONS: Execute multiple coordination tasks in parallel
+   * This provides massive performance improvements over sequential MCP calls
+   */
+  async batchCoordinationOperations(operations) {
+    await this.ensureInitialized();
+    
+    if (!this.options.batchOperations) {
+      // Fallback to sequential execution
+      const results = [];
+      for (const op of operations) {
+        results.push(await this.executeSingleOperation(op));
+      }
+      return results;
+    }
+    
+    const batchOperation = this.trackOperation('batch_operations');
+    
+    try {
+      printInfo(`ZAP Executing ${operations.length} operations in parallel...`);
+      
+      // Group operations by type for optimal batching
+      const groupedOps = this.groupOperationsByType(operations);
+      
+      // Execute each group in parallel
+      const groupPromises = Object.entries(groupedOps).map(([type, ops]) => 
+        this.executeBatchGroup(type, ops)
+      );
+      
+      const groupResults = await Promise.all(groupPromises);
+      
+      // Flatten results maintaining original order
+      const results = this.flattenBatchResults(groupResults, operations);
+      
+      this.completeOperation(batchOperation, true);
+      
+      const batchEfficiency = operations.length / batchOperation.duration * 1000;
+      this.metrics.batchEfficiency = (this.metrics.batchEfficiency + batchEfficiency) / 2;
+      
+      printSuccess(`CHECK Completed ${operations.length} operations in ${batchOperation.duration}ms (${batchEfficiency.toFixed(1)} ops/sec)`);
+      
+      return {
+        results,
+        batchPerformance: {
+          totalOperations: operations.length,
+          executionTime: batchOperation.duration,
+          operationsPerSecond: batchEfficiency,
+          parallelGroups: Object.keys(groupedOps).length,
+          nativeBatching: true
+        }
+      };
+      
+    } catch (error) {
+      this.completeOperation(batchOperation, false, error);
+      throw error;
+    }
+  }
+  
+  groupOperationsByType(operations) {
+    const groups = {};
+    
+    operations.forEach((op, index) => {
+      const type = op.type || 'unknown';
+      if (!groups[type]) {
+        groups[type] = [];
+      }
+      groups[type].push({ ...op, originalIndex: index });
+    });
+    
+    return groups;
+  }
+  
+  async executeBatchGroup(type, operations) {
+    const promises = operations.map(op => this.executeSingleOperation(op));
+    const results = await Promise.all(promises);
+    
+    return {
+      type,
+      results: results.map((result, index) => ({
+        ...result,
+        originalIndex: operations[index].originalIndex
+      }))
+    };
+  }
+  
+  async executeSingleOperation(operation) {
+    switch (operation.type) {
+      case 'swarm_init':
+        return this.initializeSwarmCoordination(operation.params);
+      case 'agent_spawn':
+        return this.spawnSpecializedAgent(operation.params);
+      case 'task_orchestrate':
+        return this.orchestrateComplexTask(operation.params);
+      case 'swarm_status':
+        return this.getCoordinationStatus(operation.params?.swarmId);
+      case 'semantic_search':
+        return this.semanticMemorySearch(operation.params?.query, operation.params?.options);
+      default:
+        throw new Error(`Unknown operation type: ${operation.type}`);
+    }
+  }
+  
+  flattenBatchResults(groupResults, originalOperations) {
+    const results = new Array(originalOperations.length);
+    
+    groupResults.forEach(group => {
+      group.results.forEach(result => {
+        results[result.originalIndex] = result;
+      });
+    });
+    
+    return results;
+  }
+  
+  // PERFORMANCE TRACKING
+  
+  trackOperation(type) {
+    const operation = {
+      id: `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      type,
+      startTime: Date.now(),
+      duration: 0
+    };
+    
+    this.activeOperations.set(operation.id, operation);
+    this.metrics.totalOperations++;
+    
+    return operation;
+  }
+  
+  completeOperation(operation, success, error = null) {
+    operation.duration = Date.now() - operation.startTime;
+    operation.success = success;
+    operation.error = error;
+    
+    this.activeOperations.delete(operation.id);
+    
+    // Update metrics
+    this.metrics.avgResponseTime = 
+      (this.metrics.avgResponseTime + operation.duration) / 2;
+    
+    const successCount = success ? 1 : 0;
+    this.metrics.successRate = 
+      (this.metrics.successRate * (this.metrics.totalOperations - 1) + successCount) / this.metrics.totalOperations;
+    
+    return operation;
+  }
+  
+  // RESULT CACHING
+  
+  getCachedResult(key) {
+    if (!this.options.cacheResults) return null;
+    
+    const cached = this.resultCache.get(key);
+    if (!cached) return null;
+    
+    if (Date.now() - cached.timestamp > this.cacheExpiry) {
+      this.resultCache.delete(key);
+      return null;
+    }
+    
+    return cached.result;
+  }
+  
+  cacheResult(key, result) {
+    if (!this.options.cacheResults) return;
+    
+    this.resultCache.set(key, {
+      result,
+      timestamp: Date.now()
+    });
+    
+    // Cleanup old cache entries
+    if (this.resultCache.size > 1000) {
+      const cutoff = Date.now() - this.cacheExpiry;
+      for (const [k, v] of this.resultCache.entries()) {
+        if (v.timestamp < cutoff) {
+          this.resultCache.delete(k);
+        }
+      }
+    }
+  }
+  
+  // UTILITY METHODS
+  
+  async ensureInitialized() {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+  }
+  
+  getPerformanceMetrics() {
+    return {
+      ...this.metrics,
+      activeOperations: this.activeOperations.size,
+      queuedOperations: this.operationQueue.length,
+      cacheSize: this.resultCache.size,
+      nativeIntegration: true,
+      revolutionaryArchitecture: true,
+      performanceGain: '10x faster than MCP'
+    };
+  }
+  
+  async cleanup() {
+    printInfo('CLEANUP Cleaning up Claude Zen Native Swarm Integration...');
+    
+    if (this.nativeHiveMind) {
+      await this.nativeHiveMind.cleanup();
+    }
+    
+    this.activeOperations.clear();
+    this.operationQueue.length = 0;
+    this.resultCache.clear();
+    
+    printSuccess('CHECK Claude Zen Native Swarm Integration cleaned up');
+  }
+}
+
+// Singleton instance for global access
+let globalNativeSwarm = null;
+
+export async function getClaudeZenNativeSwarm(options = {}) {
+  if (!globalNativeSwarm) {
+    globalNativeSwarm = new ClaudeZenNativeSwarm(options);
+    await globalNativeSwarm.initialize();
+  }
+  return globalNativeSwarm;
+}
+
+export async function initializeNativeSwarmIntegration(options = {}) {
+  printInfo('ROCKET Initializing Claude Zen Native Swarm Integration...');
+  
+  const nativeSwarm = await getClaudeZenNativeSwarm(options);
+  
+  printSuccess('CHECK Native Swarm Integration ready for revolutionary coordination!');
+  printInfo('TARGET Available capabilities:');
+  printInfo('   - Direct ruv-swarm function calls (no MCP overhead)');
+  printInfo('   - Unified LanceDB + SQLite backend');
+  printInfo('   - Real-time semantic search');
+  printInfo('   - Graph relationship traversal');
+  printInfo('   - Neural pattern learning');
+  printInfo('   - Batch operation processing');
+  printInfo('   - Result caching and optimization');
+  
+  return nativeSwarm;
+}
+
+export default ClaudeZenNativeSwarm;
