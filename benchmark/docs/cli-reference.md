@@ -484,7 +484,7 @@ swarm-benchmark compare abc123 def456
 swarm-benchmark compare abc123 def456 --metrics execution_time quality_score
 
 # Export comparison chart
-swarm-benchmark compare abc123 def456 ghi789 --format chart --export comparison.png
+swarm-benchmark compare abc123 def456 ghi789 --format chart --export comparison.html
 ```
 
 ## 🎯 Advanced Usage

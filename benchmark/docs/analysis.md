@@ -87,8 +87,8 @@ swarm-benchmark compare id1 id2 id3
 # Compare specific metrics
 swarm-benchmark compare id1 id2 --metrics execution_time,quality_score
 
-# Visual comparison
-swarm-benchmark compare id1 id2 --format chart --export comparison.png
+# Visual comparison  
+swarm-benchmark compare id1 id2 --format chart --export comparison.html
 ```
 
 ## 📈 Performance Analysis
@@ -359,7 +359,7 @@ def analyze_benchmark(benchmark_id):
     # ... (additional visualizations)
     
     plt.tight_layout()
-    plt.savefig(f'analysis_{benchmark_id}.png')
+    plt.savefig(f'analysis_{benchmark_id}.html')
 ```
 
 ## 🎯 Analysis Best Practices

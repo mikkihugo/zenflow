@@ -738,7 +738,7 @@ export class KuzuGraphInterface {
   async queryFunctionsByComplexity(minComplexity = 10) {
     this.stats.queryCount++;
     
-    let results = Array.from(this.nodes.values())
+    const results = Array.from(this.nodes.values())
       .filter(node => node.type === 'Function' && 
                      node.properties.cyclomatic_complexity >= minComplexity);
     
@@ -756,7 +756,7 @@ export class KuzuGraphInterface {
   async queryFilesByComplexity(minScore = 5.0) {
     this.stats.queryCount++;
     
-    let results = Array.from(this.nodes.values())
+    const results = Array.from(this.nodes.values())
       .filter(node => node.type === 'SourceFile' && 
                      node.properties.complexity_score >= minScore);
     
@@ -1474,6 +1474,8 @@ export class KuzuGraphInterface {
     
     return recommendations[pattern] || 'Consider using modern alternatives';
   }
+
+  getSystemQueries() {
     const queries = {
       createNodes: [],
       createRelationships: [],

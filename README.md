@@ -103,14 +103,34 @@ claude mcp add claude-zen npx claude-zen mcp start
 # Initialize a new project with Queen assistance
 claude-zen init --with-queens
 
-# Generate code from design
-claude-zen vision analyze design.png --output src/
+# Create strategic vision
+claude-zen workflow vision create "AI-powered feature" --description "Build intelligent system"
 
 # Run collaborative code review
 claude-zen queens collaborate --task "review codebase"
 
 # Start neural analysis
 claude-zen neural analyze --model lstm --data timeseries.csv
+```
+
+### 🎯 Vision-to-Code Workflow
+
+```bash
+# Strategic Vision Management
+claude-zen workflow vision create "E-commerce Platform" \
+  --description "Modern e-commerce with AI recommendations" \
+  --goals "revenue,scalability,user-experience"
+
+claude-zen workflow vision list
+claude-zen workflow vision approve <vision-id> --approver "tech-lead@company.com"
+
+# Execute Vision-to-Code workflow
+claude-zen workflow vtc execute <technical-plan-id> --mode "collaborative"
+
+# Advanced workflow coordination
+claude-zen workflow swarm coordinate "Build API endpoints" \
+  --queenType "code-specialist" \
+  --consensus "majority"
 ```
 
 ## 📦 Project Structure
