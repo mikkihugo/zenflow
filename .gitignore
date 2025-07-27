@@ -16,14 +16,25 @@ bazel-*/
 *.kuzu/
 *.kuzu-wal
 
+# Build artifacts and binaries
 /target
 target 
+dist/
+bin/claude-zen-node-pkg
+*.exe
+*.bin
+
+# Environment and config
 .env
 .env.*
 node_modules
+
+# IDE and system files
 .DS_Store
 .vscode
 .idea
+
+# Temporary and log files
 *.log
 *.swp
 *.swo
@@ -37,9 +48,38 @@ node_modules
 *.swn
 .venv/
 
-# Ignore polyglot benchmark directories
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+claude-zen-memory.db
+tasks.db
+
+# Coverage and test reports
+coverage/
+lcov-report/
+*.lcov
+test-results/
+.nyc_output/
+
+# Lint and cache files
+.eslintcache
+lint-report.json
+.cache/
+
+# Polyglot benchmark directories
 polyglot-benchmark/
 polyglot-benchmarks/
 
-# Ignore merge script
+# Scripts and temporary files
 merge_script.sh
+
+# Root-level temporary test and demo files
+/test-*.js
+/demo-*.js
+/debug-*.js
+/verify-*.js
+
+# Memory and other temporary files
+memory_tasks.json
+.sync-status.json
