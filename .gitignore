@@ -32,3 +32,17 @@ polyglot-benchmarks/
 
 # Ignore merge script
 merge_script.sh
+
+# Local development and runtime directories
+.claude/
+.swarm/
+.hive-mind/
+.ruv-swarm/
+.nx/workspace-data/
+.genaiscript/
+coverage/
+data/
+tasks.db
+tasks.json
+claude-zen-memory.db
+.sync-status.json

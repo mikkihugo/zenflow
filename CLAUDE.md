@@ -229,6 +229,29 @@ This is an active project combining:
 
 PRs welcome for improvements in any area!
 
+## 📝 **DOCUMENTATION ARCHITECTURE PRINCIPLES**
+
+### **Template CLAUDE.md Policy**
+The template CLAUDE.md (`/src/cli/command-handlers/init-handlers/init/templates/CLAUDE.md`) should **NOT** document ruv-swarm directly because:
+
+1. **Templates are project-agnostic** - They show how to use Claude Code capabilities
+2. **ruv-swarm is claude-zen's internal implementation** - Users interact with `mcp__claude-zen__*` tools
+3. **MCP abstraction is correct** - Users don't need to know ruv-swarm implementation details
+4. **ruv-swarm is bundled with claude-zen** - It's automatically available via workspace integration
+
+### **Where ruv-swarm IS Documented**
+- **`/ruv-FANN/CLAUDE.md`** - Direct ruv-swarm usage (for power users)
+- **`/ruv-FANN/README.md`** - ruv-swarm architecture and capabilities
+- **Template settings.json** - Automatically enables `"enabledMcpjsonServers": ["claude-zen", "ruv-swarm"]`
+
+### **Integration Architecture**
+- **Package Integration**: `ruv-FANN/ruv-swarm/npm` is in claude-zen workspace
+- **Direct Binary**: `./ruv-FANN/ruv-swarm/npm/bin/ruv-swarm-secure.js` works directly
+- **Workspace Access**: `npx @claude-zen/ruv-swarm` available automatically
+- **MCP Server**: ruv-swarm runs as MCP server alongside claude-zen
+
+**IMPORTANT: Template CLAUDE.md shows claude-zen MCP tools (which internally use ruv-swarm). This is the correct abstraction.**
+
 ---
 
 **Status**: Production-ready with multi-Queen hive support, vector/graph databases, and neural network integration.
