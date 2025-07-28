@@ -1,7 +1,7 @@
 #!/bin/sh
 # Claude-Zen Smart Dispatcher - Detects and uses the best available runtime
 
-VERSION="2.0.0-alpha.70"
+VERSION="2.0.0-alpha.73"
 
 # Determine the correct path based on how the script is invoked
 if [ -L "$0" ]; then

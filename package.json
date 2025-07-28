@@ -1,6 +1,6 @@
 {
   "name": "@claude-zen/monorepo",
-  "version": "2.0.0-alpha.70",
+  "version": "2.0.0-alpha.73",
   "description": "Hive-Mind Primary System: Integrated hybrid memory + simple ruv-swarm + plugin coordination (Claude Zen)",
   "workspaces": [
     "src",

@@ -13,32 +13,47 @@ export async function copyAgentFiles(targetDir, options = {}) {
   const { force = false, dryRun = false } = options;
   
   // Path to agent files - try multiple locations for claude-zen structure
-  const packageAgentsDir = join(__dirname, '../../../../../.claude/agents'); // From npm package
+  const packageAgentsDir = join(__dirname, '../../../../../.claude/agents'); // From npm package  
   const localAgentsDir = join(process.cwd(), '.claude/agents');              // Local development
   const sourceTemplateDir = join(__dirname, '../../../../../templates/.claude/agents'); // Template structure
+  const workspaceAgentsDir = '/workspaces/claude-code-flow/.claude/agents';   // Workspace development
   
   let sourceAgentsDir;
-  // Try multiple source locations for claude-zen
-  for (const dir of [packageAgentsDir, localAgentsDir, sourceTemplateDir]) {
+  
+  // Try multiple source locations with enhanced logging
+  for (const dir of [localAgentsDir, packageAgentsDir, workspaceAgentsDir, sourceTemplateDir]) {
     try {
       await fs.access(dir);
       sourceAgentsDir = dir;
+      console.log(`  📁 Using agent files from: ${dir}`);
       break;
     } catch {
       // Try next location
     }
   }
-  
   const targetAgentsDir = join(targetDir, '.claude/agents');
   
   console.log('📁 Copying agent system files...');
+  console.log(`  📂 Source: ${sourceAgentsDir}`);
+  console.log(`  📂 Target: ${targetAgentsDir}`);
   
   try {
+<<<<<<< HEAD:src/cli/command-handlers/init-handlers/init/agent-copier.js
     // Check if source agents directory exists
     if (!sourceAgentsDir) {
       console.log('⚠️  Agent files not found in any location, skipping agent system setup');
       return { success: false, error: 'Agent files not found in any location' };
     }
+||||||| parent of 62a29dfc (🚀 Alpha.73: Complete 64-Agent System Implementation):src/cli/simple-commands/init/agent-copier.js
+    // Check if source agents directory exists
+    try {
+      await fs.access(sourceAgentsDir);
+    } catch (err) {
+      console.log('⚠️  Agent files not found in package, skipping agent system setup');
+      return { success: false, error: 'Agent files not found in package' };
+    }
+=======
+>>>>>>> 62a29dfc (🚀 Alpha.73: Complete 64-Agent System Implementation):src/cli/simple-commands/init/agent-copier.js
     
     // Create target directory
     if (!dryRun) {
