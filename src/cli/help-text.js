@@ -5,14 +5,14 @@
 
 import { HelpFormatter } from './help-formatter.js';
 
-export const VERSION = '2.0.0-alpha.70';
+export const VERSION = '2.0.0-alpha.73';
 
 export const MAIN_HELP = `
 🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
 
 🎯 ENTERPRISE FEATURES: Complete ruv-swarm integration with 87 MCP tools, neural networking, and production-ready infrastructure
 🐝 NEW: Advanced Hive Mind System with Queen-led coordination, collective intelligence, and unlimited scaling
-⚡ ALPHA 64: Fixed wrapper script to use @alpha tag, ensures latest version always used
+⚡ ALPHA 73: Complete 64-agent system with swarm coordination, enhanced CLAUDE.md integration, and optimized init system
 
 USAGE:
   claude-zen <command> [options]
