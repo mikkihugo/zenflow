@@ -6,7 +6,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // Vision workflow stages
-const WORKFLOW_STAGES = {
+export const WORKFLOW_STAGES = {
   VISION_CREATED: 'vision_created',
   WORKFLOW_REGISTERED: 'workflow_registered',
   AGENTS_ASSIGNED: 'agents_assigned',
@@ -18,7 +18,7 @@ const WORKFLOW_STAGES = {
 };
 
 // Service URLs for integration testing
-const SERVICE_URLS = {
+export const SERVICE_URLS = {
   BUSINESS: process.env.BUSINESS_SERVICE_URL || 'http://localhost:4102',
   CORE: process.env.CORE_SERVICE_URL || 'http://localhost:4105',
   SWARM: process.env.SWARM_SERVICE_URL || 'http://localhost:4108',
@@ -26,7 +26,7 @@ const SERVICE_URLS = {
 };
 
 // Mock vision data for different complexity levels
-const mockVisions = {
+export const mockVisions = {
   simple: {
     id: 'vision_simple_001',
     title: 'Simple Landing Page',
@@ -143,7 +143,7 @@ const mockVisions = {
 };
 
 // Mock stakeholder approval workflows
-const mockStakeholders = {
+export const mockStakeholders = {
   product_team: {
     id: 'stakeholder_product',
     name: 'Product Team',
@@ -168,7 +168,7 @@ const mockStakeholders = {
 };
 
 // Mock agent configurations
-const mockAgentConfigurations = {
+export const mockAgentConfigurations = {
   simple_workflow: {
     agents: [
       {
@@ -259,7 +259,7 @@ const mockAgentConfigurations = {
 };
 
 // Mock workflow events for testing event flow
-const mockWorkflowEvents = {
+export const mockWorkflowEvents = {
   vision_created: {
     event: 'vision.created',
     data: {
@@ -298,7 +298,7 @@ const mockWorkflowEvents = {
 };
 
 // Performance benchmarks for different workflow types
-const performanceBenchmarks = {
+export const performanceBenchmarks = {
   simple_workflow: {
     max_duration_minutes: 30,
     expected_duration_minutes: 15,
@@ -320,7 +320,7 @@ const performanceBenchmarks = {
 };
 
 // Error scenarios for resilience testing
-const errorScenarios = {
+export const errorScenarios = {
   service_unavailable: {
     type: 'service_error',
     service: 'development',
@@ -348,7 +348,7 @@ const errorScenarios = {
 };
 
 // API response templates
-const apiResponseTemplates = {
+export const apiResponseTemplates = {
   success: (data) => ({
     status: 'success',
     data,

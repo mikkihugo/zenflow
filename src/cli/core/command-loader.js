@@ -211,8 +211,18 @@ async function registerDevelopmentCommands(router) {
     handler: neuralCommand,
     description: '🧠 Neural AI development tools with ruv-FANN intelligence',
     usage: 'neural <subcommand> [options]',
-    examples: ['neural import /path/to/monorepo', 'neural analyze .', 'neural optimize --verbose'],
+    examples: ['neural load code-completion-base', 'neural infer "create a function"', 'neural analyze file.js'],
     aliases: ['ai', 'brain']
+  });
+
+  // Queen command (Multi-Queen Architecture)
+  const { queenCommand } = await import('../command-handlers/queen-command.js');
+  router.register('queen', {
+    handler: queenCommand,
+    description: '👑 Multi-Queen architecture for collaborative AI development',
+    usage: 'queen <subcommand> [options]',
+    examples: ['queen task "create API endpoint"', 'queen collaborate "review code"', 'queen status'],
+    aliases: ['queens']
   });
 }
 

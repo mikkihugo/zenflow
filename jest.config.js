@@ -25,10 +25,7 @@ export default {
       }
     }],
     '^.+\\.js$': ['babel-jest', {
-      presets: [['@babel/preset-env', { 
-        modules: 'auto',
-        targets: { node: 'current' }
-      }]]
+      presets: [['@babel/preset-env', { modules: 'auto' }]]
     }]
   },
   moduleNameMapper: {

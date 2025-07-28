@@ -1,6 +1,6 @@
-const fs = require('fs').promises;
-const path = require('path');
-const crypto = require('crypto');
+import { promises as fs } from 'fs';
+import path from 'path';
+import crypto from 'crypto';
 
 /**
  * Test helper utilities for Vision-to-Code tests

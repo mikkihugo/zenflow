@@ -1,17 +1,27 @@
 {
   "name": "@claude-zen/export-system-plugin",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "description": "Multi-format export and reporting system for Claude Zen",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "export", "reports", "pdf", "html", "csv", "markdown"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "export",
+    "reports",
+    "pdf",
+    "html",
+    "csv",
+    "markdown"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
-    "glob": "^10.0.0"
+    "glob": "^10.0.0",
+    "nanoid": "5.1.5"
   },
   "optionalDependencies": {
-    "puppeteer": "^21.0.0"
+    "puppeteer": "^24.15.0"
   },
   "claudeZenPlugin": {
     "name": "export-system",
@@ -19,7 +29,7 @@
     "capabilities": [
       "pdf-generation",
       "html-export",
-      "json-export", 
+      "json-export",
       "csv-export",
       "markdown-export",
       "template-system",

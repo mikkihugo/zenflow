@@ -502,6 +502,12 @@ export class DocumentationLinkerPlugin {
   resolveLinkPath(sourcePath, linkUrl) {
     const sourceDir = path.dirname(sourcePath);
     
+    // Guard against undefined linkUrl
+    if (!linkUrl || typeof linkUrl !== 'string') {
+      console.warn(`⚠️ Invalid linkUrl: ${linkUrl} in ${sourcePath}`);
+      return '';
+    }
+    
     // Remove anchor if present
     const [pathPart, anchor] = linkUrl.split('#');
     
@@ -515,6 +521,12 @@ export class DocumentationLinkerPlugin {
     console.log('✅ Validating links...');
     
     for (const [targetPath, linkInfo] of this.linkMap) {
+      // Guard against undefined targetPath
+      if (!targetPath || typeof targetPath !== 'string') {
+        console.warn(`⚠️ Invalid targetPath: ${targetPath}`);
+        continue;
+      }
+      
       const [filePath, anchor] = targetPath.split('#');
       
       try {

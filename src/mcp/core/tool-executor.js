@@ -144,11 +144,11 @@ export class MCPToolExecutor {
    * @returns {Promise<any>} Command result
    */
   async executeClaudeCommand(command, args) {
-    const { execSync } = await import('child_process');
+    const { execFileSync } = await import('child_process');
     
     try {
       // Build command line arguments
-      let cmdArgs = [];
+      const cmdArgs = [];
       
       // Handle different argument patterns for each command
       switch (command) {
@@ -167,10 +167,10 @@ export class MCPToolExecutor {
           break;
         case 'hive-mind':
           if (args.subcommand) cmdArgs.push(args.subcommand);
-          if (args.objective) cmdArgs.push(`"${args.objective}"`);
+          if (args.objective) cmdArgs.push(args.objective);
           break;
         case 'swarm':
-          if (args.objective) cmdArgs.push(`"${args.objective}"`);
+          if (args.objective) cmdArgs.push(args.objective);
           if (args.topology) cmdArgs.push('--topology', args.topology);
           if (args.maxAgents) cmdArgs.push('--max-agents', args.maxAgents.toString());
           break;
@@ -181,12 +181,12 @@ export class MCPToolExecutor {
           break;
         case 'task':
           if (args.action) cmdArgs.push(args.action);
-          if (args.description) cmdArgs.push(`"${args.description}"`);
+          if (args.description) cmdArgs.push(args.description);
           if (args.taskId) cmdArgs.push(args.taskId);
           break;
         case 'memory':
           if (args.action) cmdArgs.push(args.action);
-          if (args.query) cmdArgs.push(`"${args.query}"`);
+          if (args.query) cmdArgs.push(args.query);
           if (args.namespace) cmdArgs.push('--namespace', args.namespace);
           break;
         case 'github':
@@ -196,15 +196,15 @@ export class MCPToolExecutor {
         case 'hooks':
           if (args.hook) cmdArgs.push(args.hook);
           if (args.file) cmdArgs.push('--file', args.file);
-          if (args.command) cmdArgs.push('--command', `"${args.command}"`);
+          if (args.command) cmdArgs.push('--command', args.command);
           break;
       }
       
-      // Execute claude-zen command
-      const fullCommand = `npx claude-zen ${command} ${cmdArgs.join(' ')}`.trim();
-      console.error(`[${new Date().toISOString()}] INFO [Tool-Executor] Executing: ${fullCommand}`);
+      // Execute claude-zen command using execFileSync for safety
+      const execArgs = ['claude-zen', command, ...cmdArgs];
+      console.error(`[${new Date().toISOString()}] INFO [Tool-Executor] Executing: npx ${execArgs.map(a => JSON.stringify(a)).join(' ')}`);
       
-      const output = execSync(fullCommand, { 
+      const output = execFileSync('npx', execArgs, { 
         encoding: 'utf8',
         timeout: 30000, // 30 second timeout
         maxBuffer: 1024 * 1024 // 1MB buffer
@@ -212,7 +212,7 @@ export class MCPToolExecutor {
       
       return {
         success: true,
-        command: fullCommand,
+        command: `npx ${execArgs.map(a => JSON.stringify(a)).join(' ')}`,
         output: output.trim(),
         timestamp: new Date().toISOString()
       };

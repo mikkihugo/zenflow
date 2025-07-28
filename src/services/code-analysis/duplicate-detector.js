@@ -156,7 +156,7 @@ export class DuplicateCodeDetector {
     const lines = output.split('\n');
     const duplicates = [];
     
-    let currentDuplicate = null;
+    const currentDuplicate = null;
     for (const line of lines) {
       if (line.includes('Found') && line.includes('clones')) {
         // Parse clone information

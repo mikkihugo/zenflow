@@ -4,11 +4,17 @@
   "description": "Pluggable workflow processing engines for Claude Zen",
   "main": "index.js",
   "type": "module",
-  "keywords": ["claude-zen", "plugin", "workflow", "orchestration", "automation"],
+  "keywords": [
+    "claude-zen",
+    "plugin",
+    "workflow",
+    "orchestration",
+    "automation"
+  ],
   "author": "Claude Zen Team",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^4.0.0"
+    "nanoid": "^5.1.5"
   },
   "optionalDependencies": {
     "@temporalio/worker": "^1.0.0",
@@ -17,8 +23,16 @@
   "claudeZenPlugin": {
     "name": "workflow-engine",
     "category": "orchestration",
-    "capabilities": ["workflow-execution", "step-management", "state-persistence"],
-    "engines": ["default", "temporal", "camunda"],
+    "capabilities": [
+      "workflow-execution",
+      "step-management",
+      "state-persistence"
+    ],
+    "engines": [
+      "default",
+      "temporal",
+      "camunda"
+    ],
     "config": {
       "engine": "default",
       "maxConcurrentWorkflows": 10,
