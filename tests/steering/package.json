@@ -1,0 +1,90 @@
+{
+  "name": "claude-flow-steering-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive test framework for steering document generation in Claude-Flow",
+  "type": "module",
+  "main": "steering-test-framework.js",
+  "scripts": {
+    "test": "node run-tests.js",
+    "test:unit": "node run-tests.js unit",
+    "test:integration": "node run-tests.js integration",
+    "test:quality": "node run-tests.js quality",
+    "test:performance": "node run-tests.js performance",
+    "test:all": "node run-tests.js",
+    "test:parallel": "TEST_PARALLEL=true node run-tests.js",
+    "test:sequential": "TEST_PARALLEL=false node run-tests.js",
+    "test:verbose": "TEST_VERBOSE=true node run-tests.js",
+    "test:coverage": "TEST_COVERAGE=true node run-tests.js",
+    "test:bail": "TEST_BAIL=true node run-tests.js",
+    "test:json": "TEST_REPORT_FORMAT=json node run-tests.js",
+    "test:html": "TEST_REPORT_FORMAT=html node run-tests.js",
+    "framework": "node steering-test-framework.js",
+    "integration": "node steering-integration-tests.js",
+    "validate": "node -e \"import('./steering-quality-validator.js').then(m => console.log('✅ Quality validator ready'))\"",
+    "mock-data": "node -e \"import('./steering-mock-data.js').then(m => console.log('✅ Mock data generator ready'))\"",
+    "clean": "rm -rf test-results integration-temp mock-steering test-data test-output temp",
+    "setup": "mkdir -p test-results && echo '✅ Test directories created'",
+    "check": "node -e \"console.log('🧪 Steering Test Framework v1.0.0'); console.log('📊 Available test suites: unit, integration, quality, performance');\""
+  },
+  "keywords": [
+    "claude-flow",
+    "steering",
+    "document",
+    "generation",
+    "testing",
+    "quality",
+    "validation",
+    "maestro",
+    "ai",
+    "framework"
+  ],
+  "author": "Claude-Flow Team",
+  "license": "MIT",
+  "dependencies": {
+    "natural": "^6.12.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {
+    "natural": "^6.12.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./steering-test-framework.js"
+    },
+    "./framework": {
+      "import": "./steering-test-framework.js"
+    },
+    "./integration": {
+      "import": "./steering-integration-tests.js"
+    },
+    "./validator": {
+      "import": "./steering-quality-validator.js"
+    },
+    "./mock-data": {
+      "import": "./steering-mock-data.js"
+    },
+    "./runner": {
+      "import": "./run-tests.js"
+    }
+  },
+  "files": [
+    "*.js",
+    "README.md",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ruvnet/claude-flow"
+  },
+  "bugs": {
+    "url": "https://github.com/ruvnet/claude-flow/issues"
+  },
+  "homepage": "https://github.com/ruvnet/claude-flow#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/ruvnet"
+  }
+}
