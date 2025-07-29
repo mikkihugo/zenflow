@@ -1,5 +1,6 @@
 // agent.js - Agent management commands
 import { printSuccess, printError, printWarning } from '../utils.js';
+import { agentLoader } from '../../agents/agent-loader.js';
 
 export async function agentCommand(subArgs, flags) {
   const agentCmd = subArgs[0];
@@ -46,22 +47,63 @@ async function spawnAgent(subArgs, flags) {
   const agentType = subArgs[1] || 'general';
   const agentName = getFlag(subArgs, '--name') || flags.name || `agent-${Date.now()}`;
 
-  printSuccess(`Spawning ${agentType} agent: ${agentName}`);
-  console.log('🤖 Agent would be created with the following configuration:');
-  console.log(`   Type: ${agentType}`);
+  // Check if agent type exists using dynamic loader
+  const agentTypeInfo = await agentLoader.getAgentType(agentType);
+  if (!agentTypeInfo) {
+    printError(`Agent type '${agentType}' not found.`);
+    console.log('\nAvailable agent types:');
+    const availableTypes = await agentLoader.getAgentTypes();
+    availableTypes.forEach(type => {
+      console.log(`  • ${type.name}${type.legacy ? ' (legacy)' : ''} - ${type.description}`);
+    });
+    return;
+  }
+
+  if (agentTypeInfo.legacy) {
+    printWarning(`Using legacy agent type '${agentType}'. Consider using '${agentTypeInfo.name}' instead.`);
+  }
+
+  printSuccess(`Spawning ${agentTypeInfo.displayName} agent: ${agentName}`);
+  console.log('🤖 Agent configuration:');
+  console.log(`   Type: ${agentTypeInfo.displayName}`);
   console.log(`   Name: ${agentName}`);
-  console.log('   Capabilities: Research, Analysis, Code Generation');
+  console.log(`   Description: ${agentTypeInfo.description}`);
+  console.log(`   Capabilities: ${agentTypeInfo.capabilities.join(', ')}`);
   console.log('   Status: Ready');
   console.log('\n📋 Note: Full agent spawning requires orchestrator to be running');
 }
 
 async function listAgents(subArgs, flags) {
-  printSuccess('Active agents:');
-  console.log('📋 No agents currently active (orchestrator not running)');
-  console.log('\nTo create agents:');
-  console.log('  claude-zen agent spawn researcher --name "ResearchBot"');
-  console.log('  claude-zen agent spawn coder --name "CodeBot"');
-  console.log('  claude-zen agent spawn analyst --name "DataBot"');
+  const showTypes = flags.types || flags.t;
+  
+  if (showTypes) {
+    printSuccess('Available agent types:');
+    const agentTypes = await agentLoader.getAgentTypes();
+    const stats = await agentLoader.getStats();
+    
+    console.log(`\n📊 Agent Statistics:`);
+    console.log(`   Total: ${stats.total}`);
+    console.log(`   Built-in: ${stats.builtin}`);
+    console.log(`   Dynamic: ${stats.dynamic}`);
+    console.log(`   Legacy: ${stats.legacy}`);
+    
+    console.log('\n🤖 Available Agent Types:');
+    agentTypes.forEach(type => {
+      const badge = type.legacy ? ' [LEGACY]' : '';
+      console.log(`   • ${type.name}${badge}`);
+      console.log(`     ${type.description}`);
+      console.log(`     Capabilities: ${type.capabilities.join(', ')}`);
+      console.log('');
+    });
+  } else {
+    printSuccess('Active agents:');
+    console.log('📋 No agents currently active (orchestrator not running)');
+    console.log('\nTo create agents:');
+    console.log('  claude-zen agent spawn researcher --name "ResearchBot"');
+    console.log('  claude-zen agent spawn coder --name "CodeBot"');
+    console.log('  claude-zen agent spawn analyst --name "DataBot"');
+    console.log('\n💡 Use "agent list --types" to see all available agent types');
+  }
 }
 
 async function manageHierarchy(subArgs, flags) {

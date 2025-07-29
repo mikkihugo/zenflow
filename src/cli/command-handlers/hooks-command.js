@@ -6,6 +6,7 @@ import {
   checkRuvSwarmAvailable,
 } from '../utils.js';
 import { SqliteMemoryStore } from '../../memory/sqlite-store.js';
+import TimeoutProtection from '../../utils/timeout-protection.js';
 
 // Initialize memory store
 let memoryStore = null;
@@ -137,11 +138,11 @@ async function preTaskCommand(subArgs, flags) {
 
     console.log(`  💾 Saved to .swarm/memory.db`);
 
-    // Execute ruv-swarm hook if available
-    const isAvailable = await checkRuvSwarmAvailable();
+    // Execute ruv-swarm hook if available with timeout protection
+    const isAvailable = await TimeoutProtection.checkRuvSwarmAvailableWithTimeout();
     if (isAvailable) {
       console.log(`\n🔄 Executing ruv-swarm pre-task hook...`);
-      const hookResult = await execRuvSwarmHook('pre-task', {
+      const hookResult = await TimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', {
         description,
         'task-id': taskId,
         'auto-spawn-agents': autoSpawnAgents,
@@ -159,6 +160,8 @@ async function preTaskCommand(subArgs, flags) {
         );
 
         printSuccess(`✅ Pre-task hook completed successfully`);
+      } else if (hookResult.timedOut) {
+        printWarning(`⚠️ ruv-swarm hook timed out, continuing without it`);
       }
     }
 
@@ -1021,9 +1024,12 @@ async function sessionEndCommand(subArgs, flags) {
     console.log(`  💾 Session saved to .swarm/memory.db`);
 
     if (memoryStore) {
-      memoryStore.close();
+      await TimeoutProtection.cleanupDatabaseWithTimeout(memoryStore);
       memoryStore = null;
     }
+    
+    // Setup safe exit to prevent hanging
+    TimeoutProtection.forceExit(1000);
 
     printSuccess(`✅ Session-end hook completed`);
   } catch (err) {
