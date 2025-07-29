@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "claude-zen": {
+      "command": "npx",
+      "args": ["claude-zen", "mcp", "start"],
+      "env": {
+        "CLAUDE_ZEN_DEBUG": "false"
+      }
+    },
+    "ruv-swarm": {
+      "command": "npx",
+      "args": ["@claude-zen/ruv-swarm", "mcp", "start"],
+      "env": {
+        "RUV_SWARM_DEBUG": "false"
+      }
+    }
+  }
+}
