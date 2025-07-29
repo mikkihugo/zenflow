@@ -1,14 +1,14 @@
-# Vision-to-Code Unified Monitoring Dashboard Design
+# Visionary Software Intelligence Unified Monitoring Dashboard Design
 
 ## Dashboard Overview
 
-The Vision-to-Code monitoring dashboard provides real-time visibility into the entire workflow from strategic vision creation to code deployment. Built with Phoenix LiveView for reactive, real-time updates without page refreshes.
+The Visionary Software Intelligence monitoring dashboard provides real-time visibility into the entire workflow from code analysis to intelligent refactoring recommendations. Built with Phoenix LiveView for reactive, real-time updates without page refreshes.
 
 ## Dashboard Layout Wireframe
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                      Vision-to-Code Monitoring Dashboard                      │
+│                   Visionary Software Intelligence Dashboard                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  🏢 Strategic Planning          │  🐝 Swarm Coordination                      │
 │  ┌────────────────────────┐    │  ┌────────────────────────────────────┐   │

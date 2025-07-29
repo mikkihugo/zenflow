@@ -16,6 +16,7 @@
  */
 
 import { createMeowCLI, executeCommand, hasCommand, showCommandHelp, commandRegistry } from './command-registry.js';
+import config from '../../config/default.js';
 import { renderTui } from '../ui/ink-tui.js';
 import { initializeHiveMind } from '../hive-mind-primary.js';
 import { printSuccess, printError, printInfo, printWarning } from './utils.js';
@@ -70,11 +71,11 @@ async function main() {
         enableHooks: flags.hooks, // Optional - Claude Code hooks work independently
         
         // Simple swarm settings (no complex orchestration)
-        maxAgents: flags.agents || 4, // Keep it simple
-        swarmMode: flags.swarmMode || 'simple',
+        maxAgents: flags.agents || config.cli.maxAgents, // Keep it simple
+        swarmMode: flags.swarmMode || config.cli.swarmMode,
         
         // Memory configuration (integrated into hive-mind)
-        memoryPath: flags.memoryPath || './.hive-mind/memory',
+        memoryPath: flags.memoryPath || config.cli.memoryPath,
         
         // Debug configuration
         debug: flags.debug || flags.verbose

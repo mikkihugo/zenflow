@@ -3,6 +3,7 @@
  * 
  * UNIFIED COORDINATION SYSTEM with:
  * ✅ Integrated Hybrid Memory (LanceDB + Kuzu + SQLite)
+ * ✅ Visionary System (Software Intelligence Core)
  * ✅ Simple direct ruv-swarm calls (no complex orchestration) 
  * ✅ Native plugin coordination
  * ✅ Optional hooks integration
@@ -10,10 +11,22 @@
  * THE HIVE-MIND IS THE MAIN INTERFACE - everything goes through it
  */
 
-import { RuvSwarm } from '../ruv-FANN/ruv-swarm/npm/src/index.js';
+import { RuvSwarm } from '../ruv-swarm/npm/src/index.js';
 import { MemoryBackendPlugin } from './plugins/memory-backend/index.js';
 import { NeuralEngine } from './neural/neural-engine.js';
+import { VisionarySoftwareOrchestrator } from './visionary/orchestrator/src/visionary-orchestrator.js';
+import { LanceDBInterface } from './database/lancedb-interface.js';
+import { KuzuAdvancedInterface } from './database/kuzu-advanced-interface.js';
+import { VisionarySoftwareIntelligenceProcessor } from './visionary/software-intelligence-processor.js';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator.js';
 import { EventEmitter } from 'events';
+// Import config from the correct location
+const config = {
+  hiveMind: {
+    memoryPath: './swarm/claude-zen-mcp.db',
+    hybridMemoryPath: './.swarm'
+  }
+};
 
 export class HiveMindPrimary extends EventEmitter {
   constructor(options = {}) {
@@ -26,11 +39,11 @@ export class HiveMindPrimary extends EventEmitter {
       enableHooks: options.enableHooks !== false,
       
       // Integrated hybrid memory (part of hive-mind)
-      memoryPath: options.memoryPath || './.hive-mind/memory',
+      memoryPath: options.memoryPath || config.hiveMind.memoryPath,
       
       // Simple swarm settings (minimal, direct calls only)
-      swarmMode: options.swarmMode || 'simple', // 'simple' | 'disabled'
-      maxAgents: options.maxAgents || 4, // Keep it simple
+      swarmMode: options.swarmMode || config.hiveMind.swarmMode, // 'simple' | 'disabled'
+      maxAgents: options.maxAgents || config.hiveMind.maxAgents, // Keep it simple
       
       // Plugin integration
       enablePlugins: options.enablePlugins !== false,
@@ -41,9 +54,16 @@ export class HiveMindPrimary extends EventEmitter {
     // INTEGRATED COMPONENTS (all part of hive-mind)
     this.hybridMemory = null;  // LanceDB + Kuzu + SQLite integrated
     this.simpleSwarm = null;   // Direct ruv-swarm calls only
+    this.visionaryOrchestrator = null; // Visionary system (software intelligence core)
     this.neuralEngine = null;  // Neural network engine
     this.plugins = new Map();  // Connected plugins
     this.hooks = new Map();    // Optional hooks system
+    
+    // ENHANCED SWARM-GENERATED SYSTEMS
+    this.lanceDBInterface = null;    // Advanced vector database
+    this.kuzuAdvanced = null;        // Enhanced graph database
+    this.softwareIntelligenceProcessor = null; // Software intelligence and code analysis
+    this.multiSystemCoordinator = null;  // Cross-system coordination
     
     // State
     this.initialized = false;
@@ -71,10 +91,16 @@ export class HiveMindPrimary extends EventEmitter {
       // 2. Initialize neural engine (automatic)
       await this.initializeNeuralEngine();
       
-      // 3. Setup simple ruv-swarm integration (direct calls only)
+      // 3. Initialize Visionary orchestrator (software intelligence core)
+      await this.initializeVisionaryOrchestrator();
+      
+      // 4. Initialize enhanced swarm-generated systems
+      await this.initializeEnhancedSystems();
+      
+      // 5. Setup simple ruv-swarm integration (direct calls only)
       await this.setupSimpleSwarmIntegration();
       
-      // 4. Connect plugins (optional)
+      // 5. Connect plugins (optional)
       if (this.options.enablePlugins) {
         await this.connectPlugins();
       }
@@ -90,6 +116,8 @@ export class HiveMindPrimary extends EventEmitter {
       console.log('✅ Hive-Mind Primary System ready!');
       console.log('💾 Hybrid Memory: Integrated (LanceDB + Kuzu + SQLite)');
       console.log('🧠 Neural Engine: Automatic AI enhancement active');
+      console.log('🎯 Visionary: Software intelligence core integrated');
+      console.log('🚀 Enhanced Systems: Swarm-generated extensions active');
       console.log('🐝 Simple Swarm: Direct calls to ruv-swarm source');
       console.log('🔌 Plugins: Connected via hive-mind coordination');
       console.log('🔗 Hooks: Optional (may not be needed)');
@@ -118,19 +146,19 @@ export class HiveMindPrimary extends EventEmitter {
       // LanceDB for vectors (semantic search)
       lanceConfig: {
         persistDirectory: `${this.options.memoryPath}/vectors`,
-        collection: 'hive_mind_memory'
+        collection: config.hiveMind.lanceConfig.collection,
       },
       
       // Kuzu for graphs (relationships)
       kuzuConfig: {
         persistDirectory: `${this.options.memoryPath}/graphs`,
-        enableRelationships: true
+        enableRelationships: config.hiveMind.kuzuConfig.enableRelationships,
       },
       
       // SQLite for structured data (fast queries)
       sqliteConfig: {
         dbPath: `${this.options.memoryPath}/structured.db`,
-        enableWAL: true
+        enableWAL: config.hiveMind.sqliteConfig.enableWAL,
       },
       
       // Integration settings
@@ -167,6 +195,106 @@ export class HiveMindPrimary extends EventEmitter {
     } catch (error) {
       console.warn('⚠️ Neural Engine unavailable (using fallback):', error.message);
       this.neuralEngine = null;
+    }
+  }
+  
+  async initializeVisionaryOrchestrator() {
+    console.log('🎯 Initializing Visionary Orchestrator (software intelligence core)...');
+    
+    this.visionaryOrchestrator = new VisionarySoftwareOrchestrator({
+      // Integrate with hive mind systems
+      memoryIntegration: true,
+      swarmCoordination: this.options.enableAdvancedSwarm,
+      
+      // Enable all core software intelligence capabilities
+      enableCodeAnalysis: true,
+      enablePatternRecognition: true,
+      enableIntelligentRefactoring: true
+    });
+    
+    try {
+      await this.visionaryOrchestrator.initialize();
+      
+      // Connect to neural engine for enhanced processing
+      if (this.neuralEngine) {
+        this.visionaryOrchestrator.setNeuralEngine(this.neuralEngine);
+      }
+      
+      // Connect to hybrid memory for persistence
+      if (this.hybridMemory) {
+        this.visionaryOrchestrator.setMemoryStore(this.hybridMemory);
+      }
+      
+      // Set up event forwarding
+      this.visionaryOrchestrator.on('jobCompleted', (result) => {
+        this.emit('visionary-job-completed', result);
+      });
+      
+      this.visionaryOrchestrator.on('jobFailed', (error) => {
+        this.emit('visionary-job-failed', error);
+      });
+      
+      console.log('✅ Visionary Software Intelligence Orchestrator ready - intelligent code analysis enabled');
+      
+    } catch (error) {
+      console.warn('⚠️ Visionary Software Intelligence Orchestrator initialization failed:', error.message);
+      this.visionaryOrchestrator = null;
+    }
+  }
+  
+  async initializeEnhancedSystems() {
+    console.log('🚀 Initializing Enhanced Swarm-Generated Systems...');
+    
+    try {
+      // Initialize advanced LanceDB interface
+      this.lanceDBInterface = new LanceDBInterface({
+        dbPath: './.hive-mind/lance-db',
+        vectorDim: 1536,
+        similarity: 'cosine'
+      });
+      await this.lanceDBInterface.initialize();
+      console.log('   ✅ LanceDB Interface: Advanced vector operations ready');
+      
+      // Initialize enhanced Kuzu graph interface
+      this.kuzuAdvanced = new KuzuAdvancedInterface({
+        dbPath: './.hive-mind/kuzu-graph',
+        enableAnalytics: true,
+        cacheSize: 10000
+      });
+      await this.kuzuAdvanced.initialize();
+      console.log('   ✅ Kuzu Advanced: Graph analytics and traversal ready');
+      
+      // Initialize software intelligence processor
+      this.softwareIntelligenceProcessor = new VisionarySoftwareIntelligenceProcessor({
+        outputDir: './.hive-mind/intelligent-analysis',
+        aiProvider: 'claude',
+        enableOptimization: true
+      });
+      await this.softwareIntelligenceProcessor.initialize();
+      console.log('   ✅ Software Intelligence Processor: Complete code analysis pipeline ready');
+      
+      // Initialize multi-system coordinator
+      this.multiSystemCoordinator = new MultiSystemCoordinator({
+        lanceDB: this.lanceDBInterface,
+        kuzu: this.kuzuAdvanced,
+        softwareIntelligenceProcessor: this.softwareIntelligenceProcessor,
+        memoryStore: this.hybridMemory
+      });
+      await this.multiSystemCoordinator.initialize();
+      console.log('   ✅ Multi-System Coordinator: Unified cross-system operations ready');
+      
+      // Connect systems to neural engine if available
+      if (this.neuralEngine) {
+        this.lanceDBInterface.setNeuralEngine(this.neuralEngine);
+        this.softwareIntelligenceProcessor.setNeuralEngine(this.neuralEngine);
+        this.multiSystemCoordinator.setNeuralEngine(this.neuralEngine);
+      }
+      
+      console.log('🚀 Enhanced Systems: All swarm-generated extensions initialized successfully');
+      
+    } catch (error) {
+      console.warn('⚠️ Enhanced Systems initialization failed:', error.message);
+      console.log('💡 System will continue with basic functionality');
     }
   }
   

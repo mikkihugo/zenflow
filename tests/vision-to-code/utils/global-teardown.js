@@ -1,5 +1,5 @@
 /**
- * Global test teardown for Vision-to-Code integration tests
+ * Global test teardown for Visionary integration tests
  * Cleans up test environment and stops services
  */
 
@@ -7,7 +7,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 module.exports = async () => {
-  console.log('🧹 Tearing down Vision-to-Code test environment...');
+  console.log('🧹 Tearing down Visionary test environment...');
   
   try {
     // Clean up test workspace
@@ -36,11 +36,11 @@ module.exports = async () => {
     await generateTestReport();
     
     // Clean up environment variables
-    delete process.env.VISION_TO_CODE_TEST_MODE;
+    delete process.env.VISIONARY_TEST_MODE;
     delete process.env.TEST_WORKSPACE_DIR;
     delete process.env.TEST_DATABASE_PATH;
     
-    console.log('✅ Vision-to-Code test environment teardown complete');
+    console.log('✅ Visionary test environment teardown complete');
     
   } catch (error) {
     console.error('❌ Error during test teardown:', error);
@@ -50,7 +50,7 @@ module.exports = async () => {
 
 async function generateTestReport() {
   try {
-    const reportDir = path.join(process.cwd(), 'tests/vision-to-code/test-results');
+    const reportDir = path.join(process.cwd(), 'tests/visionary/test-results');
     await fs.mkdir(reportDir, { recursive: true });
     
     const testSummary = {
@@ -63,7 +63,7 @@ async function generateTestReport() {
       },
       test_configuration: {
         test_mode: process.env.NODE_ENV,
-        vision_to_code_test_mode: process.env.VISION_TO_CODE_TEST_MODE,
+        visionary_test_mode: process.env.VISIONARY_TEST_MODE,
         services_mocked: {
           business: !!process.env.BUSINESS_SERVICE_MOCKED,
           core: !!process.env.CORE_SERVICE_MOCKED,

@@ -1,11 +1,11 @@
-# Vision-to-Code Integration Test Suite
+# Visionary Integration Test Suite
 
-Comprehensive integration tests for the Vision-to-Code system covering all services, workflows, and scenarios.
+Comprehensive integration tests for the Visionary system covering all services, workflows, and scenarios.
 
 ## Test Structure
 
 ```
-tests/vision-to-code/
+tests/visionary/
 ├── unit/                    # Unit tests for individual components
 │   ├── services/           # Service-level unit tests
 │   ├── utils/              # Utility function tests
@@ -166,13 +166,13 @@ describe('Complete User Flow', () => {
 ### Running Load Tests
 ```bash
 # Normal load test
-k6 run tests/vision-to-code/performance/load-test.js
+k6 run tests/visionary/performance/load-test.js
 
 # Stress test
-k6 run tests/vision-to-code/performance/load-test.js --env SCENARIO=stress
+k6 run tests/visionary/performance/load-test.js --env SCENARIO=stress
 
 # Spike test
-k6 run tests/vision-to-code/performance/load-test.js --env SCENARIO=spike
+k6 run tests/visionary/performance/load-test.js --env SCENARIO=spike
 ```
 
 ### Load Test Scenarios

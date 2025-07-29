@@ -22,8 +22,8 @@ const mcpServer = new ClaudeFlowMCPServer({
   httpMode: true
 });
 
-// Initialize MCP server
-await mcpServer.initialize();
+// MCP server auto-initializes, add small delay for neural engine
+await new Promise(resolve => setTimeout(resolve, 100));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

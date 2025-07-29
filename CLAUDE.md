@@ -11,7 +11,6 @@ Claude Code Flow is a high-performance Node.js/TypeScript AI orchestration platf
 - **SQLite** - Primary memory persistence & hive-mind coordination
 - **LanceDB** - Vector database for embeddings & semantic search
 - **Kuzu** - Graph database for service relationships
-- **PostgreSQL** - Optional enterprise backend
 - **WebGPU/WASM** - GPU acceleration
 - **Rust** - High-performance neural network engine (ruv-FANN)
 
@@ -36,7 +35,7 @@ Claude Code Flow is a high-performance Node.js/TypeScript AI orchestration platf
 ### **Queen Systems Present:**
 1. **Main Queen Council** - Strategic oversight in JavaScript/TypeScript
 2. **ruv-FANN Queen** - Neural network-based Queen in Rust
-3. **Vision Queen** - Visual-to-code pipeline coordination
+3. **Visionary Queen** - Software intelligence and code analysis coordination
 4. **Hive Queens** - Multiple Queens per hive for distributed intelligence
 
 ## 🧠 Major Features
@@ -49,12 +48,11 @@ Claude Code Flow is a high-performance Node.js/TypeScript AI orchestration platf
 - **SIMD Optimization** - CPU performance enhancements
 - **CUDA-WASM** - GPU compute via WebAssembly
 
-### **2. Database Stack**
+### **2. Enhanced Database Stack (Swarm-Extended)**
 - **SQLite** - Persistent memory, hive coordination, Queen state
-- **LanceDB** - Vector embeddings, semantic search, neural patterns
-- **Kuzu** - Graph relationships, service dependencies, Queen networks
-- **ChromaDB** - Fallback vector store (mapped to LanceDB)
-- **PostgreSQL** - Enterprise-scale deployments
+- **LanceDB Advanced Interface** - Enhanced vector operations, clustering, analytics (855 lines)
+- **Kuzu Advanced Interface** - Complex graph traversal, centrality analysis, community detection (1,168 lines)
+- **Multi-System Coordinator** - Unified cross-database operations and intelligence (1,013 lines)
 
 ### **3. Swarm Orchestration**
 - **Hive Mind** - Persistent service intelligence with multi-Queen support
@@ -63,11 +61,12 @@ Claude Code Flow is a high-performance Node.js/TypeScript AI orchestration platf
 - **Neural Swarms** - ruv-swarm achieving 84.8% on benchmarks
 - **MCP Integration** - Model Context Protocol server
 
-### **4. Vision-to-Code Pipeline**
-- **Vision Service** - Converts designs to code
-- **Code Service** - Generation and optimization
-- **Language Service** - Multi-language support
-- **Queen Orchestrator** - Coordinates the pipeline
+### **4. Visionary Software Intelligence System (Swarm-Enhanced)**
+- **Visionary Orchestrator** - Core system for software intelligence coordination (246 lines)
+- **Software Intelligence Processor** - Complete AI-powered code analysis pipeline (1,212 lines)
+- **Multi-Language Support** - JavaScript, TypeScript, Python, Rust, Java code analysis
+- **Quality Validation** - Code optimization and refactoring recommendation systems
+- **Neural Integration** - AI-enhanced design analysis and generation
 
 ### **5. Advanced Features**
 - **Graph Neural Networks** - Via Kuzu for complex relationships
@@ -91,8 +90,8 @@ claude-code-flow/
 │   ├── neuro-divergent/   # 27+ forecasting models
 │   ├── ruv-swarm/         # Swarm intelligence
 │   └── queen/             # Neural Queen implementation
-├── vision-to-code/        # Visual to code pipeline
-│   └── queen-agent/       # Vision Queen coordinator
+├── visionary/             # Software intelligence system
+│   └── orchestrator/      # Visionary intelligence coordinator
 ├── benchmark/             # Performance testing
 ├── claude-zen-mcp/        # MCP server implementation
 └── databases/
@@ -130,9 +129,9 @@ cd ruv-FANN
 cargo build --release   # Build neural engine
 cargo test              # Test neural networks
 
-# Vision pipeline
-cd vision-to-code
-npm run vision:start    # Start vision service
+# Visionary system
+cd visionary
+npm run visionary:start # Start software intelligence service
 ```
 
 ## 💾 Database Configuration

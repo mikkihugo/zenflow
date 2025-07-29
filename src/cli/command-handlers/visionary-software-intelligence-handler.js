@@ -151,27 +151,30 @@ const handleSquadCommand = async (subcommand, args, flags) => {
   }
 };
 
-const handleSwarmCommand = async (subcommand, args, flags) => {
+const handleAdvancedSwarmCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
     case 'coordinate':
-      console.log('Initiating swarm coordination...');
+      console.log('🧠 Initiating advanced swarm coordination...');
       const objective = flags.objective || args[0];
       if (!objective) {
-        console.error('Objective is required for swarm coordination.');
+        console.error('Objective is required for advanced swarm coordination.');
         return;
       }
-      const swarmConfig = {
+      const advancedSwarmConfig = {
         objective: objective,
         name: flags.name,
-        queenType: flags.queenType,
-        maxWorkers: flags.maxWorkers,
-        consensusAlgorithm: flags.consensus,
-        topology: flags.topology,
-        autoScale: flags.autoScale,
-        encryption: flags.encryption,
+        queenType: flags.queenType || 'advanced-intelligence',
+        maxWorkers: flags.maxWorkers || 8,
+        consensusAlgorithm: flags.consensus || 'hierarchical-consensus',
+        topology: flags.topology || 'hierarchical',
+        autoScale: flags.autoScale !== false,
+        encryption: flags.encryption !== false,
+        cognitiveSupport: true,
+        neuralPatterns: true,
+        intelligenceLevel: 'advanced'
       };
-      await hiveMindCore.initialize(swarmConfig); // Re-initialize or ensure initialized with config
-      console.log('Swarm coordination initiated via HiveMindCore.');
+      await hiveMindCore.initialize(advancedSwarmConfig);
+      console.log('✅ Advanced swarm coordination initiated via HiveMindCore.');
       break;
     case 'agents':
       console.log('Getting agent status...');
@@ -192,35 +195,57 @@ const handleSwarmCommand = async (subcommand, args, flags) => {
   }
 };
 
-const handleVtcCommand = async (subcommand, args, flags) => {
+const handleVsiCommand = async (subcommand, args, flags) => {
   switch (subcommand) {
-    case 'execute':
-      console.log('Executing Vision-to-Code workflow...');
-      const technicalPlanId = args[0];
-      const vtcObjective = `Implement technical plan: ${technicalPlanId}`;
+    case 'analyze':
+      console.log('🧠 Executing Visionary Software Intelligence analysis...');
+      const codebasePath = args[0];
+      const vsiObjective = `Analyze codebase: ${codebasePath}`;
       const createdTask = await hierarchicalTaskManagerPlugin.createTask({
-        title: vtcObjective,
-        description: `VTC execution for technical plan ${technicalPlanId}`,
-        type: 'vtc_execution',
+        title: vsiObjective,
+        description: `VSI analysis for codebase ${codebasePath}`,
+        type: 'vsi_analysis',
         priority: 5,
         effort: 'large',
         metadata: {
-          technicalPlanId: technicalPlanId,
-          executionMode: flags.mode,
-          claudeIntegration: flags.claudeIntegration,
-          squadConfig: flags.squadConfig ? JSON.parse(flags.squadConfig) : {},
+          codebasePath: codebasePath,
+          analysisMode: flags.mode || 'comprehensive',
+          language: flags.language || 'auto-detect',
+          includeRefactoring: flags.refactoring !== false,
+          patternDetection: flags.patterns !== false,
+          qualityAssessment: flags.quality !== false,
+          advancedCoordination: true
         },
-      }, technicalPlanId, 'technical_plan'); // Parent is the technical plan
-      console.log('VTC workflow execution initiated as task:', createdTask);
+      }, codebasePath, 'codebase_analysis');
+      console.log('✅ VSI analysis workflow initiated as task:', createdTask);
       break;
     case 'progress':
-      console.log('Getting VTC progress...');
-      const executionId = args[0];
-      const vtcTasks = await defaultRegistry.discover({
-        tags: ['task', 'vtc_execution'],
-        query: { 'metadata.technicalPlanId': executionId },
+      console.log('📊 Getting VSI analysis progress...');
+      const analysisId = args[0];
+      const vsiTasks = await defaultRegistry.discover({
+        tags: ['task', 'vsi_analysis'],
+        query: { 'metadata.codebasePath': analysisId },
       });
-      console.log('VTC progress (related tasks):', vtcTasks);
+      console.log('📈 VSI progress (related tasks):', vsiTasks);
+      break;
+    case 'refactor':
+      console.log('🔧 Generating refactoring recommendations...');
+      const refactorPath = args[0];
+      const refactorTask = await hierarchicalTaskManagerPlugin.createTask({
+        title: `Refactor recommendations: ${refactorPath}`,
+        description: `Generate intelligent refactoring recommendations for ${refactorPath}`,
+        type: 'vsi_refactoring',
+        priority: 4,
+        effort: 'medium',
+        metadata: {
+          codebasePath: refactorPath,
+          language: flags.language || 'auto-detect',
+          refactoringDepth: flags.depth || 'comprehensive',
+          includeBestPractices: flags.bestPractices !== false,
+          advancedCoordination: true
+        },
+      }, refactorPath, 'refactoring_analysis');
+      console.log('✅ VSI refactoring workflow initiated:', refactorTask);
       break;
     default:
       console.log(`Unknown vtc subcommand: ${subcommand}`);
@@ -228,7 +253,7 @@ const handleVtcCommand = async (subcommand, args, flags) => {
   }
 };
 
-export const visionToCodeWorkflowHandler = async (subArgs, flags) => {
+export const visionarySoftwareIntelligenceHandler = async (subArgs, flags) => {
   await initializeMetaRegistry();
 
   const mainCommand = subArgs[0];
@@ -246,10 +271,10 @@ export const visionToCodeWorkflowHandler = async (subArgs, flags) => {
       await handleSquadCommand(subcommand, remainingArgs, flags);
       break;
     case 'swarm':
-      await handleSwarmCommand(subcommand, remainingArgs, flags);
+      await handleAdvancedSwarmCommand(subcommand, remainingArgs, flags);
       break;
-    case 'vtc':
-      await handleVtcCommand(subcommand, remainingArgs, flags);
+    case 'vsi':
+      await handleVsiCommand(subcommand, remainingArgs, flags);
       break;
     default:
       console.log(`
@@ -259,8 +284,8 @@ Commands:
   vision    Manage strategic visions (create, approve, roadmap, list)
   adr       Manage Architectural Decision Records (create, list)
   squad     Manage development squads (assign-task)
-  swarm     Manage swarm coordination (coordinate, agents, mrap)
-  vtc       Execute Vision-to-Code workflows (execute, progress)
+  swarm     Manage advanced swarm coordination (coordinate, agents, mrap)
+  vsi       Execute Visionary Software Intelligence workflows (analyze, progress, refactor)
 
 Use 'claude-zen workflow <command> --help' for more details.
       `);

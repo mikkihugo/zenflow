@@ -1,31 +1,39 @@
 {
-  "timestamp": "2025-07-28T13:39:23.449Z",
+  "timestamp": "2025-07-29T20:28:12.344Z",
   "versions": {
     "ours": "2.0.0-alpha.73",
-    "upstream": "2.0.0-alpha.73",
-    "gap": 0
+    "upstream": "2.0.0-alpha.78",
+    "gap": 5
   },
   "sync": {
-    "commitsBehind": 10,
-    "status": "🟡 BEHIND",
-    "priority": "medium"
+    "commitsBehind": 37,
+    "status": "🔴 ACTION_REQUIRED",
+    "priority": "high"
   },
   "recentActivity": {
-    "commitsLastWeek": 12,
-    "changedFiles": 3258,
+    "commitsLastWeek": 33,
+    "changedFiles": 2326,
     "analysis": {
       "bugFixes": 3,
-      "features": 0,
+      "features": 2,
       "security": 0,
       "performance": 0,
       "breaking": 0,
-      "other": 9
+      "other": 28
     }
   },
   "recommendations": [
     {
+      "icon": "🚨",
+      "message": "URGENT: Significant gap detected. Review and integrate critical changes."
+    },
+    {
       "icon": "🐛",
       "message": "3 bug fixes available. Consider selective integration."
+    },
+    {
+      "icon": "📦",
+      "message": "Consider bulk integration or version alignment strategy."
     }
   ]
 }

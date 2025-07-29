@@ -3,8 +3,9 @@
  * 
  * REVOLUTIONARY MONOREPO INTEGRATION combining:
  * 
- * CHECK EXISTING PLUGINS:
+ * CHECK CORE SYSTEMS:
  * - Memory Backend (LanceDB + Kuzu + SQLite)
+ * - Vision-to-Code Pipeline (Core System)
  * - GitHub Integration
  * - AI Providers  
  * - Workflow Engine

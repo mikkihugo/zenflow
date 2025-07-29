@@ -356,7 +356,7 @@ class BenchmarkRunner extends EventEmitter {
     console.log(`   Status: ${this.results.neural_inference.status}`);
     
     // Save results to file
-    const fs = await import('fs/promises');
+    const fs = await import('node:fs/promises');
     const reportPath = `benchmark-results-${Date.now()}.json`;
     await fs.writeFile(reportPath, JSON.stringify(this.results, null, 2));
     console.log(`\n📄 Full results saved to: ${reportPath}`);

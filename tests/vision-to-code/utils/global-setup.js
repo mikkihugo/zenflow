@@ -1,5 +1,5 @@
 /**
- * Global test setup for Vision-to-Code integration tests
+ * Global test setup for Visionary integration tests
  * Prepares test environment and starts necessary services
  */
 
@@ -14,7 +14,7 @@ let testProcesses = [];
 let testDbPath;
 
 module.exports = async () => {
-  console.log('🚀 Setting up Vision-to-Code integration test environment...');
+  console.log('🚀 Setting up Visionary integration test environment...');
   
   try {
     // Create test workspace directory
@@ -23,11 +23,11 @@ module.exports = async () => {
     
     // Set environment variables for test mode
     process.env.NODE_ENV = 'test';
-    process.env.VISION_TO_CODE_TEST_MODE = 'true';
+    process.env.VISIONARY_TEST_MODE = 'true';
     process.env.TEST_WORKSPACE_DIR = testWorkspaceDir;
     
     // Create test database
-    testDbPath = path.join(testWorkspaceDir, 'test-vision-to-code.db');
+    testDbPath = path.join(testWorkspaceDir, 'test-visionary.db');
     process.env.TEST_DATABASE_PATH = testDbPath;
     
     // Wait for services to be ready or start mock services
@@ -41,7 +41,7 @@ module.exports = async () => {
     // Initialize test data
     await initializeTestData();
     
-    console.log('✅ Vision-to-Code test environment setup complete');
+    console.log('✅ Visionary test environment setup complete');
     
   } catch (error) {
     console.error('❌ Failed to setup test environment:', error);
