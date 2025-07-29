@@ -12,6 +12,7 @@
 
 import { RuvSwarm } from '../ruv-FANN/ruv-swarm/npm/src/index.js';
 import { MemoryBackendPlugin } from './plugins/memory-backend/index.js';
+import { NeuralEngine } from './neural/neural-engine.js';
 import { EventEmitter } from 'events';
 
 export class HiveMindPrimary extends EventEmitter {
@@ -40,6 +41,7 @@ export class HiveMindPrimary extends EventEmitter {
     // INTEGRATED COMPONENTS (all part of hive-mind)
     this.hybridMemory = null;  // LanceDB + Kuzu + SQLite integrated
     this.simpleSwarm = null;   // Direct ruv-swarm calls only
+    this.neuralEngine = null;  // Neural network engine
     this.plugins = new Map();  // Connected plugins
     this.hooks = new Map();    // Optional hooks system
     
@@ -66,10 +68,13 @@ export class HiveMindPrimary extends EventEmitter {
       // 1. Initialize integrated hybrid memory (part of hive-mind)
       await this.initializeIntegratedHybridMemory();
       
-      // 2. Setup simple ruv-swarm integration (direct calls only)
+      // 2. Initialize neural engine (automatic)
+      await this.initializeNeuralEngine();
+      
+      // 3. Setup simple ruv-swarm integration (direct calls only)
       await this.setupSimpleSwarmIntegration();
       
-      // 3. Connect plugins (optional)
+      // 4. Connect plugins (optional)
       if (this.options.enablePlugins) {
         await this.connectPlugins();
       }
@@ -84,6 +89,7 @@ export class HiveMindPrimary extends EventEmitter {
       
       console.log('✅ Hive-Mind Primary System ready!');
       console.log('💾 Hybrid Memory: Integrated (LanceDB + Kuzu + SQLite)');
+      console.log('🧠 Neural Engine: Automatic AI enhancement active');
       console.log('🐝 Simple Swarm: Direct calls to ruv-swarm source');
       console.log('🔌 Plugins: Connected via hive-mind coordination');
       console.log('🔗 Hooks: Optional (may not be needed)');
@@ -135,6 +141,33 @@ export class HiveMindPrimary extends EventEmitter {
     await this.hybridMemory.initialize();
     
     console.log('✅ Integrated Hybrid Memory ready (part of hive-mind)');
+  }
+  
+  async initializeNeuralEngine() {
+    console.log('🧠 Initializing Neural Engine (automatic)...');
+    
+    this.neuralEngine = new NeuralEngine();
+    
+    try {
+      await this.neuralEngine.initialize();
+      
+      // Connect neural engine to memory for enhanced decisions
+      if (this.hybridMemory) {
+        this.neuralEngine.setMemoryStore(this.hybridMemory);
+      }
+      
+      // Enable automatic neural enhancement
+      this.neuralEngine.on('inference', (result) => {
+        this.emit('neural-insight', result);
+      });
+      
+      console.log('✅ Neural Engine ready - automatic AI enhancement enabled');
+      console.log(`🧠 Available models: ${this.neuralEngine.models.size}`);
+      
+    } catch (error) {
+      console.warn('⚠️ Neural Engine unavailable (using fallback):', error.message);
+      this.neuralEngine = null;
+    }
   }
   
   async setupSimpleSwarmIntegration() {

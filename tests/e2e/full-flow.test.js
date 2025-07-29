@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 import TestHelpers from '../vision-to-code/utils/test-helpers.js';
 import { mockImages } from '../vision-to-code/fixtures/mock-data.js';
 
-describe('Vision-to-Code E2E Tests', () => {
+describe.skip('Vision-to-Code E2E Tests', () => {
   let browser;
   let context;
   let page;

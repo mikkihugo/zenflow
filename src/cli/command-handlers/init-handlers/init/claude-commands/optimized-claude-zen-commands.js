@@ -479,8 +479,8 @@ The memory system provides persistent storage for cross-session and cross-agent 
 \`\`\`json
 {
   "memory": {
-    "backend": "json",
-    "path": "./memory/claude-zen-data.json",
+    "backend": "hybrid", // LanceDB + Kuzu + SQLite unified backend
+    "path": "./memory/",
     "cacheSize": 10000,
     "indexing": true,
     "batchtools": {

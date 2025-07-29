@@ -1,12 +1,8 @@
 import { performance } from 'perf_hooks';
-import { BaseQueen, Task, Result } from './base-queen.js';
+import { BaseQueen } from './base-queen.js';
 import { NeuralEngine } from '../neural/neural-engine.js';
 
 export class CodeQueen extends BaseQueen {
-    private neuralEngine: NeuralEngine;
-    private codePatterns: Map<string, string[]>;
-    private languageSupport: Set<string>;
-
     constructor() {
         super('CodeQueen', 'code-generation');
         this.confidence = 0.9;
@@ -19,12 +15,22 @@ export class CodeQueen extends BaseQueen {
         this.initialize();
     }
 
-    private async initialize(): Promise<void> {
+    /**
+     * Initialize the neural engine
+     * @private
+     * @returns {Promise<void>}
+     */
+    async initialize() {
         await this.neuralEngine.initialize();
         await this.neuralEngine.loadModel('code-completion-base');
     }
 
-    private initializePatterns(): void {
+    /**
+     * Initialize code patterns
+     * @private
+     * @returns {void}
+     */
+    initializePatterns() {
         this.codePatterns.set('function', [
             'function {{name}}({{params}}) {\n  {{body}}\n}',
             'const {{name}} = ({{params}}) => {\n  {{body}}\n};',
@@ -52,7 +58,12 @@ export class CodeQueen extends BaseQueen {
         ]);
     }
 
-    async process(task: Task): Promise<Result> {
+    /**
+     * Process code generation task
+     * @param {Task} task - The task to process
+     * @returns {Promise<Result>} Task result
+     */
+    async process(task) {
         const startTime = performance.now();
         this.trackTaskStart(task.id);
 
@@ -64,7 +75,7 @@ export class CodeQueen extends BaseQueen {
             const language = this.detectLanguage(task);
             const codeType = this.detectCodeType(task);
 
-            let recommendation: string;
+            let recommendation;
             let confidence = 0.8;
 
             if (complexity === 'high') {
@@ -81,7 +92,7 @@ export class CodeQueen extends BaseQueen {
             recommendation = this.addBestPractices(recommendation, language, codeType);
 
             const processingTime = performance.now() - startTime;
-            const result: Result = {
+            const result = {
                 taskId: task.id,
                 queenName: this.name,
                 recommendation,
@@ -103,7 +114,7 @@ export class CodeQueen extends BaseQueen {
 
         } catch (error) {
             this.logger.error(`Code generation failed for task ${task.id}:`, error);
-            const result: Result = {
+            const result = {
                 taskId: task.id,
                 queenName: this.name,
                 recommendation: `// Error generating code: ${error.message}\n// Please provide more specific requirements`,
@@ -116,7 +127,13 @@ export class CodeQueen extends BaseQueen {
         }
     }
 
-    private analyzeComplexity(task: Task): 'low' | 'medium' | 'high' {
+    /**
+     * Analyze task complexity
+     * @private
+     * @param {Task} task - The task to analyze
+     * @returns {'low' | 'medium' | 'high'} Complexity level
+     */
+    analyzeComplexity(task) {
         const prompt = task.prompt.toLowerCase();
         
         // High complexity indicators
@@ -143,7 +160,13 @@ export class CodeQueen extends BaseQueen {
         return 'low';
     }
 
-    private detectLanguage(task: Task): string {
+    /**
+     * Detect programming language from task
+     * @private
+     * @param {Task} task - The task
+     * @returns {string} Detected language
+     */
+    detectLanguage(task) {
         const prompt = task.prompt.toLowerCase();
         const context = task.context?.language?.toLowerCase();
         
@@ -182,7 +205,13 @@ export class CodeQueen extends BaseQueen {
         return 'typescript'; // Default
     }
 
-    private detectCodeType(task: Task): string {
+    /**
+     * Detect code type from task
+     * @private
+     * @param {Task} task - The task
+     * @returns {string} Code type
+     */
+    detectCodeType(task) {
         const prompt = task.prompt.toLowerCase();
         
         const codeTypePatterns = {
@@ -206,7 +235,13 @@ export class CodeQueen extends BaseQueen {
         return 'function'; // Default
     }
 
-    private async generateWithNeuralNetwork(task: Task): Promise<string> {
+    /**
+     * Generate code using neural network
+     * @private
+     * @param {Task} task - The task
+     * @returns {Promise<string>} Generated code
+     */
+    async generateWithNeuralNetwork(task) {
         try {
             const enhancedPrompt = this.createEnhancedPrompt(task);
             const result = await this.neuralEngine.inference(enhancedPrompt, {
@@ -222,7 +257,13 @@ export class CodeQueen extends BaseQueen {
         }
     }
 
-    private createEnhancedPrompt(task: Task): string {
+    /**
+     * Create enhanced prompt for neural network
+     * @private
+     * @param {Task} task - The task
+     * @returns {string} Enhanced prompt
+     */
+    createEnhancedPrompt(task) {
         const language = this.detectLanguage(task);
         const codeType = this.detectCodeType(task);
         const context = task.context;
@@ -249,8 +290,16 @@ Code:`;
         return prompt;
     }
 
-    private async generateWithPatterns(task: Task, codeType: string, language: string): Promise<string> {
-        const patterns = this.codePatterns.get(codeType) || this.codePatterns.get('function')!;
+    /**
+     * Generate code using patterns
+     * @private
+     * @param {Task} task - The task
+     * @param {string} codeType - Code type
+     * @param {string} language - Programming language
+     * @returns {Promise<string>} Generated code
+     */
+    async generateWithPatterns(task, codeType, language) {
+        const patterns = this.codePatterns.get(codeType) || this.codePatterns.get('function');
         const selectedPattern = patterns[0]; // Could be randomized or ML-selected
 
         const variables = this.extractVariables(task, codeType);
@@ -267,7 +316,14 @@ Code:`;
         return code;
     }
 
-    private extractVariables(task: Task, codeType: string): Record<string, string> {
+    /**
+     * Extract variables from task
+     * @private
+     * @param {Task} task - The task
+     * @param {string} codeType - Code type
+     * @returns {Object.<string, string>} Variables map
+     */
+    extractVariables(task, codeType) {
         const prompt = task.prompt;
         
         // Extract function/class names
@@ -301,7 +357,13 @@ Code:`;
         };
     }
 
-    private generateDefaultName(codeType: string): string {
+    /**
+     * Generate default name for code type
+     * @private
+     * @param {string} codeType - Code type
+     * @returns {string} Default name
+     */
+    generateDefaultName(codeType) {
         const timestamp = Date.now().toString().slice(-4);
         const defaults = {
             'function': `processData${timestamp}`,
@@ -318,13 +380,25 @@ Code:`;
         return defaults[codeType] || `generated${timestamp}`;
     }
 
-    private toCamelCase(str: string): string {
+    /**
+     * Convert string to camelCase
+     * @private
+     * @param {string} str - Input string
+     * @returns {string} CamelCase string
+     */
+    toCamelCase(str) {
         return str.charAt(0).toLowerCase() + str.slice(1).replace(/[-_\s]+(.)?/g, (_, char) => 
             char ? char.toUpperCase() : ''
         );
     }
 
-    private getDefaultParams(codeType: string): string {
+    /**
+     * Get default parameters for code type
+     * @private
+     * @param {string} codeType - Code type
+     * @returns {string} Default parameters
+     */
+    getDefaultParams(codeType) {
         const defaults = {
             'function': 'data: any',
             'class': '',
@@ -340,7 +414,14 @@ Code:`;
         return defaults[codeType] || 'data: any';
     }
 
-    private generateDefaultBody(codeType: string, name: string): string {
+    /**
+     * Generate default body for code type
+     * @private
+     * @param {string} codeType - Code type
+     * @param {string} name - Function/class name
+     * @returns {string} Default body
+     */
+    generateDefaultBody(codeType, name) {
         const defaults = {
             'function': '// TODO: Implement logic\n  return data;',
             'class': `this.${this.toCamelCase(name)} = {};`,
@@ -356,15 +437,34 @@ Code:`;
         return defaults[codeType] || '// TODO: Implement';
     }
 
-    private getDefaultType(name: string): string {
+    /**
+     * Get default type name
+     * @private
+     * @param {string} name - Base name
+     * @returns {string} Type name
+     */
+    getDefaultType(name) {
         return `I${name.charAt(0).toUpperCase() + name.slice(1)}`;
     }
 
-    private generateDefaultProperties(name: string): string {
+    /**
+     * Generate default properties
+     * @private
+     * @param {string} name - Base name
+     * @returns {string} Default properties
+     */
+    generateDefaultProperties(name) {
         return `id: string;\n  name: string;\n  ${this.toCamelCase(name)}: any;`;
     }
 
-    private adaptToLanguage(code: string, language: string): string {
+    /**
+     * Adapt code to specific language
+     * @private
+     * @param {string} code - Generated code
+     * @param {string} language - Target language
+     * @returns {string} Adapted code
+     */
+    adaptToLanguage(code, language) {
         switch (language) {
             case 'python':
                 return code
@@ -387,7 +487,15 @@ Code:`;
         }
     }
 
-    private addBestPractices(code: string, language: string, codeType: string): string {
+    /**
+     * Add best practices to generated code
+     * @private
+     * @param {string} code - Generated code
+     * @param {string} language - Programming language
+     * @param {string} codeType - Code type
+     * @returns {string} Enhanced code
+     */
+    addBestPractices(code, language, codeType) {
         let enhanced = code;
         
         // Add TypeScript types if applicable
@@ -406,7 +514,14 @@ Code:`;
         return enhanced;
     }
 
-    private addTypeAnnotations(code: string, codeType: string): string {
+    /**
+     * Add TypeScript type annotations
+     * @private
+     * @param {string} code - Code to enhance
+     * @param {string} codeType - Code type
+     * @returns {string} Code with type annotations
+     */
+    addTypeAnnotations(code, codeType) {
         // Basic type annotation patterns
         const patterns = [
             { from: /(\w+)\s*\(\s*([^)]*)\s*\)\s*{/, to: '$1($2): void {' },
@@ -420,7 +535,14 @@ Code:`;
         return code;
     }
 
-    private addErrorHandling(code: string, language: string): string {
+    /**
+     * Add error handling to code
+     * @private
+     * @param {string} code - Code to enhance
+     * @param {string} language - Programming language
+     * @returns {string} Code with error handling
+     */
+    addErrorHandling(code, language) {
         if (language === 'javascript' || language === 'typescript') {
             // Wrap main logic in try-catch
             if (!code.includes('try')) {
@@ -436,7 +558,14 @@ Code:`;
         return code;
     }
 
-    private addDocumentation(code: string, codeType: string): string {
+    /**
+     * Add documentation to code
+     * @private
+     * @param {string} code - Code to document
+     * @param {string} codeType - Code type
+     * @returns {string} Documented code
+     */
+    addDocumentation(code, codeType) {
         const lines = code.split('\n');
         const firstLine = lines.findIndex(line => 
             line.includes('function') || line.includes('class') || line.includes('interface')
@@ -450,7 +579,14 @@ Code:`;
         return lines.join('\n');
     }
 
-    private generateDocComment(codeType: string, codeLine: string): string {
+    /**
+     * Generate documentation comment
+     * @private
+     * @param {string} codeType - Code type
+     * @param {string} codeLine - Code line to document
+     * @returns {string} JSDoc comment
+     */
+    generateDocComment(codeType, codeLine) {
         const nameMatch = codeLine.match(/(?:function|class|interface)\s+(\w+)/);
         const name = nameMatch ? nameMatch[1] : 'Generated';
         
@@ -463,15 +599,28 @@ Code:`;
  */`;
     }
 
-    private cleanGeneratedCode(code: string): string {
+    /**
+     * Clean generated code
+     * @private
+     * @param {string} code - Code to clean
+     * @returns {string} Cleaned code
+     */
+    cleanGeneratedCode(code) {
         return code
             .replace(/^```[\w]*\n?/gm, '') // Remove code block markers
             .replace(/\n?```$/gm, '')
             .trim();
     }
 
-    private async generateAlternatives(task: Task, primarySolution: string): Promise<string[]> {
-        const alternatives: string[] = [];
+    /**
+     * Generate alternative solutions
+     * @private
+     * @param {Task} task - The task
+     * @param {string} primarySolution - Primary solution
+     * @returns {Promise<string[]>} Alternative solutions
+     */
+    async generateAlternatives(task, primarySolution) {
+        const alternatives = [];
         const codeType = this.detectCodeType(task);
         const patterns = this.codePatterns.get(codeType);
         
@@ -495,7 +644,13 @@ Code:`;
         return alternatives;
     }
 
-    private estimateCodeQuality(code: string): number {
+    /**
+     * Estimate code quality
+     * @private
+     * @param {string} code - Code to evaluate
+     * @returns {number} Quality score (0-1)
+     */
+    estimateCodeQuality(code) {
         let quality = 0.5; // Base quality
         
         // Positive indicators
@@ -513,7 +668,13 @@ Code:`;
         return Math.max(0, Math.min(1, quality));
     }
 
-    protected async calculateSuitability(task: Task): Promise<number> {
+    /**
+     * Calculate suitability for task
+     * @protected
+     * @param {Task} task - The task
+     * @returns {Promise<number>} Suitability score
+     */
+    async calculateSuitability(task) {
         let suitability = await super.calculateSuitability(task);
         
         // CodeQueen is highly suitable for code generation tasks

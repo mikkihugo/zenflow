@@ -1,12 +1,21 @@
 /**
  * Kuzu Graph Database Interface
- * High-performance graph database for service relationships and coordination
- * 15 microservices pilot - single domain, flat structure
+ * HIGH-PERFORMANCE REAL KUZU DATABASE INTEGRATION
+ * Replaces file-based simulation with actual Kuzu database connections
  */
 
-import { writeFile, readFile, mkdir, existsSync } from 'fs/promises';
+import { writeFile, readFile, mkdir } from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
 import { printSuccess, printError, printWarning, printInfo } from '../utils.js';
+
+// Dynamic import for Kuzu database
+let kuzu = null;
+try {
+  kuzu = await import('kuzu');
+} catch (error) {
+  console.warn('Kuzu database not available, using fallback mode:', error.message);
+}
 
 export class KuzuGraphInterface {
   constructor(config = {}) {
@@ -14,14 +23,19 @@ export class KuzuGraphInterface {
       dbPath: config.dbPath || './graph-db',
       dbName: config.dbName || 'claude-zen-services',
       batchSize: config.batchSize || 1000,
-      indexing: config.indexing !== false, // default true
-      compression: config.compression !== false, // default true
+      indexing: config.indexing !== false,
+      compression: config.compression !== false,
       memoryLimit: config.memoryLimit || '2GB',
+      useRealKuzu: config.useRealKuzu !== false, // Default to real Kuzu
       ...config
     };
     
     this.isInitialized = false;
     this.schema = null;
+    this.database = null; // Real Kuzu database instance
+    this.connection = null; // Real Kuzu connection
+    
+    // Fallback storage for when Kuzu is not available
     this.nodes = new Map();
     this.relationships = new Map();
     this.indices = new Map();
@@ -31,24 +45,46 @@ export class KuzuGraphInterface {
       nodeCount: 0,
       relationshipCount: 0,
       queryCount: 0,
-      lastUpdate: null
+      lastUpdate: null,
+      usingRealKuzu: false
     };
   }
 
   /**
-   * Initialize the graph database
+   * Initialize the graph database - REAL KUZU INTEGRATION
    */
   async initialize() {
-    printInfo('🗃️ Initializing Kuzu graph database...');
+    printInfo('🗃️ Initializing REAL Kuzu graph database...');
     
     try {
-      // Create database directory
-      if (!existsSync(this.config.dbPath)) {
-        await mkdir(this.config.dbPath, { recursive: true });
+      // Try to initialize real Kuzu database first (don't create directory for real Kuzu)
+      try {
+        const kuzuModule = await import('kuzu');
+        this.database = new kuzuModule.Database(this.config.dbPath);
+        this.connection = new kuzuModule.Connection(this.database);
+        this.stats.usingRealKuzu = true;
+        printSuccess('✅ Real Kuzu database connection established');
+        
+        // Create node and relationship tables
+        await this.createKuzuSchema();
+        
+      } catch (kuzuError) {
+        printWarning(`⚠️ Real Kuzu failed, falling back to simulation: ${kuzuError.message}`);
+        this.stats.usingRealKuzu = false;
+        
+        // For simulation mode, create directory structure
+        if (!existsSync(this.config.dbPath)) {
+          await mkdir(this.config.dbPath, { recursive: true });
+        }
       }
       
       // Initialize schema
       await this.initializeSchema();
+      
+      // Create tables in real Kuzu if available
+      if (this.stats.usingRealKuzu) {
+        await this.createKuzuTables();
+      }
       
       // Set up indices for performance
       if (this.config.indexing) {
@@ -59,10 +95,12 @@ export class KuzuGraphInterface {
       await this.loadExistingData();
       
       this.isInitialized = true;
-      printSuccess(`✅ Kuzu database initialized: ${this.config.dbName}`);
+      const mode = this.stats.usingRealKuzu ? 'REAL KUZU' : 'SIMULATION';
+      printSuccess(`✅ Kuzu database initialized in ${mode} mode: ${this.config.dbName}`);
       
       return {
         status: 'initialized',
+        mode: this.stats.usingRealKuzu ? 'real' : 'simulation',
         dbPath: this.config.dbPath,
         nodeTypes: Object.keys(this.schema.nodes || {}),
         relationshipTypes: Object.keys(this.schema.relationships || {})
@@ -75,9 +113,99 @@ export class KuzuGraphInterface {
   }
 
   /**
+   * Create Kuzu database schema with node and relationship tables
+   */
+  async createKuzuSchema() {
+    if (!this.connection) return;
+    
+    try {
+      // Create Service node table using query method
+      const serviceResult = this.connection.querySync(`
+        CREATE NODE TABLE IF NOT EXISTS Service(
+          name STRING,
+          path STRING,
+          type STRING,
+          complexity STRING,
+          lineCount INT64,
+          fileCount INT64,
+          technologies STRING[],
+          apis STRING[],
+          databases STRING[],
+          created_at STRING,
+          updated_at STRING,
+          PRIMARY KEY (name)
+        )
+      `);
+      console.log('✅ Service table creation completed');
+      
+      // Create Technology node table
+      const techResult = this.connection.querySync(`
+        CREATE NODE TABLE IF NOT EXISTS Technology(
+          name STRING,
+          category STRING,
+          version STRING,
+          usage_count INT64,
+          PRIMARY KEY (name)
+        )
+      `);
+      console.log('✅ Technology table creation completed');
+      
+      // Create DEPENDS_ON relationship table
+      const dependsResult = this.connection.querySync(`
+        CREATE REL TABLE IF NOT EXISTS DEPENDS_ON(
+          FROM Service TO Service,
+          strength STRING,
+          type STRING,
+          created_at STRING
+        )
+      `);
+      console.log('✅ DEPENDS_ON relation creation completed');
+      
+      // Create USES relationship table
+      const usesResult = this.connection.querySync(`
+        CREATE REL TABLE IF NOT EXISTS USES(
+          FROM Service TO Technology,
+          importance STRING,
+          created_at STRING
+        )
+      `);
+      console.log('✅ USES relation creation completed');
+      
+      printSuccess('✅ Kuzu schema created successfully');
+      
+    } catch (error) {
+      printError(`❌ Failed to create Kuzu schema: ${error.message}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Connect to actual Kuzu database
+   */
+  async connectToKuzu() {
+    try {
+      // Dynamic import for Kuzu database
+      const kuzu = await import('kuzu');
+      
+      // Create database connection
+      this.kuzuDatabase = new kuzu.Database(this.config.dbPath);
+      this.kuzuConnection = new kuzu.Connection(this.kuzuDatabase);
+      
+      console.log(`✅ Connected to Kuzu database at: ${this.config.dbPath}`);
+      return true;
+    } catch (error) {
+      console.warn(`⚠️ Kuzu not available, falling back to in-memory: ${error.message}`);
+      return false;
+    }
+  }
+
+  /**
    * Initialize database schema for microservices and code analysis
    */
   async initializeSchema() {
+    // Try to connect to real Kuzu first
+    this.useRealKuzu = await this.connectToKuzu();
+    
     this.schema = {
       nodes: {
         Service: {
@@ -91,8 +219,8 @@ export class KuzuGraphInterface {
             technologies: 'STRING[]',
             apis: 'STRING[]',
             databases: 'STRING[]',
-            created_at: 'TIMESTAMP',
-            updated_at: 'TIMESTAMP'
+            created_at: 'STRING',
+            updated_at: 'STRING'
           },
           primaryKey: 'name'
         },
@@ -107,22 +235,24 @@ export class KuzuGraphInterface {
         },
         API: {
           properties: {
+            id: 'STRING',
             service_name: 'STRING',
             endpoint: 'STRING',
             method: 'STRING',
             type: 'STRING',
             file_path: 'STRING'
           },
-          primaryKey: ['service_name', 'endpoint']
+          primaryKey: 'id'
         },
         Database: {
           properties: {
+            id: 'STRING',
             service_name: 'STRING',
             name: 'STRING',
             type: 'STRING',
             connection_string: 'STRING'
           },
-          primaryKey: ['service_name', 'name']
+          primaryKey: 'id'
         },
         Hive: {
           properties: {
@@ -130,8 +260,8 @@ export class KuzuGraphInterface {
             hive_id: 'STRING',
             status: 'STRING',
             agent_count: 'INT64',
-            created_at: 'TIMESTAMP',
-            last_active: 'TIMESTAMP'
+            created_at: 'STRING',
+            last_active: 'STRING'
           },
           primaryKey: 'hive_id'
         },
@@ -147,7 +277,7 @@ export class KuzuGraphInterface {
             complexity_score: 'DOUBLE',
             maintainability_index: 'DOUBLE',
             hash: 'STRING',
-            last_analyzed: 'TIMESTAMP'
+            last_analyzed: 'STRING'
           },
           primaryKey: 'id'
         },
@@ -238,7 +368,7 @@ export class KuzuGraphInterface {
           properties: {
             strength: 'STRING',
             type: 'STRING',
-            created_at: 'TIMESTAMP'
+            created_at: 'STRING'
           }
         },
         USES_TECH: {
@@ -271,7 +401,7 @@ export class KuzuGraphInterface {
           properties: {
             communication_type: 'STRING',
             frequency: 'STRING',
-            last_communication: 'TIMESTAMP'
+            last_communication: 'STRING'
           }
         },
         MANAGES: {
@@ -387,9 +517,11 @@ export class KuzuGraphInterface {
       }
     };
     
-    // Save schema to file
-    const schemaPath = path.join(this.config.dbPath, 'schema.json');
-    await writeFile(schemaPath, JSON.stringify(this.schema, null, 2));
+    // Save schema to file only for simulation mode (real Kuzu has its own schema)
+    if (!this.stats.usingRealKuzu) {
+      const schemaPath = path.join(this.config.dbPath, 'schema.json');
+      await writeFile(schemaPath, JSON.stringify(this.schema, null, 2));
+    }
     
     printInfo('📋 Database schema initialized');
   }
@@ -428,9 +560,11 @@ export class KuzuGraphInterface {
     
     this.indices = indices;
     
-    // Save indices configuration
-    const indicesPath = path.join(this.config.dbPath, 'indices.json');
-    await writeFile(indicesPath, JSON.stringify(indices, null, 2));
+    // Save indices configuration only for simulation mode
+    if (!this.stats.usingRealKuzu) {
+      const indicesPath = path.join(this.config.dbPath, 'indices.json');
+      await writeFile(indicesPath, JSON.stringify(indices, null, 2));
+    }
     
     printInfo('🔍 Performance indices configured');
   }
@@ -439,6 +573,12 @@ export class KuzuGraphInterface {
    * Load existing data from disk
    */
   async loadExistingData() {
+    // Skip JSON file loading if using real Kuzu (it has its own persistence)
+    if (this.stats.usingRealKuzu) {
+      printInfo('📊 Using real Kuzu database - skipping JSON file loading');
+      return;
+    }
+    
     try {
       const nodesPath = path.join(this.config.dbPath, 'nodes.json');
       const relationshipsPath = path.join(this.config.dbPath, 'relationships.json');
@@ -472,6 +612,36 @@ export class KuzuGraphInterface {
     printInfo(`📦 Inserting ${services.length} services into graph database...`);
     
     let inserted = 0;
+    
+    // Use real Kuzu database if available
+    if (this.stats.usingRealKuzu && this.connection) {
+      for (const service of services) {
+        try {
+          // Use prepared statement pattern for Kuzu
+          const query = `
+            CREATE (s:Service {
+              name: '${service.name.replace(/'/g, "''")}',
+              path: '${service.path.replace(/'/g, "''")}',
+              type: '${service.type}',
+              complexity: '${service.codeStats?.complexity || 'unknown'}',
+              lineCount: ${service.codeStats?.lineCount || 0},
+              fileCount: ${service.codeStats?.fileCount || 0},
+              created_at: '${new Date().toISOString()}',
+              updated_at: '${new Date().toISOString()}'
+            })
+          `;
+          this.connection.querySync(query);
+          inserted++;
+        } catch (error) {
+          printWarning(`⚠️ Failed to insert service ${service.name}: ${error.message}`);
+        }
+      }
+      
+      printSuccess(`✅ Inserted ${inserted} services via real Kuzu`);
+      return inserted;
+    }
+    
+    // Fallback to in-memory simulation
     const batch = [];
     
     for (const service of services) {
@@ -650,6 +820,39 @@ export class KuzuGraphInterface {
   async queryServices(criteria = {}) {
     this.stats.queryCount++;
     
+    // Use real Kuzu query if available
+    if (this.stats.usingRealKuzu && this.connection) {
+      try {
+        // Build WHERE clauses based on criteria
+        const whereClauses = [];
+        if (criteria.name) {
+          whereClauses.push(`s.name CONTAINS '${criteria.name.replace(/'/g, "''")}' `);
+        }
+        if (criteria.type) {
+          whereClauses.push(`s.type = '${criteria.type.replace(/'/g, "''")}' `);
+        }
+        if (criteria.complexity) {
+          whereClauses.push(`s.complexity = '${criteria.complexity.replace(/'/g, "''")}' `);
+        }
+        
+        const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+        const query = `MATCH (s:Service) ${whereClause} RETURN s ORDER BY s.name`;
+        
+        const queryResult = await this.executeQuery(query);
+        if (queryResult.success) {
+          // Transform Kuzu results to match expected format
+          return queryResult.data.map(row => ({
+            id: `service:${row.s.name}`,
+            type: 'Service',
+            properties: row.s
+          }));
+        }
+      } catch (error) {
+        printWarning(`⚠️ Kuzu query failed, falling back to in-memory: ${error.message}`);
+      }
+    }
+    
+    // Fallback to in-memory query
     let results = Array.from(this.nodes.values())
       .filter(node => node.type === 'Service');
     
@@ -1536,20 +1739,187 @@ export class KuzuGraphInterface {
   }
 
   /**
-   * Process batch operations
+   * Create Kuzu tables from schema - REAL DATABASE INTEGRATION
+   */
+  async createKuzuTables() {
+    if (!this.connection || !this.stats.usingRealKuzu) {
+      return;
+    }
+    
+    try {
+      printInfo('📋 Creating Kuzu tables from schema...');
+      
+      // Create node tables
+      for (const [nodeType, schema] of Object.entries(this.schema.nodes)) {
+        const propDefs = Object.entries(schema.properties)
+          .map(([prop, type]) => `${prop} ${type}`)
+          .join(', ');
+        
+        // Handle composite primary keys (arrays) vs single primary keys
+        const primaryKey = Array.isArray(schema.primaryKey) 
+          ? schema.primaryKey.join(', ')
+          : schema.primaryKey;
+        
+        const createQuery = `CREATE NODE TABLE IF NOT EXISTS ${nodeType}(${propDefs}, PRIMARY KEY (${primaryKey}))`;
+        this.connection.querySync(createQuery);
+        printInfo(`✅ Created node table: ${nodeType}`);
+      }
+      
+      // Create relationship tables
+      for (const [relType, schema] of Object.entries(this.schema.relationships)) {
+        const propDefs = Object.entries(schema.properties || {})
+          .map(([prop, type]) => `${prop} ${type}`)
+          .join(', ');
+        
+        const propList = propDefs ? `, ${propDefs}` : '';
+        const createQuery = `CREATE REL TABLE IF NOT EXISTS ${relType}(FROM ${schema.from} TO ${schema.to}${propList})`;
+        this.connection.querySync(createQuery);
+        printInfo(`✅ Created relationship table: ${relType}`);
+      }
+      
+      printSuccess('✅ All Kuzu tables created successfully');
+      
+    } catch (error) {
+      printError(`❌ Failed to create Kuzu tables: ${error.message}`);
+      throw error;
+    }
+  }
+  
+  /**
+   * Execute raw Kuzu query - REAL DATABASE QUERIES
+   */
+  async executeQuery(query, params = {}) {
+    this.stats.queryCount++;
+    
+    if (this.stats.usingRealKuzu && this.connection) {
+      try {
+        // Kuzu's query method returns a QueryResult object
+        const result = this.connection.querySync(query);
+        let rows = [];
+        
+        try {
+          // Use the synchronous getAllSync() method to avoid async iteration issues
+          rows = result.getAllSync();
+        } catch (error) {
+          printWarning(`⚠️ Error getting query results: ${error.message}`);
+          // Try alternative approach
+          try {
+            result.resetIterator();
+            while (result.hasNext()) {
+              rows.push(result.getNextSync());
+            }
+          } catch (innerError) {
+            printWarning(`⚠️ Alternative approach also failed: ${innerError.message}`);
+          }
+        } finally {
+          // Always close the result
+          result.close();
+        }
+        return {
+          success: true,
+          data: rows,
+          mode: 'real_kuzu'
+        };
+      } catch (error) {
+        printError(`❌ Kuzu query failed: ${error.message}`);
+        return {
+          success: false,
+          error: error.message,
+          mode: 'real_kuzu'
+        };
+      }
+    } else {
+      // Fallback to simulation mode
+      printWarning('⚠️ Executing query in simulation mode');
+      return this.simulateQuery(query, params);
+    }
+  }
+  
+  /**
+   * Simulate query execution for fallback mode
+   */
+  simulateQuery(query, params = {}) {
+    try {
+      // Basic query simulation logic
+      if (query.includes('MATCH') && query.includes('Service')) {
+        const results = Array.from(this.nodes.values())
+          .filter(node => node.type === 'Service');
+        return {
+          success: true,
+          data: results,
+          mode: 'simulation'
+        };
+      }
+      
+      return {
+        success: true,
+        data: [],
+        mode: 'simulation'
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        mode: 'simulation'
+      };
+    }
+  }
+  
+  /**
+   * Process batch operations - ENHANCED WITH REAL KUZU SUPPORT
    */
   async processBatch(batch, type) {
     try {
-      const filePath = path.join(this.config.dbPath, `${type}.json`);
-      const data = type === 'nodes' ? 
-        Array.from(this.nodes.entries()) : 
-        Array.from(this.relationships.entries());
-      
-      await writeFile(filePath, JSON.stringify(data, null, 2));
+      if (this.stats.usingRealKuzu && this.connection) {
+        // Use Kuzu batch operations
+        if (type === 'nodes') {
+          for (const node of batch) {
+            const query = this.generateInsertNodeQuery(node);
+            this.connection.querySync(query);
+          }
+        } else if (type === 'relationships') {
+          for (const rel of batch) {
+            const query = this.generateInsertRelQuery(rel);
+            this.connection.querySync(query);
+          }
+        }
+      } else {
+        // Fallback to file storage
+        const filePath = path.join(this.config.dbPath, `${type}.json`);
+        const data = type === 'nodes' ? 
+          Array.from(this.nodes.entries()) : 
+          Array.from(this.relationships.entries());
+        
+        await writeFile(filePath, JSON.stringify(data, null, 2));
+      }
       
     } catch (error) {
       printWarning(`⚠️ Batch processing warning: ${error.message}`);
     }
+  }
+  
+  /**
+   * Generate Kuzu INSERT query for nodes
+   */
+  generateInsertNodeQuery(node) {
+    const propEntries = Object.entries(node.properties)
+      .map(([key, value]) => `${key}: '${value}'`)
+      .join(', ');
+    
+    return `CREATE (n:${node.type} {${propEntries}})`;
+  }
+  
+  /**
+   * Generate Kuzu INSERT query for relationships
+   */
+  generateInsertRelQuery(rel) {
+    const propEntries = Object.entries(rel.properties || {})
+      .map(([key, value]) => `${key}: '${value}'`)
+      .join(', ');
+    
+    const propClause = propEntries ? ` {${propEntries}}` : '';
+    
+    return `MATCH (a {id: '${rel.from}'}), (b {id: '${rel.to}'}) CREATE (a)-[r:${rel.type}${propClause}]->(b)`;
   }
 
   /**
@@ -1598,21 +1968,32 @@ export class KuzuGraphInterface {
   }
 
   /**
-   * Close database connection and save data
+   * Close database connection and save data - REAL KUZU INTEGRATION
    */
   async close() {
-    printInfo('💾 Saving graph database data...');
+    printInfo('💾 Closing graph database...');
     
     try {
-      // Save final data
-      await this.processBatch([], 'nodes');
-      await this.processBatch([], 'relationships');
+      if (this.stats.usingRealKuzu && this.connection) {
+        // Kuzu connections don't have a close method - just null the references
+        this.database = null;
+        this.connection = null;
+        printSuccess('✅ Real Kuzu database connection released');
+      } else {
+        // Save final data in simulation mode
+        await this.processBatch([], 'nodes');
+        await this.processBatch([], 'relationships');
+        printSuccess('✅ Simulation data saved');
+      }
       
-      // Save statistics
-      const statsPath = path.join(this.config.dbPath, 'stats.json');
-      await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
+      // Save statistics (not inside Kuzu database directory for real Kuzu)
+      if (!this.stats.usingRealKuzu) {
+        const statsPath = path.join(this.config.dbPath, 'stats.json');
+        await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
+      }
       
-      printSuccess('✅ Graph database closed and data saved');
+      const mode = this.stats.usingRealKuzu ? 'REAL KUZU' : 'SIMULATION';
+      printSuccess(`✅ Graph database closed (${mode} mode)`);
       
     } catch (error) {
       printError(`❌ Error closing database: ${error.message}`);

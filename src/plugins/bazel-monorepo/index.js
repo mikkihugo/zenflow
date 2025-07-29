@@ -1176,59 +1176,28 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
       // Detect circular dependencies
       const cycles = await this.detectCircularDependenciesGraph();
 
-      return {
-        statistics: stats[0] || {},
-        topConnectedTargets: hubs.map(row => ({
-          id: row['t.id'],
-          name: row['t.name'],
-          package: row['t.package'],
-          outgoing: row.outgoing,
-          incoming: row.incoming,
-          totalConnections: row.total_connections
-        })),
-        circularDependencies: cycles,
-        analysisTimestamp: Date.now()
-      };
-      
-    } catch (error) {
-      console.warn('Failed to generate graph analysis:', error.message);
-      return { error: error.message };
-    }
-  }
-
-  async generateGraphAnalysis() {
-    if (!this.graphBackend?.storage?.conn) {
-      return {};
-    }
-
-    try {
-      const conn = this.graphBackend.storage.conn;
-      
-      // Get graph statistics
-      const stats = await conn.query(`
+      // Find orphaned targets
+      const orphans = await conn.query(`
         MATCH (t:BazelTarget)
-        OPTIONAL MATCH (t)-[:Depends]->(dep:BazelTarget)
-        RETURN 
-          count(DISTINCT t) as total_targets,
-          count(DISTINCT dep) as total_dependencies,
-          avg(count(dep)) as avg_dependencies_per_target
-      `);
-
-      // Find most connected targets
-      const hubs = await conn.query(`
-        MATCH (t:BazelTarget)
-        OPTIONAL MATCH (t)-[:Depends]->(out:BazelTarget)
-        OPTIONAL MATCH (in:BazelTarget)-[:Depends]->(t)
-        RETURN t.id, t.name, t.package,
-               count(DISTINCT out) as outgoing,
-               count(DISTINCT in) as incoming,
-               (count(DISTINCT out) + count(DISTINCT in)) as total_connections
-        ORDER BY total_connections DESC
+        WHERE NOT EXISTS((t)-[:Depends]-()) AND NOT EXISTS(()-[:Depends]->(t))
+        RETURN t.id, t.name, t.package, t.rule_type
         LIMIT 10
       `);
 
-      // Detect circular dependencies
-      const cycles = await this.detectCircularDependenciesGraph();
+      // Calculate module complexity distribution
+      const complexity = await conn.query(`
+        MATCH (t:BazelTarget)
+        OPTIONAL MATCH (t)-[:Depends]->(out:BazelTarget)
+        OPTIONAL MATCH (in:BazelTarget)-[:Depends]->(t)
+        WITH t.package as package, 
+             count(DISTINCT t) as target_count,
+             count(DISTINCT out) as outgoing_deps,
+             count(DISTINCT in) as incoming_deps
+        RETURN package, target_count, outgoing_deps, incoming_deps,
+               (target_count + outgoing_deps + incoming_deps) as complexity_score
+        ORDER BY complexity_score DESC
+        LIMIT 20
+      `);
 
       return {
         statistics: stats[0] || {},
@@ -1241,6 +1210,19 @@ ${this.config.remoteCache ? `build --remote_cache=${this.config.remoteCache}` : 
           totalConnections: row.total_connections
         })),
         circularDependencies: cycles,
+        orphanedTargets: orphans.map(row => ({
+          id: row['t.id'],
+          name: row['t.name'],
+          package: row['t.package'],
+          ruleType: row['t.rule_type']
+        })),
+        moduleComplexity: complexity.map(row => ({
+          package: row.package,
+          targetCount: row.target_count,
+          outgoingDeps: row.outgoing_deps,
+          incomingDeps: row.incoming_deps,
+          complexityScore: row.complexity_score
+        })),
         analysisTimestamp: Date.now()
       };
       

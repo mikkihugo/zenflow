@@ -199,6 +199,36 @@ export async function registerCoreCommands() {
   console.log('✅ Core commands loaded');
 }
 
+/**
+ * Show all commands grouped by category
+ */
+export function showAllCommands() {
+  const commands = commandRouter.list(true);
+  const grouped = {
+    core: [],
+    coordination: [],
+    management: [],
+    development: [],
+    other: []
+  };
+  
+  for (const cmd of commands) {
+    if (['init', 'start', 'status', 'config'].includes(cmd.name)) {
+      grouped.core.push(cmd.name);
+    } else if (['hive-mind', 'swarm', 'agent', 'task'].includes(cmd.name)) {
+      grouped.coordination.push(cmd.name);
+    } else if (['memory', 'mcp', 'monitor', 'security', 'backup'].includes(cmd.name)) {
+      grouped.management.push(cmd.name);
+    } else if (['github', 'deploy', 'workflow', 'analytics', 'neural', 'queen'].includes(cmd.name)) {
+      grouped.development.push(cmd.name);
+    } else {
+      grouped.other.push(cmd.name);
+    }
+  }
+  
+  return grouped;
+}
+
 // Re-export everything for maximum compatibility
 export {
   executeCommand as execute,

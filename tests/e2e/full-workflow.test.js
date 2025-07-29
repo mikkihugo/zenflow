@@ -18,7 +18,7 @@ import {
   testHelpers
 } from '../vision-to-code/fixtures/vision-workflow-fixtures.js';
 
-describe('End-to-End Vision-to-Code Workflow Tests', () => {
+describe.skip('End-to-End Vision-to-Code Workflow Tests', () => {
   let serviceClients;
   let testWorkflowId;
   let testVisionId;

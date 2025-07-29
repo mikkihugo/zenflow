@@ -11,7 +11,7 @@ export async function startCommand(subArgs, flags) {
 
   // Parse start options
   const daemon = subArgs.includes('--daemon') || subArgs.includes('-d') || flags.daemon;
-  const port = flags.port || getArgValue(subArgs, '--port') || getArgValue(subArgs, '-p') || 3000;
+  const port = process.env.PORT || flags.port || getArgValue(subArgs, '--port') || getArgValue(subArgs, '-p') || 3000;
   // Use same port for API - everything unified on single port
   const apiPort = flags['api-port'] || getArgValue(subArgs, '--api-port') || port;
   const verbose = subArgs.includes('--verbose') || subArgs.includes('-v') || flags.verbose;

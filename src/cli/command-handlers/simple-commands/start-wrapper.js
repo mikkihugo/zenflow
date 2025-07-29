@@ -16,7 +16,7 @@ export async function startCommand(subArgs, flags) {
 
   // Parse start options
   const daemon = subArgs.includes('--daemon') || subArgs.includes('-d') || flags.daemon;
-  const port = flags.port || getArgValue(subArgs, '--port') || getArgValue(subArgs, '-p') || 3000;
+  const port = process.env.PORT || flags.port || getArgValue(subArgs, '--port') || getArgValue(subArgs, '-p') || 3000;
   const verbose = subArgs.includes('--verbose') || subArgs.includes('-v') || flags.verbose;
   
   // UI defaults to ON, can be disabled with --no-ui

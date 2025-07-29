@@ -502,13 +502,23 @@ export class NATTraversalPlugin {
   }
 
   async createUPnPMapping(port, protocol) {
-    // UPnP port mapping implementation
-    throw new Error('UPnP not implemented in this example');
+    // UPnP port mapping implementation (simplified)
+    console.warn(`UPnP mapping requested for ${protocol}:${port} - using direct connection`);
+    return {
+      success: false,
+      reason: 'UPnP not available - using direct connection',
+      externalPort: port,
+      protocol: protocol
+    };
   }
 
   async removeUPnPMapping(port, protocol) {
-    // UPnP port mapping removal
-    throw new Error('UPnP not implemented in this example');
+    // UPnP port mapping removal (simplified)
+    console.warn(`UPnP unmapping requested for ${protocol}:${port}`);
+    return {
+      success: true,
+      message: 'No UPnP mapping to remove'
+    };
   }
 
   // Query and management methods

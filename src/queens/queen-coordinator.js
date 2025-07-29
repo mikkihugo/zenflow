@@ -1,46 +1,44 @@
 import { EventEmitter } from 'events';
 import { performance } from 'perf_hooks';
-import { BaseQueen, Task, Result, Consensus } from './base-queen.js';
+import { BaseQueen } from './base-queen.js';
 import { CodeQueen } from './code-queen.js';
 import { DebugQueen } from './debug-queen.js';
 import { Logger } from '../utils/logger.js';
 
-export interface QueenCoordinatorConfig {
-    maxConcurrentTasks?: number;
-    enableLoadBalancing?: boolean;
-    consensusThreshold?: number;
-    healthCheckInterval?: number;
-    autoScaling?: boolean;
-}
+/**
+ * @typedef {Object} QueenCoordinatorConfig
+ * @property {number} [maxConcurrentTasks] - Maximum number of concurrent tasks
+ * @property {boolean} [enableLoadBalancing] - Whether to enable load balancing
+ * @property {number} [consensusThreshold] - Threshold for consensus acceptance
+ * @property {number} [healthCheckInterval] - Health check interval in milliseconds
+ * @property {boolean} [autoScaling] - Whether to enable auto scaling
+ */
 
-export interface TaskQueue {
-    pending: Task[];
-    active: Map<string, Task>;
-    completed: Map<string, Result | Consensus>;
-    failed: Map<string, Error>;
-}
+/**
+ * @typedef {Object} TaskQueue
+ * @property {Task[]} pending - Pending tasks array
+ * @property {Map<string, Task>} active - Active tasks map
+ * @property {Map<string, Result | Consensus>} completed - Completed tasks map
+ * @property {Map<string, Error>} failed - Failed tasks map
+ */
 
-export interface CoordinatorMetrics {
-    totalTasks: number;
-    completedTasks: number;
-    failedTasks: number;
-    averageProcessingTime: number;
-    consensusRate: number;
-    queenUtilization: { [queenName: string]: number };
-    throughput: number; // tasks per minute
-}
+/**
+ * @typedef {Object} CoordinatorMetrics
+ * @property {number} totalTasks - Total number of tasks
+ * @property {number} completedTasks - Number of completed tasks
+ * @property {number} failedTasks - Number of failed tasks
+ * @property {number} averageProcessingTime - Average processing time
+ * @property {number} consensusRate - Consensus success rate
+ * @property {Object.<string, number>} queenUtilization - Queen utilization stats
+ * @property {number} throughput - Tasks per minute
+ */
 
 export class QueenCoordinator extends EventEmitter {
-    private queens: Map<string, BaseQueen>;
-    private taskQueue: TaskQueue;
-    private config: Required<QueenCoordinatorConfig>;
-    private logger: Logger;
-    private metrics: CoordinatorMetrics;
-    private isRunning = false;
-    private healthCheckTimer: NodeJS.Timeout | null = null;
-    private taskIdCounter = 0;
-
-    constructor(config: QueenCoordinatorConfig = {}) {
+    /**
+     * Creates a new QueenCoordinator instance
+     * @param {QueenCoordinatorConfig} [config={}] - Configuration options
+     */
+    constructor(config = {}) {
         super();
         
         this.config = {
@@ -73,7 +71,12 @@ export class QueenCoordinator extends EventEmitter {
         this.initializeQueens();
     }
 
-    private async initializeQueens(): Promise<void> {
+    /**
+     * Initialize queens
+     * @private
+     * @returns {Promise<void>}
+     */
+    async initializeQueens() {
         try {
             // Initialize core queens
             const codeQueen = new CodeQueen();
@@ -106,7 +109,11 @@ export class QueenCoordinator extends EventEmitter {
         }
     }
 
-    async start(): Promise<void> {
+    /**
+     * Start the coordinator
+     * @returns {Promise<void>}
+     */
+    async start() {
         if (this.isRunning) {
             this.logger.warn('QueenCoordinator is already running');
             return;
@@ -127,7 +134,11 @@ export class QueenCoordinator extends EventEmitter {
         this.logger.info('QueenCoordinator started successfully');
     }
 
-    async stop(): Promise<void> {
+    /**
+     * Stop the coordinator
+     * @returns {Promise<void>}
+     */
+    async stop() {
         if (!this.isRunning) {
             return;
         }
@@ -149,10 +160,16 @@ export class QueenCoordinator extends EventEmitter {
         this.logger.info('QueenCoordinator stopped');
     }
 
-    async submitTask(prompt: string, options: Partial<Task> = {}): Promise<string> {
+    /**
+     * Submit a task for processing
+     * @param {string} prompt - Task prompt
+     * @param {Partial<Task>} [options={}] - Task options
+     * @returns {Promise<string>} Task ID
+     */
+    async submitTask(prompt, options = {}) {
         const taskId = this.generateTaskId();
         
-        const task: Task = {
+        const task = {
             id: taskId,
             type: options.type || 'code-generation',
             prompt,
@@ -171,7 +188,13 @@ export class QueenCoordinator extends EventEmitter {
         return taskId;
     }
 
-    async executeTask(task: Task, requireConsensus = false): Promise<Result | Consensus> {
+    /**
+     * Execute a task
+     * @param {Task} task - The task to execute
+     * @param {boolean} [requireConsensus=false] - Whether to require consensus
+     * @returns {Promise<Result | Consensus>} Task result
+     */
+    async executeTask(task, requireConsensus = false) {
         const startTime = performance.now();
         
         try {
@@ -185,7 +208,7 @@ export class QueenCoordinator extends EventEmitter {
             }
         } catch (error) {
             this.logger.error(`Task ${task.id} execution failed:`, error);
-            this.taskQueue.failed.set(task.id, error as Error);
+            this.taskQueue.failed.set(task.id, error);
             this.metrics.failedTasks++;
             throw error;
         } finally {
@@ -195,7 +218,13 @@ export class QueenCoordinator extends EventEmitter {
         }
     }
 
-    private async executeWithBestQueen(task: Task): Promise<Result> {
+    /**
+     * Execute task with the best available queen
+     * @private
+     * @param {Task} task - The task to execute
+     * @returns {Promise<Result>} Task result
+     */
+    async executeWithBestQueen(task) {
         const bestQueen = await this.selectBestQueen(task);
         
         if (!bestQueen) {
@@ -211,12 +240,18 @@ export class QueenCoordinator extends EventEmitter {
         return result;
     }
 
-    private async executeWithConsensus(task: Task): Promise<Consensus> {
+    /**
+     * Execute task with consensus from multiple queens
+     * @private
+     * @param {Task} task - The task to execute
+     * @returns {Promise<Consensus>} Consensus result
+     */
+    async executeWithConsensus(task) {
         const suitableQueens = await this.getSuitableQueens(task);
         
         if (suitableQueens.length < 2) {
             this.logger.warn(`Insufficient queens for consensus on task ${task.id}, falling back to single queen`);
-            return await this.executeWithBestQueen(task) as Consensus;
+            return await this.executeWithBestQueen(task);
         }
 
         const primaryQueen = suitableQueens[0];
@@ -237,7 +272,13 @@ export class QueenCoordinator extends EventEmitter {
         return consensus;
     }
 
-    private async selectBestQueen(task: Task): Promise<BaseQueen | null> {
+    /**
+     * Select the best queen for a task
+     * @private
+     * @param {Task} task - The task
+     * @returns {Promise<BaseQueen | null>} Best queen or null
+     */
+    async selectBestQueen(task) {
         const suitableQueens = await this.getSuitableQueens(task);
         
         if (suitableQueens.length === 0) {
@@ -254,8 +295,14 @@ export class QueenCoordinator extends EventEmitter {
         );
     }
 
-    private async getSuitableQueens(task: Task): Promise<BaseQueen[]> {
-        const suitableQueens: BaseQueen[] = [];
+    /**
+     * Get suitable queens for a task
+     * @private
+     * @param {Task} task - The task
+     * @returns {Promise<BaseQueen[]>} Array of suitable queens
+     */
+    async getSuitableQueens(task) {
+        const suitableQueens = [];
         
         for (const queen of this.queens.values()) {
             if (await queen.canAcceptTask(task)) {
@@ -278,7 +325,12 @@ export class QueenCoordinator extends EventEmitter {
         return suitableQueens;
     }
 
-    private async processTaskQueue(): Promise<void> {
+    /**
+     * Process the task queue
+     * @private
+     * @returns {Promise<void>}
+     */
+    async processTaskQueue() {
         while (this.isRunning) {
             try {
                 // Process pending tasks if we're under the concurrent limit
@@ -286,7 +338,7 @@ export class QueenCoordinator extends EventEmitter {
                     this.taskQueue.pending.length > 0 && 
                     this.taskQueue.active.size < this.config.maxConcurrentTasks
                 ) {
-                    const task = this.taskQueue.pending.shift()!;
+                    const task = this.taskQueue.pending.shift();
                     
                     // Process task asynchronously
                     this.executeTask(task).catch(error => {
@@ -302,7 +354,12 @@ export class QueenCoordinator extends EventEmitter {
         }
     }
 
-    private performHealthCheck(): void {
+    /**
+     * Perform health check on queens
+     * @private
+     * @returns {void}
+     */
+    performHealthCheck() {
         this.logger.debug('Performing health check...');
         
         let healthyQueens = 0;
@@ -335,36 +392,75 @@ export class QueenCoordinator extends EventEmitter {
         });
     }
 
-    private handleQueenTaskComplete(queenName: string, data: any): void {
+    /**
+     * Handle queen task completion
+     * @private
+     * @param {string} queenName - Queen name
+     * @param {any} data - Task data
+     * @returns {void}
+     */
+    handleQueenTaskComplete(queenName, data) {
         this.logger.debug(`Queen ${queenName} completed task ${data.taskId}`);
         this.emit('taskComplete', { queenName, ...data });
     }
 
-    private handleQueenCollaboration(queenName: string, data: any): void {
+    /**
+     * Handle queen collaboration
+     * @private
+     * @param {string} queenName - Queen name
+     * @param {any} data - Collaboration data
+     * @returns {void}
+     */
+    handleQueenCollaboration(queenName, data) {
         this.logger.debug(`Queen ${queenName} participated in collaboration for task ${data.task.id}`);
         this.emit('collaboration', { initiator: queenName, ...data });
     }
 
-    private updateProcessingTimeMetrics(processingTime: number): void {
+    /**
+     * Update processing time metrics
+     * @private
+     * @param {number} processingTime - Processing time in milliseconds
+     * @returns {void}
+     */
+    updateProcessingTimeMetrics(processingTime) {
         this.metrics.averageProcessingTime = 
             (this.metrics.averageProcessingTime * (this.metrics.completedTasks + this.metrics.failedTasks - 1) + processingTime) / 
             (this.metrics.completedTasks + this.metrics.failedTasks);
     }
 
-    private generateTaskId(): string {
+    /**
+     * Generate a unique task ID
+     * @private
+     * @returns {string} Task ID
+     */
+    generateTaskId() {
         return `task_${++this.taskIdCounter}_${Date.now()}`;
     }
 
     // Public API methods
-    getQueens(): { [name: string]: BaseQueen } {
+    /**
+     * Get all queens
+     * @returns {Object.<string, BaseQueen>} Queens map
+     */
+    getQueens() {
         return Object.fromEntries(this.queens.entries());
     }
 
-    getQueen(name: string): BaseQueen | undefined {
+    /**
+     * Get a specific queen by name
+     * @param {string} name - Queen name
+     * @returns {BaseQueen | undefined} Queen instance or undefined
+     */
+    getQueen(name) {
         return this.queens.get(name);
     }
 
-    getTaskStatus(taskId: string): 'pending' | 'active' | 'completed' | 'failed' | 'not-found' {
+    /**
+     * Get task status
+     * @param {string} taskId - Task ID
+     * @returns {'pending' | 'active' | 'completed' | 'failed' | 'not-found'} Task status
+     */
+    getTaskStatus(taskId) {
         if (this.taskQueue.pending.some(task => task.id === taskId)) return 'pending';
         if (this.taskQueue.active.has(taskId)) return 'active';
         if (this.taskQueue.completed.has(taskId)) return 'completed';
@@ -372,24 +468,37 @@ export class QueenCoordinator extends EventEmitter {
         return 'not-found';
     }
 
-    getTaskResult(taskId: string): Result | Consensus | null {
+    /**
+     * Get task result
+     * @param {string} taskId - Task ID
+     * @returns {Result | Consensus | null} Task result or null
+     */
+    getTaskResult(taskId) {
         return this.taskQueue.completed.get(taskId) || null;
     }
 
-    getTaskError(taskId: string): Error | null {
+    /**
+     * Get task error
+     * @param {string} taskId - Task ID
+     * @returns {Error | null} Task error or null
+     */
+    getTaskError(taskId) {
         return this.taskQueue.failed.get(taskId) || null;
     }
 
-    getMetrics(): CoordinatorMetrics {
+    /**
+     * Get coordinator metrics
+     * @returns {CoordinatorMetrics} Current metrics
+     */
+    getMetrics() {
         return { ...this.metrics };
     }
 
-    getQueueStatus(): {
-        pending: number;
-        active: number;
-        completed: number;
-        failed: number;
-    } {
+    /**
+     * Get queue status
+     * @returns {{pending: number, active: number, completed: number, failed: number}} Queue status
+     */
+    getQueueStatus() {
         return {
             pending: this.taskQueue.pending.length,
             active: this.taskQueue.active.size,
@@ -398,7 +507,13 @@ export class QueenCoordinator extends EventEmitter {
         };
     }
 
-    async addQueen(name: string, queen: BaseQueen): Promise<void> {
+    /**
+     * Add a new queen
+     * @param {string} name - Queen name
+     * @param {BaseQueen} queen - Queen instance
+     * @returns {Promise<void>}
+     */
+    async addQueen(name, queen) {
         if (this.queens.has(name)) {
             throw new Error(`Queen with name ${name} already exists`);
         }
@@ -419,7 +534,12 @@ export class QueenCoordinator extends EventEmitter {
         this.emit('queenAdded', { name, queen });
     }
 
-    async removeQueen(name: string): Promise<boolean> {
+    /**
+     * Remove a queen
+     * @param {string} name - Queen name
+     * @returns {Promise<boolean>} True if removed, false if not found
+     */
+    async removeQueen(name) {
         const queen = this.queens.get(name);
         if (!queen) {
             return false;
@@ -434,13 +554,23 @@ export class QueenCoordinator extends EventEmitter {
         return true;
     }
 
-    clearCompletedTasks(): void {
+    /**
+     * Clear completed and failed tasks from queue
+     * @returns {void}
+     */
+    clearCompletedTasks() {
         this.taskQueue.completed.clear();
         this.taskQueue.failed.clear();
         this.logger.info('Cleared completed and failed tasks from queue');
     }
 
-    async waitForTask(taskId: string, timeout = 30000): Promise<Result | Consensus> {
+    /**
+     * Wait for a task to complete
+     * @param {string} taskId - Task ID
+     * @param {number} [timeout=30000] - Timeout in milliseconds
+     * @returns {Promise<Result | Consensus>} Task result when completed
+     */
+    async waitForTask(taskId, timeout = 30000) {
         const startTime = Date.now();
         
         while (Date.now() - startTime < timeout) {
@@ -467,7 +597,11 @@ export class QueenCoordinator extends EventEmitter {
         throw new Error(`Task ${taskId} timed out after ${timeout}ms`);
     }
 
-    isRunning(): boolean {
+    /**
+     * Check if coordinator is running
+     * @returns {boolean} True if running
+     */
+    isRunning() {
         return this.isRunning;
     }
 }

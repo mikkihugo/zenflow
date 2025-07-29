@@ -4,6 +4,8 @@
  * @module MCPToolsRegistry
  */
 
+import { gitTools } from './git-tools.js';
+
 /**
  * Initialize Claude Zen core command tools
  * @returns {Object} Claude Zen command tool definitions
@@ -317,12 +319,25 @@ export function initializeNeuralTools() {
   return {
     neural_status: {
       name: 'neural_status',
-      description: 'Check neural network status',
+      description: 'Check neural network status (automatic)',
       inputSchema: {
         type: 'object',
         properties: {
-          modelId: { type: 'string' }
+          modelId: { type: 'string', description: 'Specific model to check (optional)' }
         }
+      },
+      handler: async (args, server) => {
+        if (!server?.neuralEngine) {
+          return { status: 'unavailable', message: 'Neural engine not initialized' };
+        }
+        
+        return {
+          status: 'available',
+          initialized: server.neuralEngine.isInitialized,
+          models: server.neuralEngine.models.size,
+          cacheSize: server.neuralEngine.cache.size,
+          specificModel: args.modelId ? server.neuralEngine.models.get(args.modelId) : null
+        };
       }
     },
     neural_train: {
@@ -350,6 +365,30 @@ export function initializeNeuralTools() {
           metadata: { type: 'object' }
         },
         required: ['action']
+      }
+    },
+    neural_inference: {
+      name: 'neural_inference',
+      description: 'Run neural inference on text (automatic)',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          prompt: { type: 'string', description: 'Text to analyze' },
+          model: { type: 'string', description: 'Model to use (optional, auto-selects best)' },
+          options: { type: 'object', description: 'Inference options' }
+        },
+        required: ['prompt']
+      },
+      handler: async (args, server) => {
+        if (!server?.neuralEngine) {
+          return { result: 'Neural inference unavailable (using fallback)', confidence: 0.1 };
+        }
+        
+        try {
+          return await server.neuralEngine.inference(args.prompt, args.model, args.options);
+        } catch (error) {
+          return { result: `Neural inference failed: ${error.message}`, confidence: 0 };
+        }
       }
     }
   };
@@ -477,6 +516,14 @@ export function initializeSystemTools() {
 }
 
 /**
+ * Initialize Git tools
+ * @returns {Object} Git tool definitions
+ */
+export function initializeGitTools() {
+  return gitTools;
+}
+
+/**
  * Combine all tool definitions into a single registry
  * @returns {Object} Complete tools registry
  */
@@ -488,7 +535,8 @@ export function initializeAllTools() {
     ...initializeMemoryTools(),
     ...initializeAgentTools(),
     ...initializeTaskTools(),
-    ...initializeSystemTools()
+    ...initializeSystemTools(),
+    ...initializeGitTools()
   };
 }
 
@@ -573,6 +621,7 @@ export function getToolCategories() {
     { name: 'memory', description: 'Memory management operations', count: Object.keys(initializeMemoryTools()).length },
     { name: 'agent', description: 'Agent lifecycle management', count: Object.keys(initializeAgentTools()).length },
     { name: 'task', description: 'Task orchestration and monitoring', count: Object.keys(initializeTaskTools()).length },
-    { name: 'system', description: 'System utilities and features', count: Object.keys(initializeSystemTools()).length }
+    { name: 'system', description: 'System utilities and features', count: Object.keys(initializeSystemTools()).length },
+    { name: 'git', description: 'Git version control operations', count: Object.keys(initializeGitTools()).length }
   ];
 }

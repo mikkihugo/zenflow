@@ -1,16 +1,48 @@
 import { createRequire } from 'module';
 import { Logger } from '../utils/logger.js';
+// Import the REAL neural integration
+import { loadRealNeuralBindings } from './real-fann-integration.js';
 
+// Main loadNeuralBindings function - unified entry point
 export async function loadNeuralBindings() {
+    try {
+        // Try to load REAL ruv-FANN integration first
+        const realBindings = await loadRealNeuralBindings();
+        if (realBindings) {
+            console.log('✅ Using REAL ruv-FANN neural bindings');
+            return realBindings;
+        }
+    } catch (error) {
+        console.warn('⚠️ Real neural bindings failed, falling back to stub:', error.message);
+    }
+    
+    // Fallback to original stub loader
     return bindingsLoader.load();
 }
 
+/**
+ * RuvFannBindingsLoader - Handles loading of native, WASM, or stub neural bindings
+ * @class
+ */
 class RuvFannBindingsLoader {
-    private logger = new Logger('RuvFannBindings');
-    private bindings: RuvFannBindings | null = null;
-    private loadAttempted = false;
+    /**
+     * Creates a new RuvFannBindingsLoader
+     * @constructor
+     */
+    constructor() {
+        /** @type {import('../utils/logger.js').Logger} Logger instance */
+        this.logger = new Logger('RuvFannBindings');
+        /** @type {RuvFannBindings|null} Loaded bindings instance */
+        this.bindings = null;
+        /** @type {boolean} Whether load has been attempted */
+        this.loadAttempted = false;
+    }
 
-    async load(): Promise<RuvFannBindings | null> {
+    /**
+     * Load neural bindings (native, WASM, or stub)
+     * @returns {Promise<RuvFannBindings|null>} The loaded bindings or null
+     */
+    async load() {
         if (this.loadAttempted) {
             return this.bindings;
         }
@@ -46,7 +78,12 @@ class RuvFannBindingsLoader {
         }
     }
 
-    private async loadNativeBindings(): Promise<RuvFannBindings | null> {
+    /**
+     * Attempt to load native NAPI bindings
+     * @private
+     * @returns {Promise<RuvFannBindings|null>} Native bindings or null if unavailable
+     */
+    async loadNativeBindings() {
         try {
             // Try to require the native addon
             const require = createRequire(import.meta.url);
@@ -78,7 +115,12 @@ class RuvFannBindingsLoader {
         }
     }
 
-    private async loadWasmBindings(): Promise<RuvFannBindings | null> {
+    /**
+     * Attempt to load WASM bindings
+     * @private
+     * @returns {Promise<RuvFannBindings|null>} WASM bindings or null if unavailable
+     */
+    async loadWasmBindings() {
         try {
             // Try to load WASM module
             const wasmPaths = [
@@ -108,9 +150,15 @@ class RuvFannBindingsLoader {
         }
     }
 
-    private wrapNativeBindings(binding: any): RuvFannBindings {
+    /**
+     * Wrap native bindings with standardized interface
+     * @private
+     * @param {any} binding - Native binding object
+     * @returns {RuvFannBindings} Wrapped bindings
+     */
+    wrapNativeBindings(binding) {
         return {
-            loadModel: async (path: string) => {
+            loadModel: async (path) => {
                 try {
                     return binding.loadModel(path);
                 } catch (error) {
@@ -119,13 +167,13 @@ class RuvFannBindingsLoader {
                 }
             },
 
-            unloadModel: async (modelName: string) => {
+            unloadModel: async (modelName) => {
                 if (binding.unloadModel) {
                     return binding.unloadModel(modelName);
                 }
             },
 
-            inference: async (prompt: string, options: InferenceOptions = {}) => {
+            inference: async (prompt, options = {}) => {
                 try {
                     return binding.inference(prompt, options);
                 } catch (error) {
@@ -143,7 +191,7 @@ class RuvFannBindingsLoader {
                 }
             },
 
-            isModelLoaded: (modelName: string) => {
+            isModelLoaded: (modelName) => {
                 try {
                     return binding.isModelLoaded(modelName);
                 } catch (error) {
@@ -151,15 +199,15 @@ class RuvFannBindingsLoader {
                 }
             },
 
-            batchInference: binding.batchInference ? async (prompts: string[], options: InferenceOptions = {}) => {
+            batchInference: binding.batchInference ? async (prompts, options = {}) => {
                 return binding.batchInference(prompts, options);
             } : undefined,
 
-            finetune: binding.finetune ? async (modelName: string, trainingData: any[]) => {
+            finetune: binding.finetune ? async (modelName, trainingData) => {
                 return binding.finetune(modelName, trainingData);
             } : undefined,
 
-            benchmark: binding.benchmark ? async (modelName: string) => {
+            benchmark: binding.benchmark ? async (modelName) => {
                 return binding.benchmark(modelName);
             } : undefined,
 
@@ -181,9 +229,15 @@ class RuvFannBindingsLoader {
         };
     }
 
-    private wrapWasmBindings(wasmModule: any): RuvFannBindings {
+    /**
+     * Wrap WASM bindings with standardized interface
+     * @private
+     * @param {any} wasmModule - WASM module object
+     * @returns {RuvFannBindings} Wrapped bindings
+     */
+    wrapWasmBindings(wasmModule) {
         return {
-            loadModel: async (path: string) => {
+            loadModel: async (path) => {
                 try {
                     return wasmModule.load_model(path);
                 } catch (error) {
@@ -192,7 +246,7 @@ class RuvFannBindingsLoader {
                 }
             },
 
-            inference: async (prompt: string, options: InferenceOptions = {}) => {
+            inference: async (prompt, options = {}) => {
                 try {
                     return wasmModule.inference(prompt, JSON.stringify(options));
                 } catch (error) {
@@ -211,7 +265,7 @@ class RuvFannBindingsLoader {
                 }
             },
 
-            isModelLoaded: (modelName: string) => {
+            isModelLoaded: (modelName) => {
                 try {
                     return wasmModule.is_model_loaded(modelName);
                 } catch (error) {
@@ -221,18 +275,23 @@ class RuvFannBindingsLoader {
         };
     }
 
-    private createStubBindings(): RuvFannBindings {
+    /**
+     * Create stub bindings for development mode
+     * @private
+     * @returns {RuvFannBindings} Stub bindings implementation
+     */
+    createStubBindings() {
         this.logger.info('Creating stub bindings for development mode');
         
         return {
-            loadModel: async (path: string) => {
+            loadModel: async (path) => {
                 this.logger.debug(`Stub: Loading model from ${path}`);
                 // Simulate loading time
                 await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
                 return true;
             },
 
-            inference: async (prompt: string, options: InferenceOptions = {}) => {
+            inference: async (prompt, options = {}) => {
                 this.logger.debug(`Stub: Inference for prompt: ${prompt.substring(0, 50)}...`);
                 
                 // Simulate processing time
@@ -260,21 +319,21 @@ class RuvFannBindingsLoader {
                 ];
             },
 
-            isModelLoaded: (modelName: string) => {
+            isModelLoaded: (modelName) => {
                 // Simulate some models being loaded
                 const loadedModels = ['code-completion-base', 'bug-detector-v2'];
                 return loadedModels.includes(modelName);
             },
 
-            batchInference: async (prompts: string[], options: InferenceOptions = {}) => {
+            batchInference: async (prompts, options = {}) => {
                 const results = [];
                 for (const prompt of prompts) {
-                    results.push(await this.bindings!.inference(prompt, options));
+                    results.push(await this.bindings.inference(prompt, options));
                 }
                 return results;
             },
 
-            benchmark: async (modelName: string) => {
+            benchmark: async (modelName) => {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 return {
                     modelName,
@@ -320,8 +379,14 @@ class RuvFannBindingsLoader {
 // Singleton instance
 const bindingsLoader = new RuvFannBindingsLoader();
 
-export async function loadNeuralBindings(): Promise<RuvFannBindings | null> {
+/**
+ * Load neural bindings (singleton pattern) - internal helper
+ * @returns {Promise<RuvFannBindings|null>} The loaded neural bindings
+ * @private
+ */
+async function loadNeuralBindingsFromLoader() {
     return bindingsLoader.load();
 }
 
-export { RuvFannBindings as default };
+// Export the class name as default
+export default RuvFannBindingsLoader;

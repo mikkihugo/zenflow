@@ -21,8 +21,9 @@ export function createFullMemoryBankMd() {
 The Claude-Flow memory system provides persistent storage and intelligent retrieval of information across agent sessions. It uses a hybrid approach combining SQL databases with semantic search capabilities.
 
 ## Storage Backends
-- **Primary**: JSON database (\`./memory/claude-zen-data.json\`)
-- **Sessions**: File-based storage in \`./memory/sessions/\`
+- **Primary**: Kuzu graph database (\`./memory/graphs/\`) with relationship modeling  
+- **Vector Store**: LanceDB (\`./memory/vectors/\`) for semantic search
+- **Sessions**: SQLite database (\`./memory/structured.db\`) for fast queries
 - **Cache**: In-memory cache for frequently accessed data
 
 ## Memory Organization
@@ -42,7 +43,7 @@ Memory settings are configured in \`claude-zen.config.json\`:
 \`\`\`json
 {
   "memory": {
-    "backend": "json",
+    "backend": "kuzu", // Graph database for relationships
     "path": "./memory/claude-zen-data.json",
     "cacheSize": 1000,
     "indexing": true,
@@ -86,7 +87,7 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 **🚀 Batchtools Enhancement**: This configuration includes parallel processing capabilities for memory operations, batch storage, and concurrent retrieval optimizations.
 
 ## Storage Backends (Enhanced)
-- **Primary**: JSON database (\`./memory/claude-zen-data.json\`) with parallel access
+- **Primary**: Hybrid backend (LanceDB + Kuzu + SQLite) with parallel access
 - **Sessions**: File-based storage in \`./memory/sessions/\` with concurrent operations
 - **Cache**: In-memory cache with batch updates for frequently accessed data
 - **Index**: Parallel indexing system for faster search and retrieval
@@ -125,7 +126,7 @@ Memory settings are configured in \`claude-zen.config.json\` with batchtools opt
 \`\`\`json
 {
   "memory": {
-    "backend": "json",
+    "backend": "kuzu", // Graph database for relationships
     "path": "./memory/claude-zen-data.json",
     "cacheSize": 5000,
     "indexing": true,

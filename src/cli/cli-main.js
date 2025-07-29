@@ -16,9 +16,15 @@ async function main() {
     return;
   }
 
-  // Handle help or no command first (no plugins needed)
-  if (!command || flags.help || flags.h) {
+  // Handle general help or no command (no plugins needed)
+  if (!command) {
     cli.showHelp(0);
+    return;
+  }
+
+  // Handle command-specific help requests
+  if (flags.help || flags.h) {
+    await showCommandHelp(command);
     return;
   }
 

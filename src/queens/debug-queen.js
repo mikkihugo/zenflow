@@ -1,13 +1,8 @@
 import { performance } from 'perf_hooks';
-import { BaseQueen, Task, Result } from './base-queen.js';
+import { BaseQueen } from './base-queen.js';
 import { NeuralEngine } from '../neural/neural-engine.js';
 
 export class DebugQueen extends BaseQueen {
-    private neuralEngine: NeuralEngine;
-    private errorPatterns: Map<string, ErrorPattern>;
-    private bugTypes: Set<string>;
-    private securityChecks: Map<string, SecurityCheck>;
-
     constructor() {
         super('DebugQueen', 'bug-detection');
         this.confidence = 0.88;
@@ -23,49 +18,49 @@ export class DebugQueen extends BaseQueen {
         this.initialize();
     }
 
-    private async initialize(): Promise<void> {
+    async initialize() {
         await this.neuralEngine.initialize();
         await this.neuralEngine.loadModel('bug-detector-v2');
     }
 
-    private initializePatterns(): void {
+    initializePatterns() {
         // Common error patterns
         this.errorPatterns.set('null-pointer', {
             pattern: /(\w+)\.(\w+)/g,
-            check: (code: string) => this.checkNullPointer(code),
-            fix: (code: string) => this.fixNullPointer(code),
+            check: (code) => this.checkNullPointer(code),
+            fix: (code) => this.fixNullPointer(code),
             severity: 'high',
             description: 'Potential null pointer exception'
         });
 
         this.errorPatterns.set('async-error', {
             pattern: /await\s+(?!.*catch)/g,
-            check: (code: string) => this.checkAsyncError(code),
-            fix: (code: string) => this.fixAsyncError(code),
+            check: (code) => this.checkAsyncError(code),
+            fix: (code) => this.fixAsyncError(code),
             severity: 'medium',
             description: 'Unhandled async operation'
         });
 
         this.errorPatterns.set('memory-leak', {
             pattern: /setInterval|setTimeout|addEventListener/g,
-            check: (code: string) => this.checkMemoryLeak(code),
-            fix: (code: string) => this.fixMemoryLeak(code),
+            check: (code) => this.checkMemoryLeak(code),
+            fix: (code) => this.fixMemoryLeak(code),
             severity: 'high',
             description: 'Potential memory leak'
         });
 
         this.errorPatterns.set('sql-injection', {
             pattern: /query.*\+.*\$\{|\bexec\(.*\+/g,
-            check: (code: string) => this.checkSQLInjection(code),
-            fix: (code: string) => this.fixSQLInjection(code),
+            check: (code) => this.checkSQLInjection(code),
+            fix: (code) => this.fixSQLInjection(code),
             severity: 'critical',
             description: 'SQL injection vulnerability'
         });
 
         this.errorPatterns.set('xss', {
             pattern: /innerHTML\s*=.*\$\{|dangerouslySetInnerHTML/g,
-            check: (code: string) => this.checkXSS(code),
-            fix: (code: string) => this.fixXSS(code),
+            check: (code) => this.checkXSS(code),
+            fix: (code) => this.fixXSS(code),
             severity: 'critical',
             description: 'Cross-site scripting vulnerability'
         });
@@ -84,7 +79,7 @@ export class DebugQueen extends BaseQueen {
         });
     }
 
-    async process(task: Task): Promise<Result> {
+    async process(task) {
         const startTime = performance.now();
         this.trackTaskStart(task.id);
 
@@ -94,7 +89,7 @@ export class DebugQueen extends BaseQueen {
             const analysis = await this.analyzeCode(task);
             const recommendations = await this.generateRecommendations(analysis, task);
             
-            const result: Result = {
+            const result = {
                 taskId: task.id,
                 queenName: this.name,
                 recommendation: recommendations.primary,
@@ -117,7 +112,7 @@ export class DebugQueen extends BaseQueen {
 
         } catch (error) {
             this.logger.error(`Debug analysis failed for task ${task.id}:`, error);
-            const result: Result = {
+            const result = {
                 taskId: task.id,
                 queenName: this.name,
                 recommendation: `❌ Debug analysis failed: ${error.message}\n\nPlease provide code context for analysis.`,
@@ -130,7 +125,7 @@ export class DebugQueen extends BaseQueen {
         }
     }
 
-    private async analyzeCode(task: Task): Promise<CodeAnalysis> {
+    async analyzeCode(task) {
         const code = task.context?.code || task.prompt;
         const language = task.context?.language || this.detectLanguage(code);
         
@@ -158,8 +153,8 @@ export class DebugQueen extends BaseQueen {
         };
     }
 
-    private async staticAnalysis(code: string, language: string): Promise<Issue[]> {
-        const issues: Issue[] = [];
+    async staticAnalysis(code, language) {
+        const issues = [];
         
         for (const [type, pattern] of this.errorPatterns.entries()) {
             if (pattern.check(code)) {
@@ -191,8 +186,8 @@ export class DebugQueen extends BaseQueen {
         return issues;
     }
 
-    private async securityAnalysis(code: string, language: string): Promise<SecurityIssue[]> {
-        const securityIssues: SecurityIssue[] = [];
+    async securityAnalysis(code, language) {
+        const securityIssues = [];
         
         for (const [type, check] of this.securityChecks.entries()) {
             for (const pattern of check.patterns) {
@@ -212,8 +207,8 @@ export class DebugQueen extends BaseQueen {
         return securityIssues;
     }
 
-    private async performanceAnalysis(code: string, language: string): Promise<PerformanceIssue[]> {
-        const perfIssues: PerformanceIssue[] = [];
+    async performanceAnalysis(code, language) {
+        const perfIssues = [];
         
         // Check for common performance anti-patterns
         const performanceChecks = [
@@ -241,7 +236,7 @@ export class DebugQueen extends BaseQueen {
             if (check.pattern.test(code)) {
                 perfIssues.push({
                     type: check.type,
-                    impact: check.impact as 'low' | 'medium' | 'high',
+                    impact: check.impact,
                     description: check.description,
                     line: this.findLine(code, check.pattern),
                     suggestion: this.getPerformanceFix(check.type)
@@ -252,7 +247,7 @@ export class DebugQueen extends BaseQueen {
         return perfIssues;
     }
 
-    private async neuralAnalysis(code: string, task: Task): Promise<Issue[]> {
+    async neuralAnalysis(code, task) {
         try {
             const prompt = `Analyze this code for bugs and issues:
 
@@ -280,8 +275,8 @@ Provide detailed analysis:`;
         }
     }
 
-    private parseNeuralAnalysis(analysis: string): Issue[] {
-        const issues: Issue[] = [];
+    parseNeuralAnalysis(analysis) {
+        const issues = [];
         const lines = analysis.split('\n');
         
         for (const line of lines) {
@@ -300,7 +295,7 @@ Provide detailed analysis:`;
         return issues;
     }
 
-    private async generateRecommendations(analysis: CodeAnalysis, task: Task): Promise<Recommendations> {
+    async generateRecommendations(analysis, task) {
         const { issues, securityIssues, performanceIssues } = analysis;
         
         let report = '🐛 **Debug Analysis Report**\n\n';
@@ -367,7 +362,7 @@ Provide detailed analysis:`;
         };
     }
 
-    private generateFixedCode(analysis: CodeAnalysis): string | null {
+    generateFixedCode(analysis) {
         try {
             let fixedCode = analysis.code;
             
@@ -388,7 +383,7 @@ Provide detailed analysis:`;
         }
     }
 
-    private generateBestPractices(analysis: CodeAnalysis): string {
+    generateBestPractices(analysis) {
         let practices = '📋 **Best Practices & Recommendations:**\n\n';
         
         switch (analysis.language) {
@@ -423,8 +418,21 @@ Provide detailed analysis:`;
         return practices;
     }
 
-    private async generateAlternatives(analysis: CodeAnalysis): Promise<string[]> {
-        const alternatives: string[] = [];
+    /**
+     * Generate alternative recommendations based on analysis
+     * @param {Object} analysis - The code analysis result
+     * @param {string} analysis.code - The analyzed code
+     * @param {string} analysis.language - Detected programming language
+     * @param {Array} analysis.issues - General code issues
+     * @param {Array} analysis.securityIssues - Security vulnerabilities
+     * @param {Array} analysis.performanceIssues - Performance concerns
+     * @param {string} analysis.maxSeverity - Highest severity found
+     * @param {string} analysis.fixComplexity - Complexity of fixing issues
+     * @param {number} analysis.riskScore - Overall risk score (0-10)
+     * @returns {Promise<string[]>} Array of alternative recommendations
+     */
+    async generateAlternatives(analysis) {
+        const alternatives = [];
         
         // Quick fix summary
         if (analysis.issues.length > 0) {
@@ -442,8 +450,13 @@ Provide detailed analysis:`;
     }
 
     // Language-specific analysis methods
-    private analyzeJavaScript(code: string): Issue[] {
-        const issues: Issue[] = [];
+    /**
+     * Analyze JavaScript code for common issues
+     * @param {string} code - The JavaScript code to analyze
+     * @returns {Array<Object>} Array of detected issues
+     */
+    analyzeJavaScript(code) {
+        const issues = [];
         
         // Check for common JS issues
         if (code.includes('==') && !code.includes('===')) {
@@ -471,8 +484,13 @@ Provide detailed analysis:`;
         return issues;
     }
 
-    private analyzePython(code: string): Issue[] {
-        const issues: Issue[] = [];
+    /**
+     * Analyze Python code for common issues
+     * @param {string} code - The Python code to analyze
+     * @returns {Array<Object>} Array of detected issues
+     */
+    analyzePython(code) {
+        const issues = [];
         
         // Check for bare except clauses
         if (code.includes('except:')) {
@@ -489,8 +507,13 @@ Provide detailed analysis:`;
         return issues;
     }
 
-    private analyzeJava(code: string): Issue[] {
-        const issues: Issue[] = [];
+    /**
+     * Analyze Java code for common issues
+     * @param {string} code - The Java code to analyze
+     * @returns {Array<Object>} Array of detected issues
+     */
+    analyzeJava(code) {
+        const issues = [];
         
         // Check for string concatenation in loops
         if (code.includes('for') && code.includes('+') && code.includes('String')) {
@@ -508,7 +531,12 @@ Provide detailed analysis:`;
     }
 
     // Error pattern check methods
-    private checkNullPointer(code: string): boolean {
+    /**
+     * Check for potential null pointer issues
+     * @param {string} code - The code to check
+     * @returns {boolean} True if null pointer issues are detected
+     */
+    checkNullPointer(code) {
         // Look for object property access without null checks
         const accessPattern = /(\w+)\.(\w+)/g;
         const nullCheckPattern = /if\s*\(\s*\w+\s*[!=]=\s*null\s*\)/g;
@@ -519,15 +547,30 @@ Provide detailed analysis:`;
         return accesses.length > nullChecks.length;
     }
 
-    private fixNullPointer(code: string): string {
+    /**
+     * Fix null pointer issues in code
+     * @param {string} code - The code to fix
+     * @returns {string} Fixed code
+     */
+    fixNullPointer(code) {
         return code.replace(/(\w+)\.(\w+)/g, '($1 && $1.$2)');
     }
 
-    private checkAsyncError(code: string): boolean {
+    /**
+     * Check for async error handling issues
+     * @param {string} code - The code to check
+     * @returns {boolean} True if async error issues are detected
+     */
+    checkAsyncError(code) {
         return /await\s+/.test(code) && !code.includes('try') && !code.includes('catch');
     }
 
-    private fixAsyncError(code: string): string {
+    /**
+     * Fix async error handling issues
+     * @param {string} code - The code to fix
+     * @returns {string} Fixed code
+     */
+    fixAsyncError(code) {
         if (code.includes('await') && !code.includes('try')) {
             const awaitMatch = code.match(/(.*await.*)/);
             if (awaitMatch) {
@@ -537,7 +580,12 @@ Provide detailed analysis:`;
         return code;
     }
 
-    private checkMemoryLeak(code: string): boolean {
+    /**
+     * Check for memory leak issues
+     * @param {string} code - The code to check
+     * @returns {boolean} True if memory leak issues are detected
+     */
+    checkMemoryLeak(code) {
         const hasInterval = /setInterval|setTimeout/.test(code);
         const hasListener = /addEventListener/.test(code);
         const hasCleanup = /clearInterval|clearTimeout|removeEventListener/.test(code);
@@ -545,7 +593,12 @@ Provide detailed analysis:`;
         return (hasInterval || hasListener) && !hasCleanup;
     }
 
-    private fixMemoryLeak(code: string): string {
+    /**
+     * Fix memory leak issues
+     * @param {string} code - The code to fix
+     * @returns {string} Fixed code
+     */
+    fixMemoryLeak(code) {
         let fixed = code;
         
         if (code.includes('setInterval') && !code.includes('clearInterval')) {
@@ -559,31 +612,62 @@ Provide detailed analysis:`;
         return fixed;
     }
 
-    private checkSQLInjection(code: string): boolean {
+    /**
+     * Check for SQL injection vulnerabilities
+     * @param {string} code - The code to check
+     * @returns {boolean} True if SQL injection issues are detected
+     */
+    checkSQLInjection(code) {
         return /query.*\+.*\$\{|\bexec\(.*\+/.test(code);
     }
 
-    private fixSQLInjection(code: string): string {
+    /**
+     * Fix SQL injection vulnerabilities
+     * @param {string} code - The code to fix
+     * @returns {string} Fixed code
+     */
+    fixSQLInjection(code) {
         return code + '\n// Use parameterized queries instead of string concatenation';
     }
 
-    private checkXSS(code: string): boolean {
+    /**
+     * Check for XSS vulnerabilities
+     * @param {string} code - The code to check
+     * @returns {boolean} True if XSS issues are detected
+     */
+    checkXSS(code) {
         return /innerHTML\s*=.*\$\{|dangerouslySetInnerHTML/.test(code);
     }
 
-    private fixXSS(code: string): string {
+    /**
+     * Fix XSS vulnerabilities
+     * @param {string} code - The code to fix
+     * @returns {string} Fixed code
+     */
+    fixXSS(code) {
         return code + '\n// Sanitize input or use textContent instead of innerHTML';
     }
 
     // Helper methods
-    private detectLanguage(code: string): string {
+    /**
+     * Detect the programming language of the code
+     * @param {string} code - The code to analyze
+     * @returns {string} Detected language
+     */
+    detectLanguage(code) {
         if (code.includes('def ') || code.includes('import ')) return 'python';
         if (code.includes('public class') || code.includes('import java')) return 'java';
         if (code.includes('interface ') || code.includes(': ')) return 'typescript';
         return 'javascript';
     }
 
-    private findLine(code: string, pattern: RegExp): number {
+    /**
+     * Find the line number where a pattern matches
+     * @param {string} code - The code to search
+     * @param {RegExp} pattern - The pattern to find
+     * @returns {number} Line number (1-based) or 0 if not found
+     */
+    findLine(code, pattern) {
         const lines = code.split('\n');
         for (let i = 0; i < lines.length; i++) {
             if (pattern.test(lines[i])) {
@@ -593,7 +677,12 @@ Provide detailed analysis:`;
         return 0;
     }
 
-    private getMaxSeverity(issues: Issue[]): 'low' | 'medium' | 'high' | 'critical' {
+    /**
+     * Get the maximum severity from a list of issues
+     * @param {Array<Object>} issues - Array of issues
+     * @returns {string} Maximum severity - 'low', 'medium', 'high', or 'critical'
+     */
+    getMaxSeverity(issues) {
         const severityOrder = ['low', 'medium', 'high', 'critical'];
         let maxSeverity = 'low';
         
@@ -603,10 +692,15 @@ Provide detailed analysis:`;
             }
         }
         
-        return maxSeverity as 'low' | 'medium' | 'high' | 'critical';
+        return maxSeverity;
     }
 
-    private calculateFixComplexity(issues: Issue[]): 'low' | 'medium' | 'high' {
+    /**
+     * Calculate the complexity of fixing the detected issues
+     * @param {Array<Object>} issues - Array of issues
+     * @returns {string} Fix complexity - 'low', 'medium', or 'high'
+     */
+    calculateFixComplexity(issues) {
         const criticalCount = issues.filter(i => i.severity === 'critical').length;
         const highCount = issues.filter(i => i.severity === 'high').length;
         
@@ -615,7 +709,14 @@ Provide detailed analysis:`;
         return 'low';
     }
 
-    private calculateRiskScore(issues: Issue[], securityIssues: SecurityIssue[], performanceIssues: PerformanceIssue[]): number {
+    /**
+     * Calculate overall risk score based on issues
+     * @param {Array<Object>} issues - General issues
+     * @param {Array<Object>} securityIssues - Security issues
+     * @param {Array<Object>} performanceIssues - Performance issues
+     * @returns {number} Risk score (0-10)
+     */
+    calculateRiskScore(issues, securityIssues, performanceIssues) {
         let score = 0;
         
         for (const issue of issues) {
@@ -633,7 +734,12 @@ Provide detailed analysis:`;
         return Math.min(10, Math.round(score));
     }
 
-    private calculateConfidence(analysis: CodeAnalysis): number {
+    /**
+     * Calculate confidence score for the analysis
+     * @param {Object} analysis - The analysis result
+     * @returns {number} Confidence score (0-1)
+     */
+    calculateConfidence(analysis) {
         let confidence = 0.8; // Base confidence
         
         // Increase confidence with more issues found
@@ -648,8 +754,13 @@ Provide detailed analysis:`;
         return Math.max(0.3, Math.min(0.95, confidence));
     }
 
-    private getCWE(type: string): string {
-        const cweMap: { [key: string]: string } = {
+    /**
+     * Get CWE identifier for security issue type
+     * @param {string} type - Security issue type
+     * @returns {string} CWE identifier
+     */
+    getCWE(type) {
+        const cweMap = {
             'sql-injection': 'CWE-89',
             'xss': 'CWE-79',
             'weak-crypto': 'CWE-327',
@@ -659,8 +770,13 @@ Provide detailed analysis:`;
         return cweMap[type] || 'CWE-0';
     }
 
-    private getPerformanceFix(type: string): string {
-        const fixes: { [key: string]: string } = {
+    /**
+     * Get performance fix suggestion for issue type
+     * @param {string} type - Performance issue type
+     * @returns {string} Fix suggestion
+     */
+    getPerformanceFix(type) {
+        const fixes = {
             'inefficient-loop': 'Use for...of or forEach for arrays',
             'dom-query': 'Cache DOM queries in variables',
             'deep-clone': 'Use structuredClone() or a proper deep clone library'
@@ -669,7 +785,12 @@ Provide detailed analysis:`;
         return fixes[type] || 'Review and optimize';
     }
 
-    protected async calculateSuitability(task: Task): Promise<number> {
+    /**
+     * Calculate suitability for a given task
+     * @param {Object} task - The task to evaluate
+     * @returns {Promise<number>} Suitability score
+     */
+    async calculateSuitability(task) {
         let suitability = await super.calculateSuitability(task);
         
         // DebugQueen is highly suitable for debugging and bug detection
@@ -686,61 +807,57 @@ Provide detailed analysis:`;
     }
 }
 
-// Type definitions
-interface ErrorPattern {
-    pattern: RegExp;
-    check: (code: string) => boolean;
-    fix: (code: string) => string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    description: string;
-}
-
-interface SecurityCheck {
-    patterns: RegExp[];
-    message: string;
-    fix: string;
-}
-
-interface Issue {
-    type: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    description: string;
-    line: number;
-    fix: string;
-    confidence: number;
-}
-
-interface SecurityIssue {
-    type: string;
-    severity: 'critical' | 'high' | 'medium' | 'low';
-    description: string;
-    fix: string;
-    line: number;
-    cwe: string;
-}
-
-interface PerformanceIssue {
-    type: string;
-    impact: 'low' | 'medium' | 'high';
-    description: string;
-    line: number;
-    suggestion: string;
-}
-
-interface CodeAnalysis {
-    code: string;
-    language: string;
-    issues: Issue[];
-    securityIssues: SecurityIssue[];
-    performanceIssues: PerformanceIssue[];
-    maxSeverity: 'low' | 'medium' | 'high' | 'critical';
-    fixComplexity: 'low' | 'medium' | 'high';
-    riskScore: number;
-}
-
-interface Recommendations {
-    primary: string;
-    confidence: number;
-    reasoning: string;
-    alternatives: string[];
-}
+/**
+ * @fileoverview DebugQueen - Specialized in bug detection, security analysis, and code quality
+ * 
+ * @typedef {Object} ErrorPattern
+ * @property {RegExp} pattern - Pattern to match in code
+ * @property {Function} check - Function to check if pattern applies
+ * @property {Function} fix - Function to fix the issue
+ * @property {string} severity - Issue severity - 'low', 'medium', 'high', or 'critical'
+ * @property {string} description - Description of the issue
+ * 
+ * @typedef {Object} SecurityCheck
+ * @property {Array<RegExp>} patterns - Array of patterns to check
+ * @property {string} message - Security warning message
+ * @property {string} fix - How to fix the security issue
+ * 
+ * @typedef {Object} Issue
+ * @property {string} type - Type of issue
+ * @property {string} severity - Issue severity - 'low', 'medium', 'high', or 'critical'
+ * @property {string} description - Issue description
+ * @property {number} line - Line number where issue occurs
+ * @property {string} fix - How to fix the issue
+ * @property {number} confidence - Confidence in the detection (0-1)
+ * 
+ * @typedef {Object} SecurityIssue
+ * @property {string} type - Type of security issue
+ * @property {string} severity - Security issue severity - 'critical', 'high', 'medium', or 'low'
+ * @property {string} description - Security issue description
+ * @property {string} fix - How to fix the security issue
+ * @property {number} line - Line number where issue occurs
+ * @property {string} cwe - Common Weakness Enumeration identifier
+ * 
+ * @typedef {Object} PerformanceIssue
+ * @property {string} type - Type of performance issue
+ * @property {string} impact - Performance impact level - 'low', 'medium', or 'high'
+ * @property {string} description - Performance issue description
+ * @property {number} line - Line number where issue occurs
+ * @property {string} suggestion - Performance improvement suggestion
+ * 
+ * @typedef {Object} CodeAnalysis
+ * @property {string} code - The analyzed code
+ * @property {string} language - Detected programming language
+ * @property {Array<Issue>} issues - General code issues
+ * @property {Array<SecurityIssue>} securityIssues - Security vulnerabilities
+ * @property {Array<PerformanceIssue>} performanceIssues - Performance concerns
+ * @property {string} maxSeverity - Highest severity found - 'low', 'medium', 'high', or 'critical'
+ * @property {string} fixComplexity - Complexity of fixing issues - 'low', 'medium', or 'high'
+ * @property {number} riskScore - Overall risk score (0-10)
+ * 
+ * @typedef {Object} Recommendations
+ * @property {string} primary - Primary recommendation
+ * @property {number} confidence - Confidence in recommendations (0-1)
+ * @property {string} reasoning - Reasoning behind recommendations
+ * @property {Array<string>} alternatives - Alternative recommendations
+ */

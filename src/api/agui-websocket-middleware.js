@@ -8,7 +8,8 @@
  */
 
 import { AGUIAdapter } from '../ai/agui-adapter.js';
-import { EventType } from '@ag-ui/core';
+import pkg from '@ag-ui/core';
+const { EventType } = pkg;
 
 /**
  * AG-UI WebSocket Middleware

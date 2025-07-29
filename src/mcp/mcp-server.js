@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { StdioOptimizer } from './core/stdio-optimizer.js';
 import { MCPErrorHandler } from './core/error-handler.js';
 import { PerformanceMetrics } from './core/performance-metrics.js';
+import { NeuralEngine } from '../neural/neural-engine.js';
 
 // Try to import dependencies, fall back to mocks if not available
 let SqliteMemoryStore, RuvSwarm, initializeAllTools, MCPMessageHandler, MCPToolExecutor;
@@ -111,6 +112,10 @@ export class ClaudeFlowMCPServer {
       logInterval: options.metricsLogInterval || 30000
     });
     
+    // Initialize neural engine automatically
+    this.neuralEngine = new NeuralEngine();
+    this.initializeNeuralEngine();
+    
     // Server capabilities
     this.capabilities = {
       tools: { listChanged: true },
@@ -140,6 +145,19 @@ export class ClaudeFlowMCPServer {
     await this.memoryStore.initialize();
     console.error(`[${new Date().toISOString()}] INFO [MCP-Server] (${this.sessionId}) Memory store initialized`);
     console.error(`[${new Date().toISOString()}] INFO [MCP-Server] (${this.sessionId}) Using SQLite storage`);
+  }
+
+  /**
+   * Initialize neural engine automatically
+   * @returns {Promise<void>}
+   */
+  async initializeNeuralEngine() {
+    try {
+      await this.neuralEngine.initialize();
+      console.error(`[${new Date().toISOString()}] INFO [MCP-Server] (${this.sessionId}) Neural engine initialized with ${this.neuralEngine.models.size} models`);
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] WARN [MCP-Server] (${this.sessionId}) Neural engine unavailable: ${error.message}`);
+    }
   }
 
   /**

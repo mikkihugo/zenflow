@@ -20,6 +20,9 @@ import { ClaudeFlowMCPServer } from '../../mcp/mcp-server.js';
 
 export class UnifiedInterfacePlugin {
   constructor(config = {}) {
+    // Environment variable takes precedence over config
+    const webPortFromEnv = process.env.PORT ? parseInt(process.env.PORT) : null;
+    
     this.config = {
       defaultMode: 'auto',
       webPort: 3000,
@@ -32,7 +35,9 @@ export class UnifiedInterfacePlugin {
       pidFile: path.join(process.cwd(), '.hive-mind', 'claude-zen.pid'),
       logFile: path.join(process.cwd(), '.hive-mind', 'claude-zen.log'),
       enableMCP: true,
-      ...config
+      ...config,
+      // PORT env var always takes precedence
+      webPort: webPortFromEnv || config.webPort || 3000
     };
     
     this.currentMode = null;

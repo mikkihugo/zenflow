@@ -2,69 +2,69 @@ import { EventEmitter } from 'events';
 import { performance } from 'perf_hooks';
 import { Logger } from '../utils/logger.js';
 
-export interface Task {
-    id: string;
-    type: 'code-generation' | 'bug-detection' | 'refactoring' | 'test-generation' | 'documentation' | 'architecture-review';
-    prompt: string;
-    context?: {
-        code?: string;
-        language?: string;
-        framework?: string;
-        testType?: string;
-        fileType?: string;
-    };
-    priority: 'low' | 'medium' | 'high' | 'critical';
-    deadline?: Date;
-    metadata?: any;
-}
+/**
+ * @typedef {Object} Task
+ * @property {string} id - Task ID
+ * @property {'code-generation' | 'bug-detection' | 'refactoring' | 'test-generation' | 'documentation' | 'architecture-review'} type - Task type
+ * @property {string} prompt - Task prompt
+ * @property {{code?: string, language?: string, framework?: string, testType?: string, fileType?: string}} [context] - Task context
+ * @property {'low' | 'medium' | 'high' | 'critical'} priority - Task priority
+ * @property {Date} [deadline] - Task deadline
+ * @property {any} [metadata] - Additional metadata
+ */
 
-export interface Result {
-    taskId: string;
-    queenName: string;
-    recommendation: string;
-    confidence: number;
-    reasoning: string;
-    processingTime: number;
-    alternatives?: string[];
-    metadata?: any;
-}
+/**
+ * @typedef {Object} Result
+ * @property {string} taskId - Task ID
+ * @property {string} queenName - Queen name
+ * @property {string} recommendation - Recommended solution
+ * @property {number} confidence - Confidence score (0-1)
+ * @property {string} reasoning - Reasoning for solution
+ * @property {number} processingTime - Processing time in ms
+ * @property {string[]} [alternatives] - Alternative solutions
+ * @property {any} [metadata] - Additional metadata
+ */
 
-export interface Consensus {
-    taskId: string;
-    decision: string;
-    confidence: number;
-    participants: number;
-    method: 'majority' | 'weighted' | 'expert' | 'unanimous';
-    dissenting?: Result[];
-    processingTime: number;
-    reasoning: string;
-}
+/**
+ * @typedef {Object} Consensus
+ * @property {string} taskId - Task ID
+ * @property {string} decision - Consensus decision
+ * @property {number} confidence - Confidence score (0-1)
+ * @property {number} participants - Number of participants
+ * @property {'majority' | 'weighted' | 'expert' | 'unanimous'} method - Consensus method
+ * @property {Result[]} [dissenting] - Dissenting opinions
+ * @property {number} processingTime - Processing time in ms
+ * @property {string} reasoning - Reasoning for consensus
+ */
 
-export interface QueenMetrics {
-    tasksProcessed: number;
-    averageConfidence: number;
-    averageProcessingTime: number;
-    successRate: number;
-    specialtyMatch: number;
-    collaborations: number;
-    consensusReached: number;
-}
+/**
+ * @typedef {Object} QueenMetrics
+ * @property {number} tasksProcessed - Number of tasks processed
+ * @property {number} averageConfidence - Average confidence score
+ * @property {number} averageProcessingTime - Average processing time
+ * @property {number} successRate - Success rate
+ * @property {number} specialtyMatch - Specialty match rate
+ * @property {number} collaborations - Number of collaborations
+ * @property {number} consensusReached - Number of consensus reached
+ */
 
-export abstract class BaseQueen extends EventEmitter {
-    protected name: string;
-    protected specialty: string;
-    protected confidence = 0.8;
-    protected workload = 0;
-    protected maxConcurrentTasks = 5;
-    protected logger: Logger;
-    protected metrics: QueenMetrics;
-    protected isActive = true;
-    private activeTasks = new Set<string>();
+// Export the JSDoc types as empty exports so they can be imported
+export const Task = /** @type {Task} */ ({});
+export const Result = /** @type {Result} */ ({});
+export const Consensus = /** @type {Consensus} */ ({});
+export const QueenMetrics = /** @type {QueenMetrics} */ ({});
 
-    constructor(name: string, specialty: string) {
+export class BaseQueen extends EventEmitter {
+    constructor(name, specialty) {
+
         super();
         this.name = name;
         this.specialty = specialty;
+        this.confidence = 0.8;
+        this.workload = 0;
+        this.maxConcurrentTasks = 5;
+        this.isActive = true;
+        this.activeTasks = new Set();
         this.logger = new Logger(`Queen:${name}`);
         this.metrics = {
             tasksProcessed: 0,
@@ -77,9 +77,11 @@ export abstract class BaseQueen extends EventEmitter {
         };
     }
 
-    abstract async process(task: Task): Promise<Result>;
+    async process(task) {
+        throw new Error('process method must be implemented by subclass');
+    }
 
-    async collaborate(task: Task, otherQueens: BaseQueen[]): Promise<Consensus> {
+    async collaborate(task, otherQueens) {
         const startTime = performance.now();
         
         try {
@@ -92,9 +94,9 @@ export abstract class BaseQueen extends EventEmitter {
             ]);
 
             // Filter successful results
-            const successfulResults: Result[] = results
+            const successfulResults = results
                 .filter(result => result.status === 'fulfilled')
-                .map(result => (result as PromiseFulfilledResult<Result>).value)
+                .map(result => result.value)
                 .filter(result => result.confidence > 0.1); // Filter out low-confidence results
 
             if (successfulResults.length === 0) {
@@ -121,7 +123,7 @@ export abstract class BaseQueen extends EventEmitter {
         }
     }
 
-    private determineConsensusMethod(task: Task, results: Result[]): 'majority' | 'weighted' | 'expert' | 'unanimous' {
+    determineConsensusMethod(task, results) {
         // Critical tasks require unanimous consensus
         if (task.priority === 'critical') {
             return 'unanimous';
@@ -147,7 +149,7 @@ export abstract class BaseQueen extends EventEmitter {
         return 'majority';
     }
 
-    private async reachConsensus(task: Task, results: Result[], method: string): Promise<Consensus> {
+    async reachConsensus(task, results, method) {
         switch (method) {
             case 'unanimous':
                 return this.unanimousConsensus(task, results);
@@ -161,7 +163,7 @@ export abstract class BaseQueen extends EventEmitter {
         }
     }
 
-    private unanimousConsensus(task: Task, results: Result[]): Consensus {
+    unanimousConsensus(task, results) {
         // Check if all results are substantially similar
         const recommendations = results.map(r => r.recommendation);
         const firstRec = recommendations[0];
@@ -192,7 +194,7 @@ export abstract class BaseQueen extends EventEmitter {
         }
     }
 
-    private expertConsensus(task: Task, results: Result[]): Consensus {
+    expertConsensus(task, results) {
         // Find the expert for this task type
         const expert = results.reduce((best, current) => {
             const isExpert = current.queenName.toLowerCase().includes(task.type.split('-')[0]);
@@ -213,7 +215,7 @@ export abstract class BaseQueen extends EventEmitter {
         };
     }
 
-    private weightedConsensus(task: Task, results: Result[]): Consensus {
+    weightedConsensus(task, results) {
         // Weight results by confidence and specialty match
         const weightedResults = results.map(result => ({
             ...result,
@@ -252,7 +254,7 @@ export abstract class BaseQueen extends EventEmitter {
         };
     }
 
-    private majorityConsensus(task: Task, results: Result[]): Consensus {
+    majorityConsensus(task, results) {
         // Group similar recommendations
         const groups = this.groupSimilarRecommendations(results);
         
@@ -284,7 +286,7 @@ export abstract class BaseQueen extends EventEmitter {
         };
     }
 
-    private calculateWeight(result: Result, task: Task): number {
+    calculateWeight(result, task) {
         let weight = result.confidence;
         
         // Boost weight if queen specialty matches task type
@@ -300,7 +302,7 @@ export abstract class BaseQueen extends EventEmitter {
         return Math.min(weight, 2.0); // Cap at 2.0
     }
 
-    private calculateSimilarity(text1: string, text2: string): number {
+    calculateSimilarity(text1, text2) {
         // Simple similarity calculation - could be enhanced with ML
         const words1 = new Set(text1.toLowerCase().split(/\W+/));
         const words2 = new Set(text2.toLowerCase().split(/\W+/));
@@ -311,8 +313,8 @@ export abstract class BaseQueen extends EventEmitter {
         return intersection.size / union.size;
     }
 
-    private groupSimilarRecommendations(results: Result[]): Result[][] {
-        const groups: Result[][] = [];
+    groupSimilarRecommendations(results) {
+        const groups = [];
         const threshold = 0.6;
         
         for (const result of results) {
@@ -335,7 +337,7 @@ export abstract class BaseQueen extends EventEmitter {
         return groups;
     }
 
-    private combineRecommendations(recommendations: string[]): string {
+    combineRecommendations(recommendations) {
         // Simple combination - take the longest/most detailed recommendation
         // In production, this could use ML to intelligently merge recommendations
         return recommendations.reduce((longest, current) => 
@@ -343,7 +345,7 @@ export abstract class BaseQueen extends EventEmitter {
         );
     }
 
-    private updateCollaborationMetrics(results: Result[], consensus: Consensus): void {
+    updateCollaborationMetrics(results, consensus) {
         // Update metrics for this queen if it participated
         const myResult = results.find(r => r.queenName === this.name);
         if (myResult) {
@@ -356,7 +358,7 @@ export abstract class BaseQueen extends EventEmitter {
         }
     }
 
-    async canAcceptTask(task: Task): Promise<boolean> {
+    async canAcceptTask(task) {
         if (!this.isActive) {
             return false;
         }
@@ -370,7 +372,7 @@ export abstract class BaseQueen extends EventEmitter {
         return suitability > 0.3; // Minimum suitability threshold
     }
 
-    protected async calculateSuitability(task: Task): Promise<number> {
+    async calculateSuitability(task) {
         // Base suitability on specialty match
         let suitability = 0.5; // Base suitability
         
@@ -390,12 +392,12 @@ export abstract class BaseQueen extends EventEmitter {
         return Math.min(suitability, 1.0);
     }
 
-    protected trackTaskStart(taskId: string): void {
+    trackTaskStart(taskId) {
         this.activeTasks.add(taskId);
         this.workload = Math.min(this.activeTasks.size / this.maxConcurrentTasks, 1.0);
     }
 
-    protected trackTaskComplete(taskId: string, result: Result): void {
+    trackTaskComplete(taskId, result) {
         this.activeTasks.delete(taskId);
         this.workload = Math.min(this.activeTasks.size / this.maxConcurrentTasks, 1.0);
         
@@ -411,27 +413,27 @@ export abstract class BaseQueen extends EventEmitter {
         this.emit('taskComplete', { taskId, result });
     }
 
-    getName(): string {
+    getName() {
         return this.name;
     }
 
-    getSpecialty(): string {
+    getSpecialty() {
         return this.specialty;
     }
 
-    getWorkload(): number {
+    getWorkload() {
         return this.workload;
     }
 
-    getMetrics(): QueenMetrics {
+    getMetrics() {
         return { ...this.metrics };
     }
 
-    isHealthy(): boolean {
+    isHealthy() {
         return this.isActive && this.workload < 0.95;
     }
 
-    async shutdown(): Promise<void> {
+    async shutdown() {
         this.logger.info(`Shutting down ${this.name}...`);
         this.isActive = false;
         

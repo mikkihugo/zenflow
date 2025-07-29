@@ -20,6 +20,7 @@ import {
   generateOpenAPISpec 
 } from './claude-zen-schema.js';
 import { integrateAGUIWithWebSocket } from './agui-websocket-middleware.js';
+import { NeuralEngine } from '../neural/neural-engine.js';
 
 /**
  * Schema-driven API server with auto-generated endpoints
@@ -81,6 +82,10 @@ export class ClaudeZenServer extends EventEmitter {
       errors: 0,
       uptime: Date.now()
     };
+    
+    // Initialize neural engine automatically
+    this.neuralEngine = new NeuralEngine();
+    this.initializeNeuralEngine();
     
     this.setupMiddleware();
     this.setupSchemaRoutes();
@@ -572,6 +577,18 @@ export class ClaudeZenServer extends EventEmitter {
   }
 
   /**
+   * Initialize neural engine automatically
+   */
+  async initializeNeuralEngine() {
+    try {
+      await this.neuralEngine.initialize();
+      console.log(`🧠 API Server: Neural engine initialized with ${this.neuralEngine.models.size} models`);
+    } catch (error) {
+      console.warn(`⚠️ API Server: Neural engine unavailable: ${error.message}`);
+    }
+  }
+
+  /**
    * Get server status
    */
   getStatus() {
@@ -582,7 +599,12 @@ export class ClaudeZenServer extends EventEmitter {
       requests: this.metrics.requests,
       errors: this.metrics.errors,
       generated_routes: this.generatedRoutes.length,
-      schema_version: this.schema.__meta?.apiVersion
+      schema_version: this.schema.__meta?.apiVersion,
+      neural_engine: this.neuralEngine ? {
+        initialized: this.neuralEngine.isInitialized,
+        models: this.neuralEngine.models.size,
+        cache_size: this.neuralEngine.cache.size
+      } : null
     };
   }
 }

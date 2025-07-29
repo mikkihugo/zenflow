@@ -8,7 +8,8 @@
  */
 
 import { EventEmitter } from 'events';
-import { 
+import pkg from '@ag-ui/core';
+const { 
   EventType,
   TextMessageStartEvent,
   TextMessageContentEvent,
@@ -21,7 +22,7 @@ import {
   RunStartedEvent,
   RunFinishedEvent,
   CustomEvent
-} from '@ag-ui/core';
+} = pkg;
 
 /**
  * AG-UI Protocol Adapter for Claude Code Zen
