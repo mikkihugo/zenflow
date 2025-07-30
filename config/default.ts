@@ -72,7 +72,6 @@ const _config: Config = {
     environment: process.env.NODE_ENV ?? 'development',
     debug: process.env.DEBUG === 'true',
   },
-  },
   server: {
     port: parseInt(process.env.PORT ?? '3000', 10),
     host: process.env.HOST ?? 'localhost',
@@ -132,11 +131,11 @@ const _config: Config = {
     format: 'json',
     file: process.env.LOG_FILE ?? './logs/claude-zen.log',
   },
-{
-  jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',;
-  tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',;
-  rateLimiting: process.env.RATE_LIMITING !== 'false',;
-}
-,
-}
+  },
+  security: {
+    jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',
+    tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',
+    rateLimiting: process.env.RATE_LIMITING !== 'false',
+  },
+};
 export default config;
