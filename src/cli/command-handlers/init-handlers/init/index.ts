@@ -1,5 +1,4 @@
 /**
- * Index Module
- * Converted from JavaScript to TypeScript
+ * Index Module;
+ * Converted from JavaScript to TypeScript;
  */
-

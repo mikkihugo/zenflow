@@ -1,6 +1,6 @@
 /**
- * Server Configuration and Management Types
- * Types for unified server architecture with multiple protocol support
+ * Server Configuration and Management Types;
+ * Types for unified server architecture with multiple protocol support;
  */
 
 import type { Request } from 'express';
@@ -31,13 +31,10 @@ export interface UnifiedServer extends LifecycleManager {
 
 export type RouteHandler = (
   req,res = > void | Promise<void>
-
 export type MiddlewareFunction = (
   req,res = > void | Promise<void>
-
 export type MCPToolHandler = (
   args,context = > Promise<MCPToolResult>
-
 export interface TypedRequest extends Request {
   // Enhanced request with type safety
   user?: UserContext;
@@ -46,11 +43,10 @@ export interface TypedRequest extends Request {
   typedQuery<T = any>(): T;
   typedBody<T = any>(): T;
 }
-
 export interface TypedResponse extends Response {
   // Enhanced response with type safety
   success<_T = any>(data, message?: string): void;
-  error(message = any>(data: T[],pagination = ============================================================================
+  error(message = any>(data: T[],pagination = ============================================================================;
 // SERVER STATUS AND METRICS
 // =============================================================================
 
@@ -68,7 +64,7 @@ export interface ValidationResult {valid = =====================================
 // =============================================================================
 
 export interface ServerFactory {
-  createUnifiedServer(config = ============================================================================
+  createUnifiedServer(config = ============================================================================;
 // EVENT TYPES
 // =============================================================================
 
@@ -79,31 +75,40 @@ export interface ServerEvents {
   'server-stopping': () => void;
   'server-stopped': () => void;
   'server-error': (error = > void;
-  
-  // Request events
-  'request-received': (req = > void;
-  'request-completed': (req = > void;
-  'request-error': (req = > void;
-  
-  // WebSocket events
-  'websocket-connected': (client = > void;
-  'websocket-disconnected': (client = > void;
-  'websocket-message': (client = > void;
-  'websocket-error': (client = > void;
-  
-  // MCP events
-  'mcp-tool-called': (toolName = > void;
-  'mcp-tool-error': (toolName = > void;
-  
-  // Health events
-  'health-check': (check = > void;
-  'health-changed': (health = > void;
-  
-  // Configuration events
-  'config-updated': (config = > void;
-  'config-error': (error = > void;
-  
-  // Metrics events
-  'metrics-collected': (metrics = > void;
-  'performance-warning': (metric = > void;
+// Request events
+('request-received');
+: (req = > void
+('request-completed')
+: (req = > void
+('request-error')
+: (req = > void
+// WebSocket events
+('websocket-connected')
+: (client = > void
+('websocket-disconnected')
+: (client = > void
+('websocket-message')
+: (client = > void
+('websocket-error')
+: (client = > void
+// MCP events
+('mcp-tool-called')
+: (toolName = > void
+('mcp-tool-error')
+: (toolName = > void
+// Health events
+('health-check')
+: (check = > void
+('health-changed')
+: (health = > void
+// Configuration events
+('config-updated')
+: (config = > void
+('config-error')
+: (error = > void
+// Metrics events
+('metrics-collected')
+: (metrics = > void
+('performance-warning')
+: (metric = > void
 }

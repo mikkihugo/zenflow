@@ -2,10 +2,10 @@
 //TODO = 'swarm:created',
 SWARM_STARTED = 'swarm = ';
 swarm: completed;
-',
-    SWARM_FAILED = 'swarm = 'agent:registered',
-    TASK_SCHEDULED = 'task = 'task:completed',
-    TASK_FAILED = 'task = 'health:warning',
+',;
+    SWARM_FAILED = 'swarm = 'agent:registered',;
+    TASK_SCHEDULED = 'task = 'task:completed',;
+    TASK_FAILED = 'task = 'health:warning',;
     ORCHESTRATOR_INITIALIZED = 'orchestrator = 'orchestrator =
 {
 }

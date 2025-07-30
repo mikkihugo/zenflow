@@ -1,15 +1,15 @@
 /**
- * Hive Mind Types
- * Multi-Queen coordination and persistent intelligence system
+ * Hive Mind Types;
+ * Multi-Queen coordination and persistent intelligence system;
  */
-
 import type {
-  Identifiable,
-  JSONObject,
-  LifecycleManager,
-  ResourceUsage,
-  TypedEventEmitter,
-} from './core';
+  Identifiable,;
+JSONObject,;
+LifecycleManager,;
+ResourceUsage,;
+TypedEventEmitter,;
+} from './core'
+
 import type { QueenMetrics } from './queen';
 
 // =============================================================================
@@ -49,38 +49,52 @@ export interface HiveEvents {
   'started': () => void;
   'stopped': () => void;
   'error': (error = > void;
-  
-  // Queen events
-  'queen-joined': (queen = > void;
-  'queen-left': (queenId = > void;
-  'queen-failed': (queenId = > void;
-  'queen-recovered': (queenId = > void;
-  
-  // Task events
-  'task-submitted': (task = > void;
-  'task-assigned': (taskId = > void;
-  'task-completed': (taskId = > void;
-  'task-failed': (taskId = > void;
-  'consensus-reached': (consensus = > void;
-  
-  // Coordination events
-  'coordination-started': (context = > void;
-  'coordination-completed': (context = > void;
-  'decision-made': (decision = > void;
-  
-  // Learning events
-  'knowledge-updated': (nodeId = > void;
-  'pattern-discovered': (pattern = > void;
-  'adaptation-triggered': (strategy = > void;
-  'improvement-detected': (metric = > void;
-  
-  // System events
-  'health-changed': (oldHealth = > void;
-  'performance-alert': (metric = > void;
-  'resource-warning': (resource = > void;
-  'optimization-completed': (improvements = > void;
+// Queen events
+('queen-joined');
+: (queen = > void
+('queen-left')
+: (queenId = > void
+('queen-failed')
+: (queenId = > void
+('queen-recovered')
+: (queenId = > void
+// Task events
+('task-submitted')
+: (task = > void
+('task-assigned')
+: (taskId = > void
+('task-completed')
+: (taskId = > void
+('task-failed')
+: (taskId = > void
+('consensus-reached')
+: (consensus = > void
+// Coordination events
+('coordination-started')
+: (context = > void
+('coordination-completed')
+: (context = > void
+('decision-made')
+: (decision = > void
+// Learning events
+('knowledge-updated')
+: (nodeId = > void
+('pattern-discovered')
+: (pattern = > void
+('adaptation-triggered')
+: (strategy = > void
+('improvement-detected')
+: (metric = > void
+// System events
+('health-changed')
+: (oldHealth = > void
+('performance-alert')
+: (metric = > void
+('resource-warning')
+: (resource = > void
+('optimization-completed')
+: (improvements = > void
 }
-
 // =============================================================================
 // HIVE MIND INTERFACE
 // =============================================================================
@@ -102,36 +116,30 @@ export interface HiveMetrics {
   queenMetrics: Record<UUID, QueenMetrics>;
   queenCollaboration: Record<string, number>;
   queenSpecialization: Record<string, number>;
-  
-  // Task metrics
-  taskDistribution: Record<string, number>;
-  taskComplexity: Record<string, number>;
-  taskSuccess: Record<string, number>;
-  
-  // Resource utilization
-  resourceUsage: ResourceUsage;
-  resourceEfficiency: number;
-  resourceBottlenecks: string[];
-  
-  // Learning metrics
-  knowledgeGrowth: number;
-  learningVelocity: number;
-  adaptationFrequency: number;
-  improvementRate: number;
-  
-  // System health
-  healthScore: number;
-  availabilityRate: number;
-  errorRate: number;
-  recoveryTime: number;
-  
-  // Coordination metrics
-  consensusRate: number;
-  decisionQuality: number;
-  collaborationEffectiveness: number;
-  coordinationOverhead: number;
+// Task metrics
+taskDistribution: Record<string, number>;
+taskComplexity: Record<string, number>;
+taskSuccess: Record<string, number>;
+// Resource utilization
+resourceUsage: ResourceUsage;
+resourceEfficiency: number;
+resourceBottlenecks: string[];
+// Learning metrics
+knowledgeGrowth: number;
+learningVelocity: number;
+adaptationFrequency: number;
+improvementRate: number;
+// System health
+healthScore: number;
+availabilityRate: number;
+errorRate: number;
+recoveryTime: number;
+// Coordination metrics
+consensusRate: number;
+decisionQuality: number;
+collaborationEffectiveness: number;
+coordinationOverhead: number;
 }
-
 export interface HiveHealthReport {
   overall: 'healthy' | 'degraded' | 'critical';
   components: {
@@ -146,7 +154,6 @@ export interface HiveHealthReport {
   trends: HealthTrends;
   predictions: HealthPredictions;
 }
-
 export interface ComponentHealth {
   status: 'healthy' | 'degraded' | 'critical';
   score: number; // 0-1
@@ -154,7 +161,6 @@ export interface ComponentHealth {
   issues: string[];
   lastCheck: Date;
 }
-
 export interface HealthIssue {
   severity: 'low' | 'medium' | 'high' | 'critical';
   component: string;
@@ -164,7 +170,6 @@ export interface HealthIssue {
   autoFixable: boolean;
   estimatedFixTime: number;
 }
-
 export interface HealthTrends {
   performance: number[]; // time series
   reliability: number[]; // time series
@@ -172,7 +177,6 @@ export interface HealthTrends {
   resourceUsage: number[]; // time series
   timestamps: Date[];
 }
-
 export interface HealthPredictions {
   nextIssues: {
     issue: string;
@@ -194,7 +198,6 @@ export interface HealthPredictions {
     effort: string;
   }[];
 }
-
 export interface PerformanceAnalysis {
   bottlenecks: {
     component: string;
@@ -222,7 +225,6 @@ export interface PerformanceAnalysis {
     projection: number;
   }[];
 }
-
 export interface PredictiveInsights {
   workloadForecasts: {
     timeframe: string;

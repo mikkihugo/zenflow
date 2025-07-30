@@ -1,6 +1,6 @@
 /**
- * Neural Network Types
- * Rust-based neural processing with FANN integration and GPU acceleration
+ * Neural Network Types;
+ * Rust-based neural processing with FANN integration and GPU acceleration;
  */
 
 import type { JSONObject, UUID } from './core.js';
@@ -9,62 +9,52 @@ import type { JSONObject, UUID } from './core.js';
 // NEURAL CORE TYPES
 // =============================================================================
 
-export type NeuralArchitecture =
-  | 'feedforward'
-  | 'recurrent'
-  | 'lstm'
-  | 'gru'
-  | 'transformer'
-  | 'conv'
-  | 'autoencoder'
-  | 'gan'
-  | 'vae'
-  | 'reinforcement'
-  | 'hybrid';
-
-export type ActivationFunction =
-  | 'sigmoid'
-  | 'tanh'
-  | 'relu'
-  | 'leaky_relu'
-  | 'elu'
-  | 'swish'
-  | 'mish'
-  | 'linear'
-  | 'softmax'
-  | 'gelu';
-
-export type LossFunction =
-  | 'mse'
-  | 'mae'
-  | 'cross_entropy'
-  | 'binary_cross_entropy'
-  | 'huber'
-  | 'focal'
-  | 'dice'
-  | 'iou'
-  | 'custom';
-
-export type Optimizer =
-  | 'sgd'
-  | 'adam'
-  | 'adamw'
-  | 'rmsprop'
-  | 'adagrad'
-  | 'adadelta'
-  | 'momentum'
-  | 'nesterov'
-  | 'lbfgs';
-
-export type NeuralStatus =
-  | 'untrained'
-  | 'training'
-  | 'trained'
-  | 'validating'
-  | 'deployed'
-  | 'error'
-  | 'deprecated';
-
+export type NeuralArchitecture = 'feedforward';
+| 'recurrent'
+| 'lstm'
+| 'gru'
+| 'transformer'
+| 'conv'
+| 'autoencoder'
+| 'gan'
+| 'vae'
+| 'reinforcement'
+| 'hybrid'
+export type ActivationFunction = 'sigmoid';
+| 'tanh'
+| 'relu'
+| 'leaky_relu'
+| 'elu'
+| 'swish'
+| 'mish'
+| 'linear'
+| 'softmax'
+| 'gelu'
+export type LossFunction = 'mse';
+| 'mae'
+| 'cross_entropy'
+| 'binary_cross_entropy'
+| 'huber'
+| 'focal'
+| 'dice'
+| 'iou'
+| 'custom'
+export type Optimizer = 'sgd';
+| 'adam'
+| 'adamw'
+| 'rmsprop'
+| 'adagrad'
+| 'adadelta'
+| 'momentum'
+| 'nesterov'
+| 'lbfgs'
+export type NeuralStatus = 'untrained';
+| 'training'
+| 'trained'
+| 'validating'
+| 'deployed'
+| 'error'
+| 'deprecated'
 // =============================================================================
 // NEURAL CONFIGURATION
 // =============================================================================
@@ -93,7 +83,7 @@ export interface InferenceEngine extends Identifiable {name = ==================
 
 export interface ModelRegistry {
   // Model lifecycle
-  registerModel(model = ============================================================================
+  registerModel(model = ============================================================================;
 // NEURAL EVENTS
 // =============================================================================
 
@@ -105,33 +95,45 @@ export interface NeuralEvents {
   'training-failed': (jobId = > void;
   'training-paused': (jobId = > void;
   'training-resumed': (jobId = > void;
-  
-  // Model events
-  'model-registered': (modelId = > void;
-  'model-updated': (modelId = > void;
-  'model-deployed': (modelId = > void;
-  'model-undeployed': (modelId = > void;
-  'model-optimized': (modelId = > void;
-  
-  // Inference events
-  'inference-request': (requestId = > void;
-  'inference-completed': (requestId = > void;
-  'inference-failed': (requestId = > void;
-  'inference-timeout': (requestId = > void;
-  
-  // Performance events
-  'performance-degraded': (entityId = > void;
-  'threshold-exceeded': (entityId = > void;
-  'resource-exhausted': (entityId = > void;
-  'anomaly-detected': (entityId = > void;
-  
-  // System events
-  'gpu-memory-warning': (usage = > void;
-  'model-drift-detected': (modelId = > void;
-  'batch-processing-completed': (batchId = > void;
-  'optimization-completed': (modelId = > void;
+// Model events
+('model-registered');
+: (modelId = > void
+('model-updated')
+: (modelId = > void
+('model-deployed')
+: (modelId = > void
+('model-undeployed')
+: (modelId = > void
+('model-optimized')
+: (modelId = > void
+// Inference events
+('inference-request')
+: (requestId = > void
+('inference-completed')
+: (requestId = > void
+('inference-failed')
+: (requestId = > void
+('inference-timeout')
+: (requestId = > void
+// Performance events
+('performance-degraded')
+: (entityId = > void
+('threshold-exceeded')
+: (entityId = > void
+('resource-exhausted')
+: (entityId = > void
+('anomaly-detected')
+: (entityId = > void
+// System events
+('gpu-memory-warning')
+: (usage = > void
+('model-drift-detected')
+: (modelId = > void
+('batch-processing-completed')
+: (batchId = > void
+('optimization-completed')
+: (modelId = > void
 }
-
 // =============================================================================
 // AUXILIARY TYPES
 // =============================================================================
@@ -144,7 +146,6 @@ export interface OptimizationOptions {
   preserveAccuracy: boolean;
   aggressiveness: 'conservative' | 'moderate' | 'aggressive';
 }
-
 export interface ValidationDataset {
   name: string;
   path: string;
@@ -152,7 +153,6 @@ export interface ValidationDataset {
   format: 'numpy' | 'csv' | 'json' | 'tfrecord' | 'parquet';
   preprocessing: JSONObject;
 }
-
 export interface ValidationResults {
   accuracy: number;
   precision: number;
@@ -162,21 +162,18 @@ export interface ValidationResults {
   confusionMatrix: number[][];
   classificationReport: JSONObject;
   customMetrics: Record<string, number>;
-
-  // Performance analysis
-  latency: {
-    mean: number;
-    median: number;
-    p95: number;
-    p99: number;
-  };
-
-  // Robustness
-  adversarialAccuracy?: number;
-  calibrationError?: number;
-  uncertainty?: JSONObject;
+// Performance analysis
+{
+  mean: number;
+  median: number;
+  p95: number;
+  p99: number;
 }
-
+// Robustness
+adversarialAccuracy?: number;
+calibrationError?: number;
+uncertainty?: JSONObject;
+}
 export interface Benchmark {
   name: string;
   type: 'speed' | 'accuracy' | 'memory' | 'energy' | 'comprehensive';
@@ -184,7 +181,6 @@ export interface Benchmark {
   metrics: string[];
   constraints: JSONObject;
 }
-
 export interface BenchmarkResults {
   benchmark: string;
   modelId: UUID;
@@ -193,7 +189,6 @@ export interface BenchmarkResults {
   comparison: JSONObject;
   timestamp: Date;
 }
-
 export interface ModelComparison {
   models: UUID[];
   metrics: Record<string, Record<UUID, number>>;
@@ -201,40 +196,32 @@ export interface ModelComparison {
   recommendations: string[];
   tradeoffs: JSONObject;
 }
-
 export interface TimeRange {
   start: Date;
   end: Date;
 }
-
 export interface ModelMetrics {
   modelId: UUID;
   timeRange: TimeRange;
-
   // Prediction quality
   accuracy: number[];
   precision: number[];
   recall: number[];
   f1Score: number[];
-
   // Performance
   latency: number[];
   throughput: number[];
   errorRate: number[];
-
   // Resource usage
   memoryUsage: number[];
   cpuUsage: number[];
   gpuUsage: number[];
-
   // Business metrics
   requestCount: number[];
   cost: number[];
   revenue: number[];
-
   timestamps: Date[];
 }
-
 export interface ModelHealth {
   status: 'healthy' | 'warning' | 'critical' | 'failed';
   score: number; // 0-1
@@ -246,37 +233,34 @@ export interface ModelHealth {
     threshold: number;
     message: string;
   }[];
-
-  issues: {
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    category: 'performance' | 'accuracy' | 'availability' | 'resource';
-    description: string;
-    recommendation: string;
-  }[];
-
-  trends: {
-    metric: string;
-    direction: 'improving' | 'stable' | 'degrading';
-    confidence: number;
-  }[];
-
-  lastCheck: Date;
-  nextCheck: Date;
+{
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  category: 'performance' | 'accuracy' | 'availability' | 'resource';
+  description: string;
+  recommendation: string;
 }
-
+[];
+{
+  metric: string;
+  direction: 'improving' | 'stable' | 'degrading';
+  confidence: number;
+}
+[];
+lastCheck: Date;
+nextCheck: Date;
+}
 export interface ModelAlert {
   name: string;
   condition: string;
   threshold: number;
   severity: 'info' | 'warning' | 'critical';
   enabled: boolean;
-
-  actions: {
-    type: 'email' | 'webhook' | 'slack' | 'pagerduty' | 'auto-scale' | 'rollback';
-    config: JSONObject;
-  }[];
-
-  cooldown: number; // seconds
-  lastTriggered?: Date;
-  triggerCount: number;
+{
+  type: 'email' | 'webhook' | 'slack' | 'pagerduty' | 'auto-scale' | 'rollback';
+  config: JSONObject;
+}
+[];
+cooldown: number; // seconds
+lastTriggered?: Date;
+triggerCount: number;
 }

@@ -3,6 +3,6 @@
 
 export class AdvancedTaskScheduler {
   async initialize(): Promise<void> {}
-  async scheduleTask(_task: any): Promise<void> {}
+  async scheduleTask(_task: unknown): Promise<void> {}
   async shutdown(): Promise<void> {}
 }

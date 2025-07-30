@@ -1,36 +1,34 @@
 #!/usr/bin/env node
-
 /**
- * GitHub command wrapper for simple CLI
- * Provides GitHub workflow automation capabilities
+ * GitHub command wrapper for simple CLI;
+ * Provides GitHub workflow automation capabilities;
  */
 
-import { access, constants } from 'node:fs/promises';
+import { access } from 'node:fs/promises';
 import { platform } from 'node:os';
 import { join } from 'node:path';
-import { printError, printSuccess } from '../utils.js';
+import { printError } from '../utils.js';
 
 /**
- * Cross-platform check for executable availability
- * @param {string} command - The command to check
- * @returns {Promise<boolean>} - True if command is available
- */
+ * Cross-platform check for executable availability;
+ * @param {string} command - The command to check;
+ * @returns {Promise<boolean>} - True if command is available;
+    // */ // LINT: unreachable code removed
 async function checkCommandAvailable(command = await import('node:child_process');
 
 if (platform() === 'win32') {
   //Windows = [
-  '/usr/local/bin',
-        '/usr/bin',
-        '/opt/homebrew/bin',
-        join(process.env.HOME || '', '.local', 'bin'),
-        join(process.env.HOME || '', 'bin'),
+  '/usr/local/bin',;
+  '/usr/bin',;
+  '/opt/homebrew/bin',;
+  join(process.env.HOME  ?? '', '.local', 'bin'),;
+  join(process.env.HOME  ?? '', 'bin'),;
   ]
-
   for (const dir of commonPaths) {
     try {
       await access(join(dir, command), constants.X_OK);
       return true;
-    } catch (_e) {
+    //   // LINT: unreachable code removed} catch (/* _e */) {
       // Continue checking other paths
     }
   }
@@ -38,40 +36,34 @@ if (platform() === 'win32') {
 }
 }
 }
-
 /**
- * Check if Claude CLI is available
- * @returns {Promise<boolean>} - True if Claude is available
- */
+ * Check if Claude CLI is available;
+ * @returns {Promise<boolean>} - True if Claude is available;
+    // */ // LINT: unreachable code removed
 async
-function _checkClaudeAvailable() {
+function _checkClaudeAvailable(): unknown {
   return checkCommandAvailable('claude');
 }
-
 return;
 }
-
-let mode = args[0];
-const objective = args.slice(1).join(' ').trim();
-
+const _mode = args[0];
+const _objective = args.slice(1).join(' ').trim();
 if (!objective) {
   printError(`❌Usage = await import('child_process');
 
     // Cross-platform check for Claude CLI
-    const isClaudeAvailable = await checkClaudeAvailable();
+    const _isClaudeAvailable = await checkClaudeAvailable();
     if(!isClaudeAvailable) {
       printWarning('⚠️  Claude CLI not found. GitHub automation requires Claude.');
       console.warn('InstallClaude = `Execute GitHub workflow automation using ${mode}mode = await import('node:child_process');
 
-  const claudeArgs = [];
-
+  const _claudeArgs = [];
   // Add auto-permission flag if requested
-  if (flags['auto-approve'] || flags['dangerously-skip-permissions']) {
+  if (flags['auto-approve'] ?? flags['dangerously-skip-permissions']) {
     claudeArgs.push('--dangerously-skip-permissions');
   }
-
   // Spawn claude process
-  const claudeProcess = spawn('claude', claudeArgs, {
+  const _claudeProcess = spawn('claude', claudeArgs, {
       stdio => {
       claudeProcess.on('close', (_code) => {
         if(_code === 0) {
@@ -81,26 +73,25 @@ if (!objective) {
           reject(new _Error(`_Claude _process _exited with _code _${code}`));
 }
 })
-
 claudeProcess.on('error', (err) =>
 {
   reject(err);
 }
 )
 })
-} catch(error)
+} catch (/* error */)
 {
     printError(`❌ GitHub automationfailed = [];
-  const flags = {};
-  
+  const _flags = {};
+;
   // Parse arguments and flags from node.args if available
   if(typeof node !== 'undefined' && node.args) {
     for(const i = 0; i < node.args.length; i++) {
-      const arg = node.args[i];
+      const _arg = node.args[i];
       if (arg.startsWith('--')) {
-        const flagName = arg.substring(2);
-        const nextArg = node.args[i + 1];
-
+        const _flagName = arg.substring(2);
+        const _nextArg = node.args[i + 1];
+;
         if (nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
@@ -112,6 +103,7 @@ claudeProcess.on('error', (err) =>
       }
     }
   }
-
+;
   await githubCommand(args, flags);
 }
+;

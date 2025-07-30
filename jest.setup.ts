@@ -1,13 +1,12 @@
 /**
- * Jest Setup File - TypeScript ESM Compatible
- *
- * @fileoverview Test environment configuration with strict TypeScript standards
- * @author Claude Code Flow Team
- * @version 2.0.0
+ * Jest Setup File - TypeScript ESM Compatible;
+ *;
+ * @fileoverview Test environment configuration with strict TypeScript standards;
+ * @author Claude Code Flow Team;
+ * @version 2.0.0;
  */
-
 /**
- * Console interface for type safety
+ * Console interface for type safety;
  */
 interface OriginalConsole {
   log: typeof console.log;
@@ -16,32 +15,28 @@ interface OriginalConsole {
   info: typeof console.info;
   debug: typeof console.debug;
 }
-
 /**
- * Global test environment configuration
- * Sets up environment variables and error handling for tests
+ * Global test environment configuration;
+ * Sets up environment variables and error handling for tests;
  */
 function setupTestEnvironment(): void {
   // Set test environment flags
   process.env.CLAUDE_FLOW_ENV = 'test';
   process.env.NODE_ENV = 'test';
-
   // Suppress console output during tests unless explicitly needed
-  const originalConsole: OriginalConsole = {
-    log: console.log,
-    error: console.error,
-    warn: console.warn,
-    info: console.info,
-    debug: console.debug,
-  };
-
+  /* const originalConsole: OriginalConsole = {
+    log: console.log,;
+    error: console.error,;
+    warn: console.warn,;
+    info: console.info,;
+    debug: console.debug,;
+  }; */
   // Store original console for restoration in tests
-  (global as unknown as { originalConsole: OriginalConsole }).originalConsole = originalConsole;
+  // (global as unknown as { originalConsole: OriginalConsole }).originalConsole = originalConsole;
 }
-
 /**
- * Sets up global error handling for tests
- * Captures unhandled promise rejections with optional debugging
+ * Sets up global error handling for tests;
+ * Captures unhandled promise rejections with optional debugging;
  */
 function setupErrorHandling(): void {
   process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
@@ -49,32 +44,27 @@ function setupErrorHandling(): void {
     if (process.env.DEBUG_TESTS) {
       console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     }
-
     // In test environment, we might want to fail the test
     if (process.env.FAIL_ON_UNHANDLED_REJECTION) {
       throw new Error(`Unhandled Promise Rejection: ${String(reason)}`);
     }
   });
-
   process.on('uncaughtException', (error: Error) => {
     if (process.env.DEBUG_TESTS) {
       console.error('Uncaught Exception:', error);
     }
-
     // In test environment, we might want to fail the test
     if (process.env.FAIL_ON_UNCAUGHT_EXCEPTION) {
       throw error;
     }
   });
 }
-
 /**
- * Configures Jest timeout and global test settings
+ * Configures Jest timeout and global test settings;
  */
 function setupJestConfiguration(): void {
   // Set reasonable timeout for integration tests
   jest.setTimeout(30000);
-
   // Configure global test utilities if needed
   if (typeof globalThis !== 'undefined') {
     // Add any global test utilities here
@@ -83,16 +73,14 @@ function setupJestConfiguration(): void {
     };
   }
 }
-
 /**
- * Main setup function
- * Initializes all test environment configurations
+ * Main setup function;
+ * Initializes all test environment configurations;
  */
 function setupTests(): void {
   setupTestEnvironment();
   setupErrorHandling();
   setupJestConfiguration();
 }
-
 // Initialize test setup
 setupTests();

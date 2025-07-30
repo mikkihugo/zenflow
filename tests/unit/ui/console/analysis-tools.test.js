@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 
 describe('Analysis Tools', () => {
   it('should analyze data', () => {

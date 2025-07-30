@@ -1,36 +1,34 @@
 /**
- * Backup Command Module
- * Converted from JavaScript to TypeScript
+ * Backup Command Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 // backup-command.js - Handle backup operations
-import { printError, printSuccess } from '../utils.js';
+import { printError } from '../utils.js';
 
-export async function backupCommand(args = args[0];
-
-switch(backupCmd) {
-    case 'configure':
+export async function backupCommand(): unknown {
+    case 'configure':;
       await handleConfigure(args.slice(1), flags);
       break;
-      
-    case 'dr':
+;
+    case 'dr':;
       await handleDr(args.slice(1), flags);
       break;
-      
-    case 'restore':
+;
+    case 'restore':;
       await handleRestore(args.slice(1), flags);
       break;default = args[0];
-  
+;
   if(drAction === 'configure') {
     printSuccess('Configuring Disaster Recovery...');
-    console.warn('🚨 DRConfiguration = == 'test') {
+    console.warn('🚨 DRConfiguration = === 'test') {
     printSuccess('Running DR Test...');
     console.warn('🧪 DR TestProgress = args[0];
   if(!restorePoint) {
     printError('Usage: backup restore <backup-id|timestamp>');
     return;
-  }
-
+    //   // LINT: unreachable code removed}
+;
   printSuccess(`Restoring from backup: ${restorePoint}`);
   console.warn('🔄 Restore Progress:');
   console.warn('   ✓ Located backup in S3');
@@ -42,8 +40,8 @@ switch(backupCmd) {
   console.warn('   ✓ Verifying restored data');
   console.warn('\n✅ Restore completed successfully');
 }
-
-function _showBackupHelp() {
+;
+function _showBackupHelp(): unknown {
   console.warn('Backup commands:');
   console.warn('  configure - Configure backup strategy');
   console.warn('  dr        - Disaster recovery management');
@@ -54,3 +52,4 @@ function _showBackupHelp() {
   console.warn('  backup dr test');
   console.warn('  backup restore "backup-20240110-023000"');
 }
+;

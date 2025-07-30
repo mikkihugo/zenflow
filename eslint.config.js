@@ -1,7 +1,7 @@
 // ESLint 9 Flat Config for Claude Zen
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import globals from 'globals';
 
 export default [
   // Base config for all files
@@ -16,7 +16,6 @@ export default [
       },
     },
   },
-
   // JavaScript files
   {
     name: 'claude-zen/javascript',
@@ -29,7 +28,6 @@ export default [
       'no-var': 'error',
     },
   },
-
   // TypeScript files
   {
     name: 'claude-zen/typescript',
@@ -52,7 +50,6 @@ export default [
       '@typescript-eslint/prefer-optional-chain': 'error',
     },
   },
-
   // Test files with Jest-specific configuration
   {
     name: 'claude-zen/tests',
@@ -98,7 +95,6 @@ export default [
       complexity: 'off',
     },
   },
-
   // CLI-specific files
   {
     name: 'claude-zen/cli',
@@ -113,7 +109,6 @@ export default [
       'no-console': 'off',
     },
   },
-
   // Web UI files (browser environment)
   {
     name: 'claude-zen/web-ui',
@@ -128,7 +123,6 @@ export default [
       'no-console': 'warn',
     },
   },
-
   // Config files
   {
     name: 'claude-zen/config',
@@ -142,7 +136,6 @@ export default [
       'no-console': 'off',
     },
   },
-
   // Script files
   {
     name: 'claude-zen/scripts',
@@ -157,7 +150,6 @@ export default [
       'no-process-exit': 'off',
     },
   },
-
   // Ignore patterns
   {
     name: 'claude-zen/ignores',

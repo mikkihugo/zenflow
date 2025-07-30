@@ -1,47 +1,41 @@
 #!/usr/bin/env node
-
 /**
- * 🎨 VISUAL DEMO OF ENHANCED CLI/TUI FEATURES
- *
- * Creates a visual demonstration of the enhanced components
- * without requiring full dependencies.
+ * 🎨 VISUAL DEMO OF ENHANCED CLI/TUI FEATURES;
+ *;
+ * Creates a visual demonstration of the enhanced components;
+ * without requiring full dependencies.;
  */
-
 console.warn('🚀 Claude-Zen Enhanced CLI/TUI Features Demo');
 console.warn('═'.repeat(60));
 console.warn('');
-
 // Demo 1: Progress Bar Styles
 console.warn('📊 Enhanced Progress Bars:');
 console.warn('');
-
-function createProgressBar(progress, width = 40, style = 'blocks') {
-  const filled = Math.floor((progress / 100) * width);
-  const empty = width - filled;
-
+function createProgressBar(): unknown {
+  const _filled = Math.floor((progress / 100) * width);
+  const _empty = width - filled;
+;
   let fillChar, emptyChar;
   switch (style) {
-    case 'dots':
+    case 'dots':;
       fillChar = '●';
       emptyChar = '○';
       break;
-    case 'bars':
+    case 'bars':;
       fillChar = '|';
       emptyChar = '·';
       break;
-    default:
+    default:;
       fillChar = '█';
       emptyChar = '░';
   }
-
+;
   return `[${fillChar.repeat(filled)}${emptyChar.repeat(empty)}] ${progress.toFixed(1)}%`;
 }
-
 console.warn(`  Blocks Style: ${createProgressBar(75, 30, 'blocks')}`);
 console.warn(`  Dots Style:   ${createProgressBar(60, 30, 'dots')}`);
 console.warn(`  Bars Style:   ${createProgressBar(45, 30, 'bars')}`);
 console.warn('');
-
 // Demo 2: Command Auto-completion
 console.warn('⌨️  Command Auto-completion:');
 console.warn('');
@@ -51,7 +45,6 @@ console.warn('  Suggestions (2) - ↑/↓ to navigate, Tab to select:');
 console.warn('    ▶ status - Show system status');
 console.warn('      swarm - Manage swarm operations');
 console.warn('');
-
 // Demo 3: API Endpoints
 console.warn('🌐 Auto-Generated API Endpoints:');
 console.warn('');
@@ -69,7 +62,6 @@ console.warn('  ✅ Documentation:');
 console.warn('     GET  /docs (Swagger UI)');
 console.warn('     GET  /api/openapi.json');
 console.warn('');
-
 // Demo 4: Split-Pane Layout
 console.warn('🎯 Split-Pane TUI Layout:');
 console.warn('');
@@ -95,7 +87,6 @@ console.warn('│                              │ 14:32:17 ✅ Setup complete  
 console.warn('└──────────────────────────────┴───────────────────────────────┘');
 console.warn('F1-F4: Modes • Tab: Complete • ↑/↓: Navigate • Ctrl+L: Layout');
 console.warn('');
-
 // Demo 5: Swarm Topology
 console.warn('🐝 Visual Swarm Topology:');
 console.warn('');
@@ -112,7 +103,6 @@ console.warn('│     worker-swarm ←→ analytics-swarm          │');
 console.warn('│                                               │');
 console.warn('└───────────────────────────────────────────────┘');
 console.warn('');
-
 // Demo 6: WebSocket Messages
 console.warn('🔗 WebSocket Real-time Messages:');
 console.warn('');
@@ -132,7 +122,6 @@ console.warn('    "progress": 75,');
 console.warn('    "timestamp": "2025-01-25T19:06:00.000Z"');
 console.warn('  }');
 console.warn('');
-
 // Demo 7: OpenAPI Documentation
 console.warn('📖 Generated OpenAPI 3.0 Documentation:');
 console.warn('');
@@ -149,7 +138,6 @@ console.warn('     • Test API calls');
 console.warn('     • Download OpenAPI spec');
 console.warn('     • Authentication support');
 console.warn('');
-
 console.warn('═'.repeat(60));
 console.warn('🎉 Enhanced CLI/TUI Features Demo Complete!');
 console.warn('');

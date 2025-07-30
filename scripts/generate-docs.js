@@ -1,7 +1,7 @@
-#!/usr/bin/env node
+#!/usr/bin/env node;
 /**
- * Documentation Generation Script
- * Generates comprehensive API documentation from JSDoc comments and schema
+ * Documentation Generation Script;
+ * Generates comprehensive API documentation from JSDoc comments and schema;
  */
 
 import fs from 'node:fs/promises';
@@ -14,161 +14,166 @@ class DocumentationGenerator {
     this.docsDir = 'docs/api';
     this.outputFile = 'docs/api/generated-api.md';
   }
-
   async generate() {
     console.warn('🚀 Generating API documentation...');
-
     try {
       // Ensure docs directory exists
       await fs.mkdir(this.docsDir, { recursive: true });
-
+;
       // Find all JavaScript files with JSDoc comments
-      const jsFiles = await glob('src/**/*.js');
+      const _jsFiles = await glob('src/**/*.js');
       console.warn(`📁 Found ${jsFiles.length} JavaScript files`);
-
+;
       // Extract JSDoc comments
-      const apiDocs = await this.extractJSDocFromFiles(jsFiles);
-
+      const _apiDocs = await this.extractJSDocFromFiles(jsFiles);
+;
       // Generate markdown documentation
-      const markdown = await this.generateMarkdown(apiDocs);
-
+      const _markdown = await this.generateMarkdown(apiDocs);
+;
       // Write to file
       await fs.writeFile(this.outputFile, markdown);
       console.warn(`✅ Documentation generated: ${this.outputFile}`);
-
+;
       return this.outputFile;
-    } catch (error) {
+    //   // LINT: unreachable code removed} catch (/* error */) {
       console.error('❌ Documentation generation failed:', error);
       throw error;
     }
   }
-
   async extractJSDocFromFiles(files) {
-    const apiDocs = [];
-
+    const _apiDocs = [];
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
-        const docs = this.extractJSDocFromContent(content, file);
+        const _content = await fs.readFile(file, 'utf-8');
+        const _docs = this.extractJSDocFromContent(content, file);
         if (docs.length > 0) {
           apiDocs.push({
-            file,
-            docs,
+            file,;
+            docs,;
           });
         }
-      } catch (error) {
-        console.warn(`⚠️ Could not process file ${file}:`, error.message);
-      }
     }
-
-    return apiDocs;
+    catch (/* error */) 
+        console.warn(`⚠️ Could not process file $
+      file
+    :`, error.message)
   }
-
+  return;
+  apiDocs;
+  //   // LINT: unreachable code removed}
   extractJSDocFromContent(content, filename) {
-    const docs = [];
-    const jsdocRegex = /\/\*\*[\s\S]*?\*\//g;
-    const matches = content.match(jsdocRegex);
-
+    const _docs = [];
+    const _jsdocRegex = /\/\*\*[\s\S]*?\*\//g;
+    const _matches = content.match(jsdocRegex);
     if (!matches) return docs;
-
+    // ; // LINT: unreachable code removed
     matches.forEach((match, index) => {
-      const parsed = this.parseJSDocComment(match);
+      const _parsed = this.parseJSDocComment(match);
       if (parsed) {
         // Try to find the function/class that follows this comment
-        const afterComment = content.substring(content.indexOf(match) + match.length);
-        const functionMatch = afterComment.match(
+        const _afterComment = content.substring(content.indexOf(match) + match.length);
+        const _functionMatch = afterComment.match(;
           /(?:export\s+)?(?:class|function|const|let|var)\s+(\w+)/
         );
-
+;
         docs.push({
-          ...parsed,
-          name: functionMatch ? functionMatch[1] : `Item ${index + 1}`,
-          filename: path.basename(filename),
-          filepath: filename,
+          ...parsed,;
+          name: functionMatch ? functionMatch[1] : `Item ${index + 1}`,;
+          filename: path.basename(filename),;
+          filepath: filename,;
         });
       }
-    });
-
-    return docs;
   }
-
+  )
+  return
+  docs;
+  //   // LINT: unreachable code removed}
   parseJSDocComment(comment) {
-    const lines = comment.split('\n').map((line) => line.replace(/^\s*\*\s?/, '').trim());
-
-    const doc = {
-      description: '',
-      params: [],
-      returns: null,
-      example: '',
-      tags: [],
-    };
-
-    let currentSection = 'description';
-    let currentParam = null;
-
-    for (const line of lines) {
-      if (line.startsWith('/**') || line.startsWith('*/') || line === '') {
+    const _lines = comment.split('\n').map((line) => line.replace(/^\s*\*\s?/, '').trim());
+    const _doc = {
+      description: '',;
+    params: [],;
+    returns: null,;
+    // example: '',; // LINT: unreachable code removed
+    tags: [],;
+  }
+  let;
+  _currentSection = 'description';
+  let;
+  _currentParam = null;
+  for (const line _of _lines) {
+      if (line.startsWith('/**')  ?? line.startsWith('*/')  ?? line === '') {
         continue;
       }
-
+;
       if (line.startsWith('@param')) {
         currentSection = 'param';
-        const paramMatch = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
+        const _paramMatch = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
         if (paramMatch) {
           currentParam = {
-            type: paramMatch[1],
-            name: paramMatch[2],
-            description: paramMatch[3],
+            type: paramMatch[1],;
+            name: paramMatch[2],;
+            description: paramMatch[3],;
           };
           doc.params.push(currentParam);
         }
-      } else if (line.startsWith('@returns') || line.startsWith('@return')) {
-        currentSection = 'returns';
-        const returnMatch = line.match(/@returns?\s+\{([^}]+)\}\s*(.*)/);
-        if (returnMatch) {
-          doc.returns = {
-            type: returnMatch[1],
-            description: returnMatch[2],
-          };
-        }
-      } else if (line.startsWith('@example')) {
-        currentSection = 'example';
-      } else if (line.startsWith('@')) {
-        const tagMatch = line.match(/@(\w+)\s*(.*)/);
-        if (tagMatch) {
-          doc.tags.push({
-            name: tagMatch[1],
-            value: tagMatch[2],
-          });
-        }
-      } else {
-        // Continue previous section
-        if (currentSection === 'description') {
-          doc.description += (doc.description ? ' ' : '') + line;
-        } else if (currentSection === 'example') {
-          doc.example += (doc.example ? '\n' : '') + line;
-        } else if (currentSection === 'param' && currentParam) {
-          currentParam.description += (currentParam.description ? ' ' : '') + line;
-        } else if (currentSection === 'returns' && doc.returns) {
-          doc.returns.description += (doc.returns.description ? ' ' : '') + line;
-        }
       }
-    }
-
-    return doc.description ? doc : null;
+  else;
+  if (_line._startsWith('@returns')
+  ??
+  line;
+  .
+  startsWith('@return')
+  ) {
+  currentSection = 'returns';
+  // const _returnMatch = line.match(/@returns?\s+\{([^ // LINT: unreachable code removed}]+)\}\s*(.*)/);
+  if(returnMatch) {
+    doc.returns = {
+            type: returnMatch[1],;
+    // description: returnMatch[2],; // LINT: unreachable code removed
   }
-
-  async generateMarkdown(apiDocs) {
-    let markdown = `# Generated API Documentation
-
+}
+} else
+if (line.startsWith('@example')) {
+  currentSection = 'example';
+} else if (line.startsWith('@')) {
+  const _tagMatch = line.match(/@(\w+)\s*(.*)/);
+  if (tagMatch) {
+    doc.tags.push({
+            name: tagMatch[1],;
+    value: tagMatch[2],;
+  }
+  )
+}
+} else
+{
+  // Continue previous section
+  if (currentSection === 'description') {
+    doc.description += (doc.description ? ' ' : '') + line;
+  } else if (currentSection === 'example') {
+    doc.example += (doc.example ? '\n' : '') + line;
+  } else if (currentSection === 'param' && currentParam) {
+    currentParam.description += (currentParam.description ? ' ' : '') + line;
+  } else if (currentSection === 'returns' && doc.returns) {
+    doc.returns.description += (doc.returns.description ? ' ' : '') + line;
+    //   // LINT: unreachable code removed}
+  }
+}
+return doc.description ? doc : null;
+//   // LINT: unreachable code removed}
+async;
+generateMarkdown(apiDocs);
+{
+    const _markdown = `# Generated API Documentation
+;
 This documentation is automatically generated from JSDoc comments in the source code.
-
+;
 *Generated on: ${new Date().toISOString()}*
-
+;
 ## Table of Contents
-
+;
 `;
-
+;
     // Generate table of contents
     apiDocs.forEach((fileDoc) => {
       markdown += `- [${fileDoc.file}](#${this.slugify(fileDoc.file)})\n`;
@@ -176,20 +181,20 @@ This documentation is automatically generated from JSDoc comments in the source 
         markdown += `  - [${doc.name}](#${this.slugify(doc.name)})\n`;
       });
     });
-
+;
     markdown += '\n---\n\n';
-
+;
     // Generate detailed documentation
     apiDocs.forEach((fileDoc) => {
       markdown += `## ${fileDoc.file}\n\n`;
-
+;
       fileDoc.docs.forEach((doc) => {
         markdown += `### ${doc.name}\n\n`;
-
+;
         if (doc.description) {
           markdown += `${doc.description}\n\n`;
         }
-
+;
         if (doc.params.length > 0) {
           markdown += '**Parameters:**\n\n';
           doc.params.forEach((param) => {
@@ -197,17 +202,17 @@ This documentation is automatically generated from JSDoc comments in the source 
           });
           markdown += '\n';
         }
-
+;
         if (doc.returns) {
           markdown += `**Returns:** \`${doc.returns.type}\` - ${doc.returns.description}\n\n`;
-        }
-
+    //   // LINT: unreachable code removed}
+;
         if (doc.example) {
           markdown += '**Example:**\n\n```javascript\n';
           markdown += doc.example;
           markdown += '\n```\n\n';
         }
-
+;
         if (doc.tags.length > 0) {
           markdown += '**Tags:**\n\n';
           doc.tags.forEach((tag) => {
@@ -215,32 +220,31 @@ This documentation is automatically generated from JSDoc comments in the source 
           });
           markdown += '\n';
         }
-
+;
         markdown += `**Source:** \`${doc.filepath}\`\n\n`;
         markdown += '---\n\n';
       });
     });
-
+;
     return markdown;
-  }
-
-  slugify(text) {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
+    //   // LINT: unreachable code removed}
+;
+  slugify(text) 
+    return text;
+    // .toLowerCase(); // LINT: unreachable code removed
+      .replace(/[^a-z0-9]+/g, '-');
       .replace(/^-+|-+$/g, '');
-  }
 }
-
+;
 // CLI runner
-async function main() {
-  const generator = new DocumentationGenerator();
+async function main(): unknown {
+  const _generator = new DocumentationGenerator();
   await generator.generate();
 }
-
+;
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
-
+;
 export { DocumentationGenerator };

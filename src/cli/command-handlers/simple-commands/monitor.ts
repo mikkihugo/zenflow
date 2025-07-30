@@ -1,82 +1,67 @@
 /**
- * Monitor Module
- * Converted from JavaScript to TypeScript
+ * Monitor Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
-export async function monitorCommand(subArgs = getFlag(subArgs, '--interval') || flags.interval || 5000;
-const format = getFlag(subArgs, '--format') || flags.format || 'pretty';
-const continuous = subArgs.includes('--watch') || flags.watch;
-
+export async function monitorCommand(subArgs = getFlag(subArgs: unknown, '--interval': unknown)  ?? flags.interval  ?? 5000;
+const _format = getFlag(subArgs, '--format') ?? flags.format ?? 'pretty';
+const _continuous = subArgs.includes('--watch') ?? flags.watch;
 if (continuous) {
   await runContinuousMonitoring(interval, format);
 } else {
   await showCurrentMetrics(format);
 }
 }
-
 async
-function showCurrentMetrics(format = await collectMetrics();
-
+function showCurrentMetrics(format = await collectMetrics(: unknown);
 if (format === 'json') {
   console.warn(JSON.stringify(metrics, null, 2));
 } else {
   displayMetrics(metrics);
 }
 }
-
 async
-function runContinuousMonitoring(interval = () => {
+function runContinuousMonitoring(interval = (): unknown => {
     if(monitorInterval) {
       clearInterval(monitorInterval);
     }
     console.warn('\n👋 Monitoring stopped');
     process.exit(0);
   };
-
 process.on('SIGINT', cleanup);
 process.on('SIGTERM', cleanup);
-
 // Initial display
-const initialMetrics = await collectMetrics();
+const _initialMetrics = await collectMetrics();
 console.warn(`🔄 Monitoring Claude-Flow System`);
 console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
-
 if (format === 'json') {
   console.warn(JSON.stringify(initialMetrics, null, 2));
 } else {
   displayMetrics(initialMetrics);
 }
-
 console.warn(`\n🔄 Next update in ${interval}ms...`);
-
 // Start continuous monitoring
 monitorInterval = setInterval(async () => {
   console.warn(`🔄 Monitoring Claude-Flow System`);
   console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
-
-  const metrics = await collectMetrics();
-
+  const _metrics = await collectMetrics();
   if (format === 'json') {
     console.warn(JSON.stringify(metrics, null, 2));
   } else {
     displayMetrics(metrics);
   }
-
   console.warn(`\n🔄 Next update in ${interval}ms...`);
 }, interval);
 }
-
 async
-function collectMetrics() {
-  const timestamp = Date.now();
-
+function collectMetrics(): unknown {
+  const _timestamp = Date.now();
   // Collect real system metrics
-  const _cpuUsage = await getCPUUsage();
-
+  const __cpuUsage = await getCPUUsage();
   // Try to get orchestrator metrics from file or socket
 
   // Collect performance metrics
@@ -85,42 +70,34 @@ function collectMetrics() {
 
   return {
     timestamp,system = os.cpus();
-  let totalIdle = 0;
-  let totalTick = 0;
-
+  // let _totalIdle = 0; // LINT: unreachable code removed
+  const _totalTick = 0;
   cpus.forEach((cpu) => {
     for (const type in cpu.times) {
       totalTick += cpu.times[type];
     }
     totalIdle += cpu.times.idle;
   });
-
-  const idle = totalIdle / cpus.length;
-  const total = totalTick / cpus.length;
-  const usage = 100 - ~~((100 * idle) / total);
-
+  const _idle = totalIdle / cpus.length;
+  const _total = totalTick / cpus.length;
+  const _usage = 100 - ~~((100 * idle) / total);
   return Math.max(0, Math.min(100, usage));
 }
-
 // Get real memory information
-function _getMemoryInfo() {
-  const _totalMem = os.totalmem();
-  const _freeMem = os.freemem();
-
+function _getMemoryInfo(): unknown {
+  const __totalMem = os.totalmem();
+  const __freeMem = os.freemem();
   return {totalMB = await fs.statfs(process.cwd());
-  const _totalBytes = stats.blocks * stats.bsize;
-  const _freeBytes = stats.bavail * stats.bsize;
-
+  // const __totalBytes = stats.blocks * stats.bsize; // LINT: unreachable code removed
+  const __freeBytes = stats.bavail * stats.bsize;
   return {totalGB = path.join(process.cwd(), '.claude-zen', 'metrics.json');
-  const metricsData = await fs.readFile(metricsPath, 'utf8');
-  const _metrics = JSON.parse(metricsData);
-
+  // const _metricsData = await fs.readFile(metricsPath, 'utf8'); // LINT: unreachable code removed
+  const __metrics = JSON.parse(metricsData);
   return {status = await checkOrchestratorRunning();
-
+  // ; // LINT: unreachable code removed
   return {status = path.join(process.cwd(), '.claude-zen', 'orchestrator.pid');
-  const pidData = await fs.readFile(pidPath, 'utf8');
-  const pid = parseInt(pidData.trim());
-
+  // const _pidData = await fs.readFile(pidPath, 'utf8'); // LINT: unreachable code removed
+  const _pid = parseInt(pidData.trim());
   // Check if process is running
   process.kill(pid, 0);
   return true;
@@ -130,19 +107,17 @@ catch
   return false;
 }
 }
-
 // Get performance metrics
-function _getPerformanceMetrics() {
-  const _cpuUsage = process.cpuUsage();
-
+function _getPerformanceMetrics(): unknown {
+  const __cpuUsage = process.cpuUsage();
   return {avg_task_duration = path.join(process.cwd(), '.claude-zen', 'memory.db');
-
+  // ; // LINT: unreachable code removed
   // Count terminal sessions
 
   // Count MCP connections
 
   return {memory_entries = path.join(process.cwd(), '.claude-zen', 'sessions');
-  const files = await fs.readdir(sessionsPath);
+  // const _files = await fs.readdir(sessionsPath); // LINT: unreachable code removed
   return files.filter((f) => f.endsWith('.json')).length;
 }
 catch
@@ -150,51 +125,50 @@ catch
   return 0;
 }
 }
-
 // Count MCP connections
 async
-function _countMCPConnections() {
+function _countMCPConnections(): unknown {
   try {
-    const mcpPath = path.join(process.cwd(), '.claude-zen', 'mcp-connections.json');
-    const data = await fs.readFile(mcpPath, 'utf8');
-    const connections = JSON.parse(data);
+    const _mcpPath = path.join(process.cwd(), '.claude-zen', 'mcp-connections.json');
+    const _data = await fs.readFile(mcpPath, 'utf8');
+    const _connections = JSON.parse(data);
     return Array.isArray(connections) ? connections.length = new Date(metrics.timestamp).toLocaleTimeString();
-
+    // ; // LINT: unreachable code removed
   console.warn('📊 System Metrics');
   console.warn('================');
-
+;
   // System metrics
-  console.warn('\n🖥️  SystemResources = > l.toFixed(2)).join(', ')}`,
+  console.warn('\n🖥️  SystemResources = > l.toFixed(2)).join(', ')}`,;
   );
-  console.warn(`Uptime = == 'running') {
+  console.warn(`Uptime = === 'running') {
     console.warn(`   ActiveAgents = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-
+  const _hours = Math.floor((seconds % 86400) / 3600);
+  const _minutes = Math.floor((seconds % 3600) / 60);
+  const _secs = seconds % 60;
+;
   if(days > 0) {
     return `${days}d ${hours}h ${minutes}m`;
-  } else if(hours > 0) {
+    //   // LINT: unreachable code removed} else if(hours > 0) {
     return `${hours}h ${minutes}m ${secs}s`;
-  } else if(minutes > 0) {
+    //   // LINT: unreachable code removed} else if(minutes > 0) {
     return `${minutes}m ${secs}s`;
-  } else {
+    //   // LINT: unreachable code removed} else {
     return `${secs}s`;
-  }
+    //   // LINT: unreachable code removed}
 }
-
-  function getFlag(args = args.indexOf(flagName);
+;
+  function getFlag(args = args.indexOf(flagName: unknown);
   return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
 }
-
-export function showMonitorHelp() {
+;
+export function _showMonitorHelp(): unknown {
   console.warn('Monitor commands:');
   console.warn('  monitor [options]                Show current system metrics');
   console.warn('  monitor --watch                  Continuous monitoring mode');
   console.warn();
   console.warn('Options:');
-  console.warn(
-    '  --interval <ms>                  Update interval in milliseconds (default: 5000)'
+  console.warn(;
+    '  --interval <ms>                  Update interval in milliseconds (default: 5000)';
   );
   console.warn('  --format <type>                  Output format: pretty, json (default: pretty)');
   console.warn('  --watch                          Continuous monitoring mode');
@@ -205,3 +179,4 @@ export function showMonitorHelp() {
   console.warn('  claude-zen monitor --interval 1000 --watch  # Fast updates');
   console.warn('  claude-zen monitor --format json            # JSON output');
 }
+;

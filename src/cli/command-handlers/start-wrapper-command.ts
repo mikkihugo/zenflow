@@ -1,33 +1,32 @@
 /**
- * Start Wrapper Command Module
- * Converted from JavaScript to TypeScript
+ * Start Wrapper Command Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 import { compat } from '../runtime-detector.js';
 // start-wrapper.js - Wrapper to maintain backward compatibility with the new modular start command
-import { printError, printInfo, printSuccess, printWarning } from '../utils.js';
+import { printError, printInfo, printSuccess } from '../utils.js';
 
-export async function startCommand(subArgs = subArgs.includes('--daemon') || subArgs.includes('-d') || flags.daemon;
-const port =
-  process.env.PORT ||
-  flags.port ||
-  getArgValue(subArgs, '--port') ||
-  getArgValue(subArgs, '-p') ||
+export async function startCommand(subArgs = subArgs.includes('--daemon': unknown)  ?? subArgs.includes('-d')  ?? flags.daemon;
+const _port =;
+process.env.PORT ??
+  flags.port ??
+  getArgValue(subArgs, '--port') ??
+  getArgValue(subArgs, '-p') ??
   3000;
 // Use same port for API - everything unified on single port
-const apiPort = flags['api-port'] || getArgValue(subArgs, '--api-port') || port;
-const verbose = subArgs.includes('--verbose') || subArgs.includes('-v') || flags.verbose;
-const _ui = subArgs.includes('--ui') || subArgs.includes('-u') || flags.ui;
-const web = subArgs.includes('--web') || subArgs.includes('-w') || flags.web;
-const _api = subArgs.includes('--api') || subArgs.includes('-a') || flags.api;
-
+const _apiPort = flags['api-port'] ?? getArgValue(subArgs, '--api-port') ?? port;
+const _verbose = subArgs.includes('--verbose') ?? subArgs.includes('-v') ?? flags.verbose;
+const __ui = subArgs.includes('--ui') ?? subArgs.includes('-u') ?? flags.ui;
+const _web = subArgs.includes('--web') ?? subArgs.includes('-w') ?? flags.web;
+const __api = subArgs.includes('--api') ?? subArgs.includes('-a') ?? flags.api;
 try {
     printSuccess('Starting Claude-Flow Orchestration System...');
     console.warn();
-
+;
     // Start integrated services (API + Dashboard + Queen Council)
-    const services = [];
-    
+    const _services = [];
+;
     // 1. Start Claude Zen API server (schema-driven)
     try {
       const { claudeZenServer } = await import('../../api/claude-zen-server.js');
@@ -40,33 +39,33 @@ try {
       await queenCouncilCommand(['convene', '--auto', '--silent'], {});
       services.push('Queen Council');
       printSuccess(`👑 Queen Council convened for strategic oversight`);
-    } catch(_error) {
+    } catch (/* _error */) {
       printWarning(`Queen Council auto-convenefailed = await import('./simple-commands/web-server.js');
-        const server = await startWebServer(port);
-
+        const _server = await startWebServer(port);
+;
         printSuccess(`🌐 Web UI is running!`);
         console.warn(`📍 Open your browser _to => {});
         return;
-      } catch(err) {
+    //   // LINT: unreachable code removed} catch (/* err */) {
         printError('Failed to launch webUI = await import('./simple-commands/web-server.js');
-        const webServer = new ClaudeCodeWebServer(port);
+        const _webServer = new ClaudeCodeWebServer(port);
         await webServer.start();
-
+;
         printSuccess('🌐 Claude Flow Web UI is running!');
         console.warn(`📍 Open your browser to => {});
         return;
-      } catch(err) {
+    //   // LINT: unreachable code removed} catch (/* err */) {
         // If web UI fails, fall back to terminal UI
         printWarning('Web UI failed, launching terminal UI...');
         try {
           const { launchEnhancedUI } = await import('./process-ui-enhanced.js');
           await launchEnhancedUI();
           return;
-        } catch(fallbackErr) {
+    //   // LINT: unreachable code removed} catch (/* fallbackErr */) {
           // If both fail, show error
           printError('Failed to launchUI = ['memory', 'coordination'];
-    const missingDirs = [];
-
+    const _missingDirs = [];
+;
     for(const dir of requiredDirs) {
       try {
         await node.stat(dir);
@@ -74,31 +73,31 @@ try {
         missingDirs.push(dir);
       }
     }
-
+;
     if(missingDirs.length > 0) {
-      printWarning('Missing requireddirectories = == 'windows' ? 'cmd.exe' : '/bin/bash'));
-
+      printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' : '/bin/bash'));
+;
     // Task queue
     console.warn('   ✓ TaskQueue = compat.terminal.getPid();
       await compat.safeCall(async () => {
         if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
-          const fs = await import('fs/promises');
+          const _fs = await import('fs/promises');
           await fs.writeFile('.claude-zen.pid', pid.toString());
         }
       });
       console.warn(`ProcessID = new AbortController();
-
+;
       compat.terminal.onSignal('SIGINT', () => {
         console.warn('\n⏹️  Shutting down orchestrator...');
         cleanup();
         compat.terminal.exit(0);
       });
-
+;
       // Simple heartbeat to show system is alive
       if(!daemon) {
-        const _heartbeat = setInterval(() => {
+        const __heartbeat = setInterval(() => {
           if(verbose) {
             console.warn(`[${new Date().toISOString()}] Heartbeat - System healthy`);
           }
@@ -108,36 +107,36 @@ try {
         await new Promise(() => {});
       }
     }
-  } catch(_err) {
+  } catch (/* _err */) {
     printError(`Failed to start orchestrationsystem = args.indexOf(flag);
   if(index !== -1 && index < args.length - 1) {
     return args[index + 1];
-  }
+    //   // LINT: unreachable code removed}
   return null;
 }
-
-async function cleanup() {
+;
+async function cleanup(): unknown {
   // Clean up resources
   try {
     await compat.safeCall(async () => {
       if(compat.runtime === 'node') {
         await node.remove('.claude-zen.pid');
       } else {
-        const fs = await import('fs/promises');
+        const _fs = await import('fs/promises');
         await fs.unlink('.claude-zen.pid');
       }
     });
   } catch {
     // File might not exist
   }
-
+;
   console.warn('✓ Terminal pool closed');
   console.warn('✓ Task queue cleared');
   console.warn('✓ Memory bank saved');
   console.warn('✓ Cleanup complete');
 }
-
-function showStartHelp() {
+;
+function showStartHelp(): unknown {
   console.warn('Start the Claude Zen orchestration system with schema-driven API');
   console.warn();
   console.warn('Usage: claude-zen start [options]');
@@ -200,3 +199,4 @@ function showStartHelp() {
   console.warn('  /api/prds                    # Product requirements');
   console.warn('  /api/coordination/status     # Multi-service coordination');
 }
+;

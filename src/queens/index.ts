@@ -1,6 +1,6 @@
 /**
- * Index Module
- * Converted from JavaScript to TypeScript
+ * Index Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 export { ArchitectAdvisor } from './architect-advisor.js';
@@ -16,7 +16,7 @@ export { QueenCoordinator } from './queen-coordinator.js';
 // Convenience factory function
 import { QueenCoordinator } from './queen-coordinator.js';
 
-export async function createQueenCoordinator(config = new QueenCoordinator(config);
+export async function createQueenCoordinator(config = new QueenCoordinator(config: unknown);
 await coordinator.start();
 return coordinator;
 }

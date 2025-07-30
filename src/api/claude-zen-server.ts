@@ -1,28 +1,27 @@
 /**
- * 🚀 CLAUDE ZEN SERVER - Schema-Driven API
- * Unified API server with auto-generated routes from schema
- * Replaces hard-coded endpoints with maintainable schema approach
+ * 🚀 CLAUDE ZEN SERVER - Schema-Driven API;
+ * Unified API server with auto-generated routes from schema;
+ * Replaces hard-coded endpoints with maintainable schema approach;
  */
 
 import { EventEmitter } from 'node:events';
-import { createServer, type Server as HTTPServer } from 'node:http';
+import { createServer } from 'node:http';
 import cors from 'cors';
-import express, { type Application, type NextFunction, type Request, type Response } from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 
 import {
-  CLAUDE_ZEN_SCHEMA,
-  generateOpenAPISpec,
-  getWebEnabledCommands,
-  SCHEMA_METADATA,
-  validateCommandArgs,
-} from './claude-zen-schema.js';
-
+  CLAUDE_ZEN_SCHEMA,;
+generateOpenAPISpec,;
+getWebEnabledCommands,;
+SCHEMA_METADATA,;
+validateCommandArgs,;
+} from './claude-zen-schema.js'
 /**
- * Server configuration interface
+ * Server configuration interface;
  */
 export interface ServerConfig {
   port?: number;
@@ -33,9 +32,8 @@ export interface ServerConfig {
   websocket?: boolean;
   apiPrefix?: string;
 }
-
 /**
- * Server metrics interface
+ * Server metrics interface;
  */
 export interface ServerMetrics {
   requests: number;
@@ -44,443 +42,451 @@ export interface ServerMetrics {
   uptime: number;
   startTime: number;
 }
-
 /**
- * Claude Zen Server - Schema-driven API server
+ * Claude Zen Server - Schema-driven API server;
  */
 export class ClaudeZenServer extends EventEmitter {
-  private app: Application;
-  private server: HTTPServer | null = null;
-  private wss: WebSocketServer | null = null;
-  private isRunning = false;
-  private config: ServerConfig;
-
-  // Metrics tracking
-  private metrics: ServerMetrics = {
-    requests: 0,
-    websocketConnections: 0,
-    errors: 0,
-    uptime: 0,
-    startTime: Date.now(),
-  };
-
-  // Dynamic storage for schema-driven data
-  private storage = new Map<string, Map<string, any>>();
-
-  constructor(config: ServerConfig = {}) {
-    super();
-
-    this.config = {
-      port: 3000,
-      host: 'localhost',
-      cors: true,
-      helmet: true,
-      rateLimit: true,
-      websocket: true,
-      apiPrefix: '/api',
-      ...config,
-    };
-
-    this.app = express();
-    this.initializeStorage();
-    this.setupMiddleware();
-    this.setupRoutes();
-  }
-
-  /**
-   * Initialize storage maps based on schema
-   */
-  private initializeStorage(): void {
-    // Initialize storage for each command that has storage defined
-    Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_commandName, command]) => {
-      if (command.storage) {
-        if (!this.storage.has(command.storage)) {
-          this.storage.set(command.storage, new Map());
-        }
+  websocketConnections: 0;
+  ,
+  errors: 0;
+  ,
+  uptime: 0;
+  ,
+  startTime: Date.now;
+  ()
+  ,
+}
+// Dynamic storage for schema-driven data
+private
+storage = new Map<string, Map<string, any>>();
+constructor(config: ServerConfig = {})
+{
+  super();
+  this.config = {
+      port: 3000,;
+  host: 'localhost',;
+  cors: true,;
+  helmet: true,;
+  rateLimit: true,;
+  websocket: true,;
+  apiPrefix: '/api',;
+  ...config,
+}
+this.app = express();
+this.initializeStorage();
+this.setupMiddleware();
+this.setupRoutes();
+}
+/**
+ * Initialize storage maps based on schema;
+ */
+private
+initializeStorage()
+: void
+{
+  // Initialize storage for each command that has storage defined
+  Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_commandName, command]) => {
+    if (command.storage) {
+      if (!this.storage.has(command.storage)) {
+        this.storage.set(command.storage, new Map());
       }
-    });
+    }
+  });
+}
+/**
+ * Setup Express middleware;
+ */
+private
+setupMiddleware();
+: void
+{
+  // Security middleware
+  if (this.config.helmet) {
+    this.app.use(helmet());
   }
-
-  /**
-   * Setup Express middleware
-   */
-  private setupMiddleware(): void {
-    // Security middleware
-    if (this.config.helmet) {
-      this.app.use(helmet());
-    }
-
-    // CORS middleware
-    if (this.config.cors) {
-      this.app.use(cors());
-    }
-
-    // Rate limiting
-    if (this.config.rateLimit) {
-      const limiter = rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 100, // limit each IP to 100 requests per windowMs
-      });
-      this.app.use(limiter);
-    }
-
-    // Body parsing
-    this.app.use(express.json({ limit: '10mb' }));
-    this.app.use(express.urlencoded({ extended: true }));
-
-    // Request logging and metrics
-    this.app.use((req: Request, _res: Response, next: NextFunction) => {
-      this.metrics.requests++;
-      console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);
-      next();
-    });
+  // CORS middleware
+  if (this.config.cors) {
+    this.app.use(cors());
   }
-
-  /**
-   * Setup API routes based on schema
-   */
-  private setupRoutes(): void {
-    const apiPrefix = this.config.apiPrefix!;
-
-    // Health check
-    this.app.get('/health', (_req: Request, res: Response) => {
-      res.json({
-        status: 'healthy',
-        version: SCHEMA_METADATA.version,
-        uptime: Date.now() - this.metrics.startTime,
-        metrics: this.getMetrics(),
-      });
+  // Rate limiting
+  if (this.config.rateLimit) {
+    const _limiter = rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100, // limit each IP to 100 requests per windowMs
     });
-
-    // API documentation
-    this.app.get(`${apiPrefix}/docs`, (_req: Request, res: Response) => {
-      const openApiSpec = generateOpenAPISpec();
-      res.json(openApiSpec);
-    });
-
-    // Schema info
-    this.app.get(`${apiPrefix}/schema`, (_req: Request, res: Response) => {
-      res.json({
-        metadata: SCHEMA_METADATA,
-        commands: Object.keys(CLAUDE_ZEN_SCHEMA),
-        webEnabled: Object.keys(getWebEnabledCommands()),
-      });
-    });
-
-    // Generate routes from schema
-    this.generateSchemaRoutes();
-
-    // Generic command execution endpoint
-    this.app.post(`${apiPrefix}/execute`, async (req: Request, res: Response) => {
-      try {
+    this.app.use(limiter);
+  }
+  // Body parsing
+  this.app.use(express.json({ limit: '10mb' }));
+  this.app.use(express.urlencoded({ extended: true }));
+  // Request logging and metrics
+  this.app.use((req: Request, _res: Response, next: NextFunction) => {
+    this.metrics.requests++;
+    console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);
+    next();
+  });
+}
+/**
+ * Setup API routes based on schema;
+ */
+private
+setupRoutes();
+: void
+{
+  const _apiPrefix = this.config.apiPrefix!;
+  // Health check
+  this.app.get('/health', (_req: Request, res: Response) => {
+    res.json({
+        status: 'healthy',;
+    version: SCHEMA_METADATA.version,;
+    uptime: Date.now() - this.metrics.startTime,;
+    metrics: this.getMetrics(),;
+  });
+}
+)
+// API documentation
+this.app.get(`$
+{
+  apiPrefix;
+}
+/ (),,6::;;;;;=>RR_`cdeeeeeenoopqqrrssssstu{{};
+const _openApiSpec = generateOpenAPISpec();
+res.json(openApiSpec);
+})
+// Schema info
+this.app.get(`$
+{
+  apiPrefix;
+}
+/ (),,6::;;;;=>RR_`aceeeeeeehmnopqqrrssssstu{{};
+res.json({
+        metadata: SCHEMA_METADATA,;
+commands: Object.keys(CLAUDE_ZEN_SCHEMA),;
+webEnabled: Object.keys(getWebEnabledCommands()),;
+})
+})
+// Generate routes from schema
+this.generateSchemaRoutes()
+// Generic command execution endpoint
+this.app.post(`$
+{
+  apiPrefix;
+}
+/ (),,7::;;;;=>RR`acceeeeeeeeennopqqrrsssssttuuxy{{};
+try {
         const { command, args = {} } = req.body;
-
+;
         if (!command) {
           return res.status(400).json({
-            error: 'Command is required',
-            available: Object.keys(CLAUDE_ZEN_SCHEMA),
+            error: 'Command is required',;
+    // available: Object.keys(CLAUDE_ZEN_SCHEMA),; // LINT: unreachable code removed
           });
         }
-
-        const result = await this.executeCommand(command, args);
-        res.json(result);
-      } catch (error) {
-        this.metrics.errors++;
-        console.error('Command execution error:', error);
-        res.status(500).json({
-          error: 'Command execution failed',
-          message: error instanceof Error ? error.message : 'Unknown error',
-        });
-      }
-    });
-
-    // Metrics endpoint
-    this.app.get(`${apiPrefix}/metrics`, (_req: Request, res: Response) => {
-      res.json(this.getMetrics());
-    });
-
-    // Error handling
-    this.app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-      this.metrics.errors++;
-      console.error('Server error:', err);
-      res.status(500).json({
-        error: 'Internal server error',
-        message: err.message,
-      });
-    });
-
-    // 404 handler
-    this.app.use('*', (req: Request, res: Response) => {
-      res.status(404).json({
-        error: 'Not found',
-        path: req.originalUrl,
-        available: this.getAvailableEndpoints(),
-      });
-    });
-  }
-
-  /**
-   * Generate routes from schema
-   */
-  private generateSchemaRoutes(): void {
-    const webCommands = getWebEnabledCommands();
-
-    Object.entries(webCommands).forEach(([commandName, command]) => {
+const _result = await this.executeCommand(command, args);
+res.json(result);
+} catch (/* error */)
+{
+  this.metrics.errors++;
+  console.error('Command execution error:', error);
+  res.status(500).json({
+          error: 'Command execution failed',;
+  message: error instanceof Error ? error.message : 'Unknown error',;
+}
+)
+}
+    })
+// Metrics endpoint
+this.app.get(`$
+{
+  apiPrefix;
+}
+/ (),,6::;;;;;=>RR_`ceeeeeeeimnopqqrrrsssssttu{{};
+res.json(this.getMetrics());
+})
+// Error handling
+this.app.use((err: Error, _req: Request, res: Response, _next: NextFunction) =>
+{
+  this.metrics.errors++;
+  console.error('Server error:', err);
+  res.status(500).json({
+        error: 'Internal server error',;
+  message: err.message,;
+}
+)
+})
+// 404 handler
+this.app.use('*', (req: Request, res: Response) =>
+{
+  res.status(404).json({
+        error: 'Not found',;
+  path: req.originalUrl,;
+  available: this.getAvailableEndpoints(),;
+}
+)
+})
+}
+/**
+ * Generate routes from schema;
+ */
+private
+generateSchemaRoutes()
+: void
+{
+  const _webCommands = getWebEnabledCommands();
+  Object.entries(webCommands).forEach(([commandName, command]) => {
       if (!command.interfaces.web) return;
-
+    // ; // LINT: unreachable code removed
       const { endpoint, method } = command.interfaces.web;
-      const fullPath = `${this.config.apiPrefix}${endpoint}`;
-
+      const _fullPath = `${this.config.apiPrefix}${endpoint}`;
+;
       // Create route handler
-      const handler = async (req: Request, res: Response) => {
+      const _handler = async (req: Request, res: Response) => {
         try {
-          const args = { ...req.query, ...req.body };
-
+          const _args = { ...req.query, ...req.body };
+;
           // Validate arguments
-          const validation = validateCommandArgs(commandName, args);
+          const _validation = validateCommandArgs(commandName, args);
           if (!validation.valid) {
             return res.status(400).json({
-              error: 'Validation failed',
-              missing: validation.missing,
-              errors: validation.errors,
+              error: 'Validation failed',;
+    // missing: validation.missing,; // LINT: unreachable code removed
+              errors: validation.errors,;
             });
           }
-
+;
           // Execute command
-          const result = await this.executeCommand(commandName, args);
+          const _result = await this.executeCommand(commandName, args);
           res.json(result);
-        } catch (error) {
+        } catch (/* error */) 
           this.metrics.errors++;
           console.error(`Error in ${commandName}:`, error);
           res.status(500).json({
-            error: 'Command execution failed',
-            command: commandName,
-            message: error instanceof Error ? error.message : 'Unknown error',
-          });
+            error: 'Command execution failed',;
+            command: commandName,;
+            message: error instanceof Error ? error.message : 'Unknown error',;);
         }
-      };
-
-      // Register route based on HTTP method
-      switch (method.toUpperCase()) {
-        case 'GET':
-          this.app.get(fullPath, handler);
-          break;
-        case 'POST':
-          this.app.post(fullPath, handler);
-          break;
-        case 'PUT':
-          this.app.put(fullPath, handler);
-          break;
-        case 'DELETE':
-          this.app.delete(fullPath, handler);
-          break;
-        default:
-          console.warn(`Unsupported HTTP method: ${method} for ${commandName}`);
-      }
-    });
+}
+// Register route based on HTTP method
+switch (method.toUpperCase()) {
+  case 'GET':
+    this.app.get(fullPath, handler);
+    break;
+  case 'POST':
+    this.app.post(fullPath, handler);
+    break;
+  case 'PUT':
+    this.app.put(fullPath, handler);
+    break;
+  case 'DELETE':
+    this.app.delete(fullPath, handler);
+    break;
+  default:
+    console.warn(`Unsupported HTTP method: ${method} for ${commandName}`);
+}
+})
+}
+/**
+ * Execute a command;
+ */
+private
+async
+executeCommand(commandName: string, args: unknown)
+: Promise<any>
+{
+  const _command = CLAUDE_ZEN_SCHEMA[commandName];
+  if (!command) {
+    throw new Error(`Unknown command: ${commandName}`);
   }
-
-  /**
-   * Execute a command
-   */
-  private async executeCommand(commandName: string, args: any): Promise<any> {
-    const command = CLAUDE_ZEN_SCHEMA[commandName];
-
-    if (!command) {
-      throw new Error(`Unknown command: ${commandName}`);
+  // Handle storage-based commands
+  if (command.storage) {
+    const _storageMap = this.storage.get(command.storage);
+    if (!storageMap) {
+      throw new Error(`Storage not found for: ${command.storage}`);
     }
-
-    // Handle storage-based commands
-    if (command.storage) {
-      const storageMap = this.storage.get(command.storage);
-      if (!storageMap) {
-        throw new Error(`Storage not found for: ${command.storage}`);
+    // Simple CRUD operations based on command name pattern
+    if (commandName.includes('create')) {
+      const _id = uuidv4();
+      const _item = {
+          id,;
+      ...args,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    storageMap.set(id, item);
+    return { success: true, id, item };
+    //   // LINT: unreachable code removed}
+    if (commandName.includes('list')) {
+      return {
+          success: true,;
+      // items: Array.from(storageMap.values()),; // LINT: unreachable code removed
+      total: storageMap.size,;
+    }
+  }
+  if (commandName.includes('get')) {
+    const _item = storageMap.get(args.id);
+    if (!item) {
+      throw new Error(`Item not found: ${args.id}`);
+    }
+    return { success: true, item };
+    //   // LINT: unreachable code removed}
+    if (commandName.includes('update')) {
+      const _item = storageMap.get(args.id);
+      if (!item) {
+        throw new Error(`Item not found: ${args.id}`);
       }
-
-      // Simple CRUD operations based on command name pattern
-      if (commandName.includes('create')) {
-        const id = uuidv4();
-        const item = {
-          id,
-          ...args,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        storageMap.set(id, item);
-        return { success: true, id, item };
-      }
-
-      if (commandName.includes('list')) {
-        return {
-          success: true,
-          items: Array.from(storageMap.values()),
-          total: storageMap.size,
-        };
-      }
-
-      if (commandName.includes('get')) {
-        const item = storageMap.get(args.id);
-        if (!item) {
-          throw new Error(`Item not found: ${args.id}`);
-        }
-        return { success: true, item };
-      }
-
-      if (commandName.includes('update')) {
-        const item = storageMap.get(args.id);
-        if (!item) {
-          throw new Error(`Item not found: ${args.id}`);
-        }
-        const updated = { ...item, ...args, updatedAt: new Date().toISOString() };
-        storageMap.set(args.id, updated);
-        return { success: true, item: updated };
-      }
-
+      const _updated = { ...item, ...args, updatedAt: new Date().toISOString() };
+      storageMap.set(args.id, updated);
+      return { success: true, item: updated };
+      //   // LINT: unreachable code removed}
       if (commandName.includes('delete')) {
-        const existed = storageMap.delete(args.id);
+        const _existed = storageMap.delete(args.id);
         return { success: true, deleted: existed };
+        //   // LINT: unreachable code removed}
       }
+      // Default command execution
+      return {
+      success: true,;
+      // command: commandName,; // LINT: unreachable code removed
+      args,;
+      timestamp: new Date().toISOString(),;
+      message: `Command ${commandName} executed successfully`,;
     }
-
-    // Default command execution
-    return {
-      success: true,
-      command: commandName,
-      args,
-      timestamp: new Date().toISOString(),
-      message: `Command ${commandName} executed successfully`,
-    };
   }
-
   /**
-   * Start the server
+   * Start the server;
    */
-  async start(): Promise<{ port: number; host: string; urls: string[] }> {
-    return new Promise((resolve, reject) => {
+  async;
+  start();
+  : Promise<port: number
+  host: string
+  urls: string[] >
+  return new Promise((resolve, reject) => {
       try {
         this.server = createServer(this.app);
-
+    // ; // LINT: unreachable code removed
         if (this.config.websocket) {
           this.setupWebSocket();
         }
-
+;
         this.server.listen(this.config.port, this.config.host, () => {
           this.isRunning = true;
           this.metrics.startTime = Date.now();
-
-          const result = {
-            port: this.config.port!,
-            host: this.config.host!,
-            urls: [
+;
+          const _result = {
+            port: this.config.port!,;
+            host: this.config.host!,;
+            urls: [;
               `http://${this.config.host}:${this.config.port}`,
               `http://${this.config.host}:${this.config.port}${this.config.apiPrefix}`,
               `http://${this.config.host}:${this.config.port}/health`,
-            ],
+            ],;
           };
-
+;
           if (this.config.websocket) {
             result.urls.push(`ws://${this.config.host}:${this.config.port}`);
           }
-
+;
           this.emit('started', result);
           resolve(result);
         });
-
+;
         this.server.on('error', (error) => {
           reject(error);
         });
-      } catch (error) {
+      } catch (/* error */) {
         reject(error);
-      }
-    });
-  }
-
-  /**
-   * Stop the server
-   */
-  async stop(): Promise<void> {
-    return new Promise((resolve) => {
+      });
+}
+/**
+ * Stop the server;
+ */
+async;
+stop();
+: Promise<void>
+{
+  return new Promise((resolve) => {
       if (!this.server) {
         resolve();
-        return;
+    // return; // LINT: unreachable code removed
       }
-
+;
       if (this.wss) {
         this.wss.close();
       }
-
+;
       this.server.close(() => {
         this.isRunning = false;
         this.emit('stopped');
         resolve();
       });
     });
-  }
-
-  /**
-   * Setup WebSocket server
-   */
-  private setupWebSocket(): void {
-    if (!this.server) return;
-
-    this.wss = new WebSocketServer({ server: this.server });
-
-    this.wss.on('connection', (ws) => {
-      this.metrics.websocketConnections++;
-
-      ws.on('close', () => {
-        this.metrics.websocketConnections--;
-      });
-
-      ws.send(
-        JSON.stringify({
-          type: 'welcome',
-          message: 'Connected to Claude Zen Server',
-          timestamp: new Date().toISOString(),
-        })
-      );
+}
+/**
+ * Setup WebSocket server;
+ */
+private
+setupWebSocket();
+: void
+{
+  if (!this.server) return;
+  // ; // LINT: unreachable code removed
+  this.wss = new WebSocketServer({ server: this.server });
+  this.wss.on('connection', (ws) => {
+    this.metrics.websocketConnections++;
+    ws.on('close', () => {
+      this.metrics.websocketConnections--;
     });
-  }
-
-  /**
-   * Get server metrics
-   */
-  getMetrics(): ServerMetrics {
-    return {
-      ...this.metrics,
-      uptime: Date.now() - this.metrics.startTime,
-    };
-  }
-
-  /**
-   * Get available endpoints
-   */
-  private getAvailableEndpoints(): string[] {
-    const endpoints = [
-      '/health',
-      `${this.config.apiPrefix}/docs`,
-      `${this.config.apiPrefix}/schema`,
-      `${this.config.apiPrefix}/execute`,
-      `${this.config.apiPrefix}/metrics`,
+    ws.send(;
+    JSON.stringify({
+          type: 'welcome',;
+    message: 'Connected to Claude Zen Server',;
+    timestamp: new Date().toISOString(),;
+  });
+  )
+}
+)
+}
+/**
+ * Get server metrics;
+ */
+getMetrics()
+: ServerMetrics
+{
+  return {
+      ...this.metrics,;
+  // uptime: Date.now() - this.metrics.startTime,; // LINT: unreachable code removed
+}
+}
+/**
+ * Get available endpoints;
+ */
+private
+getAvailableEndpoints()
+: string[]
+{
+    const _endpoints = [;
+      '/health',;
+      `${this.config.apiPrefix}/docs`,;
+      `${this.config.apiPrefix}/schema`,;
+      `${this.config.apiPrefix}/execute`,;
+      `${this.config.apiPrefix}/metrics`,;
     ];
-
+;
     // Add schema-based endpoints
-    const webCommands = getWebEnabledCommands();
+    const _webCommands = getWebEnabledCommands();
     Object.values(webCommands).forEach((command) => {
       if (command.interfaces.web) {
         endpoints.push(`${this.config.apiPrefix}${command.interfaces.web.endpoint}`);
       }
     });
-
+;
     return endpoints.sort();
-  }
-
+    //   // LINT: unreachable code removed}
+;
   /**
-   * Check if server is running
-   */
-  isServerRunning(): boolean {
+   * Check if server is running;
+   */;
+  isServerRunning(): boolean 
     return this.isRunning;
-  }
-}
-
+;
 export default ClaudeZenServer;

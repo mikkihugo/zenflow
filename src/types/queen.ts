@@ -1,6 +1,6 @@
 /**
- * Queen System Types
- * Multi-Queen hive architecture with distributed decision-making
+ * Queen System Types;
+ * Multi-Queen hive architecture with distributed decision-making;
  */
 
 import type { Identifiable, JSONObject, TypedEventEmitter } from './core.js';
@@ -21,29 +21,25 @@ export type QueenType =
   | 'performance-queen' // Performance analysis and optimization
   | 'test-queen'; // Testing and quality assurance
 
-export type QueenStatus =
-  | 'initializing'
-  | 'active'
-  | 'busy'
-  | 'idle'
-  | 'overloaded'
-  | 'offline'
-  | 'error';
-
-export type TaskType =
-  | 'code-generation'
-  | 'bug-detection'
-  | 'refactoring'
-  | 'test-generation'
-  | 'documentation'
-  | 'architecture-review'
-  | 'performance-analysis'
-  | 'security-audit'
-  | 'vision-processing'
-  | 'neural-training'
-  | 'memory-optimization'
-  | 'coordination';
-
+export type QueenStatus = 'initializing';
+| 'active'
+| 'busy'
+| 'idle'
+| 'overloaded'
+| 'offline'
+| 'error'
+export type TaskType = 'code-generation';
+| 'bug-detection'
+| 'refactoring'
+| 'test-generation'
+| 'documentation'
+| 'architecture-review'
+| 'performance-analysis'
+| 'security-audit'
+| 'vision-processing'
+| 'neural-training'
+| 'memory-optimization'
+| 'coordination'
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 export type ConsensusMethod = 'majority' | 'weighted' | 'expert' | 'unanimous';
@@ -81,7 +77,6 @@ export interface QueenEvents {
   'error': (error = > void;
   [event = > void;
 }
-
 // =============================================================================
 // QUEEN INTERFACE
 // =============================================================================
@@ -93,7 +88,7 @@ export interface Queen extends TypedEventEmitter<QueenEvents>, Identifiable {
 // =============================================================================
 
 export interface CodeQueen extends Queen {
-  generateCode(spec = ============================================================================
+  generateCode(spec = ============================================================================;
 // AUXILIARY TYPES
 // =============================================================================
 
@@ -109,7 +104,6 @@ export interface HealthStatus {
   recommendations?: string[];
   lastCheck: Date;
 }
-
 export interface DetailedQueenMetrics extends QueenMetrics {
   timeSeriesData: {
     timestamp: Date;
@@ -127,7 +121,6 @@ export interface DetailedQueenMetrics extends QueenMetrics {
     benchmarkComparison: Record<string, number>;
   };
 }
-
 export interface DiagnosticResult {
   overall: 'pass' | 'warn' | 'fail';
   tests: {
@@ -140,7 +133,6 @@ export interface DiagnosticResult {
   estimatedFixTime?: number;
   autoFixAvailable?: boolean;
 }
-
 // Code generation types
 export interface CodeGenerationSpec {
   language: string;
@@ -151,7 +143,6 @@ export interface CodeGenerationSpec {
   examples?: string[];
   style?: JSONObject;
 }
-
 export interface CodeResult {
   code: string;
   explanation: string;
@@ -161,7 +152,6 @@ export interface CodeResult {
   confidence: number;
   quality: QualityAnalysis;
 }
-
 export interface RefactoringOptions {
   target: 'readability' | 'performance' | 'maintainability' | 'testability';
   preserveBehavior: boolean;
@@ -169,13 +159,11 @@ export interface RefactoringOptions {
   addComments: boolean;
   addTypes: boolean;
 }
-
 export interface OptimizationTarget {
   type: 'speed' | 'memory' | 'size' | 'readability';
   constraints: string[];
   acceptableTradeoffs: string[];
 }
-
 export interface QualityAnalysis {
   score: number;
   metrics: {
@@ -195,7 +183,6 @@ export interface QualityAnalysis {
   }[];
   recommendations: string[];
 }
-
 // Bug analysis types
 export interface BugAnalysis {
   type: string;
@@ -207,7 +194,6 @@ export interface BugAnalysis {
   evidence: JSONObject[];
   confidence: number;
 }
-
 export interface FixSuggestion {
   approach: string;
   changes: {
@@ -226,7 +212,6 @@ export interface FixSuggestion {
   };
   confidence: number;
 }
-
 // Architecture types
 export interface ArchitectureAnalysis {
   overview: string;
@@ -245,7 +230,6 @@ export interface ArchitectureAnalysis {
   };
   recommendations: string[];
 }
-
 export interface ArchitectureRecommendation {
   priority: Priority;
   category: string;
@@ -257,7 +241,6 @@ export interface ArchitectureRecommendation {
   risks: string[];
   alternatives: string[];
 }
-
 export interface ArchitecturalDecision {
   title: string;
   context: string;
@@ -268,7 +251,6 @@ export interface ArchitecturalDecision {
   assumptions: string[];
   constraints: string[];
 }
-
 export interface PatternValidation {
   valid: boolean;
   pattern: string;
@@ -277,7 +259,6 @@ export interface PatternValidation {
   recommendations: string[];
   examples: string[];
 }
-
 // Vision processing types
 export interface VisionContext {
   type: 'ui-mockup' | 'diagram' | 'screenshot' | 'design' | 'chart';
@@ -285,7 +266,6 @@ export interface VisionContext {
   style_preferences: JSONObject;
   constraints: string[];
 }
-
 export interface VisionResult {
   interpretation: string;
   components: {
@@ -298,7 +278,6 @@ export interface VisionResult {
   confidence: number;
   suggestions: string[];
 }
-
 export interface DesignAnalysis {
   style: {
     colors: string[];
@@ -322,7 +301,6 @@ export interface DesignAnalysis {
     behavior: string[];
   };
 }
-
 export interface ComparisonResult {
   similarity: number;
   differences: {
@@ -332,7 +310,6 @@ export interface ComparisonResult {
   }[];
   recommendations: string[];
 }
-
 // Neural network types
 export interface TrainingData {
   inputs: number[][];
@@ -343,7 +320,6 @@ export interface TrainingData {
   learning_rate: number;
   metadata: JSONObject;
 }
-
 export interface ModelResult {
   model_id: string;
   accuracy: number;
@@ -354,7 +330,6 @@ export interface ModelResult {
   metrics: JSONObject;
   hyperparameters: JSONObject;
 }
-
 export interface InferenceResult {
   prediction: number[] | JSONObject;
   confidence: number;
@@ -362,7 +337,6 @@ export interface InferenceResult {
   model_version: string;
   metadata: JSONObject;
 }
-
 export interface OptimizationResult {
   best_params: JSONObject;
   best_score: number;

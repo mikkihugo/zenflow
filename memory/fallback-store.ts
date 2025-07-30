@@ -1,14 +1,13 @@
 /**
- * Fallback memory store for MCP server
- * Provides basic memory functionality when persistent storage is unavailable
+ * Fallback memory store for MCP server;
+ * Provides basic memory functionality when persistent storage is unavailable;
  */
-
 // =============================================================================
 // FALLBACK STORE TYPES
 // =============================================================================
 
 /**
- * Store operation result
+ * Store operation result;
  */
 export interface StoreResult {
   success: boolean;
@@ -19,38 +18,34 @@ export interface StoreResult {
   itemCount?: number;
   message?: string;
 }
-
 /**
- * Retrieve operation result
+ * Retrieve operation result;
  */
 export interface RetrieveResult {
   success: boolean;
   error?: string;
-  value?: any;
-  metadata?: Record<string, any>;
+  value?: unknown;
+  metadata?: Record<string, unknown>;
   timestamp?: number;
 }
-
 /**
- * List operation result
+ * List operation result;
  */
 export interface ListResult {
   success: boolean;
   error?: string;
   keys?: string[];
 }
-
 /**
- * Context operation result
+ * Context operation result;
  */
 export interface ContextResult {
   success: boolean;
   error?: string;
   context?: ContextItem[];
 }
-
 /**
- * Stats operation result
+ * Stats operation result;
  */
 export interface StatsResult {
   success: boolean;
@@ -62,66 +57,59 @@ export interface StatsResult {
     type: string;
   };
 }
-
 /**
- * Store entry
+ * Store entry;
  */
 export interface StoreEntry {
-  value: any;
+  value: unknown;
   timestamp: number;
   ttl: number | null;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
-
 /**
- * Store options
+ * Store options;
  */
 export interface StoreOptions {
   ttl?: number | null;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
-
 /**
- * Context item
+ * Context item;
  */
 export interface ContextItem {
   timestamp: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
-
 /**
- * Memory store interface
+ * Memory store interface;
  */
 export interface MemoryStore {
   initialize(): Promise<StoreResult>;
-  store(key: string, value: any, options?: StoreOptions): Promise<StoreResult>;
+  store(key: string, value: unknown, options?: StoreOptions): Promise<StoreResult>;
   retrieve(key: string): Promise<RetrieveResult>;
   list(pattern?: string): Promise<ListResult>;
   delete(key: string): Promise<StoreResult>;
   clear(): Promise<StoreResult>;
   getContext(contextId: string): Promise<ContextResult>;
-  addToContext(contextId: string, item: any): Promise<StoreResult>;
+  addToContext(contextId: string, item: unknown): Promise<StoreResult>;
   getStats(): Promise<StatsResult>;
 }
-
 // =============================================================================
 // FALLBACK STORE IMPLEMENTATION
 // =============================================================================
 
 /**
- * In-memory fallback store implementation
+ * In-memory fallback store implementation;
  */
 export class FallbackStore implements MemoryStore {
   private memory: Map<string, StoreEntry>;
   private contexts: Map<string, ContextItem[]>;
   private initialized: boolean;
-
   constructor() {
     this.memory = new Map<string, StoreEntry>();
     this.contexts = new Map<string, ContextItem[]>();
     this.initialized = false;
   }
-
   /**
    * Initialize the fallback store
    * @returns Initialization result
@@ -130,7 +118,6 @@ export class FallbackStore implements MemoryStore {
     this.initialized = true;
     return { success: true, message: 'Fallback store initialized' };
   }
-
   /**
    * Store a key-value pair
    * @param key - Storage key
@@ -138,13 +125,13 @@ export class FallbackStore implements MemoryStore {
    * @param options - Storage options
    * @returns Store operation result
    */
-  async store(key: string, value: any, options: StoreOptions = {}): Promise<StoreResult> {
+  async store(key: string, value: unknown, options: StoreOptions = {}): Promise<StoreResult> {
     try {
       const entry: StoreEntry = {
         value,
         timestamp: Date.now(),
-        ttl: options.ttl || null,
-        metadata: options.metadata || {},
+        ttl: options.ttl ?? null,
+        metadata: options.metadata ?? {},
       };
       this.memory.set(key, entry);
       return { success: true, key };
@@ -153,7 +140,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Retrieve a value by key
    * @param key - Storage key
@@ -183,7 +169,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * List keys matching a pattern
    * @param pattern - Key pattern (* for all)
@@ -201,7 +186,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Delete a key
    * @param key - Storage key
@@ -217,7 +201,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Clear all stored data
    * @returns Clear operation result
@@ -232,7 +215,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Get context items
    * @param contextId - Context identifier
@@ -240,28 +222,27 @@ export class FallbackStore implements MemoryStore {
    */
   async getContext(contextId: string): Promise<ContextResult> {
     try {
-      const context = this.contexts.get(contextId) || [];
+      const context = this.contexts.get(contextId) ?? [];
       return { success: true, context };
     } catch (error: any) {
       console.error('Fallback getContext error:', error);
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Add item to context
    * @param contextId - Context identifier
    * @param item - Item to add
    * @returns Store operation result
    */
-  async addToContext(contextId: string, item: any): Promise<StoreResult> {
+  async addToContext(contextId: string, item: unknown): Promise<StoreResult> {
     try {
       if (!this.contexts.has(contextId)) {
         this.contexts.set(contextId, []);
       }
       const context = this.contexts.get(contextId)!;
       const contextItem: ContextItem = {
-        ...item,
+        ...(item as Record<string, unknown>),
         timestamp: Date.now(),
       };
       context.push(contextItem);
@@ -277,7 +258,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Get storage statistics
    * @returns Stats operation result
@@ -301,7 +281,6 @@ export class FallbackStore implements MemoryStore {
       return { success: false, error: error.message };
     }
   }
-
   /**
    * Check if store is initialized
    * @returns Initialization status
@@ -309,7 +288,6 @@ export class FallbackStore implements MemoryStore {
   isInitialized(): boolean {
     return this.initialized;
   }
-
   /**
    * Get memory usage information
    * @returns Memory usage stats
@@ -321,7 +299,6 @@ export class FallbackStore implements MemoryStore {
     };
   }
 }
-
 // =============================================================================
 // EXPORTS
 // =============================================================================

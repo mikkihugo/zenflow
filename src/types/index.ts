@@ -1,6 +1,6 @@
 /**
- * Claude Code Flow - Core Type Definitions
- * Comprehensive TypeScript architecture for the entire system
+ * Claude Code Flow - Core Type Definitions;
+ * Comprehensive TypeScript architecture for the entire system;
  */
 
 export * from './api.js';
@@ -35,7 +35,6 @@ declare global {
       processId: string;
       instanceId: string;
     }
-
     interface Configuration {
       core: import('./core.js').CoreConfig;
       database: import('./database.js').DatabaseConfig;
@@ -45,10 +44,9 @@ declare global {
     }
   }
 }
-
 // Module augmentation for Node.js global
 declare global {
-  const claudeCodeFlow: {
+  const _claudeCodeFlow: {
     system: ClaudeCodeFlow.SystemContext;
     config: ClaudeCodeFlow.Configuration;
     hiveMind?: import('./hive-mind.js').HiveMind;

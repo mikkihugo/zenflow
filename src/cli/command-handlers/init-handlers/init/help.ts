@@ -1,11 +1,10 @@
 /**
- * Help Module
- * Converted from JavaScript to TypeScript
+ * Help Module;
+ * Converted from JavaScript to TypeScript;
  */
-
 // help.js - Help text for init command
 
-export function showInitHelp() {
+export function showInitHelp(): unknown {
   console.warn('Initialize Claude Code integration files with Claude Flow v2.0.0');
   console.warn();
   console.warn('Usage: claude-zen init [options]');
@@ -51,15 +50,15 @@ export function showInitHelp() {
   console.warn('🚀 STANDARD INITIALIZATION:');
   console.warn('  npx claude-zen@latest init --sparc --force  # ⭐ RECOMMENDED: Optimized setup');
   console.warn('  npx claude-zen@latest init --sparc          # Standard SPARC setup');
-  console.warn(
-    '  claude-zen init --sparc --force             # Optimized setup (existing project)'
-  );
-  console.warn('  claude-zen init --sparc --modes architect,tdd,code  # Selective initialization');
-  console.warn('  claude-zen init --dry-run --sparc          # Preview initialization');
-  console.warn('  claude-zen init --minimal                  # Minimal setup');
-  console.warn();
-  console.warn('🔄 VALIDATION & ROLLBACK:');
-  console.warn('  claude-zen init --validate                 # Validate existing setup');
+  console.warn(;
+  ('  claude-zen init --sparc --force             # Optimized setup (existing project)');
+  )
+  console.warn('  claude-zen init --sparc --modes architect,tdd,code  # Selective initialization')
+  console.warn('  claude-zen init --dry-run --sparc          # Preview initialization')
+  console.warn('  claude-zen init --minimal                  # Minimal setup')
+  console.warn()
+  console.warn('🔄 VALIDATION & ROLLBACK:')
+  console.warn('  claude-zen init --validate                 # Validate existing setup')
   console.warn('  claude-zen init --rollback --full          # Full system rollback');
   console.warn('  claude-zen init --rollback --partial --phase sparc-init  # Rollback SPARC only');
   console.warn('  claude-zen init --list-backups             # Show available backups');

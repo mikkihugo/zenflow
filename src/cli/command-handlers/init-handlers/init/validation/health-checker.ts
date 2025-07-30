@@ -3,56 +3,54 @@
 export class HealthChecker {
   constructor(workingDir = workingDir;
 }
-
 /**
- * Check SPARC mode availability
+ * Check SPARC mode availability;
  */
 async;
 checkModeAvailability();
 {
-  const result = {success = [
-        'architect',
-        'code',
-        'tdd',
-        'spec-pseudocode',
-        'integration',
-        'debug',
-        'security-review',
-        'refinement-optimization-mode',
-        'docs-writer',
-        'devops',
-        'mcp',
-        'swarm',
+  const _result = {success = [;
+        'architect',;
+        'code',;
+        'tdd',;
+        'spec-pseudocode',;
+        'integration',;
+        'debug',;
+        'security-review',;
+        'refinement-optimization-mode',;
+        'docs-writer',;
+        'devops',;
+        'mcp',;
+        'swarm',;
       ];
-
   result.modes.total = expectedModes.length;
-
   // Check each mode
   for (const mode of expectedModes) {
-    const isAvailable = await this.checkSingleModeAvailability(mode);
+    const _isAvailable = await this.checkSingleModeAvailability(mode);
     if (isAvailable) {
       result.modes.available++;
     } else {
       result.modes.unavailable.push(mode);
     }
   }
-
   // Determine overall success
   if (result.modes.available === 0) {
     result.success = false;
     result.errors.push('No SPARC modes are available');
   } else if (result.modes.unavailable.length > 0) {
-    result.warnings.push(
-          `${result.modes.unavailable.length} modesunavailable = false;
-      result.errors.push(`Mode availability check failed = {success = ['.roo/templates', '.claude/commands'];
-
+    result.warnings.push(;
+    `${result.modes.unavailable.length} modesunavailable = false;
+      result.errors.push(`;
+    Mode;
+    availability;
+    check;
+    failed = {success = ['.roo/templates', '.claude/commands'];
     for (const dir of templateDirs) {
-      const dirPath = `${this.workingDir}/${dir}`;
-
+      const _dirPath = `${this.workingDir}/${dir}`;
       try {
-        const stat = await node.stat(dirPath);
+        const _stat = await node.stat(dirPath);
         if (stat.isDirectory) {
-          const templateCheck = await this.checkTemplateDirectory(dirPath);
+          const _templateCheck = await this.checkTemplateDirectory(dirPath);
           result.templates.found.push(...templateCheck.found);
           result.templates.missing.push(...templateCheck.missing);
           result.templates.corrupted.push(...templateCheck.corrupted);
@@ -61,15 +59,12 @@ checkModeAvailability();
         result.templates.missing.push(dir);
       }
     }
-
     // Check core template files
-    const coreTemplates = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
-
+    const _coreTemplates = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
     for (const template of coreTemplates) {
-      const templatePath = `${this.workingDir}/${template}`;
-
+      const _templatePath = `${this.workingDir}/${template}`;
       try {
-        const content = await node.readTextFile(templatePath);
+        const _content = await node.readTextFile(templatePath);
         if (content.length < 50) {
           result.templates.corrupted.push(template);
         } else {
@@ -79,7 +74,6 @@ checkModeAvailability();
         result.templates.missing.push(template);
       }
     }
-
     // Assess results
     if (result.templates.corrupted.length > 0) {
       result.success = false;
@@ -89,22 +83,20 @@ checkModeAvailability();
       if (!roomodesCheck.consistent) {
         result.warnings.push('Inconsistency between .roomodes and available commands');
       }
-
       // Check consistency between CLAUDE.md and actual setup
-      const claudeCheck = await this.checkClaudeConfigConsistency();
+      const _claudeCheck = await this.checkClaudeConfigConsistency();
       result.consistency.claude = claudeCheck;
       if (!claudeCheck.consistent) {
         result.warnings.push('Inconsistency between CLAUDE.md and actual setup');
       }
-
       // Check memory configuration consistency
-      const memoryCheck = await this.checkMemoryConsistency();
+      const _memoryCheck = await this.checkMemoryConsistency();
       result.consistency.memory = memoryCheck;
       if (!memoryCheck.consistent) {
         result.warnings.push('Memory configuration inconsistency detected');
       }
     }
-    catch(error)
+    catch (/* error */)
     {
       result.success = false;
       result.errors.push(`Configuration consistency check failed = {success = await this.checkDiskSpace();
@@ -112,113 +104,101 @@ checkModeAvailability();
       if(!diskCheck.adequate) {
         result.warnings.push('Low disk space detected');
       }
-
+;
       // Check memory usage
-      const memoryCheck = await this.checkMemoryUsage();
+      const _memoryCheck = await this.checkMemoryUsage();
       result.resources.memory = memoryCheck;
       if(!memoryCheck.adequate) {
         result.warnings.push('High memory usage detected');
       }
-
+;
       // Check file descriptors
-      const fdCheck = await this.checkFileDescriptors();
+      const _fdCheck = await this.checkFileDescriptors();
       result.resources.fileDescriptors = fdCheck;
       if(!fdCheck.adequate) {
         result.warnings.push('Many open file descriptors');
       }
-
+;
       // Check process limits
-      const processCheck = await this.checkProcessLimits();
+      const _processCheck = await this.checkProcessLimits();
       result.resources.processes = processCheck;
       if(!processCheck.adequate) {
         result.warnings.push('Process limits may affect operation');
       }
-    } catch(error) {
+    } catch (/* error */) {
       result.warnings.push(`System resource check failed = {success = await this.checkFileSystemHealth();
       result.diagnostics.filesystem = fsHealth;
       if (!fsHealth.healthy) {
         result.success = false;
         result.errors.push(...fsHealth.errors);
       }
-
       // Process health
-      const processHealth = await this.checkProcessHealth();
+      const _processHealth = await this.checkProcessHealth();
       result.diagnostics.processes = processHealth;
       if (!processHealth.healthy) {
         result.warnings.push(...processHealth.warnings);
       }
-
       // Network health (for external dependencies)
-      const networkHealth = await this.checkNetworkHealth();
+      const _networkHealth = await this.checkNetworkHealth();
       result.diagnostics.network = networkHealth;
       if (!networkHealth.healthy) {
         result.warnings.push(...networkHealth.warnings);
       }
-
       // Integration health
-      const integrationHealth = await this.checkIntegrationHealth();
+      const _integrationHealth = await this.checkIntegrationHealth();
       result.diagnostics.integration = integrationHealth;
       if (!integrationHealth.healthy) {
         result.warnings.push(...integrationHealth.warnings);
       }
     }
-    catch(error)
+    catch (/* error */)
     {
       result.success = false;
       result.errors.push(`Health diagnosticsfailed = `${this.workingDir}/.roomodes`;
-      const content = await node.readTextFile(roomodesPath);
-      const config = JSON.parse(content);
-
+      const _content = await node.readTextFile(roomodesPath);
+      const _config = JSON.parse(content);
       return !!(config.modes?.[mode]);
-    }
-    catch
-    return false;
-  }
-
-  async;
-  checkTemplateDirectory(dirPath);
-  : any
-  {
-    const result = {found = `${dirPath}/${entry.name}`;
-
-    try {
-      const stat = await node.stat(filePath);
-      if (stat.size === 0) {
-        result.corrupted.push(entry.name);
-      } else {
-        result.found.push(entry.name);
+      //   // LINT: unreachable code removed}
+      catch
+      return false;
+      //   // LINT: unreachable code removed}
+      async;
+      checkTemplateDirectory(dirPath);
+      : unknown
+      {
+        const _result = {found = `${dirPath}/${entry.name}`;
+        try {
+          const _stat = await node.stat(filePath);
+          if (stat.size === 0) {
+            result.corrupted.push(entry.name);
+          } else {
+            result.found.push(entry.name);
+          }
+        } catch {
+          result.corrupted.push(entry.name);
+        }
       }
-    } catch {
-      result.corrupted.push(entry.name);
     }
   }
+  catch
+  return result;
 }
-} catch
+async;
+checkRoomodesConsistency();
 {
-  // Directory not accessible
-}
-
-return result;
-}
-
-  async checkRoomodesConsistency()
-{
-  const result = {consistent = `${this.workingDir}/.roomodes`;
-  const content = await node.readTextFile(roomodesPath);
-  const config = JSON.parse(content);
-
+  const _result = {consistent = `${this.workingDir}/.roomodes`;
+  const _content = await node.readTextFile(roomodesPath);
+  const _config = JSON.parse(content);
   if (config.modes) {
-    const commandsDir = `${this.workingDir}/.claude/commands`;
-
+    const _commandsDir = `${this.workingDir}/.claude/commands`;
     try {
-      const commandFiles = [];
+      const _commandFiles = [];
       for await (const entry of node.readDir(commandsDir)) {
         if (entry.isFile && entry.name.endsWith('.js')) {
           commandFiles.push(entry.name.replace('.js', ''));
         }
       }
-
-      const modeNames = Object.keys(config.modes);
+      const _modeNames = Object.keys(config.modes);
       for (const mode of modeNames) {
         if (!commandFiles.some((cmd) => cmd.includes(mode))) {
           result.consistent = false;
@@ -236,24 +216,21 @@ catch
   result.consistent = false;
   result.issues.push('Cannot read .roomodes file');
 }
-
 return result;
 }
-
-  async checkClaudeConfigConsistency()
+async
+checkClaudeConfigConsistency()
 {
-  const result = {consistent = `${this.workingDir}/CLAUDE.md`;
-  const content = await node.readTextFile(claudePath);
-
+  const _result = {consistent = `${this.workingDir}/CLAUDE.md`;
+  const _content = await node.readTextFile(claudePath);
   // Check if mentioned commands exist
-  const mentionedCommands = ['claude-zen sparc', 'npm run build', 'npm run test'];
-
+  const _mentionedCommands = ['claude-zen sparc', 'npm run build', 'npm run test'];
   for (const command of mentionedCommands) {
     if (content.includes(command)) {
       // Check if the command is actually available
-      const parts = command.split(' ');
+      const _parts = command.split(' ');
       if (parts[0] === 'claude-zen') {
-        const executablePath = `${this.workingDir}/claude-zen`;
+        const _executablePath = `${this.workingDir}/claude-zen`;
         try {
           await node.stat(executablePath);
         } catch {
@@ -269,23 +246,22 @@ catch
   result.consistent = false;
   result.issues.push('Cannot read CLAUDE.md');
 }
-
 return result;
 }
-
-  async checkMemoryConsistency()
+async
+checkMemoryConsistency()
 {
-    const result = {consistent = `${this.workingDir}/memory/claude-zen-data.json`;
-      const data = JSON.parse(await node.readTextFile(memoryDataPath));
-
+    const _result = {consistent = `${this.workingDir}/memory/claude-zen-data.json`;
+      const _data = JSON.parse(await node.readTextFile(memoryDataPath));
+;
       // Basic structure validation
-      if(!data.agents || !data.tasks) {
+      if(!data.agents  ?? !data.tasks) {
         result.consistent = false;
         result.issues.push('Memory data structure incomplete');
       }
-
+;
       // Check directory structure
-      const expectedDirs = ['agents', 'sessions'];
+      const _expectedDirs = ['agents', 'sessions'];
       for(const dir of expectedDirs) {
         try {
           await node.stat(`${this.workingDir}/memory/${dir}`);
@@ -294,19 +270,19 @@ return result;
           result.issues.push(`Memory directorymissing = false;
       result.issues.push('Cannot validate memory structure');
     }
-
+;
     return result;
-  }
-
+    //   // LINT: unreachable code removed}
+;
   async checkDiskSpace() {
-    const result = {adequate = new node.Command('df', {args = await command.output();
-
+    const _result = {adequate = new node.Command('df', {args = await command.output();
+;
       if(success) {
-        const output = new TextDecoder().decode(stdout);
-        const lines = output.trim().split('\n');
-
+        const _output = new TextDecoder().decode(stdout);
+        const _lines = output.trim().split('\n');
+;
         if(lines.length >= 2) {
-          const parts = lines[1].split(/\s+/);
+          const _parts = lines[1].split(/\s+/);
           if(parts.length >= 4) {
             result.available = parseInt(parts[3]) / 1024; // MB
             result.used = parseInt(parts[2]) / 1024; // MB
@@ -318,21 +294,21 @@ return result;
       // Can't check - assume adequate
       result.adequate = true;
     }
-
+;
     return result;
-  }
-
+    //   // LINT: unreachable code removed}
+;
   async checkMemoryUsage() {
-    const result = {adequate = new node.Command('free', {args = await command.output();
-
+    const _result = {adequate = new node.Command('free', {args = await command.output();
+;
       if(success) {
-        const output = new TextDecoder().decode(stdout);
-        const lines = output.trim().split('\n');
-
+        const _output = new TextDecoder().decode(stdout);
+        const _lines = output.trim().split('\n');
+;
         for(const line of lines) {
           if (line.startsWith('Mem = line.split(/\s+/);
             if(parts.length >= 3) {
-              result.available = parseInt(parts[6] || parts[3]); // Available
+              result.available = parseInt(parts[6]  ?? parts[3]); // Available
               result.used = parseInt(parts[2]); // Used
               result.adequate = result.available > 100; // At least 100MB
             }
@@ -344,15 +320,15 @@ return result;
       // Can't check - assume adequate
       result.adequate = true;
     }
-
+;
     return result;
-  }
-
+    //   // LINT: unreachable code removed}
+;
   async checkFileDescriptors() {
-    const result = {adequate = new node.Command('sh', {args = await command.output();
-
+    const _result = {adequate = new node.Command('sh', {args = await command.output();
+;
       if(success) {
-        const count = parseInt(new TextDecoder().decode(stdout).trim());
+        const _count = parseInt(new TextDecoder().decode(stdout).trim());
         result.open = count;
         result.adequate = count < 100; // Arbitrary threshold
       }
@@ -360,15 +336,15 @@ return result;
       // Can't check - assume adequate
       result.adequate = true;
     }
-
+;
     return result;
-  }
-
+    //   // LINT: unreachable code removed}
+;
   async checkProcessLimits() {
-    const result = {adequate = new node.Command('ulimit', {args = await command.output();
-
+    const _result = {adequate = new node.Command('ulimit', {args = await command.output();
+;
       if(success) {
-        const output = new TextDecoder().decode(stdout);
+        const _output = new TextDecoder().decode(stdout);
         // Parse ulimit output for important limits
         result.adequate = !output.includes('0'); // Very basic check
       }
@@ -376,40 +352,41 @@ return result;
       // Can't check - assume adequate
       result.adequate = true;
     }
-
+;
     return result;
-  }
-
+    //   // LINT: unreachable code removed}
+;
   async checkFileSystemHealth() {
     return {
-      healthy: true,
-      errors: [],
-      readWrite: true,
-      permissions: true,
+      healthy: true,;
+    // errors: [],; // LINT: unreachable code removed
+      readWrite: true,;
+      permissions: true,;
     };
   }
-
+;
   async checkProcessHealth() {
     return {
-      healthy: true,
-      warnings: [],
-      processes: [],
+      healthy: true,;
+    // warnings: [],; // LINT: unreachable code removed
+      processes: [],;
     };
   }
-
+;
   async checkNetworkHealth() {
     return {
-      healthy: true,
-      warnings: [],
-      connectivity: true,
+      healthy: true,;
+    // warnings: [],; // LINT: unreachable code removed
+      connectivity: true,;
     };
   }
-
+;
   async checkIntegrationHealth() {
     return {
-      healthy: true,
-      warnings: [],
-      integrations: {},
+      healthy: true,;
+    // warnings: [],; // LINT: unreachable code removed
+      integrations: {},;
     };
   }
 }
+;

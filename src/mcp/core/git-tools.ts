@@ -1,77 +1,79 @@
 /**
- * Git Tools for MCP Server
- * Provides comprehensive Git operations through MCP protocol
+ * Git Tools for MCP Server;
+ * Provides comprehensive Git operations through MCP protocol;
  */
 
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 
-const _execAsync = promisify(exec);
-
+const __execAsync = promisify(exec);
 // =============================================================================
 // GIT TYPES
 // =============================================================================
 
 /**
- * Git command execution result
+ * Git command execution result;
  */
 export interface GitCommandResult {success = ============================================================================
 // GIT COMMAND EXECUTION
 // =============================================================================
 
 /**
- * Execute a git command safely
- * @param command - Git command to execute
- * @param cwd - Working directory
- * @returns Git command result
- */
-export async function executeGitCommand(command = process.cwd()): Promise<GitCommandResult> {
+ * Execute a git command safely;
+ * @param command - Git command to execute;
+ * @param cwd - Working directory;
+ * @returns Git command result;
+    // */ // LINT: unreachable code removed
+export async function executeGitCommand(
+  command = process.cwd(: unknown)
+): Promise<GitCommandResult> {
   try {
     const { stdout
-, stderr } = await execAsync(`git $
+, stderr }
+  = await execAsync(`git $
+  command
+`,
 {
-  command;
-}
-`, { 
-      cwd,maxBuffer = ============================================================================
-// GIT TOOLS REGISTRY
-// =============================================================================
+  cwd,maxBuffer = ============================================================================;
+  // GIT TOOLS REGISTRY
+  // =============================================================================
 
-/**
- * Git tools configuration
- */
-export const gitTools = {git_status = 'status';
-      if (args.short) cmd += ' -s';
-      if (args.branch) cmd += ' -b';
-      return await executeGitCommand(cmd, args.path);
-    }
-  },git_add = 'add';
-      if (args.all) {
-        cmd += ' -A';
-      } else if (args.files?.length && args.files.length > 0) {
-        cmd += `;
-$;
-{
-  args.files.join(' ');
+  /**
+   * Git tools configuration;
+   */
+  export const _gitTools = {git_status = 'status';
+  if (args.short) cmd += ' -s';
+  if (args.branch) cmd += ' -b';
+  return await executeGitCommand(cmd, args.path);
+  //   // LINT: unreachable code removed}
 }
+,git_add = 'add'
+if (args.all) {
+  cmd += ' -A';
+} else if (args.files?.length && args.files.length > 0) {
+  cmd += `;
+$;
+args.files.join(' ');
 `;
-      } else {
-        cmd += ' .';
-      }
-      if (args.patch) cmd += ' -p';
-      return await executeGitCommand(cmd, args.path);
-    }
-  },git_commit = 'commit';
-      if (args.amend) cmd += ' --amend';
-      if (args.noVerify) cmd += ' --no-verify';
-      cmd += ` - m;
+} else {
+  cmd += ' .';
+}
+if (args.patch) cmd += ' -p';
+return await executeGitCommand(cmd, args.path);
+//   // LINT: unreachable code removed}
+},git_commit = 'commit'
+if (args.amend) cmd += ' --amend';
+if (args.noVerify) cmd += ' --no-verify';
+cmd += ` - m;
 '${args.message.replace(/' / g, '\\"';
-)}"`;
+)
+}
+"`;
 return await executeGitCommand(cmd, args.path);
 }
   },git_push = `push $
 {
-  args.remote || 'origin';
+  args.remote ?? 'origin';
 }
 `;
       if (args.branch) cmd += `;
@@ -83,12 +85,12 @@ $;
       if (args.force) cmd += ' --force';
       if (args.setUpstream) cmd += ' -u';
       return await executeGitCommand(cmd, args.path);
-    }
+    //   // LINT: unreachable code removed}
   },git_pull = `;
 pull;
 $;
 {
-  args.remote || 'origin';
+  args.remote ?? 'origin';
 }
 `;
       if (args.branch) cmd += `;
@@ -99,15 +101,15 @@ $;
 `;
       if (args.rebase) cmd += ' --rebase';
       return await executeGitCommand(cmd, args.path);
-    }
+    //   // LINT: unreachable code removed}
   },git_branch = '';
       switch (args.action) {
-        case 'list':
+        case 'list':;
           cmd = 'branch';
           if (args.all) cmd += ' -a';
           else if (args.remote) cmd += ' -r';
           break;
-        case 'create':
+        case 'create':;
           cmd = `;
 checkout - b;
 $;
@@ -116,7 +118,7 @@ $;
 }
 `;
           break;
-        case 'delete':
+        case 'delete':;
           cmd = `;
 branch - d;
 $;
@@ -125,7 +127,7 @@ $;
 }
 `;
           break;
-        case 'rename':
+        case 'rename':;
           cmd = `;
 branch - m;
 $;
@@ -138,7 +140,7 @@ $;
 }
 `;
           break;
-        case 'checkout':
+        case 'checkout':;
           cmd = `;
 checkout;
 $;
@@ -150,7 +152,7 @@ $;
         default = 'branch';
       }
       return await executeGitCommand(cmd, args.path);
-    }
+    //   // LINT: unreachable code removed}
   },git_log = 'log';
       if (args.limit) cmd += ` - n;
 $;
@@ -165,7 +167,7 @@ author = "${args.author}"`;
       if (args.since) cmd += `--;
 since = '${args.since}'`;
       return await executeGitCommand(cmd, args.path);
-    }
+    //   // LINT: unreachable code removed}
   },git_diff = 'diff';
       if (args.staged) cmd += ' --staged';
       if (args.nameOnly) cmd += ' --name-only';
@@ -176,7 +178,7 @@ $;
 }
 `;
       return await executeGitCommand(cmd, args.path);
-    }
+    //   // LINT: unreachable code removed}
   },git_clone = `;
 clone;
 $;
@@ -204,18 +206,18 @@ $;
 }
 `;
       return await executeGitCommand(cmd);
-    }
+    //   // LINT: unreachable code removed}
   },git_stash = 'stash';
       switch (args.action) {
-        case 'save':
+        case 'save':;
           cmd += ' save';
           if (args.message) cmd += `;
 '${args.message}'`;
           break;
-        case 'list':
+        case 'list':;
           cmd += ' list';
           break;
-        case 'apply':
+        case 'apply':;
           cmd += ' apply';
           if (args.index !== undefined) cmd += `;
 stash;
@@ -223,15 +225,15 @@ stash;
 }`
 break;
 case 'pop':
-          cmd += ' pop'
+cmd += ' pop'
 if (args.index !== undefined) cmd += ` stash@{${args.index}}`;
 break;
 case 'drop':
-          cmd += ' drop'
+cmd += ' drop'
 if (args.index !== undefined) cmd += ` stash@{${args.index}}`;
 break;
 case 'clear':
-          cmd += ' clear'
+cmd += ' clear'
 break;
 }
 return await executeGitCommand(cmd, args.path);
@@ -248,10 +250,10 @@ switch (args.action) {
     cmd += ` remove ${args.name}`;
     break;
   case 'show':
-    cmd += ` show ${args.name || 'origin'}`;
+    cmd += ` show ${args.name ?? 'origin'}`;
     break;
   case 'get-url':
-    cmd += ` get-url ${args.name || 'origin'}`;
+    cmd += ` get-url ${args.name ?? 'origin'}`;
     break;
 }
 return await executeGitCommand(cmd, args.path);
@@ -279,13 +281,12 @@ return await executeGitCommand(cmd, args.path);
 }
   }
 }
-
 // =============================================================================
 // REGISTRATION FUNCTIONS
 // =============================================================================
 
 /**
- * Tool registry interface for registration
+ * Tool registry interface for registration;
  */
 export interface ToolsRegistry {
   registerTool(name => {
@@ -293,5 +294,4 @@ export interface ToolsRegistry {
   }
 )
 }
-
 export default gitTools;

@@ -1,38 +1,33 @@
 #!/usr/bin/env node
-
 /**
- * 🤖 ENHANCED API GENERATION FROM MEOW CLI
- *
- * Generates comprehensive REST/GraphQL/WebSocket APIs from CLI commands
- * with full OpenAPI documentation, validation, and real-time features.
+ * 🤖 ENHANCED API GENERATION FROM MEOW CLI;
+ *;
+ * Generates comprehensive REST/GraphQL/WebSocket APIs from CLI commands;
+ * with full OpenAPI documentation, validation, and real-time features.;
  */
-
 /**
- * Generate comprehensive OpenAPI specification from CLI commands
- * @param {Object} cli - Meow CLI instance
- * @returns {Object} Complete OpenAPI 3.0 specification
- */
+ * Generate comprehensive OpenAPI specification from CLI commands;
+ * @param {Object} cli - Meow CLI instance;
+ * @returns {Object} Complete OpenAPI 3.0 specification;
+    // */ // LINT: unreachable code removed
 export function generateApiFromMeow(cli => {
-    const openapi = {
+    const _openapi = {
       openapi = {get = {get = {post = {
       post => {
-      const commandPath = `/api/execute/${cmd.name}`;
-
+      const _commandPath = `/api/execute/${cmd.name}`;
 openapi.paths[commandPath] = {
         post = {get = {get = {};
-
-Object.entries(flags).forEach(([flagName, flagConfig]) => {
+Object.entries(flags: unknown).forEach(([flagName, flagConfig]) => {
     if(typeof flagConfig === 'object' && flagConfig !== null) {
       schema[flagName] = {type = flagConfig.choices;
       }
-      
+;
       if(flagConfig.required) {
         schema[flagName].required = true;
       }
     } else {
       schema[flagName] = {
         type = {};
-
 Object.entries(flags).forEach(([flagName, flagConfig]) => {
   if (typeof flagConfig === 'object' && flagConfig !== null) {
     if (flagConfig.default !== undefined) {
@@ -48,14 +43,12 @@ Object.entries(flags).forEach(([flagName, flagConfig]) => {
     example[flagName] = `example-${flagName}`;
   }
 });
-
 return example;
 }
-
 /**
- * Generate GraphQL schema from commands (future enhancement)
+ * Generate GraphQL schema from commands (future enhancement);
  */
-export function generateGraphQLSchema(commands = > commands,command = > commands.find(_cmd => cmd.name === name)
+export function generateGraphQLSchema(commands = > commands: unknown, command = > commands.find(_cmd => cmd.name === name: unknown)
 },Mutation = [], flags =
 {
 }
@@ -63,15 +56,14 @@ export function generateGraphQLSchema(commands = > commands,command = > commands
 {
   // This would call the actual command execution
   return {
-            success: true,
-            result: {},
-            sessionId: Date.now().toString(),
-            duration: 100
-          };
+            success: true,;
+  // result: { // LINT: unreachable code removed},;
+  sessionId: Date.now().toString(),;
+  duration: 100;
+}
 }
 }
     }
   }
 }
-
 export default generateApiFromMeow;

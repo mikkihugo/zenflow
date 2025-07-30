@@ -1,20 +1,17 @@
 /**
- * Standalone swarm executable for npm package
- * This handles swarm execution when installed via npm
+ * Standalone swarm executable for npm package;
+ * This handles swarm execution when installed via npm;
  */
-
 import { spawn } from
 'node = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+const ___dirname = dirname(__filename);
 // Parse arguments
-const args = [];
-const flags = {};
-
+const _args = [];
+const _flags = {};
 for (let i = 0; i < process.args.length; i++) {
-  const arg = process.args[i];
+  const _arg = process.args[i];
   if (arg.startsWith('--')) {
-    const flagName = arg.substring(2);
+    const _flagName = arg.substring(2);
     if (nextArg && !nextArg.startsWith('--')) {
       flags[flagName] = nextArg;
       i++; // Skip the next argument
@@ -25,29 +22,25 @@ for (let i = 0; i < process.args.length; i++) {
     args.push(arg);
   }
 }
-
-const objective = args.join(' ');
-
+const _objective = args.join(' ');
 if (!objective && !flags.help) {
-  console.error('❌Usage = [
-  join(__dirname, '../../swarm-demo.ts'),
-  join(__dirname, '../../swarm-demo-enhanced.ts'),
-  join(__dirname, '../../../swarm-demo.ts'),
+  console.error('❌Usage = [;
+  join(__dirname, '../../swarm-demo.ts'),;
+  join(__dirname, '../../swarm-demo-enhanced.ts'),;
+  join(__dirname, '../../../swarm-demo.ts'),;
   ]
-
-  let swarmPath = null;
+  const _swarmPath = null;
   for (const path of possiblePaths) {
     if (existsSync(path)) {
       swarmPath = path;
       break;
     }
   }
-
   if (!swarmPath) {
     // Fallback to inline implementation without calling back to swarm.js
     console.warn('🐝 Launching swarm system...');
     console.warn(`📋Objective = `swarm_${Math.random().toString(36).substring(2, 11)}_${Math.random().toString(36).substring(2, 11)}`;
-
+;
   if(flags['dry-run']) {
     console.warn(`🆔 SwarmID = = false}`);
     console.warn(`🔒Encryption = await import('child_process');
@@ -56,15 +49,13 @@ if (!objective && !flags.help) {
     try {
       execSync('which claude', {stdio = `Execute a swarm coordination task with the following configuration = await import('child_process');
 
-    const claudeArgs = [];
-
+    const _claudeArgs = [];
     // Add auto-permission flag if requested
-    if (flags.auto || flags['dangerously-skip-permissions']) {
+    if (flags.auto ?? flags['dangerously-skip-permissions']) {
       claudeArgs.push('--dangerously-skip-permissions');
     }
-
     // Spawn claude process
-    const claudeProcess = spawn('claude', claudeArgs, {
+    const _claudeProcess = spawn('claude', claudeArgs, {
       stdio => {
       claudeProcess.on('close', (_code) => {
         if(_code === 0) {
@@ -74,14 +65,13 @@ if (!objective && !flags.help) {
   }
 }
 )
-
 claudeProcess.on('error', (err) =>
 {
   reject(err);
 }
 )
 })
-} catch(error)
+} catch (/* error */)
 {
     // Fallback if Claude execution fails
     console.warn(`✅ Swarm initialized withID = [objective];
@@ -91,9 +81,10 @@ claudeProcess.on('error', (err) =>
       swarmArgs.push(String(value));
     }
   }
-
-  const node = spawn('node', [swarmPath, ...swarmArgs], {
+;
+  const _node = spawn('node', [swarmPath, ...swarmArgs], {
     stdio => {
-    exit(code || 0);
+    exit(code  ?? 0);
   });
 }
+;

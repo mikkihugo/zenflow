@@ -1,22 +1,22 @@
 /**
- * Basic Claude Zen Server Setup Example
- * Demonstrates how to start the schema-driven API server
+ * Basic Claude Zen Server Setup Example;
+ * Demonstrates how to start the schema-driven API server;
  */
 
 import { CLAUDE_ZEN_SCHEMA } from '../src/api/claude-zen-schema.js';
 import { ClaudeZenServer } from '../src/api/claude-zen-server.js';
 
-async function basicServerExample() {
+async function basicServerExample(): unknown {
   console.warn('🚀 Starting Basic Claude Zen Server Example');
-
+;
   // Create server instance with configuration
-  const server = new ClaudeZenServer({
-    port: 3001,
-    host: '0.0.0.0',
-    schema: CLAUDE_ZEN_SCHEMA,
-  });
-
-  try {
+  const _server = new ClaudeZenServer({
+    port: 3001,;
+    host: '0.0.0.0',;
+    schema: CLAUDE_ZEN_SCHEMA,;
+  }
+)
+try {
     // Start the server
     await server.start();
     console.warn('✅ Server started successfully');
@@ -28,23 +28,23 @@ async function basicServerExample() {
     server.generatedRoutes.forEach((route) => {
       console.warn(`  ${route.method.toUpperCase()} ${route.path} - ${route.description}`);
     });
-
+;
     // Example API calls
     console.warn('\n🔗 Making example API calls...');
-
+;
     // Get visions
-    const visionsResponse = await fetch('http://localhost:3001/api/v1/visions');
-    const visions = await visionsResponse.json();
+    const _visionsResponse = await fetch('http://localhost:3001/api/v1/visions');
+    const _visions = await visionsResponse.json();
     console.warn('Visions:', visions);
-
+;
     // Get ADRs
-    const adrsResponse = await fetch('http://localhost:3001/api/adrs');
-    const adrs = await adrsResponse.json();
+    const _adrsResponse = await fetch('http://localhost:3001/api/adrs');
+    const _adrs = await adrsResponse.json();
     console.warn('ADRs:', adrs);
-
+;
     // Keep server running for demonstration
     console.warn('\n⏳ Server running... Press Ctrl+C to stop');
-
+;
     // Graceful shutdown handling
     process.on('SIGINT', async () => {
       console.warn('\n🛑 Shutting down server...');
@@ -52,55 +52,57 @@ async function basicServerExample() {
       console.warn('✅ Server stopped');
       process.exit(0);
     });
-  } catch (error) {
+  } catch (/* error */) {
     console.error('❌ Server startup failed:', error);
     process.exit(1);
   }
 }
-
 // Example with custom middleware
-async function advancedServerExample() {
+async
+function advancedServerExample(): unknown {
   console.warn('🚀 Starting Advanced Claude Zen Server Example');
-
-  const server = new ClaudeZenServer({
-    port: 3002,
-    host: '0.0.0.0',
-  });
-
-  // Add custom middleware
-  server.app.use('/api/custom', (req, _res, next) => {
-    console.warn(`Custom middleware: ${req.method} ${req.path}`);
-    next();
-  });
-
-  // Add custom routes
-  server.app.get('/api/custom/health', (_req, res) => {
-    res.json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
-    });
-  });
-
-  // Monitor server events
-  server.on('request', (data) => {
-    console.warn(`📨 Request: ${data.method} ${data.path}`);
-  });
-
-  server.on('error', (error) => {
-    console.error('🚨 Server error:', error);
-  });
-
-  await server.start();
-  console.warn('✅ Advanced server started');
-  console.warn(`🌐 Custom health endpoint: http://localhost:3002/api/custom/health`);
+;
+  const _server = new ClaudeZenServer({
+    port: 3002,;
+    host: '0.0.0.0',;
+  }
+)
+// Add custom middleware
+server.app.use('/api/custom', (req, _res, next) =>
+{
+  console.warn(`Custom middleware: ${req.method} ${req.path}`);
+  next();
 }
-
+)
+// Add custom routes
+server.app.get('/api/custom/health', (_req, res) =>
+{
+  res.json({
+      status: 'healthy',;
+  timestamp: new Date().toISOString(),;
+  uptime: process.uptime(),;
+  memory: process.memoryUsage(),;
+}
+)
+})
+// Monitor server events
+server.on('request', (data) =>
+{
+  console.warn(`📨 Request: ${data.method} ${data.path}`);
+}
+)
+server.on('error', (error) =>
+{
+  console.error('🚨 Server error:', error);
+}
+)
+await server.start()
+console.warn('✅ Advanced server started')
+console.warn(`🌐 Custom health endpoint: http://localhost:3002/api/custom/health`);
+}
 // Run examples
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const example = process.argv[2] || 'basic';
-
+  const _example = process.argv[2] ?? 'basic';
   if (example === 'basic') {
     basicServerExample();
   } else if (example === 'advanced') {
@@ -109,5 +111,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.warn('Usage: node basic-server.js [basic|advanced]');
   }
 }
-
 export { basicServerExample, advancedServerExample };

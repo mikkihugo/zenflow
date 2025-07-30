@@ -1,171 +1,154 @@
 /**
- * Base Provider Implementation
- * Abstract base class for all AI providers with common functionality
+ * Base Provider Implementation;
+ * Abstract base class for all AI providers with common functionality;
  */
 
 import { EventEmitter } from 'node:events';
-import { type BaseProvider as IBaseProvider, ProviderError } from './types.js';
+import type { BaseProvider as IBaseProvider } from './types.js';
 
 export abstract class BaseProvider extends EventEmitter implements IBaseProvider {
   abstract name = {inputTokenPrice = {totalRequests = [];
   protected lastHealthCheck = new Date();
   protected isHealthy = true;
-
   constructor() {
     super();
     this.setupMetricsTracking();
   }
-
   // Abstract methods that must be implemented by providers
   abstract initialize(config = Date.now();
-
   // Simple health check - try to get models
   await;
   this;
   .
   getModels();
-
   const;
   responseTime = Date.now() - startTime;
   this;
   .
   updateHealthStatus(true, responseTime);
-
   this;
   .
   emit('health_check', {provider = new Date();
   const;
   timeSinceLastCheck = now.getTime() - this.lastHealthCheck.getTime();
-
   // Auto health check if it's been too long
-  if (timeSinceLastCheck > (this.config.healthCheckInterval || 300000)
+  if (timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
   ) {
       await this.
   healthCheck();
 }
-
 return {name = [...this.responseTimeHistory].sort((a, b) => a - b);
-const p95Index = Math.floor(sorted.length * 0.95);
-const p99Index = Math.floor(sorted.length * 0.99);
-
-this.metrics.latencyP95 = sorted[p95Index] || 0;
-this.metrics.latencyP99 = sorted[p99Index] || 0;
+// const _p95Index = Math.floor(sorted.length * 0.95); // LINT: unreachable code removed
+const _p99Index = Math.floor(sorted.length * 0.99);
+this.metrics.latencyP95 = sorted[p95Index] ?? 0;
+this.metrics.latencyP99 = sorted[p99Index] ?? 0;
 }
-
 return { ...this.metrics };
 }
-
-  // Protected helper methods
-  protected validateRequest(request): void
+// Protected helper methods
+protected
+validateRequest(request)
+: void
 {
-  if (!request.messages || request.messages.length === 0) {
+  if (!request.messages ?? request.messages.length === 0) {
     throw new ProviderError('Messages are required', this.name, 'INVALID_REQUEST');
   }
   if (!request.model) {
     throw new ProviderError('Model is required', this.name, 'INVALID_REQUEST');
   }
   if (!this.capabilities.models?.includes(request.model)) {
-    throw new ProviderError(
-      `Model ${request.model} not supported`,
-      this.name,
-      'MODEL_NOT_SUPPORTED'
-    );
+    throw new ProviderError(;
+    `Model ${request.model} not supported`,;
+    this.name,;
+    ('MODEL_NOT_SUPPORTED');
+    )
   }
 }
-
-protected
+protected;
 calculateCost(usage = (usage.promptTokens / 1000) * this.pricing.inputTokenPrice;
-const outputCost = (usage.completionTokens / 1000) * this.pricing.outputTokenPrice;
+const _outputCost = (usage.completionTokens / 1000) * this.pricing.outputTokenPrice;
 return inputCost + outputCost;
 }
-
-  protected updateMetrics(request = error.constructor.name
-this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] || 0) + 1
+protected
+updateMetrics(request = error.constructor.name
+this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 0) + 1
 } else
 {
   this.metrics.successfulRequests++;
   this.metrics.totalTokensUsed += response.usage.totalTokens;
-  this.metrics.totalCost += response.usage.cost || 0;
-
+  this.metrics.totalCost += response.usage.cost ?? 0;
   // Track requests by model
-  this.metrics.requestsByModel[request.model] =
-    (this.metrics.requestsByModel[request.model] || 0) + 1;
-
+  this.metrics.requestsByModel[request.model] =;
+  (this.metrics.requestsByModel[request.model] ?? 0) + 1;
   // Update response time tracking
   this.responseTimeHistory.push(response.responseTime);
-
   // Keep only last 1000 response times for memory efficiency
   if (this.responseTimeHistory.length > 1000) {
     this.responseTimeHistory = this.responseTimeHistory.slice(-1000);
   }
-
   // Update average response time
-  this.metrics.averageResponseTime =
-    this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / this.responseTimeHistory.length;
+  this.metrics.averageResponseTime =;
+  this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / this.responseTimeHistory.length;
 }
 }
-
-  protected updateHealthStatus(healthy = healthy
+protected
+updateHealthStatus(healthy = healthy
 this.lastHealthCheck = new Date()
-
 if (healthy && responseTime > 0) {
   this.responseTimeHistory.push(responseTime);
 }
 }
-
-  protected getAverageResponseTime(): number
+protected
+getAverageResponseTime()
+: number
 {
   if (this.responseTimeHistory.length === 0) return 0;
-  return this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / 
-           this.responseTimeHistory.length;
+  // return this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / ; // LINT: unreachable code removed
+  this.responseTimeHistory.length;
 }
-
-protected
+protected;
 getErrorRate();
 : number
 {
   if (this.metrics.totalRequests === 0) return 0;
-  return this.metrics.failedRequests / this.metrics.totalRequests;
+  // return this.metrics.failedRequests / this.metrics.totalRequests; // LINT: unreachable code removed
 }
-
-protected
+protected;
 async;
-withRetry<T>(operation = > Promise<T>,
-    maxRetries = this.config.retryAttempts || 3,
-    delay = this.config.retryDelay || 1000
-  )
+withRetry<T>(operation = > Promise<T>,;
+maxRetries = this.config.retryAttempts  ?? 3,;
+delay = this.config.retryDelay ?? 1000;
+)
 : Promise<T>
 {
-  let lastError = 0;
+  const _lastError = 0;
   attempt <= maxRetries;
   attempt++;
   )
   try {
     return await operation();
-  } catch (error) {
+    //   // LINT: unreachable code removed} catch (/* error */) {
     lastError = error;
-
+;
     // Don't retry on certain error types
-    if (
-      error instanceof ProviderError &&
-      ['INVALID_REQUEST', 'MODEL_NOT_SUPPORTED'].includes(error.code)
-    ) {
+    if (;
+      error instanceof ProviderError &&;
+      ['INVALID_REQUEST', 'MODEL_NOT_SUPPORTED'].includes(error.code);
+    ) 
       throw error;
-    }
-
+;
     if (attempt < maxRetries) {
       await this.sleep(delay * 2 ** attempt); // Exponential backoff
     }
   }
-
   throw lastError;
 }
-
-protected
+protected;
 sleep(ms = > setTimeout(resolve, ms));
 }
-
-  private setupMetricsTracking(): void
+private
+setupMetricsTracking()
+: void
 {
   // Reset metrics periodically to prevent memory leaks
   setInterval(() => {
@@ -175,54 +158,51 @@ sleep(ms = > setTimeout(resolve, ms));
     }
   }, 3600000); // Every hour
 }
-
 // Event emission helpers
-protected
-emitRequest(request: AIRequest)
+protected;
+emitRequest(request: AIRequest);
 : void
 {
   this.emit('request', {
-    type: 'request',
-    provider: this.name,
-    timestamp: new Date(),
-    data: {
-      id: request.id,
-      model: request.model,
-      messageCount: request.messages.length,
-    },
-  });
+    type: 'request',;
+  provider: this.name,;
+  timestamp: new Date(),;
+  id: request.id,;
+  model: request.model,;
+  messageCount: request.messages.length,;
+  ,
 }
-
+)
+}
 protected
 emitResponse(response: AIResponse)
 : void
 {
   this.emit('response', {
-    type: 'response',
-    provider: this.name,
-    timestamp: new Date(),
-    data: {
-      id: response.id,
-      model: response.model,
-      usage: response.usage,
-      responseTime: response.responseTime,
-    },
-  });
+    type: 'response',;
+  provider: this.name,;
+  timestamp: new Date(),;
+  id: response.id,;
+  model: response.model,;
+  usage: response.usage,;
+  responseTime: response.responseTime,;
+  ,
 }
-
+)
+}
 protected
 emitError(error: Error, request?: AIRequest)
 : void
 {
   this.emit('error', {
-    type: 'error',
-    provider: this.name,
-    timestamp: new Date(),
-    data: {
-      error: error.message,
-      requestId: request?.id,
-      model: request?.model,
-    },
-  });
+    type: 'error',;
+  provider: this.name,;
+  timestamp: new Date(),;
+  error: error.message,;
+  requestId: request?.id,;
+  model: request?.model,;
+  ,
+}
+)
 }
 }

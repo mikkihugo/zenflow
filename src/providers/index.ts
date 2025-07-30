@@ -1,6 +1,6 @@
 /**
- * Multi-LLM Provider Architecture - Main Export
- * Comprehensive AI provider management system
+ * Multi-LLM Provider Architecture - Main Export;
+ * Comprehensive AI provider management system;
  */
 
 // Provider implementations
@@ -21,56 +21,55 @@ export * from './types.js';
 export * from './utils.js';
 
 // Quick start function for easy initialization
-export async function createProviderManager(configs = {}) {
+export async function createProviderManager(): unknown {
   const { ProviderManager } = await import('./provider-manager.js');
 
-  const manager = new ProviderManager(configs.manager);
-  await manager.initializeBuiltInProviders(configs.providers || {});
-
+  const _manager = new ProviderManager(configs.manager);
+  await manager.initializeBuiltInProviders(configs.providers ?? {});
   return manager;
 }
-
 // Provider factory for dynamic loading
-export async function createProvider(name = await import('./anthropic.js');
-let anthropic = new AnthropicProvider();
+export async function createProvider(name = await import('./anthropic.js': unknown);
+const _anthropic = new AnthropicProvider();
 await anthropic.initialize(config);
 return anthropic;
-
+// ; // LINT: unreachable code removed
 case 'openai':
 const { OpenAIProvider } = await import('./openai.js');
-const openai = new OpenAIProvider();
+const _openai = new OpenAIProvider();
 await openai.initialize(config);
 return openai;
-
+// ; // LINT: unreachable code removed
 case 'cohere':
 const { CohereProvider } = await import('./cohere.js');
-const cohere = new CohereProvider();
+const _cohere = new CohereProvider();
 await cohere.initialize(config);
 return cohere;
-
+// ; // LINT: unreachable code removed
 case 'google':
 const { GoogleProvider } = await import('./google.js');
-const google = new GoogleProvider();
+const _google = new GoogleProvider();
 await google.initialize(config);
 return google;
-
+// ; // LINT: unreachable code removed
 case 'ollama':
 const { OllamaProvider } = await import('./ollama.js');
-const ollama = new OllamaProvider();
+const _ollama = new OllamaProvider();
 await ollama.initialize(config);
 return ollama;
-
+// ; // LINT: unreachable code removed
 default =
-{anthropic = {ROUND_ROBIN = > ({ type = > ({ 
-    type = {DEVELOPMENT = `
+{anthropic = {ROUND_ROBIN = > ({ type = > ({ ;
+    type = {DEVELOPMENT = `;
 // Quick start
-import { createProviderManager, COMMON_CONFIGS } from './providers/index.js';
+import { createProviderManager } from './providers/index.js';
 
-const manager = await createProviderManager({
+const _manager = await createProviderManager({
   ...COMMON_CONFIGS.PRODUCTION,providers = await manager.generateText({id = await manager.getProviderStatuses();
 console.warn(statuses);
 `;
-
+;
 console.warn('Multi-LLM Provider Architecture loaded successfully');
 console.warn('Available providers: Anthropic, OpenAI, Cohere, Google, Ollama');
 console.warn('Features: Load balancing, failover, caching, circuit breakers, metrics');
+;

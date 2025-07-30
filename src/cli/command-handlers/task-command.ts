@@ -1,124 +1,122 @@
 /**
- * Task Command Module
- * Converted from JavaScript to TypeScript
+ * Task Command Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 // task.js - Task management commands with improved argument parsing
-import { printError, printSuccess } from '../utils.js';
+import { printError } from '../utils.js';
 
-export async function taskCommand(subArgs = subArgs[0];
-
-switch(taskCmd) {
-    case 'create':
+export async function taskCommand(): unknown {
+    case 'create':;
       await createTask(subArgs, flags);
       break;
-
-    case 'list':
+;
+    case 'list':;
       await listTasks(subArgs, flags);
       break;
-
-    case 'status':
+;
+    case 'status':;
       await showTaskStatus(subArgs, flags);
       break;
-
-    case 'cancel':
+;
+    case 'cancel':;
       await cancelTask(subArgs, flags);
       break;
-
-    case 'workflow':
+;
+    case 'workflow':;
       await executeWorkflow(subArgs, flags);
       break;
-
-    case 'coordination':
+;
+    case 'coordination':;
       await manageCoordination(subArgs, flags);
-      break;default = new Command()
-    .exitOverride()
-    .allowUnknownOption()
+      break;default = new Command();
+    .exitOverride();
+    .allowUnknownOption();
     .option('--priority <value>', 'Set task priority (1-10)', '5');
-
+;
   try {
     // Parse the arguments starting from the create command
     program.parse(subArgs, {from = program.opts();
-  const args = program.args;
-
+  const _args = program.args;
+;
   // Extract task type and description with proper quote handling
-  const taskType = args[1]; // First arg after 'create'
+  const _taskType = args[1]; // First arg after 'create'
 
   // Join remaining args for description, handling quoted strings properly
-  let description = '';
+  const _description = '';
   if(args.length > 2) {
     // If the description starts with a quote, find the matching end quote
-    const descriptionArgs = args.slice(2);
+    const _descriptionArgs = args.slice(2);
     description = parseQuotedDescription(descriptionArgs);
   }
-
-  if(!taskType || !description) {
+;
+  if(!taskType  ?? !description) {
     printError('Usage = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const _priority = opts.priority || '5';
-
+  const __priority = opts.priority  ?? '5';
+;
   printSuccess(`Creating ${taskType}task = args.join(' ');
-
+;
   // Check if it starts with a quote
-  if (fullString.startsWith('"') || fullString.startsWith("'")) {
-    const quoteChar = fullString[0];
-    const endIndex = fullString.lastIndexOf(quoteChar);
-
+  if (fullString.startsWith('"')  ?? fullString.startsWith("'")) {
+    const _quoteChar = fullString[0];
+    const _endIndex = fullString.lastIndexOf(quoteChar);
+;
     if(endIndex > 0) {
       // Extract the quoted content
       return fullString.substring(1, endIndex);
-    }
+    //   // LINT: unreachable code removed}
   }
-
+;
   // If not quoted or improperly quoted, return the full string
   return fullString;
 }
-
-async function listTasks(subArgs = new Command()
-    .exitOverride()
-    .allowUnknownOption()
-    .option('--filter <status>', 'Filter by task status')
-    .option('--verbose', 'Show detailed output')
+;
+async function listTasks(subArgs = new Command(: unknown);
+    .exitOverride();
+    .allowUnknownOption();
+    .option('--filter <status>', 'Filter by task status');
+    .option('--verbose', 'Show detailed output');
     .option('-v', 'Show detailed output');
-
+;
   try {
     program.parse(subArgs, {from = program.opts();
-  const filter = opts.filter;
-  const verbose = opts.verbose || opts.v;
-
+  const _filter = opts.filter;
+  const _verbose = opts.verbose  ?? opts.v;
+;
   printSuccess('Taskqueue = subArgs[1];
-
+;
   if(!taskId) {
     printError('Usage = subArgs[1];
-
+;
   if(!taskId) {
     printError('Usage = subArgs[1];
-
+;
   if(!workflowFile) {
     printError('Usage = subArgs[1];
-
+;
   switch(coordCmd) {
-    case 'status':
+    case 'status':;
       printSuccess('Task coordination status:');
       console.warn('🎯 Coordination engine: Not running');
       console.warn('   Active coordinators: 0');
       console.warn('   Pending tasks: 0');
       console.warn('   Resource utilization: 0%');
       break;
-
-    case 'optimize':
+;
+    case 'optimize':;
       printSuccess('Optimizing task coordination...');
       console.warn('⚡ Optimization would include:');
       console.warn('   - Task dependency analysis');
       console.warn('   - Resource allocation optimization');
       console.warn('   - Parallel execution planning');
       break;
-
-    default:
+;
+    default:;
       console.warn('Coordination commands: status, optimize');
   }
 }
-
-function showTaskHelp() {
+;
+function showTaskHelp(): unknown {
   console.warn('Task commands:');
   console.warn('  create <type> "<description>"    Create new task');
   console.warn('  list [--filter <status>]        List tasks');
@@ -145,3 +143,4 @@ function showTaskHelp() {
   console.warn('  claude-zen task workflow examples/development-workflow.json');
   console.warn('  claude-zen task coordination status');
 }
+;

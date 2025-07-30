@@ -1,82 +1,71 @@
 /**
- * Mcp Command Module
- * Converted from JavaScript to TypeScript
+ * Mcp Command Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 // mcp.js - MCP server management commands
 import { printSuccess } from '../utils.js';
 
-export async function mcpCommand(subArgs = subArgs[0];
-
-switch (mcpCmd) {
+export async function mcpCommand(): unknown {
   case 'status':
-    await showMcpStatus(subArgs, flags);
-    break;
-
+  await showMcpStatus(subArgs, flags)
+  break;
   case 'start':
-    await startMcpServer(subArgs, flags);
-    break;
-
+  await startMcpServer(subArgs, flags)
+  break;
   case 'stop':
-    await stopMcpServer(subArgs, flags);
-    break;
-
+  await stopMcpServer(subArgs, flags)
+  break;
   case 'tools':
-    await listMcpTools(subArgs, flags);
-    break;
-
+  await listMcpTools(subArgs, flags)
+  break;
   case 'auth':
-    await manageMcpAuth(subArgs, flags);
-    break;
-
+  await manageMcpAuth(subArgs, flags)
+  break;
   case 'config':
-    await showMcpConfig(subArgs, flags);
-    break;
-  default = subArgs.includes('--auto-orchestrator') || flags.autoOrchestrator;
-  const _daemon = subArgs.includes('--daemon') || flags.daemon;
-  const stdio = subArgs.includes('--stdio') || flags.stdio || true; // Default to stdio mode
+  await showMcpConfig(subArgs, flags)
+  break;
+  default = subArgs.includes('--auto-orchestrator')  ?? flags.autoOrchestrator
+  const __daemon = subArgs.includes('--daemon') ?? flags.daemon;
+  const _stdio = subArgs.includes('--stdio') ?? flags.stdio ?? true; // Default to stdio mode
 
-  if(stdio) {
+  if (stdio) {
     // Start MCP server in stdio mode (like ruv-swarm)
     printSuccess('Starting Claude Flow MCP server in stdio mode...');
-
-    if(autoOrchestrator) {
+    if (autoOrchestrator) {
       console.warn('🚀 Auto-starting orchestrator...');
       console.warn('🧠 Neural networkcapabilities = await import('url');
-      const path = await import('node:path');
+      const _path = await import('node:path');
       const { spawn } = await import('node:child_process');
 
-      const __filename = fileURLToPath(import.meta.url);
-      const __dirname = path.dirname(__filename);
-      const mcpServerPath = path.join(__dirname, '../../src/mcp/mcp-server.js');
-
+      const ___filename = fileURLToPath(import.meta.url);
+      const ___dirname = path.dirname(__filename);
+      const _mcpServerPath = path.join(__dirname, '../../src/mcp/mcp-server.js');
       // Check if the file exists, and log the path for debugging
-      const fs = await import('node:fs');
+      const _fs = await import('node:fs');
       if (!fs.existsSync(mcpServerPath)) {
         console.error(`MCP server file not foundat = spawn('node', [mcpServerPath], {
         stdio => {
         if(code !== 0) {
           console.error(`MCP server exited with code ${code}`);
-        }
-      });
-
-      // Keep the process alive
-      await new Promise(() => {}); // Never resolves, keeps server running
-    } catch(error) {
-      console.error('Failed to start MCPserver = getFlag(subArgs, '--port') || flags.port || 3000;
-    const host = getFlag(subArgs, '--host') || flags.host || 'localhost';
-
+      }
+    }
+    )
+    // Keep the process alive
+    await new Promise(() => ) // Never resolves, keeps server running
+  }
+  catch (/* error */)
+  {
+    console.error('Failed to start MCPserver = getFlag(subArgs, '--port')  ?? flags.port  ?? 3000;
+    const _host = getFlag(subArgs, '--host') ?? flags.host ?? 'localhost';
     printSuccess(`Starting Claude Flow MCP server on ${host}:${port}...`);
     console.warn('🚀 HTTP mode not yet implemented, use --stdio for full functionality');
   }
 }
-
-async function stopMcpServer(subArgs = subArgs.includes('--verbose') || subArgs.includes('-v') || flags.verbose;
-const category = getFlag(subArgs, '--category') || flags.category;
-
+async function stopMcpServer(subArgs = subArgs.includes('--verbose': unknown)  ?? subArgs.includes('-v')  ?? flags.verbose;
+const _category = getFlag(subArgs, '--category') ?? flags.category;
 printSuccess('Claude-Flow MCP Tools & Resources (87 total):');
-
-if (!category || category === 'swarm') {
+if (!category ?? category === 'swarm') {
   console.warn('\n🐝 SWARM COORDINATION (12 tools):');
   console.warn('  • swarm_init            Initialize swarm with topology');
   console.warn('  • agent_spawn           Create specialized AI agents');
@@ -91,8 +80,7 @@ if (!category || category === 'swarm') {
   console.warn('  • swarm_scale           Auto-scale agent count');
   console.warn('  • swarm_destroy         Gracefully shutdown swarm');
 }
-
-if (!category || category === 'neural') {
+if (!category ?? category === 'neural') {
   console.warn('\n🧠 NEURAL NETWORKS & AI (15 tools):');
   console.warn('  • neural_status         Check neural network status');
   console.warn('  • neural_train          Train neural patterns');
@@ -110,8 +98,7 @@ if (!category || category === 'neural') {
   console.warn('  • transfer_learn        Transfer learning');
   console.warn('  • neural_explain        AI explainability');
 }
-
-if (!category || category === 'memory') {
+if (!category ?? category === 'memory') {
   console.warn('\n💾 MEMORY & PERSISTENCE (12 tools):');
   console.warn('  • memory_usage          Store/retrieve persistent data');
   console.warn('  • memory_search         Search memory with patterns');
@@ -126,8 +113,7 @@ if (!category || category === 'memory') {
   console.warn('  • context_restore       Restore execution context');
   console.warn('  • memory_analytics      Analyze memory usage');
 }
-
-if (!category || category === 'analysis') {
+if (!category ?? category === 'analysis') {
   console.warn('\n📊 ANALYSIS & MONITORING (13 tools):');
   console.warn('  • task_status           Check task execution status');
   console.warn('  • task_results          Get task completion results');
@@ -143,8 +129,7 @@ if (!category || category === 'analysis') {
   console.warn('  • usage_stats           Usage statistics');
   console.warn('  • health_check          System health monitoring');
 }
-
-if (!category || category === 'workflow') {
+if (!category ?? category === 'workflow') {
   console.warn('\n🔧 WORKFLOW & AUTOMATION (11 tools):');
   console.warn('  • workflow_create       Create custom workflows');
   console.warn('  • workflow_execute      Execute predefined workflows');
@@ -158,8 +143,7 @@ if (!category || category === 'workflow') {
   console.warn('  • batch_process         Batch processing');
   console.warn('  • parallel_execute      Execute tasks in parallel');
 }
-
-if (!category || category === 'github') {
+if (!category ?? category === 'github') {
   console.warn('\n🐙 GITHUB INTEGRATION (8 tools):');
   console.warn('  • github_repo_analyze   Repository analysis');
   console.warn('  • github_pr_manage      Pull request management');
@@ -170,8 +154,7 @@ if (!category || category === 'github') {
   console.warn('  • github_sync_coord     Multi-repo sync coordination');
   console.warn('  • github_metrics        Repository metrics');
 }
-
-if (!category || category === 'daa') {
+if (!category ?? category === 'daa') {
   console.warn('\n🤖 DAA (Dynamic Agent Architecture) (8 tools):');
   console.warn('  • daa_agent_create      Create dynamic agents');
   console.warn('  • daa_capability_match  Match capabilities to tasks');
@@ -182,8 +165,7 @@ if (!category || category === 'daa') {
   console.warn('  • daa_fault_tolerance   Fault tolerance & recovery');
   console.warn('  • daa_optimization      Performance optimization');
 }
-
-if (!category || category === 'system') {
+if (!category ?? category === 'system') {
   console.warn('\n⚙️ SYSTEM & UTILITIES (8 tools):');
   console.warn('  • terminal_execute      Execute terminal commands');
   console.warn('  • config_manage         Configuration management');
@@ -194,21 +176,16 @@ if (!category || category === 'system') {
   console.warn('  • log_analysis          Log analysis & insights');
   console.warn('  • diagnostic_run        System diagnostics');
 }
-
 if (verbose) {
   console.warn('\n📋 DETAILED TOOLINFORMATION = <category> --verbose');
 }
-
-async function manageMcpAuth(subArgs = subArgs[1];
-
-switch (authCmd) {
+async function _manageMcpAuth(): unknown {
   case 'setup':
-    printSuccess('Setting up MCP authentication...');
-    console.warn('🔐 Authenticationconfiguration = args.indexOf(flagName);
-    return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
+  printSuccess('Setting up MCP authentication...')
+  console.warn('🔐 Authenticationconfiguration = args.indexOf(flagName);
+  return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
 }
-
-function _showMcpHelp() {
+function _showMcpHelp(): unknown {
   console.warn('🔧 Claude-Flow MCP ServerCommands = neural --verbose');
   console.warn('  claude-zen mcp tools --category=swarm');
   console.warn('  claude-zen mcp config');

@@ -1,36 +1,34 @@
 /**
- * System Consolidation Command - Unified entry point
- * Addresses redundant commands and provides clear system control
+ * System Consolidation Command - Unified entry point;
+ * Addresses redundant commands and provides clear system control;
  */
 
-import { printError, printInfo, printSuccess } from '../utils.js';
+import { printError, printInfo } from '../utils.js';
 
-export async function systemConsolidationCommand(subArgs = subArgs[0] || 'status';
-
-switch(action) {
-    case 'start':
+export async function systemConsolidationCommand(): unknown {
+    case 'start':;
       return await startUnifiedSystem(subArgs.slice(1), flags);
-    case 'stop':
+    // case 'stop':; // LINT: unreachable code removed
       return await stopUnifiedSystem(subArgs.slice(1), flags);
-    case 'restart':
+    // case 'restart':; // LINT: unreachable code removed
       return await restartUnifiedSystem(subArgs.slice(1), flags);
-    case 'status':
+    // case 'status':; // LINT: unreachable code removed
       return await showUnifiedStatus(subArgs.slice(1), flags);
-    case 'consolidate':
+    // case 'consolidate':; // LINT: unreachable code removed
       return await showConsolidationPlan();default = [];
-  
+;
   try {
     // Import and start the main system
     const { startCommand } = await import('./start-wrapper-command.js');
     await startCommand(args, flags);
-    
+;
     printSuccess('✅ Unified system started successfully');
     printInfo('📋 Activeservices = > setTimeout(resolve, 2000)); // Wait 2 seconds
     await startUnifiedSystem(args, flags);
-    
-  } catch(_error) {
+;
+  } catch (/* _error */) {
     printError(`Failed to restartsystem = await fetch('http://localhost:3000/health');
-    const health = await response.json();
+    const _health = await response.json();
     printSuccess(`✅ APIServer = await import('./plugin-status-command.js');
 
     printSuccess(`✅ PluginSystem = await import('../database/strategic-documents-manager.js');
@@ -40,16 +38,16 @@ switch(action) {
   printInfo('  - dashboard start = UI only (individual component)');
   printInfo('  - init = Project setup with template selection');
 }
-
-async function showConsolidationPlan() {
+;
+async function showConsolidationPlan(): unknown {
   printInfo('🔧 Command Consolidation Analysis');
   console.warn();
-  
-  printInfo('📋 REDUNDANT COMMANDSIDENTIFIED = == claude-zen server start');
+;
+  printInfo('📋 REDUNDANT COMMANDSIDENTIFIED = === claude-zen server start');
   console.warn('  ❌ claude-zen dashboard start (auto-included in start)');
   console.warn('  ❌ Manual queen council convening (auto-convened)');
   console.warn();
-  
+;
   printInfo('✅ CONSOLIDATEDSYSTEM = Full integrated system');
   console.warn('     ├── API Server (port 3000)');
   console.warn('     ├── Dashboard (integrated)');
@@ -59,21 +57,21 @@ async function showConsolidationPlan() {
   console.warn('  🎨 claude-zen dashboard start = UI only (dev/debug)');
   console.warn('  👑 claude-zen queen-council convene = Manual council');
   console.warn();
-  
+;
   printInfo('📂 TEMPLATESYSTEM = Project setup (template selection)');
   console.warn('  📋 claude-zen template = Template management');
   console.warn('     Available = {
       name: claude-zen, ruv-FANN-zen');
   console.warn();
-  
+;
   printInfo('🎯 RECOMMENDED USAGE:');
   console.warn('  • Start development: claude-zen start');
   console.warn('  • New project: claude-zen init --template claude-zen');
   console.warn('  • Neural project: claude-zen init --template ruv-FANN-zen');
   console.warn('  • System status: claude-zen system status');
 }
-
-function showConsolidationHelp() {
+;
+function showConsolidationHelp(): unknown {
   console.warn('Claude-Zen System Consolidation Command');
   console.warn();
   console.warn('Usage: claude-zen system <action> [options]');
@@ -90,11 +88,12 @@ function showConsolidationHelp() {
   console.warn('  claude-zen system status          # Check all components');
   console.warn('  claude-zen system consolidate     # See consolidation plan');
 }
-
+;
 export const systemConsolidationCommandConfig,ame: 'system',
-  description: 'Unified system control and consolidation',
-  usage: 'system <action> [options]',
-  options: [
+  description: 'Unified system control and consolidation',;
+  usage: 'system <action> [options]',;
+  options: [;
     { name: 'help', description: 'Show help message', alias: 'h' }
-  ]
+  ];
 };
+;

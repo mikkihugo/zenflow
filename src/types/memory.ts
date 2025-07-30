@@ -1,6 +1,6 @@
 /**
- * Memory System Types
- * Persistent memory and state management across sessions
+ * Memory System Types;
+ * Persistent memory and state management across sessions;
  */
 
 import type { Identifiable, JSONObject } from './core.js';
@@ -29,7 +29,7 @@ export interface MemoryNamespace extends Identifiable {name = ==================
 
 export interface MemoryOperations {
   // Basic operations
-  get(key = ============================================================================
+  get(key = ============================================================================;
 // QUERY SYSTEM
 // =============================================================================
 
@@ -46,7 +46,6 @@ export interface VectorSearchOptions {
   includeDistances?: boolean;
   includeVectors?: boolean;
 }
-
 export interface VectorSearchResult {entry = ============================================================================
 // TRANSACTIONS
 // =============================================================================
@@ -63,15 +62,13 @@ export interface BackupOptions {
   destination?: string;
   metadata?: JSONObject;
 }
-
 export interface BackupInfo extends Identifiable {namespace = ============================================================================
 // MONITORING & STATISTICS
 // =============================================================================
 
 export interface MemoryStatistics {
   namespace?: string;
-  
-  // Storage statisticsentryCount = ============================================================================
+// Storage statisticsentryCount = ============================================================================
 // MAINTENANCE OPERATIONS
 // =============================================================================
 
@@ -86,10 +83,8 @@ export interface CleanupResult {
     corrupted: number;
     duplicate: number;
   };
-  
-  errors: string[];
+errors: string[];
 }
-
 export interface OptimizationResult {
   improvements: {
     type: string;
@@ -97,17 +92,14 @@ export interface OptimizationResult {
     benefit: string;
     applied: boolean;
   }[];
-
-  performance: {
-    before: PerformanceSnapshot;
-    after: PerformanceSnapshot;
-    improvement: number; // percentage
-  };
-
-  duration: number; // milliseconds
-  errors: string[];
+{
+  before: PerformanceSnapshot;
+  after: PerformanceSnapshot;
+  improvement: number; // percentage
 }
-
+duration: number; // milliseconds
+errors: string[];
+}
 export interface VacuumResult {
   bytesReclaimed: number;
   fragmentationReduced: number; // percentage
@@ -115,7 +107,6 @@ export interface VacuumResult {
   duration: number; // milliseconds
   errors: string[];
 }
-
 export interface ReindexResult {
   indexesRebuilt: number;
   indexSize: number; // bytes
@@ -126,7 +117,6 @@ export interface ReindexResult {
   };
   errors: string[];
 }
-
 export interface PerformanceSnapshot {
   timestamp: Date;
   throughput: number; // operations per second
@@ -135,7 +125,6 @@ export interface PerformanceSnapshot {
   cpuUsage: number; // percentage
   hitRate: number; // 0-1
 }
-
 export interface TimeRange {
   start: Date;
   end: Date;

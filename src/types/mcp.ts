@@ -1,6 +1,6 @@
 /**
- * Model Context Protocol (MCP) Types
- * Types for MCP server integration and tool execution
+ * Model Context Protocol (MCP) Types;
+ * Types for MCP server integration and tool execution;
  */
 
 import type { JSONObject } from './core.js';
@@ -16,35 +16,28 @@ export type MCPTransport = 'stdio' | 'sse' | 'websocket' | 'http';
 export interface MCPCapabilities {
   // Logging capabilities
   logging?: {};
-
   // Prompts capabilities
   prompts?: {
     listChanged?: boolean;
   };
-
   // Resources capabilities
   resources?: {
     subscribe?: boolean;
     listChanged?: boolean;
   };
-
   // Tools capabilities
   tools?: {
     listChanged?: boolean;
   };
-
   // Roots capabilities (for client)
   roots?: {
     listChanged?: boolean;
   };
-
   // Sampling capabilities (for client)
   sampling?: {};
-
   // Experimental capabilities
   experimental?: Record<string, JSONObject>;
 }
-
 export interface MCPImplementation {name = ============================================================================
 // MCP MESSAGES
 // =============================================================================
@@ -108,7 +101,7 @@ export interface MCPTransportConfig {type = ====================================
 
 export interface MCPToolExecutor {
   // Tool execution
-  executeTool(server = ============================================================================
+  executeTool(server = ============================================================================;
 // MCP EVENTS
 // =============================================================================
 
@@ -118,24 +111,29 @@ export interface MCPEvents {
   'server-disconnected': (serverId = > void;
   'server-error': (serverId = > void;
   'server-health-changed': (serverId = > void;
-  
-  // Tool events
-  'tool-executed': (result = > void;
-  'tool-failed': (request = > void;
-  'tools-discovered': (result = > void;
-  'tool-list-changed': (serverId = > void;
-  
-  // Resource events
-  'resource-updated': (serverId = > void;
-  'resource-list-changed': (serverId = > void;
-  
-  // Prompt events
-  'prompt-list-changed': (serverId = > void;
-  
-  // Logging events
-  'log-message': (serverId = > void;
-  
-  // Performance events
-  'performance-warning': (serverId = > void;
-  'resource-exhausted': (serverId = > void;
+// Tool events
+('tool-executed');
+: (result = > void
+('tool-failed')
+: (request = > void
+('tools-discovered')
+: (result = > void
+('tool-list-changed')
+: (serverId = > void
+// Resource events
+('resource-updated')
+: (serverId = > void
+('resource-list-changed')
+: (serverId = > void
+// Prompt events
+('prompt-list-changed')
+: (serverId = > void
+// Logging events
+('log-message')
+: (serverId = > void
+// Performance events
+('performance-warning')
+: (serverId = > void
+('resource-exhausted')
+: (serverId = > void
 }

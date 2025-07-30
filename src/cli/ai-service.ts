@@ -1,6 +1,6 @@
 /**
- * Ai Service Module
- * Converted from JavaScript to TypeScript
+ * Ai Service Module;
+ * Converted from JavaScript to TypeScript;
  */
 
 import { readFile } from 'node:fs/promises';
@@ -9,72 +9,69 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import inquirer from 'inquirer';
 import { createClaudeCodeProvider } from './claude-code-provider.js';
 
-const LLM_PROVIDER_FILE = path.join(process.cwd(), '.hive-mind', 'llm-provider.json');
-
-async function _getProviderConfig() {
+const _LLM_PROVIDER_FILE = path.join(process.cwd(), '.hive-mind', 'llm-provider.json');
+async function _getProviderConfig(): unknown {
   try {
-    const content = await readFile(LLM_PROVIDER_FILE, 'utf8');
+    const _content = await readFile(LLM_PROVIDER_FILE, 'utf8');
     return JSON.parse(content);
-  } catch(error) {
+    //   // LINT: unreachable code removed} catch (/* error */) {
     if(error.code === 'ENOENT') {
       return {providers = await _getProviderConfig();
-  const apiKey = process.env.GEMINI_API_KEY || config.providers.google.apiKey;
-
+    // const _apiKey = process.env.GEMINI_API_KEY  ?? config.providers.google.apiKey; // LINT: unreachable code removed
+;
   if(!apiKey) {
-    const { key } = await inquirer.prompt([
+    const { key } = await inquirer.prompt([;
       {type = key;
     config.providers.google.apiKey = apiKey;
     await saveProviderConfig(config);
   }
-
+;
   return apiKey;
 }
-
-async function getGenAI() {
-  const apiKey = await getApiKey();
+;
+async function getGenAI(): unknown {
+  const _apiKey = await getApiKey();
   return new GoogleGenerativeAI(apiKey);
 }
-
-let claudeProvider = null;
-
-async function getClaudeProvider() {
+;
+let _claudeProvider = null;
+;
+async function getClaudeProvider(): unknown {
   if(!claudeProvider) {
-    const _config = await _getProviderConfig();
-
+    const __config = await _getProviderConfig();
+;
     try {
       claudeProvider = await createClaudeCodeProvider({
-        modelId = {}): any {
-  const provider = await getClaudeProvider();
-  
+        modelId = {}): unknown {
+  const _provider = await getClaudeProvider();
+;
   if(!provider) {
     console.warn('Claude Code not available, falling back to Google AI');
     return generateTextWithGoogle(prompt, options);
-  }
-  
+    //   // LINT: unreachable code removed}
+;
   try {
     return await provider.generateText(prompt, options);
-  } catch(_error) {
-    console.warn('Claude generationfailed = 'flash' }): any {
-  const genAI = await getGenAI();
-
-  const model = genAI.getGenerativeModel({model = await model.generateContent(prompt);
-  const response = await result.response;
+    //   // LINT: unreachable code removed} catch (/* _error */) {
+    console.warn('Claude generationfailed = 'flash' }): unknown {
+  const _genAI = await getGenAI();
+;
+  const _model = genAI.getGenerativeModel({model = await model.generateContent(prompt);
+  const _response = await result.response;
   return response.text();
 }
-
-export async function _generateText(prompt = {}): any {
-  const config = await _getProviderConfig();
-  
+;
+export async function _generateText(prompt = {}: unknown): unknown {
+  const _config = await _getProviderConfig();
+;
   // Try Claude first if it's the default or has higher priority
-  if (config.defaultProvider === 'claude' || 
-      (config.providers.claude?.priority < config.providers.google?.priority)) {
+  if (config.defaultProvider === 'claude'  ?? (config.providers.claude?.priority < config.providers.google?.priority)) {
     try {
       return await generateTextWithClaude(prompt, options);
-    } catch(error) {
+    //   // LINT: unreachable code removed} catch (/* error */) {
       console.warn('Claude generation failed, falling back to Google AI:', error.message);
       return await generateTextWithGoogle(prompt, options);
-    }
-  } else {
+    //   // LINT: unreachable code removed}
+  } else 
     return await generateTextWithGoogle(prompt, options);
-  }
-}
+;

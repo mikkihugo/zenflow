@@ -3,5 +3,5 @@
 
 export class MemoryManager {
   async initialize(): Promise<void> {}
-  async store(_data: any): Promise<void> {}
+  async store(_data: unknown): Promise<void> {}
 }

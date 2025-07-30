@@ -1,149 +1,131 @@
 /**
- * Anthropic Claude Provider Implementation
- * High-performance integration with Claude models
+ * Anthropic Claude Provider Implementation;
+ * High-performance integration with Claude models;
  */
 
-import { ProviderError, RateLimitError } from './types.js';
+import { ProviderError } from './types.js';
 
 interface AnthropicMessage {role = 'anthropic'
 version = '2024-07-29'
-
-config = {enabled = {textGeneration = 'https = [
+config = {enabled = {textGeneration = 'https = [;
     'claude-3-5-sonnet-20241022',
-    'claude-3-5-haiku-20241022', 
-    'claude-3-opus-20240229',
-    'claude-3-sonnet-20240229',
-    'claude-3-haiku-20240307'
+'claude-3-5-haiku-20241022',
+'claude-3-opus-20240229',
+'claude-3-sonnet-20240229',
+('claude-3-haiku-20240307');
 ]
-
 constructor()
 {
   super();
-  this.pricing = {inputTokenPrice = config.apiKey || process.env.ANTHROPIC_API_KEY;
+  this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.ANTHROPIC_API_KEY;
   if (!this.apiKey) {
     throw new ProviderError('Anthropic API key is required', this.name, 'MISSING_API_KEY');
   }
-
   if (config.baseUrl) {
     this.baseUrl = config.baseUrl;
   }
-
   // Override default config
   this.config = { ...this.config, ...config };
-
   // Test the connection
   await this.healthCheck();
 }
-
 async;
 generateText(request = Date.now();
 this.validateRequest(request);
 this.emitRequest(request);
-
 try {
-      const _anthropicRequest = {model = request.systemPrompt;
+      const __anthropicRequest = {model = request.systemPrompt;
       }
-
-const _response = await this.makeRequest('/messages', anthropicRequest);
-
+const __response = await this.makeRequest('/messages', anthropicRequest);
 }
-
-const response = await fetch(`${this.baseUrl}/messages`, {method = response.body?.getReader();
+const _response = await fetch(`${this.baseUrl}/messages`, {method = response.body?.getReader();
 if (!reader) {
   throw new ProviderError('No response body', this.name);
 }
-
-const decoder = new TextDecoder();
-let buffer = '';
-
+const _decoder = new TextDecoder();
+const _buffer = '';
 while (true) {
   const { done, value } = await reader.read();
   if (done) break;
-
   buffer += decoder.decode(value, {stream = buffer.split('\n');
-  buffer = lines.pop() || '';
-
+  buffer = lines.pop() ?? '';
   for (const line of lines) {
     if (line.startsWith('data = line.slice(6);
             if (data === '[DONE]') continue;
-
     try {
-      const parsed = JSON.parse(data);
+      const _parsed = JSON.parse(data);
       if (parsed.type === 'content_block_delta') {
-        yield parsed.delta?.text || '';
+        yield parsed.delta?.text  ?? '';
       }
-    } catch (_e) {
+    } catch (/* _e */) {
       // Ignore parsing errors for streaming
     }
   }
 }
 }
-    } catch (error)
+    } catch (/* error */)
 {
   this.emitError(error, request);
   throw this.handleError(error);
 }
 }
-
-  async getModels(): Promise<string[]>
+async
+getModels()
+: Promise<string[]>
 {
   return [...this.availableModels];
 }
-
 async;
 cleanup();
 : Promise<void>
 {
   // No cleanup needed for HTTP-based provider
 }
-
-private
+private;
 convertMessages(messages = > msg.role !== 'system') // System messages handled separately
       .map(_msg => ({role = === 'user' ? 'user' : 'assistant',content = await fetch(`${this.baseUrl}${endpoint}`, {method = await response.text();
-let errorData = {};
-
+const _errorData = {};
 try {
   errorData = JSON.parse(text);
-} catch (_e) {
+} catch (/* _e */) {
   errorData = {message = === 429) {
-      const retryAfter = response.headers.get('retry-after');
+      const _retryAfter = response.headers.get('retry-after');
   return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
 }
-
-return new ProviderError(
-      errorData.error?.message || errorData.message || 'Unknown error',
-      this.name,
-      errorData.error?.type || 'API_ERROR',
-      response.status
-    );
+return new ProviderError(;
+// errorData.error?.message  ?? errorData.message  ?? 'Unknown error',; // LINT: unreachable code removed
+this.name,;
+errorData.error?.type  ?? 'API_ERROR',;
+response.status;
+)
 }
-
-  private mapStopReason(reason: string): AIResponse['finishReason']
+private
+mapStopReason(reason: string)
+: AIResponse['finishReason']
 {
   switch (reason) {
-    case 'end_turn':
+    case 'end_turn':;
       return 'stop';
-    case 'max_tokens':
+    // case 'max_tokens':; // LINT: unreachable code removed
       return 'length';
-    case 'stop_sequence':
+    // case 'stop_sequence':; // LINT: unreachable code removed
       return 'stop';
-    default:
+    // default:; // LINT: unreachable code removed
       return 'stop';
-  }
+    //   // LINT: unreachable code removed}
 }
-
-private
-handleError(error: any)
-: Error
-{
+;
+private;
+handleError(error: unknown);
+: Error;
   if (error instanceof ProviderError) {
     return error;
-  }
-
-  return new ProviderError(
-      error.message || 'Unknown error occurred',
-      this.name,
-      'UNKNOWN_ERROR'
+    //   // LINT: unreachable code removed}
+;
+  return new ProviderError(;
+    // error.message  ?? 'Unknown error occurred',; // LINT: unreachable code removed
+      this.name,;
+      'UNKNOWN_ERROR';
     );
 }
-}
+;

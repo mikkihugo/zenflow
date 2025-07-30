@@ -1,6 +1,6 @@
 /**
- * CLI Utilities - TypeScript Edition
- * Comprehensive utilities for the Claude Code Flow CLI system
+ * CLI Utilities - TypeScript Edition;
+ * Comprehensive utilities for the Claude Code Flow CLI system;
  */
 
 export * from './configuration-manager';

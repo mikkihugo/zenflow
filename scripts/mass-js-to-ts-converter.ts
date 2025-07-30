@@ -1,23 +1,21 @@
 #!/usr/bin/env node
-
 /**
- * Mass JavaScript to TypeScript Converter
- * Converts all JavaScript files to strict TypeScript with Google standards
- *
- * @fileoverview Automated mass conversion tool with comprehensive type safety
- * @author Claude Code Flow Team
- * @version 2.0.0
+ * Mass JavaScript to TypeScript Converter;
+ * Converts all JavaScript files to strict TypeScript with Google standards;
+ *;
+ * @fileoverview Automated mass conversion tool with comprehensive type safety;
+ * @author Claude Code Flow Team;
+ * @version 2.0.0;
  */
 
 import { promises as fs } from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+const ___filename = fileURLToPath(import.meta.url);
+const ___dirname = dirname(__filename);
 /**
- * Conversion statistics tracking
+ * Conversion statistics tracking;
  */
 interface ConversionStats {
   filesProcessed: number;
@@ -26,9 +24,8 @@ interface ConversionStats {
   errorsEncountered: number;
   totalLinesConverted: number;
 }
-
 /**
- * File processing context
+ * File processing context;
  */
 interface FileContext {
   originalPath: string;
@@ -38,7 +35,6 @@ interface FileContext {
   isScriptFile: boolean;
   lineCount: number;
 }
-
 /**
  * Type import replacement rule
  */
@@ -47,293 +43,292 @@ interface ImportReplacement {
   replacement: string;
   description: string;
 }
-
 /**
- * Google TypeScript standards enforcement rules
+ * Google TypeScript standards enforcement rules;
  */
-const GOOGLE_STANDARDS = {
+const _GOOGLE_STANDARDS = {
   // Maximum file size limits
-  MAX_LINES_PER_FILE: 500,
-  MAX_FUNCTIONS_PER_FILE: 25,
-
-  // Required imports for Node.js ESM
-  NODE_IMPORTS: [
+  MAX_LINES_PER_FILE: 500,;
+MAX_FUNCTIONS_PER_FILE: 25,
+;
+// Required imports for Node.js ESM
+NODE_IMPORTS: [;
     {
       pattern: /import\s+{\s*promises\s+as\s+fs\s*}\s+from\s+['"]fs['"];?/g,
       replacement: "import { promises as fs } from 'node:fs';",
-      description: 'Use node: prefix for core modules',
-    },
+      description: 'Use node: prefix for core modules',;
+    },;
     {
       pattern: /import\s+.*\s+from\s+['"]path['"];?/g,
       replacement: "import path from 'node:path';",
-      description: 'Use node: prefix for path module',
-    },
+      description: 'Use node: prefix for path module',;
+    },;
     {
       pattern: /import\s+.*\s+from\s+['"]os['"];?/g,
       replacement: "import os from 'node:os';",
-      description: 'Use node: prefix for os module',
-    },
+      description: 'Use node: prefix for os module',;
+    },;
     {
       pattern: /import\s+.*\s+from\s+['"]child_process['"];?/g,
-      replacement: "import { exec, execSync } from 'node:child_process';",
-      description: 'Use node: prefix for child_process',
-    },
+      replacement: "import { exec } from 'node:child_process';",
+      description: 'Use node: prefix for child_process',;
+    },;
   ] as ImportReplacement[],
-
+;
   // Type-only import fixes
-  TYPE_IMPORTS: [
+  TYPE_IMPORTS: [;
     {
       pattern: /import\s+type\s+{\s*EventEmitter\s*}\s+from\s+['"]events['"];?/g,
       replacement: "import { EventEmitter } from 'node:events';",
       description: 'EventEmitter should be value import',
-    },
+    },;
     {
       pattern: /import\s+type\s+{\s*Database\s*}\s+from\s+['"]sqlite3['"];?/g,
       replacement: "import { Database } from 'sqlite3';",
       description: 'Database should be value import',
-    },
-  ] as ImportReplacement[],
+    },;
+  ] as ImportReplacement[],;
 };
-
+;
 /**
- * Adds comprehensive TypeScript types and interfaces to content
- */
+ * Adds comprehensive TypeScript types and interfaces to content;
+ */;
 function addTypeScriptTypes(content: string, context: FileContext): string {
-  let typedContent = content;
-
+  const _typedContent = content;
+;
   // Add strict typing header
-  const fileHeader = `/**
- * ${context.isTestFile ? 'Test file' : context.isScriptFile ? 'Script file' : 'Module'} converted to TypeScript with Google standards
- * 
- * @fileoverview Strict TypeScript implementation with comprehensive type safety
- * @author Claude Code Flow Team
- * @version 2.0.0
+  const _fileHeader = `/**
+ * ${context.isTestFile ? 'Test file' : context.isScriptFile ? 'Script file' : 'Module'} converted to TypeScript with Google standards;
+ * ;
+ * @fileoverview Strict TypeScript implementation with comprehensive type safety;
+ * @author Claude Code Flow Team;
+ * @version 2.0.0;
  */
-
+;
 `;
-
+;
   // Add type imports if not present
   if (context.isTestFile) {
     if (!typedContent.includes('@jest/globals')) {
-      typedContent = typedContent.replace(
+      typedContent = typedContent.replace(;
         /import.*from.*jest.*/g,
-        "import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';"
+        "import { describe, it, expect, beforeEach } from '@jest/globals';"
       );
     }
   }
-
+;
   // Fix function parameter types
-  typedContent = typedContent.replace(
-    /function\s+(\w+)\s*\(([^)]*)\)/g,
+  typedContent = typedContent.replace(;
+    /function\s+(\w+)\s*\(([^)]*)\)/g,;
     (_match: string, funcName: string, params: string) => {
       if (!params) return `function ${funcName}(): void`;
-
+    // ; // LINT: unreachable code removed
       // Add basic types to parameters
-      const typedParams = params
-        .split(',')
+      const _typedParams = params;
+        .split(',');
         .map((param: string) => {
-          const trimmed = param.trim();
+          const _trimmed = param.trim();
           if (!trimmed.includes(':') && trimmed) {
             // Guess type based on parameter name
-            if (trimmed.includes('callback') || trimmed.includes('cb')) {
+            if (trimmed.includes('callback')  ?? trimmed.includes('cb')) {
               return `${trimmed}: () => void`;
-            } else if (trimmed.includes('path') || trimmed.includes('file')) {
+    //   // LINT: unreachable code removed} else if (trimmed.includes('path')  ?? trimmed.includes('file')) {
               return `${trimmed}: string`;
-            } else if (trimmed.includes('count') || trimmed.includes('index')) {
+    //   // LINT: unreachable code removed} else if (trimmed.includes('count')  ?? trimmed.includes('index')) {
               return `${trimmed}: number`;
-            } else {
+    //   // LINT: unreachable code removed} else {
               return `${trimmed}: unknown`;
-            }
+    //   // LINT: unreachable code removed}
           }
           return trimmed;
-        })
+    //   // LINT: unreachable code removed});
         .join(', ');
-
+;
       return `function ${funcName}(${typedParams}): void`;
-    }
+    //   // LINT: unreachable code removed}
   );
-
+;
   // Fix arrow function types
-  typedContent = typedContent.replace(
-    /const\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g,
+  typedContent = typedContent.replace(;
+    /const\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g,;
     (_match: string, funcName: string, params: string) => {
       if (!params) return `const ${funcName} = (): void =>`;
-
-      const typedParams = params
-        .split(',')
+    // ; // LINT: unreachable code removed
+      const _typedParams = params;
+        .split(',');
         .map((param: string) => {
-          const trimmed = param.trim();
+          const _trimmed = param.trim();
           if (!trimmed.includes(':') && trimmed) {
             return `${trimmed}: unknown`;
-          }
+    //   // LINT: unreachable code removed}
           return trimmed;
-        })
+    //   // LINT: unreachable code removed});
         .join(', ');
-
+;
       return `const ${funcName} = (${typedParams}): void =>`;
-    }
+    //   // LINT: unreachable code removed}
   );
-
+;
   // Fix any usage (prohibited in Google standards)
   typedContent = typedContent.replace(/:\s*any\b/g, ': unknown');
   typedContent = typedContent.replace(/as\s+any\b/g, 'as unknown');
-
+;
   // Add interface definitions for common patterns
-  if (typedContent.includes('execSync') || typedContent.includes('exec')) {
-    const execInterface = `
+  if (typedContent.includes('execSync')  ?? typedContent.includes('exec')) {
+    const _execInterface = `;
 /**
- * Command execution result
- */
+ * Command execution result;
+ */;
 interface ExecResult {
   stdout: string;
   stderr: string;
 }
-
+;
 `;
     typedContent = fileHeader + execInterface + typedContent;
   } else {
     typedContent = fileHeader + typedContent;
   }
-
+;
   return typedContent;
 }
-
+;
 /**
- * Applies Google TypeScript standards to content
- */
-function applyGoogleStandards(content: string): string {
-  let standardizedContent = content;
-
+ * Applies Google TypeScript standards to content;
+ */;
+function _applyGoogleStandards(content: string): string {
+  const _standardizedContent = content;
+;
   // Apply Node.js import standards
   for (const rule of GOOGLE_STANDARDS.NODE_IMPORTS) {
     standardizedContent = standardizedContent.replace(rule.pattern, rule.replacement);
   }
-
+;
   // Apply type import fixes
   for (const rule of GOOGLE_STANDARDS.TYPE_IMPORTS) {
     standardizedContent = standardizedContent.replace(rule.pattern, rule.replacement);
   }
-
+;
   // Fix require statements to import statements
-  standardizedContent = standardizedContent.replace(
-    /const\s+(\w+)\s*=\s*require\(['"]([^'"]+)['"]\);?/g,
+  standardizedContent = standardizedContent.replace(;
+    /const\s+(\w+)\s*=\s*require\(['"]([^'"]+)['"]\);?/g,;
     "import $1 from '$2';"
   );
-
+;
   // Fix destructured require statements
-  standardizedContent = standardizedContent.replace(
-    /const\s*{\s*([^}]+)\s*}\s*=\s*require\(['"]([^'"]+)['"]\);?/g,
+  standardizedContent = standardizedContent.replace(;
+    /const\s*{\s*([^}]+)\s*}\s*=\s*require\(['"]([^'"]+)['"]\);?/g,;
     "import { $1 } from '$2';"
   );
-
+;
   // Fix missing .js extensions in relative imports
-  standardizedContent = standardizedContent.replace(
-    /from\s+['"](\.\/?[^'"]*?)['"];?/g,
+  standardizedContent = standardizedContent.replace(;
+    /from\s+['"](\.\/?[^'"]*?)['"];?/g,;
     (match: string, importPath: string) => {
       if (!importPath.includes('.') && !importPath.includes('node:')) {
         return match.replace(importPath, `${importPath}.js`);
-      }
+    //   // LINT: unreachable code removed}
       return match;
-    }
+    //   // LINT: unreachable code removed}
   );
-
+;
   // Add JSDoc comments to functions without them
-  standardizedContent = standardizedContent.replace(
+  standardizedContent = standardizedContent.replace(;
     /(export\s+)?(async\s+)?function\s+(\w+)/g,
     (match: string, _exportKeyword = '', _asyncKeyword = '', funcName: string) => {
-      const precedingLines = standardizedContent
-        .substring(0, standardizedContent.indexOf(match))
+      const _precedingLines = standardizedContent;
+        .substring(0, standardizedContent.indexOf(match));
         .split('\n');
-      const lastLine = precedingLines[precedingLines.length - 1];
-
+      const _lastLine = precedingLines[precedingLines.length - 1];
+;
       if (!lastLine.includes('/**') && !lastLine.includes('*')) {
         return `/**
- * ${funcName} function
- * TODO: Add proper JSDoc documentation
- */
+ * ${funcName} function;
+    // * TODO: Add proper JSDoc documentation; // LINT: unreachable code removed
+ */;
 ${match}`;
       }
       return match;
-    }
+    //   // LINT: unreachable code removed}
   );
-
+;
   return standardizedContent;
 }
-
+;
 /**
- * Validates file size and complexity against Google standards
- */
+ * Validates file size and complexity against Google standards;
+ */;
 function validateGoogleStandards(context: FileContext): string[] {
-  const warnings: string[] = [];
-
+  const _warnings: string[] = [];
+;
   if (context.lineCount > GOOGLE_STANDARDS.MAX_LINES_PER_FILE) {
-    warnings.push(
-      `File exceeds ${GOOGLE_STANDARDS.MAX_LINES_PER_FILE} lines (${context.lineCount})`
+    warnings.push(;
+      `File exceeds ${GOOGLE_STANDARDS.MAX_LINES_PER_FILE} lines (${context.lineCount})`;
     );
   }
-
-  const functionCount = (context.content.match(/function\s+\w+|const\s+\w+\s*=\s*\(/g) || [])
+;
+  const _functionCount = (context.content.match(/function\s+\w+|const\s+\w+\s*=\s*\(/g)  ?? []);
     .length;
   if (functionCount > GOOGLE_STANDARDS.MAX_FUNCTIONS_PER_FILE) {
-    warnings.push(
-      `File exceeds ${GOOGLE_STANDARDS.MAX_FUNCTIONS_PER_FILE} functions (${functionCount})`
+    warnings.push(;
+      `File exceeds ${GOOGLE_STANDARDS.MAX_FUNCTIONS_PER_FILE} functions (${functionCount})`;
     );
   }
-
+;
   return warnings;
 }
-
+;
 /**
- * Converts a single JavaScript file to TypeScript
- */
-async function convertFile(jsPath: string, stats: ConversionStats): Promise<void> {
+ * Converts a single JavaScript file to TypeScript;
+ */;
+async function _convertFile(jsPath: string, stats: ConversionStats): Promise<void> {
   try {
     stats.filesProcessed++;
-
+;
     // Skip if TypeScript version already exists
-    const tsPath = jsPath.replace(/\.js$/, '.ts');
+    const _tsPath = jsPath.replace(/\.js$/, '.ts');
     try {
       await fs.access(tsPath);
       console.warn(`⚠️  Skipping ${jsPath} - TypeScript version already exists`);
       stats.filesSkipped++;
       return;
-    } catch {
+    //   // LINT: unreachable code removed} catch {
       // TypeScript version doesn't exist, proceed with conversion
     }
-
+;
     // Read and analyze file
-    const content = await fs.readFile(jsPath, 'utf-8');
-    const lines = content.split('\n');
-
-    const context: FileContext = {
-      originalPath: jsPath,
-      newPath: tsPath,
-      content,
-      isTestFile: jsPath.includes('test') || jsPath.includes('spec'),
-      isScriptFile: jsPath.includes('scripts/'),
-      lineCount: lines.length,
+    const _content = await fs.readFile(jsPath, 'utf-8');
+    const _lines = content.split('\n');
+;
+    const _context: FileContext = {
+      originalPath: jsPath,;
+      newPath: tsPath,;
+      content,;
+      isTestFile: jsPath.includes('test')  ?? jsPath.includes('spec'),;
+      isScriptFile: jsPath.includes('scripts/'),;
+      lineCount: lines.length,;
     };
-
+;
     // Apply Google standards and type safety
-    let convertedContent = applyGoogleStandards(content);
+    const _convertedContent = _applyGoogleStandards(content);
     convertedContent = addTypeScriptTypes(convertedContent, context);
-
+;
     // Validate against Google standards
-    const warnings = validateGoogleStandards({
-      ...context,
-      content: convertedContent,
-      lineCount: convertedContent.split('\n').length,
+    const _warnings = validateGoogleStandards({
+      ...context,;
+      content: convertedContent,;
+      lineCount: convertedContent.split('\n').length,;
     });
-
+;
     // Write TypeScript file
     await fs.writeFile(tsPath, convertedContent);
-
+;
     // Remove original JavaScript file
     await fs.unlink(jsPath);
-
+;
     stats.filesConverted++;
     stats.totalLinesConverted += context.lineCount;
-
+;
     // Report conversion with warnings
     if (warnings.length > 0) {
       console.warn(`✅ Converted ${jsPath} → ${tsPath} (${warnings.length} warnings)`);
@@ -341,90 +336,90 @@ async function convertFile(jsPath: string, stats: ConversionStats): Promise<void
     } else {
       console.warn(`✅ Converted ${jsPath} → ${tsPath}`);
     }
-  } catch (error) {
+  } catch (/* error */) {
     stats.errorsEncountered++;
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`❌ Error converting ${jsPath}: ${errorMessage}`);
   }
 }
-
+;
 /**
- * Finds all JavaScript files to convert
- */
+ * Finds all JavaScript files to convert;
+ */;
 async function findJavaScriptFiles(dir: string): Promise<string[]> {
-  const files: string[] = [];
-
+  const _files: string[] = [];
+;
   try {
-    const entries = await fs.readdir(dir, { withFileTypes: true });
-
+    const _entries = await fs.readdir(dir, { withFileTypes: true });
+;
     for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-
+      const _fullPath = path.join(dir, entry.name);
+;
       // Skip excluded directories
-      const excludedDirs = ['node_modules', 'dist', '.git', 'coverage', 'build', 'claude-zen-mcp'];
+      const _excludedDirs = ['node_modules', 'dist', '.git', 'coverage', 'build', 'claude-zen-mcp'];
       if (entry.isDirectory() && !excludedDirs.includes(entry.name)) {
-        const subFiles = await findJavaScriptFiles(fullPath);
+        const _subFiles = await findJavaScriptFiles(fullPath);
         files.push(...subFiles);
       } else if (entry.isFile() && entry.name.endsWith('.js')) {
         files.push(fullPath);
       }
     }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+  } catch (/* error */) {
+    const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`Error reading directory ${dir}:`, errorMessage);
   }
-
+;
   return files;
 }
-
+;
 /**
- * Main conversion orchestrator
- */
+ * Main conversion orchestrator;
+ */;
 async function main(): Promise<void> {
   try {
-    const rootDir = dirname(__dirname);
-    const stats: ConversionStats = {
-      filesProcessed: 0,
-      filesConverted: 0,
-      filesSkipped: 0,
-      errorsEncountered: 0,
-      totalLinesConverted: 0,
+    const _rootDir = dirname(__dirname);
+    const _stats: ConversionStats = {
+      filesProcessed: 0,;
+      filesConverted: 0,;
+      filesSkipped: 0,;
+      errorsEncountered: 0,;
+      totalLinesConverted: 0,;
     };
-
+;
     console.warn('🔍 Mass JavaScript to TypeScript Conversion Starting...');
     console.warn('📋 Google TypeScript Standards Enforcement Active');
     console.warn('');
-
+;
     // Find all JavaScript files
-    const jsFiles = await findJavaScriptFiles(rootDir);
+    const _jsFiles = await findJavaScriptFiles(rootDir);
     console.warn(`📁 Found ${jsFiles.length} JavaScript files to convert`);
     console.warn('');
-
+;
     // Sort files by priority (scripts first, then tests, then others)
-    const prioritizedFiles = jsFiles.sort((a: string, b: string): number => {
-      const aIsScript = a.includes('scripts/') ? 1 : 0;
-      const bIsScript = b.includes('scripts/') ? 1 : 0;
-      const aIsTest = a.includes('test') ? 1 : 0;
-      const bIsTest = b.includes('test') ? 1 : 0;
-
-      return bIsScript - aIsScript || bIsTest - aIsTest;
-    });
-
+    const _prioritizedFiles = jsFiles.sort((a: string, b: string): number => {
+      const _aIsScript = a.includes('scripts/') ? 1 : 0;
+      const _bIsScript = b.includes('scripts/') ? 1 : 0;
+      const _aIsTest = a.includes('test') ? 1 : 0;
+      const _bIsTest = b.includes('test') ? 1 : 0;
+;
+      return bIsScript - aIsScript  ?? bIsTest - aIsTest;
+    //   // LINT: unreachable code removed});
+;
     // Convert files in batches for performance
-    const batchSize = 5;
+    const _batchSize = 5;
     for (let i = 0; i < prioritizedFiles.length; i += batchSize) {
-      const batch = prioritizedFiles.slice(i, i + batchSize);
-      const batchPromises = batch.map((file) => convertFile(file, stats));
+      const _batch = prioritizedFiles.slice(i, i + batchSize);
+      const _batchPromises = batch.map((file) => convertFile(file, stats));
       await Promise.all(batchPromises);
-
+;
       // Progress reporting
-      const progress = Math.min(((i + batchSize) / prioritizedFiles.length) * 100, 100);
-      console.warn(
-        `📊 Progress: ${progress.toFixed(1)}% (${Math.min(i + batchSize, prioritizedFiles.length)}/${prioritizedFiles.length})`
+      const _progress = Math.min(((i + batchSize) / prioritizedFiles.length) * 100, 100);
+      console.warn(;
+        `📊 Progress: ${progress.toFixed(1)}% (${Math.min(i + batchSize, prioritizedFiles.length)}/${prioritizedFiles.length})`;
       );
       console.warn('');
     }
-
+;
     // Final comprehensive report
     console.warn('🎉 Mass Conversion Complete!');
     console.warn('');
@@ -434,11 +429,11 @@ async function main(): Promise<void> {
     console.warn(`  Files skipped: ${stats.filesSkipped}`);
     console.warn(`  Errors encountered: ${stats.errorsEncountered}`);
     console.warn(`  Total lines converted: ${stats.totalLinesConverted.toLocaleString()}`);
-    console.warn(
-      `  Success rate: ${((stats.filesConverted / stats.filesProcessed) * 100).toFixed(1)}%`
+    console.warn(;
+      `  Success rate: ${((stats.filesConverted / stats.filesProcessed) * 100).toFixed(1)}%`;
     );
     console.warn('');
-
+;
     if (stats.errorsEncountered === 0) {
       console.warn('✅ All JavaScript files successfully converted to TypeScript!');
       console.warn('🎯 Google TypeScript standards enforced across all files');
@@ -447,15 +442,16 @@ async function main(): Promise<void> {
       console.warn('⚠️ Conversion completed with some errors. Check logs above.');
       process.exit(1);
     }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+  } catch (/* error */) {
+    const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Fatal error in mass conversion:', errorMessage);
     process.exit(1);
   }
 }
-
+;
 // Execute mass conversion
 main().catch((error: Error) => {
   console.error('❌ Unhandled error in mass conversion:', error);
   process.exit(1);
 });
+;
