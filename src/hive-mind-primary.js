@@ -351,7 +351,66 @@ export class HiveMindPrimary extends EventEmitter {
       simpleSwarm: this.simpleSwarm
     };
     
-    // Dynamic import and connection
+    // Special handling for ai-providers to integrate new provider system
+    if (pluginName === 'ai-providers') {
+      try {
+        // Load the new TypeScript provider system
+        const { createProviderManager, COMMON_CONFIGS } = await import('./providers/index.js');
+        
+        // Create integrated provider manager
+        const providerManager = await createProviderManager({
+          ...COMMON_CONFIGS.PRODUCTION,
+          providers: {
+            anthropic: { 
+              apiKey: process.env.ANTHROPIC_API_KEY,
+              enabled: true,
+              priority: 1 
+            },
+            openai: { 
+              apiKey: process.env.OPENAI_API_KEY,
+              enabled: true,
+              priority: 2 
+            },
+            cohere: { 
+              apiKey: process.env.COHERE_API_KEY,
+              enabled: false,
+              priority: 3 
+            },
+            google: { 
+              apiKey: process.env.GOOGLE_API_KEY,
+              enabled: false,
+              priority: 4 
+            },
+            ollama: { 
+              enabled: true,
+              priority: 5 
+            }
+          }
+        });
+        
+        // Connect provider manager to hive-mind
+        this.providerManager = providerManager;
+        
+        // Still load the plugin for backward compatibility
+        const { default: PluginClass } = await import(`./plugins/${pluginName}/index.js`);
+        const plugin = new PluginClass({
+          ...pluginConfig,
+          providerManager // Pass integrated provider manager
+        });
+        
+        await plugin.initialize();
+        this.plugins.set(pluginName, plugin);
+        
+        console.log(`✅ Plugin connected with enterprise providers: ${pluginName}`);
+        console.log(`🚀 Provider Manager: ${providerManager.getAvailableProviders().length} providers ready`);
+        
+        return;
+      } catch (error) {
+        console.warn(`⚠️ Failed to integrate new provider system, falling back to plugin:`, error.message);
+      }
+    }
+    
+    // Standard plugin loading
     const { default: PluginClass } = await import(`./plugins/${pluginName}/index.js`);
     const plugin = new PluginClass(pluginConfig);
     
@@ -412,6 +471,11 @@ export class HiveMindPrimary extends EventEmitter {
           
         case 'plugin':
           result = await this.coordinatePlugin(request);
+          this.metrics.pluginCalls++;
+          break;
+          
+        case 'provider':
+          result = await this.coordinateProvider(request);
           this.metrics.pluginCalls++;
           break;
           
@@ -545,6 +609,29 @@ export class HiveMindPrimary extends EventEmitter {
     return pluginInstance[operation](params);
   }
   
+  async coordinateProvider(request) {
+    if (!this.providerManager) {
+      throw new Error('Provider manager not integrated - ai-providers plugin not loaded');
+    }
+    
+    const { operation, params } = request;
+    
+    switch (operation) {
+      case 'generate_text':
+        return this.providerManager.generateText(params);
+      case 'generate_stream':
+        return this.providerManager.generateStream(params);
+      case 'get_provider_statuses':
+        return this.providerManager.getProviderStatuses();
+      case 'get_available_providers':
+        return this.providerManager.getAvailableProviders();
+      case 'get_metrics':
+        return this.providerManager.getMetrics();
+      default:
+        throw new Error(`Unknown provider operation: ${operation}`);
+    }
+  }
+
   async coordinateHybridOperation(request) {
     // Combines memory + simple swarm through hive-mind coordination
     const { operation, params } = request;
@@ -570,6 +657,32 @@ export class HiveMindPrimary extends EventEmitter {
         }
         
         return { searchResults, hybrid: true };
+        
+      case 'ai_enhanced_search':
+        // Memory search + AI provider processing
+        const memoryResults = await this.coordinateMemoryOperation({
+          operation: 'search',
+          params: { query: params.query, options: params.searchOptions }
+        });
+        
+        if (this.providerManager && params.enableAIProcessing) {
+          const aiResult = await this.coordinateProvider({
+            operation: 'generate_text',
+            params: {
+              model: params.model || 'claude-3-5-sonnet-20241022',
+              messages: [
+                { 
+                  role: 'user', 
+                  content: `Analyze and summarize these search results: ${JSON.stringify(memoryResults)}` 
+                }
+              ]
+            }
+          });
+          
+          return { memoryResults, aiResult, hybrid: true };
+        }
+        
+        return { memoryResults, hybrid: true };
         
       default:
         throw new Error(`Unknown hybrid operation: ${operation}`);
@@ -605,7 +718,8 @@ export class HiveMindPrimary extends EventEmitter {
         memoryOperations: ['store', 'retrieve', 'search', 'graph_query', 'vector_search'],
         swarmOperations: this.simpleSwarm ? ['create_simple_swarm', 'add_agent', 'run_task', 'get_status'] : [],
         pluginOperations: Array.from(this.plugins.keys()),
-        hybridOperations: ['search_and_process']
+        providerOperations: this.providerManager ? ['generate_text', 'generate_stream', 'get_provider_statuses', 'get_available_providers', 'get_metrics'] : [],
+        hybridOperations: ['search_and_process', 'ai_enhanced_search']
       }
     };
   }

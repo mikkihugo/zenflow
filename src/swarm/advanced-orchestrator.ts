@@ -9,13 +9,13 @@
 
 import { EventEmitter } from 'node:events';
 import { performance } from 'node:perf_hooks';
-import { Logger } from '../core/logger.js';
-import { generateId } from '../utils/helpers.js';
-import { SwarmCoordinator } from '../coordination/swarm-coordinator.js';
-import { AdvancedTaskScheduler } from '../coordination/advanced-scheduler.js';
-import { SwarmMonitor } from '../coordination/swarm-monitor.js';
-import { MemoryManager } from '../memory/manager.js';
-import TaskExecutor from './executor.js';
+import { Logger } from '../core/logger';
+import { generateId } from '../cli/utils.js';
+import { SwarmCoordinator } from '../coordination/meta-registry/index.js';
+import { AdvancedTaskScheduler } from '../coordination/advanced-scheduler.ts';
+import { SwarmMonitor } from '../coordination/swarm-monitor.ts';
+import { MemoryManager } from '../memory/manager.ts';
+import TaskExecutor from './executor.ts';
 import {
   SwarmConfig,
   SwarmObjective,
@@ -35,7 +35,7 @@ import {
   SwarmEvent,
   EventType,
   SWARM_CONSTANTS,
-} from './types.js';
+} from './types.ts';
 
 export interface AdvancedSwarmConfig extends SwarmConfig {
   // Advanced features
