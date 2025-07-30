@@ -126,12 +126,12 @@ const _config: Config = {
     memoryRetention: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
     autoBackup: true,
   },
-{
-  level: process.env.LOG_LEVEL ?? 'info',;
-  format: 'json',;
-  file: process.env.LOG_FILE ?? './logs/claude-zen.log',;
-}
-,
+  },
+  logging: {
+    level: process.env.LOG_LEVEL ?? 'info',
+    format: 'json',
+    file: process.env.LOG_FILE ?? './logs/claude-zen.log',
+  },
 {
   jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',;
   tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',;
