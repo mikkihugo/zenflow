@@ -8,7 +8,7 @@
 import { chmod } from 'node:fs/promises';
 import { platform } from 'node:os';
 
-export async function createLocalExecutable(workingDir = false: unknown): unknown {
+export async function createLocalExecutable(workingDir = false) {
   try {
     if (platform() === 'win32') {
       // Create Windows batch file
@@ -28,14 +28,16 @@ if exist "%PROJECT_DIR%\\node_modules\\.bin\\claude-zen.cmd" (;
   cd /d "%PROJECT_DIR%";
   "%PROJECT_DIR%\\node_modules\\.bin\\claude-zen.cmd" %*;
   exit /b %ERRORLEVEL%;
-)
+// )
+
 
 REM 2. Parent directory node_modules (monorepo setup);
 if exist "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-zen.cmd" (;
   cd /d "%PROJECT_DIR%";
   "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-zen.cmd" %*;
   exit /b %ERRORLEVEL%;
-)
+// )
+
 
 REM 3. Global installation (npm install -g claude-zen);
 where claude-zen >nul 2>nul;
@@ -43,7 +45,8 @@ if %ERRORLEVEL% EQU 0 (;
   cd /d "%PROJECT_DIR%";
   claude-zen %*;
   exit /b %ERRORLEVEL%;
-)
+// )
+
 
 REM 4. Fallback to npx (will download if needed);
 cd /d "%PROJECT_DIR%";
@@ -112,9 +115,10 @@ fi;
         // Make it executable
 // await chmod(`${workingDir}/claude-zen`, 0o755);
         console.warn('  ✓ Created local claude-zen executable wrapper');
-        console.warn('    You can now use: ./claude-zen instead of npx claude-zen');
-      }
-    }
+        console.warn('    You can now use);
+      //       }
+    //     }
   } catch(err) ;
-    console.warn(`  ⚠️  Could not create local executable: \$err.message`);
-}
+    console.warn(`  ⚠️  Could not create local executable);
+// }
+

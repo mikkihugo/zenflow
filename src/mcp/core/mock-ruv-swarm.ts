@@ -3,13 +3,14 @@
  * Provides basic functionality when ruv-swarm is not available
  */
 export class RuvSwarm {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     this.options = options;
     this.swarms = new Map();
     console.warn('[Mock] Using mock RuvSwarm implementation');
-  }
+  //   }
 
-  async createSwarm(config): unknown {
+
+  async createSwarm(config) {
     const _swarm = new MockSwarm(config);
     this.swarms.set(config.id, swarm);
     return swarm;
@@ -32,7 +33,8 @@ class MockSwarm {
   this;
 
   created = new Date().toISOString();
-}
+// }
+
 
 getAgents();
   return this.agents;
@@ -49,4 +51,5 @@ getUptime();
 async;
 cleanup();
   this.agents = [];
-}
+// }
+

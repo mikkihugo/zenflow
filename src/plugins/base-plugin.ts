@@ -6,7 +6,7 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { performance } from 'node:perf_hooks';
-import type { Plugin, ResourceUsage } from '../types/plugin.js';
+import type { Plugin, ResourceUsage } from '../types/plugin.js'; // eslint-disable-line
 
 export abstract class BasePlugin extends EventEmitter implements Plugin {
   public readonlyid = 'uninitialized';
@@ -45,9 +45,9 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
   this;
 
   updateLastActivity();
-}
+// }
 catch (error)
-{
+// {
       this.setState('error');
       this.metadata.status = 'error';
       this.metadata.errorCount++;
@@ -62,7 +62,8 @@ catch (error)
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = === 'running') {
 // await this.stop();
-      }
+      //       }
+
 
       this.setState('destroying');
       this.emit('unloading', this.manifest.name);
@@ -86,23 +87,27 @@ catch (error)
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = false) {
 // await this.start();
-    }
-  }
+    //     }
+  //   }
+
 
   async unload(): Promise<void> {
 // await this.destroy();
-  }
+  //   }
+
 
   async reload(): Promise<void> {
 // await this.stop();
 // await this.start();
     this.metadata.restartCount++;
-  }
+  //   }
+
 
   async configure(updates = await this.validateConfiguration({ ...this.config, ...updates });
     if (validation.some(v => !v.valid)) {
       throw new Error(`Invalidconfiguration = > !v.valid).map(v => v.message).join(', ')}`);
-    }
+    //     }
+
 
     // Apply updates
     Object.assign(this.config, updates);
@@ -110,8 +115,9 @@ catch (error)
     // Restart if needed
     if (this.state === 'running') {
 // await this.reload();
-    }
-  }
+    //     }
+  //   }
+
 
   // Hook system implementation
   async registerHook(type = {callCount = this.hooks.get(type);
@@ -119,8 +125,9 @@ catch (error)
       handlers.delete(handler);
       if (handlers.size === 0) {
         this.hooks.delete(type);
-      }
-    }
+      //       }
+    //     }
+
 
     this.emit('hook-unregistered', this.manifest.name, type);
     this.context.apis.logger.info(`Hookunregistered = this.hooks.get(type);
@@ -136,8 +143,9 @@ catch (error)
 
         if (result.stop) {
           break;
-        }
-      }
+        //         }
+      //       }
+
 
       const _executionTime = performance.now() - startTime;
       this.updateHookMetrics(type, executionTime, true);
@@ -193,7 +201,7 @@ catch (error)
         case 'high': score -= 20; break;
         case 'medium': score -= 10; break;
         case 'low': score -= 5; break;
-      }
+      //       }
     });
 
     score = Math.max(0, score);
@@ -225,7 +233,8 @@ catch (error)
       for (const field of this.manifest.configuration.required) {
         if (!(field in config)) {
           results.push({valid = state;
-  }
+  //   }
+
 
   protected updateLastActivity(): void ;
     this.metadata.lastActivity = new Date();
@@ -243,8 +252,9 @@ catch (error)
 
       if (!success) {
         hookMetrics.errorCount++;
-      }
-    }
+      //       }
+    //     }
+
 
   protected updateAPIMetrics(name = this.metrics.apis[name];
     if (apiMetrics) {
@@ -254,9 +264,10 @@ catch (error)
 
       if (!success) {
         apiMetrics.errorCount++;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   private setupLifecycleEvents(): void ;
     // Track performance metrics
@@ -277,12 +288,14 @@ catch (error)
     // Validate system dependencies
     for (const _dep of this.manifest.dependencies.system) {
       // Would implement actual system dependency validation
-    }
+    //     }
+
 
     // Validate plugin dependencies
     for (const [_pluginName, _version] of Object.entries(this.manifest.dependencies.plugins)) {
       // Would implement actual plugin dependency validation
-    }
+    //     }
+
 
   private resourceMonitorInterval?: NodeJS.Timeout;
 
@@ -297,16 +310,18 @@ catch (error)
           const _usage = this.resourceUsage[limit.type as keyof ResourceUsage];
           if (usage > limit.recommended) {
             this.emit('resource-warning', this.manifest.name, limit.type, usage, limit.recommended);
-          }
-        }
+          //           }
+        //         }
       }, 5000); // Update every 5 seconds
-    }
+    //     }
+
 
   private stopResourceMonitoring(): void ;
     if (this.resourceMonitorInterval) {
       clearInterval(this.resourceMonitorInterval);
       this.resourceMonitorInterval = undefined;
-    }
-}
+    //     }
+// }
+
 
 export default BasePlugin;

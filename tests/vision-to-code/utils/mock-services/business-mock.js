@@ -44,7 +44,7 @@ app.get('/api/health', (_req, res) =>
   uptime: process.uptime(),
   timestamp: new Date().toISOString()
 })
-)
+// )
 })
 // Authentication endpoints
 app.post('/auth/login', (req, res) =>
@@ -61,7 +61,7 @@ app.post('/auth/login', (req, res) =>
 
     expires_in
 })
-  )
+  //   )
 // }
 else
 // {
@@ -80,7 +80,7 @@ app.post('/auth/service-token', (req, res) =>
   permissions: permissions  ?? ['read', 'write'],
   expires_in
 })
-)
+// )
 })
 // Vision management endpoints
 app.post('/api/visions', (req, res) =>
@@ -101,7 +101,7 @@ setTimeout(;
 Math.random() * 100 + 50;
 ) // 50-150ms delay
 })
-app.get('/api/visions/:id', (req, res) =>
+app.get('/api/visions/) =>
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -135,9 +135,9 @@ app.get('/api/visions', (req, res) =>
   total: visions.length,
   totalPages: Math.ceil(visions.length / limitNum)
 })
-)
+// )
 })
-app.patch('/api/visions/:id', (req, res) =>
+app.patch('/api/visions/) =>
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -153,7 +153,7 @@ else
   res.status(404).json(apiResponseTemplates.error('Vision not found', 'VISION_NOT_FOUND'));
 // }
 })
-app.delete('/api/visions/:id', (req, res) =>
+app.delete('/api/visions/) =>
 // {
   if (mockData.visions.has(req.params.id)) {
     mockData.visions.delete(req.params.id);
@@ -163,7 +163,7 @@ app.delete('/api/visions/:id', (req, res) =>
 // }
 })
 // Stakeholder approval endpoints
-app.post('/api/visions/:id/submit-approval', (req, res) =>
+app.post('/api/visions/) =>
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -186,7 +186,7 @@ else
   res.status(404).json(apiResponseTemplates.error('Vision not found', 'VISION_NOT_FOUND'));
 // }
 })
-app.post('/api/visions/:id/approve', (req, res) =>
+app.post('/api/visions/) =>
 // {
   const _approval = mockData.approvals.get(req.params.id);
   const { stakeholder_id, decision, comments } = req.body;
@@ -218,7 +218,7 @@ json(apiResponseTemplates.error('Approval request not found', 'APPROVAL_NOT_FOUN
 // }
 })
 // ROI Analysis endpoints
-app.post('/api/visions/:id/analyze-roi', (req, res) =>
+app.post('/api/visions/) =>
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -251,7 +251,7 @@ app.get('/api/analytics/portfolio-metrics', (_req, res) =>
 // {
   res.json(apiResponseTemplates.success(mockData.analytics));
 })
-app.get('/api/visions/:id/analytics', (req, res) =>
+app.get('/api/visions/) =>
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -367,7 +367,7 @@ app.get('/api/events', (req, res) =>
 // Error handling middleware
 app.use((error, _req, res, _next) =>
 // {
-  console.error('[Mock Business] Error:', error);
+  console.error('[Mock Business] Error);
   res.status(500).json(apiResponseTemplates.error('Internal server error', 'INTERNAL_ERROR'));
 })
 // 404 handler

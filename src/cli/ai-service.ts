@@ -10,7 +10,7 @@ import inquirer from 'inquirer';
 import { createClaudeCodeProvider } from './claude-code-provider.js';
 
 const _LLM_PROVIDER_FILE = path.join(process.cwd(), '.hive-mind', 'llm-provider.json');
-async function _getProviderConfig(): unknown {
+async function _getProviderConfig() {
   try {
 // const _content = awaitreadFile(LLM_PROVIDER_FILE, 'utf8');
     return JSON.parse(content);
@@ -24,25 +24,28 @@ async function _getProviderConfig(): unknown {
       {type = key;
     config.providers.google.apiKey = apiKey;
 // await saveProviderConfig(config);
-  }
+  //   }
+
 
   return apiKey;
-}
+// }
 
-async function getGenAI(): unknown {
+
+async function getGenAI() {
 // const _apiKey = awaitgetApiKey();
   return new GoogleGenerativeAI(apiKey);
-}
+// }
+
 
 let _claudeProvider = null;
 
-async function getClaudeProvider(): unknown {
+async function getClaudeProvider() {
   if(!claudeProvider) {
 // const __config = await_getProviderConfig();
 
     try {
       claudeProvider = await createClaudeCodeProvider({
-        modelId = {}): unknown {
+        modelId = {}) {
 // const _provider = awaitgetClaudeProvider();
 
   if(!provider) {
@@ -53,15 +56,16 @@ async function getClaudeProvider(): unknown {
   try {
     return await provider.generateText(prompt, options);
     //   // LINT: unreachable code removed} catch (/* _error */) {
-    console.warn('Claude generationfailed = 'flash' }): unknown {
+    console.warn('Claude generationfailed = 'flash' }) {
 // const _genAI = awaitgetGenAI();
 
   const _model = genAI.getGenerativeModel({model = await model.generateContent(prompt);
 // const _response = awaitresult.response;
   return response.text();
-}
+// }
 
-export async function _generateText(prompt = {}: unknown): unknown {
+
+export async function _generateText(prompt = {}) {
 // const _config = await_getProviderConfig();
 
   // Try Claude first if it's the default or has higher priority
@@ -69,7 +73,7 @@ export async function _generateText(prompt = {}: unknown): unknown {
     try {
       return await generateTextWithClaude(prompt, options);
     //   // LINT: unreachable code removed} catch (error) {
-      console.warn('Claude generation failed, falling back to Google AI:', error.message);
+      console.warn('Claude generation failed, falling back to Google AI);
       return await generateTextWithGoogle(prompt, options);
     //   // LINT: unreachable code removed}
   } else

@@ -31,8 +31,8 @@ export interface HealthCheck {name = ===========================================
 
 export interface ErrorDetails {code = 'SystemError'
 this.cause = cause
-}
-}
+// }
+// }
 // =============================================================================
 // RESOURCE MANAGEMENT
 // =============================================================================
@@ -57,7 +57,7 @@ export interface LifecycleManager extends EventEmitter {
 'stopped': () => void
 'error': (error = > void
 'health-check': (health = > void
-}
+// }
 // =============================================================================
 // CONFIGURATION MANAGEMENT
 // =============================================================================
@@ -66,12 +66,12 @@ export interface ConfigurationSchema {
   [key = > boolean | string;
     description?: string;
     sensitive?: boolean; // For secrets/passwords
-  }
-}
+  //   }
+// }
 export interface ConfigurationManager {
   get<T = any>(key): T | undefined;
   set<_T = any>(key,value = > void): () => void;
-}
+// }
 export interface ValidationResult {key = ============================================================================
 // LOGGING & OBSERVABILITY
 // =============================================================================
@@ -111,5 +111,6 @@ export interface TypedEventEmitter<T extends EventMap> extends EventEmitter {
   emit<K extends keyof T>(event, ...args: Parameters<T[K]>): boolean;
   once<K extends keyof T>(event, listener: T[K]): this;
   off<K extends keyof T>(event, listener: T[K]): this;
-  removeAllListeners<K extends keyof T>(event?: K): this;
-}
+  removeAllListeners<K extends keyof T>(event?): this;
+// }
+

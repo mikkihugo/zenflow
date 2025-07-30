@@ -9,18 +9,19 @@ export class ValidationHelper {
   /**
    * Validate enum parameter;
    */;
-  static validateEnum(value, paramName, validOptions, commandPath): unknown {
+  static validateEnum(value, paramName, validOptions, commandPath) {
     if (!validOptions.includes(value)) {
       console.error(;
         HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath));
       process.exit(1);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Validate numeric parameter;
    */;
-  static validateNumber(value, paramName, min, _max, commandPath): unknown {
+  static validateNumber(value, paramName, min, _max, commandPath) {
     const _num = parseInt(value, 10);
 
     if (Number.isNaN(num)) {
@@ -29,7 +30,8 @@ export class ValidationHelper {
           `'${value}' is not a valid number for ${paramName}.`,
           commandPath  ?? 'claude-zen'));
       process.exit(1);
-    }
+    //     }
+
 
     if(min !== undefined && num < min) {
       console.error(;
@@ -48,12 +50,13 @@ export class ValidationHelper {
           `File not found for ${paramName}: $path`,
           commandPath  ?? 'claude-zen'));
       process.exit(1);
-  }
+  //   }
+
 
   /**
    * Validate boolean flag;
    */;
-  static validateBoolean(value, paramName, commandPath): unknown {
+  static validateBoolean(value, paramName, commandPath) {
     const _lowerValue = value.toLowerCase();
     if(lowerValue === 'true'  ?? lowerValue === '1'  ?? lowerValue === 'yes') {
       return true;
@@ -67,5 +70,6 @@ export class ValidationHelper {
         `'${value}' is not a valid boolean for ${paramName}. Use, false, yes, no, 1, or 0.`,
         commandPath  ?? 'claude-zen'));
     process.exit(1);
-  }
-}
+  //   }
+// }
+

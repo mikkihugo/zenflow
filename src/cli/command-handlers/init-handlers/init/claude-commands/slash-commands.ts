@@ -9,19 +9,20 @@ import { copyTemplates } from '../template-copier.js';
 import { createClaudeFlowCommands } from './claude-zen-commands.js';
 
 // Create Claude Code slash commands (non-SPARC)
-export async function createClaudeSlashCommands(workingDir = {force = await copyTemplates(workingDir, slashCommandOptions: unknown);
+export async function createClaudeSlashCommands(workingDir = {force = await copyTemplates(workingDir, slashCommandOptions);
 
 if (!copyResults.success) {
   console.warn(`  ⚠️  Template copier failed: ${copyResults.errors.join(', ')}`);
-}
+// }
 // Create claude-zen specific commands
 try {
 // await createClaudeFlowCommands(workingDir);
 } catch (/* err */) {
-  console.warn(`  ⚠️  Could not create Claude Code slash commands: ${err.message}`);
-}
+  console.warn(`  ⚠️  Could not create Claude Code slash commands);
+// }
 } catch (/* mainErr */)
-{
-  console.warn(`  ⚠️  Error creating slash commands: ${mainErr.message}`);
-}
-}
+// {
+  console.warn(`  ⚠️  Error creating slash commands);
+// }
+// }
+

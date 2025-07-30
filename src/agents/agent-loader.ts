@@ -11,30 +11,30 @@ import { fileURLToPath } from 'node:url';
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
 export interface AgentType {
-  name: string;
-  displayName: string;
-  description: string;
-  capabilities: string[];
-  priority: number;
+  // name: string
+  // displayName: string
+  // description: string
+  capabilities;
+  // priority: number
   legacy?: boolean;
-}
+// }
 export interface AgentStats {
-  total: number;
-  builtin: number;
-  legacy: number;
-  dynamic: number;
-}
+  // total: number
+  // builtin: number
+  // legacy: number
+  // dynamic: number
+// }
 /**
  * Singleton class for loading and managing agent types;
  */
 export class AgentLoader {
-  private static instance: AgentLoader;
+  private static instance: AgentLoader,
   private agentTypes = new Map<string, AgentType>();
   private initialized = false;
-  static getInstance(): AgentLoader {
+  static getInstance() {
     if (!AgentLoader.instance) {
       AgentLoader.instance = new AgentLoader();
-    }
+    //     }
     return AgentLoader.instance;
     //   // LINT: unreachable code removed}
     /**
@@ -62,20 +62,20 @@ export class AgentLoader {
   /**
    * Built-in agent types that are always available;
    */
-  private static BUILTIN_AGENTS: AgentType[] = [
-    {
+  private static BUILTIN_AGENTS = [
+    //     {
       name: 'code-analyzer',
       displayName: 'Code Analyzer',
       description: 'Analyzes code quality, patterns, and improvements',
       capabilities: ['analysis', 'code-review', 'refactoring'],
       priority},
-    {
+    //     {
       name: 'system-architect',
       displayName: 'System Architect',
       description: 'Designs system architecture and technical specifications',
       capabilities: ['architecture', 'design', 'planning'],
       priority},
-    {
+    //     {
       name: 'test-engineer',
       displayName: 'Test Engineer',
       description: 'Creates and manages test suites and quality assurance',
@@ -83,7 +83,7 @@ export class AgentLoader {
       priority} ];
   private constructor() {
     // Private constructor for singleton
-  }
+  //   }
   /**
    * Initialize the agent loader and discover available agents;
    */
@@ -94,13 +94,13 @@ export class AgentLoader {
       // Load built-in agents
       for (const agent of AgentLoader.BUILTIN_AGENTS) {
         this.agentTypes.set(agent.name, agent);
-      }
+      //       }
       // Set up legacy mappings
       this.setupLegacyMappings();
       // Discover dynamic agents
 // await this.discoverDynamicAgents();
       this.initialized = true;
-    }
+    //     }
     /**
      * Set up legacy agent mappings;
      */
@@ -113,9 +113,9 @@ export class AgentLoader {
         this.agentTypes.set(legacy, {
 ..modernAgent,
         legacy}
-      )
-    }
-  }
+      //       )
+    //     }
+  //   }
   /**
    * Discover agent modules from the filesystem;
    */
@@ -127,23 +127,24 @@ export class AgentLoader {
       for (const file of files) {
         if (file === 'agent-loader.ts'  ?? file === 'agent-loader.js') {
           continue;
-        }
+        //         }
+
 
         const _filePath = join(agentsDir, file);
 // const _stats = awaitfs.stat(filePath);
 
         if (stats.isFile() && (extname(file) === '.js'  ?? extname(file) === '.ts')) {
 // await this.loadAgentFromFile(filePath);
-        }
-      }
+        //         }
+      //       }
     } catch (error) {
-      console.warn(`⚠️ Could not discover dynamic agents: ${error}`);
-    }
-  }
+      console.warn(`⚠️ Could not discover dynamic agents);
+    //     }
+  //   }
   /**
    * Load an agent from a file;
    */
-  private async loadAgentFromFile(filePath: string): Promise<void> {
+  private async loadAgentFromFile(filePath): Promise<void> {
     try {
 // const _module = awaitimport(filePath);
 
@@ -151,7 +152,7 @@ export class AgentLoader {
         const _agentConfig = module.default as AgentType;
 
         if (agentConfig.name && agentConfig.displayName) {
-          const _agentType: AgentType = {
+          const _agentType = {
             name: agentConfig.name,
             displayName: agentConfig.displayName,
             description: agentConfig.description  ?? 'Dynamic agent',
@@ -159,20 +160,20 @@ export class AgentLoader {
             priority: agentConfig.priority  ?? 3 };
 
           this.agentTypes.set(agentType.name, agentType);
-        }
-      }
-  }
+        //         }
+      //       }
+  //   }
   catch (error) {
-    console.warn(`⚠️ Could not load agent from ${filePath}: ${error}`);
-  }
-}
+    console.warn(`⚠️ Could not load agent from ${filePath});
+  //   }
+// }
 /**
  * Get an agent type by name;
  */
 async;
-getAgentType(name: string)
+getAgentType(name)
 : Promise<AgentType | null>
-{
+// {
 // await this.initialize();
     const _agent = this.agentTypes.get(name);
     if (agent) {
@@ -188,8 +189,9 @@ getAgentType(name: string)
 ..agent,
     // legacy, // LINT: unreachable code removed
         };
-      }
-    }
+      //       }
+    //     }
+
 
     return null;
     //   // LINT: unreachable code removed}
@@ -197,7 +199,7 @@ getAgentType(name: string)
   /**
    * Check if an agent type exists;
    */;
-  async hasAgentType(name: string): Promise<boolean> {
+  async hasAgentType(name): Promise<boolean> {
 // const _agent = awaitthis.getAgentType(name);
     return agent !== null;
     //   // LINT: unreachable code removed}
@@ -205,7 +207,7 @@ getAgentType(name: string)
   /**
    * Get agent types by capability;
    */;
-  async getAgentTypesByCapability(capability: string): Promise<AgentType[]>
+  async getAgentTypesByCapability(capability): Promise<AgentType[]>
 // await this.initialize();
     return Array.from(this.agentTypes.values()).filter((_agent) =>;
     // agent.capabilities.includes(capability); // LINT: unreachable code removed
@@ -221,7 +223,7 @@ getAgentType(name: string)
   /**
    * Register a new agent type at runtime;
    */;
-  registerAgentType(agentType: AgentType): void
+  registerAgentType(agentType): void
     this.agentTypes.set(agentType.name, agentType);
 
   /**

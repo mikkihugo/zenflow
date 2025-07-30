@@ -101,10 +101,7 @@ import styles from './${name}.module.css';
 // }
 export const ${name}: React.FC<${name}Props> = () => {
   return (;
-    // <div className={\`\${styles.container // LINT: unreachable code removed} \${className  ?? ''}\`}>;
-      {/* ${name} content */}
-    </div>;
-  );
+    // <div className={\`\${styles.container // LINT);
 };
 export default ${name};`,
 

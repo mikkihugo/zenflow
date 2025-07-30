@@ -6,7 +6,7 @@
  * AI-powered analysis and feedback on documents
  */
 
-const { spawn } = require('node:child_process');
+const { spawn } = require('node);
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store
@@ -57,7 +57,7 @@ const _colors = {
 async function runGHModel(prompt, model = 'gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], {
-      stdio: ['pipe', 'pipe', 'pipe'] });
+      stdio);
 
     let output = '';
     let errorOutput = '';
@@ -72,7 +72,7 @@ async function runGHModel(prompt, model = 'gpt-4o-mini') {
 
     gh.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`gh models run failed: ${errorOutput}`));
+        reject(new Error(`gh models run failed));
       } else {
         resolve(output.trim());
       }

@@ -1,7 +1,7 @@
 /**
  * Plugin Status Command - Check plugin system health and status;
  */
-export async function pluginStatusCommand(args = [], flags = {}: unknown): unknown {
+export async function pluginStatusCommand(args = [], flags = {}) {
   const _subcommand = args[0]  ?? 'status';
 
   switch(subcommand) {
@@ -35,24 +35,27 @@ export async function pluginStatusCommand(args = [], flags = {}: unknown): unkno
           console.warn(`   🟢 ${plugin.name.padEnd(20)} (${plugin.class})`);
         });
         console.warn('');
-      }
+      //       }
+
 
       if(failedPlugins.length > 0) {
         console.warn('⚠️ Failed to Load => {
           console.warn(`   🔴 ${plugin.name.padEnd(20)} (${plugin.class})`);
         });
         console.warn('');
-      }
+      //       }
+
 
       if(disabledPlugins.length > 0) {
         console.warn('🔇 Disabled Plugins => {
           console.warn(`   ⚪ ${plugin.name.padEnd(20)} (${plugin.class})`);
         });
         console.warn('');
-      }
+      //       }
     } else {
       console.warn('💡 Use --verbose for detailed plugin information');
-    }
+    //     }
+
 
     // Show quick stats for key plugins
     const _keyPlugins = ['memory-backend', 'unified-interface', 'github-integration'];
@@ -79,7 +82,8 @@ export async function pluginStatusCommand(args = [], flags = {}: unknown): unkno
 
         if(pluginHealth.details) {
           console.warn(`     └─ ${JSON.stringify(pluginHealth.details, null, 2).replace(/\n/g, '\n     ')}`);
-        }
+        //         }
+
 
         if(pluginHealth.error) {
           console.warn(`     └─Error = getPluginManager();
@@ -99,21 +103,22 @@ export async function pluginStatusCommand(args = [], flags = {}: unknown): unkno
         console.warn('\n📊Statistics = getPluginManager();
 
     console.warn(`🔄 Restarting plugin = {
-      handler: ${pluginName}`);
+      handler);
 
     // Unload the plugin
 // await manager.unloadPlugin(pluginName);
-    console.warn(`📤 Unloaded: ${pluginName}`);
+    console.warn(`📤 Unloaded);
 
     // Reload the plugin
 // await manager.loadPlugin(pluginName);
-    console.warn(`📥 Reloaded: ${pluginName}`);
+    console.warn(`📥 Reloaded);
 
-    console.warn(`✅ Successfully restarted plugin: ${pluginName}`);
+    console.warn(`✅ Successfully restarted plugin);
 
   } catch (error) {
-    console.error(`❌ Failed to restart plugin '${pluginName}': ${error.message}`);
-  }
+    console.error(`❌ Failed to restart plugin '${pluginName}');
+  //   }
+
 
 // Export the configuration for the command registry
 export const _pluginStatusCommandConfig,_ler,

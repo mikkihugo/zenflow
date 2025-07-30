@@ -34,26 +34,28 @@ totalQueryTime = 0;
 private;
 queryCount = 0;
 constructor(dbPath, (options = {}));
-{
+// {
   this.dbPath = dbPath;
   this.options = {minConnections = = false,enableHealthChecks = = false;
-}
-}
+// }
+// }
 /**
  * Initialize the connection pool;
  */
-async
+// async
 initialize()
 : Promise<void>
-{
+// {
   console.warn(`🏊 Initializing SQLite connectionpool = 0; i < this.options.minConnections; i++) {
 // await this._createConnection();
-      }
+      //       }
+
 
       // Start health checks if enabled
       if (this.options.enableHealthChecks) {
         this.startHealthChecks();
-      }
+      //       }
+
 
       // Start cleanup timer
       this.startCleanupInterval();
@@ -79,7 +81,8 @@ initialize()
       if (this.isShuttingDown) {
         reject(new Error('Connection pool is shutting down'));
     // return; // LINT: unreachable code removed
-      }
+      //       }
+
 
       // Check for available connection
       if (this.available.length > 0) {
@@ -90,7 +93,8 @@ initialize()
         // Update metrics
         if (this.options.enableMetrics) {
           this.totalWaitTime += Date.now() - requestStart;
-        }
+        //         }
+
 
         resolve(connection);
         return;
@@ -106,7 +110,8 @@ initialize()
           // Update metrics
           if (this.options.enableMetrics) {
             this.totalWaitTime += Date.now() - requestStart;
-          }
+          //           }
+
 
           resolve(connection);
           return;
@@ -114,7 +119,8 @@ initialize()
           reject(error);
           return;
     //   // LINT: unreachable code removed}
-      }
+      //       }
+
 
       // Wait for connection to become available
       const __timeout = setTimeout(() => {
@@ -122,7 +128,7 @@ initialize()
         if (index > -1) {
           this.waiting.splice(index, 1);
           reject(new Error('Connection acquisition timeout'));
-        }
+        //         }
       }, this.options.acquireTimeout);
 
       const _waiter = {
@@ -131,7 +137,7 @@ initialize()
           // Update metrics
           if (this.options.enableMetrics) {
             this.totalWaitTime += Date.now() - requestStart;
-          }
+          //           }
           resolve(connection);
         },
         reject => {
@@ -147,11 +153,13 @@ initialize()
       if (waiterPriority > existingPriority) {
         insertIndex = i;
         break;
-      }
-    }
+      //       }
+    //     }
+
 
     this.waiting.splice(insertIndex, 0, waiter);
-  }
+  //   }
+
 
   /**
    * Release a connection back to the pool;
@@ -192,7 +200,8 @@ initialize()
         if (options.timeout) {
           // SQLite doesn't support query timeout directly
           // This would need to be implemented with a Promise.race pattern
-        }
+        //         }
+
 
         // Determine if this is a SELECT query (returns data) or not (INSERT/UPDATE/DELETE)
         const _isSelectQuery = query.trim().toUpperCase().startsWith('SELECT')  ?? query.trim().toUpperCase().startsWith('WITH')  ?? query.trim().toUpperCase().startsWith('EXPLAIN');
@@ -200,7 +209,8 @@ initialize()
         let _result = stmt.all(...params);
         } else {
           result = stmt.run(...params);
-        }
+        //         }
+
 
         // Update connection metrics
         connection.queryCount++;
@@ -210,21 +220,25 @@ initialize()
           this.totalQueries++;
           this.queryCount++;
           this.totalQueryTime += Date.now() - queryStart;
-        }
+        //         }
+
 
         return result;
     // ; // LINT: unreachable code removed
       } catch (error = false;
-        }
+        //         }
+
 
         // Update error metrics
         if (this.options.enableMetrics) {
           this.totalErrors++;
-        }
+        //         }
+
 
         if (retries === 0) {
           throw error;
-        }
+        //         }
+
 
         retries--;
 
@@ -233,10 +247,11 @@ initialize()
       } finally {
         if (connection) {
           this.release(connection);
-        }
-      }
-    }
-  }
+        //         }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Execute multiple queries in a transaction;
@@ -257,8 +272,8 @@ initialize()
             results.push(stmt.all(...params));
           } else {
             results.push(stmt.run(...params));
-          }
-        }
+          //           }
+        //         }
         return results;
     //   // LINT: unreachable code removed});
 
@@ -269,7 +284,8 @@ initialize()
       if (this.options.enableMetrics) {
         this.totalQueries += queries.length;
         this.queryCount += queries.length;
-      }
+      //       }
+
 
       return results;
     // ; // LINT: unreachable code removed
@@ -277,13 +293,15 @@ initialize()
 
       if (this.options.enableMetrics) {
         this.totalErrors++;
-      }
+      //       }
+
 
       throw error;
     } finally {
       this.release(connection);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Execute a batch of queries (non-transactional);
@@ -299,12 +317,11 @@ initialize()
         try {
           return await this.execute(queryInfo.query, queryInfo.params, {
 ..queryInfo.options,
-    // priority; // LINT: unreachable code removed
-          });
+    // priority; // LINT);
         } catch (error) {
           if (failFast) {
             throw error;
-          }
+          //           }
           return error;
     //   // LINT: unreachable code removed}
       });
@@ -313,8 +330,7 @@ initialize()
         return await Promise.all(promises);
     //   // LINT: unreachable code removed} else {
         return await Promise.allSettled(promises).then(results =>;
-    // results.map(result => ; // LINT: unreachable code removed
-            result.status === 'fulfilled' ? result.value = await this.acquire(priority);
+    // results.map(result => ; // LINT);
       const _results = [];
 
       try {
@@ -326,27 +342,28 @@ initialize()
             let _result = stmt.all(...(queryInfo.params  ?? []));
             } else {
               result = stmt.run(...(queryInfo.params  ?? []));
-            }
+            //             }
+
 
             results.push(result);
             connection.queryCount++;
 
           } catch (error = queries.length;
           this.queryCount += queries.length;
-        }
+        //         }
+
 
         return results;
-    // ; // LINT: unreachable code removed
-      } finally {
-        this.release(connection);
-      }
-    }
-  }
+    // ; // LINT);
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Get pool statistics;
    */;
-  getStats(): PoolStats {
+  getStats() {
     const _now = Date.now();
 
     return {totalConnections = > c.inUse).length,availableConnections = > ;
@@ -363,13 +380,15 @@ initialize()
           (now - connection.lastUsed) > this.options.idleTimeout &&;
           this.connections.length > this.options.minConnections) {
         connectionsToClose.push(connection);
-      }
-    }
+      //       }
+    //     }
+
 
     // Close idle connections
     for (const connection of connectionsToClose) {
       this._closeConnection(connection);
-    }
+    //     }
+
 
     // Create new connections if below minimum
     while (this.connections.length < this.options.minConnections) {
@@ -393,11 +412,12 @@ initialize()
 
       return isHealthy;
     //   // LINT: unreachable code removed} catch (error) {
-      console.warn(`Health check failed for connection ${connection.id}: ${error}`);
+      console.warn(`Health check failed for connection ${connection.id});
     connection.isHealthy = false;
     return false;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Start periodic health checks;
@@ -413,21 +433,24 @@ startHealthChecks();
 // const _isHealthy = awaitthis.performHealthCheck(connection);
           if (!isHealthy) {
             unhealthyConnections.push(connection);
-          }
-        }
-      }
+          //           }
+        //         }
+      //       }
+
 
       // Replace unhealthy connections
       for (const _connection of unhealthyConnections) {
         console.warn(`⚠️ Replacing unhealthyconnection = this.connections.indexOf(connection);
     if (connIndex > -1) {
       this.connections.splice(connIndex, 1);
-    }
+    //     }
+
 
     const _availIndex = this.available.indexOf(connection);
     if (availIndex > -1) {
       this.available.splice(availIndex, 1);
-    }
+    //     }
+
 
     // Close the database connection
     try {
@@ -437,14 +460,14 @@ startHealthChecks();
     // Stop timers
     if (this.healthCheckTimer) {
       clearInterval(this.healthCheckTimer);
-    }
+    //     }
     this.stopCleanupInterval();
 
     // Reject all waiting requests
     for (const waiter of this.waiting) {
       clearTimeout(waiter.timeout);
       waiter.reject(new Error('Connection pool is shutting down'));
-    }
+    //     }
     this.waiting.length = 0;
 
     // Wait for active connections to finish (with timeout)
@@ -457,14 +480,16 @@ startHealthChecks();
     // Force close all connections
     for (const connection of this.connections) {
       this._closeConnection(connection);
-    }
+    //     }
+
 
     this.connections.length = 0;
     this.available.length = 0;
     this.activeConnections = 0;
 
     console.warn('✅ Connection pool shutdown complete');
-  }
+  //   }
+
 
   /**
    * Helper method to run periodic cleanup;
@@ -491,42 +516,49 @@ startHealthChecks();
     if (stats.availableConnections === 0 && stats.waitingRequests > 0) {
       issues.push('No available connections with pending requests');
       status = 'critical';
-    }
+    //     }
+
 
     // Check error rate
     const __errorRate = stats.totalQueries > 0 ? ;
       stats.totalErrors / stats.totalQueries = status === 'critical' ? 'critical' : 'warning';
-    }
+    //     }
+
 
     // Check connection usage
     const _usageRatio = stats.activeConnections / stats.totalConnections;
     if (usageRatio > 0.9) {
       issues.push('High connection usage');
       status = status === 'critical' ? 'critical' : 'warning';
-    }
+    //     }
+
 
     // Check for unhealthy connections
     const _unhealthyCount = this.connections.filter(c => !c.isHealthy).length;
     if (unhealthyCount > 0) {
       issues.push(`${unhealthyCount} unhealthy connections`);
       status = status === 'critical' ? 'critical' : 'warning';
-    }
+    //     }
+
 
     return { status,metrics = false; // Will be replaced when released
-      }
-    }
+      //       }
+    //     }
+
 
   // Create new connections to maintain minimum
   while (this.connections.length < this.options.minConnections) {
     try {
 // await this._createConnection();
     } catch (error) {
-      console.error(`Failed to create replacement connection: ${error}`);
+      console.error(`Failed to create replacement connection);
       break;
-    }
-  }
+    //     }
+  //   }
+
 
   console.warn('✅ Connection refresh complete');
-}
+// }
+
 
 export default SQLiteConnectionPool;

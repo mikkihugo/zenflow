@@ -34,7 +34,7 @@ import { UnifiedClaudeFlowServer } from './unified-server.js';
 const _DEFAULT_CONFIGS = {unified = this.validateConfig(config);
 if (!validationResult.valid) {
   throw new Error(`Invalid serverconfiguration = > e.message).join(', ')}`);
-}
+// }
 // Create unified server with enhanced configuration
 const _serverOptions = {port = this.getDefaultConfig('api');
 const _mergedConfig = this.mergeConfig(defaultConfig, config);
@@ -49,8 +49,8 @@ if (!config.name ?? typeof config.name !== 'string') {
       errors.push({field = === 0,
   errors,
   warnings;
-}
-}
+// }
+// }
 /**
  * Get default configuration for server type
  */
@@ -70,13 +70,14 @@ if (!baseConfig) {
           (merged as any)[key] = { ...defaultValue, ...customValue };
         } else {
           (merged as any)[key] = customValue;
-        }
-      }
+        //         }
+      //       }
     });
 
     return merged;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Server Builder Implementation;
@@ -85,7 +86,8 @@ if (!baseConfig) {
 export class ClaudeFlowServerBuilder implements ServerBuilder {
   private config = {};
   private factory = factory  ?? new ClaudeFlowServerFactory();
-  }
+  //   }
+
 
   /**
    * Set server configuration
@@ -98,33 +100,35 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
    * Enable or disable a protocol
    */;
   withProtocol(protocol = {} as any;
-    }
+    //     }
+
 
     switch (protocol) {
       case 'http':;
       case 'https':;
         if (!this.config.protocols.http) {
           this.config.protocols.http = { enabled,version = enabled;
-        }
+        //         }
         break;
       case 'ws':;
       case 'wss':;
         if (!this.config.protocols.websocket) {
           this.config.protocols.websocket = { ;
             enabled,path = enabled;
-        }
+        //         }
         break;
       case 'mcp':;
         if (!this.config.protocols.mcp) {
           this.config.protocols.mcp = { enabled,endpoint = enabled;
-        }
+        //         }
         break;
       case 'grpc':;
         if (!this.config.protocols.grpc) {
           this.config.protocols.grpc = { enabled,reflection = enabled;
-        }
+        //         }
         break;
-    }
+    //     }
+
 
     return this;
     //   // LINT: unreachable code removed}
@@ -133,7 +137,7 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
    * Enable or disable a feature
    */;
   withFeature(feature = {} as ServerFeatures;
-    }
+    //     }
     this.config.features[feature] = enabled;
     return this;
     //   // LINT: unreachable code removed}
@@ -141,7 +145,7 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
   /**
    * Add middleware
    */;
-  withMiddleware(middleware): ServerBuilder {
+  withMiddleware(middleware) {
     if (!this.config.middleware) {
       this.config.middleware = {builtin = = false;
     });
@@ -153,7 +157,7 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
    * Add route definition
    */;
   withRoute(route = [];
-    }
+    //     }
     (this.config as any).routes.push(route);
     return this;
     //   // LINT: unreachable code removed}
@@ -162,7 +166,8 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
    * Add health check
    */;
   withHealthCheck(check = this.factory['getDefaultMonitoringConfig']();
-    }
+    //     }
+
 
     this.config.monitoring.health.checks.push(check);
     return this;
@@ -183,8 +188,9 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
         else if (this.config.features.enableWebSocket) serverType = 'websocket';
         else if (this.config.features.enableGRPC) serverType = 'grpc';
         else if (this.config.features.enableAPI) serverType = 'api';
-      }
-    }
+      //       }
+    //     }
+
 
     // Get default configuration and merge with custom config
     const _defaultConfig = this.factory.getDefaultConfig(serverType);
@@ -198,34 +204,38 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
         return this.factory.createMCPServer(finalConfig);default = new ClaudeFlowServerFactory();
 
 // Export builder function for convenience
-export function createServerBuilder(): ServerBuilder {
+export function createServerBuilder() {
   return new ClaudeFlowServerBuilder(serverFactory);
-}
+// }
+
 
 // Export convenience functions
-export async function createUnifiedServer(config?: Partial<ServerConfig>): Promise<UnifiedServer> {
+export async function createUnifiedServer(config?): Promise<UnifiedServer> {
   const _builder = createServerBuilder();
   if (config) {
     builder.withConfig(config);
-  }
+  //   }
   return builder.build();
-}
+// }
 
-export async function createAPIServer(port?, host?: string): Promise<UnifiedServer> {
+
+export async function createAPIServer(port?, host?): Promise<UnifiedServer> {
   return createServerBuilder();
-    // .withConfig({ port, host  // LINT: unreachable code removed});
+    // .withConfig({ port, host  // LINT);
 withFeature('enableAPI', true);
 withFeature('enableMCP', false);
 build();
-}
+// }
 
-export async function createMCPServer(port?, host?: string): Promise<UnifiedServer> {
+
+export async function createMCPServer(port?, host?): Promise<UnifiedServer> {
   return createServerBuilder();
-    // .withConfig({ port, host  // LINT: unreachable code removed});
+    // .withConfig({ port, host  // LINT);
 withFeature('enableMCP', true);
 withFeature('enableAPI', false);
 build();
-}
+// }
+
 
 export default {
   serverFactory,

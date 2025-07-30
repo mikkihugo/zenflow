@@ -18,14 +18,14 @@ export interface CommandRegistry {get = > Command | undefined
 has = > boolean
 entries = > IterableIterator<[string
 , Command]>
-}
+// }
 /**
  * Command definition;
  */
 export interface Command {handler = > void
 onCommandComplete?: (commandName = > void;
 onCommandError?: (commandName = > void;
-}
+// }
 /**
  * Execution context;
  */
@@ -48,7 +48,7 @@ onCommandError?: (commandName = > void;
  * @param options - Executor configuration options;
  */
 constructor((commandRegistry = {}))
-{
+// {
   this.commandRegistry = commandRegistry;
   this;
 
@@ -71,7 +71,7 @@ constructor((commandRegistry = {}))
   this
 
   onCommandError = options.onCommandError
-}
+// }
 /**
  * Execute a command with proper error handling and logging;
  * @param commandName - Name of command to execute;
@@ -84,7 +84,7 @@ public;
 async;
 executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
 : Promise<any>
-{
+// {
   const __startTime = Date.now();
   const __retryCount = 0;
 
@@ -113,7 +113,8 @@ then(resolve);
 catch(reject);
 finally(() => clearTimeout(timeoutId));
     });
-  }
+  //   }
+
 
   /**
    * List available commands;
@@ -127,7 +128,8 @@ finally(() => clearTimeout(timeoutId));
       if (includeHidden  ?? !command.hidden) {
         commands.push({
           name,description = > a.name.localeCompare(b.name));
-  }
+  //   }
+
 
   /**
    * Get command information;
@@ -151,7 +153,8 @@ finally(() => clearTimeout(timeoutId));
         cmd.context  ?? {}
       );
       results.push(result);
-    }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
@@ -173,7 +176,8 @@ finally(() => clearTimeout(timeoutId));
     );
 
   return Promise.all(promises);
-}
+// }
+
 
 /**
  * Get execution metrics;
@@ -208,7 +212,8 @@ shouldRetry(error);
 
   // Retry other errors
   return true;
-}
+// }
+
 
 /**
  * Sleep for specified milliseconds;
@@ -217,7 +222,8 @@ shouldRetry(error);
     // */; // LINT: unreachable code removed
 private;
 sleep(ms = > setTimeout(resolve, ms));
-}
+// }
+
 
 // =============================================================================
 // FACTORY FUNCTIONS
@@ -229,9 +235,10 @@ sleep(ms = > setTimeout(resolve, ms));
  * @param options - Executor options;
  * @returns Command executor instance;
     // */; // LINT: unreachable code removed
-export function _createCommandExecutor(commandRegistry = {}: unknown): CommandExecutor {
+export function _createCommandExecutor(commandRegistry = {}) {
   return new CommandExecutor(commandRegistry, options);
-}
+// }
+
 
 /**
  * Create command executor with enhanced error handling;
@@ -239,19 +246,18 @@ export function _createCommandExecutor(commandRegistry = {}: unknown): CommandEx
  * @param options - Executor options;
  * @returns Command executor with enhanced error handling;
     // */; // LINT: unreachable code removed
-export function _createRobustCommandExecutor(_commandRegistry = {}: unknown): CommandExecutor {
+export function _createRobustCommandExecutor(_commandRegistry = {}) {
   const __enhancedOptions = {
       timeout => {
       logger.error(`Command '${commandName}' failed after ${duration}ms`, {
-        error: error.message,
-        stack: error.stack;
-      });
+        error);
 
       if (options.onCommandError) {
         options.onCommandError(commandName, error, duration);
-      }
-    }
+      //       }
+    //     }
   };
 
   return new CommandExecutor(commandRegistry, enhancedOptions);
-}
+// }
+

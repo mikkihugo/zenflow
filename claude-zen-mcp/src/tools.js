@@ -5,7 +5,7 @@
 export const toolCategories = {
   swarm: {
     name: '🐝 SWARM COORDINATION',
-{
+// {
   description: 'Initialize swarm with topology',
   type: 'object',
   type: 'string',
@@ -24,18 +24,19 @@ export const toolCategories = {
   required: ['topology'],
 
   handler: async (args) =>
-  {
+  //   {
     const _command = `npx ruv-swarm init --topology ${args.topology} --max-agents ${args.maxAgents ?? 8} --strategy ${args.strategy ?? 'auto'}`;
     return new Promise((resolve, _reject) => {
             exec(command, (error, stdout, _stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
     // return reject(`Failed to initialize swarm: ${stderr // LINT: unreachable code removed}`);
-              }
+              //               }
               resolve(stdout);
             });
           });
-  }
+  //   }
+
 
   description: 'Create specialized AI agents',
   type: 'object',
@@ -66,7 +67,7 @@ export const toolCategories = {
   handler: (args) =>
   `🤖 Agent spawned: $args.name  ?? 'Unnamed'($args.
   type;
-  )
+  //   )
   with ${args.capabilities?.length  ?? 0}
   capabilities`,
 
@@ -99,7 +100,7 @@ export const toolCategories = {
   default, description: 'Show detailed status' ,
 
   handler: (args) =>
-  {
+  //   {
     const _basic = `;
   📊 Swarm Status: ACTIVE\n├── Topology: hierarchical\n├── Agents: 6/8 active\n├── Tasks: 3 completed, 2 in-progress\n└── Memory: 512KB used`
   const _detailed = `${basic}\n\nAgent Details:\n├── 🟢 coordinator: Managing workflow\n├── 🟢 researcher: Data analysis\n├── 🟢 coder: Implementation\n├── 🟡 analyst: Waiting for data\n├── 🟢 tester: Running tests\n└── 🔴 optimizer: Idle`;
@@ -113,9 +114,9 @@ type: 'object',
 
   handler: (args) =>
   `👥 Active Agents ($
-{
+// {
   args.type ?? 'all';
-}
+// }
 ):\n├── coordinator-1: Managing tasks\n├── researcher-2: Data analysis\n├── coder-3: Implementation\n└── analyst-4: Performance monitoring`,
 
   description: 'Agent performance metrics',
@@ -125,9 +126,9 @@ type: 'string', description;
 
   handler: (args) =>
   `📈 Agent Metrics ($
-{
+// {
   args.agentId ?? 'all';
-}
+// }
 ):\n├── Tasks completed: 15\n├── Success rate: 94.2%\n├── Avg response time: 1.2s\n└── Memory usage: 128KB`,
 
   description: 'Real-time swarm monitoring',
@@ -137,9 +138,9 @@ default, description: 'Monitoring interval (seconds)' ,
 
   handler: (args) =>
   `🔍 Monitoring started ($
-{
+// {
   args.interval ?? 30;
-}
+// }
 s;
 intervals;
 )\n├── CPU: 45%\n├── Memory: 2.1GB\n├── Network: 1.2MB/s\n└── Active connections: 23`,
@@ -160,18 +161,19 @@ enum: ['round-robin', 'least-connections', 'weighted'],
   default: 'weighted',
 
   handler: async (args) =>
-{
+// {
   const _command = `npx ruv-swarm load-balance --algorithm ${args.algorithm ?? 'weighted'}`;
   return new Promise((resolve, _reject) => {
             exec(command, (error, stdout, _stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
     // return reject(`Failed to load balance: ${stderr // LINT: unreachable code removed}`);
-              }
+              //               }
               resolve(stdout);
             });
           });
-}
+// }
+
 
   description: 'Sync agent coordination',
 type: 'object',
@@ -179,18 +181,19 @@ type: 'boolean',
 default, description: 'Force sync' ,
 
   handler: async (args) =>
-{
+// {
   const _command = `npx ruv-swarm coordination sync ${args.force ? '--force' : ''}`;
   return new Promise((resolve, _reject) => {
             exec(command, (error, stdout, _stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
     // return reject(`Failed to sync coordination: ${stderr // LINT: unreachable code removed}`);
-              }
+              //               }
               resolve(stdout);
             });
           });
-}
+// }
+
 
   description: 'Auto-scale agent count',
 type: 'object',
@@ -200,18 +203,19 @@ type: 'boolean',
 default, description: 'Auto-scaling enabled' ,
 
   handler: async (args) =>
-{
+// {
   const _command = `npx ruv-swarm scale --target-size ${args.targetSize ?? 'auto'} ${args.auto ? '--auto' : ''}`;
   return new Promise((resolve, _reject) => {
             exec(command, (error, stdout, _stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
     // return reject(`Failed to scale swarm: ${stderr // LINT: unreachable code removed}`);
-              }
+              //               }
               resolve(stdout);
             });
           });
-}
+// }
+
 
   description: 'Gracefully shutdown swarm',
 type: 'object',
@@ -221,21 +225,25 @@ type: 'number',
 default, description: 'Shutdown timeout (seconds)' ,
 
   handler: async (args) =>
-{
+// {
   const _command = `npx ruv-swarm destroy ${args.force ? '--force' : ''} --timeout ${args.timeout ?? 30}`;
   return new Promise((resolve, _reject) => {
             exec(command, (error, stdout, _stderr) => {
               if (error) {
                 console.error(`exec error: ${error}`);
     // return reject(`Failed to destroy swarm: ${stderr // LINT: unreachable code removed}`);
-              }
+              //               }
               resolve(stdout);
             });
           });
-}
+// }
 
+
+   // 
    }
 
+
+// 
 {
   name: '💾 MEMORY & PERSISTENCE',
   description: 'Store/retrieve persistent data',
@@ -283,8 +291,11 @@ default, description: 'Shutdown timeout (seconds)' ,
   handler: (args) =>
   `📊 Memory Analytics (\$args.timeframe  ?? '24h'):\n├── Total entries,234\n├── Most accessed: user_preferences\n├── Storage used: 45.2MB\n└── Growth rate: +12% this week`,
 
+   // 
    }
 
+
+// 
 {
   name: '📊 ANALYSIS & MONITORING',
   description: 'Generate performance reports',
@@ -321,8 +332,11 @@ default, description: 'Shutdown timeout (seconds)' ,
   handler: (args) =>
   `🏥 Health Check (\$args.components?.length  ?? 'all'components):\n├── System: 🟢 Healthy\n├── Database: 🟢 Healthy\n├── Network: 🟡 Warning\n└── Overall: 🟢 Healthy`,
 
+   // 
    }
 
+
+// 
 {
   name: '⚙️ SYSTEM & UTILITIES',
   description: 'Execute terminal commands',
@@ -973,11 +987,11 @@ default, description: 'Shutdown timeout (seconds)' ,
           name,
           description: toolData.description,
           inputSchema: toolData.inputSchema });
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
   return tools;
-}
+// }
 // Execute tool based on name and arguments
 export function executeTool() {
   for (const categoryData of Object.values(toolCategories)) {
@@ -988,7 +1002,8 @@ export function executeTool() {
     // { // LINT: unreachable code removed
             type: 'text',
             text } ] };
-    }
-  }
+    //     }
+  //   }
 throw new Error(`Unknown tool: ${toolName}`);
-}
+// }
+

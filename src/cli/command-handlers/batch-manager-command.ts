@@ -8,7 +8,7 @@ import { promises as fs } from 'node:fs';
 import { printError } from '../utils.js';
 import { ENVIRONMENT_CONFIGS } from './batch-constants.js';
 
-export async function batchManagerCommand(): unknown {
+export async function batchManagerCommand() {
     case 'create-config':;
       return await createBatchConfig(subArgs.slice(1), flags);
     // case 'validate-config':; // LINT: unreachable code removed
@@ -49,12 +49,14 @@ export async function batchManagerCommand(): unknown {
     // Validate structure
     if(!config.projects && !config.projectConfigs) {
       issues.push('Missing "projects" array or "projectConfigs" object');
-    }
+    //     }
+
 
     if(config.projects && config.projectConfigs) {
       warnings.push(;
         'Both "projects" and "projectConfigs" specified. "projectConfigs" will take precedence.');
-    }
+    //     }
+
 
     // Validate base options
     if(config.baseOptions) {
@@ -62,7 +64,8 @@ export async function batchManagerCommand(): unknown {
 
       if (maxConcurrency && (maxConcurrency < 1  ?? maxConcurrency > 20)) {
         issues.push('maxConcurrency must be between 1 and 20');
-      }
+      //       }
+
 
       if(template && !PROJECT_TEMPLATES[template]) {
         issues.push(;
@@ -71,7 +74,8 @@ export async function batchManagerCommand(): unknown {
 
       if(warnings.length > 0) {
         console.warn('\n⚠️Warnings = > console.warn(`  - ${warning}`));
-      }
+      //       }
+
 
       // Summary
       console.warn('\n📊 ConfigurationSummary = config.projects;
@@ -79,7 +83,7 @@ export async function batchManagerCommand(): unknown {
 
       if(warnings.length > 0) {
         console.warn('\n⚠️Warnings = > console.warn(`  - ${warning}`));
-      }
+      //       }
   } catch (error) {
     if(error.code === 'ENOENT') {
       printError(`Configuration file notfound = =============================\n');
@@ -114,16 +118,17 @@ export async function batchManagerCommand(): unknown {
     } else if(config.projectConfigs) {
       projectCount = Object.keys(config.projectConfigs).length;
       totalEnvironments = projectCount; // Each project has its own environment
-    }
+    //     }
+
 
     const _parallel = config.baseOptions?.parallel !== false;
     const _maxConcurrency = config.baseOptions?.maxConcurrency  ?? 5;
     const _avgTimePerProject = 15; // seconds estimate
 
-  console.warn('USAGE:');
+  console.warn('USAGE);
   console.warn('  claude-zen batch <command> [options]\n');
 
-  console.warn('COMMANDS:');
+  console.warn('COMMANDS);
   console.warn('  create-config [file]     Create batch configuration template');
   console.warn('  validate-config <file>   Validate batch configuration file');
   console.warn('  list-templates          Show available project templates');
@@ -131,11 +136,11 @@ export async function batchManagerCommand(): unknown {
   console.warn('  estimate <config>       Estimate time and resources for batch operation');
   console.warn('  help                    Show this help message\n');
 
-  console.warn('OPTIONS:');
+  console.warn('OPTIONS);
   console.warn('  --interactive, -i       Create interactive configuration');
   console.warn('  --help, -h             Show command help\n');
 
-  console.warn('EXAMPLES:');
+  console.warn('EXAMPLES);
   console.warn('  claude-zen batch create-config my-batch.json');
   console.warn('  claude-zen batch create-config --interactive');
   console.warn('  claude-zen batch validate-config my-batch.json');
@@ -143,7 +148,8 @@ export async function batchManagerCommand(): unknown {
   console.warn('  claude-zen batch list-templates');
   console.warn('  claude-zen batch list-environments\n');
 
-  console.warn('INTEGRATION:');
-  console.warn('  Use created configs with: claude-zen init --config <file>');
-  console.warn('  Or batch init directly: claude-zen init --batch-init project1,project2');
-}
+  console.warn('INTEGRATION);
+  console.warn('  Use created configs with);
+  console.warn('  Or batch init directly);
+// }
+

@@ -15,15 +15,15 @@ class SwarmWorker {
   console;
 
   warn(`🤖 Swarm worker ${this.workerId} initialized`);
-}
+// }
 /**
  * Initialize worker and set up message handlers;
  */
 initialize();
-{
+// {
   if (!parentPort) {
     throw new Error('Worker must be run in a worker thread');
-  }
+  //   }
   // Listen for messages from main thread
   parentPort.on('message', (message) => {
     this.handleMessage(message);
@@ -65,7 +65,8 @@ initialize();
           result = await this.executeTestingTask(task);
           break;
         default = await this.executeGenericTask(task);
-      }
+      //       }
+
 
       const _executionTime = Date.now() - startTime;
 
@@ -73,15 +74,15 @@ initialize();
       this.sendCompletion(task.id, {
 ..result,
         executionTime,workerId = null;
-    }
-  }
+    //     }
+  //   }
   /**
    * Execute agent spawning task;
    */
   async;
   executeAgentSpawn(task);
   : unknown
-  {
+  //   {
     const { agentType, agentConfig } = task.data;
     this.sendProgress(task.id, { status = {id = task.data;
     this.sendProgress(task.id, {status = this.createCoordinationPlan(subtasks, strategy);
@@ -96,14 +97,13 @@ initialize();
     this.sendProgress(task.id, { status = {topic = task.data;
     this.sendProgress(task.id, {status = await this.runTests(testType, target, testConfig);
     this.sendProgress(task.id, { status = {
-      'coordinator': ['planning', 'coordination', 'monitoring', 'resource-management'],
-    ('coder');
+      'coordinator');
     : ['code-generation', 'debugging', 'refactoring', 'testing'],
-    ('researcher'):  ['data-gathering', 'analysis', 'web-research', 'documentation'],
-    ('analyst'):  ['performance-analysis', 'bottleneck-identification', 'optimization'],
-    ('tester'):  ['test-generation', 'automation', 'validation', 'quality-assurance'],
-    ('reviewer'):  ['code-review', 'best-practices', 'security-analysis', 'compliance']
-  }
+    ('researcher')  ['data-gathering', 'analysis', 'web-research', 'documentation'],
+    ('analyst')  ['performance-analysis', 'bottleneck-identification', 'optimization'],
+    ('tester')  ['test-generation', 'automation', 'validation', 'quality-assurance'],
+    ('reviewer')  ['code-review', 'best-practices', 'security-analysis', 'compliance']
+  //   }
   return capabilities[agentType]  ?? ['general-purpose'];
   //   // LINT: unreachable code removed}
   /**
@@ -119,21 +119,21 @@ initialize();
     // Simulate subtask execution
 // await this.delay(200);
     results.push({subtaskId = > ({bottleneck = === 'high' ? '20-30%' : '5-15%',effort = === 'high' ? 'medium' : 'low';
-  }
+  //   }
   ))
-}
+// }
 /**
  * Analyze code complexity;
  */
 analyzeComplexity(codebase);
 : unknown
-{
+// {
   return {cyclomaticComplexity = Math.floor(Math.random() * 50) + 20;
   // const __passed = Math.floor(totalTests * 0.92); // LINT: unreachable code removed
   return {
       type,
   // target,total = > setTimeout(resolve, ms)); // LINT: unreachable code removed
-}
+// }
 /**
  * Graceful shutdown;
  */
@@ -145,20 +145,20 @@ this.isShuttingDown = true;
 if (this.currentTask) {
   console.warn(`⏳ Waiting for current task ${this.currentTask.id} to complete...`);
   // In a real implementation, you might want to interrupt the task
-}
+// }
 process.exit(0);
 // Initialize and start the worker
 const _worker = new SwarmWorker(workerData.workerId);
 worker.initialize();
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  console.error(`Uncaught exception in worker ${workerData.workerId}:`, error);
+  console.error(`Uncaught exception in worker ${workerData.workerId});
   if(parentPort) {
     parentPort.postMessage({type = > process.exit(1), 100); // Brief delay to send message
 });
 
 process.on('unhandledRejection', (reason, _promise) => {
-  console.error(`Unhandled rejection in worker ${workerData.workerId}:`, reason);
+  console.error(`Unhandled rejection in worker ${workerData.workerId});
   if(parentPort) {
     parentPort.postMessage({type = > process.exit(1), 100); // Brief delay to send message
 });

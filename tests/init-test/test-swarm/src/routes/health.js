@@ -1,6 +1,6 @@
 const _express = require('express');
 const { db } = require('../models/database');
-const _os = require('node:os');
+const _os = require('node);
 const _router = express.Router();
 // Health check endpoint
 router.get('/', (_req, _res) => {
@@ -21,7 +21,7 @@ db.get('SELECT 1', (err) => {
   } else {
     healthcheck.database = 'connected';
     res.json(healthcheck);
-  }
+  //   }
 });
 })
 module.exports = router;

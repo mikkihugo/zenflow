@@ -12,15 +12,15 @@ async function testUnifiedServer() {
     const _plugin = new UnifiedInterfacePlugin({
       webPort,
       enableMCP,
-      theme: 'dark' });
+      theme);
     // Initialize the plugin
   // await plugin.initialize();
     console.warn('✅ Unified server with MCP started successfully!');
-    console.warn('🌐 Web UI: http://localhost:3000/');
-    console.warn('🔗 MCP endpoint: http://localhost:3000/mcp');
-    console.warn('📊 Health check: http://localhost:3000/health');
-    console.warn('🔧 MCP tools: http://localhost:3000/mcp/tools');
-    console.warn('📝 MCP info: http://localhost:3000/mcp/info');
+    console.warn('🌐 Web UI);
+    console.warn('🔗 MCP endpoint);
+    console.warn('📊 Health check);
+    console.warn('🔧 MCP tools);
+    console.warn('📝 MCP info);
 
     // Keep the server running
     console.warn('🎯 Server running... Press Ctrl+C to stop');
@@ -30,11 +30,11 @@ async function testUnifiedServer() {
   // await plugin.shutdown();
       process.exit(0);
     });
-  }
+  //   }
 catch (error)
-{
-  console.error('❌ Failed to start unified server:', error.message);
+// {
+  console.error('❌ Failed to start unified server);
   process.exit(1);
-}
-}
+// }
+// }
 testUnifiedServer()

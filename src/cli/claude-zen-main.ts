@@ -19,19 +19,19 @@ export interface UltimateArchitectureConfig {
   enableBatching?: boolean;
   debug?: boolean;
   verboseLogging?: boolean;
-}
+// }
 /**
  * Unified operation parameters;
  */
 export interface UnifiedOperationParams {category = > void
-}
+// }
 /**
  * Ultimate architecture interface;
  */
 export interface UltimateArchitecture {executeUnifiedOperation = > Promise<any>
 getUnifiedStats = > ArchitectureStats
 cleanup = > Promise<void>
-}
+// }
 /**
  * CLI flags interface;
  */
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
 // const _cli = awaitcreateMeowCLI()
 let { input
 , flags
-}
+// }
 = cli as
 {input = input[0];
 
@@ -96,19 +96,21 @@ if (flags.version  ?? flags.v) {
  * @param config - Architecture configuration;
  * @returns Promise resolving to architecture instance;
     // */; // LINT: unreachable code removed
-async function initializeUltimateArchitecture(): unknown {
+async function initializeUltimateArchitecture() {
         case 'init':;
           return architecture.executeUnifiedOperation({category = Object.values(context.arguments).slice(1).join(' ');
     // if (!task) { // LINT: unreachable code removed
             throw new Error('Task description required');
-          }
+          //           }
+
 
           return architecture.executeUnifiedOperation({
             category => {
       const _query = Object.values(context.arguments).join(' ');
     // if (!query) { // LINT: unreachable code removed
         throw new Error('Search query required');
-      }
+      //       }
+
 
       return architecture.executeUnifiedOperation({
         category => {
@@ -133,7 +135,8 @@ async function initializeUltimateArchitecture(): unknown {
   });
 
   printSuccess(`✅ Registered ${Object.keys(unifiedOverrides).length + 4} unified commands`);
-}
+// }
+
 
 // =============================================================================
 // SIGNAL HANDLERS
@@ -150,7 +153,7 @@ process.on('SIGINT', async (): Promise<void> => {
     } catch (_error => ;
   if (globalArchitecture) {
 // await globalArchitecture.cleanup();
-  }
+  //   }
   process.exit(0););
 
 process.on('uncaughtException', async (error => {
@@ -160,11 +163,12 @@ process.on('uncaughtException', async (error => {
 
 // Run the revolutionary CLI
 main().catch(async (error => {
-  printError(`❌ Fatal error: ${error.message}`);
+  printError(`❌ Fatal error);
 
   if (globalArchitecture) {
 // await globalArchitecture.cleanup();
-  }
+  //   }
+
 
   process.exit(1);
 });

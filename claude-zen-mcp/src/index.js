@@ -30,8 +30,8 @@ if (request.method === 'OPTIONS') {
       return new Response('Claude Flow MCP Server - POST to /sse for MCP requests', {
       headers: { 'Content-Type': 'text/plain', ...corsHeaders },
       //   // LINT: unreachable code removed});
-    }
-     }
+    //     }
+     //      }
   async function handleMCPRequest() {
   try {
 // const _body = awaitrequest.json();
@@ -47,7 +47,8 @@ if (request.method === 'OPTIONS') {
               version: '1.0.0',, },
         corsHeaders;
       );
-    }
+    //     }
+
 
     // Handle tools/list request
     if (body.method === 'tools/list') {
@@ -58,7 +59,7 @@ if (request.method === 'OPTIONS') {
           id: body.id,tools  },
         corsHeaders;
       );
-    }
+    //     }
   // Handle tools/call request
   if (body.method === 'tools/call') {
     const { name, arguments } = body.params;
@@ -71,8 +72,8 @@ if (request.method === 'OPTIONS') {
             result }
 
     corsHeaders
-    )
-  }
+    //     )
+  //   }
   catch (error)
   return jsonResponse(;
   // { // LINT: unreachable code removed
@@ -83,35 +84,36 @@ if (request.method === 'OPTIONS') {
 
   corsHeaders,
   400
-  )
-}
-}
+  //   )
+// }
+// }
 // Handle unknown methods
 return jsonResponse(;
 // { // LINT: unreachable code removed
 jsonrpc: '2.0',
 id: body.id,
-{
+// {
   code: -32601,
   message: 'Method not found' }
  },
 corsHeaders
-)
+// )
 } catch (error)
-{
+// {
   return jsonResponse(;
   // { // LINT: unreachable code removed
   jsonrpc: '2.0',
   id: body.id  ?? null,
   code: -32603,
   message: `Internal error: ${error.message}`,
-   }
+   //    }
+
 
 corsHeaders,
 500
-)
-}
-}
+// )
+// }
+// }
 function jsonResponse() {
   return new Response(JSON.stringify(data), {
     status,
@@ -119,4 +121,5 @@ function jsonResponse() {
       'Content-Type': 'application/json',
 ..corsHeaders }
  })
-}
+// }
+

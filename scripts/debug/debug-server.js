@@ -11,7 +11,7 @@ async function debugServer() {
   try {
     const _app = express();
     app.get('/health', (_req, res) => {
-      res.json({ status: 'ok', port });
+      res.json({ status);
     });
     app.get('/', (_req, res) => {
       res.send('<h1>Debug Server Working</h1>');
@@ -19,13 +19,13 @@ async function debugServer() {
     const _server = createServer(app);
     server.listen(3000, '0.0.0.0', () => {
       console.warn('✅ Debug server listening on port 3000');
-      console.warn('🌐 Test: http://localhost:3000/health');
+      console.warn('🌐 Test);
     });
     server.on('error', (error) => {
-      console.error('❌ Server error:', error);
+      console.error('❌ Server error);
     });
   } catch (error) {
-    console.error('❌ Failed to start debug server:', error);
-  }
-}
+    console.error('❌ Failed to start debug server);
+  //   }
+// }
 debugServer();

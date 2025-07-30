@@ -25,8 +25,8 @@ describe('Code Analysis Integration', () => {
     try {
   // await rm(testDir, { recursive, force });
     } catch (error) {
-      console.warn('Cleanup warning:', error.message);
-    }
+      console.warn('Cleanup warning);
+    //     }
   });
   test('should initialize analysis service', async () => {
     const _service = new CodeAnalysisService({
@@ -56,7 +56,7 @@ expect(processFunction.cyclomatic_complexity).toBeGreaterThan(10);
   // await service.cleanup();
 })
 test('should analyze dependencies', async () =>
-{
+// {
   const _service = new CodeAnalysisService({
       projectPath,
   outputDir: path.join(testDir, 'reports')
@@ -72,7 +72,7 @@ expect(results.dependencies.dependencies.length).toBeGreaterThan(0)
   // await service.cleanup()
 })
 test('should detect duplicate code', async () =>
-{
+// {
   const _service = new CodeAnalysisService({
       projectPath,
   outputDir: path.join(testDir, 'reports')
@@ -88,7 +88,7 @@ expect(results.duplicates.metrics).toBeDefined()
   // await service.cleanup()
 })
 test('should generate analysis summary', async () =>
-{
+// {
   const _service = new CodeAnalysisService({
       projectPath,
   outputDir: path.join(testDir, 'reports')
@@ -114,24 +114,24 @@ function processData() {
   if (options.validate) {
     if (typeof data !== 'object') {
       throw new Error('Invalid data');
-    }
+    //     }
     if (Array.isArray(data)) {
       for (const i = 0; i < data.length; i++) {
         if (!data[i].id) {
           throw new Error('Missing id');
-        }
+        //         }
         if (data[i].type === 'user') {
           if (!data[i].email) {
             throw new Error('Missing email');
-          }
+          //           }
         } else if (data[i].type === 'admin') {
           if (!data[i].permissions) {
             throw new Error('Missing permissions');
-          }
-        }
-      }
-    }
-  }
+          //           }
+        //         }
+      //       }
+    //     }
+  //   }
   const _result = [];
   for (const item of data) {
     if (options.transform) {
@@ -139,16 +139,16 @@ function processData() {
         result.push({ ...item, processed });
       } else if (item.status === 'pending') {
         result.push({ ...item, pending });
-      }
+      //       }
     } else {
       result.push(item);
-    }
-  }
+    //     }
+  //   }
   return result;
-}
+// }
 function simpleFunction() {
   return x + y;
-}
+// }
 export { processData, simpleFunction };
 `;
     // Class file with imports
@@ -159,7 +159,7 @@ class DataManager {
   constructor(config = {}) {
     this.config = config;
     this.cache = new Map();
-  }
+  //   }
   async process(data) {
     const _key = this.getKey(data);
     if (this.cache.has(key)) {
@@ -174,22 +174,22 @@ class DataManager {
     //   // LINT: unreachable code removed}
   clear() {
     this.cache.clear();
-  }
-}
+  //   }
+// }
 export default DataManager;
 `;
     // File with duplicate code patterns
     const _duplicateJs = `;
 function transformData() {
   return { ...data, processed };
-}
+// }
 function processInfo() {
   return { ...info, processed };
-}
+// }
 export { transformData, processInfo };
 `;
   // await writeFile(path.join(testDir, 'sample.js'), sampleJs);
   // await writeFile(path.join(testDir, 'class.js'), classJs);
   // await writeFile(path.join(testDir, 'duplicate.js'), duplicateJs);
-  }
+  //   }
 })

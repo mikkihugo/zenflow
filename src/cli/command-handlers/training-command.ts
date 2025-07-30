@@ -2,9 +2,9 @@
  * Training Command Module;
  * Converted from JavaScript to TypeScript
  */
-{
+// {
   Logger, JSONObject, JSONValue, JSONArray;
-}
+// }
 from;
 ('../types/core.js');
 printSuccess,
@@ -14,10 +14,10 @@ trainNeuralModel,
 updateNeuralPattern,
 callRuvSwarmLibrary,
 checkRuvSwarmAvailable } from '../utils.js'
-export async function trainingAction(): unknown {
+export async function trainingAction() {
   showTrainingHelp();
   return;
-}
+// }
 try {
     switch(subcommand) {
       case 'neural-train':;
@@ -47,14 +47,14 @@ try {
       console.warn(`  • Trainingtime = 1; i <= Math.min(epochs, 3); i++) {
       console.warn(`  Epoch ${i}/${epochs}: Training... (fallback mode)`);
 // await new Promise((resolve) => setTimeout(resolve, 200));
-    }
+    //     }
     printSuccess(`✅ Neural training completed (fallback mode)`);
-  }
-}
+  //   }
+// }
 async function patternLearnCommand(subArgs = flags;
 const __operation = options.operation ?? 'unknown';
 const __outcome = options.outcome ?? 'success';
-console.warn(`🔍 Learning from operation pattern...`: unknown);
+console.warn(`🔍 Learning from operation pattern...`);
 console.warn(`⚙️Operation = await checkRuvSwarmAvailable();
   if(!isAvailable) {
     printError('ruv-swarm is not available. Please install it with = {timestamp = await updateNeuralPattern(operation, outcome, metadata);
@@ -72,43 +72,34 @@ console.warn(`🤖 Agenttype = await checkRuvSwarmAvailable();
         `  • Model _version => {
           console.warn(`  • ${pattern}`);
         });
-}
+// }
     } else
-{
-  printError(`Model update failed: ${updateResult.error ?? 'Unknown error'}`);
-}
+// {
+  printError(`Model update failed);
+// }
 } catch (error)
-{
+// {
   // Fallback to showing success with default metrics
   printSuccess(`✅ Model update completed (using cached patterns)`);
   console.warn(`🧠 ${agentType} agent model updated with new insights`);
-  console.warn(`📈 Performance prediction improved based on: ${result}`);
-  console.warn(`📊 Update metrics:`);
-  console.warn(`  • Model version: v1.0`);
-  console.warn(`  • Performance delta: +5%`);
-  console.warn(`  • Training samples: 250`);
-  console.warn(`  • Accuracy improvement: +3%`);
-  console.warn(`  • Confidence increase: +8%`);
-}
-}
-function showTrainingHelp(): unknown {
+  console.warn(`📈 Performance prediction improved based on);
+  console.warn(`📊 Update metrics);
+  console.warn(`  • Model version);
+  console.warn(`  • Performance delta);
+  console.warn(`  • Training samples);
+  console.warn(`  • Accuracy improvement);
+  console.warn(`  • Confidence increase);
+// }
+// }
+function showTrainingHelp() {
   console.warn(`;
 🧠 Training Commands - Neural Pattern Learning & Model Updates
 
-USAGE:;
-  claude-zen training <command> [options]
-
-COMMANDS:;
-  neural-train      Train neural patterns from operations;
-  pattern-learn     Learn from specific operation outcomes  ;
-  model-update      Update agent models with new insights
-
-NEURAL TRAIN OPTIONS:;
-  --data <source>   Training data source (default: recent);
+USAGE);
                     Options, historical, custom, swarm-<id>;
-  --model <name>    Target model (default: general-predictor);
+  --model <name>    Target model (default);
                     Options: task-predictor, agent-selector, performance-optimizer;
-  --epochs <n>      Training epochs (default: 50)
+  --epochs <n>      Training epochs (default)
 
 PATTERN LEARN OPTIONS:;
   --operation <op>  Operation type to learn from;
@@ -137,4 +128,5 @@ EXAMPLES:;
   • Coordination efficiency;
   • Error prevention patterns;
 `);
-}
+// }
+

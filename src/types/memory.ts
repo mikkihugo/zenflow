@@ -45,7 +45,7 @@ export interface VectorSearchOptions {
   filters?: MemoryFilter[];
   includeDistances?: boolean;
   includeVectors?: boolean;
-}
+// }
 export interface VectorSearchResult {entry = ============================================================================
 // TRANSACTIONS
 // =============================================================================
@@ -61,7 +61,7 @@ export interface BackupOptions {
   encryption?: boolean;
   destination?: string;
   metadata?: JSONObject;
-}
+// }
 export interface BackupInfo extends Identifiable {namespace = ============================================================================
 // MONITORING & STATISTICS
 // =============================================================================
@@ -73,59 +73,60 @@ export interface MemoryStatistics {
 // =============================================================================
 
 export interface CleanupResult {
-  entriesRemoved: number;
-  bytesFreed: number;
-  duration: number; // milliseconds
+  // entriesRemoved: number
+  // bytesFreed: number
+  duration: number, // milliseconds
 
   breakdown: {
-    expired: number;
-    orphaned: number;
-    corrupted: number;
-    duplicate: number;
+    // expired: number
+    // orphaned: number
+    // corrupted: number
+    // duplicate: number
   };
-errors: string[];
-}
+errors;
+// }
 export interface OptimizationResult {
   improvements: {
-    type: string;
-    description: string;
-    benefit: string;
-    applied: boolean;
+    // type: string
+    // description: string
+    // benefit: string
+    // applied: boolean
   }[];
-{
-  before: PerformanceSnapshot;
-  after: PerformanceSnapshot;
-  improvement: number; // percentage
-}
-duration: number; // milliseconds
-errors: string[];
-}
+// {
+  // before: PerformanceSnapshot
+  // after: PerformanceSnapshot
+  improvement: number, // percentage
+// }
+duration: number, // milliseconds
+errors;
+// }
 export interface VacuumResult {
-  bytesReclaimed: number;
-  fragmentationReduced: number; // percentage
-  indexesRebuilt: number;
-  duration: number; // milliseconds
-  errors: string[];
-}
+  // bytesReclaimed: number
+  fragmentationReduced: number, // percentage
+  // indexesRebuilt: number
+  duration: number, // milliseconds
+  errors;
+// }
 export interface ReindexResult {
-  indexesRebuilt: number;
-  indexSize: number; // bytes
-  duration: number; // milliseconds
+  // indexesRebuilt: number
+  indexSize: number, // bytes
+  duration: number, // milliseconds
   performance: {
-    searchSpeedup: number; // percentage
-    writeSlowdown: number; // percentage
+    searchSpeedup: number, // percentage
+    writeSlowdown: number, // percentage
   };
-  errors: string[];
-}
+  errors;
+// }
 export interface PerformanceSnapshot {
-  timestamp: Date;
-  throughput: number; // operations per second
-  latency: number; // milliseconds
-  memoryUsage: number; // bytes
-  cpuUsage: number; // percentage
-  hitRate: number; // 0-1
-}
+  // timestamp: Date
+  throughput: number, // operations per second
+  latency: number, // milliseconds
+  memoryUsage: number, // bytes
+  cpuUsage: number, // percentage
+  hitRate: number, // 0-1
+// }
 export interface TimeRange {
-  start: Date;
-  end: Date;
-}
+  // start: Date
+  // end: Date
+// }
+

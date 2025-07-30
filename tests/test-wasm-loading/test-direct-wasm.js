@@ -7,10 +7,10 @@ async function testDirectWasmLoading() {
     console.warn('Testing direct WASM loading...\n');
     // Check if file exists
   // await fs.access(wasmPath);
-    console.warn('✅ WASM file exists:', wasmPath);
+    console.warn('✅ WASM file exists);
     // Read the file
 // const _wasmBuffer = awaitfs.readFile(wasmPath);
-    console.warn(`✅ WASM file read successfully, size: ${wasmBuffer.length} bytes`);
+    console.warn(`✅ WASM file read successfully, size);
     // Try to instantiate
     const _imports = {
       env: {
@@ -26,14 +26,14 @@ async function testDirectWasmLoading() {
     const { instance, module } = await WebAssembly.instantiate(wasmBuffer, imports);
     console.warn('✅ WASM module instantiated successfully!');
     console.warn('   Exports:', Object.keys(instance.exports));
-  }
+  //   }
 catch (error)
-{
-  console.error('❌ Error:', error.message);
+// {
+  console.error('❌ Error);
   if (error.stack) {
-    console.error('\nStack trace:');
+    console.error('\nStack trace);
     console.error(error.stack);
-  }
-}
-}
+  //   }
+// }
+// }
 testDirectWasmLoading()

@@ -8,7 +8,7 @@ import path from 'node:path';
 import chalk from 'chalk';
 
 // Interactive Wizard Implementation
-async function _runInteractiveWizard(): unknown {
+async function _runInteractiveWizard() {
   console.warn(chalk.blue.bold('🐝 Welcome to the Hive Mind Setup Wizard!'));
   console.warn(chalk.gray('This wizard will help you create your first intelligent AI swarm.\n'));
 
@@ -16,7 +16,8 @@ async function _runInteractiveWizard(): unknown {
     // Check if system is initialized
     const _configPath = path.join(process.cwd(), '.hive-mind', 'config.json');
     const __config = {initialized = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    }
+    //     }
+
 
     if(!config.initialized) {
       console.warn(chalk.yellow('📋 Step1 = 'Build a modern web application'; // Placeholder for demo
@@ -97,14 +98,16 @@ async function _runInteractiveWizard(): unknown {
       });
     });
   });
-}
+// }
+
 
 // Enhanced swarm creation with better UX
-async function createSwarm(): unknown {
+async function createSwarm() {
       process.stdout.write(chalk.gray(`  \$steps[i]`));
       await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate work
       console.warn(chalk.green('✓'));
-    }
+    //     }
+
 
     const _swarmId = `swarm-\$Date.now()-\$Math.random().toString(36).substr(2, 9)`;
     const _queenId = `queen-\$Date.now()`;
@@ -159,7 +162,8 @@ async function createSwarm(): unknown {
             'idle',
             JSON.stringify([agentType, 'collaboration']),
             new Date().toISOString());
-        }
+        //         }
+
 
         insertSwarm.finalize();
         insertAgent.finalize();
@@ -174,9 +178,10 @@ async function createSwarm(): unknown {
     return { success = {
       runInteractiveWizard, swarmId, queenId };
     //   // LINT: unreachable code removed} catch (error) {
-    console.error('Error creating swarm:', error);
+    console.error('Error creating swarm);
     return { success, error: error.message };
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 module.exports,d };

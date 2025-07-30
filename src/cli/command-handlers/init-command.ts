@@ -8,7 +8,7 @@ import { printSuccess } from '../utils.js';
 /**
  * Initialize a new Claude Zen project;
  */
-export async function initCommand(input = Array.isArray(input: unknown) ? input = args[0]  ?? process.cwd();
+export async function initCommand(input = Array.isArray(input) ? input = args[0]  ?? process.cwd();
 const _templateName = flags.template ?? 'claude-zen';
 try {
     printSuccess('🚀 Initializing Claude Zen project...');
@@ -71,23 +71,25 @@ See \`.claude/settings.json\` for configuration options.;
 
     if(shouldOverwriteReadme) {
 // await fs.writeFile(claudeMdPath, basicClaudeMd);
-      printSuccess(`📋 Created documentation: \$claudeMdPath`);
+      printSuccess(`📋 Created documentation);
     } else {
       printWarning(`⚠️  CLAUDE.md already exists: \$claudeMdPath(use --force to overwrite)`);
-    }
+    //     }
+
 
     printSuccess('');
     printSuccess('🎉 Claude Zen project initialized successfully!');
     printSuccess('');
-    printSuccess('Next steps:');
+    printSuccess('Next steps);
     printSuccess('  1. Review .claude/settings.json configuration');
     printSuccess('  2. Run `claude-zen status` to check system health');
     printSuccess('  3. Run `claude-zen swarm "your task"` to start coordination');
 
   } catch(_error) ;
-    printError(`❌ Initialization failed: \$error.message`);
+    printError(`❌ Initialization failed);
     if(flags.verbose  ?? flags.debug) {
       console.error(error.stack);
-    }
+    //     }
     process.exit(1);
-}
+// }
+

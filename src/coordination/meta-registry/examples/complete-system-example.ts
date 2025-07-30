@@ -3,7 +3,8 @@
  * Demonstrates the fullhierarchy = null;
     this.mainRegistry = null;
     this.hierarchyManager = null;
-  }
+  //   }
+
 
   async initialize() {
     console.warn('🚀 Initializing Complete Ultra-Modular Meta Registry System...');
@@ -15,8 +16,8 @@
   try {
 // await example.initialize();
   } catch (error)
-{
-  console.error('❌ Error inexample = === `file://${process.argv[1]}`) {
+// {
+  console.error('❌ Error inexample = === `file) {
   runCompleteExample().catch(console.error);
-}
+// }
 export default CompleteSystemExample;

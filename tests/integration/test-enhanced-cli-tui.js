@@ -14,7 +14,7 @@ const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
 // Mock implementations for testing without dependencies
 const _mockListCommands = async () => [;
-  {
+  //   {
     name: 'init',
     description: 'Initialize Claude Zen project',
     usage: 'claude-zen init [options]',
@@ -23,7 +23,7 @@ const _mockListCommands = async () => [;
     flags: {
       auto: { type: 'boolean', description: 'Auto-configure' },
       minimal: { type: 'boolean', description: 'Minimal setup' } } },
-  {
+  //   {
     name: 'status',
     description: 'Show system status',
     usage: 'claude-zen status [--verbose]',
@@ -32,7 +32,7 @@ const _mockListCommands = async () => [;
     flags: {
       verbose: { type: 'boolean', description: 'Verbose output' },
       json: { type: 'boolean', description: 'JSON format' } } },
-  {
+  //   {
     name: 'swarm',
     description: 'Manage swarm operations',
     usage: 'claude-zen swarm <action> [options]',
@@ -60,7 +60,7 @@ async function testAPIGeneration() {
       });
       return {
         endpoints,core, coordination  };
-    }
+    //     }
 // const _result = awaitmockGenerateAPIEndpoints();
 assert(result.totalEndpoints === 3, `Expected 3 endpoints, got ${result.totalEndpoints}`);
 assert(result.endpoints['/api/execute/init'], 'Init endpoint should exist');
@@ -70,11 +70,11 @@ console.warn('✅ API endpoint generation test passed');
 console.warn(`   Generated ${result.totalEndpoints} endpoints`);
 console.warn(`   Categories: ${JSON.stringify(result.categories)}`);
 } catch (error)
-{
-  console.error('❌ API generation test failed:', error.message);
+// {
+  console.error('❌ API generation test failed);
   throw error;
-}
-}
+// }
+// }
 // Test command validation
 async function testCommandValidation() {
   console.warn('🧪 Testing command validation...');
@@ -83,7 +83,7 @@ async function testCommandValidation() {
     const _mockValidateCommand = () => {
       const _commands = {
         init: {
-          flags: { auto: { type: 'boolean' }, minimal: { type: 'boolean' } } },minArgs ,type: 'number' , name: type: 'string' , };
+          flags: { auto: { type: 'boolean' }, minimal: { type: 'boolean' } } },minArgs ,type: 'number' , name: type, 'string' , };
       const _command = commands[commandName];
       if (!command) {
         return { valid, errors: [`Command '${commandName}' not found`] };
@@ -93,7 +93,7 @@ async function testCommandValidation() {
       if (command.validation?.minArgs && args.length < command.validation.minArgs) {
         validation.valid = false;
         validation.errors.push(`Minimum ${command.validation.minArgs} arguments required`);
-      }
+      //       }
       // Check flag types
       Object.entries(flags).forEach(([flagName, flagValue]) => {
         const _flagConfig = command.flags?.[flagName];
@@ -104,7 +104,7 @@ async function testCommandValidation() {
         if (flagConfig.type === 'number' && Number.isNaN(Number(flagValue))) {
           validation.valid = false;
           validation.errors.push(`Flag '${flagName}' must be a number`);
-        }
+        //         }
       });
       return validation;
     //   // LINT: unreachable code removed};
@@ -116,17 +116,17 @@ async function testCommandValidation() {
     assert(result.valid === false, 'Swarm command without args should fail validation');
     assert(result.errors.length > 0, 'Should have validation errors');
     // Test invalid flag type
-    result = mockValidateCommand('swarm', ['create'], { agents: 'invalid' });
+    result = mockValidateCommand('swarm', ['create'], { agents);
     assert(result.valid === false, 'Invalid number flag should fail validation');
     // Test unknown command
     result = mockValidateCommand('unknown', [], {});
     assert(result.valid === false, 'Unknown command should fail validation');
     console.warn('✅ Command validation test passed');
   } catch (error) {
-    console.error('❌ Command validation test failed:', error.message);
+    console.error('❌ Command validation test failed);
     throw error;
-  }
-}
+  //   }
+// }
 // Test OpenAPI specification generation
 async function testOpenAPIGeneration() {
   console.warn('🧪 Testing OpenAPI specification generation...');
@@ -147,7 +147,7 @@ async function testOpenAPIGeneration() {
             tags: [cmd.category],
               required,
                 'application/json': \$ref: '#/components/schemas/CommandRequest' ,,,,
-              200: null
+              // 200: null
                 description: 'Command executed successfully',
                   'application/json': \$ref: '#/components/schemas/CommandResponse' ,,,, } };
       });
@@ -167,13 +167,13 @@ async function testOpenAPIGeneration() {
     console.warn('✅ OpenAPI specification test passed');
     console.warn(`   Generated ${Object.keys(spec.paths).length} API paths`);
     console.warn(`   Schemas: ${Object.keys(spec.components.schemas).length}`);
-  }
+  //   }
 catch (error)
-{
-  console.error('❌ OpenAPI generation test failed:', error.message);
+// {
+  console.error('❌ OpenAPI generation test failed);
   throw error;
-}
-}
+// }
+// }
 // Test TUI component structure
 async function testTUIComponents() {
   console.warn('🧪 Testing TUI component structure...');
@@ -221,9 +221,9 @@ slice(0, 5);
     assert(filteredLogs.length === 3, 'Should show all logs when filter is "all"');
     console.warn('✅ TUI component structure test passed');
   } catch (error)
-    console.error('❌ TUI component test failed:', error.message);
+    console.error('❌ TUI component test failed);
     throw error;
-}
+// }
 // Test WebSocket message structure
 async function testWebSocketMessages() {
   console.warn('🧪 Testing WebSocket message structure...');
@@ -256,7 +256,7 @@ async function testWebSocketMessages() {
         case 'execution_progress':;
           if (;
             typeof message.progress !== 'number'  ?? message.progress < 0  ?? message.progress > 100;
-          )
+          //           )
             return { valid, error: 'Valid progress percentage required' };
     //   // LINT: unreachable code removed}
           break;
@@ -264,27 +264,23 @@ async function testWebSocketMessages() {
     //   // LINT: unreachable code removed};
     // Test valid messages
     const _result = mockValidateWSMessage({
-      type: 'execute_command',
-      command: 'status',
-      args: [] });
+      type);
     assert(result.valid === true, 'Valid execute_command should pass');
     result = mockValidateWSMessage({
-      type: 'execution_progress',
-      progress,
-      sessionId: 'test-123' });
+      type);
     assert(result.valid === true, 'Valid execution_progress should pass');
     // Test invalid messages
-    result = mockValidateWSMessage({ type: 'invalid_type' });
+    result = mockValidateWSMessage({ type);
     assert(result.valid === false, 'Invalid message type should fail');
-    result = mockValidateWSMessage({ type: 'execute_command' }); // missing command
+    result = mockValidateWSMessage({ type); // missing command
     assert(result.valid === false, 'Missing command should fail');
-    result = mockValidateWSMessage({ type: 'execution_progress', progress });
+    result = mockValidateWSMessage({ type);
     assert(result.valid === false, 'Invalid progress percentage should fail');
     console.warn('✅ WebSocket message structure test passed');
   } catch (error)
-    console.error('❌ WebSocket message test failed:', error.message);
+    console.error('❌ WebSocket message test failed);
     throw error;
-}
+// }
 // Main test runner
 async function runTests() {
   console.warn('🚀 Running Enhanced CLI/TUI Functionality Tests');
@@ -302,17 +298,17 @@ async function runTests() {
   // await test();
       passed++;
     } catch (error) {
-      console.error(`Test failed: ${error.message}`);
+      console.error(`Test failed);
       failed++;
-    }
+    //     }
     console.warn(''); // Empty line between tests
-  }
+  //   }
   console.warn('═'.repeat(60));
-  console.warn(`📊 Test Results: ${passed} passed, ${failed} failed`);
+  console.warn(`📊 Test Results);
   if (failed === 0) {
     console.warn('🎉 All tests passed! Enhanced CLI/TUI functionality is working correctly.');
     console.warn('');
-    console.warn('✨ Enhanced Features Validated:');
+    console.warn('✨ Enhanced Features Validated);
     console.warn('   • Auto-generated API endpoints from CLI commands');
     console.warn('   • Command validation with type checking and error reporting');
     console.warn('   • Comprehensive OpenAPI 3.0 specification generation');
@@ -324,13 +320,13 @@ async function runTests() {
   } else {
     console.warn(`❌ ${failed} test(s) failed. Please check the implementation.`);
     process.exit(1);
-  }
-}
+  //   }
+// }
 // Run tests if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   runTests().catch((error) => {
-    console.error('Fatal test error:', error);
+    console.error('Fatal test error);
     process.exit(1);
   });
-}
+// }
 export { runTests };

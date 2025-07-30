@@ -62,21 +62,10 @@ export interface QueenCapabilities {taskTypes = ================================
 
 export interface QueenEvents {
   'task-assigned': (task = > void;
-  'task-started': (taskId = > void;
-  'task-progress': (taskId = > void;
-  'task-completed': (taskId = > void;
-  'task-failed': (taskId = > void;
-  'collaboration-request': (task = > void;
-  'collaboration-response': (taskId = > void;
-  'consensus-reached': (consensus = > void;
-  'learning-update': (pattern = > void;
-  'metrics-updated': (metrics = > void;
-  'state-changed': (oldState = > void;
-  'health-warning': (issue = > void;
-  'shutdown': () => void;
+  'task-started') => void;
   'error': (error = > void;
   [event = > void;
-}
+// }
 // =============================================================================
 // QUEEN INTERFACE
 // =============================================================================
@@ -95,255 +84,256 @@ export interface CodeQueen extends Queen {
 export interface HealthStatus {
   overall: 'healthy' | 'degraded' | 'critical';
   components: {
-    [component: string]: {
+    [component]: {
       status: 'healthy' | 'degraded' | 'critical';
       message?: string;
       metrics?: JSONObject;
     };
   };
   recommendations?: string[];
-  lastCheck: Date;
-}
+  // lastCheck: Date
+// }
 export interface DetailedQueenMetrics extends QueenMetrics {
   timeSeriesData: {
-    timestamp: Date;
+    // timestamp: Date
     metrics: Partial<QueenMetrics>;
   }[];
   distributionData: {
     taskTypeDistribution: Record<TaskType, number>;
-    processingTimeDistribution: number[];
-    confidenceDistribution: number[];
-    qualityDistribution: number[];
+    processingTimeDistribution;
+    confidenceDistribution;
+    qualityDistribution;
   };
   comparisonData: {
     peerComparison: Record<string, number>;
     historicalComparison: Record<string, number>;
     benchmarkComparison: Record<string, number>;
   };
-}
+// }
 export interface DiagnosticResult {
   overall: 'pass' | 'warn' | 'fail';
   tests: {
-    name: string;
+    // name: string
     status: 'pass' | 'warn' | 'fail';
     message?: string;
     details?: JSONObject;
   }[];
-  recommendations: string[];
+  recommendations;
   estimatedFixTime?: number;
   autoFixAvailable?: boolean;
-}
+// }
 // Code generation types
 export interface CodeGenerationSpec {
-  language: string;
+  // language: string
   framework?: string;
-  description: string;
-  requirements: string[];
-  constraints: string[];
+  // description: string
+  requirements;
+  constraints;
   examples?: string[];
   style?: JSONObject;
-}
+// }
 export interface CodeResult {
-  code: string;
-  explanation: string;
+  // code: string
+  // explanation: string
   tests?: string;
   documentation?: string;
   dependencies?: string[];
-  confidence: number;
-  quality: QualityAnalysis;
-}
+  // confidence: number
+  // quality: QualityAnalysis
+// }
 export interface RefactoringOptions {
   target: 'readability' | 'performance' | 'maintainability' | 'testability';
-  preserveBehavior: boolean;
-  modernize: boolean;
-  addComments: boolean;
-  addTypes: boolean;
-}
+  // preserveBehavior: boolean
+  // modernize: boolean
+  // addComments: boolean
+  // addTypes: boolean
+// }
 export interface OptimizationTarget {
   type: 'speed' | 'memory' | 'size' | 'readability';
-  constraints: string[];
-  acceptableTradeoffs: string[];
-}
+  constraints;
+  acceptableTradeoffs;
+// }
 export interface QualityAnalysis {
-  score: number;
+  // score: number
   metrics: {
-    complexity: number;
-    maintainability: number;
-    readability: number;
-    testability: number;
-    performance: number;
-    security: number;
+    // complexity: number
+    // maintainability: number
+    // readability: number
+    // testability: number
+    // performance: number
+    // security: number
   };
   issues: {
-    type: string;
+    // type: string
     severity: 'low' | 'medium' | 'high';
-    message: string;
+    // message: string
     line?: number;
     suggestion?: string;
   }[];
-  recommendations: string[];
-}
+  recommendations;
+// }
 // Bug analysis types
 export interface BugAnalysis {
-  type: string;
+  // type: string
   severity: 'low' | 'medium' | 'high' | 'critical';
-  root_cause: string;
-  impact: string;
-  affected_components: string[];
-  reproduction_steps: string[];
-  evidence: JSONObject[];
-  confidence: number;
-}
+  // root_cause: string
+  // impact: string
+  affected_components;
+  reproduction_steps;
+  evidence;
+  // confidence: number
+// }
 export interface FixSuggestion {
-  approach: string;
+  // approach: string
   changes: {
-    file: string;
+    // file: string
     line?: number;
     oldCode?: string;
-    newCode: string;
-    explanation: string;
+    // newCode: string
+    // explanation: string
   }[];
-  tests: string[];
-  validation_steps: string[];
+  tests;
+  validation_steps;
   risk_assessment: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];
-    mitigation: string[];
+    factors;
+    mitigation;
   };
-  confidence: number;
-}
+  // confidence: number
+// }
 // Architecture types
 export interface ArchitectureAnalysis {
-  overview: string;
-  patterns: string[];
-  antipatterns: string[];
+  // overview: string
+  patterns;
+  antipatterns;
   dependencies: {
-    internal: string[];
-    external: string[];
-    circular: string[];
+    internal;
+    external;
+    circular;
   };
   metrics: {
-    complexity: number;
-    coupling: number;
-    cohesion: number;
-    maintainability: number;
+    // complexity: number
+    // coupling: number
+    // cohesion: number
+    // maintainability: number
   };
-  recommendations: string[];
-}
+  recommendations;
+// }
 export interface ArchitectureRecommendation {
-  priority: Priority;
-  category: string;
-  recommendation: string;
-  rationale: string;
-  implementation_steps: string[];
-  estimated_effort: string;
-  benefits: string[];
-  risks: string[];
-  alternatives: string[];
-}
+  // priority: Priority
+  // category: string
+  // recommendation: string
+  // rationale: string
+  implementation_steps;
+  // estimated_effort: string
+  benefits;
+  risks;
+  alternatives;
+// }
 export interface ArchitecturalDecision {
-  title: string;
-  context: string;
-  decision: string;
+  // title: string
+  // context: string
+  // decision: string
   status: 'proposed' | 'accepted' | 'rejected' | 'deprecated';
-  consequences: string[];
-  alternatives: string[];
-  assumptions: string[];
-  constraints: string[];
-}
+  consequences;
+  alternatives;
+  assumptions;
+  constraints;
+// }
 export interface PatternValidation {
-  valid: boolean;
-  pattern: string;
-  compliance: number;
-  violations: string[];
-  recommendations: string[];
-  examples: string[];
-}
+  // valid: boolean
+  // pattern: string
+  // compliance: number
+  violations;
+  recommendations;
+  examples;
+// }
 // Vision processing types
 export interface VisionContext {
   type: 'ui-mockup' | 'diagram' | 'screenshot' | 'design' | 'chart';
-  target_platform: string;
-  style_preferences: JSONObject;
-  constraints: string[];
-}
+  // target_platform: string
+  // style_preferences: JSONObject
+  constraints;
+// }
 export interface VisionResult {
-  interpretation: string;
+  // interpretation: string
   components: {
-    type: string;
-    properties: JSONObject;
+    // type: string
+    // properties: JSONObject
     children?: VisionResult['components'];
   }[];
-  layout: JSONObject;
-  styling: JSONObject;
-  confidence: number;
-  suggestions: string[];
-}
+  // layout: JSONObject
+  // styling: JSONObject
+  // confidence: number
+  suggestions;
+// }
 export interface DesignAnalysis {
   style: {
-    colors: string[];
-    fonts: string[];
-    spacing: JSONObject;
-    layout_type: string;
+    colors;
+    fonts;
+    // spacing: JSONObject
+    // layout_type: string
   };
   components: {
-    type: string;
-    count: number;
-    variations: string[];
+    // type: string
+    // count: number
+    variations;
   }[];
-  patterns: string[];
+  patterns;
   accessibility: {
-    score: number;
-    issues: string[];
-    recommendations: string[];
+    // score: number
+    issues;
+    recommendations;
   };
   responsive: {
-    breakpoints: number[];
-    behavior: string[];
+    breakpoints;
+    behavior;
   };
-}
+// }
 export interface ComparisonResult {
-  similarity: number;
+  // similarity: number
   differences: {
-    type: string;
-    description: string;
+    // type: string
+    // description: string
     severity: 'low' | 'medium' | 'high';
   }[];
-  recommendations: string[];
-}
+  recommendations;
+// }
 // Neural network types
 export interface TrainingData {
-  inputs: number[][];
-  outputs: number[][];
-  validation_split: number;
-  epochs: number;
-  batch_size: number;
-  learning_rate: number;
-  metadata: JSONObject;
-}
+  inputs[];
+  outputs[];
+  // validation_split: number
+  // epochs: number
+  // batch_size: number
+  // learning_rate: number
+  // metadata: JSONObject
+// }
 export interface ModelResult {
-  model_id: string;
-  accuracy: number;
-  loss: number;
-  training_time: number;
-  parameters: number;
-  size: number;
-  metrics: JSONObject;
-  hyperparameters: JSONObject;
-}
+  // model_id: string
+  // accuracy: number
+  // loss: number
+  // training_time: number
+  // parameters: number
+  // size: number
+  // metrics: JSONObject
+  // hyperparameters: JSONObject
+// }
 export interface InferenceResult {
-  prediction: number[] | JSONObject;
-  confidence: number;
-  processing_time: number;
-  model_version: string;
-  metadata: JSONObject;
-}
+  prediction | JSONObject;
+  // confidence: number
+  // processing_time: number
+  // model_version: string
+  // metadata: JSONObject
+// }
 export interface OptimizationResult {
-  best_params: JSONObject;
-  best_score: number;
+  // best_params: JSONObject
+  // best_score: number
   optimization_history: {
-    params: JSONObject;
-    score: number;
-    iteration: number;
+    // params: JSONObject
+    // score: number
+    // iteration: number
   }[];
-  time_taken: number;
-}
+  // time_taken: number
+// }
+

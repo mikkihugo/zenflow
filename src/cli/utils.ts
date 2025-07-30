@@ -5,35 +5,38 @@ import { SqliteMemoryStore } from '../memory/sqlite-store.ts';
 
 const __logger = new Logger('cli-utils');
 // Color formatting functions
-export function printSuccess(): unknown {
+export function printSuccess() {
   throw err;
-}
+// }
 return true;
-}
-}
-export async function fileExists(path = {}: unknown): Promise<object> {
+// }
+// }
+export async function fileExists(path = {}): Promise<object> {
   try {
 // const _content = await(process as any).readTextFile(path);
     return JSON.parse(content);
     //   // LINT: unreachable code removed} catch {
     return defaultValue;
     //   // LINT: unreachable code removed}
-}
+// }
 
-export async function _writeJsonFile(_path = 100: unknown): string {
+
+export async function _writeJsonFile(_path = 100) {
   return str.length > length ? `${str.substring(0, length)}...` : str;
-}
+// }
 
-export function _formatBytes(): unknown {
+
+export function _formatBytes() {
   size /= 1024;
   unitIndex++;
-}
+// }
+
 
 return `${size.toFixed(2)} ${units[unitIndex]}`;
-}
+// }
 // Command execution helpers
 export function parseFlags(args = {};
-const _providedFlags = new Set<string>(: unknown); // Track explicitly provided flags
+const _providedFlags = new Set<string>(); // Track explicitly provided flags
 const _filteredArgs = [];
 for (let i = 0; i < args.length; i++) {
   const _arg = args[i];
@@ -47,32 +50,30 @@ for (let i = 0; i < args.length; i++) {
     } else {
       flags[flagName] = true;
       providedFlags.add(flagName);
-    }
+    //     }
   } else if (arg.startsWith('-') && arg.length > 1) {
     // Short flags
     const _shortFlags = arg.substring(1);
     for (const flag of shortFlags) {
       flags[flag] = true;
       providedFlags.add(flag);
-    }
+    //     }
   } else {
     filteredArgs.push(arg);
-  }
-}
+  //   }
+// }
 return {
     flags,args = [], options = {}): Promise<any> {
   try {
     // Check if we're in Node.js or node environment
     if (typeof process !== 'undefined' && (_process _as _any).versions && (process as any).versions.node) {
       // Node.js environment
-      const { spawn } = await import('node:child_process');
-// const { promisify  // LINT: unreachable code removed} = await import('node:util');
+      const { spawn } = await import('node);
+// const { promisify  // LINT: unreachable code removed} = await import('node);
 
 return new Promise((resolve) => {
         const _child = spawn(command, args, {stdio = '';
-    // let __stderr = ''; // LINT: unreachable code removed
-
-        child.stdout?.on('data', (data) => {
+    // let __stderr = ''; // LINT) => {
           stdout += data.toString();
         });
 
@@ -95,39 +96,40 @@ return new Promise((resolve) => {
   } catch {
     return defaultConfig;
     //   // LINT: unreachable code removed}
-}
+// }
 
-export async function saveConfig(config = 'claude-zen.config.json': unknown): Promise<void> {
+
+export async function saveConfig(config = 'claude-zen.config.json'): Promise<void> {
 // await writeJsonFile(path, config);
-}
+// }
 // ID generation
-export function generateId(prefix = '': unknown): string {
+export function generateId(prefix = '') {
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substr(2, 9);
   return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
-}
+// }
 // Array helpers
 export function chunk<_T>(array = [];
 for (let i = 0; i < array.length; i += size) {
   chunks.push(array.slice(i, i + size));
-}
+// }
 return chunks;
-}
+// }
 // Environment helpers
-export function getEnvVar(name = null: unknown): unknown {
+export function getEnvVar(name = null) {
   return (process as any).env.get(name) ?? defaultValue;
-}
-export function setEnvVar(_name = '': unknown): void {
+// }
+export function setEnvVar(_name = '') {
   const _percentage = Math.round((current / total) * 100);
   const _bar = '█'.repeat(Math.round(percentage / 5)) + '░'.repeat(20 - Math.round(percentage / 5));
   console.warn(`\r${bar} ${percentage}% ${message}`);
-}
-export function clearLine(): void {
+// }
+export function clearLine() {
   console.warn('\r\x1b[K');
-}
+// }
 // Async helpers
-export function sleep(ms = > setTimeout(resolve, ms: unknown));
-}
+export function sleep(ms = > setTimeout(resolve, ms));
+// }
 export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000): Promise<T> {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
@@ -135,11 +137,12 @@ export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000)
     //   // LINT: unreachable code removed} catch (/* err */) {
       if (attempt === maxAttempts) {
         throw err;
-      }
+      //       }
 // await sleep(delay * attempt);
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // ruv-swarm source integration - Using consolidated main implementation
 import { RuvSwarm } from '../../ruv-FANN/ruv-swarm/npm/src/index.js';
@@ -176,10 +179,11 @@ async function _getRuvSwarmInstance(): Promise<any> {
   const _operation = toolMapping[tool]  ?? tool;
   return await callRuvSwarmLibrary(operation, params);
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 // Direct ruv-swarm neural training (real WASM implementation)
-export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<any> {
+export async function _callRuvSwarmDirectNeural(params = {}): Promise<any> {
   try {
     const _modelName = (params as any).model  ?? 'general';
     const __epochs = (params as any).epochs  ?? 50;
@@ -206,7 +210,7 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
             dataSource,
             '--output-format',
             'json' ],
-          {
+          //           {
             stdio => {
           resolve({
             success = === 0,
@@ -223,9 +227,10 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
           if (stat.mtime > latestTime) {
             latestTime = stat.mtime;
             latestFile = filePath;
-          }
-        }
-      }
+          //           }
+        //         }
+      //       }
+
 
       if (latestFile) {
 // const _content = await(process as any).readTextFile(latestFile);
@@ -241,7 +246,7 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
       args.push(`--\$key`);
       if (value !== true && value !== false) {
         args.push(String(value));
-      }
+      //       }
     });
 // const _result = awaitrunCommand(command, args, {stdout = await runCommand('npx', ['ruv-swarm', '--version'], {stdout = 50): Promise<any> {
   return await callRuvSwarmMCP('neural_train', {
@@ -259,4 +264,5 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
     priority: (options as any).priority  ?? 'medium',
 ..options;
   });
-}
+// }
+

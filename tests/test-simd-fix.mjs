@@ -12,7 +12,7 @@ if (global._ruvSwarmInstance) {
   global._ruvSwarmInitialized = 0;
 }
 const _simdSupported = RuvSwarm.detectSIMDSupport();
-try {
+try { // eslint-disable-line
 // const _instance = awaitRuvSwarm.initialize({
     useSIMD,
     debug });

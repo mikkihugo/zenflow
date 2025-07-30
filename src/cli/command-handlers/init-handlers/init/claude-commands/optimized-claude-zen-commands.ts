@@ -6,11 +6,7 @@
 
 // Create batchtools-optimized Claude-Flow specific commands
 export async function createOptimizedClaudeFlowCommands(workingDir = `---name = `---name = `---
-name: claude-zen-swarm;
-description: Coordinate multi-agent swarms for complex tasks with batchtools optimization;
----
-
-# 🐝 Claude-Flow Swarm Coordination (Batchtools Optimized)
+name)
 
 Advanced multi-agent coordination system with timeout-free execution, distributed memory sharing, and intelligent load balancing.
 
@@ -52,8 +48,8 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 ## ⚙️ Common Options (Batchtools Enhanced);
 - \`--strategy <type>\` - Execution strategy with optimization;
 - \`--mode <type>\` - Coordination mode with parallel processing;
-- \`--max-agents <n>\` - Maximum concurrent agents (default, optimized: 25);
-- \`--timeout <minutes>\` - Timeout in minutes (default: 60);
+- \`--max-agents <n>\` - Maximum concurrent agents (default, optimized);
+- \`--timeout <minutes>\` - Timeout in minutes (default);
 - \`--background\` - Run in background with parallel monitoring;
 - \`--monitor\` - Enable real-time monitoring with concurrent metrics;
 - \`--ui\` - Launch terminal UI with performance dashboard;
@@ -252,7 +248,7 @@ Swarms automatically use distributed memory with parallel processing for collabo
 
 ### Batchtools Configuration;
 \`\`\`json;
-{
+// {
   "swarm": {
     "batchtools": {
       "enabled",
@@ -268,9 +264,9 @@ Swarms automatically use distributed memory with parallel processing for collabo
       "batchOperationSize",
       "parallelMemoryAccess",
       "realTimeMetrics": true;
-    }
-  }
-}
+    //     }
+  //   }
+// }
 \`\`\`
 
 ### Scheduling algorithms (Enhanced):;
@@ -338,9 +334,10 @@ Swarms automatically use distributed memory with parallel processing for collabo
 - **Monitoring**: 350% improvement with concurrent metrics;
 - **Memory Operations**: 400% faster with parallel processing
 
-For detailed documentation and optimization guides, see: https://github.com/ruvnet/claude-code-flow/docs/swarm-batchtools.md
+For detailed documentation and optimization guides, see: https,//github.com/ruvnet/claude-code-flow/docs/swarm-batchtools.md
 `;
 // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
 // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
 console.warn('  ✓ Created optimized slash command: /claude-zen-swarm (Batchtools enhanced)');
-}
+// }
+

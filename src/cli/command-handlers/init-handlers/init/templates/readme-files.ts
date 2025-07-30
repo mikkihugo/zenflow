@@ -4,7 +4,7 @@
  */
 // readme-files.js - README templates for various directories
 
-export function createAgentsReadme(): unknown {
+export function createAgentsReadme() {
   return `# Agent Memory Storage
 
     // ## Purpose; // LINT: unreachable code removed
@@ -36,8 +36,8 @@ memory/agents/;
 ## Last Updated;
 ${new Date().toISOString()}
 `;
-}
-export function createSessionsReadme(): unknown {
+// }
+export function createSessionsReadme() {
   return `# Session Memory Storage
 
     // ## Purpose; // LINT: unreachable code removed
@@ -70,4 +70,5 @@ memory/sessions/;
 ## Last Updated;
 ${new Date().toISOString()}
 `;
-}
+// }
+

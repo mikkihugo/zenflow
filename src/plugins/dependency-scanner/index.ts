@@ -7,10 +7,11 @@ import { readFile } from 'node:fs/promises';
 import { glob } from 'glob';
 
 export class DependencyScannerPlugin {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     this.config = {packageManagerTypes = new Map();
     this.conflictStrategies = new Map();
-  }
+  //   }
+
 
   async initialize() {
     console.warn('📦 Dependency Scanner Plugin initialized');
@@ -20,12 +21,13 @@ export class DependencyScannerPlugin {
     if(!this.config.aiProvider && this.config.generateADRs) {
       console.warn('⚠️ No AI provider configured, ADR generation disabled');
       this.config.generateADRs = false;
-    }
-  }
+    //     }
+  //   }
+
 
   setupConflictStrategies() {
     this.conflictStrategies.set('major_version', {
-      severity = {}): unknown {
+      severity = {}) {
     const { includeTypes = ['dependencies', 'devDependencies', 'peerDependencies'] } = options;
 
     console.warn('🔍 Scanning for package.json files...');
@@ -53,8 +55,9 @@ export class DependencyScannerPlugin {
       if(versions.length > this.config.conflictThreshold) {
 // const _conflict = awaitthis.analyzeConflict(depName, data);
         conflicts.push(conflict);
-      }
-    }
+      //       }
+    //     }
+
 
     return conflicts.sort((a, b) => this.getSeverityWeight(b.severity) - this.getSeverityWeight(a.severity));
     //   // LINT: unreachable code removed}
@@ -62,15 +65,16 @@ export class DependencyScannerPlugin {
   /**
    * Analyze individual dependency conflict;
    */;
-  async analyzeConflict(depName, data): unknown {
+  async analyzeConflict(depName, data) {
     const _versions = Array.from(data.versions.keys());
     const _conflictType = this.classifyConflict(versions);
     const _strategy = this.conflictStrategies.get(conflictType)  ?? this.conflictStrategies.get('minor_version');
 
     const __conflict = {id = await this.generateConflictADR(depName, data, strategy);
       } catch(error) ;
-        console.warn(`Failed to generate ADR for ${depName}: $error.message`);
-    }
+        console.warn(`Failed to generate ADR for ${depName});
+    //     }
+
 
     return conflict;
     //   // LINT: unreachable code removed}
@@ -78,7 +82,7 @@ export class DependencyScannerPlugin {
   /**
    * Classify the type of version conflict;
    */;
-  classifyConflict(versions): unknown {
+  classifyConflict(versions) {
     const _parsed = versions.map(v => this.parseVersion(v)).filter(Boolean);
 
     if (parsed.length < 2) return 'patch_version';
@@ -94,7 +98,7 @@ export class DependencyScannerPlugin {
   /**
    * Parse semantic version string;
    */;
-  parseVersion(version): unknown {
+  parseVersion(version) {
     const _cleanVersion = version.replace(/[\^~><=]/, '');
     const _match = cleanVersion.match(/^(\d+)\.(\d+)\.(\d+)/);
 
@@ -105,12 +109,13 @@ export class DependencyScannerPlugin {
     for(const [version, _usages] of versionsMap) {
       formatted.push({
         version,projects = > u.project),files = > u.file),count = > b.count - a.count);
-  }
+  //   }
+
 
   /**
    * Generate ADR for dependency conflict resolution;
    */;
-  async generateConflictADR(depName, data, strategy): unknown {
+  async generateConflictADR(depName, data, strategy) {
     const _versions = Array.from(data.versions.keys());
     const __prompt = this.buildADRPrompt(depName, versions, data, strategy);
 
@@ -132,7 +137,8 @@ export class DependencyScannerPlugin {
       conflictTypeBreakdown,
       mostConflictedDependency: conflicts.length > 0 ? conflicts[0].dependency : null;
     };
-  }
+  //   }
+
 
   /**
    * Get scanning capabilities;
@@ -153,6 +159,7 @@ export class DependencyScannerPlugin {
   async cleanup() ;
     this.dependencyMap.clear();
     console.warn('📦 Dependency Scanner Plugin cleaned up');
-}
+// }
+
 
 export default DependencyScannerPlugin;

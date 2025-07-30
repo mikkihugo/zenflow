@@ -20,7 +20,7 @@ try {
   console.warn('[MCP-Server] SqliteMemoryStore not available, using mock implementation');
 // const _mockModule = awaitimport('./core/mock-memory-store.js');
   SqliteMemoryStore = mockModule.SqliteMemoryStore;
-}
+// }
 try {
 // const _ruvSwarmModule = awaitimport('../../ruv-FANN/ruv-swarm/npm/src/index.js');
   RuvSwarm = ruvSwarmModule.RuvSwarm;
@@ -28,7 +28,7 @@ try {
   console.warn('[MCP-Server] RuvSwarm not available, using mock implementation');
 // const _mockModule = awaitimport('./core/mock-ruv-swarm.js');
   RuvSwarm = mockModule.RuvSwarm;
-}
+// }
 try {
 // const _toolsModule = awaitimport('./core/tools-registry.js');
   initializeAllTools = toolsModule.initializeAllTools;
@@ -36,20 +36,20 @@ try {
   console.warn('[MCP-Server] Tools registry not available, using mock implementation');
 // const _mockModule = awaitimport('./core/mock-tools-registry.js');
   initializeAllTools = mockModule.initializeAllTools;
-}
+// }
 try {
 // const _handlerModule = awaitimport('./core/message-handler.js');
   MCPMessageHandler = handlerModule.MCPMessageHandler;
 } catch (error) {
   console.warn('[MCP-Server] Message handler not available, using simplified version');
   MCPMessageHandler = class {
-    async handleMessage(_message): unknown {
+    async handleMessage(_message) {
       return {jsonrpc = await import('./core/tool-executor.js');
     // MCPToolExecutor = executorModule.MCPToolExecutor; // LINT: unreachable code removed
 } catch (error) {
   console.warn('[MCP-Server] Tool executor not available, using simplified version');
   MCPToolExecutor = class {
-    async executeTool(_name, _args): unknown {
+    async executeTool(_name, _args) {
       return {tool = fileURLToPath(import.meta.url);
     // /** // LINT: unreachable code removed
  * Refactored Claude Flow MCP Server;
@@ -59,7 +59,7 @@ export class ClaudeFlowMCPServer {
   /**
    * @param {Object} options - Server configuration options
    */;
-  constructor(_options = {}): unknown {
+  constructor(_options = {}) {
     this.version = '2.0.0-alpha.70';
     this.sessionId = `session-cf-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
 
@@ -95,13 +95,14 @@ export class ClaudeFlowMCPServer {
       console.error(`[${new Date().toISOString()}] CRITICAL [MCP-Server] Stdio connection lost, initiating shutdown`);
       this.shutdown();
     });
-  }
+  //   }
+
 
   /**
    * Process a batch of messages;
    * @param {Array} batch - Array of message objects
    */;
-  async processBatch(batch): unknown {
+  async processBatch(batch) {
     const _batchStartTime = Date.now();
     this.performanceMetrics.recordBatchMetrics(batch.length, 0); // Will update processing time later
 
@@ -139,7 +140,7 @@ export class ClaudeFlowMCPServer {
       id,status = await this.memoryStore.search('swarm:', {namespace = > ({ ...s,status = await this.memoryStore.search('agent:', {namespace = > a.type))],lastUpdated = await this.memoryStore.search('task:', {namespace = > t.status))],lastUpdated = this.toolExecutor.getExecutionStats();
     // ; // LINT: unreachable code removed
     return {toolExecutionStats = this.performanceMetrics.generateReport();
-    // console.error(`[${new Date().toISOString() // LINT: unreachable code removed}] INFO [MCP-Server] Final performancereport = this.performanceMetrics ? this.performanceMetrics.getMetrics() : {};
+    // console.error(`[\${new Date().toISOString() // LINT] INFO [MCP-Server] Final performancereport = this.performanceMetrics ? this.performanceMetrics.getMetrics() };
     const _stdioMetrics = this.stdioOptimizer ? this.stdioOptimizer.getMetrics() : {};
     const _errorStats = this.errorHandler ? this.errorHandler.getErrorStats() : {};
 
@@ -158,7 +159,8 @@ export class ClaudeFlowMCPServer {
       process.exit(0);
     });
 // await server.start();
-  }
+  //   }
+
 
 // Export for use as module (class already exported above)
 export default ClaudeFlowMCPServer;

@@ -24,7 +24,8 @@ class SecureEnvironment {
 
     // Set up security monitoring
     this.startSecurityMonitoring();
-  }
+  //   }
+
 
   createRestrictedGlobals() {
     // Remove dangerous globals
@@ -48,7 +49,8 @@ class SecureEnvironment {
     global.Function = (): unknown => {
       throw new SecurityError('Function constructor is not allowed');
     };
-  }
+  //   }
+
 
   createSecureRequire() {
     const _allowedModules = new Set([;
@@ -119,12 +121,13 @@ class SecureEnvironment {
         this.reportOperation('console-warn', {message = > ;
         operation.startsWith(allowed.replace('*', ''));
       );
-    }
+    //     }
+
 
     return true;
     //   // LINT: unreachable code removed}
 
-  isPathAllowed(filePath, operation): unknown {
+  isPathAllowed(filePath, operation) {
     const _normalizedPath = path.normalize(filePath);
 
     // Check against denied paths
@@ -132,14 +135,16 @@ class SecureEnvironment {
       if (normalizedPath.startsWith(path.normalize(deniedPath))) {
         return false;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     // Check against allowed paths
     if(allowedPaths.length > 0) {
       return allowedPaths.some(allowedPath => ;
     // normalizedPath.startsWith(path.normalize(allowedPath)); // LINT: unreachable code removed
       );
-    }
+    //     }
+
 
     return true;
     //   // LINT: unreachable code removed}
@@ -155,7 +160,8 @@ class SecureEnvironment {
       return policy.allowedDomains.some(domain => ;
     // hostname === domain  ?? hostname.endsWith('.' + domain); // LINT: unreachable code removed
       );
-    }
+    //     }
+
 
     return true;
     // ; // LINT: unreachable code removed
@@ -172,7 +178,7 @@ class SecureEnvironment {
     return this.networkRequestCount < policy.maxNetworkRequests;
     //   // LINT: unreachable code removed}
 
-  async restrictedFetch(url, options): unknown {
+  async restrictedFetch(url, options) {
     // This would implement a restricted fetch with timeout and size limits
     // For now, using a placeholder that simulates the fetch API
 
@@ -191,15 +197,17 @@ class SecureEnvironment {
       if(executionTime > this.executionTimeLimit) {
         this.reportSecurityViolation('execution-time-exceeded', 'critical', {current = === 'critical') {
       process.exit(1);
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // Custom security error
 class SecurityError extends Error {
   constructor(message = 'SecurityError';
-  }
-}
+  //   }
+// }
+
 
 // Initialize secure environment
 const _secureEnv = new SecureEnvironment();
@@ -251,13 +259,15 @@ parentPort.on('message', async (message) => {
     // Initialize plugin if it has an init method
     if(plugin && typeof plugin.initialize === 'function') {
 // await plugin.initialize();
-    }
+    //     }
+
 
     isInitialized = true;
 
     parentPort.postMessage({type = = 'function') {
     throw new Error(`Method '${method}' not found in plugin`);
-  }
+  //   }
+
 
   const _startTime = performance.now();
 
@@ -275,26 +285,31 @@ parentPort.on('message', async (message) => {
   const _executionTime = Date.now() - secureEnv.startTime;
 
   const _health = {status = 20;
-  }
+  //   }
+
 
   if(executionTime > secureEnv.executionTimeLimit * 0.8) {
     health.issues.push({severity = 15;
-  }
+  //   }
+
 
   if(secureEnv.operationCount > 5000) {
     health.issues.push({severity = 5;
-  }
+  //   }
+
 
   if(health.score < 70) {
     health.status = 'degraded';
-  }
+  //   }
   if(health.score < 40) {
     health.status = 'unhealthy';
-  }
+  //   }
+
 
   parentPort.postMessage({type = === 'function') {
 // await plugin.cleanup();
-    }
+    //     }
+
 
     plugin = null;
     isInitialized = false;

@@ -34,7 +34,7 @@ class GitHubSafe {
     try {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
-      }
+      //       }
     } catch (error) {
       console.warn('Failed to cleanup temp file = {}): unknown {
     const { timeout = GitHubSafe.TIMEOUT, input } = options;
@@ -47,16 +47,18 @@ class GitHubSafe {
         args = args.map(arg => ;
           arg === '--body' ? \`--body-file=\${tempFile}\` ;
         );
-      }
+      //       }
+
 
       const _command = \`gh \${args.join(' ')}\`;
 
     } finally {
       if(tempFile) {
         GitHubSafe.cleanupTempFile(tempFile);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Create pull request safely;
@@ -74,7 +76,8 @@ class GitHubSafe {
 
     return GitHubSafe.execGhSafe(args);
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 module.exports = GitHubSafe;
 `;

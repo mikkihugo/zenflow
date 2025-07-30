@@ -40,19 +40,19 @@ describe('Utils', () => {
 
     test('should parse flags with values', () => {
       const _result = parseFlags(['--port', '8080', '--name', 'test']);
-      expect(result.flags).toEqual({ port: '8080', name: 'test' });
+      expect(result.flags).toEqual({ port);
       expect(result.args).toEqual([]);
     });
 
     test('should separate arguments and flags', () => {
       const _result = parseFlags(['arg1', '--flag', 'value', 'arg2', '--bool']);
-      expect(result.flags).toEqual({ flag: 'value', bool});
+      expect(result.flags).toEqual({ flag);
       expect(result.args).toEqual(['arg1', 'arg2']);
     });
 
     test('should handle combined short flags', () => {
       const _result = parseFlags(['-vf', '--port', '8080']);
-      expect(result.flags).toEqual({ v, f, port: '8080' });
+      expect(result.flags).toEqual({ v, f, port);
       expect(result.args).toEqual([]);
     });
 
@@ -125,7 +125,7 @@ describe('Utils', () => {
     test('should return false and print error for insufficient arguments', () => {
       const _result = validateArgs(['arg1'], 2, 'command <arg1> <arg2>');
     // expect(result).toBe(false); // LINT: unreachable code removed
-      expect(consoleLogSpy).toHaveBeenCalledWith('❌ Usage: command <arg1> <arg2>');
+      expect(consoleLogSpy).toHaveBeenCalledWith('❌ Usage);
     });
   });
 
@@ -199,14 +199,14 @@ describe('Utils', () => {
 
   describe('isValidJson', () => {
     test('should validate correct JSON', () => {
-      expect(isValidJson('{"key":"value"}')).toBe(true);
+      expect(isValidJson('{"key")).toBe(true);
       expect(isValidJson('[1,2,3]')).toBe(true);
       expect(isValidJson('"string"')).toBe(true);
       expect(isValidJson('123')).toBe(true);
     });
 
     test('should reject invalid JSON', () => {
-      expect(isValidJson('{"key":}')).toBe(false);
+      expect(isValidJson('{"key")).toBe(false);
       expect(isValidJson('invalid')).toBe(false);
       expect(isValidJson('')).toBe(false);
     });
@@ -214,8 +214,8 @@ describe('Utils', () => {
 
   describe('isValidUrl', () => {
     test('should validate correct URLs', () => {
-      expect(isValidUrl('https://example.com')).toBe(true);
-      expect(isValidUrl('http://localhost:3000')).toBe(true);
+      expect(isValidUrl('https)).toBe(true);
+      expect(isValidUrl('http)).toBe(true);
     });
 
     test('should reject invalid URLs', () => {

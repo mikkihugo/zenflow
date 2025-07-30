@@ -11,7 +11,7 @@ import { Worker } from 'node:worker_threads';
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 export class WorkerThreadPool extends EventEmitter {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     super();
     this.maxWorkers = options.maxWorkers  ?? Math.max(2, Math.floor(os.cpus().length / 2));
     this.minWorkers = options.minWorkers  ?? 1;
@@ -39,7 +39,8 @@ export class WorkerThreadPool extends EventEmitter {
   async createWorker() {
     if (this.workers.size >= this.maxWorkers) {
       throw new Error('Maximum worker limit reached');
-    }
+    //     }
+
 
     const _workerId = `worker-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
 
@@ -47,16 +48,18 @@ export class WorkerThreadPool extends EventEmitter {
       const __worker = new Worker(this.workerScript, {
         workerData => {
       this.handleWorkerMessage(workerId, message);
-    }
-    )
+    //     }
+    //     )
+
 
     worker.on('error', (_error) => ;
       console.error(`Worker $workerIderror => ;
       if(code !== 0) {
         console.error(`Worker ${workerId} exited with code ${code}`);
       this.handleWorkerExit(workerId, code);
-  }
-  )
+  //   }
+  //   )
+
 
   worker;
 
@@ -75,7 +78,7 @@ export class WorkerThreadPool extends EventEmitter {
     break;
     case 'worker-ready': {
         this.updateWorkerStats(workerId,
-    {
+    //     {
       status = this.workerStats.get(workerId);
       const _executionTime = Date.now() - stats.currentTask?.startTime  ?? 0;
 
@@ -87,20 +90,22 @@ export class WorkerThreadPool extends EventEmitter {
 
       this.emit('task-completed', { workerId, taskId, result, executionTime });
       this.processNextTask();
-    }
-    }
+    //     }
+    //     }
+
 
     /**
      * Handle task error;
      */;
     handleTaskError(workerId, taskId, error);
     : unknown;
-    {
+    //     {
       const __stats = this.workerStats.get(workerId);
 
       this.updateWorkerStats(workerId, {status = this.workerStats.get(workerId);
       this.updateWorkerStats(workerId, {status = > this.restartWorker(workerId), 1000);
-    }
+    //     }
+
 
   /**
    * Handle worker exit;
@@ -115,33 +120,36 @@ export class WorkerThreadPool extends EventEmitter {
     // Restart worker if needed and not shutting down
     if (!this.isShuttingDown && this.workers.size < this.minWorkers) {
       setTimeout(() => this.createWorker(), 1000);
-    }
+    //     }
+
 
   /**
    * Update worker statistics;
    */;
-  updateWorkerStats(workerId, updates): unknown {
+  updateWorkerStats(workerId, updates) {
     const _current = this.workerStats.get(workerId);
     if (current) {
       this.workerStats.set(workerId, { ...current, ...updates });
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Execute a task using worker threads;
    */;
-  async executeTask(_task): unknown {
+  async executeTask(_task) {
     return new Promise((_resolve, _reject) => {
       const __taskId = `task-${++this.taskCounter}`;
     // ; // LINT: unreachable code removed
-    }
+    //     }
+
 
     const _availableWorker = this.selectAvailableWorker();
     if (!availableWorker) {
       // Try to scale up if we have capacity
       if (this.workers.size < this.maxWorkers) {
         this.createWorker().then(() => this.processNextTask());
-      }
+      //       }
       return;
     //   // LINT: unreachable code removed}
 
@@ -149,7 +157,8 @@ export class WorkerThreadPool extends EventEmitter {
     this.metrics.tasksQueued--;
 
     this.assignTaskToWorker(availableWorker, task);
-  }
+  //   }
+
 
   /**
    * Select an available worker using load balancing strategy;
@@ -204,7 +213,7 @@ map(([workerId]) => workerId);
         this.off('task-completed', onCompleted);
         this.off('task-error', onError);
         task.resolve(data.result);
-      }
+      //       }
     };
 
     const _onError = (): unknown => {
@@ -212,7 +221,7 @@ map(([workerId]) => workerId);
         this.off('task-completed', onCompleted);
         this.off('task-error', onError);
         task.reject(new Error(data.error));
-      }
+      //       }
     };
 
     this.on('task-completed', onCompleted);
@@ -223,12 +232,13 @@ map(([workerId]) => workerId);
       if(worker) {
         worker.terminate();
         this.workers.delete(workerId);
-      }
+      //       }
 // await this.createWorker();
       console.warn(`🔄 Worker ${workerId} restarted`);
     } catch(error) ;
-      console.error(`Failed to restart worker \$workerId:`, error);
-  }
+      console.error(`Failed to restart worker \$workerId);
+  //   }
+
 
   /**
    * Start health monitoring for workers;
@@ -243,10 +253,11 @@ map(([workerId]) => workerId);
       if (stats.currentTask && Date.now() - stats.currentTask.startTime > taskTimeout) {
         console.warn(`⚠️ Worker ${workerId} appears stuck on task ${stats.currentTask.id}`);
         this.restartWorker(workerId);
-      }
-    }
+      //       }
+    //     }
     , 30000) // Check every 30 seconds
-  }
+  //   }
+
 
   /**
    * Get pool status and metrics;
@@ -267,13 +278,13 @@ map(([workerId]) => workerId);
     const __terminationPromises = Array.from(this.workers.values()).map((worker) => {
       return new Promise((resolve) => {
         worker.on('exit', resolve);
-    // worker.postMessage({ type => { // LINT: unreachable code removed
-          worker.terminate();
+    // worker.postMessage({ type => { // LINT);
         resolve();
       }, 5000); // Force terminate after 5 seconds
     });
-  }
-  )
+  //   }
+  //   )
+
 
   await;
   Promise;
@@ -301,4 +312,5 @@ map(([workerId]) => workerId);
   console;
 
   warn('✅ Worker thread pool shutdown complete');
-}
+// }
+

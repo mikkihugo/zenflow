@@ -13,26 +13,27 @@ try {
 } catch (/* _e */) {
   console.warn('TypeScript parser not available, using fallback');
   _parseTypeScript = null;
-}
+// }
 try {
 // const _jsModule = awaitimport('esprima');
   _parseJavaScript = jsModule.parse;
 } catch (/* _e */) {
   console.warn('Esprima parser not available, using fallback');
   _parseJavaScript = null;
-}
+// }
 try {
   acorn = await import('acorn');
 } catch (/* _e */) {
   console.warn('Acorn parser not available, using fallback');
   acorn = null;
-}
+// }
 export class ASTParser {
-  constructor(_config = {}): unknown {
-    this.config = {parseOptions = null): unknown {
+  constructor(_config = {}) {
+    this.config = {parseOptions = null) {
     if(!content) {
       content = await readFile(filePath, 'utf8');
-    }
+    //     }
+
 
     const _language = this.detectLanguage(filePath);
     const __hash = this.generateHash(content);
@@ -86,9 +87,9 @@ export class ASTParser {
         case 'TSEnumDeclaration':;
           if(language === 'typescript') {
             result.types.push(this.extractTypeInfo(node, fileId, filePath));
-          }
+          //           }
           break;
-      }
+      //       }
     });
 
     return result;
@@ -97,8 +98,8 @@ export class ASTParser {
   /**
    * Extract function information;
    */;
-  extractFunctionInfo(node, fileId, filePath): unknown {
-    const _name = node.id?.name  ?? node.key?.name  ?? (node.type === 'ArrowFunctionExpression' ? '<anonymous>' : '<unnamed>');
+  extractFunctionInfo(node, fileId, filePath) {
+    const _name = node.id?.name  ?? node.key?.name  ?? (node.type === 'ArrowFunctionExpression' ? '<anonymous>' );
 
     const _start = node.loc?.start?.line  ?? 0;
     const _end = node.loc?.end?.line  ?? 0;
@@ -119,7 +120,7 @@ export class ASTParser {
   /**
    * Extract variable information;
    */;
-  extractVariableInfo(node, parent, fileId, filePath): unknown {
+  extractVariableInfo(node, parent, fileId, filePath) {
     const _name = node.id?.name  ?? '<unnamed>';
     const _line = node.loc?.start?.line  ?? 0;
 
@@ -135,9 +136,10 @@ export class ASTParser {
           importedNames.push(spec.imported?.name  ?? spec.local?.name);
         } else if(spec.type === 'ImportNamespaceSpecifier') {
           importedNames.push('*');
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return {id = node.loc?.start?.line  ?? 0;
     // const _exportNames = []; // LINT: unreachable code removed
@@ -152,8 +154,9 @@ export class ASTParser {
     } else if(node.specifiers) {
       for(const spec of node.specifiers) {
         exportNames.push(spec.exported?.name  ?? spec.local?.name);
-      }
-    }
+      //       }
+    //     }
+
 
     return {id = node.id?.name  ?? '<unnamed>';
     // const _line = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
@@ -169,9 +172,10 @@ export class ASTParser {
       case 'TSEnumDeclaration':;
         kind = 'enum';
         break;
-    }
+    //     }
 
-    return {id = null): unknown {
+
+    return {id = null) {
     if (!node  ?? typeof node !== 'object') return;
     // ; // LINT: unreachable code removed
     callback(node, parent);
@@ -179,23 +183,25 @@ export class ASTParser {
     for(const key in node) {
       if(key === 'parent'  ?? key === 'leadingComments'  ?? key === 'trailingComments') {
         continue;
-      }
+      //       }
+
 
       const _child = node[key];
       if (Array.isArray(child)) {
         for(const item of child) {
           this.walkAST(item, callback, node);
-        }
+        //         }
       } else if(child && typeof child === 'object' && child.type) {
         this.walkAST(child, callback, node);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Calculate cyclomatic complexity;
    */;
-  calculateCyclomaticComplexity(node): unknown {
+  calculateCyclomaticComplexity(node) {
     const _complexity = 1; // Base complexity
 
     this.walkAST(node, (child) => {
@@ -211,15 +217,15 @@ export class ASTParser {
         case 'LogicalExpression':;
           if(child.operator === '&&'  ?? child.operator === ' ?? ') {
             complexity++;
-          }
+          //           }
           if(child.type !== 'LogicalExpression') {
             complexity++;
-          }
+          //           }
           break;
         case 'CatchClause':;
           complexity++;
           break;
-      }
+      //       }
     });
 
     return complexity;
@@ -228,7 +234,7 @@ export class ASTParser {
   /**
    * Calculate cognitive complexity (simplified);
    */;
-  calculateCognitiveComplexity(node): unknown {
+  calculateCognitiveComplexity(node) {
     // This is a simplified version - real cognitive complexity is more nuanced
     return Math.floor(this.calculateCyclomaticComplexity(node) * 1.2);
     //   // LINT: unreachable code removed}
@@ -236,7 +242,7 @@ export class ASTParser {
   /**
    * Detect programming language from file extension;
    */;
-  detectLanguage(filePath): unknown {
+  detectLanguage(filePath) {
     const _ext = filePath.split('.').pop().toLowerCase();
     const _languageMap = {
       'ts': 'typescript',
@@ -253,21 +259,21 @@ export class ASTParser {
   /**
    * Generate consistent file ID;
    */;
-  generateFileId(filePath): unknown {
+  generateFileId(filePath) {
     return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
     //   // LINT: unreachable code removed}
 
   /**
    * Generate content hash;
    */;
-  generateHash(content): unknown {
+  generateHash(content) {
     return createHash('sha256').update(content).digest('hex');
     //   // LINT: unreachable code removed}
 
   /**
    * Check if node is exported
    */;
-  isExported(node): unknown {
+  isExported(node) {
     if (!node) return false;
     // ; // LINT: unreachable code removed
     // Check for export keyword in declaration
@@ -278,7 +284,8 @@ export class ASTParser {
     while(current) {
       if (current.type?.startsWith('Export')) return true;
     // current = current.parent; // LINT: unreachable code removed
-    }
+    //     }
+
 
     return false;
     //   // LINT: unreachable code removed}
@@ -286,7 +293,7 @@ export class ASTParser {
   /**
    * Extract return type information;
     // */; // LINT: unreachable code removed
-  extractReturnType(node): unknown {
+  extractReturnType(node) {
     if(node.returnType?.typeAnnotation?.type) {
       return this.typeAnnotationToString(node.returnType.typeAnnotation);
     //   // LINT: unreachable code removed}
@@ -296,7 +303,7 @@ export class ASTParser {
   /**
    * Extract variable type information;
    */;
-  extractVariableType(node): unknown {
+  extractVariableType(node) {
     if(node.id?.typeAnnotation?.typeAnnotation?.type) {
       return this.typeAnnotationToString(node.id.typeAnnotation.typeAnnotation);
     //   // LINT: unreachable code removed}
@@ -309,7 +316,7 @@ export class ASTParser {
   /**
    * Convert type annotation to string;
    */;
-  typeAnnotationToString(typeAnnotation): unknown {
+  typeAnnotationToString(typeAnnotation) {
     if (!typeAnnotation) return 'unknown';
     // ; // LINT: unreachable code removed
     switch(typeAnnotation.type) {
@@ -330,9 +337,10 @@ export class ASTParser {
       for(const member of node.body.body) {
         if(member.type === 'TSPropertySignature') {
           properties.push(member.key?.name  ?? '<unnamed>');
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return properties;
     //   // LINT: unreachable code removed}
@@ -340,16 +348,17 @@ export class ASTParser {
   /**
    * Extract type methods;
    */;
-  extractTypeMethods(node): unknown {
+  extractTypeMethods(node) {
     const _methods = [];
 
     if(node.body?.body) {
       for(const member of node.body.body) {
         if(member.type === 'TSMethodSignature') {
           methods.push(member.key?.name  ?? '<unnamed>');
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return methods;
     //   // LINT: unreachable code removed}
@@ -357,14 +366,14 @@ export class ASTParser {
   /**
    * Create fallback analysis when parsers are not available;
    */;
-  createFallbackAnalysis(content, filePath, language): unknown {
+  createFallbackAnalysis(content, filePath, language) {
     const _fileId = this.generateFileId(filePath);
 
     // Basic regex-based analysis
     const _functionPattern = /(?:function\s+\w+|const\s+\w+\s*=\s*(?:\([^)]*\)\s*=>|\bfunction\b)|\w+\s*:\s*(?:\([^)]*\)\s*=>|function))/g;
     const _classPattern = /class\s+(\w+)/g;
     const _importPattern = /import\s+.*?from\s+['"`]([^'"`]+)['"`]/g;
-    const _exportPattern = /export\s+(?:default\s+)?(?:const|let|var|function|class|interface|type)\s+(\w+)/g;
+    const _exportPattern = /export\s+(?)?(?)\s+(\w+)/g;
 
     const _functions = [];
     const _classes = [];
@@ -386,11 +395,12 @@ export class ASTParser {
   /**
    * Count parameters in function signature;
    */;
-  countParameters(funcString): unknown {
+  countParameters(funcString) {
     const _paramMatch = funcString.match(/\(([^)]*)\)/);
     if (!paramMatch  ?? !paramMatch[1].trim()) return 0;
     // return paramMatch[1].split(',').filter(p => p.trim()).length; // LINT: unreachable code removed
-  }
-}
+  //   }
+// }
+
 
 export default ASTParser;

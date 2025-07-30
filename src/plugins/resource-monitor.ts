@@ -17,8 +17,8 @@ diskCounters = new Map()
 private;
 readonly;
 config = {}
-)
-{
+// )
+// {
   super();
   this.config = {enabled = config.resourceLimits ? this.parseResourceLimits(config.resourceLimits) : [];
   this.plugins.set(pluginName, {
@@ -34,18 +34,18 @@ config = {}
     const _entries = list.getEntries();
     for (const entry of entries) {
       this.processPerformanceEntry(entry);
-    }
+    //     }
   });
   this.performanceObserver.observe({ entryTypes => {
       this.cleanupOldMetrics();
-}
+// }
 , 300000) // Every 5 minutes
-}
+// }
 private
-async
+// async
 collectMetrics()
 : Promise<void>
-{
+// {
   for (const [pluginName, pluginData] of this.plugins) {
     try {
 // const _metrics = awaitthis.gatherPluginMetrics(pluginName, pluginData);
@@ -73,7 +73,7 @@ collectMetrics()
     private;
     calculateCpuPercentage(cpuData = cpuData.user + cpuData.system;
     return Math.min(100, (totalCpu / 1000000) * 100); // Convert to percentage
-  }
+  //   }
   private;
   async;
   getWorkerHandles(worker = this.plugins.get(pluginName);
@@ -89,7 +89,7 @@ collectMetrics()
 // await this.checkNetworkAlert(pluginName, metrics.network, pluginData);
   // Check handle alerts
 // await this.checkHandleAlert(pluginName, metrics.handles, pluginData);
-}
+// }
 private
 async;
 checkMemoryAlert(pluginName = this.config.alertThresholds.memory
@@ -119,15 +119,17 @@ if (memory.percentage >= critical) {
       await this.createAlert(pluginData, {
         pluginName,
         alertType = {id = pluginData.alerts.slice(-this.config.maxAlerts);
-        }
+        //         }
+
 
         this.emit('resource-alert', alert);
 
         // Consider enforcement action for critical alerts
         if (alert.alertType === 'critical' && this.config.enforcementEnabled) {
 // await this.considerEnforcement(alert, pluginData);
-        }
-      }
+        //         }
+      //       }
+
 
       // Resource enforcement
       private;
@@ -135,8 +137,9 @@ if (memory.percentage >= critical) {
       considerEnforcement(alert = Date.now() - pluginData.lastEnforcement.executedAt.getTime();
       if (timeSinceLastEnforcement < this.config.gracePeriod) {
         return; // Still in grace period
-      }
-    }
+      //       }
+    //     }
+
 
     // Determine enforcement action
     const _action = 'throttle';
@@ -147,14 +150,15 @@ if (memory.percentage >= critical) {
       action = 'suspend';
     } else if (alert.percentage > 100) {
       action = 'quarantine';
-    }
+    //     }
+
 
     const _enforcement = {action = await this.executeEnforcement(alert.pluginName, enforcement);
     enforcement.successful = success;
     pluginData.lastEnforcement = enforcement;
 
     this.emit('resource-enforcement', enforcement);
-  }
+  //   }
   catch (error = this.plugins.get(pluginName);
   if (!pluginData) return false;
     // ; // LINT: unreachable code removed
@@ -185,8 +189,9 @@ if (memory.percentage >= critical) {
       pluginData.alerts = pluginData.alerts.filter(;
         alert => !alert.acknowledged  ?? alert.timestamp.getTime() > cutoffTime;
       );
-    }
-  }
+    //     }
+  //   }
+
 
   // Public API methods
   getResourceUsage(pluginName = this.plugins.get(pluginName);
@@ -201,7 +206,7 @@ if (memory.percentage >= critical) {
     return limit ? metrics.slice(-limit) : metrics;
     //   // LINT: unreachable code removed}
 
-  getActiveAlerts(pluginName?: string);
+  getActiveAlerts(pluginName?);
   : ResourceAlert[];
     if (pluginName) {
       const _pluginData = this.plugins.get(pluginName);
@@ -211,7 +216,8 @@ if (memory.percentage >= critical) {
     const _allAlerts = [];
     for (const [ pluginData] of this.plugins) {
       allAlerts.push(...pluginData.alerts.filter((alert) => !alert.acknowledged));
-    }
+    //     }
+
 
     return allAlerts.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
     //   // LINT: unreachable code removed}
@@ -222,12 +228,13 @@ if (memory.percentage >= critical) {
     this.emit('alert-acknowledged', alert);
     return true;
     //   // LINT: unreachable code removed}
-}
+// }
 return false;
-}
+// }
+
 
   getSystemResourceSummary():;
-{
+// {
   totalPlugins = 0;
   const __totalCpu = 0;
   const __totalNetwork = 0;
@@ -242,19 +249,22 @@ return false;
       _totalCpu += latest.cpu.percentage;
       _totalNetwork += latest.network.requests;
       _pluginCount++;
-    }
+    //     }
+
 
     const _unacknowledgedAlerts = pluginData.alerts.filter((a) => !a.acknowledged);
     _activeAlerts += unacknowledgedAlerts.length;
     _criticalAlerts += unacknowledgedAlerts.filter((a) => a.alertType === 'critical').length;
-  }
+  //   }
+
 
   return {totalPlugins = this.networkCounters.get(pluginName);
     // if (counter) { // LINT: unreachable code removed
     counter.requests++;
     counter.bytesIn += bytesIn;
     counter.bytesOut += bytesOut;
-  }
+  //   }
+
 
 recordDiskOperation(pluginName = this.diskCounters.get(pluginName);
 if (counter) {
@@ -264,26 +274,30 @@ if (counter) {
   } else {
     counter.writes++;
     counter.bytesWritten += bytes;
-  }
-}
-}
+  //   }
+// }
+// }
+
 
   async cleanup(): Promise<void>;
-{
+// {
   if (this.monitoringInterval) {
     clearInterval(this.monitoringInterval);
     this.monitoringInterval = undefined;
-  }
+  //   }
+
 
   if (this.performanceObserver) {
     this.performanceObserver.disconnect();
     this.performanceObserver = undefined;
-  }
+  //   }
+
 
   this.plugins.clear();
   this.networkCounters.clear();
   this.diskCounters.clear();
-}
-}
+// }
+// }
+
 
 export default ResourceMonitor;

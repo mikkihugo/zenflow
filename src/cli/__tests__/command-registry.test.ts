@@ -12,35 +12,29 @@ registerCoreCommands,
 showAllCommands,
 showCommandHelp } from '../command-registry.js'
 // Mock all command modules
-jest.mock('../simple-commands/init.js', () => (
-{
-  initCommand: jest.fn();
-}
+jest.mock('../simple-commands/init.js', () => (// {
+  initCommand);
+// }
 ))
-jest.mock('../simple-commands/memory.js', () => (
-{
-  memoryCommand: jest.fn();
-}
+jest.mock('../simple-commands/memory.js', () => (// {
+  memoryCommand);
+// }
 ))
-jest.mock('../simple-commands/agent.js', () => (
-{
-  agentCommand: jest.fn();
-}
+jest.mock('../simple-commands/agent.js', () => (// {
+  agentCommand);
+// }
 ))
-jest.mock('../simple-commands/task.js', () => (
-{
-  taskCommand: jest.fn();
-}
+jest.mock('../simple-commands/task.js', () => (// {
+  taskCommand);
+// }
 ))
-jest.mock('../simple-commands/swarm.js', () => (
-{
-  swarmCommand: jest.fn();
-}
+jest.mock('../simple-commands/swarm.js', () => (// {
+  swarmCommand);
+// }
 ))
-jest.mock('../simple-commands/config.js', () => (
-{
-  configCommand: jest.fn();
-}
+jest.mock('../simple-commands/config.js', () => (// {
+  configCommand);
+// }
 ))
 jest.mock('../simple-commands/status.js', () => ({ statusCommand: jest.fn() }));
 jest.mock('../simple-commands/mcp.js', () => ({ mcpCommand: jest.fn() }));
@@ -52,7 +46,7 @@ jest.mock('../simple-commands/ruv-swarm.js', () => ({ ruvSwarmAction: jest.fn() 
 jest.mock('../simple-commands/config-integration.js', () => ({
   configIntegrationAction: jest.fn() }))
 =>
-{
+// {
   let consoleLogSpy;
   let consoleErrorSpy;
 

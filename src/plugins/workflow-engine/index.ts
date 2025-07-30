@@ -8,7 +8,7 @@ import { mkdir, unlink } from 'node:fs/promises';
 import path from 'node:path';
 
 export class WorkflowEnginePlugin extends EventEmitter {
-  constructor(config = {}): unknown {
+  constructor(config = {}) {
     super();
     this.config = {maxConcurrentWorkflows = null;
     this.activeWorkflows = new Map();
@@ -16,7 +16,8 @@ export class WorkflowEnginePlugin extends EventEmitter {
     this.workflowDefinitions = new Map();
     this.stepHandlers = new Map();
     this.initialized = false;
-  }
+  //   }
+
 
   async initialize() {
     if (this.initialized) return;
@@ -30,12 +31,14 @@ export class WorkflowEnginePlugin extends EventEmitter {
     // Load persisted workflows
     if(this.config.persistWorkflows) {
 // await this.loadPersistedWorkflows();
-    }
+    //     }
+
 
     this.initialized = true;
     this.emit('initialized');
     console.warn('✅ Workflow Engine Plugin initialized');
-  }
+  //   }
+
 
   registerBuiltInHandlers() ;
     // Delay step
@@ -62,12 +65,13 @@ export class WorkflowEnginePlugin extends EventEmitter {
       for(const _item of items) {
         const _loopContext = { ...context,loopItem = await this.executeStep(params.step, loopContext);
         results.push(result);
-      }
+      //       }
+
 
       return { results };
     //   // LINT: unreachable code removed});
 
-  registerStepHandler(type, handler): unknown {
+  registerStepHandler(type, handler) {
     this.stepHandlers.set(type, handler);
     console.warn(`📌 Registered stephandler = this.stepHandlers.get(step.type);
     if(!handler) {
@@ -80,12 +84,13 @@ export class WorkflowEnginePlugin extends EventEmitter {
 
     for(const part of parts) {
       value = value?.[part];
-    }
+    //     }
+
 
     return value;
     //   // LINT: unreachable code removed}
 
-  async applyTransformation(data, transformation): unknown {
+  async applyTransformation(data, transformation) {
     if(typeof transformation === 'function') {
       return transformation(data);
     //   // LINT: unreachable code removed}
@@ -98,8 +103,8 @@ export class WorkflowEnginePlugin extends EventEmitter {
           result[key] = this.getContextValue({ data }, value.substring(2));
         } else {
           result[key] = value;
-        }
-      }
+        //         }
+      //       }
       return result;
     //   // LINT: unreachable code removed}
 
@@ -127,21 +132,23 @@ export class WorkflowEnginePlugin extends EventEmitter {
 // await unlink(filePath);
     } catch (/* _error */) {
       // File might not exist
-    }
+    //     }
+
 
   async registerWorkflowDefinition(name, definition): unknown ;
     this.workflowDefinitions.set(name, definition);
-    console.warn(`📝 Registered workflow definition = {}): unknown {
+    console.warn(`📝 Registered workflow definition = {}) {
     let definition;
 
     if(typeof workflowDefinitionOrName === 'string') {
       definition = this.workflowDefinitions.get(workflowDefinitionOrName);
       if(!definition) {
         throw new Error(`Workflow definition '${workflowDefinitionOrName}' not found`);
-      }
+      //       }
     } else {
       definition = workflowDefinitionOrName;
-    }
+    //     }
+
 
     // Check concurrent workflow limit
     const _activeCount = Array.from(this.activeWorkflows.values());
@@ -149,7 +156,7 @@ filter(w => w.status === 'running').length;
 
     if(activeCount >= this.config.maxConcurrentWorkflows) {
       throw new Error(`Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`);
-    }
+    //     }
 // const _result = awaitthis.engine.startWorkflow(definition, context);
 
     this.emit('workflow = await this.engine.pauseWorkflow(workflowId);
@@ -158,7 +165,7 @@ filter(w => w.status === 'running').length;
     if(result.success) {
       this.emit('workflow = await this.engine.cancelWorkflow(workflowId);
     if(result.success) {
-      this.emit('workflow = 100): unknown {
+      this.emit('workflow = 100) {
     const _history = [];
 
     try {
@@ -170,7 +177,8 @@ filter(w => w.status === 'running').length;
         const _data = JSON.parse(await readFile(filePath, 'utf8'));
 
         history.push({id = > new Date(b.startTime) - new Date(a.startTime));
-  }
+  //   }
+
 
   async getWorkflowMetrics() {
     const _metrics = {total = Array.from(this.activeWorkflows.values());
@@ -186,16 +194,18 @@ filter(w => w.status === 'running').length;
         return sum + (new Date(w.endTime) - new Date(w.startTime));
     //   // LINT: unreachable code removed}, 0);
       metrics.averageDuration = totalDuration / completed.length;
-    }
+    //     }
+
 
     if(metrics.total > 0) {
       metrics.successRate = metrics.completed / metrics.total;
-    }
+    //     }
+
 
     return metrics;
     //   // LINT: unreachable code removed}
 
-  generateWorkflowVisualization(workflow): unknown {
+  generateWorkflowVisualization(workflow) {
     if (!this.config.enableVisualization) return null;
     // ; // LINT: unreachable code removed
     // Generate a simple Mermaid diagram
@@ -214,24 +224,27 @@ filter(w => w.status === 'running').length;
         lines.push(`    style ${nodeId}fill = config;
     this.plugin = plugin;
     this.workflows = new Map();
-  }
+  //   }
+
 
   async initialize() ;
     console.warn('📋 Default workflow engine ready');
 
-  async startWorkflow(definition, context): unknown {
+  async startWorkflow(definition, context) {
     const _workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const _workflow = {
       id => {
       console.error(`Workflow ${workflowId}failed = workflow.currentStep; i < workflow.steps.length; i++) {
         if(workflow.status !== 'running') {
           break; // Workflow was paused or cancelled
-        }
+        //         }
+
 
         const _step = workflow.steps[i];
         workflow.currentStep = i;
 // await this.executeWorkflowStep(workflow, step, i);
-      }
+      //       }
+
 
       if(workflow.status === 'running') {
         workflow.status = 'completed';
@@ -255,7 +268,8 @@ filter(w => w.status === 'running').length;
         // Store result in context if specified
         if(step.output) {
           workflow.context[step.output] = result;
-        }
+        //         }
+
 
         // Store in step results
         workflow.stepResults[stepId] = result;
@@ -267,14 +281,16 @@ filter(w => w.status === 'running').length;
         if(retries > maxRetries) {
           this.emit('step = === 'continue') {
             workflow.stepResults[stepId] = {error = > setTimeout(resolve, this.config.retryDelay * retries));
-      }
-    }
+      //       }
+    //     }
 
-  async getWorkflowStatus(workflowId): unknown {
+
+  async getWorkflowStatus(workflowId) {
     const _workflow = this.workflows.get(workflowId);
     if(!workflow) {
       throw new Error(`Workflow ${workflowId} not found`);
-    }
+    //     }
+
 
     const __duration = workflow.endTime ? ;
       new Date(workflow.endTime) - new Date(workflow.startTime) :;
@@ -316,7 +332,8 @@ map(w => ({
   async cleanup() {
     this.workflows.clear();
     this.removeAllListeners();
-  }
-}
+  //   }
+// }
+
 
 export default WorkflowEnginePlugin;

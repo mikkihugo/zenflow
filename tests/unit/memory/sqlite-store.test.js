@@ -6,8 +6,8 @@ import { SqliteMemoryStore } from '../../../src/memory/sqlite-store.js';
 
 // Mock dependencies that don't need actual implementation
 const _mockSqliteWrapper = () => ({
-  createDatabase: jest.fn(() => ({
-    prepare: jest.fn(() => ({
+  createDatabase) => ({
+    prepare) => ({
       run: jest.fn(),
 get: jest.fn(),
 all: jest.fn(),
@@ -18,28 +18,28 @@ pragma: jest.fn() }))
 })
 jest.mock('../../../src/memory/sqlite-wrapper.js', mockSqliteWrapper)
 describe('SqliteMemoryStore', () =>
-{
+// {
   let _memoryStore;
   let testDir;
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-sqlite-test-'));
     _memoryStore = new SqliteMemoryStore({
       directory,
-    dbName: 'test-memory.db' });
+    dbName);
 })
 afterEach(async () =>
-{
+// {
   if (memoryStore?.db) {
   // await memoryStore.close();
-  }
+  //   }
   try {
   // await fs.rm(testDir, { recursive, force });
     } catch (/* _error */) {
       // Ignore cleanup errors
-    }
+    //     }
 })
 describe('constructor', () =>
-{
+// {
   it('should initialize with default options', () => {
     const _store = new SqliteMemoryStore();
     expect(store.options.dbName).toBe('memory.db');
@@ -59,7 +59,7 @@ describe('constructor', () =>
 })
 })
 describe('_getMemoryDirectory', () =>
-{
+// {
   it('should return .swarm directory in current working directory', () => {
     const _store = new SqliteMemoryStore();
     // const _expectedPath = path.join(process.cwd(), '.swarm'); // LINT: unreachable code removed
@@ -67,7 +67,7 @@ describe('_getMemoryDirectory', () =>
   });
 })
 describe('initialization', () =>
-{
+// {
   it('should initialize database and create directory if needed', async () => {
     expect(memoryStore.isInitialized).toBe(false);
   // await memoryStore.initialize();
@@ -82,7 +82,7 @@ describe('initialization', () =>
   });
 })
 describe('memory operations', () =>
-{
+// {
   beforeEach(async () => {
   // await memoryStore.initialize();
   });
@@ -98,15 +98,15 @@ describe('memory operations', () =>
   value: testMemory.value,
   metadata: testMemory.metadata
 })
-)
+// )
 })
 it('should return null for non-existent keys', async () =>
-{
+// {
 // const _result = awaitmemoryStore.retrieve('non-existent-key');
   // expect(result).toBeNull(); // LINT: unreachable code removed
 })
 it('should list all memories', async () =>
-{
+// {
   // await memoryStore.store('key1', 'value1');
   // await memoryStore.store('key2', 'value2');
 // const _memories = awaitmemoryStore.list();
@@ -115,7 +115,7 @@ it('should list all memories', async () =>
   expect(memories.map((m) => m.key)).toContain('key2');
 })
 it('should delete memory', async () =>
-{
+// {
   // await memoryStore.store('delete-test', 'value');
 // const _retrieved = awaitmemoryStore.retrieve('delete-test');
   expect(retrieved).toBeTruthy();
@@ -124,7 +124,7 @@ it('should delete memory', async () =>
   expect(retrieved).toBeNull();
 })
 it('should clear all memories', async () =>
-{
+// {
   // await memoryStore.store('key1', 'value1');
   // await memoryStore.store('key2', 'value2');
 // const _memories = awaitmemoryStore.list();
@@ -135,12 +135,12 @@ it('should clear all memories', async () =>
 })
 })
 describe('search functionality', () =>
-{
+// {
   beforeEach(async () => {
   // await memoryStore.initialize();
-  // await memoryStore.store('search1', 'hello world', { tags: ['greeting'] });
-  // await memoryStore.store('search2', 'goodbye world', { tags: ['farewell'] });
-  // await memoryStore.store('search3', 'hello universe', { tags: ['greeting', 'cosmic'] });
+  // await memoryStore.store('search1', 'hello world', { tags);
+  // await memoryStore.store('search2', 'goodbye world', { tags);
+  // await memoryStore.store('search3', 'hello universe', { tags);
   });
   it('should search by term', async () => {
 // const _results = awaitmemoryStore.search('hello');
@@ -153,9 +153,9 @@ describe('search functionality', () =>
   });
 })
 describe('error handling', () =>
-{
+// {
   it('should handle initialization errors gracefully', async () => {
-    const _store = new SqliteMemoryStore({ directory: '/invalid/path' });
+    const _store = new SqliteMemoryStore({ directory);
     // Should not throw but should handle gracefully
   // await expect(store.initialize()).rejects.toThrow();
   });
@@ -165,7 +165,7 @@ describe('error handling', () =>
   });
 })
 describe('caching', () =>
-{
+// {
   beforeEach(async () => {
     memoryStore = new SqliteMemoryStore({
         directory,
@@ -174,7 +174,7 @@ describe('caching', () =>
   // await memoryStore.initialize();
 })
 it('should cache query results when enabled', async () =>
-{
+// {
   // await memoryStore.store('cache-test', 'value');
   // First call should miss cache
 // const _result1 = awaitmemoryStore.retrieve('cache-test');
@@ -185,7 +185,7 @@ it('should cache query results when enabled', async () =>
 })
 })
 describe('cleanup', () =>
-{
+// {
   it('should close database connection properly', async () => {
   // await memoryStore.initialize();
     expect(memoryStore.db).toBeDefined();

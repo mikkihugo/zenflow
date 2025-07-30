@@ -4,7 +4,7 @@
  */
 // memory-bank-md.js - Memory Bank templates
 
-export function createMinimalMemoryBankMd(): unknown {
+export function createMinimalMemoryBankMd() {
   return `# Memory Bank
 
     // ## Quick Reference; // LINT: unreachable code removed
@@ -16,8 +16,8 @@ export function createMinimalMemoryBankMd(): unknown {
 - Database: \`./memory/claude-zen-data.json\`;
 - Sessions: \`./memory/sessions/\`;
 `;
-}
-export function createFullMemoryBankMd(): unknown {
+// }
+export function createFullMemoryBankMd() {
   return `# Memory Bank Configuration
 
     // ## Overview; // LINT: unreachable code removed
@@ -44,7 +44,7 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 ## Configuration;
 Memory settings are configured in \`claude-zen.config.json\`:;
 \`\`\`json;
-{
+// {
   "memory": {
     "backend": "kuzu", // Graph database for relationships
     "path": "./memory/claude-zen-data.json",
@@ -55,9 +55,9 @@ Memory settings are configured in \`claude-zen.config.json\`:;
       "sessions": "30d",
       "tasks": "90d",
       "agents": "permanent";
-    }
-  }
-}
+    //     }
+  //   }
+// }
 \`\`\`
 
 ## Best Practices;
@@ -78,9 +78,9 @@ Memory settings are configured in \`claude-zen.config.json\`:;
 - Memory contents are private to your local instance;
 - No data is sent to external services without explicit commands;
 `;
-}
+// }
 // Create optimized Memory Bank with batchtools support
-export async function createOptimizedMemoryBankMd(): unknown {
+export async function createOptimizedMemoryBankMd() {
   return `# Memory Bank Configuration (Batchtools Optimized)
 
     // ## Overview; // LINT: unreachable code removed
@@ -126,7 +126,7 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 ## Configuration (Enhanced);
 Memory settings are configured in \`claude-zen.config.json\` with batchtools optimizations:;
 \`\`\`json;
-{
+// {
   "memory": {
     "backend": "kuzu", // Graph database for relationships
     "path": "./memory/claude-zen-data.json",
@@ -152,9 +152,9 @@ Memory settings are configured in \`claude-zen.config.json\` with batchtools opt
       "concurrentQueries",
       "batchWriteSize",
       "parallelIndexUpdate": true;
-    }
-  }
-}
+    //     }
+  //   }
+// }
 \`\`\`
 
 ## Batchtools Integration
@@ -257,6 +257,7 @@ npx claude-zen memory analyze --batchtools --verbose
 npx claude-zen memory index-validate --parallel --repair;
 \`\`\`
 
-For more information about memory system optimization, see: https://github.com/ruvnet/claude-zen/docs/memory-batchtools.md
+For more information about memory system optimization, see: https,//github.com/ruvnet/claude-zen/docs/memory-batchtools.md
 `;
-}
+// }
+

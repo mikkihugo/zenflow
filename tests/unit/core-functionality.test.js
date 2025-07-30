@@ -72,12 +72,12 @@ describe('Core Functionality Tests', () => {
           return { status, message: 'Not Found' };
     //   // LINT: unreachable code removed} };
       // Register routes
-      router.register('GET', '/api/health', () => ({ status: 'healthy' }));
-      router.register('POST', '/api/data', (req) => ({ received: req.body }));
+      router.register('GET', '/api/health', () => ({ status));
+      router.register('POST', '/api/data', (req) => ({ received));
       // Test routing
       const _healthResponse = router.handle('GET', '/api/health', {}, {});
       expect(healthResponse.status).toBe('healthy');
-      const _dataResponse = router.handle('POST', '/api/data', { body: { test } }, {});
+      const _dataResponse = router.handle('POST', '/api/data', { body);
       expect(dataResponse.received.test).toBe(true);
       const _notFoundResponse = router.handle('GET', '/api/unknown', {}, {});
       expect(notFoundResponse.status).toBe(404);
@@ -94,7 +94,7 @@ describe('Core Functionality Tests', () => {
             if (index < this.stack.length) {
               const _fn = this.stack[index++];
               fn(req, res, next);
-            }
+            //             }
           };
           next();
           return { req, res };
@@ -131,8 +131,8 @@ describe('Core Functionality Tests', () => {
               result.command = arg;
             } else {
               result.positional.push(arg);
-            }
-          }
+            //             }
+          //           }
           return result;
     //   // LINT: unreachable code removed} };
       const _parsed = argParser.parse(['init', '--force', '--template=basic', 'arg1']);
@@ -163,7 +163,7 @@ describe('Core Functionality Tests', () => {
             if (!(flag in flags)) {
               return { valid, error: `Missing required flag: --${flag}` };
     //   // LINT: unreachable code removed}
-          }
+          //           }
           // Check argument count
           if (args.length < spec.minArgs) {
             return { valid, error: `Too few arguments` };
@@ -179,10 +179,10 @@ describe('Core Functionality Tests', () => {
       // Invalid commands
       expect(commandValidator.validate('unknown', {}, [])).toEqual({
         valid,
-        error: 'Unknown command' });
+        error);
       expect(commandValidator.validate('deploy', {}, [])).toEqual({
         valid,
-        error: 'Missing required flag: --target' });
+        error);
     });
   });
   describe('Coordination and Orchestration', () => {
@@ -216,10 +216,10 @@ describe('Core Functionality Tests', () => {
           return false;
     //   // LINT: unreachable code removed} };
       // Add tasks
-      taskQueue.add({ id: 'task1', type: 'analysis' });
-      taskQueue.add({ id: 'task2', type: 'build' });
-      taskQueue.add({ id: 'task3', type: 'test' });
-      taskQueue.add({ id: 'task4', type: 'deploy' });
+      taskQueue.add({ id);
+      taskQueue.add({ id);
+      taskQueue.add({ id);
+      taskQueue.add({ id);
       expect(taskQueue.queue).toHaveLength(4);
       expect(taskQueue.canStart()).toBe(true);
       // Start tasks
@@ -241,7 +241,7 @@ describe('Core Functionality Tests', () => {
         addDependency: function (task, /* dependency */) {
           if (!this.dependencies.has(task)) {
             this.dependencies.set(task, []);
-          }
+          //           }
           this.dependencies.get(task).push(dependency);
         },
         canExecute: function (task, /* completed */) {
@@ -286,8 +286,8 @@ describe('Core Functionality Tests', () => {
               result[key] = this.merge(result[key]  ?? {}, value);
             } else {
               result[key] = value;
-            }
-          }
+            //             }
+          //           }
           return result;
     //   // LINT: unreachable code removed} };
       const _baseConfig = {
@@ -315,25 +315,25 @@ describe('Core Functionality Tests', () => {
             if (rules.required && value === undefined) {
               errors.push(`${key} is required`);
               continue;
-            }
+            //             }
             if (value === undefined) continue;
             if (rules.type && typeof value !== rules.type) {
               errors.push(`${key} must be of type ${rules.type}`);
-            }
+            //             }
             if (rules.min && value < rules.min) {
               errors.push(`${key} must be at least ${rules.min}`);
-            }
+            //             }
             if (rules.max && value > rules.max) {
               errors.push(`${key} must be at most ${rules.max}`);
-            }
+            //             }
             if (rules.enum && !rules.enum.includes(value)) {
               errors.push(`${key} must be one of: ${rules.enum.join(', ')}`);
-            }
+            //             }
             if (typeof rules === 'object' && typeof value === 'object') {
               const _nestedErrors = this.validate(value, rules);
               errors.push(...nestedErrors.map((err) => `${key}.${err}`));
-            }
-          }
+            //             }
+          //           }
           return errors;
     //   // LINT: unreachable code removed} };
       // Valid config

@@ -9,7 +9,7 @@ import chalk from 'chalk';
 
 export async function dashboardCommand(args = args[0]  ?? 'start';
 
-console.warn(chalk.cyan.bold('🚀 Claude-Zen Dashboard System': unknown));
+console.warn(chalk.cyan.bold('🚀 Claude-Zen Dashboard System'));
 console.warn('');
 switch (subcommand) {
   case 'start': null
@@ -18,13 +18,13 @@ switch (subcommand) {
     return dashboardStatus(flags);
     // case 'stop':; // LINT: unreachable code removed
     return stopDashboard(flags);
-  default = await fetch('http://localhost:3000/health');
+  default = await fetch('http);
 // const _health = awaitresponse.json();
     console.warn(chalk.green(`✅ API server healthy (uptime = flags.web  ?? process.env.DISPLAY;
 
   const _port = flags.port  ?? 3000;
 
-  console.warn(chalk.blue(`🎯 Launching dashboard in ${isWeb && !flags.terminal ? 'WEB' : 'TERMINAL'} mode`));
+  console.warn(chalk.blue(`🎯 Launching dashboard in ${isWeb && !flags.terminal ? 'WEB' ));
   console.warn(chalk.gray(`📡 Connecting to API server on port ${port}`));
   console.warn('');
 
@@ -41,7 +41,7 @@ switch (subcommand) {
         console.warn(chalk.green('✅ Dashboard closed successfully'));
       } else {
         console.warn(chalk.yellow(`⚠️  Dashboard exited with code ${code}`));
-      }
+      //       }
     });
 
     // Handle graceful shutdown
@@ -56,39 +56,40 @@ switch (subcommand) {
       dashboardProcess.on('exit', resolve);
     });
 
+// 
 }
 catch (error)
-{
-  console.error(chalk.red('❌ Error startingdashboard = await fetch('http: //localhost:3000/health');
+// {
+  console.error(chalk.red('❌ Error startingdashboard = await fetch('http);
 // const _health = awaitresponse.json();
-  console.warn(chalk.green('✅ APIServer = await fetch('http://localhost:3000/api/websocket/status');
+  console.warn(chalk.green('✅ APIServer = await fetch('http);
 
     console.warn(chalk.green('✅WebSocket = await import('fs');
   const _dashboardExists = fs.existsSync('./src/ui/unified-dashboard.js');
   if (dashboardExists) {
     console.warn(chalk.green('   ✅ Unified Dashboard = {
-      handler: Available'));
+      handler));
   } else {
-    console.warn(chalk.red('   ❌ Unified Dashboard: Missing'));
-  }
-}
+    console.warn(chalk.red('   ❌ Unified Dashboard));
+  //   }
+// }
 catch (error)
-{
-  console.warn(chalk.yellow('   ⚠️  Dashboard Check: Error'));
-}
+// {
+  console.warn(chalk.yellow('   ⚠️  Dashboard Check));
+// }
 console.warn('');
 console.warn(chalk.gray('💡 Use "claude-zen dashboard start" to launch the interface'));
-}
-async function stopDashboard(_flags: unknown): unknown {
+// }
+async function stopDashboard(_flags) {
   console.warn(chalk.yellow('🛑 Dashboard stop command'));
   console.warn('');
   console.warn('The dashboard runs in the foreground.');
   console.warn("To stop it, use Ctrl+C in the terminal where it's running.");
   console.warn('');
   console.warn(chalk.gray('For background processes, you would need to:'));
-  console.warn('1. Find the process: ps aux | grep dashboard');
-  console.warn('2. Kill it: kill <pid>');
-}
+  console.warn('1. Find the process);
+  console.warn('2. Kill it);
+// }
 export const dashboardCommandConfig,ler,
   description: '📊 Launch unified dashboard interface with React/Ink support',
 usage: 'dashboard <command> [options]',
@@ -129,7 +130,7 @@ React/Ink interface with real-time WebSocket updates.
 Options:;
   --web               Force web mode (future feature);
   --terminal          Force terminal mode (default)  ;
-  --port <port>       API server port (default: 3000);
+  --port <port>       API server port (default);
   --verbose           Show detailed connection info
 
 Prerequisites:;
@@ -137,4 +138,5 @@ Prerequisites:;
   • React and Ink dependencies installed;
   • WebSocket endpoint available;
 `;
-}
+// }
+

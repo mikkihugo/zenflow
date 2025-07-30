@@ -18,7 +18,7 @@ const _PORT = process.env.PORT ?? 3000;
 const _HOST = process.env.HOST ?? '0.0.0.0';
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit));
 app.use(express.urlencoded({ extended }));
 // Initialize services
 const _mcpServer = new ClaudeFlowMCPServer();
@@ -27,7 +27,7 @@ const _orchestrator = new ServicesOrchestrator();
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-  }
+  //   }
   async store(key, value, options = {}) {
     const _fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
@@ -35,22 +35,22 @@ class MockMemoryStore {
     //   // LINT: unreachable code removed}
     async;
     retrieve(key, (options = {}));
-    {
+    //     {
       const _fullKey = options.namespace ? `${options.namespace}:${key}` ;
       return this.data.get(fullKey) ?? null;
       //   // LINT: unreachable code removed}
       async;
       search((options = {}));
-      {
+      //       {
         const _results = {};
         for (const [key, value] of this.data) {
           if (options.pattern === '*' ?? key.includes(options.pattern ?? '')) {
             results[key] = value;
-          }
-        }
+          //           }
+        //         }
         return results;
         //   // LINT: unreachable code removed}
-      }
+      //       }
       const _documentMemoryStore = new MockMemoryStore();
       const _documentStack = new DocumentStack(documentMemoryStore);
       setupDefaultRules(documentStack);
@@ -64,11 +64,11 @@ class MockMemoryStore {
         uptime: process.uptime() });
     })
     // MCP tools endpoint
-    app.post('/mcp/tools/:toolName', async (req, res) =>
+    app.post('/mcp/tools/) =>
     try {
     const { toolName } = req.params;
     const _args = req.body;
-    console.warn(`🔧 MCP Tool Call: ${toolName}`, args);
+    console.warn(`🔧 MCP Tool Call);
 // const _result = awaitmcpServer.callTool(toolName, args);
     res.json({
       success,
@@ -89,7 +89,7 @@ class MockMemoryStore {
 
   post('/service-documents/create', _async (_req, _res)
   =>
-{
+// {
   try {
 // const
   _result = awaitmcpServer.handleServiceDocumentManager({
@@ -101,14 +101,14 @@ class MockMemoryStore {
 
 })
   res.json(result)
-}
+// }
 catch (error)
-{
-  res.status(500).json({ success, error: error.message });
-}
+// {
+  res.status(500).json({ success, error);
+// }
 })
-app.get('/service-documents/list/:serviceName?', async (req, res) =>
-{
+app.get('/service-documents/list/) =>
+// {
   try {
 // const _result = awaitmcpServer.handleServiceDocumentManager({
       action: 'list',
@@ -116,66 +116,66 @@ app.get('/service-documents/list/:serviceName?', async (req, res) =>
       documentType: 'all'
 })
   res.json(result)
-}
+// }
 catch (error)
-{
-  res.status(500).json({ success, error: error.message });
-}
+// {
+  res.status(500).json({ success, error);
+// }
 })
 app.post('/service-documents/validate', async (req, res) =>
-{
+// {
   try {
 // const _result = awaitmcpServer.handleServiceDocumentValidator(req.body);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ success, error: error.message });
-  }
+    res.status(500).json({ success, error);
+  //   }
 })
 app.post('/service-documents/approve', async (req, res) =>
-{
+// {
   try {
 // const _result = awaitmcpServer.handleServiceApprovalWorkflow(req.body);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ success, error: error.message });
-  }
+    res.status(500).json({ success, error);
+  //   }
 })
 // Swarm coordination endpoints
 app.post('/swarm/init', async (req, res) =>
-{
+// {
   try {
 // const _result = awaitmcpServer.callTool('swarm_init', req.body);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ success, error: error.message });
-  }
+    res.status(500).json({ success, error);
+  //   }
 })
 app.post('/swarm/spawn-agent', async (req, res) =>
-{
+// {
   try {
 // const _result = awaitmcpServer.callTool('agent_spawn', req.body);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ success, error: error.message });
-  }
+    res.status(500).json({ success, error);
+  //   }
 })
 // Memory endpoints
 app.post('/memory/store', async (_req, res) =>
-{
+// {
   try {
 // const _result = awaitmcpServer.callTool('memory_usage', {
       action: 'store',
 ..req.body
 })
   res.json(result)
-}
+// }
 catch (error)
-{
-  res.status(500).json({ success, error: error.message });
-}
+// {
+  res.status(500).json({ success, error);
+// }
 })
-app.get('/memory/retrieve/:key', async (req, res) =>
-{
+app.get('/memory/retrieve/) =>
+// {
   try {
 // const _result = awaitmcpServer.callTool('memory_usage', {
       action: 'retrieve',
@@ -183,15 +183,15 @@ app.get('/memory/retrieve/:key', async (req, res) =>
       namespace: req.query.namespace
 })
   res.json(result)
-}
+// }
 catch (error)
-{
-  res.status(500).json({ success, error: error.message });
-}
+// {
+  res.status(500).json({ success, error);
+// }
 })
 // System status endpoint
 app.get('/status', async (_req, res) =>
-{
+// {
   try {
     const _systemStatus = orchestrator.getSystemStatus();
 // const _healthCheck = awaitorchestrator.healthCheck();
@@ -201,7 +201,8 @@ app.get('/status', async (_req, res) =>
         port,
         status: 'running',
         uptime: process.uptime()
-}
+// }
+
 
   services,
   health,
@@ -219,9 +220,9 @@ app.get('/status', async (_req, res) =>
   'GET /status' ]
 })
 } catch (error)
-{
-  res.status(500).json({ success, error: error.message });
-}
+// {
+  res.status(500).json({ success, error);
+// }
 })
 // Start server
 async function startServer() {
@@ -232,14 +233,14 @@ async function startServer() {
   // await orchestrator.start();
     // Start HTTP server
     const _server = app.listen(PORT, HOST, () => {
-      console.warn(`\n🌐 HTTP MCP Server running on http://${HOST}:${PORT}`);
-      console.warn('📡 Available endpoints:');
-      console.warn(`   • GET  http://${HOST}:${PORT}/health`);
-      console.warn(`   • POST http://${HOST}:${PORT}/service-documents/create`);
-      console.warn(`   • GET  http://${HOST}:${PORT}/service-documents/list`);
-      console.warn(`   • POST http://${HOST}:${PORT}/swarm/init`);
-      console.warn(`   • POST http://${HOST}:${PORT}/memory/store`);
-      console.warn(`   • GET  http://${HOST}:${PORT}/status`);
+      console.warn(`\n🌐 HTTP MCP Server running on http);
+      console.warn('📡 Available endpoints);
+      console.warn(`   • GET  http);
+      console.warn(`   • POST http);
+      console.warn(`   • GET  http);
+      console.warn(`   • POST http);
+      console.warn(`   • POST http);
+      console.warn(`   • GET  http);
       console.warn('\n✅ Server ready for external connections!');
     });
     // Graceful shutdown
@@ -250,8 +251,8 @@ async function startServer() {
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error('❌ Failed to start server);
     process.exit(1);
-  }
-}
+  //   }
+// }
 startServer();

@@ -3,7 +3,7 @@
  * Type definitions for command-line interface components;
  */
 // Re-export CLI errors
-export type {
+export type { // eslint-disable-line
   CliError as CLIError,
 CliErrorCode,
 CommandExecutionError,
@@ -46,13 +46,13 @@ export type CommandArgumentType = 'string' | 'number' | 'boolean' | 'array' | 'o
  * Command flag definition (enhanced);
  */
 export interface CommandFlag {name = > boolean | string
-}
+// }
 /**
  * Command argument definition;
  */
 export interface CommandArgument {name = > boolean | string
 alias?: string;
-}
+// }
 /**
  * Command option definition;
  */
@@ -78,7 +78,7 @@ COMMAND_NOT_FOUND = 127,
 INVALID_EXIT_ARGUMENT = 128,
 FATAL_ERROR_SIGNAL_OFFSET = 128,
 SCRIPT_TERMINATED_BY_CTRL_C = 130;
-}
+// }
 // =============================================================================
 // VALIDATION TYPES
 // =============================================================================
@@ -95,15 +95,15 @@ export interface ValidationResult {isValid = ===================================
  */
 export class CommandNotFoundError extends Error {
   constructor(command = 'CommandNotFoundError';
-}
-}
+// }
+// }
 /**
  * Invalid argument error;
  */
 export class InvalidArgumentError extends Error {
   constructor(argument,reason = 'InvalidArgumentError';
-}
-}
+// }
+// }
 // =============================================================================
 // CONFIGURATION TYPES
 // =============================================================================

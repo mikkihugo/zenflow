@@ -14,17 +14,15 @@ async function startProductionServer() {
     const _server = new UnifiedInterfacePlugin({
       webPort,
       enableMCP,
-      theme: 'dark',
-      daemonMode, // Keep alive in foreground
-    });
+      theme);
 
     // Initialize - this starts web UI, MCP server, and WebSocket
 // await server.initialize();
     console.warn('✅ PRODUCTION SERVER READY!');
-    console.warn('🌐 Web UI: http://localhost:3000/');
-    console.warn('🔗 MCP Server: http://localhost:3000/mcp');
-    console.warn('📡 WebSocket: ws://localhost:3000/ws');
-    console.warn('📊 Health: http://localhost:3000/health');
+    console.warn('🌐 Web UI);
+    console.warn('🔗 MCP Server);
+    console.warn('📡 WebSocket);
+    console.warn('📊 Health);
     console.warn('');
     console.warn('🎯 This is the REAL production server');
     console.warn('⏰ Server will stay alive... Press Ctrl+C to stop');
@@ -41,15 +39,15 @@ async function startProductionServer() {
 // await server.shutdown();
       process.exit(0);
     });
-  }
+  //   }
 catch (error)
-{
-  console.error('❌ PRODUCTION SERVER FAILED:', error.message);
+// {
+  console.error('❌ PRODUCTION SERVER FAILED);
   if (error.stack) {
-    console.error('Stack:', error.stack);
-  }
+    console.error('Stack);
+  //   }
   process.exit(1);
-}
-}
+// }
+// }
 // Start the production server
 startProductionServer()

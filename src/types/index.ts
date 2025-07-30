@@ -26,24 +26,24 @@ export * from './vision.js';
 export * from './workflow.js';
 
 // Global type augmentation for the system
-declare global {
+declare global { // eslint-disable-line
   namespace ClaudeCodeFlow {
 // interface SystemContext {
-      version: string;
+      // version: string
       environment: 'development' | 'production' | 'test';
-      startTime: Date;
-      processId: string;
-      instanceId: string;
-    }
+      // startTime: Date
+      // processId: string
+      // instanceId: string
+    //     }
 // interface Configuration {
       core: import('./core.js').CoreConfig;
       database: import('./database.js').DatabaseConfig;
       plugins: import('./plugin.js').PluginConfig;
       neural: import('./neural.js').NeuralConfig;
       security: import('./security.js').SecurityConfig;
-    }
-  }
-}
+    //     }
+  //   }
+// }
 // Module augmentation for Node.js global
 declare global {
   const _claudeCodeFlow: {
@@ -54,4 +54,5 @@ declare global {
     queens?: Map<string, import('./queen.js').Queen>;
     swarms?: Map<string, import('./swarm.js').Swarm>;
   };
-}
+// }
+

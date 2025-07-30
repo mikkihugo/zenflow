@@ -17,7 +17,7 @@ DEPLOYMENT_READY: 'deployment_ready',
 COMPLETED: 'completed'
 // }
 // Service URLs for integration testing
-export const SERVICE_URLS = {
+export const SERVICE_URLS = { // eslint-disable-line
   BUSINESS: process.env.BUSINESS_SERVICE_URL ?? 'http://localhost:4102',
   CORE: process.env.CORE_SERVICE_URL ?? 'http://localhost:4105',
   SWARM: process.env.SWARM_SERVICE_URL ?? 'http://localhost:4108',

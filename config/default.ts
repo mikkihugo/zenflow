@@ -4,68 +4,68 @@
  */
 export interface DatabaseConfig {
   sqlite: {
-    path: string;
+    // path: string
     options: {
-      timeout: number;
-      verbose: boolean;
+      // timeout: number
+      // verbose: boolean
     };
   };
   lancedb: {
-    path: string;
-    dimensions: number;
+    // path: string
+    // dimensions: number
   };
   kuzu: {
-    path: string;
-    readOnly: boolean;
+    // path: string
+    // readOnly: boolean
   };
 // }
 export interface ServerConfig {
-  port: number;
-  host: string;
+  // port: number
+  // host: string
   cors: {
     origin: string | string[];
-    credentials: boolean;
+    // credentials: boolean
   };
   rateLimit: {
-    windowMs: number;
-    max: number;
+    // windowMs: number
+    // max: number
   };
 // }
 export interface RuvFANNConfig {
-  integrated: boolean;
-  wasmPath: string;
-  neuralModels: string[];
-  gpuAcceleration: boolean;
+  // integrated: boolean
+  // wasmPath: string
+  neuralModels;
+  // gpuAcceleration: boolean
 // }
 export interface HiveMindConfig {
-  maxQueens: number;
-  consensusThreshold: number;
-  memoryRetention: number;
-  autoBackup: boolean;
+  // maxQueens: number
+  // consensusThreshold: number
+  // memoryRetention: number
+  // autoBackup: boolean
 // }
 export interface Config {
   app: {
-    name: string;
-    version: string;
-    environment: string;
-    debug: boolean;
+    // name: string
+    // version: string
+    // environment: string
+    // debug: boolean
   };
-  server: ServerConfig;
-  database: DatabaseConfig;
-  ruvFANN: RuvFANNConfig;
-  hiveMind: HiveMindConfig;
+  // server: ServerConfig
+  // database: DatabaseConfig
+  // ruvFANN: RuvFANNConfig
+  // hiveMind: HiveMindConfig
   logging: {
-    level: string;
-    format: string;
-    file: string;
+    // level: string
+    // format: string
+    // file: string
   };
   security: {
-    jwtSecret: string;
-    tokenExpiry: string;
-    rateLimiting: boolean;
+    // jwtSecret: string
+    // tokenExpiry: string
+    // rateLimiting: boolean
   };
 // }
-const _config: Config = {
+const _config = {
   app: {
     name: 'Claude-Zen',
     version: '2.0.0-alpha.73',

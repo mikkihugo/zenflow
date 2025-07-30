@@ -12,13 +12,13 @@ if (score <= 3) return 'low';
 // if (score <= 6) return 'medium'; // LINT: unreachable code removed
 if (score <= 9) return 'high';
 // return 'very_high'; // LINT: unreachable code removed
-}
+// }
 /**
  * Count complexity keywords;
  */
 _countComplexityKeywords(text)
 : unknown
-{
+// {
   const _complexKeywords = [
 
     'complex',
@@ -36,28 +36,28 @@ _countComplexityKeywords(text)
     'real-time',,,,,,, ];
   const _lowerText = text.toLowerCase();
   return complexKeywords.filter((keyword) => lowerText.includes(keyword)).length;
-}
+// }
 /**
  * Identify components in objective;
  */
 _identifyComponents(objective);
 : unknown
-{
+// {
   const _components = [];
   const _componentKeywords = {backend = objective.toLowerCase();
   Object.entries(componentKeywords).forEach(([component, keywords]) => {
     if (keywords.some((keyword) => lowerObjective.includes(keyword))) {
       components.push(component);
-    }
+    //     }
   });
   return components;
-}
+// }
 /**
  * Identify required capabilities;
  */
 _identifyRequiredCapabilities(objective);
 : unknown
-{
+// {
   const _capabilities = new Set();
   const __components = this._identifyComponents(objective);
   // Map components to capabilities
@@ -65,18 +65,18 @@ _identifyRequiredCapabilities(objective);
       backend => {
       const _caps = capabilityMap[component]  ?? [];
   caps.forEach((cap) => capabilities.add(cap));
-}
-)
+// }
+// )
 // Always include researcher for initial analysis
 capabilities.add('researcher')
 return Array.from(capabilities);
-}
+// }
 /**
  * Estimate number of tasks;
  */
 _estimateTaskCount(objective)
 : unknown
-{
+// {
   const _complexity = this._assessComplexity(objective);
   const __components = this._identifyComponents(objective).length;
 
@@ -100,19 +100,21 @@ _estimateTaskCount(objective)
     //   // LINT: unreachable code removed}
 
   return 'consensus_driven'; // Default
-}
+// }
+
 
 /**
  * Estimate resource requirements;
  */;
 _estimateResources(objective);
 : unknown;
-{
+// {
   const __complexity = this._assessComplexity(objective);
 
   return {minWorkers = === 'very_high' ? 'high' : 'medium',
     //   // LINT: unreachable code removed};
-}
+// }
+
 
 /**
  * Create execution plan;
@@ -120,7 +122,7 @@ _estimateResources(objective);
 async;
 createExecutionPlan(analysis, workers);
 : unknown;
-{
+// {
   const _strategy = this.strategies[analysis.recommendedStrategy];
   if (!strategy) {
     throw new Error(`Unknownstrategy = await strategy(analysis, workers);
@@ -166,13 +168,13 @@ createExecutionPlan(analysis, workers);
   /**
    * Group workers by type;
    */;
-  _groupWorkersByType(workers): unknown {
+  _groupWorkersByType(workers) {
     const _groups = {};
 
     workers.forEach((worker) => {
       if(!groups[worker.type]) {
         groups[worker.type] = [];
-      }
+      //       }
       groups[worker.type].push(worker);
     });
 
@@ -182,7 +184,7 @@ createExecutionPlan(analysis, workers);
   /**
    * Optimize worker assignment for tasks;
    */;
-  _optimizeWorkerAssignment(tasks, workerGroups): unknown {
+  _optimizeWorkerAssignment(tasks, workerGroups) {
     const _assignments = {};
 
     tasks.forEach((task) => {
@@ -196,7 +198,7 @@ createExecutionPlan(analysis, workers);
           availableWorkers.length;
 
         assignments[task] = availableWorkers[workerIndex];
-      }
+      //       }
     });
 
     return assignments;
@@ -205,7 +207,7 @@ createExecutionPlan(analysis, workers);
   /**
    * Find best worker type for task;
    */;
-  _findBestWorkerType(task): unknown {
+  _findBestWorkerType(task) {
     const _taskLower = task.toLowerCase();
 
     if (taskLower.includes('research')  ?? taskLower.includes('analyze')) {
@@ -228,12 +230,13 @@ createExecutionPlan(analysis, workers);
     //   // LINT: unreachable code removed}
 
     return 'coder'; // Default
-  }
+  //   }
+
 
   /**
    * Identify decision points in objective;
    */;
-  _identifyDecisionPoints(analysis): unknown {
+  _identifyDecisionPoints(analysis) {
 
     const _decisions = [];
     const _components = this._identifyComponents(analysis.objective);
@@ -241,21 +244,25 @@ createExecutionPlan(analysis, workers);
     // Architecture decisions
     if(components.length > 2) {
       decisions.push('Architecture pattern selection');
-    }
+    //     }
+
 
     // Technology decisions
     components.forEach((component) => {
       decisions.push(`Technology stack for ${component}`);
-  }
-  )
+  //   }
+  //   )
+
 
   // Implementation decisions
   if (analysis.complexity !== 'low') {
     decisions.push('Implementation approach');
-  }
+  //   }
+
 
   return decisions;
-}
+// }
+
 
 /**
  * Make strategic decision;
@@ -263,7 +270,7 @@ createExecutionPlan(analysis, workers);
 async;
 makeDecision(topic, options, (workerVotes = {}));
 : unknown;
-{
+// {
   const _decision = {
       topic,
       options,
@@ -275,30 +282,35 @@ makeDecision(topic, options, (workerVotes = {}));
   // Learn from decision
   if (this.config.type === 'adaptive') {
     this._learnFromDecision(decision);
-  }
+  //   }
+
 
   this.emit('decision = === 'strategic') {
   return this._strategicVote(topic, options);
-}
+// }
+
 
 // Tactical queen focuses on immediate efficiency
 if (this.config.type === 'tactical') {
   return this._tacticalVote(topic, options, workerVotes);
-}
+// }
+
 
 // Adaptive queen learns from past decisions
 if (this.config.type === 'adaptive') {
   return this._adaptiveVote(topic, options, workerVotes);
-}
+// }
+
 
 return options[0]; // Default
-}
+// }
+
 
   /**
    * Strategic voting logic;
    */;
   _strategicVote(topic, options): unknown;
-{
+// {
   // Prefer options that mention long-term benefits
   const _strategicKeywords = ['scalable', 'maintainable', 'extensible', 'future'];
 
@@ -307,17 +319,19 @@ return options[0]; // Default
     if (strategicKeywords.some((keyword) => optionLower.includes(keyword))) {
       return option;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   return options[0];
-}
+// }
+
 
 /**
  * Tactical voting logic;
  */;
 _tacticalVote(topic, options, workerVotes);
 : unknown;
-{
+// {
   // Follow majority if consensus is strong
   const _voteCounts = {};
   Object.values(workerVotes).forEach((vote) => {
@@ -337,17 +351,19 @@ _tacticalVote(topic, options, workerVotes);
     if (tacticalKeywords.some((keyword) => optionLower.includes(keyword))) {
       return option;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   return options[0];
-}
+// }
+
 
 /**
  * Adaptive voting logic;
  */;
 _adaptiveVote(topic, options, workerVotes);
 : unknown;
-{
+// {
   // Check if we've seen similar decisions before
   const _similarDecisions = Array.from(this.state.learningData.entries()).filter(;
     ([key, value]) => key.includes('decision') && value.topic.includes(topic);
@@ -363,19 +379,21 @@ map(([_, decision]) => decision.result);
       if (successfulOptions.includes(option)) {
         return option;
     //   // LINT: unreachable code removed}
-    }
-  }
+    //     }
+  //   }
+
 
   // Otherwise, explore new option
   return options[Math.floor(Math.random() * options.length)];
-}
+// }
+
 
 /**
  * Calculate final decision with weighted votes;
  */;
 _calculateFinalDecision(decision);
 : unknown;
-{
+// {
   const _voteCounts = {};
 
   // Count worker votes
@@ -390,27 +408,29 @@ _calculateFinalDecision(decision);
   // Find winner
   const _sorted = Object.entries(voteCounts).sort((a, b) => b[1] - a[1]);
   return sorted[0][0];
-}
+// }
+
 
 /**
  * Learn from decision outcomes;
  */;
 _learnFromDecision(decision);
 : unknown;
-{
+// {
   const _key = `decision-${this.state.decisionsCount}`;
   this.state.learningData.set(key, {
 ..decision,
-      success = {}): unknown {
+      success = {}) {
     const _key = `decision-${decisionId}`;
   const _decision = this.state.learningData.get(key);
 
   if (decision) {
     decision.success = success;
     decision.metrics = metrics;
-    this.emit('learning:updated', { decisionId, success, metrics });
-  }
-}
+    this.emit('learning);
+  //   }
+// }
+
 
 /**
  * Get queen status;
@@ -424,4 +444,5 @@ getStatus();
       strategiesExecuted: this.state.strategiesExecuted,
       currentStrategy: this.state.currentStrategy,
       learningDataSize: this.state.learningData.size }
-}
+// }
+

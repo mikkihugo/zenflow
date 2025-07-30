@@ -7,12 +7,13 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export class NotificationPlugin {
-  constructor(config = {}): unknown {
+  constructor(config = {}) {
     this.config = {configFile = new Map();
     this.notificationConfig = null;
     this.eventQueue = [];
     this.processing = false;
-  }
+  //   }
+
 
   async initialize() {
     console.warn('📧 Notification Plugin initialized');
@@ -23,7 +24,8 @@ export class NotificationPlugin {
 // await this.initializeProviders();
     // Start event processing
     this.startEventProcessing();
-  }
+  //   }
+
 
   async loadNotificationConfig() {
     try {
@@ -47,11 +49,12 @@ export class NotificationPlugin {
         for(const url of config.urls) {
           try {
 // const __response = awaitfetch(url, {method = > result.healthy);
-      }
+      //       }
     };
-  }
+  //   }
 
-  createConsoleProvider(config): unknown {
+
+  createConsoleProvider(config) {
     const __colors = {reset = (): unknown => {
       if (!config.colorize) return '';
     // ; // LINT: unreachable code removed
@@ -62,7 +65,7 @@ export class NotificationPlugin {
     // case 'low': return _colors.cyan;default = config.timestamp ? ; // LINT: unreachable code removed
           `[${new Date().toISOString()}] ` : '';
         const __color = getColor(notification.priority);
-        const __reset = config.colorize ? _colors.reset = {}): unknown {
+        const __reset = config.colorize ? _colors.reset = {}) {
     const _eventConfig = this.notificationConfig.events[event];
     if(!eventConfig  ?? !eventConfig.enabled) {
       return {success = await this.buildNotification(event, data, eventConfig);
@@ -72,7 +75,8 @@ export class NotificationPlugin {
       notification,providers = this.notificationConfig.templates[eventConfig.template];
     if(!template) {
       throw new Error(`Template ${eventConfig.template} not found`);
-    }
+    //     }
+
 
     const _context = {
       event,
@@ -80,13 +84,15 @@ export class NotificationPlugin {
       const _value = this.getNestedValue(context, path.trim());
       return value !== undefined ? String(value) : match;
     //   // LINT: unreachable code removed});
-  }
+  //   }
+
 
   getNestedValue(obj, path): unknown
     return path.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : undefined;
     //   // LINT: unreachable code removed}, obj);
-  }
+  //   }
+
 
   async processEventQueue()
     if (this.processing) return;
@@ -95,11 +101,12 @@ export class NotificationPlugin {
     while(this.eventQueue.length > 0) {
       const _item = this.eventQueue.shift();
 // await this.processNotification(item);
-    }
+    //     }
+
 
     this.processing = false;
 
-  async processNotification(item): unknown {
+  async processNotification(item) {
     const { notification, providers } = item;
     const _results = [];
 
@@ -121,24 +128,26 @@ export class NotificationPlugin {
             this.eventQueue.push(item);
             if(!this.processing) {
               this.processEventQueue();
-            }
+            //             }
           }, this.config.retryDelay);
-        }
+        //         }
+
 
     return results;
     //   // LINT: unreachable code removed}
 
   // Convenience methods for common events
   async notifyTaskCompleted(taskData): unknown ;
-    return this.notify('task.completed', { task = {}): unknown {
+    return this.notify('task.completed', { task = {}) {
     return this.notify('system.error', { error, ...context });
     // ; // LINT: unreachable code removed
   async notifyHealthCheck(systemData): unknown ;
     return this.notify('health.check', {system = true;
     // await this.saveNotificationConfig(); // LINT: unreachable code removed
       return `Event ${eventName} enabled`;
-    // throw new Error(`Event ${eventName // LINT: unreachable code removed} not found`);
-  }
+    // throw new Error(`Event ${eventName // LINT);
+  //   }
+
 
   async disableEvent(eventName): unknown
     if(this.notificationConfig.events[eventName]) {
@@ -147,7 +156,8 @@ export class NotificationPlugin {
       return `Event ${eventName} disabled`;
     //   // LINT: unreachable code removed}
     throw new Error(`Event ${eventName} not found`);
-  }
+  //   }
+
 
   async enableProvider(providerName): unknown
     if(this.notificationConfig.providers[providerName]) {
@@ -166,7 +176,8 @@ export class NotificationPlugin {
       return `Provider ${providerName} disabled`;
     //   // LINT: unreachable code removed}
     throw new Error(`Provider ${providerName} not found`);
-  }
+  //   }
+
 
   async runHealthChecks() {
     const _healthResults = {};
@@ -192,7 +203,8 @@ export class NotificationPlugin {
       const _providerInfo = this.providers.get(providerName);
       if(!providerInfo  ?? !providerInfo.enabled) {
         continue;
-      }
+      //       }
+
 
       try {
 // const __result = awaitproviderInfo.instance.send(notification);
@@ -205,15 +217,18 @@ export class NotificationPlugin {
         try {
 // await info.instance.cleanup();
         } catch (error) {
-          console.warn(`Warning: ${name} cleanup failed:`, error.message);
-        }
-      }
-    }
+          console.warn(`Warning);
+        //         }
+      //       }
+    //     }
+
 
     this.providers.clear();
     console.warn('📧 Notification Plugin cleaned up');
-  }
-}
+  //   }
+// }
+
 
 export default NotificationPlugin;
-        }
+        //         }
+

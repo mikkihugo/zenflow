@@ -7,7 +7,7 @@ import { formatTimestampForDisplay } from '../../utils/timezone-utils.js';
 /**
  * Fixed function to create session with proper timezone handling;
  */
-export function createSessionWithProperTimezone(_objective = {}: unknown): unknown {
+export function createSessionWithProperTimezone(_objective = {}) {
 
   // Store both UTC timestamp (for consistency) and timezone info
 
@@ -35,14 +35,14 @@ export function createSessionWithProperTimezone(_objective = {}: unknown): unkno
 
   console.warn(`\n💡 Times shown in yourtimezone = getTimezoneInfo();
   console.warn(`🌍 Yourtimezone = createSessionWithProperTimezone('Build scalable application', {
-    queenType: 'strategic',
-    maxWorkers});
+    queenType);
 
   // Display with proper timezone
   displaySessionInfo(session);
 
-  console.warn('\n📋 Session list example:');
+  console.warn('\n📋 Session list example);
   listSessionsWithTimezone([session]);
 
   console.warn("\n✅ Fix applied - timestamps now show in user's local timezone!");
-}
+// }
+

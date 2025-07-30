@@ -12,7 +12,7 @@ class MCPBridge {
     this.mcpServer = new ClaudeFlowMCPServer();
     this.orchestrator = new ServicesOrchestrator();
     this.isRunning = false;
-  }
+  //   }
   async start() {
     console.warn('🔗 Starting Claude-Flow MCP Bridge...\n');
     // Start the services orchestrator
@@ -23,7 +23,7 @@ class MCPBridge {
     this.bindServiceMethods();
     this.isRunning = true;
     console.warn('\n🔗 MCP Bridge Ready!');
-    console.warn('📡 Available MCP Tools:');
+    console.warn('📡 Available MCP Tools);
     console.warn('   • mcp__claude-zen__service_document_manager');
     console.warn('   • mcp__claude-zen__service_approval_workflow');
     console.warn('   • mcp__claude-zen__service_document_validator');
@@ -51,42 +51,43 @@ class MCPBridge {
     documentType,
     content,
     approvalMetadata)
-  }
+  //   }
   async listServiceDocuments(_serviceName = null) {
     return await this.mcpServer.handleServiceDocumentManager({
       action: 'list',
     // serviceName, // LINT: unreachable code removed
     documentType: 'all'
 })
-}
+// }
 async;
 validateServiceDocument(serviceName, documentType);
-{
+// {
   return await this.mcpServer.handleServiceDocumentValidator({
       validateType: 'single-document',
   // serviceName, // LINT: unreachable code removed
   documentType
 })
-}
-async
+// }
+// async
 queueApproval(documentId, approver)
-{
+// {
   return await this.mcpServer.handleServiceApprovalWorkflow({
       action: 'queue',
   // documentId, // LINT: unreachable code removed
   approver
 })
-}
+// }
 getStatus()
-{
+// {
   return {
       bridge: {
         running: this.isRunning,
   // version: '2.0.0-alpha.61', // LINT: unreachable code removed
-}
+// }
+
 
 orchestrator: this.orchestrator.getSystemStatus(),
-{
+// {
   toolsAvailable: [;
           'service_document_manager',
           'service_approval_workflow',
@@ -94,16 +95,18 @@ orchestrator: this.orchestrator.getSystemStatus(),
           'swarm_init',
           'agent_spawn',
           'memory_usage' ]
-}
+// }
 
+
+// 
 }
-}
-}
+// }
+// }
 // Export for programmatic use
 export { MCPBridge };
 
 // CLI support
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   const _bridge = new MCPBridge();
   process.on('SIGINT', async () => {
     console.warn('\n🔄 Shutting down MCP Bridge...');
@@ -118,28 +121,25 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // const _createResult = awaitbridge.createServiceDocument(;
       'payment-service',
       'service-description',
-        name: 'Payment Service',
-        version: '1.0.0',
-        description: 'Handles payment processing and billing',
-        endpoints: ['/pay', '/refund', '/status'],
-        dependencies: ['user-service', 'notification-service']);
-    console.warn('📄 Service document created:', createResult.success ? '✅' : '❌');
+        name);
+    console.warn('📄 Service document created);
     // Test 2: List documents
 // const _listResult = awaitbridge.listServiceDocuments('payment-service');
-    console.warn('📋 Documents listed:', listResult.success ? '✅' : '❌');
+    console.warn('📋 Documents listed);
     // Test 3: Validate document
 // const _validateResult = awaitbridge.validateServiceDocument(;
       'payment-service',
       'service-description';
     );
-    console.warn('✅ Document validated:', validateResult.success ? '✅' : '❌');
+    console.warn('✅ Document validated);
     // Test 4: Queue approval
 // const _approvalResult = awaitbridge.queueApproval(createResult.documentId, 'tech-lead');
-    console.warn('📝 Approval queued:', approvalResult.success ? '✅' : '❌');
+    console.warn('📝 Approval queued);
     console.warn('\n✨ MCP Bridge fully operational!');
-    console.warn('🔌 Connect Claude Desktop with: npx claude-zen@alpha mcp start');
+    console.warn('🔌 Connect Claude Desktop with);
   } catch (error) {
-    console.error('❌ Failed to start MCP Bridge:', error);
+    console.error('❌ Failed to start MCP Bridge);
     process.exit(1);
-  }
-}
+  //   }
+// }
+

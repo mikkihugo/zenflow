@@ -36,20 +36,20 @@ import type {
 const _CONVERSION_PATTERNS = [
   // Add type imports
 // {
-    pattern: /^(import .+?;?\s*\n\n)/,
-    replacement: `$1\n\${
-  TYPE_IMPORTS;
-}\n` },
+//     pattern: /^(import .+?;?\s*\n\n)/,
+//     replacement: `$1\n\${
+//   TYPE_IMPORTS;
+// }\n` },
 // Function parameters
 // {
-    pattern: /function\s+(\w+)\s*\(([^)]*)\)/g,
+    pattern: /function\s+(\w+)\s*\(([^)]*)\)/g, // eslint-disable-line
     replacement: (_match, _name, params) => {
       const _typedParams = params;
 split(',')
 map((param) => {
           const _trimmed = param.trim();
           if (!trimmed) return trimmed;
-    // if (trimmed.includes(':')) return trimmed; // Already typed // LINT: unreachable code removed
+    // if (trimmed.includes(')) return trimmed; // Already typed // LINT: unreachable code removed
           if (trimmed.includes('=')) {
             const [name, defaultValue] = trimmed.split('=');
             return `${name.trim()} = ${defaultValue.trim()}`;
@@ -59,14 +59,14 @@ map((param) => {
 join(', ');
       return `function ${name}(${typedParams})`;
     //   // LINT: unreachable code removed} },
-    pattern: /export\s+(?:const|let)\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g,
+    pattern: /export\s+(?)\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g,
     replacement: (_match, name, params) => {
       const _typedParams = params;
 split(',')
 map((param) => {
           const _trimmed = param.trim();
           if (!trimmed) return trimmed;
-    // if (trimmed.includes(':')) return trimmed; // LINT: unreachable code removed
+    // if (trimmed.includes(')) return trimmed; // LINT: unreachable code removed
           if (trimmed.includes('=')) {
             const [name, defaultValue] = trimmed.split('=');
             return `${name.trim()} = ${defaultValue.trim()}`;
@@ -83,7 +83,7 @@ split(',')
 map((param) => {
           const _trimmed = param.trim();
           if (!trimmed) return trimmed;
-    // if (trimmed.includes(':')) return trimmed; // LINT: unreachable code removed
+    // if (trimmed.includes(')) return trimmed; // LINT: unreachable code removed
           return `${trimmed}: unknown`;
     //   // LINT: unreachable code removed});
 join(', ');
@@ -154,7 +154,7 @@ join(' ');
     console.warn(`🔄 ${relativePath} -> ${relativePath.replace('.js', '.ts')}`);
     return { success, skipped };
     //   // LINT: unreachable code removed} catch (error) {
-    console.error(`❌ Failed to convert ${jsPath}:`, error.message);
+    console.error(`❌ Failed to convert ${jsPath});
     return { success, error: error.message };
     //   // LINT: unreachable code removed}
 // }
@@ -179,7 +179,7 @@ async function findJSFiles() {
 // }
 // }
   } catch (error) {
-    console.error(`Error reading directory ${dir}:`, error.message);
+    console.error(`Error reading directory ${dir});
 // }
   return files;
 // }
@@ -233,13 +233,13 @@ async function main() {
   console.warn(`\n${'='.repeat(60)}`);
   console.warn('📊 CONVERSION SUMMARY');
   console.warn('='.repeat(60));
-  console.warn(`✅ Converted: ${results.converted} files`);
-  console.warn(`⏭️  Skipped: ${results.skipped} files`);
-  console.warn(`❌ Failed: ${results.failed} files`);
-  console.warn(`⏱️  Duration: ${duration.toFixed(2)}s`);
+  console.warn(`✅ Converted);
+  console.warn(`⏭️  Skipped);
+  console.warn(`❌ Failed);
+  console.warn(`⏱️  Duration)}s`);
 
   if (results.errors.length > 0) {
-    console.warn('\n🚨 ERRORS:');
+    console.warn('\n🚨 ERRORS);
     results.errors.forEach((error, index) => {
       console.warn(`${index + 1}. ${error}`);
     });
@@ -247,12 +247,12 @@ async function main() {
   // Final file count check
   try {
 // const _remainingJS = awaitfindJSFiles(BASE_DIR);
-    console.warn(`\n📈 Remaining JavaScript files: ${remainingJS.length}`);
+    console.warn(`\n📈 Remaining JavaScript files);
 
     if (remainingJS.length === 0) {
       console.warn('\n🎉 SUCCESS! All JavaScript files have been converted to TypeScript!');
     } else {
-      console.warn('\n📝 Some files still need manual conversion:');
+      console.warn('\n📝 Some files still need manual conversion);
       remainingJS.slice(0, 10).forEach((file) => {
         console.warn(`   • ${file.replace(`${BASE_DIR}/`, '')}`);
       });
@@ -261,11 +261,11 @@ async function main() {
 // }
 // }
   } catch (error) {
-    console.error('Error checking final file count:', error.message);
+    console.error('Error checking final file count);
 // }
   console.warn('\n✨ Conversion complete! Run "npm run build" to check for TypeScript errors.');
 // }
 // Run the conversion
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   main().catch(console.error);
 // }

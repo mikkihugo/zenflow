@@ -2,7 +2,7 @@
  * Message converter for Claude Code format;
  * Based on claude-task-master implementation;
  */
-export function convertToClaudeCodeMessages(): unknown {
+export function convertToClaudeCodeMessages() {
   return {messagesPrompt = Array.isArray(prompt) ? prompt : prompt.messages  ?? [];
   // ; // LINT: unreachable code removed
   for (const message of messages) {
@@ -14,26 +14,26 @@ export function convertToClaudeCodeMessages(): unknown {
         messagesPrompt += `\nHuman = formatAssistantMessage(message);
         messagesPrompt += `;
         \nAssistant = `\nTool Result ($
-        {
+        //         {
           message.content.toolName;
-        }
+        //         }
         ): $
-        {
+        //         {
           JSON.stringify(message.content.result);
-        }
+        //         }
         \n`
         break;
-    }
-  }
+    //     }
+  //   }
   // Handle special modes
   if (prompt.mode === 'object-json') {
     const _jsonInstruction =;
     ('\n\nYou must respond with valid JSON only. No explanations or markdown.');
     systemPrompt = systemPrompt ? `${systemPrompt}${jsonInstruction}` : jsonInstruction;
-  }
+  //   }
   return {messagesPrompt = === 'string') {
     return content;
-}
+// }
 if (Array.isArray(content)) {
   return content;
   // .map(part => { // LINT: unreachable code removed
@@ -46,16 +46,16 @@ if (Array.isArray(content)) {
     return '';
     //   // LINT: unreachable code removed});
 join(' ')
-  }
+  //   }
   return String(content);
-}
-function _formatAssistantMessage(): unknown {
+// }
+function _formatAssistantMessage() {
   content += '\n\nToolcalls = `- ${toolCall.function.name}(${JSON.stringify(toolCall.function.arguments)})\n`;
-}
-}
+// }
+// }
 return content;
-}
-export function extractJSONFromResponse(text = text.replace(/```json\s*/g, '': unknown).replace(/```\s*/g, '');
+// }
+export function extractJSONFromResponse(text = text.replace(/```json\s*/g, '').replace(/```\s*/g, '');
 
 // Remove JavaScript variable declarations
 text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
@@ -77,4 +77,5 @@ replace(/'/g, '"'); // Replace single quotes
     //   // LINT: unreachable code removed} catch (/* _e2 */) {
     return null;
     //   // LINT: unreachable code removed}
-}
+// }
+

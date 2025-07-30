@@ -30,7 +30,7 @@ export const mcpCommand = {
           return 'Port must be between 1 and 65535';
     //   // LINT: unreachable code removed}
         return true;
-}
+// }
     },
 {name = neural',
       description => {
@@ -59,14 +59,15 @@ export const mcpCommand = {
           result = await showMcpConfig(options, logger);
           break;
         default = showMcpHelp(logger);
-      }
+      //       }
+
 
       // Return success result
       return {success = ============================================================================;
     // // OPTION PARSING AND VALIDATION // LINT: unreachable code removed
 // =============================================================================
 
-function parseMcpOptions(context = new FlagValidator(context.flags as any: unknown);
+function parseMcpOptions(context = new FlagValidator(context.flags as any);
 
   logger.debug('Parsing MCP options', {flags = validator.getNumberFlag('port', 3000);
   const __host = validator.getStringFlag('host', 'localhost');
@@ -79,7 +80,8 @@ function parseMcpOptions(context = new FlagValidator(context.flags as any: unkno
   // Validate port range
   if (port < 1  ?? port > 65535) {
     throw new CLIError('Port must be between 1 and 65535', 'mcp');
-  }
+  //   }
+
 
   // Validate category if provided
   const _validCategories = ['swarm', 'neural', 'memory', 'analysis', 'workflow', 'github', 'daa', 'system'];
@@ -88,7 +90,7 @@ function parseMcpOptions(context = new FlagValidator(context.flags as any: unkno
 // MCP SUBCOMMAND IMPLEMENTATIONS
 // =============================================================================
 
-async function showMcpStatus(options = {status = await import('url': unknown);
+async function showMcpStatus(options = {status = await import('url');
 // const _path = awaitimport('path');
       const { spawn } = await import('child_process');
 
@@ -103,7 +105,7 @@ async function showMcpStatus(options = {status = await import('url': unknown);
         stdio => {
         if (code !== 0) {
           logger.error('MCP server exited with error', { code });
-        }
+        //         }
       });
 
       logger.info('MCP server started successfully');
@@ -181,31 +183,37 @@ async function showMcpStatus(options = {status = await import('url': unknown);
       tools.push({name = === 'analysis') {
     console.warn('\n📊 ANALYSIS & MONITORING (13 tools):');
     // ... (implement similar pattern for analysis tools)
-  }
+  //   }
+
 
   if (!options.category  ?? options.category === 'workflow') {
     console.warn('\n🔧 WORKFLOW & AUTOMATION (11 tools):');
     // ... (implement similar pattern for workflow tools)
-  }
+  //   }
+
 
   if (!options.category  ?? options.category === 'github') {
     console.warn('\n🐙 GITHUB INTEGRATION (8 tools):');
     // ... (implement similar pattern for github tools)
-  }
+  //   }
+
 
   if (!options.category  ?? options.category === 'daa') {
     console.warn('\n🤖 DAA (Dynamic Agent Architecture) (8 tools):');
     // ... (implement similar pattern for daa tools)
-  }
+  //   }
+
 
   if (!options.category  ?? options.category === 'system') {
     console.warn('\n⚙️ SYSTEM & UTILITIES (8 tools):');
     // ... (implement similar pattern for system tools)
-  }
+  //   }
+
 
   if (options.verbose) {
     displayVerboseToolInfo();
-  }
+  //   }
+
 
   console.warn('\n📡Status = <category> --verbose');
 
@@ -216,10 +224,11 @@ async function showMcpStatus(options = {status = await import('url': unknown);
   console.warn('  claude-zen mcp config                    # Show MCP configuration');
   console.warn('  claude-zen mcp auth setup                # Setup MCP authentication');
   console.warn();
-  console.warn('NOTE: Use "claude-zen start --daemon" to start MCP server');
+  console.warn('NOTE);
   console.warn();
-  console.warn('🎯 Total: 87 tools & resources available');
+  console.warn('🎯 Total);
   console.warn('🔗 Full ruv-swarm + DAA + Claude-Flow integration');
 
   return 'MCP help displayed';
-}
+// }
+

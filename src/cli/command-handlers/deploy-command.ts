@@ -9,15 +9,15 @@ import { log } from '../core/logger.js';
 
 // Helper functions
 const _printSuccess = (msg) => log.success(msg);
-export async function deployCommand(): unknown {
+export async function deployCommand() {
   case 'ha-cluster': null
-  {
+  //   {
     const __nodes = args.find((arg) => arg.includes('--nodes'));
     const __regions = args.find((arg) => arg.includes('--regions'));
     printSuccess('Deploying High Availability Cluster...');
     console.warn('🏗️  HAConfiguration = ')[1];
     : '3'
-  }
+  //   }
   `);
           console.warn(;
             `;
@@ -38,6 +38,7 @@ export async function deployCommand(): unknown {
       console.warn('🔍 Real-time SecurityStatus = 3 --regions="us-east-1,us-west-2"');
       console.warn('  deploy scaling configure --min=2 --max=50');
       console.warn('  deploy security harden --profile enterprise');
-    }
-  }
-}
+    //     }
+  //   }
+// }
+

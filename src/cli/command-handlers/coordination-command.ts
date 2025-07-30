@@ -5,9 +5,9 @@
 import {
 
 import type
-{
+// {
   Logger, JSONObject, JSONValue, JSONArray;
-}
+// }
 from;
 ('../types/core.js');
 printSuccess,
@@ -20,13 +20,13 @@ spawnSwarmAgent,
 getSwarmStatus,
 checkRuvSwarmAvailable } from '../utils.js'
 // Simple ID generator
-function generateId(prefix = 'id': unknown): unknown {
+function generateId(prefix = 'id') {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-export async function coordinationAction(): unknown {
+// }
+export async function coordinationAction() {
   showCoordinationHelp();
   return;
-}
+// }
 try {
     switch(subcommand) {
       case 'swarm-init':;
@@ -53,8 +53,9 @@ try {
       // Use real ruv-swarm initialization
 // const _swarmResult = awaitinitializeSwarm({
         swarmId,topology = false; // Trigger fallback
-    }
-  }
+    //     }
+  //   }
+
 
   if(!isAvailable) {
     //Fallback = > setTimeout(resolve, 1000));
@@ -71,7 +72,8 @@ try {
   if (!validTypes.includes(agentType)) {
     printWarning(`⚠️  Unknown agent type '${agentType}'. Using 'general' instead.`);
     agentType = 'general'; // Actually change the type to general
-  }
+  //   }
+
 
   console.warn(`🤖 Spawning coordinated agent...`);
   console.warn(`🏷️  Agenttype = > setTimeout(resolve, 800));
@@ -109,28 +111,30 @@ try {
   printSuccess(`✅ Task orchestration configured successfully`);
 
   console.warn(`\n🎯 ORCHESTRATION DETAILS = {
-      coordinator: `);
-  console.warn(`  📋 Task: ${task}`);
+      coordinator);
+  console.warn(`  📋 Task);
   console.warn(`  🆔 Task ID: ${generateId('task')}`);
-  console.warn(`  📊 Strategy: ${strategy}`);
+  console.warn(`  📊 Strategy);
   console.warn(`  🤖 Assigned agents: 3 (coordinator, developer, researcher)`);
-  console.warn(`  🔗 Coordination: Active`);
-  console.warn(`  💾 Shared memory: Configured`);
-  console.warn(`  📈 Progress tracking: Enabled`);
+  console.warn(`  🔗 Coordination);
+  console.warn(`  💾 Shared memory);
+  console.warn(`  📈 Progress tracking);
 
   if(shareResults) {
-    console.warn(`  🔄 Result sharing: Enabled across swarm`);
-  }
+    console.warn(`  🔄 Result sharing);
+  //   }
 
-  console.warn(`\n📋 COORDINATION WORKFLOW:`);
+
+  console.warn(`\n📋 COORDINATION WORKFLOW);
   console.warn(`  1. ✅ Task analysis and decomposition complete`);
   console.warn(`  2. ✅ Agent selection and assignment complete`);
   console.warn(`  3. ✅ Communication channels established`);
   console.warn(`  4. 🔄 Task execution coordination in progress...`);
   console.warn(`  5. ⏳ Results aggregation and sharing pending`);
-}
+// }
 
-function _getAgentCapabilities(_type: unknown): unknown {
+
+function _getAgentCapabilities(_type) {
   const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',
     _coder: 'Code implementation, debugging, technical development',
     _developer: 'Code implementation, debugging, technical development',
@@ -143,28 +147,20 @@ function _getAgentCapabilities(_type: unknown): unknown {
     _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',
     _general: 'Multi-purpose coordination and development' };
   return capabilities[type]  ?? capabilities.general;
-}
+// }
 
-function _showCoordinationHelp(): unknown {
+
+function _showCoordinationHelp() {
   console.warn(`;
 🐝 Coordination Commands - Swarm & Agent Orchestration
 
-USAGE:;
-  claude-zen coordination <command> [options]
-
-COMMANDS:;
-  swarm-init        Initialize swarm coordination infrastructure;
-  agent-spawn       Spawn and coordinate new agents;
-  task-orchestrate  Orchestrate task execution across agents
-
-SWARM-INIT OPTIONS:;
-  --swarm-id <id>      Swarm identifier (auto-generated if not provided);
-  --topology <type>    Coordination topology (default: hierarchical);
+USAGE);
+  --topology <type>    Coordination topology (default);
                        Options, mesh, ring, star, hybrid;
-  --max-agents <n>     Maximum number of agents (default: 5)
+  --max-agents <n>     Maximum number of agents (default)
 
 AGENT-SPAWN OPTIONS:;
-  --type <type>        Agent type (default: general);
+  --type <type>        Agent type (default);
                        Options, coder, developer, researcher, analyst, analyzer,
                        tester, architect, reviewer, optimizer, general;
   --name <name>        Custom agent name (auto-generated if not provided);
@@ -174,7 +170,7 @@ AGENT-SPAWN OPTIONS:;
 TASK-ORCHESTRATE OPTIONS:;
   --task <description> Task description (required);
   --swarm-id <id>      Target swarm for task execution;
-  --strategy <strategy> Coordination strategy (default: adaptive);
+  --strategy <strategy> Coordination strategy (default);
                        Options, parallel, sequential, hierarchical;
   --share-results      Enable result sharing across swarm
 
@@ -198,4 +194,5 @@ EXAMPLES:;
   • Performance optimization;
   • Fault tolerance;
 `);
-}
+// }
+

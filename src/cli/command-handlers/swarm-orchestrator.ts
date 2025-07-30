@@ -8,7 +8,7 @@ import { printInfo } from '../utils.js';
  * Leverages ruv-swarm library v1.0.18 with full integration;
  */
 export class SwarmOrchestrator {
-  constructor(_options = {}): unknown {
+  constructor(_options = {}) {
     this.memoryStore = null;
     this.ruvSwarm = null;
     this.activeSwarms = new Map();
@@ -16,21 +16,22 @@ export class SwarmOrchestrator {
     this.taskQueue = [];
     this.config = {maxConcurrentSwarms = = false,enableHooks = = false,telemetryEnabled = = false,
 ..options;
-    }
-}
+    //     }
+// }
 /**
  * Initialize the orchestrator with memory and ruv-swarm;
  */
 async;
 initialize();
-{
+// {
   try {
       // Initialize memory store
       this.memoryStore = new SqliteMemoryStore({dbName = new RuvSwarm({
-        memoryStore = {}): unknown {
+        memoryStore = {}) {
     if(!this._ruvSwarm) {
       throw new Error('Orchestrator not initialized. Call initialize() first.');
-    }
+    //     }
+
 
     try {
       // Pre-task coordination using ruv-swarm + optional hooks
@@ -55,7 +56,8 @@ initialize();
 // const _agent = awaitthis.spawnAgent(swarm, agentSpec);
         spawnedAgents.push(agent);
         this.globalAgents.set(agent.id, agent);
-      }
+      //       }
+
 
       // Create orchestrated task
       const _task = new Task({id = await swarm.orchestrate(task);
@@ -67,7 +69,7 @@ initialize();
       printSuccess(`✅ Swarm launchedsuccessfully = > a.type).join(', ')}
     `);
 
-      return {swarmId = > ({ id: a.id,type = this.analyzeComplexity(objective);
+      return {swarmId = > ({ id);
     // const _domain = this.detectDomain(objective); // LINT: unreachable code removed
 
     return {id = = false,enableConsensus = this.detectDomain(objective);
@@ -98,19 +100,21 @@ initialize();
     //   // LINT: unreachable code removed} else {
       return 'general';
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   /**
    * Smart complexity analysis;
    */;
-  analyzeComplexity(objective): unknown {
+  analyzeComplexity(objective) {
     const _indicators = {high = objective.toLowerCase();
 
     for (const [level, words] of Object.entries(indicators)) {
       if (words.some(word => obj.includes(word))) {
         return level;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     // Default based on length and keywords
     return obj.length > 100  ?? obj.split(' ').length > 15 ? 'high' : 'medium';
@@ -119,7 +123,7 @@ initialize();
   /**
    * Select optimal topology based on task characteristics;
    */;
-  selectOptimalTopology(complexity, domain, options): unknown {
+  selectOptimalTopology(complexity, domain, options) {
     if (options.topology) return options.topology;
     // ; // LINT: unreachable code removed
     switch(complexity) {
@@ -127,7 +131,7 @@ initialize();
         return domain === 'research' ? 'mesh' : 'hierarchical';
     // case 'medium':; // LINT: unreachable code removed
         return domain === 'github'  ?? domain === 'devops' ? 'star' : 'hierarchical';
-    // default = {high = {high = null): unknown { // LINT: unreachable code removed
+    // default = {high = {high = null) { // LINT: unreachable code removed
     if(swarmId) {
       const _swarm = this.activeSwarms.get(swarmId);
       if(!swarm) {
@@ -135,7 +139,8 @@ initialize();
     Swarm;
     \$swarmIdnot;
     found`);
-      }
+      //       }
+
 
       return this.buildSwarmStatusInfo(swarm);
     //   // LINT: unreachable code removed}
@@ -144,14 +149,13 @@ initialize();
     const _allStatus = {};
     for (const [id, swarm] of this.activeSwarms.entries()) {
       allStatus[id] = await this.buildSwarmStatusInfo(swarm);
-    }
+    //     }
+
 
     return {totalSwarms = swarm.getAgents();
     // ; // LINT: unreachable code removed
     return {id = > ({id = await this.memoryStore.retrieve(`;
-    // swarm /; // LINT: unreachable code removed
-      \$swarmId /;
-      metrics`);
+    // swarm /; // LINT);
       return metricsData ? JSON.parse(metricsData) : {
         tasksCompleted = {swarmId = = false;
     //   // LINT: unreachable code removed};
@@ -162,7 +166,8 @@ initialize();
     `,
       JSON.stringify(resultData);
     );
-  }
+  //   }
+
 
   /**
    * Load persisted swarms from memory;
@@ -171,12 +176,13 @@ initialize();
     // This would load swarms from the database that were persisted
     // For now, start with empty state
     printInfo('📚 Loading persisted swarms from memory...');
-  }
+  //   }
+
 
   /**
    * Neural learning integration;
    */;
-  async learnFromOrchestration(swarmId, taskId, outcome): unknown {
+  async learnFromOrchestration(swarmId, taskId, outcome) {
     if (!this.config.enableNeuralLearning) return;
     // ; // LINT: unreachable code removed
     try {
@@ -194,7 +200,7 @@ initialize();
     Date.now();
     `,
         JSON.stringify({
-          sessionEndedAt = {}): unknown {
+          sessionEndedAt = {}) {
     // Fire and forget - don't block main execution
     setTimeout(_async () => {
       try {
@@ -218,7 +224,7 @@ join(' ');
       agents = {};
     for (const agent of this.globalAgents.values()) {
       byType[agent.type] = (byType[agent.type]  ?? 0) + 1;
-    }
+    //     }
     return byType;
     //   // LINT: unreachable code removed}
 
@@ -253,7 +259,7 @@ join(' ');
     /,-;`aaefilnstt;
     JSON.stringify(swarm.getState());
     );
-  }
+  //   }
   this;
 
   activeSwarms
@@ -265,6 +271,6 @@ join(' ');
 
   clear()
   printSuccess('✅ Swarm orchestrator shutdown complete')
-}
+// }
 // Export singleton instance
 export const _swarmOrchestrator = new SwarmOrchestrator();

@@ -5,25 +5,25 @@
  * capabilities for swarm operations. It collects outputs from multiple agents,
  * performs quality analysis, generates insights, and creates detailed reports.;
  */
-'node = new Map();
+'node = new Map(); // eslint-disable-line
   private resultCache = new Map()
 private
 (processingQueue =
-{
-}
+// {
+// }
 ), (memoryManager = new Logger('SwarmResultAggregator'))
 this.config = this.createDefaultConfig(config)
 this.memoryManager = memoryManager
 this.processingQueue = new ProcessingQueue(this.config.aggregationInterval)
 this.setupEventHandlers()
-}
+// }
 /**
  * Initialize the result aggregator;
  */
-async
+// async
 initialize()
 : Promise<void>
-{
+// {
   this.logger.info('Initializing swarm result aggregator...');
   try {
 // await this.processingQueue.start();
@@ -32,15 +32,15 @@ initialize()
   } catch (error) {
     this.logger.error('Failed to initialize result aggregator', error);
     throw error;
-  }
-}
+  //   }
+// }
 /**
  * Shutdown the aggregator gracefully;
  */
 async;
 shutdown();
 : Promise<void>
-{
+// {
   this.logger.info('Shutting down swarm result aggregator...');
   try {
     // Complete active aggregations
@@ -53,8 +53,8 @@ shutdown();
   } catch (error) {
     this.logger.error('Error during result aggregator shutdown', error);
     throw error;
-  }
-}
+  //   }
+// }
 /**
  * Start aggregating results for a swarm execution;
  */
@@ -67,12 +67,12 @@ context,
 this.config,
 this.logger,
 this.memoryManager;
-)
+// )
 this.activeAggregations.set(aggregationId, session)
 // Start real-time processing if enabled
 if (this.config.enableRealTimeUpdates) {
   session.startRealTimeProcessing();
-}
+// }
 this.emit('aggregation = this.activeAggregations.get(aggregationId);
 if (!session) {
   throw new Error(`Aggregation session notfound = this.activeAggregations.get(aggregationId);
@@ -165,8 +165,8 @@ filter(r => r.validated).length;
         aggregationId => {
       this.logger.info('Report generated', data);
     });
-    }
-  }
+    //     }
+  //   }
   // Supporting classes
 
   class AggregationSession {
@@ -189,7 +189,7 @@ filter(r => r.validated).length;
     this;
 
     startTime = new Date();
-  }
+  //   }
   async;
   addTaskResult(taskId = this.context.tasks.size;
   const _completed = this.taskResults.size;
@@ -217,19 +217,19 @@ filter(r => r.validated).length;
   //   // LINT: unreachable code removed}
   private;
   consolidateOutputs();
-  {
+  //   {
     // Placeholder implementation
     const _outputs = [];
     // Add task results
     for (const result of this.taskResults.values()) {
       if (result.output) {
         outputs.push(result.output);
-      }
-    }
+      //       }
+    //     }
     // Add agent outputs
     for (const agentOutputList of this.agentOutputs.values()) {
       outputs.push(...agentOutputList);
-    }
+    //     }
     return {summary = Array.from(this.taskResults.values());
     // .filter(r => r.validated).length; // LINT: unreachable code removed
     const __totalTasks = this.taskResults.size;
@@ -238,7 +238,7 @@ filter(r => r.validated).length;
     private;
     intervalHandle?: NodeJS.Timeout;
     constructor(interval = interval;
-  }
+  //   }
   async;
   start();
   : Promise<void>
@@ -257,9 +257,9 @@ filter(r => r.validated).length;
   this.isRunning = false;
   if (this.intervalHandle) {
     clearInterval(this.intervalHandle);
-  }
+  //   }
   getThroughput();
   : number
   return this.throughputCounter;
-}
+// }
 export default SwarmResultAggregator;

@@ -10,7 +10,7 @@ import { cwd } from 'node:process';
 import { createDatabase } from '../../../../memory/sqlite-wrapper.js';
 
 export class HiveMindSessionManager {
-  constructor(hiveMindDir = null): unknown {
+  constructor(hiveMindDir = null) {
     this.hiveMindDir = hiveMindDir  ?? path.join(cwd(), '.hive-mind');
     this.sessionsDir = path.join(this.hiveMindDir, 'sessions');
     this.dbPath = path.join(this.hiveMindDir, 'hive.db');
@@ -23,7 +23,8 @@ export class HiveMindSessionManager {
 
     // Initialize database connection
     this.initializeDatabase();
-  }
+  //   }
+
 
   /**
    * Initialize database with fallback support;
@@ -43,7 +44,8 @@ export class HiveMindSessionManager {
     } catch (/* _error */)
       console.error('Failed to create SQLitedatabase = === null && !this.isInMemory) {
 // await this.initializeDatabase();
-  }
+  //   }
+
 
   /**
    * Initialize in-memory fallback for session storage;
@@ -57,14 +59,15 @@ export class HiveMindSessionManager {
       if(!hasParentPid) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN parent_pid INTEGER');
         console.warn('Added parent_pid column to sessions table');
-      }
+      //       }
+
 
       if(!hasChildPids) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN child_pids TEXT');
         console.warn('Added child_pids column to sessions table');
-      }
+      //       }
     } catch (/* _error */) {
-      console.error('Migration error = {}): unknown {
+      console.error('Migration error = {}) {
 // await this.ensureInitialized();
     const _sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
@@ -76,7 +79,8 @@ export class HiveMindSessionManager {
       `);
 
       stmt.run(sessionId, swarmId, swarmName, objective, JSON.stringify(metadata), process.pid);
-    }
+    //     }
+
 
     // Log session creation
 // await this.logSessionEvent(sessionId, 'info', 'Session created', null, {
@@ -89,7 +93,7 @@ export class HiveMindSessionManager {
       if(session) {
         session.checkpoint_data = JSON.stringify(checkpointData);
         session.updated_at = new Date().toISOString();
-      }
+      //       }
     } else {
       // Save to database
       const _stmt = this.db.prepare(`;
@@ -107,7 +111,8 @@ export class HiveMindSessionManager {
       `);
 
       updateStmt.run(JSON.stringify(checkpointData), sessionId);
-    }
+    //     }
+
 
     // Save checkpoint file for backup
     const _checkpointFile = path.join(this.sessionsDir, `${sessionId}-${checkpointName}.json`);
@@ -148,10 +153,7 @@ export class HiveMindSessionManager {
       // Return simplified session data for in-memory mode
       return {
 ..session,metadata = this.db;
-    // .prepare(; // LINT: unreachable code removed
-        `;
-      SELECT * FROM sessions WHERE id = ?;
-    `);
+    // .prepare(; // LINT);
 get(sessionId);
 
     if(!session) {
@@ -208,7 +210,8 @@ all(sessionId);
 ..cp,checkpoint_data = > a.status === 'active'  ?? a.status === 'busy').length,totalTasks = > t.status === 'completed').length,pendingTasks = > t.status === 'pending').length,inProgressTasks = > t.status === 'in_progress').length,completionPercentage = > t.status === 'completed').length / tasks.length) * 100,
     // ); // LINT: unreachable code removed
             } };
-  }
+  //   }
+
 
   /**
    * Pause a session;
@@ -244,8 +247,9 @@ all(sessionId);
           this.db;
 prepare('UPDATE swarms SET status = ? WHERE id = ?');
 run('paused', session.swarm_id);
-        }
-      }
+        //         }
+      //       }
+
 
       return result.changes > 0;
     //   // LINT: unreachable code removed}
@@ -253,12 +257,13 @@ run('paused', session.swarm_id);
   /**
    * Resume any previous session (paused, stopped, or inactive);
    */;
-  async resumeSession(sessionId): unknown {
+  async resumeSession(sessionId) {
     const _session = this.getSession(sessionId);
 
     if(!session) {
       throw new Error(`Session ${sessionId} not found`);
-    }
+    //     }
+
 
     // Allow resuming any session regardless of status
     console.warn(`Resuming session ${sessionId} fromstatus = === 'stopped') {
@@ -266,7 +271,8 @@ run('paused', session.swarm_id);
         sessionId,
         'info',
         `Restarting stopped session with original configuration`);
-    }
+    //     }
+
 
     // Update session status
     const _stmt = this.db.prepare(`;
@@ -310,8 +316,9 @@ run(session.swarm_id);
         this.db;
 prepare('UPDATE swarms SET status = ? WHERE id = ?');
 run('completed', session.swarm_id);
-      }
-    }
+      //       }
+    //     }
+
 
     return result.changes > 0;
     //   // LINT: unreachable code removed}
@@ -319,7 +326,7 @@ run('completed', session.swarm_id);
   /**
    * Archive old sessions;
    */;
-  async archiveSessions(daysOld = 30): unknown {
+  async archiveSessions(daysOld = 30) {
     const _cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
@@ -340,7 +347,8 @@ all(cutoffDate.toISOString());
       this.db.prepare('DELETE FROM session_logs WHERE session_id = ?').run(session.id);
       this.db.prepare('DELETE FROM session_checkpoints WHERE session_id = ?').run(session.id);
       this.db.prepare('DELETE FROM sessions WHERE id = ?').run(session.id);
-    }
+    //     }
+
 
     return sessionsToArchive.length;
     //   // LINT: unreachable code removed}
@@ -354,12 +362,13 @@ all(cutoffDate.toISOString());
       // Use in-memory storage for logs
 
       stmt.run(sessionId, logLevel, message, agentId, data ? JSON.stringify(data) : null);
-    }
+    //     }
+
 
   /**
    * Get session logs;
    */;
-  getSessionLogs(sessionId, limit = 100, offset = 0): unknown {
+  getSessionLogs(sessionId, limit = 100, offset = 0) {
     const _stmt = this.db.prepare(`;
       SELECT * FROM session_logs ;
       WHERE session_id = ? ;
@@ -374,7 +383,7 @@ all(cutoffDate.toISOString());
     // if(session) { // LINT: unreachable code removed
         session.completion_percentage = completionPercentage;
         session.updated_at = new Date().toISOString();
-      }
+      //       }
     } else {
       // Use SQLite
       const _stmt = this.db.prepare(`;
@@ -384,13 +393,14 @@ all(cutoffDate.toISOString());
       `);
 
       stmt.run(completionPercentage, sessionId);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Generate session summary;
    */;
-  generateSessionSummary(sessionId): unknown {
+  generateSessionSummary(sessionId) {
     let _session = this.getSession(sessionId);
 
     if(!session) {
@@ -405,12 +415,13 @@ all(cutoffDate.toISOString());
       return acc;
     //   // LINT: unreachable code removed});
 
-    return {sessionId = null): unknown {
+    return {sessionId = null) {
     const _session = this.getSession(sessionId);
     // ; // LINT: unreachable code removed
     if(!session) {
       throw new Error(`Session ${sessionId} not found`);
-    }
+    //     }
+
 
     const _exportFile = exportPath  ?? path.join(this.sessionsDir, `${sessionId}-export.json`);
 // await writeFile(exportFile, JSON.stringify(session, null, 2));
@@ -420,7 +431,7 @@ all(cutoffDate.toISOString());
   /**
    * Import session data;
    */;
-  async importSession(importPath): unknown {
+  async importSession(importPath) {
     const _sessionData = JSON.parse(await readFile(importPath, 'utf8'));
 
     // Create new session with imported data
@@ -436,7 +447,8 @@ all(cutoffDate.toISOString());
         newSessionId,
         checkpoint.checkpoint_name,
         checkpoint.checkpoint_data);
-    }
+    //     }
+
 
     // Import logs
     for(const log of sessionData.recentLogs  ?? []) {
@@ -446,7 +458,8 @@ all(cutoffDate.toISOString());
         log.message,
         log.agent_id,
         log.data ? JSON.parse(log.data) : null);
-    }
+    //     }
+
 
     return newSessionId;
     //   // LINT: unreachable code removed}
@@ -454,14 +467,15 @@ all(cutoffDate.toISOString());
   /**
    * Add a child process PID to session;
    */;
-  addChildPid(sessionId, pid): unknown {
+  addChildPid(sessionId, pid) {
     const _session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
     if (!session) return false;
     // ; // LINT: unreachable code removed
     const _childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
     if (!childPids.includes(pid)) {
       childPids.push(pid);
-    }
+    //     }
+
 
     const _stmt = this.db.prepare(`;
       UPDATE sessions ;
@@ -478,7 +492,7 @@ all(cutoffDate.toISOString());
   /**
    * Remove a child process PID from session;
    */;
-  removeChildPid(sessionId, pid): unknown {
+  removeChildPid(sessionId, pid) {
     const _session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
     if (!session) return false;
     // ; // LINT: unreachable code removed
@@ -486,7 +500,8 @@ all(cutoffDate.toISOString());
     const _index = childPids.indexOf(pid);
     if(index > -1) {
       childPids.splice(index, 1);
-    }
+    //     }
+
 
     const _stmt = this.db.prepare(`;
       UPDATE sessions ;
@@ -515,16 +530,18 @@ all(cutoffDate.toISOString());
       const _session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
       if (!session  ?? !session.child_pids) return [];
     // return JSON.parse(session.child_pids); // LINT: unreachable code removed
-    }
+    //     }
+
 
   /**
    * Stop a session and terminate all child processes;
    */;
-  async stopSession(sessionId): unknown {
+  async stopSession(sessionId) {
 // const _session = awaitthis.getSession(sessionId);
     if(!session) {
       throw new Error(`Session ${sessionId} not found`);
-    }
+    //     }
+
 
     // Get child PIDs
 // const _childPids = awaitthis.getChildPids(sessionId);
@@ -541,7 +558,7 @@ all(cutoffDate.toISOString());
       if(sessionData) {
         sessionData.status = 'stopped';
         sessionData.updated_at = new Date().toISOString();
-      }
+      //       }
     } else {
       // Use SQLite
       const _stmt = this.db.prepare(`;
@@ -554,7 +571,7 @@ all(cutoffDate.toISOString());
 
       // Update swarm status
       this.db.prepare('UPDATE swarms SET status = ? WHERE id = ?').run('stopped', session.swarm_id);
-    }
+    //     }
 // await this.logSessionEvent(sessionId, 'info', 'Session stopped');
     return true;
     //   // LINT: unreachable code removed}
@@ -577,15 +594,13 @@ all(cutoffDate.toISOString());
           aliveChildPids.push(pid);
         } catch (/* _err */) {
           // Process is dead
-        }
-      }
+        //         }
+      //       }
+
 
       return {
 ..session,parent_pid = this.db;
-    // .prepare(; // LINT: unreachable code removed
-        `;
-      SELECT * FROM sessions ;
-      WHERE status IN ('active', 'paused');
+    // .prepare(; // LINT);
     `);
 all();
 
@@ -600,8 +615,9 @@ all();
         this.stopSession(session.id);
         cleanedCount++;
         this.logSessionEvent(session.id, 'info', 'Orphaned session cleaned up');
-      }
-    }
+      //       }
+    //     }
+
 
     return cleanedCount;
     //   // LINT: unreachable code removed}
@@ -612,8 +628,9 @@ all();
   close()
     if(this._db && !this._isInMemory) {
       this.db.close();
-    }
-}
+    //     }
+// }
+
 
 // Export for use in other modules
 export default HiveMindSessionManager;

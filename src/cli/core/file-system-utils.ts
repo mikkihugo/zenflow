@@ -16,7 +16,7 @@ export interface DirectoryListingOptions {
   directoriesOnly?: boolean;
   pattern?: string;
   recursive?: boolean;
-}
+// }
 /**
  * File stats interface;
  */
@@ -26,7 +26,7 @@ export interface FileStats {size = BufferEncoding | 'binary'
  * @param dirPath - Directory path to ensure;
  * @returns Promise resolving to true if successful;
     // */ // LINT: unreachable code removed
-export async function ensureDirectoryExists(dirPath = 'utf8': unknown): Promise<string | Buffer> {
+export async function ensureDirectoryExists(dirPath = 'utf8'): Promise<string | Buffer> {
   try {
 // const _content = awaitfs.readFile(filePath
 , encoding)
@@ -49,16 +49,18 @@ logger.debug(`File copied = {}
     // Filter by type
     if (options.filesOnly) {
       filteredEntries = filteredEntries.filter(entry => entry.isFile());
-    }
+    //     }
     if (options.directoriesOnly) {
       filteredEntries = filteredEntries.filter(entry => entry.isDirectory());
-    }
+    //     }
+
 
     // Filter by pattern
     if (options.pattern) {
       const _regex = new RegExp(options.pattern);
       filteredEntries = filteredEntries.filter(entry => regex.test(entry.name));
-    }
+    //     }
+
 
     return {
       size = {}): Promise<boolean> {
@@ -69,17 +71,17 @@ logger.debug(`File copied = {}
 // await fs.rmdir(targetPath, {recursive = === 'ENOENT' && options.ignoreNotFound) {
       logger.debug(`Path not found (ignored): ${targetPath}`);
 return true;
-}
-throw new CliError(`Failed to remove '${targetPath}': ${error.message}`);
-}
-}
+// }
+throw new CliError(`Failed to remove '${targetPath}');
+// }
+// }
 /**
  * Move/rename file or directory;
  * @param sourcePath - Source path;
  * @param destinationPath - Destination path;
  * @returns Promise resolving to true if successful;
     // */ // LINT: unreachable code removed
-export async function movePathSecurely(sourcePath = path.dirname(destinationPath: unknown);
+export async function movePathSecurely(sourcePath = path.dirname(destinationPath);
 // await ensureDirectoryExists(destDir);
 // await fs.rename(sourcePath, destinationPath);
 logger.debug(`Pathmoved = await fs.stat(filePath);
@@ -87,26 +89,28 @@ logger.debug(`Pathmoved = await fs.stat(filePath);
     //   // LINT: unreachable code removed} catch {
     return false;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Check if path is a directory;
  * @param dirPath - Path to check;
  * @returns Promise resolving to true if path is a directory;
     // */; // LINT: unreachable code removed
-export async function isDirectory(dirPath = await fs.stat(dirPath: unknown);
+export async function isDirectory(dirPath = await fs.stat(dirPath);
     return stats.isDirectory();
     //   // LINT: unreachable code removed} catch {
     return false;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Get file size in bytes;
  * @param filePath - File path;
  * @returns Promise resolving to file size in bytes;
     // */; // LINT: unreachable code removed
-export async function getFileSize(filePath = await fs.stat(filePath: unknown);
+export async function getFileSize(filePath = await fs.stat(filePath);
     return stats.size;
     //   // LINT: unreachable code removed} catch (error = any>(filePath): Promise<T> {
   try {
@@ -126,12 +130,13 @@ export async function getFileSize(filePath = await fs.stat(filePath: unknown);
 // await writeFileSecurely(tempPath, '', 'utf8');
   logger.debug(`Temporary filecreated = 'temp');
 : Promise<string>
-{
+// {
   const _tmpDir = process.env.TMPDIR ?? process.env.TMP ?? '/tmp';
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substring(2);
   const _tempPath = path.join(tmpDir, `${prefix}-${timestamp}-${random}`);
 // await ensureDirectoryExists(tempPath);
-  logger.debug(`Temporary directory created: ${tempPath}`);
+  logger.debug(`Temporary directory created);
   return tempPath;
-}
+// }
+

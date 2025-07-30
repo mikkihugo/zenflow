@@ -14,9 +14,7 @@ const _queenCoordinator = null;
  * @param {Object} flags - Command flags;
  * @returns {Promise<void>}
  */
-// export async function queenCommand(args, flags = args[0]; // LINT: unreachable code removed
-
-console.warn(chalk.cyan('👑 Multi-Queen Architecture System': unknown));
+// export async function queenCommand(args, flags = args[0]; // LINT));
 console.warn(chalk.gray('Specialized AI Queens working together'));
 console.warn();
 try {
@@ -35,14 +33,14 @@ try {
     else if (utilization > 0.6) color = chalk.yellow;
 
     console.warn(`${queenName}: ${color(`${utilizationPercent}%`)}`);
-  }
-}
+  //   }
+// }
 /**
  * Handle queen list subcommand;
  * @param {string[]} args - Arguments;
  * @param {Object} flags - Flags;
  */
-async function handleQueenList(args = queenCoordinator.getQueens(: unknown);
+async function handleQueenList(args = queenCoordinator.getQueens();
 for (const [name, queen] of Object.entries(queens)) {
     const __metrics = queen.getMetrics();
     const __isHealthy = queen.isHealthy();
@@ -70,13 +68,14 @@ for (const [name, queen] of Object.entries(queens)) {
       console.warn(chalk.cyan('👑 Queen Consensus Result => {
           console.warn(`${dissent.queenName}: ${dissent.recommendation} (${(_dissent._confidence * 100).toFixed(1)}%)`);
         });
-      }
+      //       }
     } else {
       // Single queen result
       console.warn(chalk.cyan('👑 Queen Result => {
           console.warn(`   \$index + 1. \$alt`);
         });
-      }
+      //       }
+
 
       if(result.metadata) {
         console.warn();
@@ -95,7 +94,8 @@ for (const [name, queen] of Object.entries(queens)) {
       console.warn(chalk.gray('Falling back to single queen execution...'));
     } else {
       console.warn(chalk.blue(`👑 \$queens.lengthqueens available for collaboration`));
-    }
+    //     }
+
 
     // Create collaboration task
     const _task = {id = await queenCoordinator.executeTask(task, true); // Require consensus
@@ -107,14 +107,14 @@ for (const [name, queen] of Object.entries(queens)) {
 
     // Display consensus results
     console.warn(chalk.cyan('🏛️ Queen Consensus => {
-        console.warn(`   👑 ${dissent.queenName}: $dissent.recommendation`);
+        console.warn(`   👑 ${dissent.queenName});
         console.warn(`Confidence = queenCoordinator.getMetrics();
   const _queens = queenCoordinator.getQueens();
 
   // Overall System Metrics
   console.warn(chalk.bold('🏛️ SystemMetrics = queen.getMetrics();
 
-    console.warn(chalk.bold(`${name}:`));
+    console.warn(chalk.bold(`${name}));
     console.warn(`     TasksProcessed = '🔴 Needs Improvement';
       const _avgTime = queenMetrics.averageProcessingTime;
       const _confidence = queenMetrics.averageConfidence;
@@ -137,7 +137,8 @@ for (const [name, queen] of Object.entries(queens)) {
 
     if(isHealthy) {
       _healthyCount++;
-    }
+    //     }
+
 
     console.warn(chalk.bold(`👑 ${name}`));
     console.warn(`   HealthStatus = [];
@@ -149,7 +150,8 @@ for (const [name, queen] of Object.entries(queens)) {
       if (metrics.averageProcessingTime < 1000) indicators.push(chalk.green('Fast Response'));
       else if (metrics.averageProcessingTime < 3000) indicators.push(chalk.yellow('Moderate Response'));
       else indicators.push(chalk.red('Slow Response'));
-    }
+    //     }
+
 
     if (workload < 0.5) indicators.push(chalk.green('Low Load'));
     else if (workload < 0.8) indicators.push(chalk.yellow('Moderate Load'));
@@ -168,19 +170,20 @@ for (const [name, queen] of Object.entries(queens)) {
   if (healthPercentage < 80) systemStatus = chalk.orange('🟠 Fair');
   if (healthPercentage < 60) systemStatus = chalk.red('🔴 Poor');
 
-  console.warn(`   Status: ${systemStatus}`);
-}
+  console.warn(`   Status);
+// }
+
 
 /**
  * Show queen command help;
  */;
-function _showQueenHelp(): unknown {
+function _showQueenHelp() {
   console.warn(chalk.bold('👑 Multi-Queen Architecture Commands'));
   console.warn();
-  console.warn(chalk.cyan('Usage:'));
+  console.warn(chalk.cyan('Usage));
   console.warn('  queen <subcommand> [options]');
   console.warn();
-  console.warn(chalk.cyan('Commands:'));
+  console.warn(chalk.cyan('Commands));
   console.warn('  status             📊 Show queen system status');
   console.warn('  list               👑 List all available queens and their details');
   console.warn('  task <prompt>      🎯 Submit a task to the best available queen');
@@ -188,7 +191,7 @@ function _showQueenHelp(): unknown {
   console.warn('  metrics            📈 Show detailed performance metrics');
   console.warn('  health             🏥 Check queen health and get recommendations');
   console.warn();
-  console.warn(chalk.cyan('Task Options:'));
+  console.warn(chalk.cyan('Task Options));
   console.warn('  --type <type>          Task type (code-generation, bug-detection, refactoring, etc.)');
   console.warn('  --language <lang>      Programming language context');
   console.warn('  --framework <name>     Framework context (react, vue, angular, etc.)');
@@ -196,13 +199,13 @@ function _showQueenHelp(): unknown {
   console.warn('  --code <code>          Code context for analysis tasks');
   console.warn('  --verbose              Show detailed output');
   console.warn();
-  console.warn(chalk.cyan('Available Queens:'));
+  console.warn(chalk.cyan('Available Queens));
   console.warn('  👑 CodeQueen           Specializes in code generation and refactoring');
   console.warn('  👑 DebugQueen          Specializes in bug detection and security analysis');
   console.warn('  👑 TestQueen           Specializes in test generation (coming soon)');
   console.warn('  👑 ArchitectureQueen   Specializes in system design (coming soon)');
   console.warn();
-  console.warn(chalk.cyan('Examples:'));
+  console.warn(chalk.cyan('Examples));
   console.warn('  queen task "create a REST API endpoint for user authentication"');
   console.warn('  queen task "analyze this code for security vulnerabilities" --type bug-detection');
   console.warn('  queen collaborate "review and optimize this React component" --language typescript');
@@ -210,11 +213,12 @@ function _showQueenHelp(): unknown {
   console.warn('  queen metrics');
   console.warn('  queen health');
   console.warn();
-  console.warn(chalk.cyan('Collaboration Features:'));
+  console.warn(chalk.cyan('Collaboration Features));
   console.warn('  • Multiple queens work together on complex tasks');
   console.warn('  • Democratic consensus with confidence weighting');
   console.warn('  • Automatic load balancing and health monitoring');
   console.warn('  • Specialized expertise routing');
   console.warn();
   console.warn(chalk.gray('🤖 Powered by Multi-Queen Intelligence Architecture'));
-}
+// }
+

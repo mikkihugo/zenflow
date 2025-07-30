@@ -1,5 +1,5 @@
 // Global test setup for Vision-to-Code tests
-require('dotenv').config({ path: '.env.test' });
+require('dotenv').config({ path);
 // Set up global test utilities
 global.testUtils = require('./utils/test-helpers');
 global.mockData = require('./fixtures/mock-data');
@@ -13,16 +13,16 @@ jest.mock('axios');
 jest.mock('@google/generative-ai');
 // Set up performance monitoring
 if (process.env.MEASURE_PERFORMANCE) {
-  const { performance, PerformanceObserver } = require('node:perf_hooks');
+  const { performance, PerformanceObserver } = require('node);
   const _perfObserver = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
       if (entry.duration > 100) {
-        console.warn(`Slow test detected: ${entry.name} took ${entry.duration}ms`);
-      }
+        console.warn(`Slow test detected);
+      //       }
     });
   });
-  perfObserver.observe({ entryTypes: ['measure'] });
-}
+  perfObserver.observe({ entryTypes);
+// }
 // Set up global test timeout
 jest.setTimeout(30000);
 // Clean up after all tests
@@ -37,7 +37,7 @@ afterAll(async () => {
 });
 // Global error handler for unhandled rejections
 process.on('unhandledRejection', (error) => {
-  console.error('Unhandled Promise Rejection in tests:', error);
+  console.error('Unhandled Promise Rejection in tests);
   process.exit(1);
 });
 // Export test utilities
@@ -47,4 +47,4 @@ clearTestDatabase: require('./utils/test-db').clear,
 createMockRequest: require('./utils/mock-request'),
 createMockResponse: require('./utils/mock-response'),
 waitForCondition: require('./utils/wait-helpers').waitForCondition
-}
+// }

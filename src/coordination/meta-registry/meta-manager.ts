@@ -9,7 +9,7 @@ import { nanoid } from 'nanoid';
 import MetaRegistry from './index.js';
 
 export class MetaRegistryManager extends EventEmitter {
-  constructor(_options = {}): unknown {
+  constructor(_options = {}) {
     super();
     this.options = {maxRegistries = new Map();
     this.activeRegistry = null;
@@ -20,7 +20,7 @@ export class MetaRegistryManager extends EventEmitter {
     this.healthMonitor = null;
     this.id = nanoid();
     this.state = 'initialized';
-  }
+  //   }
   /**
    * Initialize the meta registry manager;
    */
@@ -33,33 +33,33 @@ export class MetaRegistryManager extends EventEmitter {
     // Start synchronization services
     this.startSynchronization();
     this.state = 'ready';
-    this.emit('ready', { id = {}): unknown {
+    this.emit('ready', { id = {}) {
     if (this._registries._has(_name)) {
       throw new Error(`Registry '${name}' already exists`);
-  }
+  //   }
   if(this._registries._size >= this._options._maxRegistries) {
       throw new Error(`Maximum number of registries (${this.options.maxRegistries}) reached`);
-    }
+    //     }
   const;
   registry = new MetaRegistry(backend, {
       name,managerId = name;
-}
+// }
 // Setup federation if configured
 if (options.federation) {
 // await this.setupFederation(name, options.federation);
-}
+// }
 this.emit('registryCreated', { name, registry });
 return registry;
-}
+// }
 /**
  * Remove a meta registry;
  */
-async
+// async
 removeRegistry(name, options =
-{
-}
+// {
+// }
 ): unknown
-{
+// {
   const _registryInfo = this.registries.get(name);
   if (!registryInfo) {
     return false;
@@ -67,13 +67,13 @@ removeRegistry(name, options =
     // Drain connections if graceful shutdown
     if (options.graceful) {
 // await this.drainRegistry(name);
-    }
+    //     }
     // Remove from federations
     for (const [fedId, federation] of this.federations.entries()) {
       if (federation.registries.includes(name)) {
 // await this.removeFederationMember(fedId, name);
-      }
-    }
+      //       }
+    //     }
     // Close registry
 // await registryInfo.registry.close();
     // Remove from collection
@@ -81,19 +81,19 @@ removeRegistry(name, options =
     // Update active registry if needed
     if (this.activeRegistry === name) {
       this.activeRegistry = this.registries.size > 0 ? Array.from(this.registries.keys())[0] : null;
-    }
+    //     }
     this.emit('registryRemoved', { name, registryInfo });
     return true;
-  }
+  //   }
   /**
    * Get registry by name;
    */
   getRegistry(name);
   : unknown
-  {
+  //   {
     const _registryInfo = this.registries.get(name);
     return registryInfo?.registry  ?? null;
-  }
+  //   }
   /**
    * Get the best available registry using load balancing;
    */
@@ -106,102 +106,104 @@ removeRegistry(name, options =
   async;
   createFederation(federationId, registryNames, (options = {}));
   : unknown
-  {
+  //   {
     if (this.federations.has(federationId)) {
       throw new Error(`Federation '${federationId}' already exists`);
-    }
+    //     }
     // Validate all registries exist
     for (const name of registryNames) {
       if (!this.registries.has(name)) {
         throw new Error(`Registry '${name}' not found`);
-      }
-    }
+      //       }
+    //     }
     const _federation = new RegistryFederation(federationId, this, {registries = = false,
 ..options
-  }
-  )
+  //   }
+  //   )
 // await federation.initialize()
   this.federations.set(federationId, federation)
   this.emit('federationCreated', federationId, federation )
   return federation;
-}
+// }
 /**
  * Setup registry federation;
  */
 async;
 setupFederation(registryName, federationConfig);
 : unknown
-{
+// {
   const { federationId, peers = [], role = 'member' } = federationConfig;
   // Create or join federation
   if (!this.federations.has(federationId)) {
 // await this.createFederation(federationId, [registryName], { role });
   } else {
 // await this.addFederationMember(federationId, registryName);
-  }
+  //   }
   // Setup peer connections
   for (const peer of peers) {
 // await this.connectFederationPeer(federationId, peer);
-  }
-}
+  //   }
+// }
 /**
  * Add member to federation;
  */
 async;
 addFederationMember(federationId, registryName);
 : unknown
-{
+// {
   const _federation = this.federations.get(federationId);
   if (!federation) {
     throw new Error(`Federation '${federationId}' not found`);
-  }
+  //   }
 // await federation.addMember(registryName);
-}
+// }
 /**
  * Remove member from federation;
  */
 async;
 removeFederationMember(federationId, registryName);
 : unknown
-{
+// {
   const _federation = this.federations.get(federationId);
   if (!federation) {
     return false;
     //   // LINT: unreachable code removed}
 // await federation.removeMember(registryName);
     return true;
-  }
+  //   }
   /**
    * Create topology management;
    */
   async;
   createTopology(topologyId, type, registries, (options = {}));
   : unknown
-  {
+  //   {
     if (this.topologies.has(topologyId)) {
       throw new Error(`Topology '${topologyId}' already exists`);
-    }
+    //     }
     const _topology = new RegistryTopology(topologyId, this, {
     type, // mesh, hierarchical, ring, star, etc.
     registries,
 ..options }
-  )
+  //   )
 // await topology.initialize()
   this.topologies.set(topologyId, topology)
   this.emit('topologyCreated', topologyId, topology )
   return topology;
-}
+// }
 /**
  * Coordinate cross-registry operations;
  */
 async;
 coordinateOperation(operation, (targets = []), (options = {}));
 : unknown
-{
+// {
+
 
     if(!source) {
       throw new Error(`Source registry '${sourceRegistry}' not found`);
-    }
+    //     }
+
 
     // Discover data to replicate
 // const _data = awaitsource.discover(query, options.discoveryOptions);
@@ -212,7 +214,8 @@ coordinateOperation(operation, (targets = []), (options = {}));
         const _target = this.getRegistry(targetName);
         if(!target) {
           throw new Error(`Target registry '${targetName}' not found`);
-        }
+        //         }
+
 
         return {registry = > r.status === 'fulfilled').length,failed = > r.status === 'rejected').length;
     //   // LINT: unreachable code removed};
@@ -228,13 +231,15 @@ coordinateOperation(operation, (targets = []), (options = {}));
 // const _health = awaitregistryInfo.registry.status();
         healthResults.set(name, {status = 'error';
         registryInfo.stats.errors++;
-      }
-    }
+      //       }
+    //     }
+
 
     // Handle failover if needed
     if(this.options.failoverEnabled) {
 // await this.handleFailover(healthResults);
-    }
+    //     }
+
 
     this.emit('healthCheck', {results = healthResults.get(this.activeRegistry);
 
@@ -248,7 +253,8 @@ coordinateOperation(operation, (targets = []), (options = {}));
           this.emit('failover', {from = setInterval(() => {
       this.performHealthCheck();
     }, this.options.healthCheckInterval);
-  }
+  //   }
+
 
   /**
    * Start synchronization services;
@@ -264,7 +270,8 @@ coordinateOperation(operation, (targets = []), (options = {}));
   async synchronizeFederations() ;
     for (const federation of this.federations.values()) {
 // await federation.synchronize();
-    }
+    //     }
+
 
   /**
    * Setup registry event handlers;
@@ -290,7 +297,8 @@ coordinateOperation(operation, (targets = []), (options = {}));
    */;
   async getStats() {
     const _stats = {manager = (stats.registries.byStatus[info.status]  ?? 0) + 1;
-    }
+    //     }
+
 
     // Individual registry stats
     stats.registryDetails = {};
@@ -303,30 +311,35 @@ coordinateOperation(operation, (targets = []), (options = {}));
     // Clear intervals
     if(this.healthMonitor) {
       clearInterval(this.healthMonitor);
-    }
+    //     }
     if(this.syncInterval) {
       clearInterval(this.syncInterval);
-    }
+    //     }
+
 
     // Close federations
     for (const federation of this.federations.values()) {
 // await federation.close();
-    }
+    //     }
+
 
     // Close topologies
     for (const topology of this.topologies.values()) {
 // await topology.close();
-    }
+    //     }
+
 
     // Close all registries
     for (const [name] of this.registries.entries()) {
 // await this.removeRegistry(name);
-    }
+    //     }
+
 
     this.state = 'closed';
     this.emit('closed');
-  }
-}
+  //   }
+// }
+
 
 /**
  * Registry Load Balancer;
@@ -336,16 +349,18 @@ class RegistryLoadBalancer {
   constructor(manager = manager;
     this.roundRobinIndex = 0;
     this.stats = new Map();
-  }
+  //   }
 
-  selectRegistry(criteria = {}): unknown {
+
+  selectRegistry(criteria = {}) {
     const _availableRegistries = Array.from(this.manager.registries.entries());
 filter(([name, info]) => info.status === 'active');
 map(([name, info]) => (name, ...info ));
 
     if(availableRegistries.length === 0) {
       throw new Error('No healthy registries available');
-    }
+    //     }
+
 
     switch(this.manager.options.loadBalancing) {
       case 'round-robin':;
@@ -360,29 +375,30 @@ map(([name, info]) => (name, ...info ));
     return selected.registry;
     //   // LINT: unreachable code removed}
 
-  leastConnections(registries): unknown {
+  leastConnections(registries) {
     // Simplified - in real implementation would track actual connections
     const _selected = registries.reduce((_min, _current) => ;
       current.stats.requests < min.stats.requests ? current = {}): unknown ;
     // Implementation would use weighted selection based on provided weights
     return registries[0].registry;
     // ; // LINT: unreachable code removed
-  performance(registries): unknown {
+  performance(registries) {
     // Select based on performance metrics
     const _selected = registries.reduce((best, current) => {
       const _currentScore = this.calculatePerformanceScore(current);
       const _bestScore = this.calculatePerformanceScore(best);
       return currentScore > bestScore ?current = registryInfo.stats.errors / (registryInfo.stats.requests  ?? 1);
     // return 1 - errorRate; // LINT: unreachable code removed
-  }
-}
+  //   }
+// }
+
 
 /**
  * Registry Federation;
  * Manages distributed coordination across multiple registries;
  */;
 class RegistryFederation extends EventEmitter {
-  constructor(id = {}): unknown {
+  constructor(id = {}) {
     super();
     this.id = id;
     this.manager = manager;
@@ -390,27 +406,31 @@ class RegistryFederation extends EventEmitter {
     this.members = new Set(options.registries  ?? []);
     this.syncState = new Map();
     this.conflictResolver = new ConflictResolver(options.conflictResolution);
-  }
+  //   }
+
 
   async initialize() {
     // Setup federation coordination
     this.emit('initialized');
-  }
+  //   }
 
-  async addMember(registryName): unknown {
+
+  async addMember(registryName) {
     this.members.add(registryName);
-    this.emit('memberAdded', { registry = {}): unknown {
+    this.emit('memberAdded', { registry = {}) {
     super();
     this.id = id;
     this.manager = manager;
     this.options = options;
     this.connections = new Map();
-  }
+  //   }
+
 
   async initialize() {
 // await this.buildTopology();
     this.emit('initialized');
-  }
+  //   }
+
 
   async buildTopology() {
     // Implementation would create topology-specific connections
@@ -427,8 +447,9 @@ class RegistryFederation extends EventEmitter {
       case 'star':;
 // await this.buildStarTopology();
         break;
-    }
-  }
+    //     }
+  //   }
+
 
   async buildMeshTopology() {
     // Connect every registry to every other registry
@@ -436,29 +457,34 @@ class RegistryFederation extends EventEmitter {
     for(let i = 0; i < registries.length; i++) {
       for(let j = i + 1; j < registries.length; j++) {
 // await this.createConnection(registries[i], registries[j]);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   async buildHierarchicalTopology() {
     // Implementation for hierarchical connections
-  }
+  //   }
+
 
   async buildRingTopology() {
     // Implementation for ring connections
-  }
+  //   }
+
 
   async buildStarTopology() {
     // Implementation for star connections
-  }
+  //   }
 
-  async createConnection(registry1, registry2): unknown {
+
+  async createConnection(registry1, registry2) {
     const _connectionId = `${registry1}-${registry2}`;
     this.connections.set(connectionId, {
-      id = {}): unknown {
+      id = {}) {
     this.manager = manager;
     this.options = options;
-  }
+  //   }
+
 
   async execute() {
     const { operation, targets, strategy, timeout } = this.options;
@@ -477,18 +503,20 @@ class RegistryFederation extends EventEmitter {
         const _registry = this.manager.getRegistry(target);
         if(!registry) {
           throw new Error(`Registry '${target}' not found`);
-        }
+        //         }
 // const _result = awaitthis.executeOnRegistry(registry, this.options.operation);
         results.set(target, result);
 
         // Store rollback action
         rollbackActions.push(() => this.rollbackOperation(registry, result));
-      }
+      //       }
+
 
       return {status = > action()));
     // throw error; // LINT: unreachable code removed
-    }
-  }
+    //     }
+  //   }
+
 
   async executeBestEffort() {
     // Execute on all, return partial success
@@ -501,7 +529,8 @@ class RegistryFederation extends EventEmitter {
 
     return {status = > r.status === 'fulfilled').length,failed = > r.status === 'rejected').length;
     //   // LINT: unreachable code removed};
-  }
+  //   }
+
 
   async executeQuorum() {
     // Require majority success
@@ -509,7 +538,7 @@ class RegistryFederation extends EventEmitter {
     const _quorumSize = Math.floor(this.options.targets.length / 2) + 1;
 
     if(results.successful >= quorumSize) {
-      return { ...results,status = 'last-write-wins'): unknown {
+      return { ...results,status = 'last-write-wins') {
     this.strategy = strategy;
     //   // LINT: unreachable code removed}
 
@@ -524,7 +553,8 @@ class RegistryFederation extends EventEmitter {
       current.timestamp > latest.timestamp ?current = > ;
       current.timestamp < earliest.timestamp ? current : earliest;
     );
-  }
+  //   }
+
 
   mergeConflicts(conflicts): unknown ;
     // Merge strategy would combine data from all conflicts

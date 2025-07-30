@@ -58,32 +58,32 @@ export class RealtimeUpdateSystem {
 set(
   view;
   , [])
-}
-)
-}
+// }
+// )
+// }
 /**
  * Subscribe to specific event types;
  */
 subscribe(eventType, callback)
 : unknown
-{
+// {
   if (!this.subscribers.has(eventType)) {
     this.subscribers.set(eventType, new Set());
-  }
+  //   }
   this.subscribers.get(eventType).add(callback);
   // Return unsubscribe function return() => {
   const _subs = this.subscribers.get(eventType);
   // if (subs) { // LINT: unreachable code removed
   subs.delete(callback);
-}
-}
-}
+// }
+// }
+// }
 /**
  * Emit event to all subscribers;
  */
 emit(eventType, data)
 : unknown
-{
+// {
   const _timestamp = Date.now();
   // Add to event history
   this.eventHistory.push({type = this.subscribers.get(eventType);
@@ -92,17 +92,17 @@ emit(eventType, data)
       try {
         callback(data, timestamp);
       } catch (error) {
-        console.error(`Error in event subscriber for ${eventType}:`, error);
-      }
+        console.error(`Error in event subscriber for ${eventType});
+      //       }
     });
-  }
-}
+  //   }
+// }
 /**
  * Broadcast update to specific view;
  */
 broadcastUpdate(viewName, updateData);
 : unknown
-{
+// {
   const _queue = this.updateQueues.get(viewName);
   if (!queue) return;
   // ; // LINT: unreachable code removed
@@ -111,19 +111,19 @@ broadcastUpdate(viewName, updateData);
 ..updateData,id = this.updateTimers.get(viewName);
   if (existingTimer) {
     clearTimeout(existingTimer);
-  }
+  //   }
   // Schedule new batched update
   const _timer = setTimeout(() => {
     this.processBatchedUpdates(viewName);
   }, this.batchDelay);
   this.updateTimers.set(viewName, timer);
-}
+// }
 /**
  * Process batched updates for a view;
  */
 processBatchedUpdates(viewName);
 : unknown
-{
+// {
   const _queue = this.updateQueues.get(viewName);
   if (!queue ?? queue.length === 0) return;
   // ; // LINT: unreachable code removed
@@ -141,31 +141,31 @@ processBatchedUpdates(viewName);
   // Keep only last 100 latency measurements
   if (this.updateMetrics.updateLatency.length > 100) {
     this.updateMetrics.updateLatency.shift();
-  }
+  //   }
   // Clear timer
   this.updateTimers.delete(viewName);
-}
+// }
 /**
  * Group updates by type for efficient processing;
  */
 groupUpdatesByType(updates);
 : unknown
-{
+// {
   const _grouped = new Map();
   updates.forEach((update) => {
     if (!grouped.has(update.type)) {
       grouped.set(update.type, []);
-    }
+    //     }
     grouped.get(update.type).push(update);
   });
   return grouped;
-}
+// }
 /**
  * Apply grouped updates to a specific view;
  */
 applyUpdatesToView(viewName, groupedUpdates);
 : unknown
-{
+// {
     try {
       // Different views handle updates differently
       switch(viewName) {
@@ -188,16 +188,17 @@ applyUpdatesToView(viewName, groupedUpdates);
           this.applyMemoryUpdates(groupedUpdates);
           break;default = === viewName) {
         this.requestUIRefresh();
-      }
+      //       }
     } catch(error) ;
-      console.error(`Error applying updates to \$viewName:`, error);
+      console.error(`Error applying updates to \$viewName);
       this.updateMetrics.droppedUpdates++;
-  }
+  //   }
+
 
   /**
    * Apply neural-specific updates;
    */;
-  applyNeuralUpdates(groupedUpdates): unknown {
+  applyNeuralUpdates(groupedUpdates) {
     const _neuralData = this.ui.enhancedViews?.viewData?.get('neural');
     if (!neuralData) return;
     // ; // LINT: unreachable code removed
@@ -224,9 +225,10 @@ applyUpdatesToView(viewName, groupedUpdates);
     if(reportUpdates) {
       reportUpdates.forEach((update) => {
         analysisData.reports.unshift({id = analysisData.reports.slice(0, 50);
-        }
+        //         }
       });
-    }
+    //     }
+
 
     // Handle metrics updates
     const _metricsUpdates = groupedUpdates.get('metrics_update');
@@ -248,17 +250,19 @@ applyUpdatesToView(viewName, groupedUpdates);
         // Update swarm integration data
         if(this.ui.swarmIntegration) {
           this.ui.swarmIntegration.updateSwarmStatus();
-        }
+        //         }
 
-        this.ui.addLog('info', `🐝 Swarm ${update.swarmId}: ${update.status}`);
+
+        this.ui.addLog('info', `🐝 Swarm ${update.swarmId});
       });
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Apply memory-specific updates;
    */;
-  applyMemoryUpdates(groupedUpdates): unknown {
+  applyMemoryUpdates(groupedUpdates) {
     // Handle memory operation updates
     const _memoryUpdates = groupedUpdates.get('memory_update');
     if(memoryUpdates) {
@@ -273,14 +277,16 @@ applyUpdatesToView(viewName, groupedUpdates);
               namespace.entries++;
             } else if(update.operation === 'delete') {
               namespace.entries = Math.max(0, namespace.entries - 1);
-            }
-          }
-        }
+            //             }
+          //           }
+        //         }
+
 
         this.ui.addLog('info', `💾 Memory ${update.operation} in ${update.namespace}`);
       });
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Apply generic updates for other views;
@@ -289,12 +295,12 @@ applyUpdatesToView(viewName, groupedUpdates);
     // Log generic updates
     groupedUpdates.forEach((updates, type) => ;
       updates.forEach((update) => ;
-        this.ui.addLog('info', `📡 ${viewName}: ${type} update`);););
+        this.ui.addLog('info', `📡 ${viewName});););
 
   /**
    * Update related views based on tool execution;
    */;
-  updateRelatedViews(toolName, result): unknown {
+  updateRelatedViews(toolName, result) {
     // Map tool names to affected views
     const _toolViewMap = {
       // Neural tools affect neural viewneural_train = toolViewMap[toolName]  ?? [];
@@ -303,10 +309,11 @@ applyUpdatesToView(viewName, groupedUpdates);
       this.broadcastUpdate(viewName, {type = setTimeout(() => {
       if(this.ui && typeof this.ui.render === 'function') {
         this.ui.render();
-      }
+      //       }
       this.refreshThrottle = null;
     }, 50); // Throttle to max 20 FPS
-  }
+  //   }
+
 
   /**
    * Start performance monitoring;
@@ -328,7 +335,7 @@ applyUpdatesToView(viewName, groupedUpdates);
     });
 
     return {
-      subscribers = {}): unknown {
+      subscribers = {}) {
     const { chunkSize = 10, delay = 100, onProgress = null, onComplete = null } = options;
     // ; // LINT: unreachable code removed
     return async () => {
@@ -341,8 +348,9 @@ applyUpdatesToView(viewName, groupedUpdates);
           const _chunk = data.slice(i, i + chunkSize);
 
           this.broadcastUpdate(viewName, {type = > setTimeout(resolve, delay));
-          }
-        }
+          //           }
+        //         }
+
 
         if (onComplete) onComplete(data);
       } catch (error) {
@@ -352,7 +360,8 @@ applyUpdatesToView(viewName, groupedUpdates);
     // Clear refresh throttle
     if(this.refreshThrottle) {
       clearTimeout(this.refreshThrottle);
-    }
+    //     }
+
 
     // Clear all subscribers
     this.subscribers.clear();
@@ -361,7 +370,8 @@ applyUpdatesToView(viewName, groupedUpdates);
     this.updateQueues.clear();
 
     this.ui.addLog('info', 'Real-time update system cleaned up');
-  }
-}
+  //   }
+// }
+
 
 export default RealtimeUpdateSystem;

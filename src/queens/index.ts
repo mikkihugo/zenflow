@@ -16,7 +16,8 @@ export { QueenCoordinator } from './queen-coordinator.js';
 // Convenience factory function
 import { QueenCoordinator } from './queen-coordinator.js';
 
-export async function createQueenCoordinator(config = new QueenCoordinator(config: unknown);
+export async function createQueenCoordinator(config = new QueenCoordinator(config);
 // await coordinator.start();
 return coordinator;
-}
+// }
+

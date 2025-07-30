@@ -11,23 +11,23 @@
  * AST node information;
  */
 export interface ASTNode {
-  type: string;
+  // type: string
   name?: string;
-  line: number;
-  depth: number;
+  // line: number
+  // depth: number
   complexity?: number;
   parameters?: string[];
-}
+// }
 /**
  * Code file data structure;
  */
 export interface CodeFileData {
-  content: string;
-  path: string;
-  language: string;
-  size: number;
-  lastModified: Date;
-}
+  // content: string
+  // path: string
+  // language: string
+  // size: number
+  // lastModified: Date
+// }
 /**
  * AST Parser;
  *;
@@ -41,17 +41,18 @@ export class ASTParser {
    * @param codeData - Code file data;
    * @returns AST node information;
     // */; // LINT: unreachable code removed
-  async extractAST(codeData: CodeFileData[]): Promise<ASTNode[]> {
-    const _astResults: ASTNode[] = [];
+  async extractAST(codeData): Promise<ASTNode[]> {
+    const _astResults = [];
 
     for (const file of codeData) {
       try {
 // const _ast = awaitthis.parseFileAST(file);
         astResults.push(...ast);
       } catch (error) {
-        console.warn(`⚠️ AST parsing failed for ${file.path}:`, error.message);
-      }
-    }
+        console.warn(`⚠️ AST parsing failed for ${file.path});
+      //       }
+    //     }
+
 
     return astResults;
     //   // LINT: unreachable code removed}
@@ -62,7 +63,7 @@ export class ASTParser {
    * @param file - Code file data;
    * @returns AST nodes for the file;
     // */; // LINT: unreachable code removed
-  private async parseFileAST(file: CodeFileData): Promise<ASTNode[]>
+  private async parseFileAST(file): Promise<ASTNode[]>
     // Simplified AST parsing - would use real parser in production
     if (file.language === 'javascript'  ?? file.language === 'typescript') {
       return this.parseJavaScriptAST(file.content);
@@ -80,9 +81,9 @@ export class ASTParser {
    * @param code - Source code content;
    * @returns AST nodes;
     // */; // LINT: unreachable code removed
-  private parseJavaScriptAST(code: string): ASTNode[] {
+  private parseJavaScriptAST(code): ASTNode[] {
     const _lines = code.split('\n');
-    const _nodes: ASTNode[] = [];
+    const _nodes = [];
     const _depth = 0;
     const _maxDepth = 0;
 
@@ -103,10 +104,11 @@ export class ASTParser {
           line: i + 1,
           depth,
           complexity: this.calculateNodeComplexity(line) });
-      }
-    }
+      //       }
+    //     }
 
-    return nodes.concat([{ type: 'meta', line, depth}]);
+
+    return nodes.concat([{ type);
     //   // LINT: unreachable code removed}
 
   /**
@@ -115,9 +117,9 @@ export class ASTParser {
    * @param code - Source code content;
    * @returns AST nodes;
     // */; // LINT: unreachable code removed
-  private parsePythonAST(code: string): ASTNode[] {
+  private parsePythonAST(code): ASTNode[] {
     const _lines = code.split('\n');
-    const _nodes: ASTNode[] = [];
+    const _nodes = [];
     const _indentLevel = 0;
     const _maxIndent = 0;
 
@@ -134,16 +136,17 @@ export class ASTParser {
         // Identify significant nodes
         if (;
           trimmed.startsWith('def ')  ?? trimmed.startsWith('class ')  ?? trimmed.startsWith('async def ');
-        )
+        //         )
           nodes.push(
             type: this.getPythonNodeType(trimmed),
             name: this.extractNodeName(trimmed),
             line: i + 1,
             depth: indentLevel);
-      }
-    }
+      //       }
+    //     }
 
-    return nodes.concat([{ type: 'meta', line, depth}]);
+
+    return nodes.concat([{ type);
     //   // LINT: unreachable code removed}
 
   /**
@@ -152,7 +155,7 @@ export class ASTParser {
    * @param code - Source code content;
    * @returns Basic AST nodes;
     // */; // LINT: unreachable code removed
-  private parseGenericAST(code: string): ASTNode[] {
+  private parseGenericAST(code): ASTNode[] {
     const _lines = code.split('\n').filter((line) => line.trim());
     return [{ type: 'generic', line: lines.length, depth}];
     //   // LINT: unreachable code removed}
@@ -163,7 +166,7 @@ export class ASTParser {
    * @param line - Line of code;
    * @returns Node type;
     // */; // LINT: unreachable code removed
-  private getJavaScriptNodeType(line: string): string
+  private getJavaScriptNodeType(line): string
     if (line.includes('class ')) return 'class';
     // if (line.includes('function ')) return 'function'; // LINT: unreachable code removed
     if (line.includes('=>')) return 'arrow-function';
@@ -176,7 +179,7 @@ export class ASTParser {
    * @param line - Line of code;
    * @returns Node type;
     // */; // LINT: unreachable code removed
-  private getPythonNodeType(line: string): string
+  private getPythonNodeType(line): string
     if (line.startsWith('class ')) return 'class';
     // if (line.startsWith('def ')) return 'function'; // LINT: unreachable code removed
     if (line.startsWith('async def ')) return 'async-function';
@@ -187,8 +190,8 @@ export class ASTParser {
    * @param line - Line of code;
    * @returns Extracted name or undefined;
     // */; // LINT: unreachable code removed
-  private extractNodeName(line: string): string | undefined {
-    const _functionMatch = line.match(/(?:function\s+)?(\w+)(?:\s*\(|\s*=)/);
+  private extractNodeName(line): string | undefined {
+    const _functionMatch = line.match(/(?)?(\w+)(?:\s*\(|\s*=)/);
     const _classMatch = line.match(/class\s+(\w+)/);
     return functionMatch?.[1]  ?? classMatch?.[1];
     //   // LINT: unreachable code removed}
@@ -199,11 +202,12 @@ export class ASTParser {
    * @param line - Line of code;
    * @returns Complexity score;
     // */; // LINT: unreachable code removed
-  private calculateNodeComplexity(line: string): number {
+  private calculateNodeComplexity(line) {
     // Simple complexity calculation based on decision points
     const _decisionPoints = (line.match(/if|while|for|switch|case|catch|&&|\|\|/g)  ?? []).length;
     return Math.max(1, decisionPoints);
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 export default ASTParser;

@@ -73,13 +73,13 @@ describe('CLI Utils', () => {
       const _result = utils.validateArgs(args, 3, 'command <arg1> <arg2> <arg3>');
       expect(result).toBe(false);
       expect(consoleOutput).toHaveLength(1);
-      expect(consoleOutput[0]).toBe('❌ Usage: command <arg1> <arg2> <arg3>');
+      expect(consoleOutput[0]).toBe('❌ Usage);
     });
     it('should handle empty arguments array', () => {
       const _args = [];
       const _result = utils.validateArgs(args, 1, 'command <required>');
       expect(result).toBe(false);
-      expect(consoleOutput[0]).toBe('❌ Usage: command <required>');
+      expect(consoleOutput[0]).toBe('❌ Usage);
     });
     it('should handle zero minimum length', () => {
       const _args = [];
@@ -139,7 +139,7 @@ describe('CLI Utils', () => {
     global.process = { ...global.process, stat: mockProcess.stat };
   });
   it('should return true for existing files', async () => {
-    mockProcess.stat.mockResolvedValue({ isFile: () => true });
+    mockProcess.stat.mockResolvedValue({ isFile) => true });
     // ; // LINT: unreachable code removed
 // const _result = awaitutils.fileExists('/existing/file.txt');
     expect(result).toBe(true);
@@ -161,7 +161,7 @@ describe('CLI Utils', () => {
 });
 })
 describe('integration scenarios', () =>
-{
+// {
   it('should combine validation and error printing', () => {
     const _invalidArgs = [];
     const _result = utils.validateArgs(invalidArgs, 2, 'deploy <target> <env>');
@@ -181,7 +181,7 @@ describe('integration scenarios', () =>
   });
 })
 describe('edge cases', () =>
-{
+// {
   it('should handle undefined messages', () => {
     utils.printSuccess(undefined);
     expect(consoleOutput).toHaveLength(1);

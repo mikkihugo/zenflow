@@ -9,7 +9,7 @@ import chalk from 'chalk';
 /**
  * Show help for hive-mind-optimize command;
  */
-function _showOptimizeHelp(): unknown {
+function _showOptimizeHelp() {
   console.warn(`;
 ${chalk.yellow('🔧 Hive Mind Database Optimization')}
 
@@ -37,7 +37,7 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');
       {type = await inquirer.prompt([;
     {type = > answers.operations.includes('cleanMemory') },
     {type = > answers.operations.includes('archiveTasks') },
-    {
+    //     {
       type = {vacuum = await optimizeHiveMindDatabase(dbPath, options);
 
   if(!result.success) {
@@ -64,22 +64,20 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');
 
   if(largeMemoryTable  ?? largeTaskTable) {
     console.warn(chalk.cyan('\nMaintenanceRecommendations = await import('child_process');
-    const __timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const __timestamp = new Date().toISOString().replace(/[]/g, '-');
     const _backupPath = dbPath.replace('.db', `-backup-\$timestamp.db`);
 
     execSync(`cp "${dbPath}" "${backupPath}"`);
     console.warn(chalk.green(`✓ Backupcreated = await inquirer.prompt([;
-      {
-        type: 'confirm',
-        name: 'proceed',
-        message: 'Continue without backup?',
-        default} ]);
+      //       {
+        type);
 
     if(!proceed) {
       exit(1);
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // Export for CLI
 export default hiveMindOptimizeCommand;

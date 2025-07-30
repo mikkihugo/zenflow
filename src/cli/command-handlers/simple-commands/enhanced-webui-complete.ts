@@ -15,7 +15,7 @@ import ToolExecutionFramework from './tool-execution-framework.js';
 const _ALL_VIEWS = {
 ..ENHANCED_VIEWS,
 // Add any additional views if needed
-}
+// }
 export class EnhancedWebUIComplete {
   constructor() {
     this.processes = new Map();
@@ -40,13 +40,13 @@ export class EnhancedWebUIComplete {
   this;
 
   initializeEnhancedUI();
-}
+// }
 /**
  * Initialize all enhanced UI components;
  */
 async;
 initializeEnhancedUI();
-{
+// {
   try {
       // Initialize original swarm integration
       this.swarmIntegration = new SwarmWebUIIntegration(this);
@@ -78,17 +78,18 @@ initializeEnhancedUI();
       this.processes.set(p.id, {
 ..p,
         status = {totalEntries = [
-      {
+      //       {
         time => {
       this.systemStats.uptime++;
       // Update process uptimes
       this.processes.forEach((process) => {
         if(process.status === 'running') {
           process.uptime++;
-        }
+        //         }
       });
     }, 1000);
-  }
+  //   }
+
 
   /**
    * Start system monitoring;
@@ -108,7 +109,7 @@ initializeEnhancedUI();
         if(process.status === 'running') {
           process.cpu = Math.max(0, process.cpu + (Math.random() - 0.5) * 1);
           process.memory = Math.max(0, process.memory + (Math.random() - 0.5) * 5);
-        }
+        //         }
       });
 
       // Emit performance metrics for real-time updates
@@ -117,8 +118,8 @@ initializeEnhancedUI();
       { name => {
       console.warn(;
         `${cat.icon} ${this.colors.white(cat.name)}: ${this.colors.yellow(cat.count)} tools`);
-    }
-  )
+    //     }
+  //   )
   console.warn()
   console.warn(this.colors.green(`Total = [
       {key = '';
@@ -129,8 +130,8 @@ initializeEnhancedUI();
   ]`)
   : this.colors.gray(`\$tab.label`)
   mainTabLine += `  \$this.colors.bold(tab.key):\$label`
-}
-)
+// }
+// )
 console.warn(mainTabLine)
 // Enhanced tool tabs (row 2)
 const _toolTabs = [
@@ -159,7 +160,8 @@ const _toolTabs = [
     console.warn(additionalTabLine);
     console.warn(this.colors.gray('─'.repeat(80)));
     console.warn();
-  }
+  //   }
+
 
   /**
    * Render enhanced help view;
@@ -174,7 +176,7 @@ const _toolTabs = [
     const __statusLine = `🧠 Claude-Flow Enhanced UI | `;
     _statusLine += `MCP = `Tools: \$this.colors.yellow(mcpStatus?.totalTools  ?? 87)| `;
     statusLine += `Active = `Queued: \$this.colors.cyan(toolStatus?.queuedExecutions  ?? 0)| `;
-    _statusLine += `Uptime = `\$this.colors.gray('Controls:')`;
+    _statusLine += `Uptime = `\$this.colors.gray('Controls)`;
     controlsLine += `\$this.colors.yellow('r')=Run Tool | `;
     controlsLine += `\$this.colors.yellow('w')=Workflow | `;
     controlsLine += `\$this.colors.yellow('b')=Batch | `;
@@ -183,7 +185,8 @@ const _toolTabs = [
     controlsLine += `\$this.colors.yellow('↑↓')=Navigate`;
 
     console.warn(controlsLine);
-  }
+  //   }
+
 
   /**
    * Enhanced input handling;
@@ -289,9 +292,10 @@ const _toolTabs = [
         case '\r':;
 // await this.toggleSelectedProcess();
           break;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Toggle selected process status;
@@ -309,22 +313,25 @@ const _toolTabs = [
         selected.status = 'running';
         selected.pid = Math.floor(Math.random() * 50000) + 1000;
         this.addLog('success', `Started ${selected.name}`);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Add log entry with enhanced formatting;
    */;
-  addLog(level, message): unknown {
+  addLog(level, message) {
     const _logEntry = {time = this.logs.slice(0, 100);
-    }
+    //     }
+
 
     // Emit log event for real-time updates
     if(this.realtimeUpdates) {
       this.realtimeUpdates.emit('log_added', logEntry);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Render process view (original);
@@ -406,9 +413,10 @@ const _toolTabs = [
     console.warn(;
       this.colors.cyan(;
         '🔍 Log Analysis ToolsAvailable = === 'running' ? this.colors.green('●') : this.colors.gray('○');
-  }
+  //   }
 
-  formatUptime(seconds): unknown {
+
+  formatUptime(seconds) {
     const _hours = Math.floor(seconds / 3600);
     const _minutes = Math.floor((seconds % 3600) / 60);
     const _secs = seconds % 60;
@@ -423,7 +431,7 @@ const _toolTabs = [
     return this.getUsageBar(percentage, 100);
     //   // LINT: unreachable code removed}
 
-  getUsageBar(value, max, width = 20): unknown {
+  getUsageBar(value, max, width = 20) {
     const _percentage = Math.min((value / max) * 100, 100);
     const __filled = Math.round((percentage / 100) * width);
 
@@ -433,7 +441,8 @@ const _toolTabs = [
     console.warn();
     printSuccess('👋 Enhanced Web UI shutdown complete');
     process.exit(0);
-  }
-}
+  //   }
+// }
+
 
 export default EnhancedWebUIComplete;

@@ -9,9 +9,10 @@
     this.suggestionEngine = null;
     this.completenessAnalyzer = null;
     this.breakdownEngine = null;
-  }
+  //   }
 
-  async initialize(registry, options = {}): unknown {
+
+  async initialize(registry, options = {}) {
     this.registry = registry;
     this.options = {dbPath = = false,completenessThreshold = = false,minConfidenceForSuggestion = new Database(this.options.dbPath);
     this.createSchema();
@@ -31,8 +32,9 @@
     // Start intelligent monitoring
     if(this.options.autoBreakdown) {
       this.startIntelligentMonitoring();
-    }
-  }
+    //     }
+  //   }
+
 
   createSchema() {
     this.db.exec(`;
@@ -143,7 +145,8 @@
           last_scanned_at DATETIME DEFAULT CURRENT_TIMESTAMP;
       );
     `);
-  }
+  //   }
+
 
   async loadServiceScopes() {
 // const _registry = awaitreadHiveRegistry();
@@ -155,23 +158,23 @@
 
         const _scopeData = {name = scopeData;
       } catch (error)
-{
+// {
   // Scope file might not exist, which is fine.
-  console.warn(`Could not load scope for ${name}: ${error.message}`);
-}
-}
+  console.warn(`Could not load scope for ${name});
+// }
+// }
 return scopes;
 //   // LINT: unreachable code removed}
 initializeIntelligenceEngines();
-{
+// {
   // These would need to be adapted to work with the DB if they have their own persistence logic
   // For now, assuming they operate in-memory or are stateless
   // this.suggestionEngine = new SuggestionEngine(this);
   // this.completenessAnalyzer = new CompletenessAnalyzer(this);
   // this.breakdownEngine = new BreakdownEngine(this);
-}
+// }
 startIntelligentMonitoring();
-{
+// {
     // Start periodic monitoring for incomplete work and optimization opportunities
     this.monitoringInterval = setInterval(async () => {
       try {
@@ -231,7 +234,7 @@ startIntelligentMonitoring();
         VALUES (@id, @parent_id, @parent_type, @title, @description, @type, @priority, @effort, @skills, @dependencies, @status, @assignee, @metadata);
     `);
     stmt.run(task);
-// await this.registry.register(`task = {}): unknown {
+// await this.registry.register(`task = {}) {
     const _task = this.db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);
     if (!task) throw new Error(`Task ${taskId} not found`);
 
@@ -284,8 +287,9 @@ run('in_progress', visionId);
       if(score > bestScore) {
         bestScore = score;
         bestMatch = service;
-      }
-    }
+      //       }
+    //     }
+
 
     // Only return if we have a reasonable match
     return bestScore > 0.3 ?bestMatch = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);
@@ -294,17 +298,19 @@ replace(/[^a-zA-Z0-9\s]/g, ' ');
 split(/\s+/);
 filter(word => word.length > 2 && !commonWords.has(word));
 slice(0, 20); // Limit to most relevant keywords
-  }
+  //   }
+
 
   // Calculate keyword match score between two keyword arrays
-  calculateKeywordMatch(keywords1, keywords2): unknown {
+  calculateKeywordMatch(keywords1, keywords2) {
     const _set1 = new Set(keywords1);
     const _set2 = new Set(keywords2);
     const _intersection = new Set([...set1].filter(x => set2.has(x)));
 
     if (set1.size === 0  ?? set2.size === 0) return 0;
     // return intersection.size / Math.max(set1.size, set2.size); // LINT: unreachable code removed
-  }
+  //   }
+
 
   // Delegate an epic to a specific service hive
   async delegateEpicToService(epicId, epicData, service): unknown
@@ -322,7 +328,8 @@ slice(0, 20); // Limit to most relevant keywords
 
       if(!hiveInfo) {
         throw new Error(`Service hive \$service.namenot found in registry`);
-      }
+      //       }
+
 
       // Create assignment record
       const _assignmentId = nanoid();
@@ -345,11 +352,12 @@ slice(0, 20); // Limit to most relevant keywords
   async cleanup() {
     if(this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
-    }
+    //     }
     if(this.db) {
       this.db.close();
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 export default HierarchicalTaskManagerPlugin;

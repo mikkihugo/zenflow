@@ -14,10 +14,10 @@ const _kuzu = null;
 try {
   kuzu = await import('kuzu');
 } catch (error) {
-  console.warn('Kuzu database not available, using fallback mode = {}): unknown {
+  console.warn('Kuzu database not available, using fallback mode = {}) {
     this.config = {dbPath = = false,compression = = false,memoryLimit = = false, // Default to real Kuzu
 ..config;
-    }
+    //     }
 this.isInitialized = false;
 this.schema = null;
 this.database = null; // Real Kuzu database instance
@@ -35,29 +35,15 @@ this.stats.usingRealKuzu = true;
 printSuccess('✅ Real Kuzu database connection established');
 // Create node and relationship tables
 // await this.createKuzuSchema();
-}
+// }
 catch (/* kuzuError */)
-{
+// {
   printWarning(`⚠️ Real Kuzu failed, falling back tosimulation = false;
 
         // For simulation mode, create directory structure
         if (!existsSync(this.config.dbPath)) {
 // await mkdir(this.config.dbPath, {recursive = true;
-      const _mode = this.stats.usingRealKuzu ? 'REAL KUZU' : 'SIMULATION';
-      printSuccess(`✅ Kuzu database initialized in ${mode}mode = this.connection.querySync(`;
-        CREATE NODE TABLE IF NOT EXISTS Service(;
-          name STRING,
-          path STRING,
-          type STRING,
-          complexity STRING,
-          lineCount INT64,
-          fileCount INT64,
-          technologies STRING[],
-          apis STRING[],
-          databases STRING[],
-          created_at STRING,
-          updated_at STRING,
-          PRIMARY KEY (name);
+      const _mode = this.stats.usingRealKuzu ? 'REAL KUZU' );
         );
       `);
   console.warn('✅ Service table creation completed');
@@ -71,9 +57,9 @@ catch (/* kuzuError */)
 
   console.warn('✅ USES relation creation completed');
   printSuccess('✅ Kuzu schema created successfully');
-}
+// }
 catch (error)
-{
+// {
   printError(`❌ Failed to create Kuzuschema = await import('kuzu');
 
       // Create database connection
@@ -83,29 +69,29 @@ catch (error)
       console.warn(`✅ Connected to Kuzu databaseat = await this.connectToKuzu();
   this.schema = {nodes = path.join(this.config.dbPath, 'schema.json');
 // await writeFile(schemaPath, JSON.stringify(this.schema, null, 2));
-}
+// }
 printInfo('📋 Database schema initialized');
-}
+// }
 /**
  * Set up performance indices;
  */
-async
+// async
 setupIndices()
-{
+// {
   const _indices = {service_name_idx = indices;
   // Save indices configuration only for simulation mode
   if (!this.stats.usingRealKuzu) {
     const _indicesPath = path.join(this.config.dbPath, 'indices.json');
 // await writeFile(indicesPath, JSON.stringify(indices, null, 2));
-  }
+  //   }
   printInfo('🔍 Performance indices configured');
-}
+// }
 /**
  * Load existing data from disk;
  */
 async;
 loadExistingData();
-{
+// {
     // Skip JSON file loading if using real Kuzu (it has its own persistence)
     if(this.stats.usingRealKuzu) {
       printInfo('📊 Using real Kuzu database - skipping JSON file loading');
@@ -120,13 +106,15 @@ loadExistingData();
         const _nodesData = JSON.parse(await readFile(nodesPath, 'utf8'));
         this.nodes = new Map(nodesData);
         this.stats.nodeCount = this.nodes.size;
-      }
+      //       }
+
 
       if (existsSync(relationshipsPath)) {
         const _relationshipsData = JSON.parse(await readFile(relationshipsPath, 'utf8'));
         this.relationships = new Map(relationshipsData);
         this.stats.relationshipCount = this.relationships.size;
-      }
+      //       }
+
 
       if(this.stats.nodeCount > 0  ?? this.stats.relationshipCount > 0) {
         printInfo(`📊 Loaded existingdata = 0;
@@ -143,13 +131,15 @@ loadExistingData();
       const _nodeId = `service = {id = > api.file)  ?? [],databases = > db.file)  ?? [],created_at = this.config.batchSize) {
 // await this.processBatch(batch, 'nodes');
         batch.length = 0;
-      }
-    }
+      //       }
+    //     }
+
 
     // Process remaining batch
     if(batch.length > 0) {
 // await this.processBatch(batch, 'nodes');
-    }
+    //     }
+
 
     this.stats.nodeCount = this.nodes.size;
     this.stats.lastUpdate = new Date().toISOString();
@@ -161,7 +151,7 @@ loadExistingData();
   /**
    * Insert technology nodes;
    */;
-  async insertTechnologies(technologies): unknown {
+  async insertTechnologies(technologies) {
     printInfo(`⚙️ Inserting \$technologies.lengthtechnologies...`);
 
     const _inserted = 0;
@@ -170,8 +160,9 @@ loadExistingData();
       const _nodeId = `technology = {id = this.nodes.get(nodeId);
         existing.properties.usage_count++;
         this.nodes.set(nodeId, existing);
-      }
-    }
+      //       }
+    //     }
+
 
     printSuccess(`✅ Inserted \$insertednew technologies`);
     return inserted;
@@ -180,7 +171,7 @@ loadExistingData();
   /**
    * Insert service relationships;
    */;
-  async insertRelationships(relationships): unknown {
+  async insertRelationships(relationships) {
     printInfo(`🔗 Inserting \$relationships.lengthrelationships...`);
 
     const _inserted = 0;
@@ -189,13 +180,15 @@ loadExistingData();
     for(const _rel of relationships) {
 
         batch.length = 0;
-      }
-    }
+      //       }
+    //     }
+
 
     // Process remaining batch
     if(batch.length > 0) {
 // await this.processBatch(batch, 'relationships');
-    }
+    //     }
+
 
     this.stats.relationshipCount = this.relationships.size;
 
@@ -206,13 +199,13 @@ loadExistingData();
   /**
    * Insert hive coordination data;
    */;
-  async insertHives(hives): unknown {
+  async insertHives(hives) {
     printInfo(`🏗️ Inserting ${hives.length} hive coordination nodes...`);
 
     const _inserted = 0;
 
     for(let _hive of hives) {
-      const _nodeId = `hive = {id = `_hive = {id = {}): unknown {
+      const _nodeId = `hive = {id = `_hive = {id = {}) {
     this.stats.queryCount++;
 
     // Use real Kuzu query if available
@@ -222,13 +215,14 @@ loadExistingData();
         const _whereClauses = [];
         if(criteria.name) {
           whereClauses.push(`s.name CONTAINS '${criteria.name.replace(/'/g, "''")}' `);
-        }
+        //         }
         if(criteria.type) {
           whereClauses.push(`s.type = '${criteria.type.replace(/'/g, "''")}' `);
-        }
+        //         }
         if(criteria.complexity) {
           whereClauses.push(`s.complexity = '${criteria.complexity.replace(/'/g, "''")}' `);
-        }
+        //         }
+
 
         const _whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
         const _query = `MATCH (s) ${whereClause} RETURN s ORDER BY s.name`;
@@ -243,25 +237,29 @@ loadExistingData();
       results = results.filter(_node => ;
         node.properties.name.includes(criteria.name);
       );
-    }
+    //     }
+
 
     if(criteria.type) {
       results = results.filter(_node => ;
         node.properties.type === criteria.type;
       );
-    }
+    //     }
+
 
     if(criteria.complexity) {
       results = results.filter(_node => ;
         node.properties.complexity === criteria.complexity;
       );
-    }
+    //     }
+
 
     if(criteria.technology) {
       results = results.filter(_node => ;
         node.properties.technologies.includes(criteria.technology);
       );
-    }
+    //     }
+
 
     // Sort by name by default
     results.sort((a, b) => a.properties.name.localeCompare(b.properties.name));
@@ -281,12 +279,14 @@ loadExistingData();
       const _nodeId = node.id  ?? `${nodeType.toLowerCase()}:${Math.random().toString(36).substring(7)}`;
 
         batch.length = 0;
-      }
+      //       }
+
 
     // Process remaining batch
     if(batch.length > 0) {
 // await this.processBatch(batch, 'nodes');
-    }
+    //     }
+
 
     this.stats.nodeCount = this.nodes.size;
     this.stats.lastUpdate = new Date().toISOString();
@@ -298,7 +298,7 @@ loadExistingData();
   /**
    * Query functions by complexity;
    */;
-  async queryFunctionsByComplexity(minComplexity = 10): unknown {
+  async queryFunctionsByComplexity(minComplexity = 10) {
     this.stats.queryCount++;
 
     const _results = Array.from(this.nodes.values());
@@ -316,7 +316,7 @@ filter(node => node.type === 'Function' && ;
   /**
    * Query files by complexity score;
    */;
-  async queryFilesByComplexity(minScore = 5.0): unknown {
+  async queryFilesByComplexity(minScore = 5.0) {
     this.stats.queryCount++;
 
     const _results = Array.from(this.nodes.values());
@@ -342,7 +342,7 @@ filter(node => node.type === 'SourceFile' && ;
       if(fromFunc && toFunc) {
         callGraph.nodes.add(fromFunc);
         callGraph.nodes.add(toFunc);
-        callGraph.edges.push({from = 80): unknown {
+        callGraph.edges.push({from = 80) {
     this.stats.queryCount++;
 
     const _duplicates = Array.from(this.nodes.values());
@@ -384,8 +384,9 @@ map(rel => {
 
         importCounts.set(fromFile, (importCounts.get(fromFile)  ?? 0) + 1);
         exportCounts.set(toFile, (exportCounts.get(toFile)  ?? 0) + 1);
-      }
-    }
+      //       }
+    //     }
+
 
     const _coupledFiles = [];
 
@@ -395,7 +396,8 @@ map(rel => {
 
       if (file && (importCount > 10  ?? exportCount > 5)) {
         coupledFiles.push({file = > b.coupling_score - a.coupling_score);
-  }
+  //   }
+
 
   /**
    * Generate Cypher-like query for common patterns;
@@ -431,12 +433,14 @@ filter(node => node.type === 'Hive');
       const _complexity = service.properties.complexity;
       if(patterns.complexityDistribution[complexity] !== undefined) {
         patterns.complexityDistribution[complexity]++;
-      }
+      //       }
+
 
       // Service types
       const _type = service.properties.type;
       patterns.serviceTypes[type] = (patterns.serviceTypes[type]  ?? 0) + 1;
-    }
+    //     }
+
 
     // Dependency patterns
     for(const service of services) {
@@ -448,7 +452,7 @@ filter(node => node.type === 'Hive');
       } else if(totalConnections >= 5) {
         patterns.dependencyPatterns.central.push({service = 3) {
         patterns.dependencyPatterns.highlyDependent.push({
-          service = {}): unknown {
+          service = {}) {
     this.stats.queryCount++;
 
     switch(queryType) {
@@ -464,7 +468,7 @@ filter(node => node.type === 'Hive');
         return this.findTightlyCoupledModules(parameters);
     // case 'identify_code_smells':; // LINT: unreachable code removed
         return this.identifyCodeSmells(parameters);
-    // default = { // LINT: unreachable code removed}): unknown {
+    // default = { // LINT: unreachable code removed}) {
     const _deprecatedPatterns = parameters.patterns  ?? [;
       'require(',
       'const ',
@@ -488,7 +492,7 @@ filter(rel => rel.type === 'CALLS_FUNCTION');
         for(const pattern of deprecatedPatterns) {
           if (funcName.includes(pattern.replace('(', ''))) {
             results.push({
-              type = {}): unknown {
+              type = {}) {
     const _rules = parameters.rules  ?? [;
       {name = [];
 
@@ -510,7 +514,7 @@ filter(rel => rel.type === 'IMPORTS_FROM');
 
             if (fromPath.includes(rule.forbidden_in) && toPath.includes(rule.pattern)) {
               violations.push({
-                type = {}): unknown {
+                type = {}) {
     const _exports = new Map();
     const _imports = new Set();
 
@@ -521,18 +525,19 @@ filter(rel => rel.type === 'IMPORTS_FROM');
           exports.set(`${node.properties.file_id}:${exportName}`, {name = === 'Import') {
         for(const importName _of _node._properties._imported_names  ?? []) {
           imports.add(importName);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     // Find exports that are never imported
     const _unusedExports = [];
     for(const [_key, exportInfo] of exports) {
       if (!imports.has(exportInfo.name) && exportInfo.name !== 'default') {
-        unusedExports.push({name = === 'default' ? 'medium' : 'low';
-        });
-      }
-    }
+        unusedExports.push({name = === 'default' ? 'medium' );
+      //       }
+    //     }
+
 
     return unusedExports;
     //   // LINT: unreachable code removed}
@@ -540,7 +545,7 @@ filter(rel => rel.type === 'IMPORTS_FROM');
   /**
    * Analyze complexity trends;
    */;
-  async analyzeComplexityTrends(parameters = {}): unknown {
+  async analyzeComplexityTrends(parameters = {}) {
     const _functions = Array.from(this.nodes.values());
 filter(node => node.type === 'Function');
 
@@ -565,7 +570,8 @@ filter(node => node.type === 'Function');
       fileData.total += complexity;
       fileData.count++;
       fileComplexity.set(fileId, fileData);
-    }
+    //     }
+
 
     // Calculate file average complexities
     const _fileAverages = [];
@@ -575,7 +581,7 @@ filter(node => node.type === 'Function');
         fileAverages.push({file = > b.averageComplexity - a.averageComplexity);
 
     return {
-      overview = {}): unknown {
+      overview = {}) {
     const _threshold = parameters.threshold  ?? 5;
     // const _couplingMap = new Map(); // LINT: unreachable code removed
 
@@ -594,12 +600,13 @@ filter(rel => rel.type === 'IMPORTS_FROM');
       if(coupling.strength >= threshold) {
         tightlyCoupled.push({
 ..coupling,severity = > b.strength - a.strength);
-  }
+  //   }
+
 
   /**
    * Identify code smells;
    */;
-  async identifyCodeSmells(parameters = {}): unknown {
+  async identifyCodeSmells(parameters = {}) {
     const _smells = [];
 
     // Long parameter lists
@@ -635,7 +642,7 @@ filter(node => node.type === 'Class' && node.properties.method_count > 15);
   /**
    * Get deprecation recommendation;
    */;
-  getDeprecationRecommendation(pattern): unknown {
+  getDeprecationRecommendation(pattern) {
     const _recommendations = {
       'eval(': 'Use safer alternatives like JSON.parse() or Function constructor',
       'innerHTML': 'Use textContent, createElement, or template literals',
@@ -657,7 +664,8 @@ join(', ');
       queries.createNodes.push(;
         `CREATE NODE TABLE \$nodeType(\$propDefs, PRIMARY KEY(\$schema.primaryKey))`;
       );
-    }
+    //     }
+
 
     // Relationship creation queries
     for (const [_relType, schema] of Object.entries(this.schema.relationships)) {
@@ -669,14 +677,16 @@ join(', ');
       queries.createRelationships.push(;
         `CREATE REL TABLE \$relType(FROM \$schema.fromTO \$schema.to\$propList)`;
       );
-    }
+    //     }
+
 
     // Index creation queries
     for (const [indexName, indexDef] of Object.entries(this.indices)) {
       queries.createIndices.push(;
         `CREATE INDEX ${indexName} ON ${indexDef.nodeType}(${indexDef.property})`;
       );
-    }
+    //     }
+
 
     return queries;
     //   // LINT: unreachable code removed}
@@ -705,7 +715,7 @@ join(', ');
         const _propList = propDefs ? `, \$propDefs` : '';
         const _createQuery = `CREATE REL TABLE IF NOT EXISTS \$relType(FROM \$schema.fromTO \$schema.to\$propList)`;
         this.connection.querySync(createQuery);
-        printInfo(`✅ Created relationship table = {}): unknown {
+        printInfo(`✅ Created relationship table = {}) {
     this.stats.queryCount++;
 
     if(this.stats.usingRealKuzu && this.connection) {
@@ -728,13 +738,13 @@ filter(node => node.type === 'Service');
           for(const node _of _batch) {
             const _query = this.generateInsertNodeQuery(node);
     // this.connection.querySync(query); // LINT: unreachable code removed
-          }
+          //           }
         } else if(type === 'relationships') {
           for(const rel of batch) {
             const _query = this.generateInsertRelQuery(rel);
             this.connection.querySync(query);
-          }
-        }
+          //           }
+        //         }
       } else {
         // Fallback to file storage
         const _filePath = path.join(this.config.dbPath, `${type}.json`);
@@ -742,7 +752,8 @@ filter(node => node.type === 'Service');
           Array.from(this.nodes.entries()) : ;
           Array.from(this.relationships.entries());
 // await writeFile(filePath, JSON.stringify(data, null, 2));
-      }
+      //       }
+
 
     } catch (error) {
       printWarning(`⚠️ Batch processingwarning = Object.entries(node.properties);
@@ -750,7 +761,7 @@ map(([key, value]) => `${key}: '${value}'`);
 join(', ');
 
     return `CREATE (n = Object.entries(rel.properties  ?? {});
-    // .map(([key, value]) => `$key: '${value // LINT: unreachable code removed}'`);
+    // .map(([key, value]) => `$key: '\${value // LINT}'`);
 join(', ');
 
     return `MATCH (a {id = {
@@ -795,15 +806,18 @@ join(', ');
       if(!this.stats.usingRealKuzu) {
         const _statsPath = path.join(this.config.dbPath, 'stats.json');
 // await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
-      }
+      //       }
+
 
       const _mode = this.stats.usingRealKuzu ? 'REAL KUZU' : 'SIMULATION';
       printSuccess(`✅ Graph database closed (\$modemode)`);
 
     } catch(error) ;
-      printError(`❌ Error closing database: ${error.message}`);
+      printError(`❌ Error closing database);
       throw error;
-}
+// }
+
 
 export default KuzuGraphInterface;
-      }
+      //       }
+

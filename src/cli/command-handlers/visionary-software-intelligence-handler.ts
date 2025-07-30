@@ -9,11 +9,11 @@ let defaultRegistry;
 let hierarchicalTaskManagerPlugin;
 let hiveMindCore;
 let _mcpToolWrapper;
-async function _initializeMetaRegistry(): unknown {
+async function _initializeMetaRegistry() {
   if (!metaRegistryManager) {
     const { MetaRegistryManager, MemoryBackend } = await import(
       '../../coordination/meta-registry/meta-manager.js';
-    )
+    //     )
     const _HierarchicalTaskManagerPlugin = (;
 // await import('../../coordination/meta-registry/plugins/hierarchical-task-manager.js');
     ).default
@@ -43,18 +43,18 @@ default;
 // await defaultRegistry.use('nat-traversal', new NATTraversalPlugin());
     hierarchicalTaskManagerPlugin = defaultRegistry.pluginSystem.getPlugin(;
     ('hierarchical-task-manager');
-    )
+    //     )
     if (!hierarchicalTaskManagerPlugin) {
       throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
-    }
+    //     }
     // Initialize HiveMindCore and MCPToolWrapper
     const { HiveMindCore } = await import('../hive-mind-handlers/hive-mind/core.js');
     const { MCPToolWrapper } = await import('../hive-mind-handlers/hive-mind/mcp-wrapper.js');
     hiveMindCore = new HiveMindCore(defaultRegistry);
     _mcpToolWrapper = new MCPToolWrapper(defaultRegistry);
 // await hiveMindCore.initialize();
-  }
-}
+  //   }
+// }
 const __handleVisionCommand = async (subcommand, args, flags) => {
   switch(subcommand) {
     case 'create': {
@@ -102,10 +102,7 @@ const __handleVisionCommand = async (subcommand, args, flags) => {
       break;
     default:;
       console.warn(`;
-Usage: claude-zen workflow <command> <subcommand> [options]
-
-Commands:;
-  vision    Manage strategic visions (create, approve, roadmap, list);
+Usage);
   adr       Manage Architectural Decision Records (create, list);
   squad     Manage development squads (assign-task);
   swarm     Manage advanced swarm coordination (coordinate, agents, mrap);
@@ -114,8 +111,9 @@ Commands:;
 Use 'claude-zen workflow <command> --help' for more details.;
       `);
       break;
-  }
-    }
+  //   }
+    //     }
 };
-    }
-    }
+    //     }
+    //     }
+

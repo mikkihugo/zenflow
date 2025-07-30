@@ -10,7 +10,7 @@ printSuccess,
 printWarning,
 readJsonFile,
 writeJsonFile } from '../utils.js'
-export async function configCommand(): unknown {
+export async function configCommand() {
   case 'init': null
 // await initConfig(subArgs, flags)
   break;
@@ -64,13 +64,14 @@ export async function configCommand(): unknown {
       console.warn(`${key}: ${JSON.stringify(value)}`);
     } else {
       printWarning(`Configuration key '${key}' not found`);
-    }
+    //     }
   } catch(err) ;
     printError('Configuration file not found');
     console.warn('Run "claude-zen config init" to create configuration');
-}
+// }
 
-async function _setConfigValue(): unknown {
+
+async function _setConfigValue() {
     printError('Usage = await readJsonFile(configFile, {});
 
     // Parse value appropriately
@@ -103,7 +104,8 @@ async function _setConfigValue(): unknown {
       if(errors.length > 0) {
         printError(`Found ${errors.length} error(s):`);
         errors.forEach((error) => console.warn(`  ❌ ${error}`));
-      }
+      //       }
+
 
       if(warnings.length > 0) {
         printWarning(`Found ${warnings.length} warning(s):`);
@@ -111,9 +113,10 @@ async function _setConfigValue(): unknown {
       }catch(err) ;
     printError('Configuration file not found or invalid');
     console.warn('Run "claude-zen config init" to create valid configuration');
-}
+// }
 
-async function resetConfig(subArgs = subArgs.includes('--force': unknown)  ?? subArgs.includes('-f');
+
+async function resetConfig(subArgs = subArgs.includes('--force')  ?? subArgs.includes('-f');
 
   if(!force) {
     printWarning('This will reset configuration to defaults');
@@ -122,27 +125,29 @@ async function resetConfig(subArgs = subArgs.includes('--force': unknown)  ?? su
     //   // LINT: unreachable code removed}
 // await initConfig(['--force'], flags);
   printSuccess('Configuration reset to defaults');
-}
+// }
+
 
 // Helper functions
-function getNestedValue(obj = > current?.[key], obj: unknown);
-}
-  function setNestedValue(obj = path.split('.': unknown);
+function getNestedValue(obj = > current?.[key], obj);
+// }
+  function setNestedValue(obj = path.split('.');
   const _last = keys.pop();
   const _target = keys.reduce((current, key) => {
     if (!current[key]) current[key] = {};
     return current[key];
     //   // LINT: unreachable code removed}, obj);
   target[last] = value;
-}
+// }
 
-  function getFlag(args = args.indexOf(flagName: unknown);
+
+  function getFlag(args = args.indexOf(flagName);
   return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
-}
+// }
 // fileExists is now imported from utils.js
 
-function _showConfigHelp(): unknown {
-  console.warn('Configuration commands:');
+function _showConfigHelp() {
+  console.warn('Configuration commands);
   console.warn('  init [--force]                   Create default configuration');
   console.warn('  show [--format json]             Display current configuration');
   console.warn('  get <key>                        Get configuration value');
@@ -150,7 +155,7 @@ function _showConfigHelp(): unknown {
   console.warn('  validate                         Validate configuration');
   console.warn('  reset --force                    Reset to defaults');
   console.warn();
-  console.warn('Configuration Keys:');
+  console.warn('Configuration Keys);
   console.warn('  terminal.poolSize                Terminal pool size');
   console.warn('  terminal.recycleAfter            Commands before recycle');
   console.warn('  orchestrator.maxConcurrentTasks  Max parallel tasks');
@@ -159,9 +164,10 @@ function _showConfigHelp(): unknown {
   console.warn('  memory.path                      Memory database path');
   console.warn('  agents.maxAgents                 Maximum number of agents');
   console.warn();
-  console.warn('Examples:');
+  console.warn('Examples);
   console.warn('  claude-zen config init');
   console.warn('  claude-zen config set terminal.poolSize 15');
   console.warn('  claude-zen config get orchestrator.maxConcurrentTasks');
   console.warn('  claude-zen config validate');
-}
+// }
+

@@ -14,6 +14,7 @@ const _DirectorySelector = (): unknown => {
     // Get directories in current path
     try {
 
+    // 
     }
     else;
     if (key.upArrow) {
@@ -29,11 +30,11 @@ const _DirectorySelector = (): unknown => {
         } else {
           // Navigate into directory
           setCurrentDir(selected.path);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
 };
-)
+// )
 return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
 // let _displayName = dir.name; // LINT: unreachable code removed
@@ -42,41 +43,41 @@ else if (dir.isCurrent) displayName = '✅ . (Select this directory)';
 else displayName = `📁 ${dir.name}`;
 return React.createElement(;
 // Box, // LINT: unreachable code removed
-{
+// {
   key: dir.path;
-}
+// }
+
 
 React.createElement(
 Text,
-{
+// {
   color: isSelected ? 'black' : 'white',
   backgroundColor: isSelected ? 'cyan' ,
   bold}
 
-`${
-  isSelected ? '▶ ' : '  ';
-}
+`\${isSelected ? '▶ ' }
 $;
-{
+// {
   displayName;
-}
+// }
 `;
-)
-)
-}
-)
+// )
+// )
+// }
+// )
 ),
 React.createElement(Box,
-{
-  marginTop: 1;
-}
+// {
+  // marginTop: 1
+// }
+
 
 React.createElement(Text,
-{
+// {
   color: 'gray';
-}
+// }
 , "↑↓ Navigate | Enter: Select/Open | ESC: Cancel")
-)
-)
-}
+// )
+// )
+// }
 export default DirectorySelector;

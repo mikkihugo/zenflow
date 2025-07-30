@@ -10,10 +10,10 @@ import React, { useEffect, useState } from 'react';
 // API client for auto-generated API
 class ApiClient {
   constructor(baseUrl = 'http = baseUrl;
-}
+// }
 async;
 fetchHives();
-{
+// {
   try {
 // const _response = awaitfetch(`${this.baseUrl}/api/hives`);
     return await response.json();
@@ -24,9 +24,10 @@ fetchHives();
   catch(error) ;
       console.error(`Failed to fetch hive details;
   for ${hiveName}
-  :`, error);
+  );
   return null;
-}
+// }
+
 
 async;
 executeCommand(command, (args = []), (flags = {}));
@@ -48,10 +49,10 @@ const __SingularityAlpha = (): unknown => {
   const [focusedButton, setFocusedButton] = useState(0); //0 = useApp();
 
   useEffect(() => {
-    async function loadHives(): unknown {
+    async function loadHives() {
 // const _hivesData = awaitapiClient.fetchHives();
       setHives(hivesData);
-    }
+    //     }
     loadHives();
 
     // Auto-refresh every 30 seconds
@@ -70,7 +71,7 @@ const __SingularityAlpha = (): unknown => {
 // const __result = awaitapiClient.executeCommand('create', [newServiceName], {path = > prev.slice(0, -1));
     //   // LINT: unreachable code removed} else if(!key.ctrl && !key.meta && input) {
         setNewServiceName(prev => prev + input);
-      }
+      //       }
       return;
     //   // LINT: unreachable code removed}
 
@@ -88,7 +89,7 @@ const __SingularityAlpha = (): unknown => {
     //   // LINT: unreachable code removed} else if(focusedButton === 2) {
         // Create new service
         setCurrentView('create');
-      }
+      //       }
       return;
     //   // LINT: unreachable code removed}
 
@@ -116,7 +117,7 @@ const __SingularityAlpha = (): unknown => {
         setCommandResult(null);
       } else {
         exit();
-      }
+      //       }
     } else if(input === 'q' && !command) {
       exit();
     } else if(input === 'r' && !command) {
@@ -124,7 +125,7 @@ const __SingularityAlpha = (): unknown => {
       loadHives();
     } else if(!key.ctrl && !key.meta && input && currentView !== 'details') {
       setCommand(prev => prev + input);
-    }
+    //     }
   });
 
     setCurrentView('details');
@@ -140,20 +141,14 @@ const __SingularityAlpha = (): unknown => {
     setHives(hivesData);
   };
 
-  return React.createElement(Box, {borderStyle = === 'hives' && React.createElement(Box, {flexDirection = === 1 ? "double" : "single",
-    // borderColor = === 1 ? "cyan" : "gray",paddingX = === 1 ? "cyan" : "white"  // LINT: unreachable code removed},
-            "📁 Select Directory";
-          );
+  return React.createElement(Box, {borderStyle = === 'hives' && React.createElement(Box, {flexDirection = === 1 ? "double" );
         ),
         React.createElement(Box, { ;
-          borderStyle = === 2 ? "double" : "single",
-          borderColor = === 2 ? "cyan" : "gray",paddingX = === 2 ? "cyan" : "white" },
-            "➕ Create New Service";
-          );
+          borderStyle = === 2 ? "double" );
         );
       ),
       // Always show command input at bottom
-      React.createElement(Box, borderStyle = === 'string' ? commandResult.result : 'Success');
+      React.createElement(Box, borderStyle = === 'string' ? commandResult.result );
           : commandResult.error;
         );
       );
@@ -170,9 +165,10 @@ const __SingularityAlpha = (): unknown => {
     );
   );
 
-export function _renderTui(cli: unknown): unknown {
+export function _renderTui(cli) {
   console.warn('🚀 Starting Singularity Alpha TUI with API integration...');
   render(React.createElement(SingularityAlpha, { cli}));
-}
+// }
+
 
 export { ApiClient };

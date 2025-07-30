@@ -19,7 +19,7 @@ describe('Vision Analysis Service', () => {
   describe('Image Analysis', () => {
     it('should analyze valid images successfully', async () => {
       // Arrange
-// const _mockImage = awaitTestHelpers.createMockImage({ format: 'png' });
+// const _mockImage = awaitTestHelpers.createMockImage({ format);
       const _expectedResult = TestHelpers.createMockVisionResult();
       visionService.analyzeImage.mockResolvedValue(expectedResult);
       // Act
@@ -59,7 +59,7 @@ describe('Vision Analysis Service', () => {
     });
     it('should enforce size limits', async () => {
       // Arrange
-// const _oversizedImage = awaitTestHelpers.createMockImage({ size: 'large' });
+// const _oversizedImage = awaitTestHelpers.createMockImage({ size);
       const _maxSize = 5 * 1024 * 1024; // 5MB
 
       if (oversizedImage.buffer.length > maxSize) {
@@ -95,7 +95,7 @@ map(() => TestHelpers.createMockImage());
       expect(totalDuration).toBeLessThan(200); // Parallel processing should be fast
 
       const _stats = metricsCollector.getStats();
-      console.warn('Parallel processing stats:', stats);
+      console.warn('Parallel processing stats);
     });
   });
   describe('Component Extraction', () => {
@@ -190,7 +190,7 @@ map(() => TestHelpers.createMockImage());
         { imageSize: 'large', expectedTime } ];
       for (const test of performanceTests) {
         // Arrange
-// const _mockImage = awaitTestHelpers.createMockImage({ size: test.imageSize });
+// const _mockImage = awaitTestHelpers.createMockImage({ size);
         visionService.analyzeImage.mockImplementation(async () => {
   // await new Promise((resolve) => setTimeout(resolve, test.expectedTime - 20));
           return TestHelpers.createMockVisionResult();

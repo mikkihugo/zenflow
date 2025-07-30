@@ -16,14 +16,14 @@ export class SwarmWebUIIntegration {
   this;
 
   tasks = new Map();
-}
+// }
 /**
  * Initialize swarm integration;
  */
 async;
 initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
 : unknown
-{
+// {
   try {
     // Check if ruv-swarm is available
 // const _hasSwarm = awaitthis.checkSwarmAvailability();
@@ -50,7 +50,8 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     } catch (/* err */) {
       return false;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   /**
    * Initialize mock swarm for demonstration;
@@ -64,7 +65,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     agentTypes.forEach((type, index) => {
       const _agentId = `agent-${type}-${index}`;
       this.agents.set(agentId, {id = [
-      {
+      //       {
         description => {
       const _taskId = `task-${index}`;
       this.tasks.set(taskId, {
@@ -76,19 +77,20 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     this.ui.systemStats.totalTasks = this.ui.tasks.length;
     this.ui.systemStats.completedTasks = this.ui.tasks.filter(;
       (t) => t.status === 'completed').length;
-  }
+  //   }
+
 
   /**
    * Spawn new agent;
    */;
-  async spawnAgent(type, name = null): unknown {
+  async spawnAgent(type, name = null) {
     if(!this.swarmActive) {
       this.ui.addLog('warning', 'Swarm not active - cannot spawn agent');
       return null;
     //   // LINT: unreachable code removed}
 
     const _agentId = `agent-${type}-${Date.now()}`;
-    const _agent = {id = 'medium', assignedTo = null): unknown {
+    const _agent = {id = 'medium', assignedTo = null) {
     if(!this.swarmActive) {
       this.ui.addLog('warning', 'Swarm not active - cannot create task');
       return null;
@@ -116,7 +118,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
   /**
    * Complete task;
    */;
-  async completeTask(taskId): unknown {
+  async completeTask(taskId) {
     const _task = this.tasks.get(taskId);
     if(!task) {
       this.ui.addLog('error', 'Invalid task ID');
@@ -132,9 +134,10 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
         agent.tasks = Math.max(0, agent.tasks - 1);
         if(agent.tasks === 0) {
           agent.status = 'idle';
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     this.updateSwarmStatus();
     this.ui.addLog('success', `Completedtask = this.agents.size;
@@ -154,7 +157,8 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
 
     this.ui.addLog('info', 'Swarm stopped and cleaned up');
     this.updateSwarmStatus();
-  }
-}
+  //   }
+// }
+
 
 export default SwarmWebUIIntegration;

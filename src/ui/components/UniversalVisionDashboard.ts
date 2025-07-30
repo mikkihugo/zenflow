@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { UniversalBox as Box } from '../adapters/render-adapter.js';
 import { visionAPI } from '../shared/vision-api.js';
 
-const _UniversalVisionDashboard = (): unknown => {
+const _UniversalVisionDashboard = (): unknown => { // eslint-disable-line
   const [visions, setVisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -32,7 +32,7 @@ const _UniversalVisionDashboard = (): unknown => {
     } else if(input === 'r') {
       setLoading(true);
       visionAPI.fetchVisions().then(setVisions).finally(() => setLoading(false));
-    }
+    //     }
   });
 
   if(loading) {
@@ -57,7 +57,7 @@ const _UniversalVisionDashboard = (): unknown => {
           ),
           isWeb() && React.createElement("div", {style = > React.createElement("div", {key = === 'completed' ? '#00ff00' :;
                   phase.status === 'in_progress' ? '#ffff00' : '#333';
-              }
+              //               }
             }));
           );
         ),

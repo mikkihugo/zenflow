@@ -5,7 +5,7 @@ module.exports = {
       {
         targets: {
           node: '20' },
-        modules } ] ],
+        modules } ] ], // eslint-disable-line
   plugins: ['@babel/plugin-syntax-import-attributes'],
   env: {
     test: {

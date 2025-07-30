@@ -29,7 +29,8 @@
       break;
     default = '█';
       emptyChar = '░';
-  }
+  //   }
+
 
   const _animatedFill = animated && progress > 0 && progress < 100 ? ;
     fillChar.repeat(Math.max(0, filled - 1)) + ['⠋', '⠙', '⠹', '⠸'][animationFrame] :;
@@ -58,7 +59,7 @@ export const CommandInput = (): unknown => {
   color = 'gray'
   dimColor > placeholder < /
   >Tetx
-  )
+  //   )
   </Box>suggestions.length > 0 && (
   <Box
   flexDirection = 'column'
@@ -92,11 +93,11 @@ export const CommandInput = (): unknown => {
   >
 .. and suggestions.length - 6more
   </Text>
-  )
+  //   )
   </Box>
-  )
+  //   )
 };
-{
+// {
   showHelp && suggestions.length === 0 && !value && (;
   <Box flexDirection = 'column';
   marginLeft={2}
@@ -106,11 +107,11 @@ export const CommandInput = (): unknown => {
   dimColor;
   marginLeft={1}>help, status, init, swarm, memory</Text>;
         </Box>;
-  )
-}
+  //   )
+// }
 </Box>;
-)
-}
+// )
+// }
 /**
  * Visual Swarm Topology Display;
  */
@@ -125,28 +126,7 @@ export const SwarmTopology = (): unknown => {
     //   // LINT: unreachable code removed}, []);
 
   return (;
-    // <Box flexDirection="column"; // LINT: unreachable code removed
-  borderStyle = 'single';
-  padding={1}>;
-      <Box justifyContent="space-between">;
-        <Text bold;
-  color = "cyan">🐝;
-  Swarm;
-  Topology < / 2;<>TTeettxx{};
-  color = 'gray';
-  dimColor > Updated;
-  refreshCounts;
-  ago < />Tetx < /    (.0===>?Baeghlmnorsstwx < Box;
-  marginTop = {1}>;
-          <Text color = 'gray';
-  dimColor > No;
-  active;
-  swarms < / 2;<>TTeettxx{};
-  color = 'yellow';
-  marginTop = {1}>;
-            💡;
-  Run;
-  ('claude-zen swarm create');
+    // <Box flexDirection="column"; // LINT);
   to;
   start;
   a;
@@ -163,17 +143,7 @@ export const SwarmTopology = (): unknown => {
                 <Box>;
                   <Text ;
                     color=;
-    swarm.id === activeSwarm ? 'cyan' : 'yellow';
-  bold=swarm.id === activeSwarm;
-                  >swarm.id === activeSwarm ? '▶ ' : '  ';
-  swarm.name;
-  </Text>;
-                  <Text;
-  color = 'gray';
-  marginLeft={1}>;
-                    ({swarm.agents}
-  agents;
-  );
+    swarm.id === activeSwarm ? 'cyan' );
                   </Text>;
                   <Text ;
                     color=;
@@ -209,7 +179,8 @@ export const SwarmTopology = (): unknown => {
         </Box>;
       );
     </Box>;
-  )
+  //   )
+
 
   /**
    * Enhanced Log Pane with filtering and search;
@@ -233,9 +204,7 @@ export const SwarmTopology = (): unknown => {
       </Box>
 
       <Box flexDirection="column" marginTop=1>visibleLogs.length === 0 ? (;
-          <_Text _color="gray" _dimColor>logs.length === 0 ? 'No logs yet' : 'No logs match filter';
-          </Text>;
-        ) : (;
+          <_Text _color="gray" _dimColor>logs.length === 0 ? 'No logs yet' ) : (;
           visibleLogs.map((_log, _index) => (;
             <Box key=index>;
               <Text color="gray" dimColor>showTimestamps && new Date(log.timestamp).toLocaleTimeString();
@@ -273,7 +242,7 @@ export const SwarmTopology = (): unknown => {
     const _secs = seconds % 60;
 
     if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
-    // if (minutes > 0) return `${minutes // LINT: unreachable code removed}m ${secs}s`;
+    // if (minutes > 0) return `\${minutes // LINT}m ${secs}s`;
     return `${secs}s`;
     //   // LINT: unreachable code removed};
 
@@ -341,7 +310,8 @@ export const SwarmTopology = (): unknown => {
 </Box>;
     </Box>;
 );
-}
+// }
+
 
 /**
  * Interactive Help Panel with search;
@@ -353,7 +323,7 @@ export const _HelpPane = (): unknown => {
     if(selectedCommand) {
       const _cmd = allCommands.find(c => c.name === selectedCommand);
       setCommandHelp(cmd);
-    }
+    //     }
   }, [selectedCommand, allCommands]);
 
   const _filteredCommands = allCommands.filter(cmd => {
@@ -403,11 +373,7 @@ export const _HelpPane = (): unknown => {
  */;
 export const _SplitPane = (): unknown => {
   return (;
-    // <Box flexDirection={split === 'vertical' ? 'row' : 'column' // LINT: unreachable code removed} flexGrow={1}>;
-      <Box width={split === 'vertical' ? leftSize = {split = === 'horizontal' ? leftSize = {split === 'vertical' ? 1 = {split = === 'horizontal' ? 1 = "single";
-          borderColor="gray";
-        />;
-      )}
+    // <Box flexDirection={split === 'vertical' ? 'row' )}
 
       <Box width={split === 'vertical' ? rightSize = {split = === 'horizontal' ? rightSize }>;right
       </Box>;

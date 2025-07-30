@@ -17,7 +17,7 @@ export interface ParsedCommandLineResult {flags = > boolean
 getFlag = > any
 getBooleanFlag = > boolean
 requireFlag = > any
-}
+// }
 /**
  * Command structure result;
  */
@@ -30,7 +30,7 @@ export interface CommandStructure {command = ===================================
  * @param args - Raw command line arguments;
  * @returns Parsed flags and remaining arguments with utility methods;
     // */ // LINT: unreachable code removed
-export function parseCommandLineArguments(): unknown {
+export function parseCommandLineArguments() {
   const __arg = args[i]
 // Handle long flags (--flag=value or --flag value)
 if (arg.startsWith('--')) {
@@ -51,8 +51,8 @@ if (i + 1 < args.length && !args[i + 1].startsWith('-')) {
 } else {
   // Boolean flag
   flags[flagName] = true;
-}
-}
+// }
+// }
 // Handle short flags (-f value or -f)
 else
 if (arg.startsWith('-') && arg.length > 1) {
@@ -63,29 +63,29 @@ if (arg.startsWith('-') && arg.length > 1) {
     i++; // Skip next argument
   } else {
     flags[flagName] = true;
-  }
-}
+  //   }
+// }
 // Positional argument
 else {
   positionalArgs.push(arg);
-}
-}
+// }
+// }
 return {
     flags,
 // positionalArgs,hasFlag = > name in flags,getFlag = null): _any => flags[name] ?? defaultValue,getBooleanFlag = > Boolean(flags[name]),requireFlag = null) => { // LINT: unreachable code removed
 if (!(_name in _flags)) {
   throw new ValidationError(errorMessage ?? `Required flag --${name} is missing`);
-}
+// }
 return flags[name];
-}
-  }
-}
+// }
+  //   }
+// }
 /**
  * Parse string value to appropriate type;
  * @param value - String value to parse;
  * @returns Parsed value;
     // */ // LINT: unreachable code removed
-function parseValue(value = === 'true': unknown);
+function parseValue(value = === 'true');
 return true;
 // if (value.toLowerCase() === 'false') return false; // LINT: unreachable code removed
 // Handle numeric strings
@@ -97,21 +97,21 @@ if (value.startsWith('[') && value.endsWith(']')) {
     return JSON.parse(value);
     //   // LINT: unreachable code removed} catch {
     // If JSON parsing fails, return as string
-  }
-}
+  //   }
+// }
 // // Handle comma-separated values // LINT: unreachable code removed
 if (value.includes(',')) {
   return value.split(',').map(item => item.trim());
-}
+// }
 return value;
-}
+// }
 /**
  * Validate required positional arguments;
  * @param args - Positional arguments;
  * @param minCount - Minimum required arguments;
  * @param usage - Usage string for error message;
  */
-export function validatePositionalArguments(args = argv.slice(2: unknown);
+export function validatePositionalArguments(args = argv.slice(2);
 
 if (args.length === 0) {
   return {command = parseCommandLineArguments(args);
@@ -123,26 +123,27 @@ if (args.length === 0) {
     // Convert kebab-case to camelCase
     const _normalizedKey = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
     normalized[normalizedKey] = value;
-  }
+  //   }
   return normalized;
-}
+// }
 /**
  * Merge command line flags with defaults;
  * @param cliFlags - Command line flags;
  * @param defaults - Default values;
  * @returns Merged flags object;
     // */ // LINT: unreachable code removed
-export function mergeWithDefaults(_cliFlags = ', ': unknown): Record<string, any> {
+export function mergeWithDefaults(_cliFlags = ', '): Record<string, any> {
   const _processed = { ...flags };
 
   for (const flagName of flagNames) {
     if (processed[flagName] && typeof processed[flagName] === 'string') {
       processed[flagName] = processed[flagName].split(delimiter).map((item = > item.trim());
-    }
-  }
+    //     }
+  //   }
+
 
   return processed;
-}
+// }
 // =============================================================================
 // FLAG VALIDATOR CLASS
 // =============================================================================
@@ -160,13 +161,13 @@ export class FlagValidator {}
 public;
 requireString(name, (errorMessage = null));
 : string
-{
+// {
   const _value = this.flags[name];
   if (!value ?? typeof value !== 'string') {
     throw new ValidationError(errorMessage ?? `Flag --${name} must be a non-empty string`);
-  }
+  //   }
   return value;
-}
+// }
 /**
  * Require numeric flag with validation;
  * @param name - Flag name;
@@ -176,14 +177,14 @@ requireString(name, (errorMessage = null));
 public;
 requireNumber((name = null));
 : number
-{
+// {
   const _value = this.flags[name];
   const _num = Number(value);
   if (Number.isNaN(num)) {
     throw new ValidationError(errorMessage ?? `Flag --${name} must be a valid number`);
-  }
+  //   }
   return num;
-}
+// }
 /**
  * Require flag to be one of specified values;
  * @param name - Flag name;
@@ -194,7 +195,7 @@ requireNumber((name = null));
 public;
 requireOneOf<T>((name = null));
 : T
-{
+// {
   const _value = this.flags[name];
   if (!validValues.includes(value)) {
     throw new ValidationError(;
@@ -208,7 +209,7 @@ requireOneOf<T>((name = null));
    * @param name - Flag name;
    * @returns Boolean value;
     // */; // LINT: unreachable code removed
-  public getBooleanFlag(name = 0): number {
+  public getBooleanFlag(name = 0) {
     const _value = this.flags[name];
     return value ? Number(value) : defaultValue;
     //   // LINT: unreachable code removed}
@@ -240,7 +241,8 @@ requireOneOf<T>((name = null));
     Flag--;
     \$nameis;
     required`);
-    }
+    //     }
+
 
     // Return default if not provided and not required
     if (value === undefined  ?? value === null) {
@@ -258,7 +260,7 @@ requireOneOf<T>((name = null));
     be;
     a;
     string`);
-          }
+          //           }
           break;
         case 'number':;
           if (isNaN(Number(value))) {
@@ -268,7 +270,7 @@ requireOneOf<T>((name = null));
     be;
     a;
     number`);
-          }
+          //           }
           break;
         case 'boolean':;
           if (typeof value !== 'boolean') {
@@ -278,7 +280,7 @@ requireOneOf<T>((name = null));
     be;
     a;
     boolean`);
-          }
+          //           }
           break;
         case 'array':;
           if (!Array.isArray(value)) {
@@ -288,10 +290,11 @@ requireOneOf<T>((name = null));
     be;
     an;
     array`);
-          }
+          //           }
           break;
-      }
-    }
+      //       }
+    //     }
+
 
     // Valid values check
     if (options.validValues && !options.validValues.includes(value)) {
@@ -301,26 +304,26 @@ requireOneOf<T>((name = null));
     $namemust;
     be;
     oneof = === 'number'
-    )
-    {
+    //     )
+    //     {
       const _numValue = Number(value);
       if (options.min !== undefined && numValue < options.min) {
         throw new ValidationError(;
         options.errorMessage ?? `Flag --${name} must be at least ${options.min}`;
-        )
-      }
+        //         )
+      //       }
       if (options.max !== undefined && numValue > options.max) {
         throw new ValidationError(;
         options.errorMessage ?? `Flag --${name} must be at most ${options.max}`;
-        )
-      }
-    }
+        //         )
+      //       }
+    //     }
     // Pattern validation for strings
     if (options.pattern && typeof value === 'string' && !options.pattern.test(value)) {
       throw new ValidationError(;
       options.errorMessage ?? `Flag --${name} does not match required pattern`;
-      )
-    }
+      //       )
+    //     }
     return value;
     //   // LINT: unreachable code removed}
     /**
@@ -346,14 +349,14 @@ requireOneOf<T>((name = null));
    * Convert arguments array to ParsedArguments interface;
    * @param argv - Process argv;
    * @returns ParsedArguments object;
-    // */ // LINT: unreachable code removed
-    export function convertToStandardFormat(argv = parseCommandStructure(argv: unknown);
+    // */ // LINT);
     const __normalizedFlags = normalizeFlags(structure.flags);
     return {
     command => {
       acc[index] = arg;
     // return acc; // LINT: unreachable code removed
-  }
+  //   }
+
 
   as
   Record<string, any>
@@ -361,8 +364,9 @@ requireOneOf<T>((name = null));
   for (const [flagName, definition] of Object.entries(flagDefinitions)) {
     const _typeInfo = definition.type ? ` (${definition.type})` : '';
     const _defaultInfo =
-      definition.default !== undefined ? ` [default: ${definition.default}]` : '';
-    lines.push(`  --${flagName}${typeInfo}: ${definition.description}${defaultInfo}`);
-  }
+      definition.default !== undefined ? ` [default]` : '';
+    lines.push(`  --${flagName}${typeInfo});
+  //   }
   return lines.join('\n');
-}
+// }
+

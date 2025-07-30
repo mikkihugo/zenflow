@@ -9,7 +9,7 @@ import { HelpFormatter } from '../../help-formatter.js';
 /**
  * Display comprehensive help for hive mind system;
  */
-export function showHiveMindHelp(): unknown {
+export function showHiveMindHelp() {
   console.warn(`;
 ${chalk.yellow('🧠 Claude Flow Hive Mind System')}
 
@@ -22,6 +22,7 @@ ${chalk.bold('USAGE = parseFlags(rawFlags);
   if (info) {
     formatter.displayUsage(info.usage, info.description, info.options);
   } else {
-    console.warn(chalk.red(`No usage information available for: ${subcommand}`));
-  }
-}
+    console.warn(chalk.red(`No usage information available for));
+  //   }
+// }
+

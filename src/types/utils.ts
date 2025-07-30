@@ -51,7 +51,7 @@ export interface GitHubCliOptions {
   timeout?: number;
   cwd?: string;
   input?: string | null;
-}
+// }
 /**
  * GitHub CLI command result interface;
  */
@@ -65,7 +65,7 @@ export interface GitHubCliResult {success = ====================================
 export interface DatabaseStore {
   close(): Promise<void>;
   forceClose?(): void;
-}
+// }
 /**
  * Interface for ruv-swarm hook result;
  */
@@ -101,7 +101,7 @@ export interface HealthCheckResult {name = =====================================
  * Retry configuration;
  */
 export interface RetryConfig {maxAttempts = > boolean
-}
+// }
 /**
  * Retry result;
  */
@@ -118,13 +118,13 @@ export interface FileOperationOptions {
   overwrite?: boolean;
   backup?: boolean;
   encoding?: BufferEncoding;
-}
+// }
 /**
  * File system entry information;
  */
 export interface FileSystemEntry {path = > boolean
 maxDepth?: number;
-}
+// }
 // =============================================================================
 // NETWORK UTILITIES
 // =============================================================================
@@ -139,7 +139,7 @@ export interface HttpRequestOptions {
   timeout?: number;
   retries?: number;
   validateStatus?: (status = > boolean;
-}
+// }
 /**
  * HTTP response;
  */
@@ -151,42 +151,7 @@ export interface HttpResponse<T = any> {status = ===============================
  * Process execution options;
  */
 export interface ProcessExecutionOptions {
-  cwd?: string;
-  env?: Record<string, string>;
-  timeout?: number;
-  killSignal?: NodeJS.Signals;
-  input?: string;
-  captureOutput?: boolean;
-}
-/**
- * Process execution result;
- */
-export interface ProcessExecutionResult {exitCode = ============================================================================
-// VALIDATION UTILITIES
-// =============================================================================
-
-/**
- * Validation rule;
- */
-export interface ValidationRule<_T = any> {name = > boolean | string
-message?: string;
-}
-/**
- * Validation schema;
- */
-export interface ValidationSchema<T = any> {
-  [key = ============================================================================;
-// GENERIC UTILITY TYPES
-// =============================================================================
-
-/**
- * Make all properties optional recursively;
- */
-export type DeepPartial<_T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial
-=
-{
-  [P in keyof T]-?: T[P] extends object ? DeepRequired= > any> = T extends (...args: infer P) => any ? P = > any> = T extends (...args: unknown[]) => infer R ? R =
+  cwd?) => any ? P = > any> = T extends (...args) => infer R ? R =
   [P in K]: T[P];
 
 /**

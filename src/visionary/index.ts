@@ -71,23 +71,24 @@ export { AnalyticsReporter } from './reporting/analytics-reporter';
  * for comprehensive code analysis and improvement recommendations.;
  */
 export class VisionarySoftwareIntelligenceProcessor {
-  private readonly orchestrator: PipelineOrchestrator;
+  private readonly orchestrator: PipelineOrchestrator,
 
   /**
    * Initialize the Visionary Software Intelligence Processor;
    *;
    * @param config - Configuration options for the system;
    */;
-  constructor(config: Partial<PipelineConfig> = {}) {
+  constructor(config) {
     this.orchestrator = new PipelineOrchestrator(config);
-  }
+  //   }
+
 
   /**
    * Initialize all system components;
    *;
    * @returns Initialization status and capabilities;
     // */; // LINT: unreachable code removed
-  async initialize(): Promise<{ status: string; capabilities: string[] }> {
+  async initialize(): Promise<{ status: string, capabilities }> {
     return this.orchestrator.initialize();
     //   // LINT: unreachable code removed}
 
@@ -109,7 +110,7 @@ export class VisionarySoftwareIntelligenceProcessor {
    * @returns Complete analysis results with insights and recommendations;
     // */; // LINT: unreachable code removed
   async processCodeIntelligence(;
-    codeFiles: string[],
+    codeFiles,
     options: Partial<ProcessingOptions> = {}
   ): Promise<AnalysisReport>
     return this.orchestrator.processCodeIntelligence(codeFiles, options);
@@ -141,11 +142,10 @@ export default VisionarySoftwareIntelligenceProcessor;
  * @param config - Configuration options;
  * @returns Configured processor instance;
     // */; // LINT: unreachable code removed
-export function _createVisionaryProcessor(
-  config: Partial<PipelineConfig> = {}
-): VisionarySoftwareIntelligenceProcessor {
+export function _createVisionaryProcessor(config) {
   return new VisionarySoftwareIntelligenceProcessor(config);
-}
+// }
+
 
 /**
  * Quick analysis function for simple use cases;
@@ -155,19 +155,14 @@ export function _createVisionaryProcessor(
  * @returns Analysis results;
     // */; // LINT: unreachable code removed
 export async function quickAnalysis(
-  codeFiles: string[],
-  language: string = 'javascript';
-): Promise<AnalysisReport> {
+  codeFiles): Promise<AnalysisReport> {
   const _processor = new VisionarySoftwareIntelligenceProcessor();
 
   try {
 // await processor.initialize();
     return await processor.processCodeIntelligence(codeFiles, {
       language,
-    // analysisDepth: 'basic', // LINT: unreachable code removed
-      includeRefactoring,
-      optimizeCode,
-      generateReport});
+    // analysisDepth);
   } finally
 // await processor.close();
 /**
@@ -178,9 +173,7 @@ export async function quickAnalysis(
  * @returns Detailed analysis results;
     // */; // LINT: unreachable code removed
 export async function comprehensiveAnalysis(
-  codeFiles: string[],
-  language: string = 'javascript';
-): Promise<AnalysisReport> {
+  codeFiles): Promise<AnalysisReport> {
   const _processor = new VisionarySoftwareIntelligenceProcessor({
     enableAnalytics});
 
@@ -188,13 +181,7 @@ export async function comprehensiveAnalysis(
 // await processor.initialize();
     return await processor.processCodeIntelligence(codeFiles, {
       language,
-    // analysisDepth: 'comprehensive', // LINT: unreachable code removed
-      includeRefactoring,
-      optimizeCode,
-      generateReport,
-      includeBestPractices,
-      includeSecurity,
-      includeTests,
-      generateDocumentation});finally
+    // analysisDepth);finally
 // await processor.close();
-}
+// }
+

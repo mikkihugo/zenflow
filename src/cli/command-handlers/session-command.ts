@@ -14,7 +14,7 @@ const _SESSION_STATES = {ACTIVE = null;
 /**
  * Initialize session storage directories and memory store;
  */
-async function _initializeSessionStorage(): unknown {
+async function _initializeSessionStorage() {
   try {
     if (!existsSync(SESSION_BASE_DIR)) {
       mkdirSync(SESSION_BASE_DIR, {recursive = new EnhancedMemory({
@@ -32,19 +32,20 @@ async function _initializeSessionStorage(): unknown {
     // Keep only last 100 sessions in history
     if(history.length > 100) {
       history.splice(100);
-    }
+    //     }
+
 
     await fs.writeFile(SESSION_HISTORY_FILE, JSON.stringify(history, null, 2));catch (error) {
     printError(`Failed to save tohistory = Date.now();
   const _random = Math.random().toString(36).substring(2, 8);
   const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
   return `session-${safeName}-${timestamp}-${random}`;
-}
+// }
   /**
    * Get current session context;
    */
-  async function _getCurrentContext(): unknown {
-    const _context = {timestamp = await import('node:child_process');
+  async function _getCurrentContext() {
+    const _context = {timestamp = await import('node);
     const _gitProcess = spawn('git', ['branch', '--show-current'], {cwd = '';
     gitProcess.stdout.on('data', (data) => {
       gitBranch += data.toString().trim();
@@ -54,15 +55,15 @@ async function _initializeSessionStorage(): unknown {
     });
     if (gitBranch) {
       context.gitBranch = gitBranch;
-    }
-  }
+    //     }
+  //   }
   catch (error)
   return context;
-}
+// }
 /**
  * Create a new session;
  */
-async function _createSession(): unknown {
+async function _createSession() {
     printError('Usage = args.slice(1).join(' ')  ?? 'No description provided';
   const _sessionId = generateSessionId(sessionName);
 
@@ -98,11 +99,12 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
       console.warn(`   📍 ${session.context.workingDirectory}`);
       if(session.context.gitBranch) {
         console.warn(`   🌿 ${session.context.gitBranch}`);
-      }
+      //       }
       console.warn(`   ⏰ ${timeAgo} - ${session.state}`);
       console.warn(`   📊 ${session.activities.length} activities, ${session.checkpoints.length} checkpoints`);
       console.warn();
-    }
+    //     }
+
 
     if(flags.verbose && memoryStore) {
       try {
@@ -133,7 +135,8 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
     //   // LINT: unreachable code removed} else ;
         sessionData = activeSessions[matchingIds[0]];
         sessionId = matchingIds[0];
-    }
+    //     }
+
 
     // Update session state
     sessionData.state = SESSION_STATES.ACTIVE;
@@ -145,15 +148,17 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
 // const _memorySession = awaitmemoryStore.resumeSession(sessionId);
       if(memorySession) {
         printInfo('💾 Session state restored from memory store');
-      }
-    }
+      //       }
+    //     }
+
 
     printSuccess(`✅ Session restored successfully!`);
     console.warn(`🆔 SessionID = sessionData.activities.slice(-5);
       recentActivities.forEach(activity => {
         console.warn(`${activity.timestamp} - ${activity.type}`);
       });
-    }
+    //     }
+
 
   } catch (error) {
     printError(`Failed to restoresession = args[0];
@@ -174,7 +179,8 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
     //   // LINT: unreachable code removed}
 
     sessionId = matchingSessions[0].id;
-  }
+  //   }
+
 
   try {
 // const _activeSessions = awaitloadActiveSessions();
@@ -218,8 +224,9 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
     //   // LINT: unreachable code removed} else {
         sessionData = activeSessions[matchingIds[0]];
         actualSessionId = matchingIds[0];
-      }
-    }
+      //       }
+    //     }
+
 
     // Confirm deletion unless force flag is provided
     if(!flags.force) {
@@ -254,9 +261,10 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
             console.warn(`${activity.timestamp} - ${activity.type}`);
             if(activity.details) {
               console.warn(`${JSON.stringify(activity.details)}`);
-            }
+            //             }
           });
-        }
+        //         }
+
 
         console.warn('\n📌 Recentcheckpoints = session.checkpoints.slice(-3);
         if(recentCheckpoints.length === 0) {
@@ -266,19 +274,7 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
             console.warn(`${checkpoint.timestamp} - ${checkpoint.message}`);
             console.warn(`ID = await memoryStore.getActiveSessions();
         console.warn(`\n💾 Memory Store = {
-    [SESSION_STATES.ACTIVE]: '🟢',
-    [SESSION_STATES.PAUSED]: '🟡',
-    [SESSION_STATES.COMPLETED]: '✅',
-    [SESSION_STATES.FAILED]: '❌',
-    [SESSION_STATES.ARCHIVED]: '📦';
-  };
-  return icons[state]  ?? '❓';
-}
-
-/**
- * Get time ago string;
- */;
-function getTimeAgo(date = new Date(: unknown);
+    [SESSION_STATES.ACTIVE]);
   const _diff = now - date;
   const _seconds = Math.floor(diff / 1000);
   const _minutes = Math.floor(seconds / 60);
@@ -286,15 +282,16 @@ function getTimeAgo(date = new Date(: unknown);
   const _days = Math.floor(hours / 24);
 
   if (days > 0) return `${days}d ago`;
-    // if (hours > 0) return `${hours // LINT: unreachable code removed}h ago`;
+    // if (hours > 0) return `\${hours // LINT}h ago`;
   if (_minutes > 0) return `${minutes}m ago`;
     // return 'just now'; // LINT: unreachable code removed
-}
+// }
+
 
 /**
  * Show session command help;
  */;
-function _showSessionHelp(): unknown {
+function _showSessionHelp() {
   console.warn(`;
 🖥️  Session Management SystemUSAGE = args[0];
 
@@ -337,13 +334,14 @@ function _showSessionHelp(): unknown {
         break;
 
       default:;
-        printError(`Unknown session command: ${subCommand}`);
+        printError(`Unknown session command);
         _showSessionHelp();
-    }
+    //     }
   } catch (error) {
-    printError(`Session command failed: ${error.message}`);
+    printError(`Session command failed);
     if(flags.verbose) {
-      console.error('Stack trace:', error.stack);
-    }
-  }
-}
+      console.error('Stack trace);
+    //     }
+  //   }
+// }
+

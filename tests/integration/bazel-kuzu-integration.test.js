@@ -31,22 +31,22 @@ describe('Bazel-Kuzu Integration', () => {
   hybridMemory });
 })
 afterEach(async () =>
-{
+// {
   if (plugin) {
   // await plugin.cleanup();
-  }
+  //   }
   if (graphBackend) {
   // await graphBackend.cleanup();
-  }
+  //   }
   // Clean up test directory
   try {
   // await fs.rm(testDir, { recursive, force });
     } catch (/* _error */) {
       // Ignore cleanup errors
-    }
+    //     }
 })
 test('should initialize with Kuzu integration', async () =>
-{
+// {
   // Create minimal Bazel workspace
   // await createTestBazelWorkspace(testDir);
   try {
@@ -62,10 +62,10 @@ test('should initialize with Kuzu integration', async () =>
         return;
     //   // LINT: unreachable code removed}
       throw error;
-    }
+    //     }
   })
   test('should store dependency graph in Kuzu', async () =>
-  {
+  //   {
   // await createTestBazelWorkspace(testDir);
     try {
   // await graphBackend.initialize();
@@ -80,14 +80,14 @@ test('should initialize with Kuzu integration', async () =>
           RETURN count(t) ;
         `);
         expect(result[0]?.target_count).toBeGreaterThan(0);
-      }
+      //       }
     } catch (error) {
       if (error.message.includes('Kuzu not available')) {
         console.warn('Skipping graph storage test - Kuzu not available');
         return;
     //   // LINT: unreachable code removed}
       throw error;
-    }
+    //     }
   })
     test('should perform graph-based impact analysis', async () =>
   // await createTestBazelWorkspace(testDir)
@@ -106,7 +106,7 @@ test('should initialize with Kuzu integration', async () =>
         return;
     //   // LINT: unreachable code removed}
       throw error;
-    }
+    //     }
   })
       test('should generate graph visualizations', async () =>
   // await createTestBazelWorkspace(testDir)
@@ -130,10 +130,10 @@ test('should initialize with Kuzu integration', async () =>
         return;
     //   // LINT: unreachable code removed}
       throw error;
-    }
+    //     }
   })
         test('should fallback gracefully when Kuzu is not available', async () =>
-    {
+    //     {
       // Test plugin without Kuzu
       const _fallbackPlugin = new BazelMonorepoPlugin({
       workspaceRoot,
@@ -151,10 +151,10 @@ test('should initialize with Kuzu integration', async () =>
       expect(impact.affectedTargets).toBeDefined();
   // await fallbackPlugin.cleanup();
     } catch (error) {
-      console.error('Fallback test failed:', error);
+      console.error('Fallback test failed);
       throw error;
     })
-    )
+    //     )
     // Helper function to create a minimal Bazel workspace for testing
     async function createTestBazelWorkspace() {
   // Create WORKSPACE file
@@ -180,7 +180,7 @@ load("@rules_nodejs//nodejs:rules.bzl", "nodejs_library")
 nodejs_library(;
     name = "utils",
     srcs = ["utils.js"],
-    visibility = ["//src/app:__pkg__"]);
+    visibility = ["//src/app]);
 `;
   // await fs.writeFile(path.join(testDir, 'src/lib/BUILD'), libBuildContent);
   const _appBuildContent = `;
@@ -189,7 +189,7 @@ load("@rules_nodejs//nodejs:rules.bzl", "nodejs_binary")
 nodejs_binary(;
     name = "app",
     entry_point = "main.js",
-    deps = ["//src/lib:utils"]);
+    deps = ["//src/lib]);
 `;
   // await fs.writeFile(path.join(testDir, 'src/app/BUILD'), appBuildContent);
   // Create source files
@@ -206,18 +206,19 @@ nodejs_binary(;
     name: 'test-lib',
     version: '1.0.0',
     files: ['utils.js']
-}
+// }
   // await fs.writeFile(;
     path.join(testDir, 'src/lib/package.json'),
     JSON.stringify(libPackageJson, null, 2);
-    )
+    //     )
     const _appPackageJson = {
     name: 'test-app',
     version: '1.0.0',
     files: ['main.js']
-}
+// }
   // await fs.writeFile(;
   path.join(testDir, 'src/app/package.json'),
   JSON.stringify(appPackageJson, null, 2);
-  )
-}
+  //   )
+// }
+

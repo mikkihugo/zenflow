@@ -3,7 +3,7 @@
  * Automatically saves session state during operations;
  */
 export class AutoSaveMiddleware {
-  constructor(sessionId = 30000): unknown {
+  constructor(sessionId = 30000) {
     this.sessionId = sessionId;
     this.saveInterval = saveInterval;
     this.sessionManager = sessionManager; // Use provided session manager
@@ -11,7 +11,7 @@ export class AutoSaveMiddleware {
     this.pendingChanges = [];
     this.isActive = false;
     this.childProcesses = new Set();
-  }
+  //   }
   /**
    * Start auto-save monitoring;
    */
@@ -24,7 +24,7 @@ export class AutoSaveMiddleware {
       this.saveTimer = setInterval(() => {
         if (this.pendingChanges.length > 0) {
           this.performAutoSave();
-        }
+        //         }
       }, this.saveInterval);
       // Also save on process exit
       process.on('beforeExit', () => {
@@ -40,7 +40,7 @@ export class AutoSaveMiddleware {
 // await this.cleanup();
         process.exit(0);
       });
-    }
+    //     }
     /**
      * Stop auto-save monitoring;
      */
@@ -48,12 +48,12 @@ export class AutoSaveMiddleware {
     if (this.saveTimer) {
       clearInterval(this.saveTimer);
       this.saveTimer = null;
-    }
+    //     }
     this.isActive = false;
     // Final save
     if (this.pendingChanges.length > 0) {
       this.performAutoSave();
-    }
+    //     }
     this.sessionManager.close();
     /**
      * Track a change for auto-save;
@@ -62,7 +62,7 @@ export class AutoSaveMiddleware {
     : unknown
     this.pendingChanges.push(
       type = === 'task_completed'  ?? changeType === 'agent_spawned'  ?? changeType === 'consensus_reached';
-      )
+      //       )
       this.performAutoSave();
       /**
        * Track task progress;
@@ -113,7 +113,7 @@ performAutoSave();
       const _changesByType = this.pendingChanges.reduce((acc, change) => {
         if(!acc[change.type]) {
           acc[change.type] = [];
-        }
+        //         }
         acc[change.type].push(change);
         return acc;
     //   // LINT: unreachable code removed}, {});
@@ -131,7 +131,8 @@ performAutoSave();
       // Update session progress
       if(completionPercentage > 0) {
 // await this.sessionManager.updateSessionProgress(this.sessionId, completionPercentage);
-      }
+      //       }
+
 
       // Log all changes as session events
       for(const _change of this.pendingChanges) {
@@ -144,8 +145,9 @@ performAutoSave();
         this.childProcesses.delete(childProcess);
         this.sessionManager.removeChildPid(this.sessionId, childProcess.pid);
       });
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Clean up all resources and child processes;
@@ -156,7 +158,8 @@ performAutoSave();
       if(this.saveTimer) {
         clearInterval(this.saveTimer);
         this.saveTimer = null;
-      }
+      //       }
+
 
       // Perform final save
 // await this.performAutoSave();
@@ -175,29 +178,32 @@ performAutoSave();
               childProcess.kill('SIGKILL');
             } catch (/* e */) {
               // Process already dead, good
-            }
-          }
+            //             }
+          //           }
         } catch (error) {
           console.error(`Failed to terminate childprocess = await this.sessionManager.getSession(this.sessionId);
       if (session && (session.status === 'active'  ?? session.status === 'paused')) {
 // await this.sessionManager.stopSession(this.sessionId);
-      }
+      //       }
+
 
       // Close database connection
       this.sessionManager.close();
 
       console.warn('Cleanup completed successfully');
     } catch (error) {
-      console.error('Error during cleanup = {}): unknown {
+      console.error('Error during cleanup = {}) {
   const _saveInterval = options.saveInterval  ?? 30000; // Default 30 seconds
   const _middleware = new AutoSaveMiddleware(sessionId, sessionManager, saveInterval);
 
   if(options.autoStart !== false) {
     middleware.start();
-  }
+  //   }
+
 
   return middleware;
-}
+// }
+
 
 // Export for use in swarm operations
 export default AutoSaveMiddleware;

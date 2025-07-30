@@ -12,7 +12,7 @@ formatErrorMessage,
 handleError,
 ValidationError } from '../cli-error.js'
 describe('CLI Error System', () =>
-{
+// {
   describe('CliError', () => {
     it('should create a basic CLI error', () => {
       const _error = new CliError('Test error message');
@@ -36,7 +36,7 @@ describe('CLI Error System', () =>
       expect(error.stack).toBeDefined();
       expect(error.stack).toContain('Stack trace test');
     });
-  });
+  }); // eslint-disable-line
 
   describe('ValidationError', () => {
     it('should create a validation error', () => {

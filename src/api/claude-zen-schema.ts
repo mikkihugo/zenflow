@@ -4,31 +4,31 @@
  * Auto-generates CLI/TUI/Web interfaces with proper hierarchy
  */
 export interface SchemaCommand {
-  description: string;
-  category: string;
-  priority: number;
+  // description: string
+  // category: string
+  // priority: number
   interfaces: {
-  cli: boolean;
+  // cli: boolean
     web?: {
-      enabled: boolean;
-      endpoint: string;
-      method: string;
+      // enabled: boolean
+      // endpoint: string
+      // method: string
     };
     tui?: boolean;
   };
   storage?: string;
   permissions?: string[];
   validation?: {
-    required: string[];
+    required;
     optional?: string[];
   };
-}
+// }
 export interface SchemaMetadata {
-  version: string;
-  lastUpdated: string;
-  categories: string[];
-  totalCommands: number;
-}
+  // version: string
+  // lastUpdated: string
+  categories;
+  // totalCommands: number
+// }
 export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   // === STRATEGIC VISIONS ===
   // High-level strategic visions that drive product development
@@ -86,7 +86,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === STRATEGIC PLANNING ===
 'roadmaps-create'
 : null
-{
+// {
   description: 'Create strategic roadmap',
   category: 'planning',
   priority,
@@ -101,7 +101,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === LARGE INITIATIVES ===
 'epics-create'
 : null
-{
+// {
   description: 'Create epic initiative',
   category: 'planning',
   priority,
@@ -116,7 +116,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === SPECIFIC CAPABILITIES ===
 'features-create'
 : null
-{
+// {
   description: 'Create feature specification',
   category: 'development',
   priority,
@@ -131,7 +131,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === EXTENDED USER STORIES WITH SPECIFICATIONS ===
 'prds-create'
 : null
-{
+// {
   description: 'Create Product Requirement Document',
   category: 'product',
   priority,
@@ -146,7 +146,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === IMPLEMENTATION WORK ===
 'tasks-create'
 : null
-{
+// {
   description: 'Create implementation task',
   category: 'development',
   priority,
@@ -161,7 +161,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === MULTI-SERVICE COORDINATION ===
 'coordination-status'
 : null
-{
+// {
   description: 'Check coordination system status',
   category: 'system',
   priority,
@@ -173,7 +173,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === SWARM INTELLIGENCE ===
 'swarms-create'
 : null
-{
+// {
   description: 'Create intelligent swarm',
   category: 'ai',
   priority,
@@ -188,7 +188,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // === META REGISTRY SYSTEM ===
 'meta-registry'
 : null
-{
+// {
   description: 'Access meta registry information',
   category: 'system',
   priority,
@@ -197,9 +197,10 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   : '/api/meta', method: 'GET' ,
   tui}
 
+// 
 }
 // === METADATA ===
-export const SCHEMA_METADATA: SchemaMetadata = {
+export const SCHEMA_METADATA = {
   version: '1.0.0',
 lastUpdated: new Date().toISOString(),
 categories: ['strategic', 'architecture', 'planning', 'development', 'product', 'system', 'ai'],
@@ -207,68 +208,67 @@ totalCommands: Object.keys(CLAUDE_ZEN_SCHEMA).length }
 /**
  * Get commands by category
  */
-export function getCommandsByCategory(_category: string): Record<string, SchemaCommand> {
+export function getCommandsByCategory(_category): Record<string, SchemaCommand> {
   return Object.fromEntries(;
   // Object.entries(CLAUDE_ZEN_SCHEMA).filter(([ cmd]) => cmd.category === category); // LINT: unreachable code removed
-  )
-}
+  //   )
+// }
 /**
  * Get web-enabled commands
  */
 export function getWebEnabledCommands(): Record<string, SchemaCommand> {
   return Object.fromEntries(;
   // Object.entries(CLAUDE_ZEN_SCHEMA).filter(([ cmd]) => cmd.interfaces.web?.enabled); // LINT: unreachable code removed
-  )
-}
+  //   )
+// }
 /**
  * Get CLI-enabled commands
  */
 export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
   return Object.fromEntries(;
   // Object.entries(CLAUDE_ZEN_SCHEMA).filter(([ cmd]) => cmd.interfaces.cli); // LINT: unreachable code removed
-  )
-}
+  //   )
+// }
 /**
  * Validate command arguments
  */
 export function validateCommandArgs(
   commandName,
-args: Record<string, any>;
-): null
-{
-  valid: boolean;
-  missing: string[];
-  errors: string[];
-}
-{
+args): null
+// {
+  // valid: boolean
+  missing;
+  errors;
+// }
+// {
   const _command = CLAUDE_ZEN_SCHEMA[commandName];
   if (!command) {
-    return { valid, missing: [], errors: [`Unknown command: ${commandName}`] };
+    return { valid, missing: [], errors: [`Unknown command] };
     //   // LINT: unreachable code removed}
     const _validation = command.validation;
     if (!validation) {
       return { valid, missing: [], errors: [] };
       //   // LINT: unreachable code removed}
-      const _missing: string[] = [];
-      const _errors: string[] = [];
+      const _missing = [];
+      const _errors = [];
       // Check required fields
       if (validation.required) {
         for (const field of validation.required) {
           if (!(field in args) ?? args[field] === undefined ?? args[field] === null) {
             missing.push(field);
-          }
-        }
-      }
+          //           }
+        //         }
+      //       }
       return {
     valid: missing.length === 0 && errors.length === 0,
       // missing, // LINT: unreachable code removed
       errors }
-  }
+  //   }
   /**
    * Generate OpenAPI specification
    */
-  export function _generateOpenAPISpec(): unknown {
-  const _paths: unknown = {};
+  export function _generateOpenAPISpec() {
+  const _paths = {};
 
   Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_cmdName, cmdConfig]) => {
     if (!cmdConfig.interfaces.web?.enabled) return;
@@ -277,7 +277,8 @@ args: Record<string, any>;
 
     if (!paths[endpoint]) {
       paths[endpoint] = {};
-    }
+    //     }
+
 
     paths[endpoint][method.toLowerCase()] = {
       summary: cmdConfig.description,
@@ -292,12 +293,12 @@ args: Record<string, any>;
           'application/json': null
               type: 'object',
               required: cmdConfig.validation.required,
-              properties: cmdConfig.validation.required.reduce((props, field: string) => {
+              properties: cmdConfig.validation.required.reduce((props, field) => {
                 props[field] = { type: 'string' };
                 return props;
     //   // LINT: unreachable code removed}, {}) },, }
-  }
-  )
+  //   }
+  //   )
   return {
     openapi: '3.0.0',
   // info: { // LINT: unreachable code removed
@@ -306,5 +307,5 @@ args: Record<string, any>;
   description: 'Auto-generated API from Claude Zen Schema' }
 
 paths }
-}
+// }
 export default CLAUDE_ZEN_SCHEMA;

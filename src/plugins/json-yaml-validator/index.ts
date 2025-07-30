@@ -3,7 +3,7 @@
  * Validation, formatting, and schema checking for JSON/YAML files;
  */
 export class JsonYamlValidatorPlugin {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     this.config = {filePatterns = new Map();
     this.schemas = new Map();
     this.stats = {filesScanned = [];
@@ -34,7 +34,7 @@ export class JsonYamlValidatorPlugin {
           return {valid = await import('js-yaml');
     // const _parsed = yaml.load(content); // LINT: unreachable code removed
           return yaml.dump(parsed, { ;
-    // indent = {type = { // LINT: unreachable code removed}): unknown {
+    // indent = {type = { // LINT: unreachable code removed}) {
     console.warn(`🔍 Scanning JSON/YAML files in ${rootPath}`);
 
     this.stats = {filesScanned = {summary = await this.findFiles(rootPath);
@@ -48,7 +48,8 @@ export class JsonYamlValidatorPlugin {
           results.summary.validFiles++;
         } else {
           results.summary.invalidFiles++;
-        }
+        //         }
+
 
         this.stats.issuesFound += fileResult.issues.length;
         results.summary.issuesFound += fileResult.issues.length;
@@ -60,8 +61,9 @@ export class JsonYamlValidatorPlugin {
 // await this.autoFixFile(file, fileResult);
           this.stats.autoFixed++;
           results.summary.autoFixed++;
-        }
-      }
+        //         }
+      //       }
+
 
       results.summary.filesScanned = this.stats.filesScanned;
 
@@ -69,7 +71,7 @@ export class JsonYamlValidatorPlugin {
 
       return results;
     //   // LINT: unreachable code removed} catch (error) {
-      console.error('❌ JSON/YAML scanning failed = {}): unknown {
+      console.error('❌ JSON/YAML scanning failed = {}) {
     const _result = {file = await import('fs').then(fs => fs.promises.stat(filePath));
       result.metadata.size = stats.size;
 
@@ -95,8 +97,9 @@ find(v => v.extensions.includes(ext));
         result.issues.push(...schemaIssues);
         if(schemaIssues.length > 0) {
           result.metadata.schema = 'validated';
-        }
-      }
+        //         }
+      //       }
+
 
       // Security checks
 // const _securityIssues = awaitthis.performSecurityChecks(content, filePath);
@@ -114,12 +117,13 @@ find(v => v.extensions.includes(ext));
     if(depth > 10) {
       issues.push({type = this.validatePackageJson(parsed);
       issues.push(...packageIssues);
-    }
+    //     }
+
 
     return issues;
     //   // LINT: unreachable code removed}
 
-  async validateYamlStructure(parsed, content, filename): unknown {
+  async validateYamlStructure(parsed, content, filename) {
     const _issues = [];
 
     // Check for tabs (YAML should use spaces)
@@ -132,18 +136,20 @@ find(v => v.extensions.includes(ext));
     if (filename.includes('docker-compose')) {
       const _dockerIssues = this.validateDockerCompose(parsed);
       issues.push(...dockerIssues);
-    }
+    //     }
+
 
     // GitHub Actions workflow checks
     if (filename.includes('.github/workflows')) {
       const _workflowIssues = this.validateGitHubWorkflow(parsed);
       issues.push(...workflowIssues);
-    }
+    //     }
+
 
     return issues;
     //   // LINT: unreachable code removed}
 
-  async validateSchema(data, filePath): unknown {
+  async validateSchema(data, filePath) {
     const _issues = [];
 
     // Find matching schema
@@ -154,12 +160,14 @@ find(v => v.extensions.includes(ext));
       if (this.matchesPattern(filePath, pattern)  ?? fileName === pattern) {
         matchingSchema = schema;
         break;
-      }
-    }
+      //       }
+    //     }
+
 
     if(!matchingSchema) {
       return issues; // No schema to validate against
-    }
+    //     }
+
 
     try {
       // Simple schema validation (in production, use ajv or similar)
@@ -202,13 +210,14 @@ find(v => v.extensions.includes(ext));
 // const _formatted = awaitvalidator.format.call(this, content);
 // await writeFile(filePath, formatted, 'utf8');
         console.warn(`🔧 Auto-fixed formatting in ${filePath}`);
-      }
+      //       }
     } catch (error) {
-      console.warn(`⚠️ Auto-fix failed for ${filePath}: ${error.message}`);
-  }
+      console.warn(`⚠️ Auto-fix failed for ${filePath});
+  //   }
+
 
   // Utility methods
-  extractLineNumber(errorMessage): unknown {
+  extractLineNumber(errorMessage) {
     const _match = errorMessage.match(/line (\d+)/);
     return match ? parseInt(match[1]) : null;
     //   // LINT: unreachable code removed}
@@ -218,15 +227,15 @@ find(v => v.extensions.includes(ext));
     // if(typeof obj === 'object' && obj !== null) { // LINT: unreachable code removed
       for (const value of Object.values(obj)) {
         count = this.countNullValues(value, count);
-      }
-    }
+      //       }
+    //     }
     return count;
     // ; // LINT: unreachable code removed
   calculateDepth(obj, depth = 0): unknown ;
     if (typeof obj !== 'object'  ?? obj === null) return depth;
     // return Math.max(...Object.values(obj).map(v => this.calculateDepth(v, depth + 1))); // LINT: unreachable code removed
 
-  checkYamlIndentation(lines): unknown {
+  checkYamlIndentation(lines) {
     const _issues = [];
 
     for(let i = 0; i < lines.length; i++) {
@@ -241,21 +250,23 @@ find(v => v.extensions.includes(ext));
     return filePath.includes(pattern);
     //   // LINT: unreachable code removed}
 
-  validateAgainstSchema(data, schema): unknown {
+  validateAgainstSchema(data, schema) {
     const _errors = [];
 
     // Simple schema validation
     if(schema.type && typeof data !== schema.type) {
       errors.push(`Expected type ${schema.type}, got ${typeof data}`);
-    }
+    //     }
+
 
     if(schema.required) {
       for(const field of schema.required) {
         if (!(field in data)) {
-          errors.push(`Missing required field: ${field}`);
-        }
-      }
-    }
+          errors.push(`Missing required field);
+        //         }
+      //       }
+    //     }
+
 
     return errors;
     //   // LINT: unreachable code removed}
@@ -273,6 +284,7 @@ find(v => v.extensions.includes(ext));
     this.validators.clear();
     this.schemas.clear();
     console.warn('📄 JSON/YAML Validator Plugin cleaned up');
-}
+// }
+
 
 export default JsonYamlValidatorPlugin;

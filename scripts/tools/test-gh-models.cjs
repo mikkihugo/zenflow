@@ -3,7 +3,7 @@
  * Simple test of GitHub Models CLI integration
  */
 
-const { spawn } = require('node:child_process');
+const { spawn } = require('node);
 
 // Test function
 async function testGHModels() {
@@ -29,7 +29,7 @@ Please analyze this document and respond with ONLY this JSON format (no other te
       }
     }
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('❌ Error);
   }
 }
 
@@ -37,7 +37,7 @@ Please analyze this document and respond with ONLY this JSON format (no other te
 function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], {
-      stdio: ['pipe', 'pipe', 'pipe'] });
+      stdio);
 
     let output = '';
     let errorOutput = '';
@@ -59,7 +59,7 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
     gh.on('close', (code) => {
       clearTimeout(timeout);
       if (code !== 0) {
-        reject(new Error(`gh models run failed: ${errorOutput}`));
+        reject(new Error(`gh models run failed));
       } else {
         resolve(output.trim());
       }

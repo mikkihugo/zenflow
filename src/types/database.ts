@@ -25,7 +25,8 @@ export interface QueryOptions {
   orderBy?: string[];
   groupBy?: string[];
   having?: string;
-}
+// }
+
 
 export interface QueryResult<T = any> {success = ============================================================================
 // VECTOR DATABASE (LANCEDB)
@@ -62,15 +63,15 @@ export interface TableChange {type = ===========================================
 
 export interface DatabaseManager {
   // Connection management
-  addDatabase(config: DatabaseConfig): Promise<string>;
-  removeDatabase(id: string): Promise<boolean>;
-  getDatabase(id: string): Promise<DatabaseOperations | null>;
+  addDatabase(config): Promise<string>;
+  removeDatabase(id): Promise<boolean>;
+  getDatabase(id): Promise<DatabaseOperations | null>;
   getAllDatabases(): Promise<DatabaseConnection[]>;
 
   // Query routing
   executeQuery(databaseId, query, options?: QueryOptions): Promise<QueryResult>;
-  executeBatch(databaseId, queries: Query[], options?: QueryOptions): Promise<OperationResult[]>;
-  executeTransaction(databaseId, queries: Query[], isolation?: TransactionIsolation): Promise<OperationResult[]>;
+  executeBatch(databaseId, queries, options?: QueryOptions): Promise<OperationResult[]>;
+  executeTransaction(databaseId, queries, isolation?: TransactionIsolation): Promise<OperationResult[]>;
 
   // Health and monitoring
   checkHealth(): Promise<DatabaseHealthReport>;
@@ -84,23 +85,25 @@ export interface DatabaseManager {
 
   // Migration
   migrateData(sourceId, targetId, mapping: JSONObject): Promise<void>;
-  syncDatabases(primaryId, replicaIds: string[]): Promise<void>;
-}
+  syncDatabases(primaryId, replicaIds): Promise<void>;
+// }
+
 
 export interface DatabaseHealthReport {
   overall: 'healthy' | 'degraded' | 'critical';
   databases: {
-    [id: string]: {
-      status: DatabaseStatus;
-      health: number;
-      issues: string[];
-      recommendations: string[];
-      lastCheck: Date;
+    [id]: {
+      // status: DatabaseStatus
+      // health: number
+      issues;
+      recommendations;
+      // lastCheck: Date
     };
   };
   systemHealth: {
-    resourceUsage: JSONObject;
-    performance: JSONObject;
-    errors: string[];
+    // resourceUsage: JSONObject
+    // performance: JSONObject
+    errors;
   };
-}
+// }
+

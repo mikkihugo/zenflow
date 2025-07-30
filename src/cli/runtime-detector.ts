@@ -14,12 +14,13 @@ exit = > process.exit(code),
 onSignal = > process.on(signal, handler) },
 safeCall
 =>
-{
+// {
   try {
     return await fn();
     //   // LINT: unreachable code removed} catch (error) {
-    console.error('Runtime error:', error.message);
+    console.error('Runtime error);
     return null;
     //   // LINT: unreachable code removed}
-}
-}
+// }
+// }
+

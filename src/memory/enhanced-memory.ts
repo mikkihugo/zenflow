@@ -15,7 +15,7 @@ import path from 'node:path';
   saveInterval?: number;
   enableEncryption?: boolean;
   encryptionKey?: string;
-}
+// }
 // interface SessionState {sessionId = false
 private;
 data = {}
@@ -23,8 +23,8 @@ private;
 options = new Map();
 private;
 compressionEnabled = {};
-)
-{
+// )
+// {
   this.options = {directory = = false,saveInterval = this.options.directory!;
   this.namespace = this.options.namespace!;
   this.memoryFile = path.join(this.directory, `${this.namespace}-memory.json`);
@@ -33,15 +33,15 @@ compressionEnabled = {};
   // Start auto-save timer if enabled
   if (this.options.autoSave) {
     this.startAutoSave();
-  }
-}
+  //   }
+// }
 /**
  * Initialize the memory system with enhanced error handling;
  */
 async;
 initialize();
 : Promise<void>
-{
+// {
     if (this.initialized) return;
     // ; // LINT: unreachable code removed
     try {
@@ -50,8 +50,9 @@ initialize();
         mkdirSync(this.directory, {recursive = true;
       console.warn(`✅ Enhanced memory initialized = {};
       this.initialized = true;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Load memory data from file with compression and encryption support;
@@ -64,20 +65,23 @@ initialize();
         // Decrypt if encryption is enabled
         if (this.encryptionEnabled) {
           content = this.decrypt(content);
-        }
+        //         }
+
 
         // Decompress if compression is enabled
         if (this.compressionEnabled) {
           content = this.decompress(content);
-        }
+        //         }
+
 
         this.data = JSON.parse(content);
         console.warn(`📁 Loaded memory data = {};
-      }
+      //       }
     } catch (/* _error */) {
       console.warn(`Failed to load memory data = {};
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Save memory data to file with compression and encryption support;
@@ -89,15 +93,17 @@ initialize();
       // Compress if compression is enabled
       if (this.compressionEnabled) {
         content = this.compress(content);
-      }
+      //       }
+
 
       // Encrypt if encryption is enabled
       if (this.encryptionEnabled) {
         content = this.encrypt(content);
-      }
+      //       }
 // await fs.writeFile(this.memoryFile, content);
       console.warn(`💾 Memory data saved = {};
-      }
+      //       }
+
 
       const __enhancedState = {
 ..state,saved = _enhancedState;
@@ -112,23 +118,25 @@ initialize();
           sessionList = sessionList.filter(session => ;
             session.state === filter.state;
           );
-        }
+        //         }
+
 
         if (filter.maxAge) {
           const _cutoff = new Date(Date.now() - filter.maxAge).toISOString();
           sessionList = sessionList.filter(session => ;
             session.lastActivity && session.lastActivity > cutoff;
           );
-        }
+        //         }
+
 
         if (filter.limit) {
           sessionList = sessionList.slice(0, filter.limit);
-        }
-      }
+        //         }
+      //       }
+
 
       return sessionList.filter(session => ;
-    // session.state === 'active'  ?? session.state === 'pending'; // LINT: unreachable code removed
-      );
+    // session.state === 'active'  ?? session.state === 'pending'; // LINT);
     } catch (error = this.data.sessions  ?? {};
       const _session = sessions[sessionId];
 
@@ -143,36 +151,41 @@ initialize();
   ): Promise<boolean> ;
     if (!this.initialized) {
 // await this.initialize();
-    }
+    //     }
+
 
     try {
       const _namespace = options.namespace  ?? 'general';
 
       if (!this.data[namespace]) {
         this.data[namespace] = {};
-      }
+      //       }
+
 
       const _entry = {value = options.ttl;
         entry.expiresAt = new Date(Date.now() + options.ttl * 1000).toISOString();
-      }
+      //       }
+
 
       this.data[namespace][key] = entry;
 
       // Update access stats
-      this.updateAccessStats(`${namespace}:${key}`);
+      this.updateAccessStats(`${namespace});
 
       // Check memory size limit
 // await this.enforceMemoryLimits();
       if (this.options.autoSave) {
 // await this.saveMemoryData();
-      }
+      //       }
+
 
       return true;catch (error = 'general',
     options = ;
   ): Promise<JSONValue | StoredEntry | null> ;
     if (!this.initialized) {
 // await this.initialize();
-    }
+    //     }
+
 
     try {
       const _data = this.data[namespace];
@@ -189,8 +202,9 @@ initialize();
         if (options.updateAccess !== false) {
           entry.accessed = new Date().toISOString();
           entry.accessCount = (entry.accessCount  ?? 0) + 1;
-          this.updateAccessStats(`${namespace}:${key}`);
-        }
+          this.updateAccessStats(`${namespace});
+        //         }
+
 
         return options.includeMetadata ? entry = {}): Promise<key = [];
     // const { // LINT: unreachable code removed
@@ -219,22 +233,26 @@ initialize();
           if (pattern) {
             const _regex = new RegExp(pattern.replace(/\*/g, '.*'), 'i');
             matches = matches && (regex.test(key)  ?? regex.test(JSON.stringify(entry.value)));
-          }
+          //           }
+
 
           if (tags && tags.length > 0) {
             const _entryTags = entry.metadata.tags as string[]  ?? [];
             matches = matches && tags.some(tag => entryTags.includes(tag));
-          }
+          //           }
+
 
           if (priority) {
             matches = matches && entry.metadata.priority === priority;
-          }
+          //           }
+
 
           // Check expiration
           if (entry.expiresAt && new Date(entry.expiresAt) < new Date()) {
             delete nsData[key];
             continue;
-          }
+          //           }
+
 
           if (matches) {
             results.push({
@@ -242,21 +260,14 @@ initialize();
         let _aVal = a.metadata.accessed  ?? a.metadata.stored;
             bVal = b.metadata.accessed  ?? b.metadata.stored;
             break;
-          case 'stored':;
-            aVal = a.metadata.stored;
-            bVal = b.metadata.stored;
-            break;
-          case 'accessCount':;
-            aVal = a.metadata.accessCount  ?? 0;
-            bVal = b.metadata.accessCount  ?? 0;
-            break;default = aVal < bVal ? -1 = === 'asc' ? comparison = ): Promise<{cleared = [];
+          case 'stored'): Promise<{cleared = [];
       const { pattern, namespace, olderThan, priority, tags, dryRun = false } = options;
 
       if (!pattern && !namespace && !olderThan && !priority && !tags) {
         // Clear all data
         if (!dryRun) {
           this.data = {};
-        }
+        //         }
         return {cleared = namespace ? [namespace] : Object.keys(this.data);
     // ; // LINT: unreachable code removed
       for (const ns of namespaces) {
@@ -270,36 +281,42 @@ initialize();
           // Apply filters
           if (pattern) {
             const _regex = new RegExp(pattern.replace(/\*/g, '.*'), 'i');
-            shouldClear = shouldClear  ?? regex.test(`${ns}:${key}`)  ?? regex.test(key);
-          }
+            shouldClear = shouldClear  ?? regex.test(`${ns})  ?? regex.test(key);
+          //           }
+
 
           if (olderThan) {
             const _entryDate = new Date(entry.stored);
             const _cutoff = new Date(Date.now() - olderThan);
             shouldClear = shouldClear  ?? entryDate < cutoff;
-          }
+          //           }
+
 
           if (priority) {
             shouldClear = shouldClear  ?? entry.metadata.priority === priority;
-          }
+          //           }
+
 
           if (tags && tags.length > 0) {
             const _entryTags = entry.metadata.tags as string[]  ?? [];
             shouldClear = shouldClear  ?? tags.some(tag => entryTags.includes(tag));
-          }
+          //           }
+
 
           if (shouldClear) {
-            cleared.push(`${ns}:${key}`);
+            cleared.push(`${ns});
             if (!dryRun) {
               delete nsData[key];
-            }
-          }
-        }
-      }
+            //             }
+          //           }
+        //         }
+      //       }
+
 
       if (!dryRun && this.options.autoSave) {
 // await this.saveMemoryData();
-      }
+      //       }
+
 
       return { cleared = {}): Promise<string[] | {key = false, includeExpired = false } = options;
     // const _results = []; // LINT: unreachable code removed
@@ -313,7 +330,8 @@ initialize();
             // Check expiration
             if (!includeExpired && entry.expiresAt && new Date(entry.expiresAt) < new Date()) {
               continue;
-            }
+            //             }
+
 
             if (includeMetadata) {
               results.push({ key,metadata = === 'object' && ns !== 'sessions') {
@@ -323,7 +341,8 @@ initialize();
               // Check expiration
               if (!includeExpired && entry.expiresAt && new Date(entry.expiresAt) < new Date()) {
                 continue;
-              }
+              //               }
+
 
               if (includeMetadata) {
                 results.push({ key = {totalNamespaces = === 'object') {
@@ -333,15 +352,17 @@ initialize();
             stats.sessions = Object.keys(this.data[namespace]).length;
           } else {
             stats.totalKeys += Object.keys(this.data[namespace]).length;
-          }
-        }
-      }
+          //           }
+        //         }
+      //       }
+
 
       return stats;
     //   // LINT: unreachable code removed} catch (error = 'json'): Promise<string> ;
     if (!this.initialized) {
 // await this.initialize();
-    }
+    //     }
+
 
     switch (format) {
       case 'json':;
@@ -359,14 +380,16 @@ initialize();
           if (entry.expiresAt && new Date(entry.expiresAt) < now) {
             delete this.data[namespace][key];
             cleaned++;
-          }
-        }
-      }
-    }
+          //           }
+        //         }
+      //       }
+    //     }
+
 
     if (cleaned > 0) {
       console.warn(`🧹 Cleaned up ${cleaned} expired entries`);
-    }
+    //     }
+
 
     return cleaned;
     //   // LINT: unreachable code removed}
@@ -392,7 +415,8 @@ initialize();
 
       if (aPriority !== bPriority) {
         return aPriority - bPriority; // Low priority first
-      }
+      //       }
+
 
       return a.lastAccess.getTime() - b.lastAccess.getTime(); // Older first
     });
@@ -406,11 +430,12 @@ initialize();
 
       const _entrySize = entry.metadata.size as number  ?? 0;
       delete this.data[ns][key];
-      this.accessStats.delete(`${ns}:${key}`);
+      this.accessStats.delete(`${ns});
 
       removedSize += entrySize;
       removedCount++;
-    }
+    //     }
+
 
     console.warn(`🗑️ Evicted ${removedCount} entries (${removedSize} bytes) to enforce memory limits`);
 
@@ -427,7 +452,8 @@ reduce((sum, stat) => sum + stat.count, 0);
 // await this.saveMemoryData();
     //   // LINT: unreachable code removed}
     }, this.options.saveInterval!);
-  }
+  //   }
+
 
   /**
    * Stop auto-save timer;
@@ -436,7 +462,8 @@ reduce((sum, stat) => sum + stat.count, 0);
     if (this.saveTimer) {
       clearInterval(this.saveTimer);
       this.saveTimer = undefined;
-    }
+    //     }
+
 
   /**
    * Compression methods (placeholder implementations);
@@ -456,9 +483,10 @@ reduce((sum, stat) => sum + stat.count, 0);
             entry.accessed  ?? '',
             entry.accessCount  ?? 0;
           ].join(','));
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return lines.join('\n');
     //   // LINT: unreachable code removed}
@@ -466,7 +494,7 @@ reduce((sum, stat) => sum + stat.count, 0);
   /**
    * Export to XML format;
    */;
-  private exportToXML(): string {
+  private exportToXML() {
     const _xml = '<?xml version="1.0" encoding="UTF-8"?>\n<memory>\n';
 
     for (const namespace in this.data) {
@@ -479,11 +507,13 @@ reduce((sum, stat) => sum + stat.count, 0);
           xml += `      <value>${this.escapeXML(JSON.stringify(entry.value))}</value>\n`;
           xml += `      <metadata>${this.escapeXML(JSON.stringify(entry.metadata))}</metadata>\n`;
           xml += `    </entry>\n`;
-        }
+        //         }
+
 
         xml += `  </namespace>\n`;
-      }
-    }
+      //       }
+    //     }
+
 
     xml += '</memory>';
     return xml;
@@ -509,13 +539,15 @@ reduce((sum, stat) => sum + stat.count, 0);
     } else if (memoryUsageRatio > 0.75) {
       issues.push('Memory usage over 75%');
       status = 'warning';
-    }
+    //     }
+
 
     // Check for initialization
     if (!this.initialized) {
       issues.push('Memory system not initialized');
       status = 'error';
-    }
+    //     }
+
 
     return {
       status,
@@ -529,8 +561,9 @@ reduce((sum, stat) => sum + stat.count, 0);
       },
       issues;
     };
-  }
-}
+  //   }
+// }
+
 
 // Default export for easier importing
 export default EnhancedMemory;

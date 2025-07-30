@@ -9,21 +9,21 @@
  * Module alias configuration for build system;
  */
 // interface ModuleAliases {
-  [pattern: string]: string;
-}
+  [pattern]: string;
+// }
 /**
  * Build configuration interface;
  */
 // interface BuildConfiguration {
-  moduleAliases: ModuleAliases;
-  excludeModules: string[];
-  externals: string[];
-}
+  // moduleAliases: ModuleAliases
+  excludeModules;
+  externals;
+// }
 /**
  * Build configuration for dual Node.js/Deno support;
  * Handles module resolution and bundling exclusions;
  */
-export const buildConfig: BuildConfiguration = {
+export const buildConfig = {
   // Module aliases for Node.js build compatibility
   moduleAliases: {
     '@cliffy/ansi/colors': './src/adapters/cliffy-node.js',

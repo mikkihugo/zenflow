@@ -12,7 +12,7 @@ import chalk from 'chalk';
  * @param {Object} flags - Command flags and options;
  * @returns {Promise<void>}
  */
-// export async function initHiveMind(flags = ora('Initializing Hive Mind system...': unknown).start(); // LINT: unreachable code removed
+// export async function initHiveMind(flags = ora('Initializing Hive Mind system...').start(); // LINT: unreachable code removed
 
 try {
     // Create session directory
@@ -33,14 +33,7 @@ try {
     console.warn(`;
 ${chalk.green('✓ Hive Mind Initialization Complete')}
 
-${chalk.bold('Created = false): unknown {
-  if (existsSync(dbPath) && !force) {
-    // Database exists, verify schema
-    const _db = new Database(dbPath);
-// await verifyDatabaseSchema(db);
-    db.close();
-    return;
-    //   // LINT: unreachable code removed}
+\${chalk.bold('Created = false)}
 
   const _db = new Database(dbPath);
 
@@ -52,18 +45,16 @@ ${chalk.bold('Created = false): unknown {
 // await insertInitialData(db);
   } finally {
     db.close();
-  }
-}
+  //   }
+// }
+
 
 /**
  * Create all required database tables;
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */;
-    // async function createDatabaseTables(db = [ // LINT: unreachable code removed
-    // Sessions table
-    `CREATE TABLE IF NOT EXISTS sessions (;
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, objective TEXT, status TEXT DEFAULT 'active', queen_type TEXT DEFAULT 'strategic', worker_count INTEGER DEFAULT 4, created_at INTEGER DEFAULT (strftime('%s', 'now': unknown)),
+    // async function createDatabaseTables(db = [ // LINT)),
       updated_at INTEGER DEFAULT (strftime('%s', 'now')),
       metadata TEXT;
     )`,
@@ -118,48 +109,44 @@ ${chalk.bold('Created = false): unknown {
 
   for(const tableSQL of tables) {
     db.exec(tableSQL);
-  }
-}
+  //   }
+// }
 /**
  * Create database indexes for performance;
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */
-// async function createDatabaseIndexes(db = [ // LINT: unreachable code removed
-'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions (status: unknown)',
+// async function createDatabaseIndexes(db = [ // LINT)',
 'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents (session_id)',
 'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory (session_id)',
 'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory (key)',
 'CREATE INDEX IF NOT EXISTS idx_decisions_session ON consensus_decisions (session_id)',
 'CREATE INDEX IF NOT EXISTS idx_metrics_session ON performance_metrics (session_id)',
 ('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics (timestamp)');
-]
+// ]
 for (const indexSQL of indexes) {
   db.exec(indexSQL);
-}
-}
+// }
+// }
 /**
  * Insert initial configuration data;
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */
-// async function insertInitialData(db = [ // LINT: unreachable code removed
-{
-  key = db.prepare(`;
-    INSERT INTO collective_memory (id, key, value, type, importance: unknown)
+// async function insertInitialData(db = [ // LINT)
     VALUES (?, ?, ?, ?, ?);
   `);
   for (const config of defaultConfig) {
     const _id = `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     stmt.run(id, config.key, config.value, config.type, 1.0);
-  }
-}
+  //   }
+// }
 /**
  * Verify database schema is current;
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */
-// async function verifyDatabaseSchema(): unknown {
+// async function verifyDatabaseSchema() {
 const _result = db
 prepare(`;
       SELECT name FROM sqlite_master ;
@@ -172,16 +159,16 @@ if (!result) {
   for(const subdir of subdirs) {
     const _dirPath = path.join(sessionDir, subdir);
 // await ensureDirectoryExists(dirPath);
-  }
-}
+  //   }
+// }
+
 
 /**
  * Validate successful initialization;
  * @param {string} sessionDir - Session directory path;
  * @returns {Promise<void>}
  */;
-    // async function validateInitialization(sessionDir = [ // LINT: unreachable code removed
-    path.join(sessionDir, 'hive-mind.db': unknown),
+    // async function validateInitialization(sessionDir = [ // LINT),
     path.join(sessionDir, 'config.json');
   ];
 
@@ -195,8 +182,9 @@ prepare('SELECT COUNT(*) as count FROM collective_memory WHERE type = ?')
 get('config');
     if (result.count === 0) {
       throw new Error('Database initialization incomplete - no config records found');
-    }
+    //     }
   } finally {
     db.close();
-  }
-}
+  //   }
+// }
+

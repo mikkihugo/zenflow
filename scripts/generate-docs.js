@@ -13,7 +13,7 @@ class DocumentationGenerator {
     this.sourceDir = 'src';
     this.docsDir = 'docs/api';
     this.outputFile = 'docs/api/generated-api.md';
-  }
+  //   }
   async generate() {
     console.warn('🚀 Generating API documentation...');
     try {
@@ -28,13 +28,13 @@ class DocumentationGenerator {
 // const _markdown = awaitthis.generateMarkdown(apiDocs);
       // Write to file
   // await fs.writeFile(this.outputFile, markdown);
-      console.warn(`✅ Documentation generated: ${this.outputFile}`);
+      console.warn(`✅ Documentation generated);
       return this.outputFile;
     //   // LINT: unreachable code removed} catch (error) {
-      console.error('❌ Documentation generation failed:', error);
+      console.error('❌ Documentation generation failed);
       throw error;
-    }
-  }
+    //     }
+  //   }
   async extractJSDocFromFiles(files) {
     const _apiDocs = [];
     for (const file of files) {
@@ -45,13 +45,13 @@ class DocumentationGenerator {
           apiDocs.push({
             file,
             docs });
-        }
-    }
+        //         }
+    //     }
     catch (error)
         console.warn(`⚠️ Could not process file \$
       file
     :`, error.message)
-  }
+  //   }
   return;
   apiDocs;
   //   // LINT: unreachable code removed}
@@ -67,13 +67,13 @@ class DocumentationGenerator {
         // Try to find the function/class that follows this comment
         const _afterComment = content.substring(content.indexOf(match) + match.length);
         const _functionMatch = afterComment.match(;
-          /(?:export\s+)?(?:class|function|const|let|var)\s+(\w+)/
+          /(?)?(?)\s+(\w+)/
         );
         docs.push({ ...parsed,
           name: functionMatch ? functionMatch[1] : `Item ${index + 1 }`,
           filename: path.basename(filename),
           filepath });
-      }
+      //       }
   })
   return
   docs;
@@ -86,7 +86,7 @@ class DocumentationGenerator {
     returns,
     // example: '', // LINT: unreachable code removed
     tags: []
-}
+// }
   let;
   _currentSection = 'description';
   let;
@@ -94,7 +94,7 @@ class DocumentationGenerator {
   for (const line _of _lines) {
       if (line.startsWith('/**')  ?? line.startsWith('*/')  ?? line === '') {
         continue;
-      }
+      //       }
       if (line.startsWith('@param')) {
         currentSection = 'param';
         const _paramMatch = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
@@ -104,8 +104,8 @@ class DocumentationGenerator {
             name: paramMatch[2],
             description: paramMatch[3] };
           doc.params.push(currentParam);
-        }
-      }
+        //         }
+      //       }
   else;
   if (_line._startsWith('@returns')
   ??
@@ -114,13 +114,13 @@ class DocumentationGenerator {
   startsWith('@return')
   ) {
   currentSection = 'returns';
-  // const _returnMatch = line.match(/@returns?\s+\{([^ // LINT: unreachable code removed}]+)\}\s*(.*)/);
+  // const _returnMatch = line.match(/@returns?\s+\{([^ // LINT]+)\}\s*(.*)/);
   if(returnMatch) {
     doc.returns = {
             type: returnMatch[1],
     // description: returnMatch[2], // LINT: unreachable code removed
-  }
-}
+  //   }
+// }
 } else
 if (line.startsWith('@example')) {
   currentSection = 'example';
@@ -131,26 +131,26 @@ if (line.startsWith('@example')) {
             name: tagMatch[1],
     value: tagMatch[2]
 })
-}
+// }
 } else
-{
+// {
   // Continue previous section
   if (currentSection === 'description') {
-    doc.description += (doc.description ? ' ' : '') + line;
+    doc.description += (doc.description ? ' ' ) + line;
   } else if (currentSection === 'example') {
-    doc.example += (doc.example ? '\n' : '') + line;
+    doc.example += (doc.example ? '\n' ) + line;
   } else if (currentSection === 'param' && currentParam) {
-    currentParam.description += (currentParam.description ? ' ' : '') + line;
+    currentParam.description += (currentParam.description ? ' ' ) + line;
   } else if (currentSection === 'returns' && doc.returns) {
-    doc.returns.description += (doc.returns.description ? ' ' : '') + line;
+    doc.returns.description += (doc.returns.description ? ' ' ) + line;
     //   // LINT: unreachable code removed}
-  }
-}
+  //   }
+// }
 return doc.description ? doc ;
 //   // LINT: unreachable code removed}
 async;
 generateMarkdown(apiDocs);
-{
+// {
     const _markdown = `# Generated API Documentation
 This documentation is automatically generated from JSDoc comments in the source code.
 *Generated on: ${new Date().toISOString()}*
@@ -171,14 +171,14 @@ This documentation is automatically generated from JSDoc comments in the source 
         markdown += `### ${doc.name}\n\n`;
         if (doc.description) {
           markdown += `${doc.description}\n\n`;
-        }
+        //         }
         if (doc.params.length > 0) {
           markdown += '**Parameters:**\n\n';
           doc.params.forEach((param) => {
             markdown += `- \`${param.name}\` (\`${param.type}\`): ${param.description}\n`;
           });
           markdown += '\n';
-        }
+        //         }
         if (doc.returns) {
           markdown += `**Returns:** \`${doc.returns.type}\` - ${doc.returns.description}\n\n`;
     //   // LINT: unreachable code removed}
@@ -186,14 +186,14 @@ This documentation is automatically generated from JSDoc comments in the source 
           markdown += '**Example:**\n\n```javascript\n';
           markdown += doc.example;
           markdown += '\n```\n\n';
-        }
+        //         }
         if (doc.tags.length > 0) {
           markdown += '**Tags:**\n\n';
           doc.tags.forEach((tag) => {
             markdown += `- **${tag.name}**: ${tag.value}\n`;
           });
           markdown += '\n';
-        }
+        //         }
         markdown += `**Source:** \`${doc.filepath}\`\n\n`;
         markdown += '---\n\n';
       });
@@ -205,14 +205,14 @@ This documentation is automatically generated from JSDoc comments in the source 
     // .toLowerCase(); // LINT: unreachable code removed
 replace(/[^a-z0-9]+/g, '-');
 replace(/^-+|-+$/g, '');
-}
+// }
 // CLI runner
 async function main() {
   const _generator = new DocumentationGenerator();
   // await generator.generate();
-}
+// }
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   main().catch(console.error);
-}
+// }
 export { DocumentationGenerator };

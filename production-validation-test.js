@@ -17,7 +17,7 @@ warnings,
 total }
 function test() {
   tests.push({ name, fn });
-}
+// }
 function assert() {
   results.total++;
   if (condition) {
@@ -26,16 +26,16 @@ function assert() {
   } else {
     console.warn(`❌ ${message}`);
     results.failed++;
-  }
-}
+  //   }
+// }
 function warn() {
   if (!condition) {
     console.warn(`⚠️  ${message}`);
     results.warnings++;
   } else {
     console.warn(`✅ ${message}`);
-  }
-}
+  //   }
+// }
 // Test 1: File Structure Validation
 test('File Structure', () => {
   console.warn('\n📁 Validating file structure...');
@@ -63,14 +63,14 @@ test('Dependencies', () => {
     warn(deps.includes('express'), 'Express dependency present');
     warn(deps.includes('better-sqlite3'), 'SQLite3 dependency present (better-sqlite3)');
   } catch (/* e */) {
-    assert(false, `Package.json validation failed: ${e.message}`);
-  }
+    assert(false, `Package.json validation failed);
+  //   }
 });
 // Test 3: MCP Server Health
 test('MCP Server', async () => {
   console.warn('\n🌐 Testing MCP server...');
   try {
-// const _response = awaitfetch('http://localhost:3000/health', { timeout });
+// const _response = awaitfetch('http);
 // const _health = awaitresponse.json();
 
     assert(response.ok, 'MCP server responds to health check');
@@ -82,8 +82,8 @@ test('MCP Server', async () => {
     console.warn(`   Server uptime: ${Math.floor(health.system.uptime / 1000)}s`);
     console.warn(`   Memory usage: ${Math.floor(health.system.memory.heapUsed / 1024 / 1024)}MB`);
   } catch (/* e */) {
-    assert(false, `MCP server test failed: ${e.message}`);
-  }
+    assert(false, `MCP server test failed);
+  //   }
 });
 // Test 4: Neural Engine Validation
 test('Neural Engine', () => {
@@ -101,8 +101,8 @@ test('Neural Engine', () => {
       existsSync('./ruv-FANN/target/release/libruv_fann.rlib')  ?? existsSync('./ruv-FANN/ruv-swarm/target/release');
     warn(rustBinariesExist, 'Rust binaries compiled (cargo build --release)');
   } catch (/* e */) {
-    assert(false, `Neural engine validation failed: ${e.message}`);
-  }
+    assert(false, `Neural engine validation failed);
+  //   }
 });
 // Test 5: Database Systems
 test('Database Systems', () => {
@@ -133,7 +133,7 @@ test('Plugin System', () => {
     assert(;
     existsSync(`${dir}/index.js`),
     `Plugin entry point exists: ${dir.split('/').pop()}/index.js`;
-    )
+    //     )
   });
 });
 // Test 7: MCP Tools Integration
@@ -149,18 +149,18 @@ test('MCP Tools', async () => {
     assert(response.ok, 'MCP tool execution endpoint responds');
     assert(result.success !== undefined, 'Tool execution returns success field');
     //   // LINT: unreachable code removed} catch (/* e */) {
-    warn(false, `MCP tools test failed: ${e.message}`);
-  }
+    warn(false, `MCP tools test failed);
+  //   }
 })
 // Test 8: Performance Benchmarks
 test('Performance', () =>
-{
+// {
   console.warn('\n⚡ Running performance validation...');
   const _start = process.hrtime.bigint();
   // Simulate some work
   for (let i = 0; i < 100000; i++) {
     Math.random();
-  }
+  //   }
   const _end = process.hrtime.bigint();
   const _duration = Number(end - start) / 1000000; // Convert to milliseconds
 
@@ -169,8 +169,8 @@ test('Performance', () =>
   const _memUsage = process.memoryUsage();
   const _heapUsedMB = memUsage.heapUsed / 1024 / 1024;
   assert(heapUsedMB < 200, `Memory usage reasonable: ${heapUsedMB.toFixed(2)}MB (< 200MB)`);
-}
-)
+// }
+// )
 // Execute all tests
 async function runTests() {
   console.warn(`Running ${tests.length} test suites...\n`);
@@ -179,22 +179,23 @@ async function runTests() {
     try {
 // await test.fn();
     } catch (/* e */) {
-      console.warn(`❌ Test suite "${test.name}" failed: ${e.message}`);
+      console.warn(`❌ Test suite "${test.name}" failed);
       results.failed++;
-    }
-  }
+    //     }
+  //   }
+
 
   // Final report
   console.warn(`\n${'='.repeat(60)}`);
   console.warn('📊 FINAL VALIDATION REPORT');
   console.warn('='.repeat(60));
-  console.warn(`✅ Passed: ${results.passed}`);
-  console.warn(`❌ Failed: ${results.failed}`);
-  console.warn(`⚠️  Warnings: ${results.warnings}`);
-  console.warn(`📝 Total Checks: ${results.total}`);
+  console.warn(`✅ Passed);
+  console.warn(`❌ Failed);
+  console.warn(`⚠️  Warnings);
+  console.warn(`📝 Total Checks);
 
   const _successRate = ((results.passed / results.total) * 100).toFixed(1);
-  console.warn(`📈 Success Rate: ${successRate}%`);
+  console.warn(`📈 Success Rate);
 
   if (results.failed === 0 && results.warnings <= 3) {
     console.warn('\n🎉 SYSTEM READY FOR PRODUCTION! 🎉');
@@ -205,9 +206,10 @@ async function runTests() {
   } else {
     console.warn('\n❌ SYSTEM NEEDS ATTENTION');
     console.warn('Multiple issues detected, further development needed.');
-  }
+  //   }
+
 
   process.exit(results.failed > 5 ? 1 );
-}
+// }
 // Run the validation suite
 runTests().catch(console.error);

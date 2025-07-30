@@ -9,41 +9,44 @@
   private activeExecutions = new Map()
 private
 metrics =
-{
-}
-)
-{
+// {
+// }
+// )
+// {
   super();
   this.logger = new Logger('MCPIntegrationWrapper');
   this.config = this.createDefaultConfig(config);
   this.toolRegistry = this.initializeToolRegistry();
   this.metrics = this.initializeMetrics();
   this.setupEventHandlers();
-}
+// }
 /**
  * Initialize the MCP integration wrapper;
  */
 async;
 initialize();
 : Promise<void>
-{
+// {
     this.logger.info('Initializing MCP integration wrapper...');
 
     try {
       // Register Claude Flow tools
       if (this.config.enableClaudeFlowTools) {
 // await this.registerClaudeFlowTools();
-      }
+      //       }
+
 
       // Register ruv-swarm tools
       if (this.config.enableRuvSwarmTools) {
 // await this.registerRuvSwarmTools();
-      }
+      //       }
+
 
       // Start cache cleanup if enabled
       if (this.config.enableCaching) {
         this.startCacheCleanup();
-      }
+      //       }
+
 
       this.logger.info('MCP integration wrapper initialized successfully', {totalTools = generateId('mcp-execution');
     const __startTime = performance.now();
@@ -57,7 +60,8 @@ initialize();
           this.logger.debug('Using cached result', { toolName, executionId });
           return cached;
     //   // LINT: unreachable code removed}
-      }
+      //       }
+
 
       // Create abort controller for timeout
       const _abortController = new AbortController();
@@ -90,7 +94,7 @@ initialize();
           execution.context;
         );
         results.push(result);
-      }
+      //       }
       return results;
     //   // LINT: unreachable code removed}
 
@@ -100,13 +104,10 @@ initialize();
 // await semaphore.acquire();
       try {
         return await this.executeTool(;
-    // execution.toolName, // LINT: unreachable code removed
-          execution.input,
-          execution.context;
-        );
+    // execution.toolName, // LINT);
       } finally {
         semaphore.release();
-      }
+      //       }
     });
 // const _results = awaitPromise.allSettled(promises);
 
@@ -123,18 +124,21 @@ initialize();
     if (options.category) {
       const _categoryTools = this.toolRegistry.categories.get(options.category)  ?? [];
       tools = tools.filter(tool => categoryTools.includes(tool.name));
-    }
+    //     }
+
 
     // Filter by capability
     if (options.capability) {
       const _capabilityTools = this.toolRegistry.capabilities.get(options.capability)  ?? [];
       tools = tools.filter(tool => capabilityTools.includes(tool.name));
-    }
+    //     }
+
 
     // Filter by agent permissions
     if (options.agent) {
       tools = tools.filter(tool => this.hasPermission(tool, options.agent!));
-    }
+    //     }
+
 
     return tools;
     //   // LINT: unreachable code removed}
@@ -151,7 +155,7 @@ initialize();
       const _category = this.categorizeClaudeFlowTool(tool.name);
       if (!this.toolRegistry.categories.has(category)) {
         this.toolRegistry.categories.set(category, []);
-      }
+      //       }
       this.toolRegistry.categories.get(category)!.push(tool.name);
 
       // Add capabilities
@@ -159,13 +163,15 @@ initialize();
       for (const capability of capabilities) {
         if (!this.toolRegistry.capabilities.has(capability)) {
           this.toolRegistry.capabilities.set(capability, []);
-        }
+        //         }
         this.toolRegistry.capabilities.get(capability)!.push(tool.name);
-      }
-    }
+      //       }
+    //     }
+
 
     this.logger.info(`Registered ${claudeFlowTools.length} Claude Flow tools`);
-  }
+  //   }
+
 
   private async registerRuvSwarmTools(): Promise<void> {
     this.logger.info('Registering ruv-swarm tools...');
@@ -179,7 +185,7 @@ initialize();
       const _category = this.categorizeRuvSwarmTool(tool.name);
       if (!this.toolRegistry.categories.has(category)) {
         this.toolRegistry.categories.set(category, []);
-      }
+      //       }
       this.toolRegistry.categories.get(category)!.push(tool.name);
 
       // Add capabilities
@@ -187,13 +193,15 @@ initialize();
       for (const capability of capabilities) {
         if (!this.toolRegistry.capabilities.has(capability)) {
           this.toolRegistry.capabilities.set(capability, []);
-        }
+        //         }
         this.toolRegistry.capabilities.get(capability)!.push(tool.name);
-      }
-    }
+      //       }
+    //     }
+
 
     this.logger.info(`Registered ${ruvSwarmTools.length} ruv-swarm tools`);
-  }
+  //   }
+
 
   private async executeWithRetry(tool = null;
     const _maxRetries = context.maxRetries  ?? this.config.maxRetries;
@@ -203,7 +211,8 @@ initialize();
         // Check if execution was aborted
         if (signal.aborted) {
           throw new Error('Execution aborted');
-        }
+        //         }
+
 
         this.logger.debug('Executing tool attempt', {toolName = await tool.handler(input, context);
 
@@ -212,12 +221,14 @@ initialize();
 
         this.logger.warn('Tool execution attempt failed', {toolName = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
 // await new Promise(resolve => setTimeout(resolve, delay));
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     throw lastError  ?? new Error('Tool execution failed after all retries');
-  }
+  //   }
+
 
   private isNonRetryableError(error = [
       /not found/i,
@@ -240,8 +251,9 @@ initialize();
     //   // LINT: unreachable code removed} else {
         // Remove expired entry
         this.executionCache.delete(cacheKey);
-      }
-    }
+      //       }
+    //     }
+
 
     this.metrics.cacheMisses++;
     return null;
@@ -249,7 +261,8 @@ initialize();
 
   private async cacheResult(toolName = this.generateCacheKey(toolName, input, context);
     this.executionCache.set(cacheKey, result);
-  }
+  //   }
+
 
   private generateCacheKey(toolName = this.hashObject(input);
 
@@ -258,7 +271,7 @@ initialize();
       const _char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
-    }
+    //     }
     return hash.toString(36);
     //   // LINT: unreachable code removed}
 
@@ -273,7 +286,8 @@ initialize();
     return agent.capabilities.some(capability => ;
     // toolPermissions.includes(capability); // LINT: unreachable code removed
     );
-  }
+  //   }
+
 
   private categorizeClaudeFlowTool(toolName = [];
 
@@ -289,8 +303,9 @@ initialize();
     for (const pattern of capabilityPatterns) {
       if (text.includes(pattern)) {
         capabilities.push(pattern);
-      }
-    }
+      //       }
+    //     }
+
 
     return capabilities.length > 0 ?capabilities = result.duration;
     // ; // LINT: unreachable code removed
@@ -304,21 +319,23 @@ initialize();
       toolStats.successCount++;
     } else {
       toolStats.failureCount++;
-    }
-  }
+    //     }
+  //   }
 
-  private calculateCacheHitRate(): number {
+
+  private calculateCacheHitRate() {
     const _total = this.metrics.cacheHits + this.metrics.cacheMisses;
     return total > 0 ? this.metrics.cacheHits / total = {};
     // ; // LINT: unreachable code removed
     for (const [toolName, stats] of this.metrics.toolExecutions) {
       distribution[toolName] = stats.count;
-    }
+    //     }
+
 
     return distribution;
     //   // LINT: unreachable code removed}
 
-  private startCacheCleanup(): void {
+  private startCacheCleanup() {
     // Clean up expired cache entries every 5 minutes
     setInterval(() => {
       const _now = Date.now();
@@ -328,8 +345,9 @@ initialize();
         const _age = now - result.metadata.timestamp.getTime();
         if (age > this.config.cacheTimeout) {
           expired.push(key);
-        }
-      }
+        //         }
+      //       }
+
 
       expired.forEach(key => this.executionCache.delete(key));
 
@@ -343,7 +361,8 @@ initialize();
         this.logger.warn('Tool execution failed', {toolName = > void> = [];
 
   constructor(permits = permits;
-  }
+  //   }
+
 
   async acquire(): Promise<void> {
     if (this.permits > 0) {
@@ -354,16 +373,18 @@ initialize();
     return new Promise<void>((resolve) => {
       this.waitQueue.push(resolve);
     //   // LINT: unreachable code removed});
-  }
+  //   }
 
-  release(): void {
+
+  release() {
     if (this.waitQueue.length > 0) {
       const _resolve = this.waitQueue.shift()!;
       resolve();
     } else {
       this.permits++;
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 export default MCPIntegrationWrapper;

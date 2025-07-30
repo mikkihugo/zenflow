@@ -17,9 +17,9 @@ export class AGUIDemoIntegration {
       sessionId => {
       console.warn(`🌟 AG-UI Event [${event.type}
     ]:`, event)
-  }
-  )
-}
+  //   }
+  //   )
+// }
 /**
    * Demo1 = this.adapter.startTextMessage(null, 'assistant');
 
@@ -28,7 +28,8 @@ export class AGUIDemoIntegration {
     for(const char of text) {
       this.adapter.addTextContent(char, messageId);
       await new Promise(resolve => setTimeout(resolve, 50)); // Simulate typing
-    }
+    //     }
+
 
     this.adapter.endTextMessage(messageId);
 
@@ -72,21 +73,22 @@ export class AGUIDemoIntegration {
 // await this.runAllDemos();
     return aguiWS;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Standalone demo runner;
  */
-export async function runAGUIDemo(): unknown {
+export async function runAGUIDemo() {
   const _demo = new AGUIDemoIntegration();
 // await demo.runAllDemos();
   return demo;
-}
+// }
 /**
  * Integration test helper;
  */
 export function createAGUIIntegrationTest(server => {
-    console.warn('🧪 Running AG-UI Integration Test...': unknown);
+    console.warn('🧪 Running AG-UI Integration Test...');
 const _demo = new AGUIDemoIntegration();
 // Test basic functionality
 // await demo.demoBasicTextMessage();
@@ -97,10 +99,10 @@ if (server?.aguiMiddleware) {
   globalAdapter.emitCustomEvent('integration_test', {
     status: 'success',
   timestamp: Date.now() }
-)
-}
+// )
+// }
 console.warn('✅ AG-UI Integration Test completed')
 return demo.adapter.getStats();
-}
-}
+// }
+// }
 export default AGUIDemoIntegration;

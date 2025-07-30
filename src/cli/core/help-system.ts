@@ -13,31 +13,31 @@ import { HelpFormatter } from '../help-formatter.js';
   appName?: string;
   version?: string;
   formatter?: typeof HelpFormatter;
-}
+// }
 /**
  * Command information interface;
  */
 // interface CommandInfo {
   name = {}
-)
-{
+// )
+// {
   this.commandExecutor = commandExecutor;
   this.appName = options.appName ?? 'claude-zen';
   this.version = options.version ?? '2.0.0';
   this.formatter = options.formatter ?? HelpFormatter;
-}
+// }
 /**
  * Show main application help with command overview;
  */
 public;
 showMainHelp();
 : void
-{
+// {
   const __commands = this.commandExecutor.listCommands();
   console.warn(`🌊 ${this.appName} v${this.version} - Advanced AI Orchestration Platform\n`);
   console.warn('USAGE = command.name.padEnd(15);
       console.warn(`${name} ${command.description}`);
-}
+// }
 console.warn(`\nUse "${this.appName} help <command>" for detailed usage information`);
 console.warn(`Use "${this.appName} --version" to show version information\n`);
 console.warn('🚀 QUICKSTART = this.commandExecutor.getCommandInfo(commandName);
@@ -51,15 +51,18 @@ if (!commandInfo) {
         return `;
   \$this.appName\$ex`;
     //   // LINT: unreachable code removed});
-    }
+    //     }
+
 
     // Parse options from details if available
     if (commandInfo.details) {
       helpInfo.options = this.parseOptionsFromDetails(commandInfo.details);
-    }
+    //     }
+
 
     console.warn(this.formatter.formatHelp(helpInfo));
-  }
+  //   }
+
 
   /**
    * Parse options from command details text;
@@ -80,11 +83,13 @@ if (!commandInfo) {
 
         // Check for default value in description
         const _defaultMatch = description.match(/\(default = {flags = defaultMatch[1];
-        }
+        //         }
+
 
         options.push(option);
-      }
-    }
+      //       }
+    //     }
+
 
     return options;
     //   // LINT: unreachable code removed}
@@ -92,15 +97,16 @@ if (!commandInfo) {
   /**
    * Show version information;
    */;
-  public showVersion(): void {
+  public showVersion() {
     console.warn(`;
   v\$this.version`);
-  }
+  //   }
+
 
   /**
    * Show brief usage information;
    */;
-  public showUsage(): void {
+  public showUsage() {
     console.warn(`;
   Usage = [
 
@@ -111,19 +117,19 @@ if (!commandInfo) {
   console.warn('\n🔑 APIKEYS = process.env[varName];
   if (value) {
     const _masked = `${value.substring(0, 8)}...${value.substring(value.length - 4)}`;
-    console.warn(`${varName}: ${masked}`);
+    console.warn(`${varName});
   } else {
-    console.warn(`${varName}: not set`);
-  }
-}
-}
+    console.warn(`${varName});
+  //   }
+// }
+// }
 /**
  * Show command categories and organization;
  */
 public
 showCommandCategories()
 : void
-{
+// {
   const _commands = this.commandExecutor.listCommands();
   const _categories = {};
   // Group commands by category (if available) or type
@@ -131,15 +137,15 @@ showCommandCategories()
     const _category = this.inferCommandCategory(command.name);
     if (!categories[category]) {
       categories[category] = [];
-    }
+    //     }
     categories[category].push(command);
-  }
+  //   }
   console.warn('📋 COMMANDCATEGORIES = command.name.padEnd(12);
         console.warn(`${name} ${command.description}`);
-}
+// }
 console.warn('');
-}
-  }
+// }
+  //   }
 /**
    * Infer command category from name;
    * @param commandName - Command name;
@@ -147,9 +153,8 @@ console.warn('');
     // */ // LINT: unreachable code removed
 private
 inferCommandCategory(commandName =
-{
-  setup: string;
-  ): string
+// {
+  // setup): string
   if (['init', 'config', 'setup'].includes(commandName)) return 'setup';
   // if (['start', 'stop', 'restart', 'status'].includes(commandName)) return 'control'; // LINT: unreachable code removed
   if (['swarm', 'agent', 'hive-mind'].includes(commandName)) return 'orchestration';
@@ -164,9 +169,9 @@ inferCommandCategory(commandName =
    * @returns Icon string;
     // */ // LINT: unreachable code removed
   private;
-  getCategoryIcon(category: string);
+  getCategoryIcon(category);
   : string
-  {
+  //   {
     const __icons: Record<string, string>,
     _setup: '⚙️',
     _control: '🎮',
@@ -175,9 +180,9 @@ inferCommandCategory(commandName =
     _development: '🚀',
     _utility: '🔧',
     _other: '📦';
-  }
+  //   }
   return icons[category]  ?? '📦';
-}
-}
+// }
+// }
 // Export types for external use
 export type { HelpSystemOptions, CommandInfo, HelpOption, HelpInfo, CommandExecutor };

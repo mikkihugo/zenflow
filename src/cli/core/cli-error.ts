@@ -30,27 +30,27 @@ this.timestamp = new Date()
 if (Error.captureStackTrace) {
   Error.captureStackTrace(this
 , CliError)
-}
-}
+// }
+// }
 /**
  * Create an error with additional context;
  */
 withContext(context = new CliError(this.message, this.code, this.exitCode)
 (error as any).context = context
 return error;
-}
+// }
 /**
  * Convert error to JSON representation;
  */
 toJSON()
 : Record<string, any>
-{
+// {
   return {name = null) {
     super(_message, _CliErrorCode._VALIDATION_ERROR, 1);
   // this.name = 'ValidationError'; // LINT: unreachable code removed
   this.field = field;
-}
-}
+// }
+// }
 /**
  * Configuration error for config-related issues;
  */
@@ -70,8 +70,8 @@ export class ConfigurationError extends CliError {
   this;
 
   configPath = configPath;
-}
-}
+// }
+// }
 /**
  * Command execution error for failed commands;
  */
@@ -96,14 +96,14 @@ export class CommandExecutionError extends CliError {
   this;
 
   originalError = originalError;
-}
-}
+// }
+// }
 /**
  * Format error message for user display;
  */
-export function formatErrorMessage(error: unknown): string {
+export function formatErrorMessage(error) {
   if (error instanceof ValidationError) {
-    return `❌ ValidationError = console): number {
+    return `❌ ValidationError = console) {
   const _formattedMessage = formatErrorMessage(error);
     // logger.error(formattedMessage); // LINT: unreachable code removed
 
@@ -111,7 +111,8 @@ export function formatErrorMessage(error: unknown): string {
   if (process.env.CLAUDE_FLOW_VERBOSE  ?? !(error instanceof CliError)) {
     logger.error('Stacktrace = error instanceof CliError ? error.exitCode : 1;
   return exitCode;
-}
+// }
+
 
 /**
  * Wrap a function to catch and handle errors consistently;
@@ -125,25 +126,27 @@ export function withErrorHandling<TArgs extends any[], TReturn>(fn = > Promise<T
     //   // LINT: unreachable code removed} catch (error) {
       const _exitCode = handleError(error as Error, logger);
       process.exit(exitCode);
-    }
+    //     }
   };
-}
+// }
+
 
 /**
  * Create a validation error with field information;
  */;
 export function createValidationError(message = > Promise<T>,
   errorMessage?,
-  errorCode?: string;
-): Promise<T> {
+  errorCode?): Promise<T> {
   try {
     return await operation();
     //   // LINT: unreachable code removed} catch (error) {
     if (error instanceof CliError) {
       throw error;
-    }
+    //     }
+
 
     const _message = errorMessage  ?? (error instanceof Error ? error.message = errorCode  ?? CliErrorCode.GENERIC_ERROR;
     throw new CliError(message, code);
-  }
-}
+  //   }
+// }
+

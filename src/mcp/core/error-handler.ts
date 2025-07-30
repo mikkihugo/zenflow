@@ -10,7 +10,7 @@ export class MCPErrorHandler {
   /**
    * @param {Object} options - Configuration options
    */;
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     this.maxRetries = options.maxRetries  ?? 3;
     this.retryDelay = options.retryDelay  ?? 1000;
     this.circuitBreakerThreshold = options.circuitBreakerThreshold  ?? 10;
@@ -25,7 +25,7 @@ export class MCPErrorHandler {
     // Error statistics
     this.errorStats = {
       totalErrors,
-      recoveredErrors = {}): unknown {
+      recoveredErrors = {}) {
     // Check circuit breaker
     if(this._circuitState === 'OPEN') {
       if (Date.now() - this.lastFailureTime < this.circuitBreakerTimeout) {
@@ -33,8 +33,9 @@ export class MCPErrorHandler {
       } else {
         this.circuitState = 'HALF_OPEN';
         console.error(`[${new Date().toISOString()}] INFO [ErrorHandler] Circuit breaker transitioning to HALF_OPEN`);
-      }
-    }
+      //       }
+    //     }
+
 
     let _lastError;
 
@@ -54,7 +55,8 @@ export class MCPErrorHandler {
         if (this.isNonRetryableError(error)) {
           console.error(`[${new Date().toISOString()}] ERROR [ErrorHandler] Non-retryableerror = === this.maxRetries) {
           break;
-        }
+        //         }
+
 
         // Calculate retry delay with exponential backoff
         const _delay = this.calculateRetryDelay(attempt);
@@ -62,7 +64,8 @@ export class MCPErrorHandler {
       this.circuitState = 'CLOSED';
       this.failureCount = 0;
       console.error(`[${new Date().toISOString()}] INFO [ErrorHandler] Circuit breaker CLOSED after successful operation`);
-  }
+  //   }
+
 
   /**
    * Handle operation failure;
@@ -77,7 +80,8 @@ export class MCPErrorHandler {
       this.circuitState = 'OPEN';
       this.errorStats.circuitBreakerTrips++;
       console.error(`[${new Date().toISOString()}] ERROR [ErrorHandler] Circuit breaker OPEN after ${this.failureCount} failures`);
-    }
+    //     }
+
 
     this.errorStats.permanentFailures++;
 
@@ -89,14 +93,15 @@ export class MCPErrorHandler {
   recordError(error, context): unknown ;
     this.errorStats.totalErrors++;
     this.errorStats.lastError = {message = this.errorStats.errorHistory.slice(-50);
-  }
+  //   }
+
 
   /**
    * Check if error is non-retryable;
    * @param {Error} error - Error to check;
    * @returns {boolean} True if error should not be retried;
     // */; // LINT: unreachable code removed
-  isNonRetryableError(error): unknown {
+  isNonRetryableError(error) {
     const _nonRetryablePatterns = [
       /Invalid JSON/i,
       /Method not found/i,
@@ -117,7 +122,7 @@ export class MCPErrorHandler {
    * @param {number} attempt - Current attempt number;
    * @returns {number} Delay in milliseconds;
     // */; // LINT: unreachable code removed
-  calculateRetryDelay(attempt): unknown {
+  calculateRetryDelay(attempt) {
     const _baseDelay = this.retryDelay;
     const _exponentialDelay = baseDelay * 2 ** (attempt - 1);
     const _maxDelay = 30000; // 30 seconds max
@@ -135,7 +140,7 @@ export class MCPErrorHandler {
    * @param {Object} context - Error context;
    * @returns {Object} Error response;
     // */; // LINT: unreachable code removed
-  createErrorResponse(id, error, context = {}): unknown {
+  createErrorResponse(id, error, context = {}) {
     const __errorCode = -32603; // Internal error default
 
     // Map common errors to appropriate codes
@@ -147,11 +152,13 @@ export class MCPErrorHandler {
       _errorCode = -32700;
     } else if (error.message.includes('Invalid Request')) {
       _errorCode = -32600;
-    }
+    //     }
+
 
       process.exit(1);
     }, 5000);
-  }
+  //   }
+
 
   /**
    * Get error statistics;
@@ -171,21 +178,22 @@ export class MCPErrorHandler {
    */;
     // delay(ms): unknown ; // LINT: unreachable code removed
     return new Promise(resolve => setTimeout(resolve, ms));
-}
+// }
+
 
   /**
    * Error recovery strategies
    */;
-  export;
+  // export;
   class;
   ErrorRecoveryStrategies;
-  {
+  //   {
   /**
    * Attempt to recover from message parsing errors;
    * @param {string} buffer - Corrupted message buffer;
    * @returns {Array} Recovered messages;
     // */; // LINT: unreachable code removed
-  static recoverFromParsingError(buffer): unknown {
+  static recoverFromParsingError(buffer) {
     const _recovered = [];
 
     try {
@@ -198,8 +206,8 @@ export class MCPErrorHandler {
           recovered.push(message);
         } catch (error) {
           // Skip invalid JSON
-        }
-      }
+        //         }
+      //       }
     } catch (error) {
       console.error(`[${new Date().toISOString()}] WARN [ErrorRecovery] Buffer recoveryfailed = JSON.stringify({ ;
           jsonrpc => {
@@ -207,7 +215,8 @@ export class MCPErrorHandler {
             resolve(!error);
           });
         });
-      }
+      //       }
+
 
       return false;
     //   // LINT: unreachable code removed} catch (error) {
@@ -226,4 +235,5 @@ export class MCPErrorHandler {
     ] WARN [ErrorRecovery] State cleanup failed:`, error);
     return {};
     //   // LINT: unreachable code removed}
-}
+// }
+

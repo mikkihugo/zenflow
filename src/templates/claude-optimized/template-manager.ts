@@ -15,8 +15,9 @@ const _commands = {install = > execSync('node install-template.js', {stdio = > e
     console.warn('Claude Optimized Template');
     console.warn('========================');
     console.warn(`Version = manifest.files.filter((f) => f.category === category).length;
-      console.warn(`${category}: ${count} files`);
-    }
+      console.warn(`${category});
+    //     }
+
 
 console.warn('\nAvailable commands => {
     console.warn('Updating template...');
@@ -33,11 +34,12 @@ if(commands[command]) {
   try {
     commands[command](...args.slice(1));
   } catch (error) {
-    console.error(`Error executing ${command}:`, error.message);
+    console.error(`Error executing ${command});
     process.exit(1);
-  }
+  //   }
 } else {
-  console.error(`Unknown command: ${command}`);
+  console.error(`Unknown command);
   console.warn(`Available commands: ${Object.keys(commands).join(', ')}`);
   process.exit(1);
-}
+// }
+

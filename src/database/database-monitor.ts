@@ -22,7 +22,7 @@ type UUID
   enableAlerts?: boolean;
   enableTrends?: boolean;
   enablePredictiveAnalysis?: boolean;
-}
+// }
 // interface AlertThresholds {
   errorRate?: number; // Percentage (0-100)
   responseTime?: number; // Milliseconds
@@ -30,7 +30,7 @@ type UUID
   memoryUsage?: number; // Percentage (0-100)
   diskUsage?: number; // Percentage (0-100)
   queryQueueSize?: number; // Number of queued queries
-}
+// }
 // interface Alert {id = false
 private;
 startTime = new Date()
@@ -49,16 +49,16 @@ stats = {totalChecks = {}) {
     super();
 this.databaseManager = databaseManager;
 this.config = {checkInterval = = false,enableTrends = = false,enablePredictiveAnalysis = = false;
-}
+// }
 // Listen to database manager events
 this.setupEventListeners()
-}
+// }
 /**
  * Start monitoring
  */
 start()
 : void
-{
+// {
     if (this.isRunning) {
       console.warn('Database monitor is already running');
       return;
@@ -79,11 +79,13 @@ start()
 
     if (this.monitoringTimer) {
       clearInterval(this.monitoringTimer);
-    }
+    //     }
+
 
     if (this.metricsTimer) {
       clearInterval(this.metricsTimer);
-    }
+    //     }
+
 
     console.warn('✅ Database monitor stopped');
     this.emit('monitor = {}): Alert[] {
@@ -117,26 +119,31 @@ sort((a, b) =>
 
     if (options.database) {
       filtered = filtered.filter(m => m.database === options.database);
-    }
+    //     }
+
 
     if (options.metric) {
       filtered = filtered.filter(m => m.metric === options.metric);
-    }
+    //     }
+
 
     if (options.startTime) {
       filtered = filtered.filter(m => m.timestamp >= options.startTime!);
-    }
+    //     }
+
 
     if (options.endTime) {
       filtered = filtered.filter(m => m.timestamp <= options.endTime!);
-    }
+    //     }
+
 
     // Sort by timestamp (newest first)
     filtered.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
     if (options.limit) {
       filtered = filtered.slice(0, options.limit);
-    }
+    //     }
+
 
     return filtered;
     //   // LINT: unreachable code removed}
@@ -144,7 +151,7 @@ sort((a, b) =>
   /**
    * Get trend analysis
    */;
-  getTrendAnalysis(database?: string): TrendAnalysis[] {
+  getTrendAnalysis(database?): TrendAnalysis[] {
     const _trends = Array.from(this.trends.values());
 
     if (database) {
@@ -172,15 +179,18 @@ sort((a, b) =>
     // Generate database summaries
     const _databases = connections.map(conn => ({
       id = {summary = > (db.health  ?? 0) > 0.8).length,overallHealth = > sum + (db.queryCount  ?? 0), 0),totalErrors = > sum + (db.errorCount  ?? 0), 0),averageResponseTime = > sum + (db.averageResponseTime  ?? 0), 0) / databases.length = this.getActiveAlerts();
-    }
+    //     }
+
 
     if (includeTrends) {
       report.trends = this.getTrendAnalysis();
-    }
+    //     }
+
 
     if (includeRecommendations) {
       report.recommendations = this.generateRecommendations(healthReport, databases);
-    }
+    //     }
+
 
     return report;
     //   // LINT: unreachable code removed}
@@ -199,19 +209,22 @@ sort((a, b) =>
       for (const [dbId, dbHealth] of Object.entries(healthReport.databases)) {
         if (!this.healthHistory.has(dbId)) {
           this.healthHistory.set(dbId, []);
-        }
+        //         }
+
 
         const _history = this.healthHistory.get(dbId)!;
         history.push({overall = 100;
         if (history.length > maxHistory) {
           history.splice(0, history.length - maxHistory);
-        }
-      }
+        //         }
+      //       }
+
 
       // Check thresholds and generate alerts
       if (this.config.enableAlerts) {
 // await this.checkAlertThresholds(healthReport, connections);
-      }
+      //       }
+
 
       // Update statistics
       this.stats.totalChecks++;
@@ -246,8 +259,9 @@ sort((a, b) =>
     const _removed = before - this.metrics.length;
     if (removed > 0) {
       console.warn(`🧹 Cleaned up ${removed} old metrics`);
-    }
-  }
+    //     }
+  //   }
+
 
   private async checkAlertThresholds(healthReport = this.config.alertThresholds;
 
@@ -269,15 +283,16 @@ sort((a, b) =>
       const _key = `\$metric.database:\$metric.metric`;
       if (!metricGroups.has(key)) {
         metricGroups.set(key, []);
-      }
+      //       }
       metricGroups.get(key)!.push(metric);
-    }
+    //     }
+
 
     // Analyze trends for each group
     for (const [key, metrics] of metricGroups) {
       if (metrics.length < 2) continue;
 
-      const [database, metricName] = key.split(':');
+      const [database, metricName] = key.split(');
       metrics.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
       const _values = metrics.map(m => m.value);
@@ -310,7 +325,8 @@ sort((a, b) =>
       direction = 'increasing';
     } else {
       direction = 'decreasing';
-    }
+    //     }
+
 
     return {
       direction,rate = [];
@@ -327,9 +343,10 @@ sort((a, b) =>
           recommendations.push(`Increasing error rate trend detected in \$trend.database- investigate root cause`);
         } else if (trend.metric === 'response_time') {
           recommendations.push(`Response time trending upward in \$trend.database- consider optimization`);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return recommendations;
     //   // LINT: unreachable code removed}
@@ -341,7 +358,7 @@ sort((a, b) =>
       this.createAlert('critical', 'availability', event.id,
         `Database error => ;
       this.createAlert('warning', 'performance', event.databaseId,
-        `Query error: \$event.error`, 0, 1););
+        `Query error););
 
   private generateAlertId(): UUID ;
     return `alert_\$Date.now()_\$Math.random().toString(36).substr(2, 9)` as UUID;

@@ -17,7 +17,8 @@ export class TemplateManager {
       path.join(__dirname, '../../templates'),
       path.join(process.env.HOME  ?? process.env.USERPROFILE, '.claude-zen/templates');
     ];
-  }
+  //   }
+
 
   /**
    * Discover available templates;
@@ -64,12 +65,13 @@ export class TemplateManager {
   /**
    * Install template to target directory;
    */;
-  async installTemplate(templateName, targetPath, options = {}): unknown {
+  async installTemplate(templateName, targetPath, options = {}) {
 // const _template = awaitthis.getTemplate(templateName);
 
     if(!template) {
       throw new Error(`Template '${templateName}' not found. Run 'claude-zen templates list' to see available templates.`);
-    }
+    //     }
+
 
     const { force = false, minimal = false, variant = 'enhanced', addPlugins = true } = options;
     const _absoluteTargetPath = path.resolve(targetPath);
@@ -81,16 +83,17 @@ export class TemplateManager {
 // const _entries = awaitfs.readdir(absoluteTargetPath);
         if(entries.length > 0 && !force) {
           throw new Error(`Directory '${targetPath}' is not empty. Use --force to overwrite.`);
-        }
-      }
+        //         }
+      //       }
     } catch (error) {
       if(error.code !== 'ENOENT') {
         throw error;
-      }
-    }
+      //       }
+    //     }
+
 
     // Create target directory
-// await fs.mkdir(absoluteTargetPath, { recursive = {}): unknown {
+// await fs.mkdir(absoluteTargetPath, { recursive = {}) {
     const { minimal = false } = options;
     try {
 // const _entries = awaitfs.readdir(sourcePath, {withFileTypes = path.join(sourcePath, entry.name);
@@ -99,27 +102,31 @@ export class TemplateManager {
         // Skip template.json and cache directories
         if(entry.name === 'template.json'  ?? entry.name === 'cache'  ?? entry.name === '.swarm') {
           continue;
-        }
+        //         }
+
 
         // Skip optional files in minimal mode
         if(minimal && manifest.files && manifest.files[entry.name] && !manifest.files[entry.name].required) {
           continue;
-        }
+        //         }
+
 
         if (entry.isDirectory()) {
 // await fs.mkdir(targetFile, {recursive = value;
-      }
-    }
+      //       }
+    //     }
+
 
     // Note => {
       console.warn(`${command}`);
     });
-  }
+  //   }
+
 
   /**
    * Install settings variant;
    */;
-  async installSettingsVariant(templatePath, targetPath, variant): unknown {
+  async installSettingsVariant(templatePath, targetPath, variant) {
     const _variantFile = variant === 'enhanced' ? 'settings.json' : `settings-${variant}.json`;
     const _sourcePath = path.join(templatePath, variantFile);
     const _targetSettingsPath = path.join(targetPath, '.claude', 'settings.json');
@@ -138,17 +145,19 @@ export class TemplateManager {
       console.warn(`2. Your ${variant} settings variant is configured in .claude/settings.json`);
     } else {
       console.warn(`1. Your ${variant} settings variant is configured in .claude/settings.json`);
-    }
+    //     }
+
 
     // Show variant-specific next steps
     if(variant === 'optimized') {
       console.warn('3. Performance features are enabled - check cache and neural settings');
     } else if(variant === 'basic') {
       console.warn('3. Basic configuration - you can upgrade by changing the variant later');
-    }
+    //     }
+
 
     if(manifest.documentation) {
-      console.warn('3. Read the documentation = {}): unknown {
+      console.warn('3. Read the documentation = {}) {
     const { description = '', version = '1.0.0', category = 'custom' } = options;
     const _sourcePath = process.cwd();
     const _targetPath = path.join(sourcePath, 'templates', templateName);
@@ -161,7 +170,8 @@ export class TemplateManager {
 // await this.copyDirectory(claudePath, templateClaudePath);
     } catch (/* _error */) {
       printWarning('No .claude directory found to include in template');
-    }
+    //     }
+
 
     // Create template manifest
     const __manifest = {name = await fs.readdir(source, {withFileTypes = path.join(source, entry.name);
@@ -171,8 +181,9 @@ export class TemplateManager {
 // await this.copyDirectory(sourceFile, targetFile);
       } else {
 // await fs.copyFile(sourceFile, targetFile);
-      }
-    }
-}
+      //       }
+    //     }
+// }
+
 
 export default TemplateManager;

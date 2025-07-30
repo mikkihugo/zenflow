@@ -10,7 +10,7 @@ export class PerformanceMetrics {
   /**
    * @param {Object} options - Configuration options
    */;
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     this.enableLogging = options.enableLogging !== false;
     this.logInterval = options.logInterval  ?? 30000; // 30 seconds
     this.metricsWindow = options.metricsWindow  ?? 60000; // 1 minute window
@@ -26,17 +26,18 @@ export class PerformanceMetrics {
 
     if(this.enableLogging) {
       this.startPeriodicLogging();
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Record the start of a request;
    * @param {string} requestId - Unique request identifier;
    * @param {Object} context - Request context
    */;
-  recordRequestStart(requestId, _context = {}): unknown {
+  recordRequestStart(requestId, _context = {}) {
     this.requestTimings.set(requestId, {
-      startTime = {}): unknown {
+      startTime = {}) {
     const _timing = this.requestTimings.get(requestId);
     if(!timing) {
       console.warn(`[${new Date().toISOString()}] WARN [Metrics] No timing data forrequest = Date.now() - timing.startTime;
@@ -49,7 +50,8 @@ export class PerformanceMetrics {
     } else {
       this.metrics.requests.failed++;
       this.recordError(result.error  ?? new Error('Unknown error'), timing.context);
-    }
+    //     }
+
 
     // Update latency metrics
     this.updateLatencyMetrics(latency);
@@ -60,14 +62,15 @@ export class PerformanceMetrics {
 
     // Store in history for trend analysis
     this.addToHistory('latencies', latency);
-  }
+  //   }
+
 
   /**
    * Record batch processing metrics;
    * @param {number} batchSize - Size of the processed batch;
    * @param {number} processingTime - Time taken to process the batch
    */;
-  recordBatchMetrics(batchSize, processingTime): unknown {
+  recordBatchMetrics(batchSize, processingTime) {
     this.metrics.batches.total++;
 
     // Update average batch size
@@ -82,14 +85,15 @@ export class PerformanceMetrics {
     this.metrics.batches.avgProcessingTime = ;
       (this.metrics.batches.avgProcessingTime * (this.metrics.batches.total - 1) + processingTime) / ;
       this.metrics.batches.total;
-  }
+  //   }
+
 
   /**
    * Record error occurrence;
    * @param {Error} error - The error that occurred;
    * @param {Object} context - Error context
    */;
-  recordError(error, context = {}): unknown {
+  recordError(error, context = {}) {
     this.metrics.errors.total++;
 
     const _errorType = error.constructor.name;
@@ -98,11 +102,12 @@ export class PerformanceMetrics {
 
     // Add to recent errors
     this.metrics.errors.recent.push({type = this.metrics.errors.recent.slice(-25);
-    }
+    //     }
+
 
     // Add to history
     this.addToHistory('errors', {
-      type = {}): unknown {
+      type = {}) {
     switch(event) {
       case 'reconnect':;
         this.metrics.connection.reconnects++;
@@ -115,16 +120,18 @@ export class PerformanceMetrics {
         this.metrics.connection.lastHealthCheck = Date.now();
         this.metrics.connection.isHealthy = details.healthy !== false;
         break;
-    }
+    //     }
+
 
     this.metrics.connection.uptime = Date.now() - this.startTime;
-  }
+  //   }
+
 
   /**
    * Update memory metrics;
    * @param {number} bufferSize - Current buffer size
    */;
-  updateMemoryMetrics(bufferSize = 0): unknown {
+  updateMemoryMetrics(bufferSize = 0) {
 
     this.metrics.memory = {heapUsed = this.metrics.requests.total;
     this.metrics.requests.avgLatency = ;
@@ -137,8 +144,9 @@ export class PerformanceMetrics {
 
       this.metrics.requests.p95Latency = sortedLatencies[Math.floor(length * 0.95)]  ?? 0;
       this.metrics.requests.p99Latency = sortedLatencies[Math.floor(length * 0.99)]  ?? 0;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Update throughput metrics
@@ -161,23 +169,26 @@ export class PerformanceMetrics {
       // Reset counters
       this.throughputCounter = 0;
       this.lastThroughputCheck = now;
-    }
+    //     }
+
 
     // Update rates
     const _totalTime = (now - this.startTime) / 1000; // in seconds
     this.metrics.requests.rate = this.metrics.requests.total / totalTime;
     this.metrics.errors.rate = this.metrics.errors.total / totalTime;
-  }
+  //   }
+
 
   /**
    * Add data point to history;
    * @param {string} type - History type;
    * @param {any} value - Value to add
    */;
-  addToHistory(type, value): unknown {
+  addToHistory(type, value) {
     if(!this.history[type]) {
       this.history[type] = [];
-    }
+    //     }
+
 
     this.history[type].push(value);
     this.history.timestamps.push(Date.now());
@@ -186,8 +197,9 @@ export class PerformanceMetrics {
     if(this.history[type].length > this.maxHistoryLength) {
       this.history[type] = this.history[type].slice(-this.maxHistoryLength / 2);
       this.history.timestamps = this.history.timestamps.slice(-this.maxHistoryLength / 2);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Get current metrics snapshot;
@@ -201,7 +213,7 @@ export class PerformanceMetrics {
 ..this.metrics,timestamp = this.getMetrics();
     // const _uptime = Date.now() - this.startTime; // LINT: unreachable code removed
 
-    return {overview = this.metricsWindow): unknown {
+    return {overview = this.metricsWindow) {
     const _cutoff = Date.now() - windowMs;
     // const _cutoffIndex = this.history.timestamps.findIndex(ts => ts >= cutoff); // LINT: unreachable code removed
 
@@ -233,7 +245,7 @@ export class PerformanceMetrics {
    * @param {Object} summary - Performance summary;
    * @returns {Array} Recommendations;
     // */; // LINT: unreachable code removed
-  generateRecommendations(summary): unknown {
+  generateRecommendations(summary) {
     const _recommendations = [];
 
     if(summary.overview.errorRate > 0.1) {
@@ -242,5 +254,6 @@ export class PerformanceMetrics {
     this.throughputCounter = 0;
 
     console.error(`[${new Date().toISOString()}] INFO [Metrics] Performance metrics reset`);
-  }
-}
+  //   }
+// }
+

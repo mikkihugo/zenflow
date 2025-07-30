@@ -9,11 +9,11 @@ import { printError, printInfo } from '../utils.js';
  * Strategic documents command handler;
  */
 export async function strategicDocsCommand(input = input[0];
-const _subArgs = input.slice(1: unknown);
+const _subArgs = input.slice(1);
 if (flags.help ?? flags.h ?? !subcommand) {
   showStrategicDocsHelp();
   return;
-}
+// }
 // Initialize database
 // await strategicDocs.initialize();
 switch(subcommand) {
@@ -108,19 +108,22 @@ switch(subcommand) {
 
     if(flags.title) {
       updates.title = flags.title;
-    }
+    //     }
+
 
     if(flags.content) {
       updates.content = flags.content;
-    }
+    //     }
+
 
     if(flags.status) {
       updates.status = flags.status;
-    }
+    //     }
+
 
     if(flags.interactive && !flags.title && !flags.content) {
 // const _answers = awaitinquirer.prompt([;
-        {
+        //         {
           type = {title = === 0) {
       printWarning('No updates provided');
       return;
@@ -130,7 +133,8 @@ switch(subcommand) {
     if(updates.content  ?? updates.title) {
       const _newText = (updates.title  ?? doc.title) + ' ' + (updates.content  ?? doc.content);
       updates.relevance_keywords = extractKeywords(newText);
-    }
+    //     }
+
 
     printSuccess(`📄 Updateddocument = args[0];
 
@@ -166,7 +170,7 @@ switch(subcommand) {
     });
 
     console.warn('\n🏛️ Queen Council Activity => {
-      console.warn(`   👑 ${queen}: ${count} decisions`);
+      console.warn(`   👑 ${queen});
     });
 
   } catch (error) {
@@ -197,44 +201,20 @@ switch(subcommand) {
     if(!doc) {
       printError(`Document notfound = args[1]  ?? `${doc.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}.md`;
 
-    const { writeFile } = await import('node:fs/promises');
+    const { writeFile } = await import('node);
 // await writeFile(outputFile, doc.content);
     printSuccess(`📤 Exported document to = {
-    'prd': '📋',
-    'roadmap': '🗺️',
-    'architecture': '🏗️',
-    'adr': '📝',
-    'strategy': '🎯',
-    'research': '🔬',
-    'specification': '📐';
-  };
-  return icons[type]  ?? '📄';
-}
-
-function getStatusBadge(status = {
-    'draft': '🟡 Draft',
-    'review': '🟠 Review',
-    'approved': '🟢 Approved',
-    'archived': '⚫ Archived';
-  };
-  return badges[status]  ?? '⚪ Unknown';
-}
-
-function extractKeywords(text = > word.length > 3);
+    'prd');
 filter((word, index, arr) => arr.indexOf(word) === index) // unique
 slice(0, 20); // limit keywords
-}
+// }
 
-function showStrategicDocsHelp(): unknown {
+
+function showStrategicDocsHelp() {
   console.warn(`;
 📚 STRATEGIC DOCS - Database-Driven Document Management
 
-USAGE:;
-  claude-zen strategic-docs <command> [options]
-
-COMMANDS:;
-  create                     Create new strategic document;
-  list [type]                List documents (optionally by type);
+USAGE);
   view <document-id>         View document details;
   edit <document-id>         Edit existing document;
   delete <document-id>       Delete document;
@@ -265,7 +245,7 @@ CREATE OPTIONS:;
 LIST/SEARCH OPTIONS:;
   --type <type>              Filter by document type;
   --status <status>          Filter by status;
-  --limit <n>                Limit results (default: 20);
+  --limit <n>                Limit results (default);
   --verbose, -v              Show detailed information;
   --json                     Output in JSON format
 
@@ -295,4 +275,5 @@ INTEGRATION:;
   • Automatic keyword extraction;
   • Version tracking and audit trail;
 `);
-}
+// }
+

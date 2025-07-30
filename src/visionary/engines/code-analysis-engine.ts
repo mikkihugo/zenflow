@@ -15,108 +15,108 @@ import path from 'node:path';
  * Code file data structure;
  */
 export interface CodeFileData {
-  content: string;
-  path: string;
-  language: string;
-  size: number;
-  lastModified: Date;
-}
+  // content: string
+  // path: string
+  // language: string
+  // size: number
+  // lastModified: Date
+// }
 /**
  * AST node information;
  */
 export interface ASTNode {
-  type: string;
+  // type: string
   name?: string;
-  line: number;
-  depth: number;
+  // line: number
+  // depth: number
   complexity?: number;
   parameters?: string[];
-}
+// }
 /**
  * Code metrics data;
  */
 export interface CodeMetrics {
-  totalLines: number;
-  codeLines: number;
-  commentLines: number;
-  blankLines: number;
-  functions: number;
-  classes: number;
-  commentRatio: number;
-}
+  // totalLines: number
+  // codeLines: number
+  // commentLines: number
+  // blankLines: number
+  // functions: number
+  // classes: number
+  // commentRatio: number
+// }
 /**
  * Function analysis data;
  */
 export interface FunctionData {
-  name: string;
-  parameters: string[];
-  isAsync: boolean;
-  lineNumber: number;
-  complexity: number;
-  lineCount: number;
-  file: string;
-}
+  // name: string
+  parameters;
+  // isAsync: boolean
+  // lineNumber: number
+  // complexity: number
+  // lineCount: number
+  // file: string
+// }
 /**
  * Class analysis data;
  */
 export interface ClassData {
-  name: string;
+  // name: string
   extends?: string[];
   implements?: string[];
-  lineNumber: number;
-  methodCount: number;
-  lineCount: number;
-  file: string;
-}
+  // lineNumber: number
+  // methodCount: number
+  // lineCount: number
+  // file: string
+// }
 /**
  * Complexity analysis results;
  */
 export interface ComplexityAnalysis {
-  cyclomatic: number;
-  lines: number;
-  functions: number;
-  maxFunctionComplexity: number;
-  avgComplexity: number;
-  maintainabilityIndex: number;
+  // cyclomatic: number
+  // lines: number
+  // functions: number
+  // maxFunctionComplexity: number
+  // avgComplexity: number
+  // maintainabilityIndex: number
   technicalDebt: 'minimal' | 'low' | 'moderate' | 'high';
-}
+// }
 /**
  * Dependency analysis results;
  */
 export interface DependencyAnalysis {
-  external: string[];
-  internal: string[];
-  totalCount: number;
-  externalCount: number;
-  internalCount: number;
-}
+  external;
+  internal;
+  // totalCount: number
+  // externalCount: number
+  // internalCount: number
+// }
 /**
  * Complete code analysis results;
  */
 export interface CodeAnalysisResult {
-  ast: ASTNode[];
-  functions: FunctionData[];
-  classes: ClassData[];
-  complexity: ComplexityAnalysis;
-  dependencies: DependencyAnalysis;
-  metrics: CodeMetrics;
+  ast;
+  functions;
+  classes;
+  // complexity: ComplexityAnalysis
+  // dependencies: DependencyAnalysis
+  // metrics: CodeMetrics
   aiInsights?: unknown;
   metadata: {
-    filesAnalyzed: number;
-    totalLinesProcessed: number;
-    analysisTime: number;
-    language: string;
+    // filesAnalyzed: number
+    // totalLinesProcessed: number
+    // analysisTime: number
+    // language: string
   };
-}
+// }
 /**
  * Configuration for the code analysis engine;
  */
 export interface CodeAnalysisConfig {
-  outputDir: string;
-  enableAnalytics: boolean;
-  supportedFormats: string[];
+  // outputDir: string
+  // enableAnalytics: boolean
+  supportedFormats;
   neuralEngine?: unknown;
-}
+// }
 /**
  * Code Analysis Engine;
  *;
@@ -124,28 +124,28 @@ export interface CodeAnalysisConfig {
  * to extract structural information, calculate metrics, and analyze complexity.;
  */
 export class CodeAnalysisEngine {
-  private readonly config: CodeAnalysisConfig;
+  private readonly config: CodeAnalysisConfig,
   /**
    * Initialize the Code Analysis Engine;
    *;
    * @param config - Configuration options;
    */
-  constructor(config: CodeAnalysisConfig) {
+  constructor(config) {
     this.config = config;
-  }
+  //   }
   /**
    * Initialize the analysis engine;
    */
   async initialize(): Promise<void> {
     console.warn('🔍 Code Analysis Engine initialized');
-  }
+  //   }
   /**
    * Analyze code files and return comprehensive analysis results;
     // *; // LINT: unreachable code removed
    * @param codeData - Array of code file data;
    * @returns Complete code analysis results;
     // */ // LINT: unreachable code removed
-  async analyzeCode(codeData: CodeFileData[]): Promise<CodeAnalysisResult> {
+  async analyzeCode(codeData): Promise<CodeAnalysisResult> {
     const _startTime = Date.now();
     const _totalLines = 0;
     try {
@@ -175,9 +175,10 @@ export class CodeAnalysisEngine {
         try {
           _aiInsights = await this.performAIAnalysis(codeData, 'code-analysis');
         } catch (error) {
-          console.warn('AI analysis unavailable:', error.message);
-        }
-      }
+          console.warn('AI analysis unavailable);
+        //         }
+      //       }
+
 
       const _analysisTime = Date.now() - startTime;
 
@@ -193,12 +194,12 @@ export class CodeAnalysisEngine {
           totalLinesProcessed,
           analysisTime,
           language: codeData[0]?.language  ?? 'unknown', }
-  }
+  //   }
   catch (error) {
-    console.error('❌ Code analysis failed:', error);
+    console.error('❌ Code analysis failed);
     throw error;
-  }
-}
+  //   }
+// }
 /**
    * Read and process code files from filesystem;
    *;
@@ -206,16 +207,16 @@ export class CodeAnalysisEngine {
    * @returns Processed code file data;
     // */ // LINT: unreachable code removed
 async;
-readCodeData(codeFiles: string[])
+readCodeData(codeFiles)
 : Promise<CodeFileData[]>
-{
-  const _codeData: CodeFileData[] = [];
+// {
+  const _codeData = [];
   for (const filePath of codeFiles) {
     if (!existsSync(filePath)) {
-      throw new Error(`Code file not found: ${filePath}`);
-    }
+      throw new Error(`Code file not found);
+    //     }
 // const _content = awaitreadFile(filePath, 'utf8');
-// const _stats = awaitimport('node:fs').then((fs) => fs.promises.stat(filePath));
+// const _stats = awaitimport('node).then((fs) => fs.promises.stat(filePath));
 
     codeData.push({
         content,
@@ -223,8 +224,8 @@ readCodeData(codeFiles: string[])
     language: this.detectLanguage(filePath),
     size: stats.size,
     lastModified: stats.mtime }
-  )
-}
+  //   )
+// }
 return codeData;
 //   // LINT: unreachable code removed}
 /**
@@ -234,9 +235,9 @@ return codeData;
    * @returns Detected language name;
     // */ // LINT: unreachable code removed
 private
-detectLanguage(filePath: string)
+detectLanguage(filePath)
 : string
-{
+// {
   const _extension = path.extname(filePath).toLowerCase();
   const _languageMap: Record<string, string> = {
       '.js': 'javascript',
@@ -271,24 +272,24 @@ return languageMap[extension]  ?? 'unknown';
  * @param language - Expected language;
  */
 async;
-validateCodeInputs(codeFiles: string[], language: string)
+validateCodeInputs(codeFiles, language: string)
 : Promise<void>
-{
+// {
   // Validate code files exist
   for (const filePath of codeFiles) {
     if (!existsSync(filePath)) {
-      throw new Error(`Code file not found: ${filePath}`);
-    }
+      throw new Error(`Code file not found);
+    //     }
     const _extension = path.extname(filePath).toLowerCase().substring(1);
     if (!this.config.supportedFormats.includes(extension)) {
-      throw new Error(`Unsupported code file format: ${extension}`);
-    }
-  }
+      throw new Error(`Unsupported code file format);
+    //     }
+  //   }
   // Validate language is supported
   if (!this.supportedLanguages.has(language)) {
-    throw new Error(`Unsupported language: ${language}`);
-  }
-}
+    throw new Error(`Unsupported language);
+  //   }
+// }
 /**
    * Extract AST (Abstract Syntax Tree) information;
    *;
@@ -297,19 +298,20 @@ validateCodeInputs(codeFiles: string[], language: string)
     // */ // LINT: unreachable code removed
 private
 async;
-extractAST(codeData: CodeFileData[])
+extractAST(codeData)
 : Promise<ASTNode[]>
-{
-    const _astResults: ASTNode[] = [];
+// {
+    const _astResults = [];
 
     for (const file of codeData) {
       try {
 // const _ast = awaitthis.parseFileAST(file);
         astResults.push(...ast);
       } catch (error) {
-        console.warn(`⚠️ AST parsing failed for ${file.path}:`, error.message);
-      }
-    }
+        console.warn(`⚠️ AST parsing failed for ${file.path});
+      //       }
+    //     }
+
 
     return astResults;
     //   // LINT: unreachable code removed}
@@ -320,7 +322,7 @@ extractAST(codeData: CodeFileData[])
    * @param file - Code file data;
    * @returns AST nodes for the file;
     // */; // LINT: unreachable code removed
-  private async parseFileAST(file: CodeFileData): Promise<ASTNode[]>
+  private async parseFileAST(file): Promise<ASTNode[]>
     // Simplified AST parsing - would use real parser in production
     if (file.language === 'javascript'  ?? file.language === 'typescript') {
       return this.parseJavaScriptAST(file.content);
@@ -338,9 +340,9 @@ extractAST(codeData: CodeFileData[])
    * @param code - Source code content;
    * @returns AST nodes;
     // */; // LINT: unreachable code removed
-  private parseJavaScriptAST(code: string): ASTNode[] {
+  private parseJavaScriptAST(code): ASTNode[] {
     const _lines = code.split('\n');
-    const _nodes: ASTNode[] = [];
+    const _nodes = [];
     const _depth = 0;
     const _maxDepth = 0;
 
@@ -361,10 +363,11 @@ extractAST(codeData: CodeFileData[])
           line: i + 1,
           depth,
           complexity: this.calculateNodeComplexity(line) });
-      }
-    }
+      //       }
+    //     }
 
-    return nodes.concat([{ type: 'meta', line, depth}]);
+
+    return nodes.concat([{ type);
     //   // LINT: unreachable code removed}
 
   /**
@@ -373,9 +376,9 @@ extractAST(codeData: CodeFileData[])
    * @param code - Source code content;
    * @returns AST nodes;
     // */; // LINT: unreachable code removed
-  private parsePythonAST(code: string): ASTNode[] {
+  private parsePythonAST(code): ASTNode[] {
     const _lines = code.split('\n');
-    const _nodes: ASTNode[] = [];
+    const _nodes = [];
     const _indentLevel = 0;
     const _maxIndent = 0;
 
@@ -392,16 +395,17 @@ extractAST(codeData: CodeFileData[])
         // Identify significant nodes
         if (;
           trimmed.startsWith('def ')  ?? trimmed.startsWith('class ')  ?? trimmed.startsWith('async def ');
-        )
+        //         )
           nodes.push(
             type: this.getPythonNodeType(trimmed),
             name: this.extractNodeName(trimmed),
             line: i + 1,
             depth: indentLevel);
-      }
-    }
+      //       }
+    //     }
 
-    return nodes.concat([{ type: 'meta', line, depth}]);
+
+    return nodes.concat([{ type);
     //   // LINT: unreachable code removed}
 
   /**
@@ -410,7 +414,7 @@ extractAST(codeData: CodeFileData[])
    * @param code - Source code content;
    * @returns Basic AST nodes;
     // */; // LINT: unreachable code removed
-  private parseGenericAST(code: string): ASTNode[] {
+  private parseGenericAST(code): ASTNode[] {
     const _lines = code.split('\n').filter((line) => line.trim());
     return [{ type: 'generic', line: lines.length, depth}];
     //   // LINT: unreachable code removed}
@@ -421,7 +425,7 @@ extractAST(codeData: CodeFileData[])
    * @param line - Line of code;
    * @returns Node type;
     // */; // LINT: unreachable code removed
-  private getJavaScriptNodeType(line: string): string
+  private getJavaScriptNodeType(line): string
     if (line.includes('class ')) return 'class';
     // if (line.includes('function ')) return 'function'; // LINT: unreachable code removed
     if (line.includes('=>')) return 'arrow-function';
@@ -434,7 +438,7 @@ extractAST(codeData: CodeFileData[])
    * @param line - Line of code;
    * @returns Node type;
     // */; // LINT: unreachable code removed
-  private getPythonNodeType(line: string): string
+  private getPythonNodeType(line): string
     if (line.startsWith('class ')) return 'class';
     // if (line.startsWith('def ')) return 'function'; // LINT: unreachable code removed
     if (line.startsWith('async def ')) return 'async-function';
@@ -445,8 +449,8 @@ extractAST(codeData: CodeFileData[])
    * @param line - Line of code;
    * @returns Extracted name or undefined;
     // */; // LINT: unreachable code removed
-  private extractNodeName(line: string): string | undefined {
-    const _functionMatch = line.match(/(?:function\s+)?(\w+)(?:\s*\(|\s*=)/);
+  private extractNodeName(line): string | undefined {
+    const _functionMatch = line.match(/(?)?(\w+)(?:\s*\(|\s*=)/);
     const _classMatch = line.match(/class\s+(\w+)/);
     return functionMatch?.[1]  ?? classMatch?.[1];
     //   // LINT: unreachable code removed}
@@ -457,7 +461,7 @@ extractAST(codeData: CodeFileData[])
    * @param line - Line of code;
    * @returns Complexity score;
     // */; // LINT: unreachable code removed
-  private calculateNodeComplexity(line: string): number {
+  private calculateNodeComplexity(line) {
     // Simple complexity calculation based on decision points
     const _decisionPoints = (line.match(/if|while|for|switch|case|catch|&&|\|\|/g)  ?? []).length;
     return Math.max(1, decisionPoints);
@@ -469,13 +473,14 @@ extractAST(codeData: CodeFileData[])
    * @param codeData - Code file data;
    * @returns Function analysis data;
     // */; // LINT: unreachable code removed
-  private async extractFunctions(codeData: CodeFileData[]): Promise<FunctionData[]> {
-    const _functions: FunctionData[] = [];
+  private async extractFunctions(codeData): Promise<FunctionData[]> {
+    const _functions = [];
 
     for (const file of codeData) {
 // const _fileFunctions = awaitthis.extractFileFunctions(file);
       functions.push(...fileFunctions);
-    }
+    //     }
+
 
     return functions;
     //   // LINT: unreachable code removed}
@@ -486,8 +491,8 @@ extractAST(codeData: CodeFileData[])
    * @param file - Code file data;
    * @returns Functions found in file;
     // */; // LINT: unreachable code removed
-  private async extractFileFunctions(file: CodeFileData): Promise<FunctionData[]> {
-    const _functions: FunctionData[] = [];
+  private async extractFileFunctions(file): Promise<FunctionData[]> {
+    const _functions = [];
     const _lines = file.content.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
@@ -495,7 +500,7 @@ extractAST(codeData: CodeFileData[])
       const _functionMatch = this.matchFunction(line, file.language);
 
       if (functionMatch) {
-        const _func: FunctionData = {
+        const _func = {
           name: functionMatch.name,
           parameters: functionMatch.parameters,
           isAsync: functionMatch.isAsync,
@@ -504,8 +509,9 @@ extractAST(codeData: CodeFileData[])
           lineCount: await this.countFunctionLines(lines, i),
           file: file.path };
         functions.push(func);
-      }
-    }
+      //       }
+    //     }
+
 
     return functions;
     //   // LINT: unreachable code removed}
@@ -519,15 +525,15 @@ extractAST(codeData: CodeFileData[])
     // */; // LINT: unreachable code removed
   private matchFunction(;
     line,
-    language: string;
+    // language: string
   ): null
-    name: string;
-    parameters: string[];
-    isAsync: boolean;| null {
+    // name: string
+    parameters;
+    isAsync: boolean,| null {
     const _patterns: Record<string, RegExp[]> = {
       javascript: [;
         /function\s+(\w+)\s*\(([^)]*)\)/,
-        /(\w+)\s*[:=]\s*\(([^)]*)\)\s*=>/,
+        /(\w+)\s*[]\s*\(([^)]*)\)\s*=>/,
         /(async\s+)?(\w+)\s*\(([^)]*)\)\s*=>/ ],
       python: [/(async\s+)?def\s+(\w+)\s*\(([^)]*)\)/] };
 
@@ -543,8 +549,9 @@ split(',');
 map((p) => p.trim());
 filter((p) => p),
           isAsync: line.includes('async') };
-      }
-    }
+      //       }
+    //     }
+
 
     return null;
     //   // LINT: unreachable code removed}
@@ -556,7 +563,7 @@ filter((p) => p),
    * @param startLine - Function start line;
    * @returns Complexity score;
     // */; // LINT: unreachable code removed
-  private async calculateFunctionComplexity(lines: string[], startLine: number): Promise<number> {
+  private async calculateFunctionComplexity(lines, startLine: number): Promise<number> {
     const _complexity = 1; // Base complexity
     const _braceCount = 0;
     const _i = startLine;
@@ -568,7 +575,7 @@ filter((p) => p),
       // Count decision points
       if (;
         line.includes('if')  ?? line.includes('while')  ?? line.includes('for')  ?? line.includes('switch')  ?? line.includes('catch');
-      )
+      //       )
         complexity++;
 
       // Track braces to find function end
@@ -577,10 +584,12 @@ filter((p) => p),
 
       if (braceCount === 0 && i > startLine) {
         break;
-      }
+      //       }
+
 
       i++;
-    }
+    //     }
+
 
     return complexity;
     //   // LINT: unreachable code removed}
@@ -592,7 +601,7 @@ filter((p) => p),
    * @param startLine - Function start line;
    * @returns Line count;
     // */; // LINT: unreachable code removed
-  private async countFunctionLines(lines: string[], startLine: number): Promise<number> {
+  private async countFunctionLines(lines, startLine: number): Promise<number> {
     const _braceCount = 0;
     const _i = startLine;
     const _lineCount = 0;
@@ -606,10 +615,12 @@ filter((p) => p),
 
       if (braceCount === 0 && i > startLine) {
         break;
-      }
+      //       }
+
 
       i++;
-    }
+    //     }
+
 
     return lineCount;
     //   // LINT: unreachable code removed}
@@ -620,13 +631,14 @@ filter((p) => p),
    * @param codeData - Code file data;
    * @returns Class analysis data;
     // */; // LINT: unreachable code removed
-  private async extractClasses(codeData: CodeFileData[]): Promise<ClassData[]> {
-    const _classes: ClassData[] = [];
+  private async extractClasses(codeData): Promise<ClassData[]> {
+    const _classes = [];
 
     for (const file of codeData) {
 // const _fileClasses = awaitthis.extractFileClasses(file);
       classes.push(...fileClasses);
-    }
+    //     }
+
 
     return classes;
     //   // LINT: unreachable code removed}
@@ -637,8 +649,8 @@ filter((p) => p),
    * @param file - Code file data;
    * @returns Classes found in file;
     // */; // LINT: unreachable code removed
-  private async extractFileClasses(file: CodeFileData): Promise<ClassData[]> {
-    const _classes: ClassData[] = [];
+  private async extractFileClasses(file): Promise<ClassData[]> {
+    const _classes = [];
     const _lines = file.content.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
@@ -646,7 +658,7 @@ filter((p) => p),
       const _classMatch = this.matchClass(line, file.language);
 
       if (classMatch) {
-        const _cls: ClassData = {
+        const _cls = {
           name: classMatch.name,
           extends: classMatch.extends,
           implements: classMatch.implements,
@@ -655,8 +667,9 @@ filter((p) => p),
           lineCount: await this.countClassLines(lines, i),
           file: file.path };
         classes.push(cls);
-      }
-    }
+      //       }
+    //     }
+
 
     return classes;
     //   // LINT: unreachable code removed}
@@ -670,9 +683,9 @@ filter((p) => p),
     // */; // LINT: unreachable code removed
   private matchClass(;
     line,
-    language: string;
+    // language: string
   ): null
-    name: string;
+    // name: string
     extends?: string[];
     implements?: string[];| null {
     const _patterns: Record<string, RegExp> = {
@@ -687,7 +700,8 @@ filter((p) => p),
         name: match[1],
     // extends: match[2] ? [match[2]] , // LINT: unreachable code removed
         implements: match[3] ? match[3].split(',').map((i) => i.trim()) };
-    }
+    //     }
+
 
     return null;
     //   // LINT: unreachable code removed}
@@ -699,7 +713,7 @@ filter((p) => p),
    * @param startLine - Class start line;
    * @returns Method count;
     // */; // LINT: unreachable code removed
-  private async countClassMethods(lines: string[], startLine: number): Promise<number> {
+  private async countClassMethods(lines, startLine: number): Promise<number> {
     const _methodCount = 0;
     const _braceCount = 0;
     const _i = startLine;
@@ -710,17 +724,20 @@ filter((p) => p),
       // Count methods
       if (this.matchFunction(line, 'javascript')) {
         methodCount++;
-      }
+      //       }
+
 
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
       if (braceCount === 0 && i > startLine) {
         break;
-      }
+      //       }
+
 
       i++;
-    }
+    //     }
+
 
     return methodCount;
     //   // LINT: unreachable code removed}
@@ -732,7 +749,7 @@ filter((p) => p),
    * @param startLine - Class start line;
    * @returns Line count;
     // */; // LINT: unreachable code removed
-  private async countClassLines(lines: string[], startLine: number): Promise<number> {
+  private async countClassLines(lines, startLine: number): Promise<number> {
     const _braceCount = 0;
     const _i = startLine;
     const _lineCount = 0;
@@ -746,10 +763,12 @@ filter((p) => p),
 
       if (braceCount === 0 && i > startLine) {
         break;
-      }
+      //       }
+
 
       i++;
-    }
+    //     }
+
 
     return lineCount;
     //   // LINT: unreachable code removed}
@@ -760,7 +779,7 @@ filter((p) => p),
    * @param codeData - Code file data;
    * @returns Complexity analysis results;
     // */; // LINT: unreachable code removed
-  private async calculateCodeComplexity(codeData: CodeFileData[]): Promise<ComplexityAnalysis> {
+  private async calculateCodeComplexity(codeData): Promise<ComplexityAnalysis> {
     const _totalComplexity = 0;
     const _totalLines = 0;
     const _totalFunctions = 0;
@@ -772,7 +791,8 @@ filter((p) => p),
       totalLines += fileComplexity.lines;
       totalFunctions += fileComplexity.functions;
       maxComplexity = Math.max(maxComplexity, fileComplexity.maxFunctionComplexity);
-    }
+    //     }
+
 
     const _avgComplexity = totalFunctions > 0 ? totalComplexity / totalFunctions : 0;
     const _maintainabilityIndex = this.calculateMaintainabilityIndex(;
@@ -790,7 +810,8 @@ filter((p) => p),
       avgComplexity,
       maintainabilityIndex,
       technicalDebt };
-  }
+  //   }
+
 
   /**
    * Calculate complexity for a single file;
@@ -798,11 +819,11 @@ filter((p) => p),
    * @param file - Code file data;
    * @returns File complexity metrics;
     // */; // LINT: unreachable code removed
-  private async calculateFileComplexity(file: CodeFileData): Promise<
-    cyclomatic: number;
-    lines: number;
-    functions: number;
-    maxFunctionComplexity: number;> {
+  private async calculateFileComplexity(file): Promise<
+    // cyclomatic: number
+    // lines: number
+    // functions: number
+    maxFunctionComplexity: number,> {
     const _lines = file.content.split('\n');
     const _complexity = 0;
     const _functionCount = 0;
@@ -820,15 +841,17 @@ filter((p) => p),
         functionCount++;
 // const _funcComplexity = awaitthis.calculateFunctionComplexity(lines, i);
         maxFunctionComplexity = Math.max(maxFunctionComplexity, funcComplexity);
-      }
-    }
+      //       }
+    //     }
+
 
     return {
       cyclomatic,
     // lines: lines.length, // LINT: unreachable code removed
       functions,
       maxFunctionComplexity };
-  }
+  //   }
+
 
   /**
    * Calculate maintainability index;
@@ -841,8 +864,8 @@ filter((p) => p),
   private calculateMaintainabilityIndex(;
     lines,
     complexity,
-    _halsteadVolume: number;
-  ): number {
+    // _halsteadVolume: number
+  ) {
     // Simplified maintainability index calculation
     const _volume = Math.log2(lines) * 10; // Simplified Halstead volume
     const _index = Math.max(;
@@ -861,7 +884,7 @@ filter((p) => p),
     // */; // LINT: unreachable code removed
   private assessTechnicalDebt(;
     avgComplexity,
-    maxComplexity: number;
+    // maxComplexity: number
   ): 'minimal' | 'low' | 'moderate' | 'high'
     if (maxComplexity > 20  ?? avgComplexity > 10) return 'high';
     // if (maxComplexity > 10  ?? avgComplexity > 7) return 'moderate'; // LINT: unreachable code removed
@@ -873,7 +896,7 @@ filter((p) => p),
    * @param codeData - Code file data;
    * @returns Dependency analysis results;
     // */; // LINT: unreachable code removed
-  private async analyzeDependencies(codeData: CodeFileData[]): Promise<DependencyAnalysis> {
+  private async analyzeDependencies(codeData): Promise<DependencyAnalysis> {
     const _dependencies = {
       external: new Set<string>(),
       internal: new Set<string>() };
@@ -882,7 +905,8 @@ filter((p) => p),
 // const _fileDeps = awaitthis.extractFileDependencies(file);
       fileDeps.external.forEach((dep) => dependencies.external.add(dep));
       fileDeps.internal.forEach((dep) => dependencies.internal.add(dep));
-    }
+    //     }
+
 
     // Convert sets to arrays for serialization
     const _external = Array.from(dependencies.external);
@@ -894,7 +918,8 @@ filter((p) => p),
       totalCount: external.length + internal.length,
       externalCount: external.length,
       internalCount: internal.length };
-  }
+  //   }
+
 
   /**
    * Extract dependencies from a single file;
@@ -902,7 +927,7 @@ filter((p) => p),
    * @param file - Code file data;
    * @returns File dependencies;
     // */; // LINT: unreachable code removed
-  private async extractFileDependencies(file: CodeFileData): Promise<
+  private async extractFileDependencies(file): Promise<
     external: Set<string>;
     internal: Set<string>;> {
     const _dependencies = {
@@ -920,8 +945,9 @@ filter((p) => p),
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
-        }
-      }
+        //         }
+      //       }
+
 
       // Extract require statements
       const _requireMatch = line.match(/require\(['"]([^'"]+)['"]\)/);
@@ -931,9 +957,10 @@ filter((p) => p),
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return dependencies;
     //   // LINT: unreachable code removed}
@@ -944,7 +971,7 @@ filter((p) => p),
    * @param codeData - Code file data;
    * @returns Code metrics;
     // */; // LINT: unreachable code removed
-  private async calculateMetrics(codeData: CodeFileData[]): Promise<CodeMetrics> {
+  private async calculateMetrics(codeData): Promise<CodeMetrics> {
     const _totalLines = 0;
     const _codeLines = 0;
     const _commentLines = 0;
@@ -960,7 +987,8 @@ filter((p) => p),
       blankLines += fileMetrics.blankLines;
       totalFunctions += fileMetrics.functions;
       totalClasses += fileMetrics.classes;
-    }
+    //     }
+
 
     const _commentRatio = totalLines > 0 ? (commentLines / totalLines) * 100 : 0;
 
@@ -972,7 +1000,8 @@ filter((p) => p),
       functions,
       classes,
       commentRatio };
-  }
+  //   }
+
 
   /**
    * Calculate metrics for a single file;
@@ -980,7 +1009,7 @@ filter((p) => p),
    * @param file - Code file data;
    * @returns File metrics;
     // */; // LINT: unreachable code removed
-  private async calculateFileMetrics(file: CodeFileData): Promise<CodeMetrics> {
+  private async calculateFileMetrics(file): Promise<CodeMetrics> {
     const _lines = file.content.split('\n');
     const _codeLines = 0;
     const _commentLines = 0;
@@ -1000,13 +1029,15 @@ filter((p) => p),
 
         if (this.matchFunction(line, file.language)) {
           functions++;
-        }
+        //         }
+
 
         if (this.matchClass(line, file.language)) {
           classes++;
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return {
       totalLines: lines.length,
@@ -1016,7 +1047,8 @@ filter((p) => p),
       functions,
       classes,
       commentRatio: lines.length > 0 ? (commentLines / lines.length) * 100 };
-  }
+  //   }
+
 
   /**
    * Check if a line is a comment;
@@ -1025,7 +1057,7 @@ filter((p) => p),
    * @param language - Programming language;
    * @returns True if line is a comment;
     // */; // LINT: unreachable code removed
-  private isCommentLine(line, language: string): boolean {
+  private isCommentLine(line, language: string) {
     const _commentPatterns: Record<string, RegExp> = {
       javascript: /^\/\/|^\/\*|\*\/$/,
       python: /^#/,
@@ -1044,10 +1076,11 @@ filter((p) => p),
    * @param analysisType - Type of analysis to perform;
    * @returns AI analysis results;
     // */; // LINT: unreachable code removed
-  private async performAIAnalysis(codeData: CodeFileData[], analysisType: string): Promise<any> {
+  private async performAIAnalysis(codeData, analysisType: string): Promise<any> {
     if (!this.config.neuralEngine) {
       throw new Error('Neural engine not available');
-    }
+    //     }
+
 
     const _codeContent = codeData.map((file) => file.content).join('\n\n');
 
@@ -1062,7 +1095,8 @@ filter((p) => p),
       type,
     // insights, // LINT: unreachable code removed
       confidence: 0.85 };
-  }
-}
+  //   }
+// }
+
 
 export default CodeAnalysisEngine;

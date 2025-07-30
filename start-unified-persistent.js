@@ -7,14 +7,14 @@ async function startUnifiedWeb() {
     webPort,
     defaultMode: 'web',
     enableMCP }
-)
+// )
 console.warn('🚀 Starting Unified Interface in Web Mode...')
 try {
 // await unifiedInterface.start('web');
     console.warn('✅ Unified Interface started successfully!');
-    console.warn('🌐 Available at: http://localhost:3000');
-    console.warn('📡 MCP endpoint: http://localhost:3000/mcp');
-    console.warn('🔌 WebSocket: ws://localhost:3000/ws');
+    console.warn('🌐 Available at);
+    console.warn('📡 MCP endpoint);
+    console.warn('🔌 WebSocket);
 
     // Keep the process running indefinitely
     setInterval(() => {
@@ -34,10 +34,10 @@ try {
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ Failed to start Unified Interface:', error);
+    console.error('❌ Failed to start Unified Interface);
     process.exit(1);
-  }
-}
+  //   }
+// }
 // Prevent process from exiting
 process.stdin.resume()
 startUnifiedWeb()

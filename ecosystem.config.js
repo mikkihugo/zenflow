@@ -1,7 +1,7 @@
 export default {
-  apps: [;
+  apps: [
 // {
-      name: 'claude-zen-api',
+      name: 'claude-zen-api', // eslint-disable-line
       script: 'src/api/start-server.js',
       cwd: '/home/mhugo/code/claude-zen',
       instances,
@@ -20,4 +20,4 @@ export default {
       pid_file: '/tmp/claude-zen-api.pid',
       merge_logs,
       time,
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z' } ] }
+      log_date_format: 'YYYY-MM-DD HH: mm,ss Z' } ] }

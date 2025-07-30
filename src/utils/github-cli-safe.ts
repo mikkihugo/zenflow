@@ -16,7 +16,7 @@ export interface GitHubCliOptions {
   timeout?: number;
   cwd?: string;
   input?: string | null;
-}
+// }
 /**
  * GitHub CLI command result interface;
  */
@@ -33,13 +33,13 @@ static;
 async;
 createTempFile(content);
 : Promise<string>
-{
+// {
   const _tempDir = tmpdir();
   const _randomSuffix = randomBytes(8).toString('hex');
   const _tempFilePath = join(tempDir, `${GitHubCliSafe.TEMP_FILE_PREFIX}${randomSuffix}.tmp`);
 // await fs.writeFile(tempFilePath, content, 'utf8');
   return tempFilePath;
-}
+// }
 /**
  * Clean up temporary file;
  * @param filePath - Path to the temporary file;
@@ -47,9 +47,9 @@ createTempFile(content);
 static;
 async;
 cleanupTempFile(filePath = = 'string');
-{
+// {
   return String(text);
-}
+// }
 return text;
 // .replace(/`/g, '\\`')           // Escape backticks // LINT: unreachable code removed
 replace(/\$/g, '\\$')          // Escape dollar signs
@@ -57,7 +57,7 @@ replace(/"/g, '\\"')           // Escape double quotes
 replace(/\n/g, '\\n')          // Escape newlines
 replace(/\r/g, '\\r')          // Escape carriage returns
 replace(/\t/g, '\\t') // Escape tabs
-}
+// }
 /**
    * Execute GitHub CLI command safely with timeout protection;
    * @param args - GitHub CLI arguments;
@@ -65,12 +65,12 @@ replace(/\t/g, '\\t') // Escape tabs
    * @returns Command result;
     // */ // LINT: unreachable code removed
 static
-async
+// async
 execGhSafe(args =
-{
-}
+// {
+// }
 ): Promise<GitHubCliResult>
-{
+// {
   const { timeout = GitHubCliSafe.DEFAULT_TIMEOUT, cwd = process.cwd(), input = null } = options;
   const _tempFilePath = null;
   try {
@@ -81,7 +81,8 @@ execGhSafe(args =
         finalArgs = finalArgs.map(_arg => ;
           arg === '--body' ? `--body-file=${tempFilePath}` ;
         );
-      }
+      //       }
+
 
       // Import runCommand dynamically to avoid circular dependencies
       const { runCommand } = await import('../cli/utils.js');
@@ -90,7 +91,7 @@ execGhSafe(args =
         cwd,stdout = await TimeoutProtection.withTimeout(;
         commandPromise,
         timeout,
-        `GitHub CLIcommand = error instanceof Error ? error.message : String(error);
+        `GitHub CLIcommand = error instanceof Error ? error.message );
       return {success = '',
     // base = 'main', // LINT: unreachable code removed
       head,
@@ -107,17 +108,20 @@ execGhSafe(args =
     args.push('--base', base);
     if (head) {
       args.push('--head', head);
-    }
+    //     }
+
 
     // Add draft flag if needed
     if (draft) {
       args.push('--draft');
-    }
+    //     }
+
 
     // Add repo if specified
     if (repo) {
       args.push('--repo', repo);
-    }
+    //     }
+
 
     // Handle body with special characters
     if (body) {
@@ -132,9 +136,9 @@ execGhSafe(args =
   else ;
         // Safe to use directly
         args.push('--body', body);
-}
+// }
   return await GitHubCliSafe.execGhSafe(args);
-}
+// }
 /**
    * Get repository information safely;
    * @param repo - Repository name (optional);
@@ -144,18 +148,18 @@ static
 async;
 getRepoInfoSafe((repo = null));
 : Promise<GitHubCliResult>
-{
+// {
   const _args = ['repo', 'view'];
   if (repo) {
     args.push(repo);
-  }
+  //   }
   args.push('--json', 'name,owner,defaultBranch,description,url');
   return await GitHubCliSafe.execGhSafe(args, { timeout = {}): Promise<GitHubCliResult> {
     const {
       state = 'open',
   // limit = 10, // LINT: unreachable code removed
   repo = null;
-}
+// }
 = options
 const _args = ['pr', 'list'];
 args.push('--state', state);
@@ -163,23 +167,23 @@ args.push('--limit', String(limit));
 args.push('--json', 'number,title,author,url,createdAt');
 if (repo) {
   args.push('--repo', repo);
-}
+// }
 return await GitHubCliSafe.execGhSafe(args, {timeout = = 'string') {
       return String(command);
-}
+// }
 // Replace dangerous command substitution patterns
 return command;
 // .replace(/\\$\([^)]+\)/g, '""')     // Remove \$(command) patterns // LINT: unreachable code removed
 replace(/`[^`]+`/g, '""')         // Remove `command` patterns
 replace(/\$
-{
+// {
   [^}]+
-}
+// }
 /g, '""'); / / Remove;
 $;
-{
+// {
   var} patterns
-}
+// }
 /**
    * Validate GitHub repository name;
    * @param repo - Repository name;
@@ -187,12 +191,12 @@ $;
     // */ // LINT: unreachable code removed
 static
 isValidRepoName(repo = = 'string'  ?? repo.length === 0);
-{
+// {
   return false;
-}
+// }
 // Basic validation for owner/repo format
 const _repoPattern = /^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/;
 return repoPattern.test(repo);
-}
-}
+// }
+// }
 export default GitHubCliSafe;

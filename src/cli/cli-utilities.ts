@@ -15,7 +15,7 @@ import type { JSONObject } from '../types/core.js';
 export interface CommandExecutionResult {success = > boolean
 errorMessage?: string;
 aliases?: string[];
-}
+// }
 /**
  * Neural training parameters;
  */
@@ -24,7 +24,7 @@ export interface NeuralTrainingParams {
   epochs?: number;
   data?: string;
   timestamp?: number;
-}
+// }
 /**
  * Neural training result;
  */
@@ -36,12 +36,12 @@ export interface NeuralTrainingResult {success = ===============================
  * Print success message with checkmark;
  * @param message - Message to display;
  */
-export function printSuccess(): unknown {
+export function printSuccess() {
   throw err;
-}
+// }
 return true;
-}
-}
+// }
+// }
 /**
  * Check if file exists;
  * @param path - File path;
@@ -56,15 +56,15 @@ export async function fileExists(path = ========================================
  * @param path - File path;
  * @param defaultValue - Default value if file doesn't exist;
  * @returns Promise resolving to parsed JSON or default value;
-    // */; // LINT: unreachable code removed
-export async function readJsonFile<T = JSONObject>(path, defaultValue = {} as T: unknown): Promise<T> {
+    // */; // LINT): Promise<T> {
   try {
 // const _content = await(process as any).readTextFile(path);
     return JSON.parse(content) as T;
     //   // LINT: unreachable code removed} catch {
     return defaultValue;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Write object to JSON file;
@@ -79,23 +79,24 @@ export async function writeJsonFile(path = =====================================
  * Format timestamp to locale string;
  * @param timestamp - Timestamp to format;
  * @returns Formatted timestamp string;
-    // */; // LINT: unreachable code removed
-export function _formatTimestamp(_timestamp = 100: unknown): string {
+    // */; // LINT) {
   return str.length > length ? `${str.substring(0, length)}...` : str;
-}
+// }
+
 
 /**
  * Format bytes to human readable string;
  * @param bytes - Number of bytes;
  * @returns Formatted byte string;
     // */; // LINT: unreachable code removed
-export function _formatBytes(): unknown {
+export function _formatBytes() {
   size /= 1024;
   unitIndex++;
-}
+// }
+
 
 return `${size.toFixed(2)} ${units[unitIndex]}`;
-}
+// }
 // =============================================================================
 // COMMAND EXECUTION HELPERS
 // =============================================================================
@@ -106,7 +107,7 @@ return `${size.toFixed(2)} ${units[unitIndex]}`;
  * @returns Parsed flags, arguments, and provided flags set;
     // */ // LINT: unreachable code removed
 export function parseFlags(args = {};
-const _providedFlags = new Set<string>(: unknown); // Track explicitly provided flags
+const _providedFlags = new Set<string>(); // Track explicitly provided flags
 const _filteredArgs = [];
 for (let i = 0; i < args.length; i++) {
   const _arg = args[i];
@@ -120,34 +121,34 @@ for (let i = 0; i < args.length; i++) {
     } else {
       flags[flagName] = true;
       providedFlags.add(flagName);
-    }
+    //     }
   } else if (arg.startsWith('-') && arg.length > 1) {
     // Short flags
     const _shortFlags = arg.substring(1);
     for (const flag of shortFlags) {
       flags[flag] = true;
       providedFlags.add(flag);
-    }
+    //     }
   } else {
     filteredArgs.push(arg);
-  }
-}
+  //   }
+// }
 return { flags, args = { ...flags };
 // ; // LINT: unreachable code removed
 // Handle queen-type -> queenType
 if (flags['queen-type'] && !flags.queenType) {
   normalized.queenType = flags['queen-type'];
-}
+// }
 // Handle max-workers -> maxWorkers
 if (flags['max-workers'] && !flags.maxWorkers) {
   normalized.maxWorkers = parseInt(flags['max-workers']);
-}
+// }
 // Handle auto-scale -> autoScale
 if (flags['auto-scale'] && !flags.autoScale) {
   normalized.autoScale = flags['auto-scale'] === 'true';
-}
+// }
 return normalized;
-}
+// }
 /**
  * Apply smart defaults to flags;
  * @param flags - Current flags;
@@ -157,16 +158,16 @@ return normalized;
     // */ // LINT: unreachable code removed
 export function applySmartDefaults(flags = { ...flags };
 
-for (const [key, defaultValue] of Object.entries(defaults: unknown)) {
+for (const [key, defaultValue] of Object.entries(defaults)) {
   // Check both camelCase and kebab-case variants
   const _kebabKey = camelToKebab(key);
 
   if (!providedFlags.has(key) && !providedFlags.has(kebabKey)) {
     result[key] = defaultValue;
-  }
-}
+  //   }
+// }
 return result;
-}
+// }
 /**
  * Convert camelCase to kebab-case;
  * @param str - String to convert;
@@ -181,7 +182,7 @@ function camelToKebab(str = ====================================================
  */
 const _FLAG_VALIDATORS = {
       queenType => {
-      const _num = parseInt(value: unknown);
+      const _num = parseInt(value);
 return num > 0 && num <= 50;
 },errorMessage = []
 for (const [flagName, config] of Object.entries(FLAG_VALIDATORS)) {
@@ -200,7 +201,7 @@ for (const [flagName, config] of Object.entries(FLAG_VALIDATORS)) {
  * @param options - Execution options;
  * @returns Promise resolving to command execution result;
     // */; // LINT: unreachable code removed
-export async function runCommand(command = [], options = {}: unknown): Promise<CommandExecutionResult> {
+export async function runCommand(command = [], options = {}): Promise<CommandExecutionResult> {
   try {
     // Check if we're in Node.js environment
     if (typeof process !== 'undefined' && (process as any).versions && (process as any).versions.node) {
@@ -209,9 +210,7 @@ export async function runCommand(command = [], options = {}: unknown): Promise<C
 
       return new Promise((resolve) => {
         const _child = spawn(command, args, {stdio = '';
-    // const _stderr = ''; // LINT: unreachable code removed
-
-        child.stdout?.on('data', (data) => {
+    // const _stderr = ''; // LINT) => {
           stdout += data.toString();
         });
 
@@ -237,22 +236,24 @@ export async function runCommand(command = [], options = {}: unknown): Promise<C
  * @param path - Configuration file path;
  * @returns Promise resolving to configuration object;
     // */; // LINT: unreachable code removed
-export async function loadConfig(path = 'claude-zen.config.json': unknown): Promise<CliConfiguration> {
+export async function loadConfig(path = 'claude-zen.config.json'): Promise<CliConfiguration> {
   const _defaultConfig = {terminal = await (process as any).readTextFile(path);
     return { ...defaultConfig, ...JSON.parse(content) };
     //   // LINT: unreachable code removed} catch {
     return defaultConfig;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Save configuration to file;
  * @param config - Configuration to save;
  * @param path - File path;
  */;
-export async function saveConfig(config = 'claude-zen.config.json': unknown): Promise<void> {
+export async function saveConfig(config = 'claude-zen.config.json'): Promise<void> {
 // await writeJsonFile(path, config);
-}
+// }
+
 
 // =============================================================================
 // ID GENERATION
@@ -263,11 +264,12 @@ export async function saveConfig(config = 'claude-zen.config.json': unknown): Pr
  * @param prefix - Optional prefix for ID;
  * @returns Generated unique ID;
     // */; // LINT: unreachable code removed
-export function generateId(prefix = '': unknown): string {
+export function generateId(prefix = '') {
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substr(2, 9);
   return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
-}
+// }
+
 
 // =============================================================================
 // ARRAY HELPERS
@@ -282,9 +284,10 @@ export function generateId(prefix = '': unknown): string {
 export function chunk<T>(array = [];
   for (let i = 0; i < array.length; i += size) {
     chunks.push(array.slice(i, i + size));
-  }
+  //   }
   return chunks;
-}
+// }
+
 
 // =============================================================================
 // ENVIRONMENT HELPERS
@@ -296,9 +299,10 @@ export function chunk<T>(array = [];
  * @param defaultValue - Default value if not found;
  * @returns Environment variable value or default;
     // */; // LINT: unreachable code removed
-export function getEnvVar(name = null: unknown): string | null {
+export function getEnvVar(name = null): string | null {
   return (process as any).env.get(name) ?? defaultValue;
-}
+// }
+
 
 /**
  * Set environment variable;
@@ -313,29 +317,20 @@ export function setEnvVar(name = ===============================================
  * Check if string is valid JSON;
  * @param str - String to validate;
  * @returns True if valid JSON;
-    // */; // LINT: unreachable code removed
-export function isValidJson(str = ============================================================================
-// PROGRESS AND STATUS HELPERS
-// =============================================================================
-
-/**
- * Show progress bar in console;
- * @param current - Current progress;
- * @param total - Total items;
- * @param message - Optional message;
- */;
-export function showProgress(current = '': unknown): void {
+    // */; // LINT) {
   const _percentage = Math.round((current / total) * 100);
   const _bar = '█'.repeat(Math.round(percentage / 5)) + '░'.repeat(20 - Math.round(percentage / 5));
   console.warn(`\r${bar} ${percentage}% ${message}`);
-}
+// }
+
 
 /**
  * Clear current console line;
  */;
-export function clearLine(): void {
+export function clearLine() {
   console.warn('\r\x1b[K');
-}
+// }
+
 
 // =============================================================================
 // ASYNC HELPERS
@@ -346,8 +341,9 @@ export function clearLine(): void {
  * @param ms - Milliseconds to sleep;
  * @returns Promise that resolves after delay;
     // */; // LINT: unreachable code removed
-export function sleep(ms = > setTimeout(resolve, ms: unknown));
-}
+export function sleep(ms = > setTimeout(resolve, ms));
+// }
+
 
 /**
  * Retry function with exponential backoff;
@@ -366,12 +362,13 @@ export async function retry<T>(fn = > Promise<T>,
     //   // LINT: unreachable code removed} catch (/* err */) {
       if (attempt === maxAttempts) {
         throw err;
-      }
+      //       }
 // await sleep(delay * attempt);
-    }
-  }
+    //     }
+  //   }
   throw new Error('Retry function failed to execute');
-}
+// }
+
 
 // =============================================================================
 // CLAUDE FLOW MCP INTEGRATION HELPERS
@@ -383,18 +380,19 @@ export async function retry<T>(fn = > Promise<T>,
  * @param params - Tool parameters;
  * @returns Promise resolving to tool result;
     // */; // LINT: unreachable code removed
-export async function callRuvSwarmMCP(tool = {}: unknown): Promise<any> {
+export async function callRuvSwarmMCP(tool = {}): Promise<any> {
   // Redirect to the new library-based implementation
   const { callRuvSwarmLibrary } = await import('./utils.js');
   return await callRuvSwarmLibrary(tool, params);
-}
+// }
+
 
 /**
  * Direct ruv-swarm neural training (real WASM implementation);
  * @param params - Training parameters;
  * @returns Promise resolving to training result;
     // */; // LINT: unreachable code removed
-export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<NeuralTrainingResult> {
+export async function callRuvSwarmDirectNeural(params = {}): Promise<NeuralTrainingResult> {
   try {
     const _modelName = params.model  ?? 'general';
     const _epochs = params.epochs  ?? 50;
@@ -404,7 +402,7 @@ export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<Ne
     console.warn(;
       `🚀Executing = = 'undefined' && (process as any).versions?.node) {
       // Node.js environment - use spawn with stdio inherit
-      const { spawn } = await import('node:child_process');
+      const { spawn } = await import('node);
 
       result = await new Promise((_resolve) => {
         const __child = spawn(;
@@ -445,9 +443,10 @@ export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<Ne
           if (stat.mtime > latestTime) {
             latestTime = stat.mtime;
             latestFile = filePath;
-          }
-        }
-      }
+          //           }
+        //         }
+      //       }
+
 
       if (latestFile) {
 // const __content = await(process as any).readTextFile(latestFile);
@@ -463,7 +462,7 @@ export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<Ne
       args.push(`--${key}`);
       if (value !== true && value !== false) {
         args.push(String(value));
-      }
+      //       }
     });
 // const __result = awaitrunCommand(command, args, {stdout = await runCommand('npx', ['ruv-swarm', '--version'], {stdout = ============================================================================;
 // NEURAL TRAINING SPECIFIC HELPERS
@@ -476,7 +475,7 @@ export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<Ne
  * @param epochs - Number of training epochs;
  * @returns Promise resolving to training result;
     // */; // LINT: unreachable code removed
-export async function _trainNeuralModel(_modelName = 50: unknown): Promise<any> {
+export async function _trainNeuralModel(_modelName = 50): Promise<any> {
   const { callRuvSwarmLibrary } = await import('./utils.js');
   return await callRuvSwarmLibrary('neural_train', {
     model = {}
@@ -492,4 +491,5 @@ export async function _trainNeuralModel(_modelName = 50: unknown): Promise<any> 
     type,
     config,
     timestamp: Date.now() });
-}
+// }
+

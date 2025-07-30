@@ -6,7 +6,7 @@
 // start-ui.js - Standalone UI launcher (Web UI by default)
 import { printError } from '../utils.js';
 
-export async function launchUI(args = []: unknown): unknown {
+export async function launchUI(args = []) {
   try {
     // Parse arguments
     const _portValue = getArgValue(args, '--port')  ?? getArgValue(args, '-p');
@@ -24,11 +24,7 @@ export async function launchUI(args = []: unknown): unknown {
         printSuccess('🌐 Claude Flow Web UI is running!');
         console.warn(`📍 Open your browserto = process.platform === 'darwin';
               ? 'open';
-              : process.platform === 'win32';
-                ? 'start';
-                : 'xdg-open';
-
-          const { exec } = await import('child_process');
+              );
           exec(`${openCommand}http = async () => {
           console.warn('\n' + '⏹️  Shutting down Web UI...');
 // await webServer.stop();
@@ -60,7 +56,8 @@ export async function launchUI(args = []: unknown): unknown {
 // const _puiModule = awaitimport('../commands/start/process-ui-simple.ts');
         ProcessManager = pmModule.ProcessManager;
         ProcessUI = puiModule.ProcessUI;
-      }
+      //       }
+
 
       printSuccess('🚀 Claude-Flow Process Management UI');
       console.warn('─'.repeat(60));
@@ -81,9 +78,11 @@ export async function launchUI(args = []: unknown): unknown {
     return args[index + 1];
     //   // LINT: unreachable code removed}
   return null;
-}
+// }
+
 
 // Run if called directly
 if(import.meta.main) {
 // await launchUI();
-}
+// }
+

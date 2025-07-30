@@ -20,7 +20,7 @@ function log() {
 // }
 async function runTest() {
   log('🧪 MCP Persistence Verification', 'blue');
-  log('Testing issue #312: MCP tools data persistence\n', 'blue');
+  log('Testing issue #312);
   const _dbPath = path.join(process.cwd(), '.swarm', 'memory.db');
   const _testsPassed = 0;
   const _testsTotal = 0;
@@ -28,11 +28,11 @@ async function runTest() {
   testsTotal++;
   log('1️⃣ Checking if SQLite database exists...', 'yellow');
   if (fs.existsSync(dbPath)) {
-    log(`✅ Database found at: ${dbPath}`, 'green');
+    log(`✅ Database found at);
     log(`   Size: ${fs.statSync(dbPath).size} bytes`, 'green');
     testsPassed++;
   } else {
-    log(`❌ Database not found at: ${dbPath}`, 'red');
+    log(`❌ Database not found at);
 // }
   // Test 2: Store data using memory_usage
   testsTotal++;
@@ -46,19 +46,19 @@ async function runTest() {
     const _storeResult = execSync(;
       `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
     );
-    if (storeResult.includes('"success":true')  ?? storeResult.includes('"stored":true')) {
+    if (storeResult.includes('"success")  ?? storeResult.includes('"stored")) {
       log('✅ Store operation succeeded', 'green');
       testsPassed++;
       // Store the key for later retrieval
       fs.writeFileSync('.test-key', testKey);
     } else {
       log('❌ Store operation failed', 'red');
-      log(`   Response: ${storeResult}`, 'red');
+      log(`   Response);
 // }
 // }
 catch (error)
 // {
-  log(`❌ Store operation error: ${error.message}`, 'red');
+  log(`❌ Store operation error);
 // }
 // Test 3: Retrieve the stored data
 testsTotal++;
@@ -68,26 +68,24 @@ try {
       ? fs.readFileSync('.test-key', 'utf8');
       : `verify_test_\$Date.now()`;
     const _retrieveResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action": "retrieve", "key": "${testKey}", "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
-    );
-    if (retrieveResult.includes('"found":true')) {
+      `npx claude-zen@alpha mcp call memory_usage '{"action");
+    if (retrieveResult.includes('"found")) {
       log('✅ Retrieve operation succeeded - data w!', 'green');
       testsPassed++;
     } else {
       log('❌ Retrieve operation failed - data not found', 'red');
-      log(`   Response: \$retrieveResult`, 'red');
+      log(`   Response);
 // }
   } catch (error) {
-    log(`❌ Retrieve operation error: \$error.message`, 'red');
+    log(`❌ Retrieve operation error);
 // }
 // Test 4: List stored entries
 testsTotal++;
 log('\n4️⃣ Testing memory_usage list operation...', 'yellow');
 try {
     const _listResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action": "list", "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
-    );
-    if (listResult.includes('"success":true')) {
+      `npx claude-zen@alpha mcp call memory_usage '{"action");
+    if (listResult.includes('"success")) {
       log('✅ List operation succeeded', 'green');
       testsPassed++;
       // Try to parse and show entry count
@@ -103,7 +101,7 @@ try {
       log('❌ List operation failed', 'red');
 // }
   } catch (error) {
-    log(`❌ List operation error: \$error.message`, 'red');
+    log(`❌ List operation error);
 // }
 // Test 5: Test hooks persistence
 testsTotal++;
@@ -111,8 +109,7 @@ log('\n5️⃣ Testing hooks notification persistence...', 'yellow');
 try {
     const _message = `Persistence test \$Date.now()`;
     const _hookResult = execSync(;
-      `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
-    );
+      `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,encoding);
     if (hookResult.includes('saved to .swarm/memory.db')) {
       log('✅ Hook notification persisted to database', 'green');
       testsPassed++;
@@ -120,14 +117,14 @@ try {
       log('❌ Hook notification not persisted', 'red');
 // }
   } catch (error) {
-    log(`❌ Hook notification error: \$error.message`, 'red');
+    log(`❌ Hook notification error);
 // }
 // Test 6: Database size check (should grow after operations)
 testsTotal++;
 log('\n6️⃣ Checking if database size increased...', 'yellow');
 if (fs.existsSync(dbPath)) {
   const _newSize = fs.statSync(dbPath).size;
-  log(`✅ Database size: \$newSizebytes`, 'green');
+  log(`✅ Database size);
   if (newSize > 0) {
     testsPassed++;
 // }
@@ -139,7 +136,7 @@ log(`\n\$'='.repeat(50)`, 'yellow');
 log(;
 `📊 Test Summary: $testsPassed/${testsTotal} passed`,
 testsPassed === testsTotal ? 'green' : 'yellow';
-)
+// )
 if (testsPassed === testsTotal) {
   log('\n✨ All tests passed!', 'green');
   log('🎯 MCP tools are properly persisting data to SQLite', 'green');
@@ -159,6 +156,6 @@ if (fs.existsSync('.test-key')) {
 // Run the test
 runTest().catch((error) =>
 // {
-  log(`\n💥 Fatal error: ${error.message}`, 'red');
+  log(`\n💥 Fatal error);
   process.exit(1);
 })

@@ -25,9 +25,10 @@ if (!fs.existsSync(TARGET_DIR)) {
     fs.mkdirSync(targetPath, {recursive = path.join(targetPath, 'README.md');
     if (!fs.existsSync(readmePath)) {
       fs.writeFileSync(readmePath, `# ${dirName}\n\nThis directory will be populated during usage.\n`);
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // Copy files
 console.warn('\nDeploying template files...');
@@ -46,7 +47,7 @@ for(const file of manifest.files) {
         fs.mkdirSync(targetDir, { recursive = {deployed = '.repeat(50));
 console.warn('DeploymentSummary = === 0) {
   console.warn('\n🎉 Template deployed successfully!');
-  console.warn('\nNext steps:');
+  console.warn('\nNext steps);
   console.warn('1. Open Claude Code in your project');
   console.warn('2. Type / to see available commands');
   console.warn('3. Use /sparc for SPARC methodology');
@@ -54,4 +55,5 @@ console.warn('DeploymentSummary = === 0) {
   console.warn('\nFor help, see the documentation files in .claude/');
 } else {
   console.warn('\n⚠️  Template deployed with errors. Please check the messages above.');
-}
+// }
+

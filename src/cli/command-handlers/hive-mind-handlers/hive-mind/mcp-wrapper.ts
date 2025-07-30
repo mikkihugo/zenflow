@@ -9,7 +9,7 @@ import { RuvSwarm } from '../../../../../ruv-FANN/ruv-swarm/npm/src/index.js';
  * MCP Tool categories and their methods;
  */
 const _MCP_TOOLS = {
-  swarm = {}): unknown {
+  swarm = {}) {
     this.config = {parallel = metaRegistryManager;
 this.defaultRegistry = null;
 this.memoryRagPlugin = null;
@@ -17,10 +17,10 @@ this.toolStats = new Map();
 this.parallelQueue = [];
 this.executing = false;
 this.ruvSwarmInstance = null;
-}
-async
+// }
+// async
 initialize()
-{
+// {
   if (this.ruvSwarmInstance) return;
     // console.warn('[MCPToolWrapper] Initializing RuvSwarm instance...'); // LINT: unreachable code removed
   try {
@@ -31,9 +31,9 @@ initialize()
     this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
     if (this.defaultRegistry) {
       this.memoryRagPlugin = this.defaultRegistry.pluginSystem.getPlugin('memory-rag');
-    }
+    //     }
   } catch (/* _error */) {
-    console.error('[MCPToolWrapper] Failed to initialize RuvSwarm = {}): unknown {
+    console.error('[MCPToolWrapper] Failed to initialize RuvSwarm = {}) {
     const _startTime = Date.now();
     const __lastError = null;
 
@@ -47,14 +47,15 @@ initialize()
         return result;
     //   // LINT: unreachable code removed} catch (error) {
         _lastError = error;
-        console.error(`Attempt ${attempt} failed for ${toolName}:`, error.message);
+        console.error(`Attempt ${attempt} failed for ${toolName});
 
         if (attempt < this.config.retryCount) {
           // Exponential backoff
 // await new Promise((resolve) => setTimeout(resolve, 2 ** attempt * 1000));
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     // Track failure
     this._trackToolUsage(toolName, Date.now() - startTime, false);
@@ -63,7 +64,7 @@ initialize()
       `Failed to execute ${toolName} after ${this.config.retryCount}attempts = [];
       for(const call of toolCalls) {
         results.push(await this.executeTool(call.tool, call.params));
-      }
+      //       }
       return results;
     //   // LINT: unreachable code removed}
 
@@ -124,7 +125,7 @@ initialize()
    */;
   _groupToolsByPriority(toolCalls);
   : unknown;
-  {
+  //   {
     const _priorities = {
       critical => {
       const _category = this._getToolCategory(call.tool);
@@ -138,15 +139,17 @@ initialize()
       priorities.low.push(call);
     } else {
       priorities.medium.push(call);
-    }
-  }
-  )
+    //     }
+  //   }
+  //   )
+
 
   // Return groups in priority order, filtering empty groups
   return [priorities.critical, priorities.high, priorities.medium, priorities.low].filter(;
     // (group) => group.length > 0, // LINT: unreachable code removed
     );
-}
+// }
+
 
 /**
  * Execute tool with timeout wrapper;
@@ -167,7 +170,8 @@ catch((error) =>
           clearTimeout(timer);
           reject(error););
     });
-}
+// }
+
 
 /**
  * Track batch execution performance;
@@ -182,15 +186,17 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
       this.batchStats.totalBatches;
     this.batchStats.avgToolsPerBatch = this.batchStats.totalTools / this.batchStats.totalBatches;
     this.batchStats.avgTimePerTool = this.batchStats.totalTime / this.batchStats.totalTools;
-  }
+  //   }
+
 
   /**
    * Internal tool execution;
    */;
-  async _executeToolInternal(toolName, params): unknown {
+  async _executeToolInternal(toolName, params) {
     if(!this.ruvSwarmInstance) {
       throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
-    }
+    //     }
+
 
     const _toolCategory = this._getToolCategory(toolName);
     if(!toolCategory) {
@@ -226,10 +232,11 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
       stats.successes++;
     } else {
       stats.failures++;
-    }
+    //     }
     stats.totalDuration += duration;
     stats.avgDuration = stats.totalDuration / stats.calls;
-  }
+  //   }
+
 
   /**
    * Get comprehensive tool statistics;
@@ -241,8 +248,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
     });
 
     return {tools = > sum + stat.calls, 0),successRate = Array.from(this.toolStats.values()).reduce((sum, stat) => sum + stat.calls, 0);
-    // const _successes = Array.from(this.toolStats.values()).reduce(; // LINT: unreachable code removed
-      (sum, stat) => sum + stat.successes,
+    // const _successes = Array.from(this.toolStats.values()).reduce(; // LINT) => sum + stat.successes,
       0);
 
     return total > 0 ? ((successes / total) * 100).toFixed(2) : 100;
@@ -284,7 +290,8 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 // const _swarm = awaitthis.ruvSwarmInstance.getSwarm(swarmId);
       if(!swarm) {
         throw new Error(`Swarm \$swarmIdnot found for agent spawning.`);
-      }
+      //       }
+
 
       const _spawnPromises = types.map(type => swarm.spawn({ type }));
 // const _results = awaitPromise.all(spawnPromises);
@@ -302,7 +309,7 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
       return result;
     //   // LINT: unreachable code removed} catch (/* _error */) {
       console.error('Error retrieving memory viaMemoryRAGPlugin = await this.memoryRagPlugin.searchMemory(swarmId, pattern);
-      return {success = 'parallel', metadata = {}): unknown {
+      return {success = 'parallel', metadata = {}) {
     if(!this._ruvSwarmInstance) {
       throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
     //   // LINT: unreachable code removed}
@@ -313,41 +320,43 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 // const _swarm = awaitthis.ruvSwarmInstance.getSwarm(swarmId);
       if(!swarm) {
         throw new Error(`Swarm \$swarmIdnot found for task orchestration.`);
-      }
+      //       }
+
 
       if(!swarm) {
         throw new Error(`Swarm \$swarmIdnot found for performance analysis.`);
-      }
+      //       }
       return await swarm.analyzePerformance();
     //   // LINT: unreachable code removed} catch (/* _error */) {
-      console.error('Error analyzing performance with RuvSwarm = {}): unknown {
+      console.error('Error analyzing performance with RuvSwarm = {}) {
     if(!this.ruvSwarmInstance) {
       throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
-    }
+    //     }
     try {
       return await this.ruvSwarmInstance.githubOperations(repo, operation, params);
     //   // LINT: unreachable code removed} catch (/* _error */) {
-      console.error('Error performing GitHub operation with RuvSwarm = {}): unknown {
+      console.error('Error performing GitHub operation with RuvSwarm = {}) {
     if(!this.ruvSwarmInstance) {
       throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
-    }
+    //     }
     try {
       return await this.ruvSwarmInstance.neuralOperation(operation, params);
     //   // LINT: unreachable code removed} catch (/* _error */) {
-      console.error('Error performing neural operation with RuvSwarm = {}): unknown {
+      console.error('Error performing neural operation with RuvSwarm = {}) {
     if(!this.ruvSwarmInstance) {
       throw new Error('RuvSwarm instance not initialized in MCPToolWrapper.');
-    }
+    //     }
     try {
       const _swarmId = params.swarmId  ?? 'default'; // Assuming a default swarm if not specified
 // const _status = awaitthis.ruvSwarmInstance.getSwarmStatus(swarmId);
       return status;
     //   // LINT: unreachable code removed} catch (error) {
-      console.error('Error getting swarm status from RuvSwarm:', error);
+      console.error('Error getting swarm status from RuvSwarm);
       throw error;
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // Export tool categories for reference
 export type { MCP_TOOLS };

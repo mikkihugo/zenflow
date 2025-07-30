@@ -24,31 +24,31 @@ export interface WebSocketServiceOptions {
   heartbeatInterval?: number;
   /** Message queue limit */
   messageQueueLimit?: number;
-}
+// }
 /**
  * WebSocket service statistics;
  */
 export interface WebSocketStats {
-  totalConnections: number;
-  activeConnections: number;
-  messagesSent: number;
-  messagesReceived: number;
-  errors: number;
-}
+  // totalConnections: number
+  // activeConnections: number
+  // messagesSent: number
+  // messagesReceived: number
+  // errors: number
+// }
 /**
  * Message information;
  */
 export interface MessageInfo {
-  type: string;
-  data: unknown;
-  source: string;
-}
+  // type: string
+  // data: unknown
+  // source: string
+// }
 export interface WebSocketSupportCheck {
-  nodeVersion: string;
-  majorVersion: number;
-  hasNativeWebSocket: boolean;
-  recommendation: string;
-}
+  // nodeVersion: string
+  // majorVersion: number
+  // hasNativeWebSocket: boolean
+  // recommendation: string
+// }
 // =============================================================================
 // WEBSOCKET SERVICE CLASS
 // =============================================================================
@@ -58,7 +58,7 @@ export interface WebSocketSupportCheck {
  * Manages both server-side WebSocket connections and client connections;
  */
 export class WebSocketService extends EventEmitter {
-  constructor(options: WebSocketServiceOptions = {}) {
+  constructor(options) {
     super();
     this.options = options;
     this.connectionManager = new WebSocketConnectionManager({
@@ -72,10 +72,10 @@ export class WebSocketService extends EventEmitter {
     messagesSent,
     messagesReceived,
     errors}
-}
+// }
 async;
 initialize();
-{
+// {
   this.connectionManager.on('connectionConnected', (info) => {
     this.stats.activeConnections++;
     this.emit('clientConnected', info);
@@ -95,11 +95,11 @@ initialize();
   this.isInitialized = true;
   this.emit('initialized');
   console.warn('🚀 WebSocket service initialized');
-}
+// }
 async;
 connectToServer((connectionName = 'main'), (customOptions = {}));
 : Promise<any>
-{
+// {
     const _url = `ws://${this.options.clientHost  ?? 'localhost'}:${this.options.clientPort  ?? 8080}`;
     const _clientOptions = { ...this.options, ...customOptions };
     const _client = this.connectionManager.addConnection(connectionName, url, clientOptions);
@@ -117,56 +117,62 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
       console.warn(`🔗 Connected to external WebSocket`);
       return client;
     //   // LINT: unreachable code removed} catch (error) {
-      console.error(`Error connecting to external WebSocket: ${error}`);
+      console.error(`Error connecting to external WebSocket);
       throw error;
-    }
+    //     }
 
-  sendMessage(connectionName, data: unknown): boolean {
+
+  sendMessage(connectionName, data: unknown) {
     const _client = this.connectionManager.getConnection(connectionName);
     if (!client) {
       throw new Error(`Connection '${connectionName}' not found`);
-    }
+    //     }
+
 
     const _success = client.send(data);
     if (success) {
       this.stats.messagesSent++;
-    }
+    //     }
+
 
     return success;
     //   // LINT: unreachable code removed}
 
-  sendBalanced(data: unknown): boolean {
+  sendBalanced(data) {
     const _client = this.connectionManager.getNextConnection();
     if (!client) {
       throw new Error('No active connections available');
-    }
+    //     }
+
 
     const _success = client.send(data);
     if (success) {
       this.stats.messagesSent++;
-    }
+    //     }
+
 
     return success;
     //   // LINT: unreachable code removed}
 
-  broadcast(data: unknown) {
+  broadcast(data) {
     const _results = this.connectionManager.broadcast(data);
-    const _successCount = results.filter((r: unknown) => r.success).length;
+    const _successCount = results.filter((r) => r.success).length;
     this.stats.messagesSent += successCount;
 
     this.emit('broadcast', {
       data,
       results,
       successCount,
-      totalConnections: this.stats.activeConnections });
+      totalConnections);
 
     return results;
     //   // LINT: unreachable code removed}
 
-  onMessage(type, handler: (_message: unknown) => void): () => void
+  onMessage(type, handler) => void): () => void
     if (!this.messageHandlers.has(type)) {
       this.messageHandlers.set(type, new Set());
-    }
+    //     }
+
 
     this.messageHandlers.get(type)?.add(handler);
 
@@ -175,9 +181,10 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     // if (handlers) { // LINT: unreachable code removed
         handlers.delete(handler);
       };
-  }
+  //   }
 
-  private handleMessage(info: unknown) {
+
+  private handleMessage(info) {
     const { data } = info;
     const _messageType = 'unknown';
     const _messageData = data;
@@ -189,35 +196,37 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
       } else if (data.event) {
         messageType = data.event;
         messageData = data.data  ?? data;
-      }
-    }
+      //       }
+    //     }
+
 
     const _handlers = this.messageHandlers.get(messageType);
     if (handlers) {
       handlers.forEach((handler) => {
         try {
-          handler({ type, data, source: info.name });
+          handler({ type, data, source);
         } catch (error) {
-          console.error(`Error in message handler for type ${messageType}:`, error);
-        }
+          console.error(`Error in message handler for type ${messageType});
+        //         }
       });
-    }
-  }
+    //     }
+  //   }
+
 
   setupClaudeZenHandlers(): void
     this.onMessage('queen_council_update', (msg) =>
-      console.warn(`👑 Queen Council Update:`, msg););
+      console.warn(`👑 Queen Council Update););
     this.onMessage('swarm_status', (msg) => {
-      console.warn(`🐝 Swarm Status:`, msg);
+      console.warn(`🐝 Swarm Status);
     });
     this.onMessage('task_update', (msg) => {
-      console.warn(`📋 Task Update:`, msg);
+      console.warn(`📋 Task Update);
     });
     this.onMessage('neural_update', (msg) => {
-      console.warn(`🧠 Neural Update:`, msg);
+      console.warn(`🧠 Neural Update);
     });
     this.onMessage('memory_update', (msg) => {
-      console.warn(`💾 Memory Update:`, msg);
+      console.warn(`💾 Memory Update);
     });
 
   async sendCommand(connectionName, command, payload: unknown): Promise<boolean> {
@@ -237,7 +246,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
       stats: this.stats,
       connectionManagerStatus: this.connectionManager.getStatus() }
 
-  getConnectionStats(connectionName: string) {
+  getConnectionStats(connectionName) {
     const _client = this.connectionManager.getConnection(connectionName);
     return client ? client.getStats() : null;
     //   // LINT: unreachable code removed}
@@ -246,19 +255,20 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     return this.connectionManager.getStatus().connections;
     //   // LINT: unreachable code removed}
 
-  async disconnectConnection(connectionName: string)
+  async disconnectConnection(connectionName)
 // await this.connectionManager.removeConnection(connectionName);
   async shutdown()
 // await this.connectionManager.shutdown();
     this.emit('shutdown');
 
-  static async create(options: WebSocketServiceOptions = {}): Promise<WebSocketService> {
+  static async create(options): Promise<WebSocketService> {
     const _service = new WebSocketService(options);
 // await service.initialize();
     service.setupClaudeZenHandlers();
     return service;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 // =============================================================================
 // UTILITY FUNCTIONS
@@ -267,7 +277,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 /**
  * Utility function to check WebSocket support;
  */;
-export function _checkWebSocketSupport(): WebSocketSupportCheck {
+export function _checkWebSocketSupport() {
   const _nodeVersion = process.version;
   const _majorVersion = parseInt(nodeVersion.substring(1).split('.')[0]);
 

@@ -20,8 +20,8 @@ sessionTokens = new Map()
 private;
 readonly;
 config = {};
-)
-{
+// )
+// {
   super();
   this.config = {isolateMemory = await this.validatePluginSecurity(plugin, manifest, config);
   if (!securityValidation.isValid) {
@@ -50,15 +50,12 @@ config = {};
       const _validation = this.validateSinglePermission(permission);
       if (!validation.isValid) {
         errors.push(`Permission ${permission}: ${validation.errors.join(', ')}`);
-  }
+  //   }
   riskScore += this.calculatePermissionRisk(permission);
-}
+// }
 // Check if risk score exceeds threshold
 if (riskScore > 75) {
-  errors.push(`Plugin risk score too high = {pluginName = === 0 ? requestedPermissions : [],deniedPermissions = === 0;
-    };
-
-    this.permissionAudits.push(audit);
+  errors.push(`Plugin risk score too high = {pluginName = === 0 ? requestedPermissions );
     this.emit('permission-audit', audit);
 
     return {isValid = === 0,
@@ -67,7 +64,9 @@ if (riskScore > 75) {
 
     // Define high-risk permissions
 
+  // 
   }
+
 
   private calculatePermissionRisk(permission = {
       // System permissions (highest risk)
@@ -90,7 +89,8 @@ if (riskScore > 75) {
 // const _permissionValidation = awaitthis.validatePermissions(manifest.name, config.permissions);
         errors.push(...permissionValidation.errors);
         warnings.push(...permissionValidation.warnings);
-      }
+      //       }
+
 
       // 4. Check resource limits
       const _resourceValidation = this.validateResourceLimits(config);
@@ -105,20 +105,23 @@ if (riskScore > 75) {
     // Check for suspicious fields
     if (manifest.name.includes('..')  ?? manifest.name.includes('/')) {
       errors.push('Plugin name contains path traversal characters');
-    }
+    //     }
+
 
     if (manifest.version && !/^\d+\.\d+\.\d+/.test(manifest.version)) {
       warnings.push('Plugin version format appears invalid');
-    }
+    //     }
+
 
     // Check for suspicious scripts
     if (manifest.scripts) {
       for (const [scriptName, scriptCommand] of Object.entries(manifest.scripts)) {
         if (typeof scriptCommand === 'string' && this.containsSuspiciousCommands(scriptCommand)) {
           errors.push(`Script '${scriptName}' contains suspicious commands`);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return {isValid = === 0, errors, warnings };
     //   // LINT: unreachable code removed}
@@ -132,9 +135,9 @@ if (riskScore > 75) {
       /system\s*\(/,
       /\\$\([^)]*\)/,
       /`[^`]*`/;
-  ]
+  //   ]
   return suspiciousPatterns.some(pattern => pattern.test(command));
-}
+// }
 private;
 async;
 scanForThreats(plugin = [];
@@ -156,7 +159,8 @@ try {
       // Memory limits
       if (limits.memory && limits.memory > 1024) { // > 1GB
         warnings.push(`High memory limitrequested = === 0, errors, _warnings };
-  }
+  //   }
+
 
   // Worker creation and management
   private async createSecureWorker(;
@@ -184,7 +188,7 @@ monitorWorkerSecurity((_worker) => {
   // Monitor worker messages for security violations
   if (message.type === 'security-violation') {
     this.recordSecurityViolation(pluginName, message.violation, message.severity, message.details);
-  }
+  //   }
 });
 
 worker.on('error', (_error) => {
@@ -202,8 +206,9 @@ worker.on('error', (_error) => {
       const _ops = operationMap[permission];
       if (ops) {
         operations.push(...ops);
-      }
-    }
+      //       }
+    //     }
+
 
     return operations;
     //   // LINT: unreachable code removed}
@@ -219,14 +224,16 @@ worker.on('error', (_error) => {
     // Take action based on severity
     if (violationRecord.blocked) {
       this.quarantinePlugin(pluginName, violationRecord);
-    }
-  }
+    //     }
+  //   }
+
 
   private async quarantinePlugin(pluginName = this.sandboxWorkers.get(pluginName);
       if (worker) {
 // await worker.terminate();
         this.sandboxWorkers.delete(pluginName);
-      }
+      //       }
+
 
       this.emit('plugin-quarantined', { pluginName, violation });
     } catch (_error =>
@@ -238,7 +245,7 @@ worker.on('error', (_error) => {
     setInterval(() => {
       if (this.permissionAudits.length > 500) {
         this.permissionAudits = this.permissionAudits.slice(-500);
-      }
+      //       }
     }, 300000); // Every 5 minutes
 
     // Monitor worker health

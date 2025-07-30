@@ -22,16 +22,14 @@ export class MCPMessageHandler {
   this;
 
   resourceManager = resourceManager;
-}
+// }
 /**
  * Main message handling entry point;
  * @param {Object} message - MCP protocol message;
  * @returns {Promise<Object>} Response message;
-    // */ // LINT: unreachable code removed
-async;
-handleMessage(message);
+    // */ // LINT);
 : unknown
-{
+// {
   const { method, id, params } = message;
   try {
     switch (method) {
@@ -61,11 +59,11 @@ handleMessage(message);
 
       return {jsonrpc = === 'string' ? result : JSON.stringify(result, null, 2);
     //   // LINT: unreachable code removed}];
-        }
-    }
-}
+        //         }
+    //     }
+// }
 catch (error)
-{
+// {
   console.error(`[\$new Date().toISOString()] ERROR [MCP-Handler] Tool executionfailed = this.server.resources;
 
     console.error(`[${new Date().toISOString()}
@@ -78,11 +76,11 @@ catch (error)
   console.error(`[$;
   new Date().toISOString();
   ] INFO [MCP-Handler] Readingresource = await this.resourceManager.readResource(uri)
-  return {jsonrpc = null): unknown {
+  return {jsonrpc = null) {
     const _response = {jsonrpc = data;
   //   // LINT: unreachable code removed}
   return response;
-}
+// }
 /**
  * Validate MCP message format;
  * @param {Object} message - Message to validate;
@@ -90,7 +88,7 @@ catch (error)
     // */ // LINT: unreachable code removed
 validateMessage(message);
 : unknown
-{
+// {
   if (!message) {
     return {valid = = '2.0') {
       return {valid = === undefined) {
@@ -98,8 +96,8 @@ validateMessage(message);
     // console.error(; // LINT: unreachable code removed
     `[${new Date().toISOString()}
   ] STATS [MCP-Handler] $method: $status($processingTimems)`
-  )
-}
+  //   )
+// }
 /**
    * Get handler statistics;
    * @returns {Object} Handler statistics;
@@ -111,5 +109,6 @@ return {
 failedMessages: this.failedMessages  ?? 0,
 averageProcessingTime: this.averageProcessingTime  ?? 0,
 lastActivity: this.lastActivity ?? null;
-}
-}
+// }
+// }
+

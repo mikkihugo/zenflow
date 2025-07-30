@@ -40,23 +40,18 @@ async function testDocumentStack() {
   const memoryStore = new MockMemoryStore();
   const docStack = new DocumentStack(memoryStore);
   setupDefaultRules(docStack);
-// const _adrResult = awaitdocStack.createDocument(
-    'service-adr',
+// const _adrResult = awaitdocStack.createDocument('service-adr',
     'storage-service',
     'use-postgres-for-primary-storage',
     'We will use PostgreSQL  primary storage solution.',
     {
-      dependencies: ['database-service'],
-      tags: ['database', 'architecture'] }
-  );
-// const _apiResult = awaitdocStack.createDocument(
-    'api-documentation',
+      dependencies);
+// const _apiResult = awaitdocStack.createDocument('api-documentation',
     'user-service',
     'users-api-v1',
     'REST API for user management operations.',
     {
-      tags: ['api', 'users', 'rest'] }
-  );
+      tags);
   const testDoc = {
     docType: 'service-adr',
     service: 'payment-service',
@@ -64,7 +59,7 @@ async function testDocumentStack() {
 // const ruleResults = awaitdocStack.applyRules(testDoc);
   ruleResults.forEach((_result) => {});
 // const searchResults = awaitdocStack.searchByMetadata({
-    stack_layer: 'service' });
+    stack_layer);
   searchResults.forEach((_result) => {});
   ['infrastructure', 'service', 'application', 'business'].forEach((layer) => {
     const _swarm = docStack.getAvailableSwarm(layer);

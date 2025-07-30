@@ -30,24 +30,14 @@ slice(0, 5);
       });
     } else {
       setSuggestions([]);
-    }
+    //     }
   }, [value]);
 
   return (;
-    // <Box flexDirection="column">; // LINT: unreachable code removed
-      <Box>;
-        <Text color="cyan">$ </Text>;
-        <Text>{value}</Text>;
-        <Text color="gray">{placeholder && !value ?placeholder = "column" marginLeft={2}>;
-          {suggestions.map((cmd, index) => (;
+    // <Box flexDirection="column">; // LINT) => (;
             <Text ;
               key={cmd.name}
-              color={index === selectedSuggestion ? 'cyan' : 'gray'}
-              backgroundColor={index === selectedSuggestion ? 'blue' }
-            >;
-              {cmd.name} - {cmd.description}
-            </Text>;
-          ))}
+              color={index === selectedSuggestion ? 'cyan' ))}
         </Box>;
       )}
     </Box>;
@@ -85,10 +75,7 @@ const _SwarmTopology = (): unknown => {
 };
 
   return (;
-    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed} height={height + 2}>;
-      <Text bold color="cyan">📋 Command Logs</Text>
-
-      {visibleLogs.map((log, index) => (;
+    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT) => (;
         <Text ;
           key={index}
           color={log.type === 'error' ? 'red' : log.type === 'success' ? 'green' : 'white'}
@@ -116,19 +103,11 @@ const _HelpPane = (): unknown => {
         const _cmd = commands.find(c => c.name === selectedCommand);
         setCommandHelp(cmd);
       });
-    }
+    //     }
   }, [selectedCommand]);
 
   return (;
-    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;
-      <Text bold color="cyan">📖 Help</Text>
-
-      {commandHelp ? (;
-        <Box flexDirection="column" marginTop={1}>;
-          <Text bold>{commandHelp.name}</Text>;
-          <Text color="gray">{commandHelp.description}</Text>;
-          <Text marginTop={1}>Usage = {1 = "yellow">Examples:</Text>;
-              {commandHelp.examples.map((example, index) => (;
+    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT) => (;
                 <Text key={index} color="gray" marginLeft={2}>{example}</Text>;
               ))}
             </>;
@@ -168,7 +147,7 @@ const _CLIInterface = (): unknown => {
   useEffect(() => {
     if(initialCommand) {
       executeCommandWithOutput(initialCommand, initialArgs, initialFlags);
-    }
+    //     }
   }, [initialCommand]);
 
   // Update system status periodically
@@ -194,7 +173,7 @@ slice(0, 8);
       });
     } else {
       setSuggestions([]);
-    }
+    //     }
   }, [command]);
 
   const _executeCommandWithOutput = useCallback(async (cmd, args = [], flags = {}) => {
@@ -213,7 +192,7 @@ slice(0, 8);
         const _logEntry = {type = (): unknown => {
         const _logEntry = { ;
           type = {setCurrentProgress = > task ? { ...task, progress });
-        }
+        //         }
       };
 
       // Restore console
@@ -249,7 +228,7 @@ slice(0, 8);
 
     // Layout switching
     if(key.ctrl && input === 'l') {
-      setViewLayout(prev => prev === 'split' ? 'full' : 'split');
+      setViewLayout(prev => prev === 'split' ? 'full' );
       return;
     //   // LINT: unreachable code removed}
 
@@ -268,7 +247,8 @@ slice(0, 8);
         setSelectedCommand(suggestions[selectedSuggestion].name);
         return;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     // Command execution
     if (key.return && command.trim()) {
@@ -283,7 +263,7 @@ slice(0, 8);
       } else {
         executeCommandWithOutput(cmd, args, {});
         setSelectedCommand(cmd);
-      }
+      //       }
       setCommand('');
       return;
     //   // LINT: unreachable code removed}
@@ -297,14 +277,15 @@ slice(0, 8);
         setSelectedCommand(null);
       } else {
         exit();
-      }
+      //       }
     } else if(input === 'q' && !command) {
       exit();
     } else if(input === 'r' && !command && mode === 'monitoring') {
       // Refresh monitoring data
       setOutput(prev => [...prev, {type = === 1) {
       setCommand(prev => prev + input);
-    }
+    //     }
+
 
     // Mode-specific inputs
     if(mode === 'api') {
@@ -332,7 +313,7 @@ slice(0, 8);
       React.createElement(Box, {flexGrow = === 'cli' && React.createElement(Box, { flexDirection => {
                 const _parts = cmd.split(' ');
                 executeCommandWithOutput(parts[0], parts.slice(1), {});
-              }
+              //               }
             }),
             suggestions.length > 0 && React.createElement(Box, {flexDirection = > ;
                 React.createElement(Text, {key = === selectedSuggestion ? 'cyan' : 'white',backgroundColor = === selectedSuggestion ? 'blue' ,marginLeft = === 'api' && React.createElement(Box, {flexDirection = === 'monitoring' && React.createElement(SwarmTopology, { ;
@@ -358,6 +339,7 @@ slice(0, 8);
     console.warn('\n👋 Claude-Zen interface shutting down...');
     // process.exit(0); // LINT: unreachable code removed
   });
-}
+// }
+
 
 export default CLIInterface;

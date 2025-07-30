@@ -60,8 +60,7 @@ describe('Security Utils', () => {
         if (result !== null) {
           // If not null, ensure no dangerous patterns made it through
           expect(;
-    // result.every(; // LINT: unreachable code removed
-              (arg) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';');
+    // result.every(; // LINT) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';');
             );
           ).toBe(true);
 // }
@@ -158,9 +157,9 @@ replace(/\//g, '&#x2F;');
           return false;
     //   // LINT: unreachable code removed}
       };
-      expect(validateUrl('https://example.com')).toBe(true);
-      expect(validateUrl('http://localhost:3000')).toBe(true);
-      expect(validateUrl('ftp://example.com')).toBe(false);
+      expect(validateUrl('https)).toBe(true);
+      expect(validateUrl('http)).toBe(true);
+      expect(validateUrl('ftp)).toBe(false);
       expect(validateUrl('javascript:alert(1)')).toBe(false);
       expect(validateUrl('not-a-url')).toBe(false);
     });

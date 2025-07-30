@@ -12,7 +12,7 @@ describe('OWASP Top 10 Security Tests', () => {
   afterAll(async () => {
   // await new Promise((resolve) => server.close(resolve));
   });
-  describe('A01: Broken Access Control', () => {
+  describe('A01) => {
     it('should prevent unauthorized access to user data', async () => {
       // Try to access another user's data
 // const _response = awaitrequest(server);
@@ -54,7 +54,7 @@ expect(404)
 // }
     });
   });
-  describe('A02: Cryptographic Failures', () => {
+  describe('A02) => {
     it('should use HTTPS in production', async () => {
 // const _response = awaitrequest(server);
 get('/api/v1/config/security')
@@ -83,7 +83,7 @@ expect(200)
       expect(response.body.keyManagement).toBe('HSM');
     });
   });
-  describe('A03: Injection', () => {
+  describe('A03) => {
     it('should prevent SQL injection', async () => {
       const _sqlInjectionPayloads = [
 
@@ -113,7 +113,7 @@ post('/api/v1/users/search')
 set('Authorization', authToken)
 send(
           filter;
-        )
+        //         )
 expect(400)
         expect(response.body.error.code).toBe('INVALID_FILTER');
 // }
@@ -130,7 +130,7 @@ post('/api/v1/images/process')
 set('Authorization', authToken)
 send(
           filename;
-        )
+        //         )
 expect(400)
         expect(response.body.error.code).toBe('INVALID_FILENAME');
 // }
@@ -152,12 +152,12 @@ send(
 expect(201)
         // Check that HTML is escaped
         expect(response.body.data.name).not.toContain('<script>');
-        expect(response.body.data.name).not.toContain('javascript:');
+        expect(response.body.data.name).not.toContain('javascript);
         expect(response.body.data.description).not.toContain('onerror=');
 // }
     });
   });
-  describe('A04: Insecure Design', () => {
+  describe('A04) => {
     it('should enforce business logic constraints', async () => {
       // Try to create more projects than allowed
       const _maxProjects = 10;
@@ -167,10 +167,8 @@ expect(201)
         request(server);
 post('/api/v1/projects')
 set('Authorization', authToken)
-send(
-          name: `Project \$i`;
-        )
-        )
+send(name)
+        //         )
 // }
 // const _responses = awaitPromise.all(promises);
       const _failures = responses.filter((r) => r.status === 400);
@@ -199,7 +197,7 @@ expect(400)
       expect(response.body.error.code).toBe('INVALID_WORKFLOW');
     });
   });
-  describe('A05: Security Misconfiguration', () => {
+  describe('A05) => {
     it('should not expose sensitive headers', async () => {
 // const _response = awaitrequest(server).get('/health').expect(200);
       // Check that sensitive headers are not exposed
@@ -213,7 +211,7 @@ options('/api/v1/images/upload')
 set('Origin', 'https://evil.com')
 expect(204)
       // Should not allow arbitrary origins
-      expect(response.headers['access-control-allow-origin']).not.toBe('https://evil.com');
+      expect(response.headers['access-control-allow-origin']).not.toBe('https);
       expect(response.headers['access-control-allow-origin']).not.toBe('*');
     });
     it('should not expose debug information in production', async () => {
@@ -244,7 +242,7 @@ expect(200)
 // }
     });
   });
-  describe('A06: Vulnerable and Outdated Components', () => {
+  describe('A06) => {
     it('should check for vulnerable dependencies', async () => {
 // const _response = awaitrequest(server);
 get('/api/v1/health/dependencies')
@@ -254,7 +252,7 @@ expect(200)
       expect(response.body.outdated).toEqual([]);
     });
   });
-  describe('A07: Identification and Authentication Failures', () => {
+  describe('A07) => {
     it('should enforce strong password requirements', async () => {
       const _weakPasswords = ['123456', 'password', 'qwerty', 'abc123', 'password123'];
       for (const _password of weakPasswords) {
@@ -275,7 +273,7 @@ expect(400)
         attempts.push(;
           request(server).post('/api/v1/auth/login').send({
             email,
-            password: 'wrong-password' });
+            password);
         );
 // }
 // const _responses = awaitPromise.all(attempts);
@@ -302,7 +300,7 @@ expect(200)
     expect(sessionResponse.body.data).toHaveProperty('ipAddress');
   });
 });
-describe('A08: Software and Data Integrity Failures', () => {
+describe('A08) => {
   it('should verify file integrity on upload', async () => {
 // const _mockImage = awaitTestHelpers.createMockImage();
     const _tamperedChecksum = 'invalid-checksum';
@@ -325,7 +323,7 @@ expect(401)
   expect(response.body.error.code).toBe('INVALID_SIGNATURE');
 });
 })
-describe('A09: Security Logging and Monitoring Failures', () => {
+describe('A09) => {
   it('should log security events', async () => {
     // Trigger a security event (failed login)
   // await request(server);
@@ -338,9 +336,7 @@ expect(401)
 // const _logsResponse = awaitrequest(server);
 get('/api/v1/admin/logs/security')
 set('Authorization', authToken)
-query(
-      event: 'failed_login';
-    )
+query(event)
 expect(200)
     expect(logsResponse.body.data.length).toBeGreaterThan(0);
     expect(logsResponse.body.data[0]).toHaveProperty('timestamp');
@@ -356,7 +352,7 @@ expect(200)
 get('/api/v1/projects')
 set('Authorization', authToken)
 set('X-Forwarded-For', '192.168.1.100')
-      )
+      //       )
 // }
   // await Promise.all(requests);
     // Check anomaly detection logs
@@ -383,7 +379,7 @@ post('/api/v1/images/import')
 set('Authorization', authToken)
 send(
         url;
-      )
+      //       )
 expect(400)
       expect(response.body.error.code).toBe('INVALID_URL');
 // }
@@ -400,7 +396,7 @@ post('/api/v1/webhooks/configure')
 set('Authorization', authToken)
 send(
         url;
-      )
+      //       )
 expect(400)
       expect(response.body.error.code).toBe('INVALID_WEBHOOK_URL');
 // }
@@ -427,12 +423,11 @@ it('should prevent timing attacks on authentication', async () => {
       for (const user of users) {
         const _start = process.hrtime.bigint();
   // await request(server).post('/api/v1/auth/login').send({
-          email: user.email,
-          password: 'wrong-password' });
+          email);
         const _end = process.hrtime.bigint();
         const _duration = Number(end - start) / 1e6; // Convert to ms
 
-        timings.push({ exists: user.exists, duration });
+        timings.push({ exists);
 // }
 // Response times should be similar to prevent user enumeration
 const _validTiming = timings.find((t) => t.exists).duration;

@@ -2,7 +2,7 @@
  * Workflow Management Hooks;
  * Hooks for workflow execution, coordination, and optimization;
  */
-export const workflowCoordinator = {name = Date.now();
+export const workflowCoordinator = {name = Date.now(); // eslint-disable-line
 
 try {
       const { workflowId, stepId, stepType, stepData } = payload.data;
@@ -11,6 +11,6 @@ try {
     // { // LINT: unreachable code removed
     name: 'workflow-coordinator',
     type: 'workflow-step',
-    hook: workflowCoordinator;
-  }
+    // hook: workflowCoordinator
+  //   }
 ];

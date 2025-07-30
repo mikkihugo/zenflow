@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 jest.mock('../../../src/cli/utils.js', () => ({
   printSuccess: jest.fn() }))
 describe('Status Command', () =>
-{
+// {
   let originalConsoleLog;
   let consoleOutput;
   let statusCommand;
@@ -36,7 +36,7 @@ describe('Status Command', () =>
     });
     it('should call printSuccess with correct message', async () => {
   // await statusCommand([], {});
-      expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status:');
+      expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status);
       expect(printSuccess).toHaveBeenCalledTimes(1);
     });
     it('should display system status information', async () => {
@@ -63,7 +63,7 @@ describe('Status Command', () =>
       // Test with various arguments and flags
   // await statusCommand(['arg1', 'arg2'], { verbose, json });
       // Should still work the same way regardless of args/flags
-      expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status:');
+      expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status);
       expect(consoleOutput).toHaveLength(6);
     });
     it('should show consistent status format', async () => {
@@ -72,32 +72,32 @@ describe('Status Command', () =>
       consoleOutput.forEach((line) => {
         expect(line).toMatch(;
         /^[\u{1F4A0}-\u{1F64F}]|\u{1F300}-\u{1F5FF}|\u{1F680}-\u{1F6FF}|\u{1F700}-\u{1F77F}|\u{1F780}-\u{1F7FF}|\u{1F800}-\u{1F8FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}|🟡|🤖|📋|💾|🖥️|🌐/u;
-        )
+        //         )
       });
     });
     it('should indicate system is not running', async () => {
   // await statusCommand([], {});
-      const _statusLine = consoleOutput.find((line) => line.includes('Status:'));
+      const _statusLine = consoleOutput.find((line) => line.includes('Status));
       expect(statusLine).toContain('Not Running');
       expect(statusLine).toContain('orchestrator not started');
     });
     it('should show zero counts for inactive system', async () => {
   // await statusCommand([], {});
-      const _agentsLine = consoleOutput.find((line) => line.includes('Agents:'));
+      const _agentsLine = consoleOutput.find((line) => line.includes('Agents));
       expect(agentsLine).toContain('0 active');
-      const _tasksLine = consoleOutput.find((line) => line.includes('Tasks:'));
+      const _tasksLine = consoleOutput.find((line) => line.includes('Tasks));
       expect(tasksLine).toContain('0 in queue');
     });
     it('should show ready status for memory and terminal pool', async () => {
   // await statusCommand([], {});
-      const _memoryLine = consoleOutput.find((line) => line.includes('Memory:'));
+      const _memoryLine = consoleOutput.find((line) => line.includes('Memory));
       expect(memoryLine).toContain('Ready');
-      const _terminalLine = consoleOutput.find((line) => line.includes('Terminal Pool:'));
+      const _terminalLine = consoleOutput.find((line) => line.includes('Terminal Pool));
       expect(terminalLine).toContain('Ready');
     });
     it('should show stopped status for MCP server', async () => {
   // await statusCommand([], {});
-      const _mcpLine = consoleOutput.find((line) => line.includes('MCP Server:'));
+      const _mcpLine = consoleOutput.find((line) => line.includes('MCP Server));
       expect(mcpLine).toContain('Stopped');
     });
     it('should be async function', () => {
@@ -123,7 +123,7 @@ describe('Status Command', () =>
   // await statusCommand([], {});
       } catch (error) {
         expect(error.message).toBe('Mock error');
-      }
+      //       }
       // Restore the mock
       printSuccess.mockRestore();
     });

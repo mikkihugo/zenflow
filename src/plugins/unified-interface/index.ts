@@ -28,7 +28,7 @@ import { BasePlugin } from '../base-plugin.js';
 // Interface mode types
 type InterfaceMode = 'auto' | 'cli' | 'tui' | 'web' | 'daemon';
 // interface Theme {primary = > void
-}
+// }
 // interface CLIInterface {displayTable = > void
 showProgress = > Ora
 prompt = > Promise<any>
@@ -37,7 +37,7 @@ error = > void
 warning = > void;
 info = > void;
 box = > void;
-}
+// }
 // interface WebServerInfo {httpServer = null
 private;
 httpServer = null
@@ -62,12 +62,12 @@ private;
 eventHandlers = new Map();
 constructor(manifest = process.env.PORT ? parseInt(process.env.PORT) : null;
 const _interfaceConfig = {defaultMode = = false,refreshInterval = = false;
-}
+// }
 // Store config back to plugin settings
 Object.assign(this.config.settings, interfaceConfig)
 // Ensure web static directory exists
 // await mkdir(interfaceConfig.staticDir,
-{
+// {
   recursive = this.detectInterfaceMode();
   // Register default components
   this.registerDefaultComponents();
@@ -77,24 +77,24 @@ Object.assign(this.config.settings, interfaceConfig)
       webPort => {
       this.context.apis.logger.info('Session started', {sessionId = === 'true') {
 // await this.cleanup();
-}
+// }
 else
-{
+// {
   this.context.apis.logger.info('Unified server staying alive for external access');
-}
-}
+// }
+// }
 protected
-async
+// async
 onDestroy()
 : Promise<void>
-{
+// {
 // await this.cleanup();
-}
+// }
 // Interface mode detection
 private;
 detectInterfaceMode();
 : InterfaceMode
-{
+// {
   const _defaultMode = this.config.settings.defaultMode  ?? 'auto';
   if (defaultMode !== 'auto') {
     return defaultMode;
@@ -124,15 +124,18 @@ detectInterfaceMode();
   // Auto-detect based on environment
   if (!process.stdout.isTTY) {
     return 'cli'; // Non-interactive environment
-  }
+  //   }
+
 
   if (process.env.TERM_PROGRAM === 'vscode'  ?? process.env.CI) {
     return 'cli'; // VS Code terminal or CI environment
-  }
+  //   }
+
 
   // Default to TUI for interactive terminals
   return 'tui';
-}
+// }
+
 
 // Component registration
 private;
@@ -183,7 +186,7 @@ startCliMode();
 private;
 createCliHeader((title = ''));
 : string;
-{
+// {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   return boxen(;
@@ -194,15 +197,15 @@ createCliHeader((title = ''));
   const _table = new Table({head = > chalk.hex(theme.primary).bold(h)),
       style => {
       table.push(row.map(cell => ;
-        typeof cell === 'string' ?cell = === 'dark' ? 'cyan' : 'blue';
-    }).start();
-}
+        typeof cell === 'string' ?cell = === 'dark' ? 'cyan' ).start();
+// }
+
 
 private;
 async;
 showCliPrompt((questions = 'info'));
 : void;
-{
+// {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   console.warn(boxen(content, {padding = (): unknown => {
@@ -214,7 +217,8 @@ showCliPrompt((questions = 'info'));
       useInput((input, key) => {
         if (key.ctrl && input === 'c') {
           this.shutdown();
-        }
+        //         }
+
 
         // Tab switching
         const _tabs = ['dashboard', 'hives', 'plugins', 'logs'];
@@ -222,16 +226,19 @@ showCliPrompt((questions = 'info'));
 
         if (tabIndex >= 0 && tabIndex < tabs.length) {
           setActiveTab(tabs[tabIndex]);
-        }
+        //         }
+
 
         // Navigation
         if (key.leftArrow  ?? key.rightArrow) {
           const _currentIndex = tabs.indexOf(activeTab);
           const _nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < tabs.length - 1 ? currentIndex + 1 : 0;
-          }
+          //           }
+
 
           setActiveTab(tabs[nextIndex]);
-        }
+        //         }
+
 
         // Refresh
         if (input === 'r') {
@@ -240,7 +247,7 @@ showCliPrompt((questions = 'info'));
             setData(newData);
             setStatus('Ready');
           });
-        }
+        //         }
       });
 
   // Auto-refresh data
@@ -255,11 +262,13 @@ showCliPrompt((questions = 'info'));
   }, []);
 
   return this.createTuiDashboard({ activeTab, data, status, setActiveTab });
-}
+// }
+
 
 this.tuiInstance = render(React.createElement(TuiApp));
 return this.tuiInstance;
-}
+// }
+
 
   private createTuiDashboard(;
   activeTab, data, status;
@@ -307,12 +316,13 @@ return this.tuiInstance;
   // Generate JavaScript
   const _jsContent = this.createWebScript();
 // await writeFile(join(this.config.settings.staticDir, 'app.js'), jsContent);
-}
+// }
+
 
 private;
 createWebDashboard();
 : string;
-{
+// {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   return `<!DOCTYPE html>;
@@ -433,12 +443,13 @@ createWebDashboard();
     <script src="app.js"></script>;
 </body>;
 </html>`;
-}
+// }
+
 
 private;
 createWebStyles();
 : string;
-{
+// {
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   return `;
@@ -449,13 +460,15 @@ createWebStyles();
         this.currentTab = 'dashboard';
         this.data = {};
         this.init();
-    }
+    //     }
+
 
     init() {
         this.setupEventListeners();
         this.connectWebSocket();
         this.loadData();
-    }
+    //     }
+
 
     connectWebSocket() {
         const _protocol = window.location.protocol === 'https = window.location.host;
@@ -476,7 +489,8 @@ createWebStyles();
             this.updateStatus('Disconnected', 'error');
             setTimeout(() => this.connectWebSocket(), 5000);
         };
-    }
+    //     }
+
 
     async loadData() {
         try {
@@ -491,7 +505,8 @@ createWebStyles();
             console.error('Failed to loaddata = (this.data.plugins  ?? []).length;
         document.getElementById('session-count').textContent = ;
             this.data.stats?.sessions  ?? 0;
-    }
+    //     }
+
 
     updateStatus(text, type) {
         const _statusText = document.querySelector('.status-text');
@@ -499,22 +514,25 @@ createWebStyles();
 
         statusText.textContent = text;
         statusDot.className = \`status-dot status-\${type}\`;
-    }
-}
+    //     }
+// }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     window.dashboard = new ClaudeZenDashboard();
 });
 
-function executeCommand(): unknown {
+function executeCommand() {
     // Command execution implementation
-}
+// }
 
-function saveSettings(): unknown {
+
+function saveSettings() {
     // Settings save implementation
-}
+// }
 `;
-}
+// }
+
 
 private;
 setupWebRoutes(app => {
@@ -545,7 +563,7 @@ setupWebRoutes(app => {
           this.handleWebSocketMessage(websocket, message);
         } catch (error) {
           this.context.apis.logger.error('Invalid WebSocket message', error);
-        }
+        //         }
       });
 
       websocket.on('close', () => {
@@ -564,17 +582,20 @@ setupWebRoutes(app => {
       return {status = fork(process.argv[1], process.argv.slice(2), {detached = = child.pid) {
       process.exit(0);
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   private async setupDaemonLogging(): Promise<void> {
     // Redirect stdout and stderr to log file
     const _logStream = createWriteStream(this.config.settings.logFile, {flags = logStream.write.bind(logStream) as any;
     process.stderr.write = logStream.write.bind(logStream) as any;
-  }
+  //   }
+
 
   private async writePidFile(): Promise<void> {
 // await writeFile(this.config.settings.pidFile, process.pid.toString());
-  }
+  //   }
+
 
   private async isDaemonRunning(): Promise<boolean> {
     try {
@@ -591,12 +612,13 @@ setupWebRoutes(app => {
 // await this.removePidFile();
           return false;
     //   // LINT: unreachable code removed}
-      }
+      //       }
       return false;
     //   // LINT: unreachable code removed} catch (error) {
       return false;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   private async getDaemonPid(): Promise<number | null> {
     try {
@@ -605,18 +627,20 @@ setupWebRoutes(app => {
     //   // LINT: unreachable code removed} catch (error) {
       return null;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   private async removePidFile(): Promise<void> {
     try {
       await writeFile(this.config.settings.pidFile, ''); // Clear the file instead of deleting
     } catch (error) {
       // Ignore errors when removing PID file
-    }
-  }
+    //     }
+  //   }
+
 
   // Public API methods
-  async start(mode?: InterfaceMode): Promise<any> {
+  async start(mode?): Promise<any> {
     const _targetMode = mode  ?? this.currentMode!;
 
     switch (targetMode) {
@@ -644,10 +668,11 @@ setupWebRoutes(app => {
         } catch (error) {
           this.context.apis.logger.error('Failed to send WebSocket message', error);
           this.wsClients.delete(client);
-        }
+        //         }
       });
-    }
-  }
+    //     }
+  //   }
+
 
   async getStats(): Promise<JSONObject> {
     return {currentMode = await this.isDaemonRunning();
@@ -662,7 +687,8 @@ setupWebRoutes(app => {
         if (this.httpServer) {
           this.httpServer.close();
           this.httpServer = null;
-        }
+        //         }
+
 
         if (this.wsClients) {
           this.wsClients.forEach(client => {
@@ -670,44 +696,50 @@ setupWebRoutes(app => {
               client.close();
             } catch (error) {
               // Ignore errors when closing clients
-            }
+            //             }
           });
           this.wsClients.clear();
-        }
+        //         }
+
 
         this.webServer = null;
         this.wsServer = null;
       } else {
         this.context.apis.logger.info('Unified server staying alive for external access');
-      }
-    }
+      //       }
+    //     }
+
 
     // Cleanup TUI
     if (this.tuiInstance) {
       this.tuiInstance.unmount();
       this.tuiInstance = null;
-    }
+    //     }
+
 
     // Clear sessions but keep unified server running
     this.sessions.clear();
-  }
+  //   }
+
 
   private async shutdown(): Promise<void> {
 // await this.cleanup();
     this.context.apis.logger.info('Claude Zen interface shutting down');
     process.exit(0);
-  }
+  //   }
+
 
   // Placeholder component methods
-  private createCliTable(data: unknown[], headers: string[]): void {
+  private createCliTable(data, headers) {
     // Implementation would be similar to displayCliTable
-  }
+  //   }
 
-  private createCliProgress(message: string): Ora {
+
+  private createCliProgress(message) {
     return this.showCliProgress(message);
     //   // LINT: unreachable code removed}
 
-  private createCliPrompt(questions: unknown[]): Promise<any> {
+  private createCliPrompt(questions): Promise<any> {
     return this.showCliPrompt(questions);
     //   // LINT: unreachable code removed}
 
@@ -719,9 +751,10 @@ setupWebRoutes(app => {
     return React.createElement('div', {}, 'TUI Status');
     //   // LINT: unreachable code removed}
 
-  private createWebApi(): JSONObject {
+  private createWebApi() {
     return { api: 'web-api' };
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 export default UnifiedInterfacePlugin;

@@ -22,10 +22,10 @@ if (!fs.existsSync(DEST_DIR)) {
       fs.writeFileSync(;
       readmePath,
       `# ${dirName}\n\nThis directory is intentionally empty and will be populated during usage.\n`;
-      )
-    }
-  }
-}
+      //       )
+    //     }
+  //   }
+// }
 // Copy files
 console.warn('\nCopying template files...');
 const __successCount = 0;
@@ -42,8 +42,9 @@ for(const file of manifest.files) {
         fs.mkdirSync(destDir, {recursive = '.repeat(50));
 console.warn('InstallationSummary = manifest.files.filter(;
     (_f) => f.category === category && fs.existsSync(path.join(DEST_DIR, f.destination))).length;
-  console.warn(`${category}: ${copied}/${info.count} files`);
-}
+  console.warn(`${category});
+// }
+
 
 // Verify installation
 if(errorCount === 0) {
@@ -57,11 +58,12 @@ if(errorCount === 0) {
 } else {
   console.warn('\n⚠️  Template installation completed with errors.');
   console.warn('Please check the error messages above and ensure source files exist.');
-}
+// }
+
 
 // Display next steps
-console.warn('\nNext steps:');
+console.warn('\nNext steps);
 console.warn('1. Review the installed files in the .claude directory');
-console.warn('2. Run tests to verify functionality: npm test');
+console.warn('2. Run tests to verify functionality);
 console.warn('3. Package for distribution if needed');
 console.warn('\nFor more information, see README.md');

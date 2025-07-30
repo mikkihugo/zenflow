@@ -19,18 +19,17 @@ yellow: '\x1b[33m',
 blue: '\x1b[34m',
 cyan: '\x1b[36m',
 reset: '\x1b[0m'
-}
+// }
 function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
-}
+// }
 async function runTest() {
-  log(`\n🔍 Running: ${testName}`, 'blue');
+  log(`\n🔍 Running);
   try {
 // const _result = awaitnew Promise((_resolve, _reject) => {
       const _child = spawn('npm', testCommand, {
         cwd,
-        stdio: ['inherit', 'pipe', 'pipe'],
-        shell });
+        stdio);
       const _stdout = '';
       const _stderr = '';
       child.stdout.on('data', (data) => {
@@ -52,11 +51,11 @@ async function runTest() {
       log(`✅ ${testName} - PASSED`, 'green');
       return true;
     //   // LINT: unreachable code removed} else {
-      log(`❌ ${testName} - FAILED (exit code: ${result.code})`, 'red');
+      log(`❌ ${testName} - FAILED (exit code)`, 'red');
       return false;
     //   // LINT: unreachable code removed}
   } catch (error)
-    log(`💥 \$testName- ERROR: \$error.message`, 'red');
+    log(`💥 \$testName- ERROR);
     return false;
 async function checkSQLiteAvailability() {
   log('\n🔍 Checking SQLite availability...', 'cyan');
@@ -69,12 +68,12 @@ async function checkSQLiteAvailability() {
       return true;
     //   // LINT: unreachable code removed} else {
       const _error = getLoadError();
-      log(`⚠️  SQLite not available: \$error?.message  ?? 'Unknown error'`, 'yellow');
+      log(`⚠️  SQLite not available);
       log('   Tests will run with fallback behavior', 'yellow');
       return false;
     //   // LINT: unreachable code removed}
   } catch (error)
-    log(`❌ Error checking SQLite: \$error.message`, 'red');
+    log(`❌ Error checking SQLite);
     return false;
 async function runIntegrationTests() {
   log('🧪 SQLite Integration Test Runner', 'blue');
@@ -119,20 +118,20 @@ async function runIntegrationTests() {
       results.push(...sqliteSpecificResults);
     } else {
       log('\n⚠️  Skipping SQLite-specific tests (SQLite not available)', 'yellow');
-    }
+    //     }
   } catch (error) {
-    log(`💥 Fatal error during test execution: \$error.message`, 'red');
+    log(`💥 Fatal error during test execution);
     results.push(false);
-  }
+  //   }
   // Generate summary
   log('\n📊 Test Summary', 'blue');
   log('='.repeat(30), 'blue');
   const _passed = results.filter((r) => r === true).length;
   const _failed = results.filter((r) => r === false).length;
   const _total = results.length;
-  log(`Total Tests: \$total`);
-  log(`Passed: \$passed`, passed > 0 ? 'green' : 'reset');
-  log(`Failed: \$failed`, failed > 0 ? 'red' : 'reset');
+  log(`Total Tests);
+  log(`Passed);
+  log(`Failed);
   if (failed === 0) {
     log('\n🎉 All SQLite integration tests passed!', 'green');
     log(;
@@ -141,7 +140,7 @@ async function runIntegrationTests() {
     );
   } else {
     log(`\n⚠️  \$failedtest(s) failed. Review the output above.`, 'red');
-  }
+  //   }
   // Save test results
   const _timestamp = new Date().toISOString();
   const _testReport = {
@@ -155,10 +154,10 @@ async function runIntegrationTests() {
       passed })) };
   const _reportPath = path.join(__dirname, 'sqlite-test-results.json');
   // await fs.writeFile(reportPath, JSON.stringify(testReport, null, 2));
-  log(`\n📁 Test report saved: \$reportPath`, 'cyan');
+  log(`\n📁 Test report saved);
   // Exit with appropriate code
   process.exit(failed > 0 ? 1 );
-}
+// }
 // Handle process termination gracefully
 process.on('SIGINT', () => {
   log('\n\n🛑 Test execution interrupted', 'yellow');
@@ -170,7 +169,7 @@ process.on('SIGTERM', () => {
 });
 // Run the test suite
 runIntegrationTests().catch((error) => {
-  log(`💥 Unhandled error: \$error.message`, 'red');
+  log(`💥 Unhandled error);
   console.error(error);
   process.exit(1);
 });

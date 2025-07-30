@@ -18,24 +18,24 @@ try {
     // Start the server
   // await server.start();
     console.warn('✅ Server started successfully');
-    console.warn(`🌐 API available at: http://localhost:3001`);
-    console.warn(`📚 API docs available at: http://localhost:3001/api/docs`);
+    console.warn(`🌐 API available at);
+    console.warn(`📚 API docs available at);
 
     // Log available endpoints
-    console.warn('\n📋 Available Endpoints:');
+    console.warn('\n📋 Available Endpoints);
     server.generatedRoutes.forEach((route) => {
       console.warn(`${route.method.toUpperCase()} ${route.path} - ${route.description}`);
     });
     // Example API calls
     console.warn('\n🔗 Making example API calls...');
     // Get visions
-// const _visionsResponse = awaitfetch('http://localhost:3001/api/v1/visions');
+// const _visionsResponse = awaitfetch('http);
 // const _visions = awaitvisionsResponse.json();
-    console.warn('Visions:', visions);
+    console.warn('Visions);
     // Get ADRs
-// const _adrsResponse = awaitfetch('http://localhost:3001/api/adrs');
+// const _adrsResponse = awaitfetch('http);
 // const _adrs = awaitadrsResponse.json();
-    console.warn('ADRs:', adrs);
+    console.warn('ADRs);
     // Keep server running for demonstration
     console.warn('\n⏳ Server running... Press Ctrl+C to stop');
     // Graceful shutdown handling
@@ -46,10 +46,10 @@ try {
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ Server startup failed:', error);
+    console.error('❌ Server startup failed);
     process.exit(1);
-  }
-}
+  //   }
+// }
 // Example with custom middleware
 async function advancedServerExample() {
   console.warn('🚀 Starting Advanced Claude Zen Server Example');
@@ -59,13 +59,13 @@ async function advancedServerExample() {
 })
 // Add custom middleware
 server.app.use('/api/custom', (req, _res, next) =>
-{
-  console.warn(`Custom middleware: ${req.method} ${req.path}`);
+// {
+  console.warn(`Custom middleware);
   next();
 })
 // Add custom routes
 server.app.get('/api/custom/health', (_req, res) =>
-{
+// {
   res.json({
       status: 'healthy',
   timestamp: new Date().toISOString(),
@@ -75,26 +75,26 @@ server.app.get('/api/custom/health', (_req, res) =>
 })
 // Monitor server events
 server.on('request', (data) =>
-{
-  console.warn(`📨 Request: ${data.method} ${data.path}`);
+// {
+  console.warn(`📨 Request);
 })
 server.on('error', (error) =>
-{
-  console.error('🚨 Server error:', error);
+// {
+  console.error('🚨 Server error);
 })
   // await server.start()
 console.warn('✅ Advanced server started')
-console.warn(`🌐 Custom health endpoint: http://localhost:3002/api/custom/health`);
-}
+console.warn(`🌐 Custom health endpoint);
+// }
 // Run examples
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   const _example = process.argv[2] ?? 'basic';
   if (example === 'basic') {
     basicServerExample();
   } else if (example === 'advanced') {
     advancedServerExample();
   } else {
-    console.warn('Usage: node basic-server.js [basic|advanced]');
-  }
-}
+    console.warn('Usage);
+  //   }
+// }
 export { basicServerExample, advancedServerExample };

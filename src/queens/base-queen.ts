@@ -92,7 +92,8 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
 
   if(_successfulResults._length === 0) {
                 throw new Error('No queens could process this task');
-            }
+            //             }
+
 
   // Determine consensus method based on task importance and queen specialties
   const;
@@ -138,7 +139,8 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
   // Default to majority
   return;
     // majority; // LINT: unreachable code removed
-}
+// }
+
 
 async;
 reachConsensus(task, results, method);
@@ -165,9 +167,10 @@ reachConsensus(task, results, method);
 
             return (isExpert && hasHigherConfidence) ?current = > r.queenName !== expert.queenName);
     //   // LINT: unreachable code removed};
-    }
+    //     }
 
-    weightedConsensus(task, results): unknown {
+
+    weightedConsensus(task, results) {
         // Weight results by confidence and specialty match
         const _weightedResults = results.map(result => ({
 ..result,weight = > b.weight - a.weight);
@@ -182,8 +185,9 @@ reachConsensus(task, results, method);
 
             if(cumulativeWeight >= totalWeight * 0.7) {
                 break;
-            }
-        }
+            //             }
+        //         }
+
 
         // Combine selected results into final decision
         const __decision = this.combineRecommendations(selectedResults.map(r => r.recommendation));
@@ -191,9 +195,10 @@ reachConsensus(task, results, method);
 
         return {taskId = > !selectedResults.some(s => s.queenName === r.queenName));
     //   // LINT: unreachable code removed};
-    }
+    //     }
 
-    majorityConsensus(task, results): unknown {
+
+    majorityConsensus(task, results) {
         // Group similar recommendations
         const _groups = this.groupSimilarRecommendations(results);
 
@@ -208,25 +213,29 @@ reachConsensus(task, results, method);
 
         return {taskId = > !majority.includes(r));
     //   // LINT: unreachable code removed};
-    }
+    //     }
 
-    calculateWeight(result, task): unknown {
+
+    calculateWeight(result, task) {
         const _weight = result.confidence;
 
         // Boost weight if queen specialty matches task type
         if (result.queenName.toLowerCase().includes(task.type.split('-')[0])) {
             weight *= 1.5;
-        }
+        //         }
+
 
         // Boost weight for faster processing (efficiency bonus)
         if(result.processingTime < 1000) {
             weight *= 1.1;
-        }
+        //         }
+
 
         return Math.min(weight, 2.0); // Cap at 2.0
-    }
+    //     }
 
-    calculateSimilarity(text1, text2): unknown {
+
+    calculateSimilarity(text1, text2) {
         // Simple similarity calculation - could be enhanced with ML
         const _words1 = new Set(text1.toLowerCase().split(/\W+/));
         const _words2 = new Set(text2.toLowerCase().split(/\W+/));
@@ -237,7 +246,7 @@ reachConsensus(task, results, method);
         return intersection.size / union.size;
     //   // LINT: unreachable code removed}
 
-    groupSimilarRecommendations(results): unknown {
+    groupSimilarRecommendations(results) {
         const _groups = [];
         const _threshold = 0.6;
 
@@ -250,13 +259,15 @@ reachConsensus(task, results, method);
                     group.push(result);
                     addedToGroup = true;
                     break;
-                }
-            }
+                //                 }
+            //             }
+
 
             if(!addedToGroup) {
                 groups.push([result]);
-            }
-        }
+            //             }
+        //         }
+
 
         return groups;
     //   // LINT: unreachable code removed}
@@ -272,8 +283,9 @@ reachConsensus(task, results, method);
             // Check if my recommendation influenced the consensus
             if (this.calculateSimilarity(myResult.recommendation, consensus.decision) > 0.5) {
                 this.metrics.consensusReached++;
-            }
-        }
+            //             }
+        //         }
+
 
     async canAcceptTask(task): unknown
         if(!this.isActive) {
@@ -287,21 +299,24 @@ reachConsensus(task, results, method);
         // Check if this queen is suitable for the task
 // const _suitability = awaitthis.calculateSuitability(task);
         return suitability > 0.3; // Minimum suitability threshold
-    }
+    //     }
 
-    async calculateSuitability(task): unknown {
+
+    async calculateSuitability(task) {
         // Base suitability on specialty match
         const _suitability = 0.5; // Base suitability
 
         // Boost if specialty matches task type
         if (this.specialty.includes(task.type.split('-')[0])) {
             suitability += 0.4;
-        }
+        //         }
+
 
         // Reduce if overloaded
         if(this.workload > 0.8) {
             suitability *= 0.6;
-        }
+        //         }
+
 
         // Boost based on historical performance for this task type
         suitability += this.metrics.specialtyMatch * 0.1;
@@ -357,7 +372,9 @@ reachConsensus(task, results, method);
         while(this.activeTasks.size > 0 && attempts < 30) {
 // await new Promise(resolve => setTimeout(resolve, 1000));
             attempts++;
-        }
+        //         }
+
 
         this.emit('shutdown');
-    }
+    //     }
+

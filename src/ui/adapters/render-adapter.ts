@@ -6,7 +6,7 @@
 import React from 'react';
 
 // Environment detection
-export const isWeb = (): unknown => typeof window !== 'undefined';
+export const isWeb = (): unknown => typeof window !== 'undefined'; // eslint-disable-line
 export const isTUI = (): unknown => !isWeb() && process.stdout?.isTTY;
 
 // Conditional imports based on environment
@@ -19,7 +19,7 @@ if (isTUI()) {
     inkComponents = ink;
   } catch (/* _error */) {
     console.warn('Ink not available, falling back to console output');
-  }
+  //   }
 } else if (isWeb()) {
   // Dynamic import for web environment
   try {
@@ -27,8 +27,8 @@ if (isTUI()) {
     webComponents = { reactDOM };
   } catch (/* _error */) {
     console.warn('React DOM not available');
-  }
-}
+  //   }
+// }
 /**
  * Universal Box component - works in both TUI and Web;
  */
@@ -99,5 +99,5 @@ export const _useUniversalInput = (): unknown => {
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     //   // LINT: unreachable code removed}, [handler]);
-  }
+  //   }
 };

@@ -21,8 +21,8 @@ recoveryInProgress = new Set()
 private;
 readonly;
 config = {};
-)
-{
+// )
+// {
   super();
 
   this.pluginManager = pluginManager;
@@ -74,10 +74,12 @@ config = {};
   if (startSuccess) {
     this.emit('plugin-restarted', { pluginName });
     this.updateMetrics(pluginName, 'recovery');
-  }
+  //   }
+
 
   return startSuccess;
-}
+// }
+
 
 // Health monitoring
 async;
@@ -94,7 +96,8 @@ if (!plugin) {
       if (schedule) {
         schedule.consecutiveFailures++;
         schedule.nextCheck = new Date(Date.now() + schedule.interval);
-      }
+      //       }
+
 
       this.recordEvent(pluginName, 'error', { error,phase = this.healthChecks.get(pluginName);
     if (!schedule) {
@@ -147,11 +150,12 @@ sort((a, b) => b.priority - a.priority);
 // await this.performHealthCheck(pluginName);
           } catch (/* _error */) {
             // Health check errors are handled within performHealthCheck
-          }
-        }
-      }
+          //           }
+        //         }
+      //       }
     }, 5000); // Check every 5 seconds for due health checks
-  }
+  //   }
+
 
   // Recovery strategies
   private setupRecoveryStrategies(): void ;
@@ -161,8 +165,7 @@ sort((a, b) => b.priority - a.priority);
         return true;,
       _priority => ;
         return health.issues.some(_issue => ;
-    // issue.component === 'configuration' && issue.severity === 'high'; // LINT: unreachable code removed
-        );,
+    // issue.component === 'configuration' && issue.severity === 'high'; // LINT);,
       _action => ;
 // await plugin.resetConfiguration();
         return true;,
@@ -175,12 +178,14 @@ sort((a, b) => b.priority - a.priority);
         // Trigger garbage collection if available
         if (global.gc) {
           global.gc();
-        }
+        //         }
+
 
         // Clear plugin caches if available
         if (typeof (plugin as any).clearCache === 'function') {
 // await (plugin as any).clearCache();
-        }
+        //         }
+
 
         return true;,priority = > health.score < 30,
       _action => ;
@@ -195,7 +200,7 @@ sort((a, b) => b.priority - a.priority);
         if (value) {
           metrics.averageStartTime = ;
             (metrics.averageStartTime * (metrics.successfulStarts - 1) + value) / metrics.successfulStarts;
-        }
+        //         }
         break;
       case 'failedStart':;
         metrics.failedStarts++;
@@ -205,7 +210,7 @@ sort((a, b) => b.priority - a.priority);
         if (value) {
           metrics.averageStopTime = ;
             (metrics.averageStopTime * (metrics.successfulStops - 1) + value) / metrics.successfulStops;
-        }
+        //         }
         break;
       case 'failedStop':;
         metrics.failedStops++;
@@ -216,7 +221,8 @@ sort((a, b) => b.priority - a.priority);
       case 'recovery':;
         metrics.recoveries++;
         break;
-    }
+    //     }
+
 
   private setupEventListeners(): void ;
     // Listen to plugin manager events
@@ -236,12 +242,13 @@ sort((a, b) => b.priority - a.priority);
 
     if (limit) {
       events = events.slice(-limit);
-    }
+    //     }
+
 
     return events;
     //   // LINT: unreachable code removed}
 
-  getMetrics(pluginName?: string): Record<string, LifecycleMetrics> ;
+  getMetrics(pluginName?): Record<string, LifecycleMetrics> ;
     if (pluginName) {
       const _metrics = this.metrics.get(pluginName);
       return metrics ? { [pluginName]} : {};
@@ -258,7 +265,8 @@ sort((a, b) => b.priority - a.priority);
       } catch (error = status = this.healthChecks.get(pluginName);
     if (schedule) {
       schedule.enabled = enabled;
-    }
+    //     }
+
 
   addRecoveryStrategy(strategy): void ;
     this.recoveryStrategies.push(strategy);
@@ -275,12 +283,14 @@ sort((a, b) => b.priority - a.priority);
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = undefined;
-    }
+    //     }
+
 
     this.healthChecks.clear();
     this.lifecycleEvents.length = 0;
     this.metrics.clear();
     this.recoveryInProgress.clear();
-}
+// }
+
 
 export default PluginLifecycleManager;

@@ -15,31 +15,34 @@ const _loadTemplate = (): unknown => {
     //   // LINT: unreachable code removed}
 };
 
-export function _createEnhancedClaudeMd(): unknown {
+export function _createEnhancedClaudeMd() {
   const _template = loadTemplate('CLAUDE.md');
   if (!template) {
     // Fallback to hardcoded if template file not found
     return createEnhancedClaudeMdFallback();
     //   // LINT: unreachable code removed}
   return template;
-}
+// }
 
-export function _createEnhancedSettingsJson(): unknown {
+
+export function _createEnhancedSettingsJson() {
   const _template = loadTemplate('settings.json');
   if (!template) {
     return createEnhancedSettingsJsonFallback();
     //   // LINT: unreachable code removed}
   return template;
-}
+// }
 
-export function _createWrapperScript(type = 'unix': unknown): unknown {
+
+export function _createWrapperScript(type = 'unix') {
   // For unix, use the universal wrapper that works in both CommonJS and ES modules
   if (type === 'unix') {
     const _universalTemplate = loadTemplate('claude-zen-universal');
     if (universalTemplate) {
       return universalTemplate;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   const _filename =;
     type === 'unix' ? 'claude-zen' : type === 'windows' ? 'claude-zen.bat' : 'claude-zen.ps1';
@@ -49,18 +52,20 @@ export function _createWrapperScript(type = 'unix': unknown): unknown {
     return createWrapperScriptFallback(type);
     //   // LINT: unreachable code removed}
   return template;
-}
+// }
 
-export function createCommandDoc(category = loadTemplate(`commands/${category}/${command}.md`: unknown);
+
+export function createCommandDoc(category = loadTemplate(`commands/${category}/${command}.md`);
 if (!template) {
   // Silently fall back to generated documentation
   return createCommandDocFallback(category, command);
-}
+// }
 return template;
-}
+// }
+
 
 // Generate command documentation fallbacks
-function createCommandDocFallback(): unknown {
+function createCommandDocFallback() {
     // Return the universal ES module compatible wrapper
     return `#!/usr/bin/env node
 
@@ -71,9 +76,9 @@ function createCommandDocFallback(): unknown {
 
 // Use dynamic import to work in both CommonJS and ES modules
 (_async () => {
-  const { spawn } = await import('node:child_process');
-const { resolve } = await import('node:path');
-const { fileURLToPath } = await import('node:url');
+  const { spawn } = await import('node);
+const { resolve } = await import('node);
+const { fileURLToPath } = await import('node);
 
 try {
   // Try to use import.meta.url (ES modules)
@@ -81,7 +86,8 @@ try {
   const ___dirname = resolve(__filename, '..');
 } catch {
   // Fallback for CommonJS
-}
+// }
+
 
 // Try multiple strategies to find claude-zen
 const __strategies = [
@@ -89,12 +95,12 @@ const __strategies = [
     async () => {
       try {
         const _localPath = resolve(process.cwd(), 'node_modules/.bin/claude-zen');
-        const { existsSync } = await import('node:fs');
+        const { existsSync } = await import('node);
         if (existsSync(localPath)) {
           return spawn(localPath, process.argv.slice(2), { stdio => {
       try {
         const _parentPath = resolve(process.cwd(), '../node_modules/.bin/claude-zen');
-    // const { existsSync  // LINT: unreachable code removed} = await import('node:fs');
+    // const { existsSync  // LINT: unreachable code removed} = await import('node);
         if (existsSync(parentPath)) {
           return spawn(parentPath, process.argv.slice(2), { stdio => {
       return spawn('npx', ['claude-zen@2.0.0-alpha.25', ...process.argv.slice(2)], {stdio = await strategy();
@@ -129,10 +135,11 @@ if(Test-Path "\$scriptPath\\package.json") ;
     # Production mode - use npx alpha;
     & npx claude-zen@alpha \$args`;
   return '';
-}
+// }
+
 
 // Fallback functions for when templates can't be loaded
-function _createEnhancedClaudeMdFallback(): unknown {
+function _createEnhancedClaudeMdFallback() {
   // Read from the actual template file we created
   try {
     return readFileSync(join(__dirname, 'CLAUDE.md'), 'utf8');
@@ -169,10 +176,11 @@ function _createEnhancedClaudeMdFallback(): unknown {
 
 See full documentation in \`.claude/commands/\`;
 `;
-  }
-}
+  //   }
+// }
 
-function _createEnhancedSettingsJsonFallback(): unknown {
+
+function _createEnhancedSettingsJsonFallback() {
   return JSON.stringify(;
         CLAUDE_FLOW_AUTO_COMMIT: 'false',
         CLAUDE_FLOW_AUTO_PUSH: 'false',
@@ -183,7 +191,7 @@ function _createEnhancedSettingsJsonFallback(): unknown {
         allow: [;
           'Bash(npx claude-zen *)',
           'Bash(npm run lint)',
-          'Bash(npm run test:*)',
+          'Bash(npm run test)',
           'Bash(npm test *)',
           'Bash(git status)',
           'Bash(git diff *)',
@@ -200,43 +208,44 @@ function _createEnhancedSettingsJsonFallback(): unknown {
         deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],,
       enabledMcpjsonServers: ['claude-zen', 'ruv-swarm'],
         PreToolUse: [;
-          {
+          //           {
             matcher: 'Bash',
             hooks: [;
-              {
+              //               {
                 type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-command --command "{}" --validate-safety true --prepare-resources true' } ] },
-          {
+          //           {
             matcher: 'Write|Edit|MultiEdit',
             hooks: [;
-              {
+              //               {
                 type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-edit --file "{}" --auto-assign-agents true --load-context true' } ] } ],
         PostToolUse: [;
-          {
+          //           {
             matcher: 'Bash',
             hooks: [;
-              {
+              //               {
                 type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks post-command --command "{}" --track-metrics true --store-results true' } ] },
-          {
+          //           {
             matcher: 'Write|Edit|MultiEdit',
             hooks: [;
-              {
+              //               {
                 type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks post-edit --file "{}" --format true --update-memory true --train-neural true' } ] } ],
         Stop: [;
-          {
+          //           {
             hooks: [;
-              {
+              //               {
                 type: 'command',
                 command:;
                   'npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true' } ] } ],,
       includeCoAuthoredBy},
     null,
     2);
-}
+// }
+

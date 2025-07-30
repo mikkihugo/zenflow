@@ -15,7 +15,7 @@ import { isInteractive } from '../../utils/interactive-detector.js';
  * Interactive memory management wizard;
  * @returns {Promise<void>}
  */
-// export async function manageMemoryWizard(): unknown { // LINT: unreachable code removed
+// export async function manageMemoryWizard() { // LINT: unreachable code removed
 if (!isInteractive()) {
     warnNonInteractive('Memory wizard requires interactive mode');
     return;
@@ -26,8 +26,8 @@ if (!isInteractive()) {
 
   try {
 // const __action = awaitinquirer.prompt([;
-      {
-        type = {list = {}): unknown {
+      //       {
+        type = {list = {}) {
   const _sessionDir = filters.sessionDir  ?? './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
 
@@ -46,28 +46,33 @@ if (!isInteractive()) {
     if(filters.type) {
       conditions.push('type = ?');
       params.push(filters.type);
-    }
+    //     }
+
 
     if(filters.minImportance) {
       conditions.push('importance >= ?');
       params.push(filters.minImportance);
-    }
+    //     }
+
 
     if(filters.session_id) {
       conditions.push('session_id = ?');
       params.push(filters.session_id);
-    }
+    //     }
+
 
     if(conditions.length > 0) {
       query += ` WHERE ${conditions.join(' AND ')}`;
-    }
+    //     }
+
 
     query += ' ORDER BY importance DESC, created_at DESC';
 
     if(filters.limit) {
       query += ' LIMIT ?';
       params.push(filters.limit);
-    }
+    //     }
+
 
     const _memories = db.prepare(query).all(...params);
 
@@ -83,16 +88,17 @@ if (!isInteractive()) {
 
     if (memories.length >= (filters.limit  ?? 20)) {
       console.warn(chalk.gray('\n... (use --limit to see more entries)'));
-    }
+    //     }
   } finally
     db.close();
-}
+// }
+
 
 /**
  * Search memories by key pattern or content;
  * @returns {Promise<void>}
  */;
-    // export async function searchMemories(): unknown { // LINT: unreachable code removed
+    // export async function searchMemories() { // LINT: unreachable code removed
   if (!isInteractive()) {
     console.warn(chalk.yellow('Search requires interactive mode'));
     return;
@@ -101,7 +107,7 @@ if (!isInteractive()) {
     {type = > input.trim().length > 0  ?? 'Search query is required';
     },
     {type = > input > 0  ?? 'Must be greater than 0';
-    }
+    //     }
   ]);
 
   const _sessionDir = './.claude/hive-mind';
@@ -123,7 +129,8 @@ if (!isInteractive()) {
       query += 'value LIKE ?';
     } else {
       query += '(key LIKE ? OR value LIKE ?)';
-    }
+    //     }
+
 
     query += ' ORDER BY importance DESC, created_at DESC LIMIT ?';
 
@@ -156,14 +163,15 @@ if (!isInteractive()) {
 
   } finally {
     db.close();
-  }
-}
+  //   }
+// }
+
 
 /**
  * Interactive memory storage wizard;
  * @returns {Promise<void>}
  */;
-    // export async function storeMemoryWizard(): unknown { // LINT: unreachable code removed
+    // export async function storeMemoryWizard() { // LINT: unreachable code removed
   if (!isInteractive()) {
     console.warn(chalk.yellow('Store wizard requires interactive mode'));
     return;
@@ -173,7 +181,7 @@ if (!isInteractive()) {
     },
     {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
     },
-    {type = 'general', importance = 0.5, sessionId = null): unknown {
+    {type = 'general', importance = 0.5, sessionId = null) {
   const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
@@ -192,14 +200,15 @@ if (!isInteractive()) {
     // ; // LINT: unreachable code removed
   } finally {
     db.close();
-  }
-}
+  //   }
+// }
+
 
 /**
  * Display memory statistics and analytics;
  * @returns {Promise<void>}
  */;
-    // export async function showMemoryStats(): unknown { // LINT: unreachable code removed
+    // export async function showMemoryStats() { // LINT: unreachable code removed
   const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
@@ -220,26 +229,27 @@ if (!isInteractive()) {
       console.warn(`  $stat.type: $chalk.cyan(stat.count)(avgimportance = totalCount > 0 ? Math.round(await estimateMemorySize(db) / totalCount) : 0;
 
     console.warn(chalk.bold('\nStorage = await inquirer.prompt([;
-    {
+    //     {
       type = {};
 
   if(answers.strategy === 'age') {
 // const _ageAnswer = awaitinquirer.prompt([;
       {type = > input > 0  ?? 'Must be greater than 0';
-      }
+      //       }
     ]);
     cleanupCriteria.maxAge = ageAnswer.days;
 
   } else if(answers.strategy === 'importance') {
 // const _importanceAnswer = awaitinquirer.prompt([
       {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
-      }
+      //       }
     ]);
     cleanupCriteria.minImportance = importanceAnswer.threshold;
 
   } else if(answers.strategy === 'unused') {
     cleanupCriteria.maxAccess = 0;
-  }
+  //   }
+
 
   const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
@@ -260,7 +270,7 @@ if (!isInteractive()) {
       const _transaction = db.transaction((memories) => {
         for(const memory of memories) {
           deleteStmt.run(memory.id);
-        }
+        //         }
       });
 
       transaction(toDelete);
@@ -268,18 +278,20 @@ if (!isInteractive()) {
       spinner.succeed(`Deleted ${toDelete.length} memories successfully`);
     } else {
       console.warn(chalk.gray('Cleanup cancelled'));
-    }
+    //     }
+
 
   } finally {
     db.close();
-  }
-}
+  //   }
+// }
+
 
 /**
  * Export memory backup;
  * @returns {Promise<void>}
  */;
-    // export async function exportMemoryBackup(): unknown { // LINT: unreachable code removed
+    // export async function exportMemoryBackup() { // LINT: unreachable code removed
   const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
@@ -291,7 +303,7 @@ if (!isInteractive()) {
       ORDER BY created_at DESC;
     `).all();
 
-    const _backup = {exported_at = new Date().toISOString().replace(/[:.]/g, '-');
+    const _backup = {exported_at = new Date().toISOString().replace(/[]/g, '-');
     const _filename = `memory-backup-\$timestamp.json`;
 
     // Ensure exports directory exists
@@ -305,13 +317,14 @@ if (!isInteractive()) {
     },
     {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
     },
-    {type = false): unknown {
+    {type = false) {
 
   const _importance = (memory.importance * 100).toFixed(0);
 
     console.warn(`  \$chalk.dim(preview)`);
-  }
-}
+  //   }
+// }
+
 
 /**
  * Estimate total memory size in bytes;
@@ -319,12 +332,13 @@ if (!isInteractive()) {
  * @returns {Promise<number>} Estimated size in bytes;
     // */; // LINT: unreachable code removed
 async function estimateMemorySize(db = db.prepare(`;
-    SELECT SUM(LENGTH(key: unknown) + LENGTH(value) + LENGTH(type) + 50) as total_size;
+    SELECT SUM(LENGTH(key) + LENGTH(value) + LENGTH(type) + 50) as total_size;
     FROM collective_memory;
   `).get();
 
   return result.total_size  ?? 0;
-}
+// }
+
 
 /**
  * Identify memories to delete based on criteria;
@@ -332,31 +346,36 @@ async function estimateMemorySize(db = db.prepare(`;
  * @param {Object} criteria - Cleanup criteria;
  * @returns {Promise<Array>} Memories to delete;
     // */; // LINT: unreachable code removed
-async function identifyMemoriesToDelete(): unknown {
+async function identifyMemoriesToDelete() {
     const _cutoffTime = Math.floor((Date.now() - criteria.maxAge * 24 * 60 * 60 * 1000) / 1000);
     conditions.push('created_at < ?');
     params.push(cutoffTime);
-  }
+  //   }
+
 
   if(criteria.minImportance !== undefined) {
     conditions.push('importance < ?');
     params.push(criteria.minImportance);
-  }
+  //   }
+
 
   if(criteria.maxAccess !== undefined) {
     conditions.push('access_count <= ?');
     params.push(criteria.maxAccess);
-  }
+  //   }
+
 
   // Never delete config memories
   conditions.push("type !== 'config'");
 
   if(conditions.length === 1 && conditions[0] === "type !== 'config'") {
     return []; // No other criteria specified
-  }
+  //   }
+
 
   query += conditions.join(' AND ');
   query += ' ORDER BY importance ASC, access_count ASC';
 
   return db.prepare(query).all(...params);
-}
+// }
+

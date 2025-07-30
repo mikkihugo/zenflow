@@ -13,7 +13,7 @@ import LanceDBInterface from '../database/lancedb-interface.js';
 import { VisionarySoftwareIntelligenceProcessor } from '../visionary/software-intelligence-processor.js';
 
 export class MultiSystemCoordinator extends EventEmitter {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     super();
 
     this.config = {
@@ -32,7 +32,8 @@ export class MultiSystemCoordinator extends EventEmitter {
     // Analytics and metrics
     this.analytics = {totalOperations = new Map();
     this.setupIntegrationPatterns();
-  }
+  //   }
+
 
   /**
    * Initialize all three systems with coordination;
@@ -60,7 +61,8 @@ export class MultiSystemCoordinator extends EventEmitter {
       this.emit('initialized', {systems = new LanceDBInterface(this.config.lancedb);
 // await this.lancedb.initialize();
     console.warn('✅ LanceDB initialized');
-  }
+  //   }
+
 
   /**
    * Initialize Kuzu system;
@@ -73,7 +75,8 @@ export class MultiSystemCoordinator extends EventEmitter {
 // await mkdir(this.config.kuzu.dbPath, {recursive = new KuzuAdvancedInterface(this.config.kuzu);
 // await this.kuzu.initializeAdvanced();
     console.warn('✅ Kuzu Advanced Interface initialized');
-  }
+  //   }
+
 
   /**
    * Initialize Vision system;
@@ -86,7 +89,8 @@ export class MultiSystemCoordinator extends EventEmitter {
 // await mkdir(this.config.vision.outputDir, {recursive = new VisionarySoftwareIntelligenceProcessor(this.config.vision);
 // await this.vision.initialize();
     console.warn('✅ Visionary Software Intelligence initialized');
-  }
+  //   }
+
 
   /**
    * Setup cross-system integrations;
@@ -151,17 +155,19 @@ export class MultiSystemCoordinator extends EventEmitter {
       const _analysis = {vision = === 'image') {
           analysis.vision = await this.vision.processImage(input.path, {framework = input.text  ?? input.code;
           analysis.vectors = await this.lancedb.semanticSearch(searchText, {table = await this.kuzu.findServiceDependencies(input.entityName);
-        }
+        //         }
+
 
         // Generate cross-system insights
         analysis.insights = await this.generateCrossSystemInsights(analysis);
 
         return analysis;
     //   // LINT: unreachable code removed} catch (error) {
-        console.warn('⚠️ Comprehensive analysis warning = {}): unknown {
+        console.warn('⚠️ Comprehensive analysis warning = {}) {
     if(!this._config._enableIntelligentRouting) {
       throw new Error('Intelligent routing is disabled');
-    }
+    //     }
+
 
     const _startTime = Date.now();
     const _operationId = `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -190,7 +196,8 @@ export class MultiSystemCoordinator extends EventEmitter {
     const _results = {systemsUsed = type;
     if(searchType === 'auto') {
       searchType = this.detectSearchType(query);
-    }
+    //     }
+
 
     // Route to appropriate table/system
     switch(searchType) {
@@ -213,21 +220,24 @@ export class MultiSystemCoordinator extends EventEmitter {
       if(similarQueries && similarQueries.length > 0) {
         results.similarQueries = similarQueries;
         results.systemsUsed.push('lancedb');
-      }
-    }
+      //       }
+    //     }
+
 
     // Execute graph analysis
     switch(input.analysisType) {
       case 'traversal':;
         results.data = await this.kuzu.advancedTraversal({startNode = await this.kuzu.computeCentrality({algorithm = await this.kuzu.detectCommunities({algorithm = await this.kuzu.patternMatching(input.pattern, options);
         break;default = await this.kuzu.executeQuery(input.query, options);
-    }
+    //     }
+
 
     // Store query pattern for future similarity search
     if(this.config.enableMemorySharing && results.data) {
 // await this.runIntegrationPattern('graph-to-vector', input.query, results.data);
       results.systemsUsed.push('lancedb');
-    }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
@@ -235,7 +245,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   /**
    * Route comprehensive analysis operations;
    */;
-  async routeComprehensiveAnalysis(input, options): unknown {
+  async routeComprehensiveAnalysis(input, options) {
     const _results = {systemsUsed = await this.runIntegrationPattern('comprehensive-analysis', input);
 
     return results;
@@ -289,27 +299,29 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
       console.warn(`⚠️ Integration pattern error (${patternName}):`, error.message);
       return null;
     //   // LINT: unreachable code removed}
-  }
+  //   }
 
-  async textToEmbedding(text): unknown {
+
+  async textToEmbedding(text) {
     // Simplified embedding generation (in production, use actual embedding model)
     const _hash = this.simpleHash(text);
     return Array(this.config.lancedb.vectorDim).fill(0).map((_, _i) => ;
     // Math.sin(hash + i) * Math.cos(hash * i); // LINT: unreachable code removed
     );
-  }
+  //   }
 
-  simpleHash(str): unknown {
+
+  simpleHash(str) {
     const _hash = 0;
     for(let i = 0; i < str.length; i++) {
       const _char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
-    }
+    //     }
     return hash;
     //   // LINT: unreachable code removed}
 
-  detectLanguage(fileName): unknown {
+  detectLanguage(fileName) {
     const _ext = path.extname(fileName).toLowerCase();
     const _langMap = {
       '.js': 'javascript',
@@ -345,7 +357,7 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
     //   // LINT: unreachable code removed}
     return 'document';
     // ; // LINT: unreachable code removed
-  analyzeComponentRelationships(components): unknown {
+  analyzeComponentRelationships(components) {
     // Simplified relationship analysis
     const _relationships = [];
 
@@ -360,9 +372,10 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
            bounds1.y >= bounds2.y &&;
            (bounds1.x + bounds1.width) <= (bounds2.x + bounds2.width) &&;
            (bounds1.y + bounds1.height) <= (bounds2.y + bounds2.height);
-  }
+  //   }
 
-  areAdjacent(bounds1, bounds2): unknown {
+
+  areAdjacent(bounds1, bounds2) {
     const _threshold = 10; // pixels
 
     // Check horizontal adjacency
@@ -386,13 +399,15 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
       this.analytics.systemUsage.lancedb.queries++;
       this.analytics.systemUsage.lancedb.avgTime = ;
         (this.analytics.systemUsage.lancedb.avgTime + executionTime) / 2;
-    }
+    //     }
+
 
     if (operation.includes('kuzu')  ?? operation.includes('graph')) {
       this.analytics.systemUsage.kuzu.queries++;
       this.analytics.systemUsage.kuzu.avgTime = ;
         (this.analytics.systemUsage.kuzu.avgTime + executionTime) / 2;
-    }
+    //     }
+
 
     if (operation.includes('vision')  ?? operation.includes('code-generation')) {
       this.analytics.systemUsage.vision.processes++;
@@ -401,10 +416,11 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
       if(success) {
         this.analytics.systemUsage.vision.successRate = ;
           (this.analytics.systemUsage.vision.successRate + 1) / 2;
-      }
-    }
+      //       }
+    //     }
 
-  sanitizeForLogging(obj): unknown {
+
+  sanitizeForLogging(obj) {
     if (typeof obj !== 'object'  ?? obj === null) return obj;
     // ; // LINT: unreachable code removed
     const _sanitized = {};
@@ -415,7 +431,7 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
         sanitized[key] = `${obj[key].substring(0, 200)}...`;
       } else {
         sanitized[key] = obj[key];
-      }
+      //       }
     });
 
     return sanitized;
@@ -436,7 +452,8 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
     }, 300000); // Every 5 minutes
 
     console.warn('📊 Analytics system initialized');
-  }
+  //   }
+
 
   /**
    * Get comprehensive system status;
@@ -477,9 +494,10 @@ reduce((sum, system) => sum + system.avgTime, 0) / 3;
       console.warn('✅ Multi-System Coordinator closed');
 
     } catch (error) {
-      console.error(`❌ Error closing coordinator: ${error.message}`);
+      console.error(`❌ Error closing coordinator);
       throw error;
-    }
-}
+    //     }
+// }
+
 
 export default MultiSystemCoordinator;

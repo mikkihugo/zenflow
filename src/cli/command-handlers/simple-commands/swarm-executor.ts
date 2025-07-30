@@ -24,10 +24,10 @@ class SwarmCoordinator {
   this;
 
   startTime = Date.now();
-}
+// }
 async;
 initialize();
-{
+// {
   console.warn(`\n🚀 Swarminitialized = 'active';
 
     // Create swarm directory
@@ -60,11 +60,12 @@ export default app;
     // Create package.json
 
     console.warn(`  ✅ Generic task completed`);
-  }
+  //   }
+
 
   async;
   getStatus();
-  {
+  //   {
     return {id = > t.status === 'completed').length,in_progress = > t.status === 'in_progress').length,
     //   // LINT: unreachable code removed},runtime = 'completed';
 // const __summary = awaitthis.getStatus();
@@ -73,10 +74,11 @@ export default app;
 // await fs.writeFile(path.join(swarmDir, 'summary.json'), JSON.stringify(summary, null, 2));
     return summary;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 // Main execution function
-async function executeSwarm(objective = {}: unknown): unknown {
+async function executeSwarm(objective = {}) {
   try {
     // Parse configuration from flags
     const _config = {name = = false },security = new SwarmCoordinator(config);
@@ -96,7 +98,8 @@ async function executeSwarm(objective = {}: unknown): unknown {
 // await coordinator.addAgent('tester', 'Test Lead');
 // await coordinator.addAgent('tester', 'Integration Tester');
 // await coordinator.addAgent('tester', 'Performance Tester');
-    }
+    //     }
+
 
     // Execute the main objective
 // await coordinator.executeTask(objective);
@@ -105,9 +108,9 @@ async function executeSwarm(objective = {}: unknown): unknown {
     // ; // LINT: unreachable code removed
     return { success, summary };
     //   // LINT: unreachable code removed} catch (error) {
-    console.error(`❌ Swarm execution failed: ${error.message}`);
+    console.error(`❌ Swarm execution failed);
     return { success, error: error.message };
-  }
-}
+  //   }
+// }
 // Export for use in swarm.js
 export { SwarmCoordinator };

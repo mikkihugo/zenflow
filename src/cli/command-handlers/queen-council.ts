@@ -24,14 +24,15 @@ export class QueenCouncil {
     // Error recovery settings
     this.errorRecovery = {maxFailedQueens = new Map();
     this.initializeQueenHealth();
-  }
+  //   }
+
 
   /**
    * Initialize queen health tracking;
    */;
   initializeQueenHealth() {
     for (const queenName of Object.keys(this.queens)) {
-      this.queenHealth.set(queenName, {status = 0, error = null): unknown {
+      this.queenHealth.set(queenName, {status = 0, error = null) {
     const _health = this.queenHealth.get(queenName);
     if (!health) return;
     // ; // LINT: unreachable code removed
@@ -52,7 +53,8 @@ export class QueenCouncil {
         health.status = 'critical';
       } else if(health.consecutiveFailures >= 2) {
         health.status = 'degraded';
-      }
+      //       }
+
 
       log.error(`Queen ${queenName} analysis failed`, {consecutiveFailures = [];
     const _degraded = [];
@@ -69,8 +71,9 @@ export class QueenCouncil {
         case 'critical':;
           critical.push(name);
           break;
-      }
-    }
+      //       }
+    //     }
+
 
     return { healthy, degraded, critical };
     //   // LINT: unreachable code removed}
@@ -79,7 +82,7 @@ export class QueenCouncil {
    * Initialize Queen Council system;
    */;
   async initialize() {
-// await mkdir(QUEEN_COUNCIL_DIR, { recursive = {}): unknown {
+// await mkdir(QUEEN_COUNCIL_DIR, { recursive = {}) {
     printInfo(`👑 _Queen _Council _conveningfor = await this.loadRelevantDocuments(objective, context);
     // Step 2 = {};
     const _queenDecisions = {};
@@ -147,7 +150,7 @@ export class QueenCouncil {
   /**
    * Load documents relevant to the strategic decision from database;
    */;
-  async loadRelevantDocuments(objective, context): unknown {
+  async loadRelevantDocuments(objective, context) {
     // Find relevant documents using ChromaDB semantic search
 // const _allRelevantDocs = awaitstrategicDocs.findRelevantDocuments(objective, 20);
 
@@ -181,7 +184,8 @@ export class QueenCouncil {
       if(!votingGroups[rec]) {
         votingGroups[rec] = {queens = decision.confidence;
       votingGroups[rec].reasoning.push(decision.reasoning);
-    }
+    //     }
+
 
     // Find consensus (highest weighted vote above threshold)
     let _consensus = null;
@@ -191,33 +195,39 @@ export class QueenCouncil {
       const _score = group.totalConfidence / totalWeight;
       if(score > highestScore && score >= this.consensusThreshold) {
         consensus = {decision = score;
-      }
-    }
+      //       }
+    //     }
+
 
     // If no consensus above threshold, escalate to conflict resolution
     if(!consensus) {
       consensus = await this.resolveConflict(objective, queenDecisions, relevantDocs);
-    }
+    //     }
+
 
     printSuccess(`🏛️ Consensusachieved = === 'abstain') return;
     // ; // LINT: unreachable code removed
     // Update roadmaps if decision affects strategic direction
     if(consensus.documentReferences?.roadmaps?.length > 0) {
 // await this.updateRoadmaps(consensus);
-    }
+    //     }
+
 
     // Create or update ADRs for architectural decisions
     if (consensus.decision.includes('architecture')  ?? consensus.decision.includes('design')) {
 // await this.createArchitectureDecisionRecord(consensus, decisionId);
-    }
+    //     }
+
 
     // Update PRDs if decision affects product requirements
     if(consensus.documentReferences?.prds?.length > 0) {
 // await this.updateProductRequirements(consensus);
-    }
+    //     }
+
 
     printInfo('📝 Strategic documents updated based on consensus');
-  }
+  //   }
+
 
   /**
    * Create Architecture Decision Record (ADR) in database;
@@ -227,7 +237,8 @@ export class QueenCouncil {
 // const __adr = awaitstrategicDocs.createADR({
         decisionId,title = > doc.id  ?? doc.path),prds = > doc.id  ?? doc.path),architecture = > doc.id  ?? doc.path),adrs = > doc.id  ?? doc.path);
     };
-  }
+  //   }
+
 
   async resolveConflict(objective, queenDecisions, relevantDocs): unknown ;
     // Conflict resolution mechanism when no clear consensus
@@ -241,7 +252,8 @@ export class QueenCouncil {
     printWarning('🚨 EMERGENCYMODE = this.queens[this.errorRecovery.emergencyQueen];
       if(!emergencyQueen) {
         throw new Error('Emergency queen not available');
-      }
+      //       }
+
 
       log.error('Emergency decision mode activated', {
         objective,emergencyQueen = await circuitBreakerManager.execute(;
@@ -261,8 +273,9 @@ export class QueenCouncil {
     for (const [name, decision] of Object.entries(queenDecisions)) {
       if(!decision.failed && !decision.skipped && decision.recommendation !== 'abstain') {
         validDecisions[name] = decision;
-      }
-    }
+      //       }
+    //     }
+
 
     if (Object.keys(validDecisions).length === 0) {
       printError('❌ No valid queen decisions available, falling back to emergency mode');
@@ -283,8 +296,9 @@ export class QueenCouncil {
         'PARTIALCONSENSUS = Math.max(0.3, consensus.confidence * 0.8);
 
       printWarning(`⚠️ Partial consensusachieved = originalThreshold;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Get comprehensive error recovery status;
@@ -296,8 +310,9 @@ export class QueenCouncil {
     for (const [name, health] of this.queenHealth.entries()) {
       healthStats[name] = {status = 1  ?? queenHealthStatus.degraded.length >= 1;
     };
-  }
-}
+  //   }
+// }
+
 
 /**
  * Base Queen Class - All queens inherit from this;
@@ -307,29 +322,33 @@ class BaseQueen {
     this.name = '';
     this.domain = '';
     this.documentTypes = [];
-  }
+  //   }
 
-  async initialize(name, strategicDocsManager): unknown {
+
+  async initialize(name, strategicDocsManager) {
     this.name = name;
     this.strategicDocs = strategicDocsManager;
-  }
+  //   }
 
-  async analyzeWithDocuments(objective, relevantDocs, context): unknown {
+
+  async analyzeWithDocuments(objective, relevantDocs, context) {
     // Base analysis method - override in subclasses
     return {domain = 'strategic-planning';
     // this.documentTypes = ['roadmaps', 'strategies']; // LINT: unreachable code removed
-  }
+  //   }
 
-  async analyzeWithDocuments(objective, relevantDocs, context): unknown {
+
+  async analyzeWithDocuments(objective, relevantDocs, context) {
     // Analyze roadmap implications
 
     return {domain = === 0) {
       return {aligned = roadmaps.map(r => r.content).join('\n---\n');
     // ; // LINT: unreachable code removed
     this.documentTypes = ['prds', 'specifications'];
-  }
+  //   }
 
-  async analyzeWithDocuments(objective, relevantDocs, context): unknown {
+
+  async analyzeWithDocuments(objective, relevantDocs, context) {
     // Analyze product requirements implications
 // const _requirementsAnalysis = awaitthis.analyzeRequirements(objective, relevantDocs.prds);
 
@@ -338,9 +357,10 @@ class BaseQueen {
     // const _requirementsAnalysis = await generateText(`; // LINT: unreachable code removed
       Analyze if this objective meets productrequirements = 'technical-architecture';
     this.documentTypes = ['architecture', 'adrs', 'design'];
-  }
+  //   }
 
-  async analyzeWithDocuments(objective, relevantDocs, context): unknown {
+
+  async analyzeWithDocuments(objective, relevantDocs, context) {
     // Analyze architectural implications
 // const _architecturalAnalysis = awaitthis.analyzeArchitecture(objective, relevantDocs.architecture);
 
@@ -359,7 +379,7 @@ class BaseQueen {
   async analyzeWithDocuments(objective, relevantDocs, context): unknown
     return {domain = 'performance-optimization';
 
-  async analyzeWithDocuments(objective, relevantDocs, context): unknown {
+  async analyzeWithDocuments(objective, relevantDocs, context) {
     return {domain = input[0];
     // const _subArgs = input.slice(1); // LINT: unreachable code removed
   const _auto = subArgs.includes('--auto')  ?? flags.auto;
@@ -398,13 +418,16 @@ class BaseQueen {
 
   decisions.forEach(decision => {
     console.warn(`\n🗓️ ${decision.created_at}`);
-    console.warn(`🎯 Objective: ${decision.objective}`);
+    console.warn(`🎯 Objective);
     console.warn(`🏛️ Decision: ${decision.consensusResult?.decision  ?? 'N/A'} (${Math.round(decision.confidenceScore * 100)}%)`);
     console.warn(`👑 Supporting Queens: ${decision.supportingQueens?.join(', ')  ?? 'None'}`);
     if(decision.total_analyses > 0) {
       console.warn(`🧠 Analyses: ${decision.total_analyses} queens (avg confidence: ${Math.round(decision.avg_queen_confidence * 100)}%)`);
-    }
+    //     }
   });
-}
+// }
 
+
+    // 
     }
+

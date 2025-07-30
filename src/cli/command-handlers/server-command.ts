@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 
 const _SERVER_PID_FILE = './.claude-zen-server.pid';
-export async function serverCommand(): unknown {
+export async function serverCommand() {
   case 'start': null
   return await startServer(flags);
   // case 'stop':; // LINT: unreachable code removed
@@ -26,7 +26,7 @@ export async function serverCommand(): unknown {
     // Start server in foreground
     return await startServerForeground(port, flags);
     //   // LINT: unreachable code removed}
-  }
+  //   }
   catch (error)
   console.error('❌ Failed to startserver = await import('../../api/claude-zen-server.js');
 
@@ -42,13 +42,13 @@ export async function serverCommand(): unknown {
   await claudeZenServer.stop()
   console.warn('✅ Server stopped gracefully')
   process.exit(0)
-  )
+  //   )
   process.on('SIGTERM', async () =>
     console.warn('\n🛑 Shutting down server...')
   await claudeZenServer.stop()
   console.warn('✅ Server stopped gracefully')
   process.exit(0);
-  )
+  //   )
   // Keep process alive
   console.warn('Press Ctrl+C to stop the server')
   // Monitor server health in verbose mode
@@ -72,70 +72,71 @@ export async function serverCommand(): unknown {
           fs.unlinkSync(SERVER_PID_FILE);
         } else {
     throw error;
-  }
-}
+  //   }
+// }
 else
-{
+// {
   // Try graceful stop if server instance is available
   if (claudeZenServer.isRunning) {
 // await claudeZenServer.stop();
     console.warn('✅ Server stopped gracefully');
   } else {
     console.warn('⚠️  Server not found');
-  }
-}
+  //   }
+// }
 } catch (error)
-{
+// {
   console.error('❌ Failed to stopserver = > setTimeout(resolve, 1000));
 // await startServer(flags);
-}
+// }
 /**
  * Show server status;
  */
-async function serverStatus(flags = await isServerRunning(: unknown);
+async function serverStatus(flags = await isServerRunning();
 console.warn('📊 Claude Zen API Server Status');
 console.warn('================================');
 console.warn(`Status = fs.readFileSync(SERVER_PID_FILE, 'utf8');
-      console.warn(`PID = await fetch('http://localhost:3000/health');
+      console.warn(`PID = await fetch('http);
 if(response.ok) {
 // const _health = awaitresponse.json();
           console.warn(`Port = =============');
   console.warn('Log viewing not implemented yet.');
   console.warn('For now, use daemon mode with --verbose flag for console output');
   console.warn('');
-  console.warn('Plannedfeatures = await fetch('http://localhost:3000/health', {signal = ==============================');
+  console.warn('Plannedfeatures = await fetch('http);
   console.warn('');
   console.warn('Usage = {
-      handler: ');
+      handler);
   console.warn('  claude-zen server <command> [options]');
   console.warn('');
-  console.warn('Commands:');
+  console.warn('Commands);
   console.warn('  start      Start the API server');
   console.warn('  stop       Stop the API server');
   console.warn('  restart    Restart the API server');
   console.warn('  status     Show server status and health');
   console.warn('  logs       View server logs');
   console.warn('');
-  console.warn('Start Options:');
-  console.warn('  --port <port>      Server port (default: 3000)');
+  console.warn('Start Options);
+  console.warn('  --port <port>      Server port (default)');
   console.warn('  --daemon           Run as background daemon');
   console.warn('  --background       Alias for --daemon');
   console.warn('  --verbose          Show detailed output');
   console.warn('');
-  console.warn('Examples:');
+  console.warn('Examples);
   console.warn('  claude-zen server start                    # Start in foreground');
   console.warn('  claude-zen server start --daemon           # Start as daemon');
   console.warn('  claude-zen server start --port 8080        # Custom port');
   console.warn('  claude-zen server status --verbose         # Detailed status');
   console.warn('  claude-zen server restart                  # Restart server');
   console.warn('');
-  console.warn('Features:');
+  console.warn('Features);
   console.warn('  • 🚀 Schema-driven API with auto-generated endpoints');
   console.warn('  • 📖 Interactive OpenAPI documentation at /docs');
   console.warn('  • 🔗 WebSocket support for real-time communication');
   console.warn('  • 🛡️ Built-in security, CORS, and rate limiting');
   console.warn('  • ⚡ High-performance with comprehensive error handling');
-}
+// }
+
 
 // Export command configuration
 export const serverCommandConfig,ler,
@@ -165,7 +166,7 @@ Commands:;
   logs       View server logs (future feature)
 
 Start Options:;
-  --port <port>      Server port (default: 3000);
+  --port <port>      Server port (default);
   --daemon           Run as background daemon process;
   --background       Alias for --daemon;
   --verbose          Show detailed output and monitoring

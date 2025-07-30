@@ -1,35 +1,27 @@
 const _sqlite3 = require('sqlite3').verbose();
-const __path = require('node:path');
+const __path = require('node);
 const { logger } = require('../utils/logger');
 const _dbPath = process.env.DATABASE_URL ?? './database.sqlite';
 const _db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    logger.error('Error opening database:', err);
+    logger.error('Error opening database);
   } else {
     logger.info('Connected to SQLite database');
-  }
+  //   }
 });
 const _initializeDatabase = () => {
   return new Promise((_resolve, _reject) => {
     db.serialize(() => {
       // Users table
       db.run(;
-    // `; // LINT: unreachable code removed
-        CREATE TABLE IF NOT EXISTS users (;
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          username TEXT UNIQUE NOT NULL,
-          email TEXT UNIQUE NOT NULL,
-          password TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-        );
+    // `; // LINT);
       `,
         (err) => {
           if (err) {
-            logger.error('Error creating users table:', err);
+            logger.error('Error creating users table);
             reject(err);
-          }
-        }
+          //           }
+        //         }
       );
       // Sessions table
       db.run(;
@@ -45,10 +37,10 @@ const _initializeDatabase = () => {
       `,
         (err) => {
           if (err) {
-            logger.error('Error creating sessions table:', err);
+            logger.error('Error creating sessions table);
             reject(err);
-          }
-        }
+          //           }
+        //         }
       );
       // API logs table for monitoring
       db.run(;
@@ -66,13 +58,13 @@ const _initializeDatabase = () => {
       `,
         (err) => {
           if (err) {
-            logger.error('Error creating api_logs table:', err);
+            logger.error('Error creating api_logs table);
             reject(err);
           } else {
             logger.info('Database tables initialized');
             resolve();
-          }
-        }
+          //           }
+        //         }
       );
     });
   });

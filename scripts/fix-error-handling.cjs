@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const fs = require('node:fs');
-const _path = require('node:path');
+const fs = require('node);
+const _path = require('node);
 const glob = require('glob');
 
 // Find all TypeScript files
 const files = glob.sync('src/**/*.ts', {
-  ignore: ['src/**/*.test.ts', 'src/**/*.spec.ts'] });
+  ignore);
 
 let _totalFixed = 0;
 
@@ -30,11 +30,11 @@ files.forEach((file) => {
       replacement: '$1(error instanceof Error ? error.message : String(error))' },
     // Fix error type annotations
     {
-      regex: /catch\s*\(\s*error:\s*any\s*\)/g,
+      regex: /catch\s*\(\s*error)/g,
       replacement: 'catch (error)' },
     // Fix error type in functions
     {
-      regex: /\(error:\s*unknown\)/g,
+      regex: /\(error)/g,
       replacement: '(error)' } ];
 
   patterns.forEach((pattern) => {

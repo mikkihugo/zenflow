@@ -9,54 +9,54 @@ import matter from 'gray-matter';
 import { lint } from 'markdownlint/sync';
 
 export class MarkdownScannerPlugin {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     this.config = {filePatterns = new Map();
-  }
+  //   }
   async initialize() {
     console.warn('📝 Markdown Scanner Plugin initialized');
     this.setupDefaultRules();
-  }
+  //   }
   setupDefaultRules() {
     // Standard markdown rules
     this.markdownRules.set('frontmatter', {description = > this.checkFrontmatter(frontmatter);
-  }
-  )
+  //   }
+  //   )
   this
 
   markdownRules;
 set('structure', {
   description = > this.checkStructure(content);
-}
-)
+// }
+// )
 this.markdownRules.set('links',
-{
+// {
   description = > this.checkLinks(content);
-}
-)
-}
+// }
+// )
+// }
 /**
  * Scan markdown files for issues;
  */
-async
+// async
 scanMarkdownFiles((options =
-{
-}
+// {
+// }
 ))
 : unknown
-{
+// {
   const { validateLinks = true, checkStructure = true } = options;
   console.warn('🔍 Scanning for markdown files...');
   const _stats = {totalFiles = await readFile(file, 'utf8');
 // const _analysis = awaitthis.analyzeMarkdownFile(content, file, {
           validateLinks,
   checkStructure;
-}
-)
+// }
+// )
 suggestions.push(...analysis.issues)
 this.updateStats(stats, analysis)
 } catch (error)
-{
-        console.warn(`⚠️ Could not analyze ${file}: ${error.message}`);
+// {
+        console.warn(`⚠️ Could not analyze ${file});
         suggestions.push({id = [];
     const _parsed = matter(content);
 
@@ -68,19 +68,22 @@ this.updateStats(stats, analysis)
     if(this.config.requireFrontmatter) {
       const _frontmatterIssues = this.checkFrontmatter(parsed.data, filepath);
       issues.push(...frontmatterIssues);
-    }
+    //     }
+
 
     // Check document structure
     if(options.checkStructure) {
       const _structureIssues = this.checkStructure(parsed.content, filepath);
       issues.push(...structureIssues);
-    }
+    //     }
+
 
     // Validate links
     if(options.validateLinks) {
 // const _linkIssues = awaitthis.checkLinks(parsed.content, filepath);
       issues.push(...linkIssues);
-    }
+    //     }
+
 
     return {
       issues,frontmatter = [];
@@ -109,7 +112,7 @@ this.updateStats(stats, analysis)
   /**
    * Extract headings from markdown content;
    */;
-  extractHeadings(content): unknown {
+  extractHeadings(content) {
     const _headings = [];
     const _lines = content.split('\n');
 
@@ -135,10 +138,11 @@ this.updateStats(stats, analysis)
       // Skip external links for now (would need HTTP requests)
       if (linkUrl.startsWith('http')) {
         continue;
-      }
+      //       }
+
 
       // Check internal links
-      if (linkUrl.startsWith('./')  ?? linkUrl.startsWith('../')  ?? !linkUrl.includes('://')) {
+      if (linkUrl.startsWith('./')  ?? linkUrl.startsWith('../')  ?? !linkUrl.includes(')) {
         const _fullPath = path.resolve(path.dirname(filepath), linkUrl);
 
         try {
@@ -146,7 +150,9 @@ this.updateStats(stats, analysis)
         } catch (/* _error */) {
           issues.push({id = path.basename(filepath, '.md');
 
+  // 
   }
+
 
   /**
    * Count headings in content;
@@ -174,7 +180,8 @@ this.updateStats(stats, analysis)
 
     return {totalIssues = > b - a)[0]?.[0];
     //   // LINT: unreachable code removed};
-  }
+  //   }
+
 
   /**
    * Get scanning capabilities;
@@ -195,6 +202,7 @@ this.updateStats(stats, analysis)
   async cleanup() ;
     this.markdownRules.clear();
     console.warn('📝 Markdown Scanner Plugin cleaned up');
-}
+// }
+
 
 export default MarkdownScannerPlugin;

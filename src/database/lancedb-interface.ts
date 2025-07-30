@@ -23,18 +23,18 @@ private;
 stats = new Map()
 private;
 maxCacheSize = {}
-)
-{
+// )
+// {
   this.config = {
       dbPath = {totalVectors = this.config.cacheSize!;
-}
+// }
 /**
  * Initialize LanceDB connection and create tables;
  */
 async;
 initialize();
 : Promise<
-{
+// {
   status = await connect(this.config.dbPath!);
   // Create core tables with optimized schemas
 // await this.createCoreTables();
@@ -66,8 +66,9 @@ initialize();
         sampleData[field] = 1.0;
       } else if (type === 'timestamp') {
         sampleData[field] = new Date();
-      }
-    }
+      //       }
+    //     }
+
 
     return [sampleData];
     //   // LINT: unreachable code removed}
@@ -98,7 +99,7 @@ initialize();
 // Check cache first
 const _cacheKey = JSON.stringify({query = (this.stats.cacheHitRate + 1) / 2; // Running average
 return this.queryCache.get(cacheKey);
-}
+// }
 const _targetTable = this.tables.get('documents');
 if (!targetTable) throw new Error('Documents table not found');
 const _queryEmbedding = query.vector;
@@ -107,7 +108,7 @@ if (typeof query.query === 'string') {
   queryEmbedding = Array(this.config.vectorDim!);
 fill(0)
 map(() => Math.random())
-}
+// }
 try {
       // Perform vector similarity search
       const _searchQuery = targetTable;
@@ -122,8 +123,8 @@ map(([key, value]) => `$key= '${value}'`);
 join(' AND ');
         if (filterStr) {
           searchQuery = searchQuery.where(filterStr);
-        }
-      }
+        //         }
+      //       }
 // const _results = awaitsearchQuery.toArray();
 
       // Filter by similarity threshold and format results
@@ -135,18 +136,18 @@ map((result = > (id = (this.stats.avgQueryTime + (Date.now() - startTime)) / 2;
 = await this.similaritySearch(vectorQuery);
 // In a full implementation, we would also do text search and combine results
 return vectorResults;
-}
+// }
 async;
 batchSearch(queries = [];
 for (const query of queries) {
   results.push(await this.similaritySearch(query));
-}
+// }
 return results;
-}
-async
+// }
+// async
 createIndex(config = > Promise<number[]>)
 : Promise<number>
-{
+// {
     const _table = this.tables.get('documents');
     if (!table) throw new Error('Documents table not initialized');
 
@@ -161,7 +162,8 @@ createIndex(config = > Promise<number[]>)
       } else if (!embedding) {
         // Generate dummy embedding for testing
         embedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
-      }
+      //       }
+
 
       enrichedDocs.push({id = enrichedDocs.length;
     this.stats.lastUpdate = new Date();
@@ -186,7 +188,8 @@ createIndex(config = > Promise<number[]>)
         embedding = await embedFunction(snippet.code);
       } else if (!embedding) {
         embedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
-      }
+      //       }
+
 
       // Calculate complexity score
 
@@ -224,7 +227,8 @@ createIndex(config = > Promise<number[]>)
     // If query is string, convert to embedding (dummy implementation)
     if (typeof query === 'string') {
       queryEmbedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
-    }
+    //     }
+
 
     try {
       // Perform vector similarity search
@@ -235,7 +239,7 @@ limit(limit);
       // Apply filters
       if (filter) {
         searchQuery = searchQuery.where(filter);
-      }
+      //       }
 // const _results = awaitsearchQuery.toArray();
 
       // Filter by similarity threshold
@@ -248,7 +252,8 @@ limit(limit);
         filteredResults.forEach((result => {
           delete result.embedding;
         });
-      }
+      //       }
+
 
       const _response = {results = (this.stats.avgQueryTime + response.query_time) / 2;
 
@@ -282,7 +287,7 @@ limit(limit);
       // Perform PCA (simplified implementation)
 
       return {reduced_vectors = 'documents'): Promise<AnalyticsResult | { error = this.tables.get(table);
-    // if (!targetTable) throw new Error(`Table ${table // LINT: unreachable code removed} not found`);
+    // if (!targetTable) throw new Error(`Table ${table // LINT);
 
     try {
 // const _data = awaittargetTable.toArray();
@@ -298,7 +303,8 @@ limit(limit);
 
     if (!source  ?? !target) {
       throw new Error('One or both tables not found');
-    }
+    //     }
+
 
     try {
 // const _sourceData = awaitsource.select(['id', 'embedding']).limit(limit).toArray();
@@ -330,7 +336,7 @@ toArray();
       try {
 // await table.add(batch);
         inserted += batch.length;
-        console.warn(`📦 Batch ${i + 1}/${totalBatches}: ${batch.length} records`);
+        console.warn(`📦 Batch ${i + 1}/${totalBatches});
       } catch (_error = inserted;
     return inserted;
     //   // LINT: unreachable code removed}
@@ -359,7 +365,8 @@ toArray();
     // Initialize centroids randomly
     for (let i = 0; i < k; i++) {
       centroids.push(Array(dim).fill(0).map(() => Math.random()));
-    }
+    //     }
+
 
     const _labels = new Array(vectors.length);
     const _distances = new Array(vectors.length);
@@ -374,12 +381,14 @@ toArray();
         if (dist < minDist) {
           minDist = dist;
           closestCentroid = j;
-        }
-      }
+        //         }
+      //       }
+
 
       labels[i] = closestCentroid;
       distances[i] = minDist;
-    }
+    //     }
+
 
     return { centroids, labels, distances };
     //   // LINT: unreachable code removed}
@@ -387,7 +396,8 @@ toArray();
   private performPCA(vectors = > ;
       Array(targetDim).fill(0).map(() => Math.random());
     );
-  }
+  //   }
+
 
   private calculateAverageNorm(vectors = vectors.map(v => Math.sqrt(v.reduce((sum, val) => sum + val * val, 0)));
     return norms.reduce((sum, norm) => sum + norm, 0) / norms.length;
@@ -399,7 +409,8 @@ toArray();
     for (const vector of vectors) {
       totalElements += vector.length;
       totalZeros += vector.filter(val => Math.abs(val) < 1e-10).length;
-    }
+    //     }
+
 
     return totalZeros / totalElements;
     //   // LINT: unreachable code removed}
@@ -411,14 +422,16 @@ toArray();
       for (let j = i + 1; j < sampleSize; j++) {
         const _sim = this.cosineSimilarity(vectors[i], vectors[j]);
         similarities.push(sim);
-      }
-    }
+      //       }
+    //     }
+
 
     similarities.sort((a, b) => a - b);
 
     return {min = > sum + sim, 0) / similarities.length;
     //   // LINT: unreachable code removed};
-  }
+  //   }
+
 
   private async detectNaturalClusters(vectors = Math.min(10, Math.floor(vectors.length / 2));
     const _wcss = [];
@@ -427,7 +440,8 @@ toArray();
       const _clustering = this.performKMeansClustering(vectors, k);
       const _totalWCSS = clustering.distances.reduce((sum, dist) => sum + dist * dist, 0);
       wcss.push(totalWCSS);
-    }
+    //     }
+
 
     // Find elbow (simplified)
     let _optimalK = 3;
@@ -437,8 +451,9 @@ toArray();
       if (nextImprovement < improvement * 0.8) {
         optimalK = i + 1;
         break;
-      }
-    }
+      //       }
+    //     }
+
 
     return {
       optimal_clusters,wcss_curve = this.performKMeansClustering(vectors, 3);
@@ -450,9 +465,10 @@ toArray();
         if (clustering.labels[i] === clustering.labels[j]) {
           totalSimilarity += this.cosineSimilarity(vectors[i], vectors[j]);
           count++;
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     return count > 0 ? totalSimilarity /count = 0;
     // let _count = 0; // LINT: unreachable code removed
@@ -462,8 +478,9 @@ toArray();
       for (let j = i + 1; j < sampleSize; j++) {
         totalDistance += this.euclideanDistance(vectors[i], vectors[j]);
         count++;
-      }
-    }
+      //       }
+    //     }
+
 
     return count > 0 ? totalDistance /count = > sum + Math.pow(val - b[i], 2), 0));
     //   // LINT: unreachable code removed}
@@ -480,7 +497,7 @@ toArray();
       if (existsSync(statsPath)) {
         const _savedStats = JSON.parse(await readFile(statsPath, 'utf8'));
         this.stats = { ...this.stats, ...savedStats };
-      }
+      //       }
     } catch (error = path.join(this.config.dbPath!, 'statistics.json');
 // await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
     } catch (error = {};
@@ -490,14 +507,16 @@ toArray();
 // const _count = awaittable.countRows();
         tableStats[tableName] = { count };
       } catch (error = {count = null;
-      }
+      //       }
+
 
       console.warn('✅ LanceDB connection closed');
 
-    } catch (error: unknown) {
-      console.error(`❌ Error closing LanceDB: ${error.message}`);
+    } catch (error) {
+      console.error(`❌ Error closing LanceDB);
       throw error;
-    }
-  }
+    //     }
+  //   }
+
 
 export default LanceDBInterface;

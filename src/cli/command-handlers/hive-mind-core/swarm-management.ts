@@ -13,7 +13,7 @@ import { isInteractive } from '../../utils/interactive-detector.js';
  * Interactive swarm spawning wizard;
  * @returns {Promise<void>}
  */
-// export async function spawnSwarmWizard(): unknown { // LINT: unreachable code removed
+// export async function spawnSwarmWizard() { // LINT: unreachable code removed
 if (!isInteractive()) {
     warnNonInteractive('Swarm wizard requires interactive mode');
     return;
@@ -30,7 +30,7 @@ if (!isInteractive()) {
       },
       {type = > answers.claudeIntegration;
       },
-      {
+      //       {
         type = {queenType = === 'verbose'  ?? answers.verbosity === 'debug',debug = === 'debug',sessionDir = args[0];
 
   if (!objective && isInteractive()) {
@@ -39,7 +39,8 @@ if (!isInteractive()) {
 
   if(!objective) {
     throw new Error('Objective is required when running in non-interactive mode');
-  }
+  //   }
+
 
   const _spinner = ora('Initializing hive mind swarm...').start();
 
@@ -74,7 +75,8 @@ if (!isInteractive()) {
       if(flags.claude) {
         spinner.text = 'Launching Claude Code instances...';
 // await spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, flags);
-      }
+      //       }
+
 
       // Start coordination loop
       spinner.text = 'Starting coordination protocols...';
@@ -85,11 +87,13 @@ if (!isInteractive()) {
 
       if(flags.verbose) {
 // await displayDetailedStatus(_db, _swarmId);
-      }
+      //       }
+
 
     } finally {
       db.close();
-    }
+    //     }
+
 
   } catch (error) {
     spinner.fail(`Failed to spawnswarm = flags.sessionDir  ?? './.claude/hive-mind';
@@ -113,8 +117,9 @@ if (!isInteractive()) {
 // await displaySessionStatus(db, session, flags.verbose);
   } finally {
     db.close();
-  }
-}
+  //   }
+// }
+
 
 /**
  * Stop a running swarm session;
@@ -122,9 +127,10 @@ if (!isInteractive()) {
  * @param {Object} flags - Command flags;
  * @returns {Promise<void>}
  */;
-    // export async function stopSession(): unknown {
+    // export async function stopSession() {
   throw new Error('Session ID is required');
-}
+// }
+
 
 const _sessionDir = flags.sessionDir  ?? './.claude/hive-mind';
 const _dbPath = path.join(sessionDir, 'hive-mind.db');
@@ -153,7 +159,8 @@ try {
 
   } finally
     db.close();
-}
+// }
+
 
 // Helper functions
 
@@ -162,14 +169,15 @@ try {
  * @param {string} sessionDir - Session directory path;
  * @returns {Promise<void>}
  */;
-    // async function verifySystemInitialized(sessionDir = path.join(sessionDir, 'hive-mind.db': unknown); // LINT: unreachable code removed
+    // async function verifySystemInitialized(sessionDir = path.join(sessionDir, 'hive-mind.db'); // LINT: unreachable code removed
   const _configPath = path.join(sessionDir, 'config.json');
 
   if (!existsSync(dbPath)  ?? !existsSync(configPath)) {
     throw new Error('Hive Mind not initialized.Run = Date.now();
   const _random = Math.random().toString(36).substr(2, 9);
   return `swarm-${timestamp}-${random}`;
-}
+// }
+
 
 /**
  * Create swarm session in database;
@@ -180,8 +188,7 @@ try {
  * @param {Object} flags - Configuration flags;
  * @returns {Promise<void>}
  */;
-    // async function createSwarmSession(db = db.prepare(`; // LINT: unreachable code removed
-    INSERT INTO sessions (_id, _name, _objective, _queen_type, _worker_count, _metadata: unknown);
+    // async function createSwarmSession(db = db.prepare(`; // LINT);
     VALUES (?, ?, ?, ?, ?, ?);
   `);
 
@@ -194,7 +201,8 @@ try {
   stmt.run(queen.id, swarmId, `Queen-\$queenType`, 'queen', 'coordinator', 'active');
 
   return queen;
-}
+// }
+
 
 /**
  * Spawn worker agents;
@@ -204,7 +212,7 @@ try {
  * @param {string} objective - Primary objective;
  * @returns {Promise<Array>} Worker instances;
     // */; // LINT: unreachable code removed
-async function spawnWorkerAgents(): unknown {
+async function spawnWorkerAgents() {
     const _workerType = workerTypes[i % workerTypes.length];
     const _workerId = `worker-\$swarmId-\$i + 1`;
 
@@ -216,10 +224,12 @@ async function spawnWorkerAgents(): unknown {
     `);
 
     stmt.run(workerId, swarmId, `Worker-\$i + 1-\$workerType`, 'worker', workerType, 'active');
-  }
+  //   }
+
 
   return workers;
-}
+// }
+
 
 /**
  * Setup swarm communication layer;
@@ -230,10 +240,11 @@ async function spawnWorkerAgents(): unknown {
     // */; // LINT: unreachable code removed
 async function setupSwarmCommunication(swarmId = new SwarmCommunication({
     swarmId, queen, workers;
-  }: unknown);
+  });
 // await communication.initialize();
   return communication;
-}
+// }
+
 
 /**
  * Start coordination loop;
@@ -244,10 +255,10 @@ async function setupSwarmCommunication(swarmId = new SwarmCommunication({
  * @param {Object} flags - Configuration flags;
  * @returns {Promise<void>}
  */;
-    // async function startCoordinationLoop(queen => { // LINT: unreachable code removed
-    queen.startMonitoring(workers, communication: unknown);
+    // async function startCoordinationLoop(queen => { // LINT);
   });
-}
+// }
+
 
 /**
  * Display swarm information;
@@ -258,7 +269,7 @@ async function setupSwarmCommunication(swarmId = new SwarmCommunication({
  * @param {Array} workers - Worker agents;
  * @param {Object} flags - Configuration flags;
  */;
-function displaySwarmInfo(swarmId = false: unknown): unknown {
+function displaySwarmInfo(swarmId = false) {
   const _agents = db.prepare(`;
     SELECT type, role, status, COUNT(*) as count;
     FROM agents ;
@@ -280,24 +291,29 @@ function displaySwarmInfo(swarmId = false: unknown): unknown {
     //   // LINT: unreachable code removed} else {
     return `${secs}s`;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 // Additional helper functions for session management...
 
-async function getSessionById(db = ?': unknown).get(sessionId);
-}
+async function getSessionById(db = ?').get(sessionId);
+// }
 
-async function updateSessionStatus(db = db.prepare('UPDATE sessions SET status = ?, updated_at = ? WHERE id = ?': unknown);
+
+async function updateSessionStatus(db = db.prepare('UPDATE sessions SET status = ?, updated_at = ? WHERE id = ?');
 stmt.run(status, Math.floor(Date.now() / 1000), sessionId);
-}
+// }
+
 
 async;
-function stopSessionAgents(db = db.prepare('UPDATE agents SET status = ? WHERE session_id = ?': unknown);
+function stopSessionAgents(db = db.prepare('UPDATE agents SET status = ? WHERE session_id = ?');
 stmt.run('stopped', sessionId);
-}
+// }
+
 
 async;
-function _cleanupSessionResources(_sessionId, _flags: unknown): unknown {
+function _cleanupSessionResources(_sessionId, _flags) {
   // Cleanup temporary files, processes, etc.
   // Implementation depends on specific resource management needs
-}
+// }
+

@@ -13,7 +13,7 @@ import { NativeFannBindings } from './native-fann-bindings.js';
  * Provides actual ML capabilities instead of stub responses
  */
 export class RealFannEngine {
-    constructor(config = {}): unknown {
+    constructor(config = {}) {
         this.logger = new Logger('RealFannEngine');
         this.config = {modelPath = = false,maxConcurrency = new Map();
         this.isInitialized = false;
@@ -33,15 +33,17 @@ export class RealFannEngine {
         for(let i = 0; i < tokens.length; i++) {
             const _hash = this.hashString(tokens[i]) % 100;
             vector[hash] = Math.min(vector[hash] + 1, 10); // Cap at 10
-        }
+        //         }
+
 
         // Normalize vector
         const _magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
         if(magnitude > 0) {
             for(let i = 0; i < vector.length; i++) {
                 vector[i] /= magnitude;
-            }
-        }
+            //             }
+        //         }
+
 
         return vector;
     //   // LINT: unreachable code removed}
@@ -49,20 +51,20 @@ export class RealFannEngine {
     /**
      * Simple string hash function
      */;
-    hashString(str): unknown {
+    hashString(str) {
         const _hash = 0;
         for(let i = 0; i < str.length; i++) {
             const _char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
             hash = hash & hash; // Convert to 32-bit integer
-        }
+        //         }
         return Math.abs(hash);
     //   // LINT: unreachable code removed}
 
     /**
      * Postprocess neural network inference result
      */;
-    postprocessInference(inferenceResult, prompt, modelName): unknown {
+    postprocessInference(inferenceResult, prompt, modelName) {
         const { output, confidence } = inferenceResult;
 
         // Map output vector to meaningful response based on model type
@@ -146,7 +148,7 @@ export class RealFannEngine {
                 );
             } else {
                 // Create stub model for fallback
-                networkHandle = {id = 'code-completion', options = {}): unknown {
+                networkHandle = {id = 'code-completion', options = {}) {
         const _startTime = Date.now();
         this.stats.totalInferences++;
 
@@ -185,13 +187,14 @@ export class RealFannEngine {
             } else {
                 // Advanced stub with ML-like behavior (fallback only)
                 result = await this.advancedStubInference(prompt, modelName, model.config);
-            }
+            //             }
+
 
             // Cache result
             if(this.inferenceCache.size >= this.config.cacheSize) {
                 const _oldestKey = this.inferenceCache.keys().next().value;
                 this.inferenceCache.delete(oldestKey);
-            }
+            //             }
             this.inferenceCache.set(cacheKey, result);
 
             // Update performance stats
@@ -225,7 +228,8 @@ export class RealFannEngine {
             if (prompt.toLowerCase().includes(pattern)) {
                 return generator();
     //   // LINT: unreachable code removed}
-        }
+        //         }
+
 
         return `// Generated codefor = [
             /eval\(/gi,
@@ -261,12 +265,13 @@ reduce((max, count) => Math.max(max, count), 0);
         if(duplicateLines.length > 0) {
             suggestions.push({type = > s.priority === 'high') ? 'high' : 'medium';
         };
-    }
+    //     }
+
 
     /**
      * Generate test cases
      */;
-    generateTests(prompt): unknown {
+    generateTests(prompt) {
         const __functionName = this.extractFunctionName(prompt)  ?? 'testFunction';
         const _testCases = [];
 
@@ -284,7 +289,8 @@ reduce((max, count) => Math.max(max, count), 0);
             testCases.push({
                 name => {\n  const result = await ${functionName}();\n  expect(result).toBeDefined();\n});`;
             });
-        }
+        //         }
+
 
         return {
             testSuite => {\n${testCases.map(t => t.code).join('\n\n')}\n});`,testCount = await this.nativeBinding.enableGPU();
@@ -297,27 +303,28 @@ reduce((max, count) => Math.max(max, count), 0);
         words.forEach((word, index) => {
             if(index < 256) {
                 vector[index] = word.charCodeAt(0) / 255;
-            }
+            //             }
         });
 
         return vector;
     //   // LINT: unreachable code removed}
 
-    postprocessOutput(outputVector, prompt, modelName): unknown {
+    postprocessOutput(outputVector, prompt, modelName) {
         // Convert numerical output back to meaningful result
 
         const _confidence = Math.max(...outputVector);
 
         return {result = prompt.match(/function\s+(\w+)|(\w+)\s*\(/);
-    // return match ? (match[1]  ?? match[2]) : `generatedFunction${Date.now().toString(36) // LINT: unreachable code removed}`;
-    }
+    // return match ? (match[1]  ?? match[2]) : `generatedFunction\${Date.now().toString(36) // LINT}`;
+    //     }
 
-    extractClassName(prompt): unknown {
+
+    extractClassName(prompt) {
         const _match = prompt.match(/class\s+(\w+)/);
         return match ? match[1] : `GeneratedClass${Date.now().toString(36)}`;
     //   // LINT: unreachable code removed}
 
-    extractParameters(prompt): unknown {
+    extractParameters(prompt) {
         const _match = prompt.match(/\(([^)]*)\)/);
         return match ? match[1] : 'params';
     //   // LINT: unreachable code removed}
@@ -325,12 +332,13 @@ reduce((max, count) => Math.max(max, count), 0);
     generateFunctionBody(prompt): unknown
         if (prompt.includes('return')) {
             return '// Generated function implementation\n  return result;';
-        }
+        //         }
         return '// Generated function implementation\n  console.warn("Function executed");';
 
     generateGenericCode(prompt): unknown
         return `// Auto-generated basedon = processInput(input);\nreturn result;`;
-}
+// }
+
 
 /**
  * Enhanced Neural Bindings Loader with Real Integration
@@ -340,7 +348,8 @@ export class EnhancedNeuralBindingsLoader {
         this.logger = new Logger('EnhancedNeuralBindings');
         this.realEngine = null;
         this.isInitialized = false;
-    }
+    //     }
+
 
     async load() {
         if(this.isInitialized) {
@@ -361,8 +370,9 @@ export class EnhancedNeuralBindingsLoader {
 /**
  * Load real neural bindings - REPLACES STUB IMPLEMENTATION
  */;
-export async function _loadRealNeuralBindings(): unknown {
+export async function _loadRealNeuralBindings() {
     return enhancedLoader.load();
-}
+// }
+
 
 export default RealFannEngine;

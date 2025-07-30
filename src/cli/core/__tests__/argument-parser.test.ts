@@ -21,7 +21,7 @@ describe('Argument Parser', () => {
 
       expect(result.positionalArgs).toEqual(['command', 'arg1']);
       expect(result.flags).toEqual({
-        flag1 => {
+        flag1 => { // eslint-disable-line
       const _args = ['--config=file.json', '--verbose=true'];
       const _result = parseCommandLineArguments(args);
 

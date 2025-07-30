@@ -37,7 +37,7 @@ export interface MCPCapabilities {
   sampling?: {};
   // Experimental capabilities
   experimental?: Record<string, JSONObject>;
-}
+// }
 export interface MCPImplementation {name = ============================================================================
 // MCP MESSAGES
 // =============================================================================
@@ -107,12 +107,7 @@ export interface MCPToolExecutor {
 
 export interface MCPEvents {
   // Connection events
-  'server-connected': (serverId = > void;
-  'server-disconnected': (serverId = > void;
-  'server-error': (serverId = > void;
-  'server-health-changed': (serverId = > void;
-// Tool events
-('tool-executed');
+  'server-connected');
 : (result = > void
 'tool-failed': (request = > void
 'tools-discovered': (result = > void
@@ -127,4 +122,5 @@ export interface MCPEvents {
 // Performance events
 'performance-warning': (serverId = > void
 'resource-exhausted': (serverId = > void
-}
+// }
+

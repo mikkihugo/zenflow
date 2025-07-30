@@ -6,7 +6,7 @@ import process from 'node:process';
 import { ParallelSwarmOrchestrator } from '../../coordination/parallel-swarm-orchestrator.js';
 import { printError, printInfo } from '../utils.js';
 
-function _showSwarmHelp(): unknown {
+function _showSwarmHelp() {
   console.warn(`;
 🧠 SWARM COMMAND - Multi-Agent AI CoordinationUSAGE = args[0];
   const _objective = args.slice(1).join(' ').trim();
@@ -56,26 +56,29 @@ function _showSwarmHelp(): unknown {
 
   if(flags['output-format'] === 'json') {
     console.warn(JSON.stringify(result, null, 2));
-  }
+  //   }
+
 
   // Start monitoring if requested
   if(flags.monitor && !flags.background) {
 // await startSwarmMonitoring(result.swarmId, orch);
-  }
+  //   }
+
 
   return result;
-}
+// }
+
 
 /**
  * Show swarm status;
  */;
 async function showSwarmStatus(flags = flags['swarm-id']  ?? flags.id;
-// const _status = awaitorchestrator.getSwarmStatus(swarmId: unknown);
+// const _status = awaitorchestrator.getSwarmStatus(swarmId);
 
   if(swarmId) {
     // Specific swarm status
     printInfo(`🐝 Swarm Status => ;
-        console.warn(`  \$index + 1. \$agent.type: \$agent.id`);
+        console.warn(`  \$index + 1. \$agent.type);
         console.warn(`     _Status => {
         console.warn(`  • ${id}: ${swarm.objective?.substring(0, 50)}...`);
         console.warn(`Agents = === 'json') ;
@@ -84,7 +87,7 @@ async function showSwarmStatus(flags = flags['swarm-id']  ?? flags.id;
 /**
  * List active swarms;
  */;
-async function listActiveSwarms(orchestrator = await orchestrator.getSwarmStatus(: unknown);
+async function listActiveSwarms(orchestrator = await orchestrator.getSwarmStatus();
 
   if(flags['output-format'] === 'json') {
     console.warn(JSON.stringify({swarms = === 0) {
@@ -121,4 +124,5 @@ async function listActiveSwarms(orchestrator = await orchestrator.getSwarmStatus
     printInfo('\\n📊 Monitoring stopped');
     process.exit(0);
   });
-}
+// }
+

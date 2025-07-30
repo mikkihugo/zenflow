@@ -23,35 +23,38 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
  */
 export interface DSPySwarmAgent extends SwarmAgent {
   specialization: 'prompt-optimizer' | 'example-generator' | 'metric-analyzer' | 'pipeline-tuner' | 'neural-enhancer';
-  optimizationHistory: DSPyOptimizationResult[];
-  learnedPatterns: DSPyPattern[];
-  performanceMetrics: DSPyAgentMetrics;
-}
+  optimizationHistory;
+  learnedPatterns;
+  // performanceMetrics: DSPyAgentMetrics
+// }
+
 
 /**
  * Learned DSPy Pattern
  */
 export interface DSPyPattern {
-  id: string;
+  // id: string
   type: 'prompt-template' | 'example-structure' | 'optimization-strategy';
-  pattern: string;
-  effectiveness: number;
-  usageCount: number;
-  lastUsed: string;
-  contexts: string[];
-}
+  // pattern: string
+  // effectiveness: number
+  // usageCount: number
+  // lastUsed: string
+  contexts;
+// }
+
 
 /**
  * DSPy Agent Performance Metrics
  */
 export interface DSPyAgentMetrics {
-  totalOptimizations: number;
-  averageImprovement: number;
-  bestImprovement: number;
-  specialtySuccessRate: number;
-  crossSessionLearning: number;
-  collaborationScore: number;
-}
+  // totalOptimizations: number
+  // averageImprovement: number
+  // bestImprovement: number
+  // specialtySuccessRate: number
+  // crossSessionLearning: number
+  // collaborationScore: number
+// }
+
 
 /**
  * DSPy Persistent Memory Structure
@@ -60,63 +63,66 @@ export interface DSPyPersistentMemory {
   programs: Map<string, DSPyProgram>;
   examples: Map<string, DSPyExample[]>;
   patterns: Map<string, DSPyPattern>;
-  optimizationHistory: DSPyOptimizationResult[];
+  optimizationHistory;
   agentKnowledge: Map<string, DSPyAgentMetrics>;
-  globalMetrics: DSPyGlobalMetrics;
-}
+  // globalMetrics: DSPyGlobalMetrics
+// }
+
 
 /**
  * Global DSPy Metrics
  */
 export interface DSPyGlobalMetrics {
-  totalOptimizations: number;
-  averageAccuracyGain: number;
-  bestPerformingPatterns: string[];
-  mostEffectiveAgents: string[];
-  crossSessionImprovements: number;
-  swarmCollaborationEfficiency: number;
-}
+  // totalOptimizations: number
+  // averageAccuracyGain: number
+  bestPerformingPatterns;
+  mostEffectiveAgents;
+  // crossSessionImprovements: number
+  // swarmCollaborationEfficiency: number
+// }
+
 
 /**
  * DSPy Swarm Task Configuration
  */
 export interface DSPySwarmTaskConfig {
-  programId: string;
-  dataset: DSPyExample[];
+  // programId: string
+  dataset;
   optimization: {
-    rounds: number;
+    // rounds: number
     strategy: 'aggressive' | 'conservative' | 'adaptive';
-    parallelization: boolean;
-    crossSessionLearning: boolean;
+    // parallelization: boolean
+    // crossSessionLearning: boolean
   };
   persistence: {
-    saveIntermediateResults: boolean;
-    learnFromFailures: boolean;
-    shareKnowledge: boolean;
+    // saveIntermediateResults: boolean
+    // learnFromFailures: boolean
+    // shareKnowledge: boolean
   };
-}
+// }
+
 
 /**
  * Advanced DSPy Swarm Coordinator with Persistent Memory
  */
 export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinator {
-  public readonly id: string;
-  public readonly name: string;
+  public readonly id: string,
+  public readonly name: string,
   public readonly agents: Map<string, DSPySwarmAgent> = new Map();
   public readonly activeQueens: Set<string> = new Set();
 
-  private readonly persistentMemory: DSPyPersistentMemory;
-  private readonly sqliteStore: SqliteStore;
-  private readonly lanceDB: LanceDBInterface;
-  private readonly kuzuDB: KuzuAdvancedInterface;
-  private readonly config: DSPyConfig;
+  private readonly persistentMemory: DSPyPersistentMemory,
+  private readonly sqliteStore: SqliteStore,
+  private readonly lanceDB: LanceDBInterface,
+  private readonly kuzuDB: KuzuAdvancedInterface,
+  private readonly config: DSPyConfig,
   private isInitialized = false;
 
   constructor(
     config,
     sqliteStore,
     lanceDB,
-    kuzuDB: KuzuAdvancedInterface
+    // kuzuDB: KuzuAdvancedInterface
   ) {
     super();
 
@@ -140,7 +146,8 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         mostEffectiveAgents: [],
         crossSessionImprovements,
         swarmCollaborationEfficiency} };
-  }
+  //   }
+
 
   /**
    * Initialize DSPy swarm with persistent memory restoration
@@ -160,10 +167,9 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
     console.log('✅ DSPy Persistent Swarm Coordinator initialized');
 
     this.emit('initialized', {
-      swarmId: this.id,
-      agentCount: this.agents.size,
-      persistentMemoryRestored});
-  }
+      swarmId);
+  //   }
+
 
   /**
    * Restore persistent memory from previous sessions
@@ -176,31 +182,32 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         const memory = JSON.parse(sqliteMemory as string);
         this.persistentMemory.globalMetrics = memory.globalMetrics ?? this.persistentMemory.globalMetrics;
         this.persistentMemory.optimizationHistory = memory.optimizationHistory ?? [];
-      }
+      //       }
+
 
       // Restore patterns from LanceDB (vector similarity search)
 // const patternVectors = awaitthis.lanceDB.search({
-        query: 'dspy_pattern',
-        limit,
-        filter: { type: 'dspy_pattern' } });
+        query);
 
       for (const vector of patternVectors) {
         const pattern = vector.metadata as DSPyPattern;
         this.persistentMemory.patterns.set(pattern.id, pattern);
-      }
+      //       }
+
 
       // Restore agent relationships from Kuzu
 // const agentRelations = awaitthis.kuzuDB.executeQuery(`
-        MATCH (a:DSPyAgent)-[r:COLLABORATED_WITH]->(b:DSPyAgent)
+        MATCH (a)-[r]->(b)
         RETURN a, r, b
       `);
 
       console.log(`🔄 Restored ${this.persistentMemory.patterns.size} patterns and ${agentRelations.length} agent collaborations`);
 
     } catch (error) {
-      console.warn('⚠️ Could not restore persistent memory, starting fresh:', error);
-    }
-  }
+      console.warn('⚠️ Could not restore persistent memory, starting fresh);
+    //     }
+  //   }
+
 
   /**
    * Initialize specialized DSPy agents
@@ -214,7 +221,7 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
       'neural-enhancer' ];
 
     for (const specialization of specializations) {
-      const agent: DSPySwarmAgent = {
+      const agent = {
         id: `dspy-${specialization}-${Date.now()}`,
         name: `DSPy ${specialization.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}`,
         status: 'idle',
@@ -240,15 +247,17 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
 
       // Restore agent-specific knowledge
 // await this.restoreAgentKnowledge(agent);
-    }
+    //     }
+
 
     console.log(`👥 Initialized ${this.agents.size} specialized DSPy agents`);
-  }
+  //   }
+
 
   /**
    * Restore agent-specific knowledge from persistent storage
    */
-  private async restoreAgentKnowledge(agent: DSPySwarmAgent): Promise<void> {
+  private async restoreAgentKnowledge(agent): Promise<void> {
     try {
 // const agentMemory = awaitthis.sqliteStore.get(`dspy_agent_${agent.specialization}`);
       if (agentMemory) {
@@ -256,11 +265,12 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         agent.performanceMetrics = memory.performanceMetrics ?? agent.performanceMetrics;
         agent.optimizationHistory = memory.optimizationHistory ?? [];
         agent.learnedPatterns = memory.learnedPatterns ?? [];
-      }
+      //       }
     } catch (error) {
-      console.warn(`⚠️ Could not restore knowledge for ${agent.name}:`, error);
-    }
-  }
+      console.warn(`⚠️ Could not restore knowledge for ${agent.name});
+    //     }
+  //   }
+
 
   /**
    * Setup cross-agent knowledge sharing
@@ -280,23 +290,25 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         name: agent.name,
         specialization: agent.specialization,
         createdAt: new Date().toISOString() });
-    }
+    //     }
+
 
     // Create collaboration relationships
     const agents = Array.from(this.agents.values());
     for (let i = 0; i < agents.length; i++) {
       for (let j = i + 1; j < agents.length; j++) {
 // await this.kuzuDB.executeQuery(`
-          MATCH (a:DSPyAgent {id: \$agentA}), (b:DSPyAgent {id: \$agentB})
+          MATCH (a), (b)
           MERGE (a)-[r:CAN_COLLABORATE_WITH {strength: 1.0, created: \$created}]->(b)
           MERGE (b)-[r2:CAN_COLLABORATE_WITH {strength: 1.0, created: \$created}]->(a)
         `, {
           agentA: agents[i].id,
           agentB: agents[j].id,
           created: new Date().toISOString() });
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Initialize database schemas for DSPy persistence
@@ -312,7 +324,7 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         metrics TEXT NOT NULL
-      )
+      //       )
     `);
 // await this.sqliteStore.run(`
       CREATE TABLE IF NOT EXISTS dspy_optimizations (
@@ -323,29 +335,29 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         improvement REAL NOT NULL,
         timestamp TEXT NOT NULL,
         FOREIGN KEY (program_id) REFERENCES dspy_programs (id)
-      )
+      //       )
     `);
     // LanceDB schema for pattern vectors
 // await this.lanceDB.createIndex({
-      name: 'dspy_patterns',
-      dimension, // Embedding dimension
-      metric: 'cosine' });
+      name);
     console.log('🗃️ DSPy database schemas initialized');
-  }
+  //   }
+
 
   /**
    * Orchestrate comprehensive DSPy optimization across multiple agents
    */
   async optimizeProgram(
     program,
-    dataset: DSPyExample[],
-    config: DSPySwarmTaskConfig
+    dataset,
+    // config: DSPySwarmTaskConfig
   ): Promise<DSPyOptimizationResult> {
     if (!this.isInitialized) {
       throw new Error('DSPy swarm not initialized');
-    }
+    //     }
 
-    console.log(`🚀 Starting DSPy swarm optimization for program: ${program.name}`);
+
+    console.log(`🚀 Starting DSPy swarm optimization for program);
 
     const startTime = Date.now();
     const originalMetrics = { ...program.metrics };
@@ -363,7 +375,7 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
 // await this.persistOptimizationKnowledge(optimizedProgram, results);
     // Update swarm metrics
 // await this.updateSwarmMetrics(originalMetrics, optimizedProgram.metrics);
-    const result: DSPyOptimizationResult = {
+    const result = {
       program,
       originalMetrics,
       optimizedMetrics: optimizedProgram.metrics,
@@ -376,17 +388,18 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
     this.emit('optimization-completed', result);
 
     return result;
-  }
+  //   }
+
 
   /**
    * Create coordinated optimization tasks for specialized agents
    */
   private async createOptimizationTasks(
     program,
-    dataset: DSPyExample[],
-    config: DSPySwarmTaskConfig
+    dataset,
+    // config: DSPySwarmTaskConfig
   ): Promise<SwarmTask[]> {
-    const tasks: SwarmTask[] = [];
+    const tasks = [];
 
     // Prompt optimization task
     tasks.push({
@@ -461,15 +474,17 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         dependencies: [tasks[0].id],
         timeout, // 10 minutes
       });
-    }
+    //     }
+
 
     return tasks;
-  }
+  //   }
+
 
   /**
    * Execute coordinated tasks with agent collaboration
    */
-  private async executeCoordinatedTasks(tasks: SwarmTask[]): Promise<Record<string, unknown>[]> {
+  private async executeCoordinatedTasks(tasks): Promise<Record<string, unknown>[]> {
     console.log(`🔄 Executing ${tasks.length} coordinated DSPy optimization tasks`);
 
     const results: Record<string, unknown>[] = [];
@@ -482,7 +497,8 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
 // await Promise.all(
           task.dependencies.map(depId => executing.get(depId)).filter(Boolean)
         );
-      }
+      //       }
+
 
       // Execute task
       const promise = this.executeTask(task);
@@ -491,26 +507,30 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
       // If no parallel tasks, wait for completion
       if (!this.config.swarmCoordination) {
         results.push(await promise);
-      }
-    }
+      //       }
+    //     }
+
 
     // Wait for all parallel tasks to complete
     if (this.config.swarmCoordination) {
 // const allResults = awaitPromise.all(Array.from(executing.values()));
       results.push(...allResults);
-    }
+    //     }
+
 
     return results;
-  }
+  //   }
+
 
   /**
    * Execute a single DSPy optimization task
    */
-  private async executeTask(task: SwarmTask): Promise<Record<string, unknown>> {
+  private async executeTask(task): Promise<Record<string, unknown>> {
     const agent = this.agents.get(task.assignedAgent ?? '');
     if (!agent) {
-      throw new Error(`No agent available for task: ${task.id}`);
-    }
+      throw new Error(`No agent available for task);
+    //     }
+
 
     agent.status = 'working';
     agent.currentTask = task;
@@ -535,9 +555,10 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         case 'dspy-neural-enhancement': null
           result = await this.executeNeuralEnhancement(task, agent);
           break;
-        default: null
-          throw new Error(`Unknown task type: ${task.type}`);
-      }
+        // default: null
+          throw new Error(`Unknown task type);
+      //       }
+
 
       // Update agent metrics
       const duration = Date.now() - startTime;
@@ -551,7 +572,7 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
       result.agentId = agent.id;
 
     } catch (error) {
-      console.error(`❌ Task ${task.id} failed:`, error);
+      console.error(`❌ Task ${task.id} failed);
       result = {
         error: error instanceof Error ? error.message : 'Unknown error',
         taskId: task.id,
@@ -560,17 +581,19 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
       agent.status = 'idle';
       agent.currentTask = null;
       agent.metrics.lastActivity = new Date().toISOString();
-    }
+    //     }
+
 
     return result;
-  }
+  //   }
+
 
   /**
    * Execute prompt optimization with cross-session learning
    */
   private async executePromptOptimization(
     task,
-    agent: DSPySwarmAgent
+    // agent: DSPySwarmAgent
   ): Promise<Record<string, unknown>> {
     const { program, dataset, rounds, strategy } = task.payload as any;
 
@@ -596,14 +619,16 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         if (accuracy > bestAccuracy) {
           bestAccuracy = accuracy;
           bestPrompt = variation;
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
+
 
     // Learn new patterns
     if (bestAccuracy > program.metrics.accuracy) {
 // await this.learnPromptPattern(program.prompt, bestPrompt, bestAccuracy);
-    }
+    //     }
+
 
     return {
       taskType: 'prompt-optimization',
@@ -612,18 +637,19 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
       improvement: bestAccuracy - program.metrics.accuracy,
       rounds,
       strategy };
-  }
+  //   }
+
 
   /**
    * Execute example generation with diversity optimization
    */
   private async executeExampleGeneration(
     task,
-    agent: DSPySwarmAgent
+    // agent: DSPySwarmAgent
   ): Promise<Record<string, unknown>> {
     const { program, targetCount, diversity, quality } = task.payload as any;
 
-    const examples: DSPyExample[] = [];
+    const examples = [];
     const existingExamples = program.examples || [];
 
     // Generate diverse examples using learned patterns
@@ -635,7 +661,8 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         quality
       );
       examples.push(example);
-    }
+    //     }
+
 
     // Rank and select best examples
 // const rankedExamples = awaitthis.rankExamplesByEffectiveness(examples, program);
@@ -647,7 +674,8 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
       averageQuality: rankedExamples.reduce((sum, ex) => sum + (ex.score ?? 0), 0) / rankedExamples.length,
       diversityScore,
       examples: rankedExamples.slice(0, this.config.fewShotExamples) };
-  }
+  //   }
+
 
   /**
    * Persist optimization knowledge across sessions
@@ -673,15 +701,17 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
     for (const result of results) {
       if (result.taskType === 'prompt-optimization') {
 // await this.savePromptPatternVector(result as any);
-      }
-    }
+      //       }
+    //     }
+
 
     // Update agent collaboration in Kuzu
     for (const result of results) {
       if (result.agentId) {
 // await this.updateAgentCollaboration(result.agentId as string, results);
-      }
-    }
+      //       }
+    //     }
+
 
     // Save persistent memory
 // await this.sqliteStore.set(
@@ -691,59 +721,69 @@ export class DSPySwarmCoordinator extends EventEmitter implements SwarmCoordinat
         optimizationHistory: this.persistentMemory.optimizationHistory.slice(-100), // Keep last 100
       })
     );
-  }
+  //   }
+
 
   // Helper methods (implementation details)
-  private getAgentBySpecialization(specialization: DSPySwarmAgent['specialization']): DSPySwarmAgent | undefined {
+  private getAgentBySpecialization(specialization): DSPySwarmAgent | undefined {
     return Array.from(this.agents.values()).find(agent => agent.specialization === specialization);
-  }
+  //   }
 
-  private async getCrossSessionPatterns(signature: string): Promise<DSPyPattern[]> {
+
+  private async getCrossSessionPatterns(signature): Promise<DSPyPattern[]> {
     return Array.from(this.persistentMemory.patterns.values())
 filter(pattern => pattern.contexts.includes(signature))
 sort((a, b) => b.effectiveness - a.effectiveness)
 slice(0, 10);
-  }
+  //   }
+
 
   private async getNeuralEnhancementPatterns(): Promise<Record<string, unknown>[]> {
     // Mock implementation
     return [];
-  }
+  //   }
+
 
   private async executeMetricAnalysis(task, agent: DSPySwarmAgent): Promise<Record<string, unknown>> {
     return { taskType: 'metric-analysis', analysis: 'completed' };
-  }
+  //   }
+
 
   private async executePipelineTuning(task, agent: DSPySwarmAgent): Promise<Record<string, unknown>> {
     return { taskType: 'pipeline-tuning', tuning: 'completed' };
-  }
+  //   }
+
 
   private async executeNeuralEnhancement(task, agent: DSPySwarmAgent): Promise<Record<string, unknown>> {
     return { taskType: 'neural-enhancement', enhancement: 'completed' };
-  }
+  //   }
 
-  private async getLearnedPromptPatterns(signature: string): Promise<DSPyPattern[]> {
+
+  private async getLearnedPromptPatterns(signature): Promise<DSPyPattern[]> {
     return Array.from(this.persistentMemory.patterns.values())
 filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
-  }
+  //   }
+
 
   private async generatePromptVariations(
     prompt,
-    dataset: DSPyExample[],
-    patterns: DSPyPattern[],
-    strategy: string
+    dataset,
+    patterns,
+    // strategy: string
   ): Promise<string[]> {
     // Mock implementation
     return [prompt + ' (optimized)'];
-  }
+  //   }
 
-  private async evaluatePromptVariation(prompt, dataset: DSPyExample[]): Promise<number> {
+
+  private async evaluatePromptVariation(prompt, dataset): Promise<number> {
     // Mock implementation
     return Math.random() * 0.3 + 0.7;
-  }
+  //   }
+
 
   private async learnPromptPattern(original, optimized, accuracy: number): Promise<void> {
-    const pattern: DSPyPattern = {
+    const pattern = {
       id: `pattern_${Date.now()}`,
       type: 'prompt-template',
       pattern: `${original} -> ${optimized}`,
@@ -753,24 +793,27 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
       contexts: [] };
 
     this.persistentMemory.patterns.set(pattern.id, pattern);
-  }
+  //   }
+
 
   private async generateHighQualityExample(
     signature,
-    existingExamples: DSPyExample[],
+    existingExamples,
     diversity,
-    quality: number
+    // quality: number
   ): Promise<DSPyExample> {
     // Mock implementation
     return {
       input: { signature, query: 'generated input' },
       output: { result: 'generated output' },
       score};
-  }
+  //   }
 
-  private async rankExamplesByEffectiveness(examples: DSPyExample[], program: DSPyProgram): Promise<DSPyExample[]> {
+
+  private async rankExamplesByEffectiveness(examples, program: DSPyProgram): Promise<DSPyExample[]> {
     return examples.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
-  }
+  //   }
+
 
   private async aggregateOptimizationResults(
     program,
@@ -782,37 +825,43 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
     for (const result of results) {
       if (result.taskType === 'prompt-optimization' && result.optimizedPrompt) {
         optimizedProgram.prompt = result.optimizedPrompt as string;
-      }
+      //       }
       if (result.taskType === 'example-generation' && result.examples) {
         optimizedProgram.examples = result.examples as DSPyExample[];
-      }
-    }
+      //       }
+    //     }
+
 
     // Update metrics
     optimizedProgram.metrics.accuracy += 0.1; // Mock improvement
     optimizedProgram.metrics.iterations++;
 
     return optimizedProgram;
-  }
+  //   }
+
 
   private async updateSwarmMetrics(original, optimized: DSPyMetrics): Promise<void> {
     this.persistentMemory.globalMetrics.totalOptimizations++;
     this.persistentMemory.globalMetrics.averageAccuracyGain =
       (this.persistentMemory.globalMetrics.averageAccuracyGain +
        (optimized.accuracy - original.accuracy)) / 2;
-  }
+  //   }
 
-  private calculateImprovement(original, optimized: DSPyMetrics): number {
+
+  private calculateImprovement(original, optimized: DSPyMetrics) {
     return ((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
-  }
+  //   }
+
 
   private async savePromptPatternVector(result: Record<string, unknown>): Promise<void> {
     // Mock vector embedding and storage
-  }
+  //   }
+
 
   private async updateAgentCollaboration(agentId, results: Record<string, unknown>[]): Promise<void> {
     // Update collaboration metrics in Kuzu
-  }
+  //   }
+
 
   /**
    * Get swarm status with persistent memory metrics
@@ -835,7 +884,8 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
         optimizationHistory: this.persistentMemory.optimizationHistory.length,
         globalMetrics: this.persistentMemory.globalMetrics },
       timestamp: new Date().toISOString() };
-  }
+  //   }
+
 
   /**
    * Shutdown swarm and persist final state
@@ -852,13 +902,15 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
           optimizationHistory: agent.optimizationHistory,
           learnedPatterns: agent.learnedPatterns })
       );
-    }
+    //     }
+
 
     // Final memory persistence
 // await this.persistOptimizationKnowledge({} as DSPyProgram, []);
     this.emit('shutdown', { swarmId: this.id, timestamp: new Date().toISOString() });
     console.log('✅ DSPy Persistent Swarm shutdown complete');
-  }
-}
+  //   }
+// }
+
 
 export default DSPySwarmCoordinator;

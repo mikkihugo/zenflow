@@ -6,18 +6,18 @@ jest.mock('../../../src/coordination/workers/worker-pool.js', () => ({
   WorkerThreadPool: jest.fn().mockImplementation(() => ({
     initialize: jest.fn(),
 submitTask: jest.fn(),
-getStats: jest.fn(() => ({ utilization: 0.75 })),
+getStats: jest.fn(() => ({ utilization)),
 shutdown: jest.fn() })) }))
 jest.mock('../../../src/cli/command-handlers/swarm-orchestrator.js', () => (
-{
+// {
   SwarmOrchestrator: jest.fn().mockImplementation(() => ({
     initialize: jest.fn(),
   executeTask: jest.fn(),
   getSwarmStatus: jest.fn(() => ({ active, tasks }))
-}
+// }
 )) }))
 describe('Parallel Swarm Orchestrator', () =>
-{
+// {
   let _orchestrator;
   let ParallelSwarmOrchestrator;
   beforeEach(async () => {
@@ -29,13 +29,13 @@ describe('Parallel Swarm Orchestrator', () =>
     parallelMode });
 })
 afterEach(async () =>
-{
+// {
   if (orchestrator) {
   // await orchestrator.shutdown();
-  }
+  //   }
 })
 describe('constructor', () =>
-{
+// {
   it('should initialize with default options', () => {
     const _defaultOrchestrator = new ParallelSwarmOrchestrator();
     expect(defaultOrchestrator.parallelMode).toBe(true);
@@ -48,18 +48,18 @@ describe('constructor', () =>
     const _customOrchestrator = new ParallelSwarmOrchestrator({
         maxWorkers,
     parallelMode,
-    loadBalancingStrategy: 'least-loaded' });
+    loadBalancingStrategy);
   expect(customOrchestrator.maxWorkers).toBe(8);
   expect(customOrchestrator.parallelMode).toBe(false);
   expect(customOrchestrator.loadBalancingStrategy).toBe('least-loaded');
 })
 it('should extend EventEmitter', () =>
-{
+// {
   expect(orchestrator).toBeInstanceOf(EventEmitter);
 })
 })
 describe('initialization', () =>
-{
+// {
   it('should initialize successfully', async () => {
   // await expect(orchestrator.initialize()).resolves.not.toThrow();
     expect(orchestrator.baseOrchestrator.initialize).toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe('initialization', () =>
   // await orchestrator.initialize();
     if (orchestrator.parallelMode) {
       expect(orchestrator.workerPool).toBeDefined();
-    }
+    //     }
   });
   it('should skip worker pool in sequential mode', async () => {
     const _sequentialOrchestrator = new ParallelSwarmOrchestrator({ parallelMode });
@@ -77,7 +77,7 @@ describe('initialization', () =>
   });
 })
 describe('task execution', () =>
-{
+// {
     beforeEach(async () => {
   // await orchestrator.initialize();
     });
@@ -91,9 +91,7 @@ describe('task execution', () =>
           return new Promise((resolve) => {
             setTimeout(() => {
               resolve({
-                taskId: task.id,
-    // result: `Analyzed ${task.payload.file // LINT: unreachable code removed}`,
-                success });
+                taskId);
             }, Math.random() * 100);
           });
         });
@@ -110,7 +108,7 @@ describe('task execution', () =>
       const _mockTaskWithFailure = async (taskId) => {
         if (taskId === 'failing-task') {
           throw new Error('Task failed');
-        }
+        //         }
         return { taskId, result: 'success' };
     //   // LINT: unreachable code removed};
       try {
@@ -118,7 +116,7 @@ describe('task execution', () =>
         expect(true).toBe(false); // Should not reach here
       } catch (error) {
         expect(error.message).toBe('Task failed');
-      }
+      //       }
 // const _successResult = awaitmockTaskWithFailure('working-task');
       expect(successResult.result).toBe('success');
     });
@@ -140,7 +138,7 @@ describe('task execution', () =>
             return this.workers.reduce((_least, _current) =>;
     // current.load < least.load ? current ; // LINT: unreachable code removed
             );
-          }
+          //           }
           return this.workers[0];
     //   // LINT: unreachable code removed} };
       const _selectedWorker = loadBalancer.selectWorker();
@@ -185,7 +183,7 @@ describe('task execution', () =>
       expect(swarm1.id).toBe('swarm1');
       expect(swarm2.id).toBe('swarm2');
       expect(swarmManager.swarms.size).toBe(2);
-      const _added = swarmManager.addTaskToSwarm('swarm1', { id: 'task1' });
+      const _added = swarmManager.addTaskToSwarm('swarm1', { id);
       expect(added).toBe(true);
       expect(swarm1.tasks).toHaveLength(1);
       const _status = swarmManager.getSwarmStatus('swarm1');
@@ -197,7 +195,7 @@ describe('task execution', () =>
         addDependency: function (fromSwarm, /* toSwarm */) {
           if (!this.dependencies.has(fromSwarm)) {
             this.dependencies.set(fromSwarm, []);
-          }
+          //           }
           this.dependencies.get(fromSwarm).push(toSwarm);
         },
         canExecute: function (swarmId, /* completedSwarms */) {
@@ -215,9 +213,9 @@ describe('task execution', () =>
                 order.push(swarm);
                 completed.push(swarm);
                 remaining.splice(i, 1);
-              }
-            }
-          }
+              //               }
+            //             }
+          //           }
           return order;
     //   // LINT: unreachable code removed} };
       coordination.addDependency('swarm2', 'swarm1');
@@ -288,7 +286,7 @@ describe('task execution', () =>
     it('should handle worker failures', async () => {
       const _failureHandler = {
         handleWorkerFailure: async (workerId, error) => {
-          console.warn(`Worker ${workerId} failed:`, error.message);
+          console.warn(`Worker ${workerId} failed);
           // Restart worker
           const _newWorker = {
             id: `${workerId}-restart`,
@@ -311,12 +309,12 @@ describe('task execution', () =>
             // Simulate task execution that might fail
             if (task.shouldFail && attempt <= 2) {
               throw new Error('Task failed');
-            }
+            //             }
             return { success, result: 'Task completed', attempts };
     //   // LINT: unreachable code removed} catch (error) {
             if (attempt >= this.maxRetries) {
-              throw new Error(`Task failed after ${this.maxRetries} attempts: ${error.message}`);
-            }
+              throw new Error(`Task failed after ${this.maxRetries} attempts);
+            //             }
             // Wait before retry
   // await new Promise((resolve) => setTimeout(resolve, this.retryDelay * attempt));
             return this.executeWithRetry(task, attempt + 1);
@@ -344,7 +342,7 @@ describe('task execution', () =>
         // Shutdown worker pool
         if (orchestrator.workerPool) {
   // await orchestrator.workerPool.shutdown();
-        }
+        //         }
         return true;
     //   // LINT: unreachable code removed};
 // const _result = awaitcleanup();
@@ -360,11 +358,11 @@ describe('task execution', () =>
           // Wait for active tasks to complete or timeout
           while (orchestrator.activeTasks.size > 0 && Date.now() - startTime < timeout) {
   // await new Promise((resolve) => setTimeout(resolve, 100));
-          }
+          //           }
           const _remainingTasks = orchestrator.activeTasks.size;
           if (remainingTasks > 0) {
             console.warn(`Shutdown with ${remainingTasks} tasks still active`);
-          }
+          //           }
           return { graceful === 0, remainingTasks };
     //   // LINT: unreachable code removed} };
 // const _result = awaitshutdownHandler.gracefulShutdown(1000);

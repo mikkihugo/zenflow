@@ -16,7 +16,7 @@ showCommandHelp } from './command-registry.js'
 
 import { initializePlugins } from './plugin-activation.js';
 
-async function _main(): unknown {
+async function _main() {
   // Use the comprehensive meow configuration from command-registry
 // const _cli = awaitcreateMeowCLI();
   const { input, flags } = cli;
@@ -56,35 +56,38 @@ async function _main(): unknown {
     try {
       _pluginManager = await initializePlugins({errorHandling = await import('./plugin-activation.js');
         registerPluginCommands(commandRegistry);
-      }
-  }
+      //       }
+  //   }
   catch(error);
   if (flags.debug) {
-    console.error('🔌 Plugin initialization failed:', error.message);
-  }
-}
+    console.error('🔌 Plugin initialization failed);
+  //   }
+// }
+
 
 // Handle UI flag (needs plugins)
 if (flags.ui) {
   renderTui(cli);
   return;
-}
+// }
+
 
 // Execute command
 if (hasCommand(command)) {
   try {
 // await executeCommand(command, input.slice(1), flags);
   } catch (/* err */) {
-    console.error(`❌ Error executing command "${command}": ${err.message}`);
+    console.error(`❌ Error executing command "${command}");
     if (flags.debug) {
-      console.error('Stack trace:', err.stack);
-    }
+      console.error('Stack trace);
+    //     }
     process.exit(1);
-  }
+  //   }
 } else {
-  console.error(`❌ Error: Unknown command "${command}"`);
+  console.error(`❌ Error);
   cli.showHelp(1);
-}
-}
+// }
+// }
+
 
 main()

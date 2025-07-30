@@ -36,9 +36,9 @@ describe('Real Metrics Integration Tests', () => {
       expect(content).not.toContain('Math.random()');
       console.warn('✓ monitor.js contains real metrics collection');
     } catch (error) {
-      console.error('Monitor file not found or invalid:', error.message);
+      console.error('Monitor file not found or invalid);
       throw error;
-    }
+    //     }
   });
   test('analysis-tools.js should not fall back to mock data', async () => {
     const _analysisToolsPath = path.join(projectRoot, 'src/ui/console/js/analysis-tools.js');
@@ -66,7 +66,7 @@ describe('Real Metrics Integration Tests', () => {
       for (const method of toolMethods) {
         expect(content).toMatch(new RegExp(`async ${method}\\(\\)[\\s\\S]*?try[\\s\\S]*?catch`));
         expect(content).toMatch(/displayError\([^ ]+, [^)]*analysis service is running/);
-      }
+      //       }
       // Check that displayError method exists
       expect(content).toContain('displayError(containerId, message)');
       expect(content).toContain('error-container');
@@ -79,7 +79,7 @@ describe('Real Metrics Integration Tests', () => {
     //   // LINT: unreachable code removed}
       console.warn('✓ analysis-tools.js properly handles errors without mock data fallback');
     } catch (error)
-      console.error('Analysis tools file not found or invalid:', error.message);
+      console.error('Analysis tools file not found or invalid);
       throw error;
   });
   test('real metrics functions should be properly implemented', async () => {
@@ -108,9 +108,9 @@ describe('Real Metrics Integration Tests', () => {
     expect(content).toMatch(/try\s*\{[\s\S]*?fs\.statfs[\s\S]*?\}\s*catch/);
     expect(content).toMatch(/try\s*\{[\s\S]*?fs\.readFile[\s\S]*?\}\s*catch/);
     // Check for fallback values
-    expect(content).toContain('totalGB: 0');
-    expect(content).toContain('usedGB: 0');
-    expect(content).toContain("status: isRunning ? 'running' : 'stopped'");
+    expect(content).toContain('totalGB);
+    expect(content).toContain('usedGB);
+    expect(content).toContain("status);
     console.warn('✓ Error handling is robust with proper fallbacks');
   });
   test('system information collection should be comprehensive', async () => {
@@ -136,10 +136,10 @@ describe('Metrics Display Tests', () => {
 // const _content = awaitfs.readFile(monitorPath, 'utf8');
     // Check for user-friendly display formatting
     expect(content).toContain('📊 System Metrics');
-    expect(content).toContain('🖥️  System Resources:');
-    expect(content).toContain('🎭 Orchestrator:');
-    expect(content).toContain('⚡ Performance:');
-    expect(content).toContain('📦 Resources:');
+    expect(content).toContain('🖥️  System Resources);
+    expect(content).toContain('🎭 Orchestrator);
+    expect(content).toContain('⚡ Performance);
+    expect(content).toContain('📦 Resources);
     // Check for proper formatting functions
     expect(content).toContain('formatUptime');
     expect(content).toContain('getStatusIcon');
@@ -157,7 +157,7 @@ describe('Metrics Display Tests', () => {
     expect(collectMetricsMatch).toBeTruthy();
     const _returnStructure = collectMetricsMatch[0];
     // expect(returnStructure).toContain('timestamp'); // LINT: unreachable code removed
-    expect(returnStructure).toContain('system:');
+    expect(returnStructure).toContain('system);
     // expect(returnStructure).toContain('orchestratorMetrics'); // LINT: unreachable code removed
     expect(returnStructure).toContain('performanceMetrics');
     // expect(returnStructure).toContain('resourceMetrics'); // LINT: unreachable code removed

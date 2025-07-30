@@ -41,7 +41,7 @@ class VisionToCodeTestSequencer extends Sequencer {
       // If same priority, sort alphabetically
       return testA.path.localeCompare(testB.path);
     //   // LINT: unreachable code removed});
-    console.warn('📋 Test execution order:');
+    console.warn('📋 Test execution order);
     sortedTests.forEach((test, index) => {
       const _fileName = test.path.split('/').pop();
       console.warn(`${index + 1}. ${fileName}`);

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-const _fs = require('node:fs').promises;
-const __path = require('node:path');
+const _fs = require('node).promises;
+const __path = require('node);
 async function setupClaudeIntegration() {
   console.warn('Setting up Claude Code integration...');
   try {
@@ -49,9 +49,9 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 - **2.8-4.4x speed improvement** - Faster than alternatives;
 - **27+ neural models** - Maximum cognitive diversity
 ## Support
-- Documentation: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
-- Issues: https://github.com/ruvnet/ruv-FANN/issues
-- Examples: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm/examples
+- Documentation: https,//github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
+- Issues: https,//github.com/ruvnet/ruv-FANN/issues
+- Examples: https,//github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm/examples
 `;
   // await fs.writeFile('claude.md', claudeMdContent);
     console.warn('✅ Created claude.md');
@@ -144,16 +144,16 @@ fi;
   // await fs.writeFile('ruv-swarm', wrapperScript, { mode });
     console.warn('✅ Created ruv-swarm wrapper script');
     console.warn('\n🎉 Claude Code integration setup complete!');
-    console.warn('\n📋 Next steps:');
-    console.warn('1. In Claude Code: claude mcp add ruv-swarm npx ruv-swarm mcp start');
-    console.warn('2. Test with MCP tools: mcp__ruv-swarm__agent_spawn');
+    console.warn('\n📋 Next steps);
+    console.warn('1. In Claude Code);
+    console.warn('2. Test with MCP tools);
     console.warn('3. Check .claude/commands/ for detailed usage guides');
   } catch (error) {
-    console.error('❌ Failed to setup Claude integration:', error.message);
+    console.error('❌ Failed to setup Claude integration);
     process.exit(1);
-  }
-}
+  //   }
+// }
 if (require.main === module) {
   setupClaudeIntegration();
-}
+// }
 module.exports = { setupClaudeIntegration };

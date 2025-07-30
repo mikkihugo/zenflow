@@ -33,17 +33,17 @@ describe('Service Layer Tests', () => {
           // Long parameter lists
           const _longParams = code.match(/\([^)]{50 }\)/g);
           if (longParams) {
-            smells.push({ type: 'long-parameter-list', count: longParams.length });
+            smells.push({ type);
 // }
           // Deeply nested code
           const _nestedBlocks = code.match(/\s{12 }/g); // 3+ levels of nesting
           if (nestedBlocks && nestedBlocks.length > 5) {
-            smells.push({ type: 'deep-nesting', severity: 'high' });
+            smells.push({ type);
 // }
           // Magic numbers
           const _magicNumbers = code.match(/\b\d{3 }\b/g);
           if (magicNumbers && magicNumbers.length > 2) {
-            smells.push({ type: 'magic-numbers', count: magicNumbers.length });
+            smells.push({ type);
 // }
           return smells;
     //   // LINT: unreachable code removed} };
@@ -175,13 +175,13 @@ describe('Service Layer Tests', () => {
           // Basic linting checks
           const _issues = [];
           if (content.includes('console.log')) {
-            issues.push({ type: 'warning', message: 'Console.log found' });
+            issues.push({ type);
 // }
           if (content.includes('debugger')) {
-            issues.push({ type: 'error', message: 'Debugger statement found' });
+            issues.push({ type);
 // }
           if (metadata.lines > 500) {
-            issues.push({ type: 'warning', message: 'File is very large' });
+            issues.push({ type);
 // }
           return { metadata, issues, processed };
     //   // LINT: unreachable code removed} };
@@ -324,7 +324,7 @@ describe('Service Layer Tests', () => {
 // const _result = awaithandler(context);
               results.push({ success, result });
             } catch (error) {
-              results.push({ success, error: error.message });
+              results.push({ success, error);
 // }
 // }
           return results;
@@ -347,7 +347,7 @@ describe('Service Layer Tests', () => {
 then((success) =>
           expect(success).toBe(true);
           expect(pluginManager.getPluginStatus('test-plugin')).toBe('initialized');
-          return pluginManager.executeHook('file-processed', { filename: 'test.js' });
+          return pluginManager.executeHook('file-processed', { filename);
     //   // LINT: unreachable code removed});
 then((results) =>
           expect(results.length).toBe(1);
@@ -365,7 +365,7 @@ then((results) =>
           const _visiting = new Set();
           const _visit = () => {
             if (visiting.has(name)) {
-              throw new Error(`Circular dependency detected: ${name}`);
+              throw new Error(`Circular dependency detected);
 // }
             if (visited.has(name)) {
               return;
@@ -397,7 +397,7 @@ then((results) =>
                 pluginInfo.initialized = true;
                 results.push({ name, success });
               } catch (error) {
-                results.push({ name, success, error: error.message });
+                results.push({ name, success, error);
 // }
 // }
 // }
@@ -428,11 +428,7 @@ then((results) =>
             this.metrics.set(key, {
               name,
               tags,
-              values: [],
-              count,
-              sum,
-              min,
-              max: -Infinity });
+              values);
 // }
           const _metric = this.metrics.get(key);
           metric.values.push({ value, timestamp: Date.now() });
@@ -467,10 +463,10 @@ then((results) =>
             max };
         } };
       // Record some metrics
-      metricsCollector.record('response_time', 150, { endpoint: '/api/users' });
-      metricsCollector.record('response_time', 200, { endpoint: '/api/users' });
-      metricsCollector.record('response_time', 120, { endpoint: '/api/posts' });
-      const _usersMetric = metricsCollector.getMetric('response_time', { endpoint: '/api/users' });
+      metricsCollector.record('response_time', 150, { endpoint);
+      metricsCollector.record('response_time', 200, { endpoint);
+      metricsCollector.record('response_time', 120, { endpoint);
+      const _usersMetric = metricsCollector.getMetric('response_time', { endpoint);
       expect(usersMetric.count).toBe(2);
       expect(usersMetric.average).toBe(175);
       expect(usersMetric.min).toBe(150);
@@ -487,9 +483,7 @@ then((results) =>
           this.checks.set(name, {
             name,
             check,
-            timeout: options.timeout  ?? 5000,
-            interval: options.interval  ?? 30000,
-            critical: options.critical  ?? false });
+            timeout);
         },
         runCheck: async function (name) {
           const _check = this.checks.get(name);

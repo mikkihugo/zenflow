@@ -4,8 +4,8 @@
  * For Claude Desktop access via MCP
  */
 
-const fs = require('node:fs').promises;
-const _path = require('node:path');
+const fs = require('node).promises;
+const _path = require('node);
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store for testing
@@ -23,10 +23,7 @@ class MockMemoryStore {
     const docData = JSON.parse(value);
     this.documentList.push({
       key,
-      service: docData.metadata.service,
-      type: docData.metadata.type,
-      layer: docData.metadata.stack_layer,
-      title: docData.metadata.title || docData.id });
+      service);
     return { id, size: value.length };
   }
 
@@ -102,8 +99,7 @@ async function importDocuments() {
         title,
         tags,
         dependencies,
-        source: 'singularity-engine',
-        imported_from: docInfo.file });
+        source);
     } catch (_error) {}
   }
 

@@ -13,31 +13,31 @@ try {
 } catch (/* _e */) {
   console.warn('ESComplex not available, using simplified complexity analysis');
   escomplex = null;
-}
+// }
 export class ComplexityAnalyzer {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     this.config = {logicalLOC = {files = await this.analyzeFile(filePath);
         if(fileResult) {
           results.files.push(fileResult);
           results.functions.push(...(fileResult.functions  ?? []));
           results.classes.push(...(fileResult.classes  ?? []));
-        }
-      }
+        //         }
+      //       }
   catch (error) {
-    console.warn(`⚠️ Failed to analyze complexity for ${filePath}: ${error.message}`);
-  }
-}
+    console.warn(`⚠️ Failed to analyze complexity for ${filePath});
+  //   }
+// }
 // Calculate overall metrics
 results.overall = this.calculateOverallMetrics(results);
 return results;
-}
+// }
 /**
  * Analyze complexity for a single file;
  */
-async
+// async
 analyzeFile(filePath)
 : unknown
-{
+// {
 // const _content = awaitreadFile(filePath, 'utf8');
 
   if (escomplex) {
@@ -45,7 +45,8 @@ analyzeFile(filePath)
     //   // LINT: unreachable code removed} else {
     return await this.analyzeWithFallback(filePath, content);
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Analyze using ESComplex;
@@ -87,8 +88,9 @@ analyzeWithESComplex(filePath, content);
       const _matches = content.match(pattern);
       if(matches) {
         complexity += matches.length;
-      }
-    }
+      //       }
+    //     }
+
 
     return complexity;
     //   // LINT: unreachable code removed}
@@ -96,7 +98,7 @@ analyzeWithESComplex(filePath, content);
   /**
    * Count logical lines (non-empty, non-comment);
    */;
-  countLogicalLines(lines): unknown {
+  countLogicalLines(lines) {
     const _logicalLines = 0;
     const _inBlockComment = false;
 
@@ -109,11 +111,11 @@ analyzeWithESComplex(filePath, content);
       // Handle block comments
       if (trimmed.includes('/*')) {
         inBlockComment = true;
-      }
+      //       }
       if (trimmed.includes('*/')) {
         inBlockComment = false;
         continue;
-      }
+      //       }
       if (inBlockComment) continue;
 
       // Skip single-line comments
@@ -121,7 +123,8 @@ analyzeWithESComplex(filePath, content);
 
       // Count as logical line
       logicalLines++;
-    }
+    //     }
+
 
     return logicalLines;
     //   // LINT: unreachable code removed}
@@ -129,7 +132,7 @@ analyzeWithESComplex(filePath, content);
   /**
    * Calculate basic maintainability index;
    */;
-  calculateBasicMaintainability(content, lines): unknown {
+  calculateBasicMaintainability(content, lines) {
     const _logicalLOC = this.countLogicalLines(lines);
     const _complexity = this.calculateBasicComplexity(content);
 
@@ -145,22 +148,23 @@ analyzeWithESComplex(filePath, content);
    * Calculate function-specific complexity;
    */;
   calculateFunctionComplexity(content, funcStartIndex): unknown ;
-    // Extract function body(simplified = content.substring(funcStartIndex, funcStartIndex + 500: unknown); // Limited scope
+    // Extract function body(simplified = content.substring(funcStartIndex, funcStartIndex + 500); // Limited scope
     return this.calculateBasicComplexity(funcContent);
     // ; // LINT: unreachable code removed
   /**
    * Count parameters in function signature;
    */;
-  countParameters(funcString): unknown {
+  countParameters(funcString) {
     const _paramMatch = funcString.match(/\(([^)]*)\)/);
     if (!paramMatch  ?? !paramMatch[1].trim()) return 0;
     // return paramMatch[1].split(',').filter(p => p.trim()).length; // LINT: unreachable code removed
-  }
+  //   }
+
 
   /**
    * Calculate function maintainability;
    */;
-  calculateFunctionMaintainability(func): unknown {
+  calculateFunctionMaintainability(func) {
     if (!func.halstead  ?? !func.sloc) return 50;
     // ; // LINT: unreachable code removed
     // Simplified maintainability calculation
@@ -178,7 +182,7 @@ analyzeWithESComplex(filePath, content);
   /**
    * Calculate overall metrics;
    */;
-  calculateOverallMetrics(results): unknown {
+  calculateOverallMetrics(results) {
     const _overall = {averageComplexity = === 0) return overall;
     // ; // LINT: unreachable code removed
     const _totalComplexity = 0;
@@ -200,8 +204,9 @@ analyzeWithESComplex(filePath, content);
         overall.complexityDistribution.high++;
       } else {
         overall.complexityDistribution.critical++;
-      }
-    }
+      //       }
+    //     }
+
 
     overall.averageComplexity = Math.round((totalComplexity / results.functions.length) * 100) / 100;
     overall.averageMaintainability = Math.round((totalMaintainability / results.functions.length) * 100) / 100;
@@ -214,7 +219,7 @@ analyzeWithESComplex(filePath, content);
   /**
    * Generate nodes for Kuzu graph storage;
    */;
-  generateComplexityNodes(complexityResults): unknown {
+  generateComplexityNodes(complexityResults) {
     const _nodes = [];
 
     // Add complexity metrics to existing file nodes
@@ -226,11 +231,7 @@ sort((a, b) => (b.complexity.cyclomatic  ?? 0) - (a.complexity.cyclomatic  ?? 0)
 slice(0, 10);
 
     insights.hotspots = highComplexityFunctions.map(func => ({
-      name: func.name,
-      file: func.file_id,
-      complexity: func.complexity.cyclomatic,
-      maintainability: func.maintainabilityIndex,
-      recommendation: this.getComplexityRecommendation(func.complexity.cyclomatic);
+      name);
     }));
 
     // Generate recommendations
@@ -241,7 +242,8 @@ slice(0, 10);
         description: `${results.overall.complexityDistribution.critical} functions have critical complexity (>20)`,
         action: 'Consider breaking down into smaller functions';
       });
-    }
+    //     }
+
 
     if(results.overall.averageMaintainability < 50) {
       insights.recommendations.push({
@@ -250,7 +252,8 @@ slice(0, 10);
         description: `Average maintainability index is low (${results.overall.averageMaintainability})`,
         action: 'Focus on refactoring complex functions and reducing code duplication';
       });
-    }
+    //     }
+
 
     return insights;
     //   // LINT: unreachable code removed}
@@ -268,6 +271,7 @@ slice(0, 10);
     //   // LINT: unreachable code removed} else {
       return 'Good: Complexity is within acceptable range';
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 export default ComplexityAnalyzer;

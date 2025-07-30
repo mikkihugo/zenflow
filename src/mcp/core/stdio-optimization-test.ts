@@ -15,7 +15,8 @@ class StdioOptimizationTests {
   constructor() {
     this.testResults = [];
     this.server = null;
-  }
+  //   }
+
 
   /**
    * Run all tests;
@@ -52,10 +53,11 @@ class StdioOptimizationTests {
         correctBatchSize && correctTimeout,
         'Batch size and timeout configured correctly';
       );
-    }
+    //     }
     catch(error) ;
       this.addTestResult('Server Initialization', false, error.message);
-  }
+  //   }
+
 
   /**
    * Test batch processing functionality;
@@ -80,8 +82,9 @@ class StdioOptimizationTests {
 
     } catch (error) {
       this.addTestResult('Batch Processing', false, error.message);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Test error handling capabilities;
@@ -114,8 +117,9 @@ class StdioOptimizationTests {
       this.addTestResult('Error Response', validResponse, 'Error responses generated correctly');
     } catch (error) {
       this.addTestResult('Error Handling', false, error.message);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Test performance metrics functionality;
@@ -148,8 +152,9 @@ class StdioOptimizationTests {
       this.addTestResult('Performance Summary', hasSummary, 'Performance summary generation works');
     } catch (error) {
       this.addTestResult('Performance Metrics', false, error.message);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Test retry logic;
@@ -177,8 +182,9 @@ class StdioOptimizationTests {
 
     } catch (error) {
       this.addTestResult('Retry Logic', false, error.message);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Test connection handling;
@@ -200,15 +206,15 @@ class StdioOptimizationTests {
 
       this.addTestResult('Buffer Management',
         hasBufferTracking,
-        `Buffersize = passed ? '✅ PASS' : '❌ FAIL';
-    console.warn(`  \$status: \$testName- \$details`);
-  }
+        `Buffersize = passed ? '✅ PASS' );
+  //   }
+
 
     /**
      * Print final test results;
      */;
     printResults();
-    {
+    //     {
       const __totalTests = this.testResults.length;
       const __passedTests = this.testResults.filter((r) => r.passed).length;
 
@@ -216,14 +222,16 @@ class StdioOptimizationTests {
       console.warn('MCP STDIO OPTIMIZATION TEST RESULTS');
       console.warn('='.repeat(50));
       console.warn(`TotalTests = > !r.passed);
-forEach(r => console.warn(`  - \$r.name: \$r.details`);
+forEach(r => console.warn(`  - \$r.name);
       );
-    }
+    //     }
 
-    console.warn('\nOptimizationsValidated = === `file://${__filename}`) {
+
+    console.warn('\nOptimizationsValidated = === `file) {
     const _tests = new StdioOptimizationTests();
     tests.runAllTests().catch(console.error);
-  }
+  //   }
 
-  export;
+
+  // export;
   StdioOptimizationTests;

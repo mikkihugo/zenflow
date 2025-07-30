@@ -2,9 +2,9 @@
  * Analysis Command Module;
  * Converted from JavaScript to TypeScript;
  */
-{
+// {
   Logger, JSONObject, JSONValue, JSONArray;
-}
+// }
 from;
 ('../types/core.js');
 printSuccess,
@@ -15,10 +15,10 @@ checkRuvSwarmAvailable } from '../utils.js'
 
 import CodeAnalysisService from '../../services/code-analysis/index.js';
 
-export async function analysisAction(): unknown {
+export async function analysisAction() {
   showAnalysisHelp();
   return;
-}
+// }
 try {
     switch(subcommand) {
       case 'codebase':;
@@ -61,13 +61,12 @@ try {
 
     printSuccess(`✅ Codebase analysis completed`);
 
-    console.warn(`\n📊 ANALYSISSUMMARY = issue.severity === 'critical' ? '🔴' : issue.severity === 'high' ? '🟡' : '🟢';
-        console.warn(`${severity} ${issue.description}`);
-      }
-    }
+    console.warn(`\n📊 ANALYSISSUMMARY = issue.severity === 'critical' ? '🔴' );
+      //       }
+    //     }
 // await analysisService.cleanup();
 } catch (error)
-{
+// {
   printError(`Codebase analysisfailed = flags;
   const _targetFiles = subArgs.slice(1);
 
@@ -150,7 +149,7 @@ try {
   console.warn(`📊Scope = await checkRuvSwarmAvailable();
   if(!isAvailable) {
     printError('ruv-swarm is not available. Please install itwith = await callRuvSwarmMCP('benchmark_run', {type = analysisResult.bottlenecks  ?? [;
-        {
+        //         {
           severity => {
         const _icon =;
           bottleneck.severity === 'critical';
@@ -160,8 +159,8 @@ try {
               : '🟢';
         console.warn(;
           `${icon} ${bottleneck.severity}: ${bottleneck.component} (${bottleneck.metric})`);
-  }
-  )
+  //   }
+  //   )
   console.warn(`\n💡RECOMMENDATIONS = analysisResult.recommendations  ?? [
   'Implement agent pool to reduce spawn overhead',
   'Optimize task queue with priority scheduling',
@@ -170,7 +169,7 @@ try {
   console.warn(`  • \$
   rec
   `)
-  )
+  //   )
   console.warn(`
   \n📊 PERFORMANCEMETRICS = flags
   const _timeframe = options.timeframe ?? '24h';
@@ -224,49 +223,31 @@ try {
   // Generate insights
   const _insights = analyzer.generateComplexityInsights(results);
   if (insights.hotspots.length > 0) {
-    console.warn(`\n🔥 COMPLEXITY HOTSPOTS:`);
+    console.warn(`\n🔥 COMPLEXITY HOTSPOTS);
     for (const hotspot of insights.hotspots.slice(0, 5)) {
-      console.warn(`  🔴 ${hotspot.name} (complexity: ${hotspot.complexity})`);
+      console.warn(`  🔴 ${hotspot.name} (complexity)`);
       console.warn(`${hotspot.recommendation}`);
-    }
-  }
+    //     }
+  //   }
   if (insights.recommendations.length > 0) {
-    console.warn(`\n💡 RECOMMENDATIONS:`);
+    console.warn(`\n💡 RECOMMENDATIONS);
     for (const rec of insights.recommendations) {
       console.warn(`  • ${rec.description}`);
-      console.warn(`    Action: ${rec.action}`);
-    }
-  }
-}
+      console.warn(`    Action);
+    //     }
+  //   }
+// }
 catch (error)
-{
-  printError(`Complexity analysis failed: ${error.message}`);
-}
-}
-function showAnalysisHelp(): unknown {
+// {
+  printError(`Complexity analysis failed);
+// }
+// }
+function showAnalysisHelp() {
   console.warn(`;
 📊 Analysis Commands - Professional Code Analysis & Performance Analytics
 
-USAGE:;
-  claude-zen analysis <command> [options]
-
-CODE ANALYSIS COMMANDS:;
-  codebase             Comprehensive codebase analysis with AST, dependencies, duplicates;
-  ast <files...>       AST analysis for specific files;
-  dependencies         Module dependency analysis and circular detection;
-  duplicates           Duplicate code detection and similarity analysis;
-  complexity           Code complexity analysis with maintainability metrics;
-  query <type>         Query analysis results with Cypher-like syntax;
-  watch                Start real-time code analysis with file watching
-
-PERFORMANCE ANALYSIS COMMANDS:;
-  bottleneck-detect    Detect performance bottlenecks in the system;
-  performance-report   Generate comprehensive performance reports;
-  token-usage          Analyze token consumption and costs
-
-CODEBASE ANALYSIS OPTIONS:;
-  --path <path>        Project path to analyze (default: current directory);
-  --output <dir>       Output directory for reports (default: ./analysis-reports);
+USAGE);
+  --output <dir>       Output directory for reports (default);
   --include <pattern>  File patterns to include (default: **/*.{js,jsx,ts,tsx})
   --exclude <pattern>  File patterns to exclude;
   --no-dependencies    Skip dependency analysis;
@@ -284,9 +265,9 @@ DEPENDENCY ANALYSIS OPTIONS:;
 
 DUPLICATE ANALYSIS OPTIONS:;
   --path <path>        Project path to analyze;
-  --threshold <num>    Similarity threshold percentage (default: 70);
-  --min-tokens <num>   Minimum tokens for duplicate (default: 50);
-  --min-lines <num>    Minimum lines for duplicate (default: 5)
+  --threshold <num>    Similarity threshold percentage (default);
+  --min-tokens <num>   Minimum tokens for duplicate (default);
+  --min-lines <num>    Minimum lines for duplicate (default)
 
 QUERY OPTIONS:;
   --threshold <num>    Threshold for query filters;
@@ -295,19 +276,19 @@ QUERY OPTIONS:;
   --rules <json>       JSON string with architectural rules
 
 BOTTLENECK DETECT OPTIONS:;
-  --scope <scope>      Analysis scope (default: system);
+  --scope <scope>      Analysis scope (default);
                        Options, swarm, agent, task, memory;
-  --target <target>    Specific target to analyze (default: all);
+  --target <target>    Specific target to analyze (default);
                        Examples: agent-id, swarm-id, task-type
 
 PERFORMANCE REPORT OPTIONS:;
-  --timeframe <time>   Report timeframe (default: 24h);
+  --timeframe <time>   Report timeframe (default);
                        Options, 6h, 24h, 7d, 30d;
-  --format <format>    Report format (default: summary);
+  --format <format>    Report format (default);
                        Options, detailed, json, csv
 
 TOKEN USAGE OPTIONS:;
-  --agent <agent>      Filter by agent type or ID (default: all);
+  --agent <agent>      Filter by agent type or ID (default);
   --breakdown          Include detailed breakdown by agent type;
   --cost-analysis      Include cost projections and optimization
 
@@ -377,4 +358,5 @@ EXAMPLES:;
   • Visual dependency graphs;
   • Historical trend analysis;
 `);
-}
+// }
+

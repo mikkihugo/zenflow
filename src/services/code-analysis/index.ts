@@ -21,16 +21,17 @@ export { CodeAnalysisOrchestrator };
 
 // Main service interface
 export class CodeAnalysisService {
-  constructor(config = {}): unknown {
+  constructor(config = {}) {
     this.orchestrator = new CodeAnalysisOrchestrator(config);
     this.watcher = new CodeAnalysisWatcher(config);
-  }
+  //   }
+
 
   async initialize() {
     // Set up event listeners for real-time analysis
     this.watcher.on('analysis => {
       console.warn(`📊 Real-time analysis => {
-      console.warn(`🚨 Significant change detected = {}): unknown {
+      console.warn(`🚨 Significant change detected = {}) {
     return await this.orchestrator.analyzeCodebase(options);
     //   // LINT: unreachable code removed}
 
@@ -41,7 +42,7 @@ export class CodeAnalysisService {
   async startRealTimeAnalysis()
     if (!this.orchestrator.isInitialized) {
 // await this.initialize();
-    }
+    //     }
     return await this.watcher.startWatching(this.orchestrator);
     //   // LINT: unreachable code removed}
 

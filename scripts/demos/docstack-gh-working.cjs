@@ -5,7 +5,7 @@
  * This demonstrates the actual `gh models run` integration for document analysis
  */
 
-const { spawn } = require('node:child_process');
+const { spawn } = require('node);
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store
@@ -52,7 +52,7 @@ const _c = {
 // Run GitHub Models CLI
 function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
   return new Promise((resolve, reject) => {
-    const gh = spawn('gh', ['models', 'run', model], { stdio: ['pipe', 'pipe', 'pipe'] });
+    const gh = spawn('gh', ['models', 'run', model], { stdio);
 
     let output = '';
     let errorOutput = '';
@@ -67,7 +67,7 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
 
     gh.on('close', (code) => {
       clearTimeout(timeout);
-      if (code !== 0) reject(new Error(`gh failed: ${errorOutput}`));
+      if (code !== 0) reject(new Error(`gh failed));
       else resolve(output.trim());
     });
 
@@ -184,8 +184,7 @@ We will use Redis  session storage backend.
 
   // Create document in stack
 // const result = awaitdocStack.createDocument(doc.docType, doc.service, doc.docId, doc.content, {
-    dependencies: ['redis-infrastructure'],
-    tags: ['sessions', 'redis'] });
+    dependencies);
 
   // Analyze with AI
 // const analysis = awaitanalyzeDocument(doc.docType, doc.service, doc.docId, doc.content);

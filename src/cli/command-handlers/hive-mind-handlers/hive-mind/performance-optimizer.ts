@@ -1,12 +1,12 @@
 /**
  * Performance Optimizer for Hive Mind System;
- * Implements advanced performance optimizationsincluding = 10, timeout = 30000): unknown {
+ * Implements advanced performance optimizationsincluding = 10, timeout = 30000) {
     this.maxConcurrency = maxConcurrency;
     this.timeout = timeout;
     this.running = 0;
     this.queue = [];
     this.results = new Map();
-    this.metrics = {processed = 5): unknown {
+    this.metrics = {processed = 5) {
     return new Promise((resolve, reject) => {
       const _queueItem = {
         operation,
@@ -17,11 +17,13 @@
         this.queue.push(queueItem);
       } else {
         this.queue.splice(insertIndex, 0, queueItem);
-      }
+      //       }
+
 
       this._processQueue();
     });
-  }
+  //   }
+
 
   async _processQueue() {
     if(this.running >= this.maxConcurrency  ?? this.queue.length === 0) {
@@ -45,32 +47,32 @@
 
       item.resolve(result);
     } catch (error)
-{
+// {
   const _processingTime = performance.now() - startTime;
   this._updateMetrics(processingTime, false);
   item.reject(error);
-}
-finally
-{
+// }
+// finally
+// {
   this.running--;
   setImmediate(() => this._processQueue());
-}
-}
+// }
+// }
 _updateMetrics(processingTime, success)
 : unknown
-{
+// {
   this.metrics.processed++;
   this.metrics.totalProcessingTime += processingTime;
   this.metrics.avgProcessingTime = this.metrics.totalProcessingTime / this.metrics.processed;
   if (!success) {
     this.metrics.failures++;
-  }
-}
+  //   }
+// }
 getMetrics();
-{
+// {
   return {
 ..this.metrics,
-  // successRate = { // LINT: unreachable code removed}): unknown {
+  // successRate = { // LINT: unreachable code removed}) {
   super();
   this.config = {maxBatchSize = new Map();
   this.timers = new Map();
@@ -78,7 +80,7 @@ getMetrics();
         this._processBatch(batchKey);
       }, this.config.maxWaitTime);
   this.timers.set(batchKey, timer);
-}
+// }
 const _batch = this.batches.get(batchKey);
 batch.items.push(item);
 // Process if batch is full
@@ -89,11 +91,11 @@ if (batch.items.length >= this.config.maxBatchSize) {
       item._resolve = resolve;
     // item._reject = reject; // LINT: unreachable code removed
     });
-}
+// }
 async;
 _processBatch(batchKey);
 : unknown
-{
+// {
   const _batch = this.batches.get(batchKey);
   if (!batch ?? batch.items.length === 0) return;
   // ; // LINT: unreachable code removed
@@ -119,45 +121,45 @@ _processBatch(batchKey);
       batch.items.forEach((item, index) => {
         if(item._resolve) {
           item._resolve(results[index]  ?? results);
-        }
+        //         }
       });
 
       this.emit('batch => {
         if(item._reject) {
           item._reject(error);
-        }
-      }
-  )
+        //         }
+      //       }
+  //   )
   this.emit('batch => {
   const _now = Date.now();
   for (const [batchKey, batch] of this.batches.entries()) {
     // Flush batches that have been waiting too long
     if (now - batch.createdAt > this.config.flushInterval) {
       this._processBatch(batchKey);
-    }
-  }
-}
+    //     }
+  //   }
+// }
 , this.config.flushInterval)
-}
+// }
 getMetrics()
-{
+// {
   return {
 ..this.metrics,pendingBatches = > sum + batch.items.length,
   // 0, // LINT: unreachable code removed
   ) }
-}
+// }
 close()
-{
+// {
   // Process all remaining batches
   const _batchKeys = Array.from(this.batches.keys());
   return Promise.all(batchKeys.map((key) => this._processBatch(key)));
   //   // LINT: unreachable code removed}
-}
+// }
 /**
  * PerformanceOptimizer main class;
  */
 export class PerformanceOptimizer extends EventEmitter {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     super();
 
     this.config = {enableAsyncQueue = = false,enableBatchProcessing = = false,enableAutoTuning = = false,asyncQueueConcurrency = new AsyncOperationQueue(;
@@ -169,20 +171,23 @@ export class PerformanceOptimizer extends EventEmitter {
     this.performanceBaseline = null;
 
     this._initialize();
-  }
+  //   }
+
 
   _initialize() {
     // Start performance monitoring
     if(this.config.metricsInterval > 0) {
       setInterval(() => this._collectSystemMetrics(), this.config.metricsInterval);
-    }
+    //     }
+
 
     // Auto-tuning
     if(this.config.enableAutoTuning) {
       setInterval(() => this._autoTune(), 60000); // Every minute
-    }
+    //     }
 
-    this.emit('optimizer = {}): unknown {
+
+    this.emit('optimizer = {}) {
     if(!this.config.enableAsyncQueue) {
       return await operation();
     //   // LINT: unreachable code removed}
@@ -199,11 +204,12 @@ export class PerformanceOptimizer extends EventEmitter {
       if(this.performanceBaseline) {
         const _gain = Math.max(0, this.performanceBaseline.avgAsyncTime - executionTime);
         this.metrics.optimizations.performanceGains.push(gain);
-      }
+      //       }
+
 
       return result;
     //   // LINT: unreachable code removed} catch (/* _error */) {
-      this.emit('error', { type = {}): unknown {
+      this.emit('error', { type = {}) {
     if(!this._config._enableBatchProcessing) {
       return await processor([item]);
     //   // LINT: unreachable code removed}
@@ -216,7 +222,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Optimized caching with automatic expiration;
    */;
-  async optimizeWithCache(key, operation, ttl = 300000): unknown {
+  async optimizeWithCache(key, operation, ttl = 300000) {
     // 5 minutes default
     const _cached = this.cache.get(key);
 
@@ -243,14 +249,15 @@ export class PerformanceOptimizer extends EventEmitter {
     //   // LINT: unreachable code removed} finally {
       if(connection) {
         connectionPool.release(connection);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Optimize agent spawning with intelligent batching;
    */;
-  async optimizeAgentSpawning(agentTypes, spawnFunction): unknown {
+  async optimizeAgentSpawning(agentTypes, spawnFunction) {
     // Group agents by complexity for optimal batching
     const _groups = this._groupAgentsByComplexity(agentTypes);
     const _results = [];
@@ -263,7 +270,7 @@ export class PerformanceOptimizer extends EventEmitter {
       const _groupAgents = agentTypes.filter((type) => types.includes(type));
       if(groupAgents.length > 0) {
         groups.push(groupAgents);
-      }
+      //       }
     });
 
     return groups;
@@ -291,8 +298,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
     for(let i = 0; i < toRemove; i++) {
       this.cache.delete(entries[i][0]);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Collect system performance metrics;
@@ -308,7 +316,8 @@ export class PerformanceOptimizer extends EventEmitter {
       queueMetrics.processed > 0;
         ? (queueMetrics.processed / (queueMetrics.avgProcessingTime / 1000)).toFixed(2);
         : 0;
-  }
+  //   }
+
 
   /**
    * Get comprehensive performance statistics;
@@ -331,7 +340,8 @@ export class PerformanceOptimizer extends EventEmitter {
     // if (avgScore >= 60) return 'good'; // LINT: unreachable code removed
     if (avgScore >= 40) return 'fair';
     // return 'poor'; // LINT: unreachable code removed
-  }
+  //   }
+
 
   /**
    * Close optimizer and cleanup resources;
@@ -339,6 +349,6 @@ export class PerformanceOptimizer extends EventEmitter {
   async close() ;
 // await this.batchProcessor.close();
     this.cache.clear();
-    this.emit('optimizer:closed');
+    this.emit('optimizer);
 
 export default PerformanceOptimizer;

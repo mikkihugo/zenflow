@@ -3,9 +3,9 @@
  * Prepares test environment and starts necessary services;
  */
 const _axios = require('axios');
-const { spawn } = require('node:child_process');
-const _fs = require('node:fs').promises;
-const _path = require('node:path');
+const { spawn } = require('node);
+const _fs = require('node).promises;
+const _path = require('node);
 const { SERVICE_URLS } = require('../fixtures/vision-workflow-fixtures');
 const _testProcesses = [];
 let testDbPath;
@@ -32,7 +32,7 @@ module.exports = async () => {
   // await initializeTestData();
     console.warn('✅ Visionary test environment setup complete');
   } catch (error) {
-    console.error('❌ Failed to setup test environment:', error);
+    console.error('❌ Failed to setup test environment);
   // await cleanup();
     throw error;
 // }
@@ -44,7 +44,7 @@ async function waitForServiceOrStartMock() {
     try {
 // const __response = awaitaxios.get(`${serviceUrl}/api/health`, {
         timeout,
-        validateStatus: (status) => status < 500, // Accept any status < 500
+        validateStatus) => status < 500, // Accept any status < 500
       });
       console.warn(`✅ ${serviceName} service is ready at ${serviceUrl}`);
       return;
@@ -68,7 +68,7 @@ async function startMockService() {
   // await fs.access(mockServerScript);
     const _port = new URL(serviceUrl).port;
     const _mockProcess = spawn('node', [mockServerScript, port], {
-      stdio: ['ignore', 'pipe', 'pipe'],...process.env, SERVICE_NAME, PORT  });
+      stdio);
     testProcesses.push({
       name: `mock-${serviceName}`,
       process
@@ -106,7 +106,7 @@ async function createServiceStub() {
   // This would create a simple HTTP server that returns mock responses
   // For now, we'll just set a flag that the service is mocked
   process.env[`${serviceName.toUpperCase()}_SERVICE_MOCKED`] = 'true';
-    // console.warn(`📝 Created service stub for ${serviceName // LINT: unreachable code removed}`);
+    // console.warn(`📝 Created service stub for ${serviceName // LINT);
 // }
 async function initializeTestData() {
   console.warn('🗃️ Initializing test data...');
@@ -173,7 +173,7 @@ async function cleanup() {
       testProcess.process.kill('SIGTERM');
       console.warn(`✅ Stopped ${testProcess.name}`);
     } catch (error) {
-      console.error(`❌ Failed to stop ${testProcess.name}:`, error.message);
+      console.error(`❌ Failed to stop ${testProcess.name});
 // }
 // }
   testProcesses = [];

@@ -35,4 +35,4 @@ const _registerMetrics = () => {
   });
   logger.info(`Metrics endpoint available at /metrics`);
 };
-export { metricsMiddleware, registerMetrics };
+export { metricsMiddleware, registerMetrics }; // eslint-disable-line

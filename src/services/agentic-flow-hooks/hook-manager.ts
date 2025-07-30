@@ -7,14 +7,14 @@ import { EventEmitter } from 'node:events';
 import { Hook } from './types.js';
 
 export class HookManager extends EventEmitter {
-  private config = {enabled = { ...this.config, ...config };
+  private config = {enabled = { ...this.config, ...config }; // eslint-disable-line
   this;
 
   setupInternalHooks();
   this;
 
   log('info', 'Hook Manager initialized');
-}
+// }
 /**
  * Register a new hook;
  */
@@ -26,10 +26,10 @@ if (!validation.valid) {
   throw new Error(`Hook validationfailed = this.hooks.get(name);
     if (!registration) {
       throw new Error(`Hook notfound = group.hooks.filter(h => h.name !== name);
-}
+// }
 this.emit('hook_unregistered', {type = 'parallel';
 ): Promise<HookExecutionContext>
-{
+// {
   if (!this._config._enabled) {
     this.log('debug', 'Hook execution disabled globally');
     return this.createEmptyExecutionContext(type, strategy);
@@ -74,7 +74,7 @@ this.emit('hook_unregistered', {type = 'parallel';
           context.hooksExecuted.push(name);
         } else {
           context.hooksFailed.push(name);
-        }
+        //         }
       } catch (/* _error */) {
         context.hooksFailed.push(name);
         context.results[name] = {success = payload;
@@ -91,16 +91,17 @@ this.emit('hook_unregistered', {type = 'parallel';
             currentPayload = {
 ..currentPayload,previousResult = === 'stop') {
             break;
-          }
-        }
+          //           }
+        //         }
       } catch (/* _error */) {
         context.hooksFailed.push(name);
         context.results[name] = {success = === 'stop') {
           break;
-        }
-      }
-    }
-  }
+        //         }
+      //       }
+    //     }
+  //   }
+
 
   /**
    * Execute hooks by priority order;
@@ -128,8 +129,9 @@ map(name => (
     if (!shouldExecute) {
       context.hooksSkipped.push(name);
       continue;
-    }
-  }
+    //     }
+  //   }
+
 
   try {
 // const _result = awaitthis.executeHook(name, payload);
@@ -139,7 +141,7 @@ map(name => (
       context.hooksExecuted.push(name);
     } else {
       context.hooksFailed.push(name);
-    }
+    //     }
   } catch (/* _error */) {
     context.hooksFailed.push(name);
     context.results[name] = {success = payload.data;
@@ -157,14 +159,15 @@ map(name => (
         context.hooksFailed.push(name);
         if (this.config.errorHandling === 'stop') {
           break;
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
     catch (error) ;
         context.hooksFailed.push(name);
     context.results[name] = success = === 'stop');
     break;
-  }
+  //   }
+
 
   /**
    * Get enabled hooks for a specific type;
@@ -173,7 +176,7 @@ map(name => (
   getEnabledHooksForType(;
 type = this.hooksByType.get(type)  ?? new Set();
   return Array.from(typeHooks).filter(name => this.enabledHooks.has(name));
-}
+// }
       /**
        * Execute hook with timeout;
        */
@@ -190,9 +193,9 @@ type = this.hooksByType.get(type)  ?? new Set();
   } catch (error) {
     clearTimeout(timer);
     reject(error);
-  }
+  //   }
       });
-    }
+    //     }
     /**
      * Update hook metrics;
      */
@@ -205,10 +208,10 @@ type = this.hooksByType.get(type)  ?? new Set();
       metrics.successfulExecutions++;
     } else {
       metrics.failedExecutions++;
-    }
+    //     }
     // Update execution history
     metrics.executionHistory.push({timestamp = metrics.executionHistory.slice(-1000);
-  }
+  //   }
   // Recalculate averages
   const _durations = metrics.executionHistory.map((h) => h.duration);
   metrics.averageExecutionTime = durations.reduce((sum, d) => sum + d, 0) / durations.length;
@@ -219,16 +222,16 @@ type = this.hooksByType.get(type)  ?? new Set();
     const _p99Index = Math.floor(sorted.length * 0.99);
     metrics.p95ExecutionTime = sorted[p95Index] ?? 0;
     metrics.p99ExecutionTime = sorted[p99Index] ?? 0;
-  }
+  //   }
   metrics.errorRate = metrics.failedExecutions / metrics.totalExecutions;
   metrics.lastExecution = result.timestamp;
-}
+// }
 /**
  * Evaluate hook conditions;
  */
 private
 evaluateConditions(_conditions =>;
-{
+// {
   const { type, field, value,function = condition;
   const _fieldValue = this.getNestedValue(payload, field);
   switch (type) {
@@ -247,7 +250,7 @@ evaluateConditions(_conditions =>;
       // case 'less':; // LINT: unreachable code removed
       return Number(fieldValue) < Number(value);
     // default = > current?.[key], obj); // LINT: unreachable code removed
-  }
+  //   }
   /**
    * Validate hook;
    */
@@ -258,30 +261,30 @@ evaluateConditions(_conditions =>;
   const _suggestions = [];
   if (!hook.name ?? typeof hook.name !== 'string') {
     errors.push('Hook name is required and must be a string');
-  }
+  //   }
   if (!hook.execute ?? typeof hook.execute !== 'function') {
     errors.push('Hook execute function is required');
-  }
+  //   }
   if (typeof hook.priority !== 'number' ?? hook.priority < 0) {
     warnings.push('Hook priority should be a positive number');
-  }
+  //   }
   if (typeof hook.timeout !== 'number' ?? hook.timeout <= 0) {
     warnings.push('Hook timeout should be a positive number');
     suggestions.push('Consider setting a reasonable timeout (e.g., 5000ms)');
-  }
+  //   }
   return {valid = === 0,
   // errors, // LINT: unreachable code removed
   warnings,
   suggestions;
-}
-}
+// }
+// }
 /**
  * Setup internal system hooks;
  */
 private
 setupInternalHooks()
 : void
-{
+// {
     // Performance monitoring hook
     this.registerHook({
       name => {
@@ -302,7 +305,7 @@ setupInternalHooks()
       console.warn(`[HookManager = {};
     for (const [name, metric] of this.hookMetrics) {
       metrics[name] = metric;
-    }
+    //     }
     return metrics;
     //   // LINT: unreachable code removed}
 

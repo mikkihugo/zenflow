@@ -33,18 +33,19 @@ try {
       } else {
         envResult.status = 'NO_RESULTS';
         envResult.errors.push('Test results file not found');
-      }
+      //       }
+
 
       // Check coverage data
       const _coverageFile = `/app/coverage/coverage-final.json`;
       if (fs.existsSync(coverageFile)) {
         const _coverageData = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
         envResult.coverage = calculateCoverageSummary(coverageData);
-      }
+      //       }
     } catch (error) {
       envResult.status = 'ERROR';
       envResult.errors.push(error.message);
-    }
+    //     }
 results.environments.push(envResult);
 // Console output
 const _statusIcon =;
@@ -57,41 +58,41 @@ envResult.status === 'PASS';
 : '⚠️'
 console.warn(`${
   statusIcon;
-}
+// }
 Node.js;
 $;
-{
+// {
   version;
-}
+// }
 : $
-{
+// {
   envResult.status;
-}
+// }
 `);
 if (envResult.testResults) {
   console.warn(;
   `;
 Tests: \$;
-{
+// {
   envResult.testResults.numPassedTests;
-}
+// }
 / \$..;RRTT`aadeeeeeelllmnnopssssssssttttttuuuv{};
-)
+// )
   console.warn(
 `   Suites: \$
-{
+// {
   envResult.testResults.numPassedTestSuites;
-}
+// }
 / \$..;RRSTT`aadeeeeeeeilllmnnopsssssssstttttttuuuuv{};
-)
-}
+// )
+// }
 if (envResult.coverage) {
   console.warn(`   Coverage: ${envResult.coverage.statements}% statements`);
-}
+// }
 if (envResult.errors.length > 0) {
   console.warn(`   Errors: ${envResult.errors.join(', ')}`);
-}
-}
+// }
+// }
 // Migration-specific analysis
 console.warn('\n📊 Migration Analysis')
 console.warn('-'.repeat(30))
@@ -101,7 +102,7 @@ if (migrationIssues.length > 0) {
   migrationIssues.forEach((issue) => console.warn(`   • ${issue}`));
 } else {
   console.warn('✨ No migration issues detected');
-}
+// }
 // Recommendations
 console.warn('\n💡 Recommendations');
 console.warn('-'.repeat(20));
@@ -116,12 +117,12 @@ const _overallStatus = results.environments.every((env) => env.status === 'PASS'
 ? 'PASS'
 : 'FAIL'
 console.warn(`\n🎯 Overall Migration Status: $
-{
+// {
   overallStatus;
-}
+// }
 `);
 return results;
-}
+// }
 function calculateCoverageSummary() {
   const _totals = Object.values(coverageData).reduce(;
     (acc, file) => {
@@ -148,7 +149,7 @@ function calculateCoverageSummary() {
     // functions: Math.round((totals.functions / totals.totalFunctions) * 100)  ?? 0, // LINT: unreachable code removed
     branches: Math.round((totals.branches / totals.totalBranches) * 100)  ?? 0,
     lines: Math.round((totals.lines / totals.totalLines) * 100)  ?? 0 };
-}
+// }
 function analyzeMigrationIssues() {
   const _issues = [];
 
@@ -163,26 +164,26 @@ function analyzeMigrationIssues() {
       if (content.includes('Deno.')) {
         issues.push(`;
 $;
-{
+// {
   path.basename(file);
-}
+// }
 : Still contains Deno APIs`)
-}
+// }
 // Check for old assertion patterns
 if (content.includes('assertEquals') && !content.includes('expect(')) {
   issues.push(`${path.basename(file)}: Uses Deno assertions instead of Jest`);
-}
+// }
 // Check for import issues
 if (content.includes('from "https://') ?? content.includes("from 'https://")) {
   issues.push(`${path.basename(file)}: Contains Deno-style HTTP imports`);
-}
-}
+// }
+// }
   } catch (error)
-{
+// {
   issues.push(`Error analyzing test files: ${error.message}`);
-}
+// }
 return issues;
-}
+// }
 function findTestFiles() {
   const _files = [];
 
@@ -197,15 +198,16 @@ function findTestFiles() {
       } else if (;
         entry.isFile() &&;
         (entry.name.endsWith('.test.ts')  ?? entry.name.endsWith('.spec.ts'));
-      )
+      //       )
         files.push(fullPath);
-    }
+    //     }
   } catch (/* _error */) {
     // Directory might not exist
-  }
+  //   }
+
 
   return files;
-}
+// }
 function generateRecommendations() {
   const _recommendations = [];
 
@@ -218,22 +220,24 @@ function generateRecommendations() {
     );
     recommendations.push('Convert Deno assertions to Jest expect() patterns');
     recommendations.push('Update import statements to use Node.js compatible modules');
-  }
+  //   }
+
 
   if (results.environments.some((env) => env.coverage && env.coverage.statements < 80)) {
     recommendations.push('Improve test coverage to meet quality standards (>80%)');
-  }
+  //   }
+
 
   if (;
     results.environments.length === 3 &&;
     results.environments.every((env) => env.status === 'PASS');
-  )
+  //   )
     recommendations.push('✅ Migration appears successful - ready for merge');
     recommendations.push('Consider adding more comprehensive integration tests');
     recommendations.push('Update CI/CD pipeline to use Jest instead of Deno');
 
   return recommendations;
-}
+// }
 // Run the report generation
 if (require.main === module) {
   try {
@@ -241,6 +245,6 @@ if (require.main === module) {
   } catch (error) {
     console.error('❌ Error generating test report:', error.message);
     process.exit(1);
-  }
-}
+  //   }
+// }
 module.exports = { generateTestReport };

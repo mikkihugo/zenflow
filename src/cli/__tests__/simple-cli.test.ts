@@ -10,8 +10,8 @@ jest.mock('../command-registry.js', () => ({
   executeCommand: jest.fn(),
 hasCommand: jest.fn(),
 listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))
-=>
-{
+=> // eslint-disable-line
+// {
   let originalArgv;
   let originalExit;
   let consoleLogSpy;

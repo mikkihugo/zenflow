@@ -45,7 +45,7 @@ export interface HTTPMCPServerConfig {
     windowMs?: number;
     max?: number;
   };
-}
+// }
 /**
  * Server Metrics
  */
@@ -56,7 +56,7 @@ _isRunning = false
 private;
 _mcpServer = {requests = []
 constructor((config = {}))
-{
+// {
   super();
   this._config = {port = = false,enableAllTools = = false,httpMode = = false,timeout = this._config.port!;
   this._host = this._config.host!;
@@ -66,32 +66,32 @@ constructor((config = {}))
   const _mcpHealthy = this._mcpServer !== null;
   if (hasErrors ?? !mcpHealthy) return 'degraded';
   // return 'healthy'; // LINT: unreachable code removed
-}
+// }
 /**
  * Get current metrics
  */
 get;
 metrics();
 : HTTPMCPServerMetrics
-{
+// {
   return { ...this._metrics };
-}
+// }
 /**
  * Get MCP server instance
  */
 get;
 mcpServer();
 : ClaudeFlowMCPServer
-{
+// {
   return this._mcpServer;
-}
+// }
 /**
  * Setup middleware
  */
 private;
 setupMiddleware();
 : void
-{
+// {
   // Enable CORS for all origins
   this._app.use(cors(this._config.cors ?? {}));
   // JSON parsing with size limit
@@ -100,7 +100,7 @@ setupMiddleware();
   this._metrics.requests++;
   if (req.path.startsWith('/mcp')) {
     this._metrics.mcpRequests++;
-  }
+  //   }
   console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);
   // Track response time
   res.on('finish', () => {
@@ -109,16 +109,16 @@ setupMiddleware();
     // Keep only last 100 response times for average calculation
     if (this._responseTimes.length > 100) {
       this._responseTimes.shift();
-    }
+    //     }
     this._metrics.averageResponseTime =;
     this._responseTimes.reduce((sum, time) => sum + time, 0) / this._responseTimes.length;
   });
   next();
-}
-)
+// }
+// )
 // Request timeout
 this._app.use((req =>
-{
+// {
       res.setTimeout(this._config.timeout!, () => {
         if (!res.headersSent) {
           res.status(408).json({
@@ -143,7 +143,7 @@ this._app.use((req =>
         // Track tool calls
         if ((message as MCPRequest).method === 'tools/call') {
           this._metrics.toolCalls++;
-        }
+        //         }
 // const _response = awaitthis._mcpServer.handleMessage(message);
         res.json(response);
       } catch (error) ;
@@ -171,11 +171,12 @@ this._app.use((req =>
       console.error('HTTP MCP Servererror = > setTimeout(resolve, 100));
     // ; // LINT: unreachable code removed
     return new Promise((resolve, reject) => {
-      this._server = this._app.listen(this._port, this._host, (err?: Error) => {
+      this._server = this._app.listen(this._port, this._host, (err?) => {
         if (err) {
           reject(err);
     // return; // LINT: unreachable code removed
-        }
+        //         }
+
 
         this._isRunning = true;
 
@@ -184,10 +185,11 @@ this._app.use((req =>
           reject(new Error(`Port ${this._port} is already in use`));
         } else {
           reject(err);
-        }
+        //         }
       });
     });
-  }
+  //   }
+
 
   /**
    * Stop the HTTP server
@@ -202,7 +204,8 @@ this._app.use((req =>
     // Cleanup MCP server
     if (this._mcpServer) {
 // await this._mcpServer.cleanup();
-    }
+    //     }
+
 
     return new Promise((resolve) => {
       this._server.close(() => {
@@ -212,7 +215,8 @@ this._app.use((req =>
         resolve();
       });
     });
-  }
+  //   }
+
 
   /**
    * Get server status
@@ -243,9 +247,10 @@ this._app.use((req =>
 
   // Start server
   server.start().catch((error) => {
-    console.error('❌ Failed to start HTTP MCP server:', error);
+    console.error('❌ Failed to start HTTP MCP server);
     process.exit(1);
   });
-}
+// }
+
 
 export default HTTPMCPServer;

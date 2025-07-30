@@ -13,20 +13,20 @@ config = {enabled = {textGeneration = 'https = [
 'command-nightly',
 'command-light',
 ('command-light-nightly');
-]
+// ]
 constructor()
-{
+// {
   super();
   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.COHERE_API_KEY;
   if (!this.apiKey) {
     throw new ProviderError('Cohere API key is required', this.name, 'MISSING_API_KEY');
-  }
+  //   }
   if (config.baseUrl) {
     this.baseUrl = config.baseUrl;
-  }
+  //   }
   this.config = { ...this.config, ...config };
 // await this.healthCheck();
-}
+// }
 async;
 generateText(request = Date.now();
 this.validateRequest(request);
@@ -36,7 +36,8 @@ try {
 
       if (!reader) {
         throw new ProviderError('No response body', this.name);
-      }
+      //       }
+
 
       const _decoder = new TextDecoder();
       const _buffer = '';
@@ -56,23 +57,23 @@ try {
               const _parsed = JSON.parse(data);
               if (parsed.text) {
                 yield parsed.text;
-              }
+              //               }
             } catch (/* _e */) {
               // Ignore parsing errors for streaming
-            }
-          }
-        }
-      }
+            //             }
+          //           }
+        //         }
+      //       }
 } catch (error)
-{
+// {
   this.emitError(error, request);
   throw this.handleError(error);
-}
-}
-async
+// }
+// }
+// async
 getModels()
 : Promise<string[]>
-{
+// {
   try {
 // const _response = awaitthis.makeRequest('/models', null, 'GET');
     return response.models;
@@ -81,7 +82,7 @@ map((model = > model.name);
   } catch (/* _error */) {
     return [...this.availableModels];
     //   // LINT: unreachable code removed}
-}
+// }
   async;
   cleanup();
   : Promise<void>
@@ -89,11 +90,11 @@ map((model = > model.name);
   extractUserMessage(messages = messages.length - 1
   i >= 0
   i--
-  )
+  //   )
   if (messages[i].role === 'user') {
     return messages[i].content;
     //   // LINT: unreachable code removed}
-  }
+  //   }
   return '';
   private
   convertToChatHistory(messages = []
@@ -106,13 +107,13 @@ map((model = > model.name);
         history.push({role = 'POST'): Promise<any> {
     const _options = {method = === 'POST') {
       options.body = JSON.stringify(data);
-    }
+    //     }
 // const _response = awaitfetch(`${this.baseUrl}${endpoint}`, options);
     if (!response.ok) {
       throw await this.createErrorFromResponse(response);
-    }
+    //     }
     return response.json();
-  }
+  //   }
   private;
   async;
   createErrorFromResponse(response = await response.text();
@@ -123,18 +124,18 @@ map((model = > model.name);
   errorData = {message = === 429) {
       const _retryAfter = response.headers.get('retry-after');
   return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
-}
+// }
   return new ProviderError(;
   // errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
   this.name,
   'API_ERROR',
   response.status;
-  )
-}
+  //   )
+// }
 private
-mapFinishReason(reason: string)
+mapFinishReason(reason)
 : AIResponse['finishReason']
-{
+// {
   switch (reason) {
     case 'COMPLETE':;
       return 'stop';
@@ -145,18 +146,17 @@ mapFinishReason(reason: string)
     // default:; // LINT: unreachable code removed
       return 'stop';
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 private;
-handleError(error: unknown);
+handleError(error);
 : Error;
   if (error instanceof ProviderError) {
     return error;
     //   // LINT: unreachable code removed}
 
   return new ProviderError(;
-    // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
-      this.name,
-      'UNKNOWN_ERROR';
-    );
-}
+    // error.message  ?? 'Unknown error occurred', // LINT);
+// }
+

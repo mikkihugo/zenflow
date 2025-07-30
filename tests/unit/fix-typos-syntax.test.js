@@ -27,14 +27,13 @@ describe('Typo and Syntax Fixes', () => {
       const _filePath = path.join(;
       process.cwd(),
       ('src/cli/simple-commands/init/claude-commands/sparc-commands.js');
-      )
+      //       )
       const _fileContent = fs.readFileSync(filePath, 'utf-8');
       // Check that the ternary operator on line 6-8 is complete
       const _ternaryMatch = fileContent.match(;
-      /mode\.roleDefinition\.length > 100\s*\?\s*`[^`]+`\s*:\s*mode\.roleDefinition/;
-      )
+      /mode\.roleDefinition\.length > 100\s*\?\s*`[^`]+`\s*)
       expect(ternaryMatch).toBeTruthy()
-      // Check that Array.isArray ternary is complete (h : 'None' part)
+      // Check that Array.isArray ternary is complete (h )
       // The pattern is: Array.isArray(mode.groups) ? ... : 'None'}
       const _arrayTernaryPattern = /Array\.isArray\(mode\.groups\)\s*\?[\s\S]+?\)\s*:\s*'None'\}/;
       const _arrayTernaryMatch = fileContent.match(arrayTernaryPattern);
@@ -44,7 +43,7 @@ describe('Typo and Syntax Fixes', () => {
       const _filePath = path.join(;
       process.cwd(),
       ('src/cli/simple-commands/init/claude-commands/sparc-commands.js');
-      )
+      //       )
       // Dynamic import to check syntax
       let imported;
       try {
@@ -53,8 +52,8 @@ describe('Typo and Syntax Fixes', () => {
         expect(typeof imported.createSparcSlashCommand).toBe('function');
       } catch (error) {
         // If import fails, it's a syntax error
-        throw new Error(`Syntax error in sparc-commands.js: ${error.message}`);
-      }
+        throw new Error(`Syntax error in sparc-commands.js);
+      //       }
     });
   });
 });

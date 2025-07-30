@@ -23,7 +23,7 @@ const _CommandInput = (): unknown => {
       setCommand((prev) => prev.slice(0, -1));
     } else if (!key.ctrl && !key.meta && input) {
       setCommand((prev) => prev + input);
-    }
+    //     }
   });
   const _resultText = result;
   ? result.success
@@ -51,7 +51,7 @@ const _CommandInput = (): unknown => {
   Text,
   color: 'gray' ,
   isExecuting ? ' (executing...)' : ' (press Enter)';
-  )
+  //   )
   ),
   result &&
   React.createElement(
@@ -69,17 +69,15 @@ const _CommandInput = (): unknown => {
   result.success ? '✅ Success' : '❌ Error'
   ),
   React.createElement(Text, null, resultText)
-  )
+  //   )
   ),
-  React.createElement(
-  Box,
+  React.createElement(Box,
   marginTop,
   React.createElement(
   Text,
-  color: 'gray' ,
-  ('Examples: "status", "create test-service", "swarm \'Build API\'"');
-  )
-  )
-  )
+  color);
+  //   )
+  //   )
+  //   )
 };
 export default CommandInput;

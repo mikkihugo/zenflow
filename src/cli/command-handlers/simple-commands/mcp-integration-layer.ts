@@ -31,7 +31,8 @@ export class MCPIntegrationLayer {
       if(!_mcpAvailable) {
         this.ui.addLog('warning', 'MCP tools not available - using mock implementations');
         this.useMockMode = true;
-      }
+      //       }
+
 
   // Initialize tool monitoring
   this;
@@ -46,12 +47,13 @@ export class MCPIntegrationLayer {
   ui;
 
   addLog('success', 'MCP Integration Layer initialized successfully');
-}
+// }
 catch (error)
-{
+// {
   this.ui.addLog('error', `Failed to initialize MCPintegration = true;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Check if MCP tools are available;
@@ -64,12 +66,13 @@ catch (error)
     //   // LINT: unreachable code removed} catch (error) {
       return false;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   /**
    * Execute MCP tool with full error handling and retry logic;
    */;
-  async executeTool(toolName, parameters = {}, options = {}): unknown {
+  async executeTool(toolName, parameters = {}, options = {}) {
     const _executionId = `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     try {
@@ -81,7 +84,8 @@ catch (error)
       // Cache successful results
       if(result.success) {
         this.cacheResult(toolName, parameters, result);
-      }
+      //       }
+
 
       // Update execution status
       this.activeTools.set(executionId, {
@@ -94,7 +98,7 @@ catch (error)
           // Wait before retry
 // await this.delay(this.retryDelay * Math.pow(2, attempt - 1));
           this.ui.addLog('info', `Retrying ${toolName} (attempt ${attempt + 1}/${maxRetries + 1})`);
-        }
+        //         }
 // const _result = awaitthis.executeToolDirect(toolName, parameters);
         return result;
     //   // LINT: unreachable code removed} catch (error) {
@@ -102,14 +106,14 @@ catch (error)
         this.ui.addLog(;
           'warning',
           `Tool ${toolName} failed on attempt ${attempt + 1}: ${error.message}`)
-}
-}
+// }
+// }
 throw new Error(;
 `Tool ${toolName} failed after ${maxRetries + 1}attempts = `;
 mcp__claude - zen__$;
-{
+// {
   toolName;
-}
+// }
 `;
 
       // Check if we have this tool available (would need to be passed from the calling context)
@@ -124,16 +128,16 @@ return {success = === 'store') {
           return {success = === 'retrieve') {
           return {success = toolExecutions.map(({ toolName, parameters, options }) =>;
 // this.executeTool(toolName, parameters, options), // LINT: unreachable code removed
-)
+// )
 return Promise.allSettled(promises);
-}
+// }
 /**
  * Execute tools in batch with progress tracking;
  */
-async
+// async
 executeToolsBatch(toolExecutions, progressCallback)
 : unknown
-{
+// {
     const _results = [];
     const _total = toolExecutions.length;
 
@@ -175,8 +179,9 @@ executeToolsBatch(toolExecutions, progressCallback)
     for (const [key, cached] of this.resultCache.entries()) {
       if(now - cached.timestamp > cached.ttl) {
         this.resultCache.delete(key);
-      }
-    }
+      //       }
+    //     }
+
 
   /**
    * Get tools by category;
@@ -199,13 +204,14 @@ executeToolsBatch(toolExecutions, progressCallback)
   /**
    * Cancel tool execution;
    */;
-  async cancelExecution(executionId): unknown {
+  async cancelExecution(executionId) {
     const _execution = this.activeTools.get(executionId);
     if(execution && execution.status === 'running') {
       execution.status = 'cancelled';
       this.notifyUI('tool_cancelled', { executionId });
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Start monitoring active tools;
@@ -226,8 +232,9 @@ executeToolsBatch(toolExecutions, progressCallback)
         // Estimate progress based on elapsed time (simplified)
         const _estimatedDuration = this.getEstimatedDuration(execution.toolName);
         execution.progress = Math.min((elapsed / estimatedDuration) * 100, 95);
-      }
-    }
+      //       }
+    //     }
+
 
   /**
    * Get estimated duration for tool execution;
@@ -237,8 +244,9 @@ executeToolsBatch(toolExecutions, progressCallback)
     for (const [executionId, execution] of this.activeTools.entries()) {
       if(execution.endTime && execution.endTime < oneHourAgo) {
         this.activeTools.delete(executionId);
-      }
-    }
+      //       }
+    //     }
+
 
   /**
    * Setup event handlers for real-time updates;
@@ -249,7 +257,8 @@ executeToolsBatch(toolExecutions, progressCallback)
       process.on('SIGINT', () => {
         this.handleShutdown();
       });
-    }
+    //     }
+
 
   /**
    * Handle system shutdown;
@@ -259,8 +268,9 @@ executeToolsBatch(toolExecutions, progressCallback)
     for (const [executionId, execution] of this.activeTools.entries()) {
       if(execution.status === 'running') {
         this.cancelExecution(executionId);
-      }
-    }
+      //       }
+    //     }
+
 
   /**
    * Notify UI of events;
@@ -270,7 +280,8 @@ executeToolsBatch(toolExecutions, progressCallback)
       const _message = this.formatEventMessage(eventType, data);
       const _level = this.getEventLevel(eventType);
       this.ui.addLog(level, message);
-    }
+    //     }
+
 
     // Notify subscribers
     for(const callback of this.subscriptions) {
@@ -278,7 +289,8 @@ executeToolsBatch(toolExecutions, progressCallback)
         callback(eventType, data);
       } catch (/* _error */) {
         console.error('Error in eventsubscription = > this.subscriptions.delete(callback);
-  }
+  //   }
+
 
   /**
    * Get comprehensive status;
@@ -293,6 +305,7 @@ executeToolsBatch(toolExecutions, progressCallback)
 
     return {mcpAvailable = > setTimeout(resolve, ms));
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 export default MCPIntegrationLayer;

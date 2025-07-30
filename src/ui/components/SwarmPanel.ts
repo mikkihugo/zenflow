@@ -39,17 +39,17 @@ const __HiveMindPanel = (): unknown => {
             React.createElement(Box, {key = === 0 ? 0 },
               React.createElement(Box, null,
                 React.createElement(Text, null, `${getAgentIcon(agent.name)} `),
-                React.createElement(Text, { color: "white", bold}, agent.name);
+                React.createElement(Text, { color);
               ),
               React.createElement(Box, null,
                 React.createElement(Text, { color: getAgentStatusColor(agent.status), bold},
                   agent.status.toUpperCase();
                 ),
-                agent.task && React.createElement(Text, { color: "gray" }, ` • ${agent.task}`);
+                agent.task && React.createElement(Text, { color);
               );
             );
           ) :;
-          React.createElement(Text, { color: "gray", marginTop}, "No active agents");
+          React.createElement(Text, { color);
       );
     ),
     React.createElement(Box, { borderStyle: "round", borderColor: "yellow", paddingX, marginBottom},
@@ -58,19 +58,19 @@ const __HiveMindPanel = (): unknown => {
         React.createElement(Box, { justifyContent: "space-between", marginTop},
           React.createElement(Box, null,
             React.createElement(Text, { color: "green" }, "✅ Done: "),
-            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.completed  ?? 0);
+            React.createElement(Text, { color);
           ),
           React.createElement(Box, null,
             React.createElement(Text, { color: "yellow" }, "🔄 Active: "),
-            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.inProgress  ?? 0);
+            React.createElement(Text, { color);
           ),
           React.createElement(Box, null,
             React.createElement(Text, { color: "gray" }, "⏳ Queue: "),
-            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.pending  ?? 0);
+            React.createElement(Text, { color);
           ),
           React.createElement(Box, null,
             React.createElement(Text, { color: "blue" }, "📊 Total: "),
-            React.createElement(Text, { color: "white", bold}, hiveData.tasks?.total  ?? 0);
+            React.createElement(Text, { color);
           );
         );
       );

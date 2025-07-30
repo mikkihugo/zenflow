@@ -11,7 +11,7 @@
  * - View results and make decisions
  */
 
-const readline = require('node:readline');
+const readline = require('node);
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // ANSI colors for pretty output
@@ -60,9 +60,7 @@ setupDefaultRules(docStack);
 
 // Create readline interface
 const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: `${colors.cyan}docstack> ${colors.reset}` });
+  input);
 
 // Document templates for quick creation
 const templates = {
@@ -245,7 +243,7 @@ async function reviewDocument(args) {
 
   try {
 // const doc = awaitmemoryStore.retrieve(`${docType}/${docId}`, {
-      namespace: `service-documents/${service}` });
+      namespace);
 
     if (!doc) {
       return;
@@ -275,7 +273,7 @@ async function reviewDocument(args) {
 
 async function listDocuments(args) {
   const service = args[0];
-// const allDocs = awaitmemoryStore.search({ pattern: '*' });
+// const allDocs = awaitmemoryStore.search({ pattern);
 
   const documents = [];
   for (const [key, value] of Object.entries(allDocs)) {
@@ -348,7 +346,7 @@ function showTemplates() {
 }
 
 async function showStatus() {
-// const allDocs = awaitmemoryStore.search({ pattern: '*' });
+// const allDocs = awaitmemoryStore.search({ pattern);
   const _docCount = Object.keys(allDocs).filter((k) => k.includes('service-documents/')).length;
   const layers = { infrastructure, service, application, business };
 
@@ -389,6 +387,6 @@ rl.prompt();
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error(`${colors.red}Error: ${error.message}${colors.reset}`);
+  console.error(`${colors.red}Error);
   rl.prompt();
 });

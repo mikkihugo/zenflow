@@ -14,7 +14,7 @@ const _HiveList = (): unknown => {
     // Reset selection if hives change
     if (selectedIndex >= hiveNames.length) {
       setSelectedIndex(Math.max(0, hiveNames.length - 1));
-    }
+    //     }
   }, [selectedIndex]);
 
   useInput((_input, key) => {
@@ -37,11 +37,11 @@ const _HiveList = (): unknown => {
           color: isSelected ? 'black' : 'white',
           backgroundColor: isSelected ? 'cyan' ,
           bold,,
-        `${isSelected ? '▶ ' : '  '}${name}`;
+        `\${isSelected ? '▶ ' }${name}`;
       ),
-      React.createElement(Text, { color: 'gray', marginLeft}, hives[name].path);
+      React.createElement(Text, { color);
     );
-  }
+  //   }
   );
     );
   );

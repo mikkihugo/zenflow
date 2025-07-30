@@ -3,7 +3,7 @@
  * This handles swarm execution when installed via npm;
  */
 import { spawn } from
-'node = fileURLToPath(import.meta.url);
+'node = fileURLToPath(import.meta.url); // eslint-disable-line
 const ___dirname = dirname(__filename);
 // Parse arguments
 const _args = [];
@@ -17,11 +17,11 @@ for (let i = 0; i < process.args.length; i++) {
       i++; // Skip the next argument
     } else {
       flags[flagName] = true;
-    }
+    //     }
   } else {
     args.push(arg);
-  }
-}
+  //   }
+// }
 const _objective = args.join(' ');
 if (!objective && !flags.help) {
   console.error('❌Usage = [
@@ -33,8 +33,8 @@ if (!objective && !flags.help) {
     if (existsSync(path)) {
       swarmPath = path;
       break;
-    }
-  }
+    //     }
+  //   }
   if (!swarmPath) {
     // Fallback to inline implementation without calling back to swarm.js
     console.warn('🐝 Launching swarm system...');
@@ -52,7 +52,7 @@ if (!objective && !flags.help) {
     // Add auto-permission flag if requested
     if (flags.auto ?? flags['dangerously-skip-permissions']) {
       claudeArgs.push('--dangerously-skip-permissions');
-    }
+    //     }
     // Spawn claude process
     const _claudeProcess = spawn('claude', claudeArgs, {
       stdio => {
@@ -61,28 +61,30 @@ if (!objective && !flags.help) {
           resolve();
         } else {
           reject(new _Error(`_Claude _process _exited with _code _${code}`));
-  }
-}
-)
+  //   }
+// }
+// )
 claudeProcess.on('error', (err) =>
-{
+// {
   reject(err);
-}
-)
+// }
+// )
 })
 } catch (error)
-{
+// {
     // Fallback if Claude execution fails
     console.warn(`✅ Swarm initialized withID = [objective];
   for (const [key, value] of Object.entries(flags)) {
     swarmArgs.push(`--${key}`);
     if(value !== true) {
       swarmArgs.push(String(value));
-    }
-  }
+    //     }
+  //   }
+
 
   const _node = spawn('node', [swarmPath, ...swarmArgs], {
     stdio => {
     exit(code  ?? 0);
   });
-}
+// }
+

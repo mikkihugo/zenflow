@@ -14,7 +14,7 @@ healthCheckInterval?: NodeJS.Timeout
 private
 metricsCollectionInterval?: NodeJS.Timeout
 constructor((config = {}));
-{
+// {
   super();
 
   this.logger = new Logger('AdvancedSwarmOrchestrator');
@@ -63,7 +63,8 @@ initialize();
     if (!context) {
       throw new Error(`Swarm notfound = = 'planning') {
       throw new Error(`Swarm ${swarmId} is not in planning state`);
-    }
+    //     }
+
 
     this.logger.info('Starting swarm execution', { swarmId });
 
@@ -94,8 +95,9 @@ initialize();
         swarmId,taskCount = 'failed';
       this.logger.error('Failed to start swarm', { swarmId, error });
       throw error;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Stop a running swarm gracefully;
@@ -122,7 +124,8 @@ initialize();
             agentId = {};
     for (const [swarmId, context] of this.activeSwarms) {
       swarmMetrics[swarmId] = context.metrics;
-    }
+    //     }
+
 
     return {global = > sum + ctx.agents.size, 0),totalTasks = > sum + ctx.tasks.size, 0),uptime = [];
     // const _startTime = performance.now(); // LINT: unreachable code removed
@@ -131,25 +134,29 @@ initialize();
       // Check orchestrator health
       if (!this.isRunning) {
         issues.push('Orchestrator is not running');
-      }
+      //       }
+
 
       // Check coordinator health
       if (!this.coordinator) {
         issues.push('Coordinator is not initialized');
-      }
+      //       }
+
 
       // Check memory manager health
       try {
 // await this.memoryManager.store({id = === 'failed') {
           issues.push(`Swarm ${swarmId} is in failed state`);
-        }
+        //         }
+
 
         // Check for stalled swarms
         const _swarmAge = Date.now() - context.startTime.getTime();
         if (swarmAge > 3600000 && context.objective.status === 'executing') { // 1 hour
           issues.push(`Swarm ${swarmId} appears to be stalled`);
-        }
-      }
+        //         }
+      //       }
+
 
       const _healthy = issues.length === 0;
 
@@ -198,13 +205,15 @@ initialize();
         if (this.isSwarmComplete(context)) {
           clearInterval(monitorInterval);
 // await this.completeSwarm(context);
-        }
+        //         }
+
 
         // Check for failure conditions
         if (this.shouldFailSwarm(context)) {
           clearInterval(monitorInterval);
 // await this.failSwarm(context, 'Too many failures or timeout');
-        }
+        //         }
+
 
       } catch (error) {
         this.logger.error('Error monitoring swarm execution', {swarmId = Array.from(context.tasks.values());
@@ -218,7 +227,8 @@ initialize();
       completedTasks,
       failedTasks,
       runningTasks,percentComplete = > a.status === 'busy').length,idleAgents = > a.status === 'idle').length,busyAgents = > a.status === 'busy').length };
-  }
+  //   }
+
 
   private isSwarmComplete(context = Array.from(context.tasks.values());
     return tasks.every(task => task.status === 'completed'  ?? task.status === 'failed');
@@ -266,15 +276,17 @@ initialize();
         this.updateGlobalMetrics();
       } catch (error) {
         this.logger.error('Metrics collection error', error);
-      }
+      //       }
     }, 10000); // Every 10 seconds
-  }
+  //   }
 
-  private updateGlobalMetrics(): void {
+
+  private updateGlobalMetrics() {
     const _swarms = Array.from(this.activeSwarms.values());
 
     this.globalMetrics = {throughput = > sum + ctx.objective.progress.completedTasks, 0);
-  }
+  //   }
+
 
   private calculateGlobalLatency(swarms = swarms.reduce((sum, ctx) => sum + ctx.objective.progress.totalTasks, 0);
     const _completedTasks = swarms.reduce((sum, ctx) => sum + ctx.objective.progress.completedTasks, 0);
@@ -300,9 +312,10 @@ initialize();
     });
 
     this.coordinator.on('agent => {
-      this.logger.info('Coordinator agent registered', { agentId: agent.id });
+      this.logger.info('Coordinator agent registered', { agentId);
     });
-  }
-}
+  //   }
+// }
+
 
 export default AdvancedSwarmOrchestrator;

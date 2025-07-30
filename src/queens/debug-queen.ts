@@ -15,12 +15,14 @@ export class DebugQueen extends BaseQueen {
         this.securityChecks = new Map();
         this.initializePatterns();
         this.initialize();
-    }
+    //     }
+
 
     async initialize() {
 // await this.neuralEngine.initialize();
 // await this.neuralEngine.loadModel('bug-detector-v2');
-    }
+    //     }
+
 
     initializePatterns() {
         // Common error patterns
@@ -80,7 +82,8 @@ export class DebugQueen extends BaseQueen {
             report += '🚨 **CriticalIssues = `- \$issue.description\n`;
                 if(issue.fix) {
                     report += `  **Fix = '\n';
-        }
+        //         }
+
 
         // High priority issues
         const _highIssues = issues.filter(i => i.severity === 'high');
@@ -88,13 +91,15 @@ export class DebugQueen extends BaseQueen {
             report += '⚠️ **High PriorityIssues = `- \$issue.description\n`;
                 if(issue.fix) {
                     report += `  **Fix = '\n';
-        }
+        //         }
+
 
         // Performance issues
         if(performanceIssues.length > 0) {
             report += '🚀 **PerformanceImprovements = `- \$issue.description\n`;
                 report += `  **Suggestion = '\n';
-        }
+        //         }
+
 
         // Generate fixed code if possible
         const _fixedCode = this.generateFixedCode(analysis);
@@ -111,9 +116,10 @@ export class DebugQueen extends BaseQueen {
                     const _pattern = this.errorPatterns.get(issue.type);
                     if(pattern) {
                         fixedCode = pattern.fix(fixedCode);
-                    }
-                }
-            }
+                    //                     }
+                //                 }
+            //             }
+
 
             return fixedCode !== analysis.code ?fixedCode = '📋 **Best Practices & Recommendations:**\n\n';
     // ; // LINT: unreachable code removed
@@ -139,7 +145,8 @@ export class DebugQueen extends BaseQueen {
                 practices += '- Use static analysis tools like SpotBugs or PMD\n';
                 practices += '- Follow naming conventions and coding standards\n';
                 break;
-        }
+        //         }
+
 
         practices += '- Write comprehensive unit tests\n';
         practices += '- Use code reviews to catch issues early\n';
@@ -162,20 +169,22 @@ export class DebugQueen extends BaseQueen {
      * @param {number} analysis.riskScore - Overall risk score (0-10);
      * @returns {Promise<string[]>} Array of alternative recommendations;
     // */; // LINT: unreachable code removed
-    async generateAlternatives(analysis): unknown {
+    async generateAlternatives(analysis) {
         const _alternatives = [];
 
         // Quick fix summary
         if(analysis.issues.length > 0) {
             const _quickFix = `🔧 **Quick FixSummary = > `- \$i.description: \$i.fix`).join('\n')}`;
             alternatives.push(quickFix);
-        }
+        //         }
+
 
         // Security-focused review
         if(analysis.securityIssues.length > 0) {
             const _securityFocus = `🔒 **Security-FocusedReview = > `- \$i.description: \$i.fix`).join('\n')}`;
             alternatives.push(securityFocus);
-        }
+        //         }
+
 
         return alternatives;
     //   // LINT: unreachable code removed}
@@ -186,7 +195,7 @@ export class DebugQueen extends BaseQueen {
      * @param {string} code - The JavaScript code to analyze;
      * @returns {Array<Object>} Array of detected issues;
     // */; // LINT: unreachable code removed
-    analyzeJavaScript(code): unknown {
+    analyzeJavaScript(code) {
         const _issues = [];
 
         // Check for common JS issues
@@ -244,12 +253,13 @@ export class DebugQueen extends BaseQueen {
      * @param {string} code - The code to fix;
      * @returns {string} Fixed code;
     // */; // LINT: unreachable code removed
-    fixMemoryLeak(code): unknown {
+    fixMemoryLeak(code) {
         const _fixed = code;
 
         if (code.includes('setInterval') && !code.includes('clearInterval')) {
             fixed += '\n// Remember to clearinterval = '\n// Remember to remove listener: element.removeEventListener(event, handler);';
-        }
+        //         }
+
 
         return fixed;
     //   // LINT: unreachable code removed}
@@ -293,7 +303,7 @@ export class DebugQueen extends BaseQueen {
     detectLanguage(code): unknown ;
         if (code.includes('def ')  ?? code.includes('import ')) return 'python';
     // if (code.includes('public class')  ?? code.includes('import java')) return 'java'; // LINT: unreachable code removed
-        if (code.includes('interface ')  ?? code.includes(': ')) return 'typescript';
+        if (code.includes('interface ')  ?? code.includes(')) return 'typescript';
     // return 'javascript'; // LINT: unreachable code removed
 
     /**
@@ -302,13 +312,13 @@ export class DebugQueen extends BaseQueen {
      * @param {RegExp} pattern - The pattern to find;
      * @returns {number} Line number (1-based) or 0 if not found;
     // */; // LINT: unreachable code removed
-    findLine(code, pattern): unknown {
+    findLine(code, pattern) {
         const _lines = code.split('\n');
         for(let i = 0; i < lines.length; i++) {
             if (pattern.test(lines[i])) {
                 return i + 1;
     //   // LINT: unreachable code removed}
-        }
+        //         }
         return 0;
     //   // LINT: unreachable code removed}
 
@@ -317,15 +327,16 @@ export class DebugQueen extends BaseQueen {
      * @param {Array<Object>} issues - Array of issues;
      * @returns {string} Maximum severity - 'low', 'medium', 'high', or 'critical';
     // */; // LINT: unreachable code removed
-    getMaxSeverity(issues): unknown {
+    getMaxSeverity(issues) {
         const _severityOrder = ['low', 'medium', 'high', 'critical'];
         const _maxSeverity = 'low';
 
         for(const issue of issues) {
             if (severityOrder.indexOf(issue.severity) > severityOrder.indexOf(maxSeverity)) {
                 maxSeverity = issue.severity;
-            }
-        }
+            //             }
+        //         }
+
 
         return maxSeverity;
     //   // LINT: unreachable code removed}
@@ -335,7 +346,7 @@ export class DebugQueen extends BaseQueen {
      * @param {Array<Object>} issues - Array of issues;
      * @returns {string} Fix complexity - 'low', 'medium', or 'high';
     // */; // LINT: unreachable code removed
-    calculateFixComplexity(issues): unknown {
+    calculateFixComplexity(issues) {
         const _criticalCount = issues.filter(i => i.severity === 'critical').length;
         const _highCount = issues.filter(i => i.severity === 'high').length;
 
@@ -351,7 +362,7 @@ export class DebugQueen extends BaseQueen {
      * @param {Array<Object>} performanceIssues - Performance issues;
      * @returns {number} Risk score (0-10);
     // */; // LINT: unreachable code removed
-    calculateRiskScore(issues, securityIssues, performanceIssues): unknown {
+    calculateRiskScore(issues, securityIssues, performanceIssues) {
         const _score = 0;
 
         for(const issue of issues) {
@@ -360,8 +371,9 @@ export class DebugQueen extends BaseQueen {
                 case 'high': score += 2; break;
                 case 'medium': score += 1; break;
                 case 'low': score += 0.5; break;
-            }
-        }
+            //             }
+        //         }
+
 
         score += securityIssues.length * 2; // Security issues are weighted higher
         score += performanceIssues.length * 0.5;
@@ -374,7 +386,7 @@ export class DebugQueen extends BaseQueen {
      * @param {Object} analysis - The analysis result;
      * @returns {number} Confidence score (0-1);
     // */; // LINT: unreachable code removed
-    calculateConfidence(analysis): unknown {
+    calculateConfidence(analysis) {
         const _confidence = 0.8; // Base confidence
 
         // Increase confidence with more issues found
@@ -394,7 +406,7 @@ export class DebugQueen extends BaseQueen {
      * @param {string} type - Security issue type;
      * @returns {string} CWE identifier;
     // */; // LINT: unreachable code removed
-    getCWE(type): unknown {
+    getCWE(type) {
         const _cweMap = {
             'sql-injection': 'CWE-89',
             'xss': 'CWE-79',
@@ -410,7 +422,7 @@ export class DebugQueen extends BaseQueen {
      * @param {string} type - Performance issue type;
      * @returns {string} Fix suggestion;
     // */; // LINT: unreachable code removed
-    getPerformanceFix(type): unknown {
+    getPerformanceFix(type) {
         const _fixes = {
             'inefficient-loop': 'Use for...of or forEach for arrays',
             'dom-query': 'Cache DOM queries in variables',
@@ -425,22 +437,25 @@ export class DebugQueen extends BaseQueen {
      * @param {Object} task - The task to evaluate;
      * @returns {Promise<number>} Suitability score;
     // */; // LINT: unreachable code removed
-    async calculateSuitability(task): unknown {
+    async calculateSuitability(task) {
 // const _suitability = awaitsuper.calculateSuitability(task);
 
         // DebugQueen is highly suitable for debugging and bug detection
         if(task.type === 'bug-detection') {
             suitability += 0.3;
-        }
+        //         }
+
 
         // Check if there's code to analyze
         if(task.context?.code) {
             suitability += 0.2;
-        }
+        //         }
+
 
         return Math.min(suitability, 1.0);
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * @fileoverview DebugQueen - Specialized in bug detection, security analysis, and code quality;

@@ -15,8 +15,8 @@ import path from 'node:path';
   private queryHistory = []
 private;
 performanceMetrics = {}
-)
-{
+// )
+// {
   super(config);
   // Enhanced configuration
   this.advancedConfig = {enableAnalytics = = false,enableCache = = false,enableMetrics = = false,
@@ -50,7 +50,8 @@ try {
 
       if (collectMetrics) {
 // await this.recordTraversalMetrics(algorithm, executionTime, result.data?.length  ?? 0);
-      }
+      //       }
+
 
       return {
 ..result,
@@ -74,7 +75,8 @@ try {
 
     if (relationshipFilter) {
       pattern += `:${relationshipFilter}`;
-    }
+    //     }
+
 
     switch (direction) {
       case 'incoming': {;
@@ -87,7 +89,7 @@ try {
       nodeType = 'Service',
       relationshipType = '',
       normalize = true;
-      }
+      //       }
     } = options;
 
     try {
@@ -105,18 +107,20 @@ try {
         case 'pagerank':;
           centralityScores = await this.computePageRank(nodeType, relationshipType);
           break;default = this.normalizeCentralityScores(centralityScores);
-      }
+      //       }
+
 
       // Store centrality scores if using real Kuzu
       if ((this.stats as any).usingRealKuzu) {
 // await this.storeCentralityScores(centralityScores, algorithm);
-      }
+      //       }
+
 
       return {
         algorithm,scores = relationshipType ? `:${relationshipType}` : '';
     // const __query = `; // LINT: unreachable code removed
       MATCH (n = await (this as any).executeQuery(query);
-    return result.data?.map((row = > ({node = `MATCH (n:${nodeType}) RETURN n.name as node`;
+    return result.data?.map((row = > ({node = `MATCH (n) RETURN n.name as node`;
     // const _nodesResult = await (this as any).executeQuery(nodesQuery); // LINT: unreachable code removed
     const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];
 
@@ -133,23 +137,23 @@ try {
               const _intermNode = pathNodes[k];
               if (betweennessScores.has(intermNode)) {
                 betweennessScores.set(intermNode, betweennessScores.get(intermNode)! + 1);
-              }
-            }
-          }
+              //               }
+            //             }
+          //           }
         } catch (error)
-      }
-    }
+      //       }
+    //     }
 return Array.from(betweennessScores.entries()).map(([node, _score]) => ({
       node,
 // score; // LINT: unreachable code removed
 }))
-}
+// }
 private
-async
+// async
 computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
 : Promise<
-{
-  node = `MATCH (n:${nodeType}) RETURN n.name as node`;
+// {
+  node = `MATCH (n) RETURN n.name as node`;
 // const _nodesResult = await(this as any).executeQuery(nodesQuery);
   const _nodes = nodesResult.data?.map((row) => row.node) ?? [];
   // Initialize PageRank scores
@@ -175,7 +179,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       if (outLinks.has(edge.source) && inLinks.has(edge.target)) {
         outLinks.get(edge.source)!.push(edge.target);
         inLinks.get(edge.target)!.push(edge.source);
-      }
+      //       }
     });
 
     // PageRank iterations
@@ -192,8 +196,9 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
           const _sourceOutDegree = (outLinks.get(sourceNode)  ?? []).length;
           if (sourceOutDegree > 0) {
             score += dampingFactor * (sourceScore / sourceOutDegree);
-          }
-        }
+          //           }
+        //         }
+
 
         newScores.set(node, score);
       });
@@ -202,13 +207,15 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       newScores.forEach((score, node) => {
         pageRankScores.set(node, score);
       });
-    }
+    //     }
+
 
     return Array.from(pageRankScores.entries()).map(([node, score]) => ({
       node,
     // score; // LINT: unreachable code removed
     }));
-  }
+  //   }
+
 
   /**
    * Community detection using modularity optimization;
@@ -234,13 +241,14 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       // Store community results if using real Kuzu
       if ((this.stats as any).usingRealKuzu) {
 // await this.storeCommunityResults(communities, algorithm, modularity);
-      }
+      //       }
+
 
       return {
         algorithm,
     // communities, // LINT: unreachable code removed
         modularity,num_communities = `;
-  MATCH (n:${nodeType})
+  MATCH (n)
   RETURN;
   n.name as node;
   `;
@@ -266,8 +274,8 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
         adjacency.get(edge.source)?.push(edge.target);
         if (edge.source !== edge.target) {
           adjacency.get(edge.target)?.push(edge.source);
-        }
-      }
+        //         }
+      //       }
     });
 
     // Simplified community optimization (single pass)
@@ -297,25 +305,27 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
           if (connections > maxConnections) {
             maxConnections = connections;
             bestCommunity = community;
-          }
+          //           }
         });
 
         // Move node if improvement found
         if (bestCommunity !== currentCommunity && maxConnections > 1) {
           nodeCommunity.set(node, bestCommunity);
           improved = true;
-        }
-      }
+        //         }
+      //       }
+
 
       iteration++;
-    }
+    //     }
+
 
     // Group nodes by community
     const _communities = new Map<number, string[]>();
     nodeCommunity.forEach((communityId, node) => {
       if (!communities.has(communityId)) {
         communities.set(communityId, []);
-      }
+      //       }
       communities.get(communityId)?.push(node);
     });
 
@@ -353,14 +363,15 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       } else if (Array.isArray(value)) {
         filterClauses.push(`;
   \$keyIN[\$value.map((v) => `'${v}'`).join(', ')]`);
-      }
+      //       }
     });
 
     if (filterClauses.length > 0) {
       query += `;
   WHERE;
   \$filterClauses.join(' AND ')`;
-    }
+    //     }
+
 
     query += ' RETURN *';
 
@@ -368,7 +379,8 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       query += `;
   LIMIT;
   \$limit`;
-    }
+    //     }
+
 
     return query;
     //   // LINT: unreachable code removed}
@@ -397,12 +409,14 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       let __optimization = {};
       if (analyzeExecution) {
         _optimization = await this.analyzeQueryExecution(query, executionTime, result);
-      }
+      //       }
+
 
       // Cache result
       if (cacheResult && result.success && this.queryCache.size < 1000) {
         this.queryCache.set(query, result);
-      }
+      //       }
+
 
       // Update performance metrics
       this.updatePerformanceMetrics(query, executionTime, result.success);
@@ -465,15 +479,18 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     } = options;
 
     const __report = {generated_at = await this.generateGraphAnalytics();
-    }
+    //     }
+
 
     if (includeCentrality) {
-      report.centrality = await this.computeCentrality({algorithm = await this.detectCommunitiesAdvanced({ algorithm: 'louvain' });
-    }
+      report.centrality = await this.computeCentrality({algorithm = await this.detectCommunitiesAdvanced({ algorithm);
+    //     }
+
 
     if (includePerformance) {
       report.performance = this.performanceMetrics;
-    }
+    //     }
+
 
     return report;
     //   // LINT: unreachable code removed}
@@ -485,9 +502,9 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
   async;
   getGraphOverview();
   : Promise<;
-  {
+  //   {
     node_count = {node_count = (this as any).connection.querySync(`;
-  MATCH (n:${nodeType})
+  MATCH (n)
   RETURN;
   count(n) as count;
   `);
@@ -495,12 +512,13 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     if (rows.length > 0) {
       overview.node_types[nodeType] = rows[0].count;
       overview.node_count += rows[0].count;
-    }
+    //     }
     result.close();
-  }
+  //   }
   catch (error) ;
             overview.node_types[nodeType] = 0;
-}
+// }
+
 
 // Count relationships by type
 for (const _relType of Object.keys((this as any).schema.relationships)) {
@@ -510,17 +528,18 @@ for (const _relType of Object.keys((this as any).schema.relationships)) {
             if (rows.length > 0) {
               overview.relationship_types[relType] = rows[0].count;
               overview.relationship_count += rows[0].count;
-            }
+            //             }
             result.close();
           } catch (error) {
             overview.relationship_types[relType] = 0;
-          }
-        }
+          //           }
+        //         }
       } else {
         // Fallback to in-memory statistics
         overview.node_count = (this.stats as any).nodeCount;
         overview.relationship_count = (this.stats as any).relationshipCount;
-      }
+      //       }
+
 
       return overview;
     // ; // LINT: unreachable code removed
@@ -532,33 +551,34 @@ for (const _relType of Object.keys((this as any).schema.relationships)) {
 ..baseStats,performance_metrics = Array.from(this.queryCache.entries());
     // entries.slice(0, 250).forEach(([key]) => { // LINT: unreachable code removed
         this.queryCache.delete(key);
-      }
-  )
-}
+      //       }
+  //   )
+// }
 // Cleanup old query history
 if (this.queryHistory.length > 500) {
   this.queryHistory = this.queryHistory.slice(-250);
-}
+// }
 // Cleanup slow queries
 if (this.performanceMetrics.slowQueries.length > 50) {
   this.performanceMetrics.slowQueries = this.performanceMetrics.slowQueries.slice(-25);
-}
+// }
 console.warn('✅ Optimization completed');
-}
+// }
 /**
  * Enhanced close method;
  */
-async
+// async
 close()
 : Promise<void>
-{
+// {
   console.warn('💾 Closing advanced Kuzu interface...');
   try {
       // Save performance metrics
       if (this.advancedConfig.enableMetrics) {
         const _metricsPath = path.join((this.config as any).dbPath, 'performance_metrics.json');
 // await writeFile(metricsPath, JSON.stringify(this.performanceMetrics, null, 2));
-      }
+      //       }
+
 
       // Clear caches
       this.queryCache.clear();
@@ -586,8 +606,8 @@ close()
       // Simplified calculation based on community size
       const _expectedEdges = (communitySize * (communitySize - 1)) / (2 * totalEdges);
       modularity += expectedEdges * (1 / communities.length);
-    }
-  }
+    //     }
+  //   }
   return Math.min(1, modularity);
   //   // LINT: unreachable code removed}
   private
@@ -598,100 +618,100 @@ close()
   execution_time,
   result_count,
   timestamp: new Date().toISOString();
-}
-)
+// }
+// )
 // Keep only recent metrics
 if (metrics.length > 1000) {
   metrics.splice(0, 500);
-}
-}
+// }
+// }
 private
-async
-analyzePatternMetrics(data: unknown[], pattern: string)
+// async
+analyzePatternMetrics(data, pattern: string)
 : Promise<
-{
-  pattern: string;
-  matches_found: number;
-  frequency_score: number;
-  complexity_score: number;
-}
+// {
+  // pattern: string
+  // matches_found: number
+  // frequency_score: number
+  // complexity_score: number
+// }
 >
-{
+// {
   return {
       pattern,
   // matches_found: data.length, // LINT: unreachable code removed
   frequency_score: Math.min(1, data.length / 100),
   complexity_score: this.calculateQueryComplexity(pattern);
-}
-}
+// }
+// }
 private
-async
+// async
 generateGraphAnalytics()
 : Promise<
-{
-  connectivity: unknown;
-  clustering: unknown;
-  paths: unknown;
-}
+// {
+  // connectivity: unknown
+  // clustering: unknown
+  // paths: unknown
+// }
 >
-{
+// {
   return {
       connectivity: await this.analyzeConnectivity(),
   // clustering: await this.analyzeClusteringCoefficient(), // LINT: unreachable code removed
   paths: await this.analyzePathLengths();
-}
-}
+// }
+// }
 private
-async
+// async
 analyzeConnectivity()
 : Promise<
-{
-  density: number;
-  components: number;
-  diameter: number;
-}
+// {
+  // density: number
+  // components: number
+  // diameter: number
+// }
 >
-{
+// {
   // Simplified connectivity analysis
   return {
       density: 0.1, // Placeholder
       components,
-  // diameter: 6; // LINT: unreachable code removed
-}
-}
+  // diameter: 6, // LINT: unreachable code removed
+// }
+// }
 private
-async
+// async
 analyzeClusteringCoefficient()
 : Promise<
-{
-  global: number;
-  average_local: number;
-}
+// {
+  // global: number
+  // average_local: number
+// }
 >
-{
+// {
   // Simplified clustering coefficient
   return {
       global: 0.3,
   // average_local: 0.25; // LINT: unreachable code removed
-}
-}
+// }
+// }
 private
-async
+// async
 analyzePathLengths()
 : Promise<
-{
-  average_shortest_path: number;
-  diameter: number;
-  radius: number;
-}
+// {
+  // average_shortest_path: number
+  // diameter: number
+  // radius: number
+// }
 >
-{
+// {
   // Simplified path length analysis
   return {
       average_shortest_path: 3.2,
   // diameter, // LINT: unreachable code removed
-  radius: 3;
-}
-}
-}
+  // radius: 3
+// }
+// }
+// }
 export default KuzuAdvancedInterface;

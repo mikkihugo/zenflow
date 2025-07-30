@@ -9,7 +9,7 @@ import { CommandRouter } from './command-router.js';
  * Load and register all core commands;
  * @returns {Promise<CommandRouter>} Configured command router;
     // */ // LINT: unreachable code removed
-export async function loadCommands(): unknown {
+export async function loadCommands() {
   const _router = new CommandRouter();
   // Core system commands
 // await registerCoreCommands(router);
@@ -20,12 +20,12 @@ export async function loadCommands(): unknown {
   // Development commands
 // await registerDevelopmentCommands(router);
   return router;
-}
+// }
 /**
  * Register core system commands;
  * @param {CommandRouter} router - Command router instance;
  */
-async function registerCoreCommands(router = await import('../command-handlers/init-command.js': unknown);
+async function registerCoreCommands(router = await import('../command-handlers/init-command.js');
 router.register('init', {handler = await import('../command-handlers/start-command.js');
 router.register('start', {handler = await import('../command-handlers/status-command.js');
 router.register('status', {handler = await import('../command-handlers/config-command.js');
@@ -45,4 +45,5 @@ router.register('workflow', {handler = await import('../command-handlers/analyti
 router.register('analytics', {handler = await import('../command-handlers/neural-command.js');
 router.register('neural', {handler = await import('../command-handlers/queen-command.js');
 router.register('queen', {handler = router.list();
-}
+// }
+

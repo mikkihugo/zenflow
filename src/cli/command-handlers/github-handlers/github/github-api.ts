@@ -10,22 +10,24 @@ import { printError, printInfo } from '../utils.js';
 https = 5000; // API calls per hour
 const __GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 class GitHubAPIClient {
-  constructor(token = null): unknown {
+  constructor(token = null) {
     this.token = token  ?? process.env.GITHUB_TOKEN;
     this.rateLimitRemaining = GITHUB_RATE_LIMIT;
     this.rateLimitResetTime = null;
     this.lastRequestTime = 0;
     this.requestQueue = [];
     this.isProcessingQueue = false;
-  }
+  //   }
+
 
   /**
    * Authentication Methods;
    */;
-  async authenticate(token = null): unknown {
+  async authenticate(token = null) {
     if(token) {
       this.token = token;
-    }
+    //     }
+
 
     if(!this.token) {
       printError('GitHub token not found. Set GITHUB_TOKEN environment variable or provide token.');
@@ -48,23 +50,26 @@ class GitHubAPIClient {
       if(waitTime > 0) {
         printWarning(`Rate limit exceeded. Waiting ${Math.ceil(waitTime / 1000)}s...`);
 // await this.sleep(waitTime);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
 
-  updateRateLimitInfo(headers): unknown {
+
+  updateRateLimitInfo(headers) {
     this.rateLimitRemaining = parseInt(headers['x-ratelimit-remaining']  ?? '0');
     this.rateLimitResetTime = new Date((parseInt(headers['x-ratelimit-reset'])  ?? 0) * 1000);
-  }
+  //   }
+
 
   /**
    * Core API Request Method;
    */;
-  async request(endpoint, options = {}): unknown {
+  async request(endpoint, options = {}) {
 // await this.checkRateLimit();
     const _url = endpoint.startsWith('http') ? endpoint = {Authorization = {method = JSON.stringify(options.body);
       headers['Content-Type'] = 'application/json';
-    }
+    //     }
+
 
     try {
 // const _response = awaitfetch(url, requestOptions);
@@ -72,16 +77,16 @@ class GitHubAPIClient {
 // const _data = awaitresponse.json();
 
       if(!response.ok) {
-        throw new Error(`GitHub API error = {}): unknown {
+        throw new Error(`GitHub API error = {}) {
     let _params = new URLSearchParams({
-      sort = {}): unknown {
+      sort = {}) {
     const _params = new URLSearchParams({
-      state = {}): unknown {
+      state = {}) {
     const _params = new URLSearchParams({
-      state = {}): unknown {
-    const _params = new URLSearchParams({per_page = 'main', inputs = {}): unknown {
+      state = {}) {
+    const _params = new URLSearchParams({per_page = 'main', inputs = {}) {
     return await this.request(;
-        method = {}): unknown {
+        method = {}) {
     const _params = new URLSearchParams({per_page = JSON.parse(payload);
 
     switch(event) {
@@ -104,23 +109,23 @@ class GitHubAPIClient {
   /**
    * Event Handlers;
    */;
-  async handlePushEvent(eventData): unknown {
+  async handlePushEvent(eventData) {
     printInfo(`Pushevent = eventData.action;
     const _pr = eventData.pull_request;
-    printInfo(`Pull request ${action}: #${pr.number} - ${pr.title}`);
+    printInfo(`Pull request ${action});
     return {handled = eventData.action;
     // const _issue = eventData.issue; // LINT: unreachable code removed
-    printInfo(`Issue ${action}: #${issue.number} - ${issue.title}`);
+    printInfo(`Issue ${action});
     return {handled = eventData.action;
     // const _release = eventData.release; // LINT: unreachable code removed
-    printInfo(`Release ${action}: ${release.tag_name} - ${release.name}`);
+    printInfo(`Release ${action});
     return {handled = eventData.action;
     // const _workflowRun = eventData.workflow_run; // LINT: unreachable code removed
-    printInfo(`Workflow run ${action}: ${workflowRun.name} - ${workflowRun.conclusion}`);
+    printInfo(`Workflow run ${action});
     return {handled = > setTimeout(resolve, ms));
     //   // LINT: unreachable code removed}
 
-  parseRepository(repoString): unknown {
+  parseRepository(repoString) {
     const _match = repoString.match(/^([^/]+)\/([^/]+)$/);
     if(!match) {
       throw new Error('Invalid repository format.Use = ['B', 'KB', 'MB', 'GB'];
@@ -130,11 +135,13 @@ class GitHubAPIClient {
     while(size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
-    }
+    //     }
+
 
     return `${size.toFixed(2)} ${units[unitIndex]}`;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 // Export singleton instance
 export const _githubAPI = new GitHubAPIClient();

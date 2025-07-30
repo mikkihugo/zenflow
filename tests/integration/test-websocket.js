@@ -6,10 +6,10 @@
 import WebSocket from 'ws';
 
 async function testWebSocket() {
-  console.warn('🔍 Testing WebSocket connection to ws://localhost:3000/ws');
+  console.warn('🔍 Testing WebSocket connection to ws);
 
   try {
-    const _ws = new WebSocket('ws://localhost:3000/ws');
+    const _ws = new WebSocket('ws);
 
     ws.on('open', () => {
       console.warn('✅ WebSocket connected successfully!');
@@ -23,7 +23,7 @@ async function testWebSocket() {
       process.exit(0);
     });
     ws.on('error', (error) => {
-      console.error('❌ WebSocket error:', error.message);
+      console.error('❌ WebSocket error);
       process.exit(1);
     });
     // Close after 5 seconds
@@ -32,8 +32,8 @@ async function testWebSocket() {
       ws.close();
     }, 5000);
   } catch (error) {
-    console.error('❌ Failed to create WebSocket:', error.message);
+    console.error('❌ Failed to create WebSocket);
     process.exit(1);
-  }
-}
+  //   }
+// }
 testWebSocket();

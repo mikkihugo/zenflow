@@ -10,7 +10,7 @@ import { CliError } from '../core/cli-error.js';
 import { inputValidator } from '../core/input-validator.js';
 
 export class StrategicDocumentsManager {
-  constructor(projectPath = null): unknown {
+  constructor(projectPath = null) {
     this.projectPath = projectPath  ?? process.cwd();
     this.projectId = this.generateProjectId(this.projectPath);
     this.lancedb = null;
@@ -43,7 +43,7 @@ export class StrategicDocumentsManager {
 
     // Start simple cleanup routine
     this.startSimpleCleanup();
-  }
+  //   }
   /**
    * Initialize LanceDB backend for strategic documents;
    */
@@ -58,21 +58,20 @@ export class StrategicDocumentsManager {
 // await this.initializeTables();
         // Initialize project metadata
 // await this.initializeProject();
-        console.warn(`📚 Strategic Documents initialized forproject = `Failed to initialize strategic documents LanceDB: ${error.message}`;
-        console.error(errorMsg);
+        console.warn(`📚 Strategic Documents initialized forproject = `Failed to initialize strategic documents LanceDB);
         throw new CliError(errorMsg, 'DATABASE_INIT_ERROR');
-      }
+      //       }
     }, 'initialize');
-  }
+  //   }
   /**
    * Generate consistent project ID from path;
    */
-  generateProjectId(_projectPath): unknown {
+  generateProjectId(_projectPath) {
     return path;
     // .basename(projectPath); // LINT: unreachable code removed
 replace(/[^a-zA-Z0-9]/g, '_')
 toLowerCase()
-  }
+  //   }
   /**
    * Initialize LanceDB tables for strategic documents;
    */
@@ -87,18 +86,18 @@ toLowerCase()
         const _schema = this.getTableSchema(namespace);
         this.tables[namespace] = await this.db.createTable(tableName, schema);
         console.warn(`🧠 LanceDB table '${tableName}' created`);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
   /**
    * Generate simple hash-based embedding for text (for testing);
    */
-  generateSimpleEmbedding(text): unknown {
+  generateSimpleEmbedding(text) {
     // Simple hash-based embedding for demonstration
     const _embedding = new Array(128).fill(0);
     for (let i = 0; i < text.length; i++) {
       embedding[i % 128] += text.charCodeAt(i) / 1000;
-    }
+    //     }
     return embedding;
     //   // LINT: unreachable code removed}
     /**
@@ -136,9 +135,9 @@ toArray();
       metadata = {},
       authorId = null,
       relevanceKeywords = [];
-    }
+    //     }
     ): unknown
-    {
+    //     {
       // Comprehensive input validation
       const _validatedData = inputValidator.validateDocumentData({
         documentType,
@@ -147,7 +146,7 @@ toArray();
       metadata,
       authorId,
       relevanceKeywords }
-    )
+    //     )
     return this.withAtomicOperation(`create_doc_${validatedData.title}`, async () => {
       const _id = nanoid();
       // const __now = new Date().toISOString(); // LINT: unreachable code removed
@@ -158,19 +157,16 @@ toArray();
       // returnDoc.relevanceKeywords = JSON.parse(document.relevanceKeywords); // LINT: unreachable code removed
       return returnDoc;
       //   // LINT: unreachable code removed} catch (error) {
-      throw new CliError(
-        `Failed to create document "${validatedData.title}": ${error.message}`,
-        'DOCUMENT_CREATE_ERROR'
-      );
+      throw new CliError(`Failed to create document "${validatedData.title}");
     });
-  }
+  //   }
   /**
    * Get document by ID;
    */
   async;
   getDocument(documentId);
   : unknown
-  {
+  //   {
     try {
 // const
   _results = awaitthis.tables.documents;
@@ -187,7 +183,8 @@ toArray();
     'metadata',
     'relevanceKeywords',
     'version'
-  )
+  //   )
+
 
   where(`id = '${documentId}'`);
 limit(1);
@@ -207,11 +204,11 @@ toArray();
   //   // LINT: unreachable code removed} catch (error) {
   console;
 
-  warn(`Failed to get document ${documentId}: ${error.message}`);
+  warn(`Failed to get document ${documentId});
   return;
   null;
   //   // LINT: unreachable code removed}
-}
+// }
 /**
  * Update document with new content (atomic operation);
  */
@@ -246,15 +243,15 @@ return this.withAtomicOperation(`update_doc_${documentId}`, async () => {
     limit = 50;
   })
 : unknown
-{
+// {
   // Validate search parameters
   const _validatedParams = inputValidator.validateQueryParams({
       query,
   documentType,
   status,
   limit;
-}
-)
+// }
+// )
 let _results = [];
 try {
       if (validatedParams.query.trim()) {
@@ -284,19 +281,22 @@ toArray();
 select('id', 'title', 'content', 'documentType', 'status', 'metadata', 'relevanceKeywords');
 limit(validatedParams.limit);
 toArray();
-        }
+        //         }
+
 
         // Filter by query text if provided
         if (validatedParams.query.trim()) {
           results = results.filter(_doc => ;
             doc.content.toLowerCase().includes(validatedParams.query.toLowerCase())  ?? doc.title.toLowerCase().includes(validatedParams.query.toLowerCase());
           );
-        }
+        //         }
+
 
         // Map results and add relevance score
         results = results.map(result => ({
 ..result,metadata = [];
-    }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
@@ -314,7 +314,7 @@ limit(limit);
 toArray();
 
       return results.map(doc => ({
-..doc,metadata = 10): unknown {
+..doc,metadata = 10) {
     try {
 // const _results = awaitthis.tables.documents;
     // .query(); // LINT: unreachable code removed
@@ -341,7 +341,7 @@ toArray();
     dissentingQueens = [],
     reasoning,
     documentReferences = [];
-  }): unknown {
+  }) {
     // Comprehensive input validation
     const _validatedData = inputValidator.validateDecisionData({
       objective,
@@ -377,10 +377,11 @@ toArray();
 
       return decision;
     //   // LINT: unreachable code removed} catch (error) {
-      console.warn(`Failed to get decision ${decisionId}: ${error.message}`);
+      console.warn(`Failed to get decision ${decisionId});
       return null;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   /**
    * Save queen analysis for a decision;
@@ -394,9 +395,9 @@ toArray();
     reasoning,
     documentInsights = {},
     processingTimeMs = 0;
-  }
+  //   }
 ): unknown
-{
+// {
     const _id = `${decisionId}_${queenName}`;
 
     const __analysis = {
@@ -416,7 +417,7 @@ where(`decisionId = '${decisionId}'`);
 toArray();
 
       return results.map(analysis => ({
-..analysis,documentInsights = 20): unknown {
+..analysis,documentInsights = 20) {
     try {
 // const _results = awaitthis.tables.decisions;
     // .query(); // LINT: unreachable code removed
@@ -479,7 +480,7 @@ toArray();
 
       return adr;
     //   // LINT: unreachable code removed} catch (error) {
-      console.warn(`Failed to get ADR ${adrId}: ${error.message}`);
+      console.warn(`Failed to get ADR ${adrId});
       return null;
     //   // LINT: unreachable code removed}
 
@@ -494,15 +495,14 @@ select('id', 'adrNumber', 'title', 'context', 'decision', 'consequences', 'imple
 toArray();
 
       return results;
-    // .map(adr => ({ // LINT: unreachable code removed
-..adr,tags = > b.adrNumber - a.adrNumber);
+    // .map(adr => ({ // LINT);
     } catch (/* _error */) {
       console.warn(`Failed to getADRs = =================== ANALYTICS ====================
 
   /**
    * Get decision analytics;
    */;
-  async getDecisionAnalytics(days = 30): unknown {
+  async getDecisionAnalytics(days = 30) {
     const _cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     const _cutoff = cutoffDate.toISOString();
@@ -521,8 +521,9 @@ map(d => ({
       for(const decision of recentDecisions) {
         for(const queen of decision.supportingQueens) {
           queenCounts[queen] = (queenCounts[queen]  ?? 0) + 1;
-        }
-      }
+        //         }
+      //       }
+
 
     const _stats = [];
 
@@ -542,8 +543,9 @@ map(d => ({
         this.cleanupCache();
       } catch (error) {
         console.warn('Cache cleanuperror = null;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Simple connection cleanup - removed complex pooling;
@@ -554,8 +556,9 @@ map(d => ({
 
     if(heapUsedMB > 500) {
       this.emergencyMemoryCleanup();
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Removed complex connection tracking - simplified;
@@ -570,12 +573,14 @@ sort((a, b) => b[1].lastUsed - a[1].lastUsed); // Most recent first
     for(const [key, connection] of toClose) {
       this.closeConnection(connection);
       this.connectionPool.delete(key);
-    }
+    //     }
+
 
     // Force garbage collection if available
     if(global.gc) {
       global.gc();
-    }
+    //     }
+
 
     console.warn(`🧹 Emergency cleanupcompleted = Date.now();
     const _removedCount = 0;
@@ -585,8 +590,9 @@ sort((a, b) => b[1].lastUsed - a[1].lastUsed); // Most recent first
       if(now - entry.timestamp > this.cacheTimeout) {
         this.queryCache.delete(key);
         removedCount++;
-      }
-    }
+      //       }
+    //     }
+
 
     // Keep cache size bounded (simple approach)
     if(this.queryCache.size > this.maxCacheSize) {
@@ -598,29 +604,33 @@ sort((a, b) => a[1].timestamp - b[1].timestamp); // Oldest first
       for(const [key] of toRemove) {
         this.queryCache.delete(key);
         removedCount++;
-      }
-    }
+      //       }
+    //     }
+
 
     // Reset performance metrics periodically to prevent unbounded growth
     if(now - this.performanceMetrics.lastReset > this.maxMetricsAge) {
       this.resetPerformanceMetrics();
-    }
+    //     }
+
 
     // Bound metrics history
     if(this.metricsHistory.length > this.maxMetricsHistory) {
       this.metricsHistory = this.metricsHistory.slice(-this.maxMetricsHistory);
-    }
+    //     }
+
 
     if(removedCount > 0) {
         return { ...result }; // Shallow copy as fallback
       return result;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   /**
    * Execute query with caching and performance tracking;
    */;
-  async executeQuery(table, operation, params = {}, cacheKey = null): unknown {
+  async executeQuery(table, operation, params = {}, cacheKey = null) {
     const _startTime = Date.now();
 
     try {
@@ -630,7 +640,8 @@ sort((a, b) => a[1].timestamp - b[1].timestamp); // Oldest first
         if(cached) {
           return cached;
     //   // LINT: unreachable code removed}
-      }
+      //       }
+
 
       // Execute query
       let result;
@@ -665,14 +676,15 @@ toArray();
         this.performanceMetrics.operationsCompleted = 0;
         this.performanceMetrics.totalQueryTime = 0;
         this.performanceMetrics.cacheHits = 0;
-      }
+      //       }
       this.performanceMetrics.totalQueryTime += queryTime;
       this.performanceMetrics.averageQueryTime = ;
         this.performanceMetrics.totalQueryTime / this.performanceMetrics.queriesExecuted;
 
       // Add to bounded metrics history
       this.metricsHistory.push({timestamp = this.metricsHistory.slice(-this.maxMetricsHistory);
-      }
+      //       }
+
 
       // Clean old accumulated metrics to prevent unbounded growth
       this.cleanupOldMetrics();
@@ -681,8 +693,9 @@ toArray();
     //   // LINT: unreachable code removed} catch (/* _error */) {
       const _queryTime = Date.now() - startTime;
       console.warn(`Query failed after ${queryTime}ms = this.metricsHistory.slice(-this.maxMetricsHistory);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Get performance metrics with cleanup;
@@ -697,13 +710,14 @@ toArray();
     // /** // LINT: unreachable code removed
    * Execute operation with atomic locking to prevent race conditions;
    */;
-  async withAtomicOperation(operationKey, operation): unknown {
+  async withAtomicOperation(operationKey, operation) {
     const _lockKey = `${this.projectId}_${operationKey}`;
 
     // Wait for any existing operation to complete
     while (this.operationLocks.has(lockKey)) {
 // await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    //     }
+
 
     // Acquire lock
     this.operationLocks.set(lockKey, true);
@@ -714,13 +728,14 @@ toArray();
     //   // LINT: unreachable code removed} finally {
       // Always release lock
       this.operationLocks.delete(lockKey);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Execute operation with retry logic and exponential backoff;
    */;
-  async withRetry(operation, operationName = 'operation'): unknown {
+  async withRetry(operation, operationName = 'operation') {
     let lastError;
 
     for(let attempt = 1; attempt <= this.maxRetries; attempt++) {
@@ -732,8 +747,9 @@ toArray();
         if(attempt === this.maxRetries) {
           console.error(`\u26a0\ufe0f  ${operationName} failed after ${this.maxRetries}attempts = this.retryDelay * 2 ** (attempt - 1); // Exponential backoff
         console.warn(`\u26a0\ufe0f  ${operationName} attempt ${attempt} failed, retrying in ${delay}ms = > setTimeout(resolve, delay));
-      }
-    }
+      //       }
+    //     }
+
 
     throw new CliError(`${operationName} failed after ${this.maxRetries} attempts = {};
       for (const [namespace, table] of Object.entries(this.tables)) {
@@ -741,7 +757,7 @@ toArray();
 // const __count = awaittable.countRows();
           tableStatus[namespace] = { status = {status = Object.values(tableStatus).some(t => t.status === 'unhealthy');
 
-      return {status = []): unknown {
+      return {status = []) {
     if(!_data  ?? typeof data !== 'object') {
       throw new CliError('Invalid input = { ...data };
     // for (const [key, value] of Object.entries(sanitized)) { // LINT: unreachable code removed
@@ -751,8 +767,9 @@ toArray();
 replace(/'/g, "''")  // Escape single quotes
 replace(/\x00/g, '') // Remove null bytes
 trim();
-      }
-    }
+      //       }
+    //     }
+
 
     return sanitized;
     //   // LINT: unreachable code removed}
@@ -762,7 +779,7 @@ trim();
   /**
    * Generate content snippet for search results;
    */;
-  generateSnippet(content, query, maxLength = 200): unknown {
+  generateSnippet(content, query, maxLength = 200) {
     if (!query) return `${content.substring(0, maxLength)}...`;
     // ; // LINT: unreachable code removed
     const _queryWords = query.toLowerCase().split(/\s+/);
@@ -774,8 +791,9 @@ trim();
       const _index = lowerContent.indexOf(word);
       if (index !== -1 && (firstIndex === -1  ?? index < firstIndex)) {
         firstIndex = index;
-      }
-    }
+      //       }
+    //     }
+
 
     if(firstIndex === -1) {
       return `${content.substring(0, maxLength)}...`;
@@ -796,7 +814,8 @@ trim();
    * Set AI provider for semantic search;
    *Note = aiProvider;
     console.warn('AI provider set for LanceDB integration');
-  }
+  //   }
+
 
   /**
    * Get backend statistics for LanceDB;
@@ -815,13 +834,15 @@ trim();
 // const _count = awaittable.countRows();
           _totalEntries += count;
         } catch (error) {
-          console.warn(`Failed to count rows in ${namespace}: ${error.message}`);
-        }
-      }
+          console.warn(`Failed to count rows in ${namespace});
+        //         }
+      //       }
+
 
       return {backend = null;
     // this.tables = { // LINT: unreachable code removed};
-      }
+      //       }
+
 
       console.warn('📚 Strategic Documents LanceDB closed with resource cleanup');
     } catch (/* _error */)

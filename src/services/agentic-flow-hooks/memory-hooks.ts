@@ -2,7 +2,7 @@
  * Memory Management Hooks;
  * Hooks for memory operations, caching, and data persistence;
  */
-export const memoryCache = {name = Date.now();
+export const memoryCache = {name = Date.now(); // eslint-disable-line
 
 try {
       const { operation, key, value, ttl } = payload.data;
@@ -13,6 +13,6 @@ try {
     // { // LINT: unreachable code removed
     name: 'memory-cache',
     type: 'memory-operation',
-    hook: memoryCache;
-  }
+    // hook: memoryCache
+  //   }
 ];

@@ -28,7 +28,7 @@ describe('Init Command NPX Isolation', () => {
       // This test verifies that our changes to batch-init don't break imports
 // const _batchInitModule = awaitimport(
         '../../../../../src/cli/simple-commands/init/batch-init.js';
-      )
+      //       )
       expect(batchInitModule).toBeDefined()
       // Key exports should still be available
       expect(batchInitModule.batchInitCommand).toBeDefined()
@@ -49,7 +49,7 @@ describe('Init Command NPX Isolation', () => {
 })
 })
 describe('NPX Cache Isolation Integration', () =>
-{
+// {
   it('should provide isolated environment without affecting global state', async () => {
     const { getIsolatedNpxEnv } = await import('../../../../../src/utils/npx-isolated-cache.js');
 
@@ -61,7 +61,7 @@ describe('NPX Cache Isolation Integration', () =>
     expect(isolatedEnv.NPM_CONFIG_CACHE).not.toBe(originalCache);
     // Should not affect global process.env
     expect(process.env.NPM_CONFIG_CACHE).toBe(originalCache);
-  });
+  }); // eslint-disable-line
   it('should work with Deno.Command-style environment passing', async () => {
     const { getIsolatedNpxEnv } = await import('../../../../../src/utils/npx-isolated-cache.js');
 

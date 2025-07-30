@@ -44,10 +44,7 @@ const _VisionDashboard = (): unknown => {
         );
       );
     }),
-    React.createElement(Box, marginTop, borderStyle: "single", borderColor: "gray", paddingX,
-      React.createElement(Text, color: "gray" ,
-        "💡 Use arrow keys to navigate • Press Enter to view details • Press R to refresh";
-      );
+    React.createElement(Box, marginTop, borderStyle);
     );
   );
 };

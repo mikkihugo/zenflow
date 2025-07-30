@@ -14,6 +14,7 @@ activeRequests = 0
 constructor(manifest, config = {token = await this.makeRequest<GitHubUser>('/user');
 this.context.apis.logger.info('GitHub authenticated'
 
+// 
 {
   (_user) => {
     // Could enhance tasks with GitHub integration
@@ -35,52 +36,52 @@ this.context.apis.logger.info('GitHub authenticated'
   /**
    * Repository Analysis - Deep repository insights;
    */
-  async
+  // async
   analyzeRepository(owner, (repo = ))
   : Promise<RepositoryAnalysis>
-  {
+  //   {
     const __analysisOptions = {includeIssues = {repository = analysis.repository;
     analysis.metrics.basic = {stars = await this.analyzeTechnologyStack(owner, repo);
-  }
+  //   }
   // Issue analysis
   if (analysisOptions.includeIssues) {
     analysis.issues = await this.analyzeIssues(owner, repo, analysisOptions.timeRange);
-  }
+  //   }
   // Pull request analysis
   if (analysisOptions.includePRs) {
     analysis.pullRequests = await this.analyzePullRequests(owner, repo, analysisOptions.timeRange);
-  }
+  //   }
   // Commit activity analysis
   if (analysisOptions.includeCommits) {
     analysis.commits = await this.analyzeCommitActivity(owner, repo, analysisOptions.timeRange);
-  }
+  //   }
   // Contributor analysis
   if (analysisOptions.includeContributors) {
     analysis.contributors = await this.analyzeContributors(owner, repo);
-  }
+  //   }
   // Repository health score
   if (analysisOptions.includeHealth) {
     analysis.health = this.calculateHealthScore(analysis);
-  }
+  //   }
   return analysis;
-}
+// }
 /**
  * Get repository information;
  */
 async;
 getRepository((owner = {}));
 : Promise<
-{
+// {
   total_count = {sort = new URLSearchParams({
       q,
   sort = {};
   ): Promise<GitHubIssue[]>
-  {
+  //   {
     const _issueOptions = {state = new URLSearchParams(;
     Object.entries(issueOptions).map(([key, value]) => [key, value.toString()]);
-    )
+    //     )
     return await this.makeRequest<GitHubIssue[]>(`/repos/${owner}/${repo}/issues?${params}`);
-  }
+  //   }
   // Private helper methods
 
   /**
@@ -93,7 +94,7 @@ getRepository((owner = {}));
   const _languagePercentages = {};
   for (const [lang, bytes] of Object.entries(languages)) {
     languagePercentages[lang] = ((bytes / totalBytes) * 100).toFixed(2);
-  }
+  //   }
   // Get repository contents to analyze tech stack
 // const _contents = awaitthis.getContents(owner, repo, '');
   return {languages = [];
@@ -101,7 +102,7 @@ getRepository((owner = {}));
   const _packageManagers = [];
   const _configFiles = [];
   const _detectionRules = (> void> = {
-  'package.json': () => packageManagers.push('npm'),
+  'package.json') => packageManagers.push('npm'),
   ('yarn.lock');
   : () => packageManagers.push('yarn'),
   ('pnpm-lock.yaml')
@@ -145,21 +146,21 @@ getRepository((owner = {}));
   : () => configFiles.push('GitHub Actions'),
   ('ci.yml')
   : () => configFiles.push('CI/CD') }
-)
+// )
 for (const file of contents) {
   const _fileName = file.name.toLowerCase();
   const _rule = detectionRules[fileName] ?? detectionRules[file.name];
   if (rule) {
     rule();
-  }
-}
+  //   }
+// }
 return { frameworks, buildTools, packageManagers, configFiles };
-}
+// }
 /**
  * Analyze repository issues;
  */
 private
-async
+// async
 analyzeIssues(owner = new Date(Date.now() - timeRangeDays * 24 * 60 * 60 * 1000).toISOString()
 // const _allIssues = awaitthis.getIssues(owner, repo, {state = allIssues.filter(issue => issue.state === 'open');
 const _closedIssues = allIssues.filter((issue) => issue.state === 'closed');
@@ -167,17 +168,17 @@ const _closedIssues = allIssues.filter((issue) => issue.state === 'closed');
 const __closeTimes = closedIssues;
 filter((issue) => issue.closed_at)
 map((issue) =>
-{
+// {
   const _created = new Date(issue.created_at).getTime();
   const _closed = new Date(issue.closed_at!).getTime();
   return (closed - created) / (1000 * 60 * 60 * 24); // days
-}
-)
+// }
+// )
 for (const issue of allIssues) {
   for (const label of issue.labels) {
     labelsUsage[label.name] = (labelsUsage[label.name] ?? 0) + 1;
-  }
-}
+  //   }
+// }
 // Recent activity analysis (last 30 days, weekly)
 const _recentActivity = [];
 const __thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
@@ -249,8 +250,9 @@ map(pr => {
         if (!contributorStats[author]) {
           contributorStats[author] = {commits = commit.stats.additions;
           contributorStats[author].deletions += commit.stats.deletions;
-        }
-      }
+        //         }
+      //       }
+
 
       // Sort contributors by commits
       const __topContributors = Object.entries(contributorStats);
@@ -286,8 +288,9 @@ slice(0, 10);
           regularContributors++;
         } else {
           occasionalContributors++;
-        }
-      }
+        //         }
+      //       }
+
 
       // Get detailed info for top contributors
       const _topContributors = [];
@@ -309,8 +312,9 @@ slice(0, 10);
       factors.activity = Math.min(100, (recentActivity / 30) * 100); // 30 commits = 100%
       if (factors.activity < 50) {
         recommendations.push('Increase commit frequency to show active development');
-      }
-    }
+      //       }
+    //     }
+
 
     // Community score (based on stars, forks, contributors)
     const _stars = analysis.metrics.basic.stars;
@@ -325,7 +329,8 @@ slice(0, 10);
 
     if (factors.community < 30) {
       recommendations.push('Promote repository to increase community engagement');
-    }
+    //     }
+
 
     // Maintenance score (based on issue resolution and PR merge rate)
     if (analysis.issues && analysis.pullRequests) {
@@ -335,15 +340,17 @@ slice(0, 10);
 
       if (factors.maintenance < 60) {
         recommendations.push('Improve issue resolution and PR merge rates');
-      }
-    }
+      //       }
+    //     }
+
 
     // Documentation score (basic check for README, etc.)
     factors.documentation = 60; // Base score, would check for actual documentation
     if (analysis.technology?.config_files.length === 0) {
       factors.documentation -= 20;
       recommendations.push('Add configuration files and documentation');
-    }
+    //     }
+
 
     // Testing score (would analyze for test files and CI)
     factors.testing = 50; // Base score, would check for actual tests
@@ -351,20 +358,15 @@ slice(0, 10);
       factors.testing += 25;
     } else {
       recommendations.push('Set up continuous integration and testing');
-    }
+    //     }
+
 
     // Overall score (weighted average)
 
     return {overall_score = await this.makeRequest<GitHubContent | GitHubContent[]>(;
-    // `/repos/${owner // LINT: unreachable code removed}/${repo}/contents/${path}`;
-      );
+    // `/repos/\${owner // LINT);
       return Array.isArray(contents) ?contents = await this.makeRequest<{rate = rateLimit.rate;
-    // ; // LINT: unreachable code removed
-      this.context.apis.logger.info('Rate limit updated', {remaining = any>(endpoint): Promise<T> {
-    const _cacheKey = `github = this.cache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < this.config.settings.cacheTTL) {
-      return cached.data;
-    //   // LINT: unreachable code removed}
+    // ; // LINT}
 
     // Rate limiting
 // await this.checkRateLimit();
@@ -383,24 +385,28 @@ slice(0, 10);
       this.context.apis.logger.info(`Rate limit reached, waiting ${waitTime}ms`);
 // await new Promise(resolve => setTimeout(resolve, waitTime));
 // await this.updateRateLimitInfo();
-    }
+    //     }
+
 
     // Concurrent request limiting
     if (this.activeRequests >= this.config.settings.maxConcurrentRequests) {
 // await new Promise<void>(resolve => {
         this.requestQueue.push(resolve);
       });
-    }
+    //     }
+
 
     this.activeRequests++;
-  }
+  //   }
+
 
   private releaseRequest(): void ;
     this.activeRequests--;
     if (this.requestQueue.length > 0) {
       const _resolve = this.requestQueue.shift();
       resolve?.();
-    }
-}
+    //     }
+// }
+
 
 export default GitHubIntegrationPlugin;

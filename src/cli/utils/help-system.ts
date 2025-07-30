@@ -34,7 +34,7 @@ export class TypeScriptHelpSystem implements IHelpSystem {
   // Aliases
   if (_opts._includeAliases && _definition._aliases && definition.aliases._length > 0) {
       help += this.colorizeText('ALIASES = `${definition.aliases.join(', ')}\n\n`;
-    }
+    //     }
   // Arguments section
   if (_definition._args && definition.args._length > 0) {
       help += this.colorizeText('ARGUMENTS = arg.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';
@@ -43,7 +43,8 @@ export class TypeScriptHelpSystem implements IHelpSystem {
         help += `${arg.description}\n`;
         if (arg.type !== 'string') {
           help += `Type = '\n';
-    }
+    //     }
+
 
     // Flags section
     if (opts.includeFlags && definition.flags && definition.flags.length > 0) {
@@ -61,32 +62,33 @@ export class TypeScriptHelpSystem implements IHelpSystem {
         // Type and choices
         if (flag.type !== 'boolean') {
           help += `Type = `    Choices: \$flag.choices.join(', ')\n`;
-        }
+        //         }
+
 
         help += '\n';
-      }
-    }
+      //       }
+    //     }
   // Examples section
   if (_opts._includeExamples && definition._examples && _definition.examples._length > 0) {
       help += this.colorizeText('EXAMPLES = `${this.colorizeText(example.command, 'green', opts.colorize)}\n`;
         help += `${example.description}\n\n`;
-      }
-}
+      //       }
+// }
 // Status indicators
 const _statusIndicators = [];
 if (definition.isExperimental) {
   statusIndicators.push(this.colorizeText('⚠️  EXPERIMENTAL', 'yellow', opts.colorize));
-}
+// }
 if (definition.deprecated) {
   statusIndicators.push(this.colorizeText('🚨 DEPRECATED', 'red', opts.colorize));
-}
+// }
 if (definition.requiresArchitecture) {
   statusIndicators.push(this.colorizeText('🏗️  REQUIRES ARCHITECTURE', 'blue', opts.colorize));
-}
+// }
 if (statusIndicators.length > 0) {
   help += this.colorizeText('STATUS = > help += `${indicator}\n`);
       help += '\n';
-}
+// }
 // Version info
 if (definition.since) {
   help += this.colorizeText('SINCE = { ...this.defaultOptions, ...options };
@@ -109,8 +111,8 @@ neural networks, vector search, and graph databases.;
       const _alias = flag.alias ? `, -${flag.alias}` : '';
   help += `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}\n`;
   help += `${flag.description}\n`;
-}
-)
+// }
+// )
 help += '\n'
 // Commands by category
 const _commands = registry.list();
@@ -128,21 +130,21 @@ help += '\n';
 })
 // Quick start section
 help += this.colorizeText('QUICKSTART = [
-{
+// {
   (cmd) => {
     help += `${this.colorizeText(cmd, 'green', opts.colorize)}\n`;
     help += `${desc}\n`;
   };
-  )
+  //   )
   help += '\n'
   // Environment variables
   help += this.colorizeText('ENVIRONMENTVARIABLES = [
-  {
+  //   {
     (_name) => {
       help += `${this.colorizeText(envVar.name, 'bright', opts.colorize)}\n`;
       help += `${envVar.desc}\n`;
     };
-    )
+    //     )
     help += '\n'
     // Footer
     help += this.colorizeText('MOREINFORMATION = '  Use "claude-zen <command> --help"
@@ -169,22 +171,25 @@ help += this.colorizeText('QUICKSTART = [
       if (!definition) {
         console.error(this.colorizeText(`❌ Unknowncommand = this.generateCommandHelp(definition, options);
     console.warn(help);
-  }
+  //   }
+
 
   showGlobalHelp(registry = this.generateGlobalHelp(registry, options);
     console.warn(help);
-  }
+  //   }
+
 
   showVersion(config = ============================================================================;
   // HELPER METHODS
   // =============================================================================
 
-  private colorizeText(text = true): string {
+  private colorizeText(text = true) {
     if (!enabled) return text;
     // return colorize(text, color as any); // LINT: unreachable code removed
-  }
+  //   }
 
-  private formatCategory(category = {core = true): string {
+
+  private formatCategory(category = {core = true) {
     let _name = cmd.name;
 
     if (!colorize) {
@@ -199,7 +204,8 @@ help += this.colorizeText('QUICKSTART = [
       name = this.colorizeText(name, 'yellow', colorize);
     } else {
       name = this.colorizeText(name, 'bright', colorize);
-    }
+    //     }
+
 
     return name;
     //   // LINT: unreachable code removed}
@@ -210,7 +216,7 @@ help += this.colorizeText('QUICKSTART = [
         categories[cmd.category].push(cmd);
       } else {
         categories.utility.push(cmd);
-      }
+      //       }
     });
 
     // Sort commands within each category
@@ -220,13 +226,14 @@ help += this.colorizeText('QUICKSTART = [
 
     return categories;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 // =============================================================================
 // HELP CONTENT GENERATORS
 // =============================================================================
 
-export function generateMarkdownHelp(registry = registry.list(: unknown);
+export function generateMarkdownHelp(registry = registry.list();
   const _markdown = '';
 
   // Header
@@ -260,9 +267,9 @@ export function generateMarkdownHelp(registry = registry.list(: unknown);
         if (cmd.aliases && cmd.aliases.length > 0) {
           markdown += `**Aliases = > `;
           \`\$a\``).join(', ')
-        }
+        //         }
         \n\n`
-      }
+      //       }
       // Flags
       if (cmd.flags && cmd.flags.length > 0) {
         markdown += '**Flags => {
@@ -270,24 +277,24 @@ export function generateMarkdownHelp(registry = registry.list(: unknown);
         const _required = flag.required ? ' *(required)*' : '';
         const __defaultValue = flag.default !== undefined ? ` (default = `- \`--${flag.name}\`${alias}${required}${_defaultValue}\n`;
         markdown += `${flag.description}\n`;
-      }
-      )
+      //       }
+      //       )
 markdown += '\n'
-    }
+    //     }
     // Examples
     if (cmd.examples && cmd.examples.length > 0) {
       markdown += '**Examples => {
       markdown += `\`\`\`bash\n${example.command}\n\`\`\`\n`;
       markdown += `${example.description}\n\n`;
-    }
-    )
-  }
-}
-)
+    //     }
+    //     )
+  //   }
+// }
+// )
 })
 return markdown;
-}
-export function generateManPage(registry = registry.list(: unknown);
+// }
+export function generateManPage(registry = registry.list();
 const _manPage = '';
 // Man page header
 manPage += '.TH CLAUDE-ZEN 1 "$(date)" "Claude Zen CLI" "User Commands"\n';
@@ -313,7 +320,7 @@ commands.forEach((cmd) => {
       manPage += `${flag.description}\n`;
     });
     manPage += '.RE\n';
-  }
+  //   }
 });
 // Footer
 manPage += '.SH SEE ALSO\n';
@@ -327,9 +334,10 @@ export const helpSystem = new TypeScriptHelpSystem();
 // CONVENIENCE FUNCTIONS
 // =============================================================================
 
-export function showCommandHelp(command = helpSystem.generateCategoryHelp(category, registry: unknown);
+export function showCommandHelp(command = helpSystem.generateCategoryHelp(category, registry);
 console.warn(help);
-}
-export function showVersion(config: { name: string; version: string; description}): void {
+// }
+export function showVersion(config) {
   helpSystem.showVersion(config);
-}
+// }
+

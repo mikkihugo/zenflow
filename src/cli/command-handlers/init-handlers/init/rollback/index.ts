@@ -22,30 +22,30 @@ export class RollbackSystem {
   this;
 
   recoveryManager = new RecoveryManager(workingDir);
-}
+// }
 /**
  * Create backup before initialization;
  */
 async;
 createPreInitBackup();
-{
+// {
     const _result = {success = await this.backupManager.createBackup('pre-init');
       result.backupId = backup.id;
       result.success = backup.success;
 
       if(backup.success) {
         printSuccess(`Backupcreated = false;
-      result.errors.push(`Backup creation failed = {}): unknown {
+      result.errors.push(`Backup creation failed = {}) {
     const _result = {success = await this.stateTracker.createCheckpoint(phase, data);
       result.checkpointId = checkpoint.id;
       result.success = checkpoint.success;
 
       if(!checkpoint.success) {
         result.errors.push(...checkpoint.errors);
-      }
+      //       }
     } catch(error) ;
       result.success = false;
-      result.errors.push(`Checkpoint creationfailed = null): unknown {
+      result.errors.push(`Checkpoint creationfailed = null) {
     const _result = {success = backupId  ?? (await this.findLatestPreInitBackup());
       if(!targetBackup) {
         result.success = false;
@@ -67,10 +67,10 @@ createPreInitBackup();
 // await this.stateTracker.recordRollback(targetBackup, 'full');
       } else {
         printError('Full rollback failed');
-      }
+      //       }
     } catch (error) {
       result.success = false;
-      result.errors.push(`Rollbackfailed = null): unknown {
+      result.errors.push(`Rollbackfailed = null) {
     const _result = {success = checkpointId  ?? (await this.findLatestCheckpoint(phase));
       if(!checkpoint) {
         result.success = false;
@@ -82,7 +82,7 @@ createPreInitBackup();
 
       if(rollbackResult.success) {
         printSuccess(`Partial rollback completed forphase = false;
-      result.errors.push(`Partial rollback failed = {}): unknown {
+      result.errors.push(`Partial rollback failed = {}) {
     const _result = {success = await this.recoveryManager.performRecovery(failureType, context);
       result.success = recoveryResult.success;
       result.errors.push(...recoveryResult.errors);
@@ -99,7 +99,7 @@ createPreInitBackup();
       result.checkpoints = checkpoints;
     } catch (error) {
       result.success = false;
-      result.errors.push(`Failed to list rollbackpoints = 5): unknown {
+      result.errors.push(`Failed to list rollbackpoints = 5) {
     const _result = {success = await this.backupManager.cleanupOldBackups(keepCount);
       result.success = cleanupResult.success;
       result.cleaned = cleanupResult.cleaned;
@@ -107,7 +107,7 @@ createPreInitBackup();
 
       if(cleanupResult.success) {
         console.warn(`🗑️  Cleaned up ${cleanupResult.cleaned.length} old backups`);
-      }
+      //       }
     } catch (error) {
       result.success = false;
       result.errors.push(`Cleanup failed = {success = await this.backupManager.validateBackupSystem();
@@ -115,21 +115,23 @@ createPreInitBackup();
       if(!backupCheck.success) {
         result.success = false;
         result.errors.push(...backupCheck.errors);
-      }
+      //       }
+
 
       // Check state tracking
 // const _stateCheck = awaitthis.stateTracker.validateStateTracking();
       result.checks.stateTracking = stateCheck;
       if(!stateCheck.success) {
         result.warnings.push(...stateCheck.errors);
-      }
+      //       }
+
 
       // Check recovery system
 // const _recoveryCheck = awaitthis.recoveryManager.validateRecoverySystem();
       result.checks.recovery = recoveryCheck;
       if(!recoveryCheck.success) {
         result.warnings.push(...recoveryCheck.errors);
-      }
+      //       }
     } catch (error) {
       result.success = false;
       result.errors.push(`Rollback system validationfailed = await this.stateTracker.getRollbackPoints();
@@ -157,7 +159,8 @@ createPreInitBackup();
     //   // LINT: unreachable code removed} catch {
       return null;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Atomic operation wrapper;
@@ -167,7 +170,8 @@ export class AtomicOperation {
     this.operationName = operationName;
     this.checkpointId = null;
     this.completed = false;
-  }
+  //   }
+
 
   /**
    * Begin atomic operation;
@@ -175,12 +179,7 @@ export class AtomicOperation {
   async begin() {
 // const _checkpoint = awaitthis.rollbackSystem.createCheckpoint(`atomic-${this.operationName}`, {operation = checkpoint.checkpointId;
     return checkpoint.success;
-    //   // LINT: unreachable code removed}
-
-  /**
-   * Commit atomic operation;
-   */;
-  async commit() ;
+    //   // LINT);
     this.completed = true;
 
     // Mark checkpoint as committed
@@ -188,7 +187,8 @@ export class AtomicOperation {
 // await this.rollbackSystem.stateTracker.updateCheckpoint(this.checkpointId, {
         status: 'committed',
         completed: Date.now() });
-    }
+    //     }
+
 
   /**
    * Rollback atomic operation;
@@ -198,11 +198,13 @@ export class AtomicOperation {
 // await this.rollbackSystem.performPartialRollback(;
         `atomic-${this.operationName}`,
         this.checkpointId);
-    }
+    //     }
+
 
 /**
  * Create and manage atomic operations;
  */;
-export function _createAtomicOperation(rollbackSystem, operationName: unknown): unknown {
+export function _createAtomicOperation(rollbackSystem, operationName) {
   return new AtomicOperation(rollbackSystem, operationName);
-}
+// }
+

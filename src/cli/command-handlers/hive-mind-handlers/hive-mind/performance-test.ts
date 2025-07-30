@@ -12,7 +12,8 @@ export class PerformanceTest {
   constructor() {
     this.results = [];
     this.baseline = null;
-  }
+  //   }
+
 
   /**
    * Run complete performance test suite;
@@ -43,7 +44,7 @@ export class PerformanceTest {
     for(let i = 0; i < agentTypes.length; i++) {
       // Simulate individual spawning time
 // await new Promise((resolve) => setTimeout(resolve, 200));
-    }
+    //     }
     const _sequentialTime = performance.now() - sequentialStart;
 
     const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2);
@@ -57,7 +58,8 @@ export class PerformanceTest {
 // await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50));
         return `Operation ${i} completed`;
     //   // LINT: unreachable code removed});
-    }
+    //     }
+
 
     // Test parallel execution
     const _parallelStart = performance.now();
@@ -69,7 +71,7 @@ export class PerformanceTest {
     const _sequentialResults = [];
     for(const op of operations) {
       sequentialResults.push(await op());
-    }
+    //     }
     const _sequentialTime = performance.now() - sequentialStart;
 
     const _improvement = (((sequentialTime - parallelTime) / sequentialTime) * 100).toFixed(2);
@@ -87,7 +89,7 @@ map(async (_, i) => {
     const _serialStart = performance.now();
     for(let i = 0; i < 100; i++) {
 // await new Promise((resolve) => setTimeout(resolve, Math.random() * 15 + 5));
-    }
+    //     }
     const _serialTime = performance.now() - serialStart;
 
     const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2);
@@ -110,7 +112,7 @@ map(async (_, i) => {
     // Get final status
     const _status = hiveMind.getStatus();
 
-    this.results.push({test = === tasks.length ? 'PASS' : 'WARN' });
+    this.results.push({test = === tasks.length ? 'PASS' );
 
     console.warn(;
       `  ✅Tasks = new PerformanceOptimizer({
@@ -134,7 +136,8 @@ map(async (_, i) => {
         return 'cached-value';
     //   // LINT: unreachable code removed});
       _cacheHits++;
-    }
+    //     }
+
 
     // Test batch processing
     const _batchStart = performance.now();
@@ -159,7 +162,7 @@ map(async (_, i) => {
       Object.entries(result).forEach(([key, value]) => {
         if(key !== 'test' && key !== 'status') {
           console.warn(`${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`);
-        }
+        //         }
       });
 
       console.warn(`Status = === 'PASS') totalPassed++;
@@ -177,7 +180,8 @@ map((r) => parseFloat(r.improvement));
 
     if(improvements.length > 0) {
 
-      console.warn(`🚀 Average PerformanceImprovement = === `file://${process.argv[1]}`) {
+      console.warn(`🚀 Average PerformanceImprovement = === `file) {
   const _testRunner = new PerformanceTest();
   testRunner.runTestSuite().catch(console.error);
-}
+// }
+

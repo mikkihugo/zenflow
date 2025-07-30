@@ -6,7 +6,7 @@
 // task.js - Task management commands with improved argument parsing
 import { printError } from '../utils.js';
 
-export async function taskCommand(): unknown {
+export async function taskCommand() {
     case 'create':;
 // await createTask(subArgs, flags);
       break;
@@ -48,7 +48,8 @@ option('--priority <value>', 'Set task priority (1-10)', '5');
     // If the description starts with a quote, find the matching end quote
     const _descriptionArgs = args.slice(2);
     description = parseQuotedDescription(descriptionArgs);
-  }
+  //   }
+
 
   if(!taskType  ?? !description) {
     printError('Usage = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -65,13 +66,15 @@ option('--priority <value>', 'Set task priority (1-10)', '5');
       // Extract the quoted content
       return fullString.substring(1, endIndex);
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   // If not quoted or improperly quoted, return the full string
   return fullString;
-}
+// }
 
-async function listTasks(subArgs = new Command(: unknown);
+
+async function listTasks(subArgs = new Command();
 exitOverride();
 allowUnknownOption();
 option('--filter <status>', 'Filter by task status');
@@ -96,16 +99,16 @@ option('-v', 'Show detailed output');
 
   switch(coordCmd) {
     case 'status':;
-      printSuccess('Task coordination status:');
-      console.warn('🎯 Coordination engine: Not running');
-      console.warn('   Active coordinators: 0');
-      console.warn('   Pending tasks: 0');
-      console.warn('   Resource utilization: 0%');
+      printSuccess('Task coordination status);
+      console.warn('🎯 Coordination engine);
+      console.warn('   Active coordinators);
+      console.warn('   Pending tasks);
+      console.warn('   Resource utilization);
       break;
 
     case 'optimize':;
       printSuccess('Optimizing task coordination...');
-      console.warn('⚡ Optimization would include:');
+      console.warn('⚡ Optimization would include);
       console.warn('   - Task dependency analysis');
       console.warn('   - Resource allocation optimization');
       console.warn('   - Parallel execution planning');
@@ -113,11 +116,12 @@ option('-v', 'Show detailed output');
 
     default:;
       console.warn('Coordination commands, optimize');
-  }
-}
+  //   }
+// }
 
-function showTaskHelp(): unknown {
-  console.warn('Task commands:');
+
+function showTaskHelp() {
+  console.warn('Task commands);
   console.warn('  create <type> "<description>"    Create new task');
   console.warn('  list [--filter <status>]        List tasks');
   console.warn('  status <id>                      Show task details');
@@ -125,21 +129,22 @@ function showTaskHelp(): unknown {
   console.warn('  workflow <file>                  Execute workflow file');
   console.warn('  coordination <status|optimize>   Manage coordination');
   console.warn();
-  console.warn('Task Types:');
+  console.warn('Task Types);
   console.warn('  research      Information gathering and analysis');
   console.warn('  code          Software development tasks');
   console.warn('  analysis      Data processing and insights');
   console.warn('  coordination  Task orchestration and management');
   console.warn('  general       General purpose tasks');
   console.warn();
-  console.warn('Options:');
+  console.warn('Options);
   console.warn('  --priority <1-10>                Set task priority');
   console.warn('  --filter <status>                Filter by status');
   console.warn('  --verbose, -v                    Show detailed output');
   console.warn();
-  console.warn('Examples:');
+  console.warn('Examples);
   console.warn('  claude-zen task create research "Market analysis" --priority 8');
   console.warn('  claude-zen task list --filter running');
   console.warn('  claude-zen task workflow examples/development-workflow.json');
   console.warn('  claude-zen task coordination status');
-}
+// }
+

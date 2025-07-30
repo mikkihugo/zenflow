@@ -14,13 +14,13 @@ class StdioBenchmark {
   constructor() {
     this.results = {
       baseline: {} }
-}
+// }
 /**
  * Run complete benchmark suite;
  */
 async;
 runBenchmark();
-{
+// {
   console.warn('🚀 MCP Stdio Optimization Benchmark\n');
   // Baseline performance (simulated single message processing)
   console.warn('📊 Running baseline performance test...');
@@ -30,13 +30,13 @@ runBenchmark();
   this.results.optimized = await this.runOptimizedTest();
   // Display results
   this.displayResults();
-}
+// }
 /**
  * Simulate baseline (non-optimized) message processing;
  */
 async;
 runBaselineTest();
-{
+// {
   const _messageCount = 1000;
   const _messages = this.generateTestMessages(messageCount);
   const _startTime = Date.now();
@@ -50,13 +50,13 @@ runBaselineTest();
         // Simulate 5% error rate
         if (Math.random() < 0.05) {
           throw new Error('Simulated processing error');
-        }
+        //         }
         processedCount++;
       } catch (/* _error */) {
         errorCount++;
         // No retry logic in baseline
-      }
-  }
+      //       }
+  //   }
   const _endTime = Date.now();
   const _totalTime = endTime - startTime;
   return {
@@ -69,14 +69,14 @@ runBaselineTest();
     errorRate;
   : errorCount / messageCount,
   avgLatency: totalTime / messageCount
-}
-}
+// }
+// }
 /**
  * Test optimized message processing with batching and error handling;
  */
-async
+// async
 runOptimizedTest()
-{
+// {
   const _messageCount = 1000;
   const _messages = this.generateTestMessages(messageCount);
   // Initialize optimized components
@@ -110,7 +110,7 @@ stdioOptimizer.on('batch', async (batch) => {
             // Simulate 5% error rate (same )
             if (Math.random() < 0.05) {
               throw new Error('Simulated processing error');
-            }
+            //             }
             return { success };
     //   // LINT: unreachable code removed});
           processedCount++;
@@ -118,8 +118,8 @@ stdioOptimizer.on('batch', async (batch) => {
         } catch (error) {
           errorCount++;
           performanceMetrics.recordRequestEnd(requestId, false, { error });
-        }
-      }
+        //         }
+      //       }
     });
     // Process messages in batches
     const _batches = this.createBatches(messages, 20);
@@ -127,7 +127,7 @@ stdioOptimizer.on('batch', async (batch) => {
       stdioOptimizer.queueMessages(batch);
       // Small delay to allow batch processing
   // await this.delay(5);
-    }
+    //     }
     // Wait for any remaining processing
   // await this.delay(100);
     const _endTime = Date.now();
@@ -148,12 +148,12 @@ stdioOptimizer.on('batch', async (batch) => {
       retryAttempts: errorStats.totalErrors - errorStats.permanentFailures,
       circuitBreakerTrips: errorStats.circuitBreakerTrips,
       performanceMetrics };
-}
+// }
 /**
  * Generate test messages;
  */
 generateTestMessages(count)
-{
+// {
   const _messages = [];
   for (let i = 0; i < count; i++) {
     messages.push({
@@ -162,22 +162,23 @@ generateTestMessages(count)
     method: 'test_method',
     id: `test-${i}`,
     data: `test data ${i}`
-}
+// }
+
 
   receivedAt: Date.now()
 })
-}
+// }
 return messages;
 //   // LINT: unreachable code removed}
 /**
  * Create batches from messages;
  */
 createBatches(messages, batchSize);
-{
+// {
     const _batches = [];
     for (let i = 0; i < messages.length; i += batchSize) {
       batches.push(messages.slice(i, i + batchSize));
-    }
+    //     }
     return batches;
     //   // LINT: unreachable code removed}
   /**
@@ -192,47 +193,47 @@ createBatches(messages, batchSize);
     // Throughput comparison
     const _throughputImprovement =;
       ((optimized.throughput - baseline.throughput) / baseline.throughput) * 100;
-    console.warn(`\n🚀 THROUGHPUT:`);
+    console.warn(`\n🚀 THROUGHPUT);
     console.warn(`  Baseline:  ${baseline.throughput.toFixed(2)} messages/sec`);
     console.warn(`  Optimized: ${optimized.throughput.toFixed(2)} messages/sec`);
     console.warn(;
-      `  Improvement: ${throughputImprovement > 0 ? '+' : ''}${throughputImprovement.toFixed(1)}%`;
+      `  Improvement: \${throughputImprovement > 0 ? '+' }${throughputImprovement.toFixed(1)}%`;
     );
     // Latency comparison
     const _latencyImprovement =;
       ((baseline.avgLatency - optimized.avgLatency) / baseline.avgLatency) * 100;
-    console.warn(`\n⚡ LATENCY:`);
+    console.warn(`\n⚡ LATENCY);
     console.warn(`  Baseline:  ${baseline.avgLatency.toFixed(2)}ms avg`);
     console.warn(`  Optimized: ${optimized.avgLatency.toFixed(2)}ms avg`);
     console.warn(;
-      `  Improvement: ${latencyImprovement > 0 ? '+' : ''}${latencyImprovement.toFixed(1)}%`;
+      `  Improvement: \${latencyImprovement > 0 ? '+' }${latencyImprovement.toFixed(1)}%`;
     );
     // Error handling comparison
-    console.warn(`\n🛡️ ERROR HANDLING:`);
+    console.warn(`\n🛡️ ERROR HANDLING);
     console.warn(;
       `  Baseline errors:  ${baseline.errorCount}/${baseline.messageCount} (${(baseline.errorRate * 100).toFixed(1)}%)`;
     );
     console.warn(;
       `  Optimized errors: ${optimized.errorCount}/${optimized.messageCount} (${(optimized.errorRate * 100).toFixed(1)}%)`;
     );
-    console.warn(`  Retry attempts:   ${optimized.retryAttempts  ?? 0}`);
-    console.warn(`  Circuit breaker:  ${optimized.circuitBreakerTrips  ?? 0} trips`);
+    console.warn(`  Retry attempts);
+    console.warn(`  Circuit breaker);
     // Processing efficiency
-    console.warn(`\n📦 PROCESSING EFFICIENCY:`);
-    console.warn(`  Baseline:  Individual message processing`);
+    console.warn(`\n📦 PROCESSING EFFICIENCY);
+    console.warn(`  Baseline);
     console.warn(;
       `  Optimized: ${optimized.batchCount} batches (avg ${(optimized.messageCount / optimized.batchCount).toFixed(1)} msgs/batch)`;
     );
     // Time comparison
     const _timeImprovement = ((baseline.totalTime - optimized.totalTime) / baseline.totalTime) * 100;
-    console.warn(`\n⏱️ TOTAL PROCESSING TIME:`);
-    console.warn(`  Baseline:  ${baseline.totalTime}ms`);
-    console.warn(`  Optimized: ${optimized.totalTime}ms`);
-    console.warn(`  Improvement: ${timeImprovement > 0 ? '+' : ''}${timeImprovement.toFixed(1)}%`);
+    console.warn(`\n⏱️ TOTAL PROCESSING TIME);
+    console.warn(`  Baseline);
+    console.warn(`  Optimized);
+    console.warn(`  Improvement: \${timeImprovement > 0 ? '+' }${timeImprovement.toFixed(1)}%`);
     // Success rates
     const _baselineSuccessRate = (baseline.processedCount / baseline.messageCount) * 100;
     const _optimizedSuccessRate = (optimized.processedCount / optimized.messageCount) * 100;
-    console.warn(`\n✅ SUCCESS RATES:`);
+    console.warn(`\n✅ SUCCESS RATES);
     console.warn(;
       `  Baseline:  ${baselineSuccessRate.toFixed(1)}% (${baseline.processedCount}/${baseline.messageCount})`;
     );
@@ -240,29 +241,29 @@ createBatches(messages, batchSize);
       `  Optimized: ${optimizedSuccessRate.toFixed(1)}% (${optimized.processedCount}/${optimized.messageCount})`;
     );
     // Summary
-    console.warn(`\n🎯 OPTIMIZATION SUMMARY:`);
+    console.warn(`\n🎯 OPTIMIZATION SUMMARY);
     if (throughputImprovement > 0) {
       console.warn(`  ✅ ${throughputImprovement.toFixed(1)}% throughput increase`);
-    }
+    //     }
     if (latencyImprovement > 0) {
       console.warn(`  ✅ ${latencyImprovement.toFixed(1)}% latency reduction`);
-    }
+    //     }
     if (optimized.retryAttempts > 0) {
       console.warn(`  ✅ ${optimized.retryAttempts} automatic error recoveries`);
-    }
+    //     }
     console.warn(`  ✅ Batch processing with ${optimized.batchSize} message batches`);
     console.warn(`  ✅ Circuit breaker protection enabled`);
     console.warn(`  ✅ Performance metrics and monitoring`);
     console.warn(`\n${'='.repeat(60)}`);
-  }
+  //   }
   /**
    * Utility delay function;
    */
   delay(ms)
     return new Promise((resolve) => setTimeout(resolve, ms));
 // Run benchmark if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   const _benchmark = new StdioBenchmark();
   benchmark.runBenchmark().catch(console.error);
-}
+// }
 export { StdioBenchmark };

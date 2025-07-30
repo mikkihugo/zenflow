@@ -15,13 +15,13 @@ class TypeSafeCommandRegistry implements ICommandRegistry {}
 register(name,definition = this.commands.get(name);
 if (!definition) {
   return false;
-}
+// }
 // Remove aliases
 if (definition.aliases) {
   for (const alias of definition.aliases) {
     this.aliases.delete(alias);
-  }
-}
+  //   }
+// }
 // Remove command
 this.commands.delete(name);
 this.logger.debug(`Unregisteredcommand = this.commands.get(name);
@@ -42,17 +42,20 @@ this.logger.debug(`Unregisteredcommand = this.commands.get(name);
     return Array.from(this.commands.values()).sort((a, b) => ;
     // a.name.localeCompare(b.name); // LINT: unreachable code removed
     );
-  }
+  //   }
+
 
   listByCategory(category = > cmd.category === category);
-  }
+  //   }
+
 
   // Execution method
   async execute(name = this.get(name);
 
     if (!definition) {
       throw new CommandNotFoundError(name);
-    }
+    //     }
+
 
     // Validate command input
     const _validationResults = this.validate(name, context);
@@ -62,8 +65,8 @@ this.logger.debug(`Unregisteredcommand = this.commands.get(name);
         `Validationfailed = > e.message).join(', ');
 }`,
 name
-)
-}
+// )
+// }
 // Execute command with error handling
 try {
       this.logger.info(`Executingcommand = Date.now();
@@ -98,15 +101,18 @@ try {
             if (typeof validation === 'string') {
               results.push({valid = = 'function') {
       throw new CLIError(`Command '${name}' must have a valid handler function`, name);
-    }
+    //     }
+
 
     if (!definition.description  ?? definition.description.trim() === '') {
       throw new CLIError(`Command '${name}' must have a description`, name);
-    }
+    //     }
+
 
     if (!definition.usage  ?? definition.usage.trim() === '') {
       throw new CLIError(`Command '${name}' must have usage information`, name);
-    }
+    //     }
+
 
     // Validate category
     const _validCategories = [
@@ -115,9 +121,9 @@ try {
     if (!validCategories.includes(definition.category)) {
       throw new CLIError(;
         `Command '${name}' has invalid category. Must be one of = {core = > cmd.isExperimental).length,deprecatedCommands = > cmd.deprecated).length;
-    }
-}
-}
+    //     }
+// }
+// }
 // =============================================================================
 // GLOBAL REGISTRY INSTANCE
 // =============================================================================
@@ -134,16 +140,16 @@ export async function initializeCommandRegistry(): Promise<void> {
     // Load commands from the legacy system for now
     if (!commandRouter) {
       commandRouter = await loadCommands();
-    }
-  }
-}
+    //     }
+  //   }
+// }
 /**
  * Get the global command registry instance;
  */
 export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
 // await initializeCommandRegistry();
   return globalRegistry!;
-}
+// }
 // =============================================================================
 // MEOW CLI CREATION
 // =============================================================================
@@ -151,13 +157,13 @@ export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
 /**
  * Create meow CLI with comprehensive TypeScript configuration;
  */
-export async function createMeowCLI(): unknown {
+export async function createMeowCLI() {
 // await initializeCommandRegistry();
   // Handle legacy context format
   const __commandContext = context as CommandContext;
-}
+// }
 else
-{
+// {
   commandContext = {
       command,args = await getCommandRegistry();
   const _definition = registry.get(name);
@@ -174,28 +180,28 @@ else
       const _deprecated = cmd.deprecated ? ' (deprecated)' : '';
       const _experimental = cmd.isExperimental ? ' (experimental)' : '';
       console.warn(`${cmd.name.padEnd(15)} ${cmd.description}${deprecated}${experimental}`);
-    }
+    //     }
     console.warn();
-  }
-}
+  //   }
+// }
 /**
  * Check if command exists;
  */
-export async function hasCommand(name = await getCommandRegistry(: unknown);
+export async function hasCommand(name = await getCommandRegistry();
 return registry.has(name);
-}
+// }
 /**
  * Get command definition;
  */
-export async function getCommand(name = await getCommandRegistry(: unknown);
+export async function getCommand(name = await getCommandRegistry();
 return registry.get(name);
-}
+// }
 /**
  * Register a new command;
  */
-export async function registerCommand(name = await getCommandRegistry(: unknown);
+export async function registerCommand(name = await getCommandRegistry();
 registry.register(name, definition);
-}
+// }
 // =============================================================================
 // LEGACY COMPATIBILITY
 // =============================================================================
@@ -205,7 +211,7 @@ registry.register(name, definition);
  */
 export const commandRegistry = {register = await getCommandRegistry();
 return registry.getStats();
-}
+// }
 // Re-export for maximum compatibility
 export type {
   executeCommand as execute,
@@ -220,11 +226,11 @@ help }
 // UTILITY FUNCTIONS
 // =============================================================================
 
-function createLogger(name = > console.warn(`[TRACE:${name}] ${message}`, metadata),debug = > console.warn(`[DEBUG:${name}] ${message}`, metadata),info = > console.warn(`[INFO:${name}] ${message}`, metadata),warn = > console.warn(`[WARN:${name}] ${message}`, metadata),error = > console.error(`[ERROR:${name}] ${message}`, error, metadata),fatal = > console.error(`[FATAL:${name}] ${message}`, error, metadata),child = > createLogger(`${name}:child`),
+function createLogger(name = > console.warn(`[TRACE] ${message}`, metadata),debug = > console.warn(`[DEBUG] ${message}`, metadata),info = > console.warn(`[INFO] ${message}`, metadata),warn = > console.warn(`[WARN] ${message}`, metadata),error = > console.error(`[ERROR] ${message}`, error, metadata),fatal = > console.error(`[FATAL] ${message}`, error, metadata),child = > createLogger(`${name}),
 _setLevel => {},getLevel = > 'info';
-}
-}
-function _createDefaultConfig(): unknown {
+// }
+// }
+function _createDefaultConfig() {
   return { name = === 'development', isProduction = === 'production', isTest = === 'test' }, paths;
   // : ; // LINT: unreachable code removed
   dataDir: `\$;
@@ -239,6 +245,7 @@ claude-zen/config`,
   : `\$process.cwd()/.claude-zen/logs`,
   cacheDir: `\$process.cwd()/.claude-zen/cache`,
   tempDir: `\$process.cwd()/.claude-zen/temp`
-}
-}
-}
+// }
+// }
+// }
+

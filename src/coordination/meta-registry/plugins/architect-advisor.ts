@@ -27,32 +27,32 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
   this;
 
   optimizationQueue = [];
-}
+// }
 async;
 initialize(registry, (options = {}));
 : unknown
-{
+// {
   this.registry = registry;
   this.options = {analysisInterval = = false,approvalRequired = = false,
 ..options
-}
+// }
 // Get reference to memory-rag plugin
 this.memoryRag = registry.pluginSystem?.getPlugin?.('memory-rag');
 if (!this.memoryRag) {
   console.warn('ArchitectAdvisor = path.join(this.options.adrPath, 'index.json');
     this.suggestionsFile = path.join(this.options.adrPath, 'suggestions.json');
   this.patternsFile = path.join(this.options.adrPath, 'architectural-patterns.json');
-}
+// }
 async;
 loadArchitecturalPatterns();
 try {
       if (await fs.pathExists(this.patternsFile)) {
 // const _patternsData = awaitfs.readJson(this.patternsFile);
         this.architecturalPatterns = new Map(patternsData);
-      }
+      //       }
     } catch (error) {
       this.emit('loadError', error);
-    }
+    //     }
 async;
 performArchitecturalAnalysis();
 try {
@@ -62,8 +62,9 @@ try {
       for(const suggestion of suggestions) {
         if(suggestion.confidence > this.options.suggestionThreshold) {
 // await this.createSuggestion(suggestion);
-        }
-      }
+        //         }
+      //       }
+
 
       this.emit('analysisCompleted', {
         analysis,suggestions = this.analysisHistory.slice(-100);
@@ -77,7 +78,7 @@ try {
     return suggestions.sort((a, b) => b.confidence - a.confidence);
     //   // LINT: unreachable code removed}
 
-  async suggestPerformanceOptimizations(analysis): unknown {
+  async suggestPerformanceOptimizations(analysis) {
     const _suggestions = [];
 
     // Analyze query performance
@@ -108,20 +109,23 @@ try {
     for(const discovery of discoveries) {
       const _hash = JSON.stringify(discovery.query);
       queryHashes.set(hash, (queryHashes.get(hash)  ?? 0) + 1);
-    }
+    //     }
+
 
     const _repeats = Array.from(queryHashes.values()).filter(count => count > 1).length;
     return queryHashes.size > 0 ? repeats / queryHashes.size = Array.from(this.suggestions.entries());
-    // await fs.writeJson(this.suggestionsFile, suggestionsData, { spaces = { // LINT: unreachable code removed}): unknown {
+    // await fs.writeJson(this.suggestionsFile, suggestionsData, { spaces = { // LINT: unreachable code removed}) {
     const _suggestions = Array.from(this.suggestions.values());
 
     if(filter.status) {
       suggestions = suggestions.filter(s => s.status === filter.status);
-    }
+    //     }
+
 
     if(filter.type) {
       suggestions = suggestions.filter(s => s.type === filter.type);
-    }
+    //     }
+
 
     return suggestions.sort((a, b) => b.confidence - a.confidence);
     //   // LINT: unreachable code removed}
@@ -139,7 +143,7 @@ try {
   calculateMemoryGrowth(history): unknown ;
     return 0.1; // 10% growth
 
-  calculateThroughput(history): unknown {
+  calculateThroughput(history) {
     const _recent = history.slice(-20);
     return recent.length;
     //   // LINT: unreachable code removed}
@@ -153,6 +157,7 @@ try {
     this.suggestions.clear();
     this.adrs.clear();
     this.architecturalPatterns.clear();
-}
+// }
+
 
 export default ArchitectAdvisorPlugin;

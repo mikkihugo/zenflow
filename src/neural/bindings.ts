@@ -11,9 +11,9 @@ export interface RuvFannBindings {
         if (realBindings) {
             console.warn('✅ Using REAL ruv-FANN neural bindings')
 return realBindings;
-}
+// }
 } catch (error)
-{
+// {
         const __errorMessage = error instanceof Error ? error.message = null;
     private loadAttempted = false;
 
@@ -83,7 +83,7 @@ return realBindings;
                 try {
                     const _binding = require(path);
                     if (binding && typeof binding.loadModel === 'function') {
-                        this.logger.info(`Native bindings loadedfrom = error instanceof Error ? error.message : String(error);
+                        this.logger.info(`Native bindings loadedfrom = error instanceof Error ? error.message );
             this.logger.debug('Native bindings notavailable = [
                 '../ruv-FANN/pkg/ruv_fann.js',
                 './ruv-FANN/pkg/ruv_fann.js',
@@ -141,7 +141,8 @@ return realBindings;
             _freeMemory => ;
                 return binding.freeMemory();: undefined;
         };
-    }
+    //     }
+
 
     /**
      * Wrap WASM bindings with standardized interface;
@@ -168,9 +169,10 @@ return realBindings;
     //   // LINT: unreachable code removed} catch (error) {
                     return false;
     //   // LINT: unreachable code removed}
-            }
+            //             }
         };
-    }
+    //     }
+
 
     /**
      * Create stub bindings for development mode;
@@ -213,7 +215,7 @@ return realBindings;
                 const _results = [];
                 for (const prompt of prompts) {
                     results.push(await this.inference(prompt, options));
-                }
+                //                 }
                 return results;
     //   // LINT: unreachable code removed},
 
@@ -225,11 +227,7 @@ return realBindings;
                 this.logger.debug('Stub => {
                 return {
                     available,
-    // deviceName => { // LINT: unreachable code removed
-                return {
-                    totalAllocated,
-    // totalUsed => { // LINT: unreachable code removed
-                this.logger.debug('Stub = new RuvFannBindingsLoader();
+    // deviceName => { // LINT);
 
 /**
  * Load neural bindings (singleton pattern) - internal helper;
@@ -238,7 +236,8 @@ return realBindings;
  */;
 async function loadNeuralBindingsFromLoader(): Promise<RuvFannBindings | null> {
     return bindingsLoader.load();
-}
+// }
+
 
 // Export the class name as default
 export default RuvFannBindingsLoader;

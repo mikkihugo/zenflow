@@ -33,7 +33,7 @@ export class QueenCoordinator extends EventEmitter {
    * Creates a new QueenCoordinator instance;
    * @param {QueenCoordinatorConfig} [config={}] - Configuration options;
    */
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
         super();
 
         this.config = {maxConcurrentTasks = new Logger('QueenCoordinator');
@@ -60,7 +60,8 @@ export class QueenCoordinator extends EventEmitter {
                 });
 
                 this.metrics.queenUtilization[name] = 0;
-            }
+            //             }
+
 
             this.logger.info(`Initialized ${this.queens.size}queens = true;
 
@@ -74,7 +75,8 @@ export class QueenCoordinator extends EventEmitter {
 
         this.emit('started');
         this.logger.info('QueenCoordinator started successfully');
-    }
+    //     }
+
 
     /**
      * Stop the coordinator;
@@ -92,14 +94,16 @@ export class QueenCoordinator extends EventEmitter {
         if(this.healthCheckTimer) {
             clearInterval(this.healthCheckTimer);
             this.healthCheckTimer = null;
-        }
+        //         }
+
 
         // Shutdown all queens
         const _shutdownPromises = Array.from(this.queens.values()).map(queen => queen.shutdown());
 // await Promise.all(shutdownPromises);
         this.emit('stopped');
         this.logger.info('QueenCoordinator stopped');
-    }
+    //     }
+
 
     /**
      * Submit a task for processing;
@@ -107,20 +111,20 @@ export class QueenCoordinator extends EventEmitter {
      * @param {Partial<Task>} [options={}] - Task options;
      * @returns {Promise<string>} Task ID;
     // */; // LINT: unreachable code removed
-    async submitTask(prompt, options = {}): unknown {
+    async submitTask(prompt, options = {}) {
         const _taskId = this.generateTaskId();
 
         const _task = {id = false] - Whether to require consensus;
      * @returns {Promise<Result | Consensus>} Task result;
     // */; // LINT: unreachable code removed
-    async executeTask(task, requireConsensus = false): unknown {
+    async executeTask(task, requireConsensus = false) {
         const _startTime = performance.now();
 
         try {
             this.logger.info(`Executing task ${task.id},requireConsensus = performance.now() - startTime;
             this.updateProcessingTimeMetrics(processingTime);
-        }
-}
+        //         }
+// }
 /**
  * Execute task with the best available queen;
  * @private;
@@ -130,7 +134,7 @@ export class QueenCoordinator extends EventEmitter {
 async;
 executeWithBestQueen(task);
 : unknown
-{
+// {
 // const _bestQueen = awaitthis.selectBestQueen(task);
 
   if (!bestQueen) {
@@ -148,7 +152,7 @@ executeWithBestQueen(task);
      * @param {Task} task - The task to execute;
      * @returns {Promise<Consensus>} Consensus result;
     // */; // LINT: unreachable code removed
-    async executeWithConsensus(task): unknown {
+    async executeWithConsensus(task) {
 // const _suitableQueens = awaitthis.getSuitableQueens(task);
 
         if(suitableQueens.length < 2) {
@@ -172,10 +176,12 @@ executeWithBestQueen(task);
     this.logger.warn(;
       `Consensus confidence ${consensus.confidence} below threshold ${this.config.consensusThreshold}`;
     );
-  }
+  //   }
+
 
   return consensus;
-}
+// }
+
 
 /**
  * Select the best queen for a task;
@@ -186,7 +192,7 @@ executeWithBestQueen(task);
 async;
 selectBestQueen(task);
 : unknown;
-{
+// {
 // const _suitableQueens = awaitthis.getSuitableQueens(task);
 
   if (suitableQueens.length === 0) {
@@ -203,8 +209,9 @@ selectBestQueen(task);
   for (const queen of this.queens.values()) {
     if (await queen.canAcceptTask(task)) {
       suitableQueens.push(queen);
-    }
-  }
+    //     }
+  //   }
+
 
   // Sort by suitability (queens with matching specialty first)
   suitableQueens.sort((a, b) => {
@@ -219,7 +226,8 @@ selectBestQueen(task);
     //   // LINT: unreachable code removed});
 
   return suitableQueens;
-}
+// }
+
 
 /**
  * Process the task queue;
@@ -250,11 +258,13 @@ processTaskQueue();
                 this.emit('queenUnhealthy', { name, queen });
             } else {
                 healthyQueens++;
-            }
+            //             }
+
 
             // Update utilization metrics
             this.metrics.queenUtilization[name] = queen.getWorkload();
-        }
+        //         }
+
 
         // Update throughput (tasks per minute)
         const _now = Date.now();
@@ -265,7 +275,8 @@ processTaskQueue();
         this.emit('healthCheck', {
             healthyQueens,totalQueens = (this.metrics.averageProcessingTime * (this.metrics.completedTasks + this.metrics.failedTasks - 1) + processingTime) / ;
             (this.metrics.completedTasks + this.metrics.failedTasks);
-    }
+    //     }
+
 
     /**
      * Generate a unique task ID;
@@ -290,7 +301,7 @@ processTaskQueue();
      * @param {string} name - Queen name;
      * @returns {BaseQueen | undefined} Queen instance or undefined;
     // */; // LINT: unreachable code removed
-    getQueen(name): unknown {
+    getQueen(name) {
         return this.queens.get(name);
     //   // LINT: unreachable code removed}
 
@@ -299,7 +310,7 @@ processTaskQueue();
      * @param {string} taskId - Task ID;
      * @returns {'pending' | 'active' | 'completed' | 'failed' | 'not-found'} Task status;
     // */; // LINT: unreachable code removed
-    getTaskStatus(taskId): unknown {
+    getTaskStatus(taskId) {
         if (this.taskQueue.pending.some(task => task.id === taskId)) return 'pending';
     // if (this.taskQueue.active.has(taskId)) return 'active'; // LINT: unreachable code removed
         if (this.taskQueue.completed.has(taskId)) return 'completed';
@@ -312,7 +323,7 @@ processTaskQueue();
      * @param {string} taskId - Task ID;
      * @returns {Result | Consensus | null} Task result or null;
     // */; // LINT: unreachable code removed
-    getTaskResult(taskId): unknown {
+    getTaskResult(taskId) {
         return this.taskQueue.completed.get(taskId)  ?? null;
     //   // LINT: unreachable code removed}
 
@@ -321,7 +332,7 @@ processTaskQueue();
      * @param {string} taskId - Task ID;
      * @returns {Error | null} Task error or null;
     // */; // LINT: unreachable code removed
-    getTaskError(taskId): unknown {
+    getTaskError(taskId) {
         return this.taskQueue.failed.get(taskId)  ?? null;
     //   // LINT: unreachable code removed}
 
@@ -357,7 +368,7 @@ processTaskQueue();
         this.logger.info(`Removedqueen = 30000] - Timeout in milliseconds;
      * @returns {Promise<Result | Consensus>} Task result when completed;
     // */; // LINT: unreachable code removed
-    async waitForTask(taskId, timeout = 30000): unknown {
+    async waitForTask(taskId, timeout = 30000) {
         const _startTime = Date.now();
 
         while (Date.now() - startTime < timeout) {
@@ -371,18 +382,22 @@ processTaskQueue();
             if(status === 'failed') {
                 const _error = this.getTaskError(taskId);
                 throw error  ?? new Error(`Task ${taskId} failed`);
-            }
+            //             }
+
 
             if(status === 'not-found') {
                 throw new Error(`Task ${taskId} not found`);
-            }
+            //             }
+
 
             // Wait before checking again
 // await new Promise(resolve => setTimeout(resolve, 100));
-        }
+        //         }
+
 
         throw new Error(`Task ${taskId} timed out after ${timeout}ms`);
-    }
+    //     }
+
 
     /**
      * Check if coordinator is running;
@@ -391,4 +406,5 @@ processTaskQueue();
     isRunning() {
         return this.isRunning;
     //   // LINT: unreachable code removed}
-}
+// }
+

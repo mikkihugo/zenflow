@@ -88,7 +88,7 @@ def process_queue():;
 /**
  * Generate safe hooks documentation;
  */;
-export function generateSafeHooksGuide(): unknown {
+export function generateSafeHooksGuide() {
   return `;
 // #; // LINT: unreachable code removed
 🛡️ Safe Hook Patterns
@@ -100,19 +100,19 @@ for Claude Code
 #
 🚨 DANGEROUS PATTERN (NEVER USE)
 $
-{
+// {
   DANGEROUS_PATTERN_EXAMPLE.description;
-}
+// }
 \`\`\`json
 $
-{
+// {
   JSON.stringify(DANGEROUS_PATTERN_EXAMPLE.pattern, null, 2);
-}
+// }
 \`\`\`
 **Problems = > `- $
-{
+// {
   p;
-}
+// }
 `).join('\n')}
 
 ---
@@ -125,17 +125,17 @@ ${ALL_SAFE_PATTERNS.map(;
 #
 #
 $;
-{
+// {
   pattern.name;
-}
+// }
 $;
-{
+// {
   pattern.description;
-}
+// }
 **Configuration = > `- $
-{
+// {
   b;
-}
+// }
 `).join('\n')}
 
 ${
@@ -143,9 +143,9 @@ ${
     ? `**Usage = > `${i + 1}. ${u}`
 ).join('\n')}`
 : ''
-}
+// }
 $
-{
+// {
   pattern.additionalSetup;
     ? `**Additional Setup:**;
 \$
@@ -157,18 +157,12 @@ $
 \`\`\`;
 `;
     : '';
-}
+// }
 
-${
-  pattern.additionalSetup.updateScript;
+
+\${pattern.additionalSetup.updateScript;
     ? `;
-**Update Script:**;
-\`\`\`bash;
-\$pattern.additionalSetup.updateScript
-\`\`\`;
-`;
-    : '';
-}`;
+**Update Script}`;
     : '';
 
 \$;
@@ -180,7 +174,8 @@ ${
 \`\`\`;
 `;
     : '';
-}
+// }
+
 
 ---;
 `).join('')
@@ -218,15 +213,16 @@ claude-zen hook-safety reset;
 
 ## 📚 Additional Resources
 
-- Issue #166: https://github.com/ruvnet/claude-zen/issues/166
-- Claude Code Hooks Documentation: https://docs.anthropic.com/en/docs/claude-code/hooks
-- Reddit Discussion: https://www.reddit.com/r/ClaudeAI/comments/1ltvi6x/anyone_else_accidentally_create_an_infinite_loop/
+- Issue #166: https,//github.com/ruvnet/claude-zen/issues/166
+- Claude Code Hooks Documentation: https,//docs.anthropic.com/en/docs/claude-code/hooks
+- Reddit Discussion: https,//www.reddit.com/r/ClaudeAI/comments/1ltvi6x/anyone_else_accidentally_create_an_infinite_loop/
 
 ---
 
 **Remember**: When in doubt, use flag-based patterns or PostToolUse hooks instead of Stop hooks!;
 `;
-}
+// }
+
 
 export default {
   DANGEROUS_PATTERN_EXAMPLE,

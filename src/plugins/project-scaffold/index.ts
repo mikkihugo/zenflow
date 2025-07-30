@@ -8,7 +8,7 @@ import { mkdir, readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export class ProjectScaffoldPlugin extends EventEmitter {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     super();
     this.config = {templatesDir = new Map();
     this.templateCache = new Map();
@@ -16,7 +16,7 @@ export class ProjectScaffoldPlugin extends EventEmitter {
     this.placeholderRegex = /\{\{([^}]+)\}\}/g;
     this.conditionalRegex = /\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g;
     this.loopRegex = /\{\{#each\s+([^}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g;
-  }
+  //   }
   async initialize() {
     console.warn('🏗️ Project Scaffold Plugin initialized');
     // Create directories
@@ -35,8 +35,8 @@ export class ProjectScaffoldPlugin extends EventEmitter {
     app.use(express.urlencoded({ extended => {
   console.error(err.stack);
     res.status(500).send('Something broke!');
-  }
-  )
+  //   }
+  //   )
   // Start server
   app;
 
@@ -45,8 +45,8 @@ export class ProjectScaffoldPlugin extends EventEmitter {
   console;
 
   warn(\`Server is running on port \${PORT}\`);
-}
-)
+// }
+// )
 module.exports = app;
 `,encoding = require('express');
 const _router = express.Router();
@@ -76,29 +76,30 @@ root.render(;
 <React.StrictMode>;
 <App />;
   </React.StrictMode>;
-)
+// )
 `,encoding = "App">
 <header className="App-header">
 <h1>Welcome
 to
-{
+// {
   projectName;
-}
+// }
 </h1>;
         <p>{{description}
 }</p>
 <p>
 Edit < code > src / App.js < /
-{
+// {
   4;
-}
+// }
+
 
 >aaacdddeeelnooorstv < /
 >p < /
 >adeehr < /
 >div
-)
-}
+// )
+// }
 export default App;
 `,
             encoding = {preset = {parser = (name): string => {
@@ -110,16 +111,16 @@ this.config = config
 // Add your methods here
 }`,
 (_encoding) =>
-{
+// {
   it('should greet correctly', () => {
     expect(hello('World')).toBe('Hello, World!');
   });
-}
-)
+// }
+// )
 `,encoding = new
-{
+// {
   className;
-}
+// }
 ({debug = production
 
 #;
@@ -146,9 +147,9 @@ nodejs;
 Expose;
 port;
 EXPOSE;
-{
+// {
   port;
-}
+// }
 #;
 Health;
 check;
@@ -192,13 +193,13 @@ process.on('SIGTERM', () => {
 });
 })
 `,
-  (encoding = require('node:http'));
+  (encoding = require('node));
 const _options = {host = http.request(options, (res) => {
   if(res.statusCode === 200) {
     process.exit(0);
   } else {
     process.exit(1);
-  }
+  //   }
 });
 request.on('error', () => {
   process.exit(1);
@@ -210,12 +211,12 @@ PORT = { {port };
 }`,
   (encoding = {});
 ): unknown
-{
+// {
   this.config = {enabled = false;
-}
+// }
 async;
 initialize();
-{
+// {
     console.warn('🔌 {{pluginName}} Plugin initialized');#if hasDatabase;
     await this.initializeDatabase();/if}}#if hasAPI;
     await this.initializeAPI();/if}}
@@ -232,7 +233,8 @@ initialize();
   async execute(options = {}): unknown ;
     if(!this.initialized) {
       throw new Error('Plugin not initialized');
-    }
+    //     }
+
 
     // Implement your plugin logic here
     console.warn('Executing {{pluginName}} withoptions = false;
@@ -259,7 +261,7 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
   afterEach(async () => {
     if(plugin.initialized) {
 // await plugin.cleanup();
-    }
+    //     }
   });
 
   test('should initialize successfully', async () => {
@@ -302,11 +304,12 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
       // Merge remote templates into registry
       for (const [id, template] of Object.entries(registry.templates  ?? {})) {
         if (!this.templates.has(id)) {
-          this.templates.set(id, { ...template, id, source = {}, options = {}): unknown {
+          this.templates.set(id, { ...template, id, source = {}, options = {}) {
     const _template = this.templates.get(templateId);
     if(!template) {
       throw new Error(`Template '${templateId}' not found`);
-    }
+    //     }
+
 
     console.warn(`🏗️ Generating project fromtemplate = await this.processVariables(template, variables);
 
@@ -319,17 +322,20 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
       // Run post-generate commands
       if(template.postGenerate && !options.skipPostGenerate) {
 // await this.runPostGenerateCommands(template.postGenerate, outputDir);
-      }
+      //       }
+
 
       // Initialize git repository
       if(this.config.gitInit && !options.skipGit) {
 // await this.initializeGit(outputDir);
-      }
+      //       }
+
 
       // Install dependencies
       if(this.config.npmInstall && !options.skipInstall) {
 // await this.installDependencies(outputDir);
-      }
+      //       }
+
 
       // Record generated project
 
@@ -340,12 +346,14 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
       // Use default if not provided
       if(value === undefined && varDef.default !== undefined) {
         value = varDef.default;
-      }
+      //       }
+
 
       // Process template references in defaults
       if (typeof value === 'string' && value.includes('{{')) {
         value = this.processTemplate(value, processed);
-      }
+      //       }
+
 
       // Validate required variables
       if(varDef.required && value === undefined) {
@@ -355,8 +363,9 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
           console.warn(`Using default value '${value}' for required variable '${key}'`);
         } else {
           throw new Error(`Required variable '${key}' not provided`);
-        }
-      }
+        //         }
+      //       }
+
 
       // Type conversion
       if(value !== undefined) {
@@ -370,13 +379,15 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
           case 'array':;
             if(typeof value === 'string') {
               value = value.split(',').map(s => s.trim());
-            }
+            //             }
             break;
-        }
-      }
+        //         }
+      //       }
+
 
       processed[key] = value;
-    }
+    //     }
+
 
     // Add computed variables
     processed.year = new Date().getFullYear();
@@ -385,7 +396,7 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
     return processed;
     //   // LINT: unreachable code removed}
 
-  async generateFiles(template, variables, outputDir): unknown {
+  async generateFiles(template, variables, outputDir) {
     const _generatedFiles = [];
 
     for (const [filePath, fileConfig] of Object.entries(template.files  ?? {})) {
@@ -415,11 +426,13 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
       for(let i = 1; i < parts.length; i++) {
         const _filter = parts[i].trim();
         value = this.applyFilter(value, filter);
-      }
+      //       }
+
 
       return value !== undefined ? String(value) : match;
     //   // LINT: unreachable code removed});
-  }
+  //   }
+
 
   processConditionals(template, variables): unknown
     return template.replace(this.conditionalRegex, (_match, condition, _content) => {
@@ -452,7 +465,8 @@ export default {{className}Plugin;`,encoding = new {{className}}Plugin({
       } else {
         return undefined;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     return value;
     //   // LINT: unreachable code removed}
@@ -494,13 +508,13 @@ toLowerCase();
           resolve();
         } else {
           reject(new Error(`Command exited with code ${code}`));
-        }
+        //         }
       });
 
       child.on('error', reject);
     });
 
-  async listTemplates(options = {}): unknown {
+  async listTemplates(options = {}) {
     const _templates = Array.from(this.templates.values());
 
     // Filter by category
@@ -520,16 +534,16 @@ toLowerCase();
         const _category = template.category  ?? 'other';
         if(!grouped[category]) {
           grouped[category] = [];
-        }
+        //         }
         grouped[category].push(template);
-      }
+      //       }
       return grouped;
     //   // LINT: unreachable code removed}
 
     return templates;
     //   // LINT: unreachable code removed}
 
-  async createCustomTemplate(name, fromProject, options = {}): unknown {
+  async createCustomTemplate(name, fromProject, options = {}) {
     const _templateDir = path.join(this.config.customTemplatesDir, name);
 
     // Create template directory
@@ -541,7 +555,8 @@ toLowerCase();
       // Copy file to template
       const _targetPath = path.join(templateDir, templatePath);
 // await mkdir(path.dirname(targetPath), {recursive = templatePath;
-    }
+    //     }
+
 
     // Save manifest
 // await writeFile(;
@@ -552,17 +567,18 @@ toLowerCase();
     // Reload templates
 // const _template = awaitthis.loadTemplateFromDirectory(templateDir);
     if(template) {
-      this.templates.set(name, { ...template,id = []): unknown {
+      this.templates.set(name, { ...template,id = []) {
 
     const { glob } = await import('glob');
 // const _files = awaitglob('**/*', {
-      cwd = {}): unknown {
-    if (_source._startsWith('github = {}): unknown {
+      cwd = {}) {
+    if (_source._startsWith('github = {}) {
     _console._warn(`📥 _Importing _template _fromGitHub = path.join(this.config.templatesDir, '.temp', Date.now().toString());
 // await mkdir(tempDir, {recursive = await this.loadTemplateFromDirectory(tempDir);
       if(!template) {
         throw new Error('No valid template found in repository');
-      }
+      //       }
+
 
       // Save to custom templates
       const _templateId = options.name  ?? path.basename(repo);
@@ -575,7 +591,8 @@ toLowerCase();
 
       if(!template) {
         throw new Error('No valid template found in package');
-      }
+      //       }
+
 
       // Save to custom templates
       const _templateId = options.name  ?? packageName;
@@ -591,7 +608,8 @@ toLowerCase();
     this.removeAllListeners();
 
     console.warn('🏗️ Project Scaffold Plugin cleaned up');
-  }
-}
+  //   }
+// }
+
 
 export default ProjectScaffoldPlugin;

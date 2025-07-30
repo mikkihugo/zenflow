@@ -11,17 +11,16 @@ jest.mock('../command-registry.js', () => ({
 hasCommand: jest.fn(),
 listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],
 getCommand: () => ({ flags: [], args: [] }) }))
-jest.mock('../utils.js', () => (
-{
-  parseFlags: jest.fn((_args) =>;
+jest.mock('../utils.js', () => (// {
+  parseFlags) =>;
   args.reduce((acc, arg, i, arr) => {
       if (arg.startsWith('--')) {
         if (arr[i + 1] && !arr[i + 1].startsWith('--')) {
           acc[arg.slice(2)] = arr[i + 1];
         } else {
           acc[arg.slice(2)] = true;
-        }
-      }
+        //         }
+      //       }
       return acc;
     //   // LINT: unreachable code removed}, {});
   ),
@@ -31,7 +30,7 @@ jest.mock('../utils.js', () => (
     isMainModule}) }
 ))
 describe('Claude-Flow CLI', () =>
-{
+// {
   let originalArgv;
   let originalExit;
   let consoleLogSpy;
@@ -55,7 +54,7 @@ describe('Claude-Flow CLI', () =>
       process.argv = ['node', 'claude-zen'];
       const { executeCommand, hasCommand, showAllCommands } = await import(
         '../command-registry.js';
-      )
+      //       )
       hasCommand.mockReturnValue(false)
       // Import after mocks are set up
 // await
@@ -105,7 +104,7 @@ describe('Claude-Flow CLI', () =>
 // await import('../cli-main.js');
       expect(hasCommand).toHaveBeenCalledWith('swarm');
       expect(executeCommand).toHaveBeenCalledWith('swarm', ['Build a REST API'], {
-        strategy: 'development' });
+        strategy);
   });
   test('should show error for unknown command', async () => {
     const { hasCommand, listCommands } = await import('../command-registry.js');
@@ -141,5 +140,6 @@ describe('Claude-Flow CLI', () =>
         expect.stringContaining('Missing required argument'));
     });
   });
-}
-)
+// }
+// )
+

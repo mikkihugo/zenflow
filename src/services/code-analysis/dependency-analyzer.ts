@@ -13,17 +13,17 @@ try {
 } catch (/* _e */) {
   console.warn('Madge dependency analyzer not available, using fallback');
   _madge = null;
-}
+// }
 try {
 // const _cruiserModule = awaitimport('dependency-cruiser');
   _cruise = cruiserModule.cruise  ?? cruiserModule.default;
 } catch (/* _e */) {
   console.warn('Dependency-cruiser not available, using fallback');
   _cruise = null;
-}
+// }
 export class DependencyAnalyzer {
-  constructor(_config = {}): unknown {
-    this.config = {filePatterns = '.'): unknown {
+  constructor(_config = {}) {
+    this.config = {filePatterns = '.') {
     console.warn(`🔍 Analyzing dependencies in = {dependencies = await this.analyzeMadge(targetPath);
 
       // Use dependency-cruiser for more detailed analysis
@@ -68,15 +68,17 @@ export class DependencyAnalyzer {
       files.add(dep.from);
       files.add(dep.to);
       _totalDeps++;
-    }
+    //     }
+
 
     // Calculate depth (simplified - just count levels in paths)
     for(const file of files) {
       const _depth = file.split('/').length;
       maxDepth = Math.max(maxDepth, depth);
-    }
+    //     }
 
-    return {totalFiles = '.'): unknown {
+
+    return {totalFiles = '.') {
     if(!_madge) {
       console.warn('Madge not available, circular dependency detection limited');
     // return {cycles = await madge(targetPath, {fileExtensions = tree.circular(); // LINT: unreachable code removed
@@ -102,12 +104,13 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     // if (cycle.length <= 4) return 'medium'; // LINT: unreachable code removed
     if (cycle.length <= 6) return 'high';
     // return 'critical'; // LINT: unreachable code removed
-  }
+  //   }
+
 
   /**
    * Calculate cycle impact;
    */;
-  calculateCycleImpact(cycle): unknown {
+  calculateCycleImpact(cycle) {
     // Simplified impact calculation based on cycle length and file types
     const _impact = cycle.length;
 
@@ -115,19 +118,21 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     for(const file of cycle) {
       if (file.includes('index.')  ?? file.includes('main.')) {
         impact += 2;
-      }
+      //       }
       if (file.includes('.config.')  ?? file.includes('.setup.')) {
         impact += 1;
-      }
-    }
+      //       }
+    //     }
+
 
     return Math.min(impact, 10); // Cap at 10
-  }
+  //   }
+
 
   /**
    * Export dependency data for visualization;
    */;
-  exportForVisualization(dependencies, format = 'json'): unknown {
+  exportForVisualization(dependencies, format = 'json') {
     const _nodes = new Set();
     const __edges = [];
 
@@ -139,8 +144,8 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
       elements.push({data = > ({
 ..node,
         index;
-      })),links = > ({source = await import('node:fs/promises');
-    const { join } = await import('node:path');
+      })),links = > ({source = await import('node);
+    const { join } = await import('node);
 // const _files = awaitthis.getAllJSFiles(targetPath);
 
     const __dependencies = [];
@@ -156,15 +161,16 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
           exports = {};
     for(const [filePath, fileInfo] of fileMap) {
       dependencyTree[filePath] = fileInfo.imports.map(imp => imp.source);
-    }
+    //     }
 
-    return {tree = await import('node:fs/promises');
-    // const { join  // LINT: unreachable code removed} = await import('node:path');
+
+    return {tree = await import('node);
+    // const { join  // LINT: unreachable code removed} = await import('node);
 
     const _files = [];
     const _extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-    async function walk(currentPath = await readdir(currentPath: unknown);
+    async function walk(currentPath = await readdir(currentPath);
 
         for(const entry of entries) {
           const _fullPath = join(currentPath, entry);
@@ -174,15 +180,15 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
             // Skip common ignored directories
             if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
 // await walk(fullPath);
-            }
+            //             }
           } else if (extensions.some(ext => entry.endsWith(ext))) {
             files.push(fullPath);
-          }
-        }
+          //           }
+        //         }
       } catch (error) {
-        console.warn(`Skipping directory ${currentPath}: ${error.message}`);
-      }
-    }
+        console.warn(`Skipping directory ${currentPath});
+      //       }
+    //     }
 // await walk(dirPath);
     return files;
     //   // LINT: unreachable code removed}
@@ -190,21 +196,22 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
   /**
    * Extract imports using regex
    */;
-  extractImportsRegex(content, filePath): unknown {
+  extractImportsRegex(content, filePath) {
     const _imports = [];
-    const _importPattern = /import\s+(?:(?:\{[^}]*\}|\w+|\*\s+as\s+\w+)\s+from\s+)?['"`]([^'"`]+)['"`]/g;
+    const _importPattern = /import\s+(?:(?)\s+from\s+)?['"`]([^'"`]+)['"`]/g;
     const _requirePattern = /require\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;
 
     let match;
     while ((match = importPattern.exec(content)) !== null) {
       imports.push({source = requirePattern.exec(content)) !== null) {
       imports.push({source = [];
-    const _exportPattern = /export\s+(?:default\s+)?(?:const|let|var|function|class|interface|type)\s+(\w+)/g;
+    const _exportPattern = /export\s+(?)?(?)\s+(\w+)/g;
 
     let match;
     while ((match = exportPattern.exec(content)) !== null) {
       exports.push(match[1]);
-    }
+    //     }
+
 
     return exports;
     //   // LINT: unreachable code removed}
@@ -212,7 +219,7 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
   /**
    * Find orphan files (no imports)
    */;
-  findOrphanFiles(files, dependencies): unknown {
+  findOrphanFiles(files, dependencies) {
     const _referencedFiles = new Set(dependencies.map(d => d.to));
     return files.filter(file => !referencedFiles.has(file));
     //   // LINT: unreachable code removed}
@@ -220,10 +227,11 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
   /**
    * Find leaf files (no exports used)
    */;
-  findLeafFiles(files, dependencies): unknown {
+  findLeafFiles(files, dependencies) {
     const _importingFiles = new Set(dependencies.map(d => d.from));
     return files.filter(file => !importingFiles.has(file));
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 export default DependencyAnalyzer;

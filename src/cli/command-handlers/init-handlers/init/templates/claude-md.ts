@@ -4,7 +4,7 @@
  */
 // claude-md.js - CLAUDE.md templates
 
-export function createMinimalClaudeMd(): unknown {
+export function createMinimalClaudeMd() {
   return `# Claude Code Configuration
 
     // ## 🚨CRITICAL = ALL RELATED OPERATIONS" // LINT: unreachable code removed
@@ -168,8 +168,8 @@ npx claude-zen sparc run integration "integrate authentication with user managem
 - Monitor system resources during parallel operations for optimal performance
 
 For more information about SPARC methodology and batchtools optimization, see: ;
-- SPARC Guide: https://github.com/ruvnet/claude-zen/docs/sparc.md
-- Batchtools Documentation: https://github.com/ruvnet/claude-zen/docs/batchtools.md
+- SPARC Guide: https,//github.com/ruvnet/claude-zen/docs/sparc.md
+- Batchtools Documentation: https,//github.com/ruvnet/claude-zen/docs/batchtools.md
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.;
@@ -177,4 +177,5 @@ NEVER create files unless they're absolutely necessary for achieving your goal.;
 ALWAYS prefer editing an existing file to creating a new one.;
 NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.;
 `;
-}
+// }
+

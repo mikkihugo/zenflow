@@ -42,37 +42,13 @@ export interface TypedRequest extends Request {
   correlation?: {id = any>(): T
   typedQuery<T = any>(): T;
   typedBody<T = any>(): T;
-}
+// }
 export interface TypedResponse extends Response {
   // Enhanced response with type safety
   success<_T = any>(data, message?: string): void;
-  error(message = any>(data: T[],pagination = ============================================================================;
-// SERVER STATUS AND METRICS
-// =============================================================================
-
-export interface ServerStatus {
-  // Basic statusrunning = ============================================================================
-// WEBSOCKET TYPES
-// =============================================================================
-
-export interface WebSocketClient {id = ============================================================================
-// VALIDATION AND UTILITY TYPES
-// =============================================================================
-
-export interface ValidationResult {valid = ============================================================================
-// SERVER FACTORY AND BUILDER
-// =============================================================================
-
-export interface ServerFactory {
-  createUnifiedServer(config = ============================================================================;
-// EVENT TYPES
-// =============================================================================
-
-export interface ServerEvents {
-  // Lifecycle events
-  'server-starting': () => void;
+  error(message = any>(data) => void;
   'server-started': (status = > void;
-  'server-stopping': () => void;
+  'server-stopping') => void;
   'server-stopped': () => void;
   'server-error': (error = > void;
 // Request events
@@ -97,4 +73,5 @@ export interface ServerEvents {
 // Metrics events
 'metrics-collected': (metrics = > void
 'performance-warning': (metric = > void
-}
+// }
+

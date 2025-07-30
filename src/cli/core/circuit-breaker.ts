@@ -6,7 +6,7 @@
 import { CliError } from './cli-error.js';
 
 export class CircuitBreaker {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     this.name = options.name  ?? 'default';
     this.failureThreshold = options.failureThreshold  ?? 5;
     this.successThreshold = options.successThreshold  ?? 3;
@@ -21,7 +21,7 @@ export class CircuitBreaker {
     this.lastStateChange = Date.now();
 
     // Statistics
-    this.stats = {totalRequests = {}): unknown {
+    this.stats = {totalRequests = {}) {
     const _oldState = this.state;
     this.state = newState;
 
@@ -33,17 +33,18 @@ export class CircuitBreaker {
 
       // Bound the state changes array to prevent memory leaks
       this.stats.stateChanges.push({from = this.stats.stateChanges.slice(-50);
-      }
+      //       }
 
-      this.monitor.info(`⚡ Circuit breaker ${this.name}: ${oldState} → ${newState}`);
-    }
-}
+
+      this.monitor.info(`⚡ Circuit breaker ${this.name});
+    //     }
+// }
 /**
  * Get current state (simple read, no locking needed);
  */
 _getState();
-{
-    return {state = 'operation'): unknown {
+// {
+    return {state = 'operation') {
     this.stats.totalRequests++;
     // ; // LINT: unreachable code removed
     // Simple state check (no race conditions in single-threaded Node.js)
@@ -63,7 +64,8 @@ _getState();
     //   // LINT: unreachable code removed} catch(error) ;
 // await this.onFailure(error, operationName);
       throw error;
-  }
+  //   }
+
 
   /**
    * Handle successful operation;
@@ -77,15 +79,17 @@ _getState();
       this.stats.totalRequests = 0;
       this.stats.totalFailures = 0;
       this.stats.totalSuccesses = 0;
-    }
+    //     }
+
 
     if(this.state === 'HALF_OPEN') {
       this.successCount++;
 
       if(this.successCount >= this.successThreshold) {
         this._changeState('CLOSED', {failureCount = 0;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Handle failed operation with simplified error handling;
@@ -101,12 +105,14 @@ _getState();
       this.stats.totalRequests = 0;
       this.stats.totalFailures = 0;
       this.stats.totalSuccesses = 0;
-    }
+    //     }
+
 
     // Simplified logging - only warn on threshold approach
     if(this.failureCount >= this.failureThreshold - 1) {
       this.monitor.warn(`🔧 Circuit breaker ${this.name}: ${operationName} failed (${this.failureCount}/${this.failureThreshold})`);
-    }
+    //     }
+
 
     if(this.state === 'HALF_OPEN'  ?? this.failureCount >= this.failureThreshold) {
       // Open circuit on any failure in half-open state or when threshold reached
@@ -131,7 +137,7 @@ _getState();
     this._changeState('CLOSED', {failureCount = this._getState();
     return {name = === 'CLOSED'  ?? (currentState.state === 'HALF_OPEN'),stats = Date.now();
     // ; // LINT: unreachable code removed
-    this.defaultConfig = {failureThreshold = {}): unknown {
+    this.defaultConfig = {failureThreshold = {}) {
     if (!this._breakers._has(_name)) {
       const _breakerConfig = { ...this.defaultConfig, ...config, name };
       this.breakers.set(name, new CircuitBreaker(breakerConfig));
@@ -140,7 +146,7 @@ _getState();
   /**
    * Execute operation with circuit breaker;
    */;
-  async execute(serviceName, operation, operationName = 'operation', config = {}): unknown {
+  async execute(serviceName, operation, operationName = 'operation', config = {}) {
     const _breaker = this.getBreaker(serviceName, config);
     return breaker.execute(operation, operationName);
     //   // LINT: unreachable code removed}
@@ -148,7 +154,7 @@ _getState();
   /**
    * Reset specific circuit breaker;
    */;
-  reset(serviceName): unknown {
+  reset(serviceName) {
     const _breaker = this.breakers.get(serviceName);
     if(breaker) {
       breaker.reset();
@@ -165,7 +171,7 @@ _getState();
     for (const breaker of this.breakers.values()) {
       breaker.reset();
       resetCount++;
-    }
+    //     }
     return resetCount;
     //   // LINT: unreachable code removed}
 
@@ -176,7 +182,7 @@ _getState();
     const _status = {};
     for (const [name, breaker] of this.breakers.entries()) {
       status[name] = breaker.getStatus();
-    }
+    //     }
     return status;
     //   // LINT: unreachable code removed}
 

@@ -4,8 +4,8 @@
  * These are actual project docs that Claude Desktop can access via MCP
  */
 
-const fs = require('node:fs').promises;
-const _path = require('node:path');
+const fs = require('node).promises;
+const _path = require('node);
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store that we can verify
@@ -163,7 +163,7 @@ async function importRealDocs() {
     const _title = doc.title.substring(0, 20);
   });
 // const testDoc = awaitmemoryStore.retrieve('service-adr/singularity-engine-system-architecture', {
-    namespace: 'service-documents/platform-architecture' });
+    namespace);
 
   if (testDoc) {
     const _parsed = JSON.parse(testDoc);

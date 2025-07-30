@@ -18,16 +18,16 @@ const ___dirname = path.dirname(__filename);
 async function applyTimezoneFixes() {
   console.warn('🔧 Applying timezone fixes for issue #246...\n');
   const _fixes = [
-    {
+    //     {
       name: 'Add timezone utilities',
       action: () => copyTimezoneUtils() },
-    {
+    //     {
       name: 'Update session creation to include timezone info',
       action: () => updateSessionCreation() },
-    {
+    //     {
       name: 'Fix session display to show local time',
       action: () => updateSessionDisplay() },
-    {
+    //     {
       name: 'Update database schema for timezone support',
       action: () => updateDatabaseSchema() } ];
   for (const fix of fixes) {
@@ -36,17 +36,17 @@ async function applyTimezoneFixes() {
   // await fix.action();
       console.warn(`✅ ${fix.name} - Complete\n`);
     } catch (error) {
-      console.error(`❌ ${fix.name} - Failed:`, error.message);
-    }
-  }
+      console.error(`❌ ${fix.name} - Failed);
+    //     }
+  //   }
   console.warn('🎉 Timezone fixes applied successfully!');
-  console.warn('\n📋 Summary of changes:');
+  console.warn('\n📋 Summary of changes);
   console.warn('• Created timezone utilities in src/utils/timezone-utils.js');
   console.warn('• Updated session creation to store timezone information');
   console.warn('• Modified displays to show local time instead of UTC');
   console.warn('• Enhanced database schema to support timezone data');
   console.warn('\n💡 Users will now see timestamps in their local timezone (e.g., AEST)');
-}
+// }
 async function copyTimezoneUtils() {
   const _utilsDir = path.join(process.cwd(), 'src', 'utils');
   const _timezoneUtilsPath = path.join(utilsDir, 'timezone-utils.js');
@@ -57,30 +57,30 @@ async function copyTimezoneUtils() {
     return;
     //   // LINT: unreachable code removed} catch {
     // File doesn't exist, continue with creation
-  }
+  //   }
   // await fs.mkdir(utilsDir, { recursive });
   // The timezone utils are already created in the previous step
   console.warn('   ✓ Timezone utilities are available');
-}
+// }
 async function updateSessionCreation() {
-  console.warn('   💡 Session creation updates:');
+  console.warn('   💡 Session creation updates);
   console.warn('   • Store both UTC and local timestamps');
   console.warn('   • Include user timezone information');
   console.warn('   • Add timezone offset for accurate conversion');
-}
+// }
 async function updateSessionDisplay() {
-  console.warn('   💡 Display updates:');
+  console.warn('   💡 Display updates);
   console.warn('   • Convert UTC timestamps to user local time');
   console.warn('   • Show relative time (e.g., "2 hours ago")');
   console.warn('   • Display timezone abbreviation (e.g., AEST)');
   console.warn('   • Add timezone info to session listings');
-}
+// }
 async function updateDatabaseSchema() {
-  console.warn('   💡 Database schema updates:');
+  console.warn('   💡 Database schema updates);
   console.warn('   • Add created_at_local column for local timestamp');
   console.warn('   • Add timezone_name column for timezone identification');
   console.warn('   • Add timezone_offset column for accurate conversion');
-}
+// }
 /**
  * Create a migration script for existing sessions;
  */
@@ -107,8 +107,8 @@ CREATE INDEX IF NOT EXISTS idx_sessions_timezone ON sessions(timezone_name);
   const _migrationPath = path.join(process.cwd(), 'migrations', 'fix-timezone-issue-246.sql');
   // await fs.mkdir(path.dirname(migrationPath), { recursive });
   // await fs.writeFile(migrationPath, migrationContent.trim());
-  console.warn(`📄 Created migration script: ${migrationPath}`);
-}
+  console.warn(`📄 Created migration script);
+// }
 /**
  * Test the timezone fix;
  */
@@ -121,20 +121,20 @@ async function testTimezoneFix() {
     );
     const _tz = getTimezoneInfo();
     console.warn(`🌍 Current timezone: ${tz.name} (${tz.abbreviation})`);
-    console.warn(`⏰ UTC offset: ${tz.offset > 0 ? '+' : ''}${tz.offset} hours`);
+    console.warn(`⏰ UTC offset);
     const _now = new Date();
     const _formatted = formatTimestampForDisplay(now);
-    console.warn(`📅 Current time: ${formatted.display}`);
+    console.warn(`📅 Current time);
     // Simulate AEST timezone for the issue reporter
     const _aestTime = new Date(now.getTime() + 10 * 60 * 60 * 1000); // UTC+10
     console.warn(;
-      `🇦🇺 AEST example: ${aestTime.toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })}`;
+      `🇦🇺 AEST example: \${aestTime.toLocaleString('en-AU', { timeZone})}`;
     );
     console.warn('\n✅ Timezone fix is working correctly!');
   } catch (error) {
-    console.error('❌ Test failed:', error.message);
-  }
-}
+    console.error('❌ Test failed);
+  //   }
+// }
 /**
  * Main execution;
  */
@@ -152,16 +152,16 @@ async function main() {
   console.warn("This script fixes the hive-mind creation time to show in user's local timezone.\n");
   // await applyTimezoneFixes();
   // await createMigrationScript();
-  console.warn('\n🚀 Next steps:');
-  console.warn('1. Run: npm test to verify changes');
+  console.warn('\n🚀 Next steps);
+  console.warn('1. Run);
   console.warn('2. Apply database migration if you have existing sessions');
-  console.warn('3. Test with: node scripts/fix-timezone-issue-246.js --test');
+  console.warn('3. Test with);
   console.warn(;
     "\n💡 The fix ensures timestamps show in user's timezone (e.g., AEST for Australian users)";
   );
-}
+// }
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   main().catch(console.error);
-}
+// }
 export { applyTimezoneFixes, testTimezoneFix, createMigrationScript };

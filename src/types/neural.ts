@@ -89,14 +89,7 @@ export interface ModelRegistry {
 
 export interface NeuralEvents {
   // Training events
-  'training-started': (jobId = > void;
-  'training-progress': (jobId = > void;
-  'training-completed': (jobId = > void;
-  'training-failed': (jobId = > void;
-  'training-paused': (jobId = > void;
-  'training-resumed': (jobId = > void;
-// Model events
-('model-registered');
+  'training-started');
 : (modelId = > void
 ('model-updated')
 : (modelId = > void
@@ -133,7 +126,7 @@ export interface NeuralEvents {
 : (batchId = > void
 ('optimization-completed')
 : (modelId = > void
-}
+// }
 // =============================================================================
 // AUXILIARY TYPES
 // =============================================================================
@@ -143,124 +136,125 @@ export interface OptimizationOptions {
   targetLatency?: number; // milliseconds
   targetAccuracy?: number; // 0-1
   targetSize?: number; // MB
-  preserveAccuracy: boolean;
+  // preserveAccuracy: boolean
   aggressiveness: 'conservative' | 'moderate' | 'aggressive';
-}
+// }
 export interface ValidationDataset {
-  name: string;
-  path: string;
-  size: number;
+  // name: string
+  // path: string
+  // size: number
   format: 'numpy' | 'csv' | 'json' | 'tfrecord' | 'parquet';
-  preprocessing: JSONObject;
-}
+  // preprocessing: JSONObject
+// }
 export interface ValidationResults {
-  accuracy: number;
-  precision: number;
-  recall: number;
-  f1Score: number;
-  auc: number;
-  confusionMatrix: number[][];
-  classificationReport: JSONObject;
+  // accuracy: number
+  // precision: number
+  // recall: number
+  // f1Score: number
+  // auc: number
+  confusionMatrix[];
+  // classificationReport: JSONObject
   customMetrics: Record<string, number>;
 // Performance analysis
-{
-  mean: number;
-  median: number;
-  p95: number;
-  p99: number;
-}
+// {
+  // mean: number
+  // median: number
+  // p95: number
+  // p99: number
+// }
 // Robustness
 adversarialAccuracy?: number;
 calibrationError?: number;
 uncertainty?: JSONObject;
-}
+// }
 export interface Benchmark {
-  name: string;
+  // name: string
   type: 'speed' | 'accuracy' | 'memory' | 'energy' | 'comprehensive';
-  dataset: string;
-  metrics: string[];
-  constraints: JSONObject;
-}
+  // dataset: string
+  metrics;
+  // constraints: JSONObject
+// }
 export interface BenchmarkResults {
-  benchmark: string;
-  modelId: UUID;
+  // benchmark: string
+  // modelId: UUID
   results: Record<string, number>;
-  ranking: number;
-  comparison: JSONObject;
-  timestamp: Date;
-}
+  // ranking: number
+  // comparison: JSONObject
+  // timestamp: Date
+// }
 export interface ModelComparison {
-  models: UUID[];
+  models;
   metrics: Record<string, Record<UUID, number>>;
   rankings: Record<string, UUID[]>;
-  recommendations: string[];
-  tradeoffs: JSONObject;
-}
+  recommendations;
+  // tradeoffs: JSONObject
+// }
 export interface TimeRange {
-  start: Date;
-  end: Date;
-}
+  // start: Date
+  // end: Date
+// }
 export interface ModelMetrics {
-  modelId: UUID;
-  timeRange: TimeRange;
+  // modelId: UUID
+  // timeRange: TimeRange
   // Prediction quality
-  accuracy: number[];
-  precision: number[];
-  recall: number[];
-  f1Score: number[];
+  accuracy;
+  precision;
+  recall;
+  f1Score;
   // Performance
-  latency: number[];
-  throughput: number[];
-  errorRate: number[];
+  latency;
+  throughput;
+  errorRate;
   // Resource usage
-  memoryUsage: number[];
-  cpuUsage: number[];
-  gpuUsage: number[];
+  memoryUsage;
+  cpuUsage;
+  gpuUsage;
   // Business metrics
-  requestCount: number[];
-  cost: number[];
-  revenue: number[];
-  timestamps: Date[];
-}
+  requestCount;
+  cost;
+  revenue;
+  timestamps;
+// }
 export interface ModelHealth {
   status: 'healthy' | 'warning' | 'critical' | 'failed';
-  score: number; // 0-1
+  score: number, // 0-1
 
   checks: {
-    name: string;
+    // name: string
     status: 'pass' | 'warning' | 'fail';
-    value: number;
-    threshold: number;
-    message: string;
+    // value: number
+    // threshold: number
+    // message: string
   }[];
-{
+// {
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'performance' | 'accuracy' | 'availability' | 'resource';
-  description: string;
-  recommendation: string;
-}
+  // description: string
+  // recommendation: string
+// }
 [];
-{
-  metric: string;
+// {
+  // metric: string
   direction: 'improving' | 'stable' | 'degrading';
-  confidence: number;
-}
+  // confidence: number
+// }
 [];
-lastCheck: Date;
-nextCheck: Date;
-}
+// lastCheck: Date
+// nextCheck: Date
+// }
 export interface ModelAlert {
-  name: string;
-  condition: string;
-  threshold: number;
+  // name: string
+  // condition: string
+  // threshold: number
   severity: 'info' | 'warning' | 'critical';
-  enabled: boolean;
-{
+  // enabled: boolean
+// {
   type: 'email' | 'webhook' | 'slack' | 'pagerduty' | 'auto-scale' | 'rollback';
-  config: JSONObject;
-}
+  // config: JSONObject
+// }
 [];
-cooldown: number; // seconds
+cooldown: number, // seconds
 lastTriggered?: Date;
-triggerCount: number;
-}
+// triggerCount: number
+// }
+

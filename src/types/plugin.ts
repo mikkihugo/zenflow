@@ -61,17 +61,17 @@ export interface PluginEvents {
 // Lifecycle events
 ('loading');
 : (pluginName = > void
-('loaded'):  (pluginName = > void
-('initializing'):  (pluginName = > void
-('initialized'):  (pluginName = > void
-('starting'):  (pluginName = > void
-('started'):  (pluginName = > void
-('stopping'):  (pluginName = > void
-('stopped'):  (pluginName = > void
-('unloading'):  (pluginName = > void
-('unloaded'):  (pluginName = > void
-('error'):  (pluginName = > void
-('restarted'):  (pluginName = > void
+('loaded')  (pluginName = > void
+('initializing')  (pluginName = > void
+('initialized')  (pluginName = > void
+('starting')  (pluginName = > void
+('started')  (pluginName = > void
+('stopping')  (pluginName = > void
+('stopped')  (pluginName = > void
+('unloading')  (pluginName = > void
+('unloaded')  (pluginName = > void
+('error')  (pluginName = > void
+('restarted')  (pluginName = > void
 // Hook events
 ('hook-registered')
 : (pluginName = > void
@@ -104,7 +104,7 @@ export interface PluginEvents {
 : (pluginName = > void
 ('sandbox-breach')
 : (pluginName = > void
-}
+// }
 // =============================================================================
 // PLUGIN INTERFACE
 // =============================================================================
@@ -128,12 +128,11 @@ export interface PluginLogger {
   trace(message = > void): Promise<void>;
   off(event = > void): Promise<void>;
   once(event = > void): Promise<void>;
-}
+// }
 export interface PluginHttpAPI {
   request(options = > boolean;
-  proxy?: string;
-  auth?: {username = > void): Promise<void>;
-}
+  proxy?): Promise<void>;
+// }
 export interface FileStats {size = ============================================================================
 // PLUGIN MANAGER
 // =============================================================================
@@ -145,19 +144,20 @@ export interface PluginManager extends TypedEventEmitter<_PluginEvents> {
 // =============================================================================
 
 export interface PluginHealthResult {status = > Promise<void>): Promise<void>
-unschedule(name: string);
+unschedule(name);
 : Promise<void>
-trigger(name: string)
+trigger(name)
 : Promise<void>
 list()
 : Promise<ScheduledJob[]>
-}
+// }
 export interface ScheduledJob {
-  name: string;
-  cron: string;
-  nextRun: Date;
+  // name: string
+  // cron: string
+  // nextRun: Date
   lastRun?: Date;
-  enabled: boolean;
-  runCount: number;
-  errorCount: number;
-}
+  // enabled: boolean
+  // runCount: number
+  // errorCount: number
+// }
+

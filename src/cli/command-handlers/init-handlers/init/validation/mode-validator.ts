@@ -1,14 +1,14 @@
 // mode-validator.js - SPARC mode functionality testing
 
 export class ModeValidator {
-  constructor(workingDir = workingDir;
-}
+  constructor(workingDir = workingDir; // eslint-disable-line
+// }
 /**
  * Test all SPARC modes for basic functionality;
  */
 async;
 testAllModes();
-{
+// {
   const _result = {success = await this.checkSparcInitialization();
   if (!sparcInitialized.initialized) {
     result.warnings.push('SPARC not initialized - mode testing skipped');
@@ -53,7 +53,7 @@ testAllModes();
         result.error = execTest.error;
         return result;
     //   // LINT: unreachable code removed}
-    }
+    //     }
     catch(error) ;
       result.success = false;
     result.error = error.message
@@ -66,10 +66,10 @@ testAllModes();
    */;
   async;
   checkSparcInitialization();
-  {
+  //   {
     const _result = {initialized = await node.stat(`${this.workingDir}/.roomodes`);
     result.hasRoomodes = stat.isFile;
-  }
+  //   }
   catch ;
         result.error = '.roomodes file not found'
 
@@ -79,21 +79,23 @@ testAllModes();
     result.hasExecutable = stat.isFile;
   } catch {
     result.error = 'claude-zen executable not found';
-  }
+  //   }
+
 
   result.initialized = result.hasRoomodes && result.hasExecutable;
-}
+// }
 catch (error)
   result.error = error.message;
 
 return result;
-}
+// }
+
 
   /**
    * Get list of available SPARC modes;
    */;
   async getAvailableModes();
-{
+// {
   const _modes = [];
 
   try {
@@ -104,7 +106,7 @@ return result;
 
     if (config.modes && typeof config.modes === 'object') {
       modes.push(...Object.keys(config.modes));
-    }
+    //     }
   } catch (/* _error */) {
     // Fallback to common modes
     modes.push(;
@@ -116,10 +118,12 @@ return result;
       'debug',
       'docs-writer';
     );
-  }
+  //   }
+
 
   return modes;
-}
+// }
+
 
 /**
  * Test if a mode is accessible via CLI;
@@ -127,7 +131,7 @@ return result;
 async;
 testModeAccess(modeName);
 : unknown;
-{
+// {
     const _result = {success = new node.Command('./claude-zen', {args = await command.output();
 
       if(success) {
@@ -172,11 +176,11 @@ testModeAccess(modeName);
             result.success = output.includes(modeName);
             if(!result.success) {
               result.error = `Mode ${modeName} not listed in available modes`;
-            }
+            //             }
           } else {
             result.error = `Mode execution testfailed = `Mode execution failed: \$errorOutput`;
-        }
-      }
+        //         }
+      //       }
     } catch (error) {
       result.error = `Execution test failed = {success = `${this.workingDir}/.roo/workflows`;
 
@@ -185,8 +189,9 @@ testModeAccess(modeName);
         for await (const entry of node.readDir(workflowDir)) {
           if (entry.isFile && entry.name.endsWith('.json')) {
             entries.push(entry.name);
-          }
-        }
+          //           }
+        //         }
+
 
         // Test each workflow file
         for(const workflowFile of entries) {
@@ -196,10 +201,10 @@ testModeAccess(modeName);
           if(!workflowTest.success) {
             result.warnings.push(`Workflow ${workflowFile} hasissues = === 0) {
           result.warnings.push('No workflow files found');
-        }
+        //         }
       } catch {
         result.warnings.push('Workflow directory not accessible');
-      }
+      //       }
     } catch (error) {
       result.errors.push(`Workflow testing failed = {success = `${this.workingDir}/.roo/workflows/${filename}`;
 // const _content = awaitnode.readTextFile(workflowPath);
@@ -221,8 +226,10 @@ testModeAccess(modeName);
           result.success = false;
           result.error = `Missing recommendedfield = false;
       result.error = `Workflow validation failed: \$error.message`;
-    }
+    //     }
+
 
     return result;
     //   // LINT: unreachable code removed}
-}
+// }
+

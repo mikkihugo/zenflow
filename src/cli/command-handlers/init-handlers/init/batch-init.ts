@@ -25,37 +25,38 @@ class BatchProgressTracker {
   this;
 
   startTime = Date.now();
-}
+// }
 startProject(projectName);
 : unknown
-{
+// {
   this.inProgress.set(projectName, Date.now());
   this.updateDisplay();
-}
+// }
 completeProject(projectName, (success = true));
 : unknown
-{
+// {
   this.inProgress.delete(projectName);
   if (success) {
     this.completed++;
   } else {
     this.failed++;
-  }
+  //   }
   this.updateDisplay();
-}
+// }
 updateDisplay();
-{
+// {
   const __elapsed = Math.floor((Date.now() - this.startTime) / 1000);
   const __progress = Math.floor(((this.completed + this.failed) / this.totalProjects) * 100);
   console.warn('🚀 Batch Initialization Progress');
   console.warn('================================');
   console.warn(`TotalProjects = Math.floor((Date.now() - startTime) / 1000);
         console.warn(`  - ${project} (${projectElapsed}s)`);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
 
-  getProgressBar(progress): unknown {
+
+  getProgressBar(progress) {
     const _filled = Math.floor(progress / 5);
     const _empty = 20 - filled;
     return '█'.repeat(filled) + '░'.repeat(empty);
@@ -63,39 +64,43 @@ updateDisplay();
 
   getReport() {
     const _elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-    return {total = 5, maxMemoryMB = 1024): unknown {
+    return {total = 5, maxMemoryMB = 1024) {
     this.maxConcurrency = maxConcurrency;
     // this.maxMemoryMB = maxMemoryMB; // LINT: unreachable code removed
     this.currentTasks = 0;
     this.queue = [];
-  }
+  //   }
+
 
   async acquire() {
     while(this.currentTasks >= this.maxConcurrency) {
 // await new Promise((resolve) => {
         this.queue.push(resolve);
       });
-    }
+    //     }
     this.currentTasks++;
-  }
+  //   }
+
 
   release() {
     this.currentTasks--;
     if(this.queue.length > 0) {
       const _resolve = this.queue.shift();
       resolve();
-    }
-  }
+    //     }
+  //   }
 
-  async withResource(fn): unknown {
+
+  async withResource(fn) {
 // await this.acquire();
     try {
       return await fn();
     //   // LINT: unreachable code removed} finally {
       this.release();
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // Project template definitions
 const _PROJECT_TEMPLATES = {
@@ -113,7 +118,7 @@ app.get('/', (req, res) => {
  },
 ('react-app')
 : null
-{
+// {
   name = production;
   COPY . .;
   EXPOSE;
@@ -130,15 +135,15 @@ action((_options) =>
     console.warn(\`Hello, \\$
     options.name
   !\`)
-}
-)
+// }
+// )
 program.parse()
 `,
- }
- }
+ //  }
+ //  }
 // Environment configurations
 const _ENVIRONMENT_CONFIGS = {
-  dev = {}): unknown {
+  dev = {}) {
   const {
     template = null,
 environment = 'dev',
@@ -172,8 +177,9 @@ try {
       const _templateConfig = PROJECT_TEMPLATES[template];
       if(templateConfig.extraDirs) {
         directories.push(...templateConfig.extraDirs);
-      }
-    }
+      //       }
+    //     }
+
 
     // Create all directories in parallel
 // await Promise.all(;
@@ -207,7 +213,7 @@ map(([key, value]) => `;
 \$key = \$value`);
 join('\n');
       fileCreationTasks.push(fs.writeFile('.env', envContent, 'utf8'));
-    }
+    //     }
 // Template-specific files
 if (template && PROJECT_TEMPLATES[template]) {
   const _templateConfig = PROJECT_TEMPLATES[template];
@@ -219,24 +225,24 @@ if (template && PROJECT_TEMPLATES[template]) {
 replace(/
           PROJECT_NAME
       / (()),..;Paaaaabcceeeeeghhjlmnoppprrsttt / { {PROJECT_DESCRIPTION };
-    }
+    //     }
     /,g;
     templateConfig.description;
-    )
+    //     )
 replace(/
           ENVIRONMENT
     / ),eegimnnnortv;
     fileCreationTasks.push(fs.writeFile(filePath, fileContent, 'utf8'));
-  }
-}
-}
+  //   }
+// }
+// }
 // Execute all file creation tasks in parallel
 // await Promise.all(fileCreationTasks)
 // Create Claude commands
 await createClaudeSlashCommands(absoluteProjectPath);
 // Change back to original directory
 process.chdir(originalDir);
-return { success = {}): unknown {
+return { success = {}) {
   const {
     parallel = true,
 // maxConcurrency = 5, // LINT: unreachable code removed
@@ -251,7 +257,7 @@ performanceMonitoring = true } = options
 if (!projects ?? projects.length === 0) {
   printError('No projects specified for batch initialization');
   return;
-}
+// }
 const _totalProjects = projects.length * environments.length;
 const __tracker = progressTracking ? new BatchProgressTracker(totalProjects) : null;
 const __resourceManager = new ResourceManager(parallel ? maxConcurrency );
@@ -287,12 +293,12 @@ for(const project of projects) {
     console.warn(`TotalProjects = results.filter((r) => r.success);
   if (successful.length > 0) {
     console.warn('\n✅ Successfullyinitialized = > console.warn(`  - ${r.projectPath}`));
-  }
+  //   }
   // List failed projects
   const _failed = results.filter((r) => !r.success);
   if (failed.length > 0) {
-    console.warn('\n❌ Failed toinitialize = > console.warn(`  - ${r.projectPath}: ${r.error}`));
-  }
+    console.warn('\n❌ Failed toinitialize = > console.warn(`  - ${r.projectPath}));
+  //   }
   // Stop monitoring and generate performance report
   perfMonitor.stop();
   resourceMonitor.stop();
@@ -301,17 +307,17 @@ for(const project of projects) {
     // Show recommendations
     if (recommendations.length > 0) {
       console.warn('\n💡Recommendations = > console.warn(`  • ${rec}`));
-    }
-  }
+    //     }
+  //   }
   return results;
-}
+// }
 // Parse batch initialization config from file
-export async function parseBatchConfig(configFile = await fs.readFile(configFile, 'utf8': unknown);
+export async function parseBatchConfig(configFile = await fs.readFile(configFile, 'utf8');
 return JSON.parse(content);
 } catch (error)
   printError(`Failed to read batch config file =
 ): unknown
-{
+// {
 // const _config = awaitparseBatchConfig(configFile);
   if (!config) return;
     // ; // LINT: unreachable code removed
@@ -331,19 +337,21 @@ return JSON.parse(content);
         return await initializeProject(projectName, projectOptions);
     //   // LINT: unreachable code removed});
       results.push(result);
-    }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
 
   // Otherwise, use standard batch init
   return await batchInitCommand(projects, mergedOptions);
-}
+// }
+
 
 // Validation for batch operations
 export function validateBatchOptions(options = [];
 
-  if (options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20: unknown))
+  if (options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20))
     errors.push('maxConcurrency must be between 1 and 20');
 
   if(options.template && !PROJECT_TEMPLATES[options.template]) {
@@ -356,12 +364,14 @@ if (options.environments) {
       errors.push(;
         `Unknown environment: ${env}. Available: ${Object.keys(ENVIRONMENT_CONFIGS).join(', ')}`;
       );
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 return errors;
-}
+// }
+
 
 // Export template and environment configurations for external use
 export type { PROJECT_TEMPLATES, ENVIRONMENT_CONFIGS };

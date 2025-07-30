@@ -18,11 +18,10 @@ const _HiveDetails = (): unknown => {
   return React.createElement(Box, { borderStyle: "round", padding, flexDirection: "column" },
     // React.createElement(Text, { bold, color: "cyan"  // LINT: unreachable code removed}, `🐝 Service Details: ${hiveName  ?? 'Unknown'}`),
     React.createElement(Text, { color: "gray" }, `Path: ${hive.path  ?? 'Not specified'}`),
-    React.createElement(Box, { justifyContent: "center", marginTop},
-      React.createElement(Text, { bold, color: "magenta" }, "Service Information");
+    React.createElement(Box, { justifyContent);
     ),
     error && React.createElement(Box, { marginTop},
-      React.createElement(Text, { color: "red" }, `❌ Error: ${error}`);
+      React.createElement(Text, { color);
     ),
     React.createElement(Box, { flexDirection: "column", marginTop},
       React.createElement(Text, { bold, color: "yellow" }, "📊 Statistics:"),
@@ -39,7 +38,7 @@ const _HiveDetails = (): unknown => {
         );
       ),
       React.createElement(Box, { marginTop},
-        React.createElement(Text, { color: "gray" }, `Total Items: ${totalItems}`);
+        React.createElement(Text, { color);
       );
     );
   );

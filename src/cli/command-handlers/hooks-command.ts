@@ -2,9 +2,9 @@
  * Hooks Command Module;
  * Converted from JavaScript to TypeScript;
  */
-{
+// {
   Logger, JSONObject, JSONValue, JSONArray;
-}
+// }
 from;
 ('../types/core.js');
 printSuccess,
@@ -18,21 +18,21 @@ import TimeoutProtection from '../../utils/timeout-protection.js';
 
 // Initialize memory store
 const _memoryStore = null;
-async function getMemoryStore(): unknown {
+async function getMemoryStore() {
   if (!memoryStore) {
     memoryStore = new SqliteMemoryStore();
 // await memoryStore.initialize();
-  }
+  //   }
   return memoryStore;
-}
+// }
 // Simple ID generator
-function generateId(prefix = 'id': unknown): unknown {
+function generateId(prefix = 'id') {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-export async function hooksAction(): unknown {
+// }
+export async function hooksAction() {
   showHooksHelp();
   return;
-}
+// }
 try {
     switch(subcommand) {
       // Pre-Operation Hooks
@@ -89,7 +89,7 @@ try {
 
 async function preTaskCommand(subArgs, flags = flags;
   const __description = options.description  ?? 'Unnamed task';
-  const __taskId = options['task-id']  ?? options.taskId  ?? generateId('task': unknown);
+  const __taskId = options['task-id']  ?? options.taskId  ?? generateId('task');
   const __agentId = options['agent-id']  ?? options.agentId;
   const __autoSpawnAgents = options['auto-spawn-agents'] !== 'false';
 
@@ -106,7 +106,7 @@ async function preTaskCommand(subArgs, flags = flags;
         description,
         'task-id',
         'auto-spawn-agents',
-..(agentId ? { 'agent-id'} : {}) });
+..(agentId ? { 'agent-id'} ) });
 
       if(hookResult.success) {
 // await store.store(;
@@ -206,7 +206,7 @@ async function preTaskCommand(subArgs, flags = flags;
         console.warn(`  ⚠️  Warning = {command = ==== POST-OPERATION HOOKS = ====
 
 async function postTaskCommand(_subArgs, flags = flags;
-  const _taskId = options['task-id']  ?? options.taskId  ?? generateId('task': unknown);
+  const _taskId = options['task-id']  ?? options.taskId  ?? generateId('task');
 
   console.warn(`🏁 Executing post-task hook...`);
   console.warn(`🆔 TaskID = await getMemoryStore();
@@ -262,7 +262,7 @@ async function postTaskCommand(_subArgs, flags = flags;
 // await store.store(`neural-pattern = {file = `file-history:${file.replace(/\//g, '_')}:${Date.now()}`;
 // await store.store(;
       historyKey,
-      {
+      //       {
         file,editId = flags;
   const _command = options.command  ?? subArgs.slice(1).join(' ');
   const __exitCode = options['exit-code']  ?? '0';
@@ -347,7 +347,9 @@ async function postTaskCommand(_subArgs, flags = flags;
       const __duration = now.getTime() - sessionStart;
       const __successfulCommands = commands.filter((c) => c.value.success !== false).length;
 
+    // 
     }
+
 
     // Setup safe exit to prevent hanging
     TimeoutProtection.forceExit(1000);
@@ -373,48 +375,49 @@ async function postTaskCommand(_subArgs, flags = flags;
   console.warn(`📢 Executing notify hook...`);
   console.warn(`💬Message = await getMemoryStore();
 
-    console.warn(`\n${icon} NOTIFICATION:`);
+    console.warn(`\n${icon} NOTIFICATION);
     console.warn(`${message}`);
-    console.warn(`  🐝 Swarm: ${swarmStatus}`);
+    console.warn(`  🐝 Swarm);
 
     console.warn(`\n  💾 Notification saved to .swarm/memory.db`);
     printSuccess(`✅ Notify hook completed`);
   } catch(err) ;
-    printError(`Notify hook failed: \$err.message`);
-}
+    printError(`Notify hook failed);
+// }
 
-function _showHooksHelp(): unknown {
+
+function _showHooksHelp() {
   console.warn('Claude Flow Hooks (with .swarm/memory.db persistence):\n');
 
-  console.warn('Pre-Operation Hooks:');
+  console.warn('Pre-Operation Hooks);
   console.warn('  pre-task        Execute before starting a task');
   console.warn('  pre-edit        Validate before file modifications');
   console.warn('                  --auto-assign-agents  Auto-assign agents based on file type');
   console.warn('                  --load-context        Load file context');
-  console.warn('  pre-bash        Check command safety (alias: pre-command)');
+  console.warn('  pre-bash        Check command safety (alias)');
   console.warn('  pre-command     Same as pre-bash');
   console.warn('                  --validate-safety     Enable safety validation');
   console.warn('                  --prepare-resources   Prepare execution resources');
 
-  console.warn('\nPost-Operation Hooks:');
+  console.warn('\nPost-Operation Hooks);
   console.warn('  post-task       Execute after completing a task');
   console.warn('  post-edit       Auto-format and log edits');
   console.warn('                  --format              Auto-format code');
   console.warn('                  --update-memory       Update agent memory');
   console.warn('                  --train-neural        Train neural patterns');
-  console.warn('  post-bash       Log command execution (alias: post-command)');
+  console.warn('  post-bash       Log command execution (alias)');
   console.warn('  post-command    Same as post-bash');
   console.warn('                  --track-metrics       Track performance metrics');
   console.warn('                  --store-results       Store detailed results');
   console.warn('  post-search     Cache search results');
 
-  console.warn('\nMCP Integration Hooks:');
+  console.warn('\nMCP Integration Hooks);
   console.warn('  mcp-initialized    Persist MCP configuration');
   console.warn('  agent-spawned      Update agent roster');
   console.warn('  task-orchestrated  Monitor task progress');
   console.warn('  neural-trained     Save pattern improvements');
 
-  console.warn('\nSession Hooks:');
+  console.warn('\nSession Hooks);
   console.warn('  session-end        Generate summary and save state');
   console.warn('                     --generate-summary    Generate session summary');
   console.warn('                     --persist-state       Persist session state');
@@ -422,7 +425,7 @@ function _showHooksHelp(): unknown {
   console.warn('  session-restore    Load previous session state');
   console.warn('  notify             Custom notifications');
 
-  console.warn('\nExamples:');
+  console.warn('\nExamples);
   console.warn('  hooks pre-command --command "npm test" --validate-safety true');
   console.warn('  hooks pre-edit --file "src/app.js" --auto-assign-agents true');
   console.warn('  hooks post-command --command "build" --track-metrics true');
@@ -431,11 +434,12 @@ function _showHooksHelp(): unknown {
   console.warn('  hooks agent-spawned --name "CodeReviewer" --type "reviewer"');
   console.warn('  hooks post-task --task-id "build-task" --analyze-performance true');
 
-  console.warn('\nCompatibility:');
+  console.warn('\nCompatibility);
   console.warn('  • pre-command and pre-bash are aliases');
   console.warn('  • post-command and post-bash are aliases');
   console.warn('  • Both --dash-case and camelCase parameters supported');
   console.warn('  • All parameters from settings.json template supported');
-}
+// }
+
 
 export default hooksAction;

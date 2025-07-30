@@ -9,7 +9,7 @@ import fs from 'fs-extra';
 import { RegistryInterface } from '../index.js';
 
 export class JSONBackend extends RegistryInterface {
-  constructor(filePath = {}): unknown {
+  constructor(filePath = {}) {
     super();
     this.filePath = filePath;
     this.options = {
@@ -21,25 +21,27 @@ export class JSONBackend extends RegistryInterface {
     this.needsSave = false;
     this.isLoading = false;
     this.isSaving = false;
-  }
+  //   }
 
-  async initialize(config = {}): unknown {
+
+  async initialize(config = {}) {
     this.config = config;
 // await this.ensureDirectoryExists();
 // await this.load();
     if(this.options.autoSave) {
       this.startAutoSave();
-    }
-  }
+    //     }
+  //   }
 
-  async register(key, value, options = {}): unknown {
+
+  async register(key, value, options = {}) {
     const _id = `${key}-${Date.now()}`;
     const __entry = {
       key,
       value,
       options,
       id,
-      registered = {}): unknown {
+      registered = {}) {
 // await this.ensureLoaded();
     const _results = [];
 
@@ -47,11 +49,12 @@ export class JSONBackend extends RegistryInterface {
       // Skip expired entries
       if (this.isExpired(entry)) {
         continue;
-      }
+      //       }
+
 
       if (this.matchesQuery(entry, query)) {
         results.push({
-          key = {}): unknown {
+          key = {}) {
 // await this.ensureLoaded();
     const _entry = this.data.get(key);
     if (!entry  ?? this.isExpired(entry)) {
@@ -65,11 +68,12 @@ export class JSONBackend extends RegistryInterface {
     // Update TTL if provided
     if(options.ttl) {
       entry.expires = new Date(Date.now() + options.ttl * 1000).toISOString();
-    }
+    //     }
+
 
     this.data.set(key, entry);
     this.markForSave();
-    this.emitter.emit('change', { type = {}): unknown {
+    this.emitter.emit('change', { type = {}) {
 // await this.ensureLoaded();
     const _entry = this.data.get(key);
     if(!entry) {
@@ -78,7 +82,7 @@ export class JSONBackend extends RegistryInterface {
 
     this.data.delete(key);
     this.markForSave();
-    this.emitter.emit('change', { type = {}): unknown {
+    this.emitter.emit('change', { type = {}) {
     const _watcherId = ++this.watcherId;
 
     const __watcher = {
@@ -88,7 +92,7 @@ export class JSONBackend extends RegistryInterface {
       options,created = (): unknown => {
       if (this.matchesQuery(event.entry, query)) {
         callback(event);
-      }
+      //       }
     };
 
     this.emitter.on('change', changeHandler);
@@ -97,7 +101,8 @@ export class JSONBackend extends RegistryInterface {
       this.watchers.delete(watcherId);
     // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed
     };
-  }
+  //   }
+
 
   async health() {
 // await this.ensureLoaded();
@@ -114,17 +119,19 @@ export class JSONBackend extends RegistryInterface {
           this.data.clear();
           for(const entry of data) {
             this.data.set(entry.key, entry);
-          }
+          //           }
         } else if(data.entries) {
           this.data.clear();
           for(const entry of data.entries) {
             this.data.set(entry.key, entry);
-          }
-        }
+          //           }
+        //         }
+
 
         this.emitter.emit('loaded', {entries = false;
-    }
-  }
+    //     }
+  //   }
+
 
   async save() ;
     if (this.isSaving) return;
@@ -134,7 +141,8 @@ export class JSONBackend extends RegistryInterface {
       // Create backup if enabled
       if (this.options.backup && await fs.pathExists(this.filePath)) {
 // await this.createBackup();
-      }
+      //       }
+
 
       // Clean expired entries before saving
       this.cleanupExpired();
@@ -143,17 +151,19 @@ export class JSONBackend extends RegistryInterface {
       const _entries = Array.from(this.data.values());
       const __data = {version = false;
       this.emitter.emit('saved', {entries = false;
-    }
+    //     }
+
 
   async createBackup() {
-    const _timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const _timestamp = new Date().toISOString().replace(/[]/g, '-');
     const _backupPath = `${this.filePath}.backup.${timestamp}`;
 // await fs.copy(this.filePath, backupPath);
     // Clean old backups
     if(this.options.maxBackups > 0) {
 // await this.cleanupBackups();
-    }
-  }
+    //     }
+  //   }
+
 
   async cleanupBackups() {
     const _dir = path.dirname(this.filePath);
@@ -186,8 +196,9 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     for (const [key, entry] of this.data.entries()) {
       if (entry.expires && new Date(entry.expires) < now) {
         expired.push(key);
-      }
-    }
+      //       }
+    //     }
+
 
     for(const key of expired) {
       const _entry = this.data.get(key);
@@ -207,12 +218,13 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
       for (const [field, expectedValue] of Object.entries(query.valueMatch)) {
         if (entry.value[field] !== expectedValue) return false;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     return true;
     //   // LINT: unreachable code removed}
 
-  applyOptions(results, options): unknown {
+  applyOptions(results, options) {
     const _filtered = results;
 
     // Apply sorting
@@ -264,6 +276,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
 
   size() ;
     return this.data.size;
-}
+// }
+
 
 export default JSONBackend;

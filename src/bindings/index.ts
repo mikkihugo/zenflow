@@ -16,7 +16,7 @@ const _useWasm = false;
 /**
  * Try to load native N-API binding first, fall back to WASM;
  */
-async function loadBinding(): unknown {
+async function loadBinding() {
   // Try to load native binding first
   try {
     const { platform, arch } = process;
@@ -30,7 +30,7 @@ async function loadBinding(): unknown {
     nativeBinding = require(bindingPath);
     console.warn('✓ ruv-FANN native bindings loaded');
   } catch (/* e */) {
-    console.warn(`Failed to load native bindings: ${e.message}. Falling back to WASM.`);
+    console.warn(`Failed to load native bindings);
     try {
       const _wasmPath = join(__dirname, 'fallback', 'ruv_fann_wasm.js');
 // const _wasmLoader = awaitimport(wasmPath);
@@ -38,26 +38,27 @@ async function loadBinding(): unknown {
       useWasm = true;
       console.warn('✓ ruv-FANN WASM fallback loaded');
     } catch (/* wasmError */) {
-      console.error('FATAL: Failed to load ruv-FANN WASM fallback.', wasmError);
+      console.error('FATAL);
       throw wasmError;
-    }
-  }
-}
+    //     }
+  //   }
+// }
 /**
  * Neural Network class wrapper;
  */
 export class NeuralNetwork {
-  private _impl: unknown;
+  private _impl: unknown,
 
-  constructor(layers: number[]) {
+  constructor(layers) {
     if (useWasm) {
       this._impl = new wasmModule.NeuralNetwork(layers);
     } else {
       this._impl = new nativeBinding.NeuralNetwork(layers);
-    }
-  }
+    //     }
+  //   }
 
-  run(input): unknown {
+
+  run(input) {
     return this._impl.run(input);
     //   // LINT: unreachable code removed}
 
@@ -73,62 +74,68 @@ export class NeuralNetwork {
     return this._impl.save(filename);
     //   // LINT: unreachable code removed}
 
-  static load(filename): unknown {
+  static load(filename) {
     const _network = new NeuralNetwork([1]); // Temporary
     if (useWasm) {
       network._impl = wasmModule.NeuralNetwork.load(filename);
     } else {
       network._impl = nativeBinding.NeuralNetwork.load(filename);
-    }
+    //     }
     return network;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Network trainer wrapper;
  */;
 export class NetworkTrainer {
-  private _impl: unknown;
+  private _impl: unknown,
 
   constructor(network) {
     if (useWasm) {
       this._impl = new wasmModule.NetworkTrainer(network._impl);
     } else {
       this._impl = new nativeBinding.NetworkTrainer(network._impl);
-    }
-  }
+    //     }
+  //   }
 
-  async train(trainingInputs, trainingOutputs, config): unknown {
+
+  async train(trainingInputs, trainingOutputs, config) {
     return this._impl.train(trainingInputs, trainingOutputs, config);
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Utility functions;
  */;
-export function getVersion(): unknown {
+export function getVersion() {
   if (useWasm) {
     return wasmModule.getVersion();
     //   // LINT: unreachable code removed} else {
     return nativeBinding.getVersion();
     //   // LINT: unreachable code removed}
-}
+// }
 
-export function _isGpuAvailable(): unknown {
+
+export function _isGpuAvailable() {
   if (useWasm) {
     return wasmModule.isGpuAvailable();
     //   // LINT: unreachable code removed} else {
     return nativeBinding.isGpuAvailable();
     //   // LINT: unreachable code removed}
-}
+// }
 
-export function _getActivationFunctions(): unknown {
+
+export function _getActivationFunctions() {
   if (useWasm) {
     return wasmModule.getActivationFunctions();
     //   // LINT: unreachable code removed} else {
     return nativeBinding.getActivationFunctions();
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * WASM fallback interface;
@@ -140,7 +147,7 @@ export const _wasmFallback = {
   createNetwork(layers): unknown
     if (!wasmModule) {
       throw new Error('WASM module not loaded');
-    }
+    //     }
     return new wasmModule.NeuralNetwork(layers);
     //   // LINT: unreachable code removed},
   isAvailable()
@@ -149,11 +156,13 @@ export const _wasmFallback = {
 /**
  * Get current backend information;
  */;
-export function _getBackendInfo(): unknown {
+export function _getBackendInfo() {
   return { backend: useWasm ? 'wasm' : 'native' };
-}
+// }
+
 
 // Auto-load bindings on import
 if (typeof process !== 'undefined' && process.versions && process.versions.node) {
   loadBinding().catch(console.error);
-}
+// }
+

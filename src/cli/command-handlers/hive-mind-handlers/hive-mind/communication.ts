@@ -11,12 +11,12 @@ import crypto from 'node:crypto';
 this.config = {
       swarmId = {agents = this.config.encryption ? crypto.randomBytes(32) : null;
 this._initialize();
-}
+// }
 /**
  * Initialize communication system;
  */
 _initialize()
-{
+// {
   // Set up message processing
   this.messageProcessor = setInterval(() => {
     this._processMessageBuffer();
@@ -27,7 +27,7 @@ _initialize()
     this._sendHeartbeats();
   }, 10000);
 
-  this.emit('communication = {}): unknown {
+  this.emit('communication = {}) {
   const _agent = {id = this.state.agents.get(agentId);
   if (!agent) return;
     // ; // LINT: unreachable code removed
@@ -36,19 +36,21 @@ _initialize()
   if (channel) {
     channel.close();
     this.state.channels.delete(agentId);
-  }
+  //   }
+
 
   this.state.agents.delete(agentId);
 
   // Announce agent departure
-  this.broadcast(;type = 'query'): unknown {
+  this.broadcast(;type = 'query') {
     const _messageId = this._generateMessageId();
   const __timestamp = Date.now();
 
   const _envelope = {id = this._encrypt(message);
   envelope.encrypted = true;
   this.state.metrics.encrypted++;
-}
+// }
+
 
 // Add to buffer
 this._addToBuffer(envelope);
@@ -65,16 +67,17 @@ this.state.messageHistory.set(messageId, {
         reject(error);
       });
     });
-  }
+  //   }
+
 
   /**
    * Broadcast message to all agents;
    */;
-  broadcast(message, type = 'broadcast'): unknown {
+  broadcast(message, type = 'broadcast') {
     const _messageId = this._generateMessageId();
     const _timestamp = Date.now();
 
-    const _envelope = {id = 'query'): unknown {
+    const _envelope = {id = 'query') {
     const _messageId = this._generateMessageId();
     const _timestamp = Date.now();
 
@@ -82,7 +85,7 @@ this.state.messageHistory.set(messageId, {
 
     this.state.metrics.sent += envelopes.length;
 
-    return { messageId,recipients = 'sync'): unknown {
+    return { messageId,recipients = 'sync') {
     const _messageId = this._generateMessageId();
     // const _timestamp = Date.now(); // LINT: unreachable code removed
 
@@ -93,7 +96,7 @@ this.state.messageHistory.set(messageId, {
     selected.forEach((agentId) => {
       const _envelope = {id = selected.length;
 
-    return { messageId,initialTargets = []): unknown {
+    return { messageId,initialTargets = []) {
     const _consensusId = this._generateMessageId();
     // const _timestamp = Date.now(); // LINT: unreachable code removed
 
@@ -101,7 +104,8 @@ this.state.messageHistory.set(messageId, {
     if(validators.length === 0) {
       validators = Array.from(this.state.agents.keys()).filter(;
         (id) => this.state.agents.get(id).status === 'online');
-    }
+    //     }
+
 
     const _votes = new Map();
 
@@ -123,7 +127,7 @@ this.state.messageHistory.set(messageId, {
       if(vote !== null) {
         voteCount[vote] = (voteCount[vote]  ?? 0) + 1;
         _totalVotes++;
-      }
+      //       }
     });
 
     // Check if consensus reached
@@ -133,7 +137,8 @@ this.state.messageHistory.set(messageId, {
     if(agent) {
       agent.lastSeen = Date.now();
       agent.messageCount++;
-    }
+    //     }
+
 
     // Decrypt if needed
     if(envelope.encrypted && this.config.encryption) {
@@ -195,10 +200,11 @@ this.state.messageHistory.set(messageId, {
         if(history) {
           history.status = 'sent';
           history.sentAt = Date.now();
-        }
+        //         }
       }, Math.random() * 100);
     });
-  }
+  //   }
+
 
   /**
    * Send heartbeats to all agents;
@@ -224,7 +230,7 @@ this.state.messageHistory.set(messageId, {
   /**
    * Encrypt message;
    */;
-  _encrypt(data): unknown {
+  _encrypt(data) {
     if (!this.encryptionKey) return data;
     // ; // LINT: unreachable code removed
     const _iv = crypto.randomBytes(16);
@@ -247,6 +253,7 @@ this.state.messageHistory.set(messageId, {
    */;
   getStatistics() {
 
-    this.emit('communication:closed');
-  }
-}
+    this.emit('communication);
+  //   }
+// }
+

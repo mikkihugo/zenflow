@@ -25,15 +25,15 @@ app.use('/api/', limiter)
 // Body parsing
 app.use(express.json())
 app.use(express.urlencoded(
-{
+// {
   extended;
-}
+// }
 ))
 // Metrics middleware
 if (process.env.ENABLE_METRICS === 'true') {
   app.use(metricsMiddleware);
   registerMetrics(app);
-}
+// }
 // Request logging
 app.use((req, res, next) => {
   const _start = Date.now();
@@ -49,7 +49,7 @@ app.use('/api/users', userRoutes);
 app.use('/health', healthRoutes);
 // 404 handler
 app.use((_req, res) => {
-  res.status(404).json({ error: 'Not found' });
+  res.status(404).json({ error);
 });
 // Error handling
 app.use(errorHandler);
@@ -60,9 +60,9 @@ async function start() {
     logger.info('Database initialized successfully');
     const _server = app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
-      logger.info(`Environment: ${process.env.NODE_ENV}`);
-      logger.info(`Metrics enabled: ${process.env.ENABLE_METRICS === 'true'}`);
-      logger.info(`ruv-swarm enabled: ${process.env.RUV_SWARM_ENABLED === 'true'}`);
+      logger.info(`Environment);
+      logger.info(`Metrics enabled);
+      logger.info(`ruv-swarm enabled);
     });
     // Graceful shutdown
     process.on('SIGTERM', () => {
@@ -73,11 +73,11 @@ async function start() {
       });
     });
   } catch (error) {
-    logger.error('Failed to start server:', error);
+    logger.error('Failed to start server);
     process.exit(1);
-  }
-}
+  //   }
+// }
 if (require.main === module) {
   start();
-}
+// }
 module.exports = app;

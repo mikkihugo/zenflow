@@ -21,7 +21,8 @@ async function executeRuvSwarmCommand() {
     //   // LINT: unreachable code removed} catch (error) {
     return { success, error: error.message, stderr: error.stderr };
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 export const _githubSwarmTools = {
   github_review_init: {

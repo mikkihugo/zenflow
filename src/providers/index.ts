@@ -21,15 +21,15 @@ export * from './types.js';
 export * from './utils.js';
 
 // Quick start function for easy initialization
-export async function createProviderManager(): unknown {
+export async function createProviderManager() {
   const { ProviderManager } = await import('./provider-manager.js');
 
   const _manager = new ProviderManager(configs.manager);
 // await manager.initializeBuiltInProviders(configs.providers ?? {});
   return manager;
-}
+// }
 // Provider factory for dynamic loading
-export async function createProvider(name = await import('./anthropic.js': unknown);
+export async function createProvider(name = await import('./anthropic.js');
 const _anthropic = new AnthropicProvider();
 // await anthropic.initialize(config);
 return anthropic;
@@ -70,4 +70,4 @@ console.warn(statuses);
 
 console.warn('Multi-LLM Provider Architecture loaded successfully');
 console.warn('Available providers, OpenAI, Cohere, Google, Ollama');
-console.warn('Features: Load balancing, failover, caching, circuit breakers, metrics');
+console.warn('Features);

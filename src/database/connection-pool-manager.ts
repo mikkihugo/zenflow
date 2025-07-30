@@ -13,14 +13,14 @@ options = new Date()
 // Metrics tracking
 private;
 metrics = {requestCount = {}
-)
-{
+// )
+// {
   super();
   this.options = {loadBalancing = = false,healthCheckInterval = = false,maxPoolsPerType = = false;
-}
+// }
 if (this.options.monitoringEnabled) {
   this.startMonitoring();
-}
+// }
 // Initialize pool type tracking
 ['sqlite', 'lancedb', 'kuzu', 'postgresql'].forEach((type) => {
   this.poolsByType.set(type, new Set());
@@ -28,20 +28,20 @@ if (this.options.monitoringEnabled) {
 // Handle graceful shutdown
 process.on('SIGINT', () => this.shutdown());
 process.on('SIGTERM', () => this.shutdown());
-}
+// }
 /**
  * Create a new connection pool;
  */
-async
+// async
 createPool(config = this.generatePoolId(config.
 type, config.name;
-)
+// )
 console.warn(`🏊 Creating connectionpool = this.poolsByType.get(config.
 type;
-)
+// )
 if (typeSet && typeSet.size >= this.options.maxPoolsPerType) {
-  throw new Error(`Maximum pools reached for type ${config.type}: ${this.options.maxPoolsPerType}`);
-}
+  throw new Error(`Maximum pools reached for type ${config.type});
+// }
 if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalConnectionLimit) {
       throw new Error(`Global connection limit would be exceeded = {id = new SQLiteConnectionPool(;
             config.filePath  ?? `${config.name}.db`,
@@ -110,7 +110,8 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
     // ; // LINT: unreachable code removed
         } finally {
 // await this.releaseConnection(poolId, connection);
-        }
+        //         }
+
 
       } catch (_error = error;
         console.warn(`Query attempt ${attempt + 1}failed = === maxRetries) break;
@@ -118,11 +119,13 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
         // Exponential backoff
         const _backoffTime = Math.pow(2, attempt) * 100;
 // await this.sleep(backoffTime);
-      }
-    }
+      //       }
+    //     }
+
 
     throw lastError!;
-  }
+  //   }
+
 
   /**
    * Remove a pool;
@@ -137,14 +140,16 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
       // Shutdown the pool
       if (pool.pool?.shutdown) {
 // await pool.pool.shutdown();
-      }
+      //       }
+
 
       // Remove from tracking
       this.pools.delete(poolId);
       const _typeSet = this.poolsByType.get(pool.type);
       if (typeSet) {
         typeSet.delete(poolId);
-      }
+      //       }
+
 
       console.warn(`✅ Poolremoved = this.getTotalConnections();
     const _activeConnections = this.getActiveConnections();
@@ -160,12 +165,14 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
       try {
         if (pool.pool && pool.pool.cleanup) {
 // await pool.pool.cleanup();
-        }
+        //         }
+
 
         // Adaptive resizing based on load
         if (this.options.adaptiveResizing) {
 // await this.adaptiveResize(pool);
-        }
+        //         }
+
 
         optimized.push(poolId);
       } catch (error = {overall = 0;
@@ -178,8 +185,9 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
 
       if (poolHealth.health > 0.7) {
         healthyPools++;
-      }
-    }
+      //       }
+    //     }
+
 
     // Determine overall health
     if (totalPools === 0) {
@@ -190,8 +198,9 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
         healthReport.overall = 'critical';
       } else if (healthRatio < 0.8) {
         healthReport.overall = 'degraded';
-      }
-    }
+      //       }
+    //     }
+
 
     return healthReport;
     //   // LINT: unreachable code removed}
@@ -205,10 +214,11 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
     // Stop timers
     if (this.healthCheckTimer) {
       clearInterval(this.healthCheckTimer);
-    }
+    //     }
     if (this.metricsTimer) {
       clearInterval(this.metricsTimer);
-    }
+    //     }
+
 
     // Shutdown all pools
     const _shutdownPromises = Array.from(this.pools.keys()).map(poolId =>;
@@ -222,7 +232,8 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
       if (pool && pool.status === 'active') {
         return options.preferredPool;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     const _availablePools = Array.from(typeSet);
 map(poolId => this.pools.get(poolId)!);
@@ -239,15 +250,14 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
     // ; // LINT: unreachable code removed
       case 'least_connections':;
         return pools.reduce((best, current) => ;
-    // current.loadFactor < best.loadFactor ?current = pools.map(pool => ({ // LINT: unreachable code removed
-            pool,weight = weighted.reduce((sum, w) => sum + w.weight, 0);
+    // current.loadFactor < best.loadFactor ?current = pools.map(pool => ({ // LINT) => sum + w.weight, 0);
           const _random = Math.random() * totalWeight;
           let _current = 0;
           for (const { pool, weight } of weighted) {
             current += weight;
             if (current >= random) return pool;
     //   // LINT: unreachable code removed}
-        }
+        //         }
         // Fallback to least connections
         return pools.reduce((best, current) => ;
     // current.loadFactor < best.loadFactor ? current => { // LINT: unreachable code removed
@@ -261,14 +271,16 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
       // Check pool status
       if (pool.status !== 'active') {
         issues.push(`Poolstatus = 0.5;
-      }
+      //       }
+
 
       // Check load factor
       if (pool.loadFactor > 0.9) {
         issues.push('High load factor');
         recommendations.push('Consider increasing pool size');
         health -= 0.3;
-      }
+      //       }
+
 
       // Database-specific health checks
       if (pool.pool?.getHealth) {
@@ -276,14 +288,16 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
         if (poolHealth.status !== 'healthy') {
           issues.push(...poolHealth.issues);
           health -= 0.2;
-        }
-      }
+        //         }
+      //       }
+
 
       pool.healthScore = Math.max(0, health);
       pool.lastHealthCheck = new Date();
 
     } catch (error = 0;
-    }
+    //     }
+
 
     return {status = pool.pool.getStats();
     // const _utilizationRatio = stats.activeConnections / stats.totalConnections; // LINT: unreachable code removed
@@ -292,23 +306,27 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
     if (utilizationRatio > 0.8 && stats.totalConnections < (pool.config.pool.max  ?? 10)) {
       console.warn(`📈 Scaling up pool ${pool.id}: utilization ${(utilizationRatio * 100).toFixed(1)}%`);
       // Implementation would depend on pool type
-    }
+    //     }
+
 
     // Scale down if utilization is low for extended period
     if (utilizationRatio < 0.3 && stats.totalConnections > (pool.config.pool.min  ?? 1)) {
       console.warn(`📉 Scaling down pool ${pool.id}: utilization ${(utilizationRatio * 100).toFixed(1)}%`);
       // Implementation would depend on pool type
-    }
+    //     }
+
 
     pool.loadFactor = utilizationRatio;
-  }
+  //   }
+
 
   private updatePoolMetrics(pool,responseTime = (pool.stats.responseTime + responseTime) / 2;
     pool.stats.requestCount++;
 
     if (!success) {
       pool.stats.errorCount++;
-    }
+    //     }
+
 
   private getTotalConnections(): number ;
     return Array.from(this.pools.values());
@@ -328,41 +346,45 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
         return total;
     //   // LINT: unreachable code removed}, 0);
 
-  private calculateThroughput(): number {
+  private calculateThroughput() {
     const _uptimeMs = Date.now() - this.startTime.getTime();
     return uptimeMs > 0 ? (this.metrics.requestCount / uptimeMs) *1000 = setInterval(async () => {
       try {
 // await this.checkHealth();
     //   // LINT: unreachable code removed} catch (_error = setInterval(() => ;
       this.emit('metrics = > setTimeout(resolve, ms));
-}
+// }
+
 
 // Placeholder connection pool classes for different database types
 class LanceDBConnectionPool {
   async initialize(): Promise<void> { /* Implementation */ }
-  async acquire(_priority: string): Promise<any> { /* Implementation */ return {}; }
-  release(_connection: unknown): void { /* Implementation */ }
+  async acquire(_priority): Promise<any> { /* Implementation */ return {}; }
+  release(_connection) { /* Implementation */ }
   async shutdown(): Promise<void> { /* Implementation */ }
   getStats() { return { totalConnections, activeConnections}; }
   getHealth() { return { status: 'healthy', issues: [] }; }
-}
+// }
+
 
 class KuzuConnectionPool {
   async initialize(): Promise<void> { /* Implementation */ }
-  async acquire(_priority: string): Promise<any> { /* Implementation */ return {}; }
-  release(_connection: unknown): void { /* Implementation */ }
+  async acquire(_priority): Promise<any> { /* Implementation */ return {}; }
+  release(_connection) { /* Implementation */ }
   async shutdown(): Promise<void> { /* Implementation */ }
   getStats() { return { totalConnections, activeConnections}; }
   getHealth() { return { status: 'healthy', issues: [] }; }
-}
+// }
+
 
 class PostgreSQLConnectionPool {
   async initialize(): Promise<void> { /* Implementation */ }
-  async acquire(_priority: string): Promise<any> { /* Implementation */ return {}; }
-  release(_connection: unknown): void { /* Implementation */ }
+  async acquire(_priority): Promise<any> { /* Implementation */ return {}; }
+  release(_connection) { /* Implementation */ }
   async shutdown(): Promise<void> { /* Implementation */ }
   getStats() { return { totalConnections, activeConnections}; }
   getHealth() { return { status: 'healthy', issues: [] }; }
-}
+// }
+
 
 export default ConnectionPoolManager;

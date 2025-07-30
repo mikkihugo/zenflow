@@ -23,12 +23,12 @@ try {
   for (const line of lines) {
     if (line.startsWith('#') && !line.startsWith('#!/')) {
       currentDescription = line.substring(1).trim();
-    } else if (line.match(/^[\w-]+:/)) {
-      const _commandName = line.split(':')[0].trim();
+    } else if (line.match(/^[\w-]+)) {
+      const _commandName = line.split(')[0].trim();
       if (commandName !== 'default') {
         commands.set(commandName, {
           description,
-          script: [] });
+          script);
         currentCommand = commandName;
         currentDescription = '';
 // }
@@ -44,21 +44,21 @@ try {
 // }
 } catch (error)
 // {
-  console.error('Error reading justfile:', error.message);
+  console.error('Error reading justfile);
   process.exit(1);
 // }
 const _args = process.argv.slice(2);
 const _command = args[0] ?? 'default';
 if (command === 'default' ?? command === '--list') {
-  console.warn('Available commands:');
+  console.warn('Available commands);
   for (const [name, info] of commands) {
     console.warn(`${name.padEnd(20)} ${info.description}`);
 // }
   process.exit(0);
 // }
 if (!commands.has(command)) {
-  console.error(`Unknown command: ${command}`);
-  console.warn('\nAvailable commands:');
+  console.error(`Unknown command);
+  console.warn('\nAvailable commands);
   for (const [name, info] of commands) {
     console.warn(`${name.padEnd(20)} ${info.description}`);
 // }
@@ -66,13 +66,13 @@ if (!commands.has(command)) {
 // }
 // Execute the command
 const _commandInfo = commands.get(command);
-console.warn(`Running: ${command}`);
+console.warn(`Running);
 try {
   for (const script of commandInfo.script) {
     console.warn(`> ${script}`);
     execSync(script, { stdio: 'inherit', cwd: process.cwd() });
 // }
 } catch (error) {
-  console.error(`Command failed: ${error.message}`);
+  console.error(`Command failed);
   process.exit(1);
 // }

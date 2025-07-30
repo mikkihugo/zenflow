@@ -17,14 +17,15 @@ export function generateApiFromMeow(cli => {
       const _commandPath = `/api/execute/${cmd.name}`;
 openapi.paths[commandPath] = {
         post = {get = {get = {};
-Object.entries(flags: unknown).forEach(([flagName, flagConfig]) => {
+Object.entries(flags).forEach(([flagName, flagConfig]) => {
     if(typeof flagConfig === 'object' && flagConfig !== null) {
       schema[flagName] = {type = flagConfig.choices;
-      }
+      //       }
+
 
       if(flagConfig.required) {
         schema[flagName].required = true;
-      }
+      //       }
     } else {
       schema[flagName] = {
         type = {};
@@ -38,32 +39,32 @@ Object.entries(flags).forEach(([flagName, flagConfig]) => {
       example[flagName] = flagConfig.choices[0];
     } else {
       example[flagName] = `example-${flagName}`;
-    }
+    //     }
   } else {
     example[flagName] = `example-${flagName}`;
-  }
+  //   }
 });
 return example;
-}
+// }
 /**
  * Generate GraphQL schema from commands (future enhancement);
  */
-export function generateGraphQLSchema(commands = > commands, command = > commands.find(_cmd => cmd.name === name: unknown)
+export function generateGraphQLSchema(commands = > commands, command = > commands.find(_cmd => cmd.name === name)
 },Mutation = [], flags =
-{
-}
+// {
+// }
 }) =>
-{
+// {
   // This would call the actual command execution
   return {
             success,
   // result: { // LINT: unreachable code removed},
   sessionId: Date.now().toString(),
-  duration: 100;
-}
-}
-}
-    }
-  }
-}
+  // duration: 100
+// }
+// }
+// }
+    //     }
+  //   }
+// }
 export default generateApiFromMeow;

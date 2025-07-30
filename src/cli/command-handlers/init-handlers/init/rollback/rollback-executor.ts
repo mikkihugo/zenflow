@@ -2,19 +2,20 @@
 
 export class RollbackExecutor {
   constructor(workingDir = workingDir;
-}
+// }
 /**
  * Execute full rollback to pre-initialization state;
  */
 async;
 executeFullRollback(backupId);
 : unknown
-{
+// {
   const _result = {success = await this.cleanupInitializationArtifacts();
   result.actions.push(...cleanupResult.actions);
   if (!cleanupResult.success) {
     result.warnings.push(...cleanupResult.errors);
-  }
+  //   }
+
 
   // Step2 = await this.restoreFromBackup(backupId);
   result.actions.push(...restoreResult.actions);
@@ -28,10 +29,11 @@ executeFullRollback(backupId);
   result.actions.push(...verifyResult.actions);
   if (!verifyResult.success) {
     result.warnings.push(...verifyResult.errors);
-  }
+  //   }
+
 
   console.warn('  ✅ Full rollback completed');
-}
+// }
 catch (error)
       result.success = false;
       result.errors.push(`Full rollback execution failed = {success = await this.rollbackSparcInitialization();
@@ -50,7 +52,8 @@ catch (error)
           break;
         default = await this.rollbackGenericPhase(phase, checkpoint);
           break;
-      }
+      //       }
+
 
       result.success = rollbackResult.success;
       result.errors.push(...rollbackResult.errors);
@@ -100,7 +103,7 @@ catch (error)
         result.actions.push('Removed claude-zen executable');
       } catch {
         result.actions.push('claude-zen executable was already clean');
-      }
+      //       }
     } catch (error) {
       result.success = false;
       result.errors.push(`Executable rollback failed = {success = checkpoint.data.actions  ?? [];
@@ -148,8 +151,9 @@ catch (error)
           foundArtifacts++;
         } catch {
           // Item doesn't exist - good
-        }
-      }
+        //         }
+      //       }
+
 
       if(foundArtifacts > 0) {
         result.success = false;
@@ -168,16 +172,17 @@ trim();
 // await node.writeTextFile(claudePath, cleanedContent);
       } catch {
         // File doesn't exist or can't be modified
-      }
+      //       }
     } catch {
       // Error handling CLAUDE.md - continue silently
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Reverse a specific action;
    */;
-  async reverseAction(action): unknown {
+  async reverseAction(action) {
     const _result = {success = `Removed created file: ${action.path}`;
           break;
 
@@ -191,7 +196,9 @@ trim();
             result.description = `Restored modifiedfile = false;
           result.description = `Unknown actiontype = false;
       result.description = `Failed to reverse action: \$error.message`;
-    }
+    //     }
+
 
     return result;
-}
+// }
+

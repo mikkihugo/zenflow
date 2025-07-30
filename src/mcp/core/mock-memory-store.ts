@@ -3,28 +3,30 @@
  * Provides basic functionality when sqlite store is not available
  */
 export class SqliteMemoryStore {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     this.options = options;
     this.storage = new Map();
     this.namespaces = new Map();
     console.warn('[Mock] Using mock SqliteMemoryStore implementation');
-  }
+  //   }
+
 
   async initialize() {
     // Mock initialization
     return true;
     //   // LINT: unreachable code removed}
 
-  async store(key, value, options = {}): unknown {
+  async store(key, value, options = {}) {
     const _namespace = options.namespace  ?? 'default';
     if (!this.namespaces.has(namespace)) {
       this.namespaces.set(namespace, new Map());
-    }
+    //     }
+
 
     const __nsStorage = this.namespaces.get(namespace);
     nsStorage.set(key, {
       value,
-      timestamp = {}): unknown {
+      timestamp = {}) {
     const _namespace = options.namespace  ?? 'default';
     const _nsStorage = this.namespaces.get(namespace);
 
@@ -42,7 +44,7 @@ export class SqliteMemoryStore {
     return item.value;
     //   // LINT: unreachable code removed}
 
-  async delete(key, options = {}): unknown {
+  async delete(key, options = {}) {
     const _namespace = options.namespace  ?? 'default';
     const _nsStorage = this.namespaces.get(namespace);
 
@@ -53,7 +55,7 @@ export class SqliteMemoryStore {
     return false;
     //   // LINT: unreachable code removed}
 
-  async list(options = {}): unknown {
+  async list(options = {}) {
     const _namespace = options.namespace  ?? 'default';
     const _nsStorage = this.namespaces.get(namespace);
 
@@ -62,7 +64,7 @@ export class SqliteMemoryStore {
     return Array.from(nsStorage.keys());
     //   // LINT: unreachable code removed}
 
-  async search(pattern, options = {}): unknown {
+  async search(pattern, options = {}) {
     const _namespace = options.namespace  ?? 'default';
     const _nsStorage = this.namespaces.get(namespace);
 
@@ -70,10 +72,11 @@ export class SqliteMemoryStore {
     // ; // LINT: unreachable code removed
     const _results = [];
     for (const [key, item] of nsStorage.entries()) {
-      if (key.includes(pattern.replace(':', ''))) {
+      if (key.includes(pattern.replace('))) {
         results.push(item.value);
-      }
-    }
+      //       }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
@@ -81,4 +84,5 @@ export class SqliteMemoryStore {
   async close()
     this.storage.clear();
     this.namespaces.clear();
-}
+// }
+

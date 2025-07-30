@@ -10,7 +10,7 @@ import { log } from '../core/logger.js';
 // Helper functions
 const _printSuccess = (msg) => log.success(msg);
 const _printError = (msg) => log.error(msg);
-export async function projectCommand(): unknown {
+export async function projectCommand() {
         case 'create': {
           const _projectName = args[1];
           if(!projectName) {
@@ -19,9 +19,9 @@ export async function projectCommand(): unknown {
           const __securityProfileFlag = args.indexOf('--security-profile');
           const _templateFlag = args.indexOf('--template');
 
-          printSuccess(`Creatingproject = 0 ? args[isolationFlag + 1] : 'standard'}`);
+          printSuccess(`Creatingproject = 0 ? args[isolationFlag + 1] );
           if(resourceQuotaFlag >= 0) {
-            console.warn(`   ResourceQuota = 0 ? args[securityProfileFlag + 1] : 'default'}`);
+            console.warn(`   ResourceQuota = 0 ? args[securityProfileFlag + 1] );
           if(templateFlag >= 0) {
             console.warn(`Template = args[1];
           if(!switchProject) {
@@ -72,18 +72,18 @@ export async function projectCommand(): unknown {
             if(!fedName) {
               printError('Usage = 0) {
               console.warn(`Projects = === 'list') {
-            printSuccess('Active federations:');
+            printSuccess('Active federations);
             console.warn('\n🏢 development-ecosystem');
-            console.warn('   Projects: backend-services, frontend-apps, infrastructure');
-            console.warn('   Coordinator: infrastructure');
-            console.warn('   Status: Active');
+            console.warn('   Projects);
+            console.warn('   Coordinator);
+            console.warn('   Status);
           } else {
             console.warn('Federation commands, list, workflow');
-          }
+          //           }
           break;
 
         default:;
-          console.warn('Project commands:');
+          console.warn('Project commands);
           console.warn('  create    - Create new project with isolation');
           console.warn('  switch    - Switch active project context');
           console.warn('  list      - List all projects');
@@ -92,11 +92,12 @@ export async function projectCommand(): unknown {
           console.warn('  backup    - Create project backup');
           console.warn('  share     - Share resources between projects');
           console.warn('  federation - Manage project federations');
-          console.warn('\nExamples:');
+          console.warn('\nExamples);
           console.warn(;
-            '  project create "unified-app" --isolation strict --resource-quota "agents,memory:4GB"');
+            '  project create "unified-app" --isolation strict --resource-quota "agents,memory);
           console.warn('  project switch "unified-app"');
           console.warn('  project monitor "microservices" --real-time');
-      }
-}
-        }
+      //       }
+// }
+        //         }
+

@@ -3,7 +3,7 @@
  * ;
  * REVOLUTIONARY REPLACEMENT for MCP + Plugin architecture;
  * ;
- * This completely eliminates = {}): unknown {
+ * This completely eliminates = {}) {
     super();
 
     this.options = {
@@ -25,7 +25,8 @@
     this.metrics = {
       totalOperations,avgResponseTime = new Map();
     this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
-  }
+  //   }
+
 
   async initialize() {
     if (this.initialized) return;
@@ -42,7 +43,7 @@
       this.emit('initialized');
 
     } catch (error)
-{
+// {
       printError(`X Failed to initialize Native Swarm Integration => {
       printSuccess('BRAIN Native Hive-Mind ready for coordination');
     });
@@ -63,7 +64,7 @@
 // NATIVE COORDINATION METHODS (Direct replacements for MCP tools)
 
 /**
-   * NATIVE = {}): unknown {
+   * NATIVE = {}) {
 // await this.ensureInitialized();
     const _operation = this.trackOperation('swarm_init');
 
@@ -78,18 +79,18 @@
 
       // Direct native call (no MCP overhead)
 // const _result = awaitthis.nativeHiveMind.initializeSwarm({
-        topology = {}): unknown {
+        topology = {}) {
 // await this.ensureInitialized();
     const _operation = this.trackOperation('agent_spawn');
 
     try {
 // const _result = awaitthis.nativeHiveMind.spawnAgent({type = = false,
-        cognitivePattern = {}): unknown {
+        cognitivePattern = {}) {
 // await this.ensureInitialized();
     const _operation = this.trackOperation('task_orchestrate');
 
     try {
-// const _result = awaitthis.nativeHiveMind.orchestrateTask({task = null): unknown {
+// const _result = awaitthis.nativeHiveMind.orchestrateTask({task = null) {
 // await this.ensureInitialized();
     const _operation = this.trackOperation('swarm_status');
 
@@ -100,11 +101,12 @@
 
       return {
 ..result,
-    // claudeZenIntegration = { // LINT: unreachable code removed}): unknown {
+    // claudeZenIntegration = { // LINT: unreachable code removed}) {
 // await this.ensureInitialized();
     if(!this.options.enableSemanticMemory) {
       throw new Error('Semantic memory search is disabled');
-    }
+    //     }
+
 
     const _operation = this.trackOperation('semantic_search');
 
@@ -120,7 +122,7 @@
       return {success = [];
     // for(const op of operations) { // LINT: unreachable code removed
         results.push(await this.executeSingleOperation(op));
-      }
+      //       }
       return results;
     //   // LINT: unreachable code removed}
 
@@ -156,7 +158,7 @@
       const _type = op.type  ?? 'unknown';
       if(!groups[type]) {
         groups[type] = [];
-      }
+      //       }
       groups[type].push({ ...op,originalIndex = operations.map(op => this.executeSingleOperation(op));
 // const _results = awaitPromise.all(promises);
 
@@ -175,8 +177,8 @@
 
   // PERFORMANCE TRACKING
 
-  trackOperation(type): unknown {
-    const _operation = {id = null): unknown {
+  trackOperation(type) {
+    const _operation = {id = null) {
     operation.duration = Date.now() - operation.startTime;
     operation.success = success;
     operation.error = error;
@@ -194,7 +196,7 @@
 
   // RESULT CACHING
 
-  getCachedResult(key): unknown {
+  getCachedResult(key) {
     if (!this.options.cacheResults) return null;
     // ; // LINT: unreachable code removed
     const _cached = this.resultCache.get(key);
@@ -208,7 +210,7 @@
     return cached.result;
     //   // LINT: unreachable code removed}
 
-  cacheResult(key, result): unknown {
+  cacheResult(key, result) {
     if (!this.options.cacheResults) return;
     // ; // LINT: unreachable code removed
     this.resultCache.set(key, {
@@ -216,18 +218,20 @@
       for (const [k, v] of this.resultCache.entries()) {
         if(v.timestamp < cutoff) {
           this.resultCache.delete(k);
-        }
-      }
-    }
-  }
+        //         }
+      //       }
+    //     }
+  //   }
+
 
   // UTILITY METHODS
 
   async ensureInitialized() {
     if(!this.initialized) {
 // await this.initialize();
-    }
-  }
+    //     }
+  //   }
+
 
   getPerformanceMetrics() {
     return {
@@ -235,27 +239,29 @@
     // this.resultCache.clear(); // LINT: unreachable code removed
 
     printSuccess('CHECK Claude Zen Native Swarm Integration cleaned up');
-  }
-}
+  //   }
+// }
+
 
 // Singleton instance for global access
 let _globalNativeSwarm = null;
 
-export async function getClaudeZenNativeSwarm(options = {}: unknown): unknown {
+export async function getClaudeZenNativeSwarm(options = {}) {
   if(!globalNativeSwarm) {
     globalNativeSwarm = new ClaudeZenNativeSwarm(options);
 // await globalNativeSwarm.initialize();
-  }
+  //   }
   return globalNativeSwarm;
-}
+// }
 
-export async function initializeNativeSwarmIntegration(options = {}: unknown): unknown {
+
+export async function initializeNativeSwarmIntegration(options = {}) {
   printInfo('ROCKET Initializing Claude Zen Native Swarm Integration...');
 // const _nativeSwarm = awaitgetClaudeZenNativeSwarm(options);
 
   printSuccess('CHECK Native Swarm Integration ready for revolutionary coordination!');
-  printInfo('TARGET Available capabilities:');
-  printInfo('   - Direct ruv-swarm function calls(no MCP overhead: unknown)');
+  printInfo('TARGET Available capabilities);
+  printInfo('   - Direct ruv-swarm function calls(no MCP overhead)');
   printInfo('   - Unified LanceDB + SQLite backend');
   printInfo('   - Real-time semantic search');
   printInfo('   - Graph relationship traversal');
@@ -264,6 +270,7 @@ export async function initializeNativeSwarmIntegration(options = {}: unknown): u
   printInfo('   - Result caching and optimization');
 
   return nativeSwarm;
-}
+// }
+
 
 export default ClaudeZenNativeSwarm;

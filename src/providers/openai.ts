@@ -25,35 +25,35 @@ config = {enabled = {textGeneration = 'https = [
 'gpt-3.5-turbo',
 'gpt-3.5-turbo-0125',
 ('gpt-3.5-turbo-1106');
-]
+// ]
 constructor()
-{
+// {
   super();
   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.OPENAI_API_KEY;
   if (!this.apiKey) {
     throw new ProviderError('OpenAI API key is required', this.name, 'MISSING_API_KEY');
-  }
+  //   }
   if (config.baseUrl) {
     this.baseUrl = config.baseUrl;
-  }
+  //   }
   // Update pricing based on model
   if (config.model?.includes('gpt-3.5')) {
     this.pricing = {
         inputTokenPrice = { ...this.config, ...config };
 // await this.healthCheck();
-  }
+  //   }
   async;
   generateText(request = Date.now();
   this.validateRequest(request);
   this.emitRequest(request);
   try {
       const _openaiRequest = {model = request.functions.map(fn => ({name = 'auto';
-      }
+      //       }
 // const _response = awaitthis.makeRequest('/chat/completions', openaiRequest);
   const _choice = response.choices[0];
   if (!reader) {
     throw new ProviderError('No response body', this.name);
-  }
+  //   }
   const _decoder = new TextDecoder();
   const _buffer = '';
   while (true) {
@@ -69,23 +69,23 @@ constructor()
         const _delta = parsed.choices[0]?.delta;
         if (delta?.content) {
           yield delta.content;
-        }
+        //         }
       } catch (/* e */) {
         // Ignore parsing errors for streaming
-      }
-    }
-  }
-}
+      //       }
+    //     }
+  //   }
+// }
 } catch (error)
-{
+// {
   this.emitError(error, request);
   throw this.handleError(error);
-}
-}
-async
+// }
+// }
+// async
 getModels()
 : Promise<string[]>
-{
+// {
   try {
 // const _response = awaitthis.makeRequest('/models', null, 'GET');
     return response.data;
@@ -95,7 +95,7 @@ map((model = > model.id);
     // Fallback to static list if API call fails
     return [...this.availableModels];
     //   // LINT: unreachable code removed}
-}
+// }
   async;
   cleanup();
   : Promise<void>
@@ -109,13 +109,13 @@ map((model = > model.id);
           role = {role = {name = 'POST'): Promise<any> {
     const _options = {method = === 'POST') {
       options.body = JSON.stringify(data);
-  }
+  //   }
 // const _response = awaitfetch(`${this.baseUrl}${endpoint}`, options);
   if (!response.ok) {
     throw await this.createErrorFromResponse(response);
-  }
+  //   }
   return response.json();
-}
+// }
 private
 async;
 createErrorFromResponse(response = await response.text();
@@ -126,25 +126,24 @@ try {
   errorData = {message = === 429) {
       const _retryAfter = response.headers.get('retry-after');
   return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
-}
+// }
 return new ProviderError(;
 // errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
 this.name,
 errorData.error?.type  ?? 'API_ERROR',
 response.status;
-)
-}
+// )
+// }
 private
-handleError(error: unknown)
+handleError(error)
 : Error
-{
+// {
   if (error instanceof ProviderError) {
     return error;
     //   // LINT: unreachable code removed}
     return new ProviderError(;
-    // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
-    this.name,
-    ('UNKNOWN_ERROR');
-    )
-  }
-}
+    // error.message  ?? 'Unknown error occurred', // LINT);
+    //     )
+  //   }
+// }
+

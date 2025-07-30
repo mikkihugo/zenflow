@@ -10,7 +10,7 @@ import { EventEmitter } from 'node:events';
   reconnectInterval?: number;
   maxReconnectAttempts?: number;
   timeout?: number;
-}
+// }
 /**
  * Native WebSocket Client using Node.js 22 built-in WebSocket;
  *;
@@ -40,14 +40,14 @@ export class WebSocketClient extends EventEmitter {
   this;
 
   messageQueue = [];
-}
+// }
 /**
  * Connect to WebSocket server;
  */
 async;
 connect();
 : Promise<void>
-{
+// {
   return new Promise((resolve, reject) => {
       try {
         // Use Node.js 22 built-in WebSocket
@@ -73,7 +73,7 @@ connect();
             this.emit('message', data);
           } catch (/* _error */) {
             this.emit('message', event.data);
-          }
+          //           }
         };
 
         this.ws.onclose = (): unknown => {
@@ -85,7 +85,7 @@ connect();
           if (;
             this.options.reconnect &&;
             this.reconnectAttempts < this.options.maxReconnectAttempts;
-          )
+          //           )
             this.scheduleReconnect();
         };
 
@@ -96,31 +96,31 @@ connect();
         };
       } catch (error) {
         reject(error);
-      }
+      //       }
     });
-}
+// }
 /**
  * Disconnect from WebSocket server;
  */
 disconnect();
 : void
-{
+// {
   if (this.reconnectTimer) {
     clearTimeout(this.reconnectTimer);
     this.reconnectTimer = undefined;
-  }
+  //   }
   this.stopHeartbeat();
   if (this.ws && this.isConnected) {
     this.ws.close();
-  }
+  //   }
   this.isConnected = false;
-}
+// }
 /**
  * Send message to server;
  */
-send(data: unknown)
+send(data)
 : void
-{
+// {
   const _message = typeof data === 'string' ? data : JSON.stringify(data);
   if (this.isConnected && this.ws) {
     try {
@@ -128,31 +128,31 @@ send(data: unknown)
       } catch (error) {
         this.emit('error', error);
         this.queueMessage(message);
-      }
+      //       }
   } else {
     this.queueMessage(message);
-  }
-}
+  //   }
+// }
 /**
  * Queue message for later sending;
  */
 private
-queueMessage(message: string)
+queueMessage(message)
 : void
-{
+// {
   this.messageQueue.push(message);
   // Limit queue size to prevent memory issues
   if (this.messageQueue.length > 1000) {
     this.messageQueue.shift();
-  }
-}
+  //   }
+// }
 /**
  * Send all queued messages;
  */
 private
 flushMessageQueue();
 : void
-{
+// {
   while (this.messageQueue.length > 0 && this.isConnected) {
     const _message = this.messageQueue.shift();
     if (message) {
@@ -162,17 +162,17 @@ flushMessageQueue();
           this.emit('error', error);
           this.messageQueue.unshift(message);
           break;
-        }
-    }
-  }
-}
+        //         }
+    //     }
+  //   }
+// }
 /**
  * Schedule reconnection attempt;
  */
 private
 scheduleReconnect();
 : void
-{
+// {
   const _delay = this.options.reconnectInterval * 2 ** this.reconnectAttempts;
   this.reconnectTimer = setTimeout(async () => {
     this.reconnectAttempts++;
@@ -186,46 +186,46 @@ scheduleReconnect();
           this.scheduleReconnect();
         } else {
           this.emit('reconnectFailed');
-        }
-      }
+        //         }
+      //       }
   }, delay);
-}
+// }
 /**
  * Start heartbeat mechanism;
  */
 private
 startHeartbeat();
 : void
-{
+// {
   this.heartbeatTimer = setInterval(() => {
     if (this.isConnected && this.ws) {
       try {
           this.ws.ping();
         } catch (error) {
           this.emit('error', error);
-        }
-    }
+        //         }
+    //     }
   }, 30000); // 30 seconds
-}
+// }
 /**
  * Stop heartbeat mechanism;
  */
 private
 stopHeartbeat();
 : void
-{
+// {
   if (this.heartbeatTimer) {
     clearInterval(this.heartbeatTimer);
     this.heartbeatTimer = undefined;
-  }
-}
+  //   }
+// }
 /**
  * Get connection status;
  */
 get;
 connected();
 : boolean
-{
+// {
     return this.isConnected;
     //   // LINT: unreachable code removed}
 

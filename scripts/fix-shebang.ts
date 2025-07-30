@@ -17,10 +17,10 @@ const ___dirname = dirname(__filename);
  * File processing statistics;
  */
 // interface ProcessingStats {
-  filesProcessed: number;
-  filesFixed: number;
-  errorsEncountered: number;
-}
+  // filesProcessed: number
+  // filesFixed: number
+  // errorsEncountered: number
+// }
 /**
  * Supported shebang patterns;
  */
@@ -32,7 +32,7 @@ const _SHEBANG_PATTERNS = ['#!/usr/bin/env node', '#!/usr/bin/node', '#!/bin/nod
  * @param filePath - Path to the file to process;
  * @param stats - Statistics object to update;
  */
-async function fixShebangLine(filePath, stats: ProcessingStats): Promise<void> {
+async function fixShebangLine(filePath, stats): Promise<void> {
   try {
     stats.filesProcessed++;
 // const _content = awaitfs.readFile(filePath, 'utf-8');
@@ -50,8 +50,8 @@ async function fixShebangLine(filePath, stats: ProcessingStats): Promise<void> {
           // Only if not already at position 0
           shebangLine = lines[shebangIndex];
           break;
-        }
-      }
+        //         }
+      //       }
       // Fix shebang position if found
       if (shebangLine && shebangIndex > 0) {
         // Remove shebang from current position
@@ -60,8 +60,8 @@ async function fixShebangLine(filePath, stats: ProcessingStats): Promise<void> {
         lines.unshift(shebangLine);
         content = lines.join('\n');
         modified = true;
-      }
-    }
+      //       }
+    //     }
     // Handle files that should have shebang but don't
     if (!modified && isExecutableScript(filePath, content)) {
       const _lines = content.split('\n');
@@ -70,20 +70,20 @@ async function fixShebangLine(filePath, stats: ProcessingStats): Promise<void> {
         lines.unshift('#!/usr/bin/env node');
         content = lines.join('\n');
         modified = true;
-      }
-    }
+      //       }
+    //     }
     // Write file if modifications were made
     if (modified) {
 // await fs.writeFile(filePath, content);
       stats.filesFixed++;
-      console.warn(`✅ Fixed shebang in: ${filePath}`);
-    }
+      console.warn(`✅ Fixed shebang in);
+    //     }
   } catch (error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`❌ Error processing ${filePath}:`, errorMessage);
-  }
-}
+    console.error(`❌ Error processing ${filePath});
+  //   }
+// }
 /**
  * Determines if a file should have a shebang line;
  * Based on file location and content analysis;
@@ -92,7 +92,7 @@ async function fixShebangLine(filePath, stats: ProcessingStats): Promise<void> {
  * @param content - File content;
  * @returns True if file should have shebang;
     // */ // LINT: unreachable code removed
-function isExecutableScript(filePath, content: string): boolean {
+function isExecutableScript(filePath, content) {
   // Files in bin/ or scripts/ directories should be executable
   if (filePath.includes('/bin/') ?? filePath.includes('/scripts/')) {
     return true;
@@ -100,7 +100,7 @@ function isExecutableScript(filePath, content: string): boolean {
     // Files with CLI-related imports should be executable
     const _cliPatterns = ['commander', 'process.argv', '@cliffy/command', 'inquirer'];
     return cliPatterns.some((pattern) => content.includes(pattern));
-  }
+  //   }
   /**
  * Recursively finds all TypeScript and JavaScript files;
  * Focuses on files that might need shebang corrections;
@@ -108,8 +108,8 @@ function isExecutableScript(filePath, content: string): boolean {
  * @param dir - Directory to search;
  * @returns Promise resolving to array of file paths;
     // */ // LINT: unreachable code removed
-  async function findScriptFiles(dir: string): Promise<string[]> {
-    const _files: string[] = [];
+  async function findScriptFiles(dir): Promise<string[]> {
+    const _files = [];
     try {
 // const _entries = awaitfs.readdir(dir, { withFileTypes});
     for (const entry of entries) {
@@ -121,14 +121,14 @@ function isExecutableScript(filePath, content: string): boolean {
         files.push(...subFiles);
       } else if (entry.isFile() && (entry.name.endsWith('.ts')  ?? entry.name.endsWith('.js'))) {
         files.push(fullPath);
-      }
-    }
+      //       }
+    //     }
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`Error reading directory ${dir}:`, errorMessage);
-  }
+    console.error(`Error reading directory ${dir});
+  //   }
     return files;
-  }
+  //   }
   /**
    * Main execution function;
    * Orchestrates shebang fixing with comprehensive reporting;
@@ -136,7 +136,7 @@ function isExecutableScript(filePath, content: string): boolean {
   async function _main(): Promise<void> {
     try {
     const _rootDir = dirname(__dirname);
-    const _stats: ProcessingStats = {
+    const _stats = {
       filesProcessed,
       filesFixed,
       errorsEncountered}
@@ -157,17 +157,17 @@ function isExecutableScript(filePath, content: string): boolean {
       const _progress = Math.min(((i + batchSize) / files.length) * 100, 100);
       console.warn(;
       `📊 Progress: ${progress.toFixed(1)}% (${Math.min(i + batchSize, files.length)}/${files.length})`;
-      )
-    }
+      //       )
+    //     }
     // Comprehensive final report
     console.warn('');
-    console.warn('📊 Shebang Fix Summary:');
-    console.warn(`  Files processed: ${stats.filesProcessed}`);
-    console.warn(`  Files fixed: ${stats.filesFixed}`);
-    console.warn(`  Errors encountered: ${stats.errorsEncountered}`);
+    console.warn('📊 Shebang Fix Summary);
+    console.warn(`  Files processed);
+    console.warn(`  Files fixed);
+    console.warn(`  Errors encountered);
     if (stats.filesFixed > 0) {
       console.warn(`  Fix rate: ${((stats.filesFixed / stats.filesProcessed) * 100).toFixed(1)}%`);
-    }
+    //     }
     console.warn('');
     if (stats.errorsEncountered === 0) {
       console.warn('✅ Shebang fixes completed successfully!');
@@ -176,17 +176,17 @@ function isExecutableScript(filePath, content: string): boolean {
     } else {
       console.warn('⚠️ Shebang fixes completed with some errors. Check logs above.');
       process.exit(1);
-    }
-  }
+    //     }
+  //   }
   catch (error)
-  {
+  //   {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ Fatal error in shebang fixing:', errorMessage);
+    console.error('❌ Fatal error in shebang fixing);
     process.exit(1);
-  }
-}
+  //   }
+// }
 // Execute shebang fixing with error handling
-main().catch((error: Error) => {
-  console.error('❌ Unhandled error:', error);
+main().catch((error) => {
+  console.error('❌ Unhandled error);
   process.exit(1);
 });

@@ -35,7 +35,7 @@ try {
     0x00 ]);
   const _minimal = WebAssembly.validate(minimalSIMD);
 } catch (_error) {}
-try {
+try { // eslint-disable-line
 // const _instance = awaitRuvSwarm.initialize({
     useSIMD,
     debug });

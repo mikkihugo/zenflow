@@ -13,21 +13,21 @@ import { describe, expect } from '@jest/globals';
 import packageJson from '../../package.json';
 
 assert;
-{
+// {
   type: 'json';
-}
+// }
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 /**
  * Package.json structure interface;
  */
 // interface PackageJson {
-  name: string;
-  version: string;
-  description?: string;
+  // name: string
+  // version: string
+  description?: string; // eslint-disable-line
   main?: string;
   bin?: Record<string, string> | string;
-}
+// }
 describe('CLI Basic Tests', (): void => {
   /**
    * Basic test to ensure test framework is working;
@@ -46,7 +46,7 @@ describe('CLI Basic Tests', (): void => {
       // Additional validation: check if file is executable
       const _stats = fs.statSync(cliPath);
       expect(stats.isFile()).toBe(true);
-    }
+    //     }
   });
   /**
    * Validates package.json metadata for consistency;
@@ -85,7 +85,7 @@ describe('CLI Basic Tests', (): void => {
         expect(pkg.bin).toBeTruthy();
       } else {
         expect(Object.keys(pkg.bin).length).toBeGreaterThan(0);
-      }
-    }
+      //       }
+    //     }
   });
 });

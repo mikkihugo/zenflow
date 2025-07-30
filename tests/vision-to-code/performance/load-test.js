@@ -67,7 +67,7 @@ const _TEST_IMAGE =;
 // Helper function to check response
 function checkResponse() {
   const _success = check(res, {
-    [`status is ${expectedStatus}`]: (r) => r.status === expectedStatus,
+    [`status is ${expectedStatus}`]) => r.status === expectedStatus,
     'response time < 100ms': (r) => r.timings.duration < 100,
     'h JSON body': (r) =>
       try {
@@ -172,7 +172,7 @@ function textSummary() {
   Object.entries(data.metrics).forEach(([name, metric]) => {
     if (metric.thresholds) {
       const _passed = Object.values(metric.thresholds).every((t) => t.ok);
-      summary += `${name}: ${passed ? '✓ PASSED' : '✗ FAILED'}\n`;
+      summary += `${name}: \${passed ? '✓ PASSED' }\n`;
 // }
   });
   return summary;
@@ -211,7 +211,7 @@ for (let i = 0; i < 100; i++) {
 // }
 // }
 check(rateLimited, {
-    'rate limiting is enforced': (r) => r === true
+    'rate limiting is enforced') => r === true
 })
 // }
 export function testCachePerformance() {
@@ -225,6 +225,6 @@ const _firstTime = firstRes.timings.duration;
 const _secondRes = http.get(`${BASE_URL}/api/v1/projects`, { headers });
 const _secondTime = secondRes.timings.duration;
 check(secondTime, {
-    'cached response is faster': (t) => t < firstTime * 0.5
+    'cached response is faster') => t < firstTime * 0.5
 })
 // }

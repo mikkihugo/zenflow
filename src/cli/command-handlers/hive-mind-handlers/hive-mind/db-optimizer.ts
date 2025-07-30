@@ -11,7 +11,7 @@ import ora from 'ora';
 /**
  * Optimize existing hive mind database with backward compatibility;
  */
-export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
+export async function optimizeHiveMindDatabase(dbPath = {}) {
   const _spinner = ora('Optimizing Hive Mind database...').start();
 
   try {
@@ -26,27 +26,32 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
     // Version 1.0 -> 1.1 = 'Applying performance indexes...';
       applyBasicIndexes(db);
       optimizationsApplied.push('Basic performance indexes');
-    }
+    //     }
+
 
     // Version 1.1 -> 1.2 = 'Applying advanced indexes...';
       applyAdvancedIndexes(db);
       optimizationsApplied.push('Advanced query optimization');
-    }
+    //     }
+
 
     // Version 1.2 -> 1.3 = 'Adding performance tracking...';
       addPerformanceTracking(db);
       optimizationsApplied.push('Performance monitoring tables');
-    }
+    //     }
+
 
     // Version 1.3 -> 1.4 = 'Optimizing memory management...';
       addMemoryOptimization(db);
       optimizationsApplied.push('Memory optimization features');
-    }
+    //     }
+
 
     // Version 1.4 -> 1.5 = 'Adding behavioral analysis...';
       addBehavioralTracking(db);
       optimizationsApplied.push('Behavioral pattern tracking');
-    }
+    //     }
+
 
     // Run ANALYZE to update query planner statistics
     spinner.text = 'Updating query statistics...';
@@ -57,7 +62,8 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
       spinner.text = 'Vacuuming database...';
       db.exec('VACUUM');
       optimizationsApplied.push('Database vacuumed');
-    }
+    //     }
+
 
     // Update schema version
     updateSchemaVersion(db, 1.5);
@@ -73,14 +79,11 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
       });
     } else {
       console.warn('\n' + chalk.yellow('ℹ') + ' Database already optimized');
-    }
+    //     }
+
 
     return {success = db;
-    // .prepare(; // LINT: unreachable code removed
-        `;
-      SELECT name FROM sqlite_master ;
-      WHERE type='table' AND name='schema_version';
-    `);
+    // .prepare(; // LINT);
 get();
 
     if(!tableExists) {
@@ -112,13 +115,13 @@ prepare(;
     `);
 get();
 
-    return result ? result.version = ''): unknown {
+    return result ? result.version = '') {
   db.prepare(;
-    // `; // LINT: unreachable code removed
-    INSERT OR REPLACE INTO schema_version (version, description) ;
+    // `; // LINT);
     VALUES (?, ?);
   `).run(version, description  ?? `Updated to version \$version`);
-}
+// }
+
 
 /**
  * Apply basic performance indexes;
@@ -128,7 +131,7 @@ prepare(;
       `;
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name NOT LIKE 'sqlite_%';
-  `: unknown);
+  `);
 all();
 map((row) => row.name);
 
@@ -141,14 +144,16 @@ map((row) => row.name);
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',
       'CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created_at)');
-  }
+  //   }
+
 
   if (tableSet.has('agents')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_agents_swarm ON agents(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_agents_type ON agents(type)',
       'CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)');
-  }
+  //   }
+
 
   if (tableSet.has('tasks')) {
     indexes.push(;
@@ -156,20 +161,23 @@ map((row) => row.name);
       'CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(agent_id)',
       'CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)',
       'CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority DESC)');
-  }
+  //   }
+
 
   if (tableSet.has('collective_memory')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_memory_swarm ON collective_memory(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
       'CREATE INDEX IF NOT EXISTS idx_memory_type ON collective_memory(type)');
-  }
+  //   }
+
 
   if (tableSet.has('consensus_decisions')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_consensus_swarm ON consensus_decisions(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_consensus_created ON consensus_decisions(created_at)');
-  }
+  //   }
+
 
   indexes.forEach((sql) => {
     try {
@@ -205,10 +213,11 @@ get();
         if (;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
-        )
+        //         )
           throw error;
-      }
-    }
+      //       }
+    //     }
+
 
     // Check and add completed_at column to tasks table
     const _hasCompletedAt = db;
@@ -227,10 +236,11 @@ get();
         if (;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
-        )
+        //         )
           throw error;
-      }
-    }
+      //       }
+    //     }
+
 
     // Check and add result column to tasks table
     const _hasResult = db;
@@ -249,11 +259,12 @@ get();
         if (;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
-        )
+        //         )
           throw error;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   if (tableSet.has('swarms')) {
     // Check and add updated_at column to swarms table
@@ -273,12 +284,13 @@ get();
         if (;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
-        )
+        //         )
           throw error;
-      }
-    }
-  }
-}
+      //       }
+    //     }
+  //   }
+// }
+
 
 /**
  * Apply advanced performance indexes;
@@ -288,7 +300,7 @@ prepare(;
       `;
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name NOT LIKE 'sqlite_%';
-  `: unknown);
+  `);
 all();
 map((_row) => row.name);
 
@@ -301,23 +313,27 @@ map((_row) => row.name);
       'CREATE INDEX IF NOT EXISTS idx_tasks_swarm_status ON tasks(swarm_id, status)',
       'CREATE INDEX IF NOT EXISTS idx_tasks_full ON tasks(swarm_id, agent_id, status, priority)',
       "CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = 'pending'");
-  }
+  //   }
+
 
   if (tableSet.has('agents')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_agents_swarm_type ON agents(swarm_id, type)',
       'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)');
-  }
+  //   }
+
 
   if (tableSet.has('collective_memory')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_memory_swarm_key ON collective_memory(swarm_id, key)');
-  }
+  //   }
+
 
   if (tableSet.has('swarms')) {
     indexes.push(;
       "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'");
-  }
+  //   }
+
 
   indexes.forEach((sql) => {
     try {
@@ -335,7 +351,8 @@ map((_row) => row.name);
       );
     END;
   `);
-}
+// }
+
 
 /**
  * Add memory optimization features;
@@ -345,7 +362,7 @@ prepare(;
       `;
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name = 'collective_memory';
-  `: unknown);
+  `);
 all();
 
   if(tables.length === 0) {
@@ -372,9 +389,10 @@ get();
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   // Check and add accessed_at column (not last_accessed)
   const _hasAccessedAt = db;
@@ -395,9 +413,10 @@ get();
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   // Add compressed and size columns if missing
   const _hasCompressed = db;
@@ -417,9 +436,10 @@ get();
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   const _hasSize = db;
 prepare(;
@@ -438,9 +458,10 @@ get();
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   // Create memory usage summary view
   db.exec(`;
@@ -466,12 +487,13 @@ get();
       performed_at DATETIME DEFAULT CURRENT_TIMESTAMP;
     );
   `);
-}
+// }
+
 
 /**
  * Add behavioral tracking features;
  */;
-function _addBehavioralTracking(_db = {}: unknown): unknown {
+function _addBehavioralTracking(_db = {}) {
   const _spinner = ora('Performing database maintenance...').start();
 
   try {
@@ -555,10 +577,12 @@ prepare(;
           WHERE status = 'completed' AND created_at < ?;
         `);
 run(archiveCutoff.toISOString());
-      }
+      //       }
+
 
       console.warn(chalk.green(`✓ Archived \$archived.changescompleted tasks`));
-    }
+    //     }
+
 
     // Update statistics
     spinner.text = 'Updating database statistics...';
@@ -572,8 +596,9 @@ run(archiveCutoff.toISOString());
         console.warn(chalk.green('✓ Database integrity check passed'));
       } else {
         console.warn(chalk.yellow('⚠ Database integrity issues detected'));
-      }
-    }
+      //       }
+    //     }
+
 
     db.close();
     spinner.succeed('Database maintenance complete!');
@@ -619,7 +644,7 @@ prepare(;
           FROM tasks WHERE completed_at IS NOT NULL;
         `);
 get();
-      }
+      //       }
     } catch (error)
       // If error, just use default value
       console.warn('Could not calculate average tasktime = avgTaskTime?.avg_minutes  ?? 0;
@@ -628,7 +653,7 @@ get();
 
     return report;
     //   // LINT: unreachable code removed} catch (error) {
-    console.error('Error generating report:', error);
+    console.error('Error generating report);
     return null;
 
 // Export for use in CLI

@@ -2,11 +2,11 @@
  * TypeScript definitions for ruv-FANN Node.js bindings;
  */
 export interface TrainingConfig {
-  learning_rate: number;
-  max_epochs: number;
-  desired_error: number;
-  algorithm: string;
-}
+  // learning_rate: number
+  // max_epochs: number
+  // desired_error: number
+  // algorithm: string
+// }
 /**
  * Neural Network class for creating and managing feedforward neural networks;
  */
@@ -45,7 +45,7 @@ export class NeuralNetwork {
    * @returns New NeuralNetwork instance;
     // */ // LINT: unreachable code removed
   static load(filename: string): NeuralNetwork;
-}
+// }
 /**
  * Advanced trainer for neural networks;
  */
@@ -67,10 +67,10 @@ export class NetworkTrainer {
 
   trainingOutputs: number[][];
 
-  config: TrainingConfig;
+  // config: TrainingConfig
   ): null
   Promise<_number>;
-}
+// }
 /**
  * Get the version of the ruv-FANN bindings;
  * @returns Version string;
@@ -105,8 +105,8 @@ createNetwork(layers: number[])
  * Check if WASM is available;
  */
 isAvailable()
-}
+// }
 /**
  * WASM fallback implementation;
  */
-export const wasmFallback: WasmFallback;
+export const wasmFallback: WasmFallback,

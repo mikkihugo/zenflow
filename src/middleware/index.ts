@@ -22,7 +22,7 @@ ValidationResult } from '../types/server.js'
 /**
  * Enhanced request logging middleware
  */
-export function requestLogger(): MiddlewareFunction {
+export function requestLogger() {
   return (req) => {
     const _start = Date.now();
     // const _correlationId =; // LINT: unreachable code removed
@@ -34,37 +34,37 @@ export function requestLogger(): MiddlewareFunction {
       const _duration = Date.now() - start;
     console.warn(;
     `[${new Date().toISOString()}] ${correlationId} ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`;
-    )
+    //     )
   };
   next();
-}
-}
+// }
+// }
 /**
  * Request validation middleware
  */
 export function validateRequest(schema => {
-    const _validation = {params = validateObject(req.params, schema.params, 'params': unknown);
-}
+    const _validation = {params = validateObject(req.params, schema.params, 'params');
+// }
 // Validate query
 if (schema.query) {
   validation.query = validateObject(req.query, schema.query, 'query');
-}
+// }
 // Validate body
 if (schema.body) {
   validation.body = validateObject(req.body, schema.body, 'body');
-}
+// }
 // Validate headers
 if (schema.headers) {
   validation.headers = validateObject(req.headers, schema.headers, 'headers');
-}
+// }
 req.validation = validation;
 // Check if any validation failed
 const _hasErrors = Object.values(validation).some((v) => !v.valid);
 if (hasErrors) {
   return res.status(400).json({success = > Promise<UserContext | null>;
-}
+// }
 ): MiddlewareFunction
-{
+// {
   return async (req => {
     try {
       const _authHeader = req.headers.authorization;
@@ -80,7 +80,7 @@ if (hasErrors) {
           user = {id = user;
       next();
     } catch (error) ;
-      console.error('Authenticationerror = > boolean)): MiddlewareFunction {
+      console.error('Authenticationerror = > boolean)) {
   return (req => {
     if (!req.user) {
       return res.status(401).json({success = false;
@@ -91,12 +91,13 @@ if (hasErrors) {
       hasPermission = permissions.some(permission => ;
         req.user!.permissions.includes(permission)  ?? req.user!.roles.some(role => role === 'admin'  ?? role === 'superuser');
       );
-    }
+    //     }
+
 
     if (!hasPermission) {
       return res.status(403).json({
         success => {
-    console.error(`Error in ${req.method} ${req.path}:`, err);
+    console.error(`Error in ${req.method} ${req.path});
     // ; // LINT: unreachable code removed
     // Handle different types of errors
     if (err.name === 'ValidationError') {
@@ -108,10 +109,10 @@ if (hasErrors) {
     res.success = function<T>(data, message?: string) {
       return this.json({success = function(message, code?, details?: JSONObject) {
       const _statusCode = code  ?? 500;
-    // return this.status(statusCode).json({success = function<T>(data: T[],pagination = function(data, ttl?: number) { // LINT: unreachable code removed
+    // return this.status(statusCode).json({success = function<T>(data,pagination = function(data, ttl?: number) { // LINT: unreachable code removed
       if (ttl) {
         this.set('Cache-Control', `public, max-age=${ttl}`);
-      }
+      //       }
       return this.json({success = function(data => {
         try {
           for await (const chunk of data) {
@@ -119,41 +120,38 @@ if (hasErrors) {
     //   // LINT: unreachable code removed}
           this.end();
         } catch (error) {
-          this.write(JSON.stringify({error = function<T>(): T {
+          this.write(JSON.stringify({error = function<T>() {
       return this.params as T;
     //   // LINT: unreachable code removed};
 
-    req.typedQuery = function<T>(): T {
+    req.typedQuery = function<T>() {
       return this.query as any as T;
     //   // LINT: unreachable code removed};
 
-    req.typedBody = function<T>(): T {
+    req.typedBody = function<T>() {
       return this.body as T;
     //   // LINT: unreachable code removed};
 
     next();
   };
-}
+// }
+
 
 /**
  * Security headers middleware
  */;
-export function securityHeaders(): MiddlewareFunction {
+export function securityHeaders() {
   return helmet({contentSecurityPolicy = === 'production';
-    //   // LINT: unreachable code removed});
-}
+    //   // LINT);
+// }
+
 
 /**
  * CORS middleware with advanced options
  */;
-export function corsMiddleware(options?: {
-  origins?: string[];
-  credentials?: boolean;
-  methods?: string[];
-  headers?: string[];
-}): MiddlewareFunction {
+export function corsMiddleware(options?) {
   return cors({origin = === 'production' ? false => {
-      res.status(429).json({success = 30000): MiddlewareFunction {
+      res.status(429).json({success = 30000) {
   return (req => {
     const _timer = setTimeout(() => {
       if (!res.headersSent) {
@@ -168,14 +166,15 @@ export function corsMiddleware(options?: {
 
     next();
   };
-}
+// }
+
 
 // Helper functions
 
 /**
  * Validate an object against a schema
  */;
-function validateObject(): unknown {
+function validateObject() {
     errors.push({
       field => {
     if (typeof schemaValue === 'object' && schemaValue !== null) {
@@ -188,13 +187,14 @@ function validateObject(): unknown {
     errors,
     warnings;
   };
-}
+// }
+
 
 /**
  * Get error name from status code
  */;
 function getErrorName(statusCode = {
-      400: number): string {
+      400) {
   const _errorNames: Record<number, string>,  400: 'Bad Request',
     401: 'Unauthorized',
     403: 'Forbidden',
@@ -212,7 +212,8 @@ function getErrorName(statusCode = {
   };
 
   return errorNames[statusCode]  ?? 'Unknown Error';
-}
+// }
+
 
 // Export all middleware functions
 export type {

@@ -14,7 +14,7 @@ import { printError } from '../utils.js';
  * @param {string} command - The command to check;
  * @returns {Promise<boolean>} - True if command is available;
     // */ // LINT: unreachable code removed
-async function checkCommandAvailable(command = await import('node:child_process');
+async function checkCommandAvailable(command = await import('node);
 
 if (platform() === 'win32') {
   //Windows = [
@@ -29,21 +29,21 @@ if (platform() === 'win32') {
       return true;
     //   // LINT: unreachable code removed} catch (/* _e */) {
       // Continue checking other paths
-    }
-  }
+    //     }
+  //   }
   return false;
-}
-}
-}
+// }
+// }
+// }
 /**
  * Check if Claude CLI is available;
  * @returns {Promise<boolean>} - True if Claude is available;
     // */ // LINT: unreachable code removed
-async function _checkClaudeAvailable(): unknown {
+async function _checkClaudeAvailable() {
   return checkCommandAvailable('claude');
-}
+// }
 return;
-}
+// }
 const _mode = args[0];
 const _objective = args.slice(1).join(' ').trim();
 if (!objective) {
@@ -53,13 +53,13 @@ if (!objective) {
 // const _isClaudeAvailable = awaitcheckClaudeAvailable();
     if(!isClaudeAvailable) {
       printWarning('⚠️  Claude CLI not found. GitHub automation requires Claude.');
-      console.warn('InstallClaude = `Execute GitHub workflow automation using ${mode}mode = await import('node:child_process');
+      console.warn('InstallClaude = `Execute GitHub workflow automation using ${mode}mode = await import('node);
 
   const _claudeArgs = [];
   // Add auto-permission flag if requested
   if (flags['auto-approve'] ?? flags['dangerously-skip-permissions']) {
     claudeArgs.push('--dangerously-skip-permissions');
-  }
+  //   }
   // Spawn claude process
   const _claudeProcess = spawn('claude', claudeArgs, {
       stdio => {
@@ -69,16 +69,16 @@ if (!objective) {
           resolve();
         } else {
           reject(new _Error(`_Claude _process _exited with _code _${code}`));
-}
+// }
 })
 claudeProcess.on('error', (err) =>
-{
+// {
   reject(err);
-}
-)
+// }
+// )
 })
 } catch (error)
-{
+// {
     printError(`❌ GitHub automationfailed = [];
   const _flags = {};
 
@@ -95,11 +95,12 @@ claudeProcess.on('error', (err) =>
           i++; // Skip the next argument
         } else {
           flags[flagName] = true;
-        }
+        //         }
       } else {
         args.push(arg);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
 // await githubCommand(args, flags);
-}
+// }
+

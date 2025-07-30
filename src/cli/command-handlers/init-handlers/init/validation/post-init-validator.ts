@@ -2,13 +2,13 @@
 
 export class PostInitValidator {
   constructor(workingDir = workingDir;
-}
+// }
 /**
  * Check file integrity (existence, size, readability);
  */
 async;
 checkFileIntegrity();
-{
+// {
   const _result = {success = [
       {path = `${this.workingDir}/${file.path}`;
 
@@ -23,7 +23,7 @@ checkFileIntegrity();
             `File toosmall = ${file.minSize})`)
   result.files[file.path] = status =
   = 'windows')
-  {
+  //   {
     const _isExecutable = (stat.mode & 0o111) !== 0;
     if (!isExecutable) {
       result.warnings.push(`File not executable = {status = { status: 'ok',size = false;
@@ -59,19 +59,19 @@ checkFileIntegrity();
       result.structure.memory = memoryStructure;
       if (!memoryStructure.valid) {
         result.warnings.push('Memory directory structure is incomplete');
-      }
+      //       }
       // Check coordination structure
 // const _coordinationStructure = awaitthis.validateCoordinationStructure();
       result.structure.coordination = coordinationStructure;
       if (!coordinationStructure.valid) {
         result.warnings.push('Coordination directory structure is incomplete');
-      }
+      //       }
       // Check Claude integration structure
 // const _claudeStructure = awaitthis.validateClaudeStructure();
       result.structure.claude = claudeStructure;
       if (!claudeStructure.valid) {
         result.warnings.push('Claude integration structure is incomplete');
-      }
+      //       }
       // Check SPARC structure (if present)
 // const _sparcExists = awaitthis.checkSparcExists();
       if (sparcExists) {
@@ -79,9 +79,9 @@ checkFileIntegrity();
         result.structure.sparc = sparcStructure;
         if (!sparcStructure.valid) {
           result.warnings.push('SPARC structure is incomplete');
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
     catch(error)
     result.success = false
     result.errors.push(`Structure validation failed = success = [path = === 'windows') ;
@@ -102,19 +102,19 @@ checkFileIntegrity();
           result.warnings.push(;
             `Incorrect permissions on ${item.path}: ` +;
     `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`)
-  }
+  //   }
   catch(error)
   result.warnings.push(`Could not check permissions
   for ${item.path}
-  : $error.message`)
-}
+  )
+// }
 return result;
-}
+// }
 // Helper methods
 
-async
+// async
 validateMemoryStructure();
-{
+// {
   const _structure = {valid = ['agents', 'sessions'];
   const _expectedFiles = ['claude-zen-data.json', 'agents/README.md', 'sessions/README.md'];
   for (const dir of expectedDirs) {
@@ -123,21 +123,21 @@ validateMemoryStructure();
       structure.dirs.push(dir);
     } catch {
       structure.valid = false;
-    }
-  }
+    //     }
+  //   }
   for (const file of expectedFiles) {
     try {
 // await node.stat(`\$this.workingDir/memory/\$file`);
       structure.files.push(file);
     } catch {
       structure.valid = false;
-    }
-  }
+    //     }
+  //   }
   return structure;
-}
+// }
 async;
 validateCoordinationStructure();
-{
+// {
   const _structure = {valid = ['memory_bank', 'subtasks', 'orchestration'];
   for (const dir of expectedDirs) {
     try {
@@ -145,13 +145,13 @@ validateCoordinationStructure();
       structure.dirs.push(dir);
     } catch {
       structure.valid = false;
-    }
-  }
+    //     }
+  //   }
   return structure;
-}
+// }
 async;
 validateClaudeStructure();
-{
+// {
   const _structure = {valid = ['commands', 'logs'];
   for (const dir of expectedDirs) {
     try {
@@ -159,23 +159,23 @@ validateClaudeStructure();
       structure.dirs.push(dir);
     } catch {
       structure.valid = false;
-    }
-  }
+    //     }
+  //   }
   // Check if there are any command files
   try {
     const _entries = [];
     for await (const entry of node.readDir(`\$this.workingDir/.claude/commands`)) {
       if (entry.isFile && entry.name.endsWith('.js')) {
         entries.push(entry.name);
-      }
-    }
+      //       }
+    //     }
     structure.hasCommands = entries.length > 0;
     structure.commandCount = entries.length;
   } catch {
     structure.hasCommands = false;
-  }
+  //   }
   return structure;
-}
+// }
 async;
 checkSparcExists();
 try {
@@ -187,10 +187,10 @@ try {
 
 async;
 validateSparcStructure();
-{
+// {
   const _structure = {valid = await node.stat(`${this.workingDir}/.roomodes`);
   structure.hasRoomodes = stat.isFile;
-}
+// }
 catch;
   structure.valid = false;
 
@@ -207,12 +207,14 @@ try {
         structure.dirs.push(dir);
       } catch {
         // Optional subdirectories
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
 } catch {
   // .roo directory is optional
-}
+// }
+
 
 return structure;
-}
+// }
+

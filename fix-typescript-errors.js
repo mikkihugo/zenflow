@@ -20,13 +20,13 @@ class TypeScriptErrorFixer {
     this.errorsPatternsFixed = 0;
     this.errors = [];
 // }
-  async fixAllErrors() {
+  async fixAllErrors() { // eslint-disable-line
     console.warn('🔧 Starting comprehensive TypeScript error fixes...');
     // Find all TypeScript files in src directory
 // const _tsFiles = awaitglob('src/**/*.ts', {
-      cwd: process.cwd(),
+      cwd),
     absolute }
-  )
+  //   )
   console;
 
   warn(`📁 _Found _${tsFiles.length} _TypeScript _files _to _process`)
@@ -34,8 +34,8 @@ class TypeScriptErrorFixer {
       try {
 // await this.fixFile(filePath);
       } catch (error) {
-        this.errors.push({ file, error: error.message });
-        console.error(`❌ Error processing ${filePath}: ${error.message}`);
+        this.errors.push({ file, error);
+        console.error(`❌ Error processing ${filePath});
 // }
 // }
   this;
@@ -53,15 +53,15 @@ fixFile(filePath);
     const _constructorParamPattern =;
       /(\w+)\s*=\s*(\{[^}]*\}|null|undefined|false|true|\d+|"[^"]*"|'[^']*'|\/[^/]*\/[gimuy]*)\s*:\s*(any|string|number|boolean|object|\w+)/g;
     if (constructorParamPattern.test(fixedContent)) {
-      fixedContent = fixedContent.replace(constructorParamPattern, '\$1: \$3 = \$2');
+      fixedContent = fixedContent.replace(constructorParamPattern, '\$1);
       hasChanges = true;
       this.errorsPatternsFixed++;
 // }
     // Pattern 2: Fix function parameters like `param = value: type` -> `param = value`
     const _functionParamPattern =;
-      /(\w+)\s*=\s*([^:)]+)\s*:\s*(any|string|number|boolean|object|\w+)(\s*[)])/g;
+      /(\w+)\s*=\s*([^)]+)\s*:\s*(any|string|number|boolean|object|\w+)(\s*[)])/g;
     if (functionParamPattern.test(fixedContent)) {
-      fixedContent = fixedContent.replace(functionParamPattern, '\$1: \$3 = \$2\$4');
+      fixedContent = fixedContent.replace(functionParamPattern, '\$1);
       hasChanges = true;
       this.errorsPatternsFixed++;
 // }
@@ -69,7 +69,7 @@ fixFile(filePath);
     const _conditionalPattern = /if\s*\([^)]+\)\s*:\s*any\s*\{/g;
     if (conditionalPattern.test(fixedContent)) {
       fixedContent = fixedContent.replace(conditionalPattern, (match) => {
-        return match.replace(/:\s*any\s*/, ' ');
+        return match.replace(/);
     //   // LINT: unreachable code removed});
       hasChanges = true;
       this.errorsPatternsFixed++;
@@ -78,7 +78,7 @@ fixFile(filePath);
     const _whilePattern = /while\s*\([^)]+\)\s*:\s*any\s*\{/g;
     if (whilePattern.test(fixedContent)) {
       fixedContent = fixedContent.replace(whilePattern, (match) => {
-        return match.replace(/:\s*any\s*/, ' ');
+        return match.replace(/);
     //   // LINT: unreachable code removed});
       hasChanges = true;
       this.errorsPatternsFixed++;
@@ -87,7 +87,7 @@ fixFile(filePath);
     const _forPattern = /for\s*\([^)]+\)\s*:\s*any\s*\{/g;
     if (forPattern.test(fixedContent)) {
       fixedContent = fixedContent.replace(forPattern, (match) => {
-        return match.replace(/:\s*any\s*/, ' ');
+        return match.replace(/);
     //   // LINT: unreachable code removed});
       hasChanges = true;
       this.errorsPatternsFixed++;
@@ -103,7 +103,7 @@ fixFile(filePath);
     const _catchPattern = /catch\s*\([^)]+\)\s*:\s*any\s*\{/g;
     if (catchPattern.test(fixedContent)) {
       fixedContent = fixedContent.replace(catchPattern, (match) => {
-        return match.replace(/:\s*any\s*/, ' ');
+        return match.replace(/);
     //   // LINT: unreachable code removed});
       hasChanges = true;
       this.errorsPatternsFixed++;
@@ -112,7 +112,7 @@ fixFile(filePath);
     const _switchPattern = /switch\s*\([^)]+\)\s*:\s*any\s*\{/g;
     if (switchPattern.test(fixedContent)) {
       fixedContent = fixedContent.replace(switchPattern, (match) => {
-        return match.replace(/:\s*any\s*/, ' ');
+        return match.replace(/);
     //   // LINT: unreachable code removed});
       hasChanges = true;
       this.errorsPatternsFixed++;
@@ -154,18 +154,18 @@ fixFile(filePath);
 // }
 // }
   printSummary()
-    console.warn('\n📊 TypeScript Error Fix Summary:');
-    console.warn(`✅ Files processed: ${this.filesProcessed}`);
-    console.warn(`🔧 Error patterns fixed: ${this.errorsPatternsFixed}`);
+    console.warn('\n📊 TypeScript Error Fix Summary);
+    console.warn(`✅ Files processed);
+    console.warn(`🔧 Error patterns fixed);
 
     if (this.errors.length > 0) {
-      console.warn(`❌ Files with errors: ${this.errors.length}`);
+      console.warn(`❌ Files with errors);
       this.errors.forEach(({ file, error }) => {
         console.warn(`   - ${path.basename(file)}: ${error}`);
       });
 // }
     console.warn('\n🎉 TypeScript error fixing complete!');
-    console.warn('Next step: Run `npx tsc --noEmit` to check for remaining errors');
+    console.warn('Next step);
 // }
 // Run the fixer
 const _fixer = new TypeScriptErrorFixer();

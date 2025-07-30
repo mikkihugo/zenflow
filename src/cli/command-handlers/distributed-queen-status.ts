@@ -14,18 +14,18 @@ export class DistributedQueenStatus {
     this.websocketService = null;
     this.statusData = {
       initialization,database = false;
-  }
+  //   }
   return;
   // this; // LINT: unreachable code removed
 
   statusData;
-}
+// }
 /**
  * Check system initialization;
  */
 async;
 checkSystemInitialization();
-{
+// {
   printInfo('🔧 Checking System Initialization...');
   try {
       this.council = new QueenCouncil();
@@ -36,8 +36,9 @@ checkSystemInitialization();
       // Count available queens
 
       console.warn(`   📊 TotalQueens = false;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Check database integration;
@@ -53,14 +54,14 @@ checkSystemInitialization();
       if(backendStats) {
         this.statusData.database = true;
         printSuccess(`✅ Databaseintegrated = false;
-    }
-}
+    //     }
+// }
 /**
  * Check individual queen capabilities;
  */
 async;
 checkQueenCapabilities();
-{
+// {
   printInfo('👑 Analyzing Individual Queen Capabilities...');
   if (!this.council) {
     printError('❌ Council not initialized - skipping queen analysis');
@@ -76,37 +77,38 @@ checkQueenCapabilities();
       printSuccess(`✅ All ${totalQueens} queens operational`);
     } else {
       printWarning(`⚠️ ${workingQueens}/${totalQueens} queens operational`);
-    }
-  }
+    //     }
+  //   }
   /**
    * Check distribution capabilities;
    */
   async;
   checkDistributionCapabilities();
-  {
+  //   {
     printInfo('🌐 Checking Distribution Capabilities...');
     try {
       // Check if queens can work independently
       const _distributionFeatures = {consensus = === 'function',conflict_resolution = === 'function',decision_logging = === 'function',document_updates = === 'function';
-      }
+      //       }
     const _workingFeatures = Object.values(distributionFeatures).filter((f) => f).length;
     const _totalFeatures = Object.keys(distributionFeatures).length;
     this.statusData.distribution = workingFeatures === totalFeatures;
     console.warn('   📊 Distribution Features => {
-        console.warn(`${working ? '✅' : '❌'} ${feature.replace('_', ' ')}`);
-  }
-  )
+        console.warn(`\${working ? '✅' } ${feature.replace('_', ' ')}`);
+  //   }
+  //   )
   if (this.statusData.distribution) {
     printSuccess(`✅ All ${totalFeatures} distribution features available`);
   } else {
     printWarning(`⚠️ ${workingFeatures}/${totalFeatures} distribution features available`);
-  }
-}
+  //   }
+// }
 catch (error)
-{
+// {
   printError(`❌ Distribution checkfailed = false;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Check WebSocket integration for real-time coordination;
@@ -121,37 +123,38 @@ catch (error)
       this.statusData.websocket = wsStatus.service.initialized;
 
       console.warn(`   🔌 ServiceInitialized = false;
-}
-}
+// }
+// }
 /**
  * Check coordination features;
  */
-async
+// async
 checkCoordinationFeatures()
-{
+// {
   printInfo('🤝 Checking Coordination Features...');
   try {
       const _coordinationFeatures = {multi_queen_analysis = === 'function',strategic_updates = === 'function';
-      }
+      //       }
   const _workingFeatures = Object.values(coordinationFeatures).filter((f) => f).length;
   const _totalFeatures = Object.keys(coordinationFeatures).length;
   this.statusData.coordination = workingFeatures >= Math.ceil(totalFeatures * 0.8); // 80% threshold
 
   console.warn('   🤝 Coordination Features => {
-        console.warn(`${working ? '✅' : '❌'} ${feature.replace(/_/g, ' ')}`);
-}
-)
+        console.warn(`\${working ? '✅' } ${feature.replace(/_/g, ' ')}`);
+// }
+// )
 if (this.statusData.coordination) {
   printSuccess(`✅ Coordination ready (${workingFeatures}/${totalFeatures} features)`);
 } else {
   printWarning(`⚠️ Coordination partially ready (${workingFeatures}/${totalFeatures} features)`);
-}
-}
+// }
+// }
 catch (error)
-{
+// {
       printError(`❌ Coordination checkfailed = false;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Generate overall readiness assessment;
@@ -176,7 +179,7 @@ catch (error)
     const _readinessPercentage = Math.round((readyCount / totalFactors) * 100);
 
     console.warn('📋 Readiness Factors => {
-      console.warn(`${ready ? '✅' : '❌'} ${factor}`);
+      console.warn(`${ready ? '✅' );
     });
 
     console.warn(`\n📊 OverallReadiness = 90) ;
@@ -190,7 +193,8 @@ catch (error)
     } else {
       this.statusData.readiness = 'NOT_READY';
       printError('❌ DISTRIBUTED QUEEN COUNCIL IS NOT READY FOR PRODUCTION');
-    }
+    //     }
+
 
     // Queen details
     const __workingQueens = Object.entries(this.statusData.queens);
@@ -203,9 +207,11 @@ length;
 
   if(flags.json) {
     console.warn(JSON.stringify(status, null, 2));
-  }
+  //   }
+
 
   return status;
-}
+// }
+
 
 export default DistributedQueenStatus;

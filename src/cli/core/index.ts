@@ -4,7 +4,7 @@
  * TypeScript-first implementation with comprehensive type exports
  */
 // Re-export types from CLI types module for convenience
-export type {
+export type { // eslint-disable-line
   ArgumentParserConfig,
 ArgumentValidationResult,
 CliConfig,

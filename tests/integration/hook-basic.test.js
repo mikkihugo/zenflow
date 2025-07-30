@@ -41,7 +41,7 @@ it('should detect dangerous commands', () => {
     //   // LINT: unreachable code removed};
     expect(isDangerous('rm -rf /')).toBe(true);
     expect(isDangerous('echo hello')).toBe(false);
-    expect(isDangerous('format c:')).toBe(true);
+    expect(isDangerous('format c)).toBe(true);
   };
-  )
+  //   )
 });

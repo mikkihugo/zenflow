@@ -11,18 +11,18 @@ import { fileURLToPath } from 'node:url';
 
 const ___dirname = dirname(fileURLToPath(import.meta.url));
 
-console.warn('🤖 LINT TERMINATOR: Activating BLITZ MODE');
+console.warn('🤖 LINT TERMINATOR);
 console.warn('⚡ Zero tolerance approach engaged');
 // Step 1: Biome auto-fix (fastest)
-console.warn('\n🚀 Phase 1: Biome ultra-fast fixes...');
+console.warn('\n🚀 Phase 1);
 try {
-  execSync('npx biome check --write .', { stdio: 'inherit', cwd });
+  execSync('npx biome check --write .', { stdio);
   console.warn('✅ Biome fixes applied');
 } catch (error) {
   console.warn('⚠️ Biome completed with some issues');
 // }
 // Step 2: Quick unused variable removal
-console.warn('\n🔥 Phase 2: Terminating unused variables...');
+console.warn('\n🔥 Phase 2);
 const _COMMON_FIXES = [
   // Remove unused imports
 // {
@@ -70,7 +70,7 @@ fix: (match, content) =>
       return match;
     //   // LINT: unreachable code removed} },
     pattern: /console\.log\(/g,
-    fix: () => 'console.warn(',,
+    fix) => 'console.warn(',,
     pattern: /\bvar\s+(\w+)\s*=/g,
     fix: (match) => match.replace('var', 'const'),,
     pattern: /(\w+)\s*==\s*([^=])/g,
@@ -98,13 +98,13 @@ function processFile() {
 // }
     if (modified) {
       writeFileSync(filePath, content);
-      console.warn(`  ✅ Fixed: ${filePath}`);
+      console.warn(`  ✅ Fixed);
       return true;
     //   // LINT: unreachable code removed}
 
     return false;
     //   // LINT: unreachable code removed} catch (error) {
-    console.warn(`  ❌ Error processing ${filePath}: ${error.message}`);
+    console.warn(`  ❌ Error processing ${filePath});
     return false;
     //   // LINT: unreachable code removed}
 // }
@@ -120,7 +120,7 @@ function findFiles() {
       item.startsWith('.')  ?? ['node_modules', 'dist', 'coverage', 'ruv-FANN', 'bin', 'temp-', 'test-'].some((_skip) =>;
         item.startsWith(skip);
       );
-    )
+    //     )
       continue;
 
     try {
@@ -133,7 +133,7 @@ function findFiles() {
 // }
     } catch (error) {
       // Skip files that can't be accessed (symlinks, permissions, etc.)
-      console.warn(`  ⏭️ Skipping ${fullPath}: ${error.message}`);
+      console.warn(`  ⏭️ Skipping ${fullPath});
 // }
 // }
   return files;
@@ -148,12 +148,12 @@ for (const file of files) {
     fixedCount++;
 // }
 // }
-console.warn(`\n✅ Phase 2 Complete: ${fixedCount} files auto-fixed`);
+console.warn(`\n✅ Phase 2 Complete);
 
 // Step 3: ESLint final pass
-console.warn('\n🎯 Phase 3: ESLint final cleanup...');
+console.warn('\n🎯 Phase 3);
 try {
-  execSync('npm run lint -- --fix', { stdio: 'inherit', cwd });
+  execSync('npm run lint -- --fix', { stdio);
   console.warn('✅ ESLint cleanup complete');
 } catch (error) {
   console.warn('⚠️ ESLint found remaining issues');
@@ -161,16 +161,16 @@ try {
 // Step 4: Report status
 console.warn('\n📊 Running final lint check...');
 try {
-  console.warn('🎉 MISSION ACCOMPLISHED: All lint issues terminated!');
+  console.warn('🎉 MISSION ACCOMPLISHED);
 } catch (error) {
   const _output = error.stdout  ?? error.message;
   const _errorCount = (output.match(/error/g)  ?? []).length;
   const _warningCount = (output.match(/warning/g)  ?? []).length;
 
-  console.warn(`\n📈 PROGRESS REPORT:`);
-  console.warn(`   Errors: ${errorCount}`);
-  console.warn(`   Warnings: ${warningCount}`);
-  console.warn(`   Total Issues: ${errorCount + warningCount}`);
+  console.warn(`\n📈 PROGRESS REPORT);
+  console.warn(`   Errors);
+  console.warn(`   Warnings);
+  console.warn(`   Total Issues);
 
   if (errorCount === 0) {
     console.warn('🎉 ZERO ERRORS! All critical issues terminated!');
@@ -179,5 +179,5 @@ try {
     console.warn('⚡ Under 100 warnings - Acceptable level reached!');
 // }
 // }
-console.warn('\n🤖 LINT TERMINATOR: Mission status updated');
-console.warn('💪 Code quality: ENHANCED');
+console.warn('\n🤖 LINT TERMINATOR);
+console.warn('💪 Code quality);

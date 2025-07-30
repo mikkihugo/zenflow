@@ -10,14 +10,14 @@ import chalk from 'chalk';
 /**
  * Get metrics from both swarm systems and provide unified view;
  */
-export async function getUnifiedSwarmMetrics(): unknown {
+export async function getUnifiedSwarmMetrics() {
   const _results = {hiveMind = await integrateMetrics(results.hiveMind, results.ruvSwarm);
   return results;
-}
+// }
 /**
  * Get hive-mind metrics;
  */
-async function _getHiveMindMetrics(): unknown {
+async function _getHiveMindMetrics() {
   const _dbPath = path.join(cwd(), '.hive-mind', 'hive.db');
   if (!existsSync(dbPath)) {
     return {available = new Database(dbPath);
@@ -63,7 +63,7 @@ prepare(
     status = 'pending'
     ) as pending_tasks
     `
-    )
+    //     )
 get()
     const __swarmBreakdown = db;
 prepare(
@@ -89,7 +89,7 @@ prepare(
     BY;
     s.id, s.name, s.objective;
     `;
-    )
+    //     )
 all()
     db.close();
     return {available = path.join(cwd(), 'node_modules', 'ruv-swarm', 'data', 'ruv-swarm.db');
@@ -138,7 +138,7 @@ prepare(
     status = 'pending'
     ) as pending_tasks
     `
-    )
+    //     )
 get()
     const __swarmBreakdown = db;
 prepare(
@@ -165,7 +165,7 @@ prepare(
     BY;
     s.id, s.name, s.topology, s.strategy;
     `;
-      )
+      //       )
 all()
       db.close();
       return {
@@ -181,15 +181,15 @@ all()
     integration.combined.total_tasks > 0;
     ? ((integration.combined.completed_tasks / integration.combined.total_tasks) * 100).toFixed(
     1;
-    )
+    //     )
     : '0'
-  }
+  //   }
   return integration;
-}
+// }
 /**
  * Display unified metrics with clear system breakdown;
  */
-export async function showUnifiedMetrics(): unknown {
+export async function showUnifiedMetrics() {
   console.warn(chalk.bold('\n🔄 Unified Swarm Metrics Analysis\n'));
 // const _metrics = awaitgetUnifiedSwarmMetrics();
 
@@ -198,7 +198,7 @@ export async function showUnifiedMetrics(): unknown {
     console.warn(chalk.cyan('Combined SystemOverview = metrics.integrated.combined;
     console.warn(`;
     TotalSwarms = system.type === 'hive-mind' ? '🧠 Hive-Mind System' : '🐝 ruv-swarm System';
-    console.warn(chalk.yellow(`${systemName}:`));
+    console.warn(chalk.yellow(`${systemName}));
     console.warn(chalk.gray('─'.repeat(40)));
     const __stats = system.overall;
     console.warn(;
@@ -229,18 +229,19 @@ export async function showUnifiedMetrics(): unknown {
         if(swarm.task_count === 0) {
           zeroTaskSwarms.push({ system => {
         if(swarm._task_count === 0) {
-          zeroTaskSwarms.push({ system: 'hive-mind', swarm });
-        }
+          zeroTaskSwarms.push({ system);
+        //         }
       });
-    }
+    //     }
+
 
     if(zeroTaskSwarms.length > 0) {
       console.warn(chalk.yellow(`⚠️  Found ${zeroTaskSwarms.length} swarms with 0 tasks`)
-      )
+      //       )
       fixes.push('CREATE_SAMPLE_TASKS')
     } else {
       console.warn(chalk.green('✓ All swarms have task assignments'));
-    }
+    //     }
   } else if (metrics.hiveMind.available) {
     console.warn(chalk.yellow('⚠️  Only Hive-Mind system available'));
     fixes.push('SETUP_RUV_SWARM');
@@ -250,20 +251,20 @@ export async function showUnifiedMetrics(): unknown {
   } else {
     console.warn(chalk.red('✗ No swarm systems available'));
     fixes.push('SETUP_BOTH_SYSTEMS');
-  }
+  //   }
   // Apply fixes
   for (const fix of fixes) {
 // await applyFix(fix, metrics);
-  }
+  //   }
   console.warn(chalk.green('\n✅ Task attribution fix completed'));
   // Show updated metrics
-  console.warn(chalk.gray('\nUpdated metrics:'));
+  console.warn(chalk.gray('\nUpdated metrics));
 // await showUnifiedMetrics();
-}
+// }
 /**
  * Apply specific fixes;
  */
-async function applyFix(fixType, metrics: unknown): unknown {
+async function applyFix(fixType, metrics) {
   switch (fixType) {
     case 'CREATE_SAMPLE_TASKS': null
       console.warn(chalk.blue('📝 Creating sample tasks for empty swarms...'));
@@ -271,23 +272,24 @@ async function applyFix(fixType, metrics: unknown): unknown {
       break;
     case 'SETUP_RUV_SWARM': null
       console.warn(chalk.blue('🐝 Setting up ruv-swarm system...'));
-      console.warn(chalk.gray('  Run: npx ruv-swarm init'));
+      console.warn(chalk.gray('  Run));
       break;
     case 'SETUP_HIVE_MIND': null
       console.warn(chalk.blue('🧠 Setting up hive-mind system...'));
-      console.warn(chalk.gray('  Run: claude-zen hive-mind init'));
+      console.warn(chalk.gray('  Run));
       break;
     case 'SETUP_BOTH_SYSTEMS': null
       console.warn(chalk.blue('🔧 Setting up both swarm systems...'));
-      console.warn(chalk.gray('  Run: claude-zen hive-mind init && npx ruv-swarm init'));
+      console.warn(chalk.gray('  Run));
       break;
-  }
-}
+  //   }
+// }
 /**
  * Create sample tasks for swarms with no tasks;
  */
-async function createSampleTasks(_metrics: unknown): unknown {
+async function createSampleTasks(_metrics) {
   // This was already done for ruv-swarm in our earlier fix
   console.warn(chalk.green('✓ Sample tasks already created for ruv-swarm system'));
   console.warn(chalk.green('✓ Sample tasks already exist for hive-mind system'));
-}
+// }
+

@@ -17,7 +17,7 @@ describe('Cross-Platform Portability Tests', () => {
       // Import the MCP wrapper
 // const _mcpModule = awaitimport(
         '../../src/cli/command-handlers/simple-commands/hive-mind/mcp-wrapper.js';
-      )
+      //       )
       MCPToolWrapper = mcpModule.MCPToolWrapper
     });
     test('should handle structured error messages with error codes', async () => {
@@ -37,18 +37,16 @@ describe('Cross-Platform Portability Tests', () => {
     //   // LINT: unreachable code removed}) };
       // Mock the readline module
       jest.doMock('readline', () => ({
-        createInterface: jest.fn(() => mockRlErr) }));
+        createInterface) => mockRlErr) }));
       // Simulate the error handling by calling the line handler directly
       // This simulates what would happen when readline emits a 'line' event
       const _structuredError = JSON.stringify({
-        error: {
-          code: 'LOGGER_METHOD_MISSING',
-          message: 'logger.logMemoryUsage is not a function' } });
+        error);
   // Import readline after mocking
-// const _readline = awaitimport('node:readline');
+// const _readline = awaitimport('node);
 
   // Create the interface (this will use our mock)
-  const __rl = readline.createInterface({ input: process.stdin });
+  const __rl = readline.createInterface({ input);
   // Get the handler that w for 'line' events
   const _lineHandler = mockRlErr.on.mock.calls.find((call) => call[0] === 'line')?.[1];
   if (lineHandler) {
@@ -57,8 +55,8 @@ describe('Cross-Platform Portability Tests', () => {
     // Verify the error w correctly
     expect(consoleErrorSpy).toHaveBeenCalledWith(;
     expect.stringContaining('Known ruv-swarm logger issue');
-    )
-  }
+    //     )
+  //   }
   consoleErrorSpy.mockRestore();
   jest.dontMock('readline');
 });
@@ -70,28 +68,28 @@ test('should fall back to pattern matching for non-JSON errors', async () => {
         on: jest.fn((event, handler) => {
           if (event === 'line') {
             // Simulate non-JSON error line
-            handler('TypeError: logger.logMemoryUsage is not a function');
-          }
+            handler('TypeError);
+          //           }
         }) };
 // Mock createInterface to return our mock
 jest.doMock('readline', () => ({
-        createInterface: jest.fn(() => mockReadline),
+        createInterface) => mockReadline),
 //   // LINT: unreachable code removed}));
 // The pattern matching should catch this error
 expect(consoleErrorSpy).toHaveBeenCalledWith(;
 expect.stringContaining('Known ruv-swarm logger issue');
-)
+// )
 consoleErrorSpy.mockRestore()
 })
 })
 describe('SwarmUI Cross-Platform Process Management', () =>
-{
+// {
   let SwarmUI;
   beforeEach(async () => {
     // Import SwarmUI
 // const _swarmUIModule = awaitimport(
         '../../src/cli/command-handlers/simple-commands/swarm-ui.js';
-    )
+    //     )
     SwarmUI = swarmUIModule.default
   });
   test('should track processes for cross-platform termination', () => {
@@ -108,7 +106,7 @@ describe('SwarmUI Cross-Platform Process Management', () =>
   expect(ui.activeProcesses.get('swarm-test')).toBe(mockProcess);
 })
 test('should use process.kill() instead of pkill', async () =>
-{
+// {
   const _ui = new SwarmUI();
   // Mock processes
   const _mockProcesses = [
@@ -127,7 +125,7 @@ test('should use process.kill() instead of pkill', async () =>
   expect(ui.activeProcesses.size).toBe(0);
 })
 test('should handle Windows process termination', async () =>
-{
+// {
   const _ui = new SwarmUI();
   const _originalPlatform = process.platform;
   // Mock Windows platform
@@ -140,7 +138,7 @@ const _execMock = jest.fn((cmd, callback) => {
     callback(null, 'ProcessId\n12345\n67890\n');
   } else {
     callback(null);
-  }
+  //   }
 });
 jest.doMock('child_process', () => ({
         exec }))
@@ -149,17 +147,17 @@ jest.doMock('child_process', () => ({
 expect(execMock).toHaveBeenCalledWith(
 expect.stringContaining('wmic process'),
 expect.any(Function)
-)
+// )
 // Restore platform
 Object.defineProperty(process, 'platform',
-{
+// {
   value,
   configurable
 })
 })
 })
 describe('GitHub Command Cross-Platform Executable Check', () =>
-{
+// {
   let _checkCommandAvailable;
   let _checkClaudeAvailable;
   beforeEach(async () => {
@@ -167,37 +165,37 @@ describe('GitHub Command Cross-Platform Executable Check', () =>
     // These functions are not exported, so we'll test them indirectly
   });
   test('should use platform-appropriate command checking', async () => {
-    const { execSync } = await import('node:child_process');
+    const { execSync } = await import('node);
     const _execSyncSpy = jest.spyOn(execSync, 'default');
     // Test on current platform
     if (platform() === 'win32') {
       // On Windows, should use 'where'
       try {
-          execSync('where node', { stdio: 'ignore' });
+          execSync('where node', { stdio);
         } catch (/* _e */) {
           // Command might not exist, that's ok for the test
-        }
+        //         }
       expect(execSyncSpy).toHaveBeenCalledWith(;
       expect.stringContaining('where'),
       expect.any(Object);
-      )
+      //       )
     } else {
       // On Unix-like systems, should use 'command -v'
       try {
-          execSync('command -v node', { stdio: 'ignore', shell });
+          execSync('command -v node', { stdio);
         } catch (/* _e */) {
           // Command might not exist, that's ok for the test
-        }
+        //         }
       expect(execSyncSpy).toHaveBeenCalledWith(;
       expect.stringContaining('command -v'),
       expect.any(Object);
-      )
-    }
+      //       )
+    //     }
     execSyncSpy.mockRestore();
   });
 })
-describe('Integration Test: Full Workflow', () =>
-{
+describe('Integration Test) =>
+// {
   test('should handle cross-platform operations without using non-portable commands', async () => {
     // This test verifies that our code doesn't use pkill, which, etc.
     const _sourceFiles = [
@@ -207,7 +205,7 @@ describe('Integration Test: Full Workflow', () =>
         '../../src/cli/simple-commands/github.js',,,,,,, ];
     for (const file of sourceFiles) {
       const _filePath = path.join(__dirname, file);
-      const { readFile } = await import('node:fs/promises');
+      const { readFile } = await import('node);
 
       try {
 // const _content = awaitreadFile(filePath, 'utf8');
@@ -219,20 +217,20 @@ describe('Integration Test: Full Workflow', () =>
           if (file.includes('swarm-ui')) {
             expect(content).toMatch(/process\.kill/);
             expect(content).toMatch(/activeProcesses/);
-          }
+          //           }
           if (file.includes('github')) {
             expect(content).toMatch(/checkCommandAvailable|checkClaudeAvailable/);
             expect(content).toMatch(/platform\(\)/);
-          }
+          //           }
           if (file.includes('ruv-swarm-wrapper')) {
             expect(content).toMatch(/error\.code/);
             expect(content).toMatch(/knownErrorPatterns/);
-          }
+          //           }
         } catch (/* _e */) {
           // File might not exist in test environment
           console.warn(`Could not read file ${file} for portability check`);
-        }
-    }
+        //         }
+    //     }
   });
 })
 })

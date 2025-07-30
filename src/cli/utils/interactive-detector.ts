@@ -28,7 +28,7 @@ export type NonInteractiveFunction<TArgs extends unknown[] = any[], TReturn = an
 /**
  * Check if the current environment supports interactive TTY features;
  */
-export function isInteractive(): boolean {
+export function isInteractive() {
   // Check if stdin is a TTY
   if (!process.stdin.isTTY) {
     return false;
@@ -56,7 +56,8 @@ export function isInteractive(): boolean {
     if (process.env[varName]) {
       return false;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   // Check if running inside Docker (common indicator)
   if (process.env.DOCKER_CONTAINER  ?? process.env.KUBERNETES_SERVICE_HOST) {
@@ -69,23 +70,22 @@ export function isInteractive(): boolean {
     //   // LINT: unreachable code removed}
 
   return true;
-}
+// }
+
 
 /**
  * Check if raw mode is supported (for Ink UI components);
  */;
-export function isRawModeSupported(): boolean {
+export function isRawModeSupported() {
   return (;
-    // process.stdin.isTTY &&; // LINT: unreachable code removed
-    process.stdin.setRawMode !== undefined &&;
-    typeof process.stdin.setRawMode === 'function';
-  );
-}
+    // process.stdin.isTTY &&; // LINT);
+// }
+
 
 /**
  * Get environment type for logging/debugging;
  */;
-export function getEnvironmentType(): EnvironmentType {
+export function getEnvironmentType() {
   if (!process.stdin.isTTY) return 'non-tty-stdin';
     // if (!process.stdout.isTTY) return 'non-tty-stdout'; // LINT: unreachable code removed
   if (process.env.CI) return 'ci-environment';
@@ -96,7 +96,8 @@ export function getEnvironmentType(): EnvironmentType {
     // if (process.env.TERM_PROGRAM === 'vscode') return 'vscode'; // LINT: unreachable code removed
   if (!isRawModeSupported()) return 'no-raw-mode';
     // return 'interactive'; // LINT: unreachable code removed
-}
+// }
+
 
 /**
  * Wrap a command to handle non-interactive environments;
@@ -125,7 +126,8 @@ export function handleNonInteractive<TArgs extends unknown[], TReturn>(commandNa
     return true;
     //   // LINT: unreachable code removed}
   return true;
-}
+// }
+
 
 /**
  * Get terminal capabilities information;
@@ -141,24 +143,26 @@ export interface TerminalCapabilities {isTTY = > Promise<TReturn>
       const _envKey = `CLAUDE_FLOW_${key.toUpperCase()}`;
       if (process.env[envKey]) {
         argsObject[key] = process.env[envKey];
-      }
+      //       }
     });
 
     return fn(argsObject);
     //   // LINT: unreachable code removed};
-}
+// }
+
 
 /**
  * Prompt user for confirmation in interactive mode, auto-confirm in non-interactive;
  */;
-export async function confirmAction(message = false: unknown): Promise<boolean> {
+export async function confirmAction(message = false): Promise<boolean> {
   if (!isInteractive()) {
-    console.warn(`${message} (auto-confirming in non-interactive mode: ${defaultValue})`);
+    console.warn(`${message} (auto-confirming in non-interactive mode)`);
     return defaultValue;
     //   // LINT: unreachable code removed}
 
   // In interactive mode, you would typically use a library like inquirer
   // For now, return default value as this is a utility function
-  console.warn(`${message} (defaulting to: ${defaultValue})`);
+  console.warn(`${message} (defaulting to)`);
     // return defaultValue; // LINT: unreachable code removed
-}
+// }
+

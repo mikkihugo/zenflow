@@ -3,9 +3,9 @@ import { describe, expect } from '@jest/globals';
 describe('Integration and End-to-End Test Coverage', () => {
   describe('File System Operations', () => {
     it('should handle basic file system patterns', async () => {
-// const _fs = awaitimport('node:fs/promises');
-// const _path = awaitimport('node:path');
-// const _os = awaitimport('node:os');
+// const _fs = awaitimport('node);
+// const _path = awaitimport('node);
+// const _os = awaitimport('node);
 
       // Test creating and cleaning up temp directories
 // const _tempDir = awaitfs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-test-'));
@@ -22,7 +22,7 @@ describe('Integration and End-to-End Test Coverage', () => {
   // await fs.rm(tempDir, { recursive, force });
     });
     it('should handle path operations', async () => {
-// const _path = awaitimport('node:path');
+// const _path = awaitimport('node);
 
       const _testPath = '/path/to/test/file.txt';
       expect(path.dirname(testPath)).toBe('/path/to/test');
@@ -50,7 +50,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(process.env.CLAUDE_ZEN_TEST).toBeUndefined();
     });
     it('should handle OS information', async () => {
-// const _os = awaitimport('node:os');
+// const _os = awaitimport('node);
 
       expect(typeof os.platform()).toBe('string');
       expect(typeof os.arch()).toBe('string');
@@ -62,7 +62,7 @@ describe('Integration and End-to-End Test Coverage', () => {
   });
   describe('Event System', () => {
     it('should handle EventEmitter functionality', async () => {
-      const { EventEmitter } = await import('node:events');
+      const { EventEmitter } = await import('node);
 
       const _emitter = new EventEmitter();
       const _eventFired = false;
@@ -76,7 +76,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(eventData).toBe('test-data');
     });
     it('should handle once listeners', async () => {
-      const { EventEmitter } = await import('node:events');
+      const { EventEmitter } = await import('node);
 
       const _emitter = new EventEmitter();
       const _callCount = 0;
@@ -91,9 +91,9 @@ describe('Integration and End-to-End Test Coverage', () => {
   });
   describe('URL and Crypto Utilities', () => {
     it('should handle URL parsing and validation', () => {
-      const _validUrl = new URL('https://example.com:8080/path?query=value#fragment');
+      const _validUrl = new URL('https);
 
-      expect(validUrl.protocol).toBe('https:');
+      expect(validUrl.protocol).toBe('https);
       expect(validUrl.hostname).toBe('example.com');
       expect(validUrl.port).toBe('8080');
       expect(validUrl.pathname).toBe('/path');
@@ -101,7 +101,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(validUrl.hash).toBe('#fragment');
     });
     it('should handle crypto operations', async () => {
-// const _crypto = awaitimport('node:crypto');
+// const _crypto = awaitimport('node);
 
       // Test random bytes
       const _randomBytes = crypto.randomBytes(16);
@@ -126,7 +126,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(concatenated.length).toBe(21);
     });
     it('should handle stream patterns', async () => {
-      const { Readable, Writable } = await import('node:stream');
+      const { Readable, Writable } = await import('node);
 
       const _writtenData = '';
       const _readable = new Readable({
@@ -150,7 +150,7 @@ describe('Integration and End-to-End Test Coverage', () => {
 })
 })
 describe('JSON and Data Processing', () =>
-{
+// {
     it('should handle JSON operations safely', () => {
       const _data = { name: 'test', value, nested: { key: 'value' } };
       const _json = JSON.stringify(data);
@@ -168,15 +168,15 @@ describe('JSON and Data Processing', () =>
         } else {
           if (!data.name  ?? typeof data.name !== 'string') {
             errors.push('Name is required and must be a string');
-          }
+          //           }
           if (data.age !== undefined && (typeof data.age !== 'number'  ?? data.age < 0)) {
             errors.push('Age must be a positive number');
-          }
-        }
+          //           }
+        //         }
         return errors;
     //   // LINT: unreachable code removed};
       expect(validateData({ name: 'John', age })).toEqual([]);
-      expect(validateData({ name: 'Jane' })).toEqual([]);
+      expect(validateData({ name)).toEqual([]);
       expect(validateData({})).toContain('Name is required');
       expect(validateData({ name: 'Bob', age: -5 })).toContain('Age must be a positive number');
     });
@@ -198,7 +198,7 @@ describe('JSON and Data Processing', () =>
       const _asyncErrorFunction = async (shouldThrow) => {
         if (shouldThrow) {
           throw new Error('Async error');
-        }
+        //         }
         return 'success';
     //   // LINT: unreachable code removed};
   // await expect(asyncErrorFunction(false)).resolves.toBe('success');
@@ -232,7 +232,7 @@ describe('JSON and Data Processing', () =>
       expect(emailRegex.test('user@example.com')).toBe(true);
       expect(emailRegex.test('invalid-email')).toBe(false);
       const _urlRegex = /^https?:\/\/[^\s]+$/;
-      expect(urlRegex.test('https://example.com')).toBe(true);
+      expect(urlRegex.test('https)).toBe(true);
       expect(urlRegex.test('not-a-url')).toBe(false);
     });
     it('should handle string manipulation', () => {
@@ -282,14 +282,14 @@ describe('JSON and Data Processing', () =>
       expect(futureDate.getTime()).toBeGreaterThan(timestamp);
       const _isoString = now.toISOString();
       expect(typeof isoString).toBe('string');
-      expect(isoString).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+      expect(isoString).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2});
     });
     it('should handle performance measurements', () => {
       const _start = Date.now();
       // Simulate some work
       for (let i = 0; i < 1000; i++) {
         Math.random();
-      }
+      //       }
       const _end = Date.now();
       const _duration = end - start;
       expect(duration).toBeGreaterThanOrEqual(0);

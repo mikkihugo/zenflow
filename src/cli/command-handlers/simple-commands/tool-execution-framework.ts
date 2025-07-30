@@ -26,42 +26,42 @@ export class ToolExecutionFramework {
   this;
 
   initializeFormatters();
-}
+// }
 /**
  * Initialize result formatters for different tool types;
  */
 initializeFormatters();
-{
+// {
   // Swarm tools formatters
   this.resultFormatters.set('swarm_init', (_result) => ({title = > ({title = > ({title = > ({title = === 'store' ? 'Stored' : 'Retrieved'}` ],status = > ({title = > `${key}: ${typeof value === 'object' ? JSON.stringify(value) }`),
-      status = {}, options = {}): unknown {
+      status = {}, options = {}) {
     try {
       // Validate tool exists
       if (!this.isToolAvailable(toolName)) {
         throw new Error(`Tool "${toolName}" is not available`);
-}
+// }
 // Create execution context
 const _execution = {id = this.maxConcurrentExecutions) {
         this.executionQueue.push(execution);
 this.ui.addLog('info', `Tool ${toolName} queued (${this.executionQueue.length} in queue)`);
 } else
-{
+// {
 // await this.executeToolDirect(execution);
-}
+// }
 return execution;
 } catch (error)
-{
-  this.ui.addLog('error', `Failed to execute ${toolName}: ${error.message}`);
+// {
+  this.ui.addLog('error', `Failed to execute ${toolName});
   throw error;
-}
-}
+// }
+// }
 /**
  * Execute tool directly;
  */
-async
+// async
 executeToolDirect(execution)
 : unknown
-{
+// {
     this.currentExecutions++;
     execution.status = 'running';
     execution.startTime = Date.now();
@@ -98,13 +98,14 @@ executeToolDirect(execution)
 
       this.ui.addLog('error', `${execution.toolName}failed = this.executionQueue.shift();
 // await this.executeToolDirect(nextExecution);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Execute multiple tools in batch;
    */;
-  async executeToolsBatch(toolExecutions, options = {}): unknown {
+  async executeToolsBatch(toolExecutions, options = {}) {
     const _batchId = `batch_${Date.now()}`;
     const _results = [];
 
@@ -122,7 +123,7 @@ executeToolDirect(execution)
             results.push({success = results.filter((r) => r.success).length;
       this.ui.addLog(;
         'success',
-        `Batch ${batchId} completed = {}): unknown {
+        `Batch ${batchId} completed = {}) {
     const _workflowId = `workflow_\$Date.now()`;
     const _context = {}; // Shared context between steps
     const _results = [];
@@ -139,7 +140,8 @@ executeToolDirect(execution)
         // Update context with results
         if(step.outputVariable && execution.result) {
           context[step.outputVariable] = execution.result;
-        }
+        //         }
+
 
         results.push(execution);
 
@@ -161,8 +163,9 @@ executeToolDirect(execution)
         resolved[key] = this.resolveParameters(value, context);
       } else {
         resolved[key] = value;
-      }
-    }
+      //       }
+    //     }
+
 
     return resolved;
     //   // LINT: unreachable code removed}
@@ -170,7 +173,7 @@ executeToolDirect(execution)
   /**
    * Format tool result for display;
    */;
-  formatResult(toolName, result): unknown {
+  formatResult(toolName, result) {
     const _formatter = this.resultFormatters.get(toolName)  ?? this.resultFormatters.get('default');
     return formatter(result);
     //   // LINT: unreachable code removed}
@@ -178,7 +181,7 @@ executeToolDirect(execution)
   /**
    * Check if tool is available;
    */;
-  isToolAvailable(toolName): unknown {
+  isToolAvailable(toolName) {
     const _allTools = Object.values(this.mcpLayer.toolCategories).flat();
     return allTools.includes(toolName);
     //   // LINT: unreachable code removed}
@@ -214,13 +217,14 @@ executeToolDirect(execution)
    */;
   getPredefinedWorkflows()
     return {
-      neural_training_pipeline = {}): unknown {
+      neural_training_pipeline = {}) {
     const _workflows = this.getPredefinedWorkflows();
     // const _workflow = workflows[workflowName]; // LINT: unreachable code removed
 
     if(!workflow) {
-      throw new Error(`Unknown workflow: ${workflowName}`);
-    }
+      throw new Error(`Unknown workflow);
+    //     }
+
 
     return await this.executeWorkflow(workflow, options);
     //   // LINT: unreachable code removed}

@@ -16,13 +16,13 @@ export class ValidationTestRunner {
   this;
 
   testResults = [];
-}
+// }
 /**
  * Run all validation and rollback tests;
  */
 async;
 runAllTests();
-{
+// {
   console.warn('🧪 Running validation and rollback system tests...');
 
   const _tests = [
@@ -40,8 +40,8 @@ runAllTests();
   for (const _testCase of tests) {
     console.warn(`\n🔬Testing = await testCase.test();
         this.testResults.push({name = > console.error(`  - ${error}`));
-          }
-        }
+          //           }
+        //         }
       } catch (error) {
         this.testResults.push({
           name = {success = await this.validationSystem.validatePreInit();
@@ -50,7 +50,8 @@ runAllTests();
       if(!normalValidation.success && normalValidation.errors.length > 0) {
         // Some failures are expected in test environment
         result.details.expectedFailures = normalValidation.errors;
-      }
+      //       }
+
 
       // Test with force flag
 // const _forceValidation = awaitthis.validationSystem.validatePreInit({force = forceValidation;
@@ -64,7 +65,7 @@ runAllTests();
     // Clean up test files
 // await this.cleanupTestFiles();
     result.success = true;
-  }
+  //   }
   catch(error) ;
       result.success = false;
   result.errors.push(`Post-init validation test failed = success = await this.validationSystem.validateConfiguration();
@@ -105,8 +106,8 @@ runAllTests();
 
   if (!deleteResult.success) {
     result.errors.push('Backup deletion failed');
-  }
-}
+  //   }
+// }
 catch (error) {
   result.success = false;
   result.errors.push(`Backup system test failed = {success = await this.rollbackSystem.validateRollbackSystem();
@@ -114,7 +115,8 @@ catch (error) {
 
       if(!rollbackValidation.success) {
         result.errors.push(...rollbackValidation.errors);
-      }
+      //       }
+
 
       // Test rollback point listing
 // const __rollbackPoints = awaitthis.rollbackSystem.listRollbackPoints();
@@ -126,14 +128,16 @@ catch (error) {
 
   if (!checkpoint.success) {
     result.errors.push('Checkpoint creation failed');
-  }
+  //   }
+
 
   // Test rollback point recording
 // const _rollbackPoint = awaitstateTracker.recordRollbackPoint('test', {testData = rollbackPoint;
 
   if (!rollbackPoint.success) {
     result.errors.push('Rollback point creation failed');
-  }
+  //   }
+
 
   // Test state validation
 // const _stateValidation = awaitstateTracker.validateStateTracking();
@@ -141,8 +145,8 @@ catch (error) {
 
   if (!stateValidation.success) {
     result.errors.push(...stateValidation.errors);
-  }
-}
+  //   }
+// }
 catch (error) {
       result.success = false;
       result.errors.push(`State tracking test failed = {success = this.rollbackSystem.recoveryManager;
@@ -153,7 +157,8 @@ catch (error) {
 
       if(!recoveryValidation.success) {
         result.errors.push(...recoveryValidation.errors);
-      }
+      //       }
+
 
       // Test generic recovery
 // const _genericRecovery = awaitrecoveryManager.performRecovery('test-failure', {test = genericRecovery;
@@ -180,8 +185,7 @@ catch (error) {
       printError(`❌ ${failed} tests failed`);
 
     console.warn('\n📋 Test Results => {
-      const _status = test.success ? '✅' : '❌';
-      console.warn(`${status} ${test.name}`);
+      const _status = test.success ? '✅' );
 
       if(!test.success && test.error) {
         console.warn(`Error = '.repeat(60));
@@ -195,8 +199,9 @@ catch (error) {
       printWarning('🟠 Fair - System has some significant issues');
     } else {
       printError('🔴 Poor - System has major issues requiring attention');
-    }
-  }
+    //     }
+  //   }
+
 
   // Helper methods for creating test files
 
@@ -205,4 +210,5 @@ catch (error) {
 // await node.mkdir(`${this.workingDir}/test-temp`, { recursive = {version = new ValidationTestRunner(workingDir);
 // await testRunner.runAllTests();
   return testRunner.testResults;
-}
+// }
+

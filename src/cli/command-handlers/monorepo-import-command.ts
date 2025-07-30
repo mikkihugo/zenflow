@@ -13,7 +13,7 @@ import { printInfo } from '../utils.js';
 /**
  * Analyze monorepo structure and discover services;
  */
-export async function importMonorepoCommand(args = args[0]  ?? process.cwd(: unknown);
+export async function importMonorepoCommand(args = args[0]  ?? process.cwd();
 const _options = {maxServices = = false, // default truesetupGraph = = false,   // default trueverbose = await discoverServices(monorepoPath, options);
 
     // 2. Analyze service code and dependencies
@@ -21,11 +21,11 @@ const _options = {maxServices = = false, // default truesetupGraph = = false,   
 // 3. Set up graph database with Kuzu
 if (options.setupGraph) {
 // await setupServiceGraph(analysis, options);
-}
+// }
 // 4. Auto-create hives if requested
 if (options.autoCreateHives) {
 // await createServiceHives(analysis, options);
-}
+// }
 // 5. Generate import summary
 const _summary = generateImportSummary(analysis, options);
 // await saveImportSummary(summary);
@@ -49,7 +49,7 @@ printSuccess(`✅ Monorepo importcompleted = new Map();
           // Merge service information
           const _existing = services.get(key);
           services.set(key, mergeServiceInfo(existing, service));
-        }
+        //         }
       });
     } catch (error) {
       if(options.verbose) {
@@ -57,12 +57,12 @@ printSuccess(`✅ Monorepo importcompleted = new Map();
 slice(0, options.maxServices) // Limit to target count
 
 printSuccess(`📦 Found $
-{
+// {
   serviceList.length;
-}
+// }
 services`);
 return serviceList;
-}
+// }
 /**
  * Strategy1 = [];
   const _patterns = [
@@ -124,47 +124,48 @@ return serviceList;
       // Build dependency map
       if(serviceAnalysis.dependencies.length > 0) {
         analysis.dependencies.set(service.name, serviceAnalysis.dependencies);
-      }
+      //       }
+
 
       // Extract relationships
       analysis.relationships.push(...serviceAnalysis.relationships);
 
     } catch (error)
-{
+// {
   printWarning(`;
 ⚠️ Failed to analyzeservice = detectServicePatterns(analysis.services)
 printSuccess(`🔬 Analysis completed =
-{
+// {
 ..service,dependencies = [
 ..service.packageInfo.dependencies,
 ..service.packageInfo.devDependencies
-  ]
-}
+  //   ]
+// }
 // Analyze NX dependencies
 if (service.nxInfo) {
   analysis.dependencies.push(...service.nxInfo.implicitDependencies);
-}
+// }
 // Code analysis (if enabled)
 if (options.analyzeCode) {
   analysis.codeStats = await analyzeServiceCode(service.path);
   analysis.apis = await detectAPIs(service.path);
   analysis.databases = await detectDatabases(service.path);
   analysis.technologies = await detectTechnologies(service.path);
-}
+// }
 // Build relationships
 analysis.relationships = buildServiceRelationships(service, analysis);
 } catch (error)
-{
-  printWarning(`Service analysis error for ${service.name}: ${error.message}`);
-}
+// {
+  printWarning(`Service analysis error for ${service.name});
+// }
 return analysis;
-}
+// }
 /**
  * Analyze service code structure;
  */
 async function analyzeServiceCode(servicePath = {fileCount = await glob('**/*', {cwd = files.length;
 
-for (const file of files.slice(0, 100: unknown)) {
+for (const file of files.slice(0, 100)) {
   // Limit for performance
   const _ext = path.extname(file).toLowerCase();
   stats.languages[ext] = (stats.languages[ext]  ?? 0) + 1;
@@ -174,22 +175,22 @@ for (const file of files.slice(0, 100: unknown)) {
     stats.lineCount += content.split('\n').length;
   } catch (/* _error */) {
     // Skip files that can't be read
-  }
-}
+  //   }
+// }
 // Estimate complexity
 if (stats.lineCount > 10000) stats.complexity = 'high';
 else if (stats.lineCount > 2000) stats.complexity = 'medium';
 else stats.complexity = 'low';
 } catch (error)
-{
+// {
   // Return basic stats on error
-}
+// }
 return stats;
-}
+// }
 /**
  * Detect APIs in service;
  */
-async function _detectAPIs(): unknown {
+async function _detectAPIs() {
 // const __files = awaitglob(pattern, {cwd = await glob('**/swagger.{json,yaml,yml}', {cwd = await glob('**/openapi.{json,yaml,yml}', { cwd => {
       apis.push({
         file,type = [];
@@ -230,12 +231,14 @@ async function _detectAPIs(): unknown {
       if (deps.mysql) technologies.add('mysql');
       if (deps.redis) technologies.add('redis');
       if (deps.graphql) technologies.add('graphql');
-    }
+    //     }
+
 
     // Check for Docker
     if (existsSync(path.join(servicePath, 'Dockerfile'))) {
       technologies.add('docker');
-    }
+    //     }
+
 
     // Check for Kubernetes
 
@@ -260,7 +263,7 @@ async function _detectAPIs(): unknown {
       if (service.codeStats.complexity === 'low') sizeCounts.small++;
       else if (service.codeStats.complexity === 'medium') sizeCounts.medium++;
       else sizeCounts.large++;
-    }
+    //     }
   });
 
   patterns.push({type = new KuzuGraphInterface({dbPath = new Set();
@@ -314,8 +317,9 @@ map(service => service.name);
   if(apiServices.length > 0) {
     recommendations.push({type = './monorepo-import-summary.json';
 // await writeFile(summaryPath, JSON.stringify(summary, null, 2));
-  printInfo(`📋 Import summary saved: ${summaryPath}`);
-}
+  printInfo(`📋 Import summary saved);
+// }
+
 
 export default {
   importMonorepoCommand,

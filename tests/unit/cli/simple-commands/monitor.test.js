@@ -21,14 +21,14 @@ describe('Basic Functionality', () => {
   test('should import without errors', async () => {
 // const _monitor = awaitimport(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
-    )
+    //     )
     expect(monitor.monitorCommand).toBeDefined()
     expect(monitor.showMonitorHelp).toBeDefined()
   });
   test('should collect and display metrics', async () => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
-    )
+    //     )
   // await monitorCommand([])
     // Check if metrics were displayed
     const _output = consoleSpy.log.mock.calls.join('\n');
@@ -37,10 +37,10 @@ describe('Basic Functionality', () => {
   test('should show help information', async () => {
     const { showMonitorHelp } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
-    )
+    //     )
     showMonitorHelp()
     const _output = consoleSpy.log.mock.calls.join('\n');
-    expect(output).toContain('Monitor commands:');
+    expect(output).toContain('Monitor commands);
     expect(output).toContain('--interval');
     expect(output).toContain('--format');
   });
@@ -49,7 +49,7 @@ describe('Output Formats', () => {
   test('should output JSON format when specified', async () => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
-    )
+    //     )
   // await monitorCommand(['--format', 'json'])
     const _calls = consoleSpy.log.mock.calls;
     const _jsonOutput = calls.find((call) => {
@@ -65,12 +65,12 @@ describe('Output Formats', () => {
         const _parsed = JSON.parse(jsonOutput[0]);
         expect(parsed).toHaveProperty('timestamp');
         expect(parsed).toHaveProperty('system');
-      }
+      //       }
     });
     test('should output pretty format by default', async () => {
       const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
-      )
+      //       )
   // await monitorCommand([])
       const _output = consoleSpy.log.mock.calls.join('\n');
       expect(output).toMatch(/System Metrics|System Resources|Performance/);

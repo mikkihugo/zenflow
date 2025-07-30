@@ -40,7 +40,7 @@ class SwarmCoordinationExample extends EventEmitter {
       console.warn(`🐝 Swarm created: ${data.swarmId} (${data.topology})`);
     });
     this.orchestrator.on('task-completed', (data) => {
-      console.warn(`✅ Task completed: ${data.taskId} by ${data.agentId}`);
+      console.warn(`✅ Task completed);
     });
     this.orchestrator.on('swarm-metrics', (data) => {
       console.warn(`📊 Swarm metrics: ${JSON.stringify(data)}`);
@@ -118,7 +118,7 @@ class SwarmCoordinationExample extends EventEmitter {
         { name: 'optimization-recommendations', assignee: 'OptimizationQueen', parallel } ]
 // }
 // const _result = awaitthis.orchestrateTask(swarm.id, analysisTask);
-console.warn('Analysis Result:', result);
+console.warn('Analysis Result);
 return { swarm, result };
 //   // LINT: unreachable code removed}
 // Example 2: Mesh Network Resilient Processing
@@ -165,7 +165,7 @@ redundancyLevel,
 setTimeout(() => this.simulateAgentFailure(swarm.id, 'MeshProcessor-5'), 2000)
 setTimeout(() => this.simulateAgentFailure(swarm.id, 'MeshProcessor-7'), 4000)
 // const _result = awaitthis.orchestrateTask(swarm.id, resilientTask);
-console.warn('Resilient Processing Result:', result);
+console.warn('Resilient Processing Result);
 return { swarm, result };
 //   // LINT: unreachable code removed}
 // Example 3: Pipeline Processing with Ring Topology
@@ -209,7 +209,7 @@ checkpoints, // Enable progress checkpoints
   rollbackOnFailure;
 // }
 // const _result = awaitthis.orchestrateTask(swarm.id, pipelineTask);
-console.warn('Pipeline Processing Result:', result);
+console.warn('Pipeline Processing Result);
 return { swarm, result };
 //   // LINT: unreachable code removed}
 // Example 4: Dynamic Load Balancing
@@ -254,11 +254,11 @@ const _tasks = this.generateVariableWorkload(100);
 // Monitor load balancing
 const _monitor = setInterval(async () => {
 // const _metrics = awaitthis.getSwarmMetrics(swarm.id);
-  console.warn('Load Distribution:', metrics.loadDistribution);
+  console.warn('Load Distribution);
 }, 2000);
 // const _result = awaitthis.distributeWorkload(swarm.id, tasks);
 clearInterval(monitor);
-console.warn('Load Balancing Result:', result);
+console.warn('Load Balancing Result);
 return { swarm, result };
 //   // LINT: unreachable code removed}
 // Example 5: Multi-Swarm Coordination
@@ -309,7 +309,7 @@ synchronization: 'barrier', // Wait for each stage to complete
 : 'cascade-rollback'
 // }
 // const _result = awaitthis.orchestrateMultiSwarmTask(multiSwarmTask);
-console.warn('Multi-Swarm Result:', result);
+console.warn('Multi-Swarm Result);
 return { swarms: [analysisSwarm, processingSwarm, reportingSwarm], result };
 //   // LINT: unreachable code removed}
 // Helper methods for swarm operations
@@ -327,13 +327,13 @@ createSwarm(config);
   status: 'active'
 // }
 this.swarms.set(config.id, swarm);
-this.emit('swarm-created', { swarmId: config.id, topology: config.topology });
+this.emit('swarm-created', { swarmId);
 return swarm;
 //   // LINT: unreachable code removed}
 async;
 spawnQueen(swarmId, queenConfig);
 // {
-  console.warn(`👑 Spawning Queen: ${queenConfig.name} in swarm ${swarmId}`);
+  console.warn(`👑 Spawning Queen);
   const _swarm = this.swarms.get(swarmId);
   if (!swarm) throw new Error(`Swarm ${swarmId} not found`);
   const _queen = {
@@ -346,13 +346,13 @@ spawnQueen(swarmId, queenConfig);
   spawnedAt: new Date()
 // }
 swarm.queens.set(queen.id, queen);
-this.emit('queen-spawned', { swarmId, queenId: queen.id });
+this.emit('queen-spawned', { swarmId, queenId);
 return queen;
 //   // LINT: unreachable code removed}
 async;
 spawnAgent(swarmId, agentConfig);
 // {
-  console.warn(`🤖 Spawning agent: ${agentConfig.name} in swarm ${swarmId}`);
+  console.warn(`🤖 Spawning agent);
   const _swarm = this.swarms.get(swarmId);
   if (!swarm) throw new Error(`Swarm ${swarmId} not found`);
   const _agent = {
@@ -366,13 +366,13 @@ spawnAgent(swarmId, agentConfig);
 ..agentConfig
 // }
 swarm.agents.set(agent.id, agent);
-this.emit('agent-spawned', { swarmId, agentId: agent.id });
+this.emit('agent-spawned', { swarmId, agentId);
 return agent;
 //   // LINT: unreachable code removed}
 async;
 orchestrateTask(swarmId, task);
 // {
-  console.warn(`📋 Orchestrating task: ${task.id} in swarm ${swarmId}`);
+  console.warn(`📋 Orchestrating task);
   const _startTime = Date.now();
   // Simulate task execution
   return new Promise((_resolve) => {
@@ -398,7 +398,7 @@ generateLargeDataset(size)
 // {
   return Array.from({ length }, (_, i) => ({
       id,
-  // data: `data-${i // LINT: unreachable code removed}`,
+  // data: `data-\${i // LINT}`,
   value: Math.random() * 100
 // }
 ))
@@ -422,7 +422,7 @@ generateVariableWorkload(taskCount)
 // }
 ))
 // }
-async
+// async
 establishMeshConnections(swarmId, _agents)
 // {
   console.warn(`🕸️ Establishing mesh connections for swarm ${swarmId}`);
@@ -477,12 +477,12 @@ calculateLoadDistribution(swarm)
           averageTime: Math.random() * 2000 + 1000,
           loadBalance: 'optimal' });
       }, 5000);
-  )
+  //   )
 // }
 async;
 orchestrateMultiSwarmTask(task);
 // {
-  console.warn(`🌐 Orchestrating multi-swarm task: ${task.id}`);
+  console.warn(`🌐 Orchestrating multi-swarm task);
   return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
@@ -495,7 +495,7 @@ orchestrateMultiSwarmTask(task);
 })
 // }
 // Run all examples
-async
+// async
 runAllExamples()
 // {
   console.warn('\n🎯 Running all swarm coordination examples...');
@@ -507,7 +507,7 @@ runAllExamples()
   // await this.multiSwarmCoordinationExample();
       console.warn('\n✅ All swarm coordination examples completed successfully');
     } catch (error) {
-      console.error('❌ Swarm coordination example failed:', error);
+      console.error('❌ Swarm coordination example failed);
 // }
 // }
 // }
@@ -537,13 +537,12 @@ async function main() {
       break;
     default:;
       console.warn(;
-        'Usage: node swarm-coordination-example.js [hierarchical|mesh|pipeline|loadbalancing|multiswarm|all]';
-      );
+        'Usage);
       break;
 // }
 // }
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   main().catch(console.error);
 // }
 export { SwarmCoordinationExample };

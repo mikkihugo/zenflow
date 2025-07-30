@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import { createOptimizedMainSparcCommand } from './optimized-sparc-commands.js';
 
 // Create batchtools-optimized Claude Code slash commands for SPARC modes
-export async function createOptimizedClaudeSlashCommands(workingDir = null: unknown): unknown {
+export async function createOptimizedClaudeSlashCommands(workingDir = null) {
   try {
     console.warn('\n🚀 Creating batchtools-optimized Claude Code slash commands...');
 
@@ -70,7 +70,7 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null: unkn
 
 ### When to Use Parallel Operations;
 ✅ **Use parallelwhen = `---;
-name: performance;
+// name: performance
 description: Monitor and optimize system performance with batchtools;
 ---
 
@@ -155,7 +155,7 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 - Implement performance alerts for critical thresholds;
 - Regular performance analysis and optimization
 
-For comprehensive performance guides, see: https://github.com/ruvnet/claude-code-flow/docs/performance.md
+For comprehensive performance guides, see: https,//github.com/ruvnet/claude-code-flow/docs/performance.md
 `;
 // await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);// await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
-  console.warn('  ✓ Created slash command: /performance');
+  console.warn('  ✓ Created slash command);

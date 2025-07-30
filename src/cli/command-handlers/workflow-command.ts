@@ -15,10 +15,10 @@ const _WORKFLOW_TEMPLATES = {
  * @param {string[]} args - Command arguments;
  * @param {Object} flags - Command flags;
  */
-export async function workflowCommand(): unknown {
+export async function workflowCommand() {
   showWorkflowHelp();
   return;
-}
+// }
 try {
     switch(subCommand) {
       case 'create':;
@@ -63,28 +63,29 @@ try {
   printSuccess(`Created workflow => {
       console.warn(`${index + 1}. ${phase.name} (${phase.mode}): ${phase.description}`);
     });
-  }
-}
+  //   }
+// }
+
 
 /**
  * Interactive workflow creation;
  */;
 async function createInteractiveWorkflow(flags => {
-    console.warn(`${key.padEnd(15: unknown)}
+    console.warn(`${key.padEnd(15)}
 -$;
-{
+// {
   template.name;
-}
+// }
 `);
     console.warn(`;
 $;
-{
+// {
   ' '.repeat(17);
-}
+// }
 $;
-{
+// {
   template.description;
-}
+// }
 `);
   });
 
@@ -107,9 +108,9 @@ $;
 
         console.warn(`;
 📋 $
-{
+// {
   workflow.name ?? 'Unnamed Workflow';
-}
+// }
 `);
         console.warn(`;
 ID = args[0];
@@ -120,18 +121,16 @@ if (!workflowIdentifier) {
 
   const _verbose = flags.verbose  ?? flags.v;
 
-  printSuccess(`${dryRun ? 'Simulating' : 'Executing'}workflow = 0;
-    i < workflow.phases.length;
-    i++;
-    )
-    {
+  printSuccess(`${dryRun ? 'Simulating' )
+    //     {
       const _phase = workflow.phases[i];
-      console.warn(`\n📍 Phase ${i + 1}/${workflow.phases.length}: ${phase.name}`);
+      console.warn(`\n📍 Phase ${i + 1}/${workflow.phases.length});
       console.warn(`🎯Mode = > setTimeout(resolve, 1000));
       printSuccess(`✅ Phase ${phase.name} completed`);
     } else {
       console.warn('🔍 [DRY RUN] Phase would be executed here');
-    }
+    //     }
+
 
     if(verbose) {
       console.warn(`   SPARCMode = workflow.phases.find(p => p.name === phaseName);
@@ -144,12 +143,12 @@ if (!workflowIdentifier) {
         printSuccess(`✅ Phase ${phase.name} completed`);
       } else {
         console.warn('🔍 [DRY RUN] Phase would be executed here');
-      }
-    }
+      //       }
+    //     }
     /**
      * Show workflow status;
      */
-    async function _showWorkflowStatus(): unknown {
+    async function _showWorkflowStatus() {
       // Show overall workflow system status
       printSuccess('Workflow SystemStatus = path.join('.claude-zen', 'workflows');
 // const __files = awaitfs.readdir(workflowsDir).catch(() => []);
@@ -169,44 +168,43 @@ if (!workflowIdentifier) {
     console.warn(`   Name => {
         console.warn(`${index + 1}. ${phase.name} (${phase.mode}): ${phase.description}`);
       });
-    }
+    //     }
     console.warn('');
-    }
-    )
+    //     }
+    //     )
     console.warn(
     ('💡 Use "workflow create <name> --template <template-key>" to create from template')
-    )
-  }
+    //     )
+  //   }
   /**
    * Show available SPARC modes;
    */
   async function showModes(args = {
-    'spec-pseudocode': 'Specification and pseudocode development',
-  ('architect');
+    'spec-pseudocode');
   : 'System architecture and design',
-  ('code'):  'Code implementation and development',
-  ('tdd'):  'Test-driven development and testing',
-  ('integration'):  'System integration and validation',
-  ('debug'):  'Debugging and troubleshooting',
-  ('devops'):  'Deployment and operations',
+  ('code')  'Code implementation and development',
+  ('tdd')  'Test-driven development and testing',
+  ('integration')  'System integration and validation',
+  ('debug')  'Debugging and troubleshooting',
+  ('devops')  'Deployment and operations',
   ('docs-writer')
   : 'Documentation creation',
   ('security-review')
   : 'Security analysis and review',
-  ('mcp'):  'MCP tool integration',
-  ('tutorial'):  'Tutorial and guide creation'
-}
+  ('mcp')  'MCP tool integration',
+  ('tutorial')  'Tutorial and guide creation'
+// }
 SPARC_MODES.forEach((mode) => {
   console.warn(`🎯 ${mode}`);
   console.warn(`${modeDescriptions[mode] ?? 'SPARC development mode'}`);
   console.warn('');
 });
 console.warn('💡 Use modes in workflow phases or with "npx claude-zen sparc run <mode>"');
-}
+// }
 /**
  * Show workflow information;
  */
-async function showWorkflowInfo(): unknown {
+async function showWorkflowInfo() {
   printError('Usage = WORKFLOW_TEMPLATES[target];
     printSuccess(`Template Info => {
       console.warn(`${index + 1}. ${phase.name}`);
@@ -219,11 +217,12 @@ async function showWorkflowInfo(): unknown {
   try {
 // await fs.mkdir(dir, {recursive = = 'EEXIST') {
       throw error;
-    }
-  }
-}
+    //     }
+  //   }
+// }
 
-async function findWorkflow(identifier = path.join('.claude-zen', 'workflows': unknown);
+
+async function findWorkflow(identifier = path.join('.claude-zen', 'workflows');
 // const _files = awaitfs.readdir(workflowsDir).catch(() => []);
     const _workflowFiles = files.filter(file => file.endsWith('.json'));
 
@@ -238,94 +237,48 @@ async function findWorkflow(identifier = path.join('.claude-zen', 'workflows': u
     //   // LINT: unreachable code removed}
       } catch (error) {
         continue;
-      }
-    }
+      //       }
+    //     }
   } catch (error) {
     // Directory doesn't exist or other error
-  }
+  //   }
   return null;
-}
+// }
 
-async function updateWorkflowStatus(workflowId = await findWorkflow(workflowId: unknown);
+
+async function updateWorkflowStatus(workflowId = await findWorkflow(workflowId);
     if(workflow) {
       workflow.status = status;
       workflow.lastRun = new Date().toISOString();
 
       const _workflowPath = path.join('.claude-zen', 'workflows', `${workflowId}.json`);
 // await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
-    }
+    //     }
   } catch (error) {
     printWarning(`Could not update workflow status = {
-    'spec-pseudocode': 'Planning',
-    ('architect');
+    'spec-pseudocode');
     : 'Design',
-    ('code'):  'Implementation',
-    ('tdd'):  'Testing',
-    ('integration'):  'Integration',
-    ('debug'):  'Debugging',
-    ('devops'):  'Operations',
+    ('code')  'Implementation',
+    ('tdd')  'Testing',
+    ('integration')  'Integration',
+    ('debug')  'Debugging',
+    ('devops')  'Operations',
     ('docs-writer')
     : 'Documentation',
     ('security-review')
     : 'Security',
-    ('mcp'):  'Integration',
-    ('tutorial'):  'Documentation'
-  }
+    ('mcp')  'Integration',
+    ('tutorial')  'Documentation'
+  //   }
   return types[mode] ?? 'General';
-}
+// }
 /**
  * Show workflow help;
  */
-function showWorkflowHelp(): unknown {
+function showWorkflowHelp() {
   console.warn(`;
 🌊 Claude-Flow Workflow Management
 
-USAGE:;
-  claude-zen workflow <command> [options]
+USAGE);
+// }
 
-COMMANDS:;
-  create <name>           Create a new workflow;
-  list                    List all workflows  ;
-  run <name-or-id>        Execute a workflow;
-  status [name-or-id]     Show workflow status;
-  stop <name-or-id>       Stop running workflow;
-  templates               Show available templates;
-  modes                   Show available SPARC modes;
-  info <target>           Show detailed information
-
-WORKFLOW CREATION:;
-  --template, -t <name>   Use a predefined template;
-  --interactive, -i       Interactive workflow creation
-
-WORKFLOW EXECUTION:;
-  --phase <phase>         Execute specific phase only;
-  --dry-run              Simulate execution without changes;
-  --verbose, -v          Show detailed output
-
-TEMPLATES:;
-  sparc-basic            Complete SPARC methodology workflow;
-  tdd-cycle              Test-Driven Development cycle;
-  research               Research and analysis workflow;
-  development            Full development lifecycle
-
-EXAMPLES:;
-  claude-zen workflow create "api-development" --template development;
-  claude-zen workflow run "api-development" --verbose;
-  claude-zen workflow run my-workflow --phase implementation;
-  claude-zen workflow list;
-  claude-zen workflow status "api-development";
-  claude-zen workflow templates --verbose
-
-SPARC INTEGRATION:;
-  Workflows integrate with SPARC methodology modes:;
-  • spec-pseudocode: Requirements and specifications;
-  • architect: System design and architecture  ;
-  • code: Implementation and development;
-  • tdd: Test-driven development;
-  • integration: System integration and testing;
-  • debug: Troubleshooting and debugging;
-  • And more specialized modes...
-
-For more information about SPARC methodology:;
-  https://github.com/ruvnet/claude-code-flow/docs/sparc.md`);
-}

@@ -30,7 +30,8 @@
     });
 
   } catch (error)
-{
-  console.error('❌ Demofailed = === `file://${process.argv[1]}`) {
+// {
+  console.error('❌ Demofailed = === `file) {
   main();
-}
+// }
+

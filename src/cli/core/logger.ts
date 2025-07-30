@@ -15,7 +15,7 @@ DEBUG = 3,
 TRACE = 4 }
 // interface LogEntry {timestamp = 'claude-zen'
 , level = LogLevel.INFO)
-{
+// {
   this.name = name;
   this.level = level;
   this.startTime = Date.now();
@@ -25,8 +25,8 @@ TRACE = 4 }
   this.enableFileLogging = process.env.CLAUDE_FLOW_LOG_FILE === 'true';
   if (this.enableFileLogging) {
     this.initFileLogging();
-  }
-}
+  //   }
+// }
 /**
  * Initialize file logging;
  */
@@ -34,37 +34,38 @@ private;
 async;
 initFileLogging();
 : Promise<void>
-{
+// {
   try {
       const _logDir = path.join(process.cwd(), '.hive-mind', 'logs');
 // await fs.mkdir(logDir, {recursive = `claude-zen-${new Date().toISOString().split('T')[0]}.log`;
       this.logFile = path.join(logDir, logFileName);
     } catch (error
   = false
-}
-}
+// }
+// }
 setLevel(level = typeof level === 'string' ? LogLevel[level.toUpperCase() as keyof typeof LogLevel] }
 shouldLog(level = this.level
-}
+// }
 /**
  * Create structured log entry;
  */
 private
 createLogEntry(level =
-{
-}
+// {
+// }
 ,error = null): LogEntry
-{
+// {
     const _timestamp = new Date().toISOString();
 
     const _logEntry = {timestamp = logEntry;
 
-    const _baseMessage = `[${timestamp}] [${level}] [${logger}:${correlationId}] ${message}`;
+    const _baseMessage = `[${timestamp}] [${level}] [${logger}] ${message}`;
 
     // Add metadata if present
     if (Object.keys(meta).length > 0) {
       baseMessage += ` | ${JSON.stringify(meta)}`;
-    }
+    //     }
+
 
     // Add error details for console
     if (error) {
@@ -84,11 +85,13 @@ createLogEntry(level =
       console.warn(formatted);
     } else {
       console.warn(formatted);
-    }
+    //     }
+
 
     // File output
 // await this.writeToFile(logEntry);
-  }
+  //   }
+
 
   error(message = {},error = null): void ;
     this.log(LogLevel.ERROR, `❌ \$message`, meta, error);
@@ -131,7 +134,7 @@ createLogEntry(level =
       // This is a wrapper - actual operation should be passed as function
       return meta;
     //   // LINT: unreachable code removed}, {
-      component = {}): Logger {
+      component = {}) {
     const _childLogger = new Logger(`${this.name}:${(context as any).component  ?? 'child'}`, this.level);
     childLogger.correlationId = this.correlationId; // Inherit correlation ID
     childLogger.enableFileLogging = this.enableFileLogging;
@@ -153,7 +156,8 @@ if (process.env.CLAUDE_FLOW_LOG_LEVEL) {
   defaultLogger.setLevel(process.env.CLAUDE_FLOW_LOG_LEVEL);
 } else if (process.env.CLAUDE_FLOW_VERBOSE) {
   defaultLogger.setLevel(LogLevel.DEBUG);
-}
+// }
+
 
 export { type Logger, LogLevel };
 export default defaultLogger;

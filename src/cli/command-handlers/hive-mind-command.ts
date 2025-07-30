@@ -8,7 +8,7 @@ import { printInfo } from '../utils.js';
 
 const _HIVE_MIND_DIR = path.join(process.cwd(), '.hive-mind');
 const _HIVE_REGISTRY_FILE = path.join(HIVE_MIND_DIR, 'registry.json');
-export async function readHiveRegistry(): unknown {
+export async function readHiveRegistry() {
   try {
 // const _content = awaitreadFile(HIVE_REGISTRY_FILE, 'utf8');
     return JSON.parse(content);
@@ -17,10 +17,11 @@ export async function readHiveRegistry(): unknown {
       return {};
     //   // LINT: unreachable code removed}
     throw error;
-  }
-}
+  //   }
+// }
 
-async function _writeHiveRegistry(): unknown {
+
+async function _writeHiveRegistry() {
     console.error('Error = flags.path  ?? path.join(process.cwd(), 'services', hiveName);
   const _hiveDbPath = path.join(servicePath, '.hive', `${hiveName}.db`);
 // await mkdir(path.dirname(hiveDbPath), {recursive = await readHiveRegistry();
@@ -51,8 +52,8 @@ async function _writeHiveRegistry(): unknown {
 // const _results = awaitplugin.scan(process.cwd(), flags);
         if(results?.suggestions) {
           pluginSuggestions.push(...results.suggestions);
-        }
-      }
+        //         }
+      //       }
     } catch (/* _error */) {
       console.warn(`⚠️ Plugin ${pluginName}failed = [...serviceSuggestions, ...scopeSuggestions, ...documentationLinkSuggestions, ...pluginSuggestions];
 
@@ -74,9 +75,9 @@ async function _writeHiveRegistry(): unknown {
 // await writeFile(suggestion.file, suggestion.suggestedHeader + fileContent);
           console.warn(`Added header to ${suggestion.file}`);
           break;
-        }
+        //         }
         case 'fix_md_lint':;
-          console.warn(`Please manually fix linting issue in ${suggestion.file} at line ${suggestion.lineNumber}: ${suggestion.rule}`);
+          console.warn(`Please manually fix linting issue in ${suggestion.file} at line ${suggestion.lineNumber});
           break;
         case 'suggest_adr': {;
           const _adrDir = path.join(process.cwd(), '.hive-mind', 'adrs');
@@ -93,14 +94,15 @@ async function _writeHiveRegistry(): unknown {
       const { refinement } = await inquirer.prompt([{type = await generateText(`;
         Originalsuggestion = `[REFINED] ${newSuggestionDescription}`;
       suggestions.unshift(suggestion);
-        }
-    }
-}
+        //         }
+    //     }
+// }
+
 
 /**
  * Launch persistent service-level hive swarm;
  */;
-async function _launchServiceHive(objective = {}: unknown): unknown {
+async function _launchServiceHive(objective = {}) {
   const _serviceName = flags.hiveName  ?? flags.service  ?? 'default';
 
   printInfo(`🏗️ Launching persistent hive for service = {serviceName = await restorePersistentHive(serviceName);
@@ -117,7 +119,8 @@ async function _launchServiceHive(objective = {}: unknown): unknown {
 // await orchestrator.initialize();
         return await orchestrator.launchSwarm(objective, hiveConfig);
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     // Execute objective with persistent hive
     printInfo('🎯 Executing objective with persistent hive coordination');
@@ -164,31 +167,36 @@ async function _launchServiceHive(objective = {}: unknown): unknown {
       Object.entries(registry).forEach(([name, info]) => {
         console.warn(`• ${name} → ${info.path}`);
       });
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 /**
  * Show consensus decisions (placeholder);
  */;
-async function showConsensus(flags: unknown): unknown {
+async function showConsensus(flags) {
   printInfo('🗳️ Consensus Decisions');
   console.warn('━'.repeat(50));
   console.warn('Consensus tracking not yet implemented.');
   console.warn('This will show collective decisions made by hive agents.');
-}
+// }
+
 
 /**
  * Show hive metrics (placeholder);
  */;
-async function showHiveMetrics(flags: unknown): unknown {
+async function showHiveMetrics(flags) {
   printInfo('📊 Hive Mind Metrics');
   console.warn('━'.repeat(50));
   console.warn('Metrics tracking not yet implemented.');
   console.warn('This will show performance analytics across all hives.');
-}
+// }
+
 
 // Export functions for direct CLI use
 export { createHive, listHives, showHiveStatus, launchServiceHive };
 
+    // 
     }
+

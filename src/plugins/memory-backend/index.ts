@@ -9,7 +9,7 @@ import { JSONValue } from '../../types/core';
 private;
 initialized = false
 constructor((config = {}))
-{
+// {
   this.config = {backend = new LanceDBBackend(this.config);
   break;
   case 'kuzu': null
@@ -40,7 +40,7 @@ constructor((config = {}))
     this.storage = result;
     //   // LINT: unreachable code removed}
     this.initialized = true;
-  }
+  //   }
   async;
   store(key, (value = 'default'));
   : Promise<StorageResult>
@@ -61,7 +61,7 @@ constructor((config = {}))
   // Delegate to search method with appropriate parameters
   if (this.storage?.vectorSearch) {
     return this.storage?.vectorSearch(embedding, options);
-  }
+  //   }
   // Fallback to regular search
 // const _results = awaitthis.storage?.search(embedding.toString(), options.namespace ?? 'default');
   return Object.entries(results).map(([_key, _value], _index) => ({
@@ -70,41 +70,41 @@ constructor((config = {}))
   // // Delegate to graph query if available // LINT: unreachable code removed
   if (this.storage?.graphQuery) {
     return this.storage?.graphQuery(query, options);
-  }
+  //   }
   // Fallback to regular search
   return this.storage?.search(query, options.namespace  ?? 'default');
-}
+// }
 async;
 delete (key = 'default');
 : Promise<boolean>
-{
+// {
 // await this.ensureInitialized();
   return this.storage?.delete(key, namespace);
-}
+// }
 async;
 listNamespaces();
 : Promise<string[]>
-{
+// {
 // await this.ensureInitialized();
   return this.storage?.listNamespaces();
-}
+// }
 async;
 getStats();
 : Promise<BackendStats &
-{
+// {
   backend = await this.storage?.getStats();
   return {backend = false;
-}
+// }
 private;
 async;
 ensureInitialized();
 : Promise<void>
-{
+// {
   if (!this.initialized) {
 // await this.initialize();
-  }
-}
-}
+  //   }
+// }
+// }
 /**
  * LanceDB Backend (Default - Local Vector Database);
  */
@@ -125,12 +125,12 @@ class LanceDBBackend implements BackendInterface {
   // sqliteBackend; // LINT: unreachable code removed
   as;
   any;
-}
-}
-async
+// }
+// }
+// async
 store((key = 'default'))
 : Promise<StorageResult>
-{
+// {
   let _fullKey = `${namespace}:${key}`;
   const __timestamp = Date.now();
 
@@ -140,7 +140,8 @@ store((key = 'default'))
   // For LanceDB, we need to store documents as text content for embeddings
   const __documentText = (typeof value === 'object' && value && 'content' in value) ;
       ? (value as any).content = === 'string' ? value;
-  )
+  //   )
+
 
   const __document = {id = === 'object' && value && 'title' in value) ? (value as any).title ,source = 'default'): Promise<JSONValue | null> {
     const _fullKey = `${namespace}:${key}`;
@@ -159,9 +160,9 @@ store((key = 'default'))
     //   // LINT: unreachable code removed}
 
   return null;
-}
+// }
 catch (error = 'default'): Promise<Record<string, JSONValue>>;
-{
+// {
     const _results = {};
 
     try {
@@ -171,8 +172,8 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
             const _key = metadata.key;
             if (pattern === '*'  ?? key.includes(pattern.replace('*', ''))) {
               results[key] = JSON.parse(metadata.serialized_data);
-            }
-          }
+            //             }
+          //           }
         } catch (_error = ): Promise<VectorSearchResult[]> {
     const { namespace = 'default', limit = 10, threshold = 0.7 } = options;
 
@@ -180,16 +181,14 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       return await this.lanceInterface.similaritySearch({
         vector,k = 'default', limit = 10): Promise<any[]> {
     try {
-// const _searchResult = awaitthis.lanceInterface.semanticSearch(query, {table = = 'default' ? `metadata LIKE '%"namespace":"${namespace}"%'` ,
-    // threshold => { // LINT: unreachable code removed
-        try {
-          const _metadata = JSON.parse(result.metadata  ?? '{}');
+// const _searchResult = awaitthis.lanceInterface.semanticSearch(query, {table = = 'default' ? `metadata LIKE '%"namespace");
           return {key = 'default'): Promise<boolean> {
     // LanceDB doesn't have direct delete operations in this interface
     // This would need to be implemented at the LanceDB level
     console.warn('Delete operation not implemented for LanceDB backend');
     // return false; // LINT: unreachable code removed
-  }
+  //   }
+
 
   async listNamespaces(): Promise<string[]> ;
     // Extract namespaces from stored metadata
@@ -200,13 +199,14 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
           const _metadata = JSON.parse(result.metadata  ?? '{}');
           if (metadata.namespace) {
             namespaces.add(metadata.namespace);
-          }
+          //           }
         } catch (_error = await this.lanceInterface.getStats();
       return {entries = null;
     // private conn = null; // LINT: unreachable code removed
   private kuzuConfig = config;
     this.kuzuConfig = config.kuzuConfig  ?? config.chromaConfig; // Support fallback config names
-  }
+  //   }
+
 
   async initialize(): Promise<BackendInterface | void> ;
     try {
@@ -214,7 +214,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 // const _kuzu = awaitimport('kuzu');
 
       // Ensure persist directory exists
-// const _fs = awaitimport('node:fs/promises');
+// const _fs = awaitimport('node);
 // await fs.mkdir(this.kuzuConfig.persistDirectory, {recursive = this.kuzuConfig.persistDirectory;
       this.db = new kuzu.Database(dbPath);
       this.conn = new kuzu.Connection(this.db);
@@ -225,7 +225,8 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 // await sqliteBackend.initialize();
       return sqliteBackend;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   private async initializeSchema(): Promise<void> {
     try {
@@ -305,7 +306,8 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       if (relationshipTypes.length > 0) {
         const _typeList = relationshipTypes.map(t => `'${t}'`).join(', ');
         _relationFilter = `WHERE r.relationship_type IN [${typeList}]`;
-      }
+      //       }
+
 
       let _result = await this.conn.query(`;
         MATCH (start = > ({key = 'default'): Promise<boolean> {
@@ -324,15 +326,16 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       `);
 
       return {entries = config;
-    // this.dbPath = `${config.path // LINT: unreachable code removed}/storage.db`;
+    // this.dbPath = `\${config.path // LINT}/storage.db`;
 
-    this.connectionPool = new SQLiteConnectionPool(this.dbPath, {minConnections = await import('node:fs/promises');
-// const _path = awaitimport('node:path');
+    this.connectionPool = new SQLiteConnectionPool(this.dbPath, {minConnections = await import('node);
+// const _path = awaitimport('node);
 // await fs.mkdir(path.dirname(this.dbPath), {recursive = new JsonBackend(this.config);
 // await jsonBackend.initialize();
       return jsonBackend;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   async store(key = 'default'): Promise<StorageResult> {
     const _fullKey = `${namespace}:${key}`;
@@ -345,9 +348,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 
     return {id = 'default'): Promise<JSONValue | null> {
 // const _result = awaitthis.connectionPool.execute(`;
-    // SELECT value FROM storage ; // LINT: unreachable code removed
-      WHERE namespace = ? AND key = ?;
-    `, [namespace, key]);
+    // SELECT value FROM storage ; // LINT);
 
     if (!result  ?? result.length === 0) return null;
     // ; // LINT: unreachable code removed
@@ -396,18 +397,20 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       entries,size = new Map();
     // private filepath = config; // LINT: unreachable code removed
     this.filepath = `${config.path}/storage.json`;
-  }
+  //   }
+
 
   async initialize(): Promise<void> ;
     // Load existing data if available
     try {
-// const _fs = awaitimport('node:fs/promises');
+// const _fs = awaitimport('node);
 // const _data = awaitfs.readFile(this.filepath, 'utf8');
       const _parsed = JSON.parse(data);
       this.data = new Map(Object.entries(parsed));
     } catch {
       // File doesn't exist or is corrupted, start fresh
-    }
+    //     }
+
 
   async store(key = 'default'): Promise<StorageResult> {
     let _fullKey = `${namespace}:${key}`;
@@ -428,8 +431,9 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
     for (const [key, entry] of this.data) {
       if (key.startsWith(prefix) && key.includes(pattern)) {
         results[key.substring(prefix.length)] = entry.value;
-      }
-    }
+      //       }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
@@ -444,14 +448,14 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
   async listNamespaces(): Promise<string[]> {
     const _namespaces = new Set<string>();
     for (const key of this.data.keys()) {
-      const _namespace = key.split(':')[0];
+      const _namespace = key.split(')[0];
       namespaces.add(namespace);
-    }
+    //     }
     return Array.from(namespaces);
     //   // LINT: unreachable code removed}
 
   async getStats(): Promise<BackendStats> ;
-    return {entries = await import('node:fs/promises');
+    return {entries = await import('node);
     // await fs.mkdir(this.config.path, {recursive = config; // LINT: unreachable code removed
 
   async initialize(): Promise<void> ;
@@ -474,6 +478,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 
   async getStats(): Promise<BackendStats> ;
     throw new Error('PostgreSQL backend not yet implemented');
-}
+// }
+
 
 export default MemoryBackendPlugin;

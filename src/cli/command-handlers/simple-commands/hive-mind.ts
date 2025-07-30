@@ -16,7 +16,7 @@ showSubcommandUsage } from '../hive-mind-core/command-interface.js'
  * @param {Object} flags - Command flags;
  * @returns {Promise<void>}
  */
-// export async function handleHiveMindCommand(args = parseHiveMindArgs(args, flags: unknown); // LINT: unreachable code removed
+// export async function handleHiveMindCommand(args = parseHiveMindArgs(args, flags); // LINT: unreachable code removed
 
 // Handle help display
 if (subcommand === 'help' ?? parsedFlags.help) {
@@ -24,26 +24,26 @@ if (subcommand === 'help' ?? parsedFlags.help) {
     showSubcommandUsage(parsedArgs[1]);
   } else {
     showHiveMindHelp();
-  }
+  //   }
   return;
-}
+// }
 // Route to appropriate handler
 // const _handler = awaitrouteHiveMindCommand(subcommand, parsedArgs, parsedFlags);
 // await handler();
 } catch (error)
-{
-  console.error(chalk.red('❌ Hive Mind Error:'), error.message);
+// {
+  console.error(chalk.red('❌ Hive Mind Error), error.message);
   if (parsedFlags?.verbose ?? parsedFlags?.debug) {
     console.error(chalk.gray(error.stack));
-  }
+  //   }
   // Show relevant help for invalid commands
-  if (error.message.startsWith('Unknown subcommand:')) {
-    console.warn(chalk.yellow('\nAvailable subcommands:'));
+  if (error.message.startsWith('Unknown subcommand)) {
+    console.warn(chalk.yellow('\nAvailable subcommands));
     showHiveMindHelp();
-  }
+  //   }
   process.exit(1);
-}
-}
+// }
+// }
 // Export compatibility with existing system
 export default handleHiveMindCommand;
 

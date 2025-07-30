@@ -8,7 +8,7 @@ import { SwarmOrchestrator } from '../cli/command-handlers/swarm-orchestrator.js
 import { WorkerThreadPool } from './workers/worker-pool.js';
 
 export class ParallelSwarmOrchestrator extends EventEmitter {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     super();
 
     // Initialize base orchestrator
@@ -29,8 +29,8 @@ export class ParallelSwarmOrchestrator extends EventEmitter {
     this.metrics = {parallelTasks = new WorkerThreadPool({
         maxWorkers => {
       this.handleWorkerTaskCompleted(data);
-    }
-  )
+    //     }
+  //   )
   this
 
   workerPool;
@@ -39,16 +39,16 @@ export class ParallelSwarmOrchestrator extends EventEmitter {
   => {
       this.
   handleWorkerTaskError(data);
-}
-)
+// }
+// )
 this.workerPool.on('task-progress', (data) =>
-{
+// {
   this.emit('task-progress', data);
-}
-)
+// }
+// )
 this.workerPool.on('worker-error', (_data) =>
-{
-  console.warn(`Worker error = {}): unknown {
+// {
+  console.warn(`Worker error = {}) {
     const _startTime = Date.now();
 
     try {
@@ -61,21 +61,22 @@ this.workerPool.on('worker-error', (_data) =>
     console.warn('📝 Using sequential execution');
     return await this.launchSequentialSwarm(objective, options);
     //   // LINT: unreachable code removed}
-}
+// }
 catch (error) {
   console.error(`Failed to launchswarm = Date.now() - startTime;
 this.updateMetrics(useParallel, executionTime);
-}
-  }
+// }
+  //   }
+
 
   /**
    * Launch swarm with parallel worker thread execution;
    */;
   async launchParallelSwarm(objective, options =;
-{
-}
+// {
+// }
 ): unknown;
-{
+// {
     // Create swarm configuration using base orchestrator
     const __swarmConfig = this.baseOrchestrator.buildSwarmConfig(objective, options);
 
@@ -88,7 +89,7 @@ this.updateMetrics(useParallel, executionTime);
 
   // Store in base orchestrator's tracking
   this.baseOrchestrator.activeSwarms.set(swarmConfig.id, {_id = > ({
-        id = {}): unknown {
+        id = {}) {
 // const _result = awaitthis.baseOrchestrator.launchSwarm(objective, options);
   this.metrics.sequentialTasks++;
   return {
@@ -118,7 +119,7 @@ this.updateMetrics(useParallel, executionTime);
       const _groupKey = task.parallelGroup  ?? 'default';
       if (!groups.has(groupKey)) {
         groups.set(groupKey, []);
-      }
+      //       }
       groups.get(groupKey).push(task);
     });
 
@@ -133,17 +134,18 @@ this.updateMetrics(useParallel, executionTime);
   /**
    * Get dependencies for a group of tasks;
    */;
-  getGroupDependencies(tasks): unknown {
+  getGroupDependencies(tasks) {
   const _allDependencies = tasks.flatMap((task) => task.dependencies);
   return [...new Set(allDependencies)];
-}
+// }
+
 
 /**
  * Sort groups by dependency order;
  */;
 sortGroupsByDependencies(groups);
 : unknown;
-{
+// {
   const _sorted = [];
   const _remaining = [...groups];
   const _completed = new Set();
@@ -156,17 +158,20 @@ sortGroupsByDependencies(groups);
     if (canRun.length === 0) {
       // Break dependency cycle by adding first remaining group
       canRun.push(remaining[0]);
-    }
+    //     }
+
 
     canRun.forEach((group) => {
       sorted.push(group);
       completed.add(group.name);
       remaining.splice(remaining.indexOf(group), 1);
     });
-  }
+  //   }
+
 
   return sorted;
-}
+// }
+
 
 /**
  * Execute parallel task plan;
@@ -174,7 +179,7 @@ sortGroupsByDependencies(groups);
 async;
 executeParallelTaskPlan(taskPlan, swarmConfig);
 : unknown;
-{
+// {
     console.warn(`🚀 Executing parallel task plan with ${taskPlan.groups.length} groups`);
 
     const __results = new Map();
@@ -190,11 +195,13 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
         for(const task of group.tasks) {
 // const _result = awaitthis.executeTaskWithWorker(task);
           results.set(task.id, result);
-        }
-      }
+        //         }
+      //       }
+
 
       console.warn(`✅ Group ${group.name} completed`);
-    }
+    //     }
+
 
     return results;
     //   // LINT: unreachable code removed}
@@ -202,7 +209,7 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
   /**
    * Execute a group of tasks in parallel;
    */;
-  async executeTaskGroupInParallel(tasks): unknown {
+  async executeTaskGroupInParallel(tasks) {
     console.warn(`🧵 Executing ${tasks.length} tasks in parallel`);
 
     const _promises = tasks.map(task => this.executeTaskWithWorker(task));
@@ -223,7 +230,7 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
 
       return {
 ..result,taskId = Date.now() - startTime;
-    // console.error(`❌ Task ${task.id // LINT: unreachable code removed} failed after ${executionTime}ms = Array.from(taskResults.values()).filter(r => r.success);
+    // console.error(`❌ Task \${task.id // LINT} failed after ${executionTime}ms = Array.from(taskResults.values()).filter(r => r.success);
     const _failed = Array.from(taskResults.values()).filter(r => !r.success);
 
     const _totalExecutionTime = Math.max(...Array.from(taskResults.values()).map(r => r.executionTime));
@@ -274,13 +281,14 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
       const _avgSequential = this.metrics.totalExecutionTime / this.metrics.sequentialTasks;
       const _avgParallel = this.metrics.parallelExecutionTime / this.metrics.parallelTasks;
       this.metrics.speedupFactor = avgSequential / avgParallel;
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Get orchestrator status including parallel metrics;
    */;
-  async getSwarmStatus(swarmId = null): unknown {
+  async getSwarmStatus(swarmId = null) {
 // const _baseStatus = awaitthis.baseOrchestrator.getSwarmStatus(swarmId);
 
     const _parallelStatus = {
@@ -292,15 +300,17 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
     if(swarmId) {
       return {
 ..baseStatus,
-    // parallel: parallelStatus; // LINT: unreachable code removed
+    // parallel: parallelStatus, // LINT: unreachable code removed
       };
-    }
+    //     }
+
 
     return {
 ..baseStatus,
-    // parallel: parallelStatus; // LINT: unreachable code removed
+    // parallel: parallelStatus, // LINT: unreachable code removed
     };
-  }
+  //   }
+
 
   /**
    * Shutdown orchestrator and worker pool;
@@ -310,7 +320,7 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
 
     if(this.workerPool) {
 // await this.workerPool.shutdown();
-    }
+    //     }
 // await this.baseOrchestrator.shutdown();
     console.warn('✅ Parallel Swarm Orchestrator shutdown complete');
 

@@ -27,7 +27,7 @@ describe('Auth Integration Tests', () => {
 });
 })
 describe('POST /api/auth/login', () =>
-{
+// {
   it('should login with valid credentials', async () => {
       const _loginData = {
         email: 'test@example.com',
@@ -37,12 +37,12 @@ describe('POST /api/auth/login', () =>
   expect(response.body).toHaveProperty('token');
   expect(response.body.user.email).toBe(loginData.email);
 })
-it('should reject login with invalid credentials', async () =>
-{
+it('should reject login with invalid credentials', async () => // eslint-disable-line
+// {
   const _loginData = {
         email: 'test@example.com',
   password: 'wrongpassword'
-}
+// }
 // const _response = awaitrequest(app).post('/api/auth/login').send(loginData).expect(401);
 expect(response.body.error).toBe('Invalid credentials');
 })

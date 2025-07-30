@@ -24,7 +24,7 @@ replace(/\//g, '&#x2F;'),
       // HTML sanitization
       expect(sanitizer.sanitizeHtml('<script>alert("xss")</script>')).toBe(;
       ('&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;');
-      )
+      //       )
       // Path sanitization
       expect(sanitizer.sanitizeFilePath('../../../etc/passwd')).toBe('etc/passwd')
       expect(sanitizer.sanitizeFilePath('/absolute/path')).toBe('absolute/path')
@@ -32,7 +32,7 @@ replace(/\//g, '&#x2F;'),
       expect(sanitizer.validateEmail('user@example.com')).toBe(true)
       expect(sanitizer.validateEmail('invalid-email')).toBe(false)
       expect(sanitizer.validateEmail('user@')).toBe(false)
-      )
+      //       )
       it('should handle rate limiting', () =>
 // {
         const _rateLimiter = {
@@ -40,7 +40,7 @@ replace(/\//g, '&#x2F;'),
         windowMs, // 1 minute
           maxRequests;
 
-        isAllowed: null
+        // isAllowed: null
         function (clientId) {
           const _now = Date.now();
           const _clientData = this.requests.get(clientId)  ?? {
@@ -106,7 +106,7 @@ replace(/\/+/g, '/'),
             expect(pathUtils.extname('/path/to/file.txt')).toBe('.txt');
             expect(pathUtils.extname('/path/to/file')).toBe('');
           };
-          )
+          //           )
             it('should handle file filtering', () =>
 // {
             const _fileFilter = {
@@ -115,7 +115,7 @@ replace(/\/+/g, '/'),
             images: /\.(jpg|jpeg|png|gif|svg)$/,
             documents: /\.(pdf|doc|docx|txt|md)$/
 // }
-            filterByType: null
+            // filterByType: null
           function (files, /* type */) {
           const _pattern = this.filters[type];
           return pattern ? files.filter((file) => pattern.test(file));
@@ -133,7 +133,7 @@ replace(/\/+/g, '/'),
           const _jsFiles = fileFilter.filterByType(;
           testFiles.map((f) => f.name),
           ('javascript');
-          )
+          //           )
             expect(jsFiles).toEqual(['app.js'])
           const _smallFiles = fileFilter.filterBySize(testFiles, 2000);
           expect(smallFiles).toHaveLength(3);
@@ -169,7 +169,7 @@ replace(/^-|-$/g, '')
       expect(stringUtils.kebabCase('HelloWorldTest')).toBe('hello-world-test');
       expect(stringUtils.truncate('This is a long string', 10)).toBe('This is...');
       expect(stringUtils.slugify('Hello World! 123')).toBe('hello-world-123');
-      )
+      //       )
       it('should handle template interpolation', () =>
 // {
         const _templateEngine = {
@@ -196,9 +196,9 @@ reduce(;
         port, debug;
 // }
       expect(templateEngine.interpolate('Hello {{name}}!', data)).toBe('Hello Claude!');
-      expect(templateEngine.interpolateAdvanced('Port: {{config.port}}', data)).toBe('Port: 3000');
-      expect(templateEngine.interpolate('Missing: {{missing}}', data)).toBe('Missing: {{missing}}');
-      )
+      expect(templateEngine.interpolateAdvanced('Port: {{config.port}}', data)).toBe('Port);
+      expect(templateEngine.interpolate('Missing: {{missing}}', data)).toBe('Missing);
+      //       )
     });
     describe('Validation Utils', () => {
       it('should validate data types', () => {
@@ -241,7 +241,7 @@ reduce(;
       expect(validator.isNumber(42)).toBe(true);
       expect(validator.isNumber('42')).toBe(false);
       expect(validator.isArray([1, 2, 3])).toBe(true);
-      expect(validator.isObject({ key: 'value' })).toBe(true);
+      expect(validator.isObject({ key)).toBe(true);
       // Empty validation
       expect(validator.isEmpty('')).toBe(true);
       expect(validator.isEmpty([])).toBe(true);
@@ -285,7 +285,7 @@ reduce(;
               try {
                 listener(...args);
               } catch (error) {
-                console.error('Event listener error:', error);
+                console.error('Event listener error);
 // }
             });
 // }

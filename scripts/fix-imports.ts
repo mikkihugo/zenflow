@@ -17,86 +17,86 @@ const ___dirname = dirname(__filename);
  * Import replacement rule configuration;
  */
 // interface ImportReplacement {
-  from: RegExp;
-  to: string;
-  description: string;
-}
+  // from: RegExp
+  // to: string
+  // description: string
+// }
 /**
  * File processing statistics;
  */
 // interface ProcessingStats {
-  filesProcessed: number;
-  filesModified: number;
-  replacementsApplied: number;
-  errorsEncountered: number;
-}
+  // filesProcessed: number
+  // filesModified: number
+  // replacementsApplied: number
+  // errorsEncountered: number
+// }
 /**
  * Comprehensive import replacement rules following Google standards
  */
-const _IMPORT_REPLACEMENTS: ImportReplacement[] = [
+const _IMPORT_REPLACEMENTS = [
   // Cliffy to Commander/Inquirer migration
-  {
+  //   {
     from: /import\s*{\s*Command\s*}\s*from\s*['"]@cliffy\/command['"]/g,
     to: "import { Command } from 'commander'",
     description: 'Replace Cliffy Command with Commander' },
-  {
+  //   {
     from: /import\s*{\s*Table\s*}\s*from\s*['"]@cliffy\/table['"]/g,
     to: "import Table from 'cli-table3'",
     description: 'Replace Cliffy Table with cli-table3' },
-  {
+  //   {
     from: /import\s*\*?\s*as\s*colors\s*from\s*['"]@cliffy\/ansi\/colors['"]/g,
     to: "import chalk from 'chalk'",
     description: 'Replace Cliffy colors with chalk' },
-  {
+  //   {
     from: /import\s*{\s*colors\s*}\s*from\s*['"]@cliffy\/ansi\/colors['"]/g,
     to: "import chalk from 'chalk'",
     description: 'Replace Cliffy colors object with chalk' },
-  {
+  //   {
     from: /import\s*{\s*Select,\s*Input,\s*Confirm,\s*Number\s*}\s*from\s*['"]@cliffy\/prompt['"]/g,
     to: "import inquirer from 'inquirer'",
     description: 'Replace Cliffy prompts with inquirer' },
   // Color API usage fixes
-  {
+  //   {
     from: /colors\.(green|red|yellow|blue|gray|cyan|magenta|white|black|bold|dim)/g,
     to: 'chalk.$1',
     description: 'Update color API calls to chalk' },
   // Duplicate import cleanup
-  {
-    from: /import\s*{\s*promises\s*as\s*fs\s*}\s*from\s*['"]node:fs['"];?\s*\n(?:.*\n)*?import\s*{\s*promises\s*as\s*fs\s*}\s*from\s*['"]node:fs['"];?/g,
+  //   {
+    from: /import\s*{\s*promises\s*as\s*fs\s*}\s*from\s*['"]node:fs['"];?\s*\n(?)*?import\s*{\s*promises\s*as\s*fs\s*}\s*from\s*['"]node:fs['"];?/g,
     to: "import { promises as fs } from 'node:fs';",
     description: 'Remove duplicate fs imports' },
   // Method name corrections
-  {
+  //   {
     from: /\.showHelp\(\)/g,
     to: '.outputHelp()',
     description: 'Fix Commander method names' },
   // Table API fixes
-  {
+  //   {
     from: /table\.push\(/g,
     to: 'table.push(',
     description: 'Ensure table.push syntax consistency' },
   // Node.js core module prefix enforcement
-  {
+  //   {
     from: /from\s+['"]fs['"];?/g,
     to: "from 'node:fs';",
     description: 'Use node: prefix for fs module' },
-  {
+  //   {
     from: /from\s+['"]path['"];?/g,
     to: "from 'node:path';",
     description: 'Use node: prefix for path module' },
-  {
+  //   {
     from: /from\s+['"]os['"];?/g,
     to: "from 'node:os';",
     description: 'Use node: prefix for os module' },
-  {
+  //   {
     from: /from\s+['"]util['"];?/g,
     to: "from 'node:util';",
     description: 'Use node: prefix for util module' },
-  {
+  //   {
     from: /from\s+['"]url['"];?/g,
     to: "from 'node:url';",
     description: 'Use node: prefix for url module' },
-  {
+  //   {
     from: /from\s+['"]child_process['"];?/g,
     to: "from 'node:child_process';",
     description: 'Use node: prefix for child_process module' } ];
@@ -107,7 +107,7 @@ const _IMPORT_REPLACEMENTS: ImportReplacement[] = [
  * @param filePath - Path to the file to process;
  * @param stats - Statistics object to update;
  */
-async function processFile(filePath, stats: ProcessingStats): Promise<void> {
+async function processFile(filePath, stats): Promise<void> {
   try {
     stats.filesProcessed++;
 // const _content = awaitfs.readFile(filePath, 'utf-8');
@@ -121,16 +121,16 @@ async function processFile(filePath, stats: ProcessingStats): Promise<void> {
         modified = true;
         fileReplacements++;
         stats.replacementsApplied++;
-      }
-    }
+      //       }
+    //     }
     // Additional TypeScript-specific fixes
     if (filePath.endsWith('.ts')) {
       // Fix missing .js extensions in relative imports (ESM requirement)
       const _beforeExtensions = content;
       content = content.replace(;
         /from\s+['"](\.\/?[^'"]*?)['"];?/g,
-        (match, importPath: string) => {
-          if (!importPath.includes('.') && !importPath.includes('node:')) {
+        (match, importPath) => {
+          if (!importPath.includes('.') && !importPath.includes('node)) {
             return match.replace(importPath, `${importPath}.js`);
     //   // LINT: unreachable code removed}
           return match;
@@ -140,20 +140,20 @@ async function processFile(filePath, stats: ProcessingStats): Promise<void> {
         modified = true;
         fileReplacements++;
         stats.replacementsApplied++;
-      }
-    }
+      //       }
+    //     }
     // Write file if modifications were made
     if (modified) {
 // await fs.writeFile(filePath, content);
       stats.filesModified++;
-      console.warn(`✅ Fixed ${fileReplacements} imports in: ${filePath}`);
-    }
+      console.warn(`✅ Fixed ${fileReplacements} imports in);
+    //     }
   } catch (error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`❌ Error processing ${filePath}:`, errorMessage);
-  }
-}
+    console.error(`❌ Error processing ${filePath});
+  //   }
+// }
 /**
  * Recursively finds all TypeScript files in a directory;
  * Excludes build directories and node_modules;
@@ -161,8 +161,8 @@ async function processFile(filePath, stats: ProcessingStats): Promise<void> {
  * @param dir - Directory to search;
  * @returns Promise resolving to array of file paths;
     // */ // LINT: unreachable code removed
-async function findTypeScriptFiles(dir: string): Promise<string[]> {
-  const _files: string[] = [];
+async function findTypeScriptFiles(dir): Promise<string[]> {
+  const _files = [];
   try {
 // const _entries = awaitfs.readdir(dir, { withFileTypes});
     for (const entry of entries) {
@@ -174,14 +174,14 @@ async function findTypeScriptFiles(dir: string): Promise<string[]> {
         files.push(...subFiles);
       } else if (entry.isFile() && (entry.name.endsWith('.ts')  ?? entry.name.endsWith('.js'))) {
         files.push(fullPath);
-      }
-    }
+      //       }
+    //     }
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`Error reading directory ${dir}:`, errorMessage);
-  }
+    console.error(`Error reading directory ${dir});
+  //   }
   return files;
-}
+// }
 /**
  * Main execution function;
  * Orchestrates the import fixing process with comprehensive reporting
@@ -189,7 +189,7 @@ async function findTypeScriptFiles(dir: string): Promise<string[]> {
 async function _main(): Promise<void> {
   try {
     const _srcDir = join(dirname(__dirname), 'src');
-    const _stats: ProcessingStats = {
+    const _stats = {
       filesProcessed,
       filesModified,
       replacementsApplied,
@@ -212,14 +212,14 @@ async function _main(): Promise<void> {
       console.warn(;
         `📊 Progress: ${progress.toFixed(1)}% (${Math.min(i + batchSize, files.length)}/${files.length})`;
       );
-    }
+    //     }
     // Comprehensive final report
     console.warn('');
-    console.warn('📊 Import Fix Summary:');
-    console.warn(`  Files processed: ${stats.filesProcessed}`);
-    console.warn(`  Files modified: ${stats.filesModified}`);
-    console.warn(`  Total replacements: ${stats.replacementsApplied}`);
-    console.warn(`  Errors encountered: ${stats.errorsEncountered}`);
+    console.warn('📊 Import Fix Summary);
+    console.warn(`  Files processed);
+    console.warn(`  Files modified);
+    console.warn(`  Total replacements);
+    console.warn(`  Errors encountered);
     console.warn(;
       `  Success rate: ${(((stats.filesProcessed - stats.errorsEncountered) / stats.filesProcessed) * 100).toFixed(1)}%`;
     );
@@ -231,15 +231,15 @@ async function _main(): Promise<void> {
     } else {
       console.warn('⚠️ Import fixes completed with some errors. Check logs above.');
       process.exit(1);
-    }
+    //     }
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ Fatal error in import fixing:', errorMessage);
+    console.error('❌ Fatal error in import fixing);
     process.exit(1);
-  }
-}
+  //   }
+// }
 // Execute import fixing with error handling
-main().catch((error: Error) => {
-  console.error('❌ Unhandled error:', error);
+main().catch((error) => {
+  console.error('❌ Unhandled error);
   process.exit(1);
 });

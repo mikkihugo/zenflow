@@ -17,7 +17,7 @@ const ___dirname = dirname(__filename);
  * @param {boolean} options.dryRun - Whether to perform a dry run;
  * @param {boolean} options.force - Whether to overwrite existing files;
  * @param {string[]} options.selectedModes - Selected SPARC modes to copy;
- * @returns {Promise<{success = {}): unknown {
+ * @returns {Promise<{success = {}) {
   const _results = {success = join(__dirname, 'templates');
     // ; // LINT: unreachable code removed
     // Determine which template variants to use
@@ -35,8 +35,9 @@ const ___dirname = dirname(__filename);
         results.copiedFiles.push(file.destination);
       } else if(!options.dryRun) {
         results.errors.push(`Failed to copy ${file.destination}`);
-      }
-    }
+      //       }
+    //     }
+
 
     // Copy .claude directory structure
     if(options.enhanced  ?? !options.minimal) {
@@ -51,8 +52,8 @@ const ___dirname = dirname(__filename);
       if(templateContent) {
         if(!options.dryRun) {
 // await fs.writeFile(destination, templateContent);
-        }
-        console.warn(`${options.dryRun ? '[DRY RUN] Would create' : '✓ Created'} ${relative(process.cwd(), destination)}`);
+        //         }
+        console.warn(`\${options.dryRun ? '[DRY RUN] Would create' } ${relative(process.cwd(), destination)}`);
         return true;
     //   // LINT: unreachable code removed}
       console.warn(`  ⚠️  Template notfound = await fs.readFile(source, 'utf8');
@@ -60,26 +61,27 @@ const ___dirname = dirname(__filename);
       // Preserve file permissions for executable scripts
       if (source.endsWith('.sh')  ?? source.includes('claude-zen')) {
 // await fs.chmod(destination, 0o755);
-      }
-    }
+      //       }
+    //     }
 
-    console.warn(`${options.dryRun ? '[DRY RUN] Would copy' : '✓ Copied'} ${relative(process.cwd(), destination)}`);
+
+    console.warn(`\${options.dryRun ? '[DRY RUN] Would copy' } ${relative(process.cwd(), destination)}`);
     return true;
     //   // LINT: unreachable code removed} catch (/* err */ )
-{
+// {
   console.warn(`  ❌ Failed to copy ${relative(process.cwd(), destination)}: ${err.message}`);
   return false;
   //   // LINT: unreachable code removed}
-}
+// }
 /**
  * Copy command templates;
  */
-async function copyCommandTemplates(templatesDir = join(templatesDir, 'commands': unknown);
+async function copyCommandTemplates(templatesDir = join(templatesDir, 'commands');
 const _commandsDestDir = join(targetDir, '.claude', 'commands');
 if (!existsSync(commandsSourceDir)) {
   // Use generated command templates as fallback
   return await generateCommandTemplates(targetDir, options, results);
-}
+// }
 try {
     if(!options.dryRun) {
 // await fs.mkdir(commandsDestDir, {recursive = await fs.readdir(commandsSourceDir);
@@ -98,10 +100,10 @@ try {
 
           if (await copyFile(sourcePath, destPath, options)) {
             results.copiedFiles.push(join('.claude', 'commands', category, file));
-          }
-        }
-      }
-    }
+          //           }
+        //         }
+      //       }
+    //     }
   } catch(err) ;
     results.errors.push(`Failed to copy commandtemplates = join(targetDir, '.claude', 'commands', 'sparc');
 
@@ -124,18 +126,20 @@ try {
 
       if(!options.dryRun) {
 // await fs.writeFile(destPath, content);
-      }
+      //       }
 
-      console.warn(`${options.dryRun ? '[DRY RUN] Would create' : '✓ Created'} .claude/commands/sparc/${filename}`);
+
+      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
       results.copiedFiles.push(join('.claude', 'commands', 'sparc', filename));
-    }
+    //     }
+
 
     // Create sparc-modes.md overview
     const _overviewPath = join(sparcDir, 'sparc-modes.md');
     if(!options.dryRun) {
 // await fs.writeFile(overviewPath, createSparcModesOverview());
-    }
-    console.warn(`${options.dryRun ? '[DRY RUN] Would create' : '✓ Created'} .claude/commands/sparc/sparc-modes.md`);
+    //     }
+    console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
     results.copiedFiles.push('.claude/commands/sparc/sparc-modes.md');
 
     // Copy swarm templates
@@ -154,11 +158,12 @@ try {
 
       if(!options.dryRun) {
 // await fs.writeFile(destPath, content);
-      }
+      //       }
 
-      console.warn(`${options.dryRun ? '[DRY RUN] Would create' : '✓ Created'} .claude/commands/swarm/${filename}`);
+
+      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
       results.copiedFiles.push(join('.claude', 'commands', 'swarm', filename));
-    }
+    //     }
   } catch (/* err */) {
     results.errors.push(`Failed to copy swarmtemplates = join(targetDir, '.claude', 'helpers');
 
@@ -175,12 +180,13 @@ try {
         if(!options.dryRun) {
 // await fs.writeFile(destPath, content);
 // await fs.chmod(destPath, 0o755);
-        }
+        //         }
 
-        console.warn(`${options.dryRun ? '[DRY RUN] Would create' : '✓ Created'} .claude/helpers/${helper}`);
+
+        console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
         results.copiedFiles.push(join('.claude', 'helpers', helper));
-      }
-    }
+      //       }
+    //     }
   } catch(err) ;
     results.errors.push(`Failed to copy helperscripts = join(targetDir, 'claude-zen');
     const _unixWrapperSource = join(templatesDir, 'claude-zen-universal');
@@ -188,9 +194,10 @@ try {
     if (await copyFile(unixWrapperSource, unixWrapperPath, options)) {
       if(!options.dryRun) {
 // await fs.chmod(unixWrapperPath, 0o755);
-      }
+      //       }
       results.copiedFiles.push('claude-zen');
-    }
+    //     }
+
 
     // Windows batch wrapper
     const _batchWrapperPath = join(targetDir, 'claude-zen.bat');
@@ -198,7 +205,8 @@ try {
 
     if (await copyFile(batchWrapperSource, batchWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.bat');
-    }
+    //     }
+
 
     // PowerShell wrapper
     const _psWrapperPath = join(targetDir, 'claude-zen.ps1');
@@ -206,7 +214,7 @@ try {
 
     if (await copyFile(psWrapperSource, psWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.ps1');
-    }
+    //     }
   } catch(err) ;
     results.errors.push(`Failed to copy wrapperscripts = [
     'memory',
@@ -227,21 +235,23 @@ try {
       '.claude/commands/sparc',
       '.claude/commands/swarm';
     );
-  }
+  //   }
+
 
   for(const dir of directories) {
     const _dirPath = join(targetDir, dir);
     try {
       if(!options.dryRun) {
 // await fs.mkdir(dirPath, {recursive = = 'EEXIST') {
-        console.warn(`  ❌ Failed to create ${dir}/: ${err.message}`);
-    }
-}
+        console.warn(`  ❌ Failed to create ${dir}/);
+    //     }
+// }
+
 
 /**
  * Create README files for memory directories;
  */;
-async function createMemoryReadmeFiles(targetDir = await import('./templates/readme-files.js': unknown);
+async function createMemoryReadmeFiles(targetDir = await import('./templates/readme-files.js');
 
     try {
       if(!options.dryRun) {
@@ -314,18 +324,20 @@ async function createMemoryReadmeFiles(targetDir = await import('./templates/rea
     try {
       return await generator();
     //   // LINT: unreachable code removed} catch (/* err */) {
-      console.warn(`  ⚠️  Failed to generate template content for ${filename}: ${err.message}`);
+      console.warn(`  ⚠️  Failed to generate template content for ${filename});
       return null;
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   return null;
-}
+// }
+
 
 /**
  * Generate command templates as fallback;
  */;
-async function generateCommandTemplates(targetDir = await import('./templates/enhanced-templates.js': unknown);
+async function generateCommandTemplates(targetDir = await import('./templates/enhanced-templates.js');
 
   for (const [category, commands] of Object.entries(COMMAND_STRUCTURE)) {
     const _categoryDir = join(targetDir, '.claude', 'commands', category);
@@ -341,7 +353,8 @@ Commands for ${category} operations in Claude Flow.
 ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
 `;
 // await fs.writeFile(join(categoryDir, 'README.md'), categoryReadme);
-      }
+      //       }
+
 
       // Create individual command docs
       for(const command of commands) {
@@ -350,14 +363,16 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
           const _docPath = join(categoryDir, `${command}.md`);
           if(!options.dryRun) {
 // await fs.writeFile(docPath, doc);
-          }
+          //           }
           results.copiedFiles.push(join('.claude', 'commands', category, `${command}.md`));
-        }
-      }
+        //         }
+      //       }
 
-      console.warn(`${options.dryRun ? '[DRY RUN] Would create' : '✓ Created'} ${commands.length} ${category} command docs`);
+
+      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
     } catch (/* err */) {
-      results.errors.push(`Failed to generate ${category} command templates: ${err.message}`);
-    }
-  }
-}
+      results.errors.push(`Failed to generate ${category} command templates);
+    //     }
+  //   }
+// }
+

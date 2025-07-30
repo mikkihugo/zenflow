@@ -27,12 +27,12 @@ export interface MockImageOptions {
  * Mock image result
  */
 export interface MockImageResult {
-  buffer: Buffer;
-  width: number;
-  height: number;
-  format: string;
-  size: number;
-  mimeType: string;
+  // buffer: Buffer
+  // width: number
+  // height: number
+  // format: string
+  // size: number
+  // mimeType: string
 // }
 /**
  * Mock vision analysis options
@@ -47,39 +47,39 @@ export interface MockVisionOptions {
  * Vision component result
  */
 export interface VisionComponent {
-  type: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  confidence: number;
+  // type: string
+  // x: number
+  // y: number
+  // width: number
+  // height: number
+  // confidence: number
 // }
 /**
  * Mock vision analysis result
  */
 export interface MockVisionResult {
-  id: string;
-  timestamp: string;
-  components: VisionComponent[];
+  // id: string
+  // timestamp: string
+  components;
   layout: {
-    type: string;
-    columns: number;
-    spacing: number;
+    // type: string
+    // columns: number
+    // spacing: number
   };
   colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    palette: string[];
+    // primary: string
+    // secondary: string
+    // accent: string
+    palette;
   };
   text: {
-    detected: boolean;
-    blocks: unknown[];
+    // detected: boolean
+    blocks;
   };
   metadata: {
-    processingTime: number;
-    modelVersion: string;
-    confidence: number;
+    // processingTime: number
+    // modelVersion: string
+    // confidence: number
   };
 // }
 /**
@@ -94,23 +94,23 @@ export interface MockCodeOptions {
  * Generated code file
  */
 export interface GeneratedCodeFile {
-  name: string;
-  path: string;
-  content: string;
-  size: number;
+  // name: string
+  // path: string
+  // content: string
+  // size: number
 // }
 /**
  * Mock code generation result
  */
 export interface MockCodeResult {
-  id: string;
-  timestamp: string;
-  framework: string;
-  language: string;
-  files: GeneratedCodeFile[];
+  // id: string
+  // timestamp: string
+  // framework: string
+  // language: string
+  files;
   metadata: {
-    generationTime: number;
-    linesOfCode: number;
+    // generationTime: number
+    // linesOfCode: number
     dependencies: Record<string, string>;
   };
 // }
@@ -126,10 +126,10 @@ export interface WaitConditionOptions {
  * Execution time measurement result
  */
 export interface ExecutionTimeResult<T> {
-  result: T;
-  duration: number;
-  label: string;
-  pass: boolean;
+  // result: T
+  // duration: number
+  // label: string
+  // pass: boolean
 // }
 /**
  * Mock HTTP request options
@@ -149,62 +149,62 @@ export interface MockRequestOptions {
  * Mock HTTP request
  */
 export interface MockRequest {
-  method: string;
-  url: string;
+  // method: string
+  // url: string
   headers: Record<string, string>;
-  body: unknown;
+  // body: unknown
   query: Record<string, string>;
   params: Record<string, string>;
-  user: unknown;
-  file: unknown;
-  files: unknown[];
+  // user: unknown
+  // file: unknown
+  files;
 // }
 /**
  * Mock HTTP response
  */
 export interface MockResponse {
-  statusCode: number;
+  // statusCode: number
   headers: Record<string, string>;
-  body: unknown;
-  status: (code: number) => MockResponse;
-  json: (data: unknown) => MockResponse;
-  send: (data: unknown) => MockResponse;
-  setHeader: (name, value: string) => MockResponse;
+  // body: unknown
+  status: (code) => MockResponse;
+  json: (data) => MockResponse;
+  send: (data) => MockResponse;
+  setHeader: (name, value) => MockResponse;
 // }
 /**
  * Performance metrics entry
  */
 export interface MetricsEntry {
-  endpoint: string;
-  duration: number;
-  status: number;
-  timestamp: number;
+  // endpoint: string
+  // duration: number
+  // status: number
+  // timestamp: number
 // }
 /**
  * Error metrics entry
  */
 export interface ErrorEntry {
-  error: string;
-  endpoint: string;
-  timestamp: number;
+  // error: string
+  // endpoint: string
+  // timestamp: number
 // }
 /**
  * Performance statistics
  */
 export interface PerformanceStats {
-  totalRequests: number;
-  totalErrors: number;
-  averageDuration: number;
-  p50: number;
-  p95: number;
-  p99: number;
+  // totalRequests: number
+  // totalErrors: number
+  // averageDuration: number
+  // p50: number
+  // p95: number
+  // p99: number
 // }
 /**
  * Metrics collector
  */
 export interface MetricsCollector {
-  recordRequest: (endpoint, duration, status: number) => void;
-  recordError: (error, endpoint: string) => void;
+  recordRequest: (endpoint, duration, status) => void;
+  recordError: (error, endpoint) => void;
   getStats: () => PerformanceStats;
   reset: () => void;
 // }
@@ -219,14 +219,14 @@ export const TestHelpers = {
   /**
    * Generate a random test ID
    */
-  generateTestId(prefix = 'test'): string {
+  generateTestId(prefix = 'test') {
     return `${prefix}_${crypto.randomBytes(8).toString('hex')}`;
   },
 
   /**
    * Create a mock image file for testing
    */
-  async createMockImage(options: MockImageOptions = {}): Promise<MockImageResult> {
+  async createMockImage(options): Promise<MockImageResult> {
     const { width = 800, height = 600, format = 'png', size = 'medium' } = options;
 
     // Mock image buffer based on size
@@ -258,7 +258,7 @@ export const TestHelpers = {
   /**
    * Create mock vision analysis result
    */
-  createMockVisionResult(options: MockVisionOptions = {}): MockVisionResult {
+  createMockVisionResult(options) {
     const {
       components = ['header', 'navigation', 'content', 'footer'],
       layout = 'grid',
@@ -296,18 +296,18 @@ export const TestHelpers = {
   /**
    * Create mock code generation result
    */
-  createMockCodeResult(options: MockCodeOptions = {}): MockCodeResult {
+  createMockCodeResult(options) {
     const {
       framework = 'react',
       language = 'javascript',
       components = ['App', 'Header', 'Content'] } = options;
 
-    const codeTemplates: Record<string, (name: string) => string> = {
-      react: (name: string) =>
+    const codeTemplates: Record<string, (name) => string> = {
+      react: (name) =>
         `import React from 'react';\n\nexport const ${name} = (): JSX.Element => {\n  return <div>${name} Component</div>;\n};`,
-      vue: (name: string) =>
+      vue: (name) =>
         `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n}\n</script>`,
-      angular: (name: string) =>
+      angular: (name) =>
         `import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}` };
 
     return {
@@ -316,8 +316,8 @@ export const TestHelpers = {
       framework,
       language,
       files: components.map((name) => ({
-        name: `${name}.${language === 'typescript' ? 'tsx' : 'jsx'}`,
-        path: `src/components/${name}.${language === 'typescript' ? 'tsx' : 'jsx'}`,
+        name: `${name}.\${language === 'typescript' ? 'tsx' }`,
+        path: `src/components/${name}.\${language === 'typescript' ? 'tsx' }`,
         content: codeTemplates[framework](name),
         size: codeTemplates[framework](name).length })),
       metadata: {
@@ -330,8 +330,7 @@ export const TestHelpers = {
   /**
    * Wait for a condition to be true
    */
-  async waitForCondition(
-    conditionFn: () => boolean | Promise<boolean>,
+  async waitForCondition(conditionFn) => boolean | Promise<boolean>,
     options: WaitConditionOptions = {}
   ): Promise<boolean> {
     const {
@@ -352,8 +351,7 @@ export const TestHelpers = {
   /**
    * Measure async function execution time
    */
-  async measureExecutionTime<T>(
-    fn: () => Promise<T>,
+  async measureExecutionTime<T>(fn) => Promise<T>,
     label = 'Operation'
   ): Promise<ExecutionTimeResult<T>> {
     const start = process.hrtime.bigint();
@@ -372,7 +370,7 @@ export const TestHelpers = {
   /**
    * Create a mock HTTP request
    */
-  createMockRequest(options: MockRequestOptions = {}): MockRequest {
+  createMockRequest(options) {
     return {
       method: options.method ?? 'GET',
       url: options.url ?? '/',
@@ -388,21 +386,21 @@ export const TestHelpers = {
   /**
    * Create a mock HTTP response
    */
-  createMockResponse(): MockResponse {
-    const res: MockResponse = {
+  createMockResponse() {
+    const res = {
       statusCode,
       headers: {},
       body,
-      status: function (code: number) {
+      status: function (code) {
         this.statusCode = code;
         return this;
       },
-      json: function (data: unknown) {
+      json: function (data) {
         this.headers['Content-Type'] = 'application/json';
         this.body = data;
         return this;
       },
-      send: function (data: unknown) {
+      send: function (data) {
         this.body = data;
         return this;
       },
@@ -417,7 +415,7 @@ export const TestHelpers = {
   /**
    * Clean up test files
    */
-  async cleanupTestFiles(directory: string): Promise<void> {
+  async cleanupTestFiles(directory): Promise<void> {
     try {
 // const files = awaitfs.readdir(directory);
       for (const file of files) {
@@ -437,7 +435,7 @@ export const TestHelpers = {
     generator: AsyncIterable<T>,
     batchSize = 100
   ): AsyncGenerator<T[]> {
-    let batch: T[] = [];
+    let batch = [];
     let _count = 0;
 
     for await (const item of generator) {
@@ -457,12 +455,12 @@ export const TestHelpers = {
   /**
    * Mock AI service responses
    */
-  mockAIResponse(service, response: unknown): void {
+  mockAIResponse(service, response: unknown) {
     const mocks: Record<string, () => void> = {
       gemini: () => {
         const gemini = require('@google/generative-ai');
         gemini.GoogleGenerativeAI.mockImplementation(() => ({
-          getGenerativeModel: jest.fn(() => ({
+          getGenerativeModel) => ({
             generateContent: jest.fn().mockResolvedValue(response) })) }));
       },
       openai: () => {
@@ -477,18 +475,18 @@ export const TestHelpers = {
   /**
    * Create performance metrics collector
    */
-  createMetricsCollector(): MetricsCollector {
+  createMetricsCollector() {
     const metrics = {
       requests: [] as MetricsEntry[],
       errors: [] as ErrorEntry[],
       durations: [] as number[] };
 
     return {
-      recordRequest: (endpoint, duration, status: number) => {
+      recordRequest: (endpoint, duration, status) => {
         metrics.requests.push({ endpoint, duration, status, timestamp: Date.now() });
         metrics.durations.push(duration);
       },
-      recordError: (error, endpoint: string) => {
+      recordError: (error, endpoint) => {
         metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now() });
       },
       getStats: (): PerformanceStats => {

@@ -5,7 +5,8 @@
   metadata?: PluginMetadata;
   [key = {}): Promise<string> {
     throw new Error('register() must be implemented by registry backend');
-  }
+  //   }
+
 
   /**
    * Discover entities in the registry;
@@ -16,9 +17,9 @@
 async;
 discover((query = {}));
 : Promise<any[]>
-{
+// {
   throw new Error('discover() must be implemented by registry backend');
-}
+// }
 /**
  * Update entity in registry;
  * @param {string} key - Entity key;
@@ -29,9 +30,9 @@ discover((query = {}));
 async;
 update((key = {}));
 : Promise<boolean>
-{
+// {
   throw new Error('update() must be implemented by registry backend');
-}
+// }
 /**
  * Remove entity from registry;
  * @param {string} key - Entity key;
@@ -41,9 +42,9 @@ update((key = {}));
 async;
 unregister((key = {}));
 : Promise<boolean>
-{
+// {
   throw new Error('unregister() must be implemented by registry backend');
-}
+// }
 /**
  * Watch for changes in the registry;
  * @param {Object} query - Watch query;
@@ -54,9 +55,9 @@ unregister((key = {}));
 async;
 watch(query = > void, options = {});
 : Promise<() => void>
-{
+// {
   throw new Error('watch() must be implemented by registry backend');
-}
+// }
 /**
  * Get registry health/status;
  * @returns {Promise<Object>} - Health status;
@@ -64,9 +65,9 @@ watch(query = > void, options = {});
 async;
 health();
 : Promise<object>
-{
+// {
   throw new Error('health() must be implemented by registry backend');
-}
+// }
 /**
  * Close registry connections;
  * @returns {Promise<void>}
@@ -74,10 +75,10 @@ health();
 // async; // LINT: unreachable code removed
 close();
 : Promise<void>
-{
+// {
   throw new Error('close() must be implemented by registry backend');
-}
-}
+// }
+// }
 /**
  * Plugin System for Registry Extensions;
  * Allows modular coordination patterns;
@@ -89,7 +90,7 @@ export class RegistryPluginSystem extends EventEmitter {
   this;
 
   middleware = [];
-}
+// }
 /**
  * Register a plugin;
  * @param {string} name - Plugin name;
@@ -98,22 +99,22 @@ export class RegistryPluginSystem extends EventEmitter {
  */
 registerPlugin(name, (plugin = {}));
 : void
-{
+// {
   if (!plugin.initialize ?? typeof plugin.initialize !== 'function') {
     throw new Error(`Plugin '${name}' must have an initialize() method`);
-  }
+  //   }
   this.plugins.set(name, {
       instance = {}): Promise<void> {
     const _plugin = this.plugins.get(name);
   if (!plugin) {
     throw new Error(`Plugin '${name}' not found`);
-  }
+  //   }
   if (!plugin.initialized) {
 // await plugin.instance.initialize(registry, { ...plugin.options, ...context });
     plugin.initialized = true;
     this.emit('pluginInitialized', { name, plugin });
-  }
-}
+  //   }
+// }
 /**
  * Register a hook for plugin lifecycle events;
  * @param {string} event - Hook event (beforeRegister, afterDiscover, etc.);
@@ -140,7 +141,8 @@ for (const hook of hooks) {
     //   // LINT: unreachable code removed};
 
   return dispatch(0);
-}
+// }
+
 
 /**
  * Get plugin by name;
@@ -149,7 +151,8 @@ for (const hook of hooks) {
     // */; // LINT: unreachable code removed
 getPlugin(name = this.plugins.get(name);
 return plugin?.instance  ?? null;
-}
+// }
+
 
   /**
    * List all plugins;
@@ -191,18 +194,21 @@ initialize((config = {}));
       // Initialize backend
       if (this.backend.initialize) {
 // await this.backend.initialize(config);
-      }
+      //       }
+
 
       // Initialize plugins
       for (const [name] of this.pluginSystem.plugins) {
 // await this.pluginSystem.initializePlugin(name, this, config);
-      }
+      //       }
+
 
       this.state = 'ready';
       this.emit('ready', {id = 'error';
       this.emit('error', error);
       throw error;
-    }
+    //     }
+
 
 /**
  * Register entity through plugin system;
@@ -214,7 +220,7 @@ initialize((config = {}));
 async;
 register((key = {}));
 : Promise<string>;
-{
+// {
   let _data = await this.pluginSystem.executeHooks('beforeRegister', {
       key, value, options,registry = await this.pluginSystem.executeMiddleware(;
       'register',
@@ -235,10 +241,11 @@ register((key = {}));
 // await coordinator.initialize();
   this.coordinators.set(swarmId, coordinator);
   this.swarms.set(swarmId, {id = > ({
-      id = {}): MetaRegistry {
+      id = {}) {
     this.pluginSystem.registerPlugin(name, plugin, options);
   return this;
-}
+// }
+
 
 /**
  * Get registry status;
@@ -250,7 +257,8 @@ status();
   // Close all swarm coordinators
   for (const coordinator of this.coordinators.values()) {
 // await coordinator.close?.();
-  }
+  //   }
+
 
   // Close backend
 // await this.backend.close?.();
@@ -281,7 +289,8 @@ export class SwarmCoordinator extends EventEmitter {
   this;
 
   state = 'created';
-}
+// }
+
 
 /**
  * Initialize swarm coordinator;
@@ -295,7 +304,8 @@ initialize();
     // Register swarm in meta registry
 // await this.registry.register(`swarm = 'ready';
     this.emit('ready');
-  }
+  //   }
+
 
   /**
    * Register agent in swarm;
@@ -303,7 +313,7 @@ initialize();
    * @param {Object} agentInfo - Agent information;
    * @returns {Promise<void>}
    */;
-    // async registerAgent(agentId = {id = { // LINT: unreachable code removed}): Promise<any[]> {
+    // async registerAgent(agentId = {id = { // LINT): Promise<any[]> {
     return this.registry.discover({
       tags = {}): Promise<any[]> {
 
@@ -315,7 +325,8 @@ initialize();
     for (const _agentId of this.agents.keys()) {
 // await this.registry.backend.unregister?.(`agent = 'closed';
     this.emit('closed');
-  }
-}
+  //   }
+// }
+
 
 export default MetaRegistry;

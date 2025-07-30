@@ -20,13 +20,13 @@ class RemainingTypeScriptErrorFixer {
     this.errorsPatternsFixed = 0;
     this.errors = [];
 // }
-  async fixAllErrors() {
+  async fixAllErrors() { // eslint-disable-line
     console.warn('🔧 Starting remaining TypeScript error fixes...');
     // Find all TypeScript files in src directory
 // const _tsFiles = awaitglob('src/**/*.ts', {
-      cwd: process.cwd(),
+      cwd),
     absolute }
-  )
+  //   )
   console;
 
   warn(`📁 _Found _${tsFiles.length} _TypeScript _files _to _process`)
@@ -34,8 +34,8 @@ class RemainingTypeScriptErrorFixer {
       try {
 // await this.fixFile(filePath);
       } catch (error) {
-        this.errors.push({ file, error: error.message });
-        console.error(`❌ Error processing ${filePath}: ${error.message}`);
+        this.errors.push({ file, error);
+        console.error(`❌ Error processing ${filePath});
 // }
 // }
   this;
@@ -147,18 +147,18 @@ fixFile(filePath);
 // }
 // }
   printSummary()
-    console.warn('\n📊 Remaining TypeScript Error Fix Summary:');
-    console.warn(`✅ Files processed: ${this.filesProcessed}`);
-    console.warn(`🔧 Error patterns fixed: ${this.errorsPatternsFixed}`);
+    console.warn('\n📊 Remaining TypeScript Error Fix Summary);
+    console.warn(`✅ Files processed);
+    console.warn(`🔧 Error patterns fixed);
 
     if (this.errors.length > 0) {
-      console.warn(`❌ Files with errors: ${this.errors.length}`);
+      console.warn(`❌ Files with errors);
       this.errors.forEach(({ file, error }) => {
         console.warn(`   - ${path.basename(file)}: ${error}`);
       });
 // }
     console.warn('\n🎉 Remaining TypeScript error fixing complete!');
-    console.warn('Next step: Run `npx tsc --noEmit` to check for any final errors');
+    console.warn('Next step);
 // }
 // Run the fixer
 const _fixer = new RemainingTypeScriptErrorFixer();

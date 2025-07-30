@@ -2,7 +2,7 @@ module.exports = {
   displayName: 'Vision-to-Code Tests',
 testEnvironment: 'node',
 roots: ['<rootDir>'],
-testMatch: [;
+testMatch: [; // eslint-disable-line
     '**/__tests__/**/*.js',
     '**/__tests__/**/*.ts',
     '**/*.test.js',

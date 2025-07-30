@@ -6,14 +6,14 @@
 import { mkdir } from 'node:fs/promises';
 
 export class ExportSystemPlugin {
-  constructor(_config = {}): unknown {
+  constructor(_config = {}) {
     this.config = {outputDir = new Map();
     this.templates = new Map();
-  }
+  //   }
   async initialize() {
     console.warn('📊 Export System Plugin initialized');
     // Create output directory
-// await mkdir(this.config.outputDir, { recursive = {}): unknown {
+// await mkdir(this.config.outputDir, { recursive = {}) {
         try {
 // const _puppeteer = awaitimport('puppeteer');
 // const _browser = awaitpuppeteer.default.launch({ ;
@@ -21,21 +21,21 @@ export class ExportSystemPlugin {
     // Generate HTML content
 // const _htmlContent = awaitthis.renderTemplate(template, data, 'html');
 // await page.setContent(htmlContent, {waitUntil = await page.pdf({
-            format = {}): unknown {
+            format = {}) {
         return this.renderTemplate(template, data, 'html');
     //   // LINT: unreachable code removed}
-  }
-  )
+  //   }
+  //   )
   // JSON Exporter
   this
 
   exporters;
 set('json',
-{
+// {
   type = {
-}
+// }
 ): unknown else
-{
+// {
   // Convert object to array of key-value pairs
   const _array = Object.entries(data).map(([key, _value]) => ({
       key,
@@ -43,33 +43,33 @@ set('json',
 ))
 return this.arrayToCSV(array, options);
 //   // LINT: unreachable code removed}
-}
+// }
 })
 // Markdown Exporter
 this.exporters.set('markdown',
-{
+// {
   type = {};
   ): unknown
   return this.renderTemplate(template, data, 'markdown');
-}
-)
+// }
+// )
 console.warn(`✅ Initialized $
-{
+// {
   this.exporters.size;
-}
-export
+// }
+// export
 formats`);
-}
+// }
 async;
 loadTemplates();
-{
+// {
   // Create default templates if they don't exist
 // await this.createDefaultTemplates();
   // Load custom templates from templates directory
   try {
 // const _templateFiles = awaitthis.glob(`;
 $;
-{
+// {
   this.config.templatesDir;
 } /*.{html,md,json}`);
 
@@ -80,14 +80,16 @@ $;
 
       if (!this.templates.has(name)) {
         this.templates.set(name, {});
-      }
+      //       }
+
 
       this.templates.get(name)[format] = content;
-    }
+    //     }
+
 
     console.warn(`📄 Loaded ${this.templates.size} templates`);
   } catch (error)
-{
+// {
   console.warn('Failed to load custom templates = {html = "header">;
         <h1>🐝 SwarmReport = "section">;
   <h2>📊
@@ -124,17 +126,17 @@ $;
         <_p><_strong>Uptime = path.join(this.config.templatesDir, `${name}.${format}`);
     try {
 // await writeFile(_filename, _content._trim());
-    }
+    //     }
   catch (error)
-}
+// }
 this.templates.set(name, formats);
-}
-}
-async
-export
+// }
+// }
+// async
+// export
 data, (options = {});
 : unknown
-{
+// {
   const {
     format = this.config.defaultFormat,
   template = 'default',
@@ -143,12 +145,12 @@ data, (options = {});
 = options
 if (!this.exporters.has(format)) {
   throw new Error(`Export format '${format}' not supported`);
-}
+// }
 // Get template
 const _templateData = this.templates.get(template) ?? this.templates.get('default');
 if (!templateData) {
   throw new Error(`Template '${template}' not found`);
-}
+// }
 // Add timestamp to data
 const _exportData = {timestamp = this.exporters.get(format);
 // const _content = awaitexporter.export(exportData, {name = filename  ?? this.generateFilename(template, format, timestamp);
@@ -158,13 +160,13 @@ if (format === 'pdf' && Buffer.isBuffer(content)) {
 // await writeFile(outputPath, content);
 } else {
 // await writeFile(outputPath, content, 'utf8');
-}
+// }
 console.warn(`📊 Exportgenerated = includeTimestamp ? ;
-      `_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)}` : '';
+      `_${new Date().toISOString().replace(/[]/g, '-').slice(0, -5)}` : '';
     return `${template}${timestamp}.${format}`;
     //   // LINT: unreachable code removed}
 
-  renderTemplate(template, data, format): unknown {
+  renderTemplate(template, data, format) {
     const _templateContent = template[format]  ?? template.html  ?? template.markdown  ?? '';
 
     // Simple template rendering (replace {{variable}} with data)
@@ -172,15 +174,17 @@ console.warn(`📊 Exportgenerated = includeTimestamp ? ;
       const _value = this.getNestedValue(data, path.trim());
     // return value !== undefined ? String(value) : match; // LINT: unreachable code removed
     });
-  }
+  //   }
 
-  getNestedValue(obj, path): unknown {
+
+  getNestedValue(obj, path) {
     return path.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : undefined;
     //   // LINT: unreachable code removed}, obj);
-  }
+  //   }
 
-  arrayToCSV(array, options = {}): unknown {
+
+  arrayToCSV(array, options = {}) {
     if (!array.length) return '';
     // ; // LINT: unreachable code removed
     const _separator = options.separator  ?? ',';
@@ -194,36 +198,35 @@ console.warn(`📊 Exportgenerated = includeTimestamp ? ;
           const _stringValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
           // Escape quotes and wrap in quotes if contains separator
           return stringValue.includes(separator)  ?? stringValue.includes('"') ?;
-    // `"${stringValue.replace(/"/g, '""'); // LINT: unreachable code removed
-}
+    // `"\${stringValue.replace(/"/g, '""'); // LINT}
 "` : stringValue;
         }).join(separator)
-)
+// )
 ].join('\n')
 return csvContent;
-}
+// }
 // Convenience methods for common exports
-async
+// async
 exportSwarmReport(swarmData, (format = 'pdf'))
 : unknown
-{
+// {
   return this.export(swarmData, {
-      format,template = 'html'): unknown {
+      format,template = 'html') {
     return this.export(taskData, {
-      format,template = 'html'): unknown {
+      format,template = 'html') {
     return this.export(healthData, {
-      format,template = 'json'): unknown {
+      format,template = 'json') {
     return this.export(data, {
       format,
-  // template,filename = path.join(this.config.templatesDir, `${name // LINT: unreachable code removed}.${format}`);
+  // template,filename = path.join(this.config.templatesDir, `\${name // LINT}.${format}`);
 // await writeFile(filename, content);
-}
+// }
 console.warn(`📄 Template '${name}' added`);
-}
-async
+// }
+// async
 removeTemplate(name)
 : unknown
-{
+// {
   if (this.templates.has(name)) {
     this.templates.delete(name);
     // Remove template files
@@ -233,33 +236,33 @@ removeTemplate(name)
 // await unlink(filename);
       } catch (error) {
         // File might not exist, that's OK
-      }
-    }
+      //       }
+    //     }
     console.warn(`🗑️ Template '${name}' removed`);
-  }
-}
+  //   }
+// }
 getAvailableTemplates();
-{
+// {
   return Array.from(this.templates.keys());
-}
+// }
 getAvailableFormats();
-{
+// {
   return Array.from(this.exporters.keys());
-}
+// }
 async;
 getStats();
-{
+// {
   return {templates = await import('glob');
   // return glob.sync(pattern); // LINT: unreachable code removed
-}
+// }
 async;
 cleanup();
-{
+// {
   // Clear templates and exporters
   this.templates.clear();
   this.exporters.clear();
 
   console.warn('📊 Export System Plugin cleaned up');
-}
-}
+// }
+// }
 export default ExportSystemPlugin;

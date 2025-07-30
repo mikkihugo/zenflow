@@ -22,9 +22,9 @@ export const monitorCommand = {
           return 'Interval must be between 1000ms and 60000ms';
     //   // LINT: unreachable code removed}
 return true;
-}
+// }
 },
-{
+// {
   (_name) => {
     const _logger = context.logger.child({command = parseMonitorOptions(context, logger);
     // Run monitoring
@@ -32,40 +32,40 @@ return true;
 // await runContinuousMonitoring(options, logger);
     } else {
 // await showCurrentMetrics(options, logger);
-    }
+    //     }
     // Return success result
     return {success = ============================================================================;
     // // OPTION PARSING AND VALIDATION // LINT: unreachable code removed
     // =============================================================================
 
-    function parseMonitorOptions(context = new FlagValidator(context.flags as any: unknown);
+    function parseMonitorOptions(context = new FlagValidator(context.flags as any);
     logger.debug('Parsing monitor options', {flags = validator.getNumberFlag('interval', 5000);
     const _format = validator.getStringFlag('format', 'pretty') as 'pretty' | 'json';
     const __watch = validator.getBooleanFlag('watch', false);
     // Validate interval range
     if (interval < 1000 ?? interval > 60000) {
       throw new CLIError('Interval must be between 1000ms and 60000ms', 'monitor');
-    }
+    //     }
     // Validate format
     if (!['pretty', 'json'].includes(format)) {
       throw new CLIError('Format must be either "pretty" or "json"', 'monitor');
-    }
+    //     }
     const _options = {interval = ============================================================================;
     // MONITORING IMPLEMENTATION
     // =============================================================================
 
-    async function showCurrentMetrics(_options = await collectMetrics(logger: unknown);
+    async function showCurrentMetrics(_options = await collectMetrics(logger);
     if (options.format === 'json') {
       console.warn(JSON.stringify(metrics, null, 2));
     } else {
       displayMetrics(metrics);
-    }
+    //     }
   };
   async function runContinuousMonitoring(options = null;
   const _cleanup = (): unknown => {
     if (monitorInterval) {
       clearInterval(monitorInterval);
-    }
+    //     }
     console.warn('\n👋 Monitoring stopped');
     process.exit(0);
   };
@@ -79,7 +79,7 @@ return true;
     console.warn(JSON.stringify(initialMetrics, null, 2));
   } else {
     displayMetrics(initialMetrics);
-  }
+  //   }
   console.warn(`\n🔄 Next update in ${options.interval}ms...`);
   // Start continuous monitoring
   monitorInterval = setInterval(async () => {
@@ -92,7 +92,8 @@ return true;
         console.warn(JSON.stringify(metrics, null, 2));
       } else {
         displayMetrics(metrics);
-      }
+      //       }
+
 
       console.warn(`\n🔄 Next update in ${options.interval}ms...`);
     } catch (error) {
@@ -101,7 +102,7 @@ return true;
 // METRICS COLLECTION
 // =============================================================================
 
-async function collectMetrics(_logger = Date.now(: unknown);
+async function collectMetrics(_logger = Date.now();
 
   // Collect real system metrics
 // const __cpuUsage = awaitgetCPUUsage();
@@ -119,7 +120,7 @@ async function collectMetrics(_logger = Date.now(: unknown);
   cpus.forEach((cpu) => {
     for (const type in cpu.times) {
       totalTick += cpu.times[type as keyof typeof cpu.times];
-    }
+    //     }
     totalIdle += cpu.times.idle;
   });
 
@@ -128,10 +129,11 @@ async function collectMetrics(_logger = Date.now(: unknown);
   const _usage = 100 - Math.floor((100 * idle) / total);
 
   return Math.max(0, Math.min(100, usage));
-}
+// }
+
 
 // Get real memory information
-function _getMemoryInfo(): MemoryInfo {
+function _getMemoryInfo() {
   const __totalMem = os.totalmem();
   const __freeMem = os.freemem();
 
@@ -158,10 +160,11 @@ function _getMemoryInfo(): MemoryInfo {
     //   // LINT: unreachable code removed} catch (error) ;
     logger.debug('Orchestrator process is not running', error);
     return false;
-}
+// }
+
 
 // Get performance metrics
-function _getPerformanceMetrics(): PerformanceMetrics {
+function _getPerformanceMetrics() {
 
   const __cpuUsage = process.cpuUsage();
 
@@ -179,19 +182,20 @@ function _getPerformanceMetrics(): PerformanceMetrics {
     //   // LINT: unreachable code removed} catch (error) {
     logger.debug('Could not count terminal sessions', error);
   return 0;
-}
-}
+// }
+// }
+
 
   // Count MCP connections
   async;
-  function countMCPConnections(logger = path.join(process.cwd(: unknown), '.claude-zen', 'mcp-connections.json');
+  function countMCPConnections(logger = path.join(process.cwd(), '.claude-zen', 'mcp-connections.json');
 // const _data = awaitfs.readFile(mcpPath, 'utf8');
   const _connections = JSON.parse(data);
   const __count = Array.isArray(connections) ? connections.length = ============================================================================;
   // DISPLAY FUNCTIONS
   // =============================================================================
 
-  function displayMetrics(metrics = new Date(metrics.timestamp: unknown).toLocaleTimeString();
+  function displayMetrics(metrics = new Date(metrics.timestamp).toLocaleTimeString();
   console.warn('📊 System Metrics');
   console.warn('================');
   // System metrics
@@ -209,5 +213,6 @@ function _getPerformanceMetrics(): PerformanceMetrics {
     return `${minutes}m ${secs}s`;
   } else {
     return `${secs}s`;
-  }
-}
+  //   }
+// }
+

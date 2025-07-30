@@ -6,11 +6,12 @@
 import { readFile } from 'node:fs/promises';
 
 export class AIProviderPlugin {
-  constructor(config = {}): unknown {
+  constructor(config = {}) {
     this.config = {configFile = new Map();
     this.providerConfig = null;
     this.activeProvider = null;
-  }
+  //   }
+
 
   async initialize() {
     console.warn('🤖 AI Provider Plugin initialized');
@@ -21,7 +22,8 @@ export class AIProviderPlugin {
 // await this.initializeProviders();
     // Set default active provider
 // await this.setActiveProvider(this.config.defaultProvider);
-  }
+  //   }
+
 
   async loadProviderConfig() {
     try {
@@ -38,8 +40,8 @@ export class AIProviderPlugin {
       console.warn('Claude Code provider notavailable = await import('openai');
 
       const _openrouter = new OpenAI({
-        baseURL = {}): unknown {
-// const _response = awaitopenrouter.chat.completions.create({model = await openrouter.embeddings.create({model = await fetch('https://openrouter.ai/api/v1/models', {headers = await response.json();
+        baseURL = {}) {
+// const _response = awaitopenrouter.chat.completions.create({model = await openrouter.embeddings.create({model = await fetch('https);
             return data.data.filter(model => model.pricing.prompt === '0'  ?? model.id.includes('free'));
     //   // LINT: unreachable code removed} catch (error) {
             console.warn('Failed to fetch OpenRoutermodels = await import('@google/generative-ai');
@@ -49,7 +51,7 @@ export class AIProviderPlugin {
       );
 
       return {
-        type = {}): unknown {
+        type = {}) {
 
     // const _model = genAI.getGenerativeModel({model = await model.generateContent(prompt); // LINT: unreachable code removed
           let _response = await result.response;
@@ -67,10 +69,11 @@ export class AIProviderPlugin {
         this.activeProvider = null;
         return;
     //   // LINT: unreachable code removed}
-    }
+    //     }
+
 
     this.activeProvider = providerName;
-    console.warn(`🎯 Active AI provider = {}): unknown {
+    console.warn(`🎯 Active AI provider = {}) {
     // Try active provider first
     if (this.activeProvider && this.providers.has(this.activeProvider)) {
       try {
@@ -124,18 +127,20 @@ sort(([ a], [ b]) => {
     //   // LINT: unreachable code removed} catch (error) {
       providerInfo.errorCount++;
       throw error;
-    }
+    //     }
 
-  markProviderUnhealthy(providerName): unknown {
+
+  markProviderUnhealthy(providerName) {
     const _providerInfo = this.providers.get(providerName);
     if(providerInfo) {
       providerInfo.errorCount++;
       if(providerInfo.errorCount >= 3) {
         providerInfo.healthy = false;
         console.warn(`⚠️ Provider ${providerName} marked as unhealthy`);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
+
 
   async runHealthChecks() {
     const _healthResults = {};
@@ -175,14 +180,16 @@ sort(([ a], [ b]) => {
 // await this.setActiveProvider(availableProviders[0]);
         } else {
           this.activeProvider = null;
-        }
-      }
+        //         }
+      //       }
+
 
       return `Provider ${providerName} disabled`;
     //   // LINT: unreachable code removed}
 
     throw new Error(`Provider ${providerName} not found in configuration`);
-  }
+  //   }
+
 
   async cleanup() ;
     // Clean up any active connections
@@ -191,13 +198,15 @@ sort(([ a], [ b]) => {
         try {
 // await info.instance.cleanup();
         } catch (error) {
-          console.warn(`Warning: ${name} cleanup failed:`, error.message);
-        }
-      }
-    }
+          console.warn(`Warning);
+        //         }
+      //       }
+    //     }
+
 
     this.providers.clear();
     console.warn('🤖 AI Provider Plugin cleaned up');
-}
+// }
+
 
 export default AIProviderPlugin;

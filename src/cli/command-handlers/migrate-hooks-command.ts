@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const ___dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export async function migrateHooksCommand(flags = path.join(__dirname, '../../../scripts/migrate-hooks.js': unknown);
+export async function migrateHooksCommand(flags = path.join(__dirname, '../../../scripts/migrate-hooks.js');
 
 // Check if script exists
 try {
@@ -18,23 +18,23 @@ try {
 } catch {
   console.error('❌ Migration script not found. Please ensure you have the latest version.');
   process.exit(1);
-}
+// }
 // Build command with any additional arguments
 const _command = ['node', scriptPath];
 if (args.length > 0) {
   command.push(...args);
-}
+// }
 // Execute the migration script
 execSync(command.join(' '), {
       stdio = {
       handler: 'inherit',
 cwd: process.cwd() })
 } catch (error)
-{
-  console.error('❌ Migration failed:', error.message);
+// {
+  console.error('❌ Migration failed);
   process.exit(1);
-}
-}
+// }
+// }
 // Export the command configuration
 export const migrateHooksCommandConfig,ler,
   description: 'Migrate settings.json hooks to Claude Code 1.0.51+ format',

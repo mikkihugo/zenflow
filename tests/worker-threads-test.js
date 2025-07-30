@@ -18,81 +18,70 @@ async function testWorkerThreads() {
     pool = new WorkerThreadPool({
       maxWorkers,
       minWorkers,
-      loadBalancingStrategy: 'round-robin' });
+      loadBalancingStrategy); // eslint-disable-line
   // await pool.initialize();
     console.warn('✅ Worker pool initialized');
     // Test 1: Simple task execution
-    console.warn('\n🔧 Test 1: Simple task execution');
+    console.warn('\n🔧 Test 1);
     const startTime = performance.now();
 // const result1 = awaitpool.executeTask({
-      type: 'agent-spawn',
-      agentType: 'coder',
-      name: 'Test Agent' });
+      type);
 
     const endTime = performance.now();
     console.warn(`✅ Task completed in ${(endTime - startTime).toFixed(0)}ms`);
-    console.warn(`📊 Result: ${result1.success ? 'Success' : 'Failed'}`);
+    console.warn(`📊 Result);
 
     // Test 2: Parallel task execution
-    console.warn('\n🔧 Test 2: Parallel task execution');
+    console.warn('\n🔧 Test 2);
     const parallelStartTime = performance.now();
     const parallelTasks = [
       pool.executeTask({
-        type: 'neural-analysis',
-        data: { data: 'test-data', analysisType: 'pattern-recognition' } }),
+        type),
       pool.executeTask({
-        type: 'code-analysis',
-        codebase: 'test-codebase',
-        analysisOptions: {} }),
+        type),
       pool.executeTask({
-        type: 'research-task',
-        topic: 'test-topic',
-        depth: 'basic' }) ];
+        type) ];
 // const parallelResults = awaitPromise.all(parallelTasks);
     const parallelEndTime = performance.now();
     console.warn(
       `✅ All parallel tasks completed in ${(parallelEndTime - parallelStartTime).toFixed(0)}ms`
     );
     console.warn(
-      `📊 Results: ${parallelResults.filter((r) => r.success).length}/${parallelResults.length} successful`
+      `📊 Results) => r.success).length}/${parallelResults.length} successful`
     );
 
     // Test 3: Pool status
-    console.warn('\n🔧 Test 3: Pool status');
+    console.warn('\n🔧 Test 3);
     const status = pool.getStatus();
     console.warn(
-      `👥 Workers: ${status.workers.total} total, ${status.workers.idle} idle, ${status.workers.busy} busy`
-    );
-    console.warn(`📋 Queue: ${status.queue.pending} pending tasks`);
+      `👥 Workers);
+    console.warn(`📋 Queue);
     console.warn(
-      `📊 Metrics: ${status.metrics.tasksCompleted} completed, ${status.metrics.averageTaskTime.toFixed(0)}ms avg time`
+      `📊 Metrics)}ms avg time`
     );
 
     // Test 4: Load balancing
-    console.warn('\n🔧 Test 4: Load balancing test');
+    console.warn('\n🔧 Test 4);
     const loadTestTasks = Array.from({ length }, (_, i) =>
       pool.executeTask({
-        type: 'testing-task',
-        testType: 'unit',
-        target: `test-${i}`
-})
+        type)
     );
 // const loadTestResults = awaitPromise.all(loadTestTasks);
     console.warn(
-      `✅ Load balancing test: ${loadTestResults.filter((r) => r.success).length}/${loadTestResults.length} successful`
+      `✅ Load balancing test) => r.success).length}/${loadTestResults.length} successful`
     );
 
     const finalStatus = pool.getStatus();
-    console.warn('📊 Final worker utilization:');
+    console.warn('📊 Final worker utilization);
     Object.entries(finalStatus.metrics.workerStats).forEach(([workerId, stats]) => {
       console.warn(
-        `  • ${workerId}: ${stats.tasksCompleted} tasks, ${stats.averageTaskTime.toFixed(0)}ms avg`
+        `  • ${workerId})}ms avg`
       );
     });
 
     console.warn('\n🎉 All tests completed successfully!');
   } catch (error) {
-    console.error('❌ Test failed:', error);
+    console.error('❌ Test failed);
     throw error;
   } finally {
     if (pool) {
@@ -102,13 +91,13 @@ async function testWorkerThreads() {
 // }
 // }
 // Run test if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   try {
   // await testWorkerThreads();
     console.warn('\n✅ Worker thread test completed successfully');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Worker thread test failed:', error);
+    console.error('❌ Worker thread test failed);
     process.exit(1);
 // }
 // }

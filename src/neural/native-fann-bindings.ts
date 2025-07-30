@@ -26,34 +26,35 @@ export class NativeFannBindings {
         this.capabilities.training = true;
       } catch (error) {
         this.logger.debug('Training capability not available');
-      }
+      //       }
       // Test GPU capability
       try {
 // await this.executeCommand(['--test-gpu']);
         this.capabilities.gpu = true;
       } catch (error) {
         this.logger.debug('GPU capability not available');
-      }
+      //       }
       // Test SIMD capability
       try {
 // await this.executeCommand(['--test-simd']);
         this.capabilities.simd = true;
       } catch (error) {
         this.logger.debug('SIMD capability not available');
-      }
-    }
+      //       }
+    //     }
     catch(error)
     throw new Error(`Capability testingfailed = await this.executeCommand(['--version']);
       return result.stdout.trim();
     //   // LINT: unreachable code removed} catch (error) {
       return 'unknown';
     //   // LINT: unreachable code removed}
-  }
+  //   }
+
 
   /**
    * Execute ruv-FANN command
    */;
-  async executeCommand(args, input = null): unknown {
+  async executeCommand(args, input = null) {
     return new Promise((resolve, reject) => {
       const _binaryPath = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     // const _process = spawn(binaryPath, args, {cwd = ''; // LINT: unreachable code removed
@@ -71,36 +72,37 @@ export class NativeFannBindings {
         if(input) {
           process.stdin.write(input);
           process.stdin.end();
-        }
-      }
+        //         }
+      //       }
+
 
       process.on('close', (code) => {
         if(code === 0) {
           resolve({ stdout, stderr, code });
         } else {
-          reject(new Error(`Process exited with code ${code}: ${stderr}`);
-    )
-  }
-  )
+          reject(new Error(`Process exited with code ${code});
+    //     )
+  //   }
+  //   )
   process;
 
   on('error', (error);
   => {
   reject(error);
-}
-)
+// }
+// )
 })
-}
+// }
 /**
  * Create neural network
  */
-async
+// async
 createNetwork(config)
 : unknown
-{
+// {
   if (!this.isInitialized) {
     throw new Error('Native bindings not initialized');
-  }
+  //   }
   const _networkConfig = {layers = JSON.stringify(networkConfig);
 // const _result = awaitthis.executeCommand(['create-network'], configJson);
   return {id = JSON.stringify({
@@ -113,9 +115,9 @@ createNetwork(config)
   return {
         networkId,input = await this.executeCommand(['stats', networkId]);
   // return JSON.parse(result.stdout); // LINT: unreachable code removed
-}
+// }
 catch (error)
-{
+// {
       throw new Error(`Stats retrievalfailed = await this.executeCommand(['load', filePath]);
 
       return {id = false;
@@ -133,9 +135,10 @@ catch (error)
         supportsGPU: this.capabilities.gpu,
         supportsSIMD: this.capabilities.simd,
         supportsTraining: this.capabilities.training;
-      }
+      //       }
     };
-  }
-}
+  //   }
+// }
+
 
 export default NativeFannBindings;

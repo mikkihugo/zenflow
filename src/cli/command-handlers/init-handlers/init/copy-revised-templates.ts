@@ -11,7 +11,7 @@ const _REPO_TEMPLATES_DIR = path.join(__dirname, '../../../../.claude/commands')
 /**
  * Copy revised template files from repository to target project;
  */
-export async function copyRevisedTemplates(targetDir = {}: unknown): unknown {
+export async function copyRevisedTemplates(targetDir = {}) {
   let _results = {success = path.join(targetDir, '.claude/commands');
 
   try {
@@ -35,40 +35,42 @@ export async function copyRevisedTemplates(targetDir = {}: unknown): unknown {
             results.copiedFiles.push(relativePath);
             if(!options.dryRun && options.verbose) {
               console.warn(`  ✓ Copied ${relativePath}`);
-            }
+            //             }
           } else {
             const _relativePath = path.relative(targetDir, targetPath);
             results.skippedFiles.push(relativePath);
             if(!options.dryRun && options.verbose) {
               console.warn(`  ⏭️  Skipped ${relativePath} (already exists)`);
-            }
-          }
+            //             }
+          //           }
         } catch (/* err */) {
-          results.errors.push(`Failed to copy ${entry.name}: ${err.message}`);
-        }
-}
-}
+          results.errors.push(`Failed to copy ${entry.name});
+        //         }
+// }
+// }
   } catch (/* err */) {
-  results.errors.push(`Failed to read directory ${sourceDir}: ${err.message}`);
-}
-}
+  results.errors.push(`Failed to read directory ${sourceDir});
+// }
+// }
+
 
 /**
  * Copy only specific categories;
  */;
-export async function copyRevisedTemplatesByCategory(targetDir = {}: unknown): unknown {
+export async function copyRevisedTemplatesByCategory(targetDir = {}) {
   const _results = {success = path.join(REPO_TEMPLATES_DIR, category);
     const _targetCategoryDir = path.join(targetDir, '.claude/commands', category);
 
     if (fs.existsSync(sourceCategoryDir)) {
 // await fs.promises.mkdir(targetCategoryDir, {recursive = results.errors.length === 0;
   return results;
-}
+// }
+
 
 /**
  * Validate that source templates exist;
  */;
-export function _validateTemplatesExist(): unknown {
+export function _validateTemplatesExist() {
   if (!fs.existsSync(REPO_TEMPLATES_DIR)) {
     return {valid = ['analysis', 'github', 'sparc', 'coordination'];
     // const _missingCategories = []; // LINT: unreachable code removed
@@ -77,15 +79,18 @@ export function _validateTemplatesExist(): unknown {
     const _categoryPath = path.join(REPO_TEMPLATES_DIR, category);
     if (!fs.existsSync(categoryPath)) {
       missingCategories.push(category);
-    }
-  }
+    //     }
+  //   }
+
 
   if(missingCategories.length > 0) {
     return {
       valid,
-    // error: `Missing required template categories: ${missingCategories.join(', ') // LINT: unreachable code removed}`;
+    // error: `Missing required template categories: \${missingCategories.join(', ') // LINT}`;
     };
-  }
+  //   }
+
 
   return { valid};
-}
+// }
+

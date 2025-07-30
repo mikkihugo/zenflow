@@ -7,7 +7,7 @@ import { compat } from '../runtime-detector.js';
 // start-wrapper.js - Wrapper to maintain backward compatibility with the new modular start command
 import { printError, printInfo, printSuccess } from '../utils.js';
 
-export async function startCommand(subArgs = subArgs.includes('--daemon': unknown)  ?? subArgs.includes('-d')  ?? flags.daemon;
+export async function startCommand(subArgs = subArgs.includes('--daemon')  ?? subArgs.includes('-d')  ?? flags.daemon;
 const _port =;
 process.env.PORT ??
   flags.port ??
@@ -70,11 +70,12 @@ try {
 // await node.stat(dir);
       } catch {
         missingDirs.push(dir);
-      }
-    }
+      //       }
+    //     }
+
 
     if(missingDirs.length > 0) {
-      printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' : '/bin/bash'));
+      printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' ));
 
     // Task queue
     console.warn('   ✓ TaskQueue = compat.terminal.getPid();
@@ -84,7 +85,7 @@ try {
         } else {
 // const _fs = awaitimport('fs/promises');
 // await fs.writeFile('.claude-zen.pid', pid.toString());
-        }
+        //         }
       });
       console.warn(`ProcessID = new AbortController();
 
@@ -99,22 +100,23 @@ try {
         const __heartbeat = setInterval(() => {
           if(verbose) {
             console.warn(`[${new Date().toISOString()}] Heartbeat - System healthy`);
-          }
+          //           }
         }, 30000); // Every 30 seconds
 
         // Wait indefinitely (until Ctrl+C)
 // await new Promise(() => {});
-      }
-    }
+      //       }
+    //     }
   } catch (/* _err */) {
     printError(`Failed to start orchestrationsystem = args.indexOf(flag);
   if(index !== -1 && index < args.length - 1) {
     return args[index + 1];
     //   // LINT: unreachable code removed}
   return null;
-}
+// }
 
-async function cleanup(): unknown {
+
+async function cleanup() {
   // Clean up resources
   try {
 // await compat.safeCall(async () => {
@@ -123,33 +125,35 @@ async function cleanup(): unknown {
       } else {
 // const _fs = awaitimport('fs/promises');
 // await fs.unlink('.claude-zen.pid');
-      }
+      //       }
     });
   } catch {
     // File might not exist
-  }
+  //   }
+
 
   console.warn('✓ Terminal pool closed');
   console.warn('✓ Task queue cleared');
   console.warn('✓ Memory bank saved');
   console.warn('✓ Cleanup complete');
-}
+// }
 
-function showStartHelp(): unknown {
+
+function showStartHelp() {
   console.warn('Start the Claude Zen orchestration system with schema-driven API');
   console.warn();
-  console.warn('Usage: claude-zen start [options]');
+  console.warn('Usage);
   console.warn();
-  console.warn('Options:');
+  console.warn('Options);
   console.warn('  -d, --daemon         Run as daemon in background');
-  console.warn('  -p, --port <port>    Server port (default: 3000)');
-  console.warn('  --api-port <port>    Override API port (default: same as --port)');
+  console.warn('  -p, --port <port>    Server port (default)');
+  console.warn('  --api-port <port>    Override API port (default)');
   console.warn('  -u, --ui             Launch terminal-based process management UI');
   console.warn('  -w, --web            Launch web-based UI server');
   console.warn('  -v, --verbose        Show detailed system activity');
   console.warn('  -h, --help           Show this help message');
   console.warn();
-  console.warn('Examples:');
+  console.warn('Examples);
   console.warn('  claude-zen start --daemon           # Start as background daemon on port 3000');
   console.warn('  claude-zen start --web              # Start with web interface');
   console.warn('  claude-zen start --port 4000        # Use custom port for everything');
@@ -158,16 +162,16 @@ function showStartHelp(): unknown {
   console.warn('  claude-zen start --web              # Launch web-based UI');
   console.warn('  claude-zen start --verbose          # Show detailed logs');
   console.warn();
-  console.warn('Web-based UI:');
-  console.warn('  The --web flag starts a web server with:');
-  console.warn('    - Full-featured web console at http://localhost:3000/console');
+  console.warn('Web-based UI);
+  console.warn('  The --web flag starts a web server with);
+  console.warn('    - Full-featured web console at http);
   console.warn('    - Real-time WebSocket communication');
   console.warn('    - Mobile-responsive design');
   console.warn('    - Multiple themes and customization options');
   console.warn('    - Claude Flow swarm integration');
   console.warn();
-  console.warn('Terminal-based UI:');
-  console.warn('  The --ui flag launches an advanced multi-view interface with:');
+  console.warn('Terminal-based UI);
+  console.warn('  The --ui flag launches an advanced multi-view interface with);
   console.warn();
   console.warn('  Views (press 1-6 to switch):');
   console.warn('    1. Process Management - Start/stop individual components');
@@ -177,13 +181,13 @@ function showStartHelp(): unknown {
   console.warn('    5. System Logs - Real-time log viewer with filters');
   console.warn('    6. Help - Comprehensive keyboard shortcuts');
   console.warn();
-  console.warn('  Features:');
+  console.warn('  Features);
   console.warn('    - Color-coded status indicators');
   console.warn('    - Real-time updates and monitoring');
   console.warn('    - Context-sensitive controls');
   console.warn('    - Tab navigation between views');
   console.warn();
-  console.warn('Notes:');
+  console.warn('Notes);
   console.warn('  - Requires "claude-zen init" to be run first');
   console.warn('  - Interactive mode shows real-time system status');
   console.warn('  - Daemon mode runs in background (check logs)');
@@ -197,4 +201,5 @@ function showStartHelp(): unknown {
   console.warn('  /api/adrs                    # Architectural decisions');
   console.warn('  /api/prds                    # Product requirements');
   console.warn('  /api/coordination/status     # Multi-service coordination');
-}
+// }
+

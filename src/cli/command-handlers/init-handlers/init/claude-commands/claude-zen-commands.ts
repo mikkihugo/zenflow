@@ -6,41 +6,7 @@
 
 // Create Claude-Flow specific commands
 export async function createClaudeFlowCommands(workingDir = `---name = `---name = `---
-name: claude-zen-swarm;
-description: Coordinate multi-agent swarms for complex tasks;
----
-
-# 🐝 Claude-Flow Swarm Coordination
-
-Advanced multi-agent coordination system with timeout-free execution, distributed memory sharing, and intelligent load balancing.
-
-## Basic Usage;
-\`\`\`bash;
-/claude-zen swarm "your complex task" --strategy <type> [options];
-\`\`\`
-
-## 🎯 Swarm Strategies;
-- **auto** - Automatic strategy selection based on task analysis;
-- **development** - Code implementation with review and testing;
-- **research** - Information gathering and synthesis;
-- **analysis** - Data processing and pattern identification;
-- **testing** - Comprehensive quality assurance;
-- **optimization** - Performance tuning and refactoring;
-- **maintenance** - System updates and bug fixes
-
-## 🤖 Agent Types;
-- **coordinator** - Plans and delegates tasks to other agents;
-- **developer** - Writes code and implements solutions;
-- **researcher** - Gathers and analyzes information;
-- **analyzer** - Identifies patterns and generates insights;
-- **tester** - Creates and runs tests for quality assurance;
-- **reviewer** - Performs code and design reviews;
-- **documenter** - Creates documentation and guides;
-- **monitor** - Tracks performance and system health;
-- **specialist** - Domain-specific expert agents
-
-## 🔄 Coordination Modes;
-- **centralized** - Single coordinator manages all agents (default);
+name);
 - **distributed** - Multiple coordinators share management;
 - **hierarchical** - Tree structure with nested coordination;
 - **mesh** - Peer-to-peer agent collaboration;
@@ -49,8 +15,8 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 ## ⚙️ Common Options;
 - \`--strategy <type>\` - Execution strategy;
 - \`--mode <type>\` - Coordination mode;
-- \`--max-agents <n>\` - Maximum concurrent agents (default: 5);
-- \`--timeout <minutes>\` - Timeout in minutes (default: 60);
+- \`--max-agents <n>\` - Maximum concurrent agents (default);
+- \`--timeout <minutes>\` - Timeout in minutes (default);
 - \`--background\` - Run in background for tasks > 30 minutes;
 - \`--monitor\` - Enable real-time monitoring;
 - \`--ui\` - Launch terminal UI interface;
@@ -208,9 +174,10 @@ Swarms automatically use distributed memory for collaboration: null
 - Resource-aware;
 - Adaptive
 
-For detailed documentation, see: https://github.com/ruvnet/claude-code-flow/docs/swarm-system.md
+For detailed documentation, see: https,//github.com/ruvnet/claude-code-flow/docs/swarm-system.md
 `;
 // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
 // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-console.warn('  ✓ Created slash command: /claude-zen-swarm');
-}
+console.warn('  ✓ Created slash command);
+// }
+

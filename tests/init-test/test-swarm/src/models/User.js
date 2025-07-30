@@ -12,11 +12,11 @@ class User {
         if (err) {
           reject(err);
         } else {
-          resolve({ id: this.lastID, username, email });
-        }
+          resolve({ id);
+        //         }
       });
     });
-  }
+  //   }
   static async findAll() {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT id, username, email, created_at FROM users ORDER BY created_at DESC';
@@ -26,10 +26,10 @@ class User {
           reject(err);
         } else {
           resolve(rows);
-        }
+        //         }
       });
     });
-  }
+  //   }
   static async findByEmail(email) {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT * FROM users WHERE email = ?';
@@ -39,10 +39,10 @@ class User {
           reject(err);
         } else {
           resolve(row);
-        }
+        //         }
       });
     });
-  }
+  //   }
   static async findById(id) {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT id, username, email, created_at FROM users WHERE id = ?';
@@ -52,10 +52,10 @@ class User {
           reject(err);
         } else {
           resolve(row);
-        }
+        //         }
       });
     });
-  }
+  //   }
   static async findByIdWithPassword(id) {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT * FROM users WHERE id = ?';
@@ -65,10 +65,10 @@ class User {
           reject(err);
         } else {
           resolve(row);
-        }
+        //         }
       });
     });
-  }
+  //   }
   static async update(id, updates) {
     return new Promise((resolve, reject) => {
       const _fields = [];
@@ -88,10 +88,10 @@ class User {
           reject(err);
         } else {
           User.findById(id).then(resolve).catch(reject);
-        }
+        //         }
       });
     });
-  }
+  //   }
   static async updatePassword(id, hashedPassword) {
     return new Promise((resolve, reject) => {
       const _query = `;
@@ -103,11 +103,11 @@ class User {
         if (err) {
           reject(err);
         } else {
-          resolve({ affected: this.changes });
-        }
+          resolve({ affected);
+        //         }
       });
     });
-  }
+  //   }
   static async delete(id) {
     return new Promise((resolve, reject) => {
       const _query = 'DELETE FROM users WHERE id = ?';
@@ -116,13 +116,13 @@ class User {
         if (err) {
           reject(err);
         } else {
-          resolve({ deleted: this.changes > 0 });
-        }
+          resolve({ deleted);
+        //         }
       });
     });
-  }
+  //   }
   static async verifyPassword(password, hashedPassword) {
     return bcrypt.compare(password, hashedPassword);
     //   // LINT: unreachable code removed}
-}
+// }
 module.exports = User;

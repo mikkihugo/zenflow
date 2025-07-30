@@ -70,13 +70,7 @@ export interface SLAMonitoringConfig {enabled = ================================
 
 export interface WorkflowEvents {
   // Workflow lifecycle events
-  'workflow-created': (workflow = > void;
-  'workflow-updated': (workflowId = > void;
-  'workflow-deleted': (workflowId = > void;
-  'workflow-activated': (workflowId = > void;
-  'workflow-deactivated': (workflowId = > void;
-// Execution events
-('execution-started');
+  'workflow-created');
 : (execution = > void
 ('execution-completed')
 : (execution = > void
@@ -147,4 +141,5 @@ export interface WorkflowEvents {
 ('security-event')
 : (event = > void
 [event = > void
-}
+// }
+

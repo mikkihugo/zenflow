@@ -9,7 +9,7 @@ import { circuitBreakerManager } from '../core/circuit-breaker.js';
 import { healthMonitor } from '../core/health-monitor.js';
 import { printSuccess } from '../utils.js';
 
-export async function monitorCommand(): unknown {
+export async function monitorCommand() {
     case 'status':;
 // await showSystemStatus();
       break;
@@ -19,7 +19,8 @@ export async function monitorCommand(): unknown {
       healthMonitor.startMonitoring(interval);
       printSuccess(`💓 Started continuous health monitoring (${interval}ms interval)`);
       break;
-    }
+    //     }
+
 
     case 'stop':;
       healthMonitor.stopMonitoring();
@@ -73,7 +74,8 @@ join(', ');
       const _available = status.isAvailable ? 'Yes' : 'No';
 
       console.warn(`│ ${namePadded} │ ${statePadded} │ ${failures} │ ${successes} │ ${available.padEnd(11)} │`);
-    }
+    //     }
+
 
     console.warn('└─────────────────────┴─────────┴──────────┴───────────┴─────────────┘');
 
@@ -108,4 +110,5 @@ MONITORED COMPONENTS:;
   🧪 Queen Council operation health;
   📊 Performance metrics and trends;
 `);
-}
+// }
+

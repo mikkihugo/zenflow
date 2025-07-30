@@ -17,7 +17,7 @@ export interface TaskExecutionResult {success = ================================
  * Mock function to show all available commands;
  * @returns Categorized commands object;
     // */ // LINT: unreachable code removed
-export function showAllCommands(): CategorizedCommands {
+export function showAllCommands() {
   return {core = ============================================================================
 // // MOCK CLASSES // LINT: unreachable code removed
 // =============================================================================
@@ -27,8 +27,8 @@ export function showAllCommands(): CategorizedCommands {
  */
 export class Agent {
   public id = {}
-)
-{
+// )
+// {
   this.id = config.id ?? 'test-agent';
   this;
 
@@ -38,7 +38,7 @@ export class Agent {
   this;
 
   config = config
-}
+// }
 /**
  * Initialize the agent;
  * @returns Promise resolving to true;
@@ -74,51 +74,51 @@ async;
 spawnAgent(type = new Agent({ type, ...config });
 this.agents.set(agent.id, agent);
 return agent;
-}
+// }
 /**
    * Orchestrate a task across agents;
    * @param task - Task to orchestrate;
    * @returns Promise resolving to orchestration result;
     // */ // LINT: unreachable code removed
-async
+// async
 orchestrate(task = new Map<string, any>()
-}
+// }
 /**
    * Store a value in memory;
    * @param key - Storage key;
    * @param value - Value to store;
    * @returns Promise resolving to true;
     // */ // LINT: unreachable code removed
-async
+// async
 store(key = []
 for (const [key, value] of this.memory.entries()) {
   if (key.includes(pattern)) {
     results.push({ key, value });
-  }
-}
+  //   }
+// }
 return results;
-}
+// }
 /**
    * Clear all memory;
    * @returns Promise resolving to true;
     // */ // LINT: unreachable code removed
-async
+// async
 clear()
 : Promise<boolean>
-{
+// {
   this.memory.clear();
   return true;
-}
+// }
 /**
  * Get memory size;
  * @returns Number of stored items;
     // */ // LINT: unreachable code removed
 size();
 : number
-{
+// {
   return this.memory.size;
-}
-}
+// }
+// }
 // =============================================================================
 // DEFAULT EXPORT
 // =============================================================================

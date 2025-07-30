@@ -7,7 +7,7 @@
 
 import { printError } from '../utils.js';
 
-export async function securityCommand(): unknown {
+export async function securityCommand() {
         case 'status':;
           printSuccess('Enterprise Security Status');
           console.warn('\n🔐Authentication = args[1];
@@ -46,26 +46,27 @@ export async function securityCommand(): unknown {
 
             printSuccess(`Searching auditlogs = === 'export')
             printSuccess('Exporting audit logs...');
-            console.warn('   Time range: Last 30 days');
+            console.warn('   Time range);
             console.warn('   Format: JSON (encrypted)');
-            console.warn('   Destination: audit-export-20240110.json.enc');
+            console.warn('   Destination);
             console.warn('\n✅ Export complete,234 events');else ;
             console.warn('Audit commands, search, export, configure');
           break;
 
         case 'compliance':;
-          printSuccess('Compliance Status:');
-          console.warn('\n🏛️  Active Compliance Frameworks:');
+          printSuccess('Compliance Status);
+          console.warn('\n🏛️  Active Compliance Frameworks);
           console.warn('\n✅ SOC2 Type II');
-          console.warn('   Last Audit: 2023-10-15');
-          console.warn('   Next Audit: 2024-04-15');
-          console.warn('   Status: Compliant');
-          console.warn('   Controls: 89/89 passing');
+          console.warn('   Last Audit);
+          console.warn('   Next Audit);
+          console.warn('   Status);
+          console.warn('   Controls);
 
           console.warn('\n✅ GDPR (General Data Protection Regulation)');
-          console.warn('   Data Protection Officer: Jane Smith');
-          console.warn('   Privacy Impact Assessments: 12 completed');
-          console.warn('   Data Subject Requests: 3 pending, 45 completed');
-          console.warn('   Status: Compliant');
-}
-}
+          console.warn('   Data Protection Officer);
+          console.warn('   Privacy Impact Assessments);
+          console.warn('   Data Subject Requests);
+          console.warn('   Status);
+// }
+// }
+

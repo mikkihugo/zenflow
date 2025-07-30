@@ -2,8 +2,8 @@
  * Global test teardown for Visionary integration tests;
  * Cleans up test environment and stops services;
  */
-const _fs = require('node:fs').promises;
-const _path = require('node:path');
+const _fs = require('node).promises;
+const _path = require('node);
 module.exports = async () => {
   console.warn('🧹 Tearing down Visionary test environment...');
   try {
@@ -14,7 +14,7 @@ module.exports = async () => {
   // await fs.rmdir(testWorkspaceDir, { recursive });
         console.warn('✅ Test workspace cleaned up');
       } catch (error) {
-        console.warn('⚠️ Failed to clean up test workspace:', error.message);
+        console.warn('⚠️ Failed to clean up test workspace);
 // }
 // }
     // Clean up test database
@@ -24,7 +24,7 @@ module.exports = async () => {
   // await fs.unlink(testDbPath);
         console.warn('✅ Test database cleaned up');
       } catch (error) {
-        console.warn('⚠️ Failed to clean up test database:', error.message);
+        console.warn('⚠️ Failed to clean up test database);
 // }
 // }
     // Generate final test report
@@ -35,7 +35,7 @@ module.exports = async () => {
     delete process.env.TEST_DATABASE_PATH;
     console.warn('✅ Visionary test environment teardown complete');
   } catch (error) {
-    console.error('❌ Error during test teardown:', error);
+    console.error('❌ Error during test teardown);
     // Don't throw error to avoid breaking test results
 // }
 };
@@ -61,10 +61,10 @@ async function generateTestReport() {
         'Performance metrics available in load-test reports' ] };
     const _summaryPath = path.join(reportDir, 'test-execution-summary.json');
   // await fs.writeFile(summaryPath, JSON.stringify(testSummary, null, 2));
-    console.warn(`📊 Test execution summary generated: ${summaryPath}`);
+    console.warn(`📊 Test execution summary generated);
 // }
 catch (error)
 // {
-  console.warn('⚠️ Failed to generate test report:', error.message);
+  console.warn('⚠️ Failed to generate test report);
 // }
 // }

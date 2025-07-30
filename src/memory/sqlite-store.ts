@@ -24,9 +24,9 @@ const ___dirname = path.dirname(__filename);
 this.statements = new Map()
 this.queryCache = new Map()
 this.cacheStats =
-{
+// {
   hits = false;
-}
+// }
 /**
  * Determine the best directory for memory storage;
  * Uses .swarm directory in current working directory (consistent with hive-mind approach)
@@ -34,24 +34,24 @@ this.cacheStats =
 private;
 _getMemoryDirectory();
 : string
-{
+// {
   // Always use .swarm directory in the current working directory
   // This ensures consistency whether running locally or via npx
   return path.join(process.cwd(), '.swarm');
-}
+// }
 private;
 async;
 _directoryExists(dir = await fs.stat(dir);
 return stats.isDirectory();
-} catch
-{
+} /* catch */
+// {
   return false;
-}
-}
-async
+// }
+// }
+// async
 initialize()
 : Promise<void>
-{
+// {
     if (this.isInitialized) return;
     // ; // LINT: unreachable code removed
     try {
@@ -135,7 +135,8 @@ initialize()
       SET accessed_at = strftime('%s', 'now'), access_count = access_count + 1;
       WHERE key = ? AND namespace = ?;
     `));
-  }
+  //   }
+
 
   async store(key = {}): Promise<{success = options.namespace  ?? 'default';
     const _metadata = options.metadata ? JSON.stringify(options.metadata) : null;
@@ -176,7 +177,8 @@ run(key, valueStr, namespace, metadata, ttl, expiresAt);
         result = JSON.parse(row.value);
       } catch {
         result = row.value;
-      }
+      //       }
+
 
       // Cache the result
       this._setCache(cacheKey, result);
@@ -243,7 +245,7 @@ all(namespace, searchPattern, searchPattern, limit);
     return cached.data;
     //   // LINT: unreachable code removed}
 
-  private _setCache(cacheKey = null): void {
+  private _setCache(cacheKey = null) {
     if (!this.options.enableCache) return;
     // ; // LINT: unreachable code removed
     const _ttl = customTTL  ?? this.options.cacheTimeout!;
@@ -255,20 +257,21 @@ all(namespace, searchPattern, searchPattern, limit);
     // SimpleLRU = this.queryCache.keys().next().value;
       this.queryCache.delete(firstKey);
       this.cacheStats.size = this.queryCache.size;
-    }
-  }
+    //     }
+  //   }
+
 
   private _invalidateCache(pattern = null): void ;
     if (pattern) {
       for (const key of this.queryCache.keys()) {
         if (key.includes(pattern)) {
           this.queryCache.delete(key);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
     else {
       this.queryCache.clear();
-    }
+    //     }
     this.cacheStats.size = this.queryCache.size;
 
   close(): void ;
@@ -276,7 +279,7 @@ all(namespace, searchPattern, searchPattern, limit);
       this.db.close();
       this.db = null;
       this.isInitialized = false;
-    }
+    //     }
     this.queryCache.clear();
     this.cacheStats = {hits = this.db?.prepare(`;
         SELECT ;

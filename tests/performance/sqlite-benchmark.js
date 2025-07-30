@@ -17,7 +17,7 @@ class SQLitePerformanceBenchmark {
     concurrentOperations: options.concurrentOperations  ?? 10,
     iterationsPerTest: options.iterationsPerTest  ?? 5,
 ..options
-}
+// }
   this;
 
   results = {};
@@ -27,27 +27,27 @@ class SQLitePerformanceBenchmark {
   this;
 
   stores = new Map();
-}
+// }
 async;
 initialize();
-{
+// {
   // Check SQLite availability
 // const _available = awaitisSQLiteAvailable();
   if (!available) {
     throw new Error('SQLite not available for benchmarking');
-  }
+  //   }
   // Create test directory
   this.testDir = path.join(os.tmpdir(), `sqlite-benchmark-${Date.now()}`);
   // await fs.mkdir(this.testDir, { recursive });
   console.warn(`🧪 SQLite Performance Benchmark Suite`);
-  console.warn(`📂 Test directory: ${this.testDir}`);
-  console.warn(`📊 Test data size: ${this.options.testDataSize} entries`);
-  console.warn(`⚡ Concurrent operations: ${this.options.concurrentOperations}`);
-  console.warn(`🔄 Iterations per test: ${this.options.iterationsPerTest}`);
-}
+  console.warn(`📂 Test directory);
+  console.warn(`📊 Test data size);
+  console.warn(`⚡ Concurrent operations);
+  console.warn(`🔄 Iterations per test);
+// }
 async;
 createStore(name, (options = {}));
-{
+// {
   const _store = new SqliteMemoryStore({
       directory: this.testDir,
   dbName: `${name}.db`,
@@ -58,7 +58,7 @@ this.stores.set(name, store)
 return store;
 //   // LINT: unreachable code removed}
 generateTestData((size = this.options.testDataSize));
-{
+// {
   const _data = [];
   for (let i = 0; i < size; i++) {
     data.push({
@@ -74,25 +74,25 @@ generateTestData((size = this.options.testDataSize));
 
     namespace: `namespace-${i % 10}`
 })
-}
+// }
 return data;
 //   // LINT: unreachable code removed}
 async;
 measureOperation(name, operation);
-{
+// {
   const _start = performance.now();
 // const _result = awaitoperation();
   const _end = performance.now();
   const _duration = end - start;
   if (!this.results[name]) {
     this.results[name] = [];
-  }
+  //   }
   this.results[name].push(duration);
   return { result, duration };
   //   // LINT: unreachable code removed}
   async;
   benchmarkBasicOperations();
-  {
+  //   {
     console.warn('\n📈 Benchmarking Basic Operations...');
     // Test with and without cache
 // const _storeWithCache = awaitthis.createStore('with-cache', { enableCache });
@@ -106,34 +106,34 @@ measureOperation(name, operation);
         // Store operations
   // await this.measureOperation(`store${suffix}`, async () => {
           for (const item of testData) {
-  // await store.store(item.key, item.value, { namespace: item.namespace });
-          }
+  // await store.store(item.key, item.value, { namespace);
+          //           }
         });
         // Retrieve operations
   // await this.measureOperation(`retrieve${suffix}`, async () => {
           for (const item of testData) {
-  // await store.retrieve(item.key, { namespace: item.namespace });
-          }
+  // await store.retrieve(item.key, { namespace);
+          //           }
         });
         // List operations
   // await this.measureOperation(`list${suffix}`, async () => {
           for (let i = 0; i < 10; i++) {
-  // await store.list({ namespace: `namespace-${i}`, limit });
-          }
+  // await store.list({ namespace);
+          //           }
         });
         // Search operations
   // await this.measureOperation(`search${suffix}`, async () => {
           const _patterns = ['test-key-00', 'Test Item', 'tag-5', 'priority'];
           for (const pattern of patterns) {
-  // await store.search(pattern, { namespace: 'namespace-0', limit });
-          }
+  // await store.search(pattern, { namespace);
+          //           }
         });
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
   async;
   benchmarkConcurrentOperations();
-  {
+  //   {
     console.warn('\n⚡ Benchmarking Concurrent Operations...');
 // const _store = awaitthis.createStore('concurrent', {
       enableCache,
@@ -148,50 +148,50 @@ measureOperation(name, operation);
       const _promises = chunks.map(async (chunk, chunkIndex) => {
           for (const item of chunk) {
   // await store.store(`${item.key}-${chunkIndex}`, item.value, {
-              namespace: item.namespace });
-          }
+              namespace);
+          //           }
     });
   // await Promise.all(promises);
   })
   // Concurrent reads
   // await this.measureOperation('concurrent-reads', async () =>
-  {
+  //   {
     const _readPromises = [];
     for (let i = 0; i < this.options.concurrentOperations; i++) {
       readPromises.push(async () => {
         for (let j = 0; j < 100; j++) {
           const _key = `test-key-${j.toString().padStart(6, '0')}-${i}`;
-  // await store.retrieve(key, { namespace: `namespace-${j % 10}` });
-        }
+  // await store.retrieve(key, { namespace);
+        //         }
       });
-    }
+    //     }
   // await Promise.all(readPromises.map((fn) => fn()));
   })
   // Mixed operations
   // await this.measureOperation('mixed-operations', async () =>
-  {
+  //   {
     const _operations = [];
     for (let i = 0; i < this.options.concurrentOperations; i++) {
       operations.push(async () => {
         // Mix of reads, writes, searches
         for (let j = 0; j < 20; j++) {
           if (j % 3 === 0) {
-  // await store.store(`mixed-${i}-${j}`, { data: `value-${j}` });
+  // await store.store(`mixed-${i}-${j}`, { data);
           } else if (j % 3 === 1) {
   // await store.retrieve(`mixed-${i}-${j - 1}`);
           } else {
   // await store.search(`mixed-${i}`, { limit });
-          }
-        }
+          //           }
+        //         }
       });
-    }
+    //     }
   // await Promise.all(operations.map((fn) => fn()));
   })
-}
-}
-async
+// }
+// }
+// async
 benchmarkIndexPerformance()
-{
+// {
   console.warn('\n🔍 Benchmarking Index Performance...');
 // const _storeWithIndexes = awaitthis.createStore('with-indexes');
   // Create a large dataset to test index effectiveness
@@ -203,14 +203,14 @@ benchmarkIndexPerformance()
         namespace: item.namespace,
     ttl: Math.random() > 0.5 ? 3600 , // Some with TTL
   })
-}
+// }
 for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++) {
   console.warn(`  Iteration ${iteration + 1}/${this.options.iterationsPerTest}`);
   // Test queries that should benefit from indexes
   // await this.measureOperation('namespace-queries', async () => {
     for (let i = 0; i < 10; i++) {
-  // await storeWithIndexes.list({ namespace: `namespace-${i}`, limit });
-    }
+  // await storeWithIndexes.list({ namespace);
+    //     }
   });
   // await this.measureOperation('expiration-queries', async () => {
   // await storeWithIndexes.cleanup();
@@ -218,20 +218,20 @@ for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++)
   // await this.measureOperation('key-lookups', async () => {
     for (let i = 0; i < 100; i++) {
       const _key = `test-key-${i.toString().padStart(6, '0')}`;
-  // await storeWithIndexes.retrieve(key, { namespace: `namespace-${i % 10}` });
-    }
+  // await storeWithIndexes.retrieve(key, { namespace);
+    //     }
   });
   // await this.measureOperation('pattern-searches', async () => {
     const _patterns = ['test-key-001', 'Test Item 1', 'tag-1', 'namespace-1'];
     for (const pattern of patterns) {
   // await storeWithIndexes.search(pattern, { limit });
-    }
+    //     }
   });
-}
-}
-async
+// }
+// }
+// async
 benchmarkCacheEffectiveness()
-{
+// {
   console.warn('\n💾 Benchmarking Cache Effectiveness...');
 // const _store = awaitthis.createStore('cache-test', {
       enableCache,
@@ -240,43 +240,43 @@ benchmarkCacheEffectiveness()
 const _testData = this.generateTestData(200);
 // Populate data
 for (const item of testData) {
-  // await store.store(item.key, item.value, { namespace: item.namespace });
-}
+  // await store.store(item.key, item.value, { namespace);
+// }
 for (let iteration = 0; iteration < this.options.iterationsPerTest; iteration++) {
   console.warn(`  Iteration ${iteration + 1}/${this.options.iterationsPerTest}`);
   // First read (cold cache)
   // await this.measureOperation('cold-cache-reads', async () => {
     for (let i = 0; i < 50; i++) {
       const _key = `test-key-${i.toString().padStart(6, '0')}`;
-  // await store.retrieve(key, { namespace: `namespace-${i % 10}` });
-    }
+  // await store.retrieve(key, { namespace);
+    //     }
   });
   // Second read (warm cache)
   // await this.measureOperation('warm-cache-reads', async () => {
     for (let i = 0; i < 50; i++) {
       const _key = `test-key-${i.toString().padStart(6, '0')}`;
-  // await store.retrieve(key, { namespace: `namespace-${i % 10}` });
-    }
+  // await store.retrieve(key, { namespace);
+    //     }
   });
   // List operations (cached)
   // await this.measureOperation('cached-list-operations', async () => {
     for (let i = 0; i < 5; i++) {
-  // await store.list({ namespace: `namespace-${i}`, limit });
-  // await store.list({ namespace: `namespace-${i}`, limit }); // Should hit cache
-    }
+  // await store.list({ namespace);
+  // await store.list({ namespace); // Should hit cache
+    //     }
   });
-}
-}
+// }
+// }
 chunkArray(array, chunkSize)
-{
+// {
   const _chunks = [];
   for (let i = 0; i < array.length; i += chunkSize) {
     chunks.push(array.slice(i, i + chunkSize));
-  }
+  //   }
   return chunks;
   //   // LINT: unreachable code removed}
   calculateStats(measurements);
-  {
+  //   {
     if (measurements.length === 0) return {};
     // ; // LINT: unreachable code removed
     const _sorted = [...measurements].sort((a, b) => a - b);
@@ -289,11 +289,11 @@ chunkArray(array, chunkSize)
     median: sorted[Math.floor(sorted.length / 2)],
     p95: sorted[Math.floor(sorted.length * 0.95)],
     p99: sorted[Math.floor(sorted.length * 0.99)]
-}
-}
+// }
+// }
 async;
 generateReport();
-{
+// {
   console.warn('\n📊 Generating Performance Report...');
   const _report = {
       timestamp: new Date().toISOString(),
@@ -301,14 +301,14 @@ generateReport();
 // Calculate statistics for each operation
 for (const [operation, measurements] of Object.entries(this.results)) {
   report.results[operation] = this.calculateStats(measurements);
-}
+// }
 // Get database and cache statistics
 for (const [name, store] of this.stores) {
 // const _dbStats = awaitstore.getDatabaseStats();
   const _perfStats = store.getPerformanceStats();
   report.results[`${name}-database-stats`] = dbStats;
   report.results[`${name}-performance-stats`] = perfStats;
-}
+// }
 // Save report
 const _reportPath = path.join(this.testDir, 'performance-report.json');
   // await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -317,20 +317,20 @@ this.printSummary(report);
 return { report, reportPath };
 //   // LINT: unreachable code removed}
 printSummary(report);
-{
+// {
   console.warn('\n📈 Performance Summary');
   console.warn('='.repeat(50));
   const _operations = Object.keys(report.results).filter(;
   (key) => !key.includes('-database-stats') && !key.includes('-performance-stats');
-  )
+  //   )
   for (const operation of operations) {
     const _stats = report.results[operation];
     if (stats.mean !== undefined) {
       console.warn(;
       `${operation.padEnd(25)} | Avg: ${stats.mean.toFixed(2)}ms | Med: ${stats.median.toFixed(2)}ms | P95: ${stats.p95.toFixed(2)}ms`;
-      )
-    }
-  }
+      //       )
+    //     }
+  //   }
   // Cache effectiveness
   const _cacheOperations = operations.filter((op) => op.includes('cache'));
   if (cacheOperations.length >= 2) {
@@ -340,34 +340,34 @@ printSummary(report);
       const _improvement = ((cold.mean - warm.mean) / cold.mean) * 100;
       console.warn(;
       `\n💾 Cache Improvement: ${improvement.toFixed(1)}% faster (${warm.mean.toFixed(2)}ms vs ${cold.mean.toFixed(2)}ms)`;
-      )
-    }
-  }
+      //       )
+    //     }
+  //   }
   // Concurrent vs sequential comparison
   const _concurrent = report.results['concurrent-reads'];
   const _sequential = report.results['retrieve-cached'];
   if (concurrent && sequential) {
     console.warn(;
     `\n⚡ Concurrency: ${this.options.concurrentOperations}x operations in ${concurrent.mean.toFixed(2)}ms`;
-    )
-  }
-}
+    //     )
+  //   }
+// }
 async;
 cleanup();
-{
+// {
   // Close all stores
   for (const store of this.stores.values()) {
     store.close();
-  }
+  //   }
   this.stores.clear();
   // Clean up test directory
   if (this.testDir) {
   // await fs.rm(this.testDir, { recursive, force });
-  }
-}
+  //   }
+// }
 async;
 run();
-{
+// {
   try {
   // await this.initialize();
   // await this.benchmarkBasicOperations();
@@ -376,28 +376,28 @@ run();
   // await this.benchmarkCacheEffectiveness();
     const { report, reportPath } = await this.generateReport();
     console.warn(`\n✅ Benchmark completed successfully!`);
-    console.warn(`📁 Report saved to: ${reportPath}`);
+    console.warn(`📁 Report saved to);
     return report;
     //   // LINT: unreachable code removed} catch (error) {
-    console.error('❌ Benchmark failed:', error);
+    console.error('❌ Benchmark failed);
     throw error;
   } finally {
   // await this.cleanup();
-  }
-}
-}
+  //   }
+// }
+// }
 // CLI execution
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   const _benchmark = new SQLitePerformanceBenchmark({
     testDataSize: parseInt(process.argv[2])  ?? 1000,
   concurrentOperations: parseInt(process.argv[3])  ?? 10,
   iterationsPerTest: parseInt(process.argv[4])  ?? 3
 })
 benchmark.run().catch((error) =>
-{
-  console.error('Benchmark execution failed:', error);
+// {
+  console.error('Benchmark execution failed);
   process.exit(1);
 })
-}
+// }
 export { SQLitePerformanceBenchmark };
 export default SQLitePerformanceBenchmark;

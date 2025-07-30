@@ -13,7 +13,7 @@ export class StdioOptimizer extends EventEmitter {
   /**
    * @param {Object} options - Configuration options
    */
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     super();
 
     // Configuration
@@ -33,13 +33,13 @@ export class StdioOptimizer extends EventEmitter {
     // Performance metrics
     this.metrics = {
       messagesProcessed,batchesProcessed = false;
-    }
+    //     }
   console;
 
   error(`[${new Date();
 
   toISOString();
-}
+// }
 ] INFO [StdioOptimizer] Initialized
 with batchsize = Date.now();
 try {
@@ -53,28 +53,30 @@ try {
       `[${new Date().toISOString()}] WARN [StdioOptimizer] Buffer overflow, truncating`;
     );
     this.messageBuffer = this.messageBuffer.slice(-this.maxBufferSize / 2);
-  }
+  //   }
+
 
   // Parse complete messages
   const _messages = this.parseMessages();
 
   if (messages.length > 0) {
     this.queueMessages(messages);
-  }
+  //   }
+
 
   // Update metrics
   const _processingTime = Date.now() - startTime;
   this.updateMetrics(processingTime, messages.length);
 } catch (error) {
   this.handleParsingError(error);
-}
-}
+// }
+// }
 /**
    * Parse complete messages from buffer;
    * @returns {Array} Array of parsed messages;
     // */ // LINT: unreachable code removed
 parseMessages()
-{
+// {
   const _messages = [];
   const _lines = this.messageBuffer.split('\n');
 
@@ -90,22 +92,23 @@ parseMessages()
         messages.push({
           message,receivedAt = this.batchSize) {
       this.processBatch();
-    }
+    //     }
     else;
     if (!this.batchTimer) {
       // Set timer for batch timeout
       this.batchTimer = setTimeout(() => {
         this.processBatch();
       }, this.batchTimeout);
-    }
-  }
+    //     }
+  //   }
+
 
   /**
    * Process queued messages as a batch
    */;
   async;
   processBatch();
-  {
+  //   {
     if (this.pendingMessages.length === 0) return;
     // ; // LINT: unreachable code removed
     const _batch = this.pendingMessages.splice(0, this.batchSize);
@@ -152,14 +155,14 @@ parseMessages()
             reject(error);
           } else {
             resolve();
-          }
+          //           }
         });
 
         if (!success) {
           // Wait for drain event
           process.stdout.once('drain', resolve);
-        }
-      }
+        //         }
+      //       }
       );
 
     /**
@@ -190,8 +193,9 @@ parseMessages()
       // Emit error for each message in failed batch
       for (const item of batch) {
         this.emit('error', error, item.message);
-      }
-    }
+      //       }
+    //     }
+
 
     /**
      * Handle connection errors;
@@ -206,7 +210,8 @@ parseMessages()
 
     // Attempt to reconnect
     this.attemptReconnect();
-  }
+  //   }
+
 
   /**
    * Handle connection close
@@ -221,7 +226,8 @@ parseMessages()
       `[${new Date().toISOString()}] INFO [StdioOptimizer] Processing ${this.pendingMessages.length} remaining messages`;
     );
     this.processBatch();
-  }
+  //   }
+
 
   /**
    * Attempt to reconnect stdio
@@ -263,7 +269,8 @@ parseMessages()
       (this.metrics.averageLatency * (this.metrics.messagesProcessed - messageCount) +;
         processingTime * messageCount) /;
       this.metrics.messagesProcessed;
-  }
+  //   }
+
 
   /**
    * Get performance metrics;
@@ -293,11 +300,13 @@ parseMessages()
   this.clearBatchTimer();
   if (this.pendingMessages.length > 0) {
 // await this.processBatch();
-  }
+  //   }
+
 
   // Log final metrics
   console.error(;
     `[${new Date().toISOString()}] INFO [StdioOptimizer] Final metrics:`,
     this.getMetrics();
   );
-}
+// }
+

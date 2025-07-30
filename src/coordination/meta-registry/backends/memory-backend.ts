@@ -7,7 +7,7 @@ import { EventEmitter } from 'node:events';
 import { RegistryInterface } from '../index.js';
 
 export class MemoryBackend extends RegistryInterface {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     super();
     this.options = options;
     this.data = new Map();
@@ -19,27 +19,29 @@ export class MemoryBackend extends RegistryInterface {
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpired();
     }, options.cleanupInterval  ?? 30000);
-  }
+  //   }
 
-  async initialize(config = {}): unknown {
+
+  async initialize(config = {}) {
     this.config = config;
 
     // Initialize with any predefined data
     if(config.initialData) {
       for (const [key, value] of Object.entries(config.initialData)) {
 // await this.register(key, value);
-      }
-    }
-  }
+      //       }
+    //     }
+  //   }
 
-  async register(key, value, options = {}): unknown {
+
+  async register(key, value, options = {}) {
     const _id = `${key}-${Date.now()}`;
     const __entry = {
       key,
       value,
       options,
       id,
-      registered = {}): unknown {
+      registered = {}) {
     const _results = [];
 
     for (const [key, entry] of this.data.entries()) {
@@ -52,7 +54,7 @@ export class MemoryBackend extends RegistryInterface {
         const _valueB = b.metadata[field]  ?? b.value[field];
 
         if(order === 'desc') {
-          return valueB > valueA ? 1 = {}): unknown {
+          return valueB > valueA ? 1 = {}) {
     let _entry = this.data.get(key);
     // if(!entry) { // LINT: unreachable code removed
       return false;
@@ -65,17 +67,18 @@ export class MemoryBackend extends RegistryInterface {
     // Update TTL if provided
     if(options.ttl) {
       entry.expires = new Date(Date.now() + options.ttl * 1000);
-    }
+    //     }
+
 
     this.data.set(key, entry);
-    this.emitter.emit('change', { type = {}): unknown {
+    this.emitter.emit('change', { type = {}) {
     const _entry = this.data.get(key);
     if(!entry) {
       return false;
     //   // LINT: unreachable code removed}
 
     this.data.delete(key);
-    this.emitter.emit('change', { type = {}): unknown {
+    this.emitter.emit('change', { type = {}) {
     const _watcherId = ++this.watcherId;
 
     const __watcher = {
@@ -85,7 +88,7 @@ export class MemoryBackend extends RegistryInterface {
       options,created = (): unknown => {
       if (this.matchesQuery(event.entry, query)) {
         callback(event);
-      }
+      //       }
     };
 
     this.emitter.on('change', changeHandler);
@@ -94,7 +97,8 @@ export class MemoryBackend extends RegistryInterface {
       this.watchers.delete(watcherId);
     // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed
     };
-  }
+  //   }
+
 
   async health() ;
     return {status = query.tags.every(tag => entry.tags.includes(tag));
@@ -111,9 +115,10 @@ export class MemoryBackend extends RegistryInterface {
       for (const [field, expectedValue] of Object.entries(query.valueMatch)) {
         if (entry.value[field] !== expectedValue) return false;
     //   // LINT: unreachable code removed}
-    }
+    //     }
 
-    // Match by custom filter function if(query.filter && typeof query.filter =: unknown): unknown {
+
+    // Match by custom filter function if(query.filter && typeof query.filter =) {
       if (!query.filter(entry)) return false;
     //   // LINT: unreachable code removed}
 
@@ -127,8 +132,9 @@ export class MemoryBackend extends RegistryInterface {
     for (const [key, entry] of this.data.entries()) {
       if(entry.expires && entry.expires < now) {
         expired.push(key);
-      }
-    }
+      //       }
+    //     }
+
 
     for(const key of expired) {
       const _entry = this.data.get(key);
@@ -141,7 +147,8 @@ export class MemoryBackend extends RegistryInterface {
         expires: entry.expires,
         tags: entry.tags;
     }));
-  }
+  //   }
+
 
   clear() ;
     this.data.clear();
@@ -149,6 +156,7 @@ export class MemoryBackend extends RegistryInterface {
 
   size() ;
     return this.data.size;
-}
+// }
+
 
 export default MemoryBackend;

@@ -64,14 +64,7 @@ export interface SwarmMetrics {
 export interface SwarmEvents {
   // Lifecycle events
   'swarm-created': (swarm = > void;
-  'swarm-started': (swarmId = > void;
-  'swarm-paused': (swarmId = > void;
-  'swarm-resumed': (swarmId = > void;
-  'swarm-completed': (swarmId = > void;
-  'swarm-failed': (swarmId = > void;
-  'swarm-cancelled': (swarmId = > void;
-// Agent events
-('agent-joined');
+  'swarm-started');
 : (swarmId = > void
 ('agent-left')
 : (swarmId = > void
@@ -137,7 +130,7 @@ export interface SwarmEvents {
 ('improvement-identified')
 : (swarmId = > void
 [event = > void
-}
+// }
 // =============================================================================
 // SWARM INTERFACE
 // =============================================================================
@@ -149,118 +142,119 @@ export interface Swarm extends TypedEventEmitter<SwarmEvents>, Identifiable {
 // =============================================================================
 
 export interface SwarmIdentity {
-  id: UUID;
-  name: string;
-  type: string;
-  version: string;
-  createdAt: Date;
-  creator: string;
-}
+  // id: UUID
+  // name: string
+  // type: string
+  // version: string
+  // createdAt: Date
+  // creator: string
+// }
 export interface CoordinationRequest {
   type: 'task_assignment' | 'resource_allocation' | 'conflict_resolution' | 'optimization';
   priority: 'low' | 'medium' | 'high' | 'urgent';
-  context: JSONObject;
-  constraints: JSONObject;
-  preferences: JSONObject;
-}
+  // context: JSONObject
+  // constraints: JSONObject
+  // preferences: JSONObject
+// }
 export interface CoordinationResponse {
-  success: boolean;
-  action: JSONObject;
-  reasoning: string;
-  confidence: number; // 0-1
-  alternatives: JSONObject[];
-  metadata: JSONObject;
-}
+  // success: boolean
+  // action: JSONObject
+  // reasoning: string
+  confidence: number, // 0-1
+  alternatives;
+  // metadata: JSONObject
+// }
 export interface Conflict {
   type: 'resource' | 'dependency' | 'priority' | 'constraint' | 'goal';
-  description: string;
-  parties: UUID[];
+  // description: string
+  parties;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  context: JSONObject;
-  constraints: JSONObject;
-}
+  // context: JSONObject
+  // constraints: JSONObject
+// }
 export interface Resolution {
-  approach: string;
-  actions: JSONObject[];
-  rationale: string;
-  impact: JSONObject;
+  // approach: string
+  actions;
+  // rationale: string
+  // impact: JSONObject
   satisfaction: Record<UUID, number>; // 0-1 satisfaction per party
-  durability: number; // 0-1 expected persistence
-}
+  durability: number, // 0-1 expected persistence
+// }
 export interface SwarmHealthStatus {
   overall: 'healthy' | 'degraded' | 'critical' | 'failed';
   components: {
-    agents: ComponentHealth;
-    coordination: ComponentHealth;
-    resources: ComponentHealth;
-    tasks: ComponentHealth;
-    communication: ComponentHealth;
+    // agents: ComponentHealth
+    // coordination: ComponentHealth
+    // resources: ComponentHealth
+    // tasks: ComponentHealth
+    // communication: ComponentHealth
   };
-  issues: HealthIssue[];
-  recommendations: string[];
-  trends: HealthTrend[];
-}
+  issues;
+  recommendations;
+  trends;
+// }
 export interface ComponentHealth {
   status: 'healthy' | 'warning' | 'critical' | 'failed';
-  score: number; // 0-1
-  metrics: JSONObject;
-  lastCheck: Date;
-}
+  score: number, // 0-1
+  // metrics: JSONObject
+  // lastCheck: Date
+// }
 export interface HealthIssue {
   severity: 'low' | 'medium' | 'high' | 'critical';
-  component: string;
-  description: string;
-  impact: string;
-  resolution: string[];
-  estimated_resolution_time: number; // minutes
-}
+  // component: string
+  // description: string
+  // impact: string
+  resolution;
+  estimated_resolution_time: number, // minutes
+// }
 export interface HealthTrend {
-  metric: string;
+  // metric: string
   direction: 'improving' | 'stable' | 'degrading';
-  rate: number; // percentage change
-  confidence: number; // 0-1
-  projection: number;
-}
+  rate: number, // percentage change
+  confidence: number, // 0-1
+  // projection: number
+// }
 export interface OptimizationResult {
-  improvements: Improvement[];
-  changes: JSONObject;
-  expected_impact: JSONObject;
-  confidence: number; // 0-1
-  implementation_time: number; // minutes
-  reversible: boolean;
-}
+  improvements;
+  // changes: JSONObject
+  // expected_impact: JSONObject
+  confidence: number, // 0-1
+  implementation_time: number, // minutes
+  // reversible: boolean
+// }
 export interface LearningOutcome {
   type: 'pattern' | 'strategy' | 'best_practice' | 'anti_pattern' | 'optimization';
-  description: string;
-  evidence: JSONObject[];
-  confidence: number; // 0-1
-  applicability: string[];
-  transferability: number; // 0-1
-}
+  // description: string
+  evidence;
+  confidence: number, // 0-1
+  applicability;
+  transferability: number, // 0-1
+// }
 export interface SwarmReport {
   type: 'progress' | 'performance' | 'quality' | 'comprehensive';
-  swarmId: UUID;
-  generatedAt: Date;
+  // swarmId: UUID
+  // generatedAt: Date
   period: {
-    start: Date;
-    end: Date;
+    // start: Date
+    // end: Date
   };
-  summary: JSONObject;
-  details: JSONObject;
-  metrics: JSONObject;
-  recommendations: string[];
-  charts: Chart[];
-  appendices: JSONObject[];
-}
+  // summary: JSONObject
+  // details: JSONObject
+  // metrics: JSONObject
+  recommendations;
+  charts;
+  appendices;
+// }
 export interface Chart {
   type: 'line' | 'bar' | 'pie' | 'scatter' | 'heatmap';
-  title: string;
-  data: JSONObject;
-  options: JSONObject;
-}
+  // title: string
+  // data: JSONObject
+  // options: JSONObject
+// }
 export interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings: string[];
-  suggestions: string[];
-}
+  // valid: boolean
+  errors;
+  warnings;
+  suggestions;
+// }
+

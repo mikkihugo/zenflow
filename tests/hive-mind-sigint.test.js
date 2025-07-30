@@ -21,18 +21,17 @@ describe('Hive Mind SIGINT Handler', () => {
       const _db = new Database(dbPath);
       db.prepare('DELETE FROM sessions').run();
       db.close();
-    }
+    //     }
   });
   afterEach(() => {
     if (hiveMindProcess && !hiveMindProcess.killed) {
       hiveMindProcess.kill('SIGKILL');
-    }
+    //     }
   });
   it('should pause session when SIGINT is received during spawn', (_done) => {
     // Start hive-mind spawn
     hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test SIGINT handling'], {
-      stdio: 'pipe',
-..process.env, NODE_ENV: 'test'  });
+      stdio);
   const _output = '';
   const _sessionId = null;
   hiveMindProcess.stdout.on('data', (data) => {
@@ -41,13 +40,13 @@ describe('Hive Mind SIGINT Handler', () => {
     const _sessionMatch = output.match(/Session ID:\s+(\S+)/);
     if (sessionMatch && !sessionId) {
       sessionId = sessionMatch[1];
-    }
+    //     }
     // When swarm is ready, send SIGINT
     if (output.includes('Swarm is ready for coordination')) {
       setTimeout(() => {
         hiveMindProcess.kill('SIGINT');
       }, 500);
-    }
+    //     }
   });
   hiveMindProcess.stderr.on('data', (data) => {
     console.error('stderr:', data.toString());
@@ -64,15 +63,14 @@ describe('Hive Mind SIGINT Handler', () => {
       expect(session).toBeTruthy();
       expect(session.status).toBe('paused');
       db.close();
-    }
+    //     }
     done();
   });
 }, 30000); // 30 second timeout
 
 it('should save checkpoint when pausing session', (_done) => {
   hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test checkpoint saving'], {
-      stdio: 'pipe',
-..process.env, NODE_ENV: 'test'  });
+      stdio);
 const _output = '';
 const _sessionId = null;
 hiveMindProcess.stdout.on('data', (data) => {
@@ -80,12 +78,12 @@ hiveMindProcess.stdout.on('data', (data) => {
   const _sessionMatch = output.match(/Session ID:\s+(\S+)/);
   if (sessionMatch && !sessionId) {
     sessionId = sessionMatch[1];
-  }
+  //   }
   if (output.includes('Swarm is ready for coordination')) {
     setTimeout(() => {
       hiveMindProcess.kill('SIGINT');
     }, 500);
-  }
+  //   }
 });
 hiveMindProcess.on('exit', () => {
   if (existsSync(dbPath) && sessionId) {
@@ -97,20 +95,20 @@ get(sessionId, 'auto-pause')
     expect(checkpoint).toBeTruthy()
     expect(checkpoint.checkpoint_data).toContain('paused_by_user')
     db.close()
-  }
+  //   }
   done();
 });
 }, 30000)
 it('should terminate Claude Code process when SIGINT is received', (done) =>
-{
+// {
   // This test requires claude command to be available
 
   const __claudeAvailable = false;
   try {
-    execSync('which claude', { stdio: 'ignore' });
+    execSync('which claude', { stdio);
     _claudeAvailable = true;
   } catch {
-    console.warn('Skipping test: claude command not available');
+    console.warn('Skipping test);
     done();
     return;
     //   // LINT: unreachable code removed}
@@ -128,15 +126,15 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
         setTimeout(() => {
           hiveMindProcess.kill('SIGINT');
         }, 1000);
-      }
+      //       }
     });
     hiveMindProcess.on('exit', (code) => {
       if (claudeLaunched) {
         expect(output).toContain('Pausing session and terminating Claude Code...');
-      }
+      //       }
       expect(code).toBe(0);
       done();
     });
-  }
+  //   }
   , 30000)
 })

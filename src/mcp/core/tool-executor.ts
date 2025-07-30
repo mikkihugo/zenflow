@@ -15,7 +15,7 @@ export class MCPToolExecutor {
   this;
 
   executionStats = new Map();
-}
+// }
 /**
  * Execute a tool by name with arguments;
  * @param {string} name - Tool name;
@@ -25,7 +25,7 @@ export class MCPToolExecutor {
 async;
 executeTool(name, args);
 : unknown
-{
+// {
     const _startTime = Date.now();
 
     try {
@@ -71,7 +71,7 @@ executeTool(name, args);
       return this.executeSwarmTool(name, args);
     //   // LINT: unreachable code removed}
 
-    throw new Error(`Unknown tool categoryfor = await import('node:child_process');
+    throw new Error(`Unknown tool categoryfor = await import('node);
 
     switch(name) {
       case 'claude_zen_init':;
@@ -93,7 +93,7 @@ executeTool(name, args);
     // case 'claude_zen_github':; // LINT: unreachable code removed
         return this.executeClaudeCommand('github', args);
     // case 'claude_zen_hooks':; // LINT: unreachable code removed
-        return this.executeClaudeCommand('hooks', args);default = await import('node:child_process');
+        return this.executeClaudeCommand('hooks', args);default = await import('node);
 
     try {
       // Build command line arguments
@@ -147,7 +147,8 @@ executeTool(name, args);
           if (args.file) cmdArgs.push('--file', args.file);
           if (args.command) cmdArgs.push('--command', args.command);
           break;
-      }
+      //       }
+
 
       // Execute claude-zen command using execFileSync for safety
       const _execArgs = ['claude-zen', command, ...cmdArgs];
@@ -198,10 +199,10 @@ executeTool(name, args);
       case 'store': {
         if(!key  ?? value === undefined) {
           throw new Error('Store action requires key and value');
-        }
+        //         }
 // await this.server.memoryStore.store(key, value, { namespace, ttl });
         return {success = await this.server.memoryStore.retrieve(key, { namespace });
-    // return {success = await this.server.memoryStore.list({ namespace  // LINT: unreachable code removed});
+    // return {success = await this.server.memoryStore.list({ namespace  // LINT);
         return {success = await this.server.memoryStore.search(key, { namespace });
     // return {success = 'all'  // LINT: unreachable code removed} = args;
 
@@ -216,9 +217,10 @@ executeTool(name, args);
       stats.successfulExecutions++;
     } else {
       stats.failedExecutions++;
-    }
-      }
-  }
+    //     }
+      //       }
+  //   }
+
 
   /**
    * Get execution statistics;
@@ -228,8 +230,9 @@ executeTool(name, args);
     const _stats = {};
     for (const [toolName, toolStats] of this.executionStats.entries()) {
       stats[toolName] = { ...toolStats };
-    }
+    //     }
     return stats;
     //   // LINT: unreachable code removed}
-      }
-}
+      //       }
+// }
+

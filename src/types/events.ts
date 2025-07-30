@@ -53,7 +53,7 @@ export interface EventBus extends TypedEventEmitter<_EventBusEvents> {
 export interface EventSubscription extends Identifiable {name = > Promise<void>
 reject = > Promise<void>
 defer = > Promise<void>
-}
+// }
 export interface EventHandlerResult {success = ============================================================================
 // EVENT STREAMS
 // =============================================================================
@@ -68,30 +68,7 @@ export interface EventTopic extends Identifiable {name = =======================
 
 export interface EventQuery {
   // Time range
-  startTime?: Date;
-  endTime?: Date;
-// Filtersfilters = ============================================================================
-// EVENT MONITORING
-// =============================================================================
-
-export interface EventBusMetrics {
-  // Throughput metricseventsPublished = ============================================================================
-// EVENT LOGGING
-// =============================================================================
-
-export interface EventLogger {
-  debug(message = > void;
-  recordTime(name = ============================================================================;
-// EVENT BUS EVENTS
-// =============================================================================
-
-export interface EventBusEvents {
-  // Publication events
-  'event-published': (event = > void;
-  'event-delivery-failed': (event = > void;
-  'event-expired': (event = > void;
-// Subscription events
-('subscription-created');
+  startTime?);
 : (subscription = > void
 ('subscription-deleted')
 : (subscriptionId = > void
@@ -141,4 +118,5 @@ export interface EventBusEvents {
 : (component = > void
 ('health-check-failed')
 : (component = > void
-}
+// }
+

@@ -1,7 +1,7 @@
 /**
  * ROCKET ULTIMATE UNIFIED ARCHITECTURE;
  * ;
- * REVOLUTIONARY MONOREPO INTEGRATION combining = {}): unknown {
+ * REVOLUTIONARY MONOREPO INTEGRATION combining = {}) {
     super();
 
     this.options = {
@@ -38,7 +38,8 @@
 
     this.pluginCount = initializedPlugins.length;
     console.warn(`CHECK Initialized ${this.pluginCount} plugins with unified integration`);
-  }
+  //   }
+
 
   async establishCrossPluginConnections() {
     console.warn('LINK Establishing Cross-Plugin Connections...');
@@ -71,14 +72,17 @@
         // Enable direct plugin-to-plugin communication
         if(plugin.instance.connectToPlugin) {
 // await plugin.instance.connectToPlugin(targetName, targetPlugin.instance);
-        }
+        //         }
+
 
         this.crossPluginConnections++;
-      }
-    }
+      //       }
+    //     }
+
 
     console.warn(`CHECK Established ${this.crossPluginConnections} cross-plugin connections`);
-  }
+  //   }
+
 
   setupUnifiedEventCoordination() {
     console.warn('SATELLITE Setting up Unified Event Coordination...');
@@ -86,18 +90,18 @@
     // Global event hub - all plugins and swarm communicate through this
 
             } catch (error)
-{
-  console.warn(`Plugin ${pluginName} failed to handle event ${eventType}:`, error.message);
-}
-}
-        }
+// {
+  console.warn(`Plugin ${pluginName} failed to handle event ${eventType});
+// }
+// }
+        //         }
 // Update metrics
 this.metrics.crossPluginCalls++
 })
 })
 // Hook native swarm events
 if(this.nativeSwarm) {
-      this.nativeSwarm.on('swarm = > this.emit('swarm:operation', {type = > this.emit('swarm:operation', {type = > this.emit('swarm:operation', {type = Date.now();
+      this.nativeSwarm.on('swarm = > this.emit('swarm);
 
     try {
       let result;
@@ -171,8 +175,7 @@ if(this.nativeSwarm) {
       if (!results  ?? !results.combined_results) return;
     // ; // LINT: unreachable code removed
       results.combined_results.forEach(result => {
-        const _key = `${result.entity_type}:${result.entity_id}`;
-        const _existing = combined.get(key);
+        const _key = `${result.entity_type});
 
         if(existing) {
           existing.combined_score += result.combined_score * (1 - index * 0.1);
@@ -180,14 +183,16 @@ if(this.nativeSwarm) {
         } else {
           combined.set(key, {
 ..result,combined_score = > b.combined_score - a.combined_score);
-  }
+  //   }
+
 
   // UTILITY METHODS
 
   async ensureInitialized()
     if(!this.initialized) {
 // await this.initialize();
-    }
+    //     }
+
 
   getUnifiedStats() {
     return {
@@ -208,48 +213,53 @@ if(this.nativeSwarm) {
     // Cleanup native swarm
     if(this.nativeSwarm) {
 // await this.nativeSwarm.cleanup();
-    }
+    //     }
+
 
     // Cleanup memory backend
     if(this.memoryBackend) {
 // await this.memoryBackend.cleanup();
-    }
+    //     }
+
 
     // Cleanup all plugins
     for(const [name, plugin] of this.plugins) {
       try {
         if(plugin.instance.cleanup) {
 // await plugin.instance.cleanup();
-        }
+        //         }
       } catch (error) {
-        console.warn(`Failed to cleanup plugin ${name}:`, error.message);
-      }
-    }
+        console.warn(`Failed to cleanup plugin ${name});
+      //       }
+    //     }
+
 
     this.plugins.clear();
 
     console.warn('CHECK Ultimate Unified Architecture cleaned up');
-}
+// }
+
 
 // Singleton instance for global access
 const _globalUnifiedArchitecture = null;
 
-export async function getUltimateUnifiedArchitecture(options = {}: unknown): unknown {
+export async function getUltimateUnifiedArchitecture(options = {}) {
   if(!globalUnifiedArchitecture) {
     globalUnifiedArchitecture = new UltimateUnifiedArchitecture(options);
 // await globalUnifiedArchitecture.initialize();
-  }
+  //   }
   return globalUnifiedArchitecture;
-}
+// }
 
-export async function initializeUltimateArchitecture(options = {}: unknown): unknown {
+
+export async function initializeUltimateArchitecture(options = {}) {
   console.warn('ROCKET Initializing Ultimate Unified Architecture...');
   console.warn('DIAMOND REVOLUTIONARY MONOREPO INTEGRATION');
   console.warn('FIRE 100x Performance + All Capabilities Unified');
 // const _architecture = awaitgetUltimateUnifiedArchitecture(options);
 
   console.warn('CHECK Ultimate Unified Architecture ready!');
-  console.warn('TARGET Capabilities unlocked:');
+  console.warn('TARGET Capabilities unlocked);
   console.warn('   - Native ruv-swarm integration (no MCP)');
   console.warn('   - Triple hybrid memory (LanceDB + Kuzu + SQLite)');
   console.warn('   - 9+ enterprise plugins unified');
@@ -258,10 +268,11 @@ export async function initializeUltimateArchitecture(options = {}: unknown): unk
   console.warn('   - Semantic search + Graph traversal');
   console.warn('   - Neural pattern learning');
   console.warn('   - Monorepo shared dependencies');
-  console.warn('   - Direct function calls(no external APIs: unknown)');
+  console.warn('   - Direct function calls(no external APIs)');
   console.warn('   - 100x performance improvement');
 
   return architecture;
-}
+// }
+
 
 export default UltimateUnifiedArchitecture;

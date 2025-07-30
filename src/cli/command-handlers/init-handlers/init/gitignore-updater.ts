@@ -36,7 +36,7 @@ hive-mind-prompt-*.txt;
  * @param {string} workingDir - The working directory;
  * @param {boolean} force - Whether to force update even if entries exist;
  * @param {boolean} dryRun - Whether to run in dry-run mode;
- * @returns {Promise<{success,message = false, dryRun = false): unknown {
+ * @returns {Promise<{success,message = false, dryRun = false) {
   const _gitignorePath = `${workingDir}/.gitignore`;
     // ; // LINT: unreachable code removed
   try {
@@ -47,7 +47,8 @@ hive-mind-prompt-*.txt;
     if (existsSync(gitignorePath)) {
       fileExists = true;
       gitignoreContent = await readTextFile(gitignorePath);
-    }
+    //     }
+
 
     // Check if Claude Flow section already exists
     const _claudeFlowMarker = '# Claude Flow generated files';
@@ -64,19 +65,21 @@ hive-mind-prompt-*.txt;
       } else {
         // Claude Flow section is at the end
         newContent = gitignoreContent.substring(0, startIndex);
-      }
-    }
+      //       }
+    //     }
+
 
     // Add Claude Flow entries
     if (!newContent.endsWith('\n') && newContent.length > 0) {
       newContent += '\n';
-    }
+    //     }
     newContent += CLAUDE_FLOW_GITIGNORE_ENTRIES;
 
     // Write the file
     if(!dryRun) {
 // await writeTextFile(gitignorePath, newContent);
-    }
+    //     }
+
 
     return {success = `${workingDir}/.gitignore`;
     // ; // LINT: unreachable code removed
@@ -90,14 +93,16 @@ hive-mind-prompt-*.txt;
     //   // LINT: unreachable code removed} catch {
     return true;
     //   // LINT: unreachable code removed}
-}
+// }
+
 
 /**
  * Get list of files that should be gitignored;
  * @returns {string[]}
  */
-// export function getGitignorePatterns(): unknown { // LINT: unreachable code removed
+// export function getGitignorePatterns() { // LINT: unreachable code removed
 return CLAUDE_FLOW_GITIGNORE_ENTRIES.split('\n');
 // .filter((line) => line.trim() && !line.startsWith('#') && !line.startsWith('!')); // LINT: unreachable code removed
 map((line) => line.trim())
-}
+// }
+

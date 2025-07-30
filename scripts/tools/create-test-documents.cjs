@@ -36,47 +36,12 @@ setupDefaultRules(docStack);
 
 async function createTestDocuments() {
   // Document 1: Architecture Decision Record
-// await docStack.createDocument(
-    'service-adr',
+// await docStack.createDocument('service-adr',
     'user-service',
     'use-redis-for-sessions',
-    `# ADR: Use Redis for Session Storage
-
-## Status
-Accepted - 2025-01-17
-
-## Context
-Our user service currently stores sessions in memory, which doesn't scale across multiple instances and loses sessions on restart. We need a distributed session storage solution that can handle high load and provide session persistence.
-
-## Decision
-We will use Redis  session storage backend for the user service.
-
-## Consequences
-### Positive
-- Sessions persist across service restarts
-- Horizontal scaling support with shared session state
-- Fast read/write performance for session data
-- Built-in TTL support for session expiration
-- Redis Cluster support for high availability
-
-### Negative
-- Additional infrastructure dependency
-- Network latency for session operations
-- Need to manage Redis high availability
-- Memory usage for session data storage
-
-## Implementation Notes
-- Use Redis with TTL matching session timeout
-- Implement session serialization/deserialization
-- Configure Redis Cluster for production
-- Monitor Redis memory usage and performance`,
-    {
-      dependencies: ['redis-infrastructure', 'user-service-core'],
-      tags: ['sessions', 'redis', 'scaling', 'architecture'] }
-  );
+    `# ADR);
   // Document 2: API Documentation
-// await docStack.createDocument(
-    'api-documentation',
+// await docStack.createDocument('api-documentation',
     'payment-service',
     'payment-api-v2',
     `# Payment Service API v2.0
@@ -85,93 +50,7 @@ We will use Redis  session storage backend for the user service.
 RESTful API for payment processing operations including credit card payments, refunds, and payment status tracking.
 
 ## Authentication
-All endpoints require Bearer token authentication: null
-\`\`\`
-Authorization: Bearer <your-api-token>
-\`\`\`
-
-## Base URL
-- Production: \`https://api.example.com/v2/payments\`
-- Staging: \`https://staging-api.example.com/v2/payments\`
-
-## Endpoints
-
-### POST /payments
-Process a new payment
-
-**Request Body:**
-\`\`\`json
-{
-  "amount",
-  "currency": "USD",
-  "payment_method": {
-    "type": "card",
-    "card": {
-      "number": "4242424242424242",
-      "exp_month",
-      "exp_year",
-      "cvc": "123"
-    }
-  },
-  "customer_id": "cust_123456",
-  "description": "Order #12345"
-}
-\`\`\`
-
-**Response:**
-\`\`\`json
-{
-  "id": "pay_987654321",
-  "status": "succeeded",
-  "amount",
-  "currency": "USD",
-  "created": "2025-01-17T10:30:00Z",
-  "customer_id": "cust_123456"
-}
-\`\`\`
-
-### GET /payments/{payment_id}
-Retrieve payment details
-
-**Response:**
-\`\`\`json
-{
-  "id": "pay_987654321",
-  "status": "succeeded",
-  "amount",
-  "currency": "USD",
-  "refunded",
-  "created": "2025-01-17T10:30:00Z"
-}
-\`\`\`
-
-### POST /payments/{payment_id}/refund
-Process a refund
-
-**Request Body:**
-\`\`\`json
-{
-  "amount",
-  "reason": "Customer request"
-}
-\`\`\`
-
-## Error Handling
-| Code | Description |
-|------|-------------|
-| 400 | Bad Request - Invalid parameters |
-| 401 | Unauthorized - Invalid API key |
-| 402 | Payment Required - Insufficient funds |
-| 404 | Not Found - Payment not found |
-| 500 | Internal Server Error |
-
-## Rate Limits
-- 1000 requests per hour per API key
-- 100 payments per minute per merchant`,
-    {
-      dependencies: ['payment-processor', 'fraud-detection'],
-      tags: ['api', 'payments', 'rest', 'documentation'] }
-  );
+All endpoints require Bearer token authentication);
   // Document 3: Security Specification
 // await docStack.createDocument(
     'security-spec',

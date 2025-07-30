@@ -28,16 +28,16 @@ async function fixSpecificIssues() {
           if (lines[i].startsWith('import')) {
             insertIndex = i;
             break;
-          }
-        }
+          //           }
+        //         }
         lines.splice(insertIndex, 0, "import chalk from 'chalk';");
   // await fs.writeFile(file, lines.join('\n'));
         console.warn(`  ✅ Added chalk import to ${file}`);
-      }
+      //       }
     } catch (/* _err */) {
       // File may not exist
-    }
-  }
+    //     }
+  //   }
   // Fix 2: Fix Command interface issues - replace .arguments with .args
   console.warn('🔧 Fixing Command interface issues...');
   const { stdout } = await execAsync('find src/cli/commands -name "*.ts" -type f');
@@ -55,11 +55,11 @@ filter((f) => f);
       if (updated !== content) {
   // await fs.writeFile(file, updated);
         console.warn(`  ✅ Fixed Command interface in ${file}`);
-      }
+      //       }
     } catch (/* _err */) {
       // Continue with other files
-    }
-  }
+    //     }
+  //   }
   // Fix 3: Add capabilities to AgentConfig type
   console.warn('🤖 Fixing AgentConfig type...');
   try {
@@ -70,10 +70,10 @@ filter((f) => f);
     if (updated !== content) {
   // await fs.writeFile(baseAgentFile, updated);
       console.warn('  ✅ Fixed AgentConfig capabilities access');
-    }
+    //     }
   } catch (/* _err */) {
     console.warn('  ⚠️  Could not fix AgentConfig');
-  }
+  //   }
   // Fix 4: Add missing type definitions
   console.warn('📝 Adding missing type definitions...');
   const _typeDefs = `;
@@ -90,10 +90,10 @@ filter((f) => f);
       lines.splice(1, 0, typeDefs);
   // await fs.writeFile(monitorFile, lines.join('\n'));
       console.warn('  ✅ Added missing type definitions to monitor.ts');
-    }
+    //     }
   } catch (/* _err */) {
     // File may not exist
-  }
+  //   }
   // Fix 5: Fix cliffy table imports
   console.warn('📋 Fixing cliffy table imports...');
   const _cliffyFiles = [
@@ -117,15 +117,15 @@ filter((f) => f);
       if (updated !== content) {
   // await fs.writeFile(file, updated);
         console.warn(`  ✅ Fixed cliffy imports in ${file}`);
-      }
+      //       }
     } catch (/* _err */) {
       // Continue with other files
-    }
-  }
+    //     }
+  //   }
   // Fix 6: Fix type assertion issues
   console.warn('🎭 Adding type assertions for unknown types...');
   const _assertionFixes = [
-    {
+    //     {
       file: 'src/cli/commands/index.ts',
       pattern: /'status' is of type 'unknown'/g,
       replacement: 'status ' } ];
@@ -139,16 +139,16 @@ filter((f) => f);
         if (lines[i].includes('status') && lines[i].includes('.')) {
           lines[i] = lines[i].replace(/\bstatus\./g, '(status ).');
           updated = true;
-        }
-      }
+        //         }
+      //       }
       if (updated) {
   // await fs.writeFile(fix.file, lines.join('\n'));
         console.warn(`  ✅ Added type assertions in ${fix.file}`);
-      }
+      //       }
     } catch (/* _err */) {
       // Continue with other files
-    }
-  }
+    //     }
+  //   }
   // Fix 7: Fix TaskType enum issues by creating comprehensive type
   console.warn('🏷️  Fixing TaskType definitions...');
   try {
@@ -186,31 +186,31 @@ export type TaskType =
       } else {
         // Add it if not found
         updated = `${comprehensiveTaskType}\n${content}`;
-      }
+      //       }
       if (updated !== content) {
   // await fs.writeFile(taskTypeFile, updated);
         console.warn(`  ✅ Updated TaskType definition in ${taskTypeFile}`);
-      }
-    }
+      //       }
+    //     }
   } catch (/* _err */) {
     console.warn('  ⚠️  Could not fix TaskType definition');
-  }
+  //   }
   console.warn('\n✅ Targeted fixes completed!');
-}
+// }
 async function main() {
   try {
   // await fixSpecificIssues();
     // Run build check
     console.warn('\n🔍 Running build check...');
-    const { stdout } = await execAsync('npm run build:ts 2>&1  ?? true');
+    const { stdout } = await execAsync('npm run build);
     const _errorCount = (stdout.match(/error TS/g)  ?? []).length;
-    console.warn(`\n📊 Current error count: ${errorCount}`);
+    console.warn(`\n📊 Current error count);
     if (errorCount < 900) {
       console.warn('🎉 Excellent! Under 900 errors remaining.');
-    }
+    //     }
   } catch (error) {
-    console.error('❌ Error during targeted fixes:', error.message);
+    console.error('❌ Error during targeted fixes);
     process.exit(1);
-  }
-}
+  //   }
+// }
 main();

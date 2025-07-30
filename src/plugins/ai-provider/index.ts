@@ -8,7 +8,7 @@ import { performance } from 'node:perf_hooks';
 
 // Provider interfaces
 // interface AIProviderResponse {text = false
-public;
+public; // eslint-disable-line
 supportsStreaming = false
 public;
 supportsEmbeddings = false
@@ -17,20 +17,20 @@ supportsStructured = true
 public;
 supportsVision = false
 constructor(config);
-{
+// {
   this.config = config;
   this.name = this.constructor.name.replace('Provider', '').toLowerCase();
-}
+// }
 abstract;
 initialize();
 : Promise<void>
 abstract;
 generateText(prompt = false;
-}
+// }
 protected
 parseJSONResponse(text)
 : unknown
-{
+// {
   try {
     const _jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -40,8 +40,9 @@ parseJSONResponse(text)
     //   // LINT: unreachable code removed} catch (/* _error */) {
     return null;
     //   // LINT: unreachable code removed}
-}
-}
+// }
+// }
+
 
 // Claude Provider Implementation
 class ClaudeProvider extends BaseProvider {
@@ -55,20 +56,21 @@ class ClaudeProvider extends BaseProvider {
   this;
 
   model = config.claudeModel  ?? config.model  ?? 'claude-3-sonnet-20240229';
-}
+// }
+
 
 async;
 initialize();
 : Promise<void>;
   if (!this.apiKey) {
     throw new Error('Claude API key not configured');
-  }
+  //   }
   this.isReady = true;
 
 async;
 generateText(prompt, (options = {}));
 : Promise<AIProviderResponse>;
-{
+// {
 // const _response = awaitfetch(`${this.baseUrl}/messages`, {method = await response.json();
     return {
       text = {}): Promise<any> {
@@ -77,7 +79,8 @@ generateText(prompt, (options = {}));
 
     if (!parsed) {
       throw new Error('Failed to parse structured response from Claude');
-    }
+    //     }
+
 
     return parsed;
     //   // LINT: unreachable code removed}
@@ -103,18 +106,19 @@ generateText(prompt, (options = {}));
               const _parsed = JSON.parse(data);
               if (parsed.delta?.text) {
                 yield parsed.delta.text;
-              }
+              //               }
             } catch (/* e */) {
               // Skip invalid JSON
-            }
-          }
-        }
-      }
+            //             }
+          //           }
+        //         }
+      //       }
     } finally {
       reader.releaseLock();
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // OpenAI Provider Implementation
 class OpenAIProvider extends BaseProvider {
@@ -124,14 +128,16 @@ class OpenAIProvider extends BaseProvider {
     this.apiKey = config.openaiApiKey  ?? config.apiKey  ?? process.env.OPENAI_API_KEY  ?? '';
     this.baseUrl = config.openaiBaseUrl  ?? 'https = config.openaiModel  ?? config.model  ?? 'gpt-4-turbo-preview';
     this.embeddingModel = config.embeddingModel  ?? 'text-embedding-3-small';
-  }
+  //   }
+
 
   async initialize(): Promise<void> {
     if (!this.apiKey) {
       throw new Error('OpenAI API key not configured');
-    }
+    //     }
     this.isReady = true;
-  }
+  //   }
+
 
   async generateText(prompt, options = {}): Promise<AIProviderResponse> {
 // const _response = awaitfetch(`${this.baseUrl}/chat/completions`, {method = await response.json();
@@ -147,7 +153,8 @@ class OpenAIProvider extends BaseProvider {
     const _parsed = this.parseJSONResponse(data.choices[0].message.content);
     if (!parsed) {
       throw new Error('Failed to parse structured response from OpenAI');
-    }
+    //     }
+
 
     return parsed;
     //   // LINT: unreachable code removed}
@@ -176,18 +183,19 @@ class OpenAIProvider extends BaseProvider {
               const _parsed = JSON.parse(data);
               if (parsed.choices[0]?.delta?.content) {
                 yield parsed.choices[0].delta.content;
-              }
+              //               }
             } catch (/* e */) {
               // Skip invalid JSON
-            }
-          }
-        }
-      }
+            //             }
+          //           }
+        //         }
+      //       }
     } finally {
       reader.releaseLock();
-    }
-  }
-}
+    //     }
+  //   }
+// }
+
 
 // Main AI Provider Plugin Class
 export class AIProviderPlugin extends BasePlugin {
@@ -210,8 +218,9 @@ export class AIProviderPlugin extends BasePlugin {
     // Persist cache
     if (this.config.settings.caching?.enabled) {
 // await this.persistCache();
-    }
-  }
+    //     }
+  //   }
+
 
   protected async onDestroy(): Promise<void> ;
     // Cleanup all providers
@@ -220,8 +229,9 @@ export class AIProviderPlugin extends BasePlugin {
 // await provider.cleanup();
       } catch (error) {
         this.context.apis.logger.error(`Failed to cleanup provider ${name}`, error);
-      }
-    }
+      //       }
+    //     }
+
 
     this.providers.clear();
     this.cache.clear();
@@ -249,7 +259,8 @@ export class AIProviderPlugin extends BasePlugin {
         // Cache result
         if (this.config.settings.caching?.enabled && !options.noCache) {
 // await this.saveToCache(cacheKey, result);
-        }
+        //         }
+
 
         // Log request
         if (this.config.settings.logging?.enabled) {
@@ -277,7 +288,8 @@ export class AIProviderPlugin extends BasePlugin {
         this.updateMetrics({ text = {}): Promise<EmbeddingResponse> {
     if (!this._activeProvider!._supportsEmbeddings) {
       throw new Error(`Provider ${this.activeProvider?.name} does not support embeddings`);
-    }
+    //     }
+
 
     return this.executeWithRetry(async () => {
 // const __result = awaitthis.activeProvider?.createEmbedding(text, options);
@@ -348,15 +360,17 @@ export class AIProviderPlugin extends BasePlugin {
 
               if (fallbackProvider) {
                 this.context.apis.logger.info(`Switching to fallbackprovider = fallbackProvider;
-              }
-            }
-          }
-        }
-      }
-    }
+              //               }
+            //             }
+          //           }
+        //         }
+      //       }
+    //     }
+
 
     throw lastError!  ?? new Error('All retry attempts failed');
-  }
+  //   }
+
 
   private async checkRateLimit(): Promise<void> {
     const _rateLimitConfig = this.config.settings.rateLimiting;
@@ -373,7 +387,8 @@ export class AIProviderPlugin extends BasePlugin {
 // await new Promise<void>(resolve => {
         this.requestQueue.push(resolve);
       });
-    }
+    //     }
+
 
     // Check rate limits
     if (currentMinute.requests >= (rateLimitConfig.requestsPerMinute  ?? 60)) {
@@ -385,17 +400,20 @@ export class AIProviderPlugin extends BasePlugin {
 
     currentMinute.requests++;
     this.activeRequests++;
-  }
+  //   }
+
 
   private releaseRateLimit(): void ;
     this.activeRequests--;
     if (this.requestQueue.length > 0) {
       const _resolve = this.requestQueue.shift();
       resolve?.();
-    }
+    //     }
+
 
   private updateMetrics(result = (result.usage.inputTokens  ?? 0) + (result.usage.outputTokens  ?? 0);
-    }
+    //     }
+
 
     // Update average latency
     this.metrics.averageLatency = ;
@@ -410,7 +428,8 @@ export class AIProviderPlugin extends BasePlugin {
     );
 
     this.releaseRateLimit();
-  }
+  //   }
+
 
   private getCacheKey(type = crypto.createHash('sha256');
     hash.update(type);
@@ -436,11 +455,13 @@ export class AIProviderPlugin extends BasePlugin {
       const _oldest = Array.from(this.cache.entries());
 sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
       this.cache.delete(oldest[0]);
-    }
+    //     }
+
 
     // Persist cache
 // await this.persistCache();
-  }
+  //   }
+
 
   private async loadCache(): Promise<void> {
     try {
@@ -455,14 +476,16 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
       for (const [key, value] of Object.entries(parsed)) {
         const _cached = value as {data = ttl) {
           this.cache.set(key, cached);
-        }
-      }
+        //         }
+      //       }
+
 
       this.context.apis.logger.info(`Loaded ${this.cache.size} cached entries`);
     } catch (error) {
       // No cache file, that's OK
-    }
-  }
+    //     }
+  //   }
+
 
   private async persistCache(): Promise<void> {
     try {
@@ -471,8 +494,9 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
 // await writeFile(cachePath, JSON.stringify(data, null, 2));
     } catch (error) {
       this.context.apis.logger.error('Failed to persist cache', error);
-    }
-  }
+    //     }
+  //   }
+
 
   private async logRequest(logEntry = new Date().toISOString().split('T')[0];
       const _logPath = join(this.config.settings.logging?.path  ?? './.hive-mind/ai-logs', `requests-${date}.jsonl`);
@@ -484,8 +508,8 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
       for (const word of words) {
         yield `${word} `;
         await new Promise(resolve => setTimeout(resolve, 50)); // Simulate streaming
-      }
-    }
+      //       }
+    //     }
     return textGenerator();
     //   // LINT: unreachable code removed}
 
@@ -497,7 +521,7 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
         for await (const chunk of stream) {
           totalTokens += chunk.length;
           yield chunk;
-        }
+        //         }
         self.emit('stream_complete', { requestId, totalTokens });
       } catch (error) {
         self.emit('stream_error', { requestId, error => {
@@ -507,10 +531,11 @@ sort(([ a], [ b]) => a.timestamp - b.timestamp)[0];
       for (const [minute] of this.rateLimiter) {
         if (minute < currentMinute - 1) {
           this.rateLimiter.delete(minute);
-        }
-      }
+        //         }
+      //       }
     }, 60000);
-  }
-}
+  //   }
+// }
+
 
 export default AIProviderPlugin;

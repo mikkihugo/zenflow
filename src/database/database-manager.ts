@@ -15,12 +15,12 @@ private;
 startTime = new Date()
 private;
 transactionManager = {}
-)
-{
+// )
+// {
   super();
   this.options = {enableMetrics = = false,enableHealthChecks = = false,healthCheckInterval = new TransactionManager(this, {defaultTimeout = new ConnectionPoolManager({loadBalancing = new DatabaseMonitor(this, {checkInterval = > this.shutdown());
   process.on('SIGTERM', () => this.shutdown());
-}
+// }
 /**
  * Add a database to the manager;
  */
@@ -35,12 +35,7 @@ console.warn(`📁 Adding ${config.type} database = {id = new SQLiteConnectionPo
           const _lanceDB = new LanceDBInterface({dbPath = lanceDB;
           break;
 
-        case 'kuzu':;
-          const _kuzuDB = new KuzuAdvancedInterface({dbPath = kuzuDB;
-          break;
-
-        case 'postgresql':;
-          throw new Error('PostgreSQL not yet implemented');default = 'connected';
+        case 'kuzu');default = 'connected';
       instance.healthCheck.isHealthy = true;
 
       this.databases.set(id, instance);
@@ -48,10 +43,11 @@ console.warn(`📁 Adding ${config.type} database = {id = new SQLiteConnectionPo
       console.warn(`✅ Database ${config.name} (${config.type})connected = this.databases.get(id);
 if (!instance) {
   return false;
-}
+// }
 console.warn(`🗑️ Removingdatabase = === 'function') {
 // await instance.connection.close();
-      }
+      //       }
+
 
       this.databases.delete(id);
       this.emit('database = this.databases.get(id);
@@ -79,16 +75,17 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
 
     if (!instance) {
       throw new Error(`Database notfound = = 'connected');
-{
+// {
   throw new Error(`Database notconnected = === 'vector' && 'similaritySearch' in instance.connection) {
         if (!query.vectorQuery) {
           throw new Error('Vector query parameters required');
-        }
+        //         }
+
 
         result = {success = === 'graph' && 'executeGraphQuery' in instance.connection) {
         if (!query.graphQuery) {
           throw new Error('Graph query parameters required');
-        }
+        //         }
 // const _graphResult = awaitinstance.connection.executeGraphQuery(query.graphQuery);
         result = graphResult;
 
@@ -114,8 +111,8 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
     report.databases[id] = dbHealth;
     if (dbHealth.health > 0.7) {
       healthyCount++;
-    }
-  }
+    //     }
+  //   }
   // Determine overall health
   if (totalCount === 0) {
     report.overall = 'critical';
@@ -126,17 +123,17 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
       report.overall = 'critical';
     } else if (healthRatio < 0.8) {
       report.overall = 'degraded';
-    }
-  }
+    //     }
+  //   }
   return report;
-}
+// }
 /**
  * Get metrics for all databases;
  */
 async;
 getMetrics();
 : Promise<DatabaseMetrics[]>
-{
+// {
     const __metrics = [];
 
     for (const [_id, _instance] of this.databases) {
@@ -147,12 +144,14 @@ getMetrics();
         if ('optimize' in instance.connection && typeof instance.connection.optimize === 'function') {
 // await instance.connection.optimize();
           optimized.push(`${instance.config.name} (${instance.type})`);
-        }
+        //         }
+
 
         if (instance.pool) {
 // await instance.pool.cleanup();
           optimized.push(`${instance.config.name} connection pool`);
-        }
+        //         }
+
 
       } catch (_error = this.databases.get(databaseId);
 
@@ -165,13 +164,15 @@ getMetrics();
 
     if (!source  ?? !target) {
       throw new Error('Source or target database not found');
-    }
+    //     }
+
 
     console.warn(`🔄 Migrating data from ${source.config.name} to ${target.config.name}`);
 
     // Migration implementation would depend on database types
     throw new Error('Data migration not yet implemented');
-  }
+  //   }
+
 
   /**
    * Sync databases;
@@ -189,7 +190,8 @@ getMetrics();
     // Stop health checks
     if (this.healthCheckTimer) {
       clearInterval(this.healthCheckTimer);
-    }
+    //     }
+
 
     // Stop database monitor
     this.databaseMonitor.stop();
@@ -213,18 +215,22 @@ getMetrics();
       if (instance.status !== 'connected') {
         issues.push('Database not connected');
         health -= 0.5;
-      }
+      //       }
+
 
       // Check error rate
 
+      // 
       }
+
 
       // Check response time
       if (instance.metrics.avgResponseTime > 5000) {
         issues.push('High average response time');
         recommendations.push('Consider query optimization');
         health -= 0.2;
-      }
+      //       }
+
 
       // Database-specific health checks
       if (instance.pool) {
@@ -232,11 +238,13 @@ getMetrics();
         if (poolHealth.status !== 'healthy') {
           issues.push(...poolHealth.issues);
           health -= 0.3;
-        }
-      }
+        //         }
+      //       }
+
 
     } catch (error = 0;
-    }
+    //     }
+
 
     instance.healthCheck = {lastCheck = new Date();
 
@@ -246,10 +254,11 @@ getMetrics();
 
     if (!success) {
       instance.metrics.errorCount++;
-    }
-  }
+    //     }
+  //   }
 
-  private startHealthChecks(): void {
+
+  private startHealthChecks() {
     this.healthCheckTimer = setInterval(async () => {
       if (this.isShuttingDown) return;
     // ; // LINT: unreachable code removed
@@ -267,7 +276,8 @@ getMetrics();
 // const _result = awaitthis.pool.execute(sql, params, {timeout = await this.pool.execute(sql, params);
       return {success = queries.map(q => ({query = await this.pool.executeBatch(batchQueries, {parallel = > ({success = await this.pool.execute(`EXPLAIN QUERY PLAN ${sql}`, params);
     // return { nodes, totalCost, estimatedRows: 0  // LINT: unreachable code removed};
-  }
-}
+  //   }
+// }
+
 
 export default UnifiedDatabaseManager;

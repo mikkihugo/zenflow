@@ -3,7 +3,7 @@
  * Converted from JavaScript to TypeScript;
  */
 export class PerformanceMonitor {
-  constructor(options = {}): unknown {
+  constructor(options = {}) {
     this.enabled = options.enabled !== false;
     this.logLevel = options.logLevel  ?? 'info';
     this.memoryCheckInterval = options.memoryCheckInterval  ?? 5000; // 5 seconds
@@ -11,7 +11,7 @@ export class PerformanceMonitor {
 
     this.metrics = {
       startTime,endTime = null;
-  }
+  //   }
   start() {
     if (!this.enabled) return;
     // ; // LINT: unreachable code removed
@@ -19,8 +19,8 @@ export class PerformanceMonitor {
     this.startMemoryMonitoring();
     if (this.logLevel === 'debug') {
       console.warn('🔍 Performance monitoring started');
-    }
-  }
+    //     }
+  //   }
   stop() {
     if (!this.enabled) return;
     // ; // LINT: unreachable code removed
@@ -29,8 +29,8 @@ export class PerformanceMonitor {
     this.calculateAverages();
     if (this.logLevel === 'debug') {
       console.warn('🔍 Performance monitoring stopped');
-    }
-  }
+    //     }
+  //   }
   startMemoryMonitoring() {
     if (typeof node !== 'undefined' && node.memoryUsage) {
       this.memoryMonitor = setInterval(() => {
@@ -38,32 +38,33 @@ export class PerformanceMonitor {
         const _memoryMB = memUsage.rss / 1024 / 1024;
 
         this.metrics.memoryReadings.push({timestamp = memoryMB;
-        }
+        //         }
+
 
       // Check memory limit
       if (memoryMB > this.maxMemoryMB) {
         this.metrics.warnings.push({timestamp = null;
-      }
-    }
+      //       }
+    //     }
     calculateAverages();
     if (this.metrics.memoryReadings.length > 0) {
       const _totalMemory = this.metrics.memoryReadings.reduce(;
       (sum, reading) => sum + reading.memoryMB,
       0;
-      )
+      //       )
       this.metrics.averageMemoryMB = totalMemory / this.metrics.memoryReadings.length
-    }
+    //     }
     recordOperation(operationType, (details = {}));
     : unknown
     if (!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.operationCount++;
     if (this.logLevel === 'debug') {
-      console.warn(`📊 Operation = {}): unknown {
+      console.warn(`📊 Operation = {}) {
     if (!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.errors.push({timestamp = === 'debug') {
-      console.warn('❌ Error recorded = {}): unknown {
+      console.warn('❌ Error recorded = {}) {
     if (!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.warnings.push({timestamp = === 'debug') {
@@ -85,21 +86,21 @@ export class PerformanceMonitor {
         `\n❌ Errors => {
         report += ` - \$error.error;
         \n`
-      }
-      )
-    }
+      //       }
+      //       )
+    //     }
     if (metrics.warnings.length > 0) {
       report +=;
       `\n⚠️  Warnings => {
         report += ` - \$warning.message;
       \n`
-    }
-    )
+    //     }
+    //     )
     return report;
     //   // LINT: unreachable code removed}
     // Real-time monitoring display
     displayRealTimeStats();
-    {
+    //     {
       if (!this.enabled) return;
       // ; // LINT: unreachable code removed
       const _currentTime = Date.now();
@@ -107,20 +108,20 @@ export class PerformanceMonitor {
       if (typeof node !== 'undefined' && node.memoryUsage) {
         const _memUsage = node.memoryUsage();
         currentMemory = `${(memUsage.rss / 1024 / 1024).toFixed(1)}MB`;
-      }
+      //       }
       console.warn(;
       `⏱️  ${elapsed.toFixed(1)}s | 💾 ${currentMemory} | 🔄 ${this.metrics.operationCount} ops`;
-      )
-    }
-  }
+      //       )
+    //     }
+  //   }
   // Resource threshold monitor
-  export;
+  // export;
   class;
   ResourceThresholdMonitor;
-  {
+  //   {
   constructor(
   options = {};
-  ): unknown {
+  ) {
     this.
   maxMemoryMB = options.maxMemoryMB ?? 1024;
   this;
@@ -144,28 +145,28 @@ export class PerformanceMonitor {
   => ),
   cpuWarning;
   => ) }
-}
+// }
 start()
-{
+// {
   if (this.isMonitoring) return;
   // ; // LINT: unreachable code removed
   this.isMonitoring = true;
   this.monitorInterval = setInterval(() => {
     this.checkResources();
   }, this.checkInterval);
-}
+// }
 stop();
-{
+// {
   if (!this.isMonitoring) return;
   // ; // LINT: unreachable code removed
   this.isMonitoring = false;
   if (this.monitorInterval) {
     clearInterval(this.monitorInterval);
     this.monitorInterval = null;
-  }
-}
+  //   }
+// }
 checkResources();
-{
+// {
   if (typeof node !== 'undefined' && node.memoryUsage) {
     const _memUsage = node.memoryUsage();
     const _memoryMB = memUsage.rss / 1024 / 1024;
@@ -175,17 +176,17 @@ checkResources();
       this.callbacks.memoryError(memoryMB, this.maxMemoryMB);
     } else if (memoryMB > warningThreshold) {
       this.callbacks.memoryWarning(memoryMB, this.maxMemoryMB);
-    }
-  }
-}
+    //     }
+  //   }
+// }
 static;
 createDefaultCallbacks();
-{
+// {
   return {
       onMemoryWarning => {
         printInfo(`⚠️ _Memory _usage _high => {
         console.error(`❌ Memory usage critical => {
-        printInfo(`⚠️ CPU usage high = {}): unknown {
+        printInfo(`⚠️ CPU usage high = {}) {
     const {
       cpuCores = 4,
     // memoryGB = 8, // LINT: unreachable code removed
@@ -196,23 +197,23 @@ createDefaultCallbacks();
       Math.floor(memoryGB / 0.5), // 500MB per project
       projectCount, // Can't exceed project count
       20, // Hard limit
-  )
+  //   )
   // Adjust for disk speed
   if (diskSpeed === 'hdd') {
     optimal = Math.ceil(optimal * 0.7); // Reduce for HDD
-  }
+  //   }
   return Math.max(1, optimal);
   //   // LINT: unreachable code removed}
   static
   estimateCompletionTime(projectCount, (options = {}));
   : unknown
-  {
+  //   {
     const {
       concurrency = 5,
     template = 'basic',
     sparc = false,
     averageTimePerProject = 15, // seconds
-  }
+  //   }
   = options
   const _timeMultiplier = 1;
   // Adjust for template complexity
@@ -225,25 +226,26 @@ createDefaultCallbacks();
   // Adjust for SPARC
   if (sparc) {
     timeMultiplier *= 1.3;
-  }
+  //   }
   const __adjustedTime = averageTimePerProject * timeMultiplier;
   return {
-      sequential = {}): unknown {
+      sequential = {}) {
     const _recommendations = [];
   // ; // LINT: unreachable code removed
   if (projectCount > 10) {
     recommendations.push('Consider using parallel processing for better performance');
-  }
+  //   }
   if (projectCount > 20) {
     recommendations.push('Use configuration files for better organization');
     recommendations.push('Consider breaking into smaller batches');
-  }
+  //   }
   if (options.sparc && projectCount > 5) {
     recommendations.push('SPARC initialization adds overhead - monitor memory usage');
-  }
+  //   }
   if (options.template === 'microservice' && projectCount > 3) {
     recommendations.push('Microservice template is complex - consider lower concurrency');
-  }
+  //   }
   return recommendations;
   //   // LINT: unreachable code removed}
-}
+// }
+

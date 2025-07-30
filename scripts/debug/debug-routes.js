@@ -14,9 +14,9 @@ Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([cmdName, cmdConfig]) => {
       app[httpMethod](endpoint, (_req, res) => res.json({}));
       console.warn('✅ OK');
     } catch (error) {
-      console.warn('❌ ERROR:', error.message);
+      console.warn('❌ ERROR);
       console.warn('   Stack:', error.stack.split('\n')[1]);
-    }
-  }
+    //     }
+  //   }
 });
 console.warn('✅ Route testing complete');

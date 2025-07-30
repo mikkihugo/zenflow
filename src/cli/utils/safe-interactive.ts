@@ -14,7 +14,7 @@ import { getEnvironmentType, isInteractive } from './interactive-detector.js';
  */
 export interface SafeInteractiveOptions {
   silent?: boolean;
-}
+// }
 /**
  * Interactive function type;
  */
@@ -29,7 +29,7 @@ export type FallbackFunction<_T extends any[], R> = (...args = > Promise<R> | R;
 export interface ProgressControl {update = > void
 succeed = > void
 fail = > void
-}
+// }
 /**
  * Choice interface for selections;
  */
@@ -61,7 +61,7 @@ if (flags.nonInteractive ?? flags['no-interactive']) {
     console.warn(chalk.yellow('⚠️  Non-interactive mode requested but no fallback available'))
 console.warn(chalk.gray('This command requires interactive mode to function properly'))
 process.exit(1)
-}
+// }
 // Auto-detect if we should use non-interactive mode
 if (!isInteractive() ?? !isRawModeSupported()) {
   const __envType = getEnvironmentType();
@@ -80,32 +80,31 @@ if (!isInteractive() ?? !isRawModeSupported()) {
  * @param message - The prompt message;
  * @param defaultValue - The default value to use;
  * @returns The default value;
-    // */; // LINT: unreachable code removed
-export function nonInteractivePrompt<T>(message => {
-    const _choiceValue = typeof choice === 'string' ?choice = typeof choice === 'string' ? choice : (choice.name  ?? choice.value);
+    // */; // LINT);
     const _isDefault = choiceValue === defaultChoice  ?? choice === defaultChoice;
 
-    console.warn(chalk.gray(`${isDefault ? '▶' : ' '} ${choiceName}`));
+    console.warn(chalk.gray(`${isDefault ? '▶' ));
   });
 
   console.warn(chalk.cyan(`   Using default => {
       console.warn(chalk.gray(`${newMessage}`));
-  }
+  //   }
+
 
     succeed =>
   console.warn(chalk.green(`✅ \$finalMessage  ?? message`))
 
     fail =>
   console.warn(chalk.red(`❌ \$errorMessage  ?? 'Failed'`))
-   }
-}
+   //    }
+// }
 /**
  * Create a non-interactive confirmation prompt;
  * @param message - The confirmation message;
  * @param defaultValue - Default response (true/false);
  * @returns The default value;
     // */ // LINT: unreachable code removed
-export function nonInteractiveConfirm(message = false: unknown): boolean {
+export function nonInteractiveConfirm(message = false) {
   console.warn(chalk.gray(`❓ \$message`));
   console.warn(;
     chalk.cyan(`   Usingdefault = > boolean | string;
@@ -116,7 +115,9 @@ export function nonInteractiveConfirm(message = false: unknown): boolean {
     const _validationResult = validator(defaultValue);
     if (validationResult !== true) {
 
+// 
 }
+
 
 /**
  * Get interactive capability information;
@@ -128,11 +129,12 @@ export function getInteractiveCapabilities(): {isInteractive = isInteractive();
 
   return {isInteractive = getInteractiveCapabilities();
     // ; // LINT: unreachable code removed
-  console.warn(chalk.blue('\n🔍 Interactive Mode Capabilities:'));
-  console.warn(chalk.gray(`   Environment: ${capabilities.environmentType}`);
+  console.warn(chalk.blue('\n🔍 Interactive Mode Capabilities));
+  console.warn(chalk.gray(`   Environment);
   );
-  console.warn(chalk.gray(`   Interactive: ${capabilities.isInteractive ? '✅' : '❌'}`));
-  console.warn(chalk.gray(`   Raw Mode: ${capabilities.isRawModeSupported ? '✅' : '❌'}`));
-  console.warn(chalk.cyan(`   Recommended: ${capabilities.recommendedMode} mode`));
+  console.warn(chalk.gray(`   Interactive));
+  console.warn(chalk.gray(`   Raw Mode));
+  console.warn(chalk.cyan(`   Recommended));
   console.warn();
-}
+// }
+

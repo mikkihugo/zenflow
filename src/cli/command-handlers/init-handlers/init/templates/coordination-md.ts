@@ -4,7 +4,7 @@
  */
 // coordination-md.js - Coordination templates
 
-export function createMinimalCoordinationMd(): unknown {
+export function createMinimalCoordinationMd() {
   return `# Agent Coordination
 
     // ## Quick Commands; // LINT: unreachable code removed
@@ -15,8 +15,8 @@ export function createMinimalCoordinationMd(): unknown {
 ## Agent Types;
 - researcher, coder, analyst, coordinator, general;
 `;
-}
-export function createFullCoordinationMd(): unknown {
+// }
+export function createFullCoordinationMd() {
   return `# Agent Coordination System
 
     // ## Overview; // LINT: unreachable code removed
@@ -70,7 +70,7 @@ npx claude-zen workflow examples/development-config.json --async;
 ## Configuration;
 Coordination settings in \`claude-zen.config.json\`:;
 \`\`\`json;
-{
+// {
   "orchestrator": {
     "maxConcurrentTasks",
     "taskTimeout",
@@ -82,9 +82,9 @@ Coordination settings in \`claude-zen.config.json\`:;
     "resourceLimits": {
       "memory": "1GB",
       "cpu": "50%";
-    }
-  }
-}
+    //     }
+  //   }
+// }
 \`\`\`
 
 ## Communication Patterns;
@@ -106,9 +106,9 @@ Coordination settings in \`claude-zen.config.json\`:;
 - Restart stuck agents with terminate/spawn cycle;
 - Use \`--verbose\` flags for detailed diagnostic information;
 `;
-}
+// }
 // Create optimized Coordination with batchtools support
-export async function createOptimizedCoordinationMd(): unknown {
+export async function createOptimizedCoordinationMd() {
   return `# Agent Coordination System (Batchtools Optimized)
 
     // ## Overview; // LINT: unreachable code removed
@@ -208,7 +208,7 @@ npx claude-zen workflow concurrent-monitor --all-workflows --real-time;
 ## Configuration (Batchtools Enhanced);
 Coordination settings in \`claude-zen.config.json\` with batchtools optimizations:;
 \`\`\`json;
-{
+// {
   "orchestrator": {
     "maxConcurrentTasks",
     "taskTimeout",
@@ -219,7 +219,7 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
       "batchSize",
       "concurrentAgents",
       "parallelWorkflows": 5;
-    }
+    //     }
   },
   "agents": {
     "maxAgents",
@@ -233,7 +233,7 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
       "batchQueueSize",
       "parallelSpawning",
       "concurrentMonitoring": true;
-    }
+    //     }
   },
   "performance": {
     "enableParallelCoordination",
@@ -241,8 +241,8 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
     "batchWorkflowSize",
     "parallelResourceMonitoring",
     "smartLoadBalancing": true;
-  }
-}
+  //   }
+// }
 \`\`\`
 
 ## Communication Patterns (Enhanced);
@@ -337,6 +337,7 @@ npx claude-zen monitor --resources --concurrent --real-time;
 - Restart stuck agents with batch operations: \`npx claude-zen agent batch-restart <agent-ids>\`;
 - Use concurrent diagnostics: \`npx claude-zen debug --all-systems --parallel\`
 
-For more information about coordination system optimization, see: https://github.com/ruvnet/claude-zen/docs/coordination-batchtools.md
+For more information about coordination system optimization, see: https,//github.com/ruvnet/claude-zen/docs/coordination-batchtools.md
 `;
-}
+// }
+

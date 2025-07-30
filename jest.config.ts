@@ -27,9 +27,9 @@ const config = {
   transform: {
     '^.+\\.ts$': [
       'ts-jest',
-      {
+      //       {
         useESM,
-        tsconfig: {
+        tsconfig: { // eslint-disable-line
           module: 'es2022',
           moduleResolution: 'node',
           allowSyntheticDefaultImports,

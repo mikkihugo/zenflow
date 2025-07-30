@@ -10,7 +10,7 @@ import { PerformanceOptimizer } from './performance-optimizer.js';
  * HiveMindCore - Main orchestration class;
  */
 export class HiveMindCore extends EventEmitter {
-  constructor(metaRegistryManager = {}): unknown {
+  constructor(metaRegistryManager = {}) {
     super();
 
     this.metaRegistryManager = metaRegistryManager;
@@ -25,8 +25,9 @@ export class HiveMindCore extends EventEmitter {
       this.state.metrics.tasksCreated++;
       // Auto-scaling check will now query ruv-swarm for pending tasks and idle workers
 // await this._checkAutoScale();
-    }
-  )
+    //     }
+  //   )
+
 
   this;
 
@@ -36,13 +37,13 @@ export class HiveMindCore extends EventEmitter {
   this;
 
   _updatePerformanceMetrics();
-}
-  )
+// }
+  //   )
   this
 
   on('task => {
       console.warn(`Task failed =>;
-  {
+  //   {
   this.
   state;
 
@@ -50,16 +51,16 @@ export class HiveMindCore extends EventEmitter {
 
   decisionsReached;
   ++
-}
-)
+// }
+// )
 this.on('worker => {
       // This event is now largely handled by ruv-swarm's internal task assignment
       console.warn('[HiveMindCore] worker => {
       console.error('Hive Mind Error => {
       console.warn(`Performance auto-tuned = $
-{
+// {
   data.newValue;
-}
+// }
 `);
 this.emit('performance => {
       console.error('Performance optimizer error => {;
@@ -72,13 +73,13 @@ this.mcpWrapper.executeTool('memory_usage', {action = 'initializing';
 this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
 if (!this.defaultRegistry) {
   throw new Error('Default MetaRegistry not found.');
-}
+// }
 this.hierarchicalTaskManagerPlugin = this.defaultRegistry.pluginSystem.getPlugin(;
 ('hierarchical-task-manager');
-)
+// )
 if (!this.hierarchicalTaskManagerPlugin) {
   throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
-}
+// }
 // Initialize ruv-swarm via mcpWrapper
 // await this.mcpWrapper.initialize();
 // Initialize swarm with MCP tools (now directly using ruv-swarm via mcpWrapper)
@@ -88,13 +89,13 @@ if (!this.hierarchicalTaskManagerPlugin) {
 this.emit('initialized', {swarmId = 'error';
 this.emit('error', error);
 throw error;
-}
-  }
+// }
+  //   }
 /**
  * Determine optimal topology based on objective;
  */
 _determineTopology();
-{
+// {
   // If user explicitly provided topology, use it
   if (this.config.topology) {
     return this.config.topology;
@@ -111,10 +112,12 @@ _determineTopology();
     return 'ring'; // Circular for continuous monitoring
   } else if (objective.includes('coordinate')  ?? objective.includes('orchestrate')) {
     return 'star'; // Centralized for coordination
-  }
+  //   }
+
 
   return 'hierarchical'; // Default
-}
+// }
+
 
 /**
  * Spawn the queen coordinator;
@@ -139,18 +142,18 @@ spawnQueen(queenData);
       this._trackSpawnPerformance(workerTypes.length, spawnTime);
 
       // Store worker info in memory (via mcpWrapper)
-// await this.mcpWrapper.executeTool('memory_usage', {action = > ({ id: r.agentId,type = 5, metadata = {}): unknown {
+// await this.mcpWrapper.executeTool('memory_usage', {action = > ({ id: r.agentId,type = 5, metadata = {}) {
     const _timestamp = Date.now();
     const _randomPart = Math.random().toString(36).substring(2, 11); // Use substring instead of substr
     const __taskId = `;
 task - $;
-{
+// {
   timestamp;
-}
+// }
 -$;
-{
+// {
   randomPart;
-}
+// }
 `;
 
     const __task = {id = await this.mcpWrapper.executeParallel([;
@@ -162,19 +165,23 @@ task - $;
       if (_complexityKeywords._complex._includes(_word)) score += 3;
       else if (complexityKeywords.medium.includes(word)) score += 2;
       else if (complexityKeywords.simple.includes(word)) score += 1;
-    }
+    //     }
+
 
     return Math.min(score * 5000, 60000); // Cap at 1 minute
-  }
+  //   }
+
 
   /**
    * Analyze task complexity;
    */;
-  _analyzeTaskComplexity(description): unknown {
+  _analyzeTaskComplexity(description) {
     const __words = description.toLowerCase().split(/\s+/);
 
+      // 
       }
-    }
+    //     }
+
 
     return 'medium';
     //   // LINT: unreachable code removed}
@@ -219,7 +226,7 @@ task - $;
   /**
    * Build consensus for decision;
    */;
-  async buildConsensus(topic, options): unknown {
+  async buildConsensus(topic, options) {
     const _decision = {id = Array.from(this.state.workers.values());
     const _votes = {};
 
@@ -276,26 +283,26 @@ typeScores.coder = 1; // Default to coder for now
 // Return type with highest score
 const _sorted = Object.entries(typeScores).sort((a, b) => b[1] - a[1]);
 return sorted.length > 0 ? sorted[0][0] : 'coder'; // Default to coder
-}
+// }
 /**
  * Update performance metrics;
  */
-async
+// async
 _updatePerformanceMetrics()
-{
+// {
   // Calculate performance metrics
 
   // Store metrics in memory (via mcpWrapper, which uses ruv-swarm's memory)
 // await this.mcpWrapper.executeTool('memory_usage', {action = === 0) {
       await this.mcpWrapper.analyzePerformance(this.state.swarmId);
-}
-}
+// }
+// }
 /**
  * Handle errors;
  */
 _handleError(error)
 : unknown
-{
+// {
   // Log error to memory (via mcpWrapper, which uses ruv-swarm's memory)
   this.mcpWrapper.executeTool('memory_usage', {action = await this.mcpWrapper.executeTool('swarm_status', {swarmId = > a.role === 'worker'), // Filter for workerstasks = 'shutting_down';
 
@@ -305,19 +312,20 @@ _handleError(error)
   // Save final state and performance report (via mcpWrapper, which uses ruv-swarm's memory)
 // await this.mcpWrapper.executeTool('memory_usage', {action = 'shutdown';
   this.emit('shutdown', { performanceReport });
-}
+// }
 catch (error)
-{
-  this.emit('error', { type: 'shutdown_failed', error });
+// {
+  this.emit('error', { type);
   throw error;
-}
-}
+// }
+// }
 /**
  * Get performance insights and recommendations;
  */
 getPerformanceInsights()
-{
+// {
   return this.performanceOptimizer.generatePerformanceReport();
-}
-}
-}
+// }
+// }
+// }
+

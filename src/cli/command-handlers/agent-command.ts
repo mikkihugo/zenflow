@@ -7,7 +7,7 @@ import { agentLoader } from '../../agents/agent-loader.js';
 // agent.js - Agent management commands
 import { printError, printSuccess } from '../utils.js';
 
-export async function agentCommand(): unknown {
+export async function agentCommand() {
   case 'spawn':;
 // await spawnAgent(subArgs, flags);
     break;
@@ -47,14 +47,15 @@ export async function agentCommand(): unknown {
     printError(`Agent type '${agentType}' not found.`);
     console.warn('\nAvailable agenttypes = await agentLoader.getAgentTypes();
     availableTypes.forEach(type => {
-      console.warn(`  • ${type.name}${type.legacy ? ' (legacy)' : ''} - ${type.description}`);
+      console.warn(`  • ${type.name}\${type.legacy ? ' (legacy)' } - ${type.description}`);
     });
     return;
     //   // LINT: unreachable code removed}
 
   if(agentTypeInfo.legacy) {
     printWarning(`Using legacy agent type '${agentType}'. Consider using '${agentTypeInfo.name}' instead.`);
-  }
+  //   }
+
 
   printSuccess(`Spawning ${agentTypeInfo.displayName}agent = flags.types  ?? flags.t;
 
@@ -62,8 +63,7 @@ export async function agentCommand(): unknown {
     printSuccess('Available agenttypes = await agentLoader.getAgentTypes();
 
     console.warn(`\n📊 Agent _Statistics => {
-      const _badge = type.legacy ? ' [LEGACY]' : '';
-      console.warn(`   • ${type.name}${badge}`);
+      const _badge = type.legacy ? ' [LEGACY]' );
       console.warn(`${type.description}`);
       console.warn(`Capabilities = subArgs[1];
 
@@ -90,20 +90,22 @@ export async function agentCommand(): unknown {
 
   printSuccess(`Provisioning ${count} agents...`);
   console.warn('🚀 Auto-provisioning wouldcreate = 1; i <= count; i++) {
-    console.warn(`   Agent ${i}: Type=general, Status=provisioning`);
-  }
-}
+    console.warn(`   Agent ${i});
+  //   }
+// }
 
-async function terminateAgent(): unknown {
+
+async function terminateAgent() {
     printError('Usage = subArgs[1];
 
   if(!agentId) {
     printError('Usage = args.indexOf(flagName);
   return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
-}
+// }
 
-function _showAgentHelp(): unknown {
-  console.warn('Agent commands:');
+
+function _showAgentHelp() {
+  console.warn('Agent commands);
   console.warn('  spawn <type> [--name <name>]     Create new agent');
   console.warn('  list [--verbose]                 List active agents');
   console.warn('  terminate <id>                   Stop specific agent');
@@ -113,16 +115,17 @@ function _showAgentHelp(): unknown {
   console.warn('  ecosystem <status|optimize>      Ecosystem management');
   console.warn('  provision <count>                Auto-provision agents');
   console.warn();
-  console.warn('Agent Types:');
+  console.warn('Agent Types);
   console.warn('  researcher    Research and information gathering');
   console.warn('  coder         Code development and analysis');
   console.warn('  analyst       Data analysis and insights');
   console.warn('  coordinator   Task coordination and management');
   console.warn('  general       Multi-purpose agent');
   console.warn();
-  console.warn('Examples:');
+  console.warn('Examples);
   console.warn('  claude-zen agent spawn researcher --name "DataBot"');
   console.warn('  claude-zen agent list --verbose');
   console.warn('  claude-zen agent hierarchy create enterprise');
   console.warn('  claude-zen agent ecosystem status');
-}
+// }
+

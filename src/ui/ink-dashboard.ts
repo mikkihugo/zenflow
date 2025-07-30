@@ -87,17 +87,20 @@ const __VisionDashboard = (): unknown => {
   useInput((input, key) => {
     if(key.ctrl && input === 'c') {
       process.exit(0);
-    }
+    //     }
+
 
     if(input === 'q') {
       process.exit(0);
-    }
+    //     }
+
 
     // Tab switching with number keys
     const _tabIndex = parseInt(input) - 1;
     if(tabIndex >= 0 && tabIndex < TABS.length) {
       setActiveTab(TABS[tabIndex].id);
-    }
+    //     }
+
 
     // Tab switching with arrow keys
     if(key.leftArrow  ?? key.rightArrow) {
@@ -106,10 +109,11 @@ const __VisionDashboard = (): unknown => {
 
       if(key.leftArrow) {
         nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < TABS.length - 1 ? currentIndex + 1 : 0;
-      }
+      //       }
+
 
       setActiveTab(TABS[nextIndex].id);
-    }
+    //     }
   });
 
   const _activeTabData = TABS.find(tab => tab.id === activeTab);
@@ -121,8 +125,7 @@ const __VisionDashboard = (): unknown => {
 
   return React.createElement(Box, { flexDirection => {
 
-    // return React.createElement(Box, { key => { // LINT: unreachable code removed
-  console.warn('\n👋 Claude-Zen dashboard shutting down...');
+    // return React.createElement(Box, { key => { // LINT);
   process.exit(0);
 });
 

@@ -48,7 +48,7 @@ class MCPClientExample {
   // Helper method to call MCP tools
   async callTool(toolName, params = {}) {
     try {
-      console.warn(`🔧 Calling tool: ${toolName}`, params);
+      console.warn(`🔧 Calling tool);
 // const _result = awaitthis.mcpServer.executeToolCall({
         name,
         arguments
@@ -56,7 +56,7 @@ class MCPClientExample {
     console.warn(`✅ Tool result:`, result)
     return result;
     //   // LINT: unreachable code removed} catch (error) {
-    console.error(`❌ Tool error:`, error);
+    console.error(`❌ Tool error);
     throw error;
 // }
 // }
@@ -100,7 +100,7 @@ agentSpawnExample();
 console.warn('✅ All agents spawned successfully')
 // }
 // Task orchestration example
-async
+// async
 taskOrchestrateExample()
 // {
   console.warn('\n📋 === Task Orchestration Example ===');
@@ -133,7 +133,7 @@ console.warn('Detailed Status:', detailedStatus)
 console.warn('Agent Metrics:', agentMetrics)
 // }
 // Memory operations example
-async
+// async
 memoryOperationsExample()
 // {
   console.warn('\n💾 === Memory Operations Example ===');
@@ -179,7 +179,7 @@ namespace: 'project'
 console.warn('All project memories:', memories)
 // }
 // Memory search example
-async
+// async
 memorySearchExample()
 // {
   console.warn('\n🔍 === Memory Search Example ===');
@@ -204,7 +204,7 @@ console.warn('Task memories:', taskResults)
 console.warn('Memory analytics:', analytics)
 // }
 // Performance analysis example
-async
+// async
 performanceAnalysisExample()
 // {
   console.warn('\n📈 === Performance Analysis Example ===');
@@ -222,7 +222,7 @@ metrics: ['response-time', 'throughput', 'error-rate']
 console.warn('Bottleneck Analysis:', bottleneckAnalysis)
 // }
 // System diagnostics example
-async
+// async
 systemDiagnosticsExample()
 // {
   console.warn('\n🔧 === System Diagnostics Example ===');
@@ -244,35 +244,35 @@ console.warn('Security Scan:', securityScan)
 console.warn('Feature Detection:', features)
 // }
 // Complete workflow example
-async
+// async
 completeWorkflowExample()
 // {
   console.warn('\n🔄 === Complete Workflow Example ===');
   try {
       // 1. Initialize swarm
-      console.warn('Step 1: Initialize swarm');
+      console.warn('Step 1);
   // await this.swarmInitExample();
       // 2. Spawn agents
-      console.warn('Step 2: Spawn specialized agents');
+      console.warn('Step 2);
   // await this.agentSpawnExample();
       // 3. Set up memory context
-      console.warn('Step 3: Set up memory context');
+      console.warn('Step 3);
   // await this.memoryOperationsExample();
       // 4. Orchestrate main task
-      console.warn('Step 4: Orchestrate main task');
+      console.warn('Step 4);
   // await this.taskOrchestrateExample();
       // 5. Monitor progress
-      console.warn('Step 5: Monitor swarm status');
+      console.warn('Step 5);
   // await this.swarmStatusExample();
       // 6. Analyze performance
-      console.warn('Step 6: Analyze performance');
+      console.warn('Step 6);
   // await this.performanceAnalysisExample();
       // 7. Run diagnostics
-      console.warn('Step 7: Run diagnostics');
+      console.warn('Step 7);
   // await this.systemDiagnosticsExample();
       console.warn('\n✅ Complete workflow example finished successfully');
     } catch (error) {
-      console.error('❌ Workflow error:', error);
+      console.error('❌ Workflow error);
       throw error;
 // }
 // }
@@ -283,12 +283,12 @@ runExample(exampleName);
   if (!this.examples.has(exampleName)) {
     throw new Error(`Example "${exampleName}" not found`);
 // }
-  console.warn(`\n🎯 Running example: ${exampleName}`);
+  console.warn(`\n🎯 Running example);
   return await this.examples.get(exampleName)();
   //   // LINT: unreachable code removed}
   // List available examples
   listExamples();
-  console.warn('\n📋 Available MCP Examples:');
+  console.warn('\n📋 Available MCP Examples);
   Array.from(this.examples.keys()).forEach((name, index) => {
     console.warn(`${index + 1}. ${name}`);
   });
@@ -301,7 +301,7 @@ runExample(exampleName);
         console.warn(`\n--- Running ${name} ---`);
   // await example();
       } catch (error) {
-        console.error(`❌ Example ${name} failed:`, error);
+        console.error(`❌ Example ${name} failed);
 // }
 // }
   console.warn('\n✅ All examples completed');
@@ -313,7 +313,7 @@ async function main() {
   // await client.initialize();
   if (!exampleName) {
     client.listExamples();
-    console.warn('\nUsage: node mcp-client-example.js [example-name|all]');
+    console.warn('\nUsage);
     return;
     //   // LINT: unreachable code removed}
   if (exampleName === 'all') {
@@ -323,7 +323,7 @@ async function main() {
 // }
 // }
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file) {
   main().catch(console.error);
 // }
 export { MCPClientExample };

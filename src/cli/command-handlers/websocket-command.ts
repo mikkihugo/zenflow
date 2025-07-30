@@ -9,11 +9,11 @@ import { printInfo, printSuccess } from '../utils.js';
  * WebSocket command handler;
  */
 export async function websocketCommand(input = input[0];
-const _subArgs = input.slice(1: unknown);
+const _subArgs = input.slice(1);
 if (flags.help ?? flags.h ?? !subcommand) {
   showWebSocketHelp();
   return;
-}
+// }
 switch(subcommand) {
     case 'test':;
 // await testWebSocket(subArgs, flags);
@@ -50,7 +50,7 @@ switch(subcommand) {
       setTimeout(() => {
         if(!responseReceived) {
           printWarning('⏰ No response received within timeout');
-        }
+        //         }
         client.disconnect();
         service.shutdown();
         resolve();
@@ -97,7 +97,7 @@ switch(subcommand) {
       });
 
       console.warn('\n🔗 Connections => {
-        console.warn(`  • ${name}: ${conn.isConnected ? '✅ Connected' : '❌ Disconnected'} (${conn.url})`);
+        console.warn(`  • ${name}: \${conn.isConnected ? '✅ Connected' } (${conn.url})`);
         if(flags.stats) {
           console.warn(`    📊Messages = args.join(' ');
   const __url = flags.url  ?? `ws = await WebSocketService.create();
@@ -108,7 +108,8 @@ switch(subcommand) {
     //   // LINT: unreachable code removed}
     } else if(flags.type) {
       messageData = {type = message;
-    }
+    //     }
+
 
     const _success = client.send(messageData);
 
@@ -174,9 +175,10 @@ switch(subcommand) {
 
         connections.push(client);
       } catch(error) ;
-        printError(`❌ Failed to create connection \$i: \$error.message`);
+        printError(`❌ Failed to create connection \$i);
         errors++;
-    }
+    //     }
+
 
     printInfo(`✅ Created \$connections.lengthconnections`);
 
@@ -187,8 +189,9 @@ switch(subcommand) {
       for(let i = 0; i < messagesPerConnection; i++) {
         const _success = client.send(testMessage);
         if (success) totalSent++;
-      }
-    }
+      //       }
+    //     }
+
 
     // Wait for responses
 // await new Promise(resolve => setTimeout(resolve, flags.timeout  ?? 10000));
@@ -205,19 +208,20 @@ switch(subcommand) {
   printInfo('🔍 WebSocket Support Information');
   console.warn('━'.repeat(60));
 
-  console.warn(`🐍 Node.js Version: ${support.nodeVersion}`);
-  console.warn(`🔢 Major Version: ${support.majorVersion}`);
-  console.warn(`🆕 Native WebSocket: ${support.hasNativeWebSocket ? '✅ Available' : '❌ Not Available'}`);
-  console.warn(`🧪 Experimental Support: ${support.supportsExperimentalWebSocket ? '✅ Yes' : '❌ No'}`);
-  console.warn(`💡 Recommendation: ${support.recommendation}`);
+  console.warn(`🐍 Node.js Version);
+  console.warn(`🔢 Major Version);
+  console.warn(`🆕 Native WebSocket);
+  console.warn(`🧪 Experimental Support);
+  console.warn(`💡 Recommendation);
 
   if(support.supportsExperimentalWebSocket && !support.hasNativeWebSocket) {
-    console.warn('\n🔧 To enable native WebSocket support:');
+    console.warn('\n🔧 To enable native WebSocket support);
     console.warn('   node --experimental-websocket your-script.js');
-    console.warn('   or add to NODE_OPTIONS: --experimental-websocket');
-  }
+    console.warn('   or add to NODE_OPTIONS);
+  //   }
 
-  console.warn('\n📚 Features:');
+
+  console.warn('\n📚 Features);
   console.warn('• Standards-compliant WebSocket client (RFC 6455)');
   console.warn('• Automatic reconnection with exponential backoff');
   console.warn('• Message queuing during disconnection');
@@ -225,53 +229,41 @@ switch(subcommand) {
   console.warn('• Load balancing across multiple connections');
   console.warn('• Real-time monitoring and statistics');
   console.warn('• Integration with claude-zen services');
-}
+// }
 
-function _showWebSocketHelp(): unknown {
+
+function _showWebSocketHelp() {
   console.warn(`;
 🌐 WEBSOCKET - Node.js 22 Native WebSocket Client & Server Management
 
-USAGE:;
-  claude-zen websocket <command> [options]
-
-COMMANDS:;
-  test [url]                Test WebSocket connectivity;
-  connect <url>             Connect and maintain WebSocket connection;
-  status                    Show WebSocket service status;
-  send <message>            Send message via WebSocket;
-  monitor [urls...]         Monitor multiple WebSocket connections;
-  benchmark [url]           Benchmark WebSocket performance;
-  support                   Show WebSocket support information
-
-TEST OPTIONS:;
-  --port <port>            Server port (default: 3000);
-  --heartbeat <ms>         Heartbeat interval (default: 5000);
-  --timeout <ms>           Response timeout (default: 5000)
+USAGE);
+  --heartbeat <ms>         Heartbeat interval (default);
+  --timeout <ms>           Response timeout (default)
 
 CONNECT OPTIONS:;
-  --name <name>            Connection name (default: cli-connection);
-  --port <port>            Server port (default: 3000);
-  --reconnect              Enable auto-reconnect (default: true);
-  --heartbeat <ms>         Heartbeat interval (default: 30000)
+  --name <name>            Connection name (default);
+  --port <port>            Server port (default);
+  --reconnect              Enable auto-reconnect (default);
+  --heartbeat <ms>         Heartbeat interval (default)
 
 SEND OPTIONS:;
   --url <url>              WebSocket URL;
-  --port <port>            Server port (default: 3000);
+  --port <port>            Server port (default);
   --type <type>            Message type for structured messages;
   --json                   Parse message as JSON
 
 MONITOR OPTIONS:;
-  --port <port>            Server port (default: 3000);
+  --port <port>            Server port (default);
   --stats                  Show periodic statistics;
-  --interval <ms>          Stats interval (default: 10000);
-  --heartbeat <ms>         Heartbeat interval (default: 30000)
+  --interval <ms>          Stats interval (default);
+  --heartbeat <ms>         Heartbeat interval (default)
 
 BENCHMARK OPTIONS:;
-  --port <port>            Server port (default: 3000);
-  --messages <count>       Number of messages (default: 1000);
-  --concurrency <count>    Concurrent connections (default: 1);
-  --size <bytes>           Message size in bytes (default: 100);
-  --timeout <ms>           Benchmark timeout (default: 10000)
+  --port <port>            Server port (default);
+  --messages <count>       Number of messages (default);
+  --concurrency <count>    Concurrent connections (default);
+  --size <bytes>           Message size in bytes (default);
+  --timeout <ms>           Benchmark timeout (default)
 
 STATUS OPTIONS:;
   --verbose                Show detailed information;
@@ -300,6 +292,7 @@ INTEGRATION:;
   • Neural network training progress;
   • Memory operation notifications;
 `);
-}
+// }
+
 
 export default websocketCommand;

@@ -53,8 +53,7 @@ describe('NPX Isolated Cache', () =>
       describe('getIsolatedNpxEnv', () => {
         it('should merge additional environment variables', () => {
           const _env = getIsolatedNpxEnv({
-        CUSTOM_VAR: 'custom-value',
-          NODE_ENV: 'override-value' });
+        CUSTOM_VAR);
         expect(env.CUSTOM_VAR).toBe('custom-value');
         expect(env.NODE_ENV).toBe('override-value');
         expect(env.NPM_CONFIG_CACHE).toBeDefined();

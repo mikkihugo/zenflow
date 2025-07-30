@@ -23,61 +23,61 @@ MetricsCalculator } from './code-analysis/metrics-calculator'
  * Code file data structure;
  */
 export interface CodeFileData {
-  content: string;
-  path: string;
-  language: string;
-  size: number;
-  lastModified: Date;
-}
+  // content: string
+  // path: string
+  // language: string
+  // size: number
+  // lastModified: Date
+// }
 /**
  * Class analysis data;
  */
 export interface ClassData {
-  name: string;
+  // name: string
   extends?: string[];
   implements?: string[];
-  lineNumber: number;
-  methodCount: number;
-  lineCount: number;
-  file: string;
-}
+  // lineNumber: number
+  // methodCount: number
+  // lineCount: number
+  // file: string
+// }
 /**
  * Dependency analysis results;
  */
 export interface DependencyAnalysis {
-  external: string[];
-  internal: string[];
-  totalCount: number;
-  externalCount: number;
-  internalCount: number;
-}
+  external;
+  internal;
+  // totalCount: number
+  // externalCount: number
+  // internalCount: number
+// }
 /**
  * Complete code analysis results;
  */
 export interface CodeAnalysisResult {
-  ast: ASTNode[];
-  functions: FunctionData[];
-  classes: ClassData[];
-  complexity: ComplexityAnalysis;
-  dependencies: DependencyAnalysis;
-  metrics: CodeMetrics;
+  ast;
+  functions;
+  classes;
+  // complexity: ComplexityAnalysis
+  // dependencies: DependencyAnalysis
+  // metrics: CodeMetrics
   aiInsights?: unknown;
   metadata: {
-    filesAnalyzed: number;
-    totalLinesProcessed: number;
-    analysisTime: number;
-    language: string;
+    // filesAnalyzed: number
+    // totalLinesProcessed: number
+    // analysisTime: number
+    // language: string
   };
-}
+// }
 /**
  * Configuration for the code analysis engine;
  */
 export interface CodeAnalysisConfig {
-  outputDir: string;
-  enableAnalytics: boolean;
-  supportedFormats: string[];
+  // outputDir: string
+  // enableAnalytics: boolean
+  supportedFormats;
   neuralEngine?: unknown;
-}
+// }
 /**
  * Modular Code Analysis Engine;
  *;
@@ -85,34 +85,34 @@ export interface CodeAnalysisConfig {
  * providing better maintainability and focused responsibilities.;
  */
 export class CodeAnalysisEngine {
-  private readonly config: CodeAnalysisConfig;
-  private readonly astParser: ASTParser;
-  private readonly metricsCalculator: MetricsCalculator;
-  private readonly functionExtractor: FunctionExtractor;
+  private readonly config: CodeAnalysisConfig,
+  private readonly astParser: ASTParser,
+  private readonly metricsCalculator: MetricsCalculator,
+  private readonly functionExtractor: FunctionExtractor,
   /**
    * Initialize the Code Analysis Engine;
    *;
    * @param config - Configuration options;
    */
-  constructor(config: CodeAnalysisConfig) {
+  constructor(config) {
     this.config = config;
     this.astParser = new ASTParser();
     this.metricsCalculator = new MetricsCalculator();
     this.functionExtractor = new FunctionExtractor();
-  }
+  //   }
   /**
    * Initialize the analysis engine;
    */
   async initialize(): Promise<void> {
     console.warn('🔍 Code Analysis Engine (Modular) initialized');
-  }
+  //   }
   /**
    * Analyze code files and return comprehensive analysis results;
     // *; // LINT: unreachable code removed
    * @param codeData - Array of code file data;
    * @returns Complete code analysis results;
     // */ // LINT: unreachable code removed
-  async analyzeCode(codeData: CodeFileData[]): Promise<CodeAnalysisResult> {
+  async analyzeCode(codeData): Promise<CodeAnalysisResult> {
     const _startTime = Date.now();
     const _totalLines = 0;
     try {
@@ -132,9 +132,10 @@ export class CodeAnalysisEngine {
         try {
           _aiInsights = await this.performAIAnalysis(codeData, 'code-analysis');
         } catch (error) {
-          console.warn('AI analysis unavailable:', error.message);
-        }
-      }
+          console.warn('AI analysis unavailable);
+        //         }
+      //       }
+
 
       const _analysisTime = Date.now() - startTime;
 
@@ -150,12 +151,12 @@ export class CodeAnalysisEngine {
           totalLinesProcessed,
           analysisTime,
           language: codeData[0]?.language  ?? 'unknown', }
-  }
+  //   }
   catch (error) {
-    console.error('❌ Code analysis failed:', error);
+    console.error('❌ Code analysis failed);
     throw error;
-  }
-}
+  //   }
+// }
 /**
    * Read and process code files from filesystem;
    *;
@@ -163,14 +164,14 @@ export class CodeAnalysisEngine {
    * @returns Processed code file data;
     // */ // LINT: unreachable code removed
 async;
-readCodeData(codeFiles: string[])
+readCodeData(codeFiles)
 : Promise<CodeFileData[]>
-{
-  const _codeData: CodeFileData[] = [];
+// {
+  const _codeData = [];
   for (const filePath of codeFiles) {
     if (!existsSync(filePath)) {
-      throw new Error(`Code file not found: ${filePath}`);
-    }
+      throw new Error(`Code file not found);
+    //     }
 // const _content = awaitreadFile(filePath, 'utf8');
 // const _stats = awaitstat(filePath);
     codeData.push({
@@ -179,8 +180,8 @@ readCodeData(codeFiles: string[])
     language: this.detectLanguage(filePath),
     size: stats.size,
     lastModified: stats.mtime }
-  )
-}
+  //   )
+// }
 return codeData;
 //   // LINT: unreachable code removed}
 /**
@@ -190,24 +191,24 @@ return codeData;
  * @param language - Expected language;
  */
 async;
-validateCodeInputs(codeFiles: string[], language: string)
+validateCodeInputs(codeFiles, language: string)
 : Promise<void>
-{
+// {
   // Validate code files exist
   for (const filePath of codeFiles) {
     if (!existsSync(filePath)) {
-      throw new Error(`Code file not found: ${filePath}`);
-    }
+      throw new Error(`Code file not found);
+    //     }
     const _extension = path.extname(filePath).toLowerCase().substring(1);
     if (!this.config.supportedFormats.includes(extension)) {
-      throw new Error(`Unsupported code file format: ${extension}`);
-    }
-  }
+      throw new Error(`Unsupported code file format);
+    //     }
+  //   }
   // Validate language is supported
   if (!this.supportedLanguages.has(language)) {
-    throw new Error(`Unsupported language: ${language}`);
-  }
-}
+    throw new Error(`Unsupported language);
+  //   }
+// }
 /**
    * Extract classes from code files (simplified implementation);
    *;
@@ -216,14 +217,14 @@ validateCodeInputs(codeFiles: string[], language: string)
     // */ // LINT: unreachable code removed
 private
 async;
-extractClasses(codeData: CodeFileData[])
+extractClasses(codeData)
 : Promise<ClassData[]>
-{
-  const _classes: ClassData[] = [];
+// {
+  const _classes = [];
   for (const file of codeData) {
 // const _fileClasses = awaitthis.extractFileClasses(file);
     classes.push(...fileClasses);
-  }
+  //   }
   return classes;
   //   // LINT: unreachable code removed}
   /**
@@ -234,16 +235,16 @@ extractClasses(codeData: CodeFileData[])
     // */ // LINT: unreachable code removed
   private
   async;
-  extractFileClasses(file: CodeFileData)
+  extractFileClasses(file)
   : Promise<ClassData[]>
-  {
-    const _classes: ClassData[] = [];
+  //   {
+    const _classes = [];
     const _lines = file.content.split('\n');
     for (let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _classMatch = this.matchClass(line, file.language);
       if (classMatch) {
-        const _cls: ClassData = {
+        const _cls = {
           name: classMatch.name,
         extends: classMatch.extends,
         implements: classMatch.implements,
@@ -252,8 +253,8 @@ extractClasses(codeData: CodeFileData[])
         lineCount: await this.countClassLines(lines, i),
         file: file.path }
       classes.push(cls);
-    }
-  }
+    //     }
+  //   }
   return classes;
   //   // LINT: unreachable code removed}
   /**
@@ -264,9 +265,9 @@ extractClasses(codeData: CodeFileData[])
     // */ // LINT: unreachable code removed
   private
   async;
-  analyzeDependencies(codeData: CodeFileData[])
+  analyzeDependencies(codeData)
   : Promise<DependencyAnalysis>
-  {
+  //   {
     const _dependencies = {
       external: new Set<string>(),
     internal: new Set<string>() }
@@ -274,7 +275,7 @@ extractClasses(codeData: CodeFileData[])
 // const _fileDeps = awaitthis.extractFileDependencies(file);
     fileDeps.external.forEach((dep) => dependencies.external.add(dep));
     fileDeps.internal.forEach((dep) => dependencies.internal.add(dep));
-  }
+  //   }
   const _external = Array.from(dependencies.external);
   const _internal = Array.from(dependencies.internal);
   return {
@@ -283,16 +284,16 @@ extractClasses(codeData: CodeFileData[])
   totalCount: external.length + internal.length,
   externalCount: external.length,
   internalCount: internal.length }
-}
+// }
 // Helper methods
 
 /**
  * Detect programming language from file extension;
  */
 private
-detectLanguage(filePath: string)
+detectLanguage(filePath)
 : string
-{
+// {
   const _extension = path.extname(filePath).toLowerCase();
   const _languageMap: Record<string, string> = {
       '.js': 'javascript',
@@ -326,15 +327,15 @@ return languageMap[extension]  ?? 'unknown';
 private
 matchClass(;
 line,
-language: string;
+// language: string
 ): null
-{
-  name: string;
+// {
+  // name: string
   extends?: string[]
   implements?: string[]
-}
+// }
 | null
-{
+// {
   const _patterns: Record<string, RegExp> = {
       javascript: /class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([^{]+))?/,
   python: /class\s+(\w+)(?:\(([^)]+)\))?/ }
@@ -345,7 +346,7 @@ if (match) {
         name: match[1],
   // extends: match[2] ? [match[2]] , // LINT: unreachable code removed
   implements: match[3] ? match[3].split(',').map((i) => i.trim()) }
-}
+// }
 return null;
 //   // LINT: unreachable code removed}
 /**
@@ -353,9 +354,9 @@ return null;
  */
 private
 async;
-countClassMethods(lines: string[], startLine: number)
+countClassMethods(lines, startLine: number)
 : Promise<number>
-{
+// {
   const _methodCount = 0;
   const _braceCount = 0;
   const _i = startLine;
@@ -364,14 +365,14 @@ countClassMethods(lines: string[], startLine: number)
     // Simplified method detection
     if (line.trim().includes('function') ?? line.trim().match(/\w+\s*\(/)) {
       methodCount++;
-    }
+    //     }
     braceCount += (line.match(/\{/g) ?? []).length;
     braceCount -= (line.match(/\}/g) ?? []).length;
     if (braceCount === 0 && i > startLine) {
       break;
-    }
+    //     }
     i++;
-  }
+  //   }
   return methodCount;
   //   // LINT: unreachable code removed}
   /**
@@ -379,9 +380,9 @@ countClassMethods(lines: string[], startLine: number)
    */
   private
   async;
-  countClassLines(lines: string[], startLine: number)
+  countClassLines(lines, startLine: number)
   : Promise<number>
-  {
+  //   {
     const _braceCount = 0;
     const _i = startLine;
     const _lineCount = 0;
@@ -392,9 +393,9 @@ countClassMethods(lines: string[], startLine: number)
       braceCount -= (line.match(/\}/g) ?? []).length;
       if (braceCount === 0 && i > startLine) {
         break;
-      }
+      //       }
       i++;
-    }
+    //     }
     return lineCount;
     //   // LINT: unreachable code removed}
     /**
@@ -402,12 +403,12 @@ countClassMethods(lines: string[], startLine: number)
      */
     private
     async;
-    extractFileDependencies(file: CodeFileData)
+    extractFileDependencies(file)
     : Promise<
     external: Set<string>
     internal: Set<string>
     >
-    {
+    //     {
       const _dependencies = {
       external: new Set<string>(),
       internal: new Set<string>() }
@@ -421,8 +422,8 @@ countClassMethods(lines: string[], startLine: number)
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
-        }
-      }
+        //         }
+      //       }
       // Extract require statements
       const _requireMatch = line.match(/require\(['"]([^'"]+)['"]\)/);
       if (requireMatch) {
@@ -431,9 +432,9 @@ countClassMethods(lines: string[], startLine: number)
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
-        }
-      }
-    }
+        //         }
+      //       }
+    //     }
     return dependencies;
     //   // LINT: unreachable code removed}
     /**
@@ -441,22 +442,22 @@ countClassMethods(lines: string[], startLine: number)
      */
     private
     async;
-    performAIAnalysis(codeData: CodeFileData[], analysisType: string)
+    performAIAnalysis(codeData, analysisType: string)
     : Promise<any>
-    {
+    //     {
       if (!this.config.neuralEngine) {
         throw new Error('Neural engine not available');
-      }
+      //       }
       const _codeContent = codeData.map((file) => file.content).join('\n\n');
 // const _result = awaitthis.config.neuralEngine.infer(;
       'analysis',
       'analyzeComplexity',
       codeContent;
-      )
+      //       )
       return {
       type,
       // insights, // LINT: unreachable code removed
       confidence: 0.85 }
-  }
-}
+  //   }
+// }
 export default CodeAnalysisEngine;

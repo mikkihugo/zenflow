@@ -30,50 +30,12 @@ const __PROCESSES = [
 
       if(process.status === 'running') {
         console.warn(;
-          `${colors.gray(`PID = new TextDecoder();
+          `\${colors.gray(`PID = new TextDecoder();
     const _encoder = new TextEncoder();
 // await node.stdout.write(encoder.encode('\nCommand = new Uint8Array(1024);
 // const _n = awaitnode.stdin.read(buf);
     if (n === null) return;
-    // ; // LINT: unreachable code removed
-    const _rawInput = decoder.decode(buf.subarray(0, n)).trim();
-    // Take only the first line if multiple lines were read
-    const _input = rawInput.split('\n')[0].toLowerCase();
-
-    // Handle commands
-    switch(input) {
-      case 'q':;
-      case 'quit':;
-        this.running = false;
-        console.clear();
-        printSuccess('Goodbye!');
-        node.exit(0);  // Exit immediately
-        node.exit(0); // Exit immediately
-        break;
-
-      case 'a':;
-// await this.startAll();
-        break;
-
-      case 'z':;
-// await this.stopAll();
-        break;
-
-      case 'r':;
-// await this.restartAll();
-        break;
-
-      case '1':;
-      case '2':;
-      case '3':;
-      case '4':;
-      case '5':;
-      case '6':;
-        const _index = parseInt(input) - 1;
-        if(index >= 0 && index < PROCESSES.length) {
-          this.selectedIndex = index;
-// await this.toggleSelected();
-        }
+    // ; // LINT}
         break;
 
       case ' ':;
@@ -81,9 +43,10 @@ const __PROCESSES = [
       case '':;
 // await this.toggleSelected();
         break;default = > setTimeout(resolve, 1000));
-        }
-    }
-  }
+        //         }
+    //     }
+  //   }
+
 
   async toggleSelected() {
     const _process = Array.from(this.processes.values())[this.selectedIndex];
@@ -91,10 +54,11 @@ const __PROCESSES = [
 // await this.startProcess(process.id);
     } else {
 // await this.stopProcess(process.id);
-    }
-  }
+    //     }
+  //   }
 
-  async startProcess(id): unknown {
+
+  async startProcess(id) {
     const _process = this.processes.get(id);
     if (!process) return;
     // ; // LINT: unreachable code removed
@@ -115,11 +79,12 @@ const __PROCESSES = [
         process.uptime++;
       } else {
         clearInterval(interval);
-      }
+      //       }
     }, 1000);
-  }
+  //   }
 
-  async stopProcess(id): unknown {
+
+  async stopProcess(id) {
     const _process = this.processes.get(id);
     if (!process) return;
     // ; // LINT: unreachable code removed
@@ -129,36 +94,41 @@ const __PROCESSES = [
     process.uptime = 0;
 // await new Promise((resolve) => setTimeout(resolve, 300));
     console.warn(colors.green(`✓ ${process.name} stopped`));
-  }
+  //   }
+
 
   async startAll() {
     console.warn(colors.yellow('Starting all processes...'));
     for(const [id, process] of this.processes) {
       if(process.status === 'stopped') {
 // await this.startProcess(id);
-      }
-    }
+      //       }
+    //     }
     console.warn(colors.green('✓ All processes started'));
-  }
+  //   }
+
 
   async stopAll() {
     console.warn(colors.yellow('Stopping all processes...'));
     for(const [id, process] of this.processes) {
       if(process.status === 'running') {
 // await this.stopProcess(id);
-      }
-    }
+      //       }
+    //     }
     console.warn(colors.green('✓ All processes stopped'));
-  }
+  //   }
+
 
   async restartAll() {
 // await this.stopAll();
 // await new Promise((resolve) => setTimeout(resolve, 500));
 // await this.startAll();
-  }
-}
+  //   }
+// }
 
-export async function launchProcessUI(): unknown {
+
+export async function launchProcessUI() {
   const _ui = new ProcessUI();
 // await ui.start();
-}
+// }
+

@@ -15,7 +15,7 @@ jest.mock('express', () => {
   return { close: jest.fn() };
   //   // LINT: unreachable code removed}),
   set: jest.fn())
-  )
+  //   )
   mockExpress.json = jest.fn()
   mockExpress.urlencoded = jest.fn()
   mockExpress.static = jest.fn()
@@ -32,18 +32,18 @@ jest.mock('../../../src/api/claude-zen-schema.js', () => ({
       { path: '/api/status', method: 'GET', handler: 'statusCheck' } ] },
 generateWorkflowRoutes: jest.fn(),
 generateOpenAPISpec: jest.fn(() => (
-{
+// {
   openapi: '3.0.0', info;
   : title: 'Test API'
-}
+// }
 )) }))
 jest.mock('../../../src/api/agui-websocket-middleware.js', () => (
-{
+// {
   integrateAGUIWithWebSocket: jest.fn()
-}
+// }
 ))
 describe('ClaudeZenServer', () =>
-{
+// {
   let server;
   let _mockApp;
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('ClaudeZenServer', () =>
   afterEach(async () => {
     if (server) {
   // await server.stop();
-    }
+    //     }
   });
   describe('constructor', () => {
     it('should create server with default options', () => {
@@ -78,7 +78,7 @@ describe('ClaudeZenServer', () =>
   });
 })
 describe('server lifecycle', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer({ port });
   });
@@ -91,7 +91,7 @@ describe('server lifecycle', () =>
       } catch (error) {
         // Server might fail to start in test environment, which is acceptable
         expect(error).toBeDefined();
-      }
+      //       }
   });
   it('should stop server successfully', async () => {
     try {
@@ -101,20 +101,20 @@ describe('server lifecycle', () =>
       } catch (error) {
         // Server operations might fail in test environment
         expect(error).toBeDefined();
-      }
+      //       }
   });
   it('should handle start errors gracefully', async () => {
     // Mock server start failure
-    const _invalidServer = new ClaudeZenServer({ port: -1 });
+    const _invalidServer = new ClaudeZenServer({ port);
     try {
   // await invalidServer.start();
       } catch (error) {
         expect(error).toBeDefined();
-      }
+      //       }
   });
 })
 describe('middleware setup', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer();
   });
@@ -129,18 +129,18 @@ describe('middleware setup', () =>
   expect(middlewareConfig.rateLimit).toBe(true);
 })
 it('should configure body parsing middleware', () =>
-{
+// {
   const _bodyParsingConfig = {
         json: { limit: '10mb' },
   extended, limit;
   : '10mb'
-}
+// }
 expect(bodyParsingConfig.json.limit).toBe('10mb');
 expect(bodyParsingConfig.urlencoded.extended).toBe(true);
 })
 })
 describe('route generation', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer();
   });
@@ -155,7 +155,7 @@ describe('route generation', () =>
   method: endpoint.method.toLowerCase(),
   handler: endpoint.handler
 })
-)
+// )
 expect(routes).toHaveLength(2)
 expect(routes[0].path).toBe('/api/test')
 expect(routes[0].method).toBe('get')
@@ -163,7 +163,7 @@ expect(routes[1].path).toBe('/api/users')
 expect(routes[1].method).toBe('post')
 })
 it('should handle different HTTP methods', () =>
-{
+// {
   const _methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
   methods.forEach((method) => {
         const _endpoint = {
@@ -176,7 +176,7 @@ it('should handle different HTTP methods', () =>
 })
 })
 describe('WebSocket integration', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer({ enableWebSocket });
   });
@@ -191,14 +191,14 @@ describe('WebSocket integration', () =>
   expect(wsConfig.path).toBe('/ws');
 })
 it('should handle WebSocket connections', () =>
-{
+// {
   const _mockConnection = {
         id: 'test-connection',
   readyState, // OPEN
     send;
   : jest.fn(),
   close: jest.fn()
-}
+// }
 const _connectionHandler = {
         onConnection: jest.fn((ws) => {
           ws.id = 'test-connection';
@@ -206,13 +206,13 @@ const _connectionHandler = {
         }),
 onMessage: jest.fn(),
 onClose: jest.fn()
-}
+// }
 connectionHandler.onConnection(mockConnection)
 expect(mockConnection.id).toBe('test-connection')
 })
 })
 describe('health and status endpoints', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer();
   });
@@ -228,13 +228,13 @@ describe('health and status endpoints', () =>
   expect(healthResponse.version).toBeDefined();
 })
 it('should provide status check endpoint', async () =>
-{
+// {
   const _statusResponse = {
         server: 'running',
   connections,
   memory: process.memoryUsage(),
   cpu: process.cpuUsage()
-}
+// }
 expect(statusResponse.server).toBe('running');
 expect(typeof statusResponse.connections).toBe('number');
 expect(statusResponse.memory).toBeDefined();
@@ -242,7 +242,7 @@ expect(statusResponse.cpu).toBeDefined();
 })
 })
 describe('error handling', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer();
   });
@@ -262,7 +262,7 @@ describe('error handling', () =>
         headersSent,
   status: jest.fn(() => mockRes),
   json: jest.fn()
-}
+// }
 errorHandler.handleError(testError, {}, mockRes, jest.fn());
 expect(mockRes.status).toHaveBeenCalledWith(500);
 expect(mockRes.json).toHaveBeenCalledWith(;
@@ -270,35 +270,35 @@ expect.objectContaining({
           error: 'Internal Server Error',
 message: 'Test error'
 })
-)
+// )
 })
 it('should handle 404 errors', () =>
-{
+// {
   const _notFoundHandler = () => {
         res.status(404).json({
           error: 'Not Found',
           message: `Route ${req.method} ${req.path} not found`,
           timestamp: new Date().toISOString() };
-  )
-}
+  //   )
+// }
 const _mockReq = { method: 'GET', path: '/api/nonexistent' };
 const _mockRes = {
         status: jest.fn(() => mockRes),
 json: jest.fn()
-}
+// }
 notFoundHandler(mockReq, mockRes)
 expect(mockRes.status).toHaveBeenCalledWith(404)
 expect(mockRes.json).toHaveBeenCalledWith(
 expect.objectContaining(
-{
+// {
   error: 'Not Found',
   message: 'Route GET /api/nonexistent not found'
 })
-)
+// )
 })
 })
 describe('metrics collection', () =>
-{
+// {
   beforeEach(() => {
     server = new ClaudeZenServer({ enableMetrics });
   });
@@ -313,8 +313,10 @@ describe('metrics collection', () =>
           this.requests.byStatus[status] = (this.requests.byStatus[status]  ?? 0) + 1;
           // Simplified average calculation
           this.requests.averageResponseTime = responseTime;
-        }
+        //         }
 
+
+// 
 }
 metrics.recordRequest('GET', 200, 150);
 metrics.recordRequest('POST', 201, 200);
@@ -325,7 +327,7 @@ expect(metrics.requests.byStatus[200]).toBe(1);
 expect(metrics.requests.byStatus[201]).toBe(1);
 })
 it('should provide metrics endpoint', () =>
-{
+// {
   const _metricsEndpoint = {
         path: '/api/metrics',
   handler: () => ({
@@ -336,16 +338,19 @@ it('should provide metrics endpoint', () =>
   , PUT ,
   200
   , 404, 500
-}
+// }
 
+
+// 
 {
   uptime: process.uptime(),
   memory: process.memoryUsage(),
   cpu: process.cpuUsage()
-}
+// }
+
 
 })
-}
+// }
 const _response = metricsEndpoint.handler();
 expect(response.requests.total).toBe(100);
 expect(response.requests.byMethod.GET).toBe(60);

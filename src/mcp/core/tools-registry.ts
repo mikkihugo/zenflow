@@ -29,7 +29,7 @@ export interface ToolCategory {name = ==========================================
  * Initialize Claude Zen core command tools;
  * @returns Claude Zen command tool definitions;
     // */ // LINT: unreachable code removed
-export function initializeClaudeZenTools(): ToolRegistry {
+export function initializeClaudeZenTools() {
   return {claude_zen_init = ============================================================================
 // // PRODUCT MANAGEMENT TOOLS // LINT: unreachable code removed
 // =============================================================================
@@ -38,7 +38,7 @@ export function initializeClaudeZenTools(): ToolRegistry {
  * Initialize Product Management tools for planning with queens;
  * @returns Product management tool definitions;
     // */ // LINT: unreachable code removed
-export function initializeProductTools(): ToolRegistry {
+export function initializeProductTools() {
   return {prd_create = ============================================================================
 // // NEURAL NETWORK TOOLS // LINT: unreachable code removed
 // =============================================================================
@@ -59,7 +59,7 @@ export interface NeuralInferenceResult {
  * Initialize memory management tools;
  * @returns Memory management tool definitions;
     // */ // LINT: unreachable code removed
-export function _initializeMemoryTools(): ToolRegistry {
+export function _initializeMemoryTools() {
   return {memory_usage = ============================================================================
 // // AGENT MANAGEMENT TOOLS // LINT: unreachable code removed
 // =============================================================================
@@ -68,7 +68,7 @@ export function _initializeMemoryTools(): ToolRegistry {
  * Initialize agent management tools;
  * @returns Agent management tool definitions;
     // */ // LINT: unreachable code removed
-export function initializeAgentTools(): ToolRegistry {
+export function initializeAgentTools() {
   return {agent_list = ============================================================================
 // // TASK MANAGEMENT TOOLS // LINT: unreachable code removed
 // =============================================================================
@@ -77,7 +77,7 @@ export function initializeAgentTools(): ToolRegistry {
  * Initialize task management tools;
  * @returns Task management tool definitions;
     // */ // LINT: unreachable code removed
-export function _initializeTaskTools(): ToolRegistry {
+export function _initializeTaskTools() {
   return {task_status = ============================================================================
 // // SYSTEM TOOLS // LINT: unreachable code removed
 // =============================================================================
@@ -86,7 +86,7 @@ export function _initializeTaskTools(): ToolRegistry {
  * Initialize system tools;
  * @returns System tool definitions;
     // */ // LINT: unreachable code removed
-export function _initializeSystemTools(): ToolRegistry {
+export function _initializeSystemTools() {
   return {features_detect = ============================================================================
 // // GIT TOOLS // LINT: unreachable code removed
 // =============================================================================
@@ -95,9 +95,9 @@ export function _initializeSystemTools(): ToolRegistry {
  * Initialize Git tools;
  * @returns Git tool definitions;
     // */ // LINT: unreachable code removed
-export function _initializeGitTools(): ToolRegistry {
+export function _initializeGitTools() {
   return gitTools;
-}
+// }
 // =============================================================================
 // TOOL REGISTRY FUNCTIONS
 // =============================================================================
@@ -106,7 +106,7 @@ export function _initializeGitTools(): ToolRegistry {
  * Combine all tool definitions into a single registry;
  * @returns Complete tools registry;
     // */ // LINT: unreachable code removed
-export function _initializeAllTools(): ToolRegistry {
+export function _initializeAllTools() {
   return {
 ..initializeClaudeZenTools(),
   // ...initializeProductTools(), // LINT: unreachable code removed
@@ -116,22 +116,22 @@ export function _initializeAllTools(): ToolRegistry {
 ..initializeTaskTools(),
 ..initializeSystemTools(),
 ..initializeGitTools() }
-}
+// }
 /**
  * Get tool schema by name;
  * @param toolName - Name of the tool;
  * @returns Tool schema or null if not found;
     // */ // LINT: unreachable code removed
-export function getToolSchema(toolName = initializeAllTools(: unknown);
+export function getToolSchema(toolName = initializeAllTools();
 return allTools[toolName] ?? null;
-}
+// }
 /**
  * Validate tool arguments against schema;
  * @param toolName - Name of the tool;
  * @param args - Arguments to validate;
  * @returns Validation result;
     // */ // LINT: unreachable code removed
-export function validateToolArgs(toolName = getToolSchema(toolName: unknown);
+export function validateToolArgs(toolName = getToolSchema(toolName);
 
 if (!schema) {
   return {valid = schema.inputSchema.required  ?? [];
@@ -145,13 +145,13 @@ if (!schema) {
         return {valid = === 'string' && typeof value !== 'string') {
         return {
           valid,
-        // error: `Invalid type for ${key // LINT: unreachable code removed}: expected string, got ${typeof value}`;
-      }
-    }
-  }
-}
+        // error: `Invalid type for \${key // LINT}: expected string, got ${typeof value}`;
+      //       }
+    //     }
+  //   }
+// }
 return { valid};
-}
+// }
 /**
  * Get tool categories;
  * @returns Array of tool categories;
@@ -162,32 +162,33 @@ export function _getToolCategories(): ToolCategory[] {
       name: 'claude-zen',
       description: 'Core Claude Zen operations',
       count: Object.keys(initializeClaudeZenTools()).length },
-    {
+    //     {
       name: 'product',
       description: 'Product management tools',
       count: Object.keys(initializeProductTools()).length },
-    {
+    //     {
       name: 'neural',
       description: 'Neural network operations',
       count: Object.keys(initializeNeuralTools()).length },
-    {
+    //     {
       name: 'memory',
       description: 'Memory management operations',
       count: Object.keys(_initializeMemoryTools()).length },
-    {
+    //     {
       name: 'agent',
       description: 'Agent lifecycle management',
       count: Object.keys(initializeAgentTools()).length },
-    {
+    //     {
       name: 'task',
       description: 'Task orchestration and monitoring',
       count: Object.keys(initializeTaskTools()).length },
-    {
+    //     {
       name: 'system',
       description: 'System utilities and features',
       count: Object.keys(initializeSystemTools()).length },
-    {
+    //     {
       name: 'git',
       description: 'Git version control operations',
       count: Object.keys(initializeGitTools()).length } ];
-}
+// }
+

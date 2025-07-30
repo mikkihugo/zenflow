@@ -17,10 +17,10 @@ async function testHierarchicalTaskManager() {
   // Mock registry object
   const _mockRegistry = {
     register: async (key, _value, _options) => {
-      console.warn(`📝 Registered: ${key}`);
+      console.warn(`📝 Registered);
       return true;
       getPlugin: (name) => {
-        console.warn(`🔌 Plugin requested: ${name}`);
+        console.warn(`🔌 Plugin requested);
         return null; // Mock plugins not available
       }, };
   try {
@@ -29,7 +29,7 @@ async function testHierarchicalTaskManager() {
       dbPath,
       autoBreakdown,
       enableQueenCoordination,
-      minConfidenceForSuggestion: 0.5 });
+      minConfidenceForSuggestion);
     console.warn('✅ Task Manager initialized successfully\n');
     // Test Vision Creation with AI Breakdown
     console.warn('🎯 Testing Vision Creation with AI Breakdown...');
@@ -45,9 +45,9 @@ async function testHierarchicalTaskManager() {
       stakeholders: ['customers', 'administrators', 'developers'],
       timeline: '6 months',
       priority: 'high'
-}
+// }
 // const _visionId = awaittaskManager.createVision(testVision);
-console.warn(`✅ Vision created with ID: ${visionId}\n`);
+console.warn(`✅ Vision created with ID);
 // Wait a moment for async breakdown to complete
   // await new Promise((resolve) => setTimeout(resolve, 2000));
 // Test querying the results
@@ -55,37 +55,37 @@ console.warn('📊 Querying breakdown results...');
 const _visions = taskManager.db.prepare('SELECT * FROM visions').all();
 const _epics = taskManager.db.prepare('SELECT * FROM epics').all();
 const _assignments = taskManager.db.prepare('SELECT * FROM assignments').all();
-console.warn(`\nResults:`);
-console.warn(`- Visions: ${visions.length}`);
-console.warn(`- Epics: ${epics.length}`);
-console.warn(`- Assignments: ${assignments.length}`);
+console.warn(`\nResults);
+console.warn(`- Visions);
+console.warn(`- Epics);
+console.warn(`- Assignments);
 if (epics.length > 0) {
-  console.warn('\n📋 Generated Epics:');
+  console.warn('\n📋 Generated Epics);
   epics.forEach((epic, index) => {
     console.warn(`${index + 1}. ${epic.title}`);
-    console.warn(`     Priority: ${epic.priority}, Effort: ${epic.effort}`);
+    console.warn(`     Priority);
   });
-}
+// }
 if (assignments.length > 0) {
-  console.warn('\n🎯 Delegations:');
+  console.warn('\n🎯 Delegations);
   assignments.forEach((assignment, index) => {
     const _context = JSON.parse(assignment.context);
-    console.warn(`${index + 1}. Assigned to: ${assignment.queen_id}`);
-    console.warn(`     Epic: ${context.epic_title}`);
-    console.warn(`     Status: ${assignment.status}`);
+    console.warn(`${index + 1}. Assigned to);
+    console.warn(`     Epic);
+    console.warn(`     Status);
   });
-}
+// }
 console.warn('\n✅ Test completed successfully!');
 } catch (error)
-{
-  console.error('❌ Test failed:', error.message);
+// {
+  console.error('❌ Test failed);
   console.error(error.stack);
-}
-finally
-{
+// }
+// finally
+// {
   // Cleanup
   // await taskManager.cleanup();
-}
-}
+// }
+// }
 // Run the test
 testHierarchicalTaskManager().catch(console.error)
