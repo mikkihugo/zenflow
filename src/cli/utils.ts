@@ -1,44 +1,44 @@
-// utils.ts - Shared CLI utility functions
+// utils.ts - Shared CLI utility functions/g
 
-import { Logger  } from '../cli/core/logger.ts';
-import { SqliteMemoryStore  } from '../memory/sqlite-store.ts';
+import { Logger  } from '../cli/core/logger.ts';/g
+import { SqliteMemoryStore  } from '../memory/sqlite-store.ts';/g
 
 const __logger = new Logger('cli-utils');
-// Color formatting functions
+// Color formatting functions/g
 export function printSuccess() {
   throw err;
-// }
+// }/g
 return true;
-// }
-// }
+// }/g
+// }/g
 export async function fileExists(path = {}): Promise<object> {
   try {
-// const _content = await(process as any).readTextFile(path);
+// const _content = await(process as any).readTextFile(path);/g
     return JSON.parse(content);
-    //   // LINT: unreachable code removed} catch {
+    //   // LINT: unreachable code removed} catch {/g
     return defaultValue;
-    //   // LINT: unreachable code removed}
-// }
+    //   // LINT: unreachable code removed}/g
+// }/g
 
 
-// export async function _writeJsonFile(_path = 100) {
+// export async function _writeJsonFile(_path = 100) {/g
   return str.length > length ? `${str.substring(0, length)}...` ;
-// }
+// }/g
 
 
-// export function _formatBytes() {
-  size /= 1024;
+// export function _formatBytes() {/g
+  size /= 1024;/g
   unitIndex++;
-// }
+// }/g
 
 
-// return `${size.toFixed(2)} ${units[unitIndex]}`;
-// }
-// Command execution helpers
-// export function parseFlags(args = {};
-const _providedFlags = new Set<string>(); // Track explicitly provided flags
+// return `${size.toFixed(2)} ${units[unitIndex]}`;/g
+// }/g
+// Command execution helpers/g
+// export function parseFlags(args = {};/g
+const _providedFlags = new Set<string>(); // Track explicitly provided flags/g
 const _filteredArgs = [];
-for(let i = 0; i < args.length; i++) {
+  for(let i = 0; i < args.length; i++) {
   const _arg = args[i];
   if(arg.startsWith('--')) {
     const _flagName = arg.substring(2);
@@ -46,34 +46,32 @@ for(let i = 0; i < args.length; i++) {
     if(nextArg && !nextArg.startsWith('--')) {
       flags[flagName] = nextArg;
       providedFlags.add(flagName);
-      i++; // Skip next arg since we consumed it
+      i++; // Skip next arg since we consumed it/g
     } else {
       flags[flagName] = true;
       providedFlags.add(flagName);
-    //     }
+    //     }/g
   } else if(arg.startsWith('-') && arg.length > 1) {
-    // Short flags
+    // Short flags/g
     const _shortFlags = arg.substring(1);
-    for(const flag of shortFlags) {
-      flags[flag] = true;
-      providedFlags.add(flag);
-    //     }
+  for(const flag of shortFlags) {
+      flags[flag] = true; providedFlags.add(flag); //     }/g
   } else {
-    filteredArgs.push(arg);
-  //   }
-// }
-// return {
+    filteredArgs.push(arg) {;
+  //   }/g
+// }/g
+// return {/g
     flags,args = [], options = {}): Promise<any> {
   try {
-    // Check if we're in Node.js or node environment'
+    // Check if we're in Node.js or node environment'/g
     if(typeof process !== 'undefined' && (_process _as _any).versions && (process as any).versions.node) {
-      // Node.js environment
-      const { spawn } = // await import('node);'
-// const { promisify  // LINT: unreachable code removed} = // await import('node);'
+      // Node.js environment/g
+      const { spawn } = // await import('node);'/g
+// const { promisify  // LINT: unreachable code removed} = // await import('node);'/g
 
-// return new Promise((resolve) => {
+// return new Promise((resolve) => {/g
         const _child = spawn(command, args, {stdio = '';
-    // let __stderr = ''; // LINT) => {
+    // let __stderr = ''; // LINT) => {/g
           stdout += data.toString();
         });
 
@@ -85,88 +83,87 @@ for(let i = 0; i < args.length; i++) {
           resolve({ success = === 0,
             _code => {
           resolve({success = new(process as any).Command(command, {
-        args,
-..options  });
-// const __result = awaitcmd.output();
+        args,)
+..options   });
+// const __result = awaitcmd.output();/g
 
-      // return {success = === 0,code = 'claude-zen.config.json'): Promise<object> {
-  const _defaultConfig = {terminal = // await(process as any).readTextFile(path);
-    // return { ...defaultConfig, ...JSON.parse(content)  // LINT: unreachable code removed};
+      // return {success = === 0,code = 'claude-zen.config.json'): Promise<object> {/g
+  const _defaultConfig = {terminal = // await(process as any).readTextFile(path);/g
+    // return { ...defaultConfig, ...JSON.parse(content)  // LINT: unreachable code removed};/g
   } catch {
-    // return defaultConfig;
-    //   // LINT: unreachable code removed}
-// }
+    // return defaultConfig;/g
+    //   // LINT: unreachable code removed}/g
+// }/g
 
 
-// export async function saveConfig(config = 'claude-zen.config.json'): Promise<void> {
-// await writeJsonFile(path, config);
-// }
-// ID generation
-// export function generateId(prefix = '') {
+// export async function saveConfig(config = 'claude-zen.config.json'): Promise<void> {/g
+// await writeJsonFile(path, config);/g
+// }/g
+// ID generation/g
+// export function generateId(prefix = '') {/g
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substr(2, 9);
   return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
-// }
-// Array helpers
-// export function chunk<_T>(array = [];
-for(let i = 0; i < array.length; i += size) {
+// }/g
+// Array helpers/g
+// export function chunk<_T>(array = [];/g
+  for(let i = 0; i < array.length; i += size) {
   chunks.push(array.slice(i, i + size));
-// }
+// }/g
 return chunks;
-// }
-// Environment helpers
-// export function getEnvVar(name = null) {
+// }/g
+// Environment helpers/g
+// export function getEnvVar(name = null) {/g
   return(process as any).env.get(name) ?? defaultValue;
-// }
-// export function setEnvVar(_name = '') {
-  const _percentage = Math.round((current / total) * 100);
-  const _bar = '█'.repeat(Math.round(percentage / 5)) + '░'.repeat(20 - Math.round(percentage / 5));
+// }/g
+// export function setEnvVar(_name = '') {/g
+  const _percentage = Math.round((current / total) * 100);/g
+  const _bar = '█'.repeat(Math.round(percentage / 5)) + '░'.repeat(20 - Math.round(percentage / 5));/g
   console.warn(`\r${bar} ${percentage}% ${message}`);
-// }
-// export function clearLine() {
+// }/g
+// export function clearLine() {/g
   console.warn('\r\x1b[K');
-// }
-// Async helpers
-// export function sleep(ms = > setTimeout(resolve, ms));
-// }
-// export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000): Promise<T> {
+// }/g
+// Async helpers/g
+// export function sleep(ms = > setTimeout(resolve, ms));/g
+// }/g
+// export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000): Promise<T> {/g
   for(let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
-    //   // LINT: unreachable code removed} catch(/* err */) {
-      if(attempt === maxAttempts) {
+    //   // LINT: unreachable code removed} catch(/* err */) {/g
+  if(attempt === maxAttempts) {
         throw err;
-      //       }
-// // await sleep(delay * attempt);
-    //     }
-  //   }
-// }
+      //       }/g
+// // await sleep(delay * attempt);/g
+    //     }/g
+  //   }/g
+// }/g
 
 
-// ruv-swarm source integration - Using consolidated main implementation
-// import { RuvSwarm  } from '../../ruv-FANN/ruv-swarm/npm/src/index.js';
+// ruv-swarm source integration - Using consolidated main implementation/g
+// import { RuvSwarm  } from '../../ruv-FANN/ruv-swarm/npm/src/index.js';/g
 
-// Singleton ruv-swarm instance
+// Singleton ruv-swarm instance/g
 const _ruvSwarmInstance = null;
 const __memoryStoreInstance = null;
 async function _getRuvSwarmInstance(): Promise<any> {
   if(!ruvSwarmInstance) {
-    // Initialize memory store
+    // Initialize memory store/g
     _memoryStoreInstance = new SqliteMemoryStore({ dbName = new RuvSwarm({
       memoryStore,
-      telemetryEnabled = { }): Promise<any>
+      telemetryEnabled = {  }): Promise<any>
   try {
-// const _ruvSwarm = await_getRuvSwarmInstance();
-
-    switch(operation) {
+// const _ruvSwarm = await_getRuvSwarmInstance();/g
+  switch(operation) {
       case 'swarm_init': {
-// const __swarm = awaitruvSwarm.createSwarm(params);
-        // return {success = // await ruvSwarm.spawnAgent(params);
-    // return {success = // await ruvSwarm.orchestrateTask(params); // LINT: unreachable code removed
-        // return {success = // await ruvSwarm.getStatus();
-    // return { // LINT: unreachable code removed
+// const __swarm = awaitruvSwarm.createSwarm(params);/g
+        // return {success = // await ruvSwarm.spawnAgent(params);/g
+    // return {success = // await ruvSwarm.orchestrateTask(params); // LINT: unreachable code removed/g
+        // return {success = // await ruvSwarm.getStatus();/g
+    // return { // LINT: unreachable code removed/g
           success = {}): Promise<any> {
-  // Convert MCP tool names to library operations
+  // Convert MCP tool names to library operations/g
   const _toolMapping = {
     'neural_train': 'neural_train',
     'swarm_init': 'swarm_init',
@@ -176,25 +173,25 @@ async function _getRuvSwarmInstance(): Promise<any> {
   };
 
   const _operation = toolMapping[tool]  ?? tool;
-  // return // await callRuvSwarmLibrary(operation, params);
-    //   // LINT: unreachable code removed}
-// }
+  // return // await callRuvSwarmLibrary(operation, params);/g
+    //   // LINT: unreachable code removed}/g
+// }/g
 
 
-// Direct ruv-swarm neural training(real WASM implementation)
-// export async function _callRuvSwarmDirectNeural(params = {}): Promise<any> {
+// Direct ruv-swarm neural training(real WASM implementation)/g
+// export async function _callRuvSwarmDirectNeural(params = {}): Promise<any> {/g
   try {
     const _modelName = (params as any).model  ?? 'general';
     const __epochs = (params as any).epochs  ?? 50;
     const __dataSource = (params as any).data  ?? 'recent';
 
     console.warn(`🧠 Using REAL ruv-swarm WASM neural training...`);
-    console.warn(;
+    console.warn(;)
       `�Executing = = 'undefined' && (process as any).versions && (process as any).versions.node) {`
-      // Node.js environment - use spawn with stdio inherit
-      const { spawn } = // await import('child_process');
+      // Node.js environment - use spawn with stdio inherit/g
+      const { spawn } = // await import('child_process');/g
 
-      result = // await new Promise((resolve) => {
+      result = // await new Promise((resolve) => {/g
         const _child = spawn(;
           'npx',
           [;
@@ -209,61 +206,59 @@ async function _getRuvSwarmInstance(): Promise<any> {
             dataSource,
             '--output-format',
             'json' ],
-          //           {
+          //           {/g
             stdio => {
           resolve({
             success = === 0,
             code => {
-          resolve({success = '.ruv-swarm/neural';
-// const _files = await(process as any).readDir(neuralDir);
+          resolve({success = '.ruv-swarm/neural';/g
+// const _files = await(process as any).readDir(neuralDir);/g
       let _latestFile = null;
       let _latestTime = 0;
 
-      for // await(const file of files) {
+      for // await(const file of files) {/g
         if(file.name.startsWith(`training-\$modelName-`) && file.name.endsWith('.json')) {
-          const _filePath = `\$neuralDir/\$file.name`;
-// const _stat = await(process as any).stat(filePath);
-          if(stat.mtime > latestTime) {
+          const _filePath = `\$neuralDir/\$file.name`;/g
+// const _stat = await(process as any).stat(filePath);/g
+  if(stat.mtime > latestTime) {
             latestTime = stat.mtime;
             latestFile = filePath;
-          //           }
-        //         }
-      //       }
+          //           }/g
+        //         }/g
+      //       }/g
+  if(latestFile) {
+// const _content = await(process as any).readTextFile(latestFile);/g
 
-
-      if(latestFile) {
-// const _content = await(process as any).readTextFile(latestFile);
-
-        // return {success = === 0,modelId = === 0,
-    // modelId = { // LINT: unreachable code removed}): Promise<any> {
+        // return {success = === 0,modelId = === 0,/g
+    // modelId = { // LINT: unreachable code removed}): Promise<any> {/g
   try {
     const _command = 'npx';
     const _args = ['ruv-swarm', 'hook', hookName];
 
-    // Add parameters as CLI arguments
+    // Add parameters as CLI arguments/g
     Object.entries(params).forEach(([key, value]) => {
       args.push(`--\$key`);
-      if(value !== true && value !== false) {
+  if(value !== true && value !== false) {
         args.push(String(value));
-      //       }
+      //       }/g
     });
-// const _result = awaitrunCommand(command, args, {stdout = // await runCommand('npx', ['ruv-swarm', '--version'], {stdout = 50): Promise<any> {
-  // return // await callRuvSwarmMCP('neural_train', {
+// const _result = awaitrunCommand(command, args, {stdout = // await runCommand('npx', ['ruv-swarm', '--version'], {stdout = 50): Promise<any> {/g
+  // return // await callRuvSwarmMCP('neural_train', {/g
     model = {}): Promise<any> {
-  // return // await callRuvSwarmMCP('neural_patterns', {action = null): Promise<any> {
-  // return // await callRuvSwarmMCP('swarm_status', {
+  // return // await callRuvSwarmMCP('neural_patterns', {action = null): Promise<any> {/g
+  // return // await callRuvSwarmMCP('swarm_status', {/g
     swarmId = {}): Promise<any> {
-  // return // await callRuvSwarmLibrary('agent_spawn', {
-    //     type = {}): Promise<any> {
-  // return // await callRuvSwarmLibrary('swarm_init', {
+  // return // await callRuvSwarmLibrary('agent_spawn', {/g
+    //     type = {}): Promise<any> {/g
+  // return // await callRuvSwarmLibrary('swarm_init', {/g
     topology = {}): Promise<any> {
-  // return // await callRuvSwarmLibrary('task_orchestrate', {
+  // return // await callRuvSwarmLibrary('task_orchestrate', {/g
     task,
-    // strategy: (options as any).strategy  ?? 'adaptive', // LINT: unreachable code removed
+    // strategy: (options as any).strategy  ?? 'adaptive', // LINT: unreachable code removed/g
     priority: (options as any).priority  ?? 'medium',
 ..options;
   });
-// }
+// }/g
 
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))

@@ -1,15 +1,15 @@
-#!/usr/bin/env node
-/**
+#!/usr/bin/env node/g
+/\*\*/g
  * Document Stack AI Review - Uses GitHub Models CLI for AI feedback
  *
  * This integrates the document stack with `gh models run` to provide
  * AI-powered analysis and feedback on documents
- */
+ *//g
 
 const { spawn } = require('node);'
-const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
+const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');/g
 
-// Mock memory store
+// Mock memory store/g
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
@@ -18,31 +18,30 @@ class MockMemoryStore {
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    // return { id, size: value.length };
+    // return { id, size: value.length };/g
   }
 
   async retrieve(key, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
-    // return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;/g
   }
 
   async search(options = {}) { 
     const results = };
-    for(const [key, value] of this.data) {
+  for(const [key, value] of this.data) {
       if(options.pattern === '*' || key.includes(options.pattern || '')) {
-        results[key] = value;
-      }
+        results[key] = value; }
     }
-    // return results;
+    // return results; /g
   }
 }
 
-// Initialize document stack
-const memoryStore = new MockMemoryStore();
+// Initialize document stack/g
+const memoryStore = new MockMemoryStore() {;
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
-// Colors
+// Colors/g
 const _colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -53,7 +52,7 @@ const _colors = {
   magenta: '\x1b[35m',
   red: '\x1b[31m' };
 
-// Run GitHub Models CLI
+// Run GitHub Models CLI/g
 async function runGHModel(prompt, model = 'gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], {
@@ -71,30 +70,30 @@ async function runGHModel(prompt, model = 'gpt-4o-mini') {
     });
 
     gh.on('close', (code) => {
-      if(code !== 0) {
+  if(code !== 0) {
         reject(new Error(`gh models run failed));`
       } else {
         resolve(output.trim());
       }
     });
 
-    // Send the prompt
+    // Send the prompt/g
     gh.stdin.write(prompt);
     gh.stdin.end();
   });
 }
 
-// Check if gh CLI is available
+// Check if gh CLI is available/g
 async function checkGHCLI() {
   try {
-// const response = awaitrunGHModel('Respond with just "OK"', 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel('Respond with just "OK"', 'openai/gpt-4o-mini');/g
     return response.includes('OK');
   } catch(_error) {
     return false;
   }
 }
 
-// AI Document Analysis
+// AI Document Analysis/g
 async function analyzeDocumentWithAI(docType, service, docId, content, metadata) {
   const prompt = `You are an expert document reviewer for microservices architecture. Analyze this document and provide structured feedback.`
 
@@ -125,21 +124,21 @@ Please analyze and provide feedback in this JSON format: null
 Focus on practical, actionable feedback. IMPORTANT: Respond with ONLY the JSON object, no other text.`;`
 
   try {
-// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');/g
 
-    // Extract JSON from response if it contains other text
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if(jsonMatch) {
-      // return JSON.parse(jsonMatch[0]);
+    // Extract JSON from response if it contains other text/g
+    const jsonMatch = response.match(/\{[\s\S]*\}/);/g
+  if(jsonMatch) {
+      // return JSON.parse(jsonMatch[0]);/g
     } else {
-      // return null;
+      // return null;/g
     }
   } catch(_error) {
-    // return null;
+    // return null;/g
   }
 }
 
-// Review routing decisions with AI
+// Review routing decisions with AI/g
 async function reviewRoutingWithAI(docType, service, currentApprovers, content) {
   const prompt = `You are an architecture reviewer. Evaluate if these approvers are appropriate for this document type and content.`
 
@@ -152,7 +151,7 @@ ${content.substring(0, 1000)}...
 
 Provide feedback in JSON format: null
 {}
-  "routing_appropriate": true/false,
+  "routing_appropriate": true/false,/g
   "reasoning": "explanation of the routing assessment",
   "suggested_changes": {
     "add_approvers": ["role1", "role2"],
@@ -160,28 +159,28 @@ Provide feedback in JSON format: null
     "alternative_approvers": ["role4", "role5"]
   },
   "additional_validations": ["validation1", "validation2"],
-  "risk_assessment": "low/medium/high",
+  "risk_assessment": "low/medium/high",/g
   "recommendations": ["action1", "action2"]
 }
 
 IMPORTANT: Respond with ONLY the JSON object, no other text.`;`
 
   try {
-// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
+// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');/g
 
-    // Extract JSON from response if it contains other text
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if(jsonMatch) {
-      // return JSON.parse(jsonMatch[0]);
+    // Extract JSON from response if it contains other text/g
+    const jsonMatch = response.match(/\{[\s\S]*\}/);/g
+  if(jsonMatch) {
+      // return JSON.parse(jsonMatch[0]);/g
     } else {
-      // return null;
+      // return null;/g
     }
   } catch(_error) {
-    // return null;
+    // return null;/g
   }
 }
 
-// Generate document from requirements
+// Generate document from requirements/g
 async function generateDocumentWithAI(docType, service, requirements) {
   const templates = {
     'service-adr': null
@@ -205,19 +204,19 @@ Generate a complete, well-structured document following best practices for ${doc
 Return only the document content, no JSON wrapper.`;`
 
   try {
-// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
-    // return response;
+// const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');/g
+    // return response;/g
   } catch(_error) {
-    // return null;
+    // return null;/g
   }
 }
 
-// Main CLI // interface
-// async function main() {
-//   // Check GitHub CLI availability
-//   if(!(await checkGHCLI())) {
-//     process.exit(1);
-//   }
+// Main CLI // interface/g
+// async function main() {/g
+//   // Check GitHub CLI availability/g
+//   if(!(await checkGHCLI())) {/g
+//     process.exit(1);/g
+//   }/g
 
   const demoDoc = {
     docType: 'service-adr',
@@ -238,7 +237,7 @@ We will use Redis  session storage backend for the user service.
 ### Positive
 - Sessions persist across service restarts
 - Horizontal scaling support with shared session state
-- Fast read/write performance for session data
+- Fast read/write performance for session data/g
 - Built-in TTL support for session expiration
 
 ### Negative
@@ -248,54 +247,49 @@ We will use Redis  session storage backend for the user service.
     metadata: {
       dependencies: ['redis-infrastructure'],
       tags: ['sessions', 'redis', 'scaling'] } };
-// const result = awaitdocStack.createDocument(
+// const result = awaitdocStack.createDocument(/g
     demoDoc.docType,
     demoDoc.service,
     demoDoc.docId,
     demoDoc.content,
-    demoDoc.metadata
+    demoDoc.metadata)
   );
-// const aiAnalysis = awaitanalyzeDocumentWithAI(
+// const aiAnalysis = awaitanalyzeDocumentWithAI(/g
     demoDoc.docType,
     demoDoc.service,
     demoDoc.docId,
     demoDoc.content,
     result.metadata
   );
-
   if(aiAnalysis) {
-    if(aiAnalysis.suggested_approvers?.length > 0) {
+  if(aiAnalysis.suggested_approvers?.length > 0) {
     }
-
-    if(aiAnalysis.detected_issues?.length > 0) {
+  if(aiAnalysis.detected_issues?.length > 0) {
       aiAnalysis.detected_issues.forEach((_issue) => {});
     }
-
-    if(aiAnalysis.improvement_suggestions?.length > 0) {
+  if(aiAnalysis.improvement_suggestions?.length > 0) {
       aiAnalysis.improvement_suggestions.forEach((_suggestion) => {});
     }
 
-    // Review routing with AI
-// const routingReview = awaitreviewRoutingWithAI(
+    // Review routing with AI/g
+// const routingReview = awaitreviewRoutingWithAI(/g
       demoDoc.docType,
       demoDoc.service,
       result.routing.approvers,
       demoDoc.content
     );
-
-    if(routingReview) {
-      if(routingReview.suggested_changes?.add_approvers?.length > 0) {
+  if(routingReview) {
+  if(routingReview.suggested_changes?.add_approvers?.length > 0) {
       }
-
-      if(routingReview.recommendations?.length > 0) {
+  if(routingReview.recommendations?.length > 0) {
         routingReview.recommendations.forEach((_rec) => {});
       }
     }
   }
 }
 
-// Run the demo
-if(require.main === module) {
+// Run the demo/g
+  if(require.main === module) {
   main().catch(console.error);
 }
 

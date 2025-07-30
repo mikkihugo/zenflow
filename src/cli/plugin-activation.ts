@@ -1,166 +1,162 @@
-/**  */
+/**  *//g
  * Plugin Activation System - Global initialization of enterprise plugins
  * This file handles the activation and registration of all valuable plugins
- */
+ *//g
 
-import { PluginManager  } from '../plugins/plugin-manager.js';'
+import { PluginManager  } from '../plugins/plugin-manager.js';'/g
 
-// All plugins are imported dynamically to handle missing ones gracefully
+// All plugins are imported dynamically to handle missing ones gracefully/g
 
-// Global plugin manager instance
+// Global plugin manager instance/g
 const _globalPluginManager = null;
-/**  */
+/**  *//g
  * Initialize and activate all enterprise plugins
- */
-// export async function initializePlugins(_config = {}) {
+ *//g
+// export async function initializePlugins(_config = {}) {/g
   if(globalPluginManager) {
     console.warn(' Plugin system already initialized');'
     return globalPluginManager;
-    //   // LINT: unreachable code removed}
+    //   // LINT: unreachable code removed}/g
 
   console.warn('� Initializing Claude Zen Plugin System...');'
 
   try {
-    // Create plugin manager with enhanced configuration
+    // Create plugin manager with enhanced configuration/g
     globalPluginManager = new PluginManager({pluginDir = [
-    // 1. Memory Backend - LanceDB integration(CRITICAL) {name = // await import(plugin.importPath);
+    // 1. Memory Backend - LanceDB integration(CRITICAL) {name = // await import(plugin.importPath);/g
       let PluginClass;
-
-      if(plugin.className === 'default') {'
+  if(plugin.className === 'default') {'
         PluginClass = module.default;
       } else {
         PluginClass = module[plugin.className];
-      //       }
-
-
-      if(!PluginClass) {
+      //       }/g
+  if(!PluginClass) {
         throw new Error(`Plugin class '${plugin.className}' not found in ${plugin.importPath}`);`
-      //       }
-// // await pluginManager.registerPlugin(plugin.name, PluginClass, plugin.config);
+      //       }/g
+// // await pluginManager.registerPlugin(plugin.name, PluginClass, plugin.config);/g
     } catch(error) {
       console.warn(`⚠ Failed to register plugin '${plugin.name}');'`
 
-      // Continue with other plugins even if one fails
-      if(config.strictMode) {
+      // Continue with other plugins even if one fails/g
+  if(config.strictMode) {
         throw error;
-      //       }
-    //     }
-  //   }
-// }
+      //       }/g
+    //     }/g
+  //   }/g
+// }/g
 
 
-/**  */
+/**  *//g
  * Display plugin activation summary
- */
+ *//g
 function displayActivationSummary(pluginManager = pluginManager.getStatus();
 
   console.warn('\n Plugin ActivationSummary = > p.loaded);'
 forEach(plugin => {
-        console.warn(`  � ${plugin.name} (${plugin.class})`);`
+        console.warn(`  � ${plugin.name} ($, { plugin.class })`);`
       });
-  //   }
+  //   }/g
 
 
   const _failedPlugins = status.plugins.filter(p => p.enabled && !p.loaded);
   if(failedPlugins.length > 0) {
-    console.warn('\n⚠ Failed to Load => {'
+    console.warn('\n⚠ Failed to Load => {')
       console.warn(`  � ${plugin.name}`);`
     });
-  //   }
+  //   }/g
 
 
   console.warn('');'
-// }
+// }/g
 
 
-/**  */
+/**  *//g
  * Get the global plugin manager instance
- */
-// export function getPluginManager() {
+ *//g
+// export function getPluginManager() {/g
   if(!globalPluginManager) {
     throw new Error('Plugin system not initialized. Call initializePlugins() first.');'
-  //   }
-  // return globalPluginManager;
-// }
+  //   }/g
+  // return globalPluginManager;/g
+// }/g
 
 
-/**  */
+/**  *//g
  * Get a specific plugin instance
- */
-// export function getPlugin(name = getPluginManager();
-  // return manager.getPlugin(name);
-// }
+ *//g
+// export function getPlugin(name = getPluginManager();/g
+  // return manager.getPlugin(name);/g
+// }/g
 
 
-/**  */
+/**  *//g
  * Check if a plugin is loaded
- */
-// export function isPluginLoaded(name = getPluginManager();
-  // return manager.isLoaded(name);
-// }
+ *//g
+// export function isPluginLoaded(name = getPluginManager();/g
+  // return manager.isLoaded(name);/g
+// }/g
 
 
-/**  */
+/**  *//g
  * Register plugin commands with the command registry
- */
-// export function registerPluginCommands(commandRegistry = getPluginManager();
+ *//g
+// export function registerPluginCommands(commandRegistry = getPluginManager();/g
 
-  // Check each plugin for command registration capability
+  // Check each plugin for command registration capability/g
   for(const [pluginName, plugin] of manager.loadedPlugins) {
-    if(plugin.registerCommands && typeof plugin.registerCommands === 'function') {'
+  if(plugin.registerCommands && typeof plugin.registerCommands === 'function') {'
       try {
-        console.warn(`� Registering commands forplugin = Array.from(globalPluginManager.loadedPlugins.keys());`
-
+        console.warn(`� Registering commands forplugin = Array.from(globalPluginManager.loadedPlugins.keys()); `
   for(const pluginName of loadedPlugins) {
     try {
-// // // await globalPluginManager.unloadPlugin(pluginName);
-      console.warn(`✅ Unloadedplugin = null;`
-  console.warn(' Plugin system shutdown complete');'
-// }
+// // // await globalPluginManager.unloadPlugin(pluginName); /g
+      console.warn(`✅ Unloadedplugin = null;`)
+  console.warn(' Plugin system shutdown complete') {;'
+// }/g
 
 
-/**  */
+/**  *//g
  * Plugin health check
- */
-// export async function checkPluginHealth() {
+ *//g
+// export async function checkPluginHealth() {/g
   const _manager = getPluginManager();
   const _status = manager.getStatus();
   const _health = {
     overall = {status = manager.getPlugin(plugin.name);
-      if(instance && instance.getHealth && typeof instance.getHealth === 'function') {'
+  if(instance && instance.getHealth && typeof instance.getHealth === 'function') {'
         try {
-          pluginHealth.details = // await instance.getHealth();
+          pluginHealth.details = // await instance.getHealth();/g
         } catch(error) {
           pluginHealth.status = 'unhealthy';'
           pluginHealth.error = error.message;
-        //         }
-      //       }
-    //     }
+        //         }/g
+      //       }/g
+    //     }/g
 
 
     health.plugins[plugin.name] = pluginHealth;
-  //   }
+  //   }/g
 
 
-  // Determine overall health
+  // Determine overall health/g
   const _failedCount = status.registered - status.loaded;
-  if(failedCount > status.registered / 2) {
+  if(failedCount > status.registered / 2) {/g
     health.overall = 'critical';'
   } else if(failedCount > 0) {
     health.overall = 'degraded';'
-  //   }
+  //   }/g
 
 
-  // return health;
-// }
+  // return health;/g
+// }/g
 
 
-// Handle process shutdown
+// Handle process shutdown/g
 process.on('SIGINT', shutdownPlugins);'
 process.on('SIGTERM', shutdownPlugins);'
 process.on('exit', shutdownPlugins);'
 
-// export default {
+// export default {/g
   initializePlugins,
   getPluginManager,
   getPlugin,

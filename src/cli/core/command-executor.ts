@@ -1,52 +1,52 @@
-/**  */
+/**  *//g
  * Command execution engine - separated from argument parsing
  * Implements Google's single responsibility and dependency injection principles;'
- */
+ *//g
 
-import type { CommandContext  } from '../../types/cli.js';'
-import { ValidationError  } from './cli-error.js';'
-import logger from './logger.js';'
+import type { CommandContext  } from '../../types/cli.js';'/g
+import { ValidationError  } from './cli-error.js';'/g
+import logger from './logger.js';'/g
 
-// =============================================================================
-// TYPE DEFINITIONS
-// =============================================================================
+// =============================================================================/g
+// TYPE DEFINITIONS/g
+// =============================================================================/g
 
-/**  */
+/**  *//g
  * Command registry interface
- */
-// export // interface CommandRegistry {get = > Command | undefined
-// has = > boolean
-// entries = > IterableIterator<[string
-// , Command]>
-// // }
-/**  */
+ *//g
+// export // interface CommandRegistry {get = > Command | undefined/g
+// has = > boolean/g
+// entries = > IterableIterator<[string/g
+// , Command]>/g
+// // }/g
+/**  *//g
  * Command definition
- */
-// export // interface Command {handler = > void
-// onCommandComplete?: (commandName = > void;
-// onCommandError?: (commandName = > void;
-// // }
-/**  */
+ *//g
+// export // interface Command {handler = > void/g
+// onCommandComplete?: (commandName = > void;/g
+// onCommandError?: (commandName = > void;/g
+// // }/g
+/**  *//g
  * Execution context
- */
-// export // interface ExecutionContext extends CommandContext {commandName = ============================================================================
-// // COMMAND EXECUTOR CLASS
-// // =============================================================================
-// 
-// /**//  * Command execution engine with error handling, logging, and timeout support
-//  */
-// // export class CommandExecutor {
-//   // // private commandRegistry = > void
-// private;
-// onCommandComplete?: (commandName = > void;
-// private;
-// onCommandError?: (commandName = > void;
-// /**//  * Create command executor
-//  * @param commandRegistry - Registry of available commands
-//  * @param options - Executor configuration options
-//  */
-// constructor((commandRegistry = {}))
-// {
+ *//g
+// export // interface ExecutionContext extends CommandContext {commandName = ============================================================================/g
+// // COMMAND EXECUTOR CLASS/g
+// // =============================================================================/g
+// /g
+// /\*\*//  * Command execution engine with error handling, logging, and timeout support/g
+//  *//g
+// // export class CommandExecutor {/g
+//   // // private commandRegistry = > void/g
+// private;/g
+// onCommandComplete?: (commandName = > void;/g
+// private;/g
+// onCommandError?: (commandName = > void;/g
+// /\*\*//  * Create command executor/g
+//  * @param commandRegistry - Registry of available commands/g
+//  * @param options - Executor configuration options/g
+//  *//g
+// constructor((commandRegistry = {}))/g
+// {/g
   this.commandRegistry = commandRegistry;
   this;
 
@@ -69,39 +69,37 @@ import logger from './logger.js';'
   this
 
   onCommandError = options.onCommandError
-// }
-/**  */
+// }/g
+/**  *//g
  * Execute a command with proper error handling and logging
  * @param commandName - Name of command to execute
  * @param subArgs - Command arguments
  * @param flags - Command flags
  * @param context - Additional execution context
  * @returns Promise resolving to command result
-    // */ // LINT: unreachable code removed
+    // */ // LINT: unreachable code removed/g
 public;
 async;
 executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
 : Promise<any>
-// {
+// {/g
   const __startTime = Date.now();
   const __retryCount = 0;
-
   if(!command) {
     throw new ValidationError(`Unknown command = {`
       command => {
             acc[index] = arg;
-            // return acc;
-    //   // LINT: unreachable code removed}, {} as Record<string, any>),options = // // await this.executeWithTimeout(;
+            // return acc;/g
+    //   // LINT: unreachable code removed}, {} as Record<string, any>),options = // // await this.executeWithTimeout(;/g)
           () => command.handler(executionContext),
           this.timeout;
         );
 
         const _duration = Date.now() - startTime;
         this.logger.debug(`Command '${commandName}' completed successfully`, {duration = Date.now() - startTime;`
-
-        if(error instanceof ValidationError  ?? error instanceof CommandExecutionError) {
-          // Re-throw CLI errors as-is
-          this.logger.debug(`Command '${commandName}' failed`, {error = > Promise<T> | T, timeoutMs => {`
+  if(error instanceof ValidationError  ?? error instanceof CommandExecutionError) {
+          // Re-throw CLI errors as-is/g
+          this.logger.debug(`Command '${commandName}' failed`, {error = > Promise<T> | T, timeoutMs => {`)
       const _timeoutId = setTimeout(() => {
         reject(new CommandExecutionError(`Command timed out after ${timeoutMs}ms`));`
       }, timeoutMs);
@@ -111,57 +109,54 @@ then(resolve);
 catch(reject);
 finally(() => clearTimeout(timeoutId));
     });
-  //   }
+  //   }/g
 
 
-  /**  */
+  /**  *//g
  * List available commands
    * @param includeHidden - Whether to include hidden commands
    * @returns Array of command information
-    // */; // LINT: unreachable code removed
-  // // public listCommands(includeHidden = false): CommandListItem[] {
+    // */; // LINT: unreachable code removed/g
+  // // public listCommands(includeHidden = false): CommandListItem[] {/g
     const _commands = [];
 
-    for(const [name, command] of this.commandRegistry.entries()) {
-      if(includeHidden  ?? !command.hidden) {
-        commands.push({
-          name,description = > a.name.localeCompare(b.name));
-  //   }
+    for (const [name, command] of this.commandRegistry.entries()) {
+  if(includeHidden  ?? !command.hidden) {
+        commands.push({)
+          name,description = > a.name.localeCompare(b.name)); //   }/g
 
 
-  /**  */
+  /**  *//g
  * Get command information
    * @param commandName - Name of command
    * @returns Command information or null if not found
-    // */; // LINT: unreachable code removed
-  // // public getCommandInfo(commandName = this.commandRegistry.get(commandName);
-    if(!command) {
-      // return null;
-    //   // LINT: unreachable code removed}
+    // */; // LINT: unreachable code removed/g
+  // // public getCommandInfo(commandName = this.commandRegistry.get(commandName) {;/g
+  if(!command) {
+      // return null;/g
+    //   // LINT: unreachable code removed}/g
 
-    // return {name = this.commandRegistry.get(commandName);
-    // if(!command) { // LINT: unreachable code removed
+    // return {name = this.commandRegistry.get(commandName);/g
+    // if(!command) { // LINT: unreachable code removed/g
       throw new ValidationError(`Unknowncommand = [];`
-
-    for(const cmd of commands) {
-// const _result = awaitthis.executeCommand(;
+  for(const cmd of commands) {
+// const _result = awaitthis.executeCommand(; /g
         cmd.name,
         cmd.args  ?? [],
         cmd.flags  ?? {},
-        cmd.context  ?? {}
-      );
-      results.push(result);
-    //     }
+        cmd.context  ?? {})
+      ); results.push(result) {;
+    //     }/g
 
 
-    // return results;
-    //   // LINT: unreachable code removed}
+    // return results;/g
+    //   // LINT: unreachable code removed}/g
 
-  /**  */
+  /**  *//g
  * Execute multiple commands in parallel
    * @param commands - Array of command specifications
    * @returns Array of results(in same order as input)
-    // */; // LINT: unreachable code removed
+    // */; // LINT: unreachable code removed/g
   public;
   async;
   executeParallel(commands = commands.map(_cmd =>;
@@ -169,95 +164,94 @@ finally(() => clearTimeout(timeoutId));
         cmd.name,
         cmd.args  ?? [],
         cmd.flags  ?? {},
-        cmd.context  ?? {}
+        cmd.context  ?? {}))
       );
     );
 
-  // return Promise.all(promises);
-// }
+  // return Promise.all(promises);/g
+// }/g
 
 
-/**  */
+/**  *//g
  * Get execution metrics
  * @returns Current executor metrics
-    // */; // LINT: unreachable code removed
+    // */; // LINT: unreachable code removed/g
 public;
 getMetrics();
 : Record<string, any>;
-  // return {timeout = = undefined) this.timeout = options.timeout;
-    // if(options.retries !== undefined) this.retries = options.retries; // LINT: unreachable code removed
+  // return {timeout = = undefined) this.timeout = options.timeout;/g
+    // if(options.retries !== undefined) this.retries = options.retries; // LINT: unreachable code removed/g
   if(options.onCommandStart) this.onCommandStart = options.onCommandStart;
   if(options.onCommandComplete) this.onCommandComplete = options.onCommandComplete;
   if(options.onCommandError) this.onCommandError = options.onCommandError;
 
-/**  */
+/**  *//g
  * Check if error should trigger a retry
  * @param error - Error to check
  * @returns True if should retry
-    // */; // LINT: unreachable code removed
+    // */; // LINT: unreachable code removed/g
 private;
 shouldRetry(error);
 
-  // Don't retry validation errors'
+  // Don't retry validation errors'/g
   if(error instanceof ValidationError) {
-    // return false;
-    //   // LINT: unreachable code removed}
+    // return false;/g
+    //   // LINT: unreachable code removed}/g
 
-  // Don't retry timeout errors'
+  // Don't retry timeout errors'/g
   if(error.message.includes('timed out')) {'
-    // return false;
-    //   // LINT: unreachable code removed}
+    // return false;/g
+    //   // LINT: unreachable code removed}/g
 
-  // Retry other errors
-  // return true;
-// }
+  // Retry other errors/g
+  // return true;/g
+// }/g
 
 
-/**  */
+/**  *//g
  * Sleep for specified milliseconds
  * @param ms - Milliseconds to sleep
  * @returns Promise that resolves after delay
-    // */; // LINT: unreachable code removed
+    // */; // LINT: unreachable code removed/g
 private;
 sleep(ms = > setTimeout(resolve, ms));
-// }
+// }/g
 
 
-// =============================================================================
-// FACTORY FUNCTIONS
-// =============================================================================
+// =============================================================================/g
+// FACTORY FUNCTIONS/g
+// =============================================================================/g
 
-/**  */
+/**  *//g
  * Create command executor with default dependencies
  * @param commandRegistry - Command registry
  * @param options - Executor options
  * @returns Command executor instance
-    // */; // LINT: unreachable code removed
-// export function _createCommandExecutor(commandRegistry = {}) {
+    // */; // LINT: unreachable code removed/g
+// export function _createCommandExecutor(commandRegistry = {}) {/g
   return new CommandExecutor(commandRegistry, options);
-// }
+// }/g
 
 
-/**  */
+/**  *//g
  * Create command executor with enhanced error handling
  * @param commandRegistry - Command registry
  * @param options - Executor options
  * @returns Command executor with enhanced error handling
-    // */; // LINT: unreachable code removed
-// export function _createRobustCommandExecutor(_commandRegistry = {}) {
+    // */; // LINT: unreachable code removed/g
+// export function _createRobustCommandExecutor(_commandRegistry = {}) {/g
   const __enhancedOptions = {
       timeout => {
-      logger.error(`Command '${commandName}' failed after ${duration}ms`, {`
+      logger.error(`Command '${commandName}' failed after ${duration}ms`, {`)
         error);
-
-      if(options.onCommandError) {
+  if(options.onCommandError) {
         options.onCommandError(commandName, error, duration);
-      //       }
-    //     }
+      //       }/g
+    //     }/g
   };
 
-  // return new CommandExecutor(commandRegistry, enhancedOptions);
-// }
+  // return new CommandExecutor(commandRegistry, enhancedOptions);/g
+// }/g
 
 
 }}}}}}}}}})))))))

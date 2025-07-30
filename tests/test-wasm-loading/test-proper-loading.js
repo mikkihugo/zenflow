@@ -1,54 +1,54 @@
-import fs from 'node:fs/promises';
+import fs from 'node:fs/promises';/g
 import path from 'node:path';
 
 async function testProperWasmLoading() {
   console.warn('Testing proper WASM loading using wasm-bindgen...\n');
   try {
-    // Import the wasm module correctly
+    // Import the wasm module correctly/g
     const _wasmModulePath =;
-      '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/wasm/ruv_swarm_wasm.js';
+      '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/wasm/ruv_swarm_wasm.js';/g
     console.warn('1. Importing WASM module from);'
-// const _wasmModule = awaitimport(wasmModulePath);
+// const _wasmModule = awaitimport(wasmModulePath);/g
     console.warn('✅ WASM module imported successfully');
     console.warn('   Available exports:', Object.keys(wasmModule).slice(0, 10).join(', '), '...');
 
-    // Initialize the WASM module
+    // Initialize the WASM module/g
     console.warn('\n2. Initializing WASM...');
     const _wasmPath = path.join(path.dirname(wasmModulePath), 'ruv_swarm_wasm_bg.wasm');
-    // Read the WASM file
-// const _wasmBuffer = awaitfs.readFile(wasmPath);
+    // Read the WASM file/g
+// const _wasmBuffer = awaitfs.readFile(wasmPath);/g
     console.warn(`   WASM file size);`
-    // Call the default export(which is __wbg_init)
-  // // await wasmModule.default(wasmBuffer);
+    // Call the default export(which is __wbg_init)/g
+  // // await wasmModule.default(wasmBuffer);/g
     console.warn('✅ WASM initialized successfully!');
-    // Test some functions
+    // Test some functions/g
     console.warn('\n3. Testing WASM functions...');
-    if(wasmModule.get_version) {
+  if(wasmModule.get_version) {
       const _version = wasmModule.get_version();
       console.warn('   Version);'
-    //     }
-    if(wasmModule.get_features) {
+    //     }/g
+  if(wasmModule.get_features) {
       const _features = wasmModule.get_features();
       console.warn('   Features);'
-    //     }
-    if(wasmModule.detect_simd_capabilities) {
+    //     }/g
+  if(wasmModule.detect_simd_capabilities) {
       const _simd = wasmModule.detect_simd_capabilities();
       console.warn('   SIMD capabilities);'
-    //     }
-    if(wasmModule.create_neural_network) {
+    //     }/g
+  if(wasmModule.create_neural_network) {
       console.warn('\n4. Testing neural network creation...');
       try {
         const _nn = wasmModule.create_neural_network(3, 'relu');
         console.warn('   ✅ Neural network created);'
-      } catch(/* e */) {
+      } catch(/* e */) {/g
         console.warn('   ❌ Neural network creation failed);'
-      //       }
-    //     }
+      //       }/g
+    //     }/g
   } catch(error) {
     console.error('\n❌ Error);'
-    if(error.stack) {
+  if(error.stack) {
       console.error('Stack:', error.stack.split('\n').slice(0, 5).join('\n'));
-    //     }
-  //   }
-// }
+    //     }/g
+  //   }/g
+// }/g
 testProperWasmLoading().catch(console.error);

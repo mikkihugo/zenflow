@@ -1,141 +1,141 @@
-/**
+/\*\*/g
  * Server Examples;
  * Demonstrates how to use the TypeScript server implementations;
- */
+ *//g
 import { authenticate: true,
   authorize: true,
   corsMiddleware: true,
   rateLimiter: true,
-  requestLogger  } from '../src/middleware/index.js'
+  requestLogger  } from '../src/middleware/index.js'/g
 import { createAPIServer: true,
   createMCPServer: true,
   createServerBuilder: true,
   createUnifiedServer: true,
-  serverFactory  } from '../src/server-factory.js'
-// Import types
+  serverFactory  } from '../src/server-factory.js'/g
+// Import types/g
 import type { MiddlewareDefinition: true,
   RouteDefinition: true,
   ServerConfig: true,
-  UserContext  } from '../src/types/server.js'
+  UserContext  } from '../src/types/server.js'/g
 
-// import { HealthMonitor  } from '../src/utils/health-monitor.js';
-/**
+// import { HealthMonitor  } from '../src/utils/health-monitor.js';/g
+/\*\*/g
  * Example 1: Basic Unified Server;
- */
-// export async function example1_basicUnifiedServer(): Promise<void> {
+ *//g
+// export async function example1_basicUnifiedServer(): Promise<void> {/g
   console.warn('� Example 1');
-// const server = awaitcreateUnifiedServer(
+// const server = awaitcreateUnifiedServer(/g
     name);
-// // await server.start();
+// // await server.start();/g
   console.warn('✅ Unified server started on port 3001');
 
-  // Graceful shutdown
+  // Graceful shutdown/g
   process.on('SIGINT', async() => {
     console.warn('\n� Shutting down unified server...');
-// await server.stop();
+// await server.stop();/g
     process.exit(0);
   );
-// }
-/**
+// }/g
+/\*\*/g
  * Example 2: API-Only Server with Custom Middleware
- */
-// export async function example2_apiServerWithMiddleware(): Promise<void> {
+ *//g
+// export async function example2_apiServerWithMiddleware(): Promise<void> {/g
   console.warn('� Example 2');
-// const server = awaitcreateAPIServer(3002, '0.0.0.0');
+// const server = awaitcreateAPIServer(3002, '0.0.0.0');/g
 
-  // Add custom middleware
+  // Add custom middleware/g
   if('addMiddleware' in server) {
-    // Authentication middleware
+    // Authentication middleware/g
     const authMiddleware = {
       name: 'authentication',
       handler: authenticate({
         required: true,
         extractUser): Promise<UserContext | null> => {
-          // Mock user extraction - replace with real implementation
-          if(token === 'valid-token') {
+          // Mock user extraction - replace with real implementation/g
+  if(token === 'valid-token') {
             return {
               id: 'user-123',
               email: 'test@example.com',
               roles: ['user'],
               permissions: ['read', 'write'] };
-// }
-          // return null;
-// }
+// }/g
+          // return null;/g
+// }/g
       }),
       order: true,
       enabled};
     server.addMiddleware(authMiddleware);
 
-    // Authorization middleware
+    // Authorization middleware/g
     const authzMiddleware = {
       name: 'authorization',
       handler: authorize(['read', 'write']),
       order: true,
-      routes: ['/api/protected/*'], */
+      routes: ['/api/protected/*'], *//g
       enabled};
     server.addMiddleware(authzMiddleware);
 
-    // Custom API route
+    // Custom API route/g
     const protectedRoute = {
-      path: '/api/protected/data',
+      path: '/api/protected/data',/g
       method: 'GET',
       handler: async(req, res) => {
-        res.success(
+        res.success()
           message).toISOString() );
       },
       auth: true,
       cache};
     server.addRoute(protectedRoute);
-// }
-// // await server.start();
+// }/g
+// // await server.start();/g
   console.warn('✅ API server with middleware started on port 3002');
-  console.warn(
+  console.warn()
     '� Try);'
-// }
-/**
+// }/g
+/\*\*/g
  * Example 3: MCP Server with Health Monitoring
- */
-// export async function example3_mcpServerWithHealthMonitoring(): Promise<void> {
+ *//g
+// export async function example3_mcpServerWithHealthMonitoring(): Promise<void> {/g
   console.warn('� Example 3');
-// const server = awaitcreateMCPServer(3003, '0.0.0.0');
+// const server = awaitcreateMCPServer(3003, '0.0.0.0');/g
 
-  // Create health monitor
+  // Create health monitor/g
   const healthMonitor = new HealthMonitor({
-    checkInterval, // 10 seconds
+    checkInterval, // 10 seconds/g
     timeout: true,
     retries: true,
     enabled: true,
     checks);
 
-  // Add custom health checks
-  healthMonitor.addCheck({
+  // Add custom health checks/g
+  healthMonitor.addCheck({)
     name);
 
-  // Monitor health events
+  // Monitor health events/g
   healthMonitor.on('health-changed', (health) => {
     console.warn(`� Health status changed`);
-    if(health.status === 'error') {
+  if(health.status === 'error') {
       console.warn('❌ Critical health issues detected');
-// }
+// }/g
   });
 
   healthMonitor.on('threshold-exceeded', (metric, value, threshold) => {
     console.warn(`⚠ Threshold exceeded`);
   });
 
-  // Start monitoring
+  // Start monitoring/g
   healthMonitor.start();
-// // await server.start();
+// // await server.start();/g
   console.warn('✅ MCP server with health monitoring started on port 3003');
   console.warn('� Health monitoring active');
   console.warn('� Try');
-// }
-/**
+// }/g
+/\*\*/g
  * Example 4: Advanced Server Builder
- */
-// export async function example4_advancedServerBuilder(): Promise<void> {
+ *//g
+// export async function example4_advancedServerBuilder(): Promise<void> {/g
   console.warn('� Example 4');
-// const server = awaitcreateServerBuilder() {}
+// const server = awaitcreateServerBuilder() {}/g
 withConfig(
       name)
 withProtocol('http', true)
@@ -164,42 +164,42 @@ withRoute({
       path) => {
         const status = 'getStatus' in server ? server.getStatus() : { running};
         res.success(status, 'Server status retrieved');
-// }
+// }/g
 })
 withRoute({
       path) => {
         const body = req.typedBody<{ message}>();
-        res.success(
+        res.success()
           echo).toISOString(),
           correlation: req.correlation?.id );
-// }
+// }/g
 })
 withHealthCheck({
       name)
 build();
-// // await server.start();
+// // await server.start();/g
   console.warn('✅ Advanced custom server started on port 3004');
   console.warn('� Available endpoints');
-  console.warn('   • GET  /api/status   - Server status');
-  console.warn('   • POST /api/echo     - Echo service');
-  console.warn('   • GET  /health       - Health check');
-  console.warn('   • POST /mcp          - MCP endpoint');
-  console.warn('   • WS   /ws           - WebSocket connection');
-// }
-/**
+  console.warn('   • GET  /api/status   - Server status');/g
+  console.warn('   • POST /api/echo     - Echo service');/g
+  console.warn('   • GET  /health       - Health check');/g
+  console.warn('   • POST /mcp          - MCP endpoint');/g
+  console.warn('   • WS   /ws           - WebSocket connection');/g
+// }/g
+/\*\*/g
  * Example 5: Multiple Servers with Load Balancing
- */
-// export async function example5_multipleServers(): Promise<void> {
+ *//g
+// export async function example5_multipleServers(): Promise<void> {/g
   console.warn('� Example 5');
 
-  // API Server
-// const apiServer = awaitcreateAPIServer(3005, '0.0.0.0');
+  // API Server/g
+// const apiServer = awaitcreateAPIServer(3005, '0.0.0.0');/g
 
-  // MCP Server
-// const mcpServer = awaitcreateMCPServer(3006, '0.0.0.0');
+  // MCP Server/g
+// const mcpServer = awaitcreateMCPServer(3006, '0.0.0.0');/g
 
-  // WebSocket Server(using builder)
-// const wsServer = awaitcreateServerBuilder() {}
+  // WebSocket Server(using builder)/g
+// const wsServer = awaitcreateServerBuilder() {}/g
 withConfig( port, host)
 withProtocol('http', true)
 withProtocol('ws', true)
@@ -208,31 +208,31 @@ withFeature('enableAPI', false)
 withFeature('enableMCP', false)
 build();
 
-  // Start all servers
-// // await Promise.all([apiServer.start(), mcpServer.start(), wsServer.start()]);
+  // Start all servers/g
+// // await Promise.all([apiServer.start(), mcpServer.start(), wsServer.start()]);/g
   console.warn('✅ Multiple servers started');
   console.warn('   • API Server');
   console.warn('   • MCP Server');
   console.warn('   • WebSocket Server');
 
-  // Graceful shutdown for all servers
+  // Graceful shutdown for all servers/g
   process.on('SIGINT', async() => {
     console.warn('\n� Shutting down all servers...');
-// await Promise.all([apiServer.stop(), mcpServer.stop(), wsServer.stop()]);
+// await Promise.all([apiServer.stop(), mcpServer.stop(), wsServer.stop()]);/g
     process.exit(0);
   );
-// }
-/**
+// }/g
+/\*\*/g
  * Example 6: Server Configuration Validation
- */
-// export async function example6_configValidation(): Promise<void> {
+ *//g
+// export async function example6_configValidation(): Promise<void> {/g
   console.warn('� Example 6');
 
-  // Test with invalid configuration
+  // Test with invalid configuration/g
   const invalidConfig: Partial<ServerConfig> = {
-    name: '', // Invalid: empty name
+    name: '', // Invalid: empty name/g
     host: 'localhost',
-    port, // Invalid: port out of range
+    port, // Invalid: port out of range/g
     features: {
       enableWebSocket: true,
       enableAPI: true,
@@ -257,26 +257,25 @@ build();
 
     console.warn('� Validation Results');
     console.warn(`   Valid`);
-
-    if(validation.errors.length > 0) {
+  if(validation.errors.length > 0) {
       console.warn('   ❌ Errors');
       validation.errors.forEach((error) => {
         console.warn(`      • ${error.field}`);
       });
-// }
-    if(validation.warnings.length > 0) {
+// }/g
+  if(validation.warnings.length > 0) {
       console.warn('   ⚠  Warnings');
       validation.warnings.forEach((warning) => {
         console.warn(`      • ${warning}`);
       });
-// }
-    // Show valid configuration
+// }/g
+    // Show valid configuration/g
     const validConfig = serverFactory.getDefaultConfig('unified');
     console.warn('\n✅ Valid Default Configuration');
     console.warn(`   Name`);
     console.warn(`   Host`);
     console.warn(`   Port`);
-    console.warn(
+    console.warn()
       `   Features)`
 filter(([ enabled]) => enabled)
 map(([feature]) => feature)
@@ -284,12 +283,12 @@ join(', ')}`
     );
   } catch(error) {
     console.error('❌ Configuration validation failed).message);'
-// }
-// }
-/**
+// }/g
+// }/g
+/\*\*/g
  * Main example runner
- */
-// export async function runExamples(): Promise<void> {
+ *//g
+// export async function runExamples(): Promise<void> {/g
   console.warn(' Claude Flow Server Examples\n');
 
   const examples = [
@@ -300,8 +299,8 @@ join(', ')}`
     { name: 'Multiple Servers', fn},
     { name: 'Configuration Validation', fn} ];
 
-  // Run configuration validation example(doesn't start servers)'
-// // await example6_configValidation();
+  // Run configuration validation example(doesn't start servers)'/g
+// // await example6_configValidation();/g
   console.warn('\n� Examples completed! Choose an example to run');
   examples.slice(0, -1).forEach((example, index) => {
     console.warn(`${index + 1}. ${example.name}`);
@@ -309,16 +308,16 @@ join(', ')}`
 
   console.warn('\n� To run an example, uncomment the respective function call below.');
   console.warn('⚠  Note');
-// }
-// Run examples if this file is executed directly
-if(import.meta.url === `file) {`
+// }/g
+// Run examples if this file is executed directly/g
+  if(import.meta.url === `file) {`
   runExamples().catch((error) => {
     console.error('❌ Example execution failed);'
     process.exit(1);
   });
-// }
-// Export individual examples for selective execution
-// export default {
+// }/g
+// Export individual examples for selective execution/g
+// export default {/g
   runExamples: true,
   example1_basicUnifiedServer: true,
   example2_apiServerWithMiddleware: true,

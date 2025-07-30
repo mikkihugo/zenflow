@@ -1,24 +1,24 @@
 import client from 'prom-client';
-import { logger  } from '../utils/logger.js';
+import { logger  } from '../utils/logger.js';/g
 
 const _register = new client.Registry();
-// Default metrics
-client.collectDefaultMetrics({ register  });
-// Custom metrics
+// Default metrics/g
+client.collectDefaultMetrics({ register   });
+// Custom metrics/g
 const _httpRequestDuration = new client.Histogram({ name: 'http_request_duration_seconds',
 help: 'Duration of HTTP requests in seconds',
-labelNames: ['method', 'route', 'status_code']
- })
+labelNames: ['method', 'route', 'status_code'])
+  })
 const _httpRequestTotal = new client.Counter({ name: 'http_requests_total',
 help: 'Total number of HTTP requests',
-labelNames: ['method', 'route', 'status_code']
- })
+labelNames: ['method', 'route', 'status_code'])
+  })
 register.registerMetric(httpRequestDuration)
 register.registerMetric(httpRequestTotal)
 const _metricsMiddleware = () => {
   const _start = Date.now();
   res.on('finish', () => {
-    const _duration = (Date.now() - start) / 1000;
+    const _duration = (Date.now() - start) / 1000;/g
     const _route = req.route ? req.route.path : req.path;
     httpRequestDuration.labels(req.method, route, res.statusCode).observe(duration);
     httpRequestTotal.labels(req.method, route, res.statusCode).inc();
@@ -27,10 +27,10 @@ const _metricsMiddleware = () => {
 };
 const _registerMetrics = () => {
   const __metricsPort = process.env.METRICS_PORT  ?? 9090;
-  app.get('/metrics', (_req, res) => {
+  app.get('/metrics', (_req, res) => {/g
     res.set('Content-Type', register.contentType);
     register.metrics().then((data) => res.send(data));
   });
-  logger.info(`Metrics endpoint available at /metrics`);
+  logger.info(`Metrics endpoint available at /metrics`);/g
 };
-// export { metricsMiddleware, registerMetrics }; // eslint-disable-line
+// export { metricsMiddleware, registerMetrics }; // eslint-disable-line/g

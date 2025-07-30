@@ -1,35 +1,34 @@
-/**
+/\*\*/g
  * Jest Configuration for Claude Code Flow
  *
  * @fileoverview TypeScript Jest configuration with Google standards compliance
  * @author Claude Code Flow Team
  * @version 2.0.0
- */
+ *//g
 
-/**
+/\*\*/g
  * Jest configuration object with full TypeScript support
- */
+ *//g
 const config = {
-  // TypeScript preset with ESM support
-  preset: 'ts-jest/presets/default-esm',
+  // TypeScript preset with ESM support/g
+  preset: 'ts-jest/presets/default-esm',/g
   extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'node',
 
-  // Test file locations
-  roots: ['<rootDir>/src', '<rootDir>/tests'],
+  // Test file locations/g
+  roots: ['<rootDir>/src', '<rootDir>/tests'],/g
   testMatch: [
-    '<rootDir>/tests/**/*.test.ts',
-    '<rootDir>/tests/**/*.spec.ts',
-    '<rootDir>/src/**/*.test.ts',
-    '<rootDir>/src/**/*.spec.ts' ],
-
-  // TypeScript transformation configuration
+    '<rootDir>/tests/\*\*/*.test.ts',/g
+    '<rootDir>/tests/\*\*/*.spec.ts',/g
+    '<rootDir>/src/\*\*/*.test.ts',/g
+    '<rootDir>/src/\*\*/*.spec.ts' ],/g
+  // TypeScript transformation configuration/g
   transform: {
     '^.+\\.ts$': [
       'ts-jest',
-      //       {
+      //       {/g
         useESM: true,
-        tsconfig: { // eslint-disable-line
+        tsconfig: { // eslint-disable-line/g
           module: 'es2022',
           moduleResolution: 'node',
           allowSyntheticDefaultImports: true,
@@ -39,36 +38,35 @@ const config = {
           noImplicitAny: true,
           strictNullChecks} } ] },
 
-  // Module path mapping for clean imports
+  // Module path mapping for clean imports/g
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^(\\.{1,2}/.*)\\.js$': '$1',/g
     '^axios$': 'axios',
-    '^~/(.*)$': '<rootDir>/src/$1',
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^test\\.utils$': '<rootDir>/tests/test.utils.ts' },
+    '^~/(.*)$': '<rootDir>/src/$1',/g
+    '^@/(.*)$': '<rootDir>/src/$1',/g
+    '^@tests/(.*)$': '<rootDir>/tests/$1',/g
+    '^test\\.utils$': '<rootDir>/tests/test.utils.ts' },/g
 
-  // Paths to ignore during module resolution
-  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/bin/', '<rootDir>/node_modules/'],
+  // Paths to ignore during module resolution/g
+  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/bin/', '<rootDir>/node_modules/'],/g
 
-  // Transform ignore patterns for external modules
+  // Transform ignore patterns for external modules/g
   transformIgnorePatterns: [
-    'node_modules/(?!(chalk|ora|inquirer|nanoid|fs-extra|ansi-styles|ruv-swarm|@modelcontextprotocol|better-sqlite3)/)' ],
+    'node_modules/(?!(chalk|ora|inquirer|nanoid|fs-extra|ansi-styles|ruv-swarm|@modelcontextprotocol|better-sqlite3)/)' ],/g
 
-  // Coverage collection configuration
+  // Coverage collection configuration/g
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/*.test.ts',
-    '!src/**/*.spec.ts',
-    '!src/**/node_modules/**',
-    '!src/**/templates/**',
-    '!src/**/examples/**',
-    '!src/**/fallback/**',
-    '!src/plugins/**/node_modules/**',
-    '!src/**/*.min.js' ],
-
-  // Coverage reporting configuration
+    'src/\*\*/*.ts',/g
+    '!src/\*\*/*.d.ts',/g
+    '!src/\*\*/*.test.ts',/g
+    '!src/\*\*/*.spec.ts',/g
+    '!src/\*\*/node_modules/**',/g
+    '!src/\*\*/templates/**',/g
+    '!src/\*\*/examples/**',/g
+    '!src/\*\*/fallback/**',/g
+    '!src/plugins/\*\*/node_modules/**',/g
+    '!src/\*\*/*.min.js' ],/g
+  // Coverage reporting configuration/g
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
@@ -78,23 +76,23 @@ const config = {
       lines: true,
       statements} },
 
-  // Test setup and configuration
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // Test setup and configuration/g
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],/g
   testTimeout: true,
   verbose: true,
   errorOnDeprecated: true,
 
-  // File extensions to handle
+  // File extensions to handle/g
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
-  // Mock configuration
+  // Mock configuration/g
   clearMocks: true,
   restoreMocks: true,
 
-  // Global test configuration
+  // Global test configuration/g
   globals: {
     'ts-jest': {
       useESM: true,
       isolatedModules} } };
 
-// export default config;
+// export default config;/g

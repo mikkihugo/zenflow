@@ -1,92 +1,92 @@
-/**
+/\*\*/g
  * � AG-UI WebSocket Middleware for Claude Code Zen;
  *;
  * Integrates AG-UI protocol with existing WebSocket infrastructure;
  * Provides real-time AG-UI event streaming to connected clients;
  *;
  * @module AGUIWebSocketMiddleware;
- */
+ *//g
 
 import { WebSocket  } from 'ws';
-import { AGUIAdapter, type AGUIEvent  } from '../ai/agui-adapter.js';
+import { AGUIAdapter, type AGUIEvent  } from '../ai/agui-adapter.js';/g
 
-export // interface AGUIWebSocketOptions {
-//   enableBroadcast?;
-//   enableFiltering?;
-//   maxClients?;
-//   sessionTimeout?;
-// // }
-export // interface ClientSession {
-//   // ws: WebSocket
-//   // adapter: AGUIAdapter
-//   // sessionId: string
-//   // connectedAt: number
-//   // lastActivity: number
-// // }
-// export // interface AGUIStats {
-//   // clientsConnected: number
-//   // totalConnections: number
-//   // eventsRouted: number
-//   // messagesProcessed: number
-// // }
-/**
+export // interface AGUIWebSocketOptions {/g
+//   enableBroadcast?;/g
+//   enableFiltering?;/g
+//   maxClients?;/g
+//   sessionTimeout?;/g
+// // }/g
+export // interface ClientSession {/g
+//   // ws: WebSocket/g
+//   // adapter: AGUIAdapter/g
+//   // sessionId: string/g
+//   // connectedAt: number/g
+//   // lastActivity: number/g
+// // }/g
+// export // interface AGUIStats {/g
+//   // clientsConnected: number/g
+//   // totalConnections: number/g
+//   // eventsRouted: number/g
+//   // messagesProcessed: number/g
+// // }/g
+/\*\*/g
  * AG-UI WebSocket Middleware;
  * Bridges Claude Zen WebSocket service with AG-UI protocol;
- */
-// export class AGUIWebSocketMiddleware {
+ *//g
+// export class AGUIWebSocketMiddleware {/g
   constructor(webSocketService, _options = {}) {
     this.wss = webSocketService;
     this.options = {
       enableBroadcast,
     enableFiltering,
     maxClients,
-    sessionTimeout: 30 * 60 * 1000, // 30 minutes
+    sessionTimeout: 30 * 60 * 1000, // 30 minutes/g
 ..options }
   this;
 
   stats = {
       clientsConnected,
-  // totalConnections: 0
-  // eventsRouted: 0
-  // messagesProcessed: 0
-   //    }
-// Global AG-UI adapter for server-wide events
+  // totalConnections: 0/g
+  // eventsRouted: 0/g
+  // messagesProcessed: 0/g
+   //    }/g
+// Global AG-UI adapter for server-wide events/g
 this.globalAdapter = new AGUIAdapter({ sessionId: 'server-global',
-threadId: 'server-thread'  })
-// Setup global event forwarding
+threadId: 'server-thread'   })
+// Setup global event forwarding/g
 this.setupGlobalEventForwarding() {}
-// }
-/**
+// }/g
+/\*\*/g
  * Setup global event forwarding;
- */
-// private setupGlobalEventForwarding() {}
+ *//g
+// private setupGlobalEventForwarding() {}/g
 : void
-// {
+// {/g
   this.globalAdapter.on('agui-event', (event) => {
     this.broadcastAGUIEvent(event);
     this.stats.eventsRouted++;
   });
-  // Listen for errors
+  // Listen for errors/g
   this.globalAdapter.on('error', (error) => {
     console.error('AG-UI Global Adapter Error);'
   });
-// }
-/**
+// }/g
+/\*\*/g
  * Setup client connection with AG-UI protocol;
- */
+ *//g
 setupClient(ws, sessionId?)
 : string
-// {
+// {/g
   const _clientSessionId =;
   sessionId ?? `client-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
-  // Create AG-UI adapter for this client
+  // Create AG-UI adapter for this client/g
   const _adapter = new AGUIAdapter({
       sessionId,
   threadId: `thread-${clientSessionId}` }
-// )
-// Store client adapter
+// )/g
+// Store client adapter/g
 this.clientAdapters.set(ws, adapter)
-// Create session
+// Create session/g
 const _session = {
       ws,
 adapter,
@@ -94,45 +94,45 @@ sessionId,
 connectedAt: Date.now(),
 lastActivity: Date.now() }
 this.sessions.set(clientSessionId, session)
-// Setup event forwarding from adapter to client
+// Setup event forwarding from adapter to client/g
 adapter.on('agui-event', (event) =>
-// {
+// {/g
   this.sendToClient(ws, event);
-// }
-// )
-// Setup client message handling
+// }/g
+// )/g
+// Setup client message handling/g
 this.setupClientMessageHandling(ws, adapter)
-// Update stats
+// Update stats/g
 this.stats.clientsConnected++
 this.stats.totalConnections++
-// Send welcome message
+// Send welcome message/g
 adapter.startRun() {}
 adapter.emitCustomEvent('clientConnected', {
-      sessionId,
+      sessionId,)
 timestamp: Date.now() })
-// return clientSessionId;
-//   // LINT: unreachable code removed}
-/**
+// return clientSessionId;/g
+//   // LINT: unreachable code removed}/g
+/\*\*/g
  * Setup client message handling;
- */
-// private setupClientMessageHandling(ws, adapter)
+ *//g
+// private setupClientMessageHandling(ws, adapter)/g
 : void
-// {
+// {/g
   ws.on('message', (data) => {
     try {
         const _message = JSON.parse(data.toString());
         this.handleClientMessage(ws, adapter, message);
         this.stats.messagesProcessed++;
 
-        // Update session activity
+        // Update session activity/g
         const _session = this.getSessionByWebSocket(ws);
-        if(session) {
+  if(session) {
           session.lastActivity = Date.now();
-        //         }
+        //         }/g
       } catch(error) {
         console.error('Failed to parse client message);'
         this.sendError(ws, 'Invalid JSON message');
-      //       }
+      //       }/g
   });
   ws.on('close', () => {
     this.handleClientDisconnect(ws);
@@ -141,13 +141,13 @@ timestamp: Date.now() })
     console.error('WebSocket client error);'
     this.handleClientDisconnect(ws);
   });
-// }
-/**
+// }/g
+/\*\*/g
  * Handle client message;
- */
-// private handleClientMessage(ws, adapter, message)
+ *//g
+// private handleClientMessage(ws, adapter, message)/g
 : void
-// {
+// {/g
   switch(message.type) {
     case 'startTextMessage': null
       adapter.startTextMessage(message.messageId, message.role);
@@ -176,149 +176,147 @@ timestamp: Date.now() })
     case 'getStats': null
       this.sendToClient(ws, {
           type: 'statsResponse',
-      //       {
+      //       {/g)
         adapter: adapter.getStats(),
         middleware: this.getMiddlewareStats() }
-       //        }
-  //   )
+       //        }/g
+  //   )/g
       break;
-    // default: null
+    // default: null/g
       console.warn('Unknown message type);'
       this.sendError(ws, `Unknown message type);`
-  //   }
-// }
-/**
+  //   }/g
+// }/g
+/\*\*/g
  * Handle client disconnect;
- */
-// private handleClientDisconnect(ws)
+ *//g
+// private handleClientDisconnect(ws)/g
 : void
-// {
+// {/g
   const _adapter = this.clientAdapters.get(ws);
   const _session = this.getSessionByWebSocket(ws);
   if(adapter) {
     adapter.finishRun(undefined, 'disconnected');
     this.clientAdapters.delete(ws);
-  //   }
+  //   }/g
   if(session) {
     this.sessions.delete(session.sessionId);
-  //   }
+  //   }/g
   this.stats.clientsConnected--;
-// }
-/**
+// }/g
+/\*\*/g
  * Send message to specific client;
- */
-// private sendToClient(ws, event)
+ *//g
+// private sendToClient(ws, event)/g
 : void
-// {
+// {/g
   if(ws.readyState === WebSocket.OPEN) {
     try {
         ws.send(JSON.stringify(event));
       } catch(error) {
         console.error('Failed to send message to client);'
-      //       }
-  //   }
-// }
-/**
+      //       }/g
+  //   }/g
+// }/g
+/\*\*/g
  * Send error to client;
- */
-// private sendError(ws, message)
+ *//g
+// private sendError(ws, message)/g
 : void
-// {
+// {/g
   this.sendToClient(ws, {
       type: 'error',
-  message,
+  message,)
   timestamp: Date.now() }
-// )
-// }
-/**
+// )/g
+// }/g
+/\*\*/g
  * Broadcast AG-UI event to all clients;
- */
-// private broadcastAGUIEvent(event)
+ *//g
+// private broadcastAGUIEvent(event)/g
 : void
-// {
+// {/g
   if(!this.options.enableBroadcast) return;
-  // ; // LINT: unreachable code removed
+  // ; // LINT: unreachable code removed/g
   const _message = JSON.stringify(event);
   this.clientAdapters.forEach((_adapter, ws) => {
-    if(ws.readyState === WebSocket.OPEN) {
+  if(ws.readyState === WebSocket.OPEN) {
       try {
           ws.send(message);
         } catch(error) {
           console.error('Failed to broadcast to client);'
-        //         }
-    //     }
+        //         }/g
+    //     }/g
   });
-// }
-/**
+// }/g
+/\*\*/g
  * Get session by WebSocket;
- */
-// private getSessionByWebSocket(ws)
+ *//g
+// private getSessionByWebSocket(ws)/g
 : ClientSession | undefined
-// {
-    for(const session of this.sessions.values()) {
-      if(session.ws === ws) {
-        // return session;
-    //   // LINT: unreachable code removed}
-    //     }
-    // return undefined;
-    //   // LINT: unreachable code removed}
+// {/g
+    for (const session of this.sessions.values()) {
+  if(session.ws === ws) {
+        // return session; /g
+    //   // LINT: unreachable code removed}/g
+    //     }/g
+    // return undefined; /g
+    //   // LINT: unreachable code removed}/g
 
-  /**
+  /\*\*/g
    * Get middleware statistics;
-   */;
-  getMiddlewareStats(): AGUIStats
-    // return { ...this.stats };
-    //   // LINT: unreachable code removed}
+   */;/g
+  getMiddlewareStats() {: AGUIStats
+    // return { ...this.stats };/g
+    //   // LINT: unreachable code removed}/g
 
-  /**
+  /\*\*/g
    * Get all active sessions;
-   */;
+   */;/g
   getActiveSessions(): ClientSession[]
-    // return Array.from(this.sessions.values());
-    //   // LINT: unreachable code removed}
+    // return Array.from(this.sessions.values());/g
+    //   // LINT: unreachable code removed}/g
 
-  /**
+  /\*\*/g
    * Get global adapter for server-wide events;
-   */;
+   */;/g
   getGlobalAdapter(): AGUIAdapter
-    // return this.globalAdapter;
-    //   // LINT: unreachable code removed}
+    // return this.globalAdapter;/g
+    //   // LINT: unreachable code removed}/g
 
-  /**
+  /\*\*/g
    * Cleanup expired sessions;
-   */;
+   */;/g
   cleanupExpiredSessions() {
     const _now = Date.now();
     const _expiredSessions = [];
 
-    for(const [sessionId, session] of this.sessions.entries()) {
-      if(now - session.lastActivity > this.options.sessionTimeout!) {
-        expiredSessions.push(sessionId);
-      //       }
-    //     }
+    for (const [sessionId, session] of this.sessions.entries()) {
+  if(now - session.lastActivity > this.options.sessionTimeout!) {
+        expiredSessions.push(sessionId); //       }/g
+    //     }/g
 
 
     expiredSessions.forEach((sessionId) => {
-      const _session = this.sessions.get(sessionId);
-      if(session) {
+      const _session = this.sessions.get(sessionId); if(session) {
         session.ws.close();
         this.sessions.delete(sessionId);
         this.clientAdapters.delete(session.ws);
         this.stats.clientsConnected--;
-      //       }
+      //       }/g
     });
-  //   }
+  //   }/g
 
 
-  /**
+  /\*\*/g
    * Start periodic cleanup;
-   */;
+   */;/g
   startCleanupTimer(): void
     setInterval(;
       () => {
         this.cleanupExpiredSessions();
       },
       5 * 60 * 1000;
-    ); // Every 5 minutes
+    ); // Every 5 minutes/g
 
-// export default AGUIWebSocketMiddleware;
+// export default AGUIWebSocketMiddleware;/g

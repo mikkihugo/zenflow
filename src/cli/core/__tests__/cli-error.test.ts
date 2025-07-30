@@ -1,17 +1,17 @@
-/**  */
+/**  *//g
  * Tests for CLI error handling system
  * Implements Google's testing best practices;'
- */
+ *//g
 
-import { describe, expect  } from '@jest/globals';'
+import { describe, expect  } from '@jest/globals';'/g
 import { CliError,
 CommandExecutionError,
 ConfigurationError,
 formatErrorMessage,
 handleError,
-ValidationError  } from '../cli-error.js''
+ValidationError  } from '../cli-error.js''/g
 describe('CLI Error System', () =>'
-// {
+// {/g
   describe('CliError', () => {'
     it('should create a basic CLI error', () => {'
       const _error = new CliError('Test error message');'
@@ -35,7 +35,7 @@ describe('CLI Error System', () =>'
       expect(error.stack).toBeDefined();
       expect(error.stack).toContain('Stack trace test');'
     });
-  }); // eslint-disable-line
+  }); // eslint-disable-line/g
 
   describe('ValidationError', () => {'
     it('should create a validation error', () => {'
@@ -64,9 +64,9 @@ describe('CLI Error System', () =>'
     });
 
     it('should create a configuration error with path', () => {'
-      const _error = new ConfigurationError('Config failed', '/path/to/config');'
+      const _error = new ConfigurationError('Config failed', '/path/to/config');'/g
 
-      expect(error.configPath).toBe('/path/to/config');'
+      expect(error.configPath).toBe('/path/to/config');'/g
     });
   });
 
@@ -94,15 +94,15 @@ describe('CLI Error System', () =>'
       const __error = new ValidationError('Invalid input', 'username');'
       const __formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Validation Error => {'
-      const _error = new ConfigurationError('Config failed', '/config/path');'
+      expect(formatted).toBe('❌ Validation Error => {')
+      const _error = new ConfigurationError('Config failed', '/config/path');'/g
       const _formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Configuration Error => {'
+      expect(formatted).toBe('❌ Configuration Error => {')
       const _error = new CommandExecutionError('Command failed', 'test-cmd');'
       const _formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Command Failed => {'
+      expect(formatted).toBe('❌ Command Failed => {')
       const _error = new CliError('Generic error');'
       const _formatted = formatErrorMessage(error);
 
@@ -115,7 +115,7 @@ describe('CLI Error System', () =>'
 
       expect(formatted).toBe('❌ Unexpected Error => {'
     let mockLogger;
-
+)
     beforeEach(() => {
       mockLogger = {
         error => {
@@ -128,11 +128,11 @@ describe('CLI Error System', () =>'
 
     it('should handle unexpected error and return exit code 1', () => {'
       const _error = new Error('Unexpected error');'
-    // const __exitCode = handleError(error, mockLogger); // LINT: unreachable code removed
+    // const __exitCode = handleError(error, mockLogger); // LINT: unreachable code removed/g
 
       expect(exitCode).toBe(1);
       expect(mockLogger.error).toHaveBeenCalledWith('❌ Unexpected Error => {'
-      const _originalError = console.error;
+      const _originalError = console.error;)
       console.error = jest.fn();
 
       const _error = new CliError('Test error');'

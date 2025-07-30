@@ -1,24 +1,24 @@
-/**  */
+/**  *//g
  * Index Module
  * Converted from JavaScript to TypeScript
- */
+ *//g
 
-export { ArchitectAdvisor  } from './architect-advisor.js';'
-// Base Queen class and types
-export { BaseQueen  } from './base-queen.js';'
-// Specialized Queen implementations
-export { CodeQueen  } from './code-queen.js';'
-export { DebugQueen  } from './debug-queen.js';'
+export { ArchitectAdvisor  } from './architect-advisor.js';'/g
+// Base Queen class and types/g
+export { BaseQueen  } from './base-queen.js';'/g
+// Specialized Queen implementations/g
+export { CodeQueen  } from './code-queen.js';'/g
+export { DebugQueen  } from './debug-queen.js';'/g
 
-// Queen Coordinator
-// export { QueenCoordinator  } from './queen-coordinator.js';'
+// Queen Coordinator/g
+// export { QueenCoordinator  } from './queen-coordinator.js';'/g
 
-// Convenience factory function
-// import { QueenCoordinator  } from './queen-coordinator.js';'
+// Convenience factory function/g
+// import { QueenCoordinator  } from './queen-coordinator.js';'/g
 
-// export async function createQueenCoordinator(config = new QueenCoordinator(config);
-// // await coordinator.start();
-// return coordinator;
-// }
+// export async function createQueenCoordinator(config = new QueenCoordinator(config);/g
+// // await coordinator.start();/g
+// return coordinator;/g
+// }/g
 
 )

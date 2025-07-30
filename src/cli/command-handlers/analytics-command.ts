@@ -1,17 +1,17 @@
-/**  */
+/**  *//g
  * Analytics Command Module
  * Converted from JavaScript to TypeScript
- */
+ *//g
 
-// analytics-command.js - Handles the analytics command
+// analytics-command.js - Handles the analytics command/g
 
-import { printSuccess  } from '../utils.js';
+import { printSuccess  } from '../utils.js';/g
 
 export async function analyticsCommand() {
   case 'performance': null
   printSuccess('Performance Analytics Report')
   console.warn('\n� System Performance(Last 30 Days):')
-  console.warn('   AgentProductivity = args[1];'
+  console.warn('   AgentProductivity = args[1];')
   if(costCmd === 'analyze') {
     printSuccess('Cost Analysis Report');
     console.warn('\n� Cost Breakdown);'
@@ -31,9 +31,9 @@ export async function analyticsCommand() {
     console.warn('     • Schedule off-peak);'
   } else {
     console.warn('Cost commands, optimize, budget');
-  //   }
+  //   }/g
   break;
-  // default: null
+  // default: null/g
   console.warn('Analytics commands)'
   console.warn('  performance    - System performance analytics')
   console.warn('  business-impact - Business impact analysis')
@@ -42,7 +42,7 @@ export async function analyticsCommand() {
   console.warn('\nExamples)'
   console.warn('  analytics performance --time-range 30d');
   console.warn('  analytics cost analyze --granularity project');
-// }
-// }
+// }/g
+// }/g
 
 )

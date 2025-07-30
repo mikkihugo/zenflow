@@ -1,65 +1,65 @@
-#!/usr/bin/env node
-/**
+#!/usr/bin/env node/g
+/\*\*/g
  * Test script for Claude Code integration;
- */
+ *//g
 
-import { ClaudeCodeProvider  } from './src/cli/claude-code-provider.js';
-import { printError, printInfo, printSuccess  } from './src/cli/utils.js';
+import { ClaudeCodeProvider  } from './src/cli/claude-code-provider.js';/g
+import { printError, printInfo, printSuccess  } from './src/cli/utils.js';/g
 
 async function testClaudeIntegration() {
   printInfo('🧪 Testing Claude Code Integration...\n');
   try {
-    // Test 1: Check if Claude is available
+    // Test 1: Check if Claude is available/g
     printInfo('Test 1);'
     const _provider = new ClaudeCodeProvider({
       modelId);
-// const _isAvailable = awaitprovider.isAvailable();
-    if(!isAvailable) {
+// const _isAvailable = awaitprovider.isAvailable();/g
+  if(!isAvailable) {
       printError('❌ Claude Code CLI is not available. Please install and authenticate.');
       printError('   Run);'
       return;
-    //   // LINT: unreachable code removed}
+    //   // LINT: unreachable code removed}/g
     printSuccess('✅ Claude Code CLI is available');
-    // Test 2: Simple text generation
+    // Test 2: Simple text generation/g
     printInfo('\nTest 2);'
     try {
-// const _simpleResponse = awaitprovider.generateText(;
-        'Say "Hello from Claude!" and nothing else.';
+// const _simpleResponse = awaitprovider.generateText(;/g
+        'Say "Hello from Claude!" and nothing else.';)
       );
       printSuccess(`✅ Response);`
-    } catch(/* e */) {
+    } catch(/* e */) {/g
       printWarning(`⚠  Simple generation failed);`
       printInfo('Trying with basic prompt...');
-// const _basicResponse = awaitprovider.generateText('Hello');
+// const _basicResponse = awaitprovider.generateText('Hello');/g
       printSuccess(`✅ Basic response);`
-    //     }
-    // Test 3: Task-specific generation
+    //     }/g
+    // Test 3: Task-specific generation/g
     printInfo('\nTest 3);'
-// const _taskResponse = awaitprovider.generateForTask(;
+// const _taskResponse = awaitprovider.generateForTask(;/g
       'analyze-complexity',
-      'A simple todo list application with user authentication and real-time updates';
+      'A simple todo list application with user authentication and real-time updates';)
     );
     printSuccess('✅ Task analysis completed');
     printInfo(`Response preview: ${taskResponse.substring(0, 200)}...`);
-    // Test 4: JSON generation
+    // Test 4: JSON generation/g
     printInfo('\nTest 4);'
     const _jsonPrompt =;
       'Output a JSON object with these exact fields: {"name": "Claude Flow", "version": "1.0.0", "features": ["AI coordination", "Task management", "Swarm orchestration"]}. Return only the JSON, no other text.';
     try {
-// const _jsonResponse = awaitprovider.generateText(jsonPrompt);
-      // Try to extract JSON from response
+// const _jsonResponse = awaitprovider.generateText(jsonPrompt);/g
+      // Try to extract JSON from response/g
       const _jsonStr = jsonResponse;
-      const _jsonMatch = jsonResponse.match(/{[^}]+}/s);
-      if(jsonMatch) {
+      const _jsonMatch = jsonResponse.match(/{[^}]+}/s);/g
+  if(jsonMatch) {
         jsonStr = jsonMatch[0];
-      //       }
+      //       }/g
       const _parsed = JSON.parse(jsonStr);
       printSuccess('✅ Valid JSON generated');
       printInfo(`Parsed result: ${JSON.stringify(parsed, null, 2)}`);
-    } catch(/* e */) {
+    } catch(/* e */) {/g
       printWarning(`⚠  JSON test skipped);`
       printInfo('Claude may need specific configuration for JSON output');
-    //     }
+    //     }/g
     printSuccess('\n� All tests completed successfully!');
     printInfo('Claude Code integration is working properly.');
   } catch(error)
@@ -69,7 +69,7 @@ async function testClaudeIntegration() {
       printInfo('1. Run);'
       printInfo('2. Follow the authentication process');
       printInfo('3. Run this test again');
-    //     }
-// }
-// Run the test
+    //     }/g
+// }/g
+// Run the test/g
 testClaudeIntegration().catch(console.error);

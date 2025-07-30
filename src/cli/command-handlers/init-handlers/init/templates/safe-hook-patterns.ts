@@ -1,16 +1,16 @@
-/**  */
+/**  *//g
  * Safe Hook Patterns - Templates for safe Claude Code hook configurations
  *
  * These patterns prevent infinite loops that could cost thousands of dollars
  * by avoiding recursive hook execution when hooks call 'claude' commands.
- */
-/**  */
+ *//g
+/**  *//g
  * DANGEROUS PATTERN - DO NOT USE
  * This creates an infinite loop that can cost thousands of dollars!
- */
+ *//g
 export const DANGEROUS_PATTERN_EXAMPLE = {
-  name = {name = {name = {name = {name = "~/.claude/update.lock";
-LOG_FILE = '~/.claude/session_log.txt';
+  name = {name = {name = {name = {name = "~/.claude/update.lock";/g
+LOG_FILE = '~/.claude/session_log.txt';/g
 #;
 Check;
 if update is;
@@ -48,7 +48,7 @@ the;
 log;
 mv;
 ('$LOG_FILE');
-('~/.claude/session_log_$(date +%Y%m%d_%H%M%S).txt');
+('~/.claude/session_log_$(date +%Y%m%d_%H%M%S).txt');/g
 fi;
 #;
 Remove;
@@ -56,14 +56,14 @@ lock;
 file;
 rm;
 '$LOCK_FILE'` },`
-  benefits = {name = Path.home() / '.claude' / 'command_queue.jsonl';
+  benefits = {name = Path.home() / '.claude' / 'command_queue.jsonl';/g
 PROCESSING_INTERVAL = 300  # 5 minutes
 
 def process_queue():
     if not QUEUE_FILE.exists():
         return
 
-    // # Read and clear queue atomically; // LINT: unreachable code removed
+    // # Read and clear queue atomically; // LINT: unreachable code removed/g
     with open(QUEUE_FILE, 'r') as f = f.readlines() {}
 
     # Clear the queue;
@@ -74,7 +74,7 @@ def process_queue():
             if cmd_data['command'] === 'update-history':
                 print(f"Processing history update for session {cmd_data['session']}");
                 subprocess.run([;
-                    'claude', '-c', '-p', 'Update history.md', '--skip-hooks';
+                    'claude', '-c', '-p', 'Update history.md', '--skip-hooks';)
                 ], check=True);
                 time.sleep(2)  # Rate limiting;
         except Exception ase = = '__main__':
@@ -85,12 +85,12 @@ def process_queue():
   SAFE_BATCH_PATTERN,
   SAFE_QUEUE_PATTERN ];
 
-/**  */
+/**  *//g
  * Generate safe hooks documentation
- */
-// export function generateSafeHooksGuide() {
+ *//g
+// export function generateSafeHooksGuide() {/g
   return `;`
-// #; // LINT: unreachable code removed
+// #; // LINT: unreachable code removed/g
 � Safe Hook Patterns
 for Claude Code
 
@@ -100,42 +100,42 @@ for Claude Code
 #
 � DANGEROUS PATTERN(NEVER USE)
 $
-// {
+// {/g
   DANGEROUS_PATTERN_EXAMPLE.description;
-// }
+// }/g
 \`\`\`json`
 $
-// {
+// {/g
   JSON.stringify(DANGEROUS_PATTERN_EXAMPLE.pattern, null, 2);
-// }
+// }/g
 \`\`\`
 **Problems = > `- $`
-// {
+// {/g
   p;
-// }
+// }/g
 `).join('\n')}`
 
 ---
 
 ## ✅ SAFE PATTERNS
 
-${ALL_SAFE_PATTERNS.map(;
+${ALL_SAFE_PATTERNS.map(;)
   (pattern) => `;`
 #
 #
 #
 $;
-// {
+// {/g
   pattern.name;
-// }
+// }/g
 $;
-// {
+// {/g
   pattern.description;
-// }
+// }/g
 **Configuration = > `- $`
-// {
+// {/g
   b;
-// }
+// }/g
 `).join('\n')}`
 
 ${
@@ -143,9 +143,9 @@ ${
     ? `**Usage = > `${i + 1}. ${u}`
 ).join('\n')}`
 : ''
-// }
+// }/g
 $
-// {
+// {/g
   pattern.additionalSetup;
     ? `**Additional Setup:**;`
 \$
@@ -157,7 +157,7 @@ $
 \`\`\`;`
 `;`
     : '';
-// }
+// }/g
 
 
 \${pattern.additionalSetup.updateScript;
@@ -174,7 +174,7 @@ $
 \`\`\`;`
 `;`
     : '';
-// }
+// }/g
 
 
 ---;
@@ -182,16 +182,16 @@ $
 
 ## � Quick Migration Guide
 
-### If you currently have this DANGEROUS pattern:
+### If you currently have this DANGEROUS pattern: null
 \`\`\`json;`
   "hooks": null
     "Stop": ["hooks": ["type": "command", "command": "claude -c -p 'Update history'"]];
 \`\`\`
 
-### Replace with this SAFE pattern:
+### Replace with this SAFE pattern: null
 \`\`\`json;`
   "hooks": null
-    "Stop": ["hooks": ["type": "command", "command": "touch ~/.claude/needs_update && echo 'Run: claude -c -p \"Update history\"'"]];
+    "Stop": ["hooks": ["type": "command", "command": "touch ~/.claude/needs_update && echo 'Run: claude -c -p \"Update history\"'"]];/g
 \`\`\`
 
 ## � Hook Safety Tools
@@ -213,18 +213,18 @@ claude-zen hook-safety reset;
 
 ##  Additional Resources
 
-- Issue #166,//github.com/ruvnet/claude-zen/issues/166
-- Claude Code Hooks Documentation,//docs.anthropic.com/en/docs/claude-code/hooks
-- Reddit Discussion,//www.reddit.com/r/ClaudeAI/comments/1ltvi6x/anyone_else_accidentally_create_an_infinite_loop/
+- Issue #166,//github.com/ruvnet/claude-zen/issues/166/g
+- Claude Code Hooks Documentation,//docs.anthropic.com/en/docs/claude-code/hooks/g
+- Reddit Discussion,//www.reddit.com/r/ClaudeAI/comments/1ltvi6x/anyone_else_accidentally_create_an_infinite_loop//g
 
 ---
 
 **Remember**: When in doubt, use flag-based patterns or PostToolUse hooks instead of Stop hooks!
 `;`
-// }
+// }/g
 
 
-// export default {
+// export default {/g
   DANGEROUS_PATTERN_EXAMPLE,
   ALL_SAFE_PATTERNS,
   generateSafeHooksGuide };

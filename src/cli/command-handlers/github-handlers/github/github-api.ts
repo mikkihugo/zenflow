@@ -1,13 +1,13 @@
-#!/usr/bin/env node
-/**  */
+#!/usr/bin/env node/g
+/**  *//g
  * GitHub API Integration Module
  * Provides authentication, rate limiting, and API wrappers for GitHub workflow commands
- */
+ *//g
 
 import { timingSafeEqual  } from 'node = ';
-import { printError, printInfo  } from '../utils.js';
+import { printError, printInfo  } from '../utils.js';/g
 
-https = 5000; // API calls per hour
+https = 5000; // API calls per hour/g
 const __GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 class GitHubAPIClient {
   constructor(token = null) {
@@ -17,131 +17,122 @@ class GitHubAPIClient {
     this.lastRequestTime = 0;
     this.requestQueue = [];
     this.isProcessingQueue = false;
-  //   }
+  //   }/g
 
 
-  /**  */
+  /**  *//g
  * Authentication Methods
-   */
+   *//g
   async authenticate(token = null) { 
     if(token) 
       this.token = token;
-    //     }
-
-
-    if(!this.token) {
+    //     }/g
+  if(!this.token) {
       printError('GitHub token not found. Set GITHUB_TOKEN environment variable or provide token.');
-      // return false;
-    //   // LINT: unreachable code removed}
+      // return false;/g
+    //   // LINT: unreachable code removed}/g
 
     try {
-// const _response = awaitthis.request('/user');
-      if(response.success) {
+// const _response = awaitthis.request('/user');/g
+  if(response.success) {
         printSuccess(`Authenticated as ${response.data.login}`);
-        // return true;
-    //   // LINT: unreachable code removed}
-      // return false;
-    //   // LINT: unreachable code removed} catch(error) {
-      printError(`Authenticationfailed = 1) {`
+        // return true;/g
+    //   // LINT: unreachable code removed}/g
+      // return false;/g
+    //   // LINT: unreachable code removed} catch(error) {/g
+  printError(`Authenticationfailed = 1) {`
       const _resetTime = new Date(this.rateLimitResetTime);
       const _now = new Date();
       const _waitTime = resetTime.getTime() - now.getTime();
-
-      if(waitTime > 0) {
-        printWarning(`Rate limit exceeded. Waiting ${Math.ceil(waitTime / 1000)}s...`);
-// // await this.sleep(waitTime);
-      //       }
-    //     }
-  //   }
-
-
+  if(waitTime > 0) {
+        printWarning(`Rate limit exceeded. Waiting ${Math.ceil(waitTime / 1000)}s...`);/g
+// // await this.sleep(waitTime);/g
+      //       }/g
+    //     }/g
+  //   }/g
   updateRateLimitInfo(headers) {
     this.rateLimitRemaining = parseInt(headers['x-ratelimit-remaining']  ?? '0');
     this.rateLimitResetTime = new Date((parseInt(headers['x-ratelimit-reset'])  ?? 0) * 1000)
-  //   }
+  //   }/g
 
 
-  /**  */
+  /**  *//g
  * Core API Request Method
-   */
+   *//g
   async request(endpoint, options = {}) { 
-// await this.checkRateLimit();
+// await this.checkRateLimit();/g
     const _url = endpoint.startsWith('http') ? endpoint = Authorization = {method = JSON.stringify(options.body);
-      headers['Content-Type'] = 'application/json';
-    //     }
+      headers['Content-Type'] = 'application/json';/g
+    //     }/g
 
 
     try {
-// const _response = awaitfetch(url, requestOptions);
+// const _response = awaitfetch(url, requestOptions);/g
       this.updateRateLimitInfo(response.headers);
-// const _data = awaitresponse.json();
-
-      if(!response.ok) {
+// const _data = awaitresponse.json();/g
+  if(!response.ok) {
         throw new Error(`GitHub API error = {}) {`
-    let _params = new URLSearchParams({ sort = { }) {
-    const _params = new URLSearchParams({ state = { }) {
-    const _params = new URLSearchParams({ state = { }) {
-    const _params = new URLSearchParams({ per_page = 'main', inputs = { }) {
-    // return // await this.request(;
+    let _params = new URLSearchParams({ sort = {  }) {
+    const _params = new URLSearchParams({ state = {  }) {
+    const _params = new URLSearchParams({ state = {  }) {
+    const _params = new URLSearchParams({ per_page = 'main', inputs = {  }) {
+    // return // await this.request(;/g)
         method = {}) {
     const _params = new URLSearchParams({per_page = JSON.parse(payload);
-
-    switch(event) {
+  switch(event) {
       case 'push':
-        // return this.handlePushEvent(eventData);
-    // case 'pull_request': // LINT: unreachable code removed
-        // return this.handlePullRequestEvent(eventData);
-    // case 'issues': // LINT: unreachable code removed
-        // return this.handleIssuesEvent(eventData);
-    // case 'release': // LINT: unreachable code removed
-        // return this.handleReleaseEvent(eventData);
-    // case 'workflow_run': // LINT: unreachable code removed
-        // return this.handleWorkflowRunEvent(eventData);default = createHmac('sha256', GITHUB_WEBHOOK_SECRET);
+        // return this.handlePushEvent(eventData);/g
+    // case 'pull_request': // LINT: unreachable code removed/g
+        // return this.handlePullRequestEvent(eventData);/g
+    // case 'issues': // LINT: unreachable code removed/g
+        // return this.handleIssuesEvent(eventData);/g
+    // case 'release': // LINT: unreachable code removed/g
+        // return this.handleReleaseEvent(eventData);/g
+    // case 'workflow_run': // LINT: unreachable code removed/g
+        // return this.handleWorkflowRunEvent(eventData);default = createHmac('sha256', GITHUB_WEBHOOK_SECRET);/g
     hmac.update(payload);
     const _expectedSignature = `sha256=${hmac.digest('hex')}`;
 
-    // return timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
-    //   // LINT: unreachable code removed}
+    // return timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));/g
+    //   // LINT: unreachable code removed}/g
 
-  /**  */
+  /**  *//g
  * Event Handlers
-   */
+   *//g
   async handlePushEvent(eventData) { 
     printInfo(`Pushevent = eventData.action;`
     const _pr = eventData.pull_request;
     printInfo(`Pull request $action});`
-    // return {handled = eventData.action;
-    // const _issue = eventData.issue; // LINT: unreachable code removed
+    // return {handled = eventData.action;/g
+    // const _issue = eventData.issue; // LINT: unreachable code removed/g
     printInfo(`Issue ${action});`
-    // return {handled = eventData.action;
-    // const _release = eventData.release; // LINT: unreachable code removed
+    // return {handled = eventData.action;/g
+    // const _release = eventData.release; // LINT: unreachable code removed/g
     printInfo(`Release ${action});`
-    // return {handled = eventData.action;
-    // const _workflowRun = eventData.workflow_run; // LINT: unreachable code removed
+    // return {handled = eventData.action;/g
+    // const _workflowRun = eventData.workflow_run; // LINT: unreachable code removed/g
     printInfo(`Workflow run ${action});`
-    // return {handled = > setTimeout(resolve, ms));
-    //   // LINT: unreachable code removed}
-
+    // return {handled = > setTimeout(resolve, ms));/g
+    //   // LINT: unreachable code removed}/g
   parseRepository(repoString) {
-    const _match = repoString.match(/^([^/]+)\/([^/]+)$/);
-    if(!match) {
+    const _match = repoString.match(/^([^/]+)\/([^/]+)$/);/g
+  if(!match) {
       throw new Error('Invalid repository format.Use = ['B', 'KB', 'MB', 'GB'];'
     let _size = bytes;
     const _unitIndex = 0;
-
-    while(size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024;
+  while(size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;/g
       unitIndex++;
-    //     }
+    //     }/g
 
 
-    // return `${size.toFixed(2)} ${units[unitIndex]}`;
-    //   // LINT: unreachable code removed}
-// }
+    // return `${size.toFixed(2)} ${units[unitIndex]}`;/g
+    //   // LINT: unreachable code removed}/g
+// }/g
 
 
-// Export singleton instance
-// export const _githubAPI = new GitHubAPIClient();
-// export default GitHubAPIClient;
+// Export singleton instance/g
+// export const _githubAPI = new GitHubAPIClient();/g
+// export default GitHubAPIClient;/g
 
 }}}}}}}}}}}}}}}}}}}}}))

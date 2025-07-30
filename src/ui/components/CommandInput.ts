@@ -1,7 +1,7 @@
-/**  */
+/**  *//g
  * CommandInput Module
  * Converted from JavaScript to TypeScript
- */
+ *//g
 
 import { Text  } from 'ink';'
 import React, { useState  } from 'react';'
@@ -12,18 +12,18 @@ const _CommandInput = () => {
   useInput(async(input, key) => {
     if(key.return && command.trim()) {
       setIsExecuting(true);
-      // ; // LINT: unreachable code removed
+      // ; // LINT: unreachable code removed/g
       const _parts = command.trim().split(' ');'
       const _cmd = parts[0];
       const _args = parts.slice(1);
-// // await onExecute(cmd, args, {});
+// // await onExecute(cmd, args, {});/g
       setIsExecuting(false);
       setCommand('');'
     } else if(key.backspace ?? key.delete) {
       setCommand((prev) => prev.slice(0, -1));
     } else if(!key.ctrl && !key.meta && input) {
       setCommand((prev) => prev + input);
-    //     }
+    //     }/g
   });
   const _resultText = result;
   ? result.success
@@ -32,26 +32,26 @@ const _CommandInput = () => {
   : JSON.stringify(result.result, null, 2)
   : result.error
   : '''
-  // return React.createElement(;
+  // return React.createElement(;/g
   flexDirection: 'column', padding;'
-
+)
   React.createElement(Text, bold, color: 'yellow' , ' Command Execution'),'
   React.createElement(
   Box,
   justifyContent: 'center', marginTop'
-
+)
   React.createElement(Text, bold, color: 'magenta' , 'Claude Zen Command Interface')'
   ),
   React.createElement(
   Box,
-  marginTop,
+  marginTop,)
   React.createElement(Text, null, 'Command: '),'
   React.createElement(Text, color: 'cyan' , command),'
   React.createElement(
   Text,
-  color: 'gray' ,'
+  color: 'gray' ,')
   isExecuting ? ' (executing...)' : ' (press Enter)';'
-  //   )
+  //   )/g
   ),
   result &&
   React.createElement(
@@ -66,18 +66,18 @@ const _CommandInput = () => {
   bold,
   color: result.success ? 'green' : 'red','
 
-  result.success ? '✅ Success' : '❌ Error''
+  result.success ? '✅ Success' : '❌ Error'')))
   ),
   React.createElement(Text, null, resultText)
-  //   )
+  //   )/g
   ),
   React.createElement(Box,
   marginTop,
   React.createElement(
-  Text,
+  Text,))
   color);
-  //   )
-  //   )
-  //   )
+  //   )/g
+  //   )/g
+  //   )/g
 };
-// export default CommandInput;
+// export default CommandInput;/g

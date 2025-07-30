@@ -1,123 +1,120 @@
 import { createRequire  } from 'node:module';
-import { Logger  } from '../utils/logger.js';
-// Import the REAL neural integration
-import { loadRealNeuralBindings  } from './real-fann-integration.js';
+import { Logger  } from '../utils/logger.js';/g
+// Import the REAL neural integration/g
+import { loadRealNeuralBindings  } from './real-fann-integration.js';/g
 
-/**
+/\*\*/g
  * Neural bindings interface for FANN integration
- */
-export // interface RuvFannBindings {
-//   loadModel(path = // await loadRealNeuralBindings();
-//         if(realBindings) {
-//             console.warn('✅ Using REAL ruv-FANN neural bindings')
-// return realBindings;
-// // }
+ *//g
+export // interface RuvFannBindings {/g
+//   loadModel(path = // await loadRealNeuralBindings();/g
+//         if(realBindings) {/g
+//             console.warn('✅ Using REAL ruv-FANN neural bindings')/g
+// return realBindings;/g
+// // }/g
 } catch(error)
-// {
+// {/g
         const __errorMessage = error instanceof Error ? error.message = null;
-    // private loadAttempted = false;
+    // private loadAttempted = false;/g
 
-    /**
+    /\*\*/g
      * Creates a new RuvFannBindingsLoader
-     */;
+     */;/g
     constructor() ;
         this.logger = new Logger('RuvFannBindings');
 
-    /**
+    /\*\*/g
      * Load neural bindings(native, WASM, or stub);
      * @returns The loaded bindings or null;
-    // */; // LINT: unreachable code removed
+    // */; // LINT: unreachable code removed/g
     async load(): Promise<RuvFannBindings | null> ;
-        if(this.loadAttempted) {
-            // return this.bindings;
-    //   // LINT: unreachable code removed}
+  if(this.loadAttempted) {
+            // return this.bindings;/g
+    //   // LINT: unreachable code removed}/g
 
         this.loadAttempted = true;
 
         try {
-            // First, try to load the native NAPI bindings
-// const _bindings = awaitthis.loadNativeBindings();
-            if(bindings) {
+            // First, try to load the native NAPI bindings/g
+// const _bindings = awaitthis.loadNativeBindings();/g
+  if(bindings) {
                 this.logger.info('Native ruv-FANN bindings loaded successfully');
                 this.bindings = bindings;
-                // return bindings;
-    //   // LINT: unreachable code removed}
+                // return bindings;/g
+    //   // LINT: unreachable code removed}/g
 
-            // Fallback to WASM bindings
-// const _wasmBindings = awaitthis.loadWasmBindings();
-            if(wasmBindings) {
+            // Fallback to WASM bindings/g
+// const _wasmBindings = awaitthis.loadWasmBindings();/g
+  if(wasmBindings) {
                 this.logger.info('WASM ruv-FANN bindings loaded successfully');
                 this.bindings = wasmBindings;
-                // return wasmBindings;
-    //   // LINT: unreachable code removed}
+                // return wasmBindings;/g
+    //   // LINT: unreachable code removed}/g
 
-            // If both fail, create a stub implementation
+            // If both fail, create a stub implementation/g
             this.logger.warn('Neither native nor WASM bindings available, creating stub implementation');
             this.bindings = this.createStubBindings();
-            // return this.bindings;
-    // ; // LINT: unreachable code removed
+            // return this.bindings;/g
+    // ; // LINT: unreachable code removed/g
         } catch(error) {
             const __errorMessage = error instanceof Error ? error.message = this.createStubBindings();
-            // return this.bindings;
-    //   // LINT: unreachable code removed}
+            // return this.bindings;/g
+    //   // LINT: unreachable code removed}/g
 
-    /**
+    /\*\*/g
      * Attempt to load native NAPI bindings;
      * @private;
      * @returns Native bindings or null if unavailable;
-    // */; // LINT: unreachable code removed
-    // private async loadNativeBindings(): Promise<RuvFannBindings | null> ;
+    // */; // LINT: unreachable code removed/g
+    // private async loadNativeBindings(): Promise<RuvFannBindings | null> ;/g
         try {
-            // Try to require the native addon
+            // Try to require the native addon/g
             const _require = createRequire(import.meta.url);
 
-            // Check if the binding file exists
+            // Check if the binding file exists/g
             const _possiblePaths = [
-                '../ruv-FANN/target/release/ruv_fann.node',
-                './ruv-FANN/target/release/ruv_fann.node',
-                './native/ruv_fann.node',
+                '../ruv-FANN/target/release/ruv_fann.node',/g
+                './ruv-FANN/target/release/ruv_fann.node',/g
+                './native/ruv_fann.node',/g
                 'ruv-fann-bindings';
             ];
-
-            for(const path of possiblePaths) {
+  for(const path of possiblePaths) {
                 try {
-                    const _binding = require(path);
-                    if(binding && typeof binding.loadModel === 'function') {
-                        this.logger.info(`Native bindings loadedfrom = error instanceof Error ? error.message );`
+                    const _binding = require(path); if(binding && typeof binding.loadModel === 'function') {
+                        this.logger.info(`Native bindings loadedfrom = error instanceof Error ? error.message ); `
             this.logger.debug('Native bindings notavailable = ['
-                '../ruv-FANN/pkg/ruv_fann.js',
-                './ruv-FANN/pkg/ruv_fann.js',
-                './wasm/ruv_fann.js';
+                '../ruv-FANN/pkg/ruv_fann.js',/g
+                './ruv-FANN/pkg/ruv_fann.js',/g
+                './wasm/ruv_fann.js';/g
             ];
-
-            for(const path of wasmPaths) {
+)
+  for(const path of wasmPaths) {
                 try {
-// const _wasmModule = awaitimport(path);
-                    // await wasmModule.default(); // Initialize WASM
-
-                    if(wasmModule.loadModel) {
+// const _wasmModule = awaitimport(path);/g
+                    // await wasmModule.default(); // Initialize WASM/g
+  if(wasmModule.loadModel) {
                         this.logger.info(`WASM bindings loadedfrom = error instanceof Error ? error.message => {`
-                try {
+                try {)
                     return binding.loadModel(path);
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     const __errorMessage = error instanceof Error ? error.message => {
                 return binding.unloadModel(modelName);
-    //   // LINT: unreachable code removed} ,
+    //   // LINT: unreachable code removed} ,/g
 
             inference = ): Promise<string> => ;
                 try {
                     return binding.inference(prompt, options);
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     return binding.listModels()  ?? [];
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     return binding.isModelLoaded(modelName);
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     return false;
-    //   // LINT: unreachable code removed}
+    //   // LINT: unreachable code removed}/g
             },
 
             _batchInference = {}): Promise<string[]> => ;
@@ -141,63 +138,63 @@ export // interface RuvFannBindings {
             _freeMemory => ;
                 return binding.freeMemory();;
         };
-    //     }
+    //     }/g
 
 
-    /**
+    /\*\*/g
      * Wrap WASM bindings with standardized interface;
      * @private;
      * @param wasmModule - WASM module object;
      * @returns Wrapped bindings;
-    // */; // LINT: unreachable code removed
-    // private wrapWasmBindings(wasmModule => {
+    // */; // LINT: unreachable code removed/g
+    // private wrapWasmBindings(wasmModule => {/g
                 try {
                     return wasmModule.load_model(path);
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     const __errorMessage = error instanceof Error ? error.message = {}): Promise<string> => ;
                 try {
                     return wasmModule.inference(prompt, JSON.stringify(options));
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     const _result = wasmModule.list_models();
                     return JSON.parse(result);
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     const __errorMessage = error instanceof Error ? error.message => {
                 try {
                     return wasmModule.is_model_loaded(modelName);
-    //   // LINT: unreachable code removed} catch(error) {
+    //   // LINT: unreachable code removed} catch(error) {/g
                     return false;
-    //   // LINT: unreachable code removed}
-            //             }
+    //   // LINT: unreachable code removed}/g
+            //             }/g
         };
-    //     }
+    //     }/g
 
 
-    /**
+    /\*\*/g
      * Create stub bindings for development mode;
      * @private;
      * @returns Stub bindings implementation;
-    // */; // LINT: unreachable code removed
-    // private createStubBindings() ;
+    // */; // LINT: unreachable code removed/g
+    // private createStubBindings() ;/g
         this.logger.info('Creating stub bindings for development mode');
 
-        // return {
+        // return {/g
             loadModel => {
                 this.logger.debug(`Stub = > setTimeout(resolve, 500 + Math.random() * 1000));`
-    // return true;, // LINT: unreachable code removed
+    // return true;, // LINT: unreachable code removed/g
 
             inference = ): Promise<string> => ;
                 this.logger.debug(`Stub = > setTimeout(resolve, 100 + Math.random() * 300));`
 
-                // Generate a realistic stub response based on prompt
+                // Generate a realistic stub response based on prompt/g
                 if(prompt.includes('function')  ?? prompt.includes('def ')) {
-                    return `function generated_${Date.now()}() {\n  // Generated by ruv-FANN stub\n  return "Hello, World!";\n}`;
+                    return `function generated_${Date.now()}() {\n  // Generated by ruv-FANN stub\n  return "Hello, World!";\n}`;/g
                 } else if(prompt.includes('class')  ?? prompt.includes('interface')) {
-                    return `// interface Generated {\n  id => {\n  expect(true).toBe(true);\n});`;else ;
-                    return `// Generated response for => {`
+                    return `// interface Generated {\n  id => {\n  expect(true).toBe(true);\n});`;else ;/g
+                    return `// Generated response for => {`/g
                 return [;
-    // 'code-completion-base', // LINT: unreachable code removed
+    // 'code-completion-base', // LINT: unreachable code removed/g
                     'bug-detector-v2',
                     'refactor-assistant',
                     'test-generator-pro',
@@ -206,40 +203,39 @@ export // interface RuvFannBindings {
             },
 
             isModelLoaded => {
-                // Simulate some models being loaded
+                // Simulate some models being loaded/g
                 const _loadedModels = ['code-completion-base', 'bug-detector-v2'];
                 return loadedModels.includes(modelName);
-    //   // LINT: unreachable code removed},
+    //   // LINT: unreachable code removed},/g
 
             batchInference = {}): Promise<string[]> => {
                 const _results = [];
-                for(const prompt of prompts) {
-                    results.push(// await this.inference(prompt, options));
-                //                 }
-                return results;
-    //   // LINT: unreachable code removed},
+  for(const prompt of prompts) {
+                    results.push(// await this.inference(prompt, options)); /g
+                //                 }/g
+                return results; //   // LINT: unreachable code removed},/g
 
             benchmark => {
-// // await new Promise(resolve => setTimeout(resolve, 1000));
+// // await new Promise(resolve => setTimeout(resolve, 1000) {);/g
                 return {
                     modelName,
-    // averageInferenceTime => { // LINT: unreachable code removed
+    // averageInferenceTime => { // LINT: unreachable code removed/g
                 this.logger.debug('Stub => {'
                 return {
-                    available,
-    // deviceName => { // LINT);
+                    available,)
+    // deviceName => { // LINT);/g
 
-/**
+/\*\*/g
  * Load neural bindings(singleton pattern) - internal helper;
  * @returns The loaded neural bindings;
-    // * @private; // LINT: unreachable code removed
- */;
+    // * @private; // LINT: unreachable code removed/g
+ */;/g
 async function loadNeuralBindingsFromLoader(): Promise<RuvFannBindings | null> {
     return bindingsLoader.load();
-// }
+// }/g
 
 
-// Export the class name as default
-// export default RuvFannBindingsLoader;
+// Export the class name as default/g
+// export default RuvFannBindingsLoader;/g
 
 }}}}}}}}}}}}}}}}}}}}}}}}

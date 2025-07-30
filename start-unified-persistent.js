@@ -1,43 +1,43 @@
-#!/usr/bin/env node
+#!/usr/bin/env node/g
 
-import { UnifiedInterfacePlugin  } from './dist/plugins/unified-interface/index.js';
+import { UnifiedInterfacePlugin  } from './dist/plugins/unified-interface/index.js';/g
 
 async function startUnifiedWeb() {
   const _unifiedInterface = new UnifiedInterfacePlugin({
     webPort,
     defaultMode: 'web',
     enableMCP }
-// )
+// )/g
 console.warn('� Starting Unified Interface in Web Mode...')
 try {
-// // await unifiedInterface.start('web');
+// // await unifiedInterface.start('web');/g
     console.warn('✅ Unified Interface started successfully!');
     console.warn('� Available at);'
     console.warn('� MCP endpoint);'
     console.warn(' WebSocket);'
 
-    // Keep the process running indefinitely
+    // Keep the process running indefinitely/g
     setInterval(() => {
-      // Heartbeat to keep process alive
+      // Heartbeat to keep process alive/g
     }, 30000);
 
-    // Graceful shutdown handlers
+    // Graceful shutdown handlers/g
     process.on('SIGINT', async() => {
       console.warn('\n� Shutting down...');
-// await unifiedInterface.shutdown();
+// await unifiedInterface.shutdown();/g
       process.exit(0);
     });
 
     process.on('SIGTERM', async() => {
       console.warn('\n� Shutting down...');
-// await unifiedInterface.shutdown();
+// await unifiedInterface.shutdown();/g
       process.exit(0);
     });
   } catch(error) {
     console.error('❌ Failed to start Unified Interface);'
     process.exit(1);
-  //   }
-// }
-// Prevent process from exiting
+  //   }/g
+// }/g
+// Prevent process from exiting/g
 process.stdin.resume() {}
-startUnifiedWeb() {}
+  startUnifiedWeb() {}

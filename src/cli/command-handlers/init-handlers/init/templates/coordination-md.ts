@@ -1,13 +1,13 @@
-/**  */
+/**  *//g
  * Coordination Md Module
  * Converted from JavaScript to TypeScript
- */
-// coordination-md.js - Coordination templates
+ *//g
+// coordination-md.js - Coordination templates/g
 
 export function createMinimalCoordinationMd() {
   return `# Agent Coordination`
 
-    // ## Quick Commands; // LINT: unreachable code removed
+    // ## Quick Commands; // LINT: unreachable code removed/g
 - \`npx claude-zen agent spawn <type>\`: Create new agent;
 - \`npx claude-zen agent list\`: Show active agents;
 - \`npx claude-zen task create <type> <description>\`: Create task
@@ -15,11 +15,11 @@ export function createMinimalCoordinationMd() {
 ## Agent Types;
 - researcher, coder, analyst, coordinator, general;
 `;`
-// }
+// }/g
 export function createFullCoordinationMd() {
   return `# Agent Coordination System`
 
-    // ## Overview; // LINT: unreachable code removed
+    // ## Overview; // LINT: unreachable code removed/g
 The Claude-Flow coordination system manages multiple AI agents working together on complex tasks. It provides intelligent task distribution, resource management, and inter-agent communication.
 
 ## Agent Types and Capabilities;
@@ -55,10 +55,10 @@ npx claude-zen monitor --interval 5000;
 \`\`\`
 
 ## Workflow Execution;
-Workflows are defined in JSON format and can orchestrate complex multi-agent operations:
+Workflows are defined in JSON format and can orchestrate complex multi-agent operations: null
 \`\`\`bash;`
-npx claude-zen workflow examples/research-workflow.json;
-npx claude-zen workflow examples/development-config.json --async;
+npx claude-zen workflow examples/research-workflow.json;/g
+npx claude-zen workflow examples/development-config.json --async;/g
 \`\`\`
 
 ## Advanced Features;
@@ -70,7 +70,7 @@ npx claude-zen workflow examples/development-config.json --async;
 ## Configuration;
 Coordination settings in \`claude-zen.config.json\`:
 \`\`\`json;`
-// {
+// {/g
   "orchestrator": {
     "maxConcurrentTasks",
     "taskTimeout",
@@ -82,9 +82,9 @@ Coordination settings in \`claude-zen.config.json\`:
     "resourceLimits": {
       "memory": "1GB",
       "cpu": "50%";
-    //     }
-  //   }
-// }
+    //     }/g
+  //   }/g
+// }/g
 \`\`\`
 
 ## Communication Patterns;
@@ -103,15 +103,15 @@ Coordination settings in \`claude-zen.config.json\`:
 ## Troubleshooting;
 - Check agent health with \`npx claude-zen status\`;
 - View detailed logs with \`npx claude-zen monitor\`;
-- Restart stuck agents with terminate/spawn cycle;
+- Restart stuck agents with terminate/spawn cycle;/g
 - Use \`--verbose\` flags for detailed diagnostic information;
 `;`
-// }
-// Create optimized Coordination with batchtools support
-// export async function createOptimizedCoordinationMd() {
+// }/g
+// Create optimized Coordination with batchtools support/g
+// export async function createOptimizedCoordinationMd() {/g
   return `# Agent Coordination System(Batchtools Optimized)`
 
-    // ## Overview; // LINT: unreachable code removed
+    // ## Overview; // LINT: unreachable code removed/g
 The Claude-Flow coordination system manages multiple AI agents working together on complex tasks. It provides intelligent task distribution, resource management, and inter-agent communication.
 
 **� Batchtools Enhancement**: This configuration includes parallel processing capabilities for agent coordination, batch task management, and concurrent workflow execution.
@@ -173,11 +173,11 @@ npx claude-zen coordination concurrent-monitor --all-systems;
 \`\`\`
 
 ## Workflow Execution(Batchtools Enhanced);
-Workflows support parallel execution, batch processing, and concurrent orchestration:
+Workflows support parallel execution, batch processing, and concurrent orchestration: null
 \`\`\`bash;`
 # Standard workflow execution;
-npx claude-zen workflow examples/research-workflow.json;
-npx claude-zen workflow examples/development-config.json --async
+npx claude-zen workflow examples/research-workflow.json;/g
+npx claude-zen workflow examples/development-config.json --async/g
 
 # Batchtools workflow execution;
 npx claude-zen workflow batch-execute <workflow-configs> --parallel;
@@ -206,9 +206,9 @@ npx claude-zen workflow concurrent-monitor --all-workflows --real-time;
 - **Retry Mechanisms**: Intelligent retry with exponential backoff and parallel validation
 
 ## Configuration(Batchtools Enhanced);
-Coordination settings in \`claude-zen.config.json\` with batchtools optimizations:
+Coordination settings in \`claude-zen.config.json\` with batchtools optimizations: null
 \`\`\`json;`
-// {
+// {/g
   "orchestrator": {
     "maxConcurrentTasks",
     "taskTimeout",
@@ -219,7 +219,7 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
       "batchSize",
       "concurrentAgents",
       "parallelWorkflows";
-    //     }
+    //     }/g
   },
   "agents": {
     "maxAgents",
@@ -233,7 +233,7 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
       "batchQueueSize",
       "parallelSpawning",
       "concurrentMonitoring";
-    //     }
+    //     }/g
   },
   "performance": {
     "enableParallelCoordination",
@@ -241,8 +241,8 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
     "batchWorkflowSize",
     "parallelResourceMonitoring",
     "smartLoadBalancing";
-  //   }
-// }
+  //   }/g
+// }/g
 \`\`\`
 
 ## Communication Patterns(Enhanced);
@@ -264,7 +264,7 @@ npx claude-zen agent batch-spawn sparc-agents.json --parallel --validate
 npx claude-zen task parallel-execute research-tasks.json --concurrent --monitor
 
 # Orchestrate multiple workflows simultaneously;
-npx claude-zen workflow concurrent-orchestrate project-workflows/ --parallel;
+npx claude-zen workflow concurrent-orchestrate project-workflows/ --parallel;/g
 \`\`\`
 
 ### Performance Monitoring(Enhanced);
@@ -337,7 +337,7 @@ npx claude-zen monitor --resources --concurrent --real-time;
 - Restart stuck agents with batch operations: \`npx claude-zen agent batch-restart <agent-ids>\`;
 - Use concurrent diagnostics: \`npx claude-zen debug --all-systems --parallel\`
 
-For more information about coordination system optimization, see,//github.com/ruvnet/claude-zen/docs/coordination-batchtools.md
+For more information about coordination system optimization, see,//github.com/ruvnet/claude-zen/docs/coordination-batchtools.md/g
 `;`
-// }
+// }/g
 

@@ -1,118 +1,118 @@
-/**
+/\*\*/g
  * Core System Types;
  * Fundamental types used throughout the Claude Code Flow system
- */
+ *//g
 
 import type { EventEmitter  } from 'node:events';
 
-// =============================================================================
-// BASIC TYPES
-// =============================================================================
+// =============================================================================/g
+// BASIC TYPES/g
+// =============================================================================/g
 
 export type UUID = string;
 export type Timestamp = number;
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
 export type JSONObject = { [key = JSONValue[];
 
-export // interface Identifiable {id = ============================================================================
-// // SYSTEM CONFIGURATION
-// // =============================================================================
-// 
-// export interface CoreConfig {
-//   // System identificationinstanceId = ============================================================================
-// // SYSTEM STATUS & HEALTH
-// // =============================================================================
-// 
-// export type SystemStatus = 'initializing' | 'healthy' | 'degraded' | 'offline' | 'error';
-// 
-// export interface HealthCheck {name = ============================================================================
-// // ERROR HANDLING
-// // =============================================================================
-// 
-// export interface ErrorDetails {code = 'SystemError'
-// this.cause = cause
-// // }
-// }
-// =============================================================================
-// RESOURCE MANAGEMENT
-// =============================================================================
+export // interface Identifiable {id = ============================================================================/g
+// // SYSTEM CONFIGURATION/g
+// // =============================================================================/g
+// /g
+// export interface CoreConfig {/g
+//   // System identificationinstanceId = ============================================================================/g
+// // SYSTEM STATUS & HEALTH/g
+// // =============================================================================/g
+// /g
+// export type SystemStatus = 'initializing' | 'healthy' | 'degraded' | 'offline' | 'error';/g
+// /g
+// export interface HealthCheck {name = ============================================================================/g
+// // ERROR HANDLING/g
+// // =============================================================================/g
+// /g
+// export interface ErrorDetails {code = 'SystemError'/g
+// this.cause = cause/g
+// // }/g
+// }/g
+// =============================================================================/g
+// RESOURCE MANAGEMENT/g
+// =============================================================================/g
 
-// export // interface ResourceLimits {memory = ============================================================================
-// // ASYNC OPERATIONS
-// // =============================================================================
-// 
-// export type OperationStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'
-// 
-// export interface AsyncOperation<_T = any> extends Identifiable {name = any> {success = ============================================================================
-// // LIFECYCLE MANAGEMENT
-// // =============================================================================
-// 
-// export type LifecycleState = 'created' | 'initializing' | 'running' | 'stopping' | 'stopped' | 'error'
-// 
-// export interface LifecycleManager extends EventEmitter {
-//   readonlystate = > void
-// ('initialized');
-// : () => void
-// 'started': () => void
-// 'stopped': () => void
-// 'error': (error = > void
-// 'health-check': (health = > void
-// // }
-// =============================================================================
-// CONFIGURATION MANAGEMENT
-// =============================================================================
+// export // interface ResourceLimits {memory = ============================================================================/g
+// // ASYNC OPERATIONS/g
+// // =============================================================================/g
+// /g
+// export type OperationStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'/g
+// /g
+// export interface AsyncOperation<_T = any> extends Identifiable {name = any> {success = ============================================================================/g
+// // LIFECYCLE MANAGEMENT/g
+// // =============================================================================/g
+// /g
+// export type LifecycleState = 'created' | 'initializing' | 'running' | 'stopping' | 'stopped' | 'error'/g
+// /g
+// export interface LifecycleManager extends EventEmitter {/g
+//   readonlystate = > void/g
+// ('initialized');/g
+// : () => void/g
+// 'started': () => void/g
+// 'stopped': () => void/g
+// 'error': (error = > void/g
+// 'health-check': (health = > void/g
+// // }/g
+// =============================================================================/g
+// CONFIGURATION MANAGEMENT/g
+// =============================================================================/g
 
-// export // interface ConfigurationSchema {
-//   [key = > boolean | string;
-//     description?;
-//     sensitive?; // For secrets/passwords
-//   //   }
-// }
-// export // interface ConfigurationManager {
-//   get<T = any>(key): T | undefined;
-//   set<_T = any>(key,value = > void): () => void;
-// // }
-// export // interface ValidationResult {key = ============================================================================
-// // LOGGING & OBSERVABILITY
-// // =============================================================================
-// 
-// export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
-// 
-// export interface LogEntry {timestamp = ============================================================================
-// // CACHING
-// // =============================================================================
-// 
-// export interface CacheEntry<_T = any> {key = any> {
-//   get(key): Promise<T | null>;
-//   set(key = ============================================================================;
-// // SERIALIZATION
-// // =============================================================================
-// 
-// export interface Serializable {
-//   serialize();
-//   deserialize(data = > T): T | null;
-//   canSerialize(obj = ============================================================================;
-// // UTILITY TYPES
-// // =============================================================================
-// 
-// export type DeepPartial<_T> = {
-//   [P in keyof T]?: T[P] extends object ? DeepPartial= Omit<T
-// , K> & Required<Pick<T, K>>
-// export type OptionalKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-// 
-// export type Constructor<_T = {}> = new(...args = > T;
+// export // interface ConfigurationSchema {/g
+//   [key = > boolean | string;/g
+//     description?;/g
+//     sensitive?; // For secrets/passwords/g
+//   //   }/g
+// }/g
+// export // interface ConfigurationManager {/g
+//   get<T = any>(key): T | undefined;/g
+//   set<_T = any>(key,value = > void): () => void;/g
+// // }/g
+// export // interface ValidationResult {key = ============================================================================/g
+// // LOGGING & OBSERVABILITY/g
+// // =============================================================================/g
+// /g
+// export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'/g
+// /g
+// export interface LogEntry {timestamp = ============================================================================/g
+// // CACHING/g
+// // =============================================================================/g
+// /g
+// export interface CacheEntry<_T = any> {key = any> {/g
+//   get(key): Promise<T | null>;/g
+//   set(key = ============================================================================;/g
+// // SERIALIZATION/g
+// // =============================================================================/g
+// /g
+// export interface Serializable {/g
+//   serialize();/g
+//   deserialize(data = > T): T | null;/g
+//   canSerialize(obj = ============================================================================;/g
+// // UTILITY TYPES/g
+// // =============================================================================/g
+// /g
+// export type DeepPartial<_T> = {/g
+//   [P in keyof T]?: T[P] extends object ? DeepPartial= Omit<T/g
+// , K> & Required<Pick<T, K>>/g
+// export type OptionalKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;/g
+// /g
+// export type Constructor<_T = {}> = new(...args = > T;/g
 
-// export type Mixin<T extends Constructor> = T & Constructor;
+// export type Mixin<T extends Constructor> = T & Constructor;/g
 
-// export type EventMap = Record<string, (...args = > void>;
+// export type EventMap = Record<string, (...args = > void>;/g
 
-// export // interface TypedEventEmitter<T extends EventMap> extends EventEmitter {
-//   on<K extends keyof T>(event, listener: T[K]);
-//   emit<K extends keyof T>(event, ...args: Parameters<T[K]>);
-//   once<K extends keyof T>(event, listener: T[K]);
-//   off<K extends keyof T>(event, listener: T[K]);
-//   removeAllListeners<K extends keyof T>(event?);
-// // }
+// export // interface TypedEventEmitter<T extends EventMap> extends EventEmitter {/g
+//   on<K extends keyof T>(event, listener: T[K]);/g
+//   emit<K extends keyof T>(event, ...args: Parameters<T[K]>);/g
+//   once<K extends keyof T>(event, listener: T[K]);/g
+//   off<K extends keyof T>(event, listener: T[K]);/g
+//   removeAllListeners<K extends keyof T>(event?);/g
+// // }/g
 
 
 }}}}}}}}}}}))))))

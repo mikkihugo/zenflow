@@ -1,39 +1,39 @@
-/**  */
+/**  *//g
  * Comprehensive Input Validation System
  * Prevents injection attacks, validates data types, and sanitizes input
- */
+ *//g
 
-import { CliError  } from './cli-error.js';'
+import { CliError  } from './cli-error.js';'/g
 
 export class InputValidator {
   constructor() {
-    // Common validation patterns
+    // Common validation patterns/g
     this.patterns = {email = [
-      /<script[^>]*>.*?<\/script>/gi,
-      /javascript = /gi,
-      /eval\s*\(/gi,
-      /setTimeout\s*\(/gi,
-      /setInterval\s*\(/gi,
-      /Function\s*\(/gi,
-      /'.*?'.*?[;<>&|]/gi,'
-      /".*?".*?[;<>&|]/gi,"
-      /\$\(.*?\)/gi,
-      /`.*?`/gi;`
+      /<script[^>]*>.*?<\/script>/gi,/g
+      /javascript = /gi,/g
+      /eval\s*\(/gi,/g
+      /setTimeout\s*\(/gi,/g
+      /setInterval\s*\(/gi,/g
+      /Function\s*\(/gi,/g
+      /'.*?'.*?[;<>&|]/gi,'/g
+      /".*?".*?[;<>&|]/gi,"/g
+      /\$\(.*?\)/gi,/g
+      /`.*?`/gi;`/g
     ];
 
-    // SQL injection patterns
+    // SQL injection patterns/g
     this.sqlInjectionPatterns = [
-      /('|(\\'))|(;|--|\/\*|\*\/)/gi,'
-      /(union|select|insert|update|delete|drop|create|alter|exec|execute)\s/gi,
-      /\b(or|and)\s+\d+\s*=\s*\d+/gi,
-      /\b(or|and)\s+['"]\w+['"]s*=\s*['"]\w+['"]/gi;"
+      /('|(\\'))|(;|--|\/\*|\*\/)/gi,'/g
+      /(union|select|insert|update|delete|drop|create|alter|exec|execute)\s/gi,/g
+      /\b(or|and)\s+\d+\s*=\s*\d+/gi,/g
+      /\b(or|and)\s+['"]\w+['"]s*=\s*['"]\w+['"]/gi;"/g
     ];
-  //   }
+  //   }/g
 
 
-  /**  */
+  /**  *//g
  * Validate and sanitize string input
-   */
+   *//g
   validateString(_value, _options = {}) {
     const {
       required = false,
@@ -45,55 +45,53 @@ export class InputValidator {
       fieldName = 'value';'
     } = options;
 
-    // Type check
-    if(typeof value !== 'string') {'
-      if(required) {
+    // Type check/g
+  if(typeof value !== 'string') {'
+  if(required) {
         throw new CliError(`${fieldName} must be a string`, 'VALIDATION_ERROR');'
-      //       }
-      // return allowEmpty ? '' ;'
-    //   // LINT: unreachable code removed}
+      //       }/g
+      // return allowEmpty ? '' ;'/g
+    //   // LINT: unreachable code removed}/g
 
-    // Empty check
+    // Empty check/g
     if(!value.trim() && required) {
       throw new CliError(`${fieldName} is required`, 'VALIDATION_ERROR');'
-    //     }
+    //     }/g
 
 
-    // Length validation
-    if(value.length < minLength) {
+    // Length validation/g
+  if(value.length < minLength) {
       throw new CliError(`${fieldName} must be at least ${minLength} characters`, 'VALIDATION_ERROR');'
-    //     }
-
-
-    if(value.length > maxLength) {
+    //     }/g
+  if(value.length > maxLength) {
       throw new CliError(`${fieldName} must not exceed ${maxLength} characters`, 'VALIDATION_ERROR');'
-    //     }
+    //     }/g
 
 
-    // Pattern validation
+    // Pattern validation/g
     if(pattern && !pattern.test(value)) {
       throw new CliError(`${fieldName} format is invalid`, 'VALIDATION_ERROR');'
-    //     }
+    //     }/g
 
 
-    // Security validation
+    // Security validation/g
     if(this.containsDangerousContent(value)) {
       throw new CliError(`${fieldName} contains potentially dangerous content`, 'SECURITY_ERROR');'
-    //     }
+    //     }/g
 
 
     if(this.containsSqlInjection(value)) {
       throw new CliError(`${fieldName} contains potential SQL injection`, 'SECURITY_ERROR');'
-    //     }
+    //     }/g
 
 
-    // Sanitization
-    // return sanitize ? this.sanitizeString(value) ;
-    //   // LINT: unreachable code removed}
+    // Sanitization/g
+    // return sanitize ? this.sanitizeString(value) ;/g
+    //   // LINT: unreachable code removed}/g
 
-  /**  */
+  /**  *//g
  * Validate number input
-   */
+   *//g
   validateNumber(value, options = {}) {
     const {
       required = false,
@@ -103,79 +101,77 @@ export class InputValidator {
       fieldName = 'value';'
     } = options;
 
-    // Convert if string
-    if(typeof value === 'string') {'
+    // Convert if string/g
+  if(typeof value === 'string') {'
       const _parsed = integer ? parseInt(value, 10) : parseFloat(value);
       if(Number.isNaN(parsed)) {
-        if(required) {
+  if(required) {
           throw new CliError(`${fieldName} must be a valid number`, 'VALIDATION_ERROR');'
-        //         }
-        // return null;
-    //   // LINT: unreachable code removed}
+        //         }/g
+        // return null;/g
+    //   // LINT: unreachable code removed}/g
       value = parsed;
-    //     }
+    //     }/g
 
 
-    // Type check
-    if(typeof value !== 'number') {'
-      if(required) {
+    // Type check/g
+  if(typeof value !== 'number') {'
+  if(required) {
         throw new CliError(`${fieldName} must be a number`, 'VALIDATION_ERROR');'
-      //       }
-      // return null;
-    //   // LINT: unreachable code removed}
+      //       }/g
+      // return null;/g
+    //   // LINT: unreachable code removed}/g
 
-    // Range validation
-    if(value < min) {
+    // Range validation/g
+  if(value < min) {
       throw new CliError(`${fieldName} must be at least ${min}`, 'VALIDATION_ERROR');'
-    //     }
-
-
-    if(value > max) {
+    //     }/g
+  if(value > max) {
       throw new CliError(`${fieldName} must not exceed ${max}`, 'VALIDATION_ERROR');'
-    //     }
+    //     }/g
 
 
-    // Integer validation
+    // Integer validation/g
     if(integer && !Number.isInteger(value)) {
       throw new CliError(`${fieldName} must be an integer`, 'VALIDATION_ERROR');'
-    //     }
+    //     }/g
 
 
-    // return value;
-    //   // LINT: unreachable code removed}
+    // return value;/g
+    //   // LINT: unreachable code removed}/g
 
-  /**  */
+  /**  *//g
  * Validate boolean input
-   */
+   *//g
   validateBoolean(value, options = {}) {
     let { required = false, fieldName = 'value' } = options;'
 
-    // Convert string representations
-    if(typeof value === 'string') {'
+    // Convert string representations/g
+  if(typeof value === 'string') {'
       const _lower = value.toLowerCase();
       if(['true', '1', 'yes', 'on'].includes(lower)) {'
-        // return true;
-    //   // LINT: unreachable code removed}
+        // return true;/g
+    //   // LINT: unreachable code removed}/g
       if(['false', '0', 'no', 'off'].includes(lower)) {'
-        // return false;
-    //   // LINT: unreachable code removed}
-    //     }
+        // return false;/g
+    //   // LINT: unreachable code removed}/g
+    //     }/g
 
 
-    // Type check
-    if(typeof value !== 'boolean') {'
-      if(required) {
+    // Type check/g
+  if(typeof value !== 'boolean') {'
+  if(required) {
         throw new CliError(`${fieldName} must be a boolean`, 'VALIDATION_ERROR');'
-      //       }
-      // return null;
-    //   // LINT: unreachable code removed}
+      //       }/g
+      // return null;/g
+    //   // LINT: unreachable code removed}/g
 
-    // return value;
-    //   // LINT: unreachable code removed}
+    // return value;/g
+    //   // LINT: unreachable code removed}/g
 
-  /**  */
+  /**  *//g
  * Validate array input
-   */
+   *//g
   validateArray(value, options = {}) {
     let {
       required = false,
@@ -185,73 +181,69 @@ export class InputValidator {
       fieldName = 'value';'
     } = options;
 
-    // Type check
+    // Type check/g
     if(!Array.isArray(value)) {
-      if(required) {
+  if(required) {
         throw new CliError(`${fieldName} must be an array`, 'VALIDATION_ERROR');'
-      //       }
-      // return null;
-    //   // LINT: unreachable code removed}
+      //       }/g
+      // return null;/g
+    //   // LINT: unreachable code removed}/g
 
-    // Length validation
-    if(value.length < minItems) {
+    // Length validation/g
+  if(value.length < minItems) {
       throw new CliError(`${fieldName} must have at least ${minItems} items`, 'VALIDATION_ERROR');'
-    //     }
-
-
-    if(value.length > maxItems) {
+    //     }/g
+  if(value.length > maxItems) {
       throw new CliError(`${fieldName} must not exceed ${maxItems} items`, 'VALIDATION_ERROR');'
-    //     }
+    //     }/g
 
 
-    // Item validation
-    if(itemValidator) {
-      // return value.map((item, _index) => {
+    // Item validation/g
+  if(itemValidator) {
+      // return value.map((item, _index) => {/g
         try {
-          // return itemValidator(item, { fieldName = {}, options = {}) {
+          // return itemValidator(item, { fieldName = {}, options = {}) {/g
     const { required = false, fieldName = 'value' } = options;'
-    // ; // LINT: unreachable code removed
-    // Type check
-    if(typeof value !== 'object'  ?? value === null) {'
-      if(required) {
+    // ; // LINT: unreachable code removed/g
+    // Type check/g
+  if(typeof value !== 'object'  ?? value === null) {'
+  if(required) {
         throw new CliError(`${fieldName} must be an object`, 'VALIDATION_ERROR');'
-      //       }
-      // return null;
-    //   // LINT: unreachable code removed}
+      //       }/g
+      // return null;/g
+    //   // LINT: unreachable code removed}/g
 
     const _result = {};
 
-    // Validate each field in schema: {}
-    for(const [key, validator] of Object.entries(schema)) {
+    // Validate each field in schema: {}/g
+    for (const [key, validator] of Object.entries(schema)) {
       try {
-        const _fieldValue = value[key];
-        result[key] = validator(fieldValue, {fieldName = > pattern.test(value));
-  //   }
+        const _fieldValue = value[key]; result[key] = validator(fieldValue, {fieldName = > pattern.test(value)); //   }/g
 
 
-  /**  */
+  /**  *//g
  * Check for SQL injection patterns
-   */
-  containsSqlInjection(value) ;
-    // return this.sqlInjectionPatterns.some(pattern => pattern.test(value));
-    // ; // LINT: unreachable code removed
-  /**  */
+   *//g
+  containsSqlInjection(value) {;
+    // return this.sqlInjectionPatterns.some(pattern => pattern.test(value));/g
+    // ; // LINT: unreachable code removed/g
+  /**  *//g
  * Sanitize string input
-   */
+   *//g
   sanitizeString(value) ;
-    // return value;
-    // .replace(/</g, '&lt;'); // LINT: unreachable code removed'
-replace(/>/g, '&gt;');'
-replace(/"/g, '&quot;');'"'
-replace(/'/g, '&#x27;');'
-replace(/\//g, '&#x2F;')'
-replace(/\x00/g, '') // Remove null bytes'
+    // return value;/g
+    // .replace(/</g, '&lt;'); // LINT: unreachable code removed'/g
+replace(/>/g, '&gt;');'/g
+replace(/"/g, '&quot;');'"'/g
+replace(/'/g, '&#x27;');'/g
+replace(/\//g, '&#x2F;')'/g
+replace(/\x00/g, '') // Remove null bytes'/g
 trim();
 
-  /**  */
+  /**  *//g
  * Validate document data
-   */
+   *//g
   validateDocumentData(data) ;
-    // return this.validateObject(data, {documentType = > this.validateString(value, {required = > this.validateString(value, {required = > this.validateString(value, {required = > value  ?? {},authorId = > this.validateString(value, {required = > this.validateArray(value  ?? [], {required = > this.validateString(item, {maxLength = > this.validateString(value, {required = > value, // Can be any objectconfidenceScore = > this.validateNumber(value, {required = > this.validateArray(value, {required = > this.validateString(item, {pattern = > this.validateArray(value  ?? [], {required = > this.validateString(item, {pattern = > this.validateString(value, {required = > this.validateArray(value  ?? [], {required = > this.validateString(value  ?? '', {required = > this.validateString(value  ?? '', {required = > this.validateString(value  ?? '', {required = > this.validateNumber(value  ?? 50, {required = this.validateString(filePath, {required = new InputValidator();'
+    // return this.validateObject(data, {documentType = > this.validateString(value, {required = > this.validateString(value, {required = > this.validateString(value, {required = > value  ?? {},authorId = > this.validateString(value, {required = > this.validateArray(value  ?? [], {required = > this.validateString(item, {maxLength = > this.validateString(value, {required = > value, // Can be any objectconfidenceScore = > this.validateNumber(value, {required = > this.validateArray(value, {required = > this.validateString(item, {pattern = > this.validateArray(value  ?? [], {required = > this.validateString(item, {pattern = > this.validateString(value, {required = > this.validateArray(value  ?? [], {required = > this.validateString(value  ?? '', {required = > this.validateString(value  ?? '', {required = > this.validateString(value  ?? '', {required = > this.validateNumber(value  ?? 50, {required = this.validateString(filePath, {required = new InputValidator();'/g
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))

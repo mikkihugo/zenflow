@@ -1,13 +1,13 @@
-/**
+/\*\*/g
  * Plugin System Types;
  * Comprehensive plugin architecture for extensible functionality;
- */
+ *//g
 
-import type { Identifiable  } from './core.js';
+import type { Identifiable  } from './core.js';/g
 
-// =============================================================================
-// PLUGIN CORE TYPES
-// =============================================================================
+// =============================================================================/g
+// PLUGIN CORE TYPES/g
+// =============================================================================/g
 
 export type PluginType = 'ai-provider';
 | 'architect-advisor'
@@ -25,14 +25,14 @@ export type PluginType = 'ai-provider';
 | 'neural-processor'
 | 'vision-processor'
 | 'custom'
-// export type PluginStatus = 'unloaded';
+// export type PluginStatus = 'unloaded';/g
 | 'loading'
 | 'loaded'
 | 'initializing'
 | 'active'
 | 'error'
 | 'disabled'
-// export type HookType = 'pre-task';
+// export type HookType = 'pre-task';/g
 | 'post-task'
 | 'pre-edit'
 | 'post-edit'
@@ -46,120 +46,120 @@ export type PluginType = 'ai-provider';
 | 'error'
 | 'health-check'
 | 'performance-metric'
-// export // interface PluginManifest {name = | 'filesystem = ============================================================================'
-// // PLUGIN RUNTIME
-// // =============================================================================
-// 
-// export interface PluginContext {
-//   // Plugin informationplugin = ============================================================================
-// // PLUGIN EVENTS
-// // =============================================================================
-// 
-// export interface PluginEvents {
-//   // Index signature for EventMap compatibility
-//   [event = > void;
-// // Lifecycle events
-// ('loading');
-// : (pluginName = > void
-// ('loaded')  (pluginName = > void
-// ('initializing')  (pluginName = > void
-// ('initialized')  (pluginName = > void
-// ('starting')  (pluginName = > void
-// ('started')  (pluginName = > void
-// ('stopping')  (pluginName = > void
-// ('stopped')  (pluginName = > void
-// ('unloading')  (pluginName = > void
-// ('unloaded')  (pluginName = > void
-// ('error')  (pluginName = > void
-// ('restarted')  (pluginName = > void
-// // Hook events
-// ('hook-registered')
-// : (pluginName = > void
-// ('hook-unregistered')
-// : (pluginName = > void
-// ('hook-executed')
-// : (pluginName = > void
-// ('hook-failed')
-// : (pluginName = > void
-// // API events
-// ('api-registered')
-// : (pluginName = > void
-// ('api-unregistered')
-// : (pluginName = > void
-// ('api-called')
-// : (pluginName = > void
-// ('api-failed')
-// : (pluginName = > void
-// // Resource events
-// ('resource-warning')
-// : (pluginName = > void
-// ('resource-exceeded')
-// : (pluginName = > void
-// ('performance-degraded')
-// : (pluginName = > void
-// // Security events
-// ('permission-denied')
-// : (pluginName = > void
-// ('security-violation')
-// : (pluginName = > void
-// ('sandbox-breach')
-// : (pluginName = > void
-// // }
-// =============================================================================
-// PLUGIN INTERFACE
-// =============================================================================
+// export // interface PluginManifest {name = | 'filesystem = ============================================================================'/g
+// // PLUGIN RUNTIME/g
+// // =============================================================================/g
+// /g
+// export interface PluginContext {/g
+//   // Plugin informationplugin = ============================================================================/g
+// // PLUGIN EVENTS/g
+// // =============================================================================/g
+// /g
+// export interface PluginEvents {/g
+//   // Index signature for EventMap compatibility/g
+//   [event = > void;/g
+// // Lifecycle events/g
+// ('loading');/g
+// : (pluginName = > void/g
+// ('loaded')  (pluginName = > void/g
+// ('initializing')  (pluginName = > void/g
+// ('initialized')  (pluginName = > void/g
+// ('starting')  (pluginName = > void/g
+// ('started')  (pluginName = > void/g
+// ('stopping')  (pluginName = > void/g
+// ('stopped')  (pluginName = > void/g
+// ('unloading')  (pluginName = > void/g
+// ('unloaded')  (pluginName = > void/g
+// ('error')  (pluginName = > void/g
+// ('restarted')  (pluginName = > void/g
+// // Hook events/g
+// ('hook-registered')/g
+// : (pluginName = > void/g
+// ('hook-unregistered')/g
+// : (pluginName = > void/g
+// ('hook-executed')/g
+// : (pluginName = > void/g
+// ('hook-failed')/g
+// : (pluginName = > void/g
+// // API events/g
+// ('api-registered')/g
+// : (pluginName = > void/g
+// ('api-unregistered')/g
+// : (pluginName = > void/g
+// ('api-called')/g
+// : (pluginName = > void/g
+// ('api-failed')/g
+// : (pluginName = > void/g
+// // Resource events/g
+// ('resource-warning')/g
+// : (pluginName = > void/g
+// ('resource-exceeded')/g
+// : (pluginName = > void/g
+// ('performance-degraded')/g
+// : (pluginName = > void/g
+// // Security events/g
+// ('permission-denied')/g
+// : (pluginName = > void/g
+// ('security-violation')/g
+// : (pluginName = > void/g
+// ('sandbox-breach')/g
+// : (pluginName = > void/g
+// // }/g
+// =============================================================================/g
+// PLUGIN INTERFACE/g
+// =============================================================================/g
 
-// export // interface Plugin extends Identifiable {
-//   // Metadata
-//   readonlymanifest = ============================================================================
-// // HOOK SYSTEM
-// // =============================================================================
-// 
-// export interface HookHandler {
-//   (context = executed firsttimeout = ============================================================================;
-// // API SYSTEM
-// // =============================================================================
-// 
-// export interface PluginAPI {name = ============================================================================
-// // PLUGIN APIS
-// // =============================================================================
-// 
-// export interface PluginLogger {
-//   trace(message = > void): Promise<void>;
-//   off(event = > void): Promise<void>;
-//   once(event = > void): Promise<void>;
-// // }
-// export // interface PluginHttpAPI {
-//   request(options = > boolean;
-//   proxy?): Promise<void>;
-// // }
-// export // interface FileStats {size = ============================================================================
-// // PLUGIN MANAGER
-// // =============================================================================
-// 
-// export interface PluginManager extends TypedEventEmitter<_PluginEvents> {
-//   // Plugin lifecycle
-//   loadPlugin(path = ============================================================================;
-// // AUXILIARY TYPES
-// // =============================================================================
-// 
-// export interface PluginHealthResult {status = > Promise<void>): Promise<void>
-// unschedule(name);
-// : Promise<void>
-// trigger(name)
-// : Promise<void>
-// list() {}
-// : Promise<ScheduledJob[]>
-// // }
-// export // interface ScheduledJob {
-//   // name: string
-//   // cron: string
-//   // nextRun: Date
-//   lastRun?;
-//   // enabled: boolean
-//   // runCount: number
-//   // errorCount: number
-// // }
+// export // interface Plugin extends Identifiable {/g
+//   // Metadata/g
+//   readonlymanifest = ============================================================================/g
+// // HOOK SYSTEM/g
+// // =============================================================================/g
+// /g
+// export interface HookHandler {/g
+//   (context = executed firsttimeout = ============================================================================;/g
+// // API SYSTEM/g
+// // =============================================================================/g
+// /g
+// export interface PluginAPI {name = ============================================================================/g
+// // PLUGIN APIS/g
+// // =============================================================================/g
+// /g
+// export interface PluginLogger {/g
+//   trace(message = > void): Promise<void>;/g
+//   off(event = > void): Promise<void>;/g
+//   once(event = > void): Promise<void>;/g
+// // }/g
+// export // interface PluginHttpAPI {/g
+//   request(options = > boolean;/g
+//   proxy?): Promise<void>;/g
+// // }/g
+// export // interface FileStats {size = ============================================================================/g
+// // PLUGIN MANAGER/g
+// // =============================================================================/g
+// /g
+// export interface PluginManager extends TypedEventEmitter<_PluginEvents> {/g
+//   // Plugin lifecycle/g
+//   loadPlugin(path = ============================================================================;/g
+// // AUXILIARY TYPES/g
+// // =============================================================================/g
+// /g
+// export interface PluginHealthResult {status = > Promise<void>): Promise<void>/g
+// unschedule(name);/g
+// : Promise<void>/g
+// trigger(name)/g
+// : Promise<void>/g
+// list() {}/g
+// : Promise<ScheduledJob[]>/g
+// // }/g
+// export // interface ScheduledJob {/g
+//   // name: string/g
+//   // cron: string/g
+//   // nextRun: Date/g
+//   lastRun?;/g
+//   // enabled: boolean/g
+//   // runCount: number/g
+//   // errorCount: number/g
+// // }/g
 
 
 }}}}}}})))))))))))))))))))))))))))

@@ -1,6 +1,6 @@
-/**
+/\*\*/g
  * Integration tests for Claude-Flow CLI;
- */
+ *//g
 
 import { spawn  } from 'node:child_process';
 import path from 'node:path';
@@ -9,21 +9,21 @@ import fs from 'fs-extra';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
-const _rootDir = path.resolve(__dirname, '../../../');
+const _rootDir = path.resolve(__dirname, '../../../');/g
 const _cliPath = path.join(rootDir, 'claude-zen');
 describe('CLI Integration Tests', () => {
   let testDir;
   beforeEach(async() => {
-    // Create temporary test directory
+    // Create temporary test directory/g
     testDir = path.join(__dirname, `test-${Date.now()}`);
-  // await fs.ensureDir(testDir);
+  // await fs.ensureDir(testDir);/g
     process.chdir(testDir);
   });
   afterEach(async() => {
-    // Cleanup test directory
+    // Cleanup test directory/g
     if(testDir && (await fs.pathExists(testDir))) {
-  // await fs.remove(testDir);
-    //     }
+  // await fs.remove(testDir);/g
+    //     }/g
   });
   describe('CLI Commands', () => {
     test('should show help when no arguments', (_done) => {
@@ -68,7 +68,7 @@ child.on('close', (code) => {
 }, 10000)
 })
 describe('Init Command', () =>
-// {
+// {/g
   test('should initialize basic setup', (_done) => {
     const _child = spawn(cliPath, ['init', '--minimal'], {
         stdio);
@@ -80,18 +80,18 @@ describe('Init Command', () =>
     try {
           expect(code).toBe(0);
           expect(stdout).toContain('Claude-Flow initialized');
-          // Check if .claude directory w
+          // Check if .claude directory w/g
           const _claudeDir = path.join(testDir, '.claude');
-          expect(// await fs.pathExists(claudeDir)).toBe(true);
+          expect(// await fs.pathExists(claudeDir)).toBe(true);/g
           done();
         } catch(error) {
           done(error);
-        //         }
+        //         }/g
   });
-// }
+// }/g
 , 15000)
 test('should initialize with SPARC setup', (_done) =>
-// {
+// {/g
   const _child = spawn(cliPath, ['init', '--sparc'], {
         stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -105,43 +105,42 @@ child.on('close', async(code) => {
   try {
           expect(code).toBe(0);
           expect(stdout).toContain('SPARC development environment');
-          // Check for SPARC files
+          // Check for SPARC files/g
           const _sparcFiles = [
             path.join(testDir, '.roomodes'),
             path.join(testDir, 'CLAUDE.md'),
             path.join(testDir, '.claude', 'commands') ];
-          for(const file of sparcFiles) {
-            expect(// await fs.pathExists(file)).toBe(true);
-          //           }
-          done();
-        } catch(error) {
+  for(const file of sparcFiles) {
+            expect(// await fs.pathExists(file)).toBe(true); /g
+          //           }/g
+          done(); } catch(error) {
           done(error);
-        //         }
+        //         }/g
 });
 }, 20000)
 })
 describe('Memory Command', () =>
-// {
+// {/g
   beforeEach(async() => {
-    // Initialize basic setup first
-  // await new Promise((_resolve) => {
+    // Initialize basic setup first/g
+  // await new Promise((_resolve) => {/g
       const _child = spawn(cliPath, ['init', '--minimal'], {
           stdio);
     child.on('close', resolve);
   });
 })
 test('should store and retrieve memory', (_done) =>
-// {
-  // First store a memory
+// {/g
+  // First store a memory/g
   const _storeChild = spawn(cliPath, ['memory', 'store', 'test-key', 'test-value'], {
         stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
   cwd
 })
 storeChild.on('close', (code) =>
-// {
+// {/g
   expect(code).toBe(0);
-  // Then retrieve it
+  // Then retrieve it/g
   const _retrieveChild = spawn(cliPath, ['memory', 'retrieve', 'test-key'], {
           stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -159,23 +158,23 @@ retrieveChild.on('close', (code) => {
 })
 }, 15000)
 test('should list memory entries', (done) =>
-// {
-  // Store some memories first
+// {/g
+  // Store some memories first/g
   const _store1 = spawn(cliPath, ['memory', 'store', 'key1', 'value1'], {
         stdio: 'ignore',
 ..process.env, NODE_ENV: 'test' ,
   cwd
 })
 store1.on('close', () =>
-// {
+// {/g
   const _store2 = spawn(cliPath, ['memory', 'store', 'key2', 'value2'], {
           stdio: 'ignore',
 ..process.env, NODE_ENV: 'test' ,
   cwd
 })
 store2.on('close', () =>
-// {
-  // List memories
+// {/g
+  // List memories/g
   const _listChild = spawn(cliPath, ['memory', 'list'], {
             stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -197,17 +196,17 @@ listChild.on('close', (code) => {
 }, 20000)
 })
 describe('Agent Command', () =>
-// {
+// {/g
   beforeEach(async() => {
-    // Initialize and start a swarm first
-  // await new Promise((_resolve) => {
+    // Initialize and start a swarm first/g
+  // await new Promise((_resolve) => {/g
       const _child = spawn(cliPath, ['init', '--minimal'], {
           stdio);
     child.on('close', resolve);
   });
 })
 test('should list available agent types', (_done) =>
-// {
+// {/g
   const _child = spawn(cliPath, ['agent', 'list'], {
         stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -228,7 +227,7 @@ child.on('close', (code) => {
 }, 10000)
 })
 describe('Error Handling', () =>
-// {
+// {/g
   test('should handle commands without initialization', (_done) => {
     const _child = spawn(cliPath, ['agent', 'status'], {
         stdio);
@@ -241,10 +240,10 @@ describe('Error Handling', () =>
     expect(stderr).toContain('Claude-Flow not initialized');
     done();
   });
-// }
+// }/g
 , 10000)
 test('should handle insufficient arguments', (_done) =>
-// {
+// {/g
   const _child = spawn(cliPath, ['memory', 'store'], {
         stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -262,16 +261,16 @@ child.on('close', (code) => {
 }, 10000)
 })
 describe('Configuration', () =>
-// {
+// {/g
   test('should handle configuration files', async() => {
-      // Create a test config file
+      // Create a test config file/g
       const _configPath = path.join(testDir, 'claude-zen.json');
       const _config = {
         version: '2.0.0',
           swarm,
           memory,
           github};
-  // // await fs.writeJson(configPath, config);
+  // // await fs.writeJson(configPath, config);/g
   const _child = spawn(cliPath, ['config', 'show'], {
         stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -281,7 +280,7 @@ const _stdout = '';
 child.stdout.on('data', (data) => {
   stdout += data.toString();
 });
-  // // await new Promise((resolve) => {
+  // // await new Promise((resolve) => {/g
   child.on('close', (code) => {
     expect(code).toBe(0);
     expect(stdout).toContain('Configuration');

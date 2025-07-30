@@ -1,14 +1,13 @@
-/**
+/\*\*/g
  * Hive Mind command for simple CLI;
  * Provides basic implementation that can work without TypeScript;
- */
+ *//g
 export async function hiveCommand(args = (args  ?? [])
 join(' ').trim() {}
-
-if(!objective ?? flags.help ?? flags.h) {
+  if(!objective ?? flags.help ?? flags.h) {
   showHiveHelp();
   return;
-// }
+// }/g
 console.warn('� Initializing Hive Mind...');
 console.warn(`� Queen Genesis coordinating...`);
 console.warn(`�Objective = `hive_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
@@ -18,18 +17,16 @@ console.warn(`�Objective = `hive_${Date.now()}_${Math.random().toString(36).su
     { type: '�', name: 'Worker-1', role: 'Backend Development' },
     { type: '�', name: 'Worker-2', role: 'Frontend Development' },
     { type: '�', name: 'Scout-Alpha', role: 'Research & Analysis' },
-    { type: '�', name: 'Guardian-Omega', role: 'Quality Assurance' } ];
-for(const agent of agents) {
-  console.warn(`${agent.type} ${agent.name} - ${agent.role}`);
-// }
-console.warn('');
-// Show task decomposition
-console.warn('🧩 Phase 1);'
+    { type: '�', name: 'Guardian-Omega', role: 'Quality Assurance' } ];)
+  for(const agent of agents) {
+  console.warn(`${agent.type} ${agent.name} - ${agent.role}`); // }/g
+console.warn(''); // Show task decomposition/g
+console.warn('🧩 Phase 1) {;'
 console.warn('  � Queen proposes task breakdown...');
 console.warn('  � Agents voting on tasks...');
 console.warn('  ✅ Consensus reached(87.5% approval)');
 console.warn('');
-// Show task assignment
+// Show task assignment/g
 console.warn('� Phase 2);'
 console.warn('  � analysis → Scout-Alpha');
 console.warn('  � design → Architect-Prime');
@@ -37,14 +34,14 @@ console.warn('  � implementation → Worker-1, Worker-2');
 console.warn('  � testing → Guardian-Omega');
 console.warn('  � documentation → Scout-Alpha');
 console.warn('');
-// Show execution
+// Show execution/g
 console.warn(' Phase 3);'
 console.warn('  [▓▓▓▓▓▓▓▓░░░░░░░░░░] 40% - Analysis in progress...');
 console.warn('  [▓▓▓░░░░░░░░░░░░░░░] 15% - Design starting...');
 console.warn('  [░░░░░░░░░░░░░░░░░░] 0%  - Implementation pending...');
 console.warn('');
-// Show monitoring dashboard
-if(flags.monitor) {
+// Show monitoring dashboard/g
+  if(flags.monitor) {
   console.warn('� Hive Mind Dashboard');
   console.warn('═══════════════════════════════════════════════════════════════');
   console.warn(`Status: EXECUTING | Time: ${new Date().toLocaleTimeString()}`);
@@ -52,29 +49,29 @@ if(flags.monitor) {
   console.warn('Consensus);'
   console.warn('Messages);'
   console.warn('═══════════════════════════════════════════════════════════════');
-// }
+// }/g
 console.warn('');
 console.warn('� Hive Mind is coordinating your objective...');
 console.warn('');
 console.warn('Note);'
 console.warn('the complete TypeScript implementation to be built.');
-// }
+// }/g
 function showHiveHelp() {
   console.warn(`;`
 � Hive Mind - Advanced Multi-Agent Coordination
-
+)
 USAGE);
   mesh           Peer-to-peer coordination;
   ring           Sequential processing;
   star           Centralized hub
 
-CONSENSUS MECHANISMS:
+CONSENSUS MECHANISMS: null
   quorum         Simple majority(default);
   unanimous      All agents must agree;
   weighted       Capability-based voting;
   leader         Queen decides with input
 
-OPTIONS:
+OPTIONS: null
   --topology <type>         Swarm topology(default);
   --consensus <type>        Decision mechanism(default);
   --max-agents <n>          Maximum agents(default);
@@ -85,14 +82,14 @@ OPTIONS:
   --sparc                   Use SPARC methodology;
   --timeout <min>           Timeout minutes(default)
 
-AGENT TYPES:
+AGENT TYPES: null
   � Queen        Orchestrator and decision maker;
   � Architect    System design and planning;
   � Worker       Implementation and execution;
   � Scout        Research and exploration;
   � Guardian     Quality and validation
 
-FEATURES:
+FEATURES: null
   • Consensus-based task decomposition;
   • Capability-based task assignment;
   • Parallel execution with monitoring;
@@ -100,8 +97,8 @@ FEATURES:
   • Distributed memory sharing;
   • SPARC methodology support
 
-For more info,//github.com/ruvnet/claude-zen/docs/hive.md
+For more info,//github.com/ruvnet/claude-zen/docs/hive.md/g
 `);`
-// }
+// }/g
 
 ))

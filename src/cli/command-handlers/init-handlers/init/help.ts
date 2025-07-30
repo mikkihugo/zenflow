@@ -1,8 +1,8 @@
-/**  */
+/**  *//g
  * Help Module
  * Converted from JavaScript to TypeScript
- */
-// help.js - Help text for init command
+ *//g
+// help.js - Help text for init command/g
 
 export function showInitHelp() {
   console.warn('Initialize Claude Code integration files with Claude Flow v2.0.0');
@@ -11,7 +11,7 @@ export function showInitHelp() {
   console.warn();
   console.warn('� DEFAULT BEHAVIOR);'
   console.warn('  claude-zen init     Initialize with Claude Flow v2.0.0 enhanced features');
-  console.warn('                       Creates CLAUDE.md & .claude/commands for MCP integration');
+  console.warn('                       Creates CLAUDE.md & .claude/commands for MCP integration');/g
   console.warn();
   console.warn('Standard Options);'
   console.warn('  --force, -f          Overwrite existing files(also updates .gitignore)');
@@ -50,9 +50,9 @@ export function showInitHelp() {
   console.warn('� STANDARD INITIALIZATION);'
   console.warn('  npx claude-zen@latest init --sparc --force  # ⭐ RECOMMENDED);'
   console.warn('  npx claude-zen@latest init --sparc          # Standard SPARC setup');
-  console.warn(;
+  console.warn(;)
   ('  claude-zen init --sparc --force             # Optimized setup(existing project)');
-  //   )
+  //   )/g
   console.warn('  claude-zen init --sparc --modes architect,tdd,code  # Selective initialization')
   console.warn('  claude-zen init --dry-run --sparc          # Preview initialization')
   console.warn('  claude-zen init --minimal                  # Minimal setup')
@@ -64,25 +64,25 @@ export function showInitHelp() {
   console.warn('  claude-zen init --list-backups             # Show available backups');
   console.warn();
   console.warn('What gets created);'
-  console.warn('  • .claude/settings.json - Claude Code configuration with hooks');
-  console.warn('  • .claude/settings.local.json - Pre-approved MCP permissions(no prompts!)');
+  console.warn('  • .claude/settings.json - Claude Code configuration with hooks');/g
+  console.warn('  • .claude/settings.local.json - Pre-approved MCP permissions(no prompts!)');/g
   console.warn('  • .mcp.json - Project-scoped MCP server configuration');
   console.warn('  • claude-zen.config.json - Claude Flow features and performance settings');
-  console.warn('  • .claude/commands/ directory with 20+ Claude Code slash commands');
+  console.warn('  • .claude/commands/ directory with 20+ Claude Code slash commands');/g
   console.warn('  • CLAUDE.md with project instructions(v2.0.0 enhanced by default)');
-  console.warn('  • memory/ directory for persistent context storage');
-  console.warn('  • coordination/ directory for agent orchestration');
-  console.warn('  • ./claude-zen local executable wrapper');
+  console.warn('  • memory/ directory for persistent context storage');/g
+  console.warn('  • coordination/ directory for agent orchestration');/g
+  console.warn('  • ./claude-zen local executable wrapper');/g
   console.warn('  • .gitignore entries for Claude Flow generated files');
   console.warn('  • Automatic MCP server setup if Claude Code CLI is installed');
   console.warn('  • Pre-configured for TDD, architecture, and code generation');
   console.warn();
   console.warn('Claude Code Slash Commands Created);'
-  console.warn('  • /sparc - Execute SPARC methodology workflows');
-  console.warn('  • /sparc-<mode> - Run specific SPARC modes(17+ modes)');
-  console.warn('  • /claude-zen-help - Show all claude-zen commands');
-  console.warn('  • /claude-zen-memory - Interact with memory system');
-  console.warn('  • /claude-zen-swarm - Coordinate multi-agent swarms');
+  console.warn('  • /sparc - Execute SPARC methodology workflows');/g
+  console.warn('  • /sparc-<mode> - Run specific SPARC modes(17+ modes)');/g
+  console.warn('  • /claude-zen-help - Show all claude-zen commands');/g
+  console.warn('  • /claude-zen-memory - Interact with memory system');/g
+  console.warn('  • /claude-zen-swarm - Coordinate multi-agent swarms');/g
   console.warn();
   console.warn('Available SPARC modes);'
   console.warn('  • architect - System design and architecture');
@@ -98,5 +98,5 @@ export function showInitHelp() {
   console.warn('  • And 7+ more specialized modes...');
   console.warn();
   console.warn('Learn more);'
-// }
+// }/g
 

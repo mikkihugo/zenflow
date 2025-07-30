@@ -1,12 +1,12 @@
-/**  */
+/**  *//g
  * Coordination Command Module
  * Converted from JavaScript to TypeScript
- */
+ *//g
 import { import type
-// {
+// {/g
   Logger, JSONObject, JSONValue, JSONArray;
-//  } from;
-('../types/core.js');'
+//  } from;/g
+('../types/core.js');'/g
 printSuccess,
 printError,
 printWarning,
@@ -15,25 +15,25 @@ initializeSwarm,
 orchestrateTask,
 spawnSwarmAgent,
 getSwarmStatus,
-checkRuvSwarmAvailable } from '../utils.js''
-// Simple ID generator
+checkRuvSwarmAvailable } from '../utils.js''/g
+// Simple ID generator/g
 function generateId(prefix = 'id') {'
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
-// }
-// export async function coordinationAction() {
+// }/g
+// export async function coordinationAction() {/g
   showCoordinationHelp();
   return;
-// }
+// }/g
 try {
-    switch(subcommand) {
+  switch(subcommand) {
       case 'swarm-init':'
-// // // await swarmInitCommand(subArgs, flags);
+// // // await swarmInitCommand(subArgs, flags);/g
         break;
       case 'agent-spawn':'
-// // // await agentSpawnCommand(subArgs, flags);
+// // // await agentSpawnCommand(subArgs, flags);/g
         break;
       case 'task-orchestrate':'
-// // // await taskOrchestrateCommand(subArgs, flags);
+// // // await taskOrchestrateCommand(subArgs, flags);/g
         break;default = flags;
   const __swarmId = options['swarm-id']  ?? options.swarmId  ?? generateId('swarm');'
   const __topology = options.topology  ?? 'hierarchical';'
@@ -41,21 +41,18 @@ try {
   const __strategy = options.strategy  ?? 'balanced';'
 
   console.warn(`� Initializing swarm coordination...`);`
-  console.warn(`� SwarmID = // // await checkRuvSwarmAvailable();`
-
+  console.warn(`� SwarmID = // // await checkRuvSwarmAvailable();`/g
   if(isAvailable) {
     try {
       console.warn(`\n� Initializing real swarm with ruv-swarm...`);`
 
-      // Use real ruv-swarm initialization
-// const _swarmResult = awaitinitializeSwarm({
-        swarmId,topology = false; // Trigger fallback
-    //     }
-  //   }
-
-
+      // Use real ruv-swarm initialization/g
+// const _swarmResult = awaitinitializeSwarm({/g
+        swarmId,topology = false; // Trigger fallback/g
+    //     }/g
+  //   }/g
   if(!isAvailable) {
-    //Fallback = > setTimeout(resolve, 1000));
+    //Fallback = > setTimeout(resolve, 1000));/g
 
     printSuccess(`✅ Local swarm coordination initialized successfully`);`
 
@@ -64,50 +61,49 @@ try {
   const _swarmId = options['swarm-id']  ?? options.swarmId;'
   const _capabilities = options.capabilities  ?? null;
 
-  // Validate agent type
-  const _validTypes = ['coordinator', 'coder', 'developer', 'researcher', 'analyst', 'analyzer', 'tester', 'architect', 'reviewer', 'optimizer', 'general'];'
+  // Validate agent type/g
+  const _validTypes = ['coordinator', 'coder', 'developer', 'researcher', 'analyst', 'analyzer', 'tester', 'architect', 'reviewer', 'optimizer', 'general'];')
   if(!validTypes.includes(agentType)) {
     printWarning(`⚠  Unknown agent type '${agentType}'. Using 'general' instead.`);`
-    agentType = 'general'; // Actually change the type to general'
-  //   }
+    agentType = 'general'; // Actually change the type to general'/g
+  //   }/g
 
 
   console.warn(`🤖 Spawning coordinated agent...`);`
   console.warn(`�  Agenttype = > setTimeout(resolve, 800));`
 
   console.warn(`🧠 Loading agent capabilities and neural patterns...`);`
-// // // await new Promise((resolve) => setTimeout(resolve, 600));
+// // // await new Promise((resolve) => setTimeout(resolve, 600));/g
   console.warn(`� Establishing swarm communication links...`);`
-// // // await new Promise((resolve) => setTimeout(resolve, 500));
+// // // await new Promise((resolve) => setTimeout(resolve, 500));/g
   console.warn(`� Registering agent in coordination memory...`);`
-// // // await new Promise((resolve) => setTimeout(resolve, 400));
+// // // await new Promise((resolve) => setTimeout(resolve, 400));/g
   printSuccess(`✅ Agent spawned and coordinated successfully`);`
 
-  console.warn(`\n🤖 AGENT COORDINATIONDETAILS = flags;`
+  console.warn(`\n🤖 AGENT COORDINATIONDETAILS = flags;`)
   const _task = options.task  ?? subArgs.slice(1).join(' ');'
   const _swarmId = options['swarm-id']  ?? options.swarmId;'
   const _strategy = options.strategy  ?? 'adaptive';'
   const _shareResults = options['share-results']  ?? false;'
-
   if(!task) {
     printError('Task description is required');'
-    // return;
-    //   // LINT: unreachable code removed}
+    // return;/g
+    //   // LINT: unreachable code removed}/g
 
   console.warn(` Orchestrating task coordination...`);`
   console.warn(`�Task = > setTimeout(resolve, 1000));`
 
   console.warn(`🤖 Selecting optimal agents for task execution...`);`
-// // // await new Promise((resolve) => setTimeout(resolve, 800));
+// // // await new Promise((resolve) => setTimeout(resolve, 800));/g
   console.warn(`� Configuring coordinationstrategy = > setTimeout(resolve, 600));`
 
   console.warn(`� Establishing task communication channels...`);`
-// // // await new Promise((resolve) => setTimeout(resolve, 500));
+// // // await new Promise((resolve) => setTimeout(resolve, 500));/g
   console.warn(`� Setting up shared task memory...`);`
-// // // await new Promise((resolve) => setTimeout(resolve, 400));
+// // // await new Promise((resolve) => setTimeout(resolve, 400));/g
   printSuccess(`✅ Task orchestration configured successfully`);`
 
-  console.warn(`\n ORCHESTRATION DETAILS = {`
+  console.warn(`\n ORCHESTRATION DETAILS = {`)
       coordinator);
   console.warn(`  � Task);`
   console.warn(`  � Task ID: ${generateId('task')}`);`
@@ -116,10 +112,9 @@ try {
   console.warn(`  � Coordination);`
   console.warn(`  � Shared memory);`
   console.warn(`  � Progress tracking);`
-
   if(shareResults) {
     console.warn(`  � Result sharing);`
-  //   }
+  //   }/g
 
 
   console.warn(`\n� COORDINATION WORKFLOW);`
@@ -128,7 +123,7 @@ try {
   console.warn(`  3. ✅ Communication channels established`);`
   console.warn(`  4. � Task execution coordination in progress...`);`
   console.warn(`  5. ⏳ Results aggregation and sharing pending`);`
-// }
+// }/g
 
 
 function _getAgentCapabilities(_type) {
@@ -143,20 +138,20 @@ function _getAgentCapabilities(_type) {
     _reviewer: 'Code review, quality assessment, best practices','
     _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis','
     _general: 'Multi-purpose coordination and development' };'
-  // return capabilities[type]  ?? capabilities.general;
-// }
+  // return capabilities[type]  ?? capabilities.general;/g
+// }/g
 
 
 function _showCoordinationHelp() {
   console.warn(`;`
 � Coordination Commands - Swarm & Agent Orchestration
-
+)
 USAGE);
   --topology <type>    Coordination topology(default);
                        Options, mesh, ring, star, hybrid;
   --max-agents <n>     Maximum number of agents(default)
 
-AGENT-SPAWN OPTIONS:
+AGENT-SPAWN OPTIONS: null
   --type <type>        Agent type(default);
                        Options, coder, developer, researcher, analyst, analyzer,
                        tester, architect, reviewer, optimizer, general;
@@ -164,14 +159,14 @@ AGENT-SPAWN OPTIONS:
   --swarm-id <id>      Target swarm for agent coordination;
   --capabilities <cap> Custom capabilities specification
 
-TASK-ORCHESTRATE OPTIONS:
+TASK-ORCHESTRATE OPTIONS: null
   --task <description> Task description(required);
   --swarm-id <id>      Target swarm for task execution;
   --strategy <strategy> Coordination strategy(default);
                        Options, parallel, sequential, hierarchical;
   --share-results      Enable result sharing across swarm
 
-EXAMPLES:
+EXAMPLES: null
   # Initialize hierarchical swarm;
   claude-zen coordination swarm-init --topology hierarchical --max-agents 8
 
@@ -184,14 +179,14 @@ EXAMPLES:
   # Initialize mesh topology for parallel work;
   claude-zen coordination swarm-init --topology mesh --max-agents 12
 
- Coordination enables:
+ Coordination enables: null
   • Intelligent task distribution;
   • Agent synchronization;
   • Shared memory coordination;
   • Performance optimization;
   • Fault tolerance;
 `);`
-// }
+// }/g
 
 
 }}}))

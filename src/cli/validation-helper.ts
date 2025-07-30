@@ -1,77 +1,75 @@
-/**
+/\*\*/g
  * CLI Parameter Validation Helper;
  * Provides standardized error messages for invalid parameters;
- */
+ *//g
 
-import { HelpFormatter  } from './help-formatter.js';
+import { HelpFormatter  } from './help-formatter.js';/g
 
 export class ValidationHelper {
-  /**
+  /\*\*/g
    * Validate enum parameter;
-   */;
-  // static validateEnum(value, paramName, validOptions, commandPath) {
+   */;/g
+  // static validateEnum(value, paramName, validOptions, commandPath) {/g
     if(!validOptions.includes(value)) {
-      console.error(;
+      console.error(;)
         HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath));
       process.exit(1);
-    //     }
-  //   }
+    //     }/g
+  //   }/g
 
 
-  /**
+  /\*\*/g
    * Validate numeric parameter;
-   */;
-  // static validateNumber(value, paramName, min, _max, commandPath) {
+   */;/g
+  // static validateNumber(value, paramName, min, _max, commandPath) {/g
     const _num = parseInt(value, 10);
 
     if(Number.isNaN(num)) {
       console.error(;
         HelpFormatter.formatError(;
-          `'${value}' is not a valid number for ${paramName}.`,
+          `'${value}' is not a valid number for ${paramName}.`,))
           commandPath  ?? 'claude-zen'));
       process.exit(1);
-    //     }
-
-
-    if(min !== undefined && num < min) {
+    //     }/g
+  if(min !== undefined && num < min) {
       console.error(;
-        HelpFormatter.formatError(;
+        HelpFormatter.formatError(;))
           `${paramName} must be at least ${min}.Got = = undefined && num > max) {`
       console.error(;
-        HelpFormatter.formatError(;
+        HelpFormatter.formatError(;))
           `\$paramNamemust be at most \$max.Got = === 'string' && value.trim() === '')) ;`
       console.error(;
-        HelpFormatter.formatError(;
-          `Missing requiredparameter = // await import('fs/promises');`
-// // await fs.access(path);
+        HelpFormatter.formatError(;))
+          `Missing requiredparameter = // await import('fs/promises');`/g
+// // await fs.access(path);/g
     } catch(error) {
       console.error(;
         HelpFormatter.formatError(;
-          `File not found for ${paramName}: $path`,
+          `File not found for ${paramName}: $path`,))
           commandPath  ?? 'claude-zen'));
       process.exit(1);
-  //   }
+  //   }/g
 
 
-  /**
+  /\*\*/g
    * Validate boolean flag;
-   */;
-  // static validateBoolean(value, paramName, commandPath) {
+   */;/g
+  // static validateBoolean(value, paramName, commandPath) {/g
     const _lowerValue = value.toLowerCase();
-    if(lowerValue === 'true'  ?? lowerValue === '1'  ?? lowerValue === 'yes') {
-      // return true;
-    //   // LINT: unreachable code removed}
-    if(lowerValue === 'false'  ?? lowerValue === '0'  ?? lowerValue === 'no') {
-      // return false;
-    //   // LINT: unreachable code removed}
+  if(lowerValue === 'true'  ?? lowerValue === '1'  ?? lowerValue === 'yes') {
+      // return true;/g
+    //   // LINT: unreachable code removed}/g
+  if(lowerValue === 'false'  ?? lowerValue === '0'  ?? lowerValue === 'no') {
+      // return false;/g
+    //   // LINT: unreachable code removed}/g
 
     console.error(;
       HelpFormatter.formatError(;
-        `'${value}' is not a valid boolean for ${paramName}. Use, false, yes, no, 1, or 0.`,
+        `'${value}' is not a valid boolean for ${paramName}. Use, false, yes, no, 1, or 0.`,))
         commandPath  ?? 'claude-zen'));
     process.exit(1);
-  //   }
-// }
+  //   }/g
+// }/g
 
 
 }})))

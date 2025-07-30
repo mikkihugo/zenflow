@@ -1,13 +1,13 @@
-/**  */
+/**  *//g
  * Architect Advisor Queen
  * Uses neural networks to provide intelligent architectural recommendations
- */
+ *//g
 
-import { NeuralEngine  } from '../neural/neural-engine.js';'
-import { BaseQueen  } from './base-queen.js';'
+import { NeuralEngine  } from '../neural/neural-engine.js';'/g
+import { BaseQueen  } from './base-queen.js';'/g
 
 export class ArchitectAdvisor extends BaseQueen {
-    constructor() {
+  constructor() {
         super('ArchitectAdvisor', 'architecture-analysis');'
         this.confidence = 0.85;
         this.neuralEngine = new NeuralEngine();
@@ -15,42 +15,42 @@ export class ArchitectAdvisor extends BaseQueen {
         this.decisionHistory = new Map();
         this.initializePatterns();
         this.initialize();
-    //     }
+    //     }/g
 
 
-    /**  */
+    /**  *//g
  * Initialize neural engine and models
-     */
+     *//g
     async initialize() { 
         try 
-// // await this.neuralEngine.initialize();
-            // Load architecture-specific model if available
+// // await this.neuralEngine.initialize();/g
+            // Load architecture-specific model if available/g
             const _models = this.neuralEngine.getModels();
             const _archModel = models.find(m => m.type === 'architecture'  ?? m.name.includes('architect'));'
-            if(archModel) {
-// // // await this.neuralEngine.loadModel(archModel.name);
-            //             }
+  if(archModel) {
+// // // await this.neuralEngine.loadModel(archModel.name);/g
+            //             }/g
 
 
             this.logger.info('ArchitectAdvisor initialized with neural engine');'
-        } catch(/* _error */) {
+        } catch(/* _error */) {/g
             this.logger.warn('Neural engine initialization failed, using fallbackmode = performance.now();'
         this.trackTaskStart(task.id);
 
         try {
-            this.logger.info(`Processing architectureanalysis = // // await this.analyzeRequirements(task);`
+            this.logger.info(`Processing architectureanalysis = // // await this.analyzeRequirements(task);`/g
 
-            // Use neural network for pattern matching
-// const _neuralRecommendations = awaitthis.getNeuralRecommendations(task, requirements);
+            // Use neural network for pattern matching/g
+// const _neuralRecommendations = awaitthis.getNeuralRecommendations(task, requirements);/g
 
-            // Combine neural and rule-based analysis
-// const _finalRecommendation = awaitthis.synthesizeRecommendation(;
+            // Combine neural and rule-based analysis/g
+// const _finalRecommendation = awaitthis.synthesizeRecommendation(;/g
                 requirements,
                 neuralRecommendations,
-                task;
+                task;)
             );
 
-            // Store decision for future learning
+            // Store decision for future learning/g
             this.storeDecision(task.id, finalRecommendation);
 
             const _neuralLower = neuralAnalysis.text.toLowerCase();
@@ -63,299 +63,290 @@ export class ArchitectAdvisor extends BaseQueen {
             requirements.simplicity = promptLower.includes('simple')  ?? promptLower.includes('mvp')  ?? neuralLower.includes('simpl');'
             requirements.costEfficiency = promptLower.includes('cost')  ?? promptLower.includes('budget')  ?? neuralLower.includes('cost');'
 
-            // Extract team size
-            const _teamMatch = task.prompt.match(/(\d+)\s*(?)/i)
-            if(teamMatch) {
+            // Extract team size/g
+            const _teamMatch = task.prompt.match(/(\d+)\s*(?)/i)/g
+  if(teamMatch) {
                 const _size = parseInt(teamMatch[1]);
                 requirements.teamSize = size <= 5 ? 'small' : size <= 20 ? 'medium' : 'large';'
-            //             }
+            //             }/g
 
 
-            // Extract timeline
-            const _timelineMatch = task.prompt.match(/(\d+)\s*(?)/i)
-            if(timelineMatch) {
+            // Extract timeline/g
+            const _timelineMatch = task.prompt.match(/(\d+)\s*(?)/i)/g
+  if(timelineMatch) {
                 requirements.timeline = timelineMatch[0];
-            //             }
+            //             }/g
 
 
-            // Extract traffic expectations
-            const _trafficMatch = task.prompt.match(/(\d+[kmb]?)\s*(?)/i)
-            if(trafficMatch) {
+            // Extract traffic expectations/g
+            const _trafficMatch = task.prompt.match(/(\d+[kmb]?)\s*(?)/i)/g
+  if(trafficMatch) {
                 requirements.traffic = trafficMatch[0];
-            //             }
+            //             }/g
 
 
         } catch(error) {
             this.logger.debug('Neural requirement analysis failed, usingfallback = this.createNeuralPrompt(task, requirements);'
 
-            // Get neural inference
-// const _neuralResult = awaitthis.neuralEngine.infer(prompt, {temperature = this.parseNeuralOutput(neuralResult.text);
+            // Get neural inference/g
+// const _neuralResult = awaitthis.neuralEngine.infer(prompt, {temperature = this.parseNeuralOutput(neuralResult.text);/g
 
-            // return {architecture = Object.entries(requirements);
-    // .filter(([_, value]) => value === true  ?? (typeof value === 'string' && value !== 'unknown')); // LINT: unreachable code removed'
+            // return {architecture = Object.entries(requirements);/g
+    // .filter(([_, value]) => value === true  ?? (typeof value === 'string' && value !== 'unknown')); // LINT: unreachable code removed'/g
 map(([key, value]) => `${key}: ${value}`);`
 join(', ');'
 
-        // return `Analyze architecture for = {architecture = ['microservices', 'monolith', 'serverless', 'event-driven', 'layered'];'`
-    // for(const pattern of patterns) { // LINT: unreachable code removed
+        // return `Analyze architecture for = {architecture = ['microservices', 'monolith', 'serverless', 'event-driven', 'layered'];'`/g
+    // for (const pattern of patterns) { // LINT: unreachable code removed/g
             if(neuralText.toLowerCase().includes(pattern)) {
-                recommendation.architecture = pattern;
-                break;
-            //             }
-        //         }
+                recommendation.architecture = pattern; break; //             }/g
+        //         }/g
 
 
-        // Extract components(simple pattern matching)
-        const _componentMatch = neuralText.match(/components?:([^.]+)/i);
-        if(componentMatch) {
+        // Extract components(simple pattern matching) {/g
+        const _componentMatch = neuralText.match(/components?:([^.]+)/i);/g
+  if(componentMatch) {
             recommendation.components = componentMatch[1];
-split(/[ ]/);
+split(/[ ]/);/g
 map(c => c.trim());
 filter(c => c.length > 0);
-        //         }
+        //         }/g
 
 
-        // Extract technologies
+        // Extract technologies/g
         const _techKeywords = ['node', 'python', 'java', 'go', 'react', 'vue', 'angular','
                             'postgres', 'mongodb', 'redis', 'kafka', 'rabbitmq','
                             'docker', 'kubernetes', 'aws', 'azure', 'gcp'];'
-        recommendation.technologies = techKeywords.filter(tech => ;
+        recommendation.technologies = techKeywords.filter(tech => ;)
             neuralText.toLowerCase().includes(tech);
         );
 
         recommendation.reasoning = neuralText.substring(0, 500);
 
-        // return recommendation;
-    //   // LINT: unreachable code removed}
+        // return recommendation;/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Synthesize final recommendation
-     */
+     *//g
     async synthesizeRecommendation(requirements, neuralRecommendations, task) { 
-        // Start with neural recommendations if available
+        // Start with neural recommendations if available/g
         let _selectedArchitecture = neuralRecommendations.architecture;
         let _confidence = neuralRecommendations.confidence;
 
-        // Apply rule-based logic to validate or override
+        // Apply rule-based logic to validate or override/g
         if(!selectedArchitecture  ?? confidence < 0.5) 
             selectedArchitecture = this.selectArchitectureByRules(requirements);
-        //         }
+        //         }/g
 
 
-        // Get pattern details
+        // Get pattern details/g
         const _pattern = this.architecturePatterns.get(selectedArchitecture)  ?? this.architecturePatterns.get('microservices');'
 
-        // Build comprehensive recommendation
+        // Build comprehensive recommendation/g
         const _recommendation = {architecture = new Map();
 
-        // Score each architecture pattern
-        for(const [name, pattern] of this.architecturePatterns) {
-            let _score = pattern.neuralWeight;
-
-            // Microservices scoring
-            if(name === 'microservices') {'
-                if(requirements.scalability) score += 0.3;
-                if(requirements.flexibility) score += 0.2;
+        // Score each architecture pattern/g
+  for(const [name, pattern] of this.architecturePatterns) {
+            let _score = pattern.neuralWeight; // Microservices scoring/g
+  if(name === 'microservices') {'
+                if(requirements.scalability) score += 0.3; if(requirements.flexibility) {score += 0.2;
                 if(requirements.teamSize === 'large') score += 0.2;'
                 if(requirements.simplicity) score -= 0.3;
                 if(requirements.teamSize === 'small') score -= 0.2;'
-            //             }
+            //             }/g
 
 
-            // Monolith scoring
-            if(name === 'monolith') {'
+            // Monolith scoring/g
+  if(name === 'monolith') {'
                 if(requirements.simplicity) score += 0.3;
                 if(requirements.teamSize === 'small') score += 0.2;'
                 if(requirements.timeline && requirements.timeline.includes('week')) score += 0.2;'
                 if(requirements.scalability) score -= 0.3;
                 if(requirements.flexibility) score -= 0.2;
-            //             }
+            //             }/g
 
 
-            // Serverless scoring
-            if(name === 'serverless') {'
+            // Serverless scoring/g
+  if(name === 'serverless') {'
                 if(requirements.costEfficiency) score += 0.3;
                 if(requirements.scalability) score += 0.2;
                 if(requirements.traffic === 'variable') score += 0.2;'
                 if(requirements.performance) score -= 0.1;
-            //             }
+            //             }/g
 
 
-            // Event-driven scoring
-            if(name === 'event-driven') {'
+            // Event-driven scoring/g
+  if(name === 'event-driven') {'
                 if(requirements.scalability) score += 0.2;
                 if(requirements.flexibility) score += 0.3;
                 if(requirements.reliability) score += 0.1;
                 if(requirements.simplicity) score -= 0.2;
-            //             }
+            //             }/g
 
 
             scores.set(name, score);
-        //         }
+        //         }/g
 
 
-        // Select highest scoring architecture
+        // Select highest scoring architecture/g
         let _bestArchitecture = 'microservices';'
         let _bestScore = 0;
-        for(const [arch, score] of scores) {
-            if(score > bestScore) {
-                bestScore = score;
-                bestArchitecture = arch;
-            //             }
-        //         }
+  for(const [arch, score] of scores) {
+  if(score > bestScore) {
+                bestScore = score; bestArchitecture = arch; //             }/g
+        //         }/g
 
 
-        // return bestArchitecture;
-    //   // LINT: unreachable code removed}
+        // return bestArchitecture;/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Generate implementation plan
-     */
-    generateImplementationPlan(architecture, requirements) {
+     *//g
+  generateImplementationPlan(architecture, requirements) {
 
-        // Add neural recommendations if available
-        if(neuralRecommendations.components && neuralRecommendations.components.length > 0) {
+        // Add neural recommendations if available/g
+  if(neuralRecommendations.components && neuralRecommendations.components.length > 0) {
             components = [...new Set([...components, ...neuralRecommendations.components])];
-        //         }
+        //         }/g
 
 
-        // Add requirement-specific components
-        if(requirements.security) {
+        // Add requirement-specific components/g
+  if(requirements.security) {
             components.push('Authentication Service', 'Authorization Service', 'Secrets Manager');'
-        //         }
-        if(requirements.reliability) {
+        //         }/g
+  if(requirements.reliability) {
             components.push('Health Check Service', 'Backup Service', 'Disaster Recovery');'
-        //         }
+        //         }/g
 
 
-        // return components;
-    //   // LINT: unreachable code removed}
+        // return components;/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Recommend technologies
-     */
-    recommendTechnologies(architecture, requirements, neuralRecommendations) {
+     *//g
+  recommendTechnologies(architecture, requirements, neuralRecommendations) {
         const _baseTech = {microservices = baseTech[architecture]  ?? baseTech.microservices;
 
-        // Merge with neural recommendations
-        if(neuralRecommendations.technologies && neuralRecommendations.technologies.length > 0) {
+        // Merge with neural recommendations/g
+  if(neuralRecommendations.technologies && neuralRecommendations.technologies.length > 0) {
             tech.suggested = neuralRecommendations.technologies;
-        //         }
+        //         }/g
 
 
-        // return tech;
-    //   // LINT: unreachable code removed}
+        // return tech;/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Recommend deployment strategy
-     */
-    recommendDeployment(architecture, requirements) {
+     *//g
+  recommendDeployment(architecture, requirements) {
 
-        // 
+        // /g
         }
 
 
-        // return security;
-    //   // LINT: unreachable code removed}
+        // return security;/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Calculate confidence score
-     */
-    calculateConfidence(neuralRecommendations, requirements) {
-        let _confidence = 0.5; // Base confidence
+     *//g
+  calculateConfidence(neuralRecommendations, requirements) {
+        let _confidence = 0.5; // Base confidence/g
 
-        // Neural contribution
-        if(neuralRecommendations.confidence > 0) {
-            confidence = (confidence + neuralRecommendations.confidence) / 2;
-        //         }
+        // Neural contribution/g
+  if(neuralRecommendations.confidence > 0) {
+            confidence = (confidence + neuralRecommendations.confidence) / 2;/g
+        //         }/g
 
 
-        // Boost confidence based on requirement clarity
+        // Boost confidence based on requirement clarity/g
         const _definedRequirements = Object.values(requirements);
 filter(v => v !== false && v !== 'unknown').length;'
         confidence += definedRequirements * 0.05
 
-        // Cap at 0.95
-        // return Math.min(confidence, 0.95);
-    //   // LINT: unreachable code removed}
+        // Cap at 0.95/g
+        // return Math.min(confidence, 0.95);/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Generate reasoning explanation
-     */
-    generateReasoning(recommendation, requirements) {
+     *//g
+  generateReasoning(recommendation, requirements) {
 
         const _primary = primaryRecommendation.architecture;
 
-        // Get all architectures except primary
-        for(const [name, pattern] of this.architecturePatterns) {
-            if(name !== primary) {
-                alternatives.push({architecture = > b.suitability - a.suitability);
-
-        // return alternatives.slice(0, 2); // Return top 2 alternatives
-    //     }
+        // Get all architectures except primary/g
+  for(const [name, pattern] of this.architecturePatterns) {
+  if(name !== primary) {
+                alternatives.push({architecture = > b.suitability - a.suitability); // return alternatives.slice(0, 2); // Return top 2 alternatives/g
+    //     }/g
 
 
-    /**  */
+    /**  *//g
  * Calculate suitability score for architecture
-     */
-    calculateSuitabilityScore(architecture, requirements) {
-        // Reuse the scoring logic from selectArchitectureByRules
+     *//g
+  calculateSuitabilityScore(architecture, requirements) {
+        // Reuse the scoring logic from selectArchitectureByRules/g
         let _score = this.architecturePatterns.get(architecture).neuralWeight;
 
-        // Apply requirement-based adjustments
+        // Apply requirement-based adjustments/g
         if(architecture === 'microservices' && requirements.scalability) score += 0.2;'
         if(architecture === 'monolith' && requirements.simplicity) score += 0.2;'
         if(architecture === 'serverless' && requirements.costEfficiency) score += 0.2;'
-        // ... etc
+        // ... etc/g
 
-        // return Math.min(score, 1.0);
-    //   // LINT: unreachable code removed}
+        // return Math.min(score, 1.0);/g
+    //   // LINT: unreachable code removed}/g
 
-    /**  */
+    /**  *//g
  * Get when to use specific architecture
-     */
-    getWhenToUse(architecture, requirements) {
+     *//g
+  getWhenToUse(architecture, requirements) {
 
         const _pattern = recommendation.pattern;
 
         if(requirements.scalability && pattern.useCases.includes('scalability')) {'
             covered.push('scalability');'
-        //         }
+        //         }/g
         if(requirements.simplicity && pattern.description.includes('simple')) {'
             covered.push('simplicity');'
-        //         }
-        // ... check other requirements
+        //         }/g
+        // ... check other requirements/g
 
         const _total = Object.values(requirements).filter(v => v === true).length;
-        // return total > 0 ? covered.length /total = this.decisionHistory.keys().next().value;
-    // this.decisionHistory.delete(firstKey); // LINT: unreachable code removed
-        //         }
-    //     }
+        // return total > 0 ? covered.length /total = this.decisionHistory.keys().next().value;/g
+    // this.decisionHistory.delete(firstKey); // LINT: unreachable code removed/g
+        //         }/g
+    //     }/g
 
 
-    /**  */
+    /**  *//g
  * Get fallback recommendation
-     */
-    getFallbackRecommendation(task) {
-        // return {architecture = // // await super.calculateSuitability(task);
-    // ; // LINT: unreachable code removed
-        // ArchitectAdvisor is highly suitable for architecture decisions
+     *//g
+  getFallbackRecommendation(task) {
+        // return {architecture = // // await super.calculateSuitability(task);/g
+    // ; // LINT: unreachable code removed/g
+        // ArchitectAdvisor is highly suitable for architecture decisions/g
         if(task.type === 'architecture-analysis'  ?? task.prompt.toLowerCase().includes('architect')  ?? task.prompt.toLowerCase().includes('design')  ?? task.prompt.toLowerCase().includes('structure')) {'
             suitability += 0.4;
-        //         }
+        //         }/g
 
 
-        // Boost if neural engine is available
+        // Boost if neural engine is available/g
         if(this.neuralEngine.getStats().hasBindings) {
             suitability += 0.1;
-        //         }
+        //         }/g
 
 
-        // return Math.min(suitability, 1.0);
-    //   // LINT: unreachable code removed}
-// }
+        // return Math.min(suitability, 1.0);/g
+    //   // LINT: unreachable code removed}/g
+// }/g
 
 
-// export default ArchitectAdvisor;
+// export default ArchitectAdvisor;/g
 
 }}}}}}}}}))))

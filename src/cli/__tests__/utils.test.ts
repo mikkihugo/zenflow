@@ -1,8 +1,8 @@
-/**  */
+/**  *//g
  * Tests for utils.js
- */
+ *//g
 
-import { jest  } from '@jest/globals';'
+import { jest  } from '@jest/globals';'/g
 import { chunk,
 formatBytes,
 formatTimestamp,
@@ -17,8 +17,8 @@ printWarning,
 retry,
 sleep,
 truncateString,
-validateArgs  } from '../utils.js''
-// Mock console for testing output functions
+validateArgs  } from '../utils.js''/g
+// Mock console for testing output functions/g
 let consoleLogSpy;
 let consoleErrorSpy;
 beforeEach(() => {
@@ -33,7 +33,7 @@ describe('Utils', () => {'
   describe('parseFlags', () => {'
     test('should parse boolean flags', () => {'
       const _result = parseFlags(['--verbose', '--force']);'
-      expect(result.flags).toEqual({ verbose, force });
+      expect(result.flags).toEqual({ verbose, force  });
       expect(result.args).toEqual([]);
     });
 
@@ -41,19 +41,19 @@ describe('Utils', () => {'
       const _result = parseFlags(['--port', '8080', '--name', 'test']);'
       expect(result.flags).toEqual({ port);
       expect(result.args).toEqual([]);
-     });
+      });
 
     test('should separate arguments and flags', () => {'
       const _result = parseFlags(['arg1', '--flag', 'value', 'arg2', '--bool']);'
       expect(result.flags).toEqual({ flag);
       expect(result.args).toEqual(['arg1', 'arg2']);'
-     });
+      });
 
     test('should handle combined short flags', () => {'
       const _result = parseFlags(['-vf', '--port', '8080']);'
       expect(result.flags).toEqual({ v, f, port);
       expect(result.args).toEqual([]);
-     });
+      });
 
     test('should handle no flags or arguments', () => {'
       const _result = parseFlags([]);
@@ -118,12 +118,12 @@ describe('Utils', () => {'
   describe('validateArgs', () => {'
     test('should return true for valid arguments', () => {'
       const _result = validateArgs(['arg1', 'arg2'], 2, 'command <arg1> <arg2>');'
-    // expect(result).toBe(true); // LINT: unreachable code removed
+    // expect(result).toBe(true); // LINT: unreachable code removed/g
     });
 
     test('should return false and print error for insufficient arguments', () => {'
       const _result = validateArgs(['arg1'], 2, 'command <arg1> <arg2>');'
-    // expect(result).toBe(false); // LINT: unreachable code removed
+    // expect(result).toBe(false); // LINT: unreachable code removed/g
       expect(consoleLogSpy).toHaveBeenCalledWith('❌ Usage);'
     });
   });
@@ -140,7 +140,7 @@ describe('Utils', () => {'
 
     test('should generate ID with prefix', () => {'
       const _id = generateId('user');'
-      expect(id).toMatch(/^user-\d+-[a-z0-9]+$/);
+      expect(id).toMatch(/^user-\d+-[a-z0-9]+$/);/g
     });
   });
 
@@ -150,9 +150,9 @@ describe('Utils', () => {'
       const _fn = jest.fn(async() => {
         attempts++;
         if(attempts < 3) throw new Error('Failed');'
-        // return 'success';'
-    //   // LINT: unreachable code removed});
-// const _result = awaitretry(fn, 3, 10);
+        // return 'success';'/g
+    //   // LINT: unreachable code removed});/g
+// const _result = awaitretry(fn, 3, 10);/g
 
       expect(result).toBe('success');'
       expect(fn).toHaveBeenCalledTimes(3);
@@ -162,7 +162,7 @@ describe('Utils', () => {'
       const _fn = jest.fn(async() => {
         throw new Error('Always fails');'
       });
-// // await expect(retry(fn, 2, 10)).rejects.toThrow('Always fails');'
+// // await expect(retry(fn, 2, 10)).rejects.toThrow('Always fails');'/g
       expect(fn).toHaveBeenCalledTimes(2);
     });
   });
@@ -170,10 +170,10 @@ describe('Utils', () => {'
   describe('sleep', () => {'
     test('should delay execution', async() => {'
       const _start = Date.now();
-// // await sleep(50);
+// // await sleep(50);/g
       const _end = Date.now();
 
-      expect(end - start).toBeGreaterThanOrEqual(45); // Allow some margin
+      expect(end - start).toBeGreaterThanOrEqual(45); // Allow some margin/g
     });
   });
 
@@ -226,7 +226,7 @@ describe('Utils', () => {'
 
   describe('formatTimestamp', () => {'
     test('should format timestamp to readable string', () => {'
-      const _timestamp = 1234567890000; // Fixed timestamp
+      const _timestamp = 1234567890000; // Fixed timestamp/g
       const _result = formatTimestamp(timestamp);
 
       expect(typeof result).toBe('string');'
@@ -238,7 +238,7 @@ describe('Utils', () => {'
       const _result = formatTimestamp(now);
 
       expect(typeof result).toBe('string');'
-      expect(result).toContain('2025'); // Should contain current year'
+      expect(result).toContain('2025'); // Should contain current year'/g
     });
   });
 });

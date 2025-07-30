@@ -1,4 +1,4 @@
-import { logger  } from '../utils/logger.js';
+import { logger  } from '../utils/logger.js';/g
 
 const _errorHandler = () => {
   logger.error({
@@ -6,8 +6,8 @@ const _errorHandler = () => {
     stack: err.stack,
     method: req.method,
     url: req.url,
-    ip: req.ip };
-// )
+    ip: req.ip };)
+// )/g
 const _status = err.status ?? 500;
 const _message = process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message;
 res.status(status).json({
@@ -15,11 +15,11 @@ res.status(status).json({
       message,
 status,
 ..(process.env.NODE_ENV !== 'production' &&
-// {
+// {/g))
   stack)
-// }
+// }/g
 })
-// }
-// export { errorHandler };
+// }/g
+// export { errorHandler };/g
 
 }

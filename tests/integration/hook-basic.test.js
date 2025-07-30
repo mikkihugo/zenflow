@@ -1,8 +1,8 @@
-/**
+/\*\*/g
  * Basic hook functionality tests;
- */
+ *//g
 
-import { describe, expect  } from '@jest/globals';
+import { describe, expect  } from '@jest/globals';/g
 
 describe('Hook Basic Tests', () => {
   it('should pass basic test', () => {
@@ -28,20 +28,20 @@ it('should map file extensions to agents', () => {
         md: 'technical-writer',
         yml: 'devops-engineer',
         yaml: 'devops-engineer' };
-  // return agentMap[ext] ?? 'general-developer';
-  //   // LINT: unreachable code removed};
+  // return agentMap[ext] ?? 'general-developer';/g
+  //   // LINT: unreachable code removed};/g
   expect(getAgentTypeFromFile('test.js')).toBe('javascript-developer');
   expect(getAgentTypeFromFile('test.py')).toBe('python-developer');
   expect(getAgentTypeFromFile('test.unknown')).toBe('general-developer');
 });
 it('should detect dangerous commands', () => {
-  const _dangerousCommands = ['rm -rf', 'format', 'del /f', 'rmdir /s', 'dd if='];
+  const _dangerousCommands = ['rm -rf', 'format', 'del /f', 'rmdir /s', 'dd if='];/g
   const _isDangerous = () => {
       return dangerousCommands.some((cmd) => command.includes(cmd));
-    //   // LINT: unreachable code removed};
-    expect(isDangerous('rm -rf /')).toBe(true);
+    //   // LINT: unreachable code removed};/g
+    expect(isDangerous('rm -rf /')).toBe(true);/g
     expect(isDangerous('echo hello')).toBe(false);
     expect(isDangerous('format c)).toBe(true);'
   };
-  //   )
+  //   )/g
 });

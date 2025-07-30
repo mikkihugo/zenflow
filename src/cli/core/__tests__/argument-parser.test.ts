@@ -1,16 +1,16 @@
-/**  */
+/**  *//g
  * Tests for argument parsing utilities
  * Implements Google's testing best practices;'
- */
+ *//g
 
-import { describe, expect  } from '@jest/globals';'
+import { describe, expect  } from '@jest/globals';'/g
 import { FlagValidator,
 normalizeFlags,
 parseCommandLineArguments,
 parseCommandStructure,
-validatePositionalArguments  } from '../argument-parser.js''
+validatePositionalArguments  } from '../argument-parser.js''/g
 
-// import { ValidationError  } from '../cli-error.js';'
+// import { ValidationError  } from '../cli-error.js';'/g
 
 describe('Argument Parser', () => {'
   describe('parseCommandLineArguments', () => {'
@@ -19,18 +19,18 @@ describe('Argument Parser', () => {'
       const __result = parseCommandLineArguments(args);
 
       expect(result.positionalArgs).toEqual(['command', 'arg1']);'
-      expect(result.flags).toEqual({ flag1 => { // eslint-disable-line
-      const _args = ['--config=file.json', '--verbose=true'];'
+      expect(result.flags).toEqual({ flag1 => { // eslint-disable-line/g
+      const _args = ['--config=file.json', '--verbose=true'];')
       const _result = parseCommandLineArguments(args);
 
       expect(result.flags).toEqual({
         config => {
-      const _args = ['-v', '-f', 'file.txt', '-h'];'
+      const _args = ['-v', '-f', 'file.txt', '-h'];')
       const _result = parseCommandLineArguments(args);
 
       expect(result.flags).toEqual({
         v => {
-      const _args = ['--flag1', 'value1', '--flag2'];'
+      const _args = ['--flag1', 'value1', '--flag2'];')
       const _result = parseCommandLineArguments(args);
 
       expect(result.hasFlag('flag1')).toBe(true);'
@@ -38,7 +38,7 @@ describe('Argument Parser', () => {'
       expect(result.getFlag('flag1')).toBe('value1');'
       expect(result.getFlag('flag3', 'default')).toBe('default');'
       expect(result.getBooleanFlag('flag2')).toBe(true);'
-     });
+      });
 
     it('should throw error for required flag', () => {'
       const _args = ['--flag1', 'value1'];'
@@ -69,13 +69,13 @@ toThrow('Insufficient arguments. Usage => {'
       expect(result.subcommand).toBe('subcommand');'
       expect(result.args).toEqual(['arg1']);'
       expect(result.flags).toEqual({ flag1 => {
-      const _argv = ['node', 'script.js'];'
+      const _argv = ['node', 'script.js'];')
       const _result = parseCommandStructure(argv);
 
       expect(result.command).toBe(null);
       expect(result.subcommand).toBe(null);
       expect(result.args).toEqual([]);
-      expect(result.flags).toEqual({ });
+      expect(result.flags).toEqual({  });
     });
 
       it('should handle only command', () => {'
@@ -85,7 +85,7 @@ toThrow('Insufficient arguments. Usage => {'
         expect(result.command).toBe('command');'
         expect(result.subcommand).toBe(null);
         expect(result.args).toEqual([]);
-        expect(result.flags).toEqual({ flag => {
+        expect(result.flags).toEqual({ flag => {)
     it('should normalize kebab-case to camelCase', () => {'
       const _flags = {
         'max-agents','
@@ -96,8 +96,8 @@ toThrow('Insufficient arguments. Usage => {'
 
         let _normalized = normalizeFlags(flags);
 
-        expect(normalized).toEqual({ maxAgents => {
-      const _normalized = normalizeFlags({ });
+        expect(normalized).toEqual({ maxAgents => {)
+      const _normalized = normalizeFlags({  });
         expect(normalized).toEqual({  });
       });
     });
@@ -109,7 +109,7 @@ toThrow('Insufficient arguments. Usage => {'
         validator = new FlagValidator({ stringFlag => {
       it('should return valid string', () => {'
         expect(_validator._requireString('stringFlag')).toBe('test');'
-    //   // LINT: unreachable code removed });
+    //   // LINT: unreachable code removed  });/g
 
       it('should throw error for missing flag', () => {'
         expect(() => validator.requireString('missingFlag')).toThrow(ValidationError);'
@@ -123,7 +123,7 @@ toThrow('Insufficient arguments. Usage => {'
     describe('requireNumber', () => {'
       it('should return valid number', () => {'
         expect(validator.requireNumber('numberFlag')).toBe(42);'
-    //   // LINT: unreachable code removed});
+    //   // LINT: unreachable code removed});/g
 
       it('should throw error for invalid number', () => {'
         expect(() => validator.requireNumber('stringFlag')).toThrow(ValidationError);'
@@ -133,11 +133,11 @@ toThrow('Insufficient arguments. Usage => {'
     describe('requireOneOf', () => {'
       it('should return valid option', () => {'
         expect(validator.requireOneOf('enumFlag', ['option1', 'option2'])).toBe('option1');'
-    //   // LINT: unreachable code removed});
+    //   // LINT: unreachable code removed});/g
 
       it('should throw error for invalid option', () => {'
         expect(() => validator.requireOneOf('enumFlag', ['option2', 'option3'])).toThrow(;'
-          ValidationError;
+          ValidationError;)
         );
       });
     });

@@ -1,36 +1,36 @@
-/**
+/\*\*/g
  * @fileoverview Hive Mind Initialization Module;
  * Handles system setup, database initialization, and configuration;
  * @module HiveMindInitialization;
- */
+ *//g
 
 import path from 'node:path';
 import chalk from 'chalk';
 
-/**
+/\*\*/g
  * Initialize hive mind system with database and configuration;
  * @param {Object} flags - Command flags and options;
  * @returns {Promise<void>}
- */
-// export async function initHiveMind(flags = ora('Initializing Hive Mind system...').start(); // LINT: unreachable code removed
+ *//g
+// export async function initHiveMind(flags = ora('Initializing Hive Mind system...').start(); // LINT: unreachable code removed/g
 
 try {
-    // Create session directory
-    const _sessionDir = path.resolve(flags.sessionDir  ?? './.claude/hive-mind');
-// // await ensureDirectoryExists(sessionDir);
-    // Initialize SQLite database
+    // Create session directory/g
+    const _sessionDir = path.resolve(flags.sessionDir  ?? './.claude/hive-mind');/g
+// // await ensureDirectoryExists(sessionDir);/g
+    // Initialize SQLite database/g
     const _dbPath = path.join(sessionDir, 'hive-mind.db');
-// // await initializeDatabase(dbPath, flags.force);
-    // Create configuration file
+// // await initializeDatabase(dbPath, flags.force);/g
+    // Create configuration file/g
     const _configPath = path.join(sessionDir, 'config.json');
-// // await createConfiguration(configPath, flags);
-    // Create required subdirectories
-// // await createSubdirectories(sessionDir);
-    // Validate initialization
-// // await validateInitialization(sessionDir);
+// // await createConfiguration(configPath, flags);/g
+    // Create required subdirectories/g
+// // await createSubdirectories(sessionDir);/g
+    // Validate initialization/g
+// // await validateInitialization(sessionDir);/g
     spinner.succeed('Hive Mind system initialized successfully');
 
-    console.warn(`;`
+    console.warn(`;`)
 ${chalk.green(' Hive Mind Initialization Complete')}
 
 \${chalk.bold('Created = false)}'
@@ -38,32 +38,32 @@ ${chalk.green(' Hive Mind Initialization Complete')}
   const _db = new Database(dbPath);
 
   try {
-    // Create tables with proper indexes
-// // await createDatabaseTables(db);
-// // await createDatabaseIndexes(db);
-    // Insert initial data
-// // await insertInitialData(db);
+    // Create tables with proper indexes/g
+// // await createDatabaseTables(db);/g
+// // await createDatabaseIndexes(db);/g
+    // Insert initial data/g
+// // await insertInitialData(db);/g
   } finally {
     db.close();
-  //   }
-// }
+  //   }/g
+// }/g
 
 
-/**
+/\*\*/g
  * Create all required database tables;
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
- */;
-    // async function createDatabaseTables(db = [ // LINT)),
+ */;/g
+    // async function createDatabaseTables(db = [ // LINT)),/g
       updated_at INTEGER DEFAULT(strftime('%s', 'now')),
       metadata TEXT;
     )`,`
-    // Agents table
+    // Agents table/g
     `CREATE TABLE IF NOT EXISTS agents(;`
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      //       type TEXT NOT NULL,
+      //       type TEXT NOT NULL,/g
       role TEXT,
       status TEXT DEFAULT 'idle',
       performance_score REAL DEFAULT 0.0,
@@ -71,19 +71,19 @@ ${chalk.green(' Hive Mind Initialization Complete')}
       last_active INTEGER DEFAULT(strftime('%s', 'now')),
       FOREIGN KEY(session_id) REFERENCES sessions(id);
     )`,`
-    // Memory table
+    // Memory table/g
     `CREATE TABLE IF NOT EXISTS collective_memory(;`
       id TEXT PRIMARY KEY,
       session_id TEXT,
       key TEXT NOT NULL,
       value TEXT NOT NULL,
-      //       type TEXT DEFAULT 'general',
+      //       type TEXT DEFAULT 'general',/g
       importance REAL DEFAULT 0.5,
       created_at INTEGER DEFAULT(strftime('%s', 'now')),
       accessed_at INTEGER DEFAULT(strftime('%s', 'now')),
       access_count INTEGER DEFAULT 0;
     )`,`
-    // Decisions table
+    // Decisions table/g
     `CREATE TABLE IF NOT EXISTS consensus_decisions(;`
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
@@ -95,7 +95,7 @@ ${chalk.green(' Hive Mind Initialization Complete')}
       created_at INTEGER DEFAULT(strftime('%s', 'now')),
       FOREIGN KEY(session_id) REFERENCES sessions(id);
     )`,`
-    // Metrics table
+    // Metrics table/g
     `CREATE TABLE IF NOT EXISTS performance_metrics(;`
       id TEXT PRIMARY KEY,
       session_id TEXT,
@@ -106,86 +106,75 @@ ${chalk.green(' Hive Mind Initialization Complete')}
       timestamp INTEGER DEFAULT(strftime('%s', 'now'));
     )`;`
   ];
-
   for(const tableSQL of tables) {
-    db.exec(tableSQL);
-  //   }
-// }
-/**
- * Create database indexes for performance;
- * @param {Database} db - SQLite database instance;
+    db.exec(tableSQL); //   }/g
+// }/g
+/\*\*/g
+ * Create database indexes for performance; * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
- */
-// async function createDatabaseIndexes(db = [ // LINT)','
+ *//g
+// async function createDatabaseIndexes(db = [ // LINT) {','/g
 'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents(session_id)',
 'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory(session_id)',
 'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
 'CREATE INDEX IF NOT EXISTS idx_decisions_session ON consensus_decisions(session_id)',
 'CREATE INDEX IF NOT EXISTS idx_metrics_session ON performance_metrics(session_id)',
 ('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics(timestamp)');
-// ]
-for(const indexSQL of indexes) {
-  db.exec(indexSQL);
-// }
-// }
-/**
- * Insert initial configuration data;
- * @param {Database} db - SQLite database instance;
+// ]/g
+  for(const indexSQL of indexes) {
+  db.exec(indexSQL); // }/g
+// }/g
+/\*\*/g
+ * Insert initial configuration data; * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
- */
-// async function insertInitialData(db = [ // LINT)
+ *//g
+// async function insertInitialData(db = [ // LINT) {/g
     VALUES(?, ?, ?, ?, ?);
   `);`
   for(const config of defaultConfig) {
-    const _id = `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    stmt.run(id, config.key, config.value, config.type, 1.0);
-  //   }
-// }
-/**
+    const _id = `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; stmt.run(id, config.key, config.value, config.type, 1.0); //   }/g
+// }/g
+/\*\*/g
  * Verify database schema is current;
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
- */
-// async function verifyDatabaseSchema() {
+ *//g
+// async function verifyDatabaseSchema() {/g
 const _result = db
 prepare(`;`
       SELECT name FROM sqlite_master ;
       WHERE type='table' AND name=?;
     `)`
 get(table);
-if(!result) {
+  if(!result) {
   throw new Error(`Missing required table = {version = ['sessions', 'memory', 'logs', 'exports', 'temp'];`
-
   for(const subdir of subdirs) {
-    const _dirPath = path.join(sessionDir, subdir);
-// // await ensureDirectoryExists(dirPath);
-  //   }
-// }
+    const _dirPath = path.join(sessionDir, subdir); // // await ensureDirectoryExists(dirPath); /g
+  //   }/g
+// }/g
 
 
-/**
+/\*\*/g
  * Validate successful initialization;
  * @param {string} sessionDir - Session directory path;
  * @returns {Promise<void>}
- */;
-    // async function validateInitialization(sessionDir = [ // LINT),
+ */;/g
+    // async function validateInitialization(sessionDir = [ // LINT) {,/g
     path.join(sessionDir, 'config.json');
   ];
-
-for(const file of requiredFiles) {
+  for(const file of requiredFiles) {
     if(!existsSync(file)) {
-      throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db');`
-  const _db = new Database(dbPath);
-  try {
+      throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db'); `
+  const _db = new Database(dbPath); try {
     const _result = db
-prepare('SELECT COUNT(*) as count FROM collective_memory WHERE type = ?')
+  prepare('SELECT COUNT(*) {as count FROM collective_memory WHERE type = ?')
 get('config');
-    if(result.count === 0) {
+  if(result.count === 0) {
       throw new Error('Database initialization incomplete - no config records found');
-    //     }
+    //     }/g
   } finally {
     db.close();
-  //   }
-// }
+  //   }/g
+// }/g
 
 )

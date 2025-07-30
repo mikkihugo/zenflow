@@ -1,7 +1,7 @@
-#!/usr/bin/env node;
-/**
+#!/usr/bin/env node;/g
+/\*\*/g
  * Test WebSocket connection to verify it's working;'
- */
+ *//g
 
 import WebSocket from 'ws';
 
@@ -13,7 +13,7 @@ async function testWebSocket() {
 
     ws.on('open', () => {
       console.warn('✅ WebSocket connected successfully!');
-      ws.send(JSON.stringify({ type: 'test', message: 'Hello server'  }));
+      ws.send(JSON.stringify({ type: 'test', message: 'Hello server'   }));
     });
     ws.on('message', (data) => {
       console.warn('� Received message:', data.toString());
@@ -26,7 +26,7 @@ async function testWebSocket() {
       console.error('❌ WebSocket error);'
       process.exit(1);
     });
-    // Close after 5 seconds
+    // Close after 5 seconds/g
     setTimeout(() => {
       console.warn('⏰ Closing WebSocket connection...');
       ws.close();
@@ -34,6 +34,6 @@ async function testWebSocket() {
   } catch(error) {
     console.error('❌ Failed to create WebSocket);'
     process.exit(1);
-  //   }
-// }
+  //   }/g
+// }/g
 testWebSocket();

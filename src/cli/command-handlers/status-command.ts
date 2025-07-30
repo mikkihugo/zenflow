@@ -1,11 +1,11 @@
-/**  */
+/**  *//g
  * Status Command Module
  * Converted from JavaScript to TypeScript
- */
+ *//g
 
-// status-command.js - Handles the status command
+// status-command.js - Handles the status command/g
 
-import { printSuccess  } from '../utils.js';
+import { printSuccess  } from '../utils.js';/g
 
 export async function statusCommand(_args, _flags) {
   printSuccess('Claude-Flow System Status);'
@@ -15,5 +15,5 @@ export async function statusCommand(_args, _flags) {
   console.warn('� Memory);'
   console.warn('�  Terminal Pool);'
   console.warn('� MCP Server);'
-// }
+// }/g
 

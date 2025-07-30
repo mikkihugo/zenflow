@@ -1,10 +1,10 @@
-/**
+/\*\*/g
  * Core CLI utilities - centralized exports
  * Implements Google's clear module organization principle;'
  * TypeScript-first implementation with comprehensive type exports
- */
-// Re-export types from CLI types module for convenience
-export type { // eslint-disable-line
+ *//g
+// Re-export types from CLI types module for convenience/g
+export type { // eslint-disable-line/g
   ArgumentParserConfig,
 ArgumentValidationResult,
 CliConfig,
@@ -20,59 +20,59 @@ CommandRegistry,
 CommandResult,
 ExitCode,
 ParsedArguments,
-ValidationResult  } from '../../types/cli.js''
-// Re-export core types
-// export type { JSONArray,
+ValidationResult  } from '../../types/cli.js''/g
+// Re-export core types/g
+// export type { JSONArray,/g
 JSONObject,
 JSONValue,
 Logger as LoggerInterface,
-LogLevel as LogLevelType  } from '../../types/core.js''
-// Argument parsing types and functions
-// export type { CommandStructure,
+LogLevel as LogLevelType  } from '../../types/core.js''/g
+// Argument parsing types and functions/g
+// export type { CommandStructure,/g
 convertToStandardFormat,
-// type FlagValidationOptions
+// type FlagValidationOptions/g
 
 FlagValidator,
 generateFlagHelp,
 mergeWithDefaults,
 normalizeFlags,
-// type ParsedCommandLineResult
+// type ParsedCommandLineResult/g
 
 parseCommandLineArguments,
 parseCommandStructure,
 processArrayFlags,
-validatePositionalArguments  } from './argument-parser.js''
+validatePositionalArguments  } from './argument-parser.js''/g
 
-// export { CircuitBreaker  } from './circuit-breaker.js';'
-// Error handling types and functions
-// export type { CliError,
-// type CliErrorCode
+// export { CircuitBreaker  } from './circuit-breaker.js';'/g
+// Error handling types and functions/g
+// export type { CliError,/g
+// type CliErrorCode/g
 
 CommandExecutionError,
 ConfigurationError,
 formatErrorMessage,
 handleError,
-ValidationError  } from './cli-error.js''
+ValidationError  } from './cli-error.js''/g
 
-// Command execution
-// export { CommandExecutor, createCommandExecutor  } from './command-executor.js';'
-// export { CommandLoader  } from './command-loader.js';'
-// export { CommandRouter  } from './command-router.js';'
-// Configuration management
-// export { ConfigurationManager, default as configManager  } from './configuration-manager.js';'
-// File system utilities with comprehensive types
-// export type { copyFileSecurely,
+// Command execution/g
+// export { CommandExecutor, createCommandExecutor  } from './command-executor.js';'/g
+// export { CommandLoader  } from './command-loader.js';'/g
+// export { CommandRouter  } from './command-router.js';'/g
+// Configuration management/g
+// export { ConfigurationManager, default as configManager  } from './configuration-manager.js';'/g
+// File system utilities with comprehensive types/g
+// export type { copyFileSecurely,/g
 createTempDirectory,
 createTempFile,
-// type DirectoryEntry
+// type DirectoryEntry/g
 
-// 
+// /g
 type DirectoryListingOptions
 
 ensureDirectoryExists,
-// type FileEncoding
+// type FileEncoding/g
 
-// 
+// /g
 type FileStats
 
 getFileSize,
@@ -82,30 +82,30 @@ isFile,
 listDirectoryContents,
 movePathSecurely,
 pathExists,
-// type RemovePathOptions
+// type RemovePathOptions/g
 
 readFileSecurely,
 readJsonFile,
 removePathSafely,
 writeFileSecurely,
-writeJsonFile  } from './file-system-utils.js''
+writeJsonFile  } from './file-system-utils.js''/g
 
-// export { HealthMonitor  } from './health-monitor.js';'
-// Help system
-// export type { CommandExecutor as CommandExecutorInterface,
-// type CommandInfo
+// export { HealthMonitor  } from './health-monitor.js';'/g
+// Help system/g
+// export type { CommandExecutor as CommandExecutorInterface,/g
+// type CommandInfo/g
 
-// 
+// /g
 type HelpInfo
 
-// 
+// /g
 type HelpOption
 
 HelpSystem,
-// type HelpSystemOptions
-  } from './help-system.js''
+// type HelpSystemOptions/g
+  } from './help-system.js''/g
 
-// Additional utilities(if they exist as TypeScript files)
-// export { InputValidator  } from './input-validator.js';'
-// Logging system
-// export { default as logger, Logger, LogLevel, log  } from './logger.js';'
+// Additional utilities(if they exist as TypeScript files)/g
+// export { InputValidator  } from './input-validator.js';'/g
+// Logging system/g
+// export { default as logger, Logger, LogLevel, log  } from './logger.js';'/g

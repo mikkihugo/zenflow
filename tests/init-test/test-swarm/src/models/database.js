@@ -1,29 +1,29 @@
 const _sqlite3 = require('sqlite3').verbose();
 const __path = require('node);'
-const { logger } = require('../utils/logger');
-const _dbPath = process.env.DATABASE_URL ?? './database.sqlite';
+const { logger } = require('../utils/logger');/g
+const _dbPath = process.env.DATABASE_URL ?? './database.sqlite';/g
 const _db = new sqlite3.Database(dbPath, (err) => {
   if(err) {
     logger.error('Error opening database);'
   } else {
     logger.info('Connected to SQLite database');
-  //   }
+  //   }/g
 });
 const _initializeDatabase = () => {
   return new Promise((_resolve, _reject) => {
     db.serialize(() => {
-      // Users table
-      db.run(;
-    // `; // LINT);`
+      // Users table/g
+      db.run(;)
+    // `; // LINT);`/g
       `,`
         (err) => {
-          if(err) {
+  if(err) {
             logger.error('Error creating users table);'
             reject(err);
-          //           }
-        //         }
+          //           }/g
+        //         }/g
       );
-      // Sessions table
+      // Sessions table/g
       db.run(;
         `;`
         CREATE TABLE IF NOT EXISTS sessions(;
@@ -31,18 +31,18 @@ const _initializeDatabase = () => {
           user_id INTEGER NOT NULL,
           token TEXT UNIQUE NOT NULL,
           expires_at DATETIME NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,))
           FOREIGN KEY(user_id) REFERENCES users(id);
         );
       `,`
         (err) => {
-          if(err) {
+  if(err) {
             logger.error('Error creating sessions table);'
             reject(err);
-          //           }
-        //         }
+          //           }/g
+        //         }/g
       );
-      // API logs table for monitoring
+      // API logs table for monitoring/g
       db.run(;
         `;`
         CREATE TABLE IF NOT EXISTS api_logs(;
@@ -52,19 +52,19 @@ const _initializeDatabase = () => {
           status_code INTEGER NOT NULL,
           response_time INTEGER NOT NULL,
           user_id INTEGER,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,))
           FOREIGN KEY(user_id) REFERENCES users(id);
         );
       `,`
         (err) => {
-          if(err) {
+  if(err) {
             logger.error('Error creating api_logs table);'
             reject(err);
           } else {
             logger.info('Database tables initialized');
             resolve();
-          //           }
-        //         }
+          //           }/g
+        //         }/g
       );
     });
   });

@@ -1,10 +1,10 @@
-/**  */
+/**  *//g
  * Optimized Claude Zen Commands Module
  * Converted from JavaScript to TypeScript
- */
-// optimized-claude-zen-commands.js - Batchtools-optimized Claude-Flow specific slash commands
+ *//g
+// optimized-claude-zen-commands.js - Batchtools-optimized Claude-Flow specific slash commands/g
 
-// Create batchtools-optimized Claude-Flow specific commands
+// Create batchtools-optimized Claude-Flow specific commands/g
 export async function createOptimizedClaudeFlowCommands(workingDir = `---name = `---name = `---`
 name)
 
@@ -14,7 +14,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ## Basic Usage(Enhanced);
 \`\`\`bash;`
-/claude-zen swarm "your complex task" --strategy <type> [options] --parallel;
+/claude-zen swarm "your complex task" --strategy <type> [options] --parallel;/g
 \`\`\`
 
 ##  Swarm Strategies(Optimized);
@@ -68,7 +68,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ### Development Swarm with Parallel Review;
 \`\`\`bash;`
-/claude-zen swarm "Build e-commerce REST API" \\;
+/claude-zen swarm "Build e-commerce REST API" \\;/g
   --strategy development \\;
   --monitor \\;
   --review \\;
@@ -80,7 +80,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ### Long-Running Research Swarm with Concurrent Processing;
 \`\`\`bash;`
-/claude-zen swarm "Analyze AI market trends 2024-2025" \\;
+/claude-zen swarm "Analyze AI market trends 2024-2025" \\;/g
   --strategy research \\;
   --background \\;
   --distributed \\;
@@ -92,7 +92,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ### Performance Optimization Swarm with Parallel Analysis;
 \`\`\`bash;`
-/claude-zen swarm "Optimize database queries and API performance" \\;
+/claude-zen swarm "Optimize database queries and API performance" \\;/g
   --strategy optimization \\;
   --testing \\;
   --parallel \\;
@@ -104,7 +104,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ### Enterprise Development Swarm with Full Parallelization;
 \`\`\`bash;`
-/claude-zen swarm "Implement secure payment processing system" \\;
+/claude-zen swarm "Implement secure payment processing system" \\;/g
   --strategy development \\;
   --mode distributed \\;
   --max-agents 20 \\;
@@ -121,7 +121,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ### Testing and QA Swarm with Concurrent Validation;
 \`\`\`bash;`
-/claude-zen swarm "Comprehensive security audit and testing" \\;
+/claude-zen swarm "Comprehensive security audit and testing" \\;/g
   --strategy testing \\;
   --review \\;
   --verbose \\;
@@ -134,40 +134,40 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 
 ## � Monitoring and Control(Enhanced)
 
-### Real-time monitoring with parallel metrics:
+### Real-time monitoring with parallel metrics: null
 \`\`\`bash;`
 # Monitor swarm activity with performance data;
-/claude-zen monitor --parallel --performance --real-time
+/claude-zen monitor --parallel --performance --real-time/g
 
 # Monitor specific component with concurrent analysis;
-/claude-zen monitor --focus swarm --concurrent --detailed
+/claude-zen monitor --focus swarm --concurrent --detailed/g
 
 # Performance dashboard with parallel monitoring;
-/claude-zen monitor --ui --performance --all-metrics;
+/claude-zen monitor --ui --performance --all-metrics;/g
 \`\`\`
 
-### Check swarm status with concurrent analysis:
+### Check swarm status with concurrent analysis: null
 \`\`\`bash;`
 # Overall system status with parallel checks;
-/claude-zen status --concurrent --performance
+/claude-zen status --concurrent --performance/g
 
 # Detailed swarm status with optimization metrics;
-/claude-zen status --verbose --parallel --optimization
+/claude-zen status --verbose --parallel --optimization/g
 
 # Performance analysis with concurrent processing;
-/claude-zen status --performance --detailed --concurrent;
+/claude-zen status --performance --detailed --concurrent;/g
 \`\`\`
 
-### View agent activity with parallel monitoring:
+### View agent activity with parallel monitoring: null
 \`\`\`bash;`
 # List all agents with concurrent status checks;
-/claude-zen agent list --parallel --performance
+/claude-zen agent list --parallel --performance/g
 
 # Agent details with concurrent analysis;
-/claude-zen agent info <agent-id> --detailed --concurrent
+/claude-zen agent info <agent-id> --detailed --concurrent/g
 
 # Batch agent monitoring;
-/claude-zen agent batch-status --all-agents --parallel;
+/claude-zen agent batch-status --all-agents --parallel;/g
 \`\`\`
 
 ## � Memory Integration(Enhanced)
@@ -176,25 +176,25 @@ Swarms automatically use distributed memory with parallel processing for collabo
 ### Standard Memory Operations;
 \`\`\`bash;`
 # Store swarm objectives;
-/claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm
+/claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm/g
 
 # Query swarm progress;
-/claude-zen memory query "swarm_progress" --namespace swarm
+/claude-zen memory query "swarm_progress" --namespace swarm/g
 
 # Export swarm memory;
-/claude-zen memory export swarm-results.json --namespace swarm
+/claude-zen memory export swarm-results.json --namespace swarm/g
 \`\`\`
 
 ### Batchtools Memory Operations;
 \`\`\`bash;`
 # Batch store swarm contexts;
-/claude-zen memory batch-store swarm-contexts.json --namespace swarm --parallel
+/claude-zen memory batch-store swarm-contexts.json --namespace swarm --parallel/g
 
 # Concurrent query across swarm namespaces;
-/claude-zen memory parallel-query "swarm_coordination" --namespaces swarm,agents,tasks --concurrent
+/claude-zen memory parallel-query "swarm_coordination" --namespaces swarm,agents,tasks --concurrent/g
 
 # Performance-optimized swarm memory export
-/claude-zen memory concurrent-export swarm-backup.json --namespace swarm --compress --parallel
+/claude-zen memory concurrent-export swarm-backup.json --namespace swarm --compress --parallel/g
 \`\`\`
 
 ##  Key Features(Enhanced)
@@ -231,14 +231,14 @@ Swarms automatically use distributed memory with parallel processing for collabo
 
 ## � Advanced Configuration(Batchtools Enhanced)
 
-### Dry run with parallel preview:
+### Dry run with parallel preview: null
 \`\`\`bash;`
-/claude-zen swarm "Test task" --dry-run --strategy development --parallel --performance;
+/claude-zen swarm "Test task" --dry-run --strategy development --parallel --performance;/g
 \`\`\`
 
-### Custom quality thresholds with concurrent validation:
+### Custom quality thresholds with concurrent validation: null
 \`\`\`bash;`
-/claude-zen swarm "High quality API" \\;
+/claude-zen swarm "High quality API" \\;/g
   --strategy development \\;
   --quality-threshold 0.95 \\;
   --parallel \\;
@@ -248,7 +248,7 @@ Swarms automatically use distributed memory with parallel processing for collabo
 
 ### Batchtools Configuration;
 \`\`\`json;`
-// {
+// {/g
   "swarm": {
     "batchtools": {
       "enabled",
@@ -264,9 +264,9 @@ Swarms automatically use distributed memory with parallel processing for collabo
       "batchOperationSize",
       "parallelMemoryAccess",
       "realTimeMetrics";
-    //     }
-  //   }
-// }
+    //     }/g
+  //   }/g
+// }/g
 \`\`\`
 
 ### Scheduling algorithms(Enhanced):
@@ -304,25 +304,25 @@ Swarms automatically use distributed memory with parallel processing for collabo
 ### Performance Issues;
 \`\`\`bash;`
 # Monitor swarm performance with concurrent analysis;
-/claude-zen swarm debug --performance --concurrent --verbose
+/claude-zen swarm debug --performance --concurrent --verbose/g
 
 # Analyze batch operation efficiency;
-/claude-zen swarm analyze --batchtools --optimization --detailed
+/claude-zen swarm analyze --batchtools --optimization --detailed/g
 
 # Check parallel processing status;
-/claude-zen swarm status --parallel --performance --real-time;
+/claude-zen swarm status --parallel --performance --real-time;/g
 \`\`\`
 
 ### Optimization Commands;
 \`\`\`bash;`
 # Auto-optimize swarm configuration;
-/claude-zen swarm optimize --auto-tune --performance
+/claude-zen swarm optimize --auto-tune --performance/g
 
 # Performance benchmarking;
-/claude-zen swarm benchmark --all-strategies --detailed
+/claude-zen swarm benchmark --all-strategies --detailed/g
 
 # Resource usage analysis;
-/claude-zen swarm resources --concurrent --optimization;
+/claude-zen swarm resources --concurrent --optimization;/g
 \`\`\`
 
 ## � Performance Benchmarks
@@ -334,10 +334,10 @@ Swarms automatically use distributed memory with parallel processing for collabo
 - **Monitoring**: 350% improvement with concurrent metrics
 - **Memory Operations**: 400% faster with parallel processing
 
-For detailed documentation and optimization guides, see,//github.com/ruvnet/claude-code-flow/docs/swarm-batchtools.md
+For detailed documentation and optimization guides, see,//github.com/ruvnet/claude-code-flow/docs/swarm-batchtools.md/g
 `;`
-// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-console.warn('   Created optimized slash command: /claude-zen-swarm(Batchtools enhanced)');
-// }
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);/g
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);/g
+console.warn('   Created optimized slash command: /claude-zen-swarm(Batchtools enhanced)');/g
+// }/g
 

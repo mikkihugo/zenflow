@@ -1,11 +1,11 @@
-#!/usr/bin/env node
-/**
+#!/usr/bin/env node/g
+/\*\*/g
  * Create test documents for Claude Desktop access via MCP
- */
+ *//g
 
-const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
+const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');/g
 
-// Mock memory store
+// Mock memory store/g
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
@@ -13,35 +13,34 @@ class MockMemoryStore {
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    // return { id, size: value.length };
+    // return { id, size: value.length };/g
   }
   async retrieve(key, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
-    // return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;/g
   }
   async search(options = {}) { 
     const results = };
-    for(const [key, value] of this.data) {
+  for(const [key, value] of this.data) {
       if(options.pattern === '*' || key.includes(options.pattern || '')) {
-        results[key] = value;
-      }
+        results[key] = value; }
     }
-    // return results;
+    // return results; /g
   }
 }
 
-const memoryStore = new MockMemoryStore();
+const memoryStore = new MockMemoryStore() {;
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
 async function createTestDocuments() {
-  // Document 1: Architecture Decision Record
-// await docStack.createDocument('service-adr',
+  // Document 1: Architecture Decision Record/g
+// await docStack.createDocument('service-adr',/g
     'user-service',
-    'use-redis-for-sessions',
+    'use-redis-for-sessions',)
     `# ADR);`
-  // Document 2: API Documentation
-// // await docStack.createDocument('api-documentation',
+  // Document 2: API Documentation/g
+// // await docStack.createDocument('api-documentation',/g
     'payment-service',
     'payment-api-v2',
     `# Payment Service API v2.0`
@@ -49,10 +48,10 @@ async function createTestDocuments() {
 ## Overview
 RESTful API for payment processing operations including credit card payments, refunds, and payment status tracking.
 
-## Authentication
+## Authentication)
 All endpoints require Bearer token authentication);
-  // Document 3: Security Specification
-// // await docStack.createDocument(
+  // Document 3: Security Specification/g
+// // await docStack.createDocument(/g
     'security-spec',
     'auth-service',
     'oauth2-implementation',
@@ -65,7 +64,7 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
 
 ### 1. Token Security
 - Access tokens MUST have maximum 1-hour expiration
-- Refresh tokens MUST have maximum 30-day expiration
+- Refresh tokens MUST have maximum 30-day expiration)
 - All tokens MUST be cryptographically secure(256-bit entropy)
 - Tokens MUST be invalidated on logout
 

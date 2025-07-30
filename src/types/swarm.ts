@@ -1,13 +1,13 @@
-/**
+/\*\*/g
  * Swarm System Types;
  * Enhanced swarm orchestration with neural integration and advanced coordination;
- */
+ *//g
 
-import type { Identifiable, JSONObject, TypedEventEmitter, UUID  } from './core.js';
+import type { Identifiable, JSONObject, TypedEventEmitter, UUID  } from './core.js';/g
 
-// =============================================================================
-// SWARM CORE TYPES
-// =============================================================================
+// =============================================================================/g
+// SWARM CORE TYPES/g
+// =============================================================================/g
 
 export type SwarmTopology = 'mesh';
 | 'hierarchical'
@@ -22,8 +22,8 @@ export type SwarmStrategy = 'parallel';
 | 'specialized'
 | 'consensus'
 | 'competitive'
-// export type SwarmMode = 'ephemeral' | 'persistent' | 'hybrid' | 'auto-scaling' | 'on-demand';
-// export type SwarmStatus = 'initializing';
+// export type SwarmMode = 'ephemeral' | 'persistent' | 'hybrid' | 'auto-scaling' | 'on-demand';/g
+// export type SwarmStatus = 'initializing';/g
 | 'active'
 | 'busy'
 | 'scaling'
@@ -31,232 +31,232 @@ export type SwarmStrategy = 'parallel';
 | 'stopping'
 | 'stopped'
 | 'error'
-// export // interface SwarmConfig {
-//   // Basic configurationname = ============================================================================
-// // SWARM OBJECTIVE & TASKS
-// // =============================================================================
-// 
-// export interface SwarmObjective extends Identifiable {name = ============================================================================
-// // SWARM AGENTS
-// // =============================================================================
-// 
-// export interface SwarmAgent extends Identifiable {name = ============================================================================
-// // SWARM TASKS
-// // =============================================================================
-// 
-// export interface SwarmTask extends Identifiable {type = ============================================================================
-// // SWARM COORDINATION
-// // =============================================================================
-// 
-// export interface SwarmCoordinator extends Identifiable {type = ============================================================================
-// // SWARM PROGRESS & RESULTS
-// // =============================================================================
-// 
-// export interface SwarmProgress {totalTasks = ============================================================================
-// // SWARM METRICS
-// // =============================================================================
-// 
-// export interface SwarmMetrics {
-//   // Performance metricsthroughput = ============================================================================
-// // SWARM EVENTS
-// // =============================================================================
-// 
-// export interface SwarmEvents {
-//   // Lifecycle events
-//   'swarm-created': (swarm = > void;
-//   'swarm-started');
-// : (swarmId = > void
-// ('agent-left')
-// : (swarmId = > void
-// ('agent-assigned')
-// : (swarmId = > void
-// ('agent-completed')
-// : (swarmId = > void
-// ('agent-failed')
-// : (swarmId = > void
-// // Task events
-// ('task-created')
-// : (swarmId = > void
-// ('task-queued')
-// : (swarmId = > void
-// ('task-scheduled')
-// : (swarmId = > void
-// ('task-started')
-// : (swarmId = > void
-// ('task-progress')
-// : (swarmId = > void
-// ('task-completed')
-// : (swarmId = > void
-// ('task-failed')
-// : (swarmId = > void
-// ('task-timeout')
-// : (swarmId = > void
-// ('task-cancelled')
-// : (swarmId = > void
-// // Coordination events
-// ('coordination-started')
-// : (swarmId = > void
-// ('coordination-changed')
-// : (swarmId = > void
-// ('bottleneck-detected')
-// : (swarmId = > void
-// ('optimization-triggered')
-// : (swarmId = > void
-// ('scaling-triggered')
-// : (swarmId = > void
-// // Quality events
-// ('quality-check')
-// : (swarmId = > void
-// ('review-completed')
-// : (swarmId = > void
-// ('test-completed')
-// : (swarmId = > void
-// // Performance events
-// ('milestone-reached')
-// : (swarmId = > void
-// ('performance-warning')
-// : (swarmId = > void
-// ('resource-exhausted')
-// : (swarmId = > void
-// ('sla-violated')
-// : (swarmId = > void
-// // Learning events
-// ('pattern-discovered')
-// : (swarmId = > void
-// ('knowledge-shared')
-// : (swarmId = > void
-// ('adaptation-triggered')
-// : (swarmId = > void
-// ('improvement-identified')
-// : (swarmId = > void
-// [event = > void
-// // }
-// =============================================================================
-// SWARM INTERFACE
-// =============================================================================
+// export // interface SwarmConfig {/g
+//   // Basic configurationname = ============================================================================/g
+// // SWARM OBJECTIVE & TASKS/g
+// // =============================================================================/g
+// /g
+// export interface SwarmObjective extends Identifiable {name = ============================================================================/g
+// // SWARM AGENTS/g
+// // =============================================================================/g
+// /g
+// export interface SwarmAgent extends Identifiable {name = ============================================================================/g
+// // SWARM TASKS/g
+// // =============================================================================/g
+// /g
+// export interface SwarmTask extends Identifiable {type = ============================================================================/g
+// // SWARM COORDINATION/g
+// // =============================================================================/g
+// /g
+// export interface SwarmCoordinator extends Identifiable {type = ============================================================================/g
+// // SWARM PROGRESS & RESULTS/g
+// // =============================================================================/g
+// /g
+// export interface SwarmProgress {totalTasks = ============================================================================/g
+// // SWARM METRICS/g
+// // =============================================================================/g
+// /g
+// export interface SwarmMetrics {/g
+//   // Performance metricsthroughput = ============================================================================/g
+// // SWARM EVENTS/g
+// // =============================================================================/g
+// /g
+// export interface SwarmEvents {/g
+//   // Lifecycle events/g
+//   'swarm-created': (swarm = > void;/g
+//   'swarm-started');/g
+// : (swarmId = > void/g
+// ('agent-left')/g
+// : (swarmId = > void/g
+// ('agent-assigned')/g
+// : (swarmId = > void/g
+// ('agent-completed')/g
+// : (swarmId = > void/g
+// ('agent-failed')/g
+// : (swarmId = > void/g
+// // Task events/g
+// ('task-created')/g
+// : (swarmId = > void/g
+// ('task-queued')/g
+// : (swarmId = > void/g
+// ('task-scheduled')/g
+// : (swarmId = > void/g
+// ('task-started')/g
+// : (swarmId = > void/g
+// ('task-progress')/g
+// : (swarmId = > void/g
+// ('task-completed')/g
+// : (swarmId = > void/g
+// ('task-failed')/g
+// : (swarmId = > void/g
+// ('task-timeout')/g
+// : (swarmId = > void/g
+// ('task-cancelled')/g
+// : (swarmId = > void/g
+// // Coordination events/g
+// ('coordination-started')/g
+// : (swarmId = > void/g
+// ('coordination-changed')/g
+// : (swarmId = > void/g
+// ('bottleneck-detected')/g
+// : (swarmId = > void/g
+// ('optimization-triggered')/g
+// : (swarmId = > void/g
+// ('scaling-triggered')/g
+// : (swarmId = > void/g
+// // Quality events/g
+// ('quality-check')/g
+// : (swarmId = > void/g
+// ('review-completed')/g
+// : (swarmId = > void/g
+// ('test-completed')/g
+// : (swarmId = > void/g
+// // Performance events/g
+// ('milestone-reached')/g
+// : (swarmId = > void/g
+// ('performance-warning')/g
+// : (swarmId = > void/g
+// ('resource-exhausted')/g
+// : (swarmId = > void/g
+// ('sla-violated')/g
+// : (swarmId = > void/g
+// // Learning events/g
+// ('pattern-discovered')/g
+// : (swarmId = > void/g
+// ('knowledge-shared')/g
+// : (swarmId = > void/g
+// ('adaptation-triggered')/g
+// : (swarmId = > void/g
+// ('improvement-identified')/g
+// : (swarmId = > void/g
+// [event = > void/g
+// // }/g
+// =============================================================================/g
+// SWARM INTERFACE/g
+// =============================================================================/g
 
-// export // interface Swarm extends TypedEventEmitter<SwarmEvents>, Identifiable {
-//   // Configuration and metadata
-//   readonlyconfig = ============================================================================
-// // AUXILIARY TYPES
-// // =============================================================================
-// 
-// export interface SwarmIdentity {
-//   // id: UUID
-//   // name: string
-//   // type: string
-//   // version: string
-//   // createdAt: Date
-//   // creator: string
-// // }
-// export // interface CoordinationRequest {
-//   type: 'task_assignment' | 'resource_allocation' | 'conflict_resolution' | 'optimization';
-//   priority: 'low' | 'medium' | 'high' | 'urgent';
-//   // context: JSONObject
-//   // constraints: JSONObject
-//   // preferences: JSONObject
-// // }
-// export // interface CoordinationResponse {
-//   // success: boolean
-//   // action: JSONObject
-//   // reasoning: string
-//   confidence, // 0-1
-//   alternatives;
-//   // metadata: JSONObject
-// // }
-// export // interface Conflict {
-//   type: 'resource' | 'dependency' | 'priority' | 'constraint' | 'goal';
-//   // description: string
-//   parties;
-//   severity: 'low' | 'medium' | 'high' | 'critical';
-//   // context: JSONObject
-//   // constraints: JSONObject
-// // }
-// export // interface Resolution {
-//   // approach: string
-//   actions;
-//   // rationale: string
-//   // impact: JSONObject
-//   satisfaction: Record<UUID, number>; // 0-1 satisfaction per party
-//   durability, // 0-1 expected persistence
-// // }
-// export // interface SwarmHealthStatus {
-//   overall: 'healthy' | 'degraded' | 'critical' | 'failed';
-//   components: {
-//     // agents: ComponentHealth
-//     // coordination: ComponentHealth
-//     // resources: ComponentHealth
-//     // tasks: ComponentHealth
-//     // communication: ComponentHealth
-//   };
+// export // interface Swarm extends TypedEventEmitter<SwarmEvents>, Identifiable {/g
+//   // Configuration and metadata/g
+//   readonlyconfig = ============================================================================/g
+// // AUXILIARY TYPES/g
+// // =============================================================================/g
+// /g
+// export interface SwarmIdentity {/g
+//   // id: UUID/g
+//   // name: string/g
+//   // type: string/g
+//   // version: string/g
+//   // createdAt: Date/g
+//   // creator: string/g
+// // }/g
+// export // interface CoordinationRequest {/g
+//   type: 'task_assignment' | 'resource_allocation' | 'conflict_resolution' | 'optimization';/g
+//   priority: 'low' | 'medium' | 'high' | 'urgent';/g
+//   // context: JSONObject/g
+//   // constraints: JSONObject/g
+//   // preferences: JSONObject/g
+// // }/g
+// export // interface CoordinationResponse {/g
+//   // success: boolean/g
+//   // action: JSONObject/g
+//   // reasoning: string/g
+//   confidence, // 0-1/g
+//   alternatives;/g
+//   // metadata: JSONObject/g
+// // }/g
+// export // interface Conflict {/g
+//   type: 'resource' | 'dependency' | 'priority' | 'constraint' | 'goal';/g
+//   // description: string/g
+//   parties;/g
+//   severity: 'low' | 'medium' | 'high' | 'critical';/g
+//   // context: JSONObject/g
+//   // constraints: JSONObject/g
+// // }/g
+// export // interface Resolution {/g
+//   // approach: string/g
+//   actions;/g
+//   // rationale: string/g
+//   // impact: JSONObject/g
+//   satisfaction: Record<UUID, number>; // 0-1 satisfaction per party/g
+//   durability, // 0-1 expected persistence/g
+// // }/g
+// export // interface SwarmHealthStatus {/g
+//   overall: 'healthy' | 'degraded' | 'critical' | 'failed';/g
+//   components: {/g
+//     // agents: ComponentHealth/g
+//     // coordination: ComponentHealth/g
+//     // resources: ComponentHealth/g
+//     // tasks: ComponentHealth/g
+//     // communication: ComponentHealth/g
+//   };/g
   issues;
   recommendations;
   trends;
-// }
-// export // interface ComponentHealth {
-//   status: 'healthy' | 'warning' | 'critical' | 'failed';
-//   score, // 0-1
-//   // metrics: JSONObject
-//   // lastCheck: Date
-// // }
-// export // interface HealthIssue {
-//   severity: 'low' | 'medium' | 'high' | 'critical';
-//   // component: string
-//   // description: string
-//   // impact: string
-//   resolution;
-//   estimated_resolution_time, // minutes
-// // }
-// export // interface HealthTrend {
-//   // metric: string
-//   direction: 'improving' | 'stable' | 'degrading';
-//   rate, // percentage change
-//   confidence, // 0-1
-//   // projection: number
-// // }
-// export // interface OptimizationResult {
-//   improvements;
-//   // changes: JSONObject
-//   // expected_impact: JSONObject
-//   confidence, // 0-1
-//   implementation_time, // minutes
-//   // reversible: boolean
-// // }
-// export // interface LearningOutcome {
-//   type: 'pattern' | 'strategy' | 'best_practice' | 'anti_pattern' | 'optimization';
-//   // description: string
-//   evidence;
-//   confidence, // 0-1
-//   applicability;
-//   transferability, // 0-1
-// // }
-// export // interface SwarmReport {
-//   type: 'progress' | 'performance' | 'quality' | 'comprehensive';
-//   // swarmId: UUID
-//   // generatedAt: Date
-//   period: {
-//     // start: Date
-//     // end: Date
-//   };
-  // summary: JSONObject
-  // details: JSONObject
-  // metrics: JSONObject
+// }/g
+// export // interface ComponentHealth {/g
+//   status: 'healthy' | 'warning' | 'critical' | 'failed';/g
+//   score, // 0-1/g
+//   // metrics: JSONObject/g
+//   // lastCheck: Date/g
+// // }/g
+// export // interface HealthIssue {/g
+//   severity: 'low' | 'medium' | 'high' | 'critical';/g
+//   // component: string/g
+//   // description: string/g
+//   // impact: string/g
+//   resolution;/g
+//   estimated_resolution_time, // minutes/g
+// // }/g
+// export // interface HealthTrend {/g
+//   // metric: string/g
+//   direction: 'improving' | 'stable' | 'degrading';/g
+//   rate, // percentage change/g
+//   confidence, // 0-1/g
+//   // projection: number/g
+// // }/g
+// export // interface OptimizationResult {/g
+//   improvements;/g
+//   // changes: JSONObject/g
+//   // expected_impact: JSONObject/g
+//   confidence, // 0-1/g
+//   implementation_time, // minutes/g
+//   // reversible: boolean/g
+// // }/g
+// export // interface LearningOutcome {/g
+//   type: 'pattern' | 'strategy' | 'best_practice' | 'anti_pattern' | 'optimization';/g
+//   // description: string/g
+//   evidence;/g
+//   confidence, // 0-1/g
+//   applicability;/g
+//   transferability, // 0-1/g
+// // }/g
+// export // interface SwarmReport {/g
+//   type: 'progress' | 'performance' | 'quality' | 'comprehensive';/g
+//   // swarmId: UUID/g
+//   // generatedAt: Date/g
+//   period: {/g
+//     // start: Date/g
+//     // end: Date/g
+//   };/g
+  // summary: JSONObject/g
+  // details: JSONObject/g
+  // metrics: JSONObject/g
   recommendations;
   charts;
   appendices;
-// }
-// export // interface Chart {
-//   type: 'line' | 'bar' | 'pie' | 'scatter' | 'heatmap';
-//   // title: string
-//   // data: JSONObject
-//   // options: JSONObject
-// // }
-// export // interface ValidationResult {
-//   // valid: boolean
-//   errors;
-//   warnings;
-//   suggestions;
-// // }
+// }/g
+// export // interface Chart {/g
+//   type: 'line' | 'bar' | 'pie' | 'scatter' | 'heatmap';/g
+//   // title: string/g
+//   // data: JSONObject/g
+//   // options: JSONObject/g
+// // }/g
+// export // interface ValidationResult {/g
+//   // valid: boolean/g
+//   errors;/g
+//   warnings;/g
+//   suggestions;/g
+// // }/g
 
 
 }}}}}}}}))))))))))))))))))))))))))))))

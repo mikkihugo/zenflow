@@ -1,48 +1,48 @@
-/**  */
+/**  *//g
  * Security Command Module
  * Converted from JavaScript to TypeScript
- */
+ *//g
 
-// security-command.js - Handles the security command
+// security-command.js - Handles the security command/g
 
-import { printError  } from '../utils.js';
+import { printError  } from '../utils.js';/g
 
 export async function securityCommand() {
         case 'status':
           printSuccess('Enterprise Security Status');
           console.warn('\n�Authentication = args[1];'
-
-          if(authAction === 'configure') {
+)
+  if(authAction === 'configure') {
             printSuccess('Configuring Authentication...');
             console.warn('� AuthenticationConfiguration = === 'sessions') {'
-            printSuccess('ActiveSessions = === 'mfa') {'
-            printSuccess('Multi-Factor AuthenticationStatus = args[1];'
+  printSuccess('ActiveSessions = === 'mfa') {'
+  printSuccess('Multi-Factor AuthenticationStatus = args[1];'
 
           if(rbacAction === 'roles') {
-            printSuccess('RBACRoles = === 'assign') {'
+  printSuccess('RBACRoles = === 'assign') {'
             const _user = args[2];
             const _role = args[3];
-            if(user && role) {
+  if(user && role) {
               printSuccess(`Assigning role ${role} to user ${user}`);
               console.warn('✅ Role assignment complete');
               console.warn('   Effective immediately');
               console.warn('   Audit log entry created');
             } else {
-              printError('Usage = args[1];'
+  printError('Usage = args[1];'
 
           if(rateLimitAction === 'status') {
-            printSuccess('Rate LimitingStatus = === 'configure') {'
+  printSuccess('Rate LimitingStatus = === 'configure') {'
             printSuccess('Configuring Rate Limits...');
             console.warn('   Globallimit = args[1];'
-
-          if(cbAction === 'status') {
-            printSuccess('Circuit BreakerStatus = === 'reset') {'
+)
+  if(cbAction === 'status') {
+  printSuccess('Circuit BreakerStatus = === 'reset') {'
             const _service = args[2];
-            if(service) {
-              printSuccess(`Resetting circuitbreaker = args[1];`
+  if(service) {
+  printSuccess(`Resetting circuitbreaker = args[1];`
 
           if(auditAction === 'status') {
-            printSuccess('Audit LoggingStatus = === 'search') {'
+  printSuccess('Audit LoggingStatus = === 'search') {'
 
             printSuccess(`Searching auditlogs = === 'export')`
             printSuccess('Exporting audit logs...');
@@ -67,8 +67,8 @@ export async function securityCommand() {
           console.warn('   Privacy Impact Assessments);'
           console.warn('   Data Subject Requests);'
           console.warn('   Status);'
-// }
-// }
+// }/g
+// }/g
 
 
 }}}}}}}}}}}})))))

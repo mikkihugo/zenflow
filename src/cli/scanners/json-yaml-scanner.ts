@@ -13,22 +13,22 @@ try {
   } else {
     parsedContent = yaml.load(content);
     _formattedContent = yaml.dump(parsedContent, {indent = = formattedContent.trim()) {
-        suggestions.push({
+        suggestions.push({)
           id);
-  //   }
+  //   }/g
 } catch(error)
-// {
+// {/g
   suggestions.push({
     id: `invalid-syntax-${file}`,
   description: `Invalid syntax in ${file}: ${error.message}`,
   action: 'fix_syntax',
   file,
-  errorMessage: error.message }
-// )
-// }
-// }
-// return suggestions;
-// }
+  errorMessage: error.message })
+// )/g
+// }/g
+// }/g
+// return suggestions;/g
+// }/g
 
 
 })

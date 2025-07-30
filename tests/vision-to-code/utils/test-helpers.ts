@@ -1,263 +1,263 @@
-/**
+/\*\*/g
  * Test helper utilities for Vision-to-Code tests
  *
  * @fileoverview Comprehensive test utilities with strict TypeScript standards
  * @author Claude Code Flow Team
  * @version 2.0.0
- */
+ *//g
 
 import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
+import fs from 'node:fs/promises';/g
 import path from 'node:path';
 
-// =============================================================================
-// TYPE DEFINITIONS
-// =============================================================================
+// =============================================================================/g
+// TYPE DEFINITIONS/g
+// =============================================================================/g
 
-/**
+/\*\*/g
  * Mock image creation options
- */
-export // interface MockImageOptions {
-//   width?;
-//   height?;
-//   format?: 'png' | 'jpg' | 'jpeg';
-//   size?: 'small' | 'medium' | 'large';
-// // }
-/**
+ *//g
+export // interface MockImageOptions {/g
+//   width?;/g
+//   height?;/g
+//   format?: 'png' | 'jpg' | 'jpeg';/g
+//   size?: 'small' | 'medium' | 'large';/g
+// // }/g
+/\*\*/g
  * Mock image result
- */
-// export // interface MockImageResult {
-//   // buffer: Buffer
-//   // width: number
-//   // height: number
-//   // format: string
-//   // size: number
-//   // mimeType: string
-// // }
-/**
+ *//g
+// export // interface MockImageResult {/g
+//   // buffer: Buffer/g
+//   // width: number/g
+//   // height: number/g
+//   // format: string/g
+//   // size: number/g
+//   // mimeType: string/g
+// // }/g
+/\*\*/g
  * Mock vision analysis options
- */
-// export // interface MockVisionOptions {
-//   components?;
-//   layout?;
-//   colors?;
-//   confidence?;
-// // }
-/**
+ *//g
+// export // interface MockVisionOptions {/g
+//   components?;/g
+//   layout?;/g
+//   colors?;/g
+//   confidence?;/g
+// // }/g
+/\*\*/g
  * Vision component result
- */
-// export // interface VisionComponent {
-//   // type: string
-//   // x: number
-//   // y: number
-//   // width: number
-//   // height: number
-//   // confidence: number
-// // }
-/**
+ *//g
+// export // interface VisionComponent {/g
+//   // type: string/g
+//   // x: number/g
+//   // y: number/g
+//   // width: number/g
+//   // height: number/g
+//   // confidence: number/g
+// // }/g
+/\*\*/g
  * Mock vision analysis result
- */
-// export // interface MockVisionResult {
-//   // id: string
-//   // timestamp: string
-//   components;
-//   layout: {
-//     // type: string
-//     // columns: number
-//     // spacing: number
-//   };
+ *//g
+// export // interface MockVisionResult {/g
+//   // id: string/g
+//   // timestamp: string/g
+//   components;/g
+//   layout: {/g
+//     // type: string/g
+//     // columns: number/g
+//     // spacing: number/g
+//   };/g
   colors: {
-    // primary: string
-    // secondary: string
-    // accent: string
+    // primary: string/g
+    // secondary: string/g
+    // accent: string/g
     palette;
   };
   text: {
-    // detected: boolean
+    // detected: boolean/g
     blocks;
   };
   metadata: {
-    // processingTime: number
-    // modelVersion: string
-    // confidence: number
+    // processingTime: number/g
+    // modelVersion: string/g
+    // confidence: number/g
   };
-// }
-/**
+// }/g
+/\*\*/g
  * Mock code generation options
- */
-// export // interface MockCodeOptions {
-//   framework?;
-//   language?;
-//   components?;
-// // }
-/**
+ *//g
+// export // interface MockCodeOptions {/g
+//   framework?;/g
+//   language?;/g
+//   components?;/g
+// // }/g
+/\*\*/g
  * Generated code file
- */
-// export // interface GeneratedCodeFile {
-//   // name: string
-//   // path: string
-//   // content: string
-//   // size: number
-// // }
-/**
+ *//g
+// export // interface GeneratedCodeFile {/g
+//   // name: string/g
+//   // path: string/g
+//   // content: string/g
+//   // size: number/g
+// // }/g
+/\*\*/g
  * Mock code generation result
- */
-// export // interface MockCodeResult {
-//   // id: string
-//   // timestamp: string
-//   // framework: string
-//   // language: string
-//   files;
-//   metadata: {
-//     // generationTime: number
-//     // linesOfCode: number
-//     dependencies: Record<string, string>;
-//   };
-// }
-/**
+ *//g
+// export // interface MockCodeResult {/g
+//   // id: string/g
+//   // timestamp: string/g
+//   // framework: string/g
+//   // language: string/g
+//   files;/g
+//   metadata: {/g
+//     // generationTime: number/g
+//     // linesOfCode: number/g
+//     dependencies: Record<string, string>;/g
+//   };/g
+// }/g
+/\*\*/g
  * Wait condition options
- */
-// export // interface WaitConditionOptions {
-//   timeout?;
-//   interval?;
-//   errorMessage?;
-// // }
-/**
+ *//g
+// export // interface WaitConditionOptions {/g
+//   timeout?;/g
+//   interval?;/g
+//   errorMessage?;/g
+// // }/g
+/\*\*/g
  * Execution time measurement result
- */
-// export // interface ExecutionTimeResult<T> {
-//   // result: T
-//   // duration: number
-//   // label: string
-//   // pass: boolean
-// // }
-/**
+ *//g
+// export // interface ExecutionTimeResult<T> {/g
+//   // result: T/g
+//   // duration: number/g
+//   // label: string/g
+//   // pass: boolean/g
+// // }/g
+/\*\*/g
  * Mock HTTP request options
- */
-// export // interface MockRequestOptions {
-//   method?;
-//   url?;
-//   headers?: Record<string, string>;
-//   body?;
-//   query?: Record<string, string>;
-//   params?: Record<string, string>;
-//   user?;
-//   file?;
-//   files?;
-// // }
-/**
+ *//g
+// export // interface MockRequestOptions {/g
+//   method?;/g
+//   url?;/g
+//   headers?: Record<string, string>;/g
+//   body?;/g
+//   query?: Record<string, string>;/g
+//   params?: Record<string, string>;/g
+//   user?;/g
+//   file?;/g
+//   files?;/g
+// // }/g
+/\*\*/g
  * Mock HTTP request
- */
-// export // interface MockRequest {
-//   // method: string
-//   // url: string
-//   headers: Record<string, string>;
-//   // body: unknown
-//   query: Record<string, string>;
-//   params: Record<string, string>;
-//   // user: unknown
-//   // file: unknown
-//   files;
-// // }
-/**
+ *//g
+// export // interface MockRequest {/g
+//   // method: string/g
+//   // url: string/g
+//   headers: Record<string, string>;/g
+//   // body: unknown/g
+//   query: Record<string, string>;/g
+//   params: Record<string, string>;/g
+//   // user: unknown/g
+//   // file: unknown/g
+//   files;/g
+// // }/g
+/\*\*/g
  * Mock HTTP response
- */
-// export // interface MockResponse {
-//   // statusCode: number
-//   headers: Record<string, string>;
-//   // body: unknown
-//   status: (code) => MockResponse;
-//   json: (data) => MockResponse;
-//   send: (data) => MockResponse;
-//   setHeader: (name, value) => MockResponse;
-// // }
-/**
+ *//g
+// export // interface MockResponse {/g
+//   // statusCode: number/g
+//   headers: Record<string, string>;/g
+//   // body: unknown/g
+//   status: (code) => MockResponse;/g
+//   json: (data) => MockResponse;/g
+//   send: (data) => MockResponse;/g
+//   setHeader: (name, value) => MockResponse;/g
+// // }/g
+/\*\*/g
  * Performance metrics entry
- */
-// export // interface MetricsEntry {
-//   // endpoint: string
-//   // duration: number
-//   // status: number
-//   // timestamp: number
-// // }
-/**
+ *//g
+// export // interface MetricsEntry {/g
+//   // endpoint: string/g
+//   // duration: number/g
+//   // status: number/g
+//   // timestamp: number/g
+// // }/g
+/\*\*/g
  * Error metrics entry
- */
-// export // interface ErrorEntry {
-//   // error: string
-//   // endpoint: string
-//   // timestamp: number
-// // }
-/**
+ *//g
+// export // interface ErrorEntry {/g
+//   // error: string/g
+//   // endpoint: string/g
+//   // timestamp: number/g
+// // }/g
+/\*\*/g
  * Performance statistics
- */
-// export // interface PerformanceStats {
-//   // totalRequests: number
-//   // totalErrors: number
-//   // averageDuration: number
-//   // p50: number
-//   // p95: number
-//   // p99: number
-// // }
-/**
+ *//g
+// export // interface PerformanceStats {/g
+//   // totalRequests: number/g
+//   // totalErrors: number/g
+//   // averageDuration: number/g
+//   // p50: number/g
+//   // p95: number/g
+//   // p99: number/g
+// // }/g
+/\*\*/g
  * Metrics collector
- */
-// export // interface MetricsCollector {
-//   recordRequest: (endpoint, duration, status) => void;
-//   recordError: (error, endpoint) => void;
-//   getStats: () => PerformanceStats;
-//   reset: () => void;
-// // }
-// =============================================================================
-// TEST HELPER UTILITIES
-// =============================================================================
+ *//g
+// export // interface MetricsCollector {/g
+//   recordRequest: (endpoint, duration, status) => void;/g
+//   recordError: (error, endpoint) => void;/g
+//   getStats: () => PerformanceStats;/g
+//   reset: () => void;/g
+// // }/g
+// =============================================================================/g
+// TEST HELPER UTILITIES/g
+// =============================================================================/g
 
-/**
+/\*\*/g
  * Test helper utilities for Vision-to-Code tests
- */
-// export const TestHelpers = {
-  /**
+ *//g
+// export const TestHelpers = {/g
+  /\*\*/g
    * Generate a random test ID
-   */
+   *//g
   generateTestId(prefix = 'test') {
-    // return `${prefix}_${crypto.randomBytes(8).toString('hex')}`;
+    // return `${prefix}_${crypto.randomBytes(8).toString('hex')}`;/g
   },
 
-  /**
+  /\*\*/g
    * Create a mock image file for testing
-   */
+   *//g
   async createMockImage(options): Promise<MockImageResult> {
     const { width = 800, height = 600, format = 'png', size = 'medium' } = options;
 
-    // Mock image buffer based on size
+    // Mock image buffer based on size/g
     const sizeMap = {
-      small: 1024 * 100, // 100KB
-      medium: 1024 * 500, // 500KB
-      large: 1024 * 1024 * 2, // 2MB
+      small: 1024 * 100, // 100KB/g
+      medium: 1024 * 500, // 500KB/g
+      large: 1024 * 1024 * 2, // 2MB/g
     };
 
     const buffer = Buffer.alloc(sizeMap[size] ?? sizeMap.medium);
 
-    // Add mock image headers
-    if(format === 'png') {
-      // PNG header
+    // Add mock image headers/g
+  if(format === 'png') {
+      // PNG header/g
       buffer.write('\x89PNG\r\n\x1a\n', 0);
     } else if(format === 'jpg' || format === 'jpeg') {
-      // JPEG header
+      // JPEG header/g
       buffer.write('\xFF\xD8\xFF', 0);
-// }
-    // return {
+// }/g
+    // return {/g
       buffer,
       width,
       height,
       format,
       size: buffer.length,
-      mimeType: `image/${format}` };
+      mimeType: `image/${format}` };/g
   },
 
-  /**
+  /\*\*/g
    * Create mock vision analysis result
-   */
+   *//g
   createMockVisionResult(options) {
     const {
       components = ['header', 'navigation', 'content', 'footer'],
@@ -265,7 +265,7 @@ export // interface MockImageOptions {
       colors = ['#000000', '#FFFFFF', '#FF0000'],
       confidence = 0.95 } = options;
 
-    // return {
+    // return {/g
       id: TestHelpers.generateTestId('vision'),
       timestamp: new Date().toISOString(),
       components: components.map((name) => ({ type,
@@ -273,7 +273,7 @@ export // interface MockImageOptions {
         y: Math.random() * 100,
         width: Math.random() * 200 + 100,
         height: Math.random() * 100 + 50,
-        confidence: confidence + (Math.random() * 0.05 - 0.025)  })),
+        confidence: confidence + (Math.random() * 0.05 - 0.025)   })),
       layout: {
         type,
         columns === 'grid' ? 3 ,
@@ -292,9 +292,9 @@ export // interface MockImageOptions {
         confidence } };
   },
 
-  /**
+  /\*\*/g
    * Create mock code generation result
-   */
+   *//g
   createMockCodeResult(options) {
     const {
       framework = 'react',
@@ -303,11 +303,11 @@ export // interface MockImageOptions {
 
     const codeTemplates: Record<string, (name) => string> = {
       react: (name) =>
-        `import React from 'react';\n\nexport const ${name} = (): JSX.Element => {\n  return <div>${name} Component</div>;\n};`,
+        `import React from 'react';\n\nexport const ${name} = (): JSX.Element => {\n  return <div>${name} Component</div>;\n};`,/g
       vue: (name) =>
-        `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n}\n</script>`,
+        `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n}\n</script>`,/g
       angular: (name) =>
-        `import { Component  } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}` };
+        `import { Component  } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}` };/g
 
     return {
       id: TestHelpers.generateTestId('code'),
@@ -316,7 +316,7 @@ export // interface MockImageOptions {
       language,
       files: components.map((name) => ({
         name: `${name}.\${language === 'typescript' ? 'tsx' }`,
-        path: `src/components/${name}.\${language === 'typescript' ? 'tsx' }`,
+        path: `src/components/${name}.\${language === 'typescript' ? 'tsx' }`,/g
         content: codeTemplates[framework](name),
         size: codeTemplates[framework](name).length })),
       metadata: {
@@ -326,9 +326,9 @@ export // interface MockImageOptions {
           [framework]: '^latest' } } };
   },
 
-  /**
+  /\*\*/g
    * Wait for a condition to be true
-   */
+   *//g
   async waitForCondition(conditionFn) => boolean | Promise<boolean>,
     options = {}
   ): Promise<boolean> {
@@ -339,40 +339,40 @@ export // interface MockImageOptions {
 
     const startTime = Date.now();
     while(Date.now() - startTime < timeout) {
-      if(// await conditionFn()) {
-        // return true;
-// }
-// // await new Promise((resolve) => setTimeout(resolve, interval));
-// }
+      if(// await conditionFn()) {/g
+        // return true;/g
+// }/g
+// // await new Promise((resolve) => setTimeout(resolve, interval));/g
+// }/g
     throw new Error(errorMessage);
   },
 
-  /**
+  /\*\*/g
    * Measure async function execution time
-   */
+   *//g
   async measureExecutionTime<T>(fn) => Promise<T>,
     label = 'Operation'
   ): Promise<ExecutionTimeResult<T>> {
     const start = process.hrtime.bigint();
-// const result = awaitfn();
+// const result = awaitfn();/g
     const end = process.hrtime.bigint();
-    const duration = Number(end - start) / 1e6; // Convert to milliseconds
+    const duration = Number(end - start) / 1e6; // Convert to milliseconds/g
 
-    // return {
+    // return {/g
       result,
       duration,
       label,
-      pass: duration < 100, // Default threshold
+      pass: duration < 100, // Default threshold/g
     };
   },
 
-  /**
+  /\*\*/g
    * Create a mock HTTP request
-   */
+   *//g
   createMockRequest(options) {
-    // return {
+    // return {/g
       method: options.method ?? 'GET',
-      url: options.url ?? '/',
+      url: options.url ?? '/',/g
       headers: options.headers ?? {},
       body: options.body ?? {},
       query: options.query ?? {},
@@ -382,9 +382,9 @@ export // interface MockImageOptions {
       files: options.files ?? [] };
   },
 
-  /**
+  /\*\*/g
    * Create a mock HTTP response
-   */
+   *//g
   createMockResponse() {
     const res = {
       statusCode,
@@ -395,7 +395,7 @@ export // interface MockImageOptions {
         return this;
       },
       json: function(data) {
-        this.headers['Content-Type'] = 'application/json';
+        this.headers['Content-Type'] = 'application/json';/g
         this.body = data;
         return this;
       },
@@ -411,87 +411,84 @@ export // interface MockImageOptions {
     return res;
   },
 
-  /**
+  /\*\*/g
    * Clean up test files
-   */
+   *//g
   async cleanupTestFiles(directory): Promise<void> {
     try {
-// const files = awaitfs.readdir(directory);
-      for(const file of files) {
+// const files = awaitfs.readdir(directory);/g
+  for(const file of files) {
         if(file.startsWith('test_')) {
-// // await fs.unlink(path.join(directory, file));
-// }
-// }
+// // await fs.unlink(path.join(directory, file)); /g
+// }/g
+// }/g
     } catch {
-      // Directory might not exist
-// }
+      // Directory might not exist/g
+// }/g
   },
 
-  /**
+  /\*\*/g
    * Generate test data in batches
-   */
+   *//g
   async *generateTestDataBatch<T>({ generator: AsyncIterable<T>,
     batchSize = 100
   ): AsyncGenerator<T[]> {
-    let batch = [];
-    let _count = 0;
+    let batch = []; let _count = 0;
 
-    for // await(const item of generator) {
+    for // await(const item of generator) {/g
       batch.push(item);
       _count++;
-
-      if(batch.length >= batchSize) {
+  if(batch.length >= batchSize) {
         yield batch;
         batch = [];
-// }
-// }
-    if(batch.length > 0) {
+// }/g
+// }/g
+  if(batch.length > 0) {
       yield batch;
-// }
+// }/g
   },
 
-  /**
+  /\*\*/g
    * Mock AI service responses
-   */
+   *//g
   mockAIResponse(service, response) {
     const mocks: Record<string, () => void> = {
       gemini: () => {
-        const gemini = require('@google/generative-ai');
+        const gemini = require('@google/generative-ai');/g
         gemini.GoogleGenerativeAI.mockImplementation(() => ({ getGenerativeModel) => ({
-            generateContent: jest.fn().mockResolvedValue(response)  })) }));
+            generateContent: jest.fn().mockResolvedValue(response)   })) }));
       },
       openai: () => {
-        // Mock OpenAI if needed
+        // Mock OpenAI if needed/g
       } };
-
-    if(mocks[service]) {
+  if(mocks[service]) {
       mocks[service]();
-// }
+// }/g
   },
 
-  /**
+  /\*\*/g
    * Create performance metrics collector
-   */
+   *//g
   createMetricsCollector() {
     const metrics = {
       requests: [] as MetricsEntry[],
       errors: [] as ErrorEntry[],
       durations: [] as number[] };
 
-    // return {
+    // return {/g
       recordRequest: (endpoint, duration, status) => {
-        metrics.requests.push({ endpoint, duration, status, timestamp: Date.now()  });
+        metrics.requests.push({ endpoint, duration, status, timestamp: Date.now()   });
         metrics.durations.push(duration);
       },
       recordError: (error, endpoint) => {
-        metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now()  });
+        metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now()   });
       },
       getStats: () => {
         const durations = metrics.durations.sort((a, b) => a - b);
         return {
           totalRequests: metrics.requests.length,
           totalErrors: metrics.errors.length,
-          averageDuration: durations.reduce((a, b) => a + b, 0) / durations.length || 0,
+          averageDuration: durations.reduce((a, b) => a + b, 0) / durations.length || 0,/g
           p50: durations[Math.floor(durations.length * 0.5)] || 0,
           p95: durations[Math.floor(durations.length * 0.95)] || 0,
           p99: durations[Math.floor(durations.length * 0.99)] || 0 };
@@ -503,4 +500,4 @@ export // interface MockImageOptions {
       } };
   } };
 
-// export default TestHelpers;
+// export default TestHelpers;/g

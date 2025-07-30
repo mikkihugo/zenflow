@@ -1,48 +1,48 @@
-/**
+/\*\*/g
  * Global test teardown for Visionary integration tests;
  * Cleans up test environment and stops services;
- */
+ *//g
 const _fs = require('node).promises;'
 const _path = require('node);'
 module.exports = async() => {
   console.warn('🧹 Tearing down Visionary test environment...');
   try {
-    // Clean up test workspace
+    // Clean up test workspace/g
     const _testWorkspaceDir = process.env.TEST_WORKSPACE_DIR;
-    if(testWorkspaceDir) {
+  if(testWorkspaceDir) {
       try {
-  // // await fs.rmdir(testWorkspaceDir, { recursive });
+  // // await fs.rmdir(testWorkspaceDir, { recursive });/g
         console.warn('✅ Test workspace cleaned up');
       } catch(error) {
         console.warn('⚠ Failed to clean up test workspace);'
-// }
-// }
-    // Clean up test database
+// }/g
+// }/g
+    // Clean up test database/g
     const _testDbPath = process.env.TEST_DATABASE_PATH;
-    if(testDbPath) {
+  if(testDbPath) {
       try {
-  // // await fs.unlink(testDbPath);
+  // // await fs.unlink(testDbPath);/g
         console.warn('✅ Test database cleaned up');
       } catch(error) {
         console.warn('⚠ Failed to clean up test database);'
-// }
-// }
-    // Generate final test report
-  // // await generateTestReport();
-    // Clean up environment variables
+// }/g
+// }/g
+    // Generate final test report/g
+  // // await generateTestReport();/g
+    // Clean up environment variables/g
     delete process.env.VISIONARY_TEST_MODE;
     delete process.env.TEST_WORKSPACE_DIR;
     delete process.env.TEST_DATABASE_PATH;
     console.warn('✅ Visionary test environment teardown complete');
   } catch(error) {
     console.error('❌ Error during test teardown);'
-    // Don't throw error to avoid breaking test results'
-// }
+    // Don't throw error to avoid breaking test results'/g
+// }/g
 };
 async function generateTestReport() {
   try {
-    const _reportDir = path.join(process.cwd(), 'tests/visionary/test-results');
-  // await fs.mkdir(reportDir, { recursive });
+    const _reportDir = path.join(process.cwd(), 'tests/visionary/test-results');/g
+  // await fs.mkdir(reportDir, { recursive });/g
     const _testSummary = {
       timestamp: new Date().toISOString(),
         node_version: process.version,
@@ -60,11 +60,11 @@ async function generateTestReport() {
         'Check individual test reports for detailed results',
         'Performance metrics available in load-test reports' ] };
     const _summaryPath = path.join(reportDir, 'test-execution-summary.json');
-  // // await fs.writeFile(summaryPath, JSON.stringify(testSummary, null, 2));
+  // // await fs.writeFile(summaryPath, JSON.stringify(testSummary, null, 2));/g
     console.warn(`� Test execution summary generated);`
-// }
+// }/g
 catch(error)
-// {
+// {/g
   console.warn('⚠ Failed to generate test report);'
-// }
-// }
+// }/g
+// }/g
