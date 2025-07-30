@@ -33,75 +33,82 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   // === STRATEGIC VISIONS ===
   // High-level strategic visions that drive product development
   'visions-create': {
-    description: 'Create new strategic vision',;
-category: 'strategic',;
-priority: 1,;
-{
-  cli: true,;
-  enabled: true, endpoint;
-  : '/api/visions', method: 'POST' ,
-  tui: true,
-}
-,
-storage: 'visions',
-{
-  required: ['title', 'description'];
-}
-,
-},
-('visions-list')
-:
-{
-  description: 'List all strategic visions',;
-  category: 'strategic',;
-  priority: 1,;
-  cli: true,;
-  enabled: true, endpoint;
-  : '/api/visions', method: 'GET' ,
-  tui: true,
-  ,
-  storage: 'visions',
-}
-,
-// === FOUNDATIONAL ARCHITECTURE DECISIONS ===
-// ADRs are cross-cutting architectural principles that inform ALL other work
-('adrs-create')
-:
-{
-  description: 'Create Architecture Decision Record',;
-  category: 'architecture',;
-  priority: 2,;
-  cli: true,;
-  enabled: true, endpoint;
-  : '/api/adrs', method: 'POST' ,
-  tui: true,
-  ,
-  storage: 'adrs',
-  required: ['title', 'status', 'context'] ,
-}
-,
-('adrs-generate')
-:
-{
-  description: 'Auto-generate ADR from context',;
-  category: 'architecture',;
-  priority: 2,;
-  cli: true,;
-  enabled: true, endpoint;
-  : '/api/adrs/generate', method: 'POST' ,
-  tui: false,
-  ,
+    description: 'Create new strategic vision',
+    category: 'strategic',
+    priority: 1,
+    interfaces: {
+      cli: true,
+      web: {
+        enabled: true,
+        endpoint: '/api/visions',
+        method: 'POST',
+      },
+      tui: true,
+    },
+    storage: 'visions',
+    validation: {
+      required: ['title', 'description'],
+    },
+  },
+  'visions-list': {
+    description: 'List all strategic visions',
+    category: 'strategic',
+    priority: 1,
+    interfaces: {
+      cli: true,
+      web: {
+        enabled: true,
+        endpoint: '/api/visions',
+        method: 'GET',
+      },
+      tui: true,
+    },
+    storage: 'visions',
+  },
+  // === FOUNDATIONAL ARCHITECTURE DECISIONS ===
+  // ADRs are cross-cutting architectural principles that inform ALL other work
+  'adrs-create': {
+    description: 'Create Architecture Decision Record',
+    category: 'architecture',
+    priority: 2,
+    interfaces: {
+      cli: true,
+      web: {
+        enabled: true,
+        endpoint: '/api/adrs',
+        method: 'POST',
+      },
+      tui: true,
+    },
+    storage: 'adrs',
+    validation: {
+      required: ['title', 'status', 'context'],
+    },
+  },
+  'adrs-generate': {
+    description: 'Auto-generate ADR from context',
+    category: 'architecture',
+    priority: 2,
+    interfaces: {
+      cli: true,
+      web: {
+        enabled: true,
+        endpoint: '/api/adrs/generate',
+        method: 'POST',
+      },
+      tui: false,
+    },
   required: ['context'] ,
 }
 ,
 // === STRATEGIC PLANNING ===
-('roadmaps-create')
+'roadmaps-create'
 :
 {
-  description: 'Create strategic roadmap',;
-  category: 'planning',;
-  priority: 1,;
-  cli: true,;
+  description: 'Create strategic roadmap',
+  category: 'planning',
+  priority: 1,
+  cli: true,
   enabled: true, endpoint;
   : '/api/roadmaps', method: 'POST' ,
   tui: true,
@@ -111,13 +118,13 @@ storage: 'visions',
 }
 ,
 // === LARGE INITIATIVES ===
-('epics-create')
+'epics-create'
 :
 {
-  description: 'Create epic initiative',;
-  category: 'planning',;
-  priority: 2,;
-  cli: true,;
+  description: 'Create epic initiative',
+  category: 'planning',
+  priority: 2,
+  cli: true,
   enabled: true, endpoint;
   : '/api/epics', method: 'POST' ,
   tui: true,
@@ -127,13 +134,13 @@ storage: 'visions',
 }
 ,
 // === SPECIFIC CAPABILITIES ===
-('features-create')
+'features-create'
 :
 {
-  description: 'Create feature specification',;
-  category: 'development',;
-  priority: 3,;
-  cli: true,;
+  description: 'Create feature specification',
+  category: 'development',
+  priority: 3,
+  cli: true,
   enabled: true, endpoint;
   : '/api/features', method: 'POST' ,
   tui: true,
@@ -143,13 +150,13 @@ storage: 'visions',
 }
 ,
 // === EXTENDED USER STORIES WITH SPECIFICATIONS ===
-('prds-create')
+'prds-create'
 :
 {
-  description: 'Create Product Requirement Document',;
-  category: 'product',;
-  priority: 3,;
-  cli: true,;
+  description: 'Create Product Requirement Document',
+  category: 'product',
+  priority: 3,
+  cli: true,
   enabled: true, endpoint;
   : '/api/prds', method: 'POST' ,
   tui: true,
@@ -159,13 +166,13 @@ storage: 'visions',
 }
 ,
 // === IMPLEMENTATION WORK ===
-('tasks-create')
+'tasks-create'
 :
 {
-  description: 'Create implementation task',;
-  category: 'development',;
-  priority: 4,;
-  cli: true,;
+  description: 'Create implementation task',
+  category: 'development',
+  priority: 4,
+  cli: true,
   enabled: true, endpoint;
   : '/api/tasks', method: 'POST' ,
   tui: true,
@@ -175,13 +182,13 @@ storage: 'visions',
 }
 ,
 // === MULTI-SERVICE COORDINATION ===
-('coordination-status')
+'coordination-status'
 :
 {
-  description: 'Check coordination system status',;
-  category: 'system',;
-  priority: 1,;
-  cli: true,;
+  description: 'Check coordination system status',
+  category: 'system',
+  priority: 1,
+  cli: true,
   enabled: true, endpoint;
   : '/api/coordination/status', method: 'GET' ,
   tui: true,
@@ -189,13 +196,13 @@ storage: 'visions',
 }
 ,
 // === SWARM INTELLIGENCE ===
-('swarms-create')
+'swarms-create'
 :
 {
-  description: 'Create intelligent swarm',;
-  category: 'ai',;
-  priority: 2,;
-  cli: true,;
+  description: 'Create intelligent swarm',
+  category: 'ai',
+  priority: 2,
+  cli: true,
   enabled: true, endpoint;
   : '/api/swarms', method: 'POST' ,
   tui: false,
@@ -205,13 +212,13 @@ storage: 'visions',
 }
 ,
 // === META REGISTRY SYSTEM ===
-('meta-registry')
+'meta-registry'
 :
 {
-  description: 'Access meta registry information',;
-  category: 'system',;
-  priority: 1,;
-  cli: true,;
+  description: 'Access meta registry information',
+  category: 'system',
+  priority: 1,
+  cli: true,
   enabled: true, endpoint;
   : '/api/meta', method: 'GET' ,
   tui: true,
@@ -221,10 +228,10 @@ storage: 'visions',
 }
 // === METADATA ===
 export const SCHEMA_METADATA: SchemaMetadata = {
-  version: '1.0.0',;
-lastUpdated: new Date().toISOString(),;
-categories: ['strategic', 'architecture', 'planning', 'development', 'product', 'system', 'ai'],;
-totalCommands: Object.keys(CLAUDE_ZEN_SCHEMA).length,;
+  version: '1.0.0',
+lastUpdated: new Date().toISOString(),
+categories: ['strategic', 'architecture', 'planning', 'development', 'product', 'system', 'ai'],
+totalCommands: Object.keys(CLAUDE_ZEN_SCHEMA).length,
 }
 /**
  * Get commands by category;
@@ -254,7 +261,7 @@ export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
  * Validate command arguments;
  */
 export function validateCommandArgs(
-  commandName: string,;
+  commandName: string,
 args: Record<string, any>;
 ):
 {
@@ -282,9 +289,9 @@ args: Record<string, any>;
         }
       }
       return {
-    valid: missing.length === 0 && errors.length === 0,;
-      // missing,; // LINT: unreachable code removed
-      errors,;
+    valid: missing.length === 0 && errors.length === 0,
+      // missing, // LINT: unreachable code removed
+      errors,
     }
   }
   /**
@@ -303,33 +310,33 @@ args: Record<string, any>;
     }
 ;
     paths[endpoint][method.toLowerCase()] = {
-      summary: cmdConfig.description,;
-      tags: [cmdConfig.category],;
+      summary: cmdConfig.description,
+      tags: [cmdConfig.category],
         '200': 
-          description: 'Success',;
-            'application/json': type: 'object' ,;,;,;,;,;
+          description: 'Success',
+            'application/json': type: 'object' ,,,,,
     };
 ;
     if (cmdConfig.validation?.required) {
       paths[endpoint][method.toLowerCase()].requestBody = {
-        required: true,;
+        required: true,
           'application/json': 
-              type: 'object',;
-              required: cmdConfig.validation.required,;
+              type: 'object',
+              required: cmdConfig.validation.required,
               properties: cmdConfig.validation.required.reduce((props: unknown, field: string) => {
                 props[field] = { type: 'string' };
                 return props;
-    //   // LINT: unreachable code removed}, {}),;
-            },;,;,;;
+    //   // LINT: unreachable code removed}, {}),
+            },,,;
     }
   }
   )
   return {
-    openapi: '3.0.0',;
+    openapi: '3.0.0',
   // info: { // LINT: unreachable code removed
-  title: 'Claude Zen API',;
-  version: SCHEMA_METADATA.version,;
-  description: 'Auto-generated API from Claude Zen Schema',;
+  title: 'Claude Zen API',
+  version: SCHEMA_METADATA.version,
+  description: 'Auto-generated API from Claude Zen Schema',
 }
 ,
 paths,
