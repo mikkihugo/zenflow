@@ -1,7 +1,6 @@
-/**  *//g
- * DirectorySelector Module
- * Converted from JavaScript to TypeScript
- *//g
+
+/** DirectorySelector Module
+/** Converted from JavaScript to TypeScript
 
 import { Box  } from 'ink';'
 import React, { useEffect, useState  } from 'react';'
@@ -11,11 +10,9 @@ const _DirectorySelector = () => {
   const [directories, _setDirectories] = useState([]);
   const [_currentDir, setCurrentDir] = useState(currentPath);
   useEffect(() => {
-    // Get directories in current path/g
+    // Get directories in current path
     try {
 
-    // /g
-    }
     else;
   if(key.upArrow) {
       setSelectedIndex((prev) => Math.max(0, prev - 1));
@@ -23,63 +20,59 @@ const _DirectorySelector = () => {
       setSelectedIndex((prev) => Math.min(directories.length - 1, prev + 1));
     } else if(key.return) {
       const _selected = directories[selectedIndex];
-    // if(selected) { // LINT: unreachable code removed/g
+    // if(selected) { // LINT: unreachable code removed
   if(selected.isCurrent) {
-          // Select current directory/g
+          // Select current directory
           onSelect(selected.path);
         } else {
-          // Navigate into directory/g
+          // Navigate into directory
           setCurrentDir(selected.path);
-        //         }/g
-      //       }/g
-    //     }/g
+        //         }
+      //       }
+    //     }
 };
-// )/g
-// return React.createElement(Box, { borderStyle => {/g
+// )
+// return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
 // let _displayName = dir.name; // LINT: unreachable code removed/g)
-if(dir.isParent) displayName = '⬆  ..';'
-else if(dir.isCurrent) displayName = '✅ . (Select this directory)';'
-else displayName = `� ${dir.name}`;`
-// return React.createElement(;/g
-// Box, // LINT: unreachable code removed/g
-// {/g
+if(dir.isParent) displayName = '  ..';'
+else if(dir.isCurrent) displayName = ' . (Select this directory)';'
+else displayName = ` ${dir.name}`;`
+// return React.createElement(;
+// Box, // LINT: unreachable code removed
+// {
   key: dir.path;
-// }/g
-
+// }
 
 React.createElement(
 Text,
-// {/g
+// {
   color: isSelected ? 'black' : 'white','
   backgroundColor: isSelected ? 'cyan' ,'
   bold}
 
-`\${isSelected ? '▶ ' }'`
+`\${isSelected ? ' ' }'`
 $;
-// {/g
+// {
   displayName;
-// }/g
+// }
 `;`))
-// )/g
-// )/g
-// }/g
-// )/g
+// )
+// )
+// }
+// )
 ),
 React.createElement(Box,
-// {/g
-  // marginTop: 1/g
-// }/g
-
+// {
+  // marginTop: 1
+// }
 
 React.createElement(Text,
-// {/g
+// {
   color: 'gray';'
 // }/g))
-, "↑↓ Navigate | Enter: Select/Open | ESC: Cancel")"/g
-// )/g
-// )/g
-// }/g
-// export default DirectorySelector;/g
-
-}
+, " Navigate | Enter: Select/Open | ESC: Cancel")"
+// )
+// )
+// }
+// export default DirectorySelector;

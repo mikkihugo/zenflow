@@ -1,67 +1,66 @@
-/**  *//g
- * Render Adapter - Unified rendering for TUI and Web
- * Auto-detects environment and renders components appropriately
- *//g
+
+/** Render Adapter - Unified rendering for TUI and Web
+/** Auto-detects environment and renders components appropriately
 
 import React from 'react';'
 
-// Environment detection/g
-export const isWeb = () => typeof window !== 'undefined'; // eslint-disable-line'/g
+// Environment detection
+export const isWeb = () => typeof window !== 'undefined'; // eslint-disable-line
 export const isTUI = () => !isWeb() && process.stdout?.isTTY;
 
-// Conditional imports based on environment/g
+// Conditional imports based on environment
 const _inkComponents = {};
 const _webComponents = {};
 if(isTUI()) {
-  // Dynamic import for TUI environment/g
+  // Dynamic import for TUI environment
   try {
-// const _ink = awaitimport('ink');'/g
+// const _ink = awaitimport('ink');'
     inkComponents = ink;
-  } catch(/* _error */) {/g
+  } catch(/* _error */) {
     console.warn('Ink not available, falling back to console output');'
-  //   }/g
+  //   }
 } else if(isWeb()) {
-  // Dynamic import for web environment/g
+  // Dynamic import for web environment
   try {
-// const _reactDOM = awaitimport('react-dom');'/g
+// const _reactDOM = awaitimport('react-dom');'
     webComponents = { reactDOM };
-  } catch(/* _error */) {/g
+  } catch(/* _error */) {
     console.warn('React DOM not available');'
-  //   }/g
-// }/g
-/**  *//g
- * Universal Box component - works in both TUI and Web
- *//g
-// export const UniversalBox = () => {/g
+  //   }
+// }
+
+/** Universal Box component - works in both TUI and Web
+
+// export const UniversalBox = () => {
   if(isTUI() && inkComponents.Box) {
-    // Ink Box for terminal/g
+    // Ink Box for terminal
     return React.createElement(inkComponents.Box, props, children);
-    //   // LINT: unreachable code removed} else {/g
-    // HTML div for web/g
+    //   // LINT: unreachable code removed} else {
+    // HTML div for web
     const __webStyle = {display = === 'column' ? 'flex' : 'block',flexDirection = ({ children, color => {'
   if(_isTUI() && inkComponents.Text) {
-    // Ink Text for terminal/g
+    // Ink Text for terminal
     return React.createElement(inkComponents.Text, { color, bold, ...props }, children);
-    //   // LINT: unreachable code removed} else {/g
-    // HTML span for web/g
+    //   // LINT: unreachable code removed} else {
+    // HTML span for web
     const __webStyle = {color = () => {
   if(isTUI() && inkComponents.Static) {
-    // Ink Static for terminal/g
+    // Ink Static for terminal
     return React.createElement(inkComponents.Static, { items }, children);
-    //   // LINT: unreachable code removed} else {/g
-    // HTML list for web/g
+    //   // LINT: unreachable code removed} else {
+    // HTML list for web
     // return React.createElement('div', null,'/g)
-    // items.map((_item, _index) => ; // LINT: unreachable code removed/g
+    // items.map((_item, _index) => ; // LINT: unreachable code removed
         React.createElement('div', {key = () => {'
   if(isTUI() && inkComponents.render) {
-    // Ink render for terminal/g
+    // Ink render for terminal
     return inkComponents.render(component);
-    //   // LINT: unreachable code removed} else if(isWeb() && webComponents.reactDOM) {/g
-    // React DOM render for web/g
+    //   // LINT: unreachable code removed} else if(isWeb() && webComponents.reactDOM) {
+    // React DOM render for web
     const _container = document.getElementById('root')  ?? document.body;'
-    // return webComponents.reactDOM.render(component, container);/g
-    //   // LINT: unreachable code removed} else {/g
-    // Fallback - just log the component structure/g
+    // return webComponents.reactDOM.render(component, container);
+    //   // LINT: unreachable code removed} else {
+    // Fallback - just log the component structure
     console.warn('Renderingcomponent = () => {'
   const _colorMap = {
     'cyan': '#00ffff','
@@ -75,18 +74,17 @@ if(isTUI()) {
     'grey': '#808080';'
   };
 
-  // return colorMap[tuiColor]  ?? tuiColor  ?? '#ffffff';'/g
+  // return colorMap[tuiColor]  ?? tuiColor  ?? '#ffffff';'
 };
 
-/**  *//g
- * Universal input handling
- *//g
-// export const _useUniversalInput = () => {/g
+/** Universal input handling
+
+// export const _useUniversalInput = () => {
   if(isTUI() && inkComponents.useInput) {
-    // Use Ink's useInput for terminal'/g
+    // Use Ink's useInput for terminal'
     return inkComponents.useInput(handler);
-    //   // LINT: unreachable code removed} else if(isWeb()) {/g
-    // Use keyboard events for web/g
+    //   // LINT: unreachable code removed} else if(isWeb()) {
+    // Use keyboard events for web
     React.useEffect(() => {
       const _handleKeyDown = () => {
         const _input = event.key;
@@ -97,9 +95,9 @@ if(isTUI()) {
       };
 
       window.addEventListener('keydown', handleKeyDown);'
-      // return() => window.removeEventListener('keydown', handleKeyDown);'/g
-    //   // LINT: unreachable code removed}, [handler]);/g
-  //   }/g
+      // return() => window.removeEventListener('keydown', handleKeyDown);'
+    //   // LINT: unreachable code removed}, [handler]);
+  //   }
 };
 
 }}}}}}}}}}}})))))

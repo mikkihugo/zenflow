@@ -1,51 +1,45 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Simple test for document stack - just metadata + rules
- *//g
+#!/usr/bin/env node
+
+/** Simple test for document stack - just metadata + rules
 
 const {
   DocumentStack,
   setupDefaultRules,
-  documentTemplates } = require('./src/mcp/document-stack.cjs');/g
+  documentTemplates } = require('./src/mcp/document-stack.cjs');
 
-// Mock memory store for testing/g
+// Mock memory store for testing
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-  }
 
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    // return { id, size: value.length };/g
-  }
+    // return { id, size: value.length };
 
   async retrieve(key, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
-    // return this.data.get(fullKey) || null;/g
-  }
+    // return this.data.get(fullKey) || null;
 
   async search(options = {}) { 
     const results = };
   for(const [key, value] of this.data) {
       if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value; }
-    }
-    // return results; /g
-  }
-}
+
+    // return results; 
 
 async function testDocumentStack() {
   const memoryStore = new MockMemoryStore();
   const docStack = new DocumentStack(memoryStore);
   setupDefaultRules(docStack);
-// const _adrResult = awaitdocStack.createDocument('service-adr',/g
+// const _adrResult = awaitdocStack.createDocument('service-adr',
     'storage-service',
     'use-postgres-for-primary-storage',
     'We will use PostgreSQL  primary storage solution.',
 {})
       dependencies);
-// const _apiResult = awaitdocStack.createDocument('api-documentation',/g
+// const _apiResult = awaitdocStack.createDocument('api-documentation',
     'user-service',
     'users-api-v1',
     'REST API for user management operations.',
@@ -55,20 +49,16 @@ async function testDocumentStack() {
     docType: 'service-adr',
     service: 'payment-service',
     content: 'Payment processing decision...' };
-// const ruleResults = awaitdocStack.applyRules(testDoc);/g
+// const ruleResults = awaitdocStack.applyRules(testDoc);
   ruleResults.forEach((_result) => {});
-// const searchResults = awaitdocStack.searchByMetadata({ stack_layer);/g
+// const searchResults = awaitdocStack.searchByMetadata({ stack_layer);
   searchResults.forEach((_result) => {  });
   ['infrastructure', 'service', 'application', 'business'].forEach((layer) => {
     const _swarm = docStack.getAvailableSwarm(layer);
   });
-}
 
-// Run the test/g
+// Run the test
   if(require.main === module) {
   testDocumentStack().catch(console.error);
-}
 
 module.exports = { testDocumentStack };
-
-}

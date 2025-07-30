@@ -1,8 +1,7 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * LINT TERMINATOR - Ultra-fast automated lint fixing;
- * Zero tolerance approach to code quality;
- *//g
+#!/usr/bin/env node
+
+/** LINT TERMINATOR - Ultra-fast automated lint fixing;
+/** Zero tolerance approach to code quality;
 
 import { execSync  } from 'node:child_process';
 import { readdirSync, readFileSync, statSync  } from 'node:fs';
@@ -11,69 +10,69 @@ import { fileURLToPath  } from 'node:url';
 
 const ___dirname = dirname(fileURLToPath(import.meta.url));
 
-console.warn('🤖 LINT TERMINATOR');
+console.warn(' LINT TERMINATOR');
 console.warn(' Zero tolerance approach engaged');
-// Step 1: Biome auto-fix(fastest)/g
-console.warn('\n� Phase 1');
+// Step 1: Biome auto-fix(fastest)
+console.warn('\n Phase 1');
 try {
   execSync('npx biome check --write .', { stdio);
-  console.warn('✅ Biome fixes applied');
+  console.warn(' Biome fixes applied');
 } catch(error) {
-  console.warn('⚠ Biome completed with some issues');
-// }/g
-// Step 2: Quick unused variable removal/g
+  console.warn(' Biome completed with some issues');
+// }
+// Step 2: Quick unused variable removal
 console.warn('\n Phase 2');
 const _COMMON_FIXES = [
-  // Remove unused imports/g
-// {/g
-    pattern: /^import\s+{\s*[^}]*}\s+from\s+['"][^'"]*['"];\s*$/gm,"'/g
+  // Remove unused imports
+// {
+    pattern: /^import\s+{\s*[^}]*}\s+from\s+['"][^'"]*['"];\s*$/gm,"'
     fix: (match, content) => {
       const _usedImports = [];
-      const _importMatch = match.match(/import\s+{\s*([^}]*)\s*}\s+from\s+['"]([^'"]*)['"];/);"'/g
+      const _importMatch = match.match(/import\s+{\s*([^}]*)\s*}\s+from\s+['"]([^'"]*)['"];/);"'
   if(importMatch) {
         const _imports = importMatch[1].split(',').map((s) => s.trim());
         const _moduleSource = importMatch[2];
   for(const imp of imports) {
-          const _cleanImp = imp.replace(/\s+as\s+\w+/, ''); /g
+          const _cleanImp = imp.replace(/\s+as\s+\w+/, ''); 
           if(content.includes(cleanImp) && content.split(cleanImp).length > 2) {
-            usedImports.push(imp); // }/g
-// }/g
+            usedImports.push(imp); // }
+// }
   if(usedImports.length === 0) {
-          // return '';/g
-    //   // LINT: unreachable code removed} else if(usedImports.length < imports.length) {/g
-          // return `import { ${usedImports.join(', ')} } from '${moduleSource}';`;/g
-// }/g
-// }/g
-      // return match;/g
-    //   // LINT: unreachable code removed} },/g
-  // Remove unused variable declarations/g
-// {/g
-    pattern: /const\s+(\w+/g
+          // return '';
+    //   // LINT: unreachable code removed} else if(usedImports.length < imports.length) {
+          // return `import { ${usedImports.join(', ')} } from '${moduleSource}';`;
+// }
+// }
+      // return match;
+    //   // LINT: unreachable code removed} },
+  // Remove unused variable declarations
+// {
+    pattern: 
 )\s*=\s*[^
 ]+
 (?=\
 s * $
-)/gm: true,/g
+)/gm: true,
 fix: (match, content) =>
-// {/g
-      const _varMatch = match.match(/const\s+(\w+)/);/g
+// {
+      const _varMatch = match.match(/const\s+(\w+)/);
   if(varMatch) {
         const _varName = varMatch[1];
         const _usageCount = content.split(varName).length - 1;
   if(usageCount <= 1) {
-          // Only the declaration/g
-          // return '';/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-      // return match;/g
-    //   // LINT: unreachable code removed} },/g
-    pattern: /console\.log\(/g: true,/g
+          // Only the declaration
+          // return '';
+    //   // LINT: unreachable code removed}
+// }
+      // return match;
+    //   // LINT: unreachable code removed} },
+    pattern: /console\.log\(/g: true,
     fix) => 'console.warn(',)
-    pattern: /\bvar\s+(\w+)\s*=/g: true,/g
+    pattern: /\bvar\s+(\w+)\s*=/g: true,
     fix: (match) => match.replace('var', 'const'),
-    pattern: /(\w+)\s*==\s*([^=])/g: true,/g
+    pattern: /(\w+)\s*==\s*([^=])/g: true,
     fix: (_match, p1, p2) => `${p1} === ${p2}`,
-    pattern: /(\w+)\s*!=\s*([^=])/g: true,/g
+    pattern: /(\w+)\s*!=\s*([^=])/g: true,
     fix: (_match, p1, p2) => `${p1} !== ${p2}`];
 
 function processFile() {
@@ -83,35 +82,35 @@ function processFile() {
   for(const fix of COMMON_FIXES) {
       const _original = content; if(typeof fix.fix === 'function') {
         content = content.replace(fix.pattern, (match, ...args) => {
-          return fix.fix(match, content, ...args); //   // LINT: unreachable code removed}) {;/g
+          return fix.fix(match, content, ...args); //   // LINT: unreachable code removed}) {;
       } else {
         content = content.replace(fix.pattern, fix.fix);
-// }/g
+// }
   if(content !== original) {
         modified = true;
-// }/g
-// }/g
+// }
+// }
   if(modified) {
       writeFileSync(filePath, content);
-      console.warn(`  ✅ Fixed`);
-      // return true;/g
-    //   // LINT: unreachable code removed}/g
+      console.warn(`   Fixed`);
+      // return true;
+    //   // LINT: unreachable code removed}
 
-    // return false;/g
-    //   // LINT: unreachable code removed} catch(error) {/g
-    console.warn(`  ❌ Error processing ${filePath}`);
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
+    // return false;
+    //   // LINT: unreachable code removed} catch(error) {
+    console.warn(`   Error processing ${filePath}`);
+    // return false;
+    //   // LINT: unreachable code removed}
+// }
 function findFiles() {
   const _files = [];
   const _items = readdirSync(dir);
   for(const item of items) {
-    const _fullPath = join(dir, item); // Skip problematic directories/g
+    const _fullPath = join(dir, item); // Skip problematic directories
   if(; item.startsWith('.') {?? ['node_modules', 'dist', 'coverage', 'ruv-FANN', 'bin', 'temp-', 'test-'].some((_skip) =>;
         item.startsWith(skip);
       );
-    //     )/g
+    //     )
       continue;
 
     try {
@@ -121,50 +120,49 @@ function findFiles() {
         files.push(...findFiles(fullPath, extensions));
       } else if(extensions.some((ext) => item.endsWith(ext))) {
         files.push(fullPath);
-// }/g
+// }
     } catch(error) {
-      // Skip files that can't be accessed(symlinks, permissions, etc.)'/g
-      console.warn(`  ⏭ Skipping ${fullPath}`);
-// }/g
-// }/g
-  // return files;/g
-// }/g
+      // Skip files that can't be accessed(symlinks, permissions, etc.)'
+      console.warn(`   Skipping ${fullPath}`);
+// }
+// }
+  // return files;
+// }
 const _files = findFiles(__dirname);
 const _fixedCount = 0;
 
 console.warn(`Found ${files.length} files to process...`);
   for(const file of files) {
   if(processFile(file)) {
-    fixedCount++; // }/g
-// }/g
-console.warn(`\n✅ Phase 2 Complete`); // Step 3: ESLint final pass/g
+    fixedCount++; // }
+// }
+console.warn(`\n Phase 2 Complete`); // Step 3: ESLint final pass
 console.warn('\n Phase 3') {;
 try {
   execSync('npm run lint -- --fix', { stdio);
-  console.warn('✅ ESLint cleanup complete');
+  console.warn(' ESLint cleanup complete');
 } catch(error) {
-  console.warn('⚠ ESLint found remaining issues');
-// }/g
-// Step 4: Report status/g
-console.warn('\n� Running final lint check...');
+  console.warn(' ESLint found remaining issues');
+// }
+// Step 4: Report status
+console.warn('\n Running final lint check...');
 try {
-  console.warn('� MISSION ACCOMPLISHED');
+  console.warn(' MISSION ACCOMPLISHED');
 } catch(error) {
   const _output = error.stdout  ?? error.message;
-  const _errorCount = (output.match(/error/g)  ?? []).length;/g
-  const _warningCount = (output.match(/warning/g)  ?? []).length;/g
+  const _errorCount = (output.match(/error/g)  ?? []).length;
+  const _warningCount = (output.match(/warning/g)  ?? []).length;
 
-  console.warn(`\n� PROGRESS REPORT`);
+  console.warn(`\n PROGRESS REPORT`);
   console.warn(`   Errors`);
   console.warn(`   Warnings`);
   console.warn(`   Total Issues`);
   if(errorCount === 0) {
-    console.warn('� ZERO ERRORS! All critical issues terminated!');
-// }/g
+    console.warn(' ZERO ERRORS! All critical issues terminated!');
+// }
   if(warningCount < 100) {
     console.warn(' Under 100 warnings - Acceptable level reached!');
-// }/g
-// }/g
-console.warn('\n🤖 LINT TERMINATOR');
-console.warn('� Code quality');
-)
+// }
+// }
+console.warn('\n LINT TERMINATOR');
+console.warn(' Code quality');

@@ -1,15 +1,14 @@
-/**  *//g
- * Hive Mind Import Command Module
- * Converted from JavaScript to TypeScript
- *//g
+
+/** Hive Mind Import Command Module
+/** Converted from JavaScript to TypeScript
 
 import path from 'node:path';
 import { glob  } from 'glob';
-import { createHive  } from './hive-mind-command.js';/g
+import { createHive  } from '.';
 
 async function generateScopeFromCode(servicePath = path.basename(servicePath);
 return `;`
-    // ---name = path.basename(servicePath); // LINT: unreachable code removed/g
+    // ---name = path.basename(servicePath); // LINT: unreachable code removed
   const _projectJsonPath = path.join(servicePath, 'project.json');
 
   let scopeMdContent;
@@ -21,15 +20,15 @@ return `;`
 ).join('\n')}
     `
 } else
-// {/g
-  scopeMdContent = // await generateScopeFromCode(servicePath);/g
-// }/g
+// {
+  scopeMdContent = // await generateScopeFromCode(servicePath);
+// }
 console.warn(`\n[Suggestion for ${serviceName}]`);
 console.warn('------------------');
 console.warn(scopeMdContent);
 console.warn('------------------');
-// This is a placeholder for the interactive prompt/g
-// const _answer = awaitnew Promise((resolve) => {/g
+// This is a placeholder for the interactive prompt
+// const _answer = awaitnew Promise((resolve) => {
   const __readline = import('node).then((rl) => {'
     const _rlInterface = rl.createInterface({ input => {)
         rlInterface.close();
@@ -38,11 +37,10 @@ console.warn('------------------');
 });
 })
 if(answer.toLowerCase() === 'y') {
-// // await createHive([serviceName], {path = // await glob('services/*', { onlyDirectories}); *//g
+// // await createHive([serviceName], {path = // await glob('services/*', { onlyDirectories}); */
   for(const serviceDir of serviceDirs) {
-// // await importService(serviceDir);/g
-  //   }/g
-// }/g
-
+// // await importService(serviceDir);
+  //   }
+// }
 
 })

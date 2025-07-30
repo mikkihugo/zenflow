@@ -1,10 +1,9 @@
-/**  */
- * Claude Flow MCP Server - Full 87-tool Suite
- * Based on Cloudflare's official MCP server pattern
- */
 
-import configData from '../config.json';
-import { executeTool } from './tools.js';
+/** Claude Flow MCP Server - Full 87-tool Suite
+/** Based on Cloudflare's official MCP server pattern
+
+import configData from '..';
+import { executeTool } from '.';
 
 // Load configuration from config.json
 const _config = configData;
@@ -48,7 +47,6 @@ if (request.method === 'OPTIONS') {
         corsHeaders;
       );
     //     }
-
 
     // Handle tools/list request
     if (body.method === 'tools/list') {
@@ -108,7 +106,6 @@ corsHeaders
   message: `Internal error: ${error.message}`,
    //    }
 
-
 corsHeaders,
 500
 // )
@@ -118,8 +115,7 @@ function jsonResponse() {
   return new Response(JSON.stringify(data), {
     status,
     // headers: { // LINT: unreachable code removed
-      'Content-Type': 'application/json',
+      'Content-Type': 'application
 ..corsHeaders }
  })
 // }
-

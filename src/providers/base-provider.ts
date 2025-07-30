@@ -1,10 +1,9 @@
-/\*\*/g
- * Base Provider Implementation;
- * Abstract base class for all AI providers with common functionality;
- *//g
+
+/** Base Provider Implementation;
+/** Abstract base class for all AI providers with common functionality;
 
 import { EventEmitter  } from 'node:events';
-import type { BaseProvider as IBaseProvider  } from './types.js';/g
+import type { BaseProvider as IBaseProvider  } from '.';
 
 export abstract class BaseProvider extends EventEmitter implements IBaseProvider {
   abstract name = {inputTokenPrice = {totalRequests = [];
@@ -13,10 +12,10 @@ export abstract class BaseProvider extends EventEmitter implements IBaseProvider
   constructor() {
     super();
     this.setupMetricsTracking();
-  //   }/g
-  // Abstract methods that must be implemented by providers/g
+  //   }
+  // Abstract methods that must be implemented by providers
   abstract initialize(config = Date.now();
-  // Simple health check - try to get models/g
+  // Simple health check - try to get models
   await;
   this;
 
@@ -31,136 +30,136 @@ export abstract class BaseProvider extends EventEmitter implements IBaseProvider
   emit('health_check', {provider = new Date();
   const;
   timeSinceLastCheck = now.getTime() - this.lastHealthCheck.getTime();
-  // Auto health check if it's been too long'/g
+  // Auto health check if it's been too long'
   if(timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
   ) {
-// // await this./g
+// // await this.
   healthCheck();
-// }/g
-// return {name = [...this.responseTimeHistory].sort((a, b) => a - b);/g
-// const _p95Index = Math.floor(sorted.length * 0.95); // LINT: unreachable code removed/g
+// }
+// return {name = [...this.responseTimeHistory].sort((a, b) => a - b);
+// const _p95Index = Math.floor(sorted.length * 0.95); // LINT: unreachable code removed
 const _p99Index = Math.floor(sorted.length * 0.99);
 this.metrics.latencyP95 = sorted[p95Index] ?? 0;
 this.metrics.latencyP99 = sorted[p99Index] ?? 0;
-// }/g
-// return { ...this.metrics };/g
-// }/g
-// Protected helper methods/g
+// }
+// return { ...this.metrics };
+// }
+// Protected helper methods
 protected
 validateRequest(request)
 : void
-// {/g
+// {
   if(!request.messages ?? request.messages.length === 0) {
     throw new ProviderError('Messages are required', this.name, 'INVALID_REQUEST');
-  //   }/g
+  //   }
   if(!request.model) {
     throw new ProviderError('Model is required', this.name, 'INVALID_REQUEST');
-  //   }/g
+  //   }
   if(!this.capabilities.models?.includes(request.model)) {
     throw new ProviderError(;
     `Model ${request.model} not supported`,
     this.name,
     ('MODEL_NOT_SUPPORTED');
-    //     )/g
-  //   }/g
-// }/g
+    //     )
+  //   }
+// }
 protected;
-calculateCost(usage = (usage.promptTokens / 1000) * this.pricing.inputTokenPrice;/g
-const _outputCost = (usage.completionTokens / 1000) * this.pricing.outputTokenPrice;/g
-// return inputCost + outputCost;/g
-// }/g
+calculateCost(usage = (usage.promptTokens / 1000) * this.pricing.inputTokenPrice;
+const _outputCost = (usage.completionTokens / 1000) * this.pricing.outputTokenPrice;
+// return inputCost + outputCost;
+// }
 protected
 updateMetrics(request = error.constructor.name
 this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 0) + 1
 } else
-// {/g
+// {
   this.metrics.successfulRequests++;
   this.metrics.totalTokensUsed += response.usage.totalTokens;
   this.metrics.totalCost += response.usage.cost ?? 0;
-  // Track requests by model/g
+  // Track requests by model
   this.metrics.requestsByModel[request.model] =;
   (this.metrics.requestsByModel[request.model] ?? 0) + 1;
-  // Update response time tracking/g
+  // Update response time tracking
   this.responseTimeHistory.push(response.responseTime);
-  // Keep only last 1000 response times for memory efficiency/g
+  // Keep only last 1000 response times for memory efficiency
   if(this.responseTimeHistory.length > 1000) {
     this.responseTimeHistory = this.responseTimeHistory.slice(-1000);
-  //   }/g
-  // Update average response time/g
+  //   }
+  // Update average response time
   this.metrics.averageResponseTime =;
-  this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / this.responseTimeHistory.length;/g
-// }/g
-// }/g
+  this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / this.responseTimeHistory.length;
+// }
+// }
 protected
   updateHealthStatus(healthy = healthy
 this.lastHealthCheck = new Date() {}
   if(healthy && responseTime > 0) {
   this.responseTimeHistory.push(responseTime);
-// }/g
-// }/g
+// }
+// }
 protected
   getAverageResponseTime() {}
 : number
-// {/g
+// {
   if(this.responseTimeHistory.length === 0) return 0;
-  // return this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / ; // LINT: unreachable code removed/g
+  // return this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / ; // LINT: unreachable code removed
   this.responseTimeHistory.length;
-// }/g
+// }
 protected;
 getErrorRate();
 : number
-// {/g
+// {
   if(this.metrics.totalRequests === 0) return 0;
-  // return this.metrics.failedRequests / this.metrics.totalRequests; // LINT: unreachable code removed/g
-// }/g
+  // return this.metrics.failedRequests / this.metrics.totalRequests; // LINT: unreachable code removed
+// }
 protected;
 async;
 withRetry<T>(operation = > Promise<T>,
 maxRetries = this.config.retryAttempts  ?? 3,
 delay = this.config.retryDelay ?? 1000;
-// )/g
+// )
 : Promise<T>
-// {/g
+// {
   const _lastError = 0;
   attempt <= maxRetries;
   attempt++;
-  //   )/g
+  //   )
   try {
-    // return // await operation();/g
-    //   // LINT: unreachable code removed} catch(error) {/g
+    // return // await operation();
+    //   // LINT: unreachable code removed} catch(error) {
     lastError = error;
 
-    // Don't retry on certain error types'/g
+    // Don't retry on certain error types'
     if(;
       error instanceof ProviderError &&;
       ['INVALID_REQUEST', 'MODEL_NOT_SUPPORTED'].includes(error.code);
-    //     )/g
+    //     )
       throw error;
   if(attempt < maxRetries) {
-      // await this.sleep(delay * 2 ** attempt); // Exponential backoff/g
-    //     }/g
-  //   }/g
+      // await this.sleep(delay * 2 ** attempt); // Exponential backoff
+    //     }
+  //   }
   throw lastError;
-// }/g
+// }
 protected;
 sleep(ms = > setTimeout(resolve, ms));
-// }/g
-// private setupMetricsTracking() {}/g
+// }
+// private setupMetricsTracking() {}
 : void
-// {/g
-  // Reset metrics periodically to prevent memory leaks/g
+// {
+  // Reset metrics periodically to prevent memory leaks
   setInterval(() => {
-    // Keep only recent history/g
+    // Keep only recent history
   if(this.responseTimeHistory.length > 10000) {
       this.responseTimeHistory = this.responseTimeHistory.slice(-1000);
-    //     }/g
-  }, 3600000); // Every hour/g
-// }/g
-// Event emission helpers/g
+    //     }
+  }, 3600000); // Every hour
+// }
+// Event emission helpers
 protected;
 emitRequest(request);
 : void
-// {/g
+// {
   this.emit('request', {
     type: 'request',
   provider: this.name,)
@@ -168,11 +167,11 @@ emitRequest(request);
   id: request.id,
   model: request.model,
   messageCount: request.messages.length })
-// }/g
+// }
 protected
 emitResponse(response)
 : void
-// {/g
+// {
   this.emit('response', {
     type: 'response',
   provider: this.name,)
@@ -181,11 +180,11 @@ emitResponse(response)
   model: response.model,
   usage: response.usage,
   responseTime: response.responseTime })
-// }/g
+// }
 protected
 emitError(error, request?)
 : void
-// {/g
+// {
   this.emit('error', {
     type: 'error',
   provider: this.name,)
@@ -193,7 +192,7 @@ emitError(error, request?)
   error: error.message,
   requestId: request?.id,
   model: request?.model })
-// }/g
-// }/g
+// }
+// }
 
 ))))

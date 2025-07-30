@@ -1,13 +1,12 @@
-/**  *//g
- * Repl Command Module
- * Converted from JavaScript to TypeScript
- *//g
 
-// repl-command.js - Handles the repl command/g
+/** Repl Command Module
+/** Converted from JavaScript to TypeScript
 
-import { log  } from '../core/logger.js';/g
+// repl-command.js - Handles the repl command
 
-// Helper function/g
+import { log  } from '../core/logger.js';
+
+// Helper function
 const _printSuccess = (msg) => log.success(msg);
 
 import readline from 'node:readline';
@@ -15,13 +14,12 @@ import readline from 'node:readline';
 async function startRepl() {
   const __rl = readline.createInterface({input = === 'exit') {
       break;
-// }/g
+// }
 console.warn(`Received: ${line.trim()}`);
 rl.prompt();
-// }/g
-// }/g
-// export async function replCommand(_args, _flags) {/g
+// }
+// }
+// export async function replCommand(_args, _flags) {
   printSuccess('Starting interactive REPL mode...');
-// await startRepl();/g
-// }/g
-
+// await startRepl();
+// }

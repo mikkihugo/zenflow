@@ -1,7 +1,7 @@
-/**  *//g
- * Swarm Orchestration WebUI Integration
- * Integrates ruv-swarm capabilities with the cross-platform WebUI
- *//g
+
+/** Swarm Orchestration WebUI Integration
+/** Integrates ruv-swarm capabilities with the cross-platform WebUI
+
 export class SwarmWebUIIntegration {
   constructor(ui = ui;
   this;
@@ -16,93 +16,89 @@ export class SwarmWebUIIntegration {
   this;
 
   tasks = new Map();
-// }/g
-/**  *//g
- * Initialize swarm integration
- *//g
+// }
+
+/** Initialize swarm integration
+
 async;
 initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
 : unknown
-// {/g
+// {
   try {
-    // Check if ruv-swarm is available/g
-// const _hasSwarm = awaitthis.checkSwarmAvailability();/g
+    // Check if ruv-swarm is available
+// const _hasSwarm = awaitthis.checkSwarmAvailability();
   if(!hasSwarm) {
       this.ui.addLog('warning', 'ruv-swarm not available - using mock swarm');
       this.initializeMockSwarm();
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Initialize actual swarm/g
+    // Initialize actual swarm
     this.ui.addLog('info', `Initializing ${topology} swarm with ${maxAgents} agents...`);
 
-    // This would integrate with actual ruv-swarm MCP tools/g
-    // For now, simulate swarm initialization/g
+    // This would integrate with actual ruv-swarm MCP tools
+    // For now, simulate swarm initialization
     this.swarmActive = true;
     this.swarmId = `swarm-${Date.now()}`;
 
     this.ui.addLog('success', `Swarm ${this.swarmId} initialized successfully`);
 
-    // Update UI with swarm status/g
+    // Update UI with swarm status
     this.updateSwarmStatus();
-  } catch(/* _err */) {/g
+  } catch(/* _err */) {
     this.ui.addLog('error', `Failed to initializeswarm = === 'true';`)
-    } catch(/* err */) {/g
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+    } catch(/* err */) {
+      // return false;
+    //   // LINT: unreachable code removed}
+  //   }
 
+/** Initialize mock swarm for demonstration
 
-  /**  *//g
- * Initialize mock swarm for demonstration
-   *//g
   initializeMockSwarm() {
     this.swarmActive = true;
     this.swarmId = 'mock-swarm';
 
-    // Create mock agents/g
+    // Create mock agents
     const _agentTypes = ['researcher', 'coder', 'analyst', 'coordinator', 'tester'];
     agentTypes.forEach((type, index) => {
       const _agentId = `agent-${type}-${index}`;
       this.agents.set(agentId, {id = [
-      //       {/g
+      //       {
         description => {
       const _taskId = `task-${index}`;
       this.tasks.set(taskId, {))
         id = {researcher = Array.from(this.agents.values());
     this.ui.tasks = Array.from(this.tasks.values());
 
-    // Update system stats/g
+    // Update system stats
     this.ui.systemStats.activeAgents = this.ui.agents.filter((a) => a.status === 'working').length;
     this.ui.systemStats.totalTasks = this.ui.tasks.length;
     this.ui.systemStats.completedTasks = this.ui.tasks.filter(;)
       (t) => t.status === 'completed').length;
-  //   }/g
+  //   }
 
+/** Spawn new agent
 
-  /**  *//g
- * Spawn new agent
-   *//g
   async spawnAgent(type, name = null) { 
     if(!this.swarmActive) 
       this.ui.addLog('warning', 'Swarm not active - cannot spawn agent');
-      // return null;/g
-    //   // LINT: unreachable code removed}/g
+      // return null;
+    //   // LINT: unreachable code removed}
 
     const _agentId = `agent-${type}-${Date.now()}`;
     const _agent = {id = 'medium', assignedTo = null) {
   if(!this.swarmActive) {
       this.ui.addLog('warning', 'Swarm not active - cannot create task');
-      // return null;/g
-    //   // LINT: unreachable code removed}/g
+      // return null;
+    //   // LINT: unreachable code removed}
 
     const _taskId = `task-${Date.now()}`;
     const _task = {id = this.tasks.get(taskId);
     const _agent = this.agents.get(agentId);
   if(!task  ?? !agent) {
       this.ui.addLog('error', 'Invalid task or agent ID');
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
+      // return false;
+    //   // LINT: unreachable code removed}
 
     task.assignedTo = agentId;
     task.status = 'in_progress';
@@ -111,18 +107,17 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
 
     this.updateSwarmStatus();
     this.ui.addLog('info', `Assigned task "${task.description}" to ${agent.name}`);
-    // return true;/g
-    //   // LINT: unreachable code removed}/g
+    // return true;
+    //   // LINT: unreachable code removed}
 
-  /**  *//g
- * Complete task
-   *//g
+/** Complete task
+
   async completeTask(taskId) { 
     const _task = this.tasks.get(taskId);
     if(!task) 
       this.ui.addLog('error', 'Invalid task ID');
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
+      // return false;
+    //   // LINT: unreachable code removed}
 
     task.status = 'completed';
     task.completed = new Date();
@@ -132,10 +127,9 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
         agent.tasks = Math.max(0, agent.tasks - 1);
   if(agent.tasks === 0) {
           agent.status = 'idle';
-        //         }/g
-      //       }/g
-    //     }/g
-
+        //         }
+      //       }
+    //     }
 
     this.updateSwarmStatus();
     this.ui.addLog('success', `Completedtask = this.agents.size;`)
@@ -149,16 +143,15 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     ).length;
 
     return {swarmId = false;
-    // this.agents.clear(); // LINT: unreachable code removed/g
+    // this.agents.clear(); // LINT: unreachable code removed
     this.tasks.clear();
     this.swarmId = null;
 
     this.ui.addLog('info', 'Swarm stopped and cleaned up');
     this.updateSwarmStatus();
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-// export default SwarmWebUIIntegration;/g
+// export default SwarmWebUIIntegration;
 
 }}}}}}}}})))))

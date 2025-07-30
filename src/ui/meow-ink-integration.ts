@@ -1,25 +1,25 @@
-#!/usr/bin/env node;/g
-/**  *//g
- *  ENHANCED MEOW + INK INTEGRATION
- *
- * Modern CLI with advanced TUIfeaturing = () => {
-  const _filled = Math.floor((progress / 100) * width)/g
+#!/usr/bin/env node;
+
+/**  ENHANCED MEOW + INK INTEGRATION
+
+/** Modern CLI with advanced TUIfeaturing = () => {
+  const _filled = Math.floor((progress / 100) * width)
   const _empty = width - filled;
 
   return(;
-    // <Box>; // LINT: unreachable code removed/g
+    // <Box>; // LINT: unreachable code removed
       <Text color={color}>;
         {label && `${label}: `}`
-        [{'█'.repeat(filled)}{'░'.repeat(empty)}] {progress.toFixed(1)}%;'
-      </Text>;/g
-    </Box>;/g
+        [{''.repeat(filled)}{''.repeat(empty)}] {progress.toFixed(1)}%;'
+      <
+    <
   );
 };
 
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
 
   useEffect(() => {
-    // Auto-completion logic/g
+    // Auto-completion logic
   if(value.length > 0) {
       listCommands().then(commands => {
         const _matches = commands;)
@@ -30,34 +30,34 @@ slice(0, 5);
       });
     } else {
       setSuggestions([]);
-    //     }/g
+    //     }
   }, [value]);
 
-  // return(;/g
-    // <Box flexDirection="column">; // LINT) => (;"/g
+  // return(;
+    // <Box flexDirection="column">; // LINT) => (;"
             <Text ;
               key={cmd.name}
               color={index === selectedSuggestion ? 'cyan' ))}'
-        </Box>;/g
+        <
       )}
-    </Box>;/g
+    <
   );
 };
 
 const _SwarmTopology = () => {
-  // return(;/g
-    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;"/g
-      <Text bold color="cyan">� Swarm Topology</Text>"/g
+  // return(;
+    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;"
+      <Text bold color="cyan"> Swarm Topology<
 
       {swarms.length === 0 ? (;
-        <Text color="gray">No active swarms</Text>;"/g
+        <Text color="gray">No active swarms<
       ) : (;
         swarms.map(swarm => (;
           <Box key={swarm.id} marginLeft={2}>;
             <Text color="yellow">;"))
               {swarm.name} ({swarm.agents} agents) - {swarm.status}
-            </Text>;/g
-          </Box>;/g
+            <
+          <
         ));
       )}
 
@@ -65,29 +65,29 @@ const _SwarmTopology = () => {
         <Box flexDirection="column" marginTop={1}>;"
           <Text color="gray">Connections = > (;"
             <Text key={index} color="blue" marginLeft={2}>;"
-              {conn.from} ←→ {conn.to}
-            </Text>;/g
+              {conn.from}  {conn.to}
+            <
           ))}
-        </Box>;/g
+        <
       )}
-    </Box>;/g
+    <
   );
 };
 
-  // return(;/g
-    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT) => (;"/g
+  // return(;
+    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT) => (;"
         <Text ;
           key={index}
           color={log.type === 'error' ? 'red' : log.type === 'success' ? 'green' : 'white'}'
         >;
           {new Date(log.timestamp).toLocaleTimeString()} {log.message}
-        </Text>;/g
+        <
       ))}
 
       {logs.length === 0 && (;
-        <Text color="gray">No logs yet</Text>;"/g
+        <Text color="gray">No logs yet<
       )}
-    </Box>;/g
+    <
   );
 };
 
@@ -98,31 +98,31 @@ const _HelpPane = () => {
 
   useEffect(() => {
   if(selectedCommand) {
-      // Fetch command help/g
+      // Fetch command help
       listCommands().then(commands => {)
         const _cmd = commands.find(c => c.name === selectedCommand);
         setCommandHelp(cmd);
       });
-    //     }/g
+    //     }
   }, [selectedCommand]);
 
-  // return(;/g
-    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT) => (;"/g
-                <Text key={index} color="gray" marginLeft={2}>{example}</Text>;"/g
+  // return(;
+    // <Box flexDirection="column" borderStyle="single" padding={1 // LINT) => (;"
+                <Text key={index} color="gray" marginLeft={2}>{example}<
               ))}
-            </>;/g
+            <
           )}
-        </Box>;/g
+        <
       ) : (;
         <Box flexDirection="column" marginTop={1}>;"
-          <Text color="gray">Keyboard Shortcuts = {2 = {2}>Ctrl+C - Exit</Text>;"/g
-          <Text marginLeft={2}>↑/↓ - Navigate suggestions</Text>;/g
-          <Text marginLeft={2}>F1 - API mode</Text>;/g
-          <Text marginLeft={2}>F2 - Monitoring mode</Text>;/g
-          <Text marginLeft={2}>F3 - Help mode</Text>;/g
-        </Box>;/g
+          <Text color="gray">Keyboard Shortcuts = {2 = {2}>Ctrl+C - Exit<
+          <Text marginLeft={2}>/ - Navigate suggestions</Text>;
+          <Text marginLeft={2}>F1 - API mode<
+          <Text marginLeft={2}>F2 - Monitoring mode<
+          <Text marginLeft={2}>F3 - Help mode<
+        <
       )}
-    </Box>;/g
+    <
   );
 };
 
@@ -131,7 +131,7 @@ const _CLIInterface = () => {
   const [output, setOutput] = useState([]);
   const [isExecuting, setIsExecuting] = useState(false);
   const [apiServer, setApiServer] = useState(null);
-  const [mode, setMode] = useState('cli'); // 'cli', 'api', 'monitoring', 'help''/g
+  const [mode, setMode] = useState('cli'); // 'cli', 'api', 'monitoring', 'help''
   const [currentProgress, setCurrentProgress] = useState(0);
   const [longRunningTask, setLongRunningTask] = useState(null);
   const [systemStatus, setSystemStatus] = useState({apiRunning = useState({apiCalls = useState([;
@@ -139,29 +139,29 @@ const _CLIInterface = () => {
     {from = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
-  const [viewLayout, setViewLayout] = useState('split'); // 'split', 'full''/g
+  const [viewLayout, setViewLayout] = useState('split'); // 'split', 'full''
 
   const { exit } = useApp();
 
-  // Auto-execute initial command/g
+  // Auto-execute initial command
   useEffect(() => {
   if(initialCommand) {
       executeCommandWithOutput(initialCommand, initialArgs, initialFlags);
-    //     }/g
+    //     }
   }, [initialCommand]);
 
-  // Update system status periodically/g
+  // Update system status periodically
   useEffect(() => {
     const _updateStatus = async() => {
       try {
-// const _commands = awaitlistCommands();/g
+// const _commands = awaitlistCommands();
         setSystemStatus(prev => ({
 ..prev,commandCount = apiServer.getStatus();
           setMetrics({apiCalls = setInterval(updateStatus, 5000);
-    // return() => clearInterval(interval);/g
-    //   // LINT: unreachable code removed}, [apiServer]);/g
+    // return() => clearInterval(interval);
+    //   // LINT: unreachable code removed}, [apiServer]);
 
-  // Command auto-completion/g
+  // Command auto-completion
   useEffect(() => {
   if(command.length > 0) {
       listCommands().then(commands => {
@@ -173,7 +173,7 @@ slice(0, 8);
       });
     } else {
       setSuggestions([]);
-    //     }/g
+    //     }
   }, [command]);
 
   const _executeCommandWithOutput = useCallback(async(cmd, args = [], flags = {}) => {
@@ -181,7 +181,7 @@ slice(0, 8);
     setCurrentProgress(0);
     const _timestamp = new Date().toISOString();
 
-    // Simulate long-running task with progress/g
+    // Simulate long-running task with progress
     setLongRunningTask({ name = setInterval(() => {
         setCurrentProgress(prev => {
 
@@ -191,18 +191,18 @@ slice(0, 8);
       console.log = () => {
         const _logEntry = {type = () => {
         const _logEntry = { ;
-          //           type = {setCurrentProgress = > task ? { ...task, progress   });/g
-        //         }/g
+          //           type = {setCurrentProgress = > task ? { ...task, progress   });
+        //         }
       };
 
-      // Restore console/g
+      // Restore console
       console.log = originalLog;
       console.error = originalError;
 
       clearInterval(progressInterval);
       setCurrentProgress(100);
 
-      // Update output with enhanced information/g
+      // Update output with enhanced information
       setOutput(prev => [...prev,
         {type = > ({ ...prev,executions = > [...prev,
         {type = useCallback(async() => {
@@ -213,62 +213,61 @@ slice(0, 8);
       setSystemStatus(prev => ({ ...prev,apiRunning = > [...prev, {type = > [...prev, {type = useCallback(async() => {
   if(!apiServer) {
   setOutput(prev => [...prev, {type = > ({ ...prev,apiRunning = > [...prev, {type = > [...prev, {
-        //         type => {/g
-    // Global keyboard shortcuts/g
+        //         type => {
+    // Global keyboard shortcuts
     if(key.ctrl && input === 'c') {'
       exit();
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Function keys for mode switching/g
+    // Function keys for mode switching
   if(key.f1) { setMode('api'); return; }'
   if(key.f2) { setMode('monitoring'); return; }'
   if(key.f3) { setMode('help'); return; }'
   if(key.f4) { setMode('cli'); return; }'
 
-    // Layout switching/g
+    // Layout switching
   if(key.ctrl && input === 'l') {'
       setViewLayout(prev => prev === 'split' ? 'full' );'
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Command completion navigation/g
+    // Command completion navigation
   if(suggestions.length > 0) {
   if(key.upArrow) {
         setSelectedSuggestion(prev => Math.max(-1, prev - 1));
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
   if(key.downArrow) {
         setSelectedSuggestion(prev => Math.min(suggestions.length - 1, prev + 1));
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
   if(key.tab && selectedSuggestion >= 0) {
         setCommand(suggestions[selectedSuggestion].name);
         setSelectedCommand(suggestions[selectedSuggestion].name);
         return;
-    //   // LINT: unreachable code removed}/g
-    //     }/g
+    //   // LINT: unreachable code removed}
+    //     }
 
-
-    // Command execution/g
+    // Command execution
     if(key.return && command.trim()) {
       const _parts = command.trim().split(' ');'
-    // const _cmd = parts[0]; // LINT: unreachable code removed/g
+    // const _cmd = parts[0]; // LINT: unreachable code removed
       const _args = parts.slice(1);
 
-      // Use suggestion if one is selected/g
+      // Use suggestion if one is selected
   if(selectedSuggestion >= 0) {
         executeCommandWithOutput(suggestions[selectedSuggestion].name, args, {});
         setSelectedCommand(suggestions[selectedSuggestion].name);
       } else {
         executeCommandWithOutput(cmd, args, {});
         setSelectedCommand(cmd);
-      //       }/g
+      //       }
       setCommand('');'
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Command input/g
+    // Command input
   if(key.backspace  ?? key.delete) {
       setCommand(prev => prev.slice(0, -1));
     } else if(key.escape) {
@@ -277,17 +276,16 @@ slice(0, 8);
         setSelectedCommand(null);
       } else {
         exit();
-      //       }/g
+      //       }
     } else if(input === 'q' && !command) {'
       exit();
     } else if(input === 'r' && !command && mode === 'monitoring') {'
-      // Refresh monitoring data/g
+      // Refresh monitoring data
   setOutput(prev => [...prev, {type = === 1) {
       setCommand(prev => prev + input);
-    //     }/g
+    //     }
 
-
-    // Mode-specific inputs/g
+    // Mode-specific inputs
   if(mode === 'api') {'
       if(input === 's') startAPIServer();'
       if(input === 'x') stopAPIServer();'
@@ -296,24 +294,24 @@ slice(0, 8);
           setOutput(prev => [...prev, {type = () => {
   switch(type) {
       case 'success': return 'green';'
-    // case 'error': return 'red'; // LINT: unreachable code removed'/g
+    // case 'error': return 'red'; // LINT: unreachable code removed'
       case 'command': return 'cyan';'
-    // case 'info': return 'yellow';default = () => { // LINT: unreachable code removed'/g
+    // case 'info': return 'yellow';default = () => { // LINT: unreachable code removed'
     return mode === targetMode ? 'cyan' : 'gray';'
-    //   // LINT: unreachable code removed};/g
+    //   // LINT: unreachable code removed};
 
-  // Main render component with enhanced split-pane layout/g
+  // Main render component with enhanced split-pane layout
   return React.createElement(Box, {flexDirection = === 'cli' }, '[F4] CLI '),'
-    // React.createElement(Text, {color = === 'api'  // LINT: unreachable code removed}, '[F1] API '),'/g
+    // React.createElement(Text, {color = === 'api'  // LINT: unreachable code removed}, '[F1] API '),'
       React.createElement(Text, {color = === 'monitoring' }, '[F2] Monitor '),'
       React.createElement(Text, {color = === 'help' }, '[F3] Help '),'
       React.createElement(Spacer, null),
       React.createElement(Text, {color = === 'split' ? ;'
-      // Split-pane layout/g
+      // Split-pane layout
       React.createElement(Box, {flexGrow = === 'cli' && React.createElement(Box, { flexDirection => {')))
                 const _parts = cmd.split(' ');'
                 executeCommandWithOutput(parts[0], parts.slice(1), {});
-              //               }/g
+              //               }
             }),
             suggestions.length > 0 && React.createElement(Box, {flexDirection = > ;
                 React.createElement(Text, {key = === selectedSuggestion ? 'cyan' : 'white',backgroundColor = === selectedSuggestion ? 'blue' ,marginLeft = === 'api' && React.createElement(Box, {flexDirection = === 'monitoring' && React.createElement(SwarmTopology, { ;'
@@ -323,24 +321,23 @@ slice(0, 8);
           mode === 'help' && React.createElement(HelpPane, { ;'
             selectedCommand ;)
           }),
-          // Command input area(always visible)/g
+          // Command input area(always visible)
           React.createElement(Box, {borderStyle = === 'cli' && React.createElement(Box, {flexDirection = === 'monitoring' && React.createElement(Box, {flexDirection = > ;')))
             React.createElement(Text, {key = () => {
   render(React.createElement(CLIInterface, {initialCommand = () => {
   const _cli = createMeowCLI();
   const { input, flags } = cli;
   if(flags.ui  ?? flags.terminal) {
-    // Launch TUI interface/g
+    // Launch TUI interface
     launchMeowInkInterface(input[0], input.slice(1), flags);
   } else {
-    // Return parsed command for normal CLI execution/g
-    // return {command = === `file => {`/g
-    console.warn('\n� Claude-Zen interface shutting down...');'
-    // process.exit(0); // LINT: unreachable code removed/g
+    // Return parsed command for normal CLI execution
+    // return {command = === `file => {`
+    console.warn('\n Claude-Zen interface shutting down...');'
+    // process.exit(0); // LINT: unreachable code removed
   });
-// }/g
+// }
 
-
-// export default CLIInterface;/g
+// export default CLIInterface;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))

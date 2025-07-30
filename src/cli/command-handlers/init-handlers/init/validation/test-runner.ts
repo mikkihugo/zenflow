@@ -1,10 +1,10 @@
-// test-runner.js - Test runner for validation and rollback systems/g
+// test-runner.js - Test runner for validation and rollback systems
 
-import { RollbackSystem  } from '../rollback/index.js';/g
-import { ValidationSystem  } from './index.js';/g
-/**  *//g
- * Test runner for validation and rollback systems
- *//g
+import { RollbackSystem  } from '../rollback/index.js';
+import { ValidationSystem  } from '.';
+
+/** Test runner for validation and rollback systems
+
 export class ValidationTestRunner {
   constructor(workingDir = workingDir;
   this;
@@ -16,14 +16,14 @@ export class ValidationTestRunner {
   this;
 
   testResults = [];
-// }/g
-/**  *//g
- * Run all validation and rollback tests
- *//g
+// }
+
+/** Run all validation and rollback tests
+
 async;
 runAllTests();
-// {/g
-  console.warn('🧪 Running validation and rollback system tests...');
+// {
+  console.warn(' Running validation and rollback system tests...');
 
   const _tests = [
     { name = > this.testPreInitValidation() },
@@ -37,171 +37,164 @@ runAllTests();
     { name = > this.testRecoveryProcedures() },
     { name = > this.testAtomicOperations() } ];
   for(const _testCase of tests) {
-    console.warn(`\n�Testing = // await testCase.test(); `/g
-        this.testResults.push({name = > console.error(`  - ${error}`)); //           }/g
-        //         }/g
+    console.warn(`\nTesting = // await testCase.test(); `
+        this.testResults.push({name = > console.error(`  - ${error}`)); //           }
+        //         }
       } catch(error) {
         this.testResults.push({)
-          name = {success = // await this.validationSystem.validatePreInit();/g
+          name = {success = // await this.validationSystem.validatePreInit();
       result.details.normal = normalValidation;
   if(!normalValidation.success && normalValidation.errors.length > 0) {
-        // Some failures are expected in test environment/g
+        // Some failures are expected in test environment
         result.details.expectedFailures = normalValidation.errors;
-      //       }/g
+      //       }
 
-
-      // Test with force flag/g
-// const _forceValidation = awaitthis.validationSystem.validatePreInit({force = forceValidation;/g
+      // Test with force flag
+// const _forceValidation = awaitthis.validationSystem.validatePreInit({force = forceValidation;
 
       result.success = true; // Pre-init validation tested successfully/g)
     } catch(error) {
       result.success = false;
-      result.errors.push(`Pre-init validation test failed = {success = // await this.validationSystem.validatePostInit();`/g
+      result.errors.push(`Pre-init validation test failed = {success = // await this.validationSystem.validatePostInit();`
     result.details.postValidation = postValidation;
 
-    // Clean up test files/g
-// // await this.cleanupTestFiles();/g
+    // Clean up test files
+// // await this.cleanupTestFiles();
     result.success = true;
-  //   }/g
+  //   }
   catch(error) ;
       result.success = false;
-  result.errors.push(`Post-init validation test failed = success = // await this.validationSystem.validateConfiguration();`/g
+  result.errors.push(`Post-init validation test failed = success = // await this.validationSystem.validateConfiguration();`
       result.details.configValidation = configValidation;
 
-      // Clean up test configs/g
-// // await this.cleanupTestConfigs();/g
+      // Clean up test configs
+// // await this.cleanupTestConfigs();
       result.success = true;catch(error) ;
       result.success = false;
-      result.errors.push(`Config validation test failed = {success = // await this.validationSystem.testModeFunctionality();`/g
+      result.errors.push(`Config validation test failed = {success = // await this.validationSystem.testModeFunctionality();`
   result.details.modeTests = modeTests;
 
-  // Clean up test SPARC config/g
-// // await this.cleanupTestSparcConfig();/g
+  // Clean up test SPARC config
+// // await this.cleanupTestSparcConfig();
   result.success = true;
   catch(error) ;
       result.success = false;
-  result.errors.push(`Mode functionality test failed = {success = // await this.validationSystem.runHealthChecks();`/g
+  result.errors.push(`Mode functionality test failed = {success = // await this.validationSystem.runHealthChecks();`
       result.details.healthChecks = healthChecks;
 
       result.success = true;catch(error) {
       result.success = false;
-      result.errors.push(`Health checks test failed = {success = // await this.rollbackSystem.backupManager.createBackup(;`/g
+      result.errors.push(`Health checks test failed = {success = // await this.rollbackSystem.backupManager.createBackup(;`
         'test',))
         'Test backup');
   result.details.backupCreation = backupResult;
   if(!backupResult.success) {
     result.success = false;
     result.errors.push('Backup creation failed');
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
+    // return result;
+    //   // LINT: unreachable code removed}
 
-  // Test backup listing/g
+  // Test backup listing
 
-  result.details.backupListing = {count = // await this.rollbackSystem.backupManager.deleteBackup(backupResult.id);/g
+  result.details.backupListing = {count = // await this.rollbackSystem.backupManager.deleteBackup(backupResult.id);
   result.details.backupDeletion = deleteResult;
   if(!deleteResult.success) {
     result.errors.push('Backup deletion failed');
-  //   }/g
-// }/g
+  //   }
+// }
   catch(error) {
   result.success = false;
-  result.errors.push(`Backup system test failed = {success = // await this.rollbackSystem.validateRollbackSystem();`/g
+  result.errors.push(`Backup system test failed = {success = // await this.rollbackSystem.validateRollbackSystem();`
       result.details.rollbackValidation = rollbackValidation;
   if(!rollbackValidation.success) {
         result.errors.push(...rollbackValidation.errors);
-      //       }/g
+      //       }
 
-
-      // Test rollback point listing/g
-// const __rollbackPoints = awaitthis.rollbackSystem.listRollbackPoints();/g
+      // Test rollback point listing
+// const __rollbackPoints = awaitthis.rollbackSystem.listRollbackPoints();
       result.details.rollbackPoints = {count = false;
       result.errors.push(`Rollback system test failed = {success = this.rollbackSystem.stateTracker;`
 
-  // Test checkpoint creation/g
-// const _checkpoint = awaitstateTracker.createCheckpoint('test-phase', {test = checkpoint;/g
+  // Test checkpoint creation
+// const _checkpoint = awaitstateTracker.createCheckpoint('test-phase', {test = checkpoint;
 ))
   if(!checkpoint.success) {
     result.errors.push('Checkpoint creation failed');
-  //   }/g
+  //   }
 
+  // Test rollback point recording
+// const _rollbackPoint = awaitstateTracker.recordRollbackPoint('test', {testData = rollbackPoint;
 
-  // Test rollback point recording/g
-// const _rollbackPoint = awaitstateTracker.recordRollbackPoint('test', {testData = rollbackPoint;/g
-)
   if(!rollbackPoint.success) {
     result.errors.push('Rollback point creation failed');
-  //   }/g
+  //   }
 
-
-  // Test state validation/g
-// const _stateValidation = awaitstateTracker.validateStateTracking();/g
+  // Test state validation
+// const _stateValidation = awaitstateTracker.validateStateTracking();
   result.details.stateValidation = stateValidation;
   if(!stateValidation.success) {
     result.errors.push(...stateValidation.errors);
-  //   }/g
-// }/g
+  //   }
+// }
   catch(error) {
       result.success = false;
       result.errors.push(`State tracking test failed = {success = this.rollbackSystem.recoveryManager;`
 
       // Test recovery system validation/g)
-// const _recoveryValidation = awaitrecoveryManager.validateRecoverySystem();/g
+// const _recoveryValidation = awaitrecoveryManager.validateRecoverySystem();
       result.details.recoveryValidation = recoveryValidation;
   if(!recoveryValidation.success) {
         result.errors.push(...recoveryValidation.errors);
-      //       }/g
+      //       }
 
-
-      // Test generic recovery/g
+      // Test generic recovery
 // const _genericRecovery = awaitrecoveryManager.performRecovery('test-failure', {test = genericRecovery;/g)
     } catch(error) {
       result.success = false;
-      result.errors.push(`Recovery procedures test failed = {success = // await import('../rollback/index.js');`/g
+      result.errors.push(`Recovery procedures test failed = {success = // await import('../rollback/index.js');`
 
-      // Test atomic operation creation/g
+      // Test atomic operation creation
       const _atomicOp = createAtomicOperation(this.rollbackSystem, 'test-operation');
 
-      // Test begin/g
+      // Test begin
 
       result.details.atomicBegin = { success = {success = false;
       result.errors.push(`Atomic operations testfailed = '.repeat(60));'`
-    console.warn('🧪 VALIDATION & ROLLBACK SYSTEM TEST REPORT');
+    console.warn(' VALIDATION & ROLLBACK SYSTEM TEST REPORT');
     console.warn('='.repeat(60));
 
     const _passed = this.testResults.filter((test) => test.success).length;
     const _failed = this.testResults.filter((test) => !test.success).length;
     const _total = this.testResults.length;
 
-    console.warn(`\n�Summary = === 0) ;`
-      printSuccess('� All tests passed!');else ;
-      printError(`❌ ${failed} tests failed`);
+    console.warn(`\nSummary = === 0) ;`
+      printSuccess(' All tests passed!');else ;
+      printError(` ${failed} tests failed`);
 
-    console.warn('\n� Test Results => {')
-      const _status = test.success ? '✅' );
+    console.warn('\n Test Results => {')
+      const _status = test.success ? '' );
   if(!test.success && test.error) {
         console.warn(`Error = '.repeat(60));'`
 
-    // Overall system health assessment/g
-    const __healthScore = (passed / total) * 100/g
-    console.warn(`\n� System HealthScore = 90) ;`
-      printSuccess('� Excellent - System is fully operational');else if(healthScore >= 70) {
-      printWarning('� Good - System is mostly operational with minor issues');
+    // Overall system health assessment
+    const __healthScore = (passed / total) * 100
+    console.warn(`\n System HealthScore = 90) ;`
+      printSuccess(' Excellent - System is fully operational');else if(healthScore >= 70) {
+      printWarning(' Good - System is mostly operational with minor issues');
     } else if(healthScore >= 50) {
-      printWarning('� Fair - System has some significant issues');
+      printWarning(' Fair - System has some significant issues');
     } else {
-      printError('� Poor - System has major issues requiring attention');
-    //     }/g
-  //   }/g
+      printError(' Poor - System has major issues requiring attention');
+    //     }
+  //   }
 
-
-  // Helper methods for creating test files/g
+  // Helper methods for creating test files
 
   async createTestFiles() ;
     try {
-// await node.mkdir(`${this.workingDir}/test-temp`, { recursive = {version = new ValidationTestRunner(workingDir);/g
-// await testRunner.runAllTests();/g
-  // return testRunner.testResults;/g
-// }/g
-
+// await node.mkdir(`${this.workingDir}/test-temp`, { recursive = {version = new ValidationTestRunner(workingDir);
+// await testRunner.runAllTests();
+  // return testRunner.testResults;
+// }
 
 }}}}}}}}}}}}}}}}}}}}}})))))))))))))))))

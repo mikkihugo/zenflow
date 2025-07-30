@@ -6,13 +6,11 @@ class ClaudeZenDashboard {
     this.data = {};
 
     this.init();
-  }
 
   init() {
     this.setupEventListeners();
     this.connectWebSocket();
     this.loadData();
-  }
 
   setupEventListeners() {
     // Tab switching
@@ -37,9 +35,8 @@ class ClaudeZenDashboard {
     document.getElementById('command').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         this.executeCommand();
-      }
+
     });
-  }
 
   connectWebSocket() {
     // Use current page's host and port for WebSocket connection
@@ -66,7 +63,6 @@ class ClaudeZenDashboard {
       console.error('WebSocket error:', error);
       this.updateStatus('Error', 'error');
     };
-  }
 
   handleWebSocketMessage(message) {
     switch (message.type) {
@@ -80,8 +76,6 @@ class ClaudeZenDashboard {
       case 'command_result':
         this.showCommandResult(message.result);
         break;
-    }
-  }
 
   async loadData() {
     try {
@@ -96,8 +90,6 @@ class ClaudeZenDashboard {
       this.updateUI();
     } catch (error) {
       console.error('Failed to load data:', error);
-    }
-  }
 
   updateUI() {
     // Update stats
@@ -107,7 +99,6 @@ class ClaudeZenDashboard {
 
     // Update current tab content
     this.updateTabContent(this.currentTab);
-  }
 
   switchTab(tabName) {
     // Update menu
@@ -124,7 +115,6 @@ class ClaudeZenDashboard {
 
     this.currentTab = tabName;
     this.updateTabContent(tabName);
-  }
 
   updateTabContent(tabName) {
     switch (tabName) {
@@ -137,50 +127,44 @@ class ClaudeZenDashboard {
       case 'queens':
         this.updateQueenStatus();
         break;
-    }
-  }
 
   updateHivesList() {
     const container = document.getElementById('hive-list');
     const hives = this.data.hives || {};
 
     if (Object.keys(hives).length === 0) {
-      container.innerHTML = '<div class="loading">No hives found</div>';
+      container.innerHTML = '<div class="loading">No hives found<
       return;
-    }
 
     container.innerHTML = Object.entries(hives)
       .map(
         ([name, info]) => `
             <div class="hive-item">
-                <h4>${name}</h4>
-                <p>${info.path}</p>
-            </div>
+                <h4>${name}<
+                <p>${info.path}<
+            <
         `
       )
       .join('');
-  }
 
   updatePluginsList() {
     const container = document.getElementById('plugin-list');
     const plugins = this.data.plugins || [];
 
     if (plugins.length === 0) {
-      container.innerHTML = '<div class="loading">No plugins found</div>';
+      container.innerHTML = '<div class="loading">No plugins found<
       return;
-    }
 
     container.innerHTML = plugins
       .map(
         (plugin) => `
             <div class="plugin-item">
-                <h4>${plugin.name}</h4>
-                <p>Status: ${plugin.status}</p>
-            </div>
+                <h4>${plugin.name}<
+                <p>Status: ${plugin.status}<
+            <
         `
       )
       .join('');
-  }
 
   async updateQueenStatus() {
     try {
@@ -202,8 +186,6 @@ class ClaudeZenDashboard {
       document.getElementById('active-queens').textContent = 'Error';
       document.getElementById('queen-tasks').textContent = 'Error';
       document.getElementById('queen-success-rate').textContent = 'Error';
-    }
-  }
 
   updateQueensList(queens) {
     const container = document.getElementById('queen-list');
@@ -214,37 +196,36 @@ class ClaudeZenDashboard {
         (queen) => `
             <div class="queen-card ${queen.status}">
                 <div class="queen-header">
-                    <h4>👑 ${queen.name}</h4>
-                    <span class="queen-status ${queen.status}">${queen.status.toUpperCase()}</span>
-                </div>
+                    <h4> ${queen.name}<
+                    <span class="queen-status ${queen.status}">${queen.status.toUpperCase()}<
+                <
                 <div class="queen-details">
                     <div class="queen-info">
                         <strong>Domain:</strong> ${queen.domain}<br>
                         <strong>Confidence:</strong> ${(queen.confidence * 100).toFixed(1)}%<br>
                         <strong>Tasks Completed:</strong> ${queen.tasksCompleted}<br>
                         <strong>Success Rate:</strong> ${(queen.successRate * 100).toFixed(1)}%
-                    </div>
+                    <
                     <div class="queen-capabilities">
-                        <strong>Document Types:</strong>
+                        <strong>Document Types:<
                         <div class="capability-tags">
-                            ${queen.documentTypes.map((type) => `<span class="tag">${type}</span>`).join('')}
-                        </div>
-                    </div>
+                            ${queen.documentTypes.map((type) => `<span class="tag">${type}<
+                        <
+                    <
                     ${
                       queen.lastDecision
                         ? `
                         <div class="queen-last-decision">
                             <strong>Last Decision:</strong> ${queen.lastDecision}
-                        </div>
+                        <
                     `
                         : ''
-                    }
-                </div>
-            </div>
+
+                <
+            <
         `
       )
       .join('');
-  }
 
   toggleTheme() {
     const body = document.body;
@@ -264,8 +245,6 @@ class ClaudeZenDashboard {
           theme: newTheme,
         })
       );
-    }
-  }
 
   async executeCommand() {
     const input = document.getElementById('command');
@@ -290,13 +269,11 @@ class ClaudeZenDashboard {
         output.textContent = result.output || 'Command executed successfully';
       } else {
         output.textContent = `Error: ${result.error}`;
-      }
+
     } catch (error) {
       output.textContent = `Failed to execute command: ${error.message}`;
-    }
 
     input.value = '';
-  }
 
   updateStatus(text, type) {
     const statusText = document.querySelector('.status-text');
@@ -304,7 +281,6 @@ class ClaudeZenDashboard {
 
     statusText.textContent = text;
     statusDot.className = `status-dot status-${type}`;
-  }
 
   showNotification(_message, _level = 'info') {}
 
@@ -312,8 +288,6 @@ class ClaudeZenDashboard {
     const output = document.getElementById('command-output');
     output.classList.add('show');
     output.textContent = JSON.stringify(result, null, 2);
-  }
-}
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -323,7 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Global functions for inline event handlers
 function _executeCommand() {
   window.dashboard.executeCommand();
-}
 
 function _saveSettings() {
   const theme = document.getElementById('theme-select').value;
@@ -341,4 +314,3 @@ function _saveSettings() {
   });
 
   alert('Settings saved successfully!');
-}

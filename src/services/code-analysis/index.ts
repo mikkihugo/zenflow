@@ -1,15 +1,14 @@
-/\*\*/g
- * Code Analysis Service;
- * Professional code analysis tools integrated with Kuzu graph storage;
- *//g
 
-import ASTParser from './ast-parser.js';/g
-import ComplexityAnalyzer from './complexity-analyzer.js';/g
-import DependencyAnalyzer from './dependency-analyzer.js';/g
-import DuplicateCodeDetector from './duplicate-detector.js';/g
-import CodeAnalysisWatcher from './file-watcher.js';/g
-import { CodeAnalysisOrchestrator  } from './orchestrator.js';/g
-import TreeSitterParser from './tree-sitter-parser.js';/g
+/** Code Analysis Service;
+/** Professional code analysis tools integrated with Kuzu graph storage;
+
+import ASTParser from '.';
+import ComplexityAnalyzer from '.';
+import DependencyAnalyzer from '.';
+import DuplicateCodeDetector from '.';
+import CodeAnalysisWatcher from '.';
+import { CodeAnalysisOrchestrator  } from '.';
+import TreeSitterParser from '.';
 
 export { ASTParser };
 export { DependencyAnalyzer };
@@ -19,54 +18,53 @@ export { TreeSitterParser };
 export { CodeAnalysisWatcher };
 export { CodeAnalysisOrchestrator };
 
-// Main service // interface/g
-// export class CodeAnalysisService {/g
-//   constructor(config = {}) {/g
+// Main service // interface
+// export class CodeAnalysisService {
+//   constructor(config = {}) {
     this.orchestrator = new CodeAnalysisOrchestrator(config);
     this.watcher = new CodeAnalysisWatcher(config);
-  //   }/g
-
+  //   }
 
   async initialize() { 
-    // Set up event listeners for real-time analysis/g
+    // Set up event listeners for real-time analysis
     this.watcher.on('analysis => '
-      console.warn(`� Real-time analysis => {`))
-      console.warn(`� Significant change detected = {}) {`
-    return // await this.orchestrator.analyzeCodebase(options);/g
-    //   // LINT: unreachable code removed}/g
+      console.warn(` Real-time analysis => {`))
+      console.warn(` Significant change detected = {}) {`
+    return // await this.orchestrator.analyzeCodebase(options);
+    //   // LINT: unreachable code removed}
 
   async analyzeFiles(filePaths, options = {}): unknown
-    // return await this.orchestrator.analyzeFiles(filePaths, options);/g
-    //   // LINT: unreachable code removed}/g
+    // return await this.orchestrator.analyzeFiles(filePaths, options);
+    //   // LINT: unreachable code removed}
 
   async startRealTimeAnalysis() { }
     if(!this.orchestrator.isInitialized) 
-// await this.initialize();/g
-    //     }/g
-    // return // await this.watcher.startWatching(this.orchestrator);/g
-    //   // LINT: unreachable code removed}/g
+// await this.initialize();
+    //     }
+    // return // await this.watcher.startWatching(this.orchestrator);
+    //   // LINT: unreachable code removed}
 
   async stopRealTimeAnalysis() { }
-    // return await this.watcher.stopWatching();/g
-    //   // LINT: unreachable code removed}/g
+    // return await this.watcher.stopWatching();
+    //   // LINT: unreachable code removed}
 
   async query(query): unknown
-    // return await this.orchestrator.queryAnalysis(query);/g
-    //   // LINT: unreachable code removed}/g
+    // return await this.orchestrator.queryAnalysis(query);
+    //   // LINT: unreachable code removed}
 
   async getStats() 
-// const _orchestratorStats = awaitthis.orchestrator.getAnalysisStats();/g
+// const _orchestratorStats = awaitthis.orchestrator.getAnalysisStats();
     const _watcherStatus = this.watcher.getStatus();
 
-    // return {/g
+    // return {
 ..orchestratorStats,
-    // realTimeAnalysis, // LINT: unreachable code removed/g
+    // realTimeAnalysis, // LINT: unreachable code removed
     };
 
   async cleanup() {}
-// await this.watcher.stopWatching();/g
-    // return await this.orchestrator.cleanup();/g
+// await this.watcher.stopWatching();
+    // return await this.orchestrator.cleanup();
 
-// export default CodeAnalysisService;/g
+// export default CodeAnalysisService;
 
 }))

@@ -1,13 +1,12 @@
-/\*\*/g
- * Neural Network Types;
- * Rust-based neural processing with FANN integration and GPU acceleration;
- *//g
 
-import type { JSONObject, UUID  } from './core.js';/g
+/** Neural Network Types;
+/** Rust-based neural processing with FANN integration and GPU acceleration;
 
-// =============================================================================/g
-// NEURAL CORE TYPES/g
-// =============================================================================/g
+import type { JSONObject, UUID  } from '.';
+
+// =============================================================================
+// NEURAL CORE TYPES
+// =============================================================================
 
 export type NeuralArchitecture = 'feedforward';
 | 'recurrent'
@@ -20,7 +19,7 @@ export type NeuralArchitecture = 'feedforward';
 | 'vae'
 | 'reinforcement'
 | 'hybrid'
-// export type ActivationFunction = 'sigmoid';/g
+// export type ActivationFunction = 'sigmoid';
 | 'tanh'
 | 'relu'
 | 'leaky_relu'
@@ -30,7 +29,7 @@ export type NeuralArchitecture = 'feedforward';
 | 'linear'
 | 'softmax'
 | 'gelu'
-// export type LossFunction = 'mse';/g
+// export type LossFunction = 'mse';
 | 'mae'
 | 'cross_entropy'
 | 'binary_cross_entropy'
@@ -39,7 +38,7 @@ export type NeuralArchitecture = 'feedforward';
 | 'dice'
 | 'iou'
 | 'custom'
-// export type Optimizer = 'sgd';/g
+// export type Optimizer = 'sgd';
 | 'adam'
 | 'adamw'
 | 'rmsprop'
@@ -48,215 +47,214 @@ export type NeuralArchitecture = 'feedforward';
 | 'momentum'
 | 'nesterov'
 | 'lbfgs'
-// export type NeuralStatus = 'untrained';/g
+// export type NeuralStatus = 'untrained';
 | 'training'
 | 'trained'
 | 'validating'
 | 'deployed'
 | 'error'
 | 'deprecated'
-// =============================================================================/g
-// NEURAL CONFIGURATION/g
-// =============================================================================/g
+// =============================================================================
+// NEURAL CONFIGURATION
+// =============================================================================
 
-// export // interface NeuralConfig {/g
-//   // System configurationbackend = ============================================================================/g
-// // NEURAL NETWORK DEFINITION/g
-// // =============================================================================/g
-// /g
-// export interface NeuralNetwork extends Identifiable {name = ============================================================================/g
-// // TRAINING CONFIGURATION/g
-// // =============================================================================/g
-// /g
-// export interface TrainingConfig {/g
-//   // Basic training parametersepochs = ============================================================================/g
-// // TRAINING PROCESS/g
-// // =============================================================================/g
-// /g
-// export interface TrainingJob extends Identifiable {networkId = ============================================================================/g
-// // INFERENCE ENGINE/g
-// // =============================================================================/g
-// /g
-// export interface InferenceEngine extends Identifiable {name = ============================================================================/g
-// // MODEL MANAGEMENT/g
-// // =============================================================================/g
-// /g
-// export interface ModelRegistry {/g
-//   // Model lifecycle/g
-//   registerModel(model = ============================================================================;/g
-// // NEURAL EVENTS/g
-// // =============================================================================/g
-// /g
-// export interface NeuralEvents {/g
-//   // Training events/g
-//   'training-started');/g
-// : (modelId = > void/g
-// ('model-updated')/g
-// : (modelId = > void/g
-// ('model-deployed')/g
-// : (modelId = > void/g
-// ('model-undeployed')/g
-// : (modelId = > void/g
-// ('model-optimized')/g
-// : (modelId = > void/g
-// // Inference events/g
-// ('inference-request')/g
-// : (requestId = > void/g
-// ('inference-completed')/g
-// : (requestId = > void/g
-// ('inference-failed')/g
-// : (requestId = > void/g
-// ('inference-timeout')/g
-// : (requestId = > void/g
-// // Performance events/g
-// ('performance-degraded')/g
-// : (entityId = > void/g
-// ('threshold-exceeded')/g
-// : (entityId = > void/g
-// ('resource-exhausted')/g
-// : (entityId = > void/g
-// ('anomaly-detected')/g
-// : (entityId = > void/g
-// // System events/g
-// ('gpu-memory-warning')/g
-// : (usage = > void/g
-// ('model-drift-detected')/g
-// : (modelId = > void/g
-// ('batch-processing-completed')/g
-// : (batchId = > void/g
-// ('optimization-completed')/g
-// : (modelId = > void/g
-// // }/g
-// =============================================================================/g
-// AUXILIARY TYPES/g
-// =============================================================================/g
+// export // interface NeuralConfig {
+//   // System configurationbackend = ============================================================================
+// // NEURAL NETWORK DEFINITION
+// // =============================================================================
 
-// export // interface OptimizationOptions {/g
-//   techniques: ('quantization' | 'pruning' | 'distillation' | 'fusion' | 'tensorrt')[];/g
-//   targetLatency?; // milliseconds/g
-//   targetAccuracy?; // 0-1/g
-//   targetSize?; // MB/g
-//   // preserveAccuracy: boolean/g
-//   aggressiveness: 'conservative' | 'moderate' | 'aggressive';/g
-// // }/g
-// export // interface ValidationDataset {/g
-//   // name: string/g
-//   // path: string/g
-//   // size: number/g
-//   format: 'numpy' | 'csv' | 'json' | 'tfrecord' | 'parquet';/g
-//   // preprocessing: JSONObject/g
-// // }/g
-// export // interface ValidationResults {/g
-//   // accuracy: number/g
-//   // precision: number/g
-//   // recall: number/g
-//   // f1Score: number/g
-//   // auc: number/g
-//   confusionMatrix[];/g
-//   // classificationReport: JSONObject/g
-//   customMetrics: Record<string, number>;/g
-// // Performance analysis/g
-// // {/g
-//   // mean: number/g
-//   // median: number/g
-//   // p95: number/g
-//   // p99: number/g
-// // }/g
-// Robustness/g
+// export interface NeuralNetwork extends Identifiable {name = ============================================================================
+// // TRAINING CONFIGURATION
+// // =============================================================================
+
+// export interface TrainingConfig {
+//   // Basic training parametersepochs = ============================================================================
+// // TRAINING PROCESS
+// // =============================================================================
+
+// export interface TrainingJob extends Identifiable {networkId = ============================================================================
+// // INFERENCE ENGINE
+// // =============================================================================
+
+// export interface InferenceEngine extends Identifiable {name = ============================================================================
+// // MODEL MANAGEMENT
+// // =============================================================================
+
+// export interface ModelRegistry {
+//   // Model lifecycle
+//   registerModel(model = ============================================================================;
+// // NEURAL EVENTS
+// // =============================================================================
+
+// export interface NeuralEvents {
+//   // Training events
+//   'training-started');
+// : (modelId = > void
+// ('model-updated')
+// : (modelId = > void
+// ('model-deployed')
+// : (modelId = > void
+// ('model-undeployed')
+// : (modelId = > void
+// ('model-optimized')
+// : (modelId = > void
+// // Inference events
+// ('inference-request')
+// : (requestId = > void
+// ('inference-completed')
+// : (requestId = > void
+// ('inference-failed')
+// : (requestId = > void
+// ('inference-timeout')
+// : (requestId = > void
+// // Performance events
+// ('performance-degraded')
+// : (entityId = > void
+// ('threshold-exceeded')
+// : (entityId = > void
+// ('resource-exhausted')
+// : (entityId = > void
+// ('anomaly-detected')
+// : (entityId = > void
+// // System events
+// ('gpu-memory-warning')
+// : (usage = > void
+// ('model-drift-detected')
+// : (modelId = > void
+// ('batch-processing-completed')
+// : (batchId = > void
+// ('optimization-completed')
+// : (modelId = > void
+// // }
+// =============================================================================
+// AUXILIARY TYPES
+// =============================================================================
+
+// export // interface OptimizationOptions {
+//   techniques: ('quantization' | 'pruning' | 'distillation' | 'fusion' | 'tensorrt')[];
+//   targetLatency?; // milliseconds
+//   targetAccuracy?; // 0-1
+//   targetSize?; // MB
+//   // preserveAccuracy: boolean
+//   aggressiveness: 'conservative' | 'moderate' | 'aggressive';
+// // }
+// export // interface ValidationDataset {
+//   // name: string
+//   // path: string
+//   // size: number
+//   format: 'numpy' | 'csv' | 'json' | 'tfrecord' | 'parquet';
+//   // preprocessing: JSONObject
+// // }
+// export // interface ValidationResults {
+//   // accuracy: number
+//   // precision: number
+//   // recall: number
+//   // f1Score: number
+//   // auc: number
+//   confusionMatrix[];
+//   // classificationReport: JSONObject
+//   customMetrics: Record<string, number>;
+// // Performance analysis
+// // {
+//   // mean: number
+//   // median: number
+//   // p95: number
+//   // p99: number
+// // }
+// Robustness
 adversarialAccuracy?;
 calibrationError?;
 uncertainty?;
-// }/g
-// export // interface Benchmark {/g
-//   // name: string/g
-//   type: 'speed' | 'accuracy' | 'memory' | 'energy' | 'comprehensive';/g
-//   // dataset: string/g
-//   metrics;/g
-//   // constraints: JSONObject/g
-// // }/g
-// export // interface BenchmarkResults {/g
-//   // benchmark: string/g
-//   // modelId: UUID/g
-//   results: Record<string, number>;/g
-//   // ranking: number/g
-//   // comparison: JSONObject/g
-//   // timestamp: Date/g
-// // }/g
-// export // interface ModelComparison {/g
-//   models;/g
-//   metrics: Record<string, Record<UUID, number>>;/g
-//   rankings: Record<string, UUID[]>;/g
-//   recommendations;/g
-//   // tradeoffs: JSONObject/g
-// // }/g
-// export // interface TimeRange {/g
-//   // start: Date/g
-//   // end: Date/g
-// // }/g
-// export // interface ModelMetrics {/g
-//   // modelId: UUID/g
-//   // timeRange: TimeRange/g
-//   // Prediction quality/g
-//   accuracy;/g
-//   precision;/g
-//   recall;/g
-//   f1Score;/g
-//   // Performance/g
-//   latency;/g
-//   throughput;/g
-//   errorRate;/g
-//   // Resource usage/g
-//   memoryUsage;/g
-//   cpuUsage;/g
-//   gpuUsage;/g
-//   // Business metrics/g
-//   requestCount;/g
-//   cost;/g
-//   revenue;/g
-//   timestamps;/g
-// // }/g
-// export // interface ModelHealth {/g
-//   status: 'healthy' | 'warning' | 'critical' | 'failed';/g
-//   score, // 0-1/g
-// /g
-//   checks: {/g
-//     // name: string/g
-//     status: 'pass' | 'warning' | 'fail';/g
-//     // value: number/g
-//     // threshold: number/g
-//     // message: string/g
-//   }[];/g
-// {/g
+// }
+// export // interface Benchmark {
+//   // name: string
+//   type: 'speed' | 'accuracy' | 'memory' | 'energy' | 'comprehensive';
+//   // dataset: string
+//   metrics;
+//   // constraints: JSONObject
+// // }
+// export // interface BenchmarkResults {
+//   // benchmark: string
+//   // modelId: UUID
+//   results: Record<string, number>;
+//   // ranking: number
+//   // comparison: JSONObject
+//   // timestamp: Date
+// // }
+// export // interface ModelComparison {
+//   models;
+//   metrics: Record<string, Record<UUID, number>>;
+//   rankings: Record<string, UUID[]>;
+//   recommendations;
+//   // tradeoffs: JSONObject
+// // }
+// export // interface TimeRange {
+//   // start: Date
+//   // end: Date
+// // }
+// export // interface ModelMetrics {
+//   // modelId: UUID
+//   // timeRange: TimeRange
+//   // Prediction quality
+//   accuracy;
+//   precision;
+//   recall;
+//   f1Score;
+//   // Performance
+//   latency;
+//   throughput;
+//   errorRate;
+//   // Resource usage
+//   memoryUsage;
+//   cpuUsage;
+//   gpuUsage;
+//   // Business metrics
+//   requestCount;
+//   cost;
+//   revenue;
+//   timestamps;
+// // }
+// export // interface ModelHealth {
+//   status: 'healthy' | 'warning' | 'critical' | 'failed';
+//   score, // 0-1
+
+//   checks: {
+//     // name: string
+//     status: 'pass' | 'warning' | 'fail';
+//     // value: number
+//     // threshold: number
+//     // message: string
+//   }[];
+// {
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'performance' | 'accuracy' | 'availability' | 'resource';
-  // description: string/g
-  // recommendation: string/g
-// }/g
+  // description: string
+  // recommendation: string
+// }
 [];
-// {/g
-  // metric: string/g
+// {
+  // metric: string
   direction: 'improving' | 'stable' | 'degrading';
-  // confidence: number/g
-// }/g
+  // confidence: number
+// }
 [];
-// lastCheck: Date/g
-// nextCheck: Date/g
-// }/g
-// export // interface ModelAlert {/g
-//   // name: string/g
-//   // condition: string/g
-//   // threshold: number/g
-//   severity: 'info' | 'warning' | 'critical';/g
-//   // enabled: boolean/g
-// // {/g
-//   type: 'email' | 'webhook' | 'slack' | 'pagerduty' | 'auto-scale' | 'rollback';/g
-//   // config: JSONObject/g
-// // }/g
+// lastCheck: Date
+// nextCheck: Date
+// }
+// export // interface ModelAlert {
+//   // name: string
+//   // condition: string
+//   // threshold: number
+//   severity: 'info' | 'warning' | 'critical';
+//   // enabled: boolean
+// // {
+//   type: 'email' | 'webhook' | 'slack' | 'pagerduty' | 'auto-scale' | 'rollback';
+//   // config: JSONObject
+// // }
 [];
-cooldown, // seconds/g
+cooldown, // seconds
 lastTriggered?;
-// triggerCount: number/g
-// }/g
-
+// triggerCount: number
+// }
 
 }}}}}})))))))))))))))))

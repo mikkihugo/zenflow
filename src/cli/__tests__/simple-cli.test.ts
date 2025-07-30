@@ -1,17 +1,16 @@
-/**  *//g
- * Tests for cli-main.js
- *//g
 
-import { jest  } from '@jest/globals';'/g
-import { parseFlags  } from '../utils.js';'/g
+/** Tests for cli-main.js
 
-// Mock the command registry/g
-jest.mock('../command-registry.js', () => ({ '/g
+import { jest  } from '@jest';
+import { parseFlags  } from '..';
+
+// Mock the command registry
+jest.mock('../command-registry.js', () => ({ '
   executeCommand: jest.fn(),
 hasCommand: jest.fn(),
 listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']   }))'
-=> // eslint-disable-line/g
-// {/g
+=> // eslint-disable-line
+// {
   let originalArgv;
   let originalExit;
   let consoleLogSpy;
@@ -37,22 +36,22 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']   }))'
     test('should show help when no arguments provided', async() => {'
       process.argv = ['node', 'claude-zen'];'
 
-      const { executeCommand, hasCommand, showAllCommands } = // await import(/g
-        '../command-registry.js';'/g
+      const { executeCommand, hasCommand, showAllCommands } = // await import(
+        '..
       );
       hasCommand.mockReturnValue(false);
 
-      // Import after mocks are set up/g
-// // // await import('../cli-main.js');'/g
+      // Import after mocks are set up
+// // // await import('../cli-main.js');'
       expect(consoleLogSpy).toHaveBeenCalled();
       const __output = consoleLogSpy.mock.calls.join('\n');'
       expect(output).toContain('Claude-Flow v2.0.0');'
       expect(output).toContain('USAGE => {'
       process.argv = ['node', 'claude-zen', '--help'];'
-)
-      const { hasCommand } = // // await import('../command-registry.js');'/g
+
+      const { hasCommand } = // // await import('../command-registry.js');'
       hasCommand.mockReturnValue(false);
-// // // await import('../cli-main.js');'/g
+// // // await import('../cli-main.js');'
       expect(consoleLogSpy).toHaveBeenCalled();
       const _output = consoleLogSpy.mock.calls.join('\n');'
       expect(output).toContain('Claude-Flow v2.0.0');'
@@ -60,7 +59,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']   }))'
 
     test('should show version for --version flag', async() => {'
       process.argv = ['node', 'claude-zen', '--version'];'
-// // await import('../cli-main.js');'/g
+// // await import('../cli-main.js');'
       expect(consoleLogSpy).toHaveBeenCalledWith('2.0.0');'
       expect(process.exit).toHaveBeenCalledWith(0);
     });
@@ -70,10 +69,10 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']   }))'
     test('should execute valid command', async() => {'
       process.argv = ['node', 'claude-zen', 'init', '--sparc'];'
 
-      const { executeCommand, hasCommand } = // await import('../command-registry.js');'/g
+      const { executeCommand, hasCommand } = // await import('../command-registry.js');'
       hasCommand.mockReturnValue(true);
       executeCommand.mockResolvedValue(undefined);
-// // // await import('../cli-main.js');'/g
+// // // await import('../cli-main.js');'
       expect(hasCommand).toHaveBeenCalledWith('init');'
       expect(executeCommand).toHaveBeenCalledWith('init', ['--sparc'], {});'
     });
@@ -87,18 +86,18 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']   }))'
         '--strategy','
         'development' ];'
 
-      const { executeCommand, hasCommand } = // // await import('../command-registry.js');'/g
+      const { executeCommand, hasCommand } = // // await import('../command-registry.js');'
       hasCommand.mockReturnValue(true);
       executeCommand.mockResolvedValue(undefined);
-// // // await import('../cli-main.js');'/g
+// // // await import('../cli-main.js');'
       expect(hasCommand).toHaveBeenCalledWith('swarm');'
       expect(executeCommand).toHaveBeenCalledWith('swarm', ['Build a REST API'], {'
         strategy => {
       process.argv = ['node', 'claude-zen', 'invalid-command'];'
-)
-      const { hasCommand, listCommands } = // // await import('../command-registry.js');'/g
+
+      const { hasCommand, listCommands } = // // await import('../command-registry.js');'
       hasCommand.mockReturnValue(false);
-// // // await import('../cli-main.js');'/g
+// // // await import('../cli-main.js');'
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
         expect.stringContaining('Unknown command => {'))
     test('should parse boolean flags correctly', () => {'
@@ -113,18 +112,18 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']   }))'
     test('should handle command execution errors gracefully', _async() => {'
       process.argv = ['node', 'claude-zen', 'init'];'
 
-      const { executeCommand, hasCommand } = // await import('../command-registry.js');'/g
+      const { executeCommand, hasCommand } = // await import('../command-registry.js');'
       hasCommand.mockReturnValue(true);
       executeCommand.mockRejectedValue(new Error('Test error'));'
-// // // await import('../cli-main.js');'/g
+// // // await import('../cli-main.js');'
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
         expect.stringContaining('Error executing command => {'
       process.argv = ['node', 'claude-zen', 'agent'];'
 ))
-      const { executeCommand, hasCommand } = // // await import('../command-registry.js');'/g
+      const { executeCommand, hasCommand } = // // await import('../command-registry.js');'
       hasCommand.mockReturnValue(true);
       executeCommand.mockRejectedValue(new Error('Missing required argument'));'
-// // // await import('../cli-main.js');'/g
+// // // await import('../cli-main.js');'
       expect(consoleErrorSpy).toHaveBeenCalledWith(;)
         expect.stringContaining('Missing required argument'));'
     });

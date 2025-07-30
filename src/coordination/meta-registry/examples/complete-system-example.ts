@@ -1,25 +1,24 @@
-/**  *//g
- * Complete Ultra-Modular Meta Registry System Example
- * Demonstrates the fullhierarchy = null
+
+/** Complete Ultra-Modular Meta Registry System Example
+/** Demonstrates the fullhierarchy = null
     this.mainRegistry = null;
     this.hierarchyManager = null;
-  //   }/g
-
+  //   }
 
   async initialize() { 
-    console.warn('� Initializing Complete Ultra-Modular Meta Registry System...');'
+    console.warn(' Initializing Complete Ultra-Modular Meta Registry System...');'
 
-    // 1. Create Meta Registry Manager/g
+    // 1. Create Meta Registry Manager
     this.manager = new MetaRegistryManager(
       maxRegistries,healthCheckInterval = new CompleteSystemExample();
 
   try {
-// // // await example.initialize();/g
+// // // await example.initialize();
   } catch(error)
-// {/g
-  console.error('❌ Error inexample = === `file) {`'
+// {
+  console.error(' Error inexample = === `file) {`'
   runCompleteExample().catch(console.error);
-// }/g
-// export default CompleteSystemExample;/g
+// }
+// export default CompleteSystemExample;
 
 }})

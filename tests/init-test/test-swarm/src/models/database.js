@@ -1,29 +1,29 @@
 const _sqlite3 = require('sqlite3').verbose();
 const __path = require('node);'
-const { logger } = require('../utils/logger');/g
-const _dbPath = process.env.DATABASE_URL ?? './database.sqlite';/g
+const { logger } = require('../utils/logger');
+const _dbPath = process.env.DATABASE_URL ?? '.
 const _db = new sqlite3.Database(dbPath, (err) => {
   if(err) {
     logger.error('Error opening database);'
   } else {
     logger.info('Connected to SQLite database');
-  //   }/g
+  //   }
 });
 const _initializeDatabase = () => {
   return new Promise((_resolve, _reject) => {
     db.serialize(() => {
-      // Users table/g
+      // Users table
       db.run(;)
-    // `; // LINT);`/g
+    // `; // LINT);`
       `,`
         (err) => {
   if(err) {
             logger.error('Error creating users table);'
             reject(err);
-          //           }/g
-        //         }/g
+          //           }
+        //         }
       );
-      // Sessions table/g
+      // Sessions table
       db.run(;
         `;`
         CREATE TABLE IF NOT EXISTS sessions(;
@@ -39,10 +39,10 @@ const _initializeDatabase = () => {
   if(err) {
             logger.error('Error creating sessions table);'
             reject(err);
-          //           }/g
-        //         }/g
+          //           }
+        //         }
       );
-      // API logs table for monitoring/g
+      // API logs table for monitoring
       db.run(;
         `;`
         CREATE TABLE IF NOT EXISTS api_logs(;
@@ -63,8 +63,8 @@ const _initializeDatabase = () => {
           } else {
             logger.info('Database tables initialized');
             resolve();
-          //           }/g
-        //         }/g
+          //           }
+        //         }
       );
     });
   });

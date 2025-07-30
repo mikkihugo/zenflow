@@ -1,51 +1,50 @@
-/**  *//g
- * Tests for command-registry.js
- *//g
 
-import { jest  } from '@jest/globals';'/g
+/** Tests for command-registry.js
+
+import { jest  } from '@jest';
 import { commandRegistry,
 executeCommand,
 hasCommand,
 listCommands,
 registerCoreCommands,
 showAllCommands,
-showCommandHelp  } from '../command-registry.js''/g
-// Mock all command modules/g
-jest.mock('../simple-commands/init.js', () => (// {'/g
+showCommandHelp  } from '..
+// Mock all command modules
+jest.mock('../simple-commands/init.js', () => (// {'
   initCommand);
-// }/g
+// }
 ))
-jest.mock('../simple-commands/memory.js', () => (// {'/g
+jest.mock('../simple-commands/memory.js', () => (// {'
   memoryCommand);
-// }/g
+// }
 ))
-jest.mock('../simple-commands/agent.js', () => (// {'/g
+jest.mock('../simple-commands/agent.js', () => (// {'
   agentCommand);
-// }/g
+// }
 ))
-jest.mock('../simple-commands/task.js', () => (// {'/g
+jest.mock('../simple-commands/task.js', () => (// {'
   taskCommand);
-// }/g
+// }
 ))
-jest.mock('../simple-commands/swarm.js', () => (// {'/g
+jest.mock('../simple-commands/swarm.js', () => (// {'
   swarmCommand);
-// }/g
+// }
 ))
-jest.mock('../simple-commands/config.js', () => (// {'/g
+jest.mock('../simple-commands/config.js', () => (// {'
   configCommand);
-// }/g
+// }
 ))
-jest.mock('../simple-commands/status.js', () => ({ statusCommand: jest.fn()   }));'/g
-jest.mock('../simple-commands/mcp.js', () => ({ mcpCommand: jest.fn()   }));'/g
-jest.mock('../simple-commands/monitor.js', () => ({ monitorCommand: jest.fn()   }));'/g
-jest.mock('../simple-commands/start.js', () => ({ startCommand: jest.fn()   }));'/g
-jest.mock('../simple-commands/sparc.js', () => ({ sparcCommand: jest.fn()   }));'/g
-jest.mock('../simple-commands/batch-manager.js', () => ({ batchManagerCommand: jest.fn()   }));'/g
-jest.mock('../simple-commands/ruv-swarm.js', () => ({ ruvSwarmAction: jest.fn()   }));'/g
-jest.mock('../simple-commands/config-integration.js', () => ({ '/g
+jest.mock('../simple-commands/status.js', () => ({ statusCommand: jest.fn()   }));'
+jest.mock('../simple-commands/mcp.js', () => ({ mcpCommand: jest.fn()   }));'
+jest.mock('../simple-commands/monitor.js', () => ({ monitorCommand: jest.fn()   }));'
+jest.mock('../simple-commands/start.js', () => ({ startCommand: jest.fn()   }));'
+jest.mock('../simple-commands/sparc.js', () => ({ sparcCommand: jest.fn()   }));'
+jest.mock('../simple-commands/batch-manager.js', () => ({ batchManagerCommand: jest.fn()   }));'
+jest.mock('../simple-commands/ruv-swarm.js', () => ({ ruvSwarmAction: jest.fn()   }));'
+jest.mock('../simple-commands/config-integration.js', () => ({ '
   configIntegrationAction: jest.fn()   }))
 =>
-// {/g
+// {
   let consoleLogSpy;
   let consoleErrorSpy;
 
@@ -107,13 +106,13 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '/g
 
     test('should return true for registered commands', () => {'
       expect(hasCommand('init')).toBe(true);'
-    // expect(hasCommand('swarm')).toBe(true); // LINT: unreachable code removed'/g
+    // expect(hasCommand('swarm')).toBe(true); // LINT: unreachable code removed'
       expect(hasCommand('agent')).toBe(true);'
     });
 
     test('should return false for unregistered commands', () => {'
       expect(hasCommand('nonexistent')).toBe(false);'
-    // expect(hasCommand('')).toBe(false); // LINT: unreachable code removed'/g
+    // expect(hasCommand('')).toBe(false); // LINT: unreachable code removed'
       expect(hasCommand(null)).toBe(false);
     });
   });
@@ -124,12 +123,12 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '/g
     });
 
     test('should execute command handler with arguments', async() => {'
-      const { initCommand } = // await import('../simple-commands/init.js');'/g
-// // await executeCommand('init', ['--sparc'], { force => {'/g
+      const { initCommand } = // await import('../simple-commands/init.js');'
+// // await executeCommand('init', ['--sparc'], { force => {'
       // await expect(_executeCommand('unknown', [], {})).rejects.toThrow('Unknown command => {'/g)
-      const { swarmCommand } = // // await import('../simple-commands/swarm.js');'/g
+      const { swarmCommand } = // // await import('../simple-commands/swarm.js');'
       swarmCommand.mockRejectedValue(new Error('Command failed'));'
-// // // await expect(executeCommand('swarm', ['test'], {})).rejects.toThrow('Command failed');'/g
+// // // await expect(executeCommand('swarm', ['test'], {})).rejects.toThrow('Command failed');'
     });
   });
 
@@ -155,13 +154,13 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '/g
 
       const _output = consoleLogSpy.mock.calls.flat().join('\n');'
 
-      // Check for categories/g
+      // Check for categories
       expect(output).toContain('SWARM INTELLIGENCE COMMANDS');'
       expect(output).toContain('WORKFLOW AUTOMATION');'
       expect(output).toContain('DEVELOPMENT & TESTING');'
       expect(output).toContain('INFRASTRUCTURE');'
 
-      // Check for specific commands/g
+      // Check for specific commands
       expect(output).toContain('swarm');'
       expect(output).toContain('agent');'
       expect(output).toContain('task');'
@@ -173,7 +172,7 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '/g
   describe('listCommands', () => {'
     test('should return array of all command names', () => {'
       registerCoreCommands();
-    // const _commands = listCommands(); // LINT: unreachable code removed/g
+    // const _commands = listCommands(); // LINT: unreachable code removed
 
       expect(Array.isArray(commands)).toBe(true);
       expect(commands).toContain('init');'
@@ -184,7 +183,7 @@ jest.mock('../simple-commands/config-integration.js', () => ({ '/g
 
     test('should return empty array when no commands registered', () => {'
       commandRegistry.clear();
-    // const _commands = listCommands(); // LINT: unreachable code removed/g
+    // const _commands = listCommands(); // LINT: unreachable code removed
 
       expect(commands).toEqual([]);
     });

@@ -1,11 +1,10 @@
-/**  *//g
- * Start Wrapper Command Module
- * Converted from JavaScript to TypeScript
- *//g
 
-import { compat  } from '../runtime-detector.js';/g
-// start-wrapper.js - Wrapper to maintain backward compatibility with the new modular start command/g
-import { printError, printInfo, printSuccess  } from '../utils.js';/g
+/** Start Wrapper Command Module
+/** Converted from JavaScript to TypeScript
+
+import { compat  } from '..';
+// start-wrapper.js - Wrapper to maintain backward compatibility with the new modular start command
+import { printError, printInfo, printSuccess  } from '..';
 
 export async function startCommand(subArgs = subArgs.includes('--daemon')  ?? subArgs.includes('-d')  ?? flags.daemon;
 const _port =;
@@ -14,7 +13,7 @@ process.env.PORT ??
   getArgValue(subArgs, '--port') ??
   getArgValue(subArgs, '-p') ??
   3000;
-// Use same port for API - everything unified on single port/g
+// Use same port for API - everything unified on single port
 const _apiPort = flags['api-port'] ?? getArgValue(subArgs, '--api-port') ?? port;
 const _verbose = subArgs.includes('--verbose') ?? subArgs.includes('-v') ?? flags.verbose;
 const __ui = subArgs.includes('--ui') ?? subArgs.includes('-u') ?? flags.ui;
@@ -24,117 +23,114 @@ try {
     printSuccess('Starting Claude-Flow Orchestration System...');
     console.warn();
 
-    // Start integrated services(API + Dashboard + Queen Council)/g
+    // Start integrated services(API + Dashboard + Queen Council)
     const _services = [];
 
-    // 1. Start Claude Zen API server(schema-driven)/g
+    // 1. Start Claude Zen API server(schema-driven)
     try {
-      const { claudeZenServer } = // await import('../../api/claude-zen-server.js');/g
+      const { claudeZenServer } = // await import('../../api/claude-zen-server.js');
       claudeZenServer.port = apiPort;
-// // await claudeZenServer.start();/g
+// // await claudeZenServer.start();
       services.push('API Server');
-      printSuccess(`� API Server started on port ${apiPort}`);
-      printInfo(`�Documentation = // await import('./dashboard-command.js');`/g
-// // await startDashboard({ api = // await import('./queen-council.js');/g
-// // await queenCouncilCommand(['convene', '--auto', '--silent'], {  });/g
+      printSuccess(` API Server started on port ${apiPort}`);
+      printInfo(`Documentation = // await import('./dashboard-command.js');`
+// // await startDashboard({ api = // await import('./queen-council.js');
+// // await queenCouncilCommand(['convene', '--auto', '--silent'], {  });
       services.push('Queen Council');
-      printSuccess(`� Queen Council convened for strategic oversight`);
-    } catch(/* _error */) {/g
-      printWarning(`Queen Council auto-convenefailed = // await import('./simple-commands/web-server.js');`/g
-// const _server = awaitstartWebServer(port);/g
+      printSuccess(` Queen Council convened for strategic oversight`);
+    } catch(/* _error */) {
+      printWarning(`Queen Council auto-convenefailed = // await import('./simple-commands/web-server.js');`
+// const _server = awaitstartWebServer(port);
 
-        printSuccess(`� Web UI is running!`);
-        console.warn(`� Open your browser _to => {});`
+        printSuccess(` Web UI is running!`);
+        console.warn(` Open your browser _to => {});`
         return;
-    //   // LINT: unreachable code removed} catch(/* err */) {/g
-        printError('Failed to launch webUI = // await import('./simple-commands/web-server.js');'/g
+    //   // LINT: unreachable code removed} catch(/* err */) {
+        printError('Failed to launch webUI = // await import('./simple-commands/web-server.js');'
         const _webServer = new ClaudeCodeWebServer(port);
-// // await webServer.start();/g
-        printSuccess('� Claude Flow Web UI is running!');
-        console.warn(`� Open your browser to => {});`
+// // await webServer.start();
+        printSuccess(' Claude Flow Web UI is running!');
+        console.warn(` Open your browser to => {});`
         return;
-    //   // LINT: unreachable code removed} catch(/* err */) {/g
-        // If web UI fails, fall back to terminal UI/g
+    //   // LINT: unreachable code removed} catch(/* err */) {
+        // If web UI fails, fall back to terminal UI
         printWarning('Web UI failed, launching terminal UI...');
         try {
-          const { launchEnhancedUI } = // await import('./process-ui-enhanced.js');/g
-// // await launchEnhancedUI();/g
+          const { launchEnhancedUI } = // await import('./process-ui-enhanced.js');
+// // await launchEnhancedUI();
           return;
-    //   // LINT: unreachable code removed} catch(/* fallbackErr */) {/g
-          // If both fail, show error/g
+    //   // LINT: unreachable code removed} catch(/* fallbackErr */) {
+          // If both fail, show error
   printError('Failed to launchUI = ['memory', 'coordination'];'
     const _missingDirs = [];
 
     for (const dir of requiredDirs) {
       try {
-// // await node.stat(dir); /g
+// // await node.stat(dir); 
       } catch {
-        missingDirs.push(dir); //       }/g
-    //     }/g
+        missingDirs.push(dir); //       }
+    //     }
   if(missingDirs.length > 0) {
       printWarning('Missing requireddirectories = === 'windows' ? 'cmd.exe' ));'
 
-    // Task queue/g
+    // Task queue
     console.warn('    TaskQueue = compat.terminal.getPid();'
-// // await compat.safeCall(async() => {/g
+// // await compat.safeCall(async() => {
   if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
-// const _fs = awaitimport('fs/promises');/g
-// // await fs.writeFile('.claude-zen.pid', pid.toString());/g
-        //         }/g
+// const _fs = awaitimport('fs/promises');
+// // await fs.writeFile('.claude-zen.pid', pid.toString());
+        //         }
       });
       console.warn(`ProcessID = new AbortController();`
 
       compat.terminal.onSignal('SIGINT', () => {
-        console.warn('\n⏹  Shutting down orchestrator...');
+        console.warn('\n  Shutting down orchestrator...');
         cleanup();
         compat.terminal.exit(0);
       });
 
-      // Simple heartbeat to show system is alive/g
+      // Simple heartbeat to show system is alive
   if(!daemon) {
         const __heartbeat = setInterval(() => {
   if(verbose) {
             console.warn(`[${new Date().toISOString()}] Heartbeat - System healthy`);
-          //           }/g
-        }, 30000); // Every 30 seconds/g
+          //           }
+        }, 30000); // Every 30 seconds
 
-        // Wait indefinitely(until Ctrl+C)/g
-// // await new Promise(() => {});/g
-      //       }/g
-    //     }/g
-  } catch(/* _err */) {/g
+        // Wait indefinitely(until Ctrl+C)
+// // await new Promise(() => {});
+      //       }
+    //     }
+  } catch(/* _err */) {
     printError(`Failed to start orchestrationsystem = args.indexOf(flag);`
   if(index !== -1 && index < args.length - 1) {
-    // return args[index + 1];/g
-    //   // LINT: unreachable code removed}/g
-  // return null;/g
-// }/g
-
+    // return args[index + 1];
+    //   // LINT: unreachable code removed}
+  // return null;
+// }
 
 async function cleanup() {
-  // Clean up resources/g
+  // Clean up resources
   try {
-// await compat.safeCall(async() => {/g
+// await compat.safeCall(async() => {
   if(compat.runtime === 'node') {
         await node.remove('.claude-zen.pid');
       } else {
-// const _fs = awaitimport('fs/promises');/g
-// // await fs.unlink('.claude-zen.pid');/g
-      //       }/g
+// const _fs = awaitimport('fs/promises');
+// // await fs.unlink('.claude-zen.pid');
+      //       }
     });
   } catch {
-    // File might not exist/g
-  //   }/g
-
+    // File might not exist
+  //   }
 
   console.warn(' Terminal pool closed');
   console.warn(' Task queue cleared');
   console.warn(' Memory bank saved');
   console.warn(' Cleanup complete');
-// }/g
-
+// }
 
 function showStartHelp() {
   console.warn('Start the Claude Zen orchestration system with schema-driven API');
@@ -171,7 +167,7 @@ function showStartHelp() {
   console.warn('  The --ui flag launches an advanced multi-view interface with);'
   console.warn();
   console.warn('  Views(press 1-6 to switch):');
-  console.warn('    1. Process Management - Start/stop individual components');/g
+  console.warn('    1. Process Management - Start/stop individual components');
   console.warn('    2. System Status - Health metrics and resource usage');
   console.warn('    3. Orchestration - Agent and task management');
   console.warn('    4. Memory Bank - Namespace browser and operations');
@@ -192,13 +188,12 @@ function showStartHelp() {
   console.warn('  - Use Ctrl+C or "claude-zen stop" to shutdown');
   console.warn();
   console.warn('API Endpoints(when daemon is running):');
-  console.warn('  /docs                        # API documentation');/g
-  console.warn('  /api/schema                  # Schema introspection');/g
-  console.warn('  /health                      # Health check');/g
-  console.warn('  /api/adrs                    # Architectural decisions');/g
-  console.warn('  /api/prds                    # Product requirements');/g
-  console.warn('  /api/coordination/status     # Multi-service coordination');/g
-// }/g
-
+  console.warn('  /docs                        # API documentation');
+  console.warn('  /api/schema                  # Schema introspection');
+  console.warn('  /health                      # Health check');
+  console.warn('  /api/adrs                    # Architectural decisions');
+  console.warn('  /api/prds                    # Product requirements');
+  console.warn('  /api/coordination/status     # Multi-service coordination');
+// }
 
 }}}))))))))

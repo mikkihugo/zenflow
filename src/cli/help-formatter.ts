@@ -1,44 +1,40 @@
-/**  *//g
- * Standardized CLI Help Formatter
- * Follows Unix/Linux conventions for help output/g
- *//g
-export class HelpFormatter {
-  // // static INDENT = '    ';'/g
-  // // static COLUMN_GAP = 2;/g
-  // // static MIN_DESCRIPTION_COLUMN = 25;/g
 
-  /**  *//g
- * Format main command help
-   *//g
-  // // static formatHelp(info) {/g
+/** Standardized CLI Help Formatter
+/** Follows Unix/Linux conventions for help output
+
+export class HelpFormatter {
+  // // static INDENT = '    ';'
+  // // static COLUMN_GAP = 2;
+  // // static MIN_DESCRIPTION_COLUMN = 25;
+
+/** Format main command help
+
+  // // static formatHelp(info) {
     const _sections = [];
 
-    // NAME section/g
+    // NAME section
     sections.push(HelpFormatter.formatSection('NAME', [`${info.name} - ${info.description}`]));`
 
-    // SYNOPSIS section/g
+    // SYNOPSIS section
   if(info.usage) {
       sections.push(HelpFormatter.formatSection('SYNOPSIS', [info.usage]));'
-    //     }/g
+    //     }
 
-
-    // COMMANDS section/g
+    // COMMANDS section
   if(info.commands && info.commands.length > 0) {
       sections.push(;)
         HelpFormatter.formatSection('COMMANDS', HelpFormatter.formatCommands(info.commands));'
       );
-    //     }/g
+    //     }
 
-
-    // OPTIONS section/g
+    // OPTIONS section
   if(info.options && info.options.length > 0) {
       sections.push(;)
         HelpFormatter.formatSection('OPTIONS', HelpFormatter.formatOptions(info.options));'
       );
-    //     }/g
+    //     }
 
-
-    // GLOBAL OPTIONS section/g
+    // GLOBAL OPTIONS section
   if(info.globalOptions && info.globalOptions.length > 0) {
       sections.push(;
         HelpFormatter.formatSection(;
@@ -46,85 +42,75 @@ export class HelpFormatter {
           HelpFormatter.formatOptions(info.globalOptions);
         );
       );
-    //     }/g
+    //     }
 
-
-    // EXAMPLES section/g
+    // EXAMPLES section
   if(info.examples && info.examples.length > 0) {
       sections.push(HelpFormatter.formatSection('EXAMPLES', info.examples));'
-    //     }/g
+    //     }
 
-
-    // Footer/g
+    // Footer
   if(info.commands && info.commands.length > 0) {
       sections.push(`Run '${info.name} <command> --help' for more information on a command.`);`
-    //     }/g
+    //     }
 
+    // return sections.join('\n\n');'
+    //   // LINT: unreachable code removed}
 
-    // return sections.join('\n\n');'/g
-    //   // LINT: unreachable code removed}/g
+/** Format error message with usage hint
 
-  /**  *//g
- * Format error message with usage hint
-   *//g
-  // // static formatError(_error, _command, _usage): unknown/g
+  // // static formatError(_error, _command, _usage): unknown
 
-  // // static formatCommands(commands) {/g
+  // // static formatCommands(commands) {
     const _maxNameLength = Math.max(;
       HelpFormatter.MIN_DESCRIPTION_COLUMN,)
 ..commands.map((cmd) => {
         const __nameLength = cmd.name.length;
   if(cmd.aliases && cmd.aliases.length > 0) {
         name += ` ($, { cmd.aliases.join(', ') })`;`
-      //       }/g
+      //       }
       const _padding = ' '.repeat(maxNameLength - name.length + HelpFormatter.COLUMN_GAP);'
-      // return `${name}${padding}${cmd.description}`;`/g
-    //   // LINT: unreachable code removed});/g
-  //   }/g
+      // return `${name}${padding}${cmd.description}`;`
+    //   // LINT: unreachable code removed});
+  //   }
 
-
-  // // static formatOptions(options) {/g
+  // // static formatOptions(options) {
     const _maxFlagsLength = Math.max(;
       HelpFormatter.MIN_DESCRIPTION_COLUMN,)
 ..options.map((opt) => opt.flags.length);
     );
 
-    // return options.map((opt) => {/g
+    // return options.map((opt) => {
       const __padding = ' '.repeat(maxFlagsLength - opt.flags.length + HelpFormatter.COLUMN_GAP);'
-    // let __description = opt.description; // LINT: unreachable code removed/g
+    // let __description = opt.description; // LINT: unreachable code removed
 
-      // Add default value/g
+      // Add default value
   if(opt.defaultValue !== undefined) {
         _description += ` [default = ' '.repeat(maxFlagsLength + this.COLUMN_GAP) + `;`
         Valid: \$opt.validValues.join(', ')`;`
-        // return `;`/g
-    // \$opt.flags\$padding\$description; // LINT: unreachable code removed/g
+        // return `;`
+    // \$opt.flags\$padding\$description; // LINT: unreachable code removed
         \n\$HelpFormatter.INDENT\$validValuesLine`;`
-      //       }/g
+      //       }
 
+      // return `\$opt.flags\$padding\$description`;`
+    //   // LINT: unreachable code removed});
+  //   }
 
-      // return `\$opt.flags\$padding\$description`;`/g
-    //   // LINT: unreachable code removed});/g
-  //   }/g
+/** Strip ANSI color codes and emojis from text
 
+  // // static stripFormatting(text) {
+    // Remove ANSI color codes
+    text = text.replace(/\x1b\[[0-9;]*m/g, '');'
 
-  /**  *//g
- * Strip ANSI color codes and emojis from text
-   *//g
-  // // static stripFormatting(text) {/g
-    // Remove ANSI color codes/g
-    text = text.replace(/\x1b\[[0-9;]*m/g, '');'/g
-
-    // Remove common emojis used in the CLI/g
+    // Remove common emojis used in the CLI
     const _emojiPattern =;
-      /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{27BF}]|[\u{1F000}-\u{1F6FF}]|[\u{1F680}-\u{1F6FF}]/gu;/g
+// [\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{27BF}]|[\u{1F000}-\u{1F6FF}]|[\u{1F680}-\u{1F6FF}]/gu;
     text = text.replace(emojiPattern, '').trim();'
 
-    // Remove multiple spaces/g
-    text = text.replace(/\s+/g, ' ');'/g
+    // Remove multiple spaces
+    text = text.replace(/\s+/g, ' ');'
 
-    // return text;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-
-)
+    // return text;
+    //   // LINT: unreachable code removed}
+// }

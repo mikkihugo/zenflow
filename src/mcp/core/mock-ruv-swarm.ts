@@ -1,23 +1,22 @@
-/**  *//g
+
  * @fileoverview Mock RuvSwarm implementation for testing
- * Provides basic functionality when ruv-swarm is not available
- *//g
+/** Provides basic functionality when ruv-swarm is not available
+
 export class RuvSwarm {
   constructor(options = {}) {
     this.options = options;
     this.swarms = new Map();
     console.warn('[Mock] Using mock RuvSwarm implementation');'
-  //   }/g
-
+  //   }
 
   async createSwarm(config) { 
     const _swarm = new MockSwarm(config);
     this.swarms.set(config.id, swarm);
-    // return swarm;/g
-    //   // LINT: unreachable code removed}/g
+    // return swarm;
+    //   // LINT: unreachable code removed}
 
   getSwarms() }
-    // return Array.from(this.swarms.values());/g
+    // return Array.from(this.swarms.values());
 
 class MockSwarm {
   constructor(config = config.id;
@@ -33,24 +32,21 @@ class MockSwarm {
   this;
 
   created = new Date().toISOString();
-// }/g
-
+// }
 
 getAgents();
-  // return this.agents;/g
+  // return this.agents;
 
 async;
 addAgent(agentConfig);
 
   this.agents.push(agentConfig);
-  // return agentConfig;/g
+  // return agentConfig;
 
 getUptime();
-  // return Date.now() - new Date(this.created).getTime();/g
+  // return Date.now() - new Date(this.created).getTime();
 
 async;
 cleanup();
   this.agents = [];
-// }/g
-
-)
+// }

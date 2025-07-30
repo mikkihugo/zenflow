@@ -1,254 +1,253 @@
-/\*\*/g
- * Hive Mind Types;
- * Multi-Queen coordination and persistent intelligence system;
- *//g
+
+/** Hive Mind Types;
+/** Multi-Queen coordination and persistent intelligence system;
+
 import type { Identifiable,
 JSONObject,
 LifecycleManager,
 ResourceUsage,
-TypedEventEmitter  } from './core'/g
+TypedEventEmitter  } from '.
 
-import type { QueenMetrics  } from './queen';/g
+import type { QueenMetrics  } from '.';
 
-// =============================================================================/g
-// HIVE MIND CORE TYPES/g
-// =============================================================================/g
+// =============================================================================
+// HIVE MIND CORE TYPES
+// =============================================================================
 
 export type HiveTopology = 'mesh' | 'hierarchical' | 'ring' | 'star' | 'hybrid';
 export type CoordinationStrategy = 'centralized' | 'distributed' | 'hybrid' | 'autonomous';
 export type DecisionMaking = 'consensus' | 'majority' | 'weighted' | 'expert' | 'autocratic';
 
-// export // interface HiveConfig {/g
-//   // Core configurationname = ============================================================================/g
-// // HIVE STATE & COORDINATION/g
-// // =============================================================================/g
-// /g
-// export type HiveStatus = 'initializing' | 'active' | 'busy' | 'degraded' | 'maintenance' | 'offline' | 'error'/g
-// /g
-// export interface HiveState {status = ============================================================================/g
-// // KNOWLEDGE MANAGEMENT/g
-// // =============================================================================/g
-// /g
-// export interface KnowledgeNode extends Identifiable {type = ============================================================================/g
-// // DECISION MAKING/g
-// // =============================================================================/g
-// /g
-// export interface Decision extends Identifiable {type = ============================================================================/g
-// // LEARNING & ADAPTATION/g
-// // =============================================================================/g
-// /g
-// export interface LearningEvent extends Identifiable {type = ============================================================================/g
-// // HIVE MIND EVENTS/g
-// // =============================================================================/g
-// /g
-// export interface HiveEvents {/g
-//   // Lifecycle events/g
-//   'initialized': () => void;/g
-//   'started': () => void;/g
-//   'stopped': () => void;/g
-//   'error': (error = > void;/g
-// // Queen events/g
-// ('queen-joined');/g
-// : (queen = > void/g
-// ('queen-left')/g
-// : (queenId = > void/g
-// ('queen-failed')/g
-// : (queenId = > void/g
-// ('queen-recovered')/g
-// : (queenId = > void/g
-// // Task events/g
-// ('task-submitted')/g
-// : (task = > void/g
-// ('task-assigned')/g
-// : (taskId = > void/g
-// ('task-completed')/g
-// : (taskId = > void/g
-// ('task-failed')/g
-// : (taskId = > void/g
-// ('consensus-reached')/g
-// : (consensus = > void/g
-// // Coordination events/g
-// ('coordination-started')/g
-// : (context = > void/g
-// ('coordination-completed')/g
-// : (context = > void/g
-// ('decision-made')/g
-// : (decision = > void/g
-// // Learning events/g
-// ('knowledge-updated')/g
-// : (nodeId = > void/g
-// ('pattern-discovered')/g
-// : (pattern = > void/g
-// ('adaptation-triggered')/g
-// : (strategy = > void/g
-// ('improvement-detected')/g
-// : (metric = > void/g
-// // System events/g
-// ('health-changed')/g
-// : (oldHealth = > void/g
-// ('performance-alert')/g
-// : (metric = > void/g
-// ('resource-warning')/g
-// : (resource = > void/g
-// ('optimization-completed')/g
-// : (improvements = > void/g
-// // }/g
-// =============================================================================/g
-// HIVE MIND INTERFACE/g
-// =============================================================================/g
+// export // interface HiveConfig {
+//   // Core configurationname = ============================================================================
+// // HIVE STATE & COORDINATION
+// // =============================================================================
 
-// export // interface HiveMind extends TypedEventEmitter<HiveEvents>, LifecycleManager, Identifiable {/g
-//   // Configuration/g
-//   readonlyconfig = ============================================================================/g
-// // ANALYTICS AND REPORTING/g
-// // =============================================================================/g
-// /g
-// export interface HiveMetrics {/g
-//   // Overall performance/g
-//   throughput, // tasks per hour/g
-//   successRate, // 0-1/g
-//   averageResponseTime, // milliseconds/g
-//   efficiency, // 0-1/g
-// /g
-//   // Queen performance/g
-//   queenMetrics: Record<UUID, QueenMetrics>;/g
-//   queenCollaboration: Record<string, number>;/g
-//   queenSpecialization: Record<string, number>;/g
-// // Task metrics/g
-// taskDistribution: Record<string, number>;/g
-// taskComplexity: Record<string, number>;/g
-// taskSuccess: Record<string, number>;/g
-// // Resource utilization/g
-// // resourceUsage: ResourceUsage/g
-// // resourceEfficiency: number/g
-// resourceBottlenecks;/g
-// // Learning metrics/g
-// // knowledgeGrowth: number/g
-// // learningVelocity: number/g
-// // adaptationFrequency: number/g
-// // improvementRate: number/g
-// // System health/g
-// // healthScore: number/g
-// // availabilityRate: number/g
-// // errorRate: number/g
-// // recoveryTime: number/g
-// // Coordination metrics/g
-// // consensusRate: number/g
-// // decisionQuality: number/g
-// // collaborationEffectiveness: number/g
-// // coordinationOverhead: number/g
-// // }/g
-// export // interface HiveHealthReport {/g
-//   overall: 'healthy' | 'degraded' | 'critical';/g
-//   components: {/g
-//     // queens: ComponentHealth/g
-//     // coordination: ComponentHealth/g
-//     // memory: ComponentHealth/g
-//     // knowledge: ComponentHealth/g
-//     // performance: ComponentHealth/g
-//   };/g
+// export type HiveStatus = 'initializing' | 'active' | 'busy' | 'degraded' | 'maintenance' | 'offline' | 'error'
+
+// export interface HiveState {status = ============================================================================
+// // KNOWLEDGE MANAGEMENT
+// // =============================================================================
+
+// export interface KnowledgeNode extends Identifiable {type = ============================================================================
+// // DECISION MAKING
+// // =============================================================================
+
+// export interface Decision extends Identifiable {type = ============================================================================
+// // LEARNING & ADAPTATION
+// // =============================================================================
+
+// export interface LearningEvent extends Identifiable {type = ============================================================================
+// // HIVE MIND EVENTS
+// // =============================================================================
+
+// export interface HiveEvents {
+//   // Lifecycle events
+//   'initialized': () => void;
+//   'started': () => void;
+//   'stopped': () => void;
+//   'error': (error = > void;
+// // Queen events
+// ('queen-joined');
+// : (queen = > void
+// ('queen-left')
+// : (queenId = > void
+// ('queen-failed')
+// : (queenId = > void
+// ('queen-recovered')
+// : (queenId = > void
+// // Task events
+// ('task-submitted')
+// : (task = > void
+// ('task-assigned')
+// : (taskId = > void
+// ('task-completed')
+// : (taskId = > void
+// ('task-failed')
+// : (taskId = > void
+// ('consensus-reached')
+// : (consensus = > void
+// // Coordination events
+// ('coordination-started')
+// : (context = > void
+// ('coordination-completed')
+// : (context = > void
+// ('decision-made')
+// : (decision = > void
+// // Learning events
+// ('knowledge-updated')
+// : (nodeId = > void
+// ('pattern-discovered')
+// : (pattern = > void
+// ('adaptation-triggered')
+// : (strategy = > void
+// ('improvement-detected')
+// : (metric = > void
+// // System events
+// ('health-changed')
+// : (oldHealth = > void
+// ('performance-alert')
+// : (metric = > void
+// ('resource-warning')
+// : (resource = > void
+// ('optimization-completed')
+// : (improvements = > void
+// // }
+// =============================================================================
+// HIVE MIND INTERFACE
+// =============================================================================
+
+// export // interface HiveMind extends TypedEventEmitter<HiveEvents>, LifecycleManager, Identifiable {
+//   // Configuration
+//   readonlyconfig = ============================================================================
+// // ANALYTICS AND REPORTING
+// // =============================================================================
+
+// export interface HiveMetrics {
+//   // Overall performance
+//   throughput, // tasks per hour
+//   successRate, // 0-1
+//   averageResponseTime, // milliseconds
+//   efficiency, // 0-1
+
+//   // Queen performance
+//   queenMetrics: Record<UUID, QueenMetrics>;
+//   queenCollaboration: Record<string, number>;
+//   queenSpecialization: Record<string, number>;
+// // Task metrics
+// taskDistribution: Record<string, number>;
+// taskComplexity: Record<string, number>;
+// taskSuccess: Record<string, number>;
+// // Resource utilization
+// // resourceUsage: ResourceUsage
+// // resourceEfficiency: number
+// resourceBottlenecks;
+// // Learning metrics
+// // knowledgeGrowth: number
+// // learningVelocity: number
+// // adaptationFrequency: number
+// // improvementRate: number
+// // System health
+// // healthScore: number
+// // availabilityRate: number
+// // errorRate: number
+// // recoveryTime: number
+// // Coordination metrics
+// // consensusRate: number
+// // decisionQuality: number
+// // collaborationEffectiveness: number
+// // coordinationOverhead: number
+// // }
+// export // interface HiveHealthReport {
+//   overall: 'healthy' | 'degraded' | 'critical';
+//   components: {
+//     // queens: ComponentHealth
+//     // coordination: ComponentHealth
+//     // memory: ComponentHealth
+//     // knowledge: ComponentHealth
+//     // performance: ComponentHealth
+//   };
   issues;
   recommendations;
-  // trends: HealthTrends/g
-  // predictions: HealthPredictions/g
-// }/g
-// export // interface ComponentHealth {/g
-//   status: 'healthy' | 'degraded' | 'critical';/g
-//   score, // 0-1/g
-//   // metrics: JSONObject/g
-//   issues;/g
-//   // lastCheck: Date/g
-// // }/g
-// export // interface HealthIssue {/g
-//   severity: 'low' | 'medium' | 'high' | 'critical';/g
-//   // component: string/g
-//   // description: string/g
-//   // impact: string/g
-//   // solution: string/g
-//   // autoFixable: boolean/g
-//   // estimatedFixTime: number/g
-// // }/g
-// export // interface HealthTrends {/g
-//   performance; // time series/g
-//   reliability; // time series/g
-//   efficiency; // time series/g
-//   resourceUsage; // time series/g
-//   timestamps;/g
-// // }/g
-// export // interface HealthPredictions {/g
-//   nextIssues: {/g
-//     // issue: string/g
-//     // probability: number/g
-//     // timeframe: string/g
-//     prevention;/g
-//   }[];/g
+  // trends: HealthTrends
+  // predictions: HealthPredictions
+// }
+// export // interface ComponentHealth {
+//   status: 'healthy' | 'degraded' | 'critical';
+//   score, // 0-1
+//   // metrics: JSONObject
+//   issues;
+//   // lastCheck: Date
+// // }
+// export // interface HealthIssue {
+//   severity: 'low' | 'medium' | 'high' | 'critical';
+//   // component: string
+//   // description: string
+//   // impact: string
+//   // solution: string
+//   // autoFixable: boolean
+//   // estimatedFixTime: number
+// // }
+// export // interface HealthTrends {
+//   performance; // time series
+//   reliability; // time series
+//   efficiency; // time series
+//   resourceUsage; // time series
+//   timestamps;
+// // }
+// export // interface HealthPredictions {
+//   nextIssues: {
+//     // issue: string
+//     // probability: number
+//     // timeframe: string
+//     prevention;
+//   }[];
   capacityProjections: {
-    // metric: string/g
-    // currentValue: number/g
-    // projectedValue: number/g
-    // timeframe: string/g
-    // confidence: number/g
+    // metric: string
+    // currentValue: number
+    // projectedValue: number
+    // timeframe: string
+    // confidence: number
   }[];
   maintenanceRecommendations: {
-    // action: string/g
+    // action: string
     priority: 'low' | 'medium' | 'high';
-    // benefit: string/g
-    // effort: string/g
+    // benefit: string
+    // effort: string
   }[];
-// }/g
-// export // interface PerformanceAnalysis {/g
-//   bottlenecks: {/g
-//     // component: string/g
-//     // severity: number/g
-//     // impact: string/g
-//     solutions;/g
-//   }[];/g
+// }
+// export // interface PerformanceAnalysis {
+//   bottlenecks: {
+//     // component: string
+//     // severity: number
+//     // impact: string
+//     solutions;
+//   }[];
   optimizations: {
-    // opportunity: string/g
-    // potential: number/g
-    // difficulty: string/g
+    // opportunity: string
+    // potential: number
+    // difficulty: string
     implementation;
   }[];
   benchmarks: {
-    // metric: string/g
-    // current: number/g
-    // target: number/g
-    // industry: number/g
-    // percentile: number/g
+    // metric: string
+    // current: number
+    // target: number
+    // industry: number
+    // percentile: number
   }[];
   trends: {
-    // metric: string/g
+    // metric: string
     direction: 'improving' | 'stable' | 'degrading';
-    // rate: number/g
-    // projection: number/g
+    // rate: number
+    // projection: number
   }[];
-// }/g
-// export // interface PredictiveInsights {/g
-//   workloadForecasts: {/g
-//     // timeframe: string/g
-//     // expectedLoad: number/g
-//     // confidence: number/g
-//     factors;/g
-//   }[];/g
+// }
+// export // interface PredictiveInsights {
+//   workloadForecasts: {
+//     // timeframe: string
+//     // expectedLoad: number
+//     // confidence: number
+//     factors;
+//   }[];
   resourceNeeds: {
-    // resource: string/g
-    // currentUsage: number/g
-    // projectedUsage: number/g
-    // recommendation: string/g
+    // resource: string
+    // currentUsage: number
+    // projectedUsage: number
+    // recommendation: string
   }[];
   riskAssessments: {
-    // risk: string/g
-    // probability: number/g
-    // impact: string/g
+    // risk: string
+    // probability: number
+    // impact: string
     mitigation;
   }[];
   opportunities: {
-    // opportunity: string/g
-    // potential: number/g
+    // opportunity: string
+    // potential: number
     requirements;
-    // timeline: string/g
+    // timeline: string
   }[];
-// }/g
-
+// }
 
 }}}}}})))))))))))))))))))))

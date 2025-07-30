@@ -1,7 +1,6 @@
-/**  *//g
- * Memory & RAG(Retrieval Augmented Generation) Plugin
- * Provides intelligent memory and retrieval capabilities for meta registries
- *//g
+
+/** Memory & RAG(Retrieval Augmented Generation) Plugin
+/** Provides intelligent memory and retrieval capabilities for meta registries
 
 import { EventEmitter  } from 'events';'
 import fs from 'fs-extra';'
@@ -9,7 +8,7 @@ import { nanoid  } from 'nanoid';'
 import path from 'path';'
 
 export class MemoryRAGPlugin extends EventEmitter {
-  // // static metadata = {name = null;/g
+  // // static metadata = {name = null;
   this;
 
   memoryBank = new Map();
@@ -27,241 +26,231 @@ export class MemoryRAGPlugin extends EventEmitter {
   learningHistory = [];
   this;
 
-  vectorStore = new Map(); // Simplified vector storage/g
+  vectorStore = new Map(); // Simplified vector storage
   this;
 
   semanticCache = new Map();
-// }/g
+// }
 async;
 initialize(registry, (options = {}));
 : unknown
-// {/g
+// {
   this.registry = registry;
   this.options = {memoryPath = = false,vectorDimensions = path.join(this.options.memoryPath, 'memory-bank.json');'
   this.knowledgeFile = path.join(this.options.memoryPath, 'knowledge-graph.json');'
   this.patternsFile = path.join(this.options.memoryPath, 'patterns.json');'
-// }/g
+// }
 async;
 registerPluginServices();
-// {/g
-// // await this.registry.register('service = data;'/g
+// {
+// // await this.registry.register('service = data;'
   // Enhance with historical context/g)
-// const _context = awaitthis.getRelevantContext(key, value);/g
+// const _context = awaitthis.getRelevantContext(key, value);
   if(context.length > 0) {
     value._context = context;
     options.tags = [...(options.tags ?? []), 'context-enhanced'];'
-  //   }/g
-  // Suggest additional tags based on patterns/g
-// const _suggestedTags = awaitthis.suggestTags(key, value);/g
+  //   }
+  // Suggest additional tags based on patterns
+// const _suggestedTags = awaitthis.suggestTags(key, value);
   if(suggestedTags.length > 0) {
     options.tags = [...(options.tags ?? []), ...suggestedTags];
     value._suggestedTags = suggestedTags;
-  //   }/g
-  // Add semantic embedding/g
-// const _embedding = awaitthis.generateEmbedding(key, value);/g
+  //   }
+  // Add semantic embedding
+// const _embedding = awaitthis.generateEmbedding(key, value);
   value._embedding = embedding;
-  // return data;/g
-// }/g
+  // return data;
+// }
 async;
 learnFromRegistration(data);
 : unknown
-// {/g
+// {
   const { key, value, options, result } = data;
-  // Store in memory bank/g
-// // // await this.storeMemory({type = data;/g
+  // Store in memory bank
+// // // await this.storeMemory({type = data;
   // Expand query with semantic understanding/g)
-// const _expandedQuery = awaitthis.expandQuery(query);/g
+// const _expandedQuery = awaitthis.expandQuery(query);
   Object.assign(data.query, expandedQuery);
-  // Add context to options/g
-// const _context = awaitthis.getRelevantContext('discovery', query);'/g
+  // Add context to options
+// const _context = awaitthis.getRelevantContext('discovery', query);'
   if(context.length > 0) {
     data.options.context = context;
-  //   }/g
-  // return data;/g
-// }/g
+  //   }
+  // return data;
+// }
 async;
 learnFromDiscovery(data);
 : unknown
-// {/g
+// {
     const { query, options, result } = data;
 
-    // Store discovery pattern/g
-// // // await this.storeMemory({ type = nanoid();/g
+    // Store discovery pattern
+// // // await this.storeMemory({ type = nanoid();
     const _memory = {id = {  }) {
     const _memories = Array.from(this.memoryBank.values());
     const _relevantMemories = [];
   for(const memory of memories) {
-// const _relevance = awaitthis.calculateRelevance(memory, query); /g
+// const _relevance = awaitthis.calculateRelevance(memory, query); 
       if(relevance > (options.threshold  ?? 0.5)) {
         relevantMemories.push({ memory,
           relevance,
           age => {)
-      const _scoreA = a.relevance - (a.age / 1000000); // Slight recency bias/g
-      const _scoreB = b.relevance - (b.age / 1000000) {;/g
-      // return scoreB - scoreA;/g
-    //   // LINT: unreachable code removed  });/g
+      const _scoreA = a.relevance - (a.age / 1000000); // Slight recency bias
+      const _scoreB = b.relevance - (b.age / 1000000) {;
+      // return scoreB - scoreA;
+    //   // LINT: unreachable code removed  });
 
-    // return relevantMemories.slice(0, options.limit  ?? 10);/g
-    //   // LINT: unreachable code removed}/g
+    // return relevantMemories.slice(0, options.limit  ?? 10);
+    //   // LINT: unreachable code removed}
 
-  // Knowledge graph management/g
+  // Knowledge graph management
   async updateKnowledgeGraph(entityKey, entityValue, operation) { 
     const _node = this.knowledgeGraph.get(entityKey);
 
     if(!node) 
       node = {key = new Date();
 
-    // Find and create connections/g
-// // // await this.findConnections(entityKey, entityValue);/g
-    // Persist knowledge graph/g
-// // // await this.persistKnowledgeGraph();/g
-  //   }/g
-
+    // Find and create connections
+// // // await this.findConnections(entityKey, entityValue);
+    // Persist knowledge graph
+// // // await this.persistKnowledgeGraph();
+  //   }
 
   async findConnections(entityKey, entityValue) { 
     const _connections = [];
 
-    // Find similar entities/g
+    // Find similar entities
     for (const [key, node] of this.knowledgeGraph.entries()) 
   if(key !== entityKey) {
-// const _similarity = awaitthis.calculateSimilarity(entityValue, node.value); /g
+// const _similarity = awaitthis.calculateSimilarity(entityValue, node.value); 
   if(similarity > this.options.patternMatchThreshold) {
-          connections.push({ key, similarity   }); // Create bidirectional connection/g
+          connections.push({ key, similarity   }); // Create bidirectional connection
           node.connections.add(entityKey) {;
           const _currentNode = this.knowledgeGraph.get(entityKey);
   if(currentNode) {
             currentNode.connections.add(key);
-          //           }/g
-        //         }/g
-      //       }/g
-    //     }/g
+          //           }
+        //         }
+      //       }
+    //     }
 
+    // return connections;
+    //   // LINT: unreachable code removed}
 
-    // return connections;/g
-    //   // LINT: unreachable code removed}/g
-
-  // Pattern learning and recognition/g
+  // Pattern learning and recognition
   async learnPatterns(patternType, data) { 
     const _patternKey = `$patternType}-${this.generatePatternSignature(data)}`;`
 
     const _pattern = this.patterns.get(patternKey);
   if(!pattern) {
       pattern = {type = pattern.examples.slice(-10);
-    //     }/g
+    //     }
 
-
-    // Calculate confidence/g
-    pattern.confidence = Math.min(pattern.occurrences / 10, 1);/g
+    // Calculate confidence
+    pattern.confidence = Math.min(pattern.occurrences / 10, 1);
     pattern.lastSeen = new Date();
 
-    // Persist patterns/g
-// // // await this.persistPatterns();/g
+    // Persist patterns
+// // // await this.persistPatterns();
     this.emit('patternLearned', { patternKey, pattern });'
-  //   }/g
+  //   }
   generatePatternSignature(data) {
-    // Generate a signature for pattern matching/g
+    // Generate a signature for pattern matching
     const _signature = {dataType = = 'object') return typeof value;'
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     const _structure = {};
     for (const [key, val] of Object.entries(value)) {
-      structure[key] = typeof val; //     }/g
-    // return structure; /g
-    //   // LINT: unreachable code removed}/g
+      structure[key] = typeof val; //     }
+    // return structure; 
+    //   // LINT: unreachable code removed}
 
-  // Context management/g
+  // Context management
   async getCurrentContext() { 
     const _contextWindow = this.learningHistory.slice(-this.options.contextWindowSize);
 
-    // return recentOperations = > ({operation = [];/g
-    // ; // LINT);/g
+    // return recentOperations = > ({operation = [];
+    // ; // LINT);
   if(node && node.connections.size > 0) {
   for(const connectionKey of node.connections) {
         const _connectedNode = this.knowledgeGraph.get(connectionKey); if(connectedNode) {
           contextEntries.push({
-            //             type = { ...originalQuery }; /g
+            //             type = { ...originalQuery }; 
 
     // Add semantic expansion based on learned patterns/g)
-// const _relatedPatterns = awaitthis.findRelatedPatterns(originalQuery) {;/g
+// const _relatedPatterns = awaitthis.findRelatedPatterns(originalQuery) {;
   if(relatedPatterns.length > 0) {
       expandedQuery._semanticExpansion = relatedPatterns;
-    //     }/g
+    //     }
 
-
-    // Add context-based expansion/g
+    // Add context-based expansion
   if(originalQuery.tags) {
-// const _relatedTags = awaitthis.findRelatedTags(originalQuery.tags);/g
+// const _relatedTags = awaitthis.findRelatedTags(originalQuery.tags);
   if(relatedTags.length > 0) {
         expandedQuery.tags = [...originalQuery.tags, ...relatedTags];
         expandedQuery._expandedTags = relatedTags;
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
-
-    // return expandedQuery;/g
-    //   // LINT: unreachable code removed}/g
+    // return expandedQuery;
+    //   // LINT: unreachable code removed}
 
   async suggestTags(entityKey, entityValue) { 
     const _suggestedTags = [];
 
-    // Pattern-based suggestions/g
-// const _relevantPatterns = awaitthis.findRelevantPatterns( key,value = this.extractCommonTags(pattern.examples);/g
+    // Pattern-based suggestions
+// const _relevantPatterns = awaitthis.findRelevantPatterns( key,value = this.extractCommonTags(pattern.examples);
         suggestedTags.push(...commonTags);
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
-
-    // Knowledge graph suggestions/g
-// const _connections = awaitthis.findConnections(entityKey, entityValue);/g
+    // Knowledge graph suggestions
+// const _connections = awaitthis.findConnections(entityKey, entityValue);
   for(const connection of connections) {
       const _connectedNode = this.knowledgeGraph.get(connection.key); if(connectedNode && connectedNode.value.tags) {
-        suggestedTags.push(...connectedNode.value.tags); //       }/g
-    //     }/g
+        suggestedTags.push(...connectedNode.value.tags); //       }
+    //     }
 
+    // Remove duplicates and return top suggestions
+    // return [...new Set(suggestedTags) {].slice(0, 5);
+    //   // LINT: unreachable code removed}
 
-    // Remove duplicates and return top suggestions/g
-    // return [...new Set(suggestedTags) {].slice(0, 5);/g
-    //   // LINT: unreachable code removed}/g
-
-  // Utility methods/g
+  // Utility methods
   async calculateRelevance(memory, query) { 
     const _relevance = 0;
 
-    // Type match/g
+    // Type match
     if(memory.type === query.type) 
       relevance += 0.3;
-    //     }/g
+    //     }
 
-
-    // Key similarity/g
+    // Key similarity
   if(memory.key && query.key) {
       relevance += this.calculateStringSimilarity(memory.key, query.key) * 0.3
-    //     }/g
+    //     }
 
-
-    // Value similarity/g
+    // Value similarity
   if(memory.value && query.value) {
-      relevance += // // await this.calculateSimilarity(memory.value, query.value) * 0.4/g
-    //     }/g
+      relevance += // // await this.calculateSimilarity(memory.value, query.value) * 0.4
+    //     }
 
-
-    // return Math.min(relevance, 1);/g
-    //   // LINT: unreachable code removed}/g
+    // return Math.min(relevance, 1);
+    //   // LINT: unreachable code removed}
 
   async calculateSimilarity(value1, value2) { 
-    // Simplified similarity calculation/g
+    // Simplified similarity calculation
     const _str1 = JSON.stringify(value1).toLowerCase();
     const _str2 = JSON.stringify(value2).toLowerCase();
-    // return this.calculateStringSimilarity(str1, str2);/g
-    //   // LINT: unreachable code removed}/g
+    // return this.calculateStringSimilarity(str1, str2);
+    //   // LINT: unreachable code removed}
 
   calculateStringSimilarity(str1, str2) 
-    // Levenshtein distance-based similarity/g
+    // Levenshtein distance-based similarity
     const _maxLen = Math.max(str1.length, str2.length);
     if(maxLen === 0) return 1;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     const _distance = this.levenshteinDistance(str1, str2);
-    // return 1 - (distance / maxLen);/g
-    //   // LINT: unreachable code removed}/g
+    // return 1 - (distance / maxLen);
+    //   // LINT: unreachable code removed}
   levenshteinDistance(str1, str2) {
     const _matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
   for(let i = 0; i <= str1.length; i++) {matrix[0][i] = i;
@@ -273,263 +262,242 @@ learnFromDiscovery(data);
           matrix[j - 1][i] + 1,
           matrix[j - 1][i - 1] + indicator;)
         );
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
+    // return matrix[str2.length][str1.length];
+    //   // LINT: unreachable code removed}
 
-    // return matrix[str2.length][str1.length];/g
-    //   // LINT: unreachable code removed}/g
-
-  // Simplified embedding generation/g
+  // Simplified embedding generation
   async generateEmbedding(key, value) { 
-    // In a real implementation, this would use a proper embedding model/g
+    // In a real implementation, this would use a proper embedding model
     const _text = `$key} ${JSON.stringify(value)}`.toLowerCase();`
     const _embedding = new Array(this.options.vectorDimensions).fill(0);
   for(let i = 0; i < text.length; i++) {
       const _charCode = text.charCodeAt(i);
       embedding[i % this.options.vectorDimensions] += charCode;
-    //     }/g
+    //     }
 
-
-    // Normalize/g
+    // Normalize
     const _magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0))
-    // return magnitude > 0 ? embedding.map(val => val / magnitude) ;/g
-    //   // LINT: unreachable code removed}/g
+    // return magnitude > 0 ? embedding.map(val => val / magnitude) ;
+    //   // LINT: unreachable code removed}
 
-  // Learning process/g
+  // Learning process
   startLearningProcess() ;
     this.learningInterval = setInterval(() => {
       this.performLearningCycle();
-    }, 60000); // Learn every minute/g
+    }, 60000); // Learn every minute
 
   async performLearningCycle() ;
     try {
-      // Analyze recent patterns/g
-// // await this.analyzeRecentPatterns();/g
-      // Optimize knowledge graph/g
-// // // await this.optimizeKnowledgeGraph();/g
-      // Update pattern confidences/g
-// // // await this.updatePatternConfidences();/g
+      // Analyze recent patterns
+// // await this.analyzeRecentPatterns();
+      // Optimize knowledge graph
+// // // await this.optimizeKnowledgeGraph();
+      // Update pattern confidences
+// // // await this.updatePatternConfidences();
       this.emit('learningCycleCompleted');'
     } catch(error) {
       this.emit('learningError', error);'
-    //     }/g
-
+    //     }
 
   async analyzeRecentPatterns() { 
     const _recentMemories = Array.from(this.memoryBank.values());
-filter(memory => Date.now() - memory.stored.getTime() < 3600000) // Last hour/g
+filter(memory => Date.now() - memory.stored.getTime() < 3600000) // Last hour
 slice(-20);
 
     for (const memory of recentMemories) 
-// // // await this.learnPatterns(memory.type, memory); /g
-    //     }/g
-  //   }/g
+// // // await this.learnPatterns(memory.type, memory); 
+    //     }
+  //   }
 
-
-  async optimizeKnowledgeGraph() ; // Remove weak connections/g
+  async optimizeKnowledgeGraph() ; // Remove weak connections
   for(const [key, node] of this.knowledgeGraph.entries() {) {
       const _weakConnections = [];
   for(const connectionKey of node.connections) {
         const _connectedNode = this.knowledgeGraph.get(connectionKey); if(connectedNode) {
-// const _similarity = awaitthis.calculateSimilarity(node.value, connectedNode.value); /g
+// const _similarity = awaitthis.calculateSimilarity(node.value, connectedNode.value); 
   if(similarity < 0.3) {
             weakConnections.push(connectionKey);
-          //           }/g
-        //         }/g
-      //       }/g
+          //           }
+        //         }
+      //       }
 
-
-      // Remove weak connections/g
+      // Remove weak connections
   for(const weakConnection of weakConnections) {
-        node.connections.delete(weakConnection); //       }/g
-    //     }/g
-
+        node.connections.delete(weakConnection); //       }
+    //     }
 
   async updatePatternConfidences() { 
     const _now = Date.now(); for(const [key, pattern] of this.patterns.entries() {) 
       const _age = now - pattern.created.getTime();
       const _lastSeenAge = now - (pattern.lastSeen?.getTime()  ?? pattern.created.getTime());
 
-      // Decay confidence over time if not seen recently/g
-  if(lastSeenAge > 86400000) { // 24 hours/g
+      // Decay confidence over time if not seen recently
+  if(lastSeenAge > 86400000) { // 24 hours
         pattern.confidence *= 0.9
-      //       }/g
+      //       }
 
-
-      // Remove very old, low-confidence patterns/g
-  if(age > 7 * 86400000 && pattern.confidence < 0.1) { // 7 days/g
+      // Remove very old, low-confidence patterns
+  if(age > 7 * 86400000 && pattern.confidence < 0.1) { // 7 days
         this.patterns.delete(key);
-      //       }/g
-    //     }/g
-  //   }/g
+      //       }
+    //     }
+  //   }
 
-
-  // Persistence methods/g
+  // Persistence methods
   async persistMemory() { 
     if(this.memoryBank.size === 0) return;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     const _memoryData = Array.from(this.memoryBank.entries());
-// // // await fs.writeJson(this.memoryFile, memoryData, spaces = === 0) return;/g
-    // ; // LINT: unreachable code removed/g
+// // // await fs.writeJson(this.memoryFile, memoryData, spaces = === 0) return;
+    // ; // LINT: unreachable code removed
     const _graphData = Array.from(this.knowledgeGraph.entries()).map(([key, node]) => [;
       key,
-      //       {/g
+      //       {
 ..node,connections = === 0) return;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     const _patternsData = Array.from(this.patterns.entries());
-// // // await fs.writeJson(this.patternsFile, patternsData, {spaces = // await fs.readJson(this.memoryFile);/g
+// // // await fs.writeJson(this.patternsFile, patternsData, {spaces = // await fs.readJson(this.memoryFile);
         this.memoryBank = new Map(memoryData);
-      //       }/g
+      //       }
 
-
-      // Load knowledge graph/g
-      if(// // await fs.pathExists(this.knowledgeFile)) {/g
-// const _graphData = awaitfs.readJson(this.knowledgeFile);/g
+      // Load knowledge graph
+      if(// // await fs.pathExists(this.knowledgeFile)) {
+// const _graphData = awaitfs.readJson(this.knowledgeFile);
         this.knowledgeGraph = new Map(graphData.map(([key, node]) => [;
           key,
-          //           {/g
-..node,connections = // // await fs.readJson(this.patternsFile);/g
+          //           {
+..node,connections = // // await fs.readJson(this.patternsFile);
         this.patterns = new Map(patternsData);
-      //       }/g
-
+      //       }
 
       this.emit('knowledgeLoaded', {memoryEntries = [];'
-)
+
     for (const [key, pattern] of this.patterns.entries()) {
   if(pattern.confidence > 0.5) {
-        // Check if pattern is relevant to query/g
-// const _relevance = awaitthis.calculatePatternRelevance(pattern, query); /g
+        // Check if pattern is relevant to query
+// const _relevance = awaitthis.calculatePatternRelevance(pattern, query); 
   if(relevance > 0.6) {
-          relatedPatterns.push({ pattern, relevance   }); //         }/g
-      //       }/g
-    //     }/g
+          relatedPatterns.push({ pattern, relevance   }); //         }
+      //       }
+    //     }
 
-
-    // return relatedPatterns.sort((a, b) {=> b.relevance - a.relevance).slice(0, 5);/g
-    //   // LINT: unreachable code removed}/g
+    // return relatedPatterns.sort((a, b) {=> b.relevance - a.relevance).slice(0, 5);
+    //   // LINT: unreachable code removed}
 
   async calculatePatternRelevance(pattern, query) { 
-    // Simplified pattern relevance calculation/g
+    // Simplified pattern relevance calculation
     const _relevance = 0;
 
     if(pattern.type === query.type) 
       relevance += 0.4;
-    //     }/g
+    //     }
 
-
-    // Check examples for similarity/g
+    // Check examples for similarity
     for (const example of pattern.examples.slice(-3)) {
-// const _similarity = awaitthis.calculateSimilarity(example.data, query); /g
+// const _similarity = awaitthis.calculateSimilarity(example.data, query); 
       relevance += similarity * 0.2
-    //     }/g
+    //     }
 
-
-    // return Math.min(relevance, 1); /g
-    //   // LINT: unreachable code removed}/g
+    // return Math.min(relevance, 1); 
+    //   // LINT: unreachable code removed}
 
   async findRelatedTags(originalTags) { 
     const _relatedTags = new Set();
 
-    // Find tags that often appear with the original tags/g
+    // Find tags that often appear with the original tags
     for (const memory of this.memoryBank.values()) 
   if(memory.options?.tags) {
         const _memoryTags = memory.options.tags; const _hasOriginalTag = originalTags.some(tag => memoryTags.includes(tag)); if(hasOriginalTag) {
           memoryTags.forEach(tag => {)
             if(!originalTags.includes(tag)) {
               relatedTags.add(tag);
-            //             }/g
+            //             }
           });
-        //         }/g
-      //       }/g
-    //     }/g
+        //         }
+      //       }
+    //     }
 
-
-    // return Array.from(relatedTags).slice(0, 3);/g
-    //   // LINT: unreachable code removed}/g
+    // return Array.from(relatedTags).slice(0, 3);
+    //   // LINT: unreachable code removed}
 
   async findRelevantPatterns(data) { 
     const _relevantPatterns = [];
 
     for (const [key, pattern] of this.patterns.entries()) 
-// const _relevance = awaitthis.calculatePatternRelevance(pattern, data); /g
+// const _relevance = awaitthis.calculatePatternRelevance(pattern, data); 
   if(relevance > 0.5) {
-        relevantPatterns.push({ ...pattern, relevance   }); //       }/g
-    //     }/g
+        relevantPatterns.push({ ...pattern, relevance   }); //       }
+    //     }
 
-
-    // return relevantPatterns.sort((a, b) {=> b.relevance - a.relevance);/g
-    //   // LINT: unreachable code removed}/g
+    // return relevantPatterns.sort((a, b) {=> b.relevance - a.relevance);
+    //   // LINT: unreachable code removed}
   extractCommonTags(examples) {
     const _tagCounts = new Map();
   for(const example of examples) {
       const _tags = example.data?.options?.tags  ?? []; for(const tag of tags) {
-        tagCounts.set(tag, (tagCounts.get(tag)  ?? 0) + 1); //       }/g
-    //     }/g
+        tagCounts.set(tag, (tagCounts.get(tag)  ?? 0) + 1); //       }
+    //     }
 
-
-    // Return tags that appear in at least 50% of examples/g
-    const _threshold = Math.ceil(examples.length * 0.5) {// return Array.from(tagCounts.entries());/g
-    // .filter(([tag, count]) => count >= threshold); // LINT: unreachable code removed/g
+    // Return tags that appear in at least 50% of examples
+    const _threshold = Math.ceil(examples.length * 0.5) {// return Array.from(tagCounts.entries());
+    // .filter(([tag, count]) => count >= threshold); // LINT: unreachable code removed
 map(([tag]) => tag);
-  //   }/g
-
+  //   }
 
   async getActiveServices() ;
     try {
 
-      // return {state = Array.from(this.memoryBank.entries());/g
-    // .sort(([ a], [ b]) => a.stored - b.stored); // LINT: unreachable code removed/g
+      // return {state = Array.from(this.memoryBank.entries());
+    // .sort(([ a], [ b]) => a.stored - b.stored); // LINT: unreachable code removed
 
     const _toRemove = memories.slice(0, Math.floor(this.options.maxMemorySize * 0.1))
   for(const [memoryId] of toRemove) {
-      this.memoryBank.delete(memoryId); //     }/g
-  //   }/g
+      this.memoryBank.delete(memoryId); //     }
+  //   }
 
-
-  // Public API methods/g
+  // Public API methods
   async query(question, context = {}) { 
-    // RAG-style query interface/g
-// const _relevantMemories = awaitthis.retrieveMemory(question, limit = // await this.getRelevantContext(question, context); /g
+    // RAG-style query interface
+// const _relevantMemories = awaitthis.retrieveMemory(question, limit = // await this.getRelevantContext(question, context); 
 
-    // return {/g
+    // return {
       question,context = [];
-    // ; // LINT: unreachable code removed/g
-    // Pattern-based suggestions/g
-// const _patterns = awaitthis.findRelatedPatterns({type = // // await this.retrieveMemory(question, {limit = > b.confidence - a.confidence) {;/g
-  //   }/g
+    // ; // LINT: unreachable code removed
+    // Pattern-based suggestions
+// const _patterns = awaitthis.findRelatedPatterns({type = // // await this.retrieveMemory(question, {limit = > b.confidence - a.confidence) {;
+  //   }
 
-
-  // Cleanup/g
+  // Cleanup
   async cleanup() ;
   if(this.learningInterval) {
       clearInterval(this.learningInterval);
-    //     }/g
+    //     }
 
-
-    // Final persistence/g
+    // Final persistence
 // // // await Promise.all([;/g)
       this.persistMemory(),
       this.persistKnowledgeGraph(),
       this.persistPatterns();
     ]);
 
-    // Clear memory/g
+    // Clear memory
     this.memoryBank.clear();
     this.knowledgeGraph.clear();
     this.patterns.clear();
     this.contexts.clear();
 
-  // Statistics and introspection/g
+  // Statistics and introspection
   getStats() ;
-    // return {memory = > sum + node.connections.size, 0),averageConnections = > sum + node.connections.size, 0) / this.knowledgeGraph.size = > p.confidence > 0.8).length,averageConfidence = > sum + p.confidence, 0) / this.patterns.size ;/g
-    //   // LINT: unreachable code removed},/g
+    // return {memory = > sum + node.connections.size, 0),averageConnections = > sum + node.connections.size, 0) / this.knowledgeGraph.size = > p.confidence > 0.8).length,averageConfidence = > sum + p.confidence, 0) / this.patterns.size ;
+    //   // LINT: unreachable code removed},
       learning: null
         historySize: this.learningHistory.length,
         enabled: this.options.enableLearning;
-// }/g
+// }
 
-
-// export default MemoryRAGPlugin;/g
+// export default MemoryRAGPlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}})))))

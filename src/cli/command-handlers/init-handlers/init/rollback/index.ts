@@ -1,13 +1,13 @@
-// rollback/index.js - Comprehensive rollback system for SPARC initialization/g
+// rollback/index.js - Comprehensive rollback system for SPARC initialization
 
-import { printSuccess  } from '../../../utils.js';/g
-import { BackupManager  } from './backup-manager.js';/g
-import { RecoveryManager  } from './recovery-manager.js';/g
-import { RollbackExecutor  } from './rollback-executor.js';/g
-import { StateTracker  } from './state-tracker.js';/g
-/**  *//g
- * Main rollback orchestrator
- *//g
+import { printSuccess  } from '../../../utils.js';
+import { BackupManager  } from '.';
+import { RecoveryManager  } from '.';
+import { RollbackExecutor  } from '.';
+import { StateTracker  } from '.';
+
+/** Main rollback orchestrator
+
 export class RollbackSystem {
   constructor(workingDir = workingDir;
   this;
@@ -22,37 +22,37 @@ export class RollbackSystem {
   this;
 
   recoveryManager = new RecoveryManager(workingDir);
-// }/g
-/**  *//g
- * Create backup before initialization
- *//g
+// }
+
+/** Create backup before initialization
+
 async;
 createPreInitBackup();
-// {/g
+// {
     const _result = {success = await this.backupManager.createBackup('pre-init');
       result.backupId = backup.id;
       result.success = backup.success;
   if(backup.success) {
   printSuccess(`Backupcreated = false;`
       result.errors.push(`Backup creation failed = {}) {`
-    const _result = {success = // await this.stateTracker.createCheckpoint(phase, data);/g
+    const _result = {success = // await this.stateTracker.createCheckpoint(phase, data);
       result.checkpointId = checkpoint.id;
       result.success = checkpoint.success;
   if(!checkpoint.success) {
         result.errors.push(...checkpoint.errors);
-      //       }/g
+      //       }
     } catch(error) ;
       result.success = false;
       result.errors.push(`Checkpoint creationfailed = null) {`
-    const _result = {success = backupId  ?? (// await this.findLatestPreInitBackup());/g
+    const _result = {success = backupId  ?? (// await this.findLatestPreInitBackup());
   if(!targetBackup) {
         result.success = false;
         result.errors.push('No suitable backup found for rollback');
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
+        // return result;
+    //   // LINT: unreachable code removed}
 
-      // Execute rollback/g
-// const _rollbackResult = awaitthis.rollbackExecutor.executeFullRollback(targetBackup);/g
+      // Execute rollback
+// const _rollbackResult = awaitthis.rollbackExecutor.executeFullRollback(targetBackup);
       result.success = rollbackResult.success;
       result.errors.push(...rollbackResult.errors);
       result.warnings.push(...rollbackResult.warnings);
@@ -60,18 +60,18 @@ createPreInitBackup();
   if(rollbackResult.success) {
         printSuccess('Full rollback completed successfully');
 
-        // Update state tracking/g
-// // await this.stateTracker.recordRollback(targetBackup, 'full');/g
+        // Update state tracking
+// // await this.stateTracker.recordRollback(targetBackup, 'full');
       } else {
         printError('Full rollback failed');
-      //       }/g
+      //       }
     } catch(error) {
       result.success = false;
       result.errors.push(`Rollbackfailed = null) {`
-    const _result = {success = checkpointId  ?? (// await this.findLatestCheckpoint(phase));/g
+    const _result = {success = checkpointId  ?? (// await this.findLatestCheckpoint(phase));
   if(!checkpoint) {
         result.success = false;
-        result.errors.push(`No checkpoint found forphase = // await this.rollbackExecutor.executePartialRollback(phase, checkpoint);`/g
+        result.errors.push(`No checkpoint found forphase = // await this.rollbackExecutor.executePartialRollback(phase, checkpoint);`
       result.success = rollbackResult.success;
       result.errors.push(...rollbackResult.errors);
       result.warnings.push(...rollbackResult.warnings);
@@ -79,126 +79,115 @@ createPreInitBackup();
   if(rollbackResult.success) {
   printSuccess(`Partial rollback completed forphase = false;`
       result.errors.push(`Partial rollback failed = {}) {`
-    const _result = {success = // await this.recoveryManager.performRecovery(failureType, context);/g
+    const _result = {success = // await this.recoveryManager.performRecovery(failureType, context);
       result.success = recoveryResult.success;
       result.errors.push(...recoveryResult.errors);
       result.warnings.push(...recoveryResult.warnings);
       result.recoveryActions.push(...recoveryResult.actions);
   if(recoveryResult.success) {
         printSuccess(`Auto-recovery completedfor = false;`
-      result.errors.push(`Auto-recovery failed = {success = // await this.stateTracker.getRollbackPoints();`/g
+      result.errors.push(`Auto-recovery failed = {success = // await this.stateTracker.getRollbackPoints();`
       result.rollbackPoints = rollbackPoints;
 
-      // Get checkpoints/g
-// const _checkpoints = awaitthis.stateTracker.getCheckpoints();/g
+      // Get checkpoints
+// const _checkpoints = awaitthis.stateTracker.getCheckpoints();
       result.checkpoints = checkpoints;
     } catch(error) {
       result.success = false;
       result.errors.push(`Failed to list rollbackpoints = 5) {`
-    const _result = {success = // await this.backupManager.cleanupOldBackups(keepCount);/g
+    const _result = {success = // await this.backupManager.cleanupOldBackups(keepCount);
       result.success = cleanupResult.success;
       result.cleaned = cleanupResult.cleaned;
       result.errors.push(...cleanupResult.errors);
   if(cleanupResult.success) {
-        console.warn(`�  Cleaned up ${cleanupResult.cleaned.length} old backups`);
-      //       }/g
+        console.warn(`  Cleaned up ${cleanupResult.cleaned.length} old backups`);
+      //       }
     } catch(error) {
       result.success = false;
-      result.errors.push(`Cleanup failed = {success = // await this.backupManager.validateBackupSystem();`/g
+      result.errors.push(`Cleanup failed = {success = // await this.backupManager.validateBackupSystem();`
       result.checks.backup = backupCheck;
   if(!backupCheck.success) {
         result.success = false;
         result.errors.push(...backupCheck.errors);
-      //       }/g
+      //       }
 
-
-      // Check state tracking/g
-// const _stateCheck = awaitthis.stateTracker.validateStateTracking();/g
+      // Check state tracking
+// const _stateCheck = awaitthis.stateTracker.validateStateTracking();
       result.checks.stateTracking = stateCheck;
   if(!stateCheck.success) {
         result.warnings.push(...stateCheck.errors);
-      //       }/g
+      //       }
 
-
-      // Check recovery system/g
-// const _recoveryCheck = awaitthis.recoveryManager.validateRecoverySystem();/g
+      // Check recovery system
+// const _recoveryCheck = awaitthis.recoveryManager.validateRecoverySystem();
       result.checks.recovery = recoveryCheck;
   if(!recoveryCheck.success) {
         result.warnings.push(...recoveryCheck.errors);
-      //       }/g
+      //       }
     } catch(error) {
       result.success = false;
-      result.errors.push(`Rollback system validationfailed = // await this.stateTracker.getRollbackPoints();`/g
+      result.errors.push(`Rollback system validationfailed = // await this.stateTracker.getRollbackPoints();`
       const _preInitPoints = rollbackPoints.filter((point) => point.type === 'pre-init');
   if(preInitPoints.length > 0) {
         return preInitPoints.sort((a, b) => b.timestamp - a.timestamp)[0].backupId;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
       return null;
-    //   // LINT: unreachable code removed} catch ;/g
+    //   // LINT: unreachable code removed} catch ;
       return null;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
   async findLatestCheckpoint(phase) ;
     try {
-// const _checkpoints = awaitthis.stateTracker.getCheckpoints();/g
+// const _checkpoints = awaitthis.stateTracker.getCheckpoints();
       const _phaseCheckpoints = checkpoints.filter((checkpoint) => checkpoint.phase === phase);
   if(phaseCheckpoints.length > 0) {
         return phaseCheckpoints.sort((a, b) => b.timestamp - a.timestamp)[0];
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
       return null;
-    //   // LINT: unreachable code removed} catch {/g
+    //   // LINT: unreachable code removed} catch {
       return null;
-    //   // LINT: unreachable code removed}/g
-// }/g
+    //   // LINT: unreachable code removed}
+// }
 
+/** Atomic operation wrapper
 
-/**  *//g
- * Atomic operation wrapper
- *//g
-// export class AtomicOperation {/g
+// export class AtomicOperation {
   constructor(rollbackSystem = rollbackSystem;
     this.operationName = operationName;
     this.checkpointId = null;
     this.completed = false;
-  //   }/g
+  //   }
 
+/** Begin atomic operation
 
-  /**  *//g
- * Begin atomic operation
-   *//g
   async begin() { 
-// const _checkpoint = awaitthis.rollbackSystem.createCheckpoint(`atomic-$this.operationName}`, {operation = checkpoint.checkpointId;/g
+// const _checkpoint = awaitthis.rollbackSystem.createCheckpoint(`atomic-$this.operationName}`, {operation = checkpoint.checkpointId;
     // return checkpoint.success;/g)
-    //   // LINT);/g
+    //   // LINT);
     this.completed = true;
 
-    // Mark checkpoint as committed/g
+    // Mark checkpoint as committed
   if(this.checkpointId) {
-// // await this.rollbackSystem.stateTracker.updateCheckpoint(this.checkpointId, {/g
+// // await this.rollbackSystem.stateTracker.updateCheckpoint(this.checkpointId, {
         status: 'committed',)
         completed: Date.now() });
-    //     }/g
+    //     }
 
+/** Rollback atomic operation
 
-  /**  *//g
- * Rollback atomic operation
-   *//g
   async rollback() ;
   if(this.checkpointId && !this.completed) {
-// await this.rollbackSystem.performPartialRollback(;/g
+// await this.rollbackSystem.performPartialRollback(;
         `atomic-${this.operationName}`,)
         this.checkpointId);
-    //     }/g
+    //     }
 
+/** Create and manage atomic operations
 
-/**  *//g
- * Create and manage atomic operations
- *//g
-// export function _createAtomicOperation(rollbackSystem, operationName) {/g
+// export function _createAtomicOperation(rollbackSystem, operationName) {
   return new AtomicOperation(rollbackSystem, operationName);
-// }/g
-
+// }
 
 }}}}}}}}}}}}}}}})))))))))

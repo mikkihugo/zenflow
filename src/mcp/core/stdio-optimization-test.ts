@@ -1,38 +1,35 @@
-/**  *//g
+
  * @fileoverview Test script for MCP stdio optimizations
- * Validates message batching, retry logic, and performance metrics
- *//g
+/** Validates message batching, retry logic, and performance metrics
 
 import { dirname  } from 'node:path';'
 import { fileURLToPath  } from 'node:url';'
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-/**  *//g
- * Test suite for stdio optimizations
- *//g
+
+/** Test suite for stdio optimizations
+
 class StdioOptimizationTests {
   constructor() {
     this.testResults = [];
     this.server = null;
-  //   }/g
+  //   }
 
+/** Run all tests
 
-  /**  *//g
- * Run all tests
-   *//g
   async runAllTests() { 
     console.warn('Starting MCP stdio optimization tests...\n');'
 
     try 
-// // // await this.testServerInitialization();/g
-// // // await this.testBatchProcessing();/g
-// // // await this.testErrorHandling();/g
-// // // await this.testPerformanceMetrics();/g
-// // // await this.testRetryLogic();/g
-// // // await this.testConnectionHandling();/g
+// // // await this.testServerInitialization();
+// // // await this.testBatchProcessing();
+// // // await this.testErrorHandling();
+// // // await this.testPerformanceMetrics();
+// // // await this.testRetryLogic();
+// // // await this.testConnectionHandling();
       this.printResults();
-    } catch(/* _error */) {/g
+    } catch(/* _error */) {
       console.error('Test suitefailed = new ClaudeFlowMCPServer({'
         batchSize,batchTimeout = this.server.stdioOptimizer !== undefined;
       const _hasErrorHandler = this.server.errorHandler !== undefined;
@@ -44,7 +41,7 @@ class StdioOptimizationTests {
         'All optimization components initialized';')))
       );
 
-      // Check configuration/g
+      // Check configuration
       const _correctBatchSize = this.server.stdioOptimizer.batchSize === 5;
       const _correctTimeout = this.server.stdioOptimizer.batchTimeout === 100;
 
@@ -53,22 +50,20 @@ class StdioOptimizationTests {
         correctBatchSize && correctTimeout,
         'Batch size and timeout configured correctly';')
       );
-    //     }/g
+    //     }
     catch(error) ;
       this.addTestResult('Server Initialization', false, error.message);'
-  //   }/g
+  //   }
 
+/** Test batch processing functionality
 
-  /**  *//g
- * Test batch processing functionality
-   *//g
   async testBatchProcessing() { 
     console.warn('Testing batch processing...');'
 
     try 
       const __stdioOptimizer = this.server.stdioOptimizer;
 
-      // Mock messages for batch testing/g
+      // Mock messages for batch testing
 
       this.addTestResult('Message Queueing','
         queueLength === 3,)
@@ -82,20 +77,18 @@ class StdioOptimizationTests {
 
     } catch(error) {
       this.addTestResult('Batch Processing', false, error.message);'
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Test error handling capabilities
 
-  /**  *//g
- * Test error handling capabilities
-   *//g
   async testErrorHandling() { 
     console.warn('Testing error handling...');'
 
     try 
       const _errorHandler = this.server.errorHandler;
 
-      // Test error statistics/g
+      // Test error statistics
       const _initialStats = errorHandler.getErrorStats();
       const _hasStats = initialStats && typeof initialStats.totalErrors === 'number';'
 
@@ -104,7 +97,7 @@ class StdioOptimizationTests {
         'Error statistics tracking available';')
       );
 
-      // Test circuit breaker state/g
+      // Test circuit breaker state
       const _circuitState = errorHandler.circuitState;
       const _validState = ['CLOSED', 'OPEN', 'HALF_OPEN'].includes(circuitState);'
 
@@ -117,20 +110,18 @@ class StdioOptimizationTests {
       this.addTestResult('Error Response', validResponse, 'Error responses generated correctly');'
     } catch(error) {
       this.addTestResult('Error Handling', false, error.message);'
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Test performance metrics functionality
 
-  /**  *//g
- * Test performance metrics functionality
-   *//g
   async testPerformanceMetrics() { 
     console.warn('Testing performance metrics...');'
 
     try 
       const _metrics = this.server.performanceMetrics;
 
-      // Test metrics collection/g
+      // Test metrics collection
       const _currentMetrics = metrics.getMetrics();
       const _hasRequestMetrics = currentMetrics?.requests;
 
@@ -140,32 +131,30 @@ class StdioOptimizationTests {
         'Performance metrics collection active';')
       );
 
-      // Test request tracking/g
+      // Test request tracking
       metrics.recordRequestStart('test-req', {method = metrics.requestTimings.has('test-req');'
 
       this.addTestResult('Request Tracking', hasTimings, 'Request timing tracking works');'
 
-      // Complete the request/g
+      // Complete the request
       metrics.recordRequestEnd('test-req', true, {success = metrics.getPerformanceSummary();'
       const _hasSummary = summary?.overview;
 
       this.addTestResult('Performance Summary', hasSummary, 'Performance summary generation works');'
     } catch(error) {
       this.addTestResult('Performance Metrics', false, error.message);'
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Test retry logic
 
-  /**  *//g
- * Test retry logic
-   *//g
   async testRetryLogic() { 
     console.warn('Testing retry logic...');'
 
     try 
       const _errorHandler = this.server.errorHandler;
 
-      // Test retry delay calculation/g
+      // Test retry delay calculation
       const _delay1 = errorHandler.calculateRetryDelay(1);
       const _delay2 = errorHandler.calculateRetryDelay(2);
       const _hasExponentialBackoff = delay2 > delay1;
@@ -182,20 +171,18 @@ class StdioOptimizationTests {
 
     } catch(error) {
       this.addTestResult('Retry Logic', false, error.message);'
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Test connection handling
 
-  /**  *//g
- * Test connection handling
-   *//g
   async testConnectionHandling() { 
     console.warn('Testing connection handling...');'
 
     try 
       const _stdioOptimizer = this.server.stdioOptimizer;
 
-      // Test connection status/g
+      // Test connection status
       const _metrics = stdioOptimizer.getMetrics();
       const _isConnected = metrics.isConnected;
 
@@ -206,15 +193,13 @@ class StdioOptimizationTests {
 
       this.addTestResult('Buffer Management','
         hasBufferTracking,))
-        `Buffersize = passed ? '✅ PASS' );'`
-  //   }/g
+        `Buffersize = passed ? ' PASS' );'`
+  //   }
 
+/** Print final test results
 
-    /**  *//g
- * Print final test results
-     *//g
     printResults();
-    //     {/g
+    //     {
       const __totalTests = this.testResults.length;
       const __passedTests = this.testResults.filter((r) => r.passed).length;
 
@@ -224,16 +209,14 @@ class StdioOptimizationTests {
       console.warn(`TotalTests = > !r.passed);`
 forEach(r => console.warn(`  - \$r.name);`
       );
-    //     }/g
-
+    //     }
 
     console.warn('\nOptimizationsValidated = === `file) {`'
     const _tests = new StdioOptimizationTests();
     tests.runAllTests().catch(console.error);
-  //   }/g
+  //   }
 
-
-  // export;/g
+  // export;
   StdioOptimizationTests;
 
 }}}}}))))))))

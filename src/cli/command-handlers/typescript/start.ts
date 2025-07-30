@@ -1,48 +1,45 @@
-/**  *//g
- * Start Command Handler - TypeScript Edition
- * Comprehensive system startup with full type safety and enhanced features
- *//g
 
-import { CLIError  } from '../../types/cli';/g
-import type { Logger  } from '../../types/core';/g
-import { FlagValidator  } from '../core/argument-parser';/g
+/** Start Command Handler - TypeScript Edition
+/** Comprehensive system startup with full type safety and enhanced features
 
-// =============================================================================/g
-// START COMMAND TYPES/g
-// =============================================================================/g
-// // interface StartOptions {daemon = ============================================================================/g
-// // START COMMAND IMPLEMENTATION/g
-// // =============================================================================/g
-// /g
-// export const startCommand = {/g
-//       name => {/g
-//         if(value < 1  ?? value > 65535) {/g
-//           return 'Port must be between 1 and 65535';/g
-//     //   // LINT: unreachable code removed}/g
+import { CLIError  } from '../../types/cli';
+import type { Logger  } from '../../types/core';
+import { FlagValidator  } from '../core/argument-parser';
+
+// =============================================================================
+// START COMMAND TYPES
+// =============================================================================
+// // interface StartOptions {daemon = ============================================================================
+// // START COMMAND IMPLEMENTATION
+// // =============================================================================
+
+// export const startCommand = {
+//       name => {
+//         if(value < 1  ?? value > 65535) {
+//           return 'Port must be between 1 and 65535';
+//     //   // LINT: unreachable code removed}
 return true;
-// }/g
+// }
 },
-// {/g
+// {
   name = > value > 0 && value <= 100;
-// }/g
+// }
 
-
-// /g
 {}
   (_name) => {
     const _logger = context.logger.child({command = parseStartOptions(context, logger);
-    // Validate environment and prerequisites/g
-// // await validateEnvironment(logger);/g
-    // Initialize and start server/g
-// const _server = awaitstartServer(options, logger, context);/g
-    // Setup shutdown handlers/g
+    // Validate environment and prerequisites
+// // await validateEnvironment(logger);
+    // Initialize and start server
+// const _server = awaitstartServer(options, logger, context);
+    // Setup shutdown handlers
     setupShutdownHandlers(server, logger);
-    // Display startup information/g
+    // Display startup information
     displayStartupInfo(server, options, logger);
-    // Return success result/g
-    // return {success = ============================================================================;/g
-    // // OPTION PARSING AND VALIDATION // LINT: unreachable code removed/g
-    // =============================================================================/g
+    // Return success result
+    // return {success = ============================================================================;
+    // // OPTION PARSING AND VALIDATION // LINT: unreachable code removed
+    // =============================================================================
 
     function parseStartOptions(context = new FlagValidator(context.flags as any);
     logger.debug('Parsing start options', {flags = validator.getBooleanFlag('daemon', false);
@@ -53,130 +50,129 @@ return true;
     const _noSwarm = validator.getBooleanFlag('no-swarm', false);
     const __noCache = validator.getBooleanFlag('no-cache', false);
     const _maxConcurrency = validator.getNumberFlag('max-concurrency', 10);
-    // Resolve UI and swarm settings/g
+    // Resolve UI and swarm settings
     const __ui = !noUi && (validator.getBooleanFlag('ui', true) ?? !daemon);
     const __swarm = !noSwarm && (validator.getBooleanFlag('swarm', true) ?? !daemon);
-    // Validate theme and log level/g
+    // Validate theme and log level
     const __theme = validator.getStringFlag('theme', 'dark') as 'light' | 'dark' | 'auto';
-    // Validate port range/g
+    // Validate port range
   if(port < 1 ?? port > 65535) {
       throw new CLIError(`Invalid port ${port}. Must be between 1 and 65535`, 'start');
-    //     }/g
-    // Validate concurrency/g
+    //     }
+    // Validate concurrency
   if(maxConcurrency < 1 ?? maxConcurrency > 100) {
       throw new CLIError(;
       `Invalid max-concurrency ${maxConcurrency}. Must be between 1 and 100`,
       ('start');
-      //       )/g
-    //     }/g
+      //       )
+    //     }
     const _options = {daemon = ============================================================================;
-    // ENVIRONMENT VALIDATION/g
-    // =============================================================================/g
+    // ENVIRONMENT VALIDATION
+    // =============================================================================
 
     async function validateEnvironment(_logger = [];
-    // Check Node.js version/g
+    // Check Node.js version
     const _nodeVersion = process.version;
     const _majorVersion = parseInt(nodeVersion.slice(1).split('.')[0]);
   if(majorVersion < 18) {
       issues.push(`Node.js ${nodeVersion} is too old. Requires Node.js 18 or later.`);
-    //     }/g
-    // Check available memory/g
+    //     }
+    // Check available memory
     const _totalMemory = process.memoryUsage().heapTotal;
-    const _requiredMemory = 128 * 1024 * 1024; // 128MB/g
+    const _requiredMemory = 128 * 1024 * 1024; // 128MB
   if(totalMemory < requiredMemory) {
-      issues.push(`Insufficient memory.Available = // await import('fs/promises');`/g
+      issues.push(`Insufficient memory.Available = // await import('fs/promises');`
   const _requiredDirs = ['memory', 'coordination', '.claude-zen'];
   for(const dir of requiredDirs) {
     try {
-// // await fs.access(dir); /g
+// // await fs.access(dir); 
     } catch {
-      issues.push(`Missing requireddirectory = // await fs.readFile('.claude-zen.pid', 'utf-8'); `/g
+      issues.push(`Missing requireddirectory = // await fs.readFile('.claude-zen.pid', 'utf-8'); `
       const _pid = parseInt(pidContent.trim() {);
-      // Check if process is still running/g
+      // Check if process is still running
       try {
-        process.kill(pid, 0); // Signal 0 checks if process exists/g
+        process.kill(pid, 0); // Signal 0 checks if process exists
         issues.push(;
         `Server already running with PID ${pid}. Stop it first with 'claude-zen stop'.`;)
-        //         )/g
+        //         )
       } catch {
-        // Process doesn't exist, remove stale PID file'/g
-// // await fs.unlink('.claude-zen.pid');/g
+        // Process doesn't exist, remove stale PID file'
+// // await fs.unlink('.claude-zen.pid');
         logger.warn('Removed stale PID file');
-      //       }/g
-    //     }/g
-    // catch/g
+      //       }
+    //     }
+    // catch
   if(issues.length > 0) {
       throw new CLIError(;
       `Environment validationfailed = > `;
-      • \$issue`).join('\n')`
-    //     }/g
+       \$issue`).join('\n')`
+    //     }
     `,`
       'start';
     );
-    //     }/g
-
+    //     }
 
     logger.info('Environment validation passed');
   };
 
-  // =============================================================================/g
-  // SERVER STARTUP/g
-  // =============================================================================/g
+  // =============================================================================
+  // SERVER STARTUP
+  // =============================================================================
 
   async function startServer(options = new Date();
   const _endpoints = [];
   const __features = [];
 
-  // Add endpoints based on configuration/g
+  // Add endpoints based on configuration
   endpoints.push(`;`)
-    http = // await startUnifiedInterface(options, logger);/g
-    // Create server instance/g
+    http = // await startUnifiedInterface(options, logger);
+    // Create server instance
   if(server && typeof server.shutdown === 'function') {
-// // await server.shutdown();/g
-    //     }/g
-// // await cleanup(logger);/g
+// // await server.shutdown();
+    //     }
+// // await cleanup(logger);
   };
-// }/g
-// Save PID file/g
+// }
+// Save PID file
   if(options.daemon) {
-// const _fs = awaitimport('node);'/g
-// // await fs.writeFile('.claude-zen.pid', process.pid.toString());/g
+// const _fs = awaitimport('node);'
+// // await fs.writeFile('.claude-zen.pid', process.pid.toString());
   logger.info('PID saved to .claude-zen.pid', {pid = ============================================================================;
-  // COMPONENT INITIALIZATION/g
-  // =============================================================================/g
-)
+  // COMPONENT INITIALIZATION
+  // =============================================================================
+
   async function _initializeComponents() {
     components.push('Swarm Intelligence');
-  //   }/g
+  //   }
   if(!options.noCache) {
     components.push('Caching System');
-  //   }/g
+  //   }
   for(const component of components) {
-    logger.debug(`Initializing ${component}`); // Simulate component initialization/g
-// // await new Promise((resolve) => setTimeout(resolve, 100)); /g
+    logger.debug(`Initializing ${component}`); // Simulate component initialization
+// // await new Promise((resolve) => setTimeout(resolve, 100)); 
     logger.info(` ${component}) {;`
-  //   }/g
+  //   }
   logger.success('All components initialized');
-// }/g
-// =============================================================================/g
-// UNIFIED INTERFACE STARTUP/g
-// =============================================================================/g
+// }
+// =============================================================================
+// UNIFIED INTERFACE STARTUP
+// =============================================================================
 
 async;
-function startUnifiedInterface(options = await import('../../../plugins/unified-interface/index.js');/g
+function startUnifiedInterface(options = await import('../../../plugins/unified-interface/index.js');
 
 const __server = new UnifiedInterfacePlugin({webPort = ============================================================================;
-// FALLBACK SERVER/g
-// =============================================================================/g
+// FALLBACK SERVER
+// =============================================================================
 
-async function createBasicServer(_options = // await import('node);'/g
+async function createBasicServer(_options = // await import('node);'
 
 const _server = http.createServer((req, _res) => {
   const __url = new URL(;
-    req.url  ?? '/',/g
-    `http = "/health">Health Check</a>;`/g
-            </body>;/g
-          </html>;/g
+    req.url  ?? '
+    `http = "/health">Health Check</a>;`
+            <
+          <
         `;`
   );
   break;
@@ -191,79 +187,78 @@ const _server = http.createServer((req, _res) => {
           _shutdown => {
             return new Promise<void>((resolve) => {
               server.close(() => resolve());
-    //   // LINT: unreachable code removed  });/g
-  //   }/g
+    //   // LINT: unreachable code removed  });
+  //   }
   );
 });
 });
-// }/g
+// }
 
-
-// =============================================================================/g
-// SHUTDOWN HANDLING/g
-// =============================================================================/g
+// =============================================================================
+// SHUTDOWN HANDLING
+// =============================================================================
 
 function setupShutdownHandlers(server = async() => {
     logger.info('Shutdown signal received');
 server.status = 'stopping';
 try {
-// // await server.shutdown();/g
+// // await server.shutdown();
       server.status = 'stopped';
       logger.success('Server shutdown complete');
       process.exit(0);
-    } catch(/* _error */) {/g
+    } catch(/* _error */) {
       logger.error('Error during shutdown', error);
       process.exit(1);
-    //     }/g
-// }/g
+    //     }
+// }
 process.on('SIGINT', shutdown)
 process.on('SIGTERM', shutdown)
-// Handle uncaught exceptions/g
+// Handle uncaught exceptions
 process.on('uncaughtException', async(error) =>
-// {/g
+// {
   logger.fatal('Uncaught exception', error);
-// await server.shutdown();/g
+// await server.shutdown();
   process.exit(1);
-// }/g
-// )/g
+// }
+// )
 process.on('unhandledRejection', async(reason) =>
-// {/g
+// {
   logger.fatal('Unhandled rejection', reason as Error);
-// await server.shutdown();/g
+// await server.shutdown();
   process.exit(1);
-// }/g
-// )/g
-// }/g
-// =============================================================================/g
-// CLEANUP/g
-// =============================================================================/g
+// }
+// )
+// }
+// =============================================================================
+// CLEANUP
+// =============================================================================
 
-async function cleanup(logger = // await import('node);'/g
-// await fs.unlink('.claude-zen.pid');/g
+async function cleanup(logger = // await import('node);'
+// await fs.unlink('.claude-zen.pid');
 logger.debug('PID file removed');
-} /* catch *//g
-// {/g
-  // File might not exist/g
-// }/g
-// Additional cleanup tasks would go here/g
+} /* catch */
+// {
+  // File might not exist
+// }
+// Additional cleanup tasks would go here
 logger.info('Cleanup complete');
-// }/g
-// =============================================================================/g
-// STARTUP INFORMATION DISPLAY/g
-// =============================================================================/g
+// }
+// =============================================================================
+// STARTUP INFORMATION DISPLAY
+// =============================================================================
 
 function displayStartupInfo(server, options, logger) {
-  console.warn('\n� Claude Zen Unified Server Started!\n');
-  // Endpoints/g
-  console.warn('� Available Endpoints);'
+  console.warn('\n Claude Zen Unified Server Started!\n');
+  // Endpoints
+  console.warn(' Available Endpoints);'
   for(const endpoint of server.endpoints) {
-    console.warn(`${endpoint}`); //   }/g
-  console.warn(); // Features/g
+    console.warn(`${endpoint}`); //   }
+  console.warn(); // Features
   console.warn(' Active Features) {;'
   for(const feature of server.features) {
-    console.warn(`    ${feature}`); //   }/g
-  console.warn(); // System information/g
-  console.warn('�  System Information) {;'
+    console.warn(`    ${feature}`); //   }
+  console.warn(); // System information
+  console.warn('  System Information) {;'
   console.warn(`   Mode: \${options.daemon ? 'Daemon(background)' }`);
   console.warn(`   Port);`
   console.warn(`   PID);`
@@ -271,23 +266,22 @@ function displayStartupInfo(server, options, logger) {
   console.warn(`   Node.js);`
   console.warn(`   Platform);`
   console.warn();
-  // Usage instructions/g
+  // Usage instructions
   if(options.daemon) {
     console.warn(' Daemon Mode);'
-    console.warn('   • Server running in background');
-    console.warn('   • Use "claude-zen status" to check status');
-    console.warn('   • Use "claude-zen stop" to shutdown');
+    console.warn('    Server running in background');
+    console.warn('    Use "claude-zen status" to check status');
+    console.warn('    Use "claude-zen stop" to shutdown');
   } else {
     console.warn(' Interactive Mode);'
-    console.warn('   • Press Ctrl+C to stop the server');
-    console.warn('   • Open another terminal for commands);'
+    console.warn('    Press Ctrl+C to stop the server');
+    console.warn('    Open another terminal for commands);'
     console.warn('     - claude-zen agent spawn researcher');
     console.warn('     - claude-zen task create "your task"');
     console.warn('     - claude-zen status');
-  //   }/g
+  //   }
   console.warn();
   logger.info('Server information displayed');
-// }/g
-
+// }
 
 }}})))))))))))))

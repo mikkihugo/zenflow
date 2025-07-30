@@ -1,38 +1,36 @@
-/\*\*/g
+
  * @fileoverview Hive Mind Memory Management Module;
- * Handles collective memory storage, retrieval, and maintenance operations;
+/** Handles collective memory storage, retrieval, and maintenance operations;
  * @module HiveMindMemoryManagement;
- *//g
 
 import { existsSync  } from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { isInteractive  } from '../../utils/interactive-detector.js';/g
+import { isInteractive  } from '../../utils/interactive-detector.js';
 
-/\*\*/g
- * Interactive memory management wizard;
+/** Interactive memory management wizard;
  * @returns {Promise<void>}
- *//g
-// export async function manageMemoryWizard() { // LINT: unreachable code removed/g
+
+// export async function manageMemoryWizard() { // LINT: unreachable code removed
 if(!isInteractive()) {
     warnNonInteractive('Memory wizard requires interactive mode');
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  console.warn(chalk.yellow('\n🧠 Collective Memory Manager'));
+  console.warn(chalk.yellow('\n Collective Memory Manager'));
   console.warn(chalk.gray('Manage shared knowledge and experiences across swarms\n'));
 
   try {
-// const __action = awaitinquirer.prompt([;/g
+// const __action = awaitinquirer.prompt([;
       //       {/g)
-        //         type = {list = {}) {/g
-  const _sessionDir = filters.sessionDir  ?? './.claude/hive-mind';/g
+        //         type = {list = {}) {
+  const _sessionDir = filters.sessionDir  ?? './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
 
   if(!existsSync(dbPath)) {
-    console.warn(chalk.yellow('⚠  Memory database not found.Run = new Database(dbPath);'
+    console.warn(chalk.yellow('  Memory database not found.Run = new Database(dbPath);'
 
   try {
     const _query = `;`
@@ -45,60 +43,56 @@ if(!isInteractive()) {
   if(filters.type) {
       conditions.push('type = ?');
       params.push(filters.type);
-    //     }/g
+    //     }
   if(filters.minImportance) {
       conditions.push('importance >= ?');
       params.push(filters.minImportance);
-    //     }/g
+    //     }
   if(filters.session_id) {
       conditions.push('session_id = ?');
       params.push(filters.session_id);
-    //     }/g
+    //     }
   if(conditions.length > 0) {
       query += ` WHERE ${conditions.join(' AND ')}`;
-    //     }/g
-
+    //     }
 
     query += ' ORDER BY importance DESC, created_at DESC';
   if(filters.limit) {
       query += ' LIMIT ?';
       params.push(filters.limit);
-    //     }/g
-
+    //     }
 
     const _memories = db.prepare(query).all(...params);
   if(memories.length === 0) {
-      console.warn(chalk.blue('� No memories found matching criteria'));
+      console.warn(chalk.blue(' No memories found matching criteria'));
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n� Collective Memory(${memories.length} entries)\n`));
+    console.warn(chalk.yellow(`\n Collective Memory(${memories.length} entries)\n`));
 
     for (const _memory of memories); displayMemoryEntry(memory); if(memories.length >= (filters.limit  ?? 20) {) {
       console.warn(chalk.gray('\n... (use --limit to see more entries)'));
-    //     }/g
+    //     }
   } finally
     db.close();
-// }/g
+// }
 
-
-/\*\*/g
- * Search memories by key pattern or content;
+/** Search memories by key pattern or content;
  * @returns {Promise<void>}
- */;/g
-    // export async function searchMemories() { // LINT: unreachable code removed/g
+
+    // export async function searchMemories() { // LINT: unreachable code removed
   if(!isInteractive()) {
     console.warn(chalk.yellow('Search requires interactive mode'));
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 // const _answers = awaitinquirer.prompt([;/g)
     {type = > input.trim().length > 0  ?? 'Search query is required';
     },
     {type = > input > 0  ?? 'Must be greater than 0';
-    //     }/g
+    //     }
   ]);
 
-  const _sessionDir = './.claude/hive-mind';/g
+  const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
 
@@ -116,8 +110,7 @@ if(!isInteractive()) {
       query += 'value LIKE ?';
     } else {
       query += '(key LIKE ? OR value LIKE ?)';
-    //     }/g
-
+    //     }
 
     query += ' ORDER BY importance DESC, created_at DESC LIMIT ?';
 
@@ -127,43 +120,41 @@ if(!isInteractive()) {
 
     const _results = db.prepare(query).all(...params);
   if(results.length === 0) {
-      console.warn(chalk.blue(`� No memories found matching "${answers.query}"`));
+      console.warn(chalk.blue(` No memories found matching "${answers.query}"`));
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n� Search Results(${results.length} found)\n`));
+    console.warn(chalk.yellow(`\n Search Results(${results.length} found)\n`));
   for(const result of results) {
-      displayMemoryEntry(result, true); // Highlight search terms in content preview/g
+      displayMemoryEntry(result, true); // Highlight search terms in content preview
   if(answers.searchType !== 'keys') {
         const __preview = result.value.substring(0, 200); console.warn(chalk.gray(`Preview = db.prepare(`;
       UPDATE collective_memory ;
       SET accessed_at = ?, access_count = access_count + 1 ;)))
       WHERE id IN($, { results.map(() {=> '?').join(',') });
     `);`
-    updateStmt.run(Math.floor(Date.now() / 1000), ...results.map(r => r.id));/g
+    updateStmt.run(Math.floor(Date.now() / 1000), ...results.map(r => r.id));
 
   } finally {
     db.close();
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-/\*\*/g
- * Interactive memory storage wizard;
+/** Interactive memory storage wizard;
  * @returns {Promise<void>}
- */;/g
-    // export async function storeMemoryWizard() { // LINT: unreachable code removed/g
+
+    // export async function storeMemoryWizard() { // LINT: unreachable code removed
   if(!isInteractive()) {
     console.warn(chalk.yellow('Store wizard requires interactive mode'));
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 // const _answers = awaitinquirer.prompt([;/g)
     {type = > input.trim().length > 0  ?? 'Key is required';
     },
     {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
     },
     {type = 'general', importance = 0.5, sessionId = null) {
-  const _sessionDir = './.claude/hive-mind';/g
+  const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
 
@@ -177,44 +168,42 @@ if(!isInteractive()) {
 
     stmt.run(memoryId, sessionId, key, value, type, importance);
 
-    // return memoryId;/g
-    // ; // LINT: unreachable code removed/g
+    // return memoryId;
+    // ; // LINT: unreachable code removed
   } finally {
     db.close();
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-/\*\*/g
- * Display memory statistics and analytics;
+/** Display memory statistics and analytics;
  * @returns {Promise<void>}
- */;/g
-    // export async function showMemoryStats() { // LINT: unreachable code removed/g
-  const _sessionDir = './.claude/hive-mind';/g
+
+    // export async function showMemoryStats() { // LINT: unreachable code removed
+  const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
 
   try {
-    // Overall statistics/g
+    // Overall statistics
     const _totalCount = db.prepare('SELECT COUNT(*) as count FROM collective_memory').get().count;
 
-    // Access statistics/g
+    // Access statistics
 
-    // Recent activity/g
+    // Recent activity
 
-    // Top accessed memories/g
+    // Top accessed memories
 
-    console.warn(chalk.yellow('\n� Collective Memory Statistics\n'));
+    console.warn(chalk.yellow('\n Collective Memory Statistics\n'));
 
     console.warn(chalk.bold('Overview = (stat.avg_importance * 100).toFixed(1);'
-      console.warn(`  $stat.type: $chalk.cyan(stat.count)(avgimportance = totalCount > 0 ? Math.round(// await estimateMemorySize(db) / totalCount) ;`/g
+      console.warn(`  $stat.type: $chalk.cyan(stat.count)(avgimportance = totalCount > 0 ? Math.round(// await estimateMemorySize(db) / totalCount) ;`
 
-    console.warn(chalk.bold('\nStorage = // await inquirer.prompt([;'/g
-    //     {/g
-      //       type = {};/g
+    console.warn(chalk.bold('\nStorage = // await inquirer.prompt([;'
+    //     {
+      //       type = {};
 )))
   if(answers.strategy === 'age') {
-// const _ageAnswer = awaitinquirer.prompt([;/g
+// const _ageAnswer = awaitinquirer.prompt([;
       {type = > input > 0  ?? 'Must be greater than 0';
       //       }/g)
     ]);
@@ -223,53 +212,49 @@ if(!isInteractive()) {
   } else if(answers.strategy === 'importance') {
 // const _importanceAnswer = awaitinquirer.prompt([/g)
       {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
-      //       }/g
+      //       }
     ]);
     cleanupCriteria.minImportance = importanceAnswer.threshold;
 
   } else if(answers.strategy === 'unused') {
     cleanupCriteria.maxAccess = 0;
-  //   }/g
+  //   }
 
-
-  const _sessionDir = './.claude/hive-mind';/g
+  const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
 
   try {
-// const _toDelete = awaitidentifyMemoriesToDelete(db, cleanupCriteria);/g
+// const _toDelete = awaitidentifyMemoriesToDelete(db, cleanupCriteria);
   if(toDelete.length === 0) {
-      console.warn(chalk.blue('� No memories match cleanup criteria'));
+      console.warn(chalk.blue(' No memories match cleanup criteria'));
       return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n�  Found ${toDelete.length} memories todelete = // await inquirer.prompt([;`/g)))
+    console.warn(chalk.yellow(`\n  Found ${toDelete.length} memories todelete = // await inquirer.prompt([;`/g)))
       {type = ora(`Deleting ${toDelete.length} memories...`).start();
 
       const _deleteStmt = db.prepare('DELETE FROM collective_memory WHERE id = ?');
       const _transaction = db.transaction((memories) => {
   for(const memory of memories) {
-          deleteStmt.run(memory.id); //         }/g
+          deleteStmt.run(memory.id); //         }
       }); transaction(toDelete) {;
 
       spinner.succeed(`Deleted ${toDelete.length} memories successfully`);
     } else {
       console.warn(chalk.gray('Cleanup cancelled'));
-    //     }/g
-
+    //     }
 
   } finally {
     db.close();
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-/\*\*/g
- * Export memory backup;
+/** Export memory backup;
  * @returns {Promise<void>}
- */;/g
-    // export async function exportMemoryBackup() { // LINT: unreachable code removed/g
-  const _sessionDir = './.claude/hive-mind';/g
+
+    // export async function exportMemoryBackup() { // LINT: unreachable code removed
+  const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
   const _db = new Database(dbPath);
 
@@ -280,14 +265,14 @@ if(!isInteractive()) {
       ORDER BY created_at DESC;)
     `).all();`
 
-    const _backup = {exported_at = new Date().toISOString().replace(/[]/g, '-');/g
+    const _backup = {exported_at = new Date().toISOString().replace(/[]/g, '-');
     const _filename = `memory-backup-\$timestamp.json`;
 
-    // Ensure exports directory exists/g
-    const { mkdirSync } = // await import('fs');/g
+    // Ensure exports directory exists
+    const { mkdirSync } = // await import('fs');
     const _exportsDir = path.join(sessionDir, 'exports');
     if(!existsSync(exportsDir)) {
-  mkdirSync(exportsDir, {recursive = // await inquirer.prompt([/g
+  mkdirSync(exportsDir, {recursive = // await inquirer.prompt([
     {type = > input > 0  ?? 'Must be greater than 0';
     },
     {type = > input > 0  ?? 'Must be greater than 0';
@@ -298,57 +283,52 @@ if(!isInteractive()) {
   const _importance = (memory.importance * 100).toFixed(0);
 
     console.warn(`  \$chalk.dim(preview)`);
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-/\*\*/g
- * Estimate total memory size in bytes;
+/** Estimate total memory size in bytes;
  * @param {Database} db - Database instance;
  * @returns {Promise<number>} Estimated size in bytes;
-    // */; // LINT: unreachable code removed/g
+ */
+    // */; // LINT: unreachable code removed
 async function estimateMemorySize(db = db.prepare(`;`)
     SELECT SUM(LENGTH(key) + LENGTH(value) + LENGTH(type) + 50) as total_size;
     FROM collective_memory;
   `).get();`
 
   return result.total_size  ?? 0;
-// }/g
+// }
 
-
-/\*\*/g
- * Identify memories to delete based on criteria;
+/** Identify memories to delete based on criteria;
  * @param {Database} db - Database instance;
  * @param {Object} criteria - Cleanup criteria;
  * @returns {Promise<Array>} Memories to delete;
-    // */; // LINT: unreachable code removed/g
+ */
+    // */; // LINT: unreachable code removed
 async function identifyMemoriesToDelete() {
-    const _cutoffTime = Math.floor((Date.now() - criteria.maxAge * 24 * 60 * 60 * 1000) / 1000);/g
+    const _cutoffTime = Math.floor((Date.now() - criteria.maxAge * 24 * 60 * 60 * 1000) / 1000);
     conditions.push('created_at < ?');
     params.push(cutoffTime);
-  //   }/g
+  //   }
   if(criteria.minImportance !== undefined) {
     conditions.push('importance < ?');
     params.push(criteria.minImportance);
-  //   }/g
+  //   }
   if(criteria.maxAccess !== undefined) {
     conditions.push('access_count <= ?');
     params.push(criteria.maxAccess);
-  //   }/g
+  //   }
 
-
-  // Never delete config memories/g
+  // Never delete config memories
   conditions.push("type !== 'config'");
   if(conditions.length === 1 && conditions[0] === "type !== 'config'") {
-    // return []; // No other criteria specified/g
-  //   }/g
-
+    // return []; // No other criteria specified
+  //   }
 
   query += conditions.join(' AND ');
   query += ' ORDER BY importance ASC, access_count ASC';
 
-  // return db.prepare(query).all(...params);/g
-// }/g
-
+  // return db.prepare(query).all(...params);
+// }
 
 }}}}}}}}}}}}}}))))))))))))))))

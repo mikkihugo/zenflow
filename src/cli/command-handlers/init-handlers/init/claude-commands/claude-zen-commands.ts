@@ -1,10 +1,10 @@
-/**  *//g
- * Claude Zen Commands Module
- * Converted from JavaScript to TypeScript
- *//g
-// claude-zen-commands.js - Claude-Flow specific slash commands/g
 
-// Create Claude-Flow specific commands/g
+/** Claude Zen Commands Module
+/** Converted from JavaScript to TypeScript
+
+// claude-zen-commands.js - Claude-Flow specific slash commands
+
+// Create Claude-Flow specific commands
 export async function createClaudeFlowCommands(workingDir = `---name = `---name = `---`
 name);
 - **distributed** - Multiple coordinators share management
@@ -12,7 +12,7 @@ name);
 - **mesh** - Peer-to-peer agent collaboration
 - **hybrid** - Mixed coordination strategies
 
-## ⚙ Common Options;
+##  Common Options;
 - \`--strategy <type>\` - Execution strategy;
 - \`--mode <type>\` - Coordination mode;
 - \`--max-agents <n>\` - Maximum concurrent agents(default);
@@ -28,11 +28,11 @@ name);
 - \`--verbose\` - Detailed logging output;
 - \`--dry-run\` - Show configuration without executing
 
-## � Examples
+##  Examples
 
 ### Development Swarm with Review;
 \`\`\`bash;`
-/claude-zen swarm "Build e-commerce REST API" \\;/g
+// claude-zen swarm "Build e-commerce REST API" \\;
   --strategy development \\;
   --monitor \\;
   --review \\;
@@ -41,7 +41,7 @@ name);
 
 ### Long-Running Research Swarm;
 \`\`\`bash;`
-/claude-zen swarm "Analyze AI market trends 2024-2025" \\;/g
+// claude-zen swarm "Analyze AI market trends 2024-2025" \\;
   --strategy research \\;
   --background \\;
   --distributed \\;
@@ -50,7 +50,7 @@ name);
 
 ### Performance Optimization Swarm;
 \`\`\`bash;`
-/claude-zen swarm "Optimize database queries and API performance" \\;/g
+// claude-zen swarm "Optimize database queries and API performance" \\;
   --strategy optimization \\;
   --testing \\;
   --parallel \\;
@@ -59,7 +59,7 @@ name);
 
 ### Enterprise Development Swarm;
 \`\`\`bash;`
-/claude-zen swarm "Implement secure payment processing system" \\;/g
+// claude-zen swarm "Implement secure payment processing system" \\;
   --strategy development \\;
   --mode distributed \\;
   --max-agents 10 \\;
@@ -73,54 +73,54 @@ name);
 
 ### Testing and QA Swarm;
 \`\`\`bash;`
-/claude-zen swarm "Comprehensive security audit and testing" \\;/g
+// claude-zen swarm "Comprehensive security audit and testing" \\;
   --strategy testing \\;
   --review \\;
   --verbose \\;
   --max-agents 6;
 \`\`\`
 
-## � Monitoring and Control
+##  Monitoring and Control
 
 ### Real-time monitoring: null
 \`\`\`bash;`
 # Monitor swarm activity;
-/claude-zen monitor/g
+// claude-zen monitor
 
 # Monitor specific component;
-/claude-zen monitor --focus swarm;/g
+// claude-zen monitor --focus swarm;
 \`\`\`
 
 ### Check swarm status: null
 \`\`\`bash;`
 # Overall system status;
-/claude-zen status/g
+// claude-zen status
 
 # Detailed swarm status;
-/claude-zen status --verbose;/g
+// claude-zen status --verbose;
 \`\`\`
 
 ### View agent activity: null
 \`\`\`bash;`
 # List all agents;
-/claude-zen agent list/g
+// claude-zen agent list
 
 # Agent details;
-/claude-zen agent info <agent-id>;/g
+// claude-zen agent info <agent-id>;
 \`\`\`
 
-## � Memory Integration
+##  Memory Integration
 
 Swarms automatically use distributed memory for collaboration: null
 \`\`\`bash;`
 # Store swarm objectives;
-/claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm/g
+// claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm
 
 # Query swarm progress;
-/claude-zen memory query "swarm_progress" --namespace swarm/g
+// claude-zen memory query "swarm_progress" --namespace swarm
 
 # Export swarm memory;
-/claude-zen memory export swarm-results.json --namespace swarm/g
+// claude-zen memory export swarm-results.json --namespace swarm
 \`\`\`
 
 ##  Key Features
@@ -151,16 +151,16 @@ Swarms automatically use distributed memory for collaboration: null
 - Data encryption;
 - Input validation
 
-## � Advanced Configuration
+##  Advanced Configuration
 
 ### Dry run to preview: null
 \`\`\`bash;`
-/claude-zen swarm "Test task" --dry-run --strategy development;/g
+// claude-zen swarm "Test task" --dry-run --strategy development;
 \`\`\`
 
 ### Custom quality thresholds: null
 \`\`\`bash;`
-/claude-zen swarm "High quality API" \\;/g
+// claude-zen swarm "High quality API" \\;
   --strategy development \\;
   --quality-threshold 0.95;
 \`\`\`
@@ -174,10 +174,9 @@ Swarms automatically use distributed memory for collaboration: null
 - Resource-aware;
 - Adaptive
 
-For detailed documentation, see,//github.com/ruvnet/claude-code-flow/docs/swarm-system.md/g
+For detailed documentation, see,//github.com/ruvnet/claude-code-flow/docs/swarm-system.md
 `;`
-// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);/g
-// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);/g
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
 console.warn('   Created slash command);'
-// }/g
-
+// }

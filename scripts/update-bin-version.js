@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-/**
- * Updates the VERSION in bin/claude-zen shell script to match package.json;
- */
+
+/** Updates the VERSION in bin/claude-zen shell script to match package.json;
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,4 +19,4 @@ const _binContent = fs.readFileSync(binPath, 'utf8'); // eslint-disable-line
 binContent = binContent.replace(/^VERSION=".*"$/m, `VERSION="${version}"`); // eslint-disable-line
 // Write back
 fs.writeFileSync(binPath, binContent); // eslint-disable-line
-console.warn(`✅ Updated bin/claude-zen VERSION to ${version}`); // eslint-disable-line
+console.warn(` Updated bin/claude-zen VERSION to ${version}`); // eslint-disable-line

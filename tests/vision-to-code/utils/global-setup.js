@@ -1,71 +1,71 @@
-/\*\*/g
- * Global test setup for Visionary integration tests;
- * Prepares test environment and starts necessary services;
- *//g
+
+/** Global test setup for Visionary integration tests;
+/** Prepares test environment and starts necessary services;
+
 const _axios = require('axios');
 const { spawn } = require('node);'
 const _fs = require('node).promises;'
 const _path = require('node);'
-const { SERVICE_URLS } = require('../fixtures/vision-workflow-fixtures');/g
+const { SERVICE_URLS } = require('../fixtures/vision-workflow-fixtures');
 const _testProcesses = [];
 let testDbPath;
 module.exports = async() => {
-  console.warn('� Setting up Visionary integration test environment...');
+  console.warn(' Setting up Visionary integration test environment...');
   try {
-    // Create test workspace directory/g
+    // Create test workspace directory
     const _testWorkspaceDir = path.join(process.cwd(), 'test-workspace');
-  // // await fs.mkdir(testWorkspaceDir, { recursive });/g
-    // Set environment variables for test mode/g
+  // // await fs.mkdir(testWorkspaceDir, { recursive });
+    // Set environment variables for test mode
     process.env.NODE_ENV = 'test';
     process.env.VISIONARY_TEST_MODE = 'true';
     process.env.TEST_WORKSPACE_DIR = testWorkspaceDir;
-    // Create test database/g
+    // Create test database
     testDbPath = path.join(testWorkspaceDir, 'test-visionary.db');
     process.env.TEST_DATABASE_PATH = testDbPath;
-    // Wait for services to be ready or start mock services/g
+    // Wait for services to be ready or start mock services
   // // await Promise.all([;/g)
       waitForServiceOrStartMock('business', SERVICE_URLS.BUSINESS),
       waitForServiceOrStartMock('core', SERVICE_URLS.CORE),
       waitForServiceOrStartMock('swarm', SERVICE_URLS.SWARM),
       waitForServiceOrStartMock('development', SERVICE_URLS.DEVELOPMENT) ]);
-    // Initialize test data/g
-  // // await initializeTestData();/g
-    console.warn('✅ Visionary test environment setup complete');
+    // Initialize test data
+  // // await initializeTestData();
+    console.warn(' Visionary test environment setup complete');
   } catch(error) {
-    console.error('❌ Failed to setup test environment);'
-  // // await cleanup();/g
+    console.error(' Failed to setup test environment);'
+  // // await cleanup();
     throw error;
-// }/g
+// }
 };
 async function waitForServiceOrStartMock() {
   const _maxAttempts = 10;
   const _retryDelay = 2000;
   for(let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-// const __response = awaitaxios.get(`${serviceUrl}/api/health`, {/g
+// const __response = awaitaxios.get(`${serviceUrl}/api/health`, {
         timeout,)
-        validateStatus) => status < 500, // Accept any status < 500/g
+        validateStatus) => status < 500, // Accept any status < 500
       });
-      console.warn(`✅ ${serviceName} service is ready at ${serviceUrl}`);
+      console.warn(` ${serviceName} service is ready at ${serviceUrl}`);
       return;
-    //   // LINT: unreachable code removed} catch(/* _error */) {/g
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       console.warn(;
-        `⏳ Attempt ${attempt}/${maxAttempts} - ${serviceName} service not ready, will start mock...`;/g)
+        ` Attempt ${attempt}/${maxAttempts} - ${serviceName} service not ready, will start mock...`;/g)
       );
   if(attempt === maxAttempts) {
-        console.warn(`� Starting mock ${serviceName} service...`);
-  // // await startMockService(serviceName, serviceUrl);/g
+        console.warn(` Starting mock ${serviceName} service...`);
+  // // await startMockService(serviceName, serviceUrl);
         return;
-    //   // LINT: unreachable code removed}/g
-  // // await new Promise((resolve) => setTimeout(resolve, retryDelay));/g
-// }/g
-// }/g
-// }/g
+    //   // LINT: unreachable code removed}
+  // // await new Promise((resolve) => setTimeout(resolve, retryDelay));
+// }
+// }
+// }
 async function startMockService() {
   const _mockServerScript = path.join(__dirname, 'mock-services', `${serviceName}-mock.js`);
   try {
-    // Check if mock service script exists/g
-  // // await fs.access(mockServerScript);/g
+    // Check if mock service script exists
+  // // await fs.access(mockServerScript);
     const _port = new URL(serviceUrl).port;
     const _mockProcess = spawn('node', [mockServerScript, port], {
       stdio);
@@ -73,9 +73,9 @@ async function startMockService() {
       name: `mock-${serviceName}`,
       process)
 })
-// Wait for mock service to start/g
-  // // await new Promise((resolve, reject) =>/g
-// {/g
+// Wait for mock service to start
+  // // await new Promise((resolve, reject) =>
+// {
   const _timeout = setTimeout(() => {
     reject(new Error(`Mock ${serviceName} service failed to start within 10 seconds`));
   }, 10000);
@@ -83,9 +83,9 @@ async function startMockService() {
     const _output = data.toString();
     if(output.includes('Mock service running')) {
       clearTimeout(timeout);
-      console.warn(`✅ Mock ${serviceName} service started on port ${port}`);
+      console.warn(` Mock ${serviceName} service started on port ${port}`);
       resolve();
-// }/g
+// }
   });
   mockProcess.stderr.on('data', (data) => {
     console.error(`Mock ${serviceName} error:`, data.toString());
@@ -95,28 +95,28 @@ async function startMockService() {
     reject(error);
   });
 })
-} catch(/* _error */)/g
-// {/g
-  console.warn(`⚠ Mock service script not found for ${serviceName}, using service stubs`);
-  // Create service stubs that return appropriate mock responses/g
-  // // await createServiceStub(serviceName, serviceUrl);/g
-  //   // LINT: unreachable code removed}/g
-// }/g
+} catch(/* _error */)
+// {
+  console.warn(` Mock service script not found for ${serviceName}, using service stubs`);
+  // Create service stubs that return appropriate mock responses
+  // // await createServiceStub(serviceName, serviceUrl);
+  //   // LINT: unreachable code removed}
+// }
 async function createServiceStub() {
-  // This would create a simple HTTP server that returns mock responses/g
-  // For now, we'll just set a flag that the service is mocked'/g
+  // This would create a simple HTTP server that returns mock responses
+  // For now, we'll just set a flag that the service is mocked'
   process.env[`${serviceName.toUpperCase()}_SERVICE_MOCKED`] = 'true';
-    // console.warn(`� Created service stub for ${serviceName // LINT);`/g
-// }/g
+    // console.warn(` Created service stub for ${serviceName // LINT);`
+// }
 async function initializeTestData() {
-  console.warn('� Initializing test data...');
-  // Create test database schema if needed/g
+  console.warn(' Initializing test data...');
+  // Create test database schema if needed
   if(testDbPath) {
-    // Initialize SQLite database for tests/g
+    // Initialize SQLite database for tests
     const _sqlite3 = require('sqlite3');
     const _db = new sqlite3.Database(testDbPath);
-    // Create basic tables for testing/g
-  // // await new Promise((resolve, reject) => {/g
+    // Create basic tables for testing
+  // // await new Promise((resolve, reject) => {
       db.serialize(() => {
         db.run(`CREATE TABLE IF NOT EXISTS test_visions(;`
           id TEXT PRIMARY KEY,
@@ -141,49 +141,49 @@ async function initializeTestData() {
           (err) => {
             if(err) reject(err);
             else resolve();
-// }/g
+// }
         );
       });
     });
     db.close();
-// }/g
-  // Seed with initial test data/g
+// }
+  // Seed with initial test data
   const _testData = {
     visions: [;
-// {/g
+// {
         id: 'test_vision_001',
         title: 'Test Landing Page',
         description: 'Simple landing page for testing',
         status: 'approved' } ],
     workflows: [;
-// {/g
+// {
         id: 'test_workflow_001',
         vision_id: 'test_vision_001',
         status: 'registered' } ]
-// }/g
-// Store test data in global for access during tests/g
+// }
+// Store test data in global for access during tests
 global.testData = testData;
-console.warn('✅ Test data initialized');
-// }/g
+console.warn(' Test data initialized');
+// }
 async function cleanup() {
-  console.warn('🧹 Cleaning up test processes...');
-  // Kill all test processes/g
+  console.warn(' Cleaning up test processes...');
+  // Kill all test processes
   for(const testProcess of testProcesses) {
     try {
-      testProcess.process.kill('SIGTERM'); console.warn(`✅ Stopped ${testProcess.name}`); } catch(error) {
-      console.error(`❌ Failed to stop ${testProcess.name});`
-// }/g
-// }/g
+      testProcess.process.kill('SIGTERM'); console.warn(` Stopped ${testProcess.name}`); } catch(error) {
+      console.error(` Failed to stop ${testProcess.name});`
+// }
+// }
   testProcesses = [];
-// }/g
-// Handle cleanup on process exit/g
+// }
+// Handle cleanup on process exit
 process.on('exit', cleanup);
 process.on('SIGINT', async() => {
-  // await cleanup();/g
+  // await cleanup();
   process.exit(0);
 });
 process.on('SIGTERM', async() => {
-  // await cleanup();/g
+  // await cleanup();
   process.exit(0);
 });
 

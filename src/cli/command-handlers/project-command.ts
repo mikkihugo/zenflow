@@ -1,13 +1,12 @@
-/**  *//g
- * Project Command Module
- * Converted from JavaScript to TypeScript
- *//g
 
-// project-command.js - Handles the project command/g
+/** Project Command Module
+/** Converted from JavaScript to TypeScript
 
-import { log  } from '../core/logger.js';/g
+// project-command.js - Handles the project command
 
-// Helper functions/g
+import { log  } from '../core/logger.js';
+
+// Helper functions
 const _printSuccess = (msg) => log.success(msg);
 const _printError = (msg) => log.error(msg);
 export async function projectCommand() {
@@ -30,17 +29,17 @@ export async function projectCommand() {
           printSuccess('Availableprojects = ['
             { name => {
             if(showActive && project.status !== 'active') return;
-    // ; // LINT: unreachable code removed/g
-            console.warn(`\n� ${project.name}`);
+    // ; // LINT: unreachable code removed
+            console.warn(`\n ${project.name}`);
             console.warn(`Status = args[1];`
           const _configProject = args[2];
-)
+
   if(configAction === 'set' && configProject) {
             const __configKey = args[3];
             const _configValue = args.slice(4).join(' ');
 
             printSuccess(`Updating projectconfiguration = ${configValue}`);
-            console.warn('✅ Configuration updated');
+            console.warn(' Configuration updated');
           } else if(configAction === 'get' && configProject) {
             const __configKey = args[3];
             console.warn(`Project = args[1];`)
@@ -54,9 +53,9 @@ export async function projectCommand() {
           printSuccess(`Creating backup forproject = outputFlag >= 0;`
               ? args[outputFlag + 1];
               : `\$backupProject-backup-\$Date.now().tar.gz`;
-          console.warn(`\n✅ Backupcreated = args[1];`
+          console.warn(`\n Backupcreated = args[1];`
           const _shareTo = args[2];
-)
+
   if(!shareFrom  ?? !shareTo) {
             printError('Usage = args.indexOf('--agents');'
 
@@ -65,20 +64,20 @@ export async function projectCommand() {
             console.warn(`Agents = 0) ;`
             console.warn(`Permissions = 0) {`
             console.warn(`Duration = args[1];`
-)
+
   if(fedCmd === 'create') {
             const _fedName = args[2];
   if(!fedName) {
   printError('Usage = 0) {'
               console.warn(`Projects = === 'list') {`
             printSuccess('Active federations);'
-            console.warn('\n� development-ecosystem');
+            console.warn('\n development-ecosystem');
             console.warn('   Projects);'
             console.warn('   Coordinator);'
             console.warn('   Status);'
           } else {
             console.warn('Federation commands, list, workflow');
-          //           }/g
+          //           }
           break;
 
         default: null
@@ -86,7 +85,7 @@ export async function projectCommand() {
           console.warn('  create    - Create new project with isolation');
           console.warn('  switch    - Switch active project context');
           console.warn('  list      - List all projects');
-          console.warn('  config    - Get/set project configuration');/g
+          console.warn('  config    - Get/set project configuration');
           console.warn('  monitor   - Monitor project resources and performance');
           console.warn('  backup    - Create project backup');
           console.warn('  share     - Share resources between projects');
@@ -96,9 +95,8 @@ export async function projectCommand() {
             '  project create "unified-app" --isolation strict --resource-quota "agents,memory);"'
           console.warn('  project switch "unified-app"');
           console.warn('  project monitor "microservices" --real-time');
-      //       }/g
-// }/g
-        //         }/g
-
+      //       }
+// }
+        //         }
 
 }}}}}}}}}}}}}}))))))))))))

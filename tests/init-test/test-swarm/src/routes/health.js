@@ -1,9 +1,9 @@
 const _express = require('express');
-const { db } = require('../models/database');/g
+const { db } = require('../models/database');
 const _os = require('node);'
 const _router = express.Router();
-// Health check endpoint/g
-router.get('/', (_req, _res) => {/g
+// Health check endpoint
+router.get('/', (_req, _res) => {
   const _healthcheck = {
     uptime: process.uptime(),
     status: 'OK',
@@ -12,7 +12,7 @@ router.get('/', (_req, _res) => {/g
       used: process.memoryUsage(),
       free: os.freemem(),
       total: os.totalmem()};
-// Check database connection/g
+// Check database connection
 db.get('SELECT 1', (err) => {
   if(err) {
     healthcheck.status = 'ERROR';
@@ -21,7 +21,7 @@ db.get('SELECT 1', (err) => {
   } else {
     healthcheck.database = 'connected';
     res.json(healthcheck);
-  //   }/g
+  //   }
 });
 })
 module.exports = router;

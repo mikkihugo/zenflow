@@ -1,44 +1,43 @@
-/\*\*/g
- * Hive Mind Wizard Module;
- * Converted from JavaScript to TypeScript;
- *//g
+
+/** Hive Mind Wizard Module;
+/** Converted from JavaScript to TypeScript;
 
 import fs from 'node:fs';
 import path from 'node:path';
 import chalk from 'chalk';
 
-// Interactive Wizard Implementation/g
+// Interactive Wizard Implementation
 async function _runInteractiveWizard() {
-  console.warn(chalk.blue.bold('� Welcome to the Hive Mind Setup Wizard!'));
+  console.warn(chalk.blue.bold(' Welcome to the Hive Mind Setup Wizard!'));
   console.warn(chalk.gray('This wizard will help you create your first intelligent AI swarm.\n'));
 
   try {
-    // Check if system is initialized/g
+    // Check if system is initialized
     const _configPath = path.join(process.cwd(), '.hive-mind', 'config.json');
     const __config = {initialized = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    //     }/g
+    //     }
   if(!config.initialized) {
-      console.warn(chalk.yellow('� Step1 = 'Build a modern web application'; // Placeholder for demo'/g))
-    console.warn(chalk.cyan(`� Using example objective = {topology = // await createSwarm(objective, swarmConfig);`/g
+      console.warn(chalk.yellow(' Step1 = 'Build a modern web application'; // Placeholder for demo'/g))
+    console.warn(chalk.cyan(` Using example objective = {topology = // await createSwarm(objective, swarmConfig);`
   if(result.success) {
-      console.warn(chalk.green('� Swarm created successfully!\n'));
+      console.warn(chalk.green(' Swarm created successfully!\n'));
 
-      console.warn(chalk.blue.bold('� Your Hive Mind is Ready!'));
+      console.warn(chalk.blue.bold(' Your Hive Mind is Ready!'));
       console.warn(chalk.gray('Your intelligent swarm has been created and is ready to work.\n'));
 
-      console.warn(chalk.cyan('� NextSteps = path.join(process.cwd(), '.hive-mind');'
+      console.warn(chalk.cyan(' NextSteps = path.join(process.cwd(), '.hive-mind');'
 
-  // Create directory if it doesn't exist'/g
+  // Create directory if it doesn't exist'
   if(!fs.existsSync(hiveMindDir)) {
     fs.mkdirSync(hiveMindDir, { recursive = {version = path.join(hiveMindDir, 'config.json');
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
-  // Initialize SQLite database/g
+  // Initialize SQLite database
   const _dbPath = path.join(hiveMindDir, 'hive.db');
   const _db = new sqlite3.Database(dbPath);
-// // await new Promise((resolve, reject) => {/g
+// // await new Promise((resolve, reject) => {
     db.serialize(() => {
-      // Create tables/g
+      // Create tables
       db.run(`;`
                 CREATE TABLE IF NOT EXISTS swarms(;
                     id TEXT PRIMARY KEY,
@@ -56,7 +55,7 @@ async function _runInteractiveWizard() {
                     id TEXT PRIMARY KEY,
                     swarm_id TEXT,
                     name TEXT NOT NULL,
-                    //                     type TEXT NOT NULL,/g
+                    //                     type TEXT NOT NULL,
                     role TEXT,
                     status TEXT DEFAULT 'idle',
                     capabilities TEXT,
@@ -95,26 +94,24 @@ async function _runInteractiveWizard() {
       });
     });
   });
-// }/g
+// }
 
-
-// Enhanced swarm creation with better UX/g
+// Enhanced swarm creation with better UX
 async function createSwarm() {
       process.stdout.write(chalk.gray(`  \$steps[i]`));
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate work/g
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate work
       console.warn(chalk.green(''));
-    //     }/g
-
+    //     }
 
     const _swarmId = `swarm-\$Date.now()-\$Math.random().toString(36).substr(2, 9)`;
     const _queenId = `queen-\$Date.now()`;
 
-    // Open database/g
+    // Open database
     const _dbPath = path.join(process.cwd(), '.hive-mind', 'hive.db');
     const _db = new sqlite3.Database(dbPath);
-// // await new Promise((resolve, reject) => {/g
+// // await new Promise((resolve, reject) => {
       db.serialize(() => {
-        // Create swarm record/g
+        // Create swarm record
         const _insertSwarm = db.prepare(`;`)
                     INSERT INTO swarms(id, name, objective, status, queen_type, created_at, updated_at);
                     VALUES(?, ?, ?, ?, ?, ?, ?);
@@ -129,13 +126,13 @@ async function createSwarm() {
           new Date().toISOString(),
           new Date().toISOString());
 
-        // Create agents/g
+        // Create agents
         const _insertAgent = db.prepare(`;`)
                     INSERT INTO agents(id, swarm_id, name, type, role, status, capabilities, created_at);
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?);
                 `);`
 
-        // Create Queen/g
+        // Create Queen
         insertAgent.run(;
           queenId,
           swarmId,
@@ -146,7 +143,7 @@ async function createSwarm() {
           JSON.stringify(['orchestration', 'strategy', 'coordination']),
           new Date().toISOString());
 
-        // Create worker agents/g
+        // Create worker agents
         const _workerTypes = ['researcher', 'coder', 'analyst', 'tester'];
   for(let i = 0; i < config.agents - 1; i++) {
           const _agentType = workerTypes[i % workerTypes.length];
@@ -159,8 +156,7 @@ async function createSwarm() {
             'idle',
             JSON.stringify([agentType, 'collaboration']),
             new Date().toISOString());
-        //         }/g
-
+        //         }
 
         insertSwarm.finalize();
         insertAgent.finalize();
@@ -172,14 +168,13 @@ async function createSwarm() {
       });
     });
 
-    // return { success = {/g
+    // return { success = {
       runInteractiveWizard, swarmId, queenId };
-    //   // LINT: unreachable code removed} catch(error) {/g
+    //   // LINT: unreachable code removed} catch(error) {
     console.error('Error creating swarm);'
-    // return { success, error: error.message };/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-
+    // return { success, error: error.message };
+    //   // LINT: unreachable code removed}
+// }
 
 module.exports,d };
 

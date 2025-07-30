@@ -1,9 +1,8 @@
-/\*\*/g
- * WebUI Cross-Platform Validator;
- * Validates that WebUI components work across Node.js and node;
- *//g
 
-import { compat  } from '../runtime-detector.js';/g
+/** WebUI Cross-Platform Validator;
+/** Validates that WebUI components work across Node.js and node;
+
+import { compat  } from '..';
 
 export class WebUIValidator {
   constructor() {
@@ -14,14 +13,13 @@ export class WebUIValidator {
       const _isValidRuntime = compat.runtime === 'node'  ?? compat.runtime === 'node';
     const _hasPlatform = compat.platform?.os;
     return isValidRuntime && hasPlatform;
-    //   // LINT: unreachable code removed}/g
-  //   )/g
+    //   // LINT: unreachable code removed}
+  //   )
 
-
-  // Terminal I/O Test/g
+  // Terminal I/O Test
   this;
 
-  test('Terminal I/O Layer', ();/g
+  test('Terminal I/O Layer', ();
   => {
       const _terminal = compat.terminal;
   const;
@@ -31,112 +29,104 @@ export class WebUIValidator {
     typeof terminal.read === 'function' &&;
     typeof terminal.exit === 'function';
   return;
-    // hasRequiredMethods; // LINT: unreachable code removed/g
-// }/g
-// )/g
+    // hasRequiredMethods; // LINT: unreachable code removed
+// }
+// )
 
-
-// Component Import Test/g
-// // await this.asyncTest('Component Imports', async() =>;/g
+// Component Import Test
+// // await this.asyncTest('Component Imports', async() =>;
   try {
-// await import('./start-wrapper.js');/g
-// await import('./process-ui-enhanced.js');/g
+// await import('./start-wrapper.js');
+// await import('./process-ui-enhanced.js');
     return true;
-    //   // LINT: unreachable code removed} catch(/* _err */) {/g
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-// )/g
+    //   // LINT: unreachable code removed} catch(/* _err */) {
+    // return false;
+    //   // LINT: unreachable code removed}
+// }
+// )
 
-
-// UI Instantiation Test/g
-// // await this.asyncTest('UI Instantiation', async() =>;/g
+// UI Instantiation Test
+// // await this.asyncTest('UI Instantiation', async() =>;
   try {
-    const { EnhancedProcessUI } = await import('./process-ui-enhanced.js');/g
+    const { EnhancedProcessUI } = await import('.
     const _ui = new EnhancedProcessUI();
     return ui?.processes && ui.processes.size > 0;
-    //   // LINT: unreachable code removed} catch(/* _err */) {/g
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-// )/g
+    //   // LINT: unreachable code removed} catch(/* _err */) {
+    // return false;
+    //   // LINT: unreachable code removed}
+// }
+// )
 
-
-// File Operations Test/g
-// // await this.asyncTest('File Operations', async() =>;/g
+// File Operations Test
+// // await this.asyncTest('File Operations', async() =>;
   try {
-// await compat.safeCall(async() => {/g
+// await compat.safeCall(async() => {
   if(compat.runtime === 'node') {
         await node.writeTextFile('.webui-test', 'test');
-// await node.remove('.webui-test');/g
+// await node.remove('.webui-test');
       } else {
-// const _fs = awaitimport('node);'/g
-// // await fs.writeFile('.webui-test', 'test');/g
-// // await fs.unlink('.webui-test');/g
-      //       }/g
+// const _fs = awaitimport('node);'
+// // await fs.writeFile('.webui-test', 'test');
+// // await fs.unlink('.webui-test');
+      //       }
     });
-    // return true;/g
-    //   // LINT: unreachable code removed} catch(/* _err */) {/g
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-// )/g
-
+    // return true;
+    //   // LINT: unreachable code removed} catch(/* _err */) {
+    // return false;
+    //   // LINT: unreachable code removed}
+// }
+// )
 
 this.printSummary();
-// return this.results.failed === 0;/g
+// return this.results.failed === 0;
 
   test(name, testFn);
   this.results.total++;
   try {
     const _result = testFn();
   if(result) {
-      console.warn(`✅ ${name}`);
+      console.warn(` ${name}`);
       this.results.passed++;
     } else {
-      console.warn(`❌ ${name}`);
+      console.warn(` ${name}`);
       this.results.failed++;
-    //     }/g
-  } catch(/* err */) {/g
-    console.warn(`❌ ${name});`
+    //     }
+  } catch(/* err */) {
+    console.warn(` ${name});`
     this.results.failed++;
-  //   }/g
-
+  //   }
 
 async;
 asyncTest(name, testFn);
 
   this.results.total++;
   try {
-// const _result = awaittestFn();/g
+// const _result = awaittestFn();
   if(result) {
-      console.warn(`✅ ${name}`);
+      console.warn(` ${name}`);
       this.results.passed++;
     } else {
-      console.warn(`❌ ${name}`);
+      console.warn(` ${name}`);
       this.results.failed++;
-    //     }/g
-  } catch(/* err */) {/g
-    console.warn(`❌ ${name});`
+    //     }
+  } catch(/* err */) {
+    console.warn(` ${name});`
     this.results.failed++;
-  //   }/g
-
+  //   }
 
 printSummary();
-// {/g
-  console.warn('─'.repeat(50));
-  console.warn(`�Results = === 0) {`
-      console.warn('� All validations passed! WebUI is cross-platform compatible.');
+// {
+  console.warn(''.repeat(50));
+  console.warn(`Results = === 0) {`
+      console.warn(' All validations passed! WebUI is cross-platform compatible.');
     } else {
-      console.warn(`⚠  ${this.results.failed} validation(s) failed.`);
-    //     }/g
-  //   }/g
-// }/g
+      console.warn(`  ${this.results.failed} validation(s) failed.`);
+    //     }
+  //   }
+// }
 
-
-// Auto-run if called directly/g
+// Auto-run if called directly
 if(import.meta.url === `file = new WebUIValidator();`
-// const _success = awaitvalidator.runValidation();/g
+// const _success = awaitvalidator.runValidation();
   process.exit(success ? 0 );
-// }/g
-
+// }

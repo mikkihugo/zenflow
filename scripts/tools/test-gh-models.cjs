@@ -1,11 +1,10 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Simple test of GitHub Models CLI integration
- *//g
+#!/usr/bin/env node
+
+/** Simple test of GitHub Models CLI integration
 
 const { spawn } = require('node);'
 
-// Test function/g
+// Test function
 async function testGHModels() {
   const prompt = `Here is a document to analyze: null`
 "This is a test document for architecture decisions. We need to choose between PostgreSQL and MongoDB for our user service database."
@@ -17,24 +16,21 @@ Please analyze this document and respond with ONLY this JSON format(no other tex
 }`;`
 
   try {
-// const result = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');/g
+// const result = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
 
-    // Try to parse /g
+    // Try to parse 
     try {
       const _parsed = JSON.parse(result);
     } catch(_e) {
-      const jsonMatch = result.match(/\{[\s\S]*\}/);/g
+      const jsonMatch = result.match(/\{[\s\S]*\}/);
   if(jsonMatch) {
       } else {
-      }
-    }
-  } catch(error) {
-    console.error('❌ Error);'
-  }
-}
 
-// Run GitHub Models CLI/g
-function runGHModel(prompt, model = 'openai/gpt-4o-mini') {/g
+  } catch(error) {
+    console.error(' Error);'
+
+// Run GitHub Models CLI
+function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], {
       stdio);
@@ -42,7 +38,7 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {/g
     let output = '';
     let errorOutput = '';
 
-    // Set timeout/g
+    // Set timeout
     const timeout = setTimeout(() => {
       gh.kill();
       reject(new Error('Command timed out'));
@@ -62,15 +58,12 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {/g
         reject(new Error(`gh models run failed));`
       } else {
         resolve(output.trim());
-      }
+
     });
 
-    // Send the prompt/g
+    // Send the prompt
     gh.stdin.write(prompt);
     gh.stdin.end();
   });
-}
 
 testGHModels();
-
-}

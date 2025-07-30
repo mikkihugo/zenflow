@@ -1,14 +1,13 @@
-/**  *//g
- * Hive Mind Core System
- * Central orchestration and coordination logic
- *//g
+
+/** Hive Mind Core System
+/** Central orchestration and coordination logic
 
 import EventEmitter from 'node:events';
-import { MCPToolWrapper  } from './mcp-wrapper.js';/g
-import { PerformanceOptimizer  } from './performance-optimizer.js';/g
-/**  *//g
- * HiveMindCore - Main orchestration class
- *//g
+import { MCPToolWrapper  } from '.';
+import { PerformanceOptimizer  } from '.';
+
+/** HiveMindCore - Main orchestration class
+
 export class HiveMindCore extends EventEmitter {
   constructor(metaRegistryManager = {}) {
     super();
@@ -23,11 +22,10 @@ export class HiveMindCore extends EventEmitter {
       enableAsyncQueue,
       _enableBatchProcessing => {
       this.state.metrics.tasksCreated++;
-      // Auto-scaling check will now query ruv-swarm for pending tasks and idle workers/g
-// // await this._checkAutoScale();/g
-    //     }/g
-  //   )/g
-
+      // Auto-scaling check will now query ruv-swarm for pending tasks and idle workers
+// // await this._checkAutoScale();
+    //     }
+  //   )
 
   this;
 
@@ -37,13 +35,13 @@ export class HiveMindCore extends EventEmitter {
   this;
 
   _updatePerformanceMetrics();
-// }/g
-  //   )/g
+// }
+  //   )
   this
 
   on('task => {'
       console.warn(`Task failed =>;`
-  //   {/g
+  //   {
   this.
   state;
 
@@ -52,272 +50,257 @@ export class HiveMindCore extends EventEmitter {
   decisionsReached;
   ++
 // }/g)
-// )/g
+// )
 this.on('worker => {'
-      // This event is now largely handled by ruv-swarm's internal task assignment'/g
+      // This event is now largely handled by ruv-swarm's internal task assignment'
       console.warn('[HiveMindCore] worker => {'
       console.error('Hive Mind Error => {'
       console.warn(`Performance auto-tuned = $`
-// {/g
+// {
   data.newValue;
 // }/g))))
 `);`
 this.emit('performance => {'
       console.error('Performance optimizer error => {;'))
 this.emit('performance = (this.state.metrics.tasksFailed  ?? 0) + 1;'
-// Ruv-swarm handles task retry and recovery internally/g
+// Ruv-swarm handles task retry and recovery internally
 console.warn('[HiveMindCore] Task failure handling is deprecated. RuvSwarm handles recovery.');
-// Log the failure to memory via mcpWrapper/g
+// Log the failure to memory via mcpWrapper
 this.mcpWrapper.executeTool('memory_usage', {action = 'initializing';
 // Get default registry and hierarchical task manager plugin/g)
 this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
   if(!this.defaultRegistry) {
   throw new Error('Default MetaRegistry not found.');
-// }/g
+// }
 this.hierarchicalTaskManagerPlugin = this.defaultRegistry.pluginSystem.getPlugin(;)
 ('hierarchical-task-manager');
-// )/g
+// )
   if(!this.hierarchicalTaskManagerPlugin) {
   throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
-// }/g
-// Initialize ruv-swarm via mcpWrapper/g
-// // await this.mcpWrapper.initialize();/g
-// Initialize swarm with MCP tools(now directly using ruv-swarm via mcpWrapper)/g
+// }
+// Initialize ruv-swarm via mcpWrapper
+// // await this.mcpWrapper.initialize();
+// Initialize swarm with MCP tools(now directly using ruv-swarm via mcpWrapper)
 // const _swarmInitResult = awaitthis.mcpWrapper.executeTool('swarm_init', {topology = swarmInitResult.swarmId;/g)
-// Store initial configuration in memory(via mcpWrapper, which uses ruv-swarm's memory)'/g
-// // await this.mcpWrapper.executeTool('memory_usage', {action = 'ready';/g
+// Store initial configuration in memory(via mcpWrapper, which uses ruv-swarm's memory)'
+// // await this.mcpWrapper.executeTool('memory_usage', {action = 'ready';
 this.emit('initialized', {swarmId = 'error';))
 this.emit('error', error);
 throw error;
-// }/g
-  //   }/g
-/**  *//g
- * Determine optimal topology based on objective
- *//g
+// }
+  //   }
+
+/** Determine optimal topology based on objective
+
 _determineTopology();
-// {/g
-  // If user explicitly provided topology, use it/g
+// {
+  // If user explicitly provided topology, use it
   if(this.config.topology) {
-    // return this.config.topology;/g
-    //   // LINT: unreachable code removed}/g
+    // return this.config.topology;
+    //   // LINT: unreachable code removed}
 
   const _objective = this.config.objective.toLowerCase();
 
-  // Heuristic topology selection/g
+  // Heuristic topology selection
   if(objective.includes('research')  ?? objective.includes('analysis')) {
-    // return 'mesh'; // Peer-to-peer for collaborative research/g
+    // return 'mesh'; // Peer-to-peer for collaborative research
   } else if(objective.includes('build')  ?? objective.includes('develop')) {
-    // return 'hierarchical'; // Clear command structure for development/g
+    // return 'hierarchical'; // Clear command structure for development
   } else if(objective.includes('monitor')  ?? objective.includes('maintain')) {
-    // return 'ring'; // Circular for continuous monitoring/g
+    // return 'ring'; // Circular for continuous monitoring
   } else if(objective.includes('coordinate')  ?? objective.includes('orchestrate')) {
-    // return 'star'; // Centralized for coordination/g
-  //   }/g
+    // return 'star'; // Centralized for coordination
+  //   }
 
+  // return 'hierarchical'; // Default
+// }
 
-  // return 'hierarchical'; // Default/g
-// }/g
+/** Spawn the queen coordinator
 
-
-/**  *//g
- * Spawn the queen coordinator
- *//g
 async;
 spawnQueen(queenData);
 
-
     try {
-      // Batch spawn agents in parallel with optimized chunking/g
+      // Batch spawn agents in parallel with optimized chunking
       const _groupedTypes = this._groupAgentTypes(workerTypes);
       const _allResults = [];
   for(const group of groupedTypes) {
-        const _batch = group.map((_type) => ({ tool = // await this.mcpWrapper.executeParallel(batch); /g
-        allResults.push(...groupResults); // Store agent information in memory(via mcpWrapper) {/g
+        const _batch = group.map((_type) => ({ tool = // await this.mcpWrapper.executeParallel(batch); 
+        allResults.push(...groupResults); // Store agent information in memory(via mcpWrapper) {
   for(const result of groupResults) {
   if(result?.agentId && !result.error) {
-// // await this.mcpWrapper.executeTool('memory_usage', {action = Date.now() - startTime; /g
-      this._trackSpawnPerformance(workerTypes.length, spawnTime); // Store worker info in memory(via mcpWrapper) {/g
-// // await this.mcpWrapper.executeTool('memory_usage', {action = > ({ id: r.agentId,type = 5, metadata = {  }) {/g
+// // await this.mcpWrapper.executeTool('memory_usage', {action = Date.now() - startTime; 
+      this._trackSpawnPerformance(workerTypes.length, spawnTime); // Store worker info in memory(via mcpWrapper) {
+// // await this.mcpWrapper.executeTool('memory_usage', {action = > ({ id: r.agentId,type = 5, metadata = {  }) {
     const _timestamp = Date.now();
-    const _randomPart = Math.random().toString(36).substring(2, 11); // Use substring instead of substr/g
+    const _randomPart = Math.random().toString(36).substring(2, 11); // Use substring instead of substr
     const __taskId = `;`
 task - $;
-// {/g
+// {
   timestamp;
-// }/g
+// }
 -$;
-// {/g
+// {
   randomPart;
-// }/g
+// }
 `;`
 
-    const __task = {id = // await this.mcpWrapper.executeParallel([;/g
+    const __task = {id = // await this.mcpWrapper.executeParallel([;
       {tool = orchestrateResult.taskId;
-)
-    this.emit('task = description.toLowerCase().split(/\s+/);'/g
+
+    this.emit('task = description.toLowerCase().split(/\s+/);'
     const _complexityKeywords = {simple = 1;
   for(const word of words) {
       if(_complexityKeywords._complex._includes(_word)) score += 3; else if(complexityKeywords.medium.includes(word)) score += 2; else if(complexityKeywords.simple.includes(word) {) score += 1;
-    //     }/g
+    //     }
 
+    // return Math.min(score * 5000, 60000); // Cap at 1 minute
+  //   }
 
-    // return Math.min(score * 5000, 60000); // Cap at 1 minute/g
-  //   }/g
+/** Analyze task complexity
 
-
-  /**  *//g
- * Analyze task complexity
-   *//g
   _analyzeTaskComplexity(description) {
-    const __words = description.toLowerCase().split(/\s+/);/g
+    const __words = description.toLowerCase().split(/\s+/);
 
-      // /g
-      }
-    //     }/g
+    //     }
 
+    // return 'medium';
+    //   // LINT: unreachable code removed}
 
-    // return 'medium';/g
-    //   // LINT: unreachable code removed}/g
+/** Find best worker for task(optimized async version)
 
-  /**  *//g
- * Find best worker for task(optimized async version)
-   *//g
   _findBestWorkerAsync(task) ;
-    // Ruv-swarm handles worker assignment internally via task orchestration/g
+    // Ruv-swarm handles worker assignment internally via task orchestration
     console.warn('[HiveMindCore] _findBestWorkerAsync is deprecated. RuvSwarm handles worker assignment.');
-    // return null;/g
-    // ; // LINT: unreachable code removed/g
-  /**  *//g
- * Synchronous version for backward compatibility
-   *//g
+    // return null;
+    // ; // LINT: unreachable code removed
+
+/** Synchronous version for backward compatibility
+
   _findBestWorker(task) ;
-    // Ruv-swarm handles worker assignment internally via task orchestration/g
+    // Ruv-swarm handles worker assignment internally via task orchestration
     console.warn('[HiveMindCore] _findBestWorker is deprecated. RuvSwarm handles worker assignment.');
-    // return null;/g
-    // ; // LINT: unreachable code removed/g
-  /**  *//g
- * Assign task to worker
-   *//g
+    // return null;
+    // ; // LINT: unreachable code removed
+
+/** Assign task to worker
+
   async _assignTask(workerId, taskId) ;
-    // Ruv-swarm handles task assignment internally/g
+    // Ruv-swarm handles task assignment internally
     console.warn('[HiveMindCore] _assignTask is deprecated. RuvSwarm handles task assignment.');
 
-  /**  *//g
- * Execute task with performance optimization
-   *//g
+/** Execute task with performance optimization
+
   _executeTask(workerId, taskId) ;
-    // Ruv-swarm handles task execution internally/g
+    // Ruv-swarm handles task execution internally
     console.warn('[HiveMindCore] _executeTask is deprecated. RuvSwarm handles task execution.');
 
-  /**  *//g
- * Assign next task to idle worker
-   *//g
+/** Assign next task to idle worker
+
   _assignNextTask(workerId) ;
-    // Ruv-swarm handles task assignment internally/g
+    // Ruv-swarm handles task assignment internally
     console.warn('[HiveMindCore] _assignNextTask is deprecated. RuvSwarm handles task assignment.');
 
-  /**  *//g
- * Build consensus for decision
-   *//g
+/** Build consensus for decision
+
   async buildConsensus(topic, options) { 
     const _decision = id = Array.from(this.state.workers.values());
     const _votes = {};
 
-    // Each worker votes/g
+    // Each worker votes
     workers.forEach((worker) => {
       const _vote = options[Math.floor(Math.random() * options.length)]
       votes[worker.id] = vote;
       decision.votes.set(worker.id, vote);
     });
 
-    // Queen gets weighted vote/g
+    // Queen gets weighted vote
     const _queenVote = options[Math.floor(Math.random() * options.length)]
     votes.queen = queenVote;
     decision.votes.set('queen', queenVote);
 
-    // Calculate consensus/g
+    // Calculate consensus
     const _result = this._calculateConsensus(decision);
     decision.result = result.decision;
     decision.confidence = result.confidence;
     decision.status = 'completed';
 
-    // Convert Map to plain object for proper JSON serialization/g
+    // Convert Map to plain object for proper JSON serialization
 
     const _voteCount = {};
 
-    // Count votes/g
+    // Count votes
     votes.forEach((vote) => {
       voteCount[vote] = (voteCount[vote]  ?? 0) + 1;
     });
   switch(decision.algorithm) {
       case 'majority': {
-        // Simple majority/g
+        // Simple majority
         const __sorted = Object.entries(voteCount).sort((a, b) => b[1] - a[1]);
 
         return {decision = decision.votes.get('queen');
-    // voteCount[queenVote] = (voteCount[queenVote]  ?? 0) + 2; // Queen counts as 3 votes // LINT: unreachable code removed/g
+    // voteCount[queenVote] = (voteCount[queenVote]  ?? 0) + 2; // Queen counts as 3 votes // LINT: unreachable code removed
 
         const __weightedSorted = Object.entries(voteCount).sort((a, b) => b[1] - a[1]);
 
         return {decision = Object.entries(voteCount).sort((a, b) => b[1] - a[1]);
-    // const _byzantineWinner = byzantineSorted[0]; // LINT: unreachable code removed/g
-        const _byzantineConfidence = byzantineWinner[1] / votes.length;/g
+    // const _byzantineWinner = byzantineSorted[0]; // LINT: unreachable code removed
+        const _byzantineConfidence = byzantineWinner[1] / votes.length;
   if(byzantineConfidence >= 0.67) {
-          return {decision = (// await this.mcpWrapper.executeTool('swarm_status', {swarmId = (// await this.mcpWrapper.executeTool('swarm_status', {swarmId = // await this._determineWorkerType();/g
-    // // await this.spawnWorkers([newWorkerType]); // LINT: unreachable code removed/g
+          return {decision = (// await this.mcpWrapper.executeTool('swarm_status', {swarmId = (// await this.mcpWrapper.executeTool('swarm_status', {swarmId = // await this._determineWorkerType();
+    // // await this.spawnWorkers([newWorkerType]); // LINT: unreachable code removed
       console.warn(`;`
 Auto-scaled = (// await this.mcpWrapper.executeTool('swarm_status', { swarmId = {};/g)))
-// Analyze pending tasks to determine needed worker type(simulated for now)/g
-// In a real scenario, ruv-swarm's neural capabilities would inform this.'/g
-typeScores.coder = 1; // Default to coder for now/g
+// Analyze pending tasks to determine needed worker type(simulated for now)
+// In a real scenario, ruv-swarm's neural capabilities would inform this.'
+typeScores.coder = 1; // Default to coder for now
 
-// Return type with highest score/g
+// Return type with highest score
 const _sorted = Object.entries(typeScores).sort((a, b) => b[1] - a[1]);
-return sorted.length > 0 ? sorted[0][0] : 'coder'; // Default to coder/g
-// }/g
-/**  *//g
- * Update performance metrics
- *//g
-// async _updatePerformanceMetrics() { }/g
-// /g
-  // Calculate performance metrics/g
+return sorted.length > 0 ? sorted[0][0] : 'coder'; // Default to coder
+// }
 
-  // Store metrics in memory(via mcpWrapper, which uses ruv-swarm's memory)'/g
-// // await this.mcpWrapper.executeTool('memory_usage', {action = === 0) {/g
-      // await this.mcpWrapper.analyzePerformance(this.state.swarmId);/g
-// }/g
-// }/g
-/**  *//g
- * Handle errors
- *//g
+/** Update performance metrics
+
+// async _updatePerformanceMetrics() { }
+
+  // Calculate performance metrics
+
+  // Store metrics in memory(via mcpWrapper, which uses ruv-swarm's memory)'
+// // await this.mcpWrapper.executeTool('memory_usage', {action = === 0) {
+      // await this.mcpWrapper.analyzePerformance(this.state.swarmId);
+// }
+// }
+
+/** Handle errors
+
 _handleError(error)
 : unknown
-// {/g
-  // Log error to memory(via mcpWrapper, which uses ruv-swarm's memory)'/g
-  this.mcpWrapper.executeTool('memory_usage', {action = // await this.mcpWrapper.executeTool('swarm_status', {swarmId = > a.role === 'worker'), // Filter for workerstasks = 'shutting_down';/g
+// {
+  // Log error to memory(via mcpWrapper, which uses ruv-swarm's memory)'
+  this.mcpWrapper.executeTool('memory_usage', {action = // await this.mcpWrapper.executeTool('swarm_status', {swarmId = > a.role === 'worker'), // Filter for workerstasks = 'shutting_down';
 
     try {
-      // Generate final performance report/g
+      // Generate final performance report
       const _performanceReport = this.performanceOptimizer.generatePerformanceReport();
-  // Save final state and performance report(via mcpWrapper, which uses ruv-swarm's memory)'/g
+  // Save final state and performance report(via mcpWrapper, which uses ruv-swarm's memory)'
 // // await this.mcpWrapper.executeTool('memory_usage', {action = 'shutdown';/g)
   this.emit('shutdown', { performanceReport });
-// }/g
+// }
 catch(error)
-// {/g
+// {
   this.emit('error', { type);
   throw error;
-// }/g
-// }/g
-/**  *//g
- * Get performance insights and recommendations
- *//g
-  getPerformanceInsights() {}
-// {/g
-  // return this.performanceOptimizer.generatePerformanceReport();/g
-// }/g
-// }/g
-// }/g
+// }
+// }
 
+/** Get performance insights and recommendations
+
+  getPerformanceInsights() {}
+// {
+  // return this.performanceOptimizer.generatePerformanceReport();
+// }
+// }
+// }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))

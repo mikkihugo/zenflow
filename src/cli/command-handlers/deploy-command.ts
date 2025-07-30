@@ -1,23 +1,22 @@
-/**  *//g
- * Deploy Command Module
- * Converted from JavaScript to TypeScript
- *//g
 
-// deploy-command.js - Handles the deploy command/g
+/** Deploy Command Module
+/** Converted from JavaScript to TypeScript
 
-import { log  } from '../core/logger.js';'/g
+// deploy-command.js - Handles the deploy command
 
-// Helper functions/g
+import { log  } from '../core/logger.js';
+
+// Helper functions
 const _printSuccess = (msg) => log.success(msg);
-// export async function deployCommand() {/g
+// export async function deployCommand() {
   case 'ha-cluster': null'
-  //   {/g
+  //   {
     const __nodes = args.find((arg) => arg.includes('--nodes'));'
     const __regions = args.find((arg) => arg.includes('--regions'));'
     printSuccess('Deploying High Availability Cluster...');'
-    console.warn('�  HAConfiguration = ')[1];'
+    console.warn('  HAConfiguration = ')[1];'
     : '3''
-  //   }/g
+  //   }
   `);`
           console.warn(;
             `;`)
@@ -28,17 +27,16 @@ const _printSuccess = (msg) => log.success(msg);
   console.warn('   LoadBalancer = args[1];')
   if(scalingAction === 'configure') {'
     printSuccess('Configuring Auto-Scaling...');'
-    console.warn('� ScalingConfiguration = === 'predictive') {'
+    console.warn(' ScalingConfiguration = === 'predictive') {'
             printSuccess('Enabling Predictive Scaling...');'
-    console.warn('� PredictiveConfiguration = args[1];')
+    console.warn(' PredictiveConfiguration = args[1];')
   if(securityAction === 'harden') {'
       printSuccess('Applying Security Hardening...');'
-      console.warn('� SecurityConfiguration = === 'monitor') {'
+      console.warn(' SecurityConfiguration = === 'monitor') {'
             printSuccess('Security Monitoring Active');'
-      console.warn('� Real-time SecurityStatus = 3 --regions="us-east-1,us-west-2"');'
+      console.warn(' Real-time SecurityStatus = 3 --regions="us-east-1,us-west-2"');'
       console.warn('  deploy scaling configure --min=2 --max=50');'
       console.warn('  deploy security harden --profile enterprise');'
-    //     }/g
-  //   }/g
-// }/g
-
+    //     }
+  //   }
+// }

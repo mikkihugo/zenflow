@@ -1,19 +1,17 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Import REAL Singularity Engine documentation into Document Stack
- * These are actual project docs that Claude Desktop can access via MCP
- *//g
+#!/usr/bin/env node
+
+/** Import REAL Singularity Engine documentation into Document Stack
+/** These are actual project docs that Claude Desktop can access via MCP
 
 const fs = require('node).promises;'
 const _path = require('node);'
-const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');/g
+const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
-// Mock memory store that we can verify/g
+// Mock memory store that we can verify
 class VerifiableMemoryStore {
   constructor() {
     this.data = new Map();
     this.documentList = [];
-  }
 
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
@@ -26,56 +24,52 @@ class VerifiableMemoryStore {
       type: docData.metadata.type,
       layer: docData.metadata.stack_layer,
       title: docData.metadata.title || docData.id,)
-      size: `${Math.round(value.length / 1024)}KB` });/g
-    // return { id, size: value.length };/g
-  }
+      size: `${Math.round(value.length / 1024)}KB` });
+    // return { id, size: value.length };
 
   async retrieve(key, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
-    // return this.data.get(fullKey) || null;/g
-  }
+    // return this.data.get(fullKey) || null;
 
   async search(options = {}) { 
     const results = };
   for(const [key, value] of this.data) {
       if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value; }
-    }
-    // return results; /g
-  }
+
+    // return results; 
+
   getStoredDocs() {
-    // return this.documentList;/g
-  }
-}
+    // return this.documentList;
 
 const memoryStore = new VerifiableMemoryStore();
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
-// Real Singularity Engine documents to import/g
+// Real Singularity Engine documents to import
 const realDocs = [
 {}
-    file: '/home/mhugo/code/singularity-engine/docs/SYSTEM_ARCHITECTURE.md',/g
+    file: '/home/mhugo/code/singularity-engine/docs/SYSTEM_ARCHITECTURE.md',
     docType: 'service-adr',
     service: 'platform-architecture',
     docId: 'singularity-engine-system-architecture' },
 {}
-    file: '/home/mhugo/code/singularity-engine/docs/README.md',/g
+    file: '/home/mhugo/code/singularity-engine/docs/README.md',
     docType: 'user-guide',
     service: 'platform-docs',
     docId: 'singularity-engine-overview' },
 {}
-    file: '/home/mhugo/code/singularity-engine/docs/NATS_COMPREHENSIVE_GUIDE.md',/g
+    file: '/home/mhugo/code/singularity-engine/docs/NATS_COMPREHENSIVE_GUIDE.md',
     docType: 'deployment-guide',
     service: 'messaging-infrastructure',
     docId: 'nats-comprehensive-guide' },
 {}
-    file: '/home/mhugo/code/singularity-engine/docs/MCP_TO_SERVICES_MIGRATION_PLAN.md',/g
+    file: '/home/mhugo/code/singularity-engine/docs/MCP_TO_SERVICES_MIGRATION_PLAN.md',
     docType: 'service-adr',
     service: 'mcp-services',
     docId: 'mcp-to-services-migration' },
 {}
-    file: '/home/mhugo/code/singularity-engine/docs/SERVICE_DOCUMENTATION.md',/g
+    file: '/home/mhugo/code/singularity-engine/docs/SERVICE_DOCUMENTATION.md',
     docType: 'api-documentation',
     service: 'platform-services',
     docId: 'service-documentation-standards' } ];
@@ -84,29 +78,29 @@ async function importRealDocs() {
   let _successCount = 0;
   for(const docInfo of realDocs) {
     try {
-      // Check if file exists/g
+      // Check if file exists
       try {
-// // await fs.access(docInfo.file); /g
+// // await fs.access(docInfo.file); 
       } catch(_error) {
         continue; }
-// const content = awaitfs.readFile(docInfo.file, 'utf-8') {;/g
+// const content = awaitfs.readFile(docInfo.file, 'utf-8') {;
 
-      // Extract real metadata from content/g
-      const titleMatch = content.match(/^#\s+(.+)$/m);/g
+      // Extract real metadata from content
+      const titleMatch = content.match(/^#\s+(.+)$/m);
       const title = titleMatch ? titleMatch[1] : docInfo.docId;
 
-      // Smart tag extraction from real content/g
+      // Smart tag extraction from real content
       const tags = [];
       const lowerContent = content.toLowerCase();
 
-      // Architecture tags/g
+      // Architecture tags
       if(lowerContent.includes('microservice') || lowerContent.includes('service'))
         tags.push('microservices');
       if(lowerContent.includes('architecture') || lowerContent.includes('design'))
         tags.push('architecture');
       if(lowerContent.includes('domain')) tags.push('domain-driven-design');
 
-      // Technology tags/g
+      // Technology tags
       if(lowerContent.includes('nats')) tags.push('nats', 'messaging');
       if(lowerContent.includes('postgresql') || lowerContent.includes('postgres'))
         tags.push('postgresql', 'database');
@@ -115,7 +109,7 @@ async function importRealDocs() {
         tags.push('kubernetes');
       if(lowerContent.includes('docker')) tags.push('docker');
 
-      // Functional tags/g
+      // Functional tags
       if(lowerContent.includes('api') || lowerContent.includes('rest')) tags.push('api');
       if(lowerContent.includes('auth') || lowerContent.includes('jwt'))
         tags.push('authentication');
@@ -126,7 +120,7 @@ async function importRealDocs() {
       if(lowerContent.includes('agent') || lowerContent.includes('ai')) tags.push('ai-agents');
       if(lowerContent.includes('mcp')) tags.push('mcp', 'model-context-protocol');
 
-      // Smart dependency detection/g
+      // Smart dependency detection
       const dependencies = [];
       if(lowerContent.includes('postgresql')) dependencies.push('postgresql-database');
       if(lowerContent.includes('nats')) dependencies.push('nats-messaging');
@@ -136,19 +130,18 @@ async function importRealDocs() {
       if(lowerContent.includes('memory-service')) dependencies.push('memory-service');
       if(lowerContent.includes('infrastructure-service'))
         dependencies.push('infrastructure-service');
-// // await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {/g
+// // await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
         title,
         tags,
         dependencies,
         source: 'singularity-engine-docs',
         original_path: docInfo.file,
         file_size: content.length,)
-        word_count: content.split(/\s+/).length });/g
+        word_count: content.split(/\s+/).length });
       _successCount++;
     } catch(_error) {}
-  }
 
-  // Show verification/g
+  // Show verification
   const storedDocs = memoryStore.getStoredDocs();
 
   storedDocs.forEach((doc) => {
@@ -163,7 +156,5 @@ async function importRealDocs() {
   if(testDoc) {
     const _parsed = JSON.parse(testDoc);
   } else {
-  }
-}
 
 importRealDocs().catch(console.error);

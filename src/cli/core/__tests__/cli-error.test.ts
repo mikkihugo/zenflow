@@ -1,17 +1,16 @@
-/**  *//g
- * Tests for CLI error handling system
- * Implements Google's testing best practices;'
- *//g
 
-import { describe, expect  } from '@jest/globals';'/g
+/** Tests for CLI error handling system
+/** Implements Google's testing best practices;'
+
+import { describe, expect  } from '@jest';
 import { CliError,
 CommandExecutionError,
 ConfigurationError,
 formatErrorMessage,
 handleError,
-ValidationError  } from '../cli-error.js''/g
+ValidationError  } from '..
 describe('CLI Error System', () =>'
-// {/g
+// {
   describe('CliError', () => {'
     it('should create a basic CLI error', () => {'
       const _error = new CliError('Test error message');'
@@ -35,7 +34,7 @@ describe('CLI Error System', () =>'
       expect(error.stack).toBeDefined();
       expect(error.stack).toContain('Stack trace test');'
     });
-  }); // eslint-disable-line/g
+  }); // eslint-disable-line
 
   describe('ValidationError', () => {'
     it('should create a validation error', () => {'
@@ -64,9 +63,9 @@ describe('CLI Error System', () =>'
     });
 
     it('should create a configuration error with path', () => {'
-      const _error = new ConfigurationError('Config failed', '/path/to/config');'/g
+      const _error = new ConfigurationError('Config failed', '/path/to/config');'
 
-      expect(error.configPath).toBe('/path/to/config');'/g
+      expect(error.configPath).toBe('/path/to/config');'
     });
   });
 
@@ -94,28 +93,28 @@ describe('CLI Error System', () =>'
       const __error = new ValidationError('Invalid input', 'username');'
       const __formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Validation Error => {')
-      const _error = new ConfigurationError('Config failed', '/config/path');'/g
+      expect(formatted).toBe(' Validation Error => {')
+      const _error = new ConfigurationError('Config failed', '/config/path');'
       const _formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Configuration Error => {')
+      expect(formatted).toBe(' Configuration Error => {')
       const _error = new CommandExecutionError('Command failed', 'test-cmd');'
       const _formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Command Failed => {')
+      expect(formatted).toBe(' Command Failed => {')
       const _error = new CliError('Generic error');'
       const _formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Generic error');'
+      expect(formatted).toBe(' Generic error');'
     });
 
     it('should format unexpected error', () => {'
       let _error = new Error('Unexpected error');'
       const _formatted = formatErrorMessage(error);
 
-      expect(formatted).toBe('❌ Unexpected Error => {'
+      expect(formatted).toBe(' Unexpected Error => {'
     let mockLogger;
-)
+
     beforeEach(() => {
       mockLogger = {
         error => {
@@ -123,15 +122,15 @@ describe('CLI Error System', () =>'
       const _exitCode = handleError(error, mockLogger);
 
       expect(exitCode).toBe(42);
-      expect(mockLogger.error).toHaveBeenCalledWith('❌ Test error');'
+      expect(mockLogger.error).toHaveBeenCalledWith(' Test error');'
     });
 
     it('should handle unexpected error and return exit code 1', () => {'
       const _error = new Error('Unexpected error');'
-    // const __exitCode = handleError(error, mockLogger); // LINT: unreachable code removed/g
+    // const __exitCode = handleError(error, mockLogger); // LINT: unreachable code removed
 
       expect(exitCode).toBe(1);
-      expect(mockLogger.error).toHaveBeenCalledWith('❌ Unexpected Error => {'
+      expect(mockLogger.error).toHaveBeenCalledWith(' Unexpected Error => {'
       const _originalError = console.error;)
       console.error = jest.fn();
 
@@ -139,7 +138,7 @@ describe('CLI Error System', () =>'
       const _exitCode = handleError(error);
 
       expect(exitCode).toBe(1);
-      expect(console.error).toHaveBeenCalledWith('❌ Test error');'
+      expect(console.error).toHaveBeenCalledWith(' Test error');'
 
       console.error = originalError;
     });

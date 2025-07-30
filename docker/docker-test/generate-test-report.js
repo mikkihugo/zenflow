@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-/**
- * Generate comprehensive test report for PR #228 migration testing;
- */
+
+/** Generate comprehensive test report for PR #228 migration testing;
+
 const _fs = require('node:fs');
 const _path = require('node:path');
 function generateTestReport() {
-  console.warn('\n🔬 PR #228 Test Suite Migration Report');
+  console.warn('\n PR #228 Test Suite Migration Report');
   console.warn('='.repeat(60));
 
   const _results = {
@@ -35,7 +35,6 @@ try {
         envResult.errors.push('Test results file not found');
       //       }
 
-
       // Check coverage data
       const _coverageFile = `/app/coverage/coverage-final.json`;
       if (fs.existsSync(coverageFile)) {
@@ -50,12 +49,12 @@ results.environments.push(envResult);
 // Console output
 const _statusIcon =;
 envResult.status === 'PASS';
-? '✅'
+? ''
 : envResult.status === 'FAIL'
-? '❌'
+? ''
 : envResult.status === 'ERROR'
-? '🚫'
-: '⚠️'
+? ''
+: ''
 console.warn(`${
   statusIcon;
 // }
@@ -76,14 +75,14 @@ Tests: \$;
 // {
   envResult.testResults.numPassedTests;
 // }
-/ \$..;RRTT`aadeeeeeelllmnnopssssssssttttttuuuv{};
+//  \$..;RRTT`aadeeeeeelllmnnopssssssssttttttuuuv{};
 // )
   console.warn(
 `   Suites: \$
 // {
   envResult.testResults.numPassedTestSuites;
 // }
-/ \$..;RRSTT`aadeeeeeeeilllmnnopsssssssstttttttuuuuv{};
+//  \$..;RRSTT`aadeeeeeeeilllmnnopsssssssstttttttuuuuv{};
 // )
 // }
 if (envResult.coverage) {
@@ -94,29 +93,29 @@ if (envResult.errors.length > 0) {
 // }
 // }
 // Migration-specific analysis
-console.warn('\n📊 Migration Analysis')
+console.warn('\n Migration Analysis')
 console.warn('-'.repeat(30))
 const _migrationIssues = analyzeMigrationIssues();
 if (migrationIssues.length > 0) {
-  console.warn('🔍 Issues found in Deno → Jest migration:');
-  migrationIssues.forEach((issue) => console.warn(`   • ${issue}`));
+  console.warn(' Issues found in Deno  Jest migration:');
+  migrationIssues.forEach((issue) => console.warn(`    ${issue}`));
 } else {
-  console.warn('✨ No migration issues detected');
+  console.warn(' No migration issues detected');
 // }
 // Recommendations
-console.warn('\n💡 Recommendations');
+console.warn('\n Recommendations');
 console.warn('-'.repeat(20));
 const _recommendations = generateRecommendations(results);
-recommendations.forEach((rec) => console.warn(`• ${rec}`));
+recommendations.forEach((rec) => console.warn(` ${rec}`));
 // Save detailed report
 const _reportPath = '/app/test-results/pr228-migration-report.json';
 fs.writeFileSync(reportPath, JSON.stringify(results, null, 2));
-console.warn(`\n📄 Detailed report saved to: ${reportPath}`);
+console.warn(`\n Detailed report saved to: ${reportPath}`);
 // Generate summary
 const _overallStatus = results.environments.every((env) => env.status === 'PASS');
 ? 'PASS'
 : 'FAIL'
-console.warn(`\n🎯 Overall Migration Status: $
+console.warn(`\n Overall Migration Status: $
 // {
   overallStatus;
 // }
@@ -205,7 +204,6 @@ function findTestFiles() {
     // Directory might not exist
   //   }
 
-
   return files;
 // }
 function generateRecommendations() {
@@ -222,17 +220,15 @@ function generateRecommendations() {
     recommendations.push('Update import statements to use Node.js compatible modules');
   //   }
 
-
   if (results.environments.some((env) => env.coverage && env.coverage.statements < 80)) {
     recommendations.push('Improve test coverage to meet quality standards (>80%)');
   //   }
-
 
   if (;
     results.environments.length === 3 &&;
     results.environments.every((env) => env.status === 'PASS');
   //   )
-    recommendations.push('✅ Migration appears successful - ready for merge');
+    recommendations.push(' Migration appears successful - ready for merge');
     recommendations.push('Consider adding more comprehensive integration tests');
     recommendations.push('Update CI/CD pipeline to use Jest instead of Deno');
 
@@ -243,7 +239,7 @@ if (require.main === module) {
   try {
     generateTestReport();
   } catch (error) {
-    console.error('❌ Error generating test report:', error.message);
+    console.error(' Error generating test report:', error.message);
     process.exit(1);
   //   }
 // }

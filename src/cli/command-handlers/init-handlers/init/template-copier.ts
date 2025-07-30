@@ -1,4 +1,4 @@
-// template-copier.js - Copy template files instead of generating them dynamically/g
+// template-copier.js - Copy template files instead of generating them dynamically
 
 import { promises as fs  } from 'node:fs';
 import { dirname  } from 'node:path';
@@ -6,8 +6,8 @@ import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-/**  *//g
- * Copy template files from the templates directory to the target directory
+
+/** Copy template files from the templates directory to the target directory
  * @param {string} targetDir - The directory to copy templates to
  * @param {Object} options - Options for template copying
  * @param {boolean} options.sparc - Whether to include SPARC templates
@@ -18,339 +18,324 @@ const ___dirname = dirname(__filename);
  * @param {boolean} options.force - Whether to overwrite existing files
  * @param {string[]} options.selectedModes - Selected SPARC modes to copy
  * @returns {Promise<{success = {}) {
+ */
   const _results = {success = join(__dirname, 'templates');
-    // ; // LINT: unreachable code removed/g
-    // Determine which template variants to use/g
+    // ; // LINT: unreachable code removed
+    // Determine which template variants to use
     const _templateVariant = options.optimized ? 'optimized' :
                           options.enhanced ? 'enhanced' :
                           options.minimal ? 'minimal' :
                           options.sparc ? 'sparc' : 'full';
 
-    // Core files to copy/g
+    // Core files to copy
 
       const _sourcePath = join(templatesDir, sourceFile);
       const _destPath = join(targetDir, file.destination);
 
-      if(// await copyFile(sourcePath, destPath, options)) {/g
+      if(// await copyFile(sourcePath, destPath, options)) {
         results.copiedFiles.push(file.destination);
       } else if(!options.dryRun) {
         results.errors.push(`Failed to copy ${file.destination}`);
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
-
-    // Copy .claude directory structure/g
+    // Copy .claude directory structure
   if(options.enhanced  ?? !options.minimal) {
       const _claudeDir = join(targetDir, '.claude');
 
-      // Copy settings.json/g
+      // Copy settings.json
       const _settingsSource = options.enhanced ? 'settings.json.enhanced' : 'settings.json';
   if(!options.dryRun) {
 // // await fs.mkdir(claudeDir, {recursive = false;/g)
-    results.errors.push(`Template copyfailed = // await getTemplateContent(source);`/g
+    results.errors.push(`Template copyfailed = // await getTemplateContent(source);`
   if(templateContent) {
   if(!options.dryRun) {
-// // await fs.writeFile(destination, templateContent);/g
-        //         }/g
+// // await fs.writeFile(destination, templateContent);
+        //         }
         console.warn(`\${options.dryRun ? '[DRY RUN] Would create' } ${relative(process.cwd(), destination)}`);
-        // return true;/g
-    //   // LINT: unreachable code removed}/g
-      console.warn(`  ⚠  Template notfound = // await fs.readFile(source, 'utf8');`/g
-// // await fs.writeFile(destination, content);/g
-      // Preserve file permissions for executable scripts/g
+        // return true;
+    //   // LINT: unreachable code removed}
+      console.warn(`    Template notfound = // await fs.readFile(source, 'utf8');`
+// // await fs.writeFile(destination, content);
+      // Preserve file permissions for executable scripts
       if(source.endsWith('.sh')  ?? source.includes('claude-zen')) {
-// // await fs.chmod(destination, 0o755);/g
-      //       }/g
-    //     }/g
-
+// // await fs.chmod(destination, 0o755);
+      //       }
+    //     }
 
     console.warn(`\${options.dryRun ? '[DRY RUN] Would copy' } ${relative(process.cwd(), destination)}`);
-    // return true;/g
-    //   // LINT: unreachable code removed} catch(/* err */ )/g
-// {/g
-  console.warn(`  ❌ Failed to copy ${relative(process.cwd(), destination)}: ${err.message}`);
-  // return false;/g
-  //   // LINT: unreachable code removed}/g
-// }/g
-/**  *//g
- * Copy command templates
- *//g
+    // return true;
+    //   // LINT: unreachable code removed} catch(/* err */ )
+// {
+  console.warn(`   Failed to copy ${relative(process.cwd(), destination)}: ${err.message}`);
+  // return false;
+  //   // LINT: unreachable code removed}
+// }
+
+/** Copy command templates
+
 async function copyCommandTemplates(templatesDir = join(templatesDir, 'commands');
 const _commandsDestDir = join(targetDir, '.claude', 'commands');
 if(!existsSync(commandsSourceDir)) {
-  // Use generated command templates as fallback/g
-  return // await generateCommandTemplates(targetDir, options, results);/g
-// }/g
+  // Use generated command templates as fallback
+  return // await generateCommandTemplates(targetDir, options, results);
+// }
 try {
   if(!options.dryRun) {
-// // await fs.mkdir(commandsDestDir, {recursive = // await fs.readdir(commandsSourceDir);/g
+// // await fs.mkdir(commandsDestDir, {recursive = // await fs.readdir(commandsSourceDir);
   for(const category of categories) {
-      const _categoryPath = join(commandsSourceDir, category); // const _stat = awaitfs.stat(categoryPath); /g
+      const _categoryPath = join(commandsSourceDir, category); // const _stat = awaitfs.stat(categoryPath); 
   if(stat.isDirectory() {) {
         const _destCategoryPath = join(commandsDestDir, category);
   if(!options.dryRun) {
-// // await fs.mkdir(destCategoryPath, {recursive = // await fs.readdir(categoryPath);/g
+// // await fs.mkdir(destCategoryPath, {recursive = // await fs.readdir(categoryPath);
   for(const file of files) {
-          const _sourcePath = join(categoryPath, file); const _destPath = join(destCategoryPath, file); if(// await copyFile(sourcePath, destPath, options) {) {/g
+          const _sourcePath = join(categoryPath, file); const _destPath = join(destCategoryPath, file); if(// await copyFile(sourcePath, destPath, options) {) {
             results.copiedFiles.push(join('.claude', 'commands', category, file));
-          //           }/g
-        //         }/g
-      //       }/g
-    //     }/g
+          //           }
+        //         }
+      //       }
+    //     }
   } catch(err) ;
     results.errors.push(`Failed to copy commandtemplates = join(targetDir, '.claude', 'commands', 'sparc');`
 
   try {
   if(!options.dryRun) {
-// // await fs.mkdir(sparcDir, {recursive = // await import('./templates/sparc-modes.js');/g
+// // await fs.mkdir(sparcDir, {recursive = // await import('./templates/sparc-modes.js');
     const _sparcTemplates = createSparcModeTemplates();
 
-    // Filter templates if selectedModes is specified/g
+    // Filter templates if selectedModes is specified
     const _templatesToCreate = options.selectedModes ;
       ? Object.entries(sparcTemplates).filter(([filename]) => {
           const _mode = filename.replace('.md', '');
           return options.selectedModes.includes(mode);
-    //   // LINT: unreachable code removed});/g
+    //   // LINT: unreachable code removed});
       : Object.entries(sparcTemplates);
 
-    // Write SPARC mode files/g
+    // Write SPARC mode files
   for(const [filename, content] of templatesToCreate) {
       const _destPath = join(sparcDir, filename); if(!options.dryRun) {
-// // await fs.writeFile(destPath, content); /g
-      //       }/g
-
+// // await fs.writeFile(destPath, content); 
+      //       }
 
       console.warn(`${options.dryRun ? '[DRY RUN] Would create' ) {;`
       results.copiedFiles.push(join('.claude', 'commands', 'sparc', filename));
-    //     }/g
+    //     }
 
-
-    // Create sparc-modes.md overview/g
+    // Create sparc-modes.md overview
     const _overviewPath = join(sparcDir, 'sparc-modes.md');
   if(!options.dryRun) {
-// // await fs.writeFile(overviewPath, createSparcModesOverview());/g
-    //     }/g
+// // await fs.writeFile(overviewPath, createSparcModesOverview());
+    //     }
     console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
-    results.copiedFiles.push('.claude/commands/sparc/sparc-modes.md');/g
+    results.copiedFiles.push('.claude/commands/sparc/sparc-modes.md');
 
-    // Copy swarm templates/g
-// // await copySwarmTemplates(templatesDir, targetDir, options, results);/g
+    // Copy swarm templates
+// // await copySwarmTemplates(templatesDir, targetDir, options, results);
   } catch(err) ;
     results.errors.push(`Failed to copy SPARCtemplates = join(targetDir, '.claude', 'commands', 'swarm');`
 
   try {
   if(!options.dryRun) {
-// // await fs.mkdir(swarmDir, {recursive = // await import('./templates/sparc-modes.js');/g
+// // await fs.mkdir(swarmDir, {recursive = // await import('./templates/sparc-modes.js');
     const _swarmTemplates = createSwarmStrategyTemplates();
 
-    // Write swarm strategy files/g
+    // Write swarm strategy files
     for (const [filename, content] of Object.entries(swarmTemplates)) {
       const _destPath = join(swarmDir, filename); if(!options.dryRun) {
-// // await fs.writeFile(destPath, content); /g
-      //       }/g
-
+// // await fs.writeFile(destPath, content); 
+      //       }
 
       console.warn(`${options.dryRun ? '[DRY RUN] Would create' ) {;`
       results.copiedFiles.push(join('.claude', 'commands', 'swarm', filename));
-    //     }/g
-  } catch(/* err */) {/g
+    //     }
+  } catch(/* err */) {
     results.errors.push(`Failed to copy swarmtemplates = join(targetDir, '.claude', 'helpers');`
 
   try {
   if(!options.dryRun) {
 // // await fs.mkdir(helpersDir, {recursive = ['setup-mcp.sh', 'quick-start.sh', 'github-setup.sh'];/g)
-    const { createHelperScript } = // await import('./templates/enhanced-templates.js');/g
+    const { createHelperScript } = // await import('./templates/enhanced-templates.js');
   for(const helper of helpers) {
       const _content = createHelperScript(helper); if(content) {
         const _destPath = join(helpersDir, helper); if(!options.dryRun) {
-// // await fs.writeFile(destPath, content);/g
-// // await fs.chmod(destPath, 0o755);/g
-        //         }/g
-
+// // await fs.writeFile(destPath, content);
+// // await fs.chmod(destPath, 0o755);
+        //         }
 
         console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
         results.copiedFiles.push(join('.claude', 'helpers', helper));
-      //       }/g
-    //     }/g
+      //       }
+    //     }
   } catch(err) ;
     results.errors.push(`Failed to copy helperscripts = join(targetDir, 'claude-zen');`
     const _unixWrapperSource = join(templatesDir, 'claude-zen-universal');
 
-    if(// await copyFile(unixWrapperSource, unixWrapperPath, options)) {/g
+    if(// await copyFile(unixWrapperSource, unixWrapperPath, options)) {
   if(!options.dryRun) {
-// // await fs.chmod(unixWrapperPath, 0o755);/g
-      //       }/g
+// // await fs.chmod(unixWrapperPath, 0o755);
+      //       }
       results.copiedFiles.push('claude-zen');
-    //     }/g
+    //     }
 
-
-    // Windows batch wrapper/g
+    // Windows batch wrapper
     const _batchWrapperPath = join(targetDir, 'claude-zen.bat');
     const _batchWrapperSource = join(templatesDir, 'claude-zen.bat');
 
-    if(// await copyFile(batchWrapperSource, batchWrapperPath, options)) {/g
+    if(// await copyFile(batchWrapperSource, batchWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.bat');
-    //     }/g
+    //     }
 
-
-    // PowerShell wrapper/g
+    // PowerShell wrapper
     const _psWrapperPath = join(targetDir, 'claude-zen.ps1');
     const _psWrapperSource = join(templatesDir, 'claude-zen.ps1');
 
-    if(// await copyFile(psWrapperSource, psWrapperPath, options)) {/g
+    if(// await copyFile(psWrapperSource, psWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.ps1');
-    //     }/g
+    //     }
   } catch(err) ;
     results.errors.push(`Failed to copy wrapperscripts = [`
     'memory',
-    'memory/agents',/g
-    'memory/sessions',/g
+    'memory
+    'memory
     'coordination',
-    'coordination/memory_bank',/g
-    'coordination/subtasks',/g
-    'coordination/orchestration',/g
+    'coordination
+    'coordination
+    'coordination
     '.claude',
-    '.claude/commands',/g
-    '.claude/logs',/g
-    '.swarm', // For memory persistence/g
+    '.claude
+    '.claude
+    '.swarm', // For memory persistence
   ];
-)
+
   if(options.sparc) {
     directories.push(;
-      '.claude/commands/sparc',/g
+      '.claude/commands/sparc',
       '.claude/commands/swarm';/g)
     );
-  //   }/g
+  //   }
   for(const dir of directories) {
     const _dirPath = join(targetDir, dir); try {
   if(!options.dryRun) {
-// // await fs.mkdir(dirPath, {recursive = = 'EEXIST') {/g
-        console.warn(`  ❌ Failed to create ${dir}/); `/g
-    //     }/g
-// }/g
+// // await fs.mkdir(dirPath, {recursive = = 'EEXIST') {
+        console.warn(`   Failed to create ${dir}/); `
+    //     }
+// }
 
+/** Create README files for memory directories
 
-/**  *//g
- * Create README files for memory directories
- *//g
-async function createMemoryReadmeFiles(targetDir = // await import('./templates/readme-files.js') {;/g
+async function createMemoryReadmeFiles(targetDir = // await import('./templates/readme-files.js') {;
 
     try {
   if(!options.dryRun) {
-// // await fs.mkdir(dirname(fullPath), {recursive = join(targetDir, 'memory', 'claude-zen-data.json');/g
-  // Map template files to their generator functions/g
+// // await fs.mkdir(dirname(fullPath), {recursive = join(targetDir, 'memory', 'claude-zen-data.json');
+  // Map template files to their generator functions
   const _templateGenerators = {
     'CLAUDE.md': async() => {
-      const { createFullClaudeMd } = await import('./templates/claude-md.js');/g
+      const { createFullClaudeMd } = await import('./templates/claude-md.js');
       return createFullClaudeMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.sparc': async() => {
-      const { createSparcClaudeMd } = await import('./templates/claude-md.js');/g
+      const { createSparcClaudeMd } = await import('./templates/claude-md.js');
       return createSparcClaudeMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.minimal': async() => {
-      const { createMinimalClaudeMd } = await import('./templates/claude-md.js');/g
+      const { createMinimalClaudeMd } = await import('./templates/claude-md.js');
       return createMinimalClaudeMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.optimized': async() => {
-      const { createOptimizedSparcClaudeMd } = await import('./templates/claude-md.js');/g
+      const { createOptimizedSparcClaudeMd } = await import('./templates/claude-md.js');
       return createOptimizedSparcClaudeMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.enhanced': async() => {
-      const { createEnhancedClaudeMd } = await import('./templates/enhanced-templates.js');/g
+      const { createEnhancedClaudeMd } = await import('./templates/enhanced-templates.js');
       return createEnhancedClaudeMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'memory-bank.md': async() => {
-      const { createFullMemoryBankMd } = await import('./templates/memory-bank-md.js');/g
+      const { createFullMemoryBankMd } = await import('./templates/memory-bank-md.js');
       return createFullMemoryBankMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'memory-bank.md.minimal': async() => {
-      const { createMinimalMemoryBankMd } = await import('./templates/memory-bank-md.js');/g
+      const { createMinimalMemoryBankMd } = await import('./templates/memory-bank-md.js');
       return createMinimalMemoryBankMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'memory-bank.md.optimized': async() => {
-      const { createOptimizedMemoryBankMd } = await import('./templates/memory-bank-md.js');/g
+      const { createOptimizedMemoryBankMd } = await import('./templates/memory-bank-md.js');
       return createOptimizedMemoryBankMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'coordination.md': async() => {
-      const { createFullCoordinationMd } = await import('./templates/coordination-md.js');/g
+      const { createFullCoordinationMd } = await import('./templates/coordination-md.js');
       return createFullCoordinationMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'coordination.md.minimal': async() => {
-      const { createMinimalCoordinationMd } = await import('./templates/coordination-md.js');/g
+      const { createMinimalCoordinationMd } = await import('./templates/coordination-md.js');
       return createMinimalCoordinationMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'coordination.md.optimized': async() => {
-      const { createOptimizedCoordinationMd } = await import('./templates/coordination-md.js');/g
+      const { createOptimizedCoordinationMd } = await import('./templates/coordination-md.js');
       return createOptimizedCoordinationMd();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'settings.json': async() =>
       return await fs.readFile(join(__dirname, 'templates', 'settings.json'), 'utf8');
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'settings.json.enhanced': async() => {
-      const { createEnhancedSettingsJson } = await import('./templates/enhanced-templates.js');/g
+      const { createEnhancedSettingsJson } = await import('./templates/enhanced-templates.js');
       return createEnhancedSettingsJson();
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'claude-zen-universal': async() =>
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen-universal'), 'utf8');
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'claude-zen.bat': async() => {
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen.bat'), 'utf8');
-    //   // LINT: unreachable code removed},/g
+    //   // LINT: unreachable code removed},
     'claude-zen.ps1': async() =>
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen.ps1'), 'utf8');
 
-  const _generator = templateGenerators[filename]  ?? templateGenerators[filename.replace(/\.(sparc|minimal|optimized|enhanced)$/, '')];/g
+  const _generator = templateGenerators[filename]  ?? templateGenerators[filename.replace(/\.(sparc|minimal|optimized|enhanced)$/, '')];
   if(generator) {
     try {
-      // return // await generator();/g
-    //   // LINT: unreachable code removed} catch(/* err */) {/g
-      console.warn(`  ⚠  Failed to generate template content for ${filename});`
-      // return null;/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+      // return // await generator();
+    //   // LINT: unreachable code removed} catch(/* err */) {
+      console.warn(`    Failed to generate template content for ${filename});`
+      // return null;
+    //   // LINT: unreachable code removed}
+  //   }
 
+  // return null;
+// }
 
-  // return null;/g
-// }/g
+/** Generate command templates as fallback
 
-
-/**  *//g
- * Generate command templates as fallback
- *//g
-async function generateCommandTemplates(targetDir = // await import('./templates/enhanced-templates.js');/g
+async function generateCommandTemplates(targetDir = // await import('./templates/enhanced-templates.js');
 
   for (const [category, commands] of Object.entries(COMMAND_STRUCTURE)) {
     const _categoryDir = join(targetDir, '.claude', 'commands', category); try {
   if(!options.dryRun) {
-// // await fs.mkdir(categoryDir, {recursive = `# ${category.charAt(0).toUpperCase() + category.slice(1)} Commands`/g
+// // await fs.mkdir(categoryDir, {recursive = `# ${category.charAt(0).toUpperCase() + category.slice(1)} Commands`
 Commands for ${category} operations in Claude Flow.
 
 ## Available Commands
 
-${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}/g
+${commands.map(cmd => `- [${cmd}](.
 `; `
-// // await fs.writeFile(join(categoryDir, 'README.md') {, categoryReadme);/g
-      //       }/g
+// // await fs.writeFile(join(categoryDir, 'README.md') {, categoryReadme);
+      //       }
 
-
-      // Create individual command docs/g
+      // Create individual command docs
   for(const command of commands) {
         const _doc = createCommandDoc(category, command); if(doc) {
           const _docPath = join(categoryDir, `${command}.md`); if(!options.dryRun) {
-// // await fs.writeFile(docPath, doc);/g
-          //           }/g
+// // await fs.writeFile(docPath, doc);
+          //           }
           results.copiedFiles.push(join('.claude', 'commands', category, `${command}.md`));
-        //         }/g
-      //       }/g
-
+        //         }
+      //       }
 
       console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
-    } catch(/* err */) {/g
+    } catch(/* err */) {
       results.errors.push(`Failed to generate ${category} command templates);`
-    //     }/g
-  //   }/g
-// }/g
-
+    //     }
+  //   }
+// }
 
 }}}}}}}}}}}}}}}}}}}}}})))))))))))))))))

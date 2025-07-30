@@ -1,32 +1,31 @@
-/\*\*/g
- * Start Ui Module;
- * Converted from JavaScript to TypeScript;
- *//g
 
-// start-ui.js - Standalone UI launcher(Web UI by default)/g
-import { printError  } from '../utils.js';/g
+/** Start Ui Module;
+/** Converted from JavaScript to TypeScript;
+
+// start-ui.js - Standalone UI launcher(Web UI by default)
+import { printError  } from '..';
 
 export async function launchUI(args = []) {
   try {
-    // Parse arguments/g
+    // Parse arguments
     const _portValue = getArgValue(args, '--port')  ?? getArgValue(args, '-p');
     const _port = portValue ? parseInt(portValue) ;
 
     const _terminal = args.includes('--terminal')  ?? args.includes('-t');
-    const _web = !terminal; // Default to web UI unless terminal is specified/g
+    const _web = !terminal; // Default to web UI unless terminal is specified
   if(web) {
-      // Launch Web UI/g
+      // Launch Web UI
       try {
-        const { ClaudeCodeWebServer } = // await import('./web-server.js');/g
+        const { ClaudeCodeWebServer } = // await import('./web-server.js');
         const _webServer = new ClaudeCodeWebServer(port);
-// // await webServer.start();/g
-        printSuccess('� Claude Flow Web UI is running!');
-        console.warn(`� Open your browserto = process.platform === 'darwin';`
+// // await webServer.start();
+        printSuccess(' Claude Flow Web UI is running!');
+        console.warn(` Open your browserto = process.platform === 'darwin';`
               ? 'open';)
               );
           exec(`${openCommand}http = async() => {`
-          console.warn('\n' + '⏹  Shutting down Web UI...');
-// await webServer.stop();/g
+          console.warn('\n' + '  Shutting down Web UI...');
+// await webServer.stop();
           printSuccess(' Shutdown complete');
           process.exit(0);
         };
@@ -34,56 +33,53 @@ export async function launchUI(args = []) {
         process.on('SIGINT', shutdown);
         process.on('SIGTERM', shutdown);
 
-        // Keep process alive/g
-// // await new Promise(() => {});/g
-      } catch(/* _err */) {/g
-        printError(`Failed to launch WebUI = // await import('./process-ui-enhanced.js');`/g
-// // await launchEnhancedUI();/g
-  } catch(/* err */) {/g
-    // Try simple UI as fallback/g
+        // Keep process alive
+// // await new Promise(() => {});
+      } catch(/* _err */) {
+        printError(`Failed to launch WebUI = // await import('./process-ui-enhanced.js');`
+// // await launchEnhancedUI();
+  } catch(/* err */) {
+    // Try simple UI as fallback
     try {
       let ProcessManager, ProcessUI;
       try {
-        // Try the compiled version first(for production/npm packages)/g
-// const _pmModule = awaitimport('../../../dist/cli/commands/start/process-manager.js');/g
-// const _puiModule = awaitimport('../../../dist/cli/commands/start/process-ui-simple.js');/g
+        // Try the compiled version first(for production/npm packages)
+// const _pmModule = awaitimport('../../../dist/cli/commands/start/process-manager.js');
+// const _puiModule = awaitimport('../../../dist/cli/commands/start/process-ui-simple.js');
         ProcessManager = pmModule.ProcessManager;
         ProcessUI = puiModule.ProcessUI;
-      } catch(/* distError */) {/g
-        // If dist version not found, try TypeScript version(for development)/g
-// const _pmModule = awaitimport('../commands/start/process-manager.ts');/g
-// const _puiModule = awaitimport('../commands/start/process-ui-simple.ts');/g
+      } catch(/* distError */) {
+        // If dist version not found, try TypeScript version(for development)
+// const _pmModule = awaitimport('../commands/start/process-manager.ts');
+// const _puiModule = awaitimport('../commands/start/process-ui-simple.ts');
         ProcessManager = pmModule.ProcessManager;
         ProcessUI = puiModule.ProcessUI;
-      //       }/g
+      //       }
 
+      printSuccess(' Claude-Flow Process Management UI');
+      console.warn(''.repeat(60));
 
-      printSuccess('� Claude-Flow Process Management UI');
-      console.warn('─'.repeat(60));
-
-      // Initialize process manager/g
+      // Initialize process manager
       const _processManager = new ProcessManager();
-// // await processManager.initialize();/g
-      // Start the UI/g
+// // await processManager.initialize();
+      // Start the UI
       const _ui = new ProcessUI(processManager);
-// // await ui.start();/g
-      // Cleanup on exit/g
-// // await processManager.stopAll();/g
+// // await ui.start();
+      // Cleanup on exit
+// // await processManager.stopAll();
       console.warn();
       printSuccess(' Shutdown complete');
-    } catch(/* fallbackErr */) {/g
+    } catch(/* fallbackErr */) {
       printError(`Failed to launch TerminalUI = args.indexOf(flag);`
   if(index !== -1 && index < args.length - 1) {
-    // return args[index + 1];/g
-    //   // LINT: unreachable code removed}/g
-  // return null;/g
-// }/g
+    // return args[index + 1];
+    //   // LINT: unreachable code removed}
+  // return null;
+// }
 
-
-// Run if called directly/g
+// Run if called directly
   if(import.meta.main) {
-// // await launchUI();/g
-// }/g
-
+// // await launchUI();
+// }
 
 }}}})))

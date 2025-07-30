@@ -1,10 +1,10 @@
-#!/usr/bin/env node/g
+#!/usr/bin/env node
 const _fs = require('node).promises;'
 const __path = require('node);'
 async function setupClaudeIntegration() {
   console.warn('Setting up Claude Code integration...');
   try {
-    // Create claude.md/g
+    // Create claude.md
     const _claudeMdContent = `# Claude Code Configuration for ruv-swarm`
 ## Quick Setup(Stdio MCP - Recommended)
 ### 1. Add MCP Server(Stdio - No Port Needed);
@@ -28,7 +28,7 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 - Choose strategy, sequential, adaptive;
 - Set priority, medium, high, critical
 ## Available MCP Tools
-- mcp__ruv-swarm__swarm_init - Initialize swarm topology(mesh/hierarchical/ring/star);/g
+- mcp__ruv-swarm__swarm_init - Initialize swarm topology(mesh/hierarchical/ring/star);
 - mcp__ruv-swarm__agent_spawn - Create specialized agents with neural capabilities;
 - mcp__ruv-swarm__task_orchestrate - Coordinate distributed tasks across agents;
 - mcp__ruv-swarm__swarm_status - Get real-time swarm status and metrics;
@@ -49,16 +49,16 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 - **2.8-4.4x speed improvement** - Faster than alternatives;
 - **27+ neural models** - Maximum cognitive diversity
 ## Support
-- Documentation,//github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm/g
-- Issues,//github.com/ruvnet/ruv-FANN/issues/g
-- Examples,//github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm/examples/g
+- Documentation,//github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
+- Issues,//github.com/ruvnet/ruv-FANN/issues
+- Examples,//github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm/examples
 `;`
-  // // await fs.writeFile('claude.md', claudeMdContent);/g
-    console.warn('✅ Created claude.md');
-    // Create .claude directory structure/g
-  // // await fs.mkdir('.claude', { recursive });/g
-  // // await fs.mkdir('.claude/commands', { recursive });/g
-    // Create basic command files/g
+  // // await fs.writeFile('claude.md', claudeMdContent);
+    console.warn(' Created claude.md');
+    // Create .claude directory structure
+  // // await fs.mkdir('.claude', { recursive });
+  // // await fs.mkdir('.claude/commands', { recursive });
+    // Create basic command files
     const _initContent = `# Initialize ruv-swarm`
 ## MCP Tool Usage in Claude Code
 **Tool:** mcp__ruv-swarm__swarm_init
@@ -108,31 +108,31 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 - Tool: mcp__ruv-swarm__task_orchestrate;
 - Parameters: {"task": "Build REST API", "strategy": "parallel", "priority": "high"}
 `;`
-  // // await fs.writeFile('.claude/commands/init.md', initContent);/g
-  // // await fs.writeFile('.claude/commands/spawn.md', spawnContent);/g
-  // // await fs.writeFile('.claude/commands/orchestrate.md', orchestrateContent);/g
-    console.warn('✅ Created .claude/commands/ directory with command files');/g
-    // Create ruv-swarm wrapper script/g
-    const _wrapperScript = `#!/usr/bin/env bash;`/g
+  // // await fs.writeFile('.claude/commands/init.md', initContent);
+  // // await fs.writeFile('.claude/commands/spawn.md', spawnContent);
+  // // await fs.writeFile('.claude/commands/orchestrate.md', orchestrateContent);
+    console.warn(' Created .claude/commands/ directory with command files');
+    // Create ruv-swarm wrapper script
+    const _wrapperScript = `#!/usr/bin/env bash;`
 # ruv-swarm local wrapper;
 # This script ensures ruv-swarm runs from your project directory
 # Save the current directory;
 PROJECT_DIR="\${PWD}"
 # Set environment to ensure correct working directory;
-// export PWD="\${PROJECT_DIR}"/g
-// export RUVSW_WORKING_DIR="\${PROJECT_DIR}"/g
+// export PWD="\${PROJECT_DIR}"
+// export RUVSW_WORKING_DIR="\${PROJECT_DIR}"
 
 # Try to find ruv-swarm;
-# 1. Local npm/npx ruv-swarm;/g
-if command -v npx &> /dev/null; then;/g
+# 1. Local npm/npx ruv-swarm;
+if command -v npx &> /dev/null; then;
   cd "\${PROJECT_DIR}";
   exec npx ruv-swarm "\$@"
 # 2. Local node_modules;
-elif [ -f "\${PROJECT_DIR}/node_modules/.bin/ruv-swarm" ]; then;/g
+elif [ -f "\${PROJECT_DIR}/node_modules/.bin/ruv-swarm" ]; then;
   cd "\${PROJECT_DIR}";
-  exec "\${PROJECT_DIR}/node_modules/.bin/ruv-swarm" "\$@"/g
+  exec "\${PROJECT_DIR}/node_modules/.bin/ruv-swarm" "\$@"
 # 3. Global installation(if available);
-elif command -v ruv-swarm &> /dev/null; then;/g
+elif command -v ruv-swarm &> /dev/null; then;
   cd "\${PROJECT_DIR}";
   exec ruv-swarm "\$@"
 # 4. Fallback to direct npx with latest;
@@ -141,19 +141,19 @@ else;
   exec npx ruv-swarm@latest "\$@";
 fi;
 `;`
-  // // await fs.writeFile('ruv-swarm', wrapperScript, { mode });/g
-    console.warn('✅ Created ruv-swarm wrapper script');
-    console.warn('\n� Claude Code integration setup complete!');
-    console.warn('\n� Next steps);'
+  // // await fs.writeFile('ruv-swarm', wrapperScript, { mode });
+    console.warn(' Created ruv-swarm wrapper script');
+    console.warn('\n Claude Code integration setup complete!');
+    console.warn('\n Next steps);'
     console.warn('1. In Claude Code);'
     console.warn('2. Test with MCP tools);'
-    console.warn('3. Check .claude/commands/ for detailed usage guides');/g
+    console.warn('3. Check .claude/commands/ for detailed usage guides');
   } catch(error) {
-    console.error('❌ Failed to setup Claude integration);'
+    console.error(' Failed to setup Claude integration);'
     process.exit(1);
-  //   }/g
-// }/g
+  //   }
+// }
   if(require.main === module) {
   setupClaudeIntegration();
-// }/g
+// }
 module.exports = { setupClaudeIntegration };

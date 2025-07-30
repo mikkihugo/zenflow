@@ -1,11 +1,12 @@
-/**
- * Creates an enhanced task prompt with Claude-Flow guidance;
+
+/** Creates an enhanced task prompt with Claude-Flow guidance;
  * @param {string} task - The original task description;
- * @param {Object} flags - Command flags/options;/g
+ * @param {Object} flags - Command flags
  * @param {string} instanceId - Unique instance identifier;
  * @param {string} tools - Comma-separated list of available tools;
  * @returns {string} Enhanced task prompt;
-    // */ // LINT: unreachable code removed/g
+ */
+    // */ // LINT: unreachable code removed
 export function createEnhancedTask(task = `# Claude-Flow Enhanced Task`
 
 ## Your Task;
@@ -47,47 +48,46 @@ and;
 user;
 interfaces`;`
     : '';
-// }/g
-
+// }
 
 #;
 #;
 Commit;
 Strategy;
 $;
-// {/g
+// {
   flags.commit === 'phase';
     ? `- **Phase`
 Commits**
 : Commit after completing major phases(planning, implementation, testing)`
 : ''
-// }/g
+// }
 $
-// {/g
+// {
   flags.commit === 'feature';
   ? `- **Feature Commits**: Commit after each feature or`
   namespace is
   complete`;`
     : '';
-// }/g
+// }
 $;
-// {/g
+// {
   flags.commit === 'manual';
     ? `- **Manual`
   Commits**
   : Only commit when explicitly requested by the user`
   : ''
-// }/g
+// }
 $;
-// {/g
-  !flags.commit ? `- **Default(Phase)**: Commit after completing major phases` : '';
-// }/g
+// {
+// ! flags.commit ? `- **Default(Phase)**: Commit after completing major phases` : '';
+// }
 #;
 #;
 Additional;
 Guidelines;
 $;
-// {/g
+// {
   flags.noPermissions;
   ? `
   #
@@ -116,9 +116,9 @@ $;
   well -
     tested`;`
     : '';
-// }/g
+// }
 $;
-// {/g
+// {
   flags.verbose;
     ? `;`
   #
@@ -146,16 +146,14 @@ $;
   outputs;
   comprehensively`;`
     : '';
-// }/g
-
+// }
 
 Now, please;
 proceed;
 with the task: $;
-// {/g
+// {
   task;
-// }/g
+// }
 `;`
-  // return enhancedTask;/g
-// }/g
-
+  // return enhancedTask;
+// }

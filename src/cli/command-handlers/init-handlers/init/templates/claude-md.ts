@@ -1,16 +1,16 @@
-/**  *//g
- * Claude Md Module
- * Converted from JavaScript to TypeScript
- *//g
-// claude-md.js - CLAUDE.md templates/g
+
+/** Claude Md Module
+/** Converted from JavaScript to TypeScript
+
+// claude-md.js - CLAUDE.md templates
 
 export function createMinimalClaudeMd() {
   return `# Claude Code Configuration`
 
-    // ## �CRITICAL = ALL RELATED OPERATIONS" // LINT: unreachable code removed"/g
+    // ## CRITICAL = ALL RELATED OPERATIONS" // LINT: unreachable code removed"
 
-**✅ CORRECT**: Everything in ONE message
-**❌ WRONG**: Multiple messages for related operations(6x slower!)
+** CORRECT**: Everything in ONE message
+** WRONG**: Multiple messages for related operations(6x slower!)
 
 ###  CONCURRENT EXECUTIONCHECKLIST = ALL RELATED OPERATIONS"
 
@@ -20,9 +20,9 @@ export function createMinimalClaudeMd() {
 
 **Examples of CORRECT concurrent execution:**
 \`\`\`javascript;`
-// ✅ CORRECT: Everything in ONE message/g
+//  CORRECT: Everything in ONE message
 [Single Message]:
-  - TodoWrite { todos: [10+ todos with all statuses/priorities] }/g
+  - TodoWrite { todos: [10+ todos with all statuses/priorities] }
   - Task("Agent 1 with full instructions and hooks");
   - Task("Agent 2 with full instructions and hooks");
   - Task("Agent 3 with full instructions and hooks");
@@ -37,30 +37,30 @@ export function createMinimalClaudeMd() {
 
 **Examples of WRONG sequential execution:**
 \`\`\`javascript;`
-// ❌ WRONG: Multiple messages(NEVER DO THIS)/g
+//  WRONG: Multiple messages(NEVER DO THIS)
 Message 1: TodoWrite { todos: [single todo] }
 Message 2: Task("Agent 1");
 Message 3: Task("Agent 2");
 Message 4: Read("file1.js");
 Message 5: Write("output1.js");
 Message 6: Bash("npm install");
-// This is 6x slower and breaks coordination!/g
+// This is 6x slower and breaks coordination!
 \`\`\`
 
 ###  CONCURRENT EXECUTION CHECKLIST: null
 Before sending ANY message, ask yourself: null
-- ✅ Are ALL related TodoWrite operations batched together?;
-- ✅ Are ALL Task spawning operations in ONE message?;
-- ✅ Are ALL file operations(Read/Write/Edit) batched together?;/g
-- ✅ Are ALL bash commands grouped in ONE message?;
-- ✅ Are ALL memory operations concurrent?
+-  Are ALL related TodoWrite operations batched together?;
+-  Are ALL Task spawning operations in ONE message?;
+-  Are ALL file operations(Read/Write/Edit) batched together?;
+-  Are ALL bash commands grouped in ONE message?;
+-  Are ALL memory operations concurrent?
 
 If ANY answer is "No", you MUST combine operations into a single message!
 
 ## Project Overview;
 This project uses the SPARC(Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development with AI assistance through Claude-Flow orchestration.
 
-**� Batchtools Optimization Enabled**: This configuration includes optimized prompts and parallel processing capabilities for improved performance and efficiency.
+** Batchtools Optimization Enabled**: This configuration includes optimized prompts and parallel processing capabilities for improved performance and efficiency.
 
 ## SPARC Development Commands
 
@@ -139,7 +139,7 @@ npx claude-zen sparc run integration "integrate authentication with user managem
 - **Code Analysis**: 250% improvement with concurrent pattern recognition
 - **Test Generation**: 400% faster with parallel test creation
 - **Documentation**: 200% improvement with concurrent content generation
-- **Memory Operations**: 180% faster with batched read/write operations/g
+- **Memory Operations**: 180% faster with batched read/write operations
 
 ## Code Style and Best Practices(Batchtools Enhanced)
 
@@ -168,8 +168,8 @@ npx claude-zen sparc run integration "integrate authentication with user managem
 - Monitor system resources during parallel operations for optimal performance
 
 For more information about SPARC methodology and batchtools optimization, see: null
-- SPARC Guide,//github.com/ruvnet/claude-zen/docs/sparc.md/g
-- Batchtools Documentation,//github.com/ruvnet/claude-zen/docs/batchtools.md/g
+- SPARC Guide,//github.com/ruvnet/claude-zen/docs/sparc.md
+- Batchtools Documentation,//github.com/ruvnet/claude-zen/docs/batchtools.md
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.;
@@ -177,5 +177,4 @@ NEVER create files unless they're absolutely necessary for achieving your goal.;
 ALWAYS prefer editing an existing file to creating a new one.;
 NEVER proactively create documentation files(*.md) or README files. Only create documentation files if explicitly requested by the User.
 `;`
-// }/g
-
+// }

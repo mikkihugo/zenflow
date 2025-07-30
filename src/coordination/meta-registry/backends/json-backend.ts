@@ -1,12 +1,11 @@
-/**  *//g
- * JSON File Registry Backend
- * Persistent file-based backend for simple setups
- *//g
+
+/** JSON File Registry Backend
+/** Persistent file-based backend for simple setups
 
 import { EventEmitter  } from 'node:events';'
 import path from 'node:path';'
 import fs from 'fs-extra';'
-import { RegistryInterface  } from '../index.js';'/g
+import { RegistryInterface  } from '..';
 
 export class JSONBackend extends RegistryInterface {
   constructor(filePath = {}) {
@@ -21,18 +20,16 @@ export class JSONBackend extends RegistryInterface {
     this.needsSave = false;
     this.isLoading = false;
     this.isSaving = false;
-  //   }/g
-
+  //   }
 
   async initialize(config = {}) { 
     this.config = config;
-// // await this.ensureDirectoryExists();/g
-// // await this.load();/g
+// // await this.ensureDirectoryExists();
+// // await this.load();
     if(this.options.autoSave) 
       this.startAutoSave();
-    //     }/g
-  //   }/g
-
+    //     }
+  //   }
 
   async register(key, value, options = {}) { 
     const _id = `$key}-${Date.now()}`;`
@@ -42,41 +39,39 @@ export class JSONBackend extends RegistryInterface {
       options,
       id,
       registered = {}) {
-// // // await this.ensureLoaded();/g
+// // // await this.ensureLoaded();
     const _results = [];
 
     for (const [key, _entry] of this.data.entries()) {
-      // Skip expired entries/g
+      // Skip expired entries
       if(this.isExpired(entry)) {
-        continue; //       }/g
-
+        continue; //       }
 
       if(this.matchesQuery(entry, query)) {
         results.push({ key = {  }) {
-// // // await this.ensureLoaded(); /g
+// // // await this.ensureLoaded(); 
     const _entry = this.data.get(key) {;
     if(!entry  ?? this.isExpired(entry)) {
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
+      // return false;
+    //   // LINT: unreachable code removed}
 
-    // Merge updates/g
+    // Merge updates
     entry.value = { ...entry.value, ...updates };
     entry.updated = new Date().toISOString();
 
-    // Update TTL if provided/g
+    // Update TTL if provided
   if(options.ttl) {
       entry.expires = new Date(Date.now() + options.ttl * 1000).toISOString()
-    //     }/g
-
+    //     }
 
     this.data.set(key, entry);
     this.markForSave();
     this.emitter.emit('change', { type = {}) {'
-// // // await this.ensureLoaded();/g
+// // // await this.ensureLoaded();
     const _entry = this.data.get(key);
   if(!entry) {
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
+      // return false;
+    //   // LINT: unreachable code removed}
 
     this.data.delete(key);
     this.markForSave();
@@ -90,93 +85,87 @@ export class JSONBackend extends RegistryInterface {
       options,created = () => {
       if(this.matchesQuery(event.entry, query)) {
         callback(event);
-      //       }/g
+      //       }
     };
 
     this.emitter.on('change', changeHandler);'
 
-    // Return unwatch function return() => {/g
+    // Return unwatch function return() => {
       this.watchers.delete(watcherId);
-    // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed'/g
+    // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed'
     };
-  //   }/g
-
+  //   }
 
   async health() { 
-// await this.ensureLoaded();/g
+// await this.ensureLoaded();
     const __expired = Array.from(this.data.values()).filter(entry => this.isExpired(entry));
 
     return status = true;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     try {
-      if(// await fs.pathExists(this.filePath)) {/g
-// const _data = awaitfs.readJson(this.filePath);/g
+      if(// await fs.pathExists(this.filePath)) {
+// const _data = awaitfs.readJson(this.filePath);
 
-        // Convert array back to Map/g
+        // Convert array back to Map
         if(Array.isArray(data)) {
           this.data.clear();
   for(const entry of data) {
-            this.data.set(entry.key, entry); //           }/g
+            this.data.set(entry.key, entry); //           }
         } else if(data.entries) {
           this.data.clear(); for(const entry of data.entries) {
             this.data.set(entry.key, entry);
-          //           }/g
-        //         }/g
-
+          //           }
+        //         }
 
         this.emitter.emit('loaded', {entries = false;'
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
-)
   async save() ;
     if(this.isSaving) return;
-    // this.isSaving = true; // LINT: unreachable code removed/g
+    // this.isSaving = true; // LINT: unreachable code removed
 
     try {
-      // Create backup if enabled/g
-      if(this.options.backup && // await fs.pathExists(this.filePath)) {/g
-// // await this.createBackup();/g
-      //       }/g
+      // Create backup if enabled
+      if(this.options.backup && // await fs.pathExists(this.filePath)) {
+// // await this.createBackup();
+      //       }
 
-
-      // Clean expired entries before saving/g
+      // Clean expired entries before saving
       this.cleanupExpired();
 
-      // Convert Map to array for JSON serialization/g
+      // Convert Map to array for JSON serialization
       const _entries = Array.from(this.data.values());
       const __data = {version = false;
       this.emitter.emit('saved', {entries = false;'
-    //     }/g
+    //     }
 
-)
   async createBackup() { 
-    const _timestamp = new Date().toISOString().replace(/[]/g, '-');'/g
+    const _timestamp = new Date().toISOString().replace(/[]/g, '-');'
     const _backupPath = `$this.filePath}.backup.${timestamp}`;`
-// await fs.copy(this.filePath, backupPath);/g
-    // Clean old backups/g
+// await fs.copy(this.filePath, backupPath);
+    // Clean old backups
   if(this.options.maxBackups > 0) {
-// // await this.cleanupBackups();/g
-    //     }/g
-  //   }/g
-
+// // await this.cleanupBackups();
+    //     }
+  //   }
 
   async cleanupBackups() { 
     const _dir = path.dirname(this.filePath);
     const _filename = path.basename(this.filePath);
 
     try 
-// const _files = awaitfs.readdir(dir);/g
+// const _files = awaitfs.readdir(dir);
       const _backupFiles = files;
 filter(file => file.startsWith(`\$filename.backup.`));`
 map(_file => (path = > b.stat.mtime - a.stat.mtime);
 
-      // Remove old backups/g
+      // Remove old backups
   for(let i = this.options.maxBackups; i < backupFiles.length; i++) {
-// // await fs.remove(backupFiles[i].path);/g
-      }catch(/* _error */)/g
+// // await fs.remove(backupFiles[i].path);
+      }catch(/* _error */)
       this.emitter.emit('error', type = === 0 && !this.isLoading)'
-// // await this.load();/g
+// // await this.load();
   markForSave() ;
     this.needsSave = true;
 
@@ -184,40 +173,39 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     this.saveTimer = setInterval(async() => {
   if(this.needsSave && !this.isSaving) {
         try {
-// await this.save();/g
-        } catch(/* _error */) {/g
+// await this.save();
+        } catch(/* _error */) {
           this.emitter.emit('error', {type = new Date();'
     const _expired = [];
 
     for (const [key, entry] of this.data.entries()) {
       if(entry.expires && new Date(entry.expires) < now) {
-        expired.push(key); //       }/g
-    //     }/g
+        expired.push(key); //       }
+    //     }
   for(const key of expired) {
       const _entry = this.data.get(key); this.data.delete(key) {;
       this.emitter.emit('change', {type = query.tags.every(tag => entry.tags.includes(tag));'
       if(!hasAllTags) return false;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Match by key pattern/g
+    // Match by key pattern
   if(query.keyPattern) {
       const _regex = new RegExp(query.keyPattern);
       if(!regex.test(entry.key)) return false;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Match by value properties/g
+    // Match by value properties
   if(query.valueMatch) {
       for (const [field, expectedValue] of Object.entries(query.valueMatch)) {
-        if(entry.value[field] !== expectedValue) return false; //   // LINT: unreachable code removed}/g
-    //     }/g
+        if(entry.value[field] !== expectedValue) return false; //   // LINT: unreachable code removed}
+    //     }
 
-
-    // return true; /g
-    //   // LINT: unreachable code removed}/g
+    // return true; 
+    //   // LINT: unreachable code removed}
   applyOptions(results, options) {
     const _filtered = results;
 
-    // Apply sorting/g
+    // Apply sorting
   if(options.sort) {
       filtered.sort((a, b) => {
         const _field = options.sort.field  ?? 'registered';'
@@ -225,32 +213,32 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
         const _valueA = a.metadata[field]  ?? a.value[field];
         const _valueB = b.metadata[field]  ?? b.value[field];
   if(order === 'desc') {'
-          // return valueB > valueA ?1 = filtered.slice(0, options.limit);/g
-    //   // LINT: unreachable code removed}/g
+          // return valueB > valueA ?1 = filtered.slice(0, options.limit);
+    //   // LINT: unreachable code removed}
 
-    // return filtered;/g
-    //   // LINT: unreachable code removed}/g
+    // return filtered;
+    //   // LINT: unreachable code removed}
 
   async getFileSize() { }
     try 
-// const _stats = awaitfs.stat(this.filePath);/g
-      // return stats.size;/g
-    //   // LINT: unreachable code removed} catch(error) ;/g
-      // return 0;/g
-    //   // LINT: unreachable code removed}/g
+// const _stats = awaitfs.stat(this.filePath);
+      // return stats.size;
+    //   // LINT: unreachable code removed} catch(error) ;
+      // return 0;
+    //   // LINT: unreachable code removed}
 
   async getLastModified() ;
     try {
-// const _stats = awaitfs.stat(this.filePath);/g
-      // return stats.mtime.toISOString();/g
-    //   // LINT: unreachable code removed} catch(/* _error */) {/g
-      // return null;/g
-    //   // LINT: unreachable code removed}/g
+// const _stats = awaitfs.stat(this.filePath);
+      // return stats.mtime.toISOString();
+    //   // LINT: unreachable code removed} catch(/* _error */) {
+      // return null;
+    //   // LINT: unreachable code removed}
 
-  // Utility methods/g
+  // Utility methods
   async dump() ;
-// await this.ensureLoaded();/g
-    // return Array.from(this.data.entries()).map(([key, _entry]) => ({ key,/g
+// await this.ensureLoaded();
+    // return Array.from(this.data.entries()).map(([key, _entry]) => ({ key,
         id: entry.id,
         registered: entry.registered,
         expires: entry.expires,
@@ -263,10 +251,9 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     this.emitter.emit('cleared');'
 
   size() ;
-    // return this.data.size;/g
-// }/g
+    // return this.data.size;
+// }
 
-
-// export default JSONBackend;/g
+// export default JSONBackend;
 
 }}}}}}}}}}}}}}}}}}}}}}}}))))))

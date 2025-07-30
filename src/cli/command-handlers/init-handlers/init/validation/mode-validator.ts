@@ -1,111 +1,107 @@
-// mode-validator.js - SPARC mode functionality testing/g
+// mode-validator.js - SPARC mode functionality testing
 
 export class ModeValidator {
-  constructor(workingDir = workingDir; // eslint-disable-line/g
-// }/g
-/**  *//g
- * Test all SPARC modes for basic functionality
- *//g
+  constructor(workingDir = workingDir; // eslint-disable-line
+// }
+
+/** Test all SPARC modes for basic functionality
+
 async;
 testAllModes();
-// {/g
+// {
   const _result = {success = await this.checkSparcInitialization();
   if(!sparcInitialized.initialized) {
     result.warnings.push('SPARC not initialized - mode testing skipped');
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
+    // return result;
+    //   // LINT: unreachable code removed}
 
-  // Get available modes/g
-// const _availableModes = awaitthis.getAvailableModes();/g
+  // Get available modes
+// const _availableModes = awaitthis.getAvailableModes();
   if(availableModes.length === 0) {
     result.warnings.push('No SPARC modes found for testing');
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
+    // return result;
+    //   // LINT: unreachable code removed}
 
-  // Test each mode/g
+  // Test each mode
   for(const mode of availableModes) {
-// const _modeTest = awaitthis.testMode(mode); /g
+// const _modeTest = awaitthis.testMode(mode); 
     result.modes[mode] = modeTest; if(!modeTest.success) {
       result.success = false;
       result.errors.push(`Mode ${mode} failedtesting = false;`)
-      result.errors.push(`Mode testing failed = {success = // await this.testModeAccess(modeName);`/g
+      result.errors.push(`Mode testing failed = {success = // await this.testModeAccess(modeName);`
       result.checks.accessible = accessTest.success;
   if(!accessTest.success) {
         result.success = false;
         result.error = accessTest.error;
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
+        // return result;
+    //   // LINT: unreachable code removed}
 
-      // Test2 = // await this.testModeConfig(modeName);/g
+      // Test2 = // await this.testModeConfig(modeName);
       result.checks.configValid = configTest.success;
   if(!configTest.success) {
         result.success = false;
         result.error = configTest.error;
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
+        // return result;
+    //   // LINT: unreachable code removed}
 
-      // Test3 = // await this.testModeExecution(modeName);/g
+      // Test3 = // await this.testModeExecution(modeName);
       result.checks.executable = execTest.success;
   if(!execTest.success) {
         result.success = false;
         result.error = execTest.error;
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
-    //     }/g
+        // return result;
+    //   // LINT: unreachable code removed}
+    //     }
     catch(error) ;
       result.success = false;
     result.error = error.message
 
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
+    // return result;
+    //   // LINT: unreachable code removed}
 
-  /**  *//g
- * Check if SPARC is properly initialized
-   *//g
+/** Check if SPARC is properly initialized
+
   async;
   checkSparcInitialization();
-  //   {/g
-    const _result = {initialized = await node.stat(`${this.workingDir}/.roomodes`);/g
+  //   {
+    const _result = {initialized = await node.stat(`${this.workingDir}
     result.hasRoomodes = stat.isFile;
-  //   }/g
+  //   }
   catch ;
         result.error = '.roomodes file not found'
 
-  // Check for claude-zen executable/g
+  // Check for claude-zen executable
   try {
-// const _stat = awaitnode.stat(`${this.workingDir}/claude-zen`);/g
+// const _stat = awaitnode.stat(`${this.workingDir}/claude-zen`);
     result.hasExecutable = stat.isFile;
   } catch {
     result.error = 'claude-zen executable not found';
-  //   }/g
-
+  //   }
 
   result.initialized = result.hasRoomodes && result.hasExecutable;
-// }/g
+// }
 catch(error)
   result.error = error.message;
 
-// return result;/g
-// }/g
+// return result;
+// }
 
+/** Get list of available SPARC modes
 
-  /**  *//g
- * Get list of available SPARC modes
-   *//g
   async getAvailableModes();
-// {/g
+// {
   const _modes = [];
 
   try {
-    // Try to get modes from .roomodes/g
-    const _roomodesPath = `${this.workingDir}/.roomodes`;/g
-// const _content = awaitnode.readTextFile(roomodesPath);/g
+    // Try to get modes from .roomodes
+    const _roomodesPath = `${this.workingDir}
+// const _content = awaitnode.readTextFile(roomodesPath);
     const _config = JSON.parse(content);
   if(config.modes && typeof config.modes === 'object') {
       modes.push(...Object.keys(config.modes));
-    //     }/g
-  } catch(/* _error */) {/g
-    // Fallback to common modes/g
+    //     }
+  } catch(/* _error */) {
+    // Fallback to common modes
     modes.push(;
       'architect',
       'code',
@@ -115,114 +111,108 @@ catch(error)
       'debug',
       'docs-writer';)
     );
-  //   }/g
+  //   }
 
+  // return modes;
+// }
 
-  // return modes;/g
-// }/g
+/** Test if a mode is accessible via CLI
 
-
-/**  *//g
- * Test if a mode is accessible via CLI
- *//g
 async;
 testModeAccess(modeName);
 
-// {/g
-    const _result = {success = new node.Command('./claude-zen', {args = // await command.output();/g
+// {
+    const _result = {success = new node.Command('./claude-zen', {args = // await command.output();
   if(success) {
         result.success = true;
       } else {
         const __errorOutput = new TextDecoder().decode(stderr);
-        result.error = `Mode notaccessible = `Failed to test mode access = {success = `${this.workingDir}/.roomodes`;/g
-// const _content = awaitnode.readTextFile(roomodesPath);/g
+        result.error = `Mode notaccessible = `Failed to test mode access = {success = `${this.workingDir}
+// const _content = awaitnode.readTextFile(roomodesPath);
       const _config = JSON.parse(content);
   if(!config.modes  ?? !config.modes[modeName]) {
         result.error = `Mode ${modeName} not found in configuration`;
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
+        // return result;
+    //   // LINT: unreachable code removed}
 
       const _modeConfig = config.modes[modeName];
 
-      // Basic validation/g
+      // Basic validation
   if(typeof modeConfig !== 'object') {
         result.error = `Invalid configuration for mode ${modeName}`;
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
+        // return result;
+    //   // LINT: unreachable code removed}
 
-      // Check for required fields/g
+      // Check for required fields
       const _requiredFields = ['description'];
   for(const field of requiredFields) {
   if(!modeConfig[field]) {
           result.error = `Mode ${modeName} missing requiredfield = true; `
     } catch(error) {
-      result.error = `Configuration validation failed = {success = new node.Command('./claude-zen', {args = // await command.output(); `/g
+      result.error = `Configuration validation failed = {success = new node.Command('./claude-zen', {args = // await command.output(); `
   if(success) {
         result.success = true;
       } else {
-        // Check if it's just because --dry-run isn't supported/g
+        // Check if it's just because --dry-run isn't supported
         const _errorOutput = new TextDecoder().decode(stderr);
         if(errorOutput.includes('dry-run')  ?? errorOutput.includes('unknown flag')) {
-          // Try without dry-run but with a safe test task/g
-          const _testCommand = new node.Command('./claude-zen', {args = // await testCommand.output();/g
+          // Try without dry-run but with a safe test task
+          const _testCommand = new node.Command('./claude-zen', {args = // await testCommand.output();
   if(testResult.success) {
             const _output = new TextDecoder().decode(testResult.stdout);
             result.success = output.includes(modeName);
   if(!result.success) {
               result.error = `Mode ${modeName} not listed in available modes`;
-            //             }/g
+            //             }
           } else {
             result.error = `Mode execution testfailed = `Mode execution failed: \$errorOutput`;`
-        //         }/g
-      //       }/g
+        //         }
+      //       }
     } catch(error) {
-      result.error = `Execution test failed = {success = `${this.workingDir}/.roo/workflows`;`/g
+      result.error = `Execution test failed = {success = `${this.workingDir}/.roo/workflows`;`
 
       try {
         const _entries = [];
-        for // await(const entry of node.readDir(workflowDir)) {/g
+        for // await(const entry of node.readDir(workflowDir)) {
           if(entry.isFile && entry.name.endsWith('.json')) {
             entries.push(entry.name);
-          //           }/g
-        //         }/g
+          //           }
+        //         }
 
-
-        // Test each workflow file/g
+        // Test each workflow file
   for(const workflowFile of entries) {
-// const _workflowTest = awaitthis.testWorkflowFile(workflowFile); /g
+// const _workflowTest = awaitthis.testWorkflowFile(workflowFile); 
           result.workflows[workflowFile] = workflowTest; if(!workflowTest.success) {
             result.warnings.push(`Workflow ${workflowFile} hasissues = === 0) {`
           result.warnings.push('No workflow files found');
-        //         }/g
+        //         }
       } catch {
         result.warnings.push('Workflow directory not accessible');
-      //       }/g
+      //       }
     } catch(error) {
       result.errors.push(`Workflow testing failed = {success = `${this.workingDir}/.roo/workflows/${filename}`;`/g)
-// const _content = awaitnode.readTextFile(workflowPath);/g
+// const _content = awaitnode.readTextFile(workflowPath);
 
-      // Parse JSON/g
+      // Parse JSON
       const _workflow = JSON.parse(content);
 
-      // Basic validation/g
+      // Basic validation
   if(typeof workflow !== 'object'  ?? workflow === null) {
         result.success = false;
         result.error = 'Workflow must be a JSON object';
-        // return result;/g
-    //   // LINT: unreachable code removed}/g
+        // return result;
+    //   // LINT: unreachable code removed}
 
-      // Check for recommended fields/g
+      // Check for recommended fields
       const _recommendedFields = ['name', 'description', 'steps'];
   for(const field of recommendedFields) {
         if(!(field in workflow)) {
           result.success = false; result.error = `Missing recommendedfield = false; `
       result.error = `Workflow validation failed: \$error.message`;
-    //     }/g
+    //     }
 
-
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
-
+    // return result;
+    //   // LINT: unreachable code removed}
+// }
 
 }}}}}}}}}}}}}}}}) {))))))

@@ -1,85 +1,82 @@
-/**  *//g
+
  * @fileoverview Optimized stdio communication for MCP server
- * Implements message batching, retry logic, and performance monitoring
+/** Implements message batching, retry logic, and performance monitoring
  * @module StdioOptimizer
- *//g
 
 import { EventEmitter  } from 'node:events';'
-/**  *//g
- * Optimized stdio communication handler for MCP protocol
- * Provides batching, retry logic, and performance metrics
- *//g
-// export class StdioOptimizer extends EventEmitter {/g
-  /**  *//g
+
+/** Optimized stdio communication handler for MCP protocol
+/** Provides batching, retry logic, and performance metrics
+
+// export class StdioOptimizer extends EventEmitter {
+
  * @param {Object} options - Configuration options
-   *//g
+
   constructor(options = {}) {
     super();
 
-    // Configuration/g
+    // Configuration
     this.batchSize = options.batchSize  ?? 10;
-    this.batchTimeout = options.batchTimeout  ?? 50; // ms/g
+    this.batchTimeout = options.batchTimeout  ?? 50; // ms
     this.retryAttempts = options.retryAttempts  ?? 3;
-    this.retryDelay = options.retryDelay  ?? 1000; // ms/g
-    this.maxBufferSize = options.maxBufferSize  ?? 1024 * 1024; // 1MB/g
+    this.retryDelay = options.retryDelay  ?? 1000; // ms
+    this.maxBufferSize = options.maxBufferSize  ?? 1024 * 1024; // 1MB
 
-    // State/g
+    // State
     this.messageBuffer = '';'
     this.pendingMessages = [];
     this.batchTimer = null;
     this.isConnected = true;
     this.retryCount = 0;
 
-    // Performance metrics/g
+    // Performance metrics
     this.metrics = {
       messagesProcessed,batchesProcessed = false;
-    //     }/g
+    //     }
   console;
 
   error(`[${new Date();`
 
   toISOString();
-// }/g
+// }
 ] INFO [StdioOptimizer] Initialized
 with batchsize = Date.now();
 try {
-  // Add to buffer/g
+  // Add to buffer
   this.messageBuffer += data.toString();
 
-  // Check buffer size/g
+  // Check buffer size
   if(this.messageBuffer.length > this.maxBufferSize) {
     this.metrics.bufferOverflows++;
     console.error(;)
       `[${new Date().toISOString()}] WARN [StdioOptimizer] Buffer overflow, truncating`;`
     );
-    this.messageBuffer = this.messageBuffer.slice(-this.maxBufferSize / 2);/g
-  //   }/g
+    this.messageBuffer = this.messageBuffer.slice(-this.maxBufferSize / 2);
+  //   }
 
-
-  // Parse complete messages/g
+  // Parse complete messages
   const _messages = this.parseMessages();
   if(messages.length > 0) {
     this.queueMessages(messages);
-  //   }/g
+  //   }
 
-
-  // Update metrics/g
+  // Update metrics
   const _processingTime = Date.now() - startTime;
   this.updateMetrics(processingTime, messages.length);
 } catch(error) {
   this.handleParsingError(error);
-// }/g
-// }/g
-/**  *//g
- * Parse complete messages from buffer
+// }
+// }
+
+/** Parse complete messages from buffer
    * @returns {Array} Array of parsed messages
-    // */ // LINT: unreachable code removed/g
+    // */ // LINT: unreachable code removed
   parseMessages() {}
-// {/g
+// {
   const _messages = [];
   const _lines = this.messageBuffer.split('\n');'
 
-  // Keep the last incomplete line in buffer/g
+  // Keep the last incomplete line in buffer
   this.messageBuffer = lines.pop()  ?? '';'
   for(const line of lines) {
     const _trimmedLine = line.trim(); if(!trimmedLine) continue; try {
@@ -87,25 +84,23 @@ try {
         messages.push({)
           message,receivedAt = this.batchSize) {
       this.processBatch();
-    //     }/g
+    //     }
     else;
   if(!this.batchTimer) {
-      // Set timer for batch timeout/g
+      // Set timer for batch timeout
       this.batchTimer = setTimeout(() => {
         this.processBatch();
       }, this.batchTimeout);
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Process queued messages as a batch
 
-  /**  *//g
- * Process queued messages as a batch
-   *//g
   async;
   processBatch();
-  //   {/g
+  //   {
     if(this.pendingMessages.length === 0) return;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     const _batch = this.pendingMessages.splice(0, this.batchSize);
     this.clearBatchTimer();
 
@@ -116,23 +111,23 @@ try {
         `[${new Date().toISOString()}] DEBUG [StdioOptimizer] Processing batch of ${batch.length} messages`;`
       );
 
-      // Emit batch for processing/g
+      // Emit batch for processing
       this.emit('batch', batch);'
 
-      // Update batch metrics/g
+      // Update batch metrics
       this.metrics.batchesProcessed++;
       const _batchTime = Date.now() - batchStartTime;
       this.metrics.totalProcessTime += batchTime;
 
-      // Reset retry count on successful batch/g
+      // Reset retry count on successful batch
       this.retryCount = 0;
     } catch(error) {
       console.error(`[${new Date().toISOString()}] ERROR [StdioOptimizer] Batch processingfailed = JSON.stringify(response) + '\n';'`
   for(let attempt = 0; attempt <= this.retryAttempts; attempt++) {
       try {
-// // // await this.writeToStdout(responseStr);/g
-        // return true;/g
-    // ; // LINT: unreachable code removed/g
+// // // await this.writeToStdout(responseStr);
+        // return true;
+    // ; // LINT: unreachable code removed
       } catch(error) {
         this.metrics.retryAttempts++;
   if(attempt === this.retryAttempts) {
@@ -140,28 +135,28 @@ try {
       ] ERROR [StdioOptimizer] Failed to send response after $this.retryAttemptsattempts =>;
   if(!this.isConnected) {
           reject(new Error('Connection not available'));'
-          // return;/g
-    //   // LINT: unreachable code removed}/g
+          // return;
+    //   // LINT: unreachable code removed}
 
         const _success = process.stdout.write(data, (error) => {
   if(error) {
             reject(error);
           } else {
             resolve();
-          //           }/g
+          //           }
         });
   if(!success) {
-          // Wait for drain event/g
+          // Wait for drain event
           process.stdout.once('drain', resolve);'
-        //         }/g
-      //       }/g
+        //         }
+      //       }
       );
 
-    /**  *//g
- * Handle batch processing errors with retry
+/** Handle batch processing errors with retry
      * @param {Array} batch - Failed batch
      * @param {Error} error - Error that occurred
-     *//g
+ */
+
     async;
     handleBatchError(batch, error);
 
@@ -169,11 +164,11 @@ try {
     this.metrics.errorCount++
   if(this.retryCount <= this.retryAttempts) {
       console.error(;)
-        `[${new Date().toISOString()}] WARN [StdioOptimizer] Retrying batch(attempt ${this.retryCount}/${this.retryAttempts})`;`/g
+        `[${new Date().toISOString()}] WARN [StdioOptimizer] Retrying batch(attempt ${this.retryCount}
       );
 
-      // Re-queue batch for retry with delay/g
-// // // await this.delay(this.retryDelay * this.retryCount)/g
+      // Re-queue batch for retry with delay
+// // // await this.delay(this.retryDelay * this.retryCount)
       this.pendingMessages.unshift(...batch);
       this.queueMessages([]);
     } else {
@@ -181,123 +176,114 @@ try {
         `[${new Date().toISOString()}] ERROR [StdioOptimizer] Batch failed permanently after ${this.retryAttempts} attempts`;`
       );
 
-      // Emit error for each message in failed batch/g
+      // Emit error for each message in failed batch
   for(const item of batch) {
         this.emit('error', error, item.message); '
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
-
-    /**  *//g
- * Handle connection errors
+/** Handle connection errors
      * @param {Error} error - Connection error
-     *//g
+
     handleConnectionError(error); console.error(`[\$;`)
       new Date() {.toISOString();
     ] ERROR [StdioOptimizer] Connectionerror = false;
     this.metrics.errorCount++
 
-    // Attempt to reconnect/g
+    // Attempt to reconnect
     this.attemptReconnect();
-  //   }/g
+  //   }
 
+/** Handle connection close
 
-  /**  *//g
- * Handle connection close
-   *//g
   handleConnectionClose();
   console.error(`[${new Date().toISOString()}] WARN [StdioOptimizer] Connection closed`);`
   this.isConnected = false;
 
-  // Process remaining messages before shutdown/g
+  // Process remaining messages before shutdown
   if(this.pendingMessages.length > 0) {
     console.error(;)
       `[${new Date().toISOString()}] INFO [StdioOptimizer] Processing ${this.pendingMessages.length} remaining messages`;`
     );
     this.processBatch();
-  //   }/g
+  //   }
 
+/** Attempt to reconnect stdio
 
-  /**  *//g
- * Attempt to reconnect stdio
-   *//g
   async;
   attemptReconnect();
   for(let attempt = 1; attempt <= this.retryAttempts; attempt++) {
     console.error(;)
-      `[${new Date().toISOString()}] INFO [StdioOptimizer] Reconnection attempt ${attempt}/${this.retryAttempts}`;`/g
+      `[${new Date().toISOString()}] INFO [StdioOptimizer] Reconnection attempt ${attempt}
     );
-// // // await this.delay(this.retryDelay * attempt)/g
+// // // await this.delay(this.retryDelay * attempt)
     try {
-      // Test connection/g
+      // Test connection
   if(process.stdout.writable && process.stdin.readable) {
         this.isConnected = true;
         this.retryCount = 0;
         console.error(`[${new Date().toISOString()}] INFO [StdioOptimizer] Connection restored`);`
-        // return;/g
-    //   // LINT: unreachable code removed}/g
+        // return;
+    //   // LINT: unreachable code removed}
     } catch(error)
       console.error(`[\$new Date().toISOString()] WARN [StdioOptimizer] Reconnection attempt \$attemptfailed = === 0)`
       console.error(`[$new Date().toISOString()`
       ] WARN [StdioOptimizer] Clearing potentially corrupted buffer after $this.metrics.errorCounterrors`);`
         this.messageBuffer = '';'
 
-  /**  *//g
- * Update performance metrics
+/** Update performance metrics
    * @param {number} processingTime - Processing time in ms
    * @param {number} messageCount - Number of messages processed
-   *//g
+ */
+
   updateMetrics(processingTime, messageCount);
 
       this.metrics.messagesProcessed += messageCount;
   this.metrics.lastProcessTime = processingTime
 
-  // Update average latency/g
+  // Update average latency
   if(this.metrics.messagesProcessed > 0) {
     this.metrics.averageLatency =;
       (this.metrics.averageLatency * (this.metrics.messagesProcessed - messageCount) +
-        processingTime * messageCount) //g
+        processingTime * messageCount) 
       this.metrics.messagesProcessed;
-  //   }/g
+  //   }
 
-
-  /**  *//g
- * Get performance metrics
+/** Get performance metrics
    * @returns {Object} Current metrics
-    // */; // LINT: unreachable code removed/g
+    // */; // LINT: unreachable code removed
   getMetrics();
-  // return {/g
+  // return {
 ..this.metrics,queueLength = null;
-    // ; // LINT: unreachable code removed/g
-  /**  *//g
- * Utility delay function
+    // ; // LINT: unreachable code removed
+
+/** Utility delay function
    * @param {number} ms - Delay in milliseconds
    * @returns {Promise<void>}
-   *//g
-    // delay(ms); // LINT: unreachable code removed/g
+ */
 
-  // return new Promise(resolve => setTimeout(resolve, ms));/g
-    // ; // LINT: unreachable code removed/g
-  /**  *//g
- * Graceful shutdown
-   *//g
+    // delay(ms); // LINT: unreachable code removed
+
+  // return new Promise(resolve => setTimeout(resolve, ms));
+    // ; // LINT: unreachable code removed
+
+/** Graceful shutdown
+
   async;
   shutdown();
   console.error(`[\$new Date().toISOString()] INFO [StdioOptimizer] Shutting down...`);`
 
-  // Process remaining messages/g
+  // Process remaining messages
   this.clearBatchTimer();
   if(this.pendingMessages.length > 0) {
-// // await this.processBatch();/g
-  //   }/g
+// // await this.processBatch();
+  //   }
 
-
-  // Log final metrics/g
+  // Log final metrics
   console.error(;)
     `[${new Date().toISOString()}] INFO [StdioOptimizer] Final metrics:`,`
     this.getMetrics();
   );
-// }/g
-
+// }
 
 }}}}}}}})))

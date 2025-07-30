@@ -1,34 +1,34 @@
-/**  *//g
- * Readme Files Module
- * Converted from JavaScript to TypeScript
- *//g
-// readme-files.js - README templates for various directories/g
+
+/** Readme Files Module
+/** Converted from JavaScript to TypeScript
+
+// readme-files.js - README templates for various directories
 
 export function createAgentsReadme() {
   return `# Agent Memory Storage`
 
-    // ## Purpose; // LINT: unreachable code removed/g
+    // ## Purpose; // LINT: unreachable code removed
 This directory stores agent-specific memory data, configurations, and persistent state information for individual Claude agents in the orchestration system.
 
 ## Structure;
 Each agent gets its own subdirectory for isolated memory storage: null
 \`\`\`;`
-memory/agents/;/g
-├── agent_001/;/g
-│   ├── state.json           # Agent state and configuration;
-│   ├── knowledge.md         # Agent-specific knowledge base;
-│   ├── tasks.json          # Completed and active tasks;
-│   └── calibration.json    # Agent-specific calibrations;
-├── agent_002/;/g
-│   └── ...;
-└── shared/;/g
-    ├── common_knowledge.md  # Shared knowledge across agents;
-    └── global_config.json  # Global agent configurations;
+memory/agents/;
+ agent_001
+    state.json           # Agent state and configuration;
+    knowledge.md         # Agent-specific knowledge base;
+    tasks.json          # Completed and active tasks;
+    calibration.json    # Agent-specific calibrations;
+ agent_002
+    ...;
+ shared
+     common_knowledge.md  # Shared knowledge across agents;
+     global_config.json  # Global agent configurations;
 \`\`\`
 
 ## Usage Guidelines;
-1. **Agent Isolation**: Each agent should only read/write to its own directory/g
-2. **Shared Resources**: Use the \`shared/\` directory for cross-agent information/g
+1. **Agent Isolation**: Each agent should only read/write to its own directory
+2. **Shared Resources**: Use the \`shared/\` directory for cross-agent information
 3. **State Persistence**: Update state.json whenever agent status changes
 4. **Knowledge Sharing**: Document discoveries in knowledge.md files
 5. **Cleanup**: Remove directories for terminated agents periodically
@@ -36,28 +36,28 @@ memory/agents/;/g
 ## Last Updated;
 ${new Date().toISOString()}
 `;`
-// }/g
-// export function createSessionsReadme() {/g
+// }
+// export function createSessionsReadme() {
   return `# Session Memory Storage`
 
-    // ## Purpose; // LINT: unreachable code removed/g
+    // ## Purpose; // LINT: unreachable code removed
 This directory stores session-based memory data, conversation history, and contextual information for development sessions using the Claude-Flow orchestration system.
 
 ## Structure;
 Sessions are organized by date and session ID for easy retrieval: null
 \`\`\`;`
-memory/sessions/;/g
-├── 2024-01-10/;/g
-│   ├── session_001/;/g
-│   │   ├── metadata.json        # Session metadata and configuration;
-│   │   ├── conversation.md      # Full conversation history;
-│   │   ├── decisions.md         # Key decisions and rationale;
-│   │   ├── artifacts/           # Generated files and outputs;/g
-│   │   └── coordination_state/  # Coordination system snapshots;/g
-│   └── ...;
-└── shared/;/g
-    ├── patterns.md              # Common session patterns;
-    └── templates/               # Session template files;/g
+memory/sessions/;
+ 2024-01-10
+    session_001
+       metadata.json        # Session metadata and configuration;
+       conversation.md      # Full conversation history;
+       decisions.md         # Key decisions and rationale;
+       artifacts/           # Generated files and outputs;
+       coordination_state/  # Coordination system snapshots;
+    ...;
+ shared
+     patterns.md              # Common session patterns;
+     templates/               # Session template files;
 \`\`\`
 
 ## Usage Guidelines;
@@ -70,5 +70,4 @@ memory/sessions/;/g
 ## Last Updated;
 ${new Date().toISOString()}
 `;`
-// }/g
-
+// }

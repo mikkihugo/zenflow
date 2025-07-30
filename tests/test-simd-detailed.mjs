@@ -126,7 +126,7 @@ const _simdFeatureTest = () => { // eslint-disable-line
     return WebAssembly.validate(testModule); // eslint-disable-line
   } catch (_e) { // eslint-disable-line
     return false;
-  }
+
 };
 
 // Method 3: Check via compile
@@ -139,5 +139,5 @@ const _checkSIMDCompile = () => { // eslint-disable-line
     return true;
   } catch (_e) { // eslint-disable-line
     return false;
-  }
+
 };

@@ -1,187 +1,186 @@
-/**  *//g
- * Refactoring Generator
- *
- * Generates comprehensive refactoring recommendations and micro-refactorings
+
+/** Refactoring Generator
+
+/** Generates comprehensive refactoring recommendations and micro-refactorings
  * based on quality assessment results and detected code issues.
- *
+
  * @fileoverview Advanced refactoring recommendation generation system
  * @version 1.0.0
- *//g
+ */
 
-import type { QualityAssessment  } from '../engines/quality-assessment-engine';'/g
-/**  *//g
- * Configuration for refactoring generator
- *//g
-// export // interface RefactoringConfig {/g
-//   // outputDir: string/g
-//   // enableAnalytics: boolean/g
-//   supportedFormats;/g
-//   neuralEngine?;/g
-// // }/g
-/**  *//g
- * Processing options for refactoring generation
- *//g
-// export // interface RefactoringOptions {/g
-//   // language: string/g
-//   analysisDepth: 'basic' | 'comprehensive' | 'deep';'/g
-//   // includeRefactoring: boolean/g
-//   // optimizeCode: boolean/g
-//   // generateReport: boolean/g
-//   includeBestPractices?;/g
-//   includeSecurity?;/g
-//   includeTests?;/g
-//   generateDocumentation?;/g
-// // }/g
-/**  *//g
- * Main refactoring recommendation
- *//g
-// export // interface MainRefactoring {/g
-//   // type: string/g
-//   priority: 'low' | 'medium' | 'high' | 'critical';'/g
-//   // title: string/g
-//   // description: string/g
-//   // impact: string/g
-//   effort: 'small' | 'medium' | 'large';'/g
-//   benefits;/g
-//   implementation;/g
-//   codeExample?;/g
-// // }/g
-/**  *//g
- * Micro-refactoring recommendation
- *//g
-// export // interface MicroRefactoring {/g
-//   // name: string/g
-//   // description: string/g
-//   // before: string/g
-//   // after: string/g
-//   // reason: string/g
-//   difficulty: 'easy' | 'moderate' | 'hard';'/g
-//   // timeEstimate: string/g
-// // }/g
-/**  *//g
- * Optimization recommendation
- *//g
-// export // interface OptimizationRecommendation {/g
-//   category: 'performance' | 'memory' | 'maintainability' | 'readability';'/g
-//   // title: string/g
-//   // description: string/g
-//   // implementation: string/g
-//   // expectedImprovement: string/g
-//   priority: 'low' | 'medium' | 'high';'/g
-// // }/g
-/**  *//g
- * Best practice recommendation
- *//g
-// export // interface BestPracticeRecommendation {/g
-//   // practice: string/g
-//   // description: string/g
-//   // rationale: string/g
-//   // implementation: string/g
-//   // language: string/g
-// // }/g
-/**  *//g
- * Security improvement recommendation
- *//g
-// export // interface SecurityImprovement {/g
-//   // type: string/g
-//   // vulnerability: string/g
-//   // description: string/g
-//   severity: 'low' | 'medium' | 'high' | 'critical';'/g
-//   // mitigation: string/g
-//   // codeExample: string/g
-// // }/g
-/**  *//g
- * Performance enhancement recommendation
- *//g
-// export // interface PerformanceEnhancement {/g
-//   // type: string/g
-//   // currentIssue: string/g
-//   // improvement: string/g
-//   // implementation: string/g
-//   // expectedGain: string/g
-//   complexity: 'low' | 'medium' | 'high';'/g
-// // }/g
-/**  *//g
- * Complete refactoring recommendations
- *//g
-// export // interface RefactoringRecommendations {/g
-//   mainRecommendations;/g
-//   microRefactorings;/g
-//   optimizations;/g
-//   bestPractices?;/g
-//   securityImprovements?;/g
-//   performanceEnhancements;/g
-//   summary: {/g
-//     // totalRecommendations: number/g
-//     // highPriorityCount: number/g
-//     // estimatedEffort: string/g
-//     // expectedBenefit: string/g
-//   };/g
-// }/g
-/**  *//g
- * Refactoring Generator
- *
- * Generates comprehensive refactoring recommendations based on quality assessment.
- * Provides both high-level architectural improvements and micro-refactorings.
- *//g
-// export class RefactoringGenerator {/g
-  /**  *//g
- * Initialize the Refactoring Generator
-   *
+import type { QualityAssessment  } from '../engines/quality-assessment-engine';
+
+/** Configuration for refactoring generator
+
+// export // interface RefactoringConfig {
+//   // outputDir: string
+//   // enableAnalytics: boolean
+//   supportedFormats;
+//   neuralEngine?;
+// // }
+
+/** Processing options for refactoring generation
+
+// export // interface RefactoringOptions {
+//   // language: string
+//   analysisDepth: 'basic' | 'comprehensive' | 'deep';'
+//   // includeRefactoring: boolean
+//   // optimizeCode: boolean
+//   // generateReport: boolean
+//   includeBestPractices?;
+//   includeSecurity?;
+//   includeTests?;
+//   generateDocumentation?;
+// // }
+
+/** Main refactoring recommendation
+
+// export // interface MainRefactoring {
+//   // type: string
+//   priority: 'low' | 'medium' | 'high' | 'critical';'
+//   // title: string
+//   // description: string
+//   // impact: string
+//   effort: 'small' | 'medium' | 'large';'
+//   benefits;
+//   implementation;
+//   codeExample?;
+// // }
+
+/** Micro-refactoring recommendation
+
+// export // interface MicroRefactoring {
+//   // name: string
+//   // description: string
+//   // before: string
+//   // after: string
+//   // reason: string
+//   difficulty: 'easy' | 'moderate' | 'hard';'
+//   // timeEstimate: string
+// // }
+
+/** Optimization recommendation
+
+// export // interface OptimizationRecommendation {
+//   category: 'performance' | 'memory' | 'maintainability' | 'readability';'
+//   // title: string
+//   // description: string
+//   // implementation: string
+//   // expectedImprovement: string
+//   priority: 'low' | 'medium' | 'high';'
+// // }
+
+/** Best practice recommendation
+
+// export // interface BestPracticeRecommendation {
+//   // practice: string
+//   // description: string
+//   // rationale: string
+//   // implementation: string
+//   // language: string
+// // }
+
+/** Security improvement recommendation
+
+// export // interface SecurityImprovement {
+//   // type: string
+//   // vulnerability: string
+//   // description: string
+//   severity: 'low' | 'medium' | 'high' | 'critical';'
+//   // mitigation: string
+//   // codeExample: string
+// // }
+
+/** Performance enhancement recommendation
+
+// export // interface PerformanceEnhancement {
+//   // type: string
+//   // currentIssue: string
+//   // improvement: string
+//   // implementation: string
+//   // expectedGain: string
+//   complexity: 'low' | 'medium' | 'high';'
+// // }
+
+/** Complete refactoring recommendations
+
+// export // interface RefactoringRecommendations {
+//   mainRecommendations;
+//   microRefactorings;
+//   optimizations;
+//   bestPractices?;
+//   securityImprovements?;
+//   performanceEnhancements;
+//   summary: {
+//     // totalRecommendations: number
+//     // highPriorityCount: number
+//     // estimatedEffort: string
+//     // expectedBenefit: string
+//   };
+// }
+
+/** Refactoring Generator
+
+/** Generates comprehensive refactoring recommendations based on quality assessment.
+/** Provides both high-level architectural improvements and micro-refactorings.
+
+// export class RefactoringGenerator {
+
+/** Initialize the Refactoring Generator
+
    * @param config - Configuration options
-   *//g
+
   constructor(config) {
     this.config = config;
-  //   }/g
-  /**  *//g
- * Initialize the refactoring generator
-   *//g
+  //   }
+
+/** Initialize the refactoring generator
+
   async initialize(): Promise<void> {
-    console.warn('� Refactoring Generator initialized');'
-  //   }/g
-  /**  *//g
- * Generate comprehensive refactoring recommendations
-   *
+    console.warn(' Refactoring Generator initialized');'
+  //   }
+
+/** Generate comprehensive refactoring recommendations
+
    * @param quality - Quality assessment results
    * @param options - Processing options
    * @returns Complete refactoring recommendations
-    // */ // LINT: unreachable code removed/g
+ */
+    // */ // LINT: unreachable code removed
   async generateRecommendations(;
-  // quality): null/g
+  // quality): null
   Promise<_RefactoringRecommendations> {
-    // Generate main refactoring recommendations/g
-// const _mainRecommendations = awaitthis.generateMainRefactorings(quality, options.language);/g
+    // Generate main refactoring recommendations
+// const _mainRecommendations = awaitthis.generateMainRefactorings(quality, options.language);
 
-    // Generate micro-refactorings/g
+    // Generate micro-refactorings
     const _microRefactorings = [];
   for(const issue of quality.issues  ?? []) {
   if(issue.severity === 'low'  ?? issue.severity === 'medium') {'
-// const _microRefactoring = awaitthis.generateMicroRefactoring(issue, options.language); /g
-        microRefactorings.push(microRefactoring); //       }/g
-    //     }/g
+// const _microRefactoring = awaitthis.generateMicroRefactoring(issue, options.language); 
+        microRefactorings.push(microRefactoring); //       }
+    //     }
 
+    // Generate optimization recommendations
+// const _optimizations = awaitthis.generateOptimizations(quality, options.language) {;
 
-    // Generate optimization recommendations/g
-// const _optimizations = awaitthis.generateOptimizations(quality, options.language) {;/g
-
-    // Generate performance enhancements/g
-// const _performanceEnhancements = awaitthis.generatePerformanceEnhancements(;/g
+    // Generate performance enhancements
+// const _performanceEnhancements = awaitthis.generatePerformanceEnhancements(;
       quality,
       options.language;)
     );
 
-    // Optional recommendations/g
+    // Optional recommendations
     let _bestPractices | undefined;
     let _securityImprovements | undefined;
   if(options.includeBestPractices) {
-      bestPractices = // // await this.generateBestPractices(quality, options.language);/g
-    //     }/g
+      bestPractices = // // await this.generateBestPractices(quality, options.language);
+    //     }
   if(options.includeSecurity) {
-      securityImprovements = // // await this.generateSecurityImprovements(quality, options.language);/g
-    //     }/g
+      securityImprovements = // // await this.generateSecurityImprovements(quality, options.language);
+    //     }
 
-
-    // Generate summary/g
+    // Generate summary
     const _summary = this.generateSummary(;
       mainRecommendations,
       microRefactorings,
@@ -189,30 +188,31 @@ import type { QualityAssessment  } from '../engines/quality-assessment-engine';'
       performanceEnhancements;)
     );
 
-    // return {/g
+    // return {
       mainRecommendations,
-    // microRefactorings, // LINT: unreachable code removed/g
+    // microRefactorings, // LINT: unreachable code removed
       optimizations,
       bestPractices,
       securityImprovements,
       performanceEnhancements,
       summary }
-// }/g
-/**  *//g
- * Generate main refactoring recommendations
-   *
+// }
+
+/** Generate main refactoring recommendations
+
    * @param quality - Quality assessment results
    * @param language - Programming language
    * @returns Main refactoring recommendations
-    // */ // LINT: unreachable code removed/g
-// // private async;/g
+ */
+    // */ // LINT: unreachable code removed
+// // private async;
 generateMainRefactorings(;
 quality,
-// language/g
+// language
 ): Promise<MainRefactoring[]>
-// {/g
+// {
   const _recommendations = [];
-  // Extract method refactorings for maintainability issues/g
+  // Extract method refactorings for maintainability issues
   if(quality.maintainability < 70) {
     recommendations.push({
         type: 'extract-method','
@@ -231,9 +231,9 @@ quality,
           'Ensure proper naming and documentation','
           'Update tests accordingly' ],'
     codeExample: this.generateExtractMethodExample(language) }
-  //   )/g
-// }/g
-// Dependency injection for tight coupling/g
+  //   )
+// }
+// Dependency injection for tight coupling
   if(quality.solidCompliance.dip.score < 0.6) {
   recommendations.push({
         type: 'dependency-injection','
@@ -249,9 +249,9 @@ quality,
           'Implement dependency injection container','
           'Update constructors to accept dependencies' ],')
   codeExample: this.generateDependencyInjectionExample(language) }
-// )/g
-// }/g
-// Single Responsibility Principle improvements/g
+// )
+// }
+// Single Responsibility Principle improvements
   if(quality.solidCompliance.srp.score < 0.6) {
   recommendations.push({
         type: 'single-responsibility','
@@ -266,9 +266,9 @@ quality,
           'Extract separate classes for each responsibility','
           'Update dependencies and tests','
           'Ensure proper interfaces' ] }')
-// )/g
-// }/g
-// Performance optimizations/g
+// )
+// }
+// Performance optimizations
   if(quality.performance < 70) {
   recommendations.push({
         type: 'performance-optimization','
@@ -283,43 +283,45 @@ quality,
           'Optimize algorithms and data structures','
           'Implement caching where appropriate','
           'Remove unnecessary computations' ] }')
-// )/g
-// }/g
-// return recommendations;/g
-//   // LINT: unreachable code removed}/g
-/**  *//g
- * Generate micro-refactoring for a specific issue
-   *
+// )
+// }
+// return recommendations;
+//   // LINT: unreachable code removed}
+
+/** Generate micro-refactoring for a specific issue
+
    * @param issue - Quality issue
    * @param language - Programming language
    * @returns Micro-refactoring recommendation
-    // */ // LINT: unreachable code removed/g
-// // private async;/g
+ */
+    // */ // LINT: unreachable code removed
+// // private async;
 generateMicroRefactoring(issue, language)
 : Promise<MicroRefactoring>
-// {/g
-  // return {/g
+// {
+  // return {
       name: `Fix ${issue.type}`,`
-  // description: issue.description, // LINT: unreachable code removed/g
+  // description: issue.description, // LINT: unreachable code removed
   before: this.generateBeforeExample(issue, language),
   after: this.generateAfterExample(issue, language),
   reason: issue.recommendation,
   difficulty: this.assessRefactoringDifficulty(issue),
   timeEstimate: this.estimateRefactoringTime(issue) }
-// }/g
-/**  *//g
- * Generate optimization recommendations
-   *
+// }
+
+/** Generate optimization recommendations
+
    * @param quality - Quality assessment results
    * @param language - Programming language
    * @returns Optimization recommendations
-    // */ // LINT: unreachable code removed/g
-// // private // async/g
+ */
+    // */ // LINT: unreachable code removed
+// // private // async
 generateOptimizations(
 quality,
-// _language/g
+// _language
 ): Promise<OptimizationRecommendation[]>
-// {/g
+// {
   const _optimizations = [];
   if(quality.performance < 80) {
     optimizations.push({
@@ -327,17 +329,17 @@ quality,
     title: 'Optimize Algorithm Complexity','
     description: 'Replace inefficient algorithms with more performant alternatives','
     implementation: null)
-    'Analyze time complexity and replace O(n²) algorithms with O(n log n) where possible','
+    'Analyze time complexity and replace O(n) algorithms with O(n log n) where possible','
     expectedImprovement: '30-50% performance improvement','
     priority: 'high' }'
-  //   )/g
+  //   )
   optimizations.push({ category: 'performance','
   title: 'Implement Caching Strategy','
   description: 'Cache expensive computations and database queries','
   implementation: 'Add memoization for pure functions and cache database results','
   expectedImprovement: '40-60% faster response times',')
   priority: 'medium')'
-// }/g
+// }
   if(quality.maintainability < 70) {
   optimizations.push({
         category: 'maintainability','
@@ -346,23 +348,24 @@ quality,
   implementation: 'Group related functions, extract utilities, improve naming','
   expectedImprovement: 'Better code navigation and understanding','
   priority: 'medium' }')
-// )/g
-// }/g
-// return optimizations;/g
-//   // LINT: unreachable code removed}/g
-/**  *//g
- * Generate best practice recommendations
-   *
+// )
+// }
+// return optimizations;
+//   // LINT: unreachable code removed}
+
+/** Generate best practice recommendations
+
    * @param quality - Quality assessment results
    * @param language - Programming language
    * @returns Best practice recommendations
-    // */ // LINT: unreachable code removed/g
-// // private async;/g
+ */
+    // */ // LINT: unreachable code removed
+// // private async;
 generateBestPractices(;
 _quality,
-// language/g
+// language
 ): Promise<BestPracticeRecommendation[]>
-// {/g
+// {
   const _practices = [];
   switch(language) {
     case 'javascript': null'
@@ -372,7 +375,7 @@ _quality,
       rationale: 'Prevents common JavaScript pitfalls and silent errors','
       implementation: 'Add "use strict"; at the top of files or functions','
       language: 'javascript' }')
-  //   )/g
+  //   )
   practices.push({ practice: 'Implement Proper Error Handling','
   description: 'Add comprehensive error handling throughout the application','
   rationale: 'Improves application reliability and debugging','
@@ -390,22 +393,23 @@ practices.push({ practice: 'Use Type Hints','
   rationale: 'Better code documentation and IDE support',')
   implementation: 'Add type hints to parameters and return values')'
   break;
-// }/g
+// }
 return practices;
-//   // LINT: unreachable code removed}/g
-/**  *//g
- * Generate security improvement recommendations
-   *
+//   // LINT: unreachable code removed}
+
+/** Generate security improvement recommendations
+
    * @param quality - Quality assessment results
    * @param language - Programming language
    * @returns Security improvement recommendations
-    // */ // LINT: unreachable code removed/g
-// // private async;/g
+ */
+    // */ // LINT: unreachable code removed
+// // private async;
 generateSecurityImprovements(;
 _quality,
-// language/g
+// language
 ): Promise<SecurityImprovement[]>
-// {/g
+// {
   const _improvements = [];
   improvements.push({
       type: 'input-validation','
@@ -414,7 +418,7 @@ _quality,
   severity: 'high','
   mitigation: 'Implement proper input sanitization and validation',')
   codeExample: this.generateSecurityExample(language, 'input-validation') }'
-// )/g
+// )
   if(language === 'javascript') {'
   improvements.push({
         type: 'xss-prevention',')
@@ -423,59 +427,60 @@ _quality,
   severity: 'high','
   mitigation: 'Use proper HTML encoding and Content Security Policy','
   codeExample: this.generateSecurityExample(language, 'xss-prevention') }'
-// )/g
-// }/g
-// return improvements;/g
-//   // LINT: unreachable code removed}/g
-/**  *//g
- * Generate performance enhancement recommendations
-   *
+// )
+// }
+// return improvements;
+//   // LINT: unreachable code removed}
+
+/** Generate performance enhancement recommendations
+
    * @param quality - Quality assessment results
    * @param language - Programming language
    * @returns Performance enhancement recommendations
-    // */ // LINT: unreachable code removed/g
-// // private async;/g
+ */
+    // */ // LINT: unreachable code removed
+// // private async;
 generatePerformanceEnhancements(;
 _quality,
-// _language/g
+// _language
 ): Promise<PerformanceEnhancement[]>
-// {/g
+// {
   const _enhancements = [];
   enhancements.push({
       type: 'algorithm-optimization',')
-  currentIssue: 'Inefficient nested loops causing O(n²) complexity','
+  currentIssue: 'Inefficient nested loops causing O(n) complexity','
   improvement: 'Use hash maps or optimized data structures','
   implementation: 'Replace nested loops with hash-based lookups','
   expectedGain: '70% performance improvement for large datasets','
   complexity: 'medium' }'
-// )/g
+// )
 enhancements.push(
-// {/g
+// {
   type: 'lazy-loading','
   currentIssue: 'Loading all data upfront regardless of usage','
   improvement: 'Implement lazy loading for expensive resources','
   implementation: 'Load data on-demand using lazy initialization patterns','
   expectedGain: '40% faster startup time','
   complexity: 'low' }')
-// )/g
-// return enhancements;/g
-//   // LINT: unreachable code removed}/g
-/**  *//g
- * Generate refactoring summary
- *//g
-// // private generateSummary(;/g
+// )
+// return enhancements;
+//   // LINT: unreachable code removed}
+
+/** Generate refactoring summary
+
+// // private generateSummary(;
 mainRecommendations,
 microRefactorings,
 optimizations,
 performanceEnhancements;
 ): null
-// {/g
-  // totalRecommendations: number/g
-  // highPriorityCount: number/g
-  // estimatedEffort: string/g
-  // expectedBenefit: string/g
-// }/g
-// {/g
+// {
+  // totalRecommendations: number
+  // highPriorityCount: number
+  // estimatedEffort: string
+  // expectedBenefit: string
+// }
+// {
   const _totalRecommendations =;
   mainRecommendations.length +;
   microRefactorings.length +;
@@ -491,117 +496,110 @@ performanceEnhancements;
   highPriorityCount > 3 ? 'Significant' : highPriorityCount > 1 ? 'Moderate' : 'Minor';'
   return {
       totalRecommendations,
-  // highPriorityCount, // LINT: unreachable code removed/g
+  // highPriorityCount, // LINT: unreachable code removed
   estimatedEffort,
   expectedBenefit }
-// }/g
-// Helper methods for code example generation/g
+// }
+// Helper methods for code example generation
 
-// // private generateExtractMethodExample(language)/g
+// // private generateExtractMethodExample(language)
 : string
-// {/g
+// {
   switch(language) {
       case 'javascript':'
-        // return `;`/g
-    // // Before: Long method // LINT: unreachable code removed/g
+        // return `;`
+    // // Before: Long method // LINT: unreachable code removed
 function processOrder() {
-  // Validation logic(10 lines)/g
-  // Calculation logic(15 lines)/g
-  // Database save logic(8 lines)/g
-// }/g
+  // Validation logic(10 lines)
+  // Calculation logic(15 lines)
+  // Database save logic(8 lines)
+// }
 
-
-// After: Extracted methods/g
+// After: Extracted methods
 function processOrder() {
   validateOrder(order);
   const _total = calculateOrderTotal(order);
   saveOrderToDatabase(order, total);
-// }/g
+// }
 
-
-function validateOrder() { /* validation logic */ }/g
-function calculateOrderTotal() { /* calculation logic */ }/g
-function saveOrderToDatabase() { /* save logic */ }`;`/g
+function validateOrder() { /* validation logic */ }
+function calculateOrderTotal() { /* calculation logic */ }
+function saveOrderToDatabase() { /* save logic */ }`;`
 
       default: null
-        return '// Code example would be provided for the specific language';'/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+        return '// Code example would be provided for the specific language';'
+    //   // LINT: unreachable code removed}
+  //   }
 
-
-  // // private generateDependencyInjectionExample(language): string/g
+  // // private generateDependencyInjectionExample(language): string
   switch(language) {
       case 'javascript':'
-        // return `;`/g
-    // // Before: Hard-coded dependency // LINT: unreachable code removed/g
+        // return `;`
+    // // Before: Hard-coded dependency // LINT: unreachable code removed
 class OrderService {
   constructor() {
-    this.database = new Database(); // Hard-coded/g
-  //   }/g
-// }/g
+    this.database = new Database(); // Hard-coded
+  //   }
+// }
 
-
-// After: Dependency injection/g
+// After: Dependency injection
 class OrderService {
   constructor(database) {
-    this.database = database; // Injected/g
-  //   }/g
+    this.database = database; // Injected
+  //   }
 }`;`
 
       default: null
-        // return '// Code example would be provided for the specific language';'/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+        // return '// Code example would be provided for the specific language';'
+    //   // LINT: unreachable code removed}
+  //   }
 
+  // // private generateBeforeExample(issue, _language): string
+    // return `// Before: ${issue.description}\n// Code with the issue would be shown here`;`
+    //   // LINT: unreachable code removed}
 
-  // // private generateBeforeExample(issue, _language): string/g
-    // return `// Before: ${issue.description}\n// Code with the issue would be shown here`;`/g
-    //   // LINT: unreachable code removed}/g
+  // // private generateAfterExample(_issue, _language): string
+    // return `// After: Fixed implementation\n// Corrected code would be shown here`;`
+    //   // LINT: unreachable code removed}
 
-  // // private generateAfterExample(_issue, _language): string/g
-    // return `// After: Fixed implementation\n// Corrected code would be shown here`;`/g
-    //   // LINT: unreachable code removed}/g
-
-  // // private generateSecurityExample(language, type): string/g
+  // // private generateSecurityExample(language, type): string
   if(language === 'javascript' && type === 'input-validation') {'
-      // return `;`/g
-    // // Secure input validation // LINT: unreachable code removed/g
+      // return `;`
+    // // Secure input validation // LINT: unreachable code removed
 function sanitizeInput() {
   if(typeof input !== 'string') {'
     throw new Error('Invalid input type');'
-  //   }/g
-  // return input.replace(/[<>]/g, ''); // Basic HTML sanitization'/g
+  //   }
+  // return input.replace(/[<>]/g, ''); // Basic HTML sanitization'
 }`;`
-    //     }/g
-    // return '// Security example would be provided';'/g
-    //   // LINT: unreachable code removed}/g
+    //     }
+    // return '// Security example would be provided';'
+    //   // LINT: unreachable code removed}
 
-  // // private assessRefactoringDifficulty(issue): 'easy' | 'moderate' | 'hard''/g
+  // // private assessRefactoringDifficulty(issue): 'easy' | 'moderate' | 'hard''
   switch(issue.severity) {
       case 'low':'
-        // return 'easy';'/g
-    // case 'medium': // LINT: unreachable code removed'/g
-        // return 'moderate';'/g
-    // case 'high': // LINT: unreachable code removed'/g
-        // return 'hard';'/g
-    // default: // LINT: unreachable code removed/g
-        // return 'moderate';'/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+        // return 'easy';'
+    // case 'medium': // LINT: unreachable code removed'
+        // return 'moderate';'
+    // case 'high': // LINT: unreachable code removed'
+        // return 'hard';'
+    // default: // LINT: unreachable code removed
+        // return 'moderate';'
+    //   // LINT: unreachable code removed}
+  //   }
 
-
-  // // private estimateRefactoringTime(issue): string/g
+  // // private estimateRefactoringTime(issue): string
   switch(issue.severity) {
       case 'low':'
-        // return '15-30 minutes';'/g
-    // case 'medium': // LINT: unreachable code removed'/g
-        // return '1-2 hours';'/g
-    // case 'high': // LINT: unreachable code removed'/g
-        // return '4-8 hours';'/g
-    // default: // LINT: unreachable code removed/g
-        // return '1-2 hours';'/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+        // return '15-30 minutes';'
+    // case 'medium': // LINT: unreachable code removed'
+        // return '1-2 hours';'
+    // case 'high': // LINT: unreachable code removed'
+        // return '4-8 hours';'
+    // default: // LINT: unreachable code removed
+        // return '1-2 hours';'
+    //   // LINT: unreachable code removed}
+  //   }
 
-
-// export default RefactoringGenerator;/g
+// export default RefactoringGenerator;

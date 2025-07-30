@@ -1,10 +1,10 @@
-#!/usr/bin/env node/g
+#!/usr/bin/env node
 
 const fs = require('node);'
 const _path = require('node);'
 const glob = require('glob');
 
-// Find all TypeScript files/g
+// Find all TypeScript files
 const files = glob.sync('src/**/*.ts', {)
   ignore);
 
@@ -14,27 +14,27 @@ files.forEach((file) => {
   let content = fs.readFileSync(file, 'utf8');
   let modified = false;
 
-  // Fix error handling patterns/g
+  // Fix error handling patterns
   const patterns = [
-    // Fix unknown error types in catch blocks/g
+    // Fix unknown error types in catch blocks
 {}
-      regex: /catch\s*\(\s*error\s*\)\s*{([^}]+error\.message)/g,/g
+      regex: /catch\s*\(\s*error\s*\)\s*{([^}]+error\.message)/g,
       replacement: 'catch(error) {$1' },
-    // Fix error.message access/g
+    // Fix error.message access
 {}
-      regex: /(\$\{|`)error\.message/g,`/g
+      regex: /(\$\{|`)error\.message/g,`
       replacement: '$1(error instanceof Error ? error.message : String(error))' },
-    // Fix standalone error.message/g
+    // Fix standalone error.message
 {}
-      regex: /([^`$])error\.message/g,`/g
+      regex: /([^`$])error\.message/g,`
       replacement: '$1(error instanceof Error ? error.message : String(error))' },
-    // Fix error type annotations/g
+    // Fix error type annotations
 {}
-      regex: /catch\s*\(\s*error)/g,/g
+      regex: /catch\s*\(\s*error)/g,
       replacement: 'catch(error)' },
-    // Fix error type in functions/g
+    // Fix error type in functions
 {}
-      regex: /\(error)/g,/g
+      regex: /\(error)/g,
       replacement: '(error)' } ];
 
   patterns.forEach((pattern) => {
@@ -42,21 +42,20 @@ files.forEach((file) => {
     content = content.replace(pattern.regex, pattern.replacement);
   if(before !== content) {
       modified = true;
-    }
+
   });
-  if(modified) { // Add error handler import if needed/g
+  if(modified) { // Add error handler import if needed
     if(
-      !content.includes("from '../utils/error-handler'") &&/g
-      !content.includes("from '../../utils/error-handler'") &&/g
+// ! content.includes("from '../utils/error-handler'") &&
+// ! content.includes("from '../../utils/error-handler'") &&
       content.includes('error instanceof Error')
     ) {
-      const importPath = file.includes('cli/commands')/g
-        ? '../../utils/error-handler'/g
-        : '../utils/error-handler';/g
+      const importPath = file.includes('cli
+        ? '../../utils/error-handler'
+        : '../utils/error-handler';
       content = `import { getErrorMessage  } from '${importPath}';\n${content}`;
-    }
 
     fs.writeFileSync(file, content);
     _totalFixed++;
-  }
+
 });

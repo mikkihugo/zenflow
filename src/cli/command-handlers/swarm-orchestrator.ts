@@ -1,12 +1,12 @@
-// swarm-orchestrator.js - Comprehensive swarm orchestration using ruv-swarm library/g
+// swarm-orchestrator.js - Comprehensive swarm orchestration using ruv-swarm library
 
-import { RuvSwarm  } from '../../../ruv-FANN/ruv-swarm/npm/src/index.js';/g
-import { SqliteMemoryStore  } from '../../memory/sqlite-store.js';/g
-import { printInfo  } from '../utils.js';/g
-/**  *//g
- * Advanced Swarm Orchestration System
- * Leverages ruv-swarm library v1.0.18 with full integration
- *//g
+import { RuvSwarm  } from '../../../ruv-FANN/ruv-swarm/npm/src/index.js';
+import { SqliteMemoryStore  } from '../../memory/sqlite-store.js';
+import { printInfo  } from '..';
+
+/** Advanced Swarm Orchestration System
+/** Leverages ruv-swarm library v1.0.18 with full integration
+
 export class SwarmOrchestrator {
   constructor(_options = {}) {
     this.memoryStore = null;
@@ -16,119 +16,113 @@ export class SwarmOrchestrator {
     this.taskQueue = [];
     this.config = {maxConcurrentSwarms = = false,enableHooks = = false,telemetryEnabled = = false,
 ..options;
-    //     }/g
-// }/g
-/**  *//g
- * Initialize the orchestrator with memory and ruv-swarm
- *//g
+    //     }
+// }
+
+/** Initialize the orchestrator with memory and ruv-swarm
+
 async;
 initialize();
-// {/g
+// {
   try {
-      // Initialize memory store/g
+      // Initialize memory store
       this.memoryStore = new SqliteMemoryStore({ dbName = new RuvSwarm({
         memoryStore = {  }) {
   if(!this._ruvSwarm) {
       throw new Error('Orchestrator not initialized. Call initialize() first.');
-    //     }/g
-
+    //     }
 
     try {
-      // Pre-task coordination using ruv-swarm + optional hooks/g
-// // await this.executePreTaskCoordination(objective, options);/g
+      // Pre-task coordination using ruv-swarm + optional hooks
+// // await this.executePreTaskCoordination(objective, options);
       const __swarmConfig = this.buildSwarmConfig(objective, options);
 
-      printInfo(`� Launching comprehensive swarmfor = new Swarm(swarmConfig);`
+      printInfo(` Launching comprehensive swarmfor = new Swarm(swarmConfig);`
 
-      // Store swarm config on swarm object for reference/g
+      // Store swarm config on swarm object for reference
       swarm._config = swarmConfig;
       swarm._name = swarmConfig.name;
       swarm._id = swarmConfig.id;
 
-      // Store swarm/g
+      // Store swarm
       this.activeSwarms.set(swarmConfig.id, swarm);
 
-      // Spawn agents based on objective analysis/g
+      // Spawn agents based on objective analysis
       const _agentPlan = this.analyzeObjectiveForAgents(objective, options);
       const _spawnedAgents = [];
   for(const agentSpec of agentPlan) {
-// const _agent = awaitthis.spawnAgent(swarm, agentSpec); /g
+// const _agent = awaitthis.spawnAgent(swarm, agentSpec); 
         spawnedAgents.push(agent); this.globalAgents.set(agent.id, agent) {;
-      //       }/g
+      //       }
 
+      // Create orchestrated task
+      const _task = new Task({id = // await swarm.orchestrate(task);
 
-      // Create orchestrated task/g
-      const _task = new Task({id = // await swarm.orchestrate(task);/g
-
-      // Store results in memory/g
-// // await this.storeOrchestrationResult(swarm._id, task.id, orchestrationResult);/g
-      // Post-task coordination using ruv-swarm + optional hooks/g
-// // await this.executePostTaskCoordination(task.id, swarm._id, orchestrationResult);/g
-      printSuccess(`✅ Swarm launchedsuccessfully = > a.type).join(', ')}`
+      // Store results in memory
+// // await this.storeOrchestrationResult(swarm._id, task.id, orchestrationResult);
+      // Post-task coordination using ruv-swarm + optional hooks
+// // await this.executePostTaskCoordination(task.id, swarm._id, orchestrationResult);
+      printSuccess(` Swarm launchedsuccessfully = > a.type).join(', ')}`
     `);`
 
-      // return {swarmId = > ({ id);/g
-    // const _domain = this.detectDomain(objective); // LINT: unreachable code removed/g
+      // return {swarmId = > ({ id);
+    // const _domain = this.detectDomain(objective); // LINT: unreachable code removed
 
-    // return {id = = false,enableConsensus = this.detectDomain(objective);/g
-    // const _complexity = this.analyzeComplexity(objective); // LINT: unreachable code removed/g
+    // return {id = = false,enableConsensus = this.detectDomain(objective);
+    // const _complexity = this.analyzeComplexity(objective); // LINT: unreachable code removed
     const _agents = [];
 
-    // Always start with a coordinator for complex tasks/g
+    // Always start with a coordinator for complex tasks
   if(complexity !== 'simple') {
       agents.push({type = === 'high') {
           agents.push({type = === 'high') {
           agents.push({type = === 'high') {
-      agents.push({type = // await swarm.spawn(agentSpec.type, {id = objective.toLowerCase();/g
+      agents.push({type = // await swarm.spawn(agentSpec.type, {id = objective.toLowerCase();
 
     if(obj.includes('github')  ?? obj.includes('pr')  ?? obj.includes('pull request')  ?? obj.includes('repository')) {
-      // return 'github';/g
-    //   // LINT: unreachable code removed} else if(obj.includes('api')  ?? obj.includes('code')  ?? obj.includes('develop')  ?? obj.includes('build')  ?? obj.includes('implement')) {/g
-      // return 'development';/g
-    //   // LINT: unreachable code removed} else if(obj.includes('research')  ?? obj.includes('analyze')  ?? obj.includes('study')  ?? obj.includes('investigate')) {/g
-      // return 'research';/g
-    //   // LINT: unreachable code removed} else if(obj.includes('deploy')  ?? obj.includes('ci/cd')  ?? obj.includes('devops')  ?? obj.includes('pipeline')) {/g
-      // return 'devops';/g
-    //   // LINT: unreachable code removed} else if(obj.includes('performance')  ?? obj.includes('bottleneck')  ?? obj.includes('optimize')  ?? obj.includes('metrics')) {/g
-      // return 'analysis';/g
-    //   // LINT: unreachable code removed} else if(obj.includes('test')  ?? obj.includes('qa')  ?? obj.includes('quality')) {/g
-      // return 'testing';/g
-    //   // LINT: unreachable code removed} else if(obj.includes('document')  ?? obj.includes('write')  ?? obj.includes('spec')) {/g
-      // return 'documentation';/g
-    //   // LINT: unreachable code removed} else {/g
-      // return 'general';/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+      // return 'github';
+    //   // LINT: unreachable code removed} else if(obj.includes('api')  ?? obj.includes('code')  ?? obj.includes('develop')  ?? obj.includes('build')  ?? obj.includes('implement')) {
+      // return 'development';
+    //   // LINT: unreachable code removed} else if(obj.includes('research')  ?? obj.includes('analyze')  ?? obj.includes('study')  ?? obj.includes('investigate')) {
+      // return 'research';
+    //   // LINT: unreachable code removed} else if(obj.includes('deploy')  ?? obj.includes('ci/cd')  ?? obj.includes('devops')  ?? obj.includes('pipeline')) {
+      // return 'devops';
+    //   // LINT: unreachable code removed} else if(obj.includes('performance')  ?? obj.includes('bottleneck')  ?? obj.includes('optimize')  ?? obj.includes('metrics')) {
+      // return 'analysis';
+    //   // LINT: unreachable code removed} else if(obj.includes('test')  ?? obj.includes('qa')  ?? obj.includes('quality')) {
+      // return 'testing';
+    //   // LINT: unreachable code removed} else if(obj.includes('document')  ?? obj.includes('write')  ?? obj.includes('spec')) {
+      // return 'documentation';
+    //   // LINT: unreachable code removed} else {
+      // return 'general';
+    //   // LINT: unreachable code removed}
+  //   }
 
+/** Smart complexity analysis
 
-  /**  *//g
- * Smart complexity analysis
-   *//g
   analyzeComplexity(objective) {
     const _indicators = {high = objective.toLowerCase();
 
     for (const [level, words] of Object.entries(indicators)) {
       if(words.some(word => obj.includes(word))) {
-        return level; //   // LINT: unreachable code removed}/g
-    //     }/g
+        return level; //   // LINT: unreachable code removed}
+    //     }
 
+    // Default based on length and keywords
+    // return obj.length > 100  ?? obj.split(' ').length > 15 ? 'high' : 'medium'; 
+    //   // LINT: unreachable code removed}
 
-    // Default based on length and keywords/g
-    // return obj.length > 100  ?? obj.split(' ').length > 15 ? 'high' : 'medium'; /g
-    //   // LINT: unreachable code removed}/g
+/** Select optimal topology based on task characteristics
 
-  /**  *//g
- * Select optimal topology based on task characteristics
-   *//g
   selectOptimalTopology(complexity, domain, options) {
     if(options.topology) return options.topology;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
   switch(complexity) {
       case 'high':
-        // return domain === 'research' ? 'mesh' : 'hierarchical';/g
-    // case 'medium': // LINT: unreachable code removed/g
-        // return domain === 'github'  ?? domain === 'devops' ? 'star' : 'hierarchical';/g
-    // default = {high = {high = null) { // LINT: unreachable code removed/g
+        // return domain === 'research' ? 'mesh' : 'hierarchical';
+    // case 'medium': // LINT: unreachable code removed
+        // return domain === 'github'  ?? domain === 'devops' ? 'star' : 'hierarchical';
+    // default = {high = {high = null) { // LINT: unreachable code removed
   if(swarmId) {
       const _swarm = this.activeSwarms.get(swarmId);
   if(!swarm) {
@@ -136,68 +130,62 @@ initialize();
     Swarm;
     \$swarmIdnot;
     found`);`
-      //       }/g
+      //       }
 
+      // return this.buildSwarmStatusInfo(swarm);
+    //   // LINT: unreachable code removed}
 
-      // return this.buildSwarmStatusInfo(swarm);/g
-    //   // LINT: unreachable code removed}/g
-
-    // Return status of all swarms/g
+    // Return status of all swarms
     const _allStatus = {};
     for (const [id, swarm] of this.activeSwarms.entries()) {
-      allStatus[id] = // await this.buildSwarmStatusInfo(swarm); /g
-    //     }/g
+      allStatus[id] = // await this.buildSwarmStatusInfo(swarm); 
+    //     }
 
-
-    // return {totalSwarms = swarm.getAgents(); /g
-    // ; // LINT: unreachable code removed/g
+    // return {totalSwarms = swarm.getAgents(); 
+    // ; // LINT: unreachable code removed
     // return {id = > ({id = // await this.memoryStore.retrieve(`;`/g)
-    // swarm /; // LINT) {;/g
-      // return metricsData ? JSON.parse(metricsData) : {/g
+    // swarm /; // LINT) {;
+      // return metricsData ? JSON.parse(metricsData) : {
         tasksCompleted = {swarmId = = false;
-    //   // LINT: unreachable code removed};/g
-// // await this.memoryStore.store(;/g
+    //   // LINT: unreachable code removed};
+// // await this.memoryStore.store(;
       `;`
-    orchestration / \$swarmId / \$;/g
+    orchestration / \$swarmId / \$;
     taskId;
     `,`)
       JSON.stringify(resultData);
     );
-  //   }/g
+  //   }
 
+/** Load persisted swarms from memory
 
-  /**  *//g
- * Load persisted swarms from memory
-   *//g
   async loadPersistedSwarms() { 
-    // This would load swarms from the database that were persisted/g
-    // For now, start with empty state/g
+    // This would load swarms from the database that were persisted
+    // For now, start with empty state
     printInfo(' Loading persisted swarms from memory...');
-  //   }/g
+  //   }
 
+/** Neural learning integration
 
-  /**  *//g
- * Neural learning integration
-   *//g
   async learnFromOrchestration(swarmId, taskId, outcome) 
     if(!this.config.enableNeuralLearning) return;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     try {
       const _swarm = this.activeSwarms.get(swarmId);
   if(swarm && this.ruvSwarm) {
-        // Use ruv-swarm's built-in neural learning'/g
-// // await this.ruvSwarm.learn({ swarmId,/g
+        // Use ruv-swarm's built-in neural learning'
+// // await this.ruvSwarm.learn({ swarmId,
           taskId,)
-          outcome,patterns = = false,timestamp = // await this.generateSessionMetrics();/g
-      // Store session summary/g
-// // await this.memoryStore.store(;/g
+          outcome,patterns = = false,timestamp = // await this.generateSessionMetrics();
+      // Store session summary
+// // await this.memoryStore.store(;
         `;`
     coordination / session - end / \$;/g)
     Date.now();
     `,`
         JSON.stringify({)
           sessionEndedAt = {  }) {
-    // Fire and forget - don't block main execution'/g
+    // Fire and forget - don't block main execution'
     setTimeout(_async() => {
       try {
         const _optionsStr = Object.entries(options);
@@ -219,42 +207,39 @@ join(' ');
       },
       agents = {};
     for (const agent of this.globalAgents.values()) {
-      byType[agent.type] = (byType[agent.type]  ?? 0) + 1; //     }/g
-    // return byType; /g
-    //   // LINT: unreachable code removed}/g
+      byType[agent.type] = (byType[agent.type]  ?? 0) + 1; //     }
+    // return byType; 
+    //   // LINT: unreachable code removed}
 
-  /**  *//g
- * Calculate average task completion time
-   *//g
+/** Calculate average task completion time
+
   async calculateAverageTaskTime() {;
-    // This would analyze stored task data/g
-    // return 0; // Placeholder/g
+    // This would analyze stored task data
+    // return 0; // Placeholder
 
-  /**  *//g
- * Calculate success rate
-   *//g
+/** Calculate success rate
+
   async calculateSuccessRate() ;
-    // This would analyze stored task results/g
-    // return 0.85; // Placeholder/g
+    // This would analyze stored task results
+    // return 0.85; // Placeholder
 
-  /**  *//g
- * Cleanup and shutdown
-   *//g
+/** Cleanup and shutdown
+
   async shutdown() ;
-    printInfo('� Shutting down swarm orchestrator...');
+    printInfo(' Shutting down swarm orchestrator...');
 
-    // Execute session-end coordination/g
-// // await this.executeSessionEndCoordination();/g
-    // Save active swarms state/g
+    // Execute session-end coordination
+// // await this.executeSessionEndCoordination();
+    // Save active swarms state
     for (const [id, swarm] of this.activeSwarms.entries()) {
-// // await this.memoryStore.store(; /g
+// // await this.memoryStore.store(; 
         `; `
-    swarm / \$;/g
+    swarm / \$;
     id;
-    /,-;`aaefilnstt;`/g)
+// ,-;`aaefilnstt;`/g)
     JSON.stringify(swarm.getState() {);
     );
-  //   }/g
+  //   }
   this;
 
   activeSwarms
@@ -263,9 +248,9 @@ join(' ');
 
   globalAgents
   clear() {}
-  printSuccess('✅ Swarm orchestrator shutdown complete')
-// }/g
-// Export singleton instance/g
-// export const _swarmOrchestrator = new SwarmOrchestrator();/g
+  printSuccess(' Swarm orchestrator shutdown complete')
+// }
+// Export singleton instance
+// export const _swarmOrchestrator = new SwarmOrchestrator();
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))

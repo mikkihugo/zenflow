@@ -1,77 +1,74 @@
-/\*\*/g
- * Duplicate Code Detector;
- * Uses jscpd to detect duplicate code patterns across the codebase;
- *//g
+
+/** Duplicate Code Detector;
+/** Uses jscpd to detect duplicate code patterns across the codebase;
 
 import { exec  } from 'node:child_process';
 import { createHash  } from 'node:crypto';
 import { promisify  } from 'node:util';
 
-// Import glob using dynamic import to avoid ESM issues/g
+// Import glob using dynamic import to avoid ESM issues
 let _glob;
 try {
-// const _globModule = awaitimport('glob');/g
+// const _globModule = awaitimport('glob');
   _glob = globModule.glob  ?? globModule.default;
-} catch(/* _e */) {/g
+} catch(/* _e */) {
   console.warn('Glob not available, using fallback file discovery');
   _glob = null;
-// }/g
+// }
 const _execAsync = promisify(exec);
-// Check if jscpd is available/g
+// Check if jscpd is available
 const __jscpdAvailable = false;
 try {
-// // await execAsync('which jscpd', {timeout = true;/g
-} catch(/* _e */) {/g
+// // await execAsync('which jscpd', {timeout = true;
+} catch(/* _e */) {
   console.warn('jscpd not available, using fallback duplicate detection');
   _jscpdAvailable = false;
-// }/g
-// export class DuplicateCodeDetector {/g
+// }
+// export class DuplicateCodeDetector {
   constructor(config = {}) {
     this.config = {minTokens = '.') {
-    console.warn(`� Detecting duplicate codein = // await this.runJSCPD(targetPath);`/g
+    console.warn(` Detecting duplicate codein = // await this.runJSCPD(targetPath);`
 
-      // Process and enhance results/g
-// const _duplicates = awaitthis.processDuplicates(jscpdResults);/g
+      // Process and enhance results
+// const _duplicates = awaitthis.processDuplicates(jscpdResults);
 
-      // Generate summary metrics/g
+      // Generate summary metrics
       const __metrics = this.calculateDuplicateMetrics(duplicates);
 
-      console.warn(`✅ Duplicate detectioncomplete = // await this.createJSCPDConfig();`/g
+      console.warn(` Duplicate detectioncomplete = // await this.createJSCPDConfig();`
 
     try {
       const _command = `npx jscpd ${targetPath} --config ${configPath}`;
-      const { stdout, stderr } = // await execAsync(command, {maxBuffer = path.join(this.config.outputDir, 'jscpd-report.json');/g
+      const { stdout, stderr } = // await execAsync(command, {maxBuffer = path.join(this.config.outputDir, 'jscpd-report.json');
       try {
-// const _reportContent = awaitreadFile(outputFile, 'utf8');/g
-        // return JSON.parse(reportContent);/g
-    //   // LINT: unreachable code removed} catch(error) {/g
-        // Fallback = {minTokens = path.join(this.config.outputDir, '.jscpd.json');/g
-// // await writeFile(configPath, JSON.stringify(config, null, 2));/g
-    // return configPath;/g
-    //   // LINT: unreachable code removed}/g
+// const _reportContent = awaitreadFile(outputFile, 'utf8');
+        // return JSON.parse(reportContent);
+    //   // LINT: unreachable code removed} catch(error) {
+        // Fallback = {minTokens = path.join(this.config.outputDir, '.jscpd.json');
+// // await writeFile(configPath, JSON.stringify(config, null, 2));
+    // return configPath;
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Parse jscpd stdout output;
-   */;/g
+/** Parse jscpd stdout output;
+
   parseJSCPDOutput(output) {
-    // Simple parser for jscpd output - this is a fallback/g
+    // Simple parser for jscpd output - this is a fallback
     const _lines = output.split('\n');
     const _duplicates = [];
   for(const line of lines) {
       if(line.includes('Found') && line.includes('clones')) {
-        // Parse clone information/g
-        const _match = line.match(/Found(\d+) clones/); /g
+        // Parse clone information
+        const _match = line.match(/Found(\d+) clones/); 
   if(match) {
-          console.warn(`� Found ${match1} duplicates in output`); //         }/g
-      //       }/g
-    //     }/g
+          console.warn(` Found ${match1} duplicates in output`); //         }
+      //       }
+    //     }
 
-
-    // return { duplicates,statistics = glob ? ;/g
-    // // await glob(this.config.filePatterns, {cwd = []; // LINT) {;/g
+    // return { duplicates,statistics = glob ? ;
+    // // await glob(this.config.filePatterns, {cwd = []; // LINT) {;
   for(const file of files) {
       try {
-// const _content = awaitreadFile(file, 'utf8'); /g
+// const _content = awaitreadFile(file, 'utf8'); 
         const _blocks = this.extractCodeBlocks(content, file); for(const block of blocks) {
           const _hash = this.generateBlockHash(block.code);
 
@@ -83,43 +80,39 @@ try {
   for(let i = 0; i <= lines.length - minLines; i++) {
       const _block = lines.slice(i, i + minLines).join('\n');
 
-      // Skip blocks that are mostly whitespace or comments/g
+      // Skip blocks that are mostly whitespace or comments
       if(this.isSignificantBlock(block)) {
         blocks.push({start = code.split('\n');
     const _significantLines = 0;
   for(const line of lines) {
-      const _trimmed = line.trim(); if(trimmed && ; !trimmed.startsWith('//') {&&/g
-          !trimmed.startsWith('/*') && *//g
-          !trimmed.startsWith('*') &&;
+      const _trimmed = line.trim(); if(trimmed && ; !trimmed.startsWith('//') {&&
+// ! trimmed.startsWith('/*') && */
+// ! trimmed.startsWith('*') &&;
           trimmed !== '{' &&;
           trimmed !== '}') {
         significantLines++;
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
+    // return significantLines >= Math.floor(lines.length * 0.7);
+    //   // LINT: unreachable code removed}
 
-    // return significantLines >= Math.floor(lines.length * 0.7);/g
-    //   // LINT: unreachable code removed}/g
+/** Process and enhance duplicate results;
 
-  /\*\*/g
-   * Process and enhance duplicate results;
-   */;/g
   async processDuplicates(jscpdResults) { 
     const _duplicates = [];
 
     if(jscpdResults.duplicates) 
   for(const duplicate of jscpdResults.duplicates) {
-// const _processed = awaitthis.enhanceDuplicate(duplicate); /g
-        duplicates.push(processed); //       }/g
-    //     }/g
+// const _processed = awaitthis.enhanceDuplicate(duplicate); 
+        duplicates.push(processed); //       }
+    //     }
 
+    // return duplicates;
+    //   // LINT: unreachable code removed}
 
-    // return duplicates;/g
-    //   // LINT: unreachable code removed}/g
+/** Enhance duplicate information;
 
-  /\*\*/g
-   * Enhance duplicate information;
-   */;/g
   async enhanceDuplicate(duplicate) { 
     const _enhanced = id = 0; i < duplicate.files.length; i++) {
         const _file = duplicate.files[i];
@@ -130,89 +123,81 @@ try {
   if(i === 0) {
           enhanced.first_occurrence_file = file.name;
           enhanced.first_occurrence_line = file.start;
-        //         }/g
-      //       }/g
-    //     }/g
+        //         }
+      //       }
+    //     }
 
-
-    // Calculate complexity score/g
+    // Calculate complexity score
     enhanced.complexity_score = this.calculateDuplicateComplexity(enhanced);
     enhanced.maintainability_impact = this.assessMaintainabilityImpact(enhanced);
 
-    // return enhanced;/g
-    //   // LINT: unreachable code removed}/g
+    // return enhanced;
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Calculate duplicate metrics;
-   */;/g
+/** Calculate duplicate metrics;
+
   calculateDuplicateMetrics(duplicates) {
     const _metrics = {total_duplicates = 0;
     let _largestSize = 0;
   for(const duplicate of duplicates) {
-      metrics.total_duplicate_lines += duplicate.line_count * duplicate.occurrences.length; metrics.total_duplicate_tokens += duplicate.token_count * duplicate.occurrences.length; // Track affected files/g
+      metrics.total_duplicate_lines += duplicate.line_count * duplicate.occurrences.length; metrics.total_duplicate_tokens += duplicate.token_count * duplicate.occurrences.length; // Track affected files
   for(const occurrence of duplicate.occurrences) {
         metrics.files_affected.add(occurrence.file);
-      //       }/g
+      //       }
 
-
-      // Severity breakdown/g
+      // Severity breakdown
       const _severity = this.calculateDuplicateSeverity(duplicate);
       metrics.severity_breakdown[severity]++;
 
-      // Average similarity/g
+      // Average similarity
       totalSimilarity += duplicate.similarity_score;
 
-      // Largest duplicate/g
+      // Largest duplicate
   if(duplicate.token_count > largestSize) {
         largestSize = duplicate.token_count;
         metrics.largest_duplicate = duplicate;
-      //       }/g
-    //     }/g
-
+      //       }
+    //     }
 
     metrics.files_affected = metrics.files_affected.size;
     metrics.average_similarity = duplicates.length > 0 ? ;
-      Math.round((totalSimilarity / duplicates.length) * 100) /100 = duplicate.line_count;/g
+      Math.round((totalSimilarity / duplicates.length) * 100) /100 = duplicate.line_count;
     const _tokens = duplicate.token_count;
     const _occurrences = duplicate.occurrences.length;
 
-    //Critical = 0;/g
+    //Critical = 0;
 
-    // Base score from size/g
+    // Base score from size
     score += Math.min(duplicate.line_count, 50);
-    score += Math.min(duplicate.token_count / 10, 20);/g
+    score += Math.min(duplicate.token_count / 10, 20);
 
-    // Penalty for multiple occurrences/g
+    // Penalty for multiple occurrences
     score += (duplicate.occurrences.length - 1) * 5;
 
-    // Bonus for high similarity/g
+    // Bonus for high similarity
   if(duplicate.similarity_score > 90) {
       score += 10;
-    //     }/g
+    //     }
 
+    // return Math.min(score, 100);
+    //   // LINT: unreachable code removed}
 
-    // return Math.min(score, 100);/g
-    //   // LINT: unreachable code removed}/g
+/** Assess maintainability impact;
 
-  /\*\*/g
-   * Assess maintainability impact;
-   */;/g
   assessMaintainabilityImpact(duplicate) {
     const _severity = this.calculateDuplicateSeverity(duplicate);
     const _occurrences = duplicate.occurrences.length;
   if(severity === 'critical'  ?? occurrences > 5) {
-      // return 'high';/g
-    //   // LINT: unreachable code removed} else if(severity === 'high'  ?? occurrences > 3) {/g
-      // return 'medium';/g
-    //   // LINT: unreachable code removed} else {/g
-      // return 'low';/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+      // return 'high';
+    //   // LINT: unreachable code removed} else if(severity === 'high'  ?? occurrences > 3) {
+      // return 'medium';
+    //   // LINT: unreachable code removed} else {
+      // return 'low';
+    //   // LINT: unreachable code removed}
+  //   }
 
+/** Generate relationships for Kuzu graph;
 
-  /\*\*/g
-   * Generate relationships for Kuzu graph;
-   */;/g
   generateGraphRelationships(duplicates) {
     const _relationships = [];
   for(const duplicate of duplicates) {
@@ -222,70 +207,63 @@ try {
   if(metrics.severity_breakdown.critical > 0) {
       recommendations.push({priority = > token.length > 0);
 length;
-  //   }/g
+  //   }
 
+/** Generate block hash;
 
-  /\*\*/g
-   * Generate block hash;
-   */;/g
   generateBlockHash(code) {
-    // Normalize code for hashing(remove whitespace variations)/g
+    // Normalize code for hashing(remove whitespace variations)
     const _normalized = code;
-replace(/\s+/g, ' ');/g
-replace(/;\s*}/g, ';}');/g
+replace(/\s+/g, ' ');
+replace(/;\s*}/g, ';}');
 trim();
 
-    // return createHash('md5').update(normalized).digest('hex');/g
-    //   // LINT: unreachable code removed}/g
+    // return createHash('md5').update(normalized).digest('hex');
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Generate duplicate ID;
-   */;/g
+/** Generate duplicate ID;
+
   generateDuplicateId(duplicate, existing = null) {
     const _base = duplicate.hash  ?? (existing ? `${existing.file})  ?? Math.random().toString(36).substring(7);`
 
-    // return createHash('md5').update(base).digest('hex').substring(0, 16);/g
-    //   // LINT: unreachable code removed}/g
+    // return createHash('md5').update(base).digest('hex').substring(0, 16);
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Generate file ID;
-   */;/g
+/** Generate file ID;
+
   generateFileId(filePath): unknown
-    // return createHash('sha256').update(filePath).digest('hex').substring(0, 16);/g
-    //   // LINT: unreachable code removed}/g
+    // return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Create fallback duplicate analysis when JSCPD isn't available;'
-   */;/g
+/** Create fallback duplicate analysis when JSCPD isn't available;'
+
   async createFallbackDuplicateAnalysis(targetPath) { 
     console.warn('Using fallback duplicate detection with basic hashing');
 
     const  readFile, readdir, stat } = await import('node);'
-    const { join } = // await import('node);'/g
-// const _files = awaitthis.getAllJSFiles(targetPath);/g
+    const { join } = // await import('node);'
+// const _files = awaitthis.getAllJSFiles(targetPath);
 
     const __duplicates = [];
     const _fileHashes = new Map();
     const _lineHashes = new Map();
 
-    // Analyze each file/g
+    // Analyze each file
   for(const filePath of files) {
       try {
-// const _content = awaitreadFile(filePath, 'utf8'); /g
-        const _lines = content.split('\n'); // Hash each significant line/g
+// const _content = awaitreadFile(filePath, 'utf8'); 
+        const _lines = content.split('\n'); // Hash each significant line
   for(let i = 0; i < lines.length; i++) {
           const _line = lines[i].trim();
-          if(line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) { *//g
-            continue; // Skip short lines and comments/g
-          //           }/g
-
+          if(line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) { */
+            continue; // Skip short lines and comments
+          //           }
 
           const _lineHash = createHash('md5').update(line).digest('hex');
 
           if(!lineHashes.has(lineHash)) {
             lineHashes.set(lineHash, []);
-          //           }/g
-
+          //           }
 
           lineHashes.get(lineHash).push({file = 0; i < lines.length - this.config.minLines; i++) {
           const _block = lines.slice(i, i + this.config.minLines).join('\n');
@@ -293,37 +271,35 @@ trim();
 
           if(!fileHashes.has(blockHash)) {
             fileHashes.set(blockHash, []);
-          //           }/g
-
+          //           }
 
           fileHashes.get(blockHash).push({)
-            file = {id = > ({file = // await import('node);'/g
-    const { join } = // await import('node);'/g
+            file = {id = > ({file = // await import('node);'
+    const { join } = // await import('node);'
 
     const _files = [];
     const _extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-    async function walk(currentPath = // await readdir(currentPath);/g
+    async function walk(currentPath = // await readdir(currentPath);
   for(const entry of entries) {
-          const _fullPath = join(currentPath, entry); // const _stats = awaitstat(fullPath); /g
+          const _fullPath = join(currentPath, entry); // const _stats = awaitstat(fullPath); 
   if(stats.isDirectory() {) {
-            // Skip common ignored directories/g
+            // Skip common ignored directories
             if(!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
-// // await walk(fullPath);/g
-            //             }/g
+// // await walk(fullPath);
+            //             }
           } else if(extensions.some(ext => entry.endsWith(ext))) {
             files.push(fullPath);
-          //           }/g
-        //         }/g
+          //           }
+        //         }
       } catch(error) ;
         console.warn(`Skipping directory \$currentPath);`
-    //     }/g
-// // await walk(dirPath);/g
-    // return files;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
+    //     }
+// // await walk(dirPath);
+    // return files;
+    //   // LINT: unreachable code removed}
+// }
 
-
-// export default DuplicateCodeDetector;/g
+// export default DuplicateCodeDetector;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}))))))

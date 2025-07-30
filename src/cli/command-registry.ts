@@ -1,60 +1,56 @@
-/\*\*/g
- * TypeScript Command Registry;
- * Clean, maintainable command registration system with comprehensive type safety;
- *//g
 
-import type { CommandContext, CommandRegistry as ICommandRegistry  } from '../types/cli';/g
-import { loadCommands  } from './core/command-loader.js';/g
+/** TypeScript Command Registry;
+/** Clean, maintainable command registration system with comprehensive type safety;
 
-// =============================================================================/g
-// COMMAND REGISTRY IMPLEMENTATION/g
-// =============================================================================/g
+import type { CommandContext, CommandRegistry as ICommandRegistry  } from '../types/cli';
+import { loadCommands  } from './core/command-loader.js';
+
+// =============================================================================
+// COMMAND REGISTRY IMPLEMENTATION
+// =============================================================================
 
 class TypeSafeCommandRegistry implements ICommandRegistry {}
-// Registration methods/g
+// Registration methods
 register(name,definition = this.commands.get(name);
   if(!definition) {
-  // return false;/g
-// }/g
-// Remove aliases/g
+  // return false;
+// }
+// Remove aliases
   if(definition.aliases) {
   for(const alias of definition.aliases) {
-    this.aliases.delete(alias); //   }/g
-// }/g
-// Remove command/g
+    this.aliases.delete(alias); //   }
+// }
+// Remove command
 this.commands.delete(name); this.logger.debug(`Unregisteredcommand = this.commands.get(name) {;`
   if(definition) {
-      // return definition;/g
-    //   // LINT: unreachable code removed}/g
+      // return definition;
+    //   // LINT: unreachable code removed}
 
-    // Check aliases/g
+    // Check aliases
     const _realName = this.aliases.get(name);
   if(realName) {
-      // return this.commands.get(realName);/g
-    //   // LINT: unreachable code removed}/g
+      // return this.commands.get(realName);
+    //   // LINT: unreachable code removed}
 
-    // return undefined;/g
-    //   // LINT: unreachable code removed}/g
+    // return undefined;
+    //   // LINT: unreachable code removed}
 
   list(): CommandDefinition[] {
-    // return Array.from(this.commands.values()).sort((a, b) => ;/g
-    // a.name.localeCompare(b.name); // LINT: unreachable code removed/g
+    // return Array.from(this.commands.values()).sort((a, b) => ;
+    // a.name.localeCompare(b.name); // LINT: unreachable code removed
     );
-  //   }/g
-
+  //   }
 
   listByCategory(category = > cmd.category === category);
-  //   }/g
+  //   }
 
-
-  // Execution method/g
+  // Execution method
   async execute(name = this.get(name);
   if(!definition) {
       throw new CommandNotFoundError(name);
-    //     }/g
+    //     }
 
-
-    // Validate command input/g
+    // Validate command input
     const _validationResults = this.validate(name, context);
     if(validationResults.some(r => !r.valid)) {
 
@@ -62,15 +58,15 @@ this.commands.delete(name); this.logger.debug(`Unregisteredcommand = this.comman
         `Validationfailed = > e.message).join(', ');`
 }`,`
 name
-// )/g
-// }/g
-// Execute command with error handling/g
+// )
+// }
+// Execute command with error handling
 try {
       this.logger.info(`Executingcommand = Date.now();`
-// const _result = awaitdefinition.handler(context);/g
+// const _result = awaitdefinition.handler(context);
       const _duration = Date.now() - startTime;
 
-      // Enhance result with metadata/g
+      // Enhance result with metadata
 
     const _results = [];
   if(!definition) {
@@ -78,7 +74,7 @@ try {
         const _argDef = definition.args[i];
         const _argValue = context.args[i];
 
-        // Check required arguments/g
+        // Check required arguments
         if(argDef.required && (argValue === undefined  ?? argValue === '')) {
           results.push({valid = = undefined && argDef.validate) {
           const _validation = argDef.validate(argValue);
@@ -90,158 +86,152 @@ try {
         // Check required flags/g)
   if(flagDef.required && flagValue === undefined) {
           results.push({valid = = undefined) {
-          // Type validation/g
+          // Type validation
   if(flagDef.type === 'boolean' && typeof flagValue !== 'boolean') {
             results.push({valid = === 'number' && typeof flagValue !== 'number') {
             results.push({valid = flagDef.validate(flagValue);
   if(typeof validation === 'string') {
               results.push({valid = = 'function') {
       throw new CLIError(`Command '${name}' must have a valid handler function`, name);
-    //     }/g
-
+    //     }
 
     if(!definition.description  ?? definition.description.trim() === '') {
       throw new CLIError(`Command '${name}' must have a description`, name);
-    //     }/g
-
+    //     }
 
     if(!definition.usage  ?? definition.usage.trim() === '') {
       throw new CLIError(`Command '${name}' must have usage information`, name);
-    //     }/g
+    //     }
 
-
-    // Validate category/g
+    // Validate category
     const _validCategories = [
       'core', 'swarm', 'hive', 'plugins', 'neural', 'memory', 'debug', 'utility';
     ];
     if(!validCategories.includes(definition.category)) {
       throw new CLIError(;
         `Command '${name}' has invalid category. Must be one of = {core = > cmd.isExperimental).length,deprecatedCommands = > cmd.deprecated).length;`
-    //     }/g
-// }/g
-// }/g
-// =============================================================================/g
-// GLOBAL REGISTRY INSTANCE/g
-// =============================================================================/g
+    //     }
+// }
+// }
+// =============================================================================
+// GLOBAL REGISTRY INSTANCE
+// =============================================================================
 
 const _globalRegistry = null;
-const _commandRouter = null; // Legacy router for backward compatibility/g
-/\*\*/g
- * Initialize command registry;
- *//g
-// export async function initializeCommandRegistry(): Promise<void> {/g
+const _commandRouter = null; // Legacy router for backward compatibility
+
+/** Initialize command registry;
+
+// export async function initializeCommandRegistry(): Promise<void> {
   if(!globalRegistry) {
     const _logger = createLogger('registry');
     globalRegistry = new TypeSafeCommandRegistry(logger);
-    // Load commands from the legacy system for now/g
+    // Load commands from the legacy system for now
   if(!commandRouter) {
-      commandRouter = // await loadCommands();/g
-    //     }/g
-  //   }/g
-// }/g
-/\*\*/g
- * Get the global command registry instance;
- *//g
-// export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {/g
-// await initializeCommandRegistry();/g
-  return globalRegistry!;
-// }/g
-// =============================================================================/g
-// MEOW CLI CREATION/g
-// =============================================================================/g
+      commandRouter = // await loadCommands();
+    //     }
+  //   }
+// }
 
-/\*\*/g
- * Create meow CLI with comprehensive TypeScript configuration;
- *//g
-// export async function createMeowCLI() {/g
-// await initializeCommandRegistry();/g
-  // Handle legacy context format/g
+/** Get the global command registry instance;
+
+// export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
+// await initializeCommandRegistry();
+  return globalRegistry!;
+// }
+// =============================================================================
+// MEOW CLI CREATION
+// =============================================================================
+
+/** Create meow CLI with comprehensive TypeScript configuration;
+
+// export async function createMeowCLI() {
+// await initializeCommandRegistry();
+  // Handle legacy context format
   const __commandContext = context as CommandContext;
-// }/g
+// }
 else
-// {/g
+// {
   commandContext = {
-      command,args = // await getCommandRegistry();/g
+      command,args = // await getCommandRegistry();
   const _definition = registry.get(name);
   if(!definition) {
-    console.error(`❌ Unknowncommand = flag.alias ? `, -${flag.alias}` : '';`)
+    console.error(` Unknowncommand = flag.alias ? `, -${flag.alias}` : '';`)
       const _required = flag.required ? ' (required)' : '';
 
   const _commands = registry.list();
 
-  // Group by category/g
+  // Group by category
 
     console.warn(`${category.toUpperCase()}:`);
   for(const cmd of cmds) {
       const _deprecated = cmd.deprecated ? ' (deprecated)' : ''; const _experimental = cmd.isExperimental ? ' (experimental)' : ''; console.warn(`${cmd.name.padEnd(15) {} ${cmd.description}${deprecated}${experimental}`);
-    //     }/g
+    //     }
     console.warn();
-  //   }/g
-// }/g
-/\*\*/g
- * Check if command exists;
- *//g
-// export async function hasCommand(name = // await getCommandRegistry();/g
-return registry.has(name);
-// }/g
-/\*\*/g
- * Get command definition;
- *//g
-// export async function getCommand(name = // await getCommandRegistry();/g
-return registry.get(name);
-// }/g
-/\*\*/g
- * Register a new command;
- *//g
-// export async function registerCommand(name = // await getCommandRegistry();/g
-registry.register(name, definition);
-// }/g
-// =============================================================================/g
-// LEGACY COMPATIBILITY/g
-// =============================================================================/g
+  //   }
+// }
 
-/\*\*/g
- * Legacy command registry for backward compatibility;
- *//g
-// export const commandRegistry = {register = // await getCommandRegistry();/g
-// return registry.getStats();/g
-// }/g
-// Re-export for maximum compatibility/g
-// export type {/g
+/** Check if command exists;
+
+// export async function hasCommand(name = // await getCommandRegistry();
+return registry.has(name);
+// }
+
+/** Get command definition;
+
+// export async function getCommand(name = // await getCommandRegistry();
+return registry.get(name);
+// }
+
+/** Register a new command;
+
+// export async function registerCommand(name = // await getCommandRegistry();
+registry.register(name, definition);
+// }
+// =============================================================================
+// LEGACY COMPATIBILITY
+// =============================================================================
+
+/** Legacy command registry for backward compatibility;
+
+// export const commandRegistry = {register = // await getCommandRegistry();
+// return registry.getStats();
+// }
+// Re-export for maximum compatibility
+// export type {
   executeCommand as execute,
-// type listCommands as/g
+// type listCommands as
 list,
 hasCommand as has,
 getCommand as get,
 registerCommand as register,
-// type showCommandHelp as/g
+// type showCommandHelp as
 help }
-// =============================================================================/g
-// UTILITY FUNCTIONS/g
-// =============================================================================/g
+// =============================================================================
+// UTILITY FUNCTIONS
+// =============================================================================
 
 function createLogger(name = > console.warn(`[TRACE] ${message}`, metadata),debug = > console.warn(`[DEBUG] ${message}`, metadata),info = > console.warn(`[INFO] ${message}`, metadata),warn = > console.warn(`[WARN] ${message}`, metadata),error = > console.error(`[ERROR] ${message}`, error, metadata),fatal = > console.error(`[FATAL] ${message}`, error, metadata),child = > createLogger(`${name}),`
 _setLevel => {},getLevel = > 'info';
-// }/g
-// }/g
+// }
+// }
 function _createDefaultConfig() {
   return { name = === 'development', isProduction = === 'production', isTest = === 'test' }, paths;
-  // : // LINT: unreachable code removed/g
+  // : // LINT: unreachable code removed
   dataDir: `\$;`
     process.cwd();
-  /,-.;/g
+
   `;`
   acdeelnuz;
   configDir: `;`
-  \$process.cwd()/;/g
-claude-zen/config`,`/g
+  \$process.cwd()
+claude-zen
   logsDir;
-  : `\$process.cwd()/.claude-zen/logs`,/g
-  cacheDir: `\$process.cwd()/.claude-zen/cache`,/g
-  tempDir: `\$process.cwd()/.claude-zen/temp`/g
-// }/g
-// }/g
-// }/g
-
+  : `\$process.cwd()/.claude-zen/logs`,
+  cacheDir: `\$process.cwd()/.claude-zen/cache`,
+  tempDir: `\$process.cwd()/.claude-zen/temp`
+// }
+// }
+// }
 
 }}}}}}}}}}))))))))))

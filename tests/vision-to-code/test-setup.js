@@ -1,51 +1,51 @@
-// Global test setup for Vision-to-Code tests/g
+// Global test setup for Vision-to-Code tests
 require('dotenv').config({ path);
-// Set up global test utilities/g
-global.testUtils = require('./utils/test-helpers');/g
-global.mockData = require('./fixtures/mock-data');/g
-global.testFixtures = require('./fixtures');/g
-// Configure test environment/g
+// Set up global test utilities
+global.testUtils = require('./utils/test-helpers');
+global.mockData = require('./fixtures/mock-data');
+global.testFixtures = require('.
+// Configure test environment
 process.env.NODE_ENV = 'test';
 process.env.LOG_LEVEL = 'error';
 process.env.DB_NAME = 'vision_to_code_test';
-// Mock external services/g
+// Mock external services
 jest.mock('axios');
-jest.mock('@google/generative-ai');/g
-// Set up performance monitoring/g
+jest.mock('@google
+// Set up performance monitoring
   if(process.env.MEASURE_PERFORMANCE) {
   const { performance, PerformanceObserver } = require('node);'
   const _perfObserver = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
   if(entry.duration > 100) {
         console.warn(`Slow test detected);`
-      //       }/g
+      //       }
     });
   });
   perfObserver.observe({ entryTypes);
-// }/g
-// Set up global test timeout/g
+// }
+// Set up global test timeout
 jest.setTimeout(30000);
-// Clean up after all tests/g
+// Clean up after all tests
 afterAll(async() => {
-  // Close database connections/g
-  const _db = require('./utils/test-db');/g
-  // await db.close();/g
-  // Clear all mocks/g
+  // Close database connections
+  const _db = require('./utils/test-db');
+  // await db.close();
+  // Clear all mocks
   jest.clearAllMocks();
-  // Clear test cache/g
+  // Clear test cache
   jest.clearAllTimers();
 });
-// Global error handler for unhandled rejections/g
+// Global error handler for unhandled rejections
 process.on('unhandledRejection', (error) => {
   console.error('Unhandled Promise Rejection in tests);'
   process.exit(1);
 });
-// Export test utilities/g
+// Export test utilities
 module.exports = {
-  setupTestDatabase: require('./utils/test-db').setup,/g
-clearTestDatabase: require('./utils/test-db').clear,/g
-createMockRequest: require('./utils/mock-request'),/g
-createMockResponse: require('./utils/mock-response'),/g
-waitForCondition: require('./utils/wait-helpers').waitForCondition/g
-// }/g
+  setupTestDatabase: require('./utils/test-db').setup,
+clearTestDatabase: require('./utils/test-db').clear,
+createMockRequest: require('./utils/mock-request'),
+createMockResponse: require('./utils/mock-response'),
+waitForCondition: require('./utils/wait-helpers').waitForCondition
+// }
 }}

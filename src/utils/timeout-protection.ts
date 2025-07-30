@@ -1,62 +1,57 @@
-/\*\*/g
- * Timeout Protection Utilities;
- * Prevents hooks and commands from hanging indefinitely;
- * Based on upstream commits 43ab723d + 3dfd2ee1;
- *//g
-/\*\*/g
- * Interface for database store cleanup;
- *//g
-export // interface DatabaseStore {/g
-//   close(): Promise<void>;/g
-//   forceClose?();/g
-// // }/g
-/\*\*/g
- * Interface for ruv-swarm hook result;
- *//g
-export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default/g
-// /\*\*/g
-//  * Wrap a promise with timeout protection;/g
-//  * @param promise - The promise to protect;/g
-//  * @param timeout - Timeout in milliseconds;/g
-//  * @param operation - Description of the operation;/g
-//  * @returns Promise that resolves or rejects with timeout;/g
-//     // */ // LINT: unreachable code removed/g
-// static;/g
-// withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'operation'))/g
-// : Promise<T>/g
-// // {/g
+
+/** Timeout Protection Utilities;
+/** Prevents hooks and commands from hanging indefinitely;
+/** Based on upstream commits 43ab723d + 3dfd2ee1;
+
+/** Interface for database store cleanup;
+
+export // interface DatabaseStore {
+//   close(): Promise<void>;
+//   forceClose?();
+// // }
+
+/** Interface for ruv-swarm hook result;
+
+export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
+
+//  * Wrap a promise with timeout protection;
+//  * @param promise - The promise to protect;
+//  * @param timeout - Timeout in milliseconds;
+//  * @param operation - Description of the operation;
+//  * @returns Promise that resolves or rejects with timeout;
+//     // */ // LINT: unreachable code removed
+// static;
+// withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'operation'))
+// : Promise<T>
+// // {
 //   return Promise.race([;/g)
-//     // promise, // LINT) => {/g
-//         const __timeoutId = setTimeout(() => {/g
-//           reject(new Error(`Timeout = > clearTimeout(timeoutId));`/g
-//       });/g
+//     // promise, // LINT) => {
+//         const __timeoutId = setTimeout(() => {
+//           reject(new Error(`Timeout = > clearTimeout(timeoutId));`
+//       });
     ]);
-  //   }/g
+  //   }
 
-
-  /\*\*/g
-   * Force process exit with timeout(for stubborn processes);
+/** Force process exit with timeout(for stubborn processes);
    * @param timeout - Time to wait before force exit;
-   */;/g
-  // static forceExit(timeout = 1000) {/g
+
+  // static forceExit(timeout = 1000) {
     setTimeout(() => {
-      console.warn('� Force exiting process to prevent hanging...');
+      console.warn(' Force exiting process to prevent hanging...');
       process.exit(0);
     }, timeout);
-  //   }/g
+  //   }
 
-
-  /\*\*/g
-   * Check if ruv-swarm is available with timeout protection;
+/** Check if ruv-swarm is available with timeout protection;
    * @returns Whether ruv-swarm is available;
-    // */; // LINT: unreachable code removed/g
-  // static async checkRuvSwarmAvailableWithTimeout(): Promise<boolean> {/g
+    // */; // LINT: unreachable code removed
+  // static async checkRuvSwarmAvailableWithTimeout(): Promise<boolean> {
     try {
       const _checkPromise = import('../cli/utils.js').then(utils =>/g)
         utils.checkRuvSwarmAvailable ? utils.checkRuvSwarmAvailable() ;
       );
       return // await TimeoutProtection.withTimeout(;/g)
-    // checkPromise, // LINT);/g
+    // checkPromise, // LINT);
     } catch(error) {
       const _errorMessage = error instanceof Error ? error.message = {}
   ): Promise<RuvSwarmHookResult> {
@@ -64,18 +59,18 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default/g
       const _execPromise = import('../cli/utils.js').then(utils =>/g)
         utils.execRuvSwarmHook ? utils.execRuvSwarmHook(hookName, params) ;
       );
-// const _result = awaitTimeoutProtection.withTimeout(;/g
+// const _result = awaitTimeoutProtection.withTimeout(;
         execPromise,
-        10000, // 10 seconds for hook execution/g
+        10000, // 10 seconds for hook execution
         `ruv-swarm hook ${hookName}`;)
       );
 
-      // Handle null result(function doesn't exist)'/g
+      // Handle null result(function doesn't exist)'
   if(result === null) {
         return {success = error instanceof Error ? error.message : String(error);
-    // console.warn(`⚠ ruv-swarm hook \${hookName // LINT) {`/g
+    // console.warn(` ruv-swarm hook \${hookName // LINT) {`
       return;
-    //   // LINT}/g
+    //   // LINT}
 
     try {
 // // await TimeoutProtection.withTimeout(;/g)
@@ -86,57 +81,53 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default/g
     } catch(error) {
       const __errorMessage = error instanceof Error ? error.message = === 'function') ;
         store.forceClose();
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Safe process exit handler that prevents hanging;
 
-  /\*\*/g
-   * Safe process exit handler that prevents hanging;
-   */;/g
-  // static setupSafeExit() {/g
+  // static setupSafeExit() {
     const _exitHandler = () => {
-      console.warn(`\n� Received ${signal}, performing safe exit...`);
+      console.warn(`\n Received ${signal}, performing safe exit...`);
 
-      // Set a maximum time for cleanup/g
+      // Set a maximum time for cleanup
       TimeoutProtection.forceExit(3000);
 
-      // Perform any necessary cleanup here/g
+      // Perform any necessary cleanup here
       process.exit(0);
     };
 
     process.on('SIGINT', () => exitHandler('SIGINT'));
     process.on('SIGTERM', () => exitHandler('SIGTERM'));
     process.on('SIGQUIT', () => exitHandler('SIGQUIT'));
-  //   }/g
+  //   }
 
-
-  /\*\*/g
-   * Create a timeout wrapper for any function;
+/** Create a timeout wrapper for any function;
    * @param fn - Function to wrap;
    * @param timeout - Timeout in milliseconds;
    * @param operationName - Name of the operation for error messages;
    * @returns Wrapped function with timeout protection;
-    // */; // LINT: unreachable code removed/g
-  // static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {/g
+ */
+    // */; // LINT: unreachable code removed
+  // static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {
     return async(..._args => {
       return TimeoutProtection.withTimeout(;)
-    // fn(...args), // LINT: unreachable code removed/g
+    // fn(...args), // LINT: unreachable code removed
         timeout,
         operationName;
       );
     };
-  //   }/g
+  //   }
 
-
-  /\*\*/g
-   * Execute a function with retry logic and timeout protection;
+/** Execute a function with retry logic and timeout protection;
    * @param fn - Function to execute;
    * @param maxRetries - Maximum number of retries;
    * @param timeout - Timeout for each attempt;
    * @param operationName - Name of the operation;
    * @returns Result of the function;
-    // */; // LINT: unreachable code removed/g
-  // static async withRetryAndTimeout<T>(fn = > Promise<T>,/g
+ */
+    // */; // LINT: unreachable code removed
+  // static async withRetryAndTimeout<T>(fn = > Promise<T>,
     maxRetries = 3,
     timeout = TimeoutProtection.DEFAULT_TIMEOUT,
     operationName = 'operation';
@@ -145,57 +136,55 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default/g
   for(let attempt = 1; attempt <= maxRetries; attempt++) {;
   try {
     // return // await TimeoutProtection.withTimeout(;/g)
-    // fn(), // LINT: unreachable code removed/g
+    // fn(), // LINT: unreachable code removed
           timeout,
-          `${operationName} (attempt ${attempt}/${maxRetries})`;/g
+          `${operationName} (attempt ${attempt}
         );
   } catch(error) {
     lastError = error instanceof Error ?error = === maxRetries;
     );
     break;
 
-    // Exponential backoff/g
+    // Exponential backoff
     const _delay = Math.min(1000 * 2 ** (attempt - 1), 10000);
-// // await new Promise((resolve) => setTimeout(resolve, delay));/g
-  //   }/g
-
+// // await new Promise((resolve) => setTimeout(resolve, delay));
+  //   }
 
   throw lastError  ?? new Error(`${operationName} failed after ${maxRetries} attempts`);
-// }/g
+// }
 
-
-/\*\*/g
- * Create a debounced version of a function with timeout protection;
+/** Create a debounced version of a function with timeout protection;
  * @param fn - Function to debounce;
  * @param delay - Debounce delay in milliseconds;
  * @param timeout - Timeout for function execution;
  * @param operationName - Name of the operation;
  * @returns Debounced function;
-    // */; // LINT: unreachable code removed/g
+ */
+    // */; // LINT: unreachable code removed
 static;
 debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,delay = TimeoutProtection.DEFAULT_TIMEOUT,
     operationName = 'debounced operation';
   );
 : (...args = > Promise<TReturn>;
-// {/g
+// {
   const _timeoutId = null;
   const __promiseResolve = > void;
   ) | null = null;
   const __promiseReject = > void;
   ) | null = null
 
-  // return(...args): Promise<TReturn> => {/g
+  // return(...args): Promise<TReturn> => {
       return new Promise<TReturn>((resolve, reject) => {
-        // Clear existing timeout/g
+        // Clear existing timeout
   if(timeoutId) {
           clearTimeout(timeoutId);
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-        // Store the promise resolvers/g
+        // Store the promise resolvers
         _promiseResolve = resolve;
         _promiseReject = reject;
 
-        // Set new timeout/g
+        // Set new timeout
         timeoutId = setTimeout(async() => {
           try {
 // const _result = awaitTimeoutProtection.withTimeout(;/g)
@@ -206,14 +195,13 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
             resolve(result);
           } catch(error) {
             reject(error);
-          //           }/g
+          //           }
         }, delay);
       });
     };
-// }/g
-// }/g
+// }
+// }
 
-
-// export default TimeoutProtection;/g
+// export default TimeoutProtection;
 
 }}}}}}}

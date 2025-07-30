@@ -1,13 +1,12 @@
-/\*\*/g
- * Event System Types;
- * Comprehensive event-driven architecture for system-wide coordination;
- *//g
 
-import type { Identifiable  } from './core';/g
+/** Event System Types;
+/** Comprehensive event-driven architecture for system-wide coordination;
 
-// =============================================================================/g
-// EVENT CORE TYPES/g
-// =============================================================================/g
+import type { Identifiable  } from '.';
+
+// =============================================================================
+// EVENT CORE TYPES
+// =============================================================================
 
 export type EventCategory = 'system';
 | 'queen'
@@ -23,102 +22,101 @@ export type EventCategory = 'system';
 | 'performance'
 | 'user'
 | 'custom'
-// export type EventSeverity = 'debug' | 'info' | 'warning' | 'error' | 'critical' | 'emergency';/g
+// export type EventSeverity = 'debug' | 'info' | 'warning' | 'error' | 'critical' | 'emergency';
 
-// export type EventStatus = 'pending';/g
+// export type EventStatus = 'pending';
 | 'processing'
 | 'completed'
 | 'failed'
 | 'cancelled'
 | 'timeout'
-// export type DeliveryGuarantee = 'at-most-once' | 'at-least-once' | 'exactly-once';/g
+// export type DeliveryGuarantee = 'at-most-once' | 'at-least-once' | 'exactly-once';
 
-// export type EventPattern = 'unicast' | 'broadcast' | 'multicast' | 'anycast';/g
+// export type EventPattern = 'unicast' | 'broadcast' | 'multicast' | 'anycast';
 
-// =============================================================================/g
-// EVENT DEFINITION/g
-// =============================================================================/g
+// =============================================================================
+// EVENT DEFINITION
+// =============================================================================
 
-// export // interface SystemEvent extends Identifiable {/g
-//   // Event identificationtype = ============================================================================/g
-// // EVENT BUS/g
-// // =============================================================================/g
-// /g
-// export interface EventBus extends TypedEventEmitter<_EventBusEvents> {/g
-//   // Event publication/g
-//   publish(event = ============================================================================;/g
-// // EVENT SUBSCRIPTION/g
-// // =============================================================================/g
-// /g
-// export interface EventSubscription extends Identifiable {name = > Promise<void>/g
-// reject = > Promise<void>/g
-// defer = > Promise<void>/g
-// // }/g
-// export // interface EventHandlerResult {success = ============================================================================/g
-// // EVENT STREAMS/g
-// // =============================================================================/g
-// /g
-// export interface EventStream extends Identifiable {name = ============================================================================/g
-// // EVENT TOPICS/g
-// // =============================================================================/g
-// /g
-// export interface EventTopic extends Identifiable {name = ============================================================================/g
-// // EVENT QUERIES/g
-// // =============================================================================/g
-// /g
-// export interface EventQuery {/g
-//   // Time range/g
-//   startTime?);/g
-// : (subscription = > void/g
-// ('subscription-deleted')/g
-// : (subscriptionId = > void/g
-// ('subscription-failed')/g
-// : (subscriptionId = > void/g
-// ('subscription-recovered')/g
-// : (subscriptionId = > void/g
-// // Processing events/g
-// ('event-processed')/g
-// : (event = > void/g
-// ('event-processing-failed')/g
-// : (event = > void/g
-// ('dead-letter-received')/g
-// : (event = > void/g
-// // Stream events/g
-// ('stream-created')/g
-// : (stream = > void/g
-// ('stream-started')/g
-// : (streamId = > void/g
-// ('stream-stopped')/g
-// : (streamId = > void/g
-// ('stream-failed')/g
-// : (streamId = > void/g
-// ('checkpoint-created')/g
-// : (streamId = > void/g
-// // Topic events/g
-// ('topic-created')/g
-// : (topic = > void/g
-// ('topic-deleted')/g
-// : (topicId = > void/g
-// ('partition-leader-changed')/g
-// : (topicId = > void/g
-// ('partition-offline')/g
-// : (topicId = > void/g
-// // System events/g
-// ('bus-started')/g
-// : () => void/g
-// ('bus-stopped')/g
-// : () => void/g
-// ('bus-paused')/g
-// : () => void/g
-// ('bus-resumed')/g
-// : () => void/g
-// ('performance-degraded')/g
-// : (metric = > void/g
-// ('capacity-warning')/g
-// : (component = > void/g
-// ('health-check-failed')/g
-// : (component = > void/g
-// // }/g
+// export // interface SystemEvent extends Identifiable {
+//   // Event identificationtype = ============================================================================
+// // EVENT BUS
+// // =============================================================================
 
+// export interface EventBus extends TypedEventEmitter<_EventBusEvents> {
+//   // Event publication
+//   publish(event = ============================================================================;
+// // EVENT SUBSCRIPTION
+// // =============================================================================
+
+// export interface EventSubscription extends Identifiable {name = > Promise<void>
+// reject = > Promise<void>
+// defer = > Promise<void>
+// // }
+// export // interface EventHandlerResult {success = ============================================================================
+// // EVENT STREAMS
+// // =============================================================================
+
+// export interface EventStream extends Identifiable {name = ============================================================================
+// // EVENT TOPICS
+// // =============================================================================
+
+// export interface EventTopic extends Identifiable {name = ============================================================================
+// // EVENT QUERIES
+// // =============================================================================
+
+// export interface EventQuery {
+//   // Time range
+//   startTime?);
+// : (subscription = > void
+// ('subscription-deleted')
+// : (subscriptionId = > void
+// ('subscription-failed')
+// : (subscriptionId = > void
+// ('subscription-recovered')
+// : (subscriptionId = > void
+// // Processing events
+// ('event-processed')
+// : (event = > void
+// ('event-processing-failed')
+// : (event = > void
+// ('dead-letter-received')
+// : (event = > void
+// // Stream events
+// ('stream-created')
+// : (stream = > void
+// ('stream-started')
+// : (streamId = > void
+// ('stream-stopped')
+// : (streamId = > void
+// ('stream-failed')
+// : (streamId = > void
+// ('checkpoint-created')
+// : (streamId = > void
+// // Topic events
+// ('topic-created')
+// : (topic = > void
+// ('topic-deleted')
+// : (topicId = > void
+// ('partition-leader-changed')
+// : (topicId = > void
+// ('partition-offline')
+// : (topicId = > void
+// // System events
+// ('bus-started')
+// : () => void
+// ('bus-stopped')
+// : () => void
+// ('bus-paused')
+// : () => void
+// ('bus-resumed')
+// : () => void
+// ('performance-degraded')
+// : (metric = > void
+// ('capacity-warning')
+// : (component = > void
+// ('health-check-failed')
+// : (component = > void
+// // }
 
 }}}}})))))))))))))))))))

@@ -1,6 +1,6 @@
 export default {
   apps: [
-    {
+
       name: 'claude-zen-api',
       script: 'src/api/start-server.js',
       cwd: '/home/mhugo/code/claude-zen',
@@ -23,6 +23,5 @@ export default {
       merge_logs: true,
       time: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z'
-    }
-  ]
+
 };

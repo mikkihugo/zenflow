@@ -1,8 +1,7 @@
-// src/swarm/executor.ts/g
-// TODO: This is a stub. Implement the actual TaskExecutor class./g
+// src/swarm/executor.ts
+// TODO: This is a stub. Implement the actual TaskExecutor class.
 
 export default class TaskExecutor {
-  async initialize(): Promise<void> {} // eslint-disable-line/g
+  async initialize(): Promise<void> {} // eslint-disable-line
   async shutdown(): Promise<void> {}
-// }/g
-
+// }

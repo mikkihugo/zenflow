@@ -1,39 +1,39 @@
-/\*\*/g
- * Build Configuration for Claude Zen;
+
+/** Build Configuration for Claude Zen;
  *;
  * @fileoverview TypeScript build configuration with Google standards;
  * @author Claude Code Flow Team;
  * @version 2.0.0;
- *//g
-/\*\*/g
- * Module alias configuration for build system;
- *//g
-// // interface ModuleAliases {/g
-//   [pattern];/g
-// // }/g
-/\*\*/g
- * Build configuration interface;
- *//g
-// // interface BuildConfiguration {/g
-//   // moduleAliases: ModuleAliases/g
-//   excludeModules;/g
-//   externals;/g
-// // }/g
-/\*\*/g
- * Build configuration for dual Node.js/Deno support;/g
- * Handles module resolution and bundling exclusions;
- *//g
-// export const buildConfig = {/g
-  // Module aliases for Node.js build compatibility/g
+ */
+
+/** Module alias configuration for build system;
+
+// // interface ModuleAliases {
+//   [pattern];
+// // }
+
+/** Build configuration interface;
+
+// // interface BuildConfiguration {
+//   // moduleAliases: ModuleAliases
+//   excludeModules;
+//   externals;
+// // }
+
+/** Build configuration for dual Node.js/Deno support;
+/** Handles module resolution and bundling exclusions;
+
+// export const buildConfig = {
+  // Module aliases for Node.js build compatibility
   moduleAliases: {
-    '@cliffy/ansi/colors': './src/adapters/cliffy-node.js',/g
-('@cliffy/prompt');/g
-: './src/adapters/cliffy-node.js',/g
-('@cliffy/table')/g
-: './src/adapters/cliffy-node.js' },/g
-// Modules to exclude from Node.js build/g
+    '@cliffy/ansi/colors': './src/adapters/cliffy-node.js',
+('@cliffy
+: './src/adapters/cliffy-node.js',
+('@cliffy
+: './src/adapters/cliffy-node.js' },
+// Modules to exclude from Node.js build
 excludeModules: [
-'vscode', // VS Code extension API/g
+'vscode', // VS Code extension API
 ],
-// External modules that should not be bundled/g
-externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed'] }/g
+// External modules that should not be bundled
+externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed'] }

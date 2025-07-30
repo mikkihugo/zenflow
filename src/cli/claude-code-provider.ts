@@ -1,93 +1,85 @@
-/**  *//g
- * Claude Code Provider for AI Service
- * Uses Claude Code CLI for AI generation without API keys
- * Based on claude-task-master implementation
- *//g
+
+/** Claude Code Provider for AI Service
+/** Uses Claude Code CLI for AI generation without API keys
+/** Based on claude-task-master implementation
 
 import { exec  } from 'node:child_process';'
 import { promisify  } from 'node:util';'
 
 const _execAsync = promisify(exec);
-// Claude Code module will be loaded dynamically if needed/g
+// Claude Code module will be loaded dynamically if needed
 const _claudeCodeModule = null;
-// export class ClaudeCodeProvider {/g
+// export class ClaudeCodeProvider {
   constructor(config = {}) {
     this.config = {modelId = null;
     this.conversationHistory = [];
-  //   }/g
-
+  //   }
 
   async isAvailable() { 
     try 
-// // await execAsync('which claude');'/g
-      // return true;/g
-    //   // LINT: unreachable code removed} catch(/* _error */) {/g
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
-  //   }/g
-
+// // await execAsync('which claude');'
+      // return true;
+    //   // LINT: unreachable code removed} catch(/* _error */) {
+      // return false;
+    //   // LINT: unreachable code removed}
+  //   }
 
   async generateText(prompt, options = {}) { 
     const _mergedConfig =  ...this.config, ...options };
 
-    // If Claude Code module is available, use it/g
+    // If Claude Code module is available, use it
   if(claudeCodeModule) {
-      // return this.generateWithModule(prompt, mergedConfig);/g
-    //   // LINT: unreachable code removed}/g
+      // return this.generateWithModule(prompt, mergedConfig);
+    //   // LINT: unreachable code removed}
 
-    // Otherwise, use CLI directly/g
-    // return this.generateWithCLI(prompt, mergedConfig);/g
-    //   // LINT: unreachable code removed}/g
+    // Otherwise, use CLI directly
+    // return this.generateWithCLI(prompt, mergedConfig);
+    //   // LINT: unreachable code removed}
 
   async generateWithModule(_prompt, _config) { 
     try 
       const { claudeCode } = claudeCodeModule;
-      const __settings = {pathToClaudeCodeExecutable = // await claudeCode({model = result.sessionId;/g
-      //       }/g
+      const __settings = {pathToClaudeCodeExecutable = // await claudeCode({model = result.sessionId;
+      //       }
 
-
-      // return result.content  ?? result.text  ?? result;/g
-    //   // LINT: unreachable code removed} catch(/* _error */) {/g
+      // return result.content  ?? result.text  ?? result;
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       console.warn('Claude Code module failed, falling back to CLI => {'
-      // Build Claude command with appropriate flags/g
+      // Build Claude command with appropriate flags
       const _args = [];
 
       // Add print mode for non-interactive output/g)
       args.push('--print');'
 
-      // For now, use text output format since JSON might not be fully supported/g
-      // args.push('--output-format', 'json');'/g
+      // For now, use text output format since JSON might not be fully supported
+      // args.push('--output-format', 'json');'
 
-      // Add permission mode if specified/g
+      // Add permission mode if specified
   if(config.permissionMode === 'bypassPermissions') {'
         args.push('--dangerously-skip-permissions');'
-      //       }/g
+      //       }
 
-
-      // Add allowed tools if specified/g
+      // Add allowed tools if specified
   if(config.allowedTools && config.allowedTools.length > 0) {
         args.push('--allowedTools', config.allowedTools.join(' '));'
-      //       }/g
+      //       }
 
-
-      // Add disallowed tools if specified/g
+      // Add disallowed tools if specified
   if(config.disallowedTools && config.disallowedTools.length > 0) {
         args.push('--disallowedTools', config.disallowedTools.join(' '));'
-      //       }/g
+      //       }
 
-
-      // Add the prompt with any system context/g
+      // Add the prompt with any system context
       const _fullPrompt = prompt;
   if(config.customSystemPrompt  ?? config.appendSystemPrompt) {
         const _systemPrompt = config.customSystemPrompt  ?? config.appendSystemPrompt;
         fullPrompt = `${systemPrompt}\n\n${prompt}`;`
-      //       }/g
+      //       }
 
-
-      // Add the prompt as the last argument/g
+      // Add the prompt as the last argument
       args.push(fullPrompt);
 
-      // Spawn Claude with the complete command/g
+      // Spawn Claude with the complete command
       const _claudeProcess = spawn(config.pathToClaudeCodeExecutable  ?? 'claude', args, {stdio = '';'
       const _error = '';'
 
@@ -102,49 +94,45 @@ const _claudeCodeModule = null;
       claudeProcess.on('error', (_err) => {'
   reject(new Error(`Failed to spawn Claude process => {`
         if(code !== 0) {
-          // Check for authentication error/g
+          // Check for authentication error
           if(error.includes('authenticate')  ?? error.includes('login')) {'
   reject(new Error('Claude Code authentication required. Please run = {}) {'
-    // Build enhanced prompt with context/g
+    // Build enhanced prompt with context
     let _enhancedPrompt = prompt;
   if(context.task) {
       enhancedPrompt = `Task = `Previous context:\n${context.previousResponse}\n\n${prompt}`;`
-    //     }/g
+    //     }
   if(this.config.appendSystemPrompt) {
       enhancedPrompt = `${this.config.appendSystemPrompt}\n\n${enhancedPrompt}`;`
-    //     }/g
+    //     }
 
+    // return this.generateText(enhancedPrompt, context.options  ?? {});
+    //   // LINT: unreachable code removed}
 
-    // return this.generateText(enhancedPrompt, context.options  ?? {});/g
-    //   // LINT: unreachable code removed}/g
-
-  // Helper method for task-specific generation/g
+  // Helper method for task-specific generation
   async generateForTask(_taskType, _data, _options = {}) { 
     const __taskPrompts = 
       'parse-prd': `Analyze the following PRD and generate structuredtasks = taskPrompts[taskType]  ?? data;`
 
-    // Apply task-specific settings if available/g
+    // Apply task-specific settings if available
     const _taskOptions = {
 ..options,
 ..(this.config.commandSpecific?.[taskType]  ?? {});
     };
 
-    // return this.generateText(prompt, taskOptions);/g
-    //   // LINT: unreachable code removed}/g
-// }/g
+    // return this.generateText(prompt, taskOptions);
+    //   // LINT: unreachable code removed}
+// }
 
-
-// Factory function to create provider with config/g
-// export async function createClaudeCodeProvider(config = {}) {/g
+// Factory function to create provider with config
+// export async function createClaudeCodeProvider(config = {}) {
   const _provider = new ClaudeCodeProvider(config);
 
   if(!await provider.isAvailable()) {
     throw new Error('Claude Code CLI is not available. Please install and authenticate Claude Code first.');'
-  //   }/g
+  //   }
 
-
-  // return provider;/g
-// }/g
-
+  // return provider;
+// }
 
 }}}}}}}}}}})))))))

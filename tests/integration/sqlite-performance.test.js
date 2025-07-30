@@ -1,43 +1,42 @@
-/\*\*/g
- * SQLite Performance Optimization Tests;
- * Validates the performance improvements work correctly;
- *//g
 
-import fs from 'node:fs/promises';/g
+/** SQLite Performance Optimization Tests;
+/** Validates the performance improvements work correctly;
+
+import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe  } from '@jest/globals';/g
-import { SqliteMemoryStore  } from '../../src/memory/sqlite-store.js';/g
-import { isSQLiteAvailable  } from '../../src/memory/sqlite-wrapper.js';/g
+import { afterEach, beforeEach, describe  } from '@jest';
+import { SqliteMemoryStore  } from '../../src/memory/sqlite-store.js';
+import { isSQLiteAvailable  } from '../../src/memory/sqlite-wrapper.js';
 
 describe('SQLite Performance Optimization Tests', () => {
   let testDir;
   let _memoryStore;
   beforeEach(async() => {
-    // Create temporary test directory/g
+    // Create temporary test directory
     testDir = path.join(os.tmpdir(), `claude-zen-perf-test-${Date.now()}`);
-  // await fs.mkdir(testDir, { recursive });/g
-    // Initialize memory store with performance optimizations/g
+  // await fs.mkdir(testDir, { recursive });
+    // Initialize memory store with performance optimizations
     _memoryStore = new SqliteMemoryStore({ directory,
     dbName);
   });
 afterEach(async() => {
-  // Close database connections/g
+  // Close database connections
   if(memoryStore?.db) {
     memoryStore.close();
-  //   }/g
-  // Clean up test directory/g
-  // // await fs.rm(testDir, { recursive, force });/g
+  //   }
+  // Clean up test directory
+  // // await fs.rm(testDir, { recursive, force });
 });
 describe('Optimized Index Usage', () => {
     it('should create all performance indexes', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
-  // // await memoryStore.initialize();/g
-      // Check that all expected indexes exist/g
+    //   // LINT: unreachable code removed}
+  // // await memoryStore.initialize();
+      // Check that all expected indexes exist
       const _indexes = memoryStore.db;
 prepare(`;`
         SELECT name FROM sqlite_master ;
@@ -45,29 +44,29 @@ prepare(`;`
       `);`
 all();
       const _indexNames = indexes.map((idx) => idx.name);
-      // Verify core performance indexes/g
+      // Verify core performance indexes
       expect(indexNames).toContain('idx_memory_namespace');
       expect(indexNames).toContain('idx_memory_expires');
       expect(indexNames).toContain('idx_memory_accessed');
-      // Verify composite indexes/g
+      // Verify composite indexes
       expect(indexNames).toContain('idx_memory_namespace_key');
       expect(indexNames).toContain('idx_memory_namespace_updated');
       expect(indexNames).toContain('idx_memory_namespace_access_count');
       expect(indexNames).toContain('idx_memory_active_entries');
-      // Verify search indexes/g
+      // Verify search indexes
       expect(indexNames).toContain('idx_memory_key_search');
       expect(indexNames).toContain('idx_memory_value_search');
     });
     it('should use indexes for key lookups', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
-  // // await memoryStore.initialize();/g
-      // Insert test data/g
-  // // await memoryStore.store('test-key', 'test-value', { namespace);/g
-      // Check query plan for key lookup/g
+    //   // LINT: unreachable code removed}
+  // // await memoryStore.initialize();
+      // Insert test data
+  // // await memoryStore.store('test-key', 'test-value', { namespace);
+      // Check query plan for key lookup
       const _plan = memoryStore.db;
 prepare(`;`
         EXPLAIN QUERY PLAN ;
@@ -75,88 +74,88 @@ prepare(`;`
         WHERE key = ? AND namespace = ?;
       `);`
 all('test-key', 'test-ns');
-      // Should use the composite index/g
+      // Should use the composite index
       const _planText = plan.map((row) => row.detail).join(' ');
       expect(planText).toContain('idx_memory_namespace_key');
     });
   });
   describe('Query Caching', () => {
     beforeEach(async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(available) {
-  // await memoryStore.initialize();/g
-      //       }/g
+  // await memoryStore.initialize();
+      //       }
     });
     it('should cache retrieve operations', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       const _key = 'cache-test-key';
       const _value = { data: 'cached value' };
-      // Store value/g
-  // // await memoryStore.store(key, value);/g
-      // First retrieve(should miss cache)/g
-// const _result1 = awaitmemoryStore.retrieve(key);/g
+      // Store value
+  // // await memoryStore.store(key, value);
+      // First retrieve(should miss cache)
+// const _result1 = awaitmemoryStore.retrieve(key);
       const _stats1 = memoryStore.getPerformanceStats();
-      // Second retrieve(should hit cache)/g
-// const _result2 = awaitmemoryStore.retrieve(key);/g
+      // Second retrieve(should hit cache)
+// const _result2 = awaitmemoryStore.retrieve(key);
       const _stats2 = memoryStore.getPerformanceStats();
       expect(result1).toEqual(value);
       expect(result2).toEqual(value);
       expect(stats2.cache.hits).toBeGreaterThan(stats1.cache.hits);
     });
     it('should invalidate cache on updates', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       const _key = 'invalidation-test';
       const _value1 = { version };
       const _value2 = { version };
-      // Store and retrieve initial value/g
-  // // await memoryStore.store(key, value1);/g
-  // // await memoryStore.retrieve(key); // Cache it/g
+      // Store and retrieve initial value
+  // // await memoryStore.store(key, value1);
+  // // await memoryStore.retrieve(key); // Cache it
 
-      // Update value/g
-  // // await memoryStore.store(key, value2);/g
-      // Retrieve should return new value, not cached/g
-// const _result = awaitmemoryStore.retrieve(key);/g
-    // expect(result).toEqual(value2); // LINT: unreachable code removed/g
+      // Update value
+  // // await memoryStore.store(key, value2);
+      // Retrieve should return new value, not cached
+// const _result = awaitmemoryStore.retrieve(key);
+    // expect(result).toEqual(value2); // LINT: unreachable code removed
     });
     it('should cache list operations', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       const _namespace = 'list-cache-test';
-      // Store test data/g
+      // Store test data
   for(let i = 0; i < 5; i++) {
-  // // await memoryStore.store(`key-\$i`, `value-\$i`, { namespace });/g
-      //       }/g
-      // First list(should miss cache)/g
-// const _list1 = awaitmemoryStore.list({ namespace, limit   });/g
+  // // await memoryStore.store(`key-\$i`, `value-\$i`, { namespace });
+      //       }
+      // First list(should miss cache)
+// const _list1 = awaitmemoryStore.list({ namespace, limit   });
       const _stats1 = memoryStore.getPerformanceStats();
-      // Second list(should hit cache)/g
-// const _list2 = awaitmemoryStore.list({ namespace, limit   });/g
+      // Second list(should hit cache)
+// const _list2 = awaitmemoryStore.list({ namespace, limit   });
       const _stats2 = memoryStore.getPerformanceStats();
       expect(list1).toHaveLength(5);
       expect(list2).toHaveLength(5);
       expect(stats2.cache.hits).toBeGreaterThan(stats1.cache.hits);
     });
     it('should provide cache statistics', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
-      // Perform some operations to generate cache activity/g
-  // // await memoryStore.store('stats-test', 'test-value');/g
-  // // await memoryStore.retrieve('stats-test'); // miss/g
-  // // await memoryStore.retrieve('stats-test'); // hit/g
+    //   // LINT: unreachable code removed}
+      // Perform some operations to generate cache activity
+  // // await memoryStore.store('stats-test', 'test-value');
+  // // await memoryStore.retrieve('stats-test'); // miss
+  // // await memoryStore.retrieve('stats-test'); // hit
 
       const _stats = memoryStore.getPerformanceStats();
       expect(stats.cache).toHaveProperty('enabled');
@@ -171,23 +170,23 @@ all('test-key', 'test-ns');
   });
   describe('Performance Monitoring', () => {
     beforeEach(async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(available) {
-  // await memoryStore.initialize();/g
-      //       }/g
+  // await memoryStore.initialize();
+      //       }
     });
     it('should provide database statistics', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
-      // Add some test data/g
+    //   // LINT: unreachable code removed}
+      // Add some test data
   for(let i = 0; i < 10; i++) {
   // // await memoryStore.store(`stats-key-\$i`, `value-\$i`, {/g)
           namespace);
-      //       }/g
-// const _stats = awaitmemoryStore.getDatabaseStats();/g
+      //       }
+// const _stats = awaitmemoryStore.getDatabaseStats();
       expect(stats).toHaveProperty('entries');
       expect(stats).toHaveProperty('namespaces');
       expect(stats).toHaveProperty('totalSize');
@@ -198,18 +197,18 @@ all('test-key', 'test-ns');
       expect(stats.entries).toBe(10);
       expect(stats.namespaces).toBe(3);
       expect(stats.totalSize).toBeGreaterThan(0);
-      expect(stats.indexes).toBeGreaterThan(8); // At least our custom indexes/g
+      expect(stats.indexes).toBeGreaterThan(8); // At least our custom indexes
     });
     it('should analyze query performance', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
-// const _analysis = awaitmemoryStore.analyzeQueryPerformance();/g
+    //   // LINT: unreachable code removed}
+// const _analysis = awaitmemoryStore.analyzeQueryPerformance();
       expect(analysis).toHaveProperty('queryPlans');
       expect(analysis).toHaveProperty('performance');
-      // Should have plans for common operations/g
+      // Should have plans for common operations
       expect(analysis.queryPlans).toHaveProperty('get');
       expect(analysis.queryPlans).toHaveProperty('list');
       expect(analysis.queryPlans).toHaveProperty('search');
@@ -224,148 +223,148 @@ all('test-key', 'test-ns');
     });
     afterEach(async() => {
   if(pool) {
-  // await pool.shutdown();/g
-      //       }/g
+  // await pool.shutdown();
+      //       }
     });
     it('should create and manage connection pool', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       pool = new SQLiteConnectionPool(poolDbPath, {
         minConnections,
         maxConnections });
-  // // await pool.initialize();/g
+  // // await pool.initialize();
       const _stats = pool.getStats();
-      expect(stats.totalConnections).toBe(2); // min connections/g
+      expect(stats.totalConnections).toBe(2); // min connections
       expect(stats.availableConnections).toBe(2);
       expect(stats.activeConnections).toBe(0);
     });
     it('should handle concurrent connections', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       pool = new SQLiteConnectionPool(poolDbPath, {
         minConnections,
         maxConnections });
-  // // await pool.initialize();/g
-      // Create table/g
-  // // await pool.execute(`;`/g
+  // // await pool.initialize();
+      // Create table
+  // // await pool.execute(`;`
         CREATE TABLE IF NOT EXISTS test_table(;
           id INTEGER PRIMARY KEY,
           value TEXT;))
         );
       `);`
-      // Perform concurrent operations/g
+      // Perform concurrent operations
       const _operations = [];
   for(let i = 0; i < 5; i++) {
         operations.push(pool.execute('INSERT INTO test_table(value) VALUES(?)', [`value-\$i`]));
-      //       }/g
-  // // await Promise.all(operations);/g
-      // Verify all operations completed/g
-// const _results = awaitpool.execute('SELECT COUNT(*)  FROM test_table');/g
+      //       }
+  // // await Promise.all(operations);
+      // Verify all operations completed
+// const _results = awaitpool.execute('SELECT COUNT(*)  FROM test_table');
       expect(results[0].count).toBe(5);
     });
     it('should handle transaction operations', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       pool = new SQLiteConnectionPool(poolDbPath);
-  // // await pool.initialize();/g
-      // Create table/g
-  // // await pool.execute(`;`/g
+  // // await pool.initialize();
+      // Create table
+  // // await pool.execute(`;`
         CREATE TABLE IF NOT EXISTS transaction_test(;
           id INTEGER PRIMARY KEY,
           value TEXT;))
         );
       `);`
-      // Execute transaction/g
+      // Execute transaction
       const _queries = [
         { query: 'INSERT INTO transaction_test(value) VALUES(?)', params: ['tx-value-1'] },
         { query: 'INSERT INTO transaction_test(value) VALUES(?)', params: ['tx-value-2'] },
         { query: 'INSERT INTO transaction_test(value) VALUES(?)', params: ['tx-value-3'] } ];
-  // // await pool.executeTransaction(queries);/g
-      // Verify transaction results/g
-// const _results = awaitpool.execute('SELECT COUNT(*)  FROM transaction_test');/g
+  // // await pool.executeTransaction(queries);
+      // Verify transaction results
+// const _results = awaitpool.execute('SELECT COUNT(*)  FROM transaction_test');
       expect(results[0].count).toBe(3);
     });
   });
   describe('Performance Regression Tests', () => {
     beforeEach(async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(available) {
-  // await memoryStore.initialize();/g
-      //       }/g
+  // await memoryStore.initialize();
+      //       }
     });
     it('should handle large datasets efficiently', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       const _startTime = Date.now();
-      // Insert large dataset/g
+      // Insert large dataset
   for(let i = 0; i < 1000; i++) {
-  // // await memoryStore.store(;/g
+  // // await memoryStore.store(;
           `large-key-\$i`,
-          //           {/g
+          //           {
             id,
             data: `Large dataset entry number \$i`,)
-            metadata: { batch: Math.floor(i / 100) } },/g
-          { namespace: `batch-\$Math.floor(i / 100)` }/g
+            metadata: { batch: Math.floor(i / 100) } },
+          { namespace: `batch-\$Math.floor(i / 100)` }
         );
-      //       }/g
+      //       }
       const _insertTime = Date.now() - startTime;
-      // Perform various queries/g
+      // Perform various queries
       const _queryStart = Date.now();
-      // Key lookups/g
+      // Key lookups
   for(let i = 0; i < 100; i++) {
-  // // await memoryStore.retrieve(`large-key-\$i * 10`, {)/g
-          namespace: `batch-\$Math.floor((i * 10) / 100)` });/g
-      //       }/g
-      // List operations/g
+  // // await memoryStore.retrieve(`large-key-\$i * 10`, {)
+          namespace: `batch-\$Math.floor((i * 10) / 100)` });
+      //       }
+      // List operations
   for(let i = 0; i < 10; i++) {
-  // // await memoryStore.list({ namespace);/g
-      //       }/g
-      // Search operations/g
-  // // await memoryStore.search('Large dataset', { limit });/g
-  // // await memoryStore.search('entry number 5', { limit });/g
+  // // await memoryStore.list({ namespace);
+      //       }
+      // Search operations
+  // // await memoryStore.search('Large dataset', { limit });
+  // // await memoryStore.search('entry number 5', { limit });
       const _queryTime = Date.now() - queryStart;
-      // Performance assertions(these are rough benchmarks)/g
-      expect(insertTime).toBeLessThan(10000); // 10 seconds for 1000 inserts/g
-      expect(queryTime).toBeLessThan(5000); // 5 seconds for mixed queries/g
+      // Performance assertions(these are rough benchmarks)
+      expect(insertTime).toBeLessThan(10000); // 10 seconds for 1000 inserts
+      expect(queryTime).toBeLessThan(5000); // 5 seconds for mixed queries
 
-      // Verify cache effectiveness/g
+      // Verify cache effectiveness
       const _stats = memoryStore.getPerformanceStats();
-      expect(stats.cache.hitRate).toBeGreaterThan(0); // Some cache hits expected/g
+      expect(stats.cache.hitRate).toBeGreaterThan(0); // Some cache hits expected
     });
     it('should maintain performance with TTL entries', async() => {
-// const _available = awaitisSQLiteAvailable();/g
+// const _available = awaitisSQLiteAvailable();
   if(!available) {
         console.warn('Skipping test);'
         return;
-    //   // LINT: unreachable code removed}/g
-      // Insert entries with various TTLs/g
+    //   // LINT: unreachable code removed}
+      // Insert entries with various TTLs
   for(let i = 0; i < 500; i++) {
   // // await memoryStore.store(`ttl-key-\$i`, `value-\$i`, {/g)
-          ttl: (i % 4) + 1, // TTL between 1-4 seconds/g
+          ttl: (i % 4) + 1, // TTL between 1-4 seconds
           namespace: 'ttl-test' });
-      //       }/g
-      // Wait for some to expire/g
-  // // await new Promise((resolve) => setTimeout(resolve, 2000));/g
+      //       }
+      // Wait for some to expire
+  // // await new Promise((resolve) => setTimeout(resolve, 2000));
       const _cleanupStart = Date.now();
-// const _cleanedCount = awaitmemoryStore.cleanup();/g
+// const _cleanedCount = awaitmemoryStore.cleanup();
       const _cleanupTime = Date.now() - cleanupStart;
-      expect(cleanedCount).toBeGreaterThan(0); // Some entries should have expired/g
-      expect(cleanupTime).toBeLessThan(1000); // Cleanup should be fast/g
+      expect(cleanedCount).toBeGreaterThan(0); // Some entries should have expired
+      expect(cleanupTime).toBeLessThan(1000); // Cleanup should be fast
 
-      // Verify remaining entries are still accessible/g
-// const _remaining = awaitmemoryStore.list({ namespace);/g
+      // Verify remaining entries are still accessible
+// const _remaining = awaitmemoryStore.list({ namespace);
       expect(remaining.length).toBeLessThan(500);
       expect(remaining.length).toBeGreaterThan(0);
       });

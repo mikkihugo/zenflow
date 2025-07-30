@@ -1,13 +1,12 @@
-/\*\*/g
- * Workflow Engine Types;
- * Advanced workflow orchestration and automation;
- *//g
 
-import type { Identifiable  } from './core.js';/g
+/** Workflow Engine Types;
+/** Advanced workflow orchestration and automation;
 
-// =============================================================================/g
-// WORKFLOW CORE TYPES/g
-// =============================================================================/g
+import type { Identifiable  } from '.';
+
+// =============================================================================
+// WORKFLOW CORE TYPES
+// =============================================================================
 
 export type WorkflowStatus = 'draft';
 | 'active'
@@ -23,14 +22,14 @@ export type StepStatus = 'pending';
 | 'skipped'
 | 'cancelled'
 | 'timeout'
-// export type TriggerType = 'manual';/g
+// export type TriggerType = 'manual';
 | 'scheduled'
 | 'event'
 | 'webhook'
 | 'api'
 | 'condition'
 | 'dependency'
-// export type StepType = 'action';/g
+// export type StepType = 'action';
 | 'condition'
 | 'loop'
 | 'parallel'
@@ -38,110 +37,109 @@ export type StepStatus = 'pending';
 | 'delay'
 | 'human'
 | 'subworkflow'
-// Audit and compliance types/g
-// export // interface AuditLogEntry extends Identifiable {action = ============================================================================/g
-// // STEP CONFIGURATIONS/g
-// // =============================================================================/g
-// /g
-// export interface StepConfig {type = ============================================================================/g
-// // WORKFLOW EXECUTION/g
-// // =============================================================================/g
-// /g
-// export interface WorkflowExecution extends Identifiable {workflowId = ============================================================================/g
-// // WORKFLOW TRIGGERS/g
-// // =============================================================================/g
-// /g
-// export interface WorkflowTrigger extends Identifiable {name = ============================================================================/g
-// // WORKFLOW ENGINE/g
-// // =============================================================================/g
-// /g
-// export interface WorkflowEngine extends TypedEventEmitter<_WorkflowEvents> {/g
-//   // Workflow management/g
-//   createWorkflow(definition = ============================================================================;/g
-// // AUXILIARY TYPES/g
-// // =============================================================================/g
-// /g
-// export interface WorkflowConfig {/g
-//   // Execution settingsmaxConcurrentExecutions = 'parallelization' | 'caching' | 'batching' | 'resource-allocation' | 'path-optimization';/g
-// /g
-// export interface SLAMonitoringConfig {enabled = ============================================================================/g
-// // WORKFLOW EVENTS/g
-// // =============================================================================/g
-// /g
-// export interface WorkflowEvents {/g
-//   // Workflow lifecycle events/g
-//   'workflow-created');/g
-// : (execution = > void/g
-// ('execution-completed')/g
-// : (execution = > void/g
-// ('execution-failed')/g
-// : (execution = > void/g
-// ('execution-cancelled')/g
-// : (executionId = > void/g
-// ('execution-paused')/g
-// : (executionId = > void/g
-// ('execution-resumed')/g
-// : (executionId = > void/g
-// // Step events/g
-// ('step-started')/g
-// : (executionId = > void/g
-// ('step-completed')/g
-// : (executionId = > void/g
-// ('step-failed')/g
-// : (executionId = > void/g
-// ('step-skipped')/g
-// : (executionId = > void/g
-// ('step-retried')/g
-// : (executionId = > void/g
-// // Human task events/g
-// ('task-assigned')/g
-// : (taskId = > void/g
-// ('task-claimed')/g
-// : (taskId = > void/g
-// ('task-completed')/g
-// : (taskId = > void/g
-// ('task-escalated')/g
-// : (taskId = > void/g
-// ('task-comment-added')/g
-// : (taskId = > void/g
-// // Trigger events/g
-// ('trigger-fired')/g
-// : (triggerId = > void/g
-// ('trigger-failed')/g
-// : (triggerId = > void/g
-// ('trigger-enabled')/g
-// : (triggerId = > void/g
-// ('trigger-disabled')/g
-// : (triggerId = > void/g
-// // Performance events/g
-// ('performance-threshold-exceeded')/g
-// : (metric = > void/g
-// ('resource-exhausted')/g
-// : (resource = > void/g
-// ('sla-violated')/g
-// : (sla = > void/g
-// // Engine events/g
-// ('engine-started')/g
-// : () => void/g
-// ('engine-stopped')/g
-// : () => void/g
-// ('engine-paused')/g
-// : () => void/g
-// ('engine-resumed')/g
-// : () => void/g
-// ('engine-error')/g
-// : (error = > void/g
-// ('health-check-failed')/g
-// : (component = > void/g
-// // Audit events/g
-// ('audit-log-created')/g
-// : (logEntry = > void/g
-// ('compliance-violation')/g
-// : (violation = > void/g
-// ('security-event')/g
-// : (event = > void/g
-// [event = > void/g
-// // }/g
+// Audit and compliance types
+// export // interface AuditLogEntry extends Identifiable {action = ============================================================================
+// // STEP CONFIGURATIONS
+// // =============================================================================
 
+// export interface StepConfig {type = ============================================================================
+// // WORKFLOW EXECUTION
+// // =============================================================================
+
+// export interface WorkflowExecution extends Identifiable {workflowId = ============================================================================
+// // WORKFLOW TRIGGERS
+// // =============================================================================
+
+// export interface WorkflowTrigger extends Identifiable {name = ============================================================================
+// // WORKFLOW ENGINE
+// // =============================================================================
+
+// export interface WorkflowEngine extends TypedEventEmitter<_WorkflowEvents> {
+//   // Workflow management
+//   createWorkflow(definition = ============================================================================;
+// // AUXILIARY TYPES
+// // =============================================================================
+
+// export interface WorkflowConfig {
+//   // Execution settingsmaxConcurrentExecutions = 'parallelization' | 'caching' | 'batching' | 'resource-allocation' | 'path-optimization';
+
+// export interface SLAMonitoringConfig {enabled = ============================================================================
+// // WORKFLOW EVENTS
+// // =============================================================================
+
+// export interface WorkflowEvents {
+//   // Workflow lifecycle events
+//   'workflow-created');
+// : (execution = > void
+// ('execution-completed')
+// : (execution = > void
+// ('execution-failed')
+// : (execution = > void
+// ('execution-cancelled')
+// : (executionId = > void
+// ('execution-paused')
+// : (executionId = > void
+// ('execution-resumed')
+// : (executionId = > void
+// // Step events
+// ('step-started')
+// : (executionId = > void
+// ('step-completed')
+// : (executionId = > void
+// ('step-failed')
+// : (executionId = > void
+// ('step-skipped')
+// : (executionId = > void
+// ('step-retried')
+// : (executionId = > void
+// // Human task events
+// ('task-assigned')
+// : (taskId = > void
+// ('task-claimed')
+// : (taskId = > void
+// ('task-completed')
+// : (taskId = > void
+// ('task-escalated')
+// : (taskId = > void
+// ('task-comment-added')
+// : (taskId = > void
+// // Trigger events
+// ('trigger-fired')
+// : (triggerId = > void
+// ('trigger-failed')
+// : (triggerId = > void
+// ('trigger-enabled')
+// : (triggerId = > void
+// ('trigger-disabled')
+// : (triggerId = > void
+// // Performance events
+// ('performance-threshold-exceeded')
+// : (metric = > void
+// ('resource-exhausted')
+// : (resource = > void
+// ('sla-violated')
+// : (sla = > void
+// // Engine events
+// ('engine-started')
+// : () => void
+// ('engine-stopped')
+// : () => void
+// ('engine-paused')
+// : () => void
+// ('engine-resumed')
+// : () => void
+// ('engine-error')
+// : (error = > void
+// ('health-check-failed')
+// : (component = > void
+// // Audit events
+// ('audit-log-created')
+// : (logEntry = > void
+// ('compliance-violation')
+// : (violation = > void
+// ('security-event')
+// : (event = > void
+// [event = > void
+// // }
 
 }}}}}}}))))))))))))))))))))))))))))

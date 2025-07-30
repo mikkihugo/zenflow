@@ -1,113 +1,110 @@
-// rollback-executor.js - Execute rollback operations/g
+// rollback-executor.js - Execute rollback operations
 
 export class RollbackExecutor {
   constructor(workingDir = workingDir;
-// }/g
-/**  *//g
- * Execute full rollback to pre-initialization state
- *//g
+// }
+
+/** Execute full rollback to pre-initialization state
+
 async;
 executeFullRollback(backupId);
 : unknown
-// {/g
-  const _result = {success = // await this.cleanupInitializationArtifacts();/g
+// {
+  const _result = {success = // await this.cleanupInitializationArtifacts();
   result.actions.push(...cleanupResult.actions);
   if(!cleanupResult.success) {
     result.warnings.push(...cleanupResult.errors);
-  //   }/g
+  //   }
 
-
-  // Step2 = // await this.restoreFromBackup(backupId);/g
+  // Step2 = // await this.restoreFromBackup(backupId);
   result.actions.push(...restoreResult.actions);
   if(!restoreResult.success) {
     result.success = false;
     result.errors.push(...restoreResult.errors);
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
+    // return result;
+    //   // LINT: unreachable code removed}
 
-  // Step3 = // await this.verifyRollback();/g
+  // Step3 = // await this.verifyRollback();
   result.actions.push(...verifyResult.actions);
   if(!verifyResult.success) {
     result.warnings.push(...verifyResult.errors);
-  //   }/g
+  //   }
 
-
-  console.warn('  ✅ Full rollback completed');
-// }/g
+  console.warn('   Full rollback completed');
+// }
 catch(error)
       result.success = false;
-      result.errors.push(`Full rollback execution failed = {success = // await this.rollbackSparcInitialization();`/g
+      result.errors.push(`Full rollback execution failed = {success = // await this.rollbackSparcInitialization();`
           break;
         case 'claude-commands':
-          rollbackResult = // await this.rollbackClaudeCommands();/g
+          rollbackResult = // await this.rollbackClaudeCommands();
           break;
         case 'memory-setup':
-          rollbackResult = // await this.rollbackMemorySetup();/g
+          rollbackResult = // await this.rollbackMemorySetup();
           break;
         case 'coordination-setup':
-          rollbackResult = // await this.rollbackCoordinationSetup();/g
+          rollbackResult = // await this.rollbackCoordinationSetup();
           break;
         case 'executable-creation':
-          rollbackResult = // await this.rollbackExecutableCreation();/g
+          rollbackResult = // await this.rollbackExecutableCreation();
           break;
-        default = // await this.rollbackGenericPhase(phase, checkpoint);/g
+        default = // await this.rollbackGenericPhase(phase, checkpoint);
           break;
-      //       }/g
-
+      //       }
 
       result.success = rollbackResult.success;
       result.errors.push(...rollbackResult.errors);
       result.warnings.push(...rollbackResult.warnings);
       result.actions.push(...rollbackResult.actions);
   if(rollbackResult.success) {
-        console.warn(`  ✅ Partial rollback completed forphase = false;`
-      result.errors.push(`Partial rollback execution failed = {success = ['.roomodes', '.roo', '.claude/commands/sparc'];`/g
+        console.warn(`   Partial rollback completed forphase = false;`
+      result.errors.push(`Partial rollback execution failed = {success = ['.roomodes', '.roo', '.claude/commands/sparc'];`
 ))
   for(const item of itemsToRemove) {
-        const _itemPath = `${this.workingDir}/${item}`; /g
+        const _itemPath = `${this.workingDir}/${item}`; 
 
         try {
-// const _stat = awaitnode.stat(itemPath); /g
+// const _stat = awaitnode.stat(itemPath); 
   if(stat.isFile) {
-// // await node.remove(itemPath);/g
+// // await node.remove(itemPath);
             result.actions.push(`Removedfile = false;`
-      result.errors.push(`SPARC rollback failed = {success = `${this.workingDir}/.claude/commands`;`/g
+      result.errors.push(`SPARC rollback failed = {success = `${this.workingDir}/.claude/commands`;`
 
       try {
         // Remove all command files/g))
-        for // await(const entry of node.readDir(commandsDir)) {/g
+        for // await(const entry of node.readDir(commandsDir)) {
           if(entry.isFile && entry.name.endsWith('.js')) {
-// // await node.remove(`${commandsDir}/${entry.name}`);/g
+// // await node.remove(`${commandsDir}/${entry.name}`);
             result.actions.push(`Removedcommand = false;`
-      result.errors.push(`Claude commands rollback failed = {success = ['memory/claude-zen-data.json', 'memory/agents', 'memory/sessions'];`/g
+      result.errors.push(`Claude commands rollback failed = {success = ['memory/claude-zen-data.json', 'memory/agents', 'memory/sessions'];`
 ))
   for(const item of memoryItems) {
-        const _itemPath = `${this.workingDir}/${item}`; /g
+        const _itemPath = `${this.workingDir}/${item}`; 
 
         try {
-// const _stat = awaitnode.stat(itemPath); /g
+// const _stat = awaitnode.stat(itemPath); 
   if(stat.isFile) {
-// // await node.remove(itemPath);/g
+// // await node.remove(itemPath);
             result.actions.push(`Removed memoryfile = false;`
-      result.errors.push(`Memory setup rollback failed = {success = `${this.workingDir}/coordination`;`/g
+      result.errors.push(`Memory setup rollback failed = {success = `${this.workingDir}
 
       try {
-// // await node.remove(coordinationDir, {recursive = false;/g
-      result.errors.push(`Coordination setup rollback failed = {success = `${this.workingDir}/claude-zen`;`/g
+// // await node.remove(coordinationDir, {recursive = false;
+      result.errors.push(`Coordination setup rollback failed = {success = `${this.workingDir}
 
       try {))))
-// // await node.remove(executablePath);/g
+// // await node.remove(executablePath);
         result.actions.push('Removed claude-zen executable');
       } catch {
         result.actions.push('claude-zen executable was already clean');
-      //       }/g
+      //       }
     } catch(error) {
       result.success = false;
       result.errors.push(`Executable rollback failed = {success = checkpoint.data.actions  ?? [];`
 
         // Reverse the actions/g)
         for (const action of actions.reverse()) {
-// const _rollbackResult = awaitthis.reverseAction(action); /g
+// const _rollbackResult = awaitthis.reverseAction(action); 
   if(rollbackResult.success) {
             result.actions.push(rollbackResult.description); } else {
             result.warnings.push(`Could not reverseaction = false;`
@@ -123,12 +120,12 @@ catch(error)
         'coordination' ];
 ))
   for(const artifact of artifactsToRemove) {
-        const _artifactPath = `${this.workingDir}/${artifact}`;/g
+        const _artifactPath = `${this.workingDir}
 
         try {
-// const _stat = awaitnode.stat(artifactPath);/g
+// const _stat = awaitnode.stat(artifactPath);
   if(stat.isFile) {
-// // await node.remove(artifactPath);/g
+// // await node.remove(artifactPath);
             result.actions.push(`Removedfile = false;`
       result.errors.push(`Cleanup failed = {success = false;`
       result.errors.push(`Restore from backup failed = {success = [`
@@ -142,57 +139,53 @@ catch(error)
       const _foundArtifacts = 0;)))
   for(const item of expectedCleanItems) {
         try {
-// // await node.stat(`${this.workingDir}/${item}`); /g
+// // await node.stat(`${this.workingDir}/${item}`); 
           foundArtifacts++; } catch {
-          // Item doesn't exist - good'/g
-        //         }/g
-      //       }/g
+          // Item doesn't exist - good'
+        //         }
+      //       }
   if(foundArtifacts > 0) {
         result.success = false;
         result.errors.push(`Rollbackincomplete = false;`
-      result.errors.push(`Rollback verificationfailed = `${this.workingDir}/CLAUDE.md`;`/g
+      result.errors.push(`Rollback verificationfailed = `${this.workingDir}
 
       try {))
-// const _content = awaitnode.readTextFile(claudePath);/g
+// const _content = awaitnode.readTextFile(claudePath);
 
-        // Remove SPARC-specific sections/g
+        // Remove SPARC-specific sections
         const _cleanedContent = content;
-replace(/## SPARC Development Commands[\s\S]*?(?=##|\n#|\n$)/g, '')/g
-replace(/### SPARC[\s\S]*?(?=###|\n##|\n#|\n$)/g, '')/g
-replace(/\n{3 }/g, '\n\n') // Clean up multiple newlines/g
+replace(/## SPARC Development Commands[\s\S]*?(?=##|\n#|\n$)/g, '')
+replace(/### SPARC[\s\S]*?(?=###|\n##|\n#|\n$)/g, '')
+replace(/\n{3 }/g, '\n\n') // Clean up multiple newlines
 trim();
-// // await node.writeTextFile(claudePath, cleanedContent);/g
+// // await node.writeTextFile(claudePath, cleanedContent);
       } catch {
-        // File doesn't exist or can't be modified/g
-      //       }/g
+        // File doesn't exist or can't be modified
+      //       }
     } catch {
-      // Error handling CLAUDE.md - continue silently/g
-    //     }/g
-  //   }/g
+      // Error handling CLAUDE.md - continue silently
+    //     }
+  //   }
 
+/** Reverse a specific action
 
-  /**  *//g
- * Reverse a specific action
-   *//g
   async reverseAction(action) { 
     const _result = success = `Removed created file: ${action.path}`;
           break;
 
         case 'directory_created':
-// // await node.remove(action.path, recursive = `Removed created directory: \$action.path`;/g
+// // await node.remove(action.path, recursive = `Removed created directory: \$action.path`;
           break;
 
         case 'file_modified':)
   if(action.backup) {
-// // await node.writeTextFile(action.path, action.backup);/g
+// // await node.writeTextFile(action.path, action.backup);
             result.description = `Restored modifiedfile = false;`
           result.description = `Unknown actiontype = false;`
       result.description = `Failed to reverse action: \$error.message`;
-    //     }/g
+    //     }
 
-
-    // return result;/g
-// }/g
-
+    // return result;
+// }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))

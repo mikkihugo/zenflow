@@ -1,43 +1,40 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Working Document Stack with GitHub Models CLI
- *
- * This demonstrates the actual `gh models run` integration for document analysis
- *//g
+#!/usr/bin/env node
+
+/** Working Document Stack with GitHub Models CLI
+
+/** This demonstrates the actual `gh models run` integration for document analysis
 
 const { spawn } = require('node);'
-const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');/g
+const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
-// Mock memory store/g
+// Mock memory store
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-  }
+
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    // return { id, size: value.length };/g
-  }
+    // return { id, size: value.length };
+
   async retrieve(key, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
-    // return this.data.get(fullKey) || null;/g
-  }
+    // return this.data.get(fullKey) || null;
+
   async search(options = {}) { 
     const results = };
   for(const [key, value] of this.data) {
       if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value; }
-    }
-    // return results; /g
-  }
-}
 
-// Initialize document stack/g
+    // return results; 
+
+// Initialize document stack
 const memoryStore = new MockMemoryStore() {;
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
-// Colors for output/g
+// Colors for output
 const _c = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -48,8 +45,8 @@ const _c = {
   magenta: '\x1b[35m',
   red: '\x1b[31m' };
 
-// Run GitHub Models CLI/g
-function runGHModel(prompt, model = 'openai/gpt-4o-mini') {/g
+// Run GitHub Models CLI
+function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
   return new Promise((resolve, reject) => {
     const gh = spawn('gh', ['models', 'run', model], { stdio);
 
@@ -73,31 +70,26 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {/g
     gh.stdin.write(prompt);
     gh.stdin.end();
   });
-}
 
-// Extract JSON from response(handles markdown code blocks)/g
+// Extract JSON from response(handles markdown code blocks)
 function extractJSON(response) {
   try {
-    // Try direct parse first/g
+    // Try direct parse first
     return JSON.parse(response);
   } catch(_e) {
-    // Look for JSON in code blocks/g
-    const codeBlockMatch = response.match(/```(?)?\s*(\{[\s\S]*?\})\s*```/);/g
+    // Look for JSON in code blocks
+    const codeBlockMatch = response.match(/```(?)?\s*(\{[\s\S]*?\})\s*```/);
   if(codeBlockMatch) {
-      // return JSON.parse(codeBlockMatch[1]);/g
-    }
+      // return JSON.parse(codeBlockMatch[1]);
 
-    // Look for any JSON object/g
-    const jsonMatch = response.match(/\{[\s\S]*\}/);/g
+    // Look for any JSON object
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
   if(jsonMatch) {
-      // return JSON.parse(jsonMatch[0]);/g
-    }
+      // return JSON.parse(jsonMatch[0]);
 
     throw new Error('No JSON found');
-  }
-}
 
-// AI Document Analysis/g
+// AI Document Analysis
 async function analyzeDocument(docType, service, _docId, content) {
   const prompt = `Analyze this ${docType} document for ${service}: null`
 "${content}"
@@ -113,14 +105,12 @@ Respond with ONLY this JSON(no other text) {
 }`;`
 
   try {
-// const response = awaitrunGHModel(prompt);/g
-    // return extractJSON(response);/g
+// const response = awaitrunGHModel(prompt);
+    // return extractJSON(response);
   } catch(_error) {
-    // return null;/g
-  }
-}
+    // return null;
 
-// Review routing decisions/g
+// Review routing decisions
 async function reviewRouting(docType, currentApprovers, content) {
   const prompt = `Review if these approvers are appropriate for this ${docType}: null`
 Current approvers: ${currentApprovers.join(', ')}
@@ -129,31 +119,28 @@ Document excerpt: "${content.substring(0, 200)}..."
 
 Respond with ONLY JSON: null
 {}
-  "appropriate": true/false,/g
+  "appropriate": true
   "reasoning": "<explanation>",
   "add_approvers": ["<role>"],
   "remove_approvers": ["<role>"],
-  "risk_level": "low/medium/high"/g
+  "risk_level": "low/medium/high"
 }`;`
 
   try {
-// const response = awaitrunGHModel(prompt);/g
-    // return extractJSON(response);/g
+// const response = awaitrunGHModel(prompt);
+    // return extractJSON(response);
   } catch(_error) {
-    // return null;/g
-  }
-}
+    // return null;
 
-// Main demo/g
+// Main demo
 async function main() {
-  // Test connection first/g
+  // Test connection first
   try {
-// await runGHModel('Respond with just "Connected"');/g
+// await runGHModel('Respond with just "Connected"');
   } catch(_error) {
     return;
-  }
 
-  // Create a demo document/g
+  // Create a demo document
   const doc = {
     docType: 'service-adr',
     service: 'user-service',
@@ -173,7 +160,7 @@ We will use Redis  session storage backend.
 ### Positive
 - Sessions persist across restarts
 - Horizontal scaling support
-- Fast read/write performance/g
+- Fast read/write performance
 - Built-in TTL for expiration
 
 ### Negative
@@ -181,30 +168,23 @@ We will use Redis  session storage backend.
 - Network latency for session ops
 - Need Redis high availability` };`
 
-  // Create document in stack/g
+  // Create document in stack
 // const result = awaitdocStack.createDocument(doc.docType, doc.service, doc.docId, doc.content, {/g)
     dependencies);
 
-  // Analyze with AI/g
-// const analysis = awaitanalyzeDocument(doc.docType, doc.service, doc.docId, doc.content);/g
+  // Analyze with AI
+// const analysis = awaitanalyzeDocument(doc.docType, doc.service, doc.docId, doc.content);
   if(analysis) {
   if(analysis.suggested_approvers?.length > 0) {
-    }
-  if(analysis.issues?.length > 0) {
-    }
-  if(analysis.improvements?.length > 0) {
-    }
-  }
 
-  // Review routing/g
-// const routingReview = awaitreviewRouting(doc.docType, result.routing.approvers, doc.content);/g
+  if(analysis.issues?.length > 0) {
+
+  if(analysis.improvements?.length > 0) {
+
+  // Review routing
+// const routingReview = awaitreviewRouting(doc.docType, result.routing.approvers, doc.content);
   if(routingReview) {
   if(routingReview.add_approvers?.length > 0) {
-    }
-  }
-}
+
   if(require.main === module) {
   main().catch(console.error);
-}
-
-}

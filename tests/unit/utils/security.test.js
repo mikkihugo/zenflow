@@ -1,12 +1,12 @@
-import { describe, expect  } from '@jest/globals';/g
-import { validateCommandArgs  } from '../../../src/utils/security.js';/g
+import { describe, expect  } from '@jest';
+import { validateCommandArgs  } from '../../../src/utils/security.js';
 
 describe('Security Utils', () => {
   describe('validatePID', () => {
     it('should validate positive integer PIDs', () => {
       expect(validatePID(1234)).toBe(1234);
       expect(validatePID('5678')).toBe(5678);
-      expect(validatePID(' 999 ')).toBe(999); // handles whitespace/g
+      expect(validatePID(' 999 ')).toBe(999); // handles whitespace
     });
     it('should reject invalid PIDs', () => {
       expect(validatePID(-1)).toBeNull();
@@ -17,12 +17,12 @@ describe('Security Utils', () => {
       expect(validatePID('12.34')).toBeNull();
     });
     it('should reject PIDs outside valid range', () => {
-      expect(validatePID(4194305)).toBeNull(); // Too large/g
-      expect(validatePID('9999999')).toBeNull(); // Way too large/g
+      expect(validatePID(4194305)).toBeNull(); // Too large
+      expect(validatePID('9999999')).toBeNull(); // Way too large
     });
     it('should handle edge cases', () => {
-      expect(validatePID(1)).toBe(1); // Minimum valid PID/g
-      expect(validatePID(4194304)).toBe(4194304); // Maximum valid PID/g
+      expect(validatePID(1)).toBe(1); // Minimum valid PID
+      expect(validatePID(4194304)).toBe(4194304); // Maximum valid PID
       expect(validatePID(null)).toBeNull();
       expect(validatePID(undefined)).toBeNull();
     });
@@ -48,22 +48,22 @@ describe('Security Utils', () => {
       expect(result).toEqual(['--flag', 'value']);
     });
     it('should reject potentially dangerous arguments', () => {
-      // Test various dangerous patterns that might be rejected/g
+      // Test various dangerous patterns that might be rejected
       const _dangerousArgs = [
-        ['--flag', '$(rm -rf /)'], // Command injection/g
-        ['--config', '../../../etc/passwd'], // Path traversal/g
-        ['--output', '/dev/null; rm important.txt'], // Command chaining/g
+        ['--flag', '$(rm -rf /)'], // Command injection
+        ['--config', '../../../etc/passwd'], // Path traversal
+        ['--output', '/dev/null; rm important.txt'], // Command chaining
       ];
       dangerousArgs.forEach((args) => {
         const _result = validateCommandArgs(args);
-        // The function should either return null or filter out dangerous args/g
+        // The function should either return null or filter out dangerous args
   if(result !== null) {
-          // If not null, ensure no dangerous patterns made it through/g
+          // If not null, ensure no dangerous patterns made it through
           expect(;
-    // result.every(; // LINT) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';');/g
+    // result.every(; // LINT) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';');
             );
           ).toBe(true);
-// }/g
+// }
       });
     });
   });
@@ -76,59 +76,59 @@ describe('Security Utils', () => {
         { input: '`whoami`', expected },
         { input: 'file && rm something', expected },
         { input: 'file  ?? echo "danger"', expected },
-        { input: 'file; rm -rf /', expected },/g
+        { input: 'file; rm -rf /', expected },
         { input: 'file | cat', expected } ];
       testCases.forEach(({ input, expected   }) => {
-        // Create a simple function to test dangerous patterns/g
+        // Create a simple function to test dangerous patterns
         const _containsDangerousPatterns = () => {
           const _dangerousPatterns = [
-            /\\$\(/, // Command substitution \$(...)/g
-            /`[^`]*`/, // Backtick command substitution`/g
-            /[;&|]/, // Command separators/g
-            /\.\.\//, // Directory traversal/g
-            /\/dev\//, // Device files/g
-            /\/proc\//, // Process files/g
-            /\/sys\//, // System files/g
+// \\$\(/, // Command substitution \$(...)
+// `[^`]*`/, // Backtick command substitution`
+// [;&|]/, // Command separators
+// \.\.\//, // Directory traversal
+// \/dev\//, // Device files
+// \/proc\//, // Process files
+// \/sys\//, // System files
           ];
-          // return dangerousPatterns.some((pattern) => pattern.test(str));/g
-    //   // LINT: unreachable code removed};/g
+          // return dangerousPatterns.some((pattern) => pattern.test(str));
+    //   // LINT: unreachable code removed};
         const _result = containsDangerousPatterns(input);
         expect(result).toBe(expected);
       });
     });
     it('should validate file paths', () => {
       const _validatePath = () => {
-        // Simple path validation/g
+        // Simple path validation
         if(typeof path !== 'string') return false;
-    // ; // LINT: unreachable code removed/g
-        // Reject paths with dangerous patterns/g
+    // ; // LINT: unreachable code removed
+        // Reject paths with dangerous patterns
         const _dangerousPatterns = [
-          /\.\.\//, // Directory traversal/g
-          /^\/etc\//, // System directories/g
-          /^\/proc\//,/g
-          /^\/sys\//,/g
-          /^\/dev\//,/g
-          /\/\.\./, // Any directory traversal/g
+// \.\.\//, // Directory traversal
+// ^\/etc\//, // System directories
+// ^\/proc\//,
+// ^\/sys\//,
+// ^\/dev\//,
+// \/\.\./, // Any directory traversal
         ];
-        // return !dangerousPatterns.some((pattern) => pattern.test(path));/g
-    //   // LINT: unreachable code removed};/g
-      expect(validatePath('normal/file.txt')).toBe(true);/g
-      expect(validatePath('./local/file.txt')).toBe(true);/g
-      expect(validatePath('../parent/file.txt')).toBe(false);/g
-      expect(validatePath('/etc/passwd')).toBe(false);/g
-      expect(validatePath('/proc/version')).toBe(false);/g
-      expect(validatePath('../../etc/shadow')).toBe(false);/g
+        // return !dangerousPatterns.some((pattern) => pattern.test(path));
+    //   // LINT: unreachable code removed};
+      expect(validatePath('normal
+      expect(validatePath('./local/file.txt')).toBe(true);
+      expect(validatePath('../parent/file.txt')).toBe(false);
+      expect(validatePath('/etc/passwd')).toBe(false);
+      expect(validatePath('/proc/version')).toBe(false);
+      expect(validatePath('../../etc/shadow')).toBe(false);
     });
   });
   describe('Input sanitization', () => {
     it('should sanitize HTML content', () => {
       const _sanitizeHtml = () => {
         return input;
-    // .replace(/</g, '&lt;'); // LINT: unreachable code removed/g
-replace(/>/g, '&gt;');/g
-replace(/"/g, '&quot;');"/g
-replace(/'/g, '&#x27;');'/g
-replace(/\//g, '&#x2F;');/g
+    // .replace(/</g, '&lt;'); // LINT: unreachable code removed
+replace(/>/g, '&gt;');
+replace(/"/g, '&quot;');"
+replace(/'/g, '&#x27;');'
+replace(/\//g, '&#x2F;');
       };
       expect(sanitizeHtml('<script>alert("xss")</script>')).toBe(;/g)
         '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;';
@@ -138,9 +138,9 @@ replace(/\//g, '&#x2F;');/g
     });
     it('should validate email addresses', () => {
       const _validateEmail = () => {
-        const _emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;/g
+        const _emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
-    //   // LINT: unreachable code removed};/g
+    //   // LINT: unreachable code removed};
       expect(validateEmail('user@example.com')).toBe(true);
       expect(validateEmail('test.email+tag@domain.co.uk')).toBe(true);
       expect(validateEmail('invalid-email')).toBe(false);
@@ -153,9 +153,9 @@ replace(/\//g, '&#x2F;');/g
         try {
           const _parsed = new URL(url);
           return ['http:', 'https:'].includes(parsed.protocol);
-    //   // LINT: unreachable code removed} catch {/g
+    //   // LINT: unreachable code removed} catch {
           return false;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
       };
       expect(validateUrl('https)).toBe(true);'
       expect(validateUrl('http)).toBe(true);'
@@ -165,4 +165,3 @@ replace(/\//g, '&#x2F;');/g
     });
   });
 });
-)

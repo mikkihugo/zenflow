@@ -2,7 +2,7 @@
 export default [
   // Base config for all files
   {
-    name: 'claude-zen/base',
+    name: 'claude-zen-base',
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',
@@ -27,7 +27,7 @@ export default [
   },
   // JavaScript and TypeScript files
   {
-    name: 'claude-zen/javascript-typescript',
+    name: 'claude-zen-js-ts',
     files: ['**/*.js', '**/*.mjs', '**/*.cjs', '**/*.ts', '**/*.tsx'],
     rules: {
       'no-unused-vars': 'error',
@@ -42,11 +42,11 @@ export default [
   },
   // Test files
   {
-    name: 'claude-zen/tests',
+    name: 'claude-zen-tests',
     files: [
       '**/*.test.js',
-      '**/*.test.ts',
       '**/*.spec.js',
+      '**/*.test.ts',
       '**/*.spec.ts',
       '**/__tests__/**/*',
       '**/tests/**/*',
@@ -72,7 +72,7 @@ export default [
   },
   // Ignore patterns
   {
-    name: 'claude-zen/ignores',
+    name: 'claude-zen-ignores',
     ignores: [
       'node_modules/**',
       'dist/**',
@@ -100,8 +100,8 @@ export default [
       '*.db',
       '*.tgz',
       '*.dump',
-      'scripts/test-monorepo-detection.js',
-      '**/*.d.ts',
+      'scripts/**/*.py',
+      '**/*.backup',
       '*.config.js.backup',
     ],
   },

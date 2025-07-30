@@ -1,12 +1,11 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Simple startup script for Claude Code Web UI;
- * Usage: node start-web-ui.js [port];
- *//g
+#!/usr/bin/env node
 
-import { startWebServer  } from './src/cli/simple-commands/web-server.js';/g
+/** Simple startup script for Claude Code Web UI;
+/** Usage: node start-web-ui.js [port];
 
-const _port = process.argv[2] ? parseInt(process.argv[2]) ; // eslint-disable-line/g
-console.warn('� Starting Claude Code Web UI...');
+import { startWebServer  } from './src/cli/simple-commands/web-server.js';
+
+const _port = process.argv[2] ? parseInt(process.argv[2]) ; // eslint-disable-line
+console.warn(' Starting Claude Code Web UI...');
 console.warn();
-  // // await startWebServer(port);/g
+  // // await startWebServer(port);

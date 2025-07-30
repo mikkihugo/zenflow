@@ -1,21 +1,21 @@
-// post-init-validator.js - Post-initialization verification checks/g
+// post-init-validator.js - Post-initialization verification checks
 
 export class PostInitValidator {
   constructor(workingDir = workingDir;
-// }/g
-/**  *//g
- * Check file integrity(existence, size, readability)
- *//g
+// }
+
+/** Check file integrity(existence, size, readability)
+
 async;
 checkFileIntegrity();
-// {/g
+// {
   const _result = {success = [
-      {path = `${this.workingDir}/${file.path}`;/g
+      {path = `${this.workingDir}
 
       try {
-// const _stat = awaitnode.stat(filePath);/g
+// const _stat = awaitnode.stat(filePath);
 
-        // Check if it exists and is a file/g
+        // Check if it exists and is a file
   if(!stat.isFile) {
           result.success = false;
           result.errors.push(`Expected file but found directory = {status = false;`
@@ -23,76 +23,76 @@ checkFileIntegrity();
             `File toosmall = ${file.minSize})`)
   result.files[file.path] = status =
   = 'windows')
-  //   {/g
+  //   {
     const _isExecutable = (stat.mode & 0o111) !== 0;
   if(!isExecutable) {
       result.warnings.push(`File not executable = {status = { status: 'ok',size = false;`
           result.errors.push(`Cannot read file = {status = false;`
       result.errors.push(`File not found = {status = {success = [`
       'memory',
-      'memory/agents',/g
-      'memory/sessions',/g
+      'memory
+      'memory
       'coordination',
-      'coordination/memory_bank',/g
-      'coordination/subtasks',/g
-      'coordination/orchestration',/g
+      'coordination
+      'coordination
+      'coordination
       '.claude',
-      '.claude/commands',/g
-      '.claude/logs' ];/g
+      '.claude
+      '.claude/logs' ];
 
     // Check required directories/g)))
   for(const dir of requiredDirs) {
-      const _dirPath = `${this.workingDir}/${dir}`; /g
+      const _dirPath = `${this.workingDir}/${dir}`; 
 
       try {
-// const _stat = awaitnode.stat(dirPath); /g
+// const _stat = awaitnode.stat(dirPath); 
   if(!stat.isDirectory) {
           result.success = false;
           result.errors.push(`Expected directory but foundfile = false;`
-      result.errors.push(`Required directorymissing = `${this.workingDir}/${dir}`;`/g
+      result.errors.push(`Required directorymissing = `${this.workingDir}
 
       try {))
-// // await node.stat(dirPath);/g
+// // await node.stat(dirPath);
       } catch {
         if(dir.includes('.roo')  ?? dir.includes('sparc')) {
-          result.warnings.push(`Optional SPARC directory missing = {success = // await this.validateMemoryStructure();`/g
+          result.warnings.push(`Optional SPARC directory missing = {success = // await this.validateMemoryStructure();`
       result.structure.memory = memoryStructure;
   if(!memoryStructure.valid) {
         result.warnings.push('Memory directory structure is incomplete');
-      //       }/g
-      // Check coordination structure/g
-// const _coordinationStructure = awaitthis.validateCoordinationStructure();/g
+      //       }
+      // Check coordination structure
+// const _coordinationStructure = awaitthis.validateCoordinationStructure();
       result.structure.coordination = coordinationStructure;
   if(!coordinationStructure.valid) {
         result.warnings.push('Coordination directory structure is incomplete');
-      //       }/g
-      // Check Claude integration structure/g
-// const _claudeStructure = awaitthis.validateClaudeStructure();/g
+      //       }
+      // Check Claude integration structure
+// const _claudeStructure = awaitthis.validateClaudeStructure();
       result.structure.claude = claudeStructure;
   if(!claudeStructure.valid) {
         result.warnings.push('Claude integration structure is incomplete');
-      //       }/g
-      // Check SPARC structure(if present)/g
-// const _sparcExists = awaitthis.checkSparcExists();/g
+      //       }
+      // Check SPARC structure(if present)
+// const _sparcExists = awaitthis.checkSparcExists();
   if(sparcExists) {
-// const _sparcStructure = awaitthis.validateSparcStructure();/g
+// const _sparcStructure = awaitthis.validateSparcStructure();
         result.structure.sparc = sparcStructure;
   if(!sparcStructure.valid) {
           result.warnings.push('SPARC structure is incomplete');
-        //         }/g
-      //       }/g
-    //     }/g
+        //         }
+      //       }
+    //     }
     catch(error)
     result.success = false
     result.errors.push(`Structure validation failed = success = [path = === 'windows') ;`
       result.warnings.push('Permission checks skipped on Windows');
-      // return result;/g
-    // ; // LINT: unreachable code removed/g
+      // return result;
+    // ; // LINT: unreachable code removed
   for(const item of itemsToCheck) {
-      const _itemPath = `${this.workingDir}/${item.path}`; /g
+      const _itemPath = `${this.workingDir}/${item.path}`; 
 
       try {
-// const _stat = awaitnode.stat(itemPath); /g
+// const _stat = awaitnode.stat(itemPath); 
         const _actualMode = stat.mode & 0o777;
         const _expectedMode = item.requiredMode;
 
@@ -101,116 +101,114 @@ checkFileIntegrity();
           result.warnings.push(;
             `Incorrect permissions on ${item.path}: ` +;)
     `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`)
-  //   }/g
+  //   }
   catch(error)
   result.warnings.push(`Could not check permissions`
   for ${item.path})
   )
-// }/g
-// return result;/g
-// }/g
-// Helper methods/g
+// }
+// return result;
+// }
+// Helper methods
 
-// async/g
+// async
 validateMemoryStructure();
-// {/g
+// {
   const _structure = {valid = ['agents', 'sessions'];
-  const _expectedFiles = ['claude-zen-data.json', 'agents/README.md', 'sessions/README.md'];/g
+  const _expectedFiles = ['claude-zen-data.json', 'agents/README.md', 'sessions/README.md'];
   for(const dir of expectedDirs) {
     try {
-// // await node.stat(`\$this.workingDir/memory/\$dir`); /g
+// // await node.stat(`\$this.workingDir/memory/\$dir`); 
       structure.dirs.push(dir); } catch {
       structure.valid = false;
-    //     }/g
-  //   }/g
+    //     }
+  //   }
   for(const file of expectedFiles) {
     try {
-// // await node.stat(`\$this.workingDir/memory/\$file`);/g
+// // await node.stat(`\$this.workingDir/memory/\$file`);
       structure.files.push(file);
     } catch {
       structure.valid = false;
-    //     }/g
-  //   }/g
-  // return structure;/g
-// }/g
+    //     }
+  //   }
+  // return structure;
+// }
 async;
 validateCoordinationStructure();
-// {/g
+// {
   const _structure = {valid = ['memory_bank', 'subtasks', 'orchestration'];
   for(const dir of expectedDirs) {
     try {
-// // await node.stat(`\$this.workingDir/coordination/\$dir`); /g
+// // await node.stat(`\$this.workingDir/coordination/\$dir`); 
       structure.dirs.push(dir); } catch {
       structure.valid = false;
-    //     }/g
-  //   }/g
-  // return structure;/g
-// }/g
+    //     }
+  //   }
+  // return structure;
+// }
 async;
   validateClaudeStructure() {;
-// {/g
+// {
   const _structure = {valid = ['commands', 'logs'];
   for(const dir of expectedDirs) {
     try {
-// // await node.stat(`\$this.workingDir/.claude/\$dir`); /g
+// // await node.stat(`\$this.workingDir/.claude/\$dir`); 
       structure.dirs.push(dir); } catch {
       structure.valid = false;
-    //     }/g
-  //   }/g
-  // Check if there are any command files/g
+    //     }
+  //   }
+  // Check if there are any command files
   try {
     const _entries = [];
-    for // await(const entry of node.readDir(`\$this.workingDir/.claude/commands`) {) {/g
+    for // await(const entry of node.readDir(`\$this.workingDir/.claude/commands`) {) {
       if(entry.isFile && entry.name.endsWith('.js')) {
         entries.push(entry.name);
-      //       }/g
-    //     }/g
+      //       }
+    //     }
     structure.hasCommands = entries.length > 0;
     structure.commandCount = entries.length;
   } catch {
     structure.hasCommands = false;
-  //   }/g
-  // return structure;/g
-// }/g
+  //   }
+  // return structure;
+// }
 async;
 checkSparcExists();
 try {
-// await node.stat(`\$this.workingDir/.roomodes`);/g
-    // return true;/g
-    //   // LINT: unreachable code removed} catch {/g
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
+// await node.stat(`\$this.workingDir/.roomodes`);
+    // return true;
+    //   // LINT: unreachable code removed} catch {
+    // return false;
+    //   // LINT: unreachable code removed}
 
 async;
 validateSparcStructure();
-// {/g
-  const _structure = {valid = await node.stat(`${this.workingDir}/.roomodes`);/g
+// {
+  const _structure = {valid = await node.stat(`${this.workingDir}
   structure.hasRoomodes = stat.isFile;
-// }/g
+// }
 catch;
   structure.valid = false;
 
-// Check .roo directory/g
+// Check .roo directory
 try {
-// const _stat = awaitnode.stat(`${this.workingDir}/.roo`);/g
+// const _stat = awaitnode.stat(`${this.workingDir}/.roo`);
   structure.hasRooDir = stat.isDirectory;
   if(structure.hasRooDir) {
     const _expectedDirs = ['templates', 'workflows', 'modes', 'configs'];
   for(const dir of expectedDirs) {
       try {
-// // await node.stat(`${this.workingDir}/.roo/${dir}`); /g
+// // await node.stat(`${this.workingDir}/.roo/${dir}`); 
         structure.dirs.push(dir); } catch {
-        // Optional subdirectories/g
-      //       }/g
-    //     }/g
-  //   }/g
+        // Optional subdirectories
+      //       }
+    //     }
+  //   }
 } catch {
-  // .roo directory is optional/g
-// }/g
+  // .roo directory is optional
+// }
 
-
-// return structure;/g
-// }/g
-
+// return structure;
+// }
 
 }}}}}}}}}}}}}}}}}}}}}) {)))))

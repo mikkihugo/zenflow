@@ -1,23 +1,22 @@
-/\*\*/g
- * Jest-compatible tests for NPX isolated cache functionality;
- *//g
+
+/** Jest-compatible tests for NPX isolated cache functionality;
 
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect  } from '@jest/globals';/g
+import { afterEach, beforeEach, describe, expect  } from '@jest';
 import { cleanupAllCaches,
 createIsolatedCache,
-getIsolatedNpxEnv  } from '../../../src/utils/npx-isolated-cache.js'/g
+getIsolatedNpxEnv  } from '../../../src/utils/npx-isolated-cache.js'
 describe('NPX Isolated Cache', () =>
-// {/g
+// {
   beforeEach(() => {
-    // Clean up any existing caches before each test/g
+    // Clean up any existing caches before each test
     return cleanupAllCaches();
-    //   // LINT: unreachable code removed});/g
+    //   // LINT: unreachable code removed});
     afterEach(() => {
-      // Clean up caches after each test/g
+      // Clean up caches after each test
       return cleanupAllCaches();
-      //   // LINT: unreachable code removed});/g
+      //   // LINT: unreachable code removed});
       describe('createIsolatedCache', () => {
         it('should create unique cache directories for each call', () => {
           const _env1 = createIsolatedCache();
@@ -35,7 +34,7 @@ describe('NPX Isolated Cache', () =>
           expect(env.npm_config_cache).toBeDefined();
           process.env.NODE_ENV = originalEnv;
         });
-        it('should create cache directories under temp/.npm-cache', () => {/g
+        it('should create cache directories under temp/.npm-cache', () => {
           const _env = createIsolatedCache();
           const _cacheDir = env.NPM_CONFIG_CACHE;
           expect(cacheDir).toContain(path.join(os.tmpdir(), '.npm-cache'));
@@ -57,7 +56,7 @@ describe('NPX Isolated Cache', () =>
         expect(env.NPM_CONFIG_CACHE).toBeDefined();
         });
       it('should prioritize additional env vars over defaults', () => {
-        const _customCacheDir = '/custom/cache/dir';/g
+        const _customCacheDir = '/custom/cache/dir';
         const _env = getIsolatedNpxEnv({ NPM_CONFIG_CACHE   });
       expect(env.NPM_CONFIG_CACHE).toBe(customCacheDir);
     });
@@ -68,11 +67,11 @@ describe('NPX Isolated Cache', () =>
       const _env2 = createIsolatedCache();
       const _cache1 = path.basename(env1.NPM_CONFIG_CACHE);
       const _cache2 = path.basename(env2.NPM_CONFIG_CACHE);
-      // Both should start with claude-zen-{pid}/g
+      // Both should start with claude-zen-{pid}
       const _pidPrefix = `claude-zen-${process.pid}-`;
       expect(cache1).toMatch(new RegExp(`^${pidPrefix}\\d+-[a-z0-9]+$`));
       expect(cache2).toMatch(new RegExp(`^${pidPrefix}\\d+-[a-z0-9]+$`));
-      // They should be different/g
+      // They should be different
       expect(cache1).not.toBe(cache2);
     });
   });
@@ -80,8 +79,8 @@ describe('NPX Isolated Cache', () =>
     it('should track cache directories for cleanup', async() => {
       const _env = createIsolatedCache();
       const __cacheDir = env.NPM_CONFIG_CACHE;
-      // Cleanup should not throw even if directory doesn't exist'/g
-  // // await expect(cleanupAllCaches()).resolves.not.toThrow();/g
+      // Cleanup should not throw even if directory doesn't exist'
+  // // await expect(cleanupAllCaches()).resolves.not.toThrow();
     });
   });
   describe('environment inheritance', () => {
@@ -92,4 +91,3 @@ describe('NPX Isolated Cache', () =>
     });
   });
 })
-}

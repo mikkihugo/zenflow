@@ -1,9 +1,8 @@
-/* */
+
 // MCP Tools for GitHub Swarm Integration
- *
+
 // This file provides MCP tools for interacting with GitHub-related swarm commands.
 // It wraps the `npx ruv-swarm github` commands to provide a consistent MCP interface.
- */
 
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -22,7 +21,6 @@ async function executeRuvSwarmCommand() {
     return { success, error: error.message, stderr: error.stderr };
     //   // LINT: unreachable code removed}
 // }
-
 
 export const _githubSwarmTools = {
   github_review_init: {

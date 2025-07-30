@@ -1,15 +1,14 @@
-/\*\*/g
- * Base Plugin Class;
- * TypeScript foundation for all Claude Code Flow plugins;
- *//g
+
+/** Base Plugin Class;
+/** TypeScript foundation for all Claude Code Flow plugins;
 
 import crypto from 'node:crypto';
 import { EventEmitter  } from 'node:events';
 import { performance  } from 'node:perf_hooks';
-import type { Plugin, ResourceUsage  } from '../types/plugin.js'; // eslint-disable-line/g
+import type { Plugin, ResourceUsage  } from '../types/plugin.js'; // eslint-disable-line
 
 export abstract class BasePlugin extends EventEmitter implements Plugin {
-  // public readonlyid = 'uninitialized';/g
+  // public readonlyid = 'uninitialized';
   protected hooks = new Map();
   protected apis = new Map();
   protected resourceUsage = 100;
@@ -24,7 +23,7 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
   this;
 
   context = context;
-  // Initialize metadata/g
+  // Initialize metadata
   this;
 
   metadata = {
@@ -45,9 +44,9 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
   this;
 
   updateLastActivity();
-// }/g
+// }
 catch(error)
-// {/g
+// {
       this.setState('error');
       this.metadata.status = 'error';
       this.metadata.errorCount++;
@@ -61,22 +60,21 @@ catch(error)
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = === 'running') {
-// // await this.stop();/g
-      //       }/g
-
+// // await this.stop();
+      //       }
 
       this.setState('destroying');
       this.emit('unloading', this.manifest.name);
 
-      // Stop resource monitoring/g
+      // Stop resource monitoring
       this.stopResourceMonitoring();
 
-      // Cleanup hooks and APIs/g
+      // Cleanup hooks and APIs
       this.hooks.clear();
       this.apis.clear();
 
-      // Call plugin-specific cleanup/g
-// // await this.onDestroy();/g
+      // Call plugin-specific cleanup
+// // await this.onDestroy();
       this.setState('destroyed');
       this.metadata.status = 'unloaded';
       this.emit('unloaded', this.manifest.name);
@@ -86,72 +84,65 @@ catch(error)
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = false) {
-// // await this.start();/g
-    //     }/g
-  //   }/g
-
+// // await this.start();
+    //     }
+  //   }
 
   async unload(): Promise<void> {
-// await this.destroy();/g
-  //   }/g
-
+// await this.destroy();
+  //   }
 
   async reload(): Promise<void> {
-// await this.stop();/g
-// await this.start();/g
+// await this.stop();
+// await this.start();
     this.metadata.restartCount++;
-  //   }/g
+  //   }
 
-
-  async configure(updates = // await this.validateConfiguration({ ...this.config, ...updates   });/g
+  async configure(updates = // await this.validateConfiguration({ ...this.config, ...updates   });
     if(validation.some(v => !v.valid)) {
       throw new Error(`Invalidconfiguration = > !v.valid).map(v => v.message).join(', ')}`);
-    //     }/g
+    //     }
 
-
-    // Apply updates/g
+    // Apply updates
     Object.assign(this.config, updates);
 
-    // Restart if needed/g
+    // Restart if needed
   if(this.state === 'running') {
-// // await this.reload();/g
-    //     }/g
-  //   }/g
+// // await this.reload();
+    //     }
+  //   }
 
-
-  // Hook system implementation/g
+  // Hook system implementation
   async registerHook(type = {callCount = this.hooks.get(type);
   if(handlers) {
       handlers.delete(handler);
   if(handlers.size === 0) {
         this.hooks.delete(type);
-      //       }/g
-    //     }/g
-
+      //       }
+    //     }
 
     this.emit('hook-unregistered', this.manifest.name, type);
     this.context.apis.logger.info(`Hookunregistered = this.hooks.get(type);`
   if(!handlers  ?? handlers.size === 0) {
-      // return {success = performance.now();/g
-    // const _results = []; // LINT: unreachable code removed/g
+      // return {success = performance.now();
+    // const _results = []; // LINT: unreachable code removed
 
     try {
   for(const handler of handlers) {
         const _hookContext = {
-          type,data = // await handler(hookContext); /g
+          type,data = // await handler(hookContext); 
         results.push(result); if(result.stop) {
           break;
-        //         }/g
-      //       }/g
-
+        //         }
+      //       }
 
       const _executionTime = performance.now() - startTime;
       this.updateHookMetrics(type, executionTime, true);
 
       this.emit('hook-executed', this.manifest.name, type, executionTime);
 
-      // return {success = > ({ ...acc, ...result.data   }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),/g
-    // executionTime,resourcesUsed = performance.now() - startTime; // LINT: unreachable code removed/g
+      // return {success = > ({ ...acc, ...result.data   }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),
+    // executionTime,resourcesUsed = performance.now() - startTime; // LINT: unreachable code removed
       this.updateHookMetrics(type, executionTime, false);
 
       this.emit('hook-failed', this.manifest.name, type, {)
@@ -162,17 +153,17 @@ catch(error)
       throw new Error(`Method notfound = performance.now();`
 
     try {
-      // Here you would implement the actual API method call/g
-      // This is a simplified version - in reality you'd need to handle the method invocation'/g
-// const _result = awaitPromise.resolve(undefined); // Placeholder/g
+      // Here you would implement the actual API method call
+      // This is a simplified version - in reality you'd need to handle the method invocation'
+// const _result = awaitPromise.resolve(undefined); // Placeholder
 
       const _executionTime = performance.now() - startTime;
       this.updateAPIMetrics(name, executionTime, true);
 
       this.emit('api-called', this.manifest.name, name, executionTime);
 
-      // return result;/g
-    //   // LINT: unreachable code removed} catch(/* _error */) {/g
+      // return result;
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       const _executionTime = performance.now() - startTime;
       this.updateAPIMetrics(name, executionTime, false);
 
@@ -181,15 +172,15 @@ catch(error)
       this.emit('resource-exceeded', this.manifest.name, type,)
         this.resourceUsage[type as keyof ResourceUsage] + amount, limits.maximum);
       return false;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-    // Allocate resource(simplified - would integrate with actual resource manager)/g
-    // return true;/g
-    //   // LINT: unreachable code removed}/g
+    // Allocate resource(simplified - would integrate with actual resource manager)
+    // return true;
+    //   // LINT: unreachable code removed}
 
   async releaseResource(type = [];
 
-    // Check error rate/g
+    // Check error rate
   if(this.metrics.performance.errorRate > 10) { 
       issues.push(severity = === 'error') {
       issues.push({severity = 100;
@@ -199,7 +190,7 @@ catch(error)
         case 'high': score -= 20; break;
         case 'medium': score -= 10; break;
         case 'low': score -= 5; break;
-      //       }/g
+      //       }
     });
 
     score = Math.max(0, score);
@@ -209,30 +200,29 @@ catch(error)
     this.healthScore = score;
     this.lastHealthCheck = new Date();
 
-    // Update metadata/g
+    // Update metadata
     this.metadata.health = {
       status,
       score,issues = > i.message),lastCheck = [];
 
     const _startTime = performance.now();
 
-    // Test1 = performance.now();/g
-// // await this.healthCheck();/g
+    // Test1 = performance.now();
+// // await this.healthCheck();
       tests.push({name = performance.now();
-// // await this.validateConfiguration(this.config);/g
+// // await this.validateConfiguration(this.config);
       tests.push({name = performance.now() - startTime;
 
-    // return {/g
+    // return {
       passed = === 0,
-    // totalTests = { ...this.config.settings, ...updates  // LINT: unreachable code removed};/g
-// // await this.configure({ ...this.config,settings = [];/g
+    // totalTests = { ...this.config.settings, ...updates  // LINT: unreachable code removed};
+// // await this.configure({ ...this.config,settings = [];
     // Basic validation - plugins can override this/g)
   if(this.manifest.configuration.required) {
   for(const field of this.manifest.configuration.required) {
         if(!(field in config)) {
-          results.push({valid = state; //   }/g
+          results.push({valid = state; //   }
 
-)
   protected updateLastActivity() ; this.metadata.lastActivity = new Date() {;
 
   protected updateResourceUsage(): void
@@ -244,78 +234,72 @@ catch(error)
   if(hookMetrics) {
       hookMetrics.callCount++;
       hookMetrics.averageExecutionTime = ;
-        (hookMetrics.averageExecutionTime * (hookMetrics.callCount - 1) + executionTime) / hookMetrics.callCount;/g
+        (hookMetrics.averageExecutionTime * (hookMetrics.callCount - 1) + executionTime) / hookMetrics.callCount;
   if(!success) {
         hookMetrics.errorCount++;
-      //       }/g
-    //     }/g
-
+      //       }
+    //     }
 
   protected updateAPIMetrics(name = this.metrics.apis[name];
   if(apiMetrics) {
       apiMetrics.callCount++;
       apiMetrics.averageExecutionTime = ;
-        (apiMetrics.averageExecutionTime * (apiMetrics.callCount - 1) + executionTime) / apiMetrics.callCount;/g
+        (apiMetrics.averageExecutionTime * (apiMetrics.callCount - 1) + executionTime) / apiMetrics.callCount;
   if(!success) {
         apiMetrics.errorCount++;
-      //       }/g
-    //     }/g
-  //   }/g
+      //       }
+    //     }
+  //   }
 
-
-  // private setupLifecycleEvents() ;/g
-    // Track performance metrics/g
+  // private setupLifecycleEvents() ;
+    // Track performance metrics
     this.on('api-called', (_pluginName, _apiName, _duration) => ;
       this.metrics.performance.callCount++;
       this.metrics.performance.totalExecutionTime += duration;
       this.metrics.performance.averageExecutionTime = ;
-        this.metrics.performance.totalExecutionTime / this.metrics.performance.callCount;);/g
+        this.metrics.performance.totalExecutionTime / this.metrics.performance.callCount;);
 
     this.on('error', () => {
       this.metadata.errorCount++;
       this.metrics.performance.errorRate = ;
-        (this.metadata.errorCount / Math.max(1, this.metrics.performance.callCount)) * 100;/g
+        (this.metadata.errorCount / Math.max(1, this.metrics.performance.callCount)) * 100;
       this.metrics.performance.successRate = 100 - this.metrics.performance.errorRate;
     });
 
-  // private async validateDependencies(): Promise<void> ;/g
-    // Validate system dependencies/g
+  // private async validateDependencies(): Promise<void> ;
+    // Validate system dependencies
   for(const _dep of this.manifest.dependencies.system) {
-      // Would implement actual system dependency validation/g
-    //     }/g
+      // Would implement actual system dependency validation
+    //     }
 
-
-    // Validate plugin dependencies/g
+    // Validate plugin dependencies
     for(const [_pluginName, _version] of Object.entries(this.manifest.dependencies.plugins)) {
-      // Would implement actual plugin dependency validation/g
-    //     }/g
+      // Would implement actual plugin dependency validation
+    //     }
 
+  // private resourceMonitorInterval?: NodeJS.Timeout; 
 
-  // private resourceMonitorInterval?: NodeJS.Timeout; /g
-
-  // private startResourceMonitoring() ; /g
+  // private startResourceMonitoring() ; 
   if(this.config.monitoring?.enabled) {
       this.resourceMonitorInterval = setInterval(() => {
         this.updateResourceUsage();
 
-        // Check for resource warnings/g
+        // Check for resource warnings
         const _limits = this.context.resources.limits;
   for(const limit of limits) {
           const _usage = this.resourceUsage[limit.type as keyof ResourceUsage]; if(usage > limit.recommended) {
-            this.emit('resource-warning', this.manifest.name, limit.type, usage, limit.recommended); //           }/g
-        //         }/g
-      }, 5000) {; // Update every 5 seconds/g
-    //     }/g
+            this.emit('resource-warning', this.manifest.name, limit.type, usage, limit.recommended); //           }
+        //         }
+      }, 5000) {; // Update every 5 seconds
+    //     }
 
-
-  // private stopResourceMonitoring() ;/g
+  // private stopResourceMonitoring() ;
   if(this.resourceMonitorInterval) {
       clearInterval(this.resourceMonitorInterval);
       this.resourceMonitorInterval = undefined;
-    //     }/g
-// }/g
+    //     }
+// }
 
-
-// export default BasePlugin;/g
+// export default BasePlugin;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))

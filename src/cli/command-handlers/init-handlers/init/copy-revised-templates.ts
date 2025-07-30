@@ -1,4 +1,4 @@
-// copy-revised-templates.js - Copy the revised template files from repository/g
+// copy-revised-templates.js - Copy the revised template files from repository
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -6,16 +6,16 @@ import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
-// Source directory for revised templates(repository root .claude/commands)/g
-const _REPO_TEMPLATES_DIR = path.join(__dirname, '../../../../.claude/commands');/g
-/**  *//g
- * Copy revised template files from repository to target project
- *//g
+// Source directory for revised templates(repository root .claude/commands)
+const _REPO_TEMPLATES_DIR = path.join(__dirname, '../../../../.claude/commands');
+
+/** Copy revised template files from repository to target project
+
 export async function copyRevisedTemplates(targetDir = {}) {
-  let _results = {success = path.join(targetDir, '.claude/commands');/g
+  let _results = {success = path.join(targetDir, '.claude
 
   try {
-    // Ensure target directory exists/g
+    // Ensure target directory exists
 // // await fs.promises.mkdir(targetCommandsDir, {recursive = [/g)
       {source = path.join(REPO_TEMPLATES_DIR, file.source);
       const _targetPath = path.join(targetDir, file.target);
@@ -24,70 +24,64 @@ export async function copyRevisedTemplates(targetDir = {}) {
         try {
           const _targetDirPath = path.dirname(targetPath);
 // // await fs.promises.mkdir(targetDirPath, {recursive = results.errors.length === 0;/g)
-  } catch(/* err */) {/g
+  } catch(/* err */) {
     results.success = false;
-    results.errors.push(`Failed to copy revisedtemplates = // await fs.promises.readdir(sourceDir, {withFileTypes = path.join(sourceDir, entry.name);`/g
+    results.errors.push(`Failed to copy revisedtemplates = // await fs.promises.readdir(sourceDir, {withFileTypes = path.join(sourceDir, entry.name);`
       const _targetPath = path.join(targetDir, entry.name);
 
       if(entry.isDirectory()) {
-        // Create directory and recurse/g
-// // await fs.promises.mkdir(targetPath, {recursive = path.relative(targetDir, targetPath);/g
+        // Create directory and recurse
+// // await fs.promises.mkdir(targetPath, {recursive = path.relative(targetDir, targetPath);
             results.copiedFiles.push(relativePath);
   if(!options.dryRun && options.verbose) {
               console.warn(`   Copied ${relativePath}`);
-            //             }/g
+            //             }
           } else {
             const _relativePath = path.relative(targetDir, targetPath);
             results.skippedFiles.push(relativePath);
   if(!options.dryRun && options.verbose) {
-              console.warn(`  ⏭  Skipped ${relativePath} (already exists)`);
-            //             }/g
-          //           }/g
-        } catch(/* err */) {/g
+              console.warn(`    Skipped ${relativePath} (already exists)`);
+            //             }
+          //           }
+        } catch(/* err */) {
           results.errors.push(`Failed to copy ${entry.name});`
-        //         }/g
-// }/g
-// }/g
-  } catch(/* err */) {/g
+        //         }
+// }
+// }
+  } catch(/* err */) {
   results.errors.push(`Failed to read directory ${sourceDir});`
-// }/g
-// }/g
+// }
+// }
 
+/** Copy only specific categories
 
-/**  *//g
- * Copy only specific categories
- *//g
-// export async function copyRevisedTemplatesByCategory(targetDir = {}) {/g
+// export async function copyRevisedTemplatesByCategory(targetDir = {}) {
   const _results = {success = path.join(REPO_TEMPLATES_DIR, category);
-    const _targetCategoryDir = path.join(targetDir, '.claude/commands', category);/g
+    const _targetCategoryDir = path.join(targetDir, '.claude/commands', category);
 
     if(fs.existsSync(sourceCategoryDir)) {
-// // await fs.promises.mkdir(targetCategoryDir, {recursive = results.errors.length === 0;/g
-  // return results;/g
-// }/g
+// // await fs.promises.mkdir(targetCategoryDir, {recursive = results.errors.length === 0;
+  // return results;
+// }
 
-
-/**  *//g
- * Validate that source templates exist
+/** Validate that source templates exist
  *//g)
-// export function _validateTemplatesExist() {/g
+// export function _validateTemplatesExist() {
   if(!fs.existsSync(REPO_TEMPLATES_DIR)) {
     return {valid = ['analysis', 'github', 'sparc', 'coordination'];
-    // const _missingCategories = []; // LINT: unreachable code removed/g
+    // const _missingCategories = []; // LINT: unreachable code removed
   for(const category of requiredCategories) {
     const _categoryPath = path.join(REPO_TEMPLATES_DIR, category); if(!fs.existsSync(categoryPath)) {
-      missingCategories.push(category); //     }/g
-  //   }/g
+      missingCategories.push(category); //     }
+  //   }
   if(missingCategories.length > 0) {
-    // return {/g
+    // return {
       valid,
-    // error: `Missing required template categories: \${missingCategories.join(', ') // LINT}`;/g
+    // error: `Missing required template categories: \${missingCategories.join(', ') // LINT}`;
     };
-  //   }/g
+  //   }
 
-
-  // return { valid};/g
-// }/g
-
+  // return { valid};
+// }
 
 }}}}}}}}}}))))))

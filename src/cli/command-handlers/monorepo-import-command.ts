@@ -1,35 +1,34 @@
-/**  *//g
- * Monorepo Import and Analysis Command
- * Import existing monorepo code and analyze service structure
- * For 15 microservices pilot - single domain, flat structure
- *//g
+
+/** Monorepo Import and Analysis Command
+/** Import existing monorepo code and analyze service structure
+/** For 15 microservices pilot - single domain, flat structure
 
 import { existsSync  } from 'node:fs';
-import { readFile  } from 'node:fs/promises';/g
+import { readFile  } from 'node:fs';
 import path from 'node:path';
 import { glob  } from 'glob';
-import { KuzuGraphInterface  } from '../database/kuzu-graph-interface.js';/g
-import { printInfo  } from '../utils.js';/g
-/**  *//g
- * Analyze monorepo structure and discover services
- *//g
-export async function importMonorepoCommand(args = args[0]  ?? process.cwd();
-const _options = {maxServices = = false, // default truesetupGraph = = false,   // default trueverbose = await discoverServices(monorepoPath, options);/g
+import { KuzuGraphInterface  } from '../database/kuzu-graph-interface.js';
+import { printInfo  } from '..';
 
-    // 2. Analyze service code and dependencies/g
-// const _analysis = awaitanalyzeServices(services, options);/g
-// 3. Set up graph database with Kuzu/g
+/** Analyze monorepo structure and discover services
+
+export async function importMonorepoCommand(args = args[0]  ?? process.cwd();
+const _options = {maxServices = = false, // default truesetupGraph = = false,   // default trueverbose = await discoverServices(monorepoPath, options);
+
+    // 2. Analyze service code and dependencies
+// const _analysis = awaitanalyzeServices(services, options);
+// 3. Set up graph database with Kuzu
   if(options.setupGraph) {
-// // await setupServiceGraph(analysis, options);/g
-// }/g
-// 4. Auto-create hives if requested/g
+// // await setupServiceGraph(analysis, options);
+// }
+// 4. Auto-create hives if requested
   if(options.autoCreateHives) {
-// // await createServiceHives(analysis, options);/g
-// }/g
-// 5. Generate import summary/g
+// // await createServiceHives(analysis, options);
+// }
+// 5. Generate import summary
 const _summary = generateImportSummary(analysis, options);
-// // await saveImportSummary(summary);/g
-printSuccess(`✅ Monorepo importcompleted = new Map();`
+// // await saveImportSummary(summary);
+printSuccess(` Monorepo importcompleted = new Map();`
   const _discoveryStrategies = [
     discoverByDirectoryStructure,
     discoverByPackageJson,
@@ -39,59 +38,59 @@ printSuccess(`✅ Monorepo importcompleted = new Map();`
   ];
   for(const strategy of discoveryStrategies) {
     try {
-// const _found = awaitstrategy(monorepoPath, options); /g
+// const _found = awaitstrategy(monorepoPath, options); 
       found.forEach(service => {)
         const _key = service.path; if(!services.has(key) {) {
           services.set(key, service);
         } else {
-          // Merge service information/g
+          // Merge service information
           const _existing = services.get(key);
           services.set(key, mergeServiceInfo(existing, service));
-        //         }/g
+        //         }
       });
     } catch(error) {
   if(options.verbose) {
         printWarning(`Strategyfailed = Array.from(services.values());`
-slice(0, options.maxServices) // Limit to target count/g
+slice(0, options.maxServices) // Limit to target count
 
-printSuccess(`� Found $`
-// {/g
+printSuccess(` Found $`
+// {
   serviceList.length;
-// }/g
+// }
 services`);`
-// return serviceList;/g
-// }/g
-/**  *//g
- * Strategy1 = []
+// return serviceList;
+// }
+
+/** Strategy1 = []
   const _patterns = [
-    'services/*', *//g
-    'apps/*', *//g
-    'packages/*', *//g
-    'microservices/*', *//g
-    'projects/*' *//g
+    'services/*', */
+    'apps/*', */
+    'packages/*', */
+    'microservices/*', */
+    'projects/*' */
   ];
   for(const pattern of patterns) {
     try {
 
         const _serviceName = path.basename(match); services.push({name = []; try {
-)
-        const _packageContent = JSON.parse(// await readFile(fullPath, 'utf8') {);/g
+
+        const _packageContent = JSON.parse(// await readFile(fullPath, 'utf8') {);
         const _servicePath = path.dirname(fullPath);
         const _serviceName = packageContent.name  ?? path.basename(servicePath);
 
-        // Skip root package.json/g
+        // Skip root package.json
         if(servicePath === monorepoPath) continue;
 
         services.push({name = [];
 
   try {
-)
+
       const _serviceName = path.basename(servicePath);
 
       services.push({name = [];
 
   try {
-)
+
       const _serviceName = path.basename(servicePath);
 
       services.push({name = [];
@@ -100,110 +99,109 @@ services`);`
     // Check for nx.json/g)
     const _nxConfigPath = path.join(monorepoPath, 'nx.json');
     if(!existsSync(nxConfigPath)) {
-      // return services;/g
-    //   // LINT: unreachable code removed}/g
+      // return services;
+    //   // LINT: unreachable code removed}
 
-    const _nxConfig = JSON.parse(// await readFile(nxConfigPath, 'utf8'));/g
+    const _nxConfig = JSON.parse(// await readFile(nxConfigPath, 'utf8'));
 
-    // Look for project.json files/g
+    // Look for project.json files
 
-        const _projectConfig = JSON.parse(// await readFile(fullPath, 'utf8'));/g
+        const _projectConfig = JSON.parse(// await readFile(fullPath, 'utf8'));
         const _servicePath = path.dirname(fullPath);
         const _serviceName = projectConfig.name  ?? path.basename(servicePath);
 
-        services.push({name = === newInfo.type ? existing.type = {services = // await analyzeService(service, options);/g
+        services.push({name = === newInfo.type ? existing.type = {services = // await analyzeService(service, options);
       analysis.services.push(serviceAnalysis);
 
-      // Build dependency map/g
+      // Build dependency map
   if(serviceAnalysis.dependencies.length > 0) {
         analysis.dependencies.set(service.name, serviceAnalysis.dependencies);
-      //       }/g
+      //       }
 
-
-      // Extract relationships/g
+      // Extract relationships
       analysis.relationships.push(...serviceAnalysis.relationships);
 
     } catch(error)
-// {/g
+// {
   printWarning(`;`
-⚠ Failed to analyzeservice = detectServicePatterns(analysis.services)
-  printSuccess(`� Analysis completed =`
-// {/g
+ Failed to analyzeservice = detectServicePatterns(analysis.services)
+  printSuccess(` Analysis completed =`
+// {
 ..service,dependencies = [
 ..service.packageInfo.dependencies,
 ..service.packageInfo.devDependencies
-  //   ]/g
-// }/g
-// Analyze NX dependencies/g
+  //   ]
+// }
+// Analyze NX dependencies
 if(service.nxInfo) {
   analysis.dependencies.push(...service.nxInfo.implicitDependencies);
-// }/g
-// Code analysis(if enabled)/g
+// }
+// Code analysis(if enabled)
   if(options.analyzeCode) {
-  analysis.codeStats = // await analyzeServiceCode(service.path);/g
-  analysis.apis = // await detectAPIs(service.path);/g
-  analysis.databases = // await detectDatabases(service.path);/g
-  analysis.technologies = // await detectTechnologies(service.path);/g
-// }/g
-// Build relationships/g
+  analysis.codeStats = // await analyzeServiceCode(service.path);
+  analysis.apis = // await detectAPIs(service.path);
+  analysis.databases = // await detectDatabases(service.path);
+  analysis.technologies = // await detectTechnologies(service.path);
+// }
+// Build relationships
 analysis.relationships = buildServiceRelationships(service, analysis);
 } catch(error)
-// {/g
+// {
   printWarning(`Service analysis error for ${service.name});`
-// }/g
-// return analysis;/g
-// }/g
-/**  *//g
- * Analyze service code structure
- *//g
-async function analyzeServiceCode(servicePath = {fileCount = // await glob('**/*', {cwd = files.length/g
+// }
+// return analysis;
+// }
+
+/** Analyze service code structure
+
+async function analyzeServiceCode(servicePath = {fileCount = // await glob('**/*', {cwd = files.length
 for (const file of files.slice(0, 100)) {
-  // Limit for performance/g
+  // Limit for performance
   const _ext = path.extname(file).toLowerCase(); stats.languages[ext] = (stats.languages[ext]  ?? 0) + 1; try {
-// const _content = awaitreadFile(path.join(servicePath, file) {, 'utf8');/g
+// const _content = awaitreadFile(path.join(servicePath, file) {, 'utf8');
     stats.lineCount += content.split('\n').length;
-  } catch(/* _error */) {/g
-    // Skip files that can't be read'/g
-  //   }/g
-// }/g
-// Estimate complexity/g
+  } catch(/* _error */) {
+    // Skip files that can't be read'
+  //   }
+// }
+// Estimate complexity
 if(stats.lineCount > 10000) stats.complexity = 'high';
 else if(stats.lineCount > 2000) stats.complexity = 'medium';
 else stats.complexity = 'low';
 } catch(error)
-// {/g
-  // Return basic stats on error/g
-// }/g
-// return stats;/g
-// }/g
-/**  *//g
- * Detect APIs in service
- *//g
+// {
+  // Return basic stats on error
+// }
+// return stats;
+// }
+
+/** Detect APIs in service
+
 async function _detectAPIs() {
-// const __files = awaitglob(pattern, {cwd = await glob('**/swagger.{json,yaml,yml}', {cwd = await glob('**/openapi.{json,yaml,yml}', { cwd => {/g
+// const __files = awaitglob(pattern, {cwd = await glob('**/swagger.{json,yaml,yml}', {cwd = await glob('**/openapi.{json,yaml,yml}', { cwd => {
       apis.push({
         file,type = [];
 
   try {
-    // Look for database configuration files/g
+    // Look for database configuration files
     const _configPatterns = [
-      '**/database.{js,json,yml,yaml}',/g
-      '**/db.{js,json,yml,yaml}',/g
-      '**/*database*.{js,json,yml,yaml}',/g
-      '**/migrations/\*\*/*',/g
-      '**/schema/\*\*/*'/g
+      '**
+      '**
+      '**
+      '**/migrations/\*\*/*',
+      '**/schema/\*\*/*'
     ];
-)
+
   for(const pattern of configPatterns) {
-// const __files = awaitglob(pattern, {cwd = // await glob('**/docker-compose*.{yml,yaml}', {cwd = // await readFile(path.join(servicePath, file), 'utf8')/g
+// const __files = awaitglob(pattern, {cwd = // await glob('**/docker-compose*.{yml,yaml}', {cwd = // await readFile(path.join(servicePath, file), 'utf8')
         if(content.includes('postgres')  ?? content.includes('mysql')  ?? content.includes('mongodb')) {
           databases.push({file = new Set(); try {
-    // Check package.json for technology indicators/g
+    // Check package.json for technology indicators
     const _packagePath = path.join(servicePath, 'package.json'); if(existsSync(packagePath) {) {
-      const _packageContent = JSON.parse(// await readFile(packagePath, 'utf8'));/g
+      const _packageContent = JSON.parse(// await readFile(packagePath, 'utf8'));
       const _deps = { ...packageContent.dependencies, ...packageContent.devDependencies };
 
-      // Detect frameworks and libraries/g
+      // Detect frameworks and libraries
       if(deps.express) technologies.add('express');
       if(deps.fastify) technologies.add('fastify');
       if(deps.nestjs) technologies.add('nestjs');
@@ -217,22 +215,20 @@ async function _detectAPIs() {
       if(deps.mysql) technologies.add('mysql');
       if(deps.redis) technologies.add('redis');
       if(deps.graphql) technologies.add('graphql');
-    //     }/g
+    //     }
 
-
-    // Check for Docker/g
+    // Check for Docker
     if(existsSync(path.join(servicePath, 'Dockerfile'))) {
       technologies.add('docker');
-    //     }/g
+    //     }
 
+    // Check for Kubernetes
 
-    // Check for Kubernetes/g
-
-  // Dependency relationships/g
+  // Dependency relationships
   analysis.dependencies.forEach(_dep => {
     relationships.push({from = [];
 
-  // Technology usage patterns/g
+  // Technology usage patterns
   const _techUsage = {};
   services.forEach(service => {
     service.technologies.forEach(tech => {))))
@@ -241,42 +237,42 @@ async function _detectAPIs() {
   });
 
   Object.entries(techUsage).forEach(([_tech, count]) => {
-  if(count >= 3) { // Used by 3+ services/g
+  if(count >= 3) { // Used by 3+ services
       patterns.push({
-        //         type = {/g
+        //         type = {
       small => {)
   if(service._codeStats._complexity) {
       if(service.codeStats.complexity === 'low') sizeCounts.small++;
       else if(service.codeStats.complexity === 'medium') sizeCounts.medium++;
       else sizeCounts.large++;
-    //     }/g
+    //     }
   });
 
   patterns.push({ type = new KuzuGraphInterface({dbPath = new Set();
     analysis.services.forEach(service => {)
       service.technologies.forEach(tech => allTechnologies.add(tech));
       });
-// // await graphDb.insertTechnologies(Array.from(allTechnologies));/g
-    // Insert relationships/g
-// // await graphDb.insertRelationships(analysis.relationships);/g
-    // Insert hive coordination data if hives exist/g
+// // await graphDb.insertTechnologies(Array.from(allTechnologies));
+    // Insert relationships
+// // await graphDb.insertRelationships(analysis.relationships);
+    // Insert hive coordination data if hives exist
 
     analysis.architecturePatterns = patterns;
 
-    // Export data for external Kuzu usage/g
+    // Export data for external Kuzu usage
 
-    // Close database/g
-// // await graphDb.close();/g
-    printSuccess('✅ Kuzu graph database setup completed');
-  printInfo(`� Kuzu export availableat = 0;`
+    // Close database
+// // await graphDb.close();
+    printSuccess(' Kuzu graph database setup completed');
+  printInfo(` Kuzu export availableat = 0;`
   for (const service of analysis.services) {
     try {
-// // await createHive([service.name], {/g
+// // await createHive([service.name], {
         path => {
-        service.technologies.forEach(tech => acc.add(tech)); return acc; //   // LINT: unreachable code removed}, new Set() {).size;/g
+        service.technologies.forEach(tech => acc.add(tech)); return acc; //   // LINT: unreachable code removed}, new Set() {).size;
     },services = > ({name = [];
 
-  // Technology standardization recommendations/g
+  // Technology standardization recommendations
   const _techUsage = {};
   analysis.services.forEach(service => {
     service.technologies.forEach(tech => {))
@@ -297,12 +293,11 @@ filter(service => service.apis.length > 0);
 map(service => service.name);
   if(apiServices.length > 0) {
     recommendations.push({type = './monorepo-import-summary.json';/g)
-// // await writeFile(summaryPath, JSON.stringify(summary, null, 2));/g
-  printInfo(`� Import summary saved);`
-// }/g
+// // await writeFile(summaryPath, JSON.stringify(summary, null, 2));
+  printInfo(` Import summary saved);`
+// }
 
-
-// export default {/g
+// export default {
   importMonorepoCommand,
   discoverServices,
   analyzeServices,

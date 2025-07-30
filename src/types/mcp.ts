@@ -1,128 +1,126 @@
-/\*\*/g
- * Model Context Protocol(MCP) Types;
- * Types for MCP server integration and tool execution
- *//g
 
-import type { JSONObject  } from './core.js';/g
+/** Model Context Protocol(MCP) Types;
+/** Types for MCP server integration and tool execution
 
-// =============================================================================/g
-// MCP CORE TYPES/g
-// =============================================================================/g
+import type { JSONObject  } from '.';
+
+// =============================================================================
+// MCP CORE TYPES
+// =============================================================================
 
 export type MCPVersion = '2024-11-05' | '1.0.0' | string;
 export type MCPRole = 'client' | 'server';
 export type MCPTransport = 'stdio' | 'sse' | 'websocket' | 'http';
 
-export // interface MCPCapabilities {/g
-//   // Logging capabilities/g
-//   logging?: {};/g
-  // Prompts capabilities/g
+export // interface MCPCapabilities {
+//   // Logging capabilities
+//   logging?: {};
+  // Prompts capabilities
   prompts?: {
     listChanged?;
   };
-  // Resources capabilities/g
+  // Resources capabilities
   resources?: {
     subscribe?;
     listChanged?;
   };
-  // Tools capabilities/g
+  // Tools capabilities
   tools?: {
     listChanged?;
   };
-  // Roots capabilities(for client)/g
+  // Roots capabilities(for client)
   roots?: {
     listChanged?;
   };
-  // Sampling capabilities(for client)/g
+  // Sampling capabilities(for client)
   sampling?: {};
-  // Experimental capabilities/g
+  // Experimental capabilities
   experimental?: Record<string, JSONObject>;
-// }/g
-// export // interface MCPImplementation {name = ============================================================================/g
-// // MCP MESSAGES/g
-// // =============================================================================/g
-// /g
-// export interface MCPMessage {/g
-//   jsonrpc = {PARSE_ERROR = ============================================================================/g
-// // INITIALIZATION/g
-// // =============================================================================/g
-// /g
-// export interface InitializeRequest extends MCPRequest {method = ============================================================================/g
-// // PING/PONG/g
-// // =============================================================================/g
-// /g
-// export interface PingRequest extends MCPRequest {method = ============================================================================/g
-// // PROMPTS/g
-// // =============================================================================/g
-// /g
-// export interface Prompt extends Identifiable {name = ============================================================================/g
-// // RESOURCES/g
-// // =============================================================================/g
-// /g
-// export interface Resource extends Identifiable {uri = ============================================================================/g
-// // TOOLS/g
-// // =============================================================================/g
-// /g
-// export interface Tool extends Identifiable {name = ============================================================================/g
-// // LOGGING/g
-// // =============================================================================/g
-// /g
-// export type LoggingLevel = 'debug' | 'info' | 'notice' | 'warning' | 'error' | 'critical' | 'alert' | 'emergency'/g
-// /g
-// export interface SetLevelRequest extends MCPRequest {method = ============================================================================/g
-// // COMPLETION(CLIENT TO SERVER)/g
-// // =============================================================================/g
-// /g
-// export interface CompleteRequest extends MCPRequest {method = ============================================================================/g
-// // ROOTS(CLIENT CAPABILITY)/g
-// // =============================================================================/g
-// /g
-// export interface Root {uri = ============================================================================/g
-// // SAMPLING(CLIENT CAPABILITY)/g
-// // =============================================================================/g
-// /g
-// export interface CreateMessageRequest extends MCPRequest {method = ============================================================================/g
-// // MCP SERVER INTERFACE/g
-// // =============================================================================/g
-// /g
-// export interface MCPServer extends Identifiable {/g
-//   // Server informationname = ============================================================================/g
-// // MCP CLIENT INTERFACE/g
-// // =============================================================================/g
-// /g
-// export interface MCPClient extends Identifiable {/g
-//   // Client informationname = ============================================================================/g
-// // MCP TRANSPORT INTERFACES/g
-// // =============================================================================/g
-// /g
-// export interface MCPTransportConfig {type = ============================================================================/g
-// // MCP TOOL EXECUTOR/g
-// // =============================================================================/g
-// /g
-// export interface MCPToolExecutor {/g
-//   // Tool execution/g
-//   executeTool(server = ============================================================================;/g
-// // MCP EVENTS/g
-// // =============================================================================/g
-// /g
-// export interface MCPEvents {/g
-//   // Connection events/g
-//   'server-connected');/g
-// : (result = > void/g
-// 'tool-failed': (request = > void/g
-// 'tools-discovered': (result = > void/g
-// 'tool-list-changed': (serverId = > void/g
-// // Resource events/g
-// 'resource-updated': (serverId = > void/g
-// 'resource-list-changed': (serverId = > void/g
-// // Prompt events/g
-// 'prompt-list-changed': (serverId = > void/g
-// // Logging events/g
-// 'log-message': (serverId = > void/g
-// // Performance events/g
-// 'performance-warning': (serverId = > void/g
-// 'resource-exhausted': (serverId = > void/g
-// // }/g
+// }
+// export // interface MCPImplementation {name = ============================================================================
+// // MCP MESSAGES
+// // =============================================================================
 
+// export interface MCPMessage {
+//   jsonrpc = {PARSE_ERROR = ============================================================================
+// // INITIALIZATION
+// // =============================================================================
+
+// export interface InitializeRequest extends MCPRequest {method = ============================================================================
+// // PING/PONG
+// // =============================================================================
+
+// export interface PingRequest extends MCPRequest {method = ============================================================================
+// // PROMPTS
+// // =============================================================================
+
+// export interface Prompt extends Identifiable {name = ============================================================================
+// // RESOURCES
+// // =============================================================================
+
+// export interface Resource extends Identifiable {uri = ============================================================================
+// // TOOLS
+// // =============================================================================
+
+// export interface Tool extends Identifiable {name = ============================================================================
+// // LOGGING
+// // =============================================================================
+
+// export type LoggingLevel = 'debug' | 'info' | 'notice' | 'warning' | 'error' | 'critical' | 'alert' | 'emergency'
+
+// export interface SetLevelRequest extends MCPRequest {method = ============================================================================
+// // COMPLETION(CLIENT TO SERVER)
+// // =============================================================================
+
+// export interface CompleteRequest extends MCPRequest {method = ============================================================================
+// // ROOTS(CLIENT CAPABILITY)
+// // =============================================================================
+
+// export interface Root {uri = ============================================================================
+// // SAMPLING(CLIENT CAPABILITY)
+// // =============================================================================
+
+// export interface CreateMessageRequest extends MCPRequest {method = ============================================================================
+// // MCP SERVER INTERFACE
+// // =============================================================================
+
+// export interface MCPServer extends Identifiable {
+//   // Server informationname = ============================================================================
+// // MCP CLIENT INTERFACE
+// // =============================================================================
+
+// export interface MCPClient extends Identifiable {
+//   // Client informationname = ============================================================================
+// // MCP TRANSPORT INTERFACES
+// // =============================================================================
+
+// export interface MCPTransportConfig {type = ============================================================================
+// // MCP TOOL EXECUTOR
+// // =============================================================================
+
+// export interface MCPToolExecutor {
+//   // Tool execution
+//   executeTool(server = ============================================================================;
+// // MCP EVENTS
+// // =============================================================================
+
+// export interface MCPEvents {
+//   // Connection events
+//   'server-connected');
+// : (result = > void
+// 'tool-failed': (request = > void
+// 'tools-discovered': (result = > void
+// 'tool-list-changed': (serverId = > void
+// // Resource events
+// 'resource-updated': (serverId = > void
+// 'resource-list-changed': (serverId = > void
+// // Prompt events
+// 'prompt-list-changed': (serverId = > void
+// // Logging events
+// 'log-message': (serverId = > void
+// // Performance events
+// 'performance-warning': (serverId = > void
+// 'resource-exhausted': (serverId = > void
+// // }
 
 }}}}}}}}}}}}}}}}))))))))))

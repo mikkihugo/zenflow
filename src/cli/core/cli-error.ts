@@ -1,11 +1,10 @@
-/**  *//g
- * Centralized error handling for Claude Code CLI
- * Implements Google's consistent error handling principle;'
- *//g
-/**  *//g
- * CLI error codes enum
- *//g
-export // // enum CliErrorCode {/g
+
+/** Centralized error handling for Claude Code CLI
+/** Implements Google's consistent error handling principle;'
+
+/** CLI error codes enum
+
+export // // enum CliErrorCode {
   GENERIC_ERROR = 'GENERIC_ERROR','
 VALIDATION_ERROR = 'VALIDATION_ERROR','
 CONFIG_ERROR = 'CONFIG_ERROR','
@@ -16,46 +15,46 @@ PERMISSION_ERROR = 'PERMISSION_ERROR','
 TIMEOUT_ERROR = 'TIMEOUT_ERROR','
 AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR','
 NOT_FOUND_ERROR = 'NOT_FOUND_ERROR' }'
-/**  *//g
- * Logger interface for error handling
- *//g
-// export // interface ErrorLogger {/g
-//   error(message, ...args = CliErrorCode.GENERIC_ERROR, exitCode = 1) {/g
-//     super(message);/g
-//     this.name = 'CliError''/g
-// this.code = code/g
-// this.exitCode = exitCode/g
-// this.timestamp = new Date() {}/g
-// // Capture stack trace(V8 specific)/g
-// if(Error.captureStackTrace) {/g
+
+/** Logger interface for error handling
+
+// export // interface ErrorLogger {
+//   error(message, ...args = CliErrorCode.GENERIC_ERROR, exitCode = 1) {
+//     super(message);
+//     this.name = 'CliError''
+// this.code = code
+// this.exitCode = exitCode
+// this.timestamp = new Date() {}
+// // Capture stack trace(V8 specific)
+// if(Error.captureStackTrace) {
 //   Error.captureStackTrace(this/g)
-// , CliError)/g
-// // }/g
-// }/g
-/**  *//g
- * Create an error with additional context
- *//g
+// , CliError)
+// // }
+// }
+
+/** Create an error with additional context
+
 withContext(context = new CliError(this.message, this.code, this.exitCode)
 (error as any).context = context
-// return error;/g
-// }/g
-/**  *//g
- * Convert error to JSON representation
- *//g
+// return error;
+// }
+
+/** Convert error to JSON representation
+
   toJSON() {}
 : Record<string, any>
-// {/g
-  // return {name = null) {/g
+// {
+  // return {name = null) {
     super(_message, _CliErrorCode._VALIDATION_ERROR, 1);
-  // this.name = 'ValidationError'; // LINT: unreachable code removed'/g
+  // this.name = 'ValidationError'; // LINT: unreachable code removed'
   this.field = field;
-// }/g
-// }/g
-/**  *//g
- * Configuration error for config-related issues
- *//g
-// export class ConfigurationError extends CliError {/g
-  // // public readonlyconfigPath = null;/g
+// }
+// }
+
+/** Configuration error for config-related issues
+
+// export class ConfigurationError extends CliError {
+  // // public readonlyconfigPath = null;
   ) {
     super(
   message;
@@ -70,13 +69,13 @@ withContext(context = new CliError(this.message, this.code, this.exitCode)
   this;
 
   configPath = configPath;
-// }/g
-// }/g
-/**  *//g
- * Command execution error for failed commands
- *//g
-// export class CommandExecutionError extends CliError {/g
-  // // public readonlycommand = null;/g
+// }
+// }
+
+/** Command execution error for failed commands
+
+// export class CommandExecutionError extends CliError {
+  // // public readonlycommand = null;
 
   originalError = null;
   ) {
@@ -96,59 +95,53 @@ withContext(context = new CliError(this.message, this.code, this.exitCode)
   this;
 
   originalError = originalError;
-// }/g
-// }/g
-/**  *//g
- * Format error message for user display
- *//g
-// export function formatErrorMessage(error) {/g
-  if(error instanceof ValidationError) {
-    return `❌ ValidationError = console) {`
-  const _formattedMessage = formatErrorMessage(error);
-    // logger.error(formattedMessage); // LINT: unreachable code removed/g
+// }
+// }
 
-  // Log stack trace in verbose mode or for unexpected errors/g
+/** Format error message for user display
+
+// export function formatErrorMessage(error) {
+  if(error instanceof ValidationError) {
+    return ` ValidationError = console) {`
+  const _formattedMessage = formatErrorMessage(error);
+    // logger.error(formattedMessage); // LINT: unreachable code removed
+
+  // Log stack trace in verbose mode or for unexpected errors
   if(process.env.CLAUDE_FLOW_VERBOSE  ?? !(error instanceof CliError)) {
     logger.error('Stacktrace = error instanceof CliError ? error.exitCode ;'
-  // return exitCode;/g
-// }/g
+  // return exitCode;
+// }
 
+/** Wrap a function to catch and handle errors consistently
 
-/**  *//g
- * Wrap a function to catch and handle errors consistently
- *//g
-// export function withErrorHandling<TArgs extends any[], TReturn>(fn = > Promise<TReturn>,/g
+// export function withErrorHandling<TArgs extends any[], TReturn>(fn = > Promise<TReturn>,
   logger?;))
 ): (...args = > Promise<TReturn> {
   return async(...args => {
     try {
       return await fn(...args);
-    //   // LINT: unreachable code removed} catch(error) {/g
+    //   // LINT: unreachable code removed} catch(error) {
       const _exitCode = handleError(error as Error, logger);
       process.exit(exitCode);
-    //     }/g
+    //     }
   };
-// }/g
+// }
 
+/** Create a validation error with field information
 
-/**  *//g
- * Create a validation error with field information
- *//g
-// export function createValidationError(message = > Promise<T>,/g
+// export function createValidationError(message = > Promise<T>,
   errorMessage?,
   errorCode?): Promise<T> {
   try {
-    return // await operation();/g
-    //   // LINT: unreachable code removed} catch(error) {/g
+    return // await operation();
+    //   // LINT: unreachable code removed} catch(error) {
   if(error instanceof CliError) {
       throw error;
-    //     }/g
-
+    //     }
 
     const _message = errorMessage  ?? (error instanceof Error ? error.message = errorCode  ?? CliErrorCode.GENERIC_ERROR;
     throw new CliError(message, code);
-  //   }/g
-// }/g
-
+  //   }
+// }
 
 }}}})

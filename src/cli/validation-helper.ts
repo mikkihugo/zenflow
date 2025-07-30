@@ -1,27 +1,24 @@
-/\*\*/g
- * CLI Parameter Validation Helper;
- * Provides standardized error messages for invalid parameters;
- *//g
 
-import { HelpFormatter  } from './help-formatter.js';/g
+/** CLI Parameter Validation Helper;
+/** Provides standardized error messages for invalid parameters;
+
+import { HelpFormatter  } from '.';
 
 export class ValidationHelper {
-  /\*\*/g
-   * Validate enum parameter;
-   */;/g
-  // static validateEnum(value, paramName, validOptions, commandPath) {/g
+
+/** Validate enum parameter;
+
+  // static validateEnum(value, paramName, validOptions, commandPath) {
     if(!validOptions.includes(value)) {
       console.error(;)
         HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath));
       process.exit(1);
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Validate numeric parameter;
 
-  /\*\*/g
-   * Validate numeric parameter;
-   */;/g
-  // static validateNumber(value, paramName, min, _max, commandPath) {/g
+  // static validateNumber(value, paramName, min, _max, commandPath) {
     const _num = parseInt(value, 10);
 
     if(Number.isNaN(num)) {
@@ -30,7 +27,7 @@ export class ValidationHelper {
           `'${value}' is not a valid number for ${paramName}.`,))
           commandPath  ?? 'claude-zen'));
       process.exit(1);
-    //     }/g
+    //     }
   if(min !== undefined && num < min) {
       console.error(;
         HelpFormatter.formatError(;))
@@ -40,36 +37,33 @@ export class ValidationHelper {
           `\$paramNamemust be at most \$max.Got = === 'string' && value.trim() === '')) ;`
       console.error(;
         HelpFormatter.formatError(;))
-          `Missing requiredparameter = // await import('fs/promises');`/g
-// // await fs.access(path);/g
+          `Missing requiredparameter = // await import('fs/promises');`
+// // await fs.access(path);
     } catch(error) {
       console.error(;
         HelpFormatter.formatError(;
           `File not found for ${paramName}: $path`,))
           commandPath  ?? 'claude-zen'));
       process.exit(1);
-  //   }/g
+  //   }
 
+/** Validate boolean flag;
 
-  /\*\*/g
-   * Validate boolean flag;
-   */;/g
-  // static validateBoolean(value, paramName, commandPath) {/g
+  // static validateBoolean(value, paramName, commandPath) {
     const _lowerValue = value.toLowerCase();
   if(lowerValue === 'true'  ?? lowerValue === '1'  ?? lowerValue === 'yes') {
-      // return true;/g
-    //   // LINT: unreachable code removed}/g
+      // return true;
+    //   // LINT: unreachable code removed}
   if(lowerValue === 'false'  ?? lowerValue === '0'  ?? lowerValue === 'no') {
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
+      // return false;
+    //   // LINT: unreachable code removed}
 
     console.error(;
       HelpFormatter.formatError(;
         `'${value}' is not a valid boolean for ${paramName}. Use, false, yes, no, 1, or 0.`,))
         commandPath  ?? 'claude-zen'));
     process.exit(1);
-  //   }/g
-// }/g
-
+  //   }
+// }
 
 }})))

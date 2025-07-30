@@ -1,8 +1,8 @@
-#!/usr/bin/env node;/g
-/\*\*/g
- * Live Demo: Creating documents through the MCP document stack;
- *//g
-// ANSI colors for pretty output/g
+#!/usr/bin/env node;
+
+/** Live Demo: Creating documents through the MCP document stack;
+
+// ANSI colors for pretty output
 const _colors = {
   reset: '\x1b[0m',
 bright: '\x1b[1m',
@@ -11,10 +11,10 @@ blue: '\x1b[34m',
 yellow: '\x1b[33m',
 cyan: '\x1b[36m',
 magenta: '\x1b[35m'
-// }/g
-// Document examples to create/g
+// }
+// Document examples to create
 const _documentExamples = [
-  //   {/g
+  //   {
     service: 'unified-storage',
     docType: 'service-adr',
     docId: 'use-postgres-for-storage',
@@ -30,7 +30,7 @@ We will use PostgreSQL 15+  primary storage solution.
 - Strong ACID compliance for data integrity;
 - Excellent support for complex queries and indexes;
 - Mature ecosystem with good tooling;
-- Support for JSON/JSONB for flexible schemas/g
+- Support for JSON/JSONB for flexible schemas
 ### Negative;
 - Requires more operational expertise than NoSQL alternatives;
 - Vertical scaling h compared to distributed databases
@@ -40,7 +40,7 @@ We will use PostgreSQL 15+  primary storage solution.
     metadata: {
       dependencies: ['database-infrastructure'],
       tags: ['database', 'architecture', 'postgresql'] } },
-  //   {/g
+  //   {
     service: 'user-service',
     docType: 'api-documentation',
     docId: 'users-api-v1',
@@ -48,9 +48,9 @@ We will use PostgreSQL 15+  primary storage solution.
 ## Overview;
 RESTful API for user management operations including CRUD operations, authentication, and profile management.
 ## Authentication;
-Bearer token authentication required for all endpoints except /health./g
+Bearer token authentication required for all endpoints except 
 ## Endpoints
-### GET /api/v1/users;/g
+### GET /api/v1/users;
 Retrieve a list of users with pagination support.
 **Query Parameters:**;
 - page(integer): Page number, default 1;
@@ -58,40 +58,40 @@ Retrieve a list of users with pagination support.
 - sort(string): Sort field, default 'created_at'
 **Response:**;
 \`\`\`json;`
-// {/g
+// {
   "users": [;
-    //     {/g
+    //     {
       "id": "123e4567-e89b-12d3-a456-426614174000",
       "email": "user@example.com",
       "name": "John Doe",
       "created_at": "2025-01-17T10,00Z";
-    //     }/g
+    //     }
   ],
   "pagination": {
     "page",
     "limit",
     "total";
-  //   }/g
-// }/g
+  //   }
+// }
 \`\`\`
-### POST /api/v1/users;/g
+### POST /api/v1/users;
 Create a new user account.
 **Request Body:**;
 \`\`\`json;`
-// {/g
+// {
   "email": "newuser@example.com",
   "password": "SecurePass123!",
   "name": "Jane Smith";
-// }/g
+// }
 \`\`\`
 **Response:** 201 Created;
 \`\`\`json;`
-// {/g
+// {
   "id": "123e4567-e89b-12d3-a456-426614174001",
   "email": "newuser@example.com",
   "name": "Jane Smith",
   "created_at": "2025-01-17T10,00Z";
-// }/g
+// }
 \`\`\`
 ## Error Codes;
 | Code | Description |;
@@ -104,7 +104,7 @@ Create a new user account.
     metadata: {
       tags: ['api', 'rest', 'users'],
       version: '1.0.0' } },
-  //   {/g
+  //   {
     service: 'payment-service',
     docType: 'security-spec',
     docId: 'pci-compliance',
@@ -120,7 +120,7 @@ This document outlines security requirements for PCI DSS Level 1 compliance for 
 #### 2. Protect Cardholder Data;
 - Protect stored cardholder data using AES-256 encryption;
 - Mask PAN when displayed(first 6, last 4 digits max
-// )/g
+// )
 -Render
 PAN
 unreadable in all
@@ -264,37 +264,37 @@ vendor`,`
 async function simulateDocumentCreation() {
   console.warn(`;`
 $;
-// {/g
+// {
   colors.bright;
-// }/g
+// }
 $;
-// {/g
+// {
   colors.green;
-// }/g
-� Document Stack Live Demo$
-// {/g
+// }
+ Document Stack Live Demo$
+// {
   colors.reset;
 // }/g)
 \n`)`
 console.warn('This demo will create real documents using the MCP document stack.\n')
-// Instead of actual MCP calls, let's demonstrate the flow'/g
+// Instead of actual MCP calls, let's demonstrate the flow'
   for(const doc of documentExamples) {
-  console.warn(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`); console.warn(`${colors.bright}� Creating); `
-  console.warn(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`) {;
-  // Show what would be sent to MCP/g
-  console.warn(`${colors.yellow}� MCP Request);`
+  console.warn(`\n${colors.cyan}${colors.reset}`); console.warn(`${colors.bright} Creating); `
+  console.warn(`${colors.cyan}${colors.reset}\n`) {;
+  // Show what would be sent to MCP
+  console.warn(`${colors.yellow} MCP Request);`
   console.warn(`Tool);`
   console.warn(`Action);`
   console.warn(`Service);`
   console.warn(`DocType);`
   console.warn(`DocId);`
   console.warn(`Metadata:`, JSON.stringify(doc.metadata, null, 2));
-  // Simulate the document stack processing/g
-  console.warn(`\n${colors.green}✅ Document Stack Processing);`
-  // Show auto-generated metadata/g
+  // Simulate the document stack processing
+  console.warn(`\n${colors.green} Document Stack Processing);`
+  // Show auto-generated metadata
   const _layer = getLayer(doc.docType);
   const _routing = getRouting(doc.docType);
-  console.warn(`\n${colors.magenta}� Auto-Generated Front Matter);`
+  console.warn(`\n${colors.magenta} Auto-Generated Front Matter);`
   console.warn(`---`);
   console.warn(`type);`
   console.warn(`service);`
@@ -306,39 +306,39 @@ console.warn('This demo will create real documents using the MCP document stack.
   console.warn(`dependencies: ${JSON.stringify(doc.metadata.dependencies ?? [])}`);
   console.warn(`tags: ${JSON.stringify(doc.metadata.tags ?? [])}`);
   console.warn(`---`);
-  // Show storage location/g
-  console.warn(`\n${colors.blue}� Storage);`
+  // Show storage location
+  console.warn(`\n${colors.blue} Storage);`
   console.warn(`Namespace);`
   console.warn(`Key);`
-  // Show load balancing/g
+  // Show load balancing
   const _swarm = getSwarmForLayer(layer);
-  console.warn(`\n${colors.yellow}⚖ Load Balanced to);`
-  // Show applied rules/g
-  console.warn(`\n${colors.green}� Applied Rules);`
+  console.warn(`\n${colors.yellow} Load Balanced to);`
+  // Show applied rules
+  console.warn(`\n${colors.green} Applied Rules);`
   if(doc.docType === 'service-adr') {
     console.warn(` ADR Review Rule);`
-  //   }/g
+  //   }
   if(doc.docType === 'security-spec') {
     console.warn(` Security Approval Rule);`
-  //   }/g
+  //   }
   if(doc.docType === 'api-documentation') {
     console.warn(` API Approval Rule);`
-  //   }/g
+  //   }
   console.warn(` Auto-Tag Rule);`
-  // Simulate success/g
+  // Simulate success
   console.warn(;
-  `\n${colors.bright}${colors.green}✨ Document created successfully!${colors.reset}`;)
-  //   )/g
-  // Small delay for readability/g
-  // // await new Promise((resolve) => setTimeout(resolve, 1000))/g
-// }/g
-// Summary/g
-console.warn(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-console.warn(`${colors.bright}${colors.green}� Demo Summary${colors.reset}`);
-console.warn(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`);
-console.warn(`✅ Created ${documentExamples.length} documents);`
+  `\n${colors.bright}${colors.green} Document created successfully!${colors.reset}`;)
+  //   )
+  // Small delay for readability
+  // // await new Promise((resolve) => setTimeout(resolve, 1000))
+// }
+// Summary
+console.warn(`\n${colors.cyan}${colors.reset}`);
+console.warn(`${colors.bright}${colors.green} Demo Summary${colors.reset}`);
+console.warn(`${colors.cyan}${colors.reset}\n`);
+console.warn(` Created ${documentExamples.length} documents);`
 documentExamples.forEach((doc) => {
-  console.warn(`   • ${doc.service}/${doc.docType}/${doc.docId}`);/g
+  console.warn(`    ${doc.service}/${doc.docType}/${doc.docId}`);
 });
 console.warn(`\n${colors.yellow} Key Features Demonstrated);`
 console.warn(`    Automatic metadata generation`);
@@ -348,10 +348,10 @@ console.warn(`    Load balancing by layer`);
 console.warn(`    Rule engine for validation`);
 console.warn(`    Namespace isolation per service`);
 console.warn(;
-`\n${colors.bright}${colors.green}� Document Stack Ready for Production!${colors.reset}\n`;)
-// )/g
-// }/g
-// Helper functions matching document-stack.js/g
+`\n${colors.bright}${colors.green} Document Stack Ready for Production!${colors.reset}\n`;)
+// )
+// }
+// Helper functions matching document-stack.js
 function getLayer() {
   const _layers = {
     'deployment-guide': 'infrastructure',
@@ -365,49 +365,43 @@ function getLayer() {
     tutorial: 'application',
     roadmap: 'business',
     'requirements-spec': 'business'
-// }/g
-// return layers[docType]  ?? 'application';/g
-// }/g
+// }
+// return layers[docType]  ?? 'application';
+// }
 function getRouting() {
   const _routing = {
     'service-adr': {
       approvers: ['architect', 'tech-lead'],
       validation: ['consistency-check', 'dependency-analysis']
-// }/g
-
+// }
 
 ('api-documentation')
 : null
-// {/g
+// {
   approvers: ['product-owner'],
   validation: ['completeness-check']
-// }/g
-
+// }
 
 ('security-spec')
 : null
-// {/g
+// {
   approvers: ['security-team', 'architect'],
   validation: ['security-scan', 'compliance-check']
-// }/g
+// }
 
-
-// /g
-}
-// return routing[docType]  ?? { approvers: ['team-lead'], validation: [] };/g
-// }/g
+// return routing[docType]  ?? { approvers: ['team-lead'], validation: [] };
+// }
 function getSwarmForLayer() {
   const _swarms = {
     infrastructure: ['infra-swarm-1', 'infra-swarm-2'],
     service: ['service-swarm-1', 'service-swarm-2'],
     application: ['app-swarm-1', 'app-swarm-2'],
     business: ['business-swarm-1']
-// }/g
+// }
 const _available = swarms[layer] ?? swarms.application;
-// return available[Math.floor(Math.random() * available.length)];/g
-// }/g
-// Run the demo/g
+// return available[Math.floor(Math.random() * available.length)];
+// }
+// Run the demo
   if(require.main === module) {
   simulateDocumentCreation().catch(console.error);
-// }/g
-
+// }

@@ -1,180 +1,173 @@
-/**  *//g
- * Centralized help system
- * Implements Google's single responsibility principle;'
- * Provides comprehensive help and usage information for CLI commands
- *//g
 
-import { HelpFormatter  } from '../help-formatter.js';'/g
+/** Centralized help system
+/** Implements Google's single responsibility principle;'
+/** Provides comprehensive help and usage information for CLI commands
 
-/**  *//g
- * Help system options interface
- *//g
-// // interface HelpSystemOptions {/g
-//   appName?;/g
-//   version?;/g
-//   formatter?: typeof HelpFormatter;/g
-// // }/g
-/**  *//g
- * Command information interface
- *//g
-// // interface CommandInfo {/g
-//   name = {}/g
-// )/g
-// {/g
+import { HelpFormatter  } from '..';
+
+/** Help system options interface
+
+// // interface HelpSystemOptions {
+//   appName?;
+//   version?;
+//   formatter?: typeof HelpFormatter;
+// // }
+
+/** Command information interface
+
+// // interface CommandInfo {
+//   name = {}
+// )
+// {
   this.commandExecutor = commandExecutor;
   this.appName = options.appName ?? 'claude-zen';'
   this.version = options.version ?? '2.0.0';'
   this.formatter = options.formatter ?? HelpFormatter;
-// }/g
-/**  *//g
- * Show main application help with command overview
- *//g
+// }
+
+/** Show main application help with command overview
+
 public;
 showMainHelp();
 : void
-// {/g
+// {
   const __commands = this.commandExecutor.listCommands();
-  console.warn(`� ${this.appName} v${this.version} - Advanced AI Orchestration Platform\n`);`
+  console.warn(` ${this.appName} v${this.version} - Advanced AI Orchestration Platform\n`);`
   console.warn('USAGE = command.name.padEnd(15);'
       console.warn(`${name} ${command.description}`);`
-// }/g
+// }
 console.warn(`\nUse "${this.appName} help <command>" for detailed usage information`);`
 console.warn(`Use "${this.appName} --version" to show version information\n`);`
-console.warn('� QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
+console.warn(' QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
   if(!commandInfo) {
   console.warn(;
   this.formatter.formatError(;))
   `Unknown command = {name = commandInfo.examples.map((ex) => {`
         if(ex.startsWith('npx')) {'
-          // return ex;/g
-    //   // LINT: unreachable code removed}/g
-        // return `;`/g
+          // return ex;
+    //   // LINT: unreachable code removed}
+        // return `;`
   \$this.appName\$ex`;`
-    //   // LINT: unreachable code removed});/g
-    //     }/g
+    //   // LINT: unreachable code removed});
+    //     }
 
-
-    // Parse options from details if available/g
+    // Parse options from details if available
   if(commandInfo.details) {
       helpInfo.options = this.parseOptionsFromDetails(commandInfo.details);
-    //     }/g
-
+    //     }
 
     console.warn(this.formatter.formatHelp(helpInfo));
-  //   }/g
+  //   }
 
-
-  /**  *//g
- * Parse options from command details text
+/** Parse options from command details text
    * @param details - Command details text
    * @returns Parsed help options
-    // */; // LINT: unreachable code removed/g
-  // // private parseOptionsFromDetails(details = details.match(/Options:([\s\S]*?)(?=\n\n|$)/)/g
+ */
+    // */; // LINT: unreachable code removed
+  // // private parseOptionsFromDetails(details = details.match(/Options:([\s\S]*?)(?=\n\n|$)/)
     if(!optionsMatch) return [];
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
     const _optionsText = optionsMatch[1];
     const _options = [];
     const _optionLines = optionsText.split('\n').filter(line => line.trim());'
   for(const line of optionLines) {
-      const _match = line.match(/^\s*(--.+?)\s{2 }(.+)$/)/g
+      const _match = line.match(/^\s*(--.+?)\s{2 }(.+)$/)
   if(match) {
-        const [ flags, description] = match; // Check for default value in description/g
-        const _defaultMatch = description.match(/\(default = {flags = defaultMatch[1]; /g
-        //         }/g
+        const [ flags, description] = match; // Check for default value in description
+        const _defaultMatch = description.match(/\(default = {flags = defaultMatch[1]; 
+        //         }
 
 ))
         options.push(option) {;
-      //       }/g
-    //     }/g
+      //       }
+    //     }
 
+    // return options;
+    //   // LINT: unreachable code removed}
 
-    // return options;/g
-    //   // LINT: unreachable code removed}/g
+/** Show version information
 
-  /**  *//g
- * Show version information
-   *//g
-  // // public showVersion() {/g
+  // // public showVersion() {
     console.warn(`;`)
   v\$this.version`);`
-  //   }/g
+  //   }
 
+/** Show brief usage information
 
-  /**  *//g
- * Show brief usage information
-   *//g
-  // // public showUsage() {/g
+  // // public showUsage() {
     console.warn(`;`
   Usage = ['CLAUDE_API_KEY','
       'OPENAI_API_KEY','
       'ANTHROPIC_API_KEY','
       'HUGGINGFACE_API_KEY';,];'
-  console.warn('\n� APIKEYS = process.env[varName];'))
+  console.warn('\n APIKEYS = process.env[varName];'))
   if(value) {
     const _masked = `${value.substring(0, 8)}...${value.substring(value.length - 4)}`;`
     console.warn(`${varName});`
   } else {
     console.warn(`${varName});`
-  //   }/g
-// }/g
-// }/g
-/**  *//g
- * Show command categories and organization
- *//g
-// // public showCommandCategories() {}/g
+  //   }
+// }
+// }
+
+/** Show command categories and organization
+
+// // public showCommandCategories() {}
 : void
-// {/g
+// {
   const _commands = this.commandExecutor.listCommands();
   const _categories = {};
-  // Group commands by category(if available) or type/g
+  // Group commands by category(if available) or type
   for(const command of commands) {
     const _category = this.inferCommandCategory(command.name); if(!categories[category]) {
-      categories[category] = []; //     }/g
+      categories[category] = []; //     }
     categories[category].push(command) {;
-  //   }/g
-  console.warn('� COMMANDCATEGORIES = command.name.padEnd(12);'
+  //   }
+  console.warn(' COMMANDCATEGORIES = command.name.padEnd(12);'
         console.warn(`${name} ${command.description}`);`
-// }/g
+// }
 console.warn('');'
-// }/g
-  //   }/g
-/**  *//g
- * Infer command category from name
+// }
+  //   }
+
+/** Infer command category from name
    * @param commandName - Command name
    * @returns Inferred category
-    // */ // LINT: unreachable code removed/g
-// // private inferCommandCategory(commandName =/g
-// {/g
-  // setup): string/g
+ */
+    // */ // LINT: unreachable code removed
+// // private inferCommandCategory(commandName =
+// {
+  // setup): string
   if(['init', 'config', 'setup'].includes(commandName)) return 'setup';'
-  // if(['start', 'stop', 'restart', 'status'].includes(commandName)) return 'control'; // LINT: unreachable code removed'/g
+  // if(['start', 'stop', 'restart', 'status'].includes(commandName)) return 'control'; // LINT: unreachable code removed'
   if(['swarm', 'agent', 'hive-mind'].includes(commandName)) return 'orchestration';'
-  // if(['memory', 'backup', 'restore'].includes(commandName)) return 'data'; // LINT: unreachable code removed'/g
+  // if(['memory', 'backup', 'restore'].includes(commandName)) return 'data'; // LINT: unreachable code removed'
   if(['deploy', 'build', 'test'].includes(commandName)) return 'development';'
-  // if(['help', 'version', 'info'].includes(commandName)) return 'utility'; // LINT: unreachable code removed'/g
-  // return 'other';'/g
-  // ; // LINT: unreachable code removed/g
-  /**  *//g
- * Get category icon
+  // if(['help', 'version', 'info'].includes(commandName)) return 'utility'; // LINT: unreachable code removed'
+  // return 'other';'
+  // ; // LINT: unreachable code removed
+
+/** Get category icon
    * @param category - Category name
    * @returns Icon string
-    // */ // LINT: unreachable code removed/g
+ */
+    // */ // LINT: unreachable code removed
   private;
   getCategoryIcon(category);
   : string
-  //   {/g
+  //   {
     const __icons: Record<string, string>,
-    _setup: '⚙','
-    _control: '�','
-    _orchestration: '�','
-    _data: '�','
-    _development: '�','
-    _utility: '�','
-    _other: '�';'
-  //   }/g
-  // return icons[category]  ?? '�';'/g
-// }/g
-// }/g
-// Export types for external use/g
-// export type { HelpSystemOptions, CommandInfo, HelpOption, HelpInfo, CommandExecutor };/g
+    _setup: '','
+    _control: '','
+    _orchestration: '','
+    _data: '','
+    _development: '','
+    _utility: '','
+    _other: '';'
+  //   }
+  // return icons[category]  ?? '';'
+// }
+// }
+// Export types for external use
+// export type { HelpSystemOptions, CommandInfo, HelpOption, HelpInfo, CommandExecutor };
 )))))))))

@@ -1,93 +1,90 @@
-/\*\*/g
- * Plugin Lifecycle Manager;
- * Advanced plugin lifecycle management with health monitoring and recovery;
- *//g
+
+/** Plugin Lifecycle Manager;
+/** Advanced plugin lifecycle management with health monitoring and recovery;
 
 import { performance  } from 'node:perf_hooks';
-import { Plugin  } from '../types/plugin.js';/g
-// // interface LifecycleEvent {pluginName = > boolean/g
-// action = > Promise<boolean>/g
-// priority = new Map() {}/g
-// private;/g
-// lifecycleEvents = []/g
-// private;/g
-// recoveryStrategies = []/g
-// private;/g
-// metrics = new Map() {}/g
-// private;/g
-// healthCheckInterval?: NodeJS.Timeout;/g
-// private;/g
-// recoveryInProgress = new Set() {}/g
-// private;/g
-// readonly;/g
-// config = {};/g
-// )/g
-// {/g
+import { Plugin  } from '../types/plugin.js';
+// // interface LifecycleEvent {pluginName = > boolean
+// action = > Promise<boolean>
+// priority = new Map() {}
+// private;
+// lifecycleEvents = []
+// private;
+// recoveryStrategies = []
+// private;
+// metrics = new Map() {}
+// private;
+// healthCheckInterval?: NodeJS.Timeout;
+// private;
+// recoveryInProgress = new Set() {}
+// private;
+// readonly;
+// config = {};
+// )
+// {
   super();
 
   this.pluginManager = pluginManager;
   this.config = {
-      healthCheckInterval, // 30 secondsmaxEventHistory = performance.now();/g
+      healthCheckInterval, // 30 secondsmaxEventHistory = performance.now();
 
     try {
       this.recordEvent(pluginName, 'starting');
-// const _plugin = awaitthis.pluginManager.getPlugin(pluginName);/g
+// const _plugin = awaitthis.pluginManager.getPlugin(pluginName);
   if(!plugin) {
     throw new Error(`Plugin notfound = performance.now() - startTime;`
       this.updateMetrics(pluginName, 'successfulStart', duration);
       this.recordEvent(pluginName, 'started', { duration });
 
-      // Schedule health checks/g
+      // Schedule health checks
       this.scheduleHealthCheck(pluginName);
 
       this.emit('plugin-started', { pluginName, duration });
-      // return true;/g
-    // ; // LINT: unreachable code removed/g
+      // return true;
+    // ; // LINT: unreachable code removed
     } catch(error = performance.now() - startTime;
       this.updateMetrics(pluginName, 'failedStart', duration);
       this.recordEvent(pluginName, 'error', { error,phase = performance.now();
 
     try {
       this.recordEvent(pluginName, 'stopping');
-// const _plugin = awaitthis.pluginManager.getPlugin(pluginName);/g
+// const _plugin = awaitthis.pluginManager.getPlugin(pluginName);
   if(!plugin) {
         throw new Error(`Plugin notfound = performance.now() - startTime;`
     this.updateMetrics(pluginName, 'successfulStop', duration);
     this.recordEvent(pluginName, 'stopped', { duration });
 
-    // Unschedule health checks/g
+    // Unschedule health checks
     this.unscheduleHealthCheck(pluginName);
 
     this.emit('plugin-stopped', { pluginName, duration });
-    // return true;/g
-    //   // LINT: unreachable code removed}/g
+    // return true;
+    //   // LINT: unreachable code removed}
   catch(error = performance.now() - startTime;
   this.updateMetrics(pluginName, 'failedStop', duration);
-  this.recordEvent(pluginName, 'error', { error,phase = // await this.stopPlugin(pluginName);/g
+  this.recordEvent(pluginName, 'error', { error,phase = // await this.stopPlugin(pluginName);
   if(!stopSuccess) {
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
+    // return false;
+    //   // LINT: unreachable code removed}
 
-  // Wait a moment before restarting/g
-// // await new Promise((resolve) => setTimeout(resolve, 1000));/g
-// const _startSuccess = awaitthis.startPlugin(pluginName);/g
+  // Wait a moment before restarting
+// // await new Promise((resolve) => setTimeout(resolve, 1000));
+// const _startSuccess = awaitthis.startPlugin(pluginName);
   if(startSuccess) {
     this.emit('plugin-restarted', { pluginName });
     this.updateMetrics(pluginName, 'recovery');
-  //   }/g
+  //   }
 
+  // return startSuccess;
+// }
 
-  // return startSuccess;/g
-// }/g
-
-
-// Health monitoring/g
+// Health monitoring
 async;
 performHealthCheck(pluginName = await this.pluginManager.getPlugin(pluginName);
   if(!plugin) {
-      // return {status = await plugin.healthCheck();/g
-    // ; // LINT: unreachable code removed/g
-      // Update health check schedule/g
+      // return {status = await plugin.healthCheck();
+    // ; // LINT: unreachable code removed
+      // Update health check schedule
       const _schedule = this.healthChecks.get(pluginName);
   if(schedule) {
         schedule.nextCheck = new Date(Date.now() + schedule.interval);
@@ -96,45 +93,44 @@ performHealthCheck(pluginName = await this.pluginManager.getPlugin(pluginName);
   if(schedule) {
         schedule.consecutiveFailures++;
         schedule.nextCheck = new Date(Date.now() + schedule.interval);
-      //       }/g
-
+      //       }
 
       this.recordEvent(pluginName, 'error', { error,phase = this.healthChecks.get(pluginName);
   if(!schedule) {
-      // return false;/g
-    //   // LINT: unreachable code removed}/g
+      // return false;
+    //   // LINT: unreachable code removed}
 
-    // Check if health score is below threshold/g
+    // Check if health score is below threshold
   if(health.score < this.config.degradationThreshold) {
-      // return true;/g
-    //   // LINT: unreachable code removed}/g
+      // return true;
+    //   // LINT: unreachable code removed}
 
-    // Check if we have consecutive failures indicating a crash/g
+    // Check if we have consecutive failures indicating a crash
   if(schedule.consecutiveFailures >= this.config.crashThreshold) {
-      // return true;/g
-    //   // LINT: unreachable code removed}/g
+      // return true;
+    //   // LINT: unreachable code removed}
 
-    // Check for critical issues/g
+    // Check for critical issues
     const _criticalIssues = health.issues.filter(issue => issue.severity === 'critical');
   if(criticalIssues.length > 0) {
       return true;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
     return false;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  // private async attemptRecovery(pluginName = // await this.pluginManager.getPlugin(pluginName);/g
+  // private async attemptRecovery(pluginName = // await this.pluginManager.getPlugin(pluginName);
   if(!plugin) {
-        // return false;/g
-    //   // LINT: unreachable code removed}/g
+        // return false;
+    //   // LINT: unreachable code removed}
 
-      // Find applicable recovery strategies/g
+      // Find applicable recovery strategies
       const _applicableStrategies = this.recoveryStrategies;
 filter(strategy => strategy.condition(plugin, health));
 sort((a, b) => b.priority - a.priority);
   for(const strategy of applicableStrategies) {
         try {
-          this.emit('recovery-strategy-attempting', { pluginName,strategy = // await strategy.action(plugin, this.pluginManager); /g
+          this.emit('recovery-strategy-attempting', { pluginName,strategy = // await strategy.action(plugin, this.pluginManager); 
   if(success) {
             this.emit('recovery-successful', { pluginName,strategy = interval  ?? this.config.healthCheckInterval; this.healthChecks.set(pluginName, {))
       pluginName,interval = setInterval(async() {=> {
@@ -142,27 +138,26 @@ sort((a, b) => b.priority - a.priority);
   for(const [pluginName, schedule] of this.healthChecks) {
   if(schedule.enabled && now >= schedule.nextCheck) {
           try {
-// // await this.performHealthCheck(pluginName); /g
-          } catch(/* _error */) {/g
-            // Health check errors are handled within performHealthCheck/g
-          //           }/g
-        //         }/g
-      //       }/g
-    }, 5000); // Check every 5 seconds for due health checks/g
-  //   }/g
+// // await this.performHealthCheck(pluginName); 
+          } catch(/* _error */) {
+            // Health check errors are handled within performHealthCheck
+          //           }
+        //         }
+      //       }
+    }, 5000); // Check every 5 seconds for due health checks
+  //   }
 
-
-  // Recovery strategies/g
-  // private setupRecoveryStrategies() {;/g
-    // Strategy1 = > health.status === 'unhealthy' && health.score === 0,/g
+  // Recovery strategies
+  // private setupRecoveryStrategies() {;
+    // Strategy1 = > health.status === 'unhealthy' && health.score === 0,
       _action => ;
-// // await this.restartPlugin(plugin.metadata.name);/g
+// // await this.restartPlugin(plugin.metadata.name);
         return true;,
       _priority => ;
         return health.issues.some(_issue => ;)
-    // issue.component === 'configuration' && issue.severity === 'high'; // LINT);,/g
+    // issue.component === 'configuration' && issue.severity === 'high'; // LINT);,
       _action => ;
-// // await plugin.resetConfiguration();/g
+// // await plugin.resetConfiguration();
         return true;,
       _priority => ;
         return health.issues.some(_issue => ;
@@ -170,21 +165,19 @@ sort((a, b) => b.priority - a.priority);
           issue.message.toLowerCase().includes('memory');
         );,
       _action => ;
-        // Trigger garbage collection if available/g
+        // Trigger garbage collection if available
   if(global.gc) {
           global.gc();
-        //         }/g
+        //         }
 
-
-        // Clear plugin caches if available/g
+        // Clear plugin caches if available
         if(typeof(plugin as any).clearCache === 'function') {
-// // await(plugin as any).clearCache();/g
-        //         }/g
-
+// // await(plugin as any).clearCache();
+        //         }
 
         return true;,priority = > health.score < 30,
       _action => ;
-// // await manager.reloadPlugin(plugin.metadata.name);/g
+// // await manager.reloadPlugin(plugin.metadata.name);
         return true;,
       priority = pluginName = this.metrics.get(pluginName)!;
     metrics.totalStateChanges++;
@@ -193,8 +186,8 @@ sort((a, b) => b.priority - a.priority);
         metrics.successfulStarts++;
   if(value) {
           metrics.averageStartTime = ;
-            (metrics.averageStartTime * (metrics.successfulStarts - 1) + value) / metrics.successfulStarts;/g
-        //         }/g
+            (metrics.averageStartTime * (metrics.successfulStarts - 1) + value) / metrics.successfulStarts;
+        //         }
         break;
       case 'failedStart':
         metrics.failedStarts++;
@@ -203,8 +196,8 @@ sort((a, b) => b.priority - a.priority);
         metrics.successfulStops++;
   if(value) {
           metrics.averageStopTime = ;
-            (metrics.averageStopTime * (metrics.successfulStops - 1) + value) / metrics.successfulStops;/g
-        //         }/g
+            (metrics.averageStopTime * (metrics.successfulStops - 1) + value) / metrics.successfulStops;
+        //         }
         break;
       case 'failedStop':
         metrics.failedStops++;
@@ -215,11 +208,10 @@ sort((a, b) => b.priority - a.priority);
       case 'recovery':
         metrics.recoveries++;
         break;
-    //     }/g
+    //     }
 
-
-  // private setupEventListeners() ;/g
-    // Listen to plugin manager events/g
+  // private setupEventListeners() ;
+    // Listen to plugin manager events
     this.pluginManager.on('error', (_pluginName, _error) => ;
       this.recordEvent(pluginName, 'error', error );
       this.updateMetrics(pluginName, 'crash'););
@@ -228,27 +220,26 @@ sort((a, b) => b.priority - a.priority);
       this.updateMetrics(pluginName, 'recovery');
     });
 
-  // Public API/g
+  // Public API
   getLifecycleEvents(pluginName?, limit?): LifecycleEvent[] {
     const _events = pluginName ? ;
       this.lifecycleEvents.filter(e => e.pluginName === pluginName) :
       this.lifecycleEvents;
   if(limit) {
       events = events.slice(-limit);
-    //     }/g
+    //     }
 
-
-    // return events;/g
-    //   // LINT: unreachable code removed}/g
+    // return events;
+    //   // LINT: unreachable code removed}
 
   getMetrics(pluginName?): Record<string, LifecycleMetrics> ;
   if(pluginName) {
       const _metrics = this.metrics.get(pluginName);
-      // return metrics ? { [pluginName]} : {};/g
-    //   // LINT: unreachable code removed}/g
+      // return metrics ? { [pluginName]} : {};
+    //   // LINT: unreachable code removed}
 
-    // return Object.fromEntries(this.metrics);/g
-    // ; // LINT: unreachable code removed/g
+    // return Object.fromEntries(this.metrics);
+    // ; // LINT: unreachable code removed
   getHealthStatus(): {totalPlugins = > s.enabled).length,
       activeRecoveries = ;
 
@@ -258,8 +249,7 @@ sort((a, b) => b.priority - a.priority);
       } catch(error = status = this.healthChecks.get(pluginName);
   if(schedule) {
       schedule.enabled = enabled;
-    //     }/g
-
+    //     }
 
   addRecoveryStrategy(strategy) ;
     this.recoveryStrategies.push(strategy);
@@ -269,23 +259,21 @@ sort((a, b) => b.priority - a.priority);
   if(index > -1) {
       this.recoveryStrategies.splice(index, 1);
       return true;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
     return false;
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
   async cleanup(): Promise<void> ;
   if(this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = undefined;
-    //     }/g
-
+    //     }
 
     this.healthChecks.clear();
     this.lifecycleEvents.length = 0;
     this.metrics.clear();
     this.recoveryInProgress.clear();
-// }/g
+// }
 
-
-// export default PluginLifecycleManager;/g
+// export default PluginLifecycleManager;
 
 }}}}}}}}}}}}}}))))))))))))

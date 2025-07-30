@@ -1,45 +1,45 @@
-/\*\*/g
- * Cli Main Module;
- * Converted from JavaScript to TypeScript;
- *//g
+
+/** Cli Main Module;
+/** Converted from JavaScript to TypeScript;
+
 #;
-!/usr/bin / env;/g
+// ! /usr/bin / env;
 node;
 
-import { renderTui  } from '../ui/ink-tui.js';/g
+import { renderTui  } from '../ui/ink-tui.js';
 import { commandRegistry,
 createMeowCLI,
 executeCommand,
 hasCommand,
-showCommandHelp  } from './command-registry.js'/g
+showCommandHelp  } from '.
 
-import { initializePlugins  } from './plugin-activation.js';/g
+import { initializePlugins  } from '.';
 
 async function _main() {
-  // Use the comprehensive meow configuration from command-registry/g
-// const _cli = awaitcreateMeowCLI();/g
+  // Use the comprehensive meow configuration from command-registry
+// const _cli = awaitcreateMeowCLI();
   const { input, flags } = cli;
   const _command = input[0];
 
-  // Handle version flag first(no plugins needed)/g
+  // Handle version flag first(no plugins needed)
   if(flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  // Handle general help or no command(no plugins needed)/g
+  // Handle general help or no command(no plugins needed)
   if(!command) {
     cli.showHelp(0);
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  // Handle command-specific help requests/g
+  // Handle command-specific help requests
   if(flags.help  ?? flags.h) {
-// // await showCommandHelp(command);/g
+// // await showCommandHelp(command);
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  // Commands that don't need plugins(lightweight commands)'/g
+  // Commands that don't need plugins(lightweight commands)'
   const _lightweightCommands = [
     'init',
     'status',
@@ -49,43 +49,40 @@ async function _main() {
     '--help',
     '--version' ];
 
-  // Initialize plugin system only for commands that need it/g
+  // Initialize plugin system only for commands that need it
   const __pluginManager = null;
   if(!lightweightCommands.includes(command)) {
     try {
-      _pluginManager = // await initializePlugins({errorHandling = // await import('./plugin-activation.js');/g
+      _pluginManager = // await initializePlugins({errorHandling = // await import('./plugin-activation.js');
         registerPluginCommands(commandRegistry);
-      //       }/g
-  //   }/g
+      //       }
+  //   }
   catch(error);
   if(flags.debug) {
     console.error(' Plugin initialization failed);'
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-// Handle UI flag(needs plugins)/g
+// Handle UI flag(needs plugins)
   if(flags.ui) {
   renderTui(cli);
   return;
-// }/g
+// }
 
-
-// Execute command/g
+// Execute command
 if(hasCommand(command)) {
   try {
-// // await executeCommand(command, input.slice(1), flags);/g
-  } catch(/* err */) {/g
-    console.error(`❌ Error executing command "${command}");`
+// // await executeCommand(command, input.slice(1), flags);
+  } catch(/* err */) {
+    console.error(` Error executing command "${command}");`
   if(flags.debug) {
       console.error('Stack trace);'
-    //     }/g
+    //     }
     process.exit(1);
-  //   }/g
+  //   }
 } else {
-  console.error(`❌ Error);`
+  console.error(` Error);`
   cli.showHelp(1);
-// }/g
-// }/g
+// }
+// }
   main() {}
-)

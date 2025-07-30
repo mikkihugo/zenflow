@@ -1,29 +1,29 @@
-/\*\*/g
- * Real-time Update System for Claude-Flow Web UI;
- * Provides event-driven architecture for live data updates;
- * Supports WebSocket-like functionality and progressive loading;
- *//g
+
+/** Real-time Update System for Claude-Flow Web UI;
+/** Provides event-driven architecture for live data updates;
+/** Supports WebSocket-like functionality and progressive loading;
+
 export class RealtimeUpdateSystem {
   constructor(ui = ui;
   this;
 
-  subscribers = new Map(); // Event type -> Set of callbacks/g
+  subscribers = new Map(); // Event type -> Set of callbacks
   this;
 
-  updateQueues = new Map(); // View -> Queue of pending updates/g
+  updateQueues = new Map(); // View -> Queue of pending updates
   this;
 
-  updateTimers = new Map(); // View -> Timer for batched updates/g
+  updateTimers = new Map(); // View -> Timer for batched updates
   this;
 
-  batchDelay = 100; // ms to batch updates/g
+  batchDelay = 100; // ms to batch updates
   this;
 
-  eventHistory = []; // Keep last 100 events/g
+  eventHistory = []; // Keep last 100 events
   this;
 
   maxHistorySize = 100;
-  // Performance monitoring/g
+  // Performance monitoring
   this;
 
   updateMetrics = {
@@ -32,13 +32,13 @@ export class RealtimeUpdateSystem {
   => {
       this.
   broadcastUpdate('tools', {
-        //         type => {/g
+        //         type => {
       this.broadcastUpdate('tools', {
-        //         type => {/g
+        //         type => {
       this.broadcastUpdate('tools', {
-        //         type => {/g
+        //         type => {
       this.broadcastUpdate('orchestration', {
-        //         type => {/g
+        //         type => {
       this.broadcastUpdate('memory', {type = [
       'neural',
       'analysis',
@@ -58,34 +58,34 @@ export class RealtimeUpdateSystem {
 set(
   view;
   , [])
-// }/g
-// )/g
-// }/g
-/\*\*/g
- * Subscribe to specific event types;
- *//g
+// }
+// )
+// }
+
+/** Subscribe to specific event types;
+
 subscribe(eventType, callback)
 : unknown
-// {/g
+// {
   if(!this.subscribers.has(eventType)) {
     this.subscribers.set(eventType, new Set());
-  //   }/g
+  //   }
   this.subscribers.get(eventType).add(callback);
-  // Return unsubscribe function return() => {/g
+  // Return unsubscribe function return() => {
   const _subs = this.subscribers.get(eventType);
-  // if(subs) { // LINT: unreachable code removed/g
+  // if(subs) { // LINT: unreachable code removed
   subs.delete(callback);
-// }/g
-// }/g
-// }/g
-/\*\*/g
- * Emit event to all subscribers;
- *//g
+// }
+// }
+// }
+
+/** Emit event to all subscribers;
+
 emit(eventType, data)
 : unknown
-// {/g
+// {
   const _timestamp = Date.now();
-  // Add to event history/g
+  // Add to event history
   this.eventHistory.push({type = this.subscribers.get(eventType);
   if(subscribers) {
     subscribers.forEach((callback) => {
@@ -93,81 +93,81 @@ emit(eventType, data)
         callback(data, timestamp);
       } catch(error) {
         console.error(`Error in event subscriber for ${eventType});`
-      //       }/g
+      //       }
     });
-  //   }/g
-// }/g
-/\*\*/g
- * Broadcast update to specific view;
- *//g
+  //   }
+// }
+
+/** Broadcast update to specific view;
+
 broadcastUpdate(viewName, updateData);
 : unknown
-// {/g
+// {
   const _queue = this.updateQueues.get(viewName);
   if(!queue) return;
-  // ; // LINT: unreachable code removed/g
-  // Add update to queue/g
+  // ; // LINT: unreachable code removed
+  // Add update to queue
   queue.push({)
 ..updateData,id = this.updateTimers.get(viewName);
   if(existingTimer) {
     clearTimeout(existingTimer);
-  //   }/g
-  // Schedule new batched update/g
+  //   }
+  // Schedule new batched update
   const _timer = setTimeout(() => {
     this.processBatchedUpdates(viewName);
   }, this.batchDelay);
   this.updateTimers.set(viewName, timer);
-// }/g
-/\*\*/g
- * Process batched updates for a view;
- *//g
+// }
+
+/** Process batched updates for a view;
+
 processBatchedUpdates(viewName);
 : unknown
-// {/g
+// {
   const _queue = this.updateQueues.get(viewName);
   if(!queue ?? queue.length === 0) return;
-  // ; // LINT: unreachable code removed/g
+  // ; // LINT: unreachable code removed
   const _startTime = Date.now();
-  // Group updates by type/g
+  // Group updates by type
   const _groupedUpdates = this.groupUpdatesByType(queue);
-  // Apply updates/g
+  // Apply updates
   this.applyUpdatesToView(viewName, groupedUpdates);
-  // Clear processed updates/g
+  // Clear processed updates
   queue.length = 0;
-  // Update metrics/g
+  // Update metrics
   const _latency = Date.now() - startTime;
   this.updateMetrics.updateLatency.push(latency);
   this.updateMetrics.batchedUpdates++;
-  // Keep only last 100 latency measurements/g
+  // Keep only last 100 latency measurements
   if(this.updateMetrics.updateLatency.length > 100) {
     this.updateMetrics.updateLatency.shift();
-  //   }/g
-  // Clear timer/g
+  //   }
+  // Clear timer
   this.updateTimers.delete(viewName);
-// }/g
-/\*\*/g
- * Group updates by type for efficient processing;
- *//g
+// }
+
+/** Group updates by type for efficient processing;
+
 groupUpdatesByType(updates);
 : unknown
-// {/g
+// {
   const _grouped = new Map();
   updates.forEach((update) => {
     if(!grouped.has(update.type)) {
       grouped.set(update.type, []);
-    //     }/g
+    //     }
     grouped.get(update.type).push(update);
   });
-  // return grouped;/g
-// }/g
-/\*\*/g
- * Apply grouped updates to a specific view;
- *//g
+  // return grouped;
+// }
+
+/** Apply grouped updates to a specific view;
+
 applyUpdatesToView(viewName, groupedUpdates);
 : unknown
-// {/g
+// {
     try {
-      // Different views handle updates differently/g
+      // Different views handle updates differently
   switch(viewName) {
         case 'neural':
           this.applyNeuralUpdates(groupedUpdates);
@@ -188,21 +188,19 @@ applyUpdatesToView(viewName, groupedUpdates);
           this.applyMemoryUpdates(groupedUpdates);
           break;default = === viewName) {
         this.requestUIRefresh();
-      //       }/g
+      //       }
     } catch(error) ;
       console.error(`Error applying updates to \$viewName);`
       this.updateMetrics.droppedUpdates++;
-  //   }/g
+  //   }
 
+/** Apply neural-specific updates;
 
-  /\*\*/g
-   * Apply neural-specific updates;
-   */;/g
   applyNeuralUpdates(groupedUpdates) {
     const _neuralData = this.ui.enhancedViews?.viewData?.get('neural');
     if(!neuralData) return;
-    // ; // LINT: unreachable code removed/g
-    // Handle training job updates/g
+    // ; // LINT: unreachable code removed
+    // Handle training job updates
     const _trainingUpdates = groupedUpdates.get('training_progress');
   if(trainingUpdates) {
       trainingUpdates.forEach((update) => {
@@ -219,18 +217,17 @@ applyUpdatesToView(viewName, groupedUpdates);
         } else {
           neuralData.models.push({id = this.ui.enhancedViews?.viewData?.get('analysis');
     if(!analysisData) return;
-    // ; // LINT: unreachable code removed/g
-    // Handle performance report updates/g
+    // ; // LINT: unreachable code removed
+    // Handle performance report updates
     const _reportUpdates = groupedUpdates.get('performance_report');
   if(reportUpdates) {
       reportUpdates.forEach((update) => {
         analysisData.reports.unshift({id = analysisData.reports.slice(0, 50);
-        //         }/g
+        //         }
       });
-    //     }/g
+    //     }
 
-
-    // Handle metrics updates/g
+    // Handle metrics updates
     const _metricsUpdates = groupedUpdates.get('metrics_update');
   if(metricsUpdates) {
       metricsUpdates.forEach((update) => {
@@ -238,94 +235,84 @@ applyUpdatesToView(viewName, groupedUpdates);
 ..update.data,timestamp = groupedUpdates.get('execution_start');
   if(executionUpdates) {
       executionUpdates.forEach((update) => {
-        this.ui.addLog('info', `�Started = groupedUpdates.get('execution_complete');`
+        this.ui.addLog('info', `Started = groupedUpdates.get('execution_complete');`
   if(completionUpdates) {
       completionUpdates.forEach((update) => {
-        this.ui.addLog('success', `✅Completed = groupedUpdates.get('execution_error');`
+        this.ui.addLog('success', `Completed = groupedUpdates.get('execution_error');`
   if(errorUpdates) {
       errorUpdates.forEach((update) => {
-        this.ui.addLog('error', `❌Failed = groupedUpdates.get('swarm_update');`
+        this.ui.addLog('error', `Failed = groupedUpdates.get('swarm_update');`
   if(swarmUpdates) {
       swarmUpdates.forEach((update) => {
-        // Update swarm integration data/g
+        // Update swarm integration data
   if(this.ui.swarmIntegration) {
           this.ui.swarmIntegration.updateSwarmStatus();
-        //         }/g
+        //         }
 
-
-        this.ui.addLog('info', `� Swarm ${update.swarmId});`
+        this.ui.addLog('info', ` Swarm ${update.swarmId});`
       });
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Apply memory-specific updates;
 
-  /\*\*/g
-   * Apply memory-specific updates;
-   */;/g
   applyMemoryUpdates(groupedUpdates) {
-    // Handle memory operation updates/g
+    // Handle memory operation updates
     const _memoryUpdates = groupedUpdates.get('memory_update');
   if(memoryUpdates) {
       memoryUpdates.forEach((update) => {
-        // Update memory stats/g
+        // Update memory stats
   if(this.ui.memoryStats) {
           const _namespace = this.ui.memoryStats.namespaces.find(;)
             (ns) => ns.name === update.namespace);
   if(namespace) {
-            // Update existing namespace stats/g
+            // Update existing namespace stats
   if(update.operation === 'store') {
               namespace.entries++;
             } else if(update.operation === 'delete') {
               namespace.entries = Math.max(0, namespace.entries - 1);
-            //             }/g
-          //           }/g
-        //         }/g
+            //             }
+          //           }
+        //         }
 
-
-        this.ui.addLog('info', `� Memory ${update.operation} in ${update.namespace}`);
+        this.ui.addLog('info', ` Memory ${update.operation} in ${update.namespace}`);
       });
-    //     }/g
-  //   }/g
+    //     }
+  //   }
 
+/** Apply generic updates for other views;
 
-  /\*\*/g
-   * Apply generic updates for other views;
-   */;/g
   applyGenericUpdates(viewName, groupedUpdates) ;
-    // Log generic updates/g
+    // Log generic updates
     groupedUpdates.forEach((updates, type) => ;
       updates.forEach((update) => ;
-        this.ui.addLog('info', `� ${viewName});););`
+        this.ui.addLog('info', ` ${viewName});););`
 
-  /\*\*/g
-   * Update related views based on tool execution;
-   */;/g
+/** Update related views based on tool execution;
+
   updateRelatedViews(toolName, result) {
-    // Map tool names to affected views/g
+    // Map tool names to affected views
     const _toolViewMap = {
-      // Neural tools affect neural viewneural_train = toolViewMap[toolName]  ?? [];/g
+      // Neural tools affect neural viewneural_train = toolViewMap[toolName]  ?? [];
 
     affectedViews.forEach((viewName) => {
       this.broadcastUpdate(viewName, {type = setTimeout(() => {
   if(this.ui && typeof this.ui.render === 'function') {
         this.ui.render();
-      //       }/g
+      //       }
       this.refreshThrottle = null;
-    }, 50); // Throttle to max 20 FPS/g
-  //   }/g
+    }, 50); // Throttle to max 20 FPS
+  //   }
 
+/** Start performance monitoring;
 
-  /\*\*/g
-   * Start performance monitoring;
-   */;/g
   startPerformanceMonitoring() {}
     setInterval(() => {
       this.reportPerformanceMetrics();
-    }, 60000); // Report every minute/g
+    }, 60000); // Report every minute
 
-  /\*\*/g
-   * Report performance metrics;
-   */;/g
+/** Report performance metrics;
+
   reportPerformanceMetrics() {}
 
     this.emit('performance_metrics', {
@@ -337,43 +324,40 @@ applyUpdatesToView(viewName, groupedUpdates);
     return {
       subscribers = {}) {
     const { chunkSize = 10, delay = 100, onProgress = null, onComplete = null } = options;
-    // ; // LINT: unreachable code removed/g
-    // return async() => {/g
+    // ; // LINT: unreachable code removed
+    // return async() => {
       try {
-// const _data = awaitdataLoader();/g
-    // ; // LINT: unreachable code removed/g
+// const _data = awaitdataLoader();
+    // ; // LINT: unreachable code removed
         if(!Array.isArray(data)) {
-          // Non-array data, load immediately/g
+          // Non-array data, load immediately
           this.broadcastUpdate(viewName, {type = 0; i < data.length; i += chunkSize) {
           const _chunk = data.slice(i, i + chunkSize);
 
           this.broadcastUpdate(viewName, {type = > setTimeout(resolve, delay));
-          //           }/g
-        //         }/g
-
+          //           }
+        //         }
 
         if(onComplete) onComplete(data);
       } catch(error) {
         this.broadcastUpdate(viewName, {type = > clearTimeout(timer));
     this.updateTimers.clear();
 
-    // Clear refresh throttle/g
+    // Clear refresh throttle
   if(this.refreshThrottle) {
       clearTimeout(this.refreshThrottle);
-    //     }/g
+    //     }
 
-
-    // Clear all subscribers/g
+    // Clear all subscribers
     this.subscribers.clear();
 
-    // Clear update queues/g
+    // Clear update queues
     this.updateQueues.clear();
 
     this.ui.addLog('info', 'Real-time update system cleaned up');
-  //   }/g
-// }/g
+  //   }
+// }
 
-
-// export default RealtimeUpdateSystem;/g
+// export default RealtimeUpdateSystem;
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))

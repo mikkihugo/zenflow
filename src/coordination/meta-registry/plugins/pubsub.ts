@@ -1,13 +1,12 @@
-/**  *//g
- * Pub/Sub Communication Plugin/g
- * Provides publish-subscribe messaging coordination through the registry
- *//g
+
+/** Pub/Sub Communication Plugin
+/** Provides publish-subscribe messaging coordination through the registry
 
 import { EventEmitter  } from 'node:events';'
 import { nanoid  } from 'nanoid';'
 
 export class PubSubPlugin extends EventEmitter {
-  // // static metadata = {name = null;/g
+  // // static metadata = {name = null;
   this;
 
   subscriptions = new Map();
@@ -23,147 +22,146 @@ export class PubSubPlugin extends EventEmitter {
   this;
 
   watchHandlers = new Map();
-// }/g
+// }
 async;
 initialize(registry, (options = {}));
 : unknown
-// {/g
+// {
   this.registry = registry;
   this.options = {
-      messageRetention, // 1 hour default TTLtopicPrefix = data;/g
+      messageRetention, // 1 hour default TTLtopicPrefix = data;
 
-    // Auto-setup pub/sub if service declares topics/g
+    // Auto-setup pub/sub if service declares topics
   if(_value._publishesTo  ?? value._subscribesTo) {
-// // // await this.setupServicePubSub(key, value);/g
-    //     }/g
+// // // await this.setupServicePubSub(key, value);
+    //     }
 
-
-  // return data;/g
-// }/g
+  // return data;
+// }
 async;
 handleUnregistration(data);
 : unknown
-// {/g
+// {
   const { key } = data;
-  // Cleanup pub/sub resources/g
-// // // await this.cleanupServicePubSub(key);/g
-  // return data;/g
-// }/g
+  // Cleanup pub/sub resources
+// // // await this.cleanupServicePubSub(key);
+  // return data;
+// }
 async;
 setupServicePubSub(serviceKey, serviceConfig);
 : unknown
-// {/g
-  // Register as publisher/g
+// {
+  // Register as publisher
   if(serviceConfig.publishesTo) {
   for(const topic of serviceConfig.publishesTo) {
-// // // await this.registerPublisher(serviceKey, topic); /g
-    //     }/g
-  //   }/g
-  // Register as subscriber/g
+// // // await this.registerPublisher(serviceKey, topic); 
+    //     }
+  //   }
+  // Register as subscriber
   if(serviceConfig.subscribesTo) {
   for(const topic of serviceConfig.subscribesTo) {
-// // // await this.subscribe(serviceKey, topic, (message) => {/g
+// // // await this.subscribe(serviceKey, topic, (message) => {
         this.emit('messageForService', { serviceKey, topic, message }); '
       }) {;
-    //     }/g
-  //   }/g
-// }/g
+    //     }
+  //   }
+// }
 async;
 cleanupServicePubSub(serviceKey);
 : unknown
-// {/g
-  // Remove publisher registrations/g
+// {
+  // Remove publisher registrations
   for (const [publisherId, publisher] of this.publishers.entries()) {
   if(publisher.serviceKey === serviceKey) {
-// // // await this.unregisterPublisher(publisherId); /g
-    //     }/g
-  //   }/g
-  // Remove subscriptions/g
+// // // await this.unregisterPublisher(publisherId); 
+    //     }
+  //   }
+  // Remove subscriptions
   for(const [subscriptionId, subscription] of this.subscriptions.entries()) {
   if(subscription.serviceKey === serviceKey) {
-// // // await this.unsubscribe(subscriptionId); /g
-    //     }/g
-  //   }/g
-// }/g
-// Core pub/sub operations/g
+// // // await this.unsubscribe(subscriptionId); 
+    //     }
+  //   }
+// }
+// Core pub/sub operations
 async;
   createTopic(topicName, (config = {}) {);
 : unknown
-// {/g
+// {
   const _topicId = `${this.options.topicPrefix}:${topicName}`;`
   if(this.topics.has(topicId)) {
-    // return this.topics.get(topicId);/g
-    //   // LINT: unreachable code removed}/g
+    // return this.topics.get(topicId);
+    //   // LINT: unreachable code removed}
     const __topic = {id = `${this.options.topicPrefix}:${topicName}`;`
     let _topic = this.topics.get(topicId);
   if(!topic) {
-      // return false;/g
-      //   // LINT: unreachable code removed}/g
-      // Remove all subscriptions/g
+      // return false;
+      //   // LINT: unreachable code removed}
+      // Remove all subscriptions
       for (const [subscriptionId, subscription] of this.subscriptions.entries()) {
   if(subscription.topicId === topicId) {
-// // // await this.unsubscribe(subscriptionId); /g
-        //         }/g
-      //       }/g
-      // Remove topic/g
-      this.topics.delete(topicId); // // // await this.registry.backend.unregister?.(topicId) {;/g
+// // // await this.unsubscribe(subscriptionId); 
+        //         }
+      //       }
+      // Remove topic
+      this.topics.delete(topicId); // // // await this.registry.backend.unregister?.(topicId) {;
       this.emit('topicDeleted', { topicId, topic });'
-      // return true;/g
-    //     }/g
+      // return true;
+    //     }
     async;
     publish(topicName, message, (options = {}));
     : unknown
-    //     {/g
+    //     {
       let _topicId = `${this.options.topicPrefix}:${topicName}`;`
       const __topic = this.topics.get(topicId);
-      // Create topic if it doesn't exist'/g
+      // Create topic if it doesn't exist'
   if(!topic) {
-        _topic = // // await this.createTopic(topicName);/g
-      //       }/g
+        _topic = // // await this.createTopic(topicName);
+      //       }
       const __messageData = {id = {}) {
     const _topicId = `${this.options.topicPrefix}:${topicName}`;`
       const _topic = this.topics.get(topicId);
-      // Create topic if it doesn't exist'/g
+      // Create topic if it doesn't exist'
   if(!topic) {
-        topic = // // await this.createTopic(topicName);/g
-      //       }/g
+        topic = // // await this.createTopic(topicName);
+      //       }
       const __subscriptionId = nanoid();
       const __subscription = {id = === 'string' ? subscriber : subscriber.id,'
       topicId,
       topicName,
-      handler,options = // // await this.registry.backend.watch({/g
+      handler,options = // // await this.registry.backend.watch({
         tags => {)
         this.handleTopicMessage(topicId, event);
-    //     }/g
-    //     )/g
+    //     }
+    //     )
     this.watchHandlers.set(topicId, unwatch)
-  //   }/g
-  // Update topic stats/g
+  //   }
+  // Update topic stats
   topic.stats.subscribers++;
-// // // await this.updateTopicStats(topicId, topic.stats);/g
+// // // await this.updateTopicStats(topicId, topic.stats);
   this.emit('subscribed','
   subscriptionId, subscription;)
-  //   )/g
-  // return subscriptionId;/g
-// }/g
+  //   )
+  // return subscriptionId;
+// }
 async;
 unsubscribe(subscriptionId);
 : unknown
-// {/g
+// {
   const _subscription = this.subscriptions.get(subscriptionId);
   if(!subscription) {
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
+    // return false;
+    //   // LINT: unreachable code removed}
 
-  // Remove subscription/g
+  // Remove subscription
   this.subscriptions.delete(subscriptionId);
-// // // await this.registry.backend.unregister?.(`${this.options.subscriptionPrefix});`/g
-  // Update topic stats/g
+// // // await this.registry.backend.unregister?.(`${this.options.subscriptionPrefix});`
+  // Update topic stats
   const _topic = this.topics.get(subscription.topicId);
   if(topic) {
     topic.stats.subscribers--;
-// // // await this.updateTopicStats(subscription.topicId, topic.stats);/g
-    // Clean up watch handler if no more subscribers/g
+// // // await this.updateTopicStats(subscription.topicId, topic.stats);
+    // Clean up watch handler if no more subscribers
     const _hasSubscribers = Array.from(this.subscriptions.values()).some(;)
       (sub) => sub.topicId === subscription.topicId;
     );
@@ -172,79 +170,71 @@ unsubscribe(subscriptionId);
       const _unwatch = this.watchHandlers.get(subscription.topicId);
       unwatch();
       this.watchHandlers.delete(subscription.topicId);
-    //     }/g
-  //   }/g
-
+    //     }
+  //   }
 
   this.emit('unsubscribed', { subscriptionId, subscription });'
-  // return true;/g
-// }/g
-
+  // return true;
+// }
 
 async;
 registerPublisher(publisherId, topicName, (options = {}));
 
-// {/g
+// {
   const _topicId = `${this.options.topicPrefix}:${topicName}`;`
   const __topic = this.topics.get(topicId);
   if(!topic) {
-    _topic = // // await this.createTopic(topicName);/g
-  //   }/g
-
+    _topic = // // await this.createTopic(topicName);
+  //   }
 
   const _publisher = {id = this.publishers.get(publisherId);
   if(!publisher) {
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
+    // return false;
+    //   // LINT: unreachable code removed}
 
   this.publishers.delete(publisherId);
-// // // await this.registry.backend.unregister?.(`${this.options.publisherPrefix});`/g
-  // Update topic stats/g
+// // // await this.registry.backend.unregister?.(`${this.options.publisherPrefix});`
+  // Update topic stats
   const _topic = this.topics.get(publisher.topicId);
   if(topic) {
     topic.stats.publishers--;
-// // // await this.updateTopicStats(publisher.topicId, topic.stats);/g
-  //   }/g
-
+// // // await this.updateTopicStats(publisher.topicId, topic.stats);
+  //   }
 
   this.emit('publisherUnregistered', { publisherId, publisher });'
-  // return true;/g
-// }/g
+  // return true;
+// }
 
-
-// Message handling/g
+// Message handling
 async;
 notifySubscribers(topicId, messageData);
 
-// {/g
+// {
   const __subscribers = Array.from(this.subscriptions.values()).filter(;)
     (sub) => sub.topicId === topicId;
   );
 
   subscription.stats.lastMessage = new Date();
 
-  // Call handler/g
+  // Call handler
   if(typeof subscription.handler === 'function') {'
-// // await subscription.handler(messageData);/g
-  //   }/g
+// // await subscription.handler(messageData);
+  //   }
 
-
-  // Emit event for external handlers/g
+  // Emit event for external handlers
   this.emit('messageDelivered', {subscriptionId = === 'register' && event.entry.tags.includes('message')) {'
-// // await this.notifySubscribers(topicId, event.entry.value);/g
-// }/g
-// }/g
-
+// // await this.notifySubscribers(topicId, event.entry.value);
+// }
+// }
 
   async updateTopicStats(topicId, stats);
   try {
-// await this.registry.update(topicId, { stats });/g
-  } catch(/* _error */) {/g
-    // Topic might not be registered, ignore/g
-  //   }/g
+// await this.registry.update(topicId, { stats });
+  } catch(/* _error */) {
+    // Topic might not be registered, ignore
+  //   }
 
-
-// Monitoring and management/g
+// Monitoring and management
 startSubscriptionMonitoring();
   this.monitoringInterval = setInterval(() => {
     this.updatePluginStats();
@@ -254,63 +244,60 @@ async;
 updatePluginStats();
   try {
 // await this.registry.update('service = `${this.options.topicPrefix}:${topicName}`;`'`/g)
-    // return this.topics.get(topicId)  ?? null;/g
-    //   // LINT: unreachable code removed}/g
+    // return this.topics.get(topicId)  ?? null;
+    //   // LINT: unreachable code removed}
 
   async;
   listSubscriptions((topicName = null));
 
-  //   {/g
+  //   {
     const _subscriptions = Array.from(this.subscriptions.values());
   if(topicName) {
-      // return subscriptions.filter(sub => sub.topicName === topicName);/g
-    //   // LINT: unreachable code removed}/g
+      // return subscriptions.filter(sub => sub.topicName === topicName);
+    //   // LINT: unreachable code removed}
 
     return subscriptions;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
   async;
   listPublishers((topicName = null));
 
-  //   {/g
+  //   {
     const _publishers = Array.from(this.publishers.values());
   if(topicName) {
-      // return publishers.filter(pub => pub.topicName === topicName);/g
-    //   // LINT: unreachable code removed}/g
+      // return publishers.filter(pub => pub.topicName === topicName);
+    //   // LINT: unreachable code removed}
 
     return publishers;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
   async;
   getStats();
-  //   {/g
+  //   {
     const _stats = {
       topics = {};
     for (const [_topicId, topic] of this.topics.entries()) {
-      stats.topicStats[topic.name] = topic.stats; //     }/g
+      stats.topicStats[topic.name] = topic.stats; //     }
 
+    // return stats; 
+    //   // LINT: unreachable code removed}
 
-    // return stats; /g
-    //   // LINT: unreachable code removed}/g
-
-  // Cleanup/g
+  // Cleanup
   async;
   cleanup() {;
   if(this.monitoringInterval) {
     clearInterval(this.monitoringInterval);
-  //   }/g
+  //   }
 
-
-  // Clean up watch handlers/g
+  // Clean up watch handlers
   for (const unwatch of this.watchHandlers.values()) {
-    unwatch(); //   }/g
-  this.watchHandlers.clear(); // Clear collections/g
+    unwatch(); //   }
+  this.watchHandlers.clear(); // Clear collections
   this.subscriptions.clear() {;
   this.topics.clear();
   this.publishers.clear();
-// }/g
+// }
 
-
-// export default PubSubPlugin;/g
+// export default PubSubPlugin;
 
 }}}}}}}}

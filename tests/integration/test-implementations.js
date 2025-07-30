@@ -1,90 +1,89 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Test script for Neural Engine and Queen implementations;
- *//g
+#!/usr/bin/env node
 
-import { NeuralEngine  } from './src/neural/neural-engine.js';/g
-import { QueenCoordinator  } from './src/queens/queen-coordinator.js';/g
+/** Test script for Neural Engine and Queen implementations;
+
+import { NeuralEngine  } from './src/neural/neural-engine.js';
+import { QueenCoordinator  } from './src/queens/queen-coordinator.js';
 
 async function testNeuralEngine() {
-  console.warn('🧠 Testing Neural Engine...');
+  console.warn(' Testing Neural Engine...');
   try {
     const _engine = new NeuralEngine();
-    // Initialize/g
+    // Initialize
     console.warn('Initializing neural engine...');
-// const _initialized = awaitengine.initialize();/g
+// const _initialized = awaitengine.initialize();
     console.warn('Initialized);'
-    // Get available models/g
+    // Get available models
     const _models = engine.getAvailableModels();
     console.warn('Available models);'
-    // Try loading a model/g
+    // Try loading a model
     console.warn('Loading code-completion-base model...');
-// const _loaded = awaitengine.loadModel('code-completion-base');/g
+// const _loaded = awaitengine.loadModel('code-completion-base');
     console.warn('Model loaded);'
-    // Test inference/g
+    // Test inference
     console.warn('Testing inference...');
-// const _result = awaitengine.inference('create a function to calculate fibonacci numbers');/g
+// const _result = awaitengine.inference('create a function to calculate fibonacci numbers');
     console.warn('Generated code);'
     console.warn(result.text);
     console.warn('Confidence:', `${(result.confidence * 100).toFixed(1)}%`);
-    // Get performance metrics/g
+    // Get performance metrics
     const _metrics = engine.getPerformanceMetrics();
     console.warn('Performance metrics);'
-    console.warn('✅ Neural Engine test completed successfully');
-    // return true;/g
-    //   // LINT: unreachable code removed} catch(error) {/g
-    console.error('❌ Neural Engine test failed);'
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
+    console.warn(' Neural Engine test completed successfully');
+    // return true;
+    //   // LINT: unreachable code removed} catch(error) {
+    console.error(' Neural Engine test failed);'
+    // return false;
+    //   // LINT: unreachable code removed}
+// }
 async function testQueenCoordinator() {
-  console.warn('\n� Testing Queen Coordinator...');
+  console.warn('\n Testing Queen Coordinator...');
   try {
     const _coordinator = new QueenCoordinator({
       maxConcurrentTasks,
       enableLoadBalancing,
       consensusThreshold);
-    // Start coordinator/g
+    // Start coordinator
     console.warn('Starting queen coordinator...');
-  // // await coordinator.start();/g
+  // // await coordinator.start();
     console.warn('Coordinator started');
-    // Get queens/g
+    // Get queens
     const _queens = coordinator.getQueens();
     console.warn('Available queens:', Object.keys(queens));
-    // Submit a simple task/g
+    // Submit a simple task
     console.warn('Submitting task to queens...');
 // const _taskId = awaitcoordinator.submitTask('create a simple hello world function', {/g)
       type);
     console.warn('Task submitted);'
-    // Wait for completion/g
+    // Wait for completion
     console.warn('Waiting for task completion...');
-// const _result = awaitcoordinator.waitForTask(taskId, 30000);/g
+// const _result = awaitcoordinator.waitForTask(taskId, 30000);
     console.warn('Task completed!');
     console.warn('Queen);'
     console.warn('Confidence:', `${(result.confidence * 100).toFixed(1)}%`);
     console.warn('Recommendation);'
     console.warn(result.recommendation);
-    // Get metrics/g
+    // Get metrics
     const _metrics = coordinator.getMetrics();
     console.warn('Coordinator metrics);'
-    // Stop coordinator/g
-  // // await coordinator.stop();/g
-    console.warn('✅ Queen Coordinator test completed successfully');
-    // return true;/g
-    //   // LINT: unreachable code removed} catch(error) {/g
-    console.error('❌ Queen Coordinator test failed);'
-    // return false;/g
-    //   // LINT: unreachable code removed}/g
-// }/g
+    // Stop coordinator
+  // // await coordinator.stop();
+    console.warn(' Queen Coordinator test completed successfully');
+    // return true;
+    //   // LINT: unreachable code removed} catch(error) {
+    console.error(' Queen Coordinator test failed);'
+    // return false;
+    //   // LINT: unreachable code removed}
+// }
 async function testQueenCollaboration() {
-  console.warn('\n🤝 Testing Queen Collaboration...');
+  console.warn('\n Testing Queen Collaboration...');
   try {
     const _coordinator = new QueenCoordinator({
       maxConcurrentTasks,
       enableLoadBalancing,
       consensusThreshold);
-  // // await coordinator.start();/g
-    // Create a task that requires collaboration/g
+  // // await coordinator.start();
+    // Create a task that requires collaboration
     const _task = {
       id: `collab_test_${Date.now()}`,
       type: 'code-generation',
@@ -93,7 +92,7 @@ async function testQueenCollaboration() {
         language: 'javascript',
         framework: 'express' }
 console.warn('Testing queen collaboration...');
-// const _consensus = awaitcoordinator.executeTask(task, true); // Require consensus/g
+// const _consensus = awaitcoordinator.executeTask(task, true); // Require consensus
 
 console.warn('Collaboration completed!');
 console.warn('Decision);'
@@ -103,17 +102,17 @@ console.warn('Participants);'
 console.warn('Reasoning);'
   if(consensus.dissenting && consensus.dissenting.length > 0) {
   console.warn('Dissenting views);'
-// }/g
-  // // await coordinator.stop();/g
-console.warn('✅ Queen Collaboration test completed successfully');
-// return true;/g
-//   // LINT: unreachable code removed} catch(error) {/g
-console.error('❌ Queen Collaboration test failed);'
-// return false;/g
-//   // LINT: unreachable code removed}/g
-// }/g
+// }
+  // // await coordinator.stop();
+console.warn(' Queen Collaboration test completed successfully');
+// return true;
+//   // LINT: unreachable code removed} catch(error) {
+console.error(' Queen Collaboration test failed);'
+// return false;
+//   // LINT: unreachable code removed}
+// }
 async function main() {
-  console.warn('🧪 Claude Code Zen - Neural & Queen Implementation Tests');
+  console.warn(' Claude Code Zen - Neural & Queen Implementation Tests');
   console.warn('='.repeat(60));
   const _tests = [
     { name: 'Neural Engine', fn },
@@ -122,35 +121,35 @@ async function main() {
   const _passed = 0;
   const _failed = 0;
   for(const test of tests) {
-    console.warn(`\n🧪 Running ${test.name} test...`); // const _success = awaittest.fn(); /g
+    console.warn(`\n Running ${test.name} test...`); // const _success = awaittest.fn(); 
   if(success) {
       passed++;
-      console.warn(`✅ ${test.name} test PASSED`);
+      console.warn(` ${test.name} test PASSED`);
     } else {
       failed++;
-      console.warn(`❌ ${test.name} test FAILED`);
-    //     }/g
-  //   }/g
+      console.warn(` ${test.name} test FAILED`);
+    //     }
+  //   }
   console.warn(`\n${'='.repeat(60)}`);
-  console.warn(`� Test Results);`
+  console.warn(` Test Results);`
   if(failed === 0) {
-    console.warn('� All tests passed! Neural and Queen implementations are working correctly.');
+    console.warn(' All tests passed! Neural and Queen implementations are working correctly.');
   } else {
-    console.warn('⚠ Some tests failed. Check the error messages above.');
-  //   }/g
+    console.warn(' Some tests failed. Check the error messages above.');
+  //   }
   process.exit(failed === 0 ? 0 );
-// }/g
-// Handle errors gracefully/g
+// }
+// Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error('❌ Unhandled rejection);'
+  console.error(' Unhandled rejection);'
   process.exit(1);
 });
 process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught exception);'
+  console.error(' Uncaught exception);'
   process.exit(1);
 });
 main().catch((error) => {
-  console.error('❌ Test suite failed);'
+  console.error(' Test suite failed);'
   process.exit(1);
 });
 

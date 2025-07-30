@@ -1,19 +1,19 @@
-/**  *//g
- * Critical Fixes Template - For Claude Flow Init
- * Includes timeout protection, GitHub CLI safety, and dynamic agent loading
- *//g
+
+/** Critical Fixes Template - For Claude Flow Init
+/** Includes timeout protection, GitHub CLI safety, and dynamic agent loading
+
 export const criticalFixesTemplate = `# Critical System Fixes Applied
 
 This Claude Flow project includes critical upstream fixes that prevent commonissues = await TimeoutProtection.checkRuvSwarmAvailableWithTimeout();
 
-// Execute hooks with timeout protection/g
-// const _result = awaitTimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', params);/g
+// Execute hooks with timeout protection
+// const _result = awaitTimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', params);
 
-// Setup safe exit handlers/g
+// Setup safe exit handlers
 TimeoutProtection.setupSafeExit();
 \`\`\`
 
-## 2. GitHub CLI Safety Utilities 🔐
+## 2. GitHub CLI Safety Utilities 
 
 **Problem Solved**: 2-minute timeouts with backticks and command substitution in GitHub CLI operations
 
@@ -25,36 +25,36 @@ TimeoutProtection.setupSafeExit();
 
 **Usage**:
 \`\`\`javascript;
-// Import GitHub CLI safety utilities/g
-import GitHubCliSafe from './src/utils/github-cli-safe.js';/g
+// Import GitHub CLI safety utilities
+import GitHubCliSafe from './src/utils/github-cli-safe.js';
 
-// Create PR safely with special characters/g
-// const _result = awaitGitHubCliSafe.createPullRequestSafe({title = await GitHubCliSafe.execGhSafe(['repo', 'view'], {timeout = await agentLoader.getAgentType('analyst'); // Maps to 'code-analyzer'/g
+// Create PR safely with special characters
+// const _result = awaitGitHubCliSafe.createPullRequestSafe({title = await GitHubCliSafe.execGhSafe(['repo', 'view'], {timeout = await agentLoader.getAgentType('analyst'); // Maps to 'code-analyzer'
 
-// List all available agents/g
+// List all available agents
 
-// Check agent statistics/g
+// Check agent statistics
 
 console.warn(\`Total = await checkRuvSwarmAvailable();
-// const _result = awaitexecRuvSwarmHook('pre-task', params);/g
+// const _result = awaitexecRuvSwarmHook('pre-task', params);
 
-// NEW(timeout protected)/g
-// const _result = awaitTimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', params);/g
+// NEW(timeout protected)
+// const _result = awaitTimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', params);
 \`\`\`
 
 ### For GitHub Operations;
 Replace direct ghcommands = execSync(\`gh pr create --title "\${title}" --body "\${body}"\`);
 
-// NEW(safe)/g
-// const _result = awaitGitHubCliSafe.createPullRequestSafe({ title, body   });/g
+// NEW(safe)
+// const _result = awaitGitHubCliSafe.createPullRequestSafe({ title, body   });
 \`\`\`
 
 ### For Agent Management;
-Update agentspawning = === 'analyst') { /* spawn analyst */ }/g
+Update agentspawning = === 'analyst') { /* spawn analyst */ }
 
-// NEW(handles legacy mapping)/g
-// const _agentTypeInfo = awaitagentLoader.getAgentType('analyst'); // Returns code-analyzer/g
-  if(agentTypeInfo) { /* spawn agent using agentTypeInfo */ }/g
+// NEW(handles legacy mapping)
+// const _agentTypeInfo = awaitagentLoader.getAgentType('analyst'); // Returns code-analyzer
+  if(agentTypeInfo) { /* spawn agent using agentTypeInfo */ }
 \`\`\`
 
 ## 7. Backward Compatibility
@@ -74,11 +74,11 @@ All changes are backward compatible: null
 
 ---
 
-**🎯 These fixes address the critical upstream issues from commits:**
+** These fixes address the critical upstream issues from commits:**
 - 43ab723d + 3dfd2ee1: Hooks timeout protection;
 - 958f5910 + f4107494: GitHub CLI safety utilities  ;
 - 00dd0094: Dynamic agent loading system
 
-Your Claude Flow project is now protected against hanging processes and common injection vulnerabilities! 🚀;
+Your Claude Flow project is now protected against hanging processes and common injection vulnerabilities! ;
 `;
 export default criticalFixesTemplate;

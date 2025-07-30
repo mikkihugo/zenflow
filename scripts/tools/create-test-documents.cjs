@@ -1,46 +1,43 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * Create test documents for Claude Desktop access via MCP
- *//g
+#!/usr/bin/env node
 
-const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');/g
+/** Create test documents for Claude Desktop access via MCP
 
-// Mock memory store/g
+const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
+
+// Mock memory store
 class MockMemoryStore {
   constructor() {
     this.data = new Map();
-  }
+
   async store(key, value, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    // return { id, size: value.length };/g
-  }
+    // return { id, size: value.length };
+
   async retrieve(key, options = {}) { 
     const fullKey = options.namespace ? `$options.namespace}:${key}` ;
-    // return this.data.get(fullKey) || null;/g
-  }
+    // return this.data.get(fullKey) || null;
+
   async search(options = {}) { 
     const results = };
   for(const [key, value] of this.data) {
       if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value; }
-    }
-    // return results; /g
-  }
-}
+
+    // return results; 
 
 const memoryStore = new MockMemoryStore() {;
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
 async function createTestDocuments() {
-  // Document 1: Architecture Decision Record/g
-// await docStack.createDocument('service-adr',/g
+  // Document 1: Architecture Decision Record
+// await docStack.createDocument('service-adr',
     'user-service',
     'use-redis-for-sessions',)
     `# ADR);`
-  // Document 2: API Documentation/g
-// // await docStack.createDocument('api-documentation',/g
+  // Document 2: API Documentation
+// // await docStack.createDocument('api-documentation',
     'payment-service',
     'payment-api-v2',
     `# Payment Service API v2.0`
@@ -50,8 +47,8 @@ RESTful API for payment processing operations including credit card payments, re
 
 ## Authentication)
 All endpoints require Bearer token authentication);
-  // Document 3: Security Specification/g
-// // await docStack.createDocument(/g
+  // Document 3: Security Specification
+// // await docStack.createDocument(
     'security-spec',
     'auth-service',
     'oauth2-implementation',
@@ -123,7 +120,5 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
   );
   for(const [_key, value] of memoryStore.data) {
     const _doc = JSON.parse(value);
-  }
-}
 
 createTestDocuments().catch(console.error);

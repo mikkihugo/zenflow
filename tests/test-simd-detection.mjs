@@ -1,10 +1,8 @@
-#!/usr/bin/env node/g
+#!/usr/bin/env node
 
-/\*\*/g
- * Test SIMD detection in ruv-swarm
- *//g
+/** Test SIMD detection in ruv-swarm
 
-import { RuvSwarm  } from './ruv-swarm/npm/src/index-enhanced.js';/g
+import { RuvSwarm  } from './ruv-swarm/npm/src/index-enhanced.js';
 
 try {
   const _simdSupported = RuvSwarm.detectSIMDSupport();
@@ -16,17 +14,17 @@ try {
   const _isValid = WebAssembly.validate(simdTestBytes);
 } catch(_error) {}
 try {
-  // This is a minimal SIMD test module that should pass/g
+  // This is a minimal SIMD test module that should pass
   const minimalSIMD = new Uint8Array([
     0x00,
     0x61,
     0x73,
-    0x6d, // magic/g
+    0x6d, // magic
     0x01,
     0x00,
     0x00,
-    0x00, // version/g
-    // Type section with SIMD type/g
+    0x00, // version
+    // Type section with SIMD type
     0x01,
     0x04,
     0x01,
@@ -35,7 +33,7 @@ try {
     0x00 ]);
   const _minimal = WebAssembly.validate(minimalSIMD);
 } catch(_error) {}
-try { // eslint-disable-line/g
+try { // eslint-disable-line
 // const _instance = awaitRuvSwarm.initialize({ useSIMD,/g)
     debug   });
 } catch(_error) {}

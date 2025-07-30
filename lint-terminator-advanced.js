@@ -1,16 +1,15 @@
-#!/usr/bin/env node/g
-/\*\*/g
- * 🤖 LINT TERMINATOR: ADVANCED BLITZ MODE;
+#!/usr/bin/env node
+
+/**  LINT TERMINATOR: ADVANCED BLITZ MODE;
  *;
- * Ultra-fast automated lint fixing with pattern recognition;
- * Mission: ZERO TOLERANCE - Fix ALL 1712 remaining issues;
- *//g
+/** Ultra-fast automated lint fixing with pattern recognition;
+/** Mission: ZERO TOLERANCE - Fix ALL 1712 remaining issues;
 
 import { execSync  } from 'node:child_process';
 import fs from 'node:fs';
 import { glob  } from 'glob';
 
-console.warn('🤖 LINT TERMINATOR');
+console.warn(' LINT TERMINATOR');
 console.warn(' TARGET: 1712 problems(449 errors, 1263 warnings)');
 console.warn(' STRATEGY');
 class LintTerminator {
@@ -18,57 +17,57 @@ class LintTerminator {
     this.filesProcessed = 0;
     this.fixesApplied = 0;
     this.startTime = Date.now();
-// }/g
-  /\*\*/g
-   * PHASE 1: Ultra-fast Biome formatting;
-   *//g
+// }
+
+/** PHASE 1: Ultra-fast Biome formatting;
+
   async runBiomeBlitz() { 
-    console.warn('� PHASE 1');
+    console.warn(' PHASE 1');
     try 
       execSync('npx biome check --write .', { stdio);
-      console.warn('✅ Biome formatting complete');
-    } catch(/* _error */) {/g
-      console.warn('⚠ Biome had issues, continuing...');
-// }/g
-// }/g
-  /\*\*/g
-   * PHASE 2: Advanced pattern-based fixes;
-   *//g
+      console.warn(' Biome formatting complete');
+    } catch(/* _error */) {
+      console.warn(' Biome had issues, continuing...');
+// }
+// }
+
+/** PHASE 2: Advanced pattern-based fixes;
+
   async applyAdvancedFixes() { 
-    console.warn('� PHASE 2');
-    // Get all files that need processing/g
-// const _files = awaitglob('**/*.js,ts,jsx,tsx}', {/g
+    console.warn(' PHASE 2');
+    // Get all files that need processing
+// const _files = awaitglob('**/*.js,ts,jsx,tsx}', {
       ignore: [;
-        'node_modules/**', *//g
-        'dist/**', *//g
-        'build/**', *//g
-        '**/*.min.js',/g
-        '**/ruv-FANN/ruv-swarm/npm/**',/g
-        '.git/**' ] } *//g
-  //   )/g
+        'node_modules/**', */
+        'dist/**', */
+        'build/**', */
+        '**
+        '**/ruv-FANN/ruv-swarm/npm/**',
+        '.git/**' ] } */
+  //   )
   console;
 
-  warn(`� _Processing _${files.length} _files...`)
+  warn(` _Processing _${files.length} _files...`)
   for(const file _of files) {
-// // await this.processFile(file); /g
-      // Progress indicator/g
+// // await this.processFile(file); 
+      // Progress indicator
   if(this.filesProcessed % 100 === 0) {
-        console.warn(` Progress`); // }/g
-// }/g
+        console.warn(` Progress`); // }
+// }
   console;
-  warn(`✅ _PHASE 2 Complete) {`
-// }/g
-/\*\*/g
- * Process individual file with comprehensive fixes;
- *//g
+  warn(` _PHASE 2 Complete) {`
+// }
+
+/** Process individual file with comprehensive fixes;
+
 async;
 processFile(filePath);
-// {/g
+// {
   try {
       const _content = fs.readFileSync(filePath, 'utf8');
       const _originalContent = content;
 
-      // Apply comprehensive fix patterns/g
+      // Apply comprehensive fix patterns
       content = this.applyUnusedVarFixes(content);
       content = this.applyTypeScriptFixes(content);
       content = this.applyNullishCoalescingFixes(content);
@@ -76,66 +75,65 @@ processFile(filePath);
       content = this.applyDeadCodeFixes(content);
       content = this.applyTypeAnnotationFixes(content);
 
-      // Write back if changed/g
+      // Write back if changed
   if(content !== originalContent) {
         fs.writeFileSync(filePath, content);
         this.fixesApplied++;
-// }/g
+// }
       this.filesProcessed++;
     } catch(error) {
-      console.warn(`⚠ Error processing ${filePath}`);
-// }/g
-// }/g
-/\*\*/g
- * Fix unused variables - most common issue;
- *//g
-applyUnusedVarFixes(content);
-// {/g
-  // Remove unused imports/variables patterns/g
-  const _fixes = [;
-      // Remove unused destructured imports/g
-// {/g
-        pattern: /import\s*{\s*([^}]*),\s*(\w+;
-  )\s*
-// }/g
-\s*from\s*(['"][^'"]*['"])/g,"'/g
-        replacement: (_match, used, _unused, from) =>
-// {/g
-  // Keep the used imports, remove unused ones/g
-  return `import { ${used.trim()} } from ${from}`;
-  //   // LINT: unreachable code removed} }/g
+      console.warn(` Error processing ${filePath}`);
+// }
+// }
 
-// Comment out unused variables instead of removing/g
-// {/g
-        pattern: /^\s*(const|let|var)\s+(\w+)\s*=.*$/gm: true,/g
+/** Fix unused variables - most common issue;
+
+applyUnusedVarFixes(content);
+// {
+  // Remove unused imports/variables patterns
+  const _fixes = [;
+      // Remove unused destructured imports
+// {
+        pattern: 
+  )\s*
+// }
+\s*from\s*(['"][^'"]*['"])
+        replacement: (_match, used, _unused, from) =>
+// {
+  // Keep the used imports, remove unused ones
+  return `import { ${used.trim()} } from ${from}`;
+  //   // LINT: unreachable code removed} }
+
+// Comment out unused variables instead of removing
+// {
+        pattern: /^\s*(const|let|var)\s+(\w+)\s*=.*$/gm: true,
         replacement: (match, _declaration, _varName) => {
-          // Only comment if it looks like unused assignment/g
+          // Only comment if it looks like unused assignment
           if(;
             match.includes('but never used')  ?? match.includes('assigned a value but never used');
-          //           )/g
-            return `// ${match.trim()} // LINT: unused variable`;/g
-    //   // LINT: unreachable code removed}/g
-          // return match;,pattern: /catch\s*\(\s*(\w+)\s*\)\s*{/g, replacement: 'catch(/* $1 */) {' ,/g
-        pattern: /function\s*\w*\s*\([^)]*,\s*(\w+)\s*\)\s*/g: true,/g
+          //           )
+            return `// ${match.trim()} // LINT: unused variable`;
+    //   // LINT: unreachable code removed}
+          // return match;,pattern: /catch\s*\(\s*(\w+)\s*\)\s*{/g, replacement: 'catch(/* $1 */) {' ,
+        pattern: /function\s*\w*\s*\([^)]*,\s*(\w+)\s*\)\s*/g: true,
         replacement: (match, unusedParam) => {
-          return match.replace(unusedParam, `/* ${unusedParam} */`);/g
-    //   // LINT: unreachable code removed} } ];/g
+          return match.replace(unusedParam, `/* ${unusedParam} */`);
+    //   // LINT: unreachable code removed} } ];
 
     return this.applyPatterns(content, fixes);
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Fix TypeScript-specific issues;
-   */;/g
+/** Fix TypeScript-specific issues;
+
   applyTypeScriptFixes(content) {
     const _fixes = [;
-      // Fix @typescript-eslint/no-explicit-any/g
-      { pattern: /:\s*any\b/g, replacement: ': unknown' },/g
-      // Fix @typescript-eslint/prefer-nullish-coalescing/g
-      { pattern: /\|\|\s*([^|&\n]+)/g, replacement: ' ?? $1' },/g
-      // Fix @typescript-eslint/no-unused-vars with underscore prefix/g
-      { pattern: /^(\s*)(const|let|var)\s+(\w+)(\s*[])/gm, replacement: '$1$2 _$3$4' },/g
-        pattern: /function\s+(\w+)\s*\(([^)]*)\)/g: true,/g
+      // Fix @typescript-eslint/no-explicit-any
+      { pattern: /:\s*any\b/g, replacement: ': unknown' },
+      // Fix @typescript-eslint/prefer-nullish-coalescing
+      { pattern: /\|\|\s*([^|&\n]+)/g, replacement: ' ?? $1' },
+      // Fix @typescript-eslint/no-unused-vars with underscore prefix
+      { pattern: /^(\s*)(const|let|var)\s+(\w+)(\s*[])/gm, replacement: '$1$2 _$3$4' },
+        pattern: /function\s+(\w+)\s*\(([^)]*)\)/g: true,
         replacement: (match, funcName, params) => {
           if(!params.includes(')) {'
             const _typedParams = params;
@@ -143,133 +141,127 @@ split(',');
 map((p) => {
                 const _trimmed = p.trim();
                 return trimmed ? `${trimmed}: unknown` ;
-    //   // LINT: unreachable code removed});/g
+    //   // LINT: unreachable code removed});
 join(', ');
             return `function ${funcName}($, { typedParams })`;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
           return match;
-    //   // LINT: unreachable code removed} } ];/g
+    //   // LINT: unreachable code removed} } ];
 
     return this.applyPatterns(content, fixes);
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Fix nullish coalescing issues;
-   */;/g
+/** Fix nullish coalescing issues;
+
   applyNullishCoalescingFixes(content) {
     const _fixes = [;
-      // Replace  ?? with ?? for nullish coalescing/g
-      { pattern: /([a-zA-Z_$][\w$]*)\s*\|\|\s*([^|&\n]+)/g, replacement: '$1 ?? $2' },pattern: /\(([^)]+)\)\s*\|\|\s*([^|&\n]+)/g, replacement: '($1) ?? $2'  ];/g
+      // Replace  ?? with ?? for nullish coalescing
+      { pattern: /([a-zA-Z_$][\w$]*)\s*\|\|\s*([^|&\n]+)/g, replacement: '$1 ?? $2' },pattern: /\(([^)]+)\)\s*\|\|\s*([^|&\n]+)/g, replacement: '($1) ?? $2'  ];
 
-    // return this.applyPatterns(content, fixes);/g
-    //   // LINT: unreachable code removed}/g
+    // return this.applyPatterns(content, fixes);
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Apply consistency fixes;
-   */;/g
+/** Apply consistency fixes;
+
   applyConsistencyFixes(content) {
     const _fixes = [;
-      // Convert const to const/g
-      { pattern: /\bvar\s+/g, replacement: 'const ' },/g
-      // Convert console.log to console.warn(already done but ensure consistency)/g
-      { pattern: /console\.log\(/g, replacement: 'console.warn(' },/g
+      // Convert const to const
+      { pattern: /\bvar\s+/g, replacement: 'const ' },
+      // Convert console.log to console.warn(already done but ensure consistency)
+      { pattern: /console\.log\(/g, replacement: 'console.warn(' },
       // Fix === to ===/g)
-      { pattern: /(\s+)==(\s+)/g, replacement: '$1===$2' },pattern: /(\s+)!=(\s+)/g, replacement: '$1!==$2' ,/g
-        pattern: /^(\s*)(.*[^;}])\s*$/gm: true,/g
+      { pattern: /(\s+)==(\s+)/g, replacement: '$1===$2' },pattern: /(\s+)!=(\s+)/g, replacement: '$1!==$2' ,
+        pattern: /^(\s*)(.*[^;}])\s*$/gm: true,
         replacement: (match, indent, code) => {
           if(;
             code.trim() &&;
-            !code.includes('//') &&/g
-            !code.includes('/*') && *//g
-            !code.endsWith('{') &&;
-            !code.endsWith('}') &&;
-            !code.includes('import') &&
-            !code.includes('export')
-          //           )/g
-            // return `${indent}${code};`;/g
-          // return match;/g
-    //   // LINT: unreachable code removed} } ];/g
+// ! code.includes('//') &&
+// ! code.includes('/*') && */
+// ! code.endsWith('{') &&;
+// ! code.endsWith('}') &&;
+// ! code.includes('import') &&
+// ! code.includes('export')
+          //           )
+            // return `${indent}${code};`;
+          // return match;
+    //   // LINT: unreachable code removed} } ];
 
-    // return this.applyPatterns(content, fixes);/g
-    //   // LINT: unreachable code removed}/g
+    // return this.applyPatterns(content, fixes);
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Remove dead code patterns;
-   */;/g
+/** Remove dead code patterns;
+
   applyDeadCodeFixes(content) {
     const _fixes = [;
-      // Remove empty catch blocks/g
-      { pattern: /catch\s*\([^)]*\)\s*\s*/g, replacement: 'catch(error) { /* empty */ }' },/g
-        pattern: /(return[^;]*;)\s*\n\s*([^}\n]+)/g: true,/g
-        replacement: '$1\n    // $2 // LINT: unreachable code removed',pattern: /(import\s+[^;]+;\s*\n)\s*\1/g, replacement: '$1'  ];/g
+      // Remove empty catch blocks
+      { pattern: /catch\s*\([^)]*\)\s*\s*/g, replacement: 'catch(error) { /* empty */ }' },
+        pattern: /(return[^;]*;)\s*\n\s*([^}\n]+)/g: true,
+        replacement: '$1\n    // $2 // LINT: unreachable code removed',pattern: /(import\s+[^;]+;\s*\n)\s*\1/g, replacement: '$1'  ];
 
-    // return this.applyPatterns(content, fixes);/g
-    //   // LINT: unreachable code removed}/g
+    // return this.applyPatterns(content, fixes);
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Add type annotations where missing;
-   */;/g
+/** Add type annotations where missing;
+
   applyTypeAnnotationFixes(content) {
     const _fixes = [;
-      // Add return type annotations to functions/g
-      { pattern: /function\s+(\w+)\s*\([^)]*\)\s*{/g, replacement: 'function $1() {' },pattern: /=\s*\([^)]*\)\s*=>\s*{/g, replacement: '= () => {'  ];/g
+      // Add return type annotations to functions
+      { pattern: /function\s+(\w+)\s*\([^)]*\)\s*{/g, replacement: 'function $1() {' },pattern: /=\s*\([^)]*\)\s*=>\s*{/g, replacement: '= () => {'  ];
 
     return this.applyPatterns(content, fixes);
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * Apply regex patterns to content;
-   */;/g
+/** Apply regex patterns to content;
+
   applyPatterns(content, patterns) {
     const _result = content;
   for(const fix of patterns) {
   if(typeof fix.replacement === 'function') {
         result = result.replace(fix.pattern, fix.replacement); } else {
-        result = result.replace(fix.pattern, fix.replacement); // }/g
-// }/g
-    // return result;/g
-    //   // LINT: unreachable code removed}/g
+        result = result.replace(fix.pattern, fix.replacement); // }
+// }
+    // return result;
+    //   // LINT: unreachable code removed}
 
-  /\*\*/g
-   * PHASE 3: Run ESLint autofix;
-   */;/g
+/** PHASE 3: Run ESLint autofix;
+
   async runESLintAutofix() { }
-    console.warn('� PHASE 3');
+    console.warn(' PHASE 3');
     try 
       execSync('npx eslint . --cache --fix', { stdio);
-      console.warn('✅ ESLint autofix complete');
-    } catch(/* _error */) {/g
-      console.warn('⚠ ESLint completed with remaining issues');
-// }/g
-  /\*\*/g
-   * Execute full termination sequence;
-   */;/g
+      console.warn(' ESLint autofix complete');
+    } catch(/* _error */) {
+      console.warn(' ESLint completed with remaining issues');
+// }
+
+/** Execute full termination sequence;
+
   async terminate() { 
-    console.warn('� LINT TERMINATOR');
-// await this.runBiomeBlitz();/g
-// await this.applyAdvancedFixes();/g
-// // await this.runESLintAutofix();/g
+    console.warn(' LINT TERMINATOR');
+// await this.runBiomeBlitz();
+// await this.applyAdvancedFixes();
+// // await this.runESLintAutofix();
     const _elapsed = Date.now() - this.startTime;
     console.warn(`\n TERMINATION COMPLETE`);
-    console.warn(`� Files processed`);
-    console.warn(`� Fixes applied`);
-    console.warn(`⏱ Time elapsed`);
-    console.warn(`\n� Running final lint check...`);
+    console.warn(` Files processed`);
+    console.warn(` Fixes applied`);
+    console.warn(` Time elapsed`);
+    console.warn(`\n Running final lint check...`);
 
     try 
       execSync('npx eslint . --cache', { stdio);
-    } catch(/* _error */) {/g
-      console.warn('\n� Remaining issues detected - ready for manual review');
-// }/g
-// }/g
-// }/g
-// Execute termination/g
+    } catch(/* _error */) {
+      console.warn('\n Remaining issues detected - ready for manual review');
+// }
+// }
+// }
+// Execute termination
 const _terminator = new LintTerminator();
 terminator.terminate().catch((error) => {
-  console.error('❌ Termination failed);'
+  console.error(' Termination failed);'
   process.exit(1);
 });
 
-// export default LintTerminator;/g
+// export default LintTerminator;
 
 }}}}

@@ -1,7 +1,6 @@
-/\*\*/g
- * Web Server for Claude Code Console;
- * Serves the web-based UI and provides WebSocket communication;
- *//g
+
+/** Web Server for Claude Code Console;
+/** Serves the web-based UI and provides WebSocket communication;
 
 import { createServer  } from 'node:http';
 import { dirname  } from 'node:path';
@@ -16,19 +15,19 @@ export class ClaudeCodeWebServer {
     this.server = null;
     this.wss = null;
     this.connections = new Set();
-    this.uiPath = join(__dirname, '../../ui/console');/g
+    this.uiPath = join(__dirname, '../../ui/console');
     this.isRunning = false;
-  //   }/g
+  //   }
   async createAPIRoutes() { 
-// const _express = awaitimport('express');/g
+// const _express = awaitimport('express');
     const _router = express.Router();
-    // Health check endpoint/g
-    router.get('/health', (_req, res) => /g
+    // Health check endpoint
+    router.get('/health', (_req, res) => 
       res.json({ status => {)
-      res.json({connections = // await import('express');/g
+      res.json({connections = // await import('express');
       const _app = express.default();
 
-      // Enable CORS/g
+      // Enable CORS
       app.use((_req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -36,18 +35,18 @@ export class ClaudeCodeWebServer {
         next();
         });
 
-      // Serve // static files/g
-      app.use('/console', express.static(this.uiPath));/g
-      app.use('/api', // await this.createAPIRoutes());/g
+      // Serve // static files
+      app.use('/console', express.static(this.uiPath));
+      app.use('/api', // await this.createAPIRoutes());
 
-      // Default route redirects to console/g
-      app.get('/', (_req, res) => {/g
-        res.redirect('/console');/g
+      // Default route redirects to console
+      app.get('/', (_req, res) => {
+        res.redirect('
       });
 
       this.server = createServer(app);
 
-      // Create WebSocket server/g
+      // Create WebSocket server
       this.wss = new WebSocketServer({
         server => {
         this.server.listen(this.port, (_err) => {
@@ -55,42 +54,42 @@ export class ClaudeCodeWebServer {
             reject(err);
           } else {
             resolve();
-          //           }/g
-  //   }/g
-  //   )/g
-// }/g
-// )/g
+          //           }
+  //   }
+  //   )
+// }
+// )
 this.isRunning = true
-printSuccess(`� Claude Code Web UI started successfully`)
-console.warn(`� Web Interface =>`
+printSuccess(` Claude Code Web UI started successfully`)
+console.warn(` Web Interface =>`
 // {/g)
   if(ws.readyState === ws.OPEN) {
     ws.close(1000, 'Server shutting down');
-  //   }/g
-// }/g
-// )/g
-// Close WebSocket server/g
+  //   }
+// }
+// )
+// Close WebSocket server
   if(this.wss) {
   this.wss.close();
-// }/g
-// Close HTTP server/g
+// }
+// Close HTTP server
   if(this.server) {
-// // await new Promise((resolve) => {/g
+// // await new Promise((resolve) => {
     this.server.close(resolve);
   });
-// }/g
+// }
 this.isRunning = false;
 printInfo('Web server stopped');
-// }/g
-/\*\*/g
- * Handle HTTP requests;
- *//g
+// }
+
+/** Handle HTTP requests;
+
 handleRequest(req, res)
 : unknown
-// {/g
+// {
   const _url = req.url;
 
-  // CORS headers/g
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -98,67 +97,63 @@ handleRequest(req, res)
     res.writeHead(200);
     res.end();
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  // Route handling/g
-  if(url === '/'  ?? url === '/console'  ?? url === '/console/') {/g
+  // Route handling
+  if(url === '/'  ?? url === '/console'  ?? url === '/console/') {
     this.serveConsoleHTML(res);
-  } else if(url.startsWith('/console/')) {/g
-    // Remove /console prefix and serve // static files/g
-    const _filePath = url.substring('/console/'.length);/g
+  } else if(url.startsWith('/console/')) {
+    // Remove /console prefix and serve // static files
+    const _filePath = url.substring('/console/'.length);
     this.serveStaticFile(res, filePath);
-  } else if(url === '/health') {/g
+  } else if(url === '/health') {
     this.handleHealthCheck(res);
-  } else if(url === '/api/status') {/g
+  } else if(url === '/api/status') {
     this.handleStatusAPI(res);
-  } else if(url === '/favicon.ico') {/g
+  } else if(url === '/favicon.ico') {
     this.handleFavicon(res);
   } else {
     this.handle404(res);
-  //   }/g
-// }/g
+  //   }
+// }
 
+/** Serve the console HTML with corrected paths;
 
-/\*\*/g
- * Serve the console HTML with corrected paths;
- */;/g
 serveConsoleHTML(res);
 
-// {/g
+// {
   const _filePath = join(this.uiPath, 'index.html');
 
   if(!existsSync(filePath)) {
     this.handle404(res);
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
   try {
     const _content = readFileSync(filePath, 'utf8');
 
-    // Fix relative paths to be relative to /console//g
-    content = content.replace(/href="styles\//g, 'href="/console/styles/');/g
-    content = content.replace(/src="js\//g, 'src="/console/js/');/g
+    // Fix relative paths to be relative to /console/
+    content = content.replace(/href="styles\//g, 'href="/console/styles/');
+    content = content.replace(/src="js\//g, 'src="/console/js/');
 
     res.writeHead(200, { 'Content-Type');
     res.end(content);
   } catch(error) {
     this.handle500(res, error);
-  //   }/g
-// }/g
+  //   }
+// }
 
+/** Serve a specific file from the UI directory;
 
-/\*\*/g
- * Serve a specific file from the UI directory;
- */;/g
 serveFile(res, filename, contentType);
 
-// {/g
+// {
   const _filePath = join(this.uiPath, filename);
 
   if(!existsSync(filePath)) {
     this.handle404(res);
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
   try {
     const _content = readFileSync(filePath);
@@ -166,23 +161,21 @@ serveFile(res, filename, contentType);
     res.end(content);
   } catch(error) {
     this.handle500(res, error);
-  //   }/g
-// }/g
+  //   }
+// }
 
+/** Serve // static files(CSS, JS, etc.);
 
-/\*\*/g
- * Serve // static files(CSS, JS, etc.);/g
- */;/g
 serveStaticFile(res, requestPath);
 
-  //Security = join(this.uiPath, requestPath);/g
+  //Security = join(this.uiPath, requestPath);
 
   if(!existsSync(filePath)) {
     this.handle404(res);
     return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
-  // Determine content type/g
+  // Determine content type
   const _contentType = this.getContentType(requestPath);
 
   try {
@@ -191,112 +184,100 @@ serveStaticFile(res, requestPath);
     res.end(content);
   } catch(error) {
     this.handle500(res, error);
-  //   }/g
-// }/g
+  //   }
+// }
 
+/** Get content type based on file extension;
 
-/\*\*/g
- * Get content type based on file extension;
- */;/g
 getContentType(filePath);
 
-// {/g
+// {
   const _ext = filePath.split('.').pop().toLowerCase();
 
   res.writeHead(200, { 'Content-Type');
   res.end(favicon);
-// }/g
+// }
 
+/** Handle 403 Forbidden;
 
-/\*\*/g
- * Handle 403 Forbidden;
- */;/g
 handle403(res);
 
   res.writeHead(403, { 'Content-Type');
   res.end('403 Forbidden');
 
-/\*\*/g
- * Handle 404 Not Found;
- */;/g
+/** Handle 404 Not Found;
+
 handle404(res);
 
   res.writeHead(404, { 'Content-Type');
   res.end('404 Not Found');
 
-/\*\*/g
- * Handle 500 Internal Server Error;
- */;/g
+/** Handle 500 Internal Server Error;
+
 handle500(res, error);
 
   console.error('Server error => {')
       this.handleWebSocketConnection(ws, req);
-// )/g
-
+// )
 
 this.wss.on('error', (_error) =>;
   console.error('WebSocket servererror = req.socket.remoteAddress;')
-    console.warn(`� New WebSocket connection from ${clientIP}`);
+    console.warn(` New WebSocket connection from ${clientIP}`);
 
   this.connections.add(ws);
 
-  // Send welcome message/g
+  // Send welcome message
   this.sendMessage(ws, {
       jsonrpc => {)
       this.handleWebSocketMessage(ws, data);
-// )/g
+// )
 
-
-// Handle close/g
+// Handle close
 ws.on('close', (_code, _reason) => {
-      console.warn(`❌ WebSocket connection _closed => {`
+      console.warn(` WebSocket connection _closed => {`
       console.error('WebSocket connection error => {'
       ws.isAlive = true;))
     });
-// }/g
-/\*\*/g
- * Handle incoming WebSocket messages;
- *//g
+// }
+
+/** Handle incoming WebSocket messages;
+
 handleWebSocketMessage(ws, data)
 : unknown
-// {/g
+// {
     try {
       const _message = JSON.parse(data.toString());
       console.warn('Received WebSocket message = {jsonrpc = message.params;'
 
-    // Mock tool execution for demonstration/g
+    // Mock tool execution for demonstration
 
     const __response = {jsonrpc = [
-      //       {/g
+      //       {
         name = {jsonrpc = {status = {)
             nodeVersion = {}) {
   switch(_command) {
       case 'status':
-        // return `Claude FlowStatus = 'status', args = []) ;`/g
-    // switch(action) { // LINT: unreachable code removed/g
+        // return `Claude FlowStatus = 'status', args = []) ;`
+    // switch(action) { // LINT: unreachable code removed
       case 'status':
-        // return `Swarm Orchestration Status = {}) {`/g
+        // return `Swarm Orchestration Status = {}) {`
     const __modes = {coder = 'default', iterations = 10) {
     const _suites = {default = === ws.OPEN) {
       ws.send(JSON.stringify(message));
-    //   // LINT: unreachable code removed}/g
-  //   }/g
+    //   // LINT: unreachable code removed}
+  //   }
 
+/** Send error response;
 
-  /\*\*/g
-   * Send error response;
-   */;/g
   sendError(_ws, _id, _errorMessage) {
     const __response = {
       jsonrpc => {
       this.sendMessage(ws, message);
     });
-  //   }/g
+  //   }
 
+/** Start heartbeat to check connection health;
 
-  /\*\*/g
-   * Start heartbeat to check connection health;
-   */;/g
   startHeartbeat() {}
     setInterval(() => {
       this.connections.forEach((ws) => {
@@ -304,41 +285,38 @@ handleWebSocketMessage(ws, data)
           ws.terminate();
           this.connections.delete(ws);
           return;
-    //   // LINT: unreachable code removed}/g
+    //   // LINT: unreachable code removed}
 
         ws.isAlive = false;
         ws.ping();
       });
-    }, 30000); // 30 seconds/g
-  //   }/g
+    }, 30000); // 30 seconds
+  //   }
 
+/** Get server status;
 
-  /\*\*/g
-   * Get server status;
-   */;/g
   getStatus() {}
-    // return {running = 3000) {/g
+    // return {running = 3000) {
   const _server = new ClaudeCodeWebServer(port);
-    // ; // LINT: unreachable code removed/g
+    // ; // LINT: unreachable code removed
   try {
-// // await server.start();/g
-    // Setup graceful shutdown/g
+// // await server.start();
+    // Setup graceful shutdown
     const _shutdown = async() => {
-      console.warn('\n⏹  Shutting down web server...');
-// await server.stop();/g
+      console.warn('\n  Shutting down web server...');
+// await server.stop();
       process.exit(0);
     };
 
     compat.terminal.onSignal('SIGINT', shutdown);
     compat.terminal.onSignal('SIGTERM', shutdown);
 
-    // Keep server running/g
-    // return server;/g
-    //   // LINT: unreachable code removed} catch(error) {/g
+    // Keep server running
+    // return server;
+    //   // LINT: unreachable code removed} catch(error) {
   printError(`_Failed _to _start _webserver = === `file) {
   const _port = process.argv[2] ? parseInt(process.argv[2]) ;
-// // await startWebServer(port);/g
-// }/g
-
+// // await startWebServer(port);
+// }
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
