@@ -85,47 +85,47 @@ const _config: Config = {
       max: 1000, // limit each IP to 1000 requests per windowMs
     },
   },
-{
-  path: process.env.SQLITE_PATH ?? './databases/claude-zen.db',;
-  timeout: 10000,;
-  verbose: process.env.DEBUG === 'true',;
-  ,
-  ,
-  path: process.env.LANCEDB_PATH ?? './databases/vectors',
-  dimensions: 1536, // OpenAI embedding dimensions,;
-    path
-  : process.env.KUZU_PATH ?? './databases/graph',
-  readOnly: false,
-  ,
-}
-,
-{
-  integrated: true, // Fully integrated as workspace component
-    wasmPath;
-  : './ruv-FANN/ruv-swarm/npm/wasm',
-  neuralModels: [
-  'LSTM',
-  'N-BEATS',
-  'Transformer',
-  'CNN-LSTM',
-  'GRU',
-  'ARIMA',;
-  'Prophet',;
-  'DeepAR',;
-  'WaveNet',;
-  'TCN',;
-  ],
-  gpuAcceleration: process.env.GPU_ACCELERATION !== 'false',
-}
-,
-{
-  maxQueens: parseInt(process.env.MAX_QUEENS ?? '10', 10),;
-  consensusThreshold: 0.66, // 66% consensus required
-    memoryRetention;
-  : 30 * 24 * 60 * 60 * 1000, // 30 days in ms
+  },
+  database: {
+    sqlite: {
+      path: process.env.SQLITE_PATH ?? './databases/claude-zen.db',
+      timeout: 10000,
+      verbose: process.env.DEBUG === 'true',
+    },
+    lancedb: {
+      path: process.env.LANCEDB_PATH ?? './databases/vectors',
+      dimensions: 1536, // OpenAI embedding dimensions
+    },
+    kuzu: {
+      path: process.env.KUZU_PATH ?? './databases/graph',
+      readOnly: false,
+    },
+  },
+  },
+  ruvFANN: {
+    integrated: true, // Fully integrated as workspace component
+    wasmPath: './ruv-FANN/ruv-swarm/npm/wasm',
+    neuralModels: [
+      'LSTM',
+      'N-BEATS',
+      'Transformer',
+      'CNN-LSTM',
+      'GRU',
+      'ARIMA',
+      'Prophet',
+      'DeepAR',
+      'WaveNet',
+      'TCN',
+    ],
+    gpuAcceleration: process.env.GPU_ACCELERATION !== 'false',
+  },
+  },
+  hiveMind: {
+    maxQueens: parseInt(process.env.MAX_QUEENS ?? '10', 10),
+    consensusThreshold: 0.66, // 66% consensus required
+    memoryRetention: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
     autoBackup: true,
-}
-,
+  },
 {
   level: process.env.LOG_LEVEL ?? 'info',;
   format: 'json',;
