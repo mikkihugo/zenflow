@@ -13,42 +13,42 @@ import { WebSocketConnectionManager } from './websocket-client.js';
 /**
  * WebSocket service options;
  */
-export interface WebSocketServiceOptions {
-  /** Client port for connections */
-  clientPort?: number;
-  /** Client host for connections */
-  clientHost?: string;
-  /** Enable automatic reconnection */
-  enableReconnect?: boolean;
-  /** Heartbeat interval in milliseconds */
-  heartbeatInterval?: number;
-  /** Message queue limit */
-  messageQueueLimit?: number;
-// }
+export // interface WebSocketServiceOptions {
+//   /** Client port for connections */
+//   clientPort?;
+//   /** Client host for connections */
+//   clientHost?;
+//   /** Enable automatic reconnection */
+//   enableReconnect?;
+//   /** Heartbeat interval in milliseconds */
+//   heartbeatInterval?;
+//   /** Message queue limit */
+//   messageQueueLimit?;
+// // }
 /**
  * WebSocket service statistics;
  */
-export interface WebSocketStats {
-  // totalConnections: number
-  // activeConnections: number
-  // messagesSent: number
-  // messagesReceived: number
-  // errors: number
-// }
+// export // interface WebSocketStats {
+//   // totalConnections: number
+//   // activeConnections: number
+//   // messagesSent: number
+//   // messagesReceived: number
+//   // errors: number
+// // }
 /**
  * Message information;
  */
-export interface MessageInfo {
-  // type: string
-  // data: unknown
-  // source: string
-// }
-export interface WebSocketSupportCheck {
-  // nodeVersion: string
-  // majorVersion: number
-  // hasNativeWebSocket: boolean
-  // recommendation: string
-// }
+// export // interface MessageInfo {
+//   // type: string
+//   // data: unknown
+//   // source: string
+// // }
+// export // interface WebSocketSupportCheck {
+//   // nodeVersion: string
+//   // majorVersion: number
+//   // hasNativeWebSocket: boolean
+//   // recommendation: string
+// // }
 // =============================================================================
 // WEBSOCKET SERVICE CLASS
 // =============================================================================
@@ -57,7 +57,7 @@ export interface WebSocketSupportCheck {
  * WebSocket Service for claude-zen;
  * Manages both server-side WebSocket connections and client connections;
  */
-export class WebSocketService extends EventEmitter {
+// export class WebSocketService extends EventEmitter {
   constructor(options) {
     super();
     this.options = options;
@@ -94,7 +94,7 @@ initialize();
   });
   this.isInitialized = true;
   this.emit('initialized');
-  console.warn('🚀 WebSocket service initialized');
+  console.warn('� WebSocket service initialized');
 // }
 async;
 connectToServer((connectionName = 'main'), (customOptions = {}));
@@ -103,26 +103,26 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     const _url = `ws://${this.options.clientHost  ?? 'localhost'}:${this.options.clientPort  ?? 8080}`;
     const _clientOptions = { ...this.options, ...customOptions };
     const _client = this.connectionManager.addConnection(connectionName, url, clientOptions);
-// await client.connect();
+// // await client.connect();
     this.stats.totalConnections++;
-    console.warn(`🔗 Connected to claude-zen server`);
-    return client;
+    console.warn(`� Connected to claude-zen server`);
+    // return client;
     //   // LINT: unreachable code removed}
 
-  async connectToExternal(connectionName, url, options: unknown = {}): Promise<any>
+  async connectToExternal(connectionName, url, options = {}): Promise<any>
     try {
       const _client = this.connectionManager.addConnection(connectionName, url, options);
 // await client.connect();
       this.stats.totalConnections++;
-      console.warn(`🔗 Connected to external WebSocket`);
-      return client;
+      console.warn(`� Connected to external WebSocket`);
+      // return client;
     //   // LINT: unreachable code removed} catch (error) {
-      console.error(`Error connecting to external WebSocket);
+      console.error(`Error connecting to external WebSocket);`
       throw error;
     //     }
 
 
-  sendMessage(connectionName, data: unknown) {
+  sendMessage(connectionName, data) {
     const _client = this.connectionManager.getConnection(connectionName);
     if (!client) {
       throw new Error(`Connection '${connectionName}' not found`);
@@ -135,7 +135,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     //     }
 
 
-    return success;
+    // return success;
     //   // LINT: unreachable code removed}
 
   sendBalanced(data) {
@@ -151,7 +151,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     //     }
 
 
-    return success;
+    // return success;
     //   // LINT: unreachable code removed}
 
   broadcast(data) {
@@ -165,7 +165,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
       successCount,
       totalConnections);
 
-    return results;
+    // return results;
     //   // LINT: unreachable code removed}
 
   onMessage(type, handler) => void): () => void
@@ -176,7 +176,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
     this.messageHandlers.get(type)?.add(handler);
 
-    return () => {
+    // return () => {
       const _handlers = this.messageHandlers.get(type);
     // if (handlers) { // LINT: unreachable code removed
         handlers.delete(handler);
@@ -184,7 +184,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
   //   }
 
 
-  private handleMessage(info) {
+  // private handleMessage(info) {
     const { data } = info;
     const _messageType = 'unknown';
     const _messageData = data;
@@ -206,7 +206,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
         try {
           handler({ type, data, source);
         } catch (error) {
-          console.error(`Error in message handler for type ${messageType});
+          console.error(`Error in message handler for type ${messageType});`
         //         }
       });
     //     }
@@ -215,32 +215,32 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
   setupClaudeZenHandlers(): void
     this.onMessage('queen_council_update', (msg) =>
-      console.warn(`👑 Queen Council Update););
+      console.warn(`� Queen Council Update););`
     this.onMessage('swarm_status', (msg) => {
-      console.warn(`🐝 Swarm Status);
+      console.warn(`� Swarm Status);`
     });
     this.onMessage('task_update', (msg) => {
-      console.warn(`📋 Task Update);
+      console.warn(`� Task Update);`
     });
     this.onMessage('neural_update', (msg) => {
-      console.warn(`🧠 Neural Update);
+      console.warn(`🧠 Neural Update);`
     });
     this.onMessage('memory_update', (msg) => {
-      console.warn(`💾 Memory Update);
+      console.warn(`� Memory Update);`
     });
 
-  async sendCommand(connectionName, command, payload: unknown): Promise<boolean> {
+  async sendCommand(connectionName, command, payload): Promise<boolean> {
     const _message = { type: 'command', command, payload };
-    return this.sendMessage(connectionName, message);
+    // return this.sendMessage(connectionName, message);
     //   // LINT: unreachable code removed}
 
-  async sendEvent(connectionName, event, data: unknown): Promise<boolean> {
+  async sendEvent(connectionName, event, data): Promise<boolean> {
     const _message = { type: 'event', event, data };
-    return this.sendMessage(connectionName, message);
+    // return this.sendMessage(connectionName, message);
     //   // LINT: unreachable code removed}
 
-  getServiceStatus()
-    return {
+  getServiceStatus() {}
+    // return {
       isInitialized: this.isInitialized,
     // options: this.options, // LINT: unreachable code removed
       stats: this.stats,
@@ -248,24 +248,24 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
   getConnectionStats(connectionName) {
     const _client = this.connectionManager.getConnection(connectionName);
-    return client ? client.getStats() : null;
+    // return client ? client.getStats() ;
     //   // LINT: unreachable code removed}
 
   listConnections(): unknown[]
-    return this.connectionManager.getStatus().connections;
+    // return this.connectionManager.getStatus().connections;
     //   // LINT: unreachable code removed}
 
   async disconnectConnection(connectionName)
 // await this.connectionManager.removeConnection(connectionName);
-  async shutdown()
+  async shutdown() {}
 // await this.connectionManager.shutdown();
     this.emit('shutdown');
 
-  static async create(options): Promise<WebSocketService> {
+  // static async create(options): Promise<WebSocketService> {
     const _service = new WebSocketService(options);
 // await service.initialize();
     service.setupClaudeZenHandlers();
-    return service;
+    // return service;
     //   // LINT: unreachable code removed}
 // }
 
@@ -277,7 +277,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 /**
  * Utility function to check WebSocket support;
  */;
-export function _checkWebSocketSupport() {
+// export function _checkWebSocketSupport() {
   const _nodeVersion = process.version;
   const _majorVersion = parseInt(nodeVersion.substring(1).split('.')[0]);
 
@@ -289,4 +289,6 @@ export function _checkWebSocketSupport() {
       ? 'Use --experimental-websocket flag for native WebSocket support';
       : 'Upgrade to Node.js 22+ for native WebSocket support' };
 
-export default WebSocketService;
+// export default WebSocketService;
+
+}}

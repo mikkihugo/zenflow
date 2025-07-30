@@ -1,13 +1,13 @@
 #!/usr/bin/env node;
 /**
- * 🔍 PRODUCTION VALIDATION TEST SUITE;
+ * � PRODUCTION VALIDATION TEST SUITE;
  * Comprehensive validation of Claude Code Flow system readiness;
  */
 
 import { existsSync } from 'node:fs';
 import fetch from 'node-fetch';
 
-console.warn('🚀 CLAUDE CODE FLOW - PRODUCTION VALIDATION SUITE');
+console.warn('� CLAUDE CODE FLOW - PRODUCTION VALIDATION SUITE');
 console.warn('='.repeat(60));
 const _tests = [];
 const _results = {
@@ -30,7 +30,7 @@ function assert() {
 // }
 function warn() {
   if (!condition) {
-    console.warn(`⚠️  ${message}`);
+    console.warn(`⚠  ${message}`);
     results.warnings++;
   } else {
     console.warn(`✅ ${message}`);
@@ -38,7 +38,7 @@ function warn() {
 // }
 // Test 1: File Structure Validation
 test('File Structure', () => {
-  console.warn('\n📁 Validating file structure...');
+  console.warn('\n� Validating file structure...');
   const _requiredFiles = [
 
     './package.json',
@@ -46,14 +46,14 @@ test('File Structure', () => {
     './src/mcp/http-mcp-server.js',
     './src/hive-mind-primary.js',
     './src/neural/neural-engine.js',
-    './ruv-FANN/ruv-swarm/npm/src/index.js',,,,,,, ];
+    './ruv-FANN/ruv-swarm/npm/src/index.js',,,,,,];
   requiredFiles.forEach((file) => {
     assert(existsSync(file), `Required file exists: ${file}`);
   });
 });
 // Test 2: Package Dependencies
 test('Dependencies', () => {
-  console.warn('\n📦 Validating dependencies...');
+  console.warn('\n� Validating dependencies...');
   try {
     const _pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
     assert(pkg.name === '@claude-zen/monorepo', 'Package name is correct');
@@ -63,14 +63,14 @@ test('Dependencies', () => {
     warn(deps.includes('express'), 'Express dependency present');
     warn(deps.includes('better-sqlite3'), 'SQLite3 dependency present (better-sqlite3)');
   } catch (/* e */) {
-    assert(false, `Package.json validation failed);
+    assert(false, `Package.json validation failed);`
   //   }
 });
 // Test 3: MCP Server Health
 test('MCP Server', async () => {
-  console.warn('\n🌐 Testing MCP server...');
+  console.warn('\n� Testing MCP server...');
   try {
-// const _response = awaitfetch('http);
+// const _response = awaitfetch('http);'
 // const _health = awaitresponse.json();
 
     assert(response.ok, 'MCP server responds to health check');
@@ -82,7 +82,7 @@ test('MCP Server', async () => {
     console.warn(`   Server uptime: ${Math.floor(health.system.uptime / 1000)}s`);
     console.warn(`   Memory usage: ${Math.floor(health.system.memory.heapUsed / 1024 / 1024)}MB`);
   } catch (/* e */) {
-    assert(false, `MCP server test failed);
+    assert(false, `MCP server test failed);`
   //   }
 });
 // Test 4: Neural Engine Validation
@@ -101,12 +101,12 @@ test('Neural Engine', () => {
       existsSync('./ruv-FANN/target/release/libruv_fann.rlib')  ?? existsSync('./ruv-FANN/ruv-swarm/target/release');
     warn(rustBinariesExist, 'Rust binaries compiled (cargo build --release)');
   } catch (/* e */) {
-    assert(false, `Neural engine validation failed);
+    assert(false, `Neural engine validation failed);`
   //   }
 });
 // Test 5: Database Systems
 test('Database Systems', () => {
-  console.warn('\n💾 Testing database systems...');
+  console.warn('\n� Testing database systems...');
   // Check for SQLite database
   const _sqliteDb = './.swarm/claude-zen-mcp.db';
   warn(existsSync(sqliteDb), 'SQLite database exists (.swarm/claude-zen-mcp.db)');
@@ -121,13 +121,13 @@ test('Database Systems', () => {
 });
 // Test 6: Plugin Architecture
 test('Plugin System', () => {
-  console.warn('\n🔌 Testing plugin architecture...');
+  console.warn('\n Testing plugin architecture...');
   const _pluginDirs = [
 
     './src/plugins/ai-provider',
     './src/plugins/architect-advisor',
     './src/plugins/unified-interface',
-    './src/plugins/workflow-engine',,,,,,, ];
+    './src/plugins/workflow-engine',,,,,,];
   pluginDirs.forEach((dir) => {
     assert(existsSync(dir), `Plugin directory exists: ${dir.split('/').pop()}`);
     assert(;
@@ -138,7 +138,7 @@ test('Plugin System', () => {
 });
 // Test 7: MCP Tools Integration
 test('MCP Tools', async () => {
-  console.warn('\n🛠️  Testing MCP tools execution...');
+  console.warn('\n  Testing MCP tools execution...');
 
   try {
 // const _response = awaitfetch('http://localhost:3000/api/execute', {
@@ -149,13 +149,13 @@ test('MCP Tools', async () => {
     assert(response.ok, 'MCP tool execution endpoint responds');
     assert(result.success !== undefined, 'Tool execution returns success field');
     //   // LINT: unreachable code removed} catch (/* e */) {
-    warn(false, `MCP tools test failed);
+    warn(false, `MCP tools test failed);`
   //   }
 })
 // Test 8: Performance Benchmarks
 test('Performance', () =>
 // {
-  console.warn('\n⚡ Running performance validation...');
+  console.warn('\n Running performance validation...');
   const _start = process.hrtime.bigint();
   // Simulate some work
   for (let i = 0; i < 100000; i++) {
@@ -177,9 +177,9 @@ async function runTests() {
 
   for (const test of tests) {
     try {
-// await test.fn();
+// // await test.fn();
     } catch (/* e */) {
-      console.warn(`❌ Test suite "${test.name}" failed);
+      console.warn(`❌ Test suite "${test.name}" failed);`
       results.failed++;
     //     }
   //   }
@@ -187,21 +187,21 @@ async function runTests() {
 
   // Final report
   console.warn(`\n${'='.repeat(60)}`);
-  console.warn('📊 FINAL VALIDATION REPORT');
+  console.warn('� FINAL VALIDATION REPORT');
   console.warn('='.repeat(60));
-  console.warn(`✅ Passed);
-  console.warn(`❌ Failed);
-  console.warn(`⚠️  Warnings);
-  console.warn(`📝 Total Checks);
+  console.warn(`✅ Passed);`
+  console.warn(`❌ Failed);`
+  console.warn(`⚠  Warnings);`
+  console.warn(`� Total Checks);`
 
   const _successRate = ((results.passed / results.total) * 100).toFixed(1);
-  console.warn(`📈 Success Rate);
+  console.warn(`� Success Rate);`
 
   if (results.failed === 0 && results.warnings <= 3) {
-    console.warn('\n🎉 SYSTEM READY FOR PRODUCTION! 🎉');
+    console.warn('\n� SYSTEM READY FOR PRODUCTION! �');
     console.warn('All critical tests passed with minimal warnings.');
   } else if (results.failed <= 2 && results.warnings <= 5) {
-    console.warn('\n⚠️  SYSTEM MOSTLY READY');
+    console.warn('\n⚠  SYSTEM MOSTLY READY');
     console.warn('Minor issues detected, but system is functional.');
   } else {
     console.warn('\n❌ SYSTEM NEEDS ATTENTION');

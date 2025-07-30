@@ -17,7 +17,7 @@ describe('Performance Tests', () => {
       for (let i = 0; i < 1000; i++) {
         largeArgList.push(`--flag${i}`, `value${i}`);
       //       }
-      const { result, duration } = await perfHelpers.measureTime(() => {
+      const { result, duration } = // await perfHelpers.measureTime(() => {
         return parseFlags(largeArgList);
     //   // LINT: unreachable code removed});
       expect(duration).toBeLessThan(100); // Should complete in less than 100ms
@@ -29,7 +29,7 @@ describe('Performance Tests', () => {
         name: `Item ${i}`,
         value: Math.random() * 1000,
         description: `Description for item ${i}`.repeat(5) }));
-      const { result, duration } = await perfHelpers.measureTime(() => {
+      const { result, duration } = // await perfHelpers.measureTime(() => {
         return JSON.stringify(largeDataset);
     //   // LINT: unreachable code removed});
       expect(duration).toBeLessThan(500); // Should complete in less than 500ms
@@ -46,7 +46,7 @@ describe('Performance Tests', () => {
     //   // LINT: unreachable code removed};
       const _obj1 = createDeepObject(50);
       const _obj2 = createDeepObject(50);
-      const { result, duration } = await perfHelpers.measureTime(() => {
+      const { result, duration } = // await perfHelpers.measureTime(() => {
         return deepMerge(obj1, obj2);
     //   // LINT: unreachable code removed});
       expect(duration).toBeLessThan(100); // Should complete in less than 100ms
@@ -74,7 +74,7 @@ describe('Performance Tests', () => {
           timestamp: new Date().toISOString(),
           tags: [`tag${i % 10}`] })) };
       jest.spyOn(fs, 'readJson').mockResolvedValue(largeMemoryData);
-      const { duration } = await perfHelpers.measureTime(async () => {
+      const { duration } = // await perfHelpers.measureTime(async () => {
   // await memoryCommand(['list'], {});
       });
       expect(duration).toBeLessThan(1000); // Should complete in less than 1 second
@@ -86,7 +86,7 @@ describe('Performance Tests', () => {
           value: `value${i}`,
           timestamp: new Date().toISOString() })) };
     jest.spyOn(fs, 'readJson').mockResolvedValue(searchableData);
-    const { duration } = await perfHelpers.measureTime(async () => {
+    const { duration } = // await perfHelpers.measureTime(async () => {
   // await memoryCommand(['list'], { pattern);
       });
     expect(duration).toBeLessThan(500); // Should complete in less than 500ms
@@ -121,13 +121,13 @@ describe('Concurrent Operations', () =>
     const _mockData = { entries: [] };
     jest.spyOn(fs, 'readJson').mockResolvedValue(mockData);
     jest.spyOn(fs, 'writeJson').mockResolvedValue(undefined);
-    const { duration } = await perfHelpers.measureTime(async () => {
+    const { duration } = // await perfHelpers.measureTime(async () => {
       const _operations = [];
       // Simulate 20 concurrent memory operations
       for (let i = 0; i < 20; i++) {
         operations.push(memoryCommand(['store', `key${i}`, `value${i}`], {}));
       //       }
-  // await Promise.all(operations);
+  // // await Promise.all(operations);
     });
     expect(duration).toBeLessThan(2000); // Should complete in less than 2 seconds
   });
@@ -138,13 +138,13 @@ describe('Concurrent Operations', () =>
   //   )
 // }
 jest.spyOn(fs, 'readJson').mockResolvedValue(mockSwarmData);
-const { duration } = await perfHelpers.measureTime(async () => {
+const { duration } = // await perfHelpers.measureTime(async () => {
   const _operations = [];
   // Simulate 10 concurrent agent status checks
   for (let i = 0; i < 10; i++) {
     operations.push(agentCommand(['status'], {}));
   //   }
-  // await Promise.all(operations);
+  // // await Promise.all(operations);
 });
 expect(duration).toBeLessThan(1000); // Should complete in less than 1 second
 })
@@ -153,7 +153,7 @@ describe('Large Data Handling', () =>
 // {
   test('should handle large configuration files efficiently', async () => {
       const _largeConfig = {
-        version: '2.0.0',,,, };
+        version: '2.0.0',,,};
   // Create large configuration with many properties
   for (let i = 0; i < 1000; i++) {
     largeConfig.features[`feature${i}`] = {
@@ -162,7 +162,7 @@ describe('Large Data Handling', () =>
     setting2: Math.random(),
     setting3: Array.from({ length }, (_, j) => `item${j}`) }
 // }
-const { duration } = await performance.measureTime(() => {
+const { duration } = // await performance.measureTime(() => {
   return JSON.stringify(largeConfig);
   //   // LINT: unreachable code removed});
   expect(duration).toBeLessThan(100); // Should serialize in less than 100ms
@@ -177,7 +177,7 @@ test('should handle large log files efficiently', async () => {
   duration: Math.random() * 1000,
   success: i % 5 !== 0 });
 // )
-const { duration } = await performance.measureTime(() => {
+const { duration } = // await performance.measureTime(() => {
   // Simulate log processing
   const _errors = largeLogs.filter((log) => log.level === 'error');
   const _recent = largeLogs.slice(0, 100);
@@ -196,7 +196,7 @@ describe('Benchmarks', () =>
   // await new Promise((resolve) => setTimeout(resolve, 10)); // Simulate I/O
       return 'CLI ready';
       //   // LINT: unreachable code removed};
-      const { result, duration } = await performance.measureTime(mockStartupOperations);
+      const { result, duration } = // await performance.measureTime(mockStartupOperations);
       expect(result).toBe('CLI ready');
       expect(duration).toBeLessThan(100); // CLI should start in less than 100ms
     };
@@ -210,12 +210,13 @@ describe('Benchmarks', () =>
         const _swarmData = {
           id: 'test-swarm',
         agents: Array.from({ length }, (_, i) => ({ id)) };
-  // await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate setup
+  // // await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate setup
       return swarmData;
       //   // LINT: unreachable code removed};
-      const { result, duration } = await performance.measureTime(mockSwarmInit);
+      const { result, duration } = // await performance.measureTime(mockSwarmInit);
       expect(result.agents).toHaveLength(8);
       expect(duration).toBeLessThan(200); // Swarm init should complete in less than 200ms
     })
   });
 })
+}}}}

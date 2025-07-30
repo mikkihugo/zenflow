@@ -17,15 +17,15 @@ describe('Code Analysis Integration', () => {
 // const _module = awaitimport('../../src/services/code-analysis/index.js');
     CodeAnalysisService = module.default;
     testDir = path.join(__dirname, 'test-data');
-  // await mkdir(testDir, { recursive });
-  // await createTestFiles();
+  // // await mkdir(testDir, { recursive });
+  // // await createTestFiles();
   });
   afterAll(async () => {
     // Cleanup test directory
     try {
   // await rm(testDir, { recursive, force });
     } catch (error) {
-      console.warn('Cleanup warning);
+      console.warn('Cleanup warning);'
     //     }
   });
   test('should initialize analysis service', async () => {
@@ -37,13 +37,13 @@ describe('Code Analysis Integration', () => {
   expect(result.analyzers).toContain('ast-parser');
   expect(result.analyzers).toContain('dependency-analyzer');
   expect(result.analyzers).toContain('duplicate-detector');
-  // await service.cleanup();
+  // // await service.cleanup();
 });
 test('should parse AST from test files', async () => {
   const _service = new CodeAnalysisService({
       projectPath,
   outputDir: path.join(testDir, 'reports') });
-  // await service.initialize();
+  // // await service.initialize();
 const _files = [path.join(testDir, 'sample.js'), path.join(testDir, 'class.js')];
 // const _results = awaitservice.analyzeFiles(files, { updateGraph });
 expect(results.files).toHaveLength(2);
@@ -53,7 +53,7 @@ expect(results.classes.length).toBeGreaterThan(0);
 const _processFunction = results.functions.find((f) => f.name === 'processData');
 expect(processFunction).toBeDefined();
 expect(processFunction.cyclomatic_complexity).toBeGreaterThan(10);
-  // await service.cleanup();
+  // // await service.cleanup();
 })
 test('should analyze dependencies', async () =>
 // {
@@ -61,15 +61,15 @@ test('should analyze dependencies', async () =>
       projectPath,
   outputDir: path.join(testDir, 'reports')
 })
-  // await service.initialize()
+  // // await service.initialize() {}
 // const _results = awaitservice.analyzeCodebase({
       includeDependencies,
 includeDuplicates,
 storeInGraph
 })
-expect(results.dependencies).toBeDefined()
+expect(results.dependencies).toBeDefined() {}
 expect(results.dependencies.dependencies.length).toBeGreaterThan(0)
-  // await service.cleanup()
+  // // await service.cleanup() {}
 })
 test('should detect duplicate code', async () =>
 // {
@@ -77,15 +77,15 @@ test('should detect duplicate code', async () =>
       projectPath,
   outputDir: path.join(testDir, 'reports')
 })
-  // await service.initialize()
+  // // await service.initialize() {}
 // const _results = awaitservice.analyzeCodebase({
       includeDependencies,
 includeDuplicates,
 storeInGraph
 })
-expect(results.duplicates).toBeDefined()
-expect(results.duplicates.metrics).toBeDefined()
-  // await service.cleanup()
+expect(results.duplicates).toBeDefined() {}
+expect(results.duplicates.metrics).toBeDefined() {}
+  // // await service.cleanup() {}
 })
 test('should generate analysis summary', async () =>
 // {
@@ -93,7 +93,7 @@ test('should generate analysis summary', async () =>
       projectPath,
   outputDir: path.join(testDir, 'reports')
 })
-  // await service.initialize()
+  // // await service.initialize() {}
 // const _results = awaitservice.analyzeCodebase();
 expect(results.summary).toBeDefined();
 expect(results.summary.overview).toBeDefined();
@@ -101,11 +101,11 @@ expect(results.summary.overview.total_files).toBeGreaterThan(0);
 expect(results.summary.overview.total_functions).toBeGreaterThan(0);
 expect(results.summary.quality_metrics).toBeDefined();
 expect(typeof results.summary.quality_metrics.high_complexity_functions).toBe('number');
-  // await service.cleanup();
+  // // await service.cleanup();
 })
 async function createTestFiles() {
     // Sample JavaScript file with complex function
-    const _sampleJs = `;
+    const _sampleJs = `;`
 // Complex function for testing
 function processData() {
   if (!data) {
@@ -144,16 +144,16 @@ function processData() {
       result.push(item);
     //     }
   //   }
-  return result;
+  // return result;
 // }
 function simpleFunction() {
   return x + y;
 // }
-export { processData, simpleFunction };
-`;
+// export { processData, simpleFunction };
+`;`
     // Class file with imports
-    const _classJs = `;
-import { processData } from './sample.js';
+    const _classJs = `;`
+// import { processData } from './sample.js';
 
 class DataManager {
   constructor(config = {}) {
@@ -163,33 +163,33 @@ class DataManager {
   async process(data) {
     const _key = this.getKey(data);
     if (this.cache.has(key)) {
-      return this.cache.get(key);
+      // return this.cache.get(key);
     //   // LINT: unreachable code removed}
     const _result = processData(data, this.config);
     this.cache.set(key, result);
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
   getKey(data) {
-    return JSON.stringify(data);
+    // return JSON.stringify(data);
     //   // LINT: unreachable code removed}
   clear() {
     this.cache.clear();
   //   }
 // }
-export default DataManager;
-`;
+// export default DataManager;
+`;`
     // File with duplicate code patterns
-    const _duplicateJs = `;
+    const _duplicateJs = `;`
 function transformData() {
   return { ...data, processed };
 // }
 function processInfo() {
   return { ...info, processed };
 // }
-export { transformData, processInfo };
-`;
-  // await writeFile(path.join(testDir, 'sample.js'), sampleJs);
-  // await writeFile(path.join(testDir, 'class.js'), classJs);
-  // await writeFile(path.join(testDir, 'duplicate.js'), duplicateJs);
+// export { transformData, processInfo };
+`;`
+  // // await writeFile(path.join(testDir, 'sample.js'), sampleJs);
+  // // await writeFile(path.join(testDir, 'class.js'), classJs);
+  // // await writeFile(path.join(testDir, 'duplicate.js'), duplicateJs);
   //   }
 })

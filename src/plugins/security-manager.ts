@@ -4,28 +4,28 @@
  */
 
 import { Worker } from 'node:worker_threads';
-// interface SecurityPolicy {allowedOperations = new Map()
-private;
-violations = []
-private;
-permissionAudits = []
-private;
-sandboxWorkers = new Map()
-private;
-threatSignatures = []
-private;
-encryptionKeys = new Map()
-private;
-sessionTokens = new Map()
-private;
-readonly;
-config = {};
+// // interface SecurityPolicy {allowedOperations = new Map() {}
+// private;
+// violations = []
+// private;
+// permissionAudits = []
+// private;
+// sandboxWorkers = new Map() {}
+// private;
+// threatSignatures = []
+// private;
+// encryptionKeys = new Map() {}
+// private;
+// sessionTokens = new Map() {}
+// private;
+// readonly;
+// config = {};
 // )
 // {
   super();
-  this.config = {isolateMemory = await this.validatePluginSecurity(plugin, manifest, config);
+  this.config = {isolateMemory = // await this.validatePluginSecurity(plugin, manifest, config);
   if (!securityValidation.isValid) {
-    throw new Error(`Security validationfailed = this.createSecurityPolicy(manifest, config);
+    throw new Error(`Security validationfailed = this.createSecurityPolicy(manifest, config);`
       this.securityPolicies.set(manifest.name, policy);
 
       // Create sandboxed worker
@@ -38,7 +38,7 @@ config = {};
       this.emit('plugin-sandboxed', {pluginName = this.sandboxWorkers.get(pluginName);
     if (worker) {
       try {
-// await worker.terminate();
+// // await worker.terminate();
         this.sandboxWorkers.delete(pluginName);
         this.securityPolicies.delete(pluginName);
 
@@ -55,10 +55,10 @@ config = {};
 // }
 // Check if risk score exceeds threshold
 if (riskScore > 75) {
-  errors.push(`Plugin risk score too high = {pluginName = === 0 ? requestedPermissions );
+  errors.push(`Plugin risk score too high = {pluginName = === 0 ? requestedPermissions );`
     this.emit('permission-audit', audit);
 
-    return {isValid = === 0,
+    // return {isValid = === 0,
     // errors,warnings = []; // LINT: unreachable code removed
     const _warnings = [];
 
@@ -68,9 +68,9 @@ if (riskScore > 75) {
   }
 
 
-  private calculatePermissionRisk(permission = {
+  // private calculatePermissionRisk(permission = {
       // System permissions (highest risk)
-      'system = [];
+      'system = [];'
     const _warnings = [];
 
     try {
@@ -97,7 +97,7 @@ if (riskScore > 75) {
       errors.push(...resourceValidation.errors);
       warnings.push(...resourceValidation.warnings);
 
-      return {isValid = === 0,
+      // return {isValid = === 0,
     // errors, // LINT: unreachable code removed
         warnings,metadata = [];
     const _warnings = [];
@@ -123,10 +123,10 @@ if (riskScore > 75) {
     //     }
 
 
-    return {isValid = === 0, errors, warnings };
+    // return {isValid = === 0, errors, warnings };
     //   // LINT: unreachable code removed}
 
-  private containsSuspiciousCommands(command = [
+  // private containsSuspiciousCommands(command = [
       /rm\s+-rf/,
       /curl.*\|\s*sh/,
       /wget.*\|\s*sh/,
@@ -134,9 +134,9 @@ if (riskScore > 75) {
       /exec\s*\(/,
       /system\s*\(/,
       /\\$\([^)]*\)/,
-      /`[^`]*`/;
+      /`[^`]*`/;`
   //   ]
-  return suspiciousPatterns.some(pattern => pattern.test(command));
+  // return suspiciousPatterns.some(pattern => pattern.test(command));
 // }
 private;
 async;
@@ -148,7 +148,7 @@ try {
 
       for (const signature of this.threatSignatures) {
         if (signature.pattern.test(pluginSource)) {
-          const __message = `Threatdetected = === 0, errors, warnings };
+          const __message = `Threatdetected = === 0, errors, warnings };`
 
     } catch (error = [];
     const _warnings = [];
@@ -158,12 +158,12 @@ try {
 
       // Memory limits
       if (limits.memory && limits.memory > 1024) { // > 1GB
-        warnings.push(`High memory limitrequested = === 0, errors, _warnings };
+        warnings.push(`High memory limitrequested = === 0, errors, _warnings };`
   //   }
 
 
   // Worker creation and management
-  private async createSecureWorker(;
+  // private async createSecureWorker(;
     manifest = {manifest = new Worker(this.getWorkerScript(), {
       workerData,resourceLimits = setTimeout(() => {
       worker.terminate();
@@ -179,9 +179,9 @@ try {
 
 private;
 getWorkerScript();
-: string;
+
   // Return the path to the secure worker script
-  return require.resolve('./secure-worker.js');
+  // return require.resolve('./secure-worker.js');
 
 private;
 monitorWorkerSecurity((_worker) => {
@@ -201,7 +201,7 @@ worker.on('error', (_error) => {
           pluginName,
           'worker-abnormal-exit',
           'medium',exitCode = {
-      'filesystem = [];
+      'filesystem = [];'
     for (const permission of permissions) {
       const _ops = operationMap[permission];
       if (ops) {
@@ -210,11 +210,11 @@ worker.on('error', (_error) => {
     //     }
 
 
-    return operations;
+    // return operations;
     //   // LINT: unreachable code removed}
 
   // Threat detection
-  private initializeThreatSignatures(): void
+  // private initializeThreatSignatures(): void
     this.threatSignatures = [
         name = {id = === 'critical'  ?? severity === 'high';
 
@@ -228,7 +228,7 @@ worker.on('error', (_error) => {
   //   }
 
 
-  private async quarantinePlugin(pluginName = this.sandboxWorkers.get(pluginName);
+  // private async quarantinePlugin(pluginName = this.sandboxWorkers.get(pluginName);
       if (worker) {
 // await worker.terminate();
         this.sandboxWorkers.delete(pluginName);
@@ -276,4 +276,6 @@ reduce((acc, permission) =>
 map(([permission, _count]) => (permission = 0;
     this.permissionAudits.length = 0;
 
-export default SecurityManager;
+// export default SecurityManager;
+
+}}}}}}}}}}}}}}}}}}}))))))))))))))))

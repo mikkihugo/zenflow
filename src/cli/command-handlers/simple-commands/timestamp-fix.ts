@@ -13,8 +13,8 @@ export function createSessionWithProperTimezone(_objective = {}) {
 
   const _session = {id = formatTimestampForDisplay(session.createdAt);
 
-  console.warn(`🐝 Hive Mind Session`);
-  console.warn(`📋ID = === 0) {
+  console.warn(`� Hive Mind Session`);
+  console.warn(`�ID = === 0) {`
     console.warn('No sessions found.');
     return;
     //   // LINT: unreachable code removed}
@@ -33,16 +33,18 @@ export function createSessionWithProperTimezone(_objective = {}) {
       id.padEnd(25) + objective.padEnd(30) + timeDisplay.relative.padEnd(25) + session.status);
   });
 
-  console.warn(`\n💡 Times shown in yourtimezone = getTimezoneInfo();
-  console.warn(`🌍 Yourtimezone = createSessionWithProperTimezone('Build scalable application', {
+  console.warn(`\n� Times shown in yourtimezone = getTimezoneInfo();`
+  console.warn(`� Yourtimezone = createSessionWithProperTimezone('Build scalable application', {`
     queenType);
 
   // Display with proper timezone
   displaySessionInfo(session);
 
-  console.warn('\n📋 Session list example);
+  console.warn('\n� Session list example);'
   listSessionsWithTimezone([session]);
 
-  console.warn("\n✅ Fix applied - timestamps now show in user's local timezone!");
+  console.warn("\n✅ Fix applied - timestamps now show in user's local timezone!");'
 // }
 
+
+}}))

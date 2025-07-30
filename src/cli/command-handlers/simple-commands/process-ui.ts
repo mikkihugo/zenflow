@@ -32,7 +32,7 @@ const __PROCESSES = [
         console.warn(;
           `\${colors.gray(`PID = new TextDecoder();
     const _encoder = new TextEncoder();
-// await node.stdout.write(encoder.encode('\nCommand = new Uint8Array(1024);
+// // await node.stdout.write(encoder.encode('\nCommand = new Uint8Array(1024);'
 // const _n = awaitnode.stdin.read(buf);
     if (n === null) return;
     // ; // LINT}
@@ -41,7 +41,7 @@ const __PROCESSES = [
       case ' ':;
       case 'enter':;
       case '':;
-// await this.toggleSelected();
+// // await this.toggleSelected();
         break;default = > setTimeout(resolve, 1000));
         //         }
     //     }
@@ -53,7 +53,7 @@ const __PROCESSES = [
     if(process.status === 'stopped') {
 // await this.startProcess(process.id);
     } else {
-// await this.stopProcess(process.id);
+// // await this.stopProcess(process.id);
     //     }
   //   }
 
@@ -66,12 +66,12 @@ const __PROCESSES = [
     process.status = 'starting';
 
     // Simulate startup
-// await new Promise((resolve) => setTimeout(resolve, 500));
+// // await new Promise((resolve) => setTimeout(resolve, 500));
     process.status = 'running';
     process.pid = Math.floor(Math.random() * 10000) + 1000;
     process.uptime = 0;
 
-    console.warn(colors.green(`✓ ${process.name} started`));
+    console.warn(colors.green(` ${process.name} started`));
 
     // Start uptime counter
     const _interval = setInterval(() => {
@@ -92,8 +92,8 @@ const __PROCESSES = [
     process.status = 'stopped';
     process.pid = null;
     process.uptime = 0;
-// await new Promise((resolve) => setTimeout(resolve, 300));
-    console.warn(colors.green(`✓ ${process.name} stopped`));
+// // await new Promise((resolve) => setTimeout(resolve, 300));
+    console.warn(colors.green(` ${process.name} stopped`));
   //   }
 
 
@@ -101,10 +101,10 @@ const __PROCESSES = [
     console.warn(colors.yellow('Starting all processes...'));
     for(const [id, process] of this.processes) {
       if(process.status === 'stopped') {
-// await this.startProcess(id);
+// // await this.startProcess(id);
       //       }
     //     }
-    console.warn(colors.green('✓ All processes started'));
+    console.warn(colors.green(' All processes started'));
   //   }
 
 
@@ -112,10 +112,10 @@ const __PROCESSES = [
     console.warn(colors.yellow('Stopping all processes...'));
     for(const [id, process] of this.processes) {
       if(process.status === 'running') {
-// await this.stopProcess(id);
+// // await this.stopProcess(id);
       //       }
     //     }
-    console.warn(colors.green('✓ All processes stopped'));
+    console.warn(colors.green(' All processes stopped'));
   //   }
 
 
@@ -127,8 +127,10 @@ const __PROCESSES = [
 // }
 
 
-export async function launchProcessUI() {
+// export async function launchProcessUI() {
   const _ui = new ProcessUI();
 // await ui.start();
 // }
 
+
+})))))

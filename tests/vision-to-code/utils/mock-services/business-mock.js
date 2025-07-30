@@ -42,7 +42,7 @@ app.get('/api/health', (_req, res) =>
   status: 'healthy',
   version: '1.0.0-mock',
   uptime: process.uptime(),
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString() {}
 })
 // )
 })
@@ -89,7 +89,7 @@ app.post('/api/visions', (req, res) =>
   id: req.body.id  ?? `vision_mock_${Date.now() }`,
   status: 'pending_approval',
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString()
+  updated_at: new Date().toISOString() {}
 // }
 mockData.visions.set(vision.id, vision);
 mockData.analytics.total_visions++;
@@ -101,7 +101,7 @@ setTimeout(;
 Math.random() * 100 + 50;
 ) // 50-150ms delay
 })
-app.get('/api/visions/) =>
+app.get('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -137,13 +137,13 @@ app.get('/api/visions', (req, res) =>
 })
 // )
 })
-app.patch('/api/visions/) =>
+app.patch('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
     const _updatedVision = { ...vision,
 ..req.body,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString() {}
 // }
   mockData.visions.set(req.params.id, updatedVision);
   res.json(apiResponseTemplates.success(updatedVision));
@@ -153,7 +153,7 @@ else
   res.status(404).json(apiResponseTemplates.error('Vision not found', 'VISION_NOT_FOUND'));
 // }
 })
-app.delete('/api/visions/) =>
+app.delete('/api/visions/) =>'
 // {
   if (mockData.visions.has(req.params.id)) {
     mockData.visions.delete(req.params.id);
@@ -163,7 +163,7 @@ app.delete('/api/visions/) =>
 // }
 })
 // Stakeholder approval endpoints
-app.post('/api/visions/) =>
+app.post('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -176,7 +176,7 @@ app.post('/api/visions/) =>
       Date.now() + 7 * 24 * 60 * 60 * 1000
     ).toISOString(), // 7 days
       submitted_at;
-    : new Date().toISOString()
+    : new Date().toISOString() {}
 // }
   mockData.approvals.set(req.params.id, approval);
   res.json(apiResponseTemplates.success(approval));
@@ -186,7 +186,7 @@ else
   res.status(404).json(apiResponseTemplates.error('Vision not found', 'VISION_NOT_FOUND'));
 // }
 })
-app.post('/api/visions/) =>
+app.post('/api/visions/) =>'
 // {
   const _approval = mockData.approvals.get(req.params.id);
   const { stakeholder_id, decision, comments } = req.body;
@@ -206,7 +206,7 @@ app.post('/api/visions/) =>
       stakeholder_id,
     decision,
     comments,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString() {}
 })
   res.json(apiResponseTemplates.success(approval))
 // }
@@ -218,7 +218,7 @@ json(apiResponseTemplates.error('Approval request not found', 'APPROVAL_NOT_FOUN
 // }
 })
 // ROI Analysis endpoints
-app.post('/api/visions/) =>
+app.post('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -251,7 +251,7 @@ app.get('/api/analytics/portfolio-metrics', (_req, res) =>
 // {
   res.json(apiResponseTemplates.success(mockData.analytics));
 })
-app.get('/api/visions/) =>
+app.get('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
   if (vision) {
@@ -367,7 +367,7 @@ app.get('/api/events', (req, res) =>
 // Error handling middleware
 app.use((error, _req, res, _next) =>
 // {
-  console.error('[Mock Business] Error);
+  console.error('[Mock Business] Error);'
   res.status(500).json(apiResponseTemplates.error('Internal server error', 'INTERNAL_ERROR'));
 })
 // 404 handler

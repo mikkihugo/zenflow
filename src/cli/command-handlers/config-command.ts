@@ -1,6 +1,6 @@
-/**
- * Config Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Config Command Module
+ * Converted from JavaScript to TypeScript
  */
 // config.js - Configuration management commands
 import {
@@ -15,19 +15,19 @@ export async function configCommand() {
 // await initConfig(subArgs, flags)
   break;
   case 'show': null
-// await showConfig(subArgs, flags)
+// // await showConfig(subArgs, flags)
   break;
   case 'get': null
-// await getConfigValue(subArgs, flags)
+// // await getConfigValue(subArgs, flags)
   break;
   case 'set': null
-// await setConfigValue(subArgs, flags)
+// // await setConfigValue(subArgs, flags)
   break;
   case 'validate': null
-// await validateConfig(subArgs, flags)
+// // await validateConfig(subArgs, flags)
   break;
   case 'reset': null
-// await resetConfig(subArgs, flags)
+// // await resetConfig(subArgs, flags)
   break;
   default = subArgs.includes('--force')  ?? subArgs.includes('-f')
   const _configFile = 'claude-zen.config.json';
@@ -49,15 +49,15 @@ export async function configCommand() {
   try {
 // const _config = awaitreadJsonFile(configFile);
 
-    printSuccess('Currentconfiguration = === 'json') {
+    printSuccess('Currentconfiguration = === 'json') {'
       console.warn(JSON.stringify(config, null, 2));
     } else {
       // Pretty format
-      console.warn('\n📋 SystemConfiguration = subArgs[1];
+      console.warn('\n� SystemConfiguration = subArgs[1];'
   const __configFile = 'claude-zen.config.json';
 
   if(!key) {
-    printError('Usage = await readJsonFile(configFile);
+    printError('Usage = // await readJsonFile(configFile);'
     const _value = getNestedValue(config, key);
 
     if(value !== undefined) {
@@ -72,7 +72,7 @@ export async function configCommand() {
 
 
 async function _setConfigValue() {
-    printError('Usage = await readJsonFile(configFile, {});
+    printError('Usage = await readJsonFile(configFile, {});'
 
     // Parse value appropriately
     const _parsedValue = value;
@@ -82,10 +82,10 @@ async function _setConfigValue() {
 
     // Set nested value
     setNestedValue(config, key, parsedValue);
-// await writeJsonFile(configFile, config);
+// // await writeJsonFile(configFile, config);
     printSuccess(`Set ${key} = ${JSON.stringify(parsedValue)}`);
   } catch(err) ;
-    printError(`Failed to setconfiguration = 'claude-zen.config.json';
+    printError(`Failed to setconfiguration = 'claude-zen.config.json';`
 
   try {
 // const _config = awaitreadJsonFile(configFile);
@@ -99,7 +99,7 @@ async function _setConfigValue() {
     const _requiredSections = ['terminal', 'orchestrator', 'memory'];
     for(const section of requiredSections) {
       if(!config[section]) {
-        errors.push(`Missing requiredsection = === 0 && warnings.length === 0) ;
+        errors.push(`Missing requiredsection = === 0 && warnings.length === 0) ;`
       printSuccess('✅ Configuration is valid');else ;
       if(errors.length > 0) {
         printError(`Found ${errors.length} error(s):`);
@@ -109,7 +109,7 @@ async function _setConfigValue() {
 
       if(warnings.length > 0) {
         printWarning(`Found ${warnings.length} warning(s):`);
-        warnings.forEach((warning) => console.warn(`  ⚠️  ${warning}`));
+        warnings.forEach((warning) => console.warn(`  ⚠  ${warning}`));
       }catch(err) ;
     printError('Configuration file not found or invalid');
     console.warn('Run "claude-zen config init" to create valid configuration');
@@ -123,7 +123,7 @@ async function resetConfig(subArgs = subArgs.includes('--force')  ?? subArgs.inc
     console.warn('Use --force to confirm reset');
     return;
     //   // LINT: unreachable code removed}
-// await initConfig(['--force'], flags);
+// // await initConfig(['--force'], flags);
   printSuccess('Configuration reset to defaults');
 // }
 
@@ -142,12 +142,12 @@ function getNestedValue(obj = > current?.[key], obj);
 
 
   function getFlag(args = args.indexOf(flagName);
-  return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
+  return index !== -1 && index + 1 < args.length ? args[index + 1] ;
 // }
 // fileExists is now imported from utils.js
 
 function _showConfigHelp() {
-  console.warn('Configuration commands);
+  console.warn('Configuration commands);'
   console.warn('  init [--force]                   Create default configuration');
   console.warn('  show [--format json]             Display current configuration');
   console.warn('  get <key>                        Get configuration value');
@@ -155,7 +155,7 @@ function _showConfigHelp() {
   console.warn('  validate                         Validate configuration');
   console.warn('  reset --force                    Reset to defaults');
   console.warn();
-  console.warn('Configuration Keys);
+  console.warn('Configuration Keys);'
   console.warn('  terminal.poolSize                Terminal pool size');
   console.warn('  terminal.recycleAfter            Commands before recycle');
   console.warn('  orchestrator.maxConcurrentTasks  Max parallel tasks');
@@ -164,10 +164,12 @@ function _showConfigHelp() {
   console.warn('  memory.path                      Memory database path');
   console.warn('  agents.maxAgents                 Maximum number of agents');
   console.warn();
-  console.warn('Examples);
+  console.warn('Examples);'
   console.warn('  claude-zen config init');
   console.warn('  claude-zen config set terminal.poolSize 15');
   console.warn('  claude-zen config get orchestrator.maxConcurrentTasks');
   console.warn('  claude-zen config validate');
 // }
 
+
+})))))))

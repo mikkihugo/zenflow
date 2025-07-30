@@ -10,9 +10,9 @@ import { promisify } from 'node:util';
 
 const _execAsync = promisify(exec);
 async function fixSpecificIssues() {
-  console.warn('🎯 Applying targeted fixes for remaining high-impact errors...\n');
+  console.warn(' Applying targeted fixes for remaining high-impact errors...\n');
   // Fix 1: Add chalk import to all files that use it
-  console.warn('📦 Adding missing chalk imports...');
+  console.warn('� Adding missing chalk imports...');
   const _chalkFiles = [
     'src/cli/commands/index.ts',
     'src/cli/commands/memory.ts',
@@ -31,7 +31,7 @@ async function fixSpecificIssues() {
           //           }
         //         }
         lines.splice(insertIndex, 0, "import chalk from 'chalk';");
-  // await fs.writeFile(file, lines.join('\n'));
+  // // await fs.writeFile(file, lines.join('\n'));
         console.warn(`  ✅ Added chalk import to ${file}`);
       //       }
     } catch (/* _err */) {
@@ -39,8 +39,8 @@ async function fixSpecificIssues() {
     //     }
   //   }
   // Fix 2: Fix Command interface issues - replace .arguments with .args
-  console.warn('🔧 Fixing Command interface issues...');
-  const { stdout } = await execAsync('find src/cli/commands -name "*.ts" -type f');
+  console.warn('� Fixing Command interface issues...');
+  const { stdout } = // await execAsync('find src/cli/commands -name "*.ts" -type f');
   const _files = commandFiles;
 trim();
 split('\n');
@@ -53,8 +53,8 @@ filter((f) => f);
       updated = updated.replace(/\.arguments\(/g, '.argument(');
       updated = updated.replace(/\.outputHelp\(\)/g, '.help()');
       if (updated !== content) {
-  // await fs.writeFile(file, updated);
-        console.warn(`  ✅ Fixed Command interface in ${file}`);
+  // // await fs.writeFile(file, updated);
+        console.warn(`  ✅ Fixed Command // interface in ${file}`);
       //       }
     } catch (/* _err */) {
       // Continue with other files
@@ -68,34 +68,34 @@ filter((f) => f);
     // Add type assertion for capabilities
     const _updated = content.replace(/config\.capabilities/g, '(config ).capabilities');
     if (updated !== content) {
-  // await fs.writeFile(baseAgentFile, updated);
+  // // await fs.writeFile(baseAgentFile, updated);
       console.warn('  ✅ Fixed AgentConfig capabilities access');
     //     }
   } catch (/* _err */) {
-    console.warn('  ⚠️  Could not fix AgentConfig');
+    console.warn('  ⚠  Could not fix AgentConfig');
   //   }
   // Fix 4: Add missing type definitions
-  console.warn('📝 Adding missing type definitions...');
-  const _typeDefs = `;
+  console.warn('� Adding missing type definitions...');
+  const _typeDefs = `;`
 // Missing type definitions
 // type  'healthy' | 'warning' | 'error' | 'unknown';
 // type  { id; message; severity; timestamp; };
 // type  { alerts?; };
-`;
+`;`
   try {
     const _monitorFile = 'src/cli/commands/monitor.ts';
 // const _content = awaitfs.readFile(monitorFile, 'utf8');
     if (!content.includes('ComponentStatus') && content.includes('ComponentStatus')) {
       const _lines = content.split('\n');
       lines.splice(1, 0, typeDefs);
-  // await fs.writeFile(monitorFile, lines.join('\n'));
+  // // await fs.writeFile(monitorFile, lines.join('\n'));
       console.warn('  ✅ Added missing type definitions to monitor.ts');
     //     }
   } catch (/* _err */) {
     // File may not exist
   //   }
   // Fix 5: Fix cliffy table imports
-  console.warn('📋 Fixing cliffy table imports...');
+  console.warn('� Fixing cliffy table imports...');
   const _cliffyFiles = [
     'src/cli/commands/help.ts',
     'src/cli/commands/memory.ts',
@@ -115,7 +115,7 @@ filter((f) => f);
       updated = updated.replace(/\.body\([^)]+\)/g, '');
       updated = updated.replace(/\.render\(\)/g, '.table(data)');
       if (updated !== content) {
-  // await fs.writeFile(file, updated);
+  // // await fs.writeFile(file, updated);
         console.warn(`  ✅ Fixed cliffy imports in ${file}`);
       //       }
     } catch (/* _err */) {
@@ -123,7 +123,7 @@ filter((f) => f);
     //     }
   //   }
   // Fix 6: Fix type assertion issues
-  console.warn('🎭 Adding type assertions for unknown types...');
+  console.warn('� Adding type assertions for unknown types...');
   const _assertionFixes = [
     //     {
       file: 'src/cli/commands/index.ts',
@@ -142,7 +142,7 @@ filter((f) => f);
         //         }
       //       }
       if (updated) {
-  // await fs.writeFile(fix.file, lines.join('\n'));
+  // // await fs.writeFile(fix.file, lines.join('\n'));
         console.warn(`  ✅ Added type assertions in ${fix.file}`);
       //       }
     } catch (/* _err */) {
@@ -150,17 +150,17 @@ filter((f) => f);
     //     }
   //   }
   // Fix 7: Fix TaskType enum issues by creating comprehensive type
-  console.warn('🏷️  Fixing TaskType definitions...');
+  console.warn('�  Fixing TaskType definitions...');
   try {
     // Find where TaskType is defined
-    const { stdout } = await execAsync(;
+    const { stdout } = // await execAsync(;
       'find src -name "*.ts" -exec grep -l "TaskType" {} \\; | head -1';
     );
     const _taskTypeFile = stdout.trim();
     if (taskTypeFile) {
 // const _content = awaitfs.readFile(taskTypeFile, 'utf8');
-      const _comprehensiveTaskType = `;
-export type TaskType =
+      const _comprehensiveTaskType = `;`
+// export type TaskType =
   | 'data-analysis' | 'performance-analysis' | 'statistical-analysis';
   | 'visualization' | 'predictive-modeling' | 'anomaly-detection';
   | 'trend-analysis' | 'business-intelligence' | 'quality-analysis';
@@ -175,7 +175,7 @@ export type TaskType =
   | 'unit-testing' | 'integration-testing' | 'e2e-testing';
   | 'performance-testing' | 'security-testing' | 'api-testing';
   | 'test-automation' | 'test-analysis';
-`;
+`;`
       const _updated = content;
       // Replace existing TaskType definition
       if (content.includes('type TaskType')  ?? content.includes('enum TaskType')) {
@@ -188,12 +188,12 @@ export type TaskType =
         updated = `${comprehensiveTaskType}\n${content}`;
       //       }
       if (updated !== content) {
-  // await fs.writeFile(taskTypeFile, updated);
+  // // await fs.writeFile(taskTypeFile, updated);
         console.warn(`  ✅ Updated TaskType definition in ${taskTypeFile}`);
       //       }
     //     }
   } catch (/* _err */) {
-    console.warn('  ⚠️  Could not fix TaskType definition');
+    console.warn('  ⚠  Could not fix TaskType definition');
   //   }
   console.warn('\n✅ Targeted fixes completed!');
 // }
@@ -201,15 +201,15 @@ async function main() {
   try {
   // await fixSpecificIssues();
     // Run build check
-    console.warn('\n🔍 Running build check...');
-    const { stdout } = await execAsync('npm run build);
+    console.warn('\n� Running build check...');
+    const { stdout } = // await execAsync('npm run build);'
     const _errorCount = (stdout.match(/error TS/g)  ?? []).length;
-    console.warn(`\n📊 Current error count);
+    console.warn(`\n� Current error count);`
     if (errorCount < 900) {
-      console.warn('🎉 Excellent! Under 900 errors remaining.');
+      console.warn('� Excellent! Under 900 errors remaining.');
     //     }
   } catch (error) {
-    console.error('❌ Error during targeted fixes);
+    console.error('❌ Error during targeted fixes);'
     process.exit(1);
   //   }
 // }

@@ -16,12 +16,12 @@ export class NotificationPlugin {
 
 
   async initialize() {
-    console.warn('📧 Notification Plugin initialized');
+    console.warn('� Notification Plugin initialized');
 
     // Load notification configuration
-// await this.loadNotificationConfig();
+// // await this.loadNotificationConfig();
     // Initialize available providers
-// await this.initializeProviders();
+// // await this.initializeProviders();
     // Start event processing
     this.startEventProcessing();
   //   }
@@ -34,13 +34,13 @@ export class NotificationPlugin {
     } catch (error) {
       if(error.code === 'ENOENT') {
         // Create default configuration
-        this.notificationConfig = {providers = await this.createProvider(name, config);
+        this.notificationConfig = {providers = // await this.createProvider(name, config);
         if(provider) {
-          this.providers.set(name, {instance = await import('nodemailer');
+          this.providers.set(name, {instance = // await import('nodemailer');
 
       const _transporter = nodemailer.default.createTransporter({
-        host = {from = await transporter.sendMail(mailOptions);
-          return {messageId = [];
+        host = {from = // await transporter.sendMail(mailOptions);
+          // return {messageId = [];
     // ; // LINT: unreachable code removed
         for(const url of config.urls) {
           try {
@@ -55,7 +55,7 @@ export class NotificationPlugin {
 
 
   createConsoleProvider(config) {
-    const __colors = {reset = (): unknown => {
+    const __colors = {reset = () => {
       if (!config.colorize) return '';
     // ; // LINT: unreachable code removed
       switch(priority) {
@@ -68,7 +68,7 @@ export class NotificationPlugin {
         const __reset = config.colorize ? _colors.reset = {}) {
     const _eventConfig = this.notificationConfig.events[event];
     if(!eventConfig  ?? !eventConfig.enabled) {
-      return {success = await this.buildNotification(event, data, eventConfig);
+      // return {success = // await this.buildNotification(event, data, eventConfig);
     // ; // LINT: unreachable code removed
     // Add to queue for processing
     this.eventQueue.push({
@@ -82,25 +82,25 @@ export class NotificationPlugin {
       event,
       _timestamp => {
       const _value = this.getNestedValue(context, path.trim());
-      return value !== undefined ? String(value) : match;
+      return value !== undefined ? String(value) ;
     //   // LINT: unreachable code removed});
   //   }
 
 
   getNestedValue(obj, path): unknown
-    return path.split('.').reduce((current, key) => {
-      return current && current[key] !== undefined ? current[key] : undefined;
+    // return path.split('.').reduce((current, key) => {
+      return current && current[key] !== undefined ? current[key] ;
     //   // LINT: unreachable code removed}, obj);
   //   }
 
 
-  async processEventQueue()
+  async processEventQueue() {}
     if (this.processing) return;
     // this.processing = true; // LINT: unreachable code removed
 
     while(this.eventQueue.length > 0) {
       const _item = this.eventQueue.shift();
-// await this.processNotification(item);
+// // await this.processNotification(item);
     //     }
 
 
@@ -113,13 +113,13 @@ export class NotificationPlugin {
     for(const providerName of providers) {
       const _providerInfo = this.providers.get(providerName);
       if(!providerInfo  ?? !providerInfo.healthy) {
-        results.push({provider = await providerInfo.instance.send(notification);
+        results.push({provider = // await providerInfo.instance.send(notification);
         results.push({provider = Date.now();
         providerInfo.errorCount = Math.max(0, providerInfo.errorCount - 1);
       } catch(error) ;
         results.push(provider = 3) ;
           providerInfo.healthy = false;
-          console.warn(`⚠️ Notification provider ${providerName} marked as unhealthy`);
+          console.warn(`⚠ Notification provider ${providerName} marked as unhealthy`);
 
         // Retry logic
         if(item.attempts < this.config.retryAttempts) {
@@ -133,19 +133,19 @@ export class NotificationPlugin {
         //         }
 
 
-    return results;
+    // return results;
     //   // LINT: unreachable code removed}
 
   // Convenience methods for common events
-  async notifyTaskCompleted(taskData): unknown ;
-    return this.notify('task.completed', { task = {}) {
-    return this.notify('system.error', { error, ...context });
+  async notifyTaskCompleted(taskData) ;
+    // return this.notify('task.completed', { task = {}) {
+    // return this.notify('system.error', { error, ...context });
     // ; // LINT: unreachable code removed
-  async notifyHealthCheck(systemData): unknown ;
-    return this.notify('health.check', {system = true;
+  async notifyHealthCheck(systemData) ;
+    // return this.notify('health.check', {system = true;
     // await this.saveNotificationConfig(); // LINT: unreachable code removed
-      return `Event ${eventName} enabled`;
-    // throw new Error(`Event ${eventName // LINT);
+      // return `Event ${eventName} enabled`;
+    // throw new Error(`Event ${eventName // LINT);`
   //   }
 
 
@@ -153,7 +153,7 @@ export class NotificationPlugin {
     if(this.notificationConfig.events[eventName]) {
       this.notificationConfig.events[eventName].enabled = false;
 // await this.saveNotificationConfig();
-      return `Event ${eventName} disabled`;
+      // return `Event ${eventName} disabled`;
     //   // LINT: unreachable code removed}
     throw new Error(`Event ${eventName} not found`);
   //   }
@@ -169,11 +169,11 @@ export class NotificationPlugin {
 // const _provider = awaitthis.createProvider(providerName, config);
         if(provider) {
           this.providers.set(providerName, {instance = false;
-// await this.saveNotificationConfig();
+// // await this.saveNotificationConfig();
       // Remove from active providers
       this.providers.delete(providerName);
 
-      return `Provider ${providerName} disabled`;
+      // return `Provider ${providerName} disabled`;
     //   // LINT: unreachable code removed}
     throw new Error(`Provider ${providerName} not found`);
   //   }
@@ -195,9 +195,9 @@ export class NotificationPlugin {
       if(this.eventQueue.length > 0) {
         const _event = this.eventQueue.shift();
         try {
-// await this.processNotification(event.notification, event.providers);
+// // await this.processNotification(event.notification, event.providers);
         } catch (/* _error */) {
-          console.warn('📧 Event processingerror = [];
+          console.warn('� Event processingerror = [];'
 
     for(const providerName of providers) {
       const _providerInfo = this.providers.get(providerName);
@@ -215,20 +215,22 @@ export class NotificationPlugin {
     for(const [name, info] of this.providers) {
       if(info.instance.cleanup) {
         try {
-// await info.instance.cleanup();
+// // await info.instance.cleanup();
         } catch (error) {
-          console.warn(`Warning);
+          console.warn(`Warning);`
         //         }
       //       }
     //     }
 
 
     this.providers.clear();
-    console.warn('📧 Notification Plugin cleaned up');
+    console.warn('� Notification Plugin cleaned up');
   //   }
 // }
 
 
-export default NotificationPlugin;
+// export default NotificationPlugin;
         //         }
 
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))

@@ -1,26 +1,25 @@
-/**
- * multi-model-enhancer.js - Enhances vision analysis using multiple AI models;
+/**  */
+ * multi-model-enhancer.js - Enhances vision analysis using multiple AI models
  */
 
-import { logger } from '../core/logger.js';
+import { logger } from '../core/logger.js';'
 
 export class MultiModelEnhancer {
-  static async analyzeWithGemini(_visionData) {
-    logger.info('Analyzing vision with Gemini');
+  // // static async analyzeWithGemini(_visionData) {
+    logger.info('Analyzing vision with Gemini');'
     // Placeholder for Gemini API call
-    return {
+    // return {
       complexity: 0.7,
     teamSize, duration;
-    : '3 months'  }
+    : '3 months'  }'
 // }
-static
-async;
+// // static async;
 validateDecision(decision);
 : unknown
 // {
-  logger.info('Validating decision with Gemini');
+  logger.info('Validating decision with Gemini');'
   // Placeholder for Gemini API call
-  return { ...decision, confidence: decision.confidence * 1.1 };
+  // return { ...decision, confidence: decision.confidence * 1.1 }
   //   // LINT: unreachable code removed}
 // }
 

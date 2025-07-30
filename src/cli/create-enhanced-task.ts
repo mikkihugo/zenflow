@@ -6,7 +6,7 @@
  * @param {string} tools - Comma-separated list of available tools;
  * @returns {string} Enhanced task prompt;
     // */ // LINT: unreachable code removed
-export function createEnhancedTask(task = `# Claude-Flow Enhanced Task
+export function createEnhancedTask(task = `# Claude-Flow Enhanced Task`
 
 ## Your Task;
 ${task}
@@ -16,7 +16,7 @@ ${task}
 You are running within the Claude-Flow orchestration system, which provides powerful features for complex task management.
 
 ### Configuration;
-- InstanceID = `;
+- InstanceID = `;`
 - **Parallel
 Execution;
 Enabled**
@@ -45,7 +45,7 @@ API;
 contracts;
 and;
 user;
-interfaces`;
+interfaces`;`
     : '';
 // }
 
@@ -57,7 +57,7 @@ Strategy;
 $;
 // {
   flags.commit === 'phase';
-    ? `- **Phase
+    ? `- **Phase`
 Commits**
 : Commit after completing major phases (planning, implementation, testing)`
 : ''
@@ -65,15 +65,15 @@ Commits**
 $
 // {
   flags.commit === 'feature';
-  ? `- **Feature Commits**: Commit after each feature or
+  ? `- **Feature Commits**: Commit after each feature or`
   namespace is
-  complete`;
+  complete`;`
     : '';
 // }
 $;
 // {
   flags.commit === 'manual';
-    ? `- **Manual
+    ? `- **Manual`
   Commits**
   : Only commit when explicitly requested by the user`
   : ''
@@ -114,13 +114,13 @@ $;
   intentional;
   and;
   well -
-    tested`;
+    tested`;`
     : '';
 // }
 $;
 // {
   flags.verbose;
-    ? `;
+    ? `;`
   #
   #
   #
@@ -144,7 +144,7 @@ $;
   all;
   command;
   outputs;
-  comprehensively`;
+  comprehensively`;`
     : '';
 // }
 
@@ -155,7 +155,7 @@ with the task: $;
 // {
   task;
 // }
-`;
-  return enhancedTask;
+`;`
+  // return enhancedTask;
 // }
 

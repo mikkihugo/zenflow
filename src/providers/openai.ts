@@ -14,25 +14,25 @@ ProviderConfig,
 ProviderError,
 RateLimitError,
 TokenUsage } from './types.js'
-// interface OpenAIMessage {role = 'openai'
-version = '2024-07-29'
-config = {enabled = {textGeneration = 'https = [
-    'gpt-4-turbo-preview',
-'gpt-4-0125-preview',
-'gpt-4-1106-preview',
-'gpt-4',
-'gpt-4-0613',
-'gpt-3.5-turbo',
-'gpt-3.5-turbo-0125',
-('gpt-3.5-turbo-1106');
-// ]
-constructor()
-// {
-  super();
-  this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.OPENAI_API_KEY;
-  if (!this.apiKey) {
-    throw new ProviderError('OpenAI API key is required', this.name, 'MISSING_API_KEY');
-  //   }
+// // interface OpenAIMessage {role = 'openai'
+// version = '2024-07-29'
+// config = {enabled = {textGeneration = 'https = ['
+//     'gpt-4-turbo-preview',
+// 'gpt-4-0125-preview',
+// 'gpt-4-1106-preview',
+// 'gpt-4',
+// 'gpt-4-0613',
+// 'gpt-3.5-turbo',
+// 'gpt-3.5-turbo-0125',
+// ('gpt-3.5-turbo-1106');
+// // ]
+// constructor() {}
+// // {
+//   super();
+//   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.OPENAI_API_KEY;
+//   if (!this.apiKey) {
+//     throw new ProviderError('OpenAI API key is required', this.name, 'MISSING_API_KEY');
+//   //   }
   if (config.baseUrl) {
     this.baseUrl = config.baseUrl;
   //   }
@@ -40,7 +40,7 @@ constructor()
   if (config.model?.includes('gpt-3.5')) {
     this.pricing = {
         inputTokenPrice = { ...this.config, ...config };
-// await this.healthCheck();
+// // await this.healthCheck();
   //   }
   async;
   generateText(request = Date.now();
@@ -57,12 +57,12 @@ constructor()
   const _decoder = new TextDecoder();
   const _buffer = '';
   while (true) {
-    const { done, value } = await reader.read();
+    const { done, value } = // await reader.read();
     if (done) break;
     buffer += decoder.decode(value, {stream = buffer.split('\n');
     buffer = lines.pop() ?? '';
     for (const line of lines) {
-      if (line.startsWith('data = line.slice(6);
+      if (line.startsWith('data = line.slice(6);'
             if (data === '[DONE]') continue;
       try {
         const _parsed = JSON.parse(data);
@@ -83,24 +83,23 @@ constructor()
 // }
 // }
 // async
-getModels()
+getModels() {}
 : Promise<string[]>
 // {
   try {
 // const _response = awaitthis.makeRequest('/models', null, 'GET');
-    return response.data;
+    // return response.data;
     // .filter((model = > this.availableModels.includes(model.id)); // LINT: unreachable code removed
 map((model = > model.id);
   } catch (error) {
-    // Fallback to static list if API call fails
-    return [...this.availableModels];
+    // Fallback to // static list if API call fails
+    // return [...this.availableModels];
     //   // LINT: unreachable code removed}
 // }
   async;
   cleanup();
   : Promise<void>
-  private
-  convertMessages(messages = []
+  // private convertMessages(messages = []
   // Add system message first if provided
   if (systemPrompt) {
     result.push({role = === 'system' && !systemPrompt) {
@@ -112,12 +111,11 @@ map((model = > model.id);
   //   }
 // const _response = awaitfetch(`${this.baseUrl}${endpoint}`, options);
   if (!response.ok) {
-    throw await this.createErrorFromResponse(response);
+    throw // await this.createErrorFromResponse(response);
   //   }
-  return response.json();
+  // return response.json();
 // }
-private
-async;
+// private async;
 createErrorFromResponse(response = await response.text();
 const _errorData = {};
 try {
@@ -125,25 +123,26 @@ try {
 } catch (/* e */) {
   errorData = {message = === 429) {
       const _retryAfter = response.headers.get('retry-after');
-  return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
+  // return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) );
 // }
-return new ProviderError(;
+// return new ProviderError(;
 // errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
 this.name,
 errorData.error?.type  ?? 'API_ERROR',
 response.status;
 // )
 // }
-private
-handleError(error)
+// private handleError(error)
 : Error
 // {
   if (error instanceof ProviderError) {
-    return error;
+    // return error;
     //   // LINT: unreachable code removed}
-    return new ProviderError(;
+    // return new ProviderError(;
     // error.message  ?? 'Unknown error occurred', // LINT);
     //     )
   //   }
 // }
 
+
+}}}}}}}}}}}}}}})))))))

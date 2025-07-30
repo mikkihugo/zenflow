@@ -5,16 +5,16 @@
  */
 
 import path from 'node:path';
-// interface KuzuAdvancedConfig {
-  enableAnalytics?: boolean;
-  enableCache?: boolean;
-  enableMetrics?: boolean;
-  maxQueryComplexity?: number;
-  queryTimeout?: number;
-  [key = new Map();
-  private queryHistory = []
-private;
-performanceMetrics = {}
+// // interface KuzuAdvancedConfig {
+//   enableAnalytics?;
+//   enableCache?;
+//   enableMetrics?;
+//   maxQueryComplexity?;
+//   queryTimeout?;
+//   [key = new Map();
+//   // private queryHistory = []
+// private;
+// performanceMetrics = {}
 // )
 // {
   super(config);
@@ -45,32 +45,32 @@ try {
           break;
         case 'all_paths':;
           query = this.buildAllPathsQuery(startNode, endNode!, maxDepth, nodeFilter, relationshipFilter);
-          break;default = await (this as any).executeQuery(query);
+          break;default = // await (this as any).executeQuery(query);
       const _executionTime = Date.now() - startTime;
 
       if (collectMetrics) {
-// await this.recordTraversalMetrics(algorithm, executionTime, result.data?.length  ?? 0);
+// // await this.recordTraversalMetrics(algorithm, executionTime, result.data?.length  ?? 0);
       //       }
 
 
-      return {
+      // return {
 ..result,
     // algorithm,execution_time = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed
     const __filterClause = nodeFilter ? `WHERE ${nodeFilter}` : '';
 
-    return `;
+    // return `;`
     // MATCH (start = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed
     const _filterClause = nodeFilter ? `WHERE \$nodeFilter` : '';
 
-    return `;
+    // return `;`
     // MATCH path=(start = this.buildRelationshipPattern('both', relationshipFilter); // LINT: unreachable code removed
     const _filterClause = nodeFilter ? `AND ${nodeFilter}` : '';
 
-    return `;
+    // return `;`
     // MATCH path=shortestPath((start = this.buildRelationshipPattern('both', relationshipFilter); // LINT: unreachable code removed
     const _filterClause = nodeFilter ? `AND \$nodeFilter` : '';
 
-    return `;
+    // return `;`
     // MATCH path=(start = ''; // LINT: unreachable code removed
 
     if (relationshipFilter) {
@@ -80,9 +80,9 @@ try {
 
     switch (direction) {
       case 'incoming': {;
-        return `<-[${pattern}]-`;
+        // return `<-[${pattern}]-`;
     // case 'outgoing':; // LINT: unreachable code removed
-        return `-[${pattern}]->`;
+        // return `-[${pattern}]->`;
     // default = { // LINT: unreachable code removed}): Promise<CentralityResult> {
     const {
       algorithm = 'degree',
@@ -96,32 +96,32 @@ try {
 // const __centralityScores = awaitthis.computeDegreeCentrality(nodeType, relationshipType);
           break;
         case 'betweenness':;
-          centralityScores = await this.computeBetweennessCentrality(nodeType, relationshipType);
+          centralityScores = // await this.computeBetweennessCentrality(nodeType, relationshipType);
           break;
         case 'closeness':;
-          centralityScores = await this.computeClosenessCentrality(nodeType, relationshipType);
+          centralityScores = // await this.computeClosenessCentrality(nodeType, relationshipType);
           break;
         case 'eigenvector':;
-          centralityScores = await this.computeEigenvectorCentrality(nodeType, relationshipType);
+          centralityScores = // await this.computeEigenvectorCentrality(nodeType, relationshipType);
           break;
         case 'pagerank':;
-          centralityScores = await this.computePageRank(nodeType, relationshipType);
+          centralityScores = // await this.computePageRank(nodeType, relationshipType);
           break;default = this.normalizeCentralityScores(centralityScores);
       //       }
 
 
       // Store centrality scores if using real Kuzu
       if ((this.stats as any).usingRealKuzu) {
-// await this.storeCentralityScores(centralityScores, algorithm);
+// // await this.storeCentralityScores(centralityScores, algorithm);
       //       }
 
 
-      return {
+      // return {
         algorithm,scores = relationshipType ? `:${relationshipType}` : '';
-    // const __query = `; // LINT: unreachable code removed
-      MATCH (n = await (this as any).executeQuery(query);
-    return result.data?.map((row = > ({node = `MATCH (n) RETURN n.name as node`;
-    // const _nodesResult = await (this as any).executeQuery(nodesQuery); // LINT: unreachable code removed
+    // const __query = `; // LINT: unreachable code removed`
+      MATCH (n = // await (this as any).executeQuery(query);
+    // return result.data?.map((row = > ({node = `MATCH (n) RETURN n.name as node`;
+    // const _nodesResult = // await (this as any).executeQuery(nodesQuery); // LINT: unreachable code removed
     const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];
 
     const _betweennessScores = new Map<string, number>();
@@ -143,13 +143,12 @@ try {
         } catch (error)
       //       }
     //     }
-return Array.from(betweennessScores.entries()).map(([node, _score]) => ({
+// return Array.from(betweennessScores.entries()).map(([node, _score]) => ({
       node,
 // score; // LINT: unreachable code removed
 }))
 // }
-private
-// async
+// private // async
 computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
 : Promise<
 // {
@@ -162,8 +161,8 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
   nodes.forEach((node) => pageRankScores.set(node, initialScore));
   // Get adjacency information
   const _relFilter = relationshipType ? `:\$relationshipType` : '';
-  const __adjQuery = `;
-      MATCH (source = await (this as any).executeQuery(adjQuery);
+  const __adjQuery = `;`
+      MATCH (source = // await (this as any).executeQuery(adjQuery);
     const _edges = adjResult.data  ?? [];
 
     // Build adjacency lists
@@ -210,7 +209,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     //     }
 
 
-    return Array.from(pageRankScores.entries()).map(([node, score]) => ({
+    // return Array.from(pageRankScores.entries()).map(([node, score]) => ({
       node,
     // score; // LINT: unreachable code removed
     }));
@@ -232,33 +231,33 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
 // const _communities = awaitthis.louvainCommunityDetection(nodeType, relationshipType, resolution);
           break;
         case 'label_propagation':;
-          communities = await this.labelPropagationCommunityDetection(nodeType, relationshipType);
+          communities = // await this.labelPropagationCommunityDetection(nodeType, relationshipType);
           break;
         case 'connected_components':;
-          communities = await this.connectedComponentsDetection(nodeType, relationshipType);
-          break;default = await this.calculateModularity(communities, nodeType, relationshipType);
+          communities = // await this.connectedComponentsDetection(nodeType, relationshipType);
+          break;default = // await this.calculateModularity(communities, nodeType, relationshipType);
 
       // Store community results if using real Kuzu
       if ((this.stats as any).usingRealKuzu) {
-// await this.storeCommunityResults(communities, algorithm, modularity);
+// // await this.storeCommunityResults(communities, algorithm, modularity);
       //       }
 
 
-      return {
+      // return {
         algorithm,
     // communities, // LINT: unreachable code removed
-        modularity,num_communities = `;
+        modularity,num_communities = `;`
   MATCH (n)
   RETURN;
   n.name as node;
-  `;
+  `;`
 // const _nodesResult = await(this as any).executeQuery(nodesQuery);
     const _nodes = nodesResult.data?.map((row) => row.node)  ?? [];
 
-    const _relFilter = relationshipType ? `;
-  :\$relationshipType` : ''
-  const __edgesQuery = `;
-      MATCH (source = await (this as any).executeQuery(edgesQuery);
+    const _relFilter = relationshipType ? `;`
+  :\$relationshipType` : ''`
+  const __edgesQuery = `;`
+      MATCH (source = // await (this as any).executeQuery(edgesQuery);
     const _edges = edgesResult.data  ?? [];
 
     // Initialize each node in its own community
@@ -330,7 +329,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     });
 
     // Convert to array format
-    return Array.from(communities.values()).map((_members, _index) => ({
+    // return Array.from(communities.values()).map((_members, _index) => ({
       id = {}): Promise<QueryResult> {
     const {
       limit = 100,
@@ -346,43 +345,43 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       if (includeMetrics && result.success) {
         // Analyze pattern frequency and importance
 
-        return {
-..result,pattern_metrics = `;
+        // return {
+..result,pattern_metrics = `;`
   MATCH;
-  \$pattern`;
+  \$pattern`;`
     // ; // LINT: unreachable code removed
     // Add filters
     const _filterClauses = [];
     Object.entries(filters).forEach(([key, value]) => {
       if (typeof value === 'string') {
-        filterClauses.push(`;
-  $key = '${value}'`);
+        filterClauses.push(`;`
+  $key = '${value}'`);`
       } else if (typeof value === 'number') {
-        filterClauses.push(`;
-  \$key = \$value`);
+        filterClauses.push(`;`
+  \$key = \$value`);`
       } else if (Array.isArray(value)) {
-        filterClauses.push(`;
-  \$keyIN[\$value.map((v) => `'${v}'`).join(', ')]`);
+        filterClauses.push(`;`
+  \$keyIN[\$value.map((v) => `'${v}'`).join(', ')]`);`
       //       }
     });
 
     if (filterClauses.length > 0) {
-      query += `;
+      query += `;`
   WHERE;
-  \$filterClauses.join(' AND ')`;
+  \$filterClauses.join(' AND ')`;`
     //     }
 
 
     query += ' RETURN *';
 
     if (limit) {
-      query += `;
+      query += `;`
   LIMIT;
-  \$limit`;
+  \$limit`;`
     //     }
 
 
-    return query;
+    // return query;
     //   // LINT: unreachable code removed}
 
   /**
@@ -401,14 +400,14 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       if (cacheResult && this.queryCache.has(query)) {
         const _cached = this.queryCache.get(query);
         this.performanceMetrics.cacheHitRate++;
-        return {
-..cached,from_cache = await (this as any).executeQuery(query);
+        // return {
+..cached,from_cache = // await (this as any).executeQuery(query);
     // const _executionTime = Date.now() - startTime; // LINT: unreachable code removed
 
       // Analyze execution if requested
       let __optimization = {};
       if (analyzeExecution) {
-        _optimization = await this.analyzeQueryExecution(query, executionTime, result);
+        _optimization = // await this.analyzeQueryExecution(query, executionTime, result);
       //       }
 
 
@@ -421,7 +420,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       // Update performance metrics
       this.updatePerformanceMetrics(query, executionTime, result.success);
 
-      return {
+      // return {
 ..result,
     // execution_time = {query_complexity = 0; // LINT: unreachable code removed
 
@@ -444,23 +443,23 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     if (query.includes('shortestPath')) complexity += 10;
     if (query.includes('allShortestPaths')) complexity += 15;
 
-    return complexity;
+    // return complexity;
     //   // LINT: unreachable code removed}
 
   /**
    * Performance monitoring and alerting;
    */;
-  private initializePerformanceTracking(): void ;
+  // private initializePerformanceTracking() ;
     // Set up performance monitoring
     setInterval(() => ;
       this.analyzePerformanceTrends();, 60000); // Every minute
 
-    console.warn('📊 Performance tracking initialized');
+    console.warn('� Performance tracking initialized');
 
   /**
    * Update performance metrics;
    */;
-  private updatePerformanceMetrics(query = (this.performanceMetrics.avgExecutionTime + executionTime) / 2;
+  // private updatePerformanceMetrics(query = (this.performanceMetrics.avgExecutionTime + executionTime) / 2;
 
     // Track slow queries
     if (executionTime > 5000) {
@@ -472,18 +471,18 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
 
     // Alert on performance degradation
     if (avgTime > this.performanceMetrics.avgExecutionTime * 2) {
-      console.warn('⚠️ Performance Alert = {}): Promise<{generated_at = true,
+      console.warn('⚠ Performance Alert = {}): Promise<{generated_at = true,'
       includeCentrality = true,
       includeCommunities = true,
       includePerformance = true;
     } = options;
 
-    const __report = {generated_at = await this.generateGraphAnalytics();
+    const __report = {generated_at = // await this.generateGraphAnalytics();
     //     }
 
 
     if (includeCentrality) {
-      report.centrality = await this.computeCentrality({algorithm = await this.detectCommunitiesAdvanced({ algorithm);
+      report.centrality = // await this.computeCentrality({algorithm = // await this.detectCommunitiesAdvanced({ algorithm);
     //     }
 
 
@@ -492,7 +491,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     //     }
 
 
-    return report;
+    // return report;
     //   // LINT: unreachable code removed}
 
   /**
@@ -503,11 +502,11 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
   getGraphOverview();
   : Promise<;
   //   {
-    node_count = {node_count = (this as any).connection.querySync(`;
+    node_count = {node_count = (this as any).connection.querySync(`;`
   MATCH (n)
   RETURN;
   count(n) as count;
-  `);
+  `);`
     const _rows = result.getAllSync();
     if (rows.length > 0) {
       overview.node_types[nodeType] = rows[0].count;
@@ -523,7 +522,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
 // Count relationships by type
 for (const _relType of Object.keys((this as any).schema.relationships)) {
           try {
-            const __result = (this as any).connection.querySync(`;
+            const __result = (this as any).connection.querySync(`;`
   MATCH ()-[r = result.getAllSync();
             if (rows.length > 0) {
               overview.relationship_types[relType] = rows[0].count;
@@ -541,13 +540,13 @@ for (const _relType of Object.keys((this as any).schema.relationships)) {
       //       }
 
 
-      return overview;
+      // return overview;
     // ; // LINT: unreachable code removed
-    } catch (error = `;
-          CREATE (c = `;
-          CREATE (c = await (this as any).getStats();
+    } catch (error = `;`
+          CREATE (c = `;`
+          CREATE (c = // await (this as any).getStats();
 
-    return {
+    // return {
 ..baseStats,performance_metrics = Array.from(this.queryCache.entries());
     // entries.slice(0, 250).forEach(([key]) => { // LINT: unreachable code removed
         this.queryCache.delete(key);
@@ -568,15 +567,15 @@ console.warn('✅ Optimization completed');
  * Enhanced close method;
  */
 // async
-close()
+close() {}
 : Promise<void>
 // {
-  console.warn('💾 Closing advanced Kuzu interface...');
+  console.warn('� Closing advanced Kuzu interface...');
   try {
       // Save performance metrics
       if (this.advancedConfig.enableMetrics) {
         const _metricsPath = path.join((this.config as any).dbPath, 'performance_metrics.json');
-// await writeFile(metricsPath, JSON.stringify(this.performanceMetrics, null, 2));
+// // await writeFile(metricsPath, JSON.stringify(this.performanceMetrics, null, 2));
       //       }
 
 
@@ -585,12 +584,12 @@ close()
       this.queryHistory.length = 0;
 
       // Call parent close method
-// await super.close();
+// // await super.close();
       console.warn('✅ Advanced Kuzu interface closed');
 
     } catch (_error
   = === 0)
-  return scores;
+  // return scores;
   // ; // LINT: unreachable code removed
   const _maxScore = Math.max(...scores.map((s) => s.score));
   if (maxScore === 0) return scores;
@@ -608,10 +607,9 @@ close()
       modularity += expectedEdges * (1 / communities.length);
     //     }
   //   }
-  return Math.min(1, modularity);
+  // return Math.min(1, modularity);
   //   // LINT: unreachable code removed}
-  private
-  async;
+  // private async;
   recordTraversalMetrics(algorithm = this.graphMetrics.get('traversal_metrics');
   metrics.push({
       algorithm,
@@ -625,9 +623,8 @@ if (metrics.length > 1000) {
   metrics.splice(0, 500);
 // }
 // }
-private
-// async
-analyzePatternMetrics(data, pattern: string)
+// private // async
+analyzePatternMetrics(data, pattern)
 : Promise<
 // {
   // pattern: string
@@ -637,16 +634,15 @@ analyzePatternMetrics(data, pattern: string)
 // }
 >
 // {
-  return {
+  // return {
       pattern,
   // matches_found: data.length, // LINT: unreachable code removed
   frequency_score: Math.min(1, data.length / 100),
   complexity_score: this.calculateQueryComplexity(pattern);
 // }
 // }
-private
-// async
-generateGraphAnalytics()
+// private // async
+generateGraphAnalytics() {}
 : Promise<
 // {
   // connectivity: unknown
@@ -655,15 +651,14 @@ generateGraphAnalytics()
 // }
 >
 // {
-  return {
-      connectivity: await this.analyzeConnectivity(),
-  // clustering: await this.analyzeClusteringCoefficient(), // LINT: unreachable code removed
-  paths: await this.analyzePathLengths();
+  // return {
+      connectivity: // await this.analyzeConnectivity(),
+  // clustering: // await this.analyzeClusteringCoefficient(), // LINT: unreachable code removed
+  paths: // await this.analyzePathLengths();
 // }
 // }
-private
-// async
-analyzeConnectivity()
+// private // async
+analyzeConnectivity() {}
 : Promise<
 // {
   // density: number
@@ -673,15 +668,14 @@ analyzeConnectivity()
 >
 // {
   // Simplified connectivity analysis
-  return {
+  // return {
       density: 0.1, // Placeholder
       components,
-  // diameter: 6, // LINT: unreachable code removed
+  // diameter, // LINT: unreachable code removed
 // }
 // }
-private
-// async
-analyzeClusteringCoefficient()
+// private // async
+analyzeClusteringCoefficient() {}
 : Promise<
 // {
   // global: number
@@ -690,14 +684,13 @@ analyzeClusteringCoefficient()
 >
 // {
   // Simplified clustering coefficient
-  return {
+  // return {
       global: 0.3,
   // average_local: 0.25; // LINT: unreachable code removed
 // }
 // }
-private
-// async
-analyzePathLengths()
+// private // async
+analyzePathLengths() {}
 : Promise<
 // {
   // average_shortest_path: number
@@ -707,11 +700,13 @@ analyzePathLengths()
 >
 // {
   // Simplified path length analysis
-  return {
+  // return {
       average_shortest_path: 3.2,
   // diameter, // LINT: unreachable code removed
   // radius: 3
 // }
 // }
 // }
-export default KuzuAdvancedInterface;
+// export default KuzuAdvancedInterface;
+
+}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))))))))

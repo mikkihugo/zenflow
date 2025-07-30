@@ -2,8 +2,8 @@
  * Global test teardown for Visionary integration tests;
  * Cleans up test environment and stops services;
  */
-const _fs = require('node).promises;
-const _path = require('node);
+const _fs = require('node).promises;'
+const _path = require('node);'
 module.exports = async () => {
   console.warn('🧹 Tearing down Visionary test environment...');
   try {
@@ -11,32 +11,32 @@ module.exports = async () => {
     const _testWorkspaceDir = process.env.TEST_WORKSPACE_DIR;
     if (testWorkspaceDir) {
       try {
-  // await fs.rmdir(testWorkspaceDir, { recursive });
+  // // await fs.rmdir(testWorkspaceDir, { recursive });
         console.warn('✅ Test workspace cleaned up');
       } catch (error) {
-        console.warn('⚠️ Failed to clean up test workspace);
+        console.warn('⚠ Failed to clean up test workspace);'
 // }
 // }
     // Clean up test database
     const _testDbPath = process.env.TEST_DATABASE_PATH;
     if (testDbPath) {
       try {
-  // await fs.unlink(testDbPath);
+  // // await fs.unlink(testDbPath);
         console.warn('✅ Test database cleaned up');
       } catch (error) {
-        console.warn('⚠️ Failed to clean up test database);
+        console.warn('⚠ Failed to clean up test database);'
 // }
 // }
     // Generate final test report
-  // await generateTestReport();
+  // // await generateTestReport();
     // Clean up environment variables
     delete process.env.VISIONARY_TEST_MODE;
     delete process.env.TEST_WORKSPACE_DIR;
     delete process.env.TEST_DATABASE_PATH;
     console.warn('✅ Visionary test environment teardown complete');
   } catch (error) {
-    console.error('❌ Error during test teardown);
-    // Don't throw error to avoid breaking test results
+    console.error('❌ Error during test teardown);'
+    // Don't throw error to avoid breaking test results'
 // }
 };
 async function generateTestReport() {
@@ -60,11 +60,11 @@ async function generateTestReport() {
         'Check individual test reports for detailed results',
         'Performance metrics available in load-test reports' ] };
     const _summaryPath = path.join(reportDir, 'test-execution-summary.json');
-  // await fs.writeFile(summaryPath, JSON.stringify(testSummary, null, 2));
-    console.warn(`📊 Test execution summary generated);
+  // // await fs.writeFile(summaryPath, JSON.stringify(testSummary, null, 2));
+    console.warn(`� Test execution summary generated);`
 // }
 catch (error)
 // {
-  console.warn('⚠️ Failed to generate test report);
+  console.warn('⚠ Failed to generate test report);'
 // }
 // }

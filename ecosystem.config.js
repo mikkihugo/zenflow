@@ -20,4 +20,4 @@ export default {
       pid_file: '/tmp/claude-zen-api.pid',
       merge_logs,
       time,
-      log_date_format: 'YYYY-MM-DD HH: mm,ss Z' } ] }
+      log_date_format: 'YYYY-MM-DD HH,ss Z' } ] }

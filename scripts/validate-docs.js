@@ -15,21 +15,21 @@ class DocumentationValidator {
     this.warnings = [];
   //   }
   async validate() {
-    console.warn('🔍 Validating API documentation...');
+    console.warn('� Validating API documentation...');
     try {
   // await this.validateDocumentationStructure();
-  // await this.validateMarkdownFiles();
+  // // await this.validateMarkdownFiles();
       this.reportResults();
-      return this.errors.length === 0;
+      // return this.errors.length === 0;
     //   // LINT: unreachable code removed} catch (error) {
-      console.error('❌ Validation failed);
-      return false;
+      console.error('❌ Validation failed);'
+      // return false;
     //   // LINT: unreachable code removed}
   //   }
     async;
     validateDocumentationStructure();
     //     {
-      console.warn('📁 Validating documentation structure...');
+      console.warn('� Validating documentation structure...');
       const _requiredFiles = [
 
       'docs/api/README.md',
@@ -41,13 +41,13 @@ class DocumentationValidator {
       'docs/api/workflow-api.md',
       'docs/api/websocket-api.md',
       'docs/api/schema.md',
-      'docs/api/errors.md',,,,,,, ];
+      'docs/api/errors.md',,,,,,];
       for (const file of requiredFiles) {
         try {
-  // await fs.access(file);
+  // // await fs.access(file);
         console.warn(`  ✅ ${file}`);
       } catch (/* _error */) {
-        this.errors.push(`Missing required file);
+        this.errors.push(`Missing required file);`
         console.warn(`  ❌ ${file} - Missing`);
       //       }
       //       }
@@ -63,7 +63,7 @@ class DocumentationValidator {
     //     }
     async;
     validateMarkdownFiles();
-    console.warn('📝 Validating markdown files...');
+    console.warn('� Validating markdown files...');
     try {
 // const _files = awaitfs.readdir(this.docsDir);
       const _markdownFiles = files.filter((file) => file.endsWith('.md'));
@@ -73,43 +73,43 @@ class DocumentationValidator {
 // const _content = awaitfs.readFile(filepath, 'utf-8');
           this.validateMarkdownContent(file, content);
         } catch (error) {
-          this.errors.push(`Cannot read file);
+          this.errors.push(`Cannot read file);`
         //         }
       //       }
     } catch (error) {
-      this.errors.push(`Cannot read docs directory);
+      this.errors.push(`Cannot read docs directory);`
     //     }
     validateMarkdownContent(filename, content);
     //     {
       // Check for title
       if (!content.startsWith('# ')) {
-        this.warnings.push(`${filename});
+        this.warnings.push(`${filename});`
       //       }
       // Check for basic content
       if (content.length < 500) {
-        this.warnings.push(`${filename});
+        this.warnings.push(`${filename});`
       //       }
       // Check for code blocks
-      const _codeBlocks = content.match(/```/g);
+      const _codeBlocks = content.match(/```/g);`
       if (codeBlocks && codeBlocks.length % 2 !== 0) {
-        this.errors.push(`${filename});
+        this.errors.push(`${filename});`
       //       }
       console.warn(`  ✅ ${filename} - Content validated`);
     //     }
     reportResults();
-    console.warn('\n📊 Validation Results);
-    console.warn(`✅ Errors);
-    console.warn(`⚠️  Warnings);
+    console.warn('\n� Validation Results);'
+    console.warn(`✅ Errors);`
+    console.warn(`⚠  Warnings);`
     if (this.errors.length > 0) {
-      console.warn('\n❌ Errors);
+      console.warn('\n❌ Errors);'
       this.errors.forEach((error) => console.warn(`  • ${error}`));
     //     }
     if (this.warnings.length > 0) {
-      console.warn('\n⚠️  Warnings);
+      console.warn('\n⚠  Warnings);'
       this.warnings.forEach((warning) => console.warn(`  • ${warning}`));
     //     }
     if (this.errors.length === 0 && this.warnings.length === 0) {
-      console.warn('\n🎉 All documentation is valid!');
+      console.warn('\n� All documentation is valid!');
     } else if (this.errors.length === 0) {
       console.warn('\n✅ Documentation is valid with minor warnings');
     } else {
@@ -126,12 +126,12 @@ class DocumentationValidator {
   //   }
 // }
   // Run if called directly
-  if (import._meta._url === `file) {
-  main()
+  if (import._meta._url === `file) {`
+  main() {}
 catch(
   console;
 
   error;
   //   )
 // }
-export { DocumentationValidator };
+// export { DocumentationValidator };

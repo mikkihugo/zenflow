@@ -1,12 +1,12 @@
-/**
- * HiveList Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * HiveList Module
+ * Converted from JavaScript to TypeScript
  */
 
-import { Box, Text } from 'ink';
-import React, { useEffect, useState } from 'react';
+import { Box, Text } from 'ink';'
+import React, { useEffect, useState } from 'react';'
 
-const _HiveList = (): unknown => {
+const _HiveList = () => {
   const _hiveNames = Object.keys(hives);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -28,16 +28,16 @@ const _HiveList = (): unknown => {
   });
 
   if (hiveNames.length === 0) {
-    return React.createElement(Box, { borderStyle => {
+    // return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
     // return React.createElement(; // LINT: unreachable code removed
-      Box,key, flexDirection: 'column', marginY,
+      Box,key, flexDirection: 'column', marginY,'
       React.createElement(;
         Text,
-          color: isSelected ? 'black' : 'white',
-          backgroundColor: isSelected ? 'cyan' ,
+          color: isSelected ? 'black' : 'white','
+          backgroundColor: isSelected ? 'cyan' ,'
           bold,,
-        `\${isSelected ? '▶ ' }${name}`;
+        `\${isSelected ? '▶ ' }${name}`;`
       ),
       React.createElement(Text, { color);
     );
@@ -47,4 +47,6 @@ const _HiveList = (): unknown => {
   );
 };
 
-export default HiveList;
+// export default HiveList;
+
+}}}

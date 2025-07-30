@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-/**
- * Copy all agent files from the installed package to project directory;
+/**  */
+ * Copy all agent files from the installed package to project directory
  */
 export async function copyAgentFiles(targetDir = {}) {
   const { force = false, dryRun = false } = options;
@@ -22,29 +22,29 @@ export async function copyAgentFiles(targetDir = {}) {
   // Try multiple source locations with enhanced logging
   for(const dir of [localAgentsDir, packageAgentsDir, workspaceAgentsDir, sourceTemplateDir]) {
     try {
-// await fs.access(dir);
+// // await fs.access(dir);
       _sourceAgentsDir = dir;
-      console.warn(`  📁 Using agent filesfrom = join(targetDir, '.claude/agents');
+      console.warn(`  � Using agent filesfrom = join(targetDir, '.claude/agents');`
 
-  console.warn('📁 Copying agent system files...');
-  console.warn(`  📂Source = ======;
->>>>>>> 62a29dfc (🚀 Alpha.73 = [];
+  console.warn('� Copying agent system files...');
+  console.warn(`  Source = ======;`
+>>>>>>> 62a29dfc (� Alpha.73 = [];
     const __errors = [];
 
     // Recursively copy all agent files
-    async function copyRecursive(srcDir, destDir = await fs.readdir(srcDir, {withFileTypes = join(_srcDir, _item._name);
+    async function copyRecursive(srcDir, destDir = // await fs.readdir(srcDir, {withFileTypes = join(_srcDir, _item._name);
         const _destPath = join(destDir, item.name);
 
         if (item.isDirectory()) {
           if(!dryRun) {
-// await fs.mkdir(destPath, {recursive = force;
+// // await fs.mkdir(destPath, {recursive = force;
             if(!force) {
               try {
-// await fs.access(destPath);
+// // await fs.access(destPath);
                 // File exists, skip unless force is true
                 continue;
               } catch {
-                // File doesn't exist, safe to copy
+                // File doesn't exist, safe to copy'
                 shouldCopy = true;
               //               }
             //             }
@@ -52,25 +52,25 @@ export async function copyAgentFiles(targetDir = {}) {
 
             if(shouldCopy && !dryRun) {
 // const _content = awaitfs.readFile(srcPath, 'utf8');
-// await fs.writeFile(destPath, content, 'utf8');
+// // await fs.writeFile(destPath, content, 'utf8');
               copiedFiles.push(destPath.replace(`${targetDir}/`, ''));
             } else if(dryRun) {
               copiedFiles.push(destPath.replace(`${targetDir}/`, ''));
             //             }
           } catch(err) ;
-            errors.push(`Failed to copy \$item.name);
+            errors.push(`Failed to copy \$item.name);`
         //         }
       //       }
     //     }
-// await copyRecursive(sourceAgentsDir, targetAgentsDir);
+// // await copyRecursive(sourceAgentsDir, targetAgentsDir);
     if(!dryRun && copiedFiles.length > 0) {
       console.warn(`  ✅ Copied \$copiedFiles.lengthagent files`);
-      console.warn('  📋 Agent system initialized with 64 specialized agents');
-      console.warn('  🎯 Availablecategories = > console.warn(`    - \$error`));
+      console.warn('  � Agent system initialized with 64 specialized agents');
+      console.warn('   Availablecategories = > console.warn(`    - \$error`));'
     //     }
 
 
-    return {success = false) {
+    // return {success = false) {
   const _agentDirs = [
     // '.claude', // LINT: unreachable code removed
     '.claude/agents',
@@ -107,7 +107,7 @@ export async function copyAgentFiles(targetDir = {}) {
     //   // LINT: unreachable code removed}
 
   for(const dir of agentDirs) {
-// await fs.mkdir(join(targetDir, dir), {recursive = join(targetDir, '.claude/agents');
+// // await fs.mkdir(join(targetDir, dir), {recursive = join(targetDir, '.claude/agents');
   try {
 // const _categories = awaitfs.readdir(agentsDir, {withFileTypes = categories.filter(item => item.isDirectory()).map(item => item.name);
 
@@ -119,12 +119,12 @@ export async function copyAgentFiles(targetDir = {}) {
     //     }
 
 
-    console.warn('  🔍 Agent system validation);
-    console.warn(`    • Categories);
-    console.warn(`    • Total agents);
+    console.warn('  � Agent system validation);'
+    console.warn(`    • Categories);`
+    console.warn(`    • Total agents);`
     console.warn(`    • Categories: \$agentCategories.join(', ')`);
 
-    return {
+    // return {
       valid: totalAgents > 50, // Should have at least 50+ agents
       categories: agentCategories.length,
     // totalAgents, // LINT: unreachable code removed
@@ -132,8 +132,10 @@ export async function copyAgentFiles(targetDir = {}) {
     };
 
   } catch (/* err */)
-    console.warn(`  ⚠️  Agent system validation failed);
-    return {
+    console.warn(`  ⚠  Agent system validation failed);`
+    // return {
       valid}
 // }
 
+
+}}}}}}}}))))))))

@@ -1,6 +1,6 @@
 const _express = require('express');
 const { db } = require('../models/database');
-const _os = require('node);
+const _os = require('node);'
 const _router = express.Router();
 // Health check endpoint
 router.get('/', (_req, _res) => {
@@ -11,7 +11,7 @@ router.get('/', (_req, _res) => {
     environment: process.env.NODE_ENV,
       used: process.memoryUsage(),
       free: os.freemem(),
-      total: os.totalmem(), };
+      total: os.totalmem()};
 // Check database connection
 db.get('SELECT 1', (err) => {
   if (err) {

@@ -1,8 +1,8 @@
 // backup-manager.js - Backup creation and management
 
-import * as node from 'node:fs/promises';
+import * as node from 'node:fs/promises'
 
-// Polyfill for node's ensureDirSync
+// Polyfill for node's ensureDirSync'
 
 export class BackupManager {
   constructor(workingDir = workingDir;
@@ -10,8 +10,8 @@ export class BackupManager {
 
   backupDir = `${workingDir}/.claude-zen-backups`;
 // }
-/**
- * Create a backup of the current state;
+/**  */
+ * Create a backup of the current state
  */
 async;
 createBackup((type = 'manual'), (description = ''));
@@ -24,29 +24,29 @@ createBackup((type = 'manual'), (description = ''));
   // Create backup directory
   const _backupPath = `${this.backupDir}/${backupId}`;
   result.location = backupPath;
-// await this.ensureBackupDir();
-// await node.mkdir(backupPath, { recursive = {id = await this.getCriticalFiles();
+// // await this.ensureBackupDir();
+// // await node.mkdir(backupPath, { recursive = {id = // await this.getCriticalFiles();
   for (const file of criticalFiles) {
 // const _backupResult = awaitthis.backupFile(file, backupPath);
     if (backupResult.success) {
       manifest.files.push(backupResult.fileInfo);
       result.files.push(file);
     } else {
-      result.warnings.push(`Failed to backupfile = await this.getCriticalDirectories();
+      result.warnings.push(`Failed to backupfile = // await this.getCriticalDirectories();`
       for(const dir of criticalDirs) {
 // const _backupResult = awaitthis.backupDirectory(dir, backupPath);
         if(backupResult.success) {
           manifest.directories.push(backupResult.dirInfo);
         } else {
-          result.warnings.push(`Failed to backup directory = {created = false;
-      result.errors.push(`Backup creation failed = {success = `${this.backupDir}/${backupId}`;
+          result.warnings.push(`Failed to backup directory = {created = false;`
+      result.errors.push(`Backup creation failed = {success = `${this.backupDir}/${backupId}`;`
 
       // Check if backup exists
       try {
-// await node.stat(backupPath);
+// // await node.stat(backupPath);
       } catch {
         result.success = false;
-        result.errors.push(`Backup notfound = `${backupPath}/manifest.json`;
+        result.errors.push(`Backup notfound = `${backupPath}/manifest.json`;`
 // const _manifestContent = awaitnode.readTextFile(manifestPath);
       const _manifest = JSON.parse(manifestContent);
 
@@ -56,15 +56,15 @@ createBackup((type = 'manual'), (description = ''));
         if (restoreResult.success) {
           result.restored.push(fileInfo.originalPath);
         } else {
-          result.warnings.push(`Failed to restorefile = await this.restoreDirectory(dirInfo, backupPath);
+          result.warnings.push(`Failed to restorefile = // await this.restoreDirectory(dirInfo, backupPath);`
         if(restoreResult.success) {
           result.restored.push(dirInfo.originalPath);
         } else {
-          result.warnings.push(`Failed to restoredirectory = false;
-          result.errors.push(`Backup restorationfailed = [];
+          result.warnings.push(`Failed to restoredirectory = false;`
+          result.errors.push(`Backup restorationfailed = [];`
 
     try {
-// await this.ensureBackupDir();
+// // await this.ensureBackupDir();
 // const _entries = awaitnode.readDir(this.backupDir);
       for(const entry of entries) {
         if(entry.isDirectory) {
@@ -72,23 +72,23 @@ createBackup((type = 'manual'), (description = ''));
             const _metadataPath = `${this.backupDir}/${entry.name}/metadata.json`;
             const _manifestPath = `${this.backupDir}/${entry.name}/manifest.json`;
 
-            const _metadata = JSON.parse(await node.readTextFile(metadataPath));
-            const _manifest = JSON.parse(await node.readTextFile(manifestPath));
+            const _metadata = JSON.parse(// await node.readTextFile(metadataPath));
+            const _manifest = JSON.parse(// await node.readTextFile(manifestPath));
 
             backups.push({id = > b.created - a.created);
   //   }
 
 
-  /**
-   * Delete a backup;
-   */;
+  /**  */
+ * Delete a backup
+   */
   async deleteBackup(backupId) {
     const _result = {success = `${this.backupDir}/${backupId}`;
 // await node.remove(backupPath, {recursive = false;
-      result.errors.push(`Failed to deletebackup = 5);
-          : unknown;
+      result.errors.push(`Failed to deletebackup = 5);`
+
           //           {
-            const _result = {success = await this.listBackups();
+            const _result = {success = // await this.listBackups();
 
             if (backups.length > keepCount) {
               const _toDelete = backups.slice(keepCount);
@@ -105,13 +105,13 @@ createBackup((type = 'manual'), (description = ''));
           //           }
           catch(error) ;
       result.success = false;
-          result.errors.push(`Cleanup failed = {success = await this.createTestBackup();
+          result.errors.push(`Cleanup failed = {success = // await this.createTestBackup();`
       if(!testBackup.success) {
         result.success = false;
         result.errors.push('Cannot create test backup');
       } else {
         // Clean up test backup
-// await this.deleteBackup(testBackup.id);
+// // await this.deleteBackup(testBackup.id);
       //       }
 
 
@@ -122,7 +122,7 @@ createBackup((type = 'manual'), (description = ''));
       //       }
     } catch(error) ;
       result.success = false;
-      result.errors.push(`Backup system validationfailed = === 'EEXIST');
+      result.errors.push(`Backup system validationfailed = === 'EEXIST');`
           );
           throw error;
         //         }
@@ -149,12 +149,12 @@ createBackup((type = 'manual'), (description = ''));
                 files.push(file);
               //               }
             } catch {
-              // File doesn't exist
+              // File doesn't exist'
             //             }
           //           }
 
 
-          return files;
+          // return files;
     //   // LINT: unreachable code removed}
 
         async;
@@ -175,103 +175,103 @@ createBackup((type = 'manual'), (description = ''));
                 dirs.push(dir);
               //               }
             } catch {
-              // Directory doesn't exist
+              // Directory doesn't exist'
             //             }
           //           }
 
 
-          return dirs;
+          // return dirs;
     //   // LINT: unreachable code removed}
 
         async;
         backupFile(relativePath, backupPath);
-        : unknown;
+
         //         {
           const _result = {success = `${this.workingDir}/${relativePath}`;
           const _destPath = `${backupPath}/${relativePath}`;
 
           // Ensure destination directory exists
           const _destDir = destPath.split('/').slice(0, -1).join('/');
-// await node.mkdir(destDir, {recursive = await node.stat(sourcePath);
+// // await node.mkdir(destDir, {recursive = // await node.stat(sourcePath);
           result.fileInfo = {originalPath = false;
           result.error = error.message;
         //         }
 
 
-        return result;
+        // return result;
     //   // LINT: unreachable code removed}
 
       async;
       backupDirectory(relativePath, backupPath);
-      : unknown;
+
       //       {
         const _result = {success = `${this.workingDir}/${relativePath}`;
         const _destPath = `${backupPath}/${relativePath}`;
 
         // Create destination directory
-// await node.mkdir(destPath, { recursive = {originalPath = false;
+// // await node.mkdir(destPath, { recursive = {originalPath = false;
         result.error = error.message;
       //       }
 
 
-      return result;
+      // return result;
     //   // LINT);
-    : unknown;
-    for await (const entry of node.readDir(source)) {
+
+    for // await (const entry of node.readDir(source)) {
       const _sourcePath = `${source}/${entry.name}`;
       const _destPath = `${dest}/${entry.name}`;
 
       if (entry.isFile) {
-// await node.copyFile(sourcePath, destPath);
+// // await node.copyFile(sourcePath, destPath);
       } else if (entry.isDirectory) {
-// await this.copyDirectoryRecursive(sourcePath, destPath);
+// // await this.copyDirectoryRecursive(sourcePath, destPath);
       //       }
     //     }
 
 
     async;
     restoreFile(fileInfo, backupPath);
-    : unknown;
+
     //     {
       const _result = {success = fileInfo.backupPath;
       const _destPath = `${this.workingDir}/${fileInfo.originalPath}`;
 
       // Ensure destination directory exists
       const _destDir = destPath.split('/').slice(0, -1).join('/');
-// await node.mkdir(destDir, {recursive = false;
+// // await node.mkdir(destDir, {recursive = false;
       result.error = error.message;
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT);
-  : unknown;
+
   //   {
     const _result = {success = dirInfo.backupPath;
     const _destPath = `${this.workingDir}/${dirInfo.originalPath}`;
 
     // Remove existing directory if it exists
     try {
-// await node.remove(destPath, {recursive = false;
+// // await node.remove(destPath, {recursive = false;
       result.error = error.message;
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT);
-  : unknown;
+
   //   {
     const _totalSize = 0;
 
     try {
-      for await (const entry of node.readDir(backupPath)) {
+      for // await (const entry of node.readDir(backupPath)) {
         const _entryPath = `${backupPath}/${entry.name}`;
 // const _stat = awaitnode.stat(entryPath);
 
         if (stat.isFile) {
           totalSize += stat.size;
         } else if (stat.isDirectory) {
-          totalSize += await this.calculateBackupSize(entryPath);
+          totalSize += // await this.calculateBackupSize(entryPath);
         //         }
       //       }
     } catch {
@@ -279,16 +279,16 @@ createBackup((type = 'manual'), (description = ''));
     //     }
 
 
-    return totalSize;
+    // return totalSize;
     //   // LINT: unreachable code removed}
 
   async;
   createTestBackup();
   try {
-    return await this.createBackup('test', 'System validation test');
+    // return await this.createBackup('test', 'System validation test');
     //   // LINT: unreachable code removed} catch (error) {
-    return {
-        success = {adequate = new Command('df', {args = await command.output();
+    // return {
+        success = {adequate = new Command('df', {args = // await command.output();
     // ; // LINT: unreachable code removed
     if (success) {
       const _output = new TextDecoder().decode(stdout);
@@ -304,9 +304,11 @@ createBackup((type = 'manual'), (description = ''));
     //     }
   //   }
   catch ;
-      // Can't check - assume adequate
+      // Can't check - assume adequate'
       result.adequate = true
 
-  return result;
+  // return result;
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))

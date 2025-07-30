@@ -1,98 +1,98 @@
-/**
- * Code Analysis Engine - Modular Version;
- *;
+/**  */
+ * Code Analysis Engine - Modular Version
+ *
  * Orchestrates code analysis using specialized components for AST parsing,
- * metrics calculation, and function/class extraction.;
- *;
- * @fileoverview Modular code analysis engine with focused components;
- * @version 2.0.0;
+ * metrics calculation, and function/class extraction.
+ *
+ * @fileoverview Modular code analysis engine with focused components
+ * @version 2.0.0
  */
 
-import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
+import { existsSync } from 'node:fs';'
+// import { readFile } from 'node:fs/promises';'
+// import path from 'node:path';'
 
-import type { ASTNode } from './code-analysis/ast-parser';
-import type { FunctionData } from './code-analysis/function-extractor';
-import type {
+// import type { ASTNode } from './code-analysis/ast-parser';'
+// import type { FunctionData } from './code-analysis/function-extractor';'
+// import type {
   CodeMetrics,
-type ComplexityAnalysis
+// type ComplexityAnalysis
 
-MetricsCalculator } from './code-analysis/metrics-calculator'
-/**
- * Code file data structure;
+MetricsCalculator } from './code-analysis/metrics-calculator''
+/**  */
+ * Code file data structure
  */
-export interface CodeFileData {
-  // content: string
-  // path: string
-  // language: string
-  // size: number
-  // lastModified: Date
-// }
-/**
- * Class analysis data;
+// export // interface CodeFileData {
+//   // content: string
+//   // path: string
+//   // language: string
+//   // size: number
+//   // lastModified: Date
+// // }
+/**  */
+ * Class analysis data
  */
-export interface ClassData {
-  // name: string
-  extends?: string[];
-  implements?: string[];
-  // lineNumber: number
-  // methodCount: number
-  // lineCount: number
-  // file: string
-// }
-/**
- * Dependency analysis results;
+// export // interface ClassData {
+//   // name: string
+//   extends?;
+//   implements?;
+//   // lineNumber: number
+//   // methodCount: number
+//   // lineCount: number
+//   // file: string
+// // }
+/**  */
+ * Dependency analysis results
  */
-export interface DependencyAnalysis {
-  external;
-  internal;
-  // totalCount: number
-  // externalCount: number
-  // internalCount: number
-// }
-/**
- * Complete code analysis results;
+// export // interface DependencyAnalysis {
+//   external;
+//   internal;
+//   // totalCount: number
+//   // externalCount: number
+//   // internalCount: number
+// // }
+/**  */
+ * Complete code analysis results
  */
-export interface CodeAnalysisResult {
-  ast;
-  functions;
-  classes;
-  // complexity: ComplexityAnalysis
-  // dependencies: DependencyAnalysis
-  // metrics: CodeMetrics
-  aiInsights?: unknown;
-  metadata: {
-    // filesAnalyzed: number
-    // totalLinesProcessed: number
-    // analysisTime: number
-    // language: string
-  };
+// export // interface CodeAnalysisResult {
+//   ast;
+//   functions;
+//   classes;
+//   // complexity: ComplexityAnalysis
+//   // dependencies: DependencyAnalysis
+//   // metrics: CodeMetrics
+//   aiInsights?;
+//   metadata: {
+//     // filesAnalyzed: number
+//     // totalLinesProcessed: number
+//     // analysisTime: number
+//     // language: string
+//   };
 // }
-/**
- * Configuration for the code analysis engine;
+/**  */
+ * Configuration for the code analysis engine
  */
-export interface CodeAnalysisConfig {
-  // outputDir: string
-  // enableAnalytics: boolean
-  supportedFormats;
-  neuralEngine?: unknown;
-// }
-/**
- * Modular Code Analysis Engine;
- *;
+// export // interface CodeAnalysisConfig {
+//   // outputDir: string
+//   // enableAnalytics: boolean
+//   supportedFormats;
+//   neuralEngine?;
+// // }
+/**  */
+ * Modular Code Analysis Engine
+ *
  * Uses specialized components for different aspects of code analysis,
- * providing better maintainability and focused responsibilities.;
+ * providing better maintainability and focused responsibilities.
  */
-export class CodeAnalysisEngine {
-  private readonly config: CodeAnalysisConfig,
-  private readonly astParser: ASTParser,
-  private readonly metricsCalculator: MetricsCalculator,
-  private readonly functionExtractor: FunctionExtractor,
-  /**
-   * Initialize the Code Analysis Engine;
-   *;
-   * @param config - Configuration options;
+// export class CodeAnalysisEngine {
+  // // private readonly config,
+  // // private readonly astParser,
+  // // private readonly metricsCalculator,
+  // // private readonly functionExtractor,
+  /**  */
+ * Initialize the Code Analysis Engine
+   *
+   * @param config - Configuration options
    */
   constructor(config) {
     this.config = config;
@@ -100,17 +100,17 @@ export class CodeAnalysisEngine {
     this.metricsCalculator = new MetricsCalculator();
     this.functionExtractor = new FunctionExtractor();
   //   }
-  /**
-   * Initialize the analysis engine;
+  /**  */
+ * Initialize the analysis engine
    */
   async initialize(): Promise<void> {
-    console.warn('🔍 Code Analysis Engine (Modular) initialized');
+    console.warn('� Code Analysis Engine (Modular) initialized');'
   //   }
-  /**
-   * Analyze code files and return comprehensive analysis results;
+  /**  */
+ * Analyze code files and return comprehensive analysis results
     // *; // LINT: unreachable code removed
-   * @param codeData - Array of code file data;
-   * @returns Complete code analysis results;
+   * @param codeData - Array of code file data
+   * @returns Complete code analysis results
     // */ // LINT: unreachable code removed
   async analyzeCode(codeData): Promise<CodeAnalysisResult> {
     const _startTime = Date.now();
@@ -130,16 +130,16 @@ export class CodeAnalysisEngine {
       let _aiInsights;
       if (this.config.neuralEngine) {
         try {
-          _aiInsights = await this.performAIAnalysis(codeData, 'code-analysis');
+          _aiInsights = // // await this.performAIAnalysis(codeData, 'code-analysis');'
         } catch (error) {
-          console.warn('AI analysis unavailable);
+          console.warn('AI analysis unavailable);'
         //         }
       //       }
 
 
       const _analysisTime = Date.now() - startTime;
 
-      return {
+      // return {
         ast,
     // functions, // LINT: unreachable code removed
         classes,
@@ -150,18 +150,18 @@ export class CodeAnalysisEngine {
           filesAnalyzed: codeData.length,
           totalLinesProcessed,
           analysisTime,
-          language: codeData[0]?.language  ?? 'unknown', }
+          language: codeData[0]?.language  ?? 'unknown'}'
   //   }
   catch (error) {
-    console.error('❌ Code analysis failed);
+    console.error('❌ Code analysis failed);'
     throw error;
   //   }
 // }
-/**
-   * Read and process code files from filesystem;
-   *;
-   * @param codeFiles - Array of file paths;
-   * @returns Processed code file data;
+/**  */
+ * Read and process code files from filesystem
+   *
+   * @param codeFiles - Array of file paths
+   * @returns Processed code file data
     // */ // LINT: unreachable code removed
 async;
 readCodeData(codeFiles)
@@ -170,9 +170,9 @@ readCodeData(codeFiles)
   const _codeData = [];
   for (const filePath of codeFiles) {
     if (!existsSync(filePath)) {
-      throw new Error(`Code file not found);
+      throw new Error(`Code file not found);`
     //     }
-// const _content = awaitreadFile(filePath, 'utf8');
+// const _content = awaitreadFile(filePath, 'utf8');'
 // const _stats = awaitstat(filePath);
     codeData.push({
         content,
@@ -182,41 +182,40 @@ readCodeData(codeFiles)
     lastModified: stats.mtime }
   //   )
 // }
-return codeData;
+// return codeData;
 //   // LINT: unreachable code removed}
-/**
- * Validate code inputs;
- *;
- * @param codeFiles - File paths to validate;
- * @param language - Expected language;
+/**  */
+ * Validate code inputs
+ *
+ * @param codeFiles - File paths to validate
+ * @param language - Expected language
  */
 async;
-validateCodeInputs(codeFiles, language: string)
+validateCodeInputs(codeFiles, language)
 : Promise<void>
 // {
   // Validate code files exist
   for (const filePath of codeFiles) {
     if (!existsSync(filePath)) {
-      throw new Error(`Code file not found);
+      throw new Error(`Code file not found);`
     //     }
     const _extension = path.extname(filePath).toLowerCase().substring(1);
     if (!this.config.supportedFormats.includes(extension)) {
-      throw new Error(`Unsupported code file format);
+      throw new Error(`Unsupported code file format);`
     //     }
   //   }
   // Validate language is supported
   if (!this.supportedLanguages.has(language)) {
-    throw new Error(`Unsupported language);
+    throw new Error(`Unsupported language);`
   //   }
 // }
-/**
-   * Extract classes from code files (simplified implementation);
-   *;
-   * @param codeData - Code file data;
-   * @returns Class analysis data;
+/**  */
+ * Extract classes from code files (simplified implementation)
+   *
+   * @param codeData - Code file data
+   * @returns Class analysis data
     // */ // LINT: unreachable code removed
-private
-async;
+// // private async;
 extractClasses(codeData)
 : Promise<ClassData[]>
 // {
@@ -225,21 +224,20 @@ extractClasses(codeData)
 // const _fileClasses = awaitthis.extractFileClasses(file);
     classes.push(...fileClasses);
   //   }
-  return classes;
+  // return classes;
   //   // LINT: unreachable code removed}
-  /**
-   * Extract classes from a single file;
-   *;
-   * @param file - Code file data;
-   * @returns Classes found in file;
+  /**  */
+ * Extract classes from a single file
+   *
+   * @param file - Code file data
+   * @returns Classes found in file
     // */ // LINT: unreachable code removed
-  private
-  async;
+  // // private async;
   extractFileClasses(file)
   : Promise<ClassData[]>
   //   {
     const _classes = [];
-    const _lines = file.content.split('\n');
+    const _lines = file.content.split('\n');'
     for (let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _classMatch = this.matchClass(line, file.language);
@@ -249,22 +247,21 @@ extractClasses(codeData)
         extends: classMatch.extends,
         implements: classMatch.implements,
         lineNumber: i + 1,
-        methodCount: await this.countClassMethods(lines, i),
-        lineCount: await this.countClassLines(lines, i),
+        methodCount: // // await this.countClassMethods(lines, i),
+        lineCount: // // await this.countClassLines(lines, i),
         file: file.path }
       classes.push(cls);
     //     }
   //   }
-  return classes;
+  // return classes;
   //   // LINT: unreachable code removed}
-  /**
-   * Analyze code dependencies;
-   *;
-   * @param codeData - Code file data;
-   * @returns Dependency analysis results;
+  /**  */
+ * Analyze code dependencies
+   *
+   * @param codeData - Code file data
+   * @returns Dependency analysis results
     // */ // LINT: unreachable code removed
-  private
-  async;
+  // // private async;
   analyzeDependencies(codeData)
   : Promise<DependencyAnalysis>
   //   {
@@ -278,7 +275,7 @@ extractClasses(codeData)
   //   }
   const _external = Array.from(dependencies.external);
   const _internal = Array.from(dependencies.internal);
-  return {
+  // return {
       external,
   // internal, // LINT: unreachable code removed
   totalCount: external.length + internal.length,
@@ -287,47 +284,45 @@ extractClasses(codeData)
 // }
 // Helper methods
 
-/**
- * Detect programming language from file extension;
+/**  */
+ * Detect programming language from file extension
  */
-private
-detectLanguage(filePath)
+// // private detectLanguage(filePath)
 : string
 // {
   const _extension = path.extname(filePath).toLowerCase();
   const _languageMap: Record<string, string> = {
-      '.js': 'javascript',
-  ('.ts');
-  : 'typescript',
-  ('.jsx')
-  : 'javascript',
-  ('.tsx')
-  : 'typescript',
-  ('.py')
-  : 'python',
-  ('.java')
-  : 'java',
-  ('.go')
-  : 'go',
-  ('.rs')
-  : 'rust',
-  ('.cpp')
-  : 'cpp',
-  ('.c')
-  : 'c',
-  ('.php')
-  : 'php',
-  ('.rb')
-  : 'ruby' }
-return languageMap[extension]  ?? 'unknown';
+      '.js': 'javascript','
+  ('.ts');'
+  : 'typescript','
+  ('.jsx')'
+  : 'javascript','
+  ('.tsx')'
+  : 'typescript','
+  ('.py')'
+  : 'python','
+  ('.java')'
+  : 'java','
+  ('.go')'
+  : 'go','
+  ('.rs')'
+  : 'rust','
+  ('.cpp')'
+  : 'cpp','
+  ('.c')'
+  : 'c','
+  ('.php')'
+  : 'php','
+  ('.rb')'
+  : 'ruby' }'
+// return languageMap[extension]  ?? 'unknown';'
 //   // LINT: unreachable code removed}
-/**
- * Match class patterns in code;
+/**  */
+ * Match class patterns in code
  */
-private
-matchClass(;
+// // private matchClass(;
 line,
-// language: string
+// language
 ): null
 // {
   // name: string
@@ -342,19 +337,18 @@ line,
 const _pattern = patterns[language] ?? patterns.javascript;
 const _match = line.match(pattern);
 if (match) {
-  return {
+  // return {
         name: match[1],
   // extends: match[2] ? [match[2]] , // LINT: unreachable code removed
-  implements: match[3] ? match[3].split(',').map((i) => i.trim()) }
+  implements: match[3] ? match[3].split(',').map((i) => i.trim()) }'
 // }
-return null;
+// return null;
 //   // LINT: unreachable code removed}
-/**
- * Count methods in a class;
+/**  */
+ * Count methods in a class
  */
-private
-async;
-countClassMethods(lines, startLine: number)
+// // private async;
+countClassMethods(lines, startLine)
 : Promise<number>
 // {
   const _methodCount = 0;
@@ -363,7 +357,7 @@ countClassMethods(lines, startLine: number)
   while (i < lines.length) {
     const _line = lines[i];
     // Simplified method detection
-    if (line.trim().includes('function') ?? line.trim().match(/\w+\s*\(/)) {
+    if (line.trim().includes('function') ?? line.trim().match(/\w+\s*\(/)) {'
       methodCount++;
     //     }
     braceCount += (line.match(/\{/g) ?? []).length;
@@ -373,14 +367,13 @@ countClassMethods(lines, startLine: number)
     //     }
     i++;
   //   }
-  return methodCount;
+  // return methodCount;
   //   // LINT: unreachable code removed}
-  /**
-   * Count lines in a class;
+  /**  */
+ * Count lines in a class
    */
-  private
-  async;
-  countClassLines(lines, startLine: number)
+  // // private async;
+  countClassLines(lines, startLine)
   : Promise<number>
   //   {
     const _braceCount = 0;
@@ -396,13 +389,12 @@ countClassMethods(lines, startLine: number)
       //       }
       i++;
     //     }
-    return lineCount;
+    // return lineCount;
     //   // LINT: unreachable code removed}
-    /**
-     * Extract dependencies from a single file;
+    /**  */
+ * Extract dependencies from a single file
      */
-    private
-    async;
+    // // private async;
     extractFileDependencies(file)
     : Promise<
     external: Set<string>
@@ -412,52 +404,53 @@ countClassMethods(lines, startLine: number)
       const _dependencies = {
       external: new Set<string>(),
       internal: new Set<string>() }
-    const _lines = file.content.split('\n');
+    const _lines = file.content.split('\n');'
     for (const line of lines) {
       // Extract import statements
-      const _importMatch = line.match(/import\s+.*\s+from\s+['"]([^'"]+)['"]/);
+      const _importMatch = line.match(/import\s+.*\s+from\s+['"]([^'"]+)['"]/);"'
       if (importMatch) {
         const _dep = importMatch[1];
-        if (dep.startsWith('.') ?? dep.startsWith('/')) {
+        if (dep.startsWith('.') ?? dep.startsWith('/')) {'
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
         //         }
       //       }
       // Extract require statements
-      const _requireMatch = line.match(/require\(['"]([^'"]+)['"]\)/);
+      const _requireMatch = line.match(/require\(['"]([^'"]+)['"]\)/);"'
       if (requireMatch) {
         const _dep = requireMatch[1];
-        if (dep.startsWith('.') ?? dep.startsWith('/')) {
+        if (dep.startsWith('.') ?? dep.startsWith('/')) {'
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
         //         }
       //       }
     //     }
-    return dependencies;
+    // return dependencies;
     //   // LINT: unreachable code removed}
-    /**
-     * Perform AI-powered analysis (if neural engine available);
+    /**  */
+ * Perform AI-powered analysis (if neural engine available)
      */
-    private
-    async;
-    performAIAnalysis(codeData, analysisType: string)
+    // // private async;
+    performAIAnalysis(codeData, analysisType)
     : Promise<any>
     //     {
       if (!this.config.neuralEngine) {
-        throw new Error('Neural engine not available');
+        throw new Error('Neural engine not available');'
       //       }
-      const _codeContent = codeData.map((file) => file.content).join('\n\n');
+      const _codeContent = codeData.map((file) => file.content).join('\n\n');'
 // const _result = awaitthis.config.neuralEngine.infer(;
-      'analysis',
-      'analyzeComplexity',
+      'analysis','
+      'analyzeComplexity','
       codeContent;
       //       )
-      return {
+      // return {
       type,
       // insights, // LINT: unreachable code removed
       confidence: 0.85 }
   //   }
 // }
-export default CodeAnalysisEngine;
+// export default CodeAnalysisEngine;
+
+}

@@ -10,7 +10,7 @@ describe('CLI Utils', () => {
     originalConsoleLog = console.log;
     console.log = (...args) => consoleOutput.push(args.join(' '));
     // Import the utils module
-    utils = await import('../../../src/cli/utils.js');
+    utils = // await import('../../../src/cli/utils.js');
   });
   afterEach(() => {
     // Restore console.log
@@ -30,12 +30,12 @@ describe('CLI Utils', () => {
     it('should print warning messages with warning symbol', () => {
       utils.printWarning('Test warning message');
       expect(consoleOutput).toHaveLength(1);
-      expect(consoleOutput[0]).toBe('⚠️  Test warning message');
+      expect(consoleOutput[0]).toBe('⚠  Test warning message');
     });
     it('should print info messages with info symbol', () => {
       utils.printInfo('Test info message');
       expect(consoleOutput).toHaveLength(1);
-      expect(consoleOutput[0]).toBe('ℹ️  Test info message');
+      expect(consoleOutput[0]).toBe('ℹ  Test info message');
     });
     it('should handle empty messages', () => {
       utils.printSuccess('');
@@ -45,8 +45,8 @@ describe('CLI Utils', () => {
       expect(consoleOutput).toHaveLength(4);
       expect(consoleOutput[0]).toBe('✅ ');
       expect(consoleOutput[1]).toBe('❌ ');
-      expect(consoleOutput[2]).toBe('⚠️  ');
-      expect(consoleOutput[3]).toBe('ℹ️  ');
+      expect(consoleOutput[2]).toBe('⚠  ');
+      expect(consoleOutput[3]).toBe('ℹ  ');
     });
     it('should handle multi-line messages', () => {
       const _multiLineMessage = 'Line 1\nLine 2\nLine 3';
@@ -73,13 +73,13 @@ describe('CLI Utils', () => {
       const _result = utils.validateArgs(args, 3, 'command <arg1> <arg2> <arg3>');
       expect(result).toBe(false);
       expect(consoleOutput).toHaveLength(1);
-      expect(consoleOutput[0]).toBe('❌ Usage);
+      expect(consoleOutput[0]).toBe('❌ Usage);'
     });
     it('should handle empty arguments array', () => {
       const _args = [];
       const _result = utils.validateArgs(args, 1, 'command <required>');
       expect(result).toBe(false);
-      expect(consoleOutput[0]).toBe('❌ Usage);
+      expect(consoleOutput[0]).toBe('❌ Usage);'
     });
     it('should handle zero minimum length', () => {
       const _args = [];
@@ -127,7 +127,7 @@ describe('CLI Utils', () => {
       const _permissionError = new Error('Permission denied');
       permissionError.code = 'EACCES';
       mockProcess.mkdir.mockRejectedValue(permissionError);
-  // await expect(utils.ensureDirectory('/forbidden/path')).rejects.toThrow('Permission denied');
+  // // await expect(utils.ensureDirectory('/forbidden/path')).rejects.toThrow('Permission denied');
     });
   });
   describe('fileExists', () => {
@@ -175,9 +175,9 @@ describe('integration scenarios', () =>
     utils.printSuccess('Operation completed');
     utils.printWarning('Minor issues detected');
     expect(consoleOutput).toHaveLength(3);
-    expect(consoleOutput[0]).toContain('ℹ️');
+    expect(consoleOutput[0]).toContain('ℹ');
     expect(consoleOutput[1]).toContain('✅');
-    expect(consoleOutput[2]).toContain('⚠️');
+    expect(consoleOutput[2]).toContain('⚠');
   });
 })
 describe('edge cases', () =>
@@ -195,13 +195,13 @@ describe('edge cases', () =>
   it('should handle numeric messages', () => {
     utils.printInfo(12345);
     expect(consoleOutput).toHaveLength(1);
-    expect(consoleOutput[0]).toBe('ℹ️  12345');
+    expect(consoleOutput[0]).toBe('ℹ  12345');
   });
   it('should handle object messages', () => {
     const _obj = { key: 'value' };
     utils.printWarning(obj);
     expect(consoleOutput).toHaveLength(1);
-    expect(consoleOutput[0]).toBe('⚠️  [object Object]');
+    expect(consoleOutput[0]).toBe('⚠  [object Object]');
   });
 })
 })

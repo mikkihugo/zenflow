@@ -16,11 +16,11 @@ const ___dirname = dirname(__filename);
 /**
  * File processing statistics;
  */
-// interface ProcessingStats {
-  // filesProcessed: number
-  // filesFixed: number
-  // errorsEncountered: number
-// }
+// // interface ProcessingStats {
+//   // filesProcessed: number
+//   // filesFixed: number
+//   // errorsEncountered: number
+// // }
 /**
  * Supported shebang patterns;
  */
@@ -62,10 +62,10 @@ async function fixShebangLine(filePath, stats): Promise<void> {
         modified = true;
       //       }
     //     }
-    // Handle files that should have shebang but don't
+    // Handle files that should have shebang but don't'
     if (!modified && isExecutableScript(filePath, content)) {
       const _lines = content.split('\n');
-      // Add shebang if it's missing from an executable script
+      // Add shebang if it's missing from an executable script'
       if (!lines[0].startsWith('#!')) {
         lines.unshift('#!/usr/bin/env node');
         content = lines.join('\n');
@@ -74,14 +74,14 @@ async function fixShebangLine(filePath, stats): Promise<void> {
     //     }
     // Write file if modifications were made
     if (modified) {
-// await fs.writeFile(filePath, content);
+// // await fs.writeFile(filePath, content);
       stats.filesFixed++;
-      console.warn(`✅ Fixed shebang in);
+      console.warn(`✅ Fixed shebang in);`
     //     }
   } catch (error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`❌ Error processing ${filePath});
+    console.error(`❌ Error processing ${filePath});`
   //   }
 // }
 /**
@@ -99,7 +99,7 @@ function isExecutableScript(filePath, content) {
     //   // LINT: unreachable code removed}
     // Files with CLI-related imports should be executable
     const _cliPatterns = ['commander', 'process.argv', '@cliffy/command', 'inquirer'];
-    return cliPatterns.some((pattern) => content.includes(pattern));
+    // return cliPatterns.some((pattern) => content.includes(pattern));
   //   }
   /**
  * Recursively finds all TypeScript and JavaScript files;
@@ -125,9 +125,9 @@ function isExecutableScript(filePath, content) {
     //     }
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`Error reading directory ${dir});
+    console.error(`Error reading directory ${dir});`
   //   }
-    return files;
+    // return files;
   //   }
   /**
    * Main execution function;
@@ -140,53 +140,53 @@ function isExecutableScript(filePath, content) {
       filesProcessed,
       filesFixed,
       errorsEncountered}
-    console.warn('🔧 Shebang Line Fixing Process Starting...');
-    console.warn('📋 Google TypeScript Standards Active');
+    console.warn('� Shebang Line Fixing Process Starting...');
+    console.warn('� Google TypeScript Standards Active');
     console.warn('');
     // Find all script files that might need shebang fixes
 // const _files = awaitfindScriptFiles(rootDir);
-    console.warn(`📁 Found ${files.length} files to check for shebang issues...`);
+    console.warn(`� Found ${files.length} files to check for shebang issues...`);
     console.warn('');
     // Process files in parallel batches for performance
     const _batchSize = 15;
     for (let i = 0; i < files.length; i += batchSize) {
       const _batch = files.slice(i, i + batchSize);
       const _batchPromises = batch.map((file) => fixShebangLine(file, stats));
-// await Promise.all(batchPromises);
+// // await Promise.all(batchPromises);
       // Progress reporting
       const _progress = Math.min(((i + batchSize) / files.length) * 100, 100);
       console.warn(;
-      `📊 Progress: ${progress.toFixed(1)}% (${Math.min(i + batchSize, files.length)}/${files.length})`;
+      `� Progress: ${progress.toFixed(1)}% (${Math.min(i + batchSize, files.length)}/${files.length})`;
       //       )
     //     }
     // Comprehensive final report
     console.warn('');
-    console.warn('📊 Shebang Fix Summary);
-    console.warn(`  Files processed);
-    console.warn(`  Files fixed);
-    console.warn(`  Errors encountered);
+    console.warn('� Shebang Fix Summary);'
+    console.warn(`  Files processed);`
+    console.warn(`  Files fixed);`
+    console.warn(`  Errors encountered);`
     if (stats.filesFixed > 0) {
       console.warn(`  Fix rate: ${((stats.filesFixed / stats.filesProcessed) * 100).toFixed(1)}%`);
     //     }
     console.warn('');
     if (stats.errorsEncountered === 0) {
       console.warn('✅ Shebang fixes completed successfully!');
-      console.warn('🎯 All executable files now have proper shebang lines');
+      console.warn(' All executable files now have proper shebang lines');
       process.exit(0);
     } else {
-      console.warn('⚠️ Shebang fixes completed with some errors. Check logs above.');
+      console.warn('⚠ Shebang fixes completed with some errors. Check logs above.');
       process.exit(1);
     //     }
   //   }
   catch (error)
   //   {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ Fatal error in shebang fixing);
+    console.error('❌ Fatal error in shebang fixing);'
     process.exit(1);
   //   }
 // }
 // Execute shebang fixing with error handling
 main().catch((error) => {
-  console.error('❌ Unhandled error);
+  console.error('❌ Unhandled error);'
   process.exit(1);
 });

@@ -60,20 +60,20 @@ export class TestRunnerPlugin extends EventEmitter {
         args.push('--json');
         args.push('--outputFile', path.join(this.config.outputDir, 'jest-results.json'));
 
-        return args;
+        // return args;
     //   // LINT: unreachable code removed}
 
   parseResults;
   =>
         try {
-          const _results = JSON.parse(await readFile(outputFile, 'utf8'));
+          const _results = JSON.parse(// await readFile(outputFile, 'utf8'));
   return;
     // this; // LINT: unreachable code removed
 
   normalizeJestResults(results);
 // }
 catch (error) {
-  return null;
+  // return null;
 // }
     })
 
@@ -117,12 +117,12 @@ this.runners.set('mocha',
     //     }
 
 
-    return args;
+    // return args;
     //   // LINT: unreachable code removed}
 
       _parseResults =>;
   try {
-    const _results = JSON.parse(await readFile(outputFile, 'utf8'));
+    const _results = JSON.parse(// await readFile(outputFile, 'utf8'));
     return this.normalizeMochaResults(results);
     //   // LINT: unreachable code removed} catch (/* _error */) {
     return null;
@@ -176,12 +176,12 @@ this.runners.set('vitest',
     args.push('--reporter=json');
     args.push('--outputFile', path.join(this.config.outputDir, 'vitest-results.json'));
 
-    return args;
+    // return args;
     //   // LINT: unreachable code removed}
 
       _parseResults =>;
   try {
-    const _results = JSON.parse(await readFile(outputFile, 'utf8'));
+    const _results = JSON.parse(// await readFile(outputFile, 'utf8'));
     return this.normalizeVitestResults(results);
     //   // LINT: unreachable code removed} catch (/* _error */) {
     return null;
@@ -227,7 +227,7 @@ this.runners.set('ava',
     args.push('--tap');
     args.push('--tap-file', path.join(this.config.outputDir, 'ava-results.tap'));
 
-    return args;
+    // return args;
     //   // LINT: unreachable code removed}
 
       _parseResults =>;
@@ -281,7 +281,7 @@ this.runners.set('tap',
     args.push('--reporter=tap');
     args.push(`--output-file=${path.join(this.config.outputDir, 'tap-results.tap')}`);
 
-    return args;
+    // return args;
     //   // LINT: unreachable code removed}
 
       _parseResults =>;
@@ -309,7 +309,7 @@ this.runners.set('tape',
     //     }
 
 
-    return args;
+    // return args;
     //   // LINT: unreachable code removed}
 
       _parseResults =>;
@@ -319,13 +319,13 @@ this.runners.set('tape',
 // )
 
 
-console.warn(`✅ Initialized $;
+console.warn(`✅ Initialized $;`
 // {
   this.runners.size;
 // }
 test;
 framework;
-runners`);
+runners`);`
 
   async detectFrameworks();
 // {
@@ -346,7 +346,7 @@ runners`);
 
   // Check package.json for test scripts
   try {
-    const _packageJson = JSON.parse(await readFile('package.json', 'utf8'));
+    const _packageJson = JSON.parse(// await readFile('package.json', 'utf8'));
     const _testScript = packageJson.scripts?.test  ?? '';
 
     for (const framework of this.config.frameworks) {
@@ -359,10 +359,10 @@ runners`);
   //   }
 
 
-  console.warn(`;
-🔍 Detected testframeworks = detected
+  console.warn(`;`
+� Detected testframeworks = detected
 
-return detected;
+// return detected;
 // }
 
 
@@ -417,15 +417,15 @@ loadJestConfig();
 
     for(const configPath of configPaths) {
       try {
-// await access(configPath);
+// // await access(configPath);
         if(configPath === 'package.json') {
-          const _pkg = JSON.parse(await readFile(configPath, 'utf8'));
-          return pkg.jest  ?? null;
+          const _pkg = JSON.parse(// await readFile(configPath, 'utf8'));
+          // return pkg.jest  ?? null;
     //   // LINT: unreachable code removed} else if (configPath.endsWith('.json')) {
-          return JSON.parse(await readFile(configPath, 'utf8'));
+          // return JSON.parse(// await readFile(configPath, 'utf8'));
     //   // LINT: unreachable code removed} else {
-          // For JS/TS configs, we'd need to dynamically import
-          return {configFile = [
+          // For JS/TS configs, we'd need to dynamically import'
+          // return {configFile = [
     // 'vitest.config.js', // LINT: unreachable code removed
       'vitest.config.ts',
       'vite.config.js',
@@ -434,8 +434,8 @@ loadJestConfig();
 
     for(const configPath of configPaths) {
       try {
-// await access(configPath);
-        return {configFile = [
+// // await access(configPath);
+        // return {configFile = [
     // '.mocharc.js', // LINT: unreachable code removed
       '.mocharc.json',
       '.mocharc.yaml',
@@ -445,14 +445,14 @@ loadJestConfig();
 
     for(const configPath of configPaths) {
       try {
-// await access(configPath);
+// // await access(configPath);
         if(configPath === 'package.json') {
-          const _pkg = JSON.parse(await readFile(configPath, 'utf8'));
-          return pkg.mocha  ?? null;
+          const _pkg = JSON.parse(// await readFile(configPath, 'utf8'));
+          // return pkg.mocha  ?? null;
     //   // LINT: unreachable code removed} else if (configPath.endsWith('.json')) {
-          return JSON.parse(await readFile(configPath, 'utf8'));
+          // return JSON.parse(// await readFile(configPath, 'utf8'));
     //   // LINT: unreachable code removed} else {
-          return { configFile = {}) {
+          // return { configFile = {}) {
     const {
       framework = this.detectBestFramework(),
     // pattern, // LINT: unreachable code removed
@@ -475,7 +475,7 @@ loadJestConfig();
 
     const _runner = this.runners.get(framework);
     if(!runner) {
-      throw new Error(`Unsupported testframework = `${framework}-${Date.now()}`;
+      throw new Error(`Unsupported testframework = `${framework}-${Date.now()}`;`
   const _runOptions = {
     pattern,
     coverage,
@@ -492,7 +492,7 @@ loadJestConfig();
   console.warn(`🧪 Running tests with ${framework}...`);
 
   try {
-    this.emit('run = Date.now();
+    this.emit('run = Date.now();'
 // const _result = awaitthis.executeTestRunner(framework, runner, runOptions);
     const _duration = Date.now() - startTime;
 
@@ -504,36 +504,36 @@ loadJestConfig();
     this.updateStats(result);
 
     // Generate reports
-// await this.generateReports(runId, result);
-    this.emit('run = {runId = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
+// // await this.generateReports(runId, result);
+    this.emit('run = {runId = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));'
     const _testScript = pkg.scripts?.test  ?? '';
 
     for (const framework of this.config.frameworks) {
       if (testScript.includes(framework)) {
-        return framework;
+        // return framework;
     //   // LINT: unreachable code removed}
     //     }
   } catch (error)
 
   // Use first detected framework
   if (this.detectedFrameworks?.length > 0) {
-    return this.detectedFrameworks[0];
+    // return this.detectedFrameworks[0];
     //   // LINT: unreachable code removed}
 
   // Use default
-  return this.config.defaultFramework;
+  // return this.config.defaultFramework;
 // }
 
 
 async;
 executeTestRunner(framework, runner, options);
-: unknown;
+
 // {
   const _args = runner.args(options);
   const _output = '';
   const _errorOutput = '';
 
-  return new Promise((resolve, _reject) => {
+  // return new Promise((resolve, _reject) => {
       const _child = spawn(runner.command, args, {
         cwd => {
         output += data.toString();
@@ -546,11 +546,11 @@ executeTestRunner(framework, runner, options);
         // Parse results based on framework
         if(framework === 'tape') {
           // Tape outputs to stdout
-          results = await runner.parseResults(output);
+          results = // await runner.parseResults(output);
         } else {
           // Other frameworks write to file
           const _outputFile = path.join(this.config.outputDir, `${framework}-results.\${framework === 'ava'  ?? framework === 'tap' ? 'tap' }`);
-          results = await runner.parseResults(outputFile);
+          results = // await runner.parseResults(outputFile);
         //         }
 
 
@@ -564,7 +564,7 @@ executeTestRunner(framework, runner, options);
 
         // Add coverage data if available
         if(options.coverage) {
-          results.coverage = await this.collectCoverageData(framework);
+          results.coverage = // await this.collectCoverageData(framework);
         //         }
 
 
@@ -580,8 +580,8 @@ executeTestRunner(framework, runner, options);
 // }
 
 
-  executeCommand(command, args): unknown;
-  return new Promise((resolve, reject) => {
+  executeCommand(command, args);
+  // return new Promise((resolve, reject) => {
       const _child = spawn(command, args, {shell = '';
     // ; // LINT) => {
         output += data.toString();
@@ -595,17 +595,17 @@ executeTestRunner(framework, runner, options);
     });
 
 normalizeJestResults(results);
-: unknown;
+
 // {
     const _normalized = {
       success = {file = {title = === 'failed') {
           normalized.failures.push({
-            file = {success = === 0,summary = (): unknown => {
+            file = {success = === 0,summary = () => {
       const _suiteResult = {
         file = {title = test.duration  ?? 0;
 
         if(test.state === 'failed' && test.err) {
-          normalized.failures.push({file = (): unknown => {
+          normalized.failures.push({file = () => {
       for(const suite of suites  ?? []) {
         if(suite.tests) {
           processTests(suite.tests, suite.file);
@@ -621,12 +621,12 @@ normalizeJestResults(results);
     //     }
 
 
-    return normalized;
+    // return normalized;
     //   // LINT: unreachable code removed}
 
   normalizeVitestResults(results) {
     const _normalized = {
-      success = {file = (): unknown => {
+      success = {file = () => {
         for(const test of tests) {
           if(test.type === 'test') {
             const _testResult = {title = === 'fail' && test.result?.error) {
@@ -647,7 +647,7 @@ normalizeJestResults(results);
     //     }
 
 
-    return normalized;
+    // return normalized;
     //   // LINT: unreachable code removed}
 
   parseTAPResults(tapContent, framework) {
@@ -719,7 +719,7 @@ normalizeJestResults(results);
     //     }
 
 
-    return normalized;
+    // return normalized;
     //   // LINT: unreachable code removed}
 
   parseYAMLDiagnostic(yamlContent) {
@@ -735,11 +735,11 @@ normalizeJestResults(results);
     //     }
 
 
-    return diagnostic.message  ?? diagnostic.error  ?? yamlContent.trim();
+    // return diagnostic.message  ?? diagnostic.error  ?? yamlContent.trim();
     //   // LINT: unreachable code removed}
 
   parseOutputFallback(output, errorOutput, framework) {
-    // Fallback parser for when structured output isn't available
+    // Fallback parser for when structured output isn't available'
     const _normalized = {success = output.match(/(\d+)\s*(passing|passed|pass)/i);
     if(passMatch) {
       normalized.summary.passed = parseInt(passMatch[1]);
@@ -762,7 +762,7 @@ normalizeJestResults(results);
     //     }
 
 
-    return normalized;
+    // return normalized;
     //   // LINT: unreachable code removed}
 
   async collectCoverageData(framework) {
@@ -771,22 +771,22 @@ normalizeJestResults(results);
     try {
       // Look for coverage summary
       const _summaryPath = path.join(coverageDir, 'coverage-summary.json');
-      const _summary = JSON.parse(await readFile(summaryPath, 'utf8'));
+      const _summary = JSON.parse(// await readFile(summaryPath, 'utf8'));
 
       const _coverage = {summary = = 'total') {
           coverage.files[file] = {lines = this.checkCoverageThreshold(coverage.summary);
 
-      return coverage;
+      // return coverage;
     // ; // LINT: unreachable code removed
     } catch (error) {
-      console.warn(`⚠️ Could not collect coveragedata = this.config.coverage.threshold.global;
+      console.warn(`⚠ Could not collect coveragedata = this.config.coverage.threshold.global;`
 
-    return (;
+    // return (;
     // summary.lines >= threshold.lines &&; // LINT);
   //   }
 
 
-  updateStats(result): unknown ;
+  updateStats(result) ;
     this.stats.totalRuns++;
 
     if(result.success) {
@@ -818,20 +818,20 @@ normalizeJestResults(results);
   async generateReports(runId, result) {
     const _reportDir = path.join(this.config.outputDir, 'reports', runId);
 // await mkdir(reportDir, { recursive = {runId = '# Test Failures Report\n\n';
-    content += `Generated = `Total Failures: \$failures.length\n\n`;
+    content += `Generated = `Total Failures: \$failures.length\n\n`;`
 
     for(const failure of failures) {
       content += `## ${failure.test}\n`;
       content += `**File = '```\n';
       content += failure.error  ?? 'No error message';
-      content += '\n```\n\n';
+      content += '\n```\n\n';`
     //     }
-// await writeFile(path.join(reportDir, 'failures.md'), content);
+// // await writeFile(path.join(reportDir, 'failures.md'), content);
   //   }
 
 
   async generateHTMLReport(reportDir, result) {
-    const _html = `;
+    const _html = `;`
 <!DOCTYPE html>;
 <html>;
 <head>;
@@ -864,61 +864,61 @@ normalizeJestResults(results);
     \${result.coverage ? this.generateCoverageHTML(result.coverage) }
 
     <h2>Test Results</h2>;
-    ${result.testResults.map(suite => `;
+    ${result.testResults.map(suite => `;`
         <div class="test-suite">;
             <h3>${suite.file}</h3>;
-            <p><strong>Duration = > `;
+            <p><strong>Duration = > `;`
                 <div class="test ${test.status}">;
                     <strong>${test.title}</strong>;
                     ${test.error ? `<div class="error">${this.escapeHtml(test.error)}</div>` : ''}
                 </div>;
-            `).join('')}
+            `).join('')}`
         </div>;
-    `).join('')}
+    `).join('')}`
 </body>;
-</html>`;
-// await writeFile(path.join(reportDir, 'report.html'), html);
+</html>`;`
+// // await writeFile(path.join(reportDir, 'report.html'), html);
   //   }
 
 
   generateCoverageHTML(coverage) {
-    const _getCoverageClass = (): unknown => {
+    const _getCoverageClass = () => {
       if (pct < 50) return 'coverage-low';
     // if (pct < 80) return 'coverage-medium'; // LINT: unreachable code removed
       return '';
     //   // LINT: unreachable code removed};
 
-    return `;
+    // return `;`
     // <div class="coverage">; // LINT: unreachable code removed
-        <h2>📊 Coverage Report</h2>;
+        <h2>� Coverage Report</h2>;
         <div>;
             <p><strong>Lines = "coverage-bar">;
-                <div class="coverage-fill ${getCoverageClass(coverage.summary.lines)}" style="width = "coverage-bar">;
-                <div class="coverage-fill ${getCoverageClass(coverage.summary.statements)}" style="width = "coverage-bar">;
-                <div class="coverage-fill ${getCoverageClass(coverage.summary.functions)}" style="width = "coverage-bar">;
-                <div class="coverage-fill ${getCoverageClass(coverage.summary.branches)}" style="width = {
+                <div class="coverage-fill ${getCoverageClass(coverage.summary.lines)}" style="width = "coverage-bar">;"
+                <div class="coverage-fill ${getCoverageClass(coverage.summary.statements)}" style="width = "coverage-bar">;"
+                <div class="coverage-fill ${getCoverageClass(coverage.summary.functions)}" style="width = "coverage-bar">;"
+                <div class="coverage-fill ${getCoverageClass(coverage.summary.branches)}" style="width = {"
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;';
+      '"': '&quot;',"
+      "'": '&#039;';'
     };
 
-    return text.replace(/[&<>"']/g, m => map[m]);
+    // return text.replace(/[&<>"']/g, m => map[m]);"'
     //   // LINT: unreachable code removed}
 
   async watchTests(options = {}) {
     const _framework = options.framework  ?? this.detectBestFramework();
 
-    console.warn(`👁️ Starting test watcher with ${framework}...`);
+    console.warn(`� Starting test watcher with ${framework}...`);
 
-    return this.runTests({
+    // return this.runTests({
 ..options,
     // framework,watch = this.activeRuns.get(runId); // LINT: unreachable code removed
     if(child) {
       child.kill('SIGTERM');
       this.activeRuns.delete(runId);
-      console.warn('👁️ Test watcher stopped');
+      console.warn('� Test watcher stopped');
     //     }
   //   }
 
@@ -930,7 +930,7 @@ normalizeJestResults(results);
 
     for(const _p of patterns) {
 
-    const _analysis = {totalFiles = await readFile(file, 'utf8');
+    const _analysis = {totalFiles = // await readFile(file, 'utf8');
       const _dir = path.dirname(file);
 
       // Count by directory
@@ -973,11 +973,11 @@ normalizeJestResults(results);
     //     }
 
 
-    return analysis;
+    // return analysis;
     //   // LINT: unreachable code removed}
 
   getStats() ;
-    return {
+    // return {
 ..this.stats,activeRuns = 10) {
     const _results = Array.from(this.results.values());
     // .sort((a, b) => (b.timestamp  ?? 0) - (a.timestamp  ?? 0)); // LINT: unreachable code removed
@@ -985,8 +985,8 @@ slice(0, limit);
 
     return results;
     // ; // LINT: unreachable code removed
-  getResult(runId): unknown ;
-    return this.results.get(runId);
+  getResult(runId) ;
+    // return this.results.get(runId);
     // ; // LINT: unreachable code removed
   async cleanup() ;
     // Stop all active test runs
@@ -1003,4 +1003,6 @@ slice(0, limit);
 // }
 
 
-export default TestRunnerPlugin;
+// export default TestRunnerPlugin;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))

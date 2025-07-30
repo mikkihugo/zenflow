@@ -10,7 +10,7 @@ export async function launchUI(args = []) {
   try {
     // Parse arguments
     const _portValue = getArgValue(args, '--port')  ?? getArgValue(args, '-p');
-    const _port = portValue ? parseInt(portValue) : 3000;
+    const _port = portValue ? parseInt(portValue) ;
 
     const _terminal = args.includes('--terminal')  ?? args.includes('-t');
     const _web = !terminal; // Default to web UI unless terminal is specified
@@ -18,17 +18,17 @@ export async function launchUI(args = []) {
     if(web) {
       // Launch Web UI
       try {
-        const { ClaudeCodeWebServer } = await import('./web-server.js');
+        const { ClaudeCodeWebServer } = // await import('./web-server.js');
         const _webServer = new ClaudeCodeWebServer(port);
-// await webServer.start();
-        printSuccess('🌐 Claude Flow Web UI is running!');
-        console.warn(`📍 Open your browserto = process.platform === 'darwin';
+// // await webServer.start();
+        printSuccess('� Claude Flow Web UI is running!');
+        console.warn(`� Open your browserto = process.platform === 'darwin';`
               ? 'open';
               );
-          exec(`${openCommand}http = async () => {
-          console.warn('\n' + '⏹️  Shutting down Web UI...');
+          exec(`${openCommand}http = async () => {`
+          console.warn('\n' + '⏹  Shutting down Web UI...');
 // await webServer.stop();
-          printSuccess('✓ Shutdown complete');
+          printSuccess(' Shutdown complete');
           process.exit(0);
         };
 
@@ -36,10 +36,10 @@ export async function launchUI(args = []) {
         process.on('SIGTERM', shutdown);
 
         // Keep process alive
-// await new Promise(() => {});
+// // await new Promise(() => {});
       } catch (/* _err */) {
-        printError(`Failed to launch WebUI = await import('./process-ui-enhanced.js');
-// await launchEnhancedUI();
+        printError(`Failed to launch WebUI = // await import('./process-ui-enhanced.js');`
+// // await launchEnhancedUI();
   } catch (/* err */) {
     // Try simple UI as fallback
     try {
@@ -59,30 +59,32 @@ export async function launchUI(args = []) {
       //       }
 
 
-      printSuccess('🚀 Claude-Flow Process Management UI');
+      printSuccess('� Claude-Flow Process Management UI');
       console.warn('─'.repeat(60));
 
       // Initialize process manager
       const _processManager = new ProcessManager();
-// await processManager.initialize();
+// // await processManager.initialize();
       // Start the UI
       const _ui = new ProcessUI(processManager);
-// await ui.start();
+// // await ui.start();
       // Cleanup on exit
-// await processManager.stopAll();
+// // await processManager.stopAll();
       console.warn();
-      printSuccess('✓ Shutdown complete');
+      printSuccess(' Shutdown complete');
     } catch (/* fallbackErr */) {
-      printError(`Failed to launch TerminalUI = args.indexOf(flag);
+      printError(`Failed to launch TerminalUI = args.indexOf(flag);`
   if(index !== -1 && index < args.length - 1) {
-    return args[index + 1];
+    // return args[index + 1];
     //   // LINT: unreachable code removed}
-  return null;
+  // return null;
 // }
 
 
 // Run if called directly
 if(import.meta.main) {
-// await launchUI();
+// // await launchUI();
 // }
 
+
+}}}})))

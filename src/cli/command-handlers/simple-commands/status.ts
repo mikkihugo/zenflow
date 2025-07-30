@@ -22,11 +22,11 @@ async function getSystemStatus(_verbose = false) {
   //   }
 
 
-  return totalEntries;
+  // return totalEntries;
 // }
 // catch
 // {
-  return 0;
+  // return 0;
 // }
 // }
 async function _getResourceUsage() {
@@ -35,10 +35,10 @@ async function _getResourceUsage() {
     // Dynamic import for cross-platform compatibility
     let os;
     try {
-      os = await import('node = await import('os');
+      os = // await import('node = // await import('os');'
       } catch {
         // Fallback for environments without os module
-        return {memory = os.totalmem();
+        // return {memory = os.totalmem();
     // ; // LINT: unreachable code removed
     const __loadAvg = 'N/A';
 
@@ -50,12 +50,12 @@ async function _getResourceUsage() {
     //     }
 
 
-    return {memory = status.orchestrator.running ? '🟢 Running' : '🟡 Not Running';
+    // return {memory = status.orchestrator.running ? '� Running' : '� Not Running';
     // console.warn(; // LINT: unreachable code removed
     `${overallStatus} (orchestrator ${status.orchestrator.running ? 'active' )`);
 
   // Core components
-  console.warn(`🤖Agents = === 0) {
+  console.warn(`🤖Agents = === 0) {`
     console.warn('   Run "claude-zen agent spawn researcher" to create an agent');
   //   }
   if(status.memory.entries === 0) {
@@ -70,7 +70,7 @@ function formatBytes() {
   //   }
 
 
-  return `${size.toFixed(2)} ${units[unitIndex]}`;
+  // return `${size.toFixed(2)} ${units[unitIndex]}`;
 // }
 
 
@@ -112,6 +112,8 @@ if(import.meta.main) {
       //       }
     //     }
   //   }
-// await statusCommand(args, flags);
+// // await statusCommand(args, flags);
 // }
 
+
+}}))

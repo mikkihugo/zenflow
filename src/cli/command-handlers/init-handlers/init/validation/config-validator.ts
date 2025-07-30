@@ -3,8 +3,8 @@
 export class ConfigValidator {
   constructor(workingDir = workingDir;
 // }
-/**
- * Validate .roomodes configuration file;
+/**  */
+ * Validate .roomodes configuration file
  */
 async;
 validateRoomodes();
@@ -17,7 +17,7 @@ validateRoomodes();
       if(!stat.isFile) {
         result.success = false;
         result.errors.push('.roomodes exists but is not a file');
-        return result;
+        // return result;
     //   // LINT: unreachable code removed}
 
       // Read and parse JSON
@@ -36,8 +36,8 @@ validateRoomodes();
         result.warnings.push(...validationResult.warnings);
       } catch (/* _jsonError */) {
         result.success = false;
-        result.errors.push(`Invalid JSON in .roomodes = false;
-        result.errors.push(`Could not read .roomodes = {success = `${this.workingDir}/CLAUDE.md`;
+        result.errors.push(`Invalid JSON in .roomodes = false;`
+        result.errors.push(`Could not read .roomodes = {success = `${this.workingDir}/CLAUDE.md`;`
 
     try {
 // const _content = awaitnode.readTextFile(claudeMdPath);
@@ -51,16 +51,16 @@ validateRoomodes();
 
       for(const section of requiredSections) {
         if (!content.includes(section)) {
-          result.warnings.push(`Missing recommendedsection = ['npx claude-zen sparc', 'npm run build', 'npm run test'];
+          result.warnings.push(`Missing recommendedsection = ['npx claude-zen sparc', 'npm run build', 'npm run test'];`
 
       for(const command of importantCommands) {
         if (!content.includes(command)) {
-          result.warnings.push(`Missing important commandreference = false;
+          result.warnings.push(`Missing important commandreference = false;`
         result.errors.push('CLAUDE.md appears to be too short or empty');
       //       }
     } catch(error) ;
       result.success = false;
-      result.errors.push(`Could not read CLAUDE.md = {success = `${this.workingDir}/memory/claude-zen-data.json`;
+      result.errors.push(`Could not read CLAUDE.md = {success = `${this.workingDir}/memory/claude-zen-data.json`;`
 
     try {
 // const _content = awaitnode.readTextFile(memoryDataPath);
@@ -78,8 +78,8 @@ validateRoomodes();
         result.warnings.push(...validationResult.warnings);
       } catch (/* jsonError */) {
         result.success = false;
-        result.errors.push(`Invalid JSON in memorydata = false;
-      result.errors.push(`Could not read memory data = {success = `${this.workingDir}/coordination.md`;
+        result.errors.push(`Invalid JSON in memorydata = false;`
+      result.errors.push(`Could not read memory data = {success = `${this.workingDir}/coordination.md`;`
 
     try {
 // const _content = awaitnode.readTextFile(coordinationPath);
@@ -93,8 +93,8 @@ validateRoomodes();
 
       for(const section of requiredSections) {
         if (!content.includes(section)) {
-          result.warnings.push(`Missing recommended section in coordination.md = false;
-      result.errors.push(`Could not read coordination.md = {success = `${this.workingDir}/claude-zen`;
+          result.warnings.push(`Missing recommended section in coordination.md = false;`
+      result.errors.push(`Could not read coordination.md = {success = `${this.workingDir}/claude-zen`;`
 
     try {
 // const _stat = awaitnode.stat(executablePath);
@@ -102,7 +102,7 @@ validateRoomodes();
       if(!stat.isFile) {
         result.success = false;
         result.errors.push('claude-zen executable is not a file');
-        return result;
+        // return result;
     //   // LINT: unreachable code removed}
 
       // Check if executable (on Unix systems)
@@ -128,16 +128,16 @@ validateRoomodes();
       //       }
     } catch (error) {
       result.success = false;
-      result.errors.push(`Could not validate executable = {valid = = 'object'  ?? config === null) {
+      result.errors.push(`Could not validate executable = {valid = = 'object'  ?? config === null) {`
       result.valid = false;
       result.errors.push('.roomodes must be a JSON object');
-      return result;
+      // return result;
     // ; // LINT: unreachable code removed
     // Check for required fields
     const _requiredFields = ['modes', 'version'];
     for(const field of requiredFields) {
       if (!(field in config)) {
-        result.warnings.push(`Missing recommended field in .roomodes = = 'object'  ?? config.modes === null) {
+        result.warnings.push(`Missing recommended field in .roomodes = = 'object'  ?? config.modes === null) {`
         result.valid = false;
         result.errors.push('.roomodes modes must be an object');
       } else {
@@ -152,43 +152,45 @@ validateRoomodes();
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 
   validateModeConfig(modeName, modeConfig) {
     const _result = {valid = = 'object'  ?? modeConfig === null) {
       result.valid = false;
       result.errors.push('mode configuration must be an object');
-      return result;
+      // return result;
     //   // LINT: unreachable code removed}
 
     // Check for recommended fields
     const _recommendedFields = ['description', 'persona', 'tools'];
     for(const field of recommendedFields) {
       if (!(field in modeConfig)) {
-        result.errors.push(`missing recommendedfield = = 'string') {
+        result.errors.push(`missing recommendedfield = = 'string') {`
       result.errors.push('description must be a string');
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 
   validateMemoryDataStructure(data) {
     const _result = {valid = = 'object'  ?? data === null) {
       result.valid = false;
       result.errors.push('Memory data must be a JSON object');
-      return result;
+      // return result;
     //   // LINT: unreachable code removed}
 
     // Check for required fields
     const _requiredFields = ['agents', 'tasks', 'lastUpdated'];
     for(const field of requiredFields) {
       if (!(field in data)) {
-        result.warnings.push(`Missing field in memorydata = = 'number') ;
+        result.warnings.push(`Missing field in memorydata = = 'number') ;`
       result.warnings.push('lastUpdated should be a timestamp number');
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}}}}}))))))))

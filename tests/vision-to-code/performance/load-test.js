@@ -78,10 +78,10 @@ function checkResponse() {
     //   // LINT: unreachable code removed}
     });
   errorRate.add(!success);
-  return success;
+  // return success;
 // }
 // Main test scenario
-export default function () {
+// export default function () {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`,
   ('Content-Type');
@@ -136,7 +136,7 @@ checkResponse(generateRes);
 sleep(Math.random() * 2 + 1); // 1-3 seconds
 // }
 // Handle summary export
-export function handleSummary() {
+// export function handleSummary() {
   return {
     'summary.html': htmlReport(data),
     // 'summary.json': JSON.stringify(data), // LINT: unreachable code removed
@@ -172,13 +172,13 @@ function textSummary() {
   Object.entries(data.metrics).forEach(([name, metric]) => {
     if (metric.thresholds) {
       const _passed = Object.values(metric.thresholds).every((t) => t.ok);
-      summary += `${name}: \${passed ? '✓ PASSED' }\n`;
+      summary += `${name}: \${passed ? ' PASSED' }\n`;
 // }
   });
   return summary;
 // }
 // Additional test scenarios for specific endpoints
-export function testConcurrentUploads() {
+// export function testConcurrentUploads() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`,
     'Content-Type': 'application/json'
@@ -197,7 +197,7 @@ for (let i = 0; i < 10; i++) {
 const _responses = http.batch(batch);
 responses.forEach((res) => checkResponse(res));
 // }
-export function testRateLimiting() {
+// export function testRateLimiting() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`
 // }
@@ -214,7 +214,7 @@ check(rateLimited, {
     'rate limiting is enforced') => r === true
 })
 // }
-export function testCachePerformance() {
+// export function testCachePerformance() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`
 // }

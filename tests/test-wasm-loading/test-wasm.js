@@ -14,7 +14,7 @@ async function checkWasmFiles() {
   for (const path of globalPaths) {
     try {
 // const _files = awaitfs.readdir(path);
-      console.warn(`✅ Found global installation at);
+      console.warn(`✅ Found global installation at);`
       console.warn(`   Files: ${files.join(', ')}`);
       // Check for specific WASM files
       const _wasmFiles = files.filter((f) => f.endsWith('.wasm'));
@@ -25,7 +25,7 @@ async function checkWasmFiles() {
       //       }
       console.warn('');
     } catch (error) {
-      console.warn(`❌ ${path});
+      console.warn(`❌ ${path});`
     //     }
   //   }
   // Check local installation
@@ -33,7 +33,7 @@ async function checkWasmFiles() {
   const _localPath = join(__dirname, 'node_modules/ruv-swarm/wasm');
   try {
 // const _files = awaitfs.readdir(localPath);
-    console.warn(`✅ Found local installation at);
+    console.warn(`✅ Found local installation at);`
     console.warn(`   Files: ${files.join(', ')}`);
   } catch (/* _error */) {
     console.warn(`❌ No local installation found`);
@@ -41,20 +41,20 @@ async function checkWasmFiles() {
   // Try to load the WASM module directly
   console.warn('\nTrying to load WASM module...');
   try {
-    const { WasmModuleLoader } = await import(
+    const { WasmModuleLoader } = // await import(
       '/home/codespace/nvm/current/lib/node_modules/ruv-swarm/src/wasm-loader.js';
     );
     const _loader = new WasmModuleLoader();
     console.warn('✅ WasmModuleLoader imported successfully');
-    console.warn(`   Base directory);
+    console.warn(`   Base directory);`
     // Try to initialize
-  // await loader.initialize('progressive');
+  // // await loader.initialize('progressive');
     console.warn('✅ Loader initialized successfully');
     const _status = loader.getModuleStatus();
     console.warn('\nModule Status:', JSON.stringify(status, null, 2));
   } catch (error) {
-    console.warn(`❌ Failed to load WASM module);
-    console.warn(`   Stack);
+    console.warn(`❌ Failed to load WASM module);`
+    console.warn(`   Stack);`
   //   }
 // }
 checkWasmFiles().catch(console.error);

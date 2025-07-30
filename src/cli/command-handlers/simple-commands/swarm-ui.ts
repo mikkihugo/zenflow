@@ -51,10 +51,10 @@ class SwarmUI {
     selectedObjective = this.swarmData.objectives[index]
     this
 
-    updateTasksList()
+    updateTasksList() {}
     this
 
-    log(`Selected objective =>
+    log(`Selected objective =>`
     //     {
       const _task = this.swarmData.tasks[index];
       if (task) {
@@ -64,24 +64,24 @@ class SwarmUI {
     //     )
     // Create objective button
     this.createButton.on('press', () =>
-    this.promptCreateObjective()
+    this.promptCreateObjective() {}
     //     )
     // Stop swarm button
     this.stopButton.on('press', () =>
-    this.stopSwarm()
+    this.stopSwarm() {}
     //     )
     // Command input
     this.commandBox.on('submit', (_value) =>
     this.executeCommand(value)
-    this.commandBox.clearValue()
-    this.screen.render()
+    this.commandBox.clearValue() {}
+    this.screen.render() {}
     //     )
     // Focus management
     this.screen.key(['tab'], () =>
-    this.screen.focusNext()
+    this.screen.focusNext() {}
     //     )
     this.screen.key(['S-tab'], () =>
-      this.screen.focusPrevious()
+      this.screen.focusPrevious() {}
     //     )
   //   }
   async startMonitoring();
@@ -131,13 +131,13 @@ updateSwarmData();
                   this.swarmData.agents.push({id = 'idle';
       //       }
     } catch(error) ;
-      this.log(`Error updating swarmdata = this.swarmData.objectives.filter((o) => o.status === 'running').length;
+      this.log(`Error updating swarmdata = this.swarmData.objectives.filter((o) => o.status === 'running').length;`
     this.statusBox.setContent(;
-    `Status = this.swarmData.objectives.map(;
-      (_obj) => `;
-    \$obj.status === 'running' ? '🟢' : '🔴';
+    `Status = this.swarmData.objectives.map(;`
+      (_obj) => `;`
+    \$obj.status === 'running' ? '�' : '�';
     \$obj.description.substring(0, 25);
-..`)
+..`)`
     this.objectivesList.setItems(objectiveItems.length > 0 ?objectiveItems = this.swarmData.agents.map(;
     (agent) => `\${agent.status === 'active' ? '🤖' } ${agent.id.substring(0, 15)}...`)
     this.agentsList.setItems(agentItems.length > 0 ?agentItems = this.swarmData.tasks.filter(;
@@ -147,10 +147,10 @@ updateSwarmData();
     //     )
     this.screen.render();
   //   }
-  async createObjective(description): unknown;
+  async createObjective(description);
   try;
       this.
-  log(`Creatingobjective = ['swarm', description, '--ui', '--monitor'];
+  log(`Creatingobjective = ['swarm', description, '--ui', '--monitor'];`
   const;
   _process = spawn('claude-zen', args, {detached = `swarm-${Date.now()}`;
   this;
@@ -163,11 +163,11 @@ set(
   //   )
   this;
 
-  log(`Launched swarm with PID => {
+  log(`Launched swarm with PID => {`
         this.updateSwarmData();
 , 2000)
 catch(error)
-this.log(`Error creatingobjective = 0;
+this.log(`Error creatingobjective = 0;`
 
       // First, try to stop tracked processes
       for(const [processId, process] of this.activeProcesses) {
@@ -176,10 +176,10 @@ this.log(`Error creatingobjective = 0;
           if(process.pid && !process.killed) {
             process.kill('SIGTERM');
             stoppedCount++;
-            this.log(`Stopped process ${processId} (PID = 'stopped';
+            this.log(`Stopped process ${processId} (PID = 'stopped';`
 this.updateDisplay();
 catch(error)
-this.log(`Error stoppingswarm = === 'win32') ;
+this.log(`Error stoppingswarm = === 'win32') ;`
       // Windows => {
           if(!error && stdout) {
             const _pids = stdout;
@@ -193,7 +193,7 @@ filter((line) => /^\d+$/.test(line));
               if(validatedPID) {
                 exec(`taskkill /F /PID ${validatedPID}`, (killError) => {
                   if(!killError) {
-                    this.log(`Stopped orphaned process PID => {
+                    this.log(`Stopped orphaned process PID => {`
         if(!error && stdout) {
           const _lines = stdout.split('\n').filter((line) => line.trim());
           lines.forEach((line) => {
@@ -203,9 +203,9 @@ filter((line) => /^\d+$/.test(line));
             if(validatedPID) {
               try {
                 process.kill(validatedPID, 'SIGTERM');
-                this.log(`Stopped orphaned process _PID => {
+                this.log(`Stopped orphaned process _PID => {`
         if(error) {
-          this.log(`Commanderror = 'info') {
+          this.log(`Commanderror = 'info') {`
     const _timestamp = new Date().toLocaleTimeString();
     const _levelColors = {info = `{${levelColors[level]  ?? 'white'}-fg}[${timestamp}] ${message}{/}`;
 
@@ -247,13 +247,15 @@ async function main() {
   const _ui = new SwarmUI();
 
   try {
-// await ui.init();
+// // await ui.init();
   } catch (error) {
-    console.error('Failed to initialize Swarm UI => {
-  console.error('Uncaught exception => {
-  console.error('Unhandledrejection = === `file) {
+    console.error('Failed to initialize Swarm UI => {'
+  console.error('Uncaught exception => {'
+  console.error('Unhandledrejection = === `file) {'`
   main();
 // }
 
 
-export default SwarmUI;
+// export default SwarmUI;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))))))))

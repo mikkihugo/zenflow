@@ -10,21 +10,21 @@ import { fileURLToPath } from 'node:url';
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 // Define a basic interface for the better-sqlite3 Database object
-export interface Database {
-  prepare(sql = > Database) | null = null
-const _sqliteAvailable = null
-const _loadError = null
-/**
- * Try to load better-sqlite3 with comprehensive error handling
- */
-async function _tryLoadSQLite(): Promise<boolean> {
-  try {
-    // Try ES module import first
-// const _module = awaitimport('better-sqlite3')
-Database = module.default  ?? module
-sqliteAvailable = true
-return true;
-// }
+export // interface Database {
+//   prepare(sql = > Database) | null = null
+// const _sqliteAvailable = null
+// const _loadError = null
+// /**
+//  * Try to load better-sqlite3 with comprehensive error handling
+//  */
+// async function _tryLoadSQLite(): Promise<boolean> {
+//   try {
+//     // Try ES module import first
+// // const _module = awaitimport('better-sqlite3')
+// Database = module.default  ?? module
+// sqliteAvailable = true
+// return true;
+// // }
 catch (error)
 // {
   // Fallback to CommonJS require
@@ -32,7 +32,7 @@ catch (error)
     const _require = createRequire(import.meta.url);
     Database = require('better-sqlite3');
     sqliteAvailable = true;
-    return true;
+    // return true;
     //   // LINT: unreachable code removed} catch (error) {
     loadError = requireErr;
 
@@ -40,7 +40,7 @@ catch (error)
     if (;
       requireErr.message.includes('was compiled against a different Node.js version')  ?? requireErr.message.includes('Could not locate the bindings file')  ?? requireErr.message.includes('The specified module could not be found')  ?? requireErr.code === 'MODULE_NOT_FOUND';
     //     )
-      console.warn(`;
+      console.warn(`;`
 ╔══════════════════════════════════════════════════════════════════════════════╗;
 ║                     Windows SQLite Installation Issue                         ║;
 ╠══════════════════════════════════════════════════════════════════════════════╣;
@@ -56,9 +56,9 @@ catch (error)
 ║  Install WSL and run Claude Flow inside a Linux environment                 ║;
 ║                                                                              ║;
 ╚══════════════════════════════════════════════════════════════════════════════╝;
-`);
+`);`
 
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 // }
 // }
@@ -67,11 +67,11 @@ catch (error)
 /**
  * Check if SQLite is available
  */;
-export async function isSQLiteAvailable(): Promise<boolean> {
+// export async function isSQLiteAvailable(): Promise<boolean> {
   if (sqliteAvailable !== null) {
     return sqliteAvailable;
     //   // LINT: unreachable code removed}
-// await tryLoadSQLite();
+// // await tryLoadSQLite();
   return sqliteAvailable;
 // }
 
@@ -79,20 +79,20 @@ export async function isSQLiteAvailable(): Promise<boolean> {
 /**
  * Get SQLite Database constructor or null
  */;
-export async function getSQLiteDatabase(): Promise<(new (dbPath = > Database) | null> {
+// export async function getSQLiteDatabase(): Promise<(new (dbPath = > Database) | null> {
   if (!sqliteAvailable && loadError === null) {
 // await tryLoadSQLite();
   //   }
 
 
-  return Database;
+  // return Database;
 // }
 
 
 /**
  * Get the load error if any
  */;
-export function getLoadError(): Error | null {
+// export function getLoadError(): Error | null {
   return loadError;
 // }
 
@@ -100,7 +100,7 @@ export function getLoadError(): Error | null {
 /**
  * Create a SQLite database instance with fallback
  */;
-export async function createDatabase(dbPath = await getSQLiteDatabase();
+// export async function createDatabase(dbPath = // await getSQLiteDatabase();
 
 if (!DB) {
   throw new Error('SQLite is not available. Use fallback storage instead.');
@@ -108,7 +108,7 @@ if (!DB) {
 
 
 try {
-    return new DB(dbPath);
+    // return new DB(dbPath);
     //   // LINT: unreachable code removed} catch (_err;
 = === 'win32';
 // }
@@ -117,17 +117,19 @@ try {
 /**
  * Get platform-specific storage recommendations
  */;
-export function getStorageRecommendations(): {
+// export function getStorageRecommendations(): {
   recommended => {
   // Silently handle initial load failure
 };
 // )
 
 
-export default {
+// export default {
   isSQLiteAvailable,
   getSQLiteDatabase,
   getLoadError,
   createDatabase,
   isWindows,
   getStorageRecommendations };
+
+}))

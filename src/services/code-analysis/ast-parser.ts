@@ -22,16 +22,16 @@ try {
   _parseJavaScript = null;
 // }
 try {
-  acorn = await import('acorn');
+  acorn = // await import('acorn');
 } catch (/* _e */) {
   console.warn('Acorn parser not available, using fallback');
   acorn = null;
 // }
-export class ASTParser {
+// export class ASTParser {
   constructor(_config = {}) {
     this.config = {parseOptions = null) {
     if(!content) {
-      content = await readFile(filePath, 'utf8');
+      content = // await readFile(filePath, 'utf8');
     //     }
 
 
@@ -53,7 +53,7 @@ export class ASTParser {
           break;default = parseTypeScript(content, {
 ..this.config.typeScriptOptions,
       filePath,project = parseJavaScript(content, {sourceType = acorn.parse(content, {
-..this.config.parseOptions,locations = `file = {
+..this.config.parseOptions,locations = `file = {`
       functions => {
       switch(node.type) {
         case 'FunctionDeclaration':;
@@ -92,7 +92,7 @@ export class ASTParser {
       //       }
     });
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 
   /**
@@ -105,7 +105,7 @@ export class ASTParser {
     const _end = node.loc?.end?.line  ?? 0;
     const _params = node.params  ?? [];
 
-    return {id = node.id?.name  ?? '<anonymous>';
+    // return {id = node.id?.name  ?? '<anonymous>';
     // const _start = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
     const _end = node.loc?.end?.line  ?? 0;
 
@@ -124,7 +124,7 @@ export class ASTParser {
     const _name = node.id?.name  ?? '<unnamed>';
     const _line = node.loc?.start?.line  ?? 0;
 
-    return {id = node.source?.value  ?? '<unknown>';
+    // return {id = node.source?.value  ?? '<unknown>';
     // const _line = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
     const _importedNames = [];
 
@@ -141,7 +141,7 @@ export class ASTParser {
     //     }
 
 
-    return {id = node.loc?.start?.line  ?? 0;
+    // return {id = node.loc?.start?.line  ?? 0;
     // const _exportNames = []; // LINT: unreachable code removed
     let _exportType = 'named';
 
@@ -158,7 +158,7 @@ export class ASTParser {
     //     }
 
 
-    return {id = node.id?.name  ?? '<unnamed>';
+    // return {id = node.id?.name  ?? '<unnamed>';
     // const _line = node.loc?.start?.line  ?? 0; // LINT: unreachable code removed
     let _kind = 'unknown';
 
@@ -175,7 +175,7 @@ export class ASTParser {
     //     }
 
 
-    return {id = null) {
+    // return {id = null) {
     if (!node  ?? typeof node !== 'object') return;
     // ; // LINT: unreachable code removed
     callback(node, parent);
@@ -228,7 +228,7 @@ export class ASTParser {
       //       }
     });
 
-    return complexity;
+    // return complexity;
     //   // LINT: unreachable code removed}
 
   /**
@@ -236,7 +236,7 @@ export class ASTParser {
    */;
   calculateCognitiveComplexity(node) {
     // This is a simplified version - real cognitive complexity is more nuanced
-    return Math.floor(this.calculateCyclomaticComplexity(node) * 1.2);
+    // return Math.floor(this.calculateCyclomaticComplexity(node) * 1.2);
     //   // LINT: unreachable code removed}
 
   /**
@@ -253,21 +253,21 @@ export class ASTParser {
       'cjs': 'javascript';
     };
 
-    return languageMap[ext]  ?? 'unknown';
+    // return languageMap[ext]  ?? 'unknown';
     //   // LINT: unreachable code removed}
 
   /**
    * Generate consistent file ID;
    */;
   generateFileId(filePath) {
-    return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
+    // return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
     //   // LINT: unreachable code removed}
 
   /**
    * Generate content hash;
    */;
   generateHash(content) {
-    return createHash('sha256').update(content).digest('hex');
+    // return createHash('sha256').update(content).digest('hex');
     //   // LINT: unreachable code removed}
 
   /**
@@ -287,7 +287,7 @@ export class ASTParser {
     //     }
 
 
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
   /**
@@ -295,9 +295,9 @@ export class ASTParser {
     // */; // LINT: unreachable code removed
   extractReturnType(node) {
     if(node.returnType?.typeAnnotation?.type) {
-      return this.typeAnnotationToString(node.returnType.typeAnnotation);
+      // return this.typeAnnotationToString(node.returnType.typeAnnotation);
     //   // LINT: unreachable code removed}
-    return 'unknown';
+    // return 'unknown';
     //   // LINT: unreachable code removed}
 
   /**
@@ -305,12 +305,12 @@ export class ASTParser {
    */;
   extractVariableType(node) {
     if(node.id?.typeAnnotation?.typeAnnotation?.type) {
-      return this.typeAnnotationToString(node.id.typeAnnotation.typeAnnotation);
+      // return this.typeAnnotationToString(node.id.typeAnnotation.typeAnnotation);
     //   // LINT: unreachable code removed}
     if(node.init) {
-      return this.inferTypeFromExpression(node.init);
+      // return this.inferTypeFromExpression(node.init);
     //   // LINT: unreachable code removed}
-    return 'unknown';
+    // return 'unknown';
     //   // LINT: unreachable code removed}
 
   /**
@@ -321,17 +321,17 @@ export class ASTParser {
     // ; // LINT: unreachable code removed
     switch(typeAnnotation.type) {
       case 'TSStringKeyword':;
-        return 'string';
+        // return 'string';
     // case 'TSNumberKeyword':; // LINT: unreachable code removed
-        return 'number';
+        // return 'number';
     // case 'TSBooleanKeyword':; // LINT: unreachable code removed
-        return 'boolean';
+        // return 'boolean';
     // case 'TSVoidKeyword':; // LINT: unreachable code removed
-        return 'void';
+        // return 'void';
     // case 'TSAnyKeyword':; // LINT: unreachable code removed
-        return 'any';
+        // return 'any';
     // case 'TSTypeReference':; // LINT: unreachable code removed
-        return typeAnnotation.typeName?.name  ?? 'object';default = [];
+        // return typeAnnotation.typeName?.name  ?? 'object';default = [];
 
     if(node.body?.body) {
       for(const member of node.body.body) {
@@ -342,7 +342,7 @@ export class ASTParser {
     //     }
 
 
-    return properties;
+    // return properties;
     //   // LINT: unreachable code removed}
 
   /**
@@ -360,7 +360,7 @@ export class ASTParser {
     //     }
 
 
-    return methods;
+    // return methods;
     //   // LINT: unreachable code removed}
 
   /**
@@ -372,7 +372,7 @@ export class ASTParser {
     // Basic regex-based analysis
     const _functionPattern = /(?:function\s+\w+|const\s+\w+\s*=\s*(?:\([^)]*\)\s*=>|\bfunction\b)|\w+\s*:\s*(?:\([^)]*\)\s*=>|function))/g;
     const _classPattern = /class\s+(\w+)/g;
-    const _importPattern = /import\s+.*?from\s+['"`]([^'"`]+)['"`]/g;
+    const _importPattern = /import\s+.*?from\s+['"`]([^'"`]+)['"`]/g;"'`
     const _exportPattern = /export\s+(?)?(?)\s+(\w+)/g;
 
     const _functions = [];
@@ -389,7 +389,7 @@ export class ASTParser {
       classes.push({id = importPattern.exec(content)) !== null) {
       imports.push({id = exportPattern.exec(content)) !== null) {
       exports.push({id = match.match(/(?:function\s+(\w+)|const\s+(\w+)|(\w+)\s*:)/);
-    return nameMatch ? (nameMatch[1]  ?? nameMatch[2]  ?? nameMatch[3]) : null;
+    return nameMatch ? (nameMatch[1]  ?? nameMatch[2]  ?? nameMatch[3]) ;
     //   // LINT: unreachable code removed}
 
   /**
@@ -403,4 +403,6 @@ export class ASTParser {
 // }
 
 
-export default ASTParser;
+// export default ASTParser;
+
+}}}}}}}}}}}}}}}}}}}}}}}

@@ -3,18 +3,18 @@
  * Prepares test environment and starts necessary services;
  */
 const _axios = require('axios');
-const { spawn } = require('node);
-const _fs = require('node).promises;
-const _path = require('node);
+const { spawn } = require('node);'
+const _fs = require('node).promises;'
+const _path = require('node);'
 const { SERVICE_URLS } = require('../fixtures/vision-workflow-fixtures');
 const _testProcesses = [];
 let testDbPath;
 module.exports = async () => {
-  console.warn('🚀 Setting up Visionary integration test environment...');
+  console.warn('� Setting up Visionary integration test environment...');
   try {
     // Create test workspace directory
     const _testWorkspaceDir = path.join(process.cwd(), 'test-workspace');
-  // await fs.mkdir(testWorkspaceDir, { recursive });
+  // // await fs.mkdir(testWorkspaceDir, { recursive });
     // Set environment variables for test mode
     process.env.NODE_ENV = 'test';
     process.env.VISIONARY_TEST_MODE = 'true';
@@ -23,17 +23,17 @@ module.exports = async () => {
     testDbPath = path.join(testWorkspaceDir, 'test-visionary.db');
     process.env.TEST_DATABASE_PATH = testDbPath;
     // Wait for services to be ready or start mock services
-  // await Promise.all([;
+  // // await Promise.all([;
       waitForServiceOrStartMock('business', SERVICE_URLS.BUSINESS),
       waitForServiceOrStartMock('core', SERVICE_URLS.CORE),
       waitForServiceOrStartMock('swarm', SERVICE_URLS.SWARM),
       waitForServiceOrStartMock('development', SERVICE_URLS.DEVELOPMENT) ]);
     // Initialize test data
-  // await initializeTestData();
+  // // await initializeTestData();
     console.warn('✅ Visionary test environment setup complete');
   } catch (error) {
-    console.error('❌ Failed to setup test environment);
-  // await cleanup();
+    console.error('❌ Failed to setup test environment);'
+  // // await cleanup();
     throw error;
 // }
 };
@@ -53,11 +53,11 @@ async function waitForServiceOrStartMock() {
         `⏳ Attempt ${attempt}/${maxAttempts} - ${serviceName} service not ready, will start mock...`;
       );
       if (attempt === maxAttempts) {
-        console.warn(`🔧 Starting mock ${serviceName} service...`);
-  // await startMockService(serviceName, serviceUrl);
+        console.warn(`� Starting mock ${serviceName} service...`);
+  // // await startMockService(serviceName, serviceUrl);
         return;
     //   // LINT: unreachable code removed}
-  // await new Promise((resolve) => setTimeout(resolve, retryDelay));
+  // // await new Promise((resolve) => setTimeout(resolve, retryDelay));
 // }
 // }
 // }
@@ -65,7 +65,7 @@ async function startMockService() {
   const _mockServerScript = path.join(__dirname, 'mock-services', `${serviceName}-mock.js`);
   try {
     // Check if mock service script exists
-  // await fs.access(mockServerScript);
+  // // await fs.access(mockServerScript);
     const _port = new URL(serviceUrl).port;
     const _mockProcess = spawn('node', [mockServerScript, port], {
       stdio);
@@ -74,7 +74,7 @@ async function startMockService() {
       process
 })
 // Wait for mock service to start
-  // await new Promise((resolve, reject) =>
+  // // await new Promise((resolve, reject) =>
 // {
   const _timeout = setTimeout(() => {
     reject(new Error(`Mock ${serviceName} service failed to start within 10 seconds`));
@@ -97,47 +97,47 @@ async function startMockService() {
 })
 } catch (/* _error */)
 // {
-  console.warn(`⚠️ Mock service script not found for ${serviceName}, using service stubs`);
+  console.warn(`⚠ Mock service script not found for ${serviceName}, using service stubs`);
   // Create service stubs that return appropriate mock responses
-  // await createServiceStub(serviceName, serviceUrl);
+  // // await createServiceStub(serviceName, serviceUrl);
   //   // LINT: unreachable code removed}
 // }
 async function createServiceStub() {
   // This would create a simple HTTP server that returns mock responses
-  // For now, we'll just set a flag that the service is mocked
+  // For now, we'll just set a flag that the service is mocked'
   process.env[`${serviceName.toUpperCase()}_SERVICE_MOCKED`] = 'true';
-    // console.warn(`📝 Created service stub for ${serviceName // LINT);
+    // console.warn(`� Created service stub for ${serviceName // LINT);`
 // }
 async function initializeTestData() {
-  console.warn('🗃️ Initializing test data...');
+  console.warn('� Initializing test data...');
   // Create test database schema if needed
   if (testDbPath) {
     // Initialize SQLite database for tests
     const _sqlite3 = require('sqlite3');
     const _db = new sqlite3.Database(testDbPath);
     // Create basic tables for testing
-  // await new Promise((resolve, reject) => {
+  // // await new Promise((resolve, reject) => {
       db.serialize(() => {
-        db.run(`CREATE TABLE IF NOT EXISTS test_visions (;
+        db.run(`CREATE TABLE IF NOT EXISTS test_visions (;`
           id TEXT PRIMARY KEY,
           title TEXT NOT NULL,
           description TEXT,
           status TEXT DEFAULT 'pending',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-        )`);
-        db.run(`CREATE TABLE IF NOT EXISTS test_workflows (;
+        )`);`
+        db.run(`CREATE TABLE IF NOT EXISTS test_workflows (;`
           id TEXT PRIMARY KEY,
           vision_id TEXT,
           status TEXT DEFAULT 'registered',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-        )`);
+        )`);`
         db.run(;
-          `CREATE TABLE IF NOT EXISTS test_sessions (;
+          `CREATE TABLE IF NOT EXISTS test_sessions (;`
           id TEXT PRIMARY KEY,
           workflow_id TEXT,
           status TEXT DEFAULT 'active',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-        )`,
+        )`,`
           (err) => {
             if (err) reject(err);
             else resolve();
@@ -173,7 +173,7 @@ async function cleanup() {
       testProcess.process.kill('SIGTERM');
       console.warn(`✅ Stopped ${testProcess.name}`);
     } catch (error) {
-      console.error(`❌ Failed to stop ${testProcess.name});
+      console.error(`❌ Failed to stop ${testProcess.name});`
 // }
 // }
   testProcesses = [];
@@ -188,3 +188,5 @@ process.on('SIGTERM', async () => {
   // await cleanup();
   process.exit(0);
 });
+
+}}

@@ -1,6 +1,6 @@
-/**
- * Monitor Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Monitor Command Module
+ * Converted from JavaScript to TypeScript
  */
 
 // monitor-command.js - Handles the monitor command
@@ -17,45 +17,45 @@ export async function monitorCommand() {
     case 'start': {
       const _interval = parseInt(flags.interval)  ?? 60000; // Default 1 minute
       healthMonitor.startMonitoring(interval);
-      printSuccess(`💓 Started continuous health monitoring (${interval}ms interval)`);
+      printSuccess(`� Started continuous health monitoring (${interval}ms interval)`);
       break;
     //     }
 
 
     case 'stop':;
       healthMonitor.stopMonitoring();
-      printSuccess('💓 Stopped health monitoring');
+      printSuccess('� Stopped health monitoring');
       break;
 
     case 'health':;
-// await showHealthReport();
+// // await showHealthReport();
       break;
 
     case 'circuit-breakers':;
-// await showCircuitBreakerStatus();
+// // await showCircuitBreakerStatus();
       break;
 
     case 'trend': {
       const _minutes = parseInt(flags.minutes)  ?? 60;
-// await showHealthTrend(minutes);
+// // await showHealthTrend(minutes);
       break;
-    }default = await healthMonitor.performHealthCheck();
+    }default = // await healthMonitor.performHealthCheck();
 
     // Overall status
-    const _statusIcon = health.status === 'healthy' ? '🟢' : ;
-                      health.status === 'degraded' ? '🟡' : '🔴';
-    console.warn(`${statusIcon} OverallStatus = check.status === 'healthy' ? '✅' : ;
-                   check.status === 'degraded' ? '⚠️' : '❌';
+    const _statusIcon = health.status === 'healthy' ? '�' : ;
+                      health.status === 'degraded' ? '�' : '�';
+    console.warn(`${statusIcon} OverallStatus = check.status === 'healthy' ? '✅' : ;`
+                   check.status === 'degraded' ? '⚠' : '❌';
       console.warn(`${icon} ${name.padEnd(20)}: ${check.status.toUpperCase()}`);
 
       if(check.reason) {
-        console.warn(`Reason = Object.entries(check.metrics);
+        console.warn(`Reason = Object.entries(check.metrics);`
 map(([key, value]) => `${key}: ${value}`);
 join(', ');
-        console.warn(`Metrics = await healthMonitor.generateHealthReport();
+        console.warn(`Metrics = // await healthMonitor.generateHealthReport();`
     console.warn(report);
   } catch (error) {
-    printError(`Failed to generate healthreport = circuitBreakerManager.getAllStatus();
+    printError(`Failed to generate healthreport = circuitBreakerManager.getAllStatus();`
 
     if (Object.keys(allStatus).length === 0) {
       console.warn('No circuit breakers registered');
@@ -82,19 +82,19 @@ join(', ');
     // Summary
 
     console.warn('');
-    console.warn(`📊Summary = healthMonitor.getHealthTrend(minutes);
+    console.warn(`�Summary = healthMonitor.getHealthTrend(minutes);`
 
     if(trend.status === 'no-data') {
-      console.warn('📊 No health trend data available');
+      console.warn('� No health trend data available');
       console.warn('   Run some health checks first or start monitoring');
       return;
     //   // LINT: unreachable code removed}
 
-    const _trendIcon = trend.status === 'excellent' ? '🟢' : ;
-                     trend.status === 'good' ? '🟡' : ;
-                     trend.status === 'concerning' ? '🟠' : '🔴';
+    const _trendIcon = trend.status === 'excellent' ? '�' : ;
+                     trend.status === 'good' ? '�' : ;
+                     trend.status === 'concerning' ? '�' : '�';
 
-    console.warn(`${trendIcon} TrendStatus = 60000]   Start continuous monitoring;
+    console.warn(`${trendIcon} TrendStatus = 60000]   Start continuous monitoring;`
   stop                       Stop continuous monitoring;
   circuit-breakers           Show circuit breaker status;
   trend [--minutes=60]       Show health trend analysisOPTIONS = <ms>           Monitoring interval in milliseconds (default);
@@ -104,11 +104,13 @@ join(', ');
   claude-zen monitor circuit-breakers         # Circuit breaker dashboard
 
 MONITORED COMPONENTS:;
-  🗄️  Database connectivity and table health;
-  ⚡ Circuit breaker status and failure rates;
-  💾 System resources (CPU, memory, disk);
+  �  Database connectivity and table health;
+   Circuit breaker status and failure rates;
+  � System resources (CPU, memory, disk);
   🧪 Queen Council operation health;
-  📊 Performance metrics and trends;
-`);
+  � Performance metrics and trends;
+`);`
 // }
 
+
+})))))

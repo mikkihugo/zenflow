@@ -25,7 +25,7 @@ export class ClaudeCodeWebServer {
     // Health check endpoint
     router.get('/health', (_req, res) => {
       res.json({ status => {
-      res.json({connections = await import('express');
+      res.json({connections = // await import('express');
       const _app = express.default();
 
       // Enable CORS
@@ -36,9 +36,9 @@ export class ClaudeCodeWebServer {
         next();
       });
 
-      // Serve static files
+      // Serve // static files
       app.use('/console', express.static(this.uiPath));
-      app.use('/api', await this.createAPIRoutes());
+      app.use('/api', // await this.createAPIRoutes());
 
       // Default route redirects to console
       app.get('/', (_req, res) => {
@@ -61,8 +61,8 @@ export class ClaudeCodeWebServer {
 // }
 // )
 this.isRunning = true
-printSuccess(`🌐 Claude Code Web UI started successfully`)
-console.warn(`📍 Web Interface =>
+printSuccess(`� Claude Code Web UI started successfully`)
+console.warn(`� Web Interface =>`
 // {
   if (ws.readyState === ws.OPEN) {
     ws.close(1000, 'Server shutting down');
@@ -75,7 +75,7 @@ if (this.wss) {
 // }
 // Close HTTP server
 if (this.server) {
-// await new Promise((resolve) => {
+// // await new Promise((resolve) => {
     this.server.close(resolve);
   });
 // }
@@ -105,7 +105,7 @@ handleRequest(req, res)
   if (url === '/'  ?? url === '/console'  ?? url === '/console/') {
     this.serveConsoleHTML(res);
   } else if (url.startsWith('/console/')) {
-    // Remove /console prefix and serve static files
+    // Remove /console prefix and serve // static files
     const _filePath = url.substring('/console/'.length);
     this.serveStaticFile(res, filePath);
   } else if (url === '/health') {
@@ -124,7 +124,7 @@ handleRequest(req, res)
  * Serve the console HTML with corrected paths;
  */;
 serveConsoleHTML(res);
-: unknown;
+
 // {
   const _filePath = join(this.uiPath, 'index.html');
 
@@ -152,7 +152,7 @@ serveConsoleHTML(res);
  * Serve a specific file from the UI directory;
  */;
 serveFile(res, filename, contentType);
-: unknown;
+
 // {
   const _filePath = join(this.uiPath, filename);
 
@@ -172,10 +172,10 @@ serveFile(res, filename, contentType);
 
 
 /**
- * Serve static files (CSS, JS, etc.);
+ * Serve // static files (CSS, JS, etc.);
  */;
 serveStaticFile(res, requestPath);
-: unknown;
+
   //Security = join(this.uiPath, requestPath);
 
   if (!existsSync(filePath)) {
@@ -200,7 +200,7 @@ serveStaticFile(res, requestPath);
  * Get content type based on file extension;
  */;
 getContentType(filePath);
-: unknown;
+
 // {
   const _ext = filePath.split('.').pop().toLowerCase();
 
@@ -213,7 +213,7 @@ getContentType(filePath);
  * Handle 403 Forbidden;
  */;
 handle403(res);
-: unknown;
+
   res.writeHead(403, { 'Content-Type');
   res.end('403 Forbidden');
 
@@ -221,7 +221,7 @@ handle403(res);
  * Handle 404 Not Found;
  */;
 handle404(res);
-: unknown;
+
   res.writeHead(404, { 'Content-Type');
   res.end('404 Not Found');
 
@@ -229,15 +229,15 @@ handle404(res);
  * Handle 500 Internal Server Error;
  */;
 handle500(res, error);
-: unknown;
-  console.error('Server error => {
+
+  console.error('Server error => {'
       this.handleWebSocketConnection(ws, req);
 // )
 
 
 this.wss.on('error', (_error) =>;
-  console.error('WebSocket servererror = req.socket.remoteAddress;
-    console.warn(`🔗 New WebSocket connection from ${clientIP}`);
+  console.error('WebSocket servererror = req.socket.remoteAddress;'
+    console.warn(`� New WebSocket connection from ${clientIP}`);
 
   this.connections.add(ws);
 
@@ -250,8 +250,8 @@ this.wss.on('error', (_error) =>;
 
 // Handle close
 ws.on('close', (_code, _reason) => {
-      console.warn(`❌ WebSocket connection _closed => {
-      console.error('WebSocket connection error => {
+      console.warn(`❌ WebSocket connection _closed => {`
+      console.error('WebSocket connection error => {'
       ws.isAlive = true;
     });
 // }
@@ -263,7 +263,7 @@ handleWebSocketMessage(ws, data)
 // {
     try {
       const _message = JSON.parse(data.toString());
-      console.warn('Received WebSocket message = {jsonrpc = message.params;
+      console.warn('Received WebSocket message = {jsonrpc = message.params;'
 
     // Mock tool execution for demonstration
 
@@ -273,10 +273,10 @@ handleWebSocketMessage(ws, data)
             nodeVersion = {}) {
     switch(_command) {
       case 'status':;
-        return `Claude FlowStatus = 'status', args = []): unknown ;
+        // return `Claude FlowStatus = 'status', args = []) ;`
     // switch(action) { // LINT: unreachable code removed
       case 'status':;
-        return `Swarm Orchestration Status = {}) {
+        // return `Swarm Orchestration Status = {}) {`
     const __modes = {coder = 'default', iterations = 10) {
     const _suites = {default = === ws.OPEN) {
       ws.send(JSON.stringify(message));
@@ -298,7 +298,7 @@ handleWebSocketMessage(ws, data)
   /**
    * Start heartbeat to check connection health;
    */;
-  startHeartbeat()
+  startHeartbeat() {}
     setInterval(() => {
       this.connections.forEach((ws) => {
         if(ws.isAlive === false) {
@@ -317,15 +317,15 @@ handleWebSocketMessage(ws, data)
   /**
    * Get server status;
    */;
-  getStatus()
-    return {running = 3000) {
+  getStatus() {}
+    // return {running = 3000) {
   const _server = new ClaudeCodeWebServer(port);
     // ; // LINT: unreachable code removed
   try {
-// await server.start();
+// // await server.start();
     // Setup graceful shutdown
     const _shutdown = async () => {
-      console.warn('\n⏹️  Shutting down web server...');
+      console.warn('\n⏹  Shutting down web server...');
 // await server.stop();
       process.exit(0);
     };
@@ -334,10 +334,12 @@ handleWebSocketMessage(ws, data)
     compat.terminal.onSignal('SIGTERM', shutdown);
 
     // Keep server running
-    return server;
+    // return server;
     //   // LINT: unreachable code removed} catch (error) {
     printError(`_Failed _to _start _webserver = === `file) {
-  const _port = process.argv[2] ? parseInt(process.argv[2]) : 3000;
-// await startWebServer(port);
+  const _port = process.argv[2] ? parseInt(process.argv[2]) ;
+// // await startWebServer(port);
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})

@@ -7,7 +7,7 @@
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 
-console.warn('🚀 Starting ruv-swarm MCP server with error handling...');
+console.warn('� Starting ruv-swarm MCP server with error handling...');
 const _ruvSwarmProcess = spawn('npx', ['ruv-swarm', 'mcp', 'start'], {
   stdio: ['pipe', 'pipe', 'pipe'],
 { ...process.env,
@@ -29,8 +29,8 @@ rlErr.on('line', (line) => {
   // Filter out the known logger error
   if (line.includes('logger.logMemoryUsage is not a function')) {
     if (!errorHandled) {
-      console.error('⚠️  Known ruv-swarm v1.0.8 logger issue detected - continuing normally');
-      console.error('💡 This error does not affect functionality');
+      console.error('⚠  Known ruv-swarm v1.0.8 logger issue detected - continuing normally');
+      console.error('� This error does not affect functionality');
       errorHandled = true;
     //     }
     return;
@@ -42,14 +42,14 @@ rlErr.on('line', (line) => {
 ruvSwarmProcess.on('exit', (code, _signal) => {
   if (code !== null && code !== 0) {
     console.error(`\n❌ ruv-swarm exited with code ${code}`);
-    console.error('💡 Try using);
+    console.error('� Try using);'
   //   }
   process.exit(code  ?? 0);
 });
 // Handle errors
 ruvSwarmProcess.on('error', (error) => {
-  console.error('❌ Failed to start ruv-swarm);
-  console.error('💡 Try using);
+  console.error('❌ Failed to start ruv-swarm);'
+  console.error('� Try using);'
   process.exit(1);
 });
 // Handle termination signals

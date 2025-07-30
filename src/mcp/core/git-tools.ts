@@ -1,134 +1,133 @@
-/**
- * Git Tools for MCP Server;
- * Provides comprehensive Git operations through MCP protocol;
+/**  */
+ * Git Tools for MCP Server
+ * Provides comprehensive Git operations through MCP protocol
  */
 
-import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
+import { exec } from 'node:child_process';'
+import { promisify } from 'node:util';'
 
 const __execAsync = promisify(exec);
 // =============================================================================
 // GIT TYPES
 // =============================================================================
 
-/**
- * Git command execution result;
+/**  */
+ * Git command execution result
  */
-export interface GitCommandResult {success = ============================================================================
-// GIT COMMAND EXECUTION
-// =============================================================================
-
-/**
- * Execute a git command safely;
- * @param command - Git command to execute;
- * @param cwd - Working directory;
- * @returns Git command result;
-    // */ // LINT: unreachable code removed
-export async function executeGitCommand(
-  command = process.cwd()
-): Promise<GitCommandResult> {
-  try {
-    const { stdout
-, stderr }
-  = await execAsync(`git \$
+// export // interface GitCommandResult {success = ============================================================================
+// // GIT COMMAND EXECUTION
+// // =============================================================================
+// 
+// /**//  * Execute a git command safely
+//  * @param command - Git command to execute
+//  * @param cwd - Working directory
+//  * @returns Git command result
+//     // */ // LINT: unreachable code removed
+// // export async function executeGitCommand(
+//   command = process.cwd() {}
+// ): Promise<GitCommandResult> {
+//   try {
+//     const { stdout
+// , stderr }
+  = // await execAsync(`git \$`
   command
-`,
+`,`
 // {
   cwd,maxBuffer = ============================================================================;
   // GIT TOOLS REGISTRY
   // =============================================================================
 
-  /**
-   * Git tools configuration;
+  /**  */
+ * Git tools configuration
    */
-  export const _gitTools = {git_status = 'status';
-  if (args.short) cmd += ' -s';
-  if (args.branch) cmd += ' -b';
-  return await executeGitCommand(cmd, args.path);
+  // export const _gitTools = {git_status = 'status';'
+  if (args.short) cmd += ' -s';'
+  if (args.branch) cmd += ' -b';'
+  // return // await executeGitCommand(cmd, args.path);
   //   // LINT: unreachable code removed}
 // }
-,git_add = 'add'
+,git_add = 'add''
 if (args.all) {
-  cmd += ' -A';
+  cmd += ' -A';'
 } else if (args.files?.length && args.files.length > 0) {
-  cmd += `;
+  cmd += `;`
 \$;
-args.files.join(' ');
-`;
+args.files.join(' ');'
+`;`
 } else {
-  cmd += ' .';
+  cmd += ' .';'
 // }
-if (args.patch) cmd += ' -p';
-return await executeGitCommand(cmd, args.path);
+if (args.patch) cmd += ' -p';'
+// return // await executeGitCommand(cmd, args.path);
 //   // LINT: unreachable code removed}
-},git_commit = 'commit'
-if (args.amend) cmd += ' --amend';
-if (args.noVerify) cmd += ' --no-verify';
-cmd += ` - m;
-'${args.message.replace(/' / g, '\\"';
+},git_commit = 'commit''
+if (args.amend) cmd += ' --amend';'
+if (args.noVerify) cmd += ' --no-verify';'
+cmd += ` - m;`
+'${args.message.replace(/' / g, '\\"';'"'
 // )
 // }
-"`;
-return await executeGitCommand(cmd, args.path);
+"`;`"
+// return // await executeGitCommand(cmd, args.path);
 // }
-  },git_push = `push $
+  },git_push = `push $`
 // {
-  args.remote ?? 'origin';
+  args.remote ?? 'origin';'
 // }
-`;
-      if (args.branch) cmd += `;
+`;`
+      if (args.branch) cmd += `;`
 $;
 // {
   args.branch;
 // }
-`;
-      if (args.force) cmd += ' --force';
-      if (args.setUpstream) cmd += ' -u';
-      return await executeGitCommand(cmd, args.path);
+`;`
+      if (args.force) cmd += ' --force';'
+      if (args.setUpstream) cmd += ' -u';'
+      // return // // await executeGitCommand(cmd, args.path);
     //   // LINT: unreachable code removed}
-  },git_pull = `;
+  },git_pull = `;`
 pull;
 $;
 // {
-  args.remote ?? 'origin';
+  args.remote ?? 'origin';'
 // }
-`;
-      if (args.branch) cmd += `;
+`;`
+      if (args.branch) cmd += `;`
 $;
 // {
   args.branch;
 // }
-`;
-      if (args.rebase) cmd += ' --rebase';
-      return await executeGitCommand(cmd, args.path);
+`;`
+      if (args.rebase) cmd += ' --rebase';'
+      // return // // await executeGitCommand(cmd, args.path);
     //   // LINT: unreachable code removed}
-  },git_branch = '';
+  },git_branch = '';'
       switch (args.action) {
-        case 'list':;
-          cmd = 'branch';
-          if (args.all) cmd += ' -a';
-          else if (args.remote) cmd += ' -r';
+        case 'list':;'
+          cmd = 'branch';'
+          if (args.all) cmd += ' -a';'
+          else if (args.remote) cmd += ' -r';'
           break;
-        case 'create':;
-          cmd = `;
+        case 'create':;'
+          cmd = `;`
 checkout - b;
 $;
 // {
   args.name;
 // }
-`;
+`;`
           break;
-        case 'delete':;
-          cmd = `;
+        case 'delete':;'
+          cmd = `;`
 branch - d;
 $;
 // {
   args.name;
 // }
-`;
+`;`
           break;
-        case 'rename':;
-          cmd = `;
+        case 'rename':;'
+          cmd = `;`
 branch - m;
 $;
 // {
@@ -138,146 +137,146 @@ $;
 // {
   args.newName;
 // }
-`;
+`;`
           break;
-        case 'checkout':;
-          cmd = `;
+        case 'checkout':;'
+          cmd = `;`
 checkout;
 $;
 // {
   args.name;
 // }
-`;
+`;`
           break;
-        default = 'branch';
+        default = 'branch';'
       //       }
-      return await executeGitCommand(cmd, args.path);
+      // return // // await executeGitCommand(cmd, args.path);
     //   // LINT: unreachable code removed}
-  },git_log = 'log';
-      if (args.limit) cmd += ` - n;
+  },git_log = 'log';'
+      if (args.limit) cmd += ` - n;`
 $;
 // {
   args.limit;
 // }
-`;
-      if (args.oneline) cmd += ' --oneline';
-      if (args.graph) cmd += ' --graph';
-      if (args.author) cmd += `--;
-author = "${args.author}"`;
-      if (args.since) cmd += `--;
-since = '${args.since}'`;
-      return await executeGitCommand(cmd, args.path);
+`;`
+      if (args.oneline) cmd += ' --oneline';'
+      if (args.graph) cmd += ' --graph';'
+      if (args.author) cmd += `--;`
+author = "${args.author}"`;`
+      if (args.since) cmd += `--;`
+since = '${args.since}'`;`
+      // return // // await executeGitCommand(cmd, args.path);
     //   // LINT: unreachable code removed}
-  },git_diff = 'diff';
-      if (args.staged) cmd += ' --staged';
-      if (args.nameOnly) cmd += ' --name-only';
-      if (args.files?.length && args.files.length > 0) cmd += `;
+  },git_diff = 'diff';'
+      if (args.staged) cmd += ' --staged';'
+      if (args.nameOnly) cmd += ' --name-only';'
+      if (args.files?.length && args.files.length > 0) cmd += `;`
 $;
 // {
-  args.files.join(' ');
+  args.files.join(' ');'
 // }
-`;
-      return await executeGitCommand(cmd, args.path);
+`;`
+      // return // // await executeGitCommand(cmd, args.path);
     //   // LINT: unreachable code removed}
-  },git_clone = `;
+  },git_clone = `;`
 clone;
 $;
 // {
   args.url;
 // }
-`;
-      if (args.path) cmd += `;
+`;`
+      if (args.path) cmd += `;`
 $;
 // {
   args.path;
 // }
-`;
-      if (args.branch) cmd += ` - b;
+`;`
+      if (args.branch) cmd += ` - b;`
 $;
 // {
   args.branch;
 // }
-`;
-      if (args.depth) cmd += `--;
+`;`
+      if (args.depth) cmd += `--;`
 depth;
 $;
 // {
   args.depth;
 // }
-`;
-      return await executeGitCommand(cmd);
+`;`
+      // return // // await executeGitCommand(cmd);
     //   // LINT: unreachable code removed}
-  },git_stash = 'stash';
+  },git_stash = 'stash';'
       switch (args.action) {
-        case 'save':;
-          cmd += ' save';
-          if (args.message) cmd += `;
-'${args.message}'`;
+        case 'save':;'
+          cmd += ' save';'
+          if (args.message) cmd += `;`
+'${args.message}'`;`
           break;
-        case 'list':;
-          cmd += ' list';
+        case 'list':;'
+          cmd += ' list';'
           break;
-        case 'apply':;
-          cmd += ' apply';
-          if (args.index !== undefined) cmd += `;
+        case 'apply':;'
+          cmd += ' apply';'
+          if (args.index !== undefined) cmd += `;`
 stash;
 @{${args.index}
-}`
+}``
 break;
-case 'pop': null
-cmd += ' pop'
-if (args.index !== undefined) cmd += ` stash@{${args.index}}`;
+case 'pop': null'
+cmd += ' pop''
+if (args.index !== undefined) cmd += ` stash@{${args.index}}`;`
 break;
-case 'drop': null
-cmd += ' drop'
-if (args.index !== undefined) cmd += ` stash@{${args.index}}`;
+case 'drop': null'
+cmd += ' drop''
+if (args.index !== undefined) cmd += ` stash@{${args.index}}`;`
 break;
-case 'clear': null
-cmd += ' clear'
+case 'clear': null'
+cmd += ' clear''
 break;
 // }
-return await executeGitCommand(cmd, args.path);
+// return // // await executeGitCommand(cmd, args.path);
 // }
-  },git_remote = 'remote'
+  },git_remote = 'remote''
 switch (args.action) {
-  case 'list': null
-    if (args.verbose) cmd += ' -v';
+  case 'list': null'
+    if (args.verbose) cmd += ' -v';'
     break;
-  case 'add': null
-    cmd += ` add ${args.name} ${args.url}`;
+  case 'add': null'
+    cmd += ` add ${args.name} ${args.url}`;`
     break;
-  case 'remove': null
-    cmd += ` remove ${args.name}`;
+  case 'remove': null'
+    cmd += ` remove ${args.name}`;`
     break;
-  case 'show': null
-    cmd += ` show ${args.name ?? 'origin'}`;
+  case 'show': null'
+    cmd += ` show ${args.name ?? 'origin'}`;`
     break;
-  case 'get-url': null
-    cmd += ` get-url ${args.name ?? 'origin'}`;
+  case 'get-url': null'
+    cmd += ` get-url ${args.name ?? 'origin'}`;`
     break;
 // }
-return await executeGitCommand(cmd, args.path);
+// return // // await executeGitCommand(cmd, args.path);
 // }
-  },git_tag = 'tag'
+  },git_tag = 'tag''
 switch (args.action) {
-  case 'list': null
+  case 'list': null'
     break;
-  case 'create': null
+  case 'create': null'
     if (args.message) {
-      cmd += ` -a ${args.name} -m "${args.message}"`;
+      cmd += ` -a ${args.name} -m "${args.message}"`;`
     } else {
-      cmd += `${args.name}`;
+      cmd += `${args.name}`;`
     //     }
-    if (args.commit) cmd += `${args.commit}`;
+    if (args.commit) cmd += `${args.commit}`;`
     break;
-  case 'delete': null
-    cmd += ` -d ${args.name}`;
+  case 'delete': null'
+    cmd += ` -d ${args.name}`;`
     break;
-  case 'show': null
-    cmd += ` show ${args.name}`;
+  case 'show': null'
+    cmd += ` show ${args.name}`;`
     break;
 // }
-return await executeGitCommand(cmd, args.path);
+// return // // await executeGitCommand(cmd, args.path);
 // }
   //   }
 // }
@@ -285,13 +284,14 @@ return await executeGitCommand(cmd, args.path);
 // REGISTRATION FUNCTIONS
 // =============================================================================
 
-/**
- * Tool registry interface for registration;
+/**  */
+ * Tool registry interface for registration
  */
-export interface ToolsRegistry {
-  registerTool(name => {
-    toolsRegistry.registerTool(key, tool);
-  //   }
+// export // interface ToolsRegistry {
+//   registerTool(name => {
+//     toolsRegistry.registerTool(key, tool);
+//   //   }
 // )
 // }
-export default gitTools;
+// export default gitTools;
+)

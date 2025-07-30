@@ -22,6 +22,6 @@ for (let j = i + 1; j < documents.length; j++) {
 // }
 // }
 // }
-return suggestions;
+// return suggestions;
 // }
 

@@ -18,7 +18,7 @@ const _documentExamples = [
     service: 'unified-storage',
     docType: 'service-adr',
     docId: 'use-postgres-for-storage',
-    content: `# ADR: Use PostgreSQL for Primary Storage
+    content: `# ADR: Use PostgreSQL for Primary Storage`
 ## Status;
 Accepted - 2025-01-17
 ## Context;
@@ -36,7 +36,7 @@ We will use PostgreSQL 15+  primary storage solution.
 - Vertical scaling h compared to distributed databases
 ## References;
 - PostgreSQL 15 Documentation;
-- Our performance benchmarks showing 10K TPS capability`,
+- Our performance benchmarks showing 10K TPS capability`,`
     metadata: {
       dependencies: ['database-infrastructure'],
       tags: ['database', 'architecture', 'postgresql'] } },
@@ -44,7 +44,7 @@ We will use PostgreSQL 15+  primary storage solution.
     service: 'user-service',
     docType: 'api-documentation',
     docId: 'users-api-v1',
-    content: `# User Service API Documentation
+    content: `# User Service API Documentation`
 ## Overview;
 RESTful API for user management operations including CRUD operations, authentication, and profile management.
 ## Authentication;
@@ -57,14 +57,14 @@ Retrieve a list of users with pagination support.
 - limit (integer): Items per page, default 20;
 - sort (string): Sort field, default 'created_at'
 **Response:**;
-\`\`\`json;
+\`\`\`json;`
 // {
   "users": [;
     //     {
       "id": "123e4567-e89b-12d3-a456-426614174000",
       "email": "user@example.com",
       "name": "John Doe",
-      "created_at": "2025-01-17T10: 00,00Z";
+      "created_at": "2025-01-17T10,00Z";
     //     }
   ],
   "pagination": {
@@ -77,7 +77,7 @@ Retrieve a list of users with pagination support.
 ### POST /api/v1/users;
 Create a new user account.
 **Request Body:**;
-\`\`\`json;
+\`\`\`json;`
 // {
   "email": "newuser@example.com",
   "password": "SecurePass123!",
@@ -85,12 +85,12 @@ Create a new user account.
 // }
 \`\`\`
 **Response:** 201 Created;
-\`\`\`json;
+\`\`\`json;`
 // {
   "id": "123e4567-e89b-12d3-a456-426614174001",
   "email": "newuser@example.com",
   "name": "Jane Smith",
-  "created_at": "2025-01-17T10: 30,00Z";
+  "created_at": "2025-01-17T10,00Z";
 // }
 \`\`\`
 ## Error Codes;
@@ -100,7 +100,7 @@ Create a new user account.
 | 401 | Unauthorized - Invalid or missing token |;
 | 404 | Not Found - User does not exist |;
 | 409 | Conflict - Email already exists |;
-| 500 | Internal Server Error |`,
+| 500 | Internal Server Error |`,`
     metadata: {
       tags: ['api', 'rest', 'users'],
       version: '1.0.0' } },
@@ -108,7 +108,7 @@ Create a new user account.
     service: 'payment-service',
     docType: 'security-spec',
     docId: 'pci-compliance',
-    content: `# Payment Service Security Specification
+    content: `# Payment Service Security Specification`
 ## PCI DSS Compliance Requirements
 ### Overview;
 This document outlines security requirements for PCI DSS Level 1 compliance for our payment processing service.
@@ -256,13 +256,13 @@ vulnerability;
 scans;
 by;
 approved;
-vendor`,
+vendor`,`
     metadata: {
       compliance: ['PCI-DSS', 'SOC2'],
       tags: ['security', 'compliance', 'payment'],
       priority: 'critical' } } ];
 async function simulateDocumentCreation() {
-  console.warn(`;
+  console.warn(`;`
 $;
 // {
   colors.bright;
@@ -271,85 +271,85 @@ $;
 // {
   colors.green;
 // }
-🚀 Document Stack Live Demo$
+� Document Stack Live Demo$
 // {
   colors.reset;
 // }
-\n`)
+\n`)`
 console.warn('This demo will create real documents using the MCP document stack.\n')
-// Instead of actual MCP calls, let's demonstrate the flow
+// Instead of actual MCP calls, let's demonstrate the flow'
 for (const doc of documentExamples) {
   console.warn(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-  console.warn(`${colors.bright}📄 Creating);
+  console.warn(`${colors.bright}� Creating);`
   console.warn(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`);
   // Show what would be sent to MCP
-  console.warn(`${colors.yellow}🔧 MCP Request);
-  console.warn(`Tool);
-  console.warn(`Action);
-  console.warn(`Service);
-  console.warn(`DocType);
-  console.warn(`DocId);
+  console.warn(`${colors.yellow}� MCP Request);`
+  console.warn(`Tool);`
+  console.warn(`Action);`
+  console.warn(`Service);`
+  console.warn(`DocType);`
+  console.warn(`DocId);`
   console.warn(`Metadata:`, JSON.stringify(doc.metadata, null, 2));
   // Simulate the document stack processing
-  console.warn(`\n${colors.green}✅ Document Stack Processing);
+  console.warn(`\n${colors.green}✅ Document Stack Processing);`
   // Show auto-generated metadata
   const _layer = getLayer(doc.docType);
   const _routing = getRouting(doc.docType);
-  console.warn(`\n${colors.magenta}📋 Auto-Generated Front Matter);
+  console.warn(`\n${colors.magenta}� Auto-Generated Front Matter);`
   console.warn(`---`);
-  console.warn(`type);
-  console.warn(`service);
-  console.warn(`layer);
+  console.warn(`type);`
+  console.warn(`service);`
+  console.warn(`layer);`
   console.warn(`created: ${new Date().toISOString()}`);
-  console.warn(`auto_routing);
+  console.warn(`auto_routing);`
   console.warn(`  approvers: ${JSON.stringify(routing.approvers)}`);
   console.warn(`  validation: ${JSON.stringify(routing.validation ?? [])}`);
   console.warn(`dependencies: ${JSON.stringify(doc.metadata.dependencies ?? [])}`);
   console.warn(`tags: ${JSON.stringify(doc.metadata.tags ?? [])}`);
   console.warn(`---`);
   // Show storage location
-  console.warn(`\n${colors.blue}💾 Storage);
-  console.warn(`Namespace);
-  console.warn(`Key);
+  console.warn(`\n${colors.blue}� Storage);`
+  console.warn(`Namespace);`
+  console.warn(`Key);`
   // Show load balancing
   const _swarm = getSwarmForLayer(layer);
-  console.warn(`\n${colors.yellow}⚖️ Load Balanced to);
+  console.warn(`\n${colors.yellow}⚖ Load Balanced to);`
   // Show applied rules
-  console.warn(`\n${colors.green}📐 Applied Rules);
+  console.warn(`\n${colors.green}� Applied Rules);`
   if (doc.docType === 'service-adr') {
-    console.warn(`✓ ADR Review Rule);
+    console.warn(` ADR Review Rule);`
   //   }
   if (doc.docType === 'security-spec') {
-    console.warn(`✓ Security Approval Rule);
+    console.warn(` Security Approval Rule);`
   //   }
   if (doc.docType === 'api-documentation') {
-    console.warn(`✓ API Approval Rule);
+    console.warn(` API Approval Rule);`
   //   }
-  console.warn(`✓ Auto-Tag Rule);
+  console.warn(` Auto-Tag Rule);`
   // Simulate success
   console.warn(;
   `\n${colors.bright}${colors.green}✨ Document created successfully!${colors.reset}`;
   //   )
   // Small delay for readability
-  // await new Promise((resolve) => setTimeout(resolve, 1000))
+  // // await new Promise((resolve) => setTimeout(resolve, 1000))
 // }
 // Summary
 console.warn(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-console.warn(`${colors.bright}${colors.green}📊 Demo Summary${colors.reset}`);
+console.warn(`${colors.bright}${colors.green}� Demo Summary${colors.reset}`);
 console.warn(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`);
-console.warn(`✅ Created ${documentExamples.length} documents);
+console.warn(`✅ Created ${documentExamples.length} documents);`
 documentExamples.forEach((doc) => {
   console.warn(`   • ${doc.service}/${doc.docType}/${doc.docId}`);
 });
-console.warn(`\n${colors.yellow}🎯 Key Features Demonstrated);
-console.warn(`   ✓ Automatic metadata generation`);
-console.warn(`   ✓ Layer-based organization`);
-console.warn(`   ✓ Auto-routing for approvals`);
-console.warn(`   ✓ Load balancing by layer`);
-console.warn(`   ✓ Rule engine for validation`);
-console.warn(`   ✓ Namespace isolation per service`);
+console.warn(`\n${colors.yellow} Key Features Demonstrated);`
+console.warn(`    Automatic metadata generation`);
+console.warn(`    Layer-based organization`);
+console.warn(`    Auto-routing for approvals`);
+console.warn(`    Load balancing by layer`);
+console.warn(`    Rule engine for validation`);
+console.warn(`    Namespace isolation per service`);
 console.warn(;
-`\n${colors.bright}${colors.green}🚀 Document Stack Ready for Production!${colors.reset}\n`;
+`\n${colors.bright}${colors.green}� Document Stack Ready for Production!${colors.reset}\n`;
 // )
 // }
 // Helper functions matching document-stack.js
@@ -367,7 +367,7 @@ function getLayer() {
     roadmap: 'business',
     'requirements-spec': 'business'
 // }
-return layers[docType]  ?? 'application';
+// return layers[docType]  ?? 'application';
 // }
 function getRouting() {
   const _routing = {
@@ -395,7 +395,7 @@ function getRouting() {
 
 // 
 }
-return routing[docType]  ?? { approvers: ['team-lead'], validation: [] };
+// return routing[docType]  ?? { approvers: ['team-lead'], validation: [] };
 // }
 function getSwarmForLayer() {
   const _swarms = {
@@ -405,7 +405,7 @@ function getSwarmForLayer() {
     business: ['business-swarm-1']
 // }
 const _available = swarms[layer] ?? swarms.application;
-return available[Math.floor(Math.random() * available.length)];
+// return available[Math.floor(Math.random() * available.length)];
 // }
 // Run the demo
 if (require.main === module) {

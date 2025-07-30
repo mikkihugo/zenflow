@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-/**
- * Fix hook variable interpolation in Claude Code settings.json files;
- * Addresses issue #249 - ${file} and ${command} variables not working;
+/**  */
+ * Fix hook variable interpolation in Claude Code settings.json files
+ * Addresses issue #249 - ${file} and ${command} variables not working
  */
 
 import { existsSync } from 'node:fs';
@@ -12,9 +12,9 @@ import { printError } from '../utils.js';
 // Known working variable syntaxes based on Claude Code version
 
 if (mappings?.[0]) {
-  return `$${mappings[0]}`;
+  // return `$${mappings[0]}`;
 // }
-return match; // Keep unchanged if no mapping
+// return match; // Keep unchanged if no mapping
 })
 // }
 if (fromSyntax === 'legacy' && toSyntax === 'jq') {
@@ -25,14 +25,14 @@ if (fromSyntax === 'legacy' && toSyntax === 'jq') {
   if (fileVarMatch) {
     // Replace ${file} with jq extraction
     const _baseCommand = command.replace(/\$\{file\}/g, '{}');
-    return `cat | jq -r '.tool_input.file_path // .tool_input.path // ""' | xargs -I {} ${baseCommand}`;
+    // return `cat | jq -r '.tool_input.file_path // .tool_input.path // ""' | xargs -I {} ${baseCommand}`;
     //   // LINT: unreachable code removed} else if (commandVarMatch) {
     // Replace ${command} with jq extraction
     const _baseCommand = command.replace(/\$\{command\}/g, '{}');
-    return `cat | jq -r '.tool_input.command // ""' | xargs -I {} ${baseCommand}`;
+    // return `cat | jq -r '.tool_input.command // ""' | xargs -I {} ${baseCommand}`;
     //   // LINT: unreachable code removed}
     // Fallback for other variables
-    return `cat | jq -r '.' | xargs -I {} ${command.replace(/\$\{(\w+)\}/g, '{}')}`;
+    // return `cat | jq -r '.' | xargs -I {} ${command.replace(/\$\{(\w+)\}/g, '{}')}`;
   //   }
   if (toSyntax === 'wrapper') {
     // Generate wrapper script path
@@ -41,19 +41,19 @@ if (fromSyntax === 'legacy' && toSyntax === 'jq') {
     : command.includes('pre-edit')
     ? 'pre-edit-hook.sh'
     : 'generic-hook.sh'
-    return `.claude/hooks/${scriptName}`;
+    // return `.claude/hooks/${scriptName}`;
   //   }
-  return command;
+  // return command;
 // }
-/**
- * Create wrapper scripts for hooks;
+/**  */
+ * Create wrapper scripts for hooks
  */
 async;
 function createWrapperScripts(commands = '.claude/hooks';
 // await fs.mkdir(hooksDir, {recursive = new Map();
 for(const command of commands) {
     if (command.includes('post-edit')) {
-      const __script = `#!/bin/bash;
+      const __script = `#!/bin/bash;`
 # Post-edit hook wrapper;
 # Handles variable interpolation for Claude Code hooks
 
@@ -65,7 +65,7 @@ FILE="$CLAUDE_EDITED_FILE";
 if [ -n "$FILE" ]; then;
   ${command.replace('${file}', '"$FILE"')}
 else;
-  echo "Warning = {}) {
+  echo "Warning = {}) {"
   const { backup = true, syntax = 'auto' } = options;
 
   try {
@@ -75,9 +75,9 @@ else;
 
     if(!settings.hooks) {
       printWarning('No hooks found in settings.json');
-      return {success = `\$settingsPath.backup-\$Date.now()`;
-    // await fs.writeFile(backupPath, content); // LINT: unreachable code removed
-      console.warn(chalk.gray(`  Createdbackup = syntax === 'auto' ? await detectWorkingSyntax() : syntax;
+      // return {success = `\$settingsPath.backup-\$Date.now()`;
+    // // await fs.writeFile(backupPath, content); // LINT: unreachable code removed
+      console.warn(chalk.gray(`  Createdbackup = syntax === 'auto' ? // await detectWorkingSyntax() ;`
     console.warn(chalk.blue(`  Using ${targetSyntax} syntax`));
 
     // Collect all commands that need transformation
@@ -85,7 +85,7 @@ else;
     const __changes = 0;
 
     // Transform hooks
-    const __transformHooks = (): unknown => {
+    const __transformHooks = () => {
       if (Array.isArray(hooks)) {
         return hooks.map((hook) => {
           if (hook.hooks && Array.isArray(hook.hooks)) {
@@ -103,8 +103,8 @@ else;
 
 
     // Save updated settings
-// await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2));
-    return {success = [
+// // await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2));
+    // return {success = [
     // '.claude/settings.json', // LINT: unreachable code removed
     'settings.json',
     '.vscode/.claude/settings.json',
@@ -118,36 +118,36 @@ else;
   //   }
 
 
-  return found;
+  // return found;
 // }
 
 
-/**
- * Main command handler;
- */;
-export async function _fixHookVariablesCommand(args = [], _flags = {}) {
-  console.warn(chalk.bold('\n🔧 Fixing Claude Code Hook Variables\n'));
+/**  */
+ * Main command handler
+ */
+// export async function _fixHookVariablesCommand(args = [], _flags = {}) {
+  console.warn(chalk.bold('\n� Fixing Claude Code Hook Variables\n'));
 
   const __options = {backup = args.length > 0 ? args : await findSettingsFiles();
 
   if(files.length === 0) {
     printError('No settings.json files found');
-    console.warn('\nSearchedlocations = 0;
+    console.warn('\nSearchedlocations = 0;'
   const __successCount = 0;
 
   for(const _file of files) {
-    console.warn(chalk.cyan(`Processing = await fixHookVariables(file, options);
+    console.warn(chalk.cyan(`Processing = // await fixHookVariables(file, options);`
 
     if(result.success) {
       successCount++;
       totalChanges += result.changes;
       console.warn(chalk.green(`  ✅ Fixed ${result.changes} hook commands`));
     } else {
-      console.warn(chalk.red(`  ❌ Error = {hooks = {
+      console.warn(chalk.red(`  ❌ Error = {hooks = {`
       description);
-// await fs.writeFile('.claude/test-settings.json', JSON.stringify(testSettings, null, 2));
-  console.warn('Created test configuration at);
-  console.warn('\nTo test);
+// // await fs.writeFile('.claude/test-settings.json', JSON.stringify(testSettings, null, 2));
+  console.warn('Created test configuration at);'
+  console.warn('\nTo test);'
   console.warn('  1. Copy .claude/test-settings.json to .claude/settings.json');
   console.warn('  2. Open Claude Code');
   console.warn('  3. Create or edit any file');
@@ -156,7 +156,7 @@ export async function _fixHookVariablesCommand(args = [], _flags = {}) {
 
 
 // Export command configuration
-export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in Claude Code hooks (${file} syntax)',
+// export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in Claude Code hooks (${file} syntax)',
   _usage: 'fix-hook-variables [settings-file...]',
   _options: [;
     { flag: '--no-backup', description: 'Skip creating backup files' },
@@ -167,7 +167,7 @@ export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in
     'claude-zen fix-hook-variables .claude/settings.json',
     'claude-zen fix-hook-variables --syntax wrapper',
     'claude-zen fix-hook-variables --test' ],
-  _details: `;
+  _details: `;`
 Fixes the \${file} and \${command} variable interpolation issue in Claude Code hooks.
 
 This command will:;
@@ -184,4 +184,6 @@ Available syntaxes:;
 Note: The 'jq' syntax is based on official Claude Code documentation and is likely;
 the most reliable approach for Claude Code 1.0.51+.
 
-For more information: https,//github.com/ruvnet/claude-zen/issues/249` };
+For more information,//github.com/ruvnet/claude-zen/issues/249` };`
+
+}}}}}}}}}}}}}}}))))))))

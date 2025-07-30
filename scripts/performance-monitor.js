@@ -26,7 +26,7 @@ class PerformanceMonitor {
 this.setupUI();
 this.startMonitoring();
 // }
-setupUI()
+setupUI() {}
 // {
   // Header
   this.header = blessed.box({
@@ -121,7 +121,7 @@ createMetricBox(options)
   fg: 'white',
   fg: 'cyan' })
 // }
-startMonitoring()
+startMonitoring() {}
 // {
   // Simulate real-time metrics
   setInterval(() => {
@@ -155,51 +155,51 @@ render();
   //   )
   // Update memory metrics
   this.memoryBox.setContent(
-  `bold/bold
+  `bold/bold`
 // }
 $;
 // {
   this.metrics.memory.reads;
 // }
-\n` +
+\n` +`
 `
 // {
   bold;
 // }
 // {
-  /bold} ${this.metrics.memory.writes}\n` +;
+  /bold} ${this.metrics.memory.writes}\n` +;`
 `{bold}Cache Hits:{/bold} ${this.metrics.memory.cacheHits}\n` +;
   `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`;
   //   )
   // Update neural metrics
-  this.neuralBox.setContent(`bold/bold
+  this.neuralBox.setContent(`bold/bold`
 // }
 $;
 // {
   this.metrics.neural.predictions;
 // }
-\n` +
+\n` +`
 `
 // {
   bold;
 // }
 // {
-  /bold} ${this.metrics.neural.trainings}\n` +;
-`{bold}Accuracy)
+  /bold} ${this.metrics.neural.trainings}\n` +;`
+`{bold}Accuracy)`
   // Update agent metrics
   this.agentBox.setContent(
-  `bold/bold
+  `bold/bold`
 // }
 $;
 // {
   this.metrics.agents.active;
 // }
-\n` +
+\n` +`
 `
 // {
   bold;
 // }
-{/bold} ${this.metrics.agents.pooled}\n` +;
+{/bold} ${this.metrics.agents.pooled}\n` +;`
 `{bold}Total Spawns:{/bold} ${this.metrics.agents.spawns}\n` +;
 `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`;
 // )
@@ -207,18 +207,18 @@ $;
 if (Math.random() > 0.7) {
   const _operations = [
 
-        '{green-fg}✓{/green-fg} Hook executed: pre-command (12ms)',
-        '{green-fg}✓{/green-fg} Memory write: command/pre/12345 (3ms)',
-        '{green-fg}✓{/green-fg} Neural prediction: task complexity (5ms)',
-        '{yellow-fg}⚡{/yellow-fg} Agent spawned from pool (45ms)',
+        '{green-fg}{/green-fg} Hook executed: pre-command (12ms)',
+        '{green-fg}{/green-fg} Memory write: command/pre/12345 (3ms)',
+        '{green-fg}{/green-fg} Neural prediction: task complexity (5ms)',
+        '{yellow-fg}{/yellow-fg} Agent spawned from pool (45ms)',
         '{blue-fg}↻{/blue-fg} Cache hit: prediction/task/analyze',
-        '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations',,, ];
+        '{green-fg}{/green-fg} Parallel batch processed: 10 operations',,];
   this.logBox.log(operations[Math.floor(Math.random() * operations.length)]);
 // }
 this.screen.render();
 monitorClaudeFlow();
 // In real implementation, this would connect to Claude Flow metrics
-this.logBox.log('{green-fg}✓{/green-fg} Connected to Claude Flow metrics');
+this.logBox.log('{green-fg}{/green-fg} Connected to Claude Flow metrics');
 this.logBox.log('{blue-fg}ℹ{/blue-fg} Monitoring performance in real-time...');
 resetMetrics();
 this.metrics = {
@@ -234,21 +234,21 @@ this.logBox.log('{yellow-fg}↻{/yellow-fg} Metrics reset')
 try {
   new PerformanceMonitor();
 } catch (/* _error */) {
-  console.warn('📊 Performance Monitoring Dashboard (Text Mode)\n');
+  console.warn('� Performance Monitoring Dashboard (Text Mode)\n');
   console.warn('Real-time metrics would be displayed here.');
-  console.warn('\nInstall blessed for interactive dashboard);
+  console.warn('\nInstall blessed for interactive dashboard);'
   console.warn('npm install blessed\n');
   // Fallback text-based monitoring
   setInterval(() => {
-    console.warn('📊 Claude Flow Performance Metrics\n');
-    console.warn('Hook Performance);
+    console.warn('� Claude Flow Performance Metrics\n');
+    console.warn('Hook Performance);'
     console.warn(`  Calls: ${Math.floor(Math.random() * 1000)}`);
     console.warn(`  Avg Time: ${Math.floor(Math.random() * 50) + 10}ms`);
-    console.warn('\nMemory Operations);
+    console.warn('\nMemory Operations);'
     console.warn(`  Cache Hit Rate: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.warn('\nNeural Processing);
+    console.warn('\nNeural Processing);'
     console.warn(`  Accuracy: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.warn('\nAgent Pool);
+    console.warn('\nAgent Pool);'
     console.warn(`  Active/Pooled: ${Math.floor(Math.random() * 10) + 5}/10`);
   }, 1000);
 // }

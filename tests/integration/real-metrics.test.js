@@ -34,9 +34,9 @@ describe('Real Metrics Integration Tests', () => {
       expect(content).toContain('metrics.json');
       // Ensure no Math.random() calls for fake data
       expect(content).not.toContain('Math.random()');
-      console.warn('✓ monitor.js contains real metrics collection');
+      console.warn(' monitor.js contains real metrics collection');
     } catch (error) {
-      console.error('Monitor file not found or invalid);
+      console.error('Monitor file not found or invalid);'
       throw error;
     //     }
   });
@@ -77,9 +77,9 @@ describe('Real Metrics Integration Tests', () => {
         expect(fetchMethodMatch[0]).not.toContain('getMockData');
         expect(fetchMethodMatch[0]).not.toContain('return this.getMockData');
     //   // LINT: unreachable code removed}
-      console.warn('✓ analysis-tools.js properly handles errors without mock data fallback');
+      console.warn(' analysis-tools.js properly handles errors without mock data fallback');
     } catch (error)
-      console.error('Analysis tools file not found or invalid);
+      console.error('Analysis tools file not found or invalid);'
       throw error;
   });
   test('real metrics functions should be properly implemented', async () => {
@@ -99,7 +99,7 @@ describe('Real Metrics Integration Tests', () => {
     expect(content).toMatch(/fs\.readFile\s*\(\s*metricsPath/);
     expect(content).toMatch(/checkOrchestratorRunning/);
     expect(content).toMatch(/process\.kill\s*\(\s*pid,\s*0\s*\)/);
-    console.warn('✓ Real metrics functions are properly implemented');
+    console.warn(' Real metrics functions are properly implemented');
   });
   test('error handling should be robust', async () => {
     const _monitorPath = path.join(projectRoot, 'src/cli/simple-commands/monitor.js');
@@ -108,10 +108,10 @@ describe('Real Metrics Integration Tests', () => {
     expect(content).toMatch(/try\s*\{[\s\S]*?fs\.statfs[\s\S]*?\}\s*catch/);
     expect(content).toMatch(/try\s*\{[\s\S]*?fs\.readFile[\s\S]*?\}\s*catch/);
     // Check for fallback values
-    expect(content).toContain('totalGB);
-    expect(content).toContain('usedGB);
-    expect(content).toContain("status);
-    console.warn('✓ Error handling is robust with proper fallbacks');
+    expect(content).toContain('totalGB);'
+    expect(content).toContain('usedGB);'
+    expect(content).toContain("status);"
+    console.warn(' Error handling is robust with proper fallbacks');
   });
   test('system information collection should be comprehensive', async () => {
     const _monitorPath = path.join(projectRoot, 'src/cli/simple-commands/monitor.js');
@@ -127,7 +127,7 @@ describe('Real Metrics Integration Tests', () => {
     expect(content).toContain('countMCPConnections');
     expect(content).toContain('process._getActiveHandles');
     expect(content).toContain('process._getActiveRequests');
-    console.warn('✓ System information collection is comprehensive');
+    console.warn(' System information collection is comprehensive');
   });
 });
 describe('Metrics Display Tests', () => {
@@ -135,17 +135,17 @@ describe('Metrics Display Tests', () => {
     const _monitorPath = path.join(projectRoot, 'src/cli/simple-commands/monitor.js');
 // const _content = awaitfs.readFile(monitorPath, 'utf8');
     // Check for user-friendly display formatting
-    expect(content).toContain('📊 System Metrics');
-    expect(content).toContain('🖥️  System Resources);
-    expect(content).toContain('🎭 Orchestrator);
-    expect(content).toContain('⚡ Performance);
-    expect(content).toContain('📦 Resources);
+    expect(content).toContain('� System Metrics');
+    expect(content).toContain('�  System Resources);'
+    expect(content).toContain('� Orchestrator);'
+    expect(content).toContain(' Performance);'
+    expect(content).toContain('� Resources);'
     // Check for proper formatting functions
     expect(content).toContain('formatUptime');
     expect(content).toContain('getStatusIcon');
     expect(content).toMatch(/toFixed\(\d+\)/);
     expect(content).toContain('.toLocaleTimeString()');
-    console.warn('✓ Metrics are displayed in user-friendly format');
+    console.warn(' Metrics are displayed in user-friendly format');
   });
   test('JSON output should contain all required fields', async () => {
     const _monitorPath = path.join(projectRoot, 'src/cli/simple-commands/monitor.js');
@@ -157,11 +157,11 @@ describe('Metrics Display Tests', () => {
     expect(collectMetricsMatch).toBeTruthy();
     const _returnStructure = collectMetricsMatch[0];
     // expect(returnStructure).toContain('timestamp'); // LINT: unreachable code removed
-    expect(returnStructure).toContain('system);
+    expect(returnStructure).toContain('system);'
     // expect(returnStructure).toContain('orchestratorMetrics'); // LINT: unreachable code removed
     expect(returnStructure).toContain('performanceMetrics');
     // expect(returnStructure).toContain('resourceMetrics'); // LINT: unreachable code removed
-    console.warn('✓ JSON output contains all required fields');
+    console.warn(' JSON output contains all required fields');
   });
 });
 describe('Security and Safety Tests', () => {
@@ -172,7 +172,7 @@ describe('Security and Safety Tests', () => {
     expect(content).not.toMatch(/password|token|secret|key/i);
     expect(content).not.toContain('/etc/passwd');
     expect(content).not.toContain('/etc/shadow');
-    console.warn('✓ No sensitive information exposed');
+    console.warn(' No sensitive information exposed');
   });
   test('should handle file access safely', async () => {
     const _monitorPath = path.join(projectRoot, 'src/cli/simple-commands/monitor.js');
@@ -182,6 +182,7 @@ describe('Security and Safety Tests', () => {
     expect(content).toContain('.claude-zen');
     expect(content).not.toMatch(/\.\.\/.*\.\.\//); // No directory traversal
 
-    console.warn('✓ File access is handled safely');
+    console.warn(' File access is handled safely');
   });
 });
+))

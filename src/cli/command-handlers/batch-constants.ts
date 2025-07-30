@@ -1,6 +1,6 @@
-/**
- * Batch Constants Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Batch Constants Module
+ * Converted from JavaScript to TypeScript
  */
 // batch-constants.js - Extracted constants for batch operations
 // Avoiding broken init system imports
@@ -41,7 +41,7 @@ dependencies: ['express', 'cors', 'helmet']; // eslint-disable-line
   dependencies: ['express', 'swagger-ui-express', 'helmet'];
 // }
 // }
-export const ENVIRONMENT_CONFIGS,
+// export const ENVIRONMENT_CONFIGS,
   ent: {
     NODE_ENV: 'development';
     DEBUG: 'true';
@@ -55,7 +55,7 @@ export const ENVIRONMENT_CONFIGS,
 
 
 // 
-{
+{}
   NODE_ENV: 'production';
   DEBUG: 'false';
   LOG_LEVEL: 'error';

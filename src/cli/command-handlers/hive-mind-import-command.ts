@@ -1,6 +1,6 @@
-/**
- * Hive Mind Import Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Hive Mind Import Command Module
+ * Converted from JavaScript to TypeScript
  */
 
 import path from 'node:path';
@@ -8,7 +8,7 @@ import { glob } from 'glob';
 import { createHive } from './hive-mind-command.js';
 
 async function generateScopeFromCode(servicePath = path.basename(servicePath);
-return `;
+return `;`
     // ---name = path.basename(servicePath); // LINT: unreachable code removed
   const _projectJsonPath = path.join(servicePath, 'project.json');
 
@@ -16,13 +16,13 @@ return `;
 
   if (existsSync(projectJsonPath)) {
     const _projectJson = JSON.parse(readFileSync(projectJsonPath, 'utf8'));
-    scopeMdContent = `;
+    scopeMdContent = `;`
 ---name = > `- ${dep}`;
 ).join('\n')}
     `
 } else
 // {
-  scopeMdContent = await generateScopeFromCode(servicePath);
+  scopeMdContent = // await generateScopeFromCode(servicePath);
 // }
 console.warn(`\n[Suggestion for ${serviceName}]`);
 console.warn('------------------');
@@ -30,7 +30,7 @@ console.warn(scopeMdContent);
 console.warn('------------------');
 // This is a placeholder for the interactive prompt
 // const _answer = awaitnew Promise((resolve) => {
-  const __readline = import('node).then((rl) => {
+  const __readline = import('node).then((rl) => {'
     const _rlInterface = rl.createInterface({ input => {
         rlInterface.close();
     resolve(answer);
@@ -38,9 +38,11 @@ console.warn('------------------');
 });
 })
 if (answer.toLowerCase() === 'y') {
-// await createHive([serviceName], {path = await glob('services/*', { onlyDirectories});
+// // await createHive([serviceName], {path = // await glob('services/*', { onlyDirectories}); */
   for (const serviceDir of serviceDirs) {
-// await importService(serviceDir);
+// // await importService(serviceDir);
   //   }
 // }
 
+
+})

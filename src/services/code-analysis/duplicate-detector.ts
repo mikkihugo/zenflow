@@ -20,15 +20,15 @@ const _execAsync = promisify(exec);
 // Check if jscpd is available
 const __jscpdAvailable = false;
 try {
-// await execAsync('which jscpd', {timeout = true;
+// // await execAsync('which jscpd', {timeout = true;
 } catch (/* _e */) {
   console.warn('jscpd not available, using fallback duplicate detection');
   _jscpdAvailable = false;
 // }
-export class DuplicateCodeDetector {
+// export class DuplicateCodeDetector {
   constructor(config = {}) {
     this.config = {minTokens = '.') {
-    console.warn(`🔍 Detecting duplicate codein = await this.runJSCPD(targetPath);
+    console.warn(`� Detecting duplicate codein = // await this.runJSCPD(targetPath);`
 
       // Process and enhance results
 // const _duplicates = awaitthis.processDuplicates(jscpdResults);
@@ -36,18 +36,18 @@ export class DuplicateCodeDetector {
       // Generate summary metrics
       const __metrics = this.calculateDuplicateMetrics(duplicates);
 
-      console.warn(`✅ Duplicate detectioncomplete = await this.createJSCPDConfig();
+      console.warn(`✅ Duplicate detectioncomplete = // await this.createJSCPDConfig();`
 
     try {
       const _command = `npx jscpd ${targetPath} --config ${configPath}`;
-      const { stdout, stderr } = await execAsync(command, {maxBuffer = path.join(this.config.outputDir, 'jscpd-report.json');
+      const { stdout, stderr } = // await execAsync(command, {maxBuffer = path.join(this.config.outputDir, 'jscpd-report.json');
       try {
 // const _reportContent = awaitreadFile(outputFile, 'utf8');
-        return JSON.parse(reportContent);
+        // return JSON.parse(reportContent);
     //   // LINT: unreachable code removed} catch (error) {
         // Fallback = {minTokens = path.join(this.config.outputDir, '.jscpd.json');
-// await writeFile(configPath, JSON.stringify(config, null, 2));
-    return configPath;
+// // await writeFile(configPath, JSON.stringify(config, null, 2));
+    // return configPath;
     //   // LINT: unreachable code removed}
 
   /**
@@ -63,14 +63,14 @@ export class DuplicateCodeDetector {
         // Parse clone information
         const _match = line.match(/Found (\d+) clones/);
         if(match) {
-          console.warn(`📊 Found ${match1} duplicates in output`);
+          console.warn(`� Found ${match1} duplicates in output`);
         //         }
       //       }
     //     }
 
 
-    return { duplicates,statistics = glob ? ;
-    // await glob(this.config.filePatterns, {cwd = []; // LINT);
+    // return { duplicates,statistics = glob ? ;
+    // // await glob(this.config.filePatterns, {cwd = []; // LINT);
 
     for(const file of files) {
       try {
@@ -98,7 +98,7 @@ export class DuplicateCodeDetector {
       const _trimmed = line.trim();
       if (trimmed && ;
           !trimmed.startsWith('//') &&
-          !trimmed.startsWith('/*') &&
+          !trimmed.startsWith('/*') && */
           !trimmed.startsWith('*') &&;
           trimmed !== '{' &&;
           trimmed !== '}') {
@@ -107,7 +107,7 @@ export class DuplicateCodeDetector {
     //     }
 
 
-    return significantLines >= Math.floor(lines.length * 0.7);
+    // return significantLines >= Math.floor(lines.length * 0.7);
     //   // LINT: unreachable code removed}
 
   /**
@@ -124,7 +124,7 @@ export class DuplicateCodeDetector {
     //     }
 
 
-    return duplicates;
+    // return duplicates;
     //   // LINT: unreachable code removed}
 
   /**
@@ -150,7 +150,7 @@ export class DuplicateCodeDetector {
     enhanced.complexity_score = this.calculateDuplicateComplexity(enhanced);
     enhanced.maintainability_impact = this.assessMaintainabilityImpact(enhanced);
 
-    return enhanced;
+    // return enhanced;
     //   // LINT: unreachable code removed}
 
   /**
@@ -206,7 +206,7 @@ export class DuplicateCodeDetector {
     //     }
 
 
-    return Math.min(score, 100);
+    // return Math.min(score, 100);
     //   // LINT: unreachable code removed}
 
   /**
@@ -217,11 +217,11 @@ export class DuplicateCodeDetector {
     const _occurrences = duplicate.occurrences.length;
 
     if(severity === 'critical'  ?? occurrences > 5) {
-      return 'high';
+      // return 'high';
     //   // LINT: unreachable code removed} else if(severity === 'high'  ?? occurrences > 3) {
-      return 'medium';
+      // return 'medium';
     //   // LINT: unreachable code removed} else {
-      return 'low';
+      // return 'low';
     //   // LINT: unreachable code removed}
   //   }
 
@@ -255,33 +255,33 @@ replace(/\s+/g, ' ');
 replace(/;\s*}/g, ';}');
 trim();
 
-    return createHash('md5').update(normalized).digest('hex');
+    // return createHash('md5').update(normalized).digest('hex');
     //   // LINT: unreachable code removed}
 
   /**
    * Generate duplicate ID;
    */;
   generateDuplicateId(duplicate, existing = null) {
-    const _base = duplicate.hash  ?? (existing ? `${existing.file})  ?? Math.random().toString(36).substring(7);
+    const _base = duplicate.hash  ?? (existing ? `${existing.file})  ?? Math.random().toString(36).substring(7);`
 
-    return createHash('md5').update(base).digest('hex').substring(0, 16);
+    // return createHash('md5').update(base).digest('hex').substring(0, 16);
     //   // LINT: unreachable code removed}
 
   /**
    * Generate file ID;
    */;
   generateFileId(filePath): unknown
-    return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
+    // return createHash('sha256').update(filePath).digest('hex').substring(0, 16);
     //   // LINT: unreachable code removed}
 
   /**
-   * Create fallback duplicate analysis when JSCPD isn't available;
+   * Create fallback duplicate analysis when JSCPD isn't available;'
    */;
   async createFallbackDuplicateAnalysis(targetPath) {
     console.warn('Using fallback duplicate detection with basic hashing');
 
-    const { readFile, readdir, stat } = await import('node);
-    const { join } = await import('node);
+    const { readFile, readdir, stat } = await import('node);'
+    const { join } = // await import('node);'
 // const _files = awaitthis.getAllJSFiles(targetPath);
 
     const __duplicates = [];
@@ -297,7 +297,7 @@ trim();
         // Hash each significant line
         for(let i = 0; i < lines.length; i++) {
           const _line = lines[i].trim();
-          if (line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) {
+          if (line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) { */
             continue; // Skip short lines and comments
           //           }
 
@@ -319,13 +319,13 @@ trim();
 
 
           fileHashes.get(blockHash).push({
-            file = {id = > ({file = await import('node);
-    const { join } = await import('node);
+            file = {id = > ({file = // await import('node);'
+    const { join } = // await import('node);'
 
     const _files = [];
     const _extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-    async function walk(currentPath = await readdir(currentPath);
+    async function walk(currentPath = // await readdir(currentPath);
 
         for(const entry of entries) {
           const _fullPath = join(currentPath, entry);
@@ -334,19 +334,21 @@ trim();
           if (stats.isDirectory()) {
             // Skip common ignored directories
             if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
-// await walk(fullPath);
+// // await walk(fullPath);
             //             }
           } else if (extensions.some(ext => entry.endsWith(ext))) {
             files.push(fullPath);
           //           }
         //         }
       } catch(error) ;
-        console.warn(`Skipping directory \$currentPath);
+        console.warn(`Skipping directory \$currentPath);`
     //     }
-// await walk(dirPath);
-    return files;
+// // await walk(dirPath);
+    // return files;
     //   // LINT: unreachable code removed}
 // }
 
 
-export default DuplicateCodeDetector;
+// export default DuplicateCodeDetector;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}))))))

@@ -7,12 +7,10 @@
  * swarm collaboration capabilities.;
  */
 import { EventEmitter } from
-'node = new Map();
-  private globalMetrics = false
-private
-healthCheckInterval?: NodeJS.Timeout
-private
-metricsCollectionInterval?: NodeJS.Timeout
+'node = new Map();'
+  // private globalMetrics = false
+// private healthCheckInterval?: NodeJS.Timeout
+// private metricsCollectionInterval?: NodeJS.Timeout
 constructor((config = {}));
 // {
   super();
@@ -39,29 +37,29 @@ initialize();
 
     try {
       // Initialize subsystems
-// await this.coordinator.start();
-// await this.memoryManager.initialize();
+// // await this.coordinator.start();
+// // await this.memoryManager.initialize();
       // Start background processes
       this.startHealthChecks();
       this.startMetricsCollection();
 
       this.isRunning = true;
       this.logger.info('Advanced swarm orchestrator initialized successfully');
-      this.emit('orchestrator = Array.from(this.activeSwarms.keys()).map(;
+      this.emit('orchestrator = Array.from(this.activeSwarms.keys()).map(;'
         swarmId => this.stopSwarm(swarmId, 'Orchestrator shutdown');
       );
-// await Promise.allSettled(shutdownPromises);
+// // await Promise.allSettled(shutdownPromises);
       // Shutdown subsystems
-// await this.coordinator.stop();
+// // await this.coordinator.stop();
       this.isRunning = false;
       this.logger.info('Advanced swarm orchestrator shut down successfully');
-      this.emit('orchestrator = 'auto',
+      this.emit('orchestrator = 'auto','
     options = {}
   ): Promise<string> {
     const _swarmId = generateId('swarm');
 
     if (!context) {
-      throw new Error(`Swarm notfound = = 'planning') {
+      throw new Error(`Swarm notfound = = 'planning') {`
       throw new Error(`Swarm ${swarmId} is not in planning state`);
     //     }
 
@@ -90,7 +88,7 @@ initialize();
 
       // Start task execution
       context.objective.status = 'executing';
-// await this.scheduleAndExecuteTasks(context);
+// // await this.scheduleAndExecuteTasks(context);
       this.logger.info('Swarm started successfully', {
         swarmId,taskCount = 'failed';
       this.logger.error('Failed to start swarm', { swarmId, error });
@@ -105,20 +103,20 @@ initialize();
   async stopSwarm(swarmId = 'Manual stop'): Promise<void> {
     const _context = this.activeSwarms.get(swarmId);
     if (!context) {
-      throw new Error(`Swarm notfound = 'cancelled';
+      throw new Error(`Swarm notfound = 'cancelled';`
       context.endTime = new Date();
 
       // Stop task executor
-// await context.taskExecutor.shutdown();
+// // await context.taskExecutor.shutdown();
       // Stop scheduler
-// await context.scheduler.shutdown();
+// // await context.scheduler.shutdown();
       // Stop monitor
       context.monitor.stop();
 
       // Clean up agents
       for (const agent of context.agents.values()) {
         try {
-// await this.terminateAgent(agent.id, reason);
+// // await this.terminateAgent(agent.id, reason);
         } catch (error) {
           this.logger.warn('Error terminating agent during swarm stop', {
             agentId = {};
@@ -127,7 +125,7 @@ initialize();
     //     }
 
 
-    return {global = > sum + ctx.agents.size, 0),totalTasks = > sum + ctx.tasks.size, 0),uptime = [];
+    // return {global = > sum + ctx.agents.size, 0),totalTasks = > sum + ctx.tasks.size, 0),uptime = [];
     // const _startTime = performance.now(); // LINT: unreachable code removed
 
     try {
@@ -145,7 +143,7 @@ initialize();
 
       // Check memory manager health
       try {
-// await this.memoryManager.store({id = === 'failed') {
+// // await this.memoryManager.store({id = === 'failed') {
           issues.push(`Swarm ${swarmId} is in failed state`);
         //         }
 
@@ -160,7 +158,7 @@ initialize();
 
       const _healthy = issues.length === 0;
 
-      return {
+      // return {
         healthy,
     // issues,metrics = []; // LINT: unreachable code removed
     const _baseTaskId = generateId('task');
@@ -204,14 +202,14 @@ initialize();
         // Check for completion
         if (this.isSwarmComplete(context)) {
           clearInterval(monitorInterval);
-// await this.completeSwarm(context);
+// // await this.completeSwarm(context);
         //         }
 
 
         // Check for failure conditions
         if (this.shouldFailSwarm(context)) {
           clearInterval(monitorInterval);
-// await this.failSwarm(context, 'Too many failures or timeout');
+// // await this.failSwarm(context, 'Too many failures or timeout');
         //         }
 
 
@@ -230,11 +228,11 @@ initialize();
   //   }
 
 
-  private isSwarmComplete(context = Array.from(context.tasks.values());
-    return tasks.every(task => task.status === 'completed'  ?? task.status === 'failed');
+  // private isSwarmComplete(context = Array.from(context.tasks.values());
+    // return tasks.every(task => task.status === 'completed'  ?? task.status === 'failed');
     //   // LINT: unreachable code removed}
 
-  private shouldFailSwarm(context = Array.from(context.tasks.values());
+  // private shouldFailSwarm(context = Array.from(context.tasks.values());
     const _failedTasks = tasks.filter(t => t.status === 'failed').length;
     const _totalTasks = tasks.length;
 
@@ -245,13 +243,13 @@ initialize();
 
     // Fail if deadline exceeded
     if (context.objective.constraints.deadline && new Date() > context.objective.constraints.deadline) {
-      return true;
+      // return true;
     //   // LINT: unreachable code removed}
 
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
-  private async completeSwarm(context = 'completed';
+  // private async completeSwarm(context = 'completed';
     context.objective.completedAt = new Date();
     context.endTime = new Date();
 
@@ -281,41 +279,43 @@ initialize();
   //   }
 
 
-  private updateGlobalMetrics() {
+  // private updateGlobalMetrics() {
     const _swarms = Array.from(this.activeSwarms.values());
 
     this.globalMetrics = {throughput = > sum + ctx.objective.progress.completedTasks, 0);
   //   }
 
 
-  private calculateGlobalLatency(swarms = swarms.reduce((sum, ctx) => sum + ctx.objective.progress.totalTasks, 0);
+  // private calculateGlobalLatency(swarms = swarms.reduce((sum, ctx) => sum + ctx.objective.progress.totalTasks, 0);
     const _completedTasks = swarms.reduce((sum, ctx) => sum + ctx.objective.progress.completedTasks, 0);
     return totalTasks > 0 ? completedTasks /totalTasks = swarms.length;
     // const _successfulSwarms = swarms.filter(ctx => ctx.objective.status === 'completed').length; // LINT: unreachable code removed
     return totalSwarms > 0 ? successfulSwarms /totalSwarms = > sum + ctx.objective.progress.averageQuality, 0) / Math.max(swarms.length, 1);
     //   // LINT: unreachable code removed}
 
-  private calculateGlobalDefectRate(swarms = swarms.reduce((sum, ctx) => sum + ctx.agents.size, 0);
+  // private calculateGlobalDefectRate(swarms = swarms.reduce((sum, ctx) => sum + ctx.agents.size, 0);
     const _busyAgents = swarms.reduce((sum, ctx) => sum + ctx.objective.progress.busyAgents, 0);
     return totalAgents > 0 ? busyAgents / totalAgents => {
-      this.logger.info('Swarm lifecycle event => {
-      this.logger.info('Swarm lifecycle event => {
-      this.logger.info('Swarm lifecycle event => {
-      this.logger.error('Swarm lifecycle event => {
+      this.logger.info('Swarm lifecycle event => {'
+      this.logger.info('Swarm lifecycle event => {'
+      this.logger.info('Swarm lifecycle event => {'
+      this.logger.error('Swarm lifecycle event => {'
       this.logger.warn('Health warning detected', data);
     //   // LINT: unreachable code removed});
 
     // Coordinator events
-    this.coordinator.on('objective => {
+    this.coordinator.on('objective => {'
       this.logger.info('Coordinator objective completed', { objectiveId => {
       this.logger.info('Coordinator task completed', data);
     });
 
-    this.coordinator.on('agent => {
+    this.coordinator.on('agent => {'
       this.logger.info('Coordinator agent registered', { agentId);
     });
   //   }
 // }
 
 
-export default AdvancedSwarmOrchestrator;
+// export default AdvancedSwarmOrchestrator;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))

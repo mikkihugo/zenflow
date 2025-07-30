@@ -17,12 +17,12 @@ class MockMemoryStore {
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id, size: value.length };
+    // return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
-    return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;
   }
 
   async search(options = {}) {
@@ -32,7 +32,7 @@ class MockMemoryStore {
         results[key] = value;
       }
     }
-    return results;
+    // return results;
   }
 }
 
@@ -44,13 +44,13 @@ async function testDocumentStack() {
     'storage-service',
     'use-postgres-for-primary-storage',
     'We will use PostgreSQL  primary storage solution.',
-    {
+{}
       dependencies);
 // const _apiResult = awaitdocStack.createDocument('api-documentation',
     'user-service',
     'users-api-v1',
     'REST API for user management operations.',
-    {
+{}
       tags);
   const testDoc = {
     docType: 'service-adr',
@@ -72,3 +72,5 @@ if (require.main === module) {
 }
 
 module.exports = { testDocumentStack };
+
+}

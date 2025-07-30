@@ -17,32 +17,32 @@ import chalk from 'chalk';
 try {
     // Create session directory
     const _sessionDir = path.resolve(flags.sessionDir  ?? './.claude/hive-mind');
-// await ensureDirectoryExists(sessionDir);
+// // await ensureDirectoryExists(sessionDir);
     // Initialize SQLite database
     const _dbPath = path.join(sessionDir, 'hive-mind.db');
-// await initializeDatabase(dbPath, flags.force);
+// // await initializeDatabase(dbPath, flags.force);
     // Create configuration file
     const _configPath = path.join(sessionDir, 'config.json');
-// await createConfiguration(configPath, flags);
+// // await createConfiguration(configPath, flags);
     // Create required subdirectories
-// await createSubdirectories(sessionDir);
+// // await createSubdirectories(sessionDir);
     // Validate initialization
-// await validateInitialization(sessionDir);
+// // await validateInitialization(sessionDir);
     spinner.succeed('Hive Mind system initialized successfully');
 
-    console.warn(`;
-${chalk.green('✓ Hive Mind Initialization Complete')}
+    console.warn(`;`
+${chalk.green(' Hive Mind Initialization Complete')}
 
-\${chalk.bold('Created = false)}
+\${chalk.bold('Created = false)}'
 
   const _db = new Database(dbPath);
 
   try {
     // Create tables with proper indexes
-// await createDatabaseTables(db);
-// await createDatabaseIndexes(db);
+// // await createDatabaseTables(db);
+// // await createDatabaseIndexes(db);
     // Insert initial data
-// await insertInitialData(db);
+// // await insertInitialData(db);
   } finally {
     db.close();
   //   }
@@ -57,34 +57,34 @@ ${chalk.green('✓ Hive Mind Initialization Complete')}
     // async function createDatabaseTables(db = [ // LINT)),
       updated_at INTEGER DEFAULT (strftime('%s', 'now')),
       metadata TEXT;
-    )`,
+    )`,`
     // Agents table
-    `CREATE TABLE IF NOT EXISTS agents (;
+    `CREATE TABLE IF NOT EXISTS agents (;`
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      type TEXT NOT NULL,
+      //       type TEXT NOT NULL,
       role TEXT,
       status TEXT DEFAULT 'idle',
       performance_score REAL DEFAULT 0.0,
       created_at INTEGER DEFAULT (strftime('%s', 'now')),
       last_active INTEGER DEFAULT (strftime('%s', 'now')),
       FOREIGN KEY (session_id) REFERENCES sessions (id);
-    )`,
+    )`,`
     // Memory table
-    `CREATE TABLE IF NOT EXISTS collective_memory (;
+    `CREATE TABLE IF NOT EXISTS collective_memory (;`
       id TEXT PRIMARY KEY,
       session_id TEXT,
       key TEXT NOT NULL,
       value TEXT NOT NULL,
-      type TEXT DEFAULT 'general',
+      //       type TEXT DEFAULT 'general',
       importance REAL DEFAULT 0.5,
       created_at INTEGER DEFAULT (strftime('%s', 'now')),
       accessed_at INTEGER DEFAULT (strftime('%s', 'now')),
       access_count INTEGER DEFAULT 0;
-    )`,
+    )`,`
     // Decisions table
-    `CREATE TABLE IF NOT EXISTS consensus_decisions (;
+    `CREATE TABLE IF NOT EXISTS consensus_decisions (;`
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
       decision_type TEXT NOT NULL,
@@ -94,9 +94,9 @@ ${chalk.green('✓ Hive Mind Initialization Complete')}
       participating_agents TEXT,
       created_at INTEGER DEFAULT (strftime('%s', 'now')),
       FOREIGN KEY (session_id) REFERENCES sessions (id);
-    )`,
+    )`,`
     // Metrics table
-    `CREATE TABLE IF NOT EXISTS performance_metrics (;
+    `CREATE TABLE IF NOT EXISTS performance_metrics (;`
       id TEXT PRIMARY KEY,
       session_id TEXT,
       agent_id TEXT,
@@ -104,7 +104,7 @@ ${chalk.green('✓ Hive Mind Initialization Complete')}
       metric_name TEXT NOT NULL,
       value REAL NOT NULL,
       timestamp INTEGER DEFAULT (strftime('%s', 'now'));
-    )`;
+    )`;`
   ];
 
   for(const tableSQL of tables) {
@@ -116,7 +116,7 @@ ${chalk.green('✓ Hive Mind Initialization Complete')}
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */
-// async function createDatabaseIndexes(db = [ // LINT)',
+// async function createDatabaseIndexes(db = [ // LINT)','
 'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents (session_id)',
 'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory (session_id)',
 'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory (key)',
@@ -135,7 +135,7 @@ for (const indexSQL of indexes) {
  */
 // async function insertInitialData(db = [ // LINT)
     VALUES (?, ?, ?, ?, ?);
-  `);
+  `);`
   for (const config of defaultConfig) {
     const _id = `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     stmt.run(id, config.key, config.value, config.type, 1.0);
@@ -148,17 +148,17 @@ for (const indexSQL of indexes) {
  */
 // async function verifyDatabaseSchema() {
 const _result = db
-prepare(`;
+prepare(`;`
       SELECT name FROM sqlite_master ;
       WHERE type='table' AND name=?;
-    `)
+    `)`
 get(table);
 if (!result) {
-  throw new Error(`Missing required table = {version = ['sessions', 'memory', 'logs', 'exports', 'temp'];
+  throw new Error(`Missing required table = {version = ['sessions', 'memory', 'logs', 'exports', 'temp'];`
 
   for(const subdir of subdirs) {
     const _dirPath = path.join(sessionDir, subdir);
-// await ensureDirectoryExists(dirPath);
+// // await ensureDirectoryExists(dirPath);
   //   }
 // }
 
@@ -174,7 +174,7 @@ if (!result) {
 
 for(const file of requiredFiles) {
     if (!existsSync(file)) {
-      throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db');
+      throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db');`
   const _db = new Database(dbPath);
   try {
     const _result = db
@@ -188,3 +188,4 @@ get('config');
   //   }
 // }
 
+)

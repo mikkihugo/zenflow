@@ -1,30 +1,30 @@
 /**
  * Google Vertex AI Provider Implementation;
- * Integration with Google's Gemini models via Vertex AI;
+ * Integration with Google's Gemini models via Vertex AI;'
  */
 
 import { ProviderError } from './types.js';
-// interface GoogleRequest {contents = 'google'
-version = '2024-07-29'
-config = {enabled = {textGeneration = 'us-central1'
-private;
-baseUrl = ['gemini-1.5-pro'
-, 'gemini-1.5-flash', 'gemini-1.0-pro', 'gemini-1.0-pro-vision']
-constructor()
-// {
-  super();
-  this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.GOOGLE_API_KEY;
-  this.projectId = config.projectId ?? process.env.GOOGLE_PROJECT_ID;
-  if (!this.apiKey) {
-    throw new ProviderError('Google API key is required', this.name, 'MISSING_API_KEY');
-  //   }
+// // interface GoogleRequest {contents = 'google'
+// version = '2024-07-29'
+// config = {enabled = {textGeneration = 'us-central1'
+// private;
+// baseUrl = ['gemini-1.5-pro'
+// , 'gemini-1.5-flash', 'gemini-1.0-pro', 'gemini-1.0-pro-vision']
+// constructor() {}
+// // {
+//   super();
+//   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.GOOGLE_API_KEY;
+//   this.projectId = config.projectId ?? process.env.GOOGLE_PROJECT_ID;
+//   if (!this.apiKey) {
+//     throw new ProviderError('Google API key is required', this.name, 'MISSING_API_KEY');
+//   //   }
   if (!this.projectId) {
     throw new ProviderError('Google Project ID is required', this.name, 'MISSING_PROJECT_ID');
   //   }
   this.location = config.location ?? this.location;
   this.baseUrl =;
-  `https = { ...this.config, ...config };
-// await this.healthCheck();
+  `https = { ...this.config, ...config };`
+// // await this.healthCheck();
   //   }
 
 
@@ -33,9 +33,9 @@ constructor()
     this.emitRequest(request);
 
     try {
-      const _googleRequest = {contents = {parts = await this.makeRequest(;
-        ` / \$request.model;
-  :generateContent`,
+      const _googleRequest = {contents = {parts = // await this.makeRequest(;
+        ` / \$request.model;`
+  :generateContent`,`
   googleRequest
   //   )
   if (!response.candidates ?? response.candidates.length === 0) {
@@ -49,12 +49,12 @@ constructor()
   const _decoder = new TextDecoder();
   const _buffer = '';
   while (true) {
-    const { done, value } = await reader.read();
+    const { done, value } = // await reader.read();
     if (done) break;
     buffer += decoder.decode(value, {stream = buffer.split('\n');
     buffer = lines.pop() ?? '';
     for (const line of lines) {
-      if (line.startsWith('data = line.slice(6);
+      if (line.startsWith('data = line.slice(6);'
 
       try {
               const _parsed = JSON.parse(data);
@@ -78,10 +78,10 @@ constructor()
 // }
 // }
 // async
-getModels()
+getModels() {}
 : Promise<string[]>
 // {
-  return [...this.availableModels];
+  // return [...this.availableModels];
 // }
 async;
 cleanup();
@@ -93,7 +93,7 @@ private;
 convertMessages(messages = [];
 for (const msg of messages) {
   if (msg.role === 'system') {
-    // System messages are handled separately in Google's API
+    // System messages are handled separately in Google's API'
     continue;
   //   }
 
@@ -106,10 +106,10 @@ for (const msg of messages) {
   } catch (/* _e */) {
     errorData = {message = === 429) {
       const _retryAfter = response.headers.get('retry-after');
-    return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
+    // return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) );
     //   // LINT: unreachable code removed}
 
-  return new ProviderError(;
+  // return new ProviderError(;
     // errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT);
 // }
 
@@ -119,27 +119,29 @@ mapFinishReason(reason);
 : AIResponse['finishReason'];
   switch (reason) {
     case 'FINISH_REASON_STOP':;
-      return 'stop';
+      // return 'stop';
     // case 'FINISH_REASON_MAX_TOKENS':; // LINT: unreachable code removed
-      return 'length';
+      // return 'length';
     // case 'FINISH_REASON_SAFETY':; // LINT: unreachable code removed
-      return 'content_filter';
+      // return 'content_filter';
     // case 'FINISH_REASON_RECITATION':; // LINT: unreachable code removed
-      return 'content_filter';
+      // return 'content_filter';
     // default:; // LINT: unreachable code removed
-      return 'stop';
+      // return 'stop';
     //   // LINT: unreachable code removed}
 // }
 
 
 private;
 handleError(error);
-: Error;
+
   if (error instanceof ProviderError) {
-    return error;
+    // return error;
     //   // LINT: unreachable code removed}
 
-  return new ProviderError(;
+  // return new ProviderError(;
     // error.message  ?? 'Unknown error occurred', // LINT);
 // }
 
+
+}}}}}}))))

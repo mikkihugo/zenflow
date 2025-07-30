@@ -1,6 +1,6 @@
-/**
- * Critical Fixes Template - For Claude Flow Init;
- * Includes timeout protection, GitHub CLI safety, and dynamic agent loading;
+/**  */
+ * Critical Fixes Template - For Claude Flow Init
+ * Includes timeout protection, GitHub CLI safety, and dynamic agent loading
  */
 export const criticalFixesTemplate = `# Critical System Fixes Applied
 
@@ -17,13 +17,13 @@ TimeoutProtection.setupSafeExit();
 
 **Problem Solved**: 2-minute timeouts with backticks and command substitution in GitHub CLI operations
 
-**Features Added**:;
+**Features Added**:
 - Safe handling of special characters (\`, \$, ", newlines);
 - Temporary file approach for complex content;
 - Command substitution sanitization;
 - Repository name validation
 
-**Usage**:;
+**Usage**:
 \`\`\`javascript;
 // Import GitHub CLI safety utilities
 import GitHubCliSafe from './src/utils/github-cli-safe.js';
@@ -67,14 +67,14 @@ All changes are backward compatible:;
 
 ## 8. Performance Impact
 
-- **Positive**: Prevents hanging processes that consume resources;
-- **Minimal**: Timeout checks add < 1ms overhead;
-- **Safe**: Force exit prevents zombie processes;
+- **Positive**: Prevents hanging processes that consume resources
+- **Minimal**: Timeout checks add < 1ms overhead
+- **Safe**: Force exit prevents zombie processes
 - **Efficient**: Agent loading is cached after initialization
 
 ---
 
-**🎯 These fixes address the critical upstream issues from commits:**;
+**🎯 These fixes address the critical upstream issues from commits:**
 - 43ab723d + 3dfd2ee1: Hooks timeout protection;
 - 958f5910 + f4107494: GitHub CLI safety utilities  ;
 - 00dd0094: Dynamic agent loading system

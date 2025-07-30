@@ -36,11 +36,11 @@ afterEach(async () =>
   // await plugin.cleanup();
   //   }
   if (graphBackend) {
-  // await graphBackend.cleanup();
+  // // await graphBackend.cleanup();
   //   }
   // Clean up test directory
   try {
-  // await fs.rm(testDir, { recursive, force });
+  // // await fs.rm(testDir, { recursive, force });
     } catch (/* _error */) {
       // Ignore cleanup errors
     //     }
@@ -50,8 +50,8 @@ test('should initialize with Kuzu integration', async () =>
   // Create minimal Bazel workspace
   // await createTestBazelWorkspace(testDir);
   try {
-  // await graphBackend.initialize();
-  // await plugin.initialize();
+  // // await graphBackend.initialize();
+  // // await plugin.initialize();
       expect(plugin.config.enableKuzuIntegration).toBe(true);
       expect(plugin.graphBackend).toBeDefined();
       expect(plugin.stats.graphNodesStored).toBeGreaterThanOrEqual(0);
@@ -68,17 +68,17 @@ test('should initialize with Kuzu integration', async () =>
   //   {
   // await createTestBazelWorkspace(testDir);
     try {
-  // await graphBackend.initialize();
-  // await plugin.initialize();
+  // // await graphBackend.initialize();
+  // // await plugin.initialize();
       // Check if graph w
       expect(plugin.stats.graphNodesStored).toBeGreaterThan(0);
       // Verify data in graph database
       if (plugin.graphBackend?.storage?.conn) {
         const _conn = plugin.graphBackend.storage.conn;
-// const _result = awaitconn.query(`;
+// const _result = awaitconn.query(`;`
           MATCH (t);
           RETURN count(t) ;
-        `);
+        `);`
         expect(result[0]?.target_count).toBeGreaterThan(0);
       //       }
     } catch (error) {
@@ -93,7 +93,7 @@ test('should initialize with Kuzu integration', async () =>
   // await createTestBazelWorkspace(testDir)
     try {
   // await graphBackend.initialize();
-  // await plugin.initialize();
+  // // await plugin.initialize();
       // Test change impact analysis
       const _changedFiles = ['src/lib/utils.js'];
 // const _impact = awaitplugin.analyzeChangeImpactGraph(changedFiles);
@@ -112,7 +112,7 @@ test('should initialize with Kuzu integration', async () =>
   // await createTestBazelWorkspace(testDir)
     try {
   // await graphBackend.initialize();
-  // await plugin.initialize();
+  // // await plugin.initialize();
       // Test different visualization formats
 // const _jsonViz = awaitplugin.generateDependencyGraphVisualization('json');
 // const _graphvizViz = awaitplugin.generateDependencyGraphVisualization('graphviz');
@@ -139,9 +139,9 @@ test('should initialize with Kuzu integration', async () =>
       workspaceRoot,
       enableKuzuIntegration
 })
-  // await createTestBazelWorkspace(testDir)
+  // // await createTestBazelWorkspace(testDir)
     try {
-  // await fallbackPlugin.initialize();
+  // // await fallbackPlugin.initialize();
       expect(fallbackPlugin.config.enableKuzuIntegration).toBe(false);
       expect(fallbackPlugin.graphBackend).toBeNull();
       // Should still work with in-memory analysis
@@ -149,55 +149,55 @@ test('should initialize with Kuzu integration', async () =>
 // const _impact = awaitfallbackPlugin.analyzeChangeImpact(changedFiles);
       expect(impact).toBeDefined();
       expect(impact.affectedTargets).toBeDefined();
-  // await fallbackPlugin.cleanup();
+  // // await fallbackPlugin.cleanup();
     } catch (error) {
-      console.error('Fallback test failed);
+      console.error('Fallback test failed);'
       throw error;
     })
     //     )
     // Helper function to create a minimal Bazel workspace for testing
     async function createTestBazelWorkspace() {
   // Create WORKSPACE file
-  const _workspaceContent = `;
+  const _workspaceContent = `;`
 workspace(name = "test_workspace")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-`;
-  // await fs.writeFile(path.join(testDir, 'WORKSPACE'), workspaceContent);
+`;`
+  // // await fs.writeFile(path.join(testDir, 'WORKSPACE'), workspaceContent);
   // Create .bazelrc
-  const _bazelrcContent = `;
+  const _bazelrcContent = `;`
 build --strategy=Javac=worker;
 build --disk_cache=.bazel-cache;
 test --test_output=errors;
-`;
-  // await fs.writeFile(path.join(testDir, '.bazelrc'), bazelrcContent);
+`;`
+  // // await fs.writeFile(path.join(testDir, '.bazelrc'), bazelrcContent);
   // Create source directories
-  // await fs.mkdir(path.join(testDir, 'src/lib'), { recursive });
-  // await fs.mkdir(path.join(testDir, 'src/app'), { recursive });
+  // // await fs.mkdir(path.join(testDir, 'src/lib'), { recursive });
+  // // await fs.mkdir(path.join(testDir, 'src/app'), { recursive });
   // Create BUILD files
-  const _libBuildContent = `;
+  const _libBuildContent = `;`
 load("@rules_nodejs//nodejs:rules.bzl", "nodejs_library")
 
 nodejs_library(;
     name = "utils",
     srcs = ["utils.js"],
-    visibility = ["//src/app]);
-`;
-  // await fs.writeFile(path.join(testDir, 'src/lib/BUILD'), libBuildContent);
-  const _appBuildContent = `;
+    visibility = ["//src/app]);"
+`;`
+  // // await fs.writeFile(path.join(testDir, 'src/lib/BUILD'), libBuildContent);
+  const _appBuildContent = `;`
 load("@rules_nodejs//nodejs:rules.bzl", "nodejs_binary")
 
 nodejs_binary(;
     name = "app",
     entry_point = "main.js",
-    deps = ["//src/lib]);
-`;
-  // await fs.writeFile(path.join(testDir, 'src/app/BUILD'), appBuildContent);
+    deps = ["//src/lib]);"
+`;`
+  // // await fs.writeFile(path.join(testDir, 'src/app/BUILD'), appBuildContent);
   // Create source files
-  // await fs.writeFile(;
+  // // await fs.writeFile(;
     path.join(testDir, 'src/lib/utils.js'),
     'export function util() { return "test"; }'
   );
-  // await fs.writeFile(;
+  // // await fs.writeFile(;
     path.join(testDir, 'src/app/main.js'),
     'import { util } from "../lib/utils.js"; console.warn(util());'
   );
@@ -207,7 +207,7 @@ nodejs_binary(;
     version: '1.0.0',
     files: ['utils.js']
 // }
-  // await fs.writeFile(;
+  // // await fs.writeFile(;
     path.join(testDir, 'src/lib/package.json'),
     JSON.stringify(libPackageJson, null, 2);
     //     )
@@ -216,7 +216,7 @@ nodejs_binary(;
     version: '1.0.0',
     files: ['main.js']
 // }
-  // await fs.writeFile(;
+  // // await fs.writeFile(;
   path.join(testDir, 'src/app/package.json'),
   JSON.stringify(appPackageJson, null, 2);
   //   )

@@ -22,14 +22,14 @@ describe('Basic Functionality', () => {
 // const _monitor = awaitimport(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
-    expect(monitor.monitorCommand).toBeDefined()
-    expect(monitor.showMonitorHelp).toBeDefined()
+    expect(monitor.monitorCommand).toBeDefined() {}
+    expect(monitor.showMonitorHelp).toBeDefined() {}
   });
   test('should collect and display metrics', async () => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
-  // await monitorCommand([])
+  // // await monitorCommand([])
     // Check if metrics were displayed
     const _output = consoleSpy.log.mock.calls.join('\n');
     expect(output).toContain('System Metrics');
@@ -38,9 +38,9 @@ describe('Basic Functionality', () => {
     const { showMonitorHelp } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
-    showMonitorHelp()
+    showMonitorHelp() {}
     const _output = consoleSpy.log.mock.calls.join('\n');
-    expect(output).toContain('Monitor commands);
+    expect(output).toContain('Monitor commands);'
     expect(output).toContain('--interval');
     expect(output).toContain('--format');
   });
@@ -50,7 +50,7 @@ describe('Output Formats', () => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
-  // await monitorCommand(['--format', 'json'])
+  // // await monitorCommand(['--format', 'json'])
     const _calls = consoleSpy.log.mock.calls;
     const _jsonOutput = calls.find((call) => {
       try {
@@ -60,7 +60,7 @@ describe('Output Formats', () => {
           return false;
     //   // LINT: unreachable code removed}
       })
-      expect(jsonOutput).toBeDefined()
+      expect(jsonOutput).toBeDefined() {}
       if (jsonOutput) {
         const _parsed = JSON.parse(jsonOutput[0]);
         expect(parsed).toHaveProperty('timestamp');
@@ -71,7 +71,7 @@ describe('Output Formats', () => {
       const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
       //       )
-  // await monitorCommand([])
+  // // await monitorCommand([])
       const _output = consoleSpy.log.mock.calls.join('\n');
       expect(output).toMatch(/System Metrics|System Resources|Performance/);
     });

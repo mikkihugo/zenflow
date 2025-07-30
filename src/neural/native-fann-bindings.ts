@@ -16,37 +16,37 @@ export class NativeFannBindings {
       training,inference = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     const _binaryExists = existsSync(binaryPath) ?? existsSync(`${binaryPath}.exe`);
     if (!binaryExists) {
-      throw new Error('ruv-FANN binary not found.Run = true;
+      throw new Error('ruv-FANN binary not found.Run = true;'
       this.logger.info('✅ Native ruv-FANN bindings initialized successfully');
-      return {native = await this.executeCommand(['--help']);
+      // return {native = // await this.executeCommand(['--help']);
       // this.capabilities.inference = true; // LINT: unreachable code removed
       // Test training capability
       try {
-// await this.executeCommand(['--test-training']);
+// // await this.executeCommand(['--test-training']);
         this.capabilities.training = true;
       } catch (error) {
         this.logger.debug('Training capability not available');
       //       }
       // Test GPU capability
       try {
-// await this.executeCommand(['--test-gpu']);
+// // await this.executeCommand(['--test-gpu']);
         this.capabilities.gpu = true;
       } catch (error) {
         this.logger.debug('GPU capability not available');
       //       }
       // Test SIMD capability
       try {
-// await this.executeCommand(['--test-simd']);
+// // await this.executeCommand(['--test-simd']);
         this.capabilities.simd = true;
       } catch (error) {
         this.logger.debug('SIMD capability not available');
       //       }
     //     }
     catch(error)
-    throw new Error(`Capability testingfailed = await this.executeCommand(['--version']);
-      return result.stdout.trim();
+    throw new Error(`Capability testingfailed = // await this.executeCommand(['--version']);`
+      // return result.stdout.trim();
     //   // LINT: unreachable code removed} catch (error) {
-      return 'unknown';
+      // return 'unknown';
     //   // LINT: unreachable code removed}
   //   }
 
@@ -55,7 +55,7 @@ export class NativeFannBindings {
    * Execute ruv-FANN command
    */;
   async executeCommand(args, input = null) {
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
       const _binaryPath = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     // const _process = spawn(binaryPath, args, {cwd = ''; // LINT: unreachable code removed
       const _stderr = '';
@@ -80,7 +80,7 @@ export class NativeFannBindings {
         if(code === 0) {
           resolve({ stdout, stderr, code });
         } else {
-          reject(new Error(`Process exited with code ${code});
+          reject(new Error(`Process exited with code ${code});`
     //     )
   //   }
   //   )
@@ -105,29 +105,29 @@ createNetwork(config)
   //   }
   const _networkConfig = {layers = JSON.stringify(networkConfig);
 // const _result = awaitthis.executeCommand(['create-network'], configJson);
-  return {id = JSON.stringify({
-        network_id,data = await this.executeCommand(['train'], trainingJson);
+  // return {id = JSON.stringify({
+        network_id,data = // await this.executeCommand(['train'], trainingJson);
   // ; // LINT: unreachable code removed
-  return {
+  // return {
         networkId,epochs = JSON.stringify({
-        network_id,input = await this.executeCommand(['inference'], inferenceJson);
+        network_id,input = // await this.executeCommand(['inference'], inferenceJson);
   // ; // LINT: unreachable code removed
-  return {
-        networkId,input = await this.executeCommand(['stats', networkId]);
+  // return {
+        networkId,input = // await this.executeCommand(['stats', networkId]);
   // return JSON.parse(result.stdout); // LINT: unreachable code removed
 // }
 catch (error)
 // {
-      throw new Error(`Stats retrievalfailed = await this.executeCommand(['load', filePath]);
+      throw new Error(`Stats retrievalfailed = // await this.executeCommand(['load', filePath]);`
 
-      return {id = false;
+      // return {id = false;
     //   // LINT: unreachable code removed}
 
   /**
    * Get performance metrics
    */;
   getMetrics() {
-    return {
+    // return {
       isInitialized: this.isInitialized,
     // capabilities: { ...this.capabilities  // LINT: unreachable code removed},
       backend: 'native',
@@ -141,4 +141,6 @@ catch (error)
 // }
 
 
-export default NativeFannBindings;
+// export default NativeFannBindings;
+
+}}}}}}}}}}))))))

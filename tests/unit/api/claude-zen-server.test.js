@@ -16,10 +16,10 @@ jest.mock('express', () => {
   //   // LINT: unreachable code removed}),
   set: jest.fn())
   //   )
-  mockExpress.json = jest.fn()
-  mockExpress.urlencoded = jest.fn()
-  mockExpress.static = jest.fn()
-  return mockExpress;
+  mockExpress.json = jest.fn() {}
+  mockExpress.urlencoded = jest.fn() {}
+  mockExpress.// static = jest.fn() {}
+  // return mockExpress;
 });
 jest.mock('cors', () => jest.fn(() => (_req, _res, next) => next()));
 jest.mock('helmet', () => jest.fn(() => (_req, _res, next) => next()));
@@ -39,7 +39,7 @@ generateOpenAPISpec: jest.fn(() => (
 )) }))
 jest.mock('../../../src/api/agui-websocket-middleware.js', () => (
 // {
-  integrateAGUIWithWebSocket: jest.fn()
+  integrateAGUIWithWebSocket: jest.fn() {}
 // }
 ))
 describe('ClaudeZenServer', () =>
@@ -86,7 +86,7 @@ describe('server lifecycle', () =>
     const _startPromise = server.start();
     expect(startPromise).toBeInstanceOf(Promise);
     try {
-  // await startPromise;
+  // // await startPromise;
         expect(server.isRunning).toBe(true);
       } catch (error) {
         // Server might fail to start in test environment, which is acceptable
@@ -107,7 +107,7 @@ describe('server lifecycle', () =>
     // Mock server start failure
     const _invalidServer = new ClaudeZenServer({ port);
     try {
-  // await invalidServer.start();
+  // // await invalidServer.start();
       } catch (error) {
         expect(error).toBeDefined();
       //       }
@@ -197,7 +197,7 @@ it('should handle WebSocket connections', () =>
   readyState, // OPEN
     send;
   : jest.fn(),
-  close: jest.fn()
+  close: jest.fn() {}
 // }
 const _connectionHandler = {
         onConnection: jest.fn((ws) => {
@@ -205,7 +205,7 @@ const _connectionHandler = {
           ws.send = jest.fn();
         }),
 onMessage: jest.fn(),
-onClose: jest.fn()
+onClose: jest.fn() {}
 // }
 connectionHandler.onConnection(mockConnection)
 expect(mockConnection.id).toBe('test-connection')
@@ -233,7 +233,7 @@ it('should provide status check endpoint', async () =>
         server: 'running',
   connections,
   memory: process.memoryUsage(),
-  cpu: process.cpuUsage()
+  cpu: process.cpuUsage() {}
 // }
 expect(statusResponse.server).toBe('running');
 expect(typeof statusResponse.connections).toBe('number');
@@ -261,7 +261,7 @@ describe('error handling', () =>
   const _mockRes = {
         headersSent,
   status: jest.fn(() => mockRes),
-  json: jest.fn()
+  json: jest.fn() {}
 // }
 errorHandler.handleError(testError, {}, mockRes, jest.fn());
 expect(mockRes.status).toHaveBeenCalledWith(500);
@@ -284,7 +284,7 @@ it('should handle 404 errors', () =>
 const _mockReq = { method: 'GET', path: '/api/nonexistent' };
 const _mockRes = {
         status: jest.fn(() => mockRes),
-json: jest.fn()
+json: jest.fn() {}
 // }
 notFoundHandler(mockReq, mockRes)
 expect(mockRes.status).toHaveBeenCalledWith(404)
@@ -342,10 +342,10 @@ it('should provide metrics endpoint', () =>
 
 
 // 
-{
+{}
   uptime: process.uptime(),
   memory: process.memoryUsage(),
-  cpu: process.cpuUsage()
+  cpu: process.cpuUsage() {}
 // }
 
 

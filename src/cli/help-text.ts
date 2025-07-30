@@ -8,24 +8,24 @@ import { HelpFormatter } from './help-formatter.js';
 export const VERSION = '2.0.0-alpha.73';
 
 export const MAIN_HELP = `
-🌊 Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
+� Claude-Flow v${VERSION} - Enterprise-Grade AI Agent Orchestration Platform
 
-🎯 ENTERPRISE FEATURES = {swarm = {agent = commandConfigs[command];
+ ENTERPRISE FEATURES = {swarm = {agent = commandConfigs[command];
   if(!config) {
-    return HelpFormatter.formatError(;
-    // `; // LINT): unknown
+    // return HelpFormatter.formatError(;
+    // `; // LINT): unknown`
 // {
   // Return the vibrant, emoji-rich version by default
   if (!plain) {
-    return MAIN_HELP;
+    // return MAIN_HELP;
     //   // LINT: unreachable code removed}
     // Return plain standardized format when requested
     const _helpInfo = {
     name: 'claude-zen',
     description: 'Advanced AI agent orchestration system',
-    usage: `claude-zen <command> [<args>] [options];
+    usage: `claude-zen <command> [<args>] [options];`
     claude-zen <command> --help;
-    claude-zen --version`,
+    claude-zen --version`,`
     commands: [;
       //       {
         name: 'hive-mind',
@@ -106,6 +106,8 @@ export const MAIN_HELP = `
       'claude-zen agent spawn researcher --name "Research Bot"',
       'claude-zen status --json',
       'claude-zen memory query "API design"' ] }
-  return HelpFormatter.formatHelp(helpInfo);
+  // return HelpFormatter.formatHelp(helpInfo);
 // }
 
+
+}}}

@@ -3,8 +3,8 @@
 export class PostInitValidator {
   constructor(workingDir = workingDir;
 // }
-/**
- * Check file integrity (existence, size, readability);
+/**  */
+ * Check file integrity (existence, size, readability)
  */
 async;
 checkFileIntegrity();
@@ -18,7 +18,7 @@ checkFileIntegrity();
         // Check if it exists and is a file
         if(!stat.isFile) {
           result.success = false;
-          result.errors.push(`Expected file but found directory = {status = false;
+          result.errors.push(`Expected file but found directory = {status = false;`
           result.errors.push(;
             `File toosmall = ${file.minSize})`)
   result.files[file.path] = status =
@@ -26,9 +26,9 @@ checkFileIntegrity();
   //   {
     const _isExecutable = (stat.mode & 0o111) !== 0;
     if (!isExecutable) {
-      result.warnings.push(`File not executable = {status = { status: 'ok',size = false;
-          result.errors.push(`Cannot read file = {status = false;
-      result.errors.push(`File not found = {status = {success = [
+      result.warnings.push(`File not executable = {status = { status: 'ok',size = false;`
+          result.errors.push(`Cannot read file = {status = false;`
+      result.errors.push(`File not found = {status = {success = [`
       'memory',
       'memory/agents',
       'memory/sessions',
@@ -48,14 +48,14 @@ checkFileIntegrity();
 // const _stat = awaitnode.stat(dirPath);
         if(!stat.isDirectory) {
           result.success = false;
-          result.errors.push(`Expected directory but foundfile = false;
-      result.errors.push(`Required directorymissing = `${this.workingDir}/${dir}`;
+          result.errors.push(`Expected directory but foundfile = false;`
+      result.errors.push(`Required directorymissing = `${this.workingDir}/${dir}`;`
 
       try {
-// await node.stat(dirPath);
+// // await node.stat(dirPath);
       } catch {
         if (dir.includes('.roo')  ?? dir.includes('sparc')) {
-          result.warnings.push(`Optional SPARC directory missing = {success = await this.validateMemoryStructure();
+          result.warnings.push(`Optional SPARC directory missing = {success = // await this.validateMemoryStructure();`
       result.structure.memory = memoryStructure;
       if (!memoryStructure.valid) {
         result.warnings.push('Memory directory structure is incomplete');
@@ -84,9 +84,9 @@ checkFileIntegrity();
     //     }
     catch(error)
     result.success = false
-    result.errors.push(`Structure validation failed = success = [path = === 'windows') ;
+    result.errors.push(`Structure validation failed = success = [path = === 'windows') ;`
       result.warnings.push('Permission checks skipped on Windows');
-      return result;
+      // return result;
     // ; // LINT: unreachable code removed
     for(const item of itemsToCheck) {
       const _itemPath = `${this.workingDir}/${item.path}`;
@@ -104,11 +104,11 @@ checkFileIntegrity();
     `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`)
   //   }
   catch(error)
-  result.warnings.push(`Could not check permissions
+  result.warnings.push(`Could not check permissions`
   for ${item.path}
   )
 // }
-return result;
+// return result;
 // }
 // Helper methods
 
@@ -119,7 +119,7 @@ validateMemoryStructure();
   const _expectedFiles = ['claude-zen-data.json', 'agents/README.md', 'sessions/README.md'];
   for (const dir of expectedDirs) {
     try {
-// await node.stat(`\$this.workingDir/memory/\$dir`);
+// // await node.stat(`\$this.workingDir/memory/\$dir`);
       structure.dirs.push(dir);
     } catch {
       structure.valid = false;
@@ -127,13 +127,13 @@ validateMemoryStructure();
   //   }
   for (const file of expectedFiles) {
     try {
-// await node.stat(`\$this.workingDir/memory/\$file`);
+// // await node.stat(`\$this.workingDir/memory/\$file`);
       structure.files.push(file);
     } catch {
       structure.valid = false;
     //     }
   //   }
-  return structure;
+  // return structure;
 // }
 async;
 validateCoordinationStructure();
@@ -141,13 +141,13 @@ validateCoordinationStructure();
   const _structure = {valid = ['memory_bank', 'subtasks', 'orchestration'];
   for (const dir of expectedDirs) {
     try {
-// await node.stat(`\$this.workingDir/coordination/\$dir`);
+// // await node.stat(`\$this.workingDir/coordination/\$dir`);
       structure.dirs.push(dir);
     } catch {
       structure.valid = false;
     //     }
   //   }
-  return structure;
+  // return structure;
 // }
 async;
 validateClaudeStructure();
@@ -155,7 +155,7 @@ validateClaudeStructure();
   const _structure = {valid = ['commands', 'logs'];
   for (const dir of expectedDirs) {
     try {
-// await node.stat(`\$this.workingDir/.claude/\$dir`);
+// // await node.stat(`\$this.workingDir/.claude/\$dir`);
       structure.dirs.push(dir);
     } catch {
       structure.valid = false;
@@ -164,7 +164,7 @@ validateClaudeStructure();
   // Check if there are any command files
   try {
     const _entries = [];
-    for await (const entry of node.readDir(`\$this.workingDir/.claude/commands`)) {
+    for // await (const entry of node.readDir(`\$this.workingDir/.claude/commands`)) {
       if (entry.isFile && entry.name.endsWith('.js')) {
         entries.push(entry.name);
       //       }
@@ -174,15 +174,15 @@ validateClaudeStructure();
   } catch {
     structure.hasCommands = false;
   //   }
-  return structure;
+  // return structure;
 // }
 async;
 checkSparcExists();
 try {
 // await node.stat(`\$this.workingDir/.roomodes`);
-    return true;
+    // return true;
     //   // LINT: unreachable code removed} catch {
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
 async;
@@ -203,7 +203,7 @@ try {
     const _expectedDirs = ['templates', 'workflows', 'modes', 'configs'];
     for (const dir of expectedDirs) {
       try {
-// await node.stat(`${this.workingDir}/.roo/${dir}`);
+// // await node.stat(`${this.workingDir}/.roo/${dir}`);
         structure.dirs.push(dir);
       } catch {
         // Optional subdirectories
@@ -215,6 +215,8 @@ try {
 // }
 
 
-return structure;
+// return structure;
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}}))))))

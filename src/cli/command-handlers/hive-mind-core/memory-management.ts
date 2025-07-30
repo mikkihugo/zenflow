@@ -27,18 +27,18 @@ if (!isInteractive()) {
   try {
 // const __action = awaitinquirer.prompt([;
       //       {
-        type = {list = {}) {
+        //         type = {list = {}) {
   const _sessionDir = filters.sessionDir  ?? './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
 
   if (!existsSync(dbPath)) {
-    console.warn(chalk.yellow('⚠️  Memory database not found.Run = new Database(dbPath);
+    console.warn(chalk.yellow('⚠  Memory database not found.Run = new Database(dbPath);'
 
   try {
-    const _query = `;
+    const _query = `;`
       SELECT id, key, type, importance, created_at, accessed_at, access_count
       FROM collective_memory;
-    `;
+    `;`
 
     const _params = [];
     const _conditions = [];
@@ -77,11 +77,11 @@ if (!isInteractive()) {
     const _memories = db.prepare(query).all(...params);
 
     if(memories.length === 0) {
-      console.warn(chalk.blue('📭 No memories found matching criteria'));
+      console.warn(chalk.blue('� No memories found matching criteria'));
       return;
     //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n💾 Collective Memory (${memories.length} entries)\n`));
+    console.warn(chalk.yellow(`\n� Collective Memory (${memories.length} entries)\n`));
 
     for(const _memory of memories);
     displayMemoryEntry(memory);
@@ -115,11 +115,11 @@ if (!isInteractive()) {
   const _db = new Database(dbPath);
 
   try {
-    const _query = `;
+    const _query = `;`
       SELECT id, key, value, type, importance, created_at, accessed_at, access_count
       FROM collective_memory;
       WHERE ;
-    `;
+    `;`
 
     const _searchPattern = `%${answers.query}%`;
 
@@ -141,11 +141,11 @@ if (!isInteractive()) {
     const _results = db.prepare(query).all(...params);
 
     if(results.length === 0) {
-      console.warn(chalk.blue(`📭 No memories found matching "${answers.query}"`));
+      console.warn(chalk.blue(`� No memories found matching "${answers.query}"`));
       return;
     //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n🔍 Search Results (${results.length} found)\n`));
+    console.warn(chalk.yellow(`\n� Search Results (${results.length} found)\n`));
 
     for(const result of results) {
       displayMemoryEntry(result, true);
@@ -158,7 +158,7 @@ if (!isInteractive()) {
       UPDATE collective_memory ;
       SET accessed_at = ?, access_count = access_count + 1 ;
       WHERE id IN (${results.map(() => '?').join(',')});
-    `);
+    `);`
     updateStmt.run(Math.floor(Date.now() / 1000), ...results.map(r => r.id));
 
   } finally {
@@ -189,14 +189,14 @@ if (!isInteractive()) {
   try {
     const _memoryId = `mem_\$Date.now()_\$Math.random().toString(36).substr(2, 9)`;
 
-    const _stmt = db.prepare(`;
+    const _stmt = db.prepare(`;`
       INSERT INTO collective_memory (id, session_id, key, value, type, importance)
       VALUES (?, ?, ?, ?, ?, ?);
-    `);
+    `);`
 
     stmt.run(memoryId, sessionId, key, value, type, importance);
 
-    return memoryId;
+    // return memoryId;
     // ; // LINT: unreachable code removed
   } finally {
     db.close();
@@ -223,14 +223,14 @@ if (!isInteractive()) {
 
     // Top accessed memories
 
-    console.warn(chalk.yellow('\n📊 Collective Memory Statistics\n'));
+    console.warn(chalk.yellow('\n� Collective Memory Statistics\n'));
 
-    console.warn(chalk.bold('Overview = (stat.avg_importance * 100).toFixed(1);
-      console.warn(`  $stat.type: $chalk.cyan(stat.count)(avgimportance = totalCount > 0 ? Math.round(await estimateMemorySize(db) / totalCount) : 0;
+    console.warn(chalk.bold('Overview = (stat.avg_importance * 100).toFixed(1);'
+      console.warn(`  $stat.type: $chalk.cyan(stat.count)(avgimportance = totalCount > 0 ? Math.round(// await estimateMemorySize(db) / totalCount) ;`
 
-    console.warn(chalk.bold('\nStorage = await inquirer.prompt([;
+    console.warn(chalk.bold('\nStorage = // await inquirer.prompt([;'
     //     {
-      type = {};
+      //       type = {};
 
   if(answers.strategy === 'age') {
 // const _ageAnswer = awaitinquirer.prompt([;
@@ -259,11 +259,11 @@ if (!isInteractive()) {
 // const _toDelete = awaitidentifyMemoriesToDelete(db, cleanupCriteria);
 
     if(toDelete.length === 0) {
-      console.warn(chalk.blue('📭 No memories match cleanup criteria'));
+      console.warn(chalk.blue('� No memories match cleanup criteria'));
       return;
     //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n🗑️  Found ${toDelete.length} memories todelete = await inquirer.prompt([;
+    console.warn(chalk.yellow(`\n�  Found ${toDelete.length} memories todelete = // await inquirer.prompt([;`
       {type = ora(`Deleting ${toDelete.length} memories...`).start();
 
       const _deleteStmt = db.prepare('DELETE FROM collective_memory WHERE id = ?');
@@ -297,20 +297,20 @@ if (!isInteractive()) {
   const _db = new Database(dbPath);
 
   try {
-    const _memories = db.prepare(`;
+    const _memories = db.prepare(`;`
       SELECT id, session_id, key, value, type, importance, created_at, accessed_at, access_count
       FROM collective_memory;
       ORDER BY created_at DESC;
-    `).all();
+    `).all();`
 
     const _backup = {exported_at = new Date().toISOString().replace(/[]/g, '-');
     const _filename = `memory-backup-\$timestamp.json`;
 
     // Ensure exports directory exists
-    const { mkdirSync } = await import('fs');
+    const { mkdirSync } = // await import('fs');
     const _exportsDir = path.join(sessionDir, 'exports');
     if (!existsSync(exportsDir)) {
-      mkdirSync(exportsDir, {recursive = await inquirer.prompt([
+      mkdirSync(exportsDir, {recursive = // await inquirer.prompt([
     {type = > input > 0  ?? 'Must be greater than 0';
     },
     {type = > input > 0  ?? 'Must be greater than 0';
@@ -331,10 +331,10 @@ if (!isInteractive()) {
  * @param {Database} db - Database instance;
  * @returns {Promise<number>} Estimated size in bytes;
     // */; // LINT: unreachable code removed
-async function estimateMemorySize(db = db.prepare(`;
+async function estimateMemorySize(db = db.prepare(`;`
     SELECT SUM(LENGTH(key) + LENGTH(value) + LENGTH(type) + 50) as total_size;
     FROM collective_memory;
-  `).get();
+  `).get();`
 
   return result.total_size  ?? 0;
 // }
@@ -369,13 +369,15 @@ async function identifyMemoriesToDelete() {
   conditions.push("type !== 'config'");
 
   if(conditions.length === 1 && conditions[0] === "type !== 'config'") {
-    return []; // No other criteria specified
+    // return []; // No other criteria specified
   //   }
 
 
   query += conditions.join(' AND ');
   query += ' ORDER BY importance ASC, access_count ASC';
 
-  return db.prepare(query).all(...params);
+  // return db.prepare(query).all(...params);
 // }
 
+
+}}}}}}}}}}}}}}))))))))))))))))

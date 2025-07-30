@@ -13,7 +13,7 @@ export class MarkdownScannerPlugin {
     this.config = {filePatterns = new Map();
   //   }
   async initialize() {
-    console.warn('📝 Markdown Scanner Plugin initialized');
+    console.warn('� Markdown Scanner Plugin initialized');
     this.setupDefaultRules();
   //   }
   setupDefaultRules() {
@@ -45,8 +45,8 @@ scanMarkdownFiles((options =
 : unknown
 // {
   const { validateLinks = true, checkStructure = true } = options;
-  console.warn('🔍 Scanning for markdown files...');
-  const _stats = {totalFiles = await readFile(file, 'utf8');
+  console.warn('� Scanning for markdown files...');
+  const _stats = {totalFiles = // await readFile(file, 'utf8');
 // const _analysis = awaitthis.analyzeMarkdownFile(content, file, {
           validateLinks,
   checkStructure;
@@ -56,7 +56,7 @@ suggestions.push(...analysis.issues)
 this.updateStats(stats, analysis)
 } catch (error)
 // {
-        console.warn(`⚠️ Could not analyze ${file});
+        console.warn(`⚠ Could not analyze ${file});`
         suggestions.push({id = [];
     const _parsed = matter(content);
 
@@ -85,7 +85,7 @@ this.updateStats(stats, analysis)
     //     }
 
 
-    return {
+    // return {
       issues,frontmatter = [];
     // ; // LINT: unreachable code removed
     try {
@@ -106,7 +106,7 @@ this.updateStats(stats, analysis)
     const _hierarchyIssues = this.validateHeadingHierarchy(headings, filepath);
     issues.push(...hierarchyIssues);
 
-    return issues;
+    // return issues;
     //   // LINT: unreachable code removed}
 
   /**
@@ -142,11 +142,11 @@ this.updateStats(stats, analysis)
 
 
       // Check internal links
-      if (linkUrl.startsWith('./')  ?? linkUrl.startsWith('../')  ?? !linkUrl.includes(')) {
+      if (linkUrl.startsWith('./')  ?? linkUrl.startsWith('../')  ?? !linkUrl.includes(')) {'
         const _fullPath = path.resolve(path.dirname(filepath), linkUrl);
 
         try {
-// await readFile(fullPath);
+// // await readFile(fullPath);
         } catch (/* _error */) {
           issues.push({id = path.basename(filepath, '.md');
 
@@ -157,13 +157,13 @@ this.updateStats(stats, analysis)
   /**
    * Count headings in content;
    */;
-  countHeadings(content): unknown ;
-    return (content.match(/^#{1,6}\s+/gm)  ?? []).length;
+  countHeadings(content) ;
+    // return (content.match(/^#{1,6}\s+/gm)  ?? []).length;
     // ; // LINT: unreachable code removed
   /**
    * Update statistics;
    */;
-  updateStats(stats, analysis): unknown ;
+  updateStats(stats, analysis) ;
     stats.lintIssues += analysis.issues.filter(i => i.type === 'lint_issue').length;
     stats.structureIssues += analysis.issues.filter(i => i.type === 'structure_issue').length;
     stats.linkIssues += analysis.issues.filter(i => i.type === 'broken_link').length;
@@ -173,12 +173,12 @@ this.updateStats(stats, analysis)
    */;
   generateSummary(suggestions): unknown
 
-      return acc;);
+      // return acc;);
 
-      return acc;
+      // return acc;
     //   // LINT: unreachable code removed});
 
-    return {totalIssues = > b - a)[0]?.[0];
+    // return {totalIssues = > b - a)[0]?.[0];
     //   // LINT: unreachable code removed};
   //   }
 
@@ -187,7 +187,7 @@ this.updateStats(stats, analysis)
    * Get scanning capabilities;
    */;
   getCapabilities() ;
-    return {
+    // return {
       fileTypes: ['.md', '.markdown'],
     // validationTypes: ['frontmatter', 'structure', 'links', 'lint'], // LINT: unreachable code removed
       features: [;
@@ -201,8 +201,10 @@ this.updateStats(stats, analysis)
 
   async cleanup() ;
     this.markdownRules.clear();
-    console.warn('📝 Markdown Scanner Plugin cleaned up');
+    console.warn('� Markdown Scanner Plugin cleaned up');
 // }
 
 
-export default MarkdownScannerPlugin;
+// export default MarkdownScannerPlugin;
+
+}}}}}}}}}}}}}}}}}}}}})))))

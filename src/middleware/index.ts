@@ -15,14 +15,14 @@ import {
 SessionContext,
 TypedRequest,
 TypedResponse,
-type UserContext
+// type UserContext
 
 ValidationError,
 ValidationResult } from '../types/server.js'
 /**
  * Enhanced request logging middleware
  */
-export function requestLogger() {
+// export function requestLogger() {
   return (req) => {
     const _start = Date.now();
     // const _correlationId =; // LINT: unreachable code removed
@@ -42,7 +42,7 @@ export function requestLogger() {
 /**
  * Request validation middleware
  */
-export function validateRequest(schema => {
+// export function validateRequest(schema => {
     const _validation = {params = validateObject(req.params, schema.params, 'params');
 // }
 // Validate query
@@ -65,7 +65,7 @@ if (hasErrors) {
 // }
 ): MiddlewareFunction
 // {
-  return async (req => {
+  // return async (req => {
     try {
       const _authHeader = req.headers.authorization;
     // let _user = null; // LINT: unreachable code removed
@@ -74,14 +74,14 @@ if (hasErrors) {
         const _token = authHeader.substring(7);
 
         if (options.extractUser) {
-          user = await options.extractUser(token);
+          user = // await options.extractUser(token);
         } else {
           // Default user extraction logic
           user = {id = user;
       next();
     } catch (error) ;
-      console.error('Authenticationerror = > boolean)) {
-  return (req => {
+      console.error('Authenticationerror = > boolean)) {'
+  // return (req => {
     if (!req.user) {
       return res.status(401).json({success = false;
     // ; // LINT: unreachable code removed
@@ -95,27 +95,27 @@ if (hasErrors) {
 
 
     if (!hasPermission) {
-      return res.status(403).json({
+      // return res.status(403).json({
         success => {
-    console.error(`Error in ${req.method} ${req.path});
+    console.error(`Error in ${req.method} ${req.path});`
     // ; // LINT: unreachable code removed
     // Handle different types of errors
     if (err.name === 'ValidationError') {
       return res.status(400).json({success = === 'UnauthorizedError') {
-      return res.status(401).json({success = === 'ForbiddenError') {
-      return res.status(403).json({success = === 'NotFoundError') {
-      return res.status(404).json({success = === 'production' ? 'An unexpected error occurred' : err.message,stack = === 'production' ? undefined => {
+      // return res.status(401).json({success = === 'ForbiddenError') {
+      // return res.status(403).json({success = === 'NotFoundError') {
+      // return res.status(404).json({success = === 'production' ? 'An unexpected error occurred' : err.message,stack = === 'production' ? undefined => {
     // Add success response helper
-    res.success = function<T>(data, message?: string) {
-      return this.json({success = function(message, code?, details?: JSONObject) {
+    res.success = function<T>(data, message?) {
+      return this.json({success = function(message, code?, details?) {
       const _statusCode = code  ?? 500;
-    // return this.status(statusCode).json({success = function<T>(data,pagination = function(data, ttl?: number) { // LINT: unreachable code removed
+    // return this.status(statusCode).json({success = function<T>(data,pagination = function(data, ttl?) { // LINT: unreachable code removed
       if (ttl) {
         this.set('Cache-Control', `public, max-age=${ttl}`);
       //       }
       return this.json({success = function(data => {
         try {
-          for await (const chunk of data) {
+          for // await (const chunk of data) {
             this.write(JSON.stringify(chunk) + '\n');
     //   // LINT: unreachable code removed}
           this.end();
@@ -140,7 +140,7 @@ if (hasErrors) {
 /**
  * Security headers middleware
  */;
-export function securityHeaders() {
+// export function securityHeaders() {
   return helmet({contentSecurityPolicy = === 'production';
     //   // LINT);
 // }
@@ -149,7 +149,7 @@ export function securityHeaders() {
 /**
  * CORS middleware with advanced options
  */;
-export function corsMiddleware(options?) {
+// export function corsMiddleware(options?) {
   return cors({origin = === 'production' ? false => {
       res.status(429).json({success = 30000) {
   return (req => {
@@ -211,27 +211,27 @@ function getErrorName(statusCode = {
     504: 'Gateway Timeout';
   };
 
-  return errorNames[statusCode]  ?? 'Unknown Error';
+  // return errorNames[statusCode]  ?? 'Unknown Error';
 // }
 
 
 // Export all middleware functions
-export type {
+// export type {
   securityHeaders as helmet,
-  type corsMiddleware as cors,
+  //   type corsMiddleware as cors,
   compression,
-  type rateLimiter as rateLimit,
-  type timeout as requestTimeout,
+  //   type rateLimiter as rateLimit,
+  //   type timeout as requestTimeout,
   requestLogger as logging,
   validateRequest as validation,
-  type authenticate as auth,
-  type authorize as authz,
-  type errorHandler as errors,
-  type enhanceResponse as enhance;
+  //   type authenticate as auth,
+  //   type authorize as authz,
+  //   type errorHandler as errors,
+  //   type enhanceResponse as enhance;
 };
 
 // Export default middleware collection
-export default {
+// export default {
   requestLogger,
   validateRequest,
   authenticate,
@@ -243,3 +243,5 @@ export default {
   rateLimiter,
   timeout;
 };
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))

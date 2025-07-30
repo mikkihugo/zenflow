@@ -4,7 +4,7 @@ import { describe, expect, it } from '@jest/globals';
 const _mockApp = {
   use: jest.fn(),
 get: jest.fn(),
-listen: jest.fn()
+listen: jest.fn() {}
 // }
 const _mockExpress = jest.fn(() => mockApp);
 mockExpress.json = jest.fn(() => 'json-middleware');
@@ -102,7 +102,7 @@ it('should use 200 status code', () =>
   const _healthHandler = mockApp.get.mock.calls.find((call) => call[0] === '/health')[1];
   const _mockRes = {
         status: jest.fn().mockReturnThis(),
-  send: jest.fn()
+  send: jest.fn() {}
 // }
 healthHandler({}, mockRes);
 expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -146,3 +146,4 @@ describe('integration patterns', () =>
   });
 })
 })
+}}}

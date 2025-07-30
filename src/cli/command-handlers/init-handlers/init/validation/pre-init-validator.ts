@@ -3,34 +3,34 @@
 export class PreInitValidator {
   constructor(workingDir = workingDir;
 // }
-/**
- * Check file system permissions;
+/**  */
+ * Check file system permissions
  */
 async;
 checkPermissions();
 // {
   const __result = {success = `${this.workingDir}/.claude-zen-permission-test`;
-// await node.writeTextFile(testFile, 'test');
-// await node.remove(testFile);
+// // await node.writeTextFile(testFile, 'test');
+// // await node.remove(testFile);
   // Test directory creation permission
   const _testDir = `${this.workingDir}/.claude-zen-dir-test`;
-// await node.mkdir(testDir);
-// await node.remove(testDir);
-// await node.mkdir(testDir);
-// await node.remove(testDir);
+// // await node.mkdir(testDir);
+// // await node.remove(testDir);
+// // await node.mkdir(testDir);
+// // await node.remove(testDir);
 // }
 catch (error)
 // {
   result.success = false;
-  result.errors.push(`Insufficient permissions in ${this.workingDir});
+  result.errors.push(`Insufficient permissions in ${this.workingDir});`
 // }
-return result;
+// return result;
 // }
-/**
- * Check available disk space;
+/**  */
+ * Check available disk space
  */
 // async
-checkDiskSpace()
+checkDiskSpace() {}
 // {
     const _result = {success = new node.Command('df', {args = await command.output();
 
@@ -50,7 +50,7 @@ checkDiskSpace()
             if(availableMB < 100) {
               result.success = false;
               result.errors.push(;
-                `Insufficient diskspace = false) {
+                `Insufficient diskspace = false) {`
     const _result = {success = [
       'CLAUDE.md',
       'memory-bank.md',
@@ -66,11 +66,11 @@ checkDiskSpace()
           result.conflicts.push(file);
           if(!force) {
             result.success = false;
-            result.errors.push(`File alreadyexists = await node.stat(`${this.workingDir}/${dir}`);
+            result.errors.push(`File alreadyexists = // await node.stat(`${this.workingDir}/${dir}`);`
         if(stat.isDirectory) {
           // Check if directory has important content
           const _entries = [];
-          for await (const entry of node.readDir(`${this.workingDir}/${dir}`)) {
+          for // await (const entry of node.readDir(`${this.workingDir}/${dir}`)) {
             entries.push(entry.name);
           //           }
 
@@ -78,8 +78,8 @@ checkDiskSpace()
           if(entries.length > 0) {
             result.conflicts.push(`${dir}/ (${entries.length} items)`);
             if(!force) {
-              result.warnings.push(`Directory exists with content = {success = [
-      {name = new node.Command(dep.command, {args = await command.output();
+              result.warnings.push(`Directory exists with content = {success = [`
+      {name = new node.Command(dep.command, {args = // await command.output();
 
         if(success) {
           const _version = new TextDecoder().decode(stdout).trim();
@@ -93,12 +93,12 @@ checkDiskSpace()
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 
-  /**
-   * Check environment variables and configuration;
-   */;
+  /**  */
+ * Check environment variables and configuration
+   */
   async checkEnvironment() {
     const _result = {success = [
       {name = node.env.get(envVar.name);
@@ -116,9 +116,9 @@ checkDiskSpace()
     //     }
 
 
-    // Check if we're in a git repository
+    // Check if we're in a git repository'
     try {
-      const _command = new node.Command('git', {args = await command.output();
+      const _command = new node.Command('git', {args = // await command.output();
       result.environment.gitRepo = success;
 
       if(!success) {
@@ -130,12 +130,12 @@ checkDiskSpace()
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 
-  /**
-   * Run all pre-initialization checks;
-   */;
+  /**  */
+ * Run all pre-initialization checks
+   */
   async runAllChecks(options = {}) {
     const _results = {permissions = Object.values(results).every((r) => r.success);
     const _allErrors = Object.values(results).flatMap((r) => r.errors  ?? []);
@@ -149,3 +149,5 @@ checkDiskSpace()
   //   }
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}))))))

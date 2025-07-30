@@ -1,6 +1,6 @@
-/**
- * Start Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Start Command Module
+ * Converted from JavaScript to TypeScript
  */
 
 // start-command.js - Re-export the wrapper to maintain backward compatibility

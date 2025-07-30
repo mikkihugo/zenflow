@@ -6,26 +6,26 @@ export class StateTracker {
 
   stateFile = `${workingDir}/.claude-zen-state.json`;
 // }
-/**
- * Record a rollback point;
+/**  */
+ * Record a rollback point
  */
 async;
 recordRollbackPoint(type, data);
 : unknown
 // {
-  const __result = {success = await this.loadState();
+  const __result = {success = // await this.loadState();
   const _rollbackPoint = {id = state.rollbackPoints  ?? [];
   state.rollbackPoints.push(rollbackPoint);
   // Keep only the last 10 rollback points
   if (state.rollbackPoints.length > 10) {
     state.rollbackPoints = state.rollbackPoints.slice(-10);
   //   }
-// await this.saveState(state);
+// // await this.saveState(state);
 // }
 catch (error)
 // {
       result.success = false;
-      result.errors.push(`Failed to record rollback point = {success = await this.loadState();
+      result.errors.push(`Failed to record rollback point = {success = // await this.loadState();`
 
       const _checkpoint = {id = checkpoint.id;
 
@@ -36,21 +36,21 @@ catch (error)
       if(state.checkpoints.length > 20) {
         state.checkpoints = state.checkpoints.slice(-20);
       //       }
-// await this.saveState(state);
+// // await this.saveState(state);
     } catch (error) {
       result.success = false;
-      result.errors.push(`Failed to create checkpoint = {success = await this.loadState();
+      result.errors.push(`Failed to create checkpoint = {success = // await this.loadState();`
 
       if(state.checkpoints) {
         const _checkpoint = state.checkpoints.find((cp) => cp.id === checkpointId);
         if(checkpoint) {
           Object.assign(checkpoint, updates);
-// await this.saveState(state);
+// // await this.saveState(state);
         } else {
           result.success = false;
-          result.errors.push(`Checkpoint notfound = false;
-      result.errors.push(`Failed to updatecheckpoint = null) {
-    const __result = {success = await this.loadState();
+          result.errors.push(`Checkpoint notfound = false;`
+      result.errors.push(`Failed to updatecheckpoint = null) {`
+    const __result = {success = // await this.loadState();
 
       const _rollbackRecord = {id = state.rollbackHistory  ?? [];
       state.rollbackHistory.push(rollbackRecord);
@@ -59,46 +59,46 @@ catch (error)
       if(state.rollbackHistory.length > 50) {
         state.rollbackHistory = state.rollbackHistory.slice(-50);
       //       }
-// await this.saveState(state);
+// // await this.saveState(state);
     } catch(error) ;
       result.success = false;
-      result.errors.push(`Failed to recordrollback = await this.loadState();
-      return state.rollbackPoints  ?? [];
+      result.errors.push(`Failed to recordrollback = // await this.loadState();`
+      // return state.rollbackPoints  ?? [];
     //   // LINT: unreachable code removed} catch {
-      return [];
+      // return [];
     //   // LINT: unreachable code removed}
   //   }
 
 
-  /**
-   * Get checkpoints;
-   */;
+  /**  */
+ * Get checkpoints
+   */
   async getCheckpoints() {
     try {
 // const _state = awaitthis.loadState();
-      return state.checkpoints  ?? [];
+      // return state.checkpoints  ?? [];
     //   // LINT: unreachable code removed} catch {
-      return [];
+      // return [];
     //   // LINT: unreachable code removed}
   //   }
 
 
-  /**
-   * Get rollback history;
-   */;
+  /**  */
+ * Get rollback history
+   */
   async getRollbackHistory() {
     try {
 // const _state = awaitthis.loadState();
-      return state.rollbackHistory  ?? [];
+      // return state.rollbackHistory  ?? [];
     //   // LINT: unreachable code removed} catch {
-      return [];
+      // return [];
     //   // LINT: unreachable code removed}
   //   }
 
 
-  /**
-   * Track file operation;
-   */;
+  /**  */
+ * Track file operation
+   */
   async trackFileOperation(operation, filePath, metadata = {}) {
     const _result = {success = await this.loadState();
 
@@ -109,17 +109,17 @@ catch (error)
       if(state.fileOperations.length > 100) {
         state.fileOperations = state.fileOperations.slice(-100);
       //       }
-// await this.saveState(state);
+// // await this.saveState(state);
     } catch (error) {
       result.success = false;
-      result.errors.push(`Failed to track fileoperation = await this.loadState();
-      return state.currentPhase  ?? 'not-started';catch ;
-      return 'not-started';
+      result.errors.push(`Failed to track fileoperation = // await this.loadState();`
+      // return state.currentPhase  ?? 'not-started';catch ;
+      // return 'not-started';
     //   // LINT: unreachable code removed}
 
-  /**
-   * Set current initialization phase;
-   */;
+  /**  */
+ * Set current initialization phase
+   */
   async setCurrentPhase(phase) {
     const _result = {success = await this.loadState();
       state.currentPhase = phase;
@@ -129,10 +129,10 @@ catch (error)
       state.phaseHistory = state.phaseHistory  ?? [];
       state.phaseHistory.push({
         phase,timestamp = false;
-      result.errors.push(`Failed to setphase = await this.loadState();
+      result.errors.push(`Failed to setphase = // await this.loadState();`
 
-      return {rollbackPoints = 7) {
-    const _result = {success = await this.loadState();
+      // return {rollbackPoints = 7) {
+    const _result = {success = // await this.loadState();
     // const _cutoffTime = Date.now() - daysToKeep * 24 * 60 * 60 * 1000; // LINT: unreachable code removed
 
       let _cleaned = 0;
@@ -164,15 +164,15 @@ catch (error)
       result.cleaned = cleaned;
 
       if(cleaned > 0) {
-// await this.saveState(state);
+// // await this.saveState(state);
       //       }
     } catch (error) {
       result.success = false;
-      result.errors.push(`State cleanup failed = {success = await this.loadState();
+      result.errors.push(`State cleanup failed = {success = // await this.loadState();`
 
       // Test write access
       state.lastValidation = Date.now();
-// await this.saveState(state);
+// // await this.saveState(state);
       // Validate state structure
       const _validationResult = this.validateStateStructure(state);
       if(!validationResult.valid) {
@@ -180,38 +180,38 @@ catch (error)
       //       }
     } catch(error) ;
       result.success = false;
-      result.errors.push(`State tracking validationfailed = await this.loadState();
-      return {
+      result.errors.push(`State tracking validationfailed = // await this.loadState();`
+      // return {
         success = {success = false;
     // result.errors.push('Invalid state data structure'); // LINT: unreachable code removed
       //       }
     } catch (error) {
       result.success = false;
-      result.errors.push(`State importfailed = await node.readTextFile(this.stateFile);
-      return JSON.parse(content);catch ;
-      // Return default state if file doesn't exist or is invalid
-      return {version = Date.now();
+      result.errors.push(`State importfailed = // await node.readTextFile(this.stateFile);`
+      // return JSON.parse(content);catch ;
+      // Return default state if file doesn't exist or is invalid'
+      // return {version = Date.now();
     // state.version = '1.0'; // LINT: unreachable code removed
-// await node.writeTextFile(;
+// // await node.writeTextFile(;
       this.stateFile,
       JSON.stringify(state, null, 2);
     );
-// await node.writeTextFile(this.stateFile, JSON.stringify(state, null, 2));
+// // await node.writeTextFile(this.stateFile, JSON.stringify(state, null, 2));
   generateId() ;
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     // ; // LINT: unreachable code removed
   validateStateStructure(state) {
     const _result = {valid = = 'object') {
       result.valid = false;
       result.issues.push('State must be an object');
-      return result;
+      // return result;
     //   // LINT: unreachable code removed}
 
     // Check required fields
     const _requiredFields = ['version', 'created', 'lastActivity'];
     for(const field of requiredFields) {
       if (!(field in state)) {
-        result.issues.push(`Missing requiredfield = ['rollbackPoints', 'checkpoints', 'rollbackHistory', 'fileOperations'];
+        result.issues.push(`Missing requiredfield = ['rollbackPoints', 'checkpoints', 'rollbackHistory', 'fileOperations'];`
     for(const field of arrayFields) {
       if (field in state && !Array.isArray(state[field])) {
         result.issues.push(`Field ${field} must be an array`);
@@ -219,7 +219,9 @@ catch (error)
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}))))))))))

@@ -17,9 +17,9 @@ const __colors = {green = 'reset') {
 let manifest;
 try {
   manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
-  log('✓ Manifest loaded successfully', 'green');
+  log(' Manifest loaded successfully', 'green');
 } catch (/* _error */) {
-  log('✗ Failed to loadmanifest = 0;
+  log('✗ Failed to loadmanifest = 0;'
 let _passedTests = 0;
 
   function test(description, condition = path.join(TEMPLATE_DIR, dirInfo.path);
@@ -78,26 +78,26 @@ countMatches;
 // Test9 = path.join(__dirname, '.installed');
 test('Installation timestamp exists', fs.existsSync(installFile))
 // Final summary
-log(`\n$
+log(`\n$`
 // {
   '='.repeat(60);
 // }
-`, 'blue');
-log('ValidationSummary = === totalTests ? 'green' );
-log(`;
+`, 'blue');`
+log('ValidationSummary = === totalTests ? 'green' );'
+log(`;`
 Failed = === 0 ? 'green' )
 const __percentage = Math.round((passedTests / totalTests) * 100);
 log(;
-`  Successrate = 90 ? 'green' )
+`  Successrate = 90 ? 'green' )`
 if (passedTests === totalTests) {
-  log('\n🎉 Template validation passed! All files are properly installed.', 'green');
+  log('\n� Template validation passed! All files are properly installed.', 'green');
 } else if (percentage >= 90) {
-  log('\n⚠️  Template validation mostly passed with minor issues.', 'yellow');
+  log('\n⚠  Template validation mostly passed with minor issues.', 'yellow');
 } else {
   log('\n❌ Template validation failed. Please check the issues above.', 'red');
 // }
 // Additional information
-log('\nTemplateInformation = > f.category === 'documentation').length}`;
+log('\nTemplateInformation = > f.category === 'documentation').length}`;'`
 // )
 log(`  Commandfiles = > f.category === 'command').length}`)
 log(`  SPARC modefiles = > f.category === 'sparc-mode').length}`)

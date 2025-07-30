@@ -67,13 +67,13 @@ initializeEnhancedUI();
       this.initializeProcesses();
 
       // Initialize mock data
-// await this.initializeSystemData();
+// // await this.initializeSystemData();
       // Start system monitoring
       this.startSystemMonitoring();
 
-      this.addLog('success', '🚀 Enhanced Web UI fully initialized with all 87 MCP tools');
+      this.addLog('success', '� Enhanced Web UI fully initialized with all 87 MCP tools');
     } catch (/* _error */) {
-      this.addLog('error', `Failed to initialize enhancedUI = [
+      this.addLog('error', `Failed to initialize enhancedUI = [`
       { id => {
       this.processes.set(p.id, {
 ..p,
@@ -120,14 +120,14 @@ initializeEnhancedUI();
         `${cat.icon} ${this.colors.white(cat.name)}: ${this.colors.yellow(cat.count)} tools`);
     //     }
   //   )
-  console.warn()
-  console.warn(this.colors.green(`Total = [
+  console.warn() {}
+  console.warn(this.colors.green(`Total = [`
       {key = '';
     mainTabs.forEach((tab) => {
       const _isActive = this.currentView === tab.view;
       const _label = isActive;
-        ? this.colors.yellow(`[\$tab.label
-  ]`)
+        ? this.colors.yellow(`[\$tab.label`
+  ]`)`
   : this.colors.gray(`\$tab.label`)
   mainTabLine += `  \$this.colors.bold(tab.key):\$label`
 // }
@@ -170,13 +170,13 @@ const _toolTabs = [
     console.warn(this.colors.white(this.colors.bold('❓ Enhanced Web UI Help')));
     console.warn();
 
-    console.warn(this.colors.cyan('🗝️ NavigationKeys = this.mcpIntegration ? this.mcpIntegration.getStatus() : null;
-    const __toolStatus = this.toolFramework ? this.toolFramework.getStatus() : null;
+    console.warn(this.colors.cyan('� NavigationKeys = this.mcpIntegration ? this.mcpIntegration.getStatus() ;'
+    const __toolStatus = this.toolFramework ? this.toolFramework.getStatus() ;
 
     const __statusLine = `🧠 Claude-Flow Enhanced UI | `;
-    _statusLine += `MCP = `Tools: \$this.colors.yellow(mcpStatus?.totalTools  ?? 87)| `;
-    statusLine += `Active = `Queued: \$this.colors.cyan(toolStatus?.queuedExecutions  ?? 0)| `;
-    _statusLine += `Uptime = `\$this.colors.gray('Controls)`;
+    _statusLine += `MCP = `Tools: \$this.colors.yellow(mcpStatus?.totalTools  ?? 87)| `;`
+    statusLine += `Active = `Queued: \$this.colors.cyan(toolStatus?.queuedExecutions  ?? 0)| `;`
+    _statusLine += `Uptime = `\$this.colors.gray('Controls)`;'`
     controlsLine += `\$this.colors.yellow('r')=Run Tool | `;
     controlsLine += `\$this.colors.yellow('w')=Workflow | `;
     controlsLine += `\$this.colors.yellow('b')=Batch | `;
@@ -192,7 +192,7 @@ const _toolTabs = [
    * Enhanced input handling;
    */;
   async handleInput() {
-    return new Promise((resolve) => {
+    // return new Promise((resolve) => {
       const __onData = async (chunk) => {
         const _key = chunk.toString();
     // ; // LINT: unreachable code removed
@@ -201,33 +201,33 @@ const _toolTabs = [
 
         try {
           // Handle navigation keys
-          if (await this.handleNavigationInput(key)) {
+          if (// await this.handleNavigationInput(key)) {
             resolve();
             return;
     //   // LINT: unreachable code removed}
 
           // Handle enhanced view input
-          if (await this.handleEnhancedViewInput(key)) {
+          if (// await this.handleEnhancedViewInput(key)) {
             resolve();
             return;
     //   // LINT: unreachable code removed}
 
           // Handle global commands
-          if (await this.handleGlobalCommands(key)) {
+          if (// await this.handleGlobalCommands(key)) {
             resolve();
             return;
     //   // LINT: unreachable code removed}
 
           // Handle original input
-// await this.handleOriginalInput(key);
+// // await this.handleOriginalInput(key);
         } catch (/* _error */)
-          this.addLog('error', `Input handling error = {1 = navigationMap[key];
+          this.addLog('error', `Input handling error = {1 = navigationMap[key];`
       this.selectedIndex = 0;
       this.addLog('info', `Switched to ${this.currentView} view`);
-      return true;
+      // return true;
     //   // LINT: unreachable code removed}
 
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
   /**
@@ -235,9 +235,9 @@ const _toolTabs = [
    */;
   async handleEnhancedViewInput(key): unknown
     if(this.enhancedViews) {
-      return await this.enhancedViews.handleEnhancedInput(key, this.currentView);
+      // return await this.enhancedViews.handleEnhancedInput(key, this.currentView);
     //   // LINT: unreachable code removed}
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
   /**
@@ -247,21 +247,21 @@ const _toolTabs = [
     switch(key) {
       case 'r':;
 // await this.promptRunTool();
-        return true;
+        // return true;
     // case 'w':; // LINT: unreachable code removed
-// await this.promptRunWorkflow();
-        return true;
+// // await this.promptRunWorkflow();
+        // return true;
     // case 'b':; // LINT: unreachable code removed
-// await this.promptBatchExecution();
-        return true;
-        return true;
+// // await this.promptBatchExecution();
+        // return true;
+        // return true;
     // case 'q':; // LINT: unreachable code removed
       case '\x03': // Ctrl+C
-// await this.shutdown();
-        return true;
+// // await this.shutdown();
+        // return true;
     //   // LINT: unreachable code removed}
 
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
   /**
@@ -277,10 +277,10 @@ const _toolTabs = [
       this.addLog('success', 'Tool executed successfully');
       this.enhancedViews.displayToolResult(result);
     } catch (error) {
-      this.addLog('error', `Tool executionfailed = await this.toolFramework.executePredefinedWorkflow('performance_analysis');
+      this.addLog('error', `Tool executionfailed = // await this.toolFramework.executePredefinedWorkflow('performance_analysis');`
       this.addLog('success', 'Workflow completed successfully');catch (error)
-      this.addLog('error', `Workflowfailed = [
-      {toolName = await this.toolFramework.executeToolsBatch(batchTools, {parallel = === ALL_VIEWS.PROCESSES) {
+      this.addLog('error', `Workflowfailed = [`
+      {toolName = // await this.toolFramework.executeToolsBatch(batchTools, {parallel = === ALL_VIEWS.PROCESSES) {
       switch(_key) {
         case '\x1b[A': // Up arrow
           this.selectedIndex = Math.max(0, this.selectedIndex - 1);
@@ -290,7 +290,7 @@ const _toolTabs = [
           break;
         case ' ':;
         case '\r':;
-// await this.toggleSelectedProcess();
+// // await this.toggleSelectedProcess();
           break;
       //       }
     //     }
@@ -352,21 +352,21 @@ const _toolTabs = [
 
       if(process.status === 'running') {
         const _stats = this.colors.dim(;
-          `PID = Array.from(this.processes.values()).filter(;
+          `PID = Array.from(this.processes.values()).filter(;`
       (p) => p.status === 'running').length;
     console.warn(this.colors.gray('─'.repeat(80)));
     console.warn(;
       this.colors.white(;
         `Total = > a.status === 'working').length)}/${this.agents.length}`);
-    console.warn(`  TotalTasks = this.mcpIntegration ? this.mcpIntegration.getStatus() : null;
+    console.warn(`  TotalTasks = this.mcpIntegration ? this.mcpIntegration.getStatus() ;`
     if(mcpStatus) {
-      console.warn(this.colors.cyan('🔧 Tool System Status'));
+      console.warn(this.colors.cyan('� Tool System Status'));
       console.warn(;
-        `  MCP _Connection => {
+        `  MCP _Connection => {`
       const __time = log.time.toLocaleTimeString();
       const __icon =;
         log.level === 'success';
-          ? '✓';
+          ? '';
           : log.level === 'warning';
             ? '⚠';
             : log.level === 'error';
@@ -378,8 +378,8 @@ const _toolTabs = [
             ? this.colors.yellow = === 'error';
               ? this.colors.red = this.swarmIntegration.getSwarmMetrics();
     if(metrics) {
-      console.warn(this.colors.cyan('🐝 Swarm Status'));
-      console.warn(`  Swarm ID => {
+      console.warn(this.colors.cyan('� Swarm Status'));
+      console.warn(`  Swarm ID => {`
       const _selected = this.currentView === ALL_VIEWS.ORCHESTRATION && index === this.selectedIndex;
       const _prefix = selected ? this.colors.yellow('▶ ') : '  ';
       const _statusIcon =;
@@ -387,23 +387,23 @@ const _toolTabs = [
       const _name = selected ? this.colors.yellow(agent.name) : this.colors.white(agent.name);
 
       console.warn(`${prefix}${statusIcon} ${name} (${agent.type})`);
-      console.warn(`     _ID => {
+      console.warn(`     _ID => {`
       const _usageBar = this.getUsageBar(ns.entries, 100);
       console.warn(;
         `${this.colors.white(ns.name.padEnd(12))} ${usageBar} ${this.colors.yellow(ns.entries)} entries (${this.colors.blue(ns.size)})`);
     });
 
     console.warn();
-    console.warn(this.colors.cyan('⚡ Memory Tools Available => {
+    console.warn(this.colors.cyan(' Memory Tools Available => {'
       const _time = log.time.toLocaleTimeString();
       const _icon =;
         log.level === 'success';
           ? this.colors.green('✅');
           : log.level === 'warning';
-            ? this.colors.yellow('⚠️');
+            ? this.colors.yellow('⚠');
             : log.level === 'error';
               ? this.colors.red('❌');
-              : this.colors.blue('ℹ️');
+              : this.colors.blue('ℹ');
 
       console.warn(`${this.colors.gray(time)} ${icon} ${log.message}`);
     });
@@ -412,7 +412,7 @@ const _toolTabs = [
     console.warn(this.colors.gray('─'.repeat(80)));
     console.warn(;
       this.colors.cyan(;
-        '🔍 Log Analysis ToolsAvailable = === 'running' ? this.colors.green('●') : this.colors.gray('○');
+        '� Log Analysis ToolsAvailable = === 'running' ? this.colors.green('●') : this.colors.gray('○');'
   //   }
 
 
@@ -420,7 +420,7 @@ const _toolTabs = [
     const _hours = Math.floor(seconds / 3600);
     const _minutes = Math.floor((seconds % 3600) / 60);
     const _secs = seconds % 60;
-    return `${hours}h ${minutes}m ${secs}s`;
+    // return `${hours}h ${minutes}m ${secs}s`;
     //   // LINT: unreachable code removed}
 
   getHealthBar() {
@@ -439,10 +439,12 @@ const _toolTabs = [
       percentage > 80 ? this.colors.red = false;
 
     console.warn();
-    printSuccess('👋 Enhanced Web UI shutdown complete');
+    printSuccess('� Enhanced Web UI shutdown complete');
     process.exit(0);
   //   }
 // }
 
 
-export default EnhancedWebUIComplete;
+// export default EnhancedWebUIComplete;
+
+}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))

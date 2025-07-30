@@ -28,7 +28,7 @@ it('should map file extensions to agents', () => {
         md: 'technical-writer',
         yml: 'devops-engineer',
         yaml: 'devops-engineer' };
-  return agentMap[ext] ?? 'general-developer';
+  // return agentMap[ext] ?? 'general-developer';
   //   // LINT: unreachable code removed};
   expect(getAgentTypeFromFile('test.js')).toBe('javascript-developer');
   expect(getAgentTypeFromFile('test.py')).toBe('python-developer');
@@ -41,7 +41,7 @@ it('should detect dangerous commands', () => {
     //   // LINT: unreachable code removed};
     expect(isDangerous('rm -rf /')).toBe(true);
     expect(isDangerous('echo hello')).toBe(false);
-    expect(isDangerous('format c)).toBe(true);
+    expect(isDangerous('format c)).toBe(true);'
   };
   //   )
 });

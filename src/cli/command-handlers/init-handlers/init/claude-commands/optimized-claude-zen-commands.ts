@@ -1,51 +1,51 @@
-/**
- * Optimized Claude Zen Commands Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Optimized Claude Zen Commands Module
+ * Converted from JavaScript to TypeScript
  */
 // optimized-claude-zen-commands.js - Batchtools-optimized Claude-Flow specific slash commands
 
 // Create batchtools-optimized Claude-Flow specific commands
-export async function createOptimizedClaudeFlowCommands(workingDir = `---name = `---name = `---
+export async function createOptimizedClaudeFlowCommands(workingDir = `---name = `---name = `---`
 name)
 
 Advanced multi-agent coordination system with timeout-free execution, distributed memory sharing, and intelligent load balancing.
 
-**🚀 Batchtools Enhancement**: Enhanced with parallel processing capabilities, batch operations, and concurrent optimization for maximum swarm efficiency.
+**� Batchtools Enhancement**: Enhanced with parallel processing capabilities, batch operations, and concurrent optimization for maximum swarm efficiency.
 
 ## Basic Usage (Enhanced);
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "your complex task" --strategy <type> [options] --parallel;
 \`\`\`
 
-## 🎯 Swarm Strategies (Optimized);
-- **auto** - Automatic strategy selection with parallel task analysis;
-- **development** - Code implementation with concurrent review and testing;
-- **research** - Information gathering with parallel synthesis;
-- **analysis** - Data processing with concurrent pattern identification;
-- **testing** - Comprehensive QA with parallel test execution;
-- **optimization** - Performance tuning with concurrent profiling;
+##  Swarm Strategies (Optimized);
+- **auto** - Automatic strategy selection with parallel task analysis
+- **development** - Code implementation with concurrent review and testing
+- **research** - Information gathering with parallel synthesis
+- **analysis** - Data processing with concurrent pattern identification
+- **testing** - Comprehensive QA with parallel test execution
+- **optimization** - Performance tuning with concurrent profiling
 - **maintenance** - System updates with parallel validation
 
 ## 🤖 Agent Types (Enhanced);
-- **coordinator** - Plans and delegates with parallel task distribution;
-- **developer** - Writes code with concurrent optimization;
-- **researcher** - Gathers information with parallel analysis;
-- **analyzer** - Identifies patterns with concurrent processing;
-- **tester** - Creates and runs tests with parallel execution;
-- **reviewer** - Performs reviews with concurrent validation;
-- **documenter** - Creates docs with parallel content generation;
-- **monitor** - Tracks performance with real-time parallel monitoring;
-- **specialist** - Domain experts with batch processing capabilities;
+- **coordinator** - Plans and delegates with parallel task distribution
+- **developer** - Writes code with concurrent optimization
+- **researcher** - Gathers information with parallel analysis
+- **analyzer** - Identifies patterns with concurrent processing
+- **tester** - Creates and runs tests with parallel execution
+- **reviewer** - Performs reviews with concurrent validation
+- **documenter** - Creates docs with parallel content generation
+- **monitor** - Tracks performance with real-time parallel monitoring
+- **specialist** - Domain experts with batch processing capabilities
 - **batch-processor** - High-throughput parallel operation specialist
 
-## 🔄 Coordination Modes (Enhanced);
-- **centralized** - Single coordinator with parallel agent management;
-- **distributed** - Multiple coordinators with concurrent load balancing;
-- **hierarchical** - Tree structure with parallel nested coordination;
-- **mesh** - Peer-to-peer with concurrent collaboration;
+## � Coordination Modes (Enhanced);
+- **centralized** - Single coordinator with parallel agent management
+- **distributed** - Multiple coordinators with concurrent load balancing
+- **hierarchical** - Tree structure with parallel nested coordination
+- **mesh** - Peer-to-peer with concurrent collaboration
 - **hybrid** - Mixed strategies with adaptive parallel processing
 
-## ⚙️ Common Options (Batchtools Enhanced);
+## ⚙ Common Options (Batchtools Enhanced);
 - \`--strategy <type>\` - Execution strategy with optimization;
 - \`--mode <type>\` - Coordination mode with parallel processing;
 - \`--max-agents <n>\` - Maximum concurrent agents (default, optimized);
@@ -64,10 +64,10 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 - \`--concurrent-agents <n>\` - Maximum concurrent agent operations;
 - \`--performance\` - Enable performance monitoring and optimization
 
-## 🌟 Examples (Batchtools Enhanced)
+## � Examples (Batchtools Enhanced)
 
 ### Development Swarm with Parallel Review;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Build e-commerce REST API" \\;
   --strategy development \\;
   --monitor \\;
@@ -79,7 +79,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 \`\`\`
 
 ### Long-Running Research Swarm with Concurrent Processing;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Analyze AI market trends 2024-2025" \\;
   --strategy research \\;
   --background \\;
@@ -91,7 +91,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 \`\`\`
 
 ### Performance Optimization Swarm with Parallel Analysis;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Optimize database queries and API performance" \\;
   --strategy optimization \\;
   --testing \\;
@@ -103,7 +103,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 \`\`\`
 
 ### Enterprise Development Swarm with Full Parallelization;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Implement secure payment processing system" \\;
   --strategy development \\;
   --mode distributed \\;
@@ -120,7 +120,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 \`\`\`
 
 ### Testing and QA Swarm with Concurrent Validation;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Comprehensive security audit and testing" \\;
   --strategy testing \\;
   --review \\;
@@ -132,10 +132,10 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
   --performance;
 \`\`\`
 
-## 📊 Monitoring and Control (Enhanced)
+## � Monitoring and Control (Enhanced)
 
 ### Real-time monitoring with parallel metrics:;
-\`\`\`bash;
+\`\`\`bash;`
 # Monitor swarm activity with performance data;
 /claude-zen monitor --parallel --performance --real-time
 
@@ -147,7 +147,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 \`\`\`
 
 ### Check swarm status with concurrent analysis:;
-\`\`\`bash;
+\`\`\`bash;`
 # Overall system status with parallel checks;
 /claude-zen status --concurrent --performance
 
@@ -159,7 +159,7 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 \`\`\`
 
 ### View agent activity with parallel monitoring:;
-\`\`\`bash;
+\`\`\`bash;`
 # List all agents with concurrent status checks;
 /claude-zen agent list --parallel --performance
 
@@ -170,11 +170,11 @@ Advanced multi-agent coordination system with timeout-free execution, distribute
 /claude-zen agent batch-status --all-agents --parallel;
 \`\`\`
 
-## 💾 Memory Integration (Enhanced)
+## � Memory Integration (Enhanced)
 
 Swarms automatically use distributed memory with parallel processing for collaboration: null
 ### Standard Memory Operations;
-\`\`\`bash;
+\`\`\`bash;`
 # Store swarm objectives;
 /claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm
 
@@ -186,7 +186,7 @@ Swarms automatically use distributed memory with parallel processing for collabo
 \`\`\`
 
 ### Batchtools Memory Operations;
-\`\`\`bash;
+\`\`\`bash;`
 # Batch store swarm contexts;
 /claude-zen memory batch-store swarm-contexts.json --namespace swarm --parallel
 
@@ -197,7 +197,7 @@ Swarms automatically use distributed memory with parallel processing for collabo
 /claude-zen memory concurrent-export swarm-backup.json --namespace swarm --compress --parallel
 \`\`\`
 
-## 🎯 Key Features (Enhanced)
+##  Key Features (Enhanced)
 
 ### Timeout-Free Execution with Parallel Processing;
 - Background mode with concurrent monitoring for long-running tasks;
@@ -229,15 +229,15 @@ Swarms automatically use distributed memory with parallel processing for collabo
 - Data encryption with parallel security checks;
 - Input validation with concurrent threat analysis
 
-## 🔧 Advanced Configuration (Batchtools Enhanced)
+## � Advanced Configuration (Batchtools Enhanced)
 
 ### Dry run with parallel preview:;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Test task" --dry-run --strategy development --parallel --performance;
 \`\`\`
 
 ### Custom quality thresholds with concurrent validation:;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "High quality API" \\;
   --strategy development \\;
   --quality-threshold 0.95 \\;
@@ -247,7 +247,7 @@ Swarms automatically use distributed memory with parallel processing for collabo
 \`\`\`
 
 ### Batchtools Configuration;
-\`\`\`json;
+\`\`\`json;`
 // {
   "swarm": {
     "batchtools": {
@@ -256,14 +256,14 @@ Swarms automatically use distributed memory with parallel processing for collabo
       "parallelCoordination",
       "batchTaskProcessing",
       "concurrentMonitoring",
-      "performanceOptimization": true;
+      "performanceOptimization";
     },
     "performance": {
       "enableParallelProcessing",
       "concurrentTaskExecution",
       "batchOperationSize",
       "parallelMemoryAccess",
-      "realTimeMetrics": true;
+      "realTimeMetrics";
     //     }
   //   }
 // }
@@ -279,30 +279,30 @@ Swarms automatically use distributed memory with parallel processing for collabo
 - Adaptive with performance optimization;
 - Parallel-optimized with load balancing
 
-## 📊 Performance Features
+## � Performance Features
 
 ### Parallel Processing Capabilities;
-- **Concurrent Agent Coordination**: Manage multiple agents simultaneously;
-- **Parallel Task Distribution**: Distribute tasks across agents concurrently;
-- **Batch Operation Processing**: Group related swarm operations;
+- **Concurrent Agent Coordination**: Manage multiple agents simultaneously
+- **Parallel Task Distribution**: Distribute tasks across agents concurrently
+- **Batch Operation Processing**: Group related swarm operations
 - **Pipeline Coordination**: Chain swarm operations with parallel stages
 
 ### Performance Optimization;
-- **Smart Load Balancing**: Intelligent distribution with real-time metrics;
-- **Resource Management**: Efficient utilization with parallel monitoring;
-- **Concurrent Validation**: Validate multiple aspects simultaneously;
+- **Smart Load Balancing**: Intelligent distribution with real-time metrics
+- **Resource Management**: Efficient utilization with parallel monitoring
+- **Concurrent Validation**: Validate multiple aspects simultaneously
 - **Performance Monitoring**: Real-time metrics and optimization recommendations
 
 ### Fault Tolerance (Enhanced);
-- **Parallel Recovery**: Concurrent recovery mechanisms for failed operations;
-- **Circuit Breakers**: Enhanced fault tolerance with parallel monitoring;
-- **Health Monitoring**: Real-time agent and swarm health with concurrent checks;
+- **Parallel Recovery**: Concurrent recovery mechanisms for failed operations
+- **Circuit Breakers**: Enhanced fault tolerance with parallel monitoring
+- **Health Monitoring**: Real-time agent and swarm health with concurrent checks
 - **Retry Mechanisms**: Intelligent retry with parallel validation
 
-## 🚨 Troubleshooting (Enhanced)
+## � Troubleshooting (Enhanced)
 
 ### Performance Issues;
-\`\`\`bash;
+\`\`\`bash;`
 # Monitor swarm performance with concurrent analysis;
 /claude-zen swarm debug --performance --concurrent --verbose
 
@@ -314,7 +314,7 @@ Swarms automatically use distributed memory with parallel processing for collabo
 \`\`\`
 
 ### Optimization Commands;
-\`\`\`bash;
+\`\`\`bash;`
 # Auto-optimize swarm configuration;
 /claude-zen swarm optimize --auto-tune --performance
 
@@ -325,19 +325,19 @@ Swarms automatically use distributed memory with parallel processing for collabo
 /claude-zen swarm resources --concurrent --optimization;
 \`\`\`
 
-## 📈 Performance Benchmarks
+## � Performance Benchmarks
 
 ### Batchtools Performance Improvements;
-- **Swarm Coordination**: Up to 600% faster with parallel processing;
-- **Agent Management**: 500% improvement with concurrent operations;
-- **Task Distribution**: 450% faster with parallel assignment;
-- **Monitoring**: 350% improvement with concurrent metrics;
+- **Swarm Coordination**: Up to 600% faster with parallel processing
+- **Agent Management**: 500% improvement with concurrent operations
+- **Task Distribution**: 450% faster with parallel assignment
+- **Monitoring**: 350% improvement with concurrent metrics
 - **Memory Operations**: 400% faster with parallel processing
 
-For detailed documentation and optimization guides, see: https,//github.com/ruvnet/claude-code-flow/docs/swarm-batchtools.md
-`;
-// await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-// await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-console.warn('  ✓ Created optimized slash command: /claude-zen-swarm (Batchtools enhanced)');
+For detailed documentation and optimization guides, see,//github.com/ruvnet/claude-code-flow/docs/swarm-batchtools.md
+`;`
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+console.warn('   Created optimized slash command: /claude-zen-swarm (Batchtools enhanced)');
 // }
 

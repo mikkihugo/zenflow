@@ -14,90 +14,90 @@ import type { NeuralEngine } from '../../neural/neural-engine';
 /**
  * DSPy Configuration Interface
  */
-export interface DSPyConfig {
-  // model: string
-  // maxTokens: number
-  // temperature: number
-  // optimizationRounds: number
-  // fewShotExamples: number
-  // swarmCoordination: boolean
-  // neuralIntegration: boolean
-// }
+export // interface DSPyConfig {
+//   // model: string
+//   // maxTokens: number
+//   // temperature: number
+//   // optimizationRounds: number
+//   // fewShotExamples: number
+//   // swarmCoordination: boolean
+//   // neuralIntegration: boolean
+// // }
 
 
 /**
  * DSPy Program Definition
  */
-export interface DSPyProgram {
-  // id: string
-  // name: string
-  // signature: string
-  // prompt: string
-  examples;
-  // metrics: DSPyMetrics
-// }
+// export // interface DSPyProgram {
+//   // id: string
+//   // name: string
+//   // signature: string
+//   // prompt: string
+//   examples;
+//   // metrics: DSPyMetrics
+// // }
 
 
 /**
  * DSPy Training Example
  */
-export interface DSPyExample {
-  input: Record<string, unknown>;
-  output: Record<string, unknown>;
-  score?: number;
-// }
+// export // interface DSPyExample {
+//   input: Record<string, unknown>;
+//   output: Record<string, unknown>;
+//   score?;
+// // }
 
 
 /**
  * DSPy Performance Metrics
  */
-export interface DSPyMetrics {
-  // accuracy: number
-  // latency: number
-  // tokenUsage: number
-  // cost: number
-  // iterations: number
-// }
+// export // interface DSPyMetrics {
+//   // accuracy: number
+//   // latency: number
+//   // tokenUsage: number
+//   // cost: number
+//   // iterations: number
+// // }
 
 
 /**
  * DSPy Optimization Result
  */
-export interface DSPyOptimizationResult {
-  // program: DSPyProgram
-  // originalMetrics: DSPyMetrics
-  // optimizedMetrics: DSPyMetrics
-  // improvement: number
-  // timestamp: string
-// }
+// export // interface DSPyOptimizationResult {
+//   // program: DSPyProgram
+//   // originalMetrics: DSPyMetrics
+//   // optimizedMetrics: DSPyMetrics
+//   // improvement: number
+//   // timestamp: string
+// // }
 
 
 /**
  * DSPy Swarm Task
  */
-export interface DSPySwarmTask {
-  // id: string
-  type: 'optimize' | 'evaluate' | 'generate' | 'analyze';
-  // program: DSPyProgram
-  dataset;
-  // config: DSPyConfig
-  priority: 'high' | 'medium' | 'low';
-// }
+// export // interface DSPySwarmTask {
+//   // id: string
+//   type: 'optimize' | 'evaluate' | 'generate' | 'analyze';
+//   // program: DSPyProgram
+//   dataset;
+//   // config: DSPyConfig
+//   priority: 'high' | 'medium' | 'low';
+// // }
 
 
 /**
  * Advanced DSPy Provider with Swarm Coordination
  */
-export class DspyPlugin extends BasePlugin {
-  private dspyConfig!: DSPyConfig;
-  private programs: Map<string, DSPyProgram> = new Map();
-  private swarmCoordinator?: SwarmCoordinator;
-  private neuralEngine?: NeuralEngine;
-  private integrationManager?: any; // DSPyIntegrationManager
-  private optimizationQueue = [];
-  private isInitialized = false;
+// export class DspyPlugin extends BasePlugin {
+  // private dspyConfig!;
+  // private programs: Map<string, DSPyProgram> = new Map();
+  // private swarmCoordinator?;
+  // private neuralEngine?;
+  // private integrationManager?; // DSPyIntegrationManager
+  // private optimizationQueue = [];
+  // private isInitialized = false;
 
-  constructor(manifest, config, context: PluginContext) {
+  constructor(manifest, config, context) {
     super(manifest, config, context);
     this.context.apis.logger.info('🧠 DSPy Provider Plugin with Swarm Coordination Initialized');
   //   }
@@ -116,9 +116,9 @@ export class DspyPlugin extends BasePlugin {
       fewShotExamples: config.fewShotExamples ?? 5,
       swarmCoordination: config.swarmCoordination ?? true,
       neuralIntegration: config.neuralIntegration ?? true };
-// await this.initializeIntegrationManager();
-// await this.initializeSwarmCoordination();
-// await this.initializeNeuralIntegration();
+// // await this.initializeIntegrationManager();
+// // await this.initializeSwarmCoordination();
+// // await this.initializeNeuralIntegration();
     this.registerAPIs();
     this.isInitialized = true;
 
@@ -129,7 +129,7 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Initialize integration manager for comprehensive DSPy functionality
    */
-  private async initializeIntegrationManager(): Promise<void> {
+  // private async initializeIntegrationManager(): Promise<void> {
     try {
       // Get database instances from context
 // const sqliteStore = awaitthis.context.apis.getSqliteStore?.();
@@ -143,7 +143,7 @@ export class DspyPlugin extends BasePlugin {
 
 
       // Import and initialize integration manager
-      const { DSPyIntegrationManager } = await import('./dspy-integration');
+      const { DSPyIntegrationManager } = // await import('./dspy-integration');
 
       const integrationConfig = {
 ..this.dspyConfig,
@@ -170,19 +170,19 @@ export class DspyPlugin extends BasePlugin {
         kuzuDB,
         neuralEngine
       );
-// await this.integrationManager.initialize();
+// // await this.integrationManager.initialize();
       // Setup event listeners
       this.integrationManager.on('optimization-completed', (result) => {
-        this.context.apis.logger.info(`🎉 DSPy optimization completed: ${result.improvement.toFixed(2)}% improvement`);
+        this.context.apis.logger.info(`� DSPy optimization completed: ${result.improvement.toFixed(2)}% improvement`);
       });
 
       this.integrationManager.on('batch-optimization-completed', (data) => {
-        this.context.apis.logger.info(`📊 Batch optimization: ${data.results.length} programs, avg improvement: ${data.analytics.averageImprovement.toFixed(2)}%`);
+        this.context.apis.logger.info(`� Batch optimization: ${data.results.length} programs, avg improvement: ${data.analytics.averageImprovement.toFixed(2)}%`);
       });
 
       this.context.apis.logger.info('🧠 DSPy Integration Manager Initialized');
     } catch (error) {
-      this.context.apis.logger.warn('⚠️ Integration manager unavailable, using basic DSPy);
+      this.context.apis.logger.warn('⚠ Integration manager unavailable, using basic DSPy);'
     //     }
   //   }
 
@@ -190,17 +190,17 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Initialize swarm coordination for distributed optimization
    */
-  private async initializeSwarmCoordination(): Promise<void> {
+  // private async initializeSwarmCoordination(): Promise<void> {
     if (!this.dspyConfig.swarmCoordination) return;
 
     try {
       // Initialize swarm coordinator for DSPy tasks
-      this.swarmCoordinator = await this.context.apis.createSwarmCoordinator?.({
+      this.swarmCoordinator = // await this.context.apis.createSwarmCoordinator?.({
         name);
 
-      this.context.apis.logger.info('🐝 DSPy Swarm Coordination Initialized');
+      this.context.apis.logger.info('� DSPy Swarm Coordination Initialized');
     } catch (error) {
-      this.context.apis.logger.warn('⚠️ Swarm coordination unavailable, using single-threaded DSPy');
+      this.context.apis.logger.warn('⚠ Swarm coordination unavailable, using single-threaded DSPy');
     //     }
   //   }
 
@@ -208,14 +208,14 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Initialize neural engine integration
    */
-  private async initializeNeuralIntegration(): Promise<void> {
+  // private async initializeNeuralIntegration(): Promise<void> {
     if (!this.dspyConfig.neuralIntegration) return;
 
     try {
-      this.neuralEngine = await this.context.apis.getNeuralEngine?.();
+      this.neuralEngine = // await this.context.apis.getNeuralEngine?.();
       this.context.apis.logger.info('🧬 DSPy Neural Integration Activated');
     } catch (error) {
-      this.context.apis.logger.warn('⚠️ Neural engine unavailable, using standard DSPy');
+      this.context.apis.logger.warn('⚠ Neural engine unavailable, using standard DSPy');
     //     }
   //   }
 
@@ -223,7 +223,7 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Register comprehensive DSPy APIs
    */
-  private registerAPIs() {
+  // private registerAPIs() {
     this.registerAPI('dspy', {
       name: 'dspy',
       description: 'Advanced DSPy integration with swarm coordination and neural optimization',
@@ -307,9 +307,9 @@ export class DspyPlugin extends BasePlugin {
         iterations} };
 
     this.programs.set(program.id, program);
-    this.context.apis.logger.info(`📝 DSPy Program created: ${name} (${program.id})`);
+    this.context.apis.logger.info(`� DSPy Program created: ${name} (${program.id})`);
 
-    return program;
+    // return program;
   //   }
 
 
@@ -319,28 +319,28 @@ export class DspyPlugin extends BasePlugin {
   async optimizeProgram(
     programId,
     dataset,
-    rounds?: number
+    rounds?
   ): Promise<DSPyOptimizationResult> {
     const program = this.programs.get(programId);
     if (!program) {
-      throw new Error(`DSPy program not found);
+      throw new Error(`DSPy program not found);`
     //     }
 
 
-    this.context.apis.logger.info(`🔧 Optimizing DSPy program);
+    this.context.apis.logger.info(`� Optimizing DSPy program);`
 
     if (this.integrationManager) {
       // Use integration manager for comprehensive optimization
-      return await this.integrationManager.createAndOptimizeProgram(program.name,
+      // return // await this.integrationManager.createAndOptimizeProgram(program.name,
         program.signature,
         program.prompt,
         dataset,
         //         {
           optimization);
     } else if (this.swarmCoordinator) {
-      return await this.optimizeWithSwarm(program, dataset, rounds ?? this.dspyConfig.optimizationRounds);
+      // return // await this.optimizeWithSwarm(program, dataset, rounds ?? this.dspyConfig.optimizationRounds);
     } else {
-      return await this.optimizeStandalone(program, dataset, rounds ?? this.dspyConfig.optimizationRounds);
+      // return // await this.optimizeStandalone(program, dataset, rounds ?? this.dspyConfig.optimizationRounds);
     //     }
   //   }
 
@@ -361,7 +361,7 @@ export class DspyPlugin extends BasePlugin {
 
 
     if (this.integrationManager) {
-      return await this.integrationManager.createAndOptimizeProgram(
+      // return // await this.integrationManager.createAndOptimizeProgram(
         name,
         signature,
         prompt,
@@ -371,7 +371,7 @@ export class DspyPlugin extends BasePlugin {
     } else {
       // Fallback to traditional method
 // const program = awaitthis.createProgram(name, signature, prompt, []);
-      return await this.optimizeProgram(program.id, dataset);
+      // return // await this.optimizeProgram(program.id, dataset);
     //     }
   //   }
 
@@ -402,7 +402,7 @@ export class DspyPlugin extends BasePlugin {
         })
       );
 
-      return await this.integrationManager.batchOptimizePrograms(programs, options);
+      // return // await this.integrationManager.batchOptimizePrograms(programs, options);
     } else {
       // Sequential optimization without integration manager
       const results = [];
@@ -416,7 +416,7 @@ export class DspyPlugin extends BasePlugin {
         );
         results.push(result);
       //       }
-      return results;
+      // return results;
     //     }
   //   }
 
@@ -424,10 +424,10 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Swarm-coordinated optimization
    */
-  private async optimizeWithSwarm(
+  // private async optimizeWithSwarm(
     program,
     dataset,
-    // rounds: number
+    // rounds
   ): Promise<DSPyOptimizationResult> {
     const originalMetrics = { ...program.metrics };
 
@@ -457,7 +457,7 @@ export class DspyPlugin extends BasePlugin {
 
     // Execute optimization rounds with swarm coordination
     for (let round = 0; round < rounds; round++) {
-      this.context.apis.logger.info(`🔄 DSPy Optimization Round ${round + 1}/${rounds}`);
+      this.context.apis.logger.info(`� DSPy Optimization Round ${round + 1}/${rounds}`);
 
       // Parallel execution of optimization tasks
 // const results = awaitPromise.all(
@@ -465,10 +465,10 @@ export class DspyPlugin extends BasePlugin {
       );
 
       // Aggregate results and update program
-// await this.aggregateOptimizationResults(program, results);
+// // await this.aggregateOptimizationResults(program, results);
       // Neural-enhanced metric evaluation
       if (this.neuralEngine) {
-// await this.enhanceWithNeuralAnalysis(program, dataset);
+// // await this.enhanceWithNeuralAnalysis(program, dataset);
       //       }
     //     }
 
@@ -476,7 +476,7 @@ export class DspyPlugin extends BasePlugin {
     const optimizedMetrics = program.metrics;
     const improvement = this.calculateImprovement(originalMetrics, optimizedMetrics);
 
-    return {
+    // return {
       program,
       originalMetrics,
       optimizedMetrics,
@@ -488,26 +488,26 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Standalone optimization without swarm coordination
    */
-  private async optimizeStandalone(
+  // private async optimizeStandalone(
     program,
     dataset,
-    // rounds: number
+    // rounds
   ): Promise<DSPyOptimizationResult> {
     const originalMetrics = { ...program.metrics };
 
     for (let round = 0; round < rounds; round++) {
       // Basic prompt optimization
-// await this.optimizePrompt(program, dataset);
+// // await this.optimizePrompt(program, dataset);
       // Example selection and ranking
-// await this.optimizeExamples(program, dataset);
+// // await this.optimizeExamples(program, dataset);
       // Performance evaluation
-// await this.evaluateProgram(program, dataset);
+// // await this.evaluateProgram(program, dataset);
     //     }
 
 
     const improvement = this.calculateImprovement(originalMetrics, program.metrics);
 
-    return {
+    // return {
       program,
       originalMetrics,
       optimizedMetrics: program.metrics,
@@ -519,42 +519,42 @@ export class DspyPlugin extends BasePlugin {
   /**
    * Execute a swarm task for DSPy optimization
    */
-  private async executeSwarmTask(task): Promise<Record<string, unknown>> {
+  // private async executeSwarmTask(task): Promise<Record<string, unknown>> {
     const startTime = Date.now();
     let result: Record<string, unknown> = {};
 
     try {
       switch (task.type) {
         case 'optimize': null
-          result = await this.optimizePrompt(task.program, task.dataset);
+          result = // await this.optimizePrompt(task.program, task.dataset);
           break;
         case 'generate': null
-          result = await this.generateExamples(task.program.signature, task.dataset.length);
+          result = // await this.generateExamples(task.program.signature, task.dataset.length);
           break;
         case 'analyze': null
-          result = await this.analyzePerformance(task.program, task.dataset);
+          result = // await this.analyzePerformance(task.program, task.dataset);
           break;
         case 'evaluate': null
-          result = await this.evaluateProgram(task.program, task.dataset);
+          result = // await this.evaluateProgram(task.program, task.dataset);
           break;
       //       }
     } catch (error) {
-      this.context.apis.logger.error(`❌ Swarm task failed);
+      this.context.apis.logger.error(`❌ Swarm task failed);`
       result = { error: error instanceof Error ? error.message : 'Unknown error' };
     //     }
 
 
     const duration = Date.now() - startTime;
-    this.context.apis.logger.info(`⚡ Swarm task completed);
+    this.context.apis.logger.info(` Swarm task completed);`
 
-    return { ...result, duration, taskId: task.id };
+    // return { ...result, duration, taskId: task.id };
   //   }
 
 
   /**
    * Optimize program prompt using advanced techniques
    */
-  private async optimizePrompt(
+  // private async optimizePrompt(
     program,
     dataset
   ): Promise<Record<string, unknown>> {
@@ -565,7 +565,7 @@ export class DspyPlugin extends BasePlugin {
     program.prompt = bestPrompt.prompt;
     program.metrics.accuracy = bestPrompt.accuracy;
 
-    return {
+    // return {
       originalPrompt: program.prompt,
       optimizedPrompt: bestPrompt.prompt,
       improvement: bestPrompt.accuracy - program.metrics.accuracy };
@@ -577,7 +577,7 @@ export class DspyPlugin extends BasePlugin {
    */
   async generateExamples(
     signature,
-    // count: number
+    // count
   ): Promise<DSPyExample[]> {
     const examples = [];
 
@@ -589,16 +589,16 @@ export class DspyPlugin extends BasePlugin {
 
 
     // Rank and select best examples
-    return await this.rankExamples(examples);
+    // return // await this.rankExamples(examples);
   //   }
 
 
   /**
    * Generate a single high-quality example
    */
-  private async generateSingleExample(signature): Promise<DSPyExample> {
+  // private async generateSingleExample(signature): Promise<DSPyExample> {
     // Mock implementation - in real usage, this would use AI generation
-    return {
+    // return {
       input: { signature, query: 'example input' },
       output: { result: 'example output' },
       score: Math.random() * 0.3 + 0.7, // 0.7-1.0 range
@@ -615,7 +615,7 @@ export class DspyPlugin extends BasePlugin {
   ): Promise<Record<string, unknown>> {
     const program = this.programs.get(programId);
     if (!program) {
-      throw new Error(`DSPy program not found);
+      throw new Error(`DSPy program not found);`
     //     }
 
 
@@ -629,14 +629,14 @@ export class DspyPlugin extends BasePlugin {
     program.metrics.latency = (program.metrics.latency + latency) / 2;
     program.metrics.iterations++;
 
-    return result;
+    // return result;
   //   }
 
 
   /**
    * Execute a DSPy program with the optimized prompt and examples
    */
-  private async executeProgram(
+  // private async executeProgram(
     program,
     input: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
@@ -646,7 +646,7 @@ export class DspyPlugin extends BasePlugin {
     // Execute via AI provider (mock implementation)
 // const response = awaitthis.callAIProvider(fullPrompt);
 
-    return {
+    // return {
       programId: program.id,
       input,
       output,
@@ -679,7 +679,7 @@ export class DspyPlugin extends BasePlugin {
     //     }
 
 
-    return analysis;
+    // return analysis;
   //   }
 
 
@@ -702,13 +702,13 @@ export class DspyPlugin extends BasePlugin {
     // Add integration manager metrics if available
     if (this.integrationManager) {
 // const analytics = awaitthis.integrationManager.getLearningAnalytics();
-      return {
+      // return {
 ..basicMetrics,
         learningAnalytics};
     //     }
 
 
-    return basicMetrics;
+    // return basicMetrics;
   //   }
 
 
@@ -717,13 +717,13 @@ export class DspyPlugin extends BasePlugin {
    */
   async getLearningAnalytics(): Promise<Record<string, unknown>> {
     if (this.integrationManager) {
-      return await this.integrationManager.getLearningAnalytics();
+      // return await this.integrationManager.getLearningAnalytics();
     //     }
 
 
-    return {
+    // return {
       message: 'Learning analytics require integration manager',
-      basicMetrics: await this.getMetrics() };
+      basicMetrics: // await this.getMetrics() };
   //   }
 
 
@@ -736,17 +736,17 @@ export class DspyPlugin extends BasePlugin {
   ): Promise<Record<string, unknown>> {
     const program = this.programs.get(programId);
     if (!program) {
-      throw new Error(`DSPy program not found);
+      throw new Error(`DSPy program not found);`
     //     }
 
 
     if (this.integrationManager) {
-      return {
-        recommendations: await this.integrationManager.getOptimizationRecommendations(program, dataset) };
+      // return {
+        recommendations: // await this.integrationManager.getOptimizationRecommendations(program, dataset) };
     //     }
 
 
-    return {
+    // return {
       message: 'Optimization recommendations require integration manager',
       basicSuggestions: [
         'Consider adding more diverse examples',
@@ -760,13 +760,13 @@ export class DspyPlugin extends BasePlugin {
    */
   async exportKnowledge(): Promise<Record<string, unknown>> {
     if (this.integrationManager) {
-      return await this.integrationManager.exportKnowledge();
+      // return await this.integrationManager.exportKnowledge();
     //     }
 
 
-    return {
+    // return {
       programs: Array.from(this.programs.entries()),
-      basicMetrics: await this.getMetrics(),
+      basicMetrics: // await this.getMetrics(),
       exportTimestamp: new Date().toISOString() };
   //   }
 
@@ -777,7 +777,7 @@ export class DspyPlugin extends BasePlugin {
   async importKnowledge(knowledge: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (this.integrationManager) {
 // await this.integrationManager.importKnowledge(knowledge);
-      return { success, message: 'Knowledge imported successfully' };
+      // return { success, message: 'Knowledge imported successfully' };
     //     }
 
 
@@ -789,54 +789,54 @@ export class DspyPlugin extends BasePlugin {
     //     }
 
 
-    return { success, message: 'Basic knowledge import completed', importedPrograms: knowledge.programs?.length ?? 0 };
+    // return { success, message: 'Basic knowledge import completed', importedPrograms: knowledge.programs?.length ?? 0 };
   //   }
 
 
   // Helper methods
-  private async generatePromptVariations(prompt, dataset): Promise<Array<{ prompt: string, accuracy}>> {
+  // private async generatePromptVariations(prompt, dataset): Promise<Array<{ prompt, accuracy}>> {
     // Mock implementation
-    return [{ prompt, accuracy: Math.random() }];
+    // return [{ prompt, accuracy: Math.random() }];
   //   }
 
 
-  private async evaluatePromptVariations(variations: Array<{ prompt: string, accuracy}>, dataset): Promise<{ prompt: string, accuracy}> {
-    return variations.reduce((best, current) => current.accuracy > best.accuracy ? current : best);
+  // private async evaluatePromptVariations(variations: Array<{ prompt, accuracy}>, dataset): Promise<{ prompt, accuracy}> {
+    // return variations.reduce((best, current) => current.accuracy > best.accuracy ? current );
   //   }
 
 
-  private async optimizeExamples(program, dataset): Promise<void> {
+  // private async optimizeExamples(program, dataset): Promise<void> {
     // Implement example optimization
   //   }
 
 
-  private async evaluateProgram(program, dataset): Promise<Record<string, unknown>> {
+  // private async evaluateProgram(program, dataset): Promise<Record<string, unknown>> {
     // Mock evaluation
-    return { accuracy: Math.random(), evaluated};
+    // return { accuracy: Math.random(), evaluated};
   //   }
 
 
-  private async aggregateOptimizationResults(program, results: Record<string, unknown>[]): Promise<void> {
+  // private async aggregateOptimizationResults(program, results: Record<string, unknown>[]): Promise<void> {
     // Aggregate swarm optimization results
   //   }
 
 
-  private async enhanceWithNeuralAnalysis(program, dataset): Promise<void> {
+  // private async enhanceWithNeuralAnalysis(program, dataset): Promise<void> {
     // Neural enhancement logic
   //   }
 
 
-  private calculateImprovement(original, optimized: DSPyMetrics) {
-    return ((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
+  // private calculateImprovement(original, optimized) {
+    // return ((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
   //   }
 
 
-  private async rankExamples(examples): Promise<DSPyExample[]> {
-    return examples.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  // private async rankExamples(examples): Promise<DSPyExample[]> {
+    // return examples.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
   //   }
 
 
-  private buildFullPrompt(program, input: Record<string, unknown>) {
+  // private buildFullPrompt(program, input: Record<string, unknown>) {
     let prompt = program.prompt;
 
     // Add few-shot examples
@@ -847,47 +847,49 @@ export class DspyPlugin extends BasePlugin {
 
     prompt += `\n\nNow process:\nInput: ${JSON.stringify(input)}\nOutput:`;
 
-    return prompt;
+    // return prompt;
   //   }
 
 
-  private async callAIProvider(prompt): Promise<string> {
+  // private async callAIProvider(prompt): Promise<string> {
     // Mock AI provider call - in real implementation, use actual AI service
-    return `Optimized DSPy response for: ${prompt.substring(0, 100)}...`;
+    // return `Optimized DSPy response for: ${prompt.substring(0, 100)}...`;
   //   }
 
 
-  private async analyzePerformance(program, dataset): Promise<Record<string, unknown>> {
-    return {
+  // private async analyzePerformance(program, dataset): Promise<Record<string, unknown>> {
+    // return {
       program: program.id,
       datasetSize: dataset.length,
       metrics: program.metrics };
   //   }
 
 
-  private calculateEfficiency(program) {
-    return program.metrics.accuracy / (program.metrics.latency + 1);
+  // private calculateEfficiency(program) {
+    // return program.metrics.accuracy / (program.metrics.latency + 1);
   //   }
 
 
-  private calculateAverageAccuracy(programs) {
-    return programs.reduce((sum, p) => sum + p.metrics.accuracy, 0) / programs.length;
+  // private calculateAverageAccuracy(programs) {
+    // return programs.reduce((sum, p) => sum + p.metrics.accuracy, 0) / programs.length;
   //   }
 
 
-  private calculateAverageLatency(programs) {
+  // private calculateAverageLatency(programs) {
     return programs.reduce((sum, p) => sum + p.metrics.latency, 0) / programs.length;
   //   }
 // }
 
 
-export default DspyPlugin;
+// export default DspyPlugin;
 
 // Export additional types for external usage
-export type {
+// export type {
   DSPyProgram,
   DSPyExample,
   DSPyMetrics,
   DSPyOptimizationResult,
   DSPyConfig,
   DSPySwarmTask };
+
+}}

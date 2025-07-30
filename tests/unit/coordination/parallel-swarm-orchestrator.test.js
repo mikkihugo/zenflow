@@ -95,7 +95,7 @@ describe('task execution', () =>
             }, Math.random() * 100);
           });
         });
-        return Promise.all(promises);
+        // return Promise.all(promises);
     //   // LINT: unreachable code removed};
 // const _results = awaitexecuteTasksInParallel(tasks);
       expect(results).toHaveLength(3);
@@ -112,7 +112,7 @@ describe('task execution', () =>
         return { taskId, result: 'success' };
     //   // LINT: unreachable code removed};
       try {
-  // await mockTaskWithFailure('failing-task');
+  // // await mockTaskWithFailure('failing-task');
         expect(true).toBe(false); // Should not reach here
       } catch (error) {
         expect(error.message).toBe('Task failed');
@@ -135,7 +135,7 @@ describe('task execution', () =>
             return worker;
     //   // LINT: unreachable code removed}
           if (this.strategy === 'least-loaded') {
-            return this.workers.reduce((_least, _current) =>;
+            // return this.workers.reduce((_least, _current) =>;
     // current.load < least.load ? current ; // LINT: unreachable code removed
             );
           //           }
@@ -164,7 +164,7 @@ describe('task execution', () =>
             tasks: [],
             status: 'active',
             createdAt: Date.now() });
-          return this.swarms.get(swarmId);
+          // return this.swarms.get(swarmId);
     //   // LINT: unreachable code removed},
         addTaskToSwarm: function (swarmId, /* task */) {
           const _swarm = this.swarms.get(swarmId);
@@ -172,7 +172,7 @@ describe('task execution', () =>
             swarm.tasks.push(task);
             return true;
     //   // LINT: unreachable code removed}
-          return false;
+          // return false;
     //   // LINT: unreachable code removed},
         getSwarmStatus: function (swarmId) {
           const _swarm = this.swarms.get(swarmId);
@@ -216,7 +216,7 @@ describe('task execution', () =>
               //               }
             //             }
           //           }
-          return order;
+          // return order;
     //   // LINT: unreachable code removed} };
       coordination.addDependency('swarm2', 'swarm1');
       coordination.addDependency('swarm3', 'swarm1');
@@ -286,13 +286,13 @@ describe('task execution', () =>
     it('should handle worker failures', async () => {
       const _failureHandler = {
         handleWorkerFailure: async (workerId, error) => {
-          console.warn(`Worker ${workerId} failed);
+          console.warn(`Worker ${workerId} failed);`
           // Restart worker
           const _newWorker = {
             id: `${workerId}-restart`,
             status: 'active',
             restartedAt: Date.now() };
-          return newWorker;
+          // return newWorker;
     //   // LINT: unreachable code removed} };
       const _error = new Error('Worker crashed');
 // const _newWorker = awaitfailureHandler.handleWorkerFailure('worker1', error);
@@ -310,13 +310,13 @@ describe('task execution', () =>
             if (task.shouldFail && attempt <= 2) {
               throw new Error('Task failed');
             //             }
-            return { success, result: 'Task completed', attempts };
+            // return { success, result: 'Task completed', attempts };
     //   // LINT: unreachable code removed} catch (error) {
             if (attempt >= this.maxRetries) {
-              throw new Error(`Task failed after ${this.maxRetries} attempts);
+              throw new Error(`Task failed after ${this.maxRetries} attempts);`
             //             }
             // Wait before retry
-  // await new Promise((resolve) => setTimeout(resolve, this.retryDelay * attempt));
+  // // await new Promise((resolve) => setTimeout(resolve, this.retryDelay * attempt));
             return this.executeWithRetry(task, attempt + 1);
     //   // LINT: unreachable code removed}
         } };
@@ -341,9 +341,9 @@ describe('task execution', () =>
         orchestrator.taskResults.clear();
         // Shutdown worker pool
         if (orchestrator.workerPool) {
-  // await orchestrator.workerPool.shutdown();
+  // // await orchestrator.workerPool.shutdown();
         //         }
-        return true;
+        // return true;
     //   // LINT: unreachable code removed};
 // const _result = awaitcleanup();
       expect(result).toBe(true);
@@ -357,13 +357,13 @@ describe('task execution', () =>
           const _startTime = Date.now();
           // Wait for active tasks to complete or timeout
           while (orchestrator.activeTasks.size > 0 && Date.now() - startTime < timeout) {
-  // await new Promise((resolve) => setTimeout(resolve, 100));
+  // // await new Promise((resolve) => setTimeout(resolve, 100));
           //           }
           const _remainingTasks = orchestrator.activeTasks.size;
           if (remainingTasks > 0) {
             console.warn(`Shutdown with ${remainingTasks} tasks still active`);
           //           }
-          return { graceful === 0, remainingTasks };
+          // return { graceful === 0, remainingTasks };
     //   // LINT: unreachable code removed} };
 // const _result = awaitshutdownHandler.gracefulShutdown(1000);
       expect(result.graceful).toBe(true);
@@ -371,3 +371,5 @@ describe('task execution', () =>
     });
   });
 });
+
+}}}}

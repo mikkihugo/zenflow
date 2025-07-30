@@ -9,7 +9,7 @@ import { performance } from 'node:perf_hooks';
 import type { Plugin, ResourceUsage } from '../types/plugin.js'; // eslint-disable-line
 
 export abstract class BasePlugin extends EventEmitter implements Plugin {
-  public readonlyid = 'uninitialized';
+  // public readonlyid = 'uninitialized';
   protected hooks = new Map();
   protected apis = new Map();
   protected resourceUsage = 100;
@@ -29,7 +29,7 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
 
   metadata = {
       id = {memory = {pluginName = = 'uninitialized') {
-      throw new Error(`Cannot initialize plugin instate = 'loaded';
+      throw new Error(`Cannot initialize plugin instate = 'loaded';`
       this.emit('initialized', this.manifest.name);
 
       this.updateLastActivity();
@@ -38,7 +38,7 @@ export abstract class BasePlugin extends EventEmitter implements Plugin {
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = 'initialized') {
-      throw new Error(`Cannot start plugin instate = 'active';
+      throw new Error(`Cannot start plugin instate = 'active';`
   this;
 
   emit('started', this.manifest.name);
@@ -52,7 +52,7 @@ catch (error)
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = 'running') {
-      throw new Error(`Cannot stop plugin instate = 'disabled';
+      throw new Error(`Cannot stop plugin instate = 'disabled';`
       this.emit('stopped', this.manifest.name);
 
       this.updateLastActivity();
@@ -61,7 +61,7 @@ catch (error)
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = === 'running') {
-// await this.stop();
+// // await this.stop();
       //       }
 
 
@@ -76,7 +76,7 @@ catch (error)
       this.apis.clear();
 
       // Call plugin-specific cleanup
-// await this.onDestroy();
+// // await this.onDestroy();
       this.setState('destroyed');
       this.metadata.status = 'unloaded';
       this.emit('unloaded', this.manifest.name);
@@ -86,7 +86,7 @@ catch (error)
       this.metadata.status = 'error';
       this.metadata.errorCount++;
       this.emit('error', this.manifest.name, {message = = false) {
-// await this.start();
+// // await this.start();
     //     }
   //   }
 
@@ -103,7 +103,7 @@ catch (error)
   //   }
 
 
-  async configure(updates = await this.validateConfiguration({ ...this.config, ...updates });
+  async configure(updates = // await this.validateConfiguration({ ...this.config, ...updates });
     if (validation.some(v => !v.valid)) {
       throw new Error(`Invalidconfiguration = > !v.valid).map(v => v.message).join(', ')}`);
     //     }
@@ -114,7 +114,7 @@ catch (error)
 
     // Restart if needed
     if (this.state === 'running') {
-// await this.reload();
+// // await this.reload();
     //     }
   //   }
 
@@ -130,15 +130,15 @@ catch (error)
 
 
     this.emit('hook-unregistered', this.manifest.name, type);
-    this.context.apis.logger.info(`Hookunregistered = this.hooks.get(type);
+    this.context.apis.logger.info(`Hookunregistered = this.hooks.get(type);`
     if (!handlers  ?? handlers.size === 0) {
-      return {success = performance.now();
+      // return {success = performance.now();
     // const _results = []; // LINT: unreachable code removed
 
     try {
       for (const handler of handlers) {
         const _hookContext = {
-          type,data = await handler(hookContext);
+          type,data = // await handler(hookContext);
         results.push(result);
 
         if (result.stop) {
@@ -152,20 +152,20 @@ catch (error)
 
       this.emit('hook-executed', this.manifest.name, type, executionTime);
 
-      return {success = > ({ ...acc, ...result.data }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),
+      // return {success = > ({ ...acc, ...result.data }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),
     // executionTime,resourcesUsed = performance.now() - startTime; // LINT: unreachable code removed
       this.updateHookMetrics(type, executionTime, false);
 
       this.emit('hook-failed', this.manifest.name, type, {
         message = {callCount = this.apis.get(name);
     if (!api) {
-      throw new Error(`API notfound = api.methods.find(m => m.name === method);
+      throw new Error(`API notfound = api.methods.find(m => m.name === method);`
     if (!apiMethod) {
-      throw new Error(`Method notfound = performance.now();
+      throw new Error(`Method notfound = performance.now();`
 
     try {
       // Here you would implement the actual API method call
-      // This is a simplified version - in reality you'd need to handle the method invocation
+      // This is a simplified version - in reality you'd need to handle the method invocation'
 // const _result = awaitPromise.resolve(undefined); // Placeholder
 
       const _executionTime = performance.now() - startTime;
@@ -173,7 +173,7 @@ catch (error)
 
       this.emit('api-called', this.manifest.name, name, executionTime);
 
-      return result;
+      // return result;
     //   // LINT: unreachable code removed} catch (/* _error */) {
       const _executionTime = performance.now() - startTime;
       this.updateAPIMetrics(name, executionTime, false);
@@ -186,7 +186,7 @@ catch (error)
     //   // LINT: unreachable code removed}
 
     // Allocate resource (simplified - would integrate with actual resource manager)
-    return true;
+    // return true;
     //   // LINT: unreachable code removed}
 
   async releaseResource(type = [];
@@ -219,15 +219,15 @@ catch (error)
     const _startTime = performance.now();
 
     // Test1 = performance.now();
-// await this.healthCheck();
+// // await this.healthCheck();
       tests.push({name = performance.now();
-// await this.validateConfiguration(this.config);
+// // await this.validateConfiguration(this.config);
       tests.push({name = performance.now() - startTime;
 
-    return {
+    // return {
       passed = === 0,
     // totalTests = { ...this.config.settings, ...updates  // LINT: unreachable code removed};
-// await this.configure({ ...this.config,settings = [];
+// // await this.configure({ ...this.config,settings = [];
     // Basic validation - plugins can override this
     if (this.manifest.configuration.required) {
       for (const field of this.manifest.configuration.required) {
@@ -236,7 +236,7 @@ catch (error)
   //   }
 
 
-  protected updateLastActivity(): void ;
+  protected updateLastActivity() ;
     this.metadata.lastActivity = new Date();
 
   protected updateResourceUsage(): void
@@ -269,7 +269,7 @@ catch (error)
   //   }
 
 
-  private setupLifecycleEvents(): void ;
+  // private setupLifecycleEvents() ;
     // Track performance metrics
     this.on('api-called', (_pluginName, _apiName, _duration) => ;
       this.metrics.performance.callCount++;
@@ -284,7 +284,7 @@ catch (error)
       this.metrics.performance.successRate = 100 - this.metrics.performance.errorRate;
     });
 
-  private async validateDependencies(): Promise<void> ;
+  // private async validateDependencies(): Promise<void> ;
     // Validate system dependencies
     for (const _dep of this.manifest.dependencies.system) {
       // Would implement actual system dependency validation
@@ -297,9 +297,9 @@ catch (error)
     //     }
 
 
-  private resourceMonitorInterval?: NodeJS.Timeout;
+  // private resourceMonitorInterval?: NodeJS.Timeout;
 
-  private startResourceMonitoring(): void ;
+  // private startResourceMonitoring() ;
     if (this.config.monitoring?.enabled) {
       this.resourceMonitorInterval = setInterval(() => {
         this.updateResourceUsage();
@@ -316,7 +316,7 @@ catch (error)
     //     }
 
 
-  private stopResourceMonitoring(): void ;
+  // private stopResourceMonitoring() ;
     if (this.resourceMonitorInterval) {
       clearInterval(this.resourceMonitorInterval);
       this.resourceMonitorInterval = undefined;
@@ -324,4 +324,6 @@ catch (error)
 // }
 
 
-export default BasePlugin;
+// export default BasePlugin;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))

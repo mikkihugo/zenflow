@@ -1,12 +1,12 @@
-/**
- * DirectorySelector Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * DirectorySelector Module
+ * Converted from JavaScript to TypeScript
  */
 
-import { Box } from 'ink';
-import React, { useEffect, useState } from 'react';
+import { Box } from 'ink';'
+import React, { useEffect, useState } from 'react';'
 
-const _DirectorySelector = (): unknown => {
+const _DirectorySelector = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [directories, _setDirectories] = useState([]);
   const [_currentDir, setCurrentDir] = useState(currentPath);
@@ -35,13 +35,13 @@ const _DirectorySelector = (): unknown => {
     //     }
 };
 // )
-return React.createElement(Box, { borderStyle => {
+// return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
 // let _displayName = dir.name; // LINT: unreachable code removed
-if (dir.isParent) displayName = '⬆️  ..';
-else if (dir.isCurrent) displayName = '✅ . (Select this directory)';
-else displayName = `📁 ${dir.name}`;
-return React.createElement(;
+if (dir.isParent) displayName = '⬆  ..';'
+else if (dir.isCurrent) displayName = '✅ . (Select this directory)';'
+else displayName = `� ${dir.name}`;`
+// return React.createElement(;
 // Box, // LINT: unreachable code removed
 // {
   key: dir.path;
@@ -51,16 +51,16 @@ return React.createElement(;
 React.createElement(
 Text,
 // {
-  color: isSelected ? 'black' : 'white',
-  backgroundColor: isSelected ? 'cyan' ,
+  color: isSelected ? 'black' : 'white','
+  backgroundColor: isSelected ? 'cyan' ,'
   bold}
 
-`\${isSelected ? '▶ ' }
+`\${isSelected ? '▶ ' }'`
 $;
 // {
   displayName;
 // }
-`;
+`;`
 // )
 // )
 // }
@@ -74,10 +74,12 @@ React.createElement(Box,
 
 React.createElement(Text,
 // {
-  color: 'gray';
+  color: 'gray';'
 // }
-, "↑↓ Navigate | Enter: Select/Open | ESC: Cancel")
+, "↑↓ Navigate | Enter: Select/Open | ESC: Cancel")"
 // )
 // )
 // }
-export default DirectorySelector;
+// export default DirectorySelector;
+
+}

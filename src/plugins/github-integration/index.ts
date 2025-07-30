@@ -4,31 +4,31 @@
  */
 
 // GitHub API types
-// interface GitHubRepository {id = new Map()
-private;
-rateLimitInfo = null
-private;
-requestQueue = > void> = []
-private;
-activeRequests = 0
-constructor(manifest, config = {token = await this.makeRequest<GitHubUser>('/user');
-this.context.apis.logger.info('GitHub authenticated'
-
+// // interface GitHubRepository {id = new Map() {}
+// private;
+// rateLimitInfo = null
+// private;
+// requestQueue = > void> = []
+// private;
+// activeRequests = 0
+// constructor(manifest, config = {token = // await this.makeRequest<GitHubUser>('/user');
+// this.context.apis.logger.info('GitHub authenticated'
 // 
-{
-  (_user) => {
-    // Could enhance tasks with GitHub integration
-    return {success = [];
-    // ; // LINT: unreachable code removed
-    // Persist cache if needed
-    // Implementation would persist important cache data
-  };
+// // 
+// {
+//   (_user) => {
+//     // Could enhance tasks with GitHub integration
+//     return {success = [];
+//     // ; // LINT: unreachable code removed
+//     // Persist cache if needed
+//     // Implementation would persist important cache data
+//   };
   protected;
   async;
   onDestroy();
   : Promise<void>
   // Clear all state
-  this.cache.clear()
+  this.cache.clear() {}
   this.requestQueue = []
   this.rateLimitInfo = null
   // Public API Methods
@@ -41,29 +41,29 @@ this.context.apis.logger.info('GitHub authenticated'
   : Promise<RepositoryAnalysis>
   //   {
     const __analysisOptions = {includeIssues = {repository = analysis.repository;
-    analysis.metrics.basic = {stars = await this.analyzeTechnologyStack(owner, repo);
+    analysis.metrics.basic = {stars = // await this.analyzeTechnologyStack(owner, repo);
   //   }
   // Issue analysis
   if (analysisOptions.includeIssues) {
-    analysis.issues = await this.analyzeIssues(owner, repo, analysisOptions.timeRange);
+    analysis.issues = // await this.analyzeIssues(owner, repo, analysisOptions.timeRange);
   //   }
   // Pull request analysis
   if (analysisOptions.includePRs) {
-    analysis.pullRequests = await this.analyzePullRequests(owner, repo, analysisOptions.timeRange);
+    analysis.pullRequests = // await this.analyzePullRequests(owner, repo, analysisOptions.timeRange);
   //   }
   // Commit activity analysis
   if (analysisOptions.includeCommits) {
-    analysis.commits = await this.analyzeCommitActivity(owner, repo, analysisOptions.timeRange);
+    analysis.commits = // await this.analyzeCommitActivity(owner, repo, analysisOptions.timeRange);
   //   }
   // Contributor analysis
   if (analysisOptions.includeContributors) {
-    analysis.contributors = await this.analyzeContributors(owner, repo);
+    analysis.contributors = // await this.analyzeContributors(owner, repo);
   //   }
   // Repository health score
   if (analysisOptions.includeHealth) {
     analysis.health = this.calculateHealthScore(analysis);
   //   }
-  return analysis;
+  // return analysis;
 // }
 /**
  * Get repository information;
@@ -80,7 +80,7 @@ getRepository((owner = {}));
     const _issueOptions = {state = new URLSearchParams(;
     Object.entries(issueOptions).map(([key, value]) => [key, value.toString()]);
     //     )
-    return await this.makeRequest<GitHubIssue[]>(`/repos/${owner}/${repo}/issues?${params}`);
+    return // await this.makeRequest<GitHubIssue[]>(`/repos/${owner}/${repo}/issues?${params}`);
   //   }
   // Private helper methods
 
@@ -97,7 +97,7 @@ getRepository((owner = {}));
   //   }
   // Get repository contents to analyze tech stack
 // const _contents = awaitthis.getContents(owner, repo, '');
-  return {languages = [];
+  // return {languages = [];
   // const _buildTools = []; // LINT: unreachable code removed
   const _packageManagers = [];
   const _configFiles = [];
@@ -154,14 +154,13 @@ for (const file of contents) {
     rule();
   //   }
 // }
-return { frameworks, buildTools, packageManagers, configFiles };
+// return { frameworks, buildTools, packageManagers, configFiles };
 // }
 /**
  * Analyze repository issues;
  */
-private
-// async
-analyzeIssues(owner = new Date(Date.now() - timeRangeDays * 24 * 60 * 60 * 1000).toISOString()
+// private // async
+analyzeIssues(owner = new Date(Date.now() - timeRangeDays * 24 * 60 * 60 * 1000).toISOString() {}
 // const _allIssues = awaitthis.getIssues(owner, repo, {state = allIssues.filter(issue => issue.state === 'open');
 const _closedIssues = allIssues.filter((issue) => issue.state === 'closed');
 // Calculate average close time
@@ -192,7 +191,7 @@ for (let i = 0; i < 4; i++) {
     //   // LINT: unreachable code removed}).length;
 
         const __weekClosed = closedIssues.filter(issue => {
-          const _closed = issue.closed_at ? new Date(issue.closed_at).getTime() : 0;
+          const _closed = issue.closed_at ? new Date(issue.closed_at).getTime() ;
           return closed >= weekStart.getTime() && closed < weekEnd.getTime();
     //   // LINT: unreachable code removed}).length;
 
@@ -227,7 +226,7 @@ map(pr => {
     //   // LINT: unreachable code removed}).length;
 
         const _weekClosed = closedPRs.filter(pr => {
-          const _closed = pr.closed_at ? new Date(pr.closed_at).getTime() : 0;
+          const _closed = pr.closed_at ? new Date(pr.closed_at).getTime() ;
           return closed >= weekStart.getTime() && closed < weekEnd.getTime() && !pr.merged_at;
     //   // LINT: unreachable code removed}).length;
 
@@ -271,7 +270,7 @@ slice(0, 10);
           return commitDate >= weekStart.getTime() && commitDate < weekEnd.getTime();
     //   // LINT: unreachable code removed});
 
-        activityTimeline.push({date = await this.makeRequest<Array<{login = 100`);
+        activityTimeline.push({date = // await this.makeRequest<Array<{login = 100`);`
 
       const _totalContributions = contributors.reduce((sum, c) => sum + c.contributions, 0);
 
@@ -303,7 +302,7 @@ slice(0, 10);
         `/repos/${owner}/${repo}/commits?since=${ninetyDaysAgo}&per_page=100`;
       );
 
-      return {
+      // return {
         total_contributors = {activity = [];
     // ; // LINT: unreachable code removed
     // Activity score (based on recent commits and issues)
@@ -363,17 +362,17 @@ slice(0, 10);
 
     // Overall score (weighted average)
 
-    return {overall_score = await this.makeRequest<GitHubContent | GitHubContent[]>(;
-    // `/repos/\${owner // LINT);
-      return Array.isArray(contents) ?contents = await this.makeRequest<{rate = rateLimit.rate;
+    // return {overall_score = // await this.makeRequest<GitHubContent | GitHubContent[]>(;
+    // `/repos/\${owner // LINT);`
+      // return Array.isArray(contents) ?contents = // await this.makeRequest<{rate = rateLimit.rate;
     // ; // LINT}
 
     // Rate limiting
-// await this.checkRateLimit();
+// // await this.checkRateLimit();
     const _startTime = performance.now();
 
     try {
-// const _response = awaitfetch(`${this.config.settings.baseUrl}${endpoint}`, {headers = await response.json();
+// const _response = awaitfetch(`${this.config.settings.baseUrl}${endpoint}`, {headers = // await response.json();
 
       // Update rate limit info from headers
       if (response.headers.get('x-ratelimit-remaining')) {
@@ -383,14 +382,14 @@ slice(0, 10);
       const _waitTime = Math.max(0, resetTime - Date.now()) + 1000; // Add 1s buffer
 
       this.context.apis.logger.info(`Rate limit reached, waiting ${waitTime}ms`);
-// await new Promise(resolve => setTimeout(resolve, waitTime));
-// await this.updateRateLimitInfo();
+// // await new Promise(resolve => setTimeout(resolve, waitTime));
+// // await this.updateRateLimitInfo();
     //     }
 
 
     // Concurrent request limiting
     if (this.activeRequests >= this.config.settings.maxConcurrentRequests) {
-// await new Promise<void>(resolve => {
+// // await new Promise<void>(resolve => {
         this.requestQueue.push(resolve);
       });
     //     }
@@ -400,7 +399,7 @@ slice(0, 10);
   //   }
 
 
-  private releaseRequest(): void ;
+  // private releaseRequest() ;
     this.activeRequests--;
     if (this.requestQueue.length > 0) {
       const _resolve = this.requestQueue.shift();
@@ -409,4 +408,6 @@ slice(0, 10);
 // }
 
 
-export default GitHubIntegrationPlugin;
+// export default GitHubIntegrationPlugin;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))

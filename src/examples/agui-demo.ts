@@ -1,5 +1,5 @@
 /**
- * 🚀 AG-UI Integration Demo for Claude Code Zen;
+ * � AG-UI Integration Demo for Claude Code Zen;
  *;
  * Demonstrates the AG-UI protocol integration with the existing architecture;
  * Shows how to use AG-UI for real-time agent-to-UI communication;
@@ -15,8 +15,8 @@ export class AGUIDemoIntegration {
   constructor() {
     this.adapter = new AGUIAdapter({
       sessionId => {
-      console.warn(`🌟 AG-UI Event [${event.type}
-    ]:`, event)
+      console.warn(`� AG-UI Event [${event.type}`
+    ]:`, event)`
   //   }
   //   )
 // }
@@ -24,16 +24,16 @@ export class AGUIDemoIntegration {
    * Demo1 = this.adapter.startTextMessage(null, 'assistant');
 
     // Simulate streaming text content
-    const _text = "Hello! I'm demonstrating the AG-UI protocol integration with Claude Code Zen.";
+    const _text = "Hello! I'm demonstrating the AG-UI protocol integration with Claude Code Zen.";'
     for(const char of text) {
       this.adapter.addTextContent(char, messageId);
-      await new Promise(resolve => setTimeout(resolve, 50)); // Simulate typing
+      // await new Promise(resolve => setTimeout(resolve, 50)); // Simulate typing
     //     }
 
 
     this.adapter.endTextMessage(messageId);
 
-    return messageId;
+    // return messageId;
     //   // LINT: unreachable code removed}
 
   /**
@@ -59,19 +59,19 @@ export class AGUIDemoIntegration {
     // Complete swarm task
     this.adapter.emitSwarmEvent('swarm-alpha', 'task_complete', ['agent-1', 'agent-2', 'agent-3'], {
       results = {queens = > setTimeout(resolve, 1000));
-// await this.demoToolCallExecution();
-// await new Promise(resolve => setTimeout(resolve, 1000));// await this.demoMultiQueenCoordination();
-// await new Promise(resolve => setTimeout(resolve, 1000));// await this.demoSwarmCoordination();
-// await new Promise(resolve => setTimeout(resolve, 1000));// await this.demoStateSynchronization();
+// // await this.demoToolCallExecution();
+// // await new Promise(resolve => setTimeout(resolve, 1000));// // await this.demoMultiQueenCoordination();
+// // await new Promise(resolve => setTimeout(resolve, 1000));// // await this.demoSwarmCoordination();
+// // await new Promise(resolve => setTimeout(resolve, 1000));// // await this.demoStateSynchronization();
       console.warn('\n✅ All AG-UI integration demos completed successfully!');
-      console.warn('📊 FinalStats = new AGUIWebSocketMiddleware(webSocketServer);
+      console.warn('� FinalStats = new AGUIWebSocketMiddleware(webSocketServer);'
 
     // Connect our demo adapter to the WebSocket middleware
     this.adapter.connectGlobalEmitter(aguiWS.getGlobalAdapter());
 
     // Run demos - events will be broadcast to connected WebSocket clients
-// await this.runAllDemos();
-    return aguiWS;
+// // await this.runAllDemos();
+    // return aguiWS;
     //   // LINT: unreachable code removed}
 // }
 
@@ -79,7 +79,7 @@ export class AGUIDemoIntegration {
 /**
  * Standalone demo runner;
  */
-export async function runAGUIDemo() {
+// export async function runAGUIDemo() {
   const _demo = new AGUIDemoIntegration();
 // await demo.runAllDemos();
   return demo;
@@ -87,12 +87,12 @@ export async function runAGUIDemo() {
 /**
  * Integration test helper;
  */
-export function createAGUIIntegrationTest(server => {
+// export function createAGUIIntegrationTest(server => {
     console.warn('🧪 Running AG-UI Integration Test...');
 const _demo = new AGUIDemoIntegration();
 // Test basic functionality
-// await demo.demoBasicTextMessage();
-// await demo.demoToolCallExecution();
+// // await demo.demoBasicTextMessage();
+// // await demo.demoToolCallExecution();
 // Test server integration if available
 if (server?.aguiMiddleware) {
   const _globalAdapter = server.aguiMiddleware.getGlobalAdapter();
@@ -102,7 +102,9 @@ if (server?.aguiMiddleware) {
 // )
 // }
 console.warn('✅ AG-UI Integration Test completed')
-return demo.adapter.getStats();
+// return demo.adapter.getStats();
 // }
 // }
-export default AGUIDemoIntegration;
+// export default AGUIDemoIntegration;
+
+}}}}}))

@@ -11,7 +11,7 @@
  * - View results and make decisions
  */
 
-const readline = require('node);
+const readline = require('node);'
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // ANSI colors for pretty output
@@ -34,12 +34,12 @@ class MockMemoryStore {
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id, size: value.length };
+    // return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
-    return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;
   }
 
   async search(options = {}) {
@@ -49,7 +49,7 @@ class MockMemoryStore {
         results[key] = value;
       }
     }
-    return results;
+    // return results;
   }
 }
 
@@ -58,30 +58,30 @@ const memoryStore = new MockMemoryStore();
 const docStack = new DocumentStack(memoryStore);
 setupDefaultRules(docStack);
 
-// Create readline interface
-const rl = readline.createInterface({
-  input);
-
-// Document templates for quick creation
-const templates = {
-  adr: {
-    docType: 'service-adr',
-    template: `# ADR: [Title]
-
-## Status
-[Proposed/Accepted/Rejected] - ${new Date().toISOString().split('T')[0]}
+// Create readline // interface
+// const rl = readline.createInterface({
+//   input);
+// 
+// // Document templates for quick creation
+// const templates = {
+//   adr: {
+//     docType: 'service-adr',
+//     template: `# ADR: [Title]`
+// 
+// ## Status
+// [Proposed/Accepted/Rejected] - ${new Date().toISOString().split('T')[0]}
 
 ## Context
-[What is the issue that we're seeing that is motivating this decision or change?]
+[What is the issue that we're seeing that is motivating this decision or change?]'
 
 ## Decision
-[What is the change that we're proposing and/or doing?]
+[What is the change that we're proposing and/or doing?]'
 
 ## Consequences
-[What becomes easier or more difficult to do because of this change?]` },
+[What becomes easier or more difficult to do because of this change?]` },`
   api: {
     docType: 'api-documentation',
-    template: `# API Documentation
+    template: `# API Documentation`
 
 ## Overview
 [Brief description of the API]
@@ -95,14 +95,14 @@ const templates = {
 [Description]
 
 **Response:**
-\`\`\`json
-{
+\`\`\`json`
+{}
   "data": []
 }
 \`\`\`` },
   security: {
     docType: 'security-spec',
-    template: `# Security Specification
+    template: `# Security Specification`
 
 ## Overview
 [Security requirements overview]
@@ -112,7 +112,7 @@ const templates = {
 2. [Requirement 2]
 
 ## Implementation
-[How to implement]` } };
+[How to implement]` } };`
 
 // Main command processor
 async function processCommand(line) {
@@ -127,27 +127,27 @@ async function processCommand(line) {
 
     case 'create': null
     case 'c': null
-// await createDocument(args.slice(1));
+// // await createDocument(args.slice(1));
       break;
 
     case 'review': null
     case 'r': null
-// await reviewDocument(args.slice(1));
+// // await reviewDocument(args.slice(1));
       break;
 
     case 'list': null
     case 'ls': null
-// await listDocuments(args.slice(1));
+// // await listDocuments(args.slice(1));
       break;
 
     case 'approve': null
     case 'a': null
-// await approveDocument(args.slice(1));
+// // await approveDocument(args.slice(1));
       break;
 
     case 'validate': null
     case 'v': null
-// await validateDocument(args.slice(1));
+// // await validateDocument(args.slice(1));
       break;
 
     case 'template': null
@@ -157,7 +157,7 @@ async function processCommand(line) {
 
     case 'status': null
     case 's': null
-// await showStatus();
+// // await showStatus();
       break;
 
     case 'clear': null
@@ -335,7 +335,7 @@ async function validateDocument(args) {
     { name: 'completeness-check', status: 'warning', message: 'Missing implementation details' } ];
 
   validations.forEach((v) => {
-    const _icon = v.status === 'pass' ? '✅' : v.status === 'warning' ? '⚠️' : '❌';
+    const _icon = v.status === 'pass' ? '✅' : v.status === 'warning' ? '⚠' : '❌';
     const _color =
       v.status === 'pass' ? colors.green : v.status === 'warning' ? colors.yellow : colors.red;
   });
@@ -387,6 +387,8 @@ rl.prompt();
 
 // Handle errors gracefully
 process.on('unhandledRejection', (error) => {
-  console.error(`${colors.red}Error);
+  console.error(`${colors.red}Error);`
   rl.prompt();
 });
+
+}}}

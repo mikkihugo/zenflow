@@ -32,13 +32,13 @@ export class RealtimeUpdateSystem {
   => {
       this.
   broadcastUpdate('tools', {
-        type => {
+        //         type => {
       this.broadcastUpdate('tools', {
-        type => {
+        //         type => {
       this.broadcastUpdate('tools', {
-        type => {
+        //         type => {
       this.broadcastUpdate('orchestration', {
-        type => {
+        //         type => {
       this.broadcastUpdate('memory', {type = [
       'neural',
       'analysis',
@@ -92,7 +92,7 @@ emit(eventType, data)
       try {
         callback(data, timestamp);
       } catch (error) {
-        console.error(`Error in event subscriber for ${eventType});
+        console.error(`Error in event subscriber for ${eventType});`
       //       }
     });
   //   }
@@ -158,7 +158,7 @@ groupUpdatesByType(updates);
     //     }
     grouped.get(update.type).push(update);
   });
-  return grouped;
+  // return grouped;
 // }
 /**
  * Apply grouped updates to a specific view;
@@ -190,7 +190,7 @@ applyUpdatesToView(viewName, groupedUpdates);
         this.requestUIRefresh();
       //       }
     } catch(error) ;
-      console.error(`Error applying updates to \$viewName);
+      console.error(`Error applying updates to \$viewName);`
       this.updateMetrics.droppedUpdates++;
   //   }
 
@@ -238,13 +238,13 @@ applyUpdatesToView(viewName, groupedUpdates);
 ..update.data,timestamp = groupedUpdates.get('execution_start');
     if(executionUpdates) {
       executionUpdates.forEach((update) => {
-        this.ui.addLog('info', `🔧Started = groupedUpdates.get('execution_complete');
+        this.ui.addLog('info', `�Started = groupedUpdates.get('execution_complete');`
     if(completionUpdates) {
       completionUpdates.forEach((update) => {
-        this.ui.addLog('success', `✅Completed = groupedUpdates.get('execution_error');
+        this.ui.addLog('success', `✅Completed = groupedUpdates.get('execution_error');`
     if(errorUpdates) {
       errorUpdates.forEach((update) => {
-        this.ui.addLog('error', `❌Failed = groupedUpdates.get('swarm_update');
+        this.ui.addLog('error', `❌Failed = groupedUpdates.get('swarm_update');`
     if(swarmUpdates) {
       swarmUpdates.forEach((update) => {
         // Update swarm integration data
@@ -253,7 +253,7 @@ applyUpdatesToView(viewName, groupedUpdates);
         //         }
 
 
-        this.ui.addLog('info', `🐝 Swarm ${update.swarmId});
+        this.ui.addLog('info', `� Swarm ${update.swarmId});`
       });
     //     }
   //   }
@@ -282,7 +282,7 @@ applyUpdatesToView(viewName, groupedUpdates);
         //         }
 
 
-        this.ui.addLog('info', `💾 Memory ${update.operation} in ${update.namespace}`);
+        this.ui.addLog('info', `� Memory ${update.operation} in ${update.namespace}`);
       });
     //     }
   //   }
@@ -291,11 +291,11 @@ applyUpdatesToView(viewName, groupedUpdates);
   /**
    * Apply generic updates for other views;
    */;
-  applyGenericUpdates(viewName, groupedUpdates): unknown ;
+  applyGenericUpdates(viewName, groupedUpdates) ;
     // Log generic updates
     groupedUpdates.forEach((updates, type) => ;
       updates.forEach((update) => ;
-        this.ui.addLog('info', `📡 ${viewName});););
+        this.ui.addLog('info', `� ${viewName});););`
 
   /**
    * Update related views based on tool execution;
@@ -318,7 +318,7 @@ applyUpdatesToView(viewName, groupedUpdates);
   /**
    * Start performance monitoring;
    */;
-  startPerformanceMonitoring()
+  startPerformanceMonitoring() {}
     setInterval(() => {
       this.reportPerformanceMetrics();
     }, 60000); // Report every minute
@@ -326,7 +326,7 @@ applyUpdatesToView(viewName, groupedUpdates);
   /**
    * Report performance metrics;
    */;
-  reportPerformanceMetrics()
+  reportPerformanceMetrics() {}
 
     this.emit('performance_metrics', {
       totalUpdates = {};
@@ -338,7 +338,7 @@ applyUpdatesToView(viewName, groupedUpdates);
       subscribers = {}) {
     const { chunkSize = 10, delay = 100, onProgress = null, onComplete = null } = options;
     // ; // LINT: unreachable code removed
-    return async () => {
+    // return async () => {
       try {
 // const _data = awaitdataLoader();
     // ; // LINT: unreachable code removed
@@ -374,4 +374,6 @@ applyUpdatesToView(viewName, groupedUpdates);
 // }
 
 
-export default RealtimeUpdateSystem;
+// export default RealtimeUpdateSystem;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))

@@ -6,8 +6,8 @@ async function testMCPIntegration() {
   // await server.initializeMemory();
   try {
     // Test memory operations
-    console.warn('🔧 Test);
-  // await server.executeTool('memory_usage', {
+    console.warn('� Test);'
+  // // await server.executeTool('memory_usage', {
       action);
 // const _memoryResult = awaitserver.executeTool('memory_usage', {
       action: 'retrieve',
@@ -16,12 +16,14 @@ async function testMCPIntegration() {
 })
 console.warn('✅ Memory test passed:', memoryResult.found)
 console.warn(
-('\n🎉 Basic integration test passed\! Claude-zen MCP server is working with library mode.')
+('\n� Basic integration test passed\! Claude-zen MCP server is working with library mode.')
 // )
 } catch (error)
 // {
-  console.error('❌ Test failed);
+  console.error('❌ Test failed);'
   console.error(error.stack);
 // }
 // }
-testMCPIntegration()
+testMCPIntegration() {}
+
+}

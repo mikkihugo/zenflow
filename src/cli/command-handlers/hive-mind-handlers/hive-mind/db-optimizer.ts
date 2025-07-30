@@ -1,27 +1,27 @@
-/**
- * Hive Mind Database Optimizer;
- *;
- * Safe, backward-compatible database optimization for existing deployments;
- * Adds indexes, performance improvements, and new features without breaking changes;
+/**  */
+ * Hive Mind Database Optimizer
+ *
+ * Safe, backward-compatible database optimization for existing deployments
+ * Adds indexes, performance improvements, and new features without breaking changes
  */
 
 import Database from 'better-sqlite3';
 import chalk from 'chalk';
 import ora from 'ora';
-/**
- * Optimize existing hive mind database with backward compatibility;
+/**  */
+ * Optimize existing hive mind database with backward compatibility
  */
 export async function optimizeHiveMindDatabase(dbPath = {}) {
   const _spinner = ora('Optimizing Hive Mind database...').start();
 
   try {
     // Open database with write-ahead logging for better performance
-    const _db = new Database(dbPath, {verbose = WAL');
+    const _db = new Database(dbPath, {verbose = WAL');'
     db.pragma('synchronous = NORMAL');
 
     // Get current schema version
     const __schemaVersion = getSchemaVersion(db);
-    spinner.text = `Current schemaversion = [];
+    spinner.text = `Current schemaversion = [];`
 
     // Version 1.0 -> 1.1 = 'Applying performance indexes...';
       applyBasicIndexes(db);
@@ -74,7 +74,7 @@ export async function optimizeHiveMindDatabase(dbPath = {}) {
     spinner.succeed('Database optimization complete!');
 
     if(optimizationsApplied.length > 0) {
-      console.warn('\n' + chalk.green('✓') + ' Optimizations applied => {
+      console.warn('\n' + chalk.green('') + ' Optimizations applied => {'
         console.warn('  - ' + opt);
       });
     } else {
@@ -82,56 +82,56 @@ export async function optimizeHiveMindDatabase(dbPath = {}) {
     //     }
 
 
-    return {success = db;
+    // return {success = db;
     // .prepare(; // LINT);
 get();
 
     if(!tableExists) {
       // Create schema version table
-      db.exec(`;
+      db.exec(`;`
         CREATE TABLE schema_version (;
           version REAL PRIMARY KEY,
           applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           description TEXT;
         );
-      `);
+      `);`
 
       // Insert initial version
       db.prepare(;
-        `;
+        `;`
         INSERT INTO schema_version (version, description) ;
         VALUES (1.0, 'Initial schema');
-      `).run();
+      `).run();`
 
-      return 1.0;
+      // return 1.0;
     //   // LINT: unreachable code removed}
 
     // Get latest version
     const _result = db;
 prepare(;
-        `;
+        `;`
       SELECT version FROM schema_version ;
       ORDER BY version DESC LIMIT 1;
-    `);
+    `);`
 get();
 
-    return result ? result.version = '') {
+    // return result ? result.version = '') {
   db.prepare(;
-    // `; // LINT);
+    // `; // LINT);`
     VALUES (?, ?);
-  `).run(version, description  ?? `Updated to version \$version`);
+  `).run(version, description  ?? `Updated to version \$version`);`
 // }
 
 
-/**
- * Apply basic performance indexes;
- */;
+/**  */
+ * Apply basic performance indexes
+ */
 function applyBasicIndexes(db = db;
 prepare(;
-      `;
+      `;`
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name NOT LIKE 'sqlite_%';
-  `);
+  `);`
 all();
 map((row) => row.name);
 
@@ -183,12 +183,12 @@ map((row) => row.name);
     try {
       db.exec(sql);
     } catch (error) {
-      console.warn(`Warning = db;
+      console.warn(`Warning = db;`
 prepare(;
-      `;
+      `;`
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name NOT LIKE 'sqlite_%';
-  `);
+  `);`
 all();
 map((row) => row.name);
 
@@ -199,10 +199,10 @@ map((row) => row.name);
     // Check and add priority column to tasks table
     const _hasPriority = db;
 prepare(;
-        `;
-      SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
+        `;`
+      SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
       WHERE name = 'priority';
-    `);
+    `);`
 get();
 
     if(!hasPriority  ?? hasPriority.count === 0) {
@@ -222,10 +222,10 @@ get();
     // Check and add completed_at column to tasks table
     const _hasCompletedAt = db;
 prepare(;
-        `;
-      SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
+        `;`
+      SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
       WHERE name = 'completed_at';
-    `);
+    `);`
 get();
 
     if(!hasCompletedAt  ?? hasCompletedAt.count === 0) {
@@ -245,10 +245,10 @@ get();
     // Check and add result column to tasks table
     const _hasResult = db;
 prepare(;
-        `;
-      SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
+        `;`
+      SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
       WHERE name = 'result';
-    `);
+    `);`
 get();
 
     if(!hasResult  ?? hasResult.count === 0) {
@@ -270,10 +270,10 @@ get();
     // Check and add updated_at column to swarms table
     const _hasUpdatedAt = db;
 prepare(;
-        `;
-      SELECT COUNT(*) as count FROM pragma_table_info('swarms') ;
+        `;`
+      SELECT COUNT(*) as count FROM pragma_table_info('swarms') 
       WHERE name = 'updated_at';
-    `);
+    `);`
 get();
 
     if(!hasUpdatedAt  ?? hasUpdatedAt.count === 0) {
@@ -292,15 +292,15 @@ get();
 // }
 
 
-/**
- * Apply advanced performance indexes;
- */;
+/**  */
+ * Apply advanced performance indexes
+ */
 function applyAdvancedIndexes(db = db;
 prepare(;
-      `;
+      `;`
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name NOT LIKE 'sqlite_%';
-  `);
+  `);`
 all();
 map((_row) => row.name);
 
@@ -339,7 +339,7 @@ map((_row) => row.name);
     try {
       db.exec(sql);
     } catch (/* _error */) {
-      console.warn(`Warning = 'completed' OR NEW.status = 'failed';
+      console.warn(`Warning = 'completed' OR NEW.status = 'failed';`
     BEGIN;
       INSERT OR REPLACE INTO agent_performance (agent_id, tasks_completed, tasks_failed);
       VALUES (;
@@ -350,19 +350,19 @@ map((_row) => row.name);
           CASE WHEN NEW.status = 'failed' THEN 1 ELSE 0 END;
       );
     END;
-  `);
+  `);`
 // }
 
 
-/**
- * Add memory optimization features;
- */;
+/**  */
+ * Add memory optimization features
+ */
 function addMemoryOptimization(db = db;
 prepare(;
-      `;
+      `;`
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name = 'collective_memory';
-  `);
+  `);`
 all();
 
   if(tables.length === 0) {
@@ -373,18 +373,18 @@ all();
   // Check and add access_count column
   const _hasAccessCount = db;
 prepare(;
-      `;
-    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
+      `;`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
     WHERE name = 'access_count';
-  `);
+  `);`
 get();
 
   if(!hasAccessCount  ?? hasAccessCount.count === 0) {
     try {
-      db.exec(`;
+      db.exec(`;`
         ALTER TABLE collective_memory ;
         ADD COLUMN access_count INTEGER DEFAULT 0;
-      `);
+      `);`
       console.warn('Added access_count column to collective_memory table');
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
@@ -397,18 +397,18 @@ get();
   // Check and add accessed_at column (not last_accessed)
   const _hasAccessedAt = db;
 prepare(;
-      `;
-    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
+      `;`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
     WHERE name = 'accessed_at';
-  `);
+  `);`
 get();
 
   if(!hasAccessedAt  ?? hasAccessedAt.count === 0) {
     try {
-      db.exec(`;
+      db.exec(`;`
         ALTER TABLE collective_memory ;
         ADD COLUMN accessed_at DATETIME;
-      `);
+      `);`
       console.warn('Added accessed_at column to collective_memory table');
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
@@ -421,18 +421,18 @@ get();
   // Add compressed and size columns if missing
   const _hasCompressed = db;
 prepare(;
-      `;
-    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
+      `;`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
     WHERE name = 'compressed';
-  `);
+  `);`
 get();
 
   if(!hasCompressed  ?? hasCompressed.count === 0) {
     try {
-      db.exec(`;
+      db.exec(`;`
         ALTER TABLE collective_memory ;
         ADD COLUMN compressed INTEGER DEFAULT 0;
-      `);
+      `);`
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
@@ -443,18 +443,18 @@ get();
 
   const _hasSize = db;
 prepare(;
-      `;
-    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
+      `;`
+    SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') 
     WHERE name = 'size';
-  `);
+  `);`
 get();
 
   if(!hasSize  ?? hasSize.count === 0) {
     try {
-      db.exec(`;
+      db.exec(`;`
         ALTER TABLE collective_memory ;
         ADD COLUMN size INTEGER DEFAULT 0;
-      `);
+      `);`
     } catch (error) {
       if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
@@ -464,7 +464,7 @@ get();
 
 
   // Create memory usage summary view
-  db.exec(`;
+  db.exec(`;`
     CREATE VIEW IF NOT EXISTS memory_usage_summary AS;
     SELECT ;
       swarm_id,
@@ -474,10 +474,10 @@ get();
       COUNT(CASE WHEN access_count = 0 THEN 1 END) as unused_entries;
     FROM collective_memory;
     GROUP BY swarm_id;
-  `);
+  `);`
 
   // Add memory cleanup tracking
-  db.exec(`;
+  db.exec(`;`
     CREATE TABLE IF NOT EXISTS memory_cleanup_log (;
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       swarm_id TEXT,
@@ -486,13 +486,13 @@ get();
       cleanup_type TEXT,
       performed_at DATETIME DEFAULT CURRENT_TIMESTAMP;
     );
-  `);
+  `);`
 // }
 
 
-/**
- * Add behavioral tracking features;
- */;
+/**  */
+ * Add behavioral tracking features
+ */
 function _addBehavioralTracking(_db = {}) {
   const _spinner = ora('Performing database maintenance...').start();
 
@@ -504,10 +504,10 @@ function _addBehavioralTracking(_db = {}) {
       // Check if collective_memory table exists
       const _hasMemoryTable = db;
 prepare(;
-          `;
+          `;`
         SELECT name FROM sqlite_master ;
         WHERE type='table' AND name='collective_memory';
-      `);
+      `);`
 get();
 
       if(hasMemoryTable) {
@@ -518,69 +518,69 @@ get();
         try {
           const _result = db;
 prepare(;
-              `;
+              `;`
             DELETE FROM collective_memory ;
             WHERE accessed_at < ? AND access_count < 5;
-          `);
+          `);`
 run(cutoffDate.toISOString());
 
-          console.warn(chalk.green(`✓ Removed ${result.changes} old memory entries`));
+          console.warn(chalk.green(` Removed ${result.changes} old memory entries`));
         } catch (/* _error */) {
-          console.warn(chalk.yellow(`⚠ Could not clean memoryentries = 'Archiving completed tasks...';
+          console.warn(chalk.yellow(`⚠ Could not clean memoryentries = 'Archiving completed tasks...';`
 
       // Create archive table if not exists
-      db.exec(`;
+      db.exec(`;`
         CREATE TABLE IF NOT EXISTS tasks_archive AS ;
-        SELECT * FROM tasks WHERE 1=0;
-      `);
+        SELECT * FROM tasks WHERE 1=0
+      `);`
 
       // Check if completed_at column exists
       const _hasCompletedAt = db;
 prepare(;
-          `;
-        SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
+          `;`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
         WHERE name = 'completed_at';
-      `);
+      `);`
 get();
 
       let _archived = {changes = new Date();
         archiveCutoff.setDate(archiveCutoff.getDate() - (options.taskRetentionDays  ?? 7));
 
-        db.exec(`;
+        db.exec(`;`
           INSERT INTO tasks_archive ;
-          SELECT * FROM tasks ;
+          SELECT * FROM tasks 
           WHERE status = 'completed' AND completed_at < '${archiveCutoff.toISOString()}';
-        `);
+        `);`
 
         archived = db;
 prepare(;
-            `;
+            `;`
           DELETE FROM tasks ;
           WHERE status = 'completed' AND completed_at < ?;
-        `);
+        `);`
 run(archiveCutoff.toISOString());
       } else {
         // Use created_at as fallback
         const _archiveCutoff = new Date();
         archiveCutoff.setDate(archiveCutoff.getDate() - (options.taskRetentionDays  ?? 7));
 
-        db.exec(`;
+        db.exec(`;`
           INSERT INTO tasks_archive ;
-          SELECT * FROM tasks ;
+          SELECT * FROM tasks 
           WHERE status = 'completed' AND created_at < '${archiveCutoff.toISOString()}';
-        `);
+        `);`
 
         archived = db;
 prepare(;
-            `;
+            `;`
           DELETE FROM tasks ;
           WHERE status = 'completed' AND created_at < ?;
-        `);
+        `);`
 run(archiveCutoff.toISOString());
       //       }
 
 
-      console.warn(chalk.green(`✓ Archived \$archived.changescompleted tasks`));
+      console.warn(chalk.green(` Archived \$archived.changescompleted tasks`));
     //     }
 
 
@@ -593,7 +593,7 @@ run(archiveCutoff.toISOString());
       spinner.text = 'Checking database integrity...';
       const _integrityCheck = db.prepare('PRAGMA integrity_check').get();
       if(integrityCheck.integrity_check === 'ok') {
-        console.warn(chalk.green('✓ Database integrity check passed'));
+        console.warn(chalk.green(' Database integrity check passed'));
       } else {
         console.warn(chalk.yellow('⚠ Database integrity issues detected'));
       //       }
@@ -604,60 +604,62 @@ run(archiveCutoff.toISOString());
     spinner.succeed('Database maintenance complete!');
   } catch (error)
     spinner.fail('Database maintenance failed');
-    console.error(chalk.red('Error = new Database(dbPath, { readonly = {schemaVersion = db;
+    console.error(chalk.red('Error = new Database(dbPath, { readonly = {schemaVersion = db;'
 prepare(;
-        `;
+        `;`
       SELECT name FROM sqlite_master WHERE type='table';
-    `);
+    `);`
 all();
 
     for(const table of tables) {
-      const _count = db.prepare(`SELECT COUNT(*) as count FROM \$table.name`).get();
+      const _count = db.prepare(`SELECT COUNT(*) as count FROM \$table.name`).get()
       const _size = db;
 prepare(;
-          `;
+          `;`
         SELECT SUM(pgsize) as size FROM dbstat WHERE name=?;
-      `);
+      `);`
 get(table.name);
 
       report.tables[table.name] = {rowCount = db;
 prepare(;
-        `;
+        `;`
       SELECT name, tbl_name FROM sqlite_master WHERE type='index';
-    `);
+    `);`
 all();
 
     // Get performance metrics (check if completed_at column exists)
     const _avgTaskTime = {avg_minutes = db;
 prepare(;
-          `;
-        SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
+          `;`
+        SELECT COUNT(*) as count FROM pragma_table_info('tasks') 
         WHERE name = 'completed_at';
-      `);
+      `);`
 get();
 
       if(hasCompletedAt && hasCompletedAt.count > 0) {
         avgTaskTime = db;
 prepare(;
-            `;
-          SELECT AVG(julianday(completed_at) - julianday(created_at)) * 24 * 60 as avg_minutes;
+            `;`
+          SELECT AVG(julianday(completed_at) - julianday(created_at)) * 24 * 60 as avg_minutes
           FROM tasks WHERE completed_at IS NOT NULL;
-        `);
+        `);`
 get();
       //       }
     } catch (error)
       // If error, just use default value
-      console.warn('Could not calculate average tasktime = avgTaskTime?.avg_minutes  ?? 0;
+      console.warn('Could not calculate average tasktime = avgTaskTime?.avg_minutes  ?? 0;'
 
     db.close();
 
-    return report;
+    // return report;
     //   // LINT: unreachable code removed} catch (error) {
-    console.error('Error generating report);
-    return null;
+    console.error('Error generating report);'
+    // return null;
 
 // Export for use in CLI
-export default {
+// export default {
   optimizeHiveMindDatabase,
   performMaintenance,
   generateOptimizationReport,
+
+}}}}}}}}))))))))))

@@ -23,7 +23,7 @@ export const SERVICE_URLS = { // eslint-disable-line
   SWARM: process.env.SWARM_SERVICE_URL ?? 'http://localhost:4108',
   DEVELOPMENT: process.env.DEVELOPMENT_SERVICE_URL ?? 'http://localhost:4103' };
 // Mock vision data for different complexity levels
-export const mockVisions = {
+// export const mockVisions = {
   simple: {
     id: 'vision_simple_001',
 title: 'Simple Landing Page',
@@ -105,7 +105,7 @@ complexity: 'simple',
   mrr_growth_target: 0.2 }
 // }
 // Mock stakeholder approval workflows
-export const mockStakeholders = {
+// export const mockStakeholders = {
   product_team: {
     id: 'stakeholder_product',
 name: 'Product Team',
@@ -127,7 +127,7 @@ notification_preferences: ['email', 'slack'] },
   notification_preferences: ['slack', 'email', 'dashboard']
 // }// }
 // Mock agent configurations
-export const mockAgentConfigurations = {
+// export const mockAgentConfigurations = {
   simple_workflow: {
     agents: [;
 // {
@@ -196,13 +196,13 @@ export const mockAgentConfigurations = {
   max_parallel_tasks }
 // }
 // Mock workflow events for testing event flow
-export const mockWorkflowEvents = {
+// export const mockWorkflowEvents = {
   vision_created: {
     event: 'vision.created',
 // {
   vision_id: 'vision_simple_001',
   stakeholder: 'product_team',
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString() {}
 // }
  },
 // {
@@ -225,7 +225,7 @@ export const mockWorkflowEvents = {
   : new Date().toISOString() }
 // }
 // Performance benchmarks for different workflow types
-export const performanceBenchmarks = {
+// export const performanceBenchmarks = {
   simple_workflow: {
     max_duration_minutes,
 expected_duration_minutes,
@@ -244,7 +244,7 @@ max_cpu_percent },
   max_cpu_percent
 // }// }
 // Error scenarios for resilience testing
-export const errorScenarios = {
+// export const errorScenarios = {
   service_unavailable: {
     type: 'service_error',
 service: 'development',
@@ -269,7 +269,7 @@ expected_recovery: 'circuit_breaker_activation' },
   expected_recovery: 'graceful_degradation'
 // }// }
 // API response templates
-export const apiResponseTemplates = {
+// export const apiResponseTemplates = {
   success: (_data) => ({
     status: 'success',
 data,
@@ -282,7 +282,7 @@ error: (error, code = 'INTERNAL_ERROR') => (
   message,
   timestamp: new Date().toISOString(),
 
-requestId: uuidv4()
+requestId: uuidv4() {}
 // }
 ),
 partial: (data, warnings = []) => (
@@ -291,11 +291,11 @@ partial: (data, warnings = []) => (
   data,
   warnings,
   timestamp: new Date().toISOString(),
-  requestId: uuidv4()
+  requestId: uuidv4() {}
 })
 // }
 // Test helper functions
-export const testHelpers = {
+// export const testHelpers = {
   createVisionWorkflow: (complexity = 'simple') => ({ ...mockVisions[complexity],
 id: `vision_${complexity }_${Date.now()}`,
 created_at: new Date().toISOString() }),
@@ -306,18 +306,18 @@ Object.values(mockWorkflowEvents).map((event) => (
   workflow_id,
   timestamp: new Date().toISOString() }
 )),
-generateApiKey: () => `sk_test_$
+generateApiKey: () => `sk_test_$`
 // {
   Math.random().toString(36).substr(2, 24);
 // }
-`,
+`,`
 waitForEvent: (eventName, timeout = 5000) =>;
 new Promise((resolve, reject) => {
       const _timer = setTimeout(;
-        () => reject(new Error(`;
+        () => reject(new Error(`;`
 Timeout;
 waiting;
-for ${eventName}`)),
+for ${eventName}`)),`
         timeout;
       );
       // In real implementation, this would listen for actual events
@@ -327,4 +327,4 @@ for ${eventName}`)),
       }, Math.random() * 1000);
     })
 // }
-export default testHelpers;
+// export default testHelpers;

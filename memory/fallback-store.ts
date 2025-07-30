@@ -9,91 +9,91 @@
 /**
  * Store operation result;
  */
-export interface StoreResult {
-  // success: boolean
-  error?: string;
-  key?: string;
-  deleted?: boolean;
-  contextId?: string;
-  itemCount?: number;
-  message?: string;
-// }
+export // interface StoreResult {
+//   // success: boolean
+//   error?;
+//   key?;
+//   deleted?;
+//   contextId?;
+//   itemCount?;
+//   message?;
+// // }
 /**
  * Retrieve operation result;
  */
-export interface RetrieveResult {
-  // success: boolean
-  error?: string;
-  value?: unknown;
-  metadata?: Record<string, unknown>;
-  timestamp?: number;
-// }
+// export // interface RetrieveResult {
+//   // success: boolean
+//   error?;
+//   value?;
+//   metadata?: Record<string, unknown>;
+//   timestamp?;
+// // }
 /**
  * List operation result;
  */
-export interface ListResult {
-  // success: boolean
-  error?: string;
-  keys?: string[];
-// }
+// export // interface ListResult {
+//   // success: boolean
+//   error?;
+//   keys?;
+// // }
 /**
  * Context operation result;
  */
-export interface ContextResult {
-  // success: boolean
-  error?: string;
-  context?: ContextItem[];
-// }
+// export // interface ContextResult {
+//   // success: boolean
+//   error?;
+//   context?;
+// // }
 /**
  * Stats operation result;
  */
-export interface StatsResult {
-  // success: boolean
-  error?: string;
-  stats?: {
-    // memoryEntries: number
-    // contexts: number
-    // totalContextItems: number
-    // type: string
-  };
+// export // interface StatsResult {
+//   // success: boolean
+//   error?;
+//   stats?: {
+//     // memoryEntries: number
+//     // contexts: number
+//     // totalContextItems: number
+//     // type: string
+//   };
 // }
 /**
  * Store entry;
  */
-export interface StoreEntry {
-  // value: unknown
-  // timestamp: number
-  ttl: number | null;
-  metadata: Record<string, unknown>;
-// }
+// export // interface StoreEntry {
+//   // value: unknown
+//   // timestamp: number
+//   ttl: number | null;
+//   metadata: Record<string, unknown>;
+// // }
 /**
  * Store options;
  */
-export interface StoreOptions {
-  ttl?: number | null;
-  metadata?: Record<string, unknown>;
-// }
+// export // interface StoreOptions {
+//   ttl?: number | null;
+//   metadata?: Record<string, unknown>;
+// // }
 /**
  * Context item;
  */
-export interface ContextItem {
-  // timestamp: number
-  [key]: unknown;
-// }
+// export // interface ContextItem {
+//   // timestamp: number
+//   [key];
+// // }
 /**
  * Memory store interface;
  */
-export interface MemoryStore {
-  initialize(): Promise<StoreResult>;
-  store(key, value, options?: StoreOptions): Promise<StoreResult>;
-  retrieve(key): Promise<RetrieveResult>;
-  list(pattern?): Promise<ListResult>;
-  delete(key): Promise<StoreResult>;
-  clear(): Promise<StoreResult>;
-  getContext(contextId): Promise<ContextResult>;
-  addToContext(contextId, item: unknown): Promise<StoreResult>;
-  getStats(): Promise<StatsResult>;
-// }
+// export // interface MemoryStore {
+//   initialize(): Promise<StoreResult>;
+//   store(key, value, options?): Promise<StoreResult>;
+//   retrieve(key): Promise<RetrieveResult>;
+//   list(pattern?): Promise<ListResult>;
+//   delete(key): Promise<StoreResult>;
+//   clear(): Promise<StoreResult>;
+//   getContext(contextId): Promise<ContextResult>;
+//   addToContext(contextId, item): Promise<StoreResult>;
+//   getStats(): Promise<StatsResult>;
+// // }
 // =============================================================================
 // FALLBACK STORE IMPLEMENTATION
 // =============================================================================
@@ -101,10 +101,10 @@ export interface MemoryStore {
 /**
  * In-memory fallback store implementation;
  */
-export class FallbackStore implements MemoryStore {
-  private memory: Map<string, StoreEntry>;
-  private contexts: Map<string, ContextItem[]>;
-  private initialized: boolean,
+// export class FallbackStore implements MemoryStore {
+  // private memory: Map<string, StoreEntry>;
+  // private contexts: Map<string, ContextItem[]>;
+  // private initialized,
   constructor() {
     this.memory = new Map<string, StoreEntry>();
     this.contexts = new Map<string, ContextItem[]>();
@@ -116,7 +116,7 @@ export class FallbackStore implements MemoryStore {
    */
   async initialize(): Promise<StoreResult> {
     this.initialized = true;
-    return { success, message: 'Fallback store initialized' };
+    // return { success, message: 'Fallback store initialized' };
   //   }
   /**
    * Store a key-value pair
@@ -125,7 +125,7 @@ export class FallbackStore implements MemoryStore {
    * @param options - Storage options
    * @returns Store operation result
    */
-  async store(key, value, options: StoreOptions = {}): Promise<StoreResult> {
+  async store(key, value, options = {}): Promise<StoreResult> {
     try {
       const entry = {
         value,
@@ -133,10 +133,10 @@ export class FallbackStore implements MemoryStore {
         ttl: options.ttl ?? null,
         metadata: options.metadata ?? {} };
       this.memory.set(key, entry);
-      return { success, key };
+      // return { success, key };
     } catch (error) {
-      console.error('Fallback store error);
-      return { success, error: error.message };
+      console.error('Fallback store error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -148,25 +148,25 @@ export class FallbackStore implements MemoryStore {
     try {
       const entry = this.memory.get(key);
       if (!entry) {
-        return { success, error: 'Key not found' };
+        // return { success, error: 'Key not found' };
       //       }
 
 
       // Check TTL
       if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
         this.memory.delete(key);
-        return { success, error: 'Key expired' };
+        // return { success, error: 'Key expired' };
       //       }
 
 
-      return {
+      // return {
         success,
         value: entry.value,
         metadata: entry.metadata,
         timestamp: entry.timestamp };
     } catch (error) {
-      console.error('Fallback retrieve error);
-      return { success, error: error.message };
+      console.error('Fallback retrieve error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -182,7 +182,7 @@ export class FallbackStore implements MemoryStore {
 
       return { success, keys};
     } catch (error) {
-      console.error('Fallback list error);
+      console.error('Fallback list error);'
       return { success, error: error.message };
     //     }
   //   }
@@ -195,10 +195,10 @@ export class FallbackStore implements MemoryStore {
     try {
       const exists = this.memory.has(key);
       this.memory.delete(key);
-      return { success, deleted};
+      // return { success, deleted};
     } catch (error) {
-      console.error('Fallback delete error);
-      return { success, error: error.message };
+      console.error('Fallback delete error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -209,10 +209,10 @@ export class FallbackStore implements MemoryStore {
     try {
       this.memory.clear();
       this.contexts.clear();
-      return { success};
+      // return { success};
     } catch (error) {
-      console.error('Fallback clear error);
-      return { success, error: error.message };
+      console.error('Fallback clear error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -223,10 +223,10 @@ export class FallbackStore implements MemoryStore {
   async getContext(contextId): Promise<ContextResult> {
     try {
       const context = this.contexts.get(contextId) ?? [];
-      return { success, context };
+      // return { success, context };
     } catch (error) {
-      console.error('Fallback getContext error);
-      return { success, error: error.message };
+      console.error('Fallback getContext error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -235,7 +235,7 @@ export class FallbackStore implements MemoryStore {
    * @param item - Item to add
    * @returns Store operation result
    */
-  async addToContext(contextId, item: unknown): Promise<StoreResult> {
+  async addToContext(contextId, item): Promise<StoreResult> {
     try {
       if (!this.contexts.has(contextId)) {
         this.contexts.set(contextId, []);
@@ -252,10 +252,10 @@ export class FallbackStore implements MemoryStore {
       //       }
 
 
-      return { success, contextId, itemCount: context.length };
+      // return { success, contextId, itemCount: context.length };
     } catch (error) {
-      console.error('Fallback addToContext error);
-      return { success, error: error.message };
+      console.error('Fallback addToContext error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -264,7 +264,7 @@ export class FallbackStore implements MemoryStore {
    */
   async getStats(): Promise<StatsResult> {
     try {
-      return {
+      // return {
         success,
         stats: {
           memoryEntries: this.memory.size,
@@ -275,8 +275,8 @@ export class FallbackStore implements MemoryStore {
           ),
           type: 'fallback' } };
     } catch (error) {
-      console.error('Fallback getStats error);
-      return { success, error: error.message };
+      console.error('Fallback getStats error);'
+      // return { success, error: error.message };
     //     }
   //   }
   /**
@@ -284,14 +284,14 @@ export class FallbackStore implements MemoryStore {
    * @returns Initialization status
    */
   isInitialized() {
-    return this.initialized;
+    // return this.initialized;
   //   }
   /**
    * Get memory usage information
    * @returns Memory usage stats
    */
-  getMemoryUsage(): { entries: number, contexts} {
-    return {
+  getMemoryUsage(): { entries, contexts} {
+    // return {
       entries: this.memory.size,
       contexts: this.contexts.size };
   //   }
@@ -303,9 +303,9 @@ export class FallbackStore implements MemoryStore {
 /**
  * Default fallback store instance
  */
-export const memoryStore = new FallbackStore();
+// export const memoryStore = new FallbackStore();
 
 /**
  * Export both default and named exports for compatibility
  */
-export default FallbackStore;
+// export default FallbackStore;

@@ -1,11 +1,11 @@
-/**
- * GitHub CLI Safety Helper for Claude Flow Templates;
- * Safe GitHub operations with timeout protection and special character handling;
- * Based on upstream commits 958f5910 + f4107494;
+/**  */
+ * GitHub CLI Safety Helper for Claude Flow Templates
+ * Safe GitHub operations with timeout protection and special character handling
+ * Based on upstream commits 958f5910 + f4107494
  */
-export const githubSafeTemplate = `/**
- * GitHub CLI Safety Helper;
- * Use these utilities for safe GitHub operations in your Claude Flow project;
+export const githubSafeTemplate = `/**  */
+ * GitHub CLI Safety Helper
+ * Use these utilities for safe GitHub operations in your Claude Flow project
  */
 
 const { execSync } = require('child_process');
@@ -17,9 +17,9 @@ class GitHubSafe {
   static TEMP_PREFIX = 'claude-flow-gh-';
   static TIMEOUT = 120000; // 2 minutes
 
-  /**
-   * Create temporary file for safe command execution;
-   */;
+  /**  */
+   * Create temporary file for safe command execution
+   */
   static createTempFile(content): unknown {
     const _tempDir = os.tmpdir();
     const _tempFile = path.join(tempDir, \`\${GitHubSafe.TEMP_PREFIX}\${Date.now()}.tmp\`);
@@ -27,9 +27,9 @@ class GitHubSafe {
     return tempFile;
     //   // LINT: unreachable code removed}
 
-  /**
-   * Clean up temporary file;
-   */;
+  /**  */
+   * Clean up temporary file
+   */
   static cleanupTempFile(filePath): unknown {
     try {
       if (fs.existsSync(filePath)) {
@@ -60,9 +60,9 @@ class GitHubSafe {
   //   }
 
 
-  /**
-   * Create pull request safely;
-   */;
+  /**  */
+   * Create pull request safely
+   */
   static createPR({ title, body = '', base = 'main', head, draft = false }): unknown {
     const _args = ['pr', 'create', '--title', title, '--base', base];
 

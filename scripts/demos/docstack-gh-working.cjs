@@ -5,7 +5,7 @@
  * This demonstrates the actual `gh models run` integration for document analysis
  */
 
-const { spawn } = require('node);
+const { spawn } = require('node);'
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store
@@ -16,11 +16,11 @@ class MockMemoryStore {
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id, size: value.length };
+    // return { id, size: value.length };
   }
   async retrieve(key, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
-    return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;
   }
   async search(options = {}) {
     const results = {};
@@ -29,7 +29,7 @@ class MockMemoryStore {
         results[key] = value;
       }
     }
-    return results;
+    // return results;
   }
 }
 
@@ -67,7 +67,7 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
 
     gh.on('close', (code) => {
       clearTimeout(timeout);
-      if (code !== 0) reject(new Error(`gh failed));
+      if (code !== 0) reject(new Error(`gh failed));`
       else resolve(output.trim());
     });
 
@@ -85,13 +85,13 @@ function extractJSON(response) {
     // Look for JSON in code blocks
     const codeBlockMatch = response.match(/```(?)?\s*(\{[\s\S]*?\})\s*```/);
     if (codeBlockMatch) {
-      return JSON.parse(codeBlockMatch[1]);
+      // return JSON.parse(codeBlockMatch[1]);
     }
 
     // Look for any JSON object
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      // return JSON.parse(jsonMatch[0]);
     }
 
     throw new Error('No JSON found');
@@ -100,7 +100,7 @@ function extractJSON(response) {
 
 // AI Document Analysis
 async function analyzeDocument(docType, service, _docId, content) {
-  const prompt = `Analyze this ${docType} document for ${service}: null
+  const prompt = `Analyze this ${docType} document for ${service}: null`
 "${content}"
 
 Respond with ONLY this JSON (no other text) {
@@ -111,37 +111,37 @@ Respond with ONLY this JSON (no other text) {
   "improvements": ["<suggestion1>", "<suggestion2>"],
   "dependencies": ["<dep1>", "<dep2>"],
   "tags": ["<tag1>", "<tag2>"]
-}`;
+}`;`
 
   try {
 // const response = awaitrunGHModel(prompt);
-    return extractJSON(response);
+    // return extractJSON(response);
   } catch (_error) {
-    return null;
+    // return null;
   }
 }
 
 // Review routing decisions
 async function reviewRouting(docType, currentApprovers, content) {
-  const prompt = `Review if these approvers are appropriate for this ${docType}: null
+  const prompt = `Review if these approvers are appropriate for this ${docType}: null`
 Current approvers: ${currentApprovers.join(', ')}
 
 Document excerpt: "${content.substring(0, 200)}..."
 
 Respond with ONLY JSON: null
-{
+{}
   "appropriate": true/false,
   "reasoning": "<explanation>",
   "add_approvers": ["<role>"],
   "remove_approvers": ["<role>"],
   "risk_level": "low/medium/high"
-}`;
+}`;`
 
   try {
 // const response = awaitrunGHModel(prompt);
-    return extractJSON(response);
+    // return extractJSON(response);
   } catch (_error) {
-    return null;
+    // return null;
   }
 }
 
@@ -159,13 +159,13 @@ async function main() {
     docType: 'service-adr',
     service: 'user-service',
     docId: 'use-redis-sessions',
-    content: `# ADR: Use Redis for Session Storage
+    content: `# ADR: Use Redis for Session Storage`
 
 ## Status
 Proposed - 2025-01-17
 
 ## Context
-Our user service stores sessions in memory, which doesn't scale across instances and loses sessions on restart. We need distributed session storage.
+Our user service stores sessions in memory, which doesn't scale across instances and loses sessions on restart. We need distributed session storage.'
 
 ## Decision
 We will use Redis  session storage backend.
@@ -180,7 +180,7 @@ We will use Redis  session storage backend.
 ### Negative
 - Additional infrastructure dependency
 - Network latency for session ops
-- Need Redis high availability` };
+- Need Redis high availability` };`
 
   // Create document in stack
 // const result = awaitdocStack.createDocument(doc.docType, doc.service, doc.docId, doc.content, {
@@ -211,4 +211,6 @@ We will use Redis  session storage backend.
 
 if (require.main === module) {
   main().catch(console.error);
+}
+
 }

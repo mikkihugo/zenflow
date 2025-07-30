@@ -46,7 +46,7 @@ startTextMessage((messageId = null), (role = 'assistant'));
 // }
 this.stats.messagesCreated++;
 this._emitEvent(event);
-return id;
+// return id;
 //   // LINT: unreachable code removed}
 addTextContent(content, (messageId = null));
 // {
@@ -93,7 +93,7 @@ startToolCall(toolName, (toolCallId = null), (parentMessageId = null))
 // }
 this.stats.toolCallsExecuted++;
 this._emitEvent(event);
-return id;
+// return id;
 //   // LINT: unreachable code removed}
 addToolCallArgs(args, (toolCallId = null));
 // {
@@ -176,12 +176,12 @@ emitHiveMindEvent(action, data)
       action,
   data,
   sessionId: this.sessionId,
-  timestamp: Date.now()
+  timestamp: Date.now() {}
 })
 // }
-getStats()
+getStats() {}
 // {
-  return { ...this.stats,
+  // return { ...this.stats,
   // sessionId: this.sessionId, // LINT: unreachable code removed
   totalEvents: this.events.length
  //  }
@@ -205,7 +205,7 @@ async function runAGUIIntegrationTests() {
       console.warn(`✅ ${name}`);
       passedTests++;
     } catch (error) {
-      console.warn(`❌ ${name});
+      console.warn(`❌ ${name});`
     //     }
   //   }
   function asyncTest() {
@@ -216,7 +216,7 @@ async function runAGUIIntegrationTests() {
         passedTests++;
       });
 catch((error) =>
-        console.warn(`❌ \$name););
+        console.warn(`❌ \$name););`
   //   }
 // Test 1: Basic adapter creation
 test('Adapter creation with session info', () => {
@@ -259,7 +259,7 @@ test('Tool call flow generates correct events', () =>
 // {
   const _adapter = new MockAGUIAdapter();
   const _toolCallId = adapter.startToolCall('test_tool');
-  adapter.addToolCallArgs('{"param");
+  adapter.addToolCallArgs('{"param");'
   adapter.endToolCall(toolCallId);
   adapter.emitToolCallResult('Test result', toolCallId);
   const _events = adapter.events;
@@ -347,7 +347,7 @@ test('Statistics tracking', () =>
   //   }
 })
 // Test 8: Claude Code Zen integration simulation
-  // await asyncTest('Claude Code Zen multi-agent simulation', async () =>
+  // // await asyncTest('Claude Code Zen multi-agent simulation', async () =>
 // {
   const _adapter = new MockAGUIAdapter();
   // Simulate a complex multi-agent interaction
@@ -362,7 +362,7 @@ test('Statistics tracking', () =>
   adapter.emitQueenEvent('queen-3', 'start_analysis', { target);
   // 3. Tool execution
   const _toolCallId = adapter.startToolCall('analyze_codebase');
-  adapter.addToolCallArgs('{"depth");
+  adapter.addToolCallArgs('{"depth");'
   adapter.endToolCall(toolCallId);
   // Simulate async tool execution
   // await new Promise((resolve) => setTimeout(resolve, 100));
@@ -401,22 +401,22 @@ test('Statistics tracking', () =>
 })
 // Summary
 console.warn(`\n\$'='.repeat(60)`)
-console.warn(`📊 Test Results);
+console.warn(`� Test Results);`
 if (passedTests === totalTests) {
   console.warn('✅ All AG-UI integration tests passed!');
-  console.warn('\n🎯 Key AG-UI Features Validated);
-  console.warn('  ✓ Text message streaming');
-  console.warn('  ✓ Tool call execution events');
-  console.warn('  ✓ Multi-Queen coordination');
-  console.warn('  ✓ Swarm orchestration');
-  console.warn('  ✓ Hive mind consensus');
-  console.warn('  ✓ State synchronization');
-  console.warn('  ✓ Event statistics tracking');
-  console.warn('\n🚀 AG-UI Protocol Integration Ready!');
-  console.warn('Next steps);
+  console.warn('\n Key AG-UI Features Validated);'
+  console.warn('   Text message streaming');
+  console.warn('   Tool call execution events');
+  console.warn('   Multi-Queen coordination');
+  console.warn('   Swarm orchestration');
+  console.warn('   Hive mind consensus');
+  console.warn('   State synchronization');
+  console.warn('   Event statistics tracking');
+  console.warn('\n� AG-UI Protocol Integration Ready!');
+  console.warn('Next steps);'
   console.warn('  1. Install @ag-ui/core package');
   console.warn('  2. Start server with WebSocket support');
-  console.warn('  3. Connect UI clients to ws);
+  console.warn('  3. Connect UI clients to ws);'
   console.warn('  4. Monitor events at /agui/status endpoint');
 } else {
   console.warn('❌ Some tests failed. Please fix issues before proceeding.');
@@ -425,3 +425,5 @@ if (passedTests === totalTests) {
 // }
 // Run tests
 runAGUIIntegrationTests().catch(console.error)
+
+}}}}}}}}}}

@@ -1,5 +1,5 @@
 const _winston = require('winston');
-const _path = require('node);
+const _path = require('node);'
 const _logDir = process.env.LOG_DIR ?? './logs';
 const _logger = winston.createLogger({
   level: process.env.LOG_LEVEL  ?? 'info',

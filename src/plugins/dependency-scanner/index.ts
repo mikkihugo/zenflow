@@ -14,12 +14,12 @@ export class DependencyScannerPlugin {
 
 
   async initialize() {
-    console.warn('📦 Dependency Scanner Plugin initialized');
+    console.warn('� Dependency Scanner Plugin initialized');
 
     this.setupConflictStrategies();
 
     if(!this.config.aiProvider && this.config.generateADRs) {
-      console.warn('⚠️ No AI provider configured, ADR generation disabled');
+      console.warn('⚠ No AI provider configured, ADR generation disabled');
       this.config.generateADRs = false;
     //     }
   //   }
@@ -30,11 +30,11 @@ export class DependencyScannerPlugin {
       severity = {}) {
     const { includeTypes = ['dependencies', 'devDependencies', 'peerDependencies'] } = options;
 
-    console.warn('🔍 Scanning for package.json files...');
-// const _packageJsonFiles = awaitglob('**/package.json', {ignore = await this.analyzeDependencies(packageJsonFiles, includeTypes);
+    console.warn('� Scanning for package.json files...');
+// const _packageJsonFiles = awaitglob('**/package.json', {ignore = // await this.analyzeDependencies(packageJsonFiles, includeTypes);
 // const _conflicts = awaitthis.detectConflicts(dependencyAnalysis);
 
-    return {
+    // return {
       totalPackages = {};
     // ; // LINT: unreachable code removed
     for(const file of packageFiles) {
@@ -59,7 +59,7 @@ export class DependencyScannerPlugin {
     //     }
 
 
-    return conflicts.sort((a, b) => this.getSeverityWeight(b.severity) - this.getSeverityWeight(a.severity));
+    // return conflicts.sort((a, b) => this.getSeverityWeight(b.severity) - this.getSeverityWeight(a.severity));
     //   // LINT: unreachable code removed}
 
   /**
@@ -70,13 +70,13 @@ export class DependencyScannerPlugin {
     const _conflictType = this.classifyConflict(versions);
     const _strategy = this.conflictStrategies.get(conflictType)  ?? this.conflictStrategies.get('minor_version');
 
-    const __conflict = {id = await this.generateConflictADR(depName, data, strategy);
+    const __conflict = {id = // await this.generateConflictADR(depName, data, strategy);
       } catch(error) ;
-        console.warn(`Failed to generate ADR for ${depName});
+        console.warn(`Failed to generate ADR for ${depName});`
     //     }
 
 
-    return conflict;
+    // return conflict;
     //   // LINT: unreachable code removed}
 
   /**
@@ -104,7 +104,7 @@ export class DependencyScannerPlugin {
 
     if (!match) return null;
     // ; // LINT: unreachable code removed
-    return {major = [];
+    // return {major = [];
     // ; // LINT: unreachable code removed
     for(const [version, _usages] of versionsMap) {
       formatted.push({
@@ -119,7 +119,7 @@ export class DependencyScannerPlugin {
     const _versions = Array.from(data.versions.keys());
     const __prompt = this.buildADRPrompt(depName, versions, data, strategy);
 
-    return `Generate an Architecture Decision Record (ADR) for standardizing the dependency '${depName}'.
+    // return `Generate an Architecture Decision Record (ADR) for standardizing the dependency '${depName}'.`
 
     // Current situation = {critical = conflicts.reduce((acc, c) => { // LINT: unreachable code removed
       acc[c.severity] = (acc[c.severity]  ?? 0) + 1;
@@ -135,7 +135,7 @@ export class DependencyScannerPlugin {
       totalConflicts: conflicts.length,
     // severityBreakdown, // LINT: unreachable code removed
       conflictTypeBreakdown,
-      mostConflictedDependency: conflicts.length > 0 ? conflicts[0].dependency : null;
+      mostConflictedDependency: conflicts.length > 0 ? conflicts[0].dependency ;
     };
   //   }
 
@@ -144,7 +144,7 @@ export class DependencyScannerPlugin {
    * Get scanning capabilities;
    */;
   getCapabilities() ;
-    return {
+    // return {
       fileTypes: ['package.json'],
     // dependencyTypes: ['dependencies', 'devDependencies', 'peerDependencies'], // LINT: unreachable code removed
       conflictTypes: ['major_version', 'minor_version', 'patch_version'],
@@ -158,8 +158,10 @@ export class DependencyScannerPlugin {
 
   async cleanup() ;
     this.dependencyMap.clear();
-    console.warn('📦 Dependency Scanner Plugin cleaned up');
+    console.warn('� Dependency Scanner Plugin cleaned up');
 // }
 
 
-export default DependencyScannerPlugin;
+// export default DependencyScannerPlugin;
+
+}}}}}}}}}}}}}}

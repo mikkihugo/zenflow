@@ -13,11 +13,11 @@ class MockMemoryStore {
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id, size: value.length };
+    // return { id, size: value.length };
   }
   async retrieve(key, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
-    return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;
   }
   async search(options = {}) {
     const results = {};
@@ -26,7 +26,7 @@ class MockMemoryStore {
         results[key] = value;
       }
     }
-    return results;
+    // return results;
   }
 }
 
@@ -39,12 +39,12 @@ async function createTestDocuments() {
 // await docStack.createDocument('service-adr',
     'user-service',
     'use-redis-for-sessions',
-    `# ADR);
+    `# ADR);`
   // Document 2: API Documentation
-// await docStack.createDocument('api-documentation',
+// // await docStack.createDocument('api-documentation',
     'payment-service',
     'payment-api-v2',
-    `# Payment Service API v2.0
+    `# Payment Service API v2.0`
 
 ## Overview
 RESTful API for payment processing operations including credit card payments, refunds, and payment status tracking.
@@ -52,11 +52,11 @@ RESTful API for payment processing operations including credit card payments, re
 ## Authentication
 All endpoints require Bearer token authentication);
   // Document 3: Security Specification
-// await docStack.createDocument(
+// // await docStack.createDocument(
     'security-spec',
     'auth-service',
     'oauth2-implementation',
-    `# OAuth 2.0 Implementation Security Specification
+    `# OAuth 2.0 Implementation Security Specification`
 
 ## Overview
 Security requirements and implementation guidelines for OAuth 2.0 authentication service supporting multiple grant types.
@@ -116,8 +116,8 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
 - OWASP OAuth 2.0 Security Best Practices
 - RFC 6749 OAuth 2.0 Authorization Framework
 - RFC 7636 PKCE for OAuth Public Clients
-- SOC 2 Type II compliance requirements`,
-    {
+- SOC 2 Type II compliance requirements`,`
+{}
       dependencies: ['redis-infrastructure', 'tls-certificates'],
       tags: ['security', 'oauth2', 'authentication', 'compliance'],
       priority: 'critical' }

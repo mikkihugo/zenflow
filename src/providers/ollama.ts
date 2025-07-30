@@ -10,27 +10,27 @@ AIResponse,
 ProviderCapabilities,
 ProviderConfig,
 ProviderError } from './types.js'
-// interface OllamaRequest {model = 'ollama'
-version = '2024-07-29'
-config = {enabled = {textGeneration = 'http = [];
-  private modelCache = new Map()
-constructor();
-// {
-  super();
-  this.pricing = {inputTokenPrice = config.baseUrl  ?? config.endpoint  ?? this.baseUrl;
-  this.config = { ...this.config, ...config };
+// // interface OllamaRequest {model = 'ollama'
+// version = '2024-07-29'
+// config = {enabled = {textGeneration = 'http = [];'
+//   // private modelCache = new Map() {}
+// constructor();
+// // {
+//   super();
+//   this.pricing = {inputTokenPrice = config.baseUrl  ?? config.endpoint  ?? this.baseUrl;
+//   this.config = { ...this.config, ...config };
   // Test connection and load available models
-// await this.loadAvailableModels();
-// await this.healthCheck();
+// // await this.loadAvailableModels();
+// // await this.healthCheck();
 // }
 async;
 generateText(request = Date.now();
 this.validateRequest(request);
 this.emitRequest(request);
 try {
-  const _ollamaRequest = {model = await this.makeRequest('/api/chat', ollamaRequest);
+  const _ollamaRequest = {model = // await this.makeRequest('/api/chat', ollamaRequest);
 
-  // Estimate token counts (Ollama doesn't always provide exact counts)
+  // Estimate token counts (Ollama doesn't always provide exact counts)'
 
   if (!reader) {
     throw new ProviderError('No response body', this.name);
@@ -41,7 +41,7 @@ try {
   const _buffer = '';
 
   while (true) {
-    const { done, value } = await reader.read();
+    const { done, value } = // await reader.read();
     if (done) break;
 
     buffer += decoder.decode(value, {stream = buffer.split('\n');
@@ -70,17 +70,17 @@ getModels();
 : Promise<string[]>
 // {
   try {
-// await this.loadAvailableModels();
-    return [...this.availableModels];
+// // await this.loadAvailableModels();
+    // return [...this.availableModels];
     //   // LINT: unreachable code removed} catch (error) {
     // Return cached models if API call fails
-    return [...this.availableModels];
+    // return [...this.availableModels];
     //   // LINT: unreachable code removed}
 // }
   async;
   cleanup();
   : Promise<void>
-  this.modelCache.clear()
+  this.modelCache.clear() {}
   // Ollama-specific methods
   // async
   pullModel(modelName = await fetch(`\$this.baseUrl/api/pull`,
@@ -94,13 +94,12 @@ getModels();
     //     }
   //   }
   catch (error)
-  // If we can't load models, keep existing cache
+  // If we can't load models, keep existing cache'
   if (this.availableModels.length === 0) {
     throw new ProviderError('Cannot connect to Ollama service', this.name, 'CONNECTION_ERROR');
   //   }
 // }
-private
-convertMessages(messages = []
+// private convertMessages(messages = []
 // Add system message first if provided
 if (systemPrompt) {
   result.push({role = === 'system' && !systemPrompt) {
@@ -111,33 +110,33 @@ if (systemPrompt) {
 // }
 // const _response = awaitfetch(`\$this.baseUrl\$endpoint`, options);
 if (!response.ok) {
-  throw await this.createErrorFromResponse(response);
+  throw // await this.createErrorFromResponse(response);
 // }
-return response.json();
+// return response.json();
 // }
-private
-// async
-createErrorFromResponse(response = await response.text()
+// private // async
+createErrorFromResponse(response = await response.text() {}
 if (response.status === 404) {
-  return new ProviderError('Ollama service not found', this.name, 'SERVICE_NOT_FOUND', 404);
+  // return new ProviderError('Ollama service not found', this.name, 'SERVICE_NOT_FOUND', 404);
 // }
-return new ProviderError(;
+// return new ProviderError(;
 // text  ?? 'Unknown error', // LINT: unreachable code removed
 this.name,
 'API_ERROR',
 response.status;
 // )
 // }
-private
-estimateTokens(text = === 'ECONNREFUSED'  ?? error.code === 'ENOTFOUND')
+// private estimateTokens(text = === 'ECONNREFUSED'  ?? error.code === 'ENOTFOUND')
 // {
-  return new ProviderError(;
+  // return new ProviderError(;
   // 'Cannot connect to Ollama service. Make sure Ollama is running.', // LINT);
   //   )
 // }
-return new ProviderError(;
+// return new ProviderError(;
 // error.message  ?? 'Unknown error occurred', // LINT);
 // )
 // }
 // }
 
+
+}}}}}}}}}))))

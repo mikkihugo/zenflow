@@ -20,16 +20,18 @@ const _authenticate = async (req, res, next) => {
     //   // LINT: unreachable code removed}
     const _decoded = verifyToken(token);
     if (!decoded) {
-      return res.status(401).json({ error);
+      // return res.status(401).json({ error);
     //   // LINT: unreachable code removed}
 // const _user = awaitUser.findById(decoded.userId);
     if (!user) {
-      return res.status(401).json({ error);
+      // return res.status(401).json({ error);
     //   // LINT: unreachable code removed}
     req.user = user;
     next();
   } catch (error)
-    logger.error('Authentication error);
+    logger.error('Authentication error);'
     res.status(500).json({ error);
 };
-export { generateToken, verifyToken, authenticate };
+// export { generateToken, verifyToken, authenticate };
+
+}}}}}

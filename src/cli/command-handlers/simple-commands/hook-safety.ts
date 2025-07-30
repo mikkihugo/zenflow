@@ -11,7 +11,7 @@
 
 
   generateSessionId() {
-    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     //   // LINT: unreachable code removed}
 
   track(hookType) {
@@ -30,7 +30,7 @@
 
   getExecutionCount(hookType) {
     const _key = `${this.sessionId}:${hookType}`;
-    return this.executions.get(key)  ?? 0;
+    // return this.executions.get(key)  ?? 0;
     //   // LINT: unreachable code removed}
 
   reset() {
@@ -46,28 +46,28 @@ const _executionTracker = new HookExecutionTracker();
 /**
  * Hook Context Manager - Tracks hook execution context;
  */
-export class HookContextManager {
-  static setContext(hookType, depth = 1) {
+// export class HookContextManager {
+  // static setContext(hookType, depth = 1) {
     process.env[HOOK_SAFETY_CONFIG.ENV_VARS.CONTEXT] = hookType;
     process.env[HOOK_SAFETY_CONFIG.ENV_VARS.DEPTH] = depth.toString();
     process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SESSION_ID] = executionTracker.sessionId;
   //   }
 
 
-  static getContext() {
-    return { type = === 'true', safeMode = === 'true' };
+  // static getContext() {
+    // return { type = === 'true', safeMode = === 'true' };
     //   // LINT: unreachable code removed}
 
-  static clearContext()
+  // static clearContext() {}
     delete process.env[HOOK_SAFETY_CONFIG.ENV_VARS.CONTEXT];
     delete process.env[HOOK_SAFETY_CONFIG.ENV_VARS.DEPTH];
     delete process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SESSION_ID];
 
-  static isInHookContext()
-    return !!process.env[HOOK_SAFETY_CONFIG.ENV_VARS.CONTEXT];
+  // static isInHookContext() {}
+    // return !!process.env[HOOK_SAFETY_CONFIG.ENV_VARS.CONTEXT];
     //   // LINT: unreachable code removed}
 
-  static setSafeMode(enabled = true): unknown
+  // static setSafeMode(enabled = true): unknown
     if (enabled) {
       process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SAFE_MODE] = 'true';
     } else {
@@ -75,7 +75,7 @@ export class HookContextManager {
     //     }
 
 
-  static setSkipHooks(enabled = true): unknown
+  // static setSkipHooks(enabled = true): unknown
     if (enabled) {
       process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SKIP_HOOKS] = 'true';
     } else {
@@ -86,11 +86,11 @@ export class HookContextManager {
 /**
  * Command Validator - Validates commands for hook safety;
  */;
-export class HookCommandValidator {
+// export class HookCommandValidator {
   /**
    * Validate if a command is safe to execute from a hook;
    */;
-  static validateCommand(command, hookType) {
+  // static validateCommand(command, hookType) {
     const _context = HookContextManager.getContext();
     const __warnings = [];
     const _errors = [];
@@ -105,7 +105,7 @@ export class HookCommandValidator {
 
     static;
     isClaudeCommand(command);
-    : unknown;
+
     //     {
       // Match various forms of claude command invocation
       const _claudePatterns = [
@@ -116,12 +116,12 @@ export class HookCommandValidator {
         /claude\.exe\b/, // Windows executable
       ];
 
-      return claudePatterns.some((pattern) => pattern.test(command));
+      // return claudePatterns.some((pattern) => pattern.test(command));
     //   // LINT: unreachable code removed}
 
     static;
     isDangerousPattern(command, hookType);
-    : unknown;
+
     //     {
       const _dangerousPatterns = [
         // Commands that could trigger more hooks
@@ -134,7 +134,7 @@ export class HookCommandValidator {
         /bash.*hook/,
         /sh.*hook/ ];
 
-      return dangerousPatterns.some((pattern) => pattern.test(command));
+      // return dangerousPatterns.some((pattern) => pattern.test(command));
     //   // LINT: unreachable code removed}
   //   }
 
@@ -149,34 +149,34 @@ export class HookCommandValidator {
   /**
    * Check if hook execution should be allowed;
    */;
-  static checkExecution(hookType) {
+  // static checkExecution(hookType) {
     const _executionCount = executionTracker.track(hookType);
 
     // Stop hook protection - maximum 2 executions per session
     if (hookType === 'Stop' && executionCount > HOOK_SAFETY_CONFIG.MAX_STOP_HOOK_EXECUTIONS) {
       throw new Error(;
-        `🚨 CIRCUIT BREAKER ACTIVATED!\n` +;
+        `� CIRCUIT BREAKER ACTIVATED!\n` +;
           `Stop hook has executed ${executionCount} times in this session.\n` +;
           `This indicates a potential infinite loop that could cost thousands of dollars.\n` +;
           `Execution blocked for financial protection.\n\n` +;
-          `Toreset = === 'Stop' && executionCount > 1) {
-      printWarning(`⚠️  Stop hook execution #\$executionCountdetected. Monitor for recursion.`);
+          `Toreset = === 'Stop' && executionCount > 1) {`
+      printWarning(`⚠  Stop hook execution #\$executionCountdetected. Monitor for recursion.`);
     //     }
 
 
-    return true;
+    // return true;
     //   // LINT: unreachable code removed}
 
-  static reset() {
+  // static reset() {
     executionTracker.reset();
     printSuccess('Circuit breaker reset successfully.');
   //   }
 
 
-  static getStatus() {
-    return {
+  // static getStatus() {
+    // return {
       sessionId => {
-        const [sessionId, hookType] = key.split(');
+        const [sessionId, hookType] = key.split(');'
     // return { hookType, count  // LINT: unreachable code removed};
   //   }
   ) }
@@ -187,11 +187,11 @@ export class HookCommandValidator {
 /**
  * Configuration Validator - Validates hook configurations for safety;
  */;
-export class HookConfigValidator {
+// export class HookConfigValidator {
   /**
    * Validate Claude Code settings.json for dangerous hook configurations;
    */;
-  static validateClaudeCodeConfig(configPath = null) {
+  // static validateClaudeCodeConfig(configPath = null) {
     if(!configPath) {
       // Try to find Claude Code settings
       const _possiblePaths = [
@@ -205,11 +205,11 @@ export class HookConfigValidator {
         return {safe = JSON.parse(readFileSync(configPath, 'utf8'));
     // const _validation = HookConfigValidator.validateHooksConfig(config.hooks  ?? { // LINT);
 
-      return {safe = === 0,
+      // return {safe = === 0,
     // configPath, // LINT: unreachable code removed
 ..validation };
     } catch (/* err */) {
-      return {safe = [];
+      // return {safe = [];
     // const _errors = []; // LINT: unreachable code removed
 
     // Check Stop hooks specifically
@@ -243,20 +243,20 @@ export class HookConfigValidator {
     //     }
 
 
-    return { warnings, errors };
+    // return { warnings, errors };
     //   // LINT: unreachable code removed}
 
   /**
    * Generate safe configuration recommendations;
    */;
-  static generateSafeAlternatives(dangerousConfig): unknown
+  // static generateSafeAlternatives(dangerousConfig): unknown
 
     // Example = {}) {
     try {
       // Skip if hooks are disabled
       if (HookContextManager.getContext().skipHooks) {
-        console.warn(`⏭️  Skipping \$hookTypehook (hooks disabled)`);
-        return {success = HookCommandValidator.validateCommand(command, hookType);
+        console.warn(`⏭  Skipping \$hookTypehook (hooks disabled)`);
+        // return {success = HookCommandValidator.validateCommand(command, hookType);
     // ; // LINT: unreachable code removed
       // Show warnings
       for(const warning of validation.warnings) {
@@ -269,60 +269,60 @@ export class HookConfigValidator {
         for(const error of validation.errors) {
           printError(error.message);
         //         }
-        return {success = HookContextManager.getContext();
+        // return {success = HookContextManager.getContext();
     // const _newDepth = currentContext.depth + 1; // LINT: unreachable code removed
       HookContextManager.setContext(hookType, newDepth);
 
       // Execute the command with safety context
 // const __result = awaitHookConfigValidator.executeCommand(command, options);
 
-      return { success = {}) {
+      // return { success = {}) {
     // This would integrate with the actual command execution system
     // For now, just log what would be executed
-    console.warn(`🔗 Executing hookcommand = subArgs[0];
+    console.warn(`� Executing hookcommand = subArgs[0];`
     // ; // LINT: unreachable code removed
   switch(subcommand) {
     case 'validate':;
-      return await validateConfigCommand(subArgs, flags);
+      // return // await validateConfigCommand(subArgs, flags);
     // case 'status':; // LINT: unreachable code removed
-      return await statusCommand(subArgs, flags);
+      // return // await statusCommand(subArgs, flags);
     // case 'reset':; // LINT: unreachable code removed
-      return await resetCommand(subArgs, flags);
+      // return // await resetCommand(subArgs, flags);
     // case 'safe-mode':; // LINT: unreachable code removed
-      return await safeModeCommand(subArgs, flags);default = flags.config  ?? flags.c;
+      // return // await safeModeCommand(subArgs, flags);default = flags.config  ?? flags.c;
 
-  console.warn('🔍 Validating hook configuration for safety...\n');
+  console.warn('� Validating hook configuration for safety...\n');
 
   const _result = HookConfigValidator.validateClaudeCodeConfig(configPath);
 
   if(result.safe) {
     printSuccess('✅ Hook configuration is safe!');
     if(result.configPath) {
-      console.warn(`📄Validated = HookContextManager.getContext();
+      console.warn(`�Validated = HookContextManager.getContext();`
 
-  console.warn('🔗 Hook Safety Status\n');
+  console.warn('� Hook Safety Status\n');
 
-  console.warn('📊 CurrentContext = !flags.disable && !flags.off;
+  console.warn('� CurrentContext = !flags.disable && !flags.off;'
 
   if(enable) {
     HookContextManager.setSafeMode(true);
     HookContextManager.setSkipHooks(true);
-    printSuccess('🛡️  Safe mode enabled!');
+    printSuccess('�  Safe mode enabled!');
     console.warn('• All hooks will be skipped');
     console.warn('• Claude commands will show safety warnings');
     console.warn('• Additional validation will be performed');
   } else {
     HookContextManager.setSafeMode(false);
     HookContextManager.setSkipHooks(false);
-    printSuccess('⚡ Safe mode disabled.');
+    printSuccess(' Safe mode disabled.');
     console.warn('Normal hook execution restored.');
   //   }
 // }
 
 
 function showHookSafetyHelp() {
-  console.warn(`;
-🛡️  Hook Safety System - Prevent Infinite Loops & Financial DamageUSAGE = HookContextManager.getContext();
+  console.warn(`;`
+�  Hook Safety System - Prevent Infinite Loops & Financial DamageUSAGE = HookContextManager.getContext();
 
   if(context.type) {
     // Automatically add --skip-hooks if in hook context
@@ -340,11 +340,11 @@ function showHookSafetyHelp() {
   //   }
 
 
-  return command;
+  // return command;
 // }
 
 
-export default {
+// export default {
   HookContextManager,
   HookCommandValidator,
   HookCircuitBreaker,
@@ -352,3 +352,5 @@ export default {
   SafeHookExecutor,
   hookSafetyCommand,
   addSafetyFlags };
+
+}}}}}}}}}}}}}}}}}}}))

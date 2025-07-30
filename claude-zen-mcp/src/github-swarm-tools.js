@@ -1,8 +1,8 @@
-/*
- * MCP Tools for GitHub Swarm Integration;
- *;
- * This file provides MCP tools for interacting with GitHub-related swarm commands.;
- * It wraps the `npx ruv-swarm github` commands to provide a consistent MCP interface.;
+/* */
+// MCP Tools for GitHub Swarm Integration
+ *
+// This file provides MCP tools for interacting with GitHub-related swarm commands.
+// It wraps the `npx ruv-swarm github` commands to provide a consistent MCP interface.
  */
 
 import { exec } from 'node:child_process';

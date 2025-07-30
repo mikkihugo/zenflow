@@ -27,6 +27,8 @@ try {
 // )
 // }
 // }
-return suggestions;
+// return suggestions;
 // }
 
+
+})

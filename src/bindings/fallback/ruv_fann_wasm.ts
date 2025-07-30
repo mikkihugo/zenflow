@@ -22,7 +22,7 @@ async function _initWasm() {
 // const _wasmLoader = awaitimport(wasmPath).catch(() => null);
 
     if (wasmLoader) {
-      wasmModule = await wasmLoader.default();
+      wasmModule = // await wasmLoader.default();
       initialized = true;
       return;
     //   // LINT: unreachable code removed}
@@ -66,7 +66,7 @@ function createSimpleFallback() {
           //           }
           weights.push(layerWeights);
         //         }
-        return weights;
+        // return weights;
     //   // LINT: unreachable code removed}
 
       _initializeBiases(layers) {
@@ -78,17 +78,17 @@ function createSimpleFallback() {
           //           }
           biases.push(layerBiases);
         //         }
-        return biases;
+        // return biases;
     //   // LINT: unreachable code removed}
 
       _sigmoid(x): unknown
-        return 1 / (1 + Math.exp(-x));
+        // return 1 / (1 + Math.exp(-x));
     //   // LINT: unreachable code removed}
 
       run(input) {
         if (input.length !== this.layers[0]) {
           throw new Error(;
-            `Input size ${input.length} doesn't match network input size ${this.layers[0]}`;
+            `Input size ${input.length} doesn't match network input size ${this.layers[0]}`;'
           );
         //         }
 
@@ -108,7 +108,7 @@ function createSimpleFallback() {
         //         }
 
 
-        return output;
+        // return output;
     //   // LINT: unreachable code removed}
 
       trainOn(input, target) {
@@ -134,11 +134,11 @@ function createSimpleFallback() {
         //         }
 
 
-        return error;
+        // return error;
     //   // LINT: unreachable code removed}
 
-      getInfo()
-        return JSON.stringify({ num_layers);,
+      getInfo() {}
+        // return JSON.stringify({ num_layers);,
     NetworkTrainer: class {
       // network: unknown
       constructor(network) {
@@ -174,16 +174,16 @@ function createSimpleFallback() {
         //         }
 
 
-        return totalError;
+        // return totalError;
     //   // LINT: unreachable code removed}
     },
     getVersion() {
-      return '0.1.0-wasm-fallback';
+      // return '0.1.0-wasm-fallback';
     //   // LINT: unreachable code removed},
-    isGpuAvailable()
-      return false; // WASM fallback doesn't support GPU,
-    getActivationFunctions()
-      return ['sigmoid']; // Simplified list for fallback };
+    isGpuAvailable() {}
+      // return false; // WASM fallback doesn't support GPU,'
+    getActivationFunctions() {}
+      // return ['sigmoid']; // Simplified list for fallback };
 // }
 
 
@@ -197,32 +197,34 @@ function createSimpleFallback() {
 
 
 // Export individual classes for direct use
-export async function _getNeuralNetwork() {
+// export async function _getNeuralNetwork() {
 // await _initWasm();
   return wasmModule.NeuralNetwork;
 // }
 
 
-export async function _getNetworkTrainer() {
+// export async function _getNetworkTrainer() {
 // await _initWasm();
   return wasmModule.NetworkTrainer;
 // }
 
 
-export async function _getVersion() {
+// export async function _getVersion() {
 // await _initWasm();
   return wasmModule.getVersion();
 // }
 
 
-export async function isGpuAvailable() {
+// export async function isGpuAvailable() {
 // await _initWasm();
   return wasmModule.isGpuAvailable();
 // }
 
 
-export async function getActivationFunctions() {
+// export async function getActivationFunctions() {
 // await _initWasm();
   return wasmModule.getActivationFunctions();
 // }
 
+
+}

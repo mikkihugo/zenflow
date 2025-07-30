@@ -1,12 +1,12 @@
-/**
- * Performance Test Suite for Hive Mind Optimizations;
- * Tests the performance improvements implemented;
+/**  */
+ * Performance Test Suite for Hive Mind Optimizations
+ * Tests the performance improvements implemented
  */
 
 import { performance } from 'node:perf_hooks';
 import { PerformanceOptimizer } from './performance-optimizer.js';
-/**
- * Performance test runner;
+/**  */
+ * Performance test runner
  */
 export class PerformanceTest {
   constructor() {
@@ -15,11 +15,11 @@ export class PerformanceTest {
   //   }
 
 
-  /**
-   * Run complete performance test suite;
-   */;
+  /**  */
+ * Run complete performance test suite
+   */
   async runTestSuite() {
-    console.warn('🔬 Starting Hive Mind Performance Test Suite...\n');
+    console.warn('� Starting Hive Mind Performance Test Suite...\n');
 
     const _tests = [
       this.testBatchAgentSpawning,
@@ -30,9 +30,9 @@ export class PerformanceTest {
 
     for(const test of tests) {
       try {
-// await test.call(this);
+// // await test.call(this);
       } catch (/* _error */) {
-        console.error(`Testfailed = new HiveMindCore({name = ['coder', 'tester', 'analyst', 'researcher', 'architect', 'optimizer'];
+        console.error(`Testfailed = new HiveMindCore({name = ['coder', 'tester', 'analyst', 'researcher', 'architect', 'optimizer'];`
 
     // Batch spawning test
     const _batchStart = performance.now();
@@ -43,11 +43,11 @@ export class PerformanceTest {
     const _sequentialStart = performance.now();
     for(let i = 0; i < agentTypes.length; i++) {
       // Simulate individual spawning time
-// await new Promise((resolve) => setTimeout(resolve, 200));
+// // await new Promise((resolve) => setTimeout(resolve, 200));
     //     }
     const _sequentialTime = performance.now() - sequentialStart;
 
-    const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2);
+    const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2)
 
     this.results.push({test = new PerformanceOptimizer({
       asyncQueueConcurrency });
@@ -55,7 +55,7 @@ export class PerformanceTest {
     const _operations = [];
     for(let i = 0; i < 20; i++) {
       operations.push(async () => {
-// await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50));
+// await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50))
         return `Operation ${i} completed`;
     //   // LINT: unreachable code removed});
     //     }
@@ -70,11 +70,11 @@ export class PerformanceTest {
     const _sequentialStart = performance.now();
     const _sequentialResults = [];
     for(const op of operations) {
-      sequentialResults.push(await op());
+      sequentialResults.push(// await op());
     //     }
     const _sequentialTime = performance.now() - sequentialStart;
 
-    const _improvement = (((sequentialTime - parallelTime) / sequentialTime) * 100).toFixed(2);
+    const _improvement = (((sequentialTime - parallelTime) / sequentialTime) * 100).toFixed(2)
 
     this.results.push({test = performance.now();
 
@@ -82,17 +82,17 @@ export class PerformanceTest {
     const _operations = Array(100);
 fill(null);
 map(async (_, i) => {
-// await new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
+// await new Promise((resolve) => setTimeout(resolve, Math.random() * 10))
         return {key = performance.now() - pooledStart;
     // ; // LINT: unreachable code removed
     // Simulate without pooling
     const _serialStart = performance.now();
     for(let i = 0; i < 100; i++) {
-// await new Promise((resolve) => setTimeout(resolve, Math.random() * 15 + 5));
+// // await new Promise((resolve) => setTimeout(resolve, Math.random() * 15 + 5))
     //     }
     const _serialTime = performance.now() - serialStart;
 
-    const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2);
+    const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2)
 
     this.results.push({test = new HiveMindCore({name = [
       'Implement user authentication',
@@ -105,24 +105,24 @@ map(async (_, i) => {
     // Test concurrent task creation and execution
     const _concurrentStart = performance.now();
     const _taskPromises = tasks.map((description) =>;
-      hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1));
-// await Promise.all(taskPromises);
+      hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1))
+// // await Promise.all(taskPromises);
     // Wait for tasks to complete (simulated)
-// await new Promise((resolve) => setTimeout(resolve, 2000));
+// // await new Promise((resolve) => setTimeout(resolve, 2000));
     // Get final status
     const _status = hiveMind.getStatus();
 
     this.results.push({test = === tasks.length ? 'PASS' );
 
     console.warn(;
-      `  ✅Tasks = new PerformanceOptimizer({
+      `  ✅Tasks = new PerformanceOptimizer({`
       enableAsyncQueue,enableBatchProcessing = 'test-cache-key';
     const __cacheHits = 0;
     const __cacheMisses = 0;
 
     // First call should be a miss
     const __cacheStart = performance.now();
-// await optimizer.optimizeWithCache(cacheKey, async () => {
+// // await optimizer.optimizeWithCache(cacheKey, async () => {
       _cacheMisses++;
 // await new Promise((resolve) => setTimeout(resolve, 100));
       return 'cached-value';
@@ -130,7 +130,7 @@ map(async (_, i) => {
 
     // Subsequent calls should be hits
     for(let i = 0; i < 5; i++) {
-// await optimizer.optimizeWithCache(cacheKey, async () => {
+// // await optimizer.optimizeWithCache(cacheKey, async () => {
         _cacheMisses++;
 // await new Promise((resolve) => setTimeout(resolve, 100));
         return 'cached-value';
@@ -147,10 +147,10 @@ map(async (_, i) => {
       batchPromises.push(;
         optimizer.optimizeBatchOperation(;
           'test-batch',_id => {
-// await new new Promise((resolve) => setTimeout(resolve, 50));
+// // await new new Promise((resolve) => setTimeout(resolve, 50));
             return items.map((_item) => ({processed = performance.now() - batchStart;
     // ; // LINT: unreachable code removed
-    this.results.push({test = '.repeat(80));
+    this.results.push({test = '.repeat(80));'
 
     const _totalPassed = 0;
     const _totalTests = this.results.length;
@@ -165,13 +165,13 @@ map(async (_, i) => {
         //         }
       });
 
-      console.warn(`Status = === 'PASS') totalPassed++;
+      console.warn(`Status = === 'PASS') totalPassed++;`
     });
 
     console.warn('\n' + '='.repeat(80));
-    console.warn(`📈 OverallResults = === totalTests) ;
-      console.warn('🎉 All performance optimizations are working correctly!');else ;
-      console.warn('⚠️  Some optimizations may need attention.');
+    console.warn(`� OverallResults = === totalTests) ;`
+      console.warn('� All performance optimizations are working correctly!');else ;
+      console.warn('⚠  Some optimizations may need attention.');
 
     // Performance summary
     const _improvements = this.results;
@@ -180,8 +180,10 @@ map((r) => parseFloat(r.improvement));
 
     if(improvements.length > 0) {
 
-      console.warn(`🚀 Average PerformanceImprovement = === `file) {
+      console.warn(`� Average PerformanceImprovement = === `file) {
   const _testRunner = new PerformanceTest();
   testRunner.runTestSuite().catch(console.error);
 // }
 
+
+}}}}}}}}}}}}}}}}}})))))))))))))

@@ -12,7 +12,7 @@ jest.fn(() => ({
 
 
 // 
-{
+{}
   version: '2.0.0-alpha.70';
 // }
 
@@ -73,13 +73,13 @@ describe('CLI Command Registry', () =>
         const _configFile = path.join(process.cwd(), 'claude-zen.config.js');
         if (;
         !flags.force &&;
-        (await fs;
+        (// await fs;
 access(configFile)
 then(() => true)
 catch(() => false))
         //         )
         throw new Error('Configuration already exists. Use --force to overwrite.');
-  // await fs.writeFile(configFile, 'export default { version);
+  // // await fs.writeFile(configFile, 'export default { version);'
         return { success, message: 'Project initialized successfully' };
         //   // LINT: unreachable code removed})
 // }
@@ -100,7 +100,7 @@ catch(() => false))
               total: process.memoryUsage().heapTotal,
               used: process.memoryUsage().heapUsed,,
             uptime: process.uptime() };
-          return status;
+          // return status;
     //   // LINT: unreachable code removed}) };
 // const _result = awaitstatusCommand.handler();
     expect(result.project).toBe('claude-zen-test');
@@ -117,20 +117,20 @@ catch(() => false))
 
             'init     - Initialize a new Claude Zen project',
             'status   - Show project status',
-            'help     - Show this help message',,,,,,, ];
+            'help     - Show this help message',,,,,,];
       if (args.length > 0) {
         const _commandName = args[0];
-        return `Help for command: ${commandName}`;
+        // return `Help for command: ${commandName}`;
         //   // LINT: unreachable code removed}
-        return `Available commands:\n${commands.join('\n')}`;
+        // return `Available commands:\n${commands.join('\n')}`;
         //   // LINT: unreachable code removed})
 // }
       const _generalHelp = helpCommand.handler([]);
-      expect(generalHelp).toContain('Available commands);
+      expect(generalHelp).toContain('Available commands);'
       expect(generalHelp).toContain('init');
       expect(generalHelp).toContain('status');
       const _specificHelp = helpCommand.handler(['init']);
-      expect(specificHelp).toBe('Help for command);
+      expect(specificHelp).toBe('Help for command);'
     });
   });
   describe('command validation', () => {
@@ -146,7 +146,7 @@ catch(() => false))
           if (command === 'unknown') {
             errors.push('Unknown command. Use "claude-zen help" to see available commands.');
           //           }
-          return errors;
+          // return errors;
     //   // LINT: unreachable code removed} };
       // Valid init command
       const _errors = validator.validateArgs('init', [], { template);
@@ -194,7 +194,7 @@ catch(() => false))
               parsed[key] = value;
             //             }
           });
-          return parsed;
+          // return parsed;
     //   // LINT: unreachable code removed} };
       const _flags = flagParser.parseFlags({
         verbose,
@@ -229,7 +229,7 @@ describe('error handling', () =>
           throw new Error('Command failed');
         }) };
   try {
-  // await errorCommand.handler();
+  // // await errorCommand.handler();
         expect(true).toBe(false); // Should not reach here
       } catch (error) {
         expect(error.message).toBe('Command failed');
@@ -245,7 +245,7 @@ it('should provide helpful error messages', () =>
           if (error.code === 'INVALID_FLAG') {
             return `Invalid flag '${error.flag}' for command '${command}'`;
     //   // LINT: unreachable code removed}
-          return `Error executing '${command}': ${error.message}`;
+          // return `Error executing '${command}': ${error.message}`;
     //   // LINT: unreachable code removed} };
       const _missingArgsError = {
         code: 'MISSING_ARGS',
@@ -259,7 +259,7 @@ it('should provide helpful error messages', () =>
   expect(message2).toBe("Invalid flag '--unknown' for command 'init'");
   const _genericError = { message: 'Something went wrong' };
   const _message3 = errorFormatter.formatError(genericError, 'status');
-  expect(message3).toBe("Error executing 'status');
+  expect(message3).toBe("Error executing 'status');"
 })
 })
 describe('command discovery', () =>
@@ -292,3 +292,4 @@ map((cmd) => cmd.name);
   });
 })
 })
+}}}

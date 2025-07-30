@@ -4,8 +4,8 @@
  * For Claude Desktop access via MCP
  */
 
-const fs = require('node).promises;
-const _path = require('node);
+const fs = require('node).promises;'
+const _path = require('node);'
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store for testing
@@ -24,12 +24,12 @@ class MockMemoryStore {
     this.documentList.push({
       key,
       service);
-    return { id, size: value.length };
+    // return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
-    return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;
   }
 
   async search(options = {}) {
@@ -39,11 +39,11 @@ class MockMemoryStore {
         results[key] = value;
       }
     }
-    return results;
+    // return results;
   }
 
   getDocumentSummary() {
-    return this.documentList;
+    // return this.documentList;
   }
 }
 
@@ -53,17 +53,17 @@ setupDefaultRules(docStack);
 
 // Documents to import from Singularity Engine
 const documentsToImport = [
-  {
+{}
     file: '/home/mhugo/code/singularity-engine/.claude/instructions.md',
     docType: 'user-guide',
     service: 'claude-integration',
     docId: 'startup-routine-instructions' },
-  {
+{}
     file: '/home/mhugo/code/singularity-engine/.claude/commands/analysis/bottleneck-detect.md',
     docType: 'api-documentation',
     service: 'performance-analysis',
     docId: 'bottleneck-detection-api' },
-  {
+{}
     file: '/home/mhugo/code/singularity-engine/.claude/commands/automation/smart-spawn.md',
     docType: 'api-documentation',
     service: 'automation-service',
@@ -95,7 +95,7 @@ async function importDocuments() {
       if (content.includes('swarm')) dependencies.push('swarm-engine');
       if (content.includes('MCP')) dependencies.push('mcp-protocol');
       if (content.includes('memory')) dependencies.push('memory-store');
-// await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
+// // await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
         title,
         tags,
         dependencies,
@@ -118,7 +118,7 @@ async function importDocuments() {
     imported_count: summary.length,
     documents,
     source: 'singularity-engine' };
-// await fs.writeFile(
+// // await fs.writeFile(
     '/home/mhugo/code/claude-code-flow/document-import-log.json',
     JSON.stringify(importLog, null, 2)
   );

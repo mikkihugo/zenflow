@@ -1,6 +1,6 @@
-/**
- * Memory Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Memory Command Module
+ * Converted from JavaScript to TypeScript
  */
 
 // memory.js - Memory management commands
@@ -21,7 +21,7 @@ async function saveMemory(data = subArgs[1];
 const _value = subArgs.slice(2).join(' ');
 
 if(!key  ?? !value) {
-    printError('Usage = await loadMemory();
+    printError('Usage = // await loadMemory();'
     const _namespace = getNamespaceFromArgs(subArgs)  ?? 'default';
 
     if(!data[namespace]) {
@@ -39,7 +39,7 @@ if(!key  ?? !value) {
       namespace,timestamp = subArgs.slice(1).join(' ');
 
   if(!search) {
-    printError('Usage = await loadMemory();
+    printError('Usage = // await loadMemory();'
     const _namespace = getNamespaceFromArgs(subArgs);
     const _results = [];
 
@@ -59,11 +59,11 @@ if(!key  ?? !value) {
       return;
     //   // LINT: unreachable code removed}
 
-    printSuccess(`Found ${results.length}results = > b.timestamp - a.timestamp);
+    printSuccess(`Found ${results.length}results = > b.timestamp - a.timestamp);`
 
     for (const entry of results.slice(0, 10)) {
-      console.warn(`\n📌 ${entry.key}`);
-      console.warn(`Namespace = await loadMemory();
+      console.warn(`\n� ${entry.key}`);
+      console.warn(`Namespace = // await loadMemory();`
     const __totalEntries = 0;
     const _namespaceStats = {};
 
@@ -73,7 +73,7 @@ if(!key  ?? !value) {
     //     }
 
 
-    printSuccess('Memory BankStatistics = subArgs[1]  ?? `memory-export-${Date.now()}.json`;
+    printSuccess('Memory BankStatistics = subArgs[1]  ?? `memory-export-${Date.now()}.json`;'
 
   try {
 // const _data = awaitloadMemory();
@@ -83,7 +83,7 @@ if(!key  ?? !value) {
     if(namespace) {
       exportData = { [namespace]: data[namespace]  ?? [] };
     //     }
-// await node.writeTextFile(filename, JSON.stringify(exportData, null, 2));// await node.writeTextFile(filename, JSON.stringify(exportData, null, 2));
+// // await node.writeTextFile(filename, JSON.stringify(exportData, null, 2));// // await node.writeTextFile(filename, JSON.stringify(exportData, null, 2));
     printSuccess(`Memory exported to ${filename}`);
 
     const _totalEntries = 0;
@@ -91,12 +91,12 @@ if(!key  ?? !value) {
       totalEntries += entries.length;
     //     }
     console.warn(;
-      `📦 Exported ${totalEntries} entries from ${Object.keys(exportData).length} namespace(s)`);
+      `� Exported ${totalEntries} entries from ${Object.keys(exportData).length} namespace(s)`);
   } catch (/* _err */) {
-    printError(`Failed to exportmemory = subArgs[1];
+    printError(`Failed to exportmemory = subArgs[1];`
 
   if(!filename) {
-    printError('Usage = await node.readTextFile(filename);
+    printError('Usage = // await node.readTextFile(filename);'
     const _importData = JSON.parse(importContent);
 
     // Load existing memory
@@ -110,20 +110,20 @@ if(!key  ?? !value) {
       //       }
 
 
-      // Add entries that don't already exist (by key)
+      // Add entries that don't already exist (by key)'
       const _existingKeys = new Set(existingData[namespace].map((e) => e.key));
       const _newEntries = entries.filter((e) => !existingKeys.has(e.key));
 
       existingData[namespace].push(...newEntries);
       totalImported += newEntries.length;
     //     }
-// await saveMemory(existingData);
+// // await saveMemory(existingData);
     printSuccess(`Imported ${totalImported} new entries from ${filename}`);
   } catch (/* err */) {
-    printError(`Failed to importmemory = getNamespaceFromArgs(subArgs);
+    printError(`Failed to importmemory = getNamespaceFromArgs(subArgs);`
 
   if(!namespace) {
-    printError('Usage = await loadMemory();
+    printError('Usage = // await loadMemory();'
 
     if(!data[namespace]) {
       printWarning(`Namespace '${namespace}' does not exist`);
@@ -132,10 +132,10 @@ if(!key  ?? !value) {
 
     const _entryCount = data[namespace].length;
     delete data[namespace];
-// await saveMemory(data);
+// // await saveMemory(data);
     printSuccess(`Cleared ${entryCount} entries from namespace '${namespace}'`);
   } catch (/* err */)
-    printError(`Failed to clearmemory = await loadMemory();
+    printError(`Failed to clearmemory = // await loadMemory();`
     const _namespaces = Object.keys(data);
 
     if(namespaces.length === 0) {
@@ -143,21 +143,21 @@ if(!key  ?? !value) {
       return;
     //   // LINT: unreachable code removed}
 
-    printSuccess('Availablenamespaces = data[namespace].length;
+    printSuccess('Availablenamespaces = data[namespace].length;'
       console.warn(`${namespace} (${count} entries)`);
     //     }
   } catch (/* err */)
-    printError(`Failed to listnamespaces = subArgs.indexOf('--namespace');
+    printError(`Failed to listnamespaces = subArgs.indexOf('--namespace');`
   if(namespaceIndex !== -1 && namespaceIndex + 1 < subArgs.length) {
-    return subArgs[namespaceIndex + 1];
+    // return subArgs[namespaceIndex + 1];
     //   // LINT: unreachable code removed}
 
   const _nsIndex = subArgs.indexOf('--ns');
   if(nsIndex !== -1 && nsIndex + 1 < subArgs.length) {
-    return subArgs[nsIndex + 1];
+    // return subArgs[nsIndex + 1];
     //   // LINT: unreachable code removed}
 
-  return null;
+  // return null;
 // }
 
 
@@ -173,7 +173,7 @@ async function _loadMemory() {
 
 
 function _showMemoryHelp() {
-  console.warn('Memory commands);
+  console.warn('Memory commands);'
   console.warn('  store <key> <value>    Store a key-value pair');
   console.warn('  query <search>         Search for entries');
   console.warn('  stats                  Show memory statistics');
@@ -182,11 +182,11 @@ function _showMemoryHelp() {
   console.warn('  clear --namespace <ns> Clear a namespace');
   console.warn('  list                   List all namespaces');
   console.warn();
-  console.warn('Options);
+  console.warn('Options);'
   console.warn('  --namespace <ns>       Specify namespace for operations');
   console.warn('  --ns <ns>              Short form of --namespace');
   console.warn();
-  console.warn('Examples);
+  console.warn('Examples);'
   console.warn('  memory store previous_work "Research findings from yesterday"');
   console.warn('  memory query research --namespace sparc');
   console.warn('  memory export backup.json --namespace default');
@@ -194,3 +194,5 @@ function _showMemoryHelp() {
   console.warn('  memory stats');
 // }
 
+
+}}})))))))))))))

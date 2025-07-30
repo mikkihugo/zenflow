@@ -1,55 +1,55 @@
-import { EventEmitter } from 'node:events';
-import { performance } from 'node:perf_hooks';
-import { Logger } from '../utils/logger.js';
-/**
- * @typedef {Object} Task;
- * @property {string} id - Task ID;
- * @property {'code-generation' | 'bug-detection' | 'refactoring' | 'test-generation' | 'documentation' | 'architecture-review'} type - Task type;
- * @property {string} prompt - Task prompt;
- * @property {{code?, language?, framework?, testType?, fileType?}} [context] - Task context;
- * @property {'low' | 'medium' | 'high' | 'critical'} priority - Task priority;
- * @property {Date} [deadline] - Task deadline;
- * @property {any} [metadata] - Additional metadata;
+import { EventEmitter } from 'node:events';'
+import { performance } from 'node:perf_hooks';'
+import { Logger } from '../utils/logger.js';'
+/**  */
+ * @typedef {Object} Task
+ * @property {string} id - Task ID
+ * @property {'code-generation' | 'bug-detection' | 'refactoring' | 'test-generation' | 'documentation' | 'architecture-review'} type - Task type;'
+ * @property {string} prompt - Task prompt
+ * @property {{code?, language?, framework?, testType?, fileType?}} [context] - Task context
+ * @property {'low' | 'medium' | 'high' | 'critical'} priority - Task priority;'
+ * @property {Date} [deadline] - Task deadline
+ * @property {any} [metadata] - Additional metadata
  */
-/**
- * @typedef {Object} Result;
- * @property {string} taskId - Task ID;
- * @property {string} queenName - Queen name;
- * @property {string} recommendation - Recommended solution;
- * @property {number} confidence - Confidence score (0-1);
- * @property {string} reasoning - Reasoning for solution;
- * @property {number} processingTime - Processing time in ms;
- * @property {string[]} [alternatives] - Alternative solutions;
- * @property {any} [metadata] - Additional metadata;
+/**  */
+ * @typedef {Object} Result
+ * @property {string} taskId - Task ID
+ * @property {string} queenName - Queen name
+ * @property {string} recommendation - Recommended solution
+ * @property {number} confidence - Confidence score (0-1)
+ * @property {string} reasoning - Reasoning for solution
+ * @property {number} processingTime - Processing time in ms
+ * @property {string[]} [alternatives] - Alternative solutions
+ * @property {any} [metadata] - Additional metadata
  */
-/**
- * @typedef {Object} Consensus;
- * @property {string} taskId - Task ID;
- * @property {string} decision - Consensus decision;
- * @property {number} confidence - Confidence score (0-1);
- * @property {number} participants - Number of participants;
- * @property {'majority' | 'weighted' | 'expert' | 'unanimous'} method - Consensus method;
- * @property {Result[]} [dissenting] - Dissenting opinions;
- * @property {number} processingTime - Processing time in ms;
- * @property {string} reasoning - Reasoning for consensus;
+/**  */
+ * @typedef {Object} Consensus
+ * @property {string} taskId - Task ID
+ * @property {string} decision - Consensus decision
+ * @property {number} confidence - Confidence score (0-1)
+ * @property {number} participants - Number of participants
+ * @property {'majority' | 'weighted' | 'expert' | 'unanimous'} method - Consensus method;'
+ * @property {Result[]} [dissenting] - Dissenting opinions
+ * @property {number} processingTime - Processing time in ms
+ * @property {string} reasoning - Reasoning for consensus
  */
-/**
- * @typedef {Object} QueenMetrics;
- * @property {number} tasksProcessed - Number of tasks processed;
- * @property {number} averageConfidence - Average confidence score;
- * @property {number} averageProcessingTime - Average processing time;
- * @property {number} successRate - Success rate;
- * @property {number} specialtyMatch - Specialty match rate;
- * @property {number} collaborations - Number of collaborations;
- * @property {number} consensusReached - Number of consensus reached;
+/**  */
+ * @typedef {Object} QueenMetrics
+ * @property {number} tasksProcessed - Number of tasks processed
+ * @property {number} averageConfidence - Average confidence score
+ * @property {number} averageProcessingTime - Average processing time
+ * @property {number} successRate - Success rate
+ * @property {number} specialtyMatch - Specialty match rate
+ * @property {number} collaborations - Number of collaborations
+ * @property {number} consensusReached - Number of consensus reached
  */
 // Export the JSDoc types as empty exports so they can be imported
-export const Task = /** @type {Task} */ ({});
-export const Result = /** @type {Result} */ ({});
-export const Consensus = /** @type {Consensus} */ ({});
-export const QueenMetrics = /** @type {QueenMetrics} */ ({});
+// export const Task = /** @type {Task} */ ({})
+// export const Result = /** @type {Result} */ ({})
+// export const Consensus = /** @type {Consensus} */ ({})
+// export const QueenMetrics = /** @type {QueenMetrics} */ ({})
 
-export class BaseQueen extends EventEmitter {
+// export class BaseQueen extends EventEmitter {
   constructor(name = name;
   this;
 
@@ -71,14 +71,14 @@ export class BaseQueen extends EventEmitter {
   activeTasks = new Set();
   this;
 
-  logger = new Logger(`Queen = {tasksProcessed = performance.now();
+  logger = new Logger(`Queen = {tasksProcessed = performance.now();`
 
         try {
-            this.logger.info(`Collaborating on task ${task.id} with ${otherQueens.length} other queens`);
+            this.logger.info(`Collaborating on task ${task.id} with ${otherQueens.length} other queens`);`
 
   // Process task with all queens in parallel
   const;
-  results = await Promise.allSettled([;
+  results = // // await Promise.allSettled([;
                 this.process(task),
 ..otherQueens.map(queen => queen.process(task));
             ]);
@@ -86,12 +86,12 @@ export class BaseQueen extends EventEmitter {
   // Filter successful results
   const;
   successfulResults = results;
-filter((_result) => result.status === 'fulfilled');
+filter((_result) => result.status === 'fulfilled');'
 map((_result) => result.value);
 filter((_result) => result.confidence > 0.1); // Filter out low-confidence results
 
   if(_successfulResults._length === 0) {
-                throw new Error('No queens could process this task');
+                throw new Error('No queens could process this task');'
             //             }
 
 
@@ -99,7 +99,7 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
   const;
   consensusMethod = this.determineConsensusMethod(task, successfulResults);
   const;
-  consensus = await this.reachConsensus(task, successfulResults, consensusMethod);
+  consensus = // // await this.reachConsensus(task, successfulResults, consensusMethod);
 
   const;
   processingTime = performance.now() - startTime;
@@ -114,44 +114,44 @@ filter((_result) => result.confidence > 0.1); // Filter out low-confidence resul
 
   this;
 
-  emit('collaboration', { task, consensus,results = === 'critical') {
-            return 'unanimous';
+  emit('collaboration', { task, consensus,results = === 'critical') {'
+            // return 'unanimous';'
     //   // LINT: unreachable code removed}
 
-  // If there's a clear expert for this task type, use expert method
+  // If there's a clear expert for this task type, use expert method'
   const;
   expertResult = results.find(;
     (_result) =>;
-      result.queenName.toLowerCase().includes(task.type.split('-')[0]) && result.confidence > 0.9;
+      result.queenName.toLowerCase().includes(task.type.split('-')[0]) && result.confidence > 0.9;'
   );
 
   if(_expertResult && _results._length > 2) {
-            return 'expert';
+            // return 'expert';'
     //   // LINT: unreachable code removed}
 
   // For high confidence results, use weighted consensus
   const;
   highConfidenceResults = results.filter((r) => r.confidence > 0.8);
   if(_highConfidenceResults._length >= _results.length * 0.6) {
-            return 'weighted';
+            // return 'weighted';'
     //   // LINT: unreachable code removed}
 
   // Default to majority
-  return;
+  // return;
     // majority; // LINT: unreachable code removed
 // }
 
 
 async;
 reachConsensus(task, results, method);
-: unknown;
+
         switch(method) {
-            case 'unanimous':;
-                return this.unanimousConsensus(task, results);
-    // case 'expert':; // LINT: unreachable code removed
-                return this.expertConsensus(task, results);
-    // case 'weighted':; // LINT: unreachable code removed
-                return this.weightedConsensus(task, results);default = results.map(r => r.recommendation);
+            case 'unanimous':;'
+                // return this.unanimousConsensus(task, results);
+    // case 'expert':; // LINT: unreachable code removed'
+                // return this.expertConsensus(task, results);
+    // case 'weighted':; // LINT: unreachable code removed'
+                // return this.weightedConsensus(task, results);default = results.map(r => r.recommendation);
         const _firstRec = recommendations[0];
 
         const _similarity = recommendations.every(_rec => ;
@@ -159,13 +159,13 @@ reachConsensus(task, results, method);
         );
 
         if(similarity) {
-            return {taskId = > r.confidence)),participants = this.weightedConsensus(task, results);
+            // return {taskId = > r.confidence)),participants = this.weightedConsensus(task, results);
     // return { // LINT: unreachable code removed
 ..weighted,method = results.reduce((best, current) => {
-            const _isExpert = current.queenName.toLowerCase().includes(task.type.split('-')[0]);
+            const _isExpert = current.queenName.toLowerCase().includes(task.type.split('-')[0]);'
             const _hasHigherConfidence = current.confidence > best.confidence;
 
-            return (isExpert && hasHigherConfidence) ?current = > r.queenName !== expert.queenName);
+            // return (isExpert && hasHigherConfidence) ?current = > r.queenName !== expert.queenName);
     //   // LINT: unreachable code removed};
     //     }
 
@@ -191,9 +191,9 @@ reachConsensus(task, results, method);
 
         // Combine selected results into final decision
         const __decision = this.combineRecommendations(selectedResults.map(r => r.recommendation));
-        const __confidence = selectedResults.reduce((sum, r) => sum + r.confidence * r.weight, 0) / cumulativeWeight;
+        const __confidence = selectedResults.reduce((sum, r) => sum + r.confidence * r.weight, 0) / cumulativeWeight
 
-        return {taskId = > !selectedResults.some(s => s.queenName === r.queenName));
+        // return {taskId = > !selectedResults.some(s => s.queenName === r.queenName));
     //   // LINT: unreachable code removed};
     //     }
 
@@ -205,13 +205,13 @@ reachConsensus(task, results, method);
         // Find the largest group
         const _majority = groups.reduce((_largest, _current) => ;
             current.length > largest.length ?current = === 0) ;
-            throw new Error('No majority found');
+            throw new Error('No majority found');'
 
         // Use the highest confidence recommendation from the majority group
         const __best = majority.reduce((_best, _current) => ;
             current.confidence > best.confidence ?current = majority.reduce((sum, r) => sum + r.confidence, 0) / majority.length;
 
-        return {taskId = > !majority.includes(r));
+        // return {taskId = > !majority.includes(r));
     //   // LINT: unreachable code removed};
     //     }
 
@@ -220,18 +220,18 @@ reachConsensus(task, results, method);
         const _weight = result.confidence;
 
         // Boost weight if queen specialty matches task type
-        if (result.queenName.toLowerCase().includes(task.type.split('-')[0])) {
-            weight *= 1.5;
+        if (result.queenName.toLowerCase().includes(task.type.split('-')[0])) {'
+            weight *= 1.5
         //         }
 
 
         // Boost weight for faster processing (efficiency bonus)
         if(result.processingTime < 1000) {
-            weight *= 1.1;
+            weight *= 1.1
         //         }
 
 
-        return Math.min(weight, 2.0); // Cap at 2.0
+        // return Math.min(weight, 2.0); // Cap at 2.0
     //     }
 
 
@@ -243,7 +243,7 @@ reachConsensus(task, results, method);
         const _intersection = new Set([...words1].filter(word => words2.has(word)));
         const _union = new Set([...words1, ...words2]);
 
-        return intersection.size / union.size;
+        // return intersection.size / union.size;
     //   // LINT: unreachable code removed}
 
     groupSimilarRecommendations(results) {
@@ -269,13 +269,13 @@ reachConsensus(task, results, method);
         //         }
 
 
-        return groups;
+        // return groups;
     //   // LINT: unreachable code removed}
 
     combineRecommendations(recommendations): unknown
         // Simple combination - take the longest/most detailed recommendation
         // In production, this could use ML to intelligently merge recommendations
-        return recommendations.reduce((_longest, _current) => ;
+        // return recommendations.reduce((_longest, _current) => ;
     // current.length > longest.length ?current = results.find(r => r.queenName === this.name); // LINT: unreachable code removed
         if(myResult) {
             this.metrics.collaborations++;
@@ -289,16 +289,16 @@ reachConsensus(task, results, method);
 
     async canAcceptTask(task): unknown
         if(!this.isActive) {
-            return false;
+            // return false;
     //   // LINT: unreachable code removed}
 
         if(this.activeTasks.size >= this.maxConcurrentTasks) {
-            return false;
+            // return false;
     //   // LINT: unreachable code removed}
 
         // Check if this queen is suitable for the task
 // const _suitability = awaitthis.calculateSuitability(task);
-        return suitability > 0.3; // Minimum suitability threshold
+        // return suitability > 0.3; // Minimum suitability threshold
     //     }
 
 
@@ -307,21 +307,21 @@ reachConsensus(task, results, method);
         const _suitability = 0.5; // Base suitability
 
         // Boost if specialty matches task type
-        if (this.specialty.includes(task.type.split('-')[0])) {
+        if (this.specialty.includes(task.type.split('-')[0])) {'
             suitability += 0.4;
         //         }
 
 
         // Reduce if overloaded
         if(this.workload > 0.8) {
-            suitability *= 0.6;
+            suitability *= 0.6
         //         }
 
 
         // Boost based on historical performance for this task type
-        suitability += this.metrics.specialtyMatch * 0.1;
+        suitability += this.metrics.specialtyMatch * 0.1
 
-        return Math.min(suitability, 1.0);
+        // return Math.min(suitability, 1.0);
     //   // LINT: unreachable code removed}
 
     trackTaskStart(taskId): unknown
@@ -335,46 +335,48 @@ reachConsensus(task, results, method);
         // Update metrics
         this.metrics.tasksProcessed++;
         this.metrics.averageConfidence = ;
-            (this.metrics.averageConfidence * (this.metrics.tasksProcessed - 1) + result.confidence) / ;
+            (this.metrics.averageConfidence * (this.metrics.tasksProcessed - 1) + result.confidence) / 
             this.metrics.tasksProcessed;
         this.metrics.averageProcessingTime = ;
-            (this.metrics.averageProcessingTime * (this.metrics.tasksProcessed - 1) + result.processingTime) / ;
+            (this.metrics.averageProcessingTime * (this.metrics.tasksProcessed - 1) + result.processingTime) / 
             this.metrics.tasksProcessed;
 
-        this.emit('taskComplete', { taskId, result });
+        this.emit('taskComplete', { taskId, result });'
 
-    getName()
-        return this.name;
+    getName() {}
+        // return this.name;
     //   // LINT: unreachable code removed}
 
-    getSpecialty()
-        return this.specialty;
+    getSpecialty() {}
+        // return this.specialty;
     //   // LINT: unreachable code removed}
 
-    getWorkload()
-        return this.workload;
+    getWorkload() {}
+        // return this.workload;
     //   // LINT: unreachable code removed}
 
-    getMetrics()
-        return { ...this.metrics };
+    getMetrics() {}
+        // return { ...this.metrics };
     //   // LINT: unreachable code removed}
 
-    isHealthy()
-        return this.isActive && this.workload < 0.95;
+    isHealthy() {}
+        // return this.isActive && this.workload < 0.95;
     //   // LINT: unreachable code removed}
 
     async shutdown() {
-        this.logger.info(`Shutting down ${this.name}...`);
+        this.logger.info(`Shutting down ${this.name}...`);`
         this.isActive = false;
 
         // Wait for active tasks to complete (with timeout)
         const _attempts = 0;
         while(this.activeTasks.size > 0 && attempts < 30) {
-// await new Promise(resolve => setTimeout(resolve, 1000));
+// // // await new Promise(resolve => setTimeout(resolve, 1000));
             attempts++;
         //         }
 
 
-        this.emit('shutdown');
+        this.emit('shutdown');'
     //     }
 
+
+})

@@ -31,13 +31,13 @@ class MockMemoryStore {
   async store(key, value, options = {}) {
     const _fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id, size: value.length };
+    // return { id, size: value.length };
     //   // LINT: unreachable code removed}
     async;
     retrieve(key, (options = {}));
     //     {
       const _fullKey = options.namespace ? `${options.namespace}:${key}` ;
-      return this.data.get(fullKey) ?? null;
+      // return this.data.get(fullKey) ?? null;
       //   // LINT: unreachable code removed}
       async;
       search((options = {}));
@@ -48,7 +48,7 @@ class MockMemoryStore {
             results[key] = value;
           //           }
         //         }
-        return results;
+        // return results;
         //   // LINT: unreachable code removed}
       //       }
       const _documentMemoryStore = new MockMemoryStore();
@@ -64,17 +64,17 @@ class MockMemoryStore {
         uptime: process.uptime() });
     })
     // MCP tools endpoint
-    app.post('/mcp/tools/) =>
+    app.post('/mcp/tools/) =>'
     try {
     const { toolName } = req.params;
     const _args = req.body;
-    console.warn(`🔧 MCP Tool Call);
+    console.warn(`� MCP Tool Call);`
 // const _result = awaitmcpServer.callTool(toolName, args);
     res.json({
       success,
       tool,
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString() {}
 })
     catch (error)
     console.error('❌ MCP Tool Error:', error)
@@ -107,7 +107,7 @@ catch (error)
   res.status(500).json({ success, error);
 // }
 })
-app.get('/service-documents/list/) =>
+app.get('/service-documents/list/) =>'
 // {
   try {
 // const _result = awaitmcpServer.handleServiceDocumentManager({
@@ -174,7 +174,7 @@ catch (error)
   res.status(500).json({ success, error);
 // }
 })
-app.get('/memory/retrieve/) =>
+app.get('/memory/retrieve/) =>'
 // {
   try {
 // const _result = awaitmcpServer.callTool('memory_usage', {
@@ -200,7 +200,7 @@ app.get('/status', async (_req, res) =>
         host,
         port,
         status: 'running',
-        uptime: process.uptime()
+        uptime: process.uptime() {}
 // }
 
 
@@ -227,32 +227,34 @@ app.get('/status', async (_req, res) =>
 // Start server
 async function startServer() {
   try {
-    console.warn('🚀 Starting Claude-Flow HTTP MCP Server...\n');
+    console.warn('� Starting Claude-Flow HTTP MCP Server...\n');
     // Initialize MCP and services
-  // await mcpServer.initializeMemory();
-  // await orchestrator.start();
+  // // await mcpServer.initializeMemory();
+  // // await orchestrator.start();
     // Start HTTP server
     const _server = app.listen(PORT, HOST, () => {
-      console.warn(`\n🌐 HTTP MCP Server running on http);
-      console.warn('📡 Available endpoints);
-      console.warn(`   • GET  http);
-      console.warn(`   • POST http);
-      console.warn(`   • GET  http);
-      console.warn(`   • POST http);
-      console.warn(`   • POST http);
-      console.warn(`   • GET  http);
+      console.warn(`\n� HTTP MCP Server running on http);`
+      console.warn('� Available endpoints);'
+      console.warn(`   • GET  http);`
+      console.warn(`   • POST http);`
+      console.warn(`   • GET  http);`
+      console.warn(`   • POST http);`
+      console.warn(`   • POST http);`
+      console.warn(`   • GET  http);`
       console.warn('\n✅ Server ready for external connections!');
     });
     // Graceful shutdown
     process.on('SIGINT', async () => {
-      console.warn('\n🔄 Shutting down server...');
+      console.warn('\n� Shutting down server...');
       server.close();
   // await orchestrator.stop();
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ Failed to start server);
+    console.error('❌ Failed to start server);'
     process.exit(1);
   //   }
 // }
 startServer();
+
+}}}}}}}}}}

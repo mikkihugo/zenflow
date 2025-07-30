@@ -25,10 +25,10 @@ scanForComplexity((options = {}));
 // }
 catch (error)
 // {
-  console.warn(`⚠️ Could not analyze ${file});
+  console.warn(`⚠ Could not analyze ${file});`
 // }
 // }
-return {totalFiles = [];
+// return {totalFiles = [];
 // ; // LINT: unreachable code removed
 try {
   const _analysis = analyse(content);
@@ -48,27 +48,27 @@ try {
     suggestions.push(fileSuggestion);
   //   }
 } catch (/* _error */) {
-  throw new Error(`Analysis failed = {id = await this.generateRefactorSuggestion(;
+  throw new Error(`Analysis failed = {id = // await this.generateRefactorSuggestion(;`
           method, filepath, content;
         );
       } catch (error) {
-        console.warn(`Failed to generate refactorsuggestion = this.buildRefactorPrompt(method, filepath, content);
+        console.warn(`Failed to generate refactorsuggestion = this.buildRefactorPrompt(method, filepath, content);`
 
-  return acc;
+  // return acc;
 // }
 
 
 // 
-{
+{}
 // }
 // )
 // }
 /**
  * Get analysis capabilities;
  */
-getCapabilities()
+getCapabilities() {}
 // {
-  return {
+  // return {
       fileTypes: ['.js', '.jsx', '.ts', '.tsx'],
   // metrics: ['cyclomatic', 'halstead', 'maintainability'], // LINT: unreachable code removed
   features: [
@@ -76,13 +76,14 @@ getCapabilities()
         'method-level analysis',
         'file-level analysis',
         'ai-powered suggestions',
-        'severity classification';,,,,,, ];
+        'severity classification';,,,,,];
 // }
 // }
 // async
-cleanup()
+cleanup() {}
 // {
-  console.warn('🔍 Code Complexity Scanner Plugin cleaned up');
+  console.warn('� Code Complexity Scanner Plugin cleaned up');
 // }
 // }
-export default CodeComplexityScannerPlugin;
+// export default CodeComplexityScannerPlugin;
+)

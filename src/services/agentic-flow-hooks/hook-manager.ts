@@ -7,7 +7,7 @@ import { EventEmitter } from 'node:events';
 import { Hook } from './types.js';
 
 export class HookManager extends EventEmitter {
-  private config = {enabled = { ...this.config, ...config }; // eslint-disable-line
+  // private config = {enabled = { ...this.config, ...config }; // eslint-disable-line
   this;
 
   setupInternalHooks();
@@ -23,23 +23,23 @@ registerHook(registration = registration;
 // Validate hook
 // const _validation = awaitthis.validateHook(hook);
 if (!validation.valid) {
-  throw new Error(`Hook validationfailed = this.hooks.get(name);
+  throw new Error(`Hook validationfailed = this.hooks.get(name);`
     if (!registration) {
-      throw new Error(`Hook notfound = group.hooks.filter(h => h.name !== name);
+      throw new Error(`Hook notfound = group.hooks.filter(h => h.name !== name);`
 // }
 this.emit('hook_unregistered', {type = 'parallel';
 ): Promise<HookExecutionContext>
 // {
   if (!this._config._enabled) {
     this.log('debug', 'Hook execution disabled globally');
-    return this.createEmptyExecutionContext(type, strategy);
+    // return this.createEmptyExecutionContext(type, strategy);
     //   // LINT: unreachable code removed}
     const _executionId = this.generateExecutionId();
     const _startTime = new Date();
     const _context = {executionId = this.getEnabledHooksForType(type);
     context.totalHooks = hookNames.length;
     if (hookNames.length === 0) {
-      this.log('debug', `No hooks registered fortype = new Date();
+      this.log('debug', `No hooks registered fortype = new Date();`
       context.duration = context.endTime.getTime() - context.startTime.getTime();
 
       this.emit('hooks_executed', {
@@ -52,7 +52,7 @@ this.emit('hook_unregistered', {type = 'parallel';
         executionId,
         type,error = this.hooks.get(name);
     if (!registration) {
-      throw new Error(`Hook notfound = Date.now();
+      throw new Error(`Hook notfound = Date.now();`
       try {
       // Execute with timeout
 // const _result = awaitthis.executeWithTimeout(;
@@ -106,7 +106,7 @@ this.emit('hook_unregistered', {type = 'parallel';
   /**
    * Execute hooks by priority order;
    */;
-  private async executePriority(hookNames = hookNames;
+  // private async executePriority(hookNames = hookNames;
 map(name => (
         name,hook = > b.hook.priority - a.hook.priority);
 // await this.executeSequential(;
@@ -148,7 +148,7 @@ map(name => (
 
     for (const name of hookNames) {
       const _pipelinePayload = {
-..payload,data = await this.executeHook(name, pipelinePayload);
+..payload,data = // await this.executeHook(name, pipelinePayload);
       context.results[name] = result;
 
       if (result.success) {
@@ -174,8 +174,8 @@ map(name => (
    */;
   private;
   getEnabledHooksForType(;
-type = this.hooksByType.get(type)  ?? new Set();
-  return Array.from(typeHooks).filter(name => this.enabledHooks.has(name));
+// type = this.hooksByType.get(type)  ?? new Set();
+  // return Array.from(typeHooks).filter(name => this.enabledHooks.has(name));
 // }
       /**
        * Execute hook with timeout;
@@ -199,8 +199,7 @@ type = this.hooksByType.get(type)  ?? new Set();
     /**
      * Update hook metrics;
      */
-    private
-    updateHookMetrics(name = this.hookMetrics.get(name);
+    // private updateHookMetrics(name = this.hookMetrics.get(name);
     if (!metrics) return;
     // ; // LINT: unreachable code removed
     metrics.totalExecutions++;
@@ -229,8 +228,7 @@ type = this.hooksByType.get(type)  ?? new Set();
 /**
  * Evaluate hook conditions;
  */
-private
-evaluateConditions(_conditions =>;
+// private evaluateConditions(_conditions =>;
 // {
   const { type, field, value,function = condition;
   const _fieldValue = this.getNestedValue(payload, field);
@@ -238,17 +236,17 @@ evaluateConditions(_conditions =>;
     case 'equals': null
       return fieldValue === value;
       // case 'contains':; // LINT: unreachable code removed
-      return String(fieldValue).includes(String(value));
+      // return String(fieldValue).includes(String(value));
       // case 'regex':; // LINT: unreachable code removed
-      return new RegExp(value).test(String(fieldValue));
+      // return new RegExp(value).test(String(fieldValue));
       // case 'function':; // LINT: unreachable code removed
-      return conditionFn ? conditionFn(payload) : false;
+      return conditionFn ? conditionFn(payload) ;
       // case 'exists':; // LINT: unreachable code removed
       return fieldValue !== undefined && fieldValue !== null;
       // case 'greater':; // LINT: unreachable code removed
       return Number(fieldValue) > Number(value);
       // case 'less':; // LINT: unreachable code removed
-      return Number(fieldValue) < Number(value);
+      // return Number(fieldValue) < Number(value);
     // default = > current?.[key], obj); // LINT: unreachable code removed
   //   }
   /**
@@ -272,7 +270,7 @@ evaluateConditions(_conditions =>;
     warnings.push('Hook timeout should be a positive number');
     suggestions.push('Consider setting a reasonable timeout (e.g., 5000ms)');
   //   }
-  return {valid = === 0,
+  // return {valid = === 0,
   // errors, // LINT: unreachable code removed
   warnings,
   suggestions;
@@ -281,8 +279,7 @@ evaluateConditions(_conditions =>;
 /**
  * Setup internal system hooks;
  */
-private
-setupInternalHooks()
+// private setupInternalHooks() {}
 : void
 // {
     // Performance monitoring hook
@@ -296,21 +293,21 @@ setupInternalHooks()
               value,
               threshold,
               _timestamp => {
-      this.log('error', `Failed to register system performancemonitor = new Date();
+      this.log('error', `Failed to register system performancemonitor = new Date();`
     return {
       executionId = {debug = levels[this.config.logLevel]  ?? 1;
     // const _messageLevel = levels[level]  ?? 1; // LINT: unreachable code removed
 
     if (messageLevel >= currentLevel) {
-      console.warn(`[HookManager = {};
+      console.warn(`[HookManager = {};`
     for (const [name, metric] of this.hookMetrics) {
       metrics[name] = metric;
     //     }
-    return metrics;
+    // return metrics;
     //   // LINT: unreachable code removed}
 
   getActiveExecutions(): HookExecutionContext[]
-    return Array.from(this.activeExecutions.values());
+    // return Array.from(this.activeExecutions.values());
     //   // LINT: unreachable code removed}
 
   async cleanup(): Promise<void>
@@ -322,3 +319,5 @@ setupInternalHooks()
     this.activeExecutions.clear();
     this.enabledHooks.clear();
     this.removeAllListeners();
+
+}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))

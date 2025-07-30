@@ -1,14 +1,14 @@
 /**
- * Default configuration for Claude-Zen;
- * Comprehensive system configuration with TypeScript types;
+ * Default configuration for Claude-Zen
+ * Comprehensive system configuration with TypeScript types
  */
-export interface DatabaseConfig {
-  sqlite: {
-    // path: string
-    options: {
-      // timeout: number
-      // verbose: boolean
-    };
+export // interface DatabaseConfig {
+//   sqlite: {
+//     // path: string
+//     options: {
+//       // timeout: number
+//       // verbose: boolean
+//     };
   };
   lancedb: {
     // path: string
@@ -19,37 +19,37 @@ export interface DatabaseConfig {
     // readOnly: boolean
   };
 // }
-export interface ServerConfig {
-  // port: number
-  // host: string
-  cors: {
-    origin: string | string[];
-    // credentials: boolean
-  };
+// export // interface ServerConfig {
+//   // port: number
+//   // host: string
+//   cors: {
+//     origin: string | string[];
+//     // credentials: boolean
+//   };
   rateLimit: {
     // windowMs: number
     // max: number
   };
 // }
-export interface RuvFANNConfig {
-  // integrated: boolean
-  // wasmPath: string
-  neuralModels;
-  // gpuAcceleration: boolean
-// }
-export interface HiveMindConfig {
-  // maxQueens: number
-  // consensusThreshold: number
-  // memoryRetention: number
-  // autoBackup: boolean
-// }
-export interface Config {
-  app: {
-    // name: string
-    // version: string
-    // environment: string
-    // debug: boolean
-  };
+// export // interface RuvFANNConfig {
+//   // integrated: boolean
+//   // wasmPath: string
+//   neuralModels;
+//   // gpuAcceleration: boolean
+// // }
+// export // interface HiveMindConfig {
+//   // maxQueens: number
+//   // consensusThreshold: number
+//   // memoryRetention: number
+//   // autoBackup: boolean
+// // }
+// export // interface Config {
+//   app: {
+//     // name: string
+//     // version: string
+//     // environment: string
+//     // debug: boolean
+//   };
   // server: ServerConfig
   // database: DatabaseConfig
   // ruvFANN: RuvFANNConfig
@@ -121,4 +121,4 @@ const _config = {
     jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',
     tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',
     rateLimiting: process.env.RATE_LIMITING !== 'false' } };
-export default _config;
+// export default _config;

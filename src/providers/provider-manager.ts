@@ -12,24 +12,24 @@ ProviderMetrics,
 ProviderStatus,
 QuotaExceededError,
 RateLimitError } from './types.js'
-// interface ProviderInstance {provider = new Map()
-private;
-requestCache = new Map()
-private;
-healthCheckInterval = null
-private;
-requestQueue = []
-private;
-processingQueue = false
-private;
-config = {loadBalancing = { ...this.config
-, ...config }
-this.setupHealthChecking()
+// // interface ProviderInstance {provider = new Map() {}
+// private;
+// requestCache = new Map() {}
+// private;
+// healthCheckInterval = null
+// private;
+// requestQueue = []
+// private;
+// processingQueue = false
+// private;
+// config = {loadBalancing = { ...this.config
+// , ...config }
+this.setupHealthChecking() {}
 this.setupCacheCleanup();
 // }
 // Provider Registration
 // async
-registerProvider(name = > BaseProvider,config = new providerClass()
+registerProvider(name = > BaseProvider,config = new providerClass() {}
 // await provider.initialize(config)
 if (cached) {
   this.emit('cache_hit', {requestId = new Promise<never>((_, reject) => {
@@ -45,9 +45,9 @@ if (cached) {
     //     }
 
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed} catch (error) {
-    this.emit('request_failed', {requestId = await this.selectProvider(request);
+    this.emit('request_failed', {requestId = // await this.selectProvider(request);
 
     if (!provider) {
       throw new ProviderError('No available providers', 'manager', 'NO_PROVIDERS');
@@ -80,26 +80,26 @@ if (cached) {
     );
 
   if (availableProviders.length === 0) {
-    return null;
+    // return null;
     //   // LINT: unreachable code removed}
 
   // Apply load balancing strategy
   switch (this.config.loadBalancing.type) {
     case 'round_robin':;
-      return this.selectRoundRobin(availableProviders);
+      // return this.selectRoundRobin(availableProviders);
     // ; // LINT: unreachable code removed
     case 'least_latency':;
-      return this.selectLeastLatency(availableProviders);
+      // return this.selectLeastLatency(availableProviders);
     // ; // LINT: unreachable code removed
     case 'least_cost':;
-      return this.selectLeastCost(availableProviders);
+      // return this.selectLeastCost(availableProviders);
     // ; // LINT: unreachable code removed
     case 'weighted':;
-      return this.selectWeighted(availableProviders, this.config.loadBalancing.weights  ?? {});
+      // return this.selectWeighted(availableProviders, this.config.loadBalancing.weights  ?? {});
     // ; // LINT: unreachable code removed
     case 'priority': {;
-      return this.selectByPriority(availableProviders, this.config.loadBalancing.priorities  ?? {});
-    // default = await this.selectProvider(request); // LINT: unreachable code removed
+      // return this.selectByPriority(availableProviders, this.config.loadBalancing.priorities  ?? {});
+    // default = // await this.selectProvider(request); // LINT: unreachable code removed
 
     if (!provider) {
       throw new ProviderError('No available providers', 'manager', 'NO_PROVIDERS');
@@ -112,7 +112,7 @@ if (cached) {
       // Update circuit breaker status
       this.updateCircuitBreaker(provider, false);
 
-      return response;
+      // return response;
     //   // LINT: unreachable code removed} catch (error) {
       // Update circuit breaker status
       this.updateCircuitBreaker(provider, true);
@@ -123,7 +123,7 @@ if (cached) {
           !(error instanceof QuotaExceededError)) {
 // const _fallbackProvider = awaitthis.selectFallbackProvider(request, provider.provider.name);
         if (fallbackProvider) {
-          return await fallbackProvider.provider.generateText(request);
+          // return // await fallbackProvider.provider.generateText(request);
     //   // LINT: unreachable code removed}
       //       }
 
@@ -145,19 +145,19 @@ if (cached) {
     !provider.circuitBreakerOpen &&;
     provider.provider.capabilities.models?.includes(request.model);
   //   )
-    return provider;
-return null;
+    // return provider;
+// return null;
     //     }
 // }
 
 
   // Load balancing strategies
-  private selectRoundRobin(providers = Math.floor(Math.random() * providers.length);
-return providers[index];
+  // private selectRoundRobin(providers = Math.floor(Math.random() * providers.length);
+// return providers[index];
 // }
 
 
-  private selectLeastLatency(providers = > ;
+  // private selectLeastLatency(providers = > ;
       current.metrics.averageResponseTime < best.metrics.averageResponseTime ? current =>;
 // {
   const _currentCostPerToken =;
@@ -177,7 +177,7 @@ return providers[index];
     if (random <= 0) return provider;
     //   // LINT: unreachable code removed}
 
-  return weightedProviders[0];
+  // return weightedProviders[0];
 // }
 
 
@@ -200,13 +200,13 @@ selectByPriority(_providers => {
     const _cached = this.requestCache.get(hash);
 
     if (cached && Date.now() - cached.timestamp.getTime() < this.config.cacheTimeout) {
-      return { ...cached.response,id = this.hashRequest(request);
+      // return { ...cached.response,id = this.hashRequest(request);
     // this.requestCache.set(hash, { // LINT) => {
       for (const [name, provider] of this.providers) {
         try {
 // const _isHealthy = awaitprovider.provider.healthCheck();
-          provider.status = await provider.provider.getStatus();
-          provider.metrics = await provider.provider.getMetrics();
+          provider.status = // await provider.provider.getStatus();
+          provider.metrics = // await provider.provider.getMetrics();
 
           if (!isHealthy && provider.config.enabled) {
             this.emit('provider_unhealthy', { name, provider });
@@ -228,22 +228,22 @@ selectByPriority(_providers => {
     const _statuses = {};
 
     for (const [name, provider] of this.providers) {
-      statuses[name] = await provider.provider.getStatus();
+      statuses[name] = // await provider.provider.getStatus();
     //     }
 
 
-    return statuses;
+    // return statuses;
     //   // LINT: unreachable code removed}
 
   async getProviderMetrics(): Promise<Record<string, ProviderMetrics>> {
     const _metrics = {};
 
     for (const [name, provider] of this.providers) {
-      metrics[name] = await provider.provider.getMetrics();
+      metrics[name] = // await provider.provider.getMetrics();
     //     }
 
 
-    return metrics;
+    // return metrics;
     //   // LINT: unreachable code removed}
 
   getAvailableModels(): string[] {
@@ -258,7 +258,7 @@ selectByPriority(_providers => {
     //     }
 
 
-    return Array.from(models);
+    // return Array.from(models);
     //   // LINT: unreachable code removed}
 
   // Cleanup
@@ -269,7 +269,7 @@ selectByPriority(_providers => {
 
 
     for (const provider of this.providers.values()) {
-// await provider.provider.cleanup();
+// // await provider.provider.cleanup();
     //     }
 
 
@@ -277,3 +277,5 @@ selectByPriority(_providers => {
     this.requestCache.clear();
 // }
 
+
+}}}}}}}}}}})))))))))

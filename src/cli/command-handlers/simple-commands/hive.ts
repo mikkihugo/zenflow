@@ -3,65 +3,65 @@
  * Provides basic implementation that can work without TypeScript;
  */
 export async function hiveCommand(args = (args  ?? [])
-join(' ').trim()
+join(' ').trim() {}
 
 if (!objective ?? flags.help ?? flags.h) {
   showHiveHelp();
   return;
 // }
-console.warn('🐝 Initializing Hive Mind...');
-console.warn(`👑 Queen Genesis coordinating...`);
-console.warn(`📋Objective = `hive_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  console.warn(`✅ Hive Mindinitialized = [
-    { type: '👑', name: 'Queen-Genesis', role: 'Orchestrator' },
-    { type: '🏗️', name: 'Architect-Prime', role: 'System Design' },
-    { type: '🐝', name: 'Worker-1', role: 'Backend Development' },
-    { type: '🐝', name: 'Worker-2', role: 'Frontend Development' },
-    { type: '🔍', name: 'Scout-Alpha', role: 'Research & Analysis' },
-    { type: '🛡️', name: 'Guardian-Omega', role: 'Quality Assurance' } ];
+console.warn('� Initializing Hive Mind...');
+console.warn(`� Queen Genesis coordinating...`);
+console.warn(`�Objective = `hive_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
+  console.warn(`✅ Hive Mindinitialized = [`
+    { type: '�', name: 'Queen-Genesis', role: 'Orchestrator' },
+    { type: '�', name: 'Architect-Prime', role: 'System Design' },
+    { type: '�', name: 'Worker-1', role: 'Backend Development' },
+    { type: '�', name: 'Worker-2', role: 'Frontend Development' },
+    { type: '�', name: 'Scout-Alpha', role: 'Research & Analysis' },
+    { type: '�', name: 'Guardian-Omega', role: 'Quality Assurance' } ];
 for (const agent of agents) {
   console.warn(`${agent.type} ${agent.name} - ${agent.role}`);
 // }
 console.warn('');
 // Show task decomposition
-console.warn('🧩 Phase 1);
-console.warn('  👑 Queen proposes task breakdown...');
-console.warn('  🗳️ Agents voting on tasks...');
+console.warn('🧩 Phase 1);'
+console.warn('  � Queen proposes task breakdown...');
+console.warn('  � Agents voting on tasks...');
 console.warn('  ✅ Consensus reached (87.5% approval)');
 console.warn('');
 // Show task assignment
-console.warn('🗳️ Phase 2);
-console.warn('  📌 analysis → Scout-Alpha');
-console.warn('  📌 design → Architect-Prime');
-console.warn('  📌 implementation → Worker-1, Worker-2');
-console.warn('  📌 testing → Guardian-Omega');
-console.warn('  📌 documentation → Scout-Alpha');
+console.warn('� Phase 2);'
+console.warn('  � analysis → Scout-Alpha');
+console.warn('  � design → Architect-Prime');
+console.warn('  � implementation → Worker-1, Worker-2');
+console.warn('  � testing → Guardian-Omega');
+console.warn('  � documentation → Scout-Alpha');
 console.warn('');
 // Show execution
-console.warn('⚡ Phase 3);
+console.warn(' Phase 3);'
 console.warn('  [▓▓▓▓▓▓▓▓░░░░░░░░░░] 40% - Analysis in progress...');
 console.warn('  [▓▓▓░░░░░░░░░░░░░░░] 15% - Design starting...');
 console.warn('  [░░░░░░░░░░░░░░░░░░] 0%  - Implementation pending...');
 console.warn('');
 // Show monitoring dashboard
 if (flags.monitor) {
-  console.warn('📊 Hive Mind Dashboard');
+  console.warn('� Hive Mind Dashboard');
   console.warn('═══════════════════════════════════════════════════════════════');
   console.warn(`Status: EXECUTING | Time: ${new Date().toLocaleTimeString()}`);
   console.warn('');
-  console.warn('Consensus);
-  console.warn('Messages);
+  console.warn('Consensus);'
+  console.warn('Messages);'
   console.warn('═══════════════════════════════════════════════════════════════');
 // }
 console.warn('');
-console.warn('🐝 Hive Mind is coordinating your objective...');
+console.warn('� Hive Mind is coordinating your objective...');
 console.warn('');
-console.warn('Note);
+console.warn('Note);'
 console.warn('the complete TypeScript implementation to be built.');
 // }
 function showHiveHelp() {
-  console.warn(`;
-🐝 Hive Mind - Advanced Multi-Agent Coordination
+  console.warn(`;`
+� Hive Mind - Advanced Multi-Agent Coordination
 
 USAGE);
   mesh           Peer-to-peer coordination;
@@ -86,11 +86,11 @@ OPTIONS:;
   --timeout <min>           Timeout minutes (default)
 
 AGENT TYPES:;
-  👑 Queen        Orchestrator and decision maker;
-  🏗️ Architect    System design and planning;
-  🐝 Worker       Implementation and execution;
-  🔍 Scout        Research and exploration;
-  🛡️ Guardian     Quality and validation
+  � Queen        Orchestrator and decision maker;
+  � Architect    System design and planning;
+  � Worker       Implementation and execution;
+  � Scout        Research and exploration;
+  � Guardian     Quality and validation
 
 FEATURES:;
   • Consensus-based task decomposition;
@@ -100,7 +100,8 @@ FEATURES:;
   • Distributed memory sharing;
   • SPARC methodology support
 
-For more info: https,//github.com/ruvnet/claude-zen/docs/hive.md
-`);
+For more info,//github.com/ruvnet/claude-zen/docs/hive.md
+`);`
 // }
 
+))

@@ -36,11 +36,11 @@ async function _main() {
 
   // Handle command-specific help requests
   if (flags.help  ?? flags.h) {
-// await showCommandHelp(command);
+// // await showCommandHelp(command);
     return;
     //   // LINT: unreachable code removed}
 
-  // Commands that don't need plugins (lightweight commands)
+  // Commands that don't need plugins (lightweight commands)'
   const _lightweightCommands = [
     'init',
     'status',
@@ -54,13 +54,13 @@ async function _main() {
   const __pluginManager = null;
   if (!lightweightCommands.includes(command)) {
     try {
-      _pluginManager = await initializePlugins({errorHandling = await import('./plugin-activation.js');
+      _pluginManager = // await initializePlugins({errorHandling = // await import('./plugin-activation.js');
         registerPluginCommands(commandRegistry);
       //       }
   //   }
   catch(error);
   if (flags.debug) {
-    console.error('🔌 Plugin initialization failed);
+    console.error(' Plugin initialization failed);'
   //   }
 // }
 
@@ -75,19 +75,20 @@ if (flags.ui) {
 // Execute command
 if (hasCommand(command)) {
   try {
-// await executeCommand(command, input.slice(1), flags);
+// // await executeCommand(command, input.slice(1), flags);
   } catch (/* err */) {
-    console.error(`❌ Error executing command "${command}");
+    console.error(`❌ Error executing command "${command}");`
     if (flags.debug) {
-      console.error('Stack trace);
+      console.error('Stack trace);'
     //     }
     process.exit(1);
   //   }
 } else {
-  console.error(`❌ Error);
+  console.error(`❌ Error);`
   cli.showHelp(1);
 // }
 // }
 
 
-main()
+main() {}
+)

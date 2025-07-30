@@ -1,5 +1,5 @@
 /**
- * 🚀 CLAUDE ZEN SERVER - Schema-Driven API;
+ * � CLAUDE ZEN SERVER - Schema-Driven API;
  * Unified API server with auto-generated routes from schema;
  * Replaces hard-coded endpoints with maintainable schema approach
  */
@@ -22,29 +22,29 @@ validateCommandArgs } from './claude-zen-schema.js'
 /**
  * Server configuration interface
  */
-export interface ServerConfig {
-  port?: number;
-  host?: string;
-  cors?: boolean;
-  helmet?: boolean;
-  rateLimit?: boolean;
-  websocket?: boolean;
-  apiPrefix?: string;
-// }
+// export // interface ServerConfig {
+//   port?;
+//   host?;
+//   cors?;
+//   helmet?;
+//   rateLimit?;
+//   websocket?;
+//   apiPrefix?;
+// // }
 /**
  * Server metrics interface
  */
-export interface ServerMetrics {
-  // requests: number
-  // websocketConnections: number
-  // errors: number
-  // uptime: number
-  // startTime: number
-// }
+// export // interface ServerMetrics {
+//   // requests: number
+//   // websocketConnections: number
+//   // errors: number
+//   // uptime: number
+//   // startTime: number
+// // }
 /**
  * Claude Zen Server - Schema-driven API server
  */
-export class ClaudeZenServer extends EventEmitter {
+// export class ClaudeZenServer extends EventEmitter {
   // websocketConnections: 0
   // errors: 0
   // uptime: 0
@@ -54,8 +54,7 @@ export class ClaudeZenServer extends EventEmitter {
 // 
 }
 // Dynamic storage for schema-driven data
-private
-storage = new Map<string, Map<string, any>>();
+// private storage = new Map<string, Map<string, any>>();
 constructor(config)
 // {
   super();
@@ -76,8 +75,7 @@ this.setupRoutes();
 /**
  * Initialize storage maps based on schema
  */
-private
-initializeStorage()
+// private initializeStorage() {}
 : void
 // {
   // Initialize storage for each command that has storage defined
@@ -92,8 +90,7 @@ initializeStorage()
 /**
  * Setup Express middleware
  */
-private
-setupMiddleware();
+// private setupMiddleware();
 : void
 // {
   // Security middleware
@@ -123,8 +120,7 @@ setupMiddleware();
 /**
  * Setup API routes based on schema
  */
-private
-setupRoutes();
+// private setupRoutes();
 : void
 // {
   const _apiPrefix = this.config.apiPrefix!;
@@ -138,30 +134,30 @@ setupRoutes();
 // }
 // )
 // API documentation
-this.app.get(`${
+this.app.get(`${`
   apiPrefix;
 // }
-/ (),,6::;=>RR_`cdeeeeeenoopqqrrssssstu{{};
+/ (),,6::;=>RR_`cdeeeeeenoopqqrrssssstu{{};`
 const _openApiSpec = generateOpenAPISpec();
 res.json(openApiSpec);
 })
 // Schema info
-this.app.get(`${
+this.app.get(`${`
   apiPrefix;
 // }
-/ (),,6::;=>RR_`aceeeeeeehmnopqqrrssssstu{{};
+/ (),,6::;=>RR_`aceeeeeeehmnopqqrrssssstu{{};`
 res.json({
         metadata,
 commands: Object.keys(CLAUDE_ZEN_SCHEMA),
 webEnabled: Object.keys(getWebEnabledCommands()) })
 })
 // Generate routes from schema
-this.generateSchemaRoutes()
+this.generateSchemaRoutes() {}
 // Generic command execution endpoint
-this.app.post(`${
+this.app.post(`${`
   apiPrefix;
 // }
-/ (),,7::;=>RR`acceeeeeeeeennopqqrrsssssttuuxy{{};
+/ (),,7::;=>RR`acceeeeeeeeennopqqrrsssssttuuxy{{};`
 try {
         const { command, args = {} } = req.body;
 
@@ -176,7 +172,7 @@ res.json(result);
 } catch (error)
 // {
   this.metrics.errors++;
-  console.error('Command execution error);
+  console.error('Command execution error);'
   res.status(500).json({
           error: 'Command execution failed',
   message: error instanceof Error ? error.message : 'Unknown error' }
@@ -184,17 +180,17 @@ res.json(result);
 // }
     })
 // Metrics endpoint
-this.app.get(`${
+this.app.get(`${`
   apiPrefix;
 // }
-/ (),,6::;=>RR_`ceeeeeeeimnopqqrrrsssssttu{{};
+/ (),,6::;=>RR_`ceeeeeeeimnopqqrrrsssssttu{{};`
 res.json(this.getMetrics());
 })
 // Error handling
 this.app.use((err, _req, res, _next) =>
 // {
   this.metrics.errors++;
-  console.error('Server error);
+  console.error('Server error);'
   res.status(500).json({
         error: 'Internal server error',
   message: err.message }
@@ -213,8 +209,7 @@ this.app.use('*', (req, res) =>
 /**
  * Generate routes from schema
  */
-private
-generateSchemaRoutes()
+// private generateSchemaRoutes() {}
 : void
 // {
   const _webCommands = getWebEnabledCommands();
@@ -232,7 +227,7 @@ generateSchemaRoutes()
           // Validate arguments
           const _validation = validateCommandArgs(commandName, args);
           if (!validation.valid) {
-            return res.status(400).json({
+            // return res.status(400).json({
               error);
           //           }
 
@@ -242,7 +237,7 @@ generateSchemaRoutes()
           res.json(result);
         } catch (error)
           this.metrics.errors++;
-          console.error(`Error in ${commandName});
+          console.error(`Error in ${commandName});`
           res.status(500).json({
             error);
         //         }
@@ -262,27 +257,26 @@ switch (method.toUpperCase()) {
     this.app.delete(fullPath, handler);
     break;
   // default: null
-    console.warn(`Unsupported HTTP method);
+    console.warn(`Unsupported HTTP method);`
 // }
 })
 // }
 /**
  * Execute a command
  */
-private
-// async
-executeCommand(commandName, args: unknown)
+// private // async
+executeCommand(commandName, args)
 : Promise<any>
 // {
   const _command = CLAUDE_ZEN_SCHEMA[commandName];
   if (!command) {
-    throw new Error(`Unknown command);
+    throw new Error(`Unknown command);`
   //   }
   // Handle storage-based commands
   if (command.storage) {
     const _storageMap = this.storage.get(command.storage);
     if (!storageMap) {
-      throw new Error(`Storage not found for);
+      throw new Error(`Storage not found for);`
     //     }
     // Simple CRUD operations based on command name pattern
     if (commandName.includes('create')) {
@@ -293,10 +287,10 @@ executeCommand(commandName, args: unknown)
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString() }
     storageMap.set(id, item);
-    return { success, id, item };
+    // return { success, id, item };
     //   // LINT: unreachable code removed}
     if (commandName.includes('list')) {
-      return {
+      // return {
           success,
       // items: Array.from(storageMap.values()), // LINT: unreachable code removed
       total: storageMap.size }
@@ -304,26 +298,26 @@ executeCommand(commandName, args: unknown)
   if (commandName.includes('get')) {
     const _item = storageMap.get(args.id);
     if (!item) {
-      throw new Error(`Item not found);
+      throw new Error(`Item not found);`
     //     }
-    return { success, item };
+    // return { success, item };
     //   // LINT: unreachable code removed}
     if (commandName.includes('update')) {
       const _item = storageMap.get(args.id);
       if (!item) {
-        throw new Error(`Item not found);
+        throw new Error(`Item not found);`
       //       }
       const _updated = { ...item, ...args, updatedAt: new Date().toISOString() };
       storageMap.set(args.id, updated);
-      return { success, item};
+      // return { success, item};
       //   // LINT: unreachable code removed}
       if (commandName.includes('delete')) {
         const _existed = storageMap.delete(args.id);
-        return { success, deleted};
+        // return { success, deleted};
         //   // LINT: unreachable code removed}
       //       }
       // Default command execution
-      return {
+      // return {
       success,
       // command, // LINT: unreachable code removed
       args,
@@ -338,7 +332,7 @@ executeCommand(commandName, args: unknown)
   : Promise<port: number
   // host: string
   urls >
-  return new Promise((resolve, reject) => {
+  // return new Promise((resolve, reject) => {
       try {
         this.server = createServer(this.app);
     // ; // LINT: unreachable code removed
@@ -360,7 +354,7 @@ executeCommand(commandName, args: unknown)
               `http://${this.config.host}:${this.config.port}/health` ] };
 
           if (this.config.websocket) {
-            result.urls.push(`ws);
+            result.urls.push(`ws);`
           //           }
 
 
@@ -382,7 +376,7 @@ async;
 stop();
 : Promise<void>
 // {
-  return new Promise((resolve) => {
+  // return new Promise((resolve) => {
       if (!this.server) {
         resolve();
     // return; // LINT: unreachable code removed
@@ -404,8 +398,7 @@ stop();
 /**
  * Setup WebSocket server
  */
-private
-setupWebSocket();
+// private setupWebSocket();
 : void
 // {
   if (!this.server) return;
@@ -428,10 +421,10 @@ setupWebSocket();
 /**
  * Get server metrics
  */
-getMetrics()
+getMetrics() {}
 : ServerMetrics
 // {
-  return {
+  // return {
 ..this.metrics,
   // uptime: Date.now() - this.metrics.startTime, // LINT: unreachable code removed
 // }
@@ -439,8 +432,7 @@ getMetrics()
 /**
  * Get available endpoints
  */
-private
-getAvailableEndpoints()
+// private getAvailableEndpoints() {}
 : string[]
 // {
     const _endpoints = [
@@ -458,13 +450,15 @@ getAvailableEndpoints()
       //       }
     });
 
-    return endpoints.sort();
+    // return endpoints.sort();
     //   // LINT: unreachable code removed}
 
   /**
    * Check if server is running
    */;
   isServerRunning(): boolean
-    return this.isRunning;
+    // return this.isRunning;
 
-export default ClaudeZenServer;
+// export default ClaudeZenServer;
+
+}}}}

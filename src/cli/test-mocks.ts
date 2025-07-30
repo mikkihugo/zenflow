@@ -9,31 +9,33 @@
 /**
  * Task execution result interface;
  */
-export interface TaskExecutionResult {success = ============================================================================
-// MOCK FUNCTIONS
-// =============================================================================
-
-/**
- * Mock function to show all available commands;
- * @returns Categorized commands object;
-    // */ // LINT: unreachable code removed
-export function showAllCommands() {
-  return {core = ============================================================================
-// // MOCK CLASSES // LINT: unreachable code removed
-// =============================================================================
-
-/**
- * Mock Agent class for testing;
- */
-export class Agent {
-  public id = {}
+export // interface TaskExecutionResult {success = ============================================================================
+// // MOCK FUNCTIONS
+// // =============================================================================
+// 
+// /**
+//  * Mock function to show all available commands;
+//  * @returns Categorized commands object;
+//     // */ // LINT: unreachable code removed
+// export function showAllCommands() {
+//   return {core = ============================================================================
+// // // MOCK CLASSES // LINT: unreachable code removed
+// // =============================================================================
+// 
+// /**
+//  * Mock Agent class for testing;
+//  */
+// export class Agent {
+//   // public id = {}
 // )
 // {
   this.id = config.id ?? 'test-agent';
   this;
 
+  // 
   type = config;
 
+  // 
   type ?? 'test';
   this;
 
@@ -46,7 +48,7 @@ export class Agent {
 async;
 initialize();
 : Promise<boolean>
-return true;
+// return true;
 /**
  * Execute a task;
  * @param task - Task to execute;
@@ -63,7 +65,7 @@ this.agents = new Map<string, Agent>();
 async;
 init();
 : Promise<boolean>
-return true;
+// return true;
 /**
  * Spawn a new agent;
  * @param type - Agent type;
@@ -73,7 +75,7 @@ return true;
 async;
 spawnAgent(type = new Agent({ type, ...config });
 this.agents.set(agent.id, agent);
-return agent;
+// return agent;
 // }
 /**
    * Orchestrate a task across agents;
@@ -96,18 +98,18 @@ for (const [key, value] of this.memory.entries()) {
     results.push({ key, value });
   //   }
 // }
-return results;
+// return results;
 // }
 /**
    * Clear all memory;
    * @returns Promise resolving to true;
     // */ // LINT: unreachable code removed
 // async
-clear()
+clear() {}
 : Promise<boolean>
 // {
   this.memory.clear();
-  return true;
+  // return true;
 // }
 /**
  * Get memory size;
@@ -116,7 +118,7 @@ clear()
 size();
 : number
 // {
-  return this.memory.size;
+  // return this.memory.size;
 // }
 // }
 // =============================================================================
@@ -126,8 +128,9 @@ size();
 /**
  * Default export with all mock implementations
  */
-export default {
+// export default {
   showAllCommands,
 Agent,
 RuvSwarm,
 SwarmMemory }
+))

@@ -5,24 +5,24 @@
  */
 
 import { connect } from '@lancedb/lancedb';
-// interface LanceDBConfig {
-  dbPath?: string;
-  dbName?: string;
-  vectorDim?: number;
-  similarity?: 'cosine' | 'euclidean' | 'manhattan' | 'dot';
-  indexType?: 'IVF_PQ' | 'HNSW' | 'FLAT';
-  batchSize?: number;
-  cacheSize?: number;
-  [key = false;
-  private database = null
-private;
-tables = new Map()
-private;
-indices = new Map()
-private;
-stats = new Map()
-private;
-maxCacheSize = {}
+// // interface LanceDBConfig {
+//   dbPath?;
+//   dbName?;
+//   vectorDim?;
+//   similarity?: 'cosine' | 'euclidean' | 'manhattan' | 'dot';
+//   indexType?: 'IVF_PQ' | 'HNSW' | 'FLAT';
+//   batchSize?;
+//   cacheSize?;
+//   [key = false;
+//   // private database = null
+// private;
+// tables = new Map() {}
+// private;
+// indices = new Map() {}
+// private;
+// stats = new Map() {}
+// private;
+// maxCacheSize = {}
 // )
 // {
   this.config = {
@@ -35,24 +35,24 @@ async;
 initialize();
 : Promise<
 // {
-  status = await connect(this.config.dbPath!);
+  status = // await connect(this.config.dbPath!);
   // Create core tables with optimized schemas
-// await this.createCoreTables();
+// // await this.createCoreTables();
   // Set up performance indices
-// await this.setupIndices();
+// // await this.setupIndices();
   // Load existing statistics
-// await this.loadStatistics();
+// // await this.loadStatistics();
   this.isInitialized = true;
-  console.warn(`✅ LanceDB initialized = {id = await this.database.tableNames();
+  console.warn(`✅ LanceDB initialized = {id = // await this.database.tableNames();`
 
         if (!existingTables.includes(tableName)) {
           // Create sample data for schema inference
           const _sampleData = this.generateSampleData(schema);
 // const _table = awaitthis.database.createTable(tableName, sampleData);
           this.tables.set(tableName, table);
-          console.warn(`✅ Createdtable = await this.database.openTable(tableName);
+          console.warn(`✅ Createdtable = // await this.database.openTable(tableName);`
   this.tables.set(tableName, table);
-  console.warn(`📂 Opened existing table = {};
+  console.warn(` Opened existing table = {};`
 
     for (const [field, type] of Object.entries(schema)) {
       if (type.startsWith('vector(')) {
@@ -70,23 +70,23 @@ initialize();
     //     }
 
 
-    return [sampleData];
+    // return [sampleData];
     //   // LINT: unreachable code removed}
 
   /**
    * Setup performance indices for fast similarity search;
    */;
-  private async setupIndices(): Promise<void> {
+  // private async setupIndices(): Promise<void> {
 
         if (table) {
           // LanceDB automatically creates indices on vector columns
           // Store index configuration for reference
           this.indices.set(indexName, config);
-          console.warn(`🔍 Indexconfigured = this.tables.get('documents');
+          console.warn(`� Indexconfigured = this.tables.get('documents');`
   if (!table) throw new Error('Documents table not initialized');
   const _enrichedDocs = entries.map(_entry => ({id = enrichedDocs.length;
   this.stats.lastUpdate = new Date();
-  console.warn(`📄 Inserted ${enrichedDocs.length} vectors`);
+  console.warn(`� Inserted ${enrichedDocs.length} vectors`);
   return {success = Date.now();
   // const { // LINT: unreachable code removed
   k = 10,
@@ -98,7 +98,7 @@ initialize();
 = query
 // Check cache first
 const _cacheKey = JSON.stringify({query = (this.stats.cacheHitRate + 1) / 2; // Running average
-return this.queryCache.get(cacheKey);
+// return this.queryCache.get(cacheKey);
 // }
 const _targetTable = this.tables.get('documents');
 if (!targetTable) throw new Error('Documents table not found');
@@ -132,17 +132,17 @@ join(' AND ');
 filter((result = > result._distance >= minScore);
 map((result = > (id = (this.stats.avgQueryTime + (Date.now() - startTime)) / 2;
 
-      return formattedResults;catch (_error;
-= await this.similaritySearch(vectorQuery);
+      // return formattedResults;catch (_error;
+= // await this.similaritySearch(vectorQuery);
 // In a full implementation, we would also do text search and combine results
-return vectorResults;
+// return vectorResults;
 // }
 async;
 batchSearch(queries = [];
 for (const query of queries) {
   results.push(await this.similaritySearch(query));
 // }
-return results;
+// return results;
 // }
 // async
 createIndex(config = > Promise<number[]>)
@@ -158,7 +158,7 @@ createIndex(config = > Promise<number[]>)
 
       // Auto-generate embedding if not provided
       if (!embedding && embedFunction) {
-        embedding = await embedFunction(doc.content  ?? doc.title  ?? '');
+        embedding = // await embedFunction(doc.content  ?? doc.title  ?? '');
       } else if (!embedding) {
         // Generate dummy embedding for testing
         embedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
@@ -168,8 +168,8 @@ createIndex(config = > Promise<number[]>)
       enrichedDocs.push({id = enrichedDocs.length;
     this.stats.lastUpdate = new Date();
 
-    console.warn(`📄 Inserted ${enrichedDocs.length} documents`);
-    return enrichedDocs.length;
+    console.warn(`� Inserted ${enrichedDocs.length} documents`);
+    // return enrichedDocs.length;
     //   // LINT: unreachable code removed}
 
   /**
@@ -185,7 +185,7 @@ createIndex(config = > Promise<number[]>)
       const _embedding = snippet.embedding;
 
       if (!embedding && embedFunction) {
-        embedding = await embedFunction(snippet.code);
+        embedding = // await embedFunction(snippet.code);
       } else if (!embedding) {
         embedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
       //       }
@@ -195,8 +195,8 @@ createIndex(config = > Promise<number[]>)
 
       enrichedCode.push({id = enrichedCode.length;
 
-    console.warn(`💻 Inserted ${enrichedCode.length} code snippets`);
-    return enrichedCode.length;
+    console.warn(`� Inserted ${enrichedCode.length} code snippets`);
+    // return enrichedCode.length;
     //   // LINT: unreachable code removed}
 
   /**
@@ -216,7 +216,7 @@ createIndex(config = > Promise<number[]>)
     const _cacheKey = JSON.stringify({ query, table, limit, filter, threshold });
     if (useCache && this.queryCache.has(cacheKey)) {
       this.stats.cacheHitRate = (this.stats.cacheHitRate + 1) / 2; // Running average
-      return this.queryCache.get(cacheKey);
+      // return this.queryCache.get(cacheKey);
     //   // LINT: unreachable code removed}
 
     const _targetTable = this.tables.get(table);
@@ -257,7 +257,7 @@ limit(limit);
 
       const _response = {results = (this.stats.avgQueryTime + response.query_time) / 2;
 
-      return response;
+      // return response;
     // ; // LINT: unreachable code removed
     } catch (_error = ): Promise<clusters = 'documents',
       numClusters = 5,
@@ -287,7 +287,7 @@ limit(limit);
       // Perform PCA (simplified implementation)
 
       return {reduced_vectors = 'documents'): Promise<AnalyticsResult | { error = this.tables.get(table);
-    // if (!targetTable) throw new Error(`Table ${table // LINT);
+    // if (!targetTable) throw new Error(`Table ${table // LINT);`
 
     try {
 // const _data = awaittargetTable.toArray();
@@ -334,11 +334,11 @@ toArray();
       const _batch = data.slice(start, end);
 
       try {
-// await table.add(batch);
+// // await table.add(batch);
         inserted += batch.length;
-        console.warn(`📦 Batch ${i + 1}/${totalBatches});
+        console.warn(`� Batch ${i + 1}/${totalBatches});`
       } catch (_error = inserted;
-    return inserted;
+    // return inserted;
     //   // LINT: unreachable code removed}
 
   /**
@@ -352,14 +352,14 @@ toArray();
     for (const [_tableName, _table] of this.tables) {
       try {
         // Force garbage collection on table
-        console.warn(`🧹 Optimizingtable = code.split('\n').length;
+        console.warn(`🧹 Optimizingtable = code.split('\n').length;`
     const _functions = (code.match(/function|=>/g)  ?? []).length;
     const _conditions = (code.match(/if|switch|while|for/g)  ?? []).length;
 
     return (lines * 0.1) + (functions * 2) + (conditions * 1.5);
     //   // LINT: unreachable code removed}
 
-  private performKMeansClustering(vectors = vectors[0].length;
+  // private performKMeansClustering(vectors = vectors[0].length;
     const _centroids = [];
 
     // Initialize centroids randomly
@@ -390,20 +390,20 @@ toArray();
     //     }
 
 
-    return { centroids, labels, distances };
+    // return { centroids, labels, distances };
     //   // LINT: unreachable code removed}
 
-  private performPCA(vectors = > ;
+  // private performPCA(vectors = > ;
       Array(targetDim).fill(0).map(() => Math.random());
     );
   //   }
 
 
-  private calculateAverageNorm(vectors = vectors.map(v => Math.sqrt(v.reduce((sum, val) => sum + val * val, 0)));
+  // private calculateAverageNorm(vectors = vectors.map(v => Math.sqrt(v.reduce((sum, val) => sum + val * val, 0)));
     return norms.reduce((sum, norm) => sum + norm, 0) / norms.length;
     //   // LINT: unreachable code removed}
 
-  private calculateSparsity(vectors = 0;
+  // private calculateSparsity(vectors = 0;
     const _totalElements = 0;
 
     for (const vector of vectors) {
@@ -415,7 +415,7 @@ toArray();
     return totalZeros / totalElements;
     //   // LINT: unreachable code removed}
 
-  private async analyzeSimilarityDistribution(vectors = [];
+  // private async analyzeSimilarityDistribution(vectors = [];
     const _sampleSize = Math.min(100, vectors.length);
 
     for (let i = 0; i < sampleSize; i++) {
@@ -433,7 +433,7 @@ toArray();
   //   }
 
 
-  private async detectNaturalClusters(vectors = Math.min(10, Math.floor(vectors.length / 2));
+  // private async detectNaturalClusters(vectors = Math.min(10, Math.floor(vectors.length / 2));
     const _wcss = [];
 
     for (let k = 1; k <= maxK; k++) {
@@ -455,7 +455,7 @@ toArray();
     //     }
 
 
-    return {
+    // return {
       optimal_clusters,wcss_curve = this.performKMeansClustering(vectors, 3);
     // const _totalSimilarity = 0; // LINT: unreachable code removed
     let _count = 0;
@@ -470,7 +470,7 @@ toArray();
     //     }
 
 
-    return count > 0 ? totalSimilarity /count = 0;
+    // return count > 0 ? totalSimilarity /count = 0;
     // let _count = 0; // LINT: unreachable code removed
 
     const _sampleSize = Math.min(50, vectors.length);
@@ -482,24 +482,24 @@ toArray();
     //     }
 
 
-    return count > 0 ? totalDistance /count = > sum + Math.pow(val - b[i], 2), 0));
+    // return count > 0 ? totalDistance /count = > sum + Math.pow(val - b[i], 2), 0));
     //   // LINT: unreachable code removed}
 
-  private cosineSimilarity(a = a.reduce((sum, val, i) => sum + val * b[i], 0);
+  // private cosineSimilarity(a = a.reduce((sum, val, i) => sum + val * b[i], 0);
     const _normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
     const _normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     return dotProduct / (normA * normB);
     //   // LINT: unreachable code removed}
 
-  private async loadStatistics(): Promise<void> {
+  // private async loadStatistics(): Promise<void> {
     try {
       const _statsPath = path.join(this.config.dbPath!, 'statistics.json');
       if (existsSync(statsPath)) {
-        const _savedStats = JSON.parse(await readFile(statsPath, 'utf8'));
+        const _savedStats = JSON.parse(// await readFile(statsPath, 'utf8'));
         this.stats = { ...this.stats, ...savedStats };
       //       }
     } catch (error = path.join(this.config.dbPath!, 'statistics.json');
-// await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
+// // await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
     } catch (error = {};
 
     for (const [tableName, table] of this.tables) {
@@ -513,10 +513,12 @@ toArray();
       console.warn('✅ LanceDB connection closed');
 
     } catch (error) {
-      console.error(`❌ Error closing LanceDB);
+      console.error(`❌ Error closing LanceDB);`
       throw error;
     //     }
   //   }
 
 
-export default LanceDBInterface;
+// export default LanceDBInterface;
+
+}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))

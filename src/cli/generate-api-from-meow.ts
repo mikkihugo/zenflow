@@ -28,7 +28,7 @@ Object.entries(flags).forEach(([flagName, flagConfig]) => {
       //       }
     } else {
       schema[flagName] = {
-        type = {};
+        //         type = {};
 Object.entries(flags).forEach(([flagName, flagConfig]) => {
   if (typeof flagConfig === 'object' && flagConfig !== null) {
     if (flagConfig.default !== undefined) {
@@ -44,12 +44,12 @@ Object.entries(flags).forEach(([flagName, flagConfig]) => {
     example[flagName] = `example-${flagName}`;
   //   }
 });
-return example;
+// return example;
 // }
 /**
  * Generate GraphQL schema from commands (future enhancement);
  */
-export function generateGraphQLSchema(commands = > commands, command = > commands.find(_cmd => cmd.name === name)
+// export function generateGraphQLSchema(commands = > commands, command = > commands.find(_cmd => cmd.name === name)
 },Mutation = [], flags =
 // {
 // }
@@ -67,4 +67,6 @@ export function generateGraphQLSchema(commands = > commands, command = > command
     //     }
   //   }
 // }
-export default generateApiFromMeow;
+// export default generateApiFromMeow;
+
+}}}}}}))

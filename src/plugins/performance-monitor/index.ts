@@ -27,10 +27,10 @@ export class PerformanceMonitorPlugin extends EventEmitter {
     this.performanceObserver = null;
   //   }
   async initialize() {
-    console.warn('📊 Performance Monitor Plugin initialized');
+    console.warn('� Performance Monitor Plugin initialized');
     // Create persistence directory
     if (this.config.persistence.enabled) {
-// await mkdir(this.config.persistence.path, { recursive => {
+// // await mkdir(this.config.persistence.path, { recursive => {
       const _cpus = os.cpus();
       // Calculate CPU usage
       const __cpuUsage = this.calculateCPUUsage(cpus);
@@ -41,7 +41,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
       const __resourceUsage = process.resourceUsage ? process.resourceUsage() : {};
       // V8 heap statistics
 
-      return {timestamp = > ({
+      // return {timestamp = > ({
             name => {
 // const _delay = awaitthis.measureEventLoopDelay();
       // return { // LINT: unreachable code removed
@@ -59,23 +59,23 @@ export class PerformanceMonitorPlugin extends EventEmitter {
             const _idle = cpu.times.idle;
             const _totalDiff = total - this.lastCPUInfo[i].total;
             const _idleDiff = idle - this.lastCPUInfo[i].idle;
-            const _usage = totalDiff > 0 ? 100 - (100 * idleDiff) / totalDiff : 0;
+            const _usage = totalDiff > 0 ? 100 - (100 * idleDiff) / totalDiff ;
             totalUsage += usage;
             this.lastCPUInfo[i] = { idle, total };
           });
-          return totalUsage / cpus.length;
+          // return totalUsage / cpus.length;
           //   // LINT: unreachable code removed}
           async;
           measureEventLoopDelay();
           //           {
             const _start = process.hrtime.bigint();
-// await new Promise(setImmediate);
+// // await new Promise(setImmediate);
             const _end = process.hrtime.bigint();
-            return Number(end - start) / 1e6; // Convert to milliseconds
+            // return Number(end - start) / 1e6; // Convert to milliseconds
           //           }
           setupPerformanceObserver();
           try {
-      const { PerformanceObserver } = require('node);
+      const { PerformanceObserver } = require('node);'
 
       this.performanceObserver = new PerformanceObserver((list) => {
         const _entries = list.getEntries();
@@ -108,7 +108,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
     //     }
 
 
-    console.warn('📊 Monitoring started');
+    console.warn('� Monitoring started');
   //   }
           async;
           collectMetrics();
@@ -139,7 +139,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
       this.trimHistory();
 
       // Check alerts
-// await this.checkAlerts(systemMetrics, processMetrics);
+// // await this.checkAlerts(systemMetrics, processMetrics);
       // Emit metrics event
       this.emit('metrics', {system = this.metrics.system.slice(-this.config.historyLimit);
     //     }
@@ -183,9 +183,9 @@ export class PerformanceMonitorPlugin extends EventEmitter {
             if (match) {
               const _value = parseInt(match[1]);
               const _unit = match[2];
-              return value * units[unit];
+              // return value * units[unit];
               //   // LINT: unreachable code removed}
-              return 60000; // Default to 1 minute
+              // return 60000; // Default to 1 minute
             //             }
             aggregateMetrics(interval);
             : unknown
@@ -226,7 +226,7 @@ if (this.aggregated.get(interval).length > 100) {
 average(values)
 : unknown
 // {
-  return values.reduce((sum, val) => sum + val, 0) / values.length;
+  // return values.reduce((sum, val) => sum + val, 0) / values.length;
 // }
 percentile(values, p);
 : unknown
@@ -250,7 +250,7 @@ startTimer(name, (labels = {}));
 
   this.recordMeasure(timer.name, duration, timer.labels);
   this.timers.delete(key);
-  return duration;
+  // return duration;
 // }
 incrementCounter(name, (value = 1), (labels = {}));
 : unknown
@@ -278,9 +278,9 @@ incrementCounter(name, (value = 1), (labels = {}));
   recordMeasure(name, duration, (labels = {}));
   : unknown
   this.recordHistogram(
-    `\$
+    `\$`
   name
-  _duration`,
+  _duration`,`
     duration,
     labels
   //   )
@@ -298,19 +298,19 @@ map(
   `
     //     )
 join(',')
-    return `;
+    // return `;`
   // \$; // LINT: unreachable code removed
   name;
   \$;
   labelStr;
-  `;
+  `;`
   //   }
   // Get current metrics
   getCurrentMetrics();
   //   {
     const __latest = {system = metrics[metrics.length - 1]  ?? null;
   //   }
-  return latest;
+  // return latest;
 // }
 getMetricsSummary((duration = '5m'));
 : unknown
@@ -334,7 +334,7 @@ getMetricsSummary((duration = '5m'));
       },alerts = > a.timestamp >= cutoff)
 // }
 // }
-getCustomMetrics()
+getCustomMetrics() {}
 // {
   const __metrics = {counters = counter.value;
 // }
@@ -355,14 +355,14 @@ metrics - \$
 timestamp.split('T')[0]
 json`
 const _filepath = path.join(this.config.persistence.path, filename);
-// await writeFile(filepath, JSON.stringify(data, null, 2));
+// // await writeFile(filepath, JSON.stringify(data, null, 2));
 // }
 catch (error)
 // {
-  console.error('Error persistingmetrics = new Date().toISOString().split('T')[0];
+  console.error('Error persistingmetrics = new Date().toISOString().split('T')[0];'
   const _filename = `metrics-${today}.json`;
   const _filepath = path.join(this.config.persistence.path, filename);
-  const _data = JSON.parse(await readFile(filepath, 'utf8'));
+  const _data = JSON.parse(// await readFile(filepath, 'utf8'));
   // Load recent metrics
   if (data.metrics) {
     this.metrics.system = data.metrics.system ?? [];
@@ -379,16 +379,16 @@ catch (error)
   if (data.alerts) {
     this.alerts = data.alerts;
   //   }
-  console.warn('📊 Loaded historical performance data');
+  console.warn('� Loaded historical performance data');
 // }
 catch (error)
 // {
-  // No historical data, that's OK
-  console.warn('📊 No historical data found, starting fresh');
+  // No historical data, that's OK'
+  console.warn('� No historical data found, starting fresh');
 // }
 // }
 // Export metrics in Prometheus format
-exportPrometheus()
+exportPrometheus() {}
 // {
   const _lines = [];
   const _timestamp = Date.now();
@@ -447,7 +447,7 @@ exportPrometheus()
     `${safeName}_bucket{le="+Inf"${labels ? `,${labels.slice(1, -1)}` : ''}} ${histogram.count} ${timestamp}`;
     //     )
   //   }
-  return lines.join('\n');
+  // return lines.join('\n');
 // }
 formatLabels(labels);
 : unknown
@@ -478,10 +478,10 @@ if (heapPercent > 90) {
   health.checks.heap.status = 'fail';
   health.status = 'unhealthy';
 // }
-return health;
+// return health;
 // }
 // async
-stopMonitoring()
+stopMonitoring() {}
 // {
   this.isMonitoring = false;
   if (this.monitoringInterval) {
@@ -497,8 +497,8 @@ stopMonitoring()
     this.performanceObserver = null;
   //   }
   // Final persistence
-// await this.persistMetrics();
-  console.warn('📊 Monitoring stopped');
+// // await this.persistMetrics();
+  console.warn('� Monitoring stopped');
 // }
 async;
 cleanup();
@@ -514,7 +514,9 @@ cleanup();
   this.counters.clear();
   this.gauges.clear();
   this.histograms.clear();
-  console.warn('📊 Performance Monitor Plugin cleaned up');
+  console.warn('� Performance Monitor Plugin cleaned up');
 // }
 // }
-export default PerformanceMonitorPlugin;
+// export default PerformanceMonitorPlugin;
+
+}}}}}}}}}}}}}}}}

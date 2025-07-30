@@ -14,7 +14,7 @@ class TypeSafeCommandRegistry implements ICommandRegistry {}
 // Registration methods
 register(name,definition = this.commands.get(name);
 if (!definition) {
-  return false;
+  // return false;
 // }
 // Remove aliases
 if (definition.aliases) {
@@ -24,22 +24,22 @@ if (definition.aliases) {
 // }
 // Remove command
 this.commands.delete(name);
-this.logger.debug(`Unregisteredcommand = this.commands.get(name);
+this.logger.debug(`Unregisteredcommand = this.commands.get(name);`
     if (definition) {
-      return definition;
+      // return definition;
     //   // LINT: unreachable code removed}
 
     // Check aliases
     const _realName = this.aliases.get(name);
     if (realName) {
-      return this.commands.get(realName);
+      // return this.commands.get(realName);
     //   // LINT: unreachable code removed}
 
-    return undefined;
+    // return undefined;
     //   // LINT: unreachable code removed}
 
   list(): CommandDefinition[] {
-    return Array.from(this.commands.values()).sort((a, b) => ;
+    // return Array.from(this.commands.values()).sort((a, b) => ;
     // a.name.localeCompare(b.name); // LINT: unreachable code removed
     );
   //   }
@@ -62,14 +62,14 @@ this.logger.debug(`Unregisteredcommand = this.commands.get(name);
     if (validationResults.some(r => !r.valid)) {
 
       throw new InvalidArgumentError(;
-        `Validationfailed = > e.message).join(', ');
-}`,
+        `Validationfailed = > e.message).join(', ');`
+}`,`
 name
 // )
 // }
 // Execute command with error handling
 try {
-      this.logger.info(`Executingcommand = Date.now();
+      this.logger.info(`Executingcommand = Date.now();`
 // const _result = awaitdefinition.handler(context);
       const _duration = Date.now() - startTime;
 
@@ -120,7 +120,7 @@ try {
     ];
     if (!validCategories.includes(definition.category)) {
       throw new CLIError(;
-        `Command '${name}' has invalid category. Must be one of = {core = > cmd.isExperimental).length,deprecatedCommands = > cmd.deprecated).length;
+        `Command '${name}' has invalid category. Must be one of = {core = > cmd.isExperimental).length,deprecatedCommands = > cmd.deprecated).length;`
     //     }
 // }
 // }
@@ -133,20 +133,20 @@ const _commandRouter = null; // Legacy router for backward compatibility
 /**
  * Initialize command registry;
  */
-export async function initializeCommandRegistry(): Promise<void> {
+// export async function initializeCommandRegistry(): Promise<void> {
   if (!globalRegistry) {
     const _logger = createLogger('registry');
     globalRegistry = new TypeSafeCommandRegistry(logger);
     // Load commands from the legacy system for now
     if (!commandRouter) {
-      commandRouter = await loadCommands();
+      commandRouter = // await loadCommands();
     //     }
   //   }
 // }
 /**
  * Get the global command registry instance;
  */
-export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
+// export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
 // await initializeCommandRegistry();
   return globalRegistry!;
 // }
@@ -157,7 +157,7 @@ export async function getCommandRegistry(): Promise<TypeSafeCommandRegistry> {
 /**
  * Create meow CLI with comprehensive TypeScript configuration;
  */
-export async function createMeowCLI() {
+// export async function createMeowCLI() {
 // await initializeCommandRegistry();
   // Handle legacy context format
   const __commandContext = context as CommandContext;
@@ -165,10 +165,10 @@ export async function createMeowCLI() {
 else
 // {
   commandContext = {
-      command,args = await getCommandRegistry();
+      command,args = // await getCommandRegistry();
   const _definition = registry.get(name);
   if (!definition) {
-    console.error(`❌ Unknowncommand = flag.alias ? `, -${flag.alias}` : '';
+    console.error(`❌ Unknowncommand = flag.alias ? `, -${flag.alias}` : '';`
       const _required = flag.required ? ' (required)' : '';
 
   const _commands = registry.list();
@@ -187,19 +187,19 @@ else
 /**
  * Check if command exists;
  */
-export async function hasCommand(name = await getCommandRegistry();
+// export async function hasCommand(name = // await getCommandRegistry();
 return registry.has(name);
 // }
 /**
  * Get command definition;
  */
-export async function getCommand(name = await getCommandRegistry();
+// export async function getCommand(name = // await getCommandRegistry();
 return registry.get(name);
 // }
 /**
  * Register a new command;
  */
-export async function registerCommand(name = await getCommandRegistry();
+// export async function registerCommand(name = // await getCommandRegistry();
 registry.register(name, definition);
 // }
 // =============================================================================
@@ -209,38 +209,38 @@ registry.register(name, definition);
 /**
  * Legacy command registry for backward compatibility;
  */
-export const commandRegistry = {register = await getCommandRegistry();
-return registry.getStats();
+// export const commandRegistry = {register = // await getCommandRegistry();
+// return registry.getStats();
 // }
 // Re-export for maximum compatibility
-export type {
+// export type {
   executeCommand as execute,
-type listCommands as
+// type listCommands as
 list,
 hasCommand as has,
 getCommand as get,
 registerCommand as register,
-type showCommandHelp as
+// type showCommandHelp as
 help }
 // =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
 
-function createLogger(name = > console.warn(`[TRACE] ${message}`, metadata),debug = > console.warn(`[DEBUG] ${message}`, metadata),info = > console.warn(`[INFO] ${message}`, metadata),warn = > console.warn(`[WARN] ${message}`, metadata),error = > console.error(`[ERROR] ${message}`, error, metadata),fatal = > console.error(`[FATAL] ${message}`, error, metadata),child = > createLogger(`${name}),
+function createLogger(name = > console.warn(`[TRACE] ${message}`, metadata),debug = > console.warn(`[DEBUG] ${message}`, metadata),info = > console.warn(`[INFO] ${message}`, metadata),warn = > console.warn(`[WARN] ${message}`, metadata),error = > console.error(`[ERROR] ${message}`, error, metadata),fatal = > console.error(`[FATAL] ${message}`, error, metadata),child = > createLogger(`${name}),`
 _setLevel => {},getLevel = > 'info';
 // }
 // }
 function _createDefaultConfig() {
   return { name = === 'development', isProduction = === 'production', isTest = === 'test' }, paths;
   // : ; // LINT: unreachable code removed
-  dataDir: `\$;
+  dataDir: `\$;`
     process.cwd();
   /,-.;
-  `;
+  `;`
   acdeelnuz;
-  configDir: `;
+  configDir: `;`
   \$process.cwd()/;
-claude-zen/config`,
+claude-zen/config`,`
   logsDir;
   : `\$process.cwd()/.claude-zen/logs`,
   cacheDir: `\$process.cwd()/.claude-zen/cache`,
@@ -249,3 +249,5 @@ claude-zen/config`,
 // }
 // }
 
+
+}}}}}}}}}}))))))))))

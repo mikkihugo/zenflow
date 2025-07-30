@@ -6,7 +6,7 @@
  * AI-powered analysis and feedback on documents
  */
 
-const { spawn } = require('node);
+const { spawn } = require('node);'
 const { DocumentStack, setupDefaultRules } = require('./src/mcp/document-stack.cjs');
 
 // Mock memory store
@@ -18,12 +18,12 @@ class MockMemoryStore {
   async store(key, value, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
     this.data.set(fullKey, value);
-    return { id, size: value.length };
+    // return { id, size: value.length };
   }
 
   async retrieve(key, options = {}) {
     const fullKey = options.namespace ? `${options.namespace}:${key}` ;
-    return this.data.get(fullKey) || null;
+    // return this.data.get(fullKey) || null;
   }
 
   async search(options = {}) {
@@ -33,7 +33,7 @@ class MockMemoryStore {
         results[key] = value;
       }
     }
-    return results;
+    // return results;
   }
 }
 
@@ -72,7 +72,7 @@ async function runGHModel(prompt, model = 'gpt-4o-mini') {
 
     gh.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`gh models run failed));
+        reject(new Error(`gh models run failed));`
       } else {
         resolve(output.trim());
       }
@@ -96,7 +96,7 @@ async function checkGHCLI() {
 
 // AI Document Analysis
 async function analyzeDocumentWithAI(docType, service, docId, content, metadata) {
-  const prompt = `You are an expert document reviewer for microservices architecture. Analyze this document and provide structured feedback.
+  const prompt = `You are an expert document reviewer for microservices architecture. Analyze this document and provide structured feedback.`
 
 Document Information: null
 - Type: ${docType}
@@ -110,7 +110,7 @@ Document Content: null
 ${content}
 
 Please analyze and provide feedback in this JSON format: null
-{
+{}
   "quality_score": <1-10>,
   "suggested_approvers": ["role1", "role2"],
   "required_validations": ["validation1", "validation2"],
@@ -122,7 +122,7 @@ Please analyze and provide feedback in this JSON format: null
   "summary": "brief summary of the document"
 }
 
-Focus on practical, actionable feedback. IMPORTANT: Respond with ONLY the JSON object, no other text.`;
+Focus on practical, actionable feedback. IMPORTANT: Respond with ONLY the JSON object, no other text.`;`
 
   try {
 // const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
@@ -130,18 +130,18 @@ Focus on practical, actionable feedback. IMPORTANT: Respond with ONLY the JSON o
     // Extract JSON from response if it contains other text
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      // return JSON.parse(jsonMatch[0]);
     } else {
-      return null;
+      // return null;
     }
   } catch (_error) {
-    return null;
+    // return null;
   }
 }
 
 // Review routing decisions with AI
 async function reviewRoutingWithAI(docType, service, currentApprovers, content) {
-  const prompt = `You are an architecture reviewer. Evaluate if these approvers are appropriate for this document type and content.
+  const prompt = `You are an architecture reviewer. Evaluate if these approvers are appropriate for this document type and content.`
 
 Document Type: ${docType}
 Service: ${service}
@@ -151,7 +151,7 @@ Document Content Summary: null
 ${content.substring(0, 1000)}...
 
 Provide feedback in JSON format: null
-{
+{}
   "routing_appropriate": true/false,
   "reasoning": "explanation of the routing assessment",
   "suggested_changes": {
@@ -164,7 +164,7 @@ Provide feedback in JSON format: null
   "recommendations": ["action1", "action2"]
 }
 
-IMPORTANT: Respond with ONLY the JSON object, no other text.`;
+IMPORTANT: Respond with ONLY the JSON object, no other text.`;`
 
   try {
 // const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
@@ -172,12 +172,12 @@ IMPORTANT: Respond with ONLY the JSON object, no other text.`;
     // Extract JSON from response if it contains other text
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      // return JSON.parse(jsonMatch[0]);
     } else {
-      return null;
+      // return null;
     }
   } catch (_error) {
-    return null;
+    // return null;
   }
 }
 
@@ -189,7 +189,7 @@ async function generateDocumentWithAI(docType, service, requirements) {
     'api-documentation': 'API documentation with Overview, Authentication, Endpoints, Examples',
     'security-spec': 'Security specification with Requirements, Implementation, Compliance details' };
 
-  const prompt = `Generate a professional ${docType} document for the ${service} service.
+  const prompt = `Generate a professional ${docType} document for the ${service} service.`
 
 Template Style: ${templates[docType] || 'Standard technical document'}
 
@@ -202,34 +202,34 @@ Generate a complete, well-structured document following best practices for ${doc
 - Specific technical details where appropriate
 - Professional tone
 
-Return only the document content, no JSON wrapper.`;
+Return only the document content, no JSON wrapper.`;`
 
   try {
 // const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
-    return response;
+    // return response;
   } catch (_error) {
-    return null;
+    // return null;
   }
 }
 
-// Main CLI interface
-async function main() {
-  // Check GitHub CLI availability
-  if (!(await checkGHCLI())) {
-    process.exit(1);
-  }
+// Main CLI // interface
+// async function main() {
+//   // Check GitHub CLI availability
+//   if (!(await checkGHCLI())) {
+//     process.exit(1);
+//   }
 
   const demoDoc = {
     docType: 'service-adr',
     service: 'user-service',
     docId: 'use-redis-for-sessions',
-    content: `# ADR: Use Redis for Session Storage
+    content: `# ADR: Use Redis for Session Storage`
 
 ## Status
 Proposed - 2025-01-17
 
 ## Context
-Our user service currently stores sessions in memory, which doesn't scale across multiple instances and loses sessions on restart. We need a distributed session storage solution.
+Our user service currently stores sessions in memory, which doesn't scale across multiple instances and loses sessions on restart. We need a distributed session storage solution.'
 
 ## Decision
 We will use Redis  session storage backend for the user service.
@@ -244,7 +244,7 @@ We will use Redis  session storage backend for the user service.
 ### Negative
 - Additional infrastructure dependency
 - Network latency for session operations
-- Need to manage Redis high availability`,
+- Need to manage Redis high availability`,`
     metadata: {
       dependencies: ['redis-infrastructure'],
       tags: ['sessions', 'redis', 'scaling'] } };

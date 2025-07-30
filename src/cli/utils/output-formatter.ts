@@ -8,19 +8,19 @@ import type { OutputFormatter as IOutputFormatter } from '../../types/cli';
 // =============================================================================
 // COLOR UTILITIES
 // =============================================================================
-// interface ColorCodes {
-  reset = {reset = = 'test' &&
-process.env.NO_COLOR !== '1'
-// }
+// // interface ColorCodes {
+//   reset = {reset = = 'test' &&
+// process.env.NO_COLOR !== '1'
+// // }
 function colorize(text = ============================================================================;
 // EMOJI AND ICON UTILITIES
 // =============================================================================
 
 const _icons = {success = '') {
   if (process._env._NO_EMOJI === '1'  ?? _process._platform === 'win32') {
-    return fallback;
+    // return fallback;
     //   // LINT: unreachable code removed}
-  return icons[name]  ?? fallback;
+  // return icons[name]  ?? fallback;
 // }
 
 
@@ -28,35 +28,35 @@ const _icons = {success = '') {
 // BASIC OUTPUT FUNCTIONS
 // =============================================================================
 
-export function printSuccess(message = getIcon('success', '[SUCCESS]');
+// export function printSuccess(message = getIcon('success', '[SUCCESS]');
 const __coloredMessage = colorize(message, 'green');
 console.warn(`${icon} ${coloredMessage}`);
 if (data && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.warn(colorize(JSON.stringify(data, null, 2), 'dim'));
 // }
 // }
-export function printError(message = getIcon('error', '[ERROR]');
+// export function printError(message = getIcon('error', '[ERROR]');
 const _coloredMessage = colorize(message, 'red');
 console.error(`${icon} ${coloredMessage}`);
 if (error && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.error(colorize(error.stack ?? error.message, 'dim'));
 // }
 // }
-export function printWarning(message = getIcon('warning', '[WARNING]');
+// export function printWarning(message = getIcon('warning', '[WARNING]');
 const _coloredMessage = colorize(message, 'yellow');
 console.warn(`${icon} ${coloredMessage}`);
 if (data && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.warn(colorize(JSON.stringify(data, null, 2), 'dim'));
 // }
 // }
-export function printInfo(message = getIcon('info', '[INFO]');
+// export function printInfo(message = getIcon('info', '[INFO]');
 const _coloredMessage = colorize(message, 'cyan');
 console.warn(`${icon} ${coloredMessage}`);
 if (data && process.env.CLAUDE_FLOW_VERBOSE === 'true') {
   console.warn(colorize(JSON.stringify(data, null, 2), 'dim'));
 // }
 // }
-export function printDebug() {
+// export function printDebug() {
   return;
   //   // LINT: unreachable code removed}
   const _coloredMessage = colorize(`[DEBUG] ${message}`, 'dim');
@@ -65,7 +65,7 @@ export function printDebug() {
     console.warn(colorize(JSON.stringify(data, null, 2), 'dim'));
   //   }
 // }
-export function printVerbose() {
+// export function printVerbose() {
   return;
   //   // LINT: unreachable code removed}
   const _coloredMessage = colorize(`[VERBOSE] ${message}`, 'dim');
@@ -78,7 +78,7 @@ export function printVerbose() {
 // PROGRESS AND LOADING
 // =============================================================================
 
-export class ProgressBar {
+// export class ProgressBar {
 
   message = 'Progress';
   ) {
@@ -100,7 +100,7 @@ const _filled = Math.round((current / this.total) * this.width);
 const _empty = this.width - filled;
 const __bar = '█'.repeat(filled) + '░'.repeat(empty);
 const _elapsed = Date.now() - this.startTime;
-const __eta = current > 0 ? Math.round((elapsed / current) * (this.total - current)) : 0;
+const __eta = current > 0 ? Math.round((elapsed / current) * (this.total - current)) ;
 const _message = customMessage ?? this.message;
 printSuccess(`${message} completed in ${elapsed}ms`);
 // }
@@ -111,7 +111,7 @@ finish(message?)
   this.update(this.total, message);
 // }
 // }
-export class Spinner {
+// export class Spinner {
   ) {
     this.
   message = message;
@@ -155,7 +155,7 @@ fail(errorMessage?);
 // TABLE FORMATTING
 // =============================================================================
 
-export function formatTable() {
+// export function formatTable() {
     return colorize('No data to display', 'dim');
     //   // LINT: unreachable code removed}
 
@@ -171,7 +171,7 @@ const _columnWidths = columns.map((col) => {
       return formatted.length;
     //   // LINT: unreachable code removed});
   );
-  return Math.max(headerWidth, dataWidth, col.width  ?? 0);
+  // return Math.max(headerWidth, dataWidth, col.width  ?? 0);
 });
 
 const _result = '';
@@ -223,17 +223,17 @@ padEnd(columnWidths[colIndex]);
 
       // Apply striping
       if (striped && rowIndex % 2 === 1) {
-        return colorize(formatted, 'dim');
+        // return colorize(formatted, 'dim');
     //   // LINT: unreachable code removed}
 
-      return formatted;
+      // return formatted;
     //   // LINT: unreachable code removed});
 join(border ? ' │ ' );
 
   result += `${dataRow}\n`;
 });
 
-return result;
+// return result;
 // }
 
 
@@ -241,11 +241,11 @@ return result;
 // OUTPUT FORMATTER IMPLEMENTATION
 // =============================================================================
 
-export class TypeScriptOutputFormatter implements IOutputFormatter {
-  format(data = colorize(`Error);
+// export class TypeScriptOutputFormatter implements IOutputFormatter {
+  format(data = colorize(`Error);`
 
   if (_error._command) {
-      message += `\nCommand = `\n  Code: \$error.details.code`;
+      message += `\nCommand = `\n  Code: \$error.details.code`;`
     //     }
 
 
@@ -256,12 +256,12 @@ map(([_key, _value]) => `    \$key: \$JSON.stringify(value)`);
 join('\n');
 
       if (contextEntries) {
-        message += `\nContext = === 'true' && error.stack) ;
-      message += `\n\nStackTrace = 0) {
+        message += `\nContext = === 'true' && error.stack) ;`
+      message += `\n\nStackTrace = 0) {`
     const __spaces = '  '.repeat(indent);
 
     if (Array.isArray(data)) {
-      return data.map(_item => `\$spaces- \$this.formatYaml(item, indent + 1).trim()`).join('\n');
+      // return data.map(_item => `\$spaces- \$this.formatYaml(item, indent + 1).trim()`).join('\n');
     //   // LINT: unreachable code removed}
 
     if (typeof data === 'object' && data !== null) {
@@ -276,17 +276,17 @@ join('\n');
     //     }
 
 
-    return String(data);
+    // return String(data);
     //   // LINT: unreachable code removed}
 
-  private formatArrayAsTable(data = === 0) ;
-      return colorize('No data to display', 'dim');
+  // private formatArrayAsTable(data = === 0) ;
+      // return colorize('No data to display', 'dim');
     // ; // LINT: unreachable code removed
     // Auto-detect columns from first object
     const _firstItem = data[0];
     if (typeof firstItem !== 'object'  ?? firstItem === null) {
       // Simple array
-      return data.map((_item, _index) => `\$index: \$item`).join('\n');
+      // return data.map((_item, _index) => `\$index: \$item`).join('\n');
     //   // LINT: unreachable code removed}
 
     const __columns = Object.keys(firstItem).map(key => ({
@@ -302,7 +302,7 @@ join('\n');
     const _result = '';
 
     if (typeof data !== 'object'  ?? data === null) {
-      return prefix + String(data);
+      // return prefix + String(data);
     //   // LINT: unreachable code removed}
 
     const _entries = Object.entries(data);
@@ -326,18 +326,18 @@ join('\n');
       //       }
     });
 
-    return result;
+    // return result;
     //   // LINT: unreachable code removed}
 
-  private formatText(data = === 'string') {
-      return data;
+  // private formatText(data = === 'string') {
+      // return data;
     //   // LINT: unreachable code removed}
 
     if (typeof data === 'object' && data !== null) {
-      return JSON.stringify(data, null, 2);
+      // return JSON.stringify(data, null, 2);
     //   // LINT: unreachable code removed}
 
-    return String(data);
+    // return String(data);
     //   // LINT: unreachable code removed}
 // }
 
@@ -346,13 +346,13 @@ join('\n');
 // GLOBAL FORMATTER INSTANCE
 // =============================================================================
 
-export const _outputFormatter = new TypeScriptOutputFormatter();
+// export const _outputFormatter = new TypeScriptOutputFormatter();
 
 // =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
 
-export function createBox(content = content.split('\n');
+// export function createBox(content = content.split('\n');
   const _maxLength = Math.max(;
 .._lines._map(_line => line._length),
     title ? title.length +2 = maxLength + 4; // 2 chars padding on each side
@@ -378,11 +378,11 @@ export function createBox(content = content.split('\n');
   // Bottom border
   result += `└${'─'.repeat(boxWidth - 2)}┘`;
 
-  return result;
+  // return result;
 // }
 
 
-export function _truncateString(str = '...') {
+// export function _truncateString(str = '...') {
   if (str.length <= maxLength) {
     return str;
     //   // LINT: unreachable code removed}
@@ -391,7 +391,7 @@ export function _truncateString(str = '...') {
 // }
 
 
-export function _padString(str = 'left') {
+// export function _padString(str = 'left') {
   if (str.length >= length) {
     return str;
     //   // LINT: unreachable code removed}
@@ -402,13 +402,13 @@ export function _padString(str = 'left') {
     case 'center': {
       const _leftPad = Math.floor(padding / 2);
       const _rightPad = padding - leftPad;
-      return ' '.repeat(leftPad) + str + ' '.repeat(rightPad);
+      // return ' '.repeat(leftPad) + str + ' '.repeat(rightPad);
     //   // LINT: unreachable code removed}
 
     case 'right':;
-      return ' '.repeat(padding) + str;
+      // return ' '.repeat(padding) + str;
     // ; // LINT: unreachable code removed
-    case 'left':default = text.split(' ');
+    case 'left' = text.split(' ');
   const _lines = [];
   const _currentLine = '';
 
@@ -431,7 +431,7 @@ export function _padString(str = 'left') {
   //   }
 
 
-  return lines;
+  // return lines;
 // }
 
 
@@ -459,3 +459,4 @@ export function _padString(str = 'left') {
   Spinner;
 // }
 
+)))))

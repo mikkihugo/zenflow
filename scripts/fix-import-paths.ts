@@ -16,18 +16,18 @@ const ___dirname = dirname(__filename);
 /**
  * Import fix configuration;
  */
-// interface ImportFix {
-  // from: string
-  // to: string
-// }
+// // interface ImportFix {
+//   // from: string
+//   // to: string
+// // }
 /**
  * File processing statistics;
  */
-// interface ProcessingStats {
-  // filesProcessed: number
-  // filesModified: number
-  // errorsEncountered: number
-// }
+// // interface ProcessingStats {
+//   // filesProcessed: number
+//   // filesModified: number
+//   // errorsEncountered: number
+// // }
 /**
  * Fixes import paths in a single file
  * Applies both relative path corrections and type/value import fixes
@@ -95,9 +95,9 @@ async function _fixImportPaths(filePath, stats): Promise<void> {
       //       }
     //     }
     // Fix missing .js extensions in relative imports (ESM requirement)
-    const _relativeImportPattern = /from\s+['"](\.\/?[^'"]*?)['"];?/g;
+    const _relativeImportPattern = /from\s+['"](\.\/?[^'"]*?)['"];?/g;"'
     content = content.replace(relativeImportPattern, (match, importPath) => {
-      // Don't modify if already has extension or is JSON
+      // Don't modify if already has extension or is JSON'
       if (importPath.includes('.')) {
         return match;
     //   // LINT: unreachable code removed}
@@ -106,18 +106,18 @@ async function _fixImportPaths(filePath, stats): Promise<void> {
       if (updatedMatch !== match) {
         modified = true;
       //       }
-      return updatedMatch;
+      // return updatedMatch;
     //   // LINT: unreachable code removed});
     // Update file if modifications were made
     if (modified) {
-// await fs.writeFile(filePath, content);
+// // await fs.writeFile(filePath, content);
       stats.filesModified++;
-      console.warn(`✅ Fixed import paths in);
+      console.warn(`✅ Fixed import paths in);`
     //     }
   } catch (error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`❌ Error processing ${filePath});
+    console.error(`❌ Error processing ${filePath});`
   //   }
 // }
 /**
@@ -144,9 +144,9 @@ async function findTypeScriptFiles(dir): Promise<string[]> {
     //     }
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`Error reading directory ${dir});
+    console.error(`Error reading directory ${dir});`
   //   }
-  return files;
+  // return files;
 // }
 /**
  * Main execution function;
@@ -159,25 +159,25 @@ async function _main(): Promise<void> {
       filesProcessed,
       filesModified,
       errorsEncountered};
-    console.warn('🔍 Scanning for TypeScript files...');
+    console.warn('� Scanning for TypeScript files...');
 // const _files = awaitfindTypeScriptFiles(srcDir);
-    console.warn(`📁 Found ${files.length} TypeScript files to check for import path issues...`);
+    console.warn(`� Found ${files.length} TypeScript files to check for import path issues...`);
 
     // Process files in parallel batches for performance
     const _batchSize = 10;
     for (let i = 0; i < files.length; i += batchSize) {
       const _batch = files.slice(i, i + batchSize);
       const _batchPromises = batch.map((file) => _fixImportPaths(file, stats));
-// await Promise.all(batchPromises);
+// // await Promise.all(batchPromises);
       // Progress reporting
       const _progress = Math.min(((i + batchSize) / files.length) * 100, 100);
-      console.warn(`📊 Progress: ${progress.toFixed(1)}% (${i + batchSize}/${files.length})`);
+      console.warn(`� Progress: ${progress.toFixed(1)}% (${i + batchSize}/${files.length})`);
     //     }
     // Final comprehensive report
-    console.warn('\n📊 Import Path Fix Summary);
-    console.warn(`  Files processed);
-    console.warn(`  Files modified);
-    console.warn(`  Errors encountered);
+    console.warn('\n� Import Path Fix Summary);'
+    console.warn(`  Files processed);`
+    console.warn(`  Files modified);`
+    console.warn(`  Errors encountered);`
     console.warn(;
       `  Success rate: ${(((stats.filesProcessed - stats.errorsEncountered) / stats.filesProcessed) * 100).toFixed(1)}%`;
     );
@@ -185,17 +185,17 @@ async function _main(): Promise<void> {
       console.warn('\n✅ Import path fixes completed successfully!');
       process.exit(0);
     } else {
-      console.warn('\n⚠️ Import path fixes completed with some errors. Check logs above.');
+      console.warn('\n⚠ Import path fixes completed with some errors. Check logs above.');
       process.exit(1);
     //     }
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ Fatal error in main process);
+    console.error('❌ Fatal error in main process);'
     process.exit(1);
   //   }
 // }
 // Execute main function with error handling
 main().catch((error) => {
-  console.error('❌ Unhandled error);
+  console.error('❌ Unhandled error);'
   process.exit(1);
 });

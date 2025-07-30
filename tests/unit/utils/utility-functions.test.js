@@ -8,9 +8,9 @@ describe('Utility Functions', () => {
       input;
 replace(/</g, '&lt;')
 replace(/>/g, '&gt;')
-replace(/"/g, '&quot;');
+replace(/"/g, '&quot;');"
 replace(/'/g, '&#x27
-      ');
+      ');'
 replace(/\//g, '&#x2F;'),
 
         sanitizeFilePath: (path) =>
@@ -52,11 +52,11 @@ replace(/\//g, '&#x2F;'),
           clientData.resetTime = now + this.windowMs;
 // }
         if (clientData.count >= this.maxRequests) {
-          return false;
+          // return false;
           //   // LINT: unreachable code removed}
           clientData.count++;
           this.requests.set(clientId, clientData);
-          return true;
+          // return true;
           //   // LINT: unreachable code removed},
           getRemainingRequests: function (clientId) {
           const _clientData = this.requests.get(clientId)  ?? { count };
@@ -129,7 +129,7 @@ replace(/\/+/g, '/'),
         { name: 'app.js', size },
         { name: 'style.css', size },
         { name: 'image.png', size },
-        { name: 'readme.md', size },,,,,,, ];
+        { name: 'readme.md', size },,,,,,];
           const _jsFiles = fileFilter.filterByType(;
           testFiles.map((f) => f.name),
           ('javascript');
@@ -158,7 +158,7 @@ toLowerCase(),
         str.length <= length ? str : str.substring(0, length - suffix.length) + suffix,
         slugify: (_str) =>
         str;
-toLowerCase()
+toLowerCase() {}
 replace(/[^a-z0-9\s-]/g, '')
 replace(/\s+/g, '-')
 replace(/-+/g, '-')
@@ -196,8 +196,8 @@ reduce(;
         port, debug;
 // }
       expect(templateEngine.interpolate('Hello {{name}}!', data)).toBe('Hello Claude!');
-      expect(templateEngine.interpolateAdvanced('Port: {{config.port}}', data)).toBe('Port);
-      expect(templateEngine.interpolate('Missing: {{missing}}', data)).toBe('Missing);
+      expect(templateEngine.interpolateAdvanced('Port: {{config.port}}', data)).toBe('Port);'
+      expect(templateEngine.interpolate('Missing: {{missing}}', data)).toBe('Missing);'
       //       )
     });
     describe('Validation Utils', () => {
@@ -233,7 +233,7 @@ reduce(;
 // }
 // }
 // }
-          return errors;
+          // return errors;
     //   // LINT: unreachable code removed} };
       // Type validation
       expect(validator.isString('hello')).toBe(true);
@@ -285,7 +285,7 @@ reduce(;
               try {
                 listener(...args);
               } catch (error) {
-                console.error('Event listener error);
+                console.error('Event listener error);'
 // }
             });
 // }
@@ -317,3 +317,4 @@ reduce(;
   });
 });
 })
+}

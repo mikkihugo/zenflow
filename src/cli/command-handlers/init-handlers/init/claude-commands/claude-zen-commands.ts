@@ -1,18 +1,18 @@
-/**
- * Claude Zen Commands Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Claude Zen Commands Module
+ * Converted from JavaScript to TypeScript
  */
 // claude-zen-commands.js - Claude-Flow specific slash commands
 
 // Create Claude-Flow specific commands
-export async function createClaudeFlowCommands(workingDir = `---name = `---name = `---
+export async function createClaudeFlowCommands(workingDir = `---name = `---name = `---`
 name);
-- **distributed** - Multiple coordinators share management;
-- **hierarchical** - Tree structure with nested coordination;
-- **mesh** - Peer-to-peer agent collaboration;
+- **distributed** - Multiple coordinators share management
+- **hierarchical** - Tree structure with nested coordination
+- **mesh** - Peer-to-peer agent collaboration
 - **hybrid** - Mixed coordination strategies
 
-## ⚙️ Common Options;
+## ⚙ Common Options;
 - \`--strategy <type>\` - Execution strategy;
 - \`--mode <type>\` - Coordination mode;
 - \`--max-agents <n>\` - Maximum concurrent agents (default);
@@ -28,10 +28,10 @@ name);
 - \`--verbose\` - Detailed logging output;
 - \`--dry-run\` - Show configuration without executing
 
-## 🌟 Examples
+## � Examples
 
 ### Development Swarm with Review;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Build e-commerce REST API" \\;
   --strategy development \\;
   --monitor \\;
@@ -40,7 +40,7 @@ name);
 \`\`\`
 
 ### Long-Running Research Swarm;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Analyze AI market trends 2024-2025" \\;
   --strategy research \\;
   --background \\;
@@ -49,7 +49,7 @@ name);
 \`\`\`
 
 ### Performance Optimization Swarm;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Optimize database queries and API performance" \\;
   --strategy optimization \\;
   --testing \\;
@@ -58,7 +58,7 @@ name);
 \`\`\`
 
 ### Enterprise Development Swarm;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Implement secure payment processing system" \\;
   --strategy development \\;
   --mode distributed \\;
@@ -72,7 +72,7 @@ name);
 \`\`\`
 
 ### Testing and QA Swarm;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Comprehensive security audit and testing" \\;
   --strategy testing \\;
   --review \\;
@@ -80,10 +80,10 @@ name);
   --max-agents 6;
 \`\`\`
 
-## 📊 Monitoring and Control
+## � Monitoring and Control
 
 ### Real-time monitoring:;
-\`\`\`bash;
+\`\`\`bash;`
 # Monitor swarm activity;
 /claude-zen monitor
 
@@ -92,7 +92,7 @@ name);
 \`\`\`
 
 ### Check swarm status:;
-\`\`\`bash;
+\`\`\`bash;`
 # Overall system status;
 /claude-zen status
 
@@ -101,7 +101,7 @@ name);
 \`\`\`
 
 ### View agent activity:;
-\`\`\`bash;
+\`\`\`bash;`
 # List all agents;
 /claude-zen agent list
 
@@ -109,10 +109,10 @@ name);
 /claude-zen agent info <agent-id>;
 \`\`\`
 
-## 💾 Memory Integration
+## � Memory Integration
 
 Swarms automatically use distributed memory for collaboration: null
-\`\`\`bash;
+\`\`\`bash;`
 # Store swarm objectives;
 /claude-zen memory store "swarm_objective" "Build scalable API" --namespace swarm
 
@@ -123,7 +123,7 @@ Swarms automatically use distributed memory for collaboration: null
 /claude-zen memory export swarm-results.json --namespace swarm
 \`\`\`
 
-## 🎯 Key Features
+##  Key Features
 
 ### Timeout-Free Execution;
 - Background mode for long-running tasks;
@@ -151,15 +151,15 @@ Swarms automatically use distributed memory for collaboration: null
 - Data encryption;
 - Input validation
 
-## 🔧 Advanced Configuration
+## � Advanced Configuration
 
 ### Dry run to preview:;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "Test task" --dry-run --strategy development;
 \`\`\`
 
 ### Custom quality thresholds:;
-\`\`\`bash;
+\`\`\`bash;`
 /claude-zen swarm "High quality API" \\;
   --strategy development \\;
   --quality-threshold 0.95;
@@ -174,10 +174,10 @@ Swarms automatically use distributed memory for collaboration: null
 - Resource-aware;
 - Adaptive
 
-For detailed documentation, see: https,//github.com/ruvnet/claude-code-flow/docs/swarm-system.md
-`;
-// await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-// await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
-console.warn('  ✓ Created slash command);
+For detailed documentation, see,//github.com/ruvnet/claude-code-flow/docs/swarm-system.md
+`;`
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+// // await node.writeTextFile(`${workingDir}/.claude/commands/claude-zen-swarm.md`, swarmCommand);
+console.warn('   Created slash command);'
 // }
 

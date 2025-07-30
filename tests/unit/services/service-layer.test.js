@@ -45,9 +45,9 @@ describe('Service Layer Tests', () => {
           if (magicNumbers && magicNumbers.length > 2) {
             smells.push({ type);
 // }
-          return smells;
+          // return smells;
     //   // LINT: unreachable code removed} };
-      const _sampleCode = `;
+      const _sampleCode = `;`
         fun/* c */tion complexFunction(a, b, c) {
           if (a > 0) {
             for (const i = 0; i < b; i++) {
@@ -58,9 +58,9 @@ describe('Service Layer Tests', () => {
 // }
 // }
 // }
-          return c;
+          // return c;
     //   // LINT: unreachable code removed}
-      `;
+      `;`
       const _complexity = complexityAnalyzer.calculateCyclomaticComplexity(sampleCode);
       expect(complexity).toBeGreaterThan(1);
       const _functions = complexityAnalyzer.analyzeFunctionLength(sampleCode);
@@ -96,10 +96,10 @@ describe('Service Layer Tests', () => {
     //   // LINT: unreachable code removed});
 // }
           // Extract imports
-          const _importMatches = code.match(/import\s+.*\s+from\s+['"`]([^'"`]+)['"`]/g);
+          const _importMatches = code.match(/import\s+.*\s+from\s+['"`]([^'"`]+)['"`]/g);"'`
           if (importMatches) {
             ast.imports = importMatches.map((match) => {
-              const _source = match.match(/from\s+['"`]([^'"`]+)['"`]/)[1];
+              const _source = match.match(/from\s+['"`]([^'"`]+)['"`]/)[1];"'`
               return { type: 'ImportDeclaration', source };
     //   // LINT: unreachable code removed});
 // }
@@ -117,9 +117,9 @@ describe('Service Layer Tests', () => {
           variableCount: ast.variables.length,
           importCount: ast.imports.length,
           complexity: ast.functions.length + ast.variables.length }) };
-      const _sampleCode = `;
-        import express from 'express';
-        import { helper } from './utils';
+      const _sampleCode = `;`
+        // import express from 'express';
+        // import { helper } from './utils';
 
         const _app = express();
         const _config = {};
@@ -129,7 +129,7 @@ describe('Service Layer Tests', () => {
         function shutdown() {
           console.warn('Shutting down');
 // }
-      `;
+      `;`
       const _ast = astAnalyzer.parseToAST(sampleCode);
       expect(ast.functions.length).toBe(2);
       expect(ast.variables.length).toBe(2);
@@ -165,7 +165,7 @@ describe('Service Layer Tests', () => {
             metadata.hasImports = true;
             metadata.importCount = (content.match(/import\s+/g)  ?? []).length;
 // }
-          return metadata;
+          // return metadata;
     //   // LINT: unreachable code removed},
         processFile: function (filename, /* content */) {
           if (!this.isSupported(filename)) {
@@ -183,18 +183,18 @@ describe('Service Layer Tests', () => {
           if (metadata.lines > 500) {
             issues.push({ type);
 // }
-          return { metadata, issues, processed };
+          // return { metadata, issues, processed };
     //   // LINT: unreachable code removed} };
       expect(fileProcessor.isSupported('app.js')).toBe(true);
       expect(fileProcessor.isSupported('style.css')).toBe(false);
-      const _content = `;
-        import React from 'react';
+      const _content = `;`
+        // import React from 'react';
 
-        export default function App() {
+        // export default function App() {
           console.warn('Hello World');
           return <div>Hello</div>;
     //   // LINT: unreachable code removed}
-      `;
+      `;`
       const _result = fileProcessor.processFile('App.jsx', content);
       expect(result.processed).toBe(true);
       expect(result.metadata.hasDefaultExport).toBe(true);
@@ -217,21 +217,21 @@ describe('Service Layer Tests', () => {
           const _file = this.queue.shift();
           try {
             // Simulate processing time
-  // await new Promise((resolve) => setTimeout(resolve, 10));
+  // // await new Promise((resolve) => setTimeout(resolve, 10));
             const _result = {
               filename: file.filename,
               success,
               processedAt: Date.now(),
               size: file.content.length };
             this.results.set(file.filename, result);
-            return result;
+            // return result;
     //   // LINT: unreachable code removed} catch (error) {
             const _result = {
               filename: file.filename,
               success,
               error: error.message };
             this.results.set(file.filename, result);
-            return result;
+            // return result;
     //   // LINT: unreachable code removed} finally {
             this.processing = false;
 // }
@@ -244,7 +244,7 @@ describe('Service Layer Tests', () => {
               results.push(result);
 // }
 // }
-          return results;
+          // return results;
     //   // LINT: unreachable code removed},
         getStats: function () {
           const _allResults = Array.from(this.results.values());
@@ -260,7 +260,7 @@ describe('Service Layer Tests', () => {
       expect(batchProcessor.queue.length).toBe(3);
       expect(batchProcessor.getStats().pending).toBe(3);
       // Process files
-      return batchProcessor.processAll().then((results) => {
+      // return batchProcessor.processAll().then((results) => {
         expect(results.length).toBe(3);
     // expect(results.every((r) => r.success)).toBe(true); // LINT: unreachable code removed
         expect(batchProcessor.getStats().successful).toBe(3);
@@ -291,10 +291,10 @@ describe('Service Layer Tests', () => {
             throw new Error(`Plugin ${name} not found`);
 // }
           if (plugin.status === 'initialized') {
-            return true;
+            // return true;
     //   // LINT: unreachable code removed}
           try {
-  // await plugin.init();
+  // // await plugin.init();
             plugin.status = 'initialized';
             plugin.initializedAt = Date.now();
             // Register hooks if plugin provides them
@@ -303,11 +303,11 @@ describe('Service Layer Tests', () => {
                 this.addHook(hookName, handler);
 // }
 // }
-            return true;
+            // return true;
     //   // LINT: unreachable code removed} catch (error) {
             plugin.status = 'error';
             plugin.error = error.message;
-            return false;
+            // return false;
     //   // LINT: unreachable code removed}
         },
         addHook: function (name, /* handler */) {
@@ -327,7 +327,7 @@ describe('Service Layer Tests', () => {
               results.push({ success, error);
 // }
 // }
-          return results;
+          // return results;
     //   // LINT: unreachable code removed},
         getPluginStatus: function (name) {
           const _plugin = this.plugins.get(name);
@@ -339,7 +339,7 @@ describe('Service Layer Tests', () => {
         init: async function () {
           this.initialized = true;
         },
-          'file-processed': async (context) => (processed, filename: context.filename ), };
+          'file-processed': async (context) => (processed, filename: context.filename )};
       pluginManager.register('test-plugin', testPlugin);
       expect(pluginManager.getPluginStatus('test-plugin')).toBe('registered');
       return pluginManager;
@@ -365,7 +365,7 @@ then((results) =>
           const _visiting = new Set();
           const _visit = () => {
             if (visiting.has(name)) {
-              throw new Error(`Circular dependency detected);
+              throw new Error(`Circular dependency detected);`
 // }
             if (visited.has(name)) {
               return;
@@ -384,7 +384,7 @@ then((results) =>
           for (const name of this.plugins.keys()) {
             visit(name);
 // }
-          return order;
+          // return order;
     //   // LINT: unreachable code removed},
         initializeAll: async function () {
           const _order = this.getInitializationOrder();
@@ -393,7 +393,7 @@ then((results) =>
             const _pluginInfo = this.plugins.get(name);
             if (pluginInfo && !pluginInfo.initialized) {
               try {
-  // await pluginInfo.plugin.init();
+  // // await pluginInfo.plugin.init();
                 pluginInfo.initialized = true;
                 results.push({ name, success });
               } catch (error) {
@@ -401,7 +401,7 @@ then((results) =>
 // }
 // }
 // }
-          return results;
+          // return results;
     //   // LINT: unreachable code removed} };
       const _pluginA = { init: async () => {} };
       const _pluginB = { init: async () => {} };
@@ -412,7 +412,7 @@ then((results) =>
       const _order = dependencyManager.getInitializationOrder();
       expect(order.indexOf('plugin-a')).toBeLessThan(order.indexOf('plugin-b'));
       expect(order.indexOf('plugin-b')).toBeLessThan(order.indexOf('plugin-c'));
-      return dependencyManager.initializeAll().then((results) => {
+      // return dependencyManager.initializeAll().then((results) => {
         expect(results.length).toBe(3);
     // expect(results.every((r) => r.success)).toBe(true); // LINT: unreachable code removed
       });
@@ -503,10 +503,10 @@ then((results) =>
               result,
               timestamp: Date.now() };
           } catch (error)
-            return {
+            // return {
               status: 'unhealthy',
     // error: error.message, // LINT: unreachable code removed
-              timestamp: Date.now()
+              timestamp: Date.now() {}
 // }
         },
         runAllChecks: async function () {
@@ -538,7 +538,7 @@ then((results) =>
     // heapTotal: usage.heapTotal, // LINT: unreachable code removed
           healthy: usage.heapUsed / usage.heapTotal < 0.9 };
       });
-      return healthChecker.runAllChecks().then((results) => {
+      // return healthChecker.runAllChecks().then((results) => {
         expect(results.status).toBeDefined();
     // expect(results.checks.database).toBeDefined(); // LINT: unreachable code removed
         expect(results.checks['external-api']).toBeDefined();
@@ -548,3 +548,5 @@ then((results) =>
     });
   });
 });
+
+}}}}}}}}}}}}}}}

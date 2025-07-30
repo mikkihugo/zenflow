@@ -5,8 +5,8 @@ import { HealthChecker } from './health-checker.js';
 import { ModeValidator } from './mode-validator.js';
 import { PostInitValidator } from './post-init-validator.js';
 import { PreInitValidator } from './pre-init-validator.js';
-/**
- * Main validation orchestrator;
+/**  */
+ * Main validation orchestrator
  */
 export class ValidationSystem {
   constructor(workingDir = workingDir;
@@ -26,15 +26,15 @@ export class ValidationSystem {
 
   healthChecker = new HealthChecker(workingDir);
 // }
-/**
- * Run all pre-initialization checks;
- * @returns {Object} Validation result with status and details;
+/**  */
+ * Run all pre-initialization checks
+ * @returns {Object} Validation result with status and details
     // */ // LINT: unreachable code removed
 async;
 validatePreInit((options = {}));
 : unknown
 // {
-  const _results = {success = await this.preInitValidator.checkPermissions();
+  const _results = {success = // await this.preInitValidator.checkPermissions();
   results.checks.permissions = permissionCheck;
   if (!permissionCheck.success) {
     results.success = false;
@@ -72,7 +72,7 @@ validatePreInit((options = {}));
 catch (error)
 // {
   results.success = false;
-  results.errors.push(`Pre-initialization validation failed = {success = await this.postInitValidator.checkFileIntegrity();
+  results.errors.push(`Pre-initialization validation failed = {success = // await this.postInitValidator.checkFileIntegrity();`
       results.checks.fileIntegrity = integrityCheck;
       if(!integrityCheck.success) {
         results.success = false;
@@ -106,7 +106,7 @@ catch (error)
       //       }
     } catch (error) {
       results.success = false;
-      results.errors.push(`Post-initialization validation failed = {success = await this.configValidator.validateRoomodes();
+      results.errors.push(`Post-initialization validation failed = {success = // await this.configValidator.validateRoomodes();`
   results.checks.roomodes = roomodesCheck;
   if (!roomodesCheck.success) {
     results.success = false;
@@ -134,7 +134,7 @@ catch (error)
 catch (error)
 // {
   results.success = false;
-  results.errors.push(`Configuration validation failed = {success = await this.modeValidator.testAllModes();
+  results.errors.push(`Configuration validation failed = {success = // await this.modeValidator.testAllModes();`
       results.modes = modeTests.modes;
 
       if(!modeTests.success) {
@@ -148,7 +148,7 @@ catch (error)
       //       }
     } catch (error) {
       results.success = false;
-      results.errors.push(`Mode functionality testing failed = {success = await this.healthChecker.checkModeAvailability();
+      results.errors.push(`Mode functionality testing failed = {success = // await this.healthChecker.checkModeAvailability();`
   results.health.modes = modeHealth;
   if (!modeHealth.success) {
     results.warnings.push(...modeHealth.errors);
@@ -176,45 +176,45 @@ catch (error)
 catch (error)
 // {
   results.success = false;
-  results.errors.push(`Health checkfailed = [];
+  results.errors.push(`Health checkfailed = [];`
     report.push('=== SPARC Initialization Validation Report ===\n');
 
     // Summary
 
       // 
       }
-      return acc;
+      // return acc;
     //   // LINT: unreachable code removed}, 0);
 
     const _warnings = validationResults.warnings?.length  ?? 0;
 
-    report.push(`Summary = === 'object' && results.checks);
-  report.push(`\n${phase.toUpperCase()}Phase = result.success ? '✓' : '✗';
-          report.push(`${status} ${check});
+    report.push(`Summary = === 'object' && results.checks);`
+  report.push(`\n${phase.toUpperCase()}Phase = result.success ? '' : '✗';`
+          report.push(`${status} ${check});`
 // }
 // }
 // Errors
 if (validationResults.errors?.length > 0) {
-  report.push('\n❌ ERRORS => {
+  report.push('\n❌ ERRORS => {'
         report.push(`  - ${error}`);
 // }
 // )
 // }
 // Warnings
 if (validationResults.warnings?.length > 0) {
-  report.push('\n⚠️  WARNINGS => {
+  report.push('\n⚠  WARNINGS => {'
         report.push(`  - ${warning}`);
 // }
 // )
 // }
 report.push('\n=== End of Report ===')
-return report.join('\n');
+// return report.join('\n');
 // }
 // }
-/**
- * Run full validation suite;
+/**  */
+ * Run full validation suite
  */
-export async function runFullValidation(workingDir = {}) {
+// export async function runFullValidation(workingDir = {}) {
   const _validator = new ValidationSystem(workingDir);
   const _results = {success = await validator.validatePreInit(options);
   results.preInit = preInitResults;
@@ -222,7 +222,7 @@ export async function runFullValidation(workingDir = {}) {
     results.success = false;
     results.errors.push(...preInitResults.errors);
     results.warnings.push(...preInitResults.warnings);
-    return results; // Stop if pre-init fails
+    // return results; // Stop if pre-init fails
   //   }
 // }
 // Post-init validation (if applicable)
@@ -265,6 +265,7 @@ if (!healthResults.success) {
 results.warnings.push(...healthResults.warnings);
 // Generate report
 results.report = validator.generateReport(results);
-return results;
+// return results;
 // }
 
+))))))

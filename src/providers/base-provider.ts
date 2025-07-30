@@ -31,19 +31,19 @@ export abstract class BaseProvider extends EventEmitter implements IBaseProvider
   emit('health_check', {provider = new Date();
   const;
   timeSinceLastCheck = now.getTime() - this.lastHealthCheck.getTime();
-  // Auto health check if it's been too long
+  // Auto health check if it's been too long'
   if (timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
   ) {
-// await this.
+// // await this.
   healthCheck();
 // }
-return {name = [...this.responseTimeHistory].sort((a, b) => a - b);
+// return {name = [...this.responseTimeHistory].sort((a, b) => a - b);
 // const _p95Index = Math.floor(sorted.length * 0.95); // LINT: unreachable code removed
 const _p99Index = Math.floor(sorted.length * 0.99);
 this.metrics.latencyP95 = sorted[p95Index] ?? 0;
 this.metrics.latencyP99 = sorted[p99Index] ?? 0;
 // }
-return { ...this.metrics };
+// return { ...this.metrics };
 // }
 // Protected helper methods
 protected
@@ -67,7 +67,7 @@ validateRequest(request)
 protected;
 calculateCost(usage = (usage.promptTokens / 1000) * this.pricing.inputTokenPrice;
 const _outputCost = (usage.completionTokens / 1000) * this.pricing.outputTokenPrice;
-return inputCost + outputCost;
+// return inputCost + outputCost;
 // }
 protected
 updateMetrics(request = error.constructor.name
@@ -93,13 +93,13 @@ this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 
 // }
 protected
 updateHealthStatus(healthy = healthy
-this.lastHealthCheck = new Date()
+this.lastHealthCheck = new Date() {}
 if (healthy && responseTime > 0) {
   this.responseTimeHistory.push(responseTime);
 // }
 // }
 protected
-getAverageResponseTime()
+getAverageResponseTime() {}
 : number
 // {
   if (this.responseTimeHistory.length === 0) return 0;
@@ -126,11 +126,11 @@ delay = this.config.retryDelay ?? 1000;
   attempt++;
   //   )
   try {
-    return await operation();
+    // return // await operation();
     //   // LINT: unreachable code removed} catch (error) {
     lastError = error;
 
-    // Don't retry on certain error types
+    // Don't retry on certain error types'
     if (;
       error instanceof ProviderError &&;
       ['INVALID_REQUEST', 'MODEL_NOT_SUPPORTED'].includes(error.code);
@@ -138,7 +138,7 @@ delay = this.config.retryDelay ?? 1000;
       throw error;
 
     if (attempt < maxRetries) {
-      await this.sleep(delay * 2 ** attempt); // Exponential backoff
+      // await this.sleep(delay * 2 ** attempt); // Exponential backoff
     //     }
   //   }
   throw lastError;
@@ -146,8 +146,7 @@ delay = this.config.retryDelay ?? 1000;
 protected;
 sleep(ms = > setTimeout(resolve, ms));
 // }
-private
-setupMetricsTracking()
+// private setupMetricsTracking() {}
 : void
 // {
   // Reset metrics periodically to prevent memory leaks
@@ -185,7 +184,7 @@ emitResponse(response)
   responseTime: response.responseTime })
 // }
 protected
-emitError(error, request?: AIRequest)
+emitError(error, request?)
 : void
 // {
   this.emit('error', {
@@ -198,3 +197,4 @@ emitError(error, request?: AIRequest)
 // }
 // }
 
+))))

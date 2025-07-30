@@ -13,11 +13,11 @@ jest.mock('axios');
 jest.mock('@google/generative-ai');
 // Set up performance monitoring
 if (process.env.MEASURE_PERFORMANCE) {
-  const { performance, PerformanceObserver } = require('node);
+  const { performance, PerformanceObserver } = require('node);'
   const _perfObserver = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
       if (entry.duration > 100) {
-        console.warn(`Slow test detected);
+        console.warn(`Slow test detected);`
       //       }
     });
   });
@@ -37,7 +37,7 @@ afterAll(async () => {
 });
 // Global error handler for unhandled rejections
 process.on('unhandledRejection', (error) => {
-  console.error('Unhandled Promise Rejection in tests);
+  console.error('Unhandled Promise Rejection in tests);'
   process.exit(1);
 });
 // Export test utilities
@@ -48,3 +48,4 @@ createMockRequest: require('./utils/mock-request'),
 createMockResponse: require('./utils/mock-response'),
 waitForCondition: require('./utils/wait-helpers').waitForCondition
 // }
+}}

@@ -14,25 +14,25 @@ async function testWorkerThreads() {
 
   try {
     // Initialize worker pool
-    console.warn('📋 Initializing worker thread pool...');
+    console.warn('� Initializing worker thread pool...');
     pool = new WorkerThreadPool({
       maxWorkers,
       minWorkers,
       loadBalancingStrategy); // eslint-disable-line
-  // await pool.initialize();
+  // // await pool.initialize();
     console.warn('✅ Worker pool initialized');
     // Test 1: Simple task execution
-    console.warn('\n🔧 Test 1);
+    console.warn('\n� Test 1);'
     const startTime = performance.now();
 // const result1 = awaitpool.executeTask({
       type);
 
     const endTime = performance.now();
     console.warn(`✅ Task completed in ${(endTime - startTime).toFixed(0)}ms`);
-    console.warn(`📊 Result);
+    console.warn(`� Result);`
 
     // Test 2: Parallel task execution
-    console.warn('\n🔧 Test 2);
+    console.warn('\n� Test 2);'
     const parallelStartTime = performance.now();
     const parallelTasks = [
       pool.executeTask({
@@ -47,21 +47,21 @@ async function testWorkerThreads() {
       `✅ All parallel tasks completed in ${(parallelEndTime - parallelStartTime).toFixed(0)}ms`
     );
     console.warn(
-      `📊 Results) => r.success).length}/${parallelResults.length} successful`
+      `� Results) => r.success).length}/${parallelResults.length} successful`
     );
 
     // Test 3: Pool status
-    console.warn('\n🔧 Test 3);
+    console.warn('\n� Test 3);'
     const status = pool.getStatus();
     console.warn(
-      `👥 Workers);
-    console.warn(`📋 Queue);
+      `� Workers);`
+    console.warn(`� Queue);`
     console.warn(
-      `📊 Metrics)}ms avg time`
+      `� Metrics)}ms avg time`
     );
 
     // Test 4: Load balancing
-    console.warn('\n🔧 Test 4);
+    console.warn('\n� Test 4);'
     const loadTestTasks = Array.from({ length }, (_, i) =>
       pool.executeTask({
         type)
@@ -72,33 +72,35 @@ async function testWorkerThreads() {
     );
 
     const finalStatus = pool.getStatus();
-    console.warn('📊 Final worker utilization);
+    console.warn('� Final worker utilization);'
     Object.entries(finalStatus.metrics.workerStats).forEach(([workerId, stats]) => {
       console.warn(
         `  • ${workerId})}ms avg`
       );
     });
 
-    console.warn('\n🎉 All tests completed successfully!');
+    console.warn('\n� All tests completed successfully!');
   } catch (error) {
-    console.error('❌ Test failed);
+    console.error('❌ Test failed);'
     throw error;
   } finally {
     if (pool) {
-  // await pool.shutdown();
-      console.warn('🔄 Worker pool shut down');
+  // // await pool.shutdown();
+      console.warn('� Worker pool shut down');
 // }
 // }
 // }
 // Run test if called directly
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   try {
-  // await testWorkerThreads();
+  // // await testWorkerThreads();
     console.warn('\n✅ Worker thread test completed successfully');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Worker thread test failed);
+    console.error('❌ Worker thread test failed);'
     process.exit(1);
 // }
 // }
-export { testWorkerThreads };
+// export { testWorkerThreads };
+
+}}

@@ -67,7 +67,7 @@ it('should overwrite settings.local.json with --force flag', async () =>
 // {
   // Create initial settings.local.json with different content
   const _claudeDir = path.join(testDir, '.claude');
-  // await fs.mkdir(claudeDir, { recursive });
+  // // await fs.mkdir(claudeDir, { recursive });
   const _customSettings = {
       permissions: {
         allow: ['custom-tool'],
@@ -78,7 +78,7 @@ it('should overwrite settings.local.json with --force flag', async () =>
 // 
 }
 const _settingsLocalPath = path.join(claudeDir, 'settings.local.json');
-  // await fs.writeFile(settingsLocalPath, JSON.stringify(customSettings, null, 2));
+  // // await fs.writeFile(settingsLocalPath, JSON.stringify(customSettings, null, 2));
 // Run init command with --force
 execSync('npx claude-zen init --force', {
       cwd,
@@ -114,3 +114,4 @@ expect(() => JSON.parse(content)).not.toThrow();
 expect(content).toMatch(/^{\n {2}"permissions");
 })
 })
+}}

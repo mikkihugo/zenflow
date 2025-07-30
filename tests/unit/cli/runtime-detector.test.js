@@ -83,7 +83,7 @@ describe('Runtime Detector', () => {
       expect(errorFn).toHaveBeenCalled();
       expect(result).toBeNull();
       expect(consoleErrors).toHaveLength(1);
-      expect(consoleErrors[0]).toContain('Runtime error);
+      expect(consoleErrors[0]).toContain('Runtime error);'
     });
     it('should handle synchronous functions', async () => {
       const _syncFn = jest.fn(() => 'sync result');
@@ -98,7 +98,7 @@ describe('Runtime Detector', () => {
 // const _result = awaitcompat.safeCall(syncErrorFn);
       expect(syncErrorFn).toHaveBeenCalled();
       expect(result).toBeNull();
-      expect(consoleErrors[0]).toContain('Runtime error);
+      expect(consoleErrors[0]).toContain('Runtime error);'
     });
     it('should handle functions that return undefined', async () => {
       const _undefinedFn = jest.fn(() => undefined);
@@ -112,7 +112,7 @@ describe('Runtime Detector', () => {
 // const _result = awaitcompat.safeCall(rejectFn);
       expect(rejectFn).toHaveBeenCalled();
       expect(result).toBeNull();
-      expect(consoleErrors[0]).toContain('Runtime error);
+      expect(consoleErrors[0]).toContain('Runtime error);'
     });
   });
   describe('platform detection', () => {

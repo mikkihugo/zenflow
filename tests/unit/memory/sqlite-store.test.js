@@ -4,7 +4,7 @@ import path from 'node:path';
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { SqliteMemoryStore } from '../../../src/memory/sqlite-store.js';
 
-// Mock dependencies that don't need actual implementation
+// Mock dependencies that don't need actual implementation'
 const _mockSqliteWrapper = () => ({
   createDatabase) => ({
     prepare) => ({
@@ -33,7 +33,7 @@ afterEach(async () =>
   // await memoryStore.close();
   //   }
   try {
-  // await fs.rm(testDir, { recursive, force });
+  // // await fs.rm(testDir, { recursive, force });
     } catch (/* _error */) {
       // Ignore cleanup errors
     //     }
@@ -90,7 +90,7 @@ describe('memory operations', () =>
       const _testMemory = {
         key: 'test-key',
         value: 'test-value',type: 'test'  };
-  // await memoryStore.store(testMemory.key, testMemory.value, testMemory.metadata);
+  // // await memoryStore.store(testMemory.key, testMemory.value, testMemory.metadata);
 // const _retrieved = awaitmemoryStore.retrieve(testMemory.key);
   expect(retrieved).toEqual(;
   expect.objectContaining({
@@ -119,8 +119,8 @@ it('should delete memory', async () =>
   // await memoryStore.store('delete-test', 'value');
 // const _retrieved = awaitmemoryStore.retrieve('delete-test');
   expect(retrieved).toBeTruthy();
-  // await memoryStore.delete('delete-test');
-  retrieved = await memoryStore.retrieve('delete-test');
+  // // await memoryStore.delete('delete-test');
+  retrieved = // await memoryStore.retrieve('delete-test');
   expect(retrieved).toBeNull();
 })
 it('should clear all memories', async () =>
@@ -129,8 +129,8 @@ it('should clear all memories', async () =>
   // await memoryStore.store('key2', 'value2');
 // const _memories = awaitmemoryStore.list();
   expect(memories.length).toBeGreaterThan(0);
-  // await memoryStore.clear();
-  memories = await memoryStore.list();
+  // // await memoryStore.clear();
+  memories = // await memoryStore.list();
   expect(memories).toHaveLength(0);
 })
 })
@@ -140,7 +140,7 @@ describe('search functionality', () =>
   // await memoryStore.initialize();
   // await memoryStore.store('search1', 'hello world', { tags);
   // await memoryStore.store('search2', 'goodbye world', { tags);
-  // await memoryStore.store('search3', 'hello universe', { tags);
+  // // await memoryStore.store('search3', 'hello universe', { tags);
   });
   it('should search by term', async () => {
 // const _results = awaitmemoryStore.search('hello');
@@ -171,7 +171,7 @@ describe('caching', () =>
         directory,
     enableCache,
     cacheTimeout });
-  // await memoryStore.initialize();
+  // // await memoryStore.initialize();
 })
 it('should cache query results when enabled', async () =>
 // {
@@ -194,3 +194,4 @@ describe('cleanup', () =>
   });
 })
 })
+}}}}}

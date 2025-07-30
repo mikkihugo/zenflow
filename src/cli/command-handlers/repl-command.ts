@@ -1,6 +1,6 @@
-/**
- * Repl Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Repl Command Module
+ * Converted from JavaScript to TypeScript
  */
 
 // repl-command.js - Handles the repl command
@@ -20,7 +20,7 @@ console.warn(`Received: ${line.trim()}`);
 rl.prompt();
 // }
 // }
-export async function replCommand(_args, _flags) {
+// export async function replCommand(_args, _flags) {
   printSuccess('Starting interactive REPL mode...');
 // await startRepl();
 // }

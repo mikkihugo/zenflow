@@ -13,7 +13,7 @@ jest.mock('../../../src/mcp/core/error-handler.js', () => (
 // {
   MCPErrorHandler: jest.fn().mockImplementation(() => ({
     handleError: jest.fn(),
-  formatError: jest.fn()
+  formatError: jest.fn() {}
 // }
 )) }))
 jest.mock('../../../src/mcp/core/performance-metrics.js', () => (
@@ -33,7 +33,7 @@ jest.mock('../../../src/memory/sqlite-store.js', () => (
   retrieve: jest.fn(),
   list: jest.fn(() => []),
   search: jest.fn(() => []),
-  close: jest.fn()
+  close: jest.fn() {}
 // }
 )) }))
 describe('MCP Server', () =>
@@ -53,10 +53,10 @@ describe('MCP Server', () =>
   describe('Module Loading', () => {
     it('should import the MCP server module without errors', async () => {
       // Since the MCP server uses dynamic imports with fallbacks,
-      // we'll test that the module can be imported
+      // we'll test that the module can be imported'
       let _mcpServerModule;
       try {
-        _mcpServerModule = await import('../../../src/mcp/mcp-server.js');
+        _mcpServerModule = // await import('../../../src/mcp/mcp-server.js');
       } catch (error) {
         // If import fails, that's part of what we're testing
         expect(error).toBeDefined();
@@ -75,7 +75,7 @@ describe('MCP Server', () =>
       console.warn = (message) => warnings.push(message);
       try {
         // Attempt to import the server
-  // await import('../../../src/mcp/mcp-server.js');
+  // // await import('../../../src/mcp/mcp-server.js');
 
         // Should have warnings about missing dependencies
         expect(warnings.some((w) => w.includes('not available'))).toBe(true);
@@ -94,7 +94,7 @@ describe('MCP Server', () =>
         port: process.env.MCP_PORT  ?? 3000,
           type: 'sqlite',,,
           enabled,
-          autoDiscovery, };
+          autoDiscovery};
     expect(defaultConfig.port).toBeDefined();
     expect(defaultConfig.memory.type).toBe('sqlite');
     expect(defaultConfig.tools.enabled).toBe(true);
@@ -106,7 +106,7 @@ describe('MCP Server', () =>
         { port: -1 },
         { port },
         { memory },
-        { tools: 'invalid' },,,,,,, ];
+        { tools: 'invalid' },,,,,,];
     invalidConfigs.forEach((config) => {
       // Test configuration validation logic
       const _isValid = typeof config.port === 'number' && config.port > 0 && config.port < 65536;
@@ -124,7 +124,7 @@ describe('Tool Registry', () =>
 
         { name: 'file_read', description: 'Read file contents' },
         { name: 'file_write', description: 'Write file contents' },
-        { name: 'shell_execute', description: 'Execute shell commands' },,,,,,, ];
+        { name: 'shell_execute', description: 'Execute shell commands' },,,,,,];
     expect(mockTools).toHaveLength(3);
     expect(mockTools[0].name).toBe('file_read');
     expect(mockTools[1].name).toBe('file_write');
@@ -140,7 +140,7 @@ describe('Tool Registry', () =>
           if (toolName === 'file_write') {
             return { written, success };
     //   // LINT: unreachable code removed}
-          return { error: 'Unknown tool', success };
+          // return { error: 'Unknown tool', success };
     //   // LINT: unreachable code removed}) };
 // const _result1 = awaitmockToolExecutor.execute('file_read', { path);
       expect(result1.success).toBe(true);
@@ -164,12 +164,12 @@ describe('Tool Registry', () =>
         'resources/list',
         'resources/read',
         'prompts/list',
-        'prompts/get',,,,,,, ];
+        'prompts/get',,,,,,];
       messageTypes.forEach((type) => {
         const _message = {
           jsonrpc: '2.0',
           id,
-          method, };
+          method};
       expect(message.jsonrpc).toBe('2.0');
       expect(message.method).toBe(type);
       expect(typeof message.id).toBe('number');
@@ -179,7 +179,7 @@ describe('Tool Registry', () =>
       const _validMessage = {
         jsonrpc: '2.0',
         id,
-        method: 'tools/list', };
+        method: 'tools/list'};
   const _invalidMessages = [
 
         {}, // missing required fields
@@ -264,15 +264,15 @@ describe('Memory Integration', () =>
     retrieve(key)
     //     {
       if (!this.initialized) throw new Error('Not initialized');
-      return this.data.get(key) ?? null;
+      // return this.data.get(key) ?? null;
       //   // LINT: unreachable code removed},
       async;
       list();
       if (!this.initialized) throw new Error('Not initialized');
-      return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
-  // await mockMemoryStore.initialize();
+      // return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
+  // // await mockMemoryStore.initialize();
       expect(mockMemoryStore.initialized).toBe(true);
-  // await mockMemoryStore.store('test-key', 'test-value');
+  // // await mockMemoryStore.store('test-key', 'test-value');
 // const _retrieved = awaitmockMemoryStore.retrieve('test-key');
       expect(retrieved).toBe('test-value');
 // const _allData = awaitmockMemoryStore.list();
@@ -281,3 +281,4 @@ describe('Memory Integration', () =>
     })
   });
 })
+}}}

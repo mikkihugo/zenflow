@@ -1,6 +1,6 @@
-/**
- * Status Command Handler - TypeScript Edition;
- * Comprehensive system status monitoring with full type safety;
+/**  */
+ * Status Command Handler - TypeScript Edition
+ * Comprehensive system status monitoring with full type safety
  */
 
 import { FlagValidator } from '../core/argument-parser.js';
@@ -8,24 +8,24 @@ import { FlagValidator } from '../core/argument-parser.js';
 // =============================================================================
 // STATUS COMMAND TYPES
 // =============================================================================
-// interface StatusOptions {verbose = ============================================================================
-// STATUS COMMAND IMPLEMENTATION
-// =============================================================================
-
-export const statusCommand = {
-      name => {
-const _logger = context.logger.child({command = parseStatusOptions(context
-, logger)
-// Get system status
-// const _status = awaitgetSystemStatus(options.verbose, logger);
-// Output status
-if (options.json) {
-  console.warn(JSON.stringify(status, null, 2));
-} else {
+// // interface StatusOptions {verbose = ============================================================================
+// // STATUS COMMAND IMPLEMENTATION
+// // =============================================================================
+// 
+// export const statusCommand = {
+//       name => {
+// const _logger = context.logger.child({command = parseStatusOptions(context
+// , logger)
+// // Get system status
+// // const _status = awaitgetSystemStatus(options.verbose, logger);
+// // Output status
+// if (options.json) {
+//   console.warn(JSON.stringify(status, null, 2));
+// } else {
   displayStatus(status, options.verbose, logger);
 // }
 // Return success result
-return {success = ============================================================================;
+// return {success = ============================================================================;
 // // OPTION PARSING AND VALIDATION // LINT: unreachable code removed
 // =============================================================================
 
@@ -36,7 +36,7 @@ const _options = {verbose = ====================================================
 // SYSTEM STATUS GATHERING
 // =============================================================================
 
-async function getSystemStatus(_verbose = {timestamp = await import('node);
+async function getSystemStatus(_verbose = {timestamp = // await import('node);'
 const _memoryStore = './memory/memory-store.json';
 // const _content = awaitfs.readFile(memoryStore, 'utf-8');
 const _data = JSON.parse(content);
@@ -47,18 +47,18 @@ for (const entries of Object.values(data)) {
   //   }
 // }
 logger.debug('Memory stats retrieved', { totalEntries });
-return totalEntries;
+// return totalEntries;
 } catch (error)
 // {
   logger.warn('Failed to get memory stats', error);
-  return 0;
+  // return 0;
 // }
 // }
-async function getResourceUsage(logger = await import('node);
+async function getResourceUsage(logger = // await import('node);'
 } /* catch */
 // {
       try {
-        os = await import('node);
+        os = // await import('node);'
       } catch {
         logger.warn('OS module unavailable, returning fallback resource info');
     // return {memory = os.totalmem(); // LINT: unreachable code removed
@@ -79,7 +79,7 @@ async function getResourceUsage(logger = await import('node);
   console.warn(`${overallStatus} (orchestrator ${status.orchestrator.running ? 'active' )`);
 
   // Core components
-  console.warn(`🤖Agents = === 0) {
+  console.warn(`🤖Agents = === 0) {`
     console.warn('   Run "claude-zen agent spawn researcher" to create an agent');
   //   }
   if (status.memory.entries === 0) {
@@ -98,7 +98,7 @@ function formatBytes() {
   //   }
 
 
-  return `${size.toFixed(2)} ${units[unitIndex]}`;
+  // return `${size.toFixed(2)} ${units[unitIndex]}`;
 // }
 
 
@@ -115,3 +115,5 @@ function formatUptime(milliseconds = === 0) return '0s';
     // return `\${seconds // LINT}s`;
 // }
 
+
+}}}}}})))))

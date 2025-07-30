@@ -20,23 +20,23 @@ function log() {
 // }
 async function runTest() {
   log('🧪 MCP Persistence Verification', 'blue');
-  log('Testing issue #312);
+  log('Testing issue #312);'
   const _dbPath = path.join(process.cwd(), '.swarm', 'memory.db');
   const _testsPassed = 0;
   const _testsTotal = 0;
   // Test 1: Check if database exists
   testsTotal++;
-  log('1️⃣ Checking if SQLite database exists...', 'yellow');
+  log('1⃣ Checking if SQLite database exists...', 'yellow');
   if (fs.existsSync(dbPath)) {
-    log(`✅ Database found at);
+    log(`✅ Database found at);`
     log(`   Size: ${fs.statSync(dbPath).size} bytes`, 'green');
     testsPassed++;
   } else {
-    log(`❌ Database not found at);
+    log(`❌ Database not found at);`
 // }
   // Test 2: Store data using memory_usage
   testsTotal++;
-  log('\n2️⃣ Testing memory_usage store operation...', 'yellow');
+  log('\n2⃣ Testing memory_usage store operation...', 'yellow');
   try {
     const _testKey = `verify_test_${Date.now()}`;
     const _testValue = {
@@ -53,39 +53,39 @@ async function runTest() {
       fs.writeFileSync('.test-key', testKey);
     } else {
       log('❌ Store operation failed', 'red');
-      log(`   Response);
+      log(`   Response);`
 // }
 // }
 catch (error)
 // {
-  log(`❌ Store operation error);
+  log(`❌ Store operation error);`
 // }
 // Test 3: Retrieve the stored data
 testsTotal++;
-log('\n3️⃣ Testing memory_usage retrieve operation...', 'yellow');
+log('\n3⃣ Testing memory_usage retrieve operation...', 'yellow');
 try {
     const _testKey = fs.existsSync('.test-key');
       ? fs.readFileSync('.test-key', 'utf8');
       : `verify_test_\$Date.now()`;
     const _retrieveResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action");
-    if (retrieveResult.includes('"found")) {
+      `npx claude-zen@alpha mcp call memory_usage '{"action");'`
+    if (retrieveResult.includes('"found")) {'
       log('✅ Retrieve operation succeeded - data w!', 'green');
       testsPassed++;
     } else {
       log('❌ Retrieve operation failed - data not found', 'red');
-      log(`   Response);
+      log(`   Response);`
 // }
   } catch (error) {
-    log(`❌ Retrieve operation error);
+    log(`❌ Retrieve operation error);`
 // }
 // Test 4: List stored entries
 testsTotal++;
-log('\n4️⃣ Testing memory_usage list operation...', 'yellow');
+log('\n4⃣ Testing memory_usage list operation...', 'yellow');
 try {
     const _listResult = execSync(;
-      `npx claude-zen@alpha mcp call memory_usage '{"action");
-    if (listResult.includes('"success")) {
+      `npx claude-zen@alpha mcp call memory_usage '{"action");'`
+    if (listResult.includes('"success")) {'
       log('✅ List operation succeeded', 'green');
       testsPassed++;
       // Try to parse and show entry count
@@ -101,11 +101,11 @@ try {
       log('❌ List operation failed', 'red');
 // }
   } catch (error) {
-    log(`❌ List operation error);
+    log(`❌ List operation error);`
 // }
 // Test 5: Test hooks persistence
 testsTotal++;
-log('\n5️⃣ Testing hooks notification persistence...', 'yellow');
+log('\n5⃣ Testing hooks notification persistence...', 'yellow');
 try {
     const _message = `Persistence test \$Date.now()`;
     const _hookResult = execSync(;
@@ -117,14 +117,14 @@ try {
       log('❌ Hook notification not persisted', 'red');
 // }
   } catch (error) {
-    log(`❌ Hook notification error);
+    log(`❌ Hook notification error);`
 // }
 // Test 6: Database size check (should grow after operations)
 testsTotal++;
-log('\n6️⃣ Checking if database size increased...', 'yellow');
+log('\n6⃣ Checking if database size increased...', 'yellow');
 if (fs.existsSync(dbPath)) {
   const _newSize = fs.statSync(dbPath).size;
-  log(`✅ Database size);
+  log(`✅ Database size);`
   if (newSize > 0) {
     testsPassed++;
 // }
@@ -134,15 +134,15 @@ if (fs.existsSync(dbPath)) {
 // Summary
 log(`\n\$'='.repeat(50)`, 'yellow');
 log(;
-`📊 Test Summary: $testsPassed/${testsTotal} passed`,
+`� Test Summary: $testsPassed/${testsTotal} passed`,
 testsPassed === testsTotal ? 'green' : 'yellow';
 // )
 if (testsPassed === testsTotal) {
   log('\n✨ All tests passed!', 'green');
-  log('🎯 MCP tools are properly persisting data to SQLite', 'green');
+  log(' MCP tools are properly persisting data to SQLite', 'green');
   log('✅ Issue #312 appears to be resolved!', 'green');
 } else if (testsPassed > testsTotal / 2) {
-  log('\n⚠️ Partial success - some persistence is working', 'yellow');
+  log('\n⚠ Partial success - some persistence is working', 'yellow');
   log('Check the failed tests above for details', 'yellow');
 } else {
   log('\n❌ Most tests failed - persistence may not be working', 'red');
@@ -156,6 +156,7 @@ if (fs.existsSync('.test-key')) {
 // Run the test
 runTest().catch((error) =>
 // {
-  log(`\n💥 Fatal error);
+  log(`\n� Fatal error);`
   process.exit(1);
 })
+}}

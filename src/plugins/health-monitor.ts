@@ -4,22 +4,22 @@
  */
 
 import { performance } from 'node:perf_hooks';
-// interface HealthMetrics {pluginName = new Map()
-private;
-healthCheckInterval?: NodeJS.Timeout;
-private;
-metricsCollectionInterval?: NodeJS.Timeout;
-private;
-trendAnalysisInterval?: NodeJS.Timeout;
-private;
-healthThresholds = new Map()
-private;
-healthTrends = new Map()
-private;
-systemHealthHistory = []
-private;
-readonly;
-config = {}
+// // interface HealthMetrics {pluginName = new Map() {}
+// private;
+// healthCheckInterval?: NodeJS.Timeout;
+// private;
+// metricsCollectionInterval?: NodeJS.Timeout;
+// private;
+// trendAnalysisInterval?: NodeJS.Timeout;
+// private;
+// healthThresholds = new Map() {}
+// private;
+// healthTrends = new Map() {}
+// private;
+// systemHealthHistory = []
+// private;
+// readonly;
+// config = {}
 // )
 // {
   super();
@@ -57,12 +57,12 @@ performScheduledHealthChecks();
       for (const healthCheck of pluginData.healthChecks) {
         if (this.shouldRunHealthCheck(healthCheck, now)) {
           try {
-// await this.runHealthCheck(pluginName, healthCheck);
+// // await this.runHealthCheck(pluginName, healthCheck);
           } catch (_error = now.getTime() - healthCheck.lastRun.getTime();
-    return timeSinceLastRun >= healthCheck.interval;
+    // return timeSinceLastRun >= healthCheck.interval;
     //   // LINT: unreachable code removed}
 
-  private async runHealthCheck(pluginName = this.plugins.get(pluginName);
+  // private async runHealthCheck(pluginName = this.plugins.get(pluginName);
     if (!pluginData) return;
     // ; // LINT: unreachable code removed
     const _startTime = performance.now();
@@ -70,21 +70,21 @@ performScheduledHealthChecks();
 
       switch (healthCheck.type) {
         case 'basic':;
-          result = await this.performBasicHealthCheck(pluginData.plugin);
+          result = // await this.performBasicHealthCheck(pluginData.plugin);
           break;
         case 'detailed':;
-          result = await this.performDetailedHealthCheck(pluginData.plugin);
+          result = // await this.performDetailedHealthCheck(pluginData.plugin);
           break;
         case 'performance':;
-          result = await this.performPerformanceHealthCheck(pluginData.plugin);
+          result = // await this.performPerformanceHealthCheck(pluginData.plugin);
           break;
         case 'dependency':;
-          result = await this.performDependencyHealthCheck(pluginData.plugin);
+          result = // await this.performDependencyHealthCheck(pluginData.plugin);
           break;
         case 'custom':;
-          result = await this.performCustomHealthCheck(pluginData.plugin, healthCheck);
+          result = // await this.performCustomHealthCheck(pluginData.plugin, healthCheck);
           break;
-        default = await this.performBasicHealthCheck(pluginData.plugin);
+        default = // await this.performBasicHealthCheck(pluginData.plugin);
       //       }
 
 
@@ -110,7 +110,7 @@ performScheduledHealthChecks();
       // Enhance basic result with response time
       result.metrics = {
 ..result.metrics,
-        responseTime,timestamp = await this.performBasicHealthCheck(plugin);
+        responseTime,timestamp = // await this.performBasicHealthCheck(plugin);
 
     // Add detailed checks
     const _detailedIssues = [];
@@ -147,7 +147,7 @@ performScheduledHealthChecks();
     //     }
 
 
-    return {
+    // return {
 ..basicResult,score = performance.now();
     // ; // LINT: unreachable code removed
     try {
@@ -172,7 +172,7 @@ performScheduledHealthChecks();
       //       }
 
 
-      return {status = [];
+      // return {status = [];
     // const __score = 100; // LINT) {
       try {
 // const _dependencyResults = await(plugin as any).checkDependencies();
@@ -191,7 +191,7 @@ performScheduledHealthChecks();
       // No dependency checking available
       metrics.dependencyCheckAvailable = false;
 
-    return {status = new Date();
+    // return {status = new Date();
     // ; // LINT: unreachable code removed
     for (let [pluginName, pluginData] of this.plugins) {
       try {
@@ -204,7 +204,7 @@ performScheduledHealthChecks();
 
     // Get basic performance metrics
 
-    return {
+    // return {
       pluginName,timestamp = === 'function') {
       try {
 // const _deps = await(plugin as any).checkDependencies();
@@ -215,7 +215,7 @@ map(([name]) => name);
         return {status = === 0 ? 'healthy' : 'failing',
     // failedChecks,latency = === 'function') { // LINT: unreachable code removed
       try {
-        return await (plugin as any).getMetrics();
+        return // await (plugin as any).getMetrics();
     //   // LINT: unreachable code removed} catch (error) ;
         return {error = this.healthThresholds.get(pluginName)  ?? [];
     // ; // LINT: unreachable code removed
@@ -231,29 +231,29 @@ map(([name]) => name);
       if (value && typeof value === 'object' && key in value) {
         value = value[key];
       } else {
-        return null;
+        // return null;
     //   // LINT: unreachable code removed}
     //     }
 
 
-    return typeof value === 'number' ?value = threshold.critical;
+    // return typeof value === 'number' ?value = threshold.critical;
     // ; // LINT: unreachable code removed
     switch (threshold.comparison) {
       case 'greater_than':;
-        return value > criticalValue;
+        // return value > criticalValue;
     // case 'less_than':; // LINT: unreachable code removed
-        return value < criticalValue;
+        // return value < criticalValue;
     // case 'equals':; // LINT: unreachable code removed
-        return value === criticalValue;
+        // return value === criticalValue;
     // case 'not_equals':; // LINT: unreachable code removed
-        return value !== criticalValue;default = await this.calculateHealthTrends(pluginName, pluginData.metrics);
+        // return value !== criticalValue;default = // await this.calculateHealthTrends(pluginName, pluginData.metrics);
       this.healthTrends.set(pluginName, trends);
 
       for (const trend of trends) {
         if (trend.trend === 'critical'  ?? trend.trend === 'degrading') {
           this.emit('health-trend-alert', {
             pluginName,
-            trend,timestamp = await this.generateSystemHealthSummary();
+            trend,timestamp = // await this.generateSystemHealthSummary();
     this.systemHealthHistory.push({timestamp = this.systemHealthHistory.slice(-this.config.maxHistoryPoints);
     //     }
 
@@ -262,7 +262,7 @@ map(([name]) => name);
   //   }
 
 
-  private async calculateHealthTrends(pluginName = [];
+  // private async calculateHealthTrends(pluginName = [];
     const __recentMetrics = metrics.slice(-20); // Last 20 data points
 
     // Analyze response time trend
@@ -303,7 +303,7 @@ map(([name]) => name);
     //     }
 
 
-    return {
+    // return {
       trend,confidence = Array.from(this.plugins.values());
     // ; // LINT: unreachable code removed
     const __degradedCount = plugins.filter(p => p.lastHealthResult?.status === 'degraded').length;
@@ -323,13 +323,13 @@ map(([name]) => name);
     // Generate recommendations
     const __recommendations = this.generateHealthRecommendations(plugins, allTrends);
 
-    return {
+    // return {
       overall,score = === 0) return 0;
     // return values.reduce((sum, val) => sum + val, 0) / values.length; // LINT: unreachable code removed
   //   }
 
 
-  private generateHealthRecommendations(plugins = [];
+  // private generateHealthRecommendations(plugins = [];
 
     // Check for plugins with poor health
     const _unhealthyPlugins = plugins.filter(p => p.lastHealthResult?.status === 'unhealthy');
@@ -357,11 +357,11 @@ map(([name]) => name);
     //     }
 
 
-    return recommendations;
+    // return recommendations;
     //   // LINT: unreachable code removed}
 
   // Setup methods
-  private createDefaultHealthChecks(pluginName = [];
+  // private createDefaultHealthChecks(pluginName = [];
 
     // Basic health check
     checks.push({name = [
@@ -377,7 +377,7 @@ map(([name]) => name);
   //   }
 
 
-  private cleanupOldData() {
+  // private cleanupOldData() {
     const _cutoffTime = Date.now() - this.config.retentionPeriod;
 
     for (const [_pluginName, pluginData] of this.plugins) {
@@ -399,7 +399,7 @@ map(([name]) => name);
   async getPluginHealth(pluginName = this.plugins.get(pluginName);
     if (!pluginData) return null;
     // ; // LINT: unreachable code removed
-    return pluginData.lastHealthResult  ?? null;
+    // return pluginData.lastHealthResult  ?? null;
     //   // LINT: unreachable code removed}
 
   async getPluginHealthReport(pluginName = this.plugins.get(pluginName);
@@ -408,7 +408,7 @@ map(([name]) => name);
     const _recentMetrics = pluginData.metrics.slice(-10); // Last 10 metrics
     const _trends = this.healthTrends.get(pluginName)  ?? [];
 
-    return {
+    // return {
       pluginName,currentHealth = > ({name = [];
     // ; // LINT: unreachable code removed
     if (pluginData.lastHealthResult?.score < 70) {
@@ -431,18 +431,18 @@ map(([name]) => name);
     //     }
 
 
-    return recommendations;
+    // return recommendations;
     //   // LINT: unreachable code removed}
 
   async getSystemHealth(): Promise<SystemHealthSummary> {
-    return await this.generateSystemHealthSummary();
+    // return await this.generateSystemHealthSummary();
     //   // LINT: unreachable code removed}
 
   getPluginMetrics(pluginName = this.plugins.get(pluginName);
     if (!pluginData) return [];
     // ; // LINT: unreachable code removed
     const _metrics = pluginData.metrics;
-    return limit ? metrics.slice(-limit) : metrics;
+    // return limit ? metrics.slice(-limit) ;
     //   // LINT: unreachable code removed}
 
   async runImmediateHealthCheck(pluginName = this.plugins.get(pluginName);
@@ -454,7 +454,7 @@ map(([name]) => name);
 
     if (!healthCheck) return null;
     // ; // LINT: unreachable code removed
-// await this.runHealthCheck(pluginName, healthCheck);
+// // await this.runHealthCheck(pluginName, healthCheck);
     return pluginData.lastHealthResult  ?? null;
     //   // LINT: unreachable code removed}
 
@@ -485,4 +485,6 @@ map(([name]) => name);
 // }
 
 
-export default HealthMonitor;
+// export default HealthMonitor;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))

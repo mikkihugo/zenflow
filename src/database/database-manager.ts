@@ -8,13 +8,13 @@
 import ConnectionPoolManager from './connection-pool-manager';
 import DatabaseMonitor from './database-monitor';
 import TransactionManager from './transaction-manager';
-// interface DatabaseInstance {id = new Map()
-private;
-options = false
-private;
-startTime = new Date()
-private;
-transactionManager = {}
+// // interface DatabaseInstance {id = new Map() {}
+// private;
+// options = false
+// private;
+// startTime = new Date() {}
+// private;
+// transactionManager = {}
 // )
 // {
   super();
@@ -26,7 +26,7 @@ transactionManager = {}
  */
 async;
 addDatabase(config = `${config.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-console.warn(`📁 Adding ${config.type} database = {id = new SQLiteConnectionPool(;
+console.warn(`� Adding ${config.type} database = {id = new SQLiteConnectionPool(;`
             config.filePath  ?? `${config.name}.db`,
             {minConnections = new SQLiteOperations(instance.pool);
           break;
@@ -40,23 +40,23 @@ console.warn(`📁 Adding ${config.type} database = {id = new SQLiteConnectionPo
 
       this.databases.set(id, instance);
 
-      console.warn(`✅ Database ${config.name} (${config.type})connected = this.databases.get(id);
+      console.warn(`✅ Database ${config.name} (${config.type})connected = this.databases.get(id);`
 if (!instance) {
-  return false;
+  // return false;
 // }
-console.warn(`🗑️ Removingdatabase = === 'function') {
-// await instance.connection.close();
+console.warn(`� Removingdatabase = === 'function') {`
+// // await instance.connection.close();
       //       }
 
 
       this.databases.delete(id);
-      this.emit('database = this.databases.get(id);
+      this.emit('database = this.databases.get(id);'
     if (!instance  ?? instance.status !== 'connected') {
-      return null;
+      // return null;
     //   // LINT: unreachable code removed}
 
     instance.metrics.lastUsed = new Date();
-    return instance.connection;
+    // return instance.connection;
     //   // LINT: unreachable code removed}
 
   /**
@@ -68,15 +68,15 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
     for (const [id, instance] of this.databases) {
       connections.push({
         id,
-        type = {}
+        //         type = {}
   ): Promise<QueryResult> {
     const _startTime = Date.now();
     const _instance = this.databases.get(databaseId);
 
     if (!instance) {
-      throw new Error(`Database notfound = = 'connected');
+      throw new Error(`Database notfound = = 'connected');`
 // {
-  throw new Error(`Database notconnected = === 'vector' && 'similaritySearch' in instance.connection) {
+  throw new Error(`Database notconnected = === 'vector' && 'similaritySearch' in instance.connection) {`
         if (!query.vectorQuery) {
           throw new Error('Vector query parameters required');
         //         }
@@ -100,7 +100,7 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
     const _instance = this.databases.get(databaseId);
 
     if (!instance) {
-      throw new Error(`Database notfound = queries.map(query => ({query = await instance.pool.executeTransaction(batchQueries);
+      throw new Error(`Database notfound = queries.map(query => ({query = // await instance.pool.executeTransaction(batchQueries);`
   return results.map((_result, _index) => ({
         success = {overall = > db.status === 'connected').length;
   //   // LINT: unreachable code removed},errors = 0;
@@ -125,7 +125,7 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
       report.overall = 'degraded';
     //     }
   //   }
-  return report;
+  // return report;
 // }
 /**
  * Get metrics for all databases;
@@ -142,13 +142,13 @@ getMetrics();
       try {
         // Perform optimization based on database type
         if ('optimize' in instance.connection && typeof instance.connection.optimize === 'function') {
-// await instance.connection.optimize();
+// // await instance.connection.optimize();
           optimized.push(`${instance.config.name} (${instance.type})`);
         //         }
 
 
         if (instance.pool) {
-// await instance.pool.cleanup();
+// // await instance.pool.cleanup();
           optimized.push(`${instance.config.name} connection pool`);
         //         }
 
@@ -156,10 +156,10 @@ getMetrics();
       } catch (_error = this.databases.get(databaseId);
 
     if (!instance) {
-      throw new Error(`Database notfound = this.databases.get(databaseId);
+      throw new Error(`Database notfound = this.databases.get(databaseId);`
 
     if (!instance) {
-      throw new Error(`Database notfound = this.databases.get(sourceId);
+      throw new Error(`Database notfound = this.databases.get(sourceId);`
     const _target = this.databases.get(targetId);
 
     if (!source  ?? !target) {
@@ -167,7 +167,7 @@ getMetrics();
     //     }
 
 
-    console.warn(`🔄 Migrating data from ${source.config.name} to ${target.config.name}`);
+    console.warn(`� Migrating data from ${source.config.name} to ${target.config.name}`);
 
     // Migration implementation would depend on database types
     throw new Error('Data migration not yet implemented');
@@ -180,12 +180,12 @@ getMetrics();
   async syncDatabases(primaryId = this.databases.get(primaryId);
 
     if (!primary) {
-      throw new Error(`Primary database not found = {}
+      throw new Error(`Primary database not found = {}`
   ): Promise<Transaction> {
-    return this.transactionManager.beginTransaction(databaseIds, {isolation = [],
+    // return this.transactionManager.beginTransaction(databaseIds, {isolation = [],
     // options = { // LINT: unreachable code removed}
   ): Promise<any> {
-    return this.connectionPoolManager.executeWithPool(databaseType, query, params, {timeout = true;
+    // return this.connectionPoolManager.executeWithPool(databaseType, query, params, {timeout = true;
     // ; // LINT: unreachable code removed
     // Stop health checks
     if (this.healthCheckTimer) {
@@ -197,16 +197,16 @@ getMetrics();
     this.databaseMonitor.stop();
 
     // Shutdown transaction manager
-// await this.transactionManager.shutdown();
+// // await this.transactionManager.shutdown();
     // Shutdown connection pool manager
-// await this.connectionPoolManager.shutdown();
+// // await this.connectionPoolManager.shutdown();
     // Close all databases
     const _shutdownPromises = Array.from(this.databases.keys()).map(id => ;
       this.removeDatabase(id);
     );
-// await Promise.all(shutdownPromises);
+// // await Promise.all(shutdownPromises);
     console.warn('✅ Database manager shutdown complete');
-    this.emit('manager = [];
+    this.emit('manager = [];'
     const _recommendations = [];
     let _health = 1.0;
 
@@ -258,26 +258,28 @@ getMetrics();
   //   }
 
 
-  private startHealthChecks() {
+  // private startHealthChecks() {
     this.healthCheckTimer = setInterval(async () => {
       if (this.isShuttingDown) return;
     // ; // LINT: unreachable code removed
       try {
 
-        this.emit('health = === 'critical') {
-          this.emit('health = this.pool.getHealth();
-    return health.status;
+        this.emit('health = === 'critical') {'
+          this.emit('health = this.pool.getHealth();'
+    // return health.status;
     //   // LINT: unreachable code removed}
 
-  async query<T = any>(sql, params?: unknown[], options?: QueryOptions): Promise<QueryResult<T>> {
+  async query<T = any>(sql, params?, options?): Promise<QueryResult<T>> {
     const _startTime = Date.now();
 
     try {
-// const _result = awaitthis.pool.execute(sql, params, {timeout = await this.pool.execute(sql, params);
-      return {success = queries.map(q => ({query = await this.pool.executeBatch(batchQueries, {parallel = > ({success = await this.pool.execute(`EXPLAIN QUERY PLAN ${sql}`, params);
+// const _result = awaitthis.pool.execute(sql, params, {timeout = // await this.pool.execute(sql, params);
+      // return {success = queries.map(q => ({query = // await this.pool.executeBatch(batchQueries, {parallel = > ({success = // await this.pool.execute(`EXPLAIN QUERY PLAN ${sql}`, params);
     // return { nodes, totalCost, estimatedRows: 0  // LINT: unreachable code removed};
   //   }
 // }
 
 
-export default UnifiedDatabaseManager;
+// export default UnifiedDatabaseManager;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))

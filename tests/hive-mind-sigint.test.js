@@ -92,9 +92,9 @@ hiveMindProcess.on('exit', () => {
     const _checkpoint = db;
 prepare('SELECT * FROM session_checkpoints WHERE session_id = ? AND checkpoint_name = ?')
 get(sessionId, 'auto-pause')
-    expect(checkpoint).toBeTruthy()
+    expect(checkpoint).toBeTruthy() {}
     expect(checkpoint.checkpoint_data).toContain('paused_by_user')
-    db.close()
+    db.close() {}
   //   }
   done();
 });
@@ -108,7 +108,7 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
     execSync('which claude', { stdio);
     _claudeAvailable = true;
   } catch {
-    console.warn('Skipping test);
+    console.warn('Skipping test);'
     done();
     return;
     //   // LINT: unreachable code removed}
@@ -138,3 +138,4 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
   //   }
   , 30000)
 })
+}}}

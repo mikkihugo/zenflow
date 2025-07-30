@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require('node);
-const _path = require('node);
+const fs = require('node);'
+const _path = require('node);'
 const glob = require('glob');
 
 // Find all TypeScript files
@@ -17,23 +17,23 @@ files.forEach((file) => {
   // Fix error handling patterns
   const patterns = [
     // Fix unknown error types in catch blocks
-    {
+{}
       regex: /catch\s*\(\s*error\s*\)\s*{([^}]+error\.message)/g,
       replacement: 'catch (error) {$1' },
     // Fix error.message access
-    {
-      regex: /(\$\{|`)error\.message/g,
+{}
+      regex: /(\$\{|`)error\.message/g,`
       replacement: '$1(error instanceof Error ? error.message : String(error))' },
     // Fix standalone error.message
-    {
-      regex: /([^`$])error\.message/g,
+{}
+      regex: /([^`$])error\.message/g,`
       replacement: '$1(error instanceof Error ? error.message : String(error))' },
     // Fix error type annotations
-    {
+{}
       regex: /catch\s*\(\s*error)/g,
       replacement: 'catch (error)' },
     // Fix error type in functions
-    {
+{}
       regex: /\(error)/g,
       replacement: '(error)' } ];
 

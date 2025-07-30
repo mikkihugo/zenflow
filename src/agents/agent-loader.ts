@@ -10,39 +10,37 @@ import { fileURLToPath } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-export interface AgentType {
-  // name: string
-  // displayName: string
-  // description: string
-  capabilities;
-  // priority: number
-  legacy?: boolean;
-// }
-export interface AgentStats {
-  // total: number
-  // builtin: number
-  // legacy: number
-  // dynamic: number
-// }
+export // interface AgentType {
+//   // name: string
+//   // displayName: string
+//   // description: string
+//   capabilities;
+//   // priority: number
+//   legacy?;
+// // }
+export // interface AgentStats {
+//   // total: number
+//   // builtin: number
+//   // legacy: number
+//   // dynamic: number
+// // }
 /**
  * Singleton class for loading and managing agent types;
  */
-export class AgentLoader {
-  private static instance: AgentLoader,
-  private agentTypes = new Map<string, AgentType>();
-  private initialized = false;
-  static getInstance() {
+// export class AgentLoader {
+  // private // static instance,
+  // private agentTypes = new Map<string, AgentType>();
+  // private initialized = false;
+  // static getInstance() {
     if (!AgentLoader.instance) {
       AgentLoader.instance = new AgentLoader();
     //     }
-    return AgentLoader.instance;
+    // return AgentLoader.instance;
     //   // LINT: unreachable code removed}
     /**
      * Legacy agent mapping for backward compatibility;
      */
-    private
-    static
-    LEGACY_AGENT_MAPPING: Record<string, string> = {
+    // private // static LEGACY_AGENT_MAPPING: Record<string, string> = {
     analyst: 'code-analyzer',
     architect: 'system-architect',
     reviewer: 'code-reviewer',
@@ -62,7 +60,7 @@ export class AgentLoader {
   /**
    * Built-in agent types that are always available;
    */
-  private static BUILTIN_AGENTS = [
+  // private // static BUILTIN_AGENTS = [
     //     {
       name: 'code-analyzer',
       displayName: 'Code Analyzer',
@@ -81,7 +79,7 @@ export class AgentLoader {
       description: 'Creates and manages test suites and quality assurance',
       capabilities: ['testing', 'qa', 'automation'],
       priority} ];
-  private constructor() {
+  // private constructor() {
     // Private constructor for singleton
   //   }
   /**
@@ -98,14 +96,13 @@ export class AgentLoader {
       // Set up legacy mappings
       this.setupLegacyMappings();
       // Discover dynamic agents
-// await this.discoverDynamicAgents();
+// // await this.discoverDynamicAgents();
       this.initialized = true;
     //     }
     /**
      * Set up legacy agent mappings;
      */
-    private
-    setupLegacyMappings();
+    // private setupLegacyMappings();
     : void
     for (const [legacy, modern] of Object.entries(AgentLoader.LEGACY_AGENT_MAPPING)) {
       const _modernAgent = this.agentTypes.get(modern);
@@ -119,7 +116,7 @@ export class AgentLoader {
   /**
    * Discover agent modules from the filesystem;
    */
-  private async discoverDynamicAgents(): Promise<void> {
+  // private async discoverDynamicAgents(): Promise<void> {
     const _agentsDir = join(__dirname, '.');
     try {
 // const _files = awaitfs.readdir(agentsDir);
@@ -134,17 +131,17 @@ export class AgentLoader {
 // const _stats = awaitfs.stat(filePath);
 
         if (stats.isFile() && (extname(file) === '.js'  ?? extname(file) === '.ts')) {
-// await this.loadAgentFromFile(filePath);
+// // await this.loadAgentFromFile(filePath);
         //         }
       //       }
     } catch (error) {
-      console.warn(`⚠️ Could not discover dynamic agents);
+      console.warn(`⚠ Could not discover dynamic agents);`
     //     }
   //   }
   /**
    * Load an agent from a file;
    */
-  private async loadAgentFromFile(filePath): Promise<void> {
+  // private async loadAgentFromFile(filePath): Promise<void> {
     try {
 // const _module = awaitimport(filePath);
 
@@ -164,7 +161,7 @@ export class AgentLoader {
       //       }
   //   }
   catch (error) {
-    console.warn(`⚠️ Could not load agent from ${filePath});
+    console.warn(`⚠ Could not load agent from ${filePath});`
   //   }
 // }
 /**
@@ -174,10 +171,10 @@ async;
 getAgentType(name)
 : Promise<AgentType | null>
 // {
-// await this.initialize();
+// // await this.initialize();
     const _agent = this.agentTypes.get(name);
     if (agent) {
-      return agent;
+      // return agent;
     //   // LINT: unreachable code removed}
 
     // Try legacy mapping
@@ -185,7 +182,7 @@ getAgentType(name)
     if (modernName) {
       agent = this.agentTypes.get(modernName);
       if (agent) {
-        return {
+        // return {
 ..agent,
     // legacy, // LINT: unreachable code removed
         };
@@ -193,7 +190,7 @@ getAgentType(name)
     //     }
 
 
-    return null;
+    // return null;
     //   // LINT: unreachable code removed}
 
   /**
@@ -201,7 +198,7 @@ getAgentType(name)
    */;
   async hasAgentType(name): Promise<boolean> {
 // const _agent = awaitthis.getAgentType(name);
-    return agent !== null;
+    // return agent !== null;
     //   // LINT: unreachable code removed}
 
   /**
@@ -209,7 +206,7 @@ getAgentType(name)
    */;
   async getAgentTypesByCapability(capability): Promise<AgentType[]>
 // await this.initialize();
-    return Array.from(this.agentTypes.values()).filter((_agent) =>;
+    // return Array.from(this.agentTypes.values()).filter((_agent) =>;
     // agent.capabilities.includes(capability); // LINT: unreachable code removed
     );
 
@@ -217,7 +214,7 @@ getAgentType(name)
    * Get legacy agent mappings;
    */;
   getLegacyMappings(): Record<string, string>
-    return { ...AgentLoader.LEGACY_AGENT_MAPPING };
+    // return { ...AgentLoader.LEGACY_AGENT_MAPPING };
     //   // LINT: unreachable code removed}
 
   /**
@@ -231,7 +228,7 @@ getAgentType(name)
    */;
   async getAllAgentTypes(): Promise<AgentType[]>
 // await this.initialize();
-    return Array.from(this.agentTypes.values());
+    // return Array.from(this.agentTypes.values());
     //   // LINT: unreachable code removed}
 
   /**
@@ -254,4 +251,4 @@ getAgentType(name)
 
 // Export singleton instance
 const _agentLoader = AgentLoader.getInstance();
-export default agentLoader;
+// export default agentLoader;

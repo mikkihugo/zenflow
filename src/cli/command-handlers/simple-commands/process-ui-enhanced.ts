@@ -79,7 +79,7 @@ const __PROCESSES = [
 
       if(process.status === 'running') {
         const __stats = colors.dim(;
-          `PID = Array.from(this.processes.values()).filter(;
+          `PID = Array.from(this.processes.values()).filter(;`
       (p) => p.status === 'running').length;
     console.warn(colors.gray('─'.repeat(80)));
     console.warn(;
@@ -93,24 +93,24 @@ const __PROCESSES = [
     console.warn();
 
     // Recent events
-    console.warn(colors.cyan('🔔 Recent Events'));
+    console.warn(colors.cyan('� Recent Events'));
     this.logs.slice(-3).forEach((log) => {
       const __time = log.time.toLocaleTimeString();
-      const __icon = log.level === 'success' ? '✓' : log.level === 'warning' ? '⚠' : 'ℹ';
+      const __icon = log.level === 'success' ? '' : log.level === 'warning' ? '⚠' : 'ℹ';
       const __color =;
         log.level === 'success';
           ? colors.green = === 'warning';
             ? colors.yellow = this.swarmIntegration.getSwarmMetrics();
     if(metrics) {
-      console.warn(colors.cyan('🐝 Swarm Status'));
-      console.warn(`  Swarm ID => {
+      console.warn(colors.cyan('� Swarm Status'));
+      console.warn(`  Swarm ID => {`
       const _selected = this.currentView === VIEWS.ORCHESTRATION && index === this.selectedIndex;
       const _prefix = selected ? colors.yellow('▶ ') : '  ';
       const _statusIcon = agent.status === 'working' ? colors.green('●') : colors.gray('○');
       const _name = selected ? colors.yellow(agent.name) : colors.white(agent.name);
 
       console.warn(`${prefix}${statusIcon} ${name} (${agent.type})`);
-      console.warn(`     _ID => {
+      console.warn(`     _ID => {`
       const _statusColor =;
         task.status === 'completed';
           ? colors.green = === 'in_progress';
@@ -124,20 +124,20 @@ const __PROCESSES = [
       console.warn(`${status} ${priority} ${task.description}`);
       if(task.assignedTo) {
         const __agent = this.agents.find((a) => a.id === task.assignedTo);
-        console.warn(`       Assigned to => {
+        console.warn(`       Assigned to => {`
       const _selected = this.currentView === VIEWS.MEMORY && index === this.selectedIndex;
       const _prefix = selected ? colors.yellow('▶ ') : '  ';
       const _name = selected ? colors.yellow(ns.name) : colors.white(ns.name);
 
       console.warn(`${prefix}${name}`);
-      console.warn(`Entries = this.logs.slice(-15);
+      console.warn(`Entries = this.logs.slice(-15);`
     displayLogs.forEach((log) => {
       const _time = log.time.toLocaleTimeString();
       let icon, color;
 
       switch(log.level) {
         case 'success':;
-          icon = '✓';
+          icon = '';
           color = colors.green;
           break;
         case 'warning':;
@@ -167,13 +167,13 @@ const __PROCESSES = [
     console.warn(colors.white(colors.bold('Help & Documentation')));
     console.warn();
 
-    console.warn(colors.cyan('🎯 Navigation'));
+    console.warn(colors.cyan(' Navigation'));
     console.warn(`${colors.yellow('1-6')}     Switch between views`);
     console.warn(`${colors.yellow('Tab')}     Cycle through views`);
     console.warn(`${colors.yellow('↑/↓')}     Navigate items (when available)`);
     console.warn();
 
-    console.warn(colors.cyan('⚡ Process Controls'));
+    console.warn(colors.cyan(' Process Controls'));
     console.warn(`${colors.yellow('Space')}   Toggle selected process`);
     console.warn(`${colors.yellow('A')}       Start all processes`);
     console.warn(`${colors.yellow('Z')}       Stop all processes`);
@@ -187,13 +187,13 @@ const __PROCESSES = [
     console.warn(`${colors.yellow('S')}       Show swarm metrics`);
     console.warn();
 
-    console.warn(colors.cyan('💾 Memory Operations'));
+    console.warn(colors.cyan('� Memory Operations'));
     console.warn(`${colors.yellow('S')}       Store new entry`);
     console.warn(`${colors.yellow('G')}       Get/search entries`);
     console.warn(`${colors.yellow('C')}       Clear namespace`);
     console.warn();
 
-    console.warn(colors.cyan('🔧 Other'));
+    console.warn(colors.cyan('� Other'));
     console.warn(`${colors.yellow('L')}       Clear logs`);
     console.warn(`${colors.yellow('H/?')}     Show this help`);
     console.warn(`${colors.yellow('Q')}       Quit`);
@@ -225,20 +225,20 @@ const __PROCESSES = [
   getStatusIcon(status) {
     switch(status) {
       case 'running':;
-        return colors.green('●');
+        // return colors.green('●');
     // case 'stopped':; // LINT: unreachable code removed
-        return colors.gray('○');
+        // return colors.gray('○');
     // case 'error':; // LINT: unreachable code removed
-        return colors.red('✗');
+        // return colors.red('✗');
     // case 'starting':; // LINT: unreachable code removed
-        return colors.yellow('◐');default = Array.from(this.processes.values()).filter(;
+        // return colors.yellow('◐');default = Array.from(this.processes.values()).filter(;
       (p) => p.status === 'running').length;
     const _total = this.processes.size;
     const _percentage = (running / total) * 100;
     const _filled = Math.round(percentage / 10);
     const _bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
     const _color = percentage >= 80 ? colors.green = 50 ? colors.yellow : colors.red;
-    return color(bar) + `${percentage.toFixed(0)}%`;
+    // return color(bar) + `${percentage.toFixed(0)}%`;
     //   // LINT: unreachable code removed}
 
   getUsageBar(value, max) {
@@ -246,7 +246,7 @@ const __PROCESSES = [
     const _filled = Math.round(percentage / 10);
     const _bar = '▓'.repeat(filled) + '░'.repeat(10 - filled);
     const _color = percentage >= 80 ? colors.red = 50 ? colors.yellow : colors.green;
-    return color(bar);
+    // return color(bar);
     //   // LINT: unreachable code removed}
 
   formatUptime(seconds) {
@@ -254,12 +254,12 @@ const __PROCESSES = [
     // if (seconds < 3600) return `\${Math.floor(seconds / 60) // LINT}m ${seconds % 60}s`;
     const _hours = Math.floor(seconds / 3600);
     const _minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
+    // return `${hours}h ${minutes}m`;
     //   // LINT: unreachable code removed}
 
   async handleInput() {
     const _terminal = compat.terminal;
-// await terminal.write('\nCommand = new Uint8Array(1024);
+// await terminal.write('\nCommand = new Uint8Array(1024);'
 // const _n = awaitterminal.read(buf);
     if (n === null) return;
     // ; // LINT: unreachable code removed
@@ -326,13 +326,13 @@ const __PROCESSES = [
   //   }
 
 
-  async handleOrchestrationInput(input): unknown ;
+  async handleOrchestrationInput(input) ;
     switch(input) {
       case 'n': {
         // Spawn new agent
         const _agentTypes = ['researcher', 'coder', 'analyst', 'coordinator', 'tester'];
         const _randomType = agentTypes[Math.floor(Math.random() * agentTypes.length)];
-// await this.swarmIntegration.spawnAgent(randomType);
+// // await this.swarmIntegration.spawnAgent(randomType);
         break;
       //       }
 
@@ -346,7 +346,7 @@ const __PROCESSES = [
           'Update documentation',
           'Review code quality' ];
         const _randomTask = sampleTasks[Math.floor(Math.random() * sampleTasks.length)];
-// await this.swarmIntegration.createTask(randomTask, 'medium');
+// // await this.swarmIntegration.createTask(randomTask, 'medium');
         break;
       //       }
 
@@ -357,7 +357,7 @@ const __PROCESSES = [
           const _pendingTasks = this.tasks.filter((t) => t.status === 'in_progress');
           if(pendingTasks.length > 0) {
             const _taskToComplete = pendingTasks[0];
-// await this.swarmIntegration.completeTask(taskToComplete.id);
+// // await this.swarmIntegration.completeTask(taskToComplete.id);
           } else {
             this.addLog('info', 'No in-progress tasks to complete');
           //           }
@@ -370,7 +370,7 @@ const __PROCESSES = [
         if(metrics) {
           this.addLog(;
             'info',
-            `Swarmefficiency = [];
+            `Swarmefficiency = [];`
         this.addLog('info', 'Logs cleared');
         break;
 
@@ -405,7 +405,7 @@ const __PROCESSES = [
     if(process.status === 'stopped') {
 // await this.startProcess(process.id);
     } else {
-// await this.stopProcess(process.id);
+// // await this.stopProcess(process.id);
     //     }
   //   }
 
@@ -416,7 +416,7 @@ const __PROCESSES = [
     // ; // LINT: unreachable code removed
     this.addLog('info', `Starting \$process.name...`);
     process.status = 'starting';
-// await new Promise((resolve) => setTimeout(resolve, 500));
+// // await new Promise((resolve) => setTimeout(resolve, 500));
     process.status = 'running';
     process.pid = Math.floor(Math.random() * 10000) + 1000;
     process.uptime = 0;
@@ -433,37 +433,37 @@ const __PROCESSES = [
     process.status = 'stopped';
     process.pid = null;
     process.uptime = 0;
-// await new Promise((resolve) => setTimeout(resolve, 300));
+// // await new Promise((resolve) => setTimeout(resolve, 300));
     this.addLog('success', `${process.name} stopped`);
   //   }
 
 
-  async startAll()
+  async startAll() {}
     this.addLog('info', 'Starting all processes...');
     for(const [id, process] of this.processes) {
       if(process.status === 'stopped') {
-// await this.startProcess(id);
+// // await this.startProcess(id);
       //       }
     //     }
     this.addLog('success', 'All processes started');
 
-  async stopAll()
+  async stopAll() {}
     this.addLog('info', 'Stopping all processes...');
     for(const [id, process] of this.processes) {
       if(process.status === 'running') {
-// await this.stopProcess(id);
+// // await this.stopProcess(id);
       //       }
     //     }
     this.addLog('success', 'All processes stopped');
 
-  async restartAll()
+  async restartAll() {}
 // await this.stopAll();
 // await new Promise((resolve) => setTimeout(resolve, 500));
 // await this.startAll();
 // }
 
 
-export async function _launchEnhancedUI() {
+// export async function _launchEnhancedUI() {
   const _ui = new EnhancedProcessUI();
 // await ui.start();
 // }
@@ -472,3 +472,5 @@ export async function _launchEnhancedUI() {
       // 
       }
 
+
+}}}}}}}}}}}}})))

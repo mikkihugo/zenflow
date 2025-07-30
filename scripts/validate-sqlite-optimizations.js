@@ -23,36 +23,36 @@ function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
 // }
 async function validateSQLiteOptimizations() {
-  log('🔍 SQLite Performance Optimization Validation', 'blue');
+  log('� SQLite Performance Optimization Validation', 'blue');
   log('='.repeat(50), 'blue');
   // Check SQLite availability
 // const _available = awaitisSQLiteAvailable();
   if (!available) {
     const _error = getLoadError();
-    log(`❌ SQLite not available);
+    log(`❌ SQLite not available);`
     log('   Performance optimizations cannot be tested', 'yellow');
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
   log('✅ SQLite is available', 'green');
   // Create test directory
   const _testDir = path.join(os.tmpdir(), `sqlite-validation-${Date.now()}`);
-  // await fs.mkdir(testDir, { recursive });
-  log(`📂 Test directory);
+  // // await fs.mkdir(testDir, { recursive });
+  log(` Test directory);`
   const _allTestsPassed = true;
   try {
     // Test 1: Basic functionality with optimizations
-    log('\n📈 Test 1);
+    log('\n� Test 1);'
     const _store = new SqliteMemoryStore({
       directory,
       dbName);
-  // await store.initialize();
+  // // await store.initialize();
     log('✅ Store initialized with optimizations', 'green');
     // Check indexes were created
     const _indexCheck = store.db;
-prepare(`;
+prepare(`;`
       SELECT COUNT(*)  FROM sqlite_master ;
       WHERE type = 'index' AND tbl_name = 'memory_entries';
-    `);
+    `);`
 get();
     if (indexCheck.count >= 10) {
       log(`✅ Performance indexes created (\$indexCheck.countindexes)`, 'green');
@@ -61,9 +61,9 @@ get();
       allTestsPassed = false;
     //     }
     // Test cache functionality
-  // await store.store('cache-test', { data);
-  // await store.retrieve('cache-test'); // Miss
-  // await store.retrieve('cache-test'); // Hit
+  // // await store.store('cache-test', { data);
+  // // await store.retrieve('cache-test'); // Miss
+  // // await store.retrieve('cache-test'); // Hit
 
     const _cacheStats = store.getPerformanceStats();
     if (cacheStats.cache.enabled && cacheStats.cache.hits > 0) {
@@ -74,13 +74,13 @@ get();
     //     }
     store.close();
     // Test 2: Connection Pool
-    log('\n⚡ Test 2);
+    log('\n Test 2);'
     const _poolDbPath = path.join(testDir, 'pool-test.db');
     const _pool = new SQLiteConnectionPool(poolDbPath, {
       minConnections,
       maxConnections
 })
-  // await pool.initialize()
+  // // await pool.initialize() {}
 const _poolStats = pool.getStats();
 if (poolStats.totalConnections === 2 && poolStats.availableConnections === 2) {
   log('✅ Connection pool initialized correctly', 'green');
@@ -89,39 +89,39 @@ if (poolStats.totalConnections === 2 && poolStats.availableConnections === 2) {
   allTestsPassed = false;
 // }
 // Test concurrent operations
-  // await pool.execute(`;
+  // // await pool.execute(`;`
       CREATE TABLE IF NOT EXISTS test_concurrent (;
         id INTEGER PRIMARY KEY,
         value TEXT;
       );
-    `);
+    `);`
 const _concurrentOps = [];
 for (let i = 0; i < 10; i++) {
   concurrentOps.push(;
   pool.execute('INSERT INTO test_concurrent (value) VALUES (?)', [`value-${i}`]);
   //   )
 // }
-  // await Promise.all(concurrentOps);
+  // // await Promise.all(concurrentOps);
 // const _result = awaitpool.execute('SELECT COUNT(*)  FROM test_concurrent');
 if (result[0].count === 10) {
   log('✅ Concurrent operations successful', 'green');
 } else {
-  log(`❌ Concurrent operations failed);
+  log(`❌ Concurrent operations failed);`
   allTestsPassed = false;
 // }
-  // await pool.shutdown();
+  // // await pool.shutdown();
 // Test 3: Performance with Large Dataset
-log('\n🚀 Test 3);
+log('\n� Test 3);'
 const _perfStore = new SqliteMemoryStore({
       directory,
 dbName: 'performance-test.db',
 enableCache
 })
-  // await perfStore.initialize()
+  // // await perfStore.initialize() {}
 const _start = Date.now();
 // Insert 1000 entries
 for (let i = 0; i < 1000; i++) {
-  // await perfStore.store(;
+  // // await perfStore.store(;
   `perf-key-${i}`,
   id,
   data: `Performance test entry ${i}`,
@@ -131,50 +131,50 @@ for (let i = 0; i < 1000; i++) {
   //   )
 // }
 const _insertTime = Date.now() - start;
-log(`📊 Insert time for 1000 entries);
+log(`� Insert time for 1000 entries);`
 // Test query performance
 const _queryStart = Date.now();
 // Key lookups
 for (let i = 0; i < 100; i++) {
-  // await perfStore.retrieve(`perf-key-${i}`, { namespace);
+  // // await perfStore.retrieve(`perf-key-${i}`, { namespace);
 // }
 // List operations
 for (let i = 0; i < 10; i++) {
-  // await perfStore.list({ namespace);
+  // // await perfStore.list({ namespace);
 // }
 // Search operations
-  // await perfStore.search('Performance test', { limit });
+  // // await perfStore.search('Performance test', { limit });
 const _queryTime = Date.now() - queryStart;
-log(`📊 Query time for mixed operations);
+log(`� Query time for mixed operations);`
 // Check cache effectiveness
 const _finalStats = perfStore.getPerformanceStats();
-log(`📊 Cache hit rate: ${(finalStats.cache.hitRate * 100).toFixed(1)}%`, 'cyan');
+log(`� Cache hit rate: ${(finalStats.cache.hitRate * 100).toFixed(1)}%`, 'cyan');
 // Performance assertions
 if (insertTime < 15000) {
   // 15 seconds for 1000 inserts
   log('✅ Insert performance acceptable', 'green');
 } else {
-  log(`⚠️ Insert performance slower than expected);
+  log(`⚠ Insert performance slower than expected);`
 // }
 if (queryTime < 5000) {
   // 5 seconds for mixed queries
   log('✅ Query performance acceptable', 'green');
 } else {
-  log(`⚠️ Query performance slower than expected);
+  log(`⚠ Query performance slower than expected);`
 // }
 // Get database statistics
 // const _dbStats = awaitperfStore.getDatabaseStats();
 log(;
-`📊 Database stats);
+`� Database stats);`
 // )
-perfStore.close()
+perfStore.close() {}
 // Test 4: Query Analysis
-log('\n🔍 Test 4: Query Analysis', 'blue')
+log('\n� Test 4: Query Analysis', 'blue')
 const _analysisStore = new SqliteMemoryStore({
       directory,
 dbName: 'analysis-test.db'
 })
-  // await analysisStore.initialize()
+  // // await analysisStore.initialize() {}
 // const _analysis = awaitanalysisStore.analyzeQueryPerformance();
 if (analysis.queryPlans && Object.keys(analysis.queryPlans).length >= 4) {
   log('✅ Query analysis working', 'green');
@@ -185,32 +185,32 @@ if (analysis.queryPlans && Object.keys(analysis.queryPlans).length >= 4) {
 analysisStore.close();
 } catch (error)
 // {
-  log(`❌ Test failed with error);
+  log(`❌ Test failed with error);`
   console.error(error);
   allTestsPassed = false;
 // }
 // finally
 // {
   // Cleanup
-  // await fs.rm(testDir, { recursive, force });
+  // // await fs.rm(testDir, { recursive, force });
 // }
 // Summary
-log('\n📋 Validation Summary', 'blue');
+log('\n� Validation Summary', 'blue');
 log('='.repeat(30), 'blue');
 if (allTestsPassed) {
-  log('🎉 All SQLite optimizations validated successfully!', 'green');
-  log('📈 Performance improvements are working correctly', 'green');
-  log('💾 Query caching is functional', 'green');
-  log('⚡ Connection pooling is operational', 'green');
-  log('🔍 Enhanced indexing is in place', 'green');
+  log('� All SQLite optimizations validated successfully!', 'green');
+  log('� Performance improvements are working correctly', 'green');
+  log('� Query caching is functional', 'green');
+  log(' Connection pooling is operational', 'green');
+  log('� Enhanced indexing is in place', 'green');
 } else {
-  log('⚠️ Some optimizations may have issues', 'yellow');
+  log('⚠ Some optimizations may have issues', 'yellow');
   log('   Check the output above for details', 'yellow');
 // }
-return allTestsPassed;
+// return allTestsPassed;
 // }
 // Run validation if called directly
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   validateSQLiteOptimizations();
 then((success) =>
       process.exit(success ? 0 )
@@ -220,5 +220,7 @@ catch((error) =>
   process.exit(1)
   //   )
 // }
-export { validateSQLiteOptimizations };
-export default validateSQLiteOptimizations;
+// export { validateSQLiteOptimizations };
+// export default validateSQLiteOptimizations;
+
+}}}}

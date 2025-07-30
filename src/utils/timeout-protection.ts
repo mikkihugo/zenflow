@@ -6,30 +6,30 @@
 /**
  * Interface for database store cleanup;
  */
-export interface DatabaseStore {
-  close(): Promise<void>;
-  forceClose?(): void;
-// }
+export // interface DatabaseStore {
+//   close(): Promise<void>;
+//   forceClose?();
+// // }
 /**
  * Interface for ruv-swarm hook result;
  */
-export interface RuvSwarmHookResult {success = 3000 // 3 seconds default
-/**
- * Wrap a promise with timeout protection;
- * @param promise - The promise to protect;
- * @param timeout - Timeout in milliseconds;
- * @param operation - Description of the operation;
- * @returns Promise that resolves or rejects with timeout;
-    // */ // LINT: unreachable code removed
-static;
-withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'operation'))
-: Promise<T>
-// {
-  return Promise.race([;
-    // promise, // LINT) => {
-        const __timeoutId = setTimeout(() => {
-          reject(new Error(`Timeout = > clearTimeout(timeoutId));
-      });
+export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
+// /**
+//  * Wrap a promise with timeout protection;
+//  * @param promise - The promise to protect;
+//  * @param timeout - Timeout in milliseconds;
+//  * @param operation - Description of the operation;
+//  * @returns Promise that resolves or rejects with timeout;
+//     // */ // LINT: unreachable code removed
+// static;
+// withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'operation'))
+// : Promise<T>
+// // {
+//   return Promise.race([;
+//     // promise, // LINT) => {
+//         const __timeoutId = setTimeout(() => {
+//           reject(new Error(`Timeout = > clearTimeout(timeoutId));`
+//       });
     ]);
   //   }
 
@@ -38,9 +38,9 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
    * Force process exit with timeout (for stubborn processes);
    * @param timeout - Time to wait before force exit;
    */;
-  static forceExit(timeout = 1000) {
+  // static forceExit(timeout = 1000) {
     setTimeout(() => {
-      console.warn('🚨 Force exiting process to prevent hanging...');
+      console.warn('� Force exiting process to prevent hanging...');
       process.exit(0);
     }, timeout);
   //   }
@@ -50,19 +50,19 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
    * Check if ruv-swarm is available with timeout protection;
    * @returns Whether ruv-swarm is available;
     // */; // LINT: unreachable code removed
-  static async checkRuvSwarmAvailableWithTimeout(): Promise<boolean> {
+  // static async checkRuvSwarmAvailableWithTimeout(): Promise<boolean> {
     try {
       const _checkPromise = import('../cli/utils.js').then(utils =>
-        utils.checkRuvSwarmAvailable ? utils.checkRuvSwarmAvailable() : false;
+        utils.checkRuvSwarmAvailable ? utils.checkRuvSwarmAvailable() ;
       );
-      return await TimeoutProtection.withTimeout(;
+      return // await TimeoutProtection.withTimeout(;
     // checkPromise, // LINT);
     } catch (error) {
       const _errorMessage = error instanceof Error ? error.message = {}
   ): Promise<RuvSwarmHookResult> {
     try {
       const _execPromise = import('../cli/utils.js').then(utils =>
-        utils.execRuvSwarmHook ? utils.execRuvSwarmHook(hookName, params) : null;
+        utils.execRuvSwarmHook ? utils.execRuvSwarmHook(hookName, params) ;
       );
 // const _result = awaitTimeoutProtection.withTimeout(;
         execPromise,
@@ -70,15 +70,15 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
         `ruv-swarm hook ${hookName}`;
       );
 
-      // Handle null result (function doesn't exist)
+      // Handle null result (function doesn't exist)'
       if (result === null) {
         return {success = error instanceof Error ? error.message : String(error);
-    // console.warn(`⚠️ ruv-swarm hook \${hookName // LINT) {
+    // console.warn(`⚠ ruv-swarm hook \${hookName // LINT) {`
       return;
     //   // LINT}
 
     try {
-// await TimeoutProtection.withTimeout(;
+// // await TimeoutProtection.withTimeout(;
         store.close(),
         2000,
         'database connection cleanup';
@@ -93,9 +93,9 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
   /**
    * Safe process exit handler that prevents hanging;
    */;
-  static setupSafeExit() {
-    const _exitHandler = (): unknown => {
-      console.warn(`\n🔄 Received ${signal}, performing safe exit...`);
+  // static setupSafeExit() {
+    const _exitHandler = () => {
+      console.warn(`\n� Received ${signal}, performing safe exit...`);
 
       // Set a maximum time for cleanup
       TimeoutProtection.forceExit(3000);
@@ -117,7 +117,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
    * @param operationName - Name of the operation for error messages;
    * @returns Wrapped function with timeout protection;
     // */; // LINT: unreachable code removed
-  static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {
+  // static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {
     return async (..._args => {
       return TimeoutProtection.withTimeout(;
     // fn(...args), // LINT: unreachable code removed
@@ -136,7 +136,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
    * @param operationName - Name of the operation;
    * @returns Result of the function;
     // */; // LINT: unreachable code removed
-  static async withRetryAndTimeout<T>(fn = > Promise<T>,
+  // static async withRetryAndTimeout<T>(fn = > Promise<T>,
     maxRetries = 3,
     timeout = TimeoutProtection.DEFAULT_TIMEOUT,
     operationName = 'operation';
@@ -145,7 +145,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
 
     for (let attempt = 1; attempt <= maxRetries; attempt++);
   try {
-    return await TimeoutProtection.withTimeout(;
+    // return // await TimeoutProtection.withTimeout(;
     // fn(), // LINT: unreachable code removed
           timeout,
           `${operationName} (attempt ${attempt}/${maxRetries})`;
@@ -157,7 +157,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
 
     // Exponential backoff
     const _delay = Math.min(1000 * 2 ** (attempt - 1), 10000);
-// await new Promise((resolve) => setTimeout(resolve, delay));
+// // await new Promise((resolve) => setTimeout(resolve, delay));
   //   }
 
 
@@ -185,7 +185,7 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
   const __promiseReject = > void;
   ) | null = null
 
-  return (...args): Promise<TReturn> => {
+  // return (...args): Promise<TReturn> => {
       return new Promise<TReturn>((resolve, reject) => {
         // Clear existing timeout
         if (timeoutId) {
@@ -215,4 +215,6 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
 // }
 
 
-export default TimeoutProtection;
+// export default TimeoutProtection;
+
+}}}}}}}

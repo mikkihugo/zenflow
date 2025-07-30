@@ -9,21 +9,21 @@
 import { QueenCoordinator } from './src/cli/command-handlers/hive-mind-handlers/hive-mind/queen.js';
 import { SqliteMemoryStore } from './src/memory/sqlite-store.js';
 
-console.warn('🚀 Claude Code Zen - Working Features Demo\n');
+console.warn('� Claude Code Zen - Working Features Demo\n');
 async function demoSqliteMemory() {
-  console.warn('📊 1. SQLite Memory System Demo');
+  console.warn('� 1. SQLite Memory System Demo');
   console.warn('================================\n');
   try {
     const _memoryStore = new SqliteMemoryStore({
       directory);
-  // await memoryStore.initialize();
+  // // await memoryStore.initialize();
     console.warn('✅ SQLite memory store initialized');
     // Store some data
-  // await memoryStore.store('demo-key-1', {
+  // // await memoryStore.store('demo-key-1', {
       message: 'Hello from Claude Zen!',
-      timestamp: Date.now()
+      timestamp: Date.now() {}
 })
-  // await memoryStore.store('demo-key-2',
+  // // await memoryStore.store('demo-key-2',
 // {
   status: 'working',
   features: ['sqlite', 'cli', 'plugins']
@@ -31,29 +31,29 @@ async function demoSqliteMemory() {
 // Retrieve data
 // const _result1 = awaitmemoryStore.retrieve('demo-key-1');
 // const _result2 = awaitmemoryStore.retrieve('demo-key-2');
-console.warn('📥 Stored and retrieved data);
-console.warn('  Key 1);
-console.warn('  Key 2);
+console.warn('� Stored and retrieved data);'
+console.warn('  Key 1);'
+console.warn('  Key 2);'
 // Get performance stats
 const _stats = memoryStore.getPerformanceStats();
-console.warn('📈 Performance stats);
-  // await memoryStore.shutdown();
+console.warn('� Performance stats);'
+  // // await memoryStore.shutdown();
 console.warn('✅ SQLite demo completed\n');
 } catch (error)
 // {
-  console.error('❌ SQLite demo failed);
+  console.error('❌ SQLite demo failed);'
 // }
 // }
 async function demoQueenCoordinator() {
-  console.warn('👑 2. Queen Coordinator Demo');
+  console.warn('� 2. Queen Coordinator Demo');
   console.warn('=============================\n');
   try {
     const _queen = new QueenCoordinator({
       type);
-  // await queen.initialize();
+  // // await queen.initialize();
     console.warn('✅ Queen coordinator initialized');
-    console.warn('  Type);
-    console.warn('  Traits);
+    console.warn('  Type);'
+    console.warn('  Traits);'
     // Make some decisions
 // const _decision1 = awaitqueen.makeDecision({
       type: 'task_prioritization',
@@ -69,35 +69,35 @@ console.warn('🧠 Decision 1:', decision1)
 console.warn('🧠 Decision 2:', decision2)
 // Get status
 const _status = queen.getStatus();
-console.warn('📊 Queen status);
+console.warn('� Queen status);'
 console.warn('✅ Queen coordinator demo completed\n');
 } catch (error)
 // {
-  console.error('❌ Queen coordinator demo failed);
+  console.error('❌ Queen coordinator demo failed);'
 // }
 // }
 async function demoStubFeatures() {
-  console.warn('🚧 3. Stub Features (Pending Implementation)');
+  console.warn('� 3. Stub Features (Pending Implementation)');
   console.warn('=============================================\n');
   try {
     // Import the stub implementation
-    const { RuvSwarm } = await import('./ruv-FANN/ruv-swarm/npm/src/index.js');
+    const { RuvSwarm } = // await import('./ruv-FANN/ruv-swarm/npm/src/index.js');
 // const _swarm = awaitRuvSwarm.initialize({
       loadingStrategy);
-    console.warn('🚧 Neural swarm stub initialized');
+    console.warn('� Neural swarm stub initialized');
 // const _task = awaitswarm.executeTask({
       type: 'code-analysis',file: 'demo.js'
 })
-console.warn('🔍 Task execution result:', task)
-  // await swarm.shutdown()
+console.warn('� Task execution result:', task)
+  // // await swarm.shutdown() {}
 console.warn('✅ Stub features demo completed\n')
 } catch (error)
 // {
-  console.error('❌ Stub features demo failed);
+  console.error('❌ Stub features demo failed);'
 // }
 // }
 async function showGapSummary() {
-  console.warn('📋 4. Feature Status Summary');
+  console.warn('� 4. Feature Status Summary');
   console.warn('============================\n');
   const _features = [
     { name: 'CLI Interface', status: '✅ Working', details: 'Comprehensive command structure' },
@@ -107,11 +107,11 @@ async function showGapSummary() {
       details: 'Performance optimized, 84% test pass rate' },
     //     {
       name: 'Queen Coordinators',
-      status: '⚠️ Basic',
+      status: '⚠ Basic',
       details: 'Pattern implemented, consensus pending' },
     //     {
       name: 'Plugin System',
-      status: '⚠️ Foundation',
+      status: '⚠ Foundation',
       details: 'Architecture present, some dependencies missing' },
     //     {
       name: 'Neural Networks',
@@ -128,29 +128,31 @@ async function showGapSummary() {
       name: 'Performance Claims',
       status: '❌ Unverified',
       details: '1M+ req/sec, 84.8% SWE-Bench unsubstantiated' } ];
-  console.warn('Current Implementation Status);
+  console.warn('Current Implementation Status);'
   features.forEach((feature) => {
     console.warn(`${feature.status} ${feature.name}`);
     console.warn(`${feature.details}`);
   });
-  console.warn('\n📊 Overall Assessment);
-  console.warn('🎯 Recommendation);
-  console.warn('⏱️ Estimated time to production readiness);
+  console.warn('\n� Overall Assessment);'
+  console.warn(' Recommendation);'
+  console.warn('⏱ Estimated time to production readiness);'
 // }
 // Run the demo
 async function main() {
   try {
   // await demoSqliteMemory();
   // await demoQueenCoordinator();
-  // await demoStubFeatures();
-  // await showGapSummary();
-    console.warn('🎉 Demo completed! Check FEATURE_REVIEW_ANALYSIS.md for detailed analysis.');
+  // // await demoStubFeatures();
+  // // await showGapSummary();
+    console.warn('� Demo completed! Check FEATURE_REVIEW_ANALYSIS.md for detailed analysis.');
   } catch (error) {
-    console.error('❌ Demo failed);
+    console.error('❌ Demo failed);'
     process.exit(1);
   //   }
 // }
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   main();
 // }
 
+
+}}}

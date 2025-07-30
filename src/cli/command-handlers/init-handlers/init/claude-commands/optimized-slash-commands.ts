@@ -1,6 +1,6 @@
-/**
- * Optimized Slash Commands Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Optimized Slash Commands Module
+ * Converted from JavaScript to TypeScript
  */
 
 // optimized-slash-commands.js - Create batchtools-optimized Claude Code slash commands
@@ -12,7 +12,7 @@ import { createOptimizedMainSparcCommand } from './optimized-sparc-commands.js';
 // Create batchtools-optimized Claude Code slash commands for SPARC modes
 export async function createOptimizedClaudeSlashCommands(workingDir = null) {
   try {
-    console.warn('\n🚀 Creating batchtools-optimized Claude Code slash commands...');
+    console.warn('\n� Creating batchtools-optimized Claude Code slash commands...');
 
     // Use template copier with optimized flag
     const __optimizedOptions = {sparc = `${workingDir}/.roomodes`;
@@ -25,15 +25,15 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null) {
         ? roomodes.customModes.filter((mode) => selectedModes.includes(mode.slug));
         : roomodes.customModes;
 
-      console.warn(`  📝 Creating optimized commands for ${modesToCreate.length} modes...`);
+      console.warn(`  � Creating optimized commands for ${modesToCreate.length} modes...`);
 
       // Create slash commands for each SPARC mode with batchtools optimization
-// await fs.mkdir(join(workingDir, '.claude', 'commands', 'sparc'), {recursive = createOptimizedMainSparcCommand(roomodes.customModes);
-// await fs.writeFile(join(workingDir, '.claude', 'commands', 'sparc.md'), mainSparcCommand);
-      console.warn('  ✅ Created optimized main slashcommand = await copyTemplates(workingDir, optimizedOptions);
+// // await fs.mkdir(join(workingDir, '.claude', 'commands', 'sparc'), {recursive = createOptimizedMainSparcCommand(roomodes.customModes);
+// // await fs.writeFile(join(workingDir, '.claude', 'commands', 'sparc.md'), mainSparcCommand);
+      console.warn('  ✅ Created optimized main slashcommand = // await copyTemplates(workingDir, optimizedOptions);'
 
       if(!copyResults.success) {
-        console.warn(`  ⚠️  Template copierfailed = `---name = await batchtools.parallel([;
+        console.warn(`  ⚠  Template copierfailed = `---name = // await batchtools.parallel([;
   read('/src/controller.ts'),
   read('/src/service.ts'),
   read('/src/model.ts'),
@@ -42,9 +42,9 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null) {
 \`\`\`
 
 ### Batch Code Generation;
-\`\`\`javascript;
+\`\`\`javascript;`
 // Create multiple files in parallel
-// await batchtools.createFiles([path = await batchtools.concurrent([;
+// // await batchtools.createFiles([path = // await batchtools.concurrent([;
   analyzeArchitecture(),
   validateSecurity(),
   checkPerformance(),
@@ -55,47 +55,47 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null) {
 ## Performance Benefits
 
 ### Speed Improvements;
-- **File Operations**: 300% faster with parallel processing;
-- **Code Analysis**: 250% improvement with concurrent pattern recognition;
-- **Test Generation**: 400% faster with parallel test creation;
+- **File Operations**: 300% faster with parallel processing
+- **Code Analysis**: 250% improvement with concurrent pattern recognition
+- **Test Generation**: 400% faster with parallel test creation
 - **Documentation**: 200% improvement with concurrent content generation
 
 ### Resource Efficiency;
-- **Memory Usage**: Optimized memory allocation for parallel operations;
-- **CPU Utilization**: Better use of multi-core processors;
-- **I/O Throughput**: Improved disk and network operation efficiency;
+- **Memory Usage**: Optimized memory allocation for parallel operations
+- **CPU Utilization**: Better use of multi-core processors
+- **I/O Throughput**: Improved disk and network operation efficiency
 - **Cache Optimization**: Smart caching for repeated operations
 
 ## Best Practices
 
 ### When to Use Parallel Operations;
-✅ **Use parallelwhen = `---;
+✅ **Use parallelwhen = `---;`
 // name: performance
 description: Monitor and optimize system performance with batchtools;
 ---
 
-# 📊 Performance Monitoring & Optimization
+# � Performance Monitoring & Optimization
 
 Real-time performance monitoring and optimization tools for Claude-Flow operations.
 
 ## Performance Metrics
 
 ### System Metrics;
-- **CPU Usage**: Multi-core utilization during parallel operations;
-- **Memory Usage**: RAM consumption and optimization;
-- **I/O Throughput**: Disk and network operation efficiency;
+- **CPU Usage**: Multi-core utilization during parallel operations
+- **Memory Usage**: RAM consumption and optimization
+- **I/O Throughput**: Disk and network operation efficiency
 - **Task Queue**: Operation queue depth and processing speed
 
 ### Batchtools Metrics;
-- **Parallel Efficiency**: Speedup ratio from concurrent processing;
-- **Batch Optimization**: Grouping effectiveness and resource utilization;
-- **Error Rates**: Success/failure rates for parallel operations;
+- **Parallel Efficiency**: Speedup ratio from concurrent processing
+- **Batch Optimization**: Grouping effectiveness and resource utilization
+- **Error Rates**: Success/failure rates for parallel operations
 - **Resource Contention**: Conflicts and bottlenecks in concurrent operations
 
 ## Monitoring Commands
 
 ### Real-time Monitoring;
-\`\`\`bash;
+\`\`\`bash;`
 # Monitor all system performance;
 /claude-zen performance monitor --real-time --all
 
@@ -107,7 +107,7 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 \`\`\`
 
 ### Performance Analysis;
-\`\`\`bash;
+\`\`\`bash;`
 # Generate performance report;
 /claude-zen performance report --detailed --timeframe 24h
 
@@ -121,21 +121,21 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 ## Optimization Recommendations
 
 ### Automatic Optimization;
-- **Smart Batching**: Automatically group related operations;
-- **Dynamic Scaling**: Adjust concurrency based on system resources;
-- **Resource Allocation**: Optimize memory and CPU usage;
+- **Smart Batching**: Automatically group related operations
+- **Dynamic Scaling**: Adjust concurrency based on system resources
+- **Resource Allocation**: Optimize memory and CPU usage
 - **Cache Management**: Intelligent caching for repeated operations
 
 ### Manual Tuning;
-- **Batch Size**: Adjust batch sizes based on operation type;
-- **Concurrency Limits**: Set optimal parallel operation limits;
-- **Resource Limits**: Configure memory and CPU constraints;
+- **Batch Size**: Adjust batch sizes based on operation type
+- **Concurrency Limits**: Set optimal parallel operation limits
+- **Resource Limits**: Configure memory and CPU constraints
 - **Timeout Settings**: Optimize timeouts for parallel operations
 
 ## Performance Tuning
 
 ### Configuration Optimization;
-\`\`\`json;
+\`\`\`json;`
   "performance": ;
     "batchtools": ;
       "maxConcurrent",
@@ -145,7 +145,7 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
     "monitoring": ;
       "realTimeMetrics",
       "performanceLogging",
-      "resourceAlerts": true;
+      "resourceAlerts";
 \`\`\`
 
 ### Best Practices;
@@ -155,7 +155,9 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 - Implement performance alerts for critical thresholds;
 - Regular performance analysis and optimization
 
-For comprehensive performance guides, see: https,//github.com/ruvnet/claude-code-flow/docs/performance.md
-`;
-// await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);// await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
-  console.warn('  ✓ Created slash command);
+For comprehensive performance guides, see,//github.com/ruvnet/claude-code-flow/docs/performance.md
+`;`
+// // await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);// // await node.writeTextFile(`${workingDir}/.claude/commands/performance.md`, performanceCommand);
+  console.warn('   Created slash command);'
+
+}}}}}}))))

@@ -10,7 +10,7 @@ const ___dirname = path.dirname(__filename);
 const _swarmNewPath = path.join(__dirname, '../src/cli/commands/swarm-new.ts');
 if (fs.existsSync(swarmNewPath)) {
   const _swarmNewContent = fs.readFileSync(swarmNewPath, 'utf8');
-  // Fix exportPath issue - remove it 's not in MonitoringConfig type
+  // Fix exportPath issue - remove it 's not in MonitoringConfig type'
   swarmNewContent = swarmNewContent.replace(;
   /exportPath: '\.\/metrics'/g,
     "// exportPath: './metrics' // Commented out - not in type definition";
@@ -30,7 +30,7 @@ if (fs.existsSync(swarmNewPath)) {
 // const _executorStats = awaitthis;
 \.executor\.getStats\(\)
   /,
-g('// const executorStats = await this.executor.getStats();')
+g('// const executorStats = // await this.executor.getStats();')
 // )
   swarmNewContent = swarmNewContent.replace(
   /\.memory\.getStats\(\)
@@ -50,8 +50,8 @@ if (fs.existsSync(cliCorePath)) {
   const _cliCoreContent = fs.readFileSync(cliCorePath, 'utf8');
   // Add proper typing for the problematic line
   cliCoreContent = cliCoreContent.replace(;
-  /const commandModule = await commandModules\[commandName\]\(\);/g,
-  ('const commandModule = await (commandModules[commandName] )();');
+  /const commandModule = // await commandModules\[commandName\]\(\);/g,
+  ('const commandModule = // await (commandModules[commandName] )();');
   //   )
   fs.writeFileSync(cliCorePath, cliCoreContent)
 // }
@@ -131,7 +131,7 @@ if (fs.existsSync(sparcPath)) {
   const _sparcContent = fs.readFileSync(sparcPath, 'utf8');
   // Initialize phases property
   sparcContent = sparcContent.replace(;
-  /private phases);
+  /// private phases);
   //   )
   // Fix index signature issues
   sparcContent = sparcContent.replace(
@@ -178,7 +178,7 @@ if (fs.existsSync(enhancedPath)) {
   ('override async processDirectory(');
   //   )
   enhancedContent = enhancedContent.replace(/async copyFile\(/g, 'override async copyFile(')
-  // Change private to protected in base class references
+  // Change // private to protected in base class references
   enhancedContent = enhancedContent.replace(/this\.fileQueue/g, '(this ).fileQueue')
   enhancedContent = enhancedContent.replace(/this\.copiedFiles/g, '(this ).copiedFiles')
   enhancedContent = enhancedContent.replace(/this\.options/g, '(this ).options')
@@ -202,3 +202,4 @@ if (fs.existsSync(promptManagerPath)) {
   fs.writeFileSync(promptManagerPath, managerContent)
 // }
 console.warn('✅ Quick TypeScript fixes applied');
+))))

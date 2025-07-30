@@ -17,55 +17,55 @@ import path from 'node:path';
 /**
  * Mock image creation options
  */
-export interface MockImageOptions {
-  width?: number;
-  height?: number;
-  format?: 'png' | 'jpg' | 'jpeg';
-  size?: 'small' | 'medium' | 'large';
-// }
+export // interface MockImageOptions {
+//   width?;
+//   height?;
+//   format?: 'png' | 'jpg' | 'jpeg';
+//   size?: 'small' | 'medium' | 'large';
+// // }
 /**
  * Mock image result
  */
-export interface MockImageResult {
-  // buffer: Buffer
-  // width: number
-  // height: number
-  // format: string
-  // size: number
-  // mimeType: string
-// }
+// export // interface MockImageResult {
+//   // buffer: Buffer
+//   // width: number
+//   // height: number
+//   // format: string
+//   // size: number
+//   // mimeType: string
+// // }
 /**
  * Mock vision analysis options
  */
-export interface MockVisionOptions {
-  components?: string[];
-  layout?: string;
-  colors?: string[];
-  confidence?: number;
-// }
+// export // interface MockVisionOptions {
+//   components?;
+//   layout?;
+//   colors?;
+//   confidence?;
+// // }
 /**
  * Vision component result
  */
-export interface VisionComponent {
-  // type: string
-  // x: number
-  // y: number
-  // width: number
-  // height: number
-  // confidence: number
-// }
+// export // interface VisionComponent {
+//   // type: string
+//   // x: number
+//   // y: number
+//   // width: number
+//   // height: number
+//   // confidence: number
+// // }
 /**
  * Mock vision analysis result
  */
-export interface MockVisionResult {
-  // id: string
-  // timestamp: string
-  components;
-  layout: {
-    // type: string
-    // columns: number
-    // spacing: number
-  };
+// export // interface MockVisionResult {
+//   // id: string
+//   // timestamp: string
+//   components;
+//   layout: {
+//     // type: string
+//     // columns: number
+//     // spacing: number
+//   };
   colors: {
     // primary: string
     // secondary: string
@@ -85,129 +85,129 @@ export interface MockVisionResult {
 /**
  * Mock code generation options
  */
-export interface MockCodeOptions {
-  framework?: string;
-  language?: string;
-  components?: string[];
-// }
+// export // interface MockCodeOptions {
+//   framework?;
+//   language?;
+//   components?;
+// // }
 /**
  * Generated code file
  */
-export interface GeneratedCodeFile {
-  // name: string
-  // path: string
-  // content: string
-  // size: number
-// }
+// export // interface GeneratedCodeFile {
+//   // name: string
+//   // path: string
+//   // content: string
+//   // size: number
+// // }
 /**
  * Mock code generation result
  */
-export interface MockCodeResult {
-  // id: string
-  // timestamp: string
-  // framework: string
-  // language: string
-  files;
-  metadata: {
-    // generationTime: number
-    // linesOfCode: number
-    dependencies: Record<string, string>;
-  };
+// export // interface MockCodeResult {
+//   // id: string
+//   // timestamp: string
+//   // framework: string
+//   // language: string
+//   files;
+//   metadata: {
+//     // generationTime: number
+//     // linesOfCode: number
+//     dependencies: Record<string, string>;
+//   };
 // }
 /**
  * Wait condition options
  */
-export interface WaitConditionOptions {
-  timeout?: number;
-  interval?: number;
-  errorMessage?: string;
-// }
+// export // interface WaitConditionOptions {
+//   timeout?;
+//   interval?;
+//   errorMessage?;
+// // }
 /**
  * Execution time measurement result
  */
-export interface ExecutionTimeResult<T> {
-  // result: T
-  // duration: number
-  // label: string
-  // pass: boolean
-// }
+// export // interface ExecutionTimeResult<T> {
+//   // result: T
+//   // duration: number
+//   // label: string
+//   // pass: boolean
+// // }
 /**
  * Mock HTTP request options
  */
-export interface MockRequestOptions {
-  method?: string;
-  url?: string;
-  headers?: Record<string, string>;
-  body?: unknown;
-  query?: Record<string, string>;
-  params?: Record<string, string>;
-  user?: unknown;
-  file?: unknown;
-  files?: unknown[];
-// }
+// export // interface MockRequestOptions {
+//   method?;
+//   url?;
+//   headers?: Record<string, string>;
+//   body?;
+//   query?: Record<string, string>;
+//   params?: Record<string, string>;
+//   user?;
+//   file?;
+//   files?;
+// // }
 /**
  * Mock HTTP request
  */
-export interface MockRequest {
-  // method: string
-  // url: string
-  headers: Record<string, string>;
-  // body: unknown
-  query: Record<string, string>;
-  params: Record<string, string>;
-  // user: unknown
-  // file: unknown
-  files;
-// }
+// export // interface MockRequest {
+//   // method: string
+//   // url: string
+//   headers: Record<string, string>;
+//   // body: unknown
+//   query: Record<string, string>;
+//   params: Record<string, string>;
+//   // user: unknown
+//   // file: unknown
+//   files;
+// // }
 /**
  * Mock HTTP response
  */
-export interface MockResponse {
-  // statusCode: number
-  headers: Record<string, string>;
-  // body: unknown
-  status: (code) => MockResponse;
-  json: (data) => MockResponse;
-  send: (data) => MockResponse;
-  setHeader: (name, value) => MockResponse;
-// }
+// export // interface MockResponse {
+//   // statusCode: number
+//   headers: Record<string, string>;
+//   // body: unknown
+//   status: (code) => MockResponse;
+//   json: (data) => MockResponse;
+//   send: (data) => MockResponse;
+//   setHeader: (name, value) => MockResponse;
+// // }
 /**
  * Performance metrics entry
  */
-export interface MetricsEntry {
-  // endpoint: string
-  // duration: number
-  // status: number
-  // timestamp: number
-// }
+// export // interface MetricsEntry {
+//   // endpoint: string
+//   // duration: number
+//   // status: number
+//   // timestamp: number
+// // }
 /**
  * Error metrics entry
  */
-export interface ErrorEntry {
-  // error: string
-  // endpoint: string
-  // timestamp: number
-// }
+// export // interface ErrorEntry {
+//   // error: string
+//   // endpoint: string
+//   // timestamp: number
+// // }
 /**
  * Performance statistics
  */
-export interface PerformanceStats {
-  // totalRequests: number
-  // totalErrors: number
-  // averageDuration: number
-  // p50: number
-  // p95: number
-  // p99: number
-// }
+// export // interface PerformanceStats {
+//   // totalRequests: number
+//   // totalErrors: number
+//   // averageDuration: number
+//   // p50: number
+//   // p95: number
+//   // p99: number
+// // }
 /**
  * Metrics collector
  */
-export interface MetricsCollector {
-  recordRequest: (endpoint, duration, status) => void;
-  recordError: (error, endpoint) => void;
-  getStats: () => PerformanceStats;
-  reset: () => void;
-// }
+// export // interface MetricsCollector {
+//   recordRequest: (endpoint, duration, status) => void;
+//   recordError: (error, endpoint) => void;
+//   getStats: () => PerformanceStats;
+//   reset: () => void;
+// // }
 // =============================================================================
 // TEST HELPER UTILITIES
 // =============================================================================
@@ -215,12 +215,12 @@ export interface MetricsCollector {
 /**
  * Test helper utilities for Vision-to-Code tests
  */
-export const TestHelpers = {
+// export const TestHelpers = {
   /**
    * Generate a random test ID
    */
   generateTestId(prefix = 'test') {
-    return `${prefix}_${crypto.randomBytes(8).toString('hex')}`;
+    // return `${prefix}_${crypto.randomBytes(8).toString('hex')}`;
   },
 
   /**
@@ -246,7 +246,7 @@ export const TestHelpers = {
       // JPEG header
       buffer.write('\xFF\xD8\xFF', 0);
 // }
-    return {
+    // return {
       buffer,
       width,
       height,
@@ -265,7 +265,7 @@ export const TestHelpers = {
       colors = ['#000000', '#FFFFFF', '#FF0000'],
       confidence = 0.95 } = options;
 
-    return {
+    // return {
       id: TestHelpers.generateTestId('vision'),
       timestamp: new Date().toISOString(),
       components: components.map((name) => ({
@@ -277,7 +277,7 @@ export const TestHelpers = {
         confidence: confidence + (Math.random() * 0.05 - 0.025) })),
       layout: {
         type,
-        columns: layout === 'grid' ? 3 ,
+        columns === 'grid' ? 3 ,
         spacing},
       colors: {
         primary: colors[0],
@@ -331,7 +331,7 @@ export const TestHelpers = {
    * Wait for a condition to be true
    */
   async waitForCondition(conditionFn) => boolean | Promise<boolean>,
-    options: WaitConditionOptions = {}
+    options = {}
   ): Promise<boolean> {
     const {
       timeout = 5000,
@@ -340,10 +340,10 @@ export const TestHelpers = {
 
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
-      if (await conditionFn()) {
-        return true;
+      if (// await conditionFn()) {
+        // return true;
 // }
-// await new Promise((resolve) => setTimeout(resolve, interval));
+// // await new Promise((resolve) => setTimeout(resolve, interval));
 // }
     throw new Error(errorMessage);
   },
@@ -359,7 +359,7 @@ export const TestHelpers = {
     const end = process.hrtime.bigint();
     const duration = Number(end - start) / 1e6; // Convert to milliseconds
 
-    return {
+    // return {
       result,
       duration,
       label,
@@ -371,7 +371,7 @@ export const TestHelpers = {
    * Create a mock HTTP request
    */
   createMockRequest(options) {
-    return {
+    // return {
       method: options.method ?? 'GET',
       url: options.url ?? '/',
       headers: options.headers ?? {},
@@ -404,7 +404,7 @@ export const TestHelpers = {
         this.body = data;
         return this;
       },
-      setHeader: function (name, value: string) {
+      setHeader: function (name, value) {
         this.headers[name] = value;
         return this;
       } };
@@ -420,7 +420,7 @@ export const TestHelpers = {
 // const files = awaitfs.readdir(directory);
       for (const file of files) {
         if (file.startsWith('test_')) {
-// await fs.unlink(path.join(directory, file));
+// // await fs.unlink(path.join(directory, file));
 // }
 // }
     } catch {
@@ -438,7 +438,7 @@ export const TestHelpers = {
     let batch = [];
     let _count = 0;
 
-    for await (const item of generator) {
+    for // await (const item of generator) {
       batch.push(item);
       _count++;
 
@@ -455,7 +455,7 @@ export const TestHelpers = {
   /**
    * Mock AI service responses
    */
-  mockAIResponse(service, response: unknown) {
+  mockAIResponse(service, response) {
     const mocks: Record<string, () => void> = {
       gemini: () => {
         const gemini = require('@google/generative-ai');
@@ -481,7 +481,7 @@ export const TestHelpers = {
       errors: [] as ErrorEntry[],
       durations: [] as number[] };
 
-    return {
+    // return {
       recordRequest: (endpoint, duration, status) => {
         metrics.requests.push({ endpoint, duration, status, timestamp: Date.now() });
         metrics.durations.push(duration);
@@ -489,7 +489,7 @@ export const TestHelpers = {
       recordError: (error, endpoint) => {
         metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now() });
       },
-      getStats: (): PerformanceStats => {
+      getStats: () => {
         const durations = metrics.durations.sort((a, b) => a - b);
         return {
           totalRequests: metrics.requests.length,
@@ -506,4 +506,4 @@ export const TestHelpers = {
       } };
   } };
 
-export default TestHelpers;
+// export default TestHelpers;

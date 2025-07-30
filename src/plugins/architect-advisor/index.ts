@@ -31,16 +31,16 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 
   async initialize() {
     try {
-      console.warn('🏗️ Architect Advisor Plugin initializing...');
+      console.warn('� Architect Advisor Plugin initializing...');
 
       // Create directories
-// await mkdir(this.config.adr_path, {recursive = global.hiveMind?.plugins?.get('ai-provider');
+// // await mkdir(this.config.adr_path, {recursive = global.hiveMind?.plugins?.get('ai-provider');
       if(aiProvider) {
         this.aiProvider = aiProvider;
         console.warn('🤖 AI Provider connected for architectural analysis');
       //       }
     } catch (error) {
-      console.warn('⚠️ AI Provider not available, using rule-based analysis only');
+      console.warn('⚠ AI Provider not available, using rule-based analysis only');
     //     }
   //   }
 
@@ -56,53 +56,53 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 
     try {
       this.isAnalyzing = true;
-      this.emit('analysis_start', { type = {id = await this.scanCodebase();
+      this.emit('analysis_start', { type = {id = // await this.scanCodebase();
       analysis.codebase_stats = this.calculateCodebaseStats(codebase);
 
       // Run different types of analysis
       if(analysisType === 'all'  ?? analysisType === 'architecture') {
-        analysis.findings.push(...await this.analyzeArchitecture(codebase));
-        analysis.patterns.push(...await this.detectPatterns(codebase));
+        analysis.findings.push(...// await this.analyzeArchitecture(codebase));
+        analysis.patterns.push(...// await this.detectPatterns(codebase));
       //       }
 
 
       if(analysisType === 'all'  ?? analysisType === 'performance') {
-        analysis.findings.push(...await this.analyzePerformance(codebase));
+        analysis.findings.push(...// await this.analyzePerformance(codebase));
       //       }
 
 
       if(analysisType === 'all'  ?? analysisType === 'security') {
-        analysis.findings.push(...await this.analyzeSecurity(codebase));
+        analysis.findings.push(...// await this.analyzeSecurity(codebase));
       //       }
 
 
       if(analysisType === 'all'  ?? analysisType === 'scalability') {
-        analysis.findings.push(...await this.analyzeScalability(codebase));
+        analysis.findings.push(...// await this.analyzeScalability(codebase));
       //       }
 
 
       if(analysisType === 'all'  ?? analysisType === 'maintainability') {
-        analysis.findings.push(...await this.analyzeMaintainability(codebase));
-        analysis.smells.push(...await this.detectCodeSmells(codebase));
+        analysis.findings.push(...// await this.analyzeMaintainability(codebase));
+        analysis.smells.push(...// await this.detectCodeSmells(codebase));
       //       }
 
 
       if(analysisType === 'all'  ?? analysisType === 'testability') {
-        analysis.findings.push(...await this.analyzeTestability(codebase));
+        analysis.findings.push(...// await this.analyzeTestability(codebase));
       //       }
 
 
       // Calculate metrics
-      analysis.metrics = await this.calculateMetrics(codebase, analysis);
+      analysis.metrics = // await this.calculateMetrics(codebase, analysis);
 
       // Generate recommendations
-      analysis.recommendations = await this.generateRecommendations(analysis);
+      analysis.recommendations = // await this.generateRecommendations(analysis);
 
       // Store analysis
       this.analysis_history.push(analysis);
-// await this.persistAnalysis(analysis);
+// // await this.persistAnalysis(analysis);
       this.emit('analysis_complete', analysis);
-      return analysis;
+      // return analysis;
     // ; // LINT: unreachable code removed
     } finally {
       this.isAnalyzing = false;
@@ -119,12 +119,12 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 // const _dirFiles = awaitthis.scanDirectory(dirPath);
         files.push(...dirFiles);
       } catch (error) {
-        // Directory doesn't exist, skip
+        // Directory doesn't exist, skip'
       //       }
     //     }
 
 
-    return files;
+    // return files;
     //   // LINT: unreachable code removed}
 
   async scanDirectory(dirPath) {
@@ -191,7 +191,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
       '.rb': 'Ruby';
     };
 
-    return langMap[ext]  ?? 'Unknown';
+    // return langMap[ext]  ?? 'Unknown';
     //   // LINT: unreachable code removed}
 
   /**
@@ -218,12 +218,12 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     // Check for architectural smells
     findings.push(...this.detectArchitecturalSmells(codebase));
 
-    return findings;
+    // return findings;
     //   // LINT: unreachable code removed}
 
   analyzeDependencies(codebase) {
     const _dependencies = new Map();
-    const _importRegex = /(?)\s*(?)?\s*(?)?['"`]([^'"`]+)['"`]/g;
+    const _importRegex = /(?)\s*(?)?\s*(?)?['"`]([^'"`]+)['"`]/g;"'`
 
     for(const file of codebase) {
       const _fileDeps = [];
@@ -242,7 +242,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     const _visited = new Set();
     const _recursionStack = new Set();
 
-    const _dfs = (): unknown => {
+    const _dfs = () => {
       if (recursionStack.has(node)) {
         // Found cycle
         const _cycleStart = path.indexOf(node);
@@ -276,7 +276,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return cycles;
+    // return cycles;
     //   // LINT: unreachable code removed}
 
   identifyLayers(codebase) {
@@ -285,7 +285,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return layers;
+    // return layers;
     //   // LINT: unreachable code removed}
 
   classifyLayer(file) {
@@ -294,25 +294,25 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 
     // Presentation layer indicators
     if (path.includes('component')  ?? path.includes('view')  ?? path.includes('ui')  ?? path.includes('page')  ?? path.includes('screen')  ?? content.includes('render')  ?? content.includes('jsx')  ?? content.includes('template')) {
-      return 'presentation';
+      // return 'presentation';
     //   // LINT: unreachable code removed}
 
     // Business layer indicators
     if (path.includes('service')  ?? path.includes('business')  ?? path.includes('logic')  ?? path.includes('domain')  ?? path.includes('use-case')  ?? path.includes('usecase')) {
-      return 'business';
+      // return 'business';
     //   // LINT: unreachable code removed}
 
     // Data layer indicators
     if (path.includes('repository')  ?? path.includes('dao')  ?? path.includes('data')  ?? path.includes('model')  ?? path.includes('entity')  ?? content.includes('database')  ?? content.includes('query')) {
-      return 'data';
+      // return 'data';
     //   // LINT: unreachable code removed}
 
     // Infrastructure layer indicators
     if (path.includes('config')  ?? path.includes('util')  ?? path.includes('helper')  ?? path.includes('middleware')  ?? path.includes('adapter')  ?? path.includes('gateway')) {
-      return 'infrastructure';
+      // return 'infrastructure';
     //   // LINT: unreachable code removed}
 
-    return 'unknown';
+    // return 'unknown';
     //   // LINT: unreachable code removed}
 
   checkLayerViolations(layers) {
@@ -331,7 +331,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
       'mongoose.', 'sequelize.', 'prisma.';
     ];
 
-    return dbPatterns.some(pattern => ;
+    // return dbPatterns.some(pattern => ;
     // file.content.toLowerCase().includes(pattern.toLowerCase())); // LINT: unreachable code removed
   //   }
 
@@ -348,12 +348,12 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return coupling;
+    // return coupling;
     //   // LINT: unreachable code removed}
 
   extractImports(file) {
     const _imports = [];
-    const _importRegex = /(?)\s*(?:\{([^}]*)\}|\*\s+as\s+(\w+)|(\w+))?\s*(?)?['"`]([^'"`]+)['"`]/g;
+    const _importRegex = /(?)\s*(?:\{([^}]*)\}|\*\s+as\s+(\w+)|(\w+))?\s*(?)?['"`]([^'"`]+)['"`]/g;"'`
     let match;
 
     while ((match = importRegex.exec(file.content)) !== null) {
@@ -377,7 +377,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     // Simpleheuristic = (file.content.match(/(?)/g)  ?? []).length;
     const _totalCount = (file.content.match(/(?)/g)  ?? []).length;
 
-    return totalCount > 0 ? abstractCount /totalCount = 0;
+    // return totalCount > 0 ? abstractCount /totalCount = 0;
     // ; // LINT: unreachable code removed
     for(const [filePath, data] of coupling) {
       if(filePath !== targetFile) {
@@ -388,7 +388,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return count;
+    // return count;
     //   // LINT: unreachable code removed}
 
   checkCouplingIssues(coupling) {
@@ -397,9 +397,9 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     for(const [filePath, data] of coupling) {
       // High instability in stable packages
       if(data.instability > 0.8 && data.afferent > 5) {
-        findings.push({category = ${data.instability.toFixed(2)})`,severity = Math.abs(data.abstractness + data.instability - 1);
+        findings.push({category = ${data.instability.toFixed(2)})`,severity = Math.abs(data.abstractness + data.instability - 1);`
       if(distance > 0.7) {
-        findings.push({category = ${distance.toFixed(2)})`,severity = [];
+        findings.push({category = ${distance.toFixed(2)})`,severity = [];`
 
     for(const file of codebase) {
       // Single Responsibility Principle
@@ -514,14 +514,14 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return patterns;
+    // return patterns;
     //   // LINT: unreachable code removed}
 
   detectDesignPatterns(file) {
     const _patterns = [];
 
     // Singleton pattern
-    if (file.content.includes('getInstance') && file.content.includes('private constructor')) {
+    if (file.content.includes('getInstance') && file.content.includes('// private constructor')) {
       patterns.push({type = [];
 
     for(const file of codebase) {
@@ -547,7 +547,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return duplicates;
+    // return duplicates;
     //   // LINT: unreachable code removed}
 
   findUnusedVariables(content) {
@@ -566,7 +566,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return unusedVars;
+    // return unusedVars;
     //   // LINT: unreachable code removed}
 
   /**
@@ -575,7 +575,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
   async calculateMetrics(codebase, analysis) {
     const _metrics = {complexity = this.calculateQualityScore(metrics, analysis);
 
-    return metrics;
+    // return metrics;
     //   // LINT: unreachable code removed}
 
   calculateComplexity(codebase) {
@@ -605,7 +605,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return {
+    // return {
       average = {critical = 0;
     // const _breakdown = { // LINT: unreachable code removed};
 
@@ -616,7 +616,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return {total = codebase.filter(file => ;
+    // return {total = codebase.filter(file => ;
     // file.name.includes('.test.')  ?? file.name.includes('.spec.')).length; // LINT: unreachable code removed
     const _sourceFiles = codebase.length - testFiles;
 
@@ -631,7 +631,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return {
+    // return {
       comment_ratio = {maintainability = Math.min(100, metrics.maintainability.average);
     // const _testCoverageScore = metrics.test_coverage_estimate.estimated_coverage; // LINT: unreachable code removed
     const _technicalDebtScore = Math.max(0, 100 - metrics.technical_debt.total);
@@ -643,7 +643,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
       technicalDebtScore * weights.technical_debt +;
       documentationScore * weights.documentation;
 
-    return Math.round(qualityScore);
+    // return Math.round(qualityScore);
     //   // LINT: unreachable code removed}
 
   /**
@@ -680,7 +680,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return grouped;
+    // return grouped;
     //   // LINT: unreachable code removed}
 
   async generateCategoryRecommendations(category, findings) {
@@ -712,7 +712,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 // const _analysis = awaitthis.analyzeSystem(analysisType, options);
 // const _proposals = awaitthis.createADRProposals(analysis, options);
 
-    return proposals.filter(p => p.confidence >= this.config.confidence_threshold);
+    // return proposals.filter(p => p.confidence >= this.config.confidence_threshold);
     //   // LINT: unreachable code removed}
 
   async createADRProposals(analysis, options = {}) {
@@ -740,7 +740,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return proposals;
+    // return proposals;
     //   // LINT: unreachable code removed}
 
   async generateADRFromFinding(finding, options) {
@@ -768,14 +768,14 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     if(this.aiProvider && this.config.enable_ai_analysis) {
       try {
 // const _aiContext = awaitthis.aiProvider.generateText(;
-          `Provide additional architectural context for thisissue = `**Architectural Implications**:\n\$aiContext.text\n\n`;
+          `Provide additional architectural context for thisissue = `**Architectural Implications**:\n\$aiContext.text\n\n`;`
       } catch (error) {
         // AI analysis failed, continue with basic context
       //       }
     //     }
 
 
-    return context;
+    // return context;
     //   // LINT: unreachable code removed}
 
   async generateADRDecision(finding) {
@@ -789,14 +789,14 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     if(this.aiProvider && this.config.enable_ai_analysis) {
       try {
 // const _aiDecision = awaitthis.aiProvider.generateText(;
-          `Provide a detailed architectural decision for addressing thisissue = `\n\n**Implementation Strategy**:\n\$aiDecision.text`;
+          `Provide a detailed architectural decision for addressing thisissue = `\n\n**Implementation Strategy**:\n\$aiDecision.text`;`
       } catch (error) {
         // AI analysis failed, continue with basic decision
       //       }
     //     }
 
 
-    return decision;
+    // return decision;
     //   // LINT: unreachable code removed}
 
   async generateADRConsequences(finding) {
@@ -814,7 +814,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return consequences;
+    // return consequences;
     //   // LINT: unreachable code removed}
 
   async generateADRAlternatives(finding) {
@@ -824,16 +824,16 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     switch(finding.type) {
       case 'circular_dependency':;
         alternatives.push(;
-          'Alternative 1 = {critical = effortMap[finding.severity]  ?? 'medium';
+          'Alternative 1 = {critical = effortMap[finding.severity]  ?? 'medium';'
 
     // Adjust based on number of affected files
     if(finding.files && finding.files.length > 10) {
-      return 'high';
+      // return 'high';
     //   // LINT: unreachable code removed} else if(finding.files && finding.files.length > 5) {
-      return baseEffort === 'low' ? 'medium' : baseEffort;
+      // return baseEffort === 'low' ? 'medium' ;
     //   // LINT: unreachable code removed}
 
-    return baseEffort;
+    // return baseEffort;
     //   // LINT: unreachable code removed}
 
   generateADRTags(finding) {
@@ -855,21 +855,21 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     //     }
 
 
-    return [...new Set(tags)]; // Remove duplicates
+    // return [...new Set(tags)]; // Remove duplicates
   //   }
 
 
   /**
    * Helper methods;
    */;
-  resolvePath(fromPath, toPath): unknown ;
+  resolvePath(fromPath, toPath) ;
     if (toPath.startsWith('.')) {
-      return path.resolve(path.dirname(fromPath), toPath);
+      // return path.resolve(path.dirname(fromPath), toPath);
     //   // LINT: unreachable code removed}
-    return toPath;
+    // return toPath;
     // ; // LINT: unreachable code removed
   initializeDesignPatterns() ;
-    return new Map([;
+    // return new Map([;
     // ['singleton', {description = path.join(this.config.patterns_db_path, 'patterns.json'); // LINT: unreachable code removed
 // const _data = awaitreadFile(patternsPath, 'utf8');
       const _patterns = JSON.parse(data);
@@ -877,7 +877,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
       for (const [key, value] of Object.entries(patterns)) ;
         this.pattern_library.set(key, value);
 
-      console.warn(`📚 Loaded \$this.pattern_library.sizepatterns from library`);catch(error) ;
+      console.warn(` Loaded \$this.pattern_library.sizepatterns from library`);catch(error) ;
   //   }
 
 
@@ -887,24 +887,24 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 // const _data = awaitreadFile(historyPath, 'utf8');
       this.analysis_history = JSON.parse(data);
 
-      console.warn(`📈 Loaded \$this.analysis_history.lengthprevious analyses`);
+      console.warn(`� Loaded \$this.analysis_history.lengthprevious analyses`);
     } catch (error) {
       // No existing history, start fresh
     //     }
 
 
-  async persistAnalysis(analysis): unknown ;
+  async persistAnalysis(analysis) ;
     try {
       // Save individual analysis
       const _analysisPath = path.join(this.config.recommendations_path, `analysis-\$analysis.id.json`);
-// await writeFile(analysisPath, JSON.stringify(analysis, null, 2));
+// // await writeFile(analysisPath, JSON.stringify(analysis, null, 2));
       // Update history
       const _historyPath = path.join(this.config.recommendations_path, 'history.json');
-// await writeFile(historyPath, JSON.stringify(this.analysis_history, null, 2));
-      console.warn(`💾 Analysis ${analysis.id} persisted`);
+// // await writeFile(historyPath, JSON.stringify(this.analysis_history, null, 2));
+      console.warn(`� Analysis ${analysis.id} persisted`);
     } catch (error) {
-      console.error('Failed to persistanalysis = 10) {
-    return this.analysis_history;
+      console.error('Failed to persistanalysis = 10) {'
+    // return this.analysis_history;
     // .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // LINT: unreachable code removed
 slice(0, limit);
   //   }
@@ -914,7 +914,7 @@ slice(0, limit);
     const _latestAnalysis = this.analysis_history[this.analysis_history.length - 1];
 
     if(!latestAnalysis) {
-      return {status = latestAnalysis.metrics?.quality_score  ?? 0;
+      // return {status = latestAnalysis.metrics?.quality_score  ?? 0;
     // const _criticalIssues = latestAnalysis.findings?.filter(f => f.severity === 'critical').length  ?? 0; // LINT: unreachable code removed
 
     const _status = 'healthy';
@@ -932,14 +932,16 @@ slice(0, limit);
     //     }
 
 
-    return {
+    // return {
       status,
     // message,quality_score = false; // LINT: unreachable code removed
 
-      console.warn('🏗️ Architect Advisor Plugin cleaned up');
+      console.warn('� Architect Advisor Plugin cleaned up');
     } catch(error) ;
-      console.error('Error during Architect Advisor cleanup);
+      console.error('Error during Architect Advisor cleanup);'
   //   }
 
 
-export default ArchitectAdvisorPlugin;
+// export default ArchitectAdvisorPlugin;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))))))))))))))))

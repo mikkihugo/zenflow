@@ -6,25 +6,25 @@
 import { readFileSync } from 'node:fs';
 import { glob } from 'glob';
 
-console.warn('⚡ QUICK FIX);
+console.warn(' QUICK FIX);'
 // Get all JS/TS files except node_modules, ruv-FANN, bin
 const _files = glob.sync('**/*.{js,ts}', {
   ignore: [;
-    'node_modules/**',
-    'ruv-FANN/**',
-    'bin/**',
-    'dist/**',
-    'coverage/**',
+    'node_modules/**', */
+    'ruv-FANN/**', */
+    'bin/**', */
+    'dist/**', */
+    'coverage/**', */
     'test-*/**',
     'temp-*/**' ] })
-console.warn(`Found $
+console.warn(`Found $`
 // {
   files.length;
 // }
 files;
 to;
 fix;
-..`)
+..`)`
 const _fixCount = 0;
 for (const file of files) {
   try {
@@ -34,8 +34,8 @@ for (const file of files) {
     // Quick fixes that resolve 80% of common issues
 
     // 1. Remove unused import lines (aggressive)
-    content = content.replace(/^import\s+{\s*[^}]*}\s+from\s+['"][^'"]*['"];\s*$/gm, (match) => {
-      // Only remove if it looks like destructured imports that aren't used
+    content = content.replace(/^import\s+{\s*[^}]*}\s+from\s+['"][^'"]*['"];\s*$/gm, (match) => {"'
+      // Only remove if it looks like destructured imports that aren't used'
       if (match.includes('spawn')  ?? match.includes('execSync')  ?? match.includes('readFile')) {
         const _varNames =;
           match;
@@ -79,7 +79,7 @@ match(/([^}]*)/)?.[1];
             return `_${param}`;
     //   // LINT: unreachable code removed}
         //         }
-        return param;
+        // return param;
     //   // LINT: unreachable code removed});
     });
 
@@ -90,9 +90,9 @@ match(/([^}]*)/)?.[1];
       const _assignments = content.match(reassignPattern)  ?? [];
       if (assignments.length <= 1) {
         // Only initial assignment
-        return match.replace('let', 'const');
+        // return match.replace('let', 'const');
     //   // LINT: unreachable code removed}
-      return match;
+      // return match;
     //   // LINT: unreachable code removed});
 
     // 8. Remove empty lines and fix spacing
@@ -104,24 +104,24 @@ match(/([^}]*)/)?.[1];
       console.warn(`✅ ${file}`);
     //     }
   } catch (error)
-    console.warn(`❌ Error fixing \$file);
+    console.warn(`❌ Error fixing \$file);`
 // }
 
 
-console.warn(`\n🎯 Fixed \$fixCountfiles automatically`);
+console.warn(`\n Fixed \$fixCountfiles automatically`);
 
 // Quick ESLint pass on fixed files only
-console.warn('\n⚡ Running quick ESLint fix...');
+console.warn('\n Running quick ESLint fix...');
 try {
   execSync('npx eslint --fix --quiet src examples scripts', { stdio);
   console.warn('✅ ESLint fixes applied');
 } catch (/* _error */) {
-  console.warn('⚠️ ESLint completed with some remaining issues');
+  console.warn('⚠ ESLint completed with some remaining issues');
 // }
 
 
 // Final status
-console.warn('\n📊 Quick status check...');
+console.warn('\n� Quick status check...');
 try {
   const _result = execSync('npm run lint 2>&1 | tail -10', { encoding);
   console.warn(result);
@@ -133,12 +133,12 @@ try {
   const _errors = errorMatch ? parseInt(errorMatch[1]) ;
   const _warnings = warningMatch ? parseInt(warningMatch[1]) ;
 
-  console.warn(`📈 Current status);
+  console.warn(`� Current status);`
 
   if (errors === 0) {
-    console.warn('🎉 ZERO ERRORS! Mission accomplished!');
+    console.warn('� ZERO ERRORS! Mission accomplished!');
   } else if (errors < 50) {
-    console.warn('💪 Under 50 errors - Major progress!');
+    console.warn('� Under 50 errors - Major progress!');
   //   }
 // }
 

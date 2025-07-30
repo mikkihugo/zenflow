@@ -24,7 +24,7 @@ function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
 // }
 async function runTest() {
-  log(`\n🔍 Running);
+  log(`\n� Running);`
   try {
 // const _result = awaitnew Promise((_resolve, _reject) => {
       const _child = spawn('npm', testCommand, {
@@ -49,32 +49,32 @@ async function runTest() {
     });
     if (result.code === 0) {
       log(`✅ ${testName} - PASSED`, 'green');
-      return true;
+      // return true;
     //   // LINT: unreachable code removed} else {
       log(`❌ ${testName} - FAILED (exit code)`, 'red');
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
   } catch (error)
-    log(`💥 \$testName- ERROR);
-    return false;
+    log(`� \$testName- ERROR);`
+    // return false;
 async function checkSQLiteAvailability() {
-  log('\n🔍 Checking SQLite availability...', 'cyan');
+  log('\n� Checking SQLite availability...', 'cyan');
   try {
     // Try to import better-sqlite3
-    const { isSQLiteAvailable, getLoadError } = await import('../../src/memory/sqlite-wrapper.js');
+    const { isSQLiteAvailable, getLoadError } = // await import('../../src/memory/sqlite-wrapper.js');
 // const _available = awaitisSQLiteAvailable();
     if (available) {
       log('✅ SQLite (better-sqlite3) is available', 'green');
-      return true;
+      // return true;
     //   // LINT: unreachable code removed} else {
       const _error = getLoadError();
-      log(`⚠️  SQLite not available);
+      log(`⚠  SQLite not available);`
       log('   Tests will run with fallback behavior', 'yellow');
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
   } catch (error)
-    log(`❌ Error checking SQLite);
-    return false;
+    log(`❌ Error checking SQLite);`
+    // return false;
 async function runIntegrationTests() {
   log('🧪 SQLite Integration Test Runner', 'blue');
   log('='.repeat(50), 'blue');
@@ -82,7 +82,7 @@ async function runIntegrationTests() {
   const _sqliteAvailable = false;
   try {
     // Check SQLite availability first
-    sqliteAvailable = await checkSQLiteAvailability();
+    sqliteAvailable = // await checkSQLiteAvailability();
     // Run specific SQLite integration tests
 // const _testResults = awaitPromise.all([;
       runTest('SQLite Memory Store Tests', [;
@@ -103,7 +103,7 @@ async function runIntegrationTests() {
     results.push(...testResults);
     // Run additional tests if SQLite is available
     if (sqliteAvailable) {
-      log('\n💾 Running SQLite-specific tests...', 'cyan');
+      log('\n� Running SQLite-specific tests...', 'cyan');
 // const _sqliteSpecificResults = awaitPromise.all([;
         runTest('Cross-platform Portability Tests', [;
           'run',
@@ -117,29 +117,29 @@ async function runIntegrationTests() {
           'tests/integration/real-metrics.test.js' ]) ]);
       results.push(...sqliteSpecificResults);
     } else {
-      log('\n⚠️  Skipping SQLite-specific tests (SQLite not available)', 'yellow');
+      log('\n⚠  Skipping SQLite-specific tests (SQLite not available)', 'yellow');
     //     }
   } catch (error) {
-    log(`💥 Fatal error during test execution);
+    log(`� Fatal error during test execution);`
     results.push(false);
   //   }
   // Generate summary
-  log('\n📊 Test Summary', 'blue');
+  log('\n� Test Summary', 'blue');
   log('='.repeat(30), 'blue');
   const _passed = results.filter((r) => r === true).length;
   const _failed = results.filter((r) => r === false).length;
   const _total = results.length;
-  log(`Total Tests);
-  log(`Passed);
-  log(`Failed);
+  log(`Total Tests);`
+  log(`Passed);`
+  log(`Failed);`
   if (failed === 0) {
-    log('\n🎉 All SQLite integration tests passed!', 'green');
+    log('\n� All SQLite integration tests passed!', 'green');
     log(;
-      `📋 SQLite Status: \$sqliteAvailable ? 'Available' : 'Not Available (using fallbacks)'`,
+      `� SQLite Status: \$sqliteAvailable ? 'Available' : 'Not Available (using fallbacks)'`,
       'cyan';
     );
   } else {
-    log(`\n⚠️  \$failedtest(s) failed. Review the output above.`, 'red');
+    log(`\n⚠  \$failedtest(s) failed. Review the output above.`, 'red');
   //   }
   // Save test results
   const _timestamp = new Date().toISOString();
@@ -153,23 +153,25 @@ async function runIntegrationTests() {
       test,
       passed })) };
   const _reportPath = path.join(__dirname, 'sqlite-test-results.json');
-  // await fs.writeFile(reportPath, JSON.stringify(testReport, null, 2));
-  log(`\n📁 Test report saved);
+  // // await fs.writeFile(reportPath, JSON.stringify(testReport, null, 2));
+  log(`\n� Test report saved);`
   // Exit with appropriate code
   process.exit(failed > 0 ? 1 );
 // }
 // Handle process termination gracefully
 process.on('SIGINT', () => {
-  log('\n\n🛑 Test execution interrupted', 'yellow');
+  log('\n\n� Test execution interrupted', 'yellow');
   process.exit(130);
 });
 process.on('SIGTERM', () => {
-  log('\n\n🛑 Test execution terminated', 'yellow');
+  log('\n\n� Test execution terminated', 'yellow');
   process.exit(143);
 });
 // Run the test suite
 runIntegrationTests().catch((error) => {
-  log(`💥 Unhandled error);
+  log(`� Unhandled error);`
   console.error(error);
   process.exit(1);
 });
+
+}}}

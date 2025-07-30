@@ -26,7 +26,7 @@ describe('AGUIAdapter', () => {
   test('should emit text message events correctly', (done) => {
     const _eventsReceived = 0;
     const _expectedEvents = ['TEXT_MESSAGE_START', 'TEXT_MESSAGE_CONTENT', 'TEXT_MESSAGE_END'];
-    adapter.on('agui) => {
+    adapter.on('agui) => {'
       expect(expectedEvents).toContain(event.type);
       eventsReceived++;
       if (eventsReceived === 3) {
@@ -44,8 +44,8 @@ describe('AGUIAdapter', () => {
         'TOOL_CALL_START',
         'TOOL_CALL_ARGS',
         'TOOL_CALL_END',
-        'TOOL_CALL_RESULT',,,,,,, ];
-    adapter.on('agui) => {
+        'TOOL_CALL_RESULT',,,,,,];
+    adapter.on('agui) => {'
       expect(expectedEvents).toContain(event.type);
       eventsReceived++;
       if (eventsReceived === 4) {
@@ -53,12 +53,12 @@ describe('AGUIAdapter', () => {
       //       }
     });
     const _toolCallId = adapter.startToolCall('test_tool');
-    adapter.addToolCallArgs('{"param");
+    adapter.addToolCallArgs('{"param");'
     adapter.endToolCall(toolCallId);
     adapter.emitToolCallResult('Test result', toolCallId);
   });
   test('should emit custom events for Claude Zen functionality', (done) => {
-    adapter.on('agui) => {
+    adapter.on('agui) => {'
       expect(event.type).toBe(EventType.CUSTOM);
       expect(event.name).toBe('queen_action');
       expect(event.value).toHaveProperty('queenId', 'test-queen');
@@ -121,7 +121,7 @@ describe('Integration with Claude Code Zen', () =>
 // {
   test('should handle Queen coordination events', () => {
     const _events = [];
-    adapter.on('agui) => {
+    adapter.on('agui) => {'
       events.push(event);
     });
     // Simulate multi-Queen coordination
@@ -135,7 +135,7 @@ describe('Integration with Claude Code Zen', () =>
   });
   test('should handle swarm coordination events', () => {
     const _events = [];
-    adapter.on('agui) => {
+    adapter.on('agui) => {'
       events.push(event);
     });
     // Simulate swarm coordination
@@ -147,7 +147,7 @@ describe('Integration with Claude Code Zen', () =>
   });
   test('should handle state synchronization', () => {
       const _events = [];
-      adapter.on('agui) => {
+      adapter.on('agui) => {'
         events.push(event);
       });
       const _testState = {
@@ -166,30 +166,32 @@ if (process.argv[1].endsWith('/agui-integration.test.js')) {
   async function runBasicTests() {
     const _adapter = new AGUIAdapter({ sessionId);
     // Test 1: Basic functionality
-    console.warn('✓ Testing basic adapter creation');
+    console.warn(' Testing basic adapter creation');
     // Test 2: Text message flow
     const _eventCount = 0;
-    adapter.on('agui) => eventCount++);
+    adapter.on('agui) => eventCount++);'
     const _messageId = adapter.startTextMessage();
     adapter.addTextContent('Test');
     adapter.endTextMessage(messageId);
-    console.warn(`✓ Text message flow (${eventCount} events)`);
+    console.warn(` Text message flow (${eventCount} events)`);
     // Test 3: Tool call flow
     const _initialCount = eventCount;
     const _toolCallId = adapter.startToolCall('test_tool');
     adapter.addToolCallArgs('{}');
     adapter.endToolCall(toolCallId);
     adapter.emitToolCallResult('result', toolCallId);
-    console.warn(`✓ Tool call flow (${eventCount - initialCount} events)`);
+    console.warn(` Tool call flow (${eventCount - initialCount} events)`);
     // Test 4: Custom events
     const _beforeCustom = eventCount;
     adapter.emitQueenEvent('queen-1', 'test', {});
     adapter.emitSwarmEvent('swarm-1', 'test', [], {});
     adapter.emitHiveMindEvent('test', {});
-    console.warn(`✓ Custom events (${eventCount - beforeCustom} events)`);
-    console.warn(`\n✅ Basic tests completed! Total events);
-    console.warn('📊 Final stats:', adapter.getStats());
+    console.warn(` Custom events (${eventCount - beforeCustom} events)`);
+    console.warn(`\n✅ Basic tests completed! Total events);`
+    console.warn('� Final stats:', adapter.getStats());
   //   }
   runBasicTests().catch(console.error);
 // }
 
+
+}}}}}}}}}

@@ -1,6 +1,6 @@
-/**
- * Claude Command Module;
- * Converted from JavaScript to TypeScript;
+/**  */
+ * Claude Command Module
+ * Converted from JavaScript to TypeScript
  */
 
 // claude-command.js - Handles the claude command
@@ -21,7 +21,7 @@ export async function claudeCommand() {
     //     }
     const _task = args.slice(1, taskEndIndex).join(' ');
     if (!task) {
-      printError('Usage = {};
+      printError('Usage = {};'
       for (let i = taskEndIndex; i < args.length; i++) {
         const _arg = args[i];
         if (arg === '--tools' ?? arg === '-t') {
@@ -56,12 +56,12 @@ export async function claudeCommand() {
       //       }
       const __instanceId = `claude-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       if (parsedFlags.dryRun) {
-        printWarning('DRY RUN - Wouldexecute = `# Task Assignment\n\n## Your Primary Task\n${task}\n\n## Development Environment\n\nYou are working in a development environment with advanced orchestration capabilities available if needed.\n\n### Project Context\n- WorkingDirectory = `\n\n   **Parallel Execution Enabled**: The orchestration system can help coordinate parallel work if needed.`;
+        printWarning('DRY RUN - Wouldexecute = `# Task Assignment\n\n## Your Primary Task\n${task}\n\n## Development Environment\n\nYou are working in a development environment with advanced orchestration capabilities available if needed.\n\n### Project Context\n- WorkingDirectory = `\n\n   **Parallel Execution Enabled**: The orchestration system can help coordinate parallel work if needed.`;'`
       //       }
       if (parsedFlags.research) {
-        enhancedTask += `\n\n   **Research Mode**: Web research tools are available for information gathering.`;
+        enhancedTask += `\n\n   **Research Mode**: Web research tools are available for information gathering.`
       //       }
-      enhancedTask += `\n\n### Task Execution Guidelines\n\n1. **Focus on Your Primary Objective**:\n   - Understand the specific requirements of the task\n   - Plan your approach based on the project's needs\n   - Use appropriate tools and practices for the technology stack\n   \${parsedFlags.mode === 'backend-only' ? '   - Focus on backend implementation' }\n   \${parsedFlags.mode === 'frontend-only' ? '   - Focus on frontend implementation' }\n   \${parsedFlags.mode === 'api-only' ? '   - Focus on API design and implementation' }\n\n2. **Development Best Practices**:\n   - Write clean, maintainable code following project conventions\n   - Include appropriate tests and documentation\n   - Use version control effectively\n   ${parsedFlags.coverage ? `   - Ensure test coverage meets ${parsedFlags.coverage}% target` : ''}\n   \${parsedFlags.commit === 'phase' ? '   - Commit changes after completing major phases' }\n   \${parsedFlags.commit === 'feature' ? '   - Commit changes after each feature is complete' }\n   \${parsedFlags.commit === 'manual' ? '   - Only commit when explicitly requested' }\n\n3. **Leverage Orchestration When Beneficial**:\n   - For complex tasks requiring persistent state, use the memory bank\n   - For multi-part projects, use task coordination features\n   - For parallelizable work, consider multi-agent approaches\n   \${parsedFlags.parallel ? '   - Parallel capabilities are enabled for this task' }\n   \${parsedFlags.research ? '   - Research tools are available if needed' }\n   \${parsedFlags.noPermissions ? '   - Running with --no-permissions mode' }\n   \${parsedFlags.verbose ? '   - Verbose mode enabled for detailed output' }\n\n## Getting Started\n\nBegin working on your task. The orchestration features are available as tools to help you be more effective, but your primary focus should be on delivering the requested functionality.\n\n### Quick Reference (if using orchestration features)\n\n\`\`\`bash\n#Example = === 'backend-only' ? `;
+      enhancedTask += `\n\n### Task Execution Guidelines\n\n1. **Focus on Your Primary Objective**:\n   - Understand the specific requirements of the task\n   - Plan your approach based on the project's needs\n   - Use appropriate tools and practices for the technology stack\n   \${parsedFlags.mode === 'backend-only' ? '   - Focus on backend implementation' }\n   \${parsedFlags.mode === 'frontend-only' ? '   - Focus on frontend implementation' }\n   \${parsedFlags.mode === 'api-only' ? '   - Focus on API design and implementation' }\n\n2. **Development Best Practices**:\n   - Write clean, maintainable code following project conventions\n   - Include appropriate tests and documentation\n   - Use version control effectively\n   ${parsedFlags.coverage ? `   - Ensure test coverage meets ${parsedFlags.coverage}% target` : ''}\n   \${parsedFlags.commit === 'phase' ? '   - Commit changes after completing major phases' }\n   \${parsedFlags.commit === 'feature' ? '   - Commit changes after each feature is complete' }\n   \${parsedFlags.commit === 'manual' ? '   - Only commit when explicitly requested' }\n\n3. **Leverage Orchestration When Beneficial**:\n   - For complex tasks requiring persistent state, use the memory bank\n   - For multi-part projects, use task coordination features\n   - For parallelizable work, consider multi-agent approaches\n   \${parsedFlags.parallel ? '   - Parallel capabilities are enabled for this task' }\n   \${parsedFlags.research ? '   - Research tools are available if needed' }\n   \${parsedFlags.noPermissions ? '   - Running with --no-permissions mode' }\n   \${parsedFlags.verbose ? '   - Verbose mode enabled for detailed output' }\n\n## Getting Started\n\nBegin working on your task. The orchestration features are available as tools to help you be more effective, but your primary focus should be on delivering the requested functionality.\n\n### Quick Reference (if using orchestration features)\n\n\`\`\`bash\n#Example = === 'backend-only' ? `;'`
       Focus;
       on;
       server - side;
@@ -70,7 +70,7 @@ export async function claudeCommand() {
       logic.` : ''}\n\${parsedFlags.mode === 'frontend-only' ? `Focus on client-side implementation, UI/UX, and user interactions.` }\n\${parsedFlags.mode === 'api-only' ? `Focus on API design, documentation, and endpoint implementation.` }\n\${parsedFlags.mode === 'full'  ?? !parsedFlags.mode ? `Full-stack development covering all aspects of the application.` }\n\n`;
       const _claudeArgs = [enhancedTask];
       claudeArgs.push('--allowedTools', tools);
-      //DEBUG = > (arg.includes(' ')  ?? arg.includes('\n') ? `"${arg}"` : arg)).join(' ')}`)
+      //DEBUG = > (arg.includes(' ')  ?? arg.includes('\n') ? `"${arg}"` )).join(' ')}`)`
     //     }
     const _child = spawn('claude', claudeArgs, {
                 env => {
@@ -88,20 +88,21 @@ resolve();
 // }
             catch (/* err */)
 // {
-  printError(`Failed to spawnClaude = args[1];
+  printError(`Failed to spawnClaude = args[1];`
           if(!workflowFile) {
-            printError('Usage);
+            printError('Usage);'
             break;
           //           }
-          printSuccess(`Loading workflow);
-  console.warn('📋 Batch execution would process workflow file');
+          printSuccess(`Loading workflow);`
+  console.warn('� Batch execution would process workflow file');
   break;
   // default: null
   console.warn('Claude commands, batch')
-  console.warn('\nExamples)
+  console.warn('\nExamples)'
   console.warn('  claude-zen claude spawn "implement user authentication" --research --parallel')
   console.warn('  claude-zen claude spawn "fix bug in payment system" --no-permissions')
   console.warn('  claude-zen claude batch workflow.json --dry-run')
 // }
 // }
 
+)

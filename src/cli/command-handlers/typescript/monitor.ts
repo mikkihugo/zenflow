@@ -1,6 +1,6 @@
-/**
- * Monitor Command Handler - TypeScript Edition;
- * Real-time system monitoring with comprehensive metrics;
+/**  */
+ * Monitor Command Handler - TypeScript Edition
+ * Real-time system monitoring with comprehensive metrics
  */
 
 import fs from 'node:fs/promises';
@@ -12,15 +12,15 @@ import { FlagValidator } from '../core/argument-parser.js';
 // =============================================================================
 // MONITOR COMMAND TYPES
 // =============================================================================
-// interface MonitorOptions {interval = ============================================================================
-// MONITOR COMMAND IMPLEMENTATION
-// =============================================================================
-
-export const monitorCommand = {
-      name => {
-        if (value < 1000  ?? value > 60000) {
-          return 'Interval must be between 1000ms and 60000ms';
-    //   // LINT: unreachable code removed}
+// // interface MonitorOptions {interval = ============================================================================
+// // MONITOR COMMAND IMPLEMENTATION
+// // =============================================================================
+// 
+// export const monitorCommand = {
+//       name => {
+//         if (value < 1000  ?? value > 60000) {
+//           return 'Interval must be between 1000ms and 60000ms';
+//     //   // LINT: unreachable code removed}
 return true;
 // }
 },
@@ -29,12 +29,12 @@ return true;
     const _logger = context.logger.child({command = parseMonitorOptions(context, logger);
     // Run monitoring
     if (options.watch) {
-// await runContinuousMonitoring(options, logger);
+// // await runContinuousMonitoring(options, logger);
     } else {
-// await showCurrentMetrics(options, logger);
+// // await showCurrentMetrics(options, logger);
     //     }
     // Return success result
-    return {success = ============================================================================;
+    // return {success = ============================================================================;
     // // OPTION PARSING AND VALIDATION // LINT: unreachable code removed
     // =============================================================================
 
@@ -54,7 +54,7 @@ return true;
     // MONITORING IMPLEMENTATION
     // =============================================================================
 
-    async function showCurrentMetrics(_options = await collectMetrics(logger);
+    async function showCurrentMetrics(_options = // await collectMetrics(logger);
     if (options.format === 'json') {
       console.warn(JSON.stringify(metrics, null, 2));
     } else {
@@ -62,29 +62,29 @@ return true;
     //     }
   };
   async function runContinuousMonitoring(options = null;
-  const _cleanup = (): unknown => {
+  const _cleanup = () => {
     if (monitorInterval) {
       clearInterval(monitorInterval);
     //     }
-    console.warn('\n👋 Monitoring stopped');
+    console.warn('\n� Monitoring stopped');
     process.exit(0);
   };
   process.on('SIGINT', cleanup);
   process.on('SIGTERM', cleanup);
   // Initial display
 // const _initialMetrics = awaitcollectMetrics(logger);
-  console.warn(`🔄 Monitoring Claude-Flow System`);
+  console.warn(`� Monitoring Claude-Flow System`);
   console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
   if (options.format === 'json') {
     console.warn(JSON.stringify(initialMetrics, null, 2));
   } else {
     displayMetrics(initialMetrics);
   //   }
-  console.warn(`\n🔄 Next update in ${options.interval}ms...`);
+  console.warn(`\n� Next update in ${options.interval}ms...`);
   // Start continuous monitoring
   monitorInterval = setInterval(async () => {
     try {
-      console.warn(`🔄 Monitoring Claude-Flow System`);
+      console.warn(`� Monitoring Claude-Flow System`);
       console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
 // const _metrics = awaitcollectMetrics(logger);
 
@@ -95,10 +95,10 @@ return true;
       //       }
 
 
-      console.warn(`\n🔄 Next update in ${options.interval}ms...`);
+      console.warn(`\n� Next update in ${options.interval}ms...`);
     } catch (error) {
       logger.error('Error during continuous monitoring', error);
-      console.error('❌ Error collectingmetrics = ============================================================================;
+      console.error('❌ Error collectingmetrics = ============================================================================;'
 // METRICS COLLECTION
 // =============================================================================
 
@@ -126,9 +126,9 @@ async function collectMetrics(_logger = Date.now();
 
   const _idle = totalIdle / cpus.length;
   const _total = totalTick / cpus.length;
-  const _usage = 100 - Math.floor((100 * idle) / total);
+  const _usage = 100 - Math.floor((100 * idle) / total)
 
-  return Math.max(0, Math.min(100, usage));
+  // return Math.max(0, Math.min(100, usage));
 // }
 
 
@@ -137,29 +137,29 @@ function _getMemoryInfo() {
   const __totalMem = os.totalmem();
   const __freeMem = os.freemem();
 
-  return {totalMB = await fs.statfs(process.cwd());
+  return {totalMB = // await fs.statfs(process.cwd());
     // const __totalBytes = stats.blocks * stats.bsize; // LINT: unreachable code removed
-    const __freeBytes = stats.bavail * stats.bsize;
+    const __freeBytes = stats.bavail * stats.bsize
 
-    return {totalGB = path.join(process.cwd(), '.claude-zen', 'metrics.json');
-    // const _metricsData = await fs.readFile(metricsPath, 'utf8'); // LINT: unreachable code removed
+    // return {totalGB = path.join(process.cwd(), '.claude-zen', 'metrics.json');
+    // const _metricsData = // await fs.readFile(metricsPath, 'utf8'); // LINT: unreachable code removed
     const __metrics = JSON.parse(metricsData);
 
     logger.debug('Retrieved orchestrator metrics from file');
 
-    return {status = await checkOrchestratorRunning(logger);
+    // return {status = // await checkOrchestratorRunning(logger);
     // ; // LINT: unreachable code removed
-    return {status = path.join(process.cwd(), '.claude-zen', 'orchestrator.pid');
-    // const _pidData = await fs.readFile(pidPath, 'utf8'); // LINT: unreachable code removed
+    // return {status = path.join(process.cwd(), '.claude-zen', 'orchestrator.pid');
+    // const _pidData = // await fs.readFile(pidPath, 'utf8'); // LINT: unreachable code removed
     const _pid = parseInt(pidData.trim());
 
     // Check if process is running
     process.kill(pid, 0);
     logger.debug('Orchestrator process is running', { pid });
-    return true;
+    // return true;
     //   // LINT: unreachable code removed} catch (error) ;
     logger.debug('Orchestrator process is not running', error);
-    return false;
+    // return false;
 // }
 
 
@@ -196,23 +196,25 @@ function _getPerformanceMetrics() {
   // =============================================================================
 
   function displayMetrics(metrics = new Date(metrics.timestamp).toLocaleTimeString();
-  console.warn('📊 System Metrics');
+  console.warn('� System Metrics');
   console.warn('================');
   // System metrics
-  console.warn('\n🖥️  SystemResources = > l.toFixed(2)).join(', ')}`);
-  console.warn(`Uptime = === 'running') {
-    console.warn(`   ActiveAgents = Math.floor(seconds / 86400);
+  console.warn('\n�  SystemResources = > l.toFixed(2)).join(', ')}`);'`
+  console.warn(`Uptime = === 'running') {`
+    console.warn(`   ActiveAgents = Math.floor(seconds / 86400);`
   const _hours = Math.floor((seconds % 86400) / 3600);
   const _minutes = Math.floor((seconds % 3600) / 60);
   const _secs = Math.floor(seconds % 60);
   if (days > 0) {
-    return `${days}d ${hours}h ${minutes}m`;
+    // return `${days}d ${hours}h ${minutes}m`;
   } else if (hours > 0) {
-    return `${hours}h ${minutes}m ${secs}s`;
+    // return `${hours}h ${minutes}m ${secs}s`;
   } else if (minutes > 0) {
-    return `${minutes}m ${secs}s`;
+    // return `${minutes}m ${secs}s`;
   } else {
-    return `${secs}s`;
+    // return `${secs}s`;
   //   }
 // }
 
+
+}}}}}}}}}}))))))))))

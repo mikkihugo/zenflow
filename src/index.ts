@@ -38,11 +38,11 @@ app.get('/status', (_req, res) =>
 // )
 })
 // Start server if not imported as module
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   app.listen(PORT, () => {
-    console.warn(`🚀 Claude-Zen API server running on port ${PORT}`);
-    console.warn(`📊 Environment);
-    console.warn(`🕒 Started at: ${new Date().toISOString()}`);
+    console.warn(`� Claude-Zen API server running on port ${PORT}`);
+    console.warn(`� Environment);`
+    console.warn(`� Started at: ${new Date().toISOString()}`);
   });
 // }
-export default app;
+// export default app;

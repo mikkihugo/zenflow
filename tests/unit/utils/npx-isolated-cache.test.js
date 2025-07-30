@@ -83,8 +83,8 @@ describe('NPX Isolated Cache', () =>
     it('should track cache directories for cleanup', async () => {
       const _env = createIsolatedCache();
       const __cacheDir = env.NPM_CONFIG_CACHE;
-      // Cleanup should not throw even if directory doesn't exist
-  // await expect(cleanupAllCaches()).resolves.not.toThrow();
+      // Cleanup should not throw even if directory doesn't exist'
+  // // await expect(cleanupAllCaches()).resolves.not.toThrow();
     });
   });
   describe('environment inheritance', () => {
@@ -95,3 +95,4 @@ describe('NPX Isolated Cache', () =>
     });
   });
 })
+}

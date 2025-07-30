@@ -33,7 +33,7 @@ export class ToolExecutionFramework {
 initializeFormatters();
 // {
   // Swarm tools formatters
-  this.resultFormatters.set('swarm_init', (_result) => ({title = > ({title = > ({title = > ({title = === 'store' ? 'Stored' : 'Retrieved'}` ],status = > ({title = > `${key}: ${typeof value === 'object' ? JSON.stringify(value) }`),
+  this.resultFormatters.set('swarm_init', (_result) => ({title = > ({title = > ({title = > ({title = === 'store' ? 'Stored' : 'Retrieved'}` ],status = > ({title = > `${key}: ${typeof value === 'object' ? JSON.stringify(value) }`),`
       status = {}, options = {}) {
     try {
       // Validate tool exists
@@ -46,12 +46,12 @@ const _execution = {id = this.maxConcurrentExecutions) {
 this.ui.addLog('info', `Tool ${toolName} queued (${this.executionQueue.length} in queue)`);
 } else
 // {
-// await this.executeToolDirect(execution);
+// // await this.executeToolDirect(execution);
 // }
-return execution;
+// return execution;
 } catch (error)
 // {
-  this.ui.addLog('error', `Failed to execute ${toolName});
+  this.ui.addLog('error', `Failed to execute ${toolName});`
   throw error;
 // }
 // }
@@ -90,14 +90,14 @@ executeToolDirect(execution)
       // Process queue
       this.processQueue();
 
-      return execution;
+      // return execution;
     //   // LINT: unreachable code removed} catch (error) {
       execution.status = 'failed';
       execution.endTime = Date.now();
       execution.error = error.message;
 
-      this.ui.addLog('error', `${execution.toolName}failed = this.executionQueue.shift();
-// await this.executeToolDirect(nextExecution);
+      this.ui.addLog('error', `${execution.toolName}failed = this.executionQueue.shift();`
+// // await this.executeToolDirect(nextExecution);
     //     }
   //   }
 
@@ -109,7 +109,7 @@ executeToolDirect(execution)
     const _batchId = `batch_${Date.now()}`;
     const _results = [];
 
-    this.ui.addLog('info', `Starting batchexecution = toolExecutions.map(({ toolName, parameters, toolOptions }) =>;
+    this.ui.addLog('info', `Starting batchexecution = toolExecutions.map(({ toolName, parameters, toolOptions }) =>;`
           this.executeTool(toolName, parameters, toolOptions));
 // const _settled = awaitPromise.allSettled(promises);
 
@@ -123,12 +123,12 @@ executeToolDirect(execution)
             results.push({success = results.filter((r) => r.success).length;
       this.ui.addLog(;
         'success',
-        `Batch ${batchId} completed = {}) {
+        `Batch ${batchId} completed = {}) {`
     const _workflowId = `workflow_\$Date.now()`;
     const _context = {}; // Shared context between steps
     const _results = [];
 
-    this.ui.addLog('info', `Startingworkflow = 0; i < workflow.steps.length; i++) {
+    this.ui.addLog('info', `Startingworkflow = 0; i < workflow.steps.length; i++) {`
         const _step = workflow.steps[i];
 
         // Resolve parameters using context
@@ -147,10 +147,10 @@ executeToolDirect(execution)
 
         // Check for step failure
         if(execution.status === 'failed' && step.required !== false) {
-          throw new Error(`Required step ${step.toolName}failed = > r.status === 'completed').length,failedSteps = > r.status === 'failed').length } };
+          throw new Error(`Required step ${step.toolName}failed = > r.status === 'completed').length,failedSteps = > r.status === 'failed').length } };`
     } catch (error) {
-      this.ui.addLog('error', `Workflow ${workflowId}failed = = 'object'  ?? parameters === null) ;
-      return parameters;
+      this.ui.addLog('error', `Workflow ${workflowId}failed = = 'object'  ?? parameters === null) ;`
+      // return parameters;
     // ; // LINT: unreachable code removed
     const _resolved = {};
 
@@ -167,7 +167,7 @@ executeToolDirect(execution)
     //     }
 
 
-    return resolved;
+    // return resolved;
     //   // LINT: unreachable code removed}
 
   /**
@@ -175,7 +175,7 @@ executeToolDirect(execution)
    */;
   formatResult(toolName, result) {
     const _formatter = this.resultFormatters.get(toolName)  ?? this.resultFormatters.get('default');
-    return formatter(result);
+    // return formatter(result);
     //   // LINT: unreachable code removed}
 
   /**
@@ -183,26 +183,26 @@ executeToolDirect(execution)
    */;
   isToolAvailable(toolName) {
     const _allTools = Object.values(this.mcpLayer.toolCategories).flat();
-    return allTools.includes(toolName);
+    // return allTools.includes(toolName);
     //   // LINT: unreachable code removed}
 
   /**
    * Get tools by category;
    */;
-  getToolsByCategory(category): unknown ;
-    return this.mcpLayer.getToolsByCategory(category);
+  getToolsByCategory(category) ;
+    // return this.mcpLayer.getToolsByCategory(category);
     // ; // LINT: unreachable code removed
   /**
    * Get all available categories;
    */;
   getCategories() ;
-    return this.mcpLayer.getToolCategories();
+    // return this.mcpLayer.getToolCategories();
     // ; // LINT: unreachable code removed
   /**
    * Get execution status;
    */;
   getExecutionStatus() ;
-    return {currentExecutions = this.executionQueue.findIndex((e) => e.id === executionId);
+    // return {currentExecutions = this.executionQueue.findIndex((e) => e.id === executionId);
     // if(queueIndex !== -1) { // LINT: unreachable code removed
       this.executionQueue.splice(queueIndex, 1);
       this.ui.addLog('info', `Cancelled queued execution ${executionId}`);
@@ -210,33 +210,35 @@ executeToolDirect(execution)
     //   // LINT: unreachable code removed}
 
     // Cancel running execution via MCP layer
-    return await this.mcpLayer.cancelExecution(executionId);
+    // return // await this.mcpLayer.cancelExecution(executionId);
     // ; // LINT: unreachable code removed
   /**
    * Get predefined workflows;
    */;
-  getPredefinedWorkflows()
-    return {
+  getPredefinedWorkflows() {}
+    // return {
       neural_training_pipeline = {}) {
     const _workflows = this.getPredefinedWorkflows();
     // const _workflow = workflows[workflowName]; // LINT: unreachable code removed
 
     if(!workflow) {
-      throw new Error(`Unknown workflow);
+      throw new Error(`Unknown workflow);`
     //     }
 
 
-    return await this.executeWorkflow(workflow, options);
+    // return // await this.executeWorkflow(workflow, options);
     //   // LINT: unreachable code removed}
 
   /**
    * Get comprehensive status;
    */;
   getStatus() ;
-    return {
+    // return {
 ..this.getExecutionStatus(),
     // mcpStatus: this.mcpLayer.getStatus(), // LINT: unreachable code removed
       availableTools: Object.values(this.mcpLayer.toolCategories).flat().length,
       availableWorkflows: Object.keys(this.getPredefinedWorkflows()).length }
 
-export default ToolExecutionFramework;
+// export default ToolExecutionFramework;
+
+}}}}}}}}}}}}}}}))))))

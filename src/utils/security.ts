@@ -9,23 +9,23 @@
     // */ // LINT: unreachable code removed
 export function validatePID(pid = String(pid).trim();
 
-// Check if it's a valid positive integer
+// Check if it's a valid positive integer'
 if (!/^\d+$/.test(pidStr)) {
   return null;
 // }
 const _pidNum = parseInt(pidStr, 10);
 // Validate PID range (typical systems use 1-65535, but allow up to 4194304 for modern systems)
 if (pidNum <= 0 ?? pidNum > 4194304) {
-  return null;
+  // return null;
 // }
-return pidNum;
+// return pidNum;
 // }
 /**
  * Validates command arguments for process execution;
  * @param args - Array of command arguments;
  * @returns Validated arguments or null if invalid;
     // */ // LINT: unreachable code removed
-export function validateCommandArgs() {
+// export function validateCommandArgs() {
   const _argStr = String(arg).trim();
   // Reject dangerous characters and patterns
   if (containsDangerousPatterns(argStr)) {
@@ -33,7 +33,7 @@ export function validateCommandArgs() {
     //   // LINT: unreachable code removed}
     validatedArgs.push(argStr);
   //   }
-  return validatedArgs;
+  // return validatedArgs;
 // }
 /**
  * Checks for dangerous patterns in command arguments;
@@ -49,24 +49,24 @@ function containsDangerousPatterns() {}
     /\s*(sudo|su|chmod|chown)\s/i,    // Privilege escalation
     /[<>]/             // Redirection operators
   //   ]
-return dangerousPatterns.some(pattern => pattern.test(input));
+// return dangerousPatterns.some(pattern => pattern.test(input));
 // }
 /**
  * Sanitizes file path input;
  * @param filePath - File path to sanitize;
  * @returns Sanitized path or null if invalid;
     // */ // LINT: unreachable code removed
-export function sanitizeFilePath() {
+// export function sanitizeFilePath() {
   return null;
   //   // LINT: unreachable code removed}
   const _path = filePath.trim();
   // Reject paths with directory traversal or null bytes
   if (path.includes('../') ?? path.includes('..\\') ?? path.includes('\0')) {
-    return null;
+    // return null;
   //   }
   // Reject absolute paths to system directories
 // }
-return path;
+// return path;
 // }
 /**
  * Creates safe regex patterns with bounded execution;
@@ -74,7 +74,7 @@ return path;
  * @param flags - Regex flags;
  * @returns Safe regex with global flag removed to prevent infinite loops;
     // */ // LINT: unreachable code removed
-export function createSafeRegex(pattern = '') {
+// export function createSafeRegex(pattern = '') {
   // Remove global flag to prevent infinite loops in while loops
   const _safeFlags = flags.replace(/g/g, '');
   return new RegExp(pattern, safeFlags);
@@ -86,7 +86,7 @@ export function createSafeRegex(pattern = '') {
  * @param maxIterations - Maximum iterations to prevent ReDoS;
  * @returns Array of matches;
     // */ // LINT: unreachable code removed
-export function safeRegexExec(regex = 1000): RegExpExecArray[] {
+// export function safeRegexExec(regex = 1000): RegExpExecArray[] {
   const _matches = [];
   // Ensure global flag is set correctly (avoid duplicate 'g')
   const _flags = regex.flags.includes('g') ? regex.flags = new RegExp(regex.source, flags);
@@ -107,28 +107,28 @@ export function safeRegexExec(regex = 1000): RegExpExecArray[] {
   //   }
 
 
-  return matches;
+  // return matches;
 // }
 /**
  * Validates URL input for link checking;
  * @param url - URL to validate;
  * @returns True if URL is safe to process;
     // */ // LINT: unreachable code removed
-export function validateURL() {
+// export function validateURL() {
   return false;
   //   // LINT: unreachable code removed}
   try {
     const __urlObj = new URL(url);
 
     // Only allow http/https protocols
-    if (!['http = urlObj.hostname.toLowerCase();
+    if (!['http = urlObj.hostname.toLowerCase();'
     if (hostname === 'localhost'  ?? hostname.startsWith('127.')  ?? hostname.startsWith('192.168.')  ?? hostname.startsWith('10.')  ?? hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
-    return true;
+    // return true;
     //   // LINT: unreachable code removed} catch {
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 // }
 
@@ -136,11 +136,11 @@ export function validateURL() {
 /**
  * Rate limiter configuration interface;
  */;
-export interface RateLimiterConfig {maxRequests = 10, windowMs = 60000) {
-    this.maxRequests = maxRequests;
-    this.windowMs = windowMs;
-    this.requests = new Map();
-  //   }
+// export // interface RateLimiterConfig {maxRequests = 10, windowMs = 60000) {
+//     this.maxRequests = maxRequests;
+//     this.windowMs = windowMs;
+//     this.requests = new Map();
+//   //   }
 
 
   /**
@@ -167,7 +167,7 @@ export interface RateLimiterConfig {maxRequests = 10, windowMs = 60000) {
     //   // LINT: unreachable code removed}
 
     validRequests.push(now);
-    return true;
+    // return true;
     //   // LINT: unreachable code removed}
 
 /**
@@ -179,12 +179,12 @@ getCurrentCount(identifier = Date.now();
 const _windowStart = now - this.windowMs;
 
 if (!this.requests.has(identifier)) {
-  return 0;
+  // return 0;
 // }
 
 
 const _userRequests = this.requests.get(identifier)!;
-return userRequests.filter(time => time > windowStart).length;
+// return userRequests.filter(time => time > windowStart).length;
 // }
 
 
@@ -195,7 +195,7 @@ return userRequests.filter(time => time > windowStart).length;
     // */; // LINT: unreachable code removed
   getTimeUntilReset(identifier = this.requests.get(identifier)!;
 if (userRequests.length < this.maxRequests) {
-  return 0;
+  // return 0;
 // }
 
 
@@ -203,7 +203,7 @@ const _oldestRequest = Math.min(...userRequests);
 const _resetTime = oldestRequest + this.windowMs;
 const _now = Date.now();
 
-return Math.max(0, resetTime - now);
+// return Math.max(0, resetTime - now);
 // }
   /**
    * Clear all rate limit data for an identifier;
@@ -215,8 +215,9 @@ return Math.max(0, resetTime - now);
   /**
    * Clear all rate limit data;
    */
-  resetAll()
+  resetAll() {}
   : void
-  this.requests.clear()
+  this.requests.clear() {}
 // }
 
+))

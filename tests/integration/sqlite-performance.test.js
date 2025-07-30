@@ -28,22 +28,22 @@ afterEach(async () => {
     memoryStore.close();
   //   }
   // Clean up test directory
-  // await fs.rm(testDir, { recursive, force });
+  // // await fs.rm(testDir, { recursive, force });
 });
 describe('Optimized Index Usage', () => {
     it('should create all performance indexes', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
-  // await memoryStore.initialize();
+  // // await memoryStore.initialize();
       // Check that all expected indexes exist
       const _indexes = memoryStore.db;
-prepare(`;
+prepare(`;`
         SELECT name FROM sqlite_master ;
         WHERE type = 'index' AND tbl_name = 'memory_entries';
-      `);
+      `);`
 all();
       const _indexNames = indexes.map((idx) => idx.name);
       // Verify core performance indexes
@@ -62,19 +62,19 @@ all();
     it('should use indexes for key lookups', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
-  // await memoryStore.initialize();
+  // // await memoryStore.initialize();
       // Insert test data
-  // await memoryStore.store('test-key', 'test-value', { namespace);
+  // // await memoryStore.store('test-key', 'test-value', { namespace);
       // Check query plan for key lookup
       const _plan = memoryStore.db;
-prepare(`;
+prepare(`;`
         EXPLAIN QUERY PLAN ;
         SELECT * FROM memory_entries ;
         WHERE key = ? AND namespace = ?;
-      `);
+      `);`
 all('test-key', 'test-ns');
       // Should use the composite index
       const _planText = plan.map((row) => row.detail).join(' ');
@@ -91,13 +91,13 @@ all('test-key', 'test-ns');
     it('should cache retrieve operations', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       const _key = 'cache-test-key';
       const _value = { data: 'cached value' };
       // Store value
-  // await memoryStore.store(key, value);
+  // // await memoryStore.store(key, value);
       // First retrieve (should miss cache)
 // const _result1 = awaitmemoryStore.retrieve(key);
       const _stats1 = memoryStore.getPerformanceStats();
@@ -111,18 +111,18 @@ all('test-key', 'test-ns');
     it('should invalidate cache on updates', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       const _key = 'invalidation-test';
       const _value1 = { version };
       const _value2 = { version };
       // Store and retrieve initial value
-  // await memoryStore.store(key, value1);
-  // await memoryStore.retrieve(key); // Cache it
+  // // await memoryStore.store(key, value1);
+  // // await memoryStore.retrieve(key); // Cache it
 
       // Update value
-  // await memoryStore.store(key, value2);
+  // // await memoryStore.store(key, value2);
       // Retrieve should return new value, not cached
 // const _result = awaitmemoryStore.retrieve(key);
     // expect(result).toEqual(value2); // LINT: unreachable code removed
@@ -130,13 +130,13 @@ all('test-key', 'test-ns');
     it('should cache list operations', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       const _namespace = 'list-cache-test';
       // Store test data
       for (let i = 0; i < 5; i++) {
-  // await memoryStore.store(`key-\$i`, `value-\$i`, { namespace });
+  // // await memoryStore.store(`key-\$i`, `value-\$i`, { namespace });
       //       }
       // First list (should miss cache)
 // const _list1 = awaitmemoryStore.list({ namespace, limit });
@@ -151,13 +151,13 @@ all('test-key', 'test-ns');
     it('should provide cache statistics', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       // Perform some operations to generate cache activity
-  // await memoryStore.store('stats-test', 'test-value');
-  // await memoryStore.retrieve('stats-test'); // miss
-  // await memoryStore.retrieve('stats-test'); // hit
+  // // await memoryStore.store('stats-test', 'test-value');
+  // // await memoryStore.retrieve('stats-test'); // miss
+  // // await memoryStore.retrieve('stats-test'); // hit
 
       const _stats = memoryStore.getPerformanceStats();
       expect(stats.cache).toHaveProperty('enabled');
@@ -180,12 +180,12 @@ all('test-key', 'test-ns');
     it('should provide database statistics', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       // Add some test data
       for (let i = 0; i < 10; i++) {
-  // await memoryStore.store(`stats-key-\$i`, `value-\$i`, {
+  // // await memoryStore.store(`stats-key-\$i`, `value-\$i`, {
           namespace);
       //       }
 // const _stats = awaitmemoryStore.getDatabaseStats();
@@ -204,7 +204,7 @@ all('test-key', 'test-ns');
     it('should analyze query performance', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
 // const _analysis = awaitmemoryStore.analyzeQueryPerformance();
@@ -231,13 +231,13 @@ all('test-key', 'test-ns');
     it('should create and manage connection pool', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       pool = new SQLiteConnectionPool(poolDbPath, {
         minConnections,
         maxConnections });
-  // await pool.initialize();
+  // // await pool.initialize();
       const _stats = pool.getStats();
       expect(stats.totalConnections).toBe(2); // min connections
       expect(stats.availableConnections).toBe(2);
@@ -246,26 +246,26 @@ all('test-key', 'test-ns');
     it('should handle concurrent connections', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       pool = new SQLiteConnectionPool(poolDbPath, {
         minConnections,
         maxConnections });
-  // await pool.initialize();
+  // // await pool.initialize();
       // Create table
-  // await pool.execute(`;
+  // // await pool.execute(`;`
         CREATE TABLE IF NOT EXISTS test_table (;
           id INTEGER PRIMARY KEY,
           value TEXT;
         );
-      `);
+      `);`
       // Perform concurrent operations
       const _operations = [];
       for (let i = 0; i < 5; i++) {
         operations.push(pool.execute('INSERT INTO test_table (value) VALUES (?)', [`value-\$i`]));
       //       }
-  // await Promise.all(operations);
+  // // await Promise.all(operations);
       // Verify all operations completed
 // const _results = awaitpool.execute('SELECT COUNT(*)  FROM test_table');
       expect(results[0].count).toBe(5);
@@ -273,24 +273,24 @@ all('test-key', 'test-ns');
     it('should handle transaction operations', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       pool = new SQLiteConnectionPool(poolDbPath);
-  // await pool.initialize();
+  // // await pool.initialize();
       // Create table
-  // await pool.execute(`;
+  // // await pool.execute(`;`
         CREATE TABLE IF NOT EXISTS transaction_test (;
           id INTEGER PRIMARY KEY,
           value TEXT;
         );
-      `);
+      `);`
       // Execute transaction
       const _queries = [
         { query: 'INSERT INTO transaction_test (value) VALUES (?)', params: ['tx-value-1'] },
         { query: 'INSERT INTO transaction_test (value) VALUES (?)', params: ['tx-value-2'] },
         { query: 'INSERT INTO transaction_test (value) VALUES (?)', params: ['tx-value-3'] } ];
-  // await pool.executeTransaction(queries);
+  // // await pool.executeTransaction(queries);
       // Verify transaction results
 // const _results = awaitpool.execute('SELECT COUNT(*)  FROM transaction_test');
       expect(results[0].count).toBe(3);
@@ -306,13 +306,13 @@ all('test-key', 'test-ns');
     it('should handle large datasets efficiently', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       const _startTime = Date.now();
       // Insert large dataset
       for (let i = 0; i < 1000; i++) {
-  // await memoryStore.store(;
+  // // await memoryStore.store(;
           `large-key-\$i`,
           //           {
             id,
@@ -326,16 +326,16 @@ all('test-key', 'test-ns');
       const _queryStart = Date.now();
       // Key lookups
       for (let i = 0; i < 100; i++) {
-  // await memoryStore.retrieve(`large-key-\$i * 10`, {
+  // // await memoryStore.retrieve(`large-key-\$i * 10`, {
           namespace: `batch-\$Math.floor((i * 10) / 100)` });
       //       }
       // List operations
       for (let i = 0; i < 10; i++) {
-  // await memoryStore.list({ namespace);
+  // // await memoryStore.list({ namespace);
       //       }
       // Search operations
-  // await memoryStore.search('Large dataset', { limit });
-  // await memoryStore.search('entry number 5', { limit });
+  // // await memoryStore.search('Large dataset', { limit });
+  // // await memoryStore.search('entry number 5', { limit });
       const _queryTime = Date.now() - queryStart;
       // Performance assertions (these are rough benchmarks)
       expect(insertTime).toBeLessThan(10000); // 10 seconds for 1000 inserts
@@ -348,17 +348,17 @@ all('test-key', 'test-ns');
     it('should maintain performance with TTL entries', async () => {
 // const _available = awaitisSQLiteAvailable();
       if (!available) {
-        console.warn('Skipping test);
+        console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       // Insert entries with various TTLs
       for (let i = 0; i < 500; i++) {
-  // await memoryStore.store(`ttl-key-\$i`, `value-\$i`, {
+  // // await memoryStore.store(`ttl-key-\$i`, `value-\$i`, {
           ttl: (i % 4) + 1, // TTL between 1-4 seconds
           namespace: 'ttl-test' });
       //       }
       // Wait for some to expire
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
+  // // await new Promise((resolve) => setTimeout(resolve, 2000));
       const _cleanupStart = Date.now();
 // const _cleanedCount = awaitmemoryStore.cleanup();
       const _cleanupTime = Date.now() - cleanupStart;
@@ -372,3 +372,5 @@ all('test-key', 'test-ns');
     });
   });
 });
+
+}}}}}

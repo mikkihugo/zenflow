@@ -19,29 +19,29 @@ export * from './plugin.js';
 export * from './providers.js';
 export * from './queen.js';
 export * from './security.js';
-export * from './server.js';
-export * from './swarm.js';
-export * from './utils.js';
-export * from './vision.js';
-export * from './workflow.js';
+// export * from './server.js';
+// export * from './swarm.js';
+// export * from './utils.js';
+// export * from './vision.js';
+// export * from './workflow.js';
 
 // Global type augmentation for the system
 declare global { // eslint-disable-line
   namespace ClaudeCodeFlow {
-// interface SystemContext {
-      // version: string
-      environment: 'development' | 'production' | 'test';
-      // startTime: Date
-      // processId: string
-      // instanceId: string
-    //     }
-// interface Configuration {
-      core: import('./core.js').CoreConfig;
-      database: import('./database.js').DatabaseConfig;
-      plugins: import('./plugin.js').PluginConfig;
-      neural: import('./neural.js').NeuralConfig;
-      security: import('./security.js').SecurityConfig;
-    //     }
+// // interface SystemContext {
+//       // version: string
+//       environment: 'development' | 'production' | 'test';
+//       // startTime: Date
+//       // processId: string
+//       // instanceId: string
+//     //     }
+// // interface Configuration {
+//       core: import('./core.js').CoreConfig;
+//       database: import('./database.js').DatabaseConfig;
+//       plugins: import('./plugin.js').PluginConfig;
+//       neural: import('./neural.js').NeuralConfig;
+//       security: import('./security.js').SecurityConfig;
+//     //     }
   //   }
 // }
 // Module augmentation for Node.js global

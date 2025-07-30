@@ -60,7 +60,7 @@ describe('Main Application Entry Point', () => {
     // We need to clear the module cache to reimport with new env
     const _modulePath = '../../../src/index.js';
     delete require.cache[require.resolve(modulePath)];
-  // await import(modulePath);
+  // // await import(modulePath);
 
     expect(mockApp.listen).toHaveBeenCalledWith('8080', expect.any(Function));
   });
@@ -87,3 +87,4 @@ describe('Main Application Entry Point', () => {
       message);
 })
 })
+}

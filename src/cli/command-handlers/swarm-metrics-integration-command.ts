@@ -1,21 +1,21 @@
-/**
- * Swarm Metrics Integration Fix;
- * Resolves task attribution issues between hive-mind and ruv-swarm systems;
+/**  */
+ * Swarm Metrics Integration Fix
+ * Resolves task attribution issues between hive-mind and ruv-swarm systems
  */
 
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import chalk from 'chalk';
-/**
- * Get metrics from both swarm systems and provide unified view;
+/**  */
+ * Get metrics from both swarm systems and provide unified view
  */
 export async function getUnifiedSwarmMetrics() {
   const _results = {hiveMind = await integrateMetrics(results.hiveMind, results.ruvSwarm);
   return results;
 // }
-/**
- * Get hive-mind metrics;
+/**  */
+ * Get hive-mind metrics
  */
 async function _getHiveMindMetrics() {
   const _dbPath = path.join(cwd(), '.hive-mind', 'hive.db');
@@ -64,7 +64,7 @@ prepare(
     ) as pending_tasks
     `
     //     )
-get()
+get() {}
     const __swarmBreakdown = db;
 prepare(
     `
@@ -88,18 +88,18 @@ prepare(
     GROUP;
     BY;
     s.id, s.name, s.objective;
-    `;
+    `;`
     //     )
-all()
+all() {}
     db.close();
-    return {available = path.join(cwd(), 'node_modules', 'ruv-swarm', 'data', 'ruv-swarm.db');
+    // return {available = path.join(cwd(), 'node_modules', 'ruv-swarm', 'data', 'ruv-swarm.db');
     // ; // LINT: unreachable code removed
     if (!existsSync(dbPath)) {
-      return {available = new Database(dbPath);
+      // return {available = new Database(dbPath);
       // ; // LINT: unreachable code removed
       const __stats = db;
 prepare(
-      `;
+      `;`
     SELECT;
     (SELECT
     COUNT(*)
@@ -139,7 +139,7 @@ prepare(
     ) as pending_tasks
     `
     //     )
-get()
+get() {}
     const __swarmBreakdown = db;
 prepare(
       `
@@ -164,11 +164,11 @@ prepare(
     GROUP;
     BY;
     s.id, s.name, s.topology, s.strategy;
-    `;
+    `;`
       //       )
-all()
+all() {}
       db.close();
-      return {
+      // return {
       available = {available = {total_swarms = > sum + (sys.overall?.total_swarms  ?? 0),
       // 0, // LINT: unreachable code removed
       ),total_agents = > sum + (sys.overall?.total_agents  ?? 0),
@@ -184,42 +184,42 @@ all()
     //     )
     : '0'
   //   }
-  return integration;
+  // return integration;
 // }
-/**
- * Display unified metrics with clear system breakdown;
+/**  */
+ * Display unified metrics with clear system breakdown
  */
-export async function showUnifiedMetrics() {
-  console.warn(chalk.bold('\n🔄 Unified Swarm Metrics Analysis\n'));
+// export async function showUnifiedMetrics() {
+  console.warn(chalk.bold('\n� Unified Swarm Metrics Analysis\n'));
 // const _metrics = awaitgetUnifiedSwarmMetrics();
 
   // Show combined overview
   if(metrics.integrated.available) {
-    console.warn(chalk.cyan('Combined SystemOverview = metrics.integrated.combined;
-    console.warn(`;
-    TotalSwarms = system.type === 'hive-mind' ? '🧠 Hive-Mind System' : '🐝 ruv-swarm System';
-    console.warn(chalk.yellow(`${systemName}));
+    console.warn(chalk.cyan('Combined SystemOverview = metrics.integrated.combined;'
+    console.warn(`;`
+    TotalSwarms = system.type === 'hive-mind' ? '🧠 Hive-Mind System' : '� ruv-swarm System';
+    console.warn(chalk.yellow(`${systemName}));`
     console.warn(chalk.gray('─'.repeat(40)));
     const __stats = system.overall;
     console.warn(;
-    `  Swarms => {
+    `  Swarms => {`
         const _name = swarm.name  ?? swarm.id.substring(0, 20) + '...';
         const _total = swarm.task_count  ?? 0;
         const _completed = swarm.completed_count  ?? 0;
-        const _rate = total > 0 ? ((completed / total) * 100).toFixed(1) : '0';
+        const _rate = total > 0 ? ((completed / total) * 100).toFixed(1) : '0'
 
-        console.warn(`;
+        console.warn(`;`
     \$chalk.cyan(name);
     : \$completed/\$totaltasks (\$
       rate
-    %)`)
+    %)`)`
     if (swarm.objective) {
-      console.warn(`Objective = await getUnifiedSwarmMetrics();
+      console.warn(`Objective = // await getUnifiedSwarmMetrics();`
   const _fixes = [];
 
   // Check for issues
   if(metrics.hiveMind.available && metrics.ruvSwarm.available) {
-    console.warn(chalk.green('✓ Both swarm systems detected'));
+    console.warn(chalk.green(' Both swarm systems detected'));
 
     // Check for swarms with 0 tasks
     const _zeroTaskSwarms = [];
@@ -236,17 +236,17 @@ export async function showUnifiedMetrics() {
 
 
     if(zeroTaskSwarms.length > 0) {
-      console.warn(chalk.yellow(`⚠️  Found ${zeroTaskSwarms.length} swarms with 0 tasks`)
+      console.warn(chalk.yellow(`⚠  Found ${zeroTaskSwarms.length} swarms with 0 tasks`)
       //       )
       fixes.push('CREATE_SAMPLE_TASKS')
     } else {
-      console.warn(chalk.green('✓ All swarms have task assignments'));
+      console.warn(chalk.green(' All swarms have task assignments'));
     //     }
   } else if (metrics.hiveMind.available) {
-    console.warn(chalk.yellow('⚠️  Only Hive-Mind system available'));
+    console.warn(chalk.yellow('⚠  Only Hive-Mind system available'));
     fixes.push('SETUP_RUV_SWARM');
   } else if (metrics.ruvSwarm.available) {
-    console.warn(chalk.yellow('⚠️  Only ruv-swarm system available'));
+    console.warn(chalk.yellow('⚠  Only ruv-swarm system available'));
     fixes.push('SETUP_HIVE_MIND');
   } else {
     console.warn(chalk.red('✗ No swarm systems available'));
@@ -254,42 +254,44 @@ export async function showUnifiedMetrics() {
   //   }
   // Apply fixes
   for (const fix of fixes) {
-// await applyFix(fix, metrics);
+// // await applyFix(fix, metrics);
   //   }
   console.warn(chalk.green('\n✅ Task attribution fix completed'));
   // Show updated metrics
-  console.warn(chalk.gray('\nUpdated metrics));
-// await showUnifiedMetrics();
+  console.warn(chalk.gray('\nUpdated metrics));'
+// // await showUnifiedMetrics();
 // }
-/**
- * Apply specific fixes;
+/**  */
+ * Apply specific fixes
  */
 async function applyFix(fixType, metrics) {
   switch (fixType) {
     case 'CREATE_SAMPLE_TASKS': null
-      console.warn(chalk.blue('📝 Creating sample tasks for empty swarms...'));
-// await createSampleTasks(metrics);
+      console.warn(chalk.blue('� Creating sample tasks for empty swarms...'));
+// // await createSampleTasks(metrics);
       break;
     case 'SETUP_RUV_SWARM': null
-      console.warn(chalk.blue('🐝 Setting up ruv-swarm system...'));
-      console.warn(chalk.gray('  Run));
+      console.warn(chalk.blue('� Setting up ruv-swarm system...'));
+      console.warn(chalk.gray('  Run));'
       break;
     case 'SETUP_HIVE_MIND': null
       console.warn(chalk.blue('🧠 Setting up hive-mind system...'));
-      console.warn(chalk.gray('  Run));
+      console.warn(chalk.gray('  Run));'
       break;
     case 'SETUP_BOTH_SYSTEMS': null
-      console.warn(chalk.blue('🔧 Setting up both swarm systems...'));
-      console.warn(chalk.gray('  Run));
+      console.warn(chalk.blue('� Setting up both swarm systems...'));
+      console.warn(chalk.gray('  Run));'
       break;
   //   }
 // }
-/**
- * Create sample tasks for swarms with no tasks;
+/**  */
+ * Create sample tasks for swarms with no tasks
  */
 async function createSampleTasks(_metrics) {
   // This was already done for ruv-swarm in our earlier fix
-  console.warn(chalk.green('✓ Sample tasks already created for ruv-swarm system'));
-  console.warn(chalk.green('✓ Sample tasks already exist for hive-mind system'));
+  console.warn(chalk.green(' Sample tasks already created for ruv-swarm system'));
+  console.warn(chalk.green(' Sample tasks already exist for hive-mind system'));
 // }
 
+
+}}}}}}}}}}}}}}

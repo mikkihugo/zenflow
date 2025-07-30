@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 🚀 UNIFIED CLAUDE-ZEN SERVER;
+ * � UNIFIED CLAUDE-ZEN SERVER;
  * Single server combining API + MCP + WebSocket on configurable port (default 3000);
  *;
  * Features:;
@@ -25,15 +25,15 @@ const ___dirname = dirname(__filename);
 /**
  * Unified Claude-Zen Server Configuration
  */
-// interface UnifiedServerOptions {
-  port?: number;
-  host?: string;
-  enableAPI?: boolean;
-  enableMCP?: boolean;
-  enableWebSocket?: boolean;
-  enableNeural?: boolean;
-  [key]: unknown;
-// }
+// // interface UnifiedServerOptions {
+//   port?;
+//   host?;
+//   enableAPI?;
+//   enableMCP?;
+//   enableWebSocket?;
+//   enableNeural?;
+//   [key];
+// // }
 /**
  * Unified Server Class;
  * Orchestrates all Claude-Zen components in a single process
@@ -61,8 +61,7 @@ class UnifiedServer {
 /**
  * Setup Express middleware
  */
-private
-setupMiddleware();
+// private setupMiddleware();
 : void
 // {
   this.app.use(;
@@ -86,8 +85,7 @@ this.app.use((req, _res, next) =>
 /**
  * Setup API routes
  */
-private
-setupRoutes()
+// private setupRoutes() {}
 : void
 // {
   // Health check
@@ -110,7 +108,7 @@ this.app.get('/status', (_req, res) =>
   host: this.options.host }
 
 // 
-{
+{}
   api: this.options.enableAPI ? 'active' : 'disabled',
   mcp: this.options.enableMCP ? 'active' : 'disabled',
   websocket: this.options.enableWebSocket ? 'active' : 'disabled',
@@ -153,19 +151,18 @@ this.app.get('/health', (_req, res) =>
 /**
  * Setup WebSocket server
  */
-private
-setupWebSocket()
+// private setupWebSocket() {}
 : void
 // {
   if (!this.options.enableWebSocket ?? !this.server) return;
   // ; // LINT: unreachable code removed
   this.wss = new WebSocketServer({ server);
   this.wss.on('connection', (ws, req) => {
-    console.warn(`🔌 WebSocket connection from ${req.socket.remoteAddress}`);
+    console.warn(` WebSocket connection from ${req.socket.remoteAddress}`);
     ws.on('message', (data) => {
         try {
           const _message = JSON.parse(data.toString());
-          console.warn('📩 WebSocket message);
+          console.warn('� WebSocket message);'
 
           // Echo back for now - integrate with swarm orchestration
           ws.send(;
@@ -175,11 +172,11 @@ setupWebSocket()
               timestamp: new Date().toISOString() });
           );
         } catch (error) {
-          console.error('❌ WebSocket message error);
+          console.error('❌ WebSocket message error);'
         //         }
   });
   ws.on('close', () => {
-    console.warn('🔌 WebSocket connection closed');
+    console.warn(' WebSocket connection closed');
   });
   // Send welcome message
   ws.send(;
@@ -192,19 +189,18 @@ setupWebSocket()
 // )
 // )
 })
-console.warn('🔌 WebSocket server enabled')
+console.warn(' WebSocket server enabled')
 // }
 /**
  * Initialize components
  */
-private
-// async
-initializeComponents()
+// private // async
+initializeComponents() {}
 : Promise<void>
 // {
   try {
       // Initialize database connections
-      console.warn('🗄️ Initializing databases...');
+      console.warn('� Initializing databases...');
 
       // Initialize neural engine (ruv-FANN integration)
       if (this.options.enableNeural) {
@@ -215,14 +211,14 @@ initializeComponents()
 
       // Initialize MCP server
       if (this.options.enableMCP) {
-        console.warn('🔗 Initializing MCP server...');
+        console.warn('� Initializing MCP server...');
         // MCP server integration
       //       }
 
 
       console.warn('✅ All components initialized');
     } catch (error) {
-      console.error('❌ Component initialization failed);
+      console.error('❌ Component initialization failed);'
       throw error;
     //     }
 // }
@@ -234,12 +230,12 @@ start();
 : Promise<void>
 // {
   if (this.isRunning) {
-    console.warn('⚠️ Server is already running');
+    console.warn('⚠ Server is already running');
     return;
     //   // LINT: unreachable code removed}
     try {
       // Initialize components first
-// await this.initializeComponents();
+// // await this.initializeComponents();
       // Create HTTP server
       this.server = createServer(this.app);
 
@@ -247,25 +243,25 @@ start();
       this.setupWebSocket();
 
       // Start listening
-// await new Promise<void>((resolve, reject) => {
+// // await new Promise<void>((resolve, reject) => {
         this.server?.listen(this.options.port, this.options.host, () => {
           this.isRunning = true;
-          console.warn(`🚀 Claude-Zen Unified Server started!`);
-          console.warn(`📍 URL);
-          console.warn(`🧠 ruv-FANN);
-          console.warn(`🔗 MCP);
-          console.warn(`🔌 WebSocket);
-          console.warn(`⚡ Neural);
+          console.warn(`� Claude-Zen Unified Server started!`);
+          console.warn(`� URL);`
+          console.warn(`🧠 ruv-FANN);`
+          console.warn(`� MCP);`
+          console.warn(` WebSocket);`
+          console.warn(` Neural);`
           resolve();
         });
 
         this.server?.on('error', (error) => {
-          console.error('❌ Server error);
+          console.error('❌ Server error);'
           reject(error);
         });
       });
     } catch (error) {
-      console.error('❌ Failed to start server);
+      console.error('❌ Failed to start server);'
       throw error;
     //     }
   //   }
@@ -276,7 +272,7 @@ start();
   stop();
   : Promise<void>
   if (!this.isRunning) {
-    console.warn('⚠️ Server is not running');
+    console.warn('⚠ Server is not running');
     return;
     //   // LINT: unreachable code removed}
     try {
@@ -289,7 +285,7 @@ start();
 
       // Close HTTP server
       if (this.server) {
-// await new Promise<void>((resolve) => {
+// // await new Promise<void>((resolve) => {
           this.server?.close(() => {
             this.server = null;
             resolve();
@@ -299,9 +295,9 @@ start();
 
 
       this.isRunning = false;
-      console.warn('🛑 Claude-Zen Unified Server stopped');
+      console.warn('� Claude-Zen Unified Server stopped');
     } catch (error) {
-      console.error('❌ Error stopping server);
+      console.error('❌ Error stopping server);'
       throw error;
     //     }
   //   }
@@ -309,7 +305,7 @@ start();
    * Get server status
    */
   getStatus();
-  return {
+  // return {
       running: this.isRunning,
   // port: this.options.port, // LINT: unreachable code removed
   host: this.options.host,
@@ -319,37 +315,39 @@ start();
 async function main() {
   const _args = process.argv.slice(2);
   const _portArg = args.find((arg) => arg.startsWith('--port='));
-  const _port = portArg ? parseInt(portArg.split('=')[1], 10) : undefined;
+  const _port = portArg ? parseInt(portArg.split('=')[1], 10) ;
   const _server = new UnifiedServer({ port });
   // Graceful shutdown
   const _shutdown = async (signal) => {
-    console.warn(`\n🛑 Received ${signal}, shutting down gracefully...`);
+    console.warn(`\n� Received ${signal}, shutting down gracefully...`);
     try {
 // await server.stop();
       process.exit(0);
     } catch (error) {
-      console.error('❌ Error during shutdown);
+      console.error('❌ Error during shutdown);'
       process.exit(1);
     //     }
   };
   process.on('SIGINT', () => shutdown('SIGINT'));
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   try {
-// await server.start();
+// // await server.start();
   } catch (error) {
-    console.error('❌ Failed to start server);
+    console.error('❌ Failed to start server);'
     process.exit(1);
   //   }
 // }
 // Export for module use
-export default UnifiedServer;
-export { UnifiedServer };
+// export default UnifiedServer;
+// export { UnifiedServer };
 
 // Run if called directly
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   main().catch((error) => {
-    console.error('❌ Unhandled error);
+    console.error('❌ Unhandled error);'
     process.exit(1);
   });
 // }
 
+
+}}}}

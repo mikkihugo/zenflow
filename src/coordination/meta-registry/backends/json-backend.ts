@@ -1,12 +1,12 @@
-/**
- * JSON File Registry Backend;
- * Persistent file-based backend for simple setups;
+/**  */
+ * JSON File Registry Backend
+ * Persistent file-based backend for simple setups
  */
 
-import { EventEmitter } from 'node:events';
-import path from 'node:path';
-import fs from 'fs-extra';
-import { RegistryInterface } from '../index.js';
+import { EventEmitter } from 'node:events';'
+import path from 'node:path';'
+import fs from 'fs-extra';'
+import { RegistryInterface } from '../index.js';'
 
 export class JSONBackend extends RegistryInterface {
   constructor(filePath = {}) {
@@ -26,8 +26,8 @@ export class JSONBackend extends RegistryInterface {
 
   async initialize(config = {}) {
     this.config = config;
-// await this.ensureDirectoryExists();
-// await this.load();
+// // await this.ensureDirectoryExists();
+// // await this.load();
     if(this.options.autoSave) {
       this.startAutoSave();
     //     }
@@ -35,14 +35,14 @@ export class JSONBackend extends RegistryInterface {
 
 
   async register(key, value, options = {}) {
-    const _id = `${key}-${Date.now()}`;
+    const _id = `${key}-${Date.now()}`;`
     const __entry = {
       key,
       value,
       options,
       id,
       registered = {}) {
-// await this.ensureLoaded();
+// // // await this.ensureLoaded();
     const _results = [];
 
     for (const [key, _entry] of this.data.entries()) {
@@ -55,10 +55,10 @@ export class JSONBackend extends RegistryInterface {
       if (this.matchesQuery(entry, query)) {
         results.push({
           key = {}) {
-// await this.ensureLoaded();
+// // // await this.ensureLoaded();
     const _entry = this.data.get(key);
     if (!entry  ?? this.isExpired(entry)) {
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
     // Merge updates
@@ -67,39 +67,39 @@ export class JSONBackend extends RegistryInterface {
 
     // Update TTL if provided
     if(options.ttl) {
-      entry.expires = new Date(Date.now() + options.ttl * 1000).toISOString();
+      entry.expires = new Date(Date.now() + options.ttl * 1000).toISOString()
     //     }
 
 
     this.data.set(key, entry);
     this.markForSave();
-    this.emitter.emit('change', { type = {}) {
-// await this.ensureLoaded();
+    this.emitter.emit('change', { type = {}) {'
+// // // await this.ensureLoaded();
     const _entry = this.data.get(key);
     if(!entry) {
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
     this.data.delete(key);
     this.markForSave();
-    this.emitter.emit('change', { type = {}) {
+    this.emitter.emit('change', { type = {}) {'
     const _watcherId = ++this.watcherId;
 
     const __watcher = {
       id,
       query,
       callback,
-      options,created = (): unknown => {
+      options,created = () => {
       if (this.matchesQuery(event.entry, query)) {
         callback(event);
       //       }
     };
 
-    this.emitter.on('change', changeHandler);
+    this.emitter.on('change', changeHandler);'
 
     // Return unwatch function return() => {
       this.watchers.delete(watcherId);
-    // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed
+    // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed'
     };
   //   }
 
@@ -111,7 +111,7 @@ export class JSONBackend extends RegistryInterface {
     return {status = true;
     // ; // LINT: unreachable code removed
     try {
-      if (await fs.pathExists(this.filePath)) {
+      if (// await fs.pathExists(this.filePath)) {
 // const _data = awaitfs.readJson(this.filePath);
 
         // Convert array back to Map
@@ -128,7 +128,7 @@ export class JSONBackend extends RegistryInterface {
         //         }
 
 
-        this.emitter.emit('loaded', {entries = false;
+        this.emitter.emit('loaded', {entries = false;'
     //     }
   //   }
 
@@ -139,8 +139,8 @@ export class JSONBackend extends RegistryInterface {
 
     try {
       // Create backup if enabled
-      if (this.options.backup && await fs.pathExists(this.filePath)) {
-// await this.createBackup();
+      if (this.options.backup && // await fs.pathExists(this.filePath)) {
+// // await this.createBackup();
       //       }
 
 
@@ -150,17 +150,17 @@ export class JSONBackend extends RegistryInterface {
       // Convert Map to array for JSON serialization
       const _entries = Array.from(this.data.values());
       const __data = {version = false;
-      this.emitter.emit('saved', {entries = false;
+      this.emitter.emit('saved', {entries = false;'
     //     }
 
 
   async createBackup() {
-    const _timestamp = new Date().toISOString().replace(/[]/g, '-');
-    const _backupPath = `${this.filePath}.backup.${timestamp}`;
+    const _timestamp = new Date().toISOString().replace(/[]/g, '-');'
+    const _backupPath = `${this.filePath}.backup.${timestamp}`;`
 // await fs.copy(this.filePath, backupPath);
     // Clean old backups
     if(this.options.maxBackups > 0) {
-// await this.cleanupBackups();
+// // await this.cleanupBackups();
     //     }
   //   }
 
@@ -172,15 +172,15 @@ export class JSONBackend extends RegistryInterface {
     try {
 // const _files = awaitfs.readdir(dir);
       const _backupFiles = files;
-filter(file => file.startsWith(`\$filename.backup.`));
+filter(file => file.startsWith(`\$filename.backup.`));`
 map(_file => (path = > b.stat.mtime - a.stat.mtime);
 
       // Remove old backups
       for(let i = this.options.maxBackups; i < backupFiles.length; i++) {
-// await fs.remove(backupFiles[i].path);
+// // await fs.remove(backupFiles[i].path);
       }catch (/* _error */)
-      this.emitter.emit('error', type = === 0 && !this.isLoading)
-// await this.load();
+      this.emitter.emit('error', type = === 0 && !this.isLoading)'
+// // await this.load();
   markForSave() ;
     this.needsSave = true;
 
@@ -190,7 +190,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
         try {
 // await this.save();
         } catch (/* _error */) {
-          this.emitter.emit('error', {type = new Date();
+          this.emitter.emit('error', {type = new Date();'
     const _expired = [];
 
     for (const [key, entry] of this.data.entries()) {
@@ -203,7 +203,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     for(const key of expired) {
       const _entry = this.data.get(key);
       this.data.delete(key);
-      this.emitter.emit('change', {type = query.tags.every(tag => entry.tags.includes(tag));
+      this.emitter.emit('change', {type = query.tags.every(tag => entry.tags.includes(tag));'
       if (!hasAllTags) return false;
     //   // LINT: unreachable code removed}
 
@@ -221,7 +221,7 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     //     }
 
 
-    return true;
+    // return true;
     //   // LINT: unreachable code removed}
 
   applyOptions(results, options) {
@@ -230,38 +230,38 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     // Apply sorting
     if(options.sort) {
       filtered.sort((a, b) => {
-        const _field = options.sort.field  ?? 'registered';
-        const _order = options.sort.order  ?? 'asc';
+        const _field = options.sort.field  ?? 'registered';'
+        const _order = options.sort.order  ?? 'asc';'
         const _valueA = a.metadata[field]  ?? a.value[field];
         const _valueB = b.metadata[field]  ?? b.value[field];
 
-        if(order === 'desc') {
-          return valueB > valueA ?1 = filtered.slice(0, options.limit);
+        if(order === 'desc') {'
+          // return valueB > valueA ?1 = filtered.slice(0, options.limit);
     //   // LINT: unreachable code removed}
 
-    return filtered;
+    // return filtered;
     //   // LINT: unreachable code removed}
 
-  async getFileSize()
+  async getFileSize() {}
     try {
 // const _stats = awaitfs.stat(this.filePath);
-      return stats.size;
+      // return stats.size;
     //   // LINT: unreachable code removed} catch(error) ;
-      return 0;
+      // return 0;
     //   // LINT: unreachable code removed}
 
   async getLastModified() ;
     try {
 // const _stats = awaitfs.stat(this.filePath);
-      return stats.mtime.toISOString();
+      // return stats.mtime.toISOString();
     //   // LINT: unreachable code removed} catch (/* _error */) {
-      return null;
+      // return null;
     //   // LINT: unreachable code removed}
 
   // Utility methods
   async dump() ;
 // await this.ensureLoaded();
-    return Array.from(this.data.entries()).map(([key, _entry]) => ({
+    // return Array.from(this.data.entries()).map(([key, _entry]) => ({
       key,
         id: entry.id,
         registered: entry.registered,
@@ -272,11 +272,13 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
   async clear() ;
     this.data.clear();
     this.markForSave();
-    this.emitter.emit('cleared');
+    this.emitter.emit('cleared');'
 
   size() ;
-    return this.data.size;
+    // return this.data.size;
 // }
 
 
-export default JSONBackend;
+// export default JSONBackend;
+
+}}}}}}}}}}}}}}}}}}}}}}}}))))))

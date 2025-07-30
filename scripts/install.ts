@@ -15,17 +15,17 @@ async function main(): Promise<void> {
     console.warn('Installing Claude-Zen...');
     // Installation verification steps
     console.warn('✅ Claude-Zen installation completed!');
-    console.warn('🚀 Neural CLI with ruv-FANN integration ready');
-    console.warn('🧠 Usage);
-    console.warn('📖 Full commands);
+    console.warn('� Neural CLI with ruv-FANN integration ready');
+    console.warn('🧠 Usage);'
+    console.warn('� Full commands);'
   } catch (error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Installation verification failed);
+    console.error('Installation verification failed);'
     process.exit(1);
   //   }
 // }
 // Execute main function with error handling
 main().catch((error) => {
-  console.error('Unhandled installation error);
+  console.error('Unhandled installation error);'
   process.exit(1);
 });

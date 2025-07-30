@@ -1,12 +1,12 @@
-/**
- * Strategic Documents Management Commands;
- * CRUD operations for strategic documents (PRDs, Roadmaps, Architecture, etc.);
+/**  */
+ * Strategic Documents Management Commands
+ * CRUD operations for strategic documents (PRDs, Roadmaps, Architecture, etc.)
  */
 
 import { strategicDocs } from '../database/strategic-documents-manager.js';
 import { printError, printInfo } from '../utils.js';
-/**
- * Strategic documents command handler;
+/**  */
+ * Strategic documents command handler
  */
 export async function strategicDocsCommand(input = input[0];
 const _subArgs = input.slice(1);
@@ -15,35 +15,35 @@ if (flags.help ?? flags.h ?? !subcommand) {
   return;
 // }
 // Initialize database
-// await strategicDocs.initialize();
+// // await strategicDocs.initialize();
 switch(subcommand) {
     case 'create':;
-// await createDocument(subArgs, flags);
+// // await createDocument(subArgs, flags);
       break;
     case 'list':;
-// await listDocuments(subArgs, flags);
+// // await listDocuments(subArgs, flags);
       break;
     case 'view':;
-// await viewDocument(subArgs, flags);
+// // await viewDocument(subArgs, flags);
       break;
     case 'edit':;
-// await editDocument(subArgs, flags);
+// // await editDocument(subArgs, flags);
       break;
     case 'delete':;
-// await deleteDocument(subArgs, flags);
+// // await deleteDocument(subArgs, flags);
       break;
     case 'search':;
-// await searchDocuments(subArgs, flags);
+// // await searchDocuments(subArgs, flags);
       break;
     case 'import': null
-// await importDocument(subArgs, flags);
+// // await importDocument(subArgs, flags);
       break;
     case 'export': null
-// await exportDocument(subArgs, flags);
+// // await exportDocument(subArgs, flags);
       break;
     case 'stats':;
-// await showDocumentStats(flags);
-      break;default = await inquirer.prompt([;
+// // await showDocumentStats(flags);
+      break;default = // await inquirer.prompt([;
         {type = > input.trim().length > 0  ?? 'Title is required';
         },
         {type = answers.documentType;
@@ -53,7 +53,7 @@ switch(subcommand) {
       // Command line mode
       documentType = flags.type  ?? args[0];
       title = flags.title  ?? args[1];
-      content = flags.content  ?? `# ${title}\n\n## Overview\n\nTODO = extractKeywords(title + ` ' + content);
+      content = flags.content  ?? `# ${title}\n\n## Overview\n\nTODO = extractKeywords(title + ` ' + content);'
 // const __doc = awaitstrategicDocs.createDocument({
       documentType,
       title,
@@ -63,11 +63,11 @@ switch(subcommand) {
     let documents;
 
     if(documentType) {
-      documents = await strategicDocs.getDocumentsByType(documentType);
+      documents = // await strategicDocs.getDocumentsByType(documentType);
     } else {
-      documents = await strategicDocs.searchDocuments({
+      documents = // await strategicDocs.searchDocuments({
         status,limit = === 0) {
-      printInfo('📝 No documents found');
+      printInfo('� No documents found');
       return;
     //   // LINT: unreachable code removed}
 
@@ -76,7 +76,7 @@ switch(subcommand) {
       return;
     //   // LINT: unreachable code removed}
 
-    printInfo(`📚 Strategic Documents (${documents.length} found)`);
+    printInfo(` Strategic Documents (${documents.length} found)`);
     console.warn('━'.repeat(80));
 
     documents.forEach(doc => {
@@ -84,27 +84,27 @@ switch(subcommand) {
       const _statusBadge = getStatusBadge(doc.status);
 
       console.warn(`\n${typeIcon} ${doc.title}`);
-      console.warn(`   📋ID = doc.content.substring(0, 100).replace(/\n/g, ' ') + '...';
-        console.warn(`   📄Preview = args[0];
+      console.warn(`   �ID = doc.content.substring(0, 100).replace(/\n/g, ' ') + '...';`
+        console.warn(`   �Preview = args[0];`
 
     if(!documentId) {
       printError('Document ID is required');
-      printInfo('Usage = await strategicDocs.getDocument(documentId);
+      printInfo('Usage = // await strategicDocs.getDocument(documentId);'
 
     if(!doc) {
-      printError(`Document notfound = getDocumentTypeIcon(doc.document_type_id);
+      printError(`Document notfound = getDocumentTypeIcon(doc.document_type_id);`
     const _statusBadge = getStatusBadge(doc.status);
 
     console.warn(`${typeIcon} ${doc.title} ${statusBadge}`);
     console.warn('━'.repeat(Math.min(doc.title.length + 10, 80)));
-    console.warn(`📋Type = args[0];
+    console.warn(`�Type = args[0];`
 
     if(!documentId) {
       printError('Document ID is required');
-      printInfo('Usage = await strategicDocs.getDocument(documentId);
+      printInfo('Usage = // await strategicDocs.getDocument(documentId);'
 
     if(!doc) {
-      printError(`Document not found = {};
+      printError(`Document not found = {};`
 
     if(flags.title) {
       updates.title = flags.title;
@@ -124,7 +124,7 @@ switch(subcommand) {
     if(flags.interactive && !flags.title && !flags.content) {
 // const _answers = awaitinquirer.prompt([;
         //         {
-          type = {title = === 0) {
+          //           type = {title = === 0) {
       printWarning('No updates provided');
       return;
     //   // LINT: unreachable code removed}
@@ -136,49 +136,49 @@ switch(subcommand) {
     //     }
 
 
-    printSuccess(`📄 Updateddocument = args[0];
+    printSuccess(`� Updateddocument = args[0];`
 
     if(!documentId) {
       printError('Document ID is required');
-      printInfo('Usage = await strategicDocs.getDocument(documentId);
+      printInfo('Usage = // await strategicDocs.getDocument(documentId);'
 
     if(!doc) {
-      printError(`Document notfound = await inquirer.prompt([;
-        {type = await strategicDocs.deleteDocument(documentId);
+      printError(`Document notfound = // await inquirer.prompt([;`
+        {type = // await strategicDocs.deleteDocument(documentId);
 
     if(success) {
-      printSuccess(`🗑️ Deleteddocument = args.join(' ')  ?? flags.query  ?? '';
+      printSuccess(`� Deleteddocument = args.join(' ')  ?? flags.query  ?? '';`
 
     if (!query.trim()) {
       printError('Search query is required');
-      printInfo('Usage = await strategicDocs.searchDocuments({
+      printInfo('Usage = // await strategicDocs.searchDocuments({'
       query,documentType = === 0) {
-      printInfo(`🔍 No documents found for query => {
+      printInfo(`� No documents found for query => {`
       const _typeIcon = getDocumentTypeIcon(doc.document_type_id);
       const _statusBadge = getStatusBadge(doc.status);
 
       console.warn(`\n${typeIcon} ${doc.title} ${statusBadge}`);
-      console.warn(`   📋ID = await strategicDocs.getDocumentStats();
+      console.warn(`   �ID = // await strategicDocs.getDocumentStats();`
 
-    printInfo('📊 Strategic Documents Statistics');
+    printInfo('� Strategic Documents Statistics');
     console.warn('━'.repeat(60));
 
-    console.warn('\n📚 Documents by Type => {
+    console.warn('\n Documents by Type => {'
       const _icon = getDocumentTypeIcon(stat.document_type);
-      const _approvalRate = stat.count > 0 ? Math.round((stat.approved_count / stat.count) * 100) : 0;
+      const _approvalRate = stat.count > 0 ? Math.round((stat.approved_count / stat.count) * 100) 
       console.warn(`${icon} ${stat.document_type}: ${stat.count} total (${stat.approved_count} approved - ${approvalRate}%)`);
     });
 
-    console.warn('\n🏛️ Queen Council Activity => {
-      console.warn(`   👑 ${queen});
+    console.warn('\n� Queen Council Activity => {'
+      console.warn(`   � ${queen});`
     });
 
   } catch (error) {
-    printError(`Failed to getstatistics = args[0];
+    printError(`Failed to getstatistics = args[0];`
 
     if(!filePath) {
       printError('File path is required');
-      printInfo('Usage = await import('fs/promises');
+      printInfo('Usage = // await import('fs/promises');'
 // const _content = awaitreadFile(filePath, 'utf8');
 
     // Extract title from first heading or filename
@@ -188,7 +188,7 @@ switch(subcommand) {
     const _documentType = flags.type;
     if(!documentType) {
       printError('Document type is required for import');
-      printInfo('Use --typeflag = extractKeywords(title + ' ' + content);
+      printInfo('Use --typeflag = extractKeywords(title + ' ' + content);'
 // const _doc = awaitstrategicDocs.createDocument({
       documentType,
       title,
@@ -196,14 +196,14 @@ switch(subcommand) {
 
     if(!documentId) {
       printError('Document ID is required');
-      printInfo('Usage = await strategicDocs.getDocument(documentId);
+      printInfo('Usage = // await strategicDocs.getDocument(documentId);'
 
     if(!doc) {
-      printError(`Document notfound = args[1]  ?? `${doc.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}.md`;
+      printError(`Document notfound = args[1]  ?? `${doc.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}.md`;`
 
-    const { writeFile } = await import('node);
-// await writeFile(outputFile, doc.content);
-    printSuccess(`📤 Exported document to = {
+    const { writeFile } = // await import('node);'
+// // await writeFile(outputFile, doc.content);
+    printSuccess(`� Exported document to = {`
     'prd');
 filter((word, index, arr) => arr.indexOf(word) === index) // unique
 slice(0, 20); // limit keywords
@@ -211,26 +211,26 @@ slice(0, 20); // limit keywords
 
 
 function showStrategicDocsHelp() {
-  console.warn(`;
-📚 STRATEGIC DOCS - Database-Driven Document Management
+  console.warn(`;`
+ STRATEGIC DOCS - Database-Driven Document Management
 
 USAGE);
   view <document-id>         View document details;
   edit <document-id>         Edit existing document;
   delete <document-id>       Delete document;
   search <query>             Search documents by content;
-  import <file> --type <t>   Import document from file
-  export <id> [file]         Export document to file
+  // import <file> --type <t>   Import document from file
+  // export <id> [file]         Export document to file
   stats                      Show document statistics
 
 DOCUMENT TYPES:;
-  📋 prd                     Product Requirements Document;
-  🗺️ roadmap                Strategic roadmap;
-  🏗️ architecture           Architecture documentation;
-  📝 adr                     Architecture Decision Record;
-  🎯 strategy                Strategy document;
-  🔬 research                Research document;
-  📐 specification           Technical specification
+  � prd                     Product Requirements Document;
+  � roadmap                Strategic roadmap;
+  � architecture           Architecture documentation;
+  � adr                     Architecture Decision Record;
+   strategy                Strategy document;
+  � research                Research document;
+  � specification           Technical specification
 
 CREATE OPTIONS:;
   --type <type>              Document type (required);
@@ -274,6 +274,8 @@ INTEGRATION:;
   • Document relationships and references;
   • Automatic keyword extraction;
   • Version tracking and audit trail;
-`);
+`);`
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))))))))))

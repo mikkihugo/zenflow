@@ -6,17 +6,17 @@ import { fileURLToPath } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
-/**
- * Copy template files from the templates directory to the target directory;
- * @param {string} targetDir - The directory to copy templates to;
- * @param {Object} options - Options for template copying;
- * @param {boolean} options.sparc - Whether to include SPARC templates;
- * @param {boolean} options.enhanced - Whether to use enhanced templates;
- * @param {boolean} options.minimal - Whether to use minimal templates;
- * @param {boolean} options.optimized - Whether to use optimized templates;
- * @param {boolean} options.dryRun - Whether to perform a dry run;
- * @param {boolean} options.force - Whether to overwrite existing files;
- * @param {string[]} options.selectedModes - Selected SPARC modes to copy;
+/**  */
+ * Copy template files from the templates directory to the target directory
+ * @param {string} targetDir - The directory to copy templates to
+ * @param {Object} options - Options for template copying
+ * @param {boolean} options.sparc - Whether to include SPARC templates
+ * @param {boolean} options.enhanced - Whether to use enhanced templates
+ * @param {boolean} options.minimal - Whether to use minimal templates
+ * @param {boolean} options.optimized - Whether to use optimized templates
+ * @param {boolean} options.dryRun - Whether to perform a dry run
+ * @param {boolean} options.force - Whether to overwrite existing files
+ * @param {string[]} options.selectedModes - Selected SPARC modes to copy
  * @returns {Promise<{success = {}) {
   const _results = {success = join(__dirname, 'templates');
     // ; // LINT: unreachable code removed
@@ -31,7 +31,7 @@ const ___dirname = dirname(__filename);
       const _sourcePath = join(templatesDir, sourceFile);
       const _destPath = join(targetDir, file.destination);
 
-      if (await copyFile(sourcePath, destPath, options)) {
+      if (// await copyFile(sourcePath, destPath, options)) {
         results.copiedFiles.push(file.destination);
       } else if(!options.dryRun) {
         results.errors.push(`Failed to copy ${file.destination}`);
@@ -47,44 +47,44 @@ const ___dirname = dirname(__filename);
       const _settingsSource = options.enhanced ? 'settings.json.enhanced' : 'settings.json';
 
       if(!options.dryRun) {
-// await fs.mkdir(claudeDir, {recursive = false;
-    results.errors.push(`Template copyfailed = await getTemplateContent(source);
+// // await fs.mkdir(claudeDir, {recursive = false;
+    results.errors.push(`Template copyfailed = // await getTemplateContent(source);`
       if(templateContent) {
         if(!options.dryRun) {
-// await fs.writeFile(destination, templateContent);
+// // await fs.writeFile(destination, templateContent);
         //         }
         console.warn(`\${options.dryRun ? '[DRY RUN] Would create' } ${relative(process.cwd(), destination)}`);
-        return true;
+        // return true;
     //   // LINT: unreachable code removed}
-      console.warn(`  ⚠️  Template notfound = await fs.readFile(source, 'utf8');
-// await fs.writeFile(destination, content);
+      console.warn(`  ⚠  Template notfound = // await fs.readFile(source, 'utf8');`
+// // await fs.writeFile(destination, content);
       // Preserve file permissions for executable scripts
       if (source.endsWith('.sh')  ?? source.includes('claude-zen')) {
-// await fs.chmod(destination, 0o755);
+// // await fs.chmod(destination, 0o755);
       //       }
     //     }
 
 
     console.warn(`\${options.dryRun ? '[DRY RUN] Would copy' } ${relative(process.cwd(), destination)}`);
-    return true;
+    // return true;
     //   // LINT: unreachable code removed} catch (/* err */ )
 // {
   console.warn(`  ❌ Failed to copy ${relative(process.cwd(), destination)}: ${err.message}`);
-  return false;
+  // return false;
   //   // LINT: unreachable code removed}
 // }
-/**
- * Copy command templates;
+/**  */
+ * Copy command templates
  */
 async function copyCommandTemplates(templatesDir = join(templatesDir, 'commands');
 const _commandsDestDir = join(targetDir, '.claude', 'commands');
 if (!existsSync(commandsSourceDir)) {
   // Use generated command templates as fallback
-  return await generateCommandTemplates(targetDir, options, results);
+  return // await generateCommandTemplates(targetDir, options, results);
 // }
 try {
     if(!options.dryRun) {
-// await fs.mkdir(commandsDestDir, {recursive = await fs.readdir(commandsSourceDir);
+// // await fs.mkdir(commandsDestDir, {recursive = // await fs.readdir(commandsSourceDir);
     for(const category of categories) {
       const _categoryPath = join(commandsSourceDir, category);
 // const _stat = awaitfs.stat(categoryPath);
@@ -93,23 +93,23 @@ try {
         const _destCategoryPath = join(commandsDestDir, category);
 
         if(!options.dryRun) {
-// await fs.mkdir(destCategoryPath, {recursive = await fs.readdir(categoryPath);
+// // await fs.mkdir(destCategoryPath, {recursive = // await fs.readdir(categoryPath);
         for(const file of files) {
           const _sourcePath = join(categoryPath, file);
           const _destPath = join(destCategoryPath, file);
 
-          if (await copyFile(sourcePath, destPath, options)) {
+          if (// await copyFile(sourcePath, destPath, options)) {
             results.copiedFiles.push(join('.claude', 'commands', category, file));
           //           }
         //         }
       //       }
     //     }
   } catch(err) ;
-    results.errors.push(`Failed to copy commandtemplates = join(targetDir, '.claude', 'commands', 'sparc');
+    results.errors.push(`Failed to copy commandtemplates = join(targetDir, '.claude', 'commands', 'sparc');`
 
   try {
     if(!options.dryRun) {
-// await fs.mkdir(sparcDir, {recursive = await import('./templates/sparc-modes.js');
+// // await fs.mkdir(sparcDir, {recursive = // await import('./templates/sparc-modes.js');
     const _sparcTemplates = createSparcModeTemplates();
 
     // Filter templates if selectedModes is specified
@@ -125,11 +125,11 @@ try {
       const _destPath = join(sparcDir, filename);
 
       if(!options.dryRun) {
-// await fs.writeFile(destPath, content);
+// // await fs.writeFile(destPath, content);
       //       }
 
 
-      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
+      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
       results.copiedFiles.push(join('.claude', 'commands', 'sparc', filename));
     //     }
 
@@ -137,19 +137,19 @@ try {
     // Create sparc-modes.md overview
     const _overviewPath = join(sparcDir, 'sparc-modes.md');
     if(!options.dryRun) {
-// await fs.writeFile(overviewPath, createSparcModesOverview());
+// // await fs.writeFile(overviewPath, createSparcModesOverview());
     //     }
-    console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
+    console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
     results.copiedFiles.push('.claude/commands/sparc/sparc-modes.md');
 
     // Copy swarm templates
-// await copySwarmTemplates(templatesDir, targetDir, options, results);
+// // await copySwarmTemplates(templatesDir, targetDir, options, results);
   } catch(err) ;
-    results.errors.push(`Failed to copy SPARCtemplates = join(targetDir, '.claude', 'commands', 'swarm');
+    results.errors.push(`Failed to copy SPARCtemplates = join(targetDir, '.claude', 'commands', 'swarm');`
 
   try {
     if(!options.dryRun) {
-// await fs.mkdir(swarmDir, {recursive = await import('./templates/sparc-modes.js');
+// // await fs.mkdir(swarmDir, {recursive = // await import('./templates/sparc-modes.js');
     const _swarmTemplates = createSwarmStrategyTemplates();
 
     // Write swarm strategy files
@@ -157,20 +157,20 @@ try {
       const _destPath = join(swarmDir, filename);
 
       if(!options.dryRun) {
-// await fs.writeFile(destPath, content);
+// // await fs.writeFile(destPath, content);
       //       }
 
 
-      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
+      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
       results.copiedFiles.push(join('.claude', 'commands', 'swarm', filename));
     //     }
   } catch (/* err */) {
-    results.errors.push(`Failed to copy swarmtemplates = join(targetDir, '.claude', 'helpers');
+    results.errors.push(`Failed to copy swarmtemplates = join(targetDir, '.claude', 'helpers');`
 
   try {
     if(!options.dryRun) {
-// await fs.mkdir(helpersDir, {recursive = ['setup-mcp.sh', 'quick-start.sh', 'github-setup.sh'];
-    const { createHelperScript } = await import('./templates/enhanced-templates.js');
+// // await fs.mkdir(helpersDir, {recursive = ['setup-mcp.sh', 'quick-start.sh', 'github-setup.sh'];
+    const { createHelperScript } = // await import('./templates/enhanced-templates.js');
 
     for(const helper of helpers) {
       const _content = createHelperScript(helper);
@@ -178,22 +178,22 @@ try {
         const _destPath = join(helpersDir, helper);
 
         if(!options.dryRun) {
-// await fs.writeFile(destPath, content);
-// await fs.chmod(destPath, 0o755);
+// // await fs.writeFile(destPath, content);
+// // await fs.chmod(destPath, 0o755);
         //         }
 
 
-        console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
+        console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
         results.copiedFiles.push(join('.claude', 'helpers', helper));
       //       }
     //     }
   } catch(err) ;
-    results.errors.push(`Failed to copy helperscripts = join(targetDir, 'claude-zen');
+    results.errors.push(`Failed to copy helperscripts = join(targetDir, 'claude-zen');`
     const _unixWrapperSource = join(templatesDir, 'claude-zen-universal');
 
-    if (await copyFile(unixWrapperSource, unixWrapperPath, options)) {
+    if (// await copyFile(unixWrapperSource, unixWrapperPath, options)) {
       if(!options.dryRun) {
-// await fs.chmod(unixWrapperPath, 0o755);
+// // await fs.chmod(unixWrapperPath, 0o755);
       //       }
       results.copiedFiles.push('claude-zen');
     //     }
@@ -203,7 +203,7 @@ try {
     const _batchWrapperPath = join(targetDir, 'claude-zen.bat');
     const _batchWrapperSource = join(templatesDir, 'claude-zen.bat');
 
-    if (await copyFile(batchWrapperSource, batchWrapperPath, options)) {
+    if (// await copyFile(batchWrapperSource, batchWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.bat');
     //     }
 
@@ -212,11 +212,11 @@ try {
     const _psWrapperPath = join(targetDir, 'claude-zen.ps1');
     const _psWrapperSource = join(templatesDir, 'claude-zen.ps1');
 
-    if (await copyFile(psWrapperSource, psWrapperPath, options)) {
+    if (// await copyFile(psWrapperSource, psWrapperPath, options)) {
       results.copiedFiles.push('claude-zen.ps1');
     //     }
   } catch(err) ;
-    results.errors.push(`Failed to copy wrapperscripts = [
+    results.errors.push(`Failed to copy wrapperscripts = [`
     'memory',
     'memory/agents',
     'memory/sessions',
@@ -242,20 +242,20 @@ try {
     const _dirPath = join(targetDir, dir);
     try {
       if(!options.dryRun) {
-// await fs.mkdir(dirPath, {recursive = = 'EEXIST') {
-        console.warn(`  ❌ Failed to create ${dir}/);
+// // await fs.mkdir(dirPath, {recursive = = 'EEXIST') {
+        console.warn(`  ❌ Failed to create ${dir}/);`
     //     }
 // }
 
 
-/**
- * Create README files for memory directories;
- */;
-async function createMemoryReadmeFiles(targetDir = await import('./templates/readme-files.js');
+/**  */
+ * Create README files for memory directories
+ */
+async function createMemoryReadmeFiles(targetDir = // await import('./templates/readme-files.js');
 
     try {
       if(!options.dryRun) {
-// await fs.mkdir(dirname(fullPath), {recursive = join(targetDir, 'memory', 'claude-zen-data.json');
+// // await fs.mkdir(dirname(fullPath), {recursive = join(targetDir, 'memory', 'claude-zen-data.json');
   // Map template files to their generator functions
   const _templateGenerators = {
     'CLAUDE.md': async () => {
@@ -322,37 +322,37 @@ async function createMemoryReadmeFiles(targetDir = await import('./templates/rea
 
   if(generator) {
     try {
-      return await generator();
+      // return // await generator();
     //   // LINT: unreachable code removed} catch (/* err */) {
-      console.warn(`  ⚠️  Failed to generate template content for ${filename});
-      return null;
+      console.warn(`  ⚠  Failed to generate template content for ${filename});`
+      // return null;
     //   // LINT: unreachable code removed}
   //   }
 
 
-  return null;
+  // return null;
 // }
 
 
-/**
- * Generate command templates as fallback;
- */;
-async function generateCommandTemplates(targetDir = await import('./templates/enhanced-templates.js');
+/**  */
+ * Generate command templates as fallback
+ */
+async function generateCommandTemplates(targetDir = // await import('./templates/enhanced-templates.js');
 
   for (const [category, commands] of Object.entries(COMMAND_STRUCTURE)) {
     const _categoryDir = join(targetDir, '.claude', 'commands', category);
 
     try {
       if(!options.dryRun) {
-// await fs.mkdir(categoryDir, {recursive = `# ${category.charAt(0).toUpperCase() + category.slice(1)} Commands
+// // await fs.mkdir(categoryDir, {recursive = `# ${category.charAt(0).toUpperCase() + category.slice(1)} Commands`
 
 Commands for ${category} operations in Claude Flow.
 
 ## Available Commands
 
 ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
-`;
-// await fs.writeFile(join(categoryDir, 'README.md'), categoryReadme);
+`;`
+// // await fs.writeFile(join(categoryDir, 'README.md'), categoryReadme);
       //       }
 
 
@@ -362,17 +362,19 @@ ${commands.map(cmd => `- [${cmd}](./${cmd}.md)`).join('\n')}
         if(doc) {
           const _docPath = join(categoryDir, `${command}.md`);
           if(!options.dryRun) {
-// await fs.writeFile(docPath, doc);
+// // await fs.writeFile(docPath, doc);
           //           }
           results.copiedFiles.push(join('.claude', 'commands', category, `${command}.md`));
         //         }
       //       }
 
 
-      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );
+      console.warn(`${options.dryRun ? '[DRY RUN] Would create' );`
     } catch (/* err */) {
-      results.errors.push(`Failed to generate ${category} command templates);
+      results.errors.push(`Failed to generate ${category} command templates);`
     //     }
   //   }
 // }
 
+
+}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))

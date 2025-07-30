@@ -83,14 +83,14 @@ describe('Security Utils', () => {
         const _containsDangerousPatterns = () => {
           const _dangerousPatterns = [
             /\\$\(/, // Command substitution \$(...)
-            /`[^`]*`/, // Backtick command substitution
+            /`[^`]*`/, // Backtick command substitution`
             /[;&|]/, // Command separators
             /\.\.\//, // Directory traversal
             /\/dev\//, // Device files
             /\/proc\//, // Process files
             /\/sys\//, // System files
           ];
-          return dangerousPatterns.some((pattern) => pattern.test(str));
+          // return dangerousPatterns.some((pattern) => pattern.test(str));
     //   // LINT: unreachable code removed};
         const _result = containsDangerousPatterns(input);
         expect(result).toBe(expected);
@@ -110,7 +110,7 @@ describe('Security Utils', () => {
           /^\/dev\//,
           /\/\.\./, // Any directory traversal
         ];
-        return !dangerousPatterns.some((pattern) => pattern.test(path));
+        // return !dangerousPatterns.some((pattern) => pattern.test(path));
     //   // LINT: unreachable code removed};
       expect(validatePath('normal/file.txt')).toBe(true);
       expect(validatePath('./local/file.txt')).toBe(true);
@@ -126,15 +126,15 @@ describe('Security Utils', () => {
         return input;
     // .replace(/</g, '&lt;'); // LINT: unreachable code removed
 replace(/>/g, '&gt;');
-replace(/"/g, '&quot;');
-replace(/'/g, '&#x27;');
+replace(/"/g, '&quot;');"
+replace(/'/g, '&#x27;');'
 replace(/\//g, '&#x2F;');
       };
       expect(sanitizeHtml('<script>alert("xss")</script>')).toBe(;
         '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;';
       );
       expect(sanitizeHtml('Hello "world"')).toBe('Hello &quot;world&quot;');
-      expect(sanitizeHtml("It's a test")).toBe('It&#x27;s a test');
+      expect(sanitizeHtml("It's a test")).toBe('It&#x27;s a test');'
     });
     it('should validate email addresses', () => {
       const _validateEmail = () => {
@@ -157,11 +157,12 @@ replace(/\//g, '&#x2F;');
           return false;
     //   // LINT: unreachable code removed}
       };
-      expect(validateUrl('https)).toBe(true);
-      expect(validateUrl('http)).toBe(true);
-      expect(validateUrl('ftp)).toBe(false);
+      expect(validateUrl('https)).toBe(true);'
+      expect(validateUrl('http)).toBe(true);'
+      expect(validateUrl('ftp)).toBe(false);'
       expect(validateUrl('javascript:alert(1)')).toBe(false);
       expect(validateUrl('not-a-url')).toBe(false);
     });
   });
 });
+)

@@ -26,7 +26,7 @@ duration, // 5 minutes
 
 
 // 
-{
+{}
   swarms,
   agentsPerSwarm,
   tasksPerSwarm,
@@ -37,7 +37,7 @@ duration, // 5 minutes
 
 
 // 
-{
+{}
   swarms,
   agentsPerSwarm,
   tasksPerSwarm,
@@ -85,10 +85,10 @@ log(message, (level = 'info'));
       console.warn(chalk.red(`${prefix} ❌ ${message}`));
       break;
     case 'warning': null
-      console.warn(chalk.yellow(`${prefix} ⚠️  ${message}`));
+      console.warn(chalk.yellow(`${prefix} ⚠  ${message}`));
       break;
     // default: null
-      console.warn(chalk.blue(`${prefix} ℹ️  ${message}`));
+      console.warn(chalk.blue(`${prefix} ℹ  ${message}`));
       break;
   //   }
 // }
@@ -98,7 +98,7 @@ initialize();
   this.log('Initializing system for load testing');
   try {
       this.systemIntegration = SystemIntegration.getInstance();
-  // await this.systemIntegration.initialize({
+  // // await this.systemIntegration.initialize({
         logLevel: 'warn', // Reduce logging for performance
         environment: 'testing',
           enabled, // Disable monitoring during load test
@@ -112,34 +112,34 @@ initialize();
 // }
 catch (error)
 // {
-  this.log(`Failed to initialize system);
+  this.log(`Failed to initialize system);`
   throw error;
 // }
 // }
 // async
-runLoadTest()
+runLoadTest() {}
 // {
   this.log(`Starting ${this.config.description}`);
   this.log(;
   `Configuration: ${this.config.swarms} swarms, ${this.config.agentsPerSwarm} agents/swarm, ${this.config.tasksPerSwarm} tasks/swarm`;
   //   )
-  this.metrics.startTime = Date.now()
+  this.metrics.startTime = Date.now() {}
   this.isRunning = true
   try {
       // Phase 1: Create swarms
-  // await this.createSwarms();
+  // // await this.createSwarms();
       // Phase 2: Spawn agents
-  // await this.spawnAgents();
+  // // await this.spawnAgents();
       // Phase 3: Create tasks
-  // await this.createTasks();
+  // // await this.createTasks();
       // Phase 4: Run for duration
-  // await this.runForDuration();
+  // // await this.runForDuration();
       // Phase 5: Cleanup
-  // await this.cleanup();
+  // // await this.cleanup();
       this.metrics.endTime = Date.now();
       this.generateReport();
     } catch (error) {
-      this.log(`Load test failed);
+      this.log(`Load test failed);`
       this.metrics.errors.push({
         message: error.message,
         timestamp: Date.now(),
@@ -153,9 +153,9 @@ runLoadTest()
 // }
 // }
 // async
-createSwarms()
+createSwarms() {}
 // {
-  this.log(`Phase 1);
+  this.log(`Phase 1);`
   const _startTime = Date.now();
   try {
       const _swarmPromises = Array.from({ length) =>;
@@ -167,7 +167,7 @@ createSwarms()
       const _duration = Date.now() - startTime;
       this.log(`Created ${swarmIds.length} swarms in ${duration}ms`, 'success');
     } catch (error) {
-      this.log(`Failed to create swarms);
+      this.log(`Failed to create swarms);`
       throw error;
     //     }
 // }
@@ -184,7 +184,7 @@ createSwarm(index);
 })
   const _duration = Date.now() - swarmStartTime;
   this.metrics.responseTimes.push(duration);
-  return swarmId;
+  // return swarmId;
   //   // LINT: unreachable code removed} catch (error) {
   this.metrics.errors.push({
         message: error.message,
@@ -196,9 +196,9 @@ throw error;
 // }
   //   }
 // async
-spawnAgents()
+spawnAgents() {}
 // {
-  this.log(`Phase 2);
+  this.log(`Phase 2);`
   const _startTime = Date.now();
   const _swarmIds = Array.from(this.activeSwarms);
   try {
@@ -210,7 +210,7 @@ spawnAgents()
       const _duration = Date.now() - startTime;
       this.log(`Spawned ${agents.length} agents in ${duration}ms`, 'success');
     } catch (error) {
-      this.log(`Failed to spawn agents);
+      this.log(`Failed to spawn agents);`
       throw error;
     //     }
 // }
@@ -228,7 +228,7 @@ spawnAgent(swarmId, index);
 })
   const _duration = Date.now() - agentStartTime;
   this.metrics.responseTimes.push(duration);
-  return agentId;
+  // return agentId;
   //   // LINT: unreachable code removed} catch (error) {
   this.metrics.errors.push({
         message: error.message,
@@ -241,9 +241,9 @@ throw error;
 // }
   //   }
 // async
-createTasks()
+createTasks() {}
 // {
-  this.log(`Phase 3);
+  this.log(`Phase 3);`
   const _startTime = Date.now();
   const _swarmIds = Array.from(this.activeSwarms);
   try {
@@ -255,7 +255,7 @@ createTasks()
       const _duration = Date.now() - startTime;
       this.log(`Created ${tasks.length} tasks in ${duration}ms`, 'success');
     } catch (error) {
-      this.log(`Failed to create tasks);
+      this.log(`Failed to create tasks);`
       throw error;
     //     }
 // }
@@ -272,7 +272,7 @@ createTask(swarmId, index);
 })
   const _duration = Date.now() - taskStartTime;
   this.metrics.responseTimes.push(duration);
-  return taskId;
+  // return taskId;
   //   // LINT: unreachable code removed} catch (error) {
   this.metrics.errors.push({
         message: error.message,
@@ -285,16 +285,16 @@ throw error;
 // }
   //   }
 // async
-runForDuration()
+runForDuration() {}
 // {
-  this.log(`Phase 4);
+  this.log(`Phase 4);`
   const _endTime = Date.now() + this.config.duration;
   const _checkInterval = 10000; // Check every 10 seconds
 
   while (Date.now() < endTime && this.isRunning) {
     try {
         // Perform periodic operations to maintain load
-  // await this.performPeriodicOperations();
+  // // await this.performPeriodicOperations();
         // Report progress
         const _elapsed = Date.now() - this.metrics.startTime;
         const _remaining = endTime - Date.now();
@@ -303,11 +303,11 @@ runForDuration()
           this.log(;
             `Load test progress: ${Math.floor(elapsed / 1000)}s elapsed, ${Math.floor(remaining / 1000)}s remaining`;
           );
-  // await this.reportCurrentMetrics();
+  // // await this.reportCurrentMetrics();
         //         }
-  // await new Promise((resolve) => setTimeout(resolve, checkInterval));
+  // // await new Promise((resolve) => setTimeout(resolve, checkInterval));
       } catch (error) {
-        this.log(`Error during load test execution);
+        this.log(`Error during load test execution);`
         this.metrics.errors.push({
           message: error.message,
           timestamp: Date.now(),
@@ -318,7 +318,7 @@ runForDuration()
 this.log('Load test duration completed', 'success');
 // }
 // async
-performPeriodicOperations()
+performPeriodicOperations() {}
 // {
   // Perform random operations to maintain load
   const _operations = [
@@ -327,7 +327,7 @@ performPeriodicOperations()
       () => this.checkTaskStatuses(),
       () => this.performHealthChecks() ];
   const _randomOperation = operations[Math.floor(Math.random() * operations.length)];
-  // await randomOperation();
+  // // await randomOperation();
 // }
 async;
 checkSwarmStatuses();
@@ -336,7 +336,7 @@ checkSwarmStatuses();
   const _randomSwarmId = swarmIds[Math.floor(Math.random() * swarmIds.length)];
   if (randomSwarmId) {
     const _startTime = Date.now();
-  // await this.swarmCoordinator.getSwarmStatus(randomSwarmId);
+  // // await this.swarmCoordinator.getSwarmStatus(randomSwarmId);
     const _duration = Date.now() - startTime;
     this.metrics.responseTimes.push(duration);
   //   }
@@ -345,7 +345,7 @@ async;
 checkAgentStatuses();
 // {
   const _startTime = Date.now();
-  // await this.agentManager.listAgents();
+  // // await this.agentManager.listAgents();
   const _duration = Date.now() - startTime;
   this.metrics.responseTimes.push(duration);
 // }
@@ -356,7 +356,7 @@ checkTaskStatuses();
   const _randomSwarmId = swarmIds[Math.floor(Math.random() * swarmIds.length)];
   if (randomSwarmId) {
     const _startTime = Date.now();
-  // await this.taskEngine.getActiveTasks(randomSwarmId);
+  // // await this.taskEngine.getActiveTasks(randomSwarmId);
     const _duration = Date.now() - startTime;
     this.metrics.responseTimes.push(duration);
   //   }
@@ -365,7 +365,7 @@ async;
 performHealthChecks();
 // {
   const _startTime = Date.now();
-  // await this.systemIntegration.getSystemHealth();
+  // // await this.systemIntegration.getSystemHealth();
   const _duration = Date.now() - startTime;
   this.metrics.responseTimes.push(duration);
 // }
@@ -383,19 +383,19 @@ reportCurrentMetrics();
         `Current metrics: ${health.metrics.healthyComponents}/${health.metrics.totalComponents} components healthy, avg response: ${avgResponseTime.toFixed(2)}ms`;
       );
     } catch (error) {
-      this.log(`Failed to get current metrics);
+      this.log(`Failed to get current metrics);`
     //     }
 // }
 async;
 cleanup();
 // {
-  this.log('Phase 5);
+  this.log('Phase 5);'
   try {
       // Shutdown system gracefully
-  // await this.systemIntegration.shutdown();
+  // // await this.systemIntegration.shutdown();
       this.log('Cleanup completed successfully', 'success');
     } catch (error) {
-      this.log(`Cleanup failed);
+      this.log(`Cleanup failed);`
     //     }
 // }
 generateReport();
@@ -414,22 +414,22 @@ generateReport();
   this.metrics.swarmsCreated + this.metrics.agentsSpawned + this.metrics.tasksCreated;
   const _throughput = totalOperations / (totalDuration / 1000);
   console.warn(`\n${'='.repeat(80)}`);
-  console.warn(chalk.bold.blue('🔥 SWARM LOAD TEST REPORT'));
+  console.warn(chalk.bold.blue(' SWARM LOAD TEST REPORT'));
   console.warn('='.repeat(80));
-  console.warn(`\n📊 Test Configuration);
-  console.warn(`   Description);
-  console.warn(`   Swarms);
-  console.warn(`   Agents per Swarm);
-  console.warn(`   Tasks per Swarm);
-  console.warn(`   Duration);
-  console.warn(`\n⏱️  Execution Metrics);
+  console.warn(`\n� Test Configuration);`
+  console.warn(`   Description);`
+  console.warn(`   Swarms);`
+  console.warn(`   Agents per Swarm);`
+  console.warn(`   Tasks per Swarm);`
+  console.warn(`   Duration);`
+  console.warn(`\n⏱  Execution Metrics);`
   console.warn(`   Total Duration: ${(totalDuration / 1000).toFixed(2)}s`);
   console.warn(`   Swarms Created: ${chalk.green(this.metrics.swarmsCreated)}`);
   console.warn(`   Agents Spawned: ${chalk.green(this.metrics.agentsSpawned)}`);
   console.warn(`   Tasks Created: ${chalk.green(this.metrics.tasksCreated)}`);
   console.warn(`   Total Operations: ${chalk.cyan(totalOperations)}`);
   console.warn(`   Throughput: ${chalk.yellow(throughput.toFixed(2))} ops/sec`);
-  console.warn(`\n🚀 Performance Metrics);
+  console.warn(`\n� Performance Metrics);`
   console.warn(`   Average Response Time: ${chalk.cyan(avgResponseTime.toFixed(2))}ms`);
   console.warn(`   Min Response Time: ${chalk.green(minResponseTime.toFixed(2))}ms`);
   console.warn(`   Max Response Time: ${chalk.yellow(maxResponseTime.toFixed(2))}ms`);
@@ -449,7 +449,7 @@ generateReport();
       console.warn(`\n✅ No errors detected!`);
   //   }
   // Performance assessment
-  console.warn(`\n📈 Performance Assessment);
+  console.warn(`\n� Performance Assessment);`
   if (avgResponseTime < 100) {
     console.warn(`   Response Time: ${chalk.green('EXCELLENT')} (< 100ms)`);
   } else if (avgResponseTime < 500) {
@@ -491,30 +491,30 @@ generateReport();
   throughput,
   errorRate,
 
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString() {}
 // }
-return reportData;
+// return reportData;
 //   // LINT: unreachable code removed}
 // }
 async function main() {
   const _args = process.argv.slice(2);
   const _configName = args[0]  ?? 'light';
   if (!LOAD_CONFIGS[configName]) {
-    console.error(chalk.red(`Unknown load config));
-    console.warn(chalk.blue('Available configs));
+    console.error(chalk.red(`Unknown load config));`
+    console.warn(chalk.blue('Available configs));'
     Object.entries(LOAD_CONFIGS).forEach(([name, config]) => {
-      console.warn(`${name});
+      console.warn(`${name});`
     });
     process.exit(1);
   //   }
   const _config = LOAD_CONFIGS[configName];
   const _tester = new SwarmLoadTester(config);
   try {
-  // await tester.initialize();
-  // await tester.runLoadTest();
+  // // await tester.initialize();
+  // // await tester.runLoadTest();
     process.exit(0);
   } catch (error) {
-    console.error(chalk.red('Load test failed), error.message);
+    console.error(chalk.red('Load test failed), error.message);'
     process.exit(1);
   //   }
 // }
@@ -527,7 +527,9 @@ process.on('SIGTERM', () => {
   console.warn(chalk.yellow('\nReceived SIGTERM, shutting down gracefully...'));
   process.exit(0);
 });
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   main();
 // }
 
+
+}

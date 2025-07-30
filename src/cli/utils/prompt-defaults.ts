@@ -3,22 +3,22 @@
  * Provides a system for supplying default values to prompts when running in non-interactive mode;
  */
 import { existsSync, readFileSync } from
-'node = ============================================================================
+'node = ============================================================================'
 // TYPE DEFINITIONS
 // =============================================================================
 
 /**
  * Default entry configuration;
  */
-export interface DefaultEntry {id = ============================================================================
-// PROMPT DEFAULTS MANAGER CLASS
-// =============================================================================
-
-/**
- * Manages prompt default values for non-interactive mode;
- */
-export class PromptDefaultsManager {
-  private config = {}
+export // interface DefaultEntry {id = ============================================================================
+// // PROMPT DEFAULTS MANAGER CLASS
+// // =============================================================================
+// 
+// /**
+//  * Manages prompt default values for non-interactive mode;
+//  */
+// export class PromptDefaultsManager {
+//   // private config = {}
 this;
 
   configPath = configPath ?? join(homedir(), '.claude-zen', 'prompt-defaults.json')
@@ -27,16 +27,15 @@ this
   environmentDefaults = new Map<string, any>()
 this
 
-  loadConfig()
+  loadConfig() {}
 this
 
-  loadEnvironmentDefaults()
+  loadEnvironmentDefaults() {}
 // }
 /**
  * Load configuration from file;
  */
-private
-loadConfig()
+// private loadConfig() {}
 : void
 // {
   try {
@@ -63,7 +62,7 @@ saveConfig();
 
     // Common defaults from environment
     if (env.CLAUDE_AUTO_APPROVE === '1'  ?? env.CLAUDE_AUTO_APPROVE === 'true') {
-      this.environmentDefaults.set('confirm = JSON.parse(env.CLAUDE_PROMPT_DEFAULTS);
+      this.environmentDefaults.set('confirm = JSON.parse(env.CLAUDE_PROMPT_DEFAULTS);'
         Object.entries(defaults).forEach(([key, value]) => {
           this.environmentDefaults.set(key, value);
         });
@@ -80,12 +79,12 @@ saveConfig();
   public;
   getDefault(promptId = `${promptType  ?? 'text'}:${promptId}`;
   if (this.environmentDefaults.has(envKey)) {
-    return this.environmentDefaults.get(envKey);
+    // return this.environmentDefaults.get(envKey);
     //   // LINT: unreachable code removed}
     // Check wildcard environment defaults
     const _wildcardKey = `${promptType ?? 'text'}:*`;
     if (this.environmentDefaults.has(wildcardKey)) {
-      return this.environmentDefaults.get(wildcardKey);
+      // return this.environmentDefaults.get(wildcardKey);
       //   // LINT: unreachable code removed}
       // Check command-specific defaults
       if (command && this.config.command?.[command]) {
@@ -116,7 +115,7 @@ saveConfig();
               //   // LINT: unreachable code removed}
             //             }
             // Return undefined if no default found
-            return undefined;
+            // return undefined;
           //           }
           /**
            * Set a default value;
@@ -161,9 +160,9 @@ saveConfig();
           public;
           getNonInteractiveDefaults();
           : NonInteractiveDefaults
-          return {
+          // return {
           // Confirmation prompts
-          'confirm = this.getNonInteractiveDefaults();
+          'confirm = this.getNonInteractiveDefaults();'
           // Object.entries(defaults).forEach(([key, value]) =>; // LINT: unreachable code removed
           if (!this.environmentDefaults.has(key)) {
             this.environmentDefaults.set(key, value);
@@ -175,24 +174,22 @@ saveConfig();
  * @param pattern - Pattern to match against;
  * @returns True if pattern matches;
     // */ // LINT: unreachable code removed
-          private
-          matchPattern(promptId = === 'string')
+          // private matchPattern(promptId = === 'string')
           //           {
             // Simple wildcard matching
             const _regex = new RegExp(pattern.replace(/\*/g, '.*'));
-            return regex.test(promptId);
+            // return regex.test(promptId);
           //           }
           else
-          return pattern.test(promptId);
+          // return pattern.test(promptId);
         //         }
         /**
    * Export current configuration;
    * @returns Deep copy of current configuration;
     // */ // LINT: unreachable code removed
-        public
-        exportConfig();
+        // public exportConfig();
         : PromptDefaultsConfig
-        return JSON.parse(JSON.stringify(this.config));
+        // return JSON.parse(JSON.stringify(this.config));
         /**
          * Import configuration;
          * @param config - Configuration to import
@@ -206,8 +203,7 @@ saveConfig();
        * @param scope - Scope to clear (global, command, environment);
        * @param target - Target within scope (command name or environment name);
        */
-      public
-      clearDefaults(scope?, target?: string)
+      // public clearDefaults(scope?, target?)
       : void
       if (scope === 'command' && target && this.config.command) {
         delete this.config.command[target];
@@ -224,7 +220,7 @@ saveConfig();
       public;
       getEnvironmentDefaults();
       : Map<string, any>
-      return new Map(this.environmentDefaults);
+      // return new Map(this.environmentDefaults);
       /**
  * Get configuration file path;
  * @returns Path to configuration file;
@@ -232,7 +228,7 @@ saveConfig();
       public;
       getConfigPath();
       : string
-      return this.configPath;
+      // return this.configPath;
       /**
  * Check if defaults exist for a prompt;
  * @param promptId - Prompt ID to check;
@@ -254,7 +250,7 @@ saveConfig();
  * @param configPath - Optional custom config path;
  * @returns PromptDefaultsManager instance;
     // */ // LINT: unreachable code removed
-  export function getPromptDefaultsManager(configPath?) {
+  // export function getPromptDefaultsManager(configPath?) {
   if (!instance) {
     instance = new PromptDefaultsManager(configPath);
   //   }
@@ -271,7 +267,7 @@ saveConfig();
  * @param promptType - Optional prompt type;
  * @returns Default value or undefined;
     // */ // LINT: unreachable code removed
-  export function getPromptDefault(promptId = getPromptDefaultsManager();
+  // export function getPromptDefault(promptId = getPromptDefaultsManager();
   const _isNonInteractive =;
   flags.nonInteractive ?? flags['non-interactive'] ?? flags.ci ?? !process.stdout.isTTY;
   manager.applyNonInteractiveDefaults(isNonInteractive);
@@ -282,7 +278,7 @@ saveConfig();
  * @param defaultValue - Default value;
  * @param options - Configuration options;
  */
-export function setPromptDefault(promptId = {}) {
+// export function setPromptDefault(promptId = {}) {
   getPromptDefaultsManager().setDefault(promptId, defaultValue, options);
 // }
 /**
@@ -292,7 +288,7 @@ export function setPromptDefault(promptId = {}) {
  * @param promptType - Optional prompt type;
  * @returns True if defaults exist;
     // */ // LINT: unreachable code removed
-export function hasPromptDefault(promptId, command?, promptType?) {
+// export function hasPromptDefault(promptId, command?, promptType?) {
   return getPromptDefaultsManager().hasDefault(promptId, command, promptType);
 // }
 /**
@@ -300,21 +296,22 @@ export function hasPromptDefault(promptId, command?, promptType?) {
  * @param scope - Scope to clear;
  * @param target - Target within scope;
  */
-export function clearPromptDefaults(scope?, target?) {
+// export function clearPromptDefaults(scope?, target?) {
   getPromptDefaultsManager().clearDefaults(scope, target);
 // }
 /**
  * Export prompt defaults configuration;
  * @returns Configuration object;
     // */ // LINT: unreachable code removed
-export function exportPromptDefaults() {
+// export function exportPromptDefaults() {
   return getPromptDefaultsManager().exportConfig();
 // }
 /**
  * Import prompt defaults configuration;
  * @param config - Configuration to import
  */
-export function importPromptDefaults(config) {
+// export function importPromptDefaults(config) {
   getPromptDefaultsManager().importConfig(config);
 // }
 
+))))))

@@ -14,51 +14,51 @@ const _execAsync = promisify(exec);
 /**
  * TypeScript error information;
  */
-// interface TypeScriptError {
-  file?: string;
-  code?: string;
-  // message: string
-// }
+// // interface TypeScriptError {
+//   file?;
+//   code?;
+//   // message: string
+// // }
 /**
  * Build result information;
  */
-// interface BuildResult {
-  // timestamp: string
-  // errorCount: number
-  errors;
-  // success: boolean
-// }
+// // interface BuildResult {
+//   // timestamp: string
+//   // errorCount: number
+//   errors;
+//   // success: boolean
+// // }
 /**
  * Error category breakdown;
  */
-// interface ErrorCategories {
-  // type_compatibility: number
-  // missing_properties: number
-  // import_export: number
-  // null_undefined: number
-  // constructor_issues: number
-  // other: number
-// }
+// // interface ErrorCategories {
+//   // type_compatibility: number
+//   // missing_properties: number
+//   // import_export: number
+//   // null_undefined: number
+//   // constructor_issues: number
+//   // other: number
+// // }
 /**
  * Alpha certification status;
  */
-// interface AlphaCertification {
-  // timestamp: string
-  status: 'ALPHA_READY' | 'IN_PROGRESS';
-  // errorCount: number
-  // buildSuccess: boolean
-  // verifiedBy: string
-// }
+// // interface AlphaCertification {
+//   // timestamp: string
+//   status: 'ALPHA_READY' | 'IN_PROGRESS';
+//   // errorCount: number
+//   // buildSuccess: boolean
+//   // verifiedBy: string
+// // }
 /**
  * Build monitoring report;
  */
-// interface BuildReport {
-  // timestamp: string
-  // currentErrorCount: number
-  buildHistory;
-  // errorCategories: ErrorCategories
-  status: 'ALPHA_READY' | 'IN_PROGRESS';
-// }
+// // interface BuildReport {
+//   // timestamp: string
+//   // currentErrorCount: number
+//   buildHistory;
+//   // errorCategories: ErrorCategories
+//   status: 'ALPHA_READY' | 'IN_PROGRESS';
+// // }
 /**
  * Build Monitor class for continuous build verification;
  * Monitors TypeScript compilation progress toward zero-error alpha release;
@@ -90,9 +90,9 @@ async;
 runBuild();
 : Promise<BuildResult>
 // {
-  console.warn('🔨 Running build verification...');
+  console.warn('� Running build verification...');
   try {
-      const { stdout, stderr } = await execAsync('npm run build');
+      const { stdout, stderr } = // await execAsync('npm run build');
       const _buildOutput = stderr  ?? stdout;
       const _errors = this.parseErrors(buildOutput);
       const _buildResult = {
@@ -101,7 +101,7 @@ runBuild();
         errors,
         success: errors.length === 0 }
   this.buildHistory.push(buildResult);
-  return buildResult;
+  // return buildResult;
   //   // LINT: unreachable code removed} catch (error) {
   // Build failed, capture error information
   const _errorMessage = error instanceof Error ? error.message : String(error);
@@ -112,7 +112,7 @@ runBuild();
   errors,
   success}
 this.buildHistory.push(buildResult);
-return buildResult;
+// return buildResult;
 //   // LINT: unreachable code removed}
 // }
 /**
@@ -122,16 +122,15 @@ return buildResult;
    * @param buildOutput - Raw build output string;
    * @returns Array of parsed TypeScript errors;
     // */ // LINT: unreachable code removed
-private
-parseErrors(buildOutput)
+// private parseErrors(buildOutput)
 : TypeScriptError[]
 // {
   if (!buildOutput) return [];
   // ; // LINT: unreachable code removed
   const _errorLines = buildOutput;
 split('\n')
-filter((line) => line.includes('error TS')  ?? line.includes('Error))
-  return errorLines.map((line): TypeScriptError => {
+filter((line) => line.includes('error TS')  ?? line.includes('Error))'
+  return errorLines.map((line) => {
       const _match = line.match(/([^]+):\s*error\s+TS(\d+):\s*(.+)/);
     // if (match) { // LINT: unreachable code removed
         return {
@@ -139,7 +138,7 @@ filter((line) => line.includes('error TS')  ?? line.includes('Error))
     // code: match[2], // LINT: unreachable code removed
           message: match[3] };
 // }
-return { message};
+// return { message};
 //   // LINT: unreachable code removed});
 // }
 /**
@@ -149,17 +148,17 @@ return { message};
    * @returns Promise resolving to boolean indicating activity;
     // */ // LINT: unreachable code removed
 // async
-checkSwarmMemory()
+checkSwarmMemory() {}
 : Promise<boolean>
 // {
   try {
-      const { stdout } = await execAsync(;
+      const { stdout } = // await execAsync(;
         'npx claude-zen hooks pre-search --query "agent-progress" --cache-results true';
       );
-      return stdout.includes('progress')  ?? stdout.includes('fixed');
+      // return stdout.includes('progress')  ?? stdout.includes('fixed');
     //   // LINT: unreachable code removed} catch (/* _error */) {
       // Swarm memory check failed, assume no activity
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
   //   }
   /**
@@ -169,46 +168,46 @@ checkSwarmMemory()
   async;
   monitor();
   : Promise<void>
-    console.warn('🐝 Build-Verifier Agent - Continuous Monitoring Active')
-  console.warn(`📊 Baseline)
-  console.warn('🎯 Target)
+    console.warn('� Build-Verifier Agent - Continuous Monitoring Active')
+  console.warn(`� Baseline)`
+  console.warn(' Target)'
   while (this.monitoringActive) {
     try {
         // Check for swarm activity
 // const _swarmActivity = awaitthis.checkSwarmMemory();
         if (swarmActivity) {
-          console.warn('🔄 Swarm activity detected - Running build verification...');
+          console.warn('� Swarm activity detected - Running build verification...');
 // const _buildResult = awaitthis.runBuild();
           if (buildResult.errorCount < this.errorCount) {
             const _reduction = this.errorCount - buildResult.errorCount;
             console.warn(;
-              `✅ Progress! Errors reduced by \$reduction);
+              `✅ Progress! Errors reduced by \$reduction);`
             // Update baseline
             this.errorCount = buildResult.errorCount;
             // Store progress and alert swarm
-// await this.storeProgress(buildResult);
-// await this.alertSwarm(buildResult);
+// // await this.storeProgress(buildResult);
+// // await this.alertSwarm(buildResult);
           } else if (buildResult.errorCount > this.errorCount) {
             const _increase = buildResult.errorCount - this.errorCount;
             console.warn(;
-              `⚠️  WARNING);
+              `⚠  WARNING);`
             // Alert swarm of regression
-// await this.alertRegression(buildResult);
+// // await this.alertRegression(buildResult);
           //           }
           // Check for alpha readiness
           if (buildResult.errorCount === 0) {
-            console.warn('🎉 ALPHA RELEASE READY);
-// await this.certifyAlphaReady();
+            console.warn('� ALPHA RELEASE READY);'
+// // await this.certifyAlphaReady();
             break;
           //           }
         //         }
         // Wait before next check (30 second intervals)
-// await new Promise((resolve) => setTimeout(resolve, 30000));
+// // await new Promise((resolve) => setTimeout(resolve, 30000));
       } catch (error) {
         const _errorMessage = error instanceof Error ? error.message : String(error);
-        console.error('❌ Monitor error);
+        console.error('❌ Monitor error);'
         // Wait longer on error (1 minute)
-// await new Promise((resolve) => setTimeout(resolve, 60000));
+// // await new Promise((resolve) => setTimeout(resolve, 60000));
       //       }
   //   }
   /**
@@ -217,16 +216,15 @@ checkSwarmMemory()
    *;
    * @param buildResult - Latest build result to store;
    */
-  private
-  async;
+  // private async;
   storeProgress(buildResult)
   : Promise<void>
   try {
       const _message = `BUILD PROGRESS: $buildResult.errorCounterrors remaining (${this.errorCount - buildResult.errorCount} fixed)`;
-// await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
+// // await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('Failed to store progress);
+      console.error('Failed to store progress);'
     //     }
   /**
    * Alerts swarm of positive build progress;
@@ -234,18 +232,17 @@ checkSwarmMemory()
    *;
    * @param buildResult - Build result to report;
    */
-  private
-  async;
+  // private async;
   alertSwarm(buildResult)
   : Promise<void>
   //   {
-    const _message = `🔨 BUILD UPDATE: \$buildResult.errorCounterrors remaining. Progress: \$this.errorCount - buildResult.errorCounterrors fixed.`;
+    const _message = `� BUILD UPDATE: \$buildResult.errorCounterrors remaining. Progress: \$this.errorCount - buildResult.errorCounterrors fixed.`;
     console.warn(message);
     try {
-// await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
+// // await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('Failed to alert swarm);
+      console.error('Failed to alert swarm);'
     //     }
   //   }
   /**
@@ -254,26 +251,24 @@ checkSwarmMemory()
    *;
    * @param buildResult - Build result showing regression;
    */
-  private
-  async;
+  // private async;
   alertRegression(buildResult)
   : Promise<void>
   //   {
-    const _message = `⚠️ REGRESSION ALERT: \$buildResult.errorCount - this.errorCountnew errors introduced. Review recent changes.`;
+    const _message = `⚠ REGRESSION ALERT: \$buildResult.errorCount - this.errorCountnew errors introduced. Review recent changes.`;
     console.warn(message);
     try {
-// await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
+// // await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
     } catch (error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('Failed to alert regression);
+      console.error('Failed to alert regression);'
     //     }
   //   }
   /**
    * Certifies alpha readiness when zero errors achieved;
    * Issues official alpha certification to swarm;
    */
-  private
-  async;
+  // private async;
   certifyAlphaReady();
   : Promise<void>
   //   {
@@ -283,19 +278,19 @@ checkSwarmMemory()
     errorCount,
     buildSuccess,
     verifiedBy: 'Build-Verifier-Agent' }
-  console.warn('🏆 ALPHA CERTIFICATION COMPLETE');
+  console.warn('� ALPHA CERTIFICATION COMPLETE');
   console.warn('✅ Zero TypeScript compilation errors');
   console.warn('✅ Build successful');
   console.warn('✅ Ready for alpha release');
   try {
-// await execAsync(;
-        `npx claude-zen hooks notification --message "🏆 ALPHA CERTIFICATION);
-// await execAsync(;
+// // await execAsync(;
+        `npx claude-zen hooks notification --message "� ALPHA CERTIFICATION);"`
+// // await execAsync(;
         `npx claude-zen hooks post-task --task-id "alpha-build-verification" --analyze-performance true`;
       );
     } catch (error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('Failed to certify alpha);
+      console.error('Failed to certify alpha);'
     //     }
 // }
 /**
@@ -316,7 +311,7 @@ generateReport();
 // Write report to file
 const _reportPath = path.join(process.cwd(), 'build-verification-status.json');
 fs.writeFile(reportPath, JSON.stringify(report, null, 2)).catch((error) => {
-  console.error('Failed to write report);
+  console.error('Failed to write report);'
 });
 return report;
 //   // LINT: unreachable code removed}
@@ -330,10 +325,10 @@ async function main(): Promise<void> {
 // await monitor.monitor();
 // }
 // Start monitoring if run directly
-if (import.meta.url === `file) {
+if (import.meta.url === `file) {`
   main().catch((error) => {
-    console.error('❌ Build monitor error);
+    console.error('❌ Build monitor error);'
     process.exit(1);
   });
 // }
-export default BuildMonitor;
+// export default BuildMonitor;

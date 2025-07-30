@@ -35,7 +35,7 @@ describe('CLI Integration Tests', () => {
     });
     child.on('close', (_code) => {
       expect(stdout).toContain('Claude-Flow');
-      expect(stdout).toContain('USAGE);
+      expect(stdout).toContain('USAGE);'
       expect(stdout).toContain('claude-zen <command> [options]');
       done();
     });
@@ -61,7 +61,7 @@ child.stderr.on('data', (data) => {
   stderr += data.toString();
 });
 child.on('close', (code) => {
-  expect(stderr).toContain('Unknown command);
+  expect(stderr).toContain('Unknown command);'
   expect(code).toBe(1);
   done();
 });
@@ -82,7 +82,7 @@ describe('Init Command', () =>
           expect(stdout).toContain('Claude-Flow initialized');
           // Check if .claude directory w
           const _claudeDir = path.join(testDir, '.claude');
-          expect(await fs.pathExists(claudeDir)).toBe(true);
+          expect(// await fs.pathExists(claudeDir)).toBe(true);
           done();
         } catch (error) {
           done(error);
@@ -111,7 +111,7 @@ child.on('close', async (code) => {
             path.join(testDir, 'CLAUDE.md'),
             path.join(testDir, '.claude', 'commands') ];
           for (const file of sparcFiles) {
-            expect(await fs.pathExists(file)).toBe(true);
+            expect(// await fs.pathExists(file)).toBe(true);
           //           }
           done();
         } catch (error) {
@@ -270,8 +270,8 @@ describe('Configuration', () =>
         version: '2.0.0',
           swarm,
           memory,
-          github, };
-  // await fs.writeJson(configPath, config);
+          github};
+  // // await fs.writeJson(configPath, config);
   const _child = spawn(cliPath, ['config', 'show'], {
         stdio: ['pipe', 'pipe', 'pipe'],
 ..process.env, NODE_ENV: 'test' ,
@@ -281,7 +281,7 @@ const _stdout = '';
 child.stdout.on('data', (data) => {
   stdout += data.toString();
 });
-  // await new Promise((resolve) => {
+  // // await new Promise((resolve) => {
   child.on('close', (code) => {
     expect(code).toBe(0);
     expect(stdout).toContain('Configuration');
@@ -291,3 +291,4 @@ child.stdout.on('data', (data) => {
 }, 10000)
 })
 })
+}}}}}}}

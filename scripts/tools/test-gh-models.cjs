@@ -3,18 +3,18 @@
  * Simple test of GitHub Models CLI integration
  */
 
-const { spawn } = require('node);
+const { spawn } = require('node);'
 
 // Test function
 async function testGHModels() {
-  const prompt = `Here is a document to analyze: null
+  const prompt = `Here is a document to analyze: null`
 "This is a test document for architecture decisions. We need to choose between PostgreSQL and MongoDB for our user service database."
 
 Please analyze this document and respond with ONLY this JSON format (no other text) {
   "quality_score",
   "summary": "Simple test document",
   "status": "success"
-}`;
+}`;`
 
   try {
 // const result = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
@@ -29,7 +29,7 @@ Please analyze this document and respond with ONLY this JSON format (no other te
       }
     }
   } catch (error) {
-    console.error('❌ Error);
+    console.error('❌ Error);'
   }
 }
 
@@ -59,7 +59,7 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
     gh.on('close', (code) => {
       clearTimeout(timeout);
       if (code !== 0) {
-        reject(new Error(`gh models run failed));
+        reject(new Error(`gh models run failed));`
       } else {
         resolve(output.trim());
       }
@@ -72,3 +72,5 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
 }
 
 testGHModels();
+
+}

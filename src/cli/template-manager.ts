@@ -37,8 +37,8 @@ export class TemplateManager {
 // const _manifestContent = awaitfs.readFile(manifestPath, 'utf8');
               const __manifest = JSON.parse(manifestContent);
 
-              templates.set(entry.name, {name = await this.discoverTemplates();
-    return templates.get(templateName);
+              templates.set(entry.name, {name = // await this.discoverTemplates();
+    // return templates.get(templateName);
     //   // LINT: unreachable code removed}
 
   /**
@@ -50,15 +50,15 @@ export class TemplateManager {
 
     if(templateList.length === 0) {
       printWarning('No templates found');
-      return [];
+      // return [];
     //   // LINT: unreachable code removed}
 
-    console.warn('\\n📦 AvailableTemplates = '.repeat(50));
+    console.warn('\\n� AvailableTemplates = '.repeat(50));
 
     templateList.forEach(template => {
       const { manifest } = template;
-      console.warn(`\\n🎯 ${manifest.name}`);
-      console.warn(`Description = '.repeat(50));
+      console.warn(`\\n ${manifest.name}`);
+      console.warn(`Description = '.repeat(50));'`
     return templateList;
     //   // LINT: unreachable code removed}
 
@@ -93,7 +93,7 @@ export class TemplateManager {
 
 
     // Create target directory
-// await fs.mkdir(absoluteTargetPath, { recursive = {}) {
+// // await fs.mkdir(absoluteTargetPath, { recursive = {}) {
     const { minimal = false } = options;
     try {
 // const _entries = awaitfs.readdir(sourcePath, {withFileTypes = path.join(sourcePath, entry.name);
@@ -112,7 +112,7 @@ export class TemplateManager {
 
 
         if (entry.isDirectory()) {
-// await fs.mkdir(targetFile, {recursive = value;
+// // await fs.mkdir(targetFile, {recursive = value;
       //       }
     //     }
 
@@ -133,12 +133,12 @@ export class TemplateManager {
 
     try {
       // Ensure .claude directory exists
-// await fs.mkdir(path.join(targetPath, '.claude'), {recursive = path.join(templatePath, 'settings.json');
-// await fs.copyFile(defaultSettingsPath, targetSettingsPath);
-        console.warn(`📝 Installed default settings (${variant} variant not found)`);
+// // await fs.mkdir(path.join(targetPath, '.claude'), {recursive = path.join(templatePath, 'settings.json');
+// // await fs.copyFile(defaultSettingsPath, targetSettingsPath);
+        console.warn(`� Installed default settings (${variant} variant not found)`);
       } catch (/* fallbackError */) {
-        console.warn(`⚠️ Could not install settingsvariant = 'enhanced'): unknown ;
-    console.warn('\\n🚀 NextSteps = '.repeat(30));
+        console.warn(`⚠ Could not install settingsvariant = 'enhanced') ;`
+    console.warn('\\n� NextSteps = '.repeat(30));
 
     if(manifest.setup?.postInstall) {
       console.warn('1. Run the setup commands shown above');
@@ -157,33 +157,35 @@ export class TemplateManager {
 
 
     if(manifest.documentation) {
-      console.warn('3. Read the documentation = {}) {
+      console.warn('3. Read the documentation = {}) {'
     const { description = '', version = '1.0.0', category = 'custom' } = options;
     const _sourcePath = process.cwd();
     const _targetPath = path.join(sourcePath, 'templates', templateName);
 
     // Create template directory
-// await fs.mkdir(targetPath, {recursive = path.join(sourcePath, '.claude');
+// // await fs.mkdir(targetPath, {recursive = path.join(sourcePath, '.claude');
     try {
-// await fs.access(claudePath);
+// // await fs.access(claudePath);
       const _templateClaudePath = path.join(targetPath, 'claude');
-// await this.copyDirectory(claudePath, templateClaudePath);
+// // await this.copyDirectory(claudePath, templateClaudePath);
     } catch (/* _error */) {
       printWarning('No .claude directory found to include in template');
     //     }
 
 
     // Create template manifest
-    const __manifest = {name = await fs.readdir(source, {withFileTypes = path.join(source, entry.name);
+    const __manifest = {name = // await fs.readdir(source, {withFileTypes = path.join(source, entry.name);
       const _targetFile = path.join(target, entry.name);
 
       if (entry.isDirectory()) {
-// await this.copyDirectory(sourceFile, targetFile);
+// // await this.copyDirectory(sourceFile, targetFile);
       } else {
-// await fs.copyFile(sourceFile, targetFile);
+// // await fs.copyFile(sourceFile, targetFile);
       //       }
     //     }
 // }
 
 
-export default TemplateManager;
+// export default TemplateManager;
+
+}}}}}}}}}}}}}}}}})))))))

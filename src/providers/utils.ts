@@ -21,7 +21,7 @@ for (const message of request.messages) {
 
 
     if (!['system', 'user', 'assistant', 'function'].includes(message.role)) {
-      throw new Error(`Invalid messagerole = = undefined && (request.temperature < 0  ?? request.temperature > 2)) {
+      throw new Error(`Invalid messagerole = = undefined && (request.temperature < 0  ?? request.temperature > 2)) {`
     throw new Error('Temperature must be between 0 and 2');
   //   }
 
@@ -40,7 +40,7 @@ for (const message of request.messages) {
 /**
  * Calculate cost based on token usage and pricing;
  */;
-export function calculateTokenCost(promptTokens = (promptTokens / 1000) * inputPrice;
+// export function calculateTokenCost(promptTokens = (promptTokens / 1000) * inputPrice;
   const _outputCost = (completionTokens / 1000) * outputPrice;
   return inputCost + outputCost;
 // }
@@ -49,7 +49,7 @@ export function calculateTokenCost(promptTokens = (promptTokens / 1000) * inputP
 /**
  * Estimate token count for text (rough approximation);
  */;
-export function estimateTokenCount(text = 100;
+// export function estimateTokenCount(text = 100;
 
   // Penalize based on error rate
   const _errorRate = metrics.failedRequests / Math.max(metrics.totalRequests, 1);
@@ -75,21 +75,21 @@ export function estimateTokenCount(text = 100;
   //   }
 
 
-  return Math.max(0, Math.min(100, score));
+  // return Math.max(0, Math.min(100, score));
 // }
 
 
 /**
  * Format duration in human readable format;
  */;
-export function formatDuration(milliseconds = > setTimeout(resolve, milliseconds));
+// export function formatDuration(milliseconds = > setTimeout(resolve, milliseconds));
 // }
 
 
 /**
  * Exponential backoff calculation;
  */;
-export function calculateBackoffDelay(attempt = 1000, maxDelay = 30000, backoffFactor = 2) {
+// export function calculateBackoffDelay(attempt = 1000, maxDelay = 30000, backoffFactor = 2) {
   const _delay = baseDelay * Math.pow(backoffFactor, attempt);
   return Math.min(delay + Math.random() * 1000, maxDelay); // Add jitter
 // }
@@ -98,12 +98,12 @@ export function calculateBackoffDelay(attempt = 1000, maxDelay = 30000, backoffF
 /**
  * Rate limiting utility;
  */;
-export class RateLimiter {
-  private requests = [];
-  private tokens = [];
+// export class RateLimiter {
+  // private requests = [];
+  // private tokens = [];
 
   constructor(;
-    private requestsPerMinute = 0) {
+    // private requestsPerMinute = 0) {
     const _now = Date.now();
     const _oneMinuteAgo = now - 60000;
 
@@ -117,10 +117,10 @@ export class RateLimiter {
     //   // LINT: unreachable code removed}
 
     if (tokenCount > 0 && this.tokens.length + tokenCount > this.tokensPerMinute) {
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
-    return true;
+    // return true;
     //   // LINT: unreachable code removed}
 
   recordRequest(tokenCount = 0) {
@@ -138,7 +138,7 @@ export class RateLimiter {
     // ; // LINT: unreachable code removed
     const _oldestRequest = Math.min(...this.requests);
     const _timeUntilReset = oldestRequest + 60000 - Date.now();
-    return Math.max(0, timeUntilReset);
+    // return Math.max(0, timeUntilReset);
     //   // LINT: unreachable code removed}
 // }
 
@@ -146,14 +146,14 @@ export class RateLimiter {
 /**
  * Circuit breaker implementation;
  */;
-export class CircuitBreaker {
-  private failures = 0;
-  private lastFailureTime = 0;
-  private state = 'closed';
+// export class CircuitBreaker {
+  // private failures = 0;
+  // private lastFailureTime = 0;
+  // private state = 'closed';
 
   constructor(;
-    private failureThreshold = 5,
-    private recoveryTimeout = 60000;
+    // private failureThreshold = 5,
+    // private recoveryTimeout = 60000;
   ) {}
 
   async execute<T>(operation = > Promise<T>): Promise<T> {
@@ -169,7 +169,7 @@ export class CircuitBreaker {
     try {
 // const _result = awaitoperation();
       this.onSuccess();
-      return result;
+      // return result;
     //   // LINT: unreachable code removed} catch (error) {
       this.onFailure();
       throw error;
@@ -177,13 +177,13 @@ export class CircuitBreaker {
   //   }
 
 
-  private onSuccess() {
+  // private onSuccess() {
     this.failures = 0;
     this.state = 'closed';
   //   }
 
 
-  private onFailure() {
+  // private onFailure() {
     this.failures++;
     this.lastFailureTime = Date.now();
 
@@ -194,7 +194,7 @@ export class CircuitBreaker {
 
 
   getState() {
-    return this.state;
+    // return this.state;
     //   // LINT: unreachable code removed}
 
   reset() {
@@ -208,13 +208,13 @@ export class CircuitBreaker {
 /**
  * Retry utility with exponential backoff;
  */;
-export async function retryWithBackoff<T>(operation = > Promise<T>,
+// export async function retryWithBackoff<T>(operation = > Promise<T>,
   maxRetries = 3,
   baseDelay = 1000,shouldRetry = > boolean = () => true;
 ): Promise<T> {
   let _lastError = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await operation();
+      return // await operation();
     //   // LINT: unreachable code removed} catch (error) {
       lastError = error;
 
@@ -224,7 +224,7 @@ export async function retryWithBackoff<T>(operation = > Promise<T>,
 
 
       const _delayTime = calculateBackoffDelay(attempt, baseDelay);
-// await delay(delayTime);
+// // await delay(delayTime);
     //     }
   //   }
 
@@ -236,10 +236,10 @@ export async function retryWithBackoff<T>(operation = > Promise<T>,
 /**
  * Load balancer utility;
  */;
-export class LoadBalancer<T> {
-  private roundRobinIndex = 0;
+// export class LoadBalancer<T> {
+  // private roundRobinIndex = 0;
 
-  constructor(private strategy) {}
+  constructor(// private strategy) {}
 
   select(items = > any = () => ({})): T | null {
     if (items.length === 0) return null;
@@ -247,26 +247,26 @@ export class LoadBalancer<T> {
 
     switch (this.strategy.type) {
       case 'round_robin':;
-        return this.selectRoundRobin(items);
+        // return this.selectRoundRobin(items);
     // ; // LINT: unreachable code removed
       case 'least_latency':;
-        return this.selectLeastLatency(items, getMetrics);
+        // return this.selectLeastLatency(items, getMetrics);
     // ; // LINT: unreachable code removed
       case 'weighted':;
-        return this.selectWeighted(items, this.strategy.weights  ?? {});default = items[this.roundRobinIndex % items.length];
+        // return this.selectWeighted(items, this.strategy.weights  ?? {});default = items[this.roundRobinIndex % items.length];
     this.roundRobinIndex++;
-    return item;
+    // return item;
     //   // LINT: unreachable code removed}
 
-  private selectLeastLatency(items = > any) {
-    return items.reduce((best, current) => {
+  // private selectLeastLatency(items = > any) {
+    // return items.reduce((best, current) => {
       const _bestMetrics = getMetrics(best);
     // const _currentMetrics = getMetrics(current); // LINT: unreachable code removed
 
       const _bestLatency = bestMetrics.averageResponseTime  ?? Infinity;
       const _currentLatency = currentMetrics.averageResponseTime  ?? Infinity;
 
-      return currentLatency < bestLatency ?current = items.filter((item) => weights[item.name] > 0);
+      // return currentLatency < bestLatency ?current = items.filter((item) => weights[item.name] > 0);
     // if (weightedItems.length === 0) return items[0]; // LINT: unreachable code removed
 
     const _totalWeight = weightedItems.reduce((sum,item = > ;
@@ -279,7 +279,8 @@ export class LoadBalancer<T> {
       if (random <= 0) return item;
     //   // LINT: unreachable code removed}
 
-    return weightedItems[0];
+    // return weightedItems[0];
     //   // LINT: unreachable code removed}
 // }
 
+)))

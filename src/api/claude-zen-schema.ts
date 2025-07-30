@@ -1,35 +1,35 @@
 /**
- * 🚀 CLAUDE ZEN UNIFIED SCHEMA;
+ * � CLAUDE ZEN UNIFIED SCHEMA;
  * Single source of truth for workflow management APIs;
  * Auto-generates CLI/TUI/Web interfaces with proper hierarchy
  */
-export interface SchemaCommand {
-  // description: string
-  // category: string
-  // priority: number
-  interfaces: {
-  // cli: boolean
-    web?: {
-      // enabled: boolean
-      // endpoint: string
-      // method: string
-    };
-    tui?: boolean;
+export // interface SchemaCommand {
+//   // description: string
+//   // category: string
+//   // priority: number
+//   interfaces: {
+//   // cli: boolean
+//     web?: {
+//       // enabled: boolean
+//       // endpoint: string
+//       // method: string
+//     };
+    tui?;
   };
-  storage?: string;
-  permissions?: string[];
+  storage?;
+  permissions?;
   validation?: {
     required;
-    optional?: string[];
+    optional?;
   };
 // }
-export interface SchemaMetadata {
-  // version: string
-  // lastUpdated: string
-  categories;
-  // totalCommands: number
-// }
-export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
+// export // interface SchemaMetadata {
+//   // version: string
+//   // lastUpdated: string
+//   categories;
+//   // totalCommands: number
+// // }
+// export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   // === STRATEGIC VISIONS ===
   // High-level strategic visions that drive product development
   'visions-create': {
@@ -200,7 +200,7 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
 // 
 }
 // === METADATA ===
-export const SCHEMA_METADATA = {
+// export const SCHEMA_METADATA = {
   version: '1.0.0',
 lastUpdated: new Date().toISOString(),
 categories: ['strategic', 'architecture', 'planning', 'development', 'product', 'system', 'ai'],
@@ -208,7 +208,7 @@ totalCommands: Object.keys(CLAUDE_ZEN_SCHEMA).length }
 /**
  * Get commands by category
  */
-export function getCommandsByCategory(_category): Record<string, SchemaCommand> {
+// export function getCommandsByCategory(_category): Record<string, SchemaCommand> {
   return Object.fromEntries(;
   // Object.entries(CLAUDE_ZEN_SCHEMA).filter(([ cmd]) => cmd.category === category); // LINT: unreachable code removed
   //   )
@@ -216,7 +216,7 @@ export function getCommandsByCategory(_category): Record<string, SchemaCommand> 
 /**
  * Get web-enabled commands
  */
-export function getWebEnabledCommands(): Record<string, SchemaCommand> {
+// export function getWebEnabledCommands(): Record<string, SchemaCommand> {
   return Object.fromEntries(;
   // Object.entries(CLAUDE_ZEN_SCHEMA).filter(([ cmd]) => cmd.interfaces.web?.enabled); // LINT: unreachable code removed
   //   )
@@ -224,7 +224,7 @@ export function getWebEnabledCommands(): Record<string, SchemaCommand> {
 /**
  * Get CLI-enabled commands
  */
-export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
+// export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
   return Object.fromEntries(;
   // Object.entries(CLAUDE_ZEN_SCHEMA).filter(([ cmd]) => cmd.interfaces.cli); // LINT: unreachable code removed
   //   )
@@ -232,7 +232,7 @@ export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
 /**
  * Validate command arguments
  */
-export function validateCommandArgs(
+// export function validateCommandArgs(
   commandName,
 args): null
 // {
@@ -243,11 +243,11 @@ args): null
 // {
   const _command = CLAUDE_ZEN_SCHEMA[commandName];
   if (!command) {
-    return { valid, missing: [], errors: [`Unknown command] };
+    // return { valid, missing: [], errors: [`Unknown command] };`
     //   // LINT: unreachable code removed}
     const _validation = command.validation;
     if (!validation) {
-      return { valid, missing: [], errors: [] };
+      // return { valid, missing: [], errors: [] };
       //   // LINT: unreachable code removed}
       const _missing = [];
       const _errors = [];
@@ -259,7 +259,7 @@ args): null
           //           }
         //         }
       //       }
-      return {
+      // return {
     valid: missing.length === 0 && errors.length === 0,
       // missing, // LINT: unreachable code removed
       errors }
@@ -267,7 +267,7 @@ args): null
   /**
    * Generate OpenAPI specification
    */
-  export function _generateOpenAPISpec() {
+  // export function _generateOpenAPISpec() {
   const _paths = {};
 
   Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_cmdName, cmdConfig]) => {
@@ -285,7 +285,7 @@ args): null
       tags: [cmdConfig.category],
         '200': null
           description: 'Success',
-            'application/json': type: 'object' ,,,, };
+            'application/json': type: 'object' ,,,};
 
     if (cmdConfig.validation?.required) {
       paths[endpoint][method.toLowerCase()].requestBody = {
@@ -296,10 +296,10 @@ args): null
               properties: cmdConfig.validation.required.reduce((props, field) => {
                 props[field] = { type: 'string' };
                 return props;
-    //   // LINT: unreachable code removed}, {}) },, }
+    //   // LINT: unreachable code removed}, {}) },}
   //   }
   //   )
-  return {
+  // return {
     openapi: '3.0.0',
   // info: { // LINT: unreachable code removed
   title: 'Claude Zen API',
@@ -308,4 +308,4 @@ args): null
 
 paths }
 // }
-export default CLAUDE_ZEN_SCHEMA;
+// export default CLAUDE_ZEN_SCHEMA;

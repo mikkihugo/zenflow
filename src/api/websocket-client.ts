@@ -5,12 +5,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-// interface WebSocketClientOptions {
-  reconnect?: boolean;
-  reconnectInterval?: number;
-  maxReconnectAttempts?: number;
-  timeout?: number;
-// }
+// // interface WebSocketClientOptions {
+//   reconnect?;
+//   reconnectInterval?;
+//   maxReconnectAttempts?;
+//   timeout?;
+// // }
 /**
  * Native WebSocket Client using Node.js 22 built-in WebSocket;
  *;
@@ -21,8 +21,8 @@ import { EventEmitter } from 'node:events';
  * - Connection state management;
  * - Error handling and recovery;
  */
-export class WebSocketClient extends EventEmitter {
-  constructor(url, _options: WebSocketClientOptions = {}) {
+// export class WebSocketClient extends EventEmitter {
+  constructor(url, _options = {}) {
     super();
     this.url = url;
     this.options = {
@@ -48,7 +48,7 @@ async;
 connect();
 : Promise<void>
 // {
-  return new Promise((resolve, reject) => {
+  // return new Promise((resolve, reject) => {
       try {
         // Use Node.js 22 built-in WebSocket
         this.ws = new WebSocket(this.url);
@@ -57,7 +57,7 @@ connect();
           reject(new Error('WebSocket connection timeout'));
         }, this.options.timeout);
 
-        this.ws.onopen = (): unknown => {
+        this.ws.onopen = () => {
           clearTimeout(timeout);
           this.isConnected = true;
           this.reconnectAttempts = 0;
@@ -67,7 +67,7 @@ connect();
           resolve();
         };
 
-        this.ws.onmessage = (): unknown => {
+        this.ws.onmessage = () => {
           try {
             const _data = JSON.parse(event.data);
             this.emit('message', data);
@@ -76,7 +76,7 @@ connect();
           //           }
         };
 
-        this.ws.onclose = (): unknown => {
+        this.ws.onclose = () => {
           clearTimeout(timeout);
           this.isConnected = false;
           this.stopHeartbeat();
@@ -89,7 +89,7 @@ connect();
             this.scheduleReconnect();
         };
 
-        this.ws.onerror = (): unknown => {
+        this.ws.onerror = () => {
           clearTimeout(timeout);
           this.emit('error', error);
           reject(error);
@@ -136,8 +136,7 @@ send(data)
 /**
  * Queue message for later sending;
  */
-private
-queueMessage(message)
+// private queueMessage(message)
 : void
 // {
   this.messageQueue.push(message);
@@ -149,8 +148,7 @@ queueMessage(message)
 /**
  * Send all queued messages;
  */
-private
-flushMessageQueue();
+// private flushMessageQueue();
 : void
 // {
   while (this.messageQueue.length > 0 && this.isConnected) {
@@ -169,8 +167,7 @@ flushMessageQueue();
 /**
  * Schedule reconnection attempt;
  */
-private
-scheduleReconnect();
+// private scheduleReconnect();
 : void
 // {
   const _delay = this.options.reconnectInterval * 2 ** this.reconnectAttempts;
@@ -178,7 +175,7 @@ scheduleReconnect();
     this.reconnectAttempts++;
     this.emit('reconnecting', this.reconnectAttempts);
     try {
-// await this.connect();
+// // await this.connect();
       } catch (error) {
         this.emit('reconnectError', error);
 
@@ -193,8 +190,7 @@ scheduleReconnect();
 /**
  * Start heartbeat mechanism;
  */
-private
-startHeartbeat();
+// private startHeartbeat();
 : void
 // {
   this.heartbeatTimer = setInterval(() => {
@@ -210,8 +206,7 @@ startHeartbeat();
 /**
  * Stop heartbeat mechanism;
  */
-private
-stopHeartbeat();
+// private stopHeartbeat();
 : void
 // {
   if (this.heartbeatTimer) {
@@ -226,21 +221,21 @@ get;
 connected();
 : boolean
 // {
-    return this.isConnected;
+    // return this.isConnected;
     //   // LINT: unreachable code removed}
 
   /**
    * Get connection URL;
    */;
   get connectionUrl(): string
-    return this.url;
+    // return this.url;
     //   // LINT: unreachable code removed}
 
   /**
    * Get queued message count;
    */;
   get queuedMessages(): number
-    return this.messageQueue.length;
+    // return this.messageQueue.length;
 
 // Default export for convenience
-export default WebSocketClient;
+// export default WebSocketClient;

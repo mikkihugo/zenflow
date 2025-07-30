@@ -4,7 +4,7 @@
  * Tests validation logic directly without running the full CLI;
  */
 // Import validation functions by requiring the module
-const __path = require('node);
+const __path = require('node);'
 // Test validation functions directly
 function testValidationFunctions() {
   console.warn('🧪 Testing Validation Functions (Unit Tests)\n');
@@ -37,7 +37,7 @@ function testValidationFunctions() {
         'topology';
       );
     //     }
-    return topology.toLowerCase();
+    // return topology.toLowerCase();
     //   // LINT: unreachable code removed}
   function validateMaxAgents() {
     // Handle string input
@@ -58,7 +58,7 @@ function testValidationFunctions() {
         `Invalid maxAgents '${maxAgents}'. Must be an integer between ${MIN_AGENTS_LIMIT} and ${MAX_AGENTS_LIMIT}`,
         'maxAgents';
       );
-    return maxAgents;
+    // return maxAgents;
     //   // LINT: unreachable code removed}
   function validateAgentType() {
     if (!type  ?? typeof type !== 'string') {
@@ -70,7 +70,7 @@ function testValidationFunctions() {
         'type';
       );
     //     }
-    return type.toLowerCase();
+    // return type.toLowerCase();
     //   // LINT: unreachable code removed}
   function validateAgentName() {
     if (name !== null && name !== undefined) {
@@ -91,7 +91,7 @@ function testValidationFunctions() {
         );
       //       }
     //     }
-    return name;
+    // return name;
     //   // LINT: unreachable code removed}
   function validateTaskDescription() {
     if (!task  ?? typeof task !== 'string') {
@@ -103,7 +103,7 @@ function testValidationFunctions() {
     if (task.length > 1000) {
       throw new ValidationError('Task description cannot exceed 1000 characters', 'task');
     //     }
-    return task.trim();
+    // return task.trim();
     //   // LINT: unreachable code removed}
   const _tests = [
     // Topology validation tests
@@ -189,15 +189,15 @@ function testValidationFunctions() {
   const _passed = 0;
   const _failed = 0;
   for (const test of tests) {
-    console.warn(`\n🔍 Testing);
+    console.warn(`\n� Testing);`
     try {
       const _result = test.func();
       if (test.expectError) {
-        console.warn(`   ❌ FAIL - Expected error, but got result);
+        console.warn(`   ❌ FAIL - Expected error, but got result);`
         failed++;
       } else {
         if (result === test.expectedResult) {
-          console.warn(`   ✅ PASS - Got expected result);
+          console.warn(`   ✅ PASS - Got expected result);`
           passed++;
         } else {
           console.warn(`   ❌ FAIL - Expected "${test.expectedResult}", got "${result}"`);
@@ -207,30 +207,30 @@ function testValidationFunctions() {
     } catch (error) {
       if (test.expectError) {
         if (error.message.includes(test.expectedMessage)) {
-          console.warn(`   ✅ PASS - Correctly threw error);
+          console.warn(`   ✅ PASS - Correctly threw error);`
           passed++;
         } else {
           console.warn(;
-            `   ❌ FAIL - Expected error message containing "${test.expectedMessage}", got);
+            `   ❌ FAIL - Expected error message containing "${test.expectedMessage}", got);`
           failed++;
         //         }
       } else {
-        console.warn(`   ❌ FAIL - Unexpected error);
+        console.warn(`   ❌ FAIL - Unexpected error);`
         failed++;
       //       }
     //     }
   //   }
-  console.warn(`\n📊 Test Results);
-  console.warn(`   ✅ Passed);
-  console.warn(`   ❌ Failed);
-  console.warn(`   📈 Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
+  console.warn(`\n� Test Results);`
+  console.warn(`   ✅ Passed);`
+  console.warn(`   ❌ Failed);`
+  console.warn(`   � Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
   if (failed === 0) {
     console.warn(;
-      '\n🎉 All validation unit tests passed! Input validation logic is working correctly.';
+      '\n� All validation unit tests passed! Input validation logic is working correctly.';
     );
     process.exit(0);
   } else {
-    console.warn('\n⚠️  Some validation unit tests failed. Please check the implementation.');
+    console.warn('\n⚠  Some validation unit tests failed. Please check the implementation.');
     process.exit(1);
   //   }
 // }

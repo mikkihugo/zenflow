@@ -69,7 +69,7 @@ describe('Core Functionality Tests', () => {
           if (handler) {
             return handler(req, res);
     //   // LINT: unreachable code removed}
-          return { status, message: 'Not Found' };
+          // return { status, message: 'Not Found' };
     //   // LINT: unreachable code removed} };
       // Register routes
       router.register('GET', '/api/health', () => ({ status));
@@ -97,7 +97,7 @@ describe('Core Functionality Tests', () => {
             //             }
           };
           next();
-          return { req, res };
+          // return { req, res };
     //   // LINT: unreachable code removed} };
       // Add middleware
       middleware.use((req, _res, next) => {
@@ -133,7 +133,7 @@ describe('Core Functionality Tests', () => {
               result.positional.push(arg);
             //             }
           //           }
-          return result;
+          // return result;
     //   // LINT: unreachable code removed} };
       const _parsed = argParser.parse(['init', '--force', '--template=basic', 'arg1']);
       expect(parsed.command).toBe('init');
@@ -152,7 +152,7 @@ describe('Core Functionality Tests', () => {
             requiredFlags: ['target'],
             optionalFlags: ['verbose'],
             minArgs,
-            maxArgs, },
+            maxArgs},
         validate: function (command, flags, /* args */) {
           const _spec = this.commands[command];
           if (!spec) {
@@ -161,17 +161,17 @@ describe('Core Functionality Tests', () => {
           // Check required flags
           for (const flag of spec.requiredFlags) {
             if (!(flag in flags)) {
-              return { valid, error: `Missing required flag: --${flag}` };
+              // return { valid, error: `Missing required flag: --${flag}` };
     //   // LINT: unreachable code removed}
           //           }
           // Check argument count
           if (args.length < spec.minArgs) {
-            return { valid, error: `Too few arguments` };
+            // return { valid, error: `Too few arguments` };
     //   // LINT: unreachable code removed}
           if (args.length > spec.maxArgs) {
-            return { valid, error: `Too many arguments` };
+            // return { valid, error: `Too many arguments` };
     //   // LINT: unreachable code removed}
-          return { valid };
+          // return { valid };
     //   // LINT: unreachable code removed} };
       // Valid commands
       expect(commandValidator.validate('init', {}, [])).toEqual({ valid });
@@ -204,7 +204,7 @@ describe('Core Functionality Tests', () => {
             this.running.push(task);
             return task;
     //   // LINT: unreachable code removed}
-          return null;
+          // return null;
     //   // LINT: unreachable code removed},
         complete: function (taskId) {
           const _index = this.running.findIndex((t) => t.id === taskId);
@@ -213,7 +213,7 @@ describe('Core Functionality Tests', () => {
             this.completed.push(task);
             return true;
     //   // LINT: unreachable code removed}
-          return false;
+          // return false;
     //   // LINT: unreachable code removed} };
       // Add tasks
       taskQueue.add({ id);
@@ -288,7 +288,7 @@ describe('Core Functionality Tests', () => {
               result[key] = value;
             //             }
           //           }
-          return result;
+          // return result;
     //   // LINT: unreachable code removed} };
       const _baseConfig = {
         server: { port, host: 'localhost' },type: 'sqlite', file: 'default.db' ,analytics  };
@@ -349,3 +349,5 @@ describe('Core Functionality Tests', () => {
     });
   });
 });
+
+}}}}}}}}}

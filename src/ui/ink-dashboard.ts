@@ -1,14 +1,14 @@
 #!/usr/bin/env node;
-import { Box } from 'ink';
-/**
- * Ink-based TUI Dashboard - Modern replacement for blessed;
- * Features vision roadmaps, swarm monitoring, and system metrics;
+import { Box } from 'ink';'
+/**  */
+ * Ink-based TUI Dashboard - Modern replacement for blessed
+ * Features vision roadmaps, swarm monitoring, and system metrics
  */
 
-import React, { useEffect, useState } from 'react';
-import { visionAPI } from './shared/vision-api.js';
+import React, { useEffect, useState } from 'react';'
+import { visionAPI } from './shared/vision-api.js';'
 
-const __VisionDashboard = (): unknown => {
+const __VisionDashboard = () => {
   const [_visions, setVisions] = useState([]);
   const [loading, _setLoading] = useState(true);
 
@@ -18,21 +18,21 @@ const __VisionDashboard = (): unknown => {
 // const _data = awaitvisionAPI.fetchVisions();
         setVisions(data);
       } catch (/* _error */) {
-        console.error('Failed to loadvisions = setInterval(loadVisions, 30000);
-    return () => clearInterval(interval);
+        console.error('Failed to loadvisions = setInterval(loadVisions, 30000);'
+    // return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
   if(loading) {
     return React.createElement(Box, {justifyContent = === 0) {
-    return React.createElement(Box, {justifyContent = (): unknown => {
+    return React.createElement(Box, {justifyContent = () => {
     switch(status) {
-      case 'approved': return 'green';
-    // case 'pending': return 'yellow'; ; // LINT: unreachable code removed
-      case 'rejected': return 'red';default = (): unknown => {
+      case 'approved': return 'green';'
+    // case 'pending': return 'yellow'; ; // LINT: unreachable code removed'
+      case 'rejected': return 'red';default = () => {'
     switch(priority) {
-      case 'high': return '🔴';
-    // case 'medium': return '🟡'; // LINT: unreachable code removed
-      case 'low': return '🟢';default = (): unknown => {
+      case 'high': return '�';'
+    // case 'medium': return '�'; // LINT: unreachable code removed'
+      case 'low': return '�';default = () => {'
     if (!phases?.length) return 0;
     // const _totalProgress = phases.reduce((sum, phase) => sum + (phase.progress  ?? 0), 0); // LINT: unreachable code removed
     return Math.round(totalProgress / phases.length);
@@ -40,12 +40,12 @@ const __VisionDashboard = (): unknown => {
 
   return React.createElement(Box, { flexDirection => {
 
-    // return React.createElement(Box, {key = > p.status === 'in_progress')?.name  ?? vision.phases.find(p => p.status === 'pending')?.name  ?? 'All phases complete'; // LINT: unreachable code removed
+    // return React.createElement(Box, {key = > p.status === 'in_progress')?.name  ?? vision.phases.find(p => p.status === 'pending')?.name  ?? 'All phases complete'; // LINT: unreachable code removed'
           );
         );
       );
     }),
-    React.createElement(Box, marginTop = (): unknown => {
+    React.createElement(Box, marginTop = () => {
   const [_swarmData, setSwarmData] = useState(null);
   const [_systemMetrics, setSystemMetrics] = useState(null);
   const [loading, _setLoading] = useState(true);
@@ -60,37 +60,37 @@ const __VisionDashboard = (): unknown => {
         setSwarmData(swarm);
         setSystemMetrics(metrics);
       } catch (/* _error */) {
-        console.error('Failed to update swarmdata = setInterval(updateData, 2000);
-    return () => clearInterval(interval);
+        console.error('Failed to update swarmdata = setInterval(updateData, 2000);'
+    // return () => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
   if(loading) {
-    return React.createElement(Box, {justifyContent = (): unknown => {
+    return React.createElement(Box, {justifyContent = () => {
     switch(status) {
-      case 'active': return 'green';
-    // case 'idle': return 'yellow'; // LINT: unreachable code removed
-      case 'error': return 'red';default = (): unknown => {
+      case 'active': return 'green';'
+    // case 'idle': return 'yellow'; // LINT: unreachable code removed'
+      case 'error': return 'red';default = () => {'
     switch (name.toLowerCase()) {
-      case 'architect': return '🏗️';
-    // case 'coder': return '💻'; // LINT: unreachable code removed
-      case 'tester': return '🧪';
-    // case 'analyst': return '📊'; // LINT: unreachable code removed
-      case 'researcher': return '🔍';default = >;
+      case 'architect': return '�';'
+    // case 'coder': return '�'; // LINT: unreachable code removed'
+      case 'tester': return '🧪';'
+    // case 'analyst': return '�'; // LINT: unreachable code removed'
+      case 'researcher': return '�';default = >;'
             React.createElement(Box, {key = === 0 ? 0 },
               React.createElement(Box, null,
-                React.createElement(Text, null, `${getAgentIcon(agent.name)} `),
+                React.createElement(Text, null, `${getAgentIcon(agent.name)} `),`
                 React.createElement(Text, {color = [
-  {id = (): unknown => {
-  const [activeTab, setActiveTab] = useState('visions');
+  {id = () => {
+  const [activeTab, setActiveTab] = useState('visions');'
   const [_startTime] = useState(new Date());
 
   useInput((input, key) => {
-    if(key.ctrl && input === 'c') {
+    if(key.ctrl && input === 'c') {'
       process.exit(0);
     //     }
 
 
-    if(input === 'q') {
+    if(input === 'q') {'
       process.exit(0);
     //     }
 
@@ -108,7 +108,7 @@ const __VisionDashboard = (): unknown => {
       let nextIndex;
 
       if(key.leftArrow) {
-        nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < TABS.length - 1 ? currentIndex + 1 : 0;
+        nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < TABS.length - 1 ? currentIndex + 1 ;
       //       }
 
 
@@ -120,16 +120,18 @@ const __VisionDashboard = (): unknown => {
 
     const _minutes = Math.floor(diff / 60000);
     const _seconds = Math.floor((diff % 60000) / 1000);
-    return `${minutes}m ${seconds}s`;
+    return `${minutes}m ${seconds}s`;`
     //   // LINT: unreachable code removed};
 
-  return React.createElement(Box, { flexDirection => {
+  // return React.createElement(Box, { flexDirection => {
 
     // return React.createElement(Box, { key => { // LINT);
   process.exit(0);
 });
 
-process.on('SIGTERM', () => {
-  console.warn('\n👋 Claude-Zen dashboard shutting down...');
+process.on('SIGTERM', () => {'
+  console.warn('\n� Claude-Zen dashboard shutting down...');'
   process.exit(0);
 });
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}})))))

@@ -5,35 +5,35 @@
  */
 
 import { createDatabase } from './sqlite-wrapper';
-// interface PoolConnection {id = > void
-reject = > void
-timeout = []
-private;
-available = []
-private;
-waiting = []
-private;
-activeConnections = 0
-private;
-isShuttingDown = false
-private;
-healthCheckTimer?: NodeJS.Timeout;
-private;
-cleanupTimer?: NodeJS.Timeout;
-private;
-startTime = Date.now();
-// Metrics
-private;
-totalQueries = 0;
-private;
-totalErrors = 0;
-private;
-totalWaitTime = 0;
-private;
-totalQueryTime = 0;
-private;
-queryCount = 0;
-constructor(dbPath, (options = {}));
+// // interface PoolConnection {id = > void
+// reject = > void
+// timeout = []
+// private;
+// available = []
+// private;
+// waiting = []
+// private;
+// activeConnections = 0
+// private;
+// isShuttingDown = false
+// private;
+// healthCheckTimer?: NodeJS.Timeout;
+// private;
+// cleanupTimer?: NodeJS.Timeout;
+// private;
+// startTime = Date.now();
+// // Metrics
+// private;
+// totalQueries = 0;
+// private;
+// totalErrors = 0;
+// private;
+// totalWaitTime = 0;
+// private;
+// totalQueryTime = 0;
+// private;
+// queryCount = 0;
+// constructor(dbPath, (options = {}));
 // {
   this.dbPath = dbPath;
   this.options = {minConnections = = false,enableHealthChecks = = false;
@@ -43,11 +43,11 @@ constructor(dbPath, (options = {}));
  * Initialize the connection pool;
  */
 // async
-initialize()
+initialize() {}
 : Promise<void>
 // {
-  console.warn(`🏊 Initializing SQLite connectionpool = 0; i < this.options.minConnections; i++) {
-// await this._createConnection();
+  console.warn(`� Initializing SQLite connectionpool = 0; i < this.options.minConnections; i++) {`
+// // await this._createConnection();
       //       }
 
 
@@ -60,7 +60,7 @@ initialize()
       // Start cleanup timer
       this.startCleanupInterval();
 
-      console.warn(`✅ Connection poolinitialized = this.options.maxConnections);
+      console.warn(`✅ Connection poolinitialized = this.options.maxConnections);`
   throw new Error('Maximum connection limit reached');
 
   try {
@@ -77,7 +77,7 @@ initialize()
       const _connection = {id = 'medium'): Promise<PoolConnection> {
     const _requestStart = Date.now();
 
-    return new Promise(async (resolve, reject) => {
+    // return new Promise(async (resolve, reject) => {
       if (this.isShuttingDown) {
         reject(new Error('Connection pool is shutting down'));
     // return; // LINT: unreachable code removed
@@ -105,7 +105,7 @@ initialize()
         try {
 // const _connection = awaitthis._createConnection();
           connection.inUse = true;
-          this.available.pop(); // Remove from available since we're using it
+          this.available.pop(); // Remove from available since we're using it'
 
           // Update metrics
           if (this.options.enableMetrics) {
@@ -183,7 +183,7 @@ initialize()
     // Replace unhealthy connection
     this._closeConnection(connection);
     this._createConnection().catch(_error => {
-        console.error(`Failed to replace unhealthyconnection = [],
+        console.error(`Failed to replace unhealthyconnection = [],`
     options = {}
   ): Promise<any> {
     const _queryStart = Date.now();
@@ -192,13 +192,13 @@ initialize()
 
     while (retries >= 0) {
       try {
-        connection = await this.acquire(options.priority);
+        connection = // await this.acquire(options.priority);
 
         const _stmt = connection.db.prepare(query);
 
         // Apply timeout if specified
         if (options.timeout) {
-          // SQLite doesn't support query timeout directly
+          // SQLite doesn't support query timeout directly'
           // This would need to be implemented with a Promise.race pattern
         //         }
 
@@ -223,7 +223,7 @@ initialize()
         //         }
 
 
-        return result;
+        // return result;
     // ; // LINT: unreachable code removed
       } catch (error = false;
         //         }
@@ -243,7 +243,7 @@ initialize()
         retries--;
 
         // Wait before retry with exponential backoff
-// await this.sleep(Math.pow(2, this.options.retryAttempts - retries) * 100);
+// // await this.sleep(Math.pow(2, this.options.retryAttempts - retries) * 100);
       } finally {
         if (connection) {
           this.release(connection);
@@ -274,7 +274,7 @@ initialize()
             results.push(stmt.run(...params));
           //           }
         //         }
-        return results;
+        // return results;
     //   // LINT: unreachable code removed});
 
       const _results = transaction();
@@ -287,7 +287,7 @@ initialize()
       //       }
 
 
-      return results;
+      // return results;
     // ; // LINT: unreachable code removed
     } catch (error = false;
 
@@ -322,14 +322,14 @@ initialize()
           if (failFast) {
             throw error;
           //           }
-          return error;
+          // return error;
     //   // LINT: unreachable code removed}
       });
 
       if (failFast) {
-        return await Promise.all(promises);
+        // return // await Promise.all(promises);
     //   // LINT: unreachable code removed} else {
-        return await Promise.allSettled(promises).then(results =>;
+        // return // await Promise.allSettled(promises).then(results =>;
     // results.map(result => ; // LINT);
       const _results = [];
 
@@ -353,7 +353,7 @@ initialize()
         //         }
 
 
-        return results;
+        // return results;
     // ; // LINT);
       //       }
     //     }
@@ -366,12 +366,12 @@ initialize()
   getStats() {
     const _now = Date.now();
 
-    return {totalConnections = > c.inUse).length,availableConnections = > ;
+    // return {totalConnections = > c.inUse).length,availableConnections = > ;
     // !c.inUse && (now - c.lastUsed) > 60000; // LINT: unreachable code removed
       ).length,oldestConnection = > now - c.createdAt));
         ,totalQueries = Date.now();
 
-    return this.connections.map(conn => ({id = Date.now();
+    // return this.connections.map(conn => ({id = Date.now();
     // const _connectionsToClose = []; // LINT: unreachable code removed
 
     // Find idle connections to close
@@ -393,13 +393,13 @@ initialize()
     // Create new connections if below minimum
     while (this.connections.length < this.options.minConnections) {
       try {
-// await this._createConnection();
+// // await this._createConnection();
       } catch (error) {
-        console.error(`Failed to create minimumconnection = Date.now();
+        console.error(`Failed to create minimumconnection = Date.now();`
 
     // Check if connection exceeded max lifetime
     if ((now - connection.createdAt) > this.options.maxLifetime) {
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
     // Check error rate
@@ -410,11 +410,11 @@ initialize()
       const _isHealthy = result && result.health_check === 1;
       connection.isHealthy = isHealthy;
 
-      return isHealthy;
+      // return isHealthy;
     //   // LINT: unreachable code removed} catch (error) {
-      console.warn(`Health check failed for connection ${connection.id});
+      console.warn(`Health check failed for connection ${connection.id});`
     connection.isHealthy = false;
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 // }
 
@@ -424,7 +424,7 @@ initialize()
  */;
 private;
 startHealthChecks();
-: void;
+
   this.healthCheckTimer = setInterval(async () => {
       const _unhealthyConnections = [];
 
@@ -440,7 +440,7 @@ startHealthChecks();
 
       // Replace unhealthy connections
       for (const _connection of unhealthyConnections) {
-        console.warn(`⚠️ Replacing unhealthyconnection = this.connections.indexOf(connection);
+        console.warn(`⚠ Replacing unhealthyconnection = this.connections.indexOf(connection);`
     if (connIndex > -1) {
       this.connections.splice(connIndex, 1);
     //     }
@@ -455,7 +455,7 @@ startHealthChecks();
     // Close the database connection
     try {
       connection.db.close();
-      console.warn(`➖ Closedconnection = true;
+      console.warn(`➖ Closedconnection = true;`
 
     // Stop timers
     if (this.healthCheckTimer) {
@@ -476,7 +476,7 @@ startHealthChecks();
 
     while (this.connections.some(c => c.inUse) && ;
            (Date.now() - startTime) < shutdownTimeout)
-// await this.sleep(100);
+// // await this.sleep(100);
     // Force close all connections
     for (const connection of this.connections) {
       this._closeConnection(connection);
@@ -494,16 +494,16 @@ startHealthChecks();
   /**
    * Helper method to run periodic cleanup;
    */;
-  startCleanupInterval(intervalMs = 60000): void ;
+  startCleanupInterval(intervalMs = 60000) ;
     this.cleanupTimer = setInterval(() => ;
       this.cleanup().catch(_error => ;
-        console.warn('Connection pool cleanuperror = undefined;
+        console.warn('Connection pool cleanuperror = undefined;'
 
   /**
    * Utility method for sleeping;
    */;
-  private sleep(ms): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  // private sleep(ms): Promise<void> {
+    // return new Promise(resolve => setTimeout(resolve, ms));
     // ; // LINT: unreachable code removed
   /**
    * Get pool health status;
@@ -541,7 +541,7 @@ startHealthChecks();
     //     }
 
 
-    return { status,metrics = false; // Will be replaced when released
+    // return { status,metrics = false; // Will be replaced when released
       //       }
     //     }
 
@@ -549,9 +549,9 @@ startHealthChecks();
   // Create new connections to maintain minimum
   while (this.connections.length < this.options.minConnections) {
     try {
-// await this._createConnection();
+// // await this._createConnection();
     } catch (error) {
-      console.error(`Failed to create replacement connection);
+      console.error(`Failed to create replacement connection);`
       break;
     //     }
   //   }
@@ -561,4 +561,6 @@ startHealthChecks();
 // }
 
 
-export default SQLiteConnectionPool;
+// export default SQLiteConnectionPool;
+
+}}}}}}}}}}))))))))))

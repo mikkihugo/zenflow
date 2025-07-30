@@ -21,7 +21,7 @@ class RemainingTypeScriptErrorFixer {
     this.errors = [];
 // }
   async fixAllErrors() { // eslint-disable-line
-    console.warn('🔧 Starting remaining TypeScript error fixes...');
+    console.warn('� Starting remaining TypeScript error fixes...');
     // Find all TypeScript files in src directory
 // const _tsFiles = awaitglob('src/**/*.ts', {
       cwd),
@@ -29,18 +29,18 @@ class RemainingTypeScriptErrorFixer {
   //   )
   console;
 
-  warn(`📁 _Found _${tsFiles.length} _TypeScript _files _to _process`)
+  warn(`� _Found _${tsFiles.length} _TypeScript _files _to _process`)
   for (const filePath _of _tsFiles) {
       try {
-// await this.fixFile(filePath);
+// // await this.fixFile(filePath);
       } catch (error) {
         this.errors.push({ file, error);
-        console.error(`❌ Error processing ${filePath});
+        console.error(`❌ Error processing ${filePath});`
 // }
 // }
   this;
 
-  printSummary()
+  printSummary() {}
 // }
 async;
 fixFile(filePath);
@@ -60,9 +60,9 @@ fixFile(filePath);
           if (objMatch) {
             const _firstProperty = objMatch[1];
             // Reconstruct  object literal
-            return `${propName} = {\n      ${firstProperty}: ${typeValue.trim()},${objectLiteral.substring(objMatch.index + firstProperty.length + 1)}`;
+            // return `${propName} = {\n      ${firstProperty}: ${typeValue.trim()},${objectLiteral.substring(objMatch.index + firstProperty.length + 1)}`;
     //   // LINT: unreachable code removed}
-          return `${propName} = ${objectLiteral}`;
+          // return `${propName} = ${objectLiteral}`;
     //   // LINT: unreachable code removed}
       );
       hasChanges = true;
@@ -146,20 +146,22 @@ fixFile(filePath);
       console.warn(`✅ Fixed remaining errors in ${path.basename(filePath)}`);
 // }
 // }
-  printSummary()
-    console.warn('\n📊 Remaining TypeScript Error Fix Summary);
-    console.warn(`✅ Files processed);
-    console.warn(`🔧 Error patterns fixed);
+  printSummary() {}
+    console.warn('\n� Remaining TypeScript Error Fix Summary);'
+    console.warn(`✅ Files processed);`
+    console.warn(`� Error patterns fixed);`
 
     if (this.errors.length > 0) {
-      console.warn(`❌ Files with errors);
+      console.warn(`❌ Files with errors);`
       this.errors.forEach(({ file, error }) => {
         console.warn(`   - ${path.basename(file)}: ${error}`);
       });
 // }
-    console.warn('\n🎉 Remaining TypeScript error fixing complete!');
-    console.warn('Next step);
+    console.warn('\n� Remaining TypeScript error fixing complete!');
+    console.warn('Next step);'
 // }
 // Run the fixer
 const _fixer = new RemainingTypeScriptErrorFixer();
 fixer.fixAllErrors().catch(console.error);
+
+}}}

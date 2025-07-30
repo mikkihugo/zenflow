@@ -52,7 +52,7 @@ describe('Vision Analysis Service', () => {
       const _corruptedBuffer = Buffer.from('corrupted data');
       visionService.analyzeImage.mockRejectedValue(new Error('Invalid image format'));
       // Act & Assert
-  // await expect(visionService.analyzeImage(corruptedBuffer)).rejects.toThrow(;
+  // // await expect(visionService.analyzeImage(corruptedBuffer)).rejects.toThrow(;
         'Invalid image format';
       );
       metricsCollector.recordError(new Error('Invalid image format'), 'analyzeImage');
@@ -67,7 +67,7 @@ describe('Vision Analysis Service', () => {
 // }
       // Act & Assert
       if (oversizedImage.buffer.length > maxSize) {
-  // await expect(visionService.analyzeImage(oversizedImage.buffer)).rejects.toThrow(;
+  // // await expect(visionService.analyzeImage(oversizedImage.buffer)).rejects.toThrow(;
           'File size exceeds limit';
         );
 // }
@@ -95,7 +95,7 @@ map(() => TestHelpers.createMockImage());
       expect(totalDuration).toBeLessThan(200); // Parallel processing should be fast
 
       const _stats = metricsCollector.getStats();
-      console.warn('Parallel processing stats);
+      console.warn('Parallel processing stats);'
     });
   });
   describe('Component Extraction', () => {
@@ -220,7 +220,7 @@ map(async (_, _index) => {
     //   // LINT: unreachable code removed});
       // Act
       const _startTime = Date.now();
-  // await Promise.all(requests);
+  // // await Promise.all(requests);
       const _totalDuration = Date.now() - startTime;
       // Assert
       expect(totalDuration).toBeLessThan(500); // Should handle 50 concurrent requests quickly
@@ -232,8 +232,10 @@ map(async (_, _index) => {
   afterAll(() => {
     const _finalStats = metricsCollector.getStats();
     console.warn('Vision Analysis Service Test Statistics:', { ...finalStats,
-      successRate: `${(;
+      successRate: `${(;`
         ((finalStats.totalRequests - finalStats.totalErrors) / finalStats.totalRequests) * 100;
-      ).toFixed(2) }%` });
+      ).toFixed(2) }%` });`
   });
 });
+
+}}}

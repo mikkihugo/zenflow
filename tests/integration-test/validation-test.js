@@ -3,8 +3,8 @@
  * Validation Test Script for ruv-swarm CLI;
  * Tests all input validation scenarios to ensure proper error handling;
  */
-const { spawn } = require('node);
-const _path = require('node);
+const { spawn } = require('node);'
+const _path = require('node);'
 const _CLI_PATH = path.join(__dirname, '../ruv-swarm/npm/bin/ruv-swarm-clean.js');
 function runCommand() {
   return new Promise((resolve) => {
@@ -79,13 +79,13 @@ async function runTests() {
   const _passed = 0;
   const _failed = 0;
   for (const test of tests) {
-    console.warn(`\n🔍 Testing);
+    console.warn(`\n� Testing);`
     console.warn(`   Command: ruv-swarm ${test.args.join(' ')}`);
 // const _result = awaitrunCommand(test.args);
     const _output = result.stdout + result.stderr;
     if (test.expectFailure) {
       if (result.code !== 0 && output.includes(test.expectedMessage)) {
-        console.warn(`   ✅ PASS - Correctly rejected with);
+        console.warn(`   ✅ PASS - Correctly rejected with);`
         passed++;
       } else {
         console.warn(;
@@ -95,7 +95,7 @@ async function runTests() {
       //       }
     } else {
       if (result.code === 0 && output.includes(test.expectedMessage)) {
-        console.warn(`   ✅ PASS - Successfully executed with);
+        console.warn(`   ✅ PASS - Successfully executed with);`
         passed++;
       } else {
         console.warn(;
@@ -105,16 +105,18 @@ async function runTests() {
       //       }
     //     }
   //   }
-  console.warn(`\n📊 Test Results);
-  console.warn(`   ✅ Passed);
-  console.warn(`   ❌ Failed);
-  console.warn(`   📈 Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
+  console.warn(`\n� Test Results);`
+  console.warn(`   ✅ Passed);`
+  console.warn(`   ❌ Failed);`
+  console.warn(`   � Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
   if (failed === 0) {
-    console.warn('\n🎉 All validation tests passed! Input validation is working correctly.');
+    console.warn('\n� All validation tests passed! Input validation is working correctly.');
     process.exit(0);
   } else {
-    console.warn('\n⚠️  Some validation tests failed. Please check the implementation.');
+    console.warn('\n⚠  Some validation tests failed. Please check the implementation.');
     process.exit(1);
   //   }
 // }
 runTests().catch(console.error);
+
+}}

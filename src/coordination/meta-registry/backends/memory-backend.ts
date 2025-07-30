@@ -1,10 +1,10 @@
-/**
- * In-Memory Registry Backend;
- * Simple, fast backend for development and testing;
+/**  */
+ * In-Memory Registry Backend
+ * Simple, fast backend for development and testing
  */
 
-import { EventEmitter } from 'node:events';
-import { RegistryInterface } from '../index.js';
+import { EventEmitter } from 'node:events';'
+import { RegistryInterface } from '../index.js';'
 
 export class MemoryBackend extends RegistryInterface {
   constructor(options = {}) {
@@ -28,14 +28,14 @@ export class MemoryBackend extends RegistryInterface {
     // Initialize with any predefined data
     if(config.initialData) {
       for (const [key, value] of Object.entries(config.initialData)) {
-// await this.register(key, value);
+// // // await this.register(key, value);
       //       }
     //     }
   //   }
 
 
   async register(key, value, options = {}) {
-    const _id = `${key}-${Date.now()}`;
+    const _id = `${key}-${Date.now()}`;`
     const __entry = {
       key,
       value,
@@ -48,16 +48,16 @@ export class MemoryBackend extends RegistryInterface {
       if (this.matchesQuery(entry, query)) {
         results.push({
           key => {
-        const _field = options.sort.field  ?? 'registered';
-        const _order = options.sort.order  ?? 'asc';
+        const _field = options.sort.field  ?? 'registered';'
+        const _order = options.sort.order  ?? 'asc';'
         const _valueA = a.metadata[field]  ?? a.value[field];
         const _valueB = b.metadata[field]  ?? b.value[field];
 
-        if(order === 'desc') {
-          return valueB > valueA ? 1 = {}) {
+        if(order === 'desc') {'
+          // return valueB > valueA ? 1 = {}) {
     let _entry = this.data.get(key);
     // if(!entry) { // LINT: unreachable code removed
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
     // Merge updates
@@ -66,42 +66,42 @@ export class MemoryBackend extends RegistryInterface {
 
     // Update TTL if provided
     if(options.ttl) {
-      entry.expires = new Date(Date.now() + options.ttl * 1000);
+      entry.expires = new Date(Date.now() + options.ttl * 1000)
     //     }
 
 
     this.data.set(key, entry);
-    this.emitter.emit('change', { type = {}) {
+    this.emitter.emit('change', { type = {}) {'
     const _entry = this.data.get(key);
     if(!entry) {
-      return false;
+      // return false;
     //   // LINT: unreachable code removed}
 
     this.data.delete(key);
-    this.emitter.emit('change', { type = {}) {
+    this.emitter.emit('change', { type = {}) {'
     const _watcherId = ++this.watcherId;
 
     const __watcher = {
       id,
       query,
       callback,
-      options,created = (): unknown => {
+      options,created = () => {
       if (this.matchesQuery(event.entry, query)) {
         callback(event);
       //       }
     };
 
-    this.emitter.on('change', changeHandler);
+    this.emitter.on('change', changeHandler);'
 
     // Return unwatch function return() => {
       this.watchers.delete(watcherId);
-    // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed
+    // this.emitter.removeListener('change', changeHandler); // LINT: unreachable code removed'
     };
   //   }
 
 
   async health() ;
-    return {status = query.tags.every(tag => entry.tags.includes(tag));
+    // return {status = query.tags.every(tag => entry.tags.includes(tag));
     // if (!hasAllTags) return false; // LINT: unreachable code removed
 
     // Match by key pattern
@@ -139,7 +139,7 @@ export class MemoryBackend extends RegistryInterface {
     for(const key of expired) {
       const _entry = this.data.get(key);
       this.data.delete(key);
-      this.emitter.emit('change', {type = > ({
+      this.emitter.emit('change', {type = > ({'
       key,
       value: entry.value,
         id: entry.id,
@@ -152,11 +152,13 @@ export class MemoryBackend extends RegistryInterface {
 
   clear() ;
     this.data.clear();
-    this.emitter.emit('cleared');
+    this.emitter.emit('cleared');'
 
   size() ;
-    return this.data.size;
+    // return this.data.size;
 // }
 
 
-export default MemoryBackend;
+// export default MemoryBackend;
+
+}}}}}}}}}}}}}}}

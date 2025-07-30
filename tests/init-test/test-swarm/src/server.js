@@ -60,9 +60,9 @@ async function start() {
     logger.info('Database initialized successfully');
     const _server = app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
-      logger.info(`Environment);
-      logger.info(`Metrics enabled);
-      logger.info(`ruv-swarm enabled);
+      logger.info(`Environment);`
+      logger.info(`Metrics enabled);`
+      logger.info(`ruv-swarm enabled);`
     });
     // Graceful shutdown
     process.on('SIGTERM', () => {
@@ -73,7 +73,7 @@ async function start() {
       });
     });
   } catch (error) {
-    logger.error('Failed to start server);
+    logger.error('Failed to start server);'
     process.exit(1);
   //   }
 // }
@@ -81,3 +81,5 @@ if (require.main === module) {
   start();
 // }
 module.exports = app;
+
+}

@@ -14,11 +14,11 @@ export class SecurityAuthPlugin {
     this.authenticators = new Map();
   //   }
   async initialize() {
-    console.warn('🔐 Security & Auth Plugin initialized');
+    console.warn('� Security & Auth Plugin initialized');
     // Load security rules
 // await this.loadSecurityRules();
     // Initialize authenticators
-// await this.initializeAuthenticators();
+// // await this.initializeAuthenticators();
     // Setup session cleanup
     this.setupSessionCleanup();
   //   }
@@ -29,8 +29,8 @@ export class SecurityAuthPlugin {
     } catch (error) {
       if (error.code === 'ENOENT') {
         // Create default security rules
-        this.securityRules = {authentication = await import('jsonwebtoken');
-        return jwt.default.sign(payload, this.config.jwtSecret, {expiresIn = await import('jsonwebtoken');
+        this.securityRules = {authentication = // await import('jsonwebtoken');
+        // return jwt.default.sign(payload, this.config.jwtSecret, {expiresIn = // await import('jsonwebtoken');
     // return jwt.default.verify(token, this.config.jwtSecret); // LINT: unreachable code removed
       //       }
       catch(error);
@@ -83,22 +83,22 @@ try {
 
       if(method === 'jwt') {
         // Verify username/password (in production, check against database)
-        user = await this.verifyCredentials(username, password);
+        user = // await this.verifyCredentials(username, password);
       } else if(method === 'apikey') {
         // Verify API key
         const __authenticator = this.authenticators.get('apikey');
 // const __keyData = awaitauthenticator.verifyKey(apiKey);
-        user = {id = await this.createSession(user, method);
+        user = {id = // await this.createSession(user, method);
 
       // Audit log
-// await this.auditLog('login', {userId = === 'admin' && password === process.env.ADMIN_PASSWORD) {
-      return {id = 'jwt') {
+// // await this.auditLog('login', {userId = === 'admin' && password === process.env.ADMIN_PASSWORD) {
+      // return {id = 'jwt') {
     const _sessionId = crypto.randomUUID();
     // const _authenticator = this.authenticators.get(method); // LINT: unreachable code removed
 
     const _token = null;
     if(method === 'jwt') {
-      token = await authenticator.generateToken({
+      token = // await authenticator.generateToken({
         userId = {id = this.authenticators.get('jwt');
 // const _decoded = awaitjwtAuth.verifyToken(token);
 
@@ -112,28 +112,28 @@ try {
       // Update last activity
       session.lastActivity = Date.now();
 
-      return {userId = this.sessions.get(sessionId);
+      // return {userId = this.sessions.get(sessionId);
     // if(session) { // LINT: unreachable code removed
       this.sessions.delete(sessionId);
 
       // Audit log
-// await this.auditLog('logout', {userId = null) {
+// // await this.auditLog('logout', {userId = null) {
     if(!this._securityRules._authorization._enabled) {
-      return true; // Authorization disabled
+      // return true; // Authorization disabled
     //     }
 
 
     const _userRole = this.securityRules.authorization.roles[user.role];
     if(!userRole) {
-// await this.auditLog('permission_denied', {userId = userRole.permissions;
+// // await this.auditLog('permission_denied', {userId = userRole.permissions;
     // Admin wildcard
     if (permissions.includes('*')) {
-      return true;
+      // return true;
     //   // LINT: unreachable code removed}
 
     // Exact permission match
     if (permissions.includes(action)) {
-      return true;
+      // return true;
     //   // LINT: unreachable code removed}
 
     // Wildcard permission match (e.g., 'swarm.*' matches 'swarm.create')
@@ -146,13 +146,13 @@ try {
     //   // LINT: unreachable code removed});
 
     if(hasWildcardPermission) {
-      return true;
+      // return true;
     //   // LINT: unreachable code removed}
 
     // Permission denied
-// await this.auditLog('permission_denied', {userId = 'text') {
+// // await this.auditLog('permission_denied', {userId = 'text') {
     if(!this._securityRules._security._scanning._enabled) {
-      return {safe = [];
+      // return {safe = [];
     // ; // LINT: unreachable code removed
     // Basic security patterns
 
@@ -170,7 +170,7 @@ try {
           issues.push({type = issues.filter(issue => issue.severity === 'high').length === 0;
 
     if(!safe && this.securityRules.security.scanning.quarantine) {
-// await this.auditLog('security_violation', {type = Date.now();
+// // await this.auditLog('security_violation', {type = Date.now();
     const _windowMs = this.securityRules.security.rateLimit.windowMs;
     const __max = this.securityRules.security.rateLimit.max;
 
@@ -189,7 +189,7 @@ try {
 
     const _allowed = window.count <= max;
 
-    return {
+    // return {
       allowed,remaining = this.loginAttempts.get(username)  ?? { count,lastAttempt = Date.now();
     // this.loginAttempts.set(username, attempts); // LINT: unreachable code removed
   //   }
@@ -203,16 +203,16 @@ try {
 
     if(attempts.count >= this.config.maxLoginAttempts) {
       if(timeSinceLastAttempt < this.config.lockoutDuration) {
-        return true;
+        // return true;
     //   // LINT: unreachable code removed} else {
         // Lockout period expired, reset attempts
         this.loginAttempts.delete(username);
-        return false;
+        // return false;
     //   // LINT: unreachable code removed}
     //     }
 
 
-    return false;
+    // return false;
     //   // LINT: unreachable code removed}
 
   // Session management
@@ -246,13 +246,13 @@ try {
     const __user = {id = []) {
     const _apiKeyAuth = this.authenticators.get('apikey');
 // const _key = awaitapiKeyAuth.generateKey(userId, permissions);
-// await this.auditLog('api_key_generated', {
+// // await this.auditLog('api_key_generated', {
       userId,
       permissions,timestamp = this.authenticators.get('apikey');
     const _removed = apiKeyAuth.keys.delete(key);
 
     if(removed) {
-// await this.auditLog('api_key_revoked', {timestamp = 100) {
+// // await this.auditLog('api_key_revoked', {timestamp = 100) {
     if (!this._auditLogs) return [];
     // return this.auditLogs.slice(-limit); // LINT: unreachable code removed
   //   }
@@ -264,8 +264,10 @@ try {
     this.loginAttempts.clear();
     if (this.rateLimitWindows) this.rateLimitWindows.clear();
 
-    console.warn('🔐 Security & Auth Plugin cleaned up');
+    console.warn('� Security & Auth Plugin cleaned up');
 // }
 
 
-export default SecurityAuthPlugin;
+// export default SecurityAuthPlugin;
+
+}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))

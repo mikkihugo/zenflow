@@ -16,7 +16,7 @@ try {
 // }
 export class ComplexityAnalyzer {
   constructor(_config = {}) {
-    this.config = {logicalLOC = {files = await this.analyzeFile(filePath);
+    this.config = {logicalLOC = {files = // await this.analyzeFile(filePath);
         if(fileResult) {
           results.files.push(fileResult);
           results.functions.push(...(fileResult.functions  ?? []));
@@ -24,12 +24,12 @@ export class ComplexityAnalyzer {
         //         }
       //       }
   catch (error) {
-    console.warn(`⚠️ Failed to analyze complexity for ${filePath});
+    console.warn(`⚠ Failed to analyze complexity for ${filePath});`
   //   }
 // }
 // Calculate overall metrics
 results.overall = this.calculateOverallMetrics(results);
-return results;
+// return results;
 // }
 /**
  * Analyze complexity for a single file;
@@ -41,9 +41,9 @@ analyzeFile(filePath)
 // const _content = awaitreadFile(filePath, 'utf8');
 
   if (escomplex) {
-    return await this.analyzeWithESComplex(filePath, content);
+    // return // await this.analyzeWithESComplex(filePath, content);
     //   // LINT: unreachable code removed} else {
-    return await this.analyzeWithFallback(filePath, content);
+    // return // await this.analyzeWithFallback(filePath, content);
     //   // LINT: unreachable code removed}
 // }
 
@@ -53,7 +53,7 @@ analyzeFile(filePath)
  */;
 async;
 analyzeWithESComplex(filePath, content);
-: unknown;
+
     try {
       const __analysis = escomplex.analyse(content, {
         logicalor = {id = content.split('\n');
@@ -92,7 +92,7 @@ analyzeWithESComplex(filePath, content);
     //     }
 
 
-    return complexity;
+    // return complexity;
     //   // LINT: unreachable code removed}
 
   /**
@@ -109,7 +109,7 @@ analyzeWithESComplex(filePath, content);
       if (!trimmed) continue;
 
       // Handle block comments
-      if (trimmed.includes('/*')) {
+      if (trimmed.includes('/*')) { */
         inBlockComment = true;
       //       }
       if (trimmed.includes('*/')) {
@@ -126,7 +126,7 @@ analyzeWithESComplex(filePath, content);
     //     }
 
 
-    return logicalLines;
+    // return logicalLines;
     //   // LINT: unreachable code removed}
 
   /**
@@ -141,13 +141,13 @@ analyzeWithESComplex(filePath, content);
     score -= Math.min(complexity * 2, 40); // Complexity penalty (max 40)
     score -= Math.min(logicalLOC / 10, 30); // Size penalty (max 30)
 
-    return Math.max(0, Math.round(score));
+    // return Math.max(0, Math.round(score));
     //   // LINT: unreachable code removed}
 
   /**
    * Calculate function-specific complexity;
    */;
-  calculateFunctionComplexity(content, funcStartIndex): unknown ;
+  calculateFunctionComplexity(content, funcStartIndex) ;
     // Extract function body(simplified = content.substring(funcStartIndex, funcStartIndex + 500); // Limited scope
     return this.calculateBasicComplexity(funcContent);
     // ; // LINT: unreachable code removed
@@ -176,7 +176,7 @@ analyzeWithESComplex(filePath, content);
       171 - 5.2 * Math.log(volume) - 0.23 * complexity - 16.2 * Math.log(loc);
     );
 
-    return Math.round(maintainability);
+    // return Math.round(maintainability);
     //   // LINT: unreachable code removed}
 
   /**
@@ -261,17 +261,19 @@ slice(0, 10);
   /**
    * Get recommendation based on complexity level;
    */;
-  getComplexityRecommendation(complexity): unknown ;
+  getComplexityRecommendation(complexity) ;
     if(complexity > 20) {
-      return 'Critical: Break down into smaller functions immediately';
+      // return 'Critical: Break down into smaller functions immediately';
     //   // LINT: unreachable code removed} else if(complexity > 10) {
       return 'High: Consider refactoring to reduce complexity';
     //   // LINT: unreachable code removed} else if(complexity > 5) {
       return 'Medium: Monitor and consider simplification';
     //   // LINT: unreachable code removed} else {
-      return 'Good: Complexity is within acceptable range';
+      // return 'Good: Complexity is within acceptable range';
     //   // LINT: unreachable code removed}
 // }
 
 
-export default ComplexityAnalyzer;
+// export default ComplexityAnalyzer;
+
+}}}}}}}}}}}))))))

@@ -1,6 +1,6 @@
-/**
- * Auto-save middleware for Hive Mind swarms;
- * Automatically saves session state during operations;
+/**  */
+ * Auto-save middleware for Hive Mind swarms
+ * Automatically saves session state during operations
  */
 export class AutoSaveMiddleware {
   constructor(sessionId = 30000) {
@@ -12,8 +12,8 @@ export class AutoSaveMiddleware {
     this.isActive = false;
     this.childProcesses = new Set();
   //   }
-  /**
-   * Start auto-save monitoring;
+  /**  */
+ * Start auto-save monitoring
    */
   start() {
     if (this.isActive) {
@@ -41,8 +41,8 @@ export class AutoSaveMiddleware {
         process.exit(0);
       });
     //     }
-    /**
-     * Stop auto-save monitoring;
+    /**  */
+ * Stop auto-save monitoring
      */
     stop();
     if (this.saveTimer) {
@@ -55,17 +55,17 @@ export class AutoSaveMiddleware {
       this.performAutoSave();
     //     }
     this.sessionManager.close();
-    /**
-     * Track a change for auto-save;
+    /**  */
+ * Track a change for auto-save
      */
     trackChange(changeType, _data);
     : unknown
     this.pendingChanges.push(
-      type = === 'task_completed'  ?? changeType === 'agent_spawned'  ?? changeType === 'consensus_reached';
+      //       type = === 'task_completed'  ?? changeType === 'agent_spawned'  ?? changeType === 'consensus_reached';
       //       )
       this.performAutoSave();
-      /**
-       * Track task progress;
+      /**  */
+ * Track task progress
        */
       trackTaskProgress(taskId, status, (result = null));
       : unknown
@@ -73,8 +73,8 @@ export class AutoSaveMiddleware {
         taskId,
         status,
         result)
-      /**
-       * Track agent activity;
+      /**  */
+ * Track agent activity
        */
       trackAgentActivity(agentId, activity, (data = null));
       : unknown
@@ -82,8 +82,8 @@ export class AutoSaveMiddleware {
       agentId,
         activity,
         data)
-    /**
-     * Track memory updates;
+    /**  */
+ * Track memory updates
      */
     trackMemoryUpdate(key, value, (type = 'general'));
     : unknown
@@ -91,16 +91,16 @@ export class AutoSaveMiddleware {
       key,
       value,
       type)
-  /**
-   * Track consensus decisions;
+  /**  */
+ * Track consensus decisions
    */
   trackConsensusDecision(topic, decision, votes): unknown
     this.trackChange('consensus_reached',
       topic,
     decision,
     votes)
-/**
- * Perform auto-save;
+/**  */
+ * Perform auto-save
  */
 async;
 performAutoSave();
@@ -123,14 +123,14 @@ performAutoSave();
       const _completedTasks = taskProgress.filter((t) => t.data.status === 'completed').length;
       const _totalTasks = taskProgress.length;
       const _completionPercentage =;
-        totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) 
 
       // Create checkpoint data
       const _checkpointData = {timestamp = `auto-save-${Date.now()}`;
-// await this.sessionManager.saveCheckpoint(this.sessionId, checkpointName, checkpointData);
+// // await this.sessionManager.saveCheckpoint(this.sessionId, checkpointName, checkpointData);
       // Update session progress
       if(completionPercentage > 0) {
-// await this.sessionManager.updateSessionProgress(this.sessionId, completionPercentage);
+// // await this.sessionManager.updateSessionProgress(this.sessionId, completionPercentage);
       //       }
 
 
@@ -139,9 +139,9 @@ performAutoSave();
         this.sessionManager.logSessionEvent(;
           this.sessionId,
           'info',
-          `Auto-save = [];
+          `Auto-save = [];`
     } catch (error) {
-      console.error('Auto-save failed => {
+      console.error('Auto-save failed => {'
         this.childProcesses.delete(childProcess);
         this.sessionManager.removeChildPid(this.sessionId, childProcess.pid);
       });
@@ -149,9 +149,9 @@ performAutoSave();
   //   }
 
 
-  /**
-   * Clean up all resources and child processes;
-   */;
+  /**  */
+ * Clean up all resources and child processes
+   */
   async cleanup() {
     try {
       // Stop the save timer
@@ -162,7 +162,7 @@ performAutoSave();
 
 
       // Perform final save
-// await this.performAutoSave();
+// // await this.performAutoSave();
       // Terminate all child processes
       for(const childProcess of this.childProcesses) {
         try {
@@ -171,7 +171,7 @@ performAutoSave();
             childProcess.kill('SIGTERM');
 
             // Give it a moment to terminate gracefully
-// await new Promise((resolve) => setTimeout(resolve, 100));
+// // await new Promise((resolve) => setTimeout(resolve, 100));
             // Force kill if still alive
             try {
               process.kill(childProcess.pid, 0); // Check if still alive
@@ -181,9 +181,9 @@ performAutoSave();
             //             }
           //           }
         } catch (error) {
-          console.error(`Failed to terminate childprocess = await this.sessionManager.getSession(this.sessionId);
+          console.error(`Failed to terminate childprocess = // await this.sessionManager.getSession(this.sessionId);`
       if (session && (session.status === 'active'  ?? session.status === 'paused')) {
-// await this.sessionManager.stopSession(this.sessionId);
+// // await this.sessionManager.stopSession(this.sessionId);
       //       }
 
 
@@ -192,7 +192,7 @@ performAutoSave();
 
       console.warn('Cleanup completed successfully');
     } catch (error) {
-      console.error('Error during cleanup = {}) {
+      console.error('Error during cleanup = {}) {'
   const _saveInterval = options.saveInterval  ?? 30000; // Default 30 seconds
   const _middleware = new AutoSaveMiddleware(sessionId, sessionManager, saveInterval);
 
@@ -201,9 +201,11 @@ performAutoSave();
   //   }
 
 
-  return middleware;
+  // return middleware;
 // }
 
 
 // Export for use in swarm operations
-export default AutoSaveMiddleware;
+// export default AutoSaveMiddleware;
+
+}}}}}}))

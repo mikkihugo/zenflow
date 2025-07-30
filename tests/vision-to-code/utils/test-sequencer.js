@@ -31,17 +31,17 @@ class VisionToCodeTestSequencer extends Sequencer {
     //   // LINT: unreachable code removed}
 // }
         // Unknown tests go last
-        return testOrder.length;
+        // return testOrder.length;
     //   // LINT: unreachable code removed};
       const _priorityA = getTestPriority(testA);
       const _priorityB = getTestPriority(testB);
       if (priorityA !== priorityB) {
-        return priorityA - priorityB;
+        // return priorityA - priorityB;
     //   // LINT: unreachable code removed}
       // If same priority, sort alphabetically
-      return testA.path.localeCompare(testB.path);
+      // return testA.path.localeCompare(testB.path);
     //   // LINT: unreachable code removed});
-    console.warn('📋 Test execution order);
+    console.warn('� Test execution order);'
     sortedTests.forEach((test, index) => {
       const _fileName = test.path.split('/').pop();
       console.warn(`${index + 1}. ${fileName}`);
@@ -50,5 +50,7 @@ class VisionToCodeTestSequencer extends Sequencer {
     //   // LINT: unreachable code removed}
   allFailedTests(tests)
     // Run failed tests first on retry
-    return tests.filter((test) => test.failureCount > 0);
+    // return tests.filter((test) => test.failureCount > 0);
 module.exports = VisionToCodeTestSequencer;
+
+}

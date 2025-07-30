@@ -3,15 +3,15 @@ import { describe, expect } from '@jest/globals';
 describe('Integration and End-to-End Test Coverage', () => {
   describe('File System Operations', () => {
     it('should handle basic file system patterns', async () => {
-// const _fs = awaitimport('node);
-// const _path = awaitimport('node);
-// const _os = awaitimport('node);
+// const _fs = awaitimport('node);'
+// const _path = awaitimport('node);'
+// const _os = awaitimport('node);'
 
       // Test creating and cleaning up temp directories
 // const _tempDir = awaitfs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-test-'));
       // Create a test file
       const _testFile = path.join(tempDir, 'test.txt');
-  // await fs.writeFile(testFile, 'test content');
+  // // await fs.writeFile(testFile, 'test content');
       // Read it back
 // const _content = awaitfs.readFile(testFile, 'utf8');
       expect(content).toBe('test content');
@@ -19,10 +19,10 @@ describe('Integration and End-to-End Test Coverage', () => {
 // const _stats = awaitfs.stat(testFile);
       expect(stats.isFile()).toBe(true);
       // Clean up
-  // await fs.rm(tempDir, { recursive, force });
+  // // await fs.rm(tempDir, { recursive, force });
     });
     it('should handle path operations', async () => {
-// const _path = awaitimport('node);
+// const _path = awaitimport('node);'
 
       const _testPath = '/path/to/test/file.txt';
       expect(path.dirname(testPath)).toBe('/path/to/test');
@@ -50,7 +50,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(process.env.CLAUDE_ZEN_TEST).toBeUndefined();
     });
     it('should handle OS information', async () => {
-// const _os = awaitimport('node);
+// const _os = awaitimport('node);'
 
       expect(typeof os.platform()).toBe('string');
       expect(typeof os.arch()).toBe('string');
@@ -62,7 +62,7 @@ describe('Integration and End-to-End Test Coverage', () => {
   });
   describe('Event System', () => {
     it('should handle EventEmitter functionality', async () => {
-      const { EventEmitter } = await import('node);
+      const { EventEmitter } = await import('node);'
 
       const _emitter = new EventEmitter();
       const _eventFired = false;
@@ -76,7 +76,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(eventData).toBe('test-data');
     });
     it('should handle once listeners', async () => {
-      const { EventEmitter } = await import('node);
+      const { EventEmitter } = await import('node);'
 
       const _emitter = new EventEmitter();
       const _callCount = 0;
@@ -91,9 +91,9 @@ describe('Integration and End-to-End Test Coverage', () => {
   });
   describe('URL and Crypto Utilities', () => {
     it('should handle URL parsing and validation', () => {
-      const _validUrl = new URL('https);
+      const _validUrl = new URL('https);'
 
-      expect(validUrl.protocol).toBe('https);
+      expect(validUrl.protocol).toBe('https);'
       expect(validUrl.hostname).toBe('example.com');
       expect(validUrl.port).toBe('8080');
       expect(validUrl.pathname).toBe('/path');
@@ -101,7 +101,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(validUrl.hash).toBe('#fragment');
     });
     it('should handle crypto operations', async () => {
-// const _crypto = awaitimport('node);
+// const _crypto = awaitimport('node);'
 
       // Test random bytes
       const _randomBytes = crypto.randomBytes(16);
@@ -126,7 +126,7 @@ describe('Integration and End-to-End Test Coverage', () => {
       expect(concatenated.length).toBe(21);
     });
     it('should handle stream patterns', async () => {
-      const { Readable, Writable } = await import('node);
+      const { Readable, Writable } = await import('node);'
 
       const _writtenData = '';
       const _readable = new Readable({
@@ -140,7 +140,7 @@ describe('Integration and End-to-End Test Coverage', () => {
           writtenData += chunk.toString();
           callback();
         } });
-  return new Promise((resolve) => {
+  // return new Promise((resolve) => {
     readable.pipe(writable);
     // writable.on('finish', () => { // LINT: unreachable code removed
     expect(writtenData).toBe('chunk1chunk2');
@@ -173,7 +173,7 @@ describe('JSON and Data Processing', () =>
             errors.push('Age must be a positive number');
           //           }
         //         }
-        return errors;
+        // return errors;
     //   // LINT: unreachable code removed};
       expect(validateData({ name: 'John', age })).toEqual([]);
       expect(validateData({ name)).toEqual([]);
@@ -201,7 +201,7 @@ describe('JSON and Data Processing', () =>
         //         }
         return 'success';
     //   // LINT: unreachable code removed};
-  // await expect(asyncErrorFunction(false)).resolves.toBe('success');
+  // // await expect(asyncErrorFunction(false)).resolves.toBe('success');
   // await expect(asyncErrorFunction(true)).rejects.toThrow('Async error');
     });
   });
@@ -232,7 +232,7 @@ describe('JSON and Data Processing', () =>
       expect(emailRegex.test('user@example.com')).toBe(true);
       expect(emailRegex.test('invalid-email')).toBe(false);
       const _urlRegex = /^https?:\/\/[^\s]+$/;
-      expect(urlRegex.test('https)).toBe(true);
+      expect(urlRegex.test('https)).toBe(true);'
       expect(urlRegex.test('not-a-url')).toBe(false);
     });
     it('should handle string manipulation', () => {
@@ -297,3 +297,5 @@ describe('JSON and Data Processing', () =>
     });
   });
 });
+
+}
