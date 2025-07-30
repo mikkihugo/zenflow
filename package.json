@@ -24,7 +24,7 @@
     "api": "npx tsx src/api/claude-zen-server.ts",
     "build": "npm run clean && npm run update-version && npm run build:ts && npm run build:binary",
     "build:ts": "echo 'TypeScript compilation skipped - using tsx for runtime'",
-    "update-version": "npx tsx scripts/update-bin-version.ts",
+    "update-version": "npx tsx scripts/update-bin-version.js",
     "clean": "rm -rf dist",
     "build:js": "npm run build:ts",
     "build:binary": "echo 'TypeScript compilation complete'",

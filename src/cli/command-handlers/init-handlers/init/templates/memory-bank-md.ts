@@ -1,40 +1,40 @@
-/**
- * Memory Bank Md Module;
- * Converted from JavaScript to TypeScript;
- */
+
+/** Memory Bank Md Module
+/** Converted from JavaScript to TypeScript
+
 // memory-bank-md.js - Memory Bank templates
 
-export function createMinimalMemoryBankMd(): unknown {
-  return `# Memory Bank
-;
+export function createMinimalMemoryBankMd() {
+  return `# Memory Bank`
+
     // ## Quick Reference; // LINT: unreachable code removed
 - Project uses SQLite for memory persistence;
 - Memory is organized by namespaces;
 - Query with \`npx claude-zen memory query <search>\`
-;
+
 ## Storage Location;
 - Database: \`./memory/claude-zen-data.json\`;
 - Sessions: \`./memory/sessions/\`;
-`;
-}
-export function createFullMemoryBankMd(): unknown {
-  return `# Memory Bank Configuration
-;
+`;`
+// }
+export function createFullMemoryBankMd() {
+  return `# Memory Bank Configuration`
+
     // ## Overview; // LINT: unreachable code removed
 The Claude-Flow memory system provides persistent storage and intelligent retrieval of information across agent sessions. It uses a hybrid approach combining SQL databases with semantic search capabilities.
-;
+
 ## Storage Backends;
-- **Primary**: Kuzu graph database (\`./memory/graphs/\`) with relationship modeling  ;
-- **Vector Store**: LanceDB (\`./memory/vectors/\`) for semantic search;
-- **Sessions**: SQLite database (\`./memory/structured.db\`) for fast queries;
+- **Primary**: Kuzu graph database(\`./memory/graphs/\`) with relationship modeling  
+- **Vector Store**: LanceDB(\`./memory/vectors/\`) for semantic search
+- **Sessions**: SQLite database(\`./memory/structured.db\`) for fast queries
 - **Cache**: In-memory cache for frequently accessed data
-;
+
 ## Memory Organization;
-- **Namespaces**: Logical groupings of related information;
-- **Sessions**: Time-bound conversation contexts;
-- **Indexing**: Automatic content indexing for fast retrieval;
+- **Namespaces**: Logical groupings of related information
+- **Sessions**: Time-bound conversation contexts
+- **Indexing**: Automatic content indexing for fast retrieval
 - **Replication**: Optional distributed storage support
-;
+
 ## Commands;
 - \`npx claude-zen memory query <search>\`: Search stored information;
 - \`npx claude-zen memory stats\`: Show memory usage statistics;
@@ -42,75 +42,75 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 - \`npx claude-zen memory import <file>\`: Import memory from file
 
 ## Configuration;
-Memory settings are configured in \`claude-zen.config.json\`:;
-\`\`\`json;
-{
+Memory settings are configured in \`claude-zen.config.json\`:
+\`\`\`json;`
+// {
   "memory": {
     "backend": "kuzu", // Graph database for relationships
-    "path": "./memory/claude-zen-data.json",;
-    "cacheSize": 1000,;
-    "indexing": true,;
-    "namespaces": ["default", "agents", "tasks", "sessions"],;
+    "path": "./memory/claude-zen-data.json",
+    "cacheSize",
+    "indexing",
+    "namespaces": ["default", "agents", "tasks", "sessions"],
     "retentionPolicy": {
-      "sessions": "30d",;
-      "tasks": "90d",;
+      "sessions": "30d",
+      "tasks": "90d",
       "agents": "permanent";
-    }
-  }
-}
+    //     }
+  //   }
+// }
 \`\`\`
-;
+
 ## Best Practices;
 - Use descriptive namespaces for different data types;
 - Regular memory exports for backup purposes
 - Monitor memory usage with stats command;
 - Clean up old sessions periodically
-;
+
 ## Memory Types;
-- **Episodic**: Conversation and interaction history;
-- **Semantic**: Factual knowledge and relationships;
-- **Procedural**: Task patterns and workflows;
+- **Episodic**: Conversation and interaction history
+- **Semantic**: Factual knowledge and relationships
+- **Procedural**: Task patterns and workflows
 - **Meta**: System configuration and preferences
-;
+
 ## Integration Notes;
 - Memory is automatically synchronized across agents;
 - Search supports both exact match and semantic similarity;
-- Memory contents are private to your local instance;
+- Memory contents are // private to your local instance;
 - No data is sent to external services without explicit commands;
-`;
-}
+`;`
+// }
 // Create optimized Memory Bank with batchtools support
-export async function createOptimizedMemoryBankMd(): unknown {
-  return `# Memory Bank Configuration (Batchtools Optimized)
-;
+// export async function createOptimizedMemoryBankMd() {
+  return `# Memory Bank Configuration(Batchtools Optimized)`
+
     // ## Overview; // LINT: unreachable code removed
 The Claude-Flow memory system provides persistent storage and intelligent retrieval of information across agent sessions. It uses a hybrid approach combining SQL databases with semantic search capabilities.
-;
-**🚀 Batchtools Enhancement**: This configuration includes parallel processing capabilities for memory operations, batch storage, and concurrent retrieval optimizations.
-;
-## Storage Backends (Enhanced);
-- **Primary**: Hybrid backend (LanceDB + Kuzu + SQLite) with parallel access;
-- **Sessions**: File-based storage in \`./memory/sessions/\` with concurrent operations;
-- **Cache**: In-memory cache with batch updates for frequently accessed data;
-- **Index**: Parallel indexing system for faster search and retrieval;
+
+** Batchtools Enhancement**: This configuration includes parallel processing capabilities for memory operations, batch storage, and concurrent retrieval optimizations.
+
+## Storage Backends(Enhanced);
+- **Primary**: Hybrid backend(LanceDB + Kuzu + SQLite) with parallel access
+- **Sessions**: File-based storage in \`./memory/sessions/\` with concurrent operations
+- **Cache**: In-memory cache with batch updates for frequently accessed data
+- **Index**: Parallel indexing system for faster search and retrieval
 - **Backup**: Concurrent backup system with automatic versioning
-;
+
 ## Batchtools Memory Features
-;
+
 ### Parallel Operations;
-- **Concurrent Storage**: Store multiple entries simultaneously;
-- **Batch Retrieval**: Query multiple namespaces in parallel;
-- **Parallel Indexing**: Build and update indexes concurrently;
+- **Concurrent Storage**: Store multiple entries simultaneously
+- **Batch Retrieval**: Query multiple namespaces in parallel
+- **Parallel Indexing**: Build and update indexes concurrently
 - **Concurrent Backups**: Export/import operations with parallel processing
 
 ### Performance Optimizations;
-- **Smart Batching**: Group related memory operations for efficiency;
-- **Pipeline Processing**: Chain memory operations with parallel stages;
-- **Resource Management**: Efficient memory usage with parallel access patterns;
+- **Smart Batching**: Group related memory operations for efficiency
+- **Pipeline Processing**: Chain memory operations with parallel stages
+- **Resource Management**: Efficient memory usage with parallel access patterns
 - **Concurrent Validation**: Validate data integrity across multiple operations
-;
-## Commands (Batchtools Enhanced)
-;
+
+## Commands(Batchtools Enhanced)
+
 ### Standard Commands;
 - \`npx claude-zen memory query <search>\`: Search stored information;
 - \`npx claude-zen memory stats\`: Show memory usage statistics;
@@ -122,141 +122,141 @@ The Claude-Flow memory system provides persistent storage and intelligent retrie
 - \`npx claude-zen memory parallel-query <queries-file>\`: Execute multiple queries concurrently;
 - \`npx claude-zen memory concurrent-export <namespaces>\`: Export multiple namespaces simultaneously
 - \`npx claude-zen memory batch-cleanup <retention-config>\`: Clean up multiple namespaces in parallel
-;
-## Configuration (Enhanced);
-Memory settings are configured in \`claude-zen.config.json\` with batchtools optimizations:;
-\`\`\`json;
-{
+
+## Configuration(Enhanced);
+Memory settings are configured in \`claude-zen.config.json\` with batchtools optimizations: null
+\`\`\`json;`
+// {
   "memory": {
     "backend": "kuzu", // Graph database for relationships
-    "path": "./memory/claude-zen-data.json",;
-    "cacheSize": 5000,;
-    "indexing": true,;
+    "path": "./memory/claude-zen-data.json",
+    "cacheSize",
+    "indexing",
     "batchtools": {
-      "enabled": true,;
-      "maxConcurrent": 10,;
-      "batchSize": 100,;
-      "parallelIndexing": true,;
-      "concurrentBackups": true;
-    },;
-    "namespaces": ["default", "agents", "tasks", "sessions", "sparc", "batchtools"],;
+      "enabled",
+      "maxConcurrent",
+      "batchSize",
+      "parallelIndexing",
+      "concurrentBackups";
+    },
+    "namespaces": ["default", "agents", "tasks", "sessions", "sparc", "batchtools"],
     "retentionPolicy": {
-      "sessions": "30d",;
-      "tasks": "90d",;
-      "agents": "permanent",;
-      "sparc": "180d",;
+      "sessions": "30d",
+      "tasks": "90d",
+      "agents": "permanent",
+      "sparc": "180d",
       "batchtools": "60d";
-    },;
+    },
     "performance": {
-      "enableParallelAccess": true,;
-      "concurrentQueries": 20,;
-      "batchWriteSize": 50,;
-      "parallelIndexUpdate": true;
-    }
-  }
-}
+      "enableParallelAccess",
+      "concurrentQueries",
+      "batchWriteSize",
+      "parallelIndexUpdate";
+    //     }
+  //   }
+// }
 \`\`\`
-;
+
 ## Batchtools Integration
-;
+
 ### Parallel Storage Patterns;
-\`\`\`bash;
+\`\`\`bash;`
 # Store SPARC workflow data in parallel;
 npx claude-zen memory batch-store sparc-data.json --namespace sparc --parallel
-;
+
 # Concurrent query across multiple namespaces;
 npx claude-zen memory parallel-query "authentication design" --namespaces arch,impl,test
-;
+
 # Batch export with parallel compression
 npx claude-zen memory concurrent-export project-backup --compress --parallel
 \`\`\`
-;
+
 ### Performance Monitoring;
-\`\`\`bash;
+\`\`\`bash;`
 # Monitor concurrent operations;
 npx claude-zen memory stats --concurrent --verbose
-;
+
 # Analyze batch operation performance;
 npx claude-zen memory performance-report --batchtools
-;
+
 # Check parallel indexing status;
 npx claude-zen memory index-status --parallel;
 \`\`\`
-;
-## Memory Organization (Enhanced)
-;
+
+## Memory Organization(Enhanced)
+
 ### Namespace Structure;
-- **default**: General storage with parallel access;
-- **agents**: Agent data with concurrent updates;
-- **tasks**: Task information with batch processing;
-- **sessions**: Session contexts with parallel indexing;
-- **sparc**: SPARC methodology data with concurrent operations;
+- **default**: General storage with parallel access
+- **agents**: Agent data with concurrent updates
+- **tasks**: Task information with batch processing
+- **sessions**: Session contexts with parallel indexing
+- **sparc**: SPARC methodology data with concurrent operations
 - **batchtools**: Performance metrics and optimization data
-;
-### Memory Types (Optimized);
-- **Episodic**: Conversation history with parallel retrieval;
-- **Semantic**: Knowledge base with concurrent search;
-- **Procedural**: Workflow patterns with batch analysis;
-- **Meta**: System configuration with parallel validation;
+
+### Memory Types(Optimized);
+- **Episodic**: Conversation history with parallel retrieval
+- **Semantic**: Knowledge base with concurrent search
+- **Procedural**: Workflow patterns with batch analysis
+- **Meta**: System configuration with parallel validation
 - **Performance**: Batchtools metrics and optimization data
-;
-## Best Practices (Batchtools Enhanced)
-;
+
+## Best Practices(Batchtools Enhanced)
+
 ### Performance Optimization;
 - Use batch operations for multiple related memory operations;
 - Enable parallel processing for independent operations;
 - Monitor concurrent operation limits to avoid resource exhaustion;
 - Implement smart batching for related data storage
-;
+
 ### Data Management;
 - Use concurrent exports for regular backup schedules
 - Implement parallel cleanup routines for maintenance;
 - Enable batch validation for data integrity checks;
 - Use parallel indexing for improved search performance
-;
+
 ### Resource Management;
 - Monitor memory usage with concurrent operations;
 - Implement throttling for batch operations under heavy load;
 - Use parallel processing judiciously based on system resources;
 - Balance concurrent operations with system stability
-;
+
 ## Performance Benchmarks
-;
+
 ### Batchtools Performance Improvements;
-- **Storage Operations**: Up to 400% faster with parallel writes;
-- **Query Performance**: 300% improvement with concurrent searches;
-- **Export/Import**: 250% faster with parallel processing;
-- **Index Updates**: 350% improvement with concurrent indexing;
+- **Storage Operations**: Up to 400% faster with parallel writes
+- **Query Performance**: 300% improvement with concurrent searches
+- **Export/Import**: 250% faster with parallel processing
+- **Index Updates**: 350% improvement with concurrent indexing
 - **Cleanup Operations**: 200% faster with batch processing
-;
-## Integration Notes (Enhanced);
+
+## Integration Notes(Enhanced);
 - Memory is automatically synchronized across agents with parallel updates;
 - Search supports both exact match and semantic similarity with concurrent processing;
-- Memory contents are private to your local instance with enhanced security;
+- Memory contents are // private to your local instance with enhanced security;
 - No data is sent to external services without explicit commands;
 - Batchtools operations are logged for performance analysis and debugging;
 - Concurrent operations include automatic retry and error recovery mechanisms
-;
+
 ## Troubleshooting Batchtools
-;
+
 ### Common Issues;
-- **Concurrent Limit Exceeded**: Reduce maxConcurrent setting in configuration;
-- **Batch Size Too Large**: Decrease batchSize for memory-constrained systems;
-- **Index Lock Conflicts**: Enable parallelIndexing with appropriate locking;
+- **Concurrent Limit Exceeded**: Reduce maxConcurrent setting in configuration
+- **Batch Size Too Large**: Decrease batchSize for memory-constrained systems
+- **Index Lock Conflicts**: Enable parallelIndexing with appropriate locking
 - **Resource Exhaustion**: Monitor system resources during concurrent operations
-;
+
 ### Debug Commands;
-\`\`\`bash;
+\`\`\`bash;`
 # Check concurrent operation status;
 npx claude-zen memory debug --concurrent
-;
+
 # Analyze batch operation performance;
 npx claude-zen memory analyze --batchtools --verbose
-;
+
 # Validate parallel index integrity;
 npx claude-zen memory index-validate --parallel --repair;
 \`\`\`
-;
-For more information about memory system optimization, see: https://github.com/ruvnet/claude-zen/docs/memory-batchtools.md
-`;
-}
+
+For more information about memory system optimization, see,//github.com/ruvnet/claude-zen/docs/memory-batchtools.md
+`;`
+// }

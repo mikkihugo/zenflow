@@ -1,9 +1,8 @@
-/**
- * Queen System Types;
- * Multi-Queen hive architecture with distributed decision-making;
- */
 
-import type { Identifiable, JSONObject, TypedEventEmitter } from './core.js';
+/** Queen System Types;
+/** Multi-Queen hive architecture with distributed decision-making;
+
+import type { Identifiable, JSONObject, TypedEventEmitter  } from '.';
 
 // =============================================================================
 // QUEEN CORE TYPES
@@ -14,21 +13,21 @@ export type QueenType =
   | 'debug-queen' // Debugging and error analysis
   | 'architect-queen' // System architecture and design
   | 'vision-queen' // Visual processing and design conversion
-  | 'neural-queen' // Neural network operations (Rust-based)
+  | 'neural-queen' // Neural network operations(Rust-based)
   | 'hive-queen' // Hive coordination and management
   | 'memory-queen' // Memory and persistence management
   | 'security-queen' // Security analysis and enforcement
   | 'performance-queen' // Performance analysis and optimization
   | 'test-queen'; // Testing and quality assurance
 
-export type QueenStatus = 'initializing';
+// export type QueenStatus = 'initializing';
 | 'active'
 | 'busy'
 | 'idle'
 | 'overloaded'
 | 'offline'
 | 'error'
-export type TaskType = 'code-generation';
+// export type TaskType = 'code-generation';
 | 'bug-detection'
 | 'refactoring'
 | 'test-generation'
@@ -40,310 +39,301 @@ export type TaskType = 'code-generation';
 | 'neural-training'
 | 'memory-optimization'
 | 'coordination'
-export type Priority = 'low' | 'medium' | 'high' | 'critical';
+// export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
-export type ConsensusMethod = 'majority' | 'weighted' | 'expert' | 'unanimous';
+// export type ConsensusMethod = 'majority' | 'weighted' | 'expert' | 'unanimous';
 
 // =============================================================================
 // TASK DEFINITIONS
 // =============================================================================
 
-export interface Task extends Identifiable {type = ============================================================================
-// CONSENSUS SYSTEM
-// =============================================================================
+// export // interface Task extends Identifiable {type = ============================================================================
+// // CONSENSUS SYSTEM
+// // =============================================================================
 
-export interface Consensus extends Identifiable {taskId = ============================================================================
-// QUEEN DEFINITION
-// =============================================================================
+// export interface Consensus extends Identifiable {taskId = ============================================================================
+// // QUEEN DEFINITION
+// // =============================================================================
 
-export interface QueenCapabilities {taskTypes = ============================================================================
-// QUEEN EVENTS
-// =============================================================================
+// export interface QueenCapabilities {taskTypes = ============================================================================
+// // QUEEN EVENTS
+// // =============================================================================
 
-export interface QueenEvents {
-  'task-assigned': (task = > void;
-  'task-started': (taskId = > void;
-  'task-progress': (taskId = > void;
-  'task-completed': (taskId = > void;
-  'task-failed': (taskId = > void;
-  'collaboration-request': (task = > void;
-  'collaboration-response': (taskId = > void;
-  'consensus-reached': (consensus = > void;
-  'learning-update': (pattern = > void;
-  'metrics-updated': (metrics = > void;
-  'state-changed': (oldState = > void;
-  'health-warning': (issue = > void;
-  'shutdown': () => void;
-  'error': (error = > void;
-  [event = > void;
-}
+// export interface QueenEvents {
+//   'task-assigned': (task = > void;
+//   'task-started') => void;
+//   'error': (error = > void;
+//   [event = > void;
+// // }
 // =============================================================================
 // QUEEN INTERFACE
 // =============================================================================
 
-export interface Queen extends TypedEventEmitter<QueenEvents>, Identifiable {
-  // Basic properties
-  readonlyname = ============================================================================
-// SPECIALIZED QUEEN TYPES
-// =============================================================================
+// export // interface Queen extends TypedEventEmitter<QueenEvents>, Identifiable {
+//   // Basic properties
+//   readonlyname = ============================================================================
+// // SPECIALIZED QUEEN TYPES
+// // =============================================================================
 
-export interface CodeQueen extends Queen {
-  generateCode(spec = ============================================================================;
-// AUXILIARY TYPES
-// =============================================================================
+// export interface CodeQueen extends Queen {
+//   generateCode(spec = ============================================================================;
+// // AUXILIARY TYPES
+// // =============================================================================
 
-export interface HealthStatus {
-  overall: 'healthy' | 'degraded' | 'critical';
-  components: {
-    [component: string]: {
-      status: 'healthy' | 'degraded' | 'critical';
-      message?: string;
-      metrics?: JSONObject;
-    };
+// export interface HealthStatus {
+//   overall: 'healthy' | 'degraded' | 'critical';
+//   components: {
+//     [component]: {
+//       status: 'healthy' | 'degraded' | 'critical';
+//       message?;
+//       metrics?;
+//     };
   };
-  recommendations?: string[];
-  lastCheck: Date;
-}
-export interface DetailedQueenMetrics extends QueenMetrics {
-  timeSeriesData: {
-    timestamp: Date;
-    metrics: Partial<QueenMetrics>;
-  }[];
+  recommendations?;
+  // lastCheck: Date
+// }
+// export // interface DetailedQueenMetrics extends QueenMetrics {
+//   timeSeriesData: {
+//     // timestamp: Date
+//     metrics: Partial<QueenMetrics>;
+//   }[];
   distributionData: {
     taskTypeDistribution: Record<TaskType, number>;
-    processingTimeDistribution: number[];
-    confidenceDistribution: number[];
-    qualityDistribution: number[];
+    processingTimeDistribution;
+    confidenceDistribution;
+    qualityDistribution;
   };
   comparisonData: {
     peerComparison: Record<string, number>;
     historicalComparison: Record<string, number>;
     benchmarkComparison: Record<string, number>;
   };
-}
-export interface DiagnosticResult {
-  overall: 'pass' | 'warn' | 'fail';
-  tests: {
-    name: string;
-    status: 'pass' | 'warn' | 'fail';
-    message?: string;
-    details?: JSONObject;
-  }[];
-  recommendations: string[];
-  estimatedFixTime?: number;
-  autoFixAvailable?: boolean;
-}
+// }
+// export // interface DiagnosticResult {
+//   overall: 'pass' | 'warn' | 'fail';
+//   tests: {
+//     // name: string
+//     status: 'pass' | 'warn' | 'fail';
+//     message?;
+//     details?;
+//   }[];
+  recommendations;
+  estimatedFixTime?;
+  autoFixAvailable?;
+// }
 // Code generation types
-export interface CodeGenerationSpec {
-  language: string;
-  framework?: string;
-  description: string;
-  requirements: string[];
-  constraints: string[];
-  examples?: string[];
-  style?: JSONObject;
-}
-export interface CodeResult {
-  code: string;
-  explanation: string;
-  tests?: string;
-  documentation?: string;
-  dependencies?: string[];
-  confidence: number;
-  quality: QualityAnalysis;
-}
-export interface RefactoringOptions {
-  target: 'readability' | 'performance' | 'maintainability' | 'testability';
-  preserveBehavior: boolean;
-  modernize: boolean;
-  addComments: boolean;
-  addTypes: boolean;
-}
-export interface OptimizationTarget {
-  type: 'speed' | 'memory' | 'size' | 'readability';
-  constraints: string[];
-  acceptableTradeoffs: string[];
-}
-export interface QualityAnalysis {
-  score: number;
-  metrics: {
-    complexity: number;
-    maintainability: number;
-    readability: number;
-    testability: number;
-    performance: number;
-    security: number;
-  };
+// export // interface CodeGenerationSpec {
+//   // language: string
+//   framework?;
+//   // description: string
+//   requirements;
+//   constraints;
+//   examples?;
+//   style?;
+// // }
+// export // interface CodeResult {
+//   // code: string
+//   // explanation: string
+//   tests?;
+//   documentation?;
+//   dependencies?;
+//   // confidence: number
+//   // quality: QualityAnalysis
+// // }
+// export // interface RefactoringOptions {
+//   target: 'readability' | 'performance' | 'maintainability' | 'testability';
+//   // preserveBehavior: boolean
+//   // modernize: boolean
+//   // addComments: boolean
+//   // addTypes: boolean
+// // }
+// export // interface OptimizationTarget {
+//   type: 'speed' | 'memory' | 'size' | 'readability';
+//   constraints;
+//   acceptableTradeoffs;
+// // }
+// export // interface QualityAnalysis {
+//   // score: number
+//   metrics: {
+//     // complexity: number
+//     // maintainability: number
+//     // readability: number
+//     // testability: number
+//     // performance: number
+//     // security: number
+//   };
   issues: {
-    type: string;
+    // type: string
     severity: 'low' | 'medium' | 'high';
-    message: string;
-    line?: number;
-    suggestion?: string;
+    // message: string
+    line?;
+    suggestion?;
   }[];
-  recommendations: string[];
-}
+  recommendations;
+// }
 // Bug analysis types
-export interface BugAnalysis {
-  type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  root_cause: string;
-  impact: string;
-  affected_components: string[];
-  reproduction_steps: string[];
-  evidence: JSONObject[];
-  confidence: number;
-}
-export interface FixSuggestion {
-  approach: string;
-  changes: {
-    file: string;
-    line?: number;
-    oldCode?: string;
-    newCode: string;
-    explanation: string;
-  }[];
-  tests: string[];
-  validation_steps: string[];
+// export // interface BugAnalysis {
+//   // type: string
+//   severity: 'low' | 'medium' | 'high' | 'critical';
+//   // root_cause: string
+//   // impact: string
+//   affected_components;
+//   reproduction_steps;
+//   evidence;
+//   // confidence: number
+// // }
+// export // interface FixSuggestion {
+//   // approach: string
+//   changes: {
+//     // file: string
+//     line?;
+//     oldCode?;
+//     // newCode: string
+//     // explanation: string
+//   }[];
+  tests;
+  validation_steps;
   risk_assessment: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];
-    mitigation: string[];
+    factors;
+    mitigation;
   };
-  confidence: number;
-}
+  // confidence: number
+// }
 // Architecture types
-export interface ArchitectureAnalysis {
-  overview: string;
-  patterns: string[];
-  antipatterns: string[];
-  dependencies: {
-    internal: string[];
-    external: string[];
-    circular: string[];
-  };
+// export // interface ArchitectureAnalysis {
+//   // overview: string
+//   patterns;
+//   antipatterns;
+//   dependencies: {
+//     internal;
+//     external;
+//     circular;
+//   };
   metrics: {
-    complexity: number;
-    coupling: number;
-    cohesion: number;
-    maintainability: number;
+    // complexity: number
+    // coupling: number
+    // cohesion: number
+    // maintainability: number
   };
-  recommendations: string[];
-}
-export interface ArchitectureRecommendation {
-  priority: Priority;
-  category: string;
-  recommendation: string;
-  rationale: string;
-  implementation_steps: string[];
-  estimated_effort: string;
-  benefits: string[];
-  risks: string[];
-  alternatives: string[];
-}
-export interface ArchitecturalDecision {
-  title: string;
-  context: string;
-  decision: string;
-  status: 'proposed' | 'accepted' | 'rejected' | 'deprecated';
-  consequences: string[];
-  alternatives: string[];
-  assumptions: string[];
-  constraints: string[];
-}
-export interface PatternValidation {
-  valid: boolean;
-  pattern: string;
-  compliance: number;
-  violations: string[];
-  recommendations: string[];
-  examples: string[];
-}
+  recommendations;
+// }
+// export // interface ArchitectureRecommendation {
+//   // priority: Priority
+//   // category: string
+//   // recommendation: string
+//   // rationale: string
+//   implementation_steps;
+//   // estimated_effort: string
+//   benefits;
+//   risks;
+//   alternatives;
+// // }
+// export // interface ArchitecturalDecision {
+//   // title: string
+//   // context: string
+//   // decision: string
+//   status: 'proposed' | 'accepted' | 'rejected' | 'deprecated';
+//   consequences;
+//   alternatives;
+//   assumptions;
+//   constraints;
+// // }
+// export // interface PatternValidation {
+//   // valid: boolean
+//   // pattern: string
+//   // compliance: number
+//   violations;
+//   recommendations;
+//   examples;
+// // }
 // Vision processing types
-export interface VisionContext {
-  type: 'ui-mockup' | 'diagram' | 'screenshot' | 'design' | 'chart';
-  target_platform: string;
-  style_preferences: JSONObject;
-  constraints: string[];
-}
-export interface VisionResult {
-  interpretation: string;
+// export // interface VisionContext {
+//   type: 'ui-mockup' | 'diagram' | 'screenshot' | 'design' | 'chart';
+//   // target_platform: string
+//   // style_preferences: JSONObject
+//   constraints;
+// // }
+// export // interface VisionResult {
+//   // interpretation: string
+//   components: {
+//     // type: string
+//     // properties: JSONObject
+//     children?: VisionResult['components'];
+//   }[];
+  // layout: JSONObject
+  // styling: JSONObject
+  // confidence: number
+  suggestions;
+// }
+// export // interface DesignAnalysis {
+//   style: {
+//     colors;
+//     fonts;
+//     // spacing: JSONObject
+//     // layout_type: string
+//   };
   components: {
-    type: string;
-    properties: JSONObject;
-    children?: VisionResult['components'];
+    // type: string
+    // count: number
+    variations;
   }[];
-  layout: JSONObject;
-  styling: JSONObject;
-  confidence: number;
-  suggestions: string[];
-}
-export interface DesignAnalysis {
-  style: {
-    colors: string[];
-    fonts: string[];
-    spacing: JSONObject;
-    layout_type: string;
-  };
-  components: {
-    type: string;
-    count: number;
-    variations: string[];
-  }[];
-  patterns: string[];
+  patterns;
   accessibility: {
-    score: number;
-    issues: string[];
-    recommendations: string[];
+    // score: number
+    issues;
+    recommendations;
   };
   responsive: {
-    breakpoints: number[];
-    behavior: string[];
+    breakpoints;
+    behavior;
   };
-}
-export interface ComparisonResult {
-  similarity: number;
-  differences: {
-    type: string;
-    description: string;
-    severity: 'low' | 'medium' | 'high';
-  }[];
-  recommendations: string[];
-}
+// }
+// export // interface ComparisonResult {
+//   // similarity: number
+//   differences: {
+//     // type: string
+//     // description: string
+//     severity: 'low' | 'medium' | 'high';
+//   }[];
+  recommendations;
+// }
 // Neural network types
-export interface TrainingData {
-  inputs: number[][];
-  outputs: number[][];
-  validation_split: number;
-  epochs: number;
-  batch_size: number;
-  learning_rate: number;
-  metadata: JSONObject;
-}
-export interface ModelResult {
-  model_id: string;
-  accuracy: number;
-  loss: number;
-  training_time: number;
-  parameters: number;
-  size: number;
-  metrics: JSONObject;
-  hyperparameters: JSONObject;
-}
-export interface InferenceResult {
-  prediction: number[] | JSONObject;
-  confidence: number;
-  processing_time: number;
-  model_version: string;
-  metadata: JSONObject;
-}
-export interface OptimizationResult {
-  best_params: JSONObject;
-  best_score: number;
-  optimization_history: {
-    params: JSONObject;
-    score: number;
-    iteration: number;
-  }[];
-  time_taken: number;
-}
+// export // interface TrainingData {
+//   inputs[];
+//   outputs[];
+//   // validation_split: number
+//   // epochs: number
+//   // batch_size: number
+//   // learning_rate: number
+//   // metadata: JSONObject
+// // }
+// export // interface ModelResult {
+//   // model_id: string
+//   // accuracy: number
+//   // loss: number
+//   // training_time: number
+//   // parameters: number
+//   // size: number
+//   // metrics: JSONObject
+//   // hyperparameters: JSONObject
+// // }
+// export // interface InferenceResult {
+//   prediction | JSONObject;
+//   // confidence: number
+//   // processing_time: number
+//   // model_version: string
+//   // metadata: JSONObject
+// // }
+// export // interface OptimizationResult {
+//   // best_params: JSONObject
+//   // best_score: number
+//   optimization_history: {
+//     // params: JSONObject
+//     // score: number
+//     // iteration: number
+//   }[];
+  // time_taken: number
+// }
+
+}}}}}))

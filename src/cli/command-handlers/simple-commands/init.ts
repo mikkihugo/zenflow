@@ -1,7 +1,6 @@
-/**
- * Init Module;
- * Converted from JavaScript to TypeScript;
- */
+
+/** Init Module;
+/** Converted from JavaScript to TypeScript;
 
 // init.js - Initialize Claude Code integration files
 // This file now re-exports from the modular init structure

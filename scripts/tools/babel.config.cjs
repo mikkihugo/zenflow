@@ -1,29 +1,18 @@
 module.exports = {
   presets: [
-    [
-      '@babel/preset-env',
-      {
+
+      '@babel
+
         targets: {
-          node: '20',
-        },
-        modules: false,
-      },
-    ],
-  ],
-  plugins: ['@babel/plugin-syntax-import-attributes'],
+          node: '20' },
+        modules } ] ], // eslint-disable-line
+  plugins: ['@babel
   env: {
     test: {
       presets: [
-        [
-          '@babel/preset-env',
-          {
+
+          '@babel
+
             targets: {
-              node: '20',
-            },
-            modules: 'auto',
-          },
-        ],
-      ],
-    },
-  },
-};
+              node: '20' },
+            modules: 'auto' } ] ] } } };

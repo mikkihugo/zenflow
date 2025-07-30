@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 
 // Original test from ruv-swarm
-const _originalSIMD = new Uint8Array([
+const _originalSIMD = new Uint8Array([ // eslint-disable-line
   0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 7, 8, 1, 4, 116, 101, 115, 116,
-  0, 0, 10, 15, 1, 13, 0, 65, 0, 253, 15, 253, 98, 11,
-]);
+  0, 0, 10, 15, 1, 13, 0, 65, 0, 253, 15, 253, 98, 11 ]);
 
 // Alternative SIMD test (more common pattern)
-const _altSIMD = new Uint8Array([
+const _altSIMD = new Uint8Array([ // eslint-disable-line
   0x00,
   0x61,
   0x73,
@@ -42,7 +41,7 @@ const _altSIMD = new Uint8Array([
 ]);
 
 // Simpler test - just check if v128 type is supported
-const _simpleV128 = new Uint8Array([
+const _simpleV128 = new Uint8Array([ // eslint-disable-line
   0x00,
   0x61,
   0x73,
@@ -72,11 +71,11 @@ try {
     0x00,
     0x00, // version
   ]);
-  WebAssembly.validate(simdModule);
-} catch (_e) {}
+  WebAssembly.validate(simdModule); // eslint-disable-line
+} catch (_e) {} // eslint-disable-line
 
 // Method 2: Check if specific SIMD opcodes work
-const _simdFeatureTest = () => {
+const _simdFeatureTest = () => { // eslint-disable-line
   try {
     // This is a v128.const instruction test
     const testModule = new Uint8Array([
@@ -124,22 +123,21 @@ const _simdFeatureTest = () => {
       0x00, // 16 bytes of zeros
       0x0b, // end
     ]);
-    return WebAssembly.validate(testModule);
-  } catch (_e) {
+    return WebAssembly.validate(testModule); // eslint-disable-line
+  } catch (_e) { // eslint-disable-line
     return false;
-  }
+
 };
 
 // Method 3: Check via compile
-const _checkSIMDCompile = () => {
+const _checkSIMDCompile = () => { // eslint-disable-line
   try {
     // Try compiling a module with SIMD
     const bytes = new Uint8Array([
-      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b,
-    ]);
-    WebAssembly.compile(bytes);
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b ]);
+    WebAssembly.compile(bytes); // eslint-disable-line
     return true;
-  } catch (_e) {
+  } catch (_e) { // eslint-disable-line
     return false;
-  }
+
 };

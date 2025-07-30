@@ -1,117 +1,101 @@
 #!/usr/bin/env node
-/**
- * Real-time Performance Monitoring Dashboard;
- */
+
+/** Real-time Performance Monitoring Dashboard;
 
 import blessed from 'blessed';
 
 class PerformanceMonitor {
   constructor() {
-    this.screen = blessed.screen({
-      smartCSR: true,;
-    title: 'Claude Flow Performance Monitor',;
-  }
-  )
+    this.screen = blessed.screen({ smartCSR,
+    title: 'Claude Flow Performance Monitor')
+  })
   this
-  .
+
   metrics = {
-      hooks: { calls: 0, avgTime: 0, errors: 0 },;
-  memory: { reads: 0, writes: 0, cacheHits: 0 }
-  ,
-  neural: { predictions: 0, trainings: 0, accuracy: 0 }
-  ,
-  agents: { active: 0, pooled: 0, spawns: 0 }
-  ,
-}
+      hooks: { calls, avgTime, errors },
+  memory: { reads, writes, cacheHits }
+
+  neural: { predictions, trainings, accuracy }
+
+  agents: { active, pooled, spawns }
+
 this.setupUI();
 this.startMonitoring();
-}
-setupUI()
-{
+// }
+  setupUI() {}
+// {
   // Header
   this.header = blessed.box({
-      top: 0,;
-  left: 0,;
-  width: '100%',;
-  height: 3,;
-  content: '{center}Claude Flow Performance Monitor{/center}',;
-  tags: true,;
-  fg: 'white',;
-  bg: 'blue',;
-  ,
-}
-)
+      top,
+  left,
+  width: '100%',
+  height,
+  content: '{center}Claude Flow Performance Monitor{
+  tags,
+  fg: 'white',
+  bg: 'blue')
+})
 // Metrics boxes
 this.hookBox = this.createMetricBox(
-{
-  top: 3,;
-  left: 0,;
-  width: '50%',;
-  height: '25%',;
-  label: ' Hook Performance ',;
-}
-)
+// {
+  top,
+  left,
+  width: '50%',
+  height: '25%',
+  label: ' Hook Performance ')
+})
 this.memoryBox = this.createMetricBox(
-{
-  top: 3,;
-  left: '50%',;
-  width: '50%',;
-  height: '25%',;
-  label: ' Memory Operations ',;
-}
-)
+// {
+  top,
+  left: '50%',
+  width: '50%',
+  height: '25%',
+  label: ' Memory Operations ')
+})
 this.neuralBox = this.createMetricBox(
-{
-  top: '28%',;
-  left: 0,;
-  width: '50%',;
-  height: '25%',;
-  label: ' Neural Processing ',;
-}
-)
+// {
+  top: '28%',
+  left,
+  width: '50%',
+  height: '25%',
+  label: ' Neural Processing ')
+})
 this.agentBox = this.createMetricBox(
-{
-  top: '28%',;
-  left: '50%',;
-  width: '50%',;
-  height: '25%',;
-  label: ' Agent Management ',;
-}
-)
+// {
+  top: '28%',
+  left: '50%',
+  width: '50%',
+  height: '25%',
+  label: ' Agent Management ')
+})
 // Real-time log
 this.logBox = blessed.log(
-{
-  top: '53%',;
-  left: 0,;
-  width: '100%',;
-  height: '35%',;
-  label: ' Live Activity Log ',;
-  tags: true,;
-  scrollable: true,;
-  alwaysScroll: true,;
-  mouse: true,;
-  type: 'line',;
-  ,
+// {
+  top: '53%',
+  left,
+  width: '100%',
+  height: '35%',
+  label: ' Live Activity Log ',
+  tags,
+  scrollable,
+  alwaysScroll,
+  mouse,
+  type: 'line',
+
   fg: 'white',
-  bg: 'black',
-  fg: 'cyan',
-  ,
-,
-}
-)
+  bg: 'black',)
+  fg: 'cyan' })
 // Status bar
 this.statusBar = blessed.box(
-{
-  bottom: 0,;
-  left: 0,;
-  width: '100%',;
-  height: 3,;
-  content: 'Press q to quit | r to reset metrics | Space to pause',;
-  fg: 'white',;
-  bg: 'green',;
-  ,
-}
-)
+// {
+  bottom,
+  left,
+  width: '100%',
+  height,
+  content: 'Press q to quit | r to reset metrics | Space to pause',
+  fg: 'white',
+  bg: 'green')
+})
 // Add all elements to screen
 this.screen.append(this.header)
 this.screen.append(this.hookBox)
@@ -124,22 +108,17 @@ this.screen.append(this.statusBar);
 this.screen.key(['q', 'C-c'], () => process.exit(0));
 this.screen.key('r', () => this.resetMetrics());
 this.screen.render();
-}
+// }
 createMetricBox(options)
-{
-  return blessed.box({
-      ...options,;
-  type: 'line',;
-  ,
-  fg: 'white',
-  fg: 'cyan',
-  ,
-  ,
-}
-)
-}
-startMonitoring()
-{
+// {
+  return blessed.box({ ...options,
+  type: 'line',
+
+  fg: 'white',)
+  fg: 'cyan'   })
+// }
+  startMonitoring() {}
+// {
   // Simulate real-time metrics
   setInterval(() => {
     this.updateMetrics();
@@ -147,10 +126,10 @@ startMonitoring()
   }, 100);
   // Monitor actual Claude Flow processes
   this.monitorClaudeFlow();
-}
+// }
 updateMetrics();
-{
-  // Simulate metric updates (in real implementation, these would come from actual monitoring)
+// {
+  // Simulate metric updates(in real implementation, these would come from actual monitoring)
   this.metrics.hooks.calls += Math.floor(Math.random() * 5);
   this.metrics.hooks.avgTime = Math.floor(Math.random() * 50) + 10;
   this.metrics.memory.reads += Math.floor(Math.random() * 10);
@@ -160,117 +139,110 @@ updateMetrics();
   this.metrics.neural.accuracy = 85 + Math.floor(Math.random() * 10);
   this.metrics.agents.active = Math.floor(Math.random() * 10) + 5;
   this.metrics.agents.pooled = 15 - this.metrics.agents.active;
-}
+// }
 render();
-{
+// {
   // Update hook metrics
   this.hookBox.setContent(;
   `{bold}Total Calls:{/bold} ${this.metrics.hooks.calls}\n` +;
-  `{bold}Avg Time:{/bold} ${this.metrics.hooks.avgTime}ms\n` +;
+  `{bold}Avg Time:{/bold} ${this.metrics.hooks.avgTime}ms\n` +;)
   `{bold}Error Rate:{/bold} ${((this.metrics.hooks.errors / Math.max(1, this.metrics.hooks.calls)) * 100).toFixed(1)}%\n` +;
   `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`;
-  )
+  //   )
   // Update memory metrics
   this.memoryBox.setContent(
-  `bold/bold
-}
+  `bold
+// }
 $;
-{
+// {
   this.metrics.memory.reads;
-}
-\n` +
+// }
+\n` +`
 `
-{
+// {
   bold;
-}
-{
-  /bold} ${this.metrics.memory.writes}\n` +;
-`{bold}Cache Hits:{/bold} ${this.metrics.memory.cacheHits}\n` +;
+// }
+// {
+// bold} ${this.metrics.memory.writes}\n` +;`
+`{bold}Cache Hits:{/bold} ${this.metrics.memory.cacheHits}\n` +;)
   `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`;
-  )
+  //   )
   // Update neural metrics
-  this.neuralBox.setContent(
-  `bold/bold
-}
+  this.neuralBox.setContent(`bold
+// }
 $;
-{
+// {
   this.metrics.neural.predictions;
-}
-\n` +
+// }
+\n` +`
 `
-{
+// {
   bold;
-}
-{
-  /bold} ${this.metrics.neural.trainings}\n` +;
-`{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%\n` +;
-  `{bold}WASM:{/bold} {green-fg}Enabled{/green-fg}`;
-  )
+// }
+// {
+// bold} ${this.metrics.neural.trainings}\n` +;`)
+`{bold}Accuracy)`
   // Update agent metrics
   this.agentBox.setContent(
-  `bold/bold
-}
+  `bold
+// }
 $;
-{
+// {
   this.metrics.agents.active;
-}
-\n` +
+// }
+\n` +`
 `
-{
+// {
   bold;
-}
-{/bold} ${this.metrics.agents.pooled}\n` +;
-`{bold}Total Spawns:{/bold} ${this.metrics.agents.spawns}\n` +;
+// }
+{/bold} ${this.metrics.agents.pooled}\n` +;`
+`{bold}Total Spawns:{/bold} ${this.metrics.agents.spawns}\n` +;)
 `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`;
-)
+// )
 // Add log entries
-if (Math.random() > 0.7) {
-  const _operations = [
-    ;
-        '{green-fg}✓{/green-fg} Hook executed: pre-command (12ms)',;
-        '{green-fg}✓{/green-fg} Memory write: command/pre/12345 (3ms)',;
-        '{green-fg}✓{/green-fg} Neural prediction: task complexity (5ms)',;
-        '{yellow-fg}⚡{/yellow-fg} Agent spawned from pool (45ms)',;
-        '{blue-fg}↻{/blue-fg} Cache hit: prediction/task/analyze',;
-        '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations',;,,,
-  ];
+if(Math.random() > 0.7) {
+  const _operations = ['{green-fg}{/green-fg} Hook executed: pre-command(12ms)',
+        '{green-fg}{/green-fg} Memory write: command/pre/12345(3ms)',
+        '{green-fg}{/green-fg} Neural prediction: task complexity(5ms)',
+        '{yellow-fg}{/yellow-fg} Agent spawned from pool(45ms)',
+        '{blue-fg}{/blue-fg} Cache hit: prediction/task/analyze',
+        '{green-fg}{/green-fg} Parallel batch processed: 10 operations'];
   this.logBox.log(operations[Math.floor(Math.random() * operations.length)]);
-}
+// }
 this.screen.render();
 monitorClaudeFlow();
 // In real implementation, this would connect to Claude Flow metrics
-this.logBox.log('{green-fg}✓{/green-fg} Connected to Claude Flow metrics');
-this.logBox.log('{blue-fg}ℹ{/blue-fg} Monitoring performance in real-time...');
+this.logBox.log('{green-fg}{/green-fg} Connected to Claude Flow metrics');
+this.logBox.log('{blue-fg}{/blue-fg} Monitoring performance in real-time...');
 resetMetrics();
 this.metrics = {
-      hooks: { calls: 0, avgTime: 0, errors: 0 },;
-reads: 0, writes;
-: 0, cacheHits: 0 ,
-  predictions: 0, trainings
-  : 0, accuracy: 0 ,
-  active: 0, pooled
-  : 0, spawns: 0 ,
-this.logBox.log('{yellow-fg}↻{/yellow-fg} Metrics reset')
+      hooks: { calls, avgTime, errors },
+reads, writes;
+, cacheHits ,
+  predictions, trainings
+  , accuracy ,
+  active, pooled
+  , spawns ,
+this.logBox.log('{yellow-fg}{/yellow-fg} Metrics reset')
 // Check if blessed is available
 try {
   new PerformanceMonitor();
-} catch (/* _error */) {
-  console.warn('📊 Performance Monitoring Dashboard (Text Mode)\n');
+} catch(/* _error */) {
+  console.warn(' Performance Monitoring Dashboard(Text Mode)\n');
   console.warn('Real-time metrics would be displayed here.');
-  console.warn('\nInstall blessed for interactive dashboard:');
+  console.warn('\nInstall blessed for interactive dashboard);'
   console.warn('npm install blessed\n');
-;
   // Fallback text-based monitoring
   setInterval(() => {
-    console.warn('📊 Claude Flow Performance Metrics\n');
-    console.warn('Hook Performance:');
+    console.warn(' Claude Flow Performance Metrics\n');
+    console.warn('Hook Performance);'
     console.warn(`  Calls: ${Math.floor(Math.random() * 1000)}`);
     console.warn(`  Avg Time: ${Math.floor(Math.random() * 50) + 10}ms`);
-    console.warn('\nMemory Operations:');
+    console.warn('\nMemory Operations);'
     console.warn(`  Cache Hit Rate: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.warn('\nNeural Processing:');
+    console.warn('\nNeural Processing);'
     console.warn(`  Accuracy: ${(85 + Math.random() * 10).toFixed(1)}%`);
-    console.warn('\nAgent Pool:');
+    console.warn('\nAgent Pool);'
     console.warn(`  Active/Pooled: ${Math.floor(Math.random() * 10) + 5}/10`);
   }, 1000);
-}
+// }

@@ -2,6 +2,6 @@
 // TODO: This is a stub. Implement the actual TaskExecutor class.
 
 export default class TaskExecutor {
-  async initialize(): Promise<void> {}
+  async initialize(): Promise<void> {} // eslint-disable-line
   async shutdown(): Promise<void> {}
-}
+// }

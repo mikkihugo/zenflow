@@ -1,261 +1,261 @@
-/**
- * AI Providers Types;
- * Re-export and extend the existing provider types with additional functionality
- */
+
+/** AI Providers Types;
+/** Re-export and extend the existing provider types with additional functionality
 
 // Re-export all existing provider types
 export * from '../providers/types.js';
 
 // Import the existing types to extend them
-import type { AIProvider as BaseAIProvider } from '../providers/types.js';
-import type { Identifiable } from './core.js';
+import type { AIProvider as BaseAIProvider  } from '../providers/types.js';
+import type { Identifiable  } from '.';
 
 // =============================================================================
 // EXTENDED PROVIDER TYPES
 // =============================================================================
 
-export interface ExtendedAIProvider extends BaseAIProvider, Identifiable {
-  // Enhanced capabilitiesenhancedCapabilities = ============================================================================
-// ENHANCED REQUEST/RESPONSE TYPES
-// =============================================================================
+export // interface ExtendedAIProvider extends BaseAIProvider, Identifiable {
+//   // Enhanced capabilitiesenhancedCapabilities = ============================================================================
+// // ENHANCED REQUEST/RESPONSE TYPES
+// // =============================================================================
 
-export interface ExtendedAIRequest extends BaseAIRequest {
-  // Enhanced request featurescontext = ============================================================================
-// ENHANCED METRICS TYPES
-// =============================================================================
+// export interface ExtendedAIRequest extends BaseAIRequest {
+//   // Enhanced request featurescontext = ============================================================================
+// // ENHANCED METRICS TYPES
+// // =============================================================================
 
-export interface ExtendedProviderMetrics extends BaseProviderMetrics {
-  // Enhanced metrics
-  enhanced: {
-    // Quality metrics over time
-    qualityMetrics: {
-      timeline: QualityTimelinePoint[];
-      trends: QualityTrends;
-      distribution: QualityDistribution;
-;
-      // Quality by different dimensions
-      byDomain: Record<string, number>;
-      byUseCase: Record<string, number>;
-      byUser: Record<string, number>;
-      byModel: Record<string, number>;
-    };
+// export interface ExtendedProviderMetrics extends BaseProviderMetrics {
+//   // Enhanced metrics
+//   enhanced: {
+//     // Quality metrics over time
+//     qualityMetrics: {
+//       timeline;
+//       // trends: QualityTrends
+//       // distribution: QualityDistribution
+//       // Quality by different dimensions
+//       byDomain: Record<string, number>;
+//       byUseCase: Record<string, number>;
+//       byUser: Record<string, number>;
+//       byModel: Record<string, number>;
+//     };
 // Cost metrics
-{
-  totalCost: number;
-  costPerRequest: number;
-  costPerToken: number;
-  costTrend: TrendData;
-  compute: number;
-  storage: number;
-  bandwidth: number;
-  api: number;
-  other: number;
-  potentialSavings: number;
-  recommendations: string[];
-}
+// {
+  // totalCost: number
+  // costPerRequest: number
+  // costPerToken: number
+  // costTrend: TrendData
+  // compute: number
+  // storage: number
+  // bandwidth: number
+  // api: number
+  // other: number
+  // potentialSavings: number
+  recommendations;
+// }
 // User experience metrics
-{
-  satisfaction: number; // 0-1
-  nps: number; // Net Promoter Score
-  csat: number; // Customer Satisfaction Score
+// {
+  satisfaction, // 0-1
+  nps, // Net Promoter Score
+  csat, // Customer Satisfaction Score
 
   // Experience breakdown
-  usability: number; // 0-1
-  reliability: number; // 0-1
-  performance: number; // 0-1
-  total: number;
-  positive: number;
-  negative: number;
-  neutral: number;
-}
+  usability, // 0-1
+  reliability, // 0-1
+  performance, // 0-1
+  // total: number
+  // positive: number
+  // negative: number
+  // neutral: number
+// }
 // Business impact metrics
-{
+// {
   // Productivity metrics
-  timesSaved: number; // hours
-  tasksAutomated: number;
-  efficiencyGain: number; // percentage
+  timesSaved, // hours
+  // tasksAutomated: number
+  efficiencyGain, // percentage
 
   // Value metrics
-  businessValue: number; // dollar amount
-  roi: number; // return on investment
+  businessValue, // dollar amount
+  roi, // return on investment
 
   // Adoption metrics
-  userAdoption: number; // percentage
+  userAdoption, // percentage
   featureUtilization: Record<string, number>;
-}
+// }
 // Competitive analysis
-{
-  marketPosition: number; // 1-10
-  competitorComparison: CompetitorComparison[];
+// {
+  marketPosition, // 1-10
+  competitorComparison;
   // Differentiation factors
-  advantages: string[];
-  disadvantages: string[];
+  advantages;
+  disadvantages;
   // Market trends
-  marketTrends: MarketTrend[];
-}
-}
+  marketTrends;
+// }
+// }
 // Predictive analytics
-{
+// {
   // Usage predictions
-  usageForecast: ForecastPoint[];
-  capacityNeeds: CapacityForecast[];
+  usageForecast;
+  capacityNeeds;
   // Performance predictions
-  performanceForecast: PerformanceForecast[];
+  performanceForecast;
   // Cost predictions
-  costForecast: CostForecast[];
+  costForecast;
   // Quality predictions
-  qualityForecast: QualityForecast[];
+  qualityForecast;
   // Confidence intervals
-  confidenceLevel: number; // 0-1
-  forecastHorizon: number; // days
-}
+  confidenceLevel, // 0-1
+  forecastHorizon, // days
+// }
 // Anomaly detection
-{
-  detected: Anomaly[];
-  patterns: AnomalyPattern[];
+// {
+  detected;
+  patterns;
   // Detection settings
-  sensitivity: number; // 0-1
-  threshold: number;
+  sensitivity, // 0-1
+  // threshold: number
   // Resolution tracking
-  resolved: number;
-  falsePositives: number;
-  actionsTaken: string[];
-}
-}
-export interface QualityTimelinePoint {
-  timestamp: Date;
-  overall: number; // 0-1
-  coherence: number; // 0-1
-  relevance: number; // 0-1
-  factuality: number; // 0-1
-  creativity: number; // 0-1
-  sampleSize: number;
-}
-export interface QualityTrends {
-  overall: TrendData;
-  coherence: TrendData;
-  relevance: TrendData;
-  factuality: TrendData;
-  creativity: TrendData;
-}
-export interface CompetitorComparison {
-  competitor: string;
-  metrics: {
-    performance: number; // relative score
-    cost: number; // relative score
-    quality: number; // relative score
-    features: number; // relative score
-  };
+  // resolved: number
+  // falsePositives: number
+  actionsTaken;
+// }
+// }
+// export // interface QualityTimelinePoint {
+//   // timestamp: Date
+//   overall, // 0-1
+//   coherence, // 0-1
+//   relevance, // 0-1
+//   factuality, // 0-1
+//   creativity, // 0-1
+//   // sampleSize: number
+// // }
+// export // interface QualityTrends {
+//   // overall: TrendData
+//   // coherence: TrendData
+//   // relevance: TrendData
+//   // factuality: TrendData
+//   // creativity: TrendData
+// // }
+// export // interface CompetitorComparison {
+//   // competitor: string
+//   metrics: {
+//     performance, // relative score
+//     cost, // relative score
+//     quality, // relative score
+//     features, // relative score
+//   };
   // Detailed comparison
-  strengths: string[];
-  weaknesses: string[];
-  marketShare: number; // 0-1
-}
-export interface MarketTrend {
-  trend: string;
-  direction: 'up' | 'down' | 'stable';
-  impact: 'low' | 'medium' | 'high';
-  confidence: number; // 0-1
-  description: string;
-  // Timeline
-  detectedAt: Date;
-  expectedDuration: number; // months
-}
-export interface ForecastPoint {
-  timestamp: Date;
-  value: number;
-  confidence: number; // 0-1
+  strengths;
+  weaknesses;
+  marketShare, // 0-1
+// }
+// export // interface MarketTrend {
+//   // trend: string
+//   direction: 'up' | 'down' | 'stable';
+//   impact: 'low' | 'medium' | 'high';
+//   confidence, // 0-1
+//   // description: string
+//   // Timeline
+//   // detectedAt: Date
+//   expectedDuration, // months
+// // }
+// export // interface ForecastPoint {
+//   // timestamp: Date
+//   // value: number
+//   confidence, // 0-1
 
-  // Confidence interval
-  lower: number;
-  upper: number;
-}
-export interface CapacityForecast {
-  resource: string;
-  current: number;
-  forecast: ForecastPoint[];
-  // Capacity planning
-  recommendedCapacity: number;
-  scalingTriggers: ScalingTrigger[];
-}
-export interface ScalingTrigger {
-  metric: string;
-  threshold: number;
-  action: 'scale_up' | 'scale_down' | 'alert';
-  confidence: number; // 0-1
-}
-export interface PerformanceForecast {
-  metric: string;
-  forecast: ForecastPoint[];
-  // Performance targets
-  target: number;
-  sla: number;
-  // Risk assessment
-  riskOfSLABreach: number; // 0-1
-  mitigationStrategies: string[];
-}
-export interface CostForecast {
-  totalCost: ForecastPoint[];
-  costPerRequest: ForecastPoint[];
-  // Budget tracking
-  budget?: number;
-  budgetUtilization: number; // 0-1
-  projectedOverrun: number;
-  // Cost optimization
-  optimizationOpportunities: CostOptimization[];
-}
-export interface CostOptimization {
-  opportunity: string;
-  potentialSavings: number;
-  effort: 'low' | 'medium' | 'high';
-  impact: 'low' | 'medium' | 'high';
-  timeline: number; // days
-}
-export interface QualityForecast {
-  overall: ForecastPoint[];
-  byDimension: Record<string, ForecastPoint[]>;
-  // Quality targets
-  target: number; // 0-1
-  minimumAcceptable: number; // 0-1
+//   // Confidence interval
+//   // lower: number
+//   // upper: number
+// // }
+// export // interface CapacityForecast {
+//   // resource: string
+//   // current: number
+//   forecast;
+//   // Capacity planning
+//   // recommendedCapacity: number
+//   scalingTriggers;
+// // }
+// export // interface ScalingTrigger {
+//   // metric: string
+//   // threshold: number
+//   action: 'scale_up' | 'scale_down' | 'alert';
+//   confidence, // 0-1
+// // }
+// export // interface PerformanceForecast {
+//   // metric: string
+//   forecast;
+//   // Performance targets
+//   // target: number
+//   // sla: number
+//   // Risk assessment
+//   riskOfSLABreach, // 0-1
+//   mitigationStrategies;
+// // }
+// export // interface CostForecast {
+//   totalCost;
+//   costPerRequest;
+//   // Budget tracking
+//   budget?;
+//   budgetUtilization, // 0-1
+//   // projectedOverrun: number
+//   // Cost optimization
+//   optimizationOpportunities;
+// // }
+// export // interface CostOptimization {
+//   // opportunity: string
+//   // potentialSavings: number
+//   effort: 'low' | 'medium' | 'high';
+//   impact: 'low' | 'medium' | 'high';
+//   timeline, // days
+// // }
+// export // interface QualityForecast {
+//   overall;
+//   byDimension: Record<string, ForecastPoint[]>;
+//   // Quality targets
+//   target, // 0-1
+//   minimumAcceptable, // 0-1
 
-  // Risk assessment
-  riskOfQualityDegradation: number; // 0-1
-}
-export interface Anomaly {
-  id: string;
-  timestamp: Date;
-  metric: string;
-  value: number;
-  expected: number;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-// Anomaly details
-type: 'spike' | 'drop' | 'trend' | 'pattern';
-confidence: number; // 0-1
-description: string;
-// Impact assessment
-{
-  users: number;
-  requests: number;
-  cost: number;
-  quality: number; // 0-1
-}
+//   // Risk assessment
+//   riskOfQualityDegradation, // 0-1
+// // }
+// export // interface Anomaly {
+//   // id: string
+//   // timestamp: Date
+//   // metric: string
+//   // value: number
+//   // expected: number
+//   severity: 'low' | 'medium' | 'high' | 'critical';
+// // Anomaly details
+// type: 'spike' | 'drop' | 'trend' | 'pattern';
+// confidence, // 0-1
+// // description: string
+// // Impact assessment
+// // {
+//   // users: number
+//   // requests: number
+//   // cost: number
+//   quality, // 0-1
+// // }
 // Resolution
 status: 'open' | 'investigating' | 'resolved' | 'false_positive';
-resolution?: string;
-resolvedAt?: Date;
-actionsTaken: string[];
-}
-export interface AnomalyPattern {
-  pattern: string;
-  frequency: number;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  // Pattern details
-  triggers: string[];
-  conditions: string[];
-  // Historical data
-  occurrences: number;
-  lastOccurrence: Date;
-  // Prevention
-  prevention: string[];
-  monitoring: string[];
-}
+resolution?;
+resolvedAt?;
+actionsTaken;
+// }
+// export // interface AnomalyPattern {
+//   // pattern: string
+//   // frequency: number
+//   severity: 'low' | 'medium' | 'high' | 'critical';
+//   // Pattern details
+//   triggers;
+//   conditions;
+//   // Historical data
+//   // occurrences: number
+//   // lastOccurrence: Date
+//   // Prevention
+//   prevention;
+//   monitoring;
+// // }
+
+}}

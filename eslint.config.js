@@ -1,62 +1,52 @@
-// ESLint 9 Flat Config for Claude Zen
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import globals from 'globals';
-
+// Simple ESLint 9 Flat Config for Claude Zen
 export default [
   // Base config for all files
   {
-    name: 'claude-zen/base',
+    name: 'claude-zen-base',
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',
       globals: {
-        ...globals.node,
-        ...globals.es2024,
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+        global: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        setImmediate: 'readonly',
+        clearImmediate: 'readonly',
       },
     },
   },
-  // JavaScript files
+  // JavaScript and TypeScript files
   {
-    name: 'claude-zen/javascript',
-    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    ...js.configs.recommended,
+    name: 'claude-zen-js-ts',
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs', '**/*.ts', '**/*.tsx'],
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'error',
       'no-console': 'off',
-      'prefer-const': 'warn',
+      'prefer-const': 'error',
       'no-var': 'error',
+      'no-undef': 'error',
+      'no-unreachable': 'error',
+      'no-redeclare': 'error',
+      'no-duplicate-imports': 'error',
     },
   },
-  // TypeScript files
+  // Test files
   {
-    name: 'claude-zen/typescript',
-    files: ['**/*.ts', '**/*.tsx'],
-    languageOptions: {
-      parser: tseslint.parser,
-      parserOptions: {
-        project: './tsconfig.json',
-      },
-    },
-    plugins: {
-      '@typescript-eslint': tseslint.plugin,
-    },
-    rules: {
-      ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-empty-function': 'warn',
-      '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      '@typescript-eslint/prefer-optional-chain': 'error',
-    },
-  },
-  // Test files with Jest-specific configuration
-  {
-    name: 'claude-zen/tests',
+    name: 'claude-zen-tests',
     files: [
       '**/*.test.js',
-      '**/*.test.ts',
       '**/*.spec.js',
+      '**/*.test.ts',
       '**/*.spec.ts',
       '**/__tests__/**/*',
       '**/tests/**/*',
@@ -64,9 +54,6 @@ export default [
     ],
     languageOptions: {
       globals: {
-        ...globals.jest,
-        ...globals.node,
-        // Jest-specific globals
         describe: 'readonly',
         it: 'readonly',
         test: 'readonly',
@@ -79,80 +66,13 @@ export default [
       },
     },
     rules: {
-      // Disable problematic rules for tests
       'no-unused-expressions': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-empty-function': 'off',
       'no-console': 'off',
-
-      // Jest-specific best practices
-      'prefer-const': 'warn',
-      'no-var': 'error',
-
-      // Allow test-specific patterns
-      'max-lines-per-function': 'off',
-      'max-statements': 'off',
-      complexity: 'off',
-    },
-  },
-  // CLI-specific files
-  {
-    name: 'claude-zen/cli',
-    files: ['src/cli/**/*.js', 'src/cli/**/*.ts'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-    },
-    rules: {
-      'no-process-exit': 'off',
-      'no-console': 'off',
-    },
-  },
-  // Web UI files (browser environment)
-  {
-    name: 'claude-zen/web-ui',
-    files: ['src/ui/**/*.js', 'src/ui/web-ui/**/*.js'],
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.es2024,
-      },
-    },
-    rules: {
-      'no-console': 'warn',
-    },
-  },
-  // Config files
-  {
-    name: 'claude-zen/config',
-    files: ['*.config.js', '*.config.mjs', '*.config.cjs'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-    },
-    rules: {
-      'no-console': 'off',
-    },
-  },
-  // Script files
-  {
-    name: 'claude-zen/scripts',
-    files: ['scripts/**/*.js', 'scripts/**/*.ts'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-    },
-    rules: {
-      'no-console': 'off',
-      'no-process-exit': 'off',
     },
   },
   // Ignore patterns
   {
-    name: 'claude-zen/ignores',
+    name: 'claude-zen-ignores',
     ignores: [
       'node_modules/**',
       'dist/**',
@@ -180,8 +100,9 @@ export default [
       '*.db',
       '*.tgz',
       '*.dump',
-      'scripts/test-monorepo-detection.js',
-      '**/*.d.ts',
+      'scripts/**/*.py',
+      '**/*.backup',
+      '*.config.js.backup',
     ],
   },
 ];

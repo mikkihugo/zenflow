@@ -1,293 +1,269 @@
-/**
- * Plugin Resource Monitor;
- * Real-time monitoring and enforcement of plugin resource usage limits;
- */
 
-import { PerformanceObserver } from 'node:perf_hooks';
-import { cpuUsage } from 'node:process';
+/** Plugin Resource Monitor;
+/** Real-time monitoring and enforcement of plugin resource usage limits;
 
-interface ResourceMetrics {pluginName = new Map()
-private;
-monitoringInterval?: NodeJS.Timeout;
-private;
-performanceObserver?: PerformanceObserver;
-private;
-networkCounters = new Map()
-private;
-diskCounters = new Map()
-private;
-readonly;
-config = {}
-)
-{
+import { PerformanceObserver  } from 'node:perf_hooks';
+import { cpuUsage  } from 'node:process';
+// // interface ResourceMetrics {pluginName = new Map() {}
+// private;
+// monitoringInterval?: NodeJS.Timeout;
+// private;
+// performanceObserver?;
+// private;
+// networkCounters = new Map() {}
+// private;
+// diskCounters = new Map() {}
+// private;
+// readonly;
+// config = {}
+// )
+// {
   super();
   this.config = {enabled = config.resourceLimits ? this.parseResourceLimits(config.resourceLimits) : [];
   this.plugins.set(pluginName, {
-      manifest,;
-  config,;
-  worker,;
-  limits,
+      manifest,
+  config,
+  worker,
+  limits,)
     (metrics = setInterval(() => {
       this.collectMetrics();
     }, this.config.interval));
   // Set up performance monitoring
   this.performanceObserver = new PerformanceObserver((list) => {
     const _entries = list.getEntries();
-    for (const entry of entries) {
-      this.processPerformanceEntry(entry);
-    }
-  });
-  this.performanceObserver.observe({ entryTypes => {
-      this.cleanupOldMetrics();
-}
+  for(const entry of entries) {
+      this.processPerformanceEntry(entry); //     }
+  }); this.performanceObserver.observe({ entryTypes => {)
+      this.cleanupOldMetrics() {;
+// }
 , 300000) // Every 5 minutes
-}
-private
-async
-collectMetrics()
+// }
+// private // async collectMetrics() { }
 : Promise<void>
-{
-  for (const [pluginName, pluginData] of this.plugins) {
+
+  for(const [pluginName, pluginData] of this.plugins) {
     try {
-        const _metrics = await this.gatherPluginMetrics(pluginName, pluginData);
-;
+// const _metrics = awaitthis.gatherPluginMetrics(pluginName, pluginData); 
+
         // Store metrics
-        pluginData.metrics.push(metrics);
-;
-        // Check for alerts
-        await this.checkResourceAlerts(pluginName, metrics, pluginData.limits);
-;
+        pluginData.metrics.push(metrics); // Check for alerts
+// // await this.checkResourceAlerts(pluginName, metrics, pluginData.limits) {;
         this.emit('metrics-collected', { pluginName, metrics });
-      } catch (_error
-    = new Date()
+      } catch(_error
+    = new Date() {}
     // Get memory usage
     const _memUsage = memoryUsage();
     // Get CPU usage
     const __cpuData = cpuUsage();
-    // Get disk I/O (estimated)
+    // Get disk I/O(estimated)
 
-    return {
-      pluginName,;
+    // return {
+      pluginName,
     // timestamp,memory = config.resourceLimits?.memory  ?? 512; // LINT: unreachable code removed
     const _limitBytes = limitMB * 1024 * 1024;
-    return (memUsage.heapUsed / limitBytes) * 100;
+    // return(memUsage.heapUsed / limitBytes) * 100;
     //   // LINT: unreachable code removed}
     private;
     calculateCpuPercentage(cpuData = cpuData.user + cpuData.system;
-    return Math.min(100, (totalCpu / 1000000) * 100); // Convert to percentage
-  }
+    // return Math.min(100, (totalCpu / 1000000) * 100); // Convert to percentage
+  //   }
   private;
   async;
   getWorkerHandles(worker = this.plugins.get(pluginName);
-  if (!pluginData) return;
+  if(!pluginData) return;
   // ; // LINT: unreachable code removed
   // Check memory alerts
-  await this.checkMemoryAlert(pluginName, metrics.memory, pluginData);
+// // await this.checkMemoryAlert(pluginName, metrics.memory, pluginData);
   // Check CPU alerts
-  await this.checkCpuAlert(pluginName, metrics.cpu, pluginData);
+// // await this.checkCpuAlert(pluginName, metrics.cpu, pluginData);
   // Check disk alerts
-  await this.checkDiskAlert(pluginName, metrics.disk, pluginData);
+// // await this.checkDiskAlert(pluginName, metrics.disk, pluginData);
   // Check network alerts
-  await this.checkNetworkAlert(pluginName, metrics.network, pluginData);
+// // await this.checkNetworkAlert(pluginName, metrics.network, pluginData);
   // Check handle alerts
-  await this.checkHandleAlert(pluginName, metrics.handles, pluginData);
-}
-private
-async;
-checkMemoryAlert(pluginName = this.config.alertThresholds.memory
-;
-if (memory.percentage >= critical) {
-  await this.createAlert(pluginData, {alertType = warning) {
-      await this.createAlert(pluginData, {
-        pluginName,alertType = this.config.alertThresholds.cpu;
-;
-  if (cpu.percentage >= critical) {
-    await this.createAlert(pluginData, {alertType = warning) {
-      await this.createAlert(pluginData, {
+// // await this.checkHandleAlert(pluginName, metrics.handles, pluginData);
+// }
+// private async;
+  checkMemoryAlert(pluginName = this.config.alertThresholds.memory
+
+if(memory.percentage >= critical) {
+// // await this.createAlert(pluginData, {alertType = warning) {
+      // await this.createAlert(pluginData, {
+        pluginName,alertType = this.config.alertThresholds.cpu;)
+  if(cpu.percentage >= critical) {
+// // await this.createAlert(pluginData, {alertType = warning) {
+      // await this.createAlert(pluginData, {/g)
         pluginName,alertType = (disk.bytesRead + disk.bytesWritten) / 1024 / 1024;
     const { warning, critical } = this.config.alertThresholds.disk;
-;
-    if (diskRateMBps >= critical) {
-      await this.createAlert(pluginData, {alertType = warning) {
-      await this.createAlert(pluginData, {
+  if(diskRateMBps >= critical) {
+// // await this.createAlert(pluginData, {alertType = warning) {
+      // await this.createAlert(pluginData, {
         pluginName,alertType = network.requests; // Simplified calculation
       const { warning, critical } = this.config.alertThresholds.network;
-;
-      if (requestsPerMinute >= critical) {
-        await this.createAlert(pluginData, {alertType = warning) {
-      await this.createAlert(pluginData, {
+
+  if(requestsPerMinute >= critical) {
+// // await this.createAlert(pluginData, {alertType = warning) {
+      // await this.createAlert(pluginData, {/g)
         pluginName,alertType = (handles.open / handles.limit) * 100;
-;
-        if (percentage >= 90) {
-          await this.createAlert(pluginData, {alertType = 75) {
-      await this.createAlert(pluginData, {
-        pluginName,;
+  if(percentage >= 90) {
+// // await this.createAlert(pluginData, {alertType = 75) {
+      // await this.createAlert(pluginData, {
+        pluginName,)
         alertType = {id = pluginData.alerts.slice(-this.config.maxAlerts);
-        }
-;
+        //         }
+
         this.emit('resource-alert', alert);
-;
+
         // Consider enforcement action for critical alerts
-        if (alert.alertType === 'critical' && this.config.enforcementEnabled) {
-          await this.considerEnforcement(alert, pluginData);
-        }
-      }
-;
+  if(alert.alertType === 'critical' && this.config.enforcementEnabled) {
+// // await this.considerEnforcement(alert, pluginData);
+        //         }
+      //       }
+
       // Resource enforcement
       private;
       async;
       considerEnforcement(alert = Date.now() - pluginData.lastEnforcement.executedAt.getTime();
-      if (timeSinceLastEnforcement < this.config.gracePeriod) {
+  if(timeSinceLastEnforcement < this.config.gracePeriod) {
         return; // Still in grace period
-      }
-    }
-;
+      //       }
+    //     }
+
     // Determine enforcement action
     const _action = 'throttle';
-;
-    if (alert.percentage > 150) {
+  if(alert.percentage > 150) {
       action = 'terminate';
-    } else if (alert.percentage > 120) {
+    } else if(alert.percentage > 120) {
       action = 'suspend';
-    } else if (alert.percentage > 100) {
+    } else if(alert.percentage > 100) {
       action = 'quarantine';
-    }
-;
-    const _enforcement = {action = await this.executeEnforcement(alert.pluginName, enforcement);
+    //     }
+
+    const _enforcement = {action = // await this.executeEnforcement(alert.pluginName, enforcement);
     enforcement.successful = success;
     pluginData.lastEnforcement = enforcement;
-;
+
     this.emit('resource-enforcement', enforcement);
-  }
-  catch (error = this.plugins.get(pluginName);
-  if (!pluginData) return false;
+  //   }
+  catch(error = this.plugins.get(pluginName);
+  if(!pluginData) return false;
     // ; // LINT: unreachable code removed
-  switch (enforcement.action) {
-    case 'throttle':;
-      return await this.throttlePlugin(pluginName, pluginData);
+  switch(enforcement.action) {
+    case 'throttle':
+      // return // await this.throttlePlugin(pluginName, pluginData);
     // ; // LINT: unreachable code removed
-    case 'suspend':;
-      return await this.suspendPlugin(pluginName, pluginData);
+    case 'suspend':
+      // return // await this.suspendPlugin(pluginName, pluginData);
     // ; // LINT: unreachable code removed
-    case 'terminate':;
-      return await this.terminatePlugin(pluginName, pluginData);
+    case 'terminate':
+      // return // await this.terminatePlugin(pluginName, pluginData);
     // ; // LINT: unreachable code removed
-    case 'quarantine':;
-      return await this.quarantinePlugin(pluginName, pluginData);
+    case 'quarantine':
+      // return // await this.quarantinePlugin(pluginName, pluginData);
     // default = []; // LINT: unreachable code removed
-;
-    if (resourceLimits.memory) {
+  if(resourceLimits.memory) {
       limits.push({resource = Date.now() - this.config.retentionPeriod;
-;
-    for (const [_pluginName, pluginData] of this.plugins) {
+  for(const [_pluginName, pluginData] of this.plugins) {
       // Clean up old metrics
-      pluginData.metrics = pluginData.metrics.filter(;
-        metric => metric.timestamp.getTime() > cutoffTime;
-      );
-;
-      // Clean up old alerts (but keep unacknowledged ones)
-      pluginData.alerts = pluginData.alerts.filter(;
+      pluginData.metrics = pluginData.metrics.filter(; metric => metric.timestamp.getTime() > cutoffTime; ) {;
+
+      // Clean up old alerts(but keep unacknowledged ones)
+      pluginData.alerts = pluginData.alerts.filter(;)
         alert => !alert.acknowledged  ?? alert.timestamp.getTime() > cutoffTime;
       );
-    }
-  }
-;
+    //     }
+  //   }
+
   // Public API methods
   getResourceUsage(pluginName = this.plugins.get(pluginName);
-    if (!pluginData  ?? pluginData.metrics.length === 0) {
-      return null;
+  if(!pluginData  ?? pluginData.metrics.length === 0) {
+      // return null;
     //   // LINT: unreachable code removed}
-;
-    return {allocated = this.plugins.get(pluginName);
-    // if (!pluginData) return []; // LINT: unreachable code removed
-;
+
+    // return {allocated = this.plugins.get(pluginName);
+    // if(!pluginData) return []; // LINT: unreachable code removed
+
     const _metrics = pluginData.metrics;
-    return limit ? metrics.slice(-limit) : metrics;
+    // return limit ? metrics.slice(-limit) ;
     //   // LINT: unreachable code removed}
-;
-  getActiveAlerts(pluginName?: string);
-  : ResourceAlert[];
-    if (pluginName) {
+
+  getActiveAlerts(pluginName?);
+  if(pluginName) {
       const _pluginData = this.plugins.get(pluginName);
-      return pluginData ? pluginData.alerts.filter(alert => !alert.acknowledged) : [];
+      // return pluginData ? pluginData.alerts.filter(alert => !alert.acknowledged) : [];
     //   // LINT: unreachable code removed}
-;
+
     const _allAlerts = [];
-    for (const [, pluginData] of this.plugins) {
-      allAlerts.push(...pluginData.alerts.filter((alert) => !alert.acknowledged));
-    }
-;
-    return allAlerts.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    //   // LINT: unreachable code removed}
-;
-  acknowledgeAlert(alertId = pluginData.alerts.find(a => a.id === alertId);
-  if (alert) {
+  for(const [ pluginData] of this.plugins) {
+      allAlerts.push(...pluginData.alerts.filter((alert) => !alert.acknowledged)); //     }
+
+    return allAlerts.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()); //   // LINT: unreachable code removed}
+  acknowledgeAlert(alertId = pluginData.alerts.find(a => a.id === alertId) {;
+  if(alert) {
     alert.acknowledged = true;
     this.emit('alert-acknowledged', alert);
     return true;
     //   // LINT: unreachable code removed}
-}
-return false;
-}
-;
-  getSystemResourceSummary():;
-{
+// }
+// return false;
+// }
+
+  getSystemResourceSummary():
+// {
   totalPlugins = 0;
   const __totalCpu = 0;
   const __totalNetwork = 0;
   const __activeAlerts = 0;
   const __criticalAlerts = 0;
   const __pluginCount = 0;
-;
-  for (const [, pluginData] of this.plugins) {
-    if (pluginData.metrics.length > 0) {
-      const _latest = pluginData.metrics[pluginData.metrics.length - 1];
-      totalMemory += latest.memory.heapUsed;
-      _totalCpu += latest.cpu.percentage;
+  for(const [ pluginData] of this.plugins) {
+  if(pluginData.metrics.length > 0) {
+      const _latest = pluginData.metrics[pluginData.metrics.length - 1]; totalMemory += latest.memory.heapUsed; _totalCpu += latest.cpu.percentage;
       _totalNetwork += latest.network.requests;
       _pluginCount++;
-    }
-;
-    const _unacknowledgedAlerts = pluginData.alerts.filter((a) => !a.acknowledged);
+    //     }
+
+    const _unacknowledgedAlerts = pluginData.alerts.filter((a) {=> !a.acknowledged);
     _activeAlerts += unacknowledgedAlerts.length;
     _criticalAlerts += unacknowledgedAlerts.filter((a) => a.alertType === 'critical').length;
-  }
-;
+  //   }
+
   return {totalPlugins = this.networkCounters.get(pluginName);
-    // if (counter) { // LINT: unreachable code removed
+    // if(counter) { // LINT: unreachable code removed
     counter.requests++;
     counter.bytesIn += bytesIn;
     counter.bytesOut += bytesOut;
-  }
-;
+  //   }
+
 recordDiskOperation(pluginName = this.diskCounters.get(pluginName);
-if (counter) {
-  if (operation === 'read') {
+  if(counter) {
+  if(operation === 'read') {
     counter.reads++;
     counter.bytesRead += bytes;
   } else {
     counter.writes++;
     counter.bytesWritten += bytes;
-  }
-}
-}
-;
+  //   }
+// }
+// }
+
   async cleanup(): Promise<void>;
-{
-  if (this.monitoringInterval) {
+// {
+  if(this.monitoringInterval) {
     clearInterval(this.monitoringInterval);
     this.monitoringInterval = undefined;
-  }
-;
-  if (this.performanceObserver) {
+  //   }
+  if(this.performanceObserver) {
     this.performanceObserver.disconnect();
     this.performanceObserver = undefined;
-  }
-;
+  //   }
+
   this.plugins.clear();
   this.networkCounters.clear();
   this.diskCounters.clear();
-}
-}
-;
-export default ResourceMonitor;
+// }
+// }
+
+// export default ResourceMonitor;
+
+}}}}}}}}}}}}}}}}}}}}})))))))))))))))
