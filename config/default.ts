@@ -84,7 +84,6 @@ const _config: Config = {
       max: 1000, // limit each IP to 1000 requests per windowMs
     },
   },
-  },
   database: {
     sqlite: {
       path: process.env.SQLITE_PATH ?? './databases/claude-zen.db',
@@ -99,7 +98,6 @@ const _config: Config = {
       path: process.env.KUZU_PATH ?? './databases/graph',
       readOnly: false,
     },
-  },
   },
   ruvFANN: {
     integrated: true, // Fully integrated as workspace component
@@ -118,19 +116,16 @@ const _config: Config = {
     ],
     gpuAcceleration: process.env.GPU_ACCELERATION !== 'false',
   },
-  },
   hiveMind: {
     maxQueens: parseInt(process.env.MAX_QUEENS ?? '10', 10),
     consensusThreshold: 0.66, // 66% consensus required
     memoryRetention: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
     autoBackup: true,
   },
-  },
   logging: {
     level: process.env.LOG_LEVEL ?? 'info',
     format: 'json',
     file: process.env.LOG_FILE ?? './logs/claude-zen.log',
-  },
   },
   security: {
     jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',
@@ -138,4 +133,4 @@ const _config: Config = {
     rateLimiting: process.env.RATE_LIMITING !== 'false',
   },
 };
-export default config;
+export default _config;

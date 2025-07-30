@@ -33,23 +33,20 @@ import type {
 /**
  * TypeScript conversion patterns;
  */
-const _CONVERSION_PATTERNS = [;
+const _CONVERSION_PATTERNS = [
   // Add type imports
   {
-    pattern: /^(import .+?;?\s*\n
-)/,
-    replacement: `$1\n$
-{
+    pattern: /^(import .+?;?\s*\n\n)/,
+    replacement: `$1\n\${
   TYPE_IMPORTS;
-}
-\n`,
+}\n`,
 },
 // Function parameters
 {
-    pattern: /function\s+(\w+)\s*\(([^)]*)\)/g,;
+    pattern: /function\s+(\w+)\s*\(([^)]*)\)/g,
     replacement: (_match, _name, params) => {
       const _typedParams = params;
-        .split(',');
+        .split(',')
         .map((param) => {
           const _trimmed = param.trim();
           if (!trimmed) return trimmed;
@@ -68,7 +65,7 @@ const _CONVERSION_PATTERNS = [;
     pattern: /export\s+(?:const|let)\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g,
     replacement: (_match, name, params) => {
       const _typedParams = params;
-        .split(',');
+        .split(',')
         .map((param) => {
           const _trimmed = param.trim();
           if (!trimmed) return trimmed;
@@ -87,7 +84,7 @@ const _CONVERSION_PATTERNS = [;
     pattern: /constructor\s*\(([^)]*)\)/g,;
     replacement: (_match, params) => {
       const _typedParams = params;
-        .split(',');
+        .split(',')
         .map((param) => {
           const _trimmed = param.trim();
           if (!trimmed) return trimmed;
