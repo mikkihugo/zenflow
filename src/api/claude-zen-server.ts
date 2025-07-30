@@ -1,7 +1,7 @@
 /**
  * 🚀 CLAUDE ZEN SERVER - Schema-Driven API;
  * Unified API server with auto-generated routes from schema;
- * Replaces hard-coded endpoints with maintainable schema approach;
+ * Replaces hard-coded endpoints with maintainable schema approach
  */
 
 import { EventEmitter } from 'node:events';
@@ -14,14 +14,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 
 import {
-  CLAUDE_ZEN_SCHEMA,;
-generateOpenAPISpec,;
-getWebEnabledCommands,;
-SCHEMA_METADATA,;
-validateCommandArgs,;
+  CLAUDE_ZEN_SCHEMA,
+generateOpenAPISpec,
+getWebEnabledCommands,
+SCHEMA_METADATA,
+validateCommandArgs,
 } from './claude-zen-schema.js'
 /**
- * Server configuration interface;
+ * Server configuration interface
  */
 export interface ServerConfig {
   port?: number;
@@ -33,7 +33,7 @@ export interface ServerConfig {
   apiPrefix?: string;
 }
 /**
- * Server metrics interface;
+ * Server metrics interface
  */
 export interface ServerMetrics {
   requests: number;
@@ -43,18 +43,18 @@ export interface ServerMetrics {
   startTime: number;
 }
 /**
- * Claude Zen Server - Schema-driven API server;
+ * Claude Zen Server - Schema-driven API server
  */
 export class ClaudeZenServer extends EventEmitter {
   websocketConnections: 0;
-  ,
+
   errors: 0;
-  ,
+
   uptime: 0;
-  ,
+
   startTime: Date.now;
   ()
-  ,
+
 }
 // Dynamic storage for schema-driven data
 private
@@ -63,13 +63,13 @@ constructor(config: ServerConfig = {})
 {
   super();
   this.config = {
-      port: 3000,;
-  host: 'localhost',;
-  cors: true,;
-  helmet: true,;
-  rateLimit: true,;
-  websocket: true,;
-  apiPrefix: '/api',;
+      port: 3000,
+  host: 'localhost',
+  cors: true,
+  helmet: true,
+  rateLimit: true,
+  websocket: true,
+  apiPrefix: '/api',
   ...config,
 }
 this.app = express();
@@ -78,7 +78,7 @@ this.setupMiddleware();
 this.setupRoutes();
 }
 /**
- * Initialize storage maps based on schema;
+ * Initialize storage maps based on schema
  */
 private
 initializeStorage()
@@ -94,7 +94,7 @@ initializeStorage()
   });
 }
 /**
- * Setup Express middleware;
+ * Setup Express middleware
  */
 private
 setupMiddleware();
@@ -127,7 +127,7 @@ setupMiddleware();
   });
 }
 /**
- * Setup API routes based on schema;
+ * Setup API routes based on schema
  */
 private
 setupRoutes();
@@ -137,10 +137,10 @@ setupRoutes();
   // Health check
   this.app.get('/health', (_req: Request, res: Response) => {
     res.json({
-        status: 'healthy',;
-    version: SCHEMA_METADATA.version,;
-    uptime: Date.now() - this.metrics.startTime,;
-    metrics: this.getMetrics(),;
+        status: 'healthy',
+    version: SCHEMA_METADATA.version,
+    uptime: Date.now() - this.metrics.startTime,
+    metrics: this.getMetrics(),
   });
 }
 )
@@ -160,9 +160,9 @@ this.app.get(`$
 }
 / (),,6::;;;;=>RR_`aceeeeeeehmnopqqrrssssstu{{};
 res.json({
-        metadata: SCHEMA_METADATA,;
-commands: Object.keys(CLAUDE_ZEN_SCHEMA),;
-webEnabled: Object.keys(getWebEnabledCommands()),;
+        metadata: SCHEMA_METADATA,
+commands: Object.keys(CLAUDE_ZEN_SCHEMA),
+webEnabled: Object.keys(getWebEnabledCommands()),
 })
 })
 // Generate routes from schema
@@ -175,22 +175,22 @@ this.app.post(`$
 / (),,7::;;;;=>RR`acceeeeeeeeennopqqrrsssssttuuxy{{};
 try {
         const { command, args = {} } = req.body;
-;
+
         if (!command) {
           return res.status(400).json({
-            error: 'Command is required',;
-    // available: Object.keys(CLAUDE_ZEN_SCHEMA),; // LINT: unreachable code removed
+            error: 'Command is required',
+    // available: Object.keys(CLAUDE_ZEN_SCHEMA), // LINT: unreachable code removed
           });
         }
 const _result = await this.executeCommand(command, args);
 res.json(result);
-} catch (/* error */)
+} catch ()
 {
   this.metrics.errors++;
   console.error('Command execution error:', error);
   res.status(500).json({
-          error: 'Command execution failed',;
-  message: error instanceof Error ? error.message : 'Unknown error',;
+          error: 'Command execution failed',
+  message: error instanceof Error ? error.message : 'Unknown error',
 }
 )
 }
@@ -209,8 +209,8 @@ this.app.use((err: Error, _req: Request, res: Response, _next: NextFunction) =>
   this.metrics.errors++;
   console.error('Server error:', err);
   res.status(500).json({
-        error: 'Internal server error',;
-  message: err.message,;
+        error: 'Internal server error',
+  message: err.message,
 }
 )
 })
@@ -218,15 +218,15 @@ this.app.use((err: Error, _req: Request, res: Response, _next: NextFunction) =>
 this.app.use('*', (req: Request, res: Response) =>
 {
   res.status(404).json({
-        error: 'Not found',;
-  path: req.originalUrl,;
-  available: this.getAvailableEndpoints(),;
+        error: 'Not found',
+  path: req.originalUrl,
+  available: this.getAvailableEndpoints(),
 }
 )
 })
 }
 /**
- * Generate routes from schema;
+ * Generate routes from schema
  */
 private
 generateSchemaRoutes()
@@ -238,32 +238,32 @@ generateSchemaRoutes()
     // ; // LINT: unreachable code removed
       const { endpoint, method } = command.interfaces.web;
       const _fullPath = `${this.config.apiPrefix}${endpoint}`;
-;
+
       // Create route handler
       const _handler = async (req: Request, res: Response) => {
         try {
           const _args = { ...req.query, ...req.body };
-;
+
           // Validate arguments
           const _validation = validateCommandArgs(commandName, args);
           if (!validation.valid) {
             return res.status(400).json({
-              error: 'Validation failed',;
-    // missing: validation.missing,; // LINT: unreachable code removed
-              errors: validation.errors,;
+              error: 'Validation failed',
+    // missing: validation.missing, // LINT: unreachable code removed
+              errors: validation.errors,
             });
           }
-;
+
           // Execute command
           const _result = await this.executeCommand(commandName, args);
           res.json(result);
-        } catch (/* error */) 
+        } catch () 
           this.metrics.errors++;
           console.error(`Error in ${commandName}:`, error);
           res.status(500).json({
-            error: 'Command execution failed',;
-            command: commandName,;
-            message: error instanceof Error ? error.message : 'Unknown error',;);
+            error: 'Command execution failed',
+            command: commandName,
+            message: error instanceof Error ? error.message : 'Unknown error',);
         }
 }
 // Register route based on HTTP method
@@ -286,7 +286,7 @@ switch (method.toUpperCase()) {
 })
 }
 /**
- * Execute a command;
+ * Execute a command
  */
 private
 async
@@ -307,7 +307,7 @@ executeCommand(commandName: string, args: unknown)
     if (commandName.includes('create')) {
       const _id = uuidv4();
       const _item = {
-          id,;
+          id,
       ...args,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -317,9 +317,9 @@ executeCommand(commandName: string, args: unknown)
     //   // LINT: unreachable code removed}
     if (commandName.includes('list')) {
       return {
-          success: true,;
-      // items: Array.from(storageMap.values()),; // LINT: unreachable code removed
-      total: storageMap.size,;
+          success: true,
+      // items: Array.from(storageMap.values()), // LINT: unreachable code removed
+      total: storageMap.size,
     }
   }
   if (commandName.includes('get')) {
@@ -345,15 +345,15 @@ executeCommand(commandName: string, args: unknown)
       }
       // Default command execution
       return {
-      success: true,;
-      // command: commandName,; // LINT: unreachable code removed
-      args,;
-      timestamp: new Date().toISOString(),;
-      message: `Command ${commandName} executed successfully`,;
+      success: true,
+      // command: commandName, // LINT: unreachable code removed
+      args,
+      timestamp: new Date().toISOString(),
+      message: `Command ${commandName} executed successfully`,
     }
   }
   /**
-   * Start the server;
+   * Start the server
    */
   async;
   start();
@@ -367,38 +367,38 @@ executeCommand(commandName: string, args: unknown)
         if (this.config.websocket) {
           this.setupWebSocket();
         }
-;
+
         this.server.listen(this.config.port, this.config.host, () => {
           this.isRunning = true;
           this.metrics.startTime = Date.now();
-;
+
           const _result = {
-            port: this.config.port!,;
-            host: this.config.host!,;
+            port: this.config.port!,
+            host: this.config.host!,
             urls: [;
               `http://${this.config.host}:${this.config.port}`,
               `http://${this.config.host}:${this.config.port}${this.config.apiPrefix}`,
               `http://${this.config.host}:${this.config.port}/health`,
-            ],;
+            ],
           };
-;
+
           if (this.config.websocket) {
             result.urls.push(`ws://${this.config.host}:${this.config.port}`);
           }
-;
+
           this.emit('started', result);
           resolve(result);
         });
-;
+
         this.server.on('error', (error) => {
           reject(error);
         });
-      } catch (/* error */) {
+      } catch () {
         reject(error);
       });
 }
 /**
- * Stop the server;
+ * Stop the server
  */
 async;
 stop();
@@ -409,11 +409,11 @@ stop();
         resolve();
     // return; // LINT: unreachable code removed
       }
-;
+
       if (this.wss) {
         this.wss.close();
       }
-;
+
       this.server.close(() => {
         this.isRunning = false;
         this.emit('stopped');
@@ -422,7 +422,7 @@ stop();
     });
 }
 /**
- * Setup WebSocket server;
+ * Setup WebSocket server
  */
 private
 setupWebSocket();
@@ -438,40 +438,40 @@ setupWebSocket();
     });
     ws.send(;
     JSON.stringify({
-          type: 'welcome',;
-    message: 'Connected to Claude Zen Server',;
-    timestamp: new Date().toISOString(),;
+          type: 'welcome',
+    message: 'Connected to Claude Zen Server',
+    timestamp: new Date().toISOString(),
   });
   )
 }
 )
 }
 /**
- * Get server metrics;
+ * Get server metrics
  */
 getMetrics()
 : ServerMetrics
 {
   return {
-      ...this.metrics,;
-  // uptime: Date.now() - this.metrics.startTime,; // LINT: unreachable code removed
+      ...this.metrics,
+  // uptime: Date.now() - this.metrics.startTime, // LINT: unreachable code removed
 }
 }
 /**
- * Get available endpoints;
+ * Get available endpoints
  */
 private
 getAvailableEndpoints()
 : string[]
 {
     const _endpoints = [;
-      '/health',;
-      `${this.config.apiPrefix}/docs`,;
-      `${this.config.apiPrefix}/schema`,;
-      `${this.config.apiPrefix}/execute`,;
-      `${this.config.apiPrefix}/metrics`,;
+      '/health',
+      `${this.config.apiPrefix}/docs`,
+      `${this.config.apiPrefix}/schema`,
+      `${this.config.apiPrefix}/execute`,
+      `${this.config.apiPrefix}/metrics`,
     ];
-;
+
     // Add schema-based endpoints
     const _webCommands = getWebEnabledCommands();
     Object.values(webCommands).forEach((command) => {
@@ -479,14 +479,14 @@ getAvailableEndpoints()
         endpoints.push(`${this.config.apiPrefix}${command.interfaces.web.endpoint}`);
       }
     });
-;
+
     return endpoints.sort();
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Check if server is running;
+   * Check if server is running
    */;
   isServerRunning(): boolean 
     return this.isRunning;
-;
+
 export default ClaudeZenServer;

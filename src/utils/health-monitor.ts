@@ -1,6 +1,6 @@
 /**
  * Health Monitoring Utilities;
- * System health checks and monitoring for Claude Flow servers;
+ * System health checks and monitoring for Claude Flow servers
  */
 
 import { EventEmitter } from 'node:events';
@@ -9,22 +9,18 @@ import os from 'node:os';
 import process from 'node:process';
 
 /**
- * Health Monitor Configuration;
+ * Health Monitor Configuration
  */
 export interface HealthMonitorConfig {checkInterval = > void
 ('check-completed');
 : (result = > void
-('check-failed')
-: (result = > void
-('threshold-exceeded')
-: (metric = > void
-('status-degraded')
-: (reason = > void
-('status-recovered')
-: (reason = > void
+'check-failed': (result = > void
+'threshold-exceeded': (metric = > void
+'status-degraded': (reason = > void
+'status-recovered': (reason = > void
 }
 /**
- * Health Monitor Implementation;
+ * Health Monitor Implementation
  */
 export class HealthMonitor extends EventEmitter {
   private config = new Map();
@@ -35,47 +31,47 @@ export class HealthMonitor extends EventEmitter {
       console.error('Initial health checkfailed = setInterval(() => {
       this.runHealthChecks().catch(error => {
         console.error('Scheduled health checkfailed = false;
-;
+
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
-;
+
     console.warn('🏥 Health monitor stopped');
   }
-;
+
   /**
-   * Add a health check;
+   * Add a health check
    */;
   addCheck(check = this.config.checks.filter(check => check.name !== name);
     this.checks.delete(name);
   }
-;
+
   /**
-   * Get current health status;
+   * Get current health status
    */;
   async getHealth(): Promise<ServerHealth> {
     if (!this.isRunning) {
       await this.runHealthChecks();
     }
-;
+
     return this.buildHealthReport();
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Run all health checks;
+   * Run all health checks
    */;
   private async runHealthChecks(): Promise<void> {
     const _promises = this.config.checks.map(check => this.runSingleCheck(check));
     await Promise.allSettled(promises);
-;
+
     // Build and emit health report
     const _health = this.buildHealthReport();
-;
+
     // Check if health status changed
     if (!this.lastHealth  ?? this.lastHealth.status !== health.status) {
       this.emit('health-changed', health);
-;
+
       if (health.status === 'degraded'  ?? health.status === 'error') {
         this.emit('status-degraded', `Health status changed to ${health.status}`);
       } else if (this.lastHealth && ;
@@ -84,21 +80,21 @@ export class HealthMonitor extends EventEmitter {
         this.emit('status-recovered', 'Health status recovered to healthy');
       }
     }
-;
+
     this.lastHealth = health;
   }
-;
+
   /**
-   * Run a single health check;
+   * Run a single health check
    */;
   private async runSingleCheck(check): Promise<void> {
     const _startTime = Date.now();
     let _result = null;
-;
+
     try {
       const _checkResult = await this.executeCheck(check);
       const _duration = Date.now() - startTime;
-;
+
       result = {name = this.checks.get(check.name);
       if (existing && checkResult.status === 'healthy') {
         result.lastSuccess = new Date();
@@ -107,14 +103,14 @@ export class HealthMonitor extends EventEmitter {
         result.lastSuccess = existing.lastSuccess;
         result.consecutiveFailures = existing.consecutiveFailures + 1;
       }
-;
-    } catch (/* err */) {
+
+    } catch () {
       error = err as Error;
       const _duration = Date.now() - startTime;
       const _existing = this.checks.get(check.name);
-;
+
       result = {name = Date.now();
-;
+
     switch (check.type) {
       case 'database':;
         return this.checkDatabase(check);
@@ -130,12 +126,12 @@ export class HealthMonitor extends EventEmitter {
     // ; // LINT: unreachable code removed
       case 'custom':;
         return this.checkCustom(check);default = Date.now();
-;
+
     try {
       // This would be implemented based on the specific database type
       // For now, just simulate a database check
       await new Promise(resolve => setTimeout(resolve, 10));
-;
+
       return {name = Date.now();
     // ; // LINT: unreachable code removed
     try {
@@ -143,11 +139,11 @@ export class HealthMonitor extends EventEmitter {
       if (!url) {
         throw new Error('Service URL not configured');
       }
-;
+
       const _controller = new AbortController();
-;
+
       const _response = await fetch(url, {method = Date.now() - startTime;
-;
+
       if (response.ok) {
         return {name = Date.now();
     // ; // LINT: unreachable code removed
@@ -156,15 +152,15 @@ export class HealthMonitor extends EventEmitter {
       if (!filePath) {
         throw new Error('File path not configured');
       }
-;
+
       const _stats = await fs.stat(filePath);
-;
+
       return {name = Date.now();
     // ; // LINT: unreachable code removed
     try {
       // Custom checks would be implemented based on the config
       const _checkFunction = check.config.function as string;
-;
+
       if (checkFunction === 'memory') {
         return this.checkMemoryUsage(check);
     //   // LINT: unreachable code removed} else if (checkFunction === 'cpu') {
@@ -172,7 +168,7 @@ export class HealthMonitor extends EventEmitter {
     //   // LINT: unreachable code removed} else if (checkFunction === 'disk') {
         return this.checkDiskUsage(check);
     //   // LINT: unreachable code removed}
-;
+
       throw new Error(`Unknown custom checkfunction = Date.now();
     const _memoryUsage = process.memoryUsage();
     const _totalMemory = os.totalmem();
@@ -195,10 +191,10 @@ export class HealthMonitor extends EventEmitter {
     try {
       // This is a simplified check - in production you'd want to check actual disk usage
       const __stats = await fs.stat(process.cwd());
-;
+
       return {name = result.metadata.usagePercentage as number;
     // const _threshold = result.metadata.threshold as number; // LINT: unreachable code removed
-;
+
         if (usage > threshold) {
           this.emit('threshold-exceeded', result.name, usage, threshold);
         }
@@ -206,7 +202,7 @@ export class HealthMonitor extends EventEmitter {
   }
 }
 /**
- * Build comprehensive health report;
+ * Build comprehensive health report
  */
 private;
 buildHealthReport();
@@ -245,7 +241,7 @@ buildHealthReport();
 }
 }
 /**
- * Get resource health status;
+ * Get resource health status
  */
 private
 getResourceHealth(resource = checks.find(check => check.name.toLowerCase().includes(resource))
@@ -274,7 +270,7 @@ if (!resourceCheck) {
   return recommendations;
 }
 /**
- * Calculate system reliability;
+ * Calculate system reliability
  */
 private;
 calculateReliability(checks = === 0);
@@ -285,7 +281,7 @@ const _failedChecks = checks.reduce((sum, check) => sum + check.consecutiveFailu
 return Math.max(0, ((totalChecks - failedChecks) / totalChecks) * 100);
 }
 /**
- * Calculate system performance;
+ * Calculate system performance
  */
 private
 calculatePerformance(checks = === 0)
@@ -297,7 +293,7 @@ const _threshold = this.config.thresholds.responseTime;
 return Math.max(0, Math.min(100, ((threshold - avgResponseTime) / threshold) * 100));
 }
 /**
- * Add default system health checks;
+ * Add default system health checks
  */
 private
 addDefaultChecks()
@@ -310,7 +306,7 @@ addDefaultChecks()
   return new HealthMonitor(config);
 }
   export default {
-  HealthMonitor,;
-  healthMonitor,;
+  HealthMonitor,
+  healthMonitor,
   _createHealthMonitor;
 }

@@ -1,6 +1,6 @@
 /**
  * SQLite Wrapper with Windows Fallback Support;
- * Provides graceful fallback when better-sqlite3 fails to load;
+ * Provides graceful fallback when better-sqlite3 fails to load
  */
 
 import { createRequire } from 'node:module';
@@ -15,7 +15,7 @@ export interface Database {
 const _sqliteAvailable = null
 const _loadError = null
 /**
- * Try to load better-sqlite3 with comprehensive error handling;
+ * Try to load better-sqlite3 with comprehensive error handling
  */
 async function _tryLoadSQLite(): Promise<boolean> {
   try {
@@ -25,7 +25,7 @@ Database = module.default  ?? module
 sqliteAvailable = true
 return true;
 }
-catch (/* _importErr */)
+catch ()
 {
   // Fallback to CommonJS require
   try {
@@ -33,9 +33,9 @@ catch (/* _importErr */)
     Database = require('better-sqlite3');
     sqliteAvailable = true;
     return true;
-    //   // LINT: unreachable code removed} catch (/* requireErr */) {
+    //   // LINT: unreachable code removed} catch () {
     loadError = requireErr;
-;
+
     // Check for specific Windows errors
     if (;
       requireErr.message.includes('was compiled against a different Node.js version')  ?? requireErr.message.includes('Could not locate the bindings file')  ?? requireErr.message.includes('The specified module could not be found')  ?? requireErr.code === 'MODULE_NOT_FOUND';
@@ -57,72 +57,71 @@ catch (/* _importErr */)
 ║                                                                              ║;
 ╚══════════════════════════════════════════════════════════════════════════════╝;
 `);
-;
+
     return false;
     //   // LINT: unreachable code removed}
 }
 }
-;
+
 /**
- * Check if SQLite is available;
+ * Check if SQLite is available
  */;
 export async function isSQLiteAvailable(): Promise<boolean> {
   if (sqliteAvailable !== null) {
     return sqliteAvailable;
     //   // LINT: unreachable code removed}
-;
+
   await tryLoadSQLite();
   return sqliteAvailable;
 }
-;
+
 /**
- * Get SQLite Database constructor or null;
+ * Get SQLite Database constructor or null
  */;
 export async function getSQLiteDatabase(): Promise<(new (dbPath = > Database) | null> {
   if (!sqliteAvailable && loadError === null) {
     await tryLoadSQLite();
   }
-;
+
   return Database;
 }
-;
+
 /**
- * Get the load error if any;
+ * Get the load error if any
  */;
 export function getLoadError(): Error | null {
   return loadError;
 }
-;
+
 /**
- * Create a SQLite database instance with fallback;
+ * Create a SQLite database instance with fallback
  */;
 export async function createDatabase(dbPath = await getSQLiteDatabase(: unknown);
 
 if (!DB) {
   throw new Error('SQLite is not available. Use fallback storage instead.');
 }
-;
+
 try {
     return new DB(dbPath);
     //   // LINT: unreachable code removed} catch (_err;
 = === 'win32';
 }
-;
+
 /**
- * Get platform-specific storage recommendations;
+ * Get platform-specific storage recommendations
  */;
 export function getStorageRecommendations(): {
   recommended => {
   // Silently handle initial load failure
 };
 )
-;
+
 export default {
-  isSQLiteAvailable,;
-  getSQLiteDatabase,;
-  getLoadError,;
-  createDatabase,;
-  isWindows,;
-  getStorageRecommendations,;
+  isSQLiteAvailable,
+  getSQLiteDatabase,
+  getLoadError,
+  createDatabase,
+  isWindows,
+  getStorageRecommendations,
 };
-;

@@ -1,6 +1,6 @@
 /**
  * Middleware Collection;
- * Reusable middleware functions for Claude Flow servers;
+ * Reusable middleware functions for Claude Flow servers
  */
 
 import compression from 'compression';
@@ -11,17 +11,17 @@ import helmet from 'helmet';
 import type { JSONObject } from '../types/core.js';
 // Import types
 import {
-  MiddlewareFunction,;
-SessionContext,;
-TypedRequest,;
-TypedResponse,;
+  MiddlewareFunction,
+SessionContext,
+TypedRequest,
+TypedResponse,
 type UserContext
-,
+
 ValidationError,
 ValidationResult,
 } from '../types/server.js'
 /**
- * Enhanced request logging middleware;
+ * Enhanced request logging middleware
  */
 export function requestLogger(): MiddlewareFunction {
   return (req) => {
@@ -41,7 +41,7 @@ export function requestLogger(): MiddlewareFunction {
 }
 }
 /**
- * Request validation middleware;
+ * Request validation middleware
  */
 export function validateRequest(schema => {
     const _validation = {params = validateObject(req.params: unknown, schema.params: unknown, 'params': unknown);
@@ -70,10 +70,10 @@ if (hasErrors) {
     try {
       const _authHeader = req.headers.authorization;
     // let _user = null; // LINT: unreachable code removed
-;
+
       if (authHeader && authHeader.startsWith('Bearer ')) {
         const _token = authHeader.substring(7);
-;
+
         if (options.extractUser) {
           user = await options.extractUser(token);
         } else {
@@ -93,7 +93,7 @@ if (hasErrors) {
         req.user!.permissions.includes(permission)  ?? req.user!.roles.some(role => role === 'admin'  ?? role === 'superuser');
       );
     }
-;
+
     if (!hasPermission) {
       return res.status(403).json({
         success => {
@@ -119,33 +119,33 @@ if (hasErrors) {
             this.write(JSON.stringify(chunk) + '\n');
     //   // LINT: unreachable code removed}
           this.end();
-        } catch (/* error */) {
+        } catch () {
           this.write(JSON.stringify({error = function<T>(): T {
       return this.params as T;
     //   // LINT: unreachable code removed};
-;
+
     req.typedQuery = function<T>(): T {
       return this.query as any as T;
     //   // LINT: unreachable code removed};
-;
+
     req.typedBody = function<T>(): T {
       return this.body as T;
     //   // LINT: unreachable code removed};
-;
+
     next();
   };
 }
-;
+
 /**
- * Security headers middleware;
+ * Security headers middleware
  */;
 export function securityHeaders(): MiddlewareFunction {
   return helmet({contentSecurityPolicy = === 'production';
     //   // LINT: unreachable code removed});
 }
-;
+
 /**
- * CORS middleware with advanced options;
+ * CORS middleware with advanced options
  */;
 export function corsMiddleware(options?: {
   origins?: string[];
@@ -162,85 +162,84 @@ export function corsMiddleware(options?: {
           success => {
       clearTimeout(timer);
     //   // LINT: unreachable code removed});
-;
+
     res.on('close', () => {
       clearTimeout(timer);
     });
-;
+
     next();
   };
 }
-;
+
 // Helper functions
 
 /**
- * Validate an object against a schema;
+ * Validate an object against a schema
  */;
 function validateObject(): unknown {
     errors.push({
       field => {
     if (typeof schemaValue === 'object' && schemaValue !== null) {
       const _fieldSchema = schemaValue as any;
-;
+
       if (fieldSchema.required && !(key in obj)) {
         errors.push({field = typeof obj[key];
         if (actualType !== fieldSchema.type) {
-          errors.push({field = === 0,;
-    errors,;
+          errors.push({field = === 0,
+    errors,
     warnings;
   };
 }
-;
+
 /**
- * Get error name from status code;
+ * Get error name from status code
  */;
 function getErrorName(statusCode = {
       400: number): string {
-  const _errorNames: Record<number, string>,  400: 'Bad Request',;
-    401: 'Unauthorized',;
-    403: 'Forbidden',;
-    404: 'Not Found',;
-    405: 'Method Not Allowed',;
-    408: 'Request Timeout',;
-    409: 'Conflict',;
-    422: 'Unprocessable Entity',;
-    429: 'Too Many Requests',;
-    500: 'Internal Server Error',;
-    501: 'Not Implemented',;
-    502: 'Bad Gateway',;
-    503: 'Service Unavailable',;
+  const _errorNames: Record<number, string>,  400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    405: 'Method Not Allowed',
+    408: 'Request Timeout',
+    409: 'Conflict',
+    422: 'Unprocessable Entity',
+    429: 'Too Many Requests',
+    500: 'Internal Server Error',
+    501: 'Not Implemented',
+    502: 'Bad Gateway',
+    503: 'Service Unavailable',
     504: 'Gateway Timeout';
   };
-;
+
   return errorNames[statusCode]  ?? 'Unknown Error';
 }
-;
+
 // Export all middleware functions
 export type {
-  securityHeaders as helmet,;
-  type corsMiddleware as cors,;
-  compression,;
-  type rateLimiter as rateLimit,;
-  type timeout as requestTimeout,;
-  requestLogger as logging,;
-  validateRequest as validation,;
-  type authenticate as auth,;
-  type authorize as authz,;
-  type errorHandler as errors,;
+  securityHeaders as helmet,
+  type corsMiddleware as cors,
+  compression,
+  type rateLimiter as rateLimit,
+  type timeout as requestTimeout,
+  requestLogger as logging,
+  validateRequest as validation,
+  type authenticate as auth,
+  type authorize as authz,
+  type errorHandler as errors,
   type enhanceResponse as enhance;
 };
-;
+
 // Export default middleware collection
 export default {
-  requestLogger,;
-  validateRequest,;
-  authenticate,;
-  authorize,;
-  errorHandler,;
-  enhanceResponse,;
-  securityHeaders,;
-  corsMiddleware,;
-  rateLimiter,;
+  requestLogger,
+  validateRequest,
+  authenticate,
+  authorize,
+  errorHandler,
+  enhanceResponse,
+  securityHeaders,
+  corsMiddleware,
+  rateLimiter,
   timeout;
 };
-;

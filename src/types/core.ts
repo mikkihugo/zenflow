@@ -1,6 +1,6 @@
 /**
  * Core System Types;
- * Fundamental types used throughout the Claude Code Flow system;
+ * Fundamental types used throughout the Claude Code Flow system
  */
 
 import type { EventEmitter } from 'node:events';
@@ -53,14 +53,10 @@ export interface LifecycleManager extends EventEmitter {
   readonlystate = > void
 ('initialized');
 : () => void
-('started')
-: () => void
-('stopped')
-: () => void
-('error')
-: (error = > void
-('health-check')
-: (health = > void
+'started': () => void
+'stopped': () => void
+'error': (error = > void
+'health-check': (health = > void
 }
 // =============================================================================
 // CONFIGURATION MANAGEMENT
@@ -117,4 +113,3 @@ export interface TypedEventEmitter<T extends EventMap> extends EventEmitter {
   off<K extends keyof T>(event: K, listener: T[K]): this;
   removeAllListeners<K extends keyof T>(event?: K): this;
 }
-;

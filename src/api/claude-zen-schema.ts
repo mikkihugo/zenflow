@@ -1,14 +1,14 @@
 /**
  * 🚀 CLAUDE ZEN UNIFIED SCHEMA;
  * Single source of truth for workflow management APIs;
- * Auto-generates CLI/TUI/Web interfaces with proper hierarchy;
+ * Auto-generates CLI/TUI/Web interfaces with proper hierarchy
  */
 export interface SchemaCommand {
   description: string;
   category: string;
   priority: number;
   interfaces: {
-    cli: boolean;
+  cli: boolean;
     web?: {
       enabled: boolean;
       endpoint: string;
@@ -37,17 +37,16 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
     category: 'strategic',
     priority: 1,
     interfaces: {
-      cli: true,
+  cli: true,
       web: {
-        enabled: true,
-        endpoint: '/api/visions',
+        enabled: true, endpoint: '/api/visions',
         method: 'POST',
       },
       tui: true,
     },
     storage: 'visions',
     validation: {
-      required: ['title', 'description'],
+  required: ['title', 'description'],
     },
   },
   'visions-list': {
@@ -55,10 +54,9 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
     category: 'strategic',
     priority: 1,
     interfaces: {
-      cli: true,
+  cli: true,
       web: {
-        enabled: true,
-        endpoint: '/api/visions',
+        enabled: true, endpoint: '/api/visions',
         method: 'GET',
       },
       tui: true,
@@ -72,17 +70,16 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
     category: 'architecture',
     priority: 2,
     interfaces: {
-      cli: true,
+  cli: true,
       web: {
-        enabled: true,
-        endpoint: '/api/adrs',
+        enabled: true, endpoint: '/api/adrs',
         method: 'POST',
       },
       tui: true,
     },
     storage: 'adrs',
     validation: {
-      required: ['title', 'status', 'context'],
+  required: ['title', 'status', 'context'],
     },
   },
   'adrs-generate': {
@@ -90,17 +87,16 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
     category: 'architecture',
     priority: 2,
     interfaces: {
-      cli: true,
+  cli: true,
       web: {
-        enabled: true,
-        endpoint: '/api/adrs/generate',
+        enabled: true, endpoint: '/api/adrs/generate',
         method: 'POST',
       },
       tui: false,
     },
   required: ['context'] ,
 }
-,
+
 // === STRATEGIC PLANNING ===
 'roadmaps-create'
 :
@@ -112,11 +108,11 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/roadmaps', method: 'POST' ,
   tui: true,
-  ,
+
   storage: 'roadmaps',
   required: ['title', 'timeline'] ,
 }
-,
+
 // === LARGE INITIATIVES ===
 'epics-create'
 :
@@ -128,11 +124,11 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/epics', method: 'POST' ,
   tui: true,
-  ,
+
   storage: 'epics',
   required: ['title', 'description', 'roadmap'] ,
 }
-,
+
 // === SPECIFIC CAPABILITIES ===
 'features-create'
 :
@@ -144,11 +140,11 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/features', method: 'POST' ,
   tui: true,
-  ,
+
   storage: 'features',
   required: ['title', 'epic', 'requirements'] ,
 }
-,
+
 // === EXTENDED USER STORIES WITH SPECIFICATIONS ===
 'prds-create'
 :
@@ -160,11 +156,11 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/prds', method: 'POST' ,
   tui: true,
-  ,
+
   storage: 'prds',
   required: ['title', 'feature', 'acceptance_criteria'] ,
 }
-,
+
 // === IMPLEMENTATION WORK ===
 'tasks-create'
 :
@@ -176,11 +172,11 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/tasks', method: 'POST' ,
   tui: true,
-  ,
+
   storage: 'tasks',
   required: ['title', 'prd', 'estimate'] ,
 }
-,
+
 // === MULTI-SERVICE COORDINATION ===
 'coordination-status'
 :
@@ -192,9 +188,9 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/coordination/status', method: 'GET' ,
   tui: true,
-  ,
+
 }
-,
+
 // === SWARM INTELLIGENCE ===
 'swarms-create'
 :
@@ -206,11 +202,11 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/swarms', method: 'POST' ,
   tui: false,
-  ,
+
   storage: 'swarms',
   required: ['type', 'size', 'objective'] ,
 }
-,
+
 // === META REGISTRY SYSTEM ===
 'meta-registry'
 :
@@ -222,9 +218,9 @@ export const CLAUDE_ZEN_SCHEMA: Record<string, SchemaCommand> = {
   enabled: true, endpoint;
   : '/api/meta', method: 'GET' ,
   tui: true,
-  ,
+
 }
-,
+
 }
 // === METADATA ===
 export const SCHEMA_METADATA: SchemaMetadata = {
@@ -234,7 +230,7 @@ categories: ['strategic', 'architecture', 'planning', 'development', 'product', 
 totalCommands: Object.keys(CLAUDE_ZEN_SCHEMA).length,
 }
 /**
- * Get commands by category;
+ * Get commands by category
  */
 export function getCommandsByCategory(_category: string): Record<string, SchemaCommand> {
   return Object.fromEntries(;
@@ -242,7 +238,7 @@ export function getCommandsByCategory(_category: string): Record<string, SchemaC
   )
 }
 /**
- * Get web-enabled commands;
+ * Get web-enabled commands
  */
 export function getWebEnabledCommands(): Record<string, SchemaCommand> {
   return Object.fromEntries(;
@@ -250,7 +246,7 @@ export function getWebEnabledCommands(): Record<string, SchemaCommand> {
   )
 }
 /**
- * Get CLI-enabled commands;
+ * Get CLI-enabled commands
  */
 export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
   return Object.fromEntries(;
@@ -258,7 +254,7 @@ export function getCLIEnabledCommands(): Record<string, SchemaCommand> {
   )
 }
 /**
- * Validate command arguments;
+ * Validate command arguments
  */
 export function validateCommandArgs(
   commandName: string,
@@ -295,20 +291,20 @@ args: Record<string, any>;
     }
   }
   /**
-   * Generate OpenAPI specification;
+   * Generate OpenAPI specification
    */
   export function _generateOpenAPISpec(): unknown {
   const _paths: unknown = {};
-;
+
   Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_cmdName, cmdConfig]) => {
     if (!cmdConfig.interfaces.web?.enabled) return;
     // ; // LINT: unreachable code removed
     const { endpoint, method } = cmdConfig.interfaces.web;
-;
+
     if (!paths[endpoint]) {
       paths[endpoint] = {};
     }
-;
+
     paths[endpoint][method.toLowerCase()] = {
       summary: cmdConfig.description,
       tags: [cmdConfig.category],
@@ -316,7 +312,7 @@ args: Record<string, any>;
           description: 'Success',
             'application/json': type: 'object' ,,,,,
     };
-;
+
     if (cmdConfig.validation?.required) {
       paths[endpoint][method.toLowerCase()].requestBody = {
         required: true,
@@ -327,7 +323,7 @@ args: Record<string, any>;
                 props[field] = { type: 'string' };
                 return props;
     //   // LINT: unreachable code removed}, {}),
-            },,,;
+            },,,
     }
   }
   )
@@ -338,7 +334,7 @@ args: Record<string, any>;
   version: SCHEMA_METADATA.version,
   description: 'Auto-generated API from Claude Zen Schema',
 }
-,
+
 paths,
 }
 }

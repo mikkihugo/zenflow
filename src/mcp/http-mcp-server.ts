@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * HTTP MCP Server - Runs MCP protocol over HTTP on port 3000;
- * Provides all Claude Flow tools including Git integration;
+ * Provides all Claude Flow tools including Git integration
  */
 
 import cors from 'cors';
@@ -9,31 +9,31 @@ import { EventEmitter } from 'events';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import { HealthCheck, JSONObject, JSONValue } from '../types/core.js';
 import {
-  MCPError,;
-MCPMessage,;
+  MCPError,
+MCPMessage,
 type MCPRequest
-,
+
 MCPResponse,
 Tool,
 ToolExecutionResult,
 } from '../types/mcp.js'
 // Import types
 import {
-  ServerConfig,;
-ServerHealth,;
-ServerMetrics,;
-ServerStatus,;
-SessionContext,;
-TypedRequest,;
-TypedResponse,;
-UnifiedServer,;
-UserContext,;
-ValidationResult,;
+  ServerConfig,
+ServerHealth,
+ServerMetrics,
+ServerStatus,
+SessionContext,
+TypedRequest,
+TypedResponse,
+UnifiedServer,
+UserContext,
+ValidationResult,
 } from '../types/server.js'
 
 import { ClaudeFlowMCPServer } from './mcp-server.js';
 /**
- * HTTP MCP Server Configuration;
+ * HTTP MCP Server Configuration
  */
 export interface HTTPMCPServerConfig {
   port?: number;
@@ -49,7 +49,7 @@ export interface HTTPMCPServerConfig {
   };
 }
 /**
- * Server Metrics;
+ * Server Metrics
  */
 interface HTTPMCPServerMetrics {requests = null
 private;
@@ -70,7 +70,7 @@ constructor((config = {}))
   // return 'healthy'; // LINT: unreachable code removed
 }
 /**
- * Get current metrics;
+ * Get current metrics
  */
 get;
 metrics();
@@ -79,7 +79,7 @@ metrics();
   return { ...this._metrics };
 }
 /**
- * Get MCP server instance;
+ * Get MCP server instance
  */
 get;
 mcpServer();
@@ -88,7 +88,7 @@ mcpServer();
   return this._mcpServer;
 }
 /**
- * Setup middleware;
+ * Setup middleware
  */
 private;
 setupMiddleware();
@@ -141,18 +141,18 @@ this._app.use((req =>
           jsonrpc => {
       try {
         const _message = req.body;
-;
+
         // Track tool calls
         if ((message as MCPRequest).method === 'tools/call') {
           this._metrics.toolCalls++;
         }
-;
+
         const _response = await this._mcpServer.handleMessage(message);
         res.json(response);
       } catch (error) ;
         this.handleMCPError(req, res, error as Error, req.body.id);
     });
-;
+
     // List available tools (human-readable)
     this._app.get('/mcp/tools', async (req => {
       try {
@@ -163,7 +163,7 @@ this._app.use((req =>
         const { toolName } = req.params;
         const _tools = await this._mcpServer.toolsRegistry?.getAllTools()  ?? [];
         const _tool = tools.find(t => t.name === toolName);
-;
+
         if (!tool) {
           return res.status(404).json({
             success => {
@@ -179,9 +179,9 @@ this._app.use((req =>
           reject(err);
     // return; // LINT: unreachable code removed
         }
-;
+
         this._isRunning = true;
-;
+
         console.warn(`🚀 HTTP MCP Server running on http => {
         if (err.code === 'EADDRINUSE') {
           reject(new Error(`Port ${this._port} is already in use`));
@@ -191,22 +191,22 @@ this._app.use((req =>
       });
     });
   }
-;
+
   /**
-   * Stop the HTTP server;
+   * Stop the HTTP server
    */;
   async stop(): Promise<void> {
     if (!this._isRunning) {
       return;
     //   // LINT: unreachable code removed}
-;
+
     console.warn('🛑 Shutting down HTTP MCP server...');
-;
+
     // Cleanup MCP server
     if (this._mcpServer) {
       await this._mcpServer.cleanup();
     }
-;
+
     return new Promise((resolve) => {
       this._server.close(() => {
         this._isRunning = false;
@@ -216,18 +216,18 @@ this._app.use((req =>
       });
     });
   }
-;
+
   /**
-   * Get server status;
+   * Get server status
    */;
   getStatus(): {running = (Date.now() - this._metrics.uptime) / 1000;
-;
+
     // Basic health checks
     const _healthChecks = [;
       {name = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :;
       healthChecks.some(check => check.status === 'error'  ?? check.status === 'offline') ? 'error' :;
       'degraded';
-;
+
     return {status = === `file://${process.argv[1]}`) {
   const _server = new HTTPMCPServer();
     // ; // LINT: unreachable code removed
@@ -237,18 +237,18 @@ this._app.use((req =>
     await server.stop();
     process.exit(0);
   });
-;
+
   process.on('SIGTERM', async () => {
     console.warn('\n🛑 Received SIGTERM, shutting down gracefully...');
     await server.stop();
     process.exit(0);
   });
-;
+
   // Start server
   server.start().catch((error) => {
     console.error('❌ Failed to start HTTP MCP server:', error);
     process.exit(1);
   });
 }
-;
+
 export default HTTPMCPServer;

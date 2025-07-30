@@ -1,7 +1,7 @@
 /**
  * @fileoverview MCP Tools Registry;
  * Claude Zen CLI command tools for MCP protocol;
- * @module MCPToolsRegistry;
+ * @module MCPToolsRegistry
  */
 
 import type { JSONSchema, ToolResult } from '../../types/mcp.js';
@@ -10,16 +10,16 @@ import type { JSONSchema, ToolResult } from '../../types/mcp.js';
 // =============================================================================
 
 /**
- * Tool handler function type;
+ * Tool handler function type
  */
 export type ToolHandler = (args = > Promise<ToolResult | any>;
 /**
- * Enhanced tool definition with handler;
+ * Enhanced tool definition with handler
  */
 export interface EnhancedTool {name = Record<string
 , EnhancedTool>
 /**
- * Tool category information;
+ * Tool category information
  */
 export interface ToolCategory {name = ============================================================================
 // CLAUDE ZEN CORE TOOLS
@@ -44,7 +44,7 @@ export function initializeProductTools(): ToolRegistry {
 // =============================================================================
 
 /**
- * Neural inference result;
+ * Neural inference result
  */
 export interface NeuralInferenceResult {
   result => {
@@ -108,8 +108,8 @@ export function _initializeGitTools(): ToolRegistry {
     // */ // LINT: unreachable code removed
 export function _initializeAllTools(): ToolRegistry {
   return {
-    ...initializeClaudeZenTools(),;
-  // ...initializeProductTools(),; // LINT: unreachable code removed
+    ...initializeClaudeZenTools(),
+  // ...initializeProductTools(), // LINT: unreachable code removed
   ...initializeNeuralTools(),
   ...initializeMemoryTools(),
   ...initializeAgentTools(),
@@ -145,7 +145,7 @@ if (!schema) {
         return {valid = === 'number' && typeof value !== 'number') {
         return {valid = === 'string' && typeof value !== 'string') {
         return {
-          valid: false,;
+          valid: false,
         // error: `Invalid type for ${key // LINT: unreachable code removed}: expected string, got ${typeof value}`;
       }
     }
@@ -160,44 +160,44 @@ return { valid: true };
 export function _getToolCategories(): ToolCategory[] {
   return [;
     // { // LINT: unreachable code removed
-      name: 'claude-zen',;
-      description: 'Core Claude Zen operations',;
-      count: Object.keys(initializeClaudeZenTools()).length,;
-    },;
+      name: 'claude-zen',
+      description: 'Core Claude Zen operations',
+      count: Object.keys(initializeClaudeZenTools()).length,
+    },
     {
-      name: 'product',;
-      description: 'Product management tools',;
-      count: Object.keys(initializeProductTools()).length,;
-    },;
+      name: 'product',
+      description: 'Product management tools',
+      count: Object.keys(initializeProductTools()).length,
+    },
     {
-      name: 'neural',;
-      description: 'Neural network operations',;
-      count: Object.keys(initializeNeuralTools()).length,;
-    },;
+      name: 'neural',
+      description: 'Neural network operations',
+      count: Object.keys(initializeNeuralTools()).length,
+    },
     {
-      name: 'memory',;
-      description: 'Memory management operations',;
-      count: Object.keys(_initializeMemoryTools()).length,;
-    },;
+      name: 'memory',
+      description: 'Memory management operations',
+      count: Object.keys(_initializeMemoryTools()).length,
+    },
     {
-      name: 'agent',;
-      description: 'Agent lifecycle management',;
-      count: Object.keys(initializeAgentTools()).length,;
-    },;
+      name: 'agent',
+      description: 'Agent lifecycle management',
+      count: Object.keys(initializeAgentTools()).length,
+    },
     {
-      name: 'task',;
-      description: 'Task orchestration and monitoring',;
-      count: Object.keys(initializeTaskTools()).length,;
-    },;
+      name: 'task',
+      description: 'Task orchestration and monitoring',
+      count: Object.keys(initializeTaskTools()).length,
+    },
     {
-      name: 'system',;
-      description: 'System utilities and features',;
-      count: Object.keys(initializeSystemTools()).length,;
-    },;
+      name: 'system',
+      description: 'System utilities and features',
+      count: Object.keys(initializeSystemTools()).length,
+    },
     {
-      name: 'git',;
-      description: 'Git version control operations',;
-      count: Object.keys(initializeGitTools()).length,;
-    },;
+      name: 'git',
+      description: 'Git version control operations',
+      count: Object.keys(initializeGitTools()).length,
+    },
   ];
 }

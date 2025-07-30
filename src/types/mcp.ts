@@ -1,6 +1,6 @@
 /**
  * Model Context Protocol (MCP) Types;
- * Types for MCP server integration and tool execution;
+ * Types for MCP server integration and tool execution
  */
 
 import type { JSONObject } from './core.js';
@@ -114,26 +114,17 @@ export interface MCPEvents {
 // Tool events
 ('tool-executed');
 : (result = > void
-('tool-failed')
-: (request = > void
-('tools-discovered')
-: (result = > void
-('tool-list-changed')
-: (serverId = > void
+'tool-failed': (request = > void
+'tools-discovered': (result = > void
+'tool-list-changed': (serverId = > void
 // Resource events
-('resource-updated')
-: (serverId = > void
-('resource-list-changed')
-: (serverId = > void
+'resource-updated': (serverId = > void
+'resource-list-changed': (serverId = > void
 // Prompt events
-('prompt-list-changed')
-: (serverId = > void
+'prompt-list-changed': (serverId = > void
 // Logging events
-('log-message')
-: (serverId = > void
+'log-message': (serverId = > void
 // Performance events
-('performance-warning')
-: (serverId = > void
-('resource-exhausted')
-: (serverId = > void
+'performance-warning': (serverId = > void
+'resource-exhausted': (serverId = > void
 }

@@ -7,7 +7,7 @@
  *;
  * @fileoverview Comprehensive database schema validation tests with Google standards;
  * @author Claude Code Flow Team;
- * @version 2.0.0;
+ * @version 2.0.0
  */
 
 import { execSync } from 'node:child_process';
@@ -18,7 +18,7 @@ import { afterEach, beforeEach, describe, expect } from '@jest/globals';
 import Database from 'better-sqlite3';
 
 /**
- * Database column information structure;
+ * Database column information structure
  */
 interface ColumnInfo {
   cid: number;
@@ -29,7 +29,7 @@ interface ColumnInfo {
   pk: number;
 }
 /**
- * SQLite master table entry;
+ * SQLite master table entry
  */
 interface SqliteMasterEntry {
   type: string;
@@ -39,7 +39,7 @@ interface SqliteMasterEntry {
   sql: string;
 }
 /**
- * Database test context;
+ * Database test context
  */
 interface TestContext {
   testDir: string;
@@ -54,12 +54,12 @@ describe('Hive Mind Database Schema - Issue #403', (): void => {
     const _testDir = path.join(os.tmpdir(), `claude-zen-hive-test-${timestamp}`);
     await fs.mkdir(testDir, { recursive: true });
     process.chdir(testDir);
-;
+
     // Initialize test context
     testContext = {
-      testDir,;
-      dbPath: path.join(testDir, '.hive-mind', 'hive.db'),;
-      db: null,;
+      testDir,
+      dbPath: path.join(testDir, '.hive-mind', 'hive.db'),
+      db: null,
     };
 });
 afterEach(async (): Promise<void> => {
@@ -74,13 +74,13 @@ afterEach(async (): Promise<void> => {
 });
 describe('Database Initialization via Init Command', (): void => {
   /**
-   * Verifies that the init command creates database with correct schema;
+   * Verifies that the init command creates database with correct schema
    */
   it('should create database with correct schema through init command', async (): Promise<void> => {
     // Execute init command to create database
     execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
-        cwd: testContext.testDir,;
-    stdio: 'pipe',;
+        cwd: testContext.testDir,
+    stdio: 'pipe',
     ...process.env ,
   });
   // Verify database file creation
@@ -105,13 +105,13 @@ describe('Database Initialization via Init Command', (): void => {
   expect(roleColumn?.notnull).toBe(0); // 0 means NULL allowed, 1 means NOT NULL
 });
 /**
- * Tests agent insertion without role value (should succeed);
+ * Tests agent insertion without role value (should succeed)
  */
 it('should allow inserting agents without role value', async (): Promise<void> => {
   // Initialize database through init command
   execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
-        cwd: testContext.testDir,;
-  stdio: 'pipe',;
+        cwd: testContext.testDir,
+  stdio: 'pipe',
   ...process.env ,
 });
 testContext.db = new Database(testContext.dbPath);
@@ -142,33 +142,33 @@ const _insertAgent = (): void => {
   `);
           .run(agentId, swarmId, 'Test Agent', 'worker', 'active');
       };
-;
+
       // Verify insertion succeeds
       expect(insertAgent).not.toThrow();
-;
+
       // Validate agent record
       const _agent = testContext.db.prepare('SELECT * FROM agents WHERE id = ?').get(agentId) as;
         | { id: string; role: string | null }
         | undefined;
-;
+
       expect(agent).toBeDefined();
       expect(agent?.id).toBe(agentId);
       expect(agent?.role).toBeNull(); // Role should be NULL when not provided
     });
-;
+
     /**
-     * Tests agent insertion with role value (should succeed);
+     * Tests agent insertion with role value (should succeed)
      */;
     it('should allow inserting agents with role value', async (): Promise<void> => {
       // Initialize database
       execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
-        cwd: testContext.testDir,;
-        stdio: 'pipe',;
-        env: { ...process.env },;
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
       });
-;
+
       testContext.db = new Database(testContext.dbPath);
-;
+
       // Create required swarm
       const _swarmId = `;
   test - swarm - $;
@@ -182,7 +182,7 @@ const _insertAgent = (): void => {
   VALUES(?, ?, ?, ?, ?);
   `);
         .run(swarmId, 'Test Swarm', 'Test Objective', 'mesh', 'active');
-;
+
       // Insert agent with role
       const _agentId = `;
   test - agent - $;
@@ -196,28 +196,28 @@ const _insertAgent = (): void => {
   VALUES(?, ?, ?, ?, ?, ?);
   `);
         .run(agentId, swarmId, 'Test Agent', 'coordinator', 'leader', 'active');
-;
+
       // Verify agent insertion with role
       const _agent = testContext.db.prepare('SELECT * FROM agents WHERE id = ?').get(agentId) as;
         | { id: string; role: string }
         | undefined;
-;
+
       expect(agent).toBeDefined();
       expect(agent?.id).toBe(agentId);
       expect(agent?.role).toBe('leader');
     });
   });
-;
+
   describe('Direct Database Schema Tests', (): void => {
     /**
-     * Validates direct database schema creation;
+     * Validates direct database schema creation
      */;
     it('should create agents table with nullable role column', async (): Promise<void> => {
       // Create database directory structure
       await fs.mkdir(path.join(testContext.testDir, '.hive-mind'), { recursive: true });
-;
+
       testContext.db = new Database(testContext.dbPath);
-;
+
       // Create schema matching init command behavior
       testContext.db.exec(`;
   CREATE;
@@ -229,21 +229,21 @@ const _insertAgent = (): void => {
   id;
   TEXT;
   PRIMARY;
-  KEY,;
+  KEY,
   name;
   TEXT;
   NOT;
-  NULL,;
+  NULL,
   objective;
-  TEXT,;
+  TEXT,
   topology;
   TEXT;
   DEFAULT;
-  'mesh',;
+  'mesh',
   status;
   TEXT;
   DEFAULT;
-  'active',;
+  'active',
   created_at;
   DATETIME;
   DEFAULT;
@@ -258,31 +258,31 @@ EXISTS
   id;
   TEXT;
   PRIMARY;
-  KEY,;
+  KEY,
   swarm_id;
-  TEXT,;
+  TEXT,
   name;
   TEXT;
   NOT;
-  NULL,;
+  NULL,
   type TEXT NOT
-  NULL,;
+  NULL,
   role;
-  TEXT,;
+  TEXT,
   capabilities;
-  TEXT,;
+  TEXT,
   status;
   TEXT;
   DEFAULT;
-  'active',;
+  'active',
   performance_score;
   REAL;
   DEFAULT;
-  0.5,;
+  0.5,
   created_at;
   DATETIME;
   DEFAULT;
-  CURRENT_TIMESTAMP,;
+  CURRENT_TIMESTAMP,
   FOREIGN;
   KEY(swarm_id);
   REFERENCES;
@@ -299,7 +299,7 @@ EXISTS
 };
 )
 /**
- * Tests schema migration from NOT NULL to nullable role column;
+ * Tests schema migration from NOT NULL to nullable role column
  */
 it('should handle schema migration from NOT NULL to nullable', async (): Promise<void> =>
 {
@@ -317,21 +317,21 @@ swarms (;
 id;
 TEXT;
 PRIMARY;
-KEY,;
+KEY,
 name;
 TEXT;
 NOT;
-NULL,;
+NULL,
 objective;
-TEXT,;
+TEXT,
 topology;
 TEXT;
 DEFAULT;
-'mesh',;
+'mesh',
 status;
 TEXT;
 DEFAULT;
-'active',;
+'active',
 created_at;
 DATETIME;
 DEFAULT;
@@ -346,15 +346,15 @@ agents (;
 id;
 TEXT;
 PRIMARY;
-KEY,;
+KEY,
 swarm_id;
-TEXT,;
+TEXT,
 name;
 TEXT;
 NOT;
-NULL,;
+NULL,
 type TEXT NOT
-NULL,;
+NULL,
 role;
 TEXT;
 NOT;
@@ -363,13 +363,13 @@ constraint;
 status;
 TEXT;
 DEFAULT;
-'idle',;
+'idle',
 capabilities;
-TEXT,;
+TEXT,
 created_at;
 DATETIME;
 DEFAULT;
-CURRENT_TIMESTAMP,;
+CURRENT_TIMESTAMP,
 FOREIGN;
 KEY(swarm_id);
 REFERENCES;
@@ -381,8 +381,8 @@ swarms(id);
   testContext.db = null;
   // Run init command with force flag for migration
   execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init --force', {
-        cwd: testContext.testDir,;
-  stdio: 'pipe',;
+        cwd: testContext.testDir,
+  stdio: 'pipe',
   ...process.env ,
 }
 )
@@ -419,39 +419,39 @@ VALUES(?, ?, ?, ?, ?);
 `);
           .run(agentId, swarmId, 'Test Agent', 'worker', 'active');
       };
-;
+
       // Migration should have fixed the constraint
       expect(insertAgent).not.toThrow();
     });
   });
-;
+
   describe('Schema Consistency Tests', (): void => {
     /**
-     * Validates schema consistency across different creation paths;
+     * Validates schema consistency across different creation paths
      */;
     it('should have consistent schema across all database creation paths', async (): Promise<void> => {
       // Test schema from init command
       execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
-        cwd: testContext.testDir,;
-        stdio: 'pipe',;
-        env: { ...process.env },;
+        cwd: testContext.testDir,
+        stdio: 'pipe',
+        env: { ...process.env },
       });
-;
+
       testContext.db = new Database(testContext.dbPath);
-;
+
       // Get schema information
       const _initSchema = testContext.db;
         .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='agents'");
         .get() as SqliteMasterEntry | undefined;
-;
+
       const _initColumns = testContext.db.prepare('PRAGMA table_info(agents)').all() as ColumnInfo[];
-;
+
       testContext.db.close();
       testContext.db = null;
-;
+
       // Clean up for isolation
       await fs.rm(path.join(testContext.testDir, '.hive-mind'), { recursive: true, force: true });
-;
+
       // Validate critical schema requirements
       const _roleColumn = initColumns.find((col: ColumnInfo): boolean => col.name === 'role');
       expect(roleColumn?.notnull).toBe(0); // Must allow NULL
@@ -462,7 +462,7 @@ VALUES(?, ?, ?, ?, ?);
         const _column = initColumns.find((col: ColumnInfo): boolean => col.name === colName);
         expect(column).toBeDefined();
       });
-;
+
       // Validate schema SQL structure
       expect(initSchema?.sql).toBeDefined();
       expect(initSchema?.sql).toContain('CREATE TABLE');
@@ -470,4 +470,3 @@ VALUES(?, ?, ?, ?, ?);
     });
   });
 });
-;

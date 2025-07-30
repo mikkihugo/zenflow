@@ -1,6 +1,6 @@
 /**
  * Server Factory and Builder;
- * Centralized server creation and configuration management;
+ * Centralized server creation and configuration management
  */
 
 import { ClaudeZenServer } from './api/claude-zen-server.js';
@@ -9,28 +9,28 @@ import { JSONObject } from './types/core.js';
 
 // Import types
 import {
-  HealthCheckDefinition,;
-MiddlewareConfig,;
-MiddlewareDefinition,;
-MonitoringConfig,;
-PerformanceConfig,;
-ProtocolType,;
-RouteDefinition,;
-SecurityConfig,;
-ServerBuilder,;
-ServerConfig,;
-ServerFactory,;
-ServerFeatures,;
-ServerType,;
-UnifiedServer,;
-ValidationError,;
-ValidationResult,;
+  HealthCheckDefinition,
+MiddlewareConfig,
+MiddlewareDefinition,
+MonitoringConfig,
+PerformanceConfig,
+ProtocolType,
+RouteDefinition,
+SecurityConfig,
+ServerBuilder,
+ServerConfig,
+ServerFactory,
+ServerFeatures,
+ServerType,
+UnifiedServer,
+ValidationError,
+ValidationResult,
 } from './types/server.js'
 
 import { UnifiedClaudeFlowServer } from './unified-server.js';
 
 /**
- * Default server configurations for different server types;
+ * Default server configurations for different server types
  */
 const _DEFAULT_CONFIGS = {unified = this.validateConfig(config);
 if (!validationResult.valid) {
@@ -47,23 +47,23 @@ const _warnings = [];
 if (!config.name ?? typeof config.name !== 'string') {
   errors.push({field = = 'string') {
       errors.push({field = = 'number'  ?? config.port < 1  ?? config.port > 65535) {
-      errors.push({field = === 0,;
-  errors,;
+      errors.push({field = === 0,
+  errors,
   warnings;
 }
 }
 /**
- * Get default configuration for server type;
+ * Get default configuration for server type
  */
 getDefaultConfig(
 type = DEFAULT_CONFIGS[type];
 if (!baseConfig) {
       throw new Error(`Unknown servertype = new Date();
-;
+
     Object.keys(customConfig).forEach(key => {
       const _customValue = (customConfig as any)[key];
       const _defaultValue = (merged as any)[key];
-;
+
       if (customValue !== undefined) {
         if (typeof customValue === 'object' && customValue !== null && ;
             typeof defaultValue === 'object' && defaultValue !== null &&;
@@ -74,33 +74,33 @@ if (!baseConfig) {
         }
       }
     });
-;
+
     return merged;
     //   // LINT: unreachable code removed}
 }
-;
+
 /**
  * Server Builder Implementation;
- * Fluent interface for building server configurations;
+ * Fluent interface for building server configurations
  */;
 export class ClaudeFlowServerBuilder implements ServerBuilder {
   private config = {};
   private factory = factory  ?? new ClaudeFlowServerFactory();
   }
-;
+
   /**
-   * Set server configuration;
+   * Set server configuration
    */;
   withConfig(config = { ...this.config, ...config };
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Enable or disable a protocol;
+   * Enable or disable a protocol
    */;
   withProtocol(protocol = {} as any;
     }
-;
+
     switch (protocol) {
       case 'http':;
       case 'https':;
@@ -126,59 +126,59 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
         }
         break;
     }
-;
+
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Enable or disable a feature;
+   * Enable or disable a feature
    */;
   withFeature(feature = {} as ServerFeatures;
     }
     this.config.features[feature] = enabled;
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Add middleware;
+   * Add middleware
    */;
   withMiddleware(middleware): ServerBuilder {
     if (!this.config.middleware) {
       this.config.middleware = {builtin = = false;
     });
-;
+
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Add route definition;
+   * Add route definition
    */;
   withRoute(route = [];
     }
     (this.config as any).routes.push(route);
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Add health check;
+   * Add health check
    */;
   withHealthCheck(check = this.factory['getDefaultMonitoringConfig']();
     }
-;
+
     this.config.monitoring.health.checks.push(check);
     return this;
     //   // LINT: unreachable code removed}
-;
+
   /**
-   * Build the server instance;
+   * Build the server instance
    */;
   async build(): Promise<UnifiedServer> {
     // Determine server type based on configuration
     let _serverType = 'unified';
-;
+
     if (this.config.features) {
       const _enabledFeatures = Object.entries(this.config.features).filter(([, enabled]) => enabled);
-;
+
       if (enabledFeatures.length === 1) {
         if (this.config.features.enableMCP) serverType = 'mcp';
         else if (this.config.features.enableWebSocket) serverType = 'websocket';
@@ -186,23 +186,23 @@ export class ClaudeFlowServerBuilder implements ServerBuilder {
         else if (this.config.features.enableAPI) serverType = 'api';
       }
     }
-;
+
     // Get default configuration and merge with custom config
     const _defaultConfig = this.factory.getDefaultConfig(serverType);
     const _finalConfig = this.factory['mergeConfig'](defaultConfig, this.config);
-;
+
     // Create server based on type
     switch (serverType) {
       case 'api':;
         return this.factory.createAPIServer(finalConfig);
     // case 'mcp':; // LINT: unreachable code removed
         return this.factory.createMCPServer(finalConfig);default = new ClaudeFlowServerFactory();
-;
+
 // Export builder function for convenience
 export function createServerBuilder(): ServerBuilder {
   return new ClaudeFlowServerBuilder(serverFactory);
 }
-;
+
 // Export convenience functions
 export async function createUnifiedServer(config?: Partial<ServerConfig>): Promise<UnifiedServer> {
   const _builder = createServerBuilder();
@@ -211,7 +211,7 @@ export async function createUnifiedServer(config?: Partial<ServerConfig>): Promi
   }
   return builder.build();
 }
-;
+
 export async function createAPIServer(port?: number, host?: string): Promise<UnifiedServer> {
   return createServerBuilder();
     // .withConfig({ port, host  // LINT: unreachable code removed});
@@ -219,7 +219,7 @@ export async function createAPIServer(port?: number, host?: string): Promise<Uni
     .withFeature('enableMCP', false);
     .build();
 }
-;
+
 export async function createMCPServer(port?: number, host?: string): Promise<UnifiedServer> {
   return createServerBuilder();
     // .withConfig({ port, host  // LINT: unreachable code removed});
@@ -227,14 +227,13 @@ export async function createMCPServer(port?: number, host?: string): Promise<Uni
     .withFeature('enableAPI', false);
     .build();
 }
-;
+
 export default {
-  serverFactory,;
-  createServerBuilder,;
-  createUnifiedServer,;
-  createAPIServer,;
-  createMCPServer,;
-  ClaudeFlowServerFactory,;
+  serverFactory,
+  createServerBuilder,
+  createUnifiedServer,
+  createAPIServer,
+  createMCPServer,
+  ClaudeFlowServerFactory,
   ClaudeFlowServerBuilder;
 };
-;

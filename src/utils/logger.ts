@@ -1,7 +1,7 @@
 /**
  * @fileoverview Logger utility for Neural and Queen components;
  * Simple wrapper around the core logger for component-specific logging;
- * @module Logger;
+ * @module Logger
  */
 export class Logger {}
 

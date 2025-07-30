@@ -9,7 +9,7 @@
  * - WebSocket real-time communication;
  * - Neural network integration via ruv-FANN;
  * - Database orchestration (SQLite + LanceDB + Kuzu);
- * - Multi-Queen hive-mind coordination;
+ * - Multi-Queen hive-mind coordination
  */
 
 import { createServer } from 'node:http';
@@ -23,7 +23,7 @@ import config from '../config/default.js';
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
 /**
- * Unified Claude-Zen Server Configuration;
+ * Unified Claude-Zen Server Configuration
  */
 interface UnifiedServerOptions {
   port?: number;
@@ -36,17 +36,17 @@ interface UnifiedServerOptions {
 }
 /**
  * Unified Server Class;
- * Orchestrates all Claude-Zen components in a single process;
+ * Orchestrates all Claude-Zen components in a single process
  */
 class UnifiedServer {
   constructor(_options: UnifiedServerOptions = {}) {
     this.options = {
-      port: parseInt(process.env.PORT ?? '3000', 10),;
-    host: process.env.HOST ?? 'localhost',;
-    enableAPI: true,;
-    enableMCP: true,;
-    enableWebSocket: true,;
-    enableNeural: true,;
+      port: parseInt(process.env.PORT ?? '3000', 10),
+    host: process.env.HOST ?? 'localhost',
+    enableAPI: true,
+    enableMCP: true,
+    enableWebSocket: true,
+    enableNeural: true,
     ...options,
   }
   this;
@@ -60,7 +60,7 @@ class UnifiedServer {
   setupRoutes();
 }
 /**
- * Setup Express middleware;
+ * Setup Express middleware
  */
 private
 setupMiddleware();
@@ -68,8 +68,8 @@ setupMiddleware();
 {
   this.app.use(;
   cors({
-        origin: process.env.CORS_ORIGIN?.split(',') ?? '*',;
-  credentials: true,;
+        origin: process.env.CORS_ORIGIN?.split(',') ?? '*',
+  credentials: true,
 }
 )
 )
@@ -92,7 +92,7 @@ this.app.use((req: Request, _res: Response, next) =>
 )
 }
 /**
- * Setup API routes;
+ * Setup API routes
  */
 private
 setupRoutes()
@@ -101,16 +101,16 @@ setupRoutes()
   // Health check
   this.app.get('/', (_req: Request, res: Response) => {
     res.json({
-        name: 'Claude-Zen Unified Server',;
-    version: '2.0.0-alpha.73',;
-    status: 'healthy',;
-    api: this.options.enableAPI,;
-    mcp: this.options.enableMCP,;
-    websocket: this.options.enableWebSocket,;
-    neural: this.options.enableNeural,;
+        name: 'Claude-Zen Unified Server',
+    version: '2.0.0-alpha.73',
+    status: 'healthy',
+    api: this.options.enableAPI,
+    mcp: this.options.enableMCP,
+    websocket: this.options.enableWebSocket,
+    neural: this.options.enableNeural,
     ('ruv-FANN');
     : 'integrated',
-    ,
+
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });
@@ -121,18 +121,18 @@ this.app.get('/status', (_req: Request, res: Response) =>
 {
   res.json({
         server: {
-          running: this.isRunning,;
-  port: this.options.port,;
-  host: this.options.host,;
+          running: this.isRunning,
+  port: this.options.port,
+  host: this.options.host,
 }
-,
+
 {
-  api: this.options.enableAPI ? 'active' : 'disabled',;
-  mcp: this.options.enableMCP ? 'active' : 'disabled',;
-  websocket: this.options.enableWebSocket ? 'active' : 'disabled',;
-  neural: this.options.enableNeural ? 'active' : 'disabled',;
+  api: this.options.enableAPI ? 'active' : 'disabled',
+  mcp: this.options.enableMCP ? 'active' : 'disabled',
+  websocket: this.options.enableWebSocket ? 'active' : 'disabled',
+  neural: this.options.enableNeural ? 'active' : 'disabled',
 }
-,
+
 memory: process.memoryUsage(),
 uptime: process.uptime(),
 timestamp: new Date().toISOString(),
@@ -143,14 +143,14 @@ if (this.options.enableMCP) {
   this.app.get('/mcp/tools', (_req: Request, res: Response) => {
     res.json({
           tools: [;
-            'swarm_init',;
-            'agent_spawn',;
-            'task_orchestrate',;
-            'memory_usage',;
-            'neural_train',;
-            'benchmark_run',;
-          ],;
-    message: 'MCP tools available via ruv-FANN integration',;
+            'swarm_init',
+            'agent_spawn',
+            'task_orchestrate',
+            'memory_usage',
+            'neural_train',
+            'benchmark_run',
+          ],
+    message: 'MCP tools available via ruv-FANN integration',
   });
 }
 )
@@ -159,10 +159,10 @@ if (this.options.enableMCP) {
 if (this.options.enableNeural) {
   this.app.get('/neural/status', (_req: Request, res: Response) => {
     res.json({
-          status: 'integrated',;
-    models: config.ruvFANN.neuralModels,;
-    gpuAcceleration: config.ruvFANN.gpuAcceleration,;
-    wasmPath: config.ruvFANN.wasmPath,;
+          status: 'integrated',
+    models: config.ruvFANN.neuralModels,
+    gpuAcceleration: config.ruvFANN.gpuAcceleration,
+    wasmPath: config.ruvFANN.wasmPath,
   });
 }
 )
@@ -171,20 +171,20 @@ if (this.options.enableNeural) {
 this.app.get('/health', (_req: Request, res: Response) =>
 {
   res.json({
-        status: 'healthy',;
-  timestamp: new Date().toISOString(),;
-  database: 'operational',;
-  memory: 'operational',;
-  neural: 'integrated',;
+        status: 'healthy',
+  timestamp: new Date().toISOString(),
+  database: 'operational',
+  memory: 'operational',
+  neural: 'integrated',
   ('ruv-FANN');
   : 'active',
-  ,
+
 }
 )
 })
 }
 /**
- * Setup WebSocket server;
+ * Setup WebSocket server
  */
 private
 setupWebSocket()
@@ -199,16 +199,16 @@ setupWebSocket()
         try {
           const _message = JSON.parse(data.toString());
           console.warn('📩 WebSocket message:', message);
-;
+
           // Echo back for now - integrate with swarm orchestration
           ws.send(;
             JSON.stringify({
-              type: 'response',;
-              data: message,;
-              timestamp: new Date().toISOString(),;
+              type: 'response',
+              data: message,
+              timestamp: new Date().toISOString(),
             });
           );
-        } catch (/* error */) {
+        } catch () {
           console.error('❌ WebSocket message error:', error);
         }
   });
@@ -218,12 +218,12 @@ setupWebSocket()
   // Send welcome message
   ws.send(;
   JSON.stringify({
-          type: 'welcome',;
-  message: 'Connected to Claude-Zen Unified Server',;
-  swarmOrchestration: true,;
-  neuralNetworks: true,;
-  realTimeCoordination: true,;
-  ,
+          type: 'welcome',
+  message: 'Connected to Claude-Zen Unified Server',
+  swarmOrchestration: true,
+  neuralNetworks: true,
+  realTimeCoordination: true,
+
 }
 )
 )
@@ -231,7 +231,7 @@ setupWebSocket()
 console.warn('🔌 WebSocket server enabled')
 }
 /**
- * Initialize components;
+ * Initialize components
  */
 private
 async
@@ -241,27 +241,27 @@ initializeComponents()
   try {
       // Initialize database connections
       console.warn('🗄️ Initializing databases...');
-;
+
       // Initialize neural engine (ruv-FANN integration)
       if (this.options.enableNeural) {
         console.warn('🧠 Initializing ruv-FANN neural engine...');
         // Integration point for ruv-FANN
       }
-;
+
       // Initialize MCP server
       if (this.options.enableMCP) {
         console.warn('🔗 Initializing MCP server...');
         // MCP server integration
       }
-;
+
       console.warn('✅ All components initialized');
-    } catch (/* error */) {
+    } catch () {
       console.error('❌ Component initialization failed:', error);
       throw error;
     }
 }
 /**
- * Start the unified server;
+ * Start the unified server
  */
 async;
 start();
@@ -274,13 +274,13 @@ start();
     try {
       // Initialize components first
       await this.initializeComponents();
-;
+
       // Create HTTP server
       this.server = createServer(this.app);
-;
+
       // Setup WebSocket if enabled
       this.setupWebSocket();
-;
+
       // Start listening
       await new Promise<void>((resolve, reject) => {
         this.server?.listen(this.options.port, this.options.host, () => {
@@ -293,19 +293,19 @@ start();
           console.warn(`⚡ Neural: ${this.options.enableNeural ? 'Enabled' : 'Disabled'}`);
           resolve();
         });
-;
+
         this.server?.on('error', (error) => {
           console.error('❌ Server error:', error);
           reject(error);
         });
       });
-    } catch (/* error */) {
+    } catch () {
       console.error('❌ Failed to start server:', error);
       throw error;
     }
   }
   /**
-   * Stop the unified server;
+   * Stop the unified server
    */
   async;
   stop();
@@ -320,7 +320,7 @@ start();
         this.wss.close();
         this.wss = null;
       }
-;
+
       // Close HTTP server
       if (this.server) {
         await new Promise<void>((resolve) => {
@@ -330,24 +330,24 @@ start();
           });
         });
       }
-;
+
       this.isRunning = false;
       console.warn('🛑 Claude-Zen Unified Server stopped');
-    } catch (/* error */) {
+    } catch () {
       console.error('❌ Error stopping server:', error);
       throw error;
     }
   }
   /**
-   * Get server status;
+   * Get server status
    */
   getStatus();
   return {
-      running: this.isRunning,;
-  // port: this.options.port,; // LINT: unreachable code removed
-  host: this.options.host,;
-  components: this.options,;
-  uptime: process.uptime(),;
+      running: this.isRunning,
+  // port: this.options.port, // LINT: unreachable code removed
+  host: this.options.host,
+  components: this.options,
+  uptime: process.uptime(),
 }
 // CLI handling
 async function main(): unknown {
@@ -361,7 +361,7 @@ async function main(): unknown {
     try {
       await server.stop();
       process.exit(0);
-    } catch (/* error */) {
+    } catch () {
       console.error('❌ Error during shutdown:', error);
       process.exit(1);
     }
@@ -370,7 +370,7 @@ async function main(): unknown {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   try {
     await server.start();
-  } catch (/* error */) {
+  } catch () {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
