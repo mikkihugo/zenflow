@@ -72,19 +72,19 @@ const _config: Config = {
     environment: process.env.NODE_ENV ?? 'development',
     debug: process.env.DEBUG === 'true',
   },
-{
-  port: parseInt(process.env.PORT ?? '3000', 10),;
-  host: process.env.HOST ?? 'localhost',;
-  origin: process.env.CORS_ORIGIN?.split(',') ?? '*',;
-  credentials: true,;
-  ,
-  windowMs: 15 *
-    60 *
-    1000, // 15 minutes
-    max
-  : 1000, // limit each IP to 1000 requests per windowMs,;
-}
-,
+  },
+  server: {
+    port: parseInt(process.env.PORT ?? '3000', 10),
+    host: process.env.HOST ?? 'localhost',
+    cors: {
+      origin: process.env.CORS_ORIGIN?.split(',') ?? '*',
+      credentials: true,
+    },
+    rateLimit: {
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 1000, // limit each IP to 1000 requests per windowMs
+    },
+  },
 {
   path: process.env.SQLITE_PATH ?? './databases/claude-zen.db',;
   timeout: 10000,;
