@@ -28,20 +28,20 @@ try {
     await fs.mkdir(claudeDir, {recursive = path.join(claudeDir, 'settings.json');
     const _basicSettings = {
       "env": {
-        "CLAUDE_ZEN_AUTO_COMMIT": "false",;
-        "CLAUDE_ZEN_AUTO_PUSH": "false", ;
-        "CLAUDE_ZEN_HOOKS_ENABLED": "true",;
+        "CLAUDE_ZEN_AUTO_COMMIT": "false",
+        "CLAUDE_ZEN_AUTO_PUSH": "false",
+        "CLAUDE_ZEN_HOOKS_ENABLED": "true",
         "CLAUDE_ZEN_TELEMETRY_ENABLED": "true";
-      },;
+      },
       "permissions": 
         "allow": [;
-          "Bash(npm run *)",;
-          "Bash(git *)",;
+          "Bash(npm run *)",
+          "Bash(git *)",
           "Bash(node *)";
-        ];,;
+        ];,
       "mcpServers": 
         "ruv-swarm": 
-          "command": "npx",;
+          "command": "npx",
           "args": ["ruv-swarm", "mcp", "start"];
     };
 ;

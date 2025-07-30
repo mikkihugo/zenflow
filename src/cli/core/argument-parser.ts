@@ -71,7 +71,7 @@ else {
 }
 }
 return {
-    flags,;
+    flags,
 // positionalArgs,hasFlag = > name in flags,getFlag = null): _any => flags[name] ?? defaultValue,getBooleanFlag = > Boolean(flags[name]),requireFlag = null) => { // LINT: unreachable code removed
 if (!(_name in _flags)) {
   throw new ValidationError(errorMessage ?? `Required flag --${name} is missing`);

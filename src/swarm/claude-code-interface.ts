@@ -53,7 +53,7 @@ const _process = spawn(command.executable, command.args, {cwd = generateId('clau
 const _agent = {id = 'idle';
 agent.lastActivity = new Date();
 this.logger.info('Claude agent spawned successfully', {
-        agentId,;
+        agentId,
 processId = {};
 ): Promise<ClaudeTaskExecution>
 {
@@ -139,7 +139,7 @@ if (!agent) {
     this.processPool.totalTerminated++;
 ;
     this.logger.info('Claude agent terminated successfully', {
-        agentId,;
+        agentId,
         reason,totalTasks = Array.from(this.agents.values());
 ;
     const __totalTokens = agents.reduce((sum, a) => sum + a.metrics.totalTokensUsed, 0);
@@ -162,7 +162,7 @@ if (!agent) {
     const _failed = results.filter(r => r.status === 'rejected').length;
 ;
     this.logger.info('Agent pool pre-warming completed', {
-      successful,;
+      successful,
       failed,targetSize = [];
 ;
     // Add model
@@ -274,8 +274,8 @@ if (!agent) {
     try {
       // Create execution context for the agent
       const _context = {task = await this.taskExecutor.executeClaudeTask(;
-        taskDefinition,;
-        context.agent,;model = performance.now() - startTime;
+        taskDefinition,
+        context.agent,model = performance.now() - startTime;
 ;
       // Update agent activity
       agent.lastActivity = new Date();

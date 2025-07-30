@@ -44,10 +44,10 @@ export class AGUIAdapter extends EventEmitter {
     this.runId = options.runId ?? `run-${Date.now()}`;
     this.startTime = Date.now();
     this.stats = {
-      messagesCreated: 0,;
-    toolCallsExecuted: 0,;
-    eventsEmitted: 0,;
-    uptime: 0,;
+      messagesCreated: 0,
+    toolCallsExecuted: 0,
+    eventsEmitted: 0,
+    uptime: 0,
   }
 }
 /**
@@ -59,19 +59,19 @@ startTextMessage(messageId?: string, role: string = 'assistant')
   const _id = messageId ?? `msg-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
   this.currentMessageId = id;
   const _event: AGUIEvent = {
-      type: 'textMessageStart',;
-  id,;
-  timestamp: Date.now(),;
-  role,;
-  sessionId: this.sessionId,;
-  threadId: this.threadId,;
+      type: 'textMessageStart',
+  id,
+  timestamp: Date.now(),
+  role,
+  sessionId: this.sessionId,
+  threadId: this.threadId,
   ,
 }
 this.activeMessages.set(id, {
-      id,;
-role,;
-startTime: Date.now(),;
-content: '',;
+      id,
+role,
+startTime: Date.now(),
+content: '',
 })
 this.stats.messagesCreated++
 this._emitEvent(event)
@@ -88,11 +88,11 @@ addTextContent(content: string, messageId?: string)
     throw new Error('No active message. Call startTextMessage first.');
   }
   const _event: AGUIEvent = {
-      type: 'textMessageContent',;
-  id,;
-  timestamp: Date.now(),;
-  content,;
-  sessionId: this.sessionId,;
+      type: 'textMessageContent',
+  id,
+  timestamp: Date.now(),
+  content,
+  sessionId: this.sessionId,
   ,
 }
 // Update active message
@@ -112,10 +112,10 @@ endTextMessage(messageId?: string)
   if (!id) return;
   // ; // LINT: unreachable code removed
   const _event: AGUIEvent = {
-      type: 'textMessageEnd',;
-  id,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: 'textMessageEnd',
+  id,
+  timestamp: Date.now(),
+  sessionId: this.sessionId,
   ,
 }
 this.activeMessages.delete(id);
@@ -133,20 +133,20 @@ startToolCall(toolName: string, toolCallId?: string, parentMessageId?: string)
   const _id = toolCallId ?? `tool-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
   this.currentToolCallId = id;
   const _event: AGUIEvent = {
-      type: 'toolCallStart',;
-  id,;
-  timestamp: Date.now(),;
-  toolName,;
-  parentMessageId,;
-  sessionId: this.sessionId,;
+      type: 'toolCallStart',
+  id,
+  timestamp: Date.now(),
+  toolName,
+  parentMessageId,
+  sessionId: this.sessionId,
   ,
 }
 this.activeToolCalls.set(id, {
-      id,;
-toolName,;
-startTime: Date.now(),;
-args: null,;
-result: null,;
+      id,
+toolName,
+startTime: Date.now(),
+args: null,
+result: null,
 })
 this.stats.toolCallsExecuted++
 this._emitEvent(event)
@@ -163,11 +163,11 @@ addToolCallArgs(args: unknown, toolCallId?: string)
     throw new Error('No active tool call. Call startToolCall first.');
   }
   const _event: AGUIEvent = {
-      type: 'toolCallArgs',;
-  id,;
-  timestamp: Date.now(),;
-  args,;
-  sessionId: this.sessionId,;
+      type: 'toolCallArgs',
+  id,
+  timestamp: Date.now(),
+  args,
+  sessionId: this.sessionId,
   ,
 }
 // Update active tool call
@@ -187,10 +187,10 @@ endToolCall(toolCallId?: string)
   if (!id) return;
   // ; // LINT: unreachable code removed
   const _event: AGUIEvent = {
-      type: 'toolCallEnd',;
-  id,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: 'toolCallEnd',
+  id,
+  timestamp: Date.now(),
+  sessionId: this.sessionId,
   ,
 }
 this.activeToolCalls.delete(id);
@@ -209,11 +209,11 @@ addToolCallResult(result: unknown, toolCallId?: string)
   if (!id) return;
   // ; // LINT: unreachable code removed
   const _event: AGUIEvent = {
-      type: 'toolCallResult',;
-  id,;
-  timestamp: Date.now(),;
-  result,;
-  sessionId: this.sessionId,;
+      type: 'toolCallResult',
+  id,
+  timestamp: Date.now(),
+  result,
+  sessionId: this.sessionId,
   ,
 }
 // Update active tool call
@@ -231,11 +231,11 @@ startRun(runId?: string)
 {
   const _id = runId ?? this.runId;
   const _event: AGUIEvent = {
-      type: 'runStarted',;
-  id,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
-  threadId: this.threadId,;
+      type: 'runStarted',
+  id,
+  timestamp: Date.now(),
+  sessionId: this.sessionId,
+  threadId: this.threadId,
   ,
 }
 this._emitEvent(event);
@@ -248,13 +248,13 @@ finishRun(runId?: string, status: string = 'completed')
 {
   const _id = runId ?? this.runId;
   const _event: AGUIEvent = {
-      type: 'runFinished',;
-  id,;
-  timestamp: Date.now(),;
-  status,;
-  sessionId: this.sessionId,;
-  threadId: this.threadId,;
-  stats: this.getStats(),;
+      type: 'runFinished',
+  id,
+  timestamp: Date.now(),
+  status,
+  sessionId: this.sessionId,
+  threadId: this.threadId,
+  stats: this.getStats(),
   ,
 }
 this._emitEvent(event);
@@ -266,13 +266,13 @@ emitStateSnapshot(state: unknown)
 : void
 {
   const _event: AGUIEvent = {
-      type: 'stateSnapshot',;
-  id: `snapshot-${Date.now()}`,;
-  timestamp: Date.now(),;
-  state,;
-  sessionId: this.sessionId,;
-  activeMessages: Array.from(this.activeMessages.keys()),;
-  activeToolCalls: Array.from(this.activeToolCalls.keys()),;
+      type: 'stateSnapshot',
+  id: `snapshot-${Date.now()}`,
+  timestamp: Date.now(),
+  state,
+  sessionId: this.sessionId,
+  activeMessages: Array.from(this.activeMessages.keys()),
+  activeToolCalls: Array.from(this.activeToolCalls.keys()),
   ,
 }
 this._emitEvent(event);
@@ -284,9 +284,9 @@ emitCustomEvent(eventType: string, data: unknown)
 : void
 {
   const _event: AGUIEvent = {
-      type: eventType,;
-  id: `custom-${Date.now()}`,;
-  timestamp: Date.now(),;
+      type: eventType,
+  id: `custom-${Date.now()}`,
+  timestamp: Date.now(),
   ...data,
   sessionId: this.sessionId,
   ,
@@ -300,8 +300,8 @@ getStats()
 : AGUIStats
 {
   return {
-      ...this.stats,;
-  // uptime: Date.now() - this.startTime,; // LINT: unreachable code removed
+      ...this.stats,
+  // uptime: Date.now() - this.startTime, // LINT: unreachable code removed
 }
 }
 /**
@@ -311,11 +311,11 @@ getActiveSessions()
 : unknown
 {
   return {
-      sessionId: this.sessionId,;
-  // threadId: this.threadId,; // LINT: unreachable code removed
-  runId: this.runId,;
-  activeMessages: this.activeMessages.size,;
-  activeToolCalls: this.activeToolCalls.size,;
+      sessionId: this.sessionId,
+  // threadId: this.threadId, // LINT: unreachable code removed
+  runId: this.runId,
+  activeMessages: this.activeMessages.size,
+  activeToolCalls: this.activeToolCalls.size,
 }
 }
 /**
@@ -329,10 +329,10 @@ reset()
   this.currentMessageId = null;
   this.currentToolCallId = null;
   this.stats = {
-      messagesCreated: 0,;
-  toolCallsExecuted: 0,;
-  eventsEmitted: 0,;
-  uptime: 0,;
+      messagesCreated: 0,
+  toolCallsExecuted: 0,
+  eventsEmitted: 0,
+  uptime: 0,
 }
 this.startTime = Date.now();
 }

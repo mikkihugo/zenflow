@@ -39,7 +39,7 @@ export class HelpFormatter {
     if (info.globalOptions && info.globalOptions.length > 0) {
       sections.push(;
         HelpFormatter.formatSection(;
-          'GLOBAL OPTIONS',;
+          'GLOBAL OPTIONS',
           HelpFormatter.formatOptions(info.globalOptions);
         );
       );
@@ -65,7 +65,7 @@ export class HelpFormatter {
 ;
   static formatCommands(commands): unknown {
     const _maxNameLength = Math.max(;
-      HelpFormatter.MIN_DESCRIPTION_COLUMN,;
+      HelpFormatter.MIN_DESCRIPTION_COLUMN,
       ...commands.map((cmd) => {
         const __nameLength = cmd.name.length;
 ;
@@ -79,7 +79,7 @@ export class HelpFormatter {
 ;
   static formatOptions(options): unknown {
     const _maxFlagsLength = Math.max(;
-      HelpFormatter.MIN_DESCRIPTION_COLUMN,;
+      HelpFormatter.MIN_DESCRIPTION_COLUMN,
       ...options.map((opt) => opt.flags.length);
     );
 ;

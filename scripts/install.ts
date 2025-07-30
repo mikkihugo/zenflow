@@ -13,7 +13,6 @@
 async function main(): Promise<void> {
   try {
     console.warn('Installing Claude-Zen...');
-;
     // Installation verification steps
     console.warn('✅ Claude-Zen installation completed!');
     console.warn('🚀 Neural CLI with ruv-FANN integration ready');

@@ -55,8 +55,8 @@ Remove;
 lock;
 file;
 rm;
-'$LOCK_FILE'`,;
-  },;
+'$LOCK_FILE'`,
+  },
   benefits = {name = Path.home() / '.claude' / 'command_queue.jsonl';
 PROCESSING_INTERVAL = 300  # 5 minutes
 ;
@@ -79,12 +79,12 @@ def process_queue():;
                 ], check=True);
                 time.sleep(2)  # Rate limiting;
         except Exception ase = = '__main__':;
-    whileTrue = [;
-  SAFE_FLAG_PATTERN,;
-  SAFE_POST_TOOL_PATTERN,;
-  SAFE_CONDITIONAL_PATTERN,;
-  SAFE_BATCH_PATTERN,;
-  SAFE_QUEUE_PATTERN,;
+    whileTrue = [
+  SAFE_FLAG_PATTERN,
+  SAFE_POST_TOOL_PATTERN,
+  SAFE_CONDITIONAL_PATTERN,
+  SAFE_BATCH_PATTERN,
+  SAFE_QUEUE_PATTERN,
 ];
 ;
 /**
@@ -185,7 +185,7 @@ $pattern.processor
 }
 ;
 ---;
-`,;
+`,
 ).join('')
 ;
 ## 🚀 Quick Migration Guide
@@ -233,8 +233,8 @@ claude-zen hook-safety reset;
 }
 ;
 export default {
-  DANGEROUS_PATTERN_EXAMPLE,;
-  ALL_SAFE_PATTERNS,;
-  generateSafeHooksGuide,;
+  DANGEROUS_PATTERN_EXAMPLE,
+  ALL_SAFE_PATTERNS,
+  generateSafeHooksGuide,
 };
 ;

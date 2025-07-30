@@ -5,11 +5,11 @@
 
 import { BaseProvider } from './base-provider.js';
 import {
-  AIRequest,;
-AIResponse,;
-ProviderCapabilities,;
-ProviderConfig,;
-ProviderError,;
+  AIRequest,
+AIResponse,
+ProviderCapabilities,
+ProviderConfig,
+ProviderError,
 } from './types.js'
 interface OllamaRequest {model = 'ollama'
 version = '2024-07-29'
@@ -122,9 +122,9 @@ if (response.status === 404) {
   return new ProviderError('Ollama service not found', this.name, 'SERVICE_NOT_FOUND', 404);
 }
 return new ProviderError(;
-// text  ?? 'Unknown error',; // LINT: unreachable code removed
-this.name,;
-'API_ERROR',;
+// text  ?? 'Unknown error', // LINT: unreachable code removed
+this.name,
+'API_ERROR',
 response.status;
 )
 }
@@ -132,14 +132,14 @@ private
 estimateTokens(text = === 'ECONNREFUSED'  ?? error.code === 'ENOTFOUND')
 {
   return new ProviderError(;
-  // 'Cannot connect to Ollama service. Make sure Ollama is running.',; // LINT: unreachable code removed
-  this.name,;
+  // 'Cannot connect to Ollama service. Make sure Ollama is running.', // LINT: unreachable code removed
+  this.name,
   ('CONNECTION_ERROR');
   )
 }
 return new ProviderError(;
-// error.message  ?? 'Unknown error occurred',; // LINT: unreachable code removed
-this.name,;
+// error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
+this.name,
 ('UNKNOWN_ERROR');
 )
 }

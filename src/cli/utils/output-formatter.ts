@@ -291,7 +291,7 @@ export class TypeScriptOutputFormatter implements IOutputFormatter {
     const _entries = Object.entries(data).map(([_key, value]) => ({property = === 'object' ? JSON.stringify(value) : String(value);
     }));
 
-    const __columns = [;
+    const __columns = [
       {key = '', isLast = true): string {
     const _result = '';
 

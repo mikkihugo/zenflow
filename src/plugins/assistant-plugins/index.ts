@@ -61,18 +61,18 @@ console.warn(`📚 Loaded $this.knowledgeBase.sizeknowledge base entries`);
 {
   // Initialize AI provider for code generation
   // This would integrate with actual AI services
-  console.warn(`🧠 AI providerinitialized = 'custom',;
-      features = [],;
-      dependencies = [],;
+  console.warn(`🧠 AI providerinitialized = 'custom',
+      features = [],
+      dependencies = [],
       config = = options;
 ;
     console.warn(`🔨 Generatingplugin = this.pluginPatterns.get(pattern)  ?? this.createCustomPattern(features);
 ;
   // Generate plugin structure
   const _pluginStructure = await this.generatePluginStructure(;
-    name,;
-    description,;
-    selectedPattern,;
+    name,
+    description,
+    selectedPattern,
     config;
   );
 ;
@@ -98,8 +98,8 @@ console.warn(`📚 Loaded $this.knowledgeBase.sizeknowledge base entries`);
       name,structure = this.toClassName(name);
 ;
   return {
-      name,;
-    // className,; // LINT: unreachable code removed
+      name,
+    // className, // LINT: unreachable code removed
       description,pattern = new Set(['EventEmitter from \'events\'']);
 ;
   // Add pattern-specific imports
@@ -208,7 +208,7 @@ ${configDefaults}${configDefaults ? ',\n' : ''}      ...config;
     };
 ;
     return {
-      name,;
+      name,
     // async = {name = this.cache.get(key); // LINT: unreachable code removed
       if (Date.now() - entry.timestamp < this.config.cacheTimeout) {
         return entry.value;
@@ -515,12 +515,12 @@ MIT`;
         await this.generateSuggestions(structure, patterns, performance) : null;
 ;
       const _analysis = {
-        pluginPath,;
-        structure,;
-        patterns,;
-        performance,;
-        compatibility,;
-        suggestions,;
+        pluginPath,
+        structure,
+        patterns,
+        performance,
+        compatibility,
+        suggestions,
         timestamp = {classes = code.matchAll(/class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{/g);
     for(const _match of classMatches) {
       structure.classes.push({name = code.matchAll(/(?:async\s+)?(\w+)\s*\([^)]*\)\s*{/g);
@@ -602,16 +602,16 @@ MIT`;
     const _removeListenerCount = (code.match(/\.(off|removeListener)\(/g)  ?? []).length;
 ;
     if(listenerCount > removeListenerCount + 2) {
-      issues.push({type = > code.includes(`async ${m}`)).length,eventEmissions = [;
-      /\bif\s*\(/g,;
-      /\belse\s+if\s*\(/g,;
-      /\belse\s*{/g,;
-      /\bfor\s*\(/g,;
-      /\bwhile\s*\(/g,;
-      /\bdo\s*{/g,;
-      /\bswitch\s*\(/g,;
-      /\bcase\s+/g,;
-      /\bcatch\s*\(/g,;
+      issues.push({type = > code.includes(`async ${m}`)).length,eventEmissions = [
+      /\bif\s*\(/g,
+      /\belse\s+if\s*\(/g,
+      /\belse\s*{/g,
+      /\bfor\s*\(/g,
+      /\bwhile\s*\(/g,
+      /\bdo\s*{/g,
+      /\bswitch\s*\(/g,
+      /\bcase\s+/g,
+      /\bcatch\s*\(/g,
       /\?\s*[^:]+:/g // ternary
     ];
 ;
@@ -663,7 +663,7 @@ MIT`;
     if(structure.events.length === 0) {
       suggestions.push({type = === 0) {
       suggestions.push({type = > ({type = path.join(;
-      this.config.pluginAnalysisDir,;
+      this.config.pluginAnalysisDir,
       `$path.basename(analysis.pluginPath, '.js')-analysis.json`;
     );
 ;
@@ -672,7 +672,7 @@ MIT`;
     // Generate readable report
     const _readableReport = this.generateReadableReport(analysis);
     const _readablePath = path.join(;
-      this.config.pluginAnalysisDir,;
+      this.config.pluginAnalysisDir,
       `$path.basename(analysis.pluginPath, '.js')-report.md`;
     );
 ;
@@ -805,13 +805,13 @@ if(!cached) {
 ;
     return Object.entries(config.defaults);
     // .map(([key, value]) => `- \`${key // LINT: unreachable code removed}\` - ${typeof value} (default = {initialize = {
-      'initialized': 'Emitted when plugin is successfully initialized.',;
-      'error': 'Emitted when an error occurs.',;
-      'cleanup': 'Emitted when cleanup is complete.',;
-      'data = [;
-      '1. Always initialize the plugin before use',;
-      '2. Handle errors gracefully and emit error events',;
-      '3. Clean up resources when done',;
+      'initialized': 'Emitted when plugin is successfully initialized.',
+      'error': 'Emitted when an error occurs.',
+      'cleanup': 'Emitted when cleanup is complete.',
+      'data = [
+      '1. Always initialize the plugin before use',
+      '2. Handle errors gracefully and emit error events',
+      '3. Clean up resources when done',
       '4. Use event emissions for better integration';
     ];
 ;
@@ -846,8 +846,8 @@ if(!cached) {
 ;
   async saveGeneratedPlugin(pluginPackage): unknown {
     const _pluginDir = path.join(;
-      this.config.pluginTemplatesDir,;
-      'generated',;
+      this.config.pluginTemplatesDir,
+      'generated',
       pluginPackage.name;
     );
 ;

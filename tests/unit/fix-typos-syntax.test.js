@@ -25,7 +25,7 @@ describe('Typo and Syntax Fixes', () => {
   describe('sparc-commands.js ternary operator check', () => {
     test('should have properly formatted ternary operators', () => {
       const _filePath = path.join(;
-      process.cwd(),;
+      process.cwd(),
       ('src/cli/simple-commands/init/claude-commands/sparc-commands.js');
       )
       const _fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -42,7 +42,7 @@ describe('Typo and Syntax Fixes', () => {
     });
     test('should be valid JavaScript syntax', async () => {
       const _filePath = path.join(;
-      process.cwd(),;
+      process.cwd(),
       ('src/cli/simple-commands/init/claude-commands/sparc-commands.js');
       )
       // Dynamic import to check syntax
@@ -51,7 +51,7 @@ describe('Typo and Syntax Fixes', () => {
         imported = await import(filePath);
         expect(imported).toBeDefined();
         expect(typeof imported.createSparcSlashCommand).toBe('function');
-      } catch (/* error */) {
+      } catch (error) {
         // If import fails, it's a syntax error
         throw new Error(`Syntax error in sparc-commands.js: ${error.message}`);
       }

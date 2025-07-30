@@ -100,7 +100,7 @@ if (!isInteractive()) {
 ;
   const _answers = await inquirer.prompt([;
     {type = > input.trim().length > 0  ?? 'Search query is required';
-    },;
+    },
     {type = > input > 0  ?? 'Must be greater than 0';
     }
   ]);
@@ -172,9 +172,9 @@ if (!isInteractive()) {
 ;
   const _answers = await inquirer.prompt([;
     {type = > input.trim().length > 0  ?? 'Key is required';
-    },;
+    },
     {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
-    },;
+    },
     {type = 'general', importance = 0.5, sessionId = null): unknown {
   const _sessionDir = './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
@@ -302,11 +302,11 @@ if (!isInteractive()) {
     if (!existsSync(exportsDir)) {
       mkdirSync(exportsDir, {recursive = await inquirer.prompt([
     {type = > input > 0  ?? 'Must be greater than 0';
-    },;
+    },
     {type = > input > 0  ?? 'Must be greater than 0';
-    },;
+    },
     {type = > (input >= 0 && input <= 1)  ?? 'Must be between 0.0 and 1.0';
-    },;
+    },
     {type = false): unknown {
 ;
   const _importance = (memory.importance * 100).toFixed(0);

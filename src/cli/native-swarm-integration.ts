@@ -51,7 +51,7 @@
     this.nativeHiveMind.on('swarm => {
       printInfo(`BEE Swarm _created => {
       printInfo(`ROBOT Agent spawned => {
-      printInfo(`CLIPBOARD Taskorchestrated = [;
+      printInfo(`CLIPBOARD Taskorchestrated = [
       {type = agentConfigs.map(_config => ;
       this.nativeHiveMind.spawnAgent(config);
     );
@@ -87,7 +87,7 @@
     const _operation = this.trackOperation('agent_spawn');
 ;
     try {
-      const _result = await this.nativeHiveMind.spawnAgent({type = = false,;
+      const _result = await this.nativeHiveMind.spawnAgent({type = = false,
         cognitivePattern = {}): unknown {
     await this.ensureInitialized();
 ;
@@ -105,7 +105,7 @@
       this.completeOperation(operation, true);
 ;
       return {
-        ...result,;
+        ...result,
     // claudeZenIntegration = { // LINT: unreachable code removed}): unknown {
     await this.ensureInitialized();
 ;
@@ -157,7 +157,7 @@
       printSuccess(`CHECK Completed ${operations.length} operations in ${batchOperation.duration}ms (${batchEfficiency.toFixed(1)} ops/sec)`);
 ;
       return {
-        results,;
+        results,
     // batchPerformance = { // LINT: unreachable code removed};
 ;
     operations.forEach((op, index) => {

@@ -193,7 +193,7 @@ performASTAnalysis(sourceFiles);
     // Analyze graph structure
 
     return {
-      ...dependencyResults,;
+      ...dependencyResults,
     // circular = {nodes_inserted = results.ast.files.length; // LINT: unreachable code removed
         graphResults.operations.push('source_files');
       }

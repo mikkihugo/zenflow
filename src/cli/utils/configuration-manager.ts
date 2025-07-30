@@ -71,7 +71,7 @@ load(path?: string)
 ;
         throw new ConfigurationError(;
           `Configuration validationfailed = > `  ${e.key}: ${e.message}`).join('\n')}
-  `,;
+  `,
           configPath;
 );
 }

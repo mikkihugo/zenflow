@@ -58,8 +58,8 @@ export class AGUIMCPToolExecutor extends MCPToolExecutor {
 ;
     this.aguiAdapter.emitCustomEvent('tool_chain_started', {
       chainId,tools = > t.name),timestamp = await this.executeTool(name, args, {
-          ...context,;
-          chainId,;
+          ...context,
+          chainId,
           stepIndex = {}): unknown {
     const _toolCallId = this.aguiAdapter.startToolCall(name, null, context.parentMessageId);
       // Create a progress callback for streaming updates
@@ -78,7 +78,7 @@ export class AGUIMCPToolExecutor extends MCPToolExecutor {
    */;
   getEnhancedStats() ;
     return {
-      ...this.getExecutionStats(),;
+      ...this.getExecutionStats(),
     // agui = { ...this.options, ...options  // LINT: unreachable code removed};
     return this;
     // ; // LINT: unreachable code removed

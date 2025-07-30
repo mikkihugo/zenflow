@@ -67,7 +67,7 @@ export default app;
   async;
   getStatus();
   {
-    return {id = > t.status === 'completed').length,in_progress = > t.status === 'in_progress').length,;
+    return {id = > t.status === 'completed').length,in_progress = > t.status === 'in_progress').length,
     //   // LINT: unreachable code removed},runtime = 'completed';
     const __summary = await this.getStatus();
     console.warn(`\n✅ Swarm completed successfully!`);
@@ -82,7 +82,7 @@ export default app;
 async function executeSwarm(objective = {}: unknown): unknown {
   try {
     // Parse configuration from flags
-    const _config = {name = = false,;
+    const _config = {name = = false,
       },security = new SwarmCoordinator(config);
     await coordinator.initialize();
 ;

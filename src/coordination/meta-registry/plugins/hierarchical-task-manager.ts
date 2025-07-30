@@ -276,7 +276,7 @@ startIntelligentMonitoring();
     if (services.length === 0) return null;
     // ; // LINT: unreachable code removed
     // Simple keyword matching - can be enhanced with AI semantic matching
-    const _epicKeywords = [;
+    const _epicKeywords = [
       ...this.extractKeywords(epicData.title),
       ...this.extractKeywords(epicData.description),
       ...(epicData.relevantServices  ?? []);

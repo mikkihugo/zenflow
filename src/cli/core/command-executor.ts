@@ -94,7 +94,7 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
             acc[index] = arg;
             return acc;
     //   // LINT: unreachable code removed}, {} as Record<string, any>),options = await this.executeWithTimeout(;
-          () => command.handler(executionContext),;
+          () => command.handler(executionContext),
           this.timeout;
         );
 ;
@@ -145,9 +145,9 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
 ;
     for (const cmd of commands) {
       const _result = await this.executeCommand(;
-        cmd.name,;
-        cmd.args  ?? [],;
-        cmd.flags  ?? {},;
+        cmd.name,
+        cmd.args  ?? [],
+        cmd.flags  ?? {},
         cmd.context  ?? {}
       );
       results.push(result);
@@ -165,9 +165,9 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
   async;
   executeParallel(commands = commands.map(_cmd =>;
       this.executeCommand(;
-        cmd.name,;
-        cmd.args  ?? [],;
-        cmd.flags  ?? {},;
+        cmd.name,
+        cmd.args  ?? [],
+        cmd.flags  ?? {},
         cmd.context  ?? {}
       );
     );
@@ -243,7 +243,7 @@ export function _createRobustCommandExecutor(_commandRegistry = {}: unknown): Co
   const __enhancedOptions = {
       timeout => {
       logger.error(`Command '${commandName}' failed after ${duration}ms`, {
-        error: error.message,;
+        error: error.message,
         stack: error.stack;
       });
 ;

@@ -12,13 +12,13 @@ if (!objective ?? flags.help ?? flags.h) {
 console.warn('🐝 Initializing Hive Mind...');
 console.warn(`👑 Queen Genesis coordinating...`);
 console.warn(`📋Objective = `hive_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  console.warn(`✅ Hive Mindinitialized = [;
-    { type: '👑', name: 'Queen-Genesis', role: 'Orchestrator' },;
-    { type: '🏗️', name: 'Architect-Prime', role: 'System Design' },;
-    { type: '🐝', name: 'Worker-1', role: 'Backend Development' },;
-    { type: '🐝', name: 'Worker-2', role: 'Frontend Development' },;
-    { type: '🔍', name: 'Scout-Alpha', role: 'Research & Analysis' },;
-    { type: '🛡️', name: 'Guardian-Omega', role: 'Quality Assurance' },;
+  console.warn(`✅ Hive Mindinitialized = [
+    { type: '👑', name: 'Queen-Genesis', role: 'Orchestrator' },
+    { type: '🏗️', name: 'Architect-Prime', role: 'System Design' },
+    { type: '🐝', name: 'Worker-1', role: 'Backend Development' },
+    { type: '🐝', name: 'Worker-2', role: 'Frontend Development' },
+    { type: '🔍', name: 'Scout-Alpha', role: 'Research & Analysis' },
+    { type: '🛡️', name: 'Guardian-Omega', role: 'Quality Assurance' },
   ];
 for (const agent of agents) {
   console.warn(`  ${agent.type} ${agent.name} - ${agent.role}`);
@@ -68,7 +68,7 @@ USAGE:;
   claude-zen hive <objective> [options]
 ;
 DESCRIPTION:;
-  Hive Mind implements advanced swarm intelligence with consensus mechanisms,;
+  Hive Mind implements advanced swarm intelligence with consensus mechanisms,
   distributed decision-making, and quality-driven execution.
 ;
 EXAMPLES:;

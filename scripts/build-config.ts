@@ -26,7 +26,7 @@ interface BuildConfiguration {
 export const buildConfig: BuildConfiguration = {
   // Module aliases for Node.js build compatibility
   moduleAliases: {
-    '@cliffy/ansi/colors': './src/adapters/cliffy-node.js',;
+    '@cliffy/ansi/colors': './src/adapters/cliffy-node.js',
 ('@cliffy/prompt');
 : './src/adapters/cliffy-node.js',
 ('@cliffy/table')

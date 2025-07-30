@@ -80,7 +80,7 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
         `;
       SELECT name FROM sqlite_master ;
       WHERE type='table' AND name='schema_version';
-    `,;
+    `,
       );
       .get();
 ;
@@ -88,8 +88,8 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
       // Create schema version table
       db.exec(`;
         CREATE TABLE schema_version (;
-          version REAL PRIMARY KEY,;
-          applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          version REAL PRIMARY KEY,
+          applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           description TEXT;
         );
       `);
@@ -99,7 +99,7 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
         `;
         INSERT INTO schema_version (version, description) ;
         VALUES (1.0, 'Initial schema');
-      `,;
+      `,
       ).run();
 ;
       return 1.0;
@@ -111,7 +111,7 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
         `;
       SELECT version FROM schema_version ;
       ORDER BY version DESC LIMIT 1;
-    `,;
+    `,
       );
       .get();
 ;
@@ -120,7 +120,7 @@ export async function optimizeHiveMindDatabase(dbPath = {}: unknown): unknown {
     // `; // LINT: unreachable code removed
     INSERT OR REPLACE INTO schema_version (version, description) ;
     VALUES (?, ?);
-  `,;
+  `,
   ).run(version, description  ?? `Updated to version $version`);
 }
 ;
@@ -143,40 +143,40 @@ function applyBasicIndexes(db = db;
   // Only create indexes for tables that exist
   if (tableSet.has('swarms')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',;
-      'CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created_at)',;
+      'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',
+      'CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created_at)',
     );
   }
 ;
   if (tableSet.has('agents')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_agents_swarm ON agents(swarm_id)',;
-      'CREATE INDEX IF NOT EXISTS idx_agents_type ON agents(type)',;
-      'CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)',;
+      'CREATE INDEX IF NOT EXISTS idx_agents_swarm ON agents(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_agents_type ON agents(type)',
+      'CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)',
     );
   }
 ;
   if (tableSet.has('tasks')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_tasks_swarm ON tasks(swarm_id)',;
-      'CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(agent_id)',;
-      'CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)',;
-      'CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority DESC)',;
+      'CREATE INDEX IF NOT EXISTS idx_tasks_swarm ON tasks(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(agent_id)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority DESC)',
     );
   }
 ;
   if (tableSet.has('collective_memory')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_memory_swarm ON collective_memory(swarm_id)',;
-      'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',;
-      'CREATE INDEX IF NOT EXISTS idx_memory_type ON collective_memory(type)',;
+      'CREATE INDEX IF NOT EXISTS idx_memory_swarm ON collective_memory(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
+      'CREATE INDEX IF NOT EXISTS idx_memory_type ON collective_memory(type)',
     );
   }
 ;
   if (tableSet.has('consensus_decisions')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_consensus_swarm ON consensus_decisions(swarm_id)',;
-      'CREATE INDEX IF NOT EXISTS idx_consensus_created ON consensus_decisions(created_at)',;
+      'CREATE INDEX IF NOT EXISTS idx_consensus_swarm ON consensus_decisions(swarm_id)',
+      'CREATE INDEX IF NOT EXISTS idx_consensus_created ON consensus_decisions(created_at)',
     );
   }
 ;
@@ -189,7 +189,7 @@ function applyBasicIndexes(db = db;
       `;
     SELECT name FROM sqlite_master ;
     WHERE type='table' AND name NOT LIKE 'sqlite_%';
-  `,;
+  `,
     );
     .all();
     .map((row) => row.name);
@@ -204,7 +204,7 @@ function applyBasicIndexes(db = db;
         `;
       SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
       WHERE name = 'priority';
-    `,;
+    `,
       );
       .get();
 ;
@@ -227,7 +227,7 @@ function applyBasicIndexes(db = db;
         `;
       SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
       WHERE name = 'completed_at';
-    `,;
+    `,
       );
       .get();
 ;
@@ -250,7 +250,7 @@ function applyBasicIndexes(db = db;
         `;
       SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
       WHERE name = 'result';
-    `,;
+    `,
       );
       .get();
 ;
@@ -275,7 +275,7 @@ function applyBasicIndexes(db = db;
         `;
       SELECT COUNT(*) as count FROM pragma_table_info('swarms') ;
       WHERE name = 'updated_at';
-    `,;
+    `,
       );
       .get();
 ;
@@ -312,28 +312,28 @@ function applyAdvancedIndexes(db = db;
   // Composite indexes for common queries
   if (tableSet.has('tasks')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_tasks_swarm_status ON tasks(swarm_id, status)',;
-      'CREATE INDEX IF NOT EXISTS idx_tasks_full ON tasks(swarm_id, agent_id, status, priority)',;
-      "CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = 'pending'",;
+      'CREATE INDEX IF NOT EXISTS idx_tasks_swarm_status ON tasks(swarm_id, status)',
+      'CREATE INDEX IF NOT EXISTS idx_tasks_full ON tasks(swarm_id, agent_id, status, priority)',
+      "CREATE INDEX IF NOT EXISTS idx_tasks_pending ON tasks(swarm_id, priority) WHERE status = 'pending'",
     );
   }
 ;
   if (tableSet.has('agents')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_agents_swarm_type ON agents(swarm_id, type)',;
-      'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)',;
+      'CREATE INDEX IF NOT EXISTS idx_agents_swarm_type ON agents(swarm_id, type)',
+      'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)',
     );
   }
 ;
   if (tableSet.has('collective_memory')) {
     indexes.push(;
-      'CREATE INDEX IF NOT EXISTS idx_memory_swarm_key ON collective_memory(swarm_id, key)',;
+      'CREATE INDEX IF NOT EXISTS idx_memory_swarm_key ON collective_memory(swarm_id, key)',
     );
   }
 ;
   if (tableSet.has('swarms')) {
     indexes.push(;
-      "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'",;
+      "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'",
     );
   }
 ;
@@ -345,9 +345,9 @@ function applyAdvancedIndexes(db = db;
     BEGIN;
       INSERT OR REPLACE INTO agent_performance (agent_id, tasks_completed, tasks_failed);
       VALUES (;
-        NEW.agent_id,;
+        NEW.agent_id,
         COALESCE((SELECT tasks_completed FROM agent_performance WHERE agent_id = NEW.agent_id), 0) + ;
-          CASE WHEN NEW.status = 'completed' THEN 1 ELSE 0 END,;
+          CASE WHEN NEW.status = 'completed' THEN 1 ELSE 0 END,
         COALESCE((SELECT tasks_failed FROM agent_performance WHERE agent_id = NEW.agent_id), 0) + ;
           CASE WHEN NEW.status = 'failed' THEN 1 ELSE 0 END;
       );
@@ -377,7 +377,7 @@ function addMemoryOptimization(db = db;
       `;
     SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
     WHERE name = 'access_count';
-  `,;
+  `,
     );
     .get();
 ;
@@ -401,7 +401,7 @@ function addMemoryOptimization(db = db;
       `;
     SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
     WHERE name = 'accessed_at';
-  `,;
+  `,
     );
     .get();
 ;
@@ -425,7 +425,7 @@ function addMemoryOptimization(db = db;
       `;
     SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
     WHERE name = 'compressed';
-  `,;
+  `,
     );
     .get();
 ;
@@ -447,7 +447,7 @@ function addMemoryOptimization(db = db;
       `;
     SELECT COUNT(*) as count FROM pragma_table_info('collective_memory') ;
     WHERE name = 'size';
-  `,;
+  `,
     );
     .get();
 ;
@@ -468,10 +468,10 @@ function addMemoryOptimization(db = db;
   db.exec(`;
     CREATE VIEW IF NOT EXISTS memory_usage_summary AS;
     SELECT ;
-      swarm_id,;
-      COUNT(*) as total_entries,;
-      SUM(LENGTH(value)) as total_size,;
-      AVG(access_count) as avg_access_count,;
+      swarm_id,
+      COUNT(*) as total_entries,
+      SUM(LENGTH(value)) as total_size,
+      AVG(access_count) as avg_access_count,
       COUNT(CASE WHEN access_count = 0 THEN 1 END) as unused_entries;
     FROM collective_memory;
     GROUP BY swarm_id;
@@ -480,11 +480,11 @@ function addMemoryOptimization(db = db;
   // Add memory cleanup tracking
   db.exec(`;
     CREATE TABLE IF NOT EXISTS memory_cleanup_log (;
-      id INTEGER PRIMARY KEY AUTOINCREMENT,;
-      swarm_id TEXT,;
-      entries_removed INTEGER,;
-      space_reclaimed INTEGER,;
-      cleanup_type TEXT,;
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      swarm_id TEXT,
+      entries_removed INTEGER,
+      space_reclaimed INTEGER,
+      cleanup_type TEXT,
       performed_at DATETIME DEFAULT CURRENT_TIMESTAMP;
     );
   `);
@@ -507,7 +507,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
           `;
         SELECT name FROM sqlite_master ;
         WHERE type='table' AND name='collective_memory';
-      `,;
+      `,
         );
         .get();
 ;
@@ -522,7 +522,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
               `;
             DELETE FROM collective_memory ;
             WHERE accessed_at < ? AND access_count < 5;
-          `,;
+          `,
             );
             .run(cutoffDate.toISOString());
 ;
@@ -542,7 +542,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
           `;
         SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
         WHERE name = 'completed_at';
-      `,;
+      `,
         );
         .get();
 ;
@@ -560,7 +560,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
             `;
           DELETE FROM tasks ;
           WHERE status = 'completed' AND completed_at < ?;
-        `,;
+        `,
           );
           .run(archiveCutoff.toISOString());
       } else {
@@ -579,7 +579,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
             `;
           DELETE FROM tasks ;
           WHERE status = 'completed' AND created_at < ?;
-        `,;
+        `,
           );
           .run(archiveCutoff.toISOString());
       }
@@ -610,7 +610,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
       .prepare(;
         `;
       SELECT name FROM sqlite_master WHERE type='table';
-    `,;
+    `,
       );
       .all();
 ;
@@ -620,7 +620,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
         .prepare(;
           `;
         SELECT SUM(pgsize) as size FROM dbstat WHERE name=?;
-      `,;
+      `,
         );
         .get(table.name);
 ;
@@ -628,7 +628,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
       .prepare(;
         `;
       SELECT name, tbl_name FROM sqlite_master WHERE type='index';
-    `,;
+    `,
       );
       .all();
 ;
@@ -638,7 +638,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
           `;
         SELECT COUNT(*) as count FROM pragma_table_info('tasks') ;
         WHERE name = 'completed_at';
-      `,;
+      `,
         );
         .get();
 ;
@@ -648,7 +648,7 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
             `;
           SELECT AVG(julianday(completed_at) - julianday(created_at)) * 24 * 60 as avg_minutes;
           FROM tasks WHERE completed_at IS NOT NULL;
-        `,;
+        `,
           );
           .get();
       }
@@ -665,7 +665,6 @@ function _addBehavioralTracking(_db = {}: unknown): unknown {
 ;
 // Export for use in CLI
 export default {
-  optimizeHiveMindDatabase,;
-  performMaintenance,;
-  generateOptimizationReport,;;
-;
+  optimizeHiveMindDatabase,
+  performMaintenance,
+  generateOptimizationReport,

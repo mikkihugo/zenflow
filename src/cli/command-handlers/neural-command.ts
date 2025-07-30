@@ -101,11 +101,11 @@ try {
 ;
     console.warn(chalk.green('✅ Inference completed'));
     console.warn(chalk.cyan('📝 GeneratedCode = parseInt(flags.iterations)  ?? 10;
-  const _prompts = [;
-    'create a function to reverse a string',;
-    'implement binary search algorithm',;
-    'write a React component for user profile',;
-    'fix null pointer exception in this code',;
+  const _prompts = [
+    'create a function to reverse a string',
+    'implement binary search algorithm',
+    'write a React component for user profile',
+    'fix null pointer exception in this code',
     'generate unit tests for data validation';
   ];
 ;

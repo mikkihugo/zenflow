@@ -44,50 +44,50 @@ async function _runInteractiveWizard(): unknown {
       // Create tables
       db.run(`;
                 CREATE TABLE IF NOT EXISTS swarms (;
-                    id TEXT PRIMARY KEY,;
-                    name TEXT NOT NULL,;
-                    objective TEXT,;
-                    status TEXT DEFAULT 'active',;
-                    queen_type TEXT DEFAULT 'strategic',;
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    objective TEXT,
+                    status TEXT DEFAULT 'active',
+                    queen_type TEXT DEFAULT 'strategic',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP;
                 );
             `);
 ;
       db.run(`;
                 CREATE TABLE IF NOT EXISTS agents (;
-                    id TEXT PRIMARY KEY,;
-                    swarm_id TEXT,;
-                    name TEXT NOT NULL,;
-                    type TEXT NOT NULL,;
-                    role TEXT,;
-                    status TEXT DEFAULT 'idle',;
-                    capabilities TEXT,;
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+                    id TEXT PRIMARY KEY,
+                    swarm_id TEXT,
+                    name TEXT NOT NULL,
+                    type TEXT NOT NULL,
+                    role TEXT,
+                    status TEXT DEFAULT 'idle',
+                    capabilities TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (swarm_id) REFERENCES swarms(id);
                 );
             `);
 ;
       db.run(`;
                 CREATE TABLE IF NOT EXISTS tasks (;
-                    id TEXT PRIMARY KEY,;
-                    swarm_id TEXT,;
-                    description TEXT,;
-                    status TEXT DEFAULT 'pending',;
-                    result TEXT,;
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+                    id TEXT PRIMARY KEY,
+                    swarm_id TEXT,
+                    description TEXT,
+                    status TEXT DEFAULT 'pending',
+                    result TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (swarm_id) REFERENCES swarms(id);
                 );
             `);
 ;
       db.run(`;
                 CREATE TABLE IF NOT EXISTS collective_memory (;
-                    id TEXT PRIMARY KEY,;
-                    swarm_id TEXT,;
-                    key TEXT NOT NULL,;
-                    value TEXT,;
-                    ttl INTEGER,;
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+                    id TEXT PRIMARY KEY,
+                    swarm_id TEXT,
+                    key TEXT NOT NULL,
+                    value TEXT,
+                    ttl INTEGER,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (swarm_id) REFERENCES swarms(id);
                 );
             `);
@@ -123,13 +123,13 @@ async function createSwarm(): unknown {
                 `);
 ;
         insertSwarm.run(;
-          swarmId,;
-          `hive-$Date.now()`,;
-          objective,;
-          'active',;
-          config.coordination,;
-          new Date().toISOString(),;
-          new Date().toISOString(),;
+          swarmId,
+          `hive-$Date.now()`,
+          objective,
+          'active',
+          config.coordination,
+          new Date().toISOString(),
+          new Date().toISOString(),
         );
 ;
         // Create agents
@@ -140,14 +140,14 @@ async function createSwarm(): unknown {
 ;
         // Create Queen
         insertAgent.run(;
-          queenId,;
-          swarmId,;
-          'Queen Coordinator',;
-          'coordinator',;
-          'queen',;
-          'active',;
-          JSON.stringify(['orchestration', 'strategy', 'coordination']),;
-          new Date().toISOString(),;
+          queenId,
+          swarmId,
+          'Queen Coordinator',
+          'coordinator',
+          'queen',
+          'active',
+          JSON.stringify(['orchestration', 'strategy', 'coordination']),
+          new Date().toISOString(),
         );
 ;
         // Create worker agents
@@ -155,14 +155,14 @@ async function createSwarm(): unknown {
         for(let i = 0; i < config.agents - 1; i++) {
           const _agentType = workerTypes[i % workerTypes.length];
           insertAgent.run(;
-            `agent-$Date.now()-$i`,;
-            swarmId,;
-            `$agentType.charAt(0).toUpperCase() + agentType.slice(1)Worker $i + 1`,;
-            agentType,;
-            'worker',;
-            'idle',;
-            JSON.stringify([agentType, 'collaboration']),;
-            new Date().toISOString(),;
+            `agent-$Date.now()-$i`,
+            swarmId,
+            `$agentType.charAt(0).toUpperCase() + agentType.slice(1)Worker $i + 1`,
+            agentType,
+            'worker',
+            'idle',
+            JSON.stringify([agentType, 'collaboration']),
+            new Date().toISOString(),
           );
         }
 ;

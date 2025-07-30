@@ -162,19 +162,19 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
       file.size > (max?.size  ?? 0) ?file = codebase.reduce((oldest, file) => ;
       file.modified < (oldest?.modified  ?? new Date()) ?file = codebase.reduce((newest, file) => ;
       file.modified > (newest?.modified  ?? new Date(0)) ? file = {
-      '.js': 'JavaScript',;
-      '.ts': 'TypeScript',;
-      '.jsx': 'React',;
-      '.tsx': 'React TypeScript',;
-      '.vue': 'Vue',;
-      '.py': 'Python',;
-      '.java': 'Java',;
-      '.go': 'Go',;
-      '.rs': 'Rust',;
-      '.cpp': 'C++',;
-      '.c': 'C',;
-      '.cs': 'C#',;
-      '.php': 'PHP',;
+      '.js': 'JavaScript',
+      '.ts': 'TypeScript',
+      '.jsx': 'React',
+      '.tsx': 'React TypeScript',
+      '.vue': 'Vue',
+      '.py': 'Python',
+      '.java': 'Java',
+      '.go': 'Go',
+      '.rs': 'Rust',
+      '.cpp': 'C++',
+      '.c': 'C',
+      '.cs': 'C#',
+      '.php': 'PHP',
       '.rb': 'Ruby';
     };
 ;
@@ -309,9 +309,9 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     
     for(const presentationFile of layers.presentation) {
       if (this.hasDirectDatabaseAccess(presentationFile)) {
-        findings.push({category = [;
-      'SELECT', 'INSERT', 'UPDATE', 'DELETE',;
-      'connection.query', 'db.query', 'execute(',;
+        findings.push({category = [
+      'SELECT', 'INSERT', 'UPDATE', 'DELETE',
+      'connection.query', 'db.query', 'execute(',
       'mongoose.', 'sequelize.', 'prisma.';
     ];
 ;
@@ -406,11 +406,11 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 ;
     for(const file of codebase) {
       // Detect synchronous operations that could block
-      const _syncPatterns = [;
-        'fs.readFileSync',;
-        'fs.writeFileSync',;
-        'JSON.parse',;
-        'while(true)',;
+      const _syncPatterns = [
+        'fs.readFileSync',
+        'fs.writeFileSync',
+        'JSON.parse',
+        'while(true)',
         'for(;;)';
       ];
 ;
@@ -427,18 +427,18 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
 ;
     for(const file of codebase) {
       // Check for hardcoded secrets
-      const _secretPatterns = [;
-        /password\s*[:=]\s*['"`][^'"`]{8,}/i,;
-        /api[_-]?key\s*[:=]\s*['"`][^'"`]{20,}/i,;
-        /secret\s*[:=]\s*['"`][^'"`]{16,}/i,;
+      const _secretPatterns = [
+        /password\s*[:=]\s*['"`][^'"`]{8,}/i,
+        /api[_-]?key\s*[:=]\s*['"`][^'"`]{20,}/i,
+        /secret\s*[:=]\s*['"`][^'"`]{16,}/i,
         /token\s*[:=]\s*['"`][^'"`]{32,}/i;
       ];
 ;
       for(const pattern of secretPatterns) 
         if (pattern.test(file.content)) {
-          findings.push({category = [;
-        /query\s*\(\s*['"`][^'"`]*\$\{/,;
-        /execute\s*\(\s*['"`][^'"`]*\+/,;
+          findings.push({category = [
+        /query\s*\(\s*['"`][^'"`]*\$\{/,
+        /execute\s*\(\s*['"`][^'"`]*\+/,
         /sql\s*=\s*['"`][^'"`]*\+/;
       ];
 ;
@@ -891,7 +891,7 @@ export class ArchitectAdvisorPlugin extends EventEmitter {
     }
 ;
     return {
-      status,;
+      status,
     // message,quality_score = false; // LINT: unreachable code removed
 ;
       console.warn('🏗️ Architect Advisor Plugin cleaned up');

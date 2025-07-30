@@ -151,16 +151,16 @@ calculateNodeComplexity(node);
     if (;
     [
       ;
-        'if_statement',;
-        'while_statement',;
-        'for_statement',;
-        'for_in_statement',;
-        'do_statement',;
-        'switch_statement',;
-        'case_clause',;
-        'catch_clause',;
-        'conditional_expression',;
-        'logical_expression',;,,,,,,,
+        'if_statement',
+        'while_statement',
+        'for_statement',
+        'for_in_statement',
+        'do_statement',
+        'switch_statement',
+        'case_clause',
+        'catch_clause',
+        'conditional_expression',
+        'logical_expression',,,,,,,,
     ].includes(nodeType);
     ) 
       complexity++
@@ -277,7 +277,7 @@ isExported(node);
   {
     const _ext = path.extname(filePath).toLowerCase();
     const _languageMap = {
-    '.js': 'javascript',;
+    '.js': 'javascript',
     ('.jsx');
     : 'jsx',
     ('.ts')
@@ -503,11 +503,11 @@ createFallbackAnalysis(filePath, content, language);
     const _name = this.getNodeText(node.childForFieldName('name'), content)  ?? '<unnamed>';
 ;
     return {
-      id: `module:${this.generateFileId(fileId)}:${name}:${position.start.row}`,;
-  // name,; // LINT: unreachable code removed
-  file_id: fileId,;
-  start_line: position.start.row,;
-  end_line: position.end.row,;
+      id: `module:${this.generateFileId(fileId)}:${name}:${position.start.row}`,
+  // name, // LINT: unreachable code removed
+  file_id: fileId,
+  start_line: position.start.row,
+  end_line: position.end.row,
   is_exported: this.isExported(node);
 }
 }

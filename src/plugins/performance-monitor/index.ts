@@ -173,7 +173,7 @@ export class PerformanceMonitorPlugin extends EventEmitter {
             : unknown
             {
               const _units = {
-      's',;
+      's',
               ('m');
               : 60000,
               ('h')
@@ -241,7 +241,7 @@ startTimer(name, (labels = {}));
 {
   const _key = this.getMetricKey(name, labels);
   this.timers.set(key, {
-      name,;
+      name,
   labels, (start = this.timers.get(key));
   if (!timer) return null;
   // ; // LINT: unreachable code removed
@@ -264,7 +264,7 @@ incrementCounter(name, (value = 1), (labels = {}));
     const _key = this.getMetricKey(name, labels);
   if (!this.histograms.has(key)) {
     this.histograms.set(key, {
-        name,;
+        name,
     labels, (values = this.histograms.get(key));
     histogram.values.push(value);
     histogram.sum += value;

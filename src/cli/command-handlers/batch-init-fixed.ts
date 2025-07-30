@@ -99,30 +99,30 @@ updateDisplay();
 // Initialize a single project with options
 async function initializeProject(projectPath = {}: unknown): unknown {
   const {
-    template = null,;
-    environment = 'development',;
-    force = false,;
-    minimal = false,;
+    template = null,
+    environment = 'development',
+    force = false,
+    minimal = false,
   } = options;
 ;
   try {
     // Use the existing init command
     await initCommand([projectPath], {
-      force,;
-      minimal,;
-      template,;
+      force,
+      minimal,
+      template,
       environment;
     });
 ;
     return { success = {}): unknown {
   const {
-    parallel = true,;
-    // maxConcurrency = 5,; // LINT: unreachable code removed
-    template = null,;
-    environments = ['development'],;
-    force = false,;
-    minimal = false,;
-    progressTracking = true,;
+    parallel = true,
+    // maxConcurrency = 5, // LINT: unreachable code removed
+    template = null,
+    environments = ['development'],
+    force = false,
+    minimal = false,
+    progressTracking = true,
   } = options;
 ;
   if(!projects  ?? projects.length === 0) {
@@ -204,7 +204,7 @@ export function validateBatchOptions(options = [];
 ;
   if(options.template && !PROJECT_TEMPLATES[options.template]) {
     errors.push(;
-      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,;
+      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,
   )
 }
 if (options.environments) {

@@ -6,8 +6,8 @@ import { printError } from '../utils.js';
 
 // Workflow templates and predefined workflows
 const _WORKFLOW_TEMPLATES = {
-  'sparc-basic': {name = [;
-  'spec-pseudocode', 'architect', 'code', 'tdd', 'integration', 'debug',;
+  'sparc-basic': {name = [
+  'spec-pseudocode', 'architect', 'code', 'tdd', 'integration', 'debug',
   'devops', 'docs-writer', 'security-review', 'mcp', 'tutorial';
 ];
 /**
@@ -182,7 +182,7 @@ if (!workflowIdentifier) {
    * Show available SPARC modes;
    */
   async function showModes(args = {
-    'spec-pseudocode': 'Specification and pseudocode development',;
+    'spec-pseudocode': 'Specification and pseudocode development',
   ('architect');
   : 'System architecture and design',
   ('code')
@@ -265,7 +265,7 @@ async function updateWorkflowStatus(workflowId = await findWorkflow(workflowId: 
     }
   } catch (/* error */) {
     printWarning(`Could not update workflow status = {
-    'spec-pseudocode': 'Planning',;
+    'spec-pseudocode': 'Planning',
     ('architect');
     : 'Design',
     ('code')

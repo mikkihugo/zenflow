@@ -62,7 +62,7 @@ if (riskScore > 75) {
     this.permissionAudits.push(audit);
     this.emit('permission-audit', audit);
 ;
-    return {isValid = === 0,;
+    return {isValid = === 0,
     // errors,warnings = []; // LINT: unreachable code removed
     const _warnings = [];
 ;
@@ -98,8 +98,8 @@ if (riskScore > 75) {
       errors.push(...resourceValidation.errors);
       warnings.push(...resourceValidation.warnings);
 ;
-      return {isValid = === 0,;
-    // errors,; // LINT: unreachable code removed
+      return {isValid = === 0,
+    // errors, // LINT: unreachable code removed
         warnings,metadata = [];
     const _warnings = [];
 ;
@@ -124,14 +124,14 @@ if (riskScore > 75) {
     return {isValid = === 0, errors, warnings };
     //   // LINT: unreachable code removed}
 ;
-  private containsSuspiciousCommands(command = [;
-      /rm\s+-rf/,;
-      /curl.*\|\s*sh/,;
-      /wget.*\|\s*sh/,;
-      /eval\s*\(/,;
-      /exec\s*\(/,;
-      /system\s*\(/,;
-      /\$\([^)]*\)/,;
+  private containsSuspiciousCommands(command = [
+      /rm\s+-rf/,
+      /curl.*\|\s*sh/,
+      /wget.*\|\s*sh/,
+      /eval\s*\(/,
+      /exec\s*\(/,
+      /system\s*\(/,
+      /\$\([^)]*\)/,
       /`[^`]*`/;
   ]
   return suspiciousPatterns.some(pattern => pattern.test(command));
@@ -165,9 +165,9 @@ try {
       workerData,resourceLimits = setTimeout(() => {
       worker.terminate();
       this.recordSecurityViolation(;
-        manifest.name,;
-        'worker-timeout',;
-        'high',;_timeout => {
+        manifest.name,
+        'worker-timeout',
+        'high',_timeout => {
       clearTimeout(_timeout);
     });
 ;
@@ -190,14 +190,14 @@ monitorWorkerSecurity((_worker) => {
 ;
 worker.on('error', (_error) => {
       this.recordSecurityViolation(;
-        pluginName,;
-        'worker-error',;
-        'high',;_error => {
+        pluginName,
+        'worker-error',
+        'high',_error => {
       if (_code !== 0) {
         this.recordSecurityViolation(;
-          pluginName,;
-          'worker-abnormal-exit',;
-          'medium',;exitCode = {
+          pluginName,
+          'worker-abnormal-exit',
+          'medium',exitCode = {
       'filesystem = [];
     for (const permission of permissions) {
       const _ops = operationMap[permission];
@@ -211,7 +211,7 @@ worker.on('error', (_error) => {
 ;
   // Threat detection
   private initializeThreatSignatures(): void 
-    this.threatSignatures = [;
+    this.threatSignatures = [
         name = {id = === 'critical'  ?? severity === 'high';;
 ;
     this.violations.push(violationRecord);
@@ -247,9 +247,9 @@ worker.on('error', (_error) => {
       for (const [pluginName, worker] of this.sandboxWorkers) {
         if (worker.threadId === -1) { // Worker has terminated
           this.recordSecurityViolation(;
-            pluginName,;
-            'worker-unexpected-termination',;
-            'medium',;
+            pluginName,
+            'worker-unexpected-termination',
+            'medium',
             {threadId = this.violations.filter(v => v.pluginName === pluginName);
     const __audits = this.permissionAudits.filter(a => a.pluginName === pluginName);
     const __quarantined = violations.some(v => v.blocked && v.severity === 'critical');

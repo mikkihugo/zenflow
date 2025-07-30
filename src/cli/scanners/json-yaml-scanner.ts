@@ -14,22 +14,22 @@ try {
     parsedContent = yaml.load(content);
     _formattedContent = yaml.dump(parsedContent, {indent = = formattedContent.trim()) {
         suggestions.push({
-          id: `formatting-issue-${file}`,;
+          id: `formatting-issue-${file}`,
           description: `Formatting issue detected in ${file}. Please reformat.`, // AI can suggest reformat
-          action: 'fix_formatting',;
-          file: file,;
-          originalContent: content,;
-          formattedContent: _formattedContent,;
+          action: 'fix_formatting',
+          file: file,
+          originalContent: content,
+          formattedContent: _formattedContent,
         });
   }
 } catch (/* error */)
 {
   suggestions.push({
-    id: `invalid-syntax-${file}`,;
-  description: `Invalid syntax in ${file}: ${error.message}`,;
-  action: 'fix_syntax',;
-  file: file,;
-  errorMessage: error.message,;
+    id: `invalid-syntax-${file}`,
+  description: `Invalid syntax in ${file}: ${error.message}`,
+  action: 'fix_syntax',
+  file: file,
+  errorMessage: error.message,
 }
 )
 }

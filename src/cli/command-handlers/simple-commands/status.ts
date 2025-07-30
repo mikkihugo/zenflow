@@ -52,7 +52,7 @@ function _getResourceUsage(): unknown {
 ;
     return {memory = status.orchestrator.running ? '🟢 Running' : '🟡 Not Running';
     // console.warn(; // LINT: unreachable code removed
-    `${overallStatus} (orchestrator ${status.orchestrator.running ? 'active' : 'not started'})`,;
+    `${overallStatus} (orchestrator ${status.orchestrator.running ? 'active' : 'not started'})`,
   );
 ;
   // Core components

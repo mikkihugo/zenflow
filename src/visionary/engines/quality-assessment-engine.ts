@@ -1,7 +1,7 @@
 /**
  * Quality Assessment Engine;
  *;
- * Comprehensive code quality assessment including SOLID principles evaluation,;
+ * Comprehensive code quality assessment including SOLID principles evaluation,
  * testability analysis, security assessment, and overall quality scoring.;
  *;
  * @fileoverview Advanced code quality assessment and validation system;
@@ -127,18 +127,18 @@ export class QualityAssessmentEngine {
 ;
     // Calculate overall score
     const _overallScore = this.calculateOverallScore([;
-      maintainability,;
-      testability,;
-      security,;
-      performance,;
-      readability,;
-      documentation,;
+      maintainability,
+      testability,
+      security,
+      performance,
+      readability,
+      documentation,
     ]);
 ;
     // Assess SOLID principles compliance
     const _solidCompliance = {
-      ...architecture.principles,;
-      overall: this.calculateSOLIDOverall(architecture.principles),;
+      ...architecture.principles,
+      overall: this.calculateSOLIDOverall(architecture.principles),
     }
   // Determine technical debt level
   const;
@@ -150,7 +150,7 @@ export class QualityAssessmentEngine {
   {
   maintainability;
   ,
-  // testability,; // LINT: unreachable code removed
+  // testability, // LINT: unreachable code removed
   security;
   ,
   performance;
@@ -195,22 +195,22 @@ validateRecommendations(refactoring: unknown, language: string)
   const _performanceScore = this.calculatePerformanceImprovement(refactoring, language);
   // Overall quality improvement score
   const _qualityScore = this.calculateQualityImprovementScore({
-      maintainabilityScore,;
-  performanceScore,;
-  impactAssessment,;
+      maintainabilityScore,
+  performanceScore,
+  impactAssessment,
 }
 )
 // Identify risks and benefits
 const _risks = this.identifyRefactoringRisks(refactoring, language);
 const _benefits = this.identifyRefactoringBenefits(refactoring, language);
 return {
-      recommendationsValid,;
-// impactAssessment,; // LINT: unreachable code removed
-maintainabilityScore,;
-performanceScore,;
-qualityScore,;
-risks,;
-benefits,;
+      recommendationsValid,
+// impactAssessment, // LINT: unreachable code removed
+maintainabilityScore,
+performanceScore,
+qualityScore,
+risks,
+benefits,
 }
 }
 /**
@@ -289,7 +289,7 @@ patterns: PatternDetectionResult
    * @returns Security score (0-100);
     // */; // LINT: unreachable code removed
   private async assessSecurity(;
-    patterns: PatternDetectionResult,;
+    patterns: PatternDetectionResult,
     language: string;
   ): Promise<number> {
     const _score = 85; // Base security score
@@ -325,7 +325,7 @@ patterns: PatternDetectionResult
    * @returns Performance score (0-100);
     // */; // LINT: unreachable code removed
   private async assessPerformance(;
-    patterns: PatternDetectionResult,;
+    patterns: PatternDetectionResult,
     _language: string;
   ): Promise<number> {
     const _score = 80; // Base performance score
@@ -403,8 +403,8 @@ patterns: PatternDetectionResult
    * @returns List of quality issues;
     // */; // LINT: unreachable code removed
   private async identifyQualityIssues(;
-    architecture: ArchitectureAnalysis,;
-    patterns: PatternDetectionResult,;
+    architecture: ArchitectureAnalysis,
+    patterns: PatternDetectionResult,
     _language: string;
   ): Promise<QualityIssue[]> {
     const _issues: QualityIssue[] = [];
@@ -412,42 +412,42 @@ patterns: PatternDetectionResult
     // Convert anti-patterns to quality issues
     patterns.antiPatterns.forEach((antiPattern) => {
       issues.push({
-        type: 'anti-pattern',;
-        severity: antiPattern.severity,;
-        description: antiPattern.description,;
-        location: antiPattern.location,;
-        impact: antiPattern.impact,;
-        recommendation: antiPattern.recommendation,;
-        file: antiPattern.file,;
-        lineNumber: antiPattern.lineNumber,;
+        type: 'anti-pattern',
+        severity: antiPattern.severity,
+        description: antiPattern.description,
+        location: antiPattern.location,
+        impact: antiPattern.impact,
+        recommendation: antiPattern.recommendation,
+        file: antiPattern.file,
+        lineNumber: antiPattern.lineNumber,
       });
     });
 ;
     // Convert code smells to quality issues
     patterns.codeSmells.forEach((smell) => {
       issues.push({
-        type: 'code-smell',;
-        severity: smell.severity,;
-        description: smell.description,;
-        location: smell.location,;
-        impact: `Affects ${smell.impact}`,;
-        recommendation: smell.suggestion,;
-        file: smell.file,;
-        lineNumber: smell.lineNumber,;
+        type: 'code-smell',
+        severity: smell.severity,
+        description: smell.description,
+        location: smell.location,
+        impact: `Affects ${smell.impact}`,
+        recommendation: smell.suggestion,
+        file: smell.file,
+        lineNumber: smell.lineNumber,
       });
     });
 ;
     // Add architecture-specific issues
     if (architecture.coupling === 'tight') {
       issues.push({
-        type: 'maintainability',;
-        severity: 'high',;
-        description: 'High coupling between components',;
-        location: 'system architecture',;
-        impact: 'Difficult to maintain and test',;
-        recommendation: 'Introduce interfaces and dependency injection',;
-        file: 'architecture',;
-        lineNumber: 0,;
+        type: 'maintainability',
+        severity: 'high',
+        description: 'High coupling between components',
+        location: 'system architecture',
+        impact: 'Difficult to maintain and test',
+        recommendation: 'Introduce interfaces and dependency injection',
+        file: 'architecture',
+        lineNumber: 0,
       });
     }
 ;
@@ -462,7 +462,7 @@ patterns: PatternDetectionResult
    * @returns List of strengths;
     // */; // LINT: unreachable code removed
   private identifyStrengths(;
-    architecture: ArchitectureAnalysis,;
+    architecture: ArchitectureAnalysis,
     patterns: PatternDetectionResult;
   ): string[] {
     const _strengths: string[] = [];
@@ -500,8 +500,8 @@ patterns: PatternDetectionResult
    * @returns List of recommendations;
     // */; // LINT: unreachable code removed
   private generateRecommendations(;
-    architecture: ArchitectureAnalysis,;
-    patterns: PatternDetectionResult,;
+    architecture: ArchitectureAnalysis,
+    patterns: PatternDetectionResult,
     language: string;
   ): string[] {
     const _recommendations: string[] = [];
@@ -555,12 +555,12 @@ patterns: PatternDetectionResult
    * @returns Overall SOLID score (0-1);
     // */; // LINT: unreachable code removed
   private calculateSOLIDOverall(principles: unknown): number {
-    const _scores = [;
-      principles.srp.score,;
-      principles.ocp.score,;
-      principles.lsp.score,;
-      principles.isp.score,;
-      principles.dip.score,;
+    const _scores = [
+      principles.srp.score,
+      principles.ocp.score,
+      principles.lsp.score,
+      principles.isp.score,
+      principles.dip.score,
     ];
     return scores.reduce((sum, score) => sum + score, 0) / scores.length;
     //   // LINT: unreachable code removed}
@@ -573,7 +573,7 @@ patterns: PatternDetectionResult
    * @returns Technical debt level;
     // */; // LINT: unreachable code removed
   private assessTechnicalDebtLevel(;
-    overallScore: number,;
+    overallScore: number,
     issues: QualityIssue[];
   ): 'minimal' | 'low' | 'moderate' | 'high' | 'critical' {
     const _criticalIssues = issues.filter((i) => i.severity === 'critical').length;
@@ -612,7 +612,7 @@ patterns: PatternDetectionResult
     //   // LINT: unreachable code removed}
 ;
   private assessRefactoringImpact(;
-    _refactoring: unknown,;
+    _refactoring: unknown,
     _language: string;
   ): 
     maintainability: 'positive' | 'neutral' | 'negative';
@@ -620,11 +620,10 @@ patterns: PatternDetectionResult
     security: 'positive' | 'neutral' | 'negative';
     readability: 'positive' | 'neutral' | 'negative';
     return {
-      maintainability: 'positive',;
-    // performance: 'neutral',; // LINT: unreachable code removed
-      security: 'positive',;
-      readability: 'positive',;;
-;
+      maintainability: 'positive',
+    // performance: 'neutral', // LINT: unreachable code removed
+      security: 'positive',
+      readability: 'positive',
   private calculateMaintainabilityImprovement(refactoring: unknown, _language: string): number 
     // Simplified calculation - would be more sophisticated in practice
     return refactoring?.mainRecommendations?.length > 0 ? 15 : 0;
@@ -683,7 +682,7 @@ patterns: PatternDetectionResult
     //   // LINT: unreachable code removed}
 ;
   private getLanguageSpecificRecommendations(;
-    language: string,;
+    language: string,
     _patterns: PatternDetectionResult;
   ): string[] {
     const _recommendations: string[] = [];

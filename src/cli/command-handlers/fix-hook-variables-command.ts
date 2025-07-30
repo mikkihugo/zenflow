@@ -108,11 +108,11 @@ else;
     // Save updated settings
     await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2));
 ;
-    return {success = [;
-    // '.claude/settings.json',; // LINT: unreachable code removed
-    'settings.json',;
-    '.vscode/.claude/settings.json',;
-    path.join(process.env.HOME  ?? '', '.claude', 'settings.json'),;
+    return {success = [
+    // '.claude/settings.json', // LINT: unreachable code removed
+    'settings.json',
+    '.vscode/.claude/settings.json',
+    path.join(process.env.HOME  ?? '', '.claude', 'settings.json'),
   ];
 ;
   const _found = [];
@@ -147,12 +147,12 @@ export async function _fixHookVariablesCommand(args = []: unknown, _flags = {}: 
       console.warn(chalk.green(`  ✅ Fixed ${result.changes} hook commands`));
     } else {
       console.warn(chalk.red(`  ❌ Error = {hooks = {
-      description: {}" >> .claude/hook-test.log',;
-            },;
-          ],;
-        },;
-      ],;
-    },;
+      description: {}" >> .claude/hook-test.log',
+            },
+          ],
+        },
+      ],
+    },
   };
 ;
   await fs.mkdir('.claude', { recursive: true });
@@ -168,18 +168,18 @@ export async function _fixHookVariablesCommand(args = []: unknown, _flags = {}: 
 ;
 // Export command configuration
 export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in Claude Code hooks (${file} syntax)',
-  _usage: 'fix-hook-variables [settings-file...]',;
+  _usage: 'fix-hook-variables [settings-file...]',
   _options: [;
-    { flag: '--no-backup', description: 'Skip creating backup files' },;
-    { flag: '--syntax <type>', description: 'Force specific syntax: environment, jq, wrapper' },;
-    { flag: '--test', description: 'Create test hook configuration' },;
-  ],;
+    { flag: '--no-backup', description: 'Skip creating backup files' },
+    { flag: '--syntax <type>', description: 'Force specific syntax: environment, jq, wrapper' },
+    { flag: '--test', description: 'Create test hook configuration' },
+  ],
   _examples: [;
-    'claude-zen fix-hook-variables',;
-    'claude-zen fix-hook-variables .claude/settings.json',;
-    'claude-zen fix-hook-variables --syntax wrapper',;
-    'claude-zen fix-hook-variables --test',;
-  ],;
+    'claude-zen fix-hook-variables',
+    'claude-zen fix-hook-variables .claude/settings.json',
+    'claude-zen fix-hook-variables --syntax wrapper',
+    'claude-zen fix-hook-variables --test',
+  ],
   _details: `;
 Fixes the \${file} and \${command} variable interpolation issue in Claude Code hooks.
 ;

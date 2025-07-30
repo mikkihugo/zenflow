@@ -74,7 +74,7 @@ let { input
 // Handle version flag first (no architecture needed)
 if (flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
-    printInfo('🚀 Revolutionary UnifiedArchitecture = [;
+    printInfo('🚀 Revolutionary UnifiedArchitecture = [
     'init', 'template', '--help', '--version';
   ];
 ;

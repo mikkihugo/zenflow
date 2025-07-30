@@ -8,10 +8,10 @@ import os from 'node:os';
 import process from 'node:process';
 
 export const compat = {
-    runtime = === 'win32' ? 'windows' : os.platform(),;
-arch = > process.pid,;
-exit = > process.exit(code),;
-onSignal = > process.on(signal, handler),;
+    runtime = === 'win32' ? 'windows' : os.platform(),
+arch = > process.pid,
+exit = > process.exit(code),
+onSignal = > process.on(signal, handler),
 },
 safeCall
 =>

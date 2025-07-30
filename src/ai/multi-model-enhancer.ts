@@ -9,7 +9,7 @@ export class MultiModelEnhancer {
     logger.info('Analyzing vision with Gemini');
     // Placeholder for Gemini API call
     return {
-      complexity: 0.7,;
+      complexity: 0.7,
     teamSize: 5, duration;
     : '3 months' ,
   }

@@ -109,9 +109,9 @@ for (const msg of messages) {
     //   // LINT: unreachable code removed}
 ;
   return new ProviderError(;
-    // errorData.error?.message  ?? errorData.message  ?? 'Unknown error',; // LINT: unreachable code removed
-      this.name,;
-      errorData.error?.code  ?? 'API_ERROR',;
+    // errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
+      this.name,
+      errorData.error?.code  ?? 'API_ERROR',
       response.status;
     );
 }
@@ -141,8 +141,8 @@ handleError(error: unknown);
     //   // LINT: unreachable code removed}
 ;
   return new ProviderError(;
-    // error.message  ?? 'Unknown error occurred',; // LINT: unreachable code removed
-      this.name,;
+    // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
+      this.name,
       'UNKNOWN_ERROR';
     );
 }

@@ -309,12 +309,12 @@ exec node run --allow-all --unstable-kv --unstable-cron \\;
 ;
   async checkForConflicts() ;
     return {
-      conflicts: [],;
+      conflicts: [],
     //   // LINT: unreachable code removed};
 ;
   async testRecoveryProcedure(procedureName): unknown ;
     return {
-      success: true,;
+      success: true,
     //   // LINT: unreachable code removed};
 }
 ;

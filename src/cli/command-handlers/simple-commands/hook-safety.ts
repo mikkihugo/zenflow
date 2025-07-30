@@ -102,7 +102,7 @@ export class HookCommandValidator {
     : unknown;
     {
       // Match various forms of claude command invocation
-      const _claudePatterns = [;
+      const _claudePatterns = [
         /\bclaude\b/, // Direct claude command
         /claude-code\b/, // claude-code command
         /npx\s+claude\b/, // NPX claude
@@ -117,16 +117,16 @@ export class HookCommandValidator {
     isDangerousPattern(command, hookType);
     : unknown;
     {
-      const _dangerousPatterns = [;
+      const _dangerousPatterns = [
         // Commands that could trigger more hooks
-        /git\s+commit.*--all/,;
-        /git\s+add\s+\./,;
+        /git\s+commit.*--all/,
+        /git\s+add\s+\./,
         // File operations that might trigger watchers
-        /watch\s+.*claude/,;
-        /nodemon.*claude/,;
+        /watch\s+.*claude/,
+        /nodemon.*claude/,
         // Recursive script execution
-        /bash.*hook/,;
-        /sh.*hook/,;
+        /bash.*hook/,
+        /sh.*hook/,
       ];
 ;
       return dangerousPatterns.some((pattern) => pattern.test(command));
@@ -171,7 +171,7 @@ export class HookCommandValidator {
         const [sessionId, hookType] = key.split(':');
     // return { hookType, count  // LINT: unreachable code removed};
   }
-  ),;
+  ),
 }
 }
 }
@@ -186,10 +186,10 @@ export class HookConfigValidator {
   static validateClaudeCodeConfig(configPath = null): unknown {
     if(!configPath) {
       // Try to find Claude Code settings
-      const _possiblePaths = [;
-        path.join(process.env.HOME  ?? '.', '.claude', 'settings.json'),;
-        path.join(process.cwd(), '.claude', 'settings.json'),;
-        path.join(process.cwd(), 'settings.json'),;
+      const _possiblePaths = [
+        path.join(process.env.HOME  ?? '.', '.claude', 'settings.json'),
+        path.join(process.cwd(), '.claude', 'settings.json'),
+        path.join(process.cwd(), 'settings.json'),
       ];
 ;
       configPath = possiblePaths.find((p) => existsSync(p));
@@ -198,9 +198,9 @@ export class HookConfigValidator {
         return {safe = JSON.parse(readFileSync(configPath, 'utf8'));
     // const _validation = HookConfigValidator.validateHooksConfig(config.hooks  ?? { // LINT: unreachable code removed});
 ;
-      return {safe = === 0,;
-    // configPath,; // LINT: unreachable code removed
-        ...validation,;
+      return {safe = === 0,
+    // configPath, // LINT: unreachable code removed
+        ...validation,
       };
     } catch (/* err */) {
       return {safe = [];
@@ -332,12 +332,12 @@ function showHookSafetyHelp(): unknown {
 }
 ;
 export default {
-  HookContextManager,;
-  HookCommandValidator,;
-  HookCircuitBreaker,;
-  HookConfigValidator,;
-  SafeHookExecutor,;
-  hookSafetyCommand,;
-  addSafetyFlags,;
+  HookContextManager,
+  HookCommandValidator,
+  HookCircuitBreaker,
+  HookConfigValidator,
+  SafeHookExecutor,
+  hookSafetyCommand,
+  addSafetyFlags,
 };
 ;

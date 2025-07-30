@@ -23,117 +23,117 @@ Unknowncommand = false;
     //   // LINT: unreachable code removed}
     // Return plain standardized format when requested
     const _helpInfo = {
-    name: 'claude-zen',;
-    description: 'Advanced AI agent orchestration system',;
+    name: 'claude-zen',
+    description: 'Advanced AI agent orchestration system',
     usage: `claude-zen <command> [<args>] [options];
     claude-zen <command> --help;
-    claude-zen --version`,;
+    claude-zen --version`,
     commands: [;
       {
-        name: 'hive-mind',;
-        description: 'Manage hive mind swarm intelligence',;
-        aliases: ['hm'],;
-      },;
+        name: 'hive-mind',
+        description: 'Manage hive mind swarm intelligence',
+        aliases: ['hm'],
+      },
       {
-        name: 'init',;
-        description: 'Initialize Claude Flow configuration',;
-      },;
+        name: 'init',
+        description: 'Initialize Claude Flow configuration',
+      },
       {
-        name: 'start',;
-        description: 'Start orchestration system',;
-      },;
+        name: 'start',
+        description: 'Start orchestration system',
+      },
       {
-        name: 'swarm',;
-        description: 'Execute multi-agent swarm coordination',;
-      },;
+        name: 'swarm',
+        description: 'Execute multi-agent swarm coordination',
+      },
       {
-        name: 'agent',;
-        description: 'Manage individual agents',;
-      },;
+        name: 'agent',
+        description: 'Manage individual agents',
+      },
       {
-        name: 'sparc',;
-        description: 'Execute SPARC development modes',;
-      },;
+        name: 'sparc',
+        description: 'Execute SPARC development modes',
+      },
       {
-        name: 'memory',;
-        description: 'Manage persistent memory operations',;
-      },;
+        name: 'memory',
+        description: 'Manage persistent memory operations',
+      },
       {
-        name: 'github',;
-        description: 'Automate GitHub workflows',;
-      },;
+        name: 'github',
+        description: 'Automate GitHub workflows',
+      },
       {
-        name: 'status',;
-        description: 'Show system status and health',;
-      },;
+        name: 'status',
+        description: 'Show system status and health',
+      },
       {
-        name: 'config',;
-        description: 'Manage configuration settings',;
-      },;
+        name: 'config',
+        description: 'Manage configuration settings',
+      },
       {
-        name: 'session',;
-        description: 'Manage sessions and state persistence',;
-      },;
+        name: 'session',
+        description: 'Manage sessions and state persistence',
+      },
       {
-        name: 'terminal',;
-        description: 'Terminal pool management',;
-      },;
+        name: 'terminal',
+        description: 'Terminal pool management',
+      },
       {
-        name: 'workflow',;
-        description: 'Manage automated workflows',;
-      },;
+        name: 'workflow',
+        description: 'Manage automated workflows',
+      },
       {
-        name: 'training',;
-        description: 'Neural pattern training',;
-      },;
+        name: 'training',
+        description: 'Neural pattern training',
+      },
       {
-        name: 'coordination',;
-        description: 'Swarm coordination commands',;
-      },;
+        name: 'coordination',
+        description: 'Swarm coordination commands',
+      },
       {
-        name: 'help',;
-        description: 'Show help information',;
-      },;
-    ],;
+        name: 'help',
+        description: 'Show help information',
+      },
+    ],
     globalOptions: [;
       {
-        flags: '--config <path>',;
-        description: 'Configuration file path',;
-        defaultValue: '.claude/config.json',;
-      },;
+        flags: '--config <path>',
+        description: 'Configuration file path',
+        defaultValue: '.claude/config.json',
+      },
       {
-        flags: '--verbose',;
-        description: 'Enable verbose output',;
-      },;
+        flags: '--verbose',
+        description: 'Enable verbose output',
+      },
       {
-        flags: '--quiet',;
-        description: 'Suppress non-error output',;
-      },;
+        flags: '--quiet',
+        description: 'Suppress non-error output',
+      },
       {
-        flags: '--json',;
-        description: 'Output in JSON format',;
-      },;
+        flags: '--json',
+        description: 'Output in JSON format',
+      },
       {
-        flags: '--plain',;
-        description: 'Show plain help without emojis',;
-      },;
+        flags: '--plain',
+        description: 'Show plain help without emojis',
+      },
       {
-        flags: '--help',;
-        description: 'Show help information',;
-      },;
+        flags: '--help',
+        description: 'Show help information',
+      },
       {
-        flags: '--version',;
-        description: 'Show version information',;
-      },;
-    ],;
+        flags: '--version',
+        description: 'Show version information',
+      },
+    ],
     examples: [;
-      'npx claude-zen@alpha init --sparc',;
-      'claude-zen hive-mind wizard',;
-      'claude-zen swarm "Build REST API"',;
-      'claude-zen agent spawn researcher --name "Research Bot"',;
-      'claude-zen status --json',;
-      'claude-zen memory query "API design"',;
-    ],;
+      'npx claude-zen@alpha init --sparc',
+      'claude-zen hive-mind wizard',
+      'claude-zen swarm "Build REST API"',
+      'claude-zen agent spawn researcher --name "Research Bot"',
+      'claude-zen status --json',
+      'claude-zen memory query "API design"',
+    ],
   }
   return HelpFormatter.formatHelp(helpInfo);
 }

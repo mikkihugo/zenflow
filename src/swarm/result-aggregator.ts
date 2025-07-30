@@ -2,7 +2,7 @@
  * Advanced Result Aggregation and Reporting System;
  *;
  * This module provides comprehensive result aggregation, analysis, and reporting;
- * capabilities for swarm operations. It collects outputs from multiple agents,;
+ * capabilities for swarm operations. It collects outputs from multiple agents,
  * performs quality analysis, generates insights, and creates detailed reports.;
  */
 'node = new Map();
@@ -67,10 +67,10 @@ async;
 startAggregation(context = generateId('aggregation');
 this.logger.info('Starting result aggregation', {
       aggregationId,swarmId = new AggregationSession(;
-aggregationId,;
-context,;
-this.config,;
-this.logger,;
+aggregationId,
+context,
+this.config,
+this.logger,
 this.memoryManager;
 )
 this.activeAggregations.set(aggregationId, session)
@@ -114,7 +114,7 @@ if (!session) {
 
       const __appendices = await this.generateAppendices(result);
       const __processingTime = performance.now() - startTime;
-      const __report = {id = > r.validated).length,tasksFailed = > !r.validated).length,agentsUsed = [;
+      const __report = {id = > r.validated).length,tasksFailed = > !r.validated).length,agentsUsed = [
       {name = this.config.qualityThreshold ? 'passed' : 'failed',score = this.config.qualityThreshold ? 'passed' : 'failed',score = this.config.qualityThreshold ? 'passed' : 'failed',score = [];
 ;
     // Raw data appendix

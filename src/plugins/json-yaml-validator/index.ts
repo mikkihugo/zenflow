@@ -262,10 +262,10 @@ export class JsonYamlValidatorPlugin {
 ;
   async getStats() ;
     return {
-      ...this.stats,;
-    // validators: this.validators.size,; // LINT: unreachable code removed
-      schemas: this.schemas.size,;
-      filePatterns: this.config.filePatterns,;
+      ...this.stats,
+    // validators: this.validators.size, // LINT: unreachable code removed
+      schemas: this.schemas.size,
+      filePatterns: this.config.filePatterns,
       autoFixEnabled: this.config.autoFix;
     };
 ;

@@ -5,13 +5,13 @@ const _router = express.Router();
 // Health check endpoint
 router.get('/', (_req, _res) => {
   const _healthcheck = {
-    uptime: process.uptime(),;
-    status: 'OK',;
-    timestamp: Date.now(),;
-    environment: process.env.NODE_ENV,;
-      used: process.memoryUsage(),;
-      free: os.freemem(),;
-      total: os.totalmem(),;,;
+    uptime: process.uptime(),
+    status: 'OK',
+    timestamp: Date.now(),
+    environment: process.env.NODE_ENV,
+      used: process.memoryUsage(),
+      free: os.freemem(),
+      total: os.totalmem(),,
   };
 // Check database connection
 db.get('SELECT 1', (err) => {

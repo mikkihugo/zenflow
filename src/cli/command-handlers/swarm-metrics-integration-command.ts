@@ -72,9 +72,9 @@ async function _getHiveMindMetrics(): unknown {
     s.id,
     s.name,
     s.objective,
-    COUNT(t.id) as task_count,;
-    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,;
-    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,;
+    COUNT(t.id) as task_count,
+    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,
     SUM(CASE WHEN t.status = 'pending' THEN 1 ELSE 0 END) as pending_count;
     FROM;
     swarms;
@@ -147,10 +147,10 @@ async function _getHiveMindMetrics(): unknown {
     s.id,
     s.name,
     s.topology,
-    s.strategy,;
-    COUNT(t.id) as task_count,;
-    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,;
-    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,;
+    s.strategy,
+    COUNT(t.id) as task_count,
+    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+    SUM(CASE WHEN t.status = 'in_progress' THEN 1 ELSE 0 END) as in_progress_count,
     SUM(CASE WHEN t.status = 'pending' THEN 1 ELSE 0 END) as pending_count;
     FROM;
     swarms;
@@ -169,18 +169,18 @@ async function _getHiveMindMetrics(): unknown {
       .all()
       db.close();
       return {
-      available = {available = {total_swarms = > sum + (sys.overall?.total_swarms  ?? 0),;
-      // 0,; // LINT: unreachable code removed
+      available = {available = {total_swarms = > sum + (sys.overall?.total_swarms  ?? 0),
+      // 0, // LINT: unreachable code removed
       ),total_agents = > sum + (sys.overall?.total_agents  ?? 0),
-      0,;
+      0,
       ),total_tasks = > sum + (sys.overall?.total_tasks  ?? 0),
-      0,;
+      0,
       ),completed_tasks = > sum + (sys.overall?.completed_tasks  ?? 0),
-      0,;
+      0,
       ),in_progress_tasks = > sum + (sys.overall?.in_progress_tasks  ?? 0),
-      0,;
+      0,
       ),pending_tasks = > sum + (sys.overall?.pending_tasks  ?? 0),
-      0,;
+      0,
       ),
     }
     integration.combined.success_rate =;

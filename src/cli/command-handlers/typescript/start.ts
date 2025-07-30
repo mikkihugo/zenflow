@@ -64,7 +64,7 @@ return true;
     // Validate concurrency
     if (maxConcurrency < 1 ?? maxConcurrency > 100) {
       throw new CLIError(;
-      `Invalid max-concurrency ${maxConcurrency}. Must be between 1 and 100`,;
+      `Invalid max-concurrency ${maxConcurrency}. Must be between 1 and 100`,
       ('start');
       )
     }
@@ -110,7 +110,7 @@ return true;
       `Environment validationfailed = > `;
       • $issue`).join('\n')
     }
-    `,;
+    `,
       'start';
     );
     }
@@ -174,7 +174,7 @@ async function createBasicServer(_options = await import('node:http');
 
 const _server = http.createServer((req, _res) => {
   const __url = new URL(;
-    req.url  ?? '/',;
+    req.url  ?? '/',
     `http = "/health">Health Check</a>;
             </body>;
           </html>;
@@ -189,7 +189,7 @@ const _server = http.createServer((req, _res) => {
   } else {
     logger.info(`Basic server listening on port ${options.port}`);
     resolve({
-          server,;
+          server,
           _shutdown => {
             return new Promise<void>((resolve) => {
               server.close(() => resolve());

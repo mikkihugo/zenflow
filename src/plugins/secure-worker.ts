@@ -52,7 +52,7 @@ class SecureEnvironment {
 ;
   createSecureRequire() {
     const _allowedModules = new Set([;
-      'crypto', 'util', 'events', 'stream', 'url', 'querystring', ;
+      'crypto', 'util', 'events', 'stream', 'url', 'querystring',
       'path', 'os', 'zlib', 'buffer';
     ]);
 ;
@@ -181,7 +181,7 @@ class SecureEnvironment {
     
     try {
       const _response = await fetch(url, {
-        ...options,;
+        ...options,
         signal => {
       const _memUsage = process.memoryUsage();
       if(memUsage.heapUsed > this.memoryLimit) {
@@ -237,7 +237,7 @@ parentPort.on('message', async (message) => {
         break;
 ;
       default = {global = new Function(;
-      ...Object.keys(context),;
+      ...Object.keys(context),
       `;
         "use strict";
         return(function() {
@@ -266,11 +266,11 @@ parentPort.on('message', async (message) => {
     const _duration = performance.now() - startTime;
 ;
     secureEnv.reportOperation('plugin-execution', {
-      method,;
+      method,
       duration,success = performance.now() - startTime;
 ;
     secureEnv.reportOperation('plugin-execution', {
-      method,;
+      method,
       duration,success = process.memoryUsage();
   const _executionTime = Date.now() - secureEnv.startTime;
 ;
@@ -304,15 +304,15 @@ parentPort.on('message', async (message) => {
   secureEnv.reportSecurityViolation('uncaught-exception', 'critical', {
     error => {
   secureEnv.reportSecurityViolation('unhandled-rejection', 'high', {
-    reason: String(reason),;
+    reason: String(reason),
     promise: promise.toString();
   });
 });
 ;
 // Send ready signal
 parentPort.postMessage({
-  type: 'worker-ready',;
-  pluginName: manifest.name,;
+  type: 'worker-ready',
+  pluginName: manifest.name,
   workerId: require('worker_threads').threadId;
 });
 ;

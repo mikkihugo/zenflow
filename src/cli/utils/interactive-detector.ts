@@ -40,17 +40,17 @@ export function isInteractive(): boolean {
     //   // LINT: unreachable code removed}
 ;
   // Check for CI environment variables
-  const _ciVars = [;
-    'CI',;
-    'CONTINUOUS_INTEGRATION',;
-    'GITHUB_ACTIONS',;
-    'GITLAB_CI',;
-    'JENKINS_URL',;
-    'TRAVIS',;
-    'CIRCLECI',;
-    'CODEBUILD_BUILD_ID',;
-    'BUILDKITE',;
-    'DRONE',;
+  const _ciVars = [
+    'CI',
+    'CONTINUOUS_INTEGRATION',
+    'GITHUB_ACTIONS',
+    'GITLAB_CI',
+    'JENKINS_URL',
+    'TRAVIS',
+    'CIRCLECI',
+    'CODEBUILD_BUILD_ID',
+    'BUILDKITE',
+    'DRONE',
   ];
 ;
   for (const varName of ciVars) {

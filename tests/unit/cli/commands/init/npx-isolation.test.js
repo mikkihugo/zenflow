@@ -40,8 +40,8 @@ describe('Init Command NPX Isolation', () => {
       // Mock Deno.env if it doesn't exist (we're in Node.js)
       const _mockDeno = {
         env: {
-          toObject: () => ({ ...process.env }),;
-        },;
+          toObject: () => ({ ...process.env }),
+        },
       };
   // This would be used in the actual init command
   const _env = mockDeno.env.toObject();
@@ -69,14 +69,13 @@ describe('NPX Cache Isolation Integration', () =>
 
     // Simulate how the init command would use this
     const _baseEnv = {
-      PWD: '/some/working/dir',;
-      CUSTOM_VAR: 'test-value',;
+      PWD: '/some/working/dir',
+      CUSTOM_VAR: 'test-value',
     };
   const _isolatedEnv = getIsolatedNpxEnv(baseEnv);
   expect(isolatedEnv.PWD).toBe('/some/working/dir');
   expect(isolatedEnv.CUSTOM_VAR).toBe('test-value');
   expect(isolatedEnv.NPM_CONFIG_CACHE).toBeDefined();
   expect(isolatedEnv.NPM_CONFIG_CACHE).toContain('claude-zen-');
-}
-)
+})
 })

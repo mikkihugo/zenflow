@@ -43,8 +43,8 @@ export class MultiSystemCoordinator extends EventEmitter {
     try {
       // Initialize systems in parallel
       await Promise.all([;
-        this.initializeLanceDB(),;
-        this.initializeKuzu(),;
+        this.initializeLanceDB(),
+        this.initializeKuzu(),
         this.initializeVision();
       ]);
 ;
@@ -132,7 +132,7 @@ export class MultiSystemCoordinator extends EventEmitter {
     // ; // LINT: unreachable code removed
       try {
         const _queryEmbedding = await this.textToEmbedding(query);
-        const _similar = await this.lancedb.semanticSearch(_queryEmbedding, {table = 'kuzu'",;
+        const _similar = await this.lancedb.semanticSearch(_queryEmbedding, {table = 'kuzu'",
           limit => {
       if (!this._lancedb) return;
     // ; // LINT: unreachable code removed
@@ -208,8 +208,8 @@ export class MultiSystemCoordinator extends EventEmitter {
     // Route to appropriate table/system
     switch(searchType) {
       case 'code':;
-        results.data = await this.lancedb.semanticSearch(query, {table = await this.lancedb.semanticSearch(query, {table = 'kuzu'",;
-          limit,;
+        results.data = await this.lancedb.semanticSearch(query, {table = await this.lancedb.semanticSearch(query, {table = 'kuzu'",
+          limit,
           ...options;
         });
         results.systemsUsed.push('kuzu');
@@ -325,22 +325,22 @@ export class MultiSystemCoordinator extends EventEmitter {
   detectLanguage(fileName): unknown {
     const _ext = path.extname(fileName).toLowerCase();
     const _langMap = {
-      '.js': 'javascript',;
-      '.jsx': 'javascript',;
-      '.ts': 'typescript',;
-      '.tsx': 'typescript',;
-      '.py': 'python',;
-      '.java': 'java',;
-      '.cpp': 'cpp',;
-      '.c': 'c',;
-      '.go': 'go',;
-      '.rs': 'rust',;
-      '.php': 'php',;
-      '.rb': 'ruby',;
-      '.cs': 'csharp',;
-      '.html': 'html',;
-      '.css': 'css',;
-      '.scss': 'scss',;
+      '.js': 'javascript',
+      '.jsx': 'javascript',
+      '.ts': 'typescript',
+      '.tsx': 'typescript',
+      '.py': 'python',
+      '.java': 'java',
+      '.cpp': 'cpp',
+      '.c': 'c',
+      '.go': 'go',
+      '.rs': 'rust',
+      '.php': 'php',
+      '.rb': 'ruby',
+      '.cs': 'csharp',
+      '.html': 'html',
+      '.css': 'css',
+      '.scss': 'scss',
       '.vue': 'vue';
     };
     return langMap[ext]  ?? 'unknown';
@@ -457,14 +457,14 @@ export class MultiSystemCoordinator extends EventEmitter {
   async getSystemStatus() 
     return {
       coordinator: {
-        initialized: this.isInitialized,;
-    // activeOperations: this.activeOperations.size,; // LINT: unreachable code removed
-        cacheSize: this.crossSystemCache.size,;
-        sharedMemorySize: this.sharedMemory.size;,;
-        lancedb: this.lancedb ? await this.lancedb.getStats() : null,;
-        kuzu: this.kuzu ? await this.kuzu.getAdvancedStats() : null,;
-        vision: this.vision ? await this.vision.getAnalytics() : null;,;
-      analytics: this.analytics,;
+        initialized: this.isInitialized,
+    // activeOperations: this.activeOperations.size, // LINT: unreachable code removed
+        cacheSize: this.crossSystemCache.size,
+        sharedMemorySize: this.sharedMemory.size;,
+        lancedb: this.lancedb ? await this.lancedb.getStats() : null,
+        kuzu: this.kuzu ? await this.kuzu.getAdvancedStats() : null,
+        vision: this.vision ? await this.vision.getAnalytics() : null;,
+      analytics: this.analytics,
       integrationPatterns: Array.from(this.integrationPatterns.keys());
     };
 ;
@@ -477,8 +477,8 @@ export class MultiSystemCoordinator extends EventEmitter {
     try {
       // Close all systems in parallel
       await Promise.all([;
-        this.lancedb?.close(),;
-        this.kuzu?.close(),;
+        this.lancedb?.close(),
+        this.kuzu?.close(),
         this.vision?.close();
       ]);
 ;

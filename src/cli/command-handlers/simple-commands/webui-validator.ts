@@ -9,7 +9,7 @@ export class WebUIValidator {
   constructor() {
     this.tests = [];
     this.results = {
-      passed,;
+      passed,
       failed => {
       const _isValidRuntime = compat.runtime === 'node'  ?? compat.runtime === 'node';
     const _hasPlatform = compat.platform?.os;

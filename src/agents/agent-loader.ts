@@ -43,48 +43,48 @@ export class AgentLoader {
     private
     static
     LEGACY_AGENT_MAPPING: Record<string, string> = {
-    analyst: 'code-analyzer',;
-    architect: 'system-architect',;
-    reviewer: 'code-reviewer',;
-    tester: 'test-engineer',;
-    coordinator: 'swarm-coordinator',;
-    researcher: 'research-specialist',;
-    optimizer: 'performance-optimizer',;
-    security: 'security-specialist',;
-    devops: 'devops-engineer',;
-    frontend: 'frontend-developer',;
-    backend: 'backend-developer',;
-    fullstack: 'fullstack-developer',;
-    mobile: 'mobile-developer',;
-    data: 'data-scientist',;
-    ml: 'ml-engineer',;
-    designer: 'ui-designer',;
+    analyst: 'code-analyzer',
+    architect: 'system-architect',
+    reviewer: 'code-reviewer',
+    tester: 'test-engineer',
+    coordinator: 'swarm-coordinator',
+    researcher: 'research-specialist',
+    optimizer: 'performance-optimizer',
+    security: 'security-specialist',
+    devops: 'devops-engineer',
+    frontend: 'frontend-developer',
+    backend: 'backend-developer',
+    fullstack: 'fullstack-developer',
+    mobile: 'mobile-developer',
+    data: 'data-scientist',
+    ml: 'ml-engineer',
+    designer: 'ui-designer',
   }
   /**
    * Built-in agent types that are always available;
    */
-  private static BUILTIN_AGENTS: AgentType[] = [;
+  private static BUILTIN_AGENTS: AgentType[] = [
     {
-      name: 'code-analyzer',;
-      displayName: 'Code Analyzer',;
-      description: 'Analyzes code quality, patterns, and improvements',;
-      capabilities: ['analysis', 'code-review', 'refactoring'],;
-      priority: 1,;
-    },;
+      name: 'code-analyzer',
+      displayName: 'Code Analyzer',
+      description: 'Analyzes code quality, patterns, and improvements',
+      capabilities: ['analysis', 'code-review', 'refactoring'],
+      priority: 1,
+    },
     {
-      name: 'system-architect',;
-      displayName: 'System Architect',;
-      description: 'Designs system architecture and technical specifications',;
-      capabilities: ['architecture', 'design', 'planning'],;
-      priority: 1,;
-    },;
+      name: 'system-architect',
+      displayName: 'System Architect',
+      description: 'Designs system architecture and technical specifications',
+      capabilities: ['architecture', 'design', 'planning'],
+      priority: 1,
+    },
     {
-      name: 'test-engineer',;
-      displayName: 'Test Engineer',;
-      description: 'Creates and manages test suites and quality assurance',;
-      capabilities: ['testing', 'qa', 'automation'],;
-      priority: 2,;
-    },;
+      name: 'test-engineer',
+      displayName: 'Test Engineer',
+      description: 'Creates and manages test suites and quality assurance',
+      capabilities: ['testing', 'qa', 'automation'],
+      priority: 2,
+    },
   ];
   private constructor() {
     // Private constructor for singleton
@@ -116,8 +116,8 @@ export class AgentLoader {
       const _modernAgent = this.agentTypes.get(modern);
       if (modernAgent) {
         this.agentTypes.set(legacy, {
-          ...modernAgent,;
-        legacy: true,;
+          ...modernAgent,
+        legacy: true,
       }
       )
     }
@@ -158,11 +158,11 @@ export class AgentLoader {
 ;
         if (agentConfig.name && agentConfig.displayName) {
           const _agentType: AgentType = {
-            name: agentConfig.name,;
-            displayName: agentConfig.displayName,;
-            description: agentConfig.description  ?? 'Dynamic agent',;
-            capabilities: agentConfig.capabilities  ?? [],;
-            priority: agentConfig.priority  ?? 3,;
+            name: agentConfig.name,
+            displayName: agentConfig.displayName,
+            description: agentConfig.description  ?? 'Dynamic agent',
+            capabilities: agentConfig.capabilities  ?? [],
+            priority: agentConfig.priority  ?? 3,
           };
 ;
           this.agentTypes.set(agentType.name, agentType);
@@ -193,8 +193,8 @@ getAgentType(name: string)
       agent = this.agentTypes.get(modernName);
       if (agent) {
         return {
-          ...agent,;
-    // legacy: true,; // LINT: unreachable code removed
+          ...agent,
+    // legacy: true, // LINT: unreachable code removed
         };
       }
     }
@@ -255,10 +255,10 @@ getAgentType(name: string)
     const _dynamic = agents.length - builtin - legacy;
 ;
     return {
-      total: agents.length,;
-    // builtin,; // LINT: unreachable code removed
-      legacy,;
-      dynamic,;
+      total: agents.length,
+    // builtin, // LINT: unreachable code removed
+      legacy,
+      dynamic,
     };
 ;
 // Export singleton instance

@@ -75,7 +75,7 @@ catch (/* error */)
     try {
       // Store execution info
       this.activeTools.set(executionId, {
-        toolName,;
+        toolName,
         parameters,startTime = await this.executeWithRetry(toolName, parameters, options);
 ;
       // Cache successful results
@@ -101,8 +101,8 @@ catch (/* error */)
     //   // LINT: unreachable code removed} catch (/* error */) {
         lastError = error;
         this.ui.addLog(;
-          'warning',;
-          `Tool ${toolName} failed on attempt ${attempt + 1}: ${error.message}`,;
+          'warning',
+          `Tool ${toolName} failed on attempt ${attempt + 1}: ${error.message}`,
   )
 }
 }
@@ -125,7 +125,7 @@ executionfailed = parameters.epochs ?? 50;
 return {success = === 'store') {
           return {success = === 'retrieve') {
           return {success = toolExecutions.map(({ toolName, parameters, options }) =>;
-// this.executeTool(toolName, parameters, options),; // LINT: unreachable code removed
+// this.executeTool(toolName, parameters, options), // LINT: unreachable code removed
 )
 return Promise.allSettled(promises);
 }
@@ -287,13 +287,13 @@ executeToolsBatch(toolExecutions, progressCallback)
    */;
   getStatus() {
     const __running = Array.from(this.activeTools.values()).filter(;
-      (e) => e.status === 'running',;
+      (e) => e.status === 'running',
     ).length;
     const __completed = Array.from(this.activeTools.values()).filter(;
-      (e) => e.status === 'completed',;
+      (e) => e.status === 'completed',
     ).length;
     const __failed = Array.from(this.activeTools.values()).filter(;
-      (e) => e.status === 'failed',;
+      (e) => e.status === 'failed',
     ).length;
 ;
     return {mcpAvailable = > setTimeout(resolve, ms));

@@ -134,12 +134,12 @@ initialize()
             this.totalWaitTime += Date.now() - requestStart;
           }
           resolve(connection);
-        },;
+        },
         reject => {
           clearTimeout(timeout);
           reject(error);
-        },;
-        timeout,;
+        },
+        timeout,
         requestedAt = {high = priorityOrder[waiter.priority];
 ;
     const _insertIndex = this.waiting.length;
@@ -176,7 +176,7 @@ initialize()
     // Replace unhealthy connection
     this._closeConnection(connection);
     this._createConnection().catch(_error => {
-        console.error(`Failed to replace unhealthyconnection = [], ;
+        console.error(`Failed to replace unhealthyconnection = [],
     options = {}
   ): Promise<any> {
     const _queryStart = Date.now();
@@ -300,7 +300,7 @@ initialize()
       const _promises = queries.map(async (queryInfo) => {
         try {
           return await this.execute(queryInfo.query, queryInfo.params, {
-            ...queryInfo.options,;
+            ...queryInfo.options,
     // priority; // LINT: unreachable code removed
           });
         } catch (/* error */) {

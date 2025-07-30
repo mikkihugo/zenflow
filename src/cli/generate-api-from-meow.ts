@@ -56,9 +56,9 @@ export function generateGraphQLSchema(commands = > commands: unknown, command = 
 {
   // This would call the actual command execution
   return {
-            success: true,;
-  // result: { // LINT: unreachable code removed},;
-  sessionId: Date.now().toString(),;
+            success: true,
+  // result: { // LINT: unreachable code removed},
+  sessionId: Date.now().toString(),
   duration: 100;
 }
 }

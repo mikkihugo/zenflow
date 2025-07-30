@@ -6,10 +6,10 @@
 
 import chalk from 'chalk';
 import {
-  parseHiveMindArgs,;
-routeHiveMindCommand,;
-showHiveMindHelp,;
-showSubcommandUsage,;
+  parseHiveMindArgs,
+routeHiveMindCommand,
+showHiveMindHelp,
+showSubcommandUsage,
 } from '../hive-mind-core/command-interface.js'
 /**
  * Main hive mind command handler with clean architecture;
@@ -50,16 +50,16 @@ export default handleHiveMindCommand;
 
 // Export individual functions for testing
 export {
-  parseHiveMindArgs,;
-routeHiveMindCommand,;
-showHiveMindHelp,;
+  parseHiveMindArgs,
+routeHiveMindCommand,
+showHiveMindHelp,
 } from '../hive-mind-core/command-interface.js'
 
 export { initHiveMind } from '../hive-mind-core/initialization.js';
 
 export type {
-  showStatus,;
-spawnSwarm,;
-spawnSwarmWizard,;
-stopSession,;
+  showStatus,
+spawnSwarm,
+spawnSwarmWizard,
+stopSession,
 } from '../hive-mind-core/swarm-management.js'

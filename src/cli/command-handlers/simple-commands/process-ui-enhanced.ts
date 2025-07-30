@@ -9,18 +9,18 @@ import { printSuccess } from '../utils.js';
 
 // Simple color utilities
 const _colors = {
-  cyan = > `\x1b[36m${text}\x1b[0m`,;
-gray = > `\x1b[90m${text}\x1b[0m`,;
-white = > `\x1b[37m${text}\x1b[0m`,;
-yellow = > `\x1b[33m${text}\x1b[0m`,;
-green = > `\x1b[32m${text}\x1b[0m`,;
-red = > `\x1b[31m${text}\x1b[0m`,;
-blue = > `\x1b[34m${text}\x1b[0m`,;
-magenta = > `\x1b[35m${text}\x1b[0m`,;
-bold = > `\x1b[1m${text}\x1b[0m`,;
-dim = > `\x1b[2m${text}\x1b[0m`,;
+  cyan = > `\x1b[36m${text}\x1b[0m`,
+gray = > `\x1b[90m${text}\x1b[0m`,
+white = > `\x1b[37m${text}\x1b[0m`,
+yellow = > `\x1b[33m${text}\x1b[0m`,
+green = > `\x1b[32m${text}\x1b[0m`,
+red = > `\x1b[31m${text}\x1b[0m`,
+blue = > `\x1b[34m${text}\x1b[0m`,
+magenta = > `\x1b[35m${text}\x1b[0m`,
+bold = > `\x1b[1m${text}\x1b[0m`,
+dim = > `\x1b[2m${text}\x1b[0m`,
 }
-const __PROCESSES = [;
+const __PROCESSES = [
   { id = {_PROCESSES = new Map();
     this.running = true;
     this.selectedIndex = 0;
@@ -35,7 +35,7 @@ const __PROCESSES = [;
     // Initialize process states
     PROCESSES.forEach((p) => {
       this.processes.set(p.id, {
-        ...p,;
+        ...p,
         _status => {
       this.systemStats.uptime++;
     }, 1000);
@@ -49,8 +49,8 @@ const __PROCESSES = [;
     await this.swarmIntegration.initializeSwarm('hierarchical', 8);
 ;
     // Mock memory namespaces
-    this.memoryStats = {totalEntries = [;
-      {time = [;
+    this.memoryStats = {totalEntries = [
+      {time = [
       {key = '';
     tabs.forEach((tab) => {
       const _isActive = this.currentView === tab.view;
@@ -80,20 +80,20 @@ const __PROCESSES = [;
       if(process.status === 'running') {
         const __stats = colors.dim(;
           `PID = Array.from(this.processes.values()).filter(;
-      (p) => p.status === 'running',;
+      (p) => p.status === 'running',
     ).length;
     console.warn(colors.gray('─'.repeat(80)));
     console.warn(;
       colors.white(;
-        `Total = > a.status === 'working').length)}/${this.agents.length}`,;
+        `Total = > a.status === 'working').length)}/${this.agents.length}`,
     );
-    console.warn(`  TotalTasks = > t.status === 'completed').length)}`,;
-    );
-    console.warn(;
-      `  InProgress = > t.status === 'in_progress').length)}`,;
+    console.warn(`  TotalTasks = > t.status === 'completed').length)}`,
     );
     console.warn(;
-      `Pending = > t.status === 'pending').length)}`,;
+      `  InProgress = > t.status === 'in_progress').length)}`,
+    );
+    console.warn(;
+      `Pending = > t.status === 'pending').length)}`,
     );
     console.warn();
 ;
@@ -233,7 +233,7 @@ const __PROCESSES = [;
         return colors.red('✗');
     // case 'starting':; // LINT: unreachable code removed
         return colors.yellow('◐');default = Array.from(this.processes.values()).filter(;
-      (p) => p.status === 'running',;
+      (p) => p.status === 'running',
     ).length;
     const _total = this.processes.size;
     const _percentage = (running / total) * 100;
@@ -340,12 +340,12 @@ const __PROCESSES = [;
 ;
       case 't': {
         // Create new task
-        const _sampleTasks = [;
-          'Implement new feature',;
-          'Fix critical bug',;
-          'Optimize performance',;
-          'Update documentation',;
-          'Review code quality',;
+        const _sampleTasks = [
+          'Implement new feature',
+          'Fix critical bug',
+          'Optimize performance',
+          'Update documentation',
+          'Review code quality',
         ];
         const _randomTask = sampleTasks[Math.floor(Math.random() * sampleTasks.length)];
         await this.swarmIntegration.createTask(randomTask, 'medium');
@@ -370,7 +370,7 @@ const __PROCESSES = [;
         const _metrics = this.swarmIntegration.getSwarmMetrics();
         if(metrics) {
           this.addLog(;
-            'info',;
+            'info',
             `Swarmefficiency = [];
         this.addLog('info', 'Logs cleared');
         break;
@@ -383,12 +383,12 @@ const __PROCESSES = [;
 ;
   addLog(level, message): unknown {
     this.logs.push({time = Math.min(;
-      100,;
-      Math.max(0, this.systemStats.cpuUsage + (Math.random() - 0.5) * 10),;
+      100,
+      Math.max(0, this.systemStats.cpuUsage + (Math.random() - 0.5) * 10),
     );
     this.systemStats.memoryUsage = Math.min(;
-      100,;
-      Math.max(0, this.systemStats.memoryUsage + (Math.random() - 0.5) * 5),;
+      100,
+      Math.max(0, this.systemStats.memoryUsage + (Math.random() - 0.5) * 5),
     );
 ;
     // Update process stats

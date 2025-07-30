@@ -31,7 +31,7 @@ describe('Hive Mind SIGINT Handler', () => {
   it('should pause session when SIGINT is received during spawn', (_done) => {
     // Start hive-mind spawn
     hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test SIGINT handling'], {
-      stdio: 'pipe',;
+      stdio: 'pipe',
     ...process.env, NODE_ENV: 'test' ,
   });
   const _output = '';
@@ -72,7 +72,7 @@ describe('Hive Mind SIGINT Handler', () => {
 
 it('should save checkpoint when pausing session', (_done) => {
   hiveMindProcess = spawn('node', [cliPath, 'hive-mind', 'spawn', 'Test checkpoint saving'], {
-      stdio: 'pipe',;
+      stdio: 'pipe',
   ...process.env, NODE_ENV: 'test' ,
 });
 const _output = '';
@@ -117,9 +117,9 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
     return;
     //   // LINT: unreachable code removed}
     hiveMindProcess = spawn(;
-    'node',;
-    [cliPath, 'hive-mind', 'spawn', 'Test Claude termination', '--claude'],;
-    stdio: 'pipe',;
+    'node',
+    [cliPath, 'hive-mind', 'spawn', 'Test Claude termination', '--claude'],
+    stdio: 'pipe',
     ...process.env, NODE_ENV: 'test' ,
     )
     const _output = '';
@@ -142,5 +142,4 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
     });
   }
   , 30000)
-}
-)
+})

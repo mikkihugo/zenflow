@@ -271,10 +271,10 @@ async function _createSession(): unknown {
             console.warn(`   ${checkpoint.timestamp} - ${checkpoint.message}`);
             console.warn(`ID = await memoryStore.getActiveSessions();
         console.warn(`\n💾 Memory Store = {
-    [SESSION_STATES.ACTIVE]: '🟢',;
-    [SESSION_STATES.PAUSED]: '🟡',;
-    [SESSION_STATES.COMPLETED]: '✅',;
-    [SESSION_STATES.FAILED]: '❌',;
+    [SESSION_STATES.ACTIVE]: '🟢',
+    [SESSION_STATES.PAUSED]: '🟡',
+    [SESSION_STATES.COMPLETED]: '✅',
+    [SESSION_STATES.FAILED]: '❌',
     [SESSION_STATES.ARCHIVED]: '📦';
   };
   return icons[state]  ?? '❓';

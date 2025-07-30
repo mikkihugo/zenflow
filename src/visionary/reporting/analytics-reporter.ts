@@ -77,7 +77,7 @@ export interface AnalysisReport {
 /**
  * Analytics Reporter;
  *;
- * Comprehensive system for tracking analytics, generating reports,;
+ * Comprehensive system for tracking analytics, generating reports,
  * and managing the output of analysis results.;
  */
 export class AnalyticsReporter {
@@ -89,20 +89,20 @@ export class AnalyticsReporter {
   constructor(config: AnalyticsConfig) {
     this.config = config;
     this.analytics = {
-      totalProcessed: 0,;
-    successRate: 1.0,;
-    avgProcessingTime: 0,;
-    codeQualityScore: 75,;
-    languagesSupported: ['javascript', 'typescript', 'python', 'java', 'go', 'rust'],;
+      totalProcessed: 0,
+    successRate: 1.0,
+    avgProcessingTime: 0,
+    codeQualityScore: 75,
+    languagesSupported: ['javascript', 'typescript', 'python', 'java', 'go', 'rust'],
     featuresUsed: [;
-        'code-analysis',;
-        'pattern-detection',;
-        'quality-assessment',;
-        'refactoring-recommendations',;
-      ],;
-    avgAnalysisTime: 0,;
-    avgPatternDetectionTime: 0,;
-    avgQualityAssessmentTime: 0,;
+        'code-analysis',
+        'pattern-detection',
+        'quality-assessment',
+        'refactoring-recommendations',
+      ],
+    avgAnalysisTime: 0,
+    avgPatternDetectionTime: 0,
+    avgQualityAssessmentTime: 0,
     ,
     maintainabilityTrend: [],
     performanceTrend: [],
@@ -132,7 +132,7 @@ initialize();
     // */ // LINT: unreachable code removed
 async;
 generateAnalysisReport(;
-pipelineResult: PipelineResult,;
+pipelineResult: PipelineResult,
 options: ReportingOptions;
 ): Promise<AnalysisReport>
 {
@@ -177,17 +177,17 @@ options: ReportingOptions;
       const _processingTime = Date.now() - startTime;
 ;
       return {
-        insights,;
-    // recommendations,; // LINT: unreachable code removed
-        qualityScore,;
-        technicalDebt,;
-        files,;
-        report,;
-          generatedAt: new Date().toISOString(),;
-          analysisDepth: options.analysisDepth,;
-          language: options.language,;
-          processingTime,;
-          filesAnalyzed: pipelineResult.metadata?.stagesCompleted.length  ?? 0,;,;
+        insights,
+    // recommendations, // LINT: unreachable code removed
+        qualityScore,
+        technicalDebt,
+        files,
+        report,
+          generatedAt: new Date().toISOString(),
+          analysisDepth: options.analysisDepth,
+          language: options.language,
+          processingTime,
+          filesAnalyzed: pipelineResult.metadata?.stagesCompleted.length  ?? 0,,
       }
 }
 catch (/* error */)
@@ -245,8 +245,8 @@ getAnalytics();
 >
 {
   return {
-      ...this.analytics,;
-  // summary: this.generateAnalyticsSummary(),; // LINT: unreachable code removed
+      ...this.analytics,
+  // summary: this.generateAnalyticsSummary(), // LINT: unreachable code removed
 }
 }
 /**
@@ -394,8 +394,8 @@ generateInsights(pipelineResult: PipelineResult)
    * @param files - File collection to populate;
    */;
   private async generateReportFiles(;
-    pipelineResult: PipelineResult,;
-    options: ReportingOptions,;
+    pipelineResult: PipelineResult,
+    options: ReportingOptions,
     files: Map<string, string>;
   ): Promise<void> {
     // Generate JSON report
@@ -420,8 +420,8 @@ generateInsights(pipelineResult: PipelineResult)
    * @param files - File collection to populate;
    */;
   private async generateOptimizedCode(;
-    optimizedRefactoring: unknown,;
-    options: ReportingOptions,;
+    optimizedRefactoring: unknown,
+    options: ReportingOptions,
     files: Map<string, string>;
   ): Promise<void> {
     const _extension = this.getFileExtension(options.language);
@@ -443,8 +443,8 @@ generateInsights(pipelineResult: PipelineResult)
    * @param files - File collection to populate;
    */;
   private async generateTestFiles(;
-    _refactoring: unknown,;
-    options: ReportingOptions,;
+    _refactoring: unknown,
+    options: ReportingOptions,
     files: Map<string, string>;
   ): Promise<void> {
     const _testExtension =;
@@ -468,8 +468,8 @@ generateInsights(pipelineResult: PipelineResult)
    * @param files - File collection to populate;
    */;
   private async generateDocumentationFiles(;
-    refactoring: unknown,;
-    options: ReportingOptions,;
+    refactoring: unknown,
+    options: ReportingOptions,
     files: Map<string, string>;
   ): Promise<void> {
     const _documentation = this.generateDocumentationTemplate(refactoring, options);
@@ -492,28 +492,28 @@ generateInsights(pipelineResult: PipelineResult)
   private createDetailedReport(pipelineResult: PipelineResult, options: ReportingOptions): unknown 
     return {
       executive_summary: {
-        quality_score: this.calculateOverallQualityScore(pipelineResult),;
-    // technical_debt: this.assessTechnicalDebt(pipelineResult),; // LINT: unreachable code removed
-        key_findings: this.extractKeyFindings(pipelineResult),;
-        recommendations_count: pipelineResult.refactoring?.summary?.totalRecommendations  ?? 0,;,;
-        code_metrics: pipelineResult.analysis?.metrics,;
-        complexity_analysis: pipelineResult.analysis?.complexity,;
-          design_patterns_found: pipelineResult.patterns?.designPatterns.length  ?? 0,;
-          anti_patterns_found: pipelineResult.patterns?.antiPatterns.length  ?? 0,;
-          code_smells_found: pipelineResult.patterns?.codeSmells.length  ?? 0,;,;
-        quality_assessment: pipelineResult.quality,;,;
-        total_processing_time: pipelineResult.metadata?.processingTime,;
-        stages_completed: pipelineResult.metadata?.stagesCompleted.length,;
-        stages_failed: pipelineResult.metadata?.stagesFailed.length,;,;
-        language: options.language,;
-        analysis_depth: options.analysisDepth,;
-        features_enabled: this.getEnabledFeatures(options),;,;
+        quality_score: this.calculateOverallQualityScore(pipelineResult),
+    // technical_debt: this.assessTechnicalDebt(pipelineResult), // LINT: unreachable code removed
+        key_findings: this.extractKeyFindings(pipelineResult),
+        recommendations_count: pipelineResult.refactoring?.summary?.totalRecommendations  ?? 0,,
+        code_metrics: pipelineResult.analysis?.metrics,
+        complexity_analysis: pipelineResult.analysis?.complexity,
+          design_patterns_found: pipelineResult.patterns?.designPatterns.length  ?? 0,
+          anti_patterns_found: pipelineResult.patterns?.antiPatterns.length  ?? 0,
+          code_smells_found: pipelineResult.patterns?.codeSmells.length  ?? 0,,
+        quality_assessment: pipelineResult.quality,,
+        total_processing_time: pipelineResult.metadata?.processingTime,
+        stages_completed: pipelineResult.metadata?.stagesCompleted.length,
+        stages_failed: pipelineResult.metadata?.stagesFailed.length,,
+        language: options.language,
+        analysis_depth: options.analysisDepth,
+        features_enabled: this.getEnabledFeatures(options),,
     };
 ;
   // Helper methods
 
   private generateMarkdownSummary(;
-    pipelineResult: PipelineResult,;
+    pipelineResult: PipelineResult,
     options: ReportingOptions;
   ): string {
     const _qualityScore = this.calculateOverallQualityScore(pipelineResult);
@@ -665,14 +665,14 @@ Generated by Visionary Software Intelligence System;
 ;
   private getFileExtension(language: string): string {
     const _extensions: Record<string, string> = {
-      javascript: 'js',;
-      typescript: 'ts',;
-      python: 'py',;
-      java: 'java',;
-      go: 'go',;
-      rust: 'rs',;
-      cpp: 'cpp',;
-      c: 'c',;
+      javascript: 'js',
+      typescript: 'ts',
+      python: 'py',
+      java: 'java',
+      go: 'go',
+      rust: 'rs',
+      cpp: 'cpp',
+      c: 'c',
     };
     return extensions[language]  ?? 'txt';
     //   // LINT: unreachable code removed}

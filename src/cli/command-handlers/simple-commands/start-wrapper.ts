@@ -36,7 +36,7 @@ try {
     const { UnifiedInterfacePlugin } = await import('../../../plugins/unified-interface/index.js');
     
     const _server = new UnifiedInterfacePlugin({
-      webPort,;
+      webPort,
       _enableMCP => {
       console.warn('\n🛑 Shutting down unified server...');
       await server.shutdown();

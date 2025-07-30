@@ -260,7 +260,7 @@ handleWebSocketMessage(ws, data)
 ;
     // Mock tool execution for demonstration
 
-    const __response = {jsonrpc = [;
+    const __response = {jsonrpc = [
       {
         name = {jsonrpc = {status = {
             nodeVersion = {}): unknown {

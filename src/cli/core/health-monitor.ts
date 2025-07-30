@@ -44,9 +44,9 @@ export class HealthMonitor {
     const _checkResult = await checkFn();
     const _duration = Date.now() - startTime;
     results.checks[name] = {
-      ...checkResult,;
-    duration,;
-    timestamp,;
+      ...checkResult,
+    duration,
+    timestamp,
   }
   // Update summary
   switch (_checkResult._status) {
@@ -253,15 +253,15 @@ getHealthTrend((minutes = 60));
       status,timeWindow = await this.performHealthCheck();
     // const _trend = this.getHealthTrend(); // LINT: unreachable code removed
 ;
-    const _report = [;
-      '📊 SYSTEM HEALTH REPORT',;
-      '━'.repeat(50),;
+    const _report = [
+      '📊 SYSTEM HEALTH REPORT',
+      '━'.repeat(50),
       `OverallStatus = > ;
         `  ${check.status === 'healthy' ? '✅' : check.status === 'degraded' ? '⚠️' : '❌'} ${name}: ${check.status}` +;
         (check.reason ? ` - ${check.reason}` : '');
-    ),;
-      '',;
-      '📈 Health Trend (60min):',;
+    ),
+      '',
+      '📈 Health Trend (60min):',
       `Status = > ;
         `  $breaker.state === 'CLOSED' ? '🟢' : breaker.state === 'HALF_OPEN' ? '🟡' : '🔴'$breaker.name: $breaker.state`;
       );

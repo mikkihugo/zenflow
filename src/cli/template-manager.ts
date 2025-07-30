@@ -12,9 +12,9 @@ const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
 export class TemplateManager {
   constructor() {
-    this.templatePaths = [;
-      path.join(process.cwd(), 'templates'),;
-      path.join(__dirname, '../../templates'),;
+    this.templatePaths = [
+      path.join(process.cwd(), 'templates'),
+      path.join(__dirname, '../../templates'),
       path.join(process.env.HOME  ?? process.env.USERPROFILE, '.claude-zen/templates');
     ];
   }

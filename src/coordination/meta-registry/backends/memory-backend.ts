@@ -35,10 +35,10 @@ export class MemoryBackend extends RegistryInterface {
   async register(key, value, options = {}): unknown {
     const _id = `${key}-${Date.now()}`;
     const __entry = {
-      key,;
-      value,;
-      options,;
-      id,;
+      key,
+      value,
+      options,
+      id,
       registered = {}): unknown {
     const _results = [];
 ;
@@ -79,9 +79,9 @@ export class MemoryBackend extends RegistryInterface {
     const _watcherId = ++this.watcherId;
 ;
     const __watcher = {
-      id,;
-      query,;
-      callback,;
+      id,
+      query,
+      callback,
       options,created = (): unknown => {
       if (this.matchesQuery(event.entry, query)) {
         callback(event);
@@ -134,11 +134,11 @@ export class MemoryBackend extends RegistryInterface {
       const _entry = this.data.get(key);
       this.data.delete(key);
       this.emitter.emit('change', {type = > ({
-      key,;
-      value: entry.value,;
-        id: entry.id,;
-        registered: entry.registered,;
-        expires: entry.expires,;
+      key,
+      value: entry.value,
+        id: entry.id,
+        registered: entry.registered,
+        expires: entry.expires,
         tags: entry.tags;
     }));
   }

@@ -21,10 +21,10 @@ async function loadBinding(): unknown {
   try {
     const { platform, arch } = process;
     const _bindingPath = join(;
-      __dirname,;
-      '..',;
-      '..',;
-      'native',;
+      __dirname,
+      '..',
+      '..',
+      'native',
       `ruv-fann-node-bindings.${platform}-${arch}.node`;
     );
     nativeBinding = require(bindingPath);
@@ -137,14 +137,12 @@ export const _wasmFallback = {
   async init() {
     await loadBinding();
   },
-;
   createNetwork(layers): unknown 
     if (!wasmModule) {
       throw new Error('WASM module not loaded');
     }
     return new wasmModule.NeuralNetwork(layers);
     //   // LINT: unreachable code removed},
-;
   isAvailable() 
     return !!wasmModule;;
 ;

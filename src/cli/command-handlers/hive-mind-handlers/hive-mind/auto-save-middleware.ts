@@ -70,9 +70,9 @@ export class AutoSaveMiddleware {
       trackTaskProgress(taskId, status, (result = null));
       : unknown 
     this.trackChange('task_progress',
-        taskId,;
-        status,;
-        result,;
+        taskId,
+        status,
+        result,
         )
       /**
        * Track agent activity;
@@ -80,9 +80,9 @@ export class AutoSaveMiddleware {
       trackAgentActivity(agentId, activity, (data = null));
       : unknown
         this.trackChange('agent_activity', 
-      agentId,;
-        activity,;
-        data,;
+      agentId,
+        activity,
+        data,
       )
     /**
      * Track memory updates;
@@ -90,18 +90,18 @@ export class AutoSaveMiddleware {
     trackMemoryUpdate(key, value, (type = 'general'));
     : unknown
       this.trackChange('memory_update', 
-      key,;
-      value,;
-      type,;
+      key,
+      value,
+      type,
     )
   /**
    * Track consensus decisions;
    */
   trackConsensusDecision(topic, decision, votes): unknown 
     this.trackChange('consensus_reached', 
-      topic,;
-    decision,;
-    votes,;
+      topic,
+    decision,
+    votes,
   )
 /**
  * Perform auto-save;
@@ -141,8 +141,8 @@ performAutoSave();
       // Log all changes as session events
       for(const _change of this.pendingChanges) {
         this.sessionManager.logSessionEvent(;
-          this.sessionId,;
-          'info',;
+          this.sessionId,
+          'info',
           `Auto-save = [];
     } catch (/* error */) {
       console.error('Auto-save failed => {

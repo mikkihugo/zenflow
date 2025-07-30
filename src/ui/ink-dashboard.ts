@@ -44,7 +44,7 @@ const __VisionDashboard = (): unknown => {
           );
         );
       );
-    }),;
+    }),
     React.createElement(Box, marginTop = (): unknown => {
   const [_swarmData, setSwarmData] = useState(null);
   const [_systemMetrics, setSystemMetrics] = useState(null);
@@ -54,7 +54,7 @@ const __VisionDashboard = (): unknown => {
     const __updateData = async () => {
       try {
         const [swarm, metrics] = await Promise.all([;
-          visionAPI.getSwarmStatus(),;
+          visionAPI.getSwarmStatus(),
           visionAPI.getSystemMetrics();
         ]);
         setSwarmData(swarm);
@@ -76,10 +76,10 @@ const __VisionDashboard = (): unknown => {
       case 'tester': return '🧪';
     // case 'analyst': return '📊'; // LINT: unreachable code removed
       case 'researcher': return '🔍';default = >;
-            React.createElement(Box, {key = === 0 ? 0 : 0 },;
-              React.createElement(Box, null,;
-                React.createElement(Text, null, `${getAgentIcon(agent.name)} `),;
-                React.createElement(Text, {color = [;
+            React.createElement(Box, {key = === 0 ? 0 : 0 },
+              React.createElement(Box, null,
+                React.createElement(Text, null, `${getAgentIcon(agent.name)} `),
+                React.createElement(Text, {color = [
   {id = (): unknown => {
   const [activeTab, setActiveTab] = useState('visions');
   const [_startTime] = useState(new Date());

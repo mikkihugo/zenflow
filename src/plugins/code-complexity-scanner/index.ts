@@ -66,13 +66,13 @@ try {
 getCapabilities()
 {
   return {
-      fileTypes: ['.js', '.jsx', '.ts', '.tsx'],;
-  // metrics: ['cyclomatic', 'halstead', 'maintainability'],; // LINT: unreachable code removed
+      fileTypes: ['.js', '.jsx', '.ts', '.tsx'],
+  // metrics: ['cyclomatic', 'halstead', 'maintainability'], // LINT: unreachable code removed
   features: [
     ;
-        'method-level analysis',;
-        'file-level analysis', ;
-        'ai-powered suggestions',;
+        'method-level analysis',
+        'file-level analysis',
+        'ai-powered suggestions',
         'severity classification';,,,,,,,
   ];
 }

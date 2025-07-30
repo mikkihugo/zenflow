@@ -53,7 +53,7 @@ export async function batchManagerCommand(): unknown {
 ;
     if(config.projects && config.projectConfigs) {
       warnings.push(;
-        'Both "projects" and "projectConfigs" specified. "projectConfigs" will take precedence.',;
+        'Both "projects" and "projectConfigs" specified. "projectConfigs" will take precedence.',
       );
     }
 ;

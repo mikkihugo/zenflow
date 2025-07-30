@@ -84,7 +84,7 @@ try {
 }
 ;
 // Try multiple strategies to find claude-zen
-const __strategies = [;
+const __strategies = [
     // 1. Local node_modules
     async () => {
       try {
@@ -174,91 +174,91 @@ See full documentation in \`.claude/commands/\`;
 ;
 function _createEnhancedSettingsJsonFallback(): unknown {
   return JSON.stringify(;
-        CLAUDE_FLOW_AUTO_COMMIT: 'false',;
-        CLAUDE_FLOW_AUTO_PUSH: 'false',;
-        CLAUDE_FLOW_HOOKS_ENABLED: 'true',;
-        CLAUDE_FLOW_TELEMETRY_ENABLED: 'true',;
-        CLAUDE_FLOW_REMOTE_EXECUTION: 'true',;
-        CLAUDE_FLOW_GITHUB_INTEGRATION: 'true',;,;
+        CLAUDE_FLOW_AUTO_COMMIT: 'false',
+        CLAUDE_FLOW_AUTO_PUSH: 'false',
+        CLAUDE_FLOW_HOOKS_ENABLED: 'true',
+        CLAUDE_FLOW_TELEMETRY_ENABLED: 'true',
+        CLAUDE_FLOW_REMOTE_EXECUTION: 'true',
+        CLAUDE_FLOW_GITHUB_INTEGRATION: 'true',,
         allow: [;
-          'Bash(npx claude-zen *)',;
-          'Bash(npm run lint)',;
-          'Bash(npm run test:*)',;
-          'Bash(npm test *)',;
-          'Bash(git status)',;
-          'Bash(git diff *)',;
-          'Bash(git log *)',;
-          'Bash(git add *)',;
-          'Bash(git commit *)',;
-          'Bash(git push)',;
-          'Bash(git config *)',;
-          'Bash(gh *)',;
-          'Bash(node *)',;
-          'Bash(which *)',;
-          'Bash(pwd)',;
-          'Bash(ls *)',;
-        ],;
-        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],;,;
-      enabledMcpjsonServers: ['claude-zen', 'ruv-swarm'],;
+          'Bash(npx claude-zen *)',
+          'Bash(npm run lint)',
+          'Bash(npm run test:*)',
+          'Bash(npm test *)',
+          'Bash(git status)',
+          'Bash(git diff *)',
+          'Bash(git log *)',
+          'Bash(git add *)',
+          'Bash(git commit *)',
+          'Bash(git push)',
+          'Bash(git config *)',
+          'Bash(gh *)',
+          'Bash(node *)',
+          'Bash(which *)',
+          'Bash(pwd)',
+          'Bash(ls *)',
+        ],
+        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],,
+      enabledMcpjsonServers: ['claude-zen', 'ruv-swarm'],
         PreToolUse: [;
           {
-            matcher: 'Bash',;
+            matcher: 'Bash',
             hooks: [;
               {
-                type: 'command',;
+                type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-command --command "{}" --validate-safety true --prepare-resources true',
-              },;
-            ],;
-          },;
+              },
+            ],
+          },
           {
-            matcher: 'Write|Edit|MultiEdit',;
+            matcher: 'Write|Edit|MultiEdit',
             hooks: [;
               {
-                type: 'command',;
+                type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks pre-edit --file "{}" --auto-assign-agents true --load-context true',
-              },;
-            ],;
-          },;
-        ],;
+              },
+            ],
+          },
+        ],
         PostToolUse: [;
           {
-            matcher: 'Bash',;
+            matcher: 'Bash',
             hooks: [;
               {
-                type: 'command',;
+                type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.command // ""\' | xargs -I {} npx claude-zen@alpha hooks post-command --command "{}" --track-metrics true --store-results true',
-              },;
-            ],;
-          },;
+              },
+            ],
+          },
           {
-            matcher: 'Write|Edit|MultiEdit',;
+            matcher: 'Write|Edit|MultiEdit',
             hooks: [;
               {
-                type: 'command',;
+                type: 'command',
                 command:;
                   'cat | jq -r \'.tool_input.file_path // .tool_input.path // ""\' | xargs -I {} npx claude-zen@alpha hooks post-edit --file "{}" --format true --update-memory true --train-neural true',
-              },;
-            ],;
-          },;
-        ],;
+              },
+            ],
+          },
+        ],
         Stop: [;
           {
             hooks: [;
               {
-                type: 'command',;
+                type: 'command',
                 command:;
                   'npx claude-zen@alpha hooks session-end --generate-summary true --persist-state true --export-metrics true',
-              },;
-            ],;
-          },;
-        ],;,;
-      includeCoAuthoredBy: true,;
-    },;
-    null,;
-    2,;
+              },
+            ],
+          },
+        ],,
+      includeCoAuthoredBy: true,
+    },
+    null,
+    2,
   );
 }
 ;

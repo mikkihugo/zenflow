@@ -30,11 +30,11 @@ if (options.autoCreateHives) {
 const _summary = generateImportSummary(analysis, options);
 await saveImportSummary(summary);
 printSuccess(`✅ Monorepo importcompleted = new Map();
-  const _discoveryStrategies = [;
-    discoverByDirectoryStructure,;
-    discoverByPackageJson,;
-    discoverByDockerfile,;
-    discoverByBuildFiles,;
+  const _discoveryStrategies = [
+    discoverByDirectoryStructure,
+    discoverByPackageJson,
+    discoverByDockerfile,
+    discoverByBuildFiles,
     discoverByNxConfig;
   ];
 ;
@@ -65,7 +65,7 @@ return serviceList;
 }
 /**
  * Strategy1 = [];
-  const _patterns = [;
+  const _patterns = [
     'services/*',
     'apps/*', 
     'packages/*',
@@ -198,9 +198,9 @@ function _detectAPIs(): unknown {
 ;
   try {
     // Look for database configuration files
-    const _configPatterns = [;
-      '**/database.{js,json,yml,yaml}',;
-      '**/db.{js,json,yml,yaml}',;
+    const _configPatterns = [
+      '**/database.{js,json,yml,yaml}',
+      '**/db.{js,json,yml,yaml}',
       '**/*database*.{js,json,yml,yaml}',
       '**/migrations/**/*',
       '**/schema/**/*'
@@ -324,8 +324,8 @@ function _detectAPIs(): unknown {
 ;
 export default {
   importMonorepoCommand,
-  discoverServices,;
-  analyzeServices,;
+  discoverServices,
+  analyzeServices,
   setupServiceGraph;
 };
 ;

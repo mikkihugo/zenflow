@@ -24,10 +24,10 @@ for (let i = 0; i < process.args.length; i++) {
 }
 const _objective = args.join(' ');
 if (!objective && !flags.help) {
-  console.error('❌Usage = [;
-  join(__dirname, '../../swarm-demo.ts'),;
-  join(__dirname, '../../swarm-demo-enhanced.ts'),;
-  join(__dirname, '../../../swarm-demo.ts'),;
+  console.error('❌Usage = [
+  join(__dirname, '../../swarm-demo.ts'),
+  join(__dirname, '../../swarm-demo-enhanced.ts'),
+  join(__dirname, '../../../swarm-demo.ts'),
   ]
   const _swarmPath = null;
   for (const path of possiblePaths) {

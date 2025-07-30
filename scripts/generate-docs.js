@@ -18,24 +18,19 @@ class DocumentationGenerator {
     console.warn('🚀 Generating API documentation...');
     try {
       // Ensure docs directory exists
-      await fs.mkdir(this.docsDir, { recursive: true });
-;
+  // await fs.mkdir(this.docsDir, { recursive: true });
       // Find all JavaScript files with JSDoc comments
       const _jsFiles = await glob('src/**/*.js');
       console.warn(`📁 Found ${jsFiles.length} JavaScript files`);
-;
       // Extract JSDoc comments
       const _apiDocs = await this.extractJSDocFromFiles(jsFiles);
-;
       // Generate markdown documentation
       const _markdown = await this.generateMarkdown(apiDocs);
-;
       // Write to file
-      await fs.writeFile(this.outputFile, markdown);
+  // await fs.writeFile(this.outputFile, markdown);
       console.warn(`✅ Documentation generated: ${this.outputFile}`);
-;
       return this.outputFile;
-    //   // LINT: unreachable code removed} catch (/* error */) {
+    //   // LINT: unreachable code removed} catch (error) {
       console.error('❌ Documentation generation failed:', error);
       throw error;
     }
@@ -48,12 +43,12 @@ class DocumentationGenerator {
         const _docs = this.extractJSDocFromContent(content, file);
         if (docs.length > 0) {
           apiDocs.push({
-            file,;
-            docs,;
+            file,
+            docs,
           });
         }
     }
-    catch (/* error */) 
+    catch (error) 
         console.warn(`⚠️ Could not process file $
       file
     :`, error.message)
@@ -75,28 +70,25 @@ class DocumentationGenerator {
         const _functionMatch = afterComment.match(;
           /(?:export\s+)?(?:class|function|const|let|var)\s+(\w+)/
         );
-;
-        docs.push({
-          ...parsed,;
-          name: functionMatch ? functionMatch[1] : `Item ${index + 1}`,;
-          filename: path.basename(filename),;
-          filepath: filename,;
+        docs.push({ ...parsed,
+          name: functionMatch ? functionMatch[1] : `Item ${index + 1 }`,
+          filename: path.basename(filename),
+          filepath: filename,
         });
       }
-  }
-  )
+  })
   return
   docs;
   //   // LINT: unreachable code removed}
   parseJSDocComment(comment) {
     const _lines = comment.split('\n').map((line) => line.replace(/^\s*\*\s?/, '').trim());
     const _doc = {
-      description: '',;
-    params: [],;
-    returns: null,;
-    // example: '',; // LINT: unreachable code removed
-    tags: [],;
-  }
+      description: '',
+    params: [],
+    returns: null,
+    // example: '', // LINT: unreachable code removed
+    tags: []
+}
   let;
   _currentSection = 'description';
   let;
@@ -105,15 +97,14 @@ class DocumentationGenerator {
       if (line.startsWith('/**')  ?? line.startsWith('*/')  ?? line === '') {
         continue;
       }
-;
       if (line.startsWith('@param')) {
         currentSection = 'param';
         const _paramMatch = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
         if (paramMatch) {
           currentParam = {
-            type: paramMatch[1],;
-            name: paramMatch[2],;
-            description: paramMatch[3],;
+            type: paramMatch[1],
+            name: paramMatch[2],
+            description: paramMatch[3],
           };
           doc.params.push(currentParam);
         }
@@ -129,8 +120,8 @@ class DocumentationGenerator {
   // const _returnMatch = line.match(/@returns?\s+\{([^ // LINT: unreachable code removed}]+)\}\s*(.*)/);
   if(returnMatch) {
     doc.returns = {
-            type: returnMatch[1],;
-    // description: returnMatch[2],; // LINT: unreachable code removed
+            type: returnMatch[1],
+    // description: returnMatch[2], // LINT: unreachable code removed
   }
 }
 } else
@@ -140,10 +131,9 @@ if (line.startsWith('@example')) {
   const _tagMatch = line.match(/@(\w+)\s*(.*)/);
   if (tagMatch) {
     doc.tags.push({
-            name: tagMatch[1],;
-    value: tagMatch[2],;
-  }
-  )
+            name: tagMatch[1],
+    value: tagMatch[2]
+})
 }
 } else
 {
@@ -165,15 +155,10 @@ async;
 generateMarkdown(apiDocs);
 {
     const _markdown = `# Generated API Documentation
-;
 This documentation is automatically generated from JSDoc comments in the source code.
-;
 *Generated on: ${new Date().toISOString()}*
-;
 ## Table of Contents
-;
 `;
-;
     // Generate table of contents
     apiDocs.forEach((fileDoc) => {
       markdown += `- [${fileDoc.file}](#${this.slugify(fileDoc.file)})\n`;
@@ -181,20 +166,15 @@ This documentation is automatically generated from JSDoc comments in the source 
         markdown += `  - [${doc.name}](#${this.slugify(doc.name)})\n`;
       });
     });
-;
     markdown += '\n---\n\n';
-;
     // Generate detailed documentation
     apiDocs.forEach((fileDoc) => {
       markdown += `## ${fileDoc.file}\n\n`;
-;
       fileDoc.docs.forEach((doc) => {
         markdown += `### ${doc.name}\n\n`;
-;
         if (doc.description) {
           markdown += `${doc.description}\n\n`;
         }
-;
         if (doc.params.length > 0) {
           markdown += '**Parameters:**\n\n';
           doc.params.forEach((param) => {
@@ -202,17 +182,14 @@ This documentation is automatically generated from JSDoc comments in the source 
           });
           markdown += '\n';
         }
-;
         if (doc.returns) {
           markdown += `**Returns:** \`${doc.returns.type}\` - ${doc.returns.description}\n\n`;
     //   // LINT: unreachable code removed}
-;
         if (doc.example) {
           markdown += '**Example:**\n\n```javascript\n';
           markdown += doc.example;
           markdown += '\n```\n\n';
         }
-;
         if (doc.tags.length > 0) {
           markdown += '**Tags:**\n\n';
           doc.tags.forEach((tag) => {
@@ -220,31 +197,25 @@ This documentation is automatically generated from JSDoc comments in the source 
           });
           markdown += '\n';
         }
-;
         markdown += `**Source:** \`${doc.filepath}\`\n\n`;
         markdown += '---\n\n';
       });
     });
-;
     return markdown;
     //   // LINT: unreachable code removed}
-;
   slugify(text) 
     return text;
     // .toLowerCase(); // LINT: unreachable code removed
       .replace(/[^a-z0-9]+/g, '-');
       .replace(/^-+|-+$/g, '');
 }
-;
 // CLI runner
-async function main(): unknown {
+async function main() {
   const _generator = new DocumentationGenerator();
-  await generator.generate();
+  // await generator.generate();
 }
-;
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
-;
 export { DocumentationGenerator };

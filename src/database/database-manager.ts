@@ -1,7 +1,7 @@
 /**
  * Unified Database Manager - TypeScript Edition;
  * Provides a unified interface for managing multiple database types;
- * (SQLite, LanceDB, Kuzu, PostgreSQL) with connection pooling,;
+ * (SQLite, LanceDB, Kuzu, PostgreSQL) with connection pooling,
  * transaction management, and health monitoring;
  */
 
@@ -28,7 +28,7 @@ transactionManager = {}
 async;
 addDatabase(config = `${config.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 console.warn(`📁 Adding ${config.type} database = {id = new SQLiteConnectionPool(;
-            config.filePath  ?? `${config.name}.db`,;
+            config.filePath  ?? `${config.name}.db`,
             {minConnections = new SQLiteOperations(instance.pool);
           break;
 ;
@@ -72,7 +72,7 @@ console.warn(`🗑️ Removingdatabase = === 'function') {
 ;
     for (const [id, instance] of this.databases) {
       connections.push({
-        id,;
+        id,
         type = {}
   ): Promise<QueryResult> {
     const _startTime = Date.now();
@@ -183,7 +183,7 @@ getMetrics();
     if (!primary) {
       throw new Error(`Primary database not found = {}
   ): Promise<Transaction> {
-    return this.transactionManager.beginTransaction(databaseIds, {isolation = [],;
+    return this.transactionManager.beginTransaction(databaseIds, {isolation = [],
     // options = { // LINT: unreachable code removed}
   ): Promise<any> {
     return this.connectionPoolManager.executeWithPool(databaseType, query, params, {timeout = true;

@@ -15,7 +15,7 @@ export class TestRunnerPlugin extends EventEmitter {
     this.activeRuns = new Map();
     this.testQueue = [];
     this.stats = {
-      totalRuns,;
+      totalRuns,
       passedRuns = {}) => {
         const _args = [];
 ;
@@ -55,7 +55,7 @@ export class TestRunnerPlugin extends EventEmitter {
 ;
         return args;
     //   // LINT: unreachable code removed}
-  ,;
+  ,
   parseResults;
   => 
         try {
@@ -71,7 +71,7 @@ catch (/* error */) {
     })
 ;
 // Mocha runner
-this.runners.set('mocha',;
+this.runners.set('mocha',
   command = {};
   ) =>;
   {
@@ -85,7 +85,7 @@ this.runners.set('mocha',;
 ;
     args.push('--reporter', 'json');
     args.push(;
-      '--reporter-options',;
+      '--reporter-options',
       `output=${path.join(this.config.outputDir, 'mocha-results.json')}`;
     );
 ;
@@ -107,7 +107,7 @@ this.runners.set('mocha',;
 ;
     return args;
     //   // LINT: unreachable code removed}
-  ,;
+  ,
       _parseResults =>;
   try {
     const _results = JSON.parse(await readFile(outputFile, 'utf8'));
@@ -119,7 +119,7 @@ this.runners.set('mocha',;
 )
 ;
 // Vitest runner
-this.runners.set('vitest',;
+this.runners.set('vitest',
   command = {};
   ) =>;
   {
@@ -128,7 +128,7 @@ this.runners.set('vitest',;
     if (options.coverage  ?? this.config.coverage.enabled) {
       args.push('--coverage');
       args.push(;
-        '--coverage.reportsDirectory',;
+        '--coverage.reportsDirectory',
         path.join(this.config.outputDir, 'coverage', 'vitest');
       );
     }
@@ -159,7 +159,7 @@ this.runners.set('vitest',;
 ;
     return args;
     //   // LINT: unreachable code removed}
-  ,;
+  ,
       _parseResults =>;
   try {
     const _results = JSON.parse(await readFile(outputFile, 'utf8'));
@@ -171,7 +171,7 @@ this.runners.set('vitest',;
 )
 ;
 // AVA runner
-this.runners.set('ava',;
+this.runners.set('ava',
   command = {};
   ) =>;
   {
@@ -204,7 +204,7 @@ this.runners.set('ava',;
 ;
     return args;
     //   // LINT: unreachable code removed}
-  ,;
+  ,
       _parseResults =>;
   try {
     const _tapContent = await readFile(outputFile, 'utf8');
@@ -216,7 +216,7 @@ this.runners.set('ava',;
 )
 ;
 // TAP runner
-this.runners.set('tap',;
+this.runners.set('tap',
   command = {};
   ) =>;
   {
@@ -252,7 +252,7 @@ this.runners.set('tap',;
 ;
     return args;
     //   // LINT: unreachable code removed}
-  ,;
+  ,
       _parseResults =>;
   try {
     const _tapContent = await readFile(outputFile, 'utf8');
@@ -264,7 +264,7 @@ this.runners.set('tap',;
 )
 ;
 // Tape runner
-this.runners.set('tape',;
+this.runners.set('tape',
   command = {};
   ) =>;
   {
@@ -278,7 +278,7 @@ this.runners.set('tape',;
 ;
     return args;
     //   // LINT: unreachable code removed}
-  ,;
+  ,
       _parseResults =>;
   // Tape outputs TAP format to stdout
   return this.parseTAPResults(output, 'tape');
@@ -368,10 +368,10 @@ return detected;
 async;
 loadJestConfig();
 {
-    const _configPaths = [;
-      'jest.config.js',;
-      'jest.config.ts',;
-      'jest.config.json',;
+    const _configPaths = [
+      'jest.config.js',
+      'jest.config.ts',
+      'jest.config.json',
       'package.json';
     ];
 ;
@@ -386,21 +386,21 @@ loadJestConfig();
           return JSON.parse(await readFile(configPath, 'utf8'));
     //   // LINT: unreachable code removed} else {
           // For JS/TS configs, we'd need to dynamically import
-          return {configFile = [;
-    // 'vitest.config.js',; // LINT: unreachable code removed
-      'vitest.config.ts',;
-      'vite.config.js',;
+          return {configFile = [
+    // 'vitest.config.js', // LINT: unreachable code removed
+      'vitest.config.ts',
+      'vite.config.js',
       'vite.config.ts';
     ];
 ;
     for(const configPath of configPaths) {
       try {
         await access(configPath);
-        return {configFile = [;
-    // '.mocharc.js',; // LINT: unreachable code removed
-      '.mocharc.json',;
-      '.mocharc.yaml',;
-      '.mocharc.yml',;
+        return {configFile = [
+    // '.mocharc.js', // LINT: unreachable code removed
+      '.mocharc.json',
+      '.mocharc.yaml',
+      '.mocharc.yml',
       'package.json';
     ];
 ;
@@ -416,17 +416,17 @@ loadJestConfig();
     //   // LINT: unreachable code removed} else {
           return { configFile = {}): unknown {
     const {
-      framework = this.detectBestFramework(),;
-    // pattern,; // LINT: unreachable code removed
-      coverage = this.config.coverage.enabled,;
-      watch = false,;
-      updateSnapshot = false,;
-      testNamePattern,;
-      grep,;
-      match,;
-      bail = this.config.bail,;
-      parallel = this.config.parallel,;
-      runInBand = false,;
+      framework = this.detectBestFramework(),
+    // pattern, // LINT: unreachable code removed
+      coverage = this.config.coverage.enabled,
+      watch = false,
+      updateSnapshot = false,
+      testNamePattern,
+      grep,
+      match,
+      bail = this.config.bail,
+      parallel = this.config.parallel,
+      runInBand = false,
       serial = false;
     } = options;
 ;
@@ -438,17 +438,17 @@ loadJestConfig();
     if(!runner) {
       throw new Error(`Unsupported testframework = `${framework}-${Date.now()}`;
   const _runOptions = {
-    pattern,;
-    coverage,;
-    watch,;
-    updateSnapshot,;
-    testNamePattern,;
-    grep,;
-    match,;
-    bail,;
-    parallel,;
-    runInBand,;
-    serial,;
+    pattern,
+    coverage,
+    watch,
+    updateSnapshot,
+    testNamePattern,
+    grep,
+    match,
+    bail,
+    parallel,
+    runInBand,
+    serial,
   };
 ;
   console.warn(`🧪 Running tests with ${framework}...`);
@@ -844,10 +844,10 @@ normalizeJestResults(results);
                 <div class="coverage-fill ${getCoverageClass(coverage.summary.statements)}" style="width = "coverage-bar">;
                 <div class="coverage-fill ${getCoverageClass(coverage.summary.functions)}" style="width = "coverage-bar">;
                 <div class="coverage-fill ${getCoverageClass(coverage.summary.branches)}" style="width = {
-      '&': '&amp;',;
-      '<': '&lt;',;
-      '>': '&gt;',;
-      '"': '&quot;',;
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
       "'": '&#039;';
     };
 ;
@@ -860,7 +860,7 @@ normalizeJestResults(results);
     console.warn(`👁️ Starting test watcher with ${framework}...`);
 ;
     return this.runTests({
-      ...options,;
+      ...options,
     // framework,watch = this.activeRuns.get(runId); // LINT: unreachable code removed
     if(child) {
       child.kill('SIGTERM');

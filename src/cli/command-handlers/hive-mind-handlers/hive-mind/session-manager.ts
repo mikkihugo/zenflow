@@ -81,8 +81,8 @@ export class HiveMindSessionManager {
 ;
     // Log session creation
     await this.logSessionEvent(sessionId, 'info', 'Session created', null, {
-      swarmId,;
-      swarmName,;
+      swarmId,
+      swarmName,
       objective,parentPid = `checkpoint-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 ;
     if(this.isInMemory) {
@@ -114,10 +114,10 @@ export class HiveMindSessionManager {
     // Save checkpoint file for backup
     const _checkpointFile = path.join(this.sessionsDir, `${sessionId}-${checkpointName}.json`);
     await writeFile(;
-      checkpointFile,;
+      checkpointFile,
       JSON.stringify(;
-          sessionId,;
-          checkpointId,;
+          sessionId,
+          checkpointId,
           checkpointName,timestamp = [];
       for(const [sessionId, session] of this.memoryStore.sessions) {
         if(session.status === 'active'  ?? session.status === 'paused') {
@@ -126,9 +126,9 @@ export class HiveMindSessionManager {
     } else {
       // Use SQLite
       const _stmt = this.db.prepare(`;
-        SELECT s.*, ;
-               COUNT(DISTINCT a.id) as agent_count,;
-               COUNT(DISTINCT t.id) as task_count,;
+        SELECT s.*,
+               COUNT(DISTINCT a.id) as agent_count,
+               COUNT(DISTINCT t.id) as task_count,
                SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks;
         FROM sessions s;
         LEFT JOIN agents a ON s.swarm_id = a.swarm_id;
@@ -153,7 +153,7 @@ export class HiveMindSessionManager {
     // .prepare(; // LINT: unreachable code removed
         `;
       SELECT * FROM sessions WHERE id = ?;
-    `,;
+    `,
       );
       .get(sessionId);
 ;
@@ -166,7 +166,7 @@ export class HiveMindSessionManager {
       .prepare(;
         `;
       SELECT * FROM swarms WHERE id = ?;
-    `,;
+    `,
       );
       .get(session.swarm_id);
 ;
@@ -175,7 +175,7 @@ export class HiveMindSessionManager {
       .prepare(;
         `;
       SELECT * FROM agents WHERE swarm_id = ?;
-    `,;
+    `,
       );
       .all(session.swarm_id);
 ;
@@ -184,7 +184,7 @@ export class HiveMindSessionManager {
       .prepare(;
         `;
       SELECT * FROM tasks WHERE swarm_id = ?;
-    `,;
+    `,
       );
       .all(session.swarm_id);
 ;
@@ -195,7 +195,7 @@ export class HiveMindSessionManager {
       SELECT * FROM session_checkpoints ;
       WHERE session_id = ? ;
       ORDER BY created_at DESC;
-    `,;
+    `,
       );
       .all(sessionId);
 ;
@@ -207,16 +207,16 @@ export class HiveMindSessionManager {
       WHERE session_id = ? ;
       ORDER BY timestamp DESC ;
       LIMIT 50;
-    `,;
+    `,
       );
       .all(sessionId);
 ;
     return {
       ...session,metadata = > ({
-        ...cp,checkpoint_data = > a.status === 'active'  ?? a.status === 'busy').length,totalTasks = > t.status === 'completed').length,pendingTasks = > t.status === 'pending').length,inProgressTasks = > t.status === 'in_progress').length,completionPercentage = > t.status === 'completed').length / tasks.length) * 100,;
+        ...cp,checkpoint_data = > a.status === 'active'  ?? a.status === 'busy').length,totalTasks = > t.status === 'completed').length,pendingTasks = > t.status === 'pending').length,inProgressTasks = > t.status === 'in_progress').length,completionPercentage = > t.status === 'completed').length / tasks.length) * 100,
     // ); // LINT: unreachable code removed
-            : 0,;
-      },;
+            : 0,
+      },
     };
   }
 ;
@@ -276,9 +276,9 @@ export class HiveMindSessionManager {
     // Allow resuming any session regardless of status
     console.warn(`Resuming session ${sessionId} fromstatus = === 'stopped') {
       this.logSessionEvent(;
-        sessionId,;
-        'info',;
-        `Restarting stopped session with original configuration`,;
+        sessionId,
+        'info',
+        `Restarting stopped session with original configuration`,
       );
     }
 ;
@@ -304,7 +304,7 @@ export class HiveMindSessionManager {
         ELSE 'idle';
       END;
       WHERE swarm_id = ?;
-    `,;
+    `,
       );
       .run(session.swarm_id);
 ;
@@ -343,7 +343,7 @@ export class HiveMindSessionManager {
         `;
       SELECT * FROM sessions ;
       WHERE status = 'completed' AND updated_at < ?;
-    `,;
+    `,
       );
       .all(cutoffDate.toISOString());
 ;
@@ -446,29 +446,29 @@ export class HiveMindSessionManager {
 
     // Create new session with imported data
     const _newSessionId = this.createSession(;
-      sessionData.swarm_id,;
-      sessionData.swarm_name,;
-      sessionData.objective,;
-      sessionData.metadata,;
+      sessionData.swarm_id,
+      sessionData.swarm_name,
+      sessionData.objective,
+      sessionData.metadata,
     );
 ;
     // Import checkpoints
     for(const checkpoint of sessionData.checkpoints  ?? []) {
       await this.saveCheckpoint(;
-        newSessionId,;
-        checkpoint.checkpoint_name,;
-        checkpoint.checkpoint_data,;
+        newSessionId,
+        checkpoint.checkpoint_name,
+        checkpoint.checkpoint_data,
       );
     }
 ;
     // Import logs
     for(const log of sessionData.recentLogs  ?? []) {
       this.logSessionEvent(;
-        newSessionId,;
-        log.log_level,;
-        log.message,;
-        log.agent_id,;
-        log.data ? JSON.parse(log.data) : null,;
+        newSessionId,
+        log.log_level,
+        log.message,
+        log.agent_id,
+        log.data ? JSON.parse(log.data) : null,
       );
     }
 ;
@@ -613,7 +613,7 @@ export class HiveMindSessionManager {
         `;
       SELECT * FROM sessions ;
       WHERE status IN ('active', 'paused');
-    `,;
+    `,
       );
       .all();
 ;

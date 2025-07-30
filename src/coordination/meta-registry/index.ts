@@ -157,7 +157,7 @@ return plugin?.instance  ?? null;
     // */; // LINT: unreachable code removed
   listPlugins():;
   name = > ({
-      name,;
+      name,
       metadata = {}) 
     super();
   this.backend = backend;
@@ -217,8 +217,8 @@ register((key = {}));
 {
   let _data = await this.pluginSystem.executeHooks('beforeRegister', {
       key, value, options,registry = await this.pluginSystem.executeMiddleware(;
-      'register',;
-      [data.key, data.value, data.options],;
+      'register',
+      [data.key, data.value, data.options],
       async (k = > this.backend.register(k, v, o);
     );
 ;
@@ -226,8 +226,8 @@ register((key = {}));
       key = {}): Promise<any[]> {
     const _data = await this.pluginSystem.executeHooks('beforeDiscover', {
       query, options,registry = await this.pluginSystem.executeMiddleware(;
-      'discover',;
-      [data.query, data.options],;
+      'discover',
+      [data.query, data.options],
       async (q = > this.backend.discover(q, o);
     );
 ;

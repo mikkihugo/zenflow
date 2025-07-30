@@ -41,7 +41,7 @@
     this.updatedAt = new Date();
 ;
     // Merge options with defaults
-    this.options = {enableHybridMemory = = false,enableSimpleSwarm = = false,enableHooks = = false,enablePlugins = = false,memoryPath = = false,enableNeuralEngine = = false,enableVisionarySystem = = false,;
+    this.options = {enableHybridMemory = = false,enableSimpleSwarm = = false,enableHooks = = false,enablePlugins = = false,memoryPath = = false,enableNeuralEngine = = false,enableVisionarySystem = = false,
       debug = {this = this.createInitialState();
 ;
     // Set up error handling
@@ -79,7 +79,7 @@ process.on('unhandledRejection', (reason =>
 {
   if (typeof reason === 'object' && reason?.stack?.includes('hive-mind')) {
     this.emit('error', new Error(`Unhandledrejection = this.componentHealth.get(name);
-    const _health = {name = === 'failed' ? (existing?.errorCount  ?? 0) + 1 : (existing?.errorCount  ?? 0),;
+    const _health = {name = === 'failed' ? (existing?.errorCount  ?? 0) + 1 : (existing?.errorCount  ?? 0),
       performance = === 'healthy' ? 1.0 = === 'degraded' ? 0.5 = === 'failed') {
       console.warn(`⚠️ Component ${name}health = === 0) return 1.0;
     // ; // LINT: unreachable code removed
@@ -226,11 +226,11 @@ process.on('unhandledRejection', (reason =>
   private async connectPlugins(): Promise<void> {
     console.warn('🔌 Connecting plugins via hive-mind coordination...');
 ;
-    const _availablePlugins = [;
-      'unified-interface',;
-      'github-integration', ;
-      'workflow-engine',;
-      'security-auth',;
+    const _availablePlugins = [
+      'unified-interface',
+      'github-integration',
+      'workflow-engine',
+      'security-auth',
       'ai-providers';
     ];
 ;
@@ -249,7 +249,7 @@ process.on('unhandledRejection', (reason =>
     // Still load the plugin for backward compatibility
     const {default = await import(`./plugins/${pluginName}/index.js`);
     const _plugin = new PluginClass({
-    ...pluginConfig,;
+    ...pluginConfig,
     providerManager, // Pass integrated provider manager
   }
   )
@@ -262,7 +262,7 @@ process.on('unhandledRejection', (reason =>
     this.plugins.set(pluginName, plugin);
 ;
     console.warn(`✅ Plugin connected = {
-      'pre-coordination': (data = > this.emit('coordination:start', data),;
+      'pre-coordination': (data = > this.emit('coordination:start', data),
   ('post-coordination');
   : (data = > this.emit('coordination:end', data),
   ('memory-updated')

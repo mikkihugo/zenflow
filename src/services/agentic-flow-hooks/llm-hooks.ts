@@ -65,7 +65,7 @@ try {
       }
 ;
       return {
-        success,;
+        success,
     // data = {name = Date.now(); // LINT: unreachable code removed
 ;
     try {
@@ -105,20 +105,20 @@ try {
 ;
       // Select optimal model
       const _optimalModel = selectOptimalModel(;
-        requestAnalysis,;
-        availableModels,;
+        requestAnalysis,
+        availableModels,
         parameters;
       );
 ;
       // Calculate expected improvements
       const _improvements = calculateModelImprovements(;
-        currentModel,;
-        optimalModel,;
+        currentModel,
+        optimalModel,
         requestAnalysis;
       );
 ;
-      return {success = = currentModel,;
-    // improvements,; // LINT: unreachable code removed
+      return {success = = currentModel,
+    // improvements, // LINT: unreachable code removed
           reasoning = {name = Date.now();
 ;
     try {
@@ -151,9 +151,9 @@ function estimateTokenCount(messages = messages.map(_m => m.content: unknown).jo
 function estimateCost(provider = {input = pricing[provider]  ?? { input: 0.001,output = messages.map(_m => m.content).join(' ');
 ;
   // Basic safety checks
-  const _harmfulPatterns = [;
-    /violence|harm|kill|death/i,;
-    /illegal|criminal|fraud/i,;
+  const _harmfulPatterns = [
+    /violence|harm|kill|death/i,
+    /illegal|criminal|fraud/i,
     /hate|racist|discrimination/i;
   ];
 ;
@@ -224,9 +224,9 @@ async function compressVerboseMessages(): unknown {
 }
 ;
 function getModelContextWindow(model = {
-    'gpt-4',;
-    'gpt-3.5-turbo': 4096,;
-    'claude-3': 200000,;
+    'gpt-4',
+    'gpt-3.5-turbo': 4096,
+    'claude-3': 200000,
     'claude-2': 100000;
   };
 ;
@@ -239,7 +239,7 @@ function getModelContextWindow(model = {
   return 4096; // Default
 }
 ;
-function _calculateCostSavings(_provider = > sum + m.content.length: unknown, 0: unknown) / messages.length,;
+function _calculateCostSavings(_provider = > sum + m.content.length: unknown, 0: unknown) / messages.length,
     requestType,complexity = messages.reduce((sum, m) => sum + m.content.length, 0);
 ;
   if (totalLength < 500) return 'low';
@@ -260,30 +260,30 @@ function _detectLanguage(): unknown {
 }
 function calculateModelImprovements(): unknown {
     return {
-      reasoning = {model = [;
+      reasoning = {model = [
     // { // LINT: unreachable code removed
-    name: 'llm-request-preprocessor',;
-    type: 'llm-request',;
+    name: 'llm-request-preprocessor',
+    type: 'llm-request',
     hook: llmRequestPreprocessor;
-  },;
+  },
   {
-    name: 'llm-response-postprocessor',;
-    type: 'llm-response',;
+    name: 'llm-response-postprocessor',
+    type: 'llm-response',
     hook: llmResponsePostprocessor;
-  },;
+  },
   {
-    name: 'token-optimizer',;
-    type: 'llm-request',;
+    name: 'token-optimizer',
+    type: 'llm-request',
     hook: tokenOptimizer;
-  },;
+  },
   {
-    name: 'smart-model-selector',;
-    type: 'llm-request',;
+    name: 'smart-model-selector',
+    type: 'llm-request',
     hook: modelSelector;
-  },;
+  },
   {
-    name: 'llm-response-cache',;
-    type: 'llm-request',;
+    name: 'llm-response-cache',
+    type: 'llm-request',
     hook: responseCache;
   }
 ];

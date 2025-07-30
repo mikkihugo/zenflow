@@ -77,7 +77,7 @@ export class NotificationPlugin {
     }
 ;
     const _context = {
-      event,;
+      event,
       _timestamp => {
       const _value = this.getNestedValue(context, path.trim());
       return value !== undefined ? String(value) : match;

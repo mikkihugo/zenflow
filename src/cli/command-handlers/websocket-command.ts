@@ -60,7 +60,7 @@ switch(subcommand) {
   } catch (/* error */) {
     printError(`❌ WebSocket testfailed = args[0]  ?? `ws = flags.name  ?? 'cli-connection';
 ;
-  printInfo(`🔗 Connecting toWebSocket = await WebSocketService.create({clientHost = await service.connectToExternal(connectionName, url, {reconnect = = false,;
+  printInfo(`🔗 Connecting toWebSocket = await WebSocketService.create({clientHost = await service.connectToExternal(connectionName, url, {reconnect = = false,
       _heartbeatInterval => {
       const _timestamp = new Date().toISOString();
       console.warn(`[${timestamp}] 📨 ${JSON.stringify(info.data, null, 2)}`);

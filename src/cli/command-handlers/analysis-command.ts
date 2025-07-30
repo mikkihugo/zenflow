@@ -7,11 +7,11 @@
 }
 from;
 ('../types/core.js');
-printSuccess,;
-printError,;
-printWarning,;
-callRuvSwarmLibrary,;
-checkRuvSwarmAvailable,;
+printSuccess,
+printError,
+printWarning,
+callRuvSwarmLibrary,
+checkRuvSwarmAvailable,
 } from '../utils.js'
 
 import CodeAnalysisService from '../../services/code-analysis/index.js';
@@ -56,8 +56,8 @@ try {
   const __outputDir = options.output  ?? './analysis-reports';
 ;
   console.warn(`🔍 Analyzingcodebase = new CodeAnalysisService({
-      projectPath,;
-      outputDir,;
+      projectPath,
+      outputDir,
       filePatterns = {includeDependencies = await analysisService.analyzeCodebase(analysisOptions);
 ;
     printSuccess(`✅ Codebase analysis completed`);
@@ -161,7 +161,7 @@ await analysisService.cleanup();
               ? '🟡';
               : '🟢';
         console.warn(;
-          `  ${icon} ${bottleneck.severity}: ${bottleneck.component} (${bottleneck.metric})`,;
+          `  ${icon} ${bottleneck.severity}: ${bottleneck.component} (${bottleneck.metric})`,
         );
   }
   )
@@ -195,7 +195,7 @@ await analysisService.cleanup();
   console.warn(`\n🔢 TOKEN USAGESUMMARY = flags;
   const _projectPath = options.path ?? process.cwd();
   console.warn(`👁️ Starting real-time code analysisfor = new CodeAnalysisService({
-      projectPath,;
+      projectPath,
       enableRealTimeAnalysis => {
       console.warn('\n🛑 Stopping real-time analysis...');
       await analysisService.stopRealTimeAnalysis();

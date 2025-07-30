@@ -134,7 +134,6 @@ function createSimpleFallback(): unknown {
 ;
       getInfo() 
         return JSON.stringify({ num_layers: this.layers.length });,
-;
     NetworkTrainer: class {
       network: unknown;
 ;
@@ -170,16 +169,13 @@ function createSimpleFallback(): unknown {
         return totalError;
     //   // LINT: unreachable code removed}
     },
-;
     getVersion() {
       return '0.1.0-wasm-fallback';
     //   // LINT: unreachable code removed},
-;
     isGpuAvailable() 
       return false; // WASM fallback doesn't support GPU,
-;
     getActivationFunctions() 
-      return ['sigmoid']; // Simplified list for fallback,;
+      return ['sigmoid']; // Simplified list for fallback,
   };
 }
 ;

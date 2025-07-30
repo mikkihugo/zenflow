@@ -109,7 +109,7 @@ try {
     }
 ;
     // Validate category
-    const _validCategories = [;
+    const _validCategories = [
       'core', 'swarm', 'hive', 'plugins', 'neural', 'memory', 'debug', 'utility';
     ];
     if (!validCategories.includes(definition.category)) {
@@ -208,20 +208,20 @@ return registry.getStats();
 }
 // Re-export for maximum compatibility
 export type {
-  executeCommand as execute,;
+  executeCommand as execute,
 type listCommands as
-list,;
-hasCommand as has,;
-getCommand as get,;
-registerCommand as register,;
+list,
+hasCommand as has,
+getCommand as get,
+registerCommand as register,
 type showCommandHelp as
-help,;
+help,
 }
 // =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
 
-function createLogger(name = > console.warn(`[TRACE:${name}] ${message}`, metadata),debug = > console.warn(`[DEBUG:${name}] ${message}`, metadata),info = > console.warn(`[INFO:${name}] ${message}`, metadata),warn = > console.warn(`[WARN:${name}] ${message}`, metadata),error = > console.error(`[ERROR:${name}] ${message}`, error, metadata),fatal = > console.error(`[FATAL:${name}] ${message}`, error, metadata),child = > createLogger(`${name}:child`),;
+function createLogger(name = > console.warn(`[TRACE:${name}] ${message}`, metadata),debug = > console.warn(`[DEBUG:${name}] ${message}`, metadata),info = > console.warn(`[INFO:${name}] ${message}`, metadata),warn = > console.warn(`[WARN:${name}] ${message}`, metadata),error = > console.error(`[ERROR:${name}] ${message}`, error, metadata),fatal = > console.error(`[FATAL:${name}] ${message}`, error, metadata),child = > createLogger(`${name}:child`),
 _setLevel => {},getLevel = > 'info';
 }
 }
@@ -235,7 +235,7 @@ function _createDefaultConfig(): unknown {
   acdeelnuz;
   configDir: `;
   $process.cwd()/;
-  .claude-zen/config`,;
+  .claude-zen/config`,
   logsDir;
   : `$process.cwd()/.claude-zen/logs`,
   cacheDir: `$process.cwd()/.claude-zen/cache`,

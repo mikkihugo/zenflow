@@ -56,7 +56,7 @@ export async function serverCommand(): unknown {
     setInterval(() => {
       const __status = claudeZenServer.getStatus();
       console.warn(`📊Requests = new URL(import.meta.url).pathname;
-  const _nodeArgs = [;
+  const _nodeArgs = [
     '--experimental-websocket', // Enable Node.js 22 WebSocket support
     scriptPath.replace('command-handlers/server-command.js', '../api/claude-zen-server.js');
   ];
@@ -139,15 +139,15 @@ if(response.ok) {
 ;
 // Export command configuration
 export const serverCommandConfig: serverCommand,ler,
-  description: '🚀 Claude Zen API Server - Schema-driven REST API with WebSocket support',;
-  usage: 'server <command> [options]',;
+  description: '🚀 Claude Zen API Server - Schema-driven REST API with WebSocket support',
+  usage: 'server <command> [options]',
   examples: [;
-    'server start',;
-    'server start --daemon --port 8080',;
-    'server status --verbose',;
-    'server restart',;
+    'server start',
+    'server start --daemon --port 8080',
+    'server status --verbose',
+    'server restart',
     'server stop';
-  ],;
+  ],
   details: `;
 Claude Zen API Server Management:
 ;

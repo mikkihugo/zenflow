@@ -3,14 +3,14 @@ const _app = require('../../src/server');
 const { initializeDatabase } = require('../../src/models/database');
 describe('Auth Integration Tests', () => {
   beforeAll(async () => {
-    await initializeDatabase();
+  // await initializeDatabase();
   });
   describe('POST /api/auth/register', () => {
     it('should register a new user', async () => {
       const _userData = {
-        username: 'testuser',;
-        email: 'test@example.com',;
-        password: 'password123',;
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password123',
       };
     const _response = await request(app).post('/api/auth/register').send(userData).expect(201);
     expect(response.body).toHaveProperty('user');
@@ -20,9 +20,9 @@ describe('Auth Integration Tests', () => {
   });
   it('should reject registration with invalid email', async () => {
       const _userData = {
-        username: 'testuser2',;
-        email: 'invalid-email',;
-        password: 'password123',;
+        username: 'testuser2',
+        email: 'invalid-email',
+        password: 'password123',
       };
   const _response = await request(app).post('/api/auth/register').send(userData).expect(400);
   expect(response.body).toHaveProperty('errors');
@@ -32,20 +32,19 @@ describe('POST /api/auth/login', () =>
 {
   it('should login with valid credentials', async () => {
       const _loginData = {
-        email: 'test@example.com',;
-        password: 'password123',;
+        email: 'test@example.com',
+        password: 'password123',
       };
   const _response = await request(app).post('/api/auth/login').send(loginData).expect(200);
   expect(response.body).toHaveProperty('user');
   expect(response.body).toHaveProperty('token');
   expect(response.body.user.email).toBe(loginData.email);
-}
-)
+})
 it('should reject login with invalid credentials', async () =>
 {
   const _loginData = {
-        email: 'test@example.com',;
-  password: 'wrongpassword',;
+        email: 'test@example.com',
+  password: 'wrongpassword'
 }
 const _response = await request(app).post('/api/auth/login').send(loginData).expect(401);
 expect(response.body.error).toBe('Invalid credentials');

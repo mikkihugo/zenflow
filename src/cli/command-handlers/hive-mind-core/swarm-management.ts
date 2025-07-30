@@ -25,11 +25,11 @@ if (!isInteractive()) {
   try {
     const _answers = await inquirer.prompt([;
       {type = > input.trim().length > 0  ?? 'Objective is required';
-      },;
+      },
       {type = > (input >= 1 && input <= 32)  ?? 'Must be between 1 and 32';
-      },;
+      },
       {type = > answers.claudeIntegration;
-      },;
+      },
       {
         type = {queenType = === 'verbose'  ?? answers.verbosity === 'debug',debug = === 'debug',sessionDir = args[0];
 ;
@@ -216,7 +216,7 @@ async function spawnWorkerAgents(): unknown {
     const _workerId = `worker-$swarmId-$i + 1`;
 ;
     const _worker = new HiveMindCore({
-      id,;
+      id,
       swarmId,type = db.prepare(`;
       INSERT INTO agents (id, session_id, name, type, role, status);
       VALUES (?, ?, ?, ?, ?, ?);

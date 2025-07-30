@@ -35,9 +35,9 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null: unkn
 ;
       if(!copyResults.success) {
         console.warn(`  ⚠️  Template copierfailed = `---name = await batchtools.parallel([;
-  read('/src/controller.ts'),;
-  read('/src/service.ts'),;
-  read('/src/model.ts'),;
+  read('/src/controller.ts'),
+  read('/src/service.ts'),
+  read('/src/model.ts'),
   read('/tests/unit.test.ts');
 ]);
 \`\`\`
@@ -46,9 +46,9 @@ export async function createOptimizedClaudeSlashCommands(workingDir = null: unkn
 \`\`\`javascript;
 // Create multiple files in parallel
 await batchtools.createFiles([path = await batchtools.concurrent([;
-  analyzeArchitecture(),;
-  validateSecurity(),;
-  checkPerformance(),;
+  analyzeArchitecture(),
+  validateSecurity(),
+  checkPerformance(),
   reviewCodeQuality();
 ]);
 \`\`\`
@@ -139,13 +139,13 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 \`\`\`json;
   "performance": ;
     "batchtools": ;
-      "maxConcurrent": 10,;
-      "batchSize": 20,;
-      "enableOptimization": true,;
-      "smartBatching": true,;
+      "maxConcurrent": 10,
+      "batchSize": 20,
+      "enableOptimization": true,
+      "smartBatching": true,
     "monitoring": ;
-      "realTimeMetrics": true,;
-      "performanceLogging": true,;
+      "realTimeMetrics": true,
+      "performanceLogging": true,
       "resourceAlerts": true;
 \`\`\`
 ;

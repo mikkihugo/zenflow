@@ -45,7 +45,7 @@ if (typeSet && typeSet.size >= this.options.maxPoolsPerType) {
 }
 if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalConnectionLimit) {
       throw new Error(`Global connection limit would be exceeded = {id = new SQLiteConnectionPool(;
-            config.filePath  ?? `${config.name}.db`,;
+            config.filePath  ?? `${config.name}.db`,
             {minConnections = new LanceDBConnectionPool(config);
           await poolInstance.pool.initialize();
           break;
@@ -85,7 +85,7 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
 ;
       this.emit('connection = this.pools.get(poolId);
     if (!pool) {
-      console.warn(`Cannot releaseconnection = [],;
+      console.warn(`Cannot releaseconnection = [],
     options = {}
   ): Promise<any> {
     const _maxRetries = options.retries  ?? 3;
@@ -151,8 +151,8 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
       console.warn(`✅ Poolremoved = this.getTotalConnections();
     const _activeConnections = this.getActiveConnections();
 ;
-    return {totalPools = > p.status === 'active').length,;
-    // totalConnections,; // LINT: unreachable code removed
+    return {totalPools = > p.status === 'active').length,
+    // totalConnections, // LINT: unreachable code removed
       activeConnections,averageResponseTime = [];
     const _failed = [];
 ;

@@ -55,7 +55,7 @@ const _router = express.Router();
 router.get('/health', (req, res) => {
   res.json({ status => {
   const { name } = req.params;
-  res.json({message = router;`,;
+  res.json({message = router;`,
 encoding = development;
 (PORT = 3000`,encoding = "en">;
   <head>;
@@ -70,7 +70,7 @@ encoding = development;
     <noscript>You need to enable JavaScript to run this app.</noscript>;
     <div id="root"></div>;
   </body>;
-</html>`),;
+</html>`),
 encoding = ReactDOM.createRoot(document.getElementById('root'));
 root.render(;
 <React.StrictMode>;
@@ -103,7 +103,7 @@ export default App;
 `,
             encoding = {preset = {parser = (name): string => {
   return \`Hello, \${name}!\`;
-};`,;
+};`,
 encoding = {};
 ): unknown
 this.config = config
@@ -164,7 +164,7 @@ healthcheck.js
 #
 Start
 application
-CMD[('node', 'src/index.js')]`,;
+CMD[('node', 'src/index.js')]`,
 encoding = require('express');
 const _pino = require('pino');
 const _app = express();
@@ -204,7 +204,7 @@ request.on('error', () => {
   process.exit(1);
 });
 request.end();
-`,;
+`,
 encoding = development;
 PORT = { {port };
 }`,
@@ -493,7 +493,7 @@ const _result = await plugin.execute({
     return new Promise((resolve, reject) => {
       const [_cmd, ..._args] = command.split(' ');
     // const _child = spawn(cmd, args, { // LINT: unreachable code removed
-        ...options,;
+        ...options,
         _shell => {
         if(code === 0) {
           resolve();
@@ -551,7 +551,7 @@ const _result = await plugin.execute({
 ;
     // Save manifest
     await writeFile(;
-      path.join(templateDir, 'template.json'),;
+      path.join(templateDir, 'template.json'),
       JSON.stringify(manifest, null, 2);
     );
 ;
@@ -573,7 +573,7 @@ const _result = await plugin.execute({
       // Save to custom templates
       const _templateId = options.name  ?? path.basename(repo);
       await this.createCustomTemplate(templateId, tempDir, {
-        ...options,;
+        ...options,
         name = {}): unknown 
     console.warn(`📥 Importing template fromNPM = path.join(this.config.templatesDir, '.temp', Date.now().toString());
     await mkdir(tempDir, {recursive = path.join(tempDir, 'node_modules', packageName);
@@ -589,7 +589,7 @@ const _result = await plugin.execute({
         ...options,name = Array.from(this.templates.values());
 ;
     return {totalTemplates = > t.source === 'builtin').length,custom = > t.source === 'custom').length,registry = > t.source === 'registry').length;
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
       _byCategory => {
         const _category = t.category  ?? 'other';
         acc[category] = (acc[category]  ?? 0) + 1;

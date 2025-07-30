@@ -71,7 +71,7 @@ initialize();
 ;
       // Send completion message
       this.sendCompletion(task.id, {
-        ...result,;
+        ...result,
         executionTime,workerId = null;
     }
   }
@@ -96,7 +96,7 @@ initialize();
     this.sendProgress(task.id, { status = {topic = task.data;
     this.sendProgress(task.id, {status = await this.runTests(testType, target, testConfig);
     this.sendProgress(task.id, { status = {
-      'coordinator': ['planning', 'coordination', 'monitoring', 'resource-management'],;
+      'coordinator': ['planning', 'coordination', 'monitoring', 'resource-management'],
     ('coder');
     : ['code-generation', 'debugging', 'refactoring', 'testing'],
     ('researcher')
@@ -135,7 +135,7 @@ analyzeComplexity(codebase);
   return {cyclomaticComplexity = Math.floor(Math.random() * 50) + 20;
   // const __passed = Math.floor(totalTests * 0.92); // LINT: unreachable code removed
   return {
-      type,;
+      type,
   // target,total = > setTimeout(resolve, ms)); // LINT: unreachable code removed
 }
 /**

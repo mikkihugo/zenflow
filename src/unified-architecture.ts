@@ -47,12 +47,12 @@
 ;
     const _connectionMap = {
       'unified-interface': ['github-integration', 'workflow-engine', 'notifications', 'export-system'],
-      'github-integration': ['architect-advisor', 'documentation-linker', 'workflow-engine'],;
-      'workflow-engine': ['security-auth', 'ai-providers', 'notifications'],;
-      'ai-providers': ['architect-advisor', 'documentation-linker'],;
+      'github-integration': ['architect-advisor', 'documentation-linker', 'workflow-engine'],
+      'workflow-engine': ['security-auth', 'ai-providers', 'notifications'],
+      'ai-providers': ['architect-advisor', 'documentation-linker'],
       'architect-advisor': ['export-system', 'documentation-linker'],
       'export-system': ['notifications'],
-      'security-auth': ['notifications'],;
+      'security-auth': ['notifications'],
       'documentation-linker': ['export-system']
     };
 ;

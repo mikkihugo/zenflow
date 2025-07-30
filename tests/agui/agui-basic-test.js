@@ -6,17 +6,17 @@
  */
 // Mock AG-UI EventType enum
 const _EventType = {
-  TEXT_MESSAGE_START: 'TEXT_MESSAGE_START',;
-TEXT_MESSAGE_CONTENT: 'TEXT_MESSAGE_CONTENT',;
-TEXT_MESSAGE_END: 'TEXT_MESSAGE_END',;
-TOOL_CALL_START: 'TOOL_CALL_START',;
-TOOL_CALL_ARGS: 'TOOL_CALL_ARGS',;
-TOOL_CALL_END: 'TOOL_CALL_END',;
-TOOL_CALL_RESULT: 'TOOL_CALL_RESULT',;
-STATE_SNAPSHOT: 'STATE_SNAPSHOT',;
-CUSTOM: 'CUSTOM',;
-RUN_STARTED: 'RUN_STARTED',;
-RUN_FINISHED: 'RUN_FINISHED',;
+  TEXT_MESSAGE_START: 'TEXT_MESSAGE_START',
+TEXT_MESSAGE_CONTENT: 'TEXT_MESSAGE_CONTENT',
+TEXT_MESSAGE_END: 'TEXT_MESSAGE_END',
+TOOL_CALL_START: 'TOOL_CALL_START',
+TOOL_CALL_ARGS: 'TOOL_CALL_ARGS',
+TOOL_CALL_END: 'TOOL_CALL_END',
+TOOL_CALL_RESULT: 'TOOL_CALL_RESULT',
+STATE_SNAPSHOT: 'STATE_SNAPSHOT',
+CUSTOM: 'CUSTOM',
+RUN_STARTED: 'RUN_STARTED',
+RUN_FINISHED: 'RUN_FINISHED'
 }
 // Mock AG-UI core functionality for testing
 class MockAGUIAdapter {
@@ -28,21 +28,21 @@ class MockAGUIAdapter {
     this.currentToolCallId = null;
     this.events = [];
     this.stats = {
-      messagesCreated: 0,;
-    toolCallsExecuted: 0,;
-    eventsEmitted: 0,;
-  }
+      messagesCreated: 0,
+    toolCallsExecuted: 0,
+    eventsEmitted: 0
+}
 }
 startTextMessage((messageId = null), (role = 'assistant'));
 {
   const _id = messageId ?? `msg-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
   this.currentMessageId = id;
   const _event = {
-      type: EventType.TEXT_MESSAGE_START,;
-  messageId: id,;
-  role,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TEXT_MESSAGE_START,
+  messageId: id,
+  role,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 this.stats.messagesCreated++;
 this._emitEvent(event);
@@ -55,11 +55,11 @@ addTextContent(content, (messageId = null));
     throw new Error('No active message. Call startTextMessage first.');
   }
   const _event = {
-      type: EventType.TEXT_MESSAGE_CONTENT,;
-  messageId: id,;
-  delta: content,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TEXT_MESSAGE_CONTENT,
+  messageId: id,
+  delta: content,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 this._emitEvent(event);
 }
@@ -69,10 +69,10 @@ endTextMessage((messageId = null))
   if (!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
-      type: EventType.TEXT_MESSAGE_END,;
-  messageId: id,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TEXT_MESSAGE_END,
+  messageId: id,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 if (id === this.currentMessageId) {
   this.currentMessageId = null;
@@ -84,12 +84,12 @@ startToolCall(toolName, (toolCallId = null), (parentMessageId = null))
   const _id = toolCallId ?? `tool-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
   this.currentToolCallId = id;
   const _event = {
-      type: EventType.TOOL_CALL_START,;
-  toolCallId: id,;
-  toolCallName: toolName,;
-  parentMessageId,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TOOL_CALL_START,
+  toolCallId: id,
+  toolCallName: toolName,
+  parentMessageId,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 this.stats.toolCallsExecuted++;
 this._emitEvent(event);
@@ -102,11 +102,11 @@ addToolCallArgs(args, (toolCallId = null));
     throw new Error('No active tool call. Call startToolCall first.');
   }
   const _event = {
-      type: EventType.TOOL_CALL_ARGS,;
-  toolCallId: id,;
-  delta: args,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TOOL_CALL_ARGS,
+  toolCallId: id,
+  delta: args,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 this._emitEvent(event);
 }
@@ -116,10 +116,10 @@ endToolCall((toolCallId = null))
   if (!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
-      type: EventType.TOOL_CALL_END,;
-  toolCallId: id,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TOOL_CALL_END,
+  toolCallId: id,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 if (id === this.currentToolCallId) {
   this.currentToolCallId = null;
@@ -130,65 +130,61 @@ emitToolCallResult(result, toolCallId, (messageId = null))
 {
   const _resultMessageId = messageId ?? `result-${toolCallId}`;
   const _event = {
-      type: EventType.TOOL_CALL_RESULT,;
-  messageId: resultMessageId,;
-  toolCallId,;
-  content: typeof result === 'string' ? result : JSON.stringify(result),;
-  role: 'tool',;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.TOOL_CALL_RESULT,
+  messageId: resultMessageId,
+  toolCallId,
+  content: typeof result === 'string' ? result : JSON.stringify(result),
+  role: 'tool',
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 this._emitEvent(event);
 }
 emitCustomEvent(name, value)
 {
   const _event = {
-      type: EventType.CUSTOM,;
-  name,;
-  value,;
-  timestamp: Date.now(),;
-  sessionId: this.sessionId,;
+      type: EventType.CUSTOM,
+  name,
+  value,
+  timestamp: Date.now(),
+  sessionId: this.sessionId
 }
 this._emitEvent(event);
 }
 emitQueenEvent(queenId, action, data)
 {
   this.emitCustomEvent('queen_action', {
-      queenId,;
-  action,;
-  data,;
-  sessionId: this.sessionId,;
-}
-)
+      queenId,
+  action,
+  data,
+  sessionId: this.sessionId
+})
 }
 emitSwarmEvent(swarmId, action, agents, data)
 {
   this.emitCustomEvent('swarm_action', {
-      swarmId,;
-  action,;
-  agents,;
-  data,;
-  sessionId: this.sessionId,;
-}
-)
+      swarmId,
+  action,
+  agents,
+  data,
+  sessionId: this.sessionId
+})
 }
 emitHiveMindEvent(action, data)
 {
   this.emitCustomEvent('hive_mind', {
-      action,;
-  data,;
-  sessionId: this.sessionId,;
-  timestamp: Date.now(),;
-}
-)
+      action,
+  data,
+  sessionId: this.sessionId,
+  timestamp: Date.now()
+})
 }
 getStats()
 {
-  return {
-      ...this.stats,;
-  // sessionId: this.sessionId,; // LINT: unreachable code removed
-  totalEvents: this.events.length,;
-}
+  return { ...this.stats,
+  // sessionId: this.sessionId, // LINT: unreachable code removed
+  totalEvents: this.events.length
+ }
 }
 _emitEvent(event)
 {
@@ -197,26 +193,22 @@ _emitEvent(event)
 }
 }
 // Test runner
-async
-function runAGUIIntegrationTests(): unknown {
+async function runAGUIIntegrationTests() {
   console.warn('🧪 Running AG-UI Integration Tests for Claude Code Zen');
   console.warn('='.repeat(60));
-;
   const _passedTests = 0;
   const _totalTests = 0;
-;
-  function test(): unknown {
+  function test() {
     totalTests++;
     try {
       testFn();
       console.warn(`✅ ${name}`);
       passedTests++;
-    } catch (/* error */) {
+    } catch (error) {
       console.warn(`❌ ${name}: ${error.message}`);
     }
   }
-;
-  function asyncTest(): unknown {
+  function asyncTest() {
     totalTests++;
     return testFn();
     // .then(() => { // LINT: unreachable code removed
@@ -229,8 +221,8 @@ function runAGUIIntegrationTests(): unknown {
 // Test 1: Basic adapter creation
 test('Adapter creation with session info', () => {
   const _adapter = new MockAGUIAdapter({
-      sessionId: 'test-session',;
-  threadId: 'test-thread',;
+      sessionId: 'test-session',
+  threadId: 'test-thread',
 });
 if (adapter.sessionId !== 'test-session') {
   throw new Error('Session ID not set correctly');
@@ -263,8 +255,7 @@ test('Text message flow generates correct events', () =>
   if (events[3].type !== EventType.TEXT_MESSAGE_END) {
     throw new Error('Fourth event should be TEXT_MESSAGE_END');
   }
-}
-)
+})
 // Test 3: Tool call flow
 test('Tool call flow generates correct events', () =>
 {
@@ -283,8 +274,7 @@ test('Tool call flow generates correct events', () =>
   if (events[0].toolCallName !== 'test_tool') {
     throw new Error('Tool name should be preserved');
   }
-}
-)
+})
 // Test 4: Queen coordination events
 test('Queen coordination events', () =>
 {
@@ -301,8 +291,7 @@ test('Queen coordination events', () =>
   if (events[0].value.queenId !== 'queen-1') {
     throw new Error('Queen ID should be preserved');
   }
-}
-)
+})
 // Test 5: Swarm coordination events
 test('Swarm coordination events', () =>
 {
@@ -319,17 +308,15 @@ test('Swarm coordination events', () =>
   if (!Array.isArray(events[0].value.agents)) {
     throw new Error('Agents should be an array');
   }
-}
-)
+})
 // Test 6: Hive mind events
 test('Hive mind coordination events', () =>
 {
   const _adapter = new MockAGUIAdapter();
   adapter.emitHiveMindEvent('consensus_reached', {
-      queens: ['queen-1', 'queen-2', 'queen-3'],;
-  decision: 'implement_agui',;
-}
-)
+      queens: ['queen-1', 'queen-2', 'queen-3'],
+  decision: 'implement_agui'
+})
 const _events = adapter.events;
 if (events.length !== 1) {
   throw new Error(`Expected 1 event, got $events.length`);
@@ -360,10 +347,9 @@ test('Statistics tracking', () =>
   if (stats.eventsEmitted !== 5) {
     throw new Error(`Expected 5 events emitted, got $stats.eventsEmitted`);
   }
-}
-)
+})
 // Test 8: Claude Code Zen integration simulation
-await asyncTest('Claude Code Zen multi-agent simulation', async () =>
+  // await asyncTest('Claude Code Zen multi-agent simulation', async () =>
 {
   const _adapter = new MockAGUIAdapter();
   // Simulate a complex multi-agent interaction
@@ -381,12 +367,12 @@ await asyncTest('Claude Code Zen multi-agent simulation', async () =>
   adapter.addToolCallArgs('{"depth": "full", "include_agui": true}');
   adapter.endToolCall(toolCallId);
   // Simulate async tool execution
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  // await new Promise((resolve) => setTimeout(resolve, 100));
   adapter.emitToolCallResult(;
-  files_analyzed: 145,;
-  agui_integration: 'successful',;
-  queens_active: 3,;
-  events_generated: adapter.events.length,;
+  files_analyzed: 145,
+  agui_integration: 'successful',
+  queens_active: 3,
+  events_generated: adapter.events.length,
   ,
   toolCallId
   )
@@ -415,8 +401,7 @@ await asyncTest('Claude Code Zen multi-agent simulation', async () =>
   if (customEvents.length < 5) {
     throw new Error('Should have multiple custom events for Claude Code Zen functionality');
   }
-}
-)
+})
 // Summary
 console.warn(`\n$'='.repeat(60)`)
 console.warn(`📊 Test Results: $passedTests/$

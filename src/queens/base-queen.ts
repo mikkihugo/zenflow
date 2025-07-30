@@ -79,7 +79,7 @@ export class BaseQueen extends EventEmitter {
   // Process task with all queens in parallel
   const;
   results = await Promise.allSettled([;
-                this.process(task),;
+                this.process(task),
                 ...otherQueens.map(queen => queen.process(task));
             ]);
 ;

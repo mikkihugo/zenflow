@@ -164,11 +164,11 @@ catch (/* error */)
 ;
     // Calculate overall readiness score
     const _readinessFactors = {
-      'System Initialization': this.statusData.initialization,;
-      'Database Integration': this.statusData.database,;
-      'Queen Operations': Object.values(this.statusData.queens).filter(q => q.initialized).length > 0,;
-      'Distribution Capabilities': this.statusData.distribution,;
-      'WebSocket Integration': this.statusData.websocket,;
+      'System Initialization': this.statusData.initialization,
+      'Database Integration': this.statusData.database,
+      'Queen Operations': Object.values(this.statusData.queens).filter(q => q.initialized).length > 0,
+      'Distribution Capabilities': this.statusData.distribution,
+      'WebSocket Integration': this.statusData.websocket,
       'Coordination Features': this.statusData.coordination;
     };
 ;

@@ -16,10 +16,10 @@ app.use(express.json());
  */
 app.get('/', (_req: Request, res: Response) => {
   res.json({
-    message: 'Claude-Zen API Server',;
-  status: 'healthy',;
-  version: '2.0.0-alpha.73',;
-  timestamp: new Date().toISOString(),;
+    message: 'Claude-Zen API Server',
+  status: 'healthy',
+  version: '2.0.0-alpha.73',
+  timestamp: new Date().toISOString(),
 });
 })
 /**
@@ -29,9 +29,9 @@ app.get('/', (_req: Request, res: Response) => {
 app.get('/status', (_req: Request, res: Response) =>
 {
   res.json({
-    status: 'operational',;
-  api: 'healthy',;
-  database: 'healthy',;
+    status: 'operational',
+  api: 'healthy',
+  database: 'healthy',
   ('ruv-FANN');
   : 'integrated',
   memory: 'operational',

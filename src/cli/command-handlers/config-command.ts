@@ -4,12 +4,12 @@
  */
 // config.js - Configuration management commands
 import {
-  fileExists,;
-printError,;
-printSuccess,;
-printWarning,;
-readJsonFile,;
-writeJsonFile,;
+  fileExists,
+printError,
+printSuccess,
+printWarning,
+readJsonFile,
+writeJsonFile,
 } from '../utils.js'
 export async function configCommand(): unknown {
   case 'init':

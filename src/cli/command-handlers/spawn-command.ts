@@ -1,9 +1,9 @@
 // spawn-command.js - Modern ES module spawn command handler
 import {
-  callRuvSwarmLibrary,;
-checkRuvSwarmAvailable,;
-printSuccess,;
-printWarning,;
+  callRuvSwarmLibrary,
+checkRuvSwarmAvailable,
+printSuccess,
+printWarning,
 } from '../utils.js'
 // Simple ID generator
 function generateId(prefix = 'id': unknown): unknown {
@@ -23,17 +23,17 @@ const __enhanced = flags.enhanced ?? flags.e;
 // Validate agent type
 const _validTypes = [
   ;
-  'coordinator',;
-  'coder',;
-  'developer',;
-  'researcher',;
-  'analyst',;
-  'analyzer',;
-  'tester',;
-  'architect',;
-  'reviewer',;
-  'optimizer',;
-  'general',;,,,,,,,
+  'coordinator',
+  'coder',
+  'developer',
+  'researcher',
+  'analyst',
+  'analyzer',
+  'tester',
+  'architect',
+  'reviewer',
+  'optimizer',
+  'general',,,,,,,,
 ];
 const __validatedType = agentType;
 if (!validTypes.includes(agentType)) {
@@ -98,17 +98,17 @@ if (isAvailable) {
  * Get capabilities description for agent type;
  */
 function getAgentCapabilities(_type: unknown): unknown {
-  const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',;
-  _coder: 'Code implementation, debugging, technical development',;
-  _developer: 'Code implementation, debugging, technical development', ;
-  _researcher: 'Information gathering, analysis, documentation',;
-  _analyst: 'Data analysis, performance monitoring, metrics',;
-  _analyzer: 'Data analysis, performance monitoring, metrics',;
-  _tester: 'Quality assurance, test automation, validation',;
-  _architect: 'System design, architecture planning, technical strategy',;
-  _reviewer: 'Code review, quality assessment, best practices',;
-  _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',;
-  _general: 'Multi-purpose coordination and development',;
+  const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',
+  _coder: 'Code implementation, debugging, technical development',
+  _developer: 'Code implementation, debugging, technical development',
+  _researcher: 'Information gathering, analysis, documentation',
+  _analyst: 'Data analysis, performance monitoring, metrics',
+  _analyzer: 'Data analysis, performance monitoring, metrics',
+  _tester: 'Quality assurance, test automation, validation',
+  _architect: 'System design, architecture planning, technical strategy',
+  _reviewer: 'Code review, quality assessment, best practices',
+  _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',
+  _general: 'Multi-purpose coordination and development',
 }
 return capabilities[type]  ?? capabilities.general;
 }

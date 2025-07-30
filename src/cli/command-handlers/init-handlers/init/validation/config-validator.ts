@@ -44,10 +44,10 @@ validateRoomodes();
       result.content = content;
 ;
       // Check for required sections
-      const _requiredSections = [;
-        '# Claude Code Configuration',;
-        '## Project Overview',;
-        '## SPARC Development Commands',;
+      const _requiredSections = [
+        '# Claude Code Configuration',
+        '## Project Overview',
+        '## SPARC Development Commands',
       ];
 ;
       for(const section of requiredSections) {
@@ -87,10 +87,10 @@ validateRoomodes();
       result.content = content;
 ;
       // Check for required sections
-      const _requiredSections = [;
-        '# Multi-Agent Coordination',;
-        '## Agent Coordination Patterns',;
-        '## Memory Management',;
+      const _requiredSections = [
+        '# Multi-Agent Coordination',
+        '## Agent Coordination Patterns',
+        '## Memory Management',
       ];
 ;
       for(const section of requiredSections) {

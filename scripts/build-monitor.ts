@@ -73,8 +73,8 @@ class BuildMonitor {
     this.monitoringActive = true;
     this.buildHistory = [];
     this.errorCategories = {
-      type_compatibility: 87,;
-    missing_properties: 56,;
+      type_compatibility: 87,
+    missing_properties: 56,
     import_export: 45, null_undefined;
     : 41,
     constructor_issues: 23,
@@ -96,12 +96,11 @@ runBuild();
       const { stdout, stderr } = await execAsync('npm run build');
       const _buildOutput = stderr  ?? stdout;
       const _errors = this.parseErrors(buildOutput);
-;
       const _buildResult: BuildResult = {
-        timestamp: new Date().toISOString(),;
-        errorCount: errors.length,;
-        errors,;
-        success: errors.length === 0,;
+        timestamp: new Date().toISOString(),
+        errorCount: errors.length,
+        errors,
+        success: errors.length === 0,
       }
   this.buildHistory.push(buildResult);
   return buildResult;
@@ -110,10 +109,10 @@ runBuild();
   const _errorMessage = error instanceof Error ? error.message : String(error);
   const _errors = this.parseErrors(errorMessage);
   const _buildResult: BuildResult = {
-        timestamp: new Date().toISOString(),;
-  errorCount: errors.length,;
-  errors,;
-  success: false,;
+        timestamp: new Date().toISOString(),
+  errorCount: errors.length,
+  errors,
+  success: false,
 }
 this.buildHistory.push(buildResult);
 return buildResult;
@@ -139,9 +138,9 @@ parseErrors(buildOutput: string)
       const _match = line.match(/([^:]+):\s*error\s+TS(\d+):\s*(.+)/);
     // if (match) { // LINT: unreachable code removed
         return {
-          file: match[1],;
-    // code: match[2],; // LINT: unreachable code removed
-          message: match[3],;
+          file: match[1],
+    // code: match[2], // LINT: unreachable code removed
+          message: match[3],
         };
 }
 return { message: line };
@@ -161,7 +160,6 @@ checkSwarmMemory()
       const { stdout } = await execAsync(;
         'npx claude-zen hooks pre-search --query "agent-progress" --cache-results true';
       );
-;
       return stdout.includes('progress')  ?? stdout.includes('fixed');
     //   // LINT: unreachable code removed} catch (/* _error */) {
       // Swarm memory check failed, assume no activity
@@ -182,20 +180,16 @@ checkSwarmMemory()
     try {
         // Check for swarm activity
         const _swarmActivity = await this.checkSwarmMemory();
-;
         if (swarmActivity) {
           console.warn('🔄 Swarm activity detected - Running build verification...');
           const _buildResult = await this.runBuild();
-;
           if (buildResult.errorCount < this.errorCount) {
             const _reduction = this.errorCount - buildResult.errorCount;
             console.warn(;
               `✅ Progress! Errors reduced by $reduction: $this.errorCount→ $buildResult.errorCount`;
             );
-;
             // Update baseline
             this.errorCount = buildResult.errorCount;
-;
             // Store progress and alert swarm
             await this.storeProgress(buildResult);
             await this.alertSwarm(buildResult);
@@ -204,11 +198,9 @@ checkSwarmMemory()
             console.warn(;
               `⚠️  WARNING: New errors introduced! +$increaseerrors: $this.errorCount→ $buildResult.errorCount`;
             );
-;
             // Alert swarm of regression
             await this.alertRegression(buildResult);
           }
-;
           // Check for alpha readiness
           if (buildResult.errorCount === 0) {
             console.warn('🎉 ALPHA RELEASE READY: ZERO ERRORS ACHIEVED!');
@@ -216,13 +208,11 @@ checkSwarmMemory()
             break;
           }
         }
-;
         // Wait before next check (30 second intervals)
         await new Promise((resolve) => setTimeout(resolve, 30000));
       } catch (/* error */) {
         const _errorMessage = error instanceof Error ? error.message : String(error);
         console.error('❌ Monitor error:', errorMessage);
-;
         // Wait longer on error (1 minute)
         await new Promise((resolve) => setTimeout(resolve, 60000));
       }
@@ -294,11 +284,11 @@ checkSwarmMemory()
   : Promise<void>
   {
     const __certification: AlphaCertification = {
-      timestamp: new Date().toISOString(),;
-    status: 'ALPHA_READY',;
-    errorCount: 0,;
-    buildSuccess: true,;
-    verifiedBy: 'Build-Verifier-Agent',;
+      timestamp: new Date().toISOString(),
+    status: 'ALPHA_READY',
+    errorCount: 0,
+    buildSuccess: true,
+    verifiedBy: 'Build-Verifier-Agent',
   }
   console.warn('🏆 ALPHA CERTIFICATION COMPLETE');
   console.warn('✅ Zero TypeScript compilation errors');
@@ -326,11 +316,11 @@ generateReport();
 : BuildReport
 {
   const _report: BuildReport = {
-      timestamp: new Date().toISOString(),;
-  currentErrorCount: this.errorCount,;
-  buildHistory: this.buildHistory,;
-  errorCategories: this.errorCategories,;
-  status: this.errorCount === 0 ? 'ALPHA_READY' : 'IN_PROGRESS',;
+      timestamp: new Date().toISOString(),
+  currentErrorCount: this.errorCount,
+  buildHistory: this.buildHistory,
+  errorCategories: this.errorCategories,
+  status: this.errorCount === 0 ? 'ALPHA_READY' : 'IN_PROGRESS',
 }
 // Write report to file
 const _reportPath = path.join(process.cwd(), 'build-verification-status.json');

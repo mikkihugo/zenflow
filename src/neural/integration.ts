@@ -2,13 +2,13 @@
  * Integration module for ruv-FANN bindings with claude-zen;
  */
 import {
-  getActivationFunctions,;
-getBackendInfo,;
-getVersion,;
-init,;
-isGpuAvailable,;
-NetworkTrainer,;
-NeuralNetwork,;
+  getActivationFunctions,
+getBackendInfo,
+getVersion,
+init,
+isGpuAvailable,
+NetworkTrainer,
+NeuralNetwork,
 } from '../bindings/index.js'
 
 /**
@@ -66,8 +66,8 @@ trainNetwork((networkId =
   }
   const __defaultConfig = {learning_rate = { ..._defaultConfig, ...config };
   return await trainer.train(;
-  // trainingData.inputs,; // LINT: unreachable code removed
-  trainingData.outputs,;
+  // trainingData.inputs, // LINT: unreachable code removed
+  trainingData.outputs,
   finalConfig;
   )
 }
@@ -97,7 +97,7 @@ loadNetwork(id = NeuralNetwork.load(filename)
 this.networks.set(id,
 {
   network,metadata = > ({
-        id,;
+        id,
   ...entry.metadata
 }
 )
@@ -115,8 +115,8 @@ export async function initializeNeuralService(): Promise<void> {
   return await neuralService.initialize();
 }
 export async function createNeuralNetwork(
-  id: string,;
-layers: number[],;
+  id: string,
+layers: number[],
 options?: JSONObject;
 ): Promise<any>
 {
@@ -126,8 +126,8 @@ export function getNeuralNetwork(id: string): unknown | null {
   return neuralService.getNetwork(id);
 }
 export async function trainNeuralNetwork(
-  networkId: string,;
-trainingData: TrainingData,;
+  networkId: string,
+trainingData: TrainingData,
 config?: TrainingConfig;
 ): Promise<any>
 {
@@ -141,10 +141,10 @@ export function getNeuralServiceStatus(): ServiceStatus {
 }
 // Export the direct bindings as well for advanced use
 export type {
-  NeuralNetwork,;
-NetworkTrainer,;
-getVersion as getNeuralVersion,;
-isGpuAvailable as isNeuralGpuAvailable,;
-getActivationFunctions as getNeuralActivationFunctions,;
-getBackendInfo as getNeuralBackendInfo,;
+  NeuralNetwork,
+NetworkTrainer,
+getVersion as getNeuralVersion,
+isGpuAvailable as isNeuralGpuAvailable,
+getActivationFunctions as getNeuralActivationFunctions,
+getBackendInfo as getNeuralBackendInfo,
 }

@@ -1,7 +1,7 @@
 /**
  * Code Analysis Engine - Modular Version;
  *;
- * Orchestrates code analysis using specialized components for AST parsing,;
+ * Orchestrates code analysis using specialized components for AST parsing,
  * metrics calculation, and function/class extraction.;
  *;
  * @fileoverview Modular code analysis engine with focused components;
@@ -15,7 +15,7 @@ import path from 'node:path';
 import type { ASTNode } from './code-analysis/ast-parser';
 import type { FunctionData } from './code-analysis/function-extractor';
 import type {
-  CodeMetrics,;
+  CodeMetrics,
 type ComplexityAnalysis
 ,
 MetricsCalculator,
@@ -82,7 +82,7 @@ export interface CodeAnalysisConfig {
 /**
  * Modular Code Analysis Engine;
  *;
- * Uses specialized components for different aspects of code analysis,;
+ * Uses specialized components for different aspects of code analysis,
  * providing better maintainability and focused responsibilities.;
  */
 export class CodeAnalysisEngine {
@@ -140,17 +140,17 @@ export class CodeAnalysisEngine {
       const _analysisTime = Date.now() - startTime;
 ;
       return {
-        ast,;
-    // functions,; // LINT: unreachable code removed
-        classes,;
-        complexity,;
-        dependencies,;
-        metrics,;
-        _aiInsights,;
-          filesAnalyzed: codeData.length,;
-          totalLinesProcessed: totalLines,;
-          analysisTime,;
-          language: codeData[0]?.language  ?? 'unknown',;,;
+        ast,
+    // functions, // LINT: unreachable code removed
+        classes,
+        complexity,
+        dependencies,
+        metrics,
+        _aiInsights,
+          filesAnalyzed: codeData.length,
+          totalLinesProcessed: totalLines,
+          analysisTime,
+          language: codeData[0]?.language  ?? 'unknown',,
       }
   }
   catch(/* error */) {
@@ -176,11 +176,11 @@ readCodeData(codeFiles: string[])
     const _content = await readFile(filePath, 'utf8');
     const _stats = await stat(filePath);
     codeData.push({
-        content,;
-    path: filePath,;
-    language: this.detectLanguage(filePath),;
-    size: stats.size,;
-    lastModified: stats.mtime,;
+        content,
+    path: filePath,
+    language: this.detectLanguage(filePath),
+    size: stats.size,
+    lastModified: stats.mtime,
   }
   )
 }
@@ -247,7 +247,7 @@ extractClasses(codeData: CodeFileData[])
       const _classMatch = this.matchClass(line, file.language);
       if (classMatch) {
         const _cls: ClassData = {
-          name: classMatch.name,;
+          name: classMatch.name,
         extends: classMatch.extends,
         implements: classMatch.implements,
         lineNumber: i + 1,
@@ -272,8 +272,8 @@ extractClasses(codeData: CodeFileData[])
   : Promise<DependencyAnalysis>
   {
     const _dependencies = {
-      external: new Set<string>(),;
-    internal: new Set<string>(),;
+      external: new Set<string>(),
+    internal: new Set<string>(),
   }
   for (const file of codeData) {
     const _fileDeps = await this.extractFileDependencies(file);
@@ -283,11 +283,11 @@ extractClasses(codeData: CodeFileData[])
   const _external = Array.from(dependencies.external);
   const _internal = Array.from(dependencies.internal);
   return {
-      external,;
-  // internal,; // LINT: unreachable code removed
-  totalCount: external.length + internal.length,;
-  externalCount: external.length,;
-  internalCount: internal.length,;
+      external,
+  // internal, // LINT: unreachable code removed
+  totalCount: external.length + internal.length,
+  externalCount: external.length,
+  internalCount: internal.length,
 }
 }
 // Helper methods
@@ -301,7 +301,7 @@ detectLanguage(filePath: string)
 {
   const _extension = path.extname(filePath).toLowerCase();
   const _languageMap: Record<string, string> = {
-      '.js': 'javascript',;
+      '.js': 'javascript',
   ('.ts');
   : 'typescript',
   ('.jsx')
@@ -332,7 +332,7 @@ return languageMap[extension]  ?? 'unknown';
  */
 private
 matchClass(;
-line: string,;
+line: string,
 language: string;
 ):
 {
@@ -343,16 +343,16 @@ language: string;
 | null
 {
   const _patterns: Record<string, RegExp> = {
-      javascript: /class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([^{]+))?/,;
-  python: /class\s+(\w+)(?:\(([^)]+)\))?/,;
+      javascript: /class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([^{]+))?/,
+  python: /class\s+(\w+)(?:\(([^)]+)\))?/,
 }
 const _pattern = patterns[language] ?? patterns.javascript;
 const _match = line.match(pattern);
 if (match) {
   return {
-        name: match[1],;
-  // extends: match[2] ? [match[2]] : undefined,; // LINT: unreachable code removed
-  implements: match[3] ? match[3].split(',').map((i) => i.trim()) : undefined,;
+        name: match[1],
+  // extends: match[2] ? [match[2]] : undefined, // LINT: unreachable code removed
+  implements: match[3] ? match[3].split(',').map((i) => i.trim()) : undefined,
 }
 }
 return null;
@@ -418,8 +418,8 @@ countClassMethods(lines: string[], startLine: number)
     >
     {
       const _dependencies = {
-      external: new Set<string>(),;
-      internal: new Set<string>(),;
+      external: new Set<string>(),
+      internal: new Set<string>(),
     }
     const _lines = file.content.split('\n');
     for (const line of lines) {
@@ -459,14 +459,14 @@ countClassMethods(lines: string[], startLine: number)
       }
       const _codeContent = codeData.map((file) => file.content).join('\n\n');
       const _result = await this.config.neuralEngine.infer(;
-      'analysis',;
-      'analyzeComplexity',;
+      'analysis',
+      'analyzeComplexity',
       codeContent;
       )
       return {
-      type: analysisType,;
-      // insights: result,; // LINT: unreachable code removed
-      confidence: 0.85,;
+      type: analysisType,
+      // insights: result, // LINT: unreachable code removed
+      confidence: 0.85,
     }
   }
 }

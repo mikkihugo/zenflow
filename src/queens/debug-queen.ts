@@ -8,8 +8,8 @@ export class DebugQueen extends BaseQueen {
         this.neuralEngine = new NeuralEngine();
         this.errorPatterns = new Map();
         this.bugTypes = new Set([;
-            'null-pointer', 'memory-leak', 'race-condition', 'buffer-overflow',;
-            'type-error', 'logic-error', 'async-error', 'security-vulnerability',;
+            'null-pointer', 'memory-leak', 'race-condition', 'buffer-overflow',
+            'type-error', 'logic-error', 'async-error', 'security-vulnerability',
             'performance-issue', 'resource-leak', 'deadlock', 'infinite-loop';
         ]);
         this.securityChecks = new Map();
@@ -31,7 +31,7 @@ export class DebugQueen extends BaseQueen {
             this.logger.info(`Processing debugtask = await this.analyzeCode(task);
             const _recommendations = await this.generateRecommendations(analysis, task);
 ;
-            const _result = {taskId = > i.type))],;
+            const _result = {taskId = > i.type))],
                     securityIssues = {taskId = task.context?.code  ?? task.prompt;
         const _language = task.context?.language  ?? this.detectLanguage(code);
 ;
@@ -48,7 +48,7 @@ export class DebugQueen extends BaseQueen {
         const _fixComplexity = this.calculateFixComplexity(allIssues);
 ;
         return {
-            code,;
+            code,
     // language,issues = []; // LINT: unreachable code removed
 ;
         for (const [type, pattern] of this.errorPatterns.entries()) {
@@ -396,9 +396,9 @@ export class DebugQueen extends BaseQueen {
     // */; // LINT: unreachable code removed
     getCWE(type): unknown {
         const _cweMap = {
-            'sql-injection': 'CWE-89',;
-            'xss': 'CWE-79',;
-            'weak-crypto': 'CWE-327',;
+            'sql-injection': 'CWE-89',
+            'xss': 'CWE-79',
+            'weak-crypto': 'CWE-327',
             'hardcoded-secrets': 'CWE-798';
         };
 ;
@@ -412,8 +412,8 @@ export class DebugQueen extends BaseQueen {
     // */; // LINT: unreachable code removed
     getPerformanceFix(type): unknown {
         const _fixes = {
-            'inefficient-loop': 'Use for...of or forEach for arrays',;
-            'dom-query': 'Cache DOM queries in variables',;
+            'inefficient-loop': 'Use for...of or forEach for arrays',
+            'dom-query': 'Cache DOM queries in variables',
             'deep-clone': 'Use structuredClone() or a proper deep clone library';
         };
 ;

@@ -99,11 +99,11 @@ export class OptimizationEngine {
       const _languageOptimizations = await this.applyLanguageOptimizations(optimized, language);
 ;
       // Track applied optimizations
-      const _optimizations = [;
-        'performance-optimization',;
-        'maintainability-enhancement',;
-        'code-quality-improvement',;
-        'language-specific-optimization',;
+      const _optimizations = [
+        'performance-optimization',
+        'maintainability-enhancement',
+        'code-quality-improvement',
+        'language-specific-optimization',
       ];
 ;
       const _optimizationTime = Date.now() - startTime;
@@ -116,15 +116,15 @@ export class OptimizationEngine {
       const _estimatedBenefit = this.calculateEstimatedBenefit(improvementsApplied);
 ;
       return {
-        refactoring: optimized,;
-    // optimizations,; // LINT: unreachable code removed
-        performanceImprovements,;
-        maintainabilityImprovements,;
-        qualityImprovements,;
-        languageOptimizations,;
-          optimizationTime,;
-          improvementsApplied,;
-          estimatedBenefit,;,;
+        refactoring: optimized,
+    // optimizations, // LINT: unreachable code removed
+        performanceImprovements,
+        maintainabilityImprovements,
+        qualityImprovements,
+        languageOptimizations,
+          optimizationTime,
+          improvementsApplied,
+          estimatedBenefit,,
       };
     }
   catch(/* error */) {
@@ -142,7 +142,7 @@ export class OptimizationEngine {
 private
 async;
 optimizeForPerformance(;
-refactoring: RefactoringRecommendations,;
+refactoring: RefactoringRecommendations,
 _language: string;
 ): Promise<
 {
@@ -161,13 +161,13 @@ _language: string;
   }
   // Add algorithm optimizations
   refactoring.performanceEnhancements.push({
-      type: 'algorithm-complexity-reduction',;
-  currentIssue: 'Multiple nested loops causing O(n³) complexity',;
-  improvement: 'Use hash tables and optimized algorithms',;
+      type: 'algorithm-complexity-reduction',
+  currentIssue: 'Multiple nested loops causing O(n³) complexity',
+  improvement: 'Use hash tables and optimized algorithms',
   implementation:;
-  'Replace nested iterations with hash-based lookups and divide-and-conquer approaches',;
-  expectedGain: '60-80% performance improvement for large datasets',;
-  complexity: 'medium',;
+  'Replace nested iterations with hash-based lookups and divide-and-conquer approaches',
+  expectedGain: '60-80% performance improvement for large datasets',
+  complexity: 'medium',
 }
 )
 algorithmOptimizations.push('O(n³) to O(n log n) complexity reduction')
@@ -175,13 +175,13 @@ algorithmOptimizations.push('Hash table optimization for lookups')
 // Add memory optimizations
 refactoring.performanceEnhancements.push(
 {
-  type: 'memory-optimization',;
-  currentIssue: 'Excessive memory allocation and garbage collection pressure',;
-  improvement: 'Implement object pooling and memory-efficient data structures',;
+  type: 'memory-optimization',
+  currentIssue: 'Excessive memory allocation and garbage collection pressure',
+  improvement: 'Implement object pooling and memory-efficient data structures',
   implementation:;
-  'Use object pools for frequently created objects and optimize data structure selection',;
-  expectedGain: '40% reduction in memory usage and GC pressure',;
-  complexity: 'medium',;
+  'Use object pools for frequently created objects and optimize data structure selection',
+  expectedGain: '40% reduction in memory usage and GC pressure',
+  complexity: 'medium',
 }
 )
 memoryOptimizations.push('Object pooling implementation')
@@ -189,22 +189,22 @@ memoryOptimizations.push('Memory-efficient data structure selection')
 // Add caching strategies
 refactoring.performanceEnhancements.push(
 {
-  type: 'intelligent-caching',;
-  currentIssue: 'Repeated expensive computations and database queries',;
-  improvement: 'Multi-level caching with TTL and invalidation strategies',;
+  type: 'intelligent-caching',
+  currentIssue: 'Repeated expensive computations and database queries',
+  improvement: 'Multi-level caching with TTL and invalidation strategies',
   implementation:;
-  'Implement LRU cache for computations and query result caching with smart invalidation',;
-  expectedGain: '70% faster response times for cached operations',;
-  complexity: 'low',;
+  'Implement LRU cache for computations and query result caching with smart invalidation',
+  expectedGain: '70% faster response times for cached operations',
+  complexity: 'low',
 }
 )
 cachingStrategies.push('LRU cache for expensive computations')
 cachingStrategies.push('Database query result caching')
 cachingStrategies.push('Smart cache invalidation strategies')
 return {
-      algorithmOptimizations,;
-// memoryOptimizations,; // LINT: unreachable code removed
-cachingStrategies,;
+      algorithmOptimizations,
+// memoryOptimizations, // LINT: unreachable code removed
+cachingStrategies,
 }
 }
 /**
@@ -232,25 +232,25 @@ language: string
   const _documentationEnhancements: string[] = [];
   // Add maintainability improvements to main recommendations
   refactoring.mainRecommendations.push({
-      type: 'architectural-restructuring',;
-  priority: 'medium',;
-  title: 'Implement Layered Architecture',;
-  description: 'Organize code into clear architectural layers with defined responsibilities',;
-  impact: 'Significantly improves code organization and maintainability',;
-  effort: 'large',;
+      type: 'architectural-restructuring',
+  priority: 'medium',
+  title: 'Implement Layered Architecture',
+  description: 'Organize code into clear architectural layers with defined responsibilities',
+  impact: 'Significantly improves code organization and maintainability',
+  effort: 'large',
   benefits: [;
-        'Clear separation of concerns',;
-        'Better code navigation',;
-        'Easier to test and modify',;
-        'Consistent code organization',;
-      ],;
+        'Clear separation of concerns',
+        'Better code navigation',
+        'Easier to test and modify',
+        'Consistent code organization',
+      ],
   implementation: [;
-        'Define presentation, business, and data layers',;
-        'Create clear interfaces between layers',;
-        'Implement dependency flow rules',;
-        'Add layer-specific documentation',;
-      ],;
-  codeExample: this.generateLayeredArchitectureExample(language),;
+        'Define presentation, business, and data layers',
+        'Create clear interfaces between layers',
+        'Implement dependency flow rules',
+        'Add layer-specific documentation',
+      ],
+  codeExample: this.generateLayeredArchitectureExample(language),
 }
 )
 structuralChanges.push('Layered architecture implementation')
@@ -259,23 +259,23 @@ structuralChanges.push('Dependency flow optimization')
 // Add naming improvements
 refactoring.mainRecommendations.push(
 {
-  type: 'naming-consistency',;
-  priority: 'low',;
-  title: 'Improve Naming Consistency',;
-  description: 'Standardize naming conventions across the codebase',;
-  impact: 'Improves code readability and maintainability',;
-  effort: 'small',;
+  type: 'naming-consistency',
+  priority: 'low',
+  title: 'Improve Naming Consistency',
+  description: 'Standardize naming conventions across the codebase',
+  impact: 'Improves code readability and maintainability',
+  effort: 'small',
   benefits: [;
-        'Better code readability',;
-        'Consistent developer experience',;
-        'Easier code navigation',;
-      ],;
+        'Better code readability',
+        'Consistent developer experience',
+        'Easier code navigation',
+      ],
   implementation: [;
-        'Define naming conventions guide',;
-        'Rename inconsistent variables and functions',;
-        'Update documentation to reflect naming standards',;
-        'Add linting rules for naming consistency',;
-      ],;
+        'Define naming conventions guide',
+        'Rename inconsistent variables and functions',
+        'Update documentation to reflect naming standards',
+        'Add linting rules for naming consistency',
+      ],
 }
 )
 namingImprovements.push('Consistent variable naming conventions')
@@ -286,9 +286,9 @@ documentationEnhancements.push('Comprehensive API documentation')
 documentationEnhancements.push('Inline code comments for complex logic')
 documentationEnhancements.push('Architecture decision records (ADRs)')
 return {
-      structuralChanges,;
-// namingImprovements,; // LINT: unreachable code removed
-documentationEnhancements,;
+      structuralChanges,
+// namingImprovements, // LINT: unreachable code removed
+documentationEnhancements,
 }
 }
 /**
@@ -320,13 +320,13 @@ language: string
   }
   // Code standards compliance
   refactoring.optimizations.push({
-      category: 'maintainability',;
-  title: 'Enforce Code Standards Compliance',;
-  description: 'Implement automated code quality checks and standards enforcement',;
+      category: 'maintainability',
+  title: 'Enforce Code Standards Compliance',
+  description: 'Implement automated code quality checks and standards enforcement',
   implementation:;
-  'Set up ESLint/Prettier for JavaScript, or equivalent tools for other languages',;
-  expectedImprovement: 'Consistent code quality and reduced review time',;
-  priority: 'medium',;
+  'Set up ESLint/Prettier for JavaScript, or equivalent tools for other languages',
+  expectedImprovement: 'Consistent code quality and reduced review time',
+  priority: 'medium',
 }
 )
 codeStandardsCompliance.push('Automated linting configuration')
@@ -335,12 +335,12 @@ codeStandardsCompliance.push('Import organization optimization')
 // Testability enhancements
 refactoring.optimizations.push(
 {
-  category: 'maintainability',;
-  title: 'Enhance Code Testability',;
-  description: 'Refactor code to improve testability and test coverage',;
-  implementation: 'Extract dependencies, reduce coupling, and add proper interfaces',;
-  expectedImprovement: 'Higher test coverage and more reliable tests',;
-  priority: 'high',;
+  category: 'maintainability',
+  title: 'Enhance Code Testability',
+  description: 'Refactor code to improve testability and test coverage',
+  implementation: 'Extract dependencies, reduce coupling, and add proper interfaces',
+  expectedImprovement: 'Higher test coverage and more reliable tests',
+  priority: 'high',
 }
 )
 testabilityEnhancements.push('Dependency injection for better mocking')
@@ -349,12 +349,12 @@ testabilityEnhancements.push('Test-friendly error handling')
 // Security hardenings
 if (refactoring.securityImprovements) {
   refactoring.securityImprovements.push({
-        type: 'comprehensive-security-review',;
-  vulnerability: 'General Security Weaknesses',;
-  description: 'Implement comprehensive security measures across the application',;
-  severity: 'medium',;
-  mitigation: 'Apply security best practices and regular security audits',;
-  codeExample: this.generateSecurityHardeningExample(language),;
+        type: 'comprehensive-security-review',
+  vulnerability: 'General Security Weaknesses',
+  description: 'Implement comprehensive security measures across the application',
+  severity: 'medium',
+  mitigation: 'Apply security best practices and regular security audits',
+  codeExample: this.generateSecurityHardeningExample(language),
 }
 )
 }
@@ -362,9 +362,9 @@ securityHardenings.push('Input validation standardization')
 securityHardenings.push('Output encoding implementation')
 securityHardenings.push('Authentication and authorization improvements')
 return {
-      codeStandardsCompliance,;
-// testabilityEnhancements,; // LINT: unreachable code removed
-securityHardenings,;
+      codeStandardsCompliance,
+// testabilityEnhancements, // LINT: unreachable code removed
+securityHardenings,
 }
 }
 /**
@@ -386,9 +386,9 @@ language: string
     case 'javascript':
       // JavaScript-specific optimizations
       refactoring.optimizations.push({
-          category: 'performance',;
-      title: 'Optimize JavaScript Bundle Size',;
-      description: 'Implement tree shaking and code splitting for better performance',;
+          category: 'performance',
+      title: 'Optimize JavaScript Bundle Size',
+      description: 'Implement tree shaking and code splitting for better performance',
       implementation: 'Use dynamic imports and optimize webpack configuration', expectedImprovement;
       : '30-50% smaller bundle size',
       priority: 'medium',

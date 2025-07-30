@@ -250,14 +250,14 @@ export const isInteractive = (: unknown): boolean => {
 // =============================================================================
 
 export default {
-  detectExecutionEnvironment,;
-  applySmartDefaults,;
-  getEnvironmentDescription,;
-  shouldUseNonInteractiveMode,;
-  shouldSkipPermissions,;
-  shouldDisableColor,;
-  isInteractive,;
-  isRawModeSupported,;
-  getEnvironmentType,;
+  detectExecutionEnvironment,
+  applySmartDefaults,
+  getEnvironmentDescription,
+  shouldUseNonInteractiveMode,
+  shouldSkipPermissions,
+  shouldDisableColor,
+  isInteractive,
+  isRawModeSupported,
+  getEnvironmentType,
 };
 ;

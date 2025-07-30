@@ -10,7 +10,7 @@ export class NATTraversalPlugin {
   static metadata = {name = null;
   this;
   .;
-  stunServers = [;
+  stunServers = [
       'stun.l.google.com = new Map();
     this.natMappings = new Map();
     this.holePunches = new Map();
@@ -42,15 +42,15 @@ export class NATTraversalPlugin {
     //   // LINT: unreachable code removed}
 ;
   async setupServiceNATTraversal(serviceKey, serviceConfig, options): unknown {
-    const _traversalConfig = {port = = false,;
+    const _traversalConfig = {port = = false,
       ...options.natTraversal;
     };
 ;
     // Create port mapping
     if(traversalConfig.port) {
       const _mapping = await this.createPortMapping(;
-        serviceKey,;
-        traversalConfig.port,;
+        serviceKey,
+        traversalConfig.port,
         traversalConfig.protocol;
       );
 ;
@@ -293,9 +293,9 @@ for (const [punchId, punch] of this.holePunches.entries()) {
     // UPnP port mapping implementation (simplified)
     console.warn(`UPnP mapping requested for ${protocol}:$port- using _direct connection`);
     return {
-      success: false,;
-    // reason: 'UPnP not available - using direct connection',; // LINT: unreachable code removed
-      externalPort: port,;
+      success: false,
+    // reason: 'UPnP not available - using direct connection', // LINT: unreachable code removed
+      externalPort: port,
       protocol: protocol;
     };
 ;
@@ -303,18 +303,18 @@ for (const [punchId, punch] of this.holePunches.entries()) {
     // UPnP port mapping removal (simplified)
     console.warn(`UPnP unmapping requested for ${protocol}:$port`);
     return {
-      success: true,;
+      success: true,
     // message: 'No UPnP mapping to remove'; // LINT: unreachable code removed
     };
 ;
   // Query and management methods
   async getTraversalInfo() ;
     return {
-      externalIP: this.externalIP,;
-    // relayPort: this.relayPort,; // LINT: unreachable code removed
-      capabilities: NATTraversalPlugin.metadata.capabilities,;
-        mappings: this.natMappings.size,;
-        relayNodes: this.relayNodes.size,;
+      externalIP: this.externalIP,
+    // relayPort: this.relayPort, // LINT: unreachable code removed
+      capabilities: NATTraversalPlugin.metadata.capabilities,
+        mappings: this.natMappings.size,
+        relayNodes: this.relayNodes.size,
         holePunches: this.holePunches.size;
     };
 ;

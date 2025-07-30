@@ -138,7 +138,7 @@ function _countMCPConnections(): unknown {
   console.warn('================');
 ;
   // System metrics
-  console.warn('\n🖥️  SystemResources = > l.toFixed(2)).join(', ')}`,;
+  console.warn('\n🖥️  SystemResources = > l.toFixed(2)).join(', ')}`,
   );
   console.warn(`Uptime = === 'running') {
     console.warn(`   ActiveAgents = Math.floor(seconds / 86400);

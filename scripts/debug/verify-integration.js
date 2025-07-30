@@ -6,28 +6,26 @@
 
 import { CodeAnalysisService } from './src/services/code-analysis/index.js';
 
-async function verifyIntegration(): unknown {
+async function verifyIntegration() {
   console.warn('🔍 Verifying professional code analysis tools integration...\n');
-;
   const _checklist = {
-    '✅ TypeScript/JavaScript Analysis': false,;
-    '✅ Dependency Analysis (madge/dependency-cruiser)': false,;
-    '✅ Duplicate Detection (jscpd)': false,;
-    '✅ Complexity Analysis (escomplex)': false,;
-    '✅ Multi-language Support (tree-sitter)': false,;
-    '✅ Real-time File Watching': false,;
-    '✅ Kuzu Graph Storage Integration': false,;
-    '✅ Advanced Query Capabilities': false,;
-    '✅ CLI Interface with Professional Tools': false,;
-    '✅ Robust Fallback Mechanisms': false,;
-  }
+    '✅ TypeScript/JavaScript Analysis': false,
+    '✅ Dependency Analysis (madge/dependency-cruiser)': false,
+    '✅ Duplicate Detection (jscpd)': false,
+    '✅ Complexity Analysis (escomplex)': false,
+    '✅ Multi-language Support (tree-sitter)': false,
+    '✅ Real-time File Watching': false,
+    '✅ Kuzu Graph Storage Integration': false,
+    '✅ Advanced Query Capabilities': false,
+    '✅ CLI Interface with Professional Tools': false,
+    '✅ Robust Fallback Mechanisms': false
+}
 try {
     // 1. Verify service can be instantiated
     const _service = new CodeAnalysisService({
-      projectPath: './src',;
-      outputDir: './tmp/verification-test',;
-    }
-)
+      projectPath: './src',
+      outputDir: './tmp/verification-test'
+})
 // 2. Verify initialization works
 console.warn('🚀 Testing initialization...')
 const _initResult = await service.initialize();
@@ -85,7 +83,7 @@ checklist['✅ CLI Interface with Professional Tools'] = true;
 const __stats = await service.getStats();
 console.warn('📈 Service stats retrieved');
 // Cleanup
-await service.cleanup();
+  // await service.cleanup();
 // Report results
 console.warn('\n📋 INTEGRATION VERIFICATION RESULTS:\n');
 for (const [item, status] of Object.entries(checklist)) {
@@ -113,7 +111,7 @@ if (completedCount === totalCount) {
 } else {
   console.warn('\n⚠️ Some features may need additional setup, but core integration is working');
 }
-} catch (/* error */)
+} catch (error)
 {
   console.error('❌ Verification failed:', error.message);
   console.warn('\n📝 ANSWER: Integration is implemented but may need dependency installation');

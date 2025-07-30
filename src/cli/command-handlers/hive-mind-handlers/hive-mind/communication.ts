@@ -55,7 +55,7 @@ this._addToBuffer(envelope);
 ;
 // Track message
 this.state.messageHistory.set(messageId, {
-      ...envelope,;
+      ...envelope,
       _status => {
       const _timeout = setTimeout(() => {
         reject(new Error(`Message timeout => {
@@ -100,7 +100,7 @@ this.state.messageHistory.set(messageId, {
     // If no validators specified, use all online agents
     if(validators.length === 0) {
       validators = Array.from(this.state.agents.keys()).filter(;
-        (id) => this.state.agents.get(id).status === 'online',;
+        (id) => this.state.agents.get(id).status === 'online',
       );
     }
 ;
@@ -154,7 +154,7 @@ this.state.messageHistory.set(messageId, {
 ;
     // Process the message
     this.emit(`gossip = Array.from(this.state.agents.keys()).filter(;
-        (id) => !gossipData.seen.includes(id),;
+        (id) => !gossipData.seen.includes(id),
       );
 ;
       const _selected = this._selectRandomAgents(agents, this.config.gossipFanout);

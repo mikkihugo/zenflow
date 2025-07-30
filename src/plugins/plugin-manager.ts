@@ -6,7 +6,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
-  Plugin,;
+  Plugin,
 type PluginCacheAPI
 ,
 type PluginDatabaseAPI
@@ -166,7 +166,7 @@ return plugin;
       try {
         const _startTime = performance.now();
         const _result = await Promise.race([;
-          hook.handler(context),;
+          hook.handler(context),
           new Promise<never>((_, reject) => ;
             setTimeout(() => reject(new Error('Hook timeout')), hook.options.timeout  ?? 5000);
           );
@@ -293,10 +293,10 @@ return plugin;
     return {name = 14.0.0',npm = [];
     // ; // LINT: unreachable code removed
     // Required fields
-    if (!_manifest._name) errors.push('Missing requiredfield = [;
-      'ai-provider', 'architect-advisor', 'security-auth', 'notifications',;
+    if (!_manifest._name) errors.push('Missing requiredfield = [
+      'ai-provider', 'architect-advisor', 'security-auth', 'notifications',
       'export-system', 'documentation-linker', 'workflow-engine', 'github-integration',
-      'memory-backend', 'performance-monitor', 'code-analysis', 'test-runner',;
+      'memory-backend', 'performance-monitor', 'code-analysis', 'test-runner',
       'database-connector', 'neural-processor', 'vision-processor', 'custom';
     ];
 ;
@@ -334,7 +334,7 @@ return plugin;
       await this.validateManifest(manifest);
 ;
       return {
-        manifest,;
+        manifest,
     // path => { // LINT: unreachable code removed
       const _loadedPlugin = this.plugins.get(pluginName);
       if (loadedPlugin && this.config.autoRestart) {

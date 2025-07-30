@@ -56,7 +56,7 @@
       if(data.confidence > bestScore) {
         bestScore = data.confidence;
         bestIntent = {
-          type,;
+          type,
           confidence = {type = {query = Date.now();
     const _results = {queens = plan.queens.map(async (queenType) => {
         const _queenResult = await this.activateQueen(queenType, plan);
@@ -103,7 +103,7 @@
 ;
     // Persist to hive-mind memory
     await this.hiveMind.coordinate({
-      type = {development = {development = [;
+      type = {development = {development = [
       {name = 0.5; // Base score
     
     // Confidence bonus
@@ -159,12 +159,12 @@
     else if (/architecture|design|structure/.test(query)) intent = 'architecture';
 ;
     return {
-      success,;
-    // intent,; // LINT: unreachable code removed
-      confidence: 0.5,;
-      fallback: true,;
+      success,
+    // intent, // LINT: unreachable code removed
+      confidence: 0.5,
+      fallback: true,
       result: {
-        message: `Fallback routing to ${intent} intent`,;
+        message: `Fallback routing to ${intent} intent`,
         suggestion: 'Consider rephrasing your query for better intent detection';
       }
     };

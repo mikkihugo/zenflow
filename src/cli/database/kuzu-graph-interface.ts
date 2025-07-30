@@ -46,17 +46,17 @@ catch (/* kuzuError */)
       const _mode = this.stats.usingRealKuzu ? 'REAL KUZU' : 'SIMULATION';
       printSuccess(`✅ Kuzu database initialized in ${mode}mode = this.connection.querySync(`;
         CREATE NODE TABLE IF NOT EXISTS Service(;
-          name STRING,;
-          path STRING,;
-          type STRING,;
-          complexity STRING,;
-          lineCount INT64,;
-          fileCount INT64,;
-          technologies STRING[],;
-          apis STRING[],;
-          databases STRING[],;
-          created_at STRING,;
-          updated_at STRING,;
+          name STRING,
+          path STRING,
+          type STRING,
+          complexity STRING,
+          lineCount INT64,
+          fileCount INT64,
+          technologies STRING[],
+          apis STRING[],
+          databases STRING[],
+          created_at STRING,
+          updated_at STRING,
           PRIMARY KEY (name);
         );
       `);
@@ -467,12 +467,12 @@ loadExistingData();
         return this.identifyCodeSmells(parameters);
     // default = { // LINT: unreachable code removed}): unknown {
     const _deprecatedPatterns = parameters.patterns  ?? [;
-      'require(',;
-      'const ',;
-      'eval(',;
-      'document.write',;
-      'innerHTML',;
-      'setInterval',;
+      'require(',
+      'const ',
+      'eval(',
+      'document.write',
+      'innerHTML',
+      'setInterval',
       'setTimeout';
     ];
 ;
@@ -621,12 +621,12 @@ loadExistingData();
     if(totalComplex / totalFunctions > 0.2) {
       recommendations.push({
         priority = {
-      'eval(': 'critical',;
-      'innerHTML': 'high',;
-      'document.write': 'high',;
-      'const ': 'medium',;
-      'require(': 'medium',;
-      'setInterval': 'low',;
+      'eval(': 'critical',
+      'innerHTML': 'high',
+      'document.write': 'high',
+      'const ': 'medium',
+      'require(': 'medium',
+      'setInterval': 'low',
       'setTimeout': 'low';
     };
 ;
@@ -638,12 +638,12 @@ loadExistingData();
    */;
   getDeprecationRecommendation(pattern): unknown {
     const _recommendations = {
-      'eval(': 'Use safer alternatives like JSON.parse() or Function constructor',;
-      'innerHTML': 'Use textContent, createElement, or template literals',;
-      'document.write': 'Use modern DOM manipulation methods',;
-      'const ': 'Use const or let for block scoping',;
+      'eval(': 'Use safer alternatives like JSON.parse() or Function constructor',
+      'innerHTML': 'Use textContent, createElement, or template literals',
+      'document.write': 'Use modern DOM manipulation methods',
+      'const ': 'Use const or let for block scoping',
       'require(': 'Use ES6 import/export statements',
-      'setInterval': 'Consider requestAnimationFrame for animations',;
+      'setInterval': 'Consider requestAnimationFrame for animations',
       'setTimeout': 'Consider using Promises or async/await';
     };
 ;
@@ -757,24 +757,24 @@ loadExistingData();
       .join(', ');
 ;
     return `MATCH (a {id = {
-      'express': 'web-framework',;
-    // 'fastify': 'web-framework', ; // LINT: unreachable code removed
-      'nestjs': 'web-framework',;
-      'react': 'frontend-framework',;
-      'vue': 'frontend-framework',;
-      'angular': 'frontend-framework',;
-      'typescript': 'language',;
-      'javascript': 'language',;
-      'nodejs': 'runtime',;
-      'prisma': 'orm',;
-      'mongoose': 'orm',;
-      'pg': 'database-driver',;
-      'mysql': 'database-driver',;
-      'postgresql': 'database',;
-      'mongodb': 'database',;
-      'redis': 'cache',;
-      'docker': 'containerization',;
-      'kubernetes': 'orchestration',;
+      'express': 'web-framework',
+    // 'fastify': 'web-framework', // LINT: unreachable code removed
+      'nestjs': 'web-framework',
+      'react': 'frontend-framework',
+      'vue': 'frontend-framework',
+      'angular': 'frontend-framework',
+      'typescript': 'language',
+      'javascript': 'language',
+      'nodejs': 'runtime',
+      'prisma': 'orm',
+      'mongoose': 'orm',
+      'pg': 'database-driver',
+      'mysql': 'database-driver',
+      'postgresql': 'database',
+      'mongodb': 'database',
+      'redis': 'cache',
+      'docker': 'containerization',
+      'kubernetes': 'orchestration',
       'graphql': 'api';
     };
 ;

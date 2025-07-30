@@ -48,7 +48,7 @@ export class PerformanceMonitor {
     calculateAverages();
     if (this.metrics.memoryReadings.length > 0) {
       const _totalMemory = this.metrics.memoryReadings.reduce(;
-      (sum, reading) => sum + reading.memoryMB,;
+      (sum, reading) => sum + reading.memoryMB,
       0;
       )
       this.metrics.averageMemoryMB = totalMemory / this.metrics.memoryReadings.length
@@ -70,7 +70,7 @@ export class PerformanceMonitor {
       console.warn('⚠️ Warningrecorded = this.metrics.endTime - this.metrics.startTime;
 ;
     return {
-      ...this.metrics,;
+      ...this.metrics,
     // duration,operationsPerSecond = this.getMetrics(); // LINT: unreachable code removed
 ;
     const _report = '\n📊 Performance Report\n';
@@ -188,8 +188,8 @@ createDefaultCallbacks();
         console.error(`❌ Memory usage critical => {
         printInfo(`⚠️ CPU usage high = {}): unknown {
     const {
-      cpuCores = 4,;
-    // memoryGB = 8,; // LINT: unreachable code removed
+      cpuCores = 4,
+    // memoryGB = 8, // LINT: unreachable code removed
       diskSpeed = 'ssd', // 'ssd' or 'hdd'
     } = systemSpecs;
   const _optimal = Math.min(;
@@ -209,16 +209,16 @@ createDefaultCallbacks();
   : unknown
   {
     const {
-      concurrency = 5,;
-    template = 'basic',;
-    sparc = false,;
+      concurrency = 5,
+    template = 'basic',
+    sparc = false,
     averageTimePerProject = 15, // seconds
   }
   = options
   const _timeMultiplier = 1;
   // Adjust for template complexity
   const _templateMultipliers = {
-      basic,;
+      basic,
   ('web-api');
   : 1.2,
   ('react-app')

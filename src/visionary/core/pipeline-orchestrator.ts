@@ -99,7 +99,7 @@ export interface PipelineResult {
 /**
  * Core Pipeline Orchestrator;
  *;
- * Manages the complete software intelligence analysis workflow,;
+ * Manages the complete software intelligence analysis workflow,
  * coordinating all analysis engines and generators.;
  */
 export class PipelineOrchestrator {
@@ -111,22 +111,22 @@ export class PipelineOrchestrator {
    */
   constructor(_config: Partial<PipelineConfig> = {}) {
     this.config = {
-      outputDir: './analysis-output',;
-    enableAnalytics: false,;
+      outputDir: './analysis-output',
+    enableAnalytics: false,
     supportedFormats: [;
-        'js',;
-        'ts',;
-        'jsx',;
-        'tsx',;
-        'py',;
-        'java',;
-        'go',;
-        'rs',;
-        'cpp',;
-        'c',;
-        'php',;
-        'rb',;
-      ],;
+        'js',
+        'ts',
+        'jsx',
+        'tsx',
+        'py',
+        'java',
+        'go',
+        'rs',
+        'cpp',
+        'c',
+        'php',
+        'rb',
+      ],
     ...config,
   }
   // Initialize analysis engines
@@ -182,17 +182,17 @@ initialize();
       console.warn('🧠 Visionary Software Intelligence Processor initialized');
 ;
       return {
-        status: 'initialized',;
+        status: 'initialized',
     // capabilities: [; // LINT: unreachable code removed
-          'code-analysis',;
-          'pattern-detection',;
-          'architecture-analysis',;
-          'quality-assessment',;
-          'refactoring-recommendations',;
-          'optimization',;
-          'validation',;
-          'analytics',;
-        ],;
+          'code-analysis',
+          'pattern-detection',
+          'architecture-analysis',
+          'quality-assessment',
+          'refactoring-recommendations',
+          'optimization',
+          'validation',
+          'analytics',
+        ],
       }
 }
 catch (/* error */)
@@ -221,11 +221,11 @@ options: Partial<ProcessingOptions> =
   }
   const _startTime = Date.now();
   const _processingOptions: ProcessingOptions = {
-      language: 'javascript',;
-  analysisDepth: 'comprehensive',;
-  includeRefactoring: true,;
-  optimizeCode: true,;
-  generateReport: true,;
+      language: 'javascript',
+  analysisDepth: 'comprehensive',
+  includeRefactoring: true,
+  optimizeCode: true,
+  generateReport: true,
   ...options,
 }
 try {
@@ -245,8 +245,8 @@ try {
 ;
       // Save analysis results
       const _outputPath = await this.saveAnalysisResults(;
-        output,;
-        processingOptions.analysisDepth,;
+        output,
+        processingOptions.analysisDepth,
         processingOptions.language;
       );
 ;
@@ -282,11 +282,11 @@ options: ProcessingOptions
 {
   const _results: Partial<PipelineResult> = {
       metadata: {
-        startTime: Date.now(),;
-  endTime: 0,;
-  processingTime: 0,;
-  stagesCompleted: [],;
-  stagesFailed: [],;
+        startTime: Date.now(),
+  endTime: 0,
+  processingTime: 0,
+  stagesCompleted: [],
+  stagesFailed: [],
 }
 ,
 }
@@ -301,7 +301,7 @@ for (const stage of this.pipeline) {
 ;
           case 'patternDetection':;
             results.patterns = await this.patternDetectionSystem.detectPatterns(;
-              codeData,;
+              codeData,
               results.analysis!;
             );
             break;
@@ -314,15 +314,15 @@ for (const stage of this.pipeline) {
 ;
           case 'qualityAssessment':;
             results.quality = await this.qualityAssessmentEngine.assessQuality(;
-              results.architecture!,;
-              results.patterns!,;
+              results.architecture!,
+              results.patterns!,
               options.language;
             );
             break;
 ;
           case 'refactoringRecommendations':;
             results.refactoring = await this.refactoringGenerator.generateRecommendations(;
-              results.quality!,;
+              results.quality!,
               options;
             );
             break;
@@ -330,7 +330,7 @@ for (const stage of this.pipeline) {
           case 'optimization':;
             if (options.optimizeCode) {
               results.optimizedRefactoring = await this.optimizationEngine.optimizeRefactoring(;
-                results.refactoring!,;
+                results.refactoring!,
                 options.language;
               );
             }
@@ -338,7 +338,7 @@ for (const stage of this.pipeline) {
 ;
           case 'validation':;
             results.validation = await this.qualityAssessmentEngine.validateRecommendations(;
-              results.optimizedRefactoring  ?? results.refactoring!,;
+              results.optimizedRefactoring  ?? results.refactoring!,
               options.language;
             );
             break;
@@ -387,7 +387,7 @@ readCodeData(codeFiles: string[])
    * @returns Formatted analysis output;
     // */; // LINT: unreachable code removed
   private async generateAnalysisReport(;
-    pipelineResult: PipelineResult,;
+    pipelineResult: PipelineResult,
     options: ProcessingOptions;
   ): Promise<any> 
     return this.analyticsReporter.generateAnalysisReport(pipelineResult, options);
@@ -402,8 +402,8 @@ readCodeData(codeFiles: string[])
    * @returns Path to saved results;
     // */; // LINT: unreachable code removed
   private async saveAnalysisResults(;
-    output: unknown,;
-    analysisDepth: string,;
+    output: unknown,
+    analysisDepth: string,
     language: string;
   ): Promise<string> {
     const _timestamp = new Date().toISOString().replace(/[:.]/g, '-');

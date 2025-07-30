@@ -98,11 +98,11 @@ export class ASTParser {
       // Identify significant nodes
       if (line.includes('function')  ?? line.includes('class')  ?? line.includes('=>')) {
         nodes.push({
-          type: this.getJavaScriptNodeType(line),;
-          name: this.extractNodeName(line),;
-          line: i + 1,;
-          depth,;
-          complexity: this.calculateNodeComplexity(line),;
+          type: this.getJavaScriptNodeType(line),
+          name: this.extractNodeName(line),
+          line: i + 1,
+          depth,
+          complexity: this.calculateNodeComplexity(line),
         });
       }
     }
@@ -137,10 +137,10 @@ export class ASTParser {
           trimmed.startsWith('def ')  ?? trimmed.startsWith('class ')  ?? trimmed.startsWith('async def ');
         ) 
           nodes.push(
-            type: this.getPythonNodeType(trimmed),;
-            name: this.extractNodeName(trimmed),;
-            line: i + 1,;
-            depth: indentLevel,;);
+            type: this.getPythonNodeType(trimmed),
+            name: this.extractNodeName(trimmed),
+            line: i + 1,
+            depth: indentLevel,);
       }
     }
 ;

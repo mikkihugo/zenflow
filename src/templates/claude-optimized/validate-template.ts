@@ -45,7 +45,7 @@ for (const cmd of sparcCommands.slice(0, 3)) {
   if (fs.existsSync(filePath)) {
     const _content = fs.readFileSync(filePath, 'utf8');
     test(;
-    `${cmd.destination} has proper structure`,;
+    `${cmd.destination} has proper structure`,
     content.includes('## Instructions') ?? content.includes('You are');
     )
   }
@@ -57,7 +57,7 @@ for (const testFile of testFiles.slice(0, 3)) {
   if (fs.existsSync(filePath)) {
     const _content = fs.readFileSync(filePath, 'utf8');
     test(;
-    `${testFile.destination} has test structure`,;
+    `${testFile.destination} has test structure`,
     content.includes('describe') ?? content.includes('test') ?? content.includes('it');
     )
   }
@@ -71,7 +71,7 @@ if (fs.existsSync(versionFile)) {
 // Allow some flexibility in counts as they might have been updated
 const _countMatches = Math.abs(actualCount - info.count) <= 2;
 test(;
-`${category} file count approximately correct (${actualCount} vs ${info.count})`,;
+`${category} file count approximately correct (${actualCount} vs ${info.count})`,
 countMatches;
 )
 }
@@ -89,7 +89,7 @@ Failed = === 0 ? 'green' : 'red'
 )
 const __percentage = Math.round((passedTests / totalTests) * 100);
 log(;
-`  Successrate = 90 ? 'green' : percentage >= 70 ? 'yellow' : 'red',;
+`  Successrate = 90 ? 'green' : percentage >= 70 ? 'yellow' : 'red',
 )
 if (passedTests === totalTests) {
   log('\n🎉 Template validation passed! All files are properly installed.', 'green');

@@ -48,7 +48,7 @@ scanMarkdownFiles((options =
   console.warn('🔍 Scanning for markdown files...');
   const _stats = {totalFiles = await readFile(file, 'utf8');
   const _analysis = await this.analyzeMarkdownFile(content, file, {
-          validateLinks,;
+          validateLinks,
   checkStructure;
 }
 )
@@ -181,13 +181,13 @@ this.updateStats(stats, analysis)
    */;
   getCapabilities() ;
     return {
-      fileTypes: ['.md', '.markdown'],;
-    // validationTypes: ['frontmatter', 'structure', 'links', 'lint'],; // LINT: unreachable code removed
+      fileTypes: ['.md', '.markdown'],
+    // validationTypes: ['frontmatter', 'structure', 'links', 'lint'], // LINT: unreachable code removed
       features: [;
-        'markdownlint-integration',;
-        'frontmatter-validation',;
-        'heading-hierarchy-check',;
-        'link-validation',;
+        'markdownlint-integration',
+        'frontmatter-validation',
+        'heading-hierarchy-check',
+        'link-validation',
         'structure-analysis';
       ];
     };

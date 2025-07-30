@@ -72,15 +72,15 @@ Coordination settings in \`claude-zen.config.json\`:;
 \`\`\`json;
 {
   "orchestrator": {
-    "maxConcurrentTasks": 10,;
-    "taskTimeout": 300000,;
+    "maxConcurrentTasks": 10,
+    "taskTimeout": 300000,
     "defaultPriority": 5;
-  },;
+  },
   "agents": {
-    "maxAgents": 20,;
-    "defaultCapabilities": ["research", "code", "terminal"],;
+    "maxAgents": 20,
+    "defaultCapabilities": ["research", "code", "terminal"],
     "resourceLimits": {
-      "memory": "1GB",;
+      "memory": "1GB",
       "cpu": "50%";
     }
   }
@@ -210,36 +210,36 @@ Coordination settings in \`claude-zen.config.json\` with batchtools optimization
 \`\`\`json;
 {
   "orchestrator": {
-    "maxConcurrentTasks": 50,;
-    "taskTimeout": 300000,;
-    "defaultPriority": 5,;
+    "maxConcurrentTasks": 50,
+    "taskTimeout": 300000,
+    "defaultPriority": 5,
     "batchtools": {
-      "enabled": true,;
-      "maxParallelTasks": 20,;
-      "batchSize": 10,;
-      "concurrentAgents": 15,;
+      "enabled": true,
+      "maxParallelTasks": 20,
+      "batchSize": 10,
+      "concurrentAgents": 15,
       "parallelWorkflows": 5;
     }
-  },;
+  },
   "agents": {
-    "maxAgents": 100,;
-    "defaultCapabilities": ["research", "code", "terminal", "batch", "parallel"],;
+    "maxAgents": 100,
+    "defaultCapabilities": ["research", "code", "terminal", "batch", "parallel"],
     "resourceLimits": {
-      "memory": "4GB",;
+      "memory": "4GB",
       "cpu": "80%";
-    },;
+    },
     "batchProcessing": {
-      "maxConcurrentOperations": 25,;
-      "batchQueueSize": 100,;
-      "parallelSpawning": true,;
+      "maxConcurrentOperations": 25,
+      "batchQueueSize": 100,
+      "parallelSpawning": true,
       "concurrentMonitoring": true;
     }
-  },;
+  },
   "performance": {
-    "enableParallelCoordination": true,;
-    "concurrentTaskExecution": 30,;
-    "batchWorkflowSize": 5,;
-    "parallelResourceMonitoring": true,;
+    "enableParallelCoordination": true,
+    "concurrentTaskExecution": 30,
+    "batchWorkflowSize": 5,
+    "parallelResourceMonitoring": true,
     "smartLoadBalancing": true;
   }
 }

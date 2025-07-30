@@ -25,17 +25,17 @@ runAllTests();
 {
   console.warn('🧪 Running validation and rollback system tests...');
 ;
-  const _tests = [;
-    { name = > this.testPreInitValidation() },;
-    { name = > this.testPostInitValidation() },;
-    { name = > this.testConfigValidation() },;
-    { name = > this.testModeFunctionality() },;
-    { name = > this.testHealthChecks() },;
-    { name = > this.testBackupSystem() },;
-    { name = > this.testRollbackSystem() },;
-    { name = > this.testStateTracking() },;
-    { name = > this.testRecoveryProcedures() },;
-    { name = > this.testAtomicOperations() },;
+  const _tests = [
+    { name = > this.testPreInitValidation() },
+    { name = > this.testPostInitValidation() },
+    { name = > this.testConfigValidation() },
+    { name = > this.testModeFunctionality() },
+    { name = > this.testHealthChecks() },
+    { name = > this.testBackupSystem() },
+    { name = > this.testRollbackSystem() },
+    { name = > this.testStateTracking() },
+    { name = > this.testRecoveryProcedures() },
+    { name = > this.testAtomicOperations() },
   ];
 ;
   for (const _testCase of tests) {
@@ -92,8 +92,8 @@ runAllTests();
       result.success = true;catch (/* error */) {
       result.success = false;
       result.errors.push(`Health checks test failed = {success = await this.rollbackSystem.backupManager.createBackup(;
-        'test',;
-        'Test backup',;
+        'test',
+        'Test backup',
       );
   result.details.backupCreation = backupResult;
 ;

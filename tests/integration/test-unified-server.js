@@ -5,20 +5,17 @@
 
 import { UnifiedInterfacePlugin } from './src/plugins/unified-interface/index.js';
 
-async function testUnifiedServer(): unknown {
+async function testUnifiedServer() {
   console.warn('🚀 Testing Unified Server with MCP Integration...');
-;
   try {
     // Create unified interface plugin with MCP enabled
     const _plugin = new UnifiedInterfacePlugin({
-      webPort: 3000,;
-      enableMCP: true,;
-      theme: 'dark',;
+      webPort: 3000,
+      enableMCP: true,
+      theme: 'dark',
     });
-;
     // Initialize the plugin
-    await plugin.initialize();
-;
+  // await plugin.initialize();
     console.warn('✅ Unified server with MCP started successfully!');
     console.warn('🌐 Web UI: http://localhost:3000/');
     console.warn('🔗 MCP endpoint: http://localhost:3000/mcp');
@@ -28,15 +25,14 @@ async function testUnifiedServer(): unknown {
 
     // Keep the server running
     console.warn('🎯 Server running... Press Ctrl+C to stop');
-;
     // Graceful shutdown
     process.on('SIGINT', async () => {
       console.warn('\n🛑 Shutting down...');
-      await plugin.shutdown();
+  // await plugin.shutdown();
       process.exit(0);
     });
   }
-catch (/* error */)
+catch (error)
 {
   console.error('❌ Failed to start unified server:', error.message);
   process.exit(1);

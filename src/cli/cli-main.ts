@@ -8,11 +8,11 @@ node;
 
 import { renderTui } from '../ui/ink-tui.js';
 import {
-  commandRegistry,;
-createMeowCLI,;
-executeCommand,;
-hasCommand,;
-showCommandHelp,;
+  commandRegistry,
+createMeowCLI,
+executeCommand,
+hasCommand,
+showCommandHelp,
 } from './command-registry.js'
 
 import { initializePlugins } from './plugin-activation.js';
@@ -42,14 +42,14 @@ async function _main(): unknown {
     //   // LINT: unreachable code removed}
 ;
   // Commands that don't need plugins (lightweight commands)
-  const _lightweightCommands = [;
-    'init',;
-    'status',;
-    'config',;
-    'help',;
-    'template',;
-    '--help',;
-    '--version',;
+  const _lightweightCommands = [
+    'init',
+    'status',
+    'config',
+    'help',
+    'template',
+    '--help',
+    '--version',
   ];
 ;
   // Initialize plugin system only for commands that need it

@@ -45,7 +45,7 @@ switch(subcommand) {
       await showDocumentStats(flags);
       break;default = await inquirer.prompt([;
         {type = > input.trim().length > 0  ?? 'Title is required';
-        },;
+        },
         {type = answers.documentType;
       title = answers.title;
       content = answers.content;
@@ -56,8 +56,8 @@ switch(subcommand) {
       content = flags.content  ?? `# ${title}\n\n## Overview\n\nTODO = extractKeywords(title + ` ' + content);
 ;
     const __doc = await strategicDocs.createDocument({
-      documentType,;
-      title,;
+      documentType,
+      title,
       content,metadata = args[0]  ?? flags.type;
     const _status = flags.status;
 ;
@@ -188,8 +188,8 @@ switch(subcommand) {
       printInfo('Use --typeflag = extractKeywords(title + ' ' + content);
 ;
     const _doc = await strategicDocs.createDocument({
-      documentType,;
-      title,;
+      documentType,
+      title,
       content,metadata = args[0];
 ;
     if(!documentId) {
@@ -203,21 +203,21 @@ switch(subcommand) {
     await writeFile(outputFile, doc.content);
 ;
     printSuccess(`📤 Exported document to = {
-    'prd': '📋',;
-    'roadmap': '🗺️',;
-    'architecture': '🏗️',;
-    'adr': '📝',;
-    'strategy': '🎯',;
-    'research': '🔬',;
+    'prd': '📋',
+    'roadmap': '🗺️',
+    'architecture': '🏗️',
+    'adr': '📝',
+    'strategy': '🎯',
+    'research': '🔬',
     'specification': '📐';
   };
   return icons[type]  ?? '📄';
 }
 ;
 function getStatusBadge(status = {
-    'draft': '🟡 Draft',;
-    'review': '🟠 Review',;
-    'approved': '🟢 Approved',;
+    'draft': '🟡 Draft',
+    'review': '🟠 Review',
+    'approved': '🟢 Approved',
     'archived': '⚫ Archived';
   };
   return badges[status]  ?? '⚪ Unknown';

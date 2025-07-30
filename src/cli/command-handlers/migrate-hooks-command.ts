@@ -27,8 +27,8 @@ if (args.length > 0) {
 // Execute the migration script
 execSync(command.join(' '), {
       stdio = {
-      handler: 'inherit',;
-cwd: process.cwd(),;
+      handler: 'inherit',
+cwd: process.cwd(),
 })
 } catch (/* error */)
 {
@@ -38,12 +38,12 @@ cwd: process.cwd(),;
 }
 // Export the command configuration
 export const migrateHooksCommandConfig: migrateHooksCommand,ler,
-  description: 'Migrate settings.json hooks to Claude Code 1.0.51+ format',;
-usage: 'migrate-hooks [settings-file]',;
+  description: 'Migrate settings.json hooks to Claude Code 1.0.51+ format',
+usage: 'migrate-hooks [settings-file]',
 examples: [;
-    'claude-zen migrate-hooks                    # Migrate all found settings.json files',;
-    'claude-zen migrate-hooks .claude/settings.json  # Migrate specific file',;
-  ],;
+    'claude-zen migrate-hooks                    # Migrate all found settings.json files',
+    'claude-zen migrate-hooks .claude/settings.json  # Migrate specific file',
+  ],
 details: `;
 Migrates old hooks format to new Claude Code 1.0.51+ format:;
   • Converts object-based hooks to array-based format;
@@ -51,5 +51,5 @@ Migrates old hooks format to new Claude Code 1.0.51+ format:;
   • Removes unsupported fields (mcpServers, features, performance);
   • Searches common locations if no file specified
 ;
-The migration is safe and creates backups of original files.`,;
+The migration is safe and creates backups of original files.`,
 }

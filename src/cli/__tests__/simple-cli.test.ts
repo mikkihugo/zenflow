@@ -7,9 +7,9 @@ import { parseFlags } from '../utils.js';
 
 // Mock the command registry
 jest.mock('../command-registry.js', () => ({
-  executeCommand: jest.fn(),;
-hasCommand: jest.fn(),;
-listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],;
+  executeCommand: jest.fn(),
+hasCommand: jest.fn(),
+listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],
 }))
 =>
 {
@@ -87,13 +87,13 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],;
     });
 ;
     test('should handle command with multiple arguments', async () => {
-      process.argv = [;
-        'node',;
-        'claude-zen',;
-        'swarm',;
-        'Build a REST API',;
-        '--strategy',;
-        'development',;
+      process.argv = [
+        'node',
+        'claude-zen',
+        'swarm',
+        'Build a REST API',
+        '--strategy',
+        'development',
       ];
 ;
       const { executeCommand, hasCommand } = await import('../command-registry.js');
@@ -143,7 +143,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],;
       await import('../cli-main.js');
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
-        expect.stringContaining('Missing required argument'),;
+        expect.stringContaining('Missing required argument'),
       );
     });
   });

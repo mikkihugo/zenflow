@@ -48,8 +48,8 @@ const _CommandInput = (): unknown => {
   React.createElement(Text, null, 'Command: '),
   React.createElement(Text, color: 'cyan' , command),
   React.createElement(
-  Text,;
-  color: 'gray' ,;
+  Text,
+  color: 'gray' ,
   isExecuting ? ' (executing...)' : ' (press Enter)';
   )
   ),
@@ -64,7 +64,7 @@ const _CommandInput = (): unknown => {
   React.createElement(
   Text,
   bold: true,
-  color: result.success ? 'green' : 'red',;
+  color: result.success ? 'green' : 'red',
   ,
   result.success ? '✅ Success' : '❌ Error'
   ),

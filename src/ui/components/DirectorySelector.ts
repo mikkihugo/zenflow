@@ -41,7 +41,7 @@ if (dir.isParent) displayName = '⬆️  ..';
 else if (dir.isCurrent) displayName = '✅ . (Select this directory)';
 else displayName = `📁 ${dir.name}`;
 return React.createElement(;
-// Box,; // LINT: unreachable code removed
+// Box, // LINT: unreachable code removed
 {
   key: dir.path;
 }
@@ -49,9 +49,9 @@ return React.createElement(;
 React.createElement(
 Text,
 {
-  color: isSelected ? 'black' : 'white',;
-  backgroundColor: isSelected ? 'cyan' : undefined,;
-  bold: isSelected,;
+  color: isSelected ? 'black' : 'white',
+  backgroundColor: isSelected ? 'cyan' : undefined,
+  bold: isSelected,
 }
 ,
 `$
@@ -68,12 +68,12 @@ $;
 }
 )
 ),
-React.createElement(Box,;
+React.createElement(Box,
 {
   marginTop: 1;
 }
 ,
-React.createElement(Text,;
+React.createElement(Text,
 {
   color: 'gray';
 }

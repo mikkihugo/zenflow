@@ -15,38 +15,37 @@ console.warn('🐝 Hive Mind with Claude Example\n');
 console.warn('Step 1: Initializing project with Claude configuration...');
 try {
   mkdirSync(hiveMindDir, { recursive: true });
-;
   // Create llm-provider.json with Claude as primary
   const _llmConfig = {
     providers: {
       claude: {
-        enabled: true,;
-        priority: 1,;
-        modelId: 'sonnet',;
-        maxTurns: 5,;
+        enabled: true,
+        priority: 1,
+        modelId: 'sonnet',
+        maxTurns: 5,
         customSystemPrompt:;
-          'You are an expert AI assistant helping with software development. Be concise and practical.',;
+          'You are an expert AI assistant helping with software development. Be concise and practical.',
             customSystemPrompt:;
-              'You are the Queen agent coordinating a hive of specialized agents. Delegate tasks efficiently.',;,;
-            maxTurns: 10,;
+              'You are the Queen agent coordinating a hive of specialized agents. Delegate tasks efficiently.',,
+            maxTurns: 10,
             customSystemPrompt:;
-              'You are a research specialist. Provide thorough analysis with sources.',;,;
+              'You are a research specialist. Provide thorough analysis with sources.',,
             customSystemPrompt:;
-              'You are a coding expert. Write clean, well-documented code following best practices.',;,;,;
-      }
+              'You are a coding expert. Write clean, well-documented code following best practices.',,
+}
 ,
 {
-  apiKey: process.env.GEMINI_API_KEY  ?? null,;
-  priority: 2,;
+  apiKey: process.env.GEMINI_API_KEY  ?? null,
+  priority: 2
 }
 ,
 },
 defaultProvider: 'claude',
-fallbackProvider: 'google',
+fallbackProvider: 'google'
 }
 writeFileSync(path.join(hiveMindDir, 'llm-provider.json'), JSON.stringify(llmConfig, null, 2))
 console.warn('✅ Claude configuration created\n')
-} catch (/* error */)
+} catch (error)
 {
   console.error('Failed to create configuration:', error.message);
 }
@@ -81,18 +80,18 @@ console.warn('claude-zen hive-mind status\n');
 // Step 4: Create example task for Claude
 console.warn('Step 4: Creating example task file...');
 const _exampleTask = {
-  id: 'example-001',;
-title: 'Implement user authentication',;
-description: 'Add JWT-based authentication to the task management API',;
-priority: 'high',;
-assignedTo: 'backend-dev',;
+  id: 'example-001',
+title: 'Implement user authentication',
+description: 'Add JWT-based authentication to the task management API',
+priority: 'high',
+assignedTo: 'backend-dev',
 subtasks: [;
-    'Design authentication schema',;
-    'Implement JWT token generation',;
-    'Create login/logout endpoints',;
-    'Add authentication middleware',;
-    'Write authentication tests',;
-  ],;
+    'Design authentication schema',
+    'Implement JWT token generation',
+    'Create login/logout endpoints',
+    'Add authentication middleware',
+    'Write authentication tests',
+  ]
 }
 writeFileSync(path.join(exampleDir, 'example-task.json'), JSON.stringify(exampleTask, null, 2))
 console.warn('✅ Example task created: example-task.json\n')

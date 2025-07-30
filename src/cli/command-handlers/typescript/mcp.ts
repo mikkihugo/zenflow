@@ -32,8 +32,8 @@ export const mcpCommand = {
     //   // LINT: unreachable code removed}
         return true;
 }
-    },;
-{name = neural',;
+    },
+{name = neural',
       description => {
 ;
     const _logger = context.logger.child({command = (context.arguments[0] as McpSubCommand)  ?? 'help';
@@ -118,18 +118,18 @@ async function showMcpStatus(options = {status = await import('url': unknown);
 ;
   if (!options.category  ?? options.category === 'swarm') {
     console.warn('\n🐝 SWARM COORDINATION (12 tools):');
-    const _swarmTools = [;
-      'swarm_init            Initialize swarm with topology',;
-      'agent_spawn           Create specialized AI agents',;
-      'task_orchestrate      Orchestrate complex workflows',;
-      'swarm_status          Monitor swarm health/performance',;
-      'agent_list            List active agents & capabilities',;
-      'agent_metrics         Agent performance metrics',;
-      'swarm_monitor         Real-time swarm monitoring',;
-      'topology_optimize     Auto-optimize swarm topology',;
-      'load_balance          Distribute tasks efficiently',;
-      'coordination_sync     Sync agent coordination',;
-      'swarm_scale           Auto-scale agent count',;
+    const _swarmTools = [
+      'swarm_init            Initialize swarm with topology',
+      'agent_spawn           Create specialized AI agents',
+      'task_orchestrate      Orchestrate complex workflows',
+      'swarm_status          Monitor swarm health/performance',
+      'agent_list            List active agents & capabilities',
+      'agent_metrics         Agent performance metrics',
+      'swarm_monitor         Real-time swarm monitoring',
+      'topology_optimize     Auto-optimize swarm topology',
+      'load_balance          Distribute tasks efficiently',
+      'coordination_sync     Sync agent coordination',
+      'swarm_scale           Auto-scale agent count',
       'swarm_destroy         Gracefully shutdown swarm';
     ];
 ;
@@ -138,21 +138,21 @@ async function showMcpStatus(options = {status = await import('url': unknown);
       console.warn(`  • ${tool}`);
       tools.push({name = === 'neural') {
     console.warn('\n🧠 NEURAL NETWORKS & AI (15 tools):');
-    const _neuralTools = [;
-      'neural_status         Check neural network status',;
-      'neural_train          Train neural patterns',;
-      'neural_patterns       Analyze cognitive patterns',;
-      'neural_predict        Make AI predictions',;
-      'model_load            Load pre-trained models',;
-      'model_save            Save trained models',;
-      'wasm_optimize         WASM SIMD optimization',;
-      'inference_run         Run neural inference',;
-      'pattern_recognize     Pattern recognition',;
-      'cognitive_analyze     Cognitive behavior analysis',;
-      'learning_adapt        Adaptive learning',;
-      'neural_compress       Compress neural models',;
-      'ensemble_create       Create model ensembles',;
-      'transfer_learn        Transfer learning',;
+    const _neuralTools = [
+      'neural_status         Check neural network status',
+      'neural_train          Train neural patterns',
+      'neural_patterns       Analyze cognitive patterns',
+      'neural_predict        Make AI predictions',
+      'model_load            Load pre-trained models',
+      'model_save            Save trained models',
+      'wasm_optimize         WASM SIMD optimization',
+      'inference_run         Run neural inference',
+      'pattern_recognize     Pattern recognition',
+      'cognitive_analyze     Cognitive behavior analysis',
+      'learning_adapt        Adaptive learning',
+      'neural_compress       Compress neural models',
+      'ensemble_create       Create model ensembles',
+      'transfer_learn        Transfer learning',
       'neural_explain        AI explainability';
     ];
 ;
@@ -161,18 +161,18 @@ async function showMcpStatus(options = {status = await import('url': unknown);
       console.warn(`  • ${tool}`);
       tools.push({name = === 'memory') {
     console.warn('\n💾 MEMORY & PERSISTENCE (12 tools):');
-    const _memoryTools = [;
-      'memory_usage          Store/retrieve persistent data',;
-      'memory_search         Search memory with patterns',;
-      'memory_persist        Cross-session persistence',;
-      'memory_namespace      Namespace management',;
-      'memory_backup         Backup memory stores',;
-      'memory_restore        Restore from backups',;
-      'memory_compress       Compress memory data',;
-      'memory_sync           Sync across instances',;
-      'cache_manage          Manage coordination cache',;
-      'state_snapshot        Create state snapshots',;
-      'context_restore       Restore execution context',;
+    const _memoryTools = [
+      'memory_usage          Store/retrieve persistent data',
+      'memory_search         Search memory with patterns',
+      'memory_persist        Cross-session persistence',
+      'memory_namespace      Namespace management',
+      'memory_backup         Backup memory stores',
+      'memory_restore        Restore from backups',
+      'memory_compress       Compress memory data',
+      'memory_sync           Sync across instances',
+      'cache_manage          Manage coordination cache',
+      'state_snapshot        Create state snapshots',
+      'context_restore       Restore execution context',
       'memory_analytics      Analyze memory usage';
     ];
 ;

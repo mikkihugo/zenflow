@@ -186,8 +186,8 @@ export class AtomicOperation {
     // Mark checkpoint as committed
     if(this.checkpointId) {
       await this.rollbackSystem.stateTracker.updateCheckpoint(this.checkpointId, {
-        status: 'committed',;
-        completed: Date.now(),;
+        status: 'committed',
+        completed: Date.now(),
       });
     }
 ;
@@ -197,8 +197,8 @@ export class AtomicOperation {
   async rollback() ;
     if(this.checkpointId && !this.completed) {
       await this.rollbackSystem.performPartialRollback(;
-        `atomic-${this.operationName}`,;
-        this.checkpointId,;
+        `atomic-${this.operationName}`,
+        this.checkpointId,
       );
     }
 ;

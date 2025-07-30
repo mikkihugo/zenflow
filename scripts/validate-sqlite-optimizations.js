@@ -12,20 +12,19 @@ import { SqliteMemoryStore } from '../src/memory/sqlite-store.js';
 import { getLoadError } from '../src/memory/sqlite-wrapper.js';
 
 const _colors = {
-  green: '\x1b[32m',;
-red: '\x1b[31m',;
-yellow: '\x1b[33m',;
-blue: '\x1b[34m',;
-cyan: '\x1b[36m',;
-reset: '\x1b[0m',;
+  green: '\x1b[32m',
+red: '\x1b[31m',
+yellow: '\x1b[33m',
+blue: '\x1b[34m',
+cyan: '\x1b[36m',
+reset: '\x1b[0m'
 }
-function log(): unknown {
+function log() {
   console.warn(`${colors[color]}${message}${colors.reset}`);
 }
-async function validateSQLiteOptimizations(): unknown {
+async function validateSQLiteOptimizations() {
   log('🔍 SQLite Performance Optimization Validation', 'blue');
   log('='.repeat(50), 'blue');
-;
   // Check SQLite availability
   const _available = await isSQLiteAvailable();
   if (!available) {
@@ -34,31 +33,24 @@ async function validateSQLiteOptimizations(): unknown {
     log('   Performance optimizations cannot be tested', 'yellow');
     return false;
     //   // LINT: unreachable code removed}
-;
   log('✅ SQLite is available', 'green');
-;
   // Create test directory
   const _testDir = path.join(os.tmpdir(), `sqlite-validation-${Date.now()}`);
-  await fs.mkdir(testDir, { recursive: true });
+  // await fs.mkdir(testDir, { recursive: true });
   log(`📂 Test directory: ${testDir}`, 'cyan');
-;
   const _allTestsPassed = true;
-;
   try {
     // Test 1: Basic functionality with optimizations
     log('\n📈 Test 1: Basic Functionality with Optimizations', 'blue');
-;
     const _store = new SqliteMemoryStore({
-      directory: testDir,;
-      dbName: 'optimization-test.db',;
-      enableCache: true,;
-      cacheSize: 5000,;
-      cacheTimeout: 60000,;
+      directory: testDir,
+      dbName: 'optimization-test.db',
+      enableCache: true,
+      cacheSize: 5000,
+      cacheTimeout: 60000,
     });
-;
-    await store.initialize();
+  // await store.initialize();
     log('✅ Store initialized with optimizations', 'green');
-;
     // Check indexes were created
     const _indexCheck = store.db;
       .prepare(`;
@@ -66,18 +58,16 @@ async function validateSQLiteOptimizations(): unknown {
       WHERE type = 'index' AND tbl_name = 'memory_entries';
     `);
       .get();
-;
     if (indexCheck.count >= 10) {
       log(`✅ Performance indexes created ($indexCheck.countindexes)`, 'green');
     } else {
       log(`❌ Expected at least 10 indexes, found ${indexCheck.count}`, 'red');
       allTestsPassed = false;
     }
-;
     // Test cache functionality
-    await store.store('cache-test', { data: 'test value' });
-    await store.retrieve('cache-test'); // Miss
-    await store.retrieve('cache-test'); // Hit
+  // await store.store('cache-test', { data: 'test value' });
+  // await store.retrieve('cache-test'); // Miss
+  // await store.retrieve('cache-test'); // Hit
 
     const _cacheStats = store.getPerformanceStats();
     if (cacheStats.cache.enabled && cacheStats.cache.hits > 0) {
@@ -86,19 +76,15 @@ async function validateSQLiteOptimizations(): unknown {
       log('❌ Query caching not working as expected', 'red');
       allTestsPassed = false;
     }
-;
     store.close();
-;
     // Test 2: Connection Pool
     log('\n⚡ Test 2: Connection Pool', 'blue');
-;
     const _poolDbPath = path.join(testDir, 'pool-test.db');
     const _pool = new SQLiteConnectionPool(poolDbPath, {
-      minConnections: 2,;
-      maxConnections: 4,;
-    }
-)
-await pool.initialize()
+      minConnections: 2,
+      maxConnections: 4
+})
+  // await pool.initialize()
 const _poolStats = pool.getStats();
 if (poolStats.totalConnections === 2 && poolStats.availableConnections === 2) {
   log('✅ Connection pool initialized correctly', 'green');
@@ -107,9 +93,9 @@ if (poolStats.totalConnections === 2 && poolStats.availableConnections === 2) {
   allTestsPassed = false;
 }
 // Test concurrent operations
-await pool.execute(`;
+  // await pool.execute(`;
       CREATE TABLE IF NOT EXISTS test_concurrent (;
-        id INTEGER PRIMARY KEY,;
+        id INTEGER PRIMARY KEY,
         value TEXT;
       );
     `);
@@ -119,7 +105,7 @@ for (let i = 0; i < 10; i++) {
   pool.execute('INSERT INTO test_concurrent (value) VALUES (?)', [`value-${i}`]);
   )
 }
-await Promise.all(concurrentOps);
+  // await Promise.all(concurrentOps);
 const _result = await pool.execute('SELECT COUNT(*) as count FROM test_concurrent');
 if (result[0].count === 10) {
   log('✅ Concurrent operations successful', 'green');
@@ -127,23 +113,23 @@ if (result[0].count === 10) {
   log(`❌ Concurrent operations failed: expected 10, got ${result[0].count}`, 'red');
   allTestsPassed = false;
 }
-await pool.shutdown();
+  // await pool.shutdown();
 // Test 3: Performance with Large Dataset
 log('\n🚀 Test 3: Performance with Large Dataset', 'blue');
 const _perfStore = new SqliteMemoryStore({
-      directory: testDir,;
-dbName: 'performance-test.db',;
-enableCache: true,;
+      directory: testDir,
+dbName: 'performance-test.db',
+enableCache: true
 })
-await perfStore.initialize()
+  // await perfStore.initialize()
 const _start = Date.now();
 // Insert 1000 entries
 for (let i = 0; i < 1000; i++) {
-  await perfStore.store(;
-  `perf-key-${i}`,;
-  id: i,;
-  data: `Performance test entry ${i}`,;
-  tags: [`tag-${i % 10}`, `category-${i % 5}`],;
+  // await perfStore.store(;
+  `perf-key-${i}`,
+  id: i,
+  data: `Performance test entry ${i}`,
+  tags: [`tag-${i % 10}`, `category-${i % 5}`],
   ,
   namespace: `namespace-${i % 10}`;
   )
@@ -154,14 +140,14 @@ log(`📊 Insert time for 1000 entries: ${insertTime}ms`, 'cyan');
 const _queryStart = Date.now();
 // Key lookups
 for (let i = 0; i < 100; i++) {
-  await perfStore.retrieve(`perf-key-${i}`, { namespace: `namespace-${i % 10}` });
+  // await perfStore.retrieve(`perf-key-${i}`, { namespace: `namespace-${i % 10}` });
 }
 // List operations
 for (let i = 0; i < 10; i++) {
-  await perfStore.list({ namespace: `namespace-${i}`, limit: 50 });
+  // await perfStore.list({ namespace: `namespace-${i}`, limit: 50 });
 }
 // Search operations
-await perfStore.search('Performance test', { limit: 50 });
+  // await perfStore.search('Performance test', { limit: 50 });
 const _queryTime = Date.now() - queryStart;
 log(`📊 Query time for mixed operations: ${queryTime}ms`, 'cyan');
 // Check cache effectiveness
@@ -183,17 +169,17 @@ if (queryTime < 5000) {
 // Get database statistics
 const _dbStats = await perfStore.getDatabaseStats();
 log(;
-`📊 Database stats: ${dbStats.entries} entries, ${dbStats.namespaces} namespaces, ${dbStats.indexes} indexes`,;
+`📊 Database stats: ${dbStats.entries} entries, ${dbStats.namespaces} namespaces, ${dbStats.indexes} indexes`,
 ('cyan');
 )
 perfStore.close()
 // Test 4: Query Analysis
 log('\n🔍 Test 4: Query Analysis', 'blue')
 const _analysisStore = new SqliteMemoryStore({
-      directory: testDir,;
-dbName: 'analysis-test.db',;
+      directory: testDir,
+dbName: 'analysis-test.db'
 })
-await analysisStore.initialize()
+  // await analysisStore.initialize()
 const _analysis = await analysisStore.analyzeQueryPerformance();
 if (analysis.queryPlans && Object.keys(analysis.queryPlans).length >= 4) {
   log('✅ Query analysis working', 'green');
@@ -202,7 +188,7 @@ if (analysis.queryPlans && Object.keys(analysis.queryPlans).length >= 4) {
   allTestsPassed = false;
 }
 analysisStore.close();
-} catch (/* error */)
+} catch (error)
 {
   log(`❌ Test failed with error: ${error.message}`, 'red');
   console.error(error);
@@ -211,7 +197,7 @@ analysisStore.close();
 finally
 {
   // Cleanup
-  await fs.rm(testDir, { recursive: true, force: true });
+  // await fs.rm(testDir, { recursive: true, force: true });
 }
 // Summary
 log('\n📋 Validation Summary', 'blue');

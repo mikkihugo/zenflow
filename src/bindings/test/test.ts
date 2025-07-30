@@ -2,13 +2,13 @@
  * Integration tests for ruv-FANN Node.js bindings;
  */
 import {
-  getActivationFunctions,;
-getBackendInfo,;
-getVersion,;
-init,;
-isGpuAvailable,;
-NetworkTrainer,;
-NeuralNetwork,;
+  getActivationFunctions,
+getBackendInfo,
+getVersion,
+init,
+isGpuAvailable,
+NetworkTrainer,
+NeuralNetwork,
 } from '../index.js'
 async
 function runTests(): unknown {
@@ -55,18 +55,18 @@ function runTests(): unknown {
 ;
     const _trainingData = {
       inputs: [;
-        [0, 0],;
-        [0, 1],;
-        [1, 0],;
-        [1, 1],;
-      ],;
-      outputs: [[0], [1], [1], [0]],;
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1],
+      ],
+      outputs: [[0], [1], [1], [0]],
     }
   const _config = {
-      learning_rate: 0.7,;
-  max_epochs: 1000,;
-  desired_error: 0.01,;
-  algorithm: 'rprop',;
+      learning_rate: 0.7,
+  max_epochs: 1000,
+  desired_error: 0.01,
+  algorithm: 'rprop',
 }
 const _finalError = await trainer.train(trainingData.inputs, trainingData.outputs, config);
 console.warn(`✓ Batch training completed with final error: ${finalError}`);

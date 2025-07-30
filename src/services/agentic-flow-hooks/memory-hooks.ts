@@ -9,10 +9,10 @@ try {
 ;
       switch (operation) {
         case 'store':;
-          return {success = [;
+          return {success = [
     // { // LINT: unreachable code removed
-    name: 'memory-cache',;
-    type: 'memory-operation',;
+    name: 'memory-cache',
+    type: 'memory-operation',
     hook: memoryCache;
   }
 ];

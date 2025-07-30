@@ -139,7 +139,7 @@ export class CircuitBreaker {
   private state = 'closed';
 ;
   constructor(;
-    private failureThreshold = 5,;
+    private failureThreshold = 5,
     private recoveryTimeout = 60000;
   ) {}
 ;
@@ -191,7 +191,7 @@ export class CircuitBreaker {
  * Retry utility with exponential backoff;
  */;
 export async function retryWithBackoff<T>(operation = > Promise<T>,
-  maxRetries = 3,;
+  maxRetries = 3,
   baseDelay = 1000,shouldRetry = > boolean = () => true;
 ): Promise<T> {
   let _lastError = 0; attempt <= maxRetries; attempt++) {

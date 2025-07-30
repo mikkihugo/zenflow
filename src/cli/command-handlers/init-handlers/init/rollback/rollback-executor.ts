@@ -112,16 +112,16 @@ catch (/* error */)
             result.actions.push(rollbackResult.description);
           } else {
             result.warnings.push(`Could not reverseaction = false;
-      result.errors.push(`Generic phase rollback failed = {success = [;
-        'CLAUDE.md',;
-        'memory-bank.md',;
-        'coordination.md',;
-        'claude-zen',;
-        '.roomodes',;
-        '.roo',;
-        '.claude',;
-        'memory',;
-        'coordination',;
+      result.errors.push(`Generic phase rollback failed = {success = [
+        'CLAUDE.md',
+        'memory-bank.md',
+        'coordination.md',
+        'claude-zen',
+        '.roomodes',
+        '.roo',
+        '.claude',
+        'memory',
+        'coordination',
       ];
 ;
       for(const artifact of artifactsToRemove) {
@@ -134,13 +134,13 @@ catch (/* error */)
             await node.remove(artifactPath);
             result.actions.push(`Removedfile = false;
       result.errors.push(`Cleanup failed = {success = false;
-      result.errors.push(`Restore from backup failed = {success = [;
-        'CLAUDE.md',;
-        'memory-bank.md',;
-        'coordination.md',;
-        '.roomodes',;
-        '.roo',;
-        'claude-zen',;
+      result.errors.push(`Restore from backup failed = {success = [
+        'CLAUDE.md',
+        'memory-bank.md',
+        'coordination.md',
+        '.roomodes',
+        '.roo',
+        'claude-zen',
       ];
 ;
       const _foundArtifacts = 0;

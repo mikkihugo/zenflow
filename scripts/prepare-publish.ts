@@ -66,36 +66,36 @@ function getPackageVersion(): string {
 function getVersionFiles(version: string): VersionFile[] {
   return [;
     // { // LINT: unreachable code removed
-      path: 'src/cli/cli-main.ts',;
-      pattern: /const VERSION = '[^']+';/,;
-  replacement: `const VERSION = '${version}';`,;
+      path: 'src/cli/cli-main.ts',
+      pattern: /const VERSION = '[^']+';/,
+  replacement: `const VERSION = '${version}';`,
 }
 ,
 {
-  path: 'src/cli/index.ts',;
-  pattern: /const VERSION = '[^']+';/,;
-  replacement: `const VERSION = '${version}';`,;
+  path: 'src/cli/index.ts',
+  pattern: /const VERSION = '[^']+';/,
+  replacement: `const VERSION = '${version}';`,
 }
 ,
 {
-  path: 'src/cli/index-remote.ts',;
-  pattern: /const VERSION = '[^']+';/,;
-  replacement: `const VERSION = '${version}';`,;
+  path: 'src/cli/index-remote.ts',
+  pattern: /const VERSION = '[^']+';/,
+  replacement: `const VERSION = '${version}';`,
 }
 ,
 {
   path: 'bin/claude-zen', pattern;
-  : /VERSION="[^"]+"/, replacement: `VERSION="$version"` },;
+  : /VERSION="[^"]+"/, replacement: `VERSION="$version"` },
       path: 'src/cli/commands/status.ts',
-  pattern: /version: '[^']+'/g,;
+  pattern: /version: '[^']+'/g,
   replacement: `version: '${version}'`,
   ,
   path: 'src/cli/init/claude-config.ts',
-  pattern: /version: "[^"]+"/g,;
+  pattern: /version: "[^"]+"/g,
   replacement: `version: "${version}"`,
   ,
   path: 'src/cli/init/directory-structure.ts',
-  pattern: /version: "[^"]+"/g,;
+  pattern: /version: "[^"]+"/g,
   replacement: `version: "${version}"`,
   ,
   ]
@@ -151,7 +151,6 @@ function buildTypeScriptFiles(): void {
     console.warn('   ✅ CLI files built successfully');
   } catch (/* _error */) {
     console.warn('   ⚠️  Build had errors, trying fallback...');
-;
     try {
       // Fallback: try the regular build
       execSync('npm run build:ts', { cwd: rootDir, stdio: 'inherit' });
@@ -195,10 +194,9 @@ function checkPublishFiles(): void {
   console.warn('\n📋 Files to be published:');
   try {
     const _packOutput = execSync('npm pack --dry-run --json', {
-      cwd: rootDir,;
-      encoding: 'utf8',;
-    }
-  )
+      cwd: rootDir,
+      encoding: 'utf8'
+})
   const _packInfo = JSON.parse(packOutput) as PackInfo[];
   if (packInfo[0]?.files) {
     const _importantFiles = packInfo[0].files.filter(
@@ -248,24 +246,18 @@ function displayNextSteps(_version: string): void {
 async function _main(): Promise<void> {
   try {
     console.warn('🚀 Preparing for npm publish...\n');
-;
     // Get package version
     const _version = getPackageVersion();
     console.warn(`📦 Package version: ${version}\n`);
-;
     // Update version in source files
     updateVersionFiles(version);
-;
     // Clean and build
     cleanDistDirectory();
     buildTypeScriptFiles();
-;
     // Verify build outputs
     verifyDistFiles(version);
-;
     // Check what will be published
     checkPublishFiles();
-;
     // Display next steps
     displayNextSteps(version);
   } catch (/* error */) {

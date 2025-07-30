@@ -20,7 +20,7 @@ if (!fs.existsSync(DEST_DIR)) {
     fs.mkdirSync(destPath, {recursive = path.join(destPath, 'README.md');
     if (!fs.existsSync(readmePath)) {
       fs.writeFileSync(;
-      readmePath,;
+      readmePath,
       `# ${dirName}\n\nThis directory is intentionally empty and will be populated during usage.\n`;
       )
     }
@@ -41,7 +41,7 @@ for(const file of manifest.files) {
       if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir, {recursive = '.repeat(50));
 console.warn('InstallationSummary = manifest.files.filter(;
-    (_f) => f.category === category && fs.existsSync(path.join(DEST_DIR, f.destination)),;
+    (_f) => f.category === category && fs.existsSync(path.join(DEST_DIR, f.destination)),
   ).length;
   console.warn(`  ${category}: ${copied}/${info.count} files`);
 }
@@ -53,8 +53,8 @@ if(errorCount === 0) {
   // Create a timestamp file
   const _timestamp = new Date().toISOString();
   fs.writeFileSync(;
-    path.join(__dirname, '.installed'),;
-    `Installed: ${timestamp}\nVersion: ${manifest.version}\n`,;
+    path.join(__dirname, '.installed'),
+    `Installed: ${timestamp}\nVersion: ${manifest.version}\n`,
   );
 } else {
   console.warn('\n⚠️  Template installation completed with errors.');

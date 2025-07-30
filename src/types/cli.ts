@@ -4,13 +4,13 @@
  */
 // Re-export CLI errors
 export type {
-  CliError as CLIError,;
-CliErrorCode,;
-CommandExecutionError,;
-ConfigurationError,;
-formatErrorMessage,;
-handleError,;
-ValidationError,;
+  CliError as CLIError,
+CliErrorCode,
+CommandExecutionError,
+ConfigurationError,
+formatErrorMessage,
+handleError,
+ValidationError,
 } from '../cli/core/cli-error.js'
 // =============================================================================
 // CLI ERROR TYPES
@@ -27,9 +27,9 @@ COMMAND_ERROR = 'COMMAND_ERROR',
 NETWORK_ERROR = 'NETWORK_ERROR',
 FILE_ERROR = 'FILE_ERROR',
 PERMISSION_ERROR = 'PERMISSION_ERROR',
-TIMEOUT_ERROR = 'TIMEOUT_ERROR',;
-AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',;
-NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',;
+TIMEOUT_ERROR = 'TIMEOUT_ERROR',
+AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
+NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
 }
 /**
  * Logger interface for error handling;

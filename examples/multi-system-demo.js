@@ -11,12 +11,12 @@ class MultiSystemDemo {
   constructor() {
     this.coordinator = null;
     this.demoResults = {
-      lancedb: {},;
+      lancedb: {},
     ,
     ,
     ,
-    startTime: Date.now(),
-  }
+    startTime: Date.now()
+}
 }
 async;
 run();
@@ -24,26 +24,22 @@ run();
   console.warn('🚀 Multi-System Integration Demo Starting...\n');
   try {
       // Initialize the coordinator
-      await this.initializeCoordinator();
-;
+  // await this.initializeCoordinator();
       // Run individual system demos
-      await this.runLanceDBDemo();
-      await this.runKuzuDemo();
-      await this.runVisionDemo();
-;
+  // await this.runLanceDBDemo();
+  // await this.runKuzuDemo();
+  // await this.runVisionDemo();
       // Run integration demos
-      await this.runIntegrationDemo();
-;
+  // await this.runIntegrationDemo();
       // Generate comprehensive report
-      await this.generateReport();
-;
+  // await this.generateReport();
       console.warn('\n✅ Multi-System Demo completed successfully!');
-    } catch (/* error */) {
+    } catch (error) {
       console.error('\n❌ Demo failed:', error.message);
       throw error;
     } finally {
       if (this.coordinator) {
-        await this.coordinator.close();
+  // await this.coordinator.close();
       }
     }
 }
@@ -53,24 +49,24 @@ initializeCoordinator();
   console.warn('🔧 Initializing Multi-System Coordinator...');
   this.coordinator = new MultiSystemCoordinator({
       lancedb: {
-        dbPath: './demo-data/vectors',;
+        dbPath: './demo-data/vectors',
   vectorDim: 384, // Smaller dimension for demo
 }
 ,
 {
-  dbPath: './demo-data/graph',;
-  dbName: 'demo-graph',;
-  enableAnalytics: true,;
+  dbPath: './demo-data/graph',
+  dbName: 'demo-graph',
+  enableAnalytics: true
 }
 ,
 {
-  outputDir: './demo-data/generated-code',;
-  enableAnalytics: true,;
+  outputDir: './demo-data/generated-code',
+  enableAnalytics: true
 }
 ,
 enableCrossSystemAnalytics: true,
 enableMemorySharing: true,
-enableIntelligentRouting: true,
+enableIntelligentRouting: true
 })
 const _result = await this.coordinator.initialize();
 console.warn('✅ Coordinator initialized');
@@ -84,38 +80,34 @@ runLanceDBDemo()
   try {
       // Demo 1: Document embeddings and semantic search
       console.warn('  📄 Demo 1: Document semantic search');
-;
-      const _documents = [;
+      const _documents = [
         {
-          id: 'doc1',;
-          content: 'React components for building user interfaces',;
-          title: 'React Components Guide',;
-          source: 'documentation',;
-        },;
+          id: 'doc1',
+          content: 'React components for building user interfaces',
+          title: 'React Components Guide',
+          source: 'documentation',
+        },
         {
-          id: 'doc2',;
-          content: 'Vue.js reactive data and computed properties',;
-          title: 'Vue Reactivity System',;
-          source: 'documentation',;
-        },;
+          id: 'doc2',
+          content: 'Vue.js reactive data and computed properties',
+          title: 'Vue Reactivity System',
+          source: 'documentation',
+        },
         {
-          id: 'doc3',;
-          content: 'Angular services and dependency injection patterns',;
-          title: 'Angular Architecture',;
-          source: 'documentation',;
-        },;
+          id: 'doc3',
+          content: 'Angular services and dependency injection patterns',
+          title: 'Angular Architecture',
+          source: 'documentation',
+        },
       ];
-;
       const _insertCount = await this.coordinator.lancedb.insertDocuments(documents);
       console.warn(`     - Inserted ${insertCount} documents`);
-;
       // Semantic search
       const _searchResults = await this.coordinator.lancedb.semanticSearch('React UI components', {
-        table: 'documents',;
-        limit: 2,;
-        threshold: 0.5,;
-      }
-  )
+        table: 'documents',
+        limit: 2,
+        threshold: 0.5
+})
   console.warn(`     - Found $searchResults.results.lengthsimilar documents`)
   this.demoResults.lancedb.semanticSearch = searchResults
   // Demo 2: Code similarity analysis
@@ -123,17 +115,17 @@ runLanceDBDemo()
   const _codeSnippets = [
     ;
         {
-          id: 'code1',;
-          code: 'function useCounter(): unknown { const [count, setCount] = useState(0); return { count, setCount }; }',;
-          language: 'javascript',;
-          file_path: 'hooks/useCounter.js',;
-        },;
+          id: 'code1',
+          code: 'function useCounter() { const [count, setCount] = useState(0); return { count, setCount }; }',
+          language: 'javascript',
+          file_path: 'hooks/useCounter.js',
+        },
         {
-          id: 'code2',;
-          code: 'const useToggle = (): unknown => { const [isOn, setIsOn] = useState(false); return [isOn, setIsOn]; }',;
-          language: 'javascript',;
-          file_path: 'hooks/useToggle.js',;
-        },;,,,,,,,
+          id: 'code2',
+          code: 'const useToggle = (): unknown => { const [isOn, setIsOn] = useState(false); return [isOn, setIsOn]; }',
+          language: 'javascript',
+          file_path: 'hooks/useToggle.js',
+        },,,,,,,,
   ];
   const _codeInsertCount = await this.coordinator.lancedb.insertCodeSnippets(codeSnippets);
   console.warn(`     - Inserted $codeInsertCountcode snippets`);
@@ -145,7 +137,7 @@ runLanceDBDemo()
   this.demoResults.lancedb.analytics = analytics;
   console.warn('  ✅ LanceDB demo completed\n');
 }
-catch (/* error */)
+catch (error)
 {
   console.error('  ❌ LanceDB demo failed:', error.message);
   this.demoResults.lancedb.error = error.message;
@@ -158,59 +150,52 @@ runKuzuDemo()
   try {
       // Demo 1: Service graph modeling
       console.warn('  🏗️ Demo 1: Service graph modeling');
-;
-      const _services = [;
+      const _services = [
         {
-          name: 'user-service',;
-          path: '/services/user',;
-          type: 'microservice',;
-          codeStats: { complexity: 'medium', lineCount: 1500, fileCount: 12 },;
-          technologies: ['nodejs', 'postgresql'],;
-          apis: [{ file: 'user-api.js' }],;
-        },;
+          name: 'user-service',
+          path: '/services/user',
+          type: 'microservice',
+          codeStats: { complexity: 'medium', lineCount: 1500, fileCount: 12 },
+          technologies: ['nodejs', 'postgresql'],
+          apis: [{ file: 'user-api.js' }],
+        },
         {
-          name: 'auth-service',;
-          path: '/services/auth',;
-          type: 'microservice',;
-          codeStats: { complexity: 'low', lineCount: 800, fileCount: 6 },;
-          technologies: ['nodejs', 'jwt'],;
-          apis: [{ file: 'auth-api.js' }],;
-        },;
+          name: 'auth-service',
+          path: '/services/auth',
+          type: 'microservice',
+          codeStats: { complexity: 'low', lineCount: 800, fileCount: 6 },
+          technologies: ['nodejs', 'jwt'],
+          apis: [{ file: 'auth-api.js' }],
+        },
         {
-          name: 'notification-service',;
-          path: '/services/notification',;
-          type: 'microservice',;
-          codeStats: { complexity: 'low', lineCount: 600, fileCount: 4 },;
-          technologies: ['nodejs', 'redis'],;
-          apis: [{ file: 'notification-api.js' }],;
-        },;
+          name: 'notification-service',
+          path: '/services/notification',
+          type: 'microservice',
+          codeStats: { complexity: 'low', lineCount: 600, fileCount: 4 },
+          technologies: ['nodejs', 'redis'],
+          apis: [{ file: 'notification-api.js' }],
+        },
       ];
-;
       const _serviceCount = await this.coordinator.kuzu.insertServices(services);
       console.warn(`     - Inserted $serviceCountservices`);
-;
       // Insert relationships
-      const _relationships = [;
-        { from: 'user-service', to: 'auth-service', type: 'DEPENDS_ON', strength: 'strong' },;
+      const _relationships = [
+        { from: 'user-service', to: 'auth-service', type: 'DEPENDS_ON', strength: 'strong' },
         {
-          from: 'user-service',;
-          to: 'notification-service',;
-          type: 'DEPENDS_ON',;
-          strength: 'medium',;
-        },;
+          from: 'user-service',
+          to: 'notification-service',
+          type: 'DEPENDS_ON',
+          strength: 'medium',
+        },
       ];
-;
       const _relCount = await this.coordinator.kuzu.insertRelationships(relationships);
       console.warn(`     - Inserted $relCountrelationships`);
-;
       // Demo 2: Advanced graph analysis
       console.warn('  📐 Demo 2: Centrality analysis');
-;
       const _centrality = await this.coordinator.kuzu.computeCentrality({
-        algorithm: 'degree',;
-        nodeType: 'Service',;
-      }
-  )
+        algorithm: 'degree',
+        nodeType: 'Service'
+})
   console.warn(`     - Computed centrality
   for ${centrality.scores.length} nodes`);
   console.warn(;
@@ -220,10 +205,9 @@ runKuzuDemo()
   // Demo 3: Community detection
   console.warn('  🏘️ Demo 3: Community detection');
   const _communities = await this.coordinator.kuzu.detectCommunities({
-        algorithm: 'louvain',;
-  nodeType: 'Service',;
-}
-)
+        algorithm: 'louvain',
+  nodeType: 'Service'
+})
 console.warn(`     - Detected
   $communities.communities.lengthcommunities`);
 console.warn(` - Modularity;
@@ -232,9 +216,9 @@ this.demoResults.kuzu.communities = communities;
 // Demo 4: Advanced traversal
 console.warn('  🔍 Demo 4: Graph traversal');
 const _traversal = await this.coordinator.kuzu.advancedTraversal({
-        startNode: 'user-service',;
-algorithm: 'dfs',;
-maxDepth: 3,;
+        startNode: 'user-service',
+algorithm: 'dfs',
+maxDepth: 3
 })
 console.warn(` - Traversal;
   found;
@@ -244,7 +228,7 @@ console.warn(` - Execution;
   time: $traversal.execution_timems`);
 this.demoResults.kuzu.traversal = traversal;
 console.warn('  ✅ Kuzu demo completed\n');
-} catch (/* error */)
+} catch (error)
 {
   console.error('  ❌ Kuzu demo failed:', error.message);
   this.demoResults.kuzu.error = error.message;
@@ -256,19 +240,16 @@ runVisionDemo();
   console.warn('🔹 Running Vision-to-Code Enhanced Demo...');
   try {
       // Create a demo image placeholder
-      await this.createDemoImage();
-;
+  // await this.createDemoImage();
       // Demo 1: React component generation
       console.warn('  ⚛️ Demo 1: React component generation');
-;
       const _result = await this.coordinator.vision.processImage('./demo-data/sample-ui.png', {
-        framework: 'react',;
-        outputName: 'DemoComponent',;
-        includeTests: true,;
-        optimizeCode: true,;
-        generateDocumentation: true,;
-      }
-  )
+        framework: 'react',
+        outputName: 'DemoComponent',
+        includeTests: true,
+        optimizeCode: true,
+        generateDocumentation: true
+})
   if (result.success) {
     console.warn(` - Generated;
   $result.files.sizefiles`);
@@ -297,23 +278,22 @@ const _multiFrameworkResults = {};
 for (const framework of frameworks) {
   try {
           const _frameworkResult = await this.coordinator.vision.processImage(;
-            './demo-data/sample-ui.png',;
-              framework,;
+            './demo-data/sample-ui.png',
+              framework,
               outputName: `;
   Demo$;
   framework.charAt(0).toUpperCase() + framework.slice(1);
-  Component`,;
-              includeTests: false,;
-              optimizeCode: false,;
+  Component`,
+              includeTests: false,
+              optimizeCode: false,
           );
-;
           multiFrameworkResults[framework] = frameworkResult;
           console.warn(` - $;
   framework;
   : $
     frameworkResult.success ? 'Success' : 'Failed'
   `);
-        } catch (/* error */) {
+        } catch (error) {
           console.warn(` - $;
   framework;
   : Failed ($
@@ -331,7 +311,7 @@ console.warn(`     - Average time: ${visionAnalytics.avgProcessingTime.toFixed(0
 this.demoResults.vision.analytics = visionAnalytics;
 console.warn('  ✅ Vision demo completed\n');
 }
-catch (/* error */)
+catch (error)
 {
   console.error('  ❌ Vision demo failed:', error.message);
   this.demoResults.vision.error = error.message;
@@ -344,32 +324,28 @@ runIntegrationDemo()
   try {
       // Demo 1: Intelligent routing
       console.warn('  🧠 Demo 1: Intelligent operation routing');
-;
-      const _routingTests = [;
+      const _routingTests = [
         {
-          operation: 'semantic-search',;
-          input: { query: 'React component patterns', type: 'code' },;
-          expected: 'lancedb',;
-        },;
+          operation: 'semantic-search',
+          input: { query: 'React component patterns', type: 'code' },
+          expected: 'lancedb',
+        },
         {
-          operation: 'graph-analysis',;
-          input: { query: 'MATCH (s:Service) RETURN s', analysisType: 'patterns' },;
-          expected: 'kuzu',;
-        },;
+          operation: 'graph-analysis',
+          input: { query: 'MATCH (s:Service) RETURN s', analysisType: 'patterns' },
+          expected: 'kuzu',
+        },
       ];
-;
       const _routingResults = {};
-;
       for (const test of routingTests) {
         try {
           const _result = await this.coordinator.intelligentRoute(test.operation, test.input, {
-            limit: 5,;
+            limit: 5,
           });
-;
           routingResults[test.operation] = result;
           console.warn(`     - ${test.operation}: ${result.success ? 'Success' : 'Failed'}`);
           console.warn(`       Systems used: ${result.result?.systemsUsed?.join(', ')  ?? 'N/A'}`);
-        } catch (/* error */) 
+        } catch (error) 
           console.warn(`     - $test.operation: Failed ($error.message)`);
       }
   this.demoResults.integration.routing = routingResults;
@@ -385,9 +361,9 @@ runIntegrationDemo()
   // Demo 3: Comprehensive analysis
   console.warn('  🔄 Demo 3: Comprehensive multi-system analysis')
   const _comprehensiveResult = await this.coordinator.intelligentRoute(;
-  'comprehensive-analysis',;
-  text: 'Analyze React component architecture patterns',;
-  entityName: 'user-service',;
+  'comprehensive-analysis',
+  text: 'Analyze React component architecture patterns',
+  entityName: 'user-service',
   )
   if (comprehensiveResult.success) {
     console.warn('     - Comprehensive analysis completed');
@@ -400,7 +376,7 @@ runIntegrationDemo()
   this.demoResults.integration.comprehensive = comprehensiveResult;
   console.warn('  ✅ Integration demo completed\n');
 }
-catch (/* error */)
+catch (error)
 {
   console.error('  ❌ Integration demo failed:', error.message);
   this.demoResults.integration.error = error.message;
@@ -411,11 +387,11 @@ createDemoImage()
 {
   // Ensure demo data directory exists
   if (!existsSync('./demo-data')) {
-    await mkdir('./demo-data', { recursive: true });
+  // await mkdir('./demo-data', { recursive: true });
   }
   // Create a placeholder "image" file for demo purposes
   const _placeholder = 'DEMO_IMAGE_PLACEHOLDER';
-  await writeFile('./demo-data/sample-ui.png', placeholder);
+  // await writeFile('./demo-data/sample-ui.png', placeholder);
 }
 async;
 generateReport();
@@ -423,27 +399,27 @@ generateReport();
   console.warn('📋 Generating Comprehensive Demo Report...');
   const _report = {
       demo_info: {
-        name: 'Multi-System Integration Demo',;
-  timestamp: new Date().toISOString(),;
-  duration: Date.now() - this.demoResults.startTime,;
+        name: 'Multi-System Integration Demo',
+  timestamp: new Date().toISOString(),
+  duration: Date.now() - this.demoResults.startTime,
   systems_tested: [;
-          'LanceDB',;
-          'Kuzu Advanced',;
-          'Enhanced Vision Processor',;
-          'Multi-System Coordinator',;
-        ],;
+          'LanceDB',
+          'Kuzu Advanced',
+          'Enhanced Vision Processor',
+          'Multi-System Coordinator',
+        ]
 }
 ,
 {
-  status: this.demoResults.lancedb.error ? 'failed' : 'success',;
+  status: this.demoResults.lancedb.error ? 'failed' : 'success',
   features_tested: [;
-            'Document embeddings and semantic search',;
-            'Code similarity analysis',;
-            'Vector analytics and clustering',;
-          ],;
-  documents_processed: this.demoResults.lancedb.semanticSearch?.total_found  ?? 0,;
-  code_snippets_analyzed: 2,;
-  analytics_generated: !!this.demoResults.lancedb.analytics,;
+            'Document embeddings and semantic search',
+            'Code similarity analysis',
+            'Vector analytics and clustering',
+          ],
+  documents_processed: this.demoResults.lancedb.semanticSearch?.total_found  ?? 0,
+  code_snippets_analyzed: 2,
+  analytics_generated: !!this.demoResults.lancedb.analytics,
   ,
   error: this.demoResults.lancedb.error,
   ,
@@ -471,7 +447,7 @@ generateReport();
   components_generated:
   Object.keys(this.demoResults.vision.multiFramework  ?? ).length + 1,
   success_rate: this.demoResults.vision.analytics?.successRate  ?? 0,
-  avg_processing_time: this.demoResults.vision.analytics?.avgProcessingTime  ?? 0,;
+  avg_processing_time: this.demoResults.vision.analytics?.avgProcessingTime  ?? 0,
   ,
   error: this.demoResults.vision.error,
   ,
@@ -485,18 +461,18 @@ generateReport();
   total_operations:
   this.demoResults.integration.analytics?.performance?.total_operations  ?? 0,
   insights_generated: this.demoResults.integration.analytics?.insights?.length  ?? 0,
-  systems_coordinated: 3,;
+  systems_coordinated: 3,
   ,
   error: this.demoResults.integration.error,
-  ,
+  
 }
 ,
 {
-  total_duration: Date.now() - this.demoResults.startTime,;
-  systems_initialized: 4,;
-  successful_operations: this.countSuccessfulOperations(),;
-  failed_operations: this.countFailedOperations(),;
-  overall_success_rate: this.calculateOverallSuccessRate(),;
+  total_duration: Date.now() - this.demoResults.startTime,
+  systems_initialized: 4,
+  successful_operations: this.countSuccessfulOperations(),
+  failed_operations: this.countFailedOperations(),
+  overall_success_rate: this.calculateOverallSuccessRate()
 }
 ,
 key_achievements: [
@@ -505,20 +481,20 @@ key_achievements: [
 '✅ Completed Vision-to-Code with full processing pipeline',
 '✅ Integrated all three systems with intelligent coordination',
 '✅ Demonstrated cross-system analytics and insights',
-'✅ Implemented memory sharing and intelligent routing',;
+'✅ Implemented memory sharing and intelligent routing',
 ],
 recommendations: [
 'Production deployment would benefit from real embedding models',
 'Consider implementing actual computer vision algorithms for Vision-to-Code',
 'Graph analysis could be enhanced with larger datasets',
 'Cross-system caching could improve performance further',
-'Monitoring and alerting systems recommended for production use',;
+'Monitoring and alerting systems recommended for production use',
 ],
-raw_results: this.demoResults,
+raw_results: this.demoResults
 }
 // Save report to file
 const _reportPath = './demo-data/multi-system-demo-report.json';
-await writeFile(reportPath, JSON.stringify(report, null, 2));
+  // await writeFile(reportPath, JSON.stringify(report, null, 2));
 // Display summary
 console.warn('\n📊 Demo Summary:');
 console.warn(`   Duration: $report.performance_summary.total_durationms`);
@@ -547,7 +523,6 @@ countSuccessfulOperations();
     if (!this.demoResults.integration.error) count++;
     return count;
     //   // LINT: unreachable code removed}
-;
   countFailedOperations() {
     const _count = 0;
     if (this.demoResults.lancedb.error) count++;
@@ -556,18 +531,15 @@ countSuccessfulOperations();
     if (this.demoResults.integration.error) count++;
     return count;
     //   // LINT: unreachable code removed}
-;
   calculateOverallSuccessRate() {
     const _successful = this.countSuccessfulOperations();
     const _total = 4;
     return (successful / total) * 100;
     //   // LINT: unreachable code removed}
 }
-;
 // Run the demo if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const _demo = new MultiSystemDemo();
-;
   demo;
     .run();
     .then(() => 
@@ -577,5 +549,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       console.error('\n💥 Demo failed:', error.message);
       process.exit(1););
 }
-;
 export default MultiSystemDemo;

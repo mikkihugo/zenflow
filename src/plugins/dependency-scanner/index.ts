@@ -127,9 +127,9 @@ export class DependencyScannerPlugin {
     //   // LINT: unreachable code removed}, {});
 ;
     return {
-      totalConflicts: conflicts.length,;
-    // severityBreakdown: severityCounts,; // LINT: unreachable code removed
-      conflictTypeBreakdown: conflictTypes,;
+      totalConflicts: conflicts.length,
+    // severityBreakdown: severityCounts, // LINT: unreachable code removed
+      conflictTypeBreakdown: conflictTypes,
       mostConflictedDependency: conflicts.length > 0 ? conflicts[0].dependency : null;
     };
   }
@@ -139,13 +139,13 @@ export class DependencyScannerPlugin {
    */;
   getCapabilities() ;
     return {
-      fileTypes: ['package.json'],;
-    // dependencyTypes: ['dependencies', 'devDependencies', 'peerDependencies'],; // LINT: unreachable code removed
-      conflictTypes: ['major_version', 'minor_version', 'patch_version'],;
+      fileTypes: ['package.json'],
+    // dependencyTypes: ['dependencies', 'devDependencies', 'peerDependencies'], // LINT: unreachable code removed
+      conflictTypes: ['major_version', 'minor_version', 'patch_version'],
       features: [;
-        'version-conflict-detection',;
-        'severity-classification',;
-        'adr-generation',;
+        'version-conflict-detection',
+        'severity-classification',
+        'adr-generation',
         'resolution-strategies';
       ];
     };

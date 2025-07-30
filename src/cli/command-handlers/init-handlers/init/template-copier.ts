@@ -211,23 +211,23 @@ try {
       results.copiedFiles.push('claude-zen.ps1');
     }
   } catch(err) ;
-    results.errors.push(`Failed to copy wrapperscripts = [;
-    'memory',;
-    'memory/agents',;
-    'memory/sessions',;
-    'coordination',;
-    'coordination/memory_bank',;
-    'coordination/subtasks',;
-    'coordination/orchestration',;
-    '.claude',;
-    '.claude/commands',;
-    '.claude/logs',;
+    results.errors.push(`Failed to copy wrapperscripts = [
+    'memory',
+    'memory/agents',
+    'memory/sessions',
+    'coordination',
+    'coordination/memory_bank',
+    'coordination/subtasks',
+    'coordination/orchestration',
+    '.claude',
+    '.claude/commands',
+    '.claude/logs',
     '.swarm', // For memory persistence
   ];
 ;
   if(options.sparc) {
     directories.push(;
-      '.claude/commands/sparc',;
+      '.claude/commands/sparc',
       '.claude/commands/swarm';
     );
   }
@@ -255,60 +255,60 @@ async function createMemoryReadmeFiles(targetDir = await import('./templates/rea
     'CLAUDE.md': async () => {
       const { createFullClaudeMd } = await import('./templates/claude-md.js');
       return createFullClaudeMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.sparc': async () => {
       const { createSparcClaudeMd } = await import('./templates/claude-md.js');
       return createSparcClaudeMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.minimal': async () => {
       const { createMinimalClaudeMd } = await import('./templates/claude-md.js');
       return createMinimalClaudeMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.optimized': async () => {
       const { createOptimizedSparcClaudeMd } = await import('./templates/claude-md.js');
       return createOptimizedSparcClaudeMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'CLAUDE.md.enhanced': async () => {
       const { createEnhancedClaudeMd } = await import('./templates/enhanced-templates.js');
       return createEnhancedClaudeMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'memory-bank.md': async () => {
       const { createFullMemoryBankMd } = await import('./templates/memory-bank-md.js');
       return createFullMemoryBankMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'memory-bank.md.minimal': async () => {
       const { createMinimalMemoryBankMd } = await import('./templates/memory-bank-md.js');
       return createMinimalMemoryBankMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'memory-bank.md.optimized': async () => {
       const { createOptimizedMemoryBankMd } = await import('./templates/memory-bank-md.js');
       return createOptimizedMemoryBankMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'coordination.md': async () => {
       const { createFullCoordinationMd } = await import('./templates/coordination-md.js');
       return createFullCoordinationMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'coordination.md.minimal': async () => {
       const { createMinimalCoordinationMd } = await import('./templates/coordination-md.js');
       return createMinimalCoordinationMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'coordination.md.optimized': async () => {
       const { createOptimizedCoordinationMd } = await import('./templates/coordination-md.js');
       return createOptimizedCoordinationMd();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'settings.json': async () => 
       return await fs.readFile(join(__dirname, 'templates', 'settings.json'), 'utf8');
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'settings.json.enhanced': async () => {
       const { createEnhancedSettingsJson } = await import('./templates/enhanced-templates.js');
       return createEnhancedSettingsJson();
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'claude-zen-universal': async () => 
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen-universal'), 'utf8');
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'claude-zen.bat': async () => {
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen.bat'), 'utf8');
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
     'claude-zen.ps1': async () => 
       return await fs.readFile(join(__dirname, 'templates', 'claude-zen.ps1'), 'utf8');;
 ;

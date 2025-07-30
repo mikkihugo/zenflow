@@ -10,15 +10,15 @@ import type
 }
 from;
 ('../types/core.js');
-printSuccess,;
-printError,;
-printWarning,;
-callRuvSwarmLibrary,;
-initializeSwarm,;
-orchestrateTask,;
-spawnSwarmAgent,;
-getSwarmStatus,;
-checkRuvSwarmAvailable,;
+printSuccess,
+printError,
+printWarning,
+callRuvSwarmLibrary,
+initializeSwarm,
+orchestrateTask,
+spawnSwarmAgent,
+getSwarmStatus,
+checkRuvSwarmAvailable,
 } from '../utils.js'
 // Simple ID generator
 function generateId(prefix = 'id': unknown): unknown {
@@ -138,17 +138,17 @@ try {
 }
 ;
 function _getAgentCapabilities(_type: unknown): unknown {
-  const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',;
-    _coder: 'Code implementation, debugging, technical development',;
-    _developer: 'Code implementation, debugging, technical development',;
-    _researcher: 'Information gathering, analysis, documentation',;
-    _analyst: 'Data analysis, performance monitoring, metrics',;
-    _analyzer: 'Data analysis, performance monitoring, metrics',;
-    _tester: 'Quality assurance, test automation, validation',;
-    _architect: 'System design, architecture planning, technical strategy',;
-    _reviewer: 'Code review, quality assessment, best practices',;
-    _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',;
-    _general: 'Multi-purpose coordination and development',;
+  const _capabilities,_nator: 'Task orchestration, agent management, workflow coordination',
+    _coder: 'Code implementation, debugging, technical development',
+    _developer: 'Code implementation, debugging, technical development',
+    _researcher: 'Information gathering, analysis, documentation',
+    _analyst: 'Data analysis, performance monitoring, metrics',
+    _analyzer: 'Data analysis, performance monitoring, metrics',
+    _tester: 'Quality assurance, test automation, validation',
+    _architect: 'System design, architecture planning, technical strategy',
+    _reviewer: 'Code review, quality assessment, best practices',
+    _optimizer: 'Performance optimization, efficiency improvement, bottleneck analysis',
+    _general: 'Multi-purpose coordination and development',
   };
   return capabilities[type]  ?? capabilities.general;
 }
@@ -173,7 +173,7 @@ SWARM-INIT OPTIONS:;
 ;
 AGENT-SPAWN OPTIONS:;
   --type <type>        Agent type (default: general);
-                       Options: coordinator, coder, developer, researcher, analyst, analyzer, ;
+                       Options: coordinator, coder, developer, researcher, analyst, analyzer,
                        tester, architect, reviewer, optimizer, general;
   --name <name>        Custom agent name (auto-generated if not provided);
   --swarm-id <id>      Target swarm for agent coordination;

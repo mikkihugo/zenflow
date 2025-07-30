@@ -141,34 +141,31 @@ const __SingularityAlpha = (): unknown => {
     setHives(hivesData);
   };
 ;
-  return React.createElement(Box, {borderStyle = === 'hives' && React.createElement(Box, {flexDirection = === 1 ? "double" : "single",;
-    // borderColor = === 1 ? "cyan" : "gray",paddingX = === 1 ? "cyan" : "white"  // LINT: unreachable code removed}, ;
+  return React.createElement(Box, {borderStyle = === 'hives' && React.createElement(Box, {flexDirection = === 1 ? "double" : "single",
+    // borderColor = === 1 ? "cyan" : "gray",paddingX = === 1 ? "cyan" : "white"  // LINT: unreachable code removed},
             "📁 Select Directory";
           );
-        ),;
+        ),
         React.createElement(Box, { ;
-          borderStyle = === 2 ? "double" : "single",;
-          borderColor = === 2 ? "cyan" : "gray",paddingX = === 2 ? "cyan" : "white" }, ;
+          borderStyle = === 2 ? "double" : "single",
+          borderColor = === 2 ? "cyan" : "gray",paddingX = === 2 ? "cyan" : "white" },
             "➕ Create New Service";
           );
         );
       ),
-;
       // Always show command input at bottom
       React.createElement(Box, borderStyle = === 'string' ? commandResult.result : 'Success');
           : commandResult.error;
         );
       );
     ),
-;
-    currentView === 'details' && selectedHive && React.createElement(HiveDetails, hive = === 'create' && React.createElement(Box, borderStyle = === 'directory' && React.createElement(DirectorySelector, ;
+    currentView === 'details' && selectedHive && React.createElement(HiveDetails, hive = === 'create' && React.createElement(Box, borderStyle = === 'directory' && React.createElement(DirectorySelector,
       _currentPath => ;
         setSelectedDirectory(_dir);
         setCommandResult({success = > setCurrentView('hives');
     }),
-;
-    React.createElement(Box, { borderStyle: "single", paddingX: 2 },;
-      React.createElement(Text, { color: "gray" },;
+    React.createElement(Box, { borderStyle: "single", paddingX: 2 },
+      React.createElement(Text, { color: "gray" },
         `View: ${currentView} | Services: ${Object.keys(hives).length} | API: Connected`;
       );
     );

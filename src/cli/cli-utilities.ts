@@ -221,11 +221,11 @@ export async function runCommand(command = []: unknown, options = {}: unknown): 
 ;
         child.on('close', (code) => {
           resolve({
-            success = === 0,;
+            success = === 0,
             code => {
           resolve({success = new (process as any).Command(command, {
-        args,;
-        ...options,;
+        args,
+        ...options,
       });
 ;
       const _result = await cmd.output();
@@ -359,7 +359,7 @@ export function sleep(ms = > setTimeout(resolve: unknown, ms: unknown));
  * @returns Promise resolving to function result;
     // */; // LINT: unreachable code removed
 export async function retry<T>(fn = > Promise<T>, 
-  maxAttempts = 3, ;
+  maxAttempts = 3,
   delay = 1000;
 ): Promise<T> {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -410,31 +410,31 @@ export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<Ne
 
       result = await new Promise((_resolve) => {
         const __child = spawn(;
-          'npx',;
+          'npx',
           [;
-            'ruv-swarm',;
-            'neural',;
-            'train',;
-            '--model',;
-            modelName,;
-            '--iterations',;
-            epochs.toString(),;
-            '--data-source',;
-            dataSource,;
-            '--output-format',;
-            'json',;
-          ],;
+            'ruv-swarm',
+            'neural',
+            'train',
+            '--model',
+            modelName,
+            '--iterations',
+            epochs.toString(),
+            '--data-source',
+            dataSource,
+            '--output-format',
+            'json',
+          ],
             _stdio => {
           resolve({
-            success = === 0,;
+            success = === 0,
             _code => {
           resolve({success = await runCommand('npx', [;
-        'ruv-swarm', ;
-        'neural', ;
-        'train',;
-        '--model', modelName,;
-        '--iterations', epochs.toString(),;
-        '--data-source', dataSource,;
+        'ruv-swarm',
+        'neural',
+        'train',
+        '--model', modelName,
+        '--iterations', epochs.toString(),
+        '--data-source', dataSource,
         '--output-format', 'json';
       ], {stdout = '.ruv-swarm/neural';
       const _files = await (process as any).readDir(neuralDir);
@@ -455,7 +455,7 @@ export async function callRuvSwarmDirectNeural(params = {}: unknown): Promise<Ne
       if (latestFile) {
         const __content = await (process as any).readTextFile(latestFile);
 ;
-        return {success = === 0,modelId = === 0,;
+        return {success = === 0,modelId = === 0,
     // modelId = { // LINT: unreachable code removed}): Promise<CommandExecutionResult> {
   try {
     const _command = 'npx';
@@ -493,9 +493,9 @@ export async function _trainNeuralModel(_modelName = 50: unknown): Promise<any> 
 ): Promise<AgentSpawnResult> {
   const { callRuvSwarmLibrary } = await import('./utils.js');
     // return await callRuvSwarmLibrary('agent_spawn', { // LINT: unreachable code removed
-    type: agentType,;
-    config: config,;
-    timestamp: Date.now(),;
+    type: agentType,
+    config: config,
+    timestamp: Date.now(),
   });
 }
 ;

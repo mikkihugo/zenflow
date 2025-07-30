@@ -54,11 +54,11 @@ getConfigPath(options =
     // ; // LINT: unreachable code removed
   // Try various locations in order of preference
   const _possiblePaths = options.searchPaths  ?? [;
-    process.env.CLAUDE_FLOW_CONFIG,;
-    path.join(process.cwd(), '.claude-zen.json'),;
-    path.join(process.cwd(), 'claude-zen.config.json'),;
-    path.join(os.homedir(), '.config', 'claude-zen', 'config.json'),;
-    path.join(os.homedir(), '.claude-zen.json'),;
+    process.env.CLAUDE_FLOW_CONFIG,
+    path.join(process.cwd(), '.claude-zen.json'),
+    path.join(process.cwd(), 'claude-zen.config.json'),
+    path.join(os.homedir(), '.config', 'claude-zen', 'config.json'),
+    path.join(os.homedir(), '.claude-zen.json'),
   ];
 ;
   const _validPaths = possiblePaths.filter(Boolean) as string[];
@@ -205,8 +205,8 @@ validate();
         }
       }
 ;
-      return {isValid = === 0,;
-    // errors,; // LINT: unreachable code removed
+      return {isValid = === 0,
+    // errors, // LINT: unreachable code removed
         warnings;
       };
 ;

@@ -303,7 +303,7 @@ initialize()
       return {entries = > idx.name);
     //   // LINT: unreachable code removed};catch (error = ;
 
-      const _commonQueries = [;
+      const _commonQueries = [
         {name = ? AND namespace = ?' },
         {name = ? ORDER BY updated_at DESC LIMIT ?' },
         {name = ? AND (key LIKE ? OR value LIKE ?) LIMIT ?' },name = strftime(\'%s\', \'now\')' }

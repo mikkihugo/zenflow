@@ -11,10 +11,9 @@ console.warn('');
 // Demo 1: Progress Bar Styles
 console.warn('📊 Enhanced Progress Bars:');
 console.warn('');
-function createProgressBar(): unknown {
+function createProgressBar() {
   const _filled = Math.floor((progress / 100) * width);
   const _empty = width - filled;
-;
   let fillChar, emptyChar;
   switch (style) {
     case 'dots':;
@@ -29,7 +28,6 @@ function createProgressBar(): unknown {
       fillChar = '█';
       emptyChar = '░';
   }
-;
   return `[${fillChar.repeat(filled)}${emptyChar.repeat(empty)}] ${progress.toFixed(1)}%`;
 }
 console.warn(`  Blocks Style: ${createProgressBar(75, 30, 'blocks')}`);

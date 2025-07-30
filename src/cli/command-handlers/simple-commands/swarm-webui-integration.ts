@@ -63,7 +63,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     const _agentTypes = ['researcher', 'coder', 'analyst', 'coordinator', 'tester'];
     agentTypes.forEach((type, index) => {
       const _agentId = `agent-${type}-${index}`;
-      this.agents.set(agentId, {id = [;
+      this.agents.set(agentId, {id = [
       {
         description => {
       const _taskId = `task-${index}`;
@@ -75,7 +75,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
     this.ui.systemStats.activeAgents = this.ui.agents.filter((a) => a.status === 'working').length;
     this.ui.systemStats.totalTasks = this.ui.tasks.length;
     this.ui.systemStats.completedTasks = this.ui.tasks.filter(;
-      (t) => t.status === 'completed',;
+      (t) => t.status === 'completed',
     ).length;
   }
 ;

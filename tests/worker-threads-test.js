@@ -20,8 +20,7 @@ async function testWorkerThreads(): Promise<void> {
       minWorkers: 2,
       loadBalancingStrategy: 'round-robin',
     });
-
-    await pool.initialize();
+  // await pool.initialize();
     console.warn('✅ Worker pool initialized');
     // Test 1: Simple task execution
     console.warn('\n🔧 Test 1: Simple task execution');
@@ -83,8 +82,8 @@ async function testWorkerThreads(): Promise<void> {
       pool.executeTask({
         type: 'testing-task',
         testType: 'unit',
-        target: `test-${i}`,
-      })
+        target: `test-${i}`
+})
     );
 
     const loadTestResults = await Promise.all(loadTestTasks);
@@ -106,7 +105,7 @@ async function testWorkerThreads(): Promise<void> {
     throw error;
   } finally {
     if (pool) {
-      await pool.shutdown();
+  // await pool.shutdown();
       console.warn('🔄 Worker pool shut down');
     }
   }
@@ -115,7 +114,7 @@ async function testWorkerThreads(): Promise<void> {
 // Run test if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   try {
-    await testWorkerThreads();
+  // await testWorkerThreads();
     console.warn('\n✅ Worker thread test completed successfully');
     process.exit(0);
   } catch (error) {

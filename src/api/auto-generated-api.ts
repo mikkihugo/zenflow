@@ -67,14 +67,14 @@ constructor(options: APIGeneratorOptions = {})
 {
   super();
   this.options = {
-      port: 8080,;
-  host: 'localhost',;
-  enableGraphQL: false,;
-  enableWebSocket: false,;
-  enableRealTime: false,;
-  cors: true,;
-  rateLimit: true,;
-  authentication: false,;
+      port: 8080,
+  host: 'localhost',
+  enableGraphQL: false,
+  enableWebSocket: false,
+  enableRealTime: false,
+  cors: true,
+  rateLimit: true,
+  authentication: false,
   ...options,
 }
 this.app = express();
@@ -106,13 +106,13 @@ start()
         this.metrics.uptime = Date.now();
 ;
         const _result = {
-          port: this.options.port!,;
-          host: this.options.host!,;
+          port: this.options.port!,
+          host: this.options.host!,
           urls: [;
             `http://${this.options.host}:${this.options.port}`,
             `http://${this.options.host}:${this.options.port}/api`,
             `http://${this.options.host}:${this.options.port}/docs`,
-          ],;
+          ],
         };
 ;
         if (this.options.enableWebSocket) {
@@ -203,9 +203,9 @@ initializeEndpoints();
       // Health check
       this.app.get('/health', (_req: Request, res: Response) => {
         res.json({
-          status: 'healthy',;
-          uptime: Date.now() - this.metrics.uptime,;
-          metrics: this.metrics,;
+          status: 'healthy',
+          uptime: Date.now() - this.metrics.uptime,
+          metrics: this.metrics,
         });
       }
   )
@@ -244,10 +244,10 @@ setupBaseEndpoints()
   // API info
   this.app.get('/api', (_req: Request, res: Response) => {
     res.json({
-        name: 'Claude Code Flow API',;
-    version: '1.0.0',;
-    endpoints: this.getEndpointList(),;
-    metrics: this.metrics,;
+        name: 'Claude Code Flow API',
+    version: '1.0.0',
+    endpoints: this.getEndpointList(),
+    metrics: this.metrics,
   });
 }
 )
@@ -255,8 +255,8 @@ setupBaseEndpoints()
 this.app.get('/api/commands', (_req: Request, res: Response) =>
 {
   res.json({
-        commands: Array.from(this.commandCache.keys()),;
-  total: this.commandCache.size,;
+        commands: Array.from(this.commandCache.keys()),
+  total: this.commandCache.size,
 }
 )
 })
@@ -268,34 +268,34 @@ this.app.post('/api/execute', async (req: Request, res: Response) =>
 ;
         if (!command) {
           return res.status(400).json({
-            error: 'Command is required',;
+            error: 'Command is required',
     //   // LINT: unreachable code removed});
         }
 ;
         const _sessionId = this.generateSessionId();
         const _session: CommandExecutionSession = {
-          id: sessionId,;
-          command,;
-          args,;
-          startTime: Date.now(),;
-          status: 'pending',;
+          id: sessionId,
+          command,
+          args,
+          startTime: Date.now(),
+          status: 'pending',
         }
   this.executionSessions.set(sessionId, session);
   // Execute command asynchronously
   this.executeCommand(session);
   res.json({
-          sessionId,;
-  status: 'started',;
-  command,;
-  args,;
+          sessionId,
+  status: 'started',
+  command,
+  args,
 }
 )
 } catch (/* error */)
 {
   this.metrics.errors++;
   res.status(500).json({
-          error: 'Execution failed',;
-  message: error instanceof Error ? error.message : 'Unknown error',;
+          error: 'Execution failed',
+  message: error instanceof Error ? error.message : 'Unknown error',
 }
 )
 }
@@ -306,7 +306,7 @@ this.app.get('/api/status/:sessionId', (req: Request, res: Response) =>
   const _session = this.executionSessions.get(req.params.sessionId);
   if (!session) {
     return res.status(404).json({
-          error: 'Session not found',;
+          error: 'Session not found',
     //   // LINT: unreachable code removed});
   }
   res.json(session);
@@ -316,9 +316,9 @@ this.app.get('/api/status/:sessionId', (req: Request, res: Response) =>
 this.app.get('/api/metrics', (_req: Request, res: Response) =>
 {
   res.json({
-        ...this.metrics,;
-  uptime: Date.now() - this.metrics.uptime,;
-  activeSessions: this.executionSessions.size,;
+        ...this.metrics,
+  uptime: Date.now() - this.metrics.uptime,
+  activeSessions: this.executionSessions.size,
 }
 )
 })
@@ -342,7 +342,7 @@ setupWebSocket()
         } catch (/* _error */) {
           ws.send(;
             JSON.stringify({
-              error: 'Invalid JSON message',;
+              error: 'Invalid JSON message',
             });
           );
         }
@@ -354,8 +354,8 @@ setupWebSocket()
   // Send welcome message
   ws.send(;
   JSON.stringify({
-          type: 'welcome',;
-  message: 'Connected to Claude Code Flow API',;
+          type: 'welcome',
+  message: 'Connected to Claude Code Flow API',
 }
 )
 )
@@ -381,7 +381,7 @@ handleWebSocketMessage(ws: WebSocket, message: unknown)
     default:
       ws.send(;
       JSON.stringify({
-            error: `Unknown message type: ${message.type}`,;
+            error: `Unknown message type: ${message.type}`,
   }
   )
   )
@@ -401,8 +401,8 @@ handleSubscribe(ws: WebSocket, message: unknown)
   this.realtimeSubscriptions.get(channel)?.push(ws);
   ws.send(;
   JSON.stringify({
-        type: 'subscribed',;
-  channel,;
+        type: 'subscribed',
+  channel,
 }
 )
 )
@@ -424,8 +424,8 @@ handleUnsubscribe(ws: WebSocket, message: unknown)
   }
   ws.send(;
   JSON.stringify({
-        type: 'unsubscribed',;
-  channel,;
+        type: 'unsubscribed',
+  channel,
 }
 )
 )
@@ -441,20 +441,20 @@ handleWebSocketExecute(ws: WebSocket, message: unknown)
   const { command, args = {} } = message;
   const _sessionId = this.generateSessionId();
   const _session: CommandExecutionSession = {
-      id: sessionId,;
-  command,;
-  args,;
-  startTime: Date.now(),;
-  status: 'pending',;
+      id: sessionId,
+  command,
+  args,
+  startTime: Date.now(),
+  status: 'pending',
 }
 this.executionSessions.set(sessionId, session);
 // Send session info
 ws.send(;
 JSON.stringify({
-        type: 'execution_started',;
-sessionId,;
-command,;
-args,;
+        type: 'execution_started',
+sessionId,
+command,
+args,
 })
 )
 // Execute command with real-time updates
@@ -474,9 +474,9 @@ executeCommand(session: CommandExecutionSession, ws?: WebSocket)
       if (ws) {
         ws.send(;
           JSON.stringify({
-            type: 'execution_update',;
-            sessionId: session.id,;
-            status: 'running',;
+            type: 'execution_update',
+            sessionId: session.id,
+            status: 'running',
           });
         );
       }
@@ -488,9 +488,9 @@ executeCommand(session: CommandExecutionSession, ws?: WebSocket)
   if (ws) {
     ws.send(;
     JSON.stringify({
-            type: 'execution_completed',;
-    sessionId: session.id,;
-    result: session.result,;
+            type: 'execution_completed',
+    sessionId: session.id,
+    result: session.result,
   }
   )
   )
@@ -502,9 +502,9 @@ executeCommand(session: CommandExecutionSession, ws?: WebSocket)
   if (ws) {
     ws.send(;
     JSON.stringify({
-            type: 'execution_error',;
-    sessionId: session.id,;
-    error: session.error,;
+            type: 'execution_error',
+    sessionId: session.id,
+    error: session.error,
   }
   )
   )
@@ -527,9 +527,9 @@ ws?: WebSocket
     if (ws) {
       ws.send(;
       JSON.stringify({
-            type: 'execution_progress',;
-      sessionId: session.id,;
-      progress: i,;
+            type: 'execution_progress',
+      sessionId: session.id,
+      progress: i,
     }
     )
     )
@@ -569,13 +569,13 @@ generateSessionId();
   getEndpointList();
   : string[]
   return [;
-    // 'GET /api',; // LINT: unreachable code removed
-      'GET /api/commands',;
-      'POST /api/execute',;
-      'GET /api/status/:sessionId',;
-      'GET /api/metrics',;
-      'GET /health',;
-      'GET /docs',;
+    // 'GET /api', // LINT: unreachable code removed
+      'GET /api/commands',
+      'POST /api/execute',
+      'GET /api/status/:sessionId',
+      'GET /api/metrics',
+      'GET /health',
+      'GET /docs',
     ];
   /**
    * Get current metrics;
@@ -583,7 +583,7 @@ generateSessionId();
   getMetrics();
   : APIMetrics
   return {
-      ...this.metrics,;
+      ...this.metrics,
 }
 /**
  * Check if server is running;

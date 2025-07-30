@@ -16,14 +16,14 @@ const _initializeDatabase = (): unknown => {
       db.run(;
     // `; // LINT: unreachable code removed
         CREATE TABLE IF NOT EXISTS users (;
-          id INTEGER PRIMARY KEY AUTOINCREMENT,;
-          username TEXT UNIQUE NOT NULL,;
-          email TEXT UNIQUE NOT NULL,;
-          password TEXT NOT NULL,;
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT UNIQUE NOT NULL,
+          email TEXT UNIQUE NOT NULL,
+          password TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP;
         );
-      `,;
+      `,
         (err) => {
           if (err) {
             logger.error('Error creating users table:', err);
@@ -31,19 +31,18 @@ const _initializeDatabase = (): unknown => {
           }
         }
       );
-;
       // Sessions table
       db.run(;
         `;
         CREATE TABLE IF NOT EXISTS sessions (;
-          id INTEGER PRIMARY KEY AUTOINCREMENT,;
-          user_id INTEGER NOT NULL,;
-          token TEXT UNIQUE NOT NULL,;
-          expires_at DATETIME NOT NULL,;
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          token TEXT UNIQUE NOT NULL,
+          expires_at DATETIME NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (user_id) REFERENCES users (id);
         );
-      `,;
+      `,
         (err) => {
           if (err) {
             logger.error('Error creating sessions table:', err);
@@ -51,21 +50,20 @@ const _initializeDatabase = (): unknown => {
           }
         }
       );
-;
       // API logs table for monitoring
       db.run(;
         `;
         CREATE TABLE IF NOT EXISTS api_logs (;
-          id INTEGER PRIMARY KEY AUTOINCREMENT,;
-          method TEXT NOT NULL,;
-          path TEXT NOT NULL,;
-          status_code INTEGER NOT NULL,;
-          response_time INTEGER NOT NULL,;
-          user_id INTEGER,;
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,;
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          method TEXT NOT NULL,
+          path TEXT NOT NULL,
+          status_code INTEGER NOT NULL,
+          response_time INTEGER NOT NULL,
+          user_id INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (user_id) REFERENCES users (id);
         );
-      `,;
+      `,
         (err) => {
           if (err) {
             logger.error('Error creating api_logs table:', err);
@@ -79,12 +77,5 @@ const _initializeDatabase = (): unknown => {
     });
   });
 };
-;
 module.exports = { db, initializeDatabase };
-;
-;
-;
-;
-;
-;
 ;

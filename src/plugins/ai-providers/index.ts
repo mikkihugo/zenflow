@@ -57,7 +57,6 @@ export class AIProviderPlugin {
           let _response = await result.response;
           return response.text();
     //   // LINT: unreachable code removed},
-;
         async healthCheck() ;
           try {
             const _model = genAI.getGenerativeModel({model = Array.from(this.providers.keys());
@@ -115,7 +114,7 @@ export class AIProviderPlugin {
 ;
     try {
       const _result = await Promise.race([;
-        provider[method](...args),;
+        provider[method](...args),
         timeoutPromise;
       ]);
 ;

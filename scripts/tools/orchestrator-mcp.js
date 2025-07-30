@@ -57,32 +57,27 @@ class MockMemoryStore {
       // Health check endpoint
       app.get('/health', (_req, res) => {
         res.json({
-    status: 'healthy',;
-        service: 'claude-zen-mcp',;
-        version: '2.0.0-alpha.61',;
-        timestamp: new Date().toISOString(),;
-        uptime: process.uptime(),;
+    status: 'healthy',
+        service: 'claude-zen-mcp',
+        version: '2.0.0-alpha.61',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
       });
-    }
-    )
+    })
     // MCP tools endpoint
     app.post('/mcp/tools/:toolName', async (req, res) =>
     try {
     const { toolName } = req.params;
     const _args = req.body;
-;
     console.warn(`🔧 MCP Tool Call: ${toolName}`, args);
-;
     const _result = await mcpServer.callTool(toolName, args);
-;
     res.json({
-      success: true,;
-      tool: toolName,;
-      result,;
-      timestamp: new Date().toISOString(),;
-    }
-    )
-    catch (/* error */) 
+      success: true,
+      tool: toolName,
+      result,
+      timestamp: new Date().toISOString()
+})
+    catch (error) 
     console.error('❌ MCP Tool Error:', error)
     res.status(500).json(
       success: false,
@@ -90,8 +85,7 @@ class MockMemoryStore {
     tool: req.params.toolName,
     timestamp: new Date().toISOString(),
     )
-  }
-  )
+  })
   // Service document manager endpoints
   app;
   .
@@ -101,17 +95,16 @@ class MockMemoryStore {
   try {
     const
   _result = await mcpServer.handleServiceDocumentManager({
-      action: 'create',;
+      action: 'create',
   ...
   req;
   .
   body;
-  ,
-}
-)
+  
+})
   res.json(result)
 }
-catch (/* error */)
+catch (error)
 {
   res.status(500).json({ success: false, error: error.message });
 }
@@ -120,14 +113,13 @@ app.get('/service-documents/list/:serviceName?', async (req, res) =>
 {
   try {
     const _result = await mcpServer.handleServiceDocumentManager({
-      action: 'list',;
-      serviceName: req.params.serviceName,;
-      documentType: 'all',;
-    }
-  )
+      action: 'list',
+      serviceName: req.params.serviceName,
+      documentType: 'all'
+})
   res.json(result)
 }
-catch (/* error */)
+catch (error)
 {
   res.status(500).json({ success: false, error: error.message });
 }
@@ -137,54 +129,49 @@ app.post('/service-documents/validate', async (req, res) =>
   try {
     const _result = await mcpServer.handleServiceDocumentValidator(req.body);
     res.json(result);
-  } catch (/* error */) {
+  } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-}
-)
+})
 app.post('/service-documents/approve', async (req, res) =>
 {
   try {
     const _result = await mcpServer.handleServiceApprovalWorkflow(req.body);
     res.json(result);
-  } catch (/* error */) {
+  } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-}
-)
+})
 // Swarm coordination endpoints
 app.post('/swarm/init', async (req, res) =>
 {
   try {
     const _result = await mcpServer.callTool('swarm_init', req.body);
     res.json(result);
-  } catch (/* error */) {
+  } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-}
-)
+})
 app.post('/swarm/spawn-agent', async (req, res) =>
 {
   try {
     const _result = await mcpServer.callTool('agent_spawn', req.body);
     res.json(result);
-  } catch (/* error */) {
+  } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-}
-)
+})
 // Memory endpoints
 app.post('/memory/store', async (_req, res) =>
 {
   try {
     const _result = await mcpServer.callTool('memory_usage', {
-      action: 'store',;
-      ...req.body,;
-    }
-  )
+      action: 'store',
+      ...req.body
+})
   res.json(result)
 }
-catch (/* error */)
+catch (error)
 {
   res.status(500).json({ success: false, error: error.message });
 }
@@ -193,14 +180,13 @@ app.get('/memory/retrieve/:key', async (req, res) =>
 {
   try {
     const _result = await mcpServer.callTool('memory_usage', {
-      action: 'retrieve',;
-      key: req.params.key,;
-      namespace: req.query.namespace,;
-    }
-  )
+      action: 'retrieve',
+      key: req.params.key,
+      namespace: req.query.namespace
+})
   res.json(result)
 }
-catch (/* error */)
+catch (error)
 {
   res.status(500).json({ success: false, error: error.message });
 }
@@ -211,14 +197,13 @@ app.get('/status', async (_req, res) =>
   try {
     const _systemStatus = orchestrator.getSystemStatus();
     const _healthCheck = await orchestrator.healthCheck();
-;
     res.json({
       mcp: {
-        host: HOST,;
-        port: PORT,;
-        status: 'running',;
-        uptime: process.uptime(),;
-      }
+        host: HOST,
+        port: PORT,
+        status: 'running',
+        uptime: process.uptime()
+}
   ,
   services: systemStatus,
   health: healthCheck,
@@ -226,32 +211,28 @@ app.get('/status', async (_req, res) =>
   'GET /health',
   'POST /mcp/tools/:toolName',
   'POST /service-documents/create',
-  'GET /service-documents/list/:serviceName?',;
-  'POST /service-documents/validate',;
-  'POST /service-documents/approve',;
-  'POST /swarm/init',;
-  'POST /swarm/spawn-agent',;
-  'POST /memory/store',;
-  'GET /memory/retrieve/:key',;
-  'GET /status',;
-  ],
-}
-)
-} catch (/* error */)
+  'GET /service-documents/list/:serviceName?',
+  'POST /service-documents/validate',
+  'POST /service-documents/approve',
+  'POST /swarm/init',
+  'POST /swarm/spawn-agent',
+  'POST /memory/store',
+  'GET /memory/retrieve/:key',
+  'GET /status',
+  ]
+})
+} catch (error)
 {
   res.status(500).json({ success: false, error: error.message });
 }
 })
 // Start server
-async
-function startServer(): unknown {
+async function startServer() {
   try {
     console.warn('🚀 Starting Claude-Flow HTTP MCP Server...\n');
-;
     // Initialize MCP and services
-    await mcpServer.initializeMemory();
-    await orchestrator.start();
-;
+  // await mcpServer.initializeMemory();
+  // await orchestrator.start();
     // Start HTTP server
     const _server = app.listen(PORT, HOST, () => {
       console.warn(`\n🌐 HTTP MCP Server running on http://${HOST}:${PORT}`);
@@ -264,15 +245,14 @@ function startServer(): unknown {
       console.warn(`   • GET  http://${HOST}:${PORT}/status`);
       console.warn('\n✅ Server ready for external connections!');
     });
-;
     // Graceful shutdown
     process.on('SIGINT', async () => {
       console.warn('\n🔄 Shutting down server...');
       server.close();
-      await orchestrator.stop();
+  // await orchestrator.stop();
       process.exit(0);
     });
-  } catch (/* error */) {
+  } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
   }

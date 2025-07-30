@@ -41,17 +41,17 @@ export class CodeQueen extends BaseQueen {
 // initializePatterns() { // LINT: unreachable code removed
 this.codePatterns.set('function', [
   ;
-            'function {{name}}({{params}}) {\n  {{body}}\n}',;
-            'const {{name}} = (): unknown => {\n  {{body}}\n};',;
+            'function {{name}}({{params}}) {\n  {{body}}\n}',
+            'const {{name}} = (): unknown => {\n  {{body}}\n};',
             'async function {{name}}({{params}}) {\n  {{body}}\n}';,,,,,,,
 ]);
 this.codePatterns.set('class', [
   ;
-            'class {{name}} {\n  constructor({{params}}: unknown): unknown {\n    {{body}}\n  }\n}',;
+            'class {{name}} {\n  constructor({{params}}: unknown): unknown {\n    {{body}}\n  }\n}',
             'export class {{name}} {\n  private {{field}}: {{type}};\n\n  constructor({{params}}: unknown): unknown {\n    {{body}}\n  }\n}',,,,,,,
 ]);
 this.codePatterns.set('interface', [;
-            'interface {{name}} {\n  {{properties}}\n}',;
+            'interface {{name}} {\n  {{properties}}\n}',
             'export interface {{name}} {\nid = await fetch("{{url}}");\n  return response.json();\n}',
             'export const {{name}} = async ({{params}}) => {\n  try {\n    const response = await fetch("{{url}}", {\nmethod = "{{className}}">\n      {{content}}\n    </div>\n  );\n}',
             'import { Component } from "@angular/core";\n\n@Component({\nselector = performance.now();
@@ -79,20 +79,20 @@ this.codePatterns.set('interface', [;
             recommendation = this.addBestPractices(recommendation, language, codeType);
 ;
             const _processingTime = performance.now() - startTime;
-            const _result = {taskId = === 'high' ? 'neural network' : 'pattern-based'} approach`,;
-                processingTime,;
+            const _result = {taskId = === 'high' ? 'neural network' : 'pattern-based'} approach`,
+                processingTime,
                 alternatives = {taskId = task.prompt.toLowerCase();
 ;
         // High complexity indicators
-        const _highComplexityIndicators = [;
-            'algorithm', 'optimization', 'performance', 'concurrent', 'parallel',;
-            'machine learning', 'ai', 'neural', 'complex logic', 'state management',;
+        const _highComplexityIndicators = [
+            'algorithm', 'optimization', 'performance', 'concurrent', 'parallel',
+            'machine learning', 'ai', 'neural', 'complex logic', 'state management',
             'microservice', 'distributed', 'scalable', 'architecture';
         ];
 ;
         // Medium complexity indicators  
-        const _mediumComplexityIndicators = [;
-            'api', 'database', 'auth', 'validation', 'middleware',;
+        const _mediumComplexityIndicators = [
+            'api', 'database', 'auth', 'validation', 'middleware',
             'component', 'service', 'utility', 'helper', 'parser';
         ];
 ;
@@ -148,14 +148,14 @@ this.codePatterns.set('interface', [;
         const _prompt = task.prompt.toLowerCase();
 ;
         const _codeTypePatterns = {
-            'function': ['function', 'method', 'procedure', 'calculate', 'compute', 'process'],;
-            'class': ['class', 'object', 'entity', 'model'],;
-            'interface': ['interface', 'type', 'contract', 'schema'],;
-            'component': ['component', 'widget', 'element', 'ui'],;
-            'api': ['api', 'endpoint', 'route', 'service', 'http'],;
-            'test': ['test', 'spec', 'unit test', 'integration test'],;
-            'utility': ['utility', 'helper', 'util', 'tool'],;
-            'hook': ['hook', 'use'],;
+            'function': ['function', 'method', 'procedure', 'calculate', 'compute', 'process'],
+            'class': ['class', 'object', 'entity', 'model'],
+            'interface': ['interface', 'type', 'contract', 'schema'],
+            'component': ['component', 'widget', 'element', 'ui'],
+            'api': ['api', 'endpoint', 'route', 'service', 'http'],
+            'test': ['test', 'spec', 'unit test', 'integration test'],
+            'utility': ['utility', 'helper', 'util', 'tool'],
+            'hook': ['hook', 'use'],
             'middleware': ['middleware', 'interceptor', 'guard'];
         };
 ;
@@ -229,14 +229,14 @@ generateWithNeuralNetwork(task);
 ;
         return {name = Date.now().toString().slice(-4);
     // const _defaults = { // LINT: unreachable code removed
-            'function': `processData$timestamp`,;
-            'class': `DataProcessor$timestamp`,;
-            'interface': `IData$timestamp`,;
-            'component': `DataComponent$timestamp`,;
-            'api': `dataApi$timestamp`,;
-            'test': `testData$timestamp`,;
-            'utility': `dataUtil$timestamp`,;
-            'hook': `useData$timestamp`,;
+            'function': `processData$timestamp`,
+            'class': `DataProcessor$timestamp`,
+            'interface': `IData$timestamp`,
+            'component': `DataComponent$timestamp`,
+            'api': `dataApi$timestamp`,
+            'test': `testData$timestamp`,
+            'utility': `dataUtil$timestamp`,
+            'hook': `useData$timestamp`,
             'middleware': `dataMiddleware$timestamp`;
         };
 ;
@@ -262,10 +262,10 @@ generateWithNeuralNetwork(task);
     // */; // LINT: unreachable code removed
     getDefaultParams(codeType): unknown {
         const _defaults = {
-            'function': 'data = {this = {};`,;
-            'interface': '',;
-            'component': 'return <div>{props.children}</div>;',;
-            'api': 'res.json({message = useState(initialValue);\n  return [value, setValue];',;
+            'function': 'data = {this = {};`,
+            'interface': '',
+            'component': 'return <div>{props.children}</div>;',
+            'api': 'res.json({message = useState(initialValue);\n  return [value, setValue];',
             'middleware': 'next();';
         };
 ;
@@ -307,7 +307,7 @@ generateWithNeuralNetwork(task);
     // */; // LINT: unreachable code removed
     addTypeAnnotations(code, codeType): unknown {
         // Basic type annotation patterns
-        const _patterns = [;
+        const _patterns = [
             {from = \s*\(([^)]*)\)\s*=>/,to = (_$2): void =>' }
         ];
 ;

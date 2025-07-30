@@ -53,7 +53,7 @@ export class VisionarySoftwareOrchestrator extends EventEmitter {
       // Update job status
       this.activeJobs.set(jobId, {
         ...this.activeJobs.get(jobId),status = > ({
-      id,;
+      id,
       ...job;
     }));
   }
@@ -88,15 +88,15 @@ export class VisionarySoftwareOrchestrator extends EventEmitter {
     // */; // LINT: unreachable code removed
   getStatus() {
     return {
-      initialized: this.isInitialized,;
-    // activeJobs: this.activeJobs.size,; // LINT: unreachable code removed
+      initialized: this.isInitialized,
+    // activeJobs: this.activeJobs.size, // LINT: unreachable code removed
       capabilities: {
-        codeAnalysis: this.options.enableCodeAnalysis,;
-        patternRecognition: this.options.enablePatternRecognition,;
+        codeAnalysis: this.options.enableCodeAnalysis,
+        patternRecognition: this.options.enablePatternRecognition,
         intelligentRefactoring: this.options.enableIntelligentRefactoring;
-      },;
+      },
       integrations: {
-        neuralEngine: !!this.neuralEngine,;
+        neuralEngine: !!this.neuralEngine,
         memoryStore: !!this.memoryStore;
       }
     };

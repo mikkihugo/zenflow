@@ -188,8 +188,8 @@ export async function example4_advancedServerBuilder(): Promise<void> {
       name: 'Advanced Custom Server',
       host: '0.0.0.0',
       port: 3004,
-      environment: 'development',
-    })
+      environment: 'development'
+})
     .withProtocol('http', true)
     .withProtocol('ws', true)
     .withProtocol('mcp', true)
@@ -204,8 +204,8 @@ export async function example4_advancedServerBuilder(): Promise<void> {
       name: 'request_logger',
       handler: requestLogger(),
       order: 0,
-      enabled: true,
-    })
+      enabled: true
+})
     .withMiddleware({
       name: 'cors',
       handler: corsMiddleware({
@@ -215,8 +215,8 @@ export async function example4_advancedServerBuilder(): Promise<void> {
         headers: ['Content-Type', 'Authorization', 'X-Requested-With'],
       }),
       order: 1,
-      enabled: true,
-    })
+      enabled: true
+})
     .withMiddleware({
       name: 'rate_limiter',
       handler: rateLimiter({
@@ -225,16 +225,16 @@ export async function example4_advancedServerBuilder(): Promise<void> {
         message: 'Too many requests from this IP',
       }),
       order: 2,
-      enabled: true,
-    })
+      enabled: true
+})
     .withRoute({
       path: '/api/status',
       method: 'GET',
       handler: async (_req, res) => {
         const status = 'getStatus' in server ? server.getStatus() : { running: true };
         res.success(status, 'Server status retrieved');
-      },
-    })
+      }
+})
     .withRoute({
       path: '/api/echo',
       method: 'POST',
@@ -245,8 +245,8 @@ export async function example4_advancedServerBuilder(): Promise<void> {
           timestamp: new Date().toISOString(),
           correlation: req.correlation?.id,
         });
-      },
-    })
+      }
+})
     .withHealthCheck({
       name: 'custom_endpoint_check',
       type: 'url',
@@ -254,8 +254,8 @@ export async function example4_advancedServerBuilder(): Promise<void> {
       timeout: 2000,
       interval: 30,
       retries: 3,
-      critical: false,
-    })
+      critical: false
+})
     .build();
   
   await server.start();

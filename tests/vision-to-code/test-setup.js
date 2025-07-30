@@ -29,7 +29,7 @@ jest.setTimeout(30000);
 afterAll(async () => {
   // Close database connections
   const _db = require('./utils/test-db');
-  await db.close();
+  // await db.close();
   // Clear all mocks
   jest.clearAllMocks();
   // Clear test cache
@@ -42,9 +42,9 @@ process.on('unhandledRejection', (error) => {
 });
 // Export test utilities
 module.exports = {
-  setupTestDatabase: require('./utils/test-db').setup,;
-clearTestDatabase: require('./utils/test-db').clear,;
-createMockRequest: require('./utils/mock-request'),;
-createMockResponse: require('./utils/mock-response'),;
-waitForCondition: require('./utils/wait-helpers').waitForCondition,;
+  setupTestDatabase: require('./utils/test-db').setup,
+clearTestDatabase: require('./utils/test-db').clear,
+createMockRequest: require('./utils/mock-request'),
+createMockResponse: require('./utils/mock-response'),
+waitForCondition: require('./utils/wait-helpers').waitForCondition
 }

@@ -415,12 +415,12 @@ export const _SplitPane = (): unknown => {
   );;
 ;
 export default {
-  ProgressBar,;
-  CommandInput,;
-  SwarmTopology,;
-  LogPane,;
-  StatusPane,;
-  _HelpPane,;
+  ProgressBar,
+  CommandInput,
+  SwarmTopology,
+  LogPane,
+  StatusPane,
+  _HelpPane,
   _SplitPane;
 };
 ;

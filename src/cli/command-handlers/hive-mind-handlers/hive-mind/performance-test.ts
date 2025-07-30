@@ -20,12 +20,12 @@ export class PerformanceTest {
   async runTestSuite() {
     console.warn('🔬 Starting Hive Mind Performance Test Suite...\n');
 ;
-    const _tests = [;
-      this.testBatchAgentSpawning,;
-      this.testAsyncOperationQueue,;
-      this.testMemoryOperations,;
-      this.testConcurrentTaskExecution,;
-      this.testPerformanceOptimizer,;
+    const _tests = [
+      this.testBatchAgentSpawning,
+      this.testAsyncOperationQueue,
+      this.testMemoryOperations,
+      this.testConcurrentTaskExecution,
+      this.testPerformanceOptimizer,
     ];
 ;
     for(const test of tests) {
@@ -50,7 +50,7 @@ export class PerformanceTest {
     const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2);
 ;
     this.results.push({test = new PerformanceOptimizer({
-      asyncQueueConcurrency,;
+      asyncQueueConcurrency,
     });
 ;
     const _operations = [];
@@ -94,19 +94,19 @@ export class PerformanceTest {
 ;
     const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2);
 ;
-    this.results.push({test = new HiveMindCore({name = [;
-      'Implement user authentication',;
-      'Write unit tests',;
-      'Analyze performance metrics',;
-      'Research best practices',;
-      'Optimize database queries',;
-      'Document API endpoints',;
+    this.results.push({test = new HiveMindCore({name = [
+      'Implement user authentication',
+      'Write unit tests',
+      'Analyze performance metrics',
+      'Research best practices',
+      'Optimize database queries',
+      'Document API endpoints',
     ];
 ;
     // Test concurrent task creation and execution
     const _concurrentStart = performance.now();
     const _taskPromises = tasks.map((description) =>;
-      hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1),;
+      hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1),
     );
 ;
     await Promise.all(taskPromises);
@@ -117,7 +117,7 @@ export class PerformanceTest {
     // Get final status
     const _status = hiveMind.getStatus();
 ;
-    this.results.push({test = === tasks.length ? 'PASS' : 'WARN',;
+    this.results.push({test = === tasks.length ? 'PASS' : 'WARN',
     });
 ;
     console.warn(;
@@ -151,7 +151,7 @@ export class PerformanceTest {
     for(let i = 0; i < 10; i++) {
       batchPromises.push(;
         optimizer.optimizeBatchOperation(;
-          'test-batch',;_id => {
+          'test-batch',_id => {
             await new new Promise((resolve) => setTimeout(resolve, 50));
             return items.map((_item) => ({processed = performance.now() - batchStart;
     // ; // LINT: unreachable code removed

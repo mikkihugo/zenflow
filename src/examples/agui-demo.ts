@@ -104,8 +104,8 @@ await demo.demoToolCallExecution();
 if (server?.aguiMiddleware) {
   const _globalAdapter = server.aguiMiddleware.getGlobalAdapter();
   globalAdapter.emitCustomEvent('integration_test', {
-    status: 'success',;
-  timestamp: Date.now(),;
+    status: 'success',
+  timestamp: Date.now(),
 }
 )
 }

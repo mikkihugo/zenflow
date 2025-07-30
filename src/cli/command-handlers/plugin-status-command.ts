@@ -67,8 +67,8 @@ export async function pluginStatusCommand(args = []: unknown, flags = {}: unknow
 ;
     // Overall health
     const _healthEmoji = {
-      'healthy': '💚',;
-      'degraded': '💛', ;
+      'healthy': '💚',
+      'degraded': '💛',
       'critical': '❤️';
     };
 ;
@@ -117,15 +117,15 @@ export async function pluginStatusCommand(args = []: unknown, flags = {}: unknow
 ;
 // Export the configuration for the command registry
 export const _pluginStatusCommandConfig: pluginStatusCommand,_ler,
-  _description: 'Plugin system status and management',;
-  _usage: 'plugin <subcommand> [options]',;
+  _description: 'Plugin system status and management',
+  _usage: 'plugin <subcommand> [options]',
   _examples: [;
-    'plugin status',;
-    'plugin status --verbose',;
-    'plugin health',;
-    'plugin info memory-backend',;
+    'plugin status',
+    'plugin status --verbose',
+    'plugin health',
+    'plugin info memory-backend',
     'plugin restart unified-interface';
-  ],;
+  ],
   _details: `;
 Plugin Management Commands:;
   status                     Show plugin system overview;

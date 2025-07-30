@@ -5,18 +5,16 @@
 
 import { ClaudeFlowMCPServer } from './src/mcp/mcp-server.js';
 
-async function demonstrateMCPOptimizations(): unknown {
+async function demonstrateMCPOptimizations() {
   console.warn('🚀 Claude Flow MCP Server Optimization Demo\n');
-;
   // Create optimized server instance
   console.warn('📡 Creating optimized MCP server...');
   const _server = new ClaudeFlowMCPServer({
-    batchSize: 15,;
-    batchTimeout: 100,;
-    retryAttempts: 3,;
-    enableMetricsLogging: false,;
-  }
-)
+    batchSize: 15,
+    batchTimeout: 100,
+    retryAttempts: 3,
+    enableMetricsLogging: false
+})
 console.warn('✅ Server created with optimizations:')
 console.warn(`   - Batch size: $
 {
@@ -45,22 +43,22 @@ threshold: $;
 // Simulate some message processing
 console.warn('\n📨 Simulating message processing...');
 // Create test messages
-const _testMessages = [;
+const _testMessages = [
     {
-      message: { jsonrpc: '2.0', method: 'initialize', id: 'init-1', params: {} },;
-      receivedAt: Date.now(),;
-    },;
-    { message: { jsonrpc: '2.0', method: 'tools/list', id: 'tools-1' }, receivedAt: Date.now() },;
-    { message: { jsonrpc: '2.0', method: 'resources/list', id: 'res-1' }, receivedAt: Date.now() },;
+      message: { jsonrpc: '2.0', method: 'initialize', id: 'init-1', params: {} },
+      receivedAt: Date.now(),
+    },
+    { message: { jsonrpc: '2.0', method: 'tools/list', id: 'tools-1' }, receivedAt: Date.now() },
+    { message: { jsonrpc: '2.0', method: 'resources/list', id: 'res-1' }, receivedAt: Date.now() },
     {
       message: {
-        jsonrpc: '2.0',;
-        method: 'resources/read',;
-        id: 'read-1',;
+        jsonrpc: '2.0',
+        method: 'resources/read',
+        id: 'read-1',
         params: { uri: 'performance://summary' },
-      },;
-      receivedAt: Date.now(),;
-    },;
+      },
+      receivedAt: Date.now(),
+    },
   ];
 // Process messages through optimized path
 const __processedCount = 0;
@@ -81,7 +79,7 @@ for (const item of batch) {
   try {
         const _response = await server.handleMessage(item.message);
         console.warn(`   ✅ ${item.message.method} -> ${response.result ? 'Success' : 'Response'}`);
-      } catch (/* error */) {
+      } catch (error) {
         console.warn(`   ❌ ${item.message.method} -> Error: ${error.message}`);
       }
 }
@@ -89,7 +87,7 @@ for (const item of batch) {
 // Queue the messages
 server.stdioOptimizer.queueMessages(testMessages)
 // Wait for processing
-await new Promise((resolve) => setTimeout(resolve, 500))
+  // await new Promise((resolve) => setTimeout(resolve, 500))
 // Show performance metrics
 console.warn('\n📊 Performance Metrics:')
 const _metrics = server.performanceMetrics.getMetrics();
@@ -263,7 +261,7 @@ usage: $;
   (perfSummary.health.memoryUsage / 1024 / 1024).toFixed(1);
 }
 MB`);
-} catch (/* error */)
+} catch (error)
 {
   console.warn(`;
 Error;
@@ -283,7 +281,7 @@ console.warn('✅ Performance metrics logging and monitoring');
 console.warn('✅ Optimized stdio communication handling');
 console.warn('✅ Graceful error recovery and retry mechanisms');
 // Clean shutdown
-await server.shutdown();
+  // await server.shutdown();
 }
 // Run demo
 demonstrateMCPOptimizations().catch(console.error)

@@ -181,7 +181,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       return await this.lanceInterface.similaritySearch({
         vector,k = 'default', limit = 10): Promise<any[]> {
     try {
-      const _searchResult = await this.lanceInterface.semanticSearch(query, {table = = 'default' ? `metadata LIKE '%"namespace":"${namespace}"%'` : undefined,;
+      const _searchResult = await this.lanceInterface.semanticSearch(query, {table = = 'default' ? `metadata LIKE '%"namespace":"${namespace}"%'` : undefined,
     // threshold => { // LINT: unreachable code removed
         try {
           const _metadata = JSON.parse(result.metadata  ?? '{}');
@@ -234,23 +234,23 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       // Create node tables for strategic documents
       await this.conn.query(`;
         CREATE NODE TABLE IF NOT EXISTS Document(;
-          id STRING, ;
-          namespace STRING,;
-          key STRING,;
-          title STRING,;
-          content STRING,;
-          doc_type STRING,;
-          metadata STRING,;
-          timestamp INT64,;
+          id STRING,
+          namespace STRING,
+          key STRING,
+          title STRING,
+          content STRING,
+          doc_type STRING,
+          metadata STRING,
+          timestamp INT64,
           PRIMARY KEY(id);
         );
       `);
 ;
       // Create relationship table for document connections
       await this.conn.query(`;
-        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document, ;
-          relationship_type STRING,;
-          strength DOUBLE,;
+        CREATE REL TABLE IF NOT EXISTS References(FROM Document TO Document,
+          relationship_type STRING,
+          strength DOUBLE,
           created_at INT64;
         );
       `);
@@ -269,12 +269,12 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 ;
     const _title = (typeof value === 'object' && value && 'title' in value) ;
       ? (value as any).title = (typeof value === 'object' && value && 'documentType' in value) ;
-      ? (value as any).documentType = $namespace,;
-            d.key = $key,;
-            d.title = $title,;
-            d.content = $content,;
-            d.doc_type = $doc_type,;
-            d.metadata = $metadata,;
+      ? (value as any).documentType = $namespace,
+            d.key = $key,
+            d.title = $title,
+            d.content = $content,
+            d.doc_type = $doc_type,
+            d.metadata = $metadata,
             d.timestamp = $timestamp;
       `, id = 'default'): Promise<JSONValue | null> {
     const _fullKey = `${namespace}:${key}`;
@@ -297,7 +297,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 ;
     try {
       await this.conn.query(`;
-        MATCH (from = [], ;
+        MATCH (from = [],
     maxDepth = 2;
   ): Promise<any[]> {
     const _fullKey = `${namespace}:${key}`;

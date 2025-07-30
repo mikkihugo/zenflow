@@ -27,10 +27,10 @@ export class WebSocketClient extends EventEmitter {
     super();
     this.url = url;
     this.options = {
-      reconnect: false,;
-    reconnectInterval: 1000,;
-    maxReconnectAttempts: 5,;
-    timeout: 10000,;
+      reconnect: false,
+    reconnectInterval: 1000,
+    maxReconnectAttempts: 5,
+    timeout: 10000,
     ...options,
   }
   this;

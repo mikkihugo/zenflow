@@ -89,12 +89,12 @@ initialize();
   console.warn(`📄 Inserted ${enrichedDocs.length} vectors`);
   return {success = Date.now();
   // const { // LINT: unreachable code removed
-  k = 10,;
-  namespace = 'default',;
-  filters,;
-  minScore = 0.7,;
-  includeMetadata = false,;
-  includeVectors = false,;
+  k = 10,
+  namespace = 'default',
+  filters,
+  minScore = 0.7,
+  includeMetadata = false,
+  includeVectors = false,
 }
 = query
 // Check cache first
@@ -204,11 +204,11 @@ createIndex(config = > Promise<number[]>)
    */;
   async semanticSearch(query = {}): Promise<{results = Date.now();
     const {
-      table = 'documents',;
-      limit = 10,;
-      filter = '',;
-      threshold = 0.7,;
-      includeEmbeddings = false,;
+      table = 'documents',
+      limit = 10,
+      filter = '',
+      threshold = 0.7,
+      includeEmbeddings = false,
       useCache = true;
     } = options;
 ;
@@ -258,9 +258,9 @@ createIndex(config = > Promise<number[]>)
 ;
       return response;
     // ; // LINT: unreachable code removed
-    } catch (_error = ): Promise<clusters = 'documents',;
-      numClusters = 5,;
-      algorithm = 'kmeans',;
+    } catch (_error = ): Promise<clusters = 'documents',
+      numClusters = 5,
+      algorithm = 'kmeans',
       field = 'embedding'= options;
 ;
     const _targetTable = this.tables.get(table);
@@ -293,7 +293,7 @@ createIndex(config = > Promise<number[]>)
       const _embeddings = data.map((row) => row.embedding).filter((emb = > emb);
 ;
       if (embeddings.length === 0) {
-        return { error = {total_vectors = {}): Promise<{cross_matches = 100,;
+        return { error = {total_vectors = {}): Promise<{cross_matches = 100,
     // threshold = 0.8; // LINT: unreachable code removed
     } = options;
 ;

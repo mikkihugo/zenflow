@@ -25,12 +25,12 @@ class UpstreamSyncChecker {
     execCommand(command, (options = {}));
     try {
       return execSync(command, {
-        encoding: 'utf8',;
-    // stdio: options.silent ? 'pipe' : 'inherit',; // LINT: unreachable code removed
-        ...options,;
-      }
+        encoding: 'utf8',
+    // stdio: options.silent ? 'pipe' : 'inherit', // LINT: unreachable code removed
+        ...options
+}
     ).trim()
-    catch (/* error */)
+    catch (error)
     if (!options.ignoreError) {
       console.error(`Command failed: ${command}`);
       console.error(error.message);
@@ -52,9 +52,8 @@ class UpstreamSyncChecker {
     getUpstreamVersion();
     try {
       const _packageJson = this.execCommand(`git show ${this.upstreamRemote}/main:package.json`, {
-        silent: true,;
-      }
-    )
+        silent: true
+})
     if (packageJson) {
       const _parsed = JSON.parse(packageJson);
       return parsed.version;
@@ -67,9 +66,8 @@ class UpstreamSyncChecker {
     getCommitsBehind();
     try {
       const _commits = this.execCommand(`git rev-list --count HEAD..${this.upstreamRemote}/main`, {
-        silent: true,;
-      }
-    )
+        silent: true
+})
     return parseInt(commits) ?? 0;
     //   // LINT: unreachable code removed} catch (/* _error */) {
     return 0;
@@ -77,7 +75,7 @@ class UpstreamSyncChecker {
     try {
       const _since = `${days} days ago`;
       const _commits = this.execCommand(;
-        `git log ${this.upstreamRemote}/main --since="${since}" --oneline`,;silent: true 
+        `git log ${this.upstreamRemote}/main --since="${since}" --oneline`,silent: true 
       );
       return commits ? commits.split('\n').filter((line) => line.trim()) : [];
     //   // LINT: unreachable code removed} catch (/* _error */) {
@@ -87,22 +85,21 @@ class UpstreamSyncChecker {
     getChangedFiles();
     try {
       const _files = this.execCommand(`git diff --name-only HEAD..${this.upstreamRemote}/main`, {
-        silent: true,;
-      }
-    )
+        silent: true
+})
     return files ? files.split('\n').filter((line) => line.trim()) : [];
     //   // LINT: unreachable code removed} catch (/* _error */) {
     return [];
     analyzeChanges(recentCommits);
     {
       const _analysis = {
-      bugFixes: 0,;
-      features: 0,;
-      security: 0,;
-      performance: 0,;
-      breaking: 0,;
-      other: 0,;
-    }
+      bugFixes: 0,
+      features: 0,
+      security: 0,
+      performance: 0,
+      breaking: 0,
+      other: 0
+}
     recentCommits.forEach((commit) => {
       const _lower = commit.toLowerCase();
       if (lower.includes('fix:') ?? lower.includes('bug') ?? lower.includes('error')) {
@@ -138,11 +135,11 @@ class UpstreamSyncChecker {
       const _match = version.match(/(\d+)\.(\d+)\.(\d+)-alpha\.(\d+)/);
       if (match) {
         return {
-        major: parseInt(match[1]),;
-        // minor: parseInt(match[2]),; // LINT: unreachable code removed
-        patch: parseInt(match[3]),;
-        alpha: parseInt(match[4]),;
-      }
+        major: parseInt(match[1]),
+        // minor: parseInt(match[2]), // LINT: unreachable code removed
+        patch: parseInt(match[3]),
+        alpha: parseInt(match[4])
+}
     }
     return null;
     //   // LINT: unreachable code removed}
@@ -168,10 +165,10 @@ class UpstreamSyncChecker {
         const _versionGap = this.calculateVersionGap(this.ourVersion, upstreamVersion);
         const _syncStatus = this.calculateSyncStatus(commitsBehind, versionGap, recentCommits);
         const _report = {
-      timestamp: new Date().toISOString(),;
-        ours: this.ourVersion,;
-        upstream: upstreamVersion,;
-        gap: versionGap,;
+      timestamp: new Date().toISOString(),
+        ours: this.ourVersion,
+        upstream: upstreamVersion,
+        gap: versionGap,
         ,
         commitsBehind: commitsBehind,
         status: syncStatus.status,
@@ -181,8 +178,8 @@ class UpstreamSyncChecker {
         changedFiles: changedFiles.length,
         analysis: analysis,
         ,
-        recommendations: this.generateRecommendations(syncStatus, analysis, commitsBehind),
-      }
+        recommendations: this.generateRecommendations(syncStatus, analysis, commitsBehind)
+}
       // Display report
       console.warn(`\n🏷️  VERSIONS:`);
       console.warn(`   Our Version:      ${report.versions.ours}`);
@@ -224,43 +221,37 @@ class UpstreamSyncChecker {
         const _recommendations = [];
         if (syncStatus.priority === 'high') {
           recommendations.push({
-        icon: '🚨',;
-          message: 'URGENT: Significant gap detected. Review and integrate critical changes.',;
-        }
-        )
+        icon: '🚨',
+          message: 'URGENT: Significant gap detected. Review and integrate critical changes.'
+})
       }
       if (analysis.security > 0) {
         recommendations.push({
-        icon: '🔒',;
-        message: `${analysis.security} security update(s) available. Priority integration recommended.`,;
-      }
-      )
+        icon: '🔒',
+        message: `${analysis.security} security update(s) available. Priority integration recommended.`
+})
     }
     if (analysis.bugFixes > 2) {
       recommendations.push({
-        icon: '🐛',;
-      message: `${analysis.bugFixes} bug fixes available. Consider selective integration.`,;
-    }
-    )
+        icon: '🐛',
+      message: `${analysis.bugFixes} bug fixes available. Consider selective integration.`
+})
     if (commitsBehind > 10) {
       recommendations.push({
-        icon: '📦',;
-      message: 'Consider bulk integration or version alignment strategy.',;
-    }
-    )
+        icon: '📦',
+      message: 'Consider bulk integration or version alignment strategy.'
+})
     if (commitsBehind === 0) {
       recommendations.push({
-        icon: '✅',;
-      message: 'Fully synced! Monitor for new upstream changes.',;
-    }
-    )
+        icon: '✅',
+      message: 'Fully synced! Monitor for new upstream changes.'
+})
     else
     if (commitsBehind <= 5) {
       recommendations.push({
-        icon: '👀',;
-      message: 'Good sync status. Continue weekly monitoring.',;
-    }
-    )
+        icon: '👀',
+      message: 'Good sync status. Continue weekly monitoring.'
+})
   }
   return;
   recommendations;
@@ -277,12 +268,10 @@ class UpstreamSyncChecker {
     try {
       const _status = JSON.parse(readFileSync(this.lastSyncFile, 'utf8'));
       const _age = Math.floor((Date.now() - new Date(status.timestamp)) / (1000 * 60 * 60 * 24));
-;
       console.warn(`\n📊 QUICK SYNC STATUS (${age} days old):`);
       console.warn(`   Status: ${status.sync.status}`);
       console.warn(`   Commits Behind: ${status.sync.commitsBehind}`);
       console.warn(`   Version Gap: ${status.versions.gap}`);
-;
       if (age > 7) {
         console.warn(`\n⚠️  Status is ${age} days old. Run 'npm run sync:check' for fresh data.`);
       }

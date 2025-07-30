@@ -13,7 +13,7 @@ import ToolExecutionFramework from './tool-execution-framework.js';
 
 // Enhanced view modes with all tool categories
 const _ALL_VIEWS = {
-  ...ENHANCED_VIEWS,;
+  ...ENHANCED_VIEWS,
 // Add any additional views if needed
 }
 export class EnhancedWebUIComplete {
@@ -36,7 +36,7 @@ export class EnhancedWebUIComplete {
     this.commandHistory = [];
     this.historyIndex = -1;
     // Colors for consistent styling
-    this.colors = {cyan = > `\x1b[36m${text}\x1b[0m`,gray = > `\x1b[90m${text}\x1b[0m`,white = > `\x1b[37m${text}\x1b[0m`,yellow = > `\x1b[33m${text}\x1b[0m`,green = > `\x1b[32m${text}\x1b[0m`,red = > `\x1b[31m${text}\x1b[0m`,blue = > `\x1b[34m${text}\x1b[0m`,magenta = > `\x1b[35m${text}\x1b[0m`,bold = > `\x1b[1m${text}\x1b[0m`,dim = > `\x1b[2m${text}\x1b[0m`,;
+    this.colors = {cyan = > `\x1b[36m${text}\x1b[0m`,gray = > `\x1b[90m${text}\x1b[0m`,white = > `\x1b[37m${text}\x1b[0m`,yellow = > `\x1b[33m${text}\x1b[0m`,green = > `\x1b[32m${text}\x1b[0m`,red = > `\x1b[31m${text}\x1b[0m`,blue = > `\x1b[34m${text}\x1b[0m`,magenta = > `\x1b[35m${text}\x1b[0m`,bold = > `\x1b[1m${text}\x1b[0m`,dim = > `\x1b[2m${text}\x1b[0m`,
   }
   this;
   .
@@ -75,11 +75,11 @@ initializeEnhancedUI();
 ;
       this.addLog('success', '🚀 Enhanced Web UI fully initialized with all 87 MCP tools');
     } catch (/* _error */) {
-      this.addLog('error', `Failed to initialize enhancedUI = [;
+      this.addLog('error', `Failed to initialize enhancedUI = [
       { id => {
       this.processes.set(p.id, {
-        ...p,;
-        status = {totalEntries = [;
+        ...p,
+        status = {totalEntries = [
       {
         time => {
       this.systemStats.uptime++;
@@ -99,12 +99,12 @@ initializeEnhancedUI();
     setInterval(() => {
       // Update system stats
       this.systemStats.cpuUsage = Math.max(;
-        0,;
-        this.systemStats.cpuUsage + (Math.random() - 0.5) * 2,;
+        0,
+        this.systemStats.cpuUsage + (Math.random() - 0.5) * 2,
       );
       this.systemStats.memoryUsage = Math.max(;
-        0,;
-        this.systemStats.memoryUsage + (Math.random() - 0.5) * 3,;
+        0,
+        this.systemStats.memoryUsage + (Math.random() - 0.5) * 3,
       );
 ;
       // Update process stats
@@ -117,15 +117,15 @@ initializeEnhancedUI();
 ;
       // Emit performance metrics for real-time updates
       if(this.realtimeUpdates) {
-        this.realtimeUpdates.emit('system_stats_update', {cpuUsage = [;
+        this.realtimeUpdates.emit('system_stats_update', {cpuUsage = [
       { name => {
       console.warn(;
-        `  ${cat.icon} ${this.colors.white(cat.name)}: ${this.colors.yellow(cat.count)} tools`,;
+        `  ${cat.icon} ${this.colors.white(cat.name)}: ${this.colors.yellow(cat.count)} tools`,
       );
     }
   )
   console.warn()
-  console.warn(this.colors.green(`Total = [;
+  console.warn(this.colors.green(`Total = [
       {key = '';
     mainTabs.forEach((tab) => {
       const _isActive = this.currentView === tab.view;
@@ -138,7 +138,7 @@ initializeEnhancedUI();
 )
 console.warn(mainTabLine)
 // Enhanced tool tabs (row 2)
-const _toolTabs = [;
+const _toolTabs = [
       {key = '';
     toolTabs.forEach((tab) => {
       const _isActive = this.currentView === tab.view;
@@ -151,7 +151,7 @@ const _toolTabs = [;
     console.warn(toolTabLine);
 ;
     // Additional tabs (row 3)
-    const _additionalTabs = [;
+    const _additionalTabs = [
       {key = '';
     additionalTabs.forEach((tab) => {
       const _isActive = this.currentView === tab.view;
@@ -281,7 +281,7 @@ const _toolTabs = [;
     } catch (/* error */) {
       this.addLog('error', `Tool executionfailed = await this.toolFramework.executePredefinedWorkflow('performance_analysis');
       this.addLog('success', 'Workflow completed successfully');catch (/* error */) 
-      this.addLog('error', `Workflowfailed = [;
+      this.addLog('error', `Workflowfailed = [
       {toolName = await this.toolFramework.executeToolsBatch(batchTools, {parallel = === ALL_VIEWS.PROCESSES) {
       switch(_key) {
         case '\x1b[A': // Up arrow
@@ -351,12 +351,12 @@ const _toolTabs = [;
       if(process.status === 'running') {
         const _stats = this.colors.dim(;
           `PID = Array.from(this.processes.values()).filter(;
-      (p) => p.status === 'running',;
+      (p) => p.status === 'running',
     ).length;
     console.warn(this.colors.gray('─'.repeat(80)));
     console.warn(;
       this.colors.white(;
-        `Total = > a.status === 'working').length)}/${this.agents.length}`,;
+        `Total = > a.status === 'working').length)}/${this.agents.length}`,
     );
     console.warn(`  TotalTasks = this.mcpIntegration ? this.mcpIntegration.getStatus() : null;
     if(mcpStatus) {
@@ -390,7 +390,7 @@ const _toolTabs = [;
       console.warn(`     _ID => {
       const _usageBar = this.getUsageBar(ns.entries, 100);
       console.warn(;
-        `  ${this.colors.white(ns.name.padEnd(12))} ${usageBar} ${this.colors.yellow(ns.entries)} entries (${this.colors.blue(ns.size)})`,;
+        `  ${this.colors.white(ns.name.padEnd(12))} ${usageBar} ${this.colors.yellow(ns.entries)} entries (${this.colors.blue(ns.size)})`,
       );
     });
 ;
@@ -425,7 +425,7 @@ const _toolTabs = [;
 ;
   getHealthBar() {
     const _running = Array.from(this.processes.values()).filter(;
-      (p) => p.status === 'running',;
+      (p) => p.status === 'running',
     ).length;
     const _total = this.processes.size;
     const _percentage = (running / total) * 100;

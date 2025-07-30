@@ -70,16 +70,16 @@ analyzeWithESComplex(filePath, content);
       fileResult.classes.push({id = 1; // Base complexity
     
     // Count control flow statements
-    const _patterns = [;
-      /\bif\s*\(/g,;
-      /\belse\s+if\s*\(/g,;
-      /\bwhile\s*\(/g,;
-      /\bfor\s*\(/g,;
-      /\bswitch\s*\(/g,;
-      /\bcase\s+/g,;
-      /\bcatch\s*\(/g,;
+    const _patterns = [
+      /\bif\s*\(/g,
+      /\belse\s+if\s*\(/g,
+      /\bwhile\s*\(/g,
+      /\bfor\s*\(/g,
+      /\bswitch\s*\(/g,
+      /\bcase\s+/g,
+      /\bcatch\s*\(/g,
       /\?\s*.*?\s*:/g, // ternary operators
-      /&&/g,;
+      /&&/g,
       /\|\|/g;
     ];
 ;
@@ -168,7 +168,7 @@ analyzeWithESComplex(filePath, content);
     const _complexity = func.cyclomatic  ?? 1;
     const _loc = func.sloc.logical  ?? 1;
 ;
-    const _maintainability = Math.max(0, ;
+    const _maintainability = Math.max(0,
       171 - 5.2 * Math.log(volume) - 0.23 * complexity - 16.2 * Math.log(loc);
     );
 ;
@@ -226,28 +226,28 @@ analyzeWithESComplex(filePath, content);
       .slice(0, 10);
 ;
     insights.hotspots = highComplexityFunctions.map(func => ({
-      name: func.name,;
-      file: func.file_id,;
-      complexity: func.complexity.cyclomatic,;
-      maintainability: func.maintainabilityIndex,;
+      name: func.name,
+      file: func.file_id,
+      complexity: func.complexity.cyclomatic,
+      maintainability: func.maintainabilityIndex,
       recommendation: this.getComplexityRecommendation(func.complexity.cyclomatic);
     }));
 ;
     // Generate recommendations
     if(results.overall.complexityDistribution.critical > 0) {
       insights.recommendations.push({
-        type: 'critical_complexity',;
-        priority: 'high',;
-        description: `${results.overall.complexityDistribution.critical} functions have critical complexity (>20)`,;
+        type: 'critical_complexity',
+        priority: 'high',
+        description: `${results.overall.complexityDistribution.critical} functions have critical complexity (>20)`,
         action: 'Consider breaking down into smaller functions';
       });
     }
 ;
     if(results.overall.averageMaintainability < 50) {
       insights.recommendations.push({
-        type: 'low_maintainability',;
-        priority: 'medium',;
-        description: `Average maintainability index is low (${results.overall.averageMaintainability})`,;
+        type: 'low_maintainability',
+        priority: 'medium',
+        description: `Average maintainability index is low (${results.overall.averageMaintainability})`,
         action: 'Focus on refactoring complex functions and reducing code duplication';
       });
     }

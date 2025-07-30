@@ -34,7 +34,7 @@ switch (subcommand) {
 ;
     console.warn(chalk.green('🚀 Starting unified dashboard...'));
     console.warn(chalk.gray(`📄 Dashboardscript = spawn('node', [dashboardPath], {
-      env,;
+      env,
       _stdio => {
       console.error(chalk.red('❌ Failed to start dashboard => {
       if(code === 0) {
@@ -91,15 +91,15 @@ function stopDashboard(_flags: unknown): unknown {
   console.warn('2. Kill it: kill <pid>');
 }
 export const dashboardCommandConfig: dashboardCommand,ler,
-  description: '📊 Launch unified dashboard interface with React/Ink support',;
-usage: 'dashboard <command> [options]',;
+  description: '📊 Launch unified dashboard interface with React/Ink support',
+usage: 'dashboard <command> [options]',
 examples: [;
-    'dashboard start',;
-    'dashboard start --terminal',;
-    'dashboard start --web --port 3000',;
-    'dashboard status',;
+    'dashboard start',
+    'dashboard start --terminal',
+    'dashboard start --web --port 3000',
+    'dashboard status',
     'dashboard stop';
-  ],;
+  ],
 details: `;
 Dashboard Commands:;
   start     Launch the unified dashboard interface;

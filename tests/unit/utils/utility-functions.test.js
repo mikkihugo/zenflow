@@ -20,7 +20,7 @@ describe('Utility Functions', () => {
       validateEmail: (email) => {
         const _emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
-        //   // LINT: unreachable code removed},;
+        //   // LINT: unreachable code removed},
       };
       // HTML sanitization
       expect(sanitizer.sanitizeHtml('<script>alert("xss")</script>')).toBe(;
@@ -37,7 +37,7 @@ describe('Utility Functions', () => {
       it('should handle rate limiting', () =>
       {
         const _rateLimiter = {
-        requests: new Map(),;
+        requests: new Map(),
         windowMs: 60000, // 1 minute
           maxRequests;
         : 100,
@@ -45,9 +45,9 @@ describe('Utility Functions', () => {
         function (clientId) {
           const _now = Date.now();
           const _clientData = this.requests.get(clientId)  ?? {
-            count: 0,;
-            resetTime: now + this.windowMs,;
-          }
+            count: 0,
+            resetTime: now + this.windowMs
+}
         if (now > clientData.resetTime) {
           clientData.count = 0;
           clientData.resetTime = now + this.windowMs;
@@ -62,8 +62,8 @@ describe('Utility Functions', () => {
           getRemainingRequests: function (clientId) {
           const _clientData = this.requests.get(clientId)  ?? { count: 0 };
           return Math.max(0, this.maxRequests - clientData.count);
-    //   // LINT: unreachable code removed},;
-      }
+    //   // LINT: unreachable code removed}
+}
           // Initial requests should be allowed
           expect(rateLimiter.isAllowed('client1')).toBe(true);
           expect(rateLimiter.getRemainingRequests('client1')).toBe(99);
@@ -72,10 +72,8 @@ describe('Utility Functions', () => {
           rateLimiter.requests.set('client2', clientData);
           expect(rateLimiter.isAllowed('client2')).toBe(false);
           expect(rateLimiter.getRemainingRequests('client2')).toBe(0);
-        }
-        )
-      }
-      )
+        })
+      })
       describe('File System Utils', () => 
         it('should handle path operations', () =>
       {
@@ -99,7 +97,7 @@ describe('Utility Functions', () => {
               const _lastDot = path.lastIndexOf('.');
               const _lastSlash = path.lastIndexOf('/');
               return lastDot > lastSlash ? path.substring(lastDot) : '';
-              //   // LINT: unreachable code removed},;
+              //   // LINT: unreachable code removed},
             };
             expect(pathUtils.join('path', 'to', 'file.txt')).toBe('path/to/file.txt');
             expect(pathUtils.join('path/', '/to/', '/file.txt')).toBe('path/to/file.txt');
@@ -115,47 +113,42 @@ describe('Utility Functions', () => {
           {
             const _fileFilter = {
         filters: {
-          javascript: /\.(js|jsx|ts|tsx)$/,;
-            images: /\.(jpg|jpeg|png|gif|svg)$/,;
-            documents: /\.(pdf|doc|docx|txt|md)$/,;
-          }
+          javascript: /\.(js|jsx|ts|tsx)$/,
+            images: /\.(jpg|jpeg|png|gif|svg)$/,
+            documents: /\.(pdf|doc|docx|txt|md)$/
+}
           ,
             filterByType:
           function (files, /* type */) {
           const _pattern = this.filters[type];
           return pattern ? files.filter((file) => pattern.test(file)) : files;
     //   // LINT: unreachable code removed},
-;
         filterBySize: (_files, _maxSize) =>;
           files.filter((file) => !file.size  ?? file.size <= maxSize),
-;
-        filterByDate: (files, since) => files.filter((file) => !file.mtime  ?? file.mtime >= since),;
-      }
+        filterByDate: (files, since) => files.filter((file) => !file.mtime  ?? file.mtime >= since)
+}
           const _testFiles = [
             ;
-        { name: 'app.js', size: 1024 },;
-        { name: 'style.css', size: 2048 },;
-        { name: 'image.png', size: 5000 },;
-        { name: 'readme.md', size: 512 },;,,,,,,,
+        { name: 'app.js', size: 1024 },
+        { name: 'style.css', size: 2048 },
+        { name: 'image.png', size: 5000 },
+        { name: 'readme.md', size: 512 },,,,,,,,
           ];
           const _jsFiles = fileFilter.filterByType(;
-          testFiles.map((f) => f.name),;
+          testFiles.map((f) => f.name),
           ('javascript');
           )
             expect(jsFiles).toEqual(['app.js'])
           const _smallFiles = fileFilter.filterBySize(testFiles, 2000);
           expect(smallFiles).toHaveLength(3);
           expect(smallFiles.some((f) => f.name === 'image.png')).toBe(false);
-        }
-        )
-      }
-      )
+        })
+      })
       describe('String Utils', () => 
         it('should handle string formatting', () =>
       {
         const _stringUtils = {
         capitalize: (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(),
-;
         camelCase: (_str) =>;
         str;
         .replace(/[-_\s]+(.)?/g, (_, char) => (char ? char.toUpperCase() : ''))
@@ -173,8 +166,8 @@ describe('Utility Functions', () => {
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
-        .replace(/^-|-$/g, ''),
-      }
+        .replace(/^-|-$/g, '')
+}
       expect(stringUtils.capitalize('hello world')).toBe('Hello world');
       expect(stringUtils.camelCase('hello-world_test')).toBe('helloWorldTest');
       expect(stringUtils.kebabCase('HelloWorldTest')).toBe('hello-world-test');
@@ -188,28 +181,26 @@ describe('Utility Functions', () => {
         template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
             return Object.hasOwn(data, key) ? data[key] : match;
     //   // LINT: unreachable code removed}),
-;
         interpolateAdvanced: function (template, /* data */) {
           return template.replace(/\{\{([\w.]+)\}\}/g, (_match, path) => {
             const _value = this.getNestedValue(data, path);
     // return value !== undefined ? value : match; // LINT: unreachable code removed
           });
         },
-;
         getNestedValue: (_obj, _path) =>;
           path;
             .split('.');
             .reduce(;
-              (current, key) => (current && Object.hasOwn(current, key) ? current[key] : undefined),;
+              (current, key) => (current && Object.hasOwn(current, key) ? current[key] : undefined),
               obj;
-            ),;
+            ),
       };
         const _data = {
-        name: 'Claude',;
-        version: '2.0.0',;
+        name: 'Claude',
+        version: '2.0.0',
         port: 3000, debug;
-        : true ,
-      }
+        : true 
+}
       expect(templateEngine.interpolate('Hello {{name}}!', data)).toBe('Hello Claude!');
       expect(templateEngine.interpolateAdvanced('Port: {{config.port}}', data)).toBe('Port: 3000');
       expect(templateEngine.interpolate('Missing: {{missing}}', data)).toBe('Missing: {{missing}}');
@@ -218,47 +209,39 @@ describe('Utility Functions', () => {
     describe('Validation Utils', () => {
       it('should validate data types', () => {
       const _validator = {
-        isString: (value) => typeof value === 'string',;
-        isNumber: (value) => typeof value === 'number' && !Number.isNaN(value),;
-        isArray: (value) => Array.isArray(value),;
-        isObject: (value) => value !== null && typeof value === 'object' && !Array.isArray(value),;
+        isString: (value) => typeof value === 'string',
+        isNumber: (value) => typeof value === 'number' && !Number.isNaN(value),
+        isArray: (value) => Array.isArray(value),
+        isObject: (value) => value !== null && typeof value === 'object' && !Array.isArray(value),
         isEmpty: (value) => {
           if (value === null  ?? value === undefined) return true;
     // if (typeof value === 'string'  ?? Array.isArray(value)) return value.length === 0; // LINT: unreachable code removed
           if (typeof value === 'object') return Object.keys(value).length === 0;
     // return false; // LINT: unreachable code removed
         },
-;
         validateSchema: function (data, /* schema */) {
           const _errors = [];
-;
           for (const [field, rules] of Object.entries(schema)) {
             const _value = data[field];
-;
             if (rules.required && this.isEmpty(value)) {
               errors.push(`${field} is required`);
               continue;
             }
-;
             if (!this.isEmpty(value)) {
               if (rules.type && !this[`is${rules.type}`](value)) {
                 errors.push(`${field} must be of type ${rules.type.toLowerCase()}`);
               }
-;
               if (rules.minLength && value.length < rules.minLength) {
                 errors.push(`${field} must be at least ${rules.minLength} characters`);
               }
-;
               if (rules.maxLength && value.length > rules.maxLength) {
                 errors.push(`${field} must be at most ${rules.maxLength} characters`);
               }
             }
           }
-;
           return errors;
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
       };
-;
       // Type validation
       expect(validator.isString('hello')).toBe(true);
       expect(validator.isString(123)).toBe(false);
@@ -266,17 +249,15 @@ describe('Utility Functions', () => {
       expect(validator.isNumber('42')).toBe(false);
       expect(validator.isArray([1, 2, 3])).toBe(true);
       expect(validator.isObject({ key: 'value' })).toBe(true);
-;
       // Empty validation
       expect(validator.isEmpty('')).toBe(true);
       expect(validator.isEmpty([])).toBe(true);
       expect(validator.isEmpty({})).toBe(true);
       expect(validator.isEmpty(null)).toBe(true);
       expect(validator.isEmpty('hello')).toBe(false);
-;
       // Schema validation
       const _schema = {
-        name: { required: true, type: 'String', minLength: 2, maxLength: 50 },;required: false, type: 'Number' ,;required: true, type: 'String' ,;
+        name: { required: true, type: 'String', minLength: 2, maxLength: 50 },required: false, type: 'Number' ,required: true, type: 'String' ,
       };
       const _validData = { name: 'John', age: 30, email: 'john@example.com' };
       expect(validator.validateSchema(validData, schema)).toEqual([]);
@@ -291,14 +272,12 @@ describe('Utility Functions', () => {
     it('should handle event emitter functionality', () => {
       const _eventEmitter = {
         events: new Map(),
-;
         on: function (event, /* listener */) {
           if (!this.events.has(event)) {
             this.events.set(event, []);
           }
           this.events.get(event).push(listener);
         },
-;
         off: function (event, /* listener */) {
           if (this.events.has(event)) {
             const _listeners = this.events.get(event);
@@ -308,26 +287,24 @@ describe('Utility Functions', () => {
             }
           }
         },
-;
         emit: function (event, ...args) {
           if (this.events.has(event)) {
             this.events.get(event).forEach((listener) => {
               try {
                 listener(...args);
-              } catch (/* error */) {
+              } catch (error) {
                 console.error('Event listener error:', error);
               }
             });
           }
         },
-;
         once: function (event, /* listener */) {
           const _onceListener = (): unknown => {
             this.off(event, onceListener);
             listener(...args);
           };
           this.on(event, onceListener);
-        },;
+        },
       };
     const _callCount = 0;
     const _listener = () => callCount++;

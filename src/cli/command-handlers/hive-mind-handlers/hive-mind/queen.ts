@@ -21,19 +21,19 @@ _countComplexityKeywords(text)
 {
   const _complexKeywords = [
     ;
-    'complex',;
-    'advanced',;
-    'enterprise',;
-    'distributed',;
-    'scalable',;
-    'modular',;
-    'architecture',;
-    'integration',;
-    'optimization',;
-    'security',;
-    'performance',;
-    'concurrent',;
-    'real-time',;,,,,,,,
+    'complex',
+    'advanced',
+    'enterprise',
+    'distributed',
+    'scalable',
+    'modular',
+    'architecture',
+    'integration',
+    'optimization',
+    'security',
+    'performance',
+    'concurrent',
+    'real-time',,,,,,,,
   ];
   const _lowerText = text.toLowerCase();
   return complexKeywords.filter((keyword) => lowerText.includes(keyword)).length;
@@ -111,7 +111,7 @@ _estimateResources(objective);
 {
   const __complexity = this._assessComplexity(objective);
 ;
-  return {minWorkers = === 'very_high' ? 'high' : 'medium',;
+  return {minWorkers = === 'very_high' ? 'high' : 'medium',
     //   // LINT: unreachable code removed};
 }
 ;
@@ -146,7 +146,7 @@ createExecutionPlan(analysis, workers);
 ;
     decisionPoints.forEach((decision, index) => {
       phases.push({name = === 0, // Only first phase in parallelrequiresConsensus = [
-      {name = > ['analyst', 'researcher'].includes(w.type)),;
+      {name = > ['analyst', 'researcher'].includes(w.type)),
         parallel = {backend = [];
     const _components = this._identifyComponents(analysis.objective);
 ;
@@ -266,8 +266,8 @@ makeDecision(topic, options, (workerVotes = {}));
 : unknown;
 {
   const _decision = {
-      topic,;
-      options,;
+      topic,
+      options,
       workerVotes,queenVote = this._calculateFinalDecision(decision);
 ;
   decision.result = finalDecision;
@@ -401,7 +401,7 @@ _learnFromDecision(decision);
 {
   const _key = `decision-${this.state.decisionsCount}`;
   this.state.learningData.set(key, {
-      ...decision,;
+      ...decision,
       success = {}): unknown {
     const _key = `decision-${decisionId}`;
   const _decision = this.state.learningData.get(key);
@@ -418,13 +418,13 @@ _learnFromDecision(decision);
  */;
 getStatus();
   return {
-      type: this.config.type,;
-    // name: this.config.name,; // LINT: unreachable code removed
-      status: this.state.status,;
-      decisionsCount: this.state.decisionsCount,;
-      strategiesExecuted: this.state.strategiesExecuted,;
-      currentStrategy: this.state.currentStrategy,;
-      learningDataSize: this.state.learningData.size,;;
+      type: this.config.type,
+    // name: this.config.name, // LINT: unreachable code removed
+      status: this.state.status,
+      decisionsCount: this.state.decisionsCount,
+      strategiesExecuted: this.state.strategiesExecuted,
+      currentStrategy: this.state.currentStrategy,
+      learningDataSize: this.state.learningData.size,
 }
 }
 ;

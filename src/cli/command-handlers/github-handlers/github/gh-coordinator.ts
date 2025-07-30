@@ -109,7 +109,7 @@ class GitHubCoordinator {
     const _response = await this.api.request(`/repos/${owner}/${repo}/contents/${workflowPath}`, {
       method = {nodejs = ./ --cov-report=xml
 ;
-    -name = [;
+    -name = [
       { name => {
       console.warn(`  - ${secret.name}: ${secret.description}`);
   }
@@ -172,11 +172,11 @@ export async function coordinateGitHubWorkflow(args = {}: unknown): unknown {
       printInfo(`🎯 Coordinating = {
       id: ${objective}`);
 ;
-      const coordinationPlan,       id: `general-${Date.now()}`,;
-        type: 'general_coordination',;
-        objective,;
-        steps: ['analyze_requirements', 'create_action_plan', 'execute_plan'],;
-        status: 'planning',;
+      const coordinationPlan,       id: `general-${Date.now()}`,
+        type: 'general_coordination',
+        objective,
+        steps: ['analyze_requirements', 'create_action_plan', 'execute_plan'],
+        status: 'planning',
       };
 ;
       coordinator.activeCoordinations.set(coordinationPlan.id, coordinationPlan);

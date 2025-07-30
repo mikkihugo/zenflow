@@ -78,8 +78,8 @@ export class RealFannEngine {
         const _maintainability = output[1] * 100; // Scale to 0-100
         const _bugRisk = output[2] * 10; // Scale to 0-10
         
-        return {type = [;
-    // 'Singleton Pattern', 'Factory Pattern', 'Observer Pattern', ; // LINT: unreachable code removed
+        return {type = [
+    // 'Singleton Pattern', 'Factory Pattern', 'Observer Pattern', // LINT: unreachable code removed
             'Strategy Pattern', 'Command Pattern', 'Adapter Pattern';
         ];
 
@@ -117,7 +117,7 @@ export class RealFannEngine {
             return true;
     // ; // LINT: unreachable code removed
         } catch () {
-            this.logger.debug('Native binding loadfailed = [;
+            this.logger.debug('Native binding loadfailed = [
                 '../ruv-FANN/pkg/ruv_fann.js',
                 './ruv-FANN/pkg/ruv_fann.js',
                 path.join(process.cwd(), 'ruv-FANN/pkg/ruv_fann.js');
@@ -134,7 +134,7 @@ export class RealFannEngine {
                             wasmModule.run_network) 
 
                             this.wasmBinding = wasmModule;
-                            this.logger.info(`✅ WASM ruv-FANN bindings loadedfrom = [;
+                            this.logger.info(`✅ WASM ruv-FANN bindings loadedfrom = [
             {name = this.nativeBinding.createNetwork(;
                     config.architecture,
                     config.activation  ?? 'relu';

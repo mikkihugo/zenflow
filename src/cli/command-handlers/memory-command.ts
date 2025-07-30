@@ -32,8 +32,8 @@ if(!key  ?? !value) {
 ;
     // Add new entry
     data[namespace].push({
-      key,;
-      value,;
+      key,
+      value,
       namespace,timestamp = subArgs.slice(1).join(' ');
 ;
   if(!search) {

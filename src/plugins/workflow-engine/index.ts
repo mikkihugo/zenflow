@@ -304,13 +304,13 @@ export class WorkflowEnginePlugin extends EventEmitter {
       return {success = Array.from(this.workflows.values());
     // .filter(w => ['running', 'paused'].includes(w.status)); // LINT: unreachable code removed
       .map(w => ({
-        id: w.id,;
-        name: w.definition?.name,;
-        status: w.status,;
-        currentStep: w.currentStep,;
-        totalSteps: w.steps.length,;
-        progress: w.steps.length > 0 ? (w.currentStep / w.steps.length) * 100 : 0,;
-        startTime: w.startTime,;
+        id: w.id,
+        name: w.definition?.name,
+        status: w.status,
+        currentStep: w.currentStep,
+        totalSteps: w.steps.length,
+        progress: w.steps.length > 0 ? (w.currentStep / w.steps.length) * 100 : 0,
+        startTime: w.startTime,
         pausedAt: w.pausedAt;
       }));
 ;

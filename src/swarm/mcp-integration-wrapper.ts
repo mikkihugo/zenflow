@@ -49,7 +49,7 @@ initialize();
     const __startTime = performance.now();
 ;
     this.logger.info('Executing MCP tool', {
-      toolName,;
+      toolName,
       executionId,agentId = this.toolRegistry.tools.get(toolName);
       if (!tool) {
         throw new Error(`Tool notfound = await this.getCachedResult(toolName, input, context);
@@ -71,10 +71,10 @@ initialize();
       try {
         // Execute tool with retry logic
         const _result = await this.executeWithRetry(;
-          tool,;
-          input,;
-          context,;
-          executionId,;
+          tool,
+          input,
+          context,
+          executionId,
           abortController.signal;
         );
 ;
@@ -85,8 +85,8 @@ initialize();
       const _executionResult = {success = [];
       for (const execution of toolExecutions) {
         const _result = await this.executeTool(;
-          execution.toolName,;
-          execution.input,;
+          execution.toolName,
+          execution.input,
           execution.context;
         );
         results.push(result);
@@ -100,8 +100,8 @@ initialize();
       await semaphore.acquire();
       try {
         return await this.executeTool(;
-    // execution.toolName,; // LINT: unreachable code removed
-          execution.input,;
+    // execution.toolName, // LINT: unreachable code removed
+          execution.input,
           execution.context;
         );
       } finally {
@@ -220,12 +220,12 @@ initialize();
     throw lastError  ?? new Error('Tool execution failed after all retries');
   }
 ;
-  private isNonRetryableError(error = [;
-      /not found/i,;
-      /invalid input/i,;
-      /permission denied/i,;
-      /unauthorized/i,;
-      /forbidden/i,;
+  private isNonRetryableError(error = [
+      /not found/i,
+      /invalid input/i,
+      /permission denied/i,
+      /unauthorized/i,
+      /forbidden/i,
     ];
 ;
     return nonRetryablePatterns.some(pattern => pattern.test(error.message));
@@ -282,11 +282,11 @@ initialize();
     // Extract capabilities from tool name and description
     const _text = `${tool.name} ${tool.description}`.toLowerCase();
 ;
-    const _capabilityPatterns = [;
-      'agent', 'task', 'memory', 'system', 'config', 'workflow',;
-      'terminal', 'swarm', 'neural', 'benchmark', 'monitoring',;
-      'orchestration', 'coordination', 'analysis', 'research',;
-      'development', 'testing', 'documentation', 'optimization',;
+    const _capabilityPatterns = [
+      'agent', 'task', 'memory', 'system', 'config', 'workflow',
+      'terminal', 'swarm', 'neural', 'benchmark', 'monitoring',
+      'orchestration', 'coordination', 'analysis', 'research',
+      'development', 'testing', 'documentation', 'optimization',
     ];
 ;
     for (const pattern of capabilityPatterns) {

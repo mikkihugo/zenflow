@@ -13,7 +13,7 @@ Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([cmdName, cmdConfig]) => {
     try {
       app[httpMethod](endpoint, (_req, res) => res.json({}));
       console.warn('✅ OK');
-    } catch (/* error */) {
+    } catch (error) {
       console.warn('❌ ERROR:', error.message);
       console.warn('   Stack:', error.stack.split('\n')[1]);
     }

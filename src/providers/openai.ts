@@ -5,26 +5,26 @@
 
 import { BaseProvider } from './base-provider.js';
 import {
-  AIRequest,;
-AIResponse,;
-FunctionCall,;
-Message,;
-ProviderCapabilities,;
-ProviderConfig,;
-ProviderError,;
-RateLimitError,;
-TokenUsage,;
+  AIRequest,
+AIResponse,
+FunctionCall,
+Message,
+ProviderCapabilities,
+ProviderConfig,
+ProviderError,
+RateLimitError,
+TokenUsage,
 } from './types.js'
 interface OpenAIMessage {role = 'openai'
 version = '2024-07-29'
-config = {enabled = {textGeneration = 'https = [;
+config = {enabled = {textGeneration = 'https = [
     'gpt-4-turbo-preview',
 'gpt-4-0125-preview',
 'gpt-4-1106-preview',
-'gpt-4',;
-'gpt-4-0613',;
-'gpt-3.5-turbo',;
-'gpt-3.5-turbo-0125',;
+'gpt-4',
+'gpt-4-0613',
+'gpt-3.5-turbo',
+'gpt-3.5-turbo-0125',
 ('gpt-3.5-turbo-1106');
 ]
 constructor()
@@ -129,9 +129,9 @@ try {
   return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
 }
 return new ProviderError(;
-// errorData.error?.message  ?? errorData.message  ?? 'Unknown error',; // LINT: unreachable code removed
-this.name,;
-errorData.error?.type  ?? 'API_ERROR',;
+// errorData.error?.message  ?? errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
+this.name,
+errorData.error?.type  ?? 'API_ERROR',
 response.status;
 )
 }
@@ -143,8 +143,8 @@ handleError(error: unknown)
     return error;
     //   // LINT: unreachable code removed}
     return new ProviderError(;
-    // error.message  ?? 'Unknown error occurred',; // LINT: unreachable code removed
-    this.name,;
+    // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
+    this.name,
     ('UNKNOWN_ERROR');
     )
   }

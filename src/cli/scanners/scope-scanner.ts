@@ -16,11 +16,11 @@ export async function scanForMissingScopeFiles(): unknown {
         `Generate a scope.md file for a service located at ${dir}. The service name is ${path.basename(dir)}.`;
       );
       suggestions.push({
-        id: `missing-scope-${dir}`,;
-        description: `Found service without a scope.md file: ${dir}`,;
-        action: 'create_scope_file',;
-        servicePath: dir,;
-        generatedScope: generatedScope,;
+        id: `missing-scope-${dir}`,
+        description: `Found service without a scope.md file: ${dir}`,
+        action: 'create_scope_file',
+        servicePath: dir,
+        generatedScope: generatedScope,
       });
     }
 }

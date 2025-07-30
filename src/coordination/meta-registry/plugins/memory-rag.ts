@@ -95,8 +95,8 @@ learnFromDiscovery(data);
       const _relevance = await this.calculateRelevance(memory, query);
       if (relevance > (options.threshold  ?? 0.5)) {
         relevantMemories.push({
-          memory,;
-          relevance,;
+          memory,
+          relevance,
           age => {
       const _scoreA = a.relevance - (a.age / 1000000); // Slight recency bias
       const _scoreB = b.relevance - (b.age / 1000000);
@@ -181,7 +181,7 @@ learnFromDiscovery(data);
     // ; // LINT: unreachable code removed
     // Get from memory bank
     const _memories = await this.retrieveMemory({
-      entityKey,;
+      entityKey,
       entityValue;
     }, limit = this.knowledgeGraph.get(entityKey);
     if(node && node.connections.size > 0) {
@@ -278,8 +278,8 @@ learnFromDiscovery(data);
     for(let j = 1; j <= str2.length; j++) {
       for(let i = 1; i <= str1.length; i++) {
         const _indicator = str1[i - 1] === str2[j - 1] ?0 = Math.min(;
-          matrix[j][i - 1] + 1,;
-          matrix[j - 1][i] + 1,;
+          matrix[j][i - 1] + 1,
+          matrix[j - 1][i] + 1,
           matrix[j - 1][i - 1] + indicator;
         );
       }
@@ -383,7 +383,7 @@ learnFromDiscovery(data);
     await fs.writeJson(this.memoryFile, memoryData, {spaces = === 0) return;
     // ; // LINT: unreachable code removed
     const _graphData = Array.from(this.knowledgeGraph.entries()).map(([key, node]) => [;
-      key,;
+      key,
       {
         ...node,connections = === 0) return;
     // ; // LINT: unreachable code removed
@@ -396,7 +396,7 @@ learnFromDiscovery(data);
       if (await fs.pathExists(this.knowledgeFile)) {
         const _graphData = await fs.readJson(this.knowledgeFile);
         this.knowledgeGraph = new Map(graphData.map(([key, node]) => [;
-          key,;
+          key,
           {
             ...node,connections = await fs.readJson(this.patternsFile);
         this.patterns = new Map(patternsData);
@@ -518,8 +518,8 @@ learnFromDiscovery(data);
 ;
     // Final persistence
     await Promise.all([;
-      this.persistMemory(),;
-      this.persistKnowledgeGraph(),;
+      this.persistMemory(),
+      this.persistKnowledgeGraph(),
       this.persistPatterns();
     ]);
 ;
@@ -532,9 +532,9 @@ learnFromDiscovery(data);
   // Statistics and introspection
   getStats() ;
     return {memory = > sum + node.connections.size, 0),averageConnections = > sum + node.connections.size, 0) / this.knowledgeGraph.size = > p.confidence > 0.8).length,averageConfidence = > sum + p.confidence, 0) / this.patterns.size : 0;
-    //   // LINT: unreachable code removed},;
+    //   // LINT: unreachable code removed},
       learning: ;
-        historySize: this.learningHistory.length,;
+        historySize: this.learningHistory.length,
         enabled: this.options.enableLearning;
 }
 ;

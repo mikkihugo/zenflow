@@ -39,8 +39,8 @@ class StdioOptimizationTests {
       const _hasPerformanceMetrics = this.server.performanceMetrics !== undefined;
 ;
       this.addTestResult(;
-        'Server Initialization',;
-        hasStdioOptimizer && hasErrorHandler && hasPerformanceMetrics,;
+        'Server Initialization',
+        hasStdioOptimizer && hasErrorHandler && hasPerformanceMetrics,
         'All optimization components initialized';
       );
 ;
@@ -49,8 +49,8 @@ class StdioOptimizationTests {
       const _correctTimeout = this.server.stdioOptimizer.batchTimeout === 100;
 ;
       this.addTestResult(;
-        'Configuration',;
-        correctBatchSize && correctTimeout,;
+        'Configuration',
+        correctBatchSize && correctTimeout,
         'Batch size and timeout configured correctly';
       );
     }
@@ -69,13 +69,13 @@ class StdioOptimizationTests {
 ;
       // Mock messages for batch testing
 
-      this.addTestResult('Message Queueing', ;
-        queueLength === 3,;
+      this.addTestResult('Message Queueing',
+        queueLength === 3,
         `Messagesqueued = stdioOptimizer.getMetrics();
       const _hasMetrics = metrics && typeof metrics.queueLength === 'number';
 ;
-      this.addTestResult('Metrics Collection', ;
-        hasMetrics,;
+      this.addTestResult('Metrics Collection',
+        hasMetrics,
         'Stdio metrics available';
       );
 ;
@@ -97,8 +97,8 @@ class StdioOptimizationTests {
       const _initialStats = errorHandler.getErrorStats();
       const _hasStats = initialStats && typeof initialStats.totalErrors === 'number';
 ;
-      this.addTestResult('Error Statistics', ;
-        hasStats,;
+      this.addTestResult('Error Statistics',
+        hasStats,
         'Error statistics tracking available';
       );
 ;
@@ -106,8 +106,8 @@ class StdioOptimizationTests {
       const _circuitState = errorHandler.circuitState;
       const _validState = ['CLOSED', 'OPEN', 'HALF_OPEN'].includes(circuitState);
 ;
-      this.addTestResult('Circuit Breaker', ;
-        validState,;
+      this.addTestResult('Circuit Breaker',
+        validState,
         `Circuit breakerstate = new Error('Test error');
       const _errorResponse = errorHandler.createErrorResponse('test-id', testError);
       const _validResponse = errorResponse && errorResponse.jsonrpc === '2.0';
@@ -132,8 +132,8 @@ class StdioOptimizationTests {
       const _hasRequestMetrics = currentMetrics?.requests;
 ;
       this.addTestResult(;
-        'Performance Metrics',;
-        hasRequestMetrics,;
+        'Performance Metrics',
+        hasRequestMetrics,
         'Performance metrics collection active';
       );
 ;
@@ -166,13 +166,13 @@ class StdioOptimizationTests {
       const _delay2 = errorHandler.calculateRetryDelay(2);
       const _hasExponentialBackoff = delay2 > delay1;
 ;
-      this.addTestResult('Exponential Backoff', ;
-        hasExponentialBackoff,;
+      this.addTestResult('Exponential Backoff',
+        hasExponentialBackoff,
         `Delays = new Error('Invalid JSON syntax');
       const _isNonRetryable = errorHandler.isNonRetryableError(jsonError);
 ;
-      this.addTestResult('Non-retryable Errors', ;
-        isNonRetryable,;
+      this.addTestResult('Non-retryable Errors',
+        isNonRetryable,
         'JSON errors correctly identified as non-retryable';
       );
 ;
@@ -194,13 +194,13 @@ class StdioOptimizationTests {
       const _metrics = stdioOptimizer.getMetrics();
       const _isConnected = metrics.isConnected;
 ;
-      this.addTestResult('Connection Status', ;
-        typeof isConnected === 'boolean',;
+      this.addTestResult('Connection Status',
+        typeof isConnected === 'boolean',
         `Connectiontracked = metrics.bufferSize;
       const _hasBufferTracking = typeof bufferSize === 'number';
 ;
-      this.addTestResult('Buffer Management', ;
-        hasBufferTracking,;
+      this.addTestResult('Buffer Management',
+        hasBufferTracking,
         `Buffersize = passed ? '✅ PASS' : '❌ FAIL';
     console.warn(`  $status: $testName- $details`);
   }

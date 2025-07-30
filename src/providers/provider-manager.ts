@@ -3,15 +3,15 @@
  * Central coordination system for multi-LLM provider management;
  */
 
-AIResponse,;
-BaseProvider,;
-LoadBalancingStrategy,;
-ProviderConfig,;
-ProviderError,;
-ProviderMetrics,;
-ProviderStatus,;
-QuotaExceededError,;
-RateLimitError,;
+AIResponse,
+BaseProvider,
+LoadBalancingStrategy,
+ProviderConfig,
+ProviderError,
+ProviderMetrics,
+ProviderStatus,
+QuotaExceededError,
+RateLimitError,
 } from './types.js'
 interface ProviderInstance {provider = new Map()
 private;
@@ -161,7 +161,7 @@ return providers[index];
     // if (weightedProviders.length === 0) return providers[0]; // LINT: unreachable code removed
 ;
   const _totalWeight = weightedProviders.reduce(;
-    (sum, p) => sum + (weights[p.provider.name]  ?? 1),;
+    (sum, p) => sum + (weights[p.provider.name]  ?? 1),
     0;
   );
   const _random = Math.random() * totalWeight;

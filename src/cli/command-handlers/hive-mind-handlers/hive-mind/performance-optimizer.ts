@@ -9,9 +9,9 @@
     this.metrics = {processed = 5): unknown {
     return new Promise((resolve, reject) => {
       const _queueItem = {
-        operation,;
-    // priority,; // LINT: unreachable code removed
-        resolve,;
+        operation,
+    // priority, // LINT: unreachable code removed
+        resolve,
         reject,addedAt = this.queue.findIndex((item) => item.priority < priority);
       if(insertIndex === -1) {
         this.queue.push(queueItem);
@@ -70,7 +70,7 @@ _updateMetrics(processingTime, success)
 getMetrics();
 {
   return {
-      ...this.metrics,;
+      ...this.metrics,
   // successRate = { // LINT: unreachable code removed}): unknown {
   super();
   this.config = {maxBatchSize = new Map();
@@ -143,8 +143,8 @@ _processBatch(batchKey);
 getMetrics()
 {
   return {
-      ...this.metrics,pendingBatches = > sum + batch.items.length,;
-  // 0,; // LINT: unreachable code removed
+      ...this.metrics,pendingBatches = > sum + batch.items.length,
+  // 0, // LINT: unreachable code removed
   ),
 }
 }
@@ -163,8 +163,8 @@ export class PerformanceOptimizer extends EventEmitter {
     super();
 ;
     this.config = {enableAsyncQueue = = false,enableBatchProcessing = = false,enableAutoTuning = = false,asyncQueueConcurrency = new AsyncOperationQueue(;
-      this.config.asyncQueueConcurrency,;
-      this.config.asyncTimeout  ?? 30000,;
+      this.config.asyncQueueConcurrency,
+      this.config.asyncTimeout  ?? 30000,
     );
 ;
     this.batchProcessor = new BatchProcessor({
@@ -284,8 +284,8 @@ export class PerformanceOptimizer extends EventEmitter {
       this.asyncQueue.maxConcurrency += 2;
       this.emit('auto_tune', {type = Math.max(5, this.asyncQueue.maxConcurrency - 1);
       this.emit('auto_tune', {type = Math.max(;
-        20,;
-        this.batchProcessor.config.maxBatchSize - 5,;
+        20,
+        this.batchProcessor.config.maxBatchSize - 5,
       );
       this.emit('auto_tune', {type = Date.now();
     const _entries = Array.from(this.cache.entries());
@@ -324,11 +324,11 @@ export class PerformanceOptimizer extends EventEmitter {
 ;
     // Analyze and provide recommendations
     if(stats.asyncQueue.utilization > 80) {
-      recommendations.push({type = [;
-      Math.min(100, parseFloat(stats.asyncQueue.successRate)),;
+      recommendations.push({type = [
+      Math.min(100, parseFloat(stats.asyncQueue.successRate)),
       Math.min(100, 100 - parseFloat(stats.asyncQueue.utilization)), // Lower utilization is better
-      Math.min(100, parseFloat(stats.cache.hitRate)),;
-      Math.min(100, (stats.batchProcessor.avgBatchSize / this.config.batchMaxSize) * 100),;
+      Math.min(100, parseFloat(stats.cache.hitRate)),
+      Math.min(100, (stats.batchProcessor.avgBatchSize / this.config.batchMaxSize) * 100),
     ];
 ;
     const _avgScore = factors.reduce((sum, score) => sum + score, 0) / factors.length;

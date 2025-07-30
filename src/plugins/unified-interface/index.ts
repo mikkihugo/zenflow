@@ -18,10 +18,10 @@ import { join } from 'path';
 import React, { useEffect, useState } from 'react';
 import { WebSocket } from 'ws';
 import type {
-  JSONObject,;
-PluginConfig,;
-PluginContext,;
-PluginManifest,;
+  JSONObject,
+PluginConfig,
+PluginContext,
+PluginManifest,
 } from '../../types/plugin.js'
 
 import { BasePlugin } from '../base-plugin.js';
@@ -189,10 +189,10 @@ createCliHeader((title = ''));
 ;
   return boxen(;
     // chalk.hex(theme.primary).bold(title) + ; // LINT: unreachable code removed
-      (subtitle ? '\n' + chalk.hex(theme.secondary)(subtitle) : ''),;
+      (subtitle ? '\n' + chalk.hex(theme.secondary)(subtitle) : ''),
       {padding = this.themes[this.config.settings.theme as 'dark' | 'light'];
 ;
-  const _table = new Table({head = > chalk.hex(theme.primary).bold(h)),;
+  const _table = new Table({head = > chalk.hex(theme.primary).bold(h)),
       style => {
       table.push(row.map(cell => ;
         typeof cell === 'string' ?cell = === 'dark' ? 'cyan' : 'blue';
@@ -485,7 +485,7 @@ createWebStyles();
     async loadData() {
         try {
             const [plugins, stats] = await Promise.all([;
-                fetch('/api/plugins').then(r => r.json()),;
+                fetch('/api/plugins').then(r => r.json()),
                 fetch('/api/stats').then(r => r.json());
             ]);
 ;

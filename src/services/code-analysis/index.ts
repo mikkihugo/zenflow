@@ -58,8 +58,8 @@ export class CodeAnalysisService {
     const _watcherStatus = this.watcher.getStatus();
 ;
     return {
-      ...orchestratorStats,;
-    // realTimeAnalysis: watcherStatus,; // LINT: unreachable code removed
+      ...orchestratorStats,
+    // realTimeAnalysis: watcherStatus, // LINT: unreachable code removed
     };
 ;
   async cleanup() 

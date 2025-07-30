@@ -35,10 +35,10 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');
 ;
     const { maintenance } = await inquirer.prompt([;
       {type = await inquirer.prompt([;
-    {type = > answers.operations.includes('cleanMemory'),;
-    },;
-    {type = > answers.operations.includes('archiveTasks'),;
-    },;
+    {type = > answers.operations.includes('cleanMemory'),
+    },
+    {type = > answers.operations.includes('archiveTasks'),
+    },
     {
       type = {vacuum = await optimizeHiveMindDatabase(dbPath, options);
 ;
@@ -72,11 +72,11 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');
     execSync(`cp "${dbPath}" "${backupPath}"`);
     console.warn(chalk.green(`✓ Backupcreated = await inquirer.prompt([;
       {
-        type: 'confirm',;
-        name: 'proceed',;
-        message: 'Continue without backup?',;
-        default: false,;
-      },;
+        type: 'confirm',
+        name: 'proceed',
+        message: 'Continue without backup?',
+        default: false,
+      },
     ]);
 ;
     if(!proceed) {

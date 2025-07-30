@@ -51,12 +51,12 @@ checkDiskSpace()
               result.success = false;
               result.errors.push(;
                 `Insufficient diskspace = false): unknown {
-    const _result = {success = [;
-      'CLAUDE.md',;
-      'memory-bank.md',;
-      'coordination.md',;
-      '.roomodes',;
-      'memory/claude-zen-data.json',;
+    const _result = {success = [
+      'CLAUDE.md',
+      'memory-bank.md',
+      'coordination.md',
+      '.roomodes',
+      'memory/claude-zen-data.json',
     ];
 ;
     // Check critical files
@@ -78,7 +78,7 @@ checkDiskSpace()
           if(entries.length > 0) {
             result.conflicts.push(`${dir}/ (${entries.length} items)`);
             if(!force) {
-              result.warnings.push(`Directory exists with content = {success = [;
+              result.warnings.push(`Directory exists with content = {success = [
       {name = new node.Command(dep.command, {args = await command.output();
 ;
         if(success) {
@@ -99,7 +99,7 @@ checkDiskSpace()
    * Check environment variables and configuration;
    */;
   async checkEnvironment() {
-    const _result = {success = [;
+    const _result = {success = [
       {name = node.env.get(envVar.name);
 ;
       if(value) {
@@ -139,10 +139,10 @@ checkDiskSpace()
     const _allWarnings = Object.values(results).flatMap((r) => r.warnings  ?? []);
 ;
     return {
-      success: overallSuccess,;
-    // results,; // LINT: unreachable code removed
-      errors: allErrors,;
-      warnings: allWarnings,;
+      success: overallSuccess,
+    // results, // LINT: unreachable code removed
+      errors: allErrors,
+      warnings: allWarnings,
     };
   }
 }

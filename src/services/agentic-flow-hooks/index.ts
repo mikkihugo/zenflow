@@ -31,11 +31,11 @@ const { WORKFLOW_HOOKS } = await import('./workflow-hooks.js');
 // Register all hooks
 const _allHooks = [
   ;
-  ...LLM_HOOKS,;
-  ...NEURAL_HOOKS,;
-  ...PERFORMANCE_HOOKS,;
-  ...MEMORY_HOOKS,;
-  ...WORKFLOW_HOOKS,;,,,,,,,
+  ...LLM_HOOKS,
+  ...NEURAL_HOOKS,
+  ...PERFORMANCE_HOOKS,
+  ...MEMORY_HOOKS,
+  ...WORKFLOW_HOOKS,,,,,,,,
 ];
 for (const hookRegistration of allHooks) {
   try {
@@ -96,21 +96,21 @@ return result;
 // Convenience hook creators
 export function createLLMRequestHook(): unknown {
   return {
-    name,type = = false,async = = false,timeout = > Promise<any>,;
+    name,type = = false,async = = false,timeout = > Promise<any>,
     // options = { // LINT: unreachable code removed}
 ) ;
   return {
-    name,type = = false,async = = false,timeout = > Promise<any>,;
+    name,type = = false,async = = false,timeout = > Promise<any>,
     // options = { // LINT: unreachable code removed}
 ) ;
   return {
-    name,type = = false,async = = false,timeout = > Promise<any>,;
+    name,type = = false,async = = false,timeout = > Promise<any>,
     // options = { // LINT: unreachable code removed}
 ) ;
   return {
-    name,type = = false,async = = false,timeout = === 'production' ? 'production' : 'development',;
+    name,type = = false,async = = false,timeout = === 'production' ? 'production' : 'development',
     // version = {DEVELOPMENT = {success = 3600000) => createLLMRequestHook(; // LINT: unreachable code removed
-    'cache-middleware',;
+    'cache-middleware',
     async (_payload) => {
       // Caching logic would go here
       return {
@@ -121,27 +121,26 @@ export function createLLMRequestHook(): unknown {
     // ; // LINT: unreachable code removed
 // Execute hooks for LLM request
 const _result = await executeLLMHooks(hookManager, {provider = createLLMRequestHook(;
-  'my-custom-hook',;
+  'my-custom-hook',
   async (payload) => {
     // Custom logic here
     return {
-      success: true,;
-    // data: { processed: true  // LINT: unreachable code removed},;
-      hookName: 'my-custom-hook',;
-      duration: 100,;
+      success: true,
+    // data: { processed: true  // LINT: unreachable code removed},
+      hookName: 'my-custom-hook',
+      duration: 100,
       timestamp: new Date();
     };
-  },;
+  },
   { ;
-    description: 'My custom processing hook',;
-    priority: 75,;
+    description: 'My custom processing hook',
+    priority: 75,
     timeout: 5000;
   }
 );
 ;
 await hookManager.registerHook(customHook);
 `,
-;
   HOOK_PATTERNS: `;
 // Use predefined hook patterns
 import { HOOK_PATTERNS } from './agentic-flow-hooks';

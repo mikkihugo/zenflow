@@ -1,7 +1,7 @@
 module.exports = {
-  displayName: 'Vision-to-Code Tests',;
-testEnvironment: 'node',;
-roots: ['<rootDir>'],;
+  displayName: 'Vision-to-Code Tests',
+testEnvironment: 'node',
+roots: ['<rootDir>'],
 testMatch: [;
     '**/__tests__/**/*.js',
     '**/__tests__/**/*.ts',
@@ -9,12 +9,12 @@ testMatch: [;
     '**/*.test.ts',
     '**/*.spec.js',
     '**/*.spec.ts',
-  ],;
+  ],
 {
   ('^.+\\.(ts|tsx)$');
   : 'ts-jest',
   ('^.+\\.(js|jsx)$')
-  : 'babel-jest',
+  : 'babel-jest'
 }
 ,
 moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
@@ -27,11 +27,11 @@ collectCoverageFrom: [
     '!src/**/node_modules/**',
 ],
 {
-  branches: 95,;
-  functions: 95,;
-  lines: 95,;
-  statements: 95,;
-  ,
+  branches: 95,
+  functions: 95,
+  lines: 95,
+  statements: 95,
+  
 }
 ,
 setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
@@ -49,7 +49,7 @@ maxWorkers: '50%',
   ('^@models/(.*)$')
   : '<rootDir>/src/models/$1',
   ('^@config/(.*)$')
-  : '<rootDir>/src/config/$1',
+  : '<rootDir>/src/config/$1'
 }
 ,
 {
@@ -59,34 +59,34 @@ maxWorkers: '50%',
   esModuleInterop: true,
   allowSyntheticDefaultImports: true,
   ,
-  ,
+  
 }
 ,
 projects: [
 {
-  displayName: 'Unit Tests',;
-  testMatch: ['<rootDir>/unit/**/*.test.{js,ts}'],
+  displayName: 'Unit Tests',
+  testMatch: ['<rootDir>/unit/**/*.test.{js,ts}']
 }
 ,
 {
-  displayName: 'Integration Tests',;
-  testMatch: ['<rootDir>/integration/**/*.test.{js,ts}'],
+  displayName: 'Integration Tests',
+  testMatch: ['<rootDir>/integration/**/*.test.{js,ts}']
 }
 ,
 {
-  displayName: 'E2E Tests',;
-  testMatch: ['<rootDir>/e2e/**/*.test.{js,ts}'],
+  displayName: 'E2E Tests',
+  testMatch: ['<rootDir>/e2e/**/*.test.{js,ts}']
 }
 ,
 {
-  displayName: 'Performance Tests',;
-  testMatch: ['<rootDir>/performance/**/*.test.{js,ts}'],
+  displayName: 'Performance Tests',
+  testMatch: ['<rootDir>/performance/**/*.test.{js,ts}']
 }
 ,
 {
-  displayName: 'Security Tests',;
-  testMatch: ['<rootDir>/security/**/*.test.{js,ts}'],
+  displayName: 'Security Tests',
+  testMatch: ['<rootDir>/security/**/*.test.{js,ts}']
 }
 ,
-],
+]
 }

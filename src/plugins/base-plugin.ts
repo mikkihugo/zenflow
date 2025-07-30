@@ -145,7 +145,7 @@ catch (/* error */)
 ;
       this.emit('hook-executed', this.manifest.name, type, executionTime);
 ;
-      return {success = > ({ ...acc, ...result.data }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),;
+      return {success = > ({ ...acc, ...result.data }), {}),continue = > r.continue),stop = > r.stop),skip = > r.skip),
     // executionTime,resourcesUsed = performance.now() - startTime; // LINT: unreachable code removed
       this.updateHookMetrics(type, executionTime, false);
 ;
@@ -173,7 +173,7 @@ catch (/* error */)
 ;
       this.emit('api-failed', this.manifest.name, name, {message = this.context.resources.limits.find(l => l.type === type);
     if (limits && this.resourceUsage[type as keyof ResourceUsage] + amount > limits.maximum) {
-      this.emit('resource-exceeded', this.manifest.name, type, ;
+      this.emit('resource-exceeded', this.manifest.name, type,
         this.resourceUsage[type as keyof ResourceUsage] + amount, limits.maximum);
       return false;
     //   // LINT: unreachable code removed}
@@ -206,7 +206,7 @@ catch (/* error */)
 ;
     // Update metadata
     this.metadata.health = {
-      status,;
+      status,
       score,issues = > i.message),lastCheck = [];
 ;
     const _startTime = performance.now();
@@ -218,7 +218,7 @@ catch (/* error */)
       tests.push({name = performance.now() - startTime;
 ;
     return {
-      passed = === 0,;
+      passed = === 0,
     // totalTests = { ...this.config.settings, ...updates  // LINT: unreachable code removed};
     await this.configure({ ...this.config,settings = [];
 ;

@@ -77,10 +77,10 @@ export class CommandRouter {
     if (!command) return null;
     // ; // LINT: unreachable code removed
     return {
-      name: command.name,;
-    // description: command.description,; // LINT: unreachable code removed
-      usage: command.usage,;
-      examples: command.examples,;
+      name: command.name,
+    // description: command.description, // LINT: unreachable code removed
+      usage: command.usage,
+      examples: command.examples,
       aliases: command.aliases;
     };
   }

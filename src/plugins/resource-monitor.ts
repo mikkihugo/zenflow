@@ -23,9 +23,9 @@ config = {}
   super();
   this.config = {enabled = config.resourceLimits ? this.parseResourceLimits(config.resourceLimits) : [];
   this.plugins.set(pluginName, {
-      manifest,;
-  config,;
-  worker,;
+      manifest,
+  config,
+  worker,
   limits,
     (metrics = setInterval(() => {
       this.collectMetrics();
@@ -67,7 +67,7 @@ collectMetrics()
     // Get disk I/O (estimated)
 
     return {
-      pluginName,;
+      pluginName,
     // timestamp,memory = config.resourceLimits?.memory  ?? 512; // LINT: unreachable code removed
     const _limitBytes = limitMB * 1024 * 1024;
     return (memUsage.heapUsed / limitBytes) * 100;
@@ -121,7 +121,7 @@ if (memory.percentage >= critical) {
         if (percentage >= 90) {
           await this.createAlert(pluginData, {alertType = 75) {
       await this.createAlert(pluginData, {
-        pluginName,;
+        pluginName,
         alertType = {id = pluginData.alerts.slice(-this.config.maxAlerts);
         }
 ;

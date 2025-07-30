@@ -5,12 +5,12 @@
 
 import { describe, expect } from '@jest/globals';
 import {
-  CliError,;
-CommandExecutionError,;
-ConfigurationError,;
-formatErrorMessage,;
-handleError,;
-ValidationError,;
+  CliError,
+CommandExecutionError,
+ConfigurationError,
+formatErrorMessage,
+handleError,
+ValidationError,
 } from '../cli-error.js'
 describe('CLI Error System', () =>
 {

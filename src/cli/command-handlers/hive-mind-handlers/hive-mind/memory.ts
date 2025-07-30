@@ -73,7 +73,7 @@ set(key, data);
   }
 ;
   const __entry = {
-      data,;
+      data,
       size,timestamp = size;
 }
 ;
@@ -123,9 +123,8 @@ getStats();
   /** @type {import('better-sqlite3').Database | null} */
   this.db = null;
 ;
-  this.config = {swarmId = = false,enableAsyncOperations = = false,;
-      ...config,;;
-;
+  this.config = {swarmId = = false,enableAsyncOperations = = false,
+      ...config,
   this.state = {totalSize = null;
 ;
   // Optimized cache with LRU eviction
@@ -135,14 +134,13 @@ getStats();
   this.pools = {queryResults = > ({ results => {
           obj.results.length = 0;
   Object.keys(obj.metadata).forEach((k) => delete obj.metadata[k]);
-,;
+,
       ),memoryEntries = > (;
   _id => {
           obj.id = obj.key = obj.value = '';
           Object.keys(obj.metadata).forEach((k) => delete obj.metadata[k]);
-        },;
-  ),;
-;
+        },
+  ),
 // Prepared statements for better performance
 this.statements = new Map();
 ;
@@ -170,18 +168,18 @@ this._initialize();
       // Ensure table exists with optimized schema
       this.db.exec(`;
         CREATE TABLE IF NOT EXISTS collective_memory (;
-          id TEXT PRIMARY KEY,;
-          swarm_id TEXT NOT NULL,;
-          key TEXT NOT NULL,;
-          value BLOB,;
-          type TEXT DEFAULT 'knowledge',;
-          confidence REAL DEFAULT 1.0,;
-          created_by TEXT,;
-          created_at INTEGER DEFAULT (strftime('%s','now')),;
-          accessed_at INTEGER DEFAULT (strftime('%s','now')),;
-          access_count INTEGER DEFAULT 0,;
-          compressed INTEGER DEFAULT 0,;
-          size INTEGER DEFAULT 0,;
+          id TEXT PRIMARY KEY,
+          swarm_id TEXT NOT NULL,
+          key TEXT NOT NULL,
+          value BLOB,
+          type TEXT DEFAULT 'knowledge',
+          confidence REAL DEFAULT 1.0,
+          created_by TEXT,
+          created_at INTEGER DEFAULT (strftime('%s','now')),
+          accessed_at INTEGER DEFAULT (strftime('%s','now')),
+          access_count INTEGER DEFAULT 0,
+          compressed INTEGER DEFAULT 0,
+          size INTEGER DEFAULT 0,
           FOREIGN KEY (swarm_id) REFERENCES swarms(id);
         );
 ;
@@ -198,11 +196,11 @@ this._initialize();
         -- Memory optimization view;
         CREATE VIEW IF NOT EXISTS memory_stats AS;
         SELECT ;
-          swarm_id,;
-          type,;
-          COUNT(*) as entry_count,;
-          SUM(size) as total_size,;
-          AVG(access_count) as avg_access,;
+          swarm_id,
+          type,
+          COUNT(*) as entry_count,
+          SUM(size) as total_size,
+          AVG(access_count) as avg_access,
           MAX(accessed_at) as last_access;
         FROM collective_memory;
         GROUP BY swarm_id, type;
@@ -222,71 +220,71 @@ this._initialize();
         this._initializeBackgroundWorker();
       }
 ;
-      this.emit('memory = ?, accessed_at = strftime('%s','now'), access_count = access_count + 1,;
+      this.emit('memory = ?, accessed_at = strftime('%s','now'), access_count = access_count + 1,
           compressed = ?, size = ?;
       WHERE swarm_id = ? AND key = ?;
-    `),;
+    `),
     );
 ;
     this.statements.set(;
-      'select',;
+      'select',
       this.db.prepare(`;
       SELECT value, type, compressed, confidence, access_count;
       FROM collective_memory;
       WHERE swarm_id = ? AND key = ?;
-    `),;
+    `),
     );
 ;
     this.statements.set(;
-      'updateAccess',;
+      'updateAccess',
       this.db.prepare(`;
       UPDATE collective_memory;
       SET accessed_at = strftime('%s','now'), access_count = access_count + 1;
       WHERE swarm_id = ? AND key = ?;
-    `),;
+    `),
     );
 ;
     this.statements.set(;
-      'searchByPattern',;
+      'searchByPattern',
       this.db.prepare(`;
       SELECT key, type, confidence, created_at, accessed_at, access_count;
       FROM collective_memory;
       WHERE swarm_id = ? AND key LIKE ? AND confidence >= ?;
       ORDER BY access_count DESC, confidence DESC;
       LIMIT ?;
-    `),;
+    `),
     );
 ;
     this.statements.set(;
-      'getStats',;
+      'getStats',
       this.db.prepare(`;
       SELECT ;
-        COUNT(*) as count,;
-        SUM(size) as totalSize,;
-        AVG(confidence) as avgConfidence,;
-        SUM(compressed) as compressedCount,;
+        COUNT(*) as count,
+        SUM(size) as totalSize,
+        AVG(confidence) as avgConfidence,
+        SUM(compressed) as compressedCount,
         AVG(access_count) as avgAccess;
       FROM collective_memory;
       WHERE swarm_id = ?;
-    `),;
+    `),
     );
 ;
     this.statements.set(;
-      'deleteExpired',;
+      'deleteExpired',
       this.db.prepare(`;
       DELETE FROM collective_memory;
       WHERE swarm_id = ? AND type = ? AND (strftime('%s','now') - accessed_at) > ?;
-    `),;
+    `),
     );
 ;
     this.statements.set(;
-      'getLRU',;
+      'getLRU',
       this.db.prepare(`;
       SELECT id, size FROM collective_memory;
       WHERE swarm_id = ? AND type NOT IN ('system', 'consensus');
       ORDER BY accessed_at ASC, access_count ASC;
       LIMIT ?;
-    `),;
+    `),
     );
   }
 ;
@@ -342,7 +340,7 @@ this._initialize();
           `;
         SELECT id FROM collective_memory ;
         WHERE swarm_id = ? AND key = ?;
-      `,;
+      `,
         );
         .get(this.config.swarmId, key);
 ;
@@ -352,20 +350,20 @@ this._initialize();
           .prepare(;
             `;
           UPDATE collective_memory ;
-          SET value = ?, type = ?, confidence = ?, ;
-              accessed_at = CURRENT_TIMESTAMP, access_count = access_count + 1,;
+          SET value = ?, type = ?, confidence = ?,
+              accessed_at = CURRENT_TIMESTAMP, access_count = access_count + 1,
               compressed = ?, size = ?;
           WHERE swarm_id = ? AND key = ?;
-        `,;
+        `,
           );
           .run(;
-            storedValue,;
-            type,;
-            metadata.confidence  ?? 1.0,;
-            compressed,;
-            size,;
-            this.config.swarmId,;
-            key,;
+            storedValue,
+            type,
+            metadata.confidence  ?? 1.0,
+            compressed,
+            size,
+            this.config.swarmId,
+            key,
           );
       } else {
         // Insert new entry
@@ -375,24 +373,24 @@ this._initialize();
           INSERT INTO collective_memory ;
           (id, swarm_id, key, value, type, confidence, created_by, compressed, size);
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        `,;
+        `,
           );
           .run(;
-            id,;
-            this.config.swarmId,;
-            key,;
-            storedValue,;
-            type,;
-            metadata.confidence  ?? 1.0,;
-            metadata.createdBy  ?? 'system',;
-            compressed,;
-            size,;
+            id,
+            this.config.swarmId,
+            key,
+            storedValue,
+            type,
+            metadata.confidence  ?? 1.0,
+            metadata.createdBy  ?? 'system',
+            compressed,
+            size,
           );
       }
 ;
       // Update cache
       this.cache.set(key, {
-        value,;
+        value,
         type,timestamp = this.cache.get(key);
         this._trackAccess(key, 'cache_hit');
         return cached.value;
@@ -405,7 +403,7 @@ this._initialize();
         SELECT value, type, compressed, confidence;
         FROM collective_memory;
         WHERE swarm_id = ? AND key = ?;
-      `,;
+      `,
         );
         .get(this.config.swarmId, key);
 ;
@@ -419,10 +417,10 @@ this._initialize();
         .prepare(;
           `;
         UPDATE collective_memory;
-        SET accessed_at = CURRENT_TIMESTAMP,;
+        SET accessed_at = CURRENT_TIMESTAMP,
             access_count = access_count + 1;
         WHERE swarm_id = ? AND key = ?;
-      `,;
+      `,
         );
         .run(this.config.swarmId, key);
 ;
@@ -480,7 +478,7 @@ this._initialize();
         AND ABS(julianday(m1.accessed_at) - julianday(m2.accessed_at)) < 0.01;
         ORDER BY m1.confidence DESC, m1.access_count DESC;
         LIMIT ?;
-      `,;
+      `,
         );
         .all(key, key, this.config.swarmId, limit);
 ;
@@ -506,7 +504,7 @@ this._initialize();
         AND type IN ('knowledge', 'result');
         ORDER BY created_at DESC;
         LIMIT 1000;
-      `,;
+      `,
         );
         .all(this.config.swarmId);
 ;
@@ -522,8 +520,8 @@ this._initialize();
         }
 ;
         consolidated.get(category).push({
-          ...memory,;
-          value,;
+          ...memory,
+          value,
         });
       });
 ;
@@ -567,7 +565,7 @@ this._initialize();
             WHERE swarm_id = ?;
             AND type = ?;
             AND (julianday('now') - julianday(accessed_at)) * 86400000 > ?;
-          `,;
+          `,
             );
             .run(this.config.swarmId, type, config.ttl);
 ;
@@ -597,7 +595,7 @@ this._initialize();
         AND type NOT IN ('system', 'consensus');
         ORDER BY accessed_at ASC, access_count ASC;
         LIMIT 100;
-      `,;
+      `,
         );
         .all(this.config.swarmId);
 ;
@@ -649,13 +647,13 @@ this._initialize();
       .prepare(;
         `;
       SELECT ;
-        COUNT(*) as count,;
-        SUM(size) as totalSize,;
-        AVG(confidence) as avgConfidence,;
+        COUNT(*) as count,
+        SUM(size) as totalSize,
+        AVG(confidence) as avgConfidence,
         SUM(compressed) as compressedCount;
       FROM collective_memory;
       WHERE swarm_id = ?;
-    `,;
+    `,
       );
       .get(this.config.swarmId);
 ;
@@ -680,7 +678,7 @@ this._initialize();
     if(this.state.accessPatterns.size > 1000) {
       // Remove oldest entries
       const _sorted = Array.from(this.state.accessPatterns.entries()).sort(;
-        (a, b) => a[1].lastAccess - b[1].lastAccess,;
+        (a, b) => a[1].lastAccess - b[1].lastAccess,
       );
 ;
       sorted.slice(0, 100).forEach(([key]) => {
@@ -699,7 +697,7 @@ this._initialize();
         SELECT * FROM collective_memory;
         WHERE swarm_id = ?;
         ORDER BY created_at DESC;
-      `,;
+      `,
         );
         .all(this.config.swarmId);
 ;
@@ -758,28 +756,28 @@ export class MemoryOptimizer {
     // Generate recommendations
     if ((analytics.cache.hitRate  ?? 0) < 70) {
       report.recommendations.push({
-        type: 'cache',;
-        priority: 'high',;
-        description: 'Increase cache size to improve hit rate',;
-        impact: 'Reduce database queries by up to 30%',;
+        type: 'cache',
+        priority: 'high',
+        description: 'Increase cache size to improve hit rate',
+        impact: 'Reduce database queries by up to 30%',
       });
     }
 ;
     if (analytics.performance.avgQueryTime > 50) {
       report.recommendations.push({
-        type: 'database',;
-        priority: 'medium',;
-        description: 'Optimize database indexes and run ANALYZE',;
-        impact: 'Improve query performance by 20-40%',;
+        type: 'database',
+        priority: 'medium',
+        description: 'Optimize database indexes and run ANALYZE',
+        impact: 'Improve query performance by 20-40%',
       });
     }
 ;
     if (analytics.pools?.queryResults?.reuseRate < 50) {
       report.recommendations.push({
-        type: 'pooling',;
-        priority: 'low',;
-        description: 'Increase object pool sizes for better reuse',;
-        impact: 'Reduce garbage collection pressure',;
+        type: 'pooling',
+        priority: 'low',
+        description: 'Increase object pool sizes for better reuse',
+        impact: 'Reduce garbage collection pressure',
       });
     }
 ;

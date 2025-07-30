@@ -4,13 +4,13 @@
 
 import { jest } from '@jest/globals';
 import {
-  commandRegistry,;
-executeCommand,;
-hasCommand,;
-listCommands,;
-registerCoreCommands,;
-showAllCommands,;
-showCommandHelp,;
+  commandRegistry,
+executeCommand,
+hasCommand,
+listCommands,
+registerCoreCommands,
+showAllCommands,
+showCommandHelp,
 } from '../command-registry.js'
 // Mock all command modules
 jest.mock('../simple-commands/init.js', () => (
@@ -51,7 +51,7 @@ jest.mock('../simple-commands/sparc.js', () => ({ sparcCommand: jest.fn() }));
 jest.mock('../simple-commands/batch-manager.js', () => ({ batchManagerCommand: jest.fn() }));
 jest.mock('../simple-commands/ruv-swarm.js', () => ({ ruvSwarmAction: jest.fn() }));
 jest.mock('../simple-commands/config-integration.js', () => ({
-  configIntegrationAction: jest.fn(),;
+  configIntegrationAction: jest.fn(),
 }))
 =>
 {
@@ -74,23 +74,23 @@ jest.mock('../simple-commands/config-integration.js', () => ({
     test('should register all core commands', () => {
       registerCoreCommands();
 ;
-      const _expectedCommands = [;
-        'init',;
-        'start',;
-        'memory',;
-        'sparc',;
-        'agent',;
-        'task',;
-        'config',;
-        'status',;
-        'mcp',;
-        'monitor',;
-        'swarm',;
-        'batch-manager',;
-        'github',;
-        'docker',;
-        'ruv-swarm',;
-        'config-integration',;
+      const _expectedCommands = [
+        'init',
+        'start',
+        'memory',
+        'sparc',
+        'agent',
+        'task',
+        'config',
+        'status',
+        'mcp',
+        'monitor',
+        'swarm',
+        'batch-manager',
+        'github',
+        'docker',
+        'ruv-swarm',
+        'config-integration',
       ];
 ;
       expectedCommands.forEach((cmd) => {

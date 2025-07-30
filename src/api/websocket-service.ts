@@ -67,11 +67,11 @@ export class WebSocketService extends EventEmitter {
     this.messageHandlers = new Map();
     this.isInitialized = false;
     this.stats = {
-      totalConnections: 0,;
-    activeConnections: 0,;
-    messagesSent: 0,;
-    messagesReceived: 0,;
-    errors: 0,;
+      totalConnections: 0,
+    activeConnections: 0,
+    messagesSent: 0,
+    messagesReceived: 0,
+    errors: 0,
   }
 }
 async;
@@ -156,10 +156,10 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     this.stats.messagesSent += successCount;
 ;
     this.emit('broadcast', {
-      data,;
-      results,;
-      successCount,;
-      totalConnections: this.stats.activeConnections,;
+      data,
+      results,
+      successCount,
+      totalConnections: this.stats.activeConnections,
     });
 ;
     return results;
@@ -234,10 +234,10 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 ;
   getServiceStatus() 
     return {
-      isInitialized: this.isInitialized,;
-    // options: this.options,; // LINT: unreachable code removed
-      stats: this.stats,;
-      connectionManagerStatus: this.connectionManager.getStatus(),;;
+      isInitialized: this.isInitialized,
+    // options: this.options, // LINT: unreachable code removed
+      stats: this.stats,
+      connectionManagerStatus: this.connectionManager.getStatus(),
   }
 ;
   getConnectionStats(connectionName: string) {
@@ -276,12 +276,12 @@ export function _checkWebSocketSupport(): WebSocketSupportCheck {
   const _majorVersion = parseInt(nodeVersion.substring(1).split('.')[0]);
 ;
   return {
-    nodeVersion,;
-    // majorVersion,; // LINT: unreachable code removed
-    hasNativeWebSocket = 22,;
+    nodeVersion,
+    // majorVersion, // LINT: unreachable code removed
+    hasNativeWebSocket = 22,
     recommendation = 22 ;
       ? 'Use --experimental-websocket flag for native WebSocket support';
-      : 'Upgrade to Node.js 22+ for native WebSocket support',;
+      : 'Upgrade to Node.js 22+ for native WebSocket support',
   };
 ;
 export default WebSocketService;

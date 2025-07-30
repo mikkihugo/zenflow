@@ -6,9 +6,9 @@ describe('monitor.js - Real Metrics Implementation', () => {
   beforeEach(() => {
     // Setup console spies
     _consoleSpy = {
-      log: jest.spyOn(console, 'log').mockImplementation(),;
-      clear: jest.spyOn(console, 'clear').mockImplementation(),;
-      error: jest.spyOn(console, 'error').mockImplementation(),;
+      log: jest.spyOn(console, 'log').mockImplementation(),
+      clear: jest.spyOn(console, 'clear').mockImplementation(),
+      error: jest.spyOn(console, 'error').mockImplementation(),
     };
   // Setup process spies
   _processExitSpy = jest.spyOn(process, 'exit').mockImplementation();
@@ -30,7 +30,7 @@ describe('Basic Functionality', () => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     )
-    await monitorCommand([], )
+  // await monitorCommand([], )
     // Check if metrics were displayed
     const _output = consoleSpy.log.mock.calls.join('\n');
     expect(output).toContain('System Metrics');
@@ -51,7 +51,7 @@ describe('Output Formats', () => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     )
-    await monitorCommand(['--format', 'json'], )
+  // await monitorCommand(['--format', 'json'], )
     const _calls = consoleSpy.log.mock.calls;
     const _jsonOutput = calls.find((call) => {
       try {
@@ -60,8 +60,7 @@ describe('Output Formats', () => {
     //   // LINT: unreachable code removed} catch {
           return false;
     //   // LINT: unreachable code removed}
-      }
-      )
+      })
       expect(jsonOutput).toBeDefined()
       if (jsonOutput) {
         const _parsed = JSON.parse(jsonOutput[0]);
@@ -73,7 +72,7 @@ describe('Output Formats', () => {
       const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
       )
-      await monitorCommand([], )
+  // await monitorCommand([], )
       const _output = consoleSpy.log.mock.calls.join('\n');
       expect(output).toMatch(/System Metrics|System Resources|Performance/);
     });

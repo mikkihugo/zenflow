@@ -73,8 +73,8 @@ const __handleVisionCommand = async (subcommand, args, flags) => {
     //   // LINT: unreachable code removed}
       const __advancedSwarmConfig = {objective = = false,encryption = = false,cognitiveSupport = hiveMindCore.getStatus().workers; // Assuming getStatus returns worker agents
       console.warn('Agentstatus = await hiveMindCore.buildConsensus(;
-    // flags.topic  ?? args[0],; // LINT: unreachable code removed
-        flags.options ? flags.options.split(',') : [],;
+    // flags.topic  ?? args[0], // LINT: unreachable code removed
+        flags.options ? flags.options.split(',') : [],
       );
       console.warn('MRAP reasoningexecuted = async (subcommand, args, flags) => {
   switch(subcommand) {

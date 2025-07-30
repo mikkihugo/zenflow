@@ -18,11 +18,11 @@ async function checkCommandAvailable(command = await import('node:child_process'
 
 if (platform() === 'win32') {
   //Windows = [
-  '/usr/local/bin',;
-  '/usr/bin',;
-  '/opt/homebrew/bin',;
-  join(process.env.HOME  ?? '', '.local', 'bin'),;
-  join(process.env.HOME  ?? '', 'bin'),;
+  '/usr/local/bin',
+  '/usr/bin',
+  '/opt/homebrew/bin',
+  join(process.env.HOME  ?? '', '.local', 'bin'),
+  join(process.env.HOME  ?? '', 'bin'),
   ]
   for (const dir of commonPaths) {
     try {

@@ -192,7 +192,7 @@ catch (/* error */)
     // state.version = '1.0'; // LINT: unreachable code removed
 ;
     await node.writeTextFile(;
-      this.stateFile,;
+      this.stateFile,
       JSON.stringify(state, null, 2);
     );
 ;

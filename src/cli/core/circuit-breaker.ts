@@ -50,7 +50,7 @@ _getState();
     if(this.state === 'OPEN') {
       if (Date.now() < this.nextAttempt) {
         const _error = new CliError(;
-          `Circuit breaker ${this.name} is OPEN for ${operationName}`,;
+          `Circuit breaker ${this.name} is OPEN for ${operationName}`,
           'CIRCUIT_BREAKER_OPEN';
         );
         this.stats.totalFailures++;
@@ -191,8 +191,8 @@ _getState();
     const _halfOpenBreakers = breakers.filter(b => b.state === 'HALF_OPEN').length;
 ;
     return {
-      totalBreakers,;
-    // healthyBreakers,; // LINT: unreachable code removed
-      openBreakers,;
+      totalBreakers,
+    // healthyBreakers, // LINT: unreachable code removed
+      openBreakers,
       halfOpenBreakers,overallHealth = new CircuitBreakerManager();
 ;

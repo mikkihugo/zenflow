@@ -26,7 +26,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
 : Promise<T>
 {
   return Promise.race([;
-    // promise,; // LINT: unreachable code removed
+    // promise, // LINT: unreachable code removed
       new Promise<never>((_, reject) => {
         const __timeoutId = setTimeout(() => {
           reject(new Error(`Timeout = > clearTimeout(timeoutId));
@@ -55,8 +55,8 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
         utils.checkRuvSwarmAvailable ? utils.checkRuvSwarmAvailable() : false;
       );
       return await TimeoutProtection.withTimeout(;
-    // checkPromise, ; // LINT: unreachable code removed
-        3000, ;
+    // checkPromise, // LINT: unreachable code removed
+        3000,
         'ruv-swarm availability check';
       );
     } catch (/* error */) {
@@ -68,7 +68,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
       );
 ;
       const _result = await TimeoutProtection.withTimeout(;
-        execPromise,;
+        execPromise,
         10000, // 10 seconds for hook execution
         `ruv-swarm hook ${hookName}`;
       );
@@ -82,8 +82,8 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
 ;
     try {
       await TimeoutProtection.withTimeout(;
-        store.close(),;
-        2000,;
+        store.close(),
+        2000,
         'database connection cleanup';
       );
     } catch (/* error */) {
@@ -121,8 +121,8 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
   static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {
     return async (..._args => {
       return TimeoutProtection.withTimeout(;
-    // fn(...args),; // LINT: unreachable code removed
-        timeout,;
+    // fn(...args), // LINT: unreachable code removed
+        timeout,
         operationName;
       );
     };
@@ -136,9 +136,9 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
    * @param operationName - Name of the operation;
    * @returns Result of the function;
     // */; // LINT: unreachable code removed
-  static async withRetryAndTimeout<T>(fn = > Promise<T>,;
-    maxRetries = 3,;
-    timeout = TimeoutProtection.DEFAULT_TIMEOUT,;
+  static async withRetryAndTimeout<T>(fn = > Promise<T>,
+    maxRetries = 3,
+    timeout = TimeoutProtection.DEFAULT_TIMEOUT,
     operationName = 'operation';
   ): Promise<T> {
     const _lastError = null;
@@ -146,8 +146,8 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
     for (let attempt = 1; attempt <= maxRetries; attempt++);
   try {
     return await TimeoutProtection.withTimeout(;
-    // fn(),; // LINT: unreachable code removed
-          timeout,;
+    // fn(), // LINT: unreachable code removed
+          timeout,
           `${operationName} (attempt ${attempt}/${maxRetries})`;
         );
   } catch (/* error */) {
@@ -172,7 +172,7 @@ withTimeout<_T>((promise = TimeoutProtection.DEFAULT_TIMEOUT), (operation = 'ope
  * @returns Debounced function;
     // */; // LINT: unreachable code removed
 static;
-debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,delay = TimeoutProtection.DEFAULT_TIMEOUT,;
+debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,delay = TimeoutProtection.DEFAULT_TIMEOUT,
     operationName = 'debounced operation';
   );
 : (...args = > Promise<TReturn>;
@@ -198,8 +198,8 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
         timeoutId = setTimeout(async () => {
           try {
             const _result = await TimeoutProtection.withTimeout(;
-              fn(...args),;
-              timeout,;
+              fn(...args),
+              timeout,
               operationName;
             );
             resolve(result);

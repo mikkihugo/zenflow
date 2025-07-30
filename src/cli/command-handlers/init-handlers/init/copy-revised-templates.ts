@@ -16,7 +16,7 @@ export async function copyRevisedTemplates(targetDir = {}: unknown): unknown {
 ;
   try {
     // Ensure target directory exists
-    await fs.promises.mkdir(targetCommandsDir, {recursive = [;
+    await fs.promises.mkdir(targetCommandsDir, {recursive = [
       {source = path.join(REPO_TEMPLATES_DIR, file.source);
       const _targetPath = path.join(targetDir, file.target);
 ;
@@ -82,7 +82,7 @@ export function _validateTemplatesExist(): unknown {
 ;
   if(missingCategories.length > 0) {
     return {
-      valid: false,;
+      valid: false,
     // error: `Missing required template categories: ${missingCategories.join(', ') // LINT: unreachable code removed}`;
     };
   }

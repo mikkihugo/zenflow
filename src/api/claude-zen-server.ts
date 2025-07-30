@@ -464,7 +464,7 @@ private
 getAvailableEndpoints()
 : string[]
 {
-    const _endpoints = [;
+    const _endpoints = [
       '/health',
       `${this.config.apiPrefix}/docs`,
       `${this.config.apiPrefix}/schema`,

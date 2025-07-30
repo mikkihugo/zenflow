@@ -9,7 +9,7 @@ export class PostInitValidator {
 async;
 checkFileIntegrity();
 {
-  const _result = {success = [;
+  const _result = {success = [
       {path = `${this.workingDir}/${file.path}`;
 ;
       try {
@@ -20,7 +20,7 @@ checkFileIntegrity();
           result.success = false;
           result.errors.push(`Expected file but found directory = {status = false;
           result.errors.push(;
-            `File toosmall = ${file.minSize})`,;
+            `File toosmall = ${file.minSize})`,
   )
   result.files[file.path] = status =
   = 'windows')
@@ -29,17 +29,17 @@ checkFileIntegrity();
     if (!isExecutable) {
       result.warnings.push(`File not executable = {status = { status: 'ok',size = false;
           result.errors.push(`Cannot read file = {status = false;
-      result.errors.push(`File not found = {status = {success = [;
-      'memory',;
-      'memory/agents',;
-      'memory/sessions',;
-      'coordination',;
-      'coordination/memory_bank',;
-      'coordination/subtasks',;
-      'coordination/orchestration',;
-      '.claude',;
-      '.claude/commands',;
-      '.claude/logs',;
+      result.errors.push(`File not found = {status = {success = [
+      'memory',
+      'memory/agents',
+      'memory/sessions',
+      'coordination',
+      'coordination/memory_bank',
+      'coordination/subtasks',
+      'coordination/orchestration',
+      '.claude',
+      '.claude/commands',
+      '.claude/logs',
     ];
 ;
     // Check required directories
@@ -98,13 +98,13 @@ checkFileIntegrity();
         const _actualMode = stat.mode & 0o777;
         const _expectedMode = item.requiredMode;
 ;
-        result.permissions[item.path] = {actual = === expectedMode,;
+        result.permissions[item.path] = {actual = === expectedMode,
         };
 ;
         if(actualMode !== expectedMode) {
           result.warnings.push(;
             `Incorrect permissions on ${item.path}: ` +;
-    `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`,;
+    `${actualMode.toString(8)} (expected ${expectedMode.toString(8)})`,
     )
   }
   catch(error)

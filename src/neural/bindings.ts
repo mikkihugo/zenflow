@@ -72,7 +72,7 @@ return realBindings;
             const _require = createRequire(import.meta.url);
             
             // Check if the binding file exists
-            const _possiblePaths = [;
+            const _possiblePaths = [
                 '../ruv-FANN/target/release/ruv_fann.node',
                 './ruv-FANN/target/release/ruv_fann.node',
                 './native/ruv_fann.node',
@@ -84,7 +84,7 @@ return realBindings;
                     const _binding = require(path);
                     if (binding && typeof binding.loadModel === 'function') {
                         this.logger.info(`Native bindings loadedfrom = error instanceof Error ? error.message : String(error);
-            this.logger.debug('Native bindings notavailable = [;
+            this.logger.debug('Native bindings notavailable = [
                 '../ruv-FANN/pkg/ruv_fann.js',
                 './ruv-FANN/pkg/ruv_fann.js',
                 './wasm/ruv_fann.js';

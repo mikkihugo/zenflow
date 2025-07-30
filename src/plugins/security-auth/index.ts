@@ -158,9 +158,9 @@ try {
       if(matches) {
         issues.push({type = === 'javascript'  ?? type === 'js') {
       // Additional JavaScript-specific checks
-      const _jsPatterns = [;
-        /innerHTML\s*=/gi,;
-        /document\.write\s*\(/gi,;
+      const _jsPatterns = [
+        /innerHTML\s*=/gi,
+        /document\.write\s*\(/gi,
         /window\.location\s*=/gi;
       ];
 ;
@@ -242,7 +242,7 @@ try {
     const _key = await apiKeyAuth.generateKey(userId, permissions);
 ;
     await this.auditLog('api_key_generated', {
-      userId,;
+      userId,
       permissions,timestamp = this.authenticators.get('apikey');
     const _removed = apiKeyAuth.keys.delete(key);
 ;

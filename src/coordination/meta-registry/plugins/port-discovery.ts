@@ -86,8 +86,8 @@ initialize(registry, (options = {}));
 ;
   async reservePort(serviceKey, port, config): unknown {
     const _allocation = {
-      serviceKey,;
-      port,;
+      serviceKey,
+      port,
       config,allocated = 'localhost'): unknown {
     return new Promise((resolve) => {
       const _server = net.createServer();
@@ -194,10 +194,10 @@ initialize(registry, (options = {}));
     }
 ;
     return {
-      allocated,;
-    // reserved,; // LINT: unreachable code removed
-      monitored,;
-      byRange,;
+      allocated,
+    // reserved, // LINT: unreachable code removed
+      monitored,
+      byRange,
       ranges: this.portRanges;
     };
   }

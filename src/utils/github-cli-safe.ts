@@ -88,13 +88,13 @@ execGhSafe(args =
       
       const _commandPromise = runCommand('gh', finalArgs, {
         cwd,stdout = await TimeoutProtection.withTimeout(;
-        commandPromise,;
-        timeout,;
+        commandPromise,
+        timeout,
         `GitHub CLIcommand = error instanceof Error ? error.message : String(error);
-      return {success = '',;
-    // base = 'main',; // LINT: unreachable code removed
-      head,;
-      draft = false,;
+      return {success = '',
+    // base = 'main', // LINT: unreachable code removed
+      head,
+      draft = false,
       repo = null;
     } = params;
 ;
@@ -153,8 +153,8 @@ getRepoInfoSafe((repo = null));
   args.push('--json', 'name,owner,defaultBranch,description,url');
   return await GitHubCliSafe.execGhSafe(args, { timeout = {}): Promise<GitHubCliResult> {
     const {
-      state = 'open',;
-  // limit = 10,; // LINT: unreachable code removed
+      state = 'open',
+  // limit = 10, // LINT: unreachable code removed
   repo = null;
 }
 = options

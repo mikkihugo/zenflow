@@ -8,24 +8,24 @@ import { CliError } from './cli-error.js';
 export class InputValidator {
   constructor() {
     // Common validation patterns
-    this.patterns = {email = [;
-      /<script[^>]*>.*?<\/script>/gi,;
-      /javascript = /gi,;
-      /eval\s*\(/gi,;
-      /setTimeout\s*\(/gi,;
-      /setInterval\s*\(/gi,;
-      /Function\s*\(/gi,;
-      /'.*?'.*?[;<>&|]/gi,;
-      /".*?".*?[;<>&|]/gi,;
-      /\$\(.*?\)/gi,;
+    this.patterns = {email = [
+      /<script[^>]*>.*?<\/script>/gi,
+      /javascript = /gi,
+      /eval\s*\(/gi,
+      /setTimeout\s*\(/gi,
+      /setInterval\s*\(/gi,
+      /Function\s*\(/gi,
+      /'.*?'.*?[;<>&|]/gi,
+      /".*?".*?[;<>&|]/gi,
+      /\$\(.*?\)/gi,
       /`.*?`/gi;
     ];
 ;
     // SQL injection patterns
-    this.sqlInjectionPatterns = [;
-      /('|(\\'))|(;|--|\/\*|\*\/)/gi,;
-      /(union|select|insert|update|delete|drop|create|alter|exec|execute)\s/gi,;
-      /\b(or|and)\s+\d+\s*=\s*\d+/gi,;
+    this.sqlInjectionPatterns = [
+      /('|(\\'))|(;|--|\/\*|\*\/)/gi,
+      /(union|select|insert|update|delete|drop|create|alter|exec|execute)\s/gi,
+      /\b(or|and)\s+\d+\s*=\s*\d+/gi,
       /\b(or|and)\s+['"]\w+['"]s*=\s*['"]\w+['"]/gi;
     ];
   }
@@ -35,12 +35,12 @@ export class InputValidator {
    */;
   validateString(_value, _options = {}): unknown {
     const {
-      required = false,;
-      minLength = 0,;
-      maxLength = 10000,;
-      pattern = null,;
-      allowEmpty = !required,;
-      sanitize = true,;
+      required = false,
+      minLength = 0,
+      maxLength = 10000,
+      pattern = null,
+      allowEmpty = !required,
+      sanitize = true,
       fieldName = 'value';
     } = options;
 ;
@@ -89,10 +89,10 @@ export class InputValidator {
    */;
   validateNumber(value, options = {}): unknown {
     const {
-      required = false,;
-      min = -Infinity,;
-      max = Infinity,;
-      integer = false,;
+      required = false,
+      min = -Infinity,
+      max = Infinity,
+      integer = false,
       fieldName = 'value';
     } = options;
 ;
@@ -166,10 +166,10 @@ export class InputValidator {
    */;
   validateArray(value, options = {}): unknown {
     let {
-      required = false,;
-      minItems = 0,;
-      maxItems = 1000,;
-      itemValidator = null,;
+      required = false,
+      minItems = 0,
+      maxItems = 1000,
+      itemValidator = null,
       fieldName = 'value';
     } = options;
 ;

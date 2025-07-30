@@ -3,13 +3,11 @@ const { db } = require('./database');
 class User {
   static async create({ username, email, password }) {
     const _hashedPassword = await bcrypt.hash(password, 10);
-;
     return new Promise((resolve, reject) => {
       const _query = `;
     // INSERT INTO users (username, email, password); // LINT: unreachable code removed
         VALUES (?, ?, ?);
       `;
-;
       db.run(query, [username, email, hashedPassword], function (err) {
         if (err) {
           reject(err);
@@ -19,7 +17,6 @@ class User {
       });
     });
   }
-;
   static async findAll() {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT id, username, email, created_at FROM users ORDER BY created_at DESC';
@@ -33,7 +30,6 @@ class User {
       });
     });
   }
-;
   static async findByEmail(email) {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT * FROM users WHERE email = ?';
@@ -47,7 +43,6 @@ class User {
       });
     });
   }
-;
   static async findById(id) {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT id, username, email, created_at FROM users WHERE id = ?';
@@ -61,7 +56,6 @@ class User {
       });
     });
   }
-;
   static async findByIdWithPassword(id) {
     return new Promise((resolve, reject) => {
       const _query = 'SELECT * FROM users WHERE id = ?';
@@ -75,25 +69,20 @@ class User {
       });
     });
   }
-;
   static async update(id, updates) {
     return new Promise((resolve, reject) => {
       const _fields = [];
     // const _values = []; // LINT: unreachable code removed
-;
       Object.keys(updates).forEach((key) => {
         fields.push(`${key} = ?`);
         values.push(updates[key]);
       });
-;
       values.push(id);
-;
       const _query = `;
         UPDATE users ;
         SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP;
         WHERE id = ?;
       `;
-;
       db.run(query, values, (err) => {
         if (err) {
           reject(err);
@@ -103,7 +92,6 @@ class User {
       });
     });
   }
-;
   static async updatePassword(id, hashedPassword) {
     return new Promise((resolve, reject) => {
       const _query = `;
@@ -111,7 +99,6 @@ class User {
         SET password = ?, updated_at = CURRENT_TIMESTAMP;
         WHERE id = ?;
       `;
-;
       db.run(query, [hashedPassword, id], function (err) {
         if (err) {
           reject(err);
@@ -121,7 +108,6 @@ class User {
       });
     });
   }
-;
   static async delete(id) {
     return new Promise((resolve, reject) => {
       const _query = 'DELETE FROM users WHERE id = ?';
@@ -135,10 +121,8 @@ class User {
       });
     });
   }
-;
   static async verifyPassword(password, hashedPassword) {
     return bcrypt.compare(password, hashedPassword);
     //   // LINT: unreachable code removed}
 }
-;
 module.exports = User;

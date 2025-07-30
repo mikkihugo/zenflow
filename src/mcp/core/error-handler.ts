@@ -97,7 +97,7 @@ export class MCPErrorHandler {
    * @returns {boolean} True if error should not be retried;
     // */; // LINT: unreachable code removed
   isNonRetryableError(error): unknown {
-    const _nonRetryablePatterns = [;
+    const _nonRetryablePatterns = [
       /Invalid JSON/i,
       /Method not found/i,
       /Invalid arguments/i,

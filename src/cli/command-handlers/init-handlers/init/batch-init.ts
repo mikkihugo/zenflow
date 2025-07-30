@@ -5,8 +5,8 @@
 
 import { promises as fs } from 'node:fs';
 
-PerformanceMonitor,;
-ResourceThresholdMonitor,;
+PerformanceMonitor,
+ResourceThresholdMonitor,
 } from './performance-monitor.js'
 
 createMinimalCoordinationMd,
@@ -111,7 +111,7 @@ app.get('/', (req, res) => {
   res.json({ message => {
   console.warn(\`Server running on port \${PORT}\`);
 });
-`,;
+`,
 }
 ,
 },
@@ -122,7 +122,7 @@ app.get('/', (req, res) => {
   COPY . .;
   EXPOSE;
   8080;
-  CMD[('node', 'src/index.js')]`,;
+  CMD[('node', 'src/index.js')]`,
       'docker-compose.yml': `;
   version = {ENVIRONMENT = 8080restart = new Command();
   program.name('{{PROJECT_NAME}}').description('{{PROJECT_DESCRIPTION}}').version('1.0.0');
@@ -146,13 +146,13 @@ program.parse()
 const _ENVIRONMENT_CONFIGS = {
   dev = {}): unknown {
   const {
-    template = null,;
-environment = 'dev',;
-advanced = false,;
-minimal = false,;
-force = false,;
-sparc = false,;
-customConfig = {},;
+    template = null,
+environment = 'dev',
+advanced = false,
+minimal = false,
+force = false,
+sparc = false,
+customConfig = {},
 } = options
 try {
     // Get absolute project path
@@ -162,17 +162,17 @@ try {
     process.chdir(absoluteProjectPath);
 ;
     // Initialize base structure
-    const _directories = [;
-      'memory',;
-      'memory/agents',;
-      'memory/sessions',;
-      'coordination',;
-      'coordination/memory_bank',;
-      'coordination/subtasks',;
-      'coordination/orchestration',;
-      '.claude',;
-      '.claude/commands',;
-      '.claude/logs',;
+    const _directories = [
+      'memory',
+      'memory/agents',
+      'memory/sessions',
+      'coordination',
+      'coordination/memory_bank',
+      'coordination/subtasks',
+      'coordination/orchestration',
+      '.claude',
+      '.claude/commands',
+      '.claude/logs',
     ];
 ;
     // Add template-specific directories
@@ -185,7 +185,7 @@ try {
 ;
     // Create all directories in parallel
     await Promise.all(;
-      directories.map((dir) => fs.mkdir(dir, { recursive => {})),;
+      directories.map((dir) => fs.mkdir(dir, { recursive => {})),
     );
 ;
     // Create configuration files in parallel
@@ -205,7 +205,7 @@ try {
 ;
     // README files
     fileCreationTasks.push(;
-      fs.writeFile('memory/agents/README.md', createAgentsReadme(), 'utf8'),;
+      fs.writeFile('memory/agents/README.md', createAgentsReadme(), 'utf8'),
       fs.writeFile('memory/sessions/README.md', createSessionsReadme(), 'utf8');
     );
 ;
@@ -234,7 +234,7 @@ if (template && PROJECT_TEMPLATES[template]) {
     )
     .replace(/
           ENVIRONMENT
-    / ),;;eegimnnnortv;
+    / ),eegimnnnortv;
     fileCreationTasks.push(fs.writeFile(filePath, fileContent, 'utf8'));
   }
 }
@@ -247,16 +247,16 @@ await createClaudeSlashCommands(absoluteProjectPath);
 process.chdir(originalDir);
 return { success = {}): unknown {
   const {
-    parallel = true,;
-// maxConcurrency = 5,; // LINT: unreachable code removed
-template = null,;
-environments = ['dev'],;
-advanced = false,;
-minimal = false,;
-force = false,;
-sparc = false,;
-progressTracking = true,;
-performanceMonitoring = true,;
+    parallel = true,
+// maxConcurrency = 5, // LINT: unreachable code removed
+template = null,
+environments = ['dev'],
+advanced = false,
+minimal = false,
+force = false,
+sparc = false,
+progressTracking = true,
+performanceMonitoring = true,
 } = options
 if (!projects ?? projects.length === 0) {
   printError('No projects specified for batch initialization');
@@ -268,7 +268,7 @@ const __resourceManager = new ResourceManager(parallel ? maxConcurrency );
 // Initialize performance monitoring
 const _perfMonitor = new PerformanceMonitor({
     enabled,logLevel = new ResourceThresholdMonitor({
-    maxMemoryMB,;
+    maxMemoryMB,
 ...ResourceThresholdMonitor.createDefaultCallbacks(),
 })
 // Calculate optimal settings
@@ -288,7 +288,7 @@ for(const project of projects) {
       const _initTask = async () => {
         if (tracker) tracker.startProject(projectPath);
         perfMonitor.recordOperation('project-init-start', {
-          projectPath,;
+          projectPath,
           template,environment = await resourceManager.withResource(async () => {
           return await initializeProject(projectPath, {
             template,environment = ===============================');
@@ -359,7 +359,7 @@ export function validateBatchOptions(options = [];
 ;
   if(options.template && !PROJECT_TEMPLATES[options.template]) {
     errors.push(;
-      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,;
+      `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`,
     );
 ;
 if (options.environments) {

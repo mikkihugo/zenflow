@@ -112,13 +112,13 @@ export class QueenCouncil {
 ;
           // Execute queen analysis with circuit breaker protection
           const _result = await circuitBreakerManager.execute(;
-            `queen-${name}`,;
+            `queen-${name}`,
             async () => {
               const _analysis = await queen.analyzeWithDocuments(objective, relevantDocs, context);
               const _decision = await queen.makeDecision(objective, analysis, relevantDocs);
               return { analysis, decision };
-    //   // LINT: unreachable code removed},;
-            `${name} queen analysis`,;failureThreshold = Date.now() - startTime;
+    //   // LINT: unreachable code removed},
+            `${name} queen analysis`,failureThreshold = Date.now() - startTime;
           this.updateQueenHealth(name, true, responseTime);
 ;
           queenAnalyses[name] = result.analysis;
@@ -157,10 +157,10 @@ export class QueenCouncil {
     // Group documents by type
     const _relevantDocs = {
       roadmaps = {
-      'roadmap': 'roadmaps',;
-      'prd': 'prds', ;
-      'architecture': 'architecture',;
-      'adr': 'adrs',;
+      'roadmap': 'roadmaps',
+      'prd': 'prds',
+      'architecture': 'architecture',
+      'adr': 'adrs',
       'strategy': 'strategies';
     };
 ;
@@ -248,18 +248,18 @@ export class QueenCouncil {
 ;
       log.error('Emergency decision mode activated', {
         objective,emergencyQueen = await circuitBreakerManager.execute(;
-        `emergency-queen-${this.errorRecovery.emergencyQueen}`,;
+        `emergency-queen-${this.errorRecovery.emergencyQueen}`,
         async () => {
           const _analysis = await emergencyQueen.analyzeWithDocuments(objective, relevantDocs, context);
           const _decision = await emergencyQueen.makeDecision(objective, analysis, relevantDocs);
           return { analysis, decision };
-    //   // LINT: unreachable code removed},;
-        'emergency queen decision',;
+    //   // LINT: unreachable code removed},
+        'emergency queen decision',
           failureThreshold = {decision = this.errorRecovery.fallbackStrategy;
 ;
     log.warn('Applying error recovery strategy', {
-      strategy,;
-      objective,failedQueens = > d.failed  ?? d.skipped).map(([name]) => name),;
+      strategy,
+      objective,failedQueens = > d.failed  ?? d.skipped).map(([name]) => name),
       component = {};
     for (const [name, decision] of Object.entries(queenDecisions)) {
       if(!decision.failed && !decision.skipped && decision.recommendation !== 'abstain') {
@@ -282,7 +282,7 @@ export class QueenCouncil {
       // Mark as partial consensus
       consensus.partialConsensus = true;
       consensus.participatingQueens = Object.keys(validDecisions);
-      consensus.reasoning = [;
+      consensus.reasoning = [
         'PARTIALCONSENSUS = Math.max(0.3, consensus.confidence * 0.8);
 ;
       printWarning(`⚠️ Partial consensusachieved = originalThreshold;

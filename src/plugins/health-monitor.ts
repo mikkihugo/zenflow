@@ -26,8 +26,8 @@ config = {}
   super();
   this.config = {enabled = this.createDefaultHealthChecks(pluginName, manifest, config);
   this.plugins.set(pluginName, {
-      plugin,;
-  manifest,;
+      plugin,
+  manifest,
   config,
     (metrics = setInterval(() => {
       this.performScheduledHealthChecks();
@@ -101,14 +101,14 @@ performScheduledHealthChecks();
 ;
       // Emit health check completed event
       this.emit('health-check-completed', {
-        pluginName,;
+        pluginName,
         healthCheckName = {status = performance.now();
       const _result = await plugin.healthCheck();
       const _responseTime = performance.now() - startTime;
 ;
       // Enhance basic result with response time
       result.metrics = {
-        ...result.metrics,;
+        ...result.metrics,
         responseTime,timestamp = await this.performBasicHealthCheck(plugin);
 ;
     // Add detailed checks
@@ -208,7 +208,7 @@ performScheduledHealthChecks();
           .filter(([, status]) => status === 'failed');
           .map(([name]) => name);
 ;
-        return {status = === 0 ? 'healthy' : 'failing',;
+        return {status = === 0 ? 'healthy' : 'failing',
     // failedChecks,latency = === 'function') { // LINT: unreachable code removed
       try {
         return await (plugin as any).getMetrics();
@@ -247,7 +247,7 @@ performScheduledHealthChecks();
       for (const trend of trends) {
         if (trend.trend === 'critical'  ?? trend.trend === 'degrading') {
           this.emit('health-trend-alert', {
-            pluginName,;
+            pluginName,
             trend,timestamp = await this.generateSystemHealthSummary();
     this.systemHealthHistory.push({timestamp = this.systemHealthHistory.slice(-this.config.maxHistoryPoints);
     }
@@ -352,7 +352,7 @@ performScheduledHealthChecks();
   private createDefaultHealthChecks(pluginName = [];
 ;
     // Basic health check
-    checks.push({name = [;
+    checks.push({name = [
       {metric = [...(this.healthThresholds.get(pluginName)  ?? [])];
 ;
     // Add plugin-specific thresholds from config

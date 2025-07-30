@@ -115,8 +115,8 @@ export class ClaudeFlowMCPServer {
         // Record request start for metrics
         this.performanceMetrics.recordRequestStart(requestId, {method = await this.errorHandler.executeWithRetry(;
           () => this.handleMessage(message),operation = this.errorHandler.createErrorResponse(;
-          message.id, ;
-          error, ;operation = Date.now() - batchStartTime;
+          message.id,
+          error,operation = Date.now() - batchStartTime;
     this.performanceMetrics.recordBatchMetrics(batch.length, batchProcessingTime);
 
     // Update memory metrics

@@ -12,7 +12,7 @@ export class ValidationHelper {
   static validateEnum(value, paramName, validOptions, commandPath): unknown {
     if (!validOptions.includes(value)) {
       console.error(;
-        HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath),;
+        HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath),
       );
       process.exit(1);
     }
@@ -27,9 +27,9 @@ export class ValidationHelper {
     if (Number.isNaN(num)) {
       console.error(;
         HelpFormatter.formatError(;
-          `'${value}' is not a valid number for ${paramName}.`,;
-          commandPath  ?? 'claude-zen',;
-        ),;
+          `'${value}' is not a valid number for ${paramName}.`,
+          commandPath  ?? 'claude-zen',
+        ),
       );
       process.exit(1);
     }
@@ -48,9 +48,9 @@ export class ValidationHelper {
     } catch (/* error */) {
       console.error(;
         HelpFormatter.formatError(;
-          `File not found for ${paramName}: $path`,;
-          commandPath  ?? 'claude-zen',;
-        ),;
+          `File not found for ${paramName}: $path`,
+          commandPath  ?? 'claude-zen',
+        ),
       );
       process.exit(1);
   }
@@ -69,9 +69,9 @@ export class ValidationHelper {
 ;
     console.error(;
       HelpFormatter.formatError(;
-        `'${value}' is not a valid boolean for ${paramName}. Use: true, false, yes, no, 1, or 0.`,;
-        commandPath  ?? 'claude-zen',;
-      ),;
+        `'${value}' is not a valid boolean for ${paramName}. Use: true, false, yes, no, 1, or 0.`,
+        commandPath  ?? 'claude-zen',
+      ),
     );
     process.exit(1);
   }

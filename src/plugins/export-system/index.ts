@@ -39,8 +39,8 @@ export class ExportSystemPlugin {
 {
   // Convert object to array of key-value pairs
   const _array = Object.entries(data).map(([key, _value]) => ({
-      key,;
-  value = === 'object' ? JSON.stringify(value) : value,;
+      key,
+  value = === 'object' ? JSON.stringify(value) : value,
 }
 ))
 return this.arrayToCSV(array, options);
@@ -139,10 +139,10 @@ data, (options = {});
 : unknown
 {
   const {
-    format = this.config.defaultFormat,;
-  template = 'default',;
-  filename,;
-  timestamp = this.config.timestamp,;
+    format = this.config.defaultFormat,
+  template = 'default',
+  filename,
+  timestamp = this.config.timestamp,
 }
 = options
 if (!this.exporters.has(format)) {
@@ -190,8 +190,8 @@ console.warn(`📊 Exportgenerated = includeTimestamp ? ;
     const _separator = options.separator  ?? ',';
     const _headers = Object.keys(array[0]);
 ;
-    const _csvContent = [;
-      headers.join(separator),;
+    const _csvContent = [
+      headers.join(separator),
       ...array.map(row => ;
         headers.map(header => {
           const _value = row[header];
@@ -218,7 +218,7 @@ exportSwarmReport(swarmData, (format = 'pdf'))
     return this.export(healthData, {
       format,template = 'json'): unknown {
     return this.export(data, {
-      format,;
+      format,
   // template,filename = path.join(this.config.templatesDir, `${name // LINT: unreachable code removed}.${format}`);
   await writeFile(filename, content);
 }

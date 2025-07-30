@@ -9,19 +9,19 @@ export class HealthChecker {
 async;
 checkModeAvailability();
 {
-  const _result = {success = [;
-        'architect',;
-        'code',;
-        'tdd',;
-        'spec-pseudocode',;
-        'integration',;
-        'debug',;
-        'security-review',;
-        'refinement-optimization-mode',;
-        'docs-writer',;
-        'devops',;
-        'mcp',;
-        'swarm',;
+  const _result = {success = [
+        'architect',
+        'code',
+        'tdd',
+        'spec-pseudocode',
+        'integration',
+        'debug',
+        'security-review',
+        'refinement-optimization-mode',
+        'docs-writer',
+        'devops',
+        'mcp',
+        'swarm',
       ];
   result.modes.total = expectedModes.length;
   // Check each mode
@@ -358,34 +358,34 @@ checkMemoryConsistency()
 ;
   async checkFileSystemHealth() {
     return {
-      healthy: true,;
-    // errors: [],; // LINT: unreachable code removed
-      readWrite: true,;
-      permissions: true,;
+      healthy: true,
+    // errors: [], // LINT: unreachable code removed
+      readWrite: true,
+      permissions: true,
     };
   }
 ;
   async checkProcessHealth() {
     return {
-      healthy: true,;
-    // warnings: [],; // LINT: unreachable code removed
-      processes: [],;
+      healthy: true,
+    // warnings: [], // LINT: unreachable code removed
+      processes: [],
     };
   }
 ;
   async checkNetworkHealth() {
     return {
-      healthy: true,;
-    // warnings: [],; // LINT: unreachable code removed
-      connectivity: true,;
+      healthy: true,
+    // warnings: [], // LINT: unreachable code removed
+      connectivity: true,
     };
   }
 ;
   async checkIntegrationHealth() {
     return {
-      healthy: true,;
-    // warnings: [],; // LINT: unreachable code removed
-      integrations: {},;
+      healthy: true,
+    // warnings: [], // LINT: unreachable code removed
+      integrations: {},
     };
   }
 }

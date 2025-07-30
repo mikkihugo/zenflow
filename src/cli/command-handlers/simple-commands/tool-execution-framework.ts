@@ -33,9 +33,9 @@ export class ToolExecutionFramework {
 initializeFormatters();
 {
   // Swarm tools formatters
-  this.resultFormatters.set('swarm_init', (_result) => ({title = > ({title = > ({title = > ({title = === 'store' ? 'Stored' : 'Retrieved'}`,;
-      ],status = > ({title = > `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`,;
-      ),;
+  this.resultFormatters.set('swarm_init', (_result) => ({title = > ({title = > ({title = > ({title = === 'store' ? 'Stored' : 'Retrieved'}`,
+      ],status = > ({title = > `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`,
+      ),
       status = {}, options = {}): unknown {
     try {
       // Validate tool exists
@@ -73,9 +73,9 @@ executeToolDirect(execution)
 ;
       // Execute via MCP layer
       const _result = await this.mcpLayer.executeTool(;
-        execution.toolName,;
-        execution.parameters,;
-        execution.options,;
+        execution.toolName,
+        execution.parameters,
+        execution.options,
       );
 ;
       // Format result
@@ -112,7 +112,7 @@ executeToolDirect(execution)
     const _results = [];
 ;
     this.ui.addLog('info', `Starting batchexecution = toolExecutions.map(({ toolName, parameters, toolOptions }) =>;
-          this.executeTool(toolName, parameters, toolOptions),;
+          this.executeTool(toolName, parameters, toolOptions),
         );
 ;
         const _settled = await Promise.allSettled(promises);
@@ -126,7 +126,7 @@ executeToolDirect(execution)
             const __execution = await this.executeTool(toolName, parameters, toolOptions);
             results.push({success = results.filter((r) => r.success).length;
       this.ui.addLog(;
-        'success',;
+        'success',
         `Batch ${batchId} completed = {}): unknown {
     const _workflowId = `workflow_$Date.now()`;
     const _context = {}; // Shared context between steps
@@ -150,8 +150,8 @@ executeToolDirect(execution)
 ;
         // Check for step failure
         if(execution.status === 'failed' && step.required !== false) {
-          throw new Error(`Required step ${step.toolName}failed = > r.status === 'completed').length,failedSteps = > r.status === 'failed').length,;
-        },;
+          throw new Error(`Required step ${step.toolName}failed = > r.status === 'completed').length,failedSteps = > r.status === 'failed').length,
+        },
       };
     } catch (/* error */) {
       this.ui.addLog('error', `Workflow ${workflowId}failed = = 'object'  ?? parameters === null) ;
@@ -237,10 +237,10 @@ executeToolDirect(execution)
    */;
   getStatus() ;
     return {
-      ...this.getExecutionStatus(),;
-    // mcpStatus: this.mcpLayer.getStatus(),; // LINT: unreachable code removed
-      availableTools: Object.values(this.mcpLayer.toolCategories).flat().length,;
-      availableWorkflows: Object.keys(this.getPredefinedWorkflows()).length,;;
+      ...this.getExecutionStatus(),
+    // mcpStatus: this.mcpLayer.getStatus(), // LINT: unreachable code removed
+      availableTools: Object.values(this.mcpLayer.toolCategories).flat().length,
+      availableWorkflows: Object.keys(this.getPredefinedWorkflows()).length,
 }
 ;
 export default ToolExecutionFramework;

@@ -128,9 +128,9 @@ createTopic(topicName, (config = {}));
         topic = await this.createTopic(topicName);
       }
       const __subscriptionId = nanoid();
-      const __subscription = {id = === 'string' ? subscriber : subscriber.id,;
-      topicId,;
-      topicName,;
+      const __subscription = {id = === 'string' ? subscriber : subscriber.id,
+      topicId,
+      topicName,
       handler,options = await this.registry.backend.watch({
         tags => {
         this.handleTopicMessage(topicId, event);
@@ -141,7 +141,7 @@ createTopic(topicName, (config = {}));
   // Update topic stats
   topic.stats.subscribers++;
   await this.updateTopicStats(topicId, topic.stats);
-  this.emit('subscribed',;
+  this.emit('subscribed',
   subscriptionId, subscription;
   )
   return subscriptionId;

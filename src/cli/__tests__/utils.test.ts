@@ -4,21 +4,21 @@
 
 import { jest } from '@jest/globals';
 import {
-  chunk,;
-formatBytes,;
-formatTimestamp,;
-generateId,;
-isValidJson,;
-isValidUrl,;
-parseFlags,;
-printError,;
-printInfo,;
-printSuccess,;
-printWarning,;
-retry,;
-sleep,;
-truncateString,;
-validateArgs,;
+  chunk,
+formatBytes,
+formatTimestamp,
+generateId,
+isValidJson,
+isValidUrl,
+parseFlags,
+printError,
+printInfo,
+printSuccess,
+printWarning,
+retry,
+sleep,
+truncateString,
+validateArgs,
 } from '../utils.js'
 // Mock console for testing output functions
 let consoleLogSpy;

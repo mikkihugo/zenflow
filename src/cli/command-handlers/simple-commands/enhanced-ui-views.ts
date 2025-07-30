@@ -29,7 +29,7 @@ initializeViewData()
         if(this._ui._currentView === _ENHANCED_VIEWS._NEURAL) {
           this.refreshNeuralData();
         }
-      }, 10000),;
+      }, 10000),
   )
   // Refresh analysis data every 30 seconds
   this.refreshIntervals.set(
@@ -53,7 +53,7 @@ renderNeuralView();
   // Neural status overview
   console.warn(colors.cyan('📊 Neural Status'));
   console.warn(`  AvailableModels = > j.status === 'running').length)} running`);
-  console.warn(`  WASMSupport = [;
+  console.warn(`  WASMSupport = [
       { key => {
         const _status =;
           job.status === 'completed';
@@ -68,8 +68,8 @@ renderNeuralView();
   console.warn();
   // System metrics overview
   console.warn(colors.cyan('📈 System Metrics'));
-  console.warn(`  TokenUsage = [;
-      {key = [;
+  console.warn(`  TokenUsage = [
+      {key = [
       { name => {
       const _status = colors.green('✓');
       console.warn(`  ${status} ${report.name} (${colors.gray(report.time)})`);
@@ -87,7 +87,7 @@ renderNeuralView();
 ;
     // Workflow status
     console.warn(colors.cyan('📊 Workflow Status'));
-    console.warn(`  ActiveWorkflows = [;
+    console.warn(`  ActiveWorkflows = [
       { key => {
       const _prefix = colors.yellow(`${index + 1}.`);
       console.warn(`  ${prefix} ${workflow.name}`);
@@ -105,11 +105,11 @@ renderGitHubView();
   console.warn();
   // GitHub status
   console.warn(colors.cyan('📊 GitHub Status'));
-  console.warn(`  ConnectedRepos = [;
-      {key = [;
+  console.warn(`  ConnectedRepos = [
+      {key = [
       { action => {
       console.warn(;
-        `  ${colors.green('✓')} ${activity.action} in ${colors.yellow(activity.repo)} (${colors.gray(activity.time)})`,;
+        `  ${colors.green('✓')} ${activity.action} in ${colors.yellow(activity.repo)} (${colors.gray(activity.time)})`,
       );
     });
   }
@@ -125,8 +125,8 @@ renderGitHubView();
 ;
     // DAA status
     console.warn(colors.cyan('📊 DAA Status'));
-    console.warn(`  DynamicAgents = [;
-      {key = [;
+    console.warn(`  DynamicAgents = [
+      {key = [
       { type => {
       const _status = agent.status === 'active' ? colors.green('●') : colors.gray('○');
       console.warn(`  ${status} ${agent.type}: ${colors.yellow(agent.count)} agents`);
@@ -142,8 +142,8 @@ renderSystemView();
   console.warn();
   // System status
   console.warn(colors.cyan('📊 System Status'));
-  console.warn(`  SecurityStatus = [;
-      {key = [;
+  console.warn(`  SecurityStatus = [
+      {key = [
       { component => {
       const _status =;
         item.status === 'excellent';
@@ -246,7 +246,7 @@ handleEnhancedInput(key, currentView)
       switch(currentView) {
         case ENHANCED_VIEWS.NEURAL = {1 = > this.promptNeuralTrain(),2 = > this.promptNeuralPredict(),3 = > this.executeQuickTool('neural_status'),4 = > this.promptModelSave(),5 = > this.promptModelLoad(),6 = > this.executeQuickTool('pattern_recognize', {data = >;
         this.executeQuickTool('cognitive_analyze', {behavior = >;
-        this.executeQuickTool('learning_adapt', {experience = > this.promptModelCompress(),a = > this.promptEnsembleCreate(),b = > this.promptTransferLearn(),c = > this.promptNeuralExplain(),d = > this.executeQuickTool('wasm_optimize', {operation = > this.promptInferenceRun(),;
+        this.executeQuickTool('learning_adapt', {experience = > this.promptModelCompress(),a = > this.promptEnsembleCreate(),b = > this.promptTransferLearn(),c = > this.promptNeuralExplain(),d = > this.executeQuickTool('wasm_optimize', {operation = > this.promptInferenceRun(),
     };
 ;
     const _action = neuralActions[key];
@@ -307,7 +307,7 @@ handleEnhancedInput(key, currentView)
    * Get color utilities;
    */;
   getColors() {
-    return {cyan = > `\x1b[36m${text}\x1b[0m`,gray = > `\x1b[90m${text}\x1b[0m`,white = > `\x1b[37m${text}\x1b[0m`,yellow = > `\x1b[33m${text}\x1b[0m`,green = > `\x1b[32m${text}\x1b[0m`,red = > `\x1b[31m${text}\x1b[0m`,blue = > `\x1b[34m${text}\x1b[0m`,magenta = > `\x1b[35m${text}\x1b[0m`,bold = > `\x1b[1m${text}\x1b[0m`,dim = > `\x1b[2m${text}\x1b[0m`,;
+    return {cyan = > `\x1b[36m${text}\x1b[0m`,gray = > `\x1b[90m${text}\x1b[0m`,white = > `\x1b[37m${text}\x1b[0m`,yellow = > `\x1b[33m${text}\x1b[0m`,green = > `\x1b[32m${text}\x1b[0m`,red = > `\x1b[31m${text}\x1b[0m`,blue = > `\x1b[34m${text}\x1b[0m`,magenta = > `\x1b[35m${text}\x1b[0m`,bold = > `\x1b[1m${text}\x1b[0m`,dim = > `\x1b[2m${text}\x1b[0m`,
     //   // LINT: unreachable code removed};
   }
 ;

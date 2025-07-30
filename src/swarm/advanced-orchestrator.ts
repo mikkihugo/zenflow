@@ -1,7 +1,7 @@
 /**
  * Advanced Swarm Orchestration Engine;
  *;
- * This is the core orchestration engine that manages swarm lifecycle,;
+ * This is the core orchestration engine that manages swarm lifecycle,
  * agent coordination, task distribution, and result aggregation.;
  * It integrates with existing MCP tools and provides production-ready;
  * swarm collaboration capabilities.;
@@ -58,7 +58,7 @@ initialize();
 ;
       this.isRunning = false;
       this.logger.info('Advanced swarm orchestrator shut down successfully');
-      this.emit('orchestrator = 'auto',;
+      this.emit('orchestrator = 'auto',
     options = {}
   ): Promise<string> {
     const _swarmId = generateId('swarm');
@@ -160,37 +160,37 @@ initialize();
       const _healthy = issues.length === 0;
 ;
       return {
-        healthy,;
+        healthy,
     // issues,metrics = []; // LINT: unreachable code removed
     const _baseTaskId = generateId('task');
 ;
     switch (objective.strategy) {
       case 'research':;
         tasks.push(;
-          this.createTaskDefinition(`${baseTaskId}-1`, 'research', 'Conduct comprehensive research', 'high', []),;
-          this.createTaskDefinition(`${baseTaskId}-2`, 'analysis', 'Analyze research findings', 'high', [`${baseTaskId}-1`]),;
-          this.createTaskDefinition(`${baseTaskId}-3`, 'synthesis', 'Synthesize insights and recommendations', 'high', [`${baseTaskId}-2`]),;
-          this.createTaskDefinition(`${baseTaskId}-4`, 'documentation', 'Create research documentation', 'medium', [`${baseTaskId}-3`]),;
+          this.createTaskDefinition(`${baseTaskId}-1`, 'research', 'Conduct comprehensive research', 'high', []),
+          this.createTaskDefinition(`${baseTaskId}-2`, 'analysis', 'Analyze research findings', 'high', [`${baseTaskId}-1`]),
+          this.createTaskDefinition(`${baseTaskId}-3`, 'synthesis', 'Synthesize insights and recommendations', 'high', [`${baseTaskId}-2`]),
+          this.createTaskDefinition(`${baseTaskId}-4`, 'documentation', 'Create research documentation', 'medium', [`${baseTaskId}-3`]),
         );
         break;
 ;
       case 'development':;
         tasks.push(;
-          this.createTaskDefinition(`${baseTaskId}-1`, 'system-design', 'Design system architecture', 'high', []),;
-          this.createTaskDefinition(`${baseTaskId}-2`, 'code-generation', 'Generate core implementation', 'high', [`${baseTaskId}-1`]),;
-          this.createTaskDefinition(`${baseTaskId}-3`, 'unit-testing', 'Create comprehensive tests', 'high', [`${baseTaskId}-2`]),;
-          this.createTaskDefinition(`${baseTaskId}-4`, 'integration-testing', 'Perform integration testing', 'high', [`${baseTaskId}-3`]),;
-          this.createTaskDefinition(`${baseTaskId}-5`, 'code-review', 'Conduct code review', 'medium', [`${baseTaskId}-4`]),;
-          this.createTaskDefinition(`${baseTaskId}-6`, 'documentation', 'Create technical documentation', 'medium', [`${baseTaskId}-5`]),;
+          this.createTaskDefinition(`${baseTaskId}-1`, 'system-design', 'Design system architecture', 'high', []),
+          this.createTaskDefinition(`${baseTaskId}-2`, 'code-generation', 'Generate core implementation', 'high', [`${baseTaskId}-1`]),
+          this.createTaskDefinition(`${baseTaskId}-3`, 'unit-testing', 'Create comprehensive tests', 'high', [`${baseTaskId}-2`]),
+          this.createTaskDefinition(`${baseTaskId}-4`, 'integration-testing', 'Perform integration testing', 'high', [`${baseTaskId}-3`]),
+          this.createTaskDefinition(`${baseTaskId}-5`, 'code-review', 'Conduct code review', 'medium', [`${baseTaskId}-4`]),
+          this.createTaskDefinition(`${baseTaskId}-6`, 'documentation', 'Create technical documentation', 'medium', [`${baseTaskId}-5`]),
         );
         break;
 ;
       case 'analysis':;
         tasks.push(;
-          this.createTaskDefinition(`${baseTaskId}-1`, 'data-collection', 'Collect and prepare data', 'high', []),;
-          this.createTaskDefinition(`${baseTaskId}-2`, 'data-analysis', 'Perform statistical analysis', 'high', [`${baseTaskId}-1`]),;
-          this.createTaskDefinition(`${baseTaskId}-3`, 'visualization', 'Create data visualizations', 'medium', [`${baseTaskId}-2`]),;
-          this.createTaskDefinition(`${baseTaskId}-4`, 'reporting', 'Generate analysis report', 'high', [`${baseTaskId}-2`, `${baseTaskId}-3`]),;
+          this.createTaskDefinition(`${baseTaskId}-1`, 'data-collection', 'Collect and prepare data', 'high', []),
+          this.createTaskDefinition(`${baseTaskId}-2`, 'data-analysis', 'Perform statistical analysis', 'high', [`${baseTaskId}-1`]),
+          this.createTaskDefinition(`${baseTaskId}-3`, 'visualization', 'Create data visualizations', 'medium', [`${baseTaskId}-2`]),
+          this.createTaskDefinition(`${baseTaskId}-4`, 'reporting', 'Generate analysis report', 'high', [`${baseTaskId}-2`, `${baseTaskId}-3`]),
         );
         break;default = > ({ id,swarmId = [];
     const _requiredTypes = context.objective.requirements.agentTypes;
@@ -223,10 +223,10 @@ initialize();
     const _runningTasks = tasks.filter(t => t.status === 'running').length;
 ;
     context.objective.progress = {
-      totalTasks,;
-      completedTasks,;
-      failedTasks,;
-      runningTasks,percentComplete = > a.status === 'busy').length,idleAgents = > a.status === 'idle').length,busyAgents = > a.status === 'busy').length,;
+      totalTasks,
+      completedTasks,
+      failedTasks,
+      runningTasks,percentComplete = > a.status === 'busy').length,idleAgents = > a.status === 'idle').length,busyAgents = > a.status === 'busy').length,
     };
   }
 ;
@@ -266,7 +266,7 @@ initialize();
     const _completedTasks = tasks.filter(t => t.status === 'completed');
     const _failedTasks = tasks.filter(t => t.status === 'failed');
 ;
-    return {outputs = > t.id),objectivesFailed = > t.id),;
+    return {outputs = > t.id),objectivesFailed = > t.id),
     // improvements = {coordinator = context.objective.progress.percentComplete; // LINT: unreachable code removed
     const _elapsed = Date.now() - context.startTime.getTime();
 ;

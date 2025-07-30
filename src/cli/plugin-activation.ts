@@ -22,7 +22,7 @@ export async function initializePlugins(_config = {}: unknown): unknown {
 ;
   try {
     // Create plugin manager with enhanced configuration
-    globalPluginManager = new PluginManager({pluginDir = [;
+    globalPluginManager = new PluginManager({pluginDir = [
     // 1. Memory Backend - LanceDB integration(CRITICAL): unknown {name = await import(plugin.importPath);
       let PluginClass;
 ;
@@ -150,12 +150,12 @@ process.on('SIGTERM', shutdownPlugins);
 process.on('exit', shutdownPlugins);
 ;
 export default {
-  initializePlugins,;
-  getPluginManager,;
-  getPlugin,;
-  isPluginLoaded,;
-  registerPluginCommands,;
-  shutdownPlugins,;
+  initializePlugins,
+  getPluginManager,
+  getPlugin,
+  isPluginLoaded,
+  registerPluginCommands,
+  shutdownPlugins,
   checkPluginHealth;
 };
 ;

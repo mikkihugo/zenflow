@@ -162,19 +162,19 @@ if (!plugin) {
     // Strategy1 = > health.status === 'unhealthy' && health.score === 0,
       _action => ;
         await this.restartPlugin(plugin.metadata.name);
-        return true;,;
+        return true;,
       _priority => ;
         return health.issues.some(_issue => ;
     // issue.component === 'configuration' && issue.severity === 'high'; // LINT: unreachable code removed
-        );,;
+        );,
       _action => ;
         await plugin.resetConfiguration();
-        return true;,;
+        return true;,
       _priority => ;
         return health.issues.some(_issue => ;
     // issue.component === 'resources' && ; // LINT: unreachable code removed
           issue.message.toLowerCase().includes('memory');
-        );,;
+        );,
       _action => ;
         // Trigger garbage collection if available
         if (global.gc) {
@@ -186,10 +186,10 @@ if (!plugin) {
           await (plugin as any).clearCache();
         }
 ;
-        return true;,priority = > health.score < 30,;
+        return true;,priority = > health.score < 30,
       _action => ;
         await manager.reloadPlugin(plugin.metadata.name);
-        return true;,;
+        return true;,
       priority = pluginName = this.metrics.get(pluginName)!;
     metrics.totalStateChanges++;
 ;
@@ -253,7 +253,7 @@ if (!plugin) {
 ;
     return Object.fromEntries(this.metrics);
     // ; // LINT: unreachable code removed
-  getHealthStatus(): {totalPlugins = > s.enabled).length,;
+  getHealthStatus(): {totalPlugins = > s.enabled).length,
       activeRecoveries = ;
 ;
     const __plugins = Array.from(this.healthChecks.keys());

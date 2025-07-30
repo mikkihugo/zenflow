@@ -108,12 +108,12 @@ return result;
   } catch (/* _error */) {
     // Fallback to common modes
     modes.push(;
-      'architect',;
-      'code',;
-      'tdd',;
-      'spec-pseudocode',;
-      'integration',;
-      'debug',;
+      'architect',
+      'code',
+      'tdd',
+      'spec-pseudocode',
+      'integration',
+      'debug',
       'docs-writer';
     );
   }

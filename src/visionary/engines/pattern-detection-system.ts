@@ -110,7 +110,7 @@ export interface ArchitectureAnalysis {
 /**
  * Pattern Detection System;
  *;
- * Advanced system for detecting design patterns, anti-patterns, code smells,;
+ * Advanced system for detecting design patterns, anti-patterns, code smells,
  * and architectural patterns in source code.;
  */
 export class PatternDetectionSystem {
@@ -386,14 +386,14 @@ export class PatternDetectionSystem {
       const _longMethods = this.findLongMethods(content);
       longMethods.forEach((method) => {
         smells.push({
-        smell: 'Long Method',;
-        severity: 'medium',;
-        location: method.name,;
-        description: `Method has ${method.lineCount} lines`,;
-        impact: 'maintainability',;
-        suggestion: 'Break method into smaller functions',;
-        file: file.path,;
-        lineNumber: method.lineNumber,;
+        smell: 'Long Method',
+        severity: 'medium',
+        location: method.name,
+        description: `Method has ${method.lineCount} lines`,
+        impact: 'maintainability',
+        suggestion: 'Break method into smaller functions',
+        file: file.path,
+        lineNumber: method.lineNumber,
       });
     }
     )
@@ -401,14 +401,14 @@ export class PatternDetectionSystem {
     const _duplicates = this.findDuplicateCode(lines);
     duplicates.forEach((duplicate) => {
       smells.push({
-        smell: 'Duplicate Code',;
-      severity: 'medium',;
-      location: duplicate.locations.join(', '),;
-      description: 'Code block appears multiple times',;
-      impact: 'maintainability',;
-      suggestion: 'Extract common code into reusable function',;
-      file: file.path,;
-      lineNumber: duplicate.locations[0],;
+        smell: 'Duplicate Code',
+      severity: 'medium',
+      location: duplicate.locations.join(', '),
+      description: 'Code block appears multiple times',
+      impact: 'maintainability',
+      suggestion: 'Extract common code into reusable function',
+      file: file.path,
+      lineNumber: duplicate.locations[0],
     });
   }
   )
@@ -422,7 +422,7 @@ const
   smells;
   .
   push({
-        smell: 'Dead Code',;
+        smell: 'Dead Code',
   severity: 'low';
   ,
   location: `line ${dead.location}`;
@@ -474,11 +474,11 @@ codeData: CodeFileData[];
   )
   if (hasModel && hasView && hasController) {
     patterns.push({
-        pattern: 'MVC',;
-    confidence: 0.8,;
-    description: 'Model-View-Controller architectural pattern',;
-    components: ['Model', 'View', 'Controller'],;
-    benefits: ['Separation of concerns', 'Testability', 'Maintainability'],;
+        pattern: 'MVC',
+    confidence: 0.8,
+    description: 'Model-View-Controller architectural pattern',
+    components: ['Model', 'View', 'Controller'],
+    benefits: ['Separation of concerns', 'Testability', 'Maintainability'],
   }
   )
 }
@@ -489,11 +489,11 @@ const _hasAPI = codeData.some(;
 )
 if (hasServices && hasAPI) {
   patterns.push({
-        pattern: 'Service Layer',;
-  confidence: 0.7,;
-  description: 'Service layer for business logic separation',;
-  components: ['Services', 'Controllers', 'Data Access'],;
-  benefits: ['Business logic encapsulation', 'Reusability'],;
+        pattern: 'Service Layer',
+  confidence: 0.7,
+  description: 'Service layer for business logic separation',
+  components: ['Services', 'Controllers', 'Data Access'],
+  benefits: ['Business logic encapsulation', 'Reusability'],
 }
 )
 }
@@ -556,11 +556,11 @@ detectLanguageIdioms(codeData: CodeFileData[])
       const _destructuringCount = (content.match(/const\s*\{[^}]+\}\s*=/g) ?? []).length;
       if (destructuringCount > 0) {
         idioms.push({
-        idiom: 'Destructuring Assignment',;
-        usage: `Used ${destructuringCount} times`,;
-        quality: 'good',;
-        file: filePath,;
-        lineNumber: this.findPatternLine(content, 'const\\s*\\{[^}]+\\}\\s*='),;
+        idiom: 'Destructuring Assignment',
+        usage: `Used ${destructuringCount} times`,
+        quality: 'good',
+        file: filePath,
+        lineNumber: this.findPatternLine(content, 'const\\s*\\{[^}]+\\}\\s*='),
       }
       )
     }
@@ -568,11 +568,11 @@ detectLanguageIdioms(codeData: CodeFileData[])
     const _arrowFunctionCount = (content.match(/=>\s*{?/g) ?? []).length;
     if (arrowFunctionCount > 0) {
       idioms.push({
-        idiom: 'Arrow Functions',;
-      usage: `Used ${arrowFunctionCount} times`,;
-      quality: 'good',;
-      file: filePath,;
-      lineNumber: this.findPatternLine(content, '=>'),;
+        idiom: 'Arrow Functions',
+      usage: `Used ${arrowFunctionCount} times`,
+      quality: 'good',
+      file: filePath,
+      lineNumber: this.findPatternLine(content, '=>'),
     }
     )
   }
@@ -580,11 +580,11 @@ detectLanguageIdioms(codeData: CodeFileData[])
   const _templateLiteralCount = (content.match(/`[^`]*\${[^}]+}[^`]*`/g) ?? []).length;
   if (templateLiteralCount > 0) {
     idioms.push({
-        idiom: 'Template Literals',;
-    usage: `Used ${templateLiteralCount} times`,;
-    quality: 'good',;
-    file: filePath,;
-    lineNumber: this.findPatternLine(content, '`[^`]*\\$\\{[^}]+\\}[^`]*`'),;
+        idiom: 'Template Literals',
+    usage: `Used ${templateLiteralCount} times`,
+    quality: 'good',
+    file: filePath,
+    lineNumber: this.findPatternLine(content, '`[^`]*\\$\\{[^}]+\\}[^`]*`'),
   }
   )
 }
@@ -606,11 +606,11 @@ detectPythonIdioms(content: string, filePath: string)
   const _listCompCount = (content.match(/\[[^\]]*for\s+\w+\s+in[^\]]*\]/g) ?? []).length;
   if (listCompCount > 0) {
     idioms.push({
-        idiom: 'List Comprehensions',;
-    usage: `Used ${listCompCount} times`,;
-    quality: 'good',;
-    file: filePath,;
-    lineNumber: this.findPatternLine(content, '\\[[^\\]]*for\\s+\\w+\\s+in[^\\]]*\\]'),;
+        idiom: 'List Comprehensions',
+    usage: `Used ${listCompCount} times`,
+    quality: 'good',
+    file: filePath,
+    lineNumber: this.findPatternLine(content, '\\[[^\\]]*for\\s+\\w+\\s+in[^\\]]*\\]'),
   }
   )
 }
@@ -705,11 +705,11 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
     // */; // LINT: unreachable code removed
   private evaluateSOLIDPrinciples(patterns: PatternDetectionResult): score: number; violations: number ;score: number; violations: number ;score: number; violations: number ;score: number; violations: number ;score: number; violations: number ;
     return {
-      srp: this.evaluateSRP(patterns),;
-    // ocp: this.evaluateOCP(patterns),; // LINT: unreachable code removed
-      lsp: this.evaluateLSP(patterns),;
-      isp: this.evaluateISP(patterns),;
-      dip: this.evaluateDIP(patterns),;;
+      srp: this.evaluateSRP(patterns),
+    // ocp: this.evaluateOCP(patterns), // LINT: unreachable code removed
+      lsp: this.evaluateLSP(patterns),
+      isp: this.evaluateISP(patterns),
+      dip: this.evaluateDIP(patterns),
   }
 ;
   /**
@@ -836,9 +836,9 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
 ;
         if (paramCount > 5) {
           methods.push({
-            name: functionMatch[1]  ?? functionMatch[3]  ?? functionMatch[5]  ?? 'anonymous',;
-            paramCount,;
-            lineNumber: i + 1,;
+            name: functionMatch[1]  ?? functionMatch[3]  ?? functionMatch[5]  ?? 'anonymous',
+            paramCount,
+            lineNumber: i + 1,
           });
         }
       }
@@ -861,9 +861,9 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
         const _methodLines = this.countMethodLines(lines, i);
         if (methodLines > 50) {
           methods.push({
-            name: functionMatch.name,;
-            lineCount: methodLines,;
-            lineNumber: i + 1,;
+            name: functionMatch.name,
+            lineCount: methodLines,
+            lineNumber: i + 1,
           });
         }
       }
@@ -919,9 +919,8 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
         !nextLine.startsWith('//')
       ) 
         deadCode.push(
-          location: i + 2,;
-          description: 'Unreachable code after return statement',;
-;
+          location: i + 2,
+          description: 'Unreachable code after return statement',
     return deadCode;
     //   // LINT: unreachable code removed}
 ;
@@ -954,16 +953,16 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
 ;
   private analyzeDependencyStructure(_patterns: PatternDetectionResult): unknown 
     return {
-      complexity: 'moderate',;
-    // circularDependencies: 0,; // LINT: unreachable code removed
-      recommendations: ['Consider dependency injection', 'Reduce inter-module dependencies'],;;
+      complexity: 'moderate',
+    // circularDependencies: 0, // LINT: unreachable code removed
+      recommendations: ['Consider dependency injection', 'Reduce inter-module dependencies'],
   }
 ;
   private analyzeModularity(_patterns: PatternDetectionResult): unknown 
     return {
-      score: 75,;
-    // strengths: ['Clear separation of concerns'],; // LINT: unreachable code removed
-      improvements: ['Consider extracting utility modules'],;;
+      score: 75,
+    // strengths: ['Clear separation of concerns'], // LINT: unreachable code removed
+      improvements: ['Consider extracting utility modules'],
   }
 ;
   /**
@@ -978,9 +977,9 @@ identifyArchitecturalLayers(patterns: PatternDetectionResult)
     const _result = await this.config.neuralEngine.infer('analysis', 'detectPatterns', codeContent);
 ;
     return {
-      type: analysisType,;
-    // patterns: result,; // LINT: unreachable code removed
-      confidence: 0.75,;
+      type: analysisType,
+    // patterns: result, // LINT: unreachable code removed
+      confidence: 0.75,
     };
   }
 }

@@ -33,7 +33,7 @@ initialize(registry, (options = {}));
 : unknown
 {
   this.registry = registry;
-  this.options = {analysisInterval = = false,approvalRequired = = false,;
+  this.options = {analysisInterval = = false,approvalRequired = = false,
   ...options
 }
 // Get reference to memory-rag plugin

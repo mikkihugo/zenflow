@@ -47,13 +47,13 @@ Memory settings are configured in \`claude-zen.config.json\`:;
 {
   "memory": {
     "backend": "kuzu", // Graph database for relationships
-    "path": "./memory/claude-zen-data.json",;
-    "cacheSize": 1000,;
-    "indexing": true,;
-    "namespaces": ["default", "agents", "tasks", "sessions"],;
+    "path": "./memory/claude-zen-data.json",
+    "cacheSize": 1000,
+    "indexing": true,
+    "namespaces": ["default", "agents", "tasks", "sessions"],
     "retentionPolicy": {
-      "sessions": "30d",;
-      "tasks": "90d",;
+      "sessions": "30d",
+      "tasks": "90d",
       "agents": "permanent";
     }
   }
@@ -129,28 +129,28 @@ Memory settings are configured in \`claude-zen.config.json\` with batchtools opt
 {
   "memory": {
     "backend": "kuzu", // Graph database for relationships
-    "path": "./memory/claude-zen-data.json",;
-    "cacheSize": 5000,;
-    "indexing": true,;
+    "path": "./memory/claude-zen-data.json",
+    "cacheSize": 5000,
+    "indexing": true,
     "batchtools": {
-      "enabled": true,;
-      "maxConcurrent": 10,;
-      "batchSize": 100,;
-      "parallelIndexing": true,;
+      "enabled": true,
+      "maxConcurrent": 10,
+      "batchSize": 100,
+      "parallelIndexing": true,
       "concurrentBackups": true;
-    },;
-    "namespaces": ["default", "agents", "tasks", "sessions", "sparc", "batchtools"],;
+    },
+    "namespaces": ["default", "agents", "tasks", "sessions", "sparc", "batchtools"],
     "retentionPolicy": {
-      "sessions": "30d",;
-      "tasks": "90d",;
-      "agents": "permanent",;
-      "sparc": "180d",;
+      "sessions": "30d",
+      "tasks": "90d",
+      "agents": "permanent",
+      "sparc": "180d",
       "batchtools": "60d";
-    },;
+    },
     "performance": {
-      "enableParallelAccess": true,;
-      "concurrentQueries": 20,;
-      "batchWriteSize": 50,;
+      "enableParallelAccess": true,
+      "concurrentQueries": 20,
+      "batchWriteSize": 50,
       "parallelIndexUpdate": true;
     }
   }

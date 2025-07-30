@@ -5,35 +5,35 @@
  */
 // Re-export types from CLI types module for convenience
 export type {
-  ArgumentParserConfig,;
-ArgumentValidationResult,;
-CliConfig,;
-CliErrorCode as ErrorCode,;
-CommandArgument,;
-CommandCategory,;
-CommandContext,;
-CommandDefinition,;
-CommandFlag,;
-CommandHandler,;
-CommandOption,;
-CommandRegistry,;
-CommandResult,;
-ExitCode,;
-ParsedArguments,;
-ValidationResult,;
+  ArgumentParserConfig,
+ArgumentValidationResult,
+CliConfig,
+CliErrorCode as ErrorCode,
+CommandArgument,
+CommandCategory,
+CommandContext,
+CommandDefinition,
+CommandFlag,
+CommandHandler,
+CommandOption,
+CommandRegistry,
+CommandResult,
+ExitCode,
+ParsedArguments,
+ValidationResult,
 } from '../../types/cli.js'
 // Re-export core types
 export type {
-  JSONArray,;
-JSONObject,;
-JSONValue,;
-Logger as LoggerInterface,;
-LogLevel as LogLevelType,;
+  JSONArray,
+JSONObject,
+JSONValue,
+Logger as LoggerInterface,
+LogLevel as LogLevelType,
 } from '../../types/core.js'
 // Argument parsing types and functions
 export type {
-  CommandStructure,;
-convertToStandardFormat,;
+  CommandStructure,
+convertToStandardFormat,
 type FlagValidationOptions
 ,
 FlagValidator,
@@ -51,7 +51,7 @@ validatePositionalArguments,
 export { CircuitBreaker } from './circuit-breaker.js';
 // Error handling types and functions
 export type {
-  CliError,;
+  CliError,
 type CliErrorCode
 ,
 CommandExecutionError,
@@ -69,9 +69,9 @@ export { CommandRouter } from './command-router.js';
 export { ConfigurationManager, default as configManager } from './configuration-manager.js';
 // File system utilities with comprehensive types
 export type {
-  copyFileSecurely,;
-createTempDirectory,;
-createTempFile,;
+  copyFileSecurely,
+createTempDirectory,
+createTempFile,
 type DirectoryEntry
 ,
 type DirectoryListingOptions
@@ -87,7 +87,7 @@ isDirectory,
 isFile,
 listDirectoryContents,
 movePathSecurely,
-pathExists,;
+pathExists,
 type RemovePathOptions
 ,
 readFileSecurely,
@@ -100,7 +100,7 @@ writeJsonFile,
 export { HealthMonitor } from './health-monitor.js';
 // Help system
 export type {
-  CommandExecutor as CommandExecutorInterface,;
+  CommandExecutor as CommandExecutorInterface,
 type CommandInfo
 ,
 type HelpInfo

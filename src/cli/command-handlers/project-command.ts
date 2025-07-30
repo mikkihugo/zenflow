@@ -19,17 +19,17 @@ export async function projectCommand(): unknown {
           const __securityProfileFlag = args.indexOf('--security-profile');
           const _templateFlag = args.indexOf('--template');
 ;
-          printSuccess(`Creatingproject = 0 ? args[isolationFlag + 1] : 'standard'}`,;
+          printSuccess(`Creatingproject = 0 ? args[isolationFlag + 1] : 'standard'}`,
           );
           if(resourceQuotaFlag >= 0) {
-            console.warn(`   ResourceQuota = 0 ? args[securityProfileFlag + 1] : 'default'}`,;
+            console.warn(`   ResourceQuota = 0 ? args[securityProfileFlag + 1] : 'default'}`,
           );
           if(templateFlag >= 0) {
             console.warn(`Template = args[1];
           if(!switchProject) {
             printError('Usage = args.includes('--active');
 ;
-          printSuccess('Availableprojects = [;
+          printSuccess('Availableprojects = [
             { name => {
             if (showActive && project.status !== 'active') return;
     // ; // LINT: unreachable code removed
@@ -96,7 +96,7 @@ export async function projectCommand(): unknown {
           console.warn('  federation - Manage project federations');
           console.warn('\nExamples:');
           console.warn(;
-            '  project create "unified-app" --isolation strict --resource-quota "agents:15,memory:4GB"',;
+            '  project create "unified-app" --isolation strict --resource-quota "agents:15,memory:4GB"',
           );
           console.warn('  project switch "unified-app"');
           console.warn('  project monitor "microservices" --real-time');

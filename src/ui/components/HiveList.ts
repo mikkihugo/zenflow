@@ -31,14 +31,14 @@ const _HiveList = (): unknown => {
     return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
     // return React.createElement(; // LINT: unreachable code removed
-      Box,;key: name, flexDirection: 'column', marginY: 0 ,;
+      Box,key: name, flexDirection: 'column', marginY: 0 ,
       React.createElement(;
-        Text,;
-          color: isSelected ? 'black' : 'white',;
-          backgroundColor: isSelected ? 'cyan' : undefined,;
-          bold: isSelected,;,;
+        Text,
+          color: isSelected ? 'black' : 'white',
+          backgroundColor: isSelected ? 'cyan' : undefined,
+          bold: isSelected,,
         `${isSelected ? '▶ ' : '  '}${name}`;
-      ),;
+      ),
       React.createElement(Text, { color: 'gray', marginLeft: 4 }, hives[name].path);
     );
   }

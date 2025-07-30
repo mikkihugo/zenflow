@@ -223,7 +223,7 @@ this._app.use((req =>
   getStatus(): {running = (Date.now() - this._metrics.uptime) / 1000;
 
     // Basic health checks
-    const _healthChecks = [;
+    const _healthChecks = [
       {name = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :;
       healthChecks.some(check => check.status === 'error'  ?? check.status === 'offline') ? 'error' :;
       'degraded';

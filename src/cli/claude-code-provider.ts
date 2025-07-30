@@ -119,7 +119,7 @@ export class ClaudeCodeProvider {
 ;
     // Apply task-specific settings if available
     const _taskOptions = {
-      ...options,;
+      ...options,
       ...(this.config.commandSpecific?.[taskType]  ?? {});
     };
 ;

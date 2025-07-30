@@ -44,8 +44,8 @@ export class ArchitectAdvisor extends BaseQueen {
 ;
             // Combine neural and rule-based analysis
             const _finalRecommendation = await this.synthesizeRecommendation(;
-                requirements,;
-                neuralRecommendations,;
+                requirements,
+                neuralRecommendations,
                 task;
             );
 ;
@@ -104,14 +104,14 @@ export class ArchitectAdvisor extends BaseQueen {
         const _componentMatch = neuralText.match(/components?:([^.]+)/i);
         if(componentMatch) {
             recommendation.components = componentMatch[1];
-                .split(/[,;]/);
+                .split(/[,]/);
                 .map(c => c.trim());
                 .filter(c => c.length > 0);
         }
 ;
         // Extract technologies
-        const _techKeywords = ['node', 'python', 'java', 'go', 'react', 'vue', 'angular', ;
-                            'postgres', 'mongodb', 'redis', 'kafka', 'rabbitmq', ;
+        const _techKeywords = ['node', 'python', 'java', 'go', 'react', 'vue', 'angular',
+                            'postgres', 'mongodb', 'redis', 'kafka', 'rabbitmq',
                             'docker', 'kubernetes', 'aws', 'azure', 'gcp'];
         recommendation.technologies = techKeywords.filter(tech => ;
             neuralText.toLowerCase().includes(tech);

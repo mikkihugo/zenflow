@@ -67,62 +67,58 @@ ${chalk.bold('Created = false): unknown {
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */;
-    // async function createDatabaseTables(db = [; // LINT: unreachable code removed
+    // async function createDatabaseTables(db = [ // LINT: unreachable code removed
     // Sessions table
     `CREATE TABLE IF NOT EXISTS sessions (;
-      id TEXT PRIMARY KEY: unknown, name TEXT NOT NULL: unknown, objective TEXT: unknown, status TEXT DEFAULT 'active': unknown, queen_type TEXT DEFAULT 'strategic': unknown, worker_count INTEGER DEFAULT 4: unknown, created_at INTEGER DEFAULT (strftime('%s': unknown, 'now': unknown)),;
-      updated_at INTEGER DEFAULT (strftime('%s', 'now')),;
+      id TEXT PRIMARY KEY: unknown, name TEXT NOT NULL: unknown, objective TEXT: unknown, status TEXT DEFAULT 'active': unknown, queen_type TEXT DEFAULT 'strategic': unknown, worker_count INTEGER DEFAULT 4: unknown, created_at INTEGER DEFAULT (strftime('%s': unknown, 'now': unknown)),
+      updated_at INTEGER DEFAULT (strftime('%s', 'now')),
       metadata TEXT;
     )`,
-;
     // Agents table
     `CREATE TABLE IF NOT EXISTS agents (;
-      id TEXT PRIMARY KEY,;
-      session_id TEXT NOT NULL,;
-      name TEXT NOT NULL,;
-      type TEXT NOT NULL,;
-      role TEXT,;
-      status TEXT DEFAULT 'idle',;
-      performance_score REAL DEFAULT 0.0,;
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),;
-      last_active INTEGER DEFAULT (strftime('%s', 'now')),;
+      id TEXT PRIMARY KEY,
+      session_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      type TEXT NOT NULL,
+      role TEXT,
+      status TEXT DEFAULT 'idle',
+      performance_score REAL DEFAULT 0.0,
+      created_at INTEGER DEFAULT (strftime('%s', 'now')),
+      last_active INTEGER DEFAULT (strftime('%s', 'now')),
       FOREIGN KEY (session_id) REFERENCES sessions (id);
     )`,
-;
     // Memory table
     `CREATE TABLE IF NOT EXISTS collective_memory (;
-      id TEXT PRIMARY KEY,;
-      session_id TEXT,;
-      key TEXT NOT NULL,;
-      value TEXT NOT NULL,;
-      type TEXT DEFAULT 'general',;
+      id TEXT PRIMARY KEY,
+      session_id TEXT,
+      key TEXT NOT NULL,
+      value TEXT NOT NULL,
+      type TEXT DEFAULT 'general',
       importance REAL DEFAULT 0.5,
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),;
-      accessed_at INTEGER DEFAULT (strftime('%s', 'now')),;
+      created_at INTEGER DEFAULT (strftime('%s', 'now')),
+      accessed_at INTEGER DEFAULT (strftime('%s', 'now')),
       access_count INTEGER DEFAULT 0;
     )`,
-;
     // Decisions table
     `CREATE TABLE IF NOT EXISTS consensus_decisions (;
-      id TEXT PRIMARY KEY,;
-      session_id TEXT NOT NULL,;
-      decision_type TEXT NOT NULL,;
-      question TEXT NOT NULL,;
-      result TEXT NOT NULL,;
-      confidence REAL DEFAULT 0.0,;
-      participating_agents TEXT,;
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),;
+      id TEXT PRIMARY KEY,
+      session_id TEXT NOT NULL,
+      decision_type TEXT NOT NULL,
+      question TEXT NOT NULL,
+      result TEXT NOT NULL,
+      confidence REAL DEFAULT 0.0,
+      participating_agents TEXT,
+      created_at INTEGER DEFAULT (strftime('%s', 'now')),
       FOREIGN KEY (session_id) REFERENCES sessions (id);
     )`,
-;
     // Metrics table
     `CREATE TABLE IF NOT EXISTS performance_metrics (;
-      id TEXT PRIMARY KEY,;
-      session_id TEXT,;
-      agent_id TEXT,;
-      metric_type TEXT NOT NULL,;
-      metric_name TEXT NOT NULL,;
-      value REAL NOT NULL,;
+      id TEXT PRIMARY KEY,
+      session_id TEXT,
+      agent_id TEXT,
+      metric_type TEXT NOT NULL,
+      metric_name TEXT NOT NULL,
+      value REAL NOT NULL,
       timestamp INTEGER DEFAULT (strftime('%s', 'now'));
     )`;
   ];
@@ -136,13 +132,13 @@ ${chalk.bold('Created = false): unknown {
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */
-// async function createDatabaseIndexes(db = [; // LINT: unreachable code removed
-'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions (status: unknown)',;
-'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents (session_id)',;
-'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory (session_id)',;
-'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory (key)',;
-'CREATE INDEX IF NOT EXISTS idx_decisions_session ON consensus_decisions (session_id)',;
-'CREATE INDEX IF NOT EXISTS idx_metrics_session ON performance_metrics (session_id)',;
+// async function createDatabaseIndexes(db = [ // LINT: unreachable code removed
+'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions (status: unknown)',
+'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents (session_id)',
+'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory (session_id)',
+'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory (key)',
+'CREATE INDEX IF NOT EXISTS idx_decisions_session ON consensus_decisions (session_id)',
+'CREATE INDEX IF NOT EXISTS idx_metrics_session ON performance_metrics (session_id)',
 ('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics (timestamp)');
 ]
 for (const indexSQL of indexes) {
@@ -154,7 +150,7 @@ for (const indexSQL of indexes) {
  * @param {Database} db - SQLite database instance;
  * @returns {Promise<void>}
  */
-// async function insertInitialData(db = [; // LINT: unreachable code removed
+// async function insertInitialData(db = [ // LINT: unreachable code removed
 {
   key = db.prepare(`;
     INSERT INTO collective_memory (id: unknown, key: unknown, value: unknown, type: unknown, importance: unknown)
@@ -191,8 +187,8 @@ if (!result) {
  * @param {string} sessionDir - Session directory path;
  * @returns {Promise<void>}
  */;
-    // async function validateInitialization(sessionDir = [; // LINT: unreachable code removed
-    path.join(sessionDir: unknown, 'hive-mind.db': unknown),;
+    // async function validateInitialization(sessionDir = [ // LINT: unreachable code removed
+    path.join(sessionDir: unknown, 'hive-mind.db': unknown),
     path.join(sessionDir, 'config.json');
   ];
 ;

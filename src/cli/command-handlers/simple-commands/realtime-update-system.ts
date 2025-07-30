@@ -27,7 +27,7 @@ export class RealtimeUpdateSystem {
   this;
   .
   updateMetrics = {
-      totalUpdates,;
+      totalUpdates,
   updateLatency;
   => {
       this.
@@ -39,16 +39,16 @@ export class RealtimeUpdateSystem {
         type => {
       this.broadcastUpdate('orchestration', {
         type => {
-      this.broadcastUpdate('memory', {type = [;
-      'neural',;
-      'analysis',;
-      'workflow',;
-      'github',;
-      'daa',;
-      'system',;
-      'tools',;
-      'orchestration',;
-      'memory',;
+      this.broadcastUpdate('memory', {type = [
+      'neural',
+      'analysis',
+      'workflow',
+      'github',
+      'daa',
+      'system',
+      'tools',
+      'orchestration',
+      'memory',
   ];
   views;
   .
@@ -267,7 +267,7 @@ applyUpdatesToView(viewName, groupedUpdates);
         // Update memory stats
         if(this.ui.memoryStats) {
           const _namespace = this.ui.memoryStats.namespaces.find(;
-            (ns) => ns.name === update.namespace,;
+            (ns) => ns.name === update.namespace,
           );
           if(namespace) {
             // Update existing namespace stats

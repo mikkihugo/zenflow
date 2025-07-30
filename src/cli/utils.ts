@@ -82,11 +82,11 @@ return new Promise((resolve) => {
 ;
         child.on('close', (code) => {
           resolve({
-            success = === 0,;
+            success = === 0,
             _code => {
           resolve({success = new (process as any).Command(command, {
-        args,;
-        ...options,;
+        args,
+        ...options,
       });
 ;
       const __result = await cmd.output();
@@ -153,7 +153,7 @@ async function _getRuvSwarmInstance(): Promise<any> {
   if (!ruvSwarmInstance) {
     // Initialize memory store
     _memoryStoreInstance = new SqliteMemoryStore({dbName = new RuvSwarm({
-      memoryStore,;
+      memoryStore,
       telemetryEnabled = {}): Promise<any> 
   try {
     const _ruvSwarm = await _getRuvSwarmInstance();
@@ -168,10 +168,10 @@ async function _getRuvSwarmInstance(): Promise<any> {
           success = {}): Promise<any> {
   // Convert MCP tool names to library operations
   const _toolMapping = {
-    'neural_train': 'neural_train',;
-    'swarm_init': 'swarm_init',;
-    'agent_spawn': 'agent_spawn',;
-    'task_orchestrate': 'task_orchestrate',;
+    'neural_train': 'neural_train',
+    'swarm_init': 'swarm_init',
+    'agent_spawn': 'agent_spawn',
+    'task_orchestrate': 'task_orchestrate',
     'swarm_status': 'swarm_status';
   };
 ;
@@ -195,24 +195,24 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
 
       result = await new Promise((resolve) => {
         const _child = spawn(;
-          'npx',;
+          'npx',
           [;
-            'ruv-swarm',;
-            'neural',;
-            'train',;
-            '--model',;
-            modelName,;
-            '--iterations',;
-            epochs.toString(),;
-            '--data-source',;
-            dataSource,;
-            '--output-format',;
-            'json',;
-          ],;
+            'ruv-swarm',
+            'neural',
+            'train',
+            '--model',
+            modelName,
+            '--iterations',
+            epochs.toString(),
+            '--data-source',
+            dataSource,
+            '--output-format',
+            'json',
+          ],
           {
             stdio => {
           resolve({
-            success = === 0,;
+            success = === 0,
             code => {
           resolve({success = '.ruv-swarm/neural';
       const _files = await (process as any).readDir(neuralDir);
@@ -233,7 +233,7 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
       if (latestFile) {
         const _content = await (process as any).readTextFile(latestFile);
 ;
-        return {success = === 0,modelId = === 0,;
+        return {success = === 0,modelId = === 0,
     // modelId = { // LINT: unreachable code removed}): Promise<any> {
   try {
     const _command = 'npx';
@@ -258,9 +258,9 @@ export async function _callRuvSwarmDirectNeural(params = {}: unknown): Promise<a
   return await callRuvSwarmLibrary('swarm_init', {
     topology = {}): Promise<any> {
   return await callRuvSwarmLibrary('task_orchestrate', {
-    task: taskDescription,;
-    // strategy: (options as any).strategy  ?? 'adaptive',; // LINT: unreachable code removed
-    priority: (options as any).priority  ?? 'medium',;
+    task: taskDescription,
+    // strategy: (options as any).strategy  ?? 'adaptive', // LINT: unreachable code removed
+    priority: (options as any).priority  ?? 'medium',
     ...options;
   });
 }

@@ -23,7 +23,7 @@ export async function deployCommand(): unknown {
             `;
   Regions = ')[1] : ';
   us - east - 1, us - west - 2, eu - west - 1;
-  '}`,;
+  '}`,
           )
   console.warn(`   ReplicationFactor = ')[1] : '2'}`);
   console.warn('   LoadBalancer = args[1];;

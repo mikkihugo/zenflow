@@ -1,7 +1,7 @@
 /**
  * Function Extractor;
  *;
- * Extracts function information from source code including parameters,;
+ * Extracts function information from source code including parameters,
  * complexity, line counts, and other function-specific metrics.;
  *;
  * @fileoverview Function extraction and analysis system;
@@ -77,13 +77,13 @@ export class FunctionExtractor {
 ;
       if (functionMatch) {
         const _func: FunctionData = {
-          name: functionMatch.name,;
-          parameters: functionMatch.parameters,;
-          isAsync: functionMatch.isAsync,;
-          lineNumber: i + 1,;
-          complexity: await this.calculateFunctionComplexity(lines, i),;
-          lineCount: await this.countFunctionLines(lines, i),;
-          file: file.path,;
+          name: functionMatch.name,
+          parameters: functionMatch.parameters,
+          isAsync: functionMatch.isAsync,
+          lineNumber: i + 1,
+          complexity: await this.calculateFunctionComplexity(lines, i),
+          lineCount: await this.countFunctionLines(lines, i),
+          file: file.path,
         };
         functions.push(func);
       }
@@ -102,11 +102,11 @@ export class FunctionExtractor {
   private matchFunction(line: string, language: string): FunctionMatch | null {
     const _patterns: Record<string, RegExp[]> = {
       javascript: [;
-        /function\s+(\w+)\s*\(([^)]*)\)/,;
-        /(\w+)\s*[:=]\s*\(([^)]*)\)\s*=>/,;
-        /(async\s+)?(\w+)\s*\(([^)]*)\)\s*=>/,;
-      ],;
-      python: [/(async\s+)?def\s+(\w+)\s*\(([^)]*)\)/],;
+        /function\s+(\w+)\s*\(([^)]*)\)/,
+        /(\w+)\s*[:=]\s*\(([^)]*)\)\s*=>/,
+        /(async\s+)?(\w+)\s*\(([^)]*)\)\s*=>/,
+      ],
+      python: [/(async\s+)?def\s+(\w+)\s*\(([^)]*)\)/],
     };
 ;
     const _langPatterns = patterns[language]  ?? patterns.javascript;
@@ -115,12 +115,12 @@ export class FunctionExtractor {
       const _match = line.match(pattern);
       if (match) {
         return {
-          name: match[2]  ?? match[1],;
+          name: match[2]  ?? match[1],
     // parameters: (match[3]  ?? match[2]  ?? ''); // LINT: unreachable code removed
             .split(',');
             .map((p) => p.trim());
-            .filter((p) => p),;
-          isAsync: line.includes('async'),;
+            .filter((p) => p),
+          isAsync: line.includes('async'),
         };
       }
     }
@@ -201,7 +201,7 @@ export class FunctionExtractor {
    * @returns Long methods found;
     // */; // LINT: unreachable code removed
   findLongMethods(;
-    content: string,;
+    content: string,
     threshold: number = 50;
   ): Array<name: string; lineCount: number; lineNumber: number > {
     const _methods: Array<{ name: string; lineCount: number; lineNumber: number }> = [];
@@ -215,9 +215,9 @@ export class FunctionExtractor {
         const _methodLines = this.countMethodLines(lines, i);
         if (methodLines > threshold) {
           methods.push({
-            name: functionMatch.name,;
-            lineCount: methodLines,;
-            lineNumber: i + 1,;
+            name: functionMatch.name,
+            lineCount: methodLines,
+            lineNumber: i + 1,
           });
         }
       }
@@ -234,7 +234,7 @@ export class FunctionExtractor {
    * @returns Methods with long parameter lists;
     // */; // LINT: unreachable code removed
   findLongParameterMethods(;
-    content: string,;
+    content: string,
     threshold: number = 5;
   ): Array<name: string; paramCount: number; lineNumber: number > {
     const _methods: Array<{ name: string; paramCount: number; lineNumber: number }> = [];
@@ -252,9 +252,9 @@ export class FunctionExtractor {
 ;
         if (paramCount > threshold) {
           methods.push({
-            name: functionMatch[1]  ?? functionMatch[3]  ?? functionMatch[5]  ?? 'anonymous',;
-            paramCount,;
-            lineNumber: i + 1,;
+            name: functionMatch[1]  ?? functionMatch[3]  ?? functionMatch[5]  ?? 'anonymous',
+            paramCount,
+            lineNumber: i + 1,
           });
         }
       }

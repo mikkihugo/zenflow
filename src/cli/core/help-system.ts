@@ -104,9 +104,9 @@ if (!commandInfo) {
     console.warn(`;
   Usage = [
     ;
-      'CLAUDE_API_KEY',;
-      'OPENAI_API_KEY',;
-      'ANTHROPIC_API_KEY',;
+      'CLAUDE_API_KEY',
+      'OPENAI_API_KEY',
+      'ANTHROPIC_API_KEY',
       'HUGGINGFACE_API_KEY';,,,,,,,
   ];
   console.warn('\n🔑 APIKEYS = process.env[varName];
@@ -168,13 +168,13 @@ inferCommandCategory(commandName =
   getCategoryIcon(category: string);
   : string
   {
-    const __icons: Record<string, string>,;
-    _setup: '⚙️',;
-    _control: '🎮',;
-    _orchestration: '🐝',;
-    _data: '💾',;
-    _development: '🚀',;
-    _utility: '🔧',;
+    const __icons: Record<string, string>,
+    _setup: '⚙️',
+    _control: '🎮',
+    _orchestration: '🐝',
+    _data: '💾',
+    _development: '🚀',
+    _utility: '🔧',
     _other: '📦';
   }
   return icons[category]  ?? '📦';

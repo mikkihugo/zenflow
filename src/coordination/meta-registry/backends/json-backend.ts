@@ -36,10 +36,10 @@ export class JSONBackend extends RegistryInterface {
   async register(key, value, options = {}): unknown {
     const _id = `${key}-${Date.now()}`;
     const __entry = {
-      key,;
-      value,;
-      options,;
-      id,;
+      key,
+      value,
+      options,
+      id,
       registered = {}): unknown {
     await this.ensureLoaded();
     const _results = [];
@@ -83,9 +83,9 @@ export class JSONBackend extends RegistryInterface {
     const _watcherId = ++this.watcherId;
 ;
     const __watcher = {
-      id,;
-      query,;
-      callback,;
+      id,
+      query,
+      callback,
       options,created = (): unknown => {
       if (this.matchesQuery(event.entry, query)) {
         callback(event);
@@ -254,10 +254,10 @@ export class JSONBackend extends RegistryInterface {
   async dump() ;
     await this.ensureLoaded();
     return Array.from(this.data.entries()).map(([key, _entry]) => ({
-      key,;
-        id: entry.id,;
-        registered: entry.registered,;
-        expires: entry.expires,;
+      key,
+        id: entry.id,
+        registered: entry.registered,
+        expires: entry.expires,
         tags: entry.tags;
     }));
 ;

@@ -50,7 +50,7 @@ export const UniversalBox = (): unknown => {
     return React.createElement(inkComponents.Static, { items }, children);
     //   // LINT: unreachable code removed} else {
     // HTML list for web
-    return React.createElement('div', null, ;
+    return React.createElement('div', null,
     // items.map((_item, _index) => ; // LINT: unreachable code removed
         React.createElement('div', {key = (): unknown => {
   if (isTUI() && inkComponents.render) {
@@ -64,14 +64,14 @@ export const UniversalBox = (): unknown => {
     // Fallback - just log the component structure
     console.warn('Renderingcomponent = (): unknown => {
   const _colorMap = {
-    'cyan': '#00ffff',;
-    'green': '#00ff00',;
-    'red': '#ff0000',;
-    'yellow': '#ffff00',;
-    'blue': '#0000ff',;
-    'magenta': '#ff00ff',;
-    'white': '#ffffff',;
-    'gray': '#808080',;
+    'cyan': '#00ffff',
+    'green': '#00ff00',
+    'red': '#ff0000',
+    'yellow': '#ffff00',
+    'blue': '#0000ff',
+    'magenta': '#ff00ff',
+    'white': '#ffffff',
+    'gray': '#808080',
     'grey': '#808080';
   };
 ;

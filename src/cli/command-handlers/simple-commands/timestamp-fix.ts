@@ -30,14 +30,14 @@ export function createSessionWithProperTimezone(_objective = {}: unknown): unkno
       session.objective.length > 27 ? session.objective.substr(0, 27) + '...' : session.objective;
 ;
     console.warn(;
-      id.padEnd(25) + objective.padEnd(30) + timeDisplay.relative.padEnd(25) + session.status,;
+      id.padEnd(25) + objective.padEnd(30) + timeDisplay.relative.padEnd(25) + session.status,
     );
   });
 ;
   console.warn(`\n💡 Times shown in yourtimezone = getTimezoneInfo();
   console.warn(`🌍 Yourtimezone = createSessionWithProperTimezone('Build scalable application', {
-    queenType: 'strategic',;
-    maxWorkers: 6,;
+    queenType: 'strategic',
+    maxWorkers: 6,
   });
 ;
   // Display with proper timezone

@@ -22,18 +22,18 @@ try {
 
       // Generate alerts if needed
       const _alerts = await generatePerformanceAlerts(;
-        metric, ;
-        value, ;
-        threshold, ;
-        trend, ;
+        metric,
+        value,
+        threshold,
+        trend,
         systemMetrics;
       );
 ;
       // Create recommendations
       const _recommendations = generateOptimizationRecommendations(;
-        metric,;
-        value,;
-        trend,;
+        metric,
+        value,
+        trend,
         systemMetrics;
       );
 ;
@@ -57,7 +57,7 @@ try {
 ;
       // Prioritize bottlenecks
 
-      return {success = > b.severity === 'high').length,;
+      return {success = > b.severity === 'high').length,
     // mitigationStrategies = {name = Date.now(); // LINT: unreachable code removed
 ;
     try {
@@ -142,7 +142,7 @@ try {
       return {success = value / threshold;
     // ; // LINT: unreachable code removed
   return {
-    hasThreshold,;
+    hasThreshold,
     // threshold,current = []; // LINT: unreachable code removed
 ;
   if (threshold && value > threshold) {
@@ -220,33 +220,33 @@ function calculateOverallSeverity(bottlenecks = bottlenecks.filter(b => b.severi
 
 export const PERFORMANCE_HOOKS = [
   {
-    name: 'system-performance-monitor',;
-    type: 'performance-metric',;
+    name: 'system-performance-monitor',
+    type: 'performance-metric',
     hook: systemPerformanceMonitor;
-  },;
+  },
   {
-    name: 'bottleneck-detector',;
-    type: 'performance-metric',;
+    name: 'bottleneck-detector',
+    type: 'performance-metric',
     hook: bottleneckDetector;
-  },;
+  },
   {
-    name: 'memory-optimizer',;
-    type: 'performance-metric',;
+    name: 'memory-optimizer',
+    type: 'performance-metric',
     hook: memoryOptimizer;
-  },;
+  },
   {
-    name: 'cpu-optimizer',;
-    type: 'performance-metric',;
+    name: 'cpu-optimizer',
+    type: 'performance-metric',
     hook: cpuOptimizer;
-  },;
+  },
   {
-    name: 'latency-analyzer',;
-    type: 'performance-metric',;
+    name: 'latency-analyzer',
+    type: 'performance-metric',
     hook: latencyAnalyzer;
-  },;
+  },
   {
-    name: 'throughput-optimizer',;
-    type: 'performance-metric',;
+    name: 'throughput-optimizer',
+    type: 'performance-metric',
     hook: throughputOptimizer;
   }
 ];

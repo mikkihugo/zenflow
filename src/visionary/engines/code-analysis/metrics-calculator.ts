@@ -1,7 +1,7 @@
 /**
  * Metrics Calculator;
  *;
- * Calculates comprehensive code metrics including lines of code, complexity,;
+ * Calculates comprehensive code metrics including lines of code, complexity,
  * maintainability index, and various quality metrics.;
  *;
  * @fileoverview Code metrics calculation and analysis system;
@@ -60,7 +60,7 @@ interface ClassMatch {
 /**
  * Metrics Calculator;
  *;
- * Comprehensive system for calculating code metrics, complexity analysis,;
+ * Comprehensive system for calculating code metrics, complexity analysis,
  * and quality measurements across multiple programming languages.;
  */
 export class MetricsCalculator {
@@ -84,19 +84,19 @@ export class MetricsCalculator {
     }
     const _avgComplexity = totalFunctions > 0 ? totalComplexity / totalFunctions : 0;
     const _maintainabilityIndex = this.calculateMaintainabilityIndex(;
-    totalLines,;
-    totalComplexity,;
+    totalLines,
+    totalComplexity,
     avgComplexity;
     )
     const _technicalDebt = this.assessTechnicalDebt(avgComplexity, maxComplexity);
     return {
-      cyclomatic: totalComplexity,;
-    // lines: totalLines,; // LINT: unreachable code removed
-    functions: totalFunctions,;
-    maxFunctionComplexity: maxComplexity,;
-    avgComplexity,;
-    maintainabilityIndex,;
-    technicalDebt,;
+      cyclomatic: totalComplexity,
+    // lines: totalLines, // LINT: unreachable code removed
+    functions: totalFunctions,
+    maxFunctionComplexity: maxComplexity,
+    avgComplexity,
+    maintainabilityIndex,
+    technicalDebt,
   }
 }
 /**
@@ -126,13 +126,13 @@ calculateMetrics(codeData: CodeFileData[])
   }
   const _commentRatio = totalLines > 0 ? (commentLines / totalLines) * 100 : 0;
   return {
-      totalLines,;
-  // codeLines,; // LINT: unreachable code removed
-  commentLines,;
-  blankLines,;
-  functions: totalFunctions,;
-  classes: totalClasses,;
-  commentRatio,;
+      totalLines,
+  // codeLines, // LINT: unreachable code removed
+  commentLines,
+  blankLines,
+  functions: totalFunctions,
+  classes: totalClasses,
+  commentRatio,
 }
 }
 /**
@@ -170,10 +170,10 @@ calculateFileComplexity(file: CodeFileData)
     }
   }
   return {
-      cyclomatic: complexity,;
-  // lines: lines.length,; // LINT: unreachable code removed
-  functions: functionCount,;
-  maxFunctionComplexity,;
+      cyclomatic: complexity,
+  // lines: lines.length, // LINT: unreachable code removed
+  functions: functionCount,
+  maxFunctionComplexity,
 }
 }
 /**
@@ -210,13 +210,13 @@ calculateFileMetrics(file: CodeFileData)
     }
   }
   return {
-      totalLines: lines.length,;
-  // codeLines,; // LINT: unreachable code removed
-  commentLines,;
-  blankLines,;
-  functions,;
-  classes,;
-  commentRatio: lines.length > 0 ? (commentLines / lines.length) * 100 : 0,;
+      totalLines: lines.length,
+  // codeLines, // LINT: unreachable code removed
+  commentLines,
+  blankLines,
+  functions,
+  classes,
+  commentRatio: lines.length > 0 ? (commentLines / lines.length) * 100 : 0,
 }
 }
 /**
@@ -267,15 +267,15 @@ calculateFunctionComplexity(lines: string[], startLine: number)
     // */ // LINT: unreachable code removed
   private
   calculateMaintainabilityIndex(;
-  lines: number,;
-  complexity: number,;
+  lines: number,
+  complexity: number,
   _halsteadVolume: number;
   ): number
   {
     // Simplified maintainability index calculation
     const _volume = Math.log2(lines) * 10; // Simplified Halstead volume
     const _index = Math.max(;
-    0,;
+    0,
     171 - 5.2 * Math.log(volume) - 0.23 * complexity - 16.2 * Math.log(lines);
     )
     return Math.min(100, index);
@@ -289,7 +289,7 @@ calculateFunctionComplexity(lines: string[], startLine: number)
     // */ // LINT: unreachable code removed
     private
     assessTechnicalDebt(;
-    avgComplexity: number,;
+    avgComplexity: number,
     maxComplexity: number;
     ): 'minimal' | 'low' | 'moderate' | 'high'
     if (maxComplexity > 20 ?? avgComplexity > 10) return 'high';
@@ -308,9 +308,9 @@ calculateFunctionComplexity(lines: string[], startLine: number)
     {
       const _patterns: Record<string, RegExp[]> = {
       javascript: [;
-        /function\s+(\w+)\s*\(([^)]*)\)/,;
-      /(\w+)\s*[:=]\s*\(([^)]*)\)\s*=>/,;
-      /(async\s+)?(\w+)\s*\(([^)]*)\)\s*=>/,;
+        /function\s+(\w+)\s*\(([^)]*)\)/,
+      /(\w+)\s*[:=]\s*\(([^)]*)\)\s*=>/,
+      /(async\s+)?(\w+)\s*\(([^)]*)\)\s*=>/,
       ],
       python: [/(async\s+)?def\s+(\w+)\s*\(([^)]*)\)/],
     }
@@ -319,7 +319,7 @@ calculateFunctionComplexity(lines: string[], startLine: number)
       const _match = line.match(pattern);
       if (match) {
         return {
-          name: match[2]  ?? match[1],;
+          name: match[2]  ?? match[1],
         // parameters: (match[3]  ?? match[2]  ?? ''); // LINT: unreachable code removed
         .split(',')
         .map((p) => p.trim())
@@ -342,16 +342,16 @@ calculateFunctionComplexity(lines: string[], startLine: number)
   : ClassMatch | null
   {
     const _patterns: Record<string, RegExp> = {
-      javascript: /class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([^{]+))?/,;
-    python: /class\s+(\w+)(?:\(([^)]+)\))?/,;
+      javascript: /class\s+(\w+)(?:\s+extends\s+(\w+))?(?:\s+implements\s+([^{]+))?/,
+    python: /class\s+(\w+)(?:\(([^)]+)\))?/,
   }
   const _pattern = patterns[language] ?? patterns.javascript;
   const _match = line.match(pattern);
   if (match) {
     return {
-        name: match[1],;
-    // extends: match[2] ? [match[2]] : undefined,; // LINT: unreachable code removed
-    implements: match[3] ? match[3].split(',').map((i) => i.trim()) : undefined,;
+        name: match[1],
+    // extends: match[2] ? [match[2]] : undefined, // LINT: unreachable code removed
+    implements: match[3] ? match[3].split(',').map((i) => i.trim()) : undefined,
   }
 }
 return null;
@@ -368,11 +368,11 @@ isCommentLine(line: string, language: string)
 : boolean
 {
   const _commentPatterns: Record<string, RegExp> = {
-      javascript: /^\/\/|^\/\*|\*\/$/,;
-  python: /^#/,;
-  java: /^\/\/|^\/\*|\*\/$/,;
-  c: /^\/\/|^\/\*|\*\/$/,;
-  cpp: /^\/\/|^\/\*|\*\/$/,;
+      javascript: /^\/\/|^\/\*|\*\/$/,
+  python: /^#/,
+  java: /^\/\/|^\/\*|\*\/$/,
+  c: /^\/\/|^\/\*|\*\/$/,
+  cpp: /^\/\/|^\/\*|\*\/$/,
 }
 const _pattern = commentPatterns[language] ?? commentPatterns.javascript;
 return pattern.test(line);

@@ -96,7 +96,7 @@ if (definition.since) {
   help += `${this.colorizeText(title, 'bright', opts.colorize)}\n\n`;
   // Description
   const _description = `;
-A powerful CLI for orchestrating AI workflows with swarm intelligence,;
+A powerful CLI for orchestrating AI workflows with swarm intelligence,
 neural networks, vector search, and graph databases.;
     `.trim();
   help += `${wrapText(description, opts.width).join('\n')}\n\n`;
@@ -104,7 +104,7 @@ neural networks, vector search, and graph databases.;
   help += this.colorizeText('USAGE = '  claude-zen <command> [options]\n';
     help += '  claude-zen <command> --help    # Get help for specific command\n\n';
   // Global flags
-  help += this.colorizeText('GLOBALFLAGS = [;
+  help += this.colorizeText('GLOBALFLAGS = [
       { name => {
       const _alias = flag.alias ? `, -${flag.alias}` : '';
   help += `  --${this.colorizeText(flag.name, 'bright', opts.colorize)}${alias}\n`;
@@ -127,7 +127,7 @@ categoryCommands.forEach((cmd) => {
 help += '\n';
 })
 // Quick start section
-help += this.colorizeText('QUICKSTART = [;
+help += this.colorizeText('QUICKSTART = [
 {
   (cmd) => {
     help += `  ${this.colorizeText(cmd, 'green', opts.colorize)}\n`;
@@ -136,7 +136,7 @@ help += this.colorizeText('QUICKSTART = [;
   )
   help += '\n'
   // Environment variables
-  help += this.colorizeText('ENVIRONMENTVARIABLES = [;
+  help += this.colorizeText('ENVIRONMENTVARIABLES = [
   {
     (_name) => {
       help += `  ${this.colorizeText(envVar.name, 'bright', opts.colorize)}\n`;

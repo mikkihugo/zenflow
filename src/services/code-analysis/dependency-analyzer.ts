@@ -137,7 +137,7 @@ export class DependencyAnalyzer {
 ;
     for(const node of data.nodes) {
       elements.push({data = > ({
-        ...node,;
+        ...node,
         index;
       })),links = > ({source = await import('node:fs/promises');
     const { join } = await import('node:path');

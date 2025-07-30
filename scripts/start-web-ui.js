@@ -9,4 +9,4 @@ import { startWebServer } from './src/cli/simple-commands/web-server.js';
 const _port = process.argv[2] ? parseInt(process.argv[2]) : 3000;
 console.warn('🚀 Starting Claude Code Web UI...');
 console.warn();
-await startWebServer(port);
+  // await startWebServer(port);

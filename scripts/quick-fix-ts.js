@@ -50,7 +50,7 @@ if (fs.existsSync(cliCorePath)) {
   const _cliCoreContent = fs.readFileSync(cliCorePath, 'utf8');
   // Add proper typing for the problematic line
   cliCoreContent = cliCoreContent.replace(;
-  /const commandModule = await commandModules\[commandName\]\(\);/g,;
+  /const commandModule = await commandModules\[commandName\]\(\);/g,
   ('const commandModule = await (commandModules[commandName] as any)();');
   )
   fs.writeFileSync(cliCorePath, cliCoreContent)
@@ -69,7 +69,7 @@ if (fs.existsSync(indexPath)) {
   const _indexContent = fs.readFileSync(indexPath, 'utf8');
   // Comment out meta property
   indexContent = indexContent.replace(;
-  /\.meta\([^)]+\)/g,;
+  /\.meta\([^)]+\)/g,
   ('// .meta() commented out - not available');
   )
   // Fix import.meta.main
@@ -88,7 +88,7 @@ const _swarmPath = path.join(__dirname, '../src/cli/commands/swarm.ts');
 if (fs.existsSync(swarmPath)) {
   const _swarmContent = fs.readFileSync(swarmPath, 'utf8');
   swarmContent = swarmContent.replace(;
-  /strategy: options\.strategy,/g,;
+  /strategy: options\.strategy,/g,
   ('strategy: options.strategy as any,');
   )
   fs.writeFileSync(swarmPath, swarmContent)
@@ -122,7 +122,7 @@ if (fs.existsSync(taskEnginePath)) {
   const _taskEngineContent = fs.readFileSync(taskEnginePath, 'utf8');
   // Fix boolean assignment
   taskEngineContent = taskEngineContent.replace(;
-  /enableCaching: options\.enableCaching,/g,;
+  /enableCaching: options\.enableCaching,/g,
   ('enableCaching: options.enableCaching  ?? false,');
   )
   fs.writeFileSync(taskEnginePath, taskEngineContent)
@@ -133,7 +133,7 @@ if (fs.existsSync(sparcPath)) {
   const _sparcContent = fs.readFileSync(sparcPath, 'utf8');
   // Initialize phases property
   sparcContent = sparcContent.replace(;
-  /private phases: SPARCPhase\[\];/g,;
+  /private phases: SPARCPhase\[\];/g,
   ('private phases: SPARCPhase[] = [];');
   )
   // Fix index signature issues
@@ -166,7 +166,7 @@ if (fs.existsSync(promptCopierPath)) {
   const _promptContent = fs.readFileSync(promptCopierPath, 'utf8');
   // Add errors property to result
   promptContent = promptContent.replace(;
-  /duration: Date\.now\(\) - startTime\n\s*};/g,;
+  /duration: Date\.now\(\) - startTime\n\s*};/g,
   ('duration: Date.now() - startTime,\n      errors: []\n    };');
   )
   fs.writeFileSync(promptCopierPath, promptContent)
@@ -177,7 +177,7 @@ if (fs.existsSync(enhancedPath)) {
   const _enhancedContent = fs.readFileSync(enhancedPath, 'utf8');
   // Add override modifiers
   enhancedContent = enhancedContent.replace(;
-  /async processDirectory\(/g,;
+  /async processDirectory\(/g,
   ('override async processDirectory(');
   )
   enhancedContent = enhancedContent.replace(/async copyFile\(/g, 'override async copyFile(')
@@ -187,7 +187,7 @@ if (fs.existsSync(enhancedPath)) {
   enhancedContent = enhancedContent.replace(/this\.options/g, '(this as any).options')
   enhancedContent = enhancedContent.replace(/this\.fileExists/g, '(this as any).fileExists')
   enhancedContent = enhancedContent.replace(
-  /this\.calculateFileHash/g,;
+  /this\.calculateFileHash/g,
   ('(this as any).calculateFileHash');
   )
   enhancedContent = enhancedContent.replace(/this\.errors/g, '(this as any).errors')

@@ -254,7 +254,7 @@ export class AIProviderPlugin extends BasePlugin {
         // Log request
         if (this.config.settings.logging?.enabled) {
           await this.logRequest({
-            requestId,;
+            requestId,
             type = {}): Promise<any> 
     return this.executeWithRetry(async () => {
       const _startTime = performance.now();
@@ -406,7 +406,7 @@ export class AIProviderPlugin extends BasePlugin {
     // Update provider usage
     const _providerName = this.activeProvider!.name;
     this.metrics.providerUsage.set(;
-      providerName,;
+      providerName,
       (this.metrics.providerUsage.get(providerName)  ?? 0) + 1;
     );
 ;

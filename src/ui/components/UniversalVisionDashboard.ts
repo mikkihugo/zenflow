@@ -55,23 +55,20 @@ const _UniversalVisionDashboard = (): unknown => {
 ;
     // return React.createElement(Box, {key = > p.status === 'in_progress')?.name  ?? vision.phases.find(p => p.status === 'pending')?.name  ?? 'All phases complete'; // LINT: unreachable code removed
           ),
-;
           isWeb() && React.createElement("div", {style = > React.createElement("div", {key = === 'completed' ? '#00ff00' :;
                   phase.status === 'in_progress' ? '#ffff00' : '#333';
               }
             }));
           );
         ),
-;
-        isWeb() && React.createElement(Box, marginTop = > console.warn('Generate roadmap for:', vision.id), "📋 Generate Roadmap"),;
+        isWeb() && React.createElement(Box, marginTop = > console.warn('Generate roadmap for:', vision.id), "📋 Generate Roadmap"),
           React.createElement("button", style = > console.warn('Edit vision:', vision.id), "✏️ Edit");
         );
       );
     }),
-;
-    React.createElement(Box, { marginTop: 1, borderStyle: "single", borderColor: "gray", paddingX: 1 },;
-      React.createElement(Text, { color: "gray" },;
-        isTUI() && '💡 TUI: [↑↓] Navigate • [R] Refresh • [Enter] Details',;
+    React.createElement(Box, { marginTop: 1, borderStyle: "single", borderColor: "gray", paddingX: 1 },
+      React.createElement(Text, { color: "gray" },
+        isTUI() && '💡 TUI: [↑↓] Navigate • [R] Refresh • [Enter] Details',
         isWeb() && '💡 Web: Click buttons • Keyboard shortcuts active';
       );
     );

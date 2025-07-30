@@ -138,8 +138,8 @@ try {
   const _requiredSections = ['terminal', 'orchestrator', 'memory'];
   for (const section of requiredSections) {
     if (!config[section]) {
-      errors.push(`Missing required section = {valid = === 0,;
-      errors,;
+      errors.push(`Missing required section = {valid = === 0,
+      errors,
       warnings;
     };
 ;

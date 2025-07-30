@@ -131,15 +131,15 @@ createBackup((type = 'manual'), (description = ''));
         getCriticalFiles();
         {
           const _files = [];
-          const _potentialFiles = [;
-            'CLAUDE.md',;
-            'memory-bank.md',;
-            'coordination.md',;
-            'package.json',;
-            'package-lock.json',;
-            '.roomodes',;
-            'claude-zen',;
-            'memory/claude-zen-data.json',;
+          const _potentialFiles = [
+            'CLAUDE.md',
+            'memory-bank.md',
+            'coordination.md',
+            'package.json',
+            'package-lock.json',
+            '.roomodes',
+            'claude-zen',
+            'memory/claude-zen-data.json',
           ];
 ;
           for (const file of potentialFiles) {
@@ -160,12 +160,12 @@ createBackup((type = 'manual'), (description = ''));
         getCriticalDirectories();
         {
           const _dirs = [];
-          const _potentialDirs = [;
-            '.claude',;
-            '.roo',;
-            'memory/agents',;
-            'memory/sessions',;
-            'coordination',;
+          const _potentialDirs = [
+            '.claude',
+            '.roo',
+            'memory/agents',
+            'memory/sessions',
+            'coordination',
           ];
 ;
           for (const dir of potentialDirs) {

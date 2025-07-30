@@ -7,10 +7,10 @@ import { parseFlags } from '../utils.js';
 
 // Mock the command registry
 jest.mock('../command-registry.js', () => ({
-  executeCommand: jest.fn(),;
-hasCommand: jest.fn(),;
-listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],;
-getCommand: () => ({ flags: [], args: [] }),;
+  executeCommand: jest.fn(),
+hasCommand: jest.fn(),
+listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'],
+getCommand: () => ({ flags: [], args: [] }),
 }))
 jest.mock('../utils.js', () => (
 {
@@ -25,12 +25,12 @@ jest.mock('../utils.js', () => (
       }
       return acc;
     //   // LINT: unreachable code removed}, {});
-  ),;
+  ),
   getCLIInfo: () => ({
-    argv: process.argv.slice(2),;
-    cwd: process.cwd(),;
-    isMainModule: true,;
-  }),;
+    argv: process.argv.slice(2),
+    cwd: process.cwd(),
+    isMainModule: true,
+  }),
 }
 ))
 describe('Claude-Flow CLI', () =>
@@ -100,12 +100,12 @@ describe('Claude-Flow CLI', () =>
     test('should handle command with multiple arguments', async () => {
       process.argv = [
         ;
-        'node',;
-        'claude-zen',;
-        'swarm',;
-        'Build a REST API',;
-        '--strategy',;
-        'development',;,,,,,,,
+        'node',
+        'claude-zen',
+        'swarm',
+        'Build a REST API',
+        '--strategy',
+        'development',,,,,,,,
       ];
       const { executeCommand, hasCommand } = await import('../command-registry.js');
       hasCommand.mockReturnValue(true);
@@ -114,7 +114,7 @@ describe('Claude-Flow CLI', () =>
 
       expect(hasCommand).toHaveBeenCalledWith('swarm');
       expect(executeCommand).toHaveBeenCalledWith('swarm', ['Build a REST API'], {
-        strategy: 'development',;
+        strategy: 'development',
     });
   });
   test('should show error for unknown command', async () => {
@@ -153,7 +153,7 @@ describe('Claude-Flow CLI', () =>
       await import('../cli-main.js');
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(;
-        expect.stringContaining('Missing required argument'),;
+        expect.stringContaining('Missing required argument'),
       );
     });
   });

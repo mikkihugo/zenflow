@@ -102,9 +102,9 @@ this.updateMetrics(useParallel, executionTime);
   const _parallelGroups = this.createParallelGroups(tasks);
 ;
   return {
-      objective,;
-    // domain,; // LINT: unreachable code removed
-      complexity,;
+      objective,
+    // domain, // LINT: unreachable code removed
+      complexity,
       tasks,parallelGroups = [];
   const __taskCounter = 0;
 ;
@@ -285,20 +285,20 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
     const _baseStatus = await this.baseOrchestrator.getSwarmStatus(swarmId);
 ;
     const _parallelStatus = {
-      parallelMode: this.parallelMode,;
-      workerPool: this.workerPool ? this.workerPool.getStatus() : null,;
+      parallelMode: this.parallelMode,
+      workerPool: this.workerPool ? this.workerPool.getStatus() : null,
       metrics: this.metrics;
     };
 ;
     if(swarmId) {
       return {
-        ...baseStatus,;
+        ...baseStatus,
     // parallel: parallelStatus; // LINT: unreachable code removed
       };
     }
 ;
     return {
-      ...baseStatus,;
+      ...baseStatus,
     // parallel: parallelStatus; // LINT: unreachable code removed
     };
   }

@@ -90,7 +90,7 @@ initialize()
 ;
           // Execute batch with timeout and retry logic
           const _batchPromises = batch.map((call) =>;
-            this._executeWithTimeout(call, this.config.timeout),;
+            this._executeWithTimeout(call, this.config.timeout),
           );
 ;
           const _batchResults = await Promise.allSettled(batchPromises);
@@ -146,7 +146,7 @@ initialize()
 ;
   // Return groups in priority order, filtering empty groups
   return [priorities.critical, priorities.high, priorities.medium, priorities.low].filter(;
-    // (group) => group.length > 0,; // LINT: unreachable code removed
+    // (group) => group.length > 0, // LINT: unreachable code removed
     );
 }
 ;
@@ -244,8 +244,8 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
 ;
     return {tools = > sum + stat.calls, 0),successRate = Array.from(this.toolStats.values()).reduce((sum, stat) => sum + stat.calls, 0);
     // const _successes = Array.from(this.toolStats.values()).reduce(; // LINT: unreachable code removed
-      (sum, stat) => sum + stat.successes,;
-      0,;
+      (sum, stat) => sum + stat.successes,
+      0,
     );
 ;
     return total > 0 ? ((successes / total) * 100).toFixed(2) : 100;
@@ -296,8 +296,8 @@ _trackBatchPerformance(toolCount, executionTime, concurrency);
       for(const result of results) {
         if(result?.id && !result.error) {
           await this.storeMemory(;
-            swarmId,;
-            `agent-${result.id}`,;id = 'knowledge'): unknown 
+            swarmId,
+            `agent-${result.id}`,id = 'knowledge'): unknown 
     if(!this._memoryRagPlugin) {
       console.warn('[MCPToolWrapper] MemoryRAGPlugin not available. Memory operations will not be persisted.');
       return {success = await this.memoryRagPlugin.storeMemory(swarmId, key, value, type);

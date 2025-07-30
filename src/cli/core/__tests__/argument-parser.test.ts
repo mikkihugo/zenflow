@@ -5,11 +5,11 @@
 
 import { describe, expect } from '@jest/globals';
 import {
-  FlagValidator,;
-normalizeFlags,;
-parseCommandLineArguments,;
-parseCommandStructure,;
-validatePositionalArguments,;
+  FlagValidator,
+normalizeFlags,
+parseCommandLineArguments,
+parseCommandStructure,
+validatePositionalArguments,
 } from '../argument-parser.js'
 
 import { ValidationError } from '../cli-error.js';
@@ -91,9 +91,9 @@ describe('Argument Parser', () => {
         expect(result.flags).toEqual({ flag => {
     it('should normalize kebab-case to camelCase', () => {
       const _flags = {
-        'max-agents',;
-        'verbose-mode': true,;
-        'simple': 'value',;
+        'max-agents',
+        'verbose-mode': true,
+        'simple': 'value',
         'multi-word-flag': 'test';
       };
 ;

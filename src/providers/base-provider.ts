@@ -58,8 +58,8 @@ validateRequest(request)
   }
   if (!this.capabilities.models?.includes(request.model)) {
     throw new ProviderError(;
-    `Model ${request.model} not supported`,;
-    this.name,;
+    `Model ${request.model} not supported`,
+    this.name,
     ('MODEL_NOT_SUPPORTED');
     )
   }
@@ -115,8 +115,8 @@ getErrorRate();
 }
 protected;
 async;
-withRetry<T>(operation = > Promise<T>,;
-maxRetries = this.config.retryAttempts  ?? 3,;
+withRetry<T>(operation = > Promise<T>,
+maxRetries = this.config.retryAttempts  ?? 3,
 delay = this.config.retryDelay ?? 1000;
 )
 : Promise<T>
@@ -164,12 +164,12 @@ emitRequest(request: AIRequest);
 : void
 {
   this.emit('request', {
-    type: 'request',;
-  provider: this.name,;
-  timestamp: new Date(),;
-  id: request.id,;
-  model: request.model,;
-  messageCount: request.messages.length,;
+    type: 'request',
+  provider: this.name,
+  timestamp: new Date(),
+  id: request.id,
+  model: request.model,
+  messageCount: request.messages.length,
   ,
 }
 )
@@ -179,13 +179,13 @@ emitResponse(response: AIResponse)
 : void
 {
   this.emit('response', {
-    type: 'response',;
-  provider: this.name,;
-  timestamp: new Date(),;
-  id: response.id,;
-  model: response.model,;
-  usage: response.usage,;
-  responseTime: response.responseTime,;
+    type: 'response',
+  provider: this.name,
+  timestamp: new Date(),
+  id: response.id,
+  model: response.model,
+  usage: response.usage,
+  responseTime: response.responseTime,
   ,
 }
 )
@@ -195,12 +195,12 @@ emitError(error: Error, request?: AIRequest)
 : void
 {
   this.emit('error', {
-    type: 'error',;
-  provider: this.name,;
-  timestamp: new Date(),;
-  error: error.message,;
-  requestId: request?.id,;
-  model: request?.model,;
+    type: 'error',
+  provider: this.name,
+  timestamp: new Date(),
+  error: error.message,
+  requestId: request?.id,
+  model: request?.model,
   ,
 }
 )

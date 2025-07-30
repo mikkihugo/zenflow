@@ -7,11 +7,11 @@
 }
 from;
 ('../types/core.js');
-printSuccess,;
-printError,;
-printWarning,;
-execRuvSwarmHook,;
-checkRuvSwarmAvailable,;
+printSuccess,
+printError,
+printWarning,
+execRuvSwarmHook,
+checkRuvSwarmAvailable,
 } from '../utils.js'
 
 import { SqliteMemoryStore } from '../../memory/sqlite-store.js';
@@ -97,17 +97,17 @@ async function preTaskCommand(subArgs: unknown, flags = flags;
   console.warn(`🔄 Executing pre-task hook...`);
   console.warn(`📋Task = await getMemoryStore();
     const _taskData = {
-      taskId,;
-      description,;
-      agentId,;
+      taskId,
+      description,
+      agentId,
       autoSpawnAgents,status = await TimeoutProtection.checkRuvSwarmAvailableWithTimeout();
     if(isAvailable) {
       console.warn(`\n🔄 Executing ruv-swarm pre-task hook...`);
       const _hookResult = await TimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', {
-        description,;
-        'task-id': taskId,;
-        'auto-spawn-agents': autoSpawnAgents,;
-        ...(agentId ? { 'agent-id': agentId } : {}),;
+        description,
+        'task-id': taskId,
+        'auto-spawn-agents': autoSpawnAgents,
+        ...(agentId ? { 'agent-id': agentId } : {}),
       });
 ;
       if(hookResult.success) {
@@ -130,25 +130,25 @@ async function preTaskCommand(subArgs: unknown, flags = flags;
       const _ext = path.extname(file).toLowerCase();
 ;
       const _agentMapping = {
-        '.js': 'javascript-developer',;
-        '.ts': 'typescript-developer',;
-        '.py': 'python-developer',;
-        '.go': 'golang-developer',;
-        '.rs': 'rust-developer',;
-        '.java': 'java-developer',;
-        '.cpp': 'cpp-developer',;
-        '.c': 'c-developer',;
-        '.css': 'frontend-developer',;
-        '.html': 'frontend-developer',;
-        '.vue': 'frontend-developer',;
-        '.react': 'frontend-developer',;
-        '.md': 'technical-writer',;
-        '.yml': 'devops-engineer',;
-        '.yaml': 'devops-engineer',;
-        '.json': 'config-specialist',;
-        '.sql': 'database-expert',;
-        '.sh': 'system-admin',;
-        '.dockerfile': 'devops-engineer',;
+        '.js': 'javascript-developer',
+        '.ts': 'typescript-developer',
+        '.py': 'python-developer',
+        '.go': 'golang-developer',
+        '.rs': 'rust-developer',
+        '.java': 'java-developer',
+        '.cpp': 'cpp-developer',
+        '.c': 'c-developer',
+        '.css': 'frontend-developer',
+        '.html': 'frontend-developer',
+        '.vue': 'frontend-developer',
+        '.react': 'frontend-developer',
+        '.md': 'technical-writer',
+        '.yml': 'devops-engineer',
+        '.yaml': 'devops-engineer',
+        '.json': 'config-specialist',
+        '.sql': 'database-expert',
+        '.sh': 'system-admin',
+        '.dockerfile': 'devops-engineer',
       };
 ;
       assignedAgentType = agentMapping[ext]  ?? 'general-developer';
@@ -166,7 +166,7 @@ async function preTaskCommand(subArgs: unknown, flags = flags;
           const _basename = path.basename(file);
 ;
           contextData = {fileExists = {fileExists = {error = {
-      file,;
+      file,
       operation,timestamp = flags;
   const _command = options.command  ?? subArgs.slice(1).join(' ')  ?? '';
   const _workingDir = options.cwd  ?? process.cwd();
@@ -178,23 +178,23 @@ async function preTaskCommand(subArgs: unknown, flags = flags;
 ;
     if(validateSafety) {
       // Basic safety validation
-      const _dangerousCommands = [;
-        'rm -rf /',;
-        'rm -rf .',;
-        'rm -rf *',;
-        'format',;
-        'fdisk',;
-        'mkfs',;
-        'curl * | bash',;
-        'wget * | sh',;
-        'eval',;
-        'exec',;
-        'chmod 777',;
+      const _dangerousCommands = [
+        'rm -rf /',
+        'rm -rf .',
+        'rm -rf *',
+        'format',
+        'fdisk',
+        'mkfs',
+        'curl * | bash',
+        'wget * | sh',
+        'eval',
+        'exec',
+        'chmod 777',
       ];
 ;
       const _isDangerous = command && typeof command === 'string' && command.length > 0 ;
         ? dangerousCommands.some((dangerous) =>;
-            command.toLowerCase().includes(dangerous.toLowerCase()),;
+            command.toLowerCase().includes(dangerous.toLowerCase()),
           );
         : false;
 ;
@@ -216,7 +216,7 @@ async function postTaskCommand(_subArgs: unknown, flags = flags;
   console.warn(`🏁 Executing post-task hook...`);
   console.warn(`🆔 TaskID = await getMemoryStore();
     const _taskData = await store.retrieve(`task = {
-      ...(taskData  ?? {}),;
+      ...(taskData  ?? {}),
       status = {taskId = flags;
   const _file = options.file  ?? 'unknown-file';
   const __memoryKey = options['memory-key']  ?? options.memoryKey;
@@ -234,24 +234,24 @@ async function postTaskCommand(_subArgs: unknown, flags = flags;
     if (format && fs.existsSync(file)) {
       const _ext = path.extname(file).toLowerCase();
       const _formatters = {
-        '.js': 'prettier',;
-        '.ts': 'prettier',;
-        '.json': 'prettier',;
-        '.css': 'prettier',;
-        '.html': 'prettier',;
-        '.py': 'black',;
-        '.go': 'gofmt',;
-        '.rs': 'rustfmt',;
-        '.java': 'google-java-format',;
-        '.cpp': 'clang-format',;
-        '.c': 'clang-format',;
+        '.js': 'prettier',
+        '.ts': 'prettier',
+        '.json': 'prettier',
+        '.css': 'prettier',
+        '.html': 'prettier',
+        '.py': 'black',
+        '.go': 'gofmt',
+        '.rs': 'rustfmt',
+        '.java': 'google-java-format',
+        '.cpp': 'clang-format',
+        '.c': 'clang-format',
       };
 ;
       const _formatter = formatters[ext];
       if(formatter) {
         console.warn(`  🎨 Auto-formatting with ${formatter}...`);
         formatResult = {
-          formatter,;
+          formatter,
           extension = {extension = null;
     if(updateMemory) {
       const _editContext = {
@@ -268,7 +268,7 @@ async function postTaskCommand(_subArgs: unknown, flags = flags;
 ;
       await store.store(`neural-pattern = {file = `file-history:${file.replace(/\//g, '_')}:${Date.now()}`;
     await store.store(;
-      historyKey,;
+      historyKey,
       {
         file,editId = flags;
   const _command = options.command  ?? subArgs.slice(1).join(' ');
@@ -289,10 +289,10 @@ async function postTaskCommand(_subArgs: unknown, flags = flags;
       const _success = parseInt(exitCode) === 0;
 ;
       metrics = {
-        commandLength,;
-        outputLength,;
-        success,;
-        duration = {command = === 0 },;
+        commandLength,
+        outputLength,
+        success,
+        duration = {command = === 0 },
     });
 ;
     // Store detailed results if enabled
@@ -349,9 +349,9 @@ async function postTaskCommand(_subArgs: unknown, flags = flags;
     if(exportMetrics) {
       const _now = new Date();
       const _sessionStart = Math.min(;
-        ...tasks.map((t) => new Date(t.value.timestamp  ?? now).getTime()),;
-        ...edits.map((e) => new Date(e.value.timestamp  ?? now).getTime()),;
-        ...commands.map((c) => new Date(c.value.timestamp  ?? now).getTime()),;
+        ...tasks.map((t) => new Date(t.value.timestamp  ?? now).getTime()),
+        ...edits.map((e) => new Date(e.value.timestamp  ?? now).getTime()),
+        ...commands.map((c) => new Date(c.value.timestamp  ?? now).getTime()),
       );
 ;
       const __duration = now.getTime() - sessionStart;

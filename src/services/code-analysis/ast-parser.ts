@@ -50,7 +50,7 @@ export class ASTParser {
         case 'jsx':;
           _parseResult = this.parseJavaScript(content, filePath);
           break;default = parseTypeScript(content, {
-      ...this.config.typeScriptOptions,;
+      ...this.config.typeScriptOptions,
       filePath,project = parseJavaScript(content, {sourceType = acorn.parse(content, {
           ...this.config.parseOptions,locations = `file = {
       functions => {
@@ -239,11 +239,11 @@ export class ASTParser {
   detectLanguage(filePath): unknown {
     const _ext = filePath.split('.').pop().toLowerCase();
     const _languageMap = {
-      'ts': 'typescript',;
-      'tsx': 'tsx',;
-      'js': 'javascript',;
-      'jsx': 'jsx',;
-      'mjs': 'javascript',;
+      'ts': 'typescript',
+      'tsx': 'tsx',
+      'js': 'javascript',
+      'jsx': 'jsx',
+      'mjs': 'javascript',
       'cjs': 'javascript';
     };
 ;

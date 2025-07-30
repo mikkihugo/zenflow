@@ -51,12 +51,12 @@ export async function isRuvSwarmAvailable(): unknown {
   const _ruvSwarm = new lib.RuvSwarm();
 ;
   printInfo(`🔄 Restoring persistenthive = await ruvSwarm.createSwarm({
-      name,;
+      name,
       maxAgents = {}): unknown {
   if(!isAvailable) {
-    throw new Error('ruv-swarm library not available - installwith = 'hierarchical',;
-    maxAgents = 8,;
-    strategy = 'adaptive',;
+    throw new Error('ruv-swarm library not available - installwith = 'hierarchical',
+    maxAgents = 8,
+    strategy = 'adaptive',
     persistenceDb;
   } = serviceConfig;
 ;
@@ -66,9 +66,9 @@ export async function isRuvSwarmAvailable(): unknown {
 ;
   // Create a persistent swarm for this service
   const _hive = await ruvSwarm.createSwarm({
-    name,;
-    maxAgents,;
-    cognitive_diversity = === 'hierarchical' ? 'hierarchy' : topology,;
+    name,
+    maxAgents,
+    cognitive_diversity = === 'hierarchical' ? 'hierarchy' : topology,
   }
   )
   printSuccess(`✅ Persistent hive initialized = ): unknown {
@@ -77,31 +77,31 @@ export async function isRuvSwarmAvailable(): unknown {
   }
 ;
   const {
-    type = 'researcher',;
-    name = `${type}-agent`,;
+    type = 'researcher',
+    name = `${type}-agent`,
     capabilities = [];
   } = agentConfig;
 ;
   try {
     const _agent = await swarm.spawn(type, {
-      name, ;
-      capabilities,;
+      name,
+      capabilities,
       cognitive_pattern = {}): unknown {
   if(!isAvailable) {
     throw new Error('ruv-swarm library not available');
   }
 ;
   const {
-    strategy = 'parallel',;
-    priority = 'high',;
+    strategy = 'parallel',
+    priority = 'high',
     maxAgents = 5;
   } = options;
 ;
   try {
     printInfo(`🎯 Orchestratingtask = await swarm.orchestrate({
-      task,;
-  strategy,;
-  priority,;
+      task,
+  strategy,
+  priority,
   maxAgents;
 }
 )
@@ -119,13 +119,13 @@ printSuccess(`✅ Task orchestrated = {}): unknown
     //   // LINT: unreachable code removed}
 ;
   const {
-    iterations = 10,;
+    iterations = 10,
     data = 'recent';
   } = options;
 ;
   try {
     printInfo(`🧠 Training neuralpatterns = await swarm.neural.train({
-      iterations,;
+      iterations,
 data;
 })
 printSuccess(`✅ Neural training completed = {}): unknown {
@@ -134,13 +134,13 @@ printSuccess(`✅ Neural training completed = {}): unknown {
   }
 ;
   const {
-    type = 'swarm',;
+    type = 'swarm',
     iterations = 10;
   } = options;
 ;
   try {
     printInfo(`📊 Running swarmbenchmark = await swarm.benchmark({
-      type,;
+      type,
 iterations;
 })
 printSuccess(`✅ Benchmark completed: ${benchmark.score} score`);
@@ -153,15 +153,15 @@ catch (/* error */)
 }
 }
 export default {
-  ensureRuvSwarmLoaded,;
-isRuvSwarmAvailable,;
-_getRuvSwarmClasses,;
-getServiceHivePath,;
-restorePersistentHive,;
-initializePersistentHive,;
-spawnAgent,;
-orchestrateTask,;
-getSwarmStatus,;
-trainNeuralPatterns,;
-benchmarkSwarm,;
+  ensureRuvSwarmLoaded,
+isRuvSwarmAvailable,
+_getRuvSwarmClasses,
+getServiceHivePath,
+restorePersistentHive,
+initializePersistentHive,
+spawnAgent,
+orchestrateTask,
+getSwarmStatus,
+trainNeuralPatterns,
+benchmarkSwarm,
 }

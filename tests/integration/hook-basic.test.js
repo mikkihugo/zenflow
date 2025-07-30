@@ -10,8 +10,8 @@ describe('Hook Basic Tests', () => {
   });
   it('should handle hook parameters', () => {
     const _options = {
-      'validate-safety': true,;
-      'prepare-resources': false,;
+      'validate-safety': true,
+      'prepare-resources': false,
     };
   const _validateSafety = options['validate-safety'] ?? options.validate ?? false;
   const _prepareResources = options['prepare-resources'] ?? false;
@@ -22,13 +22,13 @@ it('should map file extensions to agents', () => {
   const _getAgentTypeFromFile = (): unknown => {
       const _ext = filePath.split('.').pop().toLowerCase();
       const _agentMap = {
-        js: 'javascript-developer',;
-        ts: 'typescript-developer',;
-        py: 'python-developer',;
-        go: 'golang-developer',;
-        md: 'technical-writer',;
-        yml: 'devops-engineer',;
-        yaml: 'devops-engineer',;
+        js: 'javascript-developer',
+        ts: 'typescript-developer',
+        py: 'python-developer',
+        go: 'golang-developer',
+        md: 'technical-writer',
+        yml: 'devops-engineer',
+        yaml: 'devops-engineer',
       };
   return agentMap[ext] ?? 'general-developer';
   //   // LINT: unreachable code removed};
@@ -41,7 +41,6 @@ it('should detect dangerous commands', () => {
   const _isDangerous = (): unknown => {
       return dangerousCommands.some((cmd) => command.includes(cmd));
     //   // LINT: unreachable code removed};
-;
     expect(isDangerous('rm -rf /')).toBe(true);
     expect(isDangerous('echo hello')).toBe(false);
     expect(isDangerous('format c:')).toBe(true);

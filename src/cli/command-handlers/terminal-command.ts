@@ -25,10 +25,10 @@ initialize()
     for (const [id, terminalData] of Object.entries(activeTerminals)) {
       if(terminalData.state === TERMINAL_STATES.ACTIVE) {
         this.terminals.set(id, {
-          ...terminalData,;
+          ...terminalData,
           process = {}): unknown {
     const _terminalId = generateTerminalId(config.name  ?? 'terminal');
-    const _terminalData = {id = === 'win32' ? 'cmd.exe' : '/bin/bash'),;
+    const _terminalData = {id = === 'win32' ? 'cmd.exe' : '/bin/bash'),
       workingDirectory = {}): unknown {
     const _terminal = this.terminals.get(terminalId);
     if(!terminal) {
@@ -49,8 +49,8 @@ initialize()
       terminal.outputBuffer.push({type = TERMINAL_STATES.ERROR;
       terminal.outputBuffer.push({
         type => {
-      const _childProcess = spawn(terminal.shell, ;
-        process.platform === 'win32' ? ['/c', command] : ['-c', command], ;
+      const _childProcess = spawn(terminal.shell,
+        process.platform === 'win32' ? ['/c', command] : ['-c', command],
         {cwd = '';
       const __stderr = '';
 ;
@@ -341,10 +341,10 @@ async function createTerminal(args = await getTerminalPool(: unknown);
  * Get state icon for terminal;
  */;
 function getStateIcon(state = {
-    [TERMINAL_STATES.ACTIVE]: '🟢',;
-    [TERMINAL_STATES.IDLE]: '🔵',;
-    [TERMINAL_STATES.BUSY]: '🟡',;
-    [TERMINAL_STATES.ERROR]: '🔴',;
+    [TERMINAL_STATES.ACTIVE]: '🟢',
+    [TERMINAL_STATES.IDLE]: '🔵',
+    [TERMINAL_STATES.BUSY]: '🟡',
+    [TERMINAL_STATES.ERROR]: '🔴',
     [TERMINAL_STATES.TERMINATED]: '⚫';
   };
   return icons[state]  ?? '❓';

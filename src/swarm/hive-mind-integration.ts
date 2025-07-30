@@ -1,7 +1,7 @@
 /**
  * Hive-Mind System Integration Interface;
  *;
- * This module provides seamless integration with the existing hive-mind system,;
+ * This module provides seamless integration with the existing hive-mind system,
  * enabling swarms to leverage collective intelligence, shared memory, and;
  * distributed coordination capabilities while maintaining compatibility;
  * with the current claude-flow architecture.;
@@ -90,8 +90,8 @@ initialize()
   async;
   createSession(swarmId = generateId('hive-session');
   this.logger.info('Creating hive-mind session', {
-  sessionId,;
-  swarmId,;
+  sessionId,
+  swarmId,
 }
 )
 const _session = {id = this.activeSessions.get(sessionId);
@@ -103,7 +103,7 @@ if (!session) {
       session.participants.splice(index, 1);
 ;
       this.logger.info('Agent removed from hive-mind session', {
-        sessionId,;
+        sessionId,
         agentId,participantCount = this.activeSessions.get(sessionId);
     if (!session) {
       throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);
@@ -111,9 +111,9 @@ if (!session) {
       throw new Error(`Hive-mind session notfound = generateId('decision');
 ;
     this.logger.info('Requesting collective decision', {
-      sessionId,;
-      decisionId,;
-      question,;
+      sessionId,
+      decisionId,
+      question,
       optionCount = {id = this.activeSessions.get(sessionId);
     if (!session) return null;
     // ; // LINT: unreachable code removed
@@ -178,7 +178,7 @@ if (!session) {
 ;
     this.emit('session = Array.from(this.activeSessions.values());
 ;
-    return {activeSessions = > sum + s.participants.length, 0),knowledgeItems = > sum + s.distributedLearning.models.size, 0),;
+    return {activeSessions = > sum + s.participants.length, 0),knowledgeItems = > sum + s.distributedLearning.models.size, 0),
     //   // LINT: unreachable code removed};
   }
 ;

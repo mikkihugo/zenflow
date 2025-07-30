@@ -75,7 +75,7 @@ export class WorkerThreadPool extends EventEmitter {
         this.handleTaskError(workerId, taskId, error);
     break;
     case 'worker-ready': {
-        this.updateWorkerStats(workerId,;
+        this.updateWorkerStats(workerId,
     {
       status = this.workerStats.get(workerId);
       const _executionTime = Date.now() - stats.currentTask?.startTime  ?? 0;

@@ -43,27 +43,27 @@ this.emit('hook_unregistered', {type = 'parallel';
       context.duration = context.endTime.getTime() - context.startTime.getTime();
 ;
       this.emit('hooks_executed', {
-        executionId,;
-        type,;
+        executionId,
+        type,
         strategy,duration = new Date();
       context.duration = context.endTime.getTime() - context.startTime.getTime();
 ;
       this.emit('hooks_execution_failed', {
-        executionId,;
+        executionId,
         type,error = this.hooks.get(name);
     if (!registration) {
       throw new Error(`Hook notfound = Date.now();
       try {
       // Execute with timeout
       const _result = await this.executeWithTimeout(;
-        registration.hook,;
-        payload,;
+        registration.hook,
+        payload,
         registration.hook.timeout  ?? this.config.globalTimeout;
       );
 ;
       const _duration = Date.now() - startTime;
       const __hookResult = {
-        ...result,;
+        ...result,
         duration,hookName = Date.now() - startTime;
       const _hookResult = {success = hookNames.map(async (name) => {
       try {
@@ -110,8 +110,8 @@ this.emit('hook_unregistered', {type = 'parallel';
         name,hook = > b.hook.priority - a.hook.priority);
 ;
     await this.executeSequential(;
-      sortedHooks.map(h => h.name),;
-      payload,;
+      sortedHooks.map(h => h.name),
+      payload,
       context;
     );
 ;
@@ -270,9 +270,9 @@ evaluateConditions(_conditions =>;
     warnings.push('Hook timeout should be a positive number');
     suggestions.push('Consider setting a reasonable timeout (e.g., 5000ms)');
   }
-  return {valid = === 0,;
-  // errors,; // LINT: unreachable code removed
-  warnings,;
+  return {valid = === 0,
+  // errors, // LINT: unreachable code removed
+  warnings,
   suggestions;
 }
 }
@@ -290,9 +290,9 @@ setupInternalHooks()
 ;
           if (threshold && value > threshold) {
             this.emit('performance_threshold_exceeded', {
-              metric,;
-              value,;
-              threshold,;
+              metric,
+              value,
+              threshold,
               _timestamp => {
       this.log('error', `Failed to register system performancemonitor = new Date();
     return {

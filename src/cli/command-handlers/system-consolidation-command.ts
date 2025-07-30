@@ -90,8 +90,8 @@ function showConsolidationHelp(): unknown {
 }
 ;
 export const systemConsolidationCommandConfig,ame: 'system',
-  description: 'Unified system control and consolidation',;
-  usage: 'system <action> [options]',;
+  description: 'Unified system control and consolidation',
+  usage: 'system <action> [options]',
   options: [;
     { name: 'help', description: 'Show help message', alias: 'h' }
   ];

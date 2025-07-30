@@ -13,9 +13,9 @@ COMMAND_ERROR = 'COMMAND_ERROR',
 NETWORK_ERROR = 'NETWORK_ERROR',
 FILE_ERROR = 'FILE_ERROR',
 PERMISSION_ERROR = 'PERMISSION_ERROR',
-TIMEOUT_ERROR = 'TIMEOUT_ERROR',;
-AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',;
-NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',;
+TIMEOUT_ERROR = 'TIMEOUT_ERROR',
+AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
+NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
 }
 /**
  * Logger interface for error handling;
@@ -134,7 +134,7 @@ export function withErrorHandling<TArgs extends any[], TReturn>(fn = > Promise<T
  * Create a validation error with field information;
  */;
 export function createValidationError(message = > Promise<T>,
-  errorMessage?: string,;
+  errorMessage?: string,
   errorCode?: string;
 ): Promise<T> {
   try {

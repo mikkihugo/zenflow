@@ -127,8 +127,8 @@ size();
  * Default export with all mock implementations
  */
 export default {
-  showAllCommands,;
-Agent,;
-RuvSwarm,;
-SwarmMemory,;
+  showAllCommands,
+Agent,
+RuvSwarm,
+SwarmMemory,
 }

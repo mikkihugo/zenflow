@@ -170,7 +170,7 @@ initialize();
         await this.saveMemoryData();
       }
 ;
-      return true;catch (error = 'general',;
+      return true;catch (error = 'general',
     options = ;
   ): Promise<JSONValue | StoredEntry | null> ;
     if (!this.initialized) {
@@ -197,12 +197,12 @@ initialize();
 ;
         return options.includeMetadata ? entry = {}): Promise<key = [];
     // const { // LINT: unreachable code removed
-        pattern,;
-        namespace,;
-        tags,;
-        priority,;
-        limit = 100,;
-        sortBy = 'accessed',;
+        pattern,
+        namespace,
+        tags,
+        priority,
+        limit = 100,
+        sortBy = 'accessed',
         sortOrder = 'desc';= options;
 ;
       const _namespaces = namespace ? [namespace] : Object.keys(this.data);
@@ -451,12 +451,12 @@ initialize();
         for (const key in this.data[namespace]) {
           const _entry = this.data[namespace][key] as StoredEntry;
           lines.push([;
-            namespace,;
-            key,;
-            JSON.stringify(entry.value).replace(/"/g, '""'),;
-            JSON.stringify(entry.metadata).replace(/"/g, '""'),;
-            entry.stored,;
-            entry.accessed  ?? '',;
+            namespace,
+            key,
+            JSON.stringify(entry.value).replace(/"/g, '""'),
+            JSON.stringify(entry.metadata).replace(/"/g, '""'),
+            entry.stored,
+            entry.accessed  ?? '',
             entry.accessCount  ?? 0;
           ].join(','));
         }
@@ -521,15 +521,15 @@ initialize();
     }
 ;
     return {
-      status,;
+      status,
     // metrics: { // LINT: unreachable code removed
-        memoryUsage: stats.memorySize,;
-        memoryLimit: this.options.maxMemorySize!,;
-        totalEntries: stats.totalKeys + stats.sessions,;
+        memoryUsage: stats.memorySize,
+        memoryLimit: this.options.maxMemorySize!,
+        totalEntries: stats.totalKeys + stats.sessions,
         expiredEntries: 0, // Would need to calculate
         lastSave: new Date().toISOString(), // Would track actual last save
         uptime: Date.now() // Would track actual uptime
-      },;
+      },
       issues;
     };
   }

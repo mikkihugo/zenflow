@@ -133,30 +133,30 @@ export class StrategicDocumentsManager {
        */
       async;
       createDocument({
-    documentType,;
-      title,;
-      content,;
-      metadata = {},;
-      authorId = null,;
+    documentType,
+      title,
+      content,
+      metadata = {},
+      authorId = null,
       relevanceKeywords = [];
     }
     ): unknown
     {
       // Comprehensive input validation
       const _validatedData = inputValidator.validateDocumentData({
-        documentType,;
-      title,;
-      content,;
-      metadata,;
-      authorId,;
-      relevanceKeywords,;
+        documentType,
+      title,
+      content,
+      metadata,
+      authorId,
+      relevanceKeywords,
     }
     )
     return this.withAtomicOperation(`create_doc_${validatedData.title}`, async () => {
       const _id = nanoid();
       // const __now = new Date().toISOString(); // LINT: unreachable code removed
       const _document = {
-        id,;
+        id,
       projectId = {id = { ...document };
       returnDoc.metadata = JSON.parse(document.metadata);
       // returnDoc.relevanceKeywords = JSON.parse(document.relevanceKeywords); // LINT: unreachable code removed
@@ -248,18 +248,18 @@ return this.withAtomicOperation(`update_doc_${documentId}`, async () => {
       await this.tables.documents.delete(`id = '${documentId}'`);
       await this.tables.metadata.delete(`id = '${document.documentType}_${documentId}'`);
 ;
-      console.warn(`🗑️ Deleteddocument = '',;
-    documentType = null,;
-    status = null,;
+      console.warn(`🗑️ Deleteddocument = '',
+    documentType = null,
+    status = null,
     limit = 50;
   })
 : unknown
 {
   // Validate search parameters
   const _validatedParams = inputValidator.validateQueryParams({
-      query,;
-  documentType,;
-  status,;
+      query,
+  documentType,
+  status,
   limit;
 }
 )
@@ -342,29 +342,29 @@ try {
    * Create a new queen council decision;
    */;
   async createDecision({
-    objective,;
-    consensusResult,;
-    confidenceScore,;
-    supportingQueens,;
-    dissentingQueens = [],;
-    reasoning,;
+    objective,
+    consensusResult,
+    confidenceScore,
+    supportingQueens,
+    dissentingQueens = [],
+    reasoning,
     documentReferences = [];
   }): unknown {
     // Comprehensive input validation
     const _validatedData = inputValidator.validateDecisionData({
-      objective,;
-      consensusResult,;
-      confidenceScore,;
-      supportingQueens,;
-      dissentingQueens,;
-      reasoning,;
+      objective,
+      consensusResult,
+      confidenceScore,
+      supportingQueens,
+      dissentingQueens,
+      reasoning,
       documentReferences;
     });
     const _id = nanoid();
     const __now = new Date().toISOString();
 ;
     const __decision = {
-      id,;
+      id,
       projectId = {validatedData = await this.tables.decisions;
         .query();
         .select('id', 'objective', 'consensusResult', 'confidenceScore', 'supportingQueens', 'dissentingQueens', 'reasoning', 'documentReferences', 'status', 'metadata');
@@ -394,13 +394,13 @@ try {
    * Save queen analysis for a decision;
    */;
   async saveQueenAnalysis({
-    decisionId,;
-    queenName,;
-    queenType,;
-    recommendation,;
-    confidenceScore,;
-    reasoning,;
-    documentInsights = {},;
+    decisionId,
+    queenName,
+    queenType,
+    recommendation,
+    confidenceScore,
+    reasoning,
+    documentInsights = {},
     processingTimeMs = 0;
   }
 ): unknown
@@ -408,15 +408,15 @@ try {
     const _id = `${decisionId}_${queenName}`;
 ;
     const __analysis = {
-      id,;
-      decisionId,;
-      queenName,;
-      queenType,;
-      recommendation,;
-      confidenceScore,;
-      reasoning,;
-      documentInsights,;
-      processingTimeMs,;
+      id,
+      decisionId,
+      queenName,
+      queenType,
+      recommendation,
+      confidenceScore,
+      reasoning,
+      documentInsights,
+      processingTimeMs,
       created_at = {queenName = await this.tables.analyses;
         .query();
         .select('id', 'decisionId', 'queenName', 'queenType', 'recommendation', 'confidenceScore', 'reasoning', 'documentInsights', 'processingTimeMs', 'metadata');
@@ -449,12 +449,12 @@ try {
    * Create Architecture Decision Record;
    */;
   async createADR({
-    decisionId,;
-    title,;
-    context,;
-    decision,;
-    consequences,;
-    implementationNotes = '',;
+    decisionId,
+    title,
+    context,
+    decision,
+    consequences,
+    implementationNotes = '',
     tags = [];
   }): unknown ;
     // Get next ADR number

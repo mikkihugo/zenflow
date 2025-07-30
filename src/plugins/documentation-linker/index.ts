@@ -217,13 +217,13 @@ export class DocumentationLinkerPlugin {
 ;
   isStopWord(word): unknown {
     const _stopWords = new Set([;
-      'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',;
-      'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during',;
-      'before', 'after', 'above', 'below', 'between', 'among', 'this', 'that',;
-      'these', 'those', 'is', 'are', 'was', 'were', 'be', 'been', 'being',;
-      'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',;
-      'should', 'may', 'might', 'must', 'can', 'shall', 'you', 'your', 'yours',;
-      'he', 'him', 'his', 'she', 'her', 'hers', 'it', 'its', 'we', 'us', 'our',;
+      'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+      'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during',
+      'before', 'after', 'above', 'below', 'between', 'among', 'this', 'that',
+      'these', 'those', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+      'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+      'should', 'may', 'might', 'must', 'can', 'shall', 'you', 'your', 'yours',
+      'he', 'him', 'his', 'she', 'her', 'hers', 'it', 'its', 'we', 'us', 'our',
       'ours', 'they', 'them', 'their', 'theirs';
     ]);
 ;

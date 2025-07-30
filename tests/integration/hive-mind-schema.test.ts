@@ -158,7 +158,7 @@ const _insertAgent = (): void => {
 
     /**
      * Tests agent insertion with role value (should succeed)
-     */;
+     */
     it('should allow inserting agents with role value', async (): Promise<void> => {
       // Initialize database
       execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
@@ -211,7 +211,7 @@ const _insertAgent = (): void => {
   describe('Direct Database Schema Tests', (): void => {
     /**
      * Validates direct database schema creation
-     */;
+     */
     it('should create agents table with nullable role column', async (): Promise<void> => {
       // Create database directory structure
       await fs.mkdir(path.join(testContext.testDir, '.hive-mind'), { recursive: true });
@@ -383,9 +383,8 @@ swarms(id);
   execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init --force', {
         cwd: testContext.testDir,
   stdio: 'pipe',
-  ...process.env ,
-}
-)
+  ...process.env 
+})
 // Reopen and verify migration success
 testContext.db = new Database(testContext.dbPath)
 // Test that we can now insert without role
@@ -428,7 +427,7 @@ VALUES(?, ?, ?, ?, ?);
   describe('Schema Consistency Tests', (): void => {
     /**
      * Validates schema consistency across different creation paths
-     */;
+     */
     it('should have consistent schema across all database creation paths', async (): Promise<void> => {
       // Test schema from init command
       execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {

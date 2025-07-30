@@ -177,35 +177,35 @@ async function applyPreprocessingStep(data = JSON.stringify(original: unknown).l
   return 1 - (processedSize / originalSize);
 }
 ;
-async function createModelCheckpoint(model = [;
+async function createModelCheckpoint(model = [
   {
-    name: 'neural-model-optimizer',;
-    type: 'neural-operation',;
+    name: 'neural-model-optimizer',
+    type: 'neural-operation',
     hook: neuralModelOptimizer;
-  },;
+  },
   {
-    name: 'gpu-resource-manager',;
-    type: 'neural-operation',;
+    name: 'gpu-resource-manager',
+    type: 'neural-operation',
     hook: gpuResourceManager;
-  },;
+  },
   {
-    name: 'neural-performance-monitor',;
-    type: 'neural-operation',;
+    name: 'neural-performance-monitor',
+    type: 'neural-operation',
     hook: neuralPerformanceMonitor;
-  },;
+  },
   {
-    name: 'neural-data-preprocessor',;
-    type: 'neural-operation',;
+    name: 'neural-data-preprocessor',
+    type: 'neural-operation',
     hook: neuralDataPreprocessor;
-  },;
+  },
   {
-    name: 'model-versioning',;
-    type: 'neural-operation',;
+    name: 'model-versioning',
+    type: 'neural-operation',
     hook: modelVersioning;
-  },;
+  },
   {
-    name: 'hyperparameter-optimizer',;
-    type: 'neural-operation',;
+    name: 'hyperparameter-optimizer',
+    type: 'neural-operation',
     hook: hyperparameterOptimizer;
   }
 ];

@@ -71,33 +71,33 @@ export async function copyAgentFiles(targetDir = {}: unknown): unknown {
     }
 ;
     return {success = false): unknown {
-  const _agentDirs = [;
-    // '.claude',; // LINT: unreachable code removed
-    '.claude/agents',;
-    '.claude/agents/core',;
-    '.claude/agents/swarm', ;
-    '.claude/agents/hive-mind',;
-    '.claude/agents/consensus',;
-    '.claude/agents/optimization',;
-    '.claude/agents/github',;
-    '.claude/agents/sparc',;
-    '.claude/agents/testing',;
-    '.claude/agents/testing/unit',;
-    '.claude/agents/testing/validation',;
-    '.claude/agents/templates',;
-    '.claude/agents/analysis',;
-    '.claude/agents/analysis/code-review',;
-    '.claude/agents/architecture',;
-    '.claude/agents/architecture/system-design',;
-    '.claude/agents/data',;
-    '.claude/agents/data/ml',;
-    '.claude/agents/development',;
-    '.claude/agents/development/backend',;
-    '.claude/agents/devops',;
-    '.claude/agents/devops/ci-cd',;
-    '.claude/agents/documentation',;
-    '.claude/agents/documentation/api-docs',;
-    '.claude/agents/specialized',;
+  const _agentDirs = [
+    // '.claude', // LINT: unreachable code removed
+    '.claude/agents',
+    '.claude/agents/core',
+    '.claude/agents/swarm',
+    '.claude/agents/hive-mind',
+    '.claude/agents/consensus',
+    '.claude/agents/optimization',
+    '.claude/agents/github',
+    '.claude/agents/sparc',
+    '.claude/agents/testing',
+    '.claude/agents/testing/unit',
+    '.claude/agents/testing/validation',
+    '.claude/agents/templates',
+    '.claude/agents/analysis',
+    '.claude/agents/analysis/code-review',
+    '.claude/agents/architecture',
+    '.claude/agents/architecture/system-design',
+    '.claude/agents/data',
+    '.claude/agents/data/ml',
+    '.claude/agents/development',
+    '.claude/agents/development/backend',
+    '.claude/agents/devops',
+    '.claude/agents/devops/ci-cd',
+    '.claude/agents/documentation',
+    '.claude/agents/documentation/api-docs',
+    '.claude/agents/specialized',
     '.claude/agents/specialized/mobile';
   ];
 ;
@@ -126,14 +126,14 @@ export async function copyAgentFiles(targetDir = {}: unknown): unknown {
 ;
     return {
       valid: totalAgents > 50, // Should have at least 50+ agents
-      categories: agentCategories.length,;
-    // totalAgents,; // LINT: unreachable code removed
+      categories: agentCategories.length,
+    // totalAgents, // LINT: unreachable code removed
       categoryNames: agentCategories;
     };
 ;
   } catch (/* err */) 
     console.warn(`  ⚠️  Agent system validation failed: $err.message`);
     return {
-      valid: false,;;
+      valid: false,
   }
 }

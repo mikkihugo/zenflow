@@ -17,9 +17,8 @@ try {
   const { ClaudeCodeProvider } = await import('./src/cli/claude-code-provider.js');
   const _provider = new ClaudeCodeProvider({
     customSystemPrompt:;
-      'You are a Queen agent coordinating a software development hive. Break down tasks efficiently and delegate to specialized agents.',;
-  }
-)
+      'You are a Queen agent coordinating a software development hive. Break down tasks efficiently and delegate to specialized agents.'
+})
 if (await provider.isAvailable()) {
   printSuccess('✅ Claude is ready to coordinate!\n');
   // Get task breakdown
@@ -46,7 +45,7 @@ if (await provider.isAvailable()) {
 } else {
   printWarning('Claude is not available. Please run: claude login');
 }
-} catch (/* error */)
+} catch (error)
 {
   printWarning(`Demo error: ${error.message}`);
   printInfo('\nMake sure Claude Code is installed and authenticated.');

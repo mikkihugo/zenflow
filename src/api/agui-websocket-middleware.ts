@@ -37,16 +37,16 @@ export class AGUIWebSocketMiddleware {
   constructor(webSocketService: unknown, _options: AGUIWebSocketOptions = {}) {
     this.wss = webSocketService;
     this.options = {
-      enableBroadcast: true,;
-    enableFiltering: false,;
-    maxClients: 100,;
+      enableBroadcast: true,
+    enableFiltering: false,
+    maxClients: 100,
     sessionTimeout: 30 * 60 * 1000, // 30 minutes
     ...options,
   }
   this;
   .
   stats = {
-      clientsConnected: 0,;
+      clientsConnected: 0,
   totalConnections: 0;
   ,
   eventsRouted: 0;
@@ -56,8 +56,8 @@ export class AGUIWebSocketMiddleware {
 }
 // Global AG-UI adapter for server-wide events
 this.globalAdapter = new AGUIAdapter({
-      sessionId: 'server-global',;
-threadId: 'server-thread',;
+      sessionId: 'server-global',
+threadId: 'server-thread',
 })
 // Setup global event forwarding
 this.setupGlobalEventForwarding()
@@ -88,19 +88,19 @@ setupClient(ws: WebSocket, sessionId?: string)
   sessionId ?? `client-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
   // Create AG-UI adapter for this client
   const _adapter = new AGUIAdapter({
-      sessionId: clientSessionId,;
-  threadId: `thread-${clientSessionId}`,;
+      sessionId: clientSessionId,
+  threadId: `thread-${clientSessionId}`,
 }
 )
 // Store client adapter
 this.clientAdapters.set(ws, adapter)
 // Create session
 const _session: ClientSession = {
-      ws,;
-adapter,;
-sessionId: clientSessionId,;
-connectedAt: Date.now(),;
-lastActivity: Date.now(),;
+      ws,
+adapter,
+sessionId: clientSessionId,
+connectedAt: Date.now(),
+lastActivity: Date.now(),
 }
 this.sessions.set(clientSessionId, session)
 // Setup event forwarding from adapter to client
@@ -117,8 +117,8 @@ this.stats.totalConnections++
 // Send welcome message
 adapter.startRun()
 adapter.emitCustomEvent('clientConnected', {
-      sessionId: clientSessionId,;
-timestamp: Date.now(),;
+      sessionId: clientSessionId,
+timestamp: Date.now(),
 })
 return clientSessionId;
 //   // LINT: unreachable code removed}
@@ -187,10 +187,10 @@ handleClientMessage(ws: WebSocket, adapter: AGUIAdapter, message: unknown)
       break;
     case 'getStats':
       this.sendToClient(ws, {
-          type: 'statsResponse',;
+          type: 'statsResponse',
       {
-        adapter: adapter.getStats(),;
-        middleware: this.getMiddlewareStats(),;
+        adapter: adapter.getStats(),
+        middleware: this.getMiddlewareStats(),
       }
       ,
   }
@@ -242,9 +242,9 @@ sendError(ws: WebSocket, message: string)
 : void
 {
   this.sendToClient(ws, {
-      type: 'error',;
-  message,;
-  timestamp: Date.now(),;
+      type: 'error',
+  message,
+  timestamp: Date.now(),
 }
 )
 }
@@ -335,7 +335,7 @@ getSessionByWebSocket(ws: WebSocket)
     setInterval(;
       () => {
         this.cleanupExpiredSessions();
-      },;
+      },
       5 * 60 * 1000;
     ); // Every 5 minutes
 ;

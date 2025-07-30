@@ -14,7 +14,7 @@ async function main(): unknown {
   // Handle version flag first (no hive-mind needed)
   if(flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
-    printInfo('🧠 Hive-Mind PrimarySystem = [;
+    printInfo('🧠 Hive-Mind PrimarySystem = [
     'init', 'template', '--help', '--version';
   ];
 ;

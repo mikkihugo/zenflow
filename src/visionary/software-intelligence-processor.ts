@@ -1,4 +1,4 @@
-VisionarySoftwareIntelligenceProcessor as NewProcessor,;
+VisionarySoftwareIntelligenceProcessor as NewProcessor,
 type PipelineConfig
 ,
 type ProcessingOptions
@@ -55,19 +55,19 @@ export class VisionarySoftwareIntelligenceProcessor {
   constructor(config: LegacyConfig = {}) {
     // Map legacy config to new config format
     const _newConfig: Partial<PipelineConfig> = {
-      outputDir: config.outputDir  ?? './analysis-output',;
-    enableAnalytics: config.enableAnalytics  ?? false,;
+      outputDir: config.outputDir  ?? './analysis-output',
+    enableAnalytics: config.enableAnalytics  ?? false,
     supportedFormats: config.supportedFormats  ?? [;
-        'js',;
-        'ts',;
-        'jsx',;
-        'tsx',;
-        'py',;
-        'java',;
-        'go',;
-        'rs',;
-      ],;
-    neuralEngine: config.neuralEngine,;
+        'js',
+        'ts',
+        'jsx',
+        'tsx',
+        'py',
+        'java',
+        'go',
+        'rs',
+      ],
+    neuralEngine: config.neuralEngine,
   }
   this;
   .
@@ -140,15 +140,15 @@ compliance;
 ;
     // Map legacy options to new format
     const _newOptions: Partial<ProcessingOptions> = {
-      language: options.language  ?? 'javascript',;
-      analysisDepth: options.analysisDepth  ?? 'comprehensive',;
-      includeRefactoring: options.includeRefactoring !== false,;
-      optimizeCode: options.optimizeCode !== false,;
-      generateReport: options.generateReport !== false,;
-      includeBestPractices: options.includeBestPractices,;
-      includeSecurity: options.includeSecurity,;
-      includeTests: options.includeTests,;
-      generateDocumentation: options.generateDocumentation,;
+      language: options.language  ?? 'javascript',
+      analysisDepth: options.analysisDepth  ?? 'comprehensive',
+      includeRefactoring: options.includeRefactoring !== false,
+      optimizeCode: options.optimizeCode !== false,
+      generateReport: options.generateReport !== false,
+      includeBestPractices: options.includeBestPractices,
+      includeSecurity: options.includeSecurity,
+      includeTests: options.includeTests,
+      generateDocumentation: options.generateDocumentation,
     };
 ;
     return this.newProcessor.processCodeIntelligence(codeFiles, newOptions);
@@ -198,8 +198,8 @@ compliance;
    * @deprecated Analytics are now handled automatically;
    */;
   async updateAnalytics(;
-    _processingTime: number,;
-    _success: boolean,;
+    _processingTime: number,
+    _success: boolean,
     _qualityScore: number;
   ): Promise<void> {
     console.warn('⚠️ updateAnalytics() is deprecated. Analytics are handled automatically.');
@@ -210,8 +210,8 @@ compliance;
    * @deprecated Use the new decomposed architecture;
    */;
   async saveAnalysisResults(;
-    output: unknown,;
-    _analysisDepth: string,;
+    output: unknown,
+    _analysisDepth: string,
     _language: string;
   ): Promise<string> {
     console.warn('⚠️ saveAnalysisResults() is deprecated. Results are saved automatically.');

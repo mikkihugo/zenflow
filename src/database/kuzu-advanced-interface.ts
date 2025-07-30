@@ -20,20 +20,20 @@ performanceMetrics = {}
 {
   super(config);
   // Enhanced configuration
-  this.advancedConfig = {enableAnalytics = = false,enableCache = = false,enableMetrics = = false,;
+  this.advancedConfig = {enableAnalytics = = false,enableCache = = false,enableMetrics = = false,
   maxQueryComplexity = {totalQueries = {
       nodeTypes = {GraphMetrics = `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const __now = new Date();
   const _now = new Date();
   const {
-    startNode,;
-  algorithm = 'dfs',;
-  maxDepth = 10,;
-  nodeFilter = '',;
-  relationshipFilter = '',;
-  direction = 'both',;
-  collectMetrics = true,;
-  endNode,;
+    startNode,
+  algorithm = 'dfs',
+  maxDepth = 10,
+  nodeFilter = '',
+  relationshipFilter = '',
+  direction = 'both',
+  collectMetrics = true,
+  endNode,
 }
 = options
 try {
@@ -55,7 +55,7 @@ try {
       }
 ;
       return {
-        ...result,;
+        ...result,
     // algorithm,execution_time = this.buildRelationshipPattern(direction, relationshipFilter); // LINT: unreachable code removed
     const __filterClause = nodeFilter ? `WHERE ${nodeFilter}` : '';
 ;
@@ -85,9 +85,9 @@ try {
         return `-[${pattern}]->`;
     // default = { // LINT: unreachable code removed}): Promise<CentralityResult> {
     const {
-      algorithm = 'degree',;
-      nodeType = 'Service',;
-      relationshipType = '',;
+      algorithm = 'degree',
+      nodeType = 'Service',
+      relationshipType = '',
       normalize = true;
       }
     } = options;
@@ -142,7 +142,7 @@ try {
       }
     }
 return Array.from(betweennessScores.entries()).map(([node, _score]) => ({
-      node,;
+      node,
 // score; // LINT: unreachable code removed
 }))
 }
@@ -207,7 +207,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     }
 ;
     return Array.from(pageRankScores.entries()).map(([node, score]) => ({
-      node,;
+      node,
     // score; // LINT: unreachable code removed
     }));
   }
@@ -217,9 +217,9 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
    */;
   async detectCommunitiesAdvanced(options = {}): Promise<CommunityResult> {
     const {
-      algorithm = 'louvain',;
-      nodeType = 'Service',;
-      relationshipType = '',;
+      algorithm = 'louvain',
+      nodeType = 'Service',
+      relationshipType = '',
       resolution = 1.0;
     } = options;
 ;
@@ -239,8 +239,8 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       }
 ;
       return {
-        algorithm,;
-    // communities,; // LINT: unreachable code removed
+        algorithm,
+    // communities, // LINT: unreachable code removed
         modularity,num_communities = `;
   MATCH (n:${nodeType})
   RETURN;
@@ -287,7 +287,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
         const _neighborCommunities = new Map<number, number>();
         neighbors.forEach((neighbor => {
           const _neighborCommunity = nodeCommunity.get(neighbor)!;
-          neighborCommunities.set(neighborCommunity, ;
+          neighborCommunities.set(neighborCommunity,
             (neighborCommunities.get(neighborCommunity)  ?? 0) + 1);
         });
 ;
@@ -325,8 +325,8 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
     return Array.from(communities.values()).map((_members, _index) => ({
       id = {}): Promise<QueryResult> {
     const {
-      limit = 100,;
-    // filters = { // LINT: unreachable code removed},;
+      limit = 100,
+    // filters = { // LINT: unreachable code removed},
       includeMetrics = true;
     } = options;
 ;
@@ -380,8 +380,8 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
    */;
   async;
   optimizeQuery((query = {}));
-  : Promise<success = true,;
-      suggestImprovement = true,;
+  : Promise<success = true,
+      suggestImprovement = true,
       cacheResult = true= options
 ;
   try {
@@ -410,7 +410,7 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
       this.updatePerformanceMetrics(query, executionTime, result.success);
 ;
       return {
-        ...result,;
+        ...result,
     // execution_time = {query_complexity = 0; // LINT: unreachable code removed
 ;
     // Count different query elements
@@ -460,9 +460,9 @@ computeClosenessCentrality((nodeType = 10), (dampingFactor = 0.85))
 ;
     // Alert on performance degradation
     if (avgTime > this.performanceMetrics.avgExecutionTime * 2) {
-      console.warn('⚠️ Performance Alert = {}): Promise<{generated_at = true,;
-      includeCentrality = true,;
-      includeCommunities = true,;
+      console.warn('⚠️ Performance Alert = {}): Promise<{generated_at = true,
+      includeCentrality = true,
+      includeCommunities = true,
       includePerformance = true;
     } = options;
 ;
@@ -597,9 +597,9 @@ close()
   async;
   recordTraversalMetrics(algorithm = this.graphMetrics.get('traversal_metrics');
   metrics.push({
-      algorithm,;
-  execution_time: executionTime,;
-  result_count: resultCount,;
+      algorithm,
+  execution_time: executionTime,
+  result_count: resultCount,
   timestamp: new Date().toISOString();
 }
 )
@@ -621,9 +621,9 @@ analyzePatternMetrics(data: unknown[], pattern: string)
 >
 {
   return {
-      pattern,;
-  // matches_found: data.length,; // LINT: unreachable code removed
-  frequency_score: Math.min(1, data.length / 100),;
+      pattern,
+  // matches_found: data.length, // LINT: unreachable code removed
+  frequency_score: Math.min(1, data.length / 100),
   complexity_score: this.calculateQueryComplexity(pattern);
 }
 }
@@ -639,8 +639,8 @@ generateGraphAnalytics()
 >
 {
   return {
-      connectivity: await this.analyzeConnectivity(),;
-  // clustering: await this.analyzeClusteringCoefficient(),; // LINT: unreachable code removed
+      connectivity: await this.analyzeConnectivity(),
+  // clustering: await this.analyzeClusteringCoefficient(), // LINT: unreachable code removed
   paths: await this.analyzePathLengths();
 }
 }
@@ -658,7 +658,7 @@ analyzeConnectivity()
   // Simplified connectivity analysis
   return {
       density: 0.1, // Placeholder
-      components: 1,;
+      components: 1,
   // diameter: 6; // LINT: unreachable code removed
 }
 }
@@ -674,7 +674,7 @@ analyzeClusteringCoefficient()
 {
   // Simplified clustering coefficient
   return {
-      global: 0.3,;
+      global: 0.3,
   // average_local: 0.25; // LINT: unreachable code removed
 }
 }
@@ -691,8 +691,8 @@ analyzePathLengths()
 {
   // Simplified path length analysis
   return {
-      average_shortest_path: 3.2,;
-  // diameter: 6,; // LINT: unreachable code removed
+      average_shortest_path: 3.2,
+  // diameter: 6, // LINT: unreachable code removed
   radius: 3;
 }
 }

@@ -7,7 +7,7 @@ import { ProviderError } from './types.js';
 
 interface CohereRequest {model = 'cohere'
 version = '2024-07-29'
-config = {enabled = {textGeneration = 'https = [;
+config = {enabled = {textGeneration = 'https = [
     'command-r-plus',
 'command-r',
 'command',
@@ -126,9 +126,9 @@ getModels()
   return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) : undefined);
 }
   return new ProviderError(;
-  // errorData.message  ?? 'Unknown error',; // LINT: unreachable code removed
-  this.name,;
-  'API_ERROR',;
+  // errorData.message  ?? 'Unknown error', // LINT: unreachable code removed
+  this.name,
+  'API_ERROR',
   response.status;
   )
 }
@@ -156,8 +156,8 @@ handleError(error: unknown);
     //   // LINT: unreachable code removed}
 ;
   return new ProviderError(;
-    // error.message  ?? 'Unknown error occurred',; // LINT: unreachable code removed
-      this.name,;
+    // error.message  ?? 'Unknown error occurred', // LINT: unreachable code removed
+      this.name,
       'UNKNOWN_ERROR';
     );
 }

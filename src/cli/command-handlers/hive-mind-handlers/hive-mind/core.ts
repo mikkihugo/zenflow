@@ -20,7 +20,7 @@ export class HiveMindCore extends EventEmitter {
     this.config = {
       objective = {status = new MCPToolWrapper({
       parallel,timeout = new PerformanceOptimizer({
-      enableAsyncQueue,;
+      enableAsyncQueue,
       _enableBatchProcessing => {
       this.state.metrics.tasksCreated++;
       // Auto-scaling check will now query ruv-swarm for pending tasks and idle workers

@@ -169,7 +169,7 @@ export class RefactoringGenerator {
 ;
     // Generate performance enhancements
     const _performanceEnhancements = await this.generatePerformanceEnhancements(;
-      quality,;
+      quality,
       options.language;
     );
 ;
@@ -187,20 +187,20 @@ export class RefactoringGenerator {
 ;
     // Generate summary
     const _summary = this.generateSummary(;
-      mainRecommendations,;
-      microRefactorings,;
-      optimizations,;
+      mainRecommendations,
+      microRefactorings,
+      optimizations,
       performanceEnhancements;
     );
 ;
     return {
-      mainRecommendations,;
-    // microRefactorings,; // LINT: unreachable code removed
-      optimizations,;
-      bestPractices,;
-      securityImprovements,;
-      performanceEnhancements,;
-      summary,;
+      mainRecommendations,
+    // microRefactorings, // LINT: unreachable code removed
+      optimizations,
+      bestPractices,
+      securityImprovements,
+      performanceEnhancements,
+      summary,
     }
 }
 /**
@@ -213,7 +213,7 @@ export class RefactoringGenerator {
 private
 async;
 generateMainRefactorings(;
-quality: QualityAssessment,;
+quality: QualityAssessment,
 language: string;
 ): Promise<MainRefactoring[]>
 {
@@ -221,82 +221,82 @@ language: string;
   // Extract method refactorings for maintainability issues
   if (quality.maintainability < 70) {
     recommendations.push({
-        type: 'extract-method',;
-    priority: 'high',;
-    title: 'Extract Long Methods',;
-    description: 'Break down long methods into smaller, focused functions',;
-    impact: 'Improves code readability and maintainability',;
-    effort: 'medium',;
+        type: 'extract-method',
+    priority: 'high',
+    title: 'Extract Long Methods',
+    description: 'Break down long methods into smaller, focused functions',
+    impact: 'Improves code readability and maintainability',
+    effort: 'medium',
     benefits: [;
-          'Easier to understand and test',;
-          'Better code reusability',;
-          'Reduced complexity',;
-        ],;
+          'Easier to understand and test',
+          'Better code reusability',
+          'Reduced complexity',
+        ],
     implementation: [;
-          'Identify long methods (>20 lines)',;
-          'Extract logical code blocks into separate methods',;
-          'Ensure proper naming and documentation',;
-          'Update tests accordingly',;
-        ],;
-    codeExample: this.generateExtractMethodExample(language),;
+          'Identify long methods (>20 lines)',
+          'Extract logical code blocks into separate methods',
+          'Ensure proper naming and documentation',
+          'Update tests accordingly',
+        ],
+    codeExample: this.generateExtractMethodExample(language),
   }
   )
 }
 // Dependency injection for tight coupling
 if (quality.solidCompliance.dip.score < 0.6) {
   recommendations.push({
-        type: 'dependency-injection',;
-  priority: 'high',;
-  title: 'Implement Dependency Injection',;
-  description: 'Reduce tight coupling by injecting dependencies',;
-  impact: 'Improves testability and flexibility',;
-  effort: 'large',;
-  benefits: ['Better testability', 'Loose coupling', 'Easier mocking'],;
+        type: 'dependency-injection',
+  priority: 'high',
+  title: 'Implement Dependency Injection',
+  description: 'Reduce tight coupling by injecting dependencies',
+  impact: 'Improves testability and flexibility',
+  effort: 'large',
+  benefits: ['Better testability', 'Loose coupling', 'Easier mocking'],
   implementation: [;
-          'Identify hard-coded dependencies',;
-          'Create interfaces for dependencies',;
-          'Implement dependency injection container',;
-          'Update constructors to accept dependencies',;
-        ],;
-  codeExample: this.generateDependencyInjectionExample(language),;
+          'Identify hard-coded dependencies',
+          'Create interfaces for dependencies',
+          'Implement dependency injection container',
+          'Update constructors to accept dependencies',
+        ],
+  codeExample: this.generateDependencyInjectionExample(language),
 }
 )
 }
 // Single Responsibility Principle improvements
 if (quality.solidCompliance.srp.score < 0.6) {
   recommendations.push({
-        type: 'single-responsibility',;
-  priority: 'medium',;
-  title: 'Apply Single Responsibility Principle',;
-  description: 'Split classes that have multiple responsibilities',;
-  impact: 'Improves code maintainability and testability',;
-  effort: 'medium',;
-  benefits: ['Clearer code structure', 'Easier to test', 'Better separation of concerns'],;
+        type: 'single-responsibility',
+  priority: 'medium',
+  title: 'Apply Single Responsibility Principle',
+  description: 'Split classes that have multiple responsibilities',
+  impact: 'Improves code maintainability and testability',
+  effort: 'medium',
+  benefits: ['Clearer code structure', 'Easier to test', 'Better separation of concerns'],
   implementation: [;
-          'Identify classes with multiple responsibilities',;
-          'Extract separate classes for each responsibility',;
-          'Update dependencies and tests',;
-          'Ensure proper interfaces',;
-        ],;
+          'Identify classes with multiple responsibilities',
+          'Extract separate classes for each responsibility',
+          'Update dependencies and tests',
+          'Ensure proper interfaces',
+        ],
 }
 )
 }
 // Performance optimizations
 if (quality.performance < 70) {
   recommendations.push({
-        type: 'performance-optimization',;
-  priority: 'medium',;
-  title: 'Optimize Performance Bottlenecks',;
-  description: 'Address identified performance issues',;
-  impact: 'Improves application response time',;
-  effort: 'medium',;
-  benefits: ['Faster execution', 'Better user experience', 'Reduced resource usage'],;
+        type: 'performance-optimization',
+  priority: 'medium',
+  title: 'Optimize Performance Bottlenecks',
+  description: 'Address identified performance issues',
+  impact: 'Improves application response time',
+  effort: 'medium',
+  benefits: ['Faster execution', 'Better user experience', 'Reduced resource usage'],
   implementation: [;
-          'Profile code to identify bottlenecks',;
-          'Optimize algorithms and data structures',;
-          'Implement caching where appropriate',;
-          'Remove unnecessary computations',;
-        ],;
+          'Profile code to identify bottlenecks',
+          'Optimize algorithms and data structures',
+          'Implement caching where appropriate',
+          'Remove unnecessary computations',
+        ],
 }
 )
 }
@@ -315,13 +315,13 @@ generateMicroRefactoring(issue: unknown, language: string)
 : Promise<MicroRefactoring>
 {
   return {
-      name: `Fix ${issue.type}`,;
-  // description: issue.description,; // LINT: unreachable code removed
-  before: this.generateBeforeExample(issue, language),;
-  after: this.generateAfterExample(issue, language),;
-  reason: issue.recommendation,;
-  difficulty: this.assessRefactoringDifficulty(issue),;
-  timeEstimate: this.estimateRefactoringTime(issue),;
+      name: `Fix ${issue.type}`,
+  // description: issue.description, // LINT: unreachable code removed
+  before: this.generateBeforeExample(issue, language),
+  after: this.generateAfterExample(issue, language),
+  reason: issue.recommendation,
+  difficulty: this.assessRefactoringDifficulty(issue),
+  timeEstimate: this.estimateRefactoringTime(issue),
 }
 }
 /**
@@ -341,13 +341,13 @@ _language: string
   const _optimizations: OptimizationRecommendation[] = [];
   if (quality.performance < 80) {
     optimizations.push({
-        category: 'performance',;
-    title: 'Optimize Algorithm Complexity',;
-    description: 'Replace inefficient algorithms with more performant alternatives',;
+        category: 'performance',
+    title: 'Optimize Algorithm Complexity',
+    description: 'Replace inefficient algorithms with more performant alternatives',
     implementation:;
-    'Analyze time complexity and replace O(n²) algorithms with O(n log n) where possible',;
-    expectedImprovement: '30-50% performance improvement',;
-    priority: 'high',;
+    'Analyze time complexity and replace O(n²) algorithms with O(n log n) where possible',
+    expectedImprovement: '30-50% performance improvement',
+    priority: 'high',
   }
   )
   optimizations.push(
@@ -361,12 +361,12 @@ _language: string
 }
 if (quality.maintainability < 70) {
   optimizations.push({
-        category: 'maintainability',;
-  title: 'Improve Code Organization',;
-  description: 'Reorganize code structure for better maintainability',;
-  implementation: 'Group related functions, extract utilities, improve naming',;
-  expectedImprovement: 'Better code navigation and understanding',;
-  priority: 'medium',;
+        category: 'maintainability',
+  title: 'Improve Code Organization',
+  description: 'Reorganize code structure for better maintainability',
+  implementation: 'Group related functions, extract utilities, improve naming',
+  expectedImprovement: 'Better code navigation and understanding',
+  priority: 'medium',
 }
 )
 }
@@ -382,7 +382,7 @@ return optimizations;
 private
 async;
 generateBestPractices(;
-_quality: QualityAssessment,;
+_quality: QualityAssessment,
 language: string;
 ): Promise<BestPracticeRecommendation[]>
 {
@@ -390,11 +390,11 @@ language: string;
   switch (language) {
     case 'javascript':
       practices.push({
-          practice: 'Use Strict Mode',;
-      description: 'Enable strict mode for better error handling',;
-      rationale: 'Prevents common JavaScript pitfalls and silent errors',;
-      implementation: 'Add "use strict"; at the top of files or functions',;
-      language: 'javascript',;
+          practice: 'Use Strict Mode',
+      description: 'Enable strict mode for better error handling',
+      rationale: 'Prevents common JavaScript pitfalls and silent errors',
+      implementation: 'Add "use strict"; at the top of files or functions',
+      language: 'javascript',
   }
   )
   practices.push(
@@ -433,28 +433,28 @@ return practices;
 private
 async;
 generateSecurityImprovements(;
-_quality: QualityAssessment,;
+_quality: QualityAssessment,
 language: string;
 ): Promise<SecurityImprovement[]>
 {
   const _improvements: SecurityImprovement[] = [];
   improvements.push({
-      type: 'input-validation',;
-  vulnerability: 'Insufficient Input Validation',;
-  description: 'Add comprehensive input validation to prevent injection attacks',;
-  severity: 'high',;
-  mitigation: 'Implement proper input sanitization and validation',;
-  codeExample: this.generateSecurityExample(language, 'input-validation'),;
+      type: 'input-validation',
+  vulnerability: 'Insufficient Input Validation',
+  description: 'Add comprehensive input validation to prevent injection attacks',
+  severity: 'high',
+  mitigation: 'Implement proper input sanitization and validation',
+  codeExample: this.generateSecurityExample(language, 'input-validation'),
 }
 )
 if (language === 'javascript') {
   improvements.push({
-        type: 'xss-prevention',;
-  vulnerability: 'Cross-Site Scripting (XSS)',;
-  description: 'Prevent XSS attacks through proper output encoding',;
-  severity: 'high',;
-  mitigation: 'Use proper HTML encoding and Content Security Policy',;
-  codeExample: this.generateSecurityExample(language, 'xss-prevention'),;
+        type: 'xss-prevention',
+  vulnerability: 'Cross-Site Scripting (XSS)',
+  description: 'Prevent XSS attacks through proper output encoding',
+  severity: 'high',
+  mitigation: 'Use proper HTML encoding and Content Security Policy',
+  codeExample: this.generateSecurityExample(language, 'xss-prevention'),
 }
 )
 }
@@ -470,28 +470,28 @@ return improvements;
 private
 async;
 generatePerformanceEnhancements(;
-_quality: QualityAssessment,;
+_quality: QualityAssessment,
 _language: string;
 ): Promise<PerformanceEnhancement[]>
 {
   const _enhancements: PerformanceEnhancement[] = [];
   enhancements.push({
-      type: 'algorithm-optimization',;
-  currentIssue: 'Inefficient nested loops causing O(n²) complexity',;
-  improvement: 'Use hash maps or optimized data structures',;
-  implementation: 'Replace nested loops with hash-based lookups',;
-  expectedGain: '70% performance improvement for large datasets',;
-  complexity: 'medium',;
+      type: 'algorithm-optimization',
+  currentIssue: 'Inefficient nested loops causing O(n²) complexity',
+  improvement: 'Use hash maps or optimized data structures',
+  implementation: 'Replace nested loops with hash-based lookups',
+  expectedGain: '70% performance improvement for large datasets',
+  complexity: 'medium',
 }
 )
 enhancements.push(
 {
-  type: 'lazy-loading',;
-  currentIssue: 'Loading all data upfront regardless of usage',;
-  improvement: 'Implement lazy loading for expensive resources',;
-  implementation: 'Load data on-demand using lazy initialization patterns',;
-  expectedGain: '40% faster startup time',;
-  complexity: 'low',;
+  type: 'lazy-loading',
+  currentIssue: 'Loading all data upfront regardless of usage',
+  improvement: 'Implement lazy loading for expensive resources',
+  implementation: 'Load data on-demand using lazy initialization patterns',
+  expectedGain: '40% faster startup time',
+  complexity: 'low',
 }
 )
 return enhancements;
@@ -501,9 +501,9 @@ return enhancements;
  */
 private
 generateSummary(;
-mainRecommendations: MainRefactoring[],;
-microRefactorings: MicroRefactoring[],;
-optimizations: OptimizationRecommendation[],;
+mainRecommendations: MainRefactoring[],
+microRefactorings: MicroRefactoring[],
+optimizations: OptimizationRecommendation[],
 performanceEnhancements: PerformanceEnhancement[];
 ):
 {
@@ -518,9 +518,9 @@ performanceEnhancements: PerformanceEnhancement[];
   microRefactorings.length +;
   optimizations.length +;
   performanceEnhancements.length;
-  const _highPriorityCount = [;
-      ...mainRecommendations.filter((r) => r.priority === 'high'),;
-      ...optimizations.filter((o) => o.priority === 'high'),;
+  const _highPriorityCount = [
+      ...mainRecommendations.filter((r) => r.priority === 'high'),
+      ...optimizations.filter((o) => o.priority === 'high'),
     ].length;
   const _largeEffortCount = mainRecommendations.filter((r) => r.effort === 'large').length;
   const _estimatedEffort =;
@@ -528,10 +528,10 @@ performanceEnhancements: PerformanceEnhancement[];
   const _expectedBenefit =;
   highPriorityCount > 3 ? 'Significant' : highPriorityCount > 1 ? 'Moderate' : 'Minor';
   return {
-      totalRecommendations,;
-  // highPriorityCount,; // LINT: unreachable code removed
-  estimatedEffort,;
-  expectedBenefit,;
+      totalRecommendations,
+  // highPriorityCount, // LINT: unreachable code removed
+  estimatedEffort,
+  expectedBenefit,
 }
 }
 // Helper methods for code example generation

@@ -14,7 +14,7 @@ export class SwarmOrchestrator {
     this.activeSwarms = new Map();
     this.globalAgents = new Map();
     this.taskQueue = [];
-    this.config = {maxConcurrentSwarms = = false,enableHooks = = false,telemetryEnabled = = false,;
+    this.config = {maxConcurrentSwarms = = false,enableHooks = = false,telemetryEnabled = = false,
       ...options;
     }
 }
@@ -163,7 +163,7 @@ initialize();
       `;
     orchestration / $swarmId / $;
     taskId;
-    `,;
+    `,
       JSON.stringify(resultData);
     );
   }
@@ -188,8 +188,8 @@ initialize();
       if(swarm && this.ruvSwarm) {
         // Use ruv-swarm's built-in neural learning
         await this.ruvSwarm.learn({
-          swarmId,;
-          taskId,;
+          swarmId,
+          taskId,
           outcome,patterns = = false,timestamp = await this.generateSessionMetrics();
 ;
       // Store session summary
@@ -197,7 +197,7 @@ initialize();
         `;
     coordination / session - end / $;
     Date.now();
-    `,;
+    `,
         JSON.stringify({
           sessionEndedAt = {}): unknown {
     // Fire and forget - don't block main execution
@@ -219,7 +219,7 @@ initialize();
     $;
     optionsStr;
     `, {stdio = > s.status === 'active').length;
-      },;
+      },
       agents = {};
     for (const agent of this.globalAgents.values()) {
       byType[agent.type] = (byType[agent.type]  ?? 0) + 1;

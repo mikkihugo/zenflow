@@ -256,18 +256,18 @@ Swarms automatically use distributed memory with parallel processing for collabo
 {
   "swarm": {
     "batchtools": {
-      "enabled": true,;
-      "maxConcurrentAgents": 25,;
-      "parallelCoordination": true,;
-      "batchTaskProcessing": true,;
-      "concurrentMonitoring": true,;
+      "enabled": true,
+      "maxConcurrentAgents": 25,
+      "parallelCoordination": true,
+      "batchTaskProcessing": true,
+      "concurrentMonitoring": true,
       "performanceOptimization": true;
-    },;
+    },
     "performance": {
-      "enableParallelProcessing": true,;
-      "concurrentTaskExecution": 20,;
-      "batchOperationSize": 10,;
-      "parallelMemoryAccess": true,;
+      "enableParallelProcessing": true,
+      "concurrentTaskExecution": 20,
+      "batchOperationSize": 10,
+      "parallelMemoryAccess": true,
       "realTimeMetrics": true;
     }
   }

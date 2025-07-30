@@ -34,7 +34,7 @@ class SwarmUI {
       parent,top = blessed.log({
       parent,top = blessed.box({
       parent,top = blessed.button({parent = blessed.button({parent = blessed.textbox({
-      parent,;
+      parent,
     (_bottom) => {
       this.cleanup();
       process.exit(0);
@@ -137,13 +137,13 @@ updateSwarmData();
       (_obj) => `;
     $obj.status === 'running' ? '🟢' : '🔴';
     $obj.description.substring(0, 25);
-    ...`,;
+    ...`,
     )
     this.objectivesList.setItems(objectiveItems.length > 0 ?objectiveItems = this.swarmData.agents.map(;
-    (agent) => `${agent.status === 'active' ? '🤖' : '💤'} ${agent.id.substring(0, 15)}...`,;
+    (agent) => `${agent.status === 'active' ? '🤖' : '💤'} ${agent.id.substring(0, 15)}...`,
     )
     this.agentsList.setItems(agentItems.length > 0 ?agentItems = this.swarmData.tasks.filter(;
-    (task) => task.swarmId === this.selectedObjective.id,;
+    (task) => task.swarmId === this.selectedObjective.id,
     )
     promptBox.destroy();
     this.screen.render();

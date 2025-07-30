@@ -72,7 +72,7 @@ getRepository((owner = {}));
 : Promise<
 {
   total_count = {sort = new URLSearchParams({
-      q,;
+      q,
   sort = {};
   ): Promise<GitHubIssue[]>
   {
@@ -101,7 +101,7 @@ getRepository((owner = {}));
   const _packageManagers = [];
   const _configFiles = [];
   const _detectionRules = (> void> = {
-  'package.json': () => packageManagers.push('npm'),;
+  'package.json': () => packageManagers.push('npm'),
   ('yarn.lock');
   : () => packageManagers.push('yarn'),
   ('pnpm-lock.yaml')
@@ -318,7 +318,7 @@ for (let i = 0; i < 4; i++) {
     const _forks = analysis.metrics.basic.forks;
     const _contributors = analysis.contributors?.total_contributors  ?? 0;
 ;
-    factors.community = Math.min(100, ;
+    factors.community = Math.min(100,
       (Math.log10(stars + 1) * 20) + ;
       (Math.log10(forks + 1) * 15) + ;
       (contributors * 2);

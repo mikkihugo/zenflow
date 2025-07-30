@@ -37,15 +37,12 @@ async function fixShebangLine(filePath: string, stats: ProcessingStats): Promise
     stats.filesProcessed++;
     const _content = await fs.readFile(filePath, 'utf-8');
     const _modified = false;
-;
     // Check if shebang is misplaced but exists in the file
     const _hasShebangAtStart = SHEBANG_PATTERNS.some((pattern) => content.startsWith(pattern));
-;
     if (!hasShebangAtStart) {
       const _lines = content.split('\n');
       const _shebangLine: string | null = null;
       const _shebangIndex = -1;
-;
       // Find any shebang line in the file
       for (const pattern of SHEBANG_PATTERNS) {
         shebangIndex = lines.findIndex((line) => line.trim() === pattern);
@@ -55,24 +52,19 @@ async function fixShebangLine(filePath: string, stats: ProcessingStats): Promise
           break;
         }
       }
-;
       // Fix shebang position if found
       if (shebangLine && shebangIndex > 0) {
         // Remove shebang from current position
         lines.splice(shebangIndex, 1);
-;
         // Add shebang to the beginning
         lines.unshift(shebangLine);
-;
         content = lines.join('\n');
         modified = true;
       }
     }
-;
     // Handle files that should have shebang but don't
     if (!modified && isExecutableScript(filePath, content)) {
       const _lines = content.split('\n');
-;
       // Add shebang if it's missing from an executable script
       if (!lines[0].startsWith('#!')) {
         lines.unshift('#!/usr/bin/env node');
@@ -80,7 +72,6 @@ async function fixShebangLine(filePath: string, stats: ProcessingStats): Promise
         modified = true;
       }
     }
-;
     // Write file if modifications were made
     if (modified) {
       await fs.writeFile(filePath, content);
@@ -121,10 +112,8 @@ function isExecutableScript(filePath: string, content: string): boolean {
     const _files: string[] = [];
     try {
     const _entries = await fs.readdir(dir, { withFileTypes: true });
-;
     for (const entry of entries) {
       const _fullPath = join(dir, entry.name);
-;
       // Skip excluded directories
       const _excludedDirs = ['node_modules', 'dist', '.git', 'coverage', 'build'];
       if (entry.isDirectory() && !excludedDirs.includes(entry.name)) {
@@ -148,9 +137,9 @@ function isExecutableScript(filePath: string, content: string): boolean {
     try {
     const _rootDir = dirname(__dirname);
     const _stats: ProcessingStats = {
-      filesProcessed: 0,;
-      filesFixed: 0,;
-      errorsEncountered: 0,;
+      filesProcessed: 0,
+      filesFixed: 0,
+      errorsEncountered: 0,
     }
     console.warn('🔧 Shebang Line Fixing Process Starting...');
     console.warn('📋 Google TypeScript Standards Active');

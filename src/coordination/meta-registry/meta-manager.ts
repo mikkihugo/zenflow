@@ -116,7 +116,7 @@ removeRegistry(name, options =
         throw new Error(`Registry '${name}' not found`);
       }
     }
-    const _federation = new RegistryFederation(federationId, this, {registries = = false,;
+    const _federation = new RegistryFederation(federationId, this, {registries = = false,
     ...options
   }
   )
@@ -183,7 +183,7 @@ removeFederationMember(federationId, registryName);
     }
     const _topology = new RegistryTopology(topologyId, this, {
     type, // mesh, hierarchical, ring, star, etc.
-    registries,;
+    registries,
     ...options,
   }
   )
@@ -221,7 +221,7 @@ coordinateOperation(operation, (targets = []), (options = {}));
     );
 ;
     this.emit('dataReplicated', {
-      sourceRegistry,;
+      sourceRegistry,
       targetRegistries,itemCount = new Map();
 ;
     for (const [name, registryInfo] of this.registries.entries()) {

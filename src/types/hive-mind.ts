@@ -3,11 +3,11 @@
  * Multi-Queen coordination and persistent intelligence system;
  */
 import type {
-  Identifiable,;
-JSONObject,;
-LifecycleManager,;
-ResourceUsage,;
-TypedEventEmitter,;
+  Identifiable,
+JSONObject,
+LifecycleManager,
+ResourceUsage,
+TypedEventEmitter,
 } from './core'
 
 import type { QueenMetrics } from './queen';
