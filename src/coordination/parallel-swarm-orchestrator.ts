@@ -2,10 +2,10 @@
  * Parallel Swarm Orchestrator - Enhanced orchestrator with worker threads support
  */
 
-import { EventEmitter } from 'node:events';'
+import { EventEmitter  } from 'node:events';'
 import os from 'node:os';'
-import { SwarmOrchestrator } from '../cli/command-handlers/swarm-orchestrator.js';'
-import { WorkerThreadPool } from './workers/worker-pool.js';'
+import { SwarmOrchestrator  } from '../cli/command-handlers/swarm-orchestrator.js';'
+import { WorkerThreadPool  } from './workers/worker-pool.js';'
 
 export class ParallelSwarmOrchestrator extends EventEmitter {
   constructor(options = {}) {
@@ -54,7 +54,7 @@ this.workerPool.on('worker-error', (_data) =>'
     try {
       console.warn(`� Launchingswarm = this.shouldUseParallelExecution(objective, options);`
 
-  if (useParallel && this.workerPool) {
+  if(useParallel && this.workerPool) {
     console.warn('🧵 Using parallel execution with worker threads');'
     // return // // await this.launchParallelSwarm(objective, options);
     //   // LINT: unreachable code removed} else {
@@ -62,7 +62,7 @@ this.workerPool.on('worker-error', (_data) =>'
     // return // // await this.launchSequentialSwarm(objective, options);
     //   // LINT: unreachable code removed}
 // }
-catch (error) {
+catch(error) {
   console.error(`Failed to launchswarm = Date.now() - startTime;`
 this.updateMetrics(useParallel, executionTime);
 // }
@@ -88,8 +88,7 @@ this.updateMetrics(useParallel, executionTime);
   // Aggregate results
 
   // Store in base orchestrator's tracking'
-  this.baseOrchestrator.activeSwarms.set(swarmConfig.id, {_id = > ({
-        id = {}) {
+  this.baseOrchestrator.activeSwarms.set(swarmConfig.id, {_id = > ({ id = { }) {
 // const _result = awaitthis.baseOrchestrator.launchSwarm(objective, options);
   this.metrics.sequentialTasks++;
   // return {
@@ -109,7 +108,7 @@ this.updateMetrics(useParallel, executionTime);
       tasks,parallelGroups = [];
   const __taskCounter = 0;
 
-  // Add agent spawning tasks (can run in parallel)
+  // Add agent spawning tasks(can run in parallel)
   const _agentPlan = this.baseOrchestrator.analyzeObjectiveForAgents(objective, options);
   agentPlan.forEach(_agentSpec => {
       tasks.push({id = new Map();
@@ -117,15 +116,15 @@ this.updateMetrics(useParallel, executionTime);
     // Group tasks by parallelGroup and dependencies
     tasks.forEach(task => {
       const _groupKey = task.parallelGroup  ?? 'default';'
-      if (!groups.has(groupKey)) {
+      if(!groups.has(groupKey)) {
         groups.set(groupKey, []);
       //       }
       groups.get(groupKey).push(task);
     });
 
     // Convert to array and sort by dependencies
-    const _groupArray = Array.from(groups.entries()).map(([_groupName, _groupTasks]) => ({name = > t.dependencies.length === 0);
-    }));
+    const _groupArray = Array.from(groups.entries()).map(([_groupName, _groupTasks]) => ({ name = > t.dependencies.length === 0);
+     }));
 
     // Sort groups by dependency order
     // return this.sortGroupsByDependencies(groupArray);
@@ -150,12 +149,12 @@ sortGroupsByDependencies(groups);
   const _remaining = [...groups];
   const _completed = new Set();
 
-  while (remaining.length > 0) {
+  while(remaining.length > 0) {
     const _canRun = remaining.filter((_group) =>;
       group.dependencies.every((dep) => completed.has(dep));
     );
 
-    if (canRun.length === 0) {
+    if(canRun.length === 0) {
       // Break dependency cycle by adding first remaining group
       canRun.push(remaining[0]);
     //     }
@@ -209,8 +208,8 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
   /**  */
  * Execute a group of tasks in parallel
    */
-  async executeTaskGroupInParallel(tasks) {
-    console.warn(`🧵 Executing ${tasks.length} tasks in parallel`);`
+  async executeTaskGroupInParallel(tasks) { 
+    console.warn(`🧵 Executing $tasks.length} tasks in parallel`);`
 
     const _promises = tasks.map(task => this.executeTaskWithWorker(task));
 // const _results = awaitPromise.allSettled(promises);
@@ -247,7 +246,7 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
 
     // Use parallel for development and research tasks
     const _domain = this.baseOrchestrator.detectDomain(objective);
-    if (['development', 'research', 'testing', 'analysis'].includes(domain)) {'
+    if(['development', 'research', 'testing', 'analysis'].includes(domain)) {'
       // return true;
     //   // LINT: unreachable code removed}
 
@@ -288,10 +287,10 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
   /**  */
  * Get orchestrator status including parallel metrics
    */
-  async getSwarmStatus(swarmId = null) {
+  async getSwarmStatus(swarmId = null) { 
 // const _baseStatus = awaitthis.baseOrchestrator.getSwarmStatus(swarmId);
 
-    const _parallelStatus = {
+    const _parallelStatus = 
       parallelMode: this.parallelMode,
       workerPool: this.workerPool ? this.workerPool.getStatus() ,
       metrics: this.metrics;
@@ -315,10 +314,10 @@ executeParallelTaskPlan(taskPlan, swarmConfig);
   /**  */
  * Shutdown orchestrator and worker pool
    */
-  async shutdown() {}
+  async shutdown() { }
     console.warn('� Shutting down Parallel Swarm Orchestrator...');'
 
-    if(this.workerPool) {
+    if(this.workerPool) 
 // // // await this.workerPool.shutdown();
     //     }
 // // // await this.baseOrchestrator.shutdown();

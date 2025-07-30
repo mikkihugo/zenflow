@@ -4,9 +4,9 @@
  * Validates SQLite functionality and runs integration tests;
  */
 
-import { spawn } from 'node:child_process';
+import { spawn  } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
@@ -41,20 +41,20 @@ async function runTest() {
         process.stderr.write(data);
       });
       child.on('close', (code) => {
-        resolve({ code, stdout, stderr });
+        resolve({ code, stdout, stderr  });
       });
       child.on('error', (error) => {
         reject(error);
       });
     });
-    if (result.code === 0) {
+    if(result.code === 0) {
       log(`✅ ${testName} - PASSED`, 'green');
       // return true;
     //   // LINT: unreachable code removed} else {
-      log(`❌ ${testName} - FAILED (exit code)`, 'red');
+      log(`❌ ${testName} - FAILED(exit code)`, 'red');
       // return false;
     //   // LINT: unreachable code removed}
-  } catch (error)
+  } catch(error)
     log(`� \$testName- ERROR);`
     // return false;
 async function checkSQLiteAvailability() {
@@ -63,8 +63,8 @@ async function checkSQLiteAvailability() {
     // Try to import better-sqlite3
     const { isSQLiteAvailable, getLoadError } = // await import('../../src/memory/sqlite-wrapper.js');
 // const _available = awaitisSQLiteAvailable();
-    if (available) {
-      log('✅ SQLite (better-sqlite3) is available', 'green');
+    if(available) {
+      log('✅ SQLite(better-sqlite3) is available', 'green');
       // return true;
     //   // LINT: unreachable code removed} else {
       const _error = getLoadError();
@@ -72,7 +72,7 @@ async function checkSQLiteAvailability() {
       log('   Tests will run with fallback behavior', 'yellow');
       // return false;
     //   // LINT: unreachable code removed}
-  } catch (error)
+  } catch(error)
     log(`❌ Error checking SQLite);`
     // return false;
 async function runIntegrationTests() {
@@ -102,7 +102,7 @@ async function runIntegrationTests() {
         'tests/integration/hive-mind-schema.test.js' ]) ]);
     results.push(...testResults);
     // Run additional tests if SQLite is available
-    if (sqliteAvailable) {
+    if(sqliteAvailable) {
       log('\n� Running SQLite-specific tests...', 'cyan');
 // const _sqliteSpecificResults = awaitPromise.all([;
         runTest('Cross-platform Portability Tests', [;
@@ -117,9 +117,9 @@ async function runIntegrationTests() {
           'tests/integration/real-metrics.test.js' ]) ]);
       results.push(...sqliteSpecificResults);
     } else {
-      log('\n⚠  Skipping SQLite-specific tests (SQLite not available)', 'yellow');
+      log('\n⚠  Skipping SQLite-specific tests(SQLite not available)', 'yellow');
     //     }
-  } catch (error) {
+  } catch(error) {
     log(`� Fatal error during test execution);`
     results.push(false);
   //   }
@@ -132,10 +132,10 @@ async function runIntegrationTests() {
   log(`Total Tests);`
   log(`Passed);`
   log(`Failed);`
-  if (failed === 0) {
+  if(failed === 0) {
     log('\n� All SQLite integration tests passed!', 'green');
     log(;
-      `� SQLite Status: \$sqliteAvailable ? 'Available' : 'Not Available (using fallbacks)'`,
+      `� SQLite Status: \$sqliteAvailable ? 'Available' : 'Not Available(using fallbacks)'`,
       'cyan';
     );
   } else {
@@ -149,9 +149,8 @@ async function runIntegrationTests() {
     totalTests,
     passed,
     failed,
-    results: results.map((_result, index) => ({
-      test,
-      passed })) };
+    results: results.map((_result, index) => ({ test,
+      passed  })) };
   const _reportPath = path.join(__dirname, 'sqlite-test-results.json');
   // // await fs.writeFile(reportPath, JSON.stringify(testReport, null, 2));
   log(`\n� Test report saved);`

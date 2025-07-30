@@ -8,17 +8,16 @@
  * @version 2.0.0
  */
 
-import { existsSync } from 'node:fs';'
-// import { readFile } from 'node:fs/promises';'
+import { existsSync  } from 'node:fs';'
+// import { readFile  } from 'node:fs/promises';'
 // import path from 'node:path';'
 
-// import type { ASTNode } from './code-analysis/ast-parser';'
-// import type { FunctionData } from './code-analysis/function-extractor';'
-// import type {
-  CodeMetrics,
+// import type { ASTNode  } from './code-analysis/ast-parser';'
+// import type { FunctionData  } from './code-analysis/function-extractor';'
+// import type { CodeMetrics,
 // type ComplexityAnalysis
 
-MetricsCalculator } from './code-analysis/metrics-calculator''
+MetricsCalculator  } from './code-analysis/metrics-calculator''
 /**  */
  * Code file data structure
  */
@@ -104,7 +103,7 @@ MetricsCalculator } from './code-analysis/metrics-calculator''
  * Initialize the analysis engine
    */
   async initialize(): Promise<void> {
-    console.warn('� Code Analysis Engine (Modular) initialized');'
+    console.warn('� Code Analysis Engine(Modular) initialized');'
   //   }
   /**  */
  * Analyze code files and return comprehensive analysis results
@@ -128,10 +127,10 @@ MetricsCalculator } from './code-analysis/metrics-calculator''
 
       // Optional AI analysis
       let _aiInsights;
-      if (this.config.neuralEngine) {
+      if(this.config.neuralEngine) {
         try {
           _aiInsights = // // await this.performAIAnalysis(codeData, 'code-analysis');'
-        } catch (error) {
+        } catch(error) {
           console.warn('AI analysis unavailable);'
         //         }
       //       }
@@ -152,7 +151,7 @@ MetricsCalculator } from './code-analysis/metrics-calculator''
           analysisTime,
           language: codeData[0]?.language  ?? 'unknown'}'
   //   }
-  catch (error) {
+  catch(error) {
     console.error('❌ Code analysis failed);'
     throw error;
   //   }
@@ -168,8 +167,8 @@ readCodeData(codeFiles)
 : Promise<CodeFileData[]>
 // {
   const _codeData = [];
-  for (const filePath of codeFiles) {
-    if (!existsSync(filePath)) {
+  for(const filePath of codeFiles) {
+    if(!existsSync(filePath)) {
       throw new Error(`Code file not found);`
     //     }
 // const _content = awaitreadFile(filePath, 'utf8');'
@@ -195,22 +194,22 @@ validateCodeInputs(codeFiles, language)
 : Promise<void>
 // {
   // Validate code files exist
-  for (const filePath of codeFiles) {
-    if (!existsSync(filePath)) {
+  for(const filePath of codeFiles) {
+    if(!existsSync(filePath)) {
       throw new Error(`Code file not found);`
     //     }
     const _extension = path.extname(filePath).toLowerCase().substring(1);
-    if (!this.config.supportedFormats.includes(extension)) {
+    if(!this.config.supportedFormats.includes(extension)) {
       throw new Error(`Unsupported code file format);`
     //     }
   //   }
   // Validate language is supported
-  if (!this.supportedLanguages.has(language)) {
+  if(!this.supportedLanguages.has(language)) {
     throw new Error(`Unsupported language);`
   //   }
 // }
 /**  */
- * Extract classes from code files (simplified implementation)
+ * Extract classes from code files(simplified implementation)
    *
    * @param codeData - Code file data
    * @returns Class analysis data
@@ -220,7 +219,7 @@ extractClasses(codeData)
 : Promise<ClassData[]>
 // {
   const _classes = [];
-  for (const file of codeData) {
+  for(const file of codeData) {
 // const _fileClasses = awaitthis.extractFileClasses(file);
     classes.push(...fileClasses);
   //   }
@@ -238,10 +237,10 @@ extractClasses(codeData)
   //   {
     const _classes = [];
     const _lines = file.content.split('\n');'
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _classMatch = this.matchClass(line, file.language);
-      if (classMatch) {
+      if(classMatch) {
         const _cls = {
           name: classMatch.name,
         extends: classMatch.extends,
@@ -268,7 +267,7 @@ extractClasses(codeData)
     const _dependencies = {
       external: new Set<string>(),
     internal: new Set<string>() }
-  for (const file of codeData) {
+  for(const file of codeData) {
 // const _fileDeps = awaitthis.extractFileDependencies(file);
     fileDeps.external.forEach((dep) => dependencies.external.add(dep));
     fileDeps.internal.forEach((dep) => dependencies.internal.add(dep));
@@ -336,7 +335,7 @@ line,
   python: /class\s+(\w+)(?:\(([^)]+)\))?/ }
 const _pattern = patterns[language] ?? patterns.javascript;
 const _match = line.match(pattern);
-if (match) {
+if(match) {
   // return {
         name: match[1],
   // extends: match[2] ? [match[2]] , // LINT: unreachable code removed
@@ -354,15 +353,15 @@ countClassMethods(lines, startLine)
   const _methodCount = 0;
   const _braceCount = 0;
   const _i = startLine;
-  while (i < lines.length) {
+  while(i < lines.length) {
     const _line = lines[i];
     // Simplified method detection
-    if (line.trim().includes('function') ?? line.trim().match(/\w+\s*\(/)) {'
+    if(line.trim().includes('function') ?? line.trim().match(/\w+\s*\(/)) {'
       methodCount++;
     //     }
     braceCount += (line.match(/\{/g) ?? []).length;
     braceCount -= (line.match(/\}/g) ?? []).length;
-    if (braceCount === 0 && i > startLine) {
+    if(braceCount === 0 && i > startLine) {
       break;
     //     }
     i++;
@@ -379,12 +378,12 @@ countClassMethods(lines, startLine)
     const _braceCount = 0;
     const _i = startLine;
     const _lineCount = 0;
-    while (i < lines.length) {
+    while(i < lines.length) {
       lineCount++;
       const _line = lines[i];
       braceCount += (line.match(/\{/g) ?? []).length;
       braceCount -= (line.match(/\}/g) ?? []).length;
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
       i++;
@@ -405,12 +404,12 @@ countClassMethods(lines, startLine)
       external: new Set<string>(),
       internal: new Set<string>() }
     const _lines = file.content.split('\n');'
-    for (const line of lines) {
+    for(const line of lines) {
       // Extract import statements
       const _importMatch = line.match(/import\s+.*\s+from\s+['"]([^'"]+)['"]/);"'
-      if (importMatch) {
+      if(importMatch) {
         const _dep = importMatch[1];
-        if (dep.startsWith('.') ?? dep.startsWith('/')) {'
+        if(dep.startsWith('.') ?? dep.startsWith('/')) {'
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
@@ -418,9 +417,9 @@ countClassMethods(lines, startLine)
       //       }
       // Extract require statements
       const _requireMatch = line.match(/require\(['"]([^'"]+)['"]\)/);"'
-      if (requireMatch) {
+      if(requireMatch) {
         const _dep = requireMatch[1];
-        if (dep.startsWith('.') ?? dep.startsWith('/')) {'
+        if(dep.startsWith('.') ?? dep.startsWith('/')) {'
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
@@ -430,13 +429,13 @@ countClassMethods(lines, startLine)
     // return dependencies;
     //   // LINT: unreachable code removed}
     /**  */
- * Perform AI-powered analysis (if neural engine available)
+ * Perform AI-powered analysis(if neural engine available)
      */
     // // private async;
     performAIAnalysis(codeData, analysisType)
     : Promise<any>
     //     {
-      if (!this.config.neuralEngine) {
+      if(!this.config.neuralEngine) {
         throw new Error('Neural engine not available');'
       //       }
       const _codeContent = codeData.map((file) => file.content).join('\n\n');'

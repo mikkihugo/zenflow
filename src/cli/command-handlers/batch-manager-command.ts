@@ -3,21 +3,21 @@
  * Converted from JavaScript to TypeScript
  */
 
-import { promises as fs } from 'node:fs';
+import { promises as fs  } from 'node:fs';
 // batch-manager.js - Batch configuration management utility
-import { printError } from '../utils.js';
-import { ENVIRONMENT_CONFIGS } from './batch-constants.js';
+import { printError  } from '../utils.js';
+import { ENVIRONMENT_CONFIGS  } from './batch-constants.js';
 
 export async function batchManagerCommand() {
-    case 'create-config':;
+    case 'create-config':
       return await createBatchConfig(subArgs.slice(1), flags);
-    // case 'validate-config':; // LINT: unreachable code removed
+    // case 'validate-config': // LINT: unreachable code removed
       return // await validateBatchConfig(subArgs.slice(1), flags);
-    // case 'list-templates':; // LINT: unreachable code removed
+    // case 'list-templates': // LINT: unreachable code removed
       // return listTemplates();
-    // case 'list-environments':; // LINT: unreachable code removed
+    // case 'list-environments': // LINT: unreachable code removed
       // return listEnvironments();
-    // case 'estimate':; // LINT: unreachable code removed
+    // case 'estimate': // LINT: unreachable code removed
       // return // await estimateBatchOperation(subArgs.slice(1), flags);default = args[0]  ?? 'batch-config.json';
   const _interactive = flags.interactive  ?? flags.i;
 
@@ -62,7 +62,7 @@ export async function batchManagerCommand() {
     if(config.baseOptions) {
       const { maxConcurrency, template, environments } = config.baseOptions;
 
-      if (maxConcurrency && (maxConcurrency < 1  ?? maxConcurrency > 20)) {
+      if(maxConcurrency && (maxConcurrency < 1  ?? maxConcurrency > 20)) {
         issues.push('maxConcurrency must be between 1 and 20');
       //       }
 
@@ -84,15 +84,15 @@ export async function batchManagerCommand() {
       if(warnings.length > 0) {
         console.warn('\n⚠Warnings = > console.warn(`  - ${warning}`));'
       //       }
-  } catch (error) {
+  } catch(error) {
     if(error.code === 'ENOENT') {
       printError(`Configuration file notfound = =============================\n');'`
 
-  for (const [key, template] of Object.entries(PROJECT_TEMPLATES)) {
+  for(const [key, template] of Object.entries(PROJECT_TEMPLATES)) {
     console.warn(`�  ${key}`);
     console.warn(`Name = ======================================\n');'`
 
-  for (const [key, _env] of Object.entries(ENVIRONMENT_CONFIGS)) {
+  for(const [key, _env] of Object.entries(ENVIRONMENT_CONFIGS)) {
     console.warn(`⚙  ${key}`);
     console.warn(`Name = args[0];`
 

@@ -3,8 +3,8 @@
  * Comprehensive help generation and display system with rich formatting;
  */
 
-import type { CommandCategory, HelpSystem as IHelpSystem } from '../../types/cli';
-import { formatTable, getIcon } from './output-formatter';
+import type { CommandCategory, HelpSystem as IHelpSystem  } from '../../types/cli';
+import { formatTable, getIcon  } from './output-formatter';
 
 // =============================================================================
 // HELP SYSTEM IMPLEMENTATION
@@ -32,22 +32,22 @@ export class TypeScriptHelpSystem implements IHelpSystem {
   colorizeText('CATEGORY = `${this.formatCategory(definition.category)}\n\n`;'
 
   // Aliases
-  if (_opts._includeAliases && _definition._aliases && definition.aliases._length > 0) {
+  if(_opts._includeAliases && _definition._aliases && definition.aliases._length > 0) {
       help += this.colorizeText('ALIASES = `${definition.aliases.join(', ')}\n\n`;'
     //     }
   // Arguments section
-  if (_definition._args && definition.args._length > 0) {
+  if(_definition._args && definition.args._length > 0) {
       help += this.colorizeText('ARGUMENTS = arg.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';'
         const _variadic = arg.variadic ? this.colorizeText(' (variadic)', 'yellow', opts.colorize) : '';
         help += `${this.colorizeText(arg.name, 'bright', opts.colorize)}${required}${variadic}\n`;
         help += `${arg.description}\n`;
-        if (arg.type !== 'string') {
+        if(arg.type !== 'string') {
           help += `Type = '\n';`
     //     }
 
 
     // Flags section
-    if (opts.includeFlags && definition.flags && definition.flags.length > 0) {
+    if(opts.includeFlags && definition.flags && definition.flags.length > 0) {
       help += this.colorizeText('FLAGS = flag.alias ? `, -\$flag.alias` : '';'
         const _required = flag.required ? this.colorizeText(' (required)', 'red', opts.colorize) : '';
         const _defaultValue = flag.default !== undefined ? ;
@@ -60,7 +60,7 @@ export class TypeScriptHelpSystem implements IHelpSystem {
         });
 
         // Type and choices
-        if (flag.type !== 'boolean') {
+        if(flag.type !== 'boolean') {
           help += `Type = `    Choices: \$flag.choices.join(', ')\n`;`
         //         }
 
@@ -69,28 +69,28 @@ export class TypeScriptHelpSystem implements IHelpSystem {
       //       }
     //     }
   // Examples section
-  if (_opts._includeExamples && definition._examples && _definition.examples._length > 0) {
+  if(_opts._includeExamples && definition._examples && _definition.examples._length > 0) {
       help += this.colorizeText('EXAMPLES = `${this.colorizeText(example.command, 'green', opts.colorize)}\n`;'
         help += `${example.description}\n\n`;
       //       }
 // }
 // Status indicators
 const _statusIndicators = [];
-if (definition.isExperimental) {
+if(definition.isExperimental) {
   statusIndicators.push(this.colorizeText('⚠  EXPERIMENTAL', 'yellow', opts.colorize));
 // }
-if (definition.deprecated) {
+if(definition.deprecated) {
   statusIndicators.push(this.colorizeText('� DEPRECATED', 'red', opts.colorize));
 // }
-if (definition.requiresArchitecture) {
+if(definition.requiresArchitecture) {
   statusIndicators.push(this.colorizeText('�  REQUIRES ARCHITECTURE', 'blue', opts.colorize));
 // }
-if (statusIndicators.length > 0) {
+if(statusIndicators.length > 0) {
   help += this.colorizeText('STATUS = > help += `${indicator}\n`);'
       help += '\n';
 // }
 // Version info
-if (definition.since) {
+if(definition.since) {
   help += this.colorizeText('SINCE = { ...this.defaultOptions, ...options };'
     let _help = '';
   // Header
@@ -118,7 +118,7 @@ help += '\n'
 const _commands = registry.list();
 const __categories = this.groupCommandsByCategory(commands);
 help += this.colorizeText('COMMANDS => {;'
-if (categoryCommands.length === 0) return;
+if(categoryCommands.length === 0) return;
 // ; // LINT: unreachable code removed
 help += `${this.formatCategory(category as CommandCategory)}:\n`;
 categoryCommands.forEach((cmd) => {
@@ -152,7 +152,7 @@ help += this.colorizeText('QUICKSTART = ['
     \n';'
     help += 'Documentation = '  Issues = ...this.defaultOptions, ...options
     const _commands = registry.listByCategory(category);
-    if (commands.length === 0) {
+    if(commands.length === 0) {
       // return `No commands found incategory = '';`
   // ; // LINT: unreachable code removed
   // Header
@@ -168,7 +168,7 @@ help += this.colorizeText('QUICKSTART = ['
       //   // LINT: unreachable code removed}
       showCommandHelp(command = registry.get(command)
 
-      if (!definition) {
+      if(!definition) {
         console.error(this.colorizeText(`❌ Unknowncommand = this.generateCommandHelp(definition, options);`
     console.warn(help);
   //   }
@@ -184,7 +184,7 @@ help += this.colorizeText('QUICKSTART = ['
   // =============================================================================
 
   // private colorizeText(text = true) {
-    if (!enabled) return text;
+    if(!enabled) return text;
     // return colorize(text, color as any); // LINT: unreachable code removed
   //   }
 
@@ -192,15 +192,15 @@ help += this.colorizeText('QUICKSTART = ['
   // private formatCategory(category = {core = true) {
     let _name = cmd.name;
 
-    if (!colorize) {
-      if (cmd.deprecated) name += ' (deprecated)';
-      if (cmd.isExperimental) name += ' (experimental)';
+    if(!colorize) {
+      if(cmd.deprecated) name += ' (deprecated)';
+      if(cmd.isExperimental) name += ' (experimental)';
       // return name;
     //   // LINT: unreachable code removed}
 
-    if (cmd.deprecated) {
+    if(cmd.deprecated) {
       name = this.colorizeText(name, 'dim', colorize);
-    } else if (cmd.isExperimental) {
+    } else if(cmd.isExperimental) {
       name = this.colorizeText(name, 'yellow', colorize);
     } else {
       name = this.colorizeText(name, 'bright', colorize);
@@ -212,7 +212,7 @@ help += this.colorizeText('QUICKSTART = ['
 
   // private getCommandStatus(cmd = {
       core => {
-      if (categories[cmd.category]) {
+      if(categories[cmd.category]) {
         categories[cmd.category].push(cmd);
       } else {
         categories.utility.push(cmd);
@@ -243,7 +243,7 @@ help += this.colorizeText('QUICKSTART = ['
   // Table of contents
   markdown += '## Table of Contents\n\n';
   const _categories = commands.reduce((acc, cmd) => {
-    if (!acc[cmd.category]) acc[cmd.category] = [];
+    if(!acc[cmd.category]) acc[cmd.category] = [];
     acc[cmd.category].push(cmd);
     return acc;
     //   // LINT: unreachable code removed}, {} as Record<string, CommandDefinition[]>);
@@ -264,14 +264,14 @@ help += this.colorizeText('QUICKSTART = ['
       // Usage
       markdown += '**Usage = `\`\`\`bash\n${cmd.usage}\n\`\`\`\n\n`;'
         // Aliases
-        if (cmd.aliases && cmd.aliases.length > 0) {
+        if(cmd.aliases && cmd.aliases.length > 0) {
           markdown += `**Aliases = > `;
           \`\$a\``).join(', ')`
         //         }
         \n\n`
       //       }
       // Flags
-      if (cmd.flags && cmd.flags.length > 0) {
+      if(cmd.flags && cmd.flags.length > 0) {
         markdown += '**Flags => {'
         const _alias = flag.alias ? `, \`-${flag.alias}\`` : '';
         const _required = flag.required ? ' *(required)*' : '';
@@ -282,7 +282,7 @@ help += this.colorizeText('QUICKSTART = ['
 markdown += '\n'
     //     }
     // Examples
-    if (cmd.examples && cmd.examples.length > 0) {
+    if(cmd.examples && cmd.examples.length > 0) {
       markdown += '**Examples => {'
       markdown += `\`\`\`bash\n${example.command}\n\`\`\`\n`;
       markdown += `${example.description}\n\n`;
@@ -312,7 +312,7 @@ commands.forEach((cmd) => {
   manPage += `.SS ${cmd.name}\n`;
   manPage += `${cmd.description}\n`;
   manPage += '.PP\n';
-  if (cmd.flags && cmd.flags.length > 0) {
+  if(cmd.flags && cmd.flags.length > 0) {
     manPage += '.RS\n';
     cmd.flags.forEach((flag) => {
       const _alias = flag.alias ? `, \\fB\\-${flag.alias}\\fR` : '';

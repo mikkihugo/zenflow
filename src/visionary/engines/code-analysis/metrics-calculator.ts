@@ -75,7 +75,7 @@
     const _totalLines = 0;
     const _totalFunctions = 0;
     const _maxComplexity = 0;
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileComplexity = awaitthis.calculateFileComplexity(file);
       totalComplexity += fileComplexity.cyclomatic;
       totalLines += fileComplexity.lines;
@@ -114,7 +114,7 @@ calculateMetrics(codeData)
   const _blankLines = 0;
   const _totalFunctions = 0;
   const _totalClasses = 0;
-  for (const file of codeData) {
+  for(const file of codeData) {
 // const _fileMetrics = awaitthis.calculateFileMetrics(file);
     totalLines += fileMetrics.totalLines;
     codeLines += fileMetrics.codeLines;
@@ -154,13 +154,13 @@ calculateFileComplexity(file)
   const _complexity = 0;
   const _functionCount = 0;
   const _maxFunctionComplexity = 0;
-  for (let i = 0; i < lines.length; i++) {
+  for(let i = 0; i < lines.length; i++) {
     const _line = lines[i];
     // Count decision points
     const _decisions = (line.match(/if|while|for|switch|case|catch|&&|\|\|/g) ?? []).length;
     complexity += decisions;
     // Check if this is a function and calculate its complexity
-    if (this.matchFunction(line, file.language)) {
+    if(this.matchFunction(line, file.language)) {
       functionCount++;
 // const _funcComplexity = awaitthis.calculateFunctionComplexity(lines, i);
       maxFunctionComplexity = Math.max(maxFunctionComplexity, funcComplexity);
@@ -188,18 +188,18 @@ calculateFileMetrics(file)
   const _blankLines = 0;
   const _functions = 0;
   const _classes = 0;
-  for (const line of lines) {
+  for(const line of lines) {
     const _trimmed = line.trim();
-    if (!trimmed) {
+    if(!trimmed) {
       blankLines++;
-    } else if (this.isCommentLine(trimmed, file.language)) {
+    } else if(this.isCommentLine(trimmed, file.language)) {
       commentLines++;
     } else {
       codeLines++;
-      if (this.matchFunction(line, file.language)) {
+      if(this.matchFunction(line, file.language)) {
         functions++;
       //       }
-      if (this.matchClass(line, file.language)) {
+      if(this.matchClass(line, file.language)) {
         classes++;
       //       }
     //     }
@@ -228,10 +228,10 @@ calculateFunctionComplexity(lines, startLine)
   const _braceCount = 0;
   const _i = startLine;
   // Find function body and count decision points
-  while (i < lines.length) {
+  while(i < lines.length) {
     const _line = lines[i];
     // Count decision points
-    if (;
+    if(;
     line.includes('if') ??'
       line.includes('while') ??'
       line.includes('for') ??'
@@ -244,7 +244,7 @@ calculateFunctionComplexity(lines, startLine)
     braceCount -= (line.match(/\
   //   }
   / )).2;??[]egghlnt{};
-  if (braceCount === 0 && i > startLine) {
+  if(braceCount === 0 && i > startLine) {
     break;
   //   }
   i++;
@@ -255,8 +255,8 @@ calculateFunctionComplexity(lines, startLine)
    *
    * @param lines - Total lines of code
    * @param complexity - Cyclomatic complexity
-   * @param halsteadVolume - Halstead volume (simplified)
-   * @returns Maintainability index (0-100)
+   * @param halsteadVolume - Halstead volume(simplified)
+   * @returns Maintainability index(0-100)
     // */ // LINT: unreachable code removed
   // // private calculateMaintainabilityIndex(;
   lines,
@@ -283,9 +283,9 @@ calculateFunctionComplexity(lines, startLine)
     avgComplexity,
     // maxComplexity
     ): 'minimal' | 'low' | 'moderate' | 'high''
-    if (maxComplexity > 20 ?? avgComplexity > 10) return 'high';'
-    // if (maxComplexity > 10  ?? avgComplexity > 7) return 'moderate'; // LINT: unreachable code removed'
-    if (maxComplexity > 5 ?? avgComplexity > 4) return 'low';'
+    if(maxComplexity > 20 ?? avgComplexity > 10) return 'high';'
+    // if(maxComplexity > 10  ?? avgComplexity > 7) return 'moderate'; // LINT: unreachable code removed'
+    if(maxComplexity > 5 ?? avgComplexity > 4) return 'low';'
     /**  */
  * Match function patterns in code
    *
@@ -303,9 +303,9 @@ calculateFunctionComplexity(lines, startLine)
       /(async\s+)?(\w+)\s*\(([^)]*)\)\s*=>/ ],
       python: [/(async\s+)?def\s+(\w+)\s*\(([^)]*)\)/] }
     const _langPatterns = patterns[language] ?? patterns.javascript;
-    for (const pattern of langPatterns) {
+    for(const pattern of langPatterns) {
       const _match = line.match(pattern);
-      if (match) {
+      if(match) {
         // return {
           name: match[2]  ?? match[1],
         // parameters: (match[3]  ?? match[2]  ?? ''); // LINT: unreachable code removed'
@@ -332,7 +332,7 @@ filter((p) => p),
     python: /class\s+(\w+)(?:\(([^)]+)\))?/ }
   const _pattern = patterns[language] ?? patterns.javascript;
   const _match = line.match(pattern);
-  if (match) {
+  if(match) {
     // return {
         name: match[1],
     // extends: match[2] ? [match[2]] , // LINT: unreachable code removed

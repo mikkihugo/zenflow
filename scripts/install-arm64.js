@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { spawn } from 'node:child_process';
+import { spawn  } from 'node:child_process';
 import os from 'node:os';
 
 // Check if SQLite bindings are working
@@ -10,7 +10,7 @@ async function checkSqliteBindings() {
     const _db = new Database.default(');'
     db.close();
     return true;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
     // return false;
     //   // LINT: unreachable code removed}
 // }
@@ -21,7 +21,7 @@ async function rebuildSqlite() {
     const _rebuild = spawn('npm', ['rebuild', 'better-sqlite3'], {
       stdio);
     rebuild.on('close', (code) => {
-      if (code === 0) {
+      if(code === 0) {
         console.warn('✅ Successfully rebuilt better-sqlite3 for ARM64');
         resolve(true);
       } else {
@@ -40,13 +40,13 @@ async function main() {
   const _platform = os.platform();
   const _arch = os.arch();
   // Only run on ARM64 macOS
-  if (platform === 'darwin' && arch === 'arm64') {
-    console.warn('� Detected Apple Silicon (ARM64) Mac');
+  if(platform === 'darwin' && arch === 'arm64') {
+    console.warn('� Detected Apple Silicon(ARM64) Mac');
 // const _bindingsWork = awaitcheckSqliteBindings();
-    if (!bindingsWork) {
+    if(!bindingsWork) {
       console.warn('⚠  SQLite bindings not working for ARM64');
 // const _rebuildSuccess = awaitrebuildSqlite();
-      if (!rebuildSuccess) {
+      if(!rebuildSuccess) {
         console.warn('');
         console.warn('⚠  Unable to rebuild SQLite bindings for ARM64');
         console.warn('� Claude-Flow will fall back to in-memory storage');

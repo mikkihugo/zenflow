@@ -1,6 +1,6 @@
-import { EventEmitter } from 'node:events';'
-import { performance } from 'node:perf_hooks';'
-import { Logger } from '../utils/logger.js';'
+import { EventEmitter  } from 'node:events';'
+import { performance  } from 'node:perf_hooks';'
+import { Logger  } from '../utils/logger.js';'
 /**  */
  * @typedef {Object} Task
  * @property {string} id - Task ID
@@ -16,7 +16,7 @@ import { Logger } from '../utils/logger.js';'
  * @property {string} taskId - Task ID
  * @property {string} queenName - Queen name
  * @property {string} recommendation - Recommended solution
- * @property {number} confidence - Confidence score (0-1)
+ * @property {number} confidence - Confidence score(0-1)
  * @property {string} reasoning - Reasoning for solution
  * @property {number} processingTime - Processing time in ms
  * @property {string[]} [alternatives] - Alternative solutions
@@ -26,7 +26,7 @@ import { Logger } from '../utils/logger.js';'
  * @typedef {Object} Consensus
  * @property {string} taskId - Task ID
  * @property {string} decision - Consensus decision
- * @property {number} confidence - Confidence score (0-1)
+ * @property {number} confidence - Confidence score(0-1)
  * @property {number} participants - Number of participants
  * @property {'majority' | 'weighted' | 'expert' | 'unanimous'} method - Consensus method;'
  * @property {Result[]} [dissenting] - Dissenting opinions
@@ -44,10 +44,10 @@ import { Logger } from '../utils/logger.js';'
  * @property {number} consensusReached - Number of consensus reached
  */
 // Export the JSDoc types as empty exports so they can be imported
-// export const Task = /** @type {Task} */ ({})
-// export const Result = /** @type {Result} */ ({})
-// export const Consensus = /** @type {Consensus} */ ({})
-// export const QueenMetrics = /** @type {QueenMetrics} */ ({})
+// export const Task = /** @type {Task} */ ({  })
+// export const Result = /** @type {Result} */ ({  })
+// export const Consensus = /** @type {Consensus} */ ({  })
+// export const QueenMetrics = /** @type {QueenMetrics} */ ({  })
 
 // export class BaseQueen extends EventEmitter {
   constructor(name = name;
@@ -146,11 +146,11 @@ async;
 reachConsensus(task, results, method);
 
         switch(method) {
-            case 'unanimous':;'
+            case 'unanimous':'
                 // return this.unanimousConsensus(task, results);
-    // case 'expert':; // LINT: unreachable code removed'
+    // case 'expert': // LINT: unreachable code removed'
                 // return this.expertConsensus(task, results);
-    // case 'weighted':; // LINT: unreachable code removed'
+    // case 'weighted': // LINT: unreachable code removed'
                 // return this.weightedConsensus(task, results);default = results.map(r => r.recommendation);
         const _firstRec = recommendations[0];
 
@@ -165,7 +165,7 @@ reachConsensus(task, results, method);
             const _isExpert = current.queenName.toLowerCase().includes(task.type.split('-')[0]);'
             const _hasHigherConfidence = current.confidence > best.confidence;
 
-            // return (isExpert && hasHigherConfidence) ?current = > r.queenName !== expert.queenName);
+            // return(isExpert && hasHigherConfidence) ?current = > r.queenName !== expert.queenName);
     //   // LINT: unreachable code removed};
     //     }
 
@@ -220,12 +220,12 @@ reachConsensus(task, results, method);
         const _weight = result.confidence;
 
         // Boost weight if queen specialty matches task type
-        if (result.queenName.toLowerCase().includes(task.type.split('-')[0])) {'
+        if(result.queenName.toLowerCase().includes(task.type.split('-')[0])) {'
             weight *= 1.5
         //         }
 
 
-        // Boost weight for faster processing (efficiency bonus)
+        // Boost weight for faster processing(efficiency bonus)
         if(result.processingTime < 1000) {
             weight *= 1.1
         //         }
@@ -255,7 +255,7 @@ reachConsensus(task, results, method);
 
             for(const group of groups) {
                 const _representative = group[0];
-                if (this.calculateSimilarity(result.recommendation, representative.recommendation) > threshold) {
+                if(this.calculateSimilarity(result.recommendation, representative.recommendation) > threshold) {
                     group.push(result);
                     addedToGroup = true;
                     break;
@@ -281,7 +281,7 @@ reachConsensus(task, results, method);
             this.metrics.collaborations++;
 
             // Check if my recommendation influenced the consensus
-            if (this.calculateSimilarity(myResult.recommendation, consensus.decision) > 0.5) {
+            if(this.calculateSimilarity(myResult.recommendation, consensus.decision) > 0.5) {
                 this.metrics.consensusReached++;
             //             }
         //         }
@@ -302,12 +302,12 @@ reachConsensus(task, results, method);
     //     }
 
 
-    async calculateSuitability(task) {
+    async calculateSuitability(task) { 
         // Base suitability on specialty match
         const _suitability = 0.5; // Base suitability
 
         // Boost if specialty matches task type
-        if (this.specialty.includes(task.type.split('-')[0])) {'
+        if(this.specialty.includes(task.type.split('-')[0])) '
             suitability += 0.4;
         //         }
 
@@ -363,11 +363,11 @@ reachConsensus(task, results, method);
         // return this.isActive && this.workload < 0.95;
     //   // LINT: unreachable code removed}
 
-    async shutdown() {
-        this.logger.info(`Shutting down ${this.name}...`);`
+    async shutdown() { 
+        this.logger.info(`Shutting down $this.name}...`);`
         this.isActive = false;
 
-        // Wait for active tasks to complete (with timeout)
+        // Wait for active tasks to complete(with timeout)
         const _attempts = 0;
         while(this.activeTasks.size > 0 && attempts < 30) {
 // // // await new Promise(resolve => setTimeout(resolve, 1000));

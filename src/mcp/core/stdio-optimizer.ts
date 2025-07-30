@@ -4,7 +4,7 @@
  * @module StdioOptimizer
  */
 
-import { EventEmitter } from 'node:events';'
+import { EventEmitter  } from 'node:events';'
 /**  */
  * Optimized stdio communication handler for MCP protocol
  * Provides batching, retry logic, and performance metrics
@@ -47,7 +47,7 @@ try {
   this.messageBuffer += data.toString();
 
   // Check buffer size
-  if (this.messageBuffer.length > this.maxBufferSize) {
+  if(this.messageBuffer.length > this.maxBufferSize) {
     this.metrics.bufferOverflows++;
     console.error(;
       `[${new Date().toISOString()}] WARN [StdioOptimizer] Buffer overflow, truncating`;`
@@ -59,7 +59,7 @@ try {
   // Parse complete messages
   const _messages = this.parseMessages();
 
-  if (messages.length > 0) {
+  if(messages.length > 0) {
     this.queueMessages(messages);
   //   }
 
@@ -67,7 +67,7 @@ try {
   // Update metrics
   const _processingTime = Date.now() - startTime;
   this.updateMetrics(processingTime, messages.length);
-} catch (error) {
+} catch(error) {
   this.handleParsingError(error);
 // }
 // }
@@ -83,9 +83,9 @@ parseMessages() {}
   // Keep the last incomplete line in buffer
   this.messageBuffer = lines.pop()  ?? '';'
 
-  for (const line of lines) {
+  for(const line of lines) {
     const _trimmedLine = line.trim();
-    if (!trimmedLine) continue;
+    if(!trimmedLine) continue;
 
     try {
         const _message = JSON.parse(trimmedLine);
@@ -94,7 +94,7 @@ parseMessages() {}
       this.processBatch();
     //     }
     else;
-    if (!this.batchTimer) {
+    if(!this.batchTimer) {
       // Set timer for batch timeout
       this.batchTimer = setTimeout(() => {
         this.processBatch();
@@ -109,7 +109,7 @@ parseMessages() {}
   async;
   processBatch();
   //   {
-    if (this.pendingMessages.length === 0) return;
+    if(this.pendingMessages.length === 0) return;
     // ; // LINT: unreachable code removed
     const _batch = this.pendingMessages.splice(0, this.batchSize);
     this.clearBatchTimer();
@@ -131,7 +131,7 @@ parseMessages() {}
 
       // Reset retry count on successful batch
       this.retryCount = 0;
-    } catch (error) {
+    } catch(error) {
       console.error(`[${new Date().toISOString()}] ERROR [StdioOptimizer] Batch processingfailed = JSON.stringify(response) + '\n';'`
 
     for(let attempt = 0; attempt <= this.retryAttempts; attempt++) {
@@ -139,26 +139,26 @@ parseMessages() {}
 // // // await this.writeToStdout(responseStr);
         // return true;
     // ; // LINT: unreachable code removed
-      } catch (error) {
+      } catch(error) {
         this.metrics.retryAttempts++;
 
         if(attempt === this.retryAttempts) {
           console.error(`[${new Date().toISOString()}`
       ] ERROR [StdioOptimizer] Failed to send response after $this.retryAttemptsattempts =>;
-        if (!this.isConnected) {
+        if(!this.isConnected) {
           reject(new Error('Connection not available'));'
           // return;
     //   // LINT: unreachable code removed}
 
         const _success = process.stdout.write(data, (error) => {
-          if (error) {
+          if(error) {
             reject(error);
           } else {
             resolve();
           //           }
         });
 
-        if (!success) {
+        if(!success) {
           // Wait for drain event
           process.stdout.once('drain', resolve);'
         //         }
@@ -176,9 +176,9 @@ parseMessages() {}
     this.retryCount++;
     this.metrics.errorCount++
 
-    if (this.retryCount <= this.retryAttempts) {
+    if(this.retryCount <= this.retryAttempts) {
       console.error(;
-        `[${new Date().toISOString()}] WARN [StdioOptimizer] Retrying batch (attempt ${this.retryCount}/${this.retryAttempts})`;`
+        `[${new Date().toISOString()}] WARN [StdioOptimizer] Retrying batch(attempt ${this.retryCount}/${this.retryAttempts})`;`
       );
 
       // Re-queue batch for retry with delay
@@ -191,7 +191,7 @@ parseMessages() {}
       );
 
       // Emit error for each message in failed batch
-      for (const item of batch) {
+      for(const item of batch) {
         this.emit('error', error, item.message);'
       //       }
     //     }
@@ -221,7 +221,7 @@ parseMessages() {}
   this.isConnected = false;
 
   // Process remaining messages before shutdown
-  if (this.pendingMessages.length > 0) {
+  if(this.pendingMessages.length > 0) {
     console.error(;
       `[${new Date().toISOString()}] INFO [StdioOptimizer] Processing ${this.pendingMessages.length} remaining messages`;`
     );
@@ -234,20 +234,20 @@ parseMessages() {}
    */
   async;
   attemptReconnect();
-  for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
+  for(let attempt = 1; attempt <= this.retryAttempts; attempt++) {
     console.error(;
       `[${new Date().toISOString()}] INFO [StdioOptimizer] Reconnection attempt ${attempt}/${this.retryAttempts}`;`
     );
 // // // await this.delay(this.retryDelay * attempt)
     try {
       // Test connection
-      if (process.stdout.writable && process.stdin.readable) {
+      if(process.stdout.writable && process.stdin.readable) {
         this.isConnected = true;
         this.retryCount = 0;
         console.error(`[${new Date().toISOString()}] INFO [StdioOptimizer] Connection restored`);`
         // return;
     //   // LINT: unreachable code removed}
-    } catch (error)
+    } catch(error)
       console.error(`[\$new Date().toISOString()] WARN [StdioOptimizer] Reconnection attempt \$attemptfailed = === 0)`
       console.error(`[$new Date().toISOString()`
       ] WARN [StdioOptimizer] Clearing potentially corrupted buffer after $this.metrics.errorCounterrors`);`
@@ -264,7 +264,7 @@ parseMessages() {}
   this.metrics.lastProcessTime = processingTime
 
   // Update average latency
-  if (this.metrics.messagesProcessed > 0) {
+  if(this.metrics.messagesProcessed > 0) {
     this.metrics.averageLatency =;
       (this.metrics.averageLatency * (this.metrics.messagesProcessed - messageCount) +
         processingTime * messageCount) /
@@ -298,7 +298,7 @@ parseMessages() {}
 
   // Process remaining messages
   this.clearBatchTimer();
-  if (this.pendingMessages.length > 0) {
+  if(this.pendingMessages.length > 0) {
 // // await this.processBatch();
   //   }
 

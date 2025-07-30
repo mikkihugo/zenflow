@@ -3,13 +3,12 @@
  * Integration with local Ollama models for self-hosted AI;
  */
 
-import { BaseProvider } from './base-provider.js';
-import {
-  AIRequest,
+import { BaseProvider  } from './base-provider.js';
+import { AIRequest,
 AIResponse,
 ProviderCapabilities,
 ProviderConfig,
-ProviderError } from './types.js'
+ProviderError  } from './types.js'
 // // interface OllamaRequest {model = 'ollama'
 // version = '2024-07-29'
 // config = {enabled = {textGeneration = 'http = [];'
@@ -30,9 +29,9 @@ this.emitRequest(request);
 try {
   const _ollamaRequest = {model = // await this.makeRequest('/api/chat', ollamaRequest);
 
-  // Estimate token counts (Ollama doesn't always provide exact counts)'
+  // Estimate token counts(Ollama doesn't always provide exact counts)'
 
-  if (!reader) {
+  if(!reader) {
     throw new ProviderError('No response body', this.name);
   //   }
 
@@ -40,28 +39,28 @@ try {
   const _decoder = new TextDecoder();
   const _buffer = '';
 
-  while (true) {
+  while(true) {
     const { done, value } = // await reader.read();
-    if (done) break;
+    if(done) break;
 
     buffer += decoder.decode(value, {stream = buffer.split('\n');
     buffer = lines.pop()  ?? '';
 
-    for (const line of lines) {
-      if (line.trim()) {
+    for(const line of lines) {
+      if(line.trim()) {
         try {
           const _parsed = JSON.parse(line);
-          if (parsed.message?.content) {
+          if(parsed.message?.content) {
             yield parsed.message.content;
           //           }
-          if (parsed.done) {
+          if(parsed.done) {
             return;
     //   // LINT: unreachable code removed}
-        } catch (/* e */)
+        } catch(/* e */)
       //       }
     //     }
   //   }
-} catch (error)
+} catch(error)
   this.emitError(error, request);
   throw this.handleError(error);
 // }
@@ -72,7 +71,7 @@ getModels();
   try {
 // // await this.loadAvailableModels();
     // return [...this.availableModels];
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     // Return cached models if API call fails
     // return [...this.availableModels];
     //   // LINT: unreachable code removed}
@@ -89,19 +88,19 @@ getModels();
     const _models = response.models ?? [];
     this.availableModels = models.map((model) => model.name);
     // Cache model details
-    for (const model of models) {
+    for(const model of models) {
       this.modelCache.set(model.name, model);
     //     }
   //   }
-  catch (error)
+  catch(error)
   // If we can't load models, keep existing cache'
-  if (this.availableModels.length === 0) {
+  if(this.availableModels.length === 0) {
     throw new ProviderError('Cannot connect to Ollama service', this.name, 'CONNECTION_ERROR');
   //   }
 // }
 // private convertMessages(messages = []
 // Add system message first if provided
-if (systemPrompt) {
+if(systemPrompt) {
   result.push({role = === 'system' && !systemPrompt) {
         result.push({role = === 'user'  ?? msg.role === 'assistant') {
         result.push({role = 'POST'): Promise<any> {
@@ -109,14 +108,13 @@ if (systemPrompt) {
       options.body = JSON.stringify(data);
 // }
 // const _response = awaitfetch(`\$this.baseUrl\$endpoint`, options);
-if (!response.ok) {
+if(!response.ok) {
   throw // await this.createErrorFromResponse(response);
 // }
 // return response.json();
 // }
-// private // async
-createErrorFromResponse(response = await response.text() {}
-if (response.status === 404) {
+// private // async createErrorFromResponse(response = await response.text() { }
+if(response.status === 404) 
   // return new ProviderError('Ollama service not found', this.name, 'SERVICE_NOT_FOUND', 404);
 // }
 // return new ProviderError(;

@@ -3,10 +3,10 @@
  * Provides persistent storage that works with both local and remote npx execution
  */
 
-import { promises as fs } from 'node:fs';
+import { promises as fs  } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createDatabase } from './sqlite-wrapper';
+import { fileURLToPath  } from 'node:url';
+import { createDatabase  } from './sqlite-wrapper';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
@@ -29,7 +29,7 @@ this.cacheStats =
 // }
 /**
  * Determine the best directory for memory storage;
- * Uses .swarm directory in current working directory (consistent with hive-mind approach)
+ * Uses .swarm directory in current working directory(consistent with hive-mind approach)
  */
 private;
 _getMemoryDirectory();
@@ -48,11 +48,10 @@ _directoryExists(dir = await fs.stat(dir);
   // return false;
 // }
 // }
-// async
-initialize() {}
+// async initialize() { }
 : Promise<void>
-// {
-    if (this.isInitialized) return;
+// 
+    if(this.isInitialized) return;
     // ; // LINT: unreachable code removed
     try {
       // Ensure directory exists
@@ -89,7 +88,7 @@ initialize() {}
       'get',
       this.db.prepare(`;`
       SELECT * FROM memory_entries ;
-      WHERE key = ? AND namespace = ? AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'));
+      WHERE key = ? AND namespace = ? AND(expires_at IS NULL OR expires_at > strftime('%s', 'now'));
     `));`
 
     // List statement
@@ -97,7 +96,7 @@ initialize() {}
       'list',
       this.db.prepare(`;`
       SELECT * FROM memory_entries ;
-      WHERE namespace = ? AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'));
+      WHERE namespace = ? AND(expires_at IS NULL OR expires_at > strftime('%s', 'now'));
       ORDER BY updated_at DESC;
       LIMIT ?;
     `));`
@@ -114,8 +113,8 @@ initialize() {}
       'search',
       this.db.prepare(`;`
       SELECT * FROM memory_entries ;
-      WHERE namespace = ? AND (key LIKE ? OR value LIKE ?) ;
-      AND (expires_at IS NULL OR expires_at > strftime('%s', 'now'));
+      WHERE namespace = ? AND(key LIKE ? OR value LIKE ?) ;
+      AND(expires_at IS NULL OR expires_at > strftime('%s', 'now'));
       ORDER BY access_count DESC, updated_at DESC;
       LIMIT ?;
     `));`
@@ -156,14 +155,14 @@ run(key, valueStr, namespace, metadata, ttl, expiresAt);
 
     // Check cache first
     const _cached = this._getFromCache(cacheKey);
-    if (cached !== null) {
+    if(cached !== null) {
       // return cached;
     //   // LINT: unreachable code removed}
 
     try {
       const _row = this.statements.get('get').get(key, namespace);
 
-      if (!row) {
+      if(!row) {
         this._setCache(cacheKey, null, 60000); // Cache null results for 1 minute
         // return null;
     //   // LINT: unreachable code removed}
@@ -184,7 +183,7 @@ run(key, valueStr, namespace, metadata, ttl, expiresAt);
       this._setCache(cacheKey, result);
 
       // return result;
-    //   // LINT: unreachable code removed} catch (error = {}): Promise<any[]> {
+    //   // LINT: unreachable code removed} catch(error = {}): Promise<any[]> {
 // // await this.initialize();
     const _namespace = options.namespace  ?? 'default';
     const _limit = options.limit  ?? 100;
@@ -192,15 +191,14 @@ run(key, valueStr, namespace, metadata, ttl, expiresAt);
 
     // Check cache first
     const _cached = this._getFromCache(cacheKey);
-    if (cached !== null) {
+    if(cached !== null) {
       // return cached;
     //   // LINT: unreachable code removed}
 
     try {
       const _rows = this.statements.get('list').all(namespace, limit);
 
-      const _result = rows.map((row) => ({
-        key = {}): Promise<boolean> {
+      const _result = rows.map((row) => ({ key = { }): Promise<boolean> {
 // // await this.initialize();
     const _namespace = options.namespace  ?? 'default';
 
@@ -208,7 +206,7 @@ run(key, valueStr, namespace, metadata, ttl, expiresAt);
       const _result = this.statements.get('delete').run(key, namespace);
 
       // Invalidate related cache entries
-      if (result.changes > 0) {
+      if(result.changes > 0) {
         this._invalidateCache(`retrieve = {}): Promise<any[]> {`
 // // await this.initialize();
     const _namespace = options.namespace  ?? 'default';
@@ -218,7 +216,7 @@ run(key, valueStr, namespace, metadata, ttl, expiresAt);
 
     // Check cache first
     const _cached = this._getFromCache(cacheKey);
-    if (cached !== null) {
+    if(cached !== null) {
       // return cached;
     //   // LINT: unreachable code removed}
 
@@ -229,13 +227,13 @@ all(namespace, searchPattern, searchPattern, limit);
 
       const _result = rows.map((_row) => ({key = this.statements.get('cleanup').run();
       return result.changes;
-    //   // LINT: unreachable code removed} catch (_error = this.queryCache.get(cacheKey);
-    if (!cached) {
+    //   // LINT: unreachable code removed} catch(_error = this.queryCache.get(cacheKey);
+    if(!cached) {
       this.cacheStats.misses++;
       return null;
     //   // LINT: unreachable code removed}
 
-    if (Date.now() > cached.expires) {
+    if(Date.now() > cached.expires) {
       this.queryCache.delete(cacheKey);
       this.cacheStats.misses++;
       // return null;
@@ -246,7 +244,7 @@ all(namespace, searchPattern, searchPattern, limit);
     //   // LINT: unreachable code removed}
 
   // private _setCache(cacheKey = null) {
-    if (!this.options.enableCache) return;
+    if(!this.options.enableCache) return;
     // ; // LINT: unreachable code removed
     const _ttl = customTTL  ?? this.options.cacheTimeout!;
     const _expires = Date.now() + ttl;
@@ -262,9 +260,9 @@ all(namespace, searchPattern, searchPattern, limit);
 
 
   // private _invalidateCache(pattern = null) ;
-    if (pattern) {
-      for (const key of this.queryCache.keys()) {
-        if (key.includes(pattern)) {
+    if(pattern) {
+      for(const key of this.queryCache.keys()) {
+        if(key.includes(pattern)) {
           this.queryCache.delete(key);
         //         }
       //       }
@@ -275,7 +273,7 @@ all(namespace, searchPattern, searchPattern, limit);
     this.cacheStats.size = this.queryCache.size;
 
   close() ;
-    if (this.db) {
+    if(this.db) {
       this.db.close();
       this.db = null;
       this.isInitialized = false;
@@ -287,25 +285,25 @@ all(namespace, searchPattern, searchPattern, limit);
           COUNT(DISTINCT namespace) as namespaces,
           SUM(LENGTH(value)) as total_size,
           AVG(access_count) as avg_access_count,
-          COUNT(*) FILTER (WHERE expires_at IS NOT NULL AND expires_at > strftime('%s', 'now')) as active_with_ttl,
-          COUNT(*) FILTER (WHERE expires_at IS NOT NULL AND expires_at <= strftime('%s', 'now')) as expired;
+          COUNT(*) FILTER(WHERE expires_at IS NOT NULL AND expires_at > strftime('%s', 'now')) as active_with_ttl,
+          COUNT(*) FILTER(WHERE expires_at IS NOT NULL AND expires_at <= strftime('%s', 'now')) as expired;
         FROM memory_entries;
       `).get();`
 
       // return {entries = > idx.name);
-    //   // LINT: unreachable code removed};catch (error = ;
+    //   // LINT: unreachable code removed};catch(error = ;
 
       const _commonQueries = [
         {name = ? AND namespace = ?' },'
         {name = ? ORDER BY updated_at DESC LIMIT ?' },'
-        {name = ? AND (key LIKE ? OR value LIKE ?) LIMIT ?' },name = strftime(\'%s\', \'now\')' }
+        {name = ? AND(key LIKE ? OR value LIKE ?) LIMIT ?' },name = strftime(\'%s\', \'now\')' }
       ];
 
-      for (const query of commonQueries) {
+      for(const query of commonQueries) {
         try {
           const _plan = this.db?.prepare(`EXPLAIN QUERY PLAN ${query.sql}`).all();
           plans[query.name] = plan;
-        } catch (_error = error = new SqliteMemoryStore();
+        } catch(_error = error = new SqliteMemoryStore();
 
 // export type { SqliteMemoryStore };
 // export default SqliteMemoryStore;

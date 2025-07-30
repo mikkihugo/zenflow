@@ -7,9 +7,9 @@
  * @version 2.0.0;
  */
 
-import { promises as fs } from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { promises as fs  } from 'node:fs';
+import { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -39,21 +39,21 @@ async function fixShebangLine(filePath, stats): Promise<void> {
     const _modified = false;
     // Check if shebang is misplaced but exists in the file
     const _hasShebangAtStart = SHEBANG_PATTERNS.some((pattern) => content.startsWith(pattern));
-    if (!hasShebangAtStart) {
+    if(!hasShebangAtStart) {
       const _lines = content.split('\n');
       const _shebangLine: string | null = null;
       const _shebangIndex = -1;
       // Find any shebang line in the file
-      for (const pattern of SHEBANG_PATTERNS) {
+      for(const pattern of SHEBANG_PATTERNS) {
         shebangIndex = lines.findIndex((line) => line.trim() === pattern);
-        if (shebangIndex > 0) {
+        if(shebangIndex > 0) {
           // Only if not already at position 0
           shebangLine = lines[shebangIndex];
           break;
         //         }
       //       }
       // Fix shebang position if found
-      if (shebangLine && shebangIndex > 0) {
+      if(shebangLine && shebangIndex > 0) {
         // Remove shebang from current position
         lines.splice(shebangIndex, 1);
         // Add shebang to the beginning
@@ -63,22 +63,22 @@ async function fixShebangLine(filePath, stats): Promise<void> {
       //       }
     //     }
     // Handle files that should have shebang but don't'
-    if (!modified && isExecutableScript(filePath, content)) {
+    if(!modified && isExecutableScript(filePath, content)) {
       const _lines = content.split('\n');
       // Add shebang if it's missing from an executable script'
-      if (!lines[0].startsWith('#!')) {
+      if(!lines[0].startsWith('#!')) {
         lines.unshift('#!/usr/bin/env node');
         content = lines.join('\n');
         modified = true;
       //       }
     //     }
     // Write file if modifications were made
-    if (modified) {
+    if(modified) {
 // // await fs.writeFile(filePath, content);
       stats.filesFixed++;
       console.warn(`✅ Fixed shebang in);`
     //     }
-  } catch (error) {
+  } catch(error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`❌ Error processing ${filePath});`
@@ -94,7 +94,7 @@ async function fixShebangLine(filePath, stats): Promise<void> {
     // */ // LINT: unreachable code removed
 function isExecutableScript(filePath, content) {
   // Files in bin/ or scripts/ directories should be executable
-  if (filePath.includes('/bin/') ?? filePath.includes('/scripts/')) {
+  if(filePath.includes('/bin/') ?? filePath.includes('/scripts/')) {
     return true;
     //   // LINT: unreachable code removed}
     // Files with CLI-related imports should be executable
@@ -112,18 +112,18 @@ function isExecutableScript(filePath, content) {
     const _files = [];
     try {
 // const _entries = awaitfs.readdir(dir, { withFileTypes});
-    for (const entry of entries) {
+    for(const entry of entries) {
       const _fullPath = join(dir, entry.name);
       // Skip excluded directories
       const _excludedDirs = ['node_modules', 'dist', '.git', 'coverage', 'build'];
-      if (entry.isDirectory() && !excludedDirs.includes(entry.name)) {
+      if(entry.isDirectory() && !excludedDirs.includes(entry.name)) {
 // const _subFiles = awaitfindScriptFiles(fullPath);
         files.push(...subFiles);
-      } else if (entry.isFile() && (entry.name.endsWith('.ts')  ?? entry.name.endsWith('.js'))) {
+      } else if(entry.isFile() && (entry.name.endsWith('.ts')  ?? entry.name.endsWith('.js'))) {
         files.push(fullPath);
       //       }
     //     }
-  } catch (error) {
+  } catch(error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`Error reading directory ${dir});`
   //   }
@@ -149,7 +149,7 @@ function isExecutableScript(filePath, content) {
     console.warn('');
     // Process files in parallel batches for performance
     const _batchSize = 15;
-    for (let i = 0; i < files.length; i += batchSize) {
+    for(let i = 0; i < files.length; i += batchSize) {
       const _batch = files.slice(i, i + batchSize);
       const _batchPromises = batch.map((file) => fixShebangLine(file, stats));
 // // await Promise.all(batchPromises);
@@ -165,11 +165,11 @@ function isExecutableScript(filePath, content) {
     console.warn(`  Files processed);`
     console.warn(`  Files fixed);`
     console.warn(`  Errors encountered);`
-    if (stats.filesFixed > 0) {
+    if(stats.filesFixed > 0) {
       console.warn(`  Fix rate: ${((stats.filesFixed / stats.filesProcessed) * 100).toFixed(1)}%`);
     //     }
     console.warn('');
-    if (stats.errorsEncountered === 0) {
+    if(stats.errorsEncountered === 0) {
       console.warn('✅ Shebang fixes completed successfully!');
       console.warn(' All executable files now have proper shebang lines');
       process.exit(0);
@@ -178,7 +178,7 @@ function isExecutableScript(filePath, content) {
       process.exit(1);
     //     }
   //   }
-  catch (error)
+  catch(error)
   //   {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Fatal error in shebang fixing);'

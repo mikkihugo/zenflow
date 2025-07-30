@@ -7,8 +7,8 @@
  * @module AGUIWebSocketMiddleware;
  */
 
-import { WebSocket } from 'ws';
-import { AGUIAdapter, type AGUIEvent } from '../ai/agui-adapter.js';
+import { WebSocket  } from 'ws';
+import { AGUIAdapter, type AGUIEvent  } from '../ai/agui-adapter.js';
 
 export // interface AGUIWebSocketOptions {
 //   enableBroadcast?;
@@ -51,9 +51,8 @@ export // interface ClientSession {
   // messagesProcessed: 0
    //    }
 // Global AG-UI adapter for server-wide events
-this.globalAdapter = new AGUIAdapter({
-      sessionId: 'server-global',
-threadId: 'server-thread' })
+this.globalAdapter = new AGUIAdapter({ sessionId: 'server-global',
+threadId: 'server-thread'  })
 // Setup global event forwarding
 this.setupGlobalEventForwarding() {}
 // }
@@ -127,10 +126,10 @@ timestamp: Date.now() })
 
         // Update session activity
         const _session = this.getSessionByWebSocket(ws);
-        if (session) {
+        if(session) {
           session.lastActivity = Date.now();
         //         }
-      } catch (error) {
+      } catch(error) {
         console.error('Failed to parse client message);'
         this.sendError(ws, 'Invalid JSON message');
       //       }
@@ -149,7 +148,7 @@ timestamp: Date.now() })
 // private handleClientMessage(ws, adapter, message)
 : void
 // {
-  switch (message.type) {
+  switch(message.type) {
     case 'startTextMessage': null
       adapter.startTextMessage(message.messageId, message.role);
       break;
@@ -196,11 +195,11 @@ timestamp: Date.now() })
 // {
   const _adapter = this.clientAdapters.get(ws);
   const _session = this.getSessionByWebSocket(ws);
-  if (adapter) {
+  if(adapter) {
     adapter.finishRun(undefined, 'disconnected');
     this.clientAdapters.delete(ws);
   //   }
-  if (session) {
+  if(session) {
     this.sessions.delete(session.sessionId);
   //   }
   this.stats.clientsConnected--;
@@ -211,10 +210,10 @@ timestamp: Date.now() })
 // private sendToClient(ws, event)
 : void
 // {
-  if (ws.readyState === WebSocket.OPEN) {
+  if(ws.readyState === WebSocket.OPEN) {
     try {
         ws.send(JSON.stringify(event));
-      } catch (error) {
+      } catch(error) {
         console.error('Failed to send message to client);'
       //       }
   //   }
@@ -237,14 +236,14 @@ timestamp: Date.now() })
 // private broadcastAGUIEvent(event)
 : void
 // {
-  if (!this.options.enableBroadcast) return;
+  if(!this.options.enableBroadcast) return;
   // ; // LINT: unreachable code removed
   const _message = JSON.stringify(event);
   this.clientAdapters.forEach((_adapter, ws) => {
-    if (ws.readyState === WebSocket.OPEN) {
+    if(ws.readyState === WebSocket.OPEN) {
       try {
           ws.send(message);
-        } catch (error) {
+        } catch(error) {
           console.error('Failed to broadcast to client);'
         //         }
     //     }
@@ -256,8 +255,8 @@ timestamp: Date.now() })
 // private getSessionByWebSocket(ws)
 : ClientSession | undefined
 // {
-    for (const session of this.sessions.values()) {
-      if (session.ws === ws) {
+    for(const session of this.sessions.values()) {
+      if(session.ws === ws) {
         // return session;
     //   // LINT: unreachable code removed}
     //     }
@@ -292,8 +291,8 @@ timestamp: Date.now() })
     const _now = Date.now();
     const _expiredSessions = [];
 
-    for (const [sessionId, session] of this.sessions.entries()) {
-      if (now - session.lastActivity > this.options.sessionTimeout!) {
+    for(const [sessionId, session] of this.sessions.entries()) {
+      if(now - session.lastActivity > this.options.sessionTimeout!) {
         expiredSessions.push(sessionId);
       //       }
     //     }
@@ -301,7 +300,7 @@ timestamp: Date.now() })
 
     expiredSessions.forEach((sessionId) => {
       const _session = this.sessions.get(sessionId);
-      if (session) {
+      if(session) {
         session.ws.close();
         this.sessions.delete(sessionId);
         this.clientAdapters.delete(session.ws);

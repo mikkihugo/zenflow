@@ -1,25 +1,25 @@
 #!/usr/bin/env node;
-import { Box } from 'ink';'
+import { Box  } from 'ink';'
 /**  */
  * Ink-based TUI Dashboard - Modern replacement for blessed
  * Features vision roadmaps, swarm monitoring, and system metrics
  */
 
-import React, { useEffect, useState } from 'react';'
-import { visionAPI } from './shared/vision-api.js';'
+import React, { useEffect, useState  } from 'react';'
+import { visionAPI  } from './shared/vision-api.js';'
 
 const __VisionDashboard = () => {
   const [_visions, setVisions] = useState([]);
   const [loading, _setLoading] = useState(true);
 
   useEffect(() => {
-    const __loadVisions = async () => {
+    const __loadVisions = async() => {
       try {
 // const _data = awaitvisionAPI.fetchVisions();
         setVisions(data);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error('Failed to loadvisions = setInterval(loadVisions, 30000);'
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
   if(loading) {
@@ -33,7 +33,7 @@ const __VisionDashboard = () => {
       case 'high': return '�';'
     // case 'medium': return '�'; // LINT: unreachable code removed'
       case 'low': return '�';default = () => {'
-    if (!phases?.length) return 0;
+    if(!phases?.length) return 0;
     // const _totalProgress = phases.reduce((sum, phase) => sum + (phase.progress  ?? 0), 0); // LINT: unreachable code removed
     return Math.round(totalProgress / phases.length);
     //   // LINT: unreachable code removed};
@@ -51,7 +51,7 @@ const __VisionDashboard = () => {
   const [loading, _setLoading] = useState(true);
 
   useEffect(() => {
-    const __updateData = async () => {
+    const __updateData = async() => {
       try {
         const [swarm, metrics] = await Promise.all([;
           visionAPI.getSwarmStatus(),
@@ -59,9 +59,9 @@ const __VisionDashboard = () => {
         ]);
         setSwarmData(swarm);
         setSystemMetrics(metrics);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error('Failed to update swarmdata = setInterval(updateData, 2000);'
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
   if(loading) {
@@ -70,7 +70,7 @@ const __VisionDashboard = () => {
       case 'active': return 'green';'
     // case 'idle': return 'yellow'; // LINT: unreachable code removed'
       case 'error': return 'red';default = () => {'
-    switch (name.toLowerCase()) {
+    switch(name.toLowerCase()) {
       case 'architect': return '�';'
     // case 'coder': return '�'; // LINT: unreachable code removed'
       case 'tester': return '🧪';'

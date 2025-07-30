@@ -4,7 +4,7 @@
  * with advanced features like distributed transactions, savepoints, and deadlock detection;
  */
 
-import { Transaction, type TransactionIsolation, type UUID } from '../types/database';
+import { Transaction, type TransactionIsolation, type UUID  } from '../types/database';
 // // interface TransactionOptions {
 //   isolation?;
 //   timeout?;
@@ -51,7 +51,7 @@ databaseIds =
       // Update stats
       this.transactionStats.totalTransactions++;
       this.transactionStats.activeTransactions++;
-      if (isDistributed) {
+      if(isDistributed) {
         this.transactionStats.distributedTransactions++;
       //       }
 
@@ -59,15 +59,15 @@ databaseIds =
       const _transaction = {id = {}
   ): Promise<QueryResult> {
     const _context = this.activeTransactions.get(transactionId);
-    if (!context) {
+    if(!context) {
       throw new Error(`Transaction notfound = = 'active') {`
-      throw new Error(`Transaction ${transactionId} is not active (state = Date.now() - context.startTime.getTime();`
+      throw new Error(`Transaction ${transactionId} is not active(state = Date.now() - context.startTime.getTime();`
       const _timeout = context.options.timeout  ?? this.options.defaultTimeout;
 
-      if (elapsed > timeout) {
+      if(elapsed > timeout) {
 // // await this.rollbackTransaction(transactionId);
         throw new Error(`Transaction timeoutexceeded = `${databaseId}:${query.sql  ?? query.type}`;`
-      if (context.options.deadlockDetection !== false) {
+      if(context.options.deadlockDetection !== false) {
 // // await this.acquireLock(context, lockKey);
       //       }
 
@@ -78,43 +78,43 @@ databaseIds =
       const __operation = {id = new Date();
 
       this.emit('transaction = this.activeTransactions.get(transactionId);'
-    if (!context) {
+    if(!context) {
       throw new Error(`Transaction notfound = = 'active') {`
       throw new Error(`Transaction ${transactionId} is not active`);
     //     }
 
 
-    if (context.savepoints.has(name)) {
+    if(context.savepoints.has(name)) {
       throw new Error(`Savepoint ${name} already exists in transaction ${transactionId}`);
     //     }
 
 
     console.warn(`� Creating savepoint = {name = // await this.databaseManager.getDatabase(databaseId);`
-        if (db && 'createSavepoint' in db) {
+        if(db && 'createSavepoint' in db) {
           // Create a dummy transaction object for the // interface
 //           const __dummyTransaction = {id = this.activeTransactions.get(transactionId);
-//     if (!context) {
+//     if(!context) {
 //       throw new Error(`Transaction notfound = = 'active') {`
 //       throw new Error(`Transaction ${transactionId} is not active`);
     //     }
 
 
     const _savepoint = context.savepoints.get(name);
-    if (!savepoint) {
+    if(!savepoint) {
       throw new Error(`Savepoint ${name} not found in transaction ${transactionId}`);
     //     }
 
 
     console.warn(`↩ Rolling back tosavepoint = // await this.databaseManager.getDatabase(databaseId);`
-        if (db && 'rollbackToSavepoint' in db) {
+        if(db && 'rollbackToSavepoint' in db) {
           const __dummyTransaction = {id = savepoint.createdAt.getTime();
       context.operations = context.operations.filter(_op => ;
         op.timestamp.getTime() <= savepointTime;
       );
 
       // Remove newer savepoints
-      for (const [spName, spInfo] of context.savepoints) {
-        if (spInfo.nestedLevel > savepoint.nestedLevel) {
+      for(const [spName, spInfo] of context.savepoints) {
+        if(spInfo.nestedLevel > savepoint.nestedLevel) {
           context.savepoints.delete(spName);
         //         }
       //       }
@@ -122,12 +122,12 @@ databaseIds =
 
       context.lastActivity = new Date();
       this.emit('savepoint = this.activeTransactions.get(transactionId);'
-    if (!context) {
+    if(!context) {
       throw new Error(`Transaction notfound = = 'active') {`
-      throw new Error(`Transaction ${transactionId} is not active (state = 'committing';`
+      throw new Error(`Transaction ${transactionId} is not active(state = 'committing';`
 
     try {
-      if (context.isDistributed) {
+      if(context.isDistributed) {
 // // await this.commitDistributedTransaction(context);
       } else {
 // // await this.commitSingleTransaction(context, context.databaseIds[0]);
@@ -147,11 +147,11 @@ databaseIds =
 
       this.emit('transaction = 'failed';'
       this.emit('transaction = this.activeTransactions.get(transactionId);'
-    if (!context) {
+    if(!context) {
       throw new Error(`Transaction notfound = 'rolling_back';`
 
     try {
-      if (context.isDistributed) {
+      if(context.isDistributed) {
 // // await this.rollbackDistributedTransaction(context);
       } else {
 // // await this.rollbackSingleTransaction(context, context.databaseIds[0]);
@@ -171,41 +171,41 @@ databaseIds =
 
       this.emit('transaction = 'failed';'
       this.emit('transaction = this.activeTransactions.get(transactionId);'
-    if (!context) {
+    if(!context) {
       // return null;
     //   // LINT: unreachable code removed}
 
-    // return {id = > ({id = Array.from(this.activeTransactions.keys()).map(async (transactionId) => {
+    // return {id = > ({id = Array.from(this.activeTransactions.keys()).map(async(transactionId) => {
       try {
 // await this.rollbackTransaction(transactionId);
-    //   // LINT: unreachable code removed} catch (error = Date.now();
+    //   // LINT: unreachable code removed} catch(error = Date.now();
     const _maxDuration = this.options.maxTransactionDuration;
     const _expiredTransactions = [];
 
-    for (const [transactionId, context] of this.activeTransactions) {
+    for(const [transactionId, context] of this.activeTransactions) {
       const _elapsed = now - context.startTime.getTime();
-      if (elapsed > maxDuration) {
+      if(elapsed > maxDuration) {
         expiredTransactions.push(transactionId);
       //       }
     //     }
 
 
-    for (const transactionId of expiredTransactions) {
+    for(const transactionId of expiredTransactions) {
       try {
 // // await this.rollbackTransaction(transactionId);
         this.transactionStats.timeoutCount++;
         console.warn(`⏰ Rolled back expiredtransaction = // await this.databaseManager.getDatabase(databaseId);`
-    if (!db) {
+    if(!db) {
       throw new Error(`Database notfound = // await this.databaseManager.getDatabase(databaseId);`
-    if (db && 'commitTransaction' in db) {
-      const _dummyTransaction = {id = context.databaseIds.map(async (databaseId) => {
+    if(db && 'commitTransaction' in db) {
+      const _dummyTransaction = {id = context.databaseIds.map(async(databaseId) => {
       // In a real implementation, this would send PREPARE messages
       return this.prepareTransaction(context, databaseId);
     //   // LINT: unreachable code removed});
 
     try {
 // // await Promise.all(preparePromises);
-    } catch (error) {
+    } catch(error) {
       // If prepare fails, rollback all
 // // await this.rollbackDistributedTransaction(context);
       throw error;
@@ -220,7 +220,7 @@ databaseIds =
 
 
   // private async rollbackSingleTransaction(context = // await this.databaseManager.getDatabase(databaseId);
-    if (db && 'rollbackTransaction' in db) {
+    if(db && 'rollbackTransaction' in db) {
       const _dummyTransaction = {id = context.databaseIds.map(databaseId =>;
       this.rollbackSingleTransaction(context, databaseId);
     );
@@ -231,7 +231,7 @@ databaseIds =
   // private async prepareTransaction(context = Date.now() - context.startTime.getTime();
     const _total = this.transactionStats.committedTransactions + this.transactionStats.rolledBackTransactions;
 
-    if (total === 1) {
+    if(total === 1) {
       this.transactionStats.averageDuration = duration;
     } else {
       this.transactionStats.averageDuration = ;
@@ -241,16 +241,16 @@ databaseIds =
 
 
   // private startDeadlockDetection() {
-    this.deadlockCheckInterval = setInterval(async () => {
+    this.deadlockCheckInterval = setInterval(async() => {
       try {
 // await this.detectDeadlocks();
-      } catch (error = Array.from(this.activeTransactions.values());
+      } catch(error = Array.from(this.activeTransactions.values());
 filter(context => context.state === 'active' && context.locks.size > 0);
 
     // Check for circular wait conditions
-    for (const transaction of waitingTransactions) {
+    for(const transaction of waitingTransactions) {
       const _age = Date.now() - transaction.startTime.getTime();
-      if (age > this.options.defaultTimeout * 2) {
+      if(age > this.options.defaultTimeout * 2) {
         console.warn(`⚠ Potential deadlock detected for transaction);`
         this.transactionStats.deadlockCount++;
         this.emit('deadlock);'
@@ -258,7 +258,7 @@ filter(context => context.state === 'active' && context.locks.size > 0);
         // Rollback the youngest transaction
         try {
 // // await this.rollbackTransaction(transaction.id);
-        } catch (error) {
+        } catch(error) {
           console.error(`Failed to rollback deadlocked transaction);`
         //         }
       //       }
@@ -279,7 +279,7 @@ filter(context => context.state === 'active' && context.locks.size > 0);
     console.warn('� Shutting down transaction manager...');
 
     // Stop deadlock detection
-    if (this.deadlockCheckInterval) {
+    if(this.deadlockCheckInterval) {
       clearInterval(this.deadlockCheckInterval);
     //     }
 

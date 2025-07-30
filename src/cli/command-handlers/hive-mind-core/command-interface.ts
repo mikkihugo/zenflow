@@ -5,7 +5,7 @@
  */
 
 import chalk from 'chalk';
-import { HelpFormatter } from '../../help-formatter.js';
+import { HelpFormatter  } from '../../help-formatter.js';
 /**
  * Display comprehensive help for hive mind system;
  */
@@ -19,7 +19,7 @@ ${chalk.bold('USAGE = parseFlags(rawFlags);'
   if(!handler) {
     throw new Error(`Unknownsubcommand = new HelpFormatter();`
   const _usageInfo = {init = usageInfo[subcommand];
-  if (info) {
+  if(info) {
     formatter.displayUsage(info.usage, info.description, info.options);
   } else {
     console.warn(chalk.red(`No usage information available for));`

@@ -1,8 +1,8 @@
 // swarm-orchestrator.js - Comprehensive swarm orchestration using ruv-swarm library
 
-import { RuvSwarm } from '../../../ruv-FANN/ruv-swarm/npm/src/index.js';
-import { SqliteMemoryStore } from '../../memory/sqlite-store.js';
-import { printInfo } from '../utils.js';
+import { RuvSwarm  } from '../../../ruv-FANN/ruv-swarm/npm/src/index.js';
+import { SqliteMemoryStore  } from '../../memory/sqlite-store.js';
+import { printInfo  } from '../utils.js';
 /**  */
  * Advanced Swarm Orchestration System
  * Leverages ruv-swarm library v1.0.18 with full integration
@@ -26,8 +26,8 @@ initialize();
 // {
   try {
       // Initialize memory store
-      this.memoryStore = new SqliteMemoryStore({dbName = new RuvSwarm({
-        memoryStore = {}) {
+      this.memoryStore = new SqliteMemoryStore({ dbName = new RuvSwarm({
+        memoryStore = { }) {
     if(!this._ruvSwarm) {
       throw new Error('Orchestrator not initialized. Call initialize() first.');
     //     }
@@ -83,19 +83,19 @@ initialize();
           agents.push({type = === 'high') {
       agents.push({type = // await swarm.spawn(agentSpec.type, {id = objective.toLowerCase();
 
-    if (obj.includes('github')  ?? obj.includes('pr')  ?? obj.includes('pull request')  ?? obj.includes('repository')) {
+    if(obj.includes('github')  ?? obj.includes('pr')  ?? obj.includes('pull request')  ?? obj.includes('repository')) {
       // return 'github';
-    //   // LINT: unreachable code removed} else if (obj.includes('api')  ?? obj.includes('code')  ?? obj.includes('develop')  ?? obj.includes('build')  ?? obj.includes('implement')) {
+    //   // LINT: unreachable code removed} else if(obj.includes('api')  ?? obj.includes('code')  ?? obj.includes('develop')  ?? obj.includes('build')  ?? obj.includes('implement')) {
       // return 'development';
-    //   // LINT: unreachable code removed} else if (obj.includes('research')  ?? obj.includes('analyze')  ?? obj.includes('study')  ?? obj.includes('investigate')) {
+    //   // LINT: unreachable code removed} else if(obj.includes('research')  ?? obj.includes('analyze')  ?? obj.includes('study')  ?? obj.includes('investigate')) {
       // return 'research';
-    //   // LINT: unreachable code removed} else if (obj.includes('deploy')  ?? obj.includes('ci/cd')  ?? obj.includes('devops')  ?? obj.includes('pipeline')) {
+    //   // LINT: unreachable code removed} else if(obj.includes('deploy')  ?? obj.includes('ci/cd')  ?? obj.includes('devops')  ?? obj.includes('pipeline')) {
       // return 'devops';
-    //   // LINT: unreachable code removed} else if (obj.includes('performance')  ?? obj.includes('bottleneck')  ?? obj.includes('optimize')  ?? obj.includes('metrics')) {
+    //   // LINT: unreachable code removed} else if(obj.includes('performance')  ?? obj.includes('bottleneck')  ?? obj.includes('optimize')  ?? obj.includes('metrics')) {
       // return 'analysis';
-    //   // LINT: unreachable code removed} else if (obj.includes('test')  ?? obj.includes('qa')  ?? obj.includes('quality')) {
+    //   // LINT: unreachable code removed} else if(obj.includes('test')  ?? obj.includes('qa')  ?? obj.includes('quality')) {
       // return 'testing';
-    //   // LINT: unreachable code removed} else if (obj.includes('document')  ?? obj.includes('write')  ?? obj.includes('spec')) {
+    //   // LINT: unreachable code removed} else if(obj.includes('document')  ?? obj.includes('write')  ?? obj.includes('spec')) {
       // return 'documentation';
     //   // LINT: unreachable code removed} else {
       // return 'general';
@@ -109,8 +109,8 @@ initialize();
   analyzeComplexity(objective) {
     const _indicators = {high = objective.toLowerCase();
 
-    for (const [level, words] of Object.entries(indicators)) {
-      if (words.some(word => obj.includes(word))) {
+    for(const [level, words] of Object.entries(indicators)) {
+      if(words.some(word => obj.includes(word))) {
         return level;
     //   // LINT: unreachable code removed}
     //     }
@@ -124,12 +124,12 @@ initialize();
  * Select optimal topology based on task characteristics
    */
   selectOptimalTopology(complexity, domain, options) {
-    if (options.topology) return options.topology;
+    if(options.topology) return options.topology;
     // ; // LINT: unreachable code removed
     switch(complexity) {
-      case 'high':;
+      case 'high':
         // return domain === 'research' ? 'mesh' : 'hierarchical';
-    // case 'medium':; // LINT: unreachable code removed
+    // case 'medium': // LINT: unreachable code removed
         // return domain === 'github'  ?? domain === 'devops' ? 'star' : 'hierarchical';
     // default = {high = {high = null) { // LINT: unreachable code removed
     if(swarmId) {
@@ -147,7 +147,7 @@ initialize();
 
     // Return status of all swarms
     const _allStatus = {};
-    for (const [id, swarm] of this.activeSwarms.entries()) {
+    for(const [id, swarm] of this.activeSwarms.entries()) {
       allStatus[id] = // await this.buildSwarmStatusInfo(swarm);
     //     }
 
@@ -172,7 +172,7 @@ initialize();
   /**  */
  * Load persisted swarms from memory
    */
-  async loadPersistedSwarms() {
+  async loadPersistedSwarms() { 
     // This would load swarms from the database that were persisted
     // For now, start with empty state
     printInfo(' Loading persisted swarms from memory...');
@@ -182,15 +182,14 @@ initialize();
   /**  */
  * Neural learning integration
    */
-  async learnFromOrchestration(swarmId, taskId, outcome) {
-    if (!this.config.enableNeuralLearning) return;
+  async learnFromOrchestration(swarmId, taskId, outcome) 
+    if(!this.config.enableNeuralLearning) return;
     // ; // LINT: unreachable code removed
     try {
       const _swarm = this.activeSwarms.get(swarmId);
       if(swarm && this.ruvSwarm) {
         // Use ruv-swarm's built-in neural learning'
-// // await this.ruvSwarm.learn({
-          swarmId,
+// // await this.ruvSwarm.learn({ swarmId,
           taskId,
           outcome,patterns = = false,timestamp = // await this.generateSessionMetrics();
       // Store session summary
@@ -200,9 +199,9 @@ initialize();
     Date.now();
     `,`
         JSON.stringify({
-          sessionEndedAt = {}) {
+          sessionEndedAt = { }) {
     // Fire and forget - don't block main execution'
-    setTimeout(_async () => {
+    setTimeout(_async() => {
       try {
         const _optionsStr = Object.entries(options);
 map(([key, value]) => `--;`
@@ -222,7 +221,7 @@ join(' ');
     `, {stdio = > s.status === 'active').length;`
       },
       agents = {};
-    for (const agent of this.globalAgents.values()) {
+    for(const agent of this.globalAgents.values()) {
       byType[agent.type] = (byType[agent.type]  ?? 0) + 1;
     //     }
     // return byType;
@@ -251,7 +250,7 @@ join(' ');
     // Execute session-end coordination
 // // await this.executeSessionEndCoordination();
     // Save active swarms state
-    for (const [id, swarm] of this.activeSwarms.entries()) {
+    for(const [id, swarm] of this.activeSwarms.entries()) {
 // // await this.memoryStore.store(;
         `;`
     swarm / \$;

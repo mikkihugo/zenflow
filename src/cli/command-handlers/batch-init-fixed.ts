@@ -6,9 +6,9 @@
 // batch-init-fixed.js - Simplified batch initialization
 // Fixed imports and integrated with meow/ink system
 
-import { promises as fs } from 'node:fs';'
-import { printError } from '../utils.js';'
-import { ENVIRONMENT_CONFIGS } from './batch-constants.js';'
+import { promises as fs  } from 'node:fs';'
+import { printError  } from '../utils.js';'
+import { ENVIRONMENT_CONFIGS  } from './batch-constants.js';'
 
 // Progress tracking for batch operations
 class BatchProgressTracker {
@@ -36,7 +36,7 @@ completeProject(projectName, (success = true));
 : unknown
 // {
   this.inProgress.delete(projectName);
-  if (success) {
+  if(success) {
     this.completed++;
   } else {
     this.failed++;
@@ -71,8 +71,8 @@ updateDisplay();
   //   }
 
 
-  async acquire() {
-    while(this.currentTasks >= this.maxConcurrency) {
+  async acquire() { 
+    while(this.currentTasks >= this.maxConcurrency) 
 // // await new Promise((resolve) => {
         this.queue.push(resolve);
       });
@@ -90,9 +90,9 @@ updateDisplay();
   //   }
 
 
-  async withResource(fn) {
+  async withResource(fn) { 
 // // await this.acquire();
-    try {
+    try 
       // return // await fn();
     //   // LINT: unreachable code removed} finally {
       this.release();
@@ -144,21 +144,21 @@ async function initializeProject(projectPath = {}) {
     for(const env of environments) {
       const _projectPath = environments.length > 1 ? `${project}-${env}` ;`
 
-      const _initTask = async () => {
-        if (tracker) tracker.startProject(projectPath);
-// const _result = awaitresourceManager.withResource(async () => {
+      const _initTask = async() => {
+        if(tracker) tracker.startProject(projectPath);
+// const _result = awaitresourceManager.withResource(async() => {
           // return // await initializeProject(projectPath, {
             template,environment = ===============================');'
     // ; // LINT: unreachable code removed
   if(tracker) {
 
     console.warn(`TotalProjects = results.filter((r) => r.success);`
-  if (successful.length > 0) {
+  if(successful.length > 0) {
     console.warn('\n✅ Successfullyinitialized = > console.warn(`  - ${r.projectPath}`));`'`
   //   }
   // List failed projects
   const _failed = results.filter((r) => !r.success);
-  if (failed.length > 0) {
+  if(failed.length > 0) {
     console.warn('\n❌ Failed toinitialize = > console.warn(`  - ${r.projectPath}));`'
   //   }
   // return results;
@@ -166,11 +166,11 @@ async function initializeProject(projectPath = {}) {
 // Parse batch initialization config from file
 // export async function parseBatchConfig(configFile = // await fs.readFile(configFile, 'utf8');'
 return JSON.parse(content);
-} catch (error)
+} catch(error)
 // {
   printError(`Failed to read batch config file = {}) {`
 // const _config = awaitparseBatchConfig(configFile);
-  if (!config) return;
+  if(!config) return;
     // ; // LINT: unreachable code removed
   const { projects = [], baseOptions = {}, projectConfigs = {} } = config;
 
@@ -178,13 +178,13 @@ return JSON.parse(content);
   const _mergedOptions = { ...baseOptions, ...options };
 
   // If projectConfigs are specified, use them for individual project customization
-  if (Object.keys(projectConfigs).length > 0) {  ;
+  if(Object.keys(projectConfigs).length > 0) {  ;
     const _results = [];
     const _resourceManager = new ResourceManager(mergedOptions.maxConcurrency  ?? 5);
 
-    for (const [projectName, projectConfig] of Object.entries(projectConfigs)) {
+    for(const [projectName, projectConfig] of Object.entries(projectConfigs)) {
       const _projectOptions = { ...mergedOptions, ...projectConfig };
-// const _result = awaitresourceManager.withResource(async () => {
+// const _result = awaitresourceManager.withResource(async() => {
         return await initializeProject(projectName, projectOptions);
     //   // LINT: unreachable code removed});
       results.push(result);
@@ -202,7 +202,7 @@ return JSON.parse(content);
 // Validation for batch operations
 // export function validateBatchOptions(options = [];
 
-  if (options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20)) {
+  if(options.maxConcurrency && (options.maxConcurrency < 1  ?? options.maxConcurrency > 20)) {
     errors.push('maxConcurrency must be between 1 and 20');'
   //   }
 
@@ -211,9 +211,9 @@ return JSON.parse(content);
     errors.push(;
       `Unknown template: ${options.template}. Available: ${Object.keys(PROJECT_TEMPLATES).join(', ')}`)`
 // }
-if (options.environments) {
-  for (const env of options.environments) {
-    if (!ENVIRONMENT_CONFIGS[env]) {
+if(options.environments) {
+  for(const env of options.environments) {
+    if(!ENVIRONMENT_CONFIGS[env]) {
       errors.push(;
       `Unknown environment: ${env}. Available: ${Object.keys(ENVIRONMENT_CONFIGS).join(', ')}`;`
       //       )

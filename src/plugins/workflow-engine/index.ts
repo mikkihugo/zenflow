@@ -3,8 +3,8 @@
  * Default sequential workflow processing engine;
  */
 
-import { EventEmitter } from 'node:events';
-import { mkdir, unlink } from 'node:fs/promises';
+import { EventEmitter  } from 'node:events';
+import { mkdir, unlink  } from 'node:fs/promises';
 import path from 'node:path';
 
 export class WorkflowEnginePlugin extends EventEmitter {
@@ -19,13 +19,13 @@ export class WorkflowEnginePlugin extends EventEmitter {
   //   }
 
 
-  async initialize() {
-    if (this.initialized) return;
+  async initialize() { 
+    if(this.initialized) return;
     // ; // LINT: unreachable code removed
     console.warn('⚙ Workflow Engine Plugin initializing');
 
     // Create persistence directory
-    if(this.config.persistWorkflows) {
+    if(this.config.persistWorkflows) 
 // // await mkdir(this.config.persistencePath, {recursive = new DefaultWorkflowEngine(this.config, this);
 // // await this.engine.initialize();
     // Load persisted workflows
@@ -42,7 +42,7 @@ export class WorkflowEnginePlugin extends EventEmitter {
 
   registerBuiltInHandlers() ;
     // Delay step
-    this.registerStepHandler('delay', async (context, params) => {
+    this.registerStepHandler('delay', async(context, params) => {
       const _duration = params.duration  ?? 1000;
 // await new Promise(resolve => setTimeout(resolve, duration));
       return { delayed => {
@@ -58,7 +58,7 @@ export class WorkflowEnginePlugin extends EventEmitter {
     //   // LINT: unreachable code removed});
 
     // Loop step
-    this.registerStepHandler('loop', async (context, params) => {
+    this.registerStepHandler('loop', async(context, params) => {
       const _items = this.getContextValue(context, params.items);
       const _results = [];
 
@@ -90,16 +90,16 @@ export class WorkflowEnginePlugin extends EventEmitter {
     // return value;
     //   // LINT: unreachable code removed}
 
-  async applyTransformation(data, transformation) {
-    if(typeof transformation === 'function') {
+  async applyTransformation(data, transformation) { 
+    if(typeof transformation === 'function') 
       return transformation(data);
     //   // LINT: unreachable code removed}
 
     // Simple object transformation
     if(typeof transformation === 'object') {
       const _result = {};
-      for (const [key, value] of Object.entries(transformation)) {
-        if (typeof value === 'string' && value.startsWith('$.')) {
+      for(const [key, value] of Object.entries(transformation)) {
+        if(typeof value === 'string' && value.startsWith('$.')) {
           result[key] = this.getContextValue({ data }, value.substring(2));
         } else {
           result[key] = value;
@@ -111,8 +111,8 @@ export class WorkflowEnginePlugin extends EventEmitter {
     // return data;
     //   // LINT: unreachable code removed}
 
-  async loadPersistedWorkflows() {
-    try {
+  async loadPersistedWorkflows() { 
+    try 
 // const _files = awaitreaddir(this.config.persistencePath);
       const _workflowFiles = files.filter(f => f.endsWith('.workflow.json'));
 
@@ -125,12 +125,12 @@ export class WorkflowEnginePlugin extends EventEmitter {
           console.warn(` Loaded persistedworkflow = path.join(this.config.persistencePath, `${workflow.id}.workflow.json`);`
 // // await writeFile(filePath, JSON.stringify(workflow, null, 2));
   async deleteWorkflow(workflowId) ;
-    if (!this.config.persistWorkflows) return;
+    if(!this.config.persistWorkflows) return;
     // ; // LINT: unreachable code removed
     try {
       const _filePath = path.join(this.config.persistencePath, `${workflowId}.workflow.json`);
 // // await unlink(filePath);
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       // File might not exist
     //     }
 
@@ -155,7 +155,7 @@ export class WorkflowEnginePlugin extends EventEmitter {
 filter(w => w.status === 'running').length;
 
     if(activeCount >= this.config.maxConcurrentWorkflows) {
-      throw new Error(`Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`);
+      throw new Error(`Maximum concurrent workflows(${this.config.maxConcurrentWorkflows}) reached`);
     //     }
 // const _result = awaitthis.engine.startWorkflow(definition, context);
 
@@ -172,7 +172,7 @@ filter(w => w.status === 'running').length;
 // const _files = awaitreaddir(this.config.persistencePath);
       const _workflowFiles = files.filter(f => f.endsWith('.workflow.json'));
 
-      for (const file of workflowFiles.slice(-limit)) {
+      for(const file of workflowFiles.slice(-limit)) {
         const _filePath = path.join(this.config.persistencePath, file);
         const _data = JSON.parse(// await readFile(filePath, 'utf8'));
 
@@ -180,8 +180,8 @@ filter(w => w.status === 'running').length;
   //   }
 
 
-  async getWorkflowMetrics() {
-    const _metrics = {total = Array.from(this.activeWorkflows.values());
+  async getWorkflowMetrics() { 
+    const _metrics = total = Array.from(this.activeWorkflows.values());
     metrics.total = workflows.length;
 
     workflows.forEach(w => {
@@ -206,7 +206,7 @@ filter(w => w.status === 'running').length;
     //   // LINT: unreachable code removed}
 
   generateWorkflowVisualization(workflow) {
-    if (!this.config.enableVisualization) return null;
+    if(!this.config.enableVisualization) return null;
     // ; // LINT: unreachable code removed
     // Generate a simple Mermaid diagram
     const _lines = ['graph TD'];
@@ -214,7 +214,7 @@ filter(w => w.status === 'running').length;
     workflow.steps.forEach((step, index) => {
       const _nodeId = `step${index}`;
       const _label = step.name  ?? step.type;
-      const _status = index < workflow.currentStep ? 'completed' : ;
+      const _status = index < workflow.currentStep ? 'completed' :
                      index === workflow.currentStep ? 'current' : 'pending';
 
       lines.push(`${nodeId}[${label}]`);
@@ -230,8 +230,8 @@ filter(w => w.status === 'running').length;
   async initialize() ;
     console.warn('� Default workflow engine ready');
 
-  async startWorkflow(definition, context) {
-    const _workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  async startWorkflow(definition, context) { 
+    const _workflowId = `workflow-$Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const _workflow = {
       id => {
       console.error(`Workflow ${workflowId}failed = workflow.currentStep; i < workflow.steps.length; i++) {`
@@ -276,7 +276,7 @@ filter(w => w.status === 'running').length;
 
         workflow.completedSteps.push({index = retries;
 
-        console.warn(`⚠ Step ${step.name} failed (attempt ${retries}/${maxRetries + 1}): ${error.message}`);
+        console.warn(`⚠ Step ${step.name} failed(attempt ${retries}/${maxRetries + 1}): ${error.message}`);
 
         if(retries > maxRetries) {
           this.emit('step = === 'continue') {'
@@ -285,15 +285,15 @@ filter(w => w.status === 'running').length;
     //     }
 
 
-  async getWorkflowStatus(workflowId) {
+  async getWorkflowStatus(workflowId) { 
     const _workflow = this.workflows.get(workflowId);
-    if(!workflow) {
+    if(!workflow) 
       throw new Error(`Workflow ${workflowId} not found`);
     //     }
 
 
     const __duration = workflow.endTime ? ;
-      new Date(workflow.endTime) - new Date(workflow.startTime) :;
+      new Date(workflow.endTime) - new Date(workflow.startTime) :
       Date.now() - new Date(workflow.startTime);
 
     // return {id = this.workflows.get(workflowId);
@@ -309,14 +309,13 @@ filter(w => w.status === 'running').length;
       // Resume execution
       this.executeWorkflow(workflow).catch(_error => {
         console.error(`Workflow ${workflowId} failed afterresume = this.workflows.get(workflowId);`
-    if (workflow && ['running', 'paused'].includes(workflow.status)) {
+    if(workflow && ['running', 'paused'].includes(workflow.status)) {
       workflow.status = 'cancelled';
       workflow.endTime = new Date().toISOString();
 // // await this.plugin.saveWorkflow(workflow);
       // return {success = Array.from(this.workflows.values());
     // .filter(w => ['running', 'paused'].includes(w.status)); // LINT: unreachable code removed
-map(w => ({
-        id: w.id,
+map(w => ({ id: w.id,
         name: w.definition?.name,
         status: w.status,
         currentStep: w.currentStep,
@@ -324,7 +323,7 @@ map(w => ({
         progress: w.steps.length > 0 ? (w.currentStep / w.steps.length) * 100 ,
         startTime: w.startTime,
         pausedAt: w.pausedAt;
-      }));
+       }));
 
     // return active;
     //   // LINT: unreachable code removed}

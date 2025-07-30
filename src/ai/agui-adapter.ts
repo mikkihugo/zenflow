@@ -7,7 +7,7 @@
  * @module AGUIAdapter
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter  } from 'node:events';
 
 // Define types for AG-UI protocol events
 // export // interface AGUIEvent {
@@ -81,7 +81,7 @@ addTextContent(content, messageId?)
 : void
 // {
   const _id = messageId ?? this.currentMessageId;
-  if (!id) {
+  if(!id) {
     throw new Error('No active message. Call startTextMessage first.');'
   //   }
   const _event = {
@@ -93,7 +93,7 @@ addTextContent(content, messageId?)
    //    }
 // Update active message
 const _activeMessage = this.activeMessages.get(id);
-if (activeMessage) {
+if(activeMessage) {
   activeMessage.content += content;
 // }
 this._emitEvent(event);
@@ -105,7 +105,7 @@ endTextMessage(messageId?)
 : void
 // {
   const _id = messageId ?? this.currentMessageId;
-  if (!id) return;
+  if(!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
       type: 'textMessageEnd','
@@ -114,7 +114,7 @@ endTextMessage(messageId?)
   sessionId: this.sessionId,
    //    }
 this.activeMessages.delete(id);
-if (id === this.currentMessageId) {
+if(id === this.currentMessageId) {
   this.currentMessageId = null;
 // }
 this._emitEvent(event);
@@ -152,7 +152,7 @@ addToolCallArgs(args, toolCallId?)
 : void
 // {
   const _id = toolCallId ?? this.currentToolCallId;
-  if (!id) {
+  if(!id) {
     throw new Error('No active tool call. Call startToolCall first.');'
   //   }
   const _event = {
@@ -164,7 +164,7 @@ addToolCallArgs(args, toolCallId?)
    //    }
 // Update active tool call
 const _activeToolCall = this.activeToolCalls.get(id);
-if (activeToolCall) {
+if(activeToolCall) {
   activeToolCall.args = args;
 // }
 this._emitEvent(event);
@@ -176,7 +176,7 @@ endToolCall(toolCallId?)
 : void
 // {
   const _id = toolCallId ?? this.currentToolCallId;
-  if (!id) return;
+  if(!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
       type: 'toolCallEnd','
@@ -185,7 +185,7 @@ endToolCall(toolCallId?)
   sessionId: this.sessionId,
    //    }
 this.activeToolCalls.delete(id);
-if (id === this.currentToolCallId) {
+if(id === this.currentToolCallId) {
   this.currentToolCallId = null;
 // }
 this._emitEvent(event);
@@ -197,7 +197,7 @@ addToolCallResult(result, toolCallId?)
 : void
 // {
   const _id = toolCallId ?? this.currentToolCallId;
-  if (!id) return;
+  if(!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
       type: 'toolCallResult','
@@ -208,7 +208,7 @@ addToolCallResult(result, toolCallId?)
    //    }
 // Update active tool call
 const _activeToolCall = this.activeToolCalls.get(id);
-if (activeToolCall) {
+if(activeToolCall) {
   activeToolCall.result = result;
 // }
 this._emitEvent(event);

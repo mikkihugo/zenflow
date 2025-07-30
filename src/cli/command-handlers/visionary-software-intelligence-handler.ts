@@ -10,7 +10,7 @@ let hierarchicalTaskManagerPlugin;
 let hiveMindCore;
 let _mcpToolWrapper;
 async function _initializeMetaRegistry() {
-  if (!metaRegistryManager) {
+  if(!metaRegistryManager) {
     const { MetaRegistryManager, MemoryBackend } = await import(
       '../../coordination/meta-registry/meta-manager.js';
     //     )
@@ -44,7 +44,7 @@ default;
     hierarchicalTaskManagerPlugin = defaultRegistry.pluginSystem.getPlugin(;
     ('hierarchical-task-manager');
     //     )
-    if (!hierarchicalTaskManagerPlugin) {
+    if(!hierarchicalTaskManagerPlugin) {
       throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
     //     }
     // Initialize HiveMindCore and MCPToolWrapper
@@ -55,13 +55,13 @@ default;
 // // await hiveMindCore.initialize();
   //   }
 // }
-const __handleVisionCommand = async (subcommand, args, flags) => {
+const __handleVisionCommand = async(subcommand, args, flags) => {
   switch(subcommand) {
     case 'create': {
       console.warn('Creating vision...');
 // const __vision = awaithierarchicalTaskManagerPlugin.createVision({title = // await hierarchicalTaskManagerPlugin.approveVision(args[0], {approver_email = // await hierarchicalTaskManagerPlugin.getVision(args[0]);
       console.warn('VisionRoadmap = // await hierarchicalTaskManagerPlugin.listVisions(flags);'
-      console.warn('Visions = async (subcommand, args, flags) => {'
+      console.warn('Visions = async(subcommand, args, flags) => {'
   switch(subcommand) {
     case 'create': {
       console.warn('Creating ADR...');
@@ -75,7 +75,7 @@ const __handleVisionCommand = async (subcommand, args, flags) => {
       console.warn('Agentstatus = // await hiveMindCore.buildConsensus(;'
     // flags.topic  ?? args[0], // LINT: unreachable code removed
         flags.options ? flags.options.split(',') : []);
-      console.warn('MRAP reasoningexecuted = async (subcommand, args, flags) => {'
+      console.warn('MRAP reasoningexecuted = async(subcommand, args, flags) => {'
   switch(subcommand) {
     case 'analyze': {
       console.warn('🧠 Executing Visionary Software Intelligence analysis...');
@@ -85,28 +85,28 @@ const __handleVisionCommand = async (subcommand, args, flags) => {
   const _remainingArgs = subArgs.slice(2);
 
   switch(mainCommand) {
-    case 'vision':;
+    case 'vision':
 // // await _handleVisionCommand(subcommand, remainingArgs, flags);
       break;
-    case 'adr':;
+    case 'adr':
 // // await handleAdrCommand(subcommand, remainingArgs, flags);
       break;
-    case 'squad':;
+    case 'squad':
 // // await handleSquadCommand(subcommand, remainingArgs, flags);
       break;
-    case 'swarm':;
+    case 'swarm':
 // // await handleAdvancedSwarmCommand(subcommand, remainingArgs, flags);
       break;
-    case 'vsi':;
+    case 'vsi':
 // // await handleVsiCommand(subcommand, remainingArgs, flags);
       break;
-    default:;
+    default:
       console.warn(`;`
 Usage);
-  adr       Manage Architectural Decision Records (create, list);
-  squad     Manage development squads (assign-task);
-  swarm     Manage advanced swarm coordination (coordinate, agents, mrap);
-  vsi       Execute Visionary Software Intelligence workflows (analyze, progress, refactor)
+  adr       Manage Architectural Decision Records(create, list);
+  squad     Manage development squads(assign-task);
+  swarm     Manage advanced swarm coordination(coordinate, agents, mrap);
+  vsi       Execute Visionary Software Intelligence workflows(analyze, progress, refactor)
 
 Use 'claude-zen workflow <command> --help' for more details.;
       `);`

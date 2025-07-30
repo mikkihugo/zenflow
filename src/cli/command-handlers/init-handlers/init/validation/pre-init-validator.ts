@@ -19,7 +19,7 @@ checkPermissions();
 // // await node.mkdir(testDir);
 // // await node.remove(testDir);
 // }
-catch (error)
+catch(error)
 // {
   result.success = false;
   result.errors.push(`Insufficient permissions in ${this.workingDir});`
@@ -29,9 +29,8 @@ catch (error)
 /**  */
  * Check available disk space
  */
-// async
-checkDiskSpace() {}
-// {
+// async checkDiskSpace() { }
+// 
     const _result = {success = new node.Command('df', {args = await command.output();
 
       if(success) {
@@ -70,7 +69,7 @@ checkDiskSpace() {}
         if(stat.isDirectory) {
           // Check if directory has important content
           const _entries = [];
-          for // await (const entry of node.readDir(`${this.workingDir}/${dir}`)) {
+          for // await(const entry of node.readDir(`${this.workingDir}/${dir}`)) {
             entries.push(entry.name);
           //           }
 
@@ -99,8 +98,8 @@ checkDiskSpace() {}
   /**  */
  * Check environment variables and configuration
    */
-  async checkEnvironment() {
-    const _result = {success = [
+  async checkEnvironment() { 
+    const _result = success = [
       {name = node.env.get(envVar.name);
 
       if(value) {
@@ -136,8 +135,8 @@ checkDiskSpace() {}
   /**  */
  * Run all pre-initialization checks
    */
-  async runAllChecks(options = {}) {
-    const _results = {permissions = Object.values(results).every((r) => r.success);
+  async runAllChecks(options = {}) { 
+    const _results = permissions = Object.values(results).every((r) => r.success);
     const _allErrors = Object.values(results).flatMap((r) => r.errors  ?? []);
     const _allWarnings = Object.values(results).flatMap((r) => r.warnings  ?? []);
 

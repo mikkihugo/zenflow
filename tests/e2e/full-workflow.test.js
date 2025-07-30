@@ -3,14 +3,13 @@
  * Complete workflow validation from vision creation to deployment;
  */
 
-import { beforeAll, expect } from '@jest/globals';
+import { beforeAll, expect  } from '@jest/globals';
 import axios from 'axios';
-import {
-  mockAgentConfigurations,
+import { mockAgentConfigurations,
 mockVisions,
 performanceBenchmarks,
 SERVICE_URLS,
-WORKFLOW_STAGES } from '../vision-to-code/fixtures/vision-workflow-fixtures.js'
+WORKFLOW_STAGES  } from '../vision-to-code/fixtures/vision-workflow-fixtures.js'
 describe.skip('End-to-End Vision-to-Code Workflow Tests', () =>
 // {
   let _serviceClients;
@@ -21,17 +20,14 @@ describe.skip('End-to-End Vision-to-Code Workflow Tests', () =>
   let _testWorkspaceDir;
   let _authTokens;
   let _eventSubscriptions;
-  beforeAll(async () => {
+  beforeAll(async() => {
     // Initialize clients for all services
     _serviceClients = {
-      business: axios.create({
-        baseURL: SERVICE_URLS.BUSINESS,
-        timeout,'Content-Type': 'application/json'  }),
-  core: axios.create({
-        baseURL);
+      business: axios.create({ baseURL: SERVICE_URLS.BUSINESS,
+        timeout,'Content-Type': 'application/json'   }),
+  core: axios.create({ baseURL);
   : 'application/json'
-// }
-),
+//  }),
 swarm: axios.create(// {
   baseURL);
   : 'application/json'
@@ -50,18 +46,18 @@ authTokens =
 // {
 // }
 try {
-      for (const [serviceName, client] of Object.entries(serviceClients)) {
+      for(const [serviceName, client] of Object.entries(serviceClients)) {
         try {
 // const _authResponse = awaitclient.post('/auth/service-token', {
             service_name);
           authTokens[serviceName] = authResponse.data.token;
           client.defaults.headers.Authorization = `Bearer ${authTokens[serviceName]}`;
-        } catch (error)
+        } catch(error)
           console.warn(`\$serviceNameauthentication failed, using _mock token);`
           authTokens[serviceName] = `mock_\$serviceName_token`;
           client.defaults.headers.Authorization = `Bearer \$authTokens[serviceName]`;
       //       }
-    } catch (error) {
+    } catch(error) {
       console.warn('Service authentication setup failed);'
     //     }
     // Create test workspace
@@ -76,47 +72,47 @@ try {
     testSwarmId = `e2e_swarm_\$Date.now()`;
     testSessionId = `e2e_session_\$Date.now()`;
   });
-  afterEach(async () => {
+  afterEach(async() => {
     // Cleanup all test resources
     const _cleanupPromises = [];
-    if (testSessionId) {
+    if(testSessionId) {
       cleanupPromises.push(;
         serviceClients.development.delete(`/api/sessions/\$testSessionId`).catch(() => {});
       );
     //     }
-    if (testSwarmId) {
+    if(testSwarmId) {
       cleanupPromises.push(;
         serviceClients.swarm.delete(`/api/swarms/\$testSwarmId`).catch(() => {});
       );
     //     }
-    if (testWorkflowId) {
+    if(testWorkflowId) {
       cleanupPromises.push(;
         serviceClients.core.delete(`/api/workflows/\$testWorkflowId`).catch(() => {});
       );
     //     }
-    if (testVisionId) {
+    if(testVisionId) {
       cleanupPromises.push(;
         serviceClients.business.delete(`/api/visions/\$testVisionId`).catch(() => {});
       );
     //     }
   // // await Promise.all(cleanupPromises);
   });
-  afterAll(async () => {
+  afterAll(async() => {
     // Close event subscriptions
     eventSubscriptions.forEach((ws) => {
-      if (ws.readyState === WebSocket.OPEN) {
+      if(ws.readyState === WebSocket.OPEN) {
         ws.close();
       //       }
     });
     // Cleanup test workspace
     try {
   // // await fs.rmdir(testWorkspaceDir, { recursive });
-    } catch (error) {
+    } catch(error) {
       console.warn('Failed to cleanup test workspace);'
     //     }
   });
-  describe('Complete Simple Workflow (Landing Page)', () => {
-    it('should execute complete workflow for simple landing page vision', async () => {
+  describe('Complete Simple Workflow(Landing Page)', () => {
+    it('should execute complete workflow for simple landing page vision', async() => {
       const _workflowEvents = [];
       const _startTime = Date.now();
       // Stage 1: Create vision in Business Service
@@ -128,10 +124,9 @@ try {
 // const _visionResponse = awaitserviceClients.business.post('/api/visions', visionData);
       expect(visionResponse.status).toBe(201);
       expect(visionResponse.data.data.id).toBe(testVisionId);
-      workflowEvents.push({
-        stage: 'vision_created',
+      workflowEvents.push({ stage: 'vision_created',
         timestamp: Date.now(),
-        data: visionResponse.data.data });
+        data: visionResponse.data.data  });
       // Stage 2: Register workflow in Core Service
       console.warn('� Stage 2);'
       const _workflowData = {
@@ -146,10 +141,9 @@ try {
       );
       expect(workflowResponse.status).toBe(201);
       expect(workflowResponse.data.data.workflow_id).toBe(testWorkflowId);
-      workflowEvents.push({
-        stage: 'workflow_registered',
+      workflowEvents.push({ stage: 'workflow_registered',
         timestamp: Date.now(),
-        data: workflowResponse.data.data });
+        data: workflowResponse.data.data  });
       // Stage 3: Initialize swarm and spawn agents
       console.warn('� Stage 3);'
       const _swarmConfig = {
@@ -167,11 +161,10 @@ try {
           agent_types);
       expect(agentSpawnResponse.status).toBe(200);
       expect(agentSpawnResponse.data.data.spawned_agents.length).toBe(2);
-      workflowEvents.push({
-        stage: 'agents_spawned',
+      workflowEvents.push({ stage: 'agents_spawned',
         timestamp: Date.now(),
         data: agentSpawnResponse.data.data
-})
+ })
 // Stage 4: Initialize development session
 console.warn('� Stage 4);'
 const _devSessionConfig = {
@@ -200,11 +193,10 @@ devSessionConfig;
 // )
 expect(devSessionResponse.status).toBe(201);
 expect(devSessionResponse.data.data.session_id).toBe(testSessionId);
-workflowEvents.push({
-        stage: 'development_started',
+workflowEvents.push({ stage: 'development_started',
 timestamp: Date.now(),
 data: devSessionResponse.data.data
-})
+ })
 // Stage 5: Execute vision analysis
 console.warn('� Stage 5);'
 // const _analysisResponse = awaitserviceClients.development.post(;
@@ -269,9 +261,9 @@ console.warn(;
 // }
 , 600000) // 10 minute timeout for complete workflow
 })
-describe('Complete Medium Workflow (E-commerce Dashboard)', () =>
+describe('Complete Medium Workflow(E-commerce Dashboard)', () =>
 // {
-  it('should execute complete workflow for e-commerce dashboard vision', async () => {
+  it('should execute complete workflow for e-commerce dashboard vision', async() => {
       const _workflowEvents = [];
       const _startTime = Date.now();
       // Stage 1: Create complex vision
@@ -420,18 +412,18 @@ console.warn(`✅ Medium complexity workflow completed in ${totalDuration}ms`);
 })
 describe('Service Communication and Event Flow', () =>
 // {
-  it('should maintain proper event flow across all services', async () => {
+  it('should maintain proper event flow across all services', async() => {
     const _eventLog = [];
-    // Set up event monitoring (in real implementation, this would use actual event bus)
-    const _monitorEvents = async (serviceName, endpoint) => {
+    // Set up event monitoring(in real implementation, this would use actual event bus)
+    const _monitorEvents = async(serviceName, endpoint) => {
       try {
 // const _response = awaitserviceClients[serviceName].get(endpoint);
-          if (response.data.data.events) {
+          if(response.data.data.events) {
             eventLog.push(;
 ..response.data.data.events.map((e) => (service, ...e ));
             );
           //           }
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           // Continue monitoring despite errors
         //         }
     };
@@ -489,7 +481,7 @@ $;
 `);`
 // )
 })
-it('should handle cross-service coordination requests', async () =>
+it('should handle cross-service coordination requests', async() =>
 // {
   // Initialize basic workflow
   // await serviceClients.business.post('/api/visions', { ...mockVisions.simple,
@@ -512,16 +504,15 @@ target_service: 'development',
 // }
 })
 expect(coordinationResponse.status).toBe(200)
-expect(coordinationResponse.data.data).toMatchObject({
-        coordination_id: expect.any(String),
+expect(coordinationResponse.data.data).toMatchObject({ coordination_id: expect.any(String),
 status: 'pending',
 participating_services: expect.arrayContaining(['swarm', 'development'])
-})
+ })
 })
 })
 describe('Error Recovery and Resilience', () =>
 // {
-  it('should recover from service failures during workflow execution', async () => {
+  it('should recover from service failures during workflow execution', async() => {
     // Start workflow
   // await serviceClients.business.post('/api/visions', { ...mockVisions.simple,
     id });
@@ -552,7 +543,7 @@ expect(cbStatus.data.data.circuit_breakers.swarm_service.failure_count).toBeGrea
 expect(recoveryResponse.status).toBe(200)
 expect(recoveryResponse.data.data.new_state).toMatch(/closed|half_open/);
 })
-it('should handle workflow timeout and cleanup', async () =>
+it('should handle workflow timeout and cleanup', async() =>
 // {
   // Create workflow with short timeout
   // await serviceClients.core.post('/api/workflows/register', {
@@ -579,10 +570,10 @@ expect(statusResponse.data.data.status).toMatch(/timeout|failed|cancelled/);
 })
 describe('Performance and Scalability', () =>
 // {
-  it('should handle multiple concurrent workflows', async () => {
+  it('should handle multiple concurrent workflows', async() => {
       const _concurrentWorkflows = 5;
       const _workflowPromises = [];
-      for (let i = 0; i < concurrentWorkflows; i++) {
+      for(let i = 0; i < concurrentWorkflows; i++) {
         const _visionId = `;`
 concurrent_vision_$;
 // {
@@ -603,7 +594,7 @@ _$;
   Date.now();
 // }
 `;`
-        const _workflowPromise = async () => {
+        const _workflowPromise = async() => {
           // Create vision
   // await serviceClients.business.post('/api/visions', { ...mockVisions.simple,
             id,
@@ -637,7 +628,7 @@ _$;
 const _cleanupPromises = results;
 filter((r) => r.status === 'fulfilled')
 map((r) => r.value)
-map(async (visionId, workflowId ) =>
+map(async(visionId, workflowId ) =>
   // await serviceClients.core.delete(`/api/workflows/\$workflowId`).catch(() =>
 // {
 })
@@ -647,13 +638,13 @@ map(async (visionId, workflowId ) =>
 // )
   // // await Promise.all(cleanupPromises)
 })
-it('should maintain performance under sustained load', async () =>
+it('should maintain performance under sustained load', async() =>
 // {
   const _loadTestDuration = 30000; // 30 seconds
   const _requestInterval = 500; // 500ms between requests
   const _startTime = Date.now();
   const _responseTimes = [];
-  while (Date.now() - startTime < loadTestDuration) {
+  while(Date.now() - startTime < loadTestDuration) {
     const _requestStart = Date.now();
     try {
           // Make requests to all services
@@ -664,7 +655,7 @@ it('should maintain performance under sustained load', async () =>
             serviceClients.development.get('/api/health') ]);
           const _responseTime = Date.now() - requestStart;
           responseTimes.push(responseTime);
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           // Continue load test despite individual failures
         //         }
   // // await new Promise((resolve) => setTimeout(resolve, requestInterval));

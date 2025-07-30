@@ -32,17 +32,17 @@ class GitHubSafe {
    */
   static cleanupTempFile(filePath): unknown {
     try {
-      if (fs.existsSync(filePath)) {
+      if(fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       //       }
-    } catch (error) {
+    } catch(error) {
       console.warn('Failed to cleanup temp file = {}): unknown {
     const { timeout = GitHubSafe.TIMEOUT, input } = options;
 
     let _tempFile = null;
     try {
       // Handle input with special characters via temp file
-      if (input && (input.includes('\`')  ?? input.includes('$'))) {
+      if(input && (input.includes('\`')  ?? input.includes('$'))) {
         tempFile = GitHubSafe.createTempFile(input);
         args = args.map(arg => ;
           arg === '--body' ? \`--body-file=\${tempFile}\` ;
@@ -63,15 +63,15 @@ class GitHubSafe {
   /**  */
    * Create pull request safely
    */
-  static createPR({ title, body = '', base = 'main', head, draft = false }): unknown {
+  static createPR({ title, body = '', base = 'main', head, draft = false  }): unknown {
     const _args = ['pr', 'create', '--title', title, '--base', base];
 
-    if (head) args.push('--head', head);
-    if (draft) args.push('--draft');
+    if(head) args.push('--head', head);
+    if(draft) args.push('--draft');
 
     return GitHubSafe.execGhSafe(args, {input = null): unknown {
     const _args = ['repo', 'view'];
-    // if (repo) args.push(repo); // LINT: unreachable code removed
+    // if(repo) args.push(repo); // LINT: unreachable code removed
     args.push('--json', 'name,owner,defaultBranch');
 
     return GitHubSafe.execGhSafe(args);

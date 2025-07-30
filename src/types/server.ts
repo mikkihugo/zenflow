@@ -3,8 +3,8 @@
  * Types for unified server architecture with multiple protocol support
  */
 
-import type { Request } from 'express';
-import type { Identifiable } from './core.js';
+import type { Request  } from 'express';
+import type { Identifiable  } from './core.js';
 
 // =============================================================================
 // SERVER CORE TYPES

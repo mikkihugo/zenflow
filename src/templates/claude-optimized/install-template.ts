@@ -14,11 +14,11 @@ const _MANIFEST_PATH = path.join(__dirname, 'manifest.json');
 // Read manifest
 const _manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
 // Create destination directory
-if (!fs.existsSync(DEST_DIR)) {
+if(!fs.existsSync(DEST_DIR)) {
   fs.mkdirSync(DEST_DIR, {recursive = path.join(DEST_DIR, dirInfo.path);
-  if (!fs.existsSync(destPath)) {
+  if(!fs.existsSync(destPath)) {
     fs.mkdirSync(destPath, {recursive = path.join(destPath, 'README.md');
-    if (!fs.existsSync(readmePath)) {
+    if(!fs.existsSync(readmePath)) {
       fs.writeFileSync(;
       readmePath,
       `# ${dirName}\n\nThis directory is intentionally empty and will be populated during usage.\n`;
@@ -35,10 +35,10 @@ for(const file of manifest.files) {
   const _destPath = path.join(DEST_DIR, file.destination);
 
   try {
-    if (fs.existsSync(sourcePath)) {
+    if(fs.existsSync(sourcePath)) {
       // Ensure destination directory exists
       const _destDir = path.dirname(destPath);
-      if (!fs.existsSync(destDir)) {
+      if(!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir, {recursive = '.repeat(50));'
 console.warn('InstallationSummary = manifest.files.filter(;'
     (_f) => f.category === category && fs.existsSync(path.join(DEST_DIR, f.destination))).length;

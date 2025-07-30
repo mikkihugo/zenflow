@@ -1,9 +1,9 @@
 /**
- * Model Context Protocol (MCP) Types;
+ * Model Context Protocol(MCP) Types;
  * Types for MCP server integration and tool execution
  */
 
-import type { JSONObject } from './core.js';
+import type { JSONObject  } from './core.js';
 
 // =============================================================================
 // MCP CORE TYPES
@@ -29,11 +29,11 @@ export // interface MCPCapabilities {
   tools?: {
     listChanged?;
   };
-  // Roots capabilities (for client)
+  // Roots capabilities(for client)
   roots?: {
     listChanged?;
   };
-  // Sampling capabilities (for client)
+  // Sampling capabilities(for client)
   sampling?: {};
   // Experimental capabilities
   experimental?: Record<string, JSONObject>;
@@ -70,15 +70,15 @@ export // interface MCPCapabilities {
 // export type LoggingLevel = 'debug' | 'info' | 'notice' | 'warning' | 'error' | 'critical' | 'alert' | 'emergency'
 // 
 // export interface SetLevelRequest extends MCPRequest {method = ============================================================================
-// // COMPLETION (CLIENT TO SERVER)
+// // COMPLETION(CLIENT TO SERVER)
 // // =============================================================================
 // 
 // export interface CompleteRequest extends MCPRequest {method = ============================================================================
-// // ROOTS (CLIENT CAPABILITY)
+// // ROOTS(CLIENT CAPABILITY)
 // // =============================================================================
 // 
 // export interface Root {uri = ============================================================================
-// // SAMPLING (CLIENT CAPABILITY)
+// // SAMPLING(CLIENT CAPABILITY)
 // // =============================================================================
 // 
 // export interface CreateMessageRequest extends MCPRequest {method = ============================================================================

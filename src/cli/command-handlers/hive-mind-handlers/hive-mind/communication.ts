@@ -29,11 +29,11 @@ _initialize() {}
 
   this.emit('communication = {}) {'
   const _agent = {id = this.state.agents.get(agentId);
-  if (!agent) return;
+  if(!agent) return;
     // ; // LINT: unreachable code removed
   // Close channel
   const _channel = this.state.channels.get(agentId);
-  if (channel) {
+  if(channel) {
     channel.close();
     this.state.channels.delete(agentId);
   //   }
@@ -65,7 +65,7 @@ this.state.messageHistory.set(messageId, {
         resolve({ messageId, delivered => {
         clearTimeout(timeout);
         reject(error);
-      });
+       });
     });
   //   }
 
@@ -113,12 +113,12 @@ this.state.messageHistory.set(messageId, {
       const _envelope = {id = new Promise((resolve) => {
         this.once(`vote => {`
           votes.set(agentId, vote);
-          resolve({ agentId, vote });
+          resolve({ agentId, vote  });
         });
 
         // Timeout for vote
         setTimeout(() => {
-          if (!votes.has(agentId)) {
+          if(!votes.has(agentId)) {
             votes.set(agentId, null);
             resolve({ agentId, vote = {};
     const __totalVotes = 0;
@@ -144,11 +144,11 @@ this.state.messageHistory.set(messageId, {
     if(envelope.encrypted && this.config.encryption) {
       try {
         envelope.message = this._decrypt(envelope.message);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         this.emit('error', {type = envelope.message._gossip;
 
     // Check if we've seen this message'
-    if (gossipData.seen.includes(this.config.swarmId)) {
+    if(gossipData.seen.includes(this.config.swarmId)) {
       return;
     //   // LINT: unreachable code removed}
 
@@ -165,7 +165,7 @@ this.state.messageHistory.set(messageId, {
       selected.forEach((agentId) => {
 
     switch(phase) {
-      case 'propose':;
+      case 'propose':
         // Agent should vote on proposal
         this.emit('consensus = {id = new EventEmitter();'
 
@@ -231,7 +231,7 @@ this.state.messageHistory.set(messageId, {
  * Encrypt message
    */
   _encrypt(data) {
-    if (!this.encryptionKey) return data;
+    if(!this.encryptionKey) return data;
     // ; // LINT: unreachable code removed
     const _iv = crypto.randomBytes(16);
     const _cipher = crypto.createCipheriv('aes-256-cbc', this.encryptionKey, iv);

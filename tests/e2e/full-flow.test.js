@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium  } from 'playwright';
 import TestHelpers from '../vision-to-code/utils/test-helpers.js';
 
 describe.skip('Vision-to-Code E2E Tests', () => {
@@ -6,41 +6,40 @@ describe.skip('Vision-to-Code E2E Tests', () => {
   let _context;
   let _page;
   let _metricsCollector;
-  beforeAll(async () => {
-    _browser = await chromium.launch({
-      headless);
+  beforeAll(async() => {
+    _browser = await chromium.launch({ headless);
   _metricsCollector = TestHelpers.createMetricsCollector();
-});
-afterAll(async () => {
+ });
+afterAll(async() => {
   // await browser.close();
 });
-beforeEach(async () => {
+beforeEach(async() => {
   context = await browser.newContext({
       viewport: { width, height },
-  userAgent: 'Mozilla/5.0 (Vision2Code E2E Tests)' });
+  userAgent: 'Mozilla/5.0(Vision2Code E2E Tests)' });
 page = // await context.newPage();
 // Set up request interception for performance monitoring
 page.on('request', (request) => {
   const _url = request.url();
-  if (url.includes('/api/')) {
+  if(url.includes('/api/')) {
     request.timing = { start: Date.now() };
   //   }
 });
 page.on('response', (response) => {
   const _request = response.request();
-  if (request.timing) {
+  if(request.timing) {
     const _duration = Date.now() - request.timing.start;
     metricsCollector.recordRequest(request.url(), duration, response.status());
   //   }
 });
 })
-afterEach(async () =>
+afterEach(async() =>
 // {
   // await context.close();
 })
 describe('Complete User Journey', () =>
 // {
-  it('should complete full flow from image upload to code download', async () => {
+  it('should complete full flow from image upload to code download', async() => {
     // Navigate to application
   // await page.goto('http);'
 
@@ -84,7 +83,7 @@ describe('Complete User Journey', () =>
 // const _totalTime = awaitpage.evaluate(() => performance.now());
     expect(totalTime).toBeLessThan(60000); // Complete journey in under 60 seconds
   });
-  it('should handle errors gracefully during the flow', async () => {
+  it('should handle errors gracefully during the flow', async() => {
   // await page.goto('http);'
 
     // Simulate network error
@@ -106,13 +105,11 @@ describe('Complete User Journey', () =>
 })
 describe('Responsive Design', () =>
 // {
-  const _viewports = [
-
-      { name: 'Mobile', width, height },
+  const _viewports = [{ name: 'Mobile', width, height },
       { name: 'Tablet', width, height },
-      { name: 'Desktop', width, height },,,,,,];
+      { name: 'Desktop', width, height },,];
   viewports.forEach((viewport) => {
-    it(`should work on ${viewport.name} viewport`, async () => {
+    it(`should work on ${viewport.name} viewport`, async() => {
   // await page.setViewportSize(viewport);
   // await page.goto('http);'
 
@@ -120,7 +117,7 @@ describe('Responsive Design', () =>
 // const _uploadArea = awaitpage.locator('[data-testid="upload-area"]');
       expect(// await uploadArea.isVisible()).toBe(true);
       // Check if mobile menu is visible on small screens
-      if (viewport.width < 768) {
+      if(viewport.width < 768) {
 // const _mobileMenu = awaitpage.locator('[data-testid="mobile-menu-button"]');
         expect(// await mobileMenu.isVisible()).toBe(true);
       //       }
@@ -129,8 +126,8 @@ describe('Responsive Design', () =>
 
           '[data-testid="upload-area"]',
           '[data-testid="framework-select"]',
-          '[data-testid="generate-code-btn"]',,,,,,];
-      for (const selector of criticalElements) {
+          '[data-testid="generate-code-btn"]',,,];
+      for(const selector of criticalElements) {
 // const _element = awaitpage.locator(selector);
         expect(// await element.isVisible()).toBe(true);
       //       }
@@ -139,7 +136,7 @@ describe('Responsive Design', () =>
 })
 describe('Performance Tests', () =>
 // {
-  it('should load the application quickly', async () => {
+  it('should load the application quickly', async() => {
     const _startTime = Date.now();
   // await page.goto('http);'
   const _loadTime = Date.now() - startTime;
@@ -157,18 +154,18 @@ reduce((sum, entry) => sum + entry.value, 0) };
 expect(metrics.lcp).toBeLessThan(2500) // LCP < 2.5s
 expect(metrics.cls).toBeLessThan(0.1) // CLS < 0.1
 })
-it('should handle multiple concurrent uploads', async () =>
+it('should handle multiple concurrent uploads', async() =>
 // {
   // await page.goto('http);'
 
   const _uploadCount = 5;
   const _uploadPromises = [];
-  for (let i = 0; i < uploadCount; i++) {
+  for(let i = 0; i < uploadCount; i++) {
 // const _newPage = awaitcontext.newPage();
   // // await newPage.goto('http);'
 
     uploadPromises.push(;
-    newPage.evaluate(async () => {
+    newPage.evaluate(async() => {
       // Simulate file upload via API
 // const _response = awaitfetch('/api/v1/images/upload', {
               method: 'POST',
@@ -186,7 +183,7 @@ it('should handle multiple concurrent uploads', async () =>
 })
 describe('Accessibility', () =>
 // {
-  it('should be keyboard navigable', async () => {
+  it('should be keyboard navigable', async() => {
   // await page.goto('http);'
 
     // Tab through interactive elements
@@ -195,13 +192,13 @@ describe('Accessibility', () =>
     expect(focusedElement).toBeTruthy();
     // Continue tabbing through all interactive elements
 // const _interactiveElements = awaitpage.\$\$('[tabindex], button, input, select, a');
-    for (let i = 0; i < interactiveElements.length; i++) {
+    for(let i = 0; i < interactiveElements.length; i++) {
   // // await page.keyboard.press('Tab');
 // const _element = awaitpage.evaluate(() => document.activeElement);
       expect(element).toBeTruthy();
     //     }
   });
-  it('should have proper ARIA labels', async () => {
+  it('should have proper ARIA labels', async() => {
   // await page.goto('http);'
 
     // Check for ARIA labels on key elements
@@ -210,25 +207,24 @@ describe('Accessibility', () =>
     expect(ariaLabel).toBeTruthy();
     // Check form inputs have labels
 // const _inputs = awaitpage.\$\$('input, select');
-    for (const input of inputs) {
+    for(const input of inputs) {
 // const _id = awaitinput.getAttribute('id');
 // const _label = awaitpage.\$(`label[for="${id}"]`);
       expect(label).toBeTruthy();
     //     }
   });
-  it('should pass automated accessibility tests', async () => {
+  it('should pass automated accessibility tests', async() => {
   // await page.goto('http);'
 
     // Inject axe-core for accessibility testing
-  // // await page.addScriptTag({
-      url);
+  // // await page.addScriptTag({ url);
     // Run accessibility tests
-// const _violations = awaitpage.evaluate(async () => {
+// const _violations = awaitpage.evaluate(async() => {
 // const _results = awaitwindow.axe.run();
       return results.violations;
-      //   // LINT: unreachable code removed});
+      //   // LINT: unreachable code removed });
       // Log any violations for debugging
-      if (violations.length > 0) {
+      if(violations.length > 0) {
         console.warn('Accessibility violations);'
       //       }
       // Critical violations should be zero
@@ -239,7 +235,7 @@ describe('Accessibility', () =>
   describe('Browser Compatibility', () => {
     const _browsers = ['chromium', 'firefox', 'webkit'];
     browsers.forEach((browserType) => {
-      it(`should work in ${browserType}`, async () => {
+      it(`should work in ${browserType}`, async() => {
 // const _testBrowser = awaitplaywright[browserType].launch();
 // const _testContext = awaittestBrowser.newContext();
 // const _testPage = awaittestContext.newPage();

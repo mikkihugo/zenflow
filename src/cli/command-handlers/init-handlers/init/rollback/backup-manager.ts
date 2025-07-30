@@ -26,9 +26,9 @@ createBackup((type = 'manual'), (description = ''));
   result.location = backupPath;
 // // await this.ensureBackupDir();
 // // await node.mkdir(backupPath, { recursive = {id = // await this.getCriticalFiles();
-  for (const file of criticalFiles) {
+  for(const file of criticalFiles) {
 // const _backupResult = awaitthis.backupFile(file, backupPath);
-    if (backupResult.success) {
+    if(backupResult.success) {
       manifest.files.push(backupResult.fileInfo);
       result.files.push(file);
     } else {
@@ -51,9 +51,9 @@ createBackup((type = 'manual'), (description = ''));
       const _manifest = JSON.parse(manifestContent);
 
       // Restore files
-      for (const fileInfo of manifest.files) {
+      for(const fileInfo of manifest.files) {
 // const _restoreResult = awaitthis.restoreFile(fileInfo, backupPath);
-        if (restoreResult.success) {
+        if(restoreResult.success) {
           result.restored.push(fileInfo.originalPath);
         } else {
           result.warnings.push(`Failed to restorefile = // await this.restoreDirectory(dirInfo, backupPath);`
@@ -82,20 +82,20 @@ createBackup((type = 'manual'), (description = ''));
   /**  */
  * Delete a backup
    */
-  async deleteBackup(backupId) {
-    const _result = {success = `${this.backupDir}/${backupId}`;
+  async deleteBackup(backupId) { 
+    const _result = success = `${this.backupDir}/${backupId}`;
 // await node.remove(backupPath, {recursive = false;
       result.errors.push(`Failed to deletebackup = 5);`
 
           //           {
             const _result = {success = // await this.listBackups();
 
-            if (backups.length > keepCount) {
+            if(backups.length > keepCount) {
               const _toDelete = backups.slice(keepCount);
 
-              for (const backup of toDelete) {
+              for(const backup of toDelete) {
 // const _deleteResult = awaitthis.deleteBackup(backup.id);
-                if (deleteResult.success) {
+                if(deleteResult.success) {
                   result.cleaned.push(backup.id);
                 } else {
                   result.errors.push(...deleteResult.errors);
@@ -142,10 +142,10 @@ createBackup((type = 'manual'), (description = ''));
             'claude-zen',
             'memory/claude-zen-data.json' ];
 
-          for (const file of potentialFiles) {
+          for(const file of potentialFiles) {
             try {
 // const _stat = awaitnode.stat(`${this.workingDir}/${file}`);
-              if (stat.isFile) {
+              if(stat.isFile) {
                 files.push(file);
               //               }
             } catch {
@@ -168,10 +168,10 @@ createBackup((type = 'manual'), (description = ''));
             'memory/sessions',
             'coordination' ];
 
-          for (const dir of potentialDirs) {
+          for(const dir of potentialDirs) {
             try {
 // const _stat = awaitnode.stat(`${this.workingDir}/${dir}`);
-              if (stat.isDirectory) {
+              if(stat.isDirectory) {
                 dirs.push(dir);
               //               }
             } catch {
@@ -217,13 +217,13 @@ createBackup((type = 'manual'), (description = ''));
       // return result;
     //   // LINT);
 
-    for // await (const entry of node.readDir(source)) {
+    for // await(const entry of node.readDir(source)) {
       const _sourcePath = `${source}/${entry.name}`;
       const _destPath = `${dest}/${entry.name}`;
 
-      if (entry.isFile) {
+      if(entry.isFile) {
 // // await node.copyFile(sourcePath, destPath);
-      } else if (entry.isDirectory) {
+      } else if(entry.isDirectory) {
 // // await this.copyDirectoryRecursive(sourcePath, destPath);
       //       }
     //     }
@@ -264,13 +264,13 @@ createBackup((type = 'manual'), (description = ''));
     const _totalSize = 0;
 
     try {
-      for // await (const entry of node.readDir(backupPath)) {
+      for // await(const entry of node.readDir(backupPath)) {
         const _entryPath = `${backupPath}/${entry.name}`;
 // const _stat = awaitnode.stat(entryPath);
 
-        if (stat.isFile) {
+        if(stat.isFile) {
           totalSize += stat.size;
-        } else if (stat.isDirectory) {
+        } else if(stat.isDirectory) {
           totalSize += // await this.calculateBackupSize(entryPath);
         //         }
       //       }
@@ -286,17 +286,17 @@ createBackup((type = 'manual'), (description = ''));
   createTestBackup();
   try {
     // return await this.createBackup('test', 'System validation test');
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     // return {
         success = {adequate = new Command('df', {args = // await command.output();
     // ; // LINT: unreachable code removed
-    if (success) {
+    if(success) {
       const _output = new TextDecoder().decode(stdout);
       const _lines = output.trim().split('\n');
 
-      if (lines.length >= 2) {
+      if(lines.length >= 2) {
         const _parts = lines[1].split(/\s+/);
-        if (parts.length >= 4) {
+        if(parts.length >= 4) {
           result.available = parseInt(parts[3]) / 1024; // MB
           result.adequate = result.available > 500; // At least 500MB for backups
         //         }

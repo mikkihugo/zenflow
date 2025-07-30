@@ -30,19 +30,19 @@ initialize();
 
     try {
       // Register Claude Flow tools
-      if (this.config.enableClaudeFlowTools) {
+      if(this.config.enableClaudeFlowTools) {
 // // await this.registerClaudeFlowTools();
       //       }
 
 
       // Register ruv-swarm tools
-      if (this.config.enableRuvSwarmTools) {
+      if(this.config.enableRuvSwarmTools) {
 // // await this.registerRuvSwarmTools();
       //       }
 
 
       // Start cache cleanup if enabled
-      if (this.config.enableCaching) {
+      if(this.config.enableCaching) {
         this.startCacheCleanup();
       //       }
 
@@ -53,9 +53,9 @@ initialize();
     this.logger.info('Executing MCP tool', {
       toolName,
       executionId,agentId = this.toolRegistry.tools.get(toolName);
-      if (!tool) {
+      if(!tool) {
         throw new Error(`Tool notfound = // await this.getCachedResult(toolName, input, context);`
-        if (cached) {
+        if(cached) {
           this.logger.debug('Using cached result', { toolName, executionId });
           // return cached;
     //   // LINT: unreachable code removed}
@@ -86,7 +86,7 @@ initialize();
         const _duration = performance.now() - startTime;
         const _executionResult = {success = performance.now() - startTime;
       const _executionResult = {success = [];
-      for (const execution of toolExecutions) {
+      for(const execution of toolExecutions) {
 // const _result = awaitthis.executeTool(;
           execution.toolName,
           execution.input,
@@ -99,7 +99,7 @@ initialize();
 
     this.logger.info('Executing tools in parallel', {toolCount = new Semaphore(this.config.maxConcurrentTools);
 
-    const _promises = toolExecutions.map(async (execution) => {
+    const _promises = toolExecutions.map(async(execution) => {
 // await semaphore.acquire();
       try {
         return await this.executeTool(;
@@ -111,7 +111,7 @@ initialize();
 // const _results = awaitPromise.allSettled(promises);
 
     // return results.map((result, index) => {
-      if (result.status === 'fulfilled') {
+      if(result.status === 'fulfilled') {
         return result.value;
     //   // LINT: unreachable code removed} else {
         // Create error result
@@ -120,21 +120,21 @@ initialize();
     let _tools = Array.from(this.toolRegistry.tools.values());
     // ; // LINT: unreachable code removed
     // Filter by category
-    if (options.category) {
+    if(options.category) {
       const _categoryTools = this.toolRegistry.categories.get(options.category)  ?? [];
       tools = tools.filter(tool => categoryTools.includes(tool.name));
     //     }
 
 
     // Filter by capability
-    if (options.capability) {
+    if(options.capability) {
       const _capabilityTools = this.toolRegistry.capabilities.get(options.capability)  ?? [];
       tools = tools.filter(tool => capabilityTools.includes(tool.name));
     //     }
 
 
     // Filter by agent permissions
-    if (options.agent) {
+    if(options.agent) {
       tools = tools.filter(tool => this.hasPermission(tool, options.agent!));
     //     }
 
@@ -147,20 +147,20 @@ initialize();
    */;
   getToolInfo(toolName = createClaudeFlowTools(this.logger);
 
-    for (const tool of claudeFlowTools) {
+    for(const tool of claudeFlowTools) {
       this.toolRegistry.tools.set(tool.name, tool);
 
       // Categorize tool
       const _category = this.categorizeClaudeFlowTool(tool.name);
-      if (!this.toolRegistry.categories.has(category)) {
+      if(!this.toolRegistry.categories.has(category)) {
         this.toolRegistry.categories.set(category, []);
       //       }
       this.toolRegistry.categories.get(category)!.push(tool.name);
 
       // Add capabilities
       const _capabilities = this.extractCapabilities(tool);
-      for (const capability of capabilities) {
-        if (!this.toolRegistry.capabilities.has(capability)) {
+      for(const capability of capabilities) {
+        if(!this.toolRegistry.capabilities.has(capability)) {
           this.toolRegistry.capabilities.set(capability, []);
         //         }
         this.toolRegistry.capabilities.get(capability)!.push(tool.name);
@@ -177,20 +177,20 @@ initialize();
 
     const _ruvSwarmTools = createRuvSwarmTools(this.logger);
 
-    for (const tool of ruvSwarmTools) {
+    for(const tool of ruvSwarmTools) {
       this.toolRegistry.tools.set(tool.name, tool);
 
       // Categorize tool
       const _category = this.categorizeRuvSwarmTool(tool.name);
-      if (!this.toolRegistry.categories.has(category)) {
+      if(!this.toolRegistry.categories.has(category)) {
         this.toolRegistry.categories.set(category, []);
       //       }
       this.toolRegistry.categories.get(category)!.push(tool.name);
 
       // Add capabilities
       const _capabilities = this.extractCapabilities(tool);
-      for (const capability of capabilities) {
-        if (!this.toolRegistry.capabilities.has(capability)) {
+      for(const capability of capabilities) {
+        if(!this.toolRegistry.capabilities.has(capability)) {
           this.toolRegistry.capabilities.set(capability, []);
         //         }
         this.toolRegistry.capabilities.get(capability)!.push(tool.name);
@@ -205,17 +205,17 @@ initialize();
   // private async executeWithRetry(tool = null;
     const _maxRetries = context.maxRetries  ?? this.config.maxRetries;
 
-    for (const attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
+    for(const attempt = 1; attempt <= maxRetries; attempt++) { 
+      try 
         // Check if execution was aborted
-        if (signal.aborted) {
+        if(signal.aborted) {
           throw new Error('Execution aborted');
         //         }
 
 
         this.logger.debug('Executing tool attempt', {toolName = // await tool.handler(input, context);
 
-        if (attempt > 1) {
+        if(attempt > 1) {
           this.logger.info('Tool execution succeeded after retry', {toolName = error instanceof Error ? error : new Error(String(error));
 
         this.logger.warn('Tool execution attempt failed', {toolName = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
@@ -242,9 +242,9 @@ initialize();
   // private async getCachedResult(toolName = this.generateCacheKey(toolName, input, context);
     const _cached = this.executionCache.get(cacheKey);
 
-    if (cached) {
+    if(cached) {
       const _age = Date.now() - cached.metadata.timestamp.getTime();
-      if (age < this.config.cacheTimeout) {
+      if(age < this.config.cacheTimeout) {
         this.metrics.cacheHits++;
         // return cached;
     //   // LINT: unreachable code removed} else {
@@ -266,7 +266,7 @@ initialize();
   // private generateCacheKey(toolName = this.hashObject(input);
 
     let _hash = 0;
-    for (const i = 0; i < str.length; i++) {
+    for(const i = 0; i < str.length; i++) {
       const _char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
@@ -277,7 +277,7 @@ initialize();
   // private hasPermission(tool = this.toolRegistry.permissions.get(tool.name)  ?? [];
 
     // If no specific permissions defined, allow all
-    if (toolPermissions.length === 0) {
+    if(toolPermissions.length === 0) {
       // return true;
     //   // LINT: unreachable code removed}
 
@@ -299,8 +299,8 @@ initialize();
       'orchestration', 'coordination', 'analysis', 'research',
       'development', 'testing', 'documentation', 'optimization' ];
 
-    for (const pattern of capabilityPatterns) {
-      if (text.includes(pattern)) {
+    for(const pattern of capabilityPatterns) {
+      if(text.includes(pattern)) {
         capabilities.push(pattern);
       //       }
     //     }
@@ -309,12 +309,12 @@ initialize();
     // return capabilities.length > 0 ?capabilities = result.duration;
     // ; // LINT: unreachable code removed
     // Update tool-specific metrics
-    if (!this.metrics.toolExecutions.has(result.toolName)) {
+    if(!this.metrics.toolExecutions.has(result.toolName)) {
       this.metrics.toolExecutions.set(result.toolName, {count = this.metrics.toolExecutions.get(result.toolName)!;
     toolStats.count++;
     toolStats.totalTime += result.duration;
 
-    if (result.success) {
+    if(result.success) {
       toolStats.successCount++;
     } else {
       toolStats.failureCount++;
@@ -326,7 +326,7 @@ initialize();
     const _total = this.metrics.cacheHits + this.metrics.cacheMisses;
     // return total > 0 ? this.metrics.cacheHits / total = {};
     // ; // LINT: unreachable code removed
-    for (const [toolName, stats] of this.metrics.toolExecutions) {
+    for(const [toolName, stats] of this.metrics.toolExecutions) {
       distribution[toolName] = stats.count;
     //     }
 
@@ -340,9 +340,9 @@ initialize();
       const _now = Date.now();
       const _expired = [];
 
-      for (const [key, result] of this.executionCache) {
+      for(const [key, result] of this.executionCache) {
         const _age = now - result.metadata.timestamp.getTime();
-        if (age > this.config.cacheTimeout) {
+        if(age > this.config.cacheTimeout) {
           expired.push(key);
         //         }
       //       }
@@ -350,13 +350,13 @@ initialize();
 
       expired.forEach(key => this.executionCache.delete(key));
 
-      if (expired.length > 0) {
+      if(expired.length > 0) {
         this.logger.debug('Cleaned up expired cache entries', { ;
           count => {
-      if (this.config.enableLogging) {
+      if(this.config.enableLogging) {
         this.logger.debug('Tool execution completed', {
           toolName => {
-      if (this.config.enableLogging) {
+      if(this.config.enableLogging) {
         this.logger.warn('Tool execution failed', {toolName = > void> = [];
 
   constructor(permits = permits;
@@ -364,7 +364,7 @@ initialize();
 
 
   async acquire(): Promise<void> {
-    if (this.permits > 0) {
+    if(this.permits > 0) {
       this.permits--;
       // return Promise.resolve();
     //   // LINT: unreachable code removed}
@@ -376,7 +376,7 @@ initialize();
 
 
   release() {
-    if (this.waitQueue.length > 0) {
+    if(this.waitQueue.length > 0) {
       const _resolve = this.waitQueue.shift()!;
       resolve();
     } else {

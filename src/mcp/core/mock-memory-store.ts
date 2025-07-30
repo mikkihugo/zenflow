@@ -11,14 +11,14 @@ export class SqliteMemoryStore {
   //   }
 
 
-  async initialize() {
+  async initialize() { 
     // Mock initialization
     // return true;
     //   // LINT: unreachable code removed}
 
-  async store(key, value, options = {}) {
+  async store(key, value, options = }) {
     const _namespace = options.namespace  ?? 'default';'
-    if (!this.namespaces.has(namespace)) {
+    if(!this.namespaces.has(namespace)) {
       this.namespaces.set(namespace, new Map());
     //     }
 
@@ -30,13 +30,13 @@ export class SqliteMemoryStore {
     const _namespace = options.namespace  ?? 'default';'
     const _nsStorage = this.namespaces.get(namespace);
 
-    if (!nsStorage) return null;
+    if(!nsStorage) return null;
     // ; // LINT: unreachable code removed
     const _item = nsStorage.get(key);
-    if (!item) return null;
+    if(!item) return null;
     // ; // LINT: unreachable code removed
     // Check TTL
-    if (item.ttl && Date.now() - item.timestamp > item.ttl) {
+    if(item.ttl && Date.now() - item.timestamp > item.ttl) {
       nsStorage.delete(key);
       // return null;
     //   // LINT: unreachable code removed}
@@ -44,35 +44,35 @@ export class SqliteMemoryStore {
     // return item.value;
     //   // LINT: unreachable code removed}
 
-  async delete(key, options = {}) {
+  async delete(key, options = {}) { 
     const _namespace = options.namespace  ?? 'default';'
     const _nsStorage = this.namespaces.get(namespace);
 
-    if (nsStorage) {
+    if(nsStorage) 
       // return nsStorage.delete(key);
     //   // LINT: unreachable code removed}
 
     // return false;
     //   // LINT: unreachable code removed}
 
-  async list(options = {}) {
+  async list(options = {}) { 
     const _namespace = options.namespace  ?? 'default';'
     const _nsStorage = this.namespaces.get(namespace);
 
-    if (!nsStorage) return [];
+    if(!nsStorage) return [];
     // ; // LINT: unreachable code removed
     // return Array.from(nsStorage.keys());
     //   // LINT: unreachable code removed}
 
-  async search(pattern, options = {}) {
+  async search(pattern, options = }) {
     const _namespace = options.namespace  ?? 'default';'
     const _nsStorage = this.namespaces.get(namespace);
 
-    if (!nsStorage) return [];
+    if(!nsStorage) return [];
     // ; // LINT: unreachable code removed
     const _results = [];
-    for (const [key, item] of nsStorage.entries()) {
-      if (key.includes(pattern.replace('))) {'
+    for(const [key, item] of nsStorage.entries()) {
+      if(key.includes(pattern.replace('))) {'
         results.push(item.value);
       //       }
     //     }

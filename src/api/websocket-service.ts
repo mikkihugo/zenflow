@@ -4,8 +4,8 @@
  * Provides unified WebSocket management for claude-zen;
  */
 
-import { EventEmitter } from 'node:events';
-import { WebSocketConnectionManager } from './websocket-client.js';
+import { EventEmitter  } from 'node:events';
+import { WebSocketConnectionManager  } from './websocket-client.js';
 // =============================================================================
 // WEBSOCKET SERVICE TYPES
 // =============================================================================
@@ -61,9 +61,8 @@ export // interface WebSocketServiceOptions {
   constructor(options) {
     super();
     this.options = options;
-    this.connectionManager = new WebSocketConnectionManager({
-      maxConnections, // Example value
-    });
+    this.connectionManager = new WebSocketConnectionManager({ maxConnections, // Example value
+     });
     this.messageHandlers = new Map();
     this.isInitialized = false;
     this.stats = {
@@ -116,7 +115,7 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
       this.stats.totalConnections++;
       console.warn(`� Connected to external WebSocket`);
       // return client;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       console.error(`Error connecting to external WebSocket);`
       throw error;
     //     }
@@ -124,13 +123,13 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
   sendMessage(connectionName, data) {
     const _client = this.connectionManager.getConnection(connectionName);
-    if (!client) {
+    if(!client) {
       throw new Error(`Connection '${connectionName}' not found`);
     //     }
 
 
     const _success = client.send(data);
-    if (success) {
+    if(success) {
       this.stats.messagesSent++;
     //     }
 
@@ -140,13 +139,13 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
   sendBalanced(data) {
     const _client = this.connectionManager.getNextConnection();
-    if (!client) {
+    if(!client) {
       throw new Error('No active connections available');
     //     }
 
 
     const _success = client.send(data);
-    if (success) {
+    if(success) {
       this.stats.messagesSent++;
     //     }
 
@@ -169,16 +168,16 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     //   // LINT: unreachable code removed}
 
   onMessage(type, handler) => void): () => void
-    if (!this.messageHandlers.has(type)) {
+    if(!this.messageHandlers.has(type)) {
       this.messageHandlers.set(type, new Set());
     //     }
 
 
     this.messageHandlers.get(type)?.add(handler);
 
-    // return () => {
+    // return() => {
       const _handlers = this.messageHandlers.get(type);
-    // if (handlers) { // LINT: unreachable code removed
+    // if(handlers) { // LINT: unreachable code removed
         handlers.delete(handler);
       };
   //   }
@@ -189,11 +188,11 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
     const _messageType = 'unknown';
     const _messageData = data;
 
-    if (typeof data === 'object' && data !== null) {
-      if (data.type) {
+    if(typeof data === 'object' && data !== null) {
+      if(data.type) {
         messageType = data.type;
         messageData = data.payload  ?? data.data  ?? data;
-      } else if (data.event) {
+      } else if(data.event) {
         messageType = data.event;
         messageData = data.data  ?? data;
       //       }
@@ -201,11 +200,11 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
 
     const _handlers = this.messageHandlers.get(messageType);
-    if (handlers) {
+    if(handlers) {
       handlers.forEach((handler) => {
         try {
           handler({ type, data, source);
-        } catch (error) {
+        } catch(error) {
           console.error(`Error in message handler for type ${messageType});`
         //         }
       });
@@ -257,11 +256,11 @@ connectToServer((connectionName = 'main'), (customOptions = {}));
 
   async disconnectConnection(connectionName)
 // await this.connectionManager.removeConnection(connectionName);
-  async shutdown() {}
+  async shutdown() { }
 // await this.connectionManager.shutdown();
     this.emit('shutdown');
 
-  // static async create(options): Promise<WebSocketService> {
+  // static async create(options): Promise<WebSocketService> 
     const _service = new WebSocketService(options);
 // await service.initialize();
     service.setupClaudeZenHandlers();

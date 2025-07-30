@@ -1,10 +1,10 @@
 // rollback/index.js - Comprehensive rollback system for SPARC initialization
 
-import { printSuccess } from '../../../utils.js';
-import { BackupManager } from './backup-manager.js';
-import { RecoveryManager } from './recovery-manager.js';
-import { RollbackExecutor } from './rollback-executor.js';
-import { StateTracker } from './state-tracker.js';
+import { printSuccess  } from '../../../utils.js';
+import { BackupManager  } from './backup-manager.js';
+import { RecoveryManager  } from './recovery-manager.js';
+import { RollbackExecutor  } from './rollback-executor.js';
+import { StateTracker  } from './state-tracker.js';
 /**  */
  * Main rollback orchestrator
  */
@@ -68,7 +68,7 @@ createPreInitBackup();
       } else {
         printError('Full rollback failed');
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Rollbackfailed = null) {`
     const _result = {success = checkpointId  ?? (// await this.findLatestCheckpoint(phase));
@@ -97,7 +97,7 @@ createPreInitBackup();
       // Get checkpoints
 // const _checkpoints = awaitthis.stateTracker.getCheckpoints();
       result.checkpoints = checkpoints;
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Failed to list rollbackpoints = 5) {`
     const _result = {success = // await this.backupManager.cleanupOldBackups(keepCount);
@@ -108,7 +108,7 @@ createPreInitBackup();
       if(cleanupResult.success) {
         console.warn(`�  Cleaned up ${cleanupResult.cleaned.length} old backups`);
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Cleanup failed = {success = // await this.backupManager.validateBackupSystem();`
       result.checks.backup = backupCheck;
@@ -132,7 +132,7 @@ createPreInitBackup();
       if(!recoveryCheck.success) {
         result.warnings.push(...recoveryCheck.errors);
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Rollback system validationfailed = // await this.stateTracker.getRollbackPoints();`
       const _preInitPoints = rollbackPoints.filter((point) => point.type === 'pre-init');
@@ -176,8 +176,8 @@ createPreInitBackup();
   /**  */
  * Begin atomic operation
    */
-  async begin() {
-// const _checkpoint = awaitthis.rollbackSystem.createCheckpoint(`atomic-${this.operationName}`, {operation = checkpoint.checkpointId;
+  async begin() { 
+// const _checkpoint = awaitthis.rollbackSystem.createCheckpoint(`atomic-$this.operationName}`, {operation = checkpoint.checkpointId;
     // return checkpoint.success;
     //   // LINT);
     this.completed = true;

@@ -6,7 +6,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { glob } from 'glob';
+import { glob  } from 'glob';
 
 class DocumentationGenerator {
   constructor() {
@@ -14,9 +14,9 @@ class DocumentationGenerator {
     this.docsDir = 'docs/api';
     this.outputFile = 'docs/api/generated-api.md';
   //   }
-  async generate() {
+  async generate() { 
     console.warn('� Generating API documentation...');
-    try {
+    try 
       // Ensure docs directory exists
   // // await fs.mkdir(this.docsDir, { recursive });
       // Find all JavaScript files with JSDoc comments
@@ -30,24 +30,23 @@ class DocumentationGenerator {
   // // await fs.writeFile(this.outputFile, markdown);
       console.warn(`✅ Documentation generated);`
       // return this.outputFile;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       console.error('❌ Documentation generation failed);'
       throw error;
     //     }
   //   }
-  async extractJSDocFromFiles(files) {
+  async extractJSDocFromFiles(files) { 
     const _apiDocs = [];
-    for (const file of files) {
+    for(const file of files) 
       try {
 // const _content = awaitfs.readFile(file, 'utf-8');
         const _docs = this.extractJSDocFromContent(content, file);
-        if (docs.length > 0) {
-          apiDocs.push({
-            file,
-            docs });
+        if(docs.length > 0) {
+          apiDocs.push({ file,
+            docs  });
         //         }
     //     }
-    catch (error)
+    catch(error)
         console.warn(`⚠ Could not process file \$`
       file
     :`, error.message)`
@@ -59,11 +58,11 @@ class DocumentationGenerator {
     const _docs = [];
     const _jsdocRegex = /\/\*\*[\s\S]*?\*\//g;
     const _matches = content.match(jsdocRegex);
-    if (!matches) return docs;
+    if(!matches) return docs;
     // ; // LINT: unreachable code removed
     matches.forEach((match, index) => {
       const _parsed = this.parseJSDocComment(match);
-      if (parsed) {
+      if(parsed) {
         // Try to find the function/class that follows this comment
         const _afterComment = content.substring(content.indexOf(match) + match.length);
         const _functionMatch = afterComment.match(;
@@ -91,14 +90,14 @@ class DocumentationGenerator {
   _currentSection = 'description';
   let;
   _currentParam = null;
-  for (const line _of _lines) {
-      if (line.startsWith('/**')  ?? line.startsWith('*/')  ?? line === '') {
+  for(const line _of _lines) {
+      if(line.startsWith('/**')  ?? line.startsWith('*/')  ?? line === '') {
         continue;
       //       }
-      if (line.startsWith('@param')) {
+      if(line.startsWith('@param')) {
         currentSection = 'param';
         const _paramMatch = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
-        if (paramMatch) {
+        if(paramMatch) {
           currentParam = {
             type: paramMatch[1],
             name: paramMatch[2],
@@ -107,7 +106,7 @@ class DocumentationGenerator {
         //         }
       //       }
   else;
-  if (_line._startsWith('@returns')
+  if(_line._startsWith('@returns')
   ??
   line;
 
@@ -122,26 +121,25 @@ class DocumentationGenerator {
   //   }
 // }
 } else
-if (line.startsWith('@example')) {
+if(line.startsWith('@example')) {
   currentSection = 'example';
-} else if (line.startsWith('@')) {
+} else if(line.startsWith('@')) {
   const _tagMatch = line.match(/@(\w+)\s*(.*)/);
-  if (tagMatch) {
-    doc.tags.push({
-            name: tagMatch[1],
+  if(tagMatch) {
+    doc.tags.push({ name: tagMatch[1],
     value: tagMatch[2]
-})
+ })
 // }
 } else
 // {
   // Continue previous section
-  if (currentSection === 'description') {
+  if(currentSection === 'description') {
     doc.description += (doc.description ? ' ' ) + line;
-  } else if (currentSection === 'example') {
+  } else if(currentSection === 'example') {
     doc.example += (doc.example ? '\n' ) + line;
-  } else if (currentSection === 'param' && currentParam) {
+  } else if(currentSection === 'param' && currentParam) {
     currentParam.description += (currentParam.description ? ' ' ) + line;
-  } else if (currentSection === 'returns' && doc.returns) {
+  } else if(currentSection === 'returns' && doc.returns) {
     doc.returns.description += (doc.returns.description ? ' ' ) + line;
     //   // LINT: unreachable code removed}
   //   }
@@ -169,25 +167,25 @@ This documentation is automatically generated from JSDoc comments in the source 
       markdown += `## ${fileDoc.file}\n\n`;
       fileDoc.docs.forEach((doc) => {
         markdown += `### ${doc.name}\n\n`;
-        if (doc.description) {
+        if(doc.description) {
           markdown += `${doc.description}\n\n`;
         //         }
-        if (doc.params.length > 0) {
+        if(doc.params.length > 0) {
           markdown += '**Parameters:**\n\n';
           doc.params.forEach((param) => {
             markdown += `- \`${param.name}\` (\`${param.type}\`): ${param.description}\n`;
           });
           markdown += '\n';
         //         }
-        if (doc.returns) {
+        if(doc.returns) {
           markdown += `**Returns:** \`${doc.returns.type}\` - ${doc.returns.description}\n\n`;
     //   // LINT: unreachable code removed}
-        if (doc.example) {
+        if(doc.example) {
           markdown += '**Example:**\n\n```javascript\n';`
           markdown += doc.example;
           markdown += '\n```\n\n';`
         //         }
-        if (doc.tags.length > 0) {
+        if(doc.tags.length > 0) {
           markdown += '**Tags:**\n\n';
           doc.tags.forEach((tag) => {
             markdown += `- **${tag.name}**: ${tag.value}\n`;
@@ -212,7 +210,7 @@ async function main() {
   // await generator.generate();
 // }
 // Run if called directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   main().catch(console.error);
 // }
 // export { DocumentationGenerator };

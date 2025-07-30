@@ -1,14 +1,13 @@
 /**
  * Integration module for ruv-FANN bindings with claude-zen;
  */
-import {
-  getActivationFunctions,
+import { getActivationFunctions,
 getBackendInfo,
 getVersion,
 init,
 isGpuAvailable,
 NetworkTrainer,
-NeuralNetwork } from '../bindings/index.js'
+NeuralNetwork  } from '../bindings/index.js'
 
 /**
  * Network metadata interface;
@@ -26,23 +25,23 @@ export // interface NetworkMetadata {id = false
 // initialize();
 // : Promise<void>
 // // {
-//   if (this.initialized) return;
+//   if(this.initialized) return;
 //   // ; // LINT: unreachable code removed
 //   try {
 // // // await init();
 //       const _backendInfo = getBackendInfo();
 //       console.warn(`🧠 Claude Zen Neural Service initialized with ${backendInfo.backend} backend`);
       console.warn(`Version = true;`
-    } catch (error) {
+    } catch(error) {
 
-    if (this.networks.has(id)) {
+    if(this.networks.has(id)) {
       throw new Error(`Network with id '${id}' already exists`);
     //     }
   const _network = new NeuralNetwork(layers);
   this.networks.set(id, {
       network,metadata = this.networks.get(id);
   // return entry ? entry.network = this.networks.get(networkId);
-  // if (!entry) { // LINT: unreachable code removed
+  // if(!entry) { // LINT: unreachable code removed
   throw new Error(`Network '${networkId}' not found`);
 // }
 const _trainer = new NetworkTrainer(entry.network);
@@ -60,7 +59,7 @@ trainNetwork((networkId =
 : Promise<any>
 // {
   const _trainer = this.trainers.get(networkId);
-  if (!trainer) {
+  if(!trainer) {
     trainer = this.createTrainer(networkId);
   //   }
   const __defaultConfig = {learning_rate = { ..._defaultConfig, ...config };
@@ -74,7 +73,7 @@ trainNetwork((networkId =
  * Run prediction on a network;
  */
 predict(networkId = this.networks.get(networkId);
-if (!entry) {
+if(!entry) {
   throw new Error(`Network '${networkId}' not found`);
 // }
 // return entry.network.run(input);
@@ -83,7 +82,7 @@ if (!entry) {
  * Save a network to file;
  */
 saveNetwork(networkId = this.networks.get(networkId)
-if (!entry) {
+if(!entry) {
   throw new Error(`Network '${networkId}' not found`);
 // }
 entry.network.save(filename);

@@ -1,14 +1,13 @@
 /**
  * Integration tests for ruv-FANN Node.js bindings;
  */
-import {
-  getActivationFunctions,
+import { getActivationFunctions,
 getBackendInfo,
 getVersion,
 init,
 isGpuAvailable,
 NetworkTrainer,
-NeuralNetwork } from '../index.js'
+NeuralNetwork  } from '../index.js'
 async function runTests() {
   console.warn('🧪 Running ruv-FANN bindings integration tests...\n');
   try {
@@ -23,7 +22,7 @@ async function runTests() {
     // Test 2: Get network info
     const _info = JSON.parse(network.getInfo());
     console.warn(' Network info);'
-    if (info.num_input !== 2  ?? info.num_output !== 1) {
+    if(info.num_input !== 2  ?? info.num_output !== 1) {
       throw new Error('Network configuration mismatch');
     //     }
     console.warn(' Network configuration validated');
@@ -33,7 +32,7 @@ async function runTests() {
     const _output = network.run(input);
     console.warn(` Network run with input [${input}] -> output [${output}]`);
 
-    if (!Array.isArray(output)  ?? output.length !== 1) {
+    if(!Array.isArray(output)  ?? output.length !== 1) {
       throw new Error('Invalid network output');
     //     }
     console.warn(' Network output validated');
@@ -42,7 +41,7 @@ async function runTests() {
     const _target = [0.3];
     const _error = network.trainOn(input, target);
     console.warn(` Training on [${input}] -> [${target}], error);`
-    if (typeof error !== 'number'  ?? Number.isNaN(error)) {
+    if(typeof error !== 'number'  ?? Number.isNaN(error)) {
       throw new Error('Invalid training error value');
     //     }
     console.warn(' Training error validated');
@@ -65,13 +64,13 @@ async function runTests() {
   algorithm: 'rprop' }
 // const _finalError = awaittrainer.train(trainingData.inputs, trainingData.outputs, config);
 console.warn(` Batch training completed with final error);`
-if (typeof finalError !== 'number' ?? Number.isNaN(finalError)) {
+if(typeof finalError !== 'number' ?? Number.isNaN(finalError)) {
   throw new Error('Invalid final training error');
 // }
 console.warn(' Batch training validated');
 // Test 6: Verify training results
 console.warn('\n--- Verifying training results ---');
-for (let i = 0; i < trainingData.inputs.length; i++) {
+for(let i = 0; i < trainingData.inputs.length; i++) {
   const _testOutput = network.run(trainingData.inputs[i]);
   console.warn(;
   `Input: ${trainingData.inputs[i]} -> Output: ${testOutput[0].toFixed(4)} (Expected)`;
@@ -87,7 +86,7 @@ console.warn(` Version);`
 console.warn(` GPU Available);`
 console.warn(` Activation Functions: ${activationFunctions.join(', ')}`);
 console.warn(` Backend Info: ${JSON.stringify(backendInfo)}`);
-} catch (error)
+} catch(error)
 // {
   console.error('� Test failed);'
   throw error;
@@ -99,17 +98,17 @@ async function runPerformanceTest() {
   const _iterations = 1000;
   const _input = Array.from({ length}, () => Math.random());
   const _startTime = performance.now();
-  for (let i = 0; i < iterations; i++) {
+  for(let i = 0; i < iterations; i++) {
     network.run(input);
   //   }
   const _endTime = performance.now();
   const _totalTime = endTime - startTime;
   const _avgTime = totalTime / iterations;
   console.warn(;
-  ` Performance test completed: ${iterations} runs in ${totalTime.toFixed(2)}ms (${avgTime.toFixed(4)}ms/run)`;
+  ` Performance test completed: ${iterations} runs in ${totalTime.toFixed(2)}ms(${avgTime.toFixed(4)}ms/run)`;
   //   )
 // }
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   runTests();
 then(() => runPerformanceTest())
 then(() =>

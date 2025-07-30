@@ -1,9 +1,9 @@
 // session-command.js - Modern session management system with cross-session memory integration
 
-import { existsSync, promises as fs } from 'node:fs';
+import { existsSync, promises as fs  } from 'node:fs';
 import path from 'node:path';
-import { EnhancedMemory } from '../../memory/enhanced-memory.js';
-import { printError, printInfo, printSuccess } from '../utils.js';
+import { EnhancedMemory  } from '../../memory/enhanced-memory.js';
+import { printError, printInfo, printSuccess  } from '../utils.js';
 
 // Session storage paths
 const _SESSION_BASE_DIR = path.join(process.cwd(), '.claude-sessions');
@@ -16,16 +16,16 @@ const _SESSION_STATES = {ACTIVE = null;
  */
 async function _initializeSessionStorage() {
   try {
-    if (!existsSync(SESSION_BASE_DIR)) {
+    if(!existsSync(SESSION_BASE_DIR)) {
       mkdirSync(SESSION_BASE_DIR, {recursive = new EnhancedMemory({
         directory,namespace = // await fs.readFile(ACTIVE_SESSIONS_FILE, 'utf8');
       return JSON.parse(content);
     //   // LINT: unreachable code removed}
-  } catch (/* _error */)
+  } catch(/* _error */)
     printWarning(`Failed to load activesessions = // await fs.readFile(SESSION_HISTORY_FILE, 'utf8');`
       // return JSON.parse(content);
     //   // LINT: unreachable code removed}
-  } catch (error) {
+  } catch(error) {
     printWarning(`Failed to load sessionhistory = // await loadSessionHistory();`
     history.unshift(sessionData);
 
@@ -35,7 +35,7 @@ async function _initializeSessionStorage() {
     //     }
 
 
-    // await fs.writeFile(SESSION_HISTORY_FILE, JSON.stringify(history, null, 2));catch (error) {
+    // await fs.writeFile(SESSION_HISTORY_FILE, JSON.stringify(history, null, 2));catch(error) {
     printError(`Failed to save tohistory = Date.now();`
   const _random = Math.random().toString(36).substring(2, 8);
   const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
@@ -53,11 +53,11 @@ async function _initializeSessionStorage() {
 // // await new Promise((resolve) => {
       gitProcess.on('close', () => resolve());
     });
-    if (gitBranch) {
+    if(gitBranch) {
       context.gitBranch = gitBranch;
     //     }
   //   }
-  catch (error)
+  catch(error)
   // return context;
 // }
 /**  */
@@ -85,7 +85,7 @@ async function _createSession() {
     printSuccess(`� Found ${sessionIds.length} session(s):`);
     console.warn();
 
-    // Sort by creation date (newest first)
+    // Sort by creation date(newest first)
     const _sortedSessions = sessionIds;
 map(id => activeSessions[id]);
 sort((a, b) => new Date(b.created) - new Date(a.created));
@@ -160,7 +160,7 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
     //     }
 
 
-  } catch (error) {
+  } catch(error) {
     printError(`Failed to restoresession = args[0];`
   if(!sessionId) {
     // Try to find active session in current directory
@@ -281,9 +281,9 @@ sort((a, b) => new Date(b.created) - new Date(a.created));
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days}d ago`;
-    // if (hours > 0) return `\${hours // LINT}h ago`;
-  if (_minutes > 0) return `${minutes}m ago`;
+  if(days > 0) return `${days}d ago`;
+    // if(hours > 0) return `\${hours // LINT}h ago`;
+  if(_minutes > 0) return `${minutes}m ago`;
     // return 'just now'; // LINT: unreachable code removed
 // }
 
@@ -303,41 +303,41 @@ function _showSessionHelp() {
 
   try {
     switch(subCommand) {
-      case 'create':;
+      case 'create':
 // // await createSession(args.slice(1), flags);
         break;
 
-      case 'list':;
-      case 'ls':;
+      case 'list':
+      case 'ls':
 // // await listSessions(args.slice(1), flags);
         break;
 
-      case 'restore':;
-      case 'resume':;
+      case 'restore':
+      case 'resume':
 // // await restoreSession(args.slice(1), flags);
         break;
 
-      case 'save':;
+      case 'save':
 // // await saveSession(args.slice(1), flags);
         break;
 
-      case 'delete':;
-      case 'remove':;
-      case 'rm':;
+      case 'delete':
+      case 'remove':
+      case 'rm':
 // // await deleteSession(args.slice(1), flags);
         break;
 
-      case 'current':;
-      case 'info':;
-      case 'status':;
+      case 'current':
+      case 'info':
+      case 'status':
 // // await showCurrentSession(args.slice(1), flags);
         break;
 
-      default:;
+      default:
         printError(`Unknown session command);`
         _showSessionHelp();
     //     }
-  } catch (error) {
+  } catch(error) {
     printError(`Session command failed);`
     if(flags.verbose) {
       console.error('Stack trace);'

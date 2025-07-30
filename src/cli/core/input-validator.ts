@@ -3,7 +3,7 @@
  * Prevents injection attacks, validates data types, and sanitizes input
  */
 
-import { CliError } from './cli-error.js';'
+import { CliError  } from './cli-error.js';'
 
 export class InputValidator {
   constructor() {
@@ -54,7 +54,7 @@ export class InputValidator {
     //   // LINT: unreachable code removed}
 
     // Empty check
-    if (!value.trim() && required) {
+    if(!value.trim() && required) {
       throw new CliError(`${fieldName} is required`, 'VALIDATION_ERROR');'
     //     }
 
@@ -71,18 +71,18 @@ export class InputValidator {
 
 
     // Pattern validation
-    if (pattern && !pattern.test(value)) {
+    if(pattern && !pattern.test(value)) {
       throw new CliError(`${fieldName} format is invalid`, 'VALIDATION_ERROR');'
     //     }
 
 
     // Security validation
-    if (this.containsDangerousContent(value)) {
+    if(this.containsDangerousContent(value)) {
       throw new CliError(`${fieldName} contains potentially dangerous content`, 'SECURITY_ERROR');'
     //     }
 
 
-    if (this.containsSqlInjection(value)) {
+    if(this.containsSqlInjection(value)) {
       throw new CliError(`${fieldName} contains potential SQL injection`, 'SECURITY_ERROR');'
     //     }
 
@@ -106,7 +106,7 @@ export class InputValidator {
     // Convert if string
     if(typeof value === 'string') {'
       const _parsed = integer ? parseInt(value, 10) : parseFloat(value);
-      if (Number.isNaN(parsed)) {
+      if(Number.isNaN(parsed)) {
         if(required) {
           throw new CliError(`${fieldName} must be a valid number`, 'VALIDATION_ERROR');'
         //         }
@@ -136,7 +136,7 @@ export class InputValidator {
 
 
     // Integer validation
-    if (integer && !Number.isInteger(value)) {
+    if(integer && !Number.isInteger(value)) {
       throw new CliError(`${fieldName} must be an integer`, 'VALIDATION_ERROR');'
     //     }
 
@@ -153,10 +153,10 @@ export class InputValidator {
     // Convert string representations
     if(typeof value === 'string') {'
       const _lower = value.toLowerCase();
-      if (['true', '1', 'yes', 'on'].includes(lower)) {'
+      if(['true', '1', 'yes', 'on'].includes(lower)) {'
         // return true;
     //   // LINT: unreachable code removed}
-      if (['false', '0', 'no', 'off'].includes(lower)) {'
+      if(['false', '0', 'no', 'off'].includes(lower)) {'
         // return false;
     //   // LINT: unreachable code removed}
     //     }
@@ -186,7 +186,7 @@ export class InputValidator {
     } = options;
 
     // Type check
-    if (!Array.isArray(value)) {
+    if(!Array.isArray(value)) {
       if(required) {
         throw new CliError(`${fieldName} must be an array`, 'VALIDATION_ERROR');'
       //       }
@@ -221,8 +221,8 @@ export class InputValidator {
 
     const _result = {};
 
-    // Validate each field in schema
-    for (const [key, validator] of Object.entries(schema)) {
+    // Validate each field in schema: {}
+    for(const [key, validator] of Object.entries(schema)) {
       try {
         const _fieldValue = value[key];
         result[key] = validator(fieldValue, {fieldName = > pattern.test(value));

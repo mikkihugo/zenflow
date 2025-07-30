@@ -31,21 +31,21 @@ class MockMemoryStore {
     this.data = new Map();
   }
 
-  async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async store(key, value, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
     // return { id, size: value.length };
   }
 
-  async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async retrieve(key, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     // return this.data.get(fullKey) || null;
   }
 
-  async search(options = {}) {
-    const results = {};
-    for (const [key, value] of this.data) {
-      if (options.pattern === '*' || key.includes(options.pattern || '')) {
+  async search(options = {}) { 
+    const results = };
+    for(const [key, value] of this.data) {
+      if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value;
       }
     }
@@ -119,7 +119,7 @@ async function processCommand(line) {
   const args = line.trim().split(' ');
   const command = args[0].toLowerCase();
 
-  switch (command) {
+  switch(command) {
     case 'help': null
     case 'h': null
       showHelp();
@@ -170,7 +170,7 @@ async function processCommand(line) {
       break;
 
     default: null
-      if (line.trim()) {
+      if(line.trim()) {
       }
   }
 }
@@ -178,7 +178,7 @@ async function processCommand(line) {
 function showHelp() {}
 
 async function createDocument(args) {
-  if (args.length < 3) {
+  if(args.length < 3) {
     return;
   }
 
@@ -204,38 +204,38 @@ async function createDocument(args) {
   const metadata = {};
 
   // Dependencies
-// const deps = awaitquestion('Dependencies (comma-separated): ');
-  if (deps) metadata.dependencies = deps.split(',').map((d) => d.trim());
+// const deps = awaitquestion('Dependencies(comma-separated): ');
+  if(deps) metadata.dependencies = deps.split(',').map((d) => d.trim());
 
   // Tags
-// const tags = awaitquestion('Tags (comma-separated): ');
-  if (tags) metadata.tags = tags.split(',').map((t) => t.trim());
+// const tags = awaitquestion('Tags(comma-separated): ');
+  if(tags) metadata.tags = tags.split(',').map((t) => t.trim());
 
-  // Priority (for certain doc types)
-  if (docType === 'security-spec' || docType === 'service-adr') {
-// const priority = awaitquestion('Priority (critical/high/medium/low): ');
-    if (priority) metadata.priority = priority;
+  // Priority(for certain doc types)
+  if(docType === 'security-spec' || docType === 'service-adr') {
+// const priority = awaitquestion('Priority(critical/high/medium/low): ');
+    if(priority) metadata.priority = priority;
   }
 
   // Create the document
   try {
 // const result = awaitdocStack.createDocument(docType, service, docId, content, metadata);
-    if (metadata.dependencies)
-      if (metadata.tags)
-        if (result.routing.validation?.length > 0) {
+    if(metadata.dependencies)
+      if(metadata.tags)
+        if(result.routing.validation?.length > 0) {
         }
-  } catch (_error) {}
+  } catch(_error) {}
 }
 
 async function reviewDocument(args) {
-  if (args.length < 1) {
+  if(args.length < 1) {
     return;
   }
 
   const [path] = args;
   const parts = path.split('/');
 
-  if (parts.length !== 3) {
+  if(parts.length !== 3) {
     return;
   }
 
@@ -245,30 +245,30 @@ async function reviewDocument(args) {
 // const doc = awaitmemoryStore.retrieve(`${docType}/${docId}`, {
       namespace);
 
-    if (!doc) {
+    if(!doc) {
       return;
     }
 
     const docData = JSON.parse(doc);
 
-    if (docData.metadata.dependencies?.length > 0) {
+    if(docData.metadata.dependencies?.length > 0) {
     }
 
-    if (docData.metadata.tags?.length > 0) {
+    if(docData.metadata.tags?.length > 0) {
     }
-    if (docData.metadata.auto_routing.validation?.length > 0) {
+    if(docData.metadata.auto_routing.validation?.length > 0) {
     }
     const _preview = docData.content.split('\n').slice(0, 10).join('\n');
-    if (docData.content.split('\n').length > 10) {
+    if(docData.content.split('\n').length > 10) {
     }
 // const feedback = awaitquestion(
-      `\n${colors.cyan}Provide feedback (or press Enter to skip): ${colors.reset}`
+      `\n${colors.cyan}Provide feedback(or press Enter to skip): ${colors.reset}`
     );
 
-    if (feedback) {
+    if(feedback) {
       // In a real system, this would be stored and processed
     }
-  } catch (_error) {}
+  } catch(_error) {}
 }
 
 async function listDocuments(args) {
@@ -276,18 +276,17 @@ async function listDocuments(args) {
 // const allDocs = awaitmemoryStore.search({ pattern);
 
   const documents = [];
-  for (const [key, value] of Object.entries(allDocs)) {
-    if (key.includes('service-documents/')) {
+  for(const [key, value] of Object.entries(allDocs)) {
+    if(key.includes('service-documents/')) {
       const docData = JSON.parse(value);
-      if (!service || key.includes(`service-documents/${service}`)) {
-        documents.push({
-          path: key.replace('service-documents/', '').replace(':', '/'),
-..docData.metadata });
+      if(!service || key.includes(`service-documents/${service}`)) {
+        documents.push({ path: key.replace('service-documents/', '').replace(':', '/'),
+..docData.metadata  });
       }
     }
   }
 
-  if (documents.length === 0) {
+  if(documents.length === 0) {
     return;
   }
 
@@ -295,7 +294,7 @@ async function listDocuments(args) {
   const grouped = {};
   documents.forEach((doc) => {
     const service = doc.path.split('/')[0];
-    if (!grouped[service]) grouped[service] = [];
+    if(!grouped[service]) grouped[service] = [];
     grouped[service].push(doc);
   });
 
@@ -307,14 +306,14 @@ async function listDocuments(args) {
 }
 
 async function approveDocument(args) {
-  if (args.length < 1) {
+  if(args.length < 1) {
     return;
   }
 
   const [_path] = args;
-// const approver = awaitquestion('Your role (architect/tech-lead/security-team/product-owner): ');
+// const approver = awaitquestion('Your role(architect/tech-lead/security-team/product-owner): ');
 
-  if (!approver) {
+  if(!approver) {
     return;
   }
 
@@ -322,7 +321,7 @@ async function approveDocument(args) {
 }
 
 async function validateDocument(args) {
-  if (args.length < 1) {
+  if(args.length < 1) {
     return;
   }
 
@@ -350,17 +349,17 @@ async function showStatus() {
   const _docCount = Object.keys(allDocs).filter((k) => k.includes('service-documents/')).length;
   const layers = { infrastructure, service, application, business };
 
-  for (const value of Object.values(allDocs)) {
+  for(const value of Object.values(allDocs)) {
     try {
       const doc = JSON.parse(value);
-      if (doc.metadata?.stack_layer) {
+      if(doc.metadata?.stack_layer) {
         layers[doc.metadata.stack_layer] = (layers[doc.metadata.stack_layer] || 0) + 1;
       }
-    } catch (_e) {}
+    } catch(_e) {}
   }
 
   Object.entries(layers).forEach(([_layer, count]) => {
-    if (count > 0) {
+    if(count > 0) {
     }
   });
 }
@@ -373,7 +372,7 @@ function question(prompt) {
 }
 
 // Start the REPL
-rl.on('line', async (line) => {
+rl.on('line', async(line) => {
 // await processCommand(line);
   rl.prompt();
 });

@@ -5,9 +5,9 @@
 
 // optimized-slash-commands.js - Create batchtools-optimized Claude Code slash commands
 
-import { promises as fs } from 'node:fs';
-import { join } from 'node:path';
-import { createOptimizedMainSparcCommand } from './optimized-sparc-commands.js';
+import { promises as fs  } from 'node:fs';
+import { join  } from 'node:path';
+import { createOptimizedMainSparcCommand  } from './optimized-sparc-commands.js';
 
 // Create batchtools-optimized Claude Code slash commands for SPARC modes
 export async function createOptimizedClaudeSlashCommands(workingDir = null) {
@@ -136,13 +136,13 @@ Real-time performance monitoring and optimization tools for Claude-Flow operatio
 
 ### Configuration Optimization;
 \`\`\`json;`
-  "performance": ;
-    "batchtools": ;
+  "performance":
+    "batchtools":
       "maxConcurrent",
       "batchSize",
       "enableOptimization",
       "smartBatching",
-    "monitoring": ;
+    "monitoring":
       "realTimeMetrics",
       "performanceLogging",
       "resourceAlerts";

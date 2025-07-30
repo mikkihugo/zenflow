@@ -4,8 +4,8 @@
  * Monitors alignment with ruvnet/claude-flow and provides sync status;
  */
 
-import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { execSync  } from 'node:child_process';
+import { readFileSync  } from 'node:fs';
 
 class UpstreamSyncChecker {
   constructor() {
@@ -18,7 +18,7 @@ class UpstreamSyncChecker {
     try {
       const _packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
       // return packageJson.version;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       // return 'unknown';
     //   // LINT: unreachable code removed}
   //   }
@@ -30,8 +30,8 @@ class UpstreamSyncChecker {
 ..options
 // }
     ).trim() {}
-    catch (error)
-    if (!options.ignoreError) {
+    catch(error)
+    if(!options.ignoreError) {
       console.error(`Command failed);`
       console.error(error.message);
     //     }
@@ -41,7 +41,7 @@ class UpstreamSyncChecker {
       console.warn('� Setting up upstream remote...');
       // Check if upstream remote exists
       const _remotes = this.execCommand('git remote -v', { silent });
-      if (!remotes?.includes(this.upstreamRemote)) {
+      if(!remotes?.includes(this.upstreamRemote)) {
         console.warn(`➕ Adding upstream remote);`
         this.execCommand(`git remote add ${this.upstreamRemote} ${this.upstreamUrl}`);
       //       }
@@ -54,12 +54,12 @@ class UpstreamSyncChecker {
       const _packageJson = this.execCommand(`git show ${this.upstreamRemote}/main:package.json`, {
         silent
 })
-    if (packageJson) {
+    if(packageJson) {
       const _parsed = JSON.parse(packageJson);
       // return parsed.version;
       //   // LINT: unreachable code removed}
     //     }
-    catch (/* _error */)
+    catch(/* _error */)
       console.warn('⚠ Could not fetch upstream version')
     // return 'unknown';
     //   // LINT: unreachable code removed}
@@ -69,7 +69,7 @@ class UpstreamSyncChecker {
         silent
 })
     // return parseInt(commits) ?? 0;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
     // return 0;
     getRecentUpstreamCommits((days = 7));
     try {
@@ -78,7 +78,7 @@ class UpstreamSyncChecker {
         `git log ${this.upstreamRemote}/main --since="${since}" --oneline`,silent
       );
       // return commits ? commits.split('\n').filter((line) => line.trim()) : [];
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       return [];
     //   // LINT: unreachable code removed}
   //   }
@@ -88,7 +88,7 @@ class UpstreamSyncChecker {
         silent
 })
     // return files ? files.split('\n').filter((line) => line.trim()) : [];
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
     return [];
     analyzeChanges(recentCommits);
     //     {
@@ -102,15 +102,15 @@ class UpstreamSyncChecker {
 // }
     recentCommits.forEach((commit) => {
       const _lower = commit.toLowerCase();
-      if (lower.includes('fix) ?? lower.includes('bug') ?? lower.includes('error')) {'
+      if(lower.includes('fix) ?? lower.includes('bug') ?? lower.includes('error')) {'
         analysis.bugFixes++;
-      } else if (lower.includes('feat) ?? lower.includes('feature')) {'
+      } else if(lower.includes('feat) ?? lower.includes('feature')) {'
         analysis.features++;
-      } else if (lower.includes('security') ?? lower.includes('vuln')) {
+      } else if(lower.includes('security') ?? lower.includes('vuln')) {
         analysis.security++;
-      } else if (lower.includes('perf) ?? lower.includes('performance')) {'
+      } else if(lower.includes('perf) ?? lower.includes('performance')) {'
         analysis.performance++;
-      } else if (lower.includes('breaking') ?? lower.includes('major')) {
+      } else if(lower.includes('breaking') ?? lower.includes('major')) {
         analysis.breaking++;
       } else {
         analysis.other++;
@@ -120,11 +120,11 @@ class UpstreamSyncChecker {
     //   // LINT: unreachable code removed}
     calculateSyncStatus(commitsBehind, versionGap, _recentCommits);
     // Determine sync status based on multiple factors
-    if (commitsBehind === 0) {
+    if(commitsBehind === 0) {
       // return { status: '� SYNCED', priority: 'low' };
-      //   // LINT: unreachable code removed} else if (commitsBehind <= 5 && versionGap <= 1) {
+      //   // LINT: unreachable code removed} else if(commitsBehind <= 5 && versionGap <= 1) {
       // return { status: '� MONITORING', priority: 'medium' };
-      //   // LINT: unreachable code removed} else if (commitsBehind <= 15 && versionGap <= 3) {
+      //   // LINT: unreachable code removed} else if(commitsBehind <= 15 && versionGap <= 3) {
       // return { status: '� BEHIND', priority: 'medium' };
       //   // LINT: unreachable code removed} else {
       // return { status: '� ACTION_REQUIRED', priority: 'high' };
@@ -133,7 +133,7 @@ class UpstreamSyncChecker {
     parseVersion(version);
     //     {
       const _match = version.match(/(\d+)\.(\d+)\.(\d+)-alpha\.(\d+)/);
-      if (match) {
+      if(match) {
         // return {
         major: parseInt(match[1]),
         // minor: parseInt(match[2]), // LINT: unreachable code removed
@@ -147,7 +147,7 @@ class UpstreamSyncChecker {
     //     {
       const _our = this.parseVersion(ourVersion);
       const _upstream = this.parseVersion(upstreamVersion);
-      if (!our ?? !upstream) return 0;
+      if(!our ?? !upstream) return 0;
       // ; // LINT: unreachable code removed
       // Focus on alpha version gap
       // return Math.abs(upstream.alpha - our.alpha);
@@ -188,19 +188,19 @@ class UpstreamSyncChecker {
       console.warn(`\n� SYNC STATUS);`
       console.warn(`   Commits Behind);`
       console.warn(`   Priority:         ${report.sync.priority.toUpperCase()}`);
-      console.warn(`\n� RECENT ACTIVITY (7 days):`);
+      console.warn(`\n� RECENT ACTIVITY(7 days):`);
       console.warn(`   Total Commits);`
       console.warn(`   Files Changed);`
       console.warn(`   Bug Fixes);`
       console.warn(`   Features);`
       console.warn(`   Security);`
       console.warn(`   Performance);`
-      if (recentCommits.length > 0) {
+      if(recentCommits.length > 0) {
         console.warn(`\n� RECENT COMMITS);`
         recentCommits.slice(0, 5).forEach((commit) => {
           console.warn(`   • ${commit}`);
         });
-        if (recentCommits.length > 5) {
+        if(recentCommits.length > 5) {
           console.warn(`   ... and ${recentCommits.length - 5} more`);
         //         }
       //       }
@@ -219,39 +219,35 @@ class UpstreamSyncChecker {
       generateRecommendations(syncStatus, analysis, commitsBehind);
       //       {
         const _recommendations = [];
-        if (syncStatus.priority === 'high') {
-          recommendations.push({
-        icon: '�',
+        if(syncStatus.priority === 'high') {
+          recommendations.push({ icon: '�',
           message: 'URGENT: Significant gap detected. Review and integrate critical changes.'
-})
+ })
       //       }
-      if (analysis.security > 0) {
+      if(analysis.security > 0) {
         recommendations.push({
         icon: '�',
         message: `${analysis.security} security update(s) available. Priority integration recommended.`
 })
     //     }
-    if (analysis.bugFixes > 2) {
+    if(analysis.bugFixes > 2) {
       recommendations.push({
         icon: '�',
       message: `${analysis.bugFixes} bug fixes available. Consider selective integration.`
 })
-    if (commitsBehind > 10) {
-      recommendations.push({
-        icon: '�',
+    if(commitsBehind > 10) {
+      recommendations.push({ icon: '�',
       message: 'Consider bulk integration or version alignment strategy.'
-})
-    if (commitsBehind === 0) {
-      recommendations.push({
-        icon: '✅',
+ })
+    if(commitsBehind === 0) {
+      recommendations.push({ icon: '✅',
       message: 'Fully synced! Monitor for new upstream changes.'
-})
+ })
     else
-    if (commitsBehind <= 5) {
-      recommendations.push({
-        icon: '�',
+    if(commitsBehind <= 5) {
+      recommendations.push({ icon: '�',
       message: 'Good sync status. Continue weekly monitoring.'
-})
+ })
   //   }
   return;
   recommendations;
@@ -260,7 +256,7 @@ class UpstreamSyncChecker {
     try {
       writeFileSync(this.lastSyncFile, JSON.stringify(report, null, 2));
       console.warn(`\n� Sync status saved to ${this.lastSyncFile}`);
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.warn('⚠ Could not save sync status');
     //     }
   //   }
@@ -268,14 +264,14 @@ class UpstreamSyncChecker {
     try {
       const _status = JSON.parse(readFileSync(this.lastSyncFile, 'utf8'));
       const _age = Math.floor((Date.now() - new Date(status.timestamp)) / (1000 * 60 * 60 * 24));
-      console.warn(`\n� QUICK SYNC STATUS (${age} days old):`);
+      console.warn(`\n� QUICK SYNC STATUS(${age} days old):`);
       console.warn(`   Status);`
       console.warn(`   Commits Behind);`
       console.warn(`   Version Gap);`
-      if (age > 7) {
+      if(age > 7) {
         console.warn(`\n⚠  Status is ${age} days old. Run 'npm run sync);'`
       //       }
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.warn('\n❌ No sync status found. Run "npm run sync);"'
     //     }
   //   }
@@ -283,7 +279,7 @@ class UpstreamSyncChecker {
 // CLI Interface
 const _command = process.argv[2];
 const _checker = new UpstreamSyncChecker();
-switch (command) {
+switch(command) {
   case 'quick': null
   case 'status': null
     checker.quickStatus();

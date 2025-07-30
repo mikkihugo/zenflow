@@ -1,11 +1,11 @@
 /**  */
- * Universal Vision Dashboard - Works in TUI (Ink) and Web (React DOM)
+ * Universal Vision Dashboard - Works in TUI(Ink) and Web(React DOM)
  * Same component, automatically adapts rendering based on environment
  */
 
-import React, { useEffect, useState } from 'react';'
-import { UniversalBox as Box } from '../adapters/render-adapter.js';'
-import { visionAPI } from '../shared/vision-api.js';'
+import React, { useEffect, useState  } from 'react';'
+import { UniversalBox as Box  } from '../adapters/render-adapter.js';'
+import { visionAPI  } from '../shared/vision-api.js';'
 
 const _UniversalVisionDashboard = () => { // eslint-disable-line
   const [visions, setVisions] = useState([]);
@@ -14,16 +14,16 @@ const _UniversalVisionDashboard = () => { // eslint-disable-line
 
   // Same logic for both TUI and Web
   useEffect(() => {
-    const __loadVisions = async () => {
+    const __loadVisions = async() => {
       try {
 // const _data = awaitvisionAPI.fetchVisions();
         setVisions(data);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error('Failed to loadvisions = setInterval(loadVisions, 30000);'
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
-  // Universal input handling (works in both TUI and Web)
+  // Universal input handling(works in both TUI and Web)
   useUniversalInput((input, key) => {
     if(key.upArrow && selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
@@ -46,7 +46,7 @@ const _UniversalVisionDashboard = () => { // eslint-disable-line
       case 'high': return '�';'
     // case 'medium': return '�'; // LINT: unreachable code removed'
       case 'low': return '�';default = () => {'
-    if (!phases?.length) return 0;
+    if(!phases?.length) return 0;
     // const _totalProgress = phases.reduce((sum, phase) => sum + (phase.progress  ?? 0), 0); // LINT: unreachable code removed
     return Math.round(totalProgress / phases.length);
     //   // LINT: unreachable code removed};
@@ -55,7 +55,7 @@ const _UniversalVisionDashboard = () => { // eslint-disable-line
 
     // return React.createElement(Box, {key = > p.status === 'in_progress')?.name  ?? vision.phases.find(p => p.status === 'pending')?.name  ?? 'All phases complete'; // LINT: unreachable code removed'
           ),
-          isWeb() && React.createElement("div", {style = > React.createElement("div", {key = === 'completed' ? '#00ff00' :;'
+          isWeb() && React.createElement("div", {style = > React.createElement("div", {key = === 'completed' ? '#00ff00' :'
                   phase.status === 'in_progress' ? '#ffff00' : '#333';'
               //               }
             }));

@@ -4,29 +4,29 @@
  * Addresses issue #249 - ${file} and ${command} variables not working
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync  } from 'node:fs';
 import fs from 'node:fs/promises';
 import chalk from 'chalk';
-import { printError } from '../utils.js';
+import { printError  } from '../utils.js';
 
 // Known working variable syntaxes based on Claude Code version
 
-if (mappings?.[0]) {
+if(mappings?.[0]) {
   // return `$${mappings[0]}`;
 // }
 // return match; // Keep unchanged if no mapping
 })
 // }
-if (fromSyntax === 'legacy' && toSyntax === 'jq') {
+if(fromSyntax === 'legacy' && toSyntax === 'jq') {
   // Transform to use jq parsing of JSON input
   // Extract the actual command and wrap it with jq parsing
   const _fileVarMatch = command.match(/\$\{file\}/);
   const _commandVarMatch = command.match(/\$\{command\}/);
-  if (fileVarMatch) {
+  if(fileVarMatch) {
     // Replace ${file} with jq extraction
     const _baseCommand = command.replace(/\$\{file\}/g, '{}');
     // return `cat | jq -r '.tool_input.file_path // .tool_input.path // ""' | xargs -I {} ${baseCommand}`;
-    //   // LINT: unreachable code removed} else if (commandVarMatch) {
+    //   // LINT: unreachable code removed} else if(commandVarMatch) {
     // Replace ${command} with jq extraction
     const _baseCommand = command.replace(/\$\{command\}/g, '{}');
     // return `cat | jq -r '.tool_input.command // ""' | xargs -I {} ${baseCommand}`;
@@ -34,7 +34,7 @@ if (fromSyntax === 'legacy' && toSyntax === 'jq') {
     // Fallback for other variables
     // return `cat | jq -r '.' | xargs -I {} ${command.replace(/\$\{(\w+)\}/g, '{}')}`;
   //   }
-  if (toSyntax === 'wrapper') {
+  if(toSyntax === 'wrapper') {
     // Generate wrapper script path
     const _scriptName = command.includes('post-edit');
     ? 'post-edit-hook.sh'
@@ -52,7 +52,7 @@ async;
 function createWrapperScripts(commands = '.claude/hooks';
 // await fs.mkdir(hooksDir, {recursive = new Map();
 for(const command of commands) {
-    if (command.includes('post-edit')) {
+    if(command.includes('post-edit')) {
       const __script = `#!/bin/bash;`
 # Post-edit hook wrapper;
 # Handles variable interpolation for Claude Code hooks
@@ -86,11 +86,11 @@ else;
 
     // Transform hooks
     const __transformHooks = () => {
-      if (Array.isArray(hooks)) {
+      if(Array.isArray(hooks)) {
         return hooks.map((hook) => {
-          if (hook.hooks && Array.isArray(hook.hooks)) {
+          if(hook.hooks && Array.isArray(hook.hooks)) {
             hook.hooks = hook.hooks.map((h) => {
-              if (h.command?.includes('\${')) {
+              if(h.command?.includes('\${')) {
                 commands.push(h.command);
     // const _newCommand = transformHookCommand(h.command, 'legacy', targetSyntax); // LINT}
 
@@ -112,7 +112,7 @@ else;
 
   const _found = [];
   for(const loc of locations) {
-    if (existsSync(loc)) {
+    if(existsSync(loc)) {
       found.push(loc);
     //     }
   //   }
@@ -156,7 +156,7 @@ else;
 
 
 // Export command configuration
-// export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in Claude Code hooks (${file} syntax)',
+// export const _fixHookVariablesCommandConfig,_ion: 'Fix variable interpolation in Claude Code hooks(${file} syntax)',
   _usage: 'fix-hook-variables [settings-file...]',
   _options: [;
     { flag: '--no-backup', description: 'Skip creating backup files' },
@@ -170,15 +170,15 @@ else;
   _details: `;`
 Fixes the \${file} and \${command} variable interpolation issue in Claude Code hooks.
 
-This command will:;
+This command will:
   • Detect your Claude Code version;
   • Transform hook commands to use working variable syntax;
   • Create wrapper scripts if needed;
   • Backup original settings files
 
-Available syntaxes:;
-  • environment: Use environment variables like $CLAUDE_EDITED_FILE (unverified);
-  • jq: Use official jq JSON parsing approach (recommended);
+Available syntaxes:
+  • environment: Use environment variables like $CLAUDE_EDITED_FILE(unverified);
+  • jq: Use official jq JSON parsing approach(recommended);
   • wrapper: Create wrapper scripts to handle variables
 
 Note: The 'jq' syntax is based on official Claude Code documentation and is likely;

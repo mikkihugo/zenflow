@@ -2,14 +2,14 @@
  * Tests for cli-main.js
  */
 
-import { jest } from '@jest/globals';'
-import { parseFlags } from '../utils.js';'
+import { jest  } from '@jest/globals';'
+import { parseFlags  } from '../utils.js';'
 
 // Mock the command registry
-jest.mock('../command-registry.js', () => ({'
+jest.mock('../command-registry.js', () => ({ '
   executeCommand: jest.fn(),
 hasCommand: jest.fn(),
-listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))'
+listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm']  }))'
 => // eslint-disable-line
 // {
   let originalArgv;
@@ -34,7 +34,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))'
   });
 
   describe('Help output', () => {'
-    test('should show help when no arguments provided', async () => {'
+    test('should show help when no arguments provided', async() => {'
       process.argv = ['node', 'claude-zen'];'
 
       const { executeCommand, hasCommand, showAllCommands } = // await import(
@@ -58,7 +58,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))'
       expect(output).toContain('Claude-Flow v2.0.0');'
     });
 
-    test('should show version for --version flag', async () => {'
+    test('should show version for --version flag', async() => {'
       process.argv = ['node', 'claude-zen', '--version'];'
 // // await import('../cli-main.js');'
       expect(consoleLogSpy).toHaveBeenCalledWith('2.0.0');'
@@ -67,7 +67,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))'
   });
 
   describe('Command execution', () => {'
-    test('should execute valid command', async () => {'
+    test('should execute valid command', async() => {'
       process.argv = ['node', 'claude-zen', 'init', '--sparc'];'
 
       const { executeCommand, hasCommand } = // await import('../command-registry.js');'
@@ -78,7 +78,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))'
       expect(executeCommand).toHaveBeenCalledWith('init', ['--sparc'], {});'
     });
 
-    test('should handle command with multiple arguments', async () => {'
+    test('should handle command with multiple arguments', async() => {'
       process.argv = [
         'node','
         'claude-zen','
@@ -110,7 +110,7 @@ listCommands: () => ['init', 'agent', 'task', 'memory', 'swarm'] }))'
       expect(flags).toEqual({ flag => {
       const _flags = parseFlags(['--port=8080', '--name=test']);'
       expect(flags).toEqual({ port => {
-    test('should handle command execution errors gracefully', _async () => {'
+    test('should handle command execution errors gracefully', _async() => {'
       process.argv = ['node', 'claude-zen', 'init'];'
 
       const { executeCommand, hasCommand } = // await import('../command-registry.js');'

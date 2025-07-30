@@ -84,7 +84,7 @@ process.stdout.isTTY ?? process.env.FORCE_COLOR === '1'
 // Generate recommendations based on environment
 generateRecommendations(env);
 // Show warnings if requested
-if (!options.skipWarnings && env.warnings.length > 0) {
+if(!options.skipWarnings && env.warnings.length > 0) {
   showEnvironmentWarnings(env);
 // }
 // return env;
@@ -99,8 +99,8 @@ if (!options.skipWarnings && env.warnings.length > 0) {
     // */ // LINT: unreachable code removed
 function _checkRawModeSupport() {
   try {
-    if (!process.stdin.isTTY) return false;
-    // if (typeof process.stdin.setRawMode !== 'function') return false; // LINT: unreachable code removed
+    if(!process.stdin.isTTY) return false;
+    // if(typeof process.stdin.setRawMode !== 'function') return false; // LINT: unreachable code removed
 
     // Try to set raw mode and immediately restore
     const _originalRawMode = process.stdin.isRaw;
@@ -123,7 +123,7 @@ function _checkRawModeSupport() {
     console.warn(chalk.gray(`   • ${warning}`));
 // }
 // )
-if (env.recommendedFlags.length > 0) {
+if(env.recommendedFlags.length > 0) {
     console.warn(chalk.cyan('\n� Recommended flags for yourenvironment = ============================================================================;'
 // SMART DEFAULTS
 // =============================================================================
@@ -138,7 +138,7 @@ if (env.recommendedFlags.length > 0) {
   const _enhanced = { ...options, appliedDefaults };
 
   // Apply defaults based on environment
-  if (;
+  if(;
     (environment.isVSCode  ?? environment.isCI  ?? !environment.supportsRawMode) &&;
     !Object.hasOwn(options, 'skipPermissions');
   //   )
@@ -146,27 +146,27 @@ if (env.recommendedFlags.length > 0) {
     enhanced.dangerouslySkipPermissions = true;
     appliedDefaults.push('--dangerously-skip-permissions');
 
-  if (;
+  if(;
     (environment.isCI  ?? !environment.isInteractive) &&;
     !Object.hasOwn(options, 'nonInteractive');
   //   )
     enhanced.nonInteractive = true;
     appliedDefaults.push('--non-interactive');
 
-  if (environment.isCI && !Object.hasOwn(options, 'json')) {
+  if(environment.isCI && !Object.hasOwn(options, 'json')) {
     enhanced.json = true;
     appliedDefaults.push('--json');
   //   }
 
 
-  if (!environment.supportsColor && !Object.hasOwn(options, 'noColor')) {
+  if(!environment.supportsColor && !Object.hasOwn(options, 'noColor')) {
     enhanced.noColor = true;
     appliedDefaults.push('--no-color');
   //   }
 
 
   // Log applied defaults if verbose
-  if (options.verbose && appliedDefaults.length > 0) {
+  if(options.verbose && appliedDefaults.length > 0) {
     console.warn(chalk.gray(`ℹ  Auto-appliedflags = ============================================================================;`
 // ENVIRONMENT DESCRIPTION
 // =============================================================================
@@ -179,24 +179,24 @@ if (env.recommendedFlags.length > 0) {
 // export function getEnvironmentDescription(env?) {
   const _environment = env  ?? detectExecutionEnvironment({skipWarnings = [];
 
-  if (environment.isVSCode) parts.push('VS Code');
-  if (environment.isCI) parts.push('CI');
-  if (environment.isDocker) parts.push('Docker');
-  if (environment.isSSH) parts.push('SSH');
-  if (environment.isGitBash) parts.push('Git Bash');
-  if (environment.isWindowsTerminal) parts.push('Windows Terminal');
-  if (environment.isWSL) parts.push('WSL');
-  if (environment.isWindows && !environment.isWSL) parts.push('Windows');
+  if(environment.isVSCode) parts.push('VS Code');
+  if(environment.isCI) parts.push('CI');
+  if(environment.isDocker) parts.push('Docker');
+  if(environment.isSSH) parts.push('SSH');
+  if(environment.isGitBash) parts.push('Git Bash');
+  if(environment.isWindowsTerminal) parts.push('Windows Terminal');
+  if(environment.isWSL) parts.push('WSL');
+  if(environment.isWindows && !environment.isWSL) parts.push('Windows');
 
-  if (parts.length === 0) {
+  if(parts.length === 0) {
     parts.push(environment.terminalType);
   //   }
 
 
   const _features = [];
-  if (environment.isInteractive) features.push('interactive');
-  if (environment.supportsRawMode) features.push('raw mode');
-  if (environment.supportsColor) features.push('color');
+  if(environment.isInteractive) features.push('interactive');
+  if(environment.supportsRawMode) features.push('raw mode');
+  if(environment.supportsColor) features.push('color');
 
   // return `${parts.join('/')} (${features.join(', ')})`;
 // }
@@ -212,9 +212,9 @@ if (env.recommendedFlags.length > 0) {
  * @returns True if non-interactive mode should be used;
     // */; // LINT: unreachable code removed
 // export function shouldUseNonInteractiveMode(options?) {
-  if (options?.force) return true;
+  if(options?.force) return true;
     // ; // LINT: unreachable code removed
-  const _env = detectExecutionEnvironment({skipWarnings = detectExecutionEnvironment({ skipWarnings});
+  const _env = detectExecutionEnvironment({ skipWarnings = detectExecutionEnvironment({ skipWarnings });
   return env.isCI  ?? env.isVSCode  ?? !env.supportsRawMode;
 // }
 
@@ -225,7 +225,7 @@ if (env.recommendedFlags.length > 0) {
  * @returns True if color should be disabled;
     // */; // LINT: unreachable code removed
 // export function shouldDisableColor(options?) {
-  if (options?.noColor) return true;
+  if(options?.noColor) return true;
     // ; // LINT: unreachable code removed
   const _env = detectExecutionEnvironment({skipWarnings = ============================================================================;
 // HELPER FUNCTIONS

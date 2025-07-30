@@ -3,8 +3,8 @@
  * Implements Google's single responsibility and dependency injection principles;'
  */
 
-import type { CommandContext } from '../../types/cli.js';'
-import { ValidationError } from './cli-error.js';'
+import type { CommandContext  } from '../../types/cli.js';'
+import { ValidationError  } from './cli-error.js';'
 import logger from './logger.js';'
 
 // =============================================================================
@@ -86,7 +86,7 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
   const __startTime = Date.now();
   const __retryCount = 0;
 
-  if (!command) {
+  if(!command) {
     throw new ValidationError(`Unknown command = {`
       command => {
             acc[index] = arg;
@@ -99,7 +99,7 @@ executeCommand(commandName, (subArgs = []), (flags = {}), (context = {}));
         const _duration = Date.now() - startTime;
         this.logger.debug(`Command '${commandName}' completed successfully`, {duration = Date.now() - startTime;`
 
-        if (error instanceof ValidationError  ?? error instanceof CommandExecutionError) {
+        if(error instanceof ValidationError  ?? error instanceof CommandExecutionError) {
           // Re-throw CLI errors as-is
           this.logger.debug(`Command '${commandName}' failed`, {error = > Promise<T> | T, timeoutMs => {`
       const _timeoutId = setTimeout(() => {
@@ -122,8 +122,8 @@ finally(() => clearTimeout(timeoutId));
   // // public listCommands(includeHidden = false): CommandListItem[] {
     const _commands = [];
 
-    for (const [name, command] of this.commandRegistry.entries()) {
-      if (includeHidden  ?? !command.hidden) {
+    for(const [name, command] of this.commandRegistry.entries()) {
+      if(includeHidden  ?? !command.hidden) {
         commands.push({
           name,description = > a.name.localeCompare(b.name));
   //   }
@@ -135,15 +135,15 @@ finally(() => clearTimeout(timeoutId));
    * @returns Command information or null if not found
     // */; // LINT: unreachable code removed
   // // public getCommandInfo(commandName = this.commandRegistry.get(commandName);
-    if (!command) {
+    if(!command) {
       // return null;
     //   // LINT: unreachable code removed}
 
     // return {name = this.commandRegistry.get(commandName);
-    // if (!command) { // LINT: unreachable code removed
+    // if(!command) { // LINT: unreachable code removed
       throw new ValidationError(`Unknowncommand = [];`
 
-    for (const cmd of commands) {
+    for(const cmd of commands) {
 // const _result = awaitthis.executeCommand(;
         cmd.name,
         cmd.args  ?? [],
@@ -160,7 +160,7 @@ finally(() => clearTimeout(timeoutId));
   /**  */
  * Execute multiple commands in parallel
    * @param commands - Array of command specifications
-   * @returns Array of results (in same order as input)
+   * @returns Array of results(in same order as input)
     // */; // LINT: unreachable code removed
   public;
   async;
@@ -185,10 +185,10 @@ public;
 getMetrics();
 : Record<string, any>;
   // return {timeout = = undefined) this.timeout = options.timeout;
-    // if (options.retries !== undefined) this.retries = options.retries; // LINT: unreachable code removed
-  if (options.onCommandStart) this.onCommandStart = options.onCommandStart;
-  if (options.onCommandComplete) this.onCommandComplete = options.onCommandComplete;
-  if (options.onCommandError) this.onCommandError = options.onCommandError;
+    // if(options.retries !== undefined) this.retries = options.retries; // LINT: unreachable code removed
+  if(options.onCommandStart) this.onCommandStart = options.onCommandStart;
+  if(options.onCommandComplete) this.onCommandComplete = options.onCommandComplete;
+  if(options.onCommandError) this.onCommandError = options.onCommandError;
 
 /**  */
  * Check if error should trigger a retry
@@ -199,12 +199,12 @@ private;
 shouldRetry(error);
 
   // Don't retry validation errors'
-  if (error instanceof ValidationError) {
+  if(error instanceof ValidationError) {
     // return false;
     //   // LINT: unreachable code removed}
 
   // Don't retry timeout errors'
-  if (error.message.includes('timed out')) {'
+  if(error.message.includes('timed out')) {'
     // return false;
     //   // LINT: unreachable code removed}
 
@@ -250,7 +250,7 @@ sleep(ms = > setTimeout(resolve, ms));
       logger.error(`Command '${commandName}' failed after ${duration}ms`, {`
         error);
 
-      if (options.onCommandError) {
+      if(options.onCommandError) {
         options.onCommandError(commandName, error, duration);
       //       }
     //     }

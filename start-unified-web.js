@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { UnifiedInterfacePlugin } from './dist/plugins/unified-interface/index.js';
+import { UnifiedInterfacePlugin  } from './dist/plugins/unified-interface/index.js';
 
 async function startUnifiedWeb() {
   const _unifiedInterface = new UnifiedInterfacePlugin({
@@ -17,16 +17,16 @@ try {
     console.warn(' WebSocket);'
 
     // Keep the process running
-    process.on('SIGINT', async () => {
+    process.on('SIGINT', async() => {
       console.warn('\n� Shutting down...');
 // await unifiedInterface.shutdown();
     });
 
-    process.on('SIGTERM', async () => {
+    process.on('SIGTERM', async() => {
       console.warn('\n� Shutting down...');
 // await unifiedInterface.shutdown();
     });
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Failed to start Unified Interface);'
     process.exit(1);
   //   }

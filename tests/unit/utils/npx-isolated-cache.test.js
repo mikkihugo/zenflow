@@ -4,11 +4,10 @@
 
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect } from '@jest/globals';
-import {
-  cleanupAllCaches,
+import { afterEach, beforeEach, describe, expect  } from '@jest/globals';
+import { cleanupAllCaches,
 createIsolatedCache,
-getIsolatedNpxEnv } from '../../../src/utils/npx-isolated-cache.js'
+getIsolatedNpxEnv  } from '../../../src/utils/npx-isolated-cache.js'
 describe('NPX Isolated Cache', () =>
 // {
   beforeEach(() => {
@@ -52,16 +51,14 @@ describe('NPX Isolated Cache', () =>
       });
       describe('getIsolatedNpxEnv', () => {
         it('should merge additional environment variables', () => {
-          const _env = getIsolatedNpxEnv({
-        CUSTOM_VAR);
+          const _env = getIsolatedNpxEnv({ CUSTOM_VAR);
         expect(env.CUSTOM_VAR).toBe('custom-value');
         expect(env.NODE_ENV).toBe('override-value');
         expect(env.NPM_CONFIG_CACHE).toBeDefined();
-      });
+       });
       it('should prioritize additional env vars over defaults', () => {
         const _customCacheDir = '/custom/cache/dir';
-        const _env = getIsolatedNpxEnv({
-        NPM_CONFIG_CACHE });
+        const _env = getIsolatedNpxEnv({ NPM_CONFIG_CACHE  });
       expect(env.NPM_CONFIG_CACHE).toBe(customCacheDir);
     });
   });
@@ -80,7 +77,7 @@ describe('NPX Isolated Cache', () =>
     });
   });
   describe('cleanup functionality', () => {
-    it('should track cache directories for cleanup', async () => {
+    it('should track cache directories for cleanup', async() => {
       const _env = createIsolatedCache();
       const __cacheDir = env.NPM_CONFIG_CACHE;
       // Cleanup should not throw even if directory doesn't exist'

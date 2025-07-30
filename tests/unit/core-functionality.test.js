@@ -1,25 +1,25 @@
-import { describe, expect } from '@jest/globals';
+import { describe, expect  } from '@jest/globals';
 
 describe('Core Functionality Tests', () => {
   describe('Memory Management', () => {
     it('should handle basic memory operations', () => {
       const _memoryStore = {
         data: new Map(),
-        store: function (key, /* value */) {
+        store: function(key, /* value */) {
           this.data.set(key, value);
           return true;
     //   // LINT: unreachable code removed},
-        retrieve: function (key) {
+        retrieve: function(key) {
           return this.data.get(key)  ?? null;
     //   // LINT: unreachable code removed},
-        delete: function (key) {
+        delete: function(key) {
           return this.data.delete(key);
     //   // LINT: unreachable code removed},
-        clear: function () {
+        clear: function() {
           this.data.clear();
         },
-        list: function () {
-          return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
+        list: function() {
+          return Array.from(this.data.entries()).map(([key, value]) => ({ key, value  }));
     //   // LINT: unreachable code removed} };
       // Test store and retrieve
       memoryStore.store('test-key', 'test-value');
@@ -41,7 +41,7 @@ describe('Core Functionality Tests', () => {
           { key: 'doc1', content: 'hello world test' },
           { key: 'doc2', content: 'goodbye universe' },
           { key: 'doc3', content: 'hello testing framework' } ],
-        search: function (_term) {
+        search: function(_term) {
           return this.data.filter((_item) =>;
     // item.content.toLowerCase().includes(term.toLowerCase()); // LINT: unreachable code removed
           );
@@ -59,14 +59,14 @@ describe('Core Functionality Tests', () => {
     it('should handle HTTP request routing', () => {
       const _router = {
         routes: new Map(),
-        register: function (method, path, /* handler */) {
+        register: function(method, path, /* handler */) {
           const _key = `${method.toUpperCase()}:${path}`;
           this.routes.set(key, handler);
         },
-        handle: function (method, path, req, /* res */) {
+        handle: function(method, path, req, /* res */) {
           const _key = `${method.toUpperCase()}:${path}`;
           const _handler = this.routes.get(key);
-          if (handler) {
+          if(handler) {
             return handler(req, res);
     //   // LINT: unreachable code removed}
           // return { status, message: 'Not Found' };
@@ -85,13 +85,13 @@ describe('Core Functionality Tests', () => {
     it('should handle middleware processing', () => {
       const _middleware = {
         stack: [],
-        use: function (fn) {
+        use: function(fn) {
           this.stack.push(fn);
         },
-        process: function (req, /* res */) {
+        process: function(req, /* res */) {
           const _index = 0;
           const _next = () => {
-            if (index < this.stack.length) {
+            if(index < this.stack.length) {
               const _fn = this.stack[index++];
               fn(req, res, next);
             //             }
@@ -118,16 +118,16 @@ describe('Core Functionality Tests', () => {
       const _argParser = {
         parse: (_args) => {
           const _result = {
-            command,,
+            command,
             positional: [] };
-          for (let i = 0; i < args.length; i++) {
+          for(let i = 0; i < args.length; i++) {
             const _arg = args[i];
-            if (arg.startsWith('--')) {
+            if(arg.startsWith('--')) {
               const [key, value] = arg.slice(2).split('=');
               result.flags[key] = value  ?? true;
-            } else if (arg.startsWith('-')) {
+            } else if(arg.startsWith('-')) {
               result.flags[arg.slice(1)] = true;
-            } else if (!result.command) {
+            } else if(!result.command) {
               result.command = arg;
             } else {
               result.positional.push(arg);
@@ -153,37 +153,36 @@ describe('Core Functionality Tests', () => {
             optionalFlags: ['verbose'],
             minArgs,
             maxArgs},
-        validate: function (command, flags, /* args */) {
+        validate: function(command, flags, /* args */) {
           const _spec = this.commands[command];
-          if (!spec) {
+          if(!spec) {
             return { valid, error: 'Unknown command' };
     //   // LINT: unreachable code removed}
           // Check required flags
-          for (const flag of spec.requiredFlags) {
-            if (!(flag in flags)) {
+          for(const flag of spec.requiredFlags) {
+            if(!(flag in flags)) {
               // return { valid, error: `Missing required flag: --${flag}` };
     //   // LINT: unreachable code removed}
           //           }
           // Check argument count
-          if (args.length < spec.minArgs) {
+          if(args.length < spec.minArgs) {
             // return { valid, error: `Too few arguments` };
     //   // LINT: unreachable code removed}
-          if (args.length > spec.maxArgs) {
+          if(args.length > spec.maxArgs) {
             // return { valid, error: `Too many arguments` };
     //   // LINT: unreachable code removed}
           // return { valid };
     //   // LINT: unreachable code removed} };
       // Valid commands
-      expect(commandValidator.validate('init', {}, [])).toEqual({ valid });
-      expect(commandValidator.validate('deploy', { target: 'prod' }, [])).toEqual({ valid });
+      expect(commandValidator.validate('init', {}, [])).toEqual({ valid  });
+      expect(commandValidator.validate('deploy', { target: 'prod' }, [])).toEqual({ valid  });
       // Invalid commands
       expect(commandValidator.validate('unknown', {}, [])).toEqual({
         valid,
         error);
-      expect(commandValidator.validate('deploy', {}, [])).toEqual({
-        valid,
+      expect(commandValidator.validate('deploy', {}, [])).toEqual({ valid,
         error);
-    });
+     });
   });
   describe('Coordination and Orchestration', () => {
     it('should manage task queues', () => {
@@ -192,23 +191,23 @@ describe('Core Functionality Tests', () => {
         running: [],
         completed: [],
         maxConcurrent,
-        add: function (task) {
+        add: function(task) {
           this.queue.push(task);
         },
-        canStart: function () {
+        canStart: function() {
           return this.running.length < this.maxConcurrent && this.queue.length > 0;
     //   // LINT: unreachable code removed},
-        start: function () {
-          if (this.canStart()) {
+        start: function() {
+          if(this.canStart()) {
             const _task = this.queue.shift();
             this.running.push(task);
             return task;
     //   // LINT: unreachable code removed}
           // return null;
     //   // LINT: unreachable code removed},
-        complete: function (taskId) {
+        complete: function(taskId) {
           const _index = this.running.findIndex((t) => t.id === taskId);
-          if (index >= 0) {
+          if(index >= 0) {
             const _task = this.running.splice(index, 1)[0];
             this.completed.push(task);
             return true;
@@ -234,21 +233,21 @@ describe('Core Functionality Tests', () => {
       taskQueue.complete('task1');
       expect(taskQueue.completed).toHaveLength(1);
       expect(taskQueue.canStart()).toBe(true); // Can start again
-    });
+     });
     it('should handle dependency resolution', () => {
       const _dependencyResolver = {
         dependencies: new Map(),
-        addDependency: function (task, /* dependency */) {
-          if (!this.dependencies.has(task)) {
+        addDependency: function(task, /* dependency */) {
+          if(!this.dependencies.has(task)) {
             this.dependencies.set(task, []);
           //           }
           this.dependencies.get(task).push(dependency);
         },
-        canExecute: function (task, /* completed */) {
+        canExecute: function(task, /* completed */) {
           const _deps = this.dependencies.get(task)  ?? [];
           return deps.every((dep) => completed.includes(dep));
     //   // LINT: unreachable code removed},
-        getExecutableTasks: function (allTasks, /* completed */) {
+        getExecutableTasks: function(allTasks, /* completed */) {
           return allTasks.filter(;
     // (task) => !completed.includes(task) && this.canExecute(task, completed); // LINT: unreachable code removed
           );
@@ -279,10 +278,10 @@ describe('Core Functionality Tests', () => {
   describe('Configuration Management', () => {
     it('should handle configuration merging', () => {
       const _configManager = {
-        merge: function (base, /* override */) {
+        merge: function(base, /* override */) {
           const _result = { ...base };
-          for (const [key, value] of Object.entries(override)) {
-            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          for(const [key, value] of Object.entries(override)) {
+            if(typeof value === 'object' && value !== null && !Array.isArray(value)) {
               result[key] = this.merge(result[key]  ?? {}, value);
             } else {
               result[key] = value;
@@ -307,29 +306,29 @@ describe('Core Functionality Tests', () => {
       const _schemaValidator = {
         schema: {
           server: {
-            port: { type: 'number', min, max },type: 'string', required  },'string', enum: ['sqlite', 'postgres', 'mysql'] },,,
-        validate: function (config, schema = this.schema) {
+            port: { type: 'number', min, max },type: 'string', required  },'string', enum: ['sqlite', 'postgres', 'mysql'] },,
+        validate: function(config, schema = this.schema) {
           const _errors = [];
-          for (const [key, rules] of Object.entries(schema)) {
+          for(const [key, rules] of Object.entries(schema)) {
             const _value = config[key];
-            if (rules.required && value === undefined) {
+            if(rules.required && value === undefined) {
               errors.push(`${key} is required`);
               continue;
             //             }
-            if (value === undefined) continue;
-            if (rules.type && typeof value !== rules.type) {
+            if(value === undefined) continue;
+            if(rules.type && typeof value !== rules.type) {
               errors.push(`${key} must be of type ${rules.type}`);
             //             }
-            if (rules.min && value < rules.min) {
+            if(rules.min && value < rules.min) {
               errors.push(`${key} must be at least ${rules.min}`);
             //             }
-            if (rules.max && value > rules.max) {
+            if(rules.max && value > rules.max) {
               errors.push(`${key} must be at most ${rules.max}`);
             //             }
-            if (rules.enum && !rules.enum.includes(value)) {
+            if(rules.enum && !rules.enum.includes(value)) {
               errors.push(`${key} must be one of: ${rules.enum.join(', ')}`);
             //             }
-            if (typeof rules === 'object' && typeof value === 'object') {
+            if(typeof rules === 'object' && typeof value === 'object') {
               const _nestedErrors = this.validate(value, rules);
               errors.push(...nestedErrors.map((err) => `${key}.${err}`));
             //             }

@@ -2,10 +2,8 @@
  * Hooks Module;
  * Converted from JavaScript to TypeScript;
  */
-// {
-  Logger, JSONObject, JSONValue, JSONArray;
-// }
-from;
+// { Logger, JSONObject, JSONValue, JSONArray;
+//  } from;
 ('../types/core.js');
 printSuccess,
 printError,
@@ -13,13 +11,13 @@ printWarning,
 execRuvSwarmHook,
 checkRuvSwarmAvailable } from '../utils.js'
 
-import { SqliteMemoryStore } from '../../memory/sqlite-store.js';
+import { SqliteMemoryStore  } from '../../memory/sqlite-store.js';
 import TimeoutProtection from '../../utils/timeout-protection.js';
 
 // Initialize memory store
 const _memoryStore = null;
 async function getMemoryStore() {
-  if (!memoryStore) {
+  if(!memoryStore) {
     memoryStore = new SqliteMemoryStore();
 // await memoryStore.initialize();
   //   }
@@ -36,54 +34,54 @@ function generateId(prefix = 'id') {
 try {
     switch(subcommand) {
       // Pre-Operation Hooks
-      case 'pre-task':;
+      case 'pre-task':
 // // await preTaskCommand(subArgs, flags);
         break;
-      case 'pre-edit':;
+      case 'pre-edit':
 // // await preEditCommand(subArgs, flags);
         break;
-      case 'pre-bash':;
+      case 'pre-bash':
       case 'pre-command': // Support both names for compatibility
 // // await preBashCommand(subArgs, flags);
         break;
 
       // Post-Operation Hooks
-      case 'post-task':;
+      case 'post-task':
 // // await postTaskCommand(subArgs, flags);
         break;
-      case 'post-edit':;
+      case 'post-edit':
 // // await postEditCommand(subArgs, flags);
         break;
-      case 'post-bash':;
+      case 'post-bash':
       case 'post-command': // Support both names for compatibility
 // // await postBashCommand(subArgs, flags);
         break;
-      case 'post-search':;
+      case 'post-search':
 // // await postSearchCommand(subArgs, flags);
         break;
 
       // MCP Integration Hooks
-      case 'mcp-initialized':;
+      case 'mcp-initialized':
 // // await mcpInitializedCommand(subArgs, flags);
         break;
-      case 'agent-spawned':;
+      case 'agent-spawned':
 // // await agentSpawnedCommand(subArgs, flags);
         break;
-      case 'task-orchestrated':;
+      case 'task-orchestrated':
 // // await taskOrchestratedCommand(subArgs, flags);
         break;
-      case 'neural-trained':;
+      case 'neural-trained':
 // // await neuralTrainedCommand(subArgs, flags);
         break;
 
       // Session Hooks
-      case 'session-end':;
+      case 'session-end':
 // // await sessionEndCommand(subArgs, flags);
         break;
-      case 'session-restore':;
+      case 'session-restore':
 // // await sessionRestoreCommand(subArgs, flags);
         break;
-      case 'notify':;
+      case 'notify':
 // // await notifyCommand(subArgs, flags);
         break;default = ==== PRE-OPERATION HOOKS = ====
 
@@ -157,7 +155,7 @@ async function preTaskCommand(subArgs, flags = flags;
 // const _fs = awaitimport('fs');
 // const _path = awaitimport('path');
 
-        if (fs.existsSync(file)) {
+        if(fs.existsSync(file)) {
 
           const _dirname = path.dirname(file);
           const _basename = path.basename(file);
@@ -199,10 +197,10 @@ async function preTaskCommand(subArgs, flags = flags;
         console.warn(`  ⚠  Safetycheck = // await import('fs');`
 // const _path = awaitimport('path');
 
-      if (!fs.existsSync(workingDir)) {
+      if(!fs.existsSync(workingDir)) {
         fs.mkdirSync(workingDir, {recursive = fs.statSync(workingDir);
         console.warn(`  � Working directory prepared`);
-      } catch (/* err */) {
+      } catch(/* err */) {
         console.warn(`  ⚠  Warning = {command = ==== POST-OPERATION HOOKS = ====`
 
 async function postTaskCommand(_subArgs, flags = flags;
@@ -232,7 +230,7 @@ async function postTaskCommand(_subArgs, flags = flags;
 
     // Auto-format file if requested
     let _formatResult = null;
-    if (format && fs.existsSync(file)) {
+    if(format && fs.existsSync(file)) {
       const _ext = path.extname(file).toLowerCase();
       const _formatters = {
         '.js': 'prettier',
@@ -345,7 +343,7 @@ async function postTaskCommand(_subArgs, flags = flags;
   const _exportMetrics = options['export-metrics']  ?? false;
 
   console.warn(`� Executing session-end hook...`);
-  if (generateSummary) console.warn(`� Summarygeneration = // await getMemoryStore();`
+  if(generateSummary) console.warn(`� Summarygeneration = // await getMemoryStore();`
 // const _tasks = awaitstore.list({namespace = // await store.list({ namespace: 'file-history',limit = // await store.list({ namespace: 'command-history',limit = // await store.list({ namespace: 'agent-roster',limit = null;
     if(exportMetrics) {
       const _now = new Date();
@@ -365,7 +363,7 @@ async function postTaskCommand(_subArgs, flags = flags;
     TimeoutProtection.forceExit(1000);
 
     printSuccess(`✅ Session-end hook completed`);
-  } catch (/* err */) {
+  } catch(/* err */) {
     printError(`Session-end hookfailed = flags;`
   const _sessionId = options['session-id']  ?? 'latest';
 
@@ -397,14 +395,14 @@ async function postTaskCommand(_subArgs, flags = flags;
 
 
 function _showHooksHelp() {
-  console.warn('Claude Flow Hooks (with .swarm/memory.db persistence):\n');
+  console.warn('Claude Flow Hooks(with .swarm/memory.db persistence):\n');
 
   console.warn('Pre-Operation Hooks);'
   console.warn('  pre-task        Execute before starting a task');
   console.warn('  pre-edit        Validate before file modifications');
   console.warn('                  --auto-assign-agents  Auto-assign agents based on file type');
   console.warn('                  --load-context        Load file context');
-  console.warn('  pre-bash        Check command safety (alias)');
+  console.warn('  pre-bash        Check command safety(alias)');
   console.warn('  pre-command     Same as pre-bash');
   console.warn('                  --validate-safety     Enable safety validation');
   console.warn('                  --prepare-resources   Prepare execution resources');
@@ -415,7 +413,7 @@ function _showHooksHelp() {
   console.warn('                  --format              Auto-format code');
   console.warn('                  --update-memory       Update agent memory');
   console.warn('                  --train-neural        Train neural patterns');
-  console.warn('  post-bash       Log command execution (alias)');
+  console.warn('  post-bash       Log command execution(alias)');
   console.warn('  post-command    Same as post-bash');
   console.warn('                  --track-metrics       Track performance metrics');
   console.warn('                  --store-results       Store detailed results');

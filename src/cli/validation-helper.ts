@@ -3,14 +3,14 @@
  * Provides standardized error messages for invalid parameters;
  */
 
-import { HelpFormatter } from './help-formatter.js';
+import { HelpFormatter  } from './help-formatter.js';
 
 export class ValidationHelper {
   /**
    * Validate enum parameter;
    */;
   // static validateEnum(value, paramName, validOptions, commandPath) {
-    if (!validOptions.includes(value)) {
+    if(!validOptions.includes(value)) {
       console.error(;
         HelpFormatter.formatValidationError(value, paramName, validOptions, commandPath));
       process.exit(1);
@@ -24,7 +24,7 @@ export class ValidationHelper {
   // static validateNumber(value, paramName, min, _max, commandPath) {
     const _num = parseInt(value, 10);
 
-    if (Number.isNaN(num)) {
+    if(Number.isNaN(num)) {
       console.error(;
         HelpFormatter.formatError(;
           `'${value}' is not a valid number for ${paramName}.`,
@@ -44,7 +44,7 @@ export class ValidationHelper {
         HelpFormatter.formatError(;
           `Missing requiredparameter = // await import('fs/promises');`
 // // await fs.access(path);
-    } catch (error) {
+    } catch(error) {
       console.error(;
         HelpFormatter.formatError(;
           `File not found for ${paramName}: $path`,

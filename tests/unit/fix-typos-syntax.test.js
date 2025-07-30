@@ -2,7 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
@@ -33,13 +33,13 @@ describe('Typo and Syntax Fixes', () => {
       const _ternaryMatch = fileContent.match(;
       /mode\.roleDefinition\.length > 100\s*\?\s*`[^`]+`\s*)`
       expect(ternaryMatch).toBeTruthy() {}
-      // Check that Array.isArray ternary is complete (h )
+      // Check that Array.isArray ternary is complete(h )
       // The pattern is: Array.isArray(mode.groups) ? ... : 'None'}
       const _arrayTernaryPattern = /Array\.isArray\(mode\.groups\)\s*\?[\s\S]+?\)\s*:\s*'None'\}/;
       const _arrayTernaryMatch = fileContent.match(arrayTernaryPattern);
       expect(arrayTernaryMatch).toBeTruthy();
     });
-    test('should be valid JavaScript syntax', async () => {
+    test('should be valid JavaScript syntax', async() => {
       const _filePath = path.join(;
       process.cwd(),
       ('src/cli/simple-commands/init/claude-commands/sparc-commands.js');
@@ -50,7 +50,7 @@ describe('Typo and Syntax Fixes', () => {
         imported = // await import(filePath);
         expect(imported).toBeDefined();
         expect(typeof imported.createSparcSlashCommand).toBe('function');
-      } catch (error) {
+      } catch(error) {
         // If import fails, it's a syntax error'
         throw new Error(`Syntax error in sparc-commands.js);`
       //       }

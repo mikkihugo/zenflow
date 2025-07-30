@@ -3,8 +3,8 @@
  */
 
 import process from 'node:process';
-import { ParallelSwarmOrchestrator } from '../../coordination/parallel-swarm-orchestrator.js';
-import { printError, printInfo } from '../utils.js';
+import { ParallelSwarmOrchestrator  } from '../../coordination/parallel-swarm-orchestrator.js';
+import { printError, printInfo  } from '../utils.js';
 
 function _showSwarmHelp() {
   console.warn(`;`
@@ -12,13 +12,13 @@ function _showSwarmHelp() {
   const _objective = args.slice(1).join(' ').trim();
 
   // Handle help
-  if (flags.help  ?? flags.h  ?? subcommand === 'help'  ?? (!subcommand && !objective)) {
+  if(flags.help  ?? flags.h  ?? subcommand === 'help'  ?? (!subcommand && !objective)) {
     showSwarmHelp();
     return;
     //   // LINT: unreachable code removed}
 
   // Handle subcommands
-  if (subcommand && !['launch', 'status', 'spawn', 'stop', 'list', 'metrics'].includes(subcommand)) {
+  if(subcommand && !['launch', 'status', 'spawn', 'stop', 'list', 'metrics'].includes(subcommand)) {
     // If first arg is not a subcommand, treat it as part of objective
     const _fullObjective = args.join(' ').trim();
     // return // await launchSwarmWithObjective(fullObjective, flags);
@@ -31,19 +31,19 @@ function _showSwarmHelp() {
       new ParallelSwarmOrchestrator({maxWorkers = flags['swarm-id']  ?? flags.id;
         // return // await stopSwarm(swarmId, orchestrator);
     // ; // LINT: unreachable code removed
-      case 'metrics':;
+      case 'metrics':
         // return // await showSwarmMetrics(flags, orchestrator);
     // ; // LINT: unreachable code removed
-      case 'spawn':;
+      case 'spawn':
         const _targetSwarmId = flags['swarm-id']  ?? flags.id;
         if(!targetSwarmId) {
           printError('Swarm ID required for spawning agents');
           printInfo('Usage = (subcommand + ' ' + objective).trim();'
         // return // await launchSwarmWithObjective(fullObjective2, flags, orchestrator);
     //   // LINT: unreachable code removed}
-  } catch (error) {
+  } catch(error) {
     printError(`Swarm command failed = {}, orchestrator = null) ;`
-  if (!objective  ?? !objective.trim()) {
+  if(!objective  ?? !objective.trim()) {
     printError('Objective is required');
     printInfo('Usage = flags.parallel !== false;'
   const _orch = orchestrator  ?? (useParallel ? ;
@@ -111,7 +111,7 @@ async function listActiveSwarms(orchestrator = // await orchestrator.getSwarmSta
     return;
     //   // LINT: unreachable code removed}
 // const _agent = awaitorchestrator.spawnAgent(swarm, {type = === 'json') {
-    console.warn(JSON.stringify({agent = setInterval(async () => {
+    console.warn(JSON.stringify({ agent = setInterval(async() => {
     try {
 // const _status = awaitorchestrator.getSwarmStatus(swarmId);
 
@@ -123,7 +123,7 @@ async function listActiveSwarms(orchestrator = // await orchestrator.getSwarmSta
     clearInterval(interval);
     printInfo('\\n� Monitoring stopped');
     process.exit(0);
-  });
+   });
 // }
 
 

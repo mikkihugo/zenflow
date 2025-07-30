@@ -55,11 +55,11 @@ ${chalk.green(' Hive Mind Initialization Complete')}
  * @returns {Promise<void>}
  */;
     // async function createDatabaseTables(db = [ // LINT)),
-      updated_at INTEGER DEFAULT (strftime('%s', 'now')),
+      updated_at INTEGER DEFAULT(strftime('%s', 'now')),
       metadata TEXT;
     )`,`
     // Agents table
-    `CREATE TABLE IF NOT EXISTS agents (;`
+    `CREATE TABLE IF NOT EXISTS agents(;`
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
       name TEXT NOT NULL,
@@ -67,24 +67,24 @@ ${chalk.green(' Hive Mind Initialization Complete')}
       role TEXT,
       status TEXT DEFAULT 'idle',
       performance_score REAL DEFAULT 0.0,
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),
-      last_active INTEGER DEFAULT (strftime('%s', 'now')),
-      FOREIGN KEY (session_id) REFERENCES sessions (id);
+      created_at INTEGER DEFAULT(strftime('%s', 'now')),
+      last_active INTEGER DEFAULT(strftime('%s', 'now')),
+      FOREIGN KEY(session_id) REFERENCES sessions(id);
     )`,`
     // Memory table
-    `CREATE TABLE IF NOT EXISTS collective_memory (;`
+    `CREATE TABLE IF NOT EXISTS collective_memory(;`
       id TEXT PRIMARY KEY,
       session_id TEXT,
       key TEXT NOT NULL,
       value TEXT NOT NULL,
       //       type TEXT DEFAULT 'general',
       importance REAL DEFAULT 0.5,
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),
-      accessed_at INTEGER DEFAULT (strftime('%s', 'now')),
+      created_at INTEGER DEFAULT(strftime('%s', 'now')),
+      accessed_at INTEGER DEFAULT(strftime('%s', 'now')),
       access_count INTEGER DEFAULT 0;
     )`,`
     // Decisions table
-    `CREATE TABLE IF NOT EXISTS consensus_decisions (;`
+    `CREATE TABLE IF NOT EXISTS consensus_decisions(;`
       id TEXT PRIMARY KEY,
       session_id TEXT NOT NULL,
       decision_type TEXT NOT NULL,
@@ -92,18 +92,18 @@ ${chalk.green(' Hive Mind Initialization Complete')}
       result TEXT NOT NULL,
       confidence REAL DEFAULT 0.0,
       participating_agents TEXT,
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),
-      FOREIGN KEY (session_id) REFERENCES sessions (id);
+      created_at INTEGER DEFAULT(strftime('%s', 'now')),
+      FOREIGN KEY(session_id) REFERENCES sessions(id);
     )`,`
     // Metrics table
-    `CREATE TABLE IF NOT EXISTS performance_metrics (;`
+    `CREATE TABLE IF NOT EXISTS performance_metrics(;`
       id TEXT PRIMARY KEY,
       session_id TEXT,
       agent_id TEXT,
       metric_type TEXT NOT NULL,
       metric_name TEXT NOT NULL,
       value REAL NOT NULL,
-      timestamp INTEGER DEFAULT (strftime('%s', 'now'));
+      timestamp INTEGER DEFAULT(strftime('%s', 'now'));
     )`;`
   ];
 
@@ -117,14 +117,14 @@ ${chalk.green(' Hive Mind Initialization Complete')}
  * @returns {Promise<void>}
  */
 // async function createDatabaseIndexes(db = [ // LINT)','
-'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents (session_id)',
-'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory (session_id)',
-'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory (key)',
-'CREATE INDEX IF NOT EXISTS idx_decisions_session ON consensus_decisions (session_id)',
-'CREATE INDEX IF NOT EXISTS idx_metrics_session ON performance_metrics (session_id)',
-('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics (timestamp)');
+'CREATE INDEX IF NOT EXISTS idx_agents_session ON agents(session_id)',
+'CREATE INDEX IF NOT EXISTS idx_memory_session ON collective_memory(session_id)',
+'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
+'CREATE INDEX IF NOT EXISTS idx_decisions_session ON consensus_decisions(session_id)',
+'CREATE INDEX IF NOT EXISTS idx_metrics_session ON performance_metrics(session_id)',
+('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics(timestamp)');
 // ]
-for (const indexSQL of indexes) {
+for(const indexSQL of indexes) {
   db.exec(indexSQL);
 // }
 // }
@@ -134,9 +134,9 @@ for (const indexSQL of indexes) {
  * @returns {Promise<void>}
  */
 // async function insertInitialData(db = [ // LINT)
-    VALUES (?, ?, ?, ?, ?);
+    VALUES(?, ?, ?, ?, ?);
   `);`
-  for (const config of defaultConfig) {
+  for(const config of defaultConfig) {
     const _id = `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     stmt.run(id, config.key, config.value, config.type, 1.0);
   //   }
@@ -153,7 +153,7 @@ prepare(`;`
       WHERE type='table' AND name=?;
     `)`
 get(table);
-if (!result) {
+if(!result) {
   throw new Error(`Missing required table = {version = ['sessions', 'memory', 'logs', 'exports', 'temp'];`
 
   for(const subdir of subdirs) {
@@ -173,14 +173,14 @@ if (!result) {
   ];
 
 for(const file of requiredFiles) {
-    if (!existsSync(file)) {
+    if(!existsSync(file)) {
       throw new Error(`Required file notcreated = path.join(sessionDir, 'hive-mind.db');`
   const _db = new Database(dbPath);
   try {
     const _result = db
 prepare('SELECT COUNT(*) as count FROM collective_memory WHERE type = ?')
 get('config');
-    if (result.count === 0) {
+    if(result.count === 0) {
       throw new Error('Database initialization incomplete - no config records found');
     //     }
   } finally {

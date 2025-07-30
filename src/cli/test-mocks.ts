@@ -73,7 +73,7 @@ init();
  * @returns Promise resolving to spawned agent;
     // */ // LINT: unreachable code removed
 async;
-spawnAgent(type = new Agent({ type, ...config });
+spawnAgent(type = new Agent({ type, ...config  });
 this.agents.set(agent.id, agent);
 // return agent;
 // }
@@ -93,9 +93,9 @@ orchestrate(task = new Map<string, any>()
     // */ // LINT: unreachable code removed
 // async
 store(key = []
-for (const [key, value] of this.memory.entries()) {
-  if (key.includes(pattern)) {
-    results.push({ key, value });
+for(const [key, value] of this.memory.entries()) {
+  if(key.includes(pattern)) {
+    results.push({ key, value  });
   //   }
 // }
 // return results;
@@ -104,10 +104,9 @@ for (const [key, value] of this.memory.entries()) {
    * Clear all memory;
    * @returns Promise resolving to true;
     // */ // LINT: unreachable code removed
-// async
-clear() {}
+// async clear() { }
 : Promise<boolean>
-// {
+// 
   this.memory.clear();
   // return true;
 // }

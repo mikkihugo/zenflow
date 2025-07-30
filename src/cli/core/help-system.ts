@@ -4,7 +4,7 @@
  * Provides comprehensive help and usage information for CLI commands
  */
 
-import { HelpFormatter } from '../help-formatter.js';'
+import { HelpFormatter  } from '../help-formatter.js';'
 
 /**  */
  * Help system options interface
@@ -41,11 +41,11 @@ showMainHelp();
 console.warn(`\nUse "${this.appName} help <command>" for detailed usage information`);`
 console.warn(`Use "${this.appName} --version" to show version information\n`);`
 console.warn('� QUICKSTART = this.commandExecutor.getCommandInfo(commandName);'
-if (!commandInfo) {
+if(!commandInfo) {
   console.warn(;
   this.formatter.formatError(;
   `Unknown command = {name = commandInfo.examples.map((ex) => {`
-        if (ex.startsWith('npx')) {'
+        if(ex.startsWith('npx')) {'
           // return ex;
     //   // LINT: unreachable code removed}
         // return `;`
@@ -55,7 +55,7 @@ if (!commandInfo) {
 
 
     // Parse options from details if available
-    if (commandInfo.details) {
+    if(commandInfo.details) {
       helpInfo.options = this.parseOptionsFromDetails(commandInfo.details);
     //     }
 
@@ -70,15 +70,15 @@ if (!commandInfo) {
    * @returns Parsed help options
     // */; // LINT: unreachable code removed
   // // private parseOptionsFromDetails(details = details.match(/Options:([\s\S]*?)(?=\n\n|$)/)
-    if (!optionsMatch) return [];
+    if(!optionsMatch) return [];
     // ; // LINT: unreachable code removed
     const _optionsText = optionsMatch[1];
     const _options = [];
     const _optionLines = optionsText.split('\n').filter(line => line.trim());'
 
-    for (const line of optionLines) {
+    for(const line of optionLines) {
       const _match = line.match(/^\s*(--.+?)\s{2 }(.+)$/)
-      if (match) {
+      if(match) {
         const [ flags, description] = match;
 
         // Check for default value in description
@@ -108,14 +108,12 @@ if (!commandInfo) {
    */
   // // public showUsage() {
     console.warn(`;`
-  Usage = [
-
-      'CLAUDE_API_KEY','
+  Usage = ['CLAUDE_API_KEY','
       'OPENAI_API_KEY','
       'ANTHROPIC_API_KEY','
-      'HUGGINGFACE_API_KEY';,,,,];'
+      'HUGGINGFACE_API_KEY';,];'
   console.warn('\n� APIKEYS = process.env[varName];'
-  if (value) {
+  if(value) {
     const _masked = `${value.substring(0, 8)}...${value.substring(value.length - 4)}`;`
     console.warn(`${varName});`
   } else {
@@ -131,10 +129,10 @@ if (!commandInfo) {
 // {
   const _commands = this.commandExecutor.listCommands();
   const _categories = {};
-  // Group commands by category (if available) or type
-  for (const command of commands) {
+  // Group commands by category(if available) or type
+  for(const command of commands) {
     const _category = this.inferCommandCategory(command.name);
-    if (!categories[category]) {
+    if(!categories[category]) {
       categories[category] = [];
     //     }
     categories[category].push(command);
@@ -153,12 +151,12 @@ console.warn('');'
 // // private inferCommandCategory(commandName =
 // {
   // setup): string
-  if (['init', 'config', 'setup'].includes(commandName)) return 'setup';'
-  // if (['start', 'stop', 'restart', 'status'].includes(commandName)) return 'control'; // LINT: unreachable code removed'
-  if (['swarm', 'agent', 'hive-mind'].includes(commandName)) return 'orchestration';'
-  // if (['memory', 'backup', 'restore'].includes(commandName)) return 'data'; // LINT: unreachable code removed'
-  if (['deploy', 'build', 'test'].includes(commandName)) return 'development';'
-  // if (['help', 'version', 'info'].includes(commandName)) return 'utility'; // LINT: unreachable code removed'
+  if(['init', 'config', 'setup'].includes(commandName)) return 'setup';'
+  // if(['start', 'stop', 'restart', 'status'].includes(commandName)) return 'control'; // LINT: unreachable code removed'
+  if(['swarm', 'agent', 'hive-mind'].includes(commandName)) return 'orchestration';'
+  // if(['memory', 'backup', 'restore'].includes(commandName)) return 'data'; // LINT: unreachable code removed'
+  if(['deploy', 'build', 'test'].includes(commandName)) return 'development';'
+  // if(['help', 'version', 'info'].includes(commandName)) return 'utility'; // LINT: unreachable code removed'
   // return 'other';'
   // ; // LINT: unreachable code removed
   /**  */

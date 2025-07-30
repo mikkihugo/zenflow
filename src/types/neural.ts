@@ -3,7 +3,7 @@
  * Rust-based neural processing with FANN integration and GPU acceleration;
  */
 
-import type { JSONObject, UUID } from './core.js';
+import type { JSONObject, UUID  } from './core.js';
 
 // =============================================================================
 // NEURAL CORE TYPES

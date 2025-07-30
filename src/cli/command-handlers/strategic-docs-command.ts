@@ -1,38 +1,38 @@
 /**  */
  * Strategic Documents Management Commands
- * CRUD operations for strategic documents (PRDs, Roadmaps, Architecture, etc.)
+ * CRUD operations for strategic documents(PRDs, Roadmaps, Architecture, etc.)
  */
 
-import { strategicDocs } from '../database/strategic-documents-manager.js';
-import { printError, printInfo } from '../utils.js';
+import { strategicDocs  } from '../database/strategic-documents-manager.js';
+import { printError, printInfo  } from '../utils.js';
 /**  */
  * Strategic documents command handler
  */
 export async function strategicDocsCommand(input = input[0];
 const _subArgs = input.slice(1);
-if (flags.help ?? flags.h ?? !subcommand) {
+if(flags.help ?? flags.h ?? !subcommand) {
   showStrategicDocsHelp();
   return;
 // }
 // Initialize database
 // // await strategicDocs.initialize();
 switch(subcommand) {
-    case 'create':;
+    case 'create':
 // // await createDocument(subArgs, flags);
       break;
-    case 'list':;
+    case 'list':
 // // await listDocuments(subArgs, flags);
       break;
-    case 'view':;
+    case 'view':
 // // await viewDocument(subArgs, flags);
       break;
-    case 'edit':;
+    case 'edit':
 // // await editDocument(subArgs, flags);
       break;
-    case 'delete':;
+    case 'delete':
 // // await deleteDocument(subArgs, flags);
       break;
-    case 'search':;
+    case 'search':
 // // await searchDocuments(subArgs, flags);
       break;
     case 'import': null
@@ -41,7 +41,7 @@ switch(subcommand) {
     case 'export': null
 // // await exportDocument(subArgs, flags);
       break;
-    case 'stats':;
+    case 'stats':
 // // await showDocumentStats(flags);
       break;default = // await inquirer.prompt([;
         {type = > input.trim().length > 0  ?? 'Title is required';
@@ -76,7 +76,7 @@ switch(subcommand) {
       return;
     //   // LINT: unreachable code removed}
 
-    printInfo(` Strategic Documents (${documents.length} found)`);
+    printInfo(` Strategic Documents(${documents.length} found)`);
     console.warn('━'.repeat(80));
 
     documents.forEach(doc => {
@@ -149,7 +149,7 @@ switch(subcommand) {
     if(success) {
       printSuccess(`� Deleteddocument = args.join(' ')  ?? flags.query  ?? '';`
 
-    if (!query.trim()) {
+    if(!query.trim()) {
       printError('Search query is required');
       printInfo('Usage = // await strategicDocs.searchDocuments({'
       query,documentType = === 0) {
@@ -166,14 +166,14 @@ switch(subcommand) {
     console.warn('\n Documents by Type => {'
       const _icon = getDocumentTypeIcon(stat.document_type);
       const _approvalRate = stat.count > 0 ? Math.round((stat.approved_count / stat.count) * 100) 
-      console.warn(`${icon} ${stat.document_type}: ${stat.count} total (${stat.approved_count} approved - ${approvalRate}%)`);
+      console.warn(`${icon} ${stat.document_type}: ${stat.count} total(${stat.approved_count} approved - ${approvalRate}%)`);
     });
 
     console.warn('\n� Queen Council Activity => {'
       console.warn(`   � ${queen});`
     });
 
-  } catch (error) {
+  } catch(error) {
     printError(`Failed to getstatistics = args[0];`
 
     if(!filePath) {
@@ -223,7 +223,7 @@ USAGE);
   // export <id> [file]         Export document to file
   stats                      Show document statistics
 
-DOCUMENT TYPES:;
+DOCUMENT TYPES:
   � prd                     Product Requirements Document;
   � roadmap                Strategic roadmap;
   � architecture           Architecture documentation;
@@ -232,34 +232,34 @@ DOCUMENT TYPES:;
   � research                Research document;
   � specification           Technical specification
 
-CREATE OPTIONS:;
-  --type <type>              Document type (required);
+CREATE OPTIONS:
+  --type <type>              Document type(required);
   --title <title>            Document title;
-  --content <content>        Document content (Markdown);
+  --content <content>        Document content(Markdown);
   --author <author>          Document author;
   --priority <priority>      Priority, medium, high;
   --status <status>          Status, review, approved, archived;
   --interactive, -i          Interactive creation mode;
   --edit                     Open for editing after creation
 
-LIST/SEARCH OPTIONS:;
+LIST/SEARCH OPTIONS:
   --type <type>              Filter by document type;
   --status <status>          Filter by status;
-  --limit <n>                Limit results (default);
+  --limit <n>                Limit results(default);
   --verbose, -v              Show detailed information;
   --json                     Output in JSON format
 
-EDIT OPTIONS:;
+EDIT OPTIONS:
   --title <title>            New title;
   --content <content>        New content;
   --status <status>          New status;
   --interactive, -i          Interactive editing mode;
   --view                     View document after editing
 
-DELETE OPTIONS:;
+DELETE OPTIONS:
   --force                    Skip confirmation prompt
 
-EXAMPLES:;
+EXAMPLES:
   claude-zen strategic-docs create prd "User Authentication System" --interactive;
   claude-zen strategic-docs list roadmap --verbose;
   claude-zen strategic-docs search "multi-tenant architecture" --type architecture;
@@ -268,7 +268,7 @@ EXAMPLES:;
   claude-zen strategic-docs import roadmap.md --type roadmap
   claude-zen strategic-docs stats
 
-INTEGRATION:;
+INTEGRATION:
   • Used by Queen Council for strategic decision making;
   • Full-text search with relevance scoring;
   • Document relationships and references;

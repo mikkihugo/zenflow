@@ -3,8 +3,8 @@
  * Converted from JavaScript to TypeScript
  */
 
-import { Box, Text } from 'ink';'
-import React, { useEffect, useState } from 'react';'
+import { Box, Text  } from 'ink';'
+import React, { useEffect, useState  } from 'react';'
 
 const _HiveList = () => {
   const _hiveNames = Object.keys(hives);
@@ -12,22 +12,22 @@ const _HiveList = () => {
 
   useEffect(() => {
     // Reset selection if hives change
-    if (selectedIndex >= hiveNames.length) {
+    if(selectedIndex >= hiveNames.length) {
       setSelectedIndex(Math.max(0, hiveNames.length - 1));
     //     }
   }, [selectedIndex]);
 
   useInput((_input, key) => {
-    if (hiveNames.length === 0) return;
+    if(hiveNames.length === 0) return;
     // ; // LINT: unreachable code removed
-    if (key.upArrow) {
+    if(key.upArrow) {
       setSelectedIndex(prev => (prev > 0 ? prev -1 = > (prev < hiveNames.length - 1 ? prev + 1 ));
-    } else if (key.return && hiveNames[selectedIndex]) {
+    } else if(key.return && hiveNames[selectedIndex]) {
       onSelect(hiveNames[selectedIndex]);
     //   // LINT: unreachable code removed}
   });
 
-  if (hiveNames.length === 0) {
+  if(hiveNames.length === 0) {
     // return React.createElement(Box, { borderStyle => {
         const _isSelected = index === selectedIndex;
     // return React.createElement(; // LINT: unreachable code removed
@@ -36,7 +36,7 @@ const _HiveList = () => {
         Text,
           color: isSelected ? 'black' : 'white','
           backgroundColor: isSelected ? 'cyan' ,'
-          bold,,
+          bold,
         `\${isSelected ? '▶ ' }${name}`;`
       ),
       React.createElement(Text, { color);

@@ -3,7 +3,7 @@
  * Demo: Claude-powered Hive Mind in action;
  */
 
-import { printInfo, printSuccess } from './src/cli/utils.js';
+import { printInfo, printSuccess  } from './src/cli/utils.js';
 
 console.warn('� Claude-Powered Hive Mind Demo\n');
 printInfo('This demo shows Claude  primary AI for hive coordination.\n');
@@ -17,7 +17,7 @@ try {
   const { ClaudeCodeProvider } = // await import('./src/cli/claude-code-provider.js');
   const _provider = new ClaudeCodeProvider({
     customSystemPrompt)
-if (// await provider.isAvailable()) {
+if(// await provider.isAvailable()) {
   printSuccess('✅ Claude is ready to coordinate!\n');
   // Get task breakdown
 // const _breakdown = awaitprovider.generateForTask('expand-task', task);
@@ -43,7 +43,7 @@ if (// await provider.isAvailable()) {
 } else {
   printWarning('Claude is not available. Please run);'
 // }
-} catch (error)
+} catch(error)
 // {
   printWarning(`Demo error);`
   printInfo('\nMake sure Claude Code is installed and authenticated.');

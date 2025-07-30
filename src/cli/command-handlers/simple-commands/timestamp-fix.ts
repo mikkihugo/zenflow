@@ -3,13 +3,13 @@
  * This file demonstrates how to properly handle timezones in hive-mind displays;
  */
 
-import { formatTimestampForDisplay } from '../../utils/timezone-utils.js';
+import { formatTimestampForDisplay  } from '../../utils/timezone-utils.js';
 /**
  * Fixed function to create session with proper timezone handling;
  */
 export function createSessionWithProperTimezone(_objective = {}) {
 
-  // Store both UTC timestamp (for consistency) and timezone info
+  // Store both UTC timestamp(for consistency) and timezone info
 
   const _session = {id = formatTimestampForDisplay(session.createdAt);
 

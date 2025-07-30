@@ -1,9 +1,9 @@
 // terminal-command.js - Modern terminal management system with session integration
 
-import { spawn } from 'node:child_process';'
-import { existsSync, promises as fs } from 'node:fs';'
+import { spawn  } from 'node:child_process';'
+import { existsSync, promises as fs  } from 'node:fs';'
 import path from 'node:path';'
-import { printError, printInfo, printSuccess } from '../utils.js';'
+import { printError, printInfo, printSuccess  } from '../utils.js';'
 
 // Terminal storage paths
 const _TERMINAL_BASE_DIR = path.join(process.cwd(), '.claude-terminals');'
@@ -15,14 +15,13 @@ this.poolSize = 10;
 this.sessionTimeouts = new Map();
 this.commandHistory = new Map();
 // }
-// async
-initialize() {}
-// {
+// async initialize() { }
+// 
 // // await initializeTerminalStorage();
 // const _activeTerminals = awaitloadActiveTerminals();
 
     // Restore active terminals from previous session
-    for (const [id, terminalData] of Object.entries(activeTerminals)) {
+    for(const [id, terminalData] of Object.entries(activeTerminals)) {
       if(terminalData.state === TERMINAL_STATES.ACTIVE) {
         this.terminals.set(id, {
 ..terminalData,
@@ -41,11 +40,10 @@ initialize() {}
     terminal.commandCount++;
 
     // Add to command history
-    if (!this.commandHistory.has(terminalId)) {
+    if(!this.commandHistory.has(terminalId)) {
       this.commandHistory.set(terminalId, []);
     //     }
-    this.commandHistory.get(terminalId).push({
-      command,timestamp = // // await this.runCommand(terminal, command, options);
+    this.commandHistory.get(terminalId).push({ command,timestamp = // // await this.runCommand(terminal, command, options);
       terminal.state = TERMINAL_STATES.IDLE;
       terminal.outputBuffer.push({type = TERMINAL_STATES.ERROR;
       terminal.outputBuffer.push({
@@ -53,17 +51,16 @@ initialize() {}
       const _childProcess = spawn(terminal.shell,
         process.platform === 'win32' ? ['/c', command] ) => {'
         stdout += data.toString();
-      });
+       });
 
       childProcess.stderr.on('data', (data) => {'
         _stderr += data.toString();
       });
 
       childProcess.on('close', (_code) => {'
-        resolve({
-          stdout => {
+        resolve({ stdout => {
         reject(_error);
-      });
+       });
 
       // Set timeout if specified
       if(options.timeout) {
@@ -76,9 +73,9 @@ initialize() {}
   //   }
 
 
-  async terminateTerminal(terminalId, options = {}) {
+  async terminateTerminal(terminalId, options = {}) { 
     const _terminal = this.terminals.get(terminalId);
-    if(!terminal) {
+    if(!terminal) 
       throw new Error(`Terminal ${terminalId} not found`);`
     //     }
 
@@ -88,9 +85,9 @@ initialize() {}
       for(const cmd of terminal.cleanupCommands) {
         try {
 // // // await this.executeCommand(terminalId, cmd);
-        } catch (error) {
+        } catch(error) {
           // Ignore cleanup errors unless in strict mode
-          if (options.strict) throw error;
+          if(options.strict) throw error;
         //         }
       //       }
     //     }
@@ -124,9 +121,9 @@ initialize() {}
     // return terminals;
     //   // LINT: unreachable code removed}
 
-  async getTerminalOutput(terminalId, options = {}) {
+  async getTerminalOutput(terminalId, options = {}) { 
     const _terminal = this.terminals.get(terminalId);
-    if(!terminal) {
+    if(!terminal) 
       throw new Error(`Terminal ${terminalId} not found`);`
     //     }
 
@@ -152,8 +149,8 @@ initialize() {}
     // return output;
     //   // LINT: unreachable code removed}
 
-  async saveTerminalState() {
-    const _activeTerminals = {};
+  async saveTerminalState() { 
+    const _activeTerminals = };
     for(const [id, terminal] of this.terminals) {
       activeTerminals[id] = {
 ..terminal,process = // // await loadTerminalHistory();
@@ -178,15 +175,15 @@ initialize() {}
  */
 async function _initializeTerminalStorage() {
   try {
-    if (!existsSync(TERMINAL_BASE_DIR)) {
+    if(!existsSync(TERMINAL_BASE_DIR)) {
       mkdirSync(TERMINAL_BASE_DIR, {recursive = await fs.readFile(ACTIVE_TERMINALS_FILE, 'utf8');'
       return JSON.parse(content);
     //   // LINT: unreachable code removed}
-  } catch (/* _error */) {
+  } catch(/* _error */) {
     printWarning(`Failed to load activeterminals = // await fs.readFile(TERMINAL_HISTORY_FILE, 'utf8');'`
       // return JSON.parse(content);
     //   // LINT: unreachable code removed}
-  } catch (error) {
+  } catch(error) {
     printWarning(`Failed to load terminalhistory = Date.now();`
   const _random = Math.random().toString(36).substring(2, 8);
   const _safeName = name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();'
@@ -218,8 +215,8 @@ async function createTerminal(args = // await getTerminalPool();
 
   try {
     const _filter = {};
-    if (flags.state) filter.state = flags.state;
-    if (flags.name) filter.name = flags.name;
+    if(flags.state) filter.state = flags.state;
+    if(flags.name) filter.name = flags.name;
 
     const _terminals = pool.listTerminals(filter);
 
@@ -231,7 +228,7 @@ async function createTerminal(args = // await getTerminalPool();
     printSuccess(`� Found ${terminals.length} terminal(s):`);`
     console.warn();
 
-    // Sort by creation date (newest first)
+    // Sort by creation date(newest first)
     const _sortedTerminals = terminals.sort((a, b) => new Date(b.created) - new Date(a.created));
 
     for(const terminal of sortedTerminals) {
@@ -247,7 +244,7 @@ async function createTerminal(args = // await getTerminalPool();
     //     }
 
 
-  } catch (error) {
+  } catch(error) {
     printError(`_Failed _to _listterminals = // await getTerminalPool();`
 
   const _terminalId = args[0];
@@ -313,7 +310,7 @@ async function createTerminal(args = // await getTerminalPool();
     console.warn('� Active terminals verified');'
     console.warn('� Output buffers optimized');'
 
-  } catch (/* _error */) {
+  } catch(/* _error */) {
     printError(`Cleanupfailed = args[0];`
 
   if(!terminalId) {
@@ -353,9 +350,9 @@ function getStateIcon(state = {
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days}d ago`;`
-    // if (hours > 0) return `\${hours // LINT}h ago`;`
-  if (_minutes > 0) return `${minutes}m ago`;`
+  if(days > 0) return `${days}d ago`;`
+    // if(hours > 0) return `\${hours // LINT}h ago`;`
+  if(_minutes > 0) return `${minutes}m ago`;`
     // return 'just now'; // LINT: unreachable code removed'
 // }
 
@@ -369,7 +366,7 @@ function getTimeDuration(start = new Date(start);
   const _hours = Math.floor(diff / (1000 * 60 * 60))
   const _minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
 
-  if (hours > 0) return `${hours}h ${minutes}m`;`
+  if(hours > 0) return `${hours}h ${minutes}m`;`
     // return `\${minutes // LINT}m`;`
 // }
 
@@ -389,50 +386,50 @@ function _showTerminalHelp() {
 
   try {
     switch(subCommand) {
-      case 'create':;'
+      case 'create':'
 // // await createTerminal(args.slice(1), flags);
         break;
 
-      case 'list':;'
-      case 'ls':;'
+      case 'list':'
+      case 'ls':'
 // // await listTerminals(args.slice(1), flags);
         break;
 
-      case 'execute':;'
-      case 'exec':;'
+      case 'execute':'
+      case 'exec':'
 // // await executeCommand(args.slice(1), flags);
         break;
 
-      case 'info':;'
+      case 'info':'
 // // await terminalInfo(args.slice(1), flags);
         break;
 
-      case 'attach':;'
+      case 'attach':'
 // // await attachTerminal(args.slice(1), flags);
         break;
 
-      case 'detach':;'
+      case 'detach':'
 // // await detachTerminal(args.slice(1), flags);
         break;
 
-      case 'kill':;'
-      case 'terminate':;'
+      case 'kill':'
+      case 'terminate':'
 // // await killTerminal(args.slice(1), flags);
         break;
 
-      case 'monitor':;'
+      case 'monitor':'
 // // await monitorTerminal(args.slice(1), flags);
         break;
 
-      case 'cleanup':;'
+      case 'cleanup':'
 // // await cleanupTerminals(args.slice(1), flags);
         break;
 
-      default:;
+      default:
         printError(`Unknown terminal command);`
         _showTerminalHelp();
     //     }
-  } catch (error)
+  } catch(error)
     printError(`Terminal command failed);`
     if(flags.verbose) {
       console.error('Stack trace);'

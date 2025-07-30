@@ -3,7 +3,7 @@
  * Type definitions for utility functions and system helpers;
  */
 
-import type { JSONObject } from './core.js';
+import type { JSONObject  } from './core.js';
 // =============================================================================
 // INTERACTIVE UTILITIES
 // =============================================================================
@@ -151,7 +151,7 @@ export type EnvironmentType = 'non-tty-stdin';
  * Process execution options;
  */
 // export interface ProcessExecutionOptions {
-  cwd?) => any ? P = > any> = T extends (...args) => infer R ? R =
+  cwd?) => any ? P = > any> = T extends(...args) => infer R ? R =
   [P in K]: T[P];
 
 /**

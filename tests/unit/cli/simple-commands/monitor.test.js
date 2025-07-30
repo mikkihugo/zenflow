@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, jest  } from '@jest/globals';
 
 describe('monitor.js - Real Metrics Implementation', () => {
   let _consoleSpy;
@@ -18,14 +18,14 @@ afterEach(() => {
   processExitSpy.mockRestore();
 });
 describe('Basic Functionality', () => {
-  test('should import without errors', async () => {
+  test('should import without errors', async() => {
 // const _monitor = awaitimport(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
     expect(monitor.monitorCommand).toBeDefined() {}
     expect(monitor.showMonitorHelp).toBeDefined() {}
   });
-  test('should collect and display metrics', async () => {
+  test('should collect and display metrics', async() => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
@@ -34,7 +34,7 @@ describe('Basic Functionality', () => {
     const _output = consoleSpy.log.mock.calls.join('\n');
     expect(output).toContain('System Metrics');
   });
-  test('should show help information', async () => {
+  test('should show help information', async() => {
     const { showMonitorHelp } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
@@ -46,7 +46,7 @@ describe('Basic Functionality', () => {
   });
 });
 describe('Output Formats', () => {
-  test('should output JSON format when specified', async () => {
+  test('should output JSON format when specified', async() => {
     const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
     //     )
@@ -61,13 +61,13 @@ describe('Output Formats', () => {
     //   // LINT: unreachable code removed}
       })
       expect(jsonOutput).toBeDefined() {}
-      if (jsonOutput) {
+      if(jsonOutput) {
         const _parsed = JSON.parse(jsonOutput[0]);
         expect(parsed).toHaveProperty('timestamp');
         expect(parsed).toHaveProperty('system');
       //       }
     });
-    test('should output pretty format by default', async () => {
+    test('should output pretty format by default', async() => {
       const { monitorCommand } = await import(
         '../../../../src/cli/command-handlers/simple-commands/monitor.js';
       //       )

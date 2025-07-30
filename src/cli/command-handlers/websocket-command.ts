@@ -3,43 +3,43 @@
  * CLI interface for WebSocket testing and management using Node.js 22 native WebSocket
  */
 
-import { WebSocketService } from '../../api/websocket-service.js';
-import { printInfo, printSuccess } from '../utils.js';
+import { WebSocketService  } from '../../api/websocket-service.js';
+import { printInfo, printSuccess  } from '../utils.js';
 /**  */
  * WebSocket command handler
  */
 export async function websocketCommand(input = input[0];
 const _subArgs = input.slice(1);
-if (flags.help ?? flags.h ?? !subcommand) {
+if(flags.help ?? flags.h ?? !subcommand) {
   showWebSocketHelp();
   return;
 // }
 switch(subcommand) {
-    case 'test':;
+    case 'test':
 // // await testWebSocket(subArgs, flags);
       break;
 
-    case 'connect':;
+    case 'connect':
 // // await connectWebSocket(subArgs, flags);
       break;
 
-    case 'status':;
+    case 'status':
 // // await showWebSocketStatus(flags);
       break;
 
-    case 'send':;
+    case 'send':
 // // await sendWebSocketMessage(subArgs, flags);
       break;
 
-    case 'monitor':;
+    case 'monitor':
 // // await monitorWebSocket(subArgs, flags);
       break;
 
-    case 'benchmark':;
+    case 'benchmark':
 // // await benchmarkWebSocket(subArgs, flags);
       break;
 
-    case 'support':;
+    case 'support':
       showWebSocketSupport();
       break;default = args[0]  ?? `ws = // await WebSocketService.create({clientHost = // await service.connectToExternal('test', url, {`
       reconnect = {type = false;
@@ -57,7 +57,7 @@ switch(subcommand) {
       }, flags.timeout  ?? 5000);
     });
 
-  } catch (error) {
+  } catch(error) {
     printError(`❌ WebSocket testfailed = args[0]  ?? `ws = flags.name  ?? 'cli-connection';
 
   printInfo(`� Connecting toWebSocket = // await WebSocketService.create({clientHost = // await service.connectToExternal(connectionName, url, {reconnect = = false,`
@@ -85,7 +85,7 @@ switch(subcommand) {
     // Keep process alive
     // await new Promise(() => {}); // Never resolves
 
-  } catch (error) {
+  } catch(error) {
     printError(`❌ Connectionfailed = // await WebSocketService.create();`
     const __status = service.getStatus();
 
@@ -102,7 +102,7 @@ switch(subcommand) {
           console.warn(`    �Messages = args.join(' ');`
   const __url = flags.url  ?? `ws = // await WebSocketService.create();`
 // const _client = awaitservice.connectToExternal('send-client', url, {reconnect = JSON.parse(message);
-      } catch (error) {
+      } catch(error) {
         printError('❌ Invalid JSON message');
         return;
     //   // LINT: unreachable code removed}
@@ -118,7 +118,7 @@ switch(subcommand) {
 
     client.disconnect();
 // // await service.shutdown();
-  } catch (error) {
+  } catch(error) {
     printError(`❌ _Sendfailed = args.length > 0 ? args = // await WebSocketService.create();`
 
     // Connect to all URLs
@@ -147,7 +147,7 @@ switch(subcommand) {
 
     // Keep process alive
 // // await new Promise(() => {});
-  } catch (error) {
+  } catch(error) {
     printError(`❌ Monitorfailed = args[0]  ?? `ws = flags.messages  ?? 1000;
   const _concurrency = flags.concurrency  ?? 1;
   const _messageSize = flags.size  ?? 100;
@@ -188,7 +188,7 @@ switch(subcommand) {
     for(const client of connections) {
       for(let i = 0; i < messagesPerConnection; i++) {
         const _success = client.send(testMessage);
-        if (success) totalSent++;
+        if(success) totalSent++;
       //       }
     //     }
 
@@ -202,7 +202,7 @@ switch(subcommand) {
 
     console.warn('\n� BenchmarkResults = > client.disconnect());'
 // // await service.shutdown();
-  } catch (error) {
+  } catch(error) {
     printError(`❌ _Benchmarkfailed = checkWebSocketSupport();`
 
   printInfo('� WebSocket Support Information');
@@ -222,7 +222,7 @@ switch(subcommand) {
 
 
   console.warn('\n Features);'
-  console.warn('• Standards-compliant WebSocket client (RFC 6455)');
+  console.warn('• Standards-compliant WebSocket client(RFC 6455)');
   console.warn('• Automatic reconnection with exponential backoff');
   console.warn('• Message queuing during disconnection');
   console.warn('• Heartbeat/ping support');
@@ -237,39 +237,39 @@ function _showWebSocketHelp() {
 � WEBSOCKET - Node.js 22 Native WebSocket Client & Server Management
 
 USAGE);
-  --heartbeat <ms>         Heartbeat interval (default);
-  --timeout <ms>           Response timeout (default)
+  --heartbeat <ms>         Heartbeat interval(default);
+  --timeout <ms>           Response timeout(default)
 
-CONNECT OPTIONS:;
-  --name <name>            Connection name (default);
-  --port <port>            Server port (default);
-  --reconnect              Enable auto-reconnect (default);
-  --heartbeat <ms>         Heartbeat interval (default)
+CONNECT OPTIONS:
+  --name <name>            Connection name(default);
+  --port <port>            Server port(default);
+  --reconnect              Enable auto-reconnect(default);
+  --heartbeat <ms>         Heartbeat interval(default)
 
-SEND OPTIONS:;
+SEND OPTIONS:
   --url <url>              WebSocket URL;
-  --port <port>            Server port (default);
+  --port <port>            Server port(default);
   --type <type>            Message type for structured messages;
   --json                   Parse message as JSON
 
-MONITOR OPTIONS:;
-  --port <port>            Server port (default);
+MONITOR OPTIONS:
+  --port <port>            Server port(default);
   --stats                  Show periodic statistics;
-  --interval <ms>          Stats interval (default);
-  --heartbeat <ms>         Heartbeat interval (default)
+  --interval <ms>          Stats interval(default);
+  --heartbeat <ms>         Heartbeat interval(default)
 
-BENCHMARK OPTIONS:;
-  --port <port>            Server port (default);
-  --messages <count>       Number of messages (default);
-  --concurrency <count>    Concurrent connections (default);
-  --size <bytes>           Message size in bytes (default);
-  --timeout <ms>           Benchmark timeout (default)
+BENCHMARK OPTIONS:
+  --port <port>            Server port(default);
+  --messages <count>       Number of messages(default);
+  --concurrency <count>    Concurrent connections(default);
+  --size <bytes>           Message size in bytes(default);
+  --timeout <ms>           Benchmark timeout(default)
 
-STATUS OPTIONS:;
+STATUS OPTIONS:
   --verbose                Show detailed information;
   --stats                  Show connection statistics
 
-EXAMPLES:;
+EXAMPLES:
   claude-zen websocket support;
   claude-zen websocket test ws://localhost:3000/ws
   claude-zen websocket connect ws://localhost:3000/ws --name my-client
@@ -278,14 +278,14 @@ EXAMPLES:;
   claude-zen websocket monitor ws://localhost:3000/ws --stats
   claude-zen websocket benchmark --messages 5000 --concurrency 10
 
-NODE.JS 22 FEATURES:;
-  • Native WebSocket client (use --experimental-websocket flag);
-  • Standards-compliant implementation (RFC 6455);
+NODE.JS 22 FEATURES:
+  • Native WebSocket client(use --experimental-websocket flag);
+  • Standards-compliant implementation(RFC 6455);
   • Better performance than external libraries;
   • Built-in ping/pong support;
   • Automatic connection management
 
-INTEGRATION:;
+INTEGRATION:
   • Real-time updates for claude-zen UI;
   • Queen Council decision broadcasting;
   • Swarm orchestration status updates;

@@ -1,29 +1,28 @@
 /**
- * Unified Interface Plugin (TypeScript);
+ * Unified Interface Plugin(TypeScript);
  * Seamless CLI, TUI, and Web interface integration with type safety;
  */
 
 import boxen from 'boxen';
 import chalk from 'chalk';
-import { ChildProcess, fork } from 'child_process';
+import { ChildProcess, fork  } from 'child_process';
 import Table from 'cli-table3';
-import express, { Express, Request, Response } from 'express';
-import { createWriteStream } from 'fs';
-import { access, mkdir, readFile } from 'fs/promises';
-import { createServer } from 'http';
-import { Box, render, Text } from 'ink';
+import express, { Express, Request, Response  } from 'express';
+import { createWriteStream  } from 'fs';
+import { access, mkdir, readFile  } from 'fs/promises';
+import { createServer  } from 'http';
+import { Box, render, Text  } from 'ink';
 import inquirer from 'inquirer';
-import ora, { Ora } from 'ora';
-import { join } from 'path';
-import React, { useEffect, useState } from 'react';
-import { WebSocket } from 'ws';
-import type {
-  JSONObject,
+import ora, { Ora  } from 'ora';
+import { join  } from 'path';
+import React, { useEffect, useState  } from 'react';
+import { WebSocket  } from 'ws';
+import type { JSONObject,
 PluginConfig,
 PluginContext,
-PluginManifest } from '../../types/plugin.js'
+PluginManifest  } from '../../types/plugin.js'
 
-// import { BasePlugin } from '../base-plugin.js';
+// import { BasePlugin  } from '../base-plugin.js';
 
 // Interface mode types
 // type InterfaceMode = 'auto' | 'cli' | 'tui' | 'web' | 'daemon';
@@ -84,10 +83,9 @@ else
 // }
 // }
 protected
-// async
-onDestroy() {}
+// async onDestroy() { }
 : Promise<void>
-// {
+// 
 // // await this.cleanup();
 // }
 // Interface mode detection
@@ -96,7 +94,7 @@ detectInterfaceMode();
 : InterfaceMode
 // {
   const _defaultMode = this.config.settings.defaultMode  ?? 'auto';
-  if (defaultMode !== 'auto') {
+  if(defaultMode !== 'auto') {
     // return defaultMode;
     //   // LINT: unreachable code removed}
 
@@ -104,30 +102,30 @@ detectInterfaceMode();
   const _args = process.argv.slice(2);
 
   // Check for daemon mode
-  if (args.includes('--daemon')) {
+  if(args.includes('--daemon')) {
     this.config.settings.daemonMode = true;
     // return 'daemon';
     //   // LINT: unreachable code removed}
 
-  if (args.includes('--web')  ?? process.env.CLAUDE_ZEN_WEB === 'true') {
+  if(args.includes('--web')  ?? process.env.CLAUDE_ZEN_WEB === 'true') {
     // return 'web';
     //   // LINT: unreachable code removed}
 
-  if (args.includes('--tui')  ?? process.env.CLAUDE_ZEN_TUI === 'true') {
+  if(args.includes('--tui')  ?? process.env.CLAUDE_ZEN_TUI === 'true') {
     // return 'tui';
     //   // LINT: unreachable code removed}
 
-  if (args.includes('--cli')  ?? process.env.CLAUDE_ZEN_CLI === 'true') {
+  if(args.includes('--cli')  ?? process.env.CLAUDE_ZEN_CLI === 'true') {
     // return 'cli';
     //   // LINT: unreachable code removed}
 
   // Auto-detect based on environment
-  if (!process.stdout.isTTY) {
+  if(!process.stdout.isTTY) {
     // return 'cli'; // Non-interactive environment
   //   }
 
 
-  if (process.env.TERM_PROGRAM === 'vscode'  ?? process.env.CI) {
+  if(process.env.TERM_PROGRAM === 'vscode'  ?? process.env.CI) {
     // return 'cli'; // VS Code terminal or CI environment
   //   }
 
@@ -190,8 +188,7 @@ createCliHeader((title = ''));
   const _theme = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   // return boxen(;
-    // chalk.hex(theme.primary).bold(title) + ; // LINT: unreachable code removed
-      (subtitle ? '\n' + chalk.hex(theme.secondary)(subtitle) : ''),
+    // chalk.hex(theme.primary).bold(title) + ; // LINT: unreachable code removed(subtitle ? '\n' + chalk.hex(theme.secondary)(subtitle) : ''),
       {padding = this.themes[this.config.settings.theme as 'dark' | 'light'];
 
   const _table = new Table({head = > chalk.hex(theme.primary).bold(h)),
@@ -210,12 +207,12 @@ showCliPrompt((questions = 'info'));
 
   console.warn(boxen(content, {padding = () => {
       const [activeTab, setActiveTab] = useState('dashboard');
-      const [data, setData] = useState<JSONObject>({});
+      const [data, setData] = useState<JSONObject>({  });
       const [status, setStatus] = useState('Ready');
 
       // Handle keyboard input
       useInput((input, key) => {
-        if (key.ctrl && input === 'c') {
+        if(key.ctrl && input === 'c') {
           this.shutdown();
         //         }
 
@@ -224,13 +221,13 @@ showCliPrompt((questions = 'info'));
         const _tabs = ['dashboard', 'hives', 'plugins', 'logs'];
         const _tabIndex = parseInt(input) - 1;
 
-        if (tabIndex >= 0 && tabIndex < tabs.length) {
+        if(tabIndex >= 0 && tabIndex < tabs.length) {
           setActiveTab(tabs[tabIndex]);
         //         }
 
 
         // Navigation
-        if (key.leftArrow  ?? key.rightArrow) {
+        if(key.leftArrow  ?? key.rightArrow) {
           const _currentIndex = tabs.indexOf(activeTab);
           const _nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < tabs.length - 1 ? currentIndex + 1 ;
           //           }
@@ -241,7 +238,7 @@ showCliPrompt((questions = 'info'));
 
 
         // Refresh
-        if (input === 'r') {
+        if(input === 'r') {
           setStatus('Refreshing...');
           this.refreshData().then(newData => {
             setData(newData);
@@ -252,16 +249,16 @@ showCliPrompt((questions = 'info'));
 
   // Auto-refresh data
   useEffect(() => {
-    if (this.config.settings.autoRefresh) {
+    if(this.config.settings.autoRefresh) {
       const _interval = setInterval(() => {
         this.refreshData().then(setData);
       }, this.config.settings.refreshInterval);
 
-      return () => clearInterval(interval);
+      return() => clearInterval(interval);
     //   // LINT: unreachable code removed}
   }, []);
 
-  return this.createTuiDashboard({ activeTab, data, status, setActiveTab });
+  return this.createTuiDashboard({ activeTab, data, status, setActiveTab  });
 // }
 
 
@@ -296,7 +293,7 @@ this.tuiInstance = render(React.createElement(TuiApp));
     this.httpServer!.listen(this.config.settings.webPort, '0.0.0.0', () => {
       this.context.apis.logger.info('Unified server ready', {
           port => {
-        if (error.code === 'EADDRINUSE') {
+        if(error.code === 'EADDRINUSE') {
           this.context.apis.logger.warn(`Port ${this.config.settings.webPort} in use - checking for existing server`);
           resolve(); // Don't reject, assume external server is running'
           return;
@@ -422,7 +419,7 @@ createWebDashboard();
                             </select>;
                         </div>;
                         <div class="form-group">;
-                            <label for="refresh-interval">Auto-refresh Interval (ms)</label>;
+                            <label for="refresh-interval">Auto-refresh Interval(ms)</label>;
                             <input type="number" id="refresh-interval" value="${this.config.settings.refreshInterval}">;
                         </div>;
                         <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>;
@@ -492,8 +489,8 @@ createWebStyles();
     //     }
 
 
-    async loadData() {
-        try {
+    async loadData() { 
+        try 
             const [plugins, stats] = await Promise.all([;
                 fetch('/api/plugins').then(r => r.json()),
                 fetch('/api/stats').then(r => r.json());
@@ -501,7 +498,7 @@ createWebStyles();
 
             this.data = { plugins, stats };
             this.updateUI();
-        } catch (error) {
+        } catch(error) {
             console.error('Failed to loaddata = (this.data.plugins  ?? []).length;'
         document.getElementById('session-count').textContent = ;
             this.data.stats?.sessions  ?? 0;
@@ -541,7 +538,7 @@ setupWebRoutes(app => {
       try {
 // const _plugins = awaitthis.getPluginsData();
         res.json(plugins);
-      } catch (error => {
+      } catch(error => {
       try {
         const _stats = {
           sessions => {
@@ -561,7 +558,7 @@ setupWebRoutes(app => {
         try {
           const _message = JSON.parse(data.toString());
           this.handleWebSocketMessage(websocket, message);
-        } catch (error) {
+        } catch(error) {
           this.context.apis.logger.error('Invalid WebSocket message', error);
         //         }
       });
@@ -602,19 +599,19 @@ setupWebRoutes(app => {
 // await access(this.config.settings.pidFile);
 // const _pid = awaitthis.getDaemonPid();
 
-      if (pid) {
+      if(pid) {
         // Check if process is actually running
         try {
           process.kill(pid, 0); // Signal 0 just checks if process exists
           // return true;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
           // Process not running, remove stale PID file
 // // await this.removePidFile();
           // return false;
     //   // LINT: unreachable code removed}
       //       }
       // return false;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       // return false;
     //   // LINT: unreachable code removed}
   //   }
@@ -624,7 +621,7 @@ setupWebRoutes(app => {
     try {
 // const _pidContent = awaitreadFile(this.config.settings.pidFile, 'utf8');
       // return parseInt(pidContent.trim());
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       // return null;
     //   // LINT: unreachable code removed}
   //   }
@@ -633,7 +630,7 @@ setupWebRoutes(app => {
   // private async removePidFile(): Promise<void> {
     try {
       await writeFile(this.config.settings.pidFile, ''); // Clear the file instead of deleting
-    } catch (error) {
+    } catch(error) {
       // Ignore errors when removing PID file
     //     }
   //   }
@@ -643,14 +640,14 @@ setupWebRoutes(app => {
   async start(mode?): Promise<any> {
     const _targetMode = mode  ?? this.currentMode!;
 
-    switch (targetMode) {
-      case 'daemon':;
+    switch(targetMode) {
+      case 'daemon':
         // return // await this.startDaemonMode();
-    // case 'cli':; // LINT: unreachable code removed
+    // case 'cli': // LINT: unreachable code removed
         // return // await this.startCliMode();
-    // case 'tui':; // LINT: unreachable code removed
+    // case 'tui': // LINT: unreachable code removed
         // return // await this.startTuiMode();
-    // case 'web':; // LINT: unreachable code removed
+    // case 'web': // LINT: unreachable code removed
         // return // await this.startWebMode();default = === this.currentMode) {
       return;
     //   // LINT: unreachable code removed}
@@ -665,7 +662,7 @@ setupWebRoutes(app => {
   broadcast(message => {
         try {
           this.sendWebSocketMessage(client, message);
-        } catch (error) {
+        } catch(error) {
           this.context.apis.logger.error('Failed to send WebSocket message', error);
           this.wsClients.delete(client);
         //         }
@@ -678,23 +675,23 @@ setupWebRoutes(app => {
     // return {currentMode = await this.isDaemonRunning();
     // const _pid = await this.getDaemonPid(); // LINT: unreachable code removed
 
-    if (isRunning) {
+    if(isRunning) {
       // return {status = === 'true') {
       this.context.apis.logger.info('Unified server staying alive in daemon mode');
     //   // LINT: unreachable code removed} else {
       // Only cleanup if explicitly requested
-      if (process.env.CLAUDE_ZEN_SHUTDOWN === 'true') {
-        if (this.httpServer) {
+      if(process.env.CLAUDE_ZEN_SHUTDOWN === 'true') {
+        if(this.httpServer) {
           this.httpServer.close();
           this.httpServer = null;
         //         }
 
 
-        if (this.wsClients) {
+        if(this.wsClients) {
           this.wsClients.forEach(client => {
             try {
               client.close();
-            } catch (error) {
+            } catch(error) {
               // Ignore errors when closing clients
             //             }
           });
@@ -711,7 +708,7 @@ setupWebRoutes(app => {
 
 
     // Cleanup TUI
-    if (this.tuiInstance) {
+    if(this.tuiInstance) {
       this.tuiInstance.unmount();
       this.tuiInstance = null;
     //     }

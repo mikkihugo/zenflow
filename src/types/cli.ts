@@ -10,7 +10,7 @@ CommandExecutionError,
 ConfigurationError,
 formatErrorMessage,
 handleError,
-ValidationError } from '../cli/core/cli-error.js'
+ValidationError  } from '../cli/core/cli-error.js'
 // =============================================================================
 // CLI ERROR TYPES
 // =============================================================================
@@ -43,7 +43,7 @@ NOT_FOUND_ERROR = 'NOT_FOUND_ERROR' }
 // export type CommandArgumentType = 'string' | 'number' | 'boolean' | 'array' | 'object'
 // 
 // /**
-//  * Command flag definition (enhanced);
+//  * Command flag definition(enhanced);
 //  */
 // export interface CommandFlag {name = > boolean | string
 // // }
@@ -59,7 +59,7 @@ NOT_FOUND_ERROR = 'NOT_FOUND_ERROR' }
 // export // interface CommandOption extends CommandArgument {
 //   short?;long = (context) => Promise<CommandResult>
 // /**
-//  * Command execution result (enhanced);
+//  * Command execution result(enhanced);
 //  */
 // export interface CommandResult {success = ============================================================================
 // // EXIT CODES
@@ -87,7 +87,7 @@ NOT_FOUND_ERROR = 'NOT_FOUND_ERROR' }
  * Validation result;
  */
 // export // interface ValidationResult {isValid = ============================================================================
-// // ERROR TYPES (Extended)
+// // ERROR TYPES(Extended)
 // // =============================================================================
 // 
 // /**

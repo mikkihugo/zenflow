@@ -4,7 +4,7 @@
  */
 
 import dgram from 'node:dgram';'
-import { nanoid } from 'nanoid';'
+import { nanoid  } from 'nanoid';'
 
 export class NATTraversalPlugin {
   // // static metadata = {name = null;
@@ -18,11 +18,11 @@ export class NATTraversalPlugin {
   //   }
 
 
-  async initialize(registry, options = {}) {
+  async initialize(registry, options = {}) { 
     this.registry = registry;
-    this.options = {
+    this.options = 
       enableSTUN,enableUPnP = // await this.discoverExternalIP();
-      } catch (error) {
+      } catch(error) {
         console.warn('STUN discoveryfailed = data;'
 
     // Auto-setup NAT traversal if service needs external connectivity
@@ -34,16 +34,16 @@ export class NATTraversalPlugin {
     // return data;
     //   // LINT: unreachable code removed}
 
-  async handleServiceUnregistration(data) {
-    const { key } = data;
+  async handleServiceUnregistration(data) { 
+    const  key } = data;
 
     // Cleanup NAT traversal resources
 // // // await this.cleanupServiceNATTraversal(key);
     // return data;
     //   // LINT: unreachable code removed}
 
-  async setupServiceNATTraversal(serviceKey, serviceConfig, options) {
-    const _traversalConfig = {port = = false,
+  async setupServiceNATTraversal(serviceKey, serviceConfig, options) { 
+    const _traversalConfig = port = = false,
 ..options.natTraversal;
     };
 
@@ -67,9 +67,9 @@ export class NATTraversalPlugin {
   //   }
 
 
-  async cleanupServiceNATTraversal(serviceKey) {
+  async cleanupServiceNATTraversal(serviceKey) { 
     // Remove port mappings
-    for (const [mappingId, mapping] of this.natMappings.entries();
+    for(const [mappingId, mapping] of this.natMappings.entries();
   //   )
       if(;
   mapping;
@@ -82,16 +82,16 @@ export class NATTraversalPlugin {
   removePortMapping(mappingId);
 
 // Remove relay configurations
-for (const [relayId, relay] of this.relayNodes.entries()) {
-  if (relay.serviceKey === serviceKey) {
+for(const [relayId, relay] of this.relayNodes.entries()) 
+  if(relay.serviceKey === serviceKey) {
 // // // await this.removeRelay(relayId);
   //   }
 // }
 
 
 // Clean up hole punches
-for (const [punchId, punch] of this.holePunches.entries()) {
-  if (punch.serviceKey === serviceKey) {
+for(const [punchId, punch] of this.holePunches.entries()) {
+  if(punch.serviceKey === serviceKey) {
     this.holePunches.delete(punchId);
   //   }
 // }
@@ -124,18 +124,18 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
     try {
       // Parse STUN response
-      if (msg.length >= 20 && msg.readUInt16BE(0) === 0x0101) {
+      if(msg.length >= 20 && msg.readUInt16BE(0) === 0x0101) {
         const _length = msg.readUInt16BE(2);
         const _offset = 20;
 
-        while (offset < 20 + length) {
+        while(offset < 20 + length) {
           const _type = msg.readUInt16BE(offset);
           const _attrLength = msg.readUInt16BE(offset + 2);
 
-          if (type === 0x0001) {
+          if(type === 0x0001) {
             // MAPPED-ADDRESS
             const _family = msg.readUInt8(offset + 5);
-            if (family === 0x01) {
+            if(family === 0x01) {
               // IPv4
               const __port = msg.readUInt16BE(offset + 6);
               const _ip = Array.from(msg.slice(offset + 8, offset + 12)).join('.');'
@@ -147,7 +147,7 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
 
           offset += 4 + attrLength;
-          if (attrLength % 4 !== 0) {
+          if(attrLength % 4 !== 0) {
             offset += 4 - (attrLength % 4);
           //           }
         //         }
@@ -156,7 +156,7 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
       socket.close();
       reject(new Error('Invalid STUN response'));'
-    } catch (error)
+    } catch(error)
       socket.close();
       reject(error);
   });
@@ -175,15 +175,15 @@ for (const [punchId, punch] of this.holePunches.entries()) {
     if(this.upnpClient) {
       try {
         _externalPort = // // await this.createUPnPMapping(internalPort, protocol);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.warn('UPnP mapping failed = {id = this.natMappings.get(mappingId);'
-    if (!mapping) return false;
+    if(!mapping) return false;
     // ; // LINT: unreachable code removed
     // Remove UPnP mapping if applicable
     if(mapping.method === 'upnp' && this.upnpClient) {'
       try {
 // // // await this.removeUPnPMapping(mapping.externalPort, mapping.protocol);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.warn('UPnP removal failed = {}) {'
     const __punchId = nanoid();
     const _punch = {id = // // await this.executeHolePunch(punch, options);
@@ -198,8 +198,8 @@ for (const [punchId, punch] of this.holePunches.entries()) {
   //   }
 
 
-  async executeHolePunch(punch, options) {
-    const { protocol = 'udp' } = options;'
+  async executeHolePunch(punch, options) { 
+    const  protocol = 'udp' } = options;'
 
     if(protocol === 'udp') {'
       // return this.executeUDPHolePunch(punch);
@@ -222,7 +222,7 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
         // Send punch packet
         const _message = Buffer.from(`PUNCH => {`
-        if (msg.toString().startsWith('PUNCH_ACK => {'
+        if(msg.toString().startsWith('PUNCH_ACK => {'
       const [remoteHost, remotePort] = punch.remoteEndpoint.split(');'
       let _attempts = 0;
       const _maxAttempts = punch.maxAttempts;
@@ -259,12 +259,12 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
 
   // Relay service
-  async startRelayService() {
-    if (this.relayServer) return;
+  async startRelayService() { 
+    if(this.relayServer) return;
     // ; // LINT: unreachable code removed
     this.relayServer = dgram.createSocket('udp4');'
 
-    this.relayServer.on('message', (msg, rinfo) => {'
+    this.relayServer.on('message', (msg, rinfo) => '
       this.handleRelayMessage(msg, rinfo);
     });
 
@@ -277,15 +277,15 @@ for (const [punchId, punch] of this.holePunches.entries()) {
   //   }
 
 
-  async setupRelay(serviceKey, config) {
-    if(!this.relayServer) {
+  async setupRelay(serviceKey, config) { 
+    if(!this.relayServer) 
 // await this.startRelayService();
     //     }
 
 
     const _relayId = nanoid();
     const _relay = {id = this.relayNodes.get(relayId);
-    if (!relay) return false;
+    if(!relay) return false;
     // ; // LINT: unreachable code removed
     this.relayNodes.delete(relayId);
 // // await this.registry.backend.unregister?.(`relay = JSON.parse(message.toString());`
@@ -301,7 +301,7 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
 
   async createUPnPMapping(port, protocol) ;
-    // UPnP port mapping implementation (simplified)
+    // UPnP port mapping implementation(simplified)
     console.warn(`UPnP mapping requested for ${protocol});`
     // return {
       success,
@@ -311,7 +311,7 @@ for (const [punchId, punch] of this.holePunches.entries()) {
     };
 
   async removeUPnPMapping(port, protocol) ;
-    // UPnP port mapping removal (simplified)
+    // UPnP port mapping removal(simplified)
     console.warn(`UPnP unmapping requested for ${protocol});`
     // return {
       success,
@@ -344,7 +344,7 @@ for (const [punchId, punch] of this.holePunches.entries()) {
 
 
     // Remove all port mappings
-    for (const mappingId of this.natMappings.keys()) {
+    for(const mappingId of this.natMappings.keys()) {
 // // await this.removePortMapping(mappingId);
     //     }
 

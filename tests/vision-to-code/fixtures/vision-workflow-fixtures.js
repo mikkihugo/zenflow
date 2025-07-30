@@ -3,7 +3,7 @@
  * Comprehensive test data for Vision-to-Code integration tests;
  */
 
-import { v4  } from 'uuid';
+import { v4   } from 'uuid';
 
 // Vision workflow stages
 export const WORKFLOW_STAGES = {
@@ -50,7 +50,7 @@ complexity: 'simple',
 // {
   id: 'vision_medium_001',
   title: 'E-commerce Dashboard',
-  description:;
+  description:
   'Admin dashboard for e-commerce platform with analytics, inventory management, and order processing',
   stakeholder: 'business_team',
   priority: 'high',
@@ -77,7 +77,7 @@ complexity: 'simple',
 // {
   id: 'vision_complex_001',
   title: 'Multi-tenant SaaS Platform',
-  description:;
+  description:
   'Complete SaaS platform with tenant isolation, billing, API gateway, and unified architecture',
   stakeholder: 'engineering_team',
   priority: 'critical',
@@ -202,7 +202,7 @@ notification_preferences: ['email', 'slack'] },
 // {
   vision_id: 'vision_simple_001',
   stakeholder: 'product_team',
-  timestamp: new Date().toISOString() {}
+  timestamp: new Date().toISOString()
 // }
  },
 // {
@@ -270,11 +270,10 @@ expected_recovery: 'circuit_breaker_activation' },
 // }// }
 // API response templates
 // export const apiResponseTemplates = {
-  success: (_data) => ({
-    status: 'success',
+  success: (_data) => ({ status: 'success',
 data,
 timestamp: new Date().toISOString(),
-requestId: uuidv4() }),
+requestId: uuidv4()  }),
 error: (error, code = 'INTERNAL_ERROR') => (
 // {
   status: 'error',
@@ -300,12 +299,10 @@ partial: (data, warnings = []) => (
 id: `vision_${complexity }_${Date.now()}`,
 created_at: new Date().toISOString() }),
 createWorkflowEvents: (workflowId) =>
-Object.values(mockWorkflowEvents).map((event) => (
-{ ...event,
+Object.values(mockWorkflowEvents).map((event) => ({ ...event,
 ..event.data,
   workflow_id,
-  timestamp: new Date().toISOString() }
-)),
+  timestamp: new Date().toISOString()  })),
 generateApiKey: () => `sk_test_$`
 // {
   Math.random().toString(36).substr(2, 24);
@@ -323,7 +320,7 @@ for ${eventName}`)),`
       // In real implementation, this would listen for actual events
       setTimeout(() => {
         clearTimeout(timer);
-        resolve({ event, timestamp: new Date().toISOString() });
+        resolve({ event, timestamp: new Date().toISOString()  });
       }, Math.random() * 1000);
     })
 // }

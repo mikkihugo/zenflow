@@ -10,19 +10,19 @@ class MockMemoryStore {
   constructor() {
     this.data = new Map();
   }
-  async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async store(key, value, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
     // return { id, size: value.length };
   }
-  async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async retrieve(key, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     // return this.data.get(fullKey) || null;
   }
-  async search(options = {}) {
-    const results = {};
-    for (const [key, value] of this.data) {
-      if (options.pattern === '*' || key.includes(options.pattern || '')) {
+  async search(options = {}) { 
+    const results = };
+    for(const [key, value] of this.data) {
+      if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value;
       }
     }
@@ -66,12 +66,12 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
 ### 1. Token Security
 - Access tokens MUST have maximum 1-hour expiration
 - Refresh tokens MUST have maximum 30-day expiration
-- All tokens MUST be cryptographically secure (256-bit entropy)
+- All tokens MUST be cryptographically secure(256-bit entropy)
 - Tokens MUST be invalidated on logout
 
 ### 2. Client Authentication
 - Confidential clients MUST use client credentials
-- Public clients MUST use PKCE (Proof Key for Code Exchange)
+- Public clients MUST use PKCE(Proof Key for Code Exchange)
 - Client secrets MUST be stored using bcrypt with cost factor 12
 - Client registration requires manual approval
 
@@ -109,7 +109,7 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
 ### TLS Requirements
 - TLS 1.3 minimum for all endpoints
 - Perfect Forward Secrecy required
-- HPKP (HTTP Public Key Pinning) enabled
+- HPKP(HTTP Public Key Pinning) enabled
 - Certificate transparency monitoring
 
 ## Compliance
@@ -122,7 +122,7 @@ Security requirements and implementation guidelines for OAuth 2.0 authentication
       tags: ['security', 'oauth2', 'authentication', 'compliance'],
       priority: 'critical' }
   );
-  for (const [_key, value] of memoryStore.data) {
+  for(const [_key, value] of memoryStore.data) {
     const _doc = JSON.parse(value);
   }
 }

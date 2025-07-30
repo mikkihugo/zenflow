@@ -1,5 +1,5 @@
 /**
- * 🧪 AG-UI Integration Test (No External Dependencies);
+ * 🧪 AG-UI Integration Test(No External Dependencies);
  *;
  * Basic integration test that works without installing @ag-ui/core;
  * Validates the core concepts and integration points;
@@ -51,7 +51,7 @@ this._emitEvent(event);
 addTextContent(content, (messageId = null));
 // {
   const _id = messageId ?? this.currentMessageId;
-  if (!id) {
+  if(!id) {
     throw new Error('No active message. Call startTextMessage first.');
   //   }
   const _event = {
@@ -66,7 +66,7 @@ this._emitEvent(event);
 endTextMessage((messageId = null))
 // {
   const _id = messageId ?? this.currentMessageId;
-  if (!id) return;
+  if(!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
       type: EventType.TEXT_MESSAGE_END,
@@ -74,7 +74,7 @@ endTextMessage((messageId = null))
   timestamp: Date.now(),
   sessionId: this.sessionId
 // }
-if (id === this.currentMessageId) {
+if(id === this.currentMessageId) {
   this.currentMessageId = null;
 // }
 this._emitEvent(event);
@@ -98,7 +98,7 @@ this._emitEvent(event);
 addToolCallArgs(args, (toolCallId = null));
 // {
   const _id = toolCallId ?? this.currentToolCallId;
-  if (!id) {
+  if(!id) {
     throw new Error('No active tool call. Call startToolCall first.');
   //   }
   const _event = {
@@ -113,7 +113,7 @@ this._emitEvent(event);
 endToolCall((toolCallId = null))
 // {
   const _id = toolCallId ?? this.currentToolCallId;
-  if (!id) return;
+  if(!id) return;
   // ; // LINT: unreachable code removed
   const _event = {
       type: EventType.TOOL_CALL_END,
@@ -121,7 +121,7 @@ endToolCall((toolCallId = null))
   timestamp: Date.now(),
   sessionId: this.sessionId
 // }
-if (id === this.currentToolCallId) {
+if(id === this.currentToolCallId) {
   this.currentToolCallId = null;
 // }
 this._emitEvent(event);
@@ -204,7 +204,7 @@ async function runAGUIIntegrationTests() {
       testFn();
       console.warn(`✅ ${name}`);
       passedTests++;
-    } catch (error) {
+    } catch(error) {
       console.warn(`❌ ${name});`
     //     }
   //   }
@@ -222,10 +222,10 @@ catch((error) =>
 test('Adapter creation with session info', () => {
   const _adapter = new MockAGUIAdapter({
       sessionId);
-if (adapter.sessionId !== 'test-session') {
+if(adapter.sessionId !== 'test-session') {
   throw new Error('Session ID not set correctly');
 // }
-if (adapter.threadId !== 'test-thread') {
+if(adapter.threadId !== 'test-thread') {
   throw new Error('Thread ID not set correctly');
 // }
 })
@@ -238,19 +238,19 @@ test('Text message flow generates correct events', () =>
   adapter.addTextContent(' World');
   adapter.endTextMessage(messageId);
   const _events = adapter.events;
-  if (events.length !== 4) {
+  if(events.length !== 4) {
     throw new Error(`Expected 4 events, got \$events.length`);
   //   }
-  if (events[0].type !== EventType.TEXT_MESSAGE_START) {
+  if(events[0].type !== EventType.TEXT_MESSAGE_START) {
     throw new Error('First event should be TEXT_MESSAGE_START');
   //   }
-  if (events[1].type !== EventType.TEXT_MESSAGE_CONTENT ?? events[1].delta !== 'Hello') {
+  if(events[1].type !== EventType.TEXT_MESSAGE_CONTENT ?? events[1].delta !== 'Hello') {
     throw new Error('Second event should be TEXT_MESSAGE_CONTENT with "Hello"');
   //   }
-  if (events[2].type !== EventType.TEXT_MESSAGE_CONTENT ?? events[2].delta !== ' World') {
+  if(events[2].type !== EventType.TEXT_MESSAGE_CONTENT ?? events[2].delta !== ' World') {
     throw new Error('Third event should be TEXT_MESSAGE_CONTENT with " World"');
   //   }
-  if (events[3].type !== EventType.TEXT_MESSAGE_END) {
+  if(events[3].type !== EventType.TEXT_MESSAGE_END) {
     throw new Error('Fourth event should be TEXT_MESSAGE_END');
   //   }
 })
@@ -263,13 +263,13 @@ test('Tool call flow generates correct events', () =>
   adapter.endToolCall(toolCallId);
   adapter.emitToolCallResult('Test result', toolCallId);
   const _events = adapter.events;
-  if (events.length !== 4) {
+  if(events.length !== 4) {
     throw new Error(`Expected 4 events, got \$events.length`);
   //   }
-  if (events[0].type !== EventType.TOOL_CALL_START) {
+  if(events[0].type !== EventType.TOOL_CALL_START) {
     throw new Error('First event should be TOOL_CALL_START');
   //   }
-  if (events[0].toolCallName !== 'test_tool') {
+  if(events[0].toolCallName !== 'test_tool') {
     throw new Error('Tool name should be preserved');
   //   }
 })
@@ -280,13 +280,13 @@ test('Queen coordination events', () =>
   adapter.emitQueenEvent('queen-1', 'start_analysis', { target);
   adapter.emitQueenEvent('queen-2', 'join_analysis', { specialization);
   const _events = adapter.events;
-  if (events.length !== 2) {
+  if(events.length !== 2) {
     throw new Error(`Expected 2 events, got \$events.length`);
   //   }
-  if (events[0].type !== EventType.CUSTOM ?? events[0].name !== 'queen_action') {
+  if(events[0].type !== EventType.CUSTOM ?? events[0].name !== 'queen_action') {
     throw new Error('Should emit custom queen_action events');
   //   }
-  if (events[0].value.queenId !== 'queen-1') {
+  if(events[0].value.queenId !== 'queen-1') {
     throw new Error('Queen ID should be preserved');
   //   }
 })
@@ -297,13 +297,13 @@ test('Swarm coordination events', () =>
   adapter.emitSwarmEvent('swarm-1', 'initialize', ['agent-1', 'agent-2'], { task);
   adapter.emitSwarmEvent('swarm-1', 'execute', ['agent-1'], { action);
   const _events = adapter.events;
-  if (events.length !== 2) {
+  if(events.length !== 2) {
     throw new Error(`Expected 2 events, got \$events.length`);
   //   }
-  if (events[0].value.swarmId !== 'swarm-1') {
+  if(events[0].value.swarmId !== 'swarm-1') {
     throw new Error('Swarm ID should be preserved');
   //   }
-  if (!Array.isArray(events[0].value.agents)) {
+  if(!Array.isArray(events[0].value.agents)) {
     throw new Error('Agents should be an array');
   //   }
 })
@@ -316,13 +316,13 @@ test('Hive mind coordination events', () =>
   decision: 'implement_agui'
 })
 const _events = adapter.events;
-if (events.length !== 1) {
+if(events.length !== 1) {
   throw new Error(`Expected 1 event, got \$events.length`);
 // }
-if (events[0].name !== 'hive_mind') {
+if(events[0].name !== 'hive_mind') {
   throw new Error('Should emit hive_mind custom event');
 // }
-if (events[0].value.action !== 'consensus_reached') {
+if(events[0].value.action !== 'consensus_reached') {
   throw new Error('Action should be preserved');
 // }
 })
@@ -336,18 +336,18 @@ test('Statistics tracking', () =>
   const _toolCallId = adapter.startToolCall('test_tool');
   adapter.endToolCall(toolCallId);
   const _stats = adapter.getStats();
-  if (stats.messagesCreated !== 1) {
+  if(stats.messagesCreated !== 1) {
     throw new Error(`Expected 1 message created, got \$stats.messagesCreated`);
   //   }
-  if (stats.toolCallsExecuted !== 1) {
+  if(stats.toolCallsExecuted !== 1) {
     throw new Error(`Expected 1 tool call executed, got \$stats.toolCallsExecuted`);
   //   }
-  if (stats.eventsEmitted !== 5) {
+  if(stats.eventsEmitted !== 5) {
     throw new Error(`Expected 5 events emitted, got \$stats.eventsEmitted`);
   //   }
 })
 // Test 8: Claude Code Zen integration simulation
-  // // await asyncTest('Claude Code Zen multi-agent simulation', async () =>
+  // // await asyncTest('Claude Code Zen multi-agent simulation', async() =>
 // {
   const _adapter = new MockAGUIAdapter();
   // Simulate a complex multi-agent interaction
@@ -389,20 +389,20 @@ test('Statistics tracking', () =>
   swarm_efficiency: 0.92)
   // Validate the simulation
   const _stats = adapter.getStats();
-  if (stats.eventsEmitted < 10) {
+  if(stats.eventsEmitted < 10) {
     throw new Error('Complex simulation should generate multiple events');
   //   }
   // Check for specific event types
 
   const _customEvents = adapter.events.filter((e) => e.type === EventType.CUSTOM);
-  if (customEvents.length < 5) {
+  if(customEvents.length < 5) {
     throw new Error('Should have multiple custom events for Claude Code Zen functionality');
   //   }
 })
 // Summary
 console.warn(`\n\$'='.repeat(60)`)
 console.warn(`� Test Results);`
-if (passedTests === totalTests) {
+if(passedTests === totalTests) {
   console.warn('✅ All AG-UI integration tests passed!');
   console.warn('\n Key AG-UI Features Validated);'
   console.warn('   Text message streaming');

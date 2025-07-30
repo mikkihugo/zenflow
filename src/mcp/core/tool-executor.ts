@@ -43,7 +43,7 @@ executeTool(name, args);
 
       // return result;
     // ; // LINT: unreachable code removed
-    } catch (error) {
+    } catch(error) {
       const _executionTime = Date.now() - startTime;
       this.updateExecutionStats(name, executionTime, false);
 
@@ -52,12 +52,12 @@ executeTool(name, args);
     //   // LINT: unreachable code removed}
 
     // Agent management tools
-    if (name.startsWith('agent_')) {'
+    if(name.startsWith('agent_')) {'
       // return this.executeAgentTool(name, args);
     //   // LINT: unreachable code removed}
 
     // Task management tools
-    if (name.startsWith('task_')) {'
+    if(name.startsWith('task_')) {'
       // return this.executeTaskTool(name, args);
     //   // LINT: unreachable code removed}
 
@@ -66,33 +66,33 @@ executeTool(name, args);
       // return this.executeSystemTool(name, args);
     //   // LINT: unreachable code removed}
 
-    // Legacy swarm tools (for compatibility)
-    if (name.startsWith('swarm_')) {'
+    // Legacy swarm tools(for compatibility)
+    if(name.startsWith('swarm_')) {'
       // return this.executeSwarmTool(name, args);
     //   // LINT: unreachable code removed}
 
     throw new Error(`Unknown tool categoryfor = // // await import('node);'`
 
     switch(name) {
-      case 'claude_zen_init':;'
+      case 'claude_zen_init':'
         // return this.executeClaudeCommand('init', args);'
-    // case 'claude_zen_status':; // LINT: unreachable code removed'
+    // case 'claude_zen_status': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('status', args);'
-    // case 'claude_zen_config':; // LINT: unreachable code removed'
+    // case 'claude_zen_config': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('config', args);'
-    // case 'claude_zen_hive_mind':; // LINT: unreachable code removed'
+    // case 'claude_zen_hive_mind': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('hive-mind', args);'
-    // case 'claude_zen_swarm':; // LINT: unreachable code removed'
+    // case 'claude_zen_swarm': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('swarm', args);'
-    // case 'claude_zen_agent':; // LINT: unreachable code removed'
+    // case 'claude_zen_agent': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('agent', args);'
-    // case 'claude_zen_task':; // LINT: unreachable code removed'
+    // case 'claude_zen_task': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('task', args);'
-    // case 'claude_zen_memory':; // LINT: unreachable code removed'
+    // case 'claude_zen_memory': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('memory', args);'
-    // case 'claude_zen_github':; // LINT: unreachable code removed'
+    // case 'claude_zen_github': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('github', args);'
-    // case 'claude_zen_hooks':; // LINT: unreachable code removed'
+    // case 'claude_zen_hooks': // LINT: unreachable code removed'
         // return this.executeClaudeCommand('hooks', args);default = // // await import('node);'
 
     try {
@@ -101,51 +101,51 @@ executeTool(name, args);
 
       // Handle different argument patterns for each command
       switch(command) {
-        case 'init':;'
-          if (args.directory) cmdArgs.push(args.directory);
-          if (args.force) cmdArgs.push('--force');'
-          if (args.template) cmdArgs.push('--template', args.template);'
+        case 'init':'
+          if(args.directory) cmdArgs.push(args.directory);
+          if(args.force) cmdArgs.push('--force');'
+          if(args.template) cmdArgs.push('--template', args.template);'
           break;
-        case 'status':;'
-          if (args.verbose) cmdArgs.push('--verbose');'
+        case 'status':'
+          if(args.verbose) cmdArgs.push('--verbose');'
           break;
-        case 'config':;'
-          if (args.action) cmdArgs.push(args.action);
-          if (args.key) cmdArgs.push(args.key);
-          if (args.value) cmdArgs.push(args.value);
+        case 'config':'
+          if(args.action) cmdArgs.push(args.action);
+          if(args.key) cmdArgs.push(args.key);
+          if(args.value) cmdArgs.push(args.value);
           break;
-        case 'hive-mind':;'
-          if (args.subcommand) cmdArgs.push(args.subcommand);
-          if (args.objective) cmdArgs.push(args.objective);
+        case 'hive-mind':'
+          if(args.subcommand) cmdArgs.push(args.subcommand);
+          if(args.objective) cmdArgs.push(args.objective);
           break;
-        case 'swarm':;'
-          if (args.objective) cmdArgs.push(args.objective);
-          if (args.topology) cmdArgs.push('--topology', args.topology);'
-          if (args.maxAgents) cmdArgs.push('--max-agents', args.maxAgents.toString());'
+        case 'swarm':'
+          if(args.objective) cmdArgs.push(args.objective);
+          if(args.topology) cmdArgs.push('--topology', args.topology);'
+          if(args.maxAgents) cmdArgs.push('--max-agents', args.maxAgents.toString());'
           break;
-        case 'agent':;'
-          if (args.action) cmdArgs.push(args.action);
-          if (args.type) cmdArgs.push(args.type);
-          if (args.agentId) cmdArgs.push(args.agentId);
+        case 'agent':'
+          if(args.action) cmdArgs.push(args.action);
+          if(args.type) cmdArgs.push(args.type);
+          if(args.agentId) cmdArgs.push(args.agentId);
           break;
-        case 'task':;'
-          if (args.action) cmdArgs.push(args.action);
-          if (args.description) cmdArgs.push(args.description);
-          if (args.taskId) cmdArgs.push(args.taskId);
+        case 'task':'
+          if(args.action) cmdArgs.push(args.action);
+          if(args.description) cmdArgs.push(args.description);
+          if(args.taskId) cmdArgs.push(args.taskId);
           break;
-        case 'memory':;'
-          if (args.action) cmdArgs.push(args.action);
-          if (args.query) cmdArgs.push(args.query);
-          if (args.namespace) cmdArgs.push('--namespace', args.namespace);'
+        case 'memory':'
+          if(args.action) cmdArgs.push(args.action);
+          if(args.query) cmdArgs.push(args.query);
+          if(args.namespace) cmdArgs.push('--namespace', args.namespace);'
           break;
-        case 'github':;'
-          if (args.action) cmdArgs.push(args.action);
-          if (args.repository) cmdArgs.push(args.repository);
+        case 'github':'
+          if(args.action) cmdArgs.push(args.action);
+          if(args.repository) cmdArgs.push(args.repository);
           break;
-        case 'hooks':;'
-          if (args.hook) cmdArgs.push(args.hook);
-          if (args.file) cmdArgs.push('--file', args.file);'
-          if (args.command) cmdArgs.push('--command', args.command);'
+        case 'hooks':'
+          if(args.hook) cmdArgs.push(args.hook);
+          if(args.file) cmdArgs.push('--file', args.file);'
+          if(args.command) cmdArgs.push('--command', args.command);'
           break;
       //       }
 
@@ -161,7 +161,7 @@ executeTool(name, args);
       let result;
 
       switch(name) {
-        case 'prd_create':;'
+        case 'prd_create':'
           result = {id = // // await this.server.memoryStore.retrieve(`prd = {`
 ..existingPrd,
 ..args.updates,lastModified = id = id = id = id = id = id = id = {id = [];
@@ -173,12 +173,11 @@ executeTool(name, args);
     const _swarmId = `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
 
     // Create swarm instance using ruv-swarm
-// const _swarm = awaitthis.server.ruvSwarm.createSwarm({
-      id,
+// const _swarm = awaitthis.server.ruvSwarm.createSwarm({ id,
       topology,
       maxAgents,
       strategy;
-    });
+     });
 
     this.server.swarms.set(swarmId, swarm);
 
@@ -203,7 +202,7 @@ executeTool(name, args);
 // // // await this.server.memoryStore.store(key, value, { namespace, ttl });
         // return {success = // // await this.server.memoryStore.retrieve(key, { namespace });
     // return {success = // // await this.server.memoryStore.list({ namespace  // LINT);
-        // return {success = // // await this.server.memoryStore.search(key, { namespace });
+        // return {success = // // await this.server.memoryStore.search(key, { namespace  });
     // return {success = 'all'  // LINT: unreachable code removed} = args;'
 
     const __features = {neural = === 'all') {'
@@ -228,7 +227,7 @@ executeTool(name, args);
     // */; // LINT: unreachable code removed
   getExecutionStats() {
     const _stats = {};
-    for (const [toolName, toolStats] of this.executionStats.entries()) {
+    for(const [toolName, toolStats] of this.executionStats.entries()) {
       stats[toolName] = { ...toolStats };
     //     }
     // return stats;

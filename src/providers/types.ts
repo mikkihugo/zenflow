@@ -5,7 +5,7 @@
 export // interface AIProvider {name = === 0) {
 //       throw new Error('Messages are required');
 //     //     }
-if (!request.model) {
+if(!request.model) {
   throw new Error('Model is required');
 // }
 // }

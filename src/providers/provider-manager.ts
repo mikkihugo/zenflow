@@ -28,10 +28,9 @@ this.setupHealthChecking() {}
 this.setupCacheCleanup();
 // }
 // Provider Registration
-// async
-registerProvider(name = > BaseProvider,config = new providerClass() {}
+// async registerProvider(name = > BaseProvider,config = new providerClass() { }
 // await provider.initialize(config)
-if (cached) {
+if(cached) 
   this.emit('cache_hit', {requestId = new Promise<never>((_, reject) => {
       setTimeout(() => reject(new Error('Request timeout')), this.config.globalTimeout);
     });
@@ -40,27 +39,27 @@ if (cached) {
 // const _result = awaitPromise.race([this.executeRequest(request), timeoutPromise]);
 
     // Cache successful responses
-    if (this.config.enableCaching) {
+    if(this.config.enableCaching) {
       this.cacheResponse(request, result);
     //     }
 
 
     // return result;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     this.emit('request_failed', {requestId = // await this.selectProvider(request);
 
-    if (!provider) {
+    if(!provider) {
       throw new ProviderError('No available providers', 'manager', 'NO_PROVIDERS');
     //     }
 
 
     try {
       yield * provider.provider.generateStream(request);
-    } catch (error) {
+    } catch(error) {
       // Try fallback for streaming
-      if (this.config.enableFallback) {
+      if(this.config.enableFallback) {
 // const _fallbackProvider = awaitthis.selectFallbackProvider(request, provider.provider.name);
-        if (fallbackProvider) {
+        if(fallbackProvider) {
           yield * fallbackProvider.provider.generateStream(request);
           return;
     //   // LINT: unreachable code removed}
@@ -79,29 +78,29 @@ if (cached) {
       p.provider.capabilities.models?.includes(request.model);
     );
 
-  if (availableProviders.length === 0) {
+  if(availableProviders.length === 0) {
     // return null;
     //   // LINT: unreachable code removed}
 
   // Apply load balancing strategy
-  switch (this.config.loadBalancing.type) {
-    case 'round_robin':;
+  switch(this.config.loadBalancing.type) {
+    case 'round_robin':
       // return this.selectRoundRobin(availableProviders);
     // ; // LINT: unreachable code removed
-    case 'least_latency':;
+    case 'least_latency':
       // return this.selectLeastLatency(availableProviders);
     // ; // LINT: unreachable code removed
-    case 'least_cost':;
+    case 'least_cost':
       // return this.selectLeastCost(availableProviders);
     // ; // LINT: unreachable code removed
-    case 'weighted':;
+    case 'weighted':
       // return this.selectWeighted(availableProviders, this.config.loadBalancing.weights  ?? {});
     // ; // LINT: unreachable code removed
     case 'priority': {;
       // return this.selectByPriority(availableProviders, this.config.loadBalancing.priorities  ?? {});
     // default = // await this.selectProvider(request); // LINT: unreachable code removed
 
-    if (!provider) {
+    if(!provider) {
       throw new ProviderError('No available providers', 'manager', 'NO_PROVIDERS');
     //     }
 
@@ -113,16 +112,16 @@ if (cached) {
       this.updateCircuitBreaker(provider, false);
 
       // return response;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       // Update circuit breaker status
       this.updateCircuitBreaker(provider, true);
 
       // Try fallback if enabled
-      if (this.config.enableFallback && ;
+      if(this.config.enableFallback && ;
           !(error instanceof RateLimitError) && ;
           !(error instanceof QuotaExceededError)) {
 // const _fallbackProvider = awaitthis.selectFallbackProvider(request, provider.provider.name);
-        if (fallbackProvider) {
+        if(fallbackProvider) {
           // return // await fallbackProvider.provider.generateText(request);
     //   // LINT: unreachable code removed}
       //       }
@@ -139,7 +138,7 @@ if (cached) {
   continue;
 
   const _provider = this.providers.get(providerName);
-  if (;
+  if(;
     provider &&;
     provider.config.enabled &&;
     !provider.circuitBreakerOpen &&;
@@ -164,7 +163,7 @@ if (cached) {
     current.metrics.totalCost / Math.max(current.metrics.totalTokensUsed, 1);
   const _bestCostPerToken = best.metrics.totalCost / Math.max(best.metrics.totalTokensUsed, 1);
   return currentCostPerToken < bestCostPerToken ?current = providers.filter(p => weights[p.provider.name] > 0);
-    // if (weightedProviders.length === 0) return providers[0]; // LINT: unreachable code removed
+    // if(weightedProviders.length === 0) return providers[0]; // LINT: unreachable code removed
 
   const _totalWeight = weightedProviders.reduce(;
     (sum, p) => sum + (weights[p.provider.name]  ?? 1),
@@ -172,9 +171,9 @@ if (cached) {
   );
   const _random = Math.random() * totalWeight;
 
-  for (const provider of weightedProviders) {
+  for(const provider of weightedProviders) {
     random -= weights[provider.provider.name]  ?? 1;
-    if (random <= 0) return provider;
+    if(random <= 0) return provider;
     //   // LINT: unreachable code removed}
 
   // return weightedProviders[0];
@@ -187,7 +186,7 @@ selectByPriority(_providers => {
       const _bestPriority = priorities[best.provider.name]  ?? 0;
       return currentPriority > bestPriority ?current = provider.metrics.failedRequests / Math.max(provider.metrics.totalRequests, 1);
     // ; // LINT: unreachable code removed
-      if (errorRate >= this.config.circuitBreakerThreshold) {
+      if(errorRate >= this.config.circuitBreakerThreshold) {
         provider.circuitBreakerOpen = true;
         provider.circuitBreakerOpenTime = new Date();
 
@@ -199,23 +198,23 @@ selectByPriority(_providers => {
           this.emit('circuit_breaker_closed', {provider = this.hashRequest(request);
     const _cached = this.requestCache.get(hash);
 
-    if (cached && Date.now() - cached.timestamp.getTime() < this.config.cacheTimeout) {
+    if(cached && Date.now() - cached.timestamp.getTime() < this.config.cacheTimeout) {
       // return { ...cached.response,id = this.hashRequest(request);
     // this.requestCache.set(hash, { // LINT) => {
-      for (const [name, provider] of this.providers) {
+      for(const [name, provider] of this.providers) {
         try {
 // const _isHealthy = awaitprovider.provider.healthCheck();
           provider.status = // await provider.provider.getStatus();
           provider.metrics = // await provider.provider.getMetrics();
 
-          if (!isHealthy && provider.config.enabled) {
+          if(!isHealthy && provider.config.enabled) {
             this.emit('provider_unhealthy', { name, provider });
           //           }
-        } catch (error) {
+        } catch(error) {
           this.emit('health_check_error', { name, error => {
       const _now = Date.now();
-      for (const [hash, entry] of this.requestCache) {
-        if (now - entry.timestamp.getTime() >= this.config.cacheTimeout) {
+      for(const [hash, entry] of this.requestCache) {
+        if(now - entry.timestamp.getTime() >= this.config.cacheTimeout) {
           this.requestCache.delete(hash);
         //         }
       //       }
@@ -227,7 +226,7 @@ selectByPriority(_providers => {
   async getProviderStatuses(): Promise<Record<string, ProviderStatus>> {
     const _statuses = {};
 
-    for (const [name, provider] of this.providers) {
+    for(const [name, provider] of this.providers) {
       statuses[name] = // await provider.provider.getStatus();
     //     }
 
@@ -238,7 +237,7 @@ selectByPriority(_providers => {
   async getProviderMetrics(): Promise<Record<string, ProviderMetrics>> {
     const _metrics = {};
 
-    for (const [name, provider] of this.providers) {
+    for(const [name, provider] of this.providers) {
       metrics[name] = // await provider.provider.getMetrics();
     //     }
 
@@ -249,9 +248,9 @@ selectByPriority(_providers => {
   getAvailableModels(): string[] {
     const _models = new Set<string>();
 
-    for (const provider of this.providers.values()) {
-      if (provider.config.enabled && !provider.circuitBreakerOpen) {
-        for (const model of provider.provider.capabilities.models  ?? []) {
+    for(const provider of this.providers.values()) {
+      if(provider.config.enabled && !provider.circuitBreakerOpen) {
+        for(const model of provider.provider.capabilities.models  ?? []) {
           models.add(model);
         //         }
       //       }
@@ -263,12 +262,12 @@ selectByPriority(_providers => {
 
   // Cleanup
   async cleanup(): Promise<void> ;
-    if (this.healthCheckInterval) {
+    if(this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     //     }
 
 
-    for (const provider of this.providers.values()) {
+    for(const provider of this.providers.values()) {
 // // await provider.provider.cleanup();
     //     }
 

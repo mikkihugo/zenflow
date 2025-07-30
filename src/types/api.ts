@@ -3,7 +3,7 @@
  * RESTful API, GraphQL, WebSocket, and gRPC interfaces;
  */
 
-import type { Identifiable, JSONObject, JSONValue } from './core';
+import type { Identifiable, JSONObject, JSONValue  } from './core';
 
 // =============================================================================
 // API CORE TYPES
@@ -209,7 +209,7 @@ extensions?: Record<string, JSONValue>;
 // // }
 // export // interface ServiceLevelAgreement {
 //   availability, // 0-1
-//   responseTime, // milliseconds (95th percentile)
+//   responseTime, // milliseconds(95th percentile)
 //   throughput, // requests per second
 //   errorRate, // 0-1
 // 
@@ -219,8 +219,8 @@ extensions?: Record<string, JSONValue>;
 //   uptimeYearly, // 0-1
 // 
 //   // Recovery
-//   mttd, // mean time to detection (minutes)
-//   mttr, // mean time to recovery (minutes)
+//   mttd, // mean time to detection(minutes)
+//   mttr, // mean time to recovery(minutes)
 // 
 //   // Business hours
 //   businessHours?: {

@@ -6,10 +6,10 @@
  * Features swarm coordination for distributed AI enhancement.
  */
 
-import type { PluginConfig, PluginContext, PluginManifest } from '../../types/plugin';
-import { BasePlugin } from '../base-plugin';
-import type { SwarmCoordinator } from '../../swarm/types';
-import type { NeuralEngine } from '../../neural/neural-engine';
+import type { PluginConfig, PluginContext, PluginManifest  } from '../../types/plugin';
+import { BasePlugin  } from '../base-plugin';
+import type { SwarmCoordinator  } from '../../swarm/types';
+import type { NeuralEngine  } from '../../neural/neural-engine';
 
 /**
  * DSPy Configuration Interface
@@ -137,7 +137,7 @@ export // interface DSPyConfig {
 // const kuzuDB = awaitthis.context.apis.getKuzuDB?.();
 // const neuralEngine = awaitthis.context.apis.getNeuralEngine?.();
 
-      if (!sqliteStore || !lanceDB || !kuzuDB) {
+      if(!sqliteStore || !lanceDB || !kuzuDB) {
         throw new Error('Required database instances not available');
       //       }
 
@@ -181,7 +181,7 @@ export // interface DSPyConfig {
       });
 
       this.context.apis.logger.info('🧠 DSPy Integration Manager Initialized');
-    } catch (error) {
+    } catch(error) {
       this.context.apis.logger.warn('⚠ Integration manager unavailable, using basic DSPy);'
     //     }
   //   }
@@ -191,7 +191,7 @@ export // interface DSPyConfig {
    * Initialize swarm coordination for distributed optimization
    */
   // private async initializeSwarmCoordination(): Promise<void> {
-    if (!this.dspyConfig.swarmCoordination) return;
+    if(!this.dspyConfig.swarmCoordination) return;
 
     try {
       // Initialize swarm coordinator for DSPy tasks
@@ -199,7 +199,7 @@ export // interface DSPyConfig {
         name);
 
       this.context.apis.logger.info('� DSPy Swarm Coordination Initialized');
-    } catch (error) {
+    } catch(error) {
       this.context.apis.logger.warn('⚠ Swarm coordination unavailable, using single-threaded DSPy');
     //     }
   //   }
@@ -209,12 +209,12 @@ export // interface DSPyConfig {
    * Initialize neural engine integration
    */
   // private async initializeNeuralIntegration(): Promise<void> {
-    if (!this.dspyConfig.neuralIntegration) return;
+    if(!this.dspyConfig.neuralIntegration) return;
 
     try {
       this.neuralEngine = // await this.context.apis.getNeuralEngine?.();
       this.context.apis.logger.info('🧬 DSPy Neural Integration Activated');
-    } catch (error) {
+    } catch(error) {
       this.context.apis.logger.warn('⚠ Neural engine unavailable, using standard DSPy');
     //     }
   //   }
@@ -288,7 +288,7 @@ export // interface DSPyConfig {
     prompt,
     examples = []
   ): Promise<DSPyProgram> {
-    if (!this.isInitialized) {
+    if(!this.isInitialized) {
       throw new Error('DSPy plugin not initialized');
     //     }
 
@@ -322,14 +322,14 @@ export // interface DSPyConfig {
     rounds?
   ): Promise<DSPyOptimizationResult> {
     const program = this.programs.get(programId);
-    if (!program) {
+    if(!program) {
       throw new Error(`DSPy program not found);`
     //     }
 
 
     this.context.apis.logger.info(`� Optimizing DSPy program);`
 
-    if (this.integrationManager) {
+    if(this.integrationManager) {
       // Use integration manager for comprehensive optimization
       // return // await this.integrationManager.createAndOptimizeProgram(program.name,
         program.signature,
@@ -337,7 +337,7 @@ export // interface DSPyConfig {
         dataset,
         //         {
           optimization);
-    } else if (this.swarmCoordinator) {
+    } else if(this.swarmCoordinator) {
       // return // await this.optimizeWithSwarm(program, dataset, rounds ?? this.dspyConfig.optimizationRounds);
     } else {
       // return // await this.optimizeStandalone(program, dataset, rounds ?? this.dspyConfig.optimizationRounds);
@@ -355,12 +355,12 @@ export // interface DSPyConfig {
     dataset,
     options: Record<string, unknown> = {}
   ): Promise<DSPyOptimizationResult> {
-    if (!this.isInitialized) {
+    if(!this.isInitialized) {
       throw new Error('DSPy plugin not initialized');
     //     }
 
 
-    if (this.integrationManager) {
+    if(this.integrationManager) {
       // return // await this.integrationManager.createAndOptimizeProgram(
         name,
         signature,
@@ -379,8 +379,7 @@ export // interface DSPyConfig {
   /**
    * Batch optimize multiple DSPy programs
    */
-  async batchOptimizePrograms(
-    programSpecs: Array<{
+  async batchOptimizePrograms({ programSpecs: Array<{
       // name: string
       // signature: string
       // prompt: string
@@ -388,15 +387,15 @@ export // interface DSPyConfig {
     }>,
     options: Record<string, unknown> = {}
   ): Promise<DSPyOptimizationResult[]> {
-    if (!this.isInitialized) {
+    if(!this.isInitialized) {
       throw new Error('DSPy plugin not initialized');
     //     }
 
 
-    if (this.integrationManager) {
+    if(this.integrationManager) {
       // Create programs and batch optimize
 // const programs = awaitPromise.all(
-        programSpecs.map(async (spec) => {
+        programSpecs.map(async(spec) => {
 // const program = awaitthis.createProgram(spec.name, spec.signature, spec.prompt, []);
           return { program, dataset: spec.dataset };
         })
@@ -406,7 +405,7 @@ export // interface DSPyConfig {
     } else {
       // Sequential optimization without integration manager
       const results = [];
-      for (const spec of programSpecs) {
+      for(const spec of programSpecs) {
 // const result = awaitthis.createAndOptimizeProgram(
           spec.name,
           spec.signature,
@@ -456,7 +455,7 @@ export // interface DSPyConfig {
         priority: 'low' } ];
 
     // Execute optimization rounds with swarm coordination
-    for (let round = 0; round < rounds; round++) {
+    for(let round = 0; round < rounds; round++) {
       this.context.apis.logger.info(`� DSPy Optimization Round ${round + 1}/${rounds}`);
 
       // Parallel execution of optimization tasks
@@ -467,7 +466,7 @@ export // interface DSPyConfig {
       // Aggregate results and update program
 // // await this.aggregateOptimizationResults(program, results);
       // Neural-enhanced metric evaluation
-      if (this.neuralEngine) {
+      if(this.neuralEngine) {
 // // await this.enhanceWithNeuralAnalysis(program, dataset);
       //       }
     //     }
@@ -495,7 +494,7 @@ export // interface DSPyConfig {
   ): Promise<DSPyOptimizationResult> {
     const originalMetrics = { ...program.metrics };
 
-    for (let round = 0; round < rounds; round++) {
+    for(let round = 0; round < rounds; round++) {
       // Basic prompt optimization
 // // await this.optimizePrompt(program, dataset);
       // Example selection and ranking
@@ -524,7 +523,7 @@ export // interface DSPyConfig {
     let result: Record<string, unknown> = {};
 
     try {
-      switch (task.type) {
+      switch(task.type) {
         case 'optimize': null
           result = // await this.optimizePrompt(task.program, task.dataset);
           break;
@@ -538,7 +537,7 @@ export // interface DSPyConfig {
           result = // await this.evaluateProgram(task.program, task.dataset);
           break;
       //       }
-    } catch (error) {
+    } catch(error) {
       this.context.apis.logger.error(`❌ Swarm task failed);`
       result = { error: error instanceof Error ? error.message : 'Unknown error' };
     //     }
@@ -581,7 +580,7 @@ export // interface DSPyConfig {
   ): Promise<DSPyExample[]> {
     const examples = [];
 
-    for (let i = 0; i < count; i++) {
+    for(let i = 0; i < count; i++) {
       // Generate diverse examples using swarm intelligence
 // const example = awaitthis.generateSingleExample(signature);
       examples.push(example);
@@ -614,7 +613,7 @@ export // interface DSPyConfig {
     input: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
     const program = this.programs.get(programId);
-    if (!program) {
+    if(!program) {
       throw new Error(`DSPy program not found);`
     //     }
 
@@ -643,7 +642,7 @@ export // interface DSPyConfig {
     // Build the optimized prompt with few-shot examples
     const fullPrompt = this.buildFullPrompt(program, input);
 
-    // Execute via AI provider (mock implementation)
+    // Execute via AI provider(mock implementation)
 // const response = awaitthis.callAIProvider(fullPrompt);
 
     // return {
@@ -668,9 +667,9 @@ export // interface DSPyConfig {
       recommendations: [] };
 
     // Analyze each program in the pipeline
-    for (const programId of programs) {
+    for(const programId of programs) {
       const program = this.programs.get(programId);
-      if (program) {
+      if(program) {
         // Add pipeline analysis logic
         analysis[programId] = {
           metrics: program.metrics,
@@ -700,7 +699,7 @@ export // interface DSPyConfig {
       timestamp: new Date().toISOString() };
 
     // Add integration manager metrics if available
-    if (this.integrationManager) {
+    if(this.integrationManager) {
 // const analytics = awaitthis.integrationManager.getLearningAnalytics();
       // return {
 ..basicMetrics,
@@ -716,7 +715,7 @@ export // interface DSPyConfig {
    * Get detailed learning analytics
    */
   async getLearningAnalytics(): Promise<Record<string, unknown>> {
-    if (this.integrationManager) {
+    if(this.integrationManager) {
       // return await this.integrationManager.getLearningAnalytics();
     //     }
 
@@ -735,12 +734,12 @@ export // interface DSPyConfig {
     dataset
   ): Promise<Record<string, unknown>> {
     const program = this.programs.get(programId);
-    if (!program) {
+    if(!program) {
       throw new Error(`DSPy program not found);`
     //     }
 
 
-    if (this.integrationManager) {
+    if(this.integrationManager) {
       // return {
         recommendations: // await this.integrationManager.getOptimizationRecommendations(program, dataset) };
     //     }
@@ -759,7 +758,7 @@ export // interface DSPyConfig {
    * Export DSPy knowledge
    */
   async exportKnowledge(): Promise<Record<string, unknown>> {
-    if (this.integrationManager) {
+    if(this.integrationManager) {
       // return await this.integrationManager.exportKnowledge();
     //     }
 
@@ -774,16 +773,16 @@ export // interface DSPyConfig {
   /**
    * Import DSPy knowledge
    */
-  async importKnowledge(knowledge: Record<string, unknown>): Promise<Record<string, unknown>> {
-    if (this.integrationManager) {
+  async importKnowledge({ knowledge: Record<string, unknown>): Promise<Record<string, unknown>> {
+    if(this.integrationManager) {
 // await this.integrationManager.importKnowledge(knowledge);
       // return { success, message: 'Knowledge imported successfully' };
     //     }
 
 
     // Basic import for programs
-    if (knowledge.programs && Array.isArray(knowledge.programs)) {
-      for (const [id, program] of knowledge.programs) {
+    if(knowledge.programs && Array.isArray(knowledge.programs)) {
+      for(const [id, program] of knowledge.programs) {
         this.programs.set(id, program as DSPyProgram);
       //       }
     //     }
@@ -800,7 +799,7 @@ export // interface DSPyConfig {
   //   }
 
 
-  // private async evaluatePromptVariations(variations: Array<{ prompt, accuracy}>, dataset): Promise<{ prompt, accuracy}> {
+  // private async evaluatePromptVariations({ variations: Array<{ prompt, accuracy}>, dataset): Promise<{ prompt, accuracy}> {
     // return variations.reduce((best, current) => current.accuracy > best.accuracy ? current );
   //   }
 
@@ -827,7 +826,7 @@ export // interface DSPyConfig {
 
 
   // private calculateImprovement(original, optimized) {
-    // return ((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
+    // return((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
   //   }
 
 
@@ -840,7 +839,7 @@ export // interface DSPyConfig {
     let prompt = program.prompt;
 
     // Add few-shot examples
-    for (const example of program.examples.slice(0, this.dspyConfig.fewShotExamples)) {
+    for(const example of program.examples.slice(0, this.dspyConfig.fewShotExamples)) {
       prompt += `\n\nExample:\nInput: ${JSON.stringify(example.input)}\nOutput: ${JSON.stringify(example.output)}`;
     //     }
 

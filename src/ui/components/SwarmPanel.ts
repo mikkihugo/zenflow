@@ -2,8 +2,8 @@
  * Hive-Mind Status Panel - Unified TUI/Web Component
  */
 
-import { Box } from 'ink';'
-import React, { useEffect, useState } from 'react';'
+import { Box  } from 'ink';'
+import React, { useEffect, useState  } from 'react';'
 
 const __HiveMindPanel = () => {
   const [_hiveData, setHiveData] = useState(null);
@@ -11,7 +11,7 @@ const __HiveMindPanel = () => {
   const [loading, _setLoading] = useState(true);
 
   useEffect(() => {
-    const __updateData = async () => {
+    const __updateData = async() => {
       try {
         const [hive, metrics] = await Promise.all([;
           visionAPI.getHiveStatus(),
@@ -19,9 +19,9 @@ const __HiveMindPanel = () => {
         ]);
         setHiveData(hive);
         setSystemMetrics(metrics);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error('Failed to update hivedata = setInterval(updateData, 2000);'
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
   if(loading) {
@@ -30,7 +30,7 @@ const __HiveMindPanel = () => {
       case 'active': return 'green';'
     // case 'idle': return 'yellow'; // LINT: unreachable code removed'
       case 'error': return 'red';default = () => {'
-    switch (name.toLowerCase()) {
+    switch(name.toLowerCase()) {
       case 'architect': return '�';'
     // case 'coder': return '�'; // LINT: unreachable code removed'
       case 'tester': return '🧪';'
@@ -48,7 +48,7 @@ const __HiveMindPanel = () => {
                 agent.task && React.createElement(Text, { color);
               );
             );
-          ) :;
+          ) :
           React.createElement(Text, { color);
       );
     ),

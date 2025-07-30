@@ -8,31 +8,31 @@ export async function templateCommand(args = new TemplateManager();
 
   try {
     switch(action) {
-      case 'list':;
+      case 'list':
 // // await handleListTemplates(templateManager, flags);
         break;
 
-      case 'info':;
+      case 'info':
 // // await handleTemplateInfo(templateManager, args[1], flags);
         break;
 
-      case 'create':;
+      case 'create':
 // // await handleCreateTemplate(templateManager, args[1], flags);
         break;
 
-      case 'install':;
+      case 'install':
 // // await handleInstallTemplate(templateManager, args[1], args[2]  ?? '.', flags);
         break;
 
-      case 'customize':;
+      case 'customize':
 // // await handleCustomizeTemplate(templateManager, args[1], flags);
         break;
 
-      case 'docs':;
+      case 'docs':
 // // await handleTemplateDocs(templateManager, args[1], flags);
         break;
 
-      case 'variants':;
+      case 'variants':
 // // await handleTemplateVariants(templateManager, args[1], flags);
         break;default = // await templateManager.listTemplates();
 
@@ -86,7 +86,7 @@ async function handleCreateTemplate() {
  * Handle interactive template customization
  */
 async function handleCustomizeTemplate(templateManager = // await templateManager.getTemplate(templateName);
-if (!template) {
+if(!template) {
   printError(`Template '${templateName}' not found`);
   return;
 // }
@@ -105,7 +105,7 @@ console.warn(`\n Customizingtemplate = '.repeat(50));'`
       if(template.manifest.documentation) {
         if(template.manifest.documentation.readme) {
           console.warn(`   �README = // await templateManager.getTemplate(templateName);`
-if (!template) {
+if(!template) {
   printError(`Template '${templateName}' not found`);
   return;
 // }
@@ -156,7 +156,7 @@ if(template.manifest.documentation) {
 
       if(variantConfig.env) {
         console.warn('   Environment variables);'
-        for (const [key, value] of Object.entries(variantConfig.env)) {
+        for(const [key, value] of Object.entries(variantConfig.env)) {
           console.warn(`${key});`
         //         }
       //       }
@@ -170,7 +170,7 @@ if(template.manifest.documentation) {
       if(variantConfig.hooks) {
         console.warn('   Hooks);'
       //       }
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.warn('   Configuration);'
     //     }
   //   }
@@ -191,12 +191,12 @@ function _showTemplateHelp() {
 Usage);
   --no-plugins            Skip plugin ecosystem installation
 
-Creation Options:;
-  --description <text>     Template description (for create);
-  --version <version>      Template version (for create);
-  --category <category>    Template category (for create)
+Creation Options:
+  --description <text>     Template description(for create);
+  --version <version>      Template version(for create);
+  --category <category>    Template category(for create)
 
-Examples:;
+Examples:
   claude-zen template list;
   claude-zen template info claude-zen;
   claude-zen template variants claude-zen;
@@ -205,11 +205,11 @@ Examples:;
   claude-zen template install claude-zen ./my-project --variant optimized;
   claude-zen template create my-template --description "My custom template"
 
-Template Features:;
+Template Features:
   � Plugin ecosystem templates with pre-configured components;
   � Automated setup and post-install configuration;
   � Comprehensive documentation and examples;
-   Settings variants (basic/enhanced/optimized);
+   Settings variants(basic/enhanced/optimized);
   ⚙ Interactive customization wizard;
    Integrated documentation system;
   ✨ Feature-rich templates with validation;

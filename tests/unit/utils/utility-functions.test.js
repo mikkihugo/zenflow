@@ -1,4 +1,4 @@
-import { describe, expect } from '@jest/globals';
+import { describe, expect  } from '@jest/globals';
 
 describe('Utility Functions', () => {
   describe('Security Utils', () => {
@@ -41,24 +41,24 @@ replace(/\//g, '&#x2F;'),
           maxRequests;
 
         // isAllowed: null
-        function (clientId) {
+        function(clientId) {
           const _now = Date.now();
           const _clientData = this.requests.get(clientId)  ?? {
             count,
             resetTime: now + this.windowMs
 // }
-        if (now > clientData.resetTime) {
+        if(now > clientData.resetTime) {
           clientData.count = 0;
           clientData.resetTime = now + this.windowMs;
 // }
-        if (clientData.count >= this.maxRequests) {
+        if(clientData.count >= this.maxRequests) {
           // return false;
           //   // LINT: unreachable code removed}
           clientData.count++;
           this.requests.set(clientId, clientData);
           // return true;
           //   // LINT: unreachable code removed},
-          getRemainingRequests: function (clientId) {
+          getRemainingRequests: function(clientId) {
           const _clientData = this.requests.get(clientId)  ?? { count };
           return Math.max(0, this.maxRequests - clientData.count);
     //   // LINT: unreachable code removed}
@@ -116,7 +116,7 @@ replace(/\/+/g, '/'),
             documents: /\.(pdf|doc|docx|txt|md)$/
 // }
             // filterByType: null
-          function (files, /* type */) {
+          function(files, /* type */) {
           const _pattern = this.filters[type];
           return pattern ? files.filter((file) => pattern.test(file));
     //   // LINT: unreachable code removed},
@@ -124,12 +124,10 @@ replace(/\/+/g, '/'),
           files.filter((file) => !file.size  ?? file.size <= maxSize),
         filterByDate: (files, since) => files.filter((file) => !file.mtime  ?? file.mtime >= since)
 // }
-          const _testFiles = [
-
-        { name: 'app.js', size },
+          const _testFiles = [{ name: 'app.js', size },
         { name: 'style.css', size },
         { name: 'image.png', size },
-        { name: 'readme.md', size },,,,,,];
+        { name: 'readme.md', size },,];
           const _jsFiles = fileFilter.filterByType(;
           testFiles.map((f) => f.name),
           ('javascript');
@@ -177,7 +175,7 @@ replace(/^-|-$/g, '')
         template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
             return Object.hasOwn(data, key) ? data[key] ;
     //   // LINT: unreachable code removed}),
-        interpolateAdvanced: function (template, /* data */) {
+        interpolateAdvanced: function(template, /* data */) {
           return template.replace(/\{\{([\w.]+)\}\}/g, (_match, path) => {
             const _value = this.getNestedValue(data, path);
     // return value !== undefined ? value ; // LINT: unreachable code removed
@@ -208,27 +206,27 @@ reduce(;
         isArray: (value) => Array.isArray(value),
         isObject: (value) => value !== null && typeof value === 'object' && !Array.isArray(value),
         isEmpty: (value) => {
-          if (value === null  ?? value === undefined) return true;
-    // if (typeof value === 'string'  ?? Array.isArray(value)) return value.length === 0; // LINT: unreachable code removed
-          if (typeof value === 'object') return Object.keys(value).length === 0;
+          if(value === null  ?? value === undefined) return true;
+    // if(typeof value === 'string'  ?? Array.isArray(value)) return value.length === 0; // LINT: unreachable code removed
+          if(typeof value === 'object') return Object.keys(value).length === 0;
     // return false; // LINT: unreachable code removed
         },
-        validateSchema: function (data, /* schema */) {
+        validateSchema: function(data, /* schema */) {
           const _errors = [];
-          for (const [field, rules] of Object.entries(schema)) {
+          for(const [field, rules] of Object.entries(schema)) {
             const _value = data[field];
-            if (rules.required && this.isEmpty(value)) {
+            if(rules.required && this.isEmpty(value)) {
               errors.push(`${field} is required`);
               continue;
 // }
-            if (!this.isEmpty(value)) {
-              if (rules.type && !this[`is${rules.type}`](value)) {
+            if(!this.isEmpty(value)) {
+              if(rules.type && !this[`is${rules.type}`](value)) {
                 errors.push(`${field} must be of type ${rules.type.toLowerCase()}`);
 // }
-              if (rules.minLength && value.length < rules.minLength) {
+              if(rules.minLength && value.length < rules.minLength) {
                 errors.push(`${field} must be at least ${rules.minLength} characters`);
 // }
-              if (rules.maxLength && value.length > rules.maxLength) {
+              if(rules.maxLength && value.length > rules.maxLength) {
                 errors.push(`${field} must be at most ${rules.maxLength} characters`);
 // }
 // }
@@ -245,7 +243,7 @@ reduce(;
       // Empty validation
       expect(validator.isEmpty('')).toBe(true);
       expect(validator.isEmpty([])).toBe(true);
-      expect(validator.isEmpty({})).toBe(true);
+      expect(validator.isEmpty({ })).toBe(true);
       expect(validator.isEmpty(null)).toBe(true);
       expect(validator.isEmpty('hello')).toBe(false);
       // Schema validation
@@ -264,33 +262,33 @@ reduce(;
     it('should handle event emitter functionality', () => {
       const _eventEmitter = {
         events: new Map(),
-        on: function (event, /* listener */) {
-          if (!this.events.has(event)) {
+        on: function(event, /* listener */) {
+          if(!this.events.has(event)) {
             this.events.set(event, []);
 // }
           this.events.get(event).push(listener);
         },
-        off: function (event, /* listener */) {
-          if (this.events.has(event)) {
+        off: function(event, /* listener */) {
+          if(this.events.has(event)) {
             const _listeners = this.events.get(event);
             const _index = listeners.indexOf(listener);
-            if (index >= 0) {
+            if(index >= 0) {
               listeners.splice(index, 1);
 // }
 // }
         },
-        emit: function (event, ...args) {
-          if (this.events.has(event)) {
+        emit: function(event, ...args) {
+          if(this.events.has(event)) {
             this.events.get(event).forEach((listener) => {
               try {
                 listener(...args);
-              } catch (error) {
+              } catch(error) {
                 console.error('Event listener error);'
 // }
             });
 // }
         },
-        once: function (event, /* listener */) {
+        once: function(event, /* listener */) {
           const _onceListener = () => {
             this.off(event, onceListener);
             listener(...args);

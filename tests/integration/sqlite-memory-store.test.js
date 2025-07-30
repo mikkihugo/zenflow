@@ -6,34 +6,33 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect } from '@jest/globals';
-import { SqliteMemoryStore } from '../../src/memory/sqlite-store.js';
-import { getLoadError } from '../../src/memory/sqlite-wrapper.js';
+import { afterEach, beforeEach, describe, expect  } from '@jest/globals';
+import { SqliteMemoryStore  } from '../../src/memory/sqlite-store.js';
+import { getLoadError  } from '../../src/memory/sqlite-wrapper.js';
 
 describe('SQLite Memory Store Integration Tests', () => {
   let testDir;
   let _memoryStore;
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Create temporary test directory
     testDir = path.join(os.tmpdir(), `claude-zen-sqlite-test-${Date.now()}`);
   // await fs.mkdir(testDir, { recursive });
     // Initialize memory store with test directory
-    _memoryStore = new SqliteMemoryStore({
-      directory,
+    _memoryStore = new SqliteMemoryStore({ directory,
     dbName);
-});
-afterEach(async () => {
+ });
+afterEach(async() => {
   // Close database connections
-  if (memoryStore?.db) {
+  if(memoryStore?.db) {
     memoryStore.close();
   //   }
   // Clean up test directory
   // // await fs.rm(testDir, { recursive, force });
 });
 describe('SQLite Availability', () => {
-  it('should check SQLite availability', async () => {
+  it('should check SQLite availability', async() => {
 // const _available = awaitisSQLiteAvailable();
-    if (!available) {
+    if(!available) {
       const _error = getLoadError();
       console.warn('SQLite not available);'
       return; // Skip tests if SQLite is not available
@@ -42,9 +41,9 @@ describe('SQLite Availability', () => {
   });
 });
 describe('Database Initialization', () => {
-    it('should initialize database with correct schema', async () => {
+    it('should initialize database with correct schema', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -59,9 +58,9 @@ then(() => true);
 catch(() => false);
       expect(dbExists).toBe(true);
     });
-    it('should create tables with correct structure', async () => {
+    it('should create tables with correct structure', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -89,15 +88,15 @@ get();
     });
   });
   describe('Basic CRUD Operations', () => {
-    beforeEach(async () => {
+    beforeEach(async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (available) {
+      if(available) {
   // await memoryStore.initialize();
       //       }
     });
-    it('should store and retrieve string values', async () => {
+    it('should store and retrieve string values', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -111,9 +110,9 @@ get();
 // const _retrievedValue = awaitmemoryStore.retrieve(key);
       expect(retrievedValue).toBe(value);
     });
-    it('should store and retrieve JSON objects', async () => {
+    it('should store and retrieve JSON objects', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -126,9 +125,9 @@ get();
 // const _retrievedValue = awaitmemoryStore.retrieve(key);
       expect(retrievedValue).toEqual(value);
     });
-    it('should handle namespaces correctly', async () => {
+    it('should handle namespaces correctly', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -145,9 +144,9 @@ get();
       expect(defaultValue).toBe(value1);
       expect(customValue).toBe(value2);
     });
-    it('should delete entries correctly', async () => {
+    it('should delete entries correctly', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -167,15 +166,15 @@ get();
     });
   });
   describe('Advanced Features', () => {
-    beforeEach(async () => {
+    beforeEach(async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (available) {
+      if(available) {
   // await memoryStore.initialize();
       //       }
     });
-    it('should handle TTL expiration', async () => {
+    it('should handle TTL expiration', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -194,18 +193,18 @@ get();
       retrievedValue = // await memoryStore.retrieve(key);
       expect(retrievedValue).toBeNull();
     });
-    it('should list entries with limit', async () => {
+    it('should list entries with limit', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       // Store multiple entries
-      for (let i = 0; i < 5; i++) {
+      for(let i = 0; i < 5; i++) {
   // // await memoryStore.store(`key-\$i`, `value-\$i`);
       //       }
       // List with limit
-// const _entries = awaitmemoryStore.list({ limit });
+// const _entries = awaitmemoryStore.list({ limit  });
       expect(entries).toHaveLength(3);
       // Verify entry structure
       expect(entries[0]).toHaveProperty('key');
@@ -214,9 +213,9 @@ get();
       expect(entries[0]).toHaveProperty('createdAt');
       expect(entries[0]).toHaveProperty('updatedAt');
     });
-    it('should search entries by pattern', async () => {
+    it('should search entries by pattern', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -232,9 +231,9 @@ get();
       expect(keys).toContain('user-settings');
       expect(keys).not.toContain('system-config');
     });
-    it('should clean up expired entries', async () => {
+    it('should clean up expired entries', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -256,28 +255,27 @@ get();
     });
   });
   describe('Error Handling', () => {
-    it('should handle invalid database path gracefully', async () => {
+    it('should handle invalid database path gracefully', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
       // Try to create store with invalid path
-      const _invalidStore = new SqliteMemoryStore({
-        directory);
+      const _invalidStore = new SqliteMemoryStore({ directory);
       // Should throw error during initialization
   // // await expect(invalidStore.initialize()).rejects.toThrow();
-    });
-    it('should handle concurrent operations safely', async () => {
+     });
+    it('should handle concurrent operations safely', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
   // // await memoryStore.initialize();
       // Perform concurrent writes
       const _promises = [];
-      for (let i = 0; i < 10; i++) {
+      for(let i = 0; i < 10; i++) {
         promises.push(memoryStore.store(`concurrent-\$i`, `value-\$i`));
       //       }
       // All should succeed
@@ -286,15 +284,15 @@ get();
         expect(result.success).toBe(true);
       });
       // Verify all entries were stored
-// const _entries = awaitmemoryStore.list({ limit });
+// const _entries = awaitmemoryStore.list({ limit  });
       const _concurrentEntries = entries.filter((entry) => entry.key.startsWith('concurrent-'));
       expect(concurrentEntries).toHaveLength(10);
     });
   });
   describe('Connection Management', () => {
-    it('should handle database close correctly', async () => {
+    it('should handle database close correctly', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}
@@ -305,9 +303,9 @@ get();
       expect(memoryStore.isInitialized).toBe(false);
       expect(memoryStore.db).toBeNull();
     });
-    it('should reinitialize after close', async () => {
+    it('should reinitialize after close', async() => {
 // const _available = awaitisSQLiteAvailable();
-      if (!available) {
+      if(!available) {
         console.warn('Skipping test);'
         return;
     //   // LINT: unreachable code removed}

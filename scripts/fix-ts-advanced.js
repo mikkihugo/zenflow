@@ -4,15 +4,15 @@
  * Targets the remaining high-impact errors after initial fixes;
  */
 
-import { exec } from 'node:child_process';
-import { promises  } from 'node:fs';
-import { promisify } from 'node:util';
+import { exec  } from 'node:child_process';
+import { promises   } from 'node:fs';
+import { promisify  } from 'node:util';
 
 const _execAsync = promisify(exec);
 // Advanced error fixes for remaining issues
 const _ADVANCED_FIXES = {
   // TS2339: Property does not exist on type
-  fixTS2339: async () => {
+  fixTS2339: async() => {
     console.warn('� Fixing TS2339);'
     const _fixes = [
       // Fix Command interface issues
@@ -37,7 +37,7 @@ const _ADVANCED_FIXES = {
   // // await applyPatternFixes(fixes);
   },
 // TS2304: Cannot find name
-fixTS2304: async () => {
+fixTS2304: async() => {
     console.warn('� Fixing TS2304);'
     // Add missing imports
     const _importFixes = [
@@ -45,9 +45,8 @@ fixTS2304: async () => {
         name: 'chalk',
         // import: "import chalk from 'chalk';",
         files: ['src/cli/commands/*.ts'] }, */
-      //       {
-        name: 'existsSync',
-        // import: "import { existsSync } from 'node:fs';",
+      //       { name: 'existsSync',
+        // import: "import { existsSync  } from 'node:fs';",
         files: ['src/cli/commands/*.ts'] }, */
       //       {
         name: 'ComponentStatus',
@@ -61,7 +60,7 @@ fixTS2304: async () => {
   // // await addMissingImports(importFixes);
   },
 // TS2322: Type assignment errors
-fixTS2322: async () => {
+fixTS2322: async() => {
     console.warn('� Fixing TS2322);'
     const _fixes = [
       // Fix never type assignments
@@ -77,7 +76,7 @@ fixTS2322: async () => {
   // // await applyPatternFixes(fixes);
   },
 // TS2678: Type comparison errors
-fixTS2678: async () => {
+fixTS2678: async() => {
     console.warn('� Fixing TS2678);'
     // Fix TaskType comparisons by updating the enum
     const _taskTypeFixes = [
@@ -125,7 +124,7 @@ fixTS2678: async () => {
   // // await updateTaskTypeEnum(taskTypeFixes);
   },
 // TS18046: Element implicitly h type
-fixTS18046: async () => {
+fixTS18046: async() => {
     console.warn('� Fixing TS18046);'
     const _fixes = [
       //       {
@@ -137,21 +136,21 @@ fixTS18046: async () => {
 // }
 // Helper function to apply pattern-based fixes
 async function applyPatternFixes() {
-  for (const fix of fixes) {
-    for (const filePattern of fix.files) {
+  for(const fix of fixes) {
+    for(const filePattern of fix.files) {
       const { stdout } = await execAsync(`find . -path "${filePattern}" -name "*.ts"`);
       const _files = stdout;
 trim();
 split('\n');
 filter((f) => f);
-      for (const file of files) {
+      for(const file of files) {
         try {
 // const _content = awaitfs.readFile(file, 'utf8');
           const _updated = content.replace(fix.pattern, fix.replacement);
-          if (updated !== content) {
+          if(updated !== content) {
   // // await fs.writeFile(file, updated);
           //           }
-        } catch (/* _err */) {
+        } catch(/* _err */) {
           // Ignore file access errors
         //         }
       //       }
@@ -160,23 +159,23 @@ filter((f) => f);
 // }
 // Helper function to add missing imports
 async function addMissingImports() {
-  for (const fix of importFixes) {
-    for (const filePattern of fix.files) {
+  for(const fix of importFixes) {
+    for(const filePattern of fix.files) {
       const { stdout } = await execAsync(`find . -path "${filePattern}" -name "*.ts"`);
       const _files = stdout;
 trim();
 split('\n');
 filter((f) => f);
-      for (const file of files) {
+      for(const file of files) {
         try {
 // const _content = awaitfs.readFile(file, 'utf8');
           // Check if the name is used but import is missing
-          if (content.includes(fix.name) && !content.includes(fix.import)) {
+          if(content.includes(fix.name) && !content.includes(fix.import)) {
             const _lines = content.split('\n');
             const _insertIndex = 0;
             // Find the first import line or top of file
-            for (let i = 0; i < lines.length; i++) {
-              if (lines[i].startsWith('import')) {
+            for(let i = 0; i < lines.length; i++) {
+              if(lines[i].startsWith('import')) {
                 insertIndex = i;
                 break;
               //               }
@@ -184,7 +183,7 @@ filter((f) => f);
             lines.splice(insertIndex, 0, fix.import);
   // // await fs.writeFile(file, lines.join('\n'));
           //           }
-        } catch (/* _err */) {
+        } catch(/* _err */) {
           // Ignore file access errors
         //         }
       //       }
@@ -202,27 +201,27 @@ async function updateTaskTypeEnum() {
 trim();
 split('\n');
 filter((f) => f);
-    for (const file of files) {
+    for(const file of files) {
 // const _content = awaitfs.readFile(file, 'utf8');
-      if (content.includes('TaskType')) {
+      if(content.includes('TaskType')) {
         // Add missing task types to enum/type definition
         const _updated = content;
-        for (const taskType of taskTypes) {
+        for(const taskType of taskTypes) {
           const _kebabCase = taskType;
           // Add to enum if not present
-          if (!updated.includes(`'${kebabCase}'`) && !updated.includes(`"${kebabCase}"`)) {
+          if(!updated.includes(`'${kebabCase}'`) && !updated.includes(`"${kebabCase}"`)) {
             // Try to add to existing enum/union type
-            if (updated.includes('TaskType =')) {
+            if(updated.includes('TaskType =')) {
               updated = updated.replace(/(TaskType = [^;]+)/, `$1 | '${kebabCase}'`);
             //             }
           //           }
         //         }
-        if (updated !== content) {
+        if(updated !== content) {
   // // await fs.writeFile(file, updated);
         //         }
       //       }
     //     }
-  } catch (/* err */) {
+  } catch(/* err */) {
     console.warn('Could not update TaskType enum);'
   //   }
 // }
@@ -240,17 +239,17 @@ async function createTypeAssertions() {
         //         {
           pattern: /status\./g,
           replacement: '(status ).' } ] } ];
-  for (const fileFix of assertionFixes) {
+  for(const fileFix of assertionFixes) {
     try {
 // const _content = awaitfs.readFile(fileFix.file, 'utf8');
       const _updated = content;
-      for (const fix of fileFix.fixes) {
+      for(const fix of fileFix.fixes) {
         updated = updated.replace(fix.pattern, fix.replacement);
       //       }
-      if (updated !== content) {
+      if(updated !== content) {
   // // await fs.writeFile(fileFix.file, updated);
       //       }
-    } catch (/* _err */) {
+    } catch(/* _err */) {
       // File may not exist
     //     }
   //   }
@@ -271,15 +270,15 @@ async function main() {
     const { stdout } = // await execAsync('npm run build);'
     const _errorCount = (stdout.match(/error TS/g)  ?? []).length;
     console.warn(`� Remaining errors);`
-    if (errorCount < 500) {
+    if(errorCount < 500) {
       console.warn('� Great progress! Under 500 errors remaining.');
     //     }
     // Show top remaining error types
     const _errorTypes = {};
     const _errors = stdout.split('\n').filter((line) => line.includes('error TS'));
-    for (const error of errors) {
+    for(const error of errors) {
       const _match = error.match(/error TS(\d+):/);
-      if (match) {
+      if(match) {
         const _code = `TS${match[1]}`;
         errorTypes[code] = (errorTypes[code]  ?? 0) + 1;
       //       }
@@ -290,7 +289,7 @@ sort((a, b) => b[1] - a[1]);
 slice(0, 5);
 forEach(([code, count]) =>
         console.warn(`  \$code););`
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Error during advanced fixes);'
     process.exit(1);
   //   }

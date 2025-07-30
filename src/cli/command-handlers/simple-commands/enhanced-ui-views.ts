@@ -34,14 +34,14 @@ initializeViewData() {}
   this.refreshIntervals.set(
   'analysis',
   setInterval(() =>
-  if (this.ui.currentView === ENHANCED_VIEWS.ANALYSIS) {
+  if(this.ui.currentView === ENHANCED_VIEWS.ANALYSIS) {
     this.refreshAnalysisData();
   //   }
   , 30000)
   //   )
 // }
 /**
- * Render Neural Network Tools View (15 tools);
+ * Render Neural Network Tools View(15 tools);
  */
 renderNeuralView();
 // {
@@ -77,7 +77,7 @@ renderNeuralView();
 
 
   /**
-   * Render Workflow & Automation View (11 tools);
+   * Render Workflow & Automation View(11 tools);
    */;
   renderWorkflowView() {
     const _colors = this.getColors();
@@ -96,7 +96,7 @@ renderNeuralView();
     });
 // }
 /**
- * Render GitHub Integration View (8 tools);
+ * Render GitHub Integration View(8 tools);
  */
 renderGitHubView();
 // {
@@ -115,7 +115,7 @@ renderGitHubView();
 
 
   /**
-   * Render DAA (Dynamic Agent Architecture) View (8 tools);
+   * Render DAA(Dynamic Agent Architecture) View(8 tools);
    */;
   renderDAAView() {
     const _colors = this.getColors();
@@ -133,7 +133,7 @@ renderGitHubView();
     });
 // }
 /**
- * Render System & Utilities View (6+ tools);
+ * Render System & Utilities View(6+ tools);
  */
 renderSystemView();
 // {
@@ -220,9 +220,9 @@ status`);`
 renderToolGrid(tools, colors, (columns = 2))
 : unknown
 // {
-  for (const i = 0; i < tools.length; i += columns) {
+  for(const i = 0; i < tools.length; i += columns) {
     const _row = '';
-    for (const j = 0; j < columns && i + j < tools.length; j++) {
+    for(const j = 0; j < columns && i + j < tools.length; j++) {
       const _tool = tools[i + j];
       const _keyLabel = colors.yellow(`[\$`
 tool.key;
@@ -230,7 +230,7 @@ tool.key;
 const _toolName = colors.white(tool.tool);
 const _desc = colors.gray(tool.desc);
 row += `${keyLabel} ${toolName} - ${desc}`;
-if (j < columns - 1) row += '    ';
+if(j < columns - 1) row += '    ';
 // }
     console.warn(row)
 // }
@@ -265,7 +265,7 @@ handleEnhancedInput(key, currentView)
 // const _result = awaitthis.toolFramework.executeTool(toolName, parameters);
       this.ui.addLog('success', `${toolName} completed successfully`);
       this.displayToolResult(result);
-    } catch (error) {
+    } catch(error) {
       this.ui.addLog('error', `${toolName}failed = this.getColors();`
     if(execution.result) {
       console.warn();
@@ -280,13 +280,13 @@ handleEnhancedInput(key, currentView)
   /**
    * Prompt for neural training;
    */;
-  async promptNeuralTrain() {
+  async promptNeuralTrain() { 
     // In a real implementation, this would show an interactive form
 
       // Update view data with fresh neural status
       const _data = this.viewData.get('neural');
       data.lastUpdate = new Date();
-    } catch (error) {
+    } catch(error) 
       // Silently handle refresh errors
     //     }
   //   }
@@ -295,11 +295,11 @@ handleEnhancedInput(key, currentView)
   /**
    * Refresh analysis data;
    */;
-  async refreshAnalysisData() {
-    try {
+  async refreshAnalysisData() { 
+    try 
 // const _report = awaitthis.toolFramework.executeTool('performance_report', {timeframe = this.viewData.get('analysis');
       data.lastUpdate = new Date();
-    } catch (error) {
+    } catch(error) {
       // Silently handle refresh errors
     //     }
   //   }
@@ -319,7 +319,7 @@ handleEnhancedInput(key, currentView)
    */;
   cleanup() {
     // Clear all refresh intervals
-    for (const interval of this.refreshIntervals.values()) {
+    for(const interval of this.refreshIntervals.values()) {
       clearInterval(interval);
     //     }
     this.refreshIntervals.clear();

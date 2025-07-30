@@ -5,7 +5,7 @@
  */
 
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 import chalk from 'chalk';
 
 const ___filename = fileURLToPath(import.meta.url);
@@ -23,7 +23,7 @@ try {
   const _recommendations = getStorageRecommendations();
   console.warn(`✅ Storage recommendation);`
   console.warn(`   Reason);`
-} catch (error) {
+} catch(error) {
   console.warn(chalk.red(`❌ SQLite wrapper test failed));`
 // }
 // Test 2: Fallback Store
@@ -41,7 +41,7 @@ try {
   console.warn(`✅ Using fallback: ${store.isUsingFallback()}`);
   console.warn(`✅ Store/retrieve works);`
   store.close();
-} catch (error) {
+} catch(error) {
   console.warn(chalk.red(`❌ Fallback store test failed));`
 // }
 // Test 3: Session Manager
@@ -55,10 +55,10 @@ try {
   // await new Promise((resolve) => setTimeout(resolve, 100));
   console.warn(`✅ Session manager initialized`);
   console.warn(`✅ Using in-memory);`
-  if (sessionManager.close) {
+  if(sessionManager.close) {
     sessionManager.close();
   //   }
-} catch (error) {
+} catch(error) {
   console.warn(chalk.red(`❌ Session manager test failed));`
 // }
 // Test 4: MCP Wrapper
@@ -74,7 +74,7 @@ try {
 // const _result = awaitwrapper.storeMemory('test-swarm', 'test-key', { data);
   console.warn(`✅ MCP wrapper initialized`);
   console.warn(`✅ Memory storage works);`
-} catch (error) {
+} catch(error) {
   console.warn(chalk.red(`❌ MCP wrapper test failed));`
 // }
 // Test 5: Error Messages
@@ -85,13 +85,13 @@ try {
   Object.defineProperty(process, 'platform', { value);
   const { isWindows } = // await import('../src/memory/sqlite-wrapper.js');
 
-  if (isWindows()) {
+  if(isWindows()) {
     console.warn(`✅ Windows-specific error messages would be shown`);
     console.warn(`✅ Windows installation guide link would be provided`);
   //   }
   // Restore original platform
   Object.defineProperty(process, 'platform', { value, writable });
-} catch (error) {
+} catch(error) {
   console.warn(chalk.red(`❌ Error message test failed));`
 // }
 // Summary

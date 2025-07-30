@@ -3,7 +3,7 @@
  * Advanced coordination layer for Queens, Swarms, and Hive Mind integration;
  */
 
-import type { Identifiable, JSONObject } from './core';
+import type { Identifiable, JSONObject  } from './core';
 
 // =============================================================================
 // COORDINATION CORE TYPES

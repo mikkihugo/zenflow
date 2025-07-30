@@ -23,7 +23,7 @@ scanForComplexity((options = {}));
 // const _analysis = awaitthis.analyzeFile(content, file, threshold);
   suggestions.push(...analysis);
 // }
-catch (error)
+catch(error)
 // {
   console.warn(`⚠ Could not analyze ${file});`
 // }
@@ -34,8 +34,8 @@ try {
   const _analysis = analyse(content);
 
   // Analyze methods/functions
-  for (const method of analysis.methods  ?? []) {
-    if (method.cyclomatic > threshold) {
+  for(const method of analysis.methods  ?? []) {
+    if(method.cyclomatic > threshold) {
 // const _suggestion = awaitthis.createComplexitySuggestion(method, filepath, content);
       suggestions.push(suggestion);
     //     }
@@ -43,15 +43,15 @@ try {
 
 
   // Analyze overall file complexity
-  if (analysis.cyclomatic > threshold * 2) {
+  if(analysis.cyclomatic > threshold * 2) {
 // const _fileSuggestion = awaitthis.createFileSuggestion(analysis, filepath);
     suggestions.push(fileSuggestion);
   //   }
-} catch (/* _error */) {
+} catch(/* _error */) {
   throw new Error(`Analysis failed = {id = // await this.generateRefactorSuggestion(;`
           method, filepath, content;
         );
-      } catch (error) {
+      } catch(error) {
         console.warn(`Failed to generate refactorsuggestion = this.buildRefactorPrompt(method, filepath, content);`
 
   // return acc;
@@ -71,17 +71,14 @@ getCapabilities() {}
   // return {
       fileTypes: ['.js', '.jsx', '.ts', '.tsx'],
   // metrics: ['cyclomatic', 'halstead', 'maintainability'], // LINT: unreachable code removed
-  features: [
-
-        'method-level analysis',
+  features: ['method-level analysis',
         'file-level analysis',
         'ai-powered suggestions',
-        'severity classification';,,,,,];
+        'severity classification';,,];
 // }
 // }
-// async
-cleanup() {}
-// {
+// async cleanup() { }
+// 
   console.warn('� Code Complexity Scanner Plugin cleaned up');
 // }
 // }

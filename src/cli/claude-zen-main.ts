@@ -71,21 +71,21 @@ export // interface UltimateArchitectureConfig {
 = cli as
 {input = input[0];
 
-// Handle version flag first (no architecture needed)
-if (flags.version  ?? flags.v) {
+// Handle version flag first(no architecture needed)
+if(flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
     printInfo('� Revolutionary UnifiedArchitecture = ['
     'init', 'template', '--help', '--version';
   ];
 
   // Initialize Ultimate Unified Architecture for all other commands
-  if (!ultraLightweightCommands.includes(command)) {
+  if(!ultraLightweightCommands.includes(command)) {
     try {
       printInfo('� Initializing Ultimate Unified Architecture...');
 
       globalArchitecture = // await initializeUltimateArchitecture({
         // Enhanced configuration based on flagsenableAllPlugins = // await executeCommand(command, {args = === 'object') {
-      if (_result._success === false) {
+      if(_result._success === false) {
         printError(`❌ Commandfailed = globalArchitecture.getUnifiedStats();`
       console.warn('� Architecturestats = ============================================================================;'
 // ARCHITECTURE INITIALIZATION
@@ -97,9 +97,9 @@ if (flags.version  ?? flags.v) {
  * @returns Promise resolving to architecture instance;
     // */; // LINT: unreachable code removed
 async function initializeUltimateArchitecture() {
-        case 'init':;
+        case 'init':
           return architecture.executeUnifiedOperation({category = Object.values(context.arguments).slice(1).join(' ');
-    // if (!task) { // LINT: unreachable code removed
+    // if(!task) { // LINT: unreachable code removed
             throw new Error('Task description required');
           //           }
 
@@ -107,7 +107,7 @@ async function initializeUltimateArchitecture() {
           // return architecture.executeUnifiedOperation({
             category => {
       const _query = Object.values(context.arguments).join(' ');
-    // if (!query) { // LINT: unreachable code removed
+    // if(!query) { // LINT: unreachable code removed
         throw new Error('Search query required');
       //       }
 
@@ -116,20 +116,20 @@ async function initializeUltimateArchitecture() {
         category => {
       const _operation = context.arguments[0] as string;
     // ; // LINT: unreachable code removed
-      switch (operation) {
-        case 'search':;
+      switch(operation) {
+        case 'search':
           return architecture.executeUnifiedOperation({
             category => {
       const _stats = architecture.getUnifiedStats();
     // ; // LINT: unreachable code removed
-      if (context.options.json) {
+      if(context.options.json) {
         console.warn(JSON.stringify(stats, null, 2));
       } else {
         printInfo('� Ultimate Unified Architecture Statistics = {'
       description => {
         const _stats = architecture.getUnifiedStats();
 
-        printInfo('� Claude Zen Status (Ultimate Unified Architecture):');
+        printInfo('� Claude Zen Status(Ultimate Unified Architecture):');
         console.warn(`✅ _Architecture => {`
     registry.register(command, config);
   });
@@ -143,29 +143,29 @@ async function initializeUltimateArchitecture() {
 // =============================================================================
 
 // Graceful shutdown
-process.on('SIGINT', async (): Promise<void> => {
+process.on('SIGINT', async(): Promise<void> => {
   printInfo('\n� Shutting down Ultimate Unified Architecture...');
 
-  if (globalArchitecture) {
+  if(globalArchitecture) {
     try {
 // // await globalArchitecture.cleanup();
       printSuccess('✅ Ultimate Unified Architecture shutdown complete');
-    } catch (_error => ;
-  if (globalArchitecture) {
+    } catch(_error => ;
+  if(globalArchitecture) {
 // // await globalArchitecture.cleanup();
   //   }
   process.exit(0););
 
-process.on('uncaughtException', async (error => {
+process.on('uncaughtException', async(error => {
   printError(`❌ Uncaughtexception = ============================================================================;`
 // RUN THE CLI
 // =============================================================================
 
 // Run the revolutionary CLI
-main().catch(async (error => {
+main().catch(async(error => {
   printError(`❌ Fatal error);`
 
-  if (globalArchitecture) {
+  if(globalArchitecture) {
 // // await globalArchitecture.cleanup();
   //   }
 

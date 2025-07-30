@@ -3,7 +3,7 @@
  * Provides parsing support for 40+ programming languages using tree-sitter;
  */
 
-import { createHash } from 'node:crypto';
+import { createHash  } from 'node:crypto';
 import path from 'node:path';
 
 // Try to import tree-sitter with fallbacks
@@ -11,21 +11,21 @@ let Parser, JavaScript, TypeScript;
 try {
 // const _TreeSitter = awaitimport('tree-sitter');
   Parser = TreeSitter.default  ?? TreeSitter;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Tree-sitter not available, using fallback parsing');
   Parser = null;
 // }
 try {
 // const _JSModule = awaitimport('tree-sitter-javascript');
   JavaScript = JSModule.default  ?? JSModule;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Tree-sitter JavaScript grammar not available');
   JavaScript = null;
 // }
 try {
 // const _TSModule = awaitimport('tree-sitter-typescript');
   TypeScript = TSModule.typescript  ?? TSModule.default  ?? TSModule;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Tree-sitter TypeScript grammar not available');
   TypeScript = null;
 // }
@@ -38,8 +38,8 @@ try {
   /**
    * Initialize tree-sitter parsers for supported languages;
    */
-  async initialize() {
-    if (!Parser) {
+  async initialize() { 
+    if(!Parser) 
       console.warn('Tree-sitter not available, using simplified parsing');
       // return {status = new Parser();
       // jsParser.setLanguage(JavaScript); // LINT: unreachable code removed
@@ -49,7 +49,7 @@ try {
       this.grammars.set('jsx', JavaScript);
     //     }
     // Initialize TypeScript parser
-    if (TypeScript) {
+    if(TypeScript) {
       const _tsParser = new Parser();
       tsParser.setLanguage(TypeScript);
       this.parsers.set('typescript', tsParser);
@@ -88,7 +88,7 @@ try {
     break;
     // Comments
     case 'comment': null
-    if (this.config.extractComments) {
+    if(this.config.extractComments) {
       result.comments.push(this.extractComment(node, fileId, content, position));
     //     }
     break;
@@ -136,7 +136,7 @@ extractFunction(node, fileId, content, position)
 getNodeText(node, content);
 : unknown
 // {
-  if (!node) return '';
+  if(!node) return '';
   // return content.slice(node.startIndex, node.endIndex); // LINT: unreachable code removed
 // }
 /**
@@ -149,11 +149,8 @@ calculateNodeComplexity(node);
 
   this.walkAST(node, (child) => {
     const _nodeType = child.type;
-    if (;
-    //     [
-
-
-        'if_statement',
+    if(;
+    //     ['if_statement',
         'while_statement',
         'for_statement',
         'for_in_statement',
@@ -162,14 +159,14 @@ calculateNodeComplexity(node);
         'case_clause',
         'catch_clause',
         'conditional_expression',
-        'logical_expression',,,,,,].includes(nodeType);
+        'logical_expression',,].includes(nodeType);
     //     )
       complexity++
   });
   // return complexity;
 // }
 /**
- * Calculate cognitive complexity (simplified);
+ * Calculate cognitive complexity(simplified);
  */
 calculateCognitiveComplexity(node);
 : unknown
@@ -183,12 +180,12 @@ calculateCognitiveComplexity(node);
 extractParameters(parametersNode, content);
 : unknown
 // {
-  if (!parametersNode) return [];
+  if(!parametersNode) return [];
   // ; // LINT: unreachable code removed
   const _parameters = [];
-  for (let i = 0; i < parametersNode.childCount; i++) {
+  for(let i = 0; i < parametersNode.childCount; i++) {
     const _param = parametersNode.child(i);
-    if (param.type === 'identifier' ?? param.type === 'parameter') {
+    if(param.type === 'identifier' ?? param.type === 'parameter') {
       parameters.push(this.getNodeText(param, content));
     //     }
   //   }
@@ -202,7 +199,7 @@ isAsyncFunction(node, content);
 // {
   // Look for 'async' keyword in the function for(let i = 0; i < node.childCount; i++) {
   const _child = node.child(i);
-  if (child.type === 'async' ?? this.getNodeText(child, content) === 'async') {
+  if(child.type === 'async' ?? this.getNodeText(child, content) === 'async') {
     return true;
     //   // LINT: unreachable code removed}
   //   }
@@ -216,8 +213,8 @@ isExported(node);
 // {
   // Walk up the tree to check for export declarations
   const _current = node.parent;
-  while (current) {
-    if (current.type?.includes('export')) {
+  while(current) {
+    if(current.type?.includes('export')) {
       // return true;
       //   // LINT: unreachable code removed}
       current = current.parent;
@@ -231,7 +228,7 @@ isExported(node);
   : unknown
   //   {
     const _returnTypeNode = node.childForFieldName('return_type');
-    // if (returnTypeNode) { // LINT: unreachable code removed
+    // if(returnTypeNode) { // LINT: unreachable code removed
     // return this.getNodeText(returnTypeNode, content);
     //   // LINT: unreachable code removed}
     // return 'unknown';
@@ -244,9 +241,9 @@ isExported(node);
   //   {
     const _methods = [];
     this.walkAST(node, (child) => {
-      if (child.type === 'method_definition') {
+      if(child.type === 'method_definition') {
         const _name = this.getNodeText(child.childForFieldName('name'), content);
-        if (name) {
+        if(name) {
           methods.push(name);
         //         }
       //       }
@@ -261,9 +258,9 @@ isExported(node);
   //   {
     const _properties = [];
     this.walkAST(node, (child) => {
-      if (child.type === 'property_definition' ?? child.type === 'field_definition') {
+      if(child.type === 'property_definition' ?? child.type === 'field_definition') {
         const _name = this.getNodeText(child.childForFieldName('property'), content);
-        if (name) {
+        if(name) {
           properties.push(name);
         //         }
       //       }
@@ -365,32 +362,32 @@ createFallbackAnalysis(filePath, content, language);
    */;
   inferTypeFromNode(node, content) {
     switch(node.type) {
-      case 'string':;
-      case 'template_string':;
+      case 'string':
+      case 'template_string':
         // return 'string';
-    // case 'number':; // LINT: unreachable code removed
+    // case 'number': // LINT: unreachable code removed
         // return 'number';
-    // case 'true':; // LINT: unreachable code removed
-      case 'false':;
+    // case 'true': // LINT: unreachable code removed
+      case 'false':
         // return 'boolean';
-    // case 'array':; // LINT: unreachable code removed
+    // case 'array': // LINT: unreachable code removed
         // return 'array';
-    // case 'object':; // LINT: unreachable code removed
+    // case 'object': // LINT: unreachable code removed
         // return 'object';
-    // case 'function_expression':; // LINT: unreachable code removed
-      case 'arrow_function':;
+    // case 'function_expression': // LINT: unreachable code removed
+      case 'arrow_function':
         return 'function';default = node.parent;
     while(current) {
       switch(current.type) {
-        case 'function_declaration':;
-        case 'function_expression':;
-        case 'arrow_function':;
+        case 'function_declaration':
+        case 'function_expression':
+        case 'arrow_function':
           return 'function';
-    // case 'class_declaration':; // LINT: unreachable code removed
+    // case 'class_declaration': // LINT: unreachable code removed
           return 'class';
-    // case 'block_statement':; // LINT: unreachable code removed
+    // case 'block_statement': // LINT: unreachable code removed
           return 'block';
-    // case 'program':; // LINT: unreachable code removed
+    // case 'program': // LINT: unreachable code removed
           // return 'global';
     //   // LINT: unreachable code removed}
       current = current.parent;
@@ -443,9 +440,9 @@ createFallbackAnalysis(filePath, content, language);
    * Determine import type
    */;
   determineImportType(source) {
-    if (source.startsWith('.')) {
+    if(source.startsWith('.')) {
       // return 'relative';
-    //   // LINT: unreachable code removed} else if (source.startsWith('/')) {
+    //   // LINT: unreachable code removed} else if(source.startsWith('/')) {
       // return 'absolute';
     //   // LINT: unreachable code removed} else {
       // return 'module';
@@ -466,7 +463,7 @@ createFallbackAnalysis(filePath, content, language);
    * Get export type
    */;
   getExportType(node, content) {
-    if (node.type.includes('default')) {
+    if(node.type.includes('default')) {
       // return 'default';
     //   // LINT: unreachable code removed}
     // return 'named';
@@ -477,11 +474,11 @@ createFallbackAnalysis(filePath, content, language);
    */;
   getTypeKind(node) {
     switch(node.type) {
-      case 'interface_declaration':;
+      case 'interface_declaration':
         // return 'interface';
-    // case 'type_alias_declaration':; // LINT: unreachable code removed
+    // case 'type_alias_declaration': // LINT: unreachable code removed
         // return 'type';
-    // case 'enum_declaration':; // LINT: unreachable code removed
+    // case 'enum_declaration': // LINT: unreachable code removed
         // return 'enum';default = node.childForFieldName('superclass');
     if(superclassNode) {
       // return this.getNodeText(superclassNode, content);

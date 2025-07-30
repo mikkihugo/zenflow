@@ -3,21 +3,21 @@
  * Analyzes module dependencies using madge and dependency-cruiser;
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFile  } from 'node:fs/promises';
 
 // Try to import optional dependencies with fallbacks
 let _madge, _cruise;
 try {
 // const _madgeModule = awaitimport('madge');
   _madge = madgeModule.default  ?? madgeModule;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Madge dependency analyzer not available, using fallback');
   _madge = null;
 // }
 try {
 // const _cruiserModule = awaitimport('dependency-cruiser');
   _cruise = cruiserModule.cruise  ?? cruiserModule.default;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Dependency-cruiser not available, using fallback');
   _cruise = null;
 // }
@@ -42,21 +42,21 @@ try {
     // return {
       tree = {validate = cruise([targetPath], cruiserConfig);
     // return this.processCruiserResults(cruiseResult); // LINT: unreachable code removed
-    } catch (error) {
+    } catch(error) {
       console.warn(`⚠ Dependency-cruiser analysisfailed = [];`
 
     if(cruiseResult.modules) {
       for(const module of cruiseResult.modules) {
         if(module.dependencies) {
           for(const _dep of module.dependencies) {
-            dependencies.push({from = = false,rules = new Map();
+            dependencies.push({ from = = false,rules = new Map();
 
     // Process madge results
-    for (const [file, deps] of Object.entries(madgeResults.tree  ?? {})) {
+    for(const [file, deps] of Object.entries(madgeResults.tree  ?? { })) {
       for(const dep of deps  ?? []) {
         const _key = `${file}->${dep}`;
         dependencies.set(key, {id = `${dep.from}->${dep.to}`;
-      if (dependencies.has(key)) {
+      if(dependencies.has(key)) {
         const _existing = dependencies.get(key);
         dependencies.set(key, {
 ..existing,type = = false,rules = = false,dynamic = new Set();
@@ -71,7 +71,7 @@ try {
     //     }
 
 
-    // Calculate depth (simplified - just count levels in paths)
+    // Calculate depth(simplified - just count levels in paths)
     for(const file of files) {
       const _depth = file.split('/').length;
       maxDepth = Math.max(maxDepth, depth);
@@ -93,7 +93,7 @@ try {
     graph.metrics.density = nodeCount > 1 ? ;
       (2 * edgeCount) / (nodeCount * (nodeCount - 1)) ;
 
-    // Find central files (high degree)
+    // Find central files(high degree)
     const _sortedNodes = Array.from(graph.nodes.values());
 sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
 
@@ -101,8 +101,8 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
 
     for(const _dep of dependencies) {
       relationships.push({id = 2) return 'low';
-    // if (cycle.length <= 4) return 'medium'; // LINT: unreachable code removed
-    if (cycle.length <= 6) return 'high';
+    // if(cycle.length <= 4) return 'medium'; // LINT: unreachable code removed
+    if(cycle.length <= 6) return 'high';
     // return 'critical'; // LINT: unreachable code removed
   //   }
 
@@ -116,10 +116,10 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
 
     // Higher impact for certain file types
     for(const file of cycle) {
-      if (file.includes('index.')  ?? file.includes('main.')) {
+      if(file.includes('index.')  ?? file.includes('main.')) {
         impact += 2;
       //       }
-      if (file.includes('.config.')  ?? file.includes('.setup.')) {
+      if(file.includes('.config.')  ?? file.includes('.setup.')) {
         impact += 1;
       //       }
     //     }
@@ -137,14 +137,13 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     const __edges = [];
 
     for(const _dep of dependencies) {
-      nodes.add({
-        id = {nodes = [];
+      nodes.add({ id = {nodes = [];
 
     for(const node of data.nodes) {
       elements.push({data = > ({
 ..node,
         index;
-      })),links = > ({source = // await import('node);'
+       })),links = > ({source = // await import('node);'
     const { join } = // await import('node);'
 // const _files = awaitthis.getAllJSFiles(targetPath);
 
@@ -176,16 +175,16 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
           const _fullPath = join(currentPath, entry);
 // const _stats = awaitstat(fullPath);
 
-          if (stats.isDirectory()) {
+          if(stats.isDirectory()) {
             // Skip common ignored directories
-            if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
+            if(!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
 // // await walk(fullPath);
             //             }
-          } else if (extensions.some(ext => entry.endsWith(ext))) {
+          } else if(extensions.some(ext => entry.endsWith(ext))) {
             files.push(fullPath);
           //           }
         //         }
-      } catch (error) {
+      } catch(error) {
         console.warn(`Skipping directory ${currentPath});`
       //       }
     //     }
@@ -202,13 +201,13 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     const _requirePattern = /require\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g;"'`
 
     let match;
-    while ((match = importPattern.exec(content)) !== null) {
+    while((match = importPattern.exec(content)) !== null) {
       imports.push({source = requirePattern.exec(content)) !== null) {
       imports.push({source = [];
     const _exportPattern = /export\s+(?)?(?)\s+(\w+)/g;
 
     let match;
-    while ((match = exportPattern.exec(content)) !== null) {
+    while((match = exportPattern.exec(content)) !== null) {
       exports.push(match[1]);
     //     }
 
@@ -217,7 +216,7 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     //   // LINT: unreachable code removed}
 
   /**
-   * Find orphan files (no imports)
+   * Find orphan files(no imports)
    */;
   findOrphanFiles(files, dependencies) {
     const _referencedFiles = new Set(dependencies.map(d => d.to));
@@ -225,7 +224,7 @@ sort((a, b) => (b.inDegree + b.outDegree) - (a.inDegree + a.outDegree));
     //   // LINT: unreachable code removed}
 
   /**
-   * Find leaf files (no exports used)
+   * Find leaf files(no exports used)
    */;
   findLeafFiles(files, dependencies) {
     const _importingFiles = new Set(dependencies.map(d => d.from));

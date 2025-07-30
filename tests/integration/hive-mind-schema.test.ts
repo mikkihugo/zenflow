@@ -10,11 +10,11 @@
  * @version 2.0.0
  */
 
-import { execSync } from 'node:child_process';
+import { execSync  } from 'node:child_process';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect  } from '@jest/globals';
 import Database from 'better-sqlite3';
 
 /**
@@ -48,7 +48,7 @@ import Database from 'better-sqlite3';
 // // }
 describe('Hive Mind Database Schema - Issue #403', () => {
   let _testContext,
-  beforeEach(async (): Promise<void> => {
+  beforeEach(async(): Promise<void> => {
     // Create temporary test directory with unique name
     const _timestamp = Date.now();
     const _testDir = path.join(os.tmpdir(), `claude-zen-hive-test-${timestamp}`);
@@ -61,9 +61,9 @@ describe('Hive Mind Database Schema - Issue #403', () => {
       dbPath: path.join(testDir, '.hive-mind', 'hive.db'),
       db};
 });
-afterEach(async (): Promise<void> => {
+afterEach(async(): Promise<void> => {
   // Close database connection if open
-  if (testContext.db?.open) {
+  if(testContext.db?.open) {
     testContext.db.close();
     testContext.db = null;
   //   }
@@ -73,9 +73,9 @@ afterEach(async (): Promise<void> => {
 });
 describe('Database Initialization via Init Command', () => {
   /**
-   * Verifies that the init command creates database with correct schema
+   * Verifies that the init command creates database with correct schema: {}
    */
-  it('should create database with correct schema through init command', async (): Promise<void> => {
+  it('should create database with correct schema through init command', async(): Promise<void> => {
     // Execute init command to create database
     execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
         cwd);
@@ -85,7 +85,7 @@ access(testContext.dbPath)
 then(() => true)
 catch(() => false)
   expect(dbExists).toBe(true)
-  // Open database and validate schema
+  // Open database and validate schema: {}
   testContext.db = new Database(testContext.dbPath)
   // Verify agents table exists with correct structure
   const _tableInfo = testContext.db;
@@ -101,9 +101,9 @@ get() as SqliteMasterEntry | undefined
   expect(roleColumn?.notnull).toBe(0); // 0 means NULL allowed, 1 means NOT NULL
 });
 /**
- * Tests agent insertion without role value (should succeed)
+ * Tests agent insertion without role value(should succeed)
  */
-it('should allow inserting agents without role value', async (): Promise<void> => {
+it('should allow inserting agents without role value', async(): Promise<void> => {
   // Initialize database through init command
   execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
         cwd);
@@ -150,9 +150,9 @@ run(agentId, swarmId, 'Test Agent', 'worker', 'active');
     });
 
     /**
-     * Tests agent insertion with role value (should succeed)
+     * Tests agent insertion with role value(should succeed)
      */
-    it('should allow inserting agents with role value', async (): Promise<void> => {
+    it('should allow inserting agents with role value', async(): Promise<void> => {
       // Initialize database
       execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
         cwd);
@@ -202,7 +202,7 @@ run(agentId, swarmId, 'Test Agent', 'coordinator', 'leader', 'active');
     /**
      * Validates direct database schema creation
      */
-    it('should create agents table with nullable role column', async (): Promise<void> => {
+    it('should create agents table with nullable role column', async(): Promise<void> => {
       // Create database directory structure
 // await fs.mkdir(path.join(testContext.testDir, '.hive-mind'), { recursive});
       testContext.db = new Database(testContext.dbPath);
@@ -214,7 +214,7 @@ run(agentId, swarmId, 'Test Agent', 'coordinator', 'leader', 'active');
   IF;
   NOT;
   EXISTS;
-  swarms (;
+  swarms(;
   id;
   TEXT;
   PRIMARY;
@@ -243,7 +243,7 @@ TABLE
 IF
 NOT
 EXISTS
-  agents (
+  agents(
   id;
   TEXT;
   PRIMARY;
@@ -290,11 +290,11 @@ EXISTS
 /**
  * Tests schema migration from NOT NULL to nullable role column
  */
-it('should handle schema migration from NOT NULL to nullable', async (): Promise<void> =>
+it('should handle schema migration from NOT NULL to nullable', async(): Promise<void> =>
 // {
   // Create database directory
 // await fs.mkdir(path.join(testContext.testDir, '.hive-mind'), { recursive});
-  // Create database with problematic schema (role NOT NULL)
+  // Create database with problematic schema(role NOT NULL)
   testContext.db = new Database(testContext.dbPath);
   testContext.db.exec(`;`
 CREATE;
@@ -302,7 +302,7 @@ TABLE;
 IF;
 NOT;
 EXISTS;
-swarms (;
+swarms(;
 id;
 TEXT;
 PRIMARY;
@@ -331,7 +331,7 @@ TABLE;
 IF;
 NOT;
 EXISTS;
-agents (;
+agents(;
 id;
 TEXT;
 PRIMARY;
@@ -417,7 +417,7 @@ run(agentId, swarmId, 'Test Agent', 'worker', 'active');
     /**
      * Validates schema consistency across different creation paths
      */
-    it('should have consistent schema across all database creation paths', async (): Promise<void> => {
+    it('should have consistent schema across all database creation paths', async(): Promise<void> => {
       // Test schema from init command
       execSync('node /home/mhugo/code/claude-zen/src/cli/cli-main.js init', {
         cwd);

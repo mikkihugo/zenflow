@@ -4,7 +4,7 @@
  * @module CommandLoader
  */
 
-import { CommandRouter } from './command-router.js';'
+import { CommandRouter  } from './command-router.js';'
 /**  */
  * Load and register all core commands
  * @returns {Promise<CommandRouter>} Configured command router

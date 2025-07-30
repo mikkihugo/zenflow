@@ -2,10 +2,8 @@
  * Analysis Command Module
  * Converted from JavaScript to TypeScript
  */
-// {
-  Logger, JSONObject, JSONValue, JSONArray;
-// }
-from;
+// { Logger, JSONObject, JSONValue, JSONArray;
+//  } from;
 ('../types/core.js');
 printSuccess,
 printError,
@@ -21,34 +19,34 @@ export async function analysisAction() {
 // }
 try {
     switch(subcommand) {
-      case 'codebase':;
+      case 'codebase':
 // // await codebaseAnalysisCommand(subArgs, flags);
         break;
-      case 'ast':;
+      case 'ast':
 // // await astAnalysisCommand(subArgs, flags);
         break;
-      case 'dependencies':;
+      case 'dependencies':
 // // await dependencyAnalysisCommand(subArgs, flags);
         break;
-      case 'duplicates':;
+      case 'duplicates':
 // // await duplicateAnalysisCommand(subArgs, flags);
         break;
-      case 'query':;
+      case 'query':
 // // await queryAnalysisCommand(subArgs, flags);
         break;
-      case 'watch':;
+      case 'watch':
 // // await watchAnalysisCommand(subArgs, flags);
         break;
-      case 'complexity':;
+      case 'complexity':
 // // await complexityAnalysisCommand(subArgs, flags);
         break;
-      case 'bottleneck-detect':;
+      case 'bottleneck-detect':
 // // await bottleneckDetectCommand(subArgs, flags);
         break;
-      case 'performance-report':;
+      case 'performance-report':
 // // await performanceReportCommand(subArgs, flags);
         break;
-      case 'token-usage':;
+      case 'token-usage':
 // // await tokenUsageCommand(subArgs, flags);
         break;default = flags;
   const __projectPath = options.path  ?? process.cwd();
@@ -65,7 +63,7 @@ try {
       //       }
     //     }
 // // await analysisService.cleanup();
-} catch (error)
+} catch(error)
 // {
   printError(`Codebase analysisfailed = flags;`
   const _targetFiles = subArgs.slice(1);
@@ -106,7 +104,7 @@ try {
     console.warn(`\n� AVAILABLEQUERIES = new CodeAnalysisService();`
 // // await analysisService.initialize();
   let results;
-  switch (queryType) {
+  switch(queryType) {
     case 'high-complexity': null
       results = // await queryHighComplexity(analysisService, options);
       break;
@@ -177,7 +175,7 @@ try {
   console.warn(`� Generating performance report...`);
   console.warn(`⏰Timeframe = > setTimeout(resolve, 1500));`
   printSuccess(`✅ Performance report generated`);
-  console.warn(`\n� PERFORMANCE SUMMARY (${timeframe}):`);
+  console.warn(`\n� PERFORMANCE SUMMARY(${timeframe}):`);
   console.warn(`  � Total tasksexecuted = === 'detailed') {`
     console.warn(`\n� DETAILEDMETRICS = flags;`
   const __agent = options.agent ?? 'all';
@@ -189,25 +187,24 @@ try {
 
   console.warn(`\n� TOKEN USAGESUMMARY = flags;`
   const _projectPath = options.path ?? process.cwd();
-  console.warn(`� Starting real-time code analysisfor = new CodeAnalysisService({`
+  console.warn(`� Starting real-time code analysisfor = new CodeAnalysisService({ `
       projectPath,
       enableRealTimeAnalysis => {
       console.warn('\n� Stopping real-time analysis...');
 // // await analysisService.stopRealTimeAnalysis();
 // // await analysisService.cleanup();
       process.exit(0);
-    });
+     });
 
     // Wait indefinitely
 // // await new Promise(() => {});
-  } catch (error) {
+  } catch(error) {
     printError(`Real-time analysisfailed = flags;`
   const _projectPath = options.path ?? process.cwd();
   const _threshold = options.threshold ?? 10;
   console.warn(`� Analyzing code complexityin = // await import('../../services/code-analysis/index.js');`
-    const _analyzer = new ComplexityAnalyzer({
-      threshold;
-    });
+    const _analyzer = new ComplexityAnalyzer({ threshold;
+     });
 
     // Get source files
     const _files = []; // Would need to implement file discovery
@@ -216,28 +213,28 @@ try {
     printSuccess(`✅ Complexity analysis completed`);
 
     console.warn(`\n� COMPLEXITY ANALYSISRESULTS = results.overall.complexityDistribution;`
-  console.warn(`  � Low (1-5): ${dist.low}`);
-  console.warn(`  � Medium (6-10): ${dist.medium}`);
-  console.warn(`  � High (11-20): ${dist.high}`);
-  console.warn(`  � Critical (21+): ${dist.critical}`);
+  console.warn(`  � Low(1-5): ${dist.low}`);
+  console.warn(`  � Medium(6-10): ${dist.medium}`);
+  console.warn(`  � High(11-20): ${dist.high}`);
+  console.warn(`  � Critical(21+): ${dist.critical}`);
   // Generate insights
   const _insights = analyzer.generateComplexityInsights(results);
-  if (insights.hotspots.length > 0) {
+  if(insights.hotspots.length > 0) {
     console.warn(`\n COMPLEXITY HOTSPOTS);`
-    for (const hotspot of insights.hotspots.slice(0, 5)) {
+    for(const hotspot of insights.hotspots.slice(0, 5)) {
       console.warn(`  � ${hotspot.name} (complexity)`);
       console.warn(`${hotspot.recommendation}`);
     //     }
   //   }
-  if (insights.recommendations.length > 0) {
+  if(insights.recommendations.length > 0) {
     console.warn(`\n� RECOMMENDATIONS);`
-    for (const rec of insights.recommendations) {
+    for(const rec of insights.recommendations) {
       console.warn(`  • ${rec.description}`);
       console.warn(`    Action);`
     //     }
   //   }
 // }
-catch (error)
+catch(error)
 // {
   printError(`Complexity analysis failed);`
 // }
@@ -247,52 +244,52 @@ function showAnalysisHelp() {
 � Analysis Commands - Professional Code Analysis & Performance Analytics
 
 USAGE);
-  --output <dir>       Output directory for reports (default);
-  --include <pattern>  File patterns to include (default: **/*.{js,jsx,ts,tsx})
+  --output <dir>       Output directory for reports(default);
+  --include <pattern>  File patterns to include({ default: **/*.{js,jsx,ts,tsx })
   --exclude <pattern>  File patterns to exclude;
   --no-dependencies    Skip dependency analysis;
   --no-duplicates      Skip duplicate detection;
   --no-complexity      Skip complexity analysis;
   --no-graph           Skip storing results in Kuzu graph
 
-AST ANALYSIS OPTIONS:;
+AST ANALYSIS OPTIONS:
   --no-graph           Skip storing results in graph database
 
-DEPENDENCY ANALYSIS OPTIONS:;
+DEPENDENCY ANALYSIS OPTIONS:
   --path <path>        Project path to analyze;
   --no-circular        Skip circular dependency detection;
   --include-npm        Include npm dependencies in analysis
 
-DUPLICATE ANALYSIS OPTIONS:;
+DUPLICATE ANALYSIS OPTIONS:
   --path <path>        Project path to analyze;
-  --threshold <num>    Similarity threshold percentage (default);
-  --min-tokens <num>   Minimum tokens for duplicate (default);
-  --min-lines <num>    Minimum lines for duplicate (default)
+  --threshold <num>    Similarity threshold percentage(default);
+  --min-tokens <num>   Minimum tokens for duplicate(default);
+  --min-lines <num>    Minimum lines for duplicate(default)
 
-QUERY OPTIONS:;
+QUERY OPTIONS:
   --threshold <num>    Threshold for query filters;
   --api <pattern>      API pattern for usage queries;
   --patterns <list>    Comma-separated patterns for deprecated API detection;
   --rules <json>       JSON string with architectural rules
 
-BOTTLENECK DETECT OPTIONS:;
-  --scope <scope>      Analysis scope (default);
+BOTTLENECK DETECT OPTIONS:
+  --scope <scope>      Analysis scope(default);
                        Options, swarm, agent, task, memory;
-  --target <target>    Specific target to analyze (default);
+  --target <target>    Specific target to analyze(default);
                        Examples: agent-id, swarm-id, task-type
 
-PERFORMANCE REPORT OPTIONS:;
-  --timeframe <time>   Report timeframe (default);
+PERFORMANCE REPORT OPTIONS:
+  --timeframe <time>   Report timeframe(default);
                        Options, 6h, 24h, 7d, 30d;
-  --format <format>    Report format (default);
+  --format <format>    Report format(default);
                        Options, detailed, json, csv
 
-TOKEN USAGE OPTIONS:;
-  --agent <agent>      Filter by agent type or ID (default);
+TOKEN USAGE OPTIONS:
+  --agent <agent>      Filter by agent type or ID(default);
   --breakdown          Include detailed breakdown by agent type;
   --cost-analysis      Include cost projections and optimization
 
-EXAMPLES:;
+EXAMPLES:
   # Full codebase analysis;
   claude-zen analysis codebase --path ./src --output ./reports
 
@@ -341,7 +338,7 @@ EXAMPLES:;
   # Token usage with breakdown;
   claude-zen analysis token-usage --breakdown --cost-analysis
 
- Analysis helps with:;
+ Analysis helps with:
   • Code quality assessment;
   • Architecture validation;
   • Dependency management;
@@ -351,7 +348,7 @@ EXAMPLES:;
   • Technical debt identification;
   • Refactoring prioritization
 
-� Integration features:;
+� Integration features:
   • Kuzu graph database storage;
   • Real-time analysis updates;
   • Cypher-like query interface;

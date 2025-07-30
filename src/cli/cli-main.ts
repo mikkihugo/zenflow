@@ -6,15 +6,14 @@
 !/usr/bin / env;
 node;
 
-import { renderTui } from '../ui/ink-tui.js';
-import {
-  commandRegistry,
+import { renderTui  } from '../ui/ink-tui.js';
+import { commandRegistry,
 createMeowCLI,
 executeCommand,
 hasCommand,
-showCommandHelp } from './command-registry.js'
+showCommandHelp  } from './command-registry.js'
 
-import { initializePlugins } from './plugin-activation.js';
+import { initializePlugins  } from './plugin-activation.js';
 
 async function _main() {
   // Use the comprehensive meow configuration from command-registry
@@ -22,25 +21,25 @@ async function _main() {
   const { input, flags } = cli;
   const _command = input[0];
 
-  // Handle version flag first (no plugins needed)
-  if (flags.version  ?? flags.v) {
+  // Handle version flag first(no plugins needed)
+  if(flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
     return;
     //   // LINT: unreachable code removed}
 
-  // Handle general help or no command (no plugins needed)
-  if (!command) {
+  // Handle general help or no command(no plugins needed)
+  if(!command) {
     cli.showHelp(0);
     return;
     //   // LINT: unreachable code removed}
 
   // Handle command-specific help requests
-  if (flags.help  ?? flags.h) {
+  if(flags.help  ?? flags.h) {
 // // await showCommandHelp(command);
     return;
     //   // LINT: unreachable code removed}
 
-  // Commands that don't need plugins (lightweight commands)'
+  // Commands that don't need plugins(lightweight commands)'
   const _lightweightCommands = [
     'init',
     'status',
@@ -52,33 +51,33 @@ async function _main() {
 
   // Initialize plugin system only for commands that need it
   const __pluginManager = null;
-  if (!lightweightCommands.includes(command)) {
+  if(!lightweightCommands.includes(command)) {
     try {
       _pluginManager = // await initializePlugins({errorHandling = // await import('./plugin-activation.js');
         registerPluginCommands(commandRegistry);
       //       }
   //   }
   catch(error);
-  if (flags.debug) {
+  if(flags.debug) {
     console.error(' Plugin initialization failed);'
   //   }
 // }
 
 
-// Handle UI flag (needs plugins)
-if (flags.ui) {
+// Handle UI flag(needs plugins)
+if(flags.ui) {
   renderTui(cli);
   return;
 // }
 
 
 // Execute command
-if (hasCommand(command)) {
+if(hasCommand(command)) {
   try {
 // // await executeCommand(command, input.slice(1), flags);
-  } catch (/* err */) {
+  } catch(/* err */) {
     console.error(`❌ Error executing command "${command}");`
-    if (flags.debug) {
+    if(flags.debug) {
       console.error('Stack trace);'
     //     }
     process.exit(1);

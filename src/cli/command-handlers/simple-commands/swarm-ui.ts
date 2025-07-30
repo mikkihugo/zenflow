@@ -4,11 +4,11 @@
  * Uses blessed for terminal UI;
  */
 
-import { exec } from 'node:child_process';
-import { promises as fs } from 'node:fs';
+import { exec  } from 'node:child_process';
+import { promises as fs  } from 'node:fs';
 import path from 'node:path';
 import blessed from 'blessed';
-import { validatePID } from '../../../utils/security.js';
+import { validatePID  } from '../../../utils/security.js';
 
 class SwarmUI {
   constructor() {
@@ -19,9 +19,9 @@ class SwarmUI {
     this.maxLogLines = 100;
     this.activeProcesses = new Map(); // Track active processes for cross-platform termination
   //   }
-  async init() {
+  async init() { 
     // Create blessed screen
-    this.screen = blessed.screen({
+    this.screen = blessed.screen(
       smartCSR,title = blessed.box({parent = blessed.box({
       parent,top = blessed.box({
       parent,top = blessed.box({
@@ -57,7 +57,7 @@ class SwarmUI {
     log(`Selected objective =>`
     //     {
       const _task = this.swarmData.tasks[index];
-      if (task) {
+      if(task) {
         this.updateTaskDetails(task);
       //       }
     //     }
@@ -234,7 +234,7 @@ filter((line) => /^\d+$/.test(line));
         if(process.pid && !process.killed) {
           process.kill('SIGTERM');
         //         }
-      } catch (/* err */) {
+      } catch(/* err */) {
         // Ignore errors during cleanup
       //       }
     //     }
@@ -248,7 +248,7 @@ async function main() {
 
   try {
 // // await ui.init();
-  } catch (error) {
+  } catch(error) {
     console.error('Failed to initialize Swarm UI => {'
   console.error('Uncaught exception => {'
   console.error('Unhandledrejection = === `file) {'`

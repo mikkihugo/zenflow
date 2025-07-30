@@ -8,7 +8,7 @@ export function initializeAllTools() {
   // return tools[toolName]  ?? null; // LINT: unreachable code removed
 // }
 export function validateToolArgs(toolName = getToolSchema(toolName);
-if (!schema) {
+if(!schema) {
   return {valid = = 'object') {'
     return { valid, error: 'Arguments must be an object' };'
 // }

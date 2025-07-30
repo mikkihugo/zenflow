@@ -17,7 +17,7 @@ safeCall
 // {
   try {
     // return // // await fn();
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     console.error('Runtime error);'
     // return null;
     //   // LINT: unreachable code removed}

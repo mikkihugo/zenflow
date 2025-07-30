@@ -4,9 +4,9 @@
  * Fixes specific high-impact issues identified in the build;
  */
 
-import { exec } from 'node:child_process';
-import { promises  } from 'node:fs';
-import { promisify } from 'node:util';
+import { exec  } from 'node:child_process';
+import { promises   } from 'node:fs';
+import { promisify  } from 'node:util';
 
 const _execAsync = promisify(exec);
 async function fixSpecificIssues() {
@@ -17,15 +17,15 @@ async function fixSpecificIssues() {
     'src/cli/commands/index.ts',
     'src/cli/commands/memory.ts',
     'src/cli/commands/monitor.ts' ];
-  for (const file of chalkFiles) {
+  for(const file of chalkFiles) {
     try {
 // const _content = awaitfs.readFile(file, 'utf8');
-      if (content.includes('chalk.') && !content.includes("import chalk from 'chalk'")) {
+      if(content.includes('chalk.') && !content.includes("import chalk from 'chalk'")) {
         const _lines = content.split('\n');
         // Find first import or add at top
         const _insertIndex = 0;
-        for (let i = 0; i < lines.length; i++) {
-          if (lines[i].startsWith('import')) {
+        for(let i = 0; i < lines.length; i++) {
+          if(lines[i].startsWith('import')) {
             insertIndex = i;
             break;
           //           }
@@ -34,7 +34,7 @@ async function fixSpecificIssues() {
   // // await fs.writeFile(file, lines.join('\n'));
         console.warn(`  ✅ Added chalk import to ${file}`);
       //       }
-    } catch (/* _err */) {
+    } catch(/* _err */) {
       // File may not exist
     //     }
   //   }
@@ -45,18 +45,18 @@ async function fixSpecificIssues() {
 trim();
 split('\n');
 filter((f) => f);
-  for (const file of files) {
+  for(const file of files) {
     try {
 // const _content = awaitfs.readFile(file, 'utf8');
       const _updated = content;
       // Fix common Command method issues
       updated = updated.replace(/\.arguments\(/g, '.argument(');
       updated = updated.replace(/\.outputHelp\(\)/g, '.help()');
-      if (updated !== content) {
+      if(updated !== content) {
   // // await fs.writeFile(file, updated);
         console.warn(`  ✅ Fixed Command // interface in ${file}`);
       //       }
-    } catch (/* _err */) {
+    } catch(/* _err */) {
       // Continue with other files
     //     }
   //   }
@@ -67,11 +67,11 @@ filter((f) => f);
 // const _content = awaitfs.readFile(baseAgentFile, 'utf8');
     // Add type assertion for capabilities
     const _updated = content.replace(/config\.capabilities/g, '(config ).capabilities');
-    if (updated !== content) {
+    if(updated !== content) {
   // // await fs.writeFile(baseAgentFile, updated);
       console.warn('  ✅ Fixed AgentConfig capabilities access');
     //     }
-  } catch (/* _err */) {
+  } catch(/* _err */) {
     console.warn('  ⚠  Could not fix AgentConfig');
   //   }
   // Fix 4: Add missing type definitions
@@ -85,13 +85,13 @@ filter((f) => f);
   try {
     const _monitorFile = 'src/cli/commands/monitor.ts';
 // const _content = awaitfs.readFile(monitorFile, 'utf8');
-    if (!content.includes('ComponentStatus') && content.includes('ComponentStatus')) {
+    if(!content.includes('ComponentStatus') && content.includes('ComponentStatus')) {
       const _lines = content.split('\n');
       lines.splice(1, 0, typeDefs);
   // // await fs.writeFile(monitorFile, lines.join('\n'));
       console.warn('  ✅ Added missing type definitions to monitor.ts');
     //     }
-  } catch (/* _err */) {
+  } catch(/* _err */) {
     // File may not exist
   //   }
   // Fix 5: Fix cliffy table imports
@@ -100,7 +100,7 @@ filter((f) => f);
     'src/cli/commands/help.ts',
     'src/cli/commands/memory.ts',
     'src/cli/commands/monitor.ts' ];
-  for (const file of cliffyFiles) {
+  for(const file of cliffyFiles) {
     try {
 // const _content = awaitfs.readFile(file, 'utf8');
       const _updated = content;
@@ -114,11 +114,11 @@ filter((f) => f);
       updated = updated.replace(/\.header\([^)]+\)/g, '');
       updated = updated.replace(/\.body\([^)]+\)/g, '');
       updated = updated.replace(/\.render\(\)/g, '.table(data)');
-      if (updated !== content) {
+      if(updated !== content) {
   // // await fs.writeFile(file, updated);
         console.warn(`  ✅ Fixed cliffy imports in ${file}`);
       //       }
-    } catch (/* _err */) {
+    } catch(/* _err */) {
       // Continue with other files
     //     }
   //   }
@@ -129,23 +129,23 @@ filter((f) => f);
       file: 'src/cli/commands/index.ts',
       pattern: /'status' is of type 'unknown'/g,
       replacement: 'status ' } ];
-  for (const fix of assertionFixes) {
+  for(const fix of assertionFixes) {
     try {
 // const _content = awaitfs.readFile(fix.file, 'utf8');
       // Find lines with unknown type errors and add assertions
       const _lines = content.split('\n');
       const _updated = false;
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes('status') && lines[i].includes('.')) {
+      for(let i = 0; i < lines.length; i++) {
+        if(lines[i].includes('status') && lines[i].includes('.')) {
           lines[i] = lines[i].replace(/\bstatus\./g, '(status ).');
           updated = true;
         //         }
       //       }
-      if (updated) {
+      if(updated) {
   // // await fs.writeFile(fix.file, lines.join('\n'));
         console.warn(`  ✅ Added type assertions in ${fix.file}`);
       //       }
-    } catch (/* _err */) {
+    } catch(/* _err */) {
       // Continue with other files
     //     }
   //   }
@@ -157,7 +157,7 @@ filter((f) => f);
       'find src -name "*.ts" -exec grep -l "TaskType" {} \\; | head -1';
     );
     const _taskTypeFile = stdout.trim();
-    if (taskTypeFile) {
+    if(taskTypeFile) {
 // const _content = awaitfs.readFile(taskTypeFile, 'utf8');
       const _comprehensiveTaskType = `;`
 // export type TaskType =
@@ -178,7 +178,7 @@ filter((f) => f);
 `;`
       const _updated = content;
       // Replace existing TaskType definition
-      if (content.includes('type TaskType')  ?? content.includes('enum TaskType')) {
+      if(content.includes('type TaskType')  ?? content.includes('enum TaskType')) {
         updated = updated.replace(;
           /(export\s+)?(type|enum)\s+TaskType[^;]*/,
           comprehensiveTaskType.trim();
@@ -187,12 +187,12 @@ filter((f) => f);
         // Add it if not found
         updated = `${comprehensiveTaskType}\n${content}`;
       //       }
-      if (updated !== content) {
+      if(updated !== content) {
   // // await fs.writeFile(taskTypeFile, updated);
         console.warn(`  ✅ Updated TaskType definition in ${taskTypeFile}`);
       //       }
     //     }
-  } catch (/* _err */) {
+  } catch(/* _err */) {
     console.warn('  ⚠  Could not fix TaskType definition');
   //   }
   console.warn('\n✅ Targeted fixes completed!');
@@ -205,10 +205,10 @@ async function main() {
     const { stdout } = // await execAsync('npm run build);'
     const _errorCount = (stdout.match(/error TS/g)  ?? []).length;
     console.warn(`\n� Current error count);`
-    if (errorCount < 900) {
+    if(errorCount < 900) {
       console.warn('� Excellent! Under 900 errors remaining.');
     //     }
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Error during targeted fixes);'
     process.exit(1);
   //   }

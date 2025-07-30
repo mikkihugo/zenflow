@@ -1,20 +1,18 @@
 import client from 'prom-client';
-import { logger } from '../utils/logger.js';
+import { logger  } from '../utils/logger.js';
 
 const _register = new client.Registry();
 // Default metrics
-client.collectDefaultMetrics({ register });
+client.collectDefaultMetrics({ register  });
 // Custom metrics
-const _httpRequestDuration = new client.Histogram({
-  name: 'http_request_duration_seconds',
+const _httpRequestDuration = new client.Histogram({ name: 'http_request_duration_seconds',
 help: 'Duration of HTTP requests in seconds',
 labelNames: ['method', 'route', 'status_code']
-})
-const _httpRequestTotal = new client.Counter({
-  name: 'http_requests_total',
+ })
+const _httpRequestTotal = new client.Counter({ name: 'http_requests_total',
 help: 'Total number of HTTP requests',
 labelNames: ['method', 'route', 'status_code']
-})
+ })
 register.registerMetric(httpRequestDuration)
 register.registerMetric(httpRequestTotal)
 const _metricsMiddleware = () => {

@@ -3,8 +3,8 @@
  * Uses neural networks to provide intelligent architectural recommendations
  */
 
-import { NeuralEngine } from '../neural/neural-engine.js';'
-import { BaseQueen } from './base-queen.js';'
+import { NeuralEngine  } from '../neural/neural-engine.js';'
+import { BaseQueen  } from './base-queen.js';'
 
 export class ArchitectAdvisor extends BaseQueen {
     constructor() {
@@ -21,8 +21,8 @@ export class ArchitectAdvisor extends BaseQueen {
     /**  */
  * Initialize neural engine and models
      */
-    async initialize() {
-        try {
+    async initialize() { 
+        try 
 // // await this.neuralEngine.initialize();
             // Load architecture-specific model if available
             const _models = this.neuralEngine.getModels();
@@ -33,7 +33,7 @@ export class ArchitectAdvisor extends BaseQueen {
 
 
             this.logger.info('ArchitectAdvisor initialized with neural engine');'
-        } catch (/* _error */) {
+        } catch(/* _error */) {
             this.logger.warn('Neural engine initialization failed, using fallbackmode = performance.now();'
         this.trackTaskStart(task.id);
 
@@ -85,7 +85,7 @@ export class ArchitectAdvisor extends BaseQueen {
             //             }
 
 
-        } catch (error) {
+        } catch(error) {
             this.logger.debug('Neural requirement analysis failed, usingfallback = this.createNeuralPrompt(task, requirements);'
 
             // Get neural inference
@@ -98,14 +98,14 @@ join(', ');'
 
         // return `Analyze architecture for = {architecture = ['microservices', 'monolith', 'serverless', 'event-driven', 'layered'];'`
     // for(const pattern of patterns) { // LINT: unreachable code removed
-            if (neuralText.toLowerCase().includes(pattern)) {
+            if(neuralText.toLowerCase().includes(pattern)) {
                 recommendation.architecture = pattern;
                 break;
             //             }
         //         }
 
 
-        // Extract components (simple pattern matching)
+        // Extract components(simple pattern matching)
         const _componentMatch = neuralText.match(/components?:([^.]+)/i);
         if(componentMatch) {
             recommendation.components = componentMatch[1];
@@ -131,13 +131,13 @@ filter(c => c.length > 0);
     /**  */
  * Synthesize final recommendation
      */
-    async synthesizeRecommendation(requirements, neuralRecommendations, task) {
+    async synthesizeRecommendation(requirements, neuralRecommendations, task) { 
         // Start with neural recommendations if available
         let _selectedArchitecture = neuralRecommendations.architecture;
         let _confidence = neuralRecommendations.confidence;
 
         // Apply rule-based logic to validate or override
-        if(!selectedArchitecture  ?? confidence < 0.5) {
+        if(!selectedArchitecture  ?? confidence < 0.5) 
             selectedArchitecture = this.selectArchitectureByRules(requirements);
         //         }
 
@@ -154,39 +154,39 @@ filter(c => c.length > 0);
 
             // Microservices scoring
             if(name === 'microservices') {'
-                if (requirements.scalability) score += 0.3;
-                if (requirements.flexibility) score += 0.2;
-                if (requirements.teamSize === 'large') score += 0.2;'
-                if (requirements.simplicity) score -= 0.3;
-                if (requirements.teamSize === 'small') score -= 0.2;'
+                if(requirements.scalability) score += 0.3;
+                if(requirements.flexibility) score += 0.2;
+                if(requirements.teamSize === 'large') score += 0.2;'
+                if(requirements.simplicity) score -= 0.3;
+                if(requirements.teamSize === 'small') score -= 0.2;'
             //             }
 
 
             // Monolith scoring
             if(name === 'monolith') {'
-                if (requirements.simplicity) score += 0.3;
-                if (requirements.teamSize === 'small') score += 0.2;'
-                if (requirements.timeline && requirements.timeline.includes('week')) score += 0.2;'
-                if (requirements.scalability) score -= 0.3;
-                if (requirements.flexibility) score -= 0.2;
+                if(requirements.simplicity) score += 0.3;
+                if(requirements.teamSize === 'small') score += 0.2;'
+                if(requirements.timeline && requirements.timeline.includes('week')) score += 0.2;'
+                if(requirements.scalability) score -= 0.3;
+                if(requirements.flexibility) score -= 0.2;
             //             }
 
 
             // Serverless scoring
             if(name === 'serverless') {'
-                if (requirements.costEfficiency) score += 0.3;
-                if (requirements.scalability) score += 0.2;
-                if (requirements.traffic === 'variable') score += 0.2;'
-                if (requirements.performance) score -= 0.1;
+                if(requirements.costEfficiency) score += 0.3;
+                if(requirements.scalability) score += 0.2;
+                if(requirements.traffic === 'variable') score += 0.2;'
+                if(requirements.performance) score -= 0.1;
             //             }
 
 
             // Event-driven scoring
             if(name === 'event-driven') {'
-                if (requirements.scalability) score += 0.2;
-                if (requirements.flexibility) score += 0.3;
-                if (requirements.reliability) score += 0.1;
-                if (requirements.simplicity) score -= 0.2;
+                if(requirements.scalability) score += 0.2;
+                if(requirements.flexibility) score += 0.3;
+                if(requirements.reliability) score += 0.1;
+                if(requirements.simplicity) score -= 0.2;
             //             }
 
 
@@ -303,9 +303,9 @@ filter(v => v !== false && v !== 'unknown').length;'
         let _score = this.architecturePatterns.get(architecture).neuralWeight;
 
         // Apply requirement-based adjustments
-        if (architecture === 'microservices' && requirements.scalability) score += 0.2;'
-        if (architecture === 'monolith' && requirements.simplicity) score += 0.2;'
-        if (architecture === 'serverless' && requirements.costEfficiency) score += 0.2;'
+        if(architecture === 'microservices' && requirements.scalability) score += 0.2;'
+        if(architecture === 'monolith' && requirements.simplicity) score += 0.2;'
+        if(architecture === 'serverless' && requirements.costEfficiency) score += 0.2;'
         // ... etc
 
         // return Math.min(score, 1.0);
@@ -318,10 +318,10 @@ filter(v => v !== false && v !== 'unknown').length;'
 
         const _pattern = recommendation.pattern;
 
-        if (requirements.scalability && pattern.useCases.includes('scalability')) {'
+        if(requirements.scalability && pattern.useCases.includes('scalability')) {'
             covered.push('scalability');'
         //         }
-        if (requirements.simplicity && pattern.description.includes('simple')) {'
+        if(requirements.simplicity && pattern.description.includes('simple')) {'
             covered.push('simplicity');'
         //         }
         // ... check other requirements
@@ -340,13 +340,13 @@ filter(v => v !== false && v !== 'unknown').length;'
         // return {architecture = // // await super.calculateSuitability(task);
     // ; // LINT: unreachable code removed
         // ArchitectAdvisor is highly suitable for architecture decisions
-        if (task.type === 'architecture-analysis'  ?? task.prompt.toLowerCase().includes('architect')  ?? task.prompt.toLowerCase().includes('design')  ?? task.prompt.toLowerCase().includes('structure')) {'
+        if(task.type === 'architecture-analysis'  ?? task.prompt.toLowerCase().includes('architect')  ?? task.prompt.toLowerCase().includes('design')  ?? task.prompt.toLowerCase().includes('structure')) {'
             suitability += 0.4;
         //         }
 
 
         // Boost if neural engine is available
-        if (this.neuralEngine.getStats().hasBindings) {
+        if(this.neuralEngine.getStats().hasBindings) {
             suitability += 0.1;
         //         }
 

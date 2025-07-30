@@ -6,8 +6,8 @@ async function setupClaudeIntegration() {
   try {
     // Create claude.md
     const _claudeMdContent = `# Claude Code Configuration for ruv-swarm`
-## Quick Setup (Stdio MCP - Recommended)
-### 1. Add MCP Server (Stdio - No Port Needed);
+## Quick Setup(Stdio MCP - Recommended)
+### 1. Add MCP Server(Stdio - No Port Needed);
 \`\`\`bash;`
 # Add ruv-swarm MCP server to Claude Code using stdio;
 claude mcp add ruv-swarm npx ruv-swarm mcp start;
@@ -16,7 +16,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start;
 Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 **Initialize a swarm:**;
 - Use the mcp__ruv-swarm__swarm_init tool with topology, hierarchical, ring, or star;
-- Set maxAgents (default);
+- Set maxAgents(default);
 - Enable cognitive diversity and neural agents
 **Spawn agents:**;
 - Use mcp__ruv-swarm__agent_spawn tool;
@@ -28,7 +28,7 @@ Once configured, ruv-swarm MCP tools are available directly in Claude Code: null
 - Choose strategy, sequential, adaptive;
 - Set priority, medium, high, critical
 ## Available MCP Tools
-- mcp__ruv-swarm__swarm_init - Initialize swarm topology (mesh/hierarchical/ring/star);
+- mcp__ruv-swarm__swarm_init - Initialize swarm topology(mesh/hierarchical/ring/star);
 - mcp__ruv-swarm__agent_spawn - Create specialized agents with neural capabilities;
 - mcp__ruv-swarm__task_orchestrate - Coordinate distributed tasks across agents;
 - mcp__ruv-swarm__swarm_status - Get real-time swarm status and metrics;
@@ -131,7 +131,7 @@ if command -v npx &> /dev/null; then;
 elif [ -f "\${PROJECT_DIR}/node_modules/.bin/ruv-swarm" ]; then;
   cd "\${PROJECT_DIR}";
   exec "\${PROJECT_DIR}/node_modules/.bin/ruv-swarm" "\$@"
-# 3. Global installation (if available);
+# 3. Global installation(if available);
 elif command -v ruv-swarm &> /dev/null; then;
   cd "\${PROJECT_DIR}";
   exec ruv-swarm "\$@"
@@ -148,12 +148,12 @@ fi;
     console.warn('1. In Claude Code);'
     console.warn('2. Test with MCP tools);'
     console.warn('3. Check .claude/commands/ for detailed usage guides');
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Failed to setup Claude integration);'
     process.exit(1);
   //   }
 // }
-if (require.main === module) {
+if(require.main === module) {
   setupClaudeIntegration();
 // }
 module.exports = { setupClaudeIntegration };

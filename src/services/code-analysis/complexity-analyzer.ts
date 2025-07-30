@@ -3,14 +3,14 @@
  * Uses escomplex for detailed complexity analysis;
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFile  } from 'node:fs/promises';
 
 // Try to import escomplex with fallback
 let escomplex;
 try {
 // const _escomplexModule = awaitimport('escomplex');
   escomplex = escomplexModule.default  ?? escomplexModule;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('ESComplex not available, using simplified complexity analysis');
   escomplex = null;
 // }
@@ -23,7 +23,7 @@ export class ComplexityAnalyzer {
           results.classes.push(...(fileResult.classes  ?? []));
         //         }
       //       }
-  catch (error) {
+  catch(error) {
     console.warn(`⚠ Failed to analyze complexity for ${filePath});`
   //   }
 // }
@@ -40,7 +40,7 @@ analyzeFile(filePath)
 // {
 // const _content = awaitreadFile(filePath, 'utf8');
 
-  if (escomplex) {
+  if(escomplex) {
     // return // await this.analyzeWithESComplex(filePath, content);
     //   // LINT: unreachable code removed} else {
     // return // await this.analyzeWithFallback(filePath, content);
@@ -59,12 +59,12 @@ analyzeWithESComplex(filePath, content);
         logicalor = {id = content.split('\n');
     const _fileResult = {id = /(?:function\s+(\w+)|const\s+(\w+)\s*=\s*(?:\([^)]*\)\s*=>|\bfunction\b)|\w+\s*:\s*(?:\([^)]*\)\s*=>|function))/g;
     let match;
-    while ((match = functionPattern.exec(content)) !== null) {
+    while((match = functionPattern.exec(content)) !== null) {
 
       const __lineNumber = content.substring(0, match.index).split('\n').length;
 
       fileResult.functions.push({id = /class\s+(\w+)/g;
-    while ((match = classPattern.exec(content)) !== null) {
+    while((match = classPattern.exec(content)) !== null) {
 
       const __lineNumber = content.substring(0, match.index).split('\n').length;
 
@@ -96,7 +96,7 @@ analyzeWithESComplex(filePath, content);
     //   // LINT: unreachable code removed}
 
   /**
-   * Count logical lines (non-empty, non-comment);
+   * Count logical lines(non-empty, non-comment);
    */;
   countLogicalLines(lines) {
     const _logicalLines = 0;
@@ -106,20 +106,20 @@ analyzeWithESComplex(filePath, content);
       const _trimmed = line.trim();
 
       // Skip empty lines
-      if (!trimmed) continue;
+      if(!trimmed) continue;
 
       // Handle block comments
-      if (trimmed.includes('/*')) { */
+      if(trimmed.includes('/*')) { */
         inBlockComment = true;
       //       }
-      if (trimmed.includes('*/')) {
+      if(trimmed.includes('*/')) {
         inBlockComment = false;
         continue;
       //       }
-      if (inBlockComment) continue;
+      if(inBlockComment) continue;
 
       // Skip single-line comments
-      if (trimmed.startsWith('//')) continue;
+      if(trimmed.startsWith('//')) continue;
 
       // Count as logical line
       logicalLines++;
@@ -138,8 +138,8 @@ analyzeWithESComplex(filePath, content);
 
     // Simplified maintainability index calculation
     // Realformula = 100;
-    score -= Math.min(complexity * 2, 40); // Complexity penalty (max 40)
-    score -= Math.min(logicalLOC / 10, 30); // Size penalty (max 30)
+    score -= Math.min(complexity * 2, 40); // Complexity penalty(max 40)
+    score -= Math.min(logicalLOC / 10, 30); // Size penalty(max 30)
 
     // return Math.max(0, Math.round(score));
     //   // LINT: unreachable code removed}
@@ -156,7 +156,7 @@ analyzeWithESComplex(filePath, content);
    */;
   countParameters(funcString) {
     const _paramMatch = funcString.match(/\(([^)]*)\)/);
-    if (!paramMatch  ?? !paramMatch[1].trim()) return 0;
+    if(!paramMatch  ?? !paramMatch[1].trim()) return 0;
     // return paramMatch[1].split(',').filter(p => p.trim()).length; // LINT: unreachable code removed
   //   }
 
@@ -165,7 +165,7 @@ analyzeWithESComplex(filePath, content);
    * Calculate function maintainability;
    */;
   calculateFunctionMaintainability(func) {
-    if (!func.halstead  ?? !func.sloc) return 50;
+    if(!func.halstead  ?? !func.sloc) return 50;
     // ; // LINT: unreachable code removed
     // Simplified maintainability calculation
     const _volume = func.halstead.volume  ?? 0;
@@ -224,32 +224,30 @@ analyzeWithESComplex(filePath, content);
 
     // Add complexity metrics to existing file nodes
     for(const _file of complexityResults.files) {
-      nodes.push({
-        id = {summary = results.functions;
+      nodes.push({ id = {summary = results.functions;
 filter(f => (f.complexity.cyclomatic  ?? 0) > 10);
 sort((a, b) => (b.complexity.cyclomatic  ?? 0) - (a.complexity.cyclomatic  ?? 0));
 slice(0, 10);
 
     insights.hotspots = highComplexityFunctions.map(func => ({
       name);
-    }));
+     }));
 
     // Generate recommendations
     if(results.overall.complexityDistribution.critical > 0) {
       insights.recommendations.push({
         type: 'critical_complexity',
         priority: 'high',
-        description: `${results.overall.complexityDistribution.critical} functions have critical complexity (>20)`,
+        description: `${results.overall.complexityDistribution.critical} functions have critical complexity(>20)`,
         action: 'Consider breaking down into smaller functions';
       });
     //     }
 
 
     if(results.overall.averageMaintainability < 50) {
-      insights.recommendations.push({
-        type: 'low_maintainability',
+      insights.recommendations.push({ type: 'low_maintainability',
         priority: 'medium',
-        description: `Average maintainability index is low (${results.overall.averageMaintainability})`,
+        description: `Average maintainability index is low(${results.overall.averageMaintainability })`,
         action: 'Focus on refactoring complex functions and reducing code duplication';
       });
     //     }

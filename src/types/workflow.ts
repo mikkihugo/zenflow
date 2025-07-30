@@ -3,7 +3,7 @@
  * Advanced workflow orchestration and automation;
  */
 
-import type { Identifiable } from './core.js';
+import type { Identifiable  } from './core.js';
 
 // =============================================================================
 // WORKFLOW CORE TYPES

@@ -18,7 +18,7 @@
   super();
   this.options = {loadBalancing = = false,healthCheckInterval = = false,maxPoolsPerType = = false;
 // }
-if (this.options.monitoringEnabled) {
+if(this.options.monitoringEnabled) {
   this.startMonitoring();
 // }
 // Initialize pool type tracking
@@ -39,22 +39,22 @@ type, config.name;
 console.warn(`� Creating connectionpool = this.poolsByType.get(config.`
 type;
 // )
-if (typeSet && typeSet.size >= this.options.maxPoolsPerType) {
+if(typeSet && typeSet.size >= this.options.maxPoolsPerType) {
   throw new Error(`Maximum pools reached for type ${config.type});`
 // }
-if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalConnectionLimit) {
+if(this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalConnectionLimit) {
       throw new Error(`Global connection limit would be exceeded = {id = new SQLiteConnectionPool(;`
             config.filePath  ?? `${config.name}.db`,
             {minConnections = new LanceDBConnectionPool(config);
 // // await poolInstance.pool.initialize();
           break;
 
-        case 'kuzu':;
+        case 'kuzu':
           poolInstance.pool = new KuzuConnectionPool(config);
 // // await poolInstance.pool.initialize();
           break;
 
-        case 'postgresql':;
+        case 'postgresql':
           poolInstance.pool = new PostgreSQLConnectionPool(config);
 // // await poolInstance.pool.initialize();
           break;default = 'active';
@@ -70,10 +70,10 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
 // const _poolId = awaitthis.selectPool(databaseType, options);
       const _pool = this.pools.get(poolId);
 
-      if (!pool) {
+      if(!pool) {
         throw new Error(`Pool notfound = = 'active') {`
         // Try failover if enabled
-        if (this.options.enableFailover && pool.failoverTarget) {
+        if(this.options.enableFailover && pool.failoverTarget) {
           // return this.getConnection(databaseType, { ...options,preferredPool = // await pool.pool.acquire(options.priority  ?? 'medium');
     // ; // LINT: unreachable code removed
       // Update metrics
@@ -83,7 +83,7 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
       this.metrics.lastRequestTime = new Date();
 
       this.emit('connection = this.pools.get(poolId);'
-    if (!pool) {
+    if(!pool) {
       console.warn(`Cannot releaseconnection = [],`
     options = {}
   ): Promise<any> {
@@ -100,11 +100,11 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
             ) ;
 
           const _queryPromise = connection.execute ? ;
-            connection.execute(query, params) :;
+            connection.execute(query, params) :
             connection.query(query, params);
 
           const _result = timeoutPromise ? ;
-// // await Promise.race([queryPromise, timeoutPromise]) :;
+// // await Promise.race([queryPromise, timeoutPromise]) :
 // // await queryPromise;
           // return result;
     // ; // LINT: unreachable code removed
@@ -113,7 +113,7 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
         //         }
 
 
-      } catch (_error = error;
+      } catch(_error = error;
         console.warn(`Query attempt ${attempt + 1}failed = === maxRetries) break;`
 
         // Exponential backoff
@@ -131,14 +131,14 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
    * Remove a pool;
    */;
   async removePool(poolId = this.pools.get(poolId);
-    if (!pool) {
+    if(!pool) {
       // return false;
     //   // LINT: unreachable code removed}
 
     console.warn(`� Removingpool = 'shutting_down';`
 
       // Shutdown the pool
-      if (pool.pool?.shutdown) {
+      if(pool.pool?.shutdown) {
 // // await pool.pool.shutdown();
       //       }
 
@@ -146,7 +146,7 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
       // Remove from tracking
       this.pools.delete(poolId);
       const _typeSet = this.poolsByType.get(pool.type);
-      if (typeSet) {
+      if(typeSet) {
         typeSet.delete(poolId);
       //       }
 
@@ -161,42 +161,42 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
 
     console.warn('� Optimizing all connection pools...');
 
-    for (const [poolId, pool] of this.pools) {
+    for(const [poolId, pool] of this.pools) {
       try {
-        if (pool.pool && pool.pool.cleanup) {
+        if(pool.pool && pool.pool.cleanup) {
 // // await pool.pool.cleanup();
         //         }
 
 
         // Adaptive resizing based on load
-        if (this.options.adaptiveResizing) {
+        if(this.options.adaptiveResizing) {
 // // await this.adaptiveResize(pool);
         //         }
 
 
         optimized.push(poolId);
-      } catch (error = {overall = 0;
+      } catch(error = {overall = 0;
     let _totalPools = 0;
 
-    for (const [poolId, pool] of this.pools) {
+    for(const [poolId, pool] of this.pools) {
       totalPools++;
 // const _poolHealth = awaitthis.checkPoolHealth(pool);
       healthReport.pools[poolId] = poolHealth;
 
-      if (poolHealth.health > 0.7) {
+      if(poolHealth.health > 0.7) {
         healthyPools++;
       //       }
     //     }
 
 
     // Determine overall health
-    if (totalPools === 0) {
+    if(totalPools === 0) {
       healthReport.overall = 'critical';
     } else {
       const _healthRatio = healthyPools / totalPools;
-      if (healthRatio < 0.5) {
+      if(healthRatio < 0.5) {
         healthReport.overall = 'critical';
-      } else if (healthRatio < 0.8) {
+      } else if(healthRatio < 0.8) {
         healthReport.overall = 'degraded';
       //       }
     //     }
@@ -212,10 +212,10 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
     console.warn('� Shutting down connection pool manager...');
 
     // Stop timers
-    if (this.healthCheckTimer) {
+    if(this.healthCheckTimer) {
       clearInterval(this.healthCheckTimer);
     //     }
-    if (this.metricsTimer) {
+    if(this.metricsTimer) {
       clearInterval(this.metricsTimer);
     //     }
 
@@ -227,9 +227,9 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
 // // await Promise.all(shutdownPromises);
     console.warn('✅ Connection pool manager shutdown complete');
     this.emit('manager = this.poolsByType.get(databaseType);'
-    if (!typeSet  ?? typeSet.size === 0) {
+    if(!typeSet  ?? typeSet.size === 0) {
       throw new Error(`No pools available for databasetype = this.pools.get(options.preferredPool);`
-      if (pool && pool.status === 'active') {
+      if(pool && pool.status === 'active') {
         // return options.preferredPool;
     //   // LINT: unreachable code removed}
     //     }
@@ -239,23 +239,23 @@ if (this.getTotalConnections() + (config.pool.max  ?? 10) > this.options.globalC
 map(poolId => this.pools.get(poolId)!);
 filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loadBalancing.healthThreshold  ?? 0.7));
 
-    if (availablePools.length === 0) {
+    if(availablePools.length === 0) {
       throw new Error(`No healthy pools available for databasetype = this.options.loadBalancing;`
 
-    switch (strategy.type) {
-      case 'round_robin':;
+    switch(strategy.type) {
+      case 'round_robin':
         const _selected = pools[this.loadBalancingIndex % pools.length];
         this.loadBalancingIndex++;
         // return selected;
     // ; // LINT: unreachable code removed
-      case 'least_connections':;
+      case 'least_connections':
         // return pools.reduce((best, current) => ;
     // current.loadFactor < best.loadFactor ?current = pools.map(pool => ({ // LINT) => sum + w.weight, 0);
           const _random = Math.random() * totalWeight;
           let _current = 0;
-          for (const { pool, weight } of weighted) {
+          for(const { pool, weight } of weighted) {
             current += weight;
-            if (current >= random) return pool;
+            if(current >= random) return pool;
     //   // LINT: unreachable code removed}
         //         }
         // Fallback to least connections
@@ -269,13 +269,13 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
 
     try {
       // Check pool status
-      if (pool.status !== 'active') {
+      if(pool.status !== 'active') {
         issues.push(`Poolstatus = 0.5;`
       //       }
 
 
       // Check load factor
-      if (pool.loadFactor > 0.9) {
+      if(pool.loadFactor > 0.9) {
         issues.push('High load factor');
         recommendations.push('Consider increasing pool size');
         health -= 0.3;
@@ -283,9 +283,9 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
 
 
       // Database-specific health checks
-      if (pool.pool?.getHealth) {
+      if(pool.pool?.getHealth) {
         const _poolHealth = pool.pool.getHealth();
-        if (poolHealth.status !== 'healthy') {
+        if(poolHealth.status !== 'healthy') {
           issues.push(...poolHealth.issues);
           health -= 0.2;
         //         }
@@ -295,7 +295,7 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
       pool.healthScore = Math.max(0, health);
       pool.lastHealthCheck = new Date();
 
-    } catch (error = 0;
+    } catch(error = 0;
     //     }
 
 
@@ -303,14 +303,14 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
     // const _utilizationRatio = stats.activeConnections / stats.totalConnections; // LINT: unreachable code removed
 
     // Scale up if utilization is high
-    if (utilizationRatio > 0.8 && stats.totalConnections < (pool.config.pool.max  ?? 10)) {
+    if(utilizationRatio > 0.8 && stats.totalConnections < (pool.config.pool.max  ?? 10)) {
       console.warn(`� Scaling up pool ${pool.id}: utilization ${(utilizationRatio * 100).toFixed(1)}%`);
       // Implementation would depend on pool type
     //     }
 
 
     // Scale down if utilization is low for extended period
-    if (utilizationRatio < 0.3 && stats.totalConnections > (pool.config.pool.min  ?? 1)) {
+    if(utilizationRatio < 0.3 && stats.totalConnections > (pool.config.pool.min  ?? 1)) {
       console.warn(`� Scaling down pool ${pool.id}: utilization ${(utilizationRatio * 100).toFixed(1)}%`);
       // Implementation would depend on pool type
     //     }
@@ -323,7 +323,7 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
   // private updatePoolMetrics(pool,responseTime = (pool.stats.responseTime + responseTime) / 2;
     pool.stats.requestCount++;
 
-    if (!success) {
+    if(!success) {
       pool.stats.errorCount++;
     //     }
 
@@ -331,7 +331,7 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
   // private getTotalConnections() ;
     // return Array.from(this.pools.values());
     // .reduce((total, pool) => { // LINT: unreachable code removed
-        if (pool.pool?.getStats) {
+        if(pool.pool?.getStats) {
           return total + pool.pool.getStats().totalConnections;
     //   // LINT: unreachable code removed}
         return total + (pool.config.pool.max  ?? 10);
@@ -340,7 +340,7 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
   // private getActiveConnections() ;
     // return Array.from(this.pools.values());
     // .reduce((total, pool) => { // LINT: unreachable code removed
-        if (pool.pool?.getStats) {
+        if(pool.pool?.getStats) {
           return total + pool.pool.getStats().activeConnections;
     //   // LINT: unreachable code removed}
         return total;
@@ -348,10 +348,10 @@ filter(pool => pool.status === 'active' && pool.healthScore >= (this.options.loa
 
   // private calculateThroughput() {
     const _uptimeMs = Date.now() - this.startTime.getTime();
-    // return uptimeMs > 0 ? (this.metrics.requestCount / uptimeMs) *1000 = setInterval(async () => {
+    // return uptimeMs > 0 ? (this.metrics.requestCount / uptimeMs) *1000 = setInterval(async() => {
       try {
 // await this.checkHealth();
-    //   // LINT: unreachable code removed} catch (_error = setInterval(() => ;
+    //   // LINT: unreachable code removed} catch(_error = setInterval(() => ;
       this.emit('metrics = > setTimeout(resolve, ms));'
 // }
 

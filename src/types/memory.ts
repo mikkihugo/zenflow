@@ -3,7 +3,7 @@
  * Persistent memory and state management across sessions;
  */
 
-import type { Identifiable, JSONObject } from './core.js';
+import type { Identifiable, JSONObject  } from './core.js';
 
 // =============================================================================
 // MEMORY CORE TYPES

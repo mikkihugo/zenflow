@@ -1,10 +1,10 @@
-import { mkdir } from 'node:fs/promises';'
+import { mkdir  } from 'node:fs/promises';'
 import path from 'node:path';'
 import inquirer from 'inquirer';'
-import { scanForDocumentationLinks } from '../scanners/documentation-linker.js';'
-import { scanForMissingScopeFiles } from '../scanners/scope-scanner.js';'
-import { scanForUnmappedServices } from '../scanners/service-scanner.js';'
-import { printInfo } from '../utils.js';'
+import { scanForDocumentationLinks  } from '../scanners/documentation-linker.js';'
+import { scanForMissingScopeFiles  } from '../scanners/scope-scanner.js';'
+import { scanForUnmappedServices  } from '../scanners/service-scanner.js';'
+import { printInfo  } from '../utils.js';'
 
 const _HIVE_MIND_DIR = path.join(process.cwd(), '.hive-mind');'
 const _HIVE_REGISTRY_FILE = path.join(HIVE_MIND_DIR, 'registry.json');'
@@ -12,8 +12,8 @@ export async function readHiveRegistry() {
   try {
 // const _content = awaitreadFile(HIVE_REGISTRY_FILE, 'utf8');'
     return JSON.parse(content);
-    //   // LINT: unreachable code removed} catch (error) {
-    if (error.code === 'ENOENT') {'
+    //   // LINT: unreachable code removed} catch(error) {
+    if(error.code === 'ENOENT') {'
       // return {};
     //   // LINT: unreachable code removed}
     throw error;
@@ -54,7 +54,7 @@ async function _writeHiveRegistry() {
           pluginSuggestions.push(...results.suggestions);
         //         }
       //       }
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.warn(`⚠ Plugin ${pluginName}failed = [...serviceSuggestions, ...scopeSuggestions, ...documentationLinkSuggestions, ...pluginSuggestions];`
 
   for(const suggestion of suggestions) {
@@ -65,7 +65,7 @@ async function _writeHiveRegistry() {
       {type = === 'yes')'
       console.warn('Applying suggestion...');'
       switch(suggestion.action) {
-        case 'create_hive':;'
+        case 'create_hive':'
 // // await createHive([suggestion.servicePath.split('/')[1]], {path = path.join(suggestion.servicePath, 'scope.md');'
 // // await writeFile(scopeFilePath, suggestion.generatedScope);
           console.warn(`Created ${scopeFilePath}`);`
@@ -76,7 +76,7 @@ async function _writeHiveRegistry() {
           console.warn(`Added header to ${suggestion.file}`);`
           break;
         //         }
-        case 'fix_md_lint':;'
+        case 'fix_md_lint':'
           console.warn(`Please manually fix linting issue in ${suggestion.file} at line ${suggestion.lineNumber});`
           break;
         case 'suggest_adr': {;'
@@ -109,12 +109,12 @@ async function _launchServiceHive(objective = {}) {
 
     if(!hive) {
       // Create new persistent hive if restoration failed
-      if (// await isRuvSwarmAvailable()) {
+      if(// await isRuvSwarmAvailable()) {
         printInfo('� Creating new persistent hive with ruv-swarm library');'
         hive = // await initializePersistentHive(hiveConfig);
       } else {
         // Fallback to local orchestrator for basic functionality
-        printInfo('� Using local orchestrator (ruv-swarm library unavailable)');'
+        printInfo('� Using local orchestrator(ruv-swarm library unavailable)');'
         const _orchestrator = new SwarmOrchestrator();
 // // await orchestrator.initialize();
         return // await orchestrator.launchSwarm(objective, hiveConfig);
@@ -131,16 +131,16 @@ async function _launchServiceHive(objective = {}) {
   const _subArgs = input.slice(1);
 
   // Handle help
-  if (flags.help  ?? flags.h  ?? subcommand === 'help'  ?? (!subcommand)) {'
+  if(flags.help  ?? flags.h  ?? subcommand === 'help'  ?? (!subcommand)) {'
     showHiveMindHelp();
     return;
     //   // LINT: unreachable code removed}
 
   switch(subcommand) {
-    case 'create':;'
+    case 'create':'
 // // await createHive(subArgs, flags);
       break;
-    case 'assign':;'
+    case 'assign':'
 // // await assignTask(subArgs, flags);
       break;
     case 'spawn': {;'
@@ -161,7 +161,7 @@ async function _launchServiceHive(objective = {}) {
     printInfo('� Available Hives');'
     console.warn('━'.repeat(40));'
 
-    if (Object.keys(registry).length === 0) {
+    if(Object.keys(registry).length === 0) {
       console.warn('No hives found.');'
     } else {
       Object.entries(registry).forEach(([name, info]) => {
@@ -173,7 +173,7 @@ async function _launchServiceHive(objective = {}) {
 
 
 /**  */
- * Show consensus decisions (placeholder)
+ * Show consensus decisions(placeholder)
  */
 async function showConsensus(flags) {
   printInfo('� Consensus Decisions');'
@@ -184,7 +184,7 @@ async function showConsensus(flags) {
 
 
 /**  */
- * Show hive metrics (placeholder)
+ * Show hive metrics(placeholder)
  */
 async function showHiveMetrics(flags) {
   printInfo('� Hive Mind Metrics');'

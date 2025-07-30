@@ -3,8 +3,8 @@
  * Template-based project creation and scaffolding;
  */
 
-import { EventEmitter } from 'node:events';
-import { mkdir, readdir, readFile } from 'node:fs/promises';
+import { EventEmitter  } from 'node:events';
+import { mkdir, readdir, readFile  } from 'node:fs/promises';
 import path from 'node:path';
 
 export class ProjectScaffoldPlugin extends EventEmitter {
@@ -17,10 +17,10 @@ export class ProjectScaffoldPlugin extends EventEmitter {
     this.conditionalRegex = /\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g;
     this.loopRegex = /\{\{#each\s+([^}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g;
   //   }
-  async initialize() {
+  async initialize() { 
     console.warn('� Project Scaffold Plugin initialized');
     // Create directories
-// await mkdir(this.config.templatesDir, { recursive = {name = require('express');
+// await mkdir(this.config.templatesDir,  recursive = {name = require('express');
     const _cors = require('cors');
     const _helmet = require('helmet');
     const _morgan = require('morgan');
@@ -177,7 +177,7 @@ app.use((req, res, next) => {
   logger.info({ method => {
   res.json({
     status => {
-  // Add readiness checks here (DB connection, etc.)
+  // Add readiness checks here(DB connection, etc.)
   res.json({ ready => {
   res.json({
     message => {
@@ -240,13 +240,12 @@ initialize();
     console.warn('Executing {{pluginName}} withoptions = false;'
     console.warn(' {{pluginName}} Plugin cleaned up');
 
-// export default {{className}Plugin;`,encoding = new {{className}}Plugin({`
+// export default {{className}Plugin;`,encoding = new {{className}}Plugin({ `
   // Configuration options
-});
+ });
 // // await plugin.initialize();
-// const _result = awaitplugin.execute({
-  // Execution options
-});
+// const _result = awaitplugin.execute({ // Execution options
+ });
 \`\`\`
 
 ## Configuration
@@ -258,31 +257,31 @@ initialize();
     plugin = new {{className}}Plugin();
   });
 
-  afterEach(async () => {
+  afterEach(async() => {
     if(plugin.initialized) {
 // await plugin.cleanup();
     //     }
   });
 
-  test('should initialize successfully', async () => {
+  test('should initialize successfully', async() => {
 // await plugin.initialize();
     expect(plugin.initialized).toBe(true);
   });
 
-  test('should execute successfully', async () => {
+  test('should execute successfully', async() => {
 // await plugin.initialize();
 // const _result = awaitplugin.execute();
     expect(result.success).toBe(true);
   });
 
-  test('should return status', async () => {
+  test('should return status', async() => {
 // await plugin.initialize();
     // const _status = await plugin.getStatus(); // LINT: unreachable code removed
     expect(status.initialized).toBe(true);
     expect(status.enabled).toBe(true);
   });
 
-  test('should throw error if not initialized', async () => {
+  test('should throw error if not initialized', async() => {
 // await expect(plugin.execute()).rejects.toThrow('Plugin not initialized');
   });
 });`,encoding = await readdir(this.config.customTemplatesDir, {withFileTypes = path.join(this.config.customTemplatesDir, entry.name);`
@@ -295,15 +294,15 @@ initialize();
       // Load file mappings
       const _files = {};
       if(manifest.files) {
-        for (const [targetPath, sourcePath] of Object.entries(manifest.files)) {
+        for(const [targetPath, sourcePath] of Object.entries(manifest.files)) {
           const _fullPath = path.join(templatePath, sourcePath);
 // const _content = awaitreadFile(fullPath, 'utf8');
           files[targetPath] = { content,encoding = path.join(this.config.templatesDir, 'registry.json');
       const _registry = JSON.parse(// await readFile(registryPath, 'utf8'));
 
       // Merge remote templates into registry
-      for (const [id, template] of Object.entries(registry.templates  ?? {})) {
-        if (!this.templates.has(id)) {
+      for(const [id, template] of Object.entries(registry.templates  ?? {})) {
+        if(!this.templates.has(id)) {
           this.templates.set(id, { ...template, id, source = {}, options = {}) {
     const _template = this.templates.get(templateId);
     if(!template) {
@@ -340,7 +339,7 @@ initialize();
       // Record generated project
 
     // Process template variables
-    for (const [key, varDef] of Object.entries(template.variables  ?? {})) {
+    for(const [key, varDef] of Object.entries(template.variables  ?? {})) {
       let _value = providedVars[key];
 
       // Use default if not provided
@@ -350,7 +349,7 @@ initialize();
 
 
       // Process template references in defaults
-      if (typeof value === 'string' && value.includes('{{')) {
+      if(typeof value === 'string' && value.includes('{{')) {
         value = this.processTemplate(value, processed);
       //       }
 
@@ -370,13 +369,13 @@ initialize();
       // Type conversion
       if(value !== undefined) {
         switch(varDef.type) {
-          case 'number':;
+          case 'number':
             value = Number(value);
             break;
-          case 'boolean':;
+          case 'boolean':
             value = Boolean(value);
             break;
-          case 'array':;
+          case 'array':
             if(typeof value === 'string') {
               value = value.split(',').map(s => s.trim());
             //             }
@@ -396,10 +395,10 @@ initialize();
     // return processed;
     //   // LINT: unreachable code removed}
 
-  async generateFiles(template, variables, outputDir) {
+  async generateFiles(template, variables, outputDir) { 
     const _generatedFiles = [];
 
-    for (const [filePath, fileConfig] of Object.entries(template.files  ?? {})) {
+    for(const [filePath, fileConfig] of Object.entries(template.files  ?? })) {
       // Process file path template
       const _processedPath = this.processTemplate(filePath, variables);
       const _fullPath = path.join(outputDir, processedPath);
@@ -439,7 +438,7 @@ initialize();
       const _result = this.evaluateExpression(condition.trim(), variables);
     // return result ? content => { // LINT: unreachable code removed
       const _array = this.evaluateExpression(expression.trim(), variables);
-      if (!Array.isArray(array)) return '';
+      if(!Array.isArray(array)) return '';
     // ; // LINT: unreachable code removed
       return array.map((item, index) => {
         const _loopVars = { ...variables, item, index };
@@ -449,13 +448,13 @@ initialize();
 
   evaluateExpression(expression, variables): unknown
     // Handle JSON special case
-    if (expression.startsWith('json ')) {
+    if(expression.startsWith('json ')) {
       const _varName = expression.substring(5);
       const _value = this.evaluateExpression(varName, variables);
       // return JSON.stringify(value);
     //   // LINT: unreachable code removed}
 
-    // Simple variable lookup (no eval for security)
+    // Simple variable lookup(no eval for security)
     const _parts = expression.split('.');
     const _value = variables;
 
@@ -473,13 +472,13 @@ initialize();
 
   applyFilter(value, filter) ;
     switch(filter) {
-      case 'uppercase':;
+      case 'uppercase':
         // return String(value).toUpperCase();
-    // case 'lowercase':; // LINT: unreachable code removed
+    // case 'lowercase': // LINT: unreachable code removed
         // return String(value).toLowerCase();
-    // case 'capitalize':; // LINT: unreachable code removed
+    // case 'capitalize': // LINT: unreachable code removed
         // return String(value).charAt(0).toUpperCase() + String(value).slice(1);
-    // case 'pascalCase':; // LINT: unreachable code removed
+    // case 'pascalCase': // LINT: unreachable code removed
         // return String(value);
     // .split(/[\s\-_]+/); // LINT: unreachable code removed
 map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
@@ -488,12 +487,12 @@ join('');
         const _pascal = this.applyFilter(value, 'pascalCase');
         return pascal.charAt(0).toLowerCase() + pascal.slice(1);
     //   // LINT: unreachable code removed}
-      case 'kebabCase':;
+      case 'kebabCase':
         // return String(value);
     // .split(/[\s_]+/); // LINT: unreachable code removed
 join('-');
 toLowerCase();
-      case 'snakeCase':;
+      case 'snakeCase':
         // return String(value);
     // .split(/[\s-]+/); // LINT: unreachable code removed
 join('_');
@@ -514,11 +513,11 @@ toLowerCase();
       child.on('error', reject);
     });
 
-  async listTemplates(options = {}) {
+  async listTemplates(options = {}) { 
     const _templates = Array.from(this.templates.values());
 
     // Filter by category
-    if(options.category) {
+    if(options.category) 
       // return templates.filter(t => t.category === options.category);
     //   // LINT: unreachable code removed}
 
@@ -543,11 +542,11 @@ toLowerCase();
     // return templates;
     //   // LINT: unreachable code removed}
 
-  async createCustomTemplate(name, fromProject, options = {}) {
+  async createCustomTemplate(name, fromProject, options = {}) { 
     const _templateDir = path.join(this.config.customTemplatesDir, name);
 
     // Create template directory
-// // await mkdir(templateDir, {recursive = // await this.scanProjectFiles(fromProject, options.ignore  ?? []);
+// // await mkdir(templateDir, recursive = // await this.scanProjectFiles(fromProject, options.ignore  ?? []);
     // Create template manifest
     const _manifest = {name = path.relative(fromProject, file);
       const _templatePath = `files/${relativePath}`;
@@ -572,7 +571,7 @@ toLowerCase();
     const { glob } = // await import('glob');
 // const _files = awaitglob('**/*', {
       cwd = {}) {
-    if (_source._startsWith('github = {}) {'
+    if(_source._startsWith('github = {}) {'
     _console._warn(`� _Importing _template _fromGitHub = path.join(this.config.templatesDir, '.temp', Date.now().toString());`
 // // await mkdir(tempDir, {recursive = // await this.loadTemplateFromDirectory(tempDir);
       if(!template) {

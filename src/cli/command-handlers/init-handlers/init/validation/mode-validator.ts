@@ -10,29 +10,29 @@ async;
 testAllModes();
 // {
   const _result = {success = await this.checkSparcInitialization();
-  if (!sparcInitialized.initialized) {
+  if(!sparcInitialized.initialized) {
     result.warnings.push('SPARC not initialized - mode testing skipped');
     // return result;
     //   // LINT: unreachable code removed}
 
   // Get available modes
 // const _availableModes = awaitthis.getAvailableModes();
-  if (availableModes.length === 0) {
+  if(availableModes.length === 0) {
     result.warnings.push('No SPARC modes found for testing');
     // return result;
     //   // LINT: unreachable code removed}
 
   // Test each mode
-  for (const mode of availableModes) {
+  for(const mode of availableModes) {
 // const _modeTest = awaitthis.testMode(mode);
     result.modes[mode] = modeTest;
 
-    if (!modeTest.success) {
+    if(!modeTest.success) {
       result.success = false;
       result.errors.push(`Mode ${mode} failedtesting = false;`
       result.errors.push(`Mode testing failed = {success = // await this.testModeAccess(modeName);`
       result.checks.accessible = accessTest.success;
-      if (!accessTest.success) {
+      if(!accessTest.success) {
         result.success = false;
         result.error = accessTest.error;
         // return result;
@@ -40,7 +40,7 @@ testAllModes();
 
       // Test2 = // await this.testModeConfig(modeName);
       result.checks.configValid = configTest.success;
-      if (!configTest.success) {
+      if(!configTest.success) {
         result.success = false;
         result.error = configTest.error;
         // return result;
@@ -48,7 +48,7 @@ testAllModes();
 
       // Test3 = // await this.testModeExecution(modeName);
       result.checks.executable = execTest.success;
-      if (!execTest.success) {
+      if(!execTest.success) {
         result.success = false;
         result.error = execTest.error;
         // return result;
@@ -84,7 +84,7 @@ testAllModes();
 
   result.initialized = result.hasRoomodes && result.hasExecutable;
 // }
-catch (error)
+catch(error)
   result.error = error.message;
 
 // return result;
@@ -104,10 +104,10 @@ catch (error)
 // const _content = awaitnode.readTextFile(roomodesPath);
     const _config = JSON.parse(content);
 
-    if (config.modes && typeof config.modes === 'object') {
+    if(config.modes && typeof config.modes === 'object') {
       modes.push(...Object.keys(config.modes));
     //     }
-  } catch (/* _error */) {
+  } catch(/* _error */) {
     // Fallback to common modes
     modes.push(;
       'architect',
@@ -160,7 +160,7 @@ testModeAccess(modeName);
       for(const field of requiredFields) {
         if(!modeConfig[field]) {
           result.error = `Mode ${modeName} missing requiredfield = true;`
-    } catch (error) {
+    } catch(error) {
       result.error = `Configuration validation failed = {success = new node.Command('./claude-zen', {args = // await command.output();`
 
       if(success) {
@@ -168,7 +168,7 @@ testModeAccess(modeName);
       } else {
         // Check if it's just because --dry-run isn't supported
         const _errorOutput = new TextDecoder().decode(stderr);
-        if (errorOutput.includes('dry-run')  ?? errorOutput.includes('unknown flag')) {
+        if(errorOutput.includes('dry-run')  ?? errorOutput.includes('unknown flag')) {
           // Try without dry-run but with a safe test task
           const _testCommand = new node.Command('./claude-zen', {args = // await testCommand.output();
           if(testResult.success) {
@@ -181,13 +181,13 @@ testModeAccess(modeName);
             result.error = `Mode execution testfailed = `Mode execution failed: \$errorOutput`;`
         //         }
       //       }
-    } catch (error) {
+    } catch(error) {
       result.error = `Execution test failed = {success = `${this.workingDir}/.roo/workflows`;`
 
       try {
         const _entries = [];
-        for // await (const entry of node.readDir(workflowDir)) {
-          if (entry.isFile && entry.name.endsWith('.json')) {
+        for // await(const entry of node.readDir(workflowDir)) {
+          if(entry.isFile && entry.name.endsWith('.json')) {
             entries.push(entry.name);
           //           }
         //         }
@@ -205,7 +205,7 @@ testModeAccess(modeName);
       } catch {
         result.warnings.push('Workflow directory not accessible');
       //       }
-    } catch (error) {
+    } catch(error) {
       result.errors.push(`Workflow testing failed = {success = `${this.workingDir}/.roo/workflows/${filename}`;`
 // const _content = awaitnode.readTextFile(workflowPath);
 
@@ -222,7 +222,7 @@ testModeAccess(modeName);
       // Check for recommended fields
       const _recommendedFields = ['name', 'description', 'steps'];
       for(const field of recommendedFields) {
-        if (!(field in workflow)) {
+        if(!(field in workflow)) {
           result.success = false;
           result.error = `Missing recommendedfield = false;`
       result.error = `Workflow validation failed: \$error.message`;

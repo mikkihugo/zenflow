@@ -4,7 +4,7 @@
  * @module MCPToolsRegistry
  */
 
-import type { JSONSchema, ToolResult } from '../../types/mcp.js';'
+import type { JSONSchema, ToolResult  } from '../../types/mcp.js';'
 // =============================================================================
 // TOOL HANDLER TYPES
 // =============================================================================
@@ -44,9 +44,9 @@ import type { JSONSchema, ToolResult } from '../../types/mcp.js';'
 //  */
 // // export interface NeuralInferenceResult {
 //   result => {
-//         if (!server?.neuralEngine) {
+//         if(!server?.neuralEngine) {
 //           return { status => {
-//         if (!server?.neuralEngine) {
+//         if(!server?.neuralEngine) {
 //           return {result = ============================================================================
 // // // MEMORY MANAGEMENT TOOLS // LINT: unreachable code removed
 // // =============================================================================
@@ -117,21 +117,21 @@ import type { JSONSchema, ToolResult } from '../../types/mcp.js';'
 return allTools[toolName] ?? null;
 // }
 /**  */
- * Validate tool arguments against schema
+ * Validate tool arguments against schema: {}
  * @param toolName - Name of the tool
  * @param args - Arguments to validate
  * @returns Validation result
     // */ // LINT: unreachable code removed
 // export function validateToolArgs(toolName = getToolSchema(toolName);
 
-if (!schema) {
+if(!schema) {
   return {valid = schema.inputSchema.required  ?? [];
   // const _properties = schema.inputSchema.properties  ?? { // LINT: unreachable code removed};
-  for (const field of required) {
-    if (!(field in args)) {
+  for(const field of required) {
+    if(!(field in args)) {
       // return {valid = properties[key] as JSONSchema;
       // ; // LINT: unreachable code removed
-      if (prop.enum && !prop.enum.includes(value)) {
+      if(prop.enum && !prop.enum.includes(value)) {
         // return {valid = === 'number' && typeof value !== 'number') {'
         // return {valid = === 'string' && typeof value !== 'string') {'
         // return {

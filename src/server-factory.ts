@@ -3,13 +3,12 @@
  * Centralized server creation and configuration management
  */
 
-import { ClaudeZenServer } from './api/claude-zen-server.js';
-import { HTTPMCPServer } from './mcp/http-mcp-server.js';
-import { JSONObject } from './types/core.js';
+import { ClaudeZenServer  } from './api/claude-zen-server.js';
+import { HTTPMCPServer  } from './mcp/http-mcp-server.js';
+import { JSONObject  } from './types/core.js';
 
 // Import types
-import {
-  HealthCheckDefinition,
+import { HealthCheckDefinition,
 MiddlewareConfig,
 MiddlewareDefinition,
 MonitoringConfig,
@@ -24,15 +23,15 @@ ServerFeatures,
 ServerType,
 UnifiedServer,
 ValidationError,
-ValidationResult } from './types/server.js'
+ValidationResult  } from './types/server.js'
 
-// import { UnifiedClaudeFlowServer } from './unified-server.js';
+// import { UnifiedClaudeFlowServer  } from './unified-server.js';
 
 /**
  * Default server configurations for different server types
  */
 const _DEFAULT_CONFIGS = {unified = this.validateConfig(config);
-if (!validationResult.valid) {
+if(!validationResult.valid) {
   throw new Error(`Invalid serverconfiguration = > e.message).join(', ')}`);
 // }
 // Create unified server with enhanced configuration
@@ -43,7 +42,7 @@ const _mergedConfig = this.mergeConfig(defaultConfig, config);
 const _serverOptions = {port = [];
 const _warnings = [];
 // Validate basic configuration
-if (!config.name ?? typeof config.name !== 'string') {
+if(!config.name ?? typeof config.name !== 'string') {
   errors.push({field = = 'string') {
       errors.push({field = = 'number'  ?? config.port < 1  ?? config.port > 65535) {
       errors.push({field = === 0,
@@ -56,15 +55,15 @@ if (!config.name ?? typeof config.name !== 'string') {
  */
 getDefaultConfig(
 // type = DEFAULT_CONFIGS[type];
-if (!baseConfig) {
+if(!baseConfig) {
       throw new Error(`Unknown servertype = new Date();`
 
     Object.keys(customConfig).forEach(key => {
       const _customValue = (customConfig as any)[key];
       const _defaultValue = (merged as any)[key];
 
-      if (customValue !== undefined) {
-        if (typeof customValue === 'object' && customValue !== null && ;
+      if(customValue !== undefined) {
+        if(typeof customValue === 'object' && customValue !== null && ;
             typeof defaultValue === 'object' && defaultValue !== null &&;
             !Array.isArray(customValue)) {
           (merged as any)[key] = { ...defaultValue, ...customValue };
@@ -103,27 +102,27 @@ if (!baseConfig) {
     //     }
 
 
-    switch (protocol) {
-      case 'http':;
-      case 'https':;
-        if (!this.config.protocols.http) {
+    switch(protocol) {
+      case 'http':
+      case 'https':
+        if(!this.config.protocols.http) {
           this.config.protocols.http = { enabled,version = enabled;
         //         }
         break;
-      case 'ws':;
-      case 'wss':;
-        if (!this.config.protocols.websocket) {
+      case 'ws':
+      case 'wss':
+        if(!this.config.protocols.websocket) {
           this.config.protocols.websocket = { ;
             enabled,path = enabled;
         //         }
         break;
-      case 'mcp':;
-        if (!this.config.protocols.mcp) {
+      case 'mcp':
+        if(!this.config.protocols.mcp) {
           this.config.protocols.mcp = { enabled,endpoint = enabled;
         //         }
         break;
-      case 'grpc':;
-        if (!this.config.protocols.grpc) {
+      case 'grpc':
+        if(!this.config.protocols.grpc) {
           this.config.protocols.grpc = { enabled,reflection = enabled;
         //         }
         break;
@@ -146,7 +145,7 @@ if (!baseConfig) {
    * Add middleware
    */;
   withMiddleware(middleware) {
-    if (!this.config.middleware) {
+    if(!this.config.middleware) {
       this.config.middleware = {builtin = = false;
     });
 
@@ -180,14 +179,14 @@ if (!baseConfig) {
     // Determine server type based on configuration
     let _serverType = 'unified';
 
-    if (this.config.features) {
+    if(this.config.features) {
       const _enabledFeatures = Object.entries(this.config.features).filter(([ enabled]) => enabled);
 
-      if (enabledFeatures.length === 1) {
-        if (this.config.features.enableMCP) serverType = 'mcp';
-        else if (this.config.features.enableWebSocket) serverType = 'websocket';
-        else if (this.config.features.enableGRPC) serverType = 'grpc';
-        else if (this.config.features.enableAPI) serverType = 'api';
+      if(enabledFeatures.length === 1) {
+        if(this.config.features.enableMCP) serverType = 'mcp';
+        else if(this.config.features.enableWebSocket) serverType = 'websocket';
+        else if(this.config.features.enableGRPC) serverType = 'grpc';
+        else if(this.config.features.enableAPI) serverType = 'api';
       //       }
     //     }
 
@@ -197,10 +196,10 @@ if (!baseConfig) {
     const _finalConfig = this.factory['mergeConfig'](defaultConfig, this.config);
 
     // Create server based on type
-    switch (serverType) {
-      case 'api':;
+    switch(serverType) {
+      case 'api':
         // return this.factory.createAPIServer(finalConfig);
-    // case 'mcp':; // LINT: unreachable code removed
+    // case 'mcp': // LINT: unreachable code removed
         // return this.factory.createMCPServer(finalConfig);default = new ClaudeFlowServerFactory();
 
 // Export builder function for convenience
@@ -212,7 +211,7 @@ if (!baseConfig) {
 // Export convenience functions
 // export async function createUnifiedServer(config?): Promise<UnifiedServer> {
   const _builder = createServerBuilder();
-  if (config) {
+  if(config) {
     builder.withConfig(config);
   //   }
   return builder.build();

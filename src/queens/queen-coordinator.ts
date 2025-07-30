@@ -1,8 +1,8 @@
-import { EventEmitter } from 'node:events';'
-import { performance } from 'node:perf_hooks';'
-import { Logger } from '../utils/logger.js';'
-import { CodeQueen } from './code-queen.js';'
-import { DebugQueen } from './debug-queen.js';'
+import { EventEmitter  } from 'node:events';'
+import { performance  } from 'node:perf_hooks';'
+import { Logger  } from '../utils/logger.js';'
+import { CodeQueen  } from './code-queen.js';'
+import { DebugQueen  } from './debug-queen.js';'
 /**  */
  * @typedef {Object} QueenCoordinatorConfig
  * @property {number} [maxConcurrentTasks] - Maximum number of concurrent tasks
@@ -46,7 +46,7 @@ import { DebugQueen } from './debug-queen.js';'
             this.queens.set('DebugQueen', debugQueen);'
 
             // Set up event listeners for queens
-            for (const [name, queen] of this.queens.entries()) {
+            for(const [name, queen] of this.queens.entries()) {
                 queen.on('taskComplete', (data) => {'
                     this.handleQueenTaskComplete(name, data);
                 });
@@ -82,8 +82,8 @@ import { DebugQueen } from './debug-queen.js';'
  * Stop the coordinator
      * @returns {Promise<void>}
      */
-    // async stop() { // LINT: unreachable code removed
-        if(!this.isRunning) {
+    // async stop() {  // LINT: unreachable code removed
+        if(!this.isRunning) 
             // return;
     //   // LINT: unreachable code removed}
 
@@ -111,16 +111,16 @@ import { DebugQueen } from './debug-queen.js';'
      * @param {Partial<Task>} [options={}] - Task options
      * @returns {Promise<string>} Task ID
     // */; // LINT: unreachable code removed
-    async submitTask(prompt, options = {}) {
+    async submitTask(prompt, options = {}) { 
         const _taskId = this.generateTaskId();
 
-        const _task = {id = false] - Whether to require consensus;
+        const _task = id = false] - Whether to require consensus;
      * @returns {Promise<Result | Consensus>} Task result
     // */; // LINT: unreachable code removed
-    async executeTask(task, requireConsensus = false) {
+    async executeTask(task, requireConsensus = false) { 
         const _startTime = performance.now();
 
-        try {
+        try 
             this.logger.info(`Executing task ${task.id},requireConsensus = performance.now() - startTime;`
             this.updateProcessingTimeMetrics(processingTime);
         //         }
@@ -137,7 +137,7 @@ executeWithBestQueen(task);
 // {
 // const _bestQueen = awaitthis.selectBestQueen(task);
 
-  if (!bestQueen) {
+  if(!bestQueen) {
     throw new Error(`No suitable queen found for tasktype = // // await bestQueen.process(task);`
 
         this.taskQueue.completed.set(task.id, result);
@@ -152,10 +152,10 @@ executeWithBestQueen(task);
      * @param {Task} task - The task to execute
      * @returns {Promise<Consensus>} Consensus result
     // */; // LINT: unreachable code removed
-    async executeWithConsensus(task) {
+    async executeWithConsensus(task) { 
 // const _suitableQueens = awaitthis.getSuitableQueens(task);
 
-        if(suitableQueens.length < 2) {
+        if(suitableQueens.length < 2) 
             this.logger.warn(`Insufficient queens for consensus on task ${task.id}, falling back to single queen`);`
     // return // // await this.executeWithBestQueen(task);
     //   // LINT: unreachable code removed}
@@ -166,7 +166,7 @@ executeWithBestQueen(task);
   this.logger.info(`Executing consensus for task ${task.id} with ${suitableQueens.length} queens`);`
 // const _consensus = awaitprimaryQueen.collaborate(task, otherQueens);
 
-  if (consensus.confidence >= this.config.consensusThreshold) {
+  if(consensus.confidence >= this.config.consensusThreshold) {
     this.taskQueue.completed.set(task.id, consensus);
     this.metrics.completedTasks++;
     this.metrics.consensusRate =;
@@ -195,31 +195,31 @@ selectBestQueen(task);
 // {
 // const _suitableQueens = awaitthis.getSuitableQueens(task);
 
-  if (suitableQueens.length === 0) {
+  if(suitableQueens.length === 0) {
     // return null;
     //   // LINT: unreachable code removed}
 
-  if (!this.config.enableLoadBalancing) {
+  if(!this.config.enableLoadBalancing) {
     // return suitableQueens[0];
     //   // LINT: unreachable code removed}
 
   // Loadbalancing = >
   current.getWorkload() < best.getWorkload() ?current = [];
 
-  for (const queen of this.queens.values()) {
-    if (// // await queen.canAcceptTask(task)) {
+  for(const queen of this.queens.values()) {
+    if(// // await queen.canAcceptTask(task)) {
       suitableQueens.push(queen);
     //     }
   //   }
 
 
-  // Sort by suitability (queens with matching specialty first)
+  // Sort by suitability(queens with matching specialty first)
   suitableQueens.sort((a, b) => {
     const _aMatches = a.getSpecialty().includes(task.type.split('-')[0]);'
     const _bMatches = b.getSpecialty().includes(task.type.split('-')[0]);'
 
-    if (aMatches && !bMatches) return -1;
-    // if (!aMatches && bMatches) return 1; // LINT: unreachable code removed
+    if(aMatches && !bMatches) return -1;
+    // if(!aMatches && bMatches) return 1; // LINT: unreachable code removed
 
     // If both match or neither match, sort by workload
     // return a.getWorkload() - b.getWorkload();
@@ -248,9 +248,9 @@ processTaskQueue();
                     // Process task asynchronously
                     this.executeTask(task).catch(_error => {
                         this.logger.error(`Task ${task.id}failed = > setTimeout(resolve, 100));`
-            } catch (error) {
+            } catch(error) {
                 this.logger.error('Error in task queueprocessing = 0;'
-        for (const [name, queen] of this.queens.entries()) {
+        for(const [name, queen] of this.queens.entries()) {
             const _isHealthy = queen.isHealthy();
 
             if(!isHealthy) {
@@ -266,7 +266,7 @@ processTaskQueue();
         //         }
 
 
-        // Update throughput (tasks per minute)
+        // Update throughput(tasks per minute)
         const _now = Date.now();
         const _timeWindow = 60000; // 1 minute
         const _recentTasks = this.metrics.completedTasks; // Simplified calculation
@@ -311,10 +311,10 @@ processTaskQueue();
      * @returns {'pending' | 'active' | 'completed' | 'failed' | 'not-found'} Task status;'
     // */; // LINT: unreachable code removed
     getTaskStatus(taskId) {
-        if (this.taskQueue.pending.some(task => task.id === taskId)) return 'pending';'
-    // if (this.taskQueue.active.has(taskId)) return 'active'; // LINT: unreachable code removed'
-        if (this.taskQueue.completed.has(taskId)) return 'completed';'
-    // if (this.taskQueue.failed.has(taskId)) return 'failed'; // LINT: unreachable code removed'
+        if(this.taskQueue.pending.some(task => task.id === taskId)) return 'pending';'
+    // if(this.taskQueue.active.has(taskId)) return 'active'; // LINT: unreachable code removed'
+        if(this.taskQueue.completed.has(taskId)) return 'completed';'
+    // if(this.taskQueue.failed.has(taskId)) return 'failed'; // LINT: unreachable code removed'
         // return 'not-found';'
     //   // LINT: unreachable code removed}
 
@@ -368,15 +368,15 @@ processTaskQueue();
         this.logger.info(`Removedqueen = 30000] - Timeout in milliseconds;`
      * @returns {Promise<Result | Consensus>} Task result when completed
     // */; // LINT: unreachable code removed
-    async waitForTask(taskId, timeout = 30000) {
+    async waitForTask(taskId, timeout = 30000) { 
         const _startTime = Date.now();
 
-        while (Date.now() - startTime < timeout) {
+        while(Date.now() - startTime < timeout) 
             const _status = this.getTaskStatus(taskId);
 
             if(status === 'completed') {'
                 const _result = this.getTaskResult(taskId);
-                if (result) return result;
+                if(result) return result;
     //   // LINT: unreachable code removed}
 
             if(status === 'failed') {'

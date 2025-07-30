@@ -5,10 +5,10 @@
 
 // security-command.js - Handles the security command
 
-import { printError } from '../utils.js';
+import { printError  } from '../utils.js';
 
 export async function securityCommand() {
-        case 'status':;
+        case 'status':
           printSuccess('Enterprise Security Status');
           console.warn('\n�Authentication = args[1];'
 
@@ -47,13 +47,13 @@ export async function securityCommand() {
             printSuccess(`Searching auditlogs = === 'export')`
             printSuccess('Exporting audit logs...');
             console.warn('   Time range);'
-            console.warn('   Format: JSON (encrypted)');
+            console.warn('   Format: JSON(encrypted)');
             console.warn('   Destination);'
             console.warn('\n✅ Export complete,234 events');else ;
             console.warn('Audit commands, search, export, configure');
           break;
 
-        case 'compliance':;
+        case 'compliance':
           printSuccess('Compliance Status);'
           console.warn('\n�  Active Compliance Frameworks);'
           console.warn('\n✅ SOC2 Type II');
@@ -62,7 +62,7 @@ export async function securityCommand() {
           console.warn('   Status);'
           console.warn('   Controls);'
 
-          console.warn('\n✅ GDPR (General Data Protection Regulation)');
+          console.warn('\n✅ GDPR(General Data Protection Regulation)');
           console.warn('   Data Protection Officer);'
           console.warn('   Privacy Impact Assessments);'
           console.warn('   Data Subject Requests);'

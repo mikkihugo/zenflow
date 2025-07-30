@@ -3,8 +3,8 @@
  * Test script for Neural Engine and Queen implementations;
  */
 
-import { NeuralEngine } from './src/neural/neural-engine.js';
-import { QueenCoordinator } from './src/queens/queen-coordinator.js';
+import { NeuralEngine  } from './src/neural/neural-engine.js';
+import { QueenCoordinator  } from './src/queens/queen-coordinator.js';
 
 async function testNeuralEngine() {
   console.warn('🧠 Testing Neural Engine...');
@@ -32,7 +32,7 @@ async function testNeuralEngine() {
     console.warn('Performance metrics);'
     console.warn('✅ Neural Engine test completed successfully');
     // return true;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     console.error('❌ Neural Engine test failed);'
     // return false;
     //   // LINT: unreachable code removed}
@@ -71,7 +71,7 @@ async function testQueenCoordinator() {
   // // await coordinator.stop();
     console.warn('✅ Queen Coordinator test completed successfully');
     // return true;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     console.error('❌ Queen Coordinator test failed);'
     // return false;
     //   // LINT: unreachable code removed}
@@ -101,13 +101,13 @@ console.warn('Confidence:', `${(consensus.confidence * 100).toFixed(1)}%`);
 console.warn('Method);'
 console.warn('Participants);'
 console.warn('Reasoning);'
-if (consensus.dissenting && consensus.dissenting.length > 0) {
+if(consensus.dissenting && consensus.dissenting.length > 0) {
   console.warn('Dissenting views);'
 // }
   // // await coordinator.stop();
 console.warn('✅ Queen Collaboration test completed successfully');
 // return true;
-//   // LINT: unreachable code removed} catch (error) {
+//   // LINT: unreachable code removed} catch(error) {
 console.error('❌ Queen Collaboration test failed);'
 // return false;
 //   // LINT: unreachable code removed}
@@ -121,10 +121,10 @@ async function main() {
     { name: 'Queen Collaboration', fn } ];
   const _passed = 0;
   const _failed = 0;
-  for (const test of tests) {
+  for(const test of tests) {
     console.warn(`\n🧪 Running ${test.name} test...`);
 // const _success = awaittest.fn();
-    if (success) {
+    if(success) {
       passed++;
       console.warn(`✅ ${test.name} test PASSED`);
     } else {
@@ -134,7 +134,7 @@ async function main() {
   //   }
   console.warn(`\n${'='.repeat(60)}`);
   console.warn(`� Test Results);`
-  if (failed === 0) {
+  if(failed === 0) {
     console.warn('� All tests passed! Neural and Queen implementations are working correctly.');
   } else {
     console.warn('⚠ Some tests failed. Check the error messages above.');

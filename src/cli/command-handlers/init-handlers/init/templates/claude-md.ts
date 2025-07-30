@@ -10,7 +10,7 @@ export function createMinimalClaudeMd() {
     // ## �CRITICAL = ALL RELATED OPERATIONS" // LINT: unreachable code removed"
 
 **✅ CORRECT**: Everything in ONE message
-**❌ WRONG**: Multiple messages for related operations (6x slower!)
+**❌ WRONG**: Multiple messages for related operations(6x slower!)
 
 ###  CONCURRENT EXECUTIONCHECKLIST = ALL RELATED OPERATIONS"
 
@@ -21,7 +21,7 @@ export function createMinimalClaudeMd() {
 **Examples of CORRECT concurrent execution:**
 \`\`\`javascript;`
 // ✅ CORRECT: Everything in ONE message
-[Single Message]:;
+[Single Message]:
   - TodoWrite { todos: [10+ todos with all statuses/priorities] }
   - Task("Agent 1 with full instructions and hooks");
   - Task("Agent 2 with full instructions and hooks");
@@ -37,7 +37,7 @@ export function createMinimalClaudeMd() {
 
 **Examples of WRONG sequential execution:**
 \`\`\`javascript;`
-// ❌ WRONG: Multiple messages (NEVER DO THIS)
+// ❌ WRONG: Multiple messages(NEVER DO THIS)
 Message 1: TodoWrite { todos: [single todo] }
 Message 2: Task("Agent 1");
 Message 3: Task("Agent 2");
@@ -48,17 +48,17 @@ Message 6: Bash("npm install");
 \`\`\`
 
 ###  CONCURRENT EXECUTION CHECKLIST: null
-Before sending ANY message, ask yourself:;
+Before sending ANY message, ask yourself:
 - ✅ Are ALL related TodoWrite operations batched together?;
 - ✅ Are ALL Task spawning operations in ONE message?;
-- ✅ Are ALL file operations (Read/Write/Edit) batched together?;
+- ✅ Are ALL file operations(Read/Write/Edit) batched together?;
 - ✅ Are ALL bash commands grouped in ONE message?;
 - ✅ Are ALL memory operations concurrent?
 
 If ANY answer is "No", you MUST combine operations into a single message!
 
 ## Project Overview;
-This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development with AI assistance through Claude-Flow orchestration.
+This project uses the SPARC(Specification, Pseudocode, Architecture, Refinement, Completion) methodology for systematic Test-Driven Development with AI assistance through Claude-Flow orchestration.
 
 **� Batchtools Optimization Enabled**: This configuration includes optimized prompts and parallel processing capabilities for improved performance and efficiency.
 
@@ -70,7 +70,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 - \`npx claude-zen sparc tdd "<feature>"\`: Run complete TDD workflow using SPARC methodology;
 - \`npx claude-zen sparc info <mode>\`: Get detailed information about a specific mode
 
-### Batchtools Commands (Optimized);
+### Batchtools Commands(Optimized);
 - \`npx claude-zen sparc batch <modes> "<task>"\`: Execute multiple SPARC modes in parallel;
 - \`npx claude-zen sparc pipeline "<task>"\`: Execute full SPARC pipeline with parallel processing;
 - \`npx claude-zen sparc concurrent <mode> "<tasks-file>"\`: Process multiple tasks concurrently
@@ -81,37 +81,37 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 - \`npm run lint\`: Run linter and format checks;
 - \`npm run typecheck\`: Run TypeScript type checking
 
-## SPARC Methodology Workflow (Batchtools Enhanced)
+## SPARC Methodology Workflow(Batchtools Enhanced)
 
-### 1. Specification Phase (Parallel Analysis);
+### 1. Specification Phase(Parallel Analysis);
 \`\`\`bash;`
 # Create detailed specifications with concurrent requirements analysis;
 npx claude-zen sparc run spec-pseudocode "Define user authentication requirements" --parallel;
 \`\`\`;`
 **Batchtools Optimization**: Simultaneously analyze multiple requirement sources, validate constraints in parallel, and generate comprehensive specifications.
 
-### 2. Pseudocode Phase (Concurrent Logic Design);
+### 2. Pseudocode Phase(Concurrent Logic Design);
 \`\`\`bash;`
 # Develop algorithmic logic with parallel pattern analysis;
 npx claude-zen sparc run spec-pseudocode "Create authentication flow pseudocode" --batch-optimize;
 \`\`\`;`
 **Batchtools Optimization**: Process multiple algorithm patterns concurrently, validate logic flows in parallel, and optimize data structures simultaneously.
 
-### 3. Architecture Phase (Parallel Component Design);
+### 3. Architecture Phase(Parallel Component Design);
 \`\`\`bash;`
 # Design system architecture with concurrent component analysis;
 npx claude-zen sparc run architect "Design authentication service architecture" --parallel;
 \`\`\`;`
 **Batchtools Optimization**: Generate multiple architectural alternatives simultaneously, validate integration points in parallel, and create comprehensive documentation concurrently.
 
-### 4. Refinement Phase (Parallel TDD Implementation);
+### 4. Refinement Phase(Parallel TDD Implementation);
 \`\`\`bash;`
 # Execute Test-Driven Development with parallel test generation;
 npx claude-zen sparc tdd "implement user authentication system" --batch-tdd;
 \`\`\`;`
 **Batchtools Optimization**: Generate multiple test scenarios simultaneously, implement and validate code in parallel, and optimize performance concurrently.
 
-### 5. Completion Phase (Concurrent Integration);
+### 5. Completion Phase(Concurrent Integration);
 \`\`\`bash;`
 # Integration with parallel validation and documentation;
 npx claude-zen sparc run integration "integrate authentication with user management" --parallel;
@@ -141,7 +141,7 @@ npx claude-zen sparc run integration "integrate authentication with user managem
 - **Documentation**: 200% improvement with concurrent content generation
 - **Memory Operations**: 180% faster with batched read/write operations
 
-## Code Style and Best Practices (Batchtools Enhanced)
+## Code Style and Best Practices(Batchtools Enhanced)
 
 ### SPARC Development Principles with Batchtools;
 - **Modular Design**: Keep files under 500 lines, optimize with parallel analysis
@@ -157,9 +157,9 @@ npx claude-zen sparc run integration "integrate authentication with user managem
 - **Pipeline Optimization**: Chain operations with parallel stages
 - **Resource Management**: Monitor and optimize resource usage
 
-## Important Notes (Enhanced)
+## Important Notes(Enhanced)
 
-- Always run tests before committing with parallel execution (\`npm run test --parallel\`);
+- Always run tests before committing with parallel execution(\`npm run test --parallel\`);
 - Use SPARC memory system with concurrent operations to maintain context across sessions;
 - Follow the Red-Green-Refactor cycle with parallel test generation during TDD phases;
 - Document architectural decisions with concurrent validation in memory;
@@ -167,7 +167,7 @@ npx claude-zen sparc run integration "integrate authentication with user managem
 - Claude Code slash commands provide quick access to batchtools-optimized SPARC modes;
 - Monitor system resources during parallel operations for optimal performance
 
-For more information about SPARC methodology and batchtools optimization, see: ;
+For more information about SPARC methodology and batchtools optimization, see:
 - SPARC Guide,//github.com/ruvnet/claude-zen/docs/sparc.md
 - Batchtools Documentation,//github.com/ruvnet/claude-zen/docs/batchtools.md
 
@@ -175,7 +175,7 @@ For more information about SPARC methodology and batchtools optimization, see: ;
 Do what has been asked; nothing more, nothing less.;
 NEVER create files unless they're absolutely necessary for achieving your goal.;'
 ALWAYS prefer editing an existing file to creating a new one.;
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+NEVER proactively create documentation files(*.md) or README files. Only create documentation files if explicitly requested by the User.
 `;`
 // }
 

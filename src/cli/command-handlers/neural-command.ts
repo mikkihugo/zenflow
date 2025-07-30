@@ -4,10 +4,10 @@
  * @module NeuralCommand
  */
 
-import { performance } from 'node:perf_hooks';'
+import { performance  } from 'node:perf_hooks';'
 import chalk from 'chalk';'
-import { NeuralEngine } from '../../neural/neural-engine.js';'
-import { initializeSwarm } from '../utils.js';'
+import { NeuralEngine  } from '../../neural/neural-engine.js';'
+import { initializeSwarm  } from '../utils.js';'
 
 const _neuralEngine = null;
 /**  */
@@ -36,23 +36,23 @@ try {
 
 
     switch(subcommand) {
-      case 'load':;'
+      case 'load':'
 // // // await handleNeuralLoad(remainingArgs, flags);
         break;
 
-      case 'models':;'
+      case 'models':'
 // // // await handleNeuralModels(remainingArgs, flags);
         break;
 
-      case 'infer':;'
+      case 'infer':'
 // // // await handleNeuralInfer(remainingArgs, flags);
         break;
 
-      case 'benchmark':;'
+      case 'benchmark':'
 // // // await handleNeuralBenchmark(remainingArgs, flags);
         break;
 
-      case 'status':;'
+      case 'status':'
 // // // await handleNeuralStatus(remainingArgs, flags);
         break;
 
@@ -60,11 +60,11 @@ try {
 // // // await handleNeuralImport(remainingArgs, flags);
         break;
 
-      case 'analyze':;'
+      case 'analyze':'
 // // // await handleNeuralAnalyze(remainingArgs, flags);
         break;
 
-      case 'optimize':;'
+      case 'optimize':'
 // // // await handleNeuralOptimize(remainingArgs, flags);
         break;default = args[0];
 
@@ -128,9 +128,9 @@ try {
 
   // Engine Status
   console.warn(chalk.bold('� EngineStatus = '� Needs Improvement';'
-    if (metrics.averageInferenceTime < 500) rating = '� Excellent';'
-    else if (metrics.averageInferenceTime < 1000) rating = '� Good';'
-    else if (metrics.averageInferenceTime < 2000) rating = '� Fair';'
+    if(metrics.averageInferenceTime < 500) rating = '� Excellent';'
+    else if(metrics.averageInferenceTime < 1000) rating = '� Good';'
+    else if(metrics.averageInferenceTime < 2000) rating = '� Fair';'
 
     console.warn(`   PerformanceRating = args[0]  ?? '.';'`
   console.warn(chalk.blue(`�Analyzing = // await initializeSwarm({topology = args[0];`
@@ -183,9 +183,9 @@ function showNeuralHelp() {
   console.warn();
   console.warn(chalk.cyan('Options));'
   console.warn('  --model <name>             Specify model for inference');'
-  console.warn('  --temperature <number>     Set inference temperature (0.0-1.0)');'
+  console.warn('  --temperature <number>     Set inference temperature(0.0-1.0)');'
   console.warn('  --max-tokens <number>      Maximum tokens to generate');'
-  console.warn('  --iterations <number>      Benchmark iterations (default)');'
+  console.warn('  --iterations <number>      Benchmark iterations(default)');'
   console.warn('  --save                     Save optimized code to file');'
   console.warn('  --verbose                  Show detailed output');'
   console.warn();

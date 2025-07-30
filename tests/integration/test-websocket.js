@@ -13,7 +13,7 @@ async function testWebSocket() {
 
     ws.on('open', () => {
       console.warn('✅ WebSocket connected successfully!');
-      ws.send(JSON.stringify({ type: 'test', message: 'Hello server' }));
+      ws.send(JSON.stringify({ type: 'test', message: 'Hello server'  }));
     });
     ws.on('message', (data) => {
       console.warn('� Received message:', data.toString());
@@ -31,7 +31,7 @@ async function testWebSocket() {
       console.warn('⏰ Closing WebSocket connection...');
       ws.close();
     }, 5000);
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Failed to create WebSocket);'
     process.exit(1);
   //   }

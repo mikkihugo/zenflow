@@ -3,8 +3,8 @@
  * Tests the performance improvements implemented
  */
 
-import { performance } from 'node:perf_hooks';
-import { PerformanceOptimizer } from './performance-optimizer.js';
+import { performance  } from 'node:perf_hooks';
+import { PerformanceOptimizer  } from './performance-optimizer.js';
 /**  */
  * Performance test runner
  */
@@ -18,7 +18,7 @@ export class PerformanceTest {
   /**  */
  * Run complete performance test suite
    */
-  async runTestSuite() {
+  async runTestSuite() { 
     console.warn('� Starting Hive Mind Performance Test Suite...\n');
 
     const _tests = [
@@ -28,10 +28,10 @@ export class PerformanceTest {
       this.testConcurrentTaskExecution,
       this.testPerformanceOptimizer ];
 
-    for(const test of tests) {
+    for(const test of tests) 
       try {
 // // await test.call(this);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error(`Testfailed = new HiveMindCore({name = ['coder', 'tester', 'analyst', 'researcher', 'architect', 'optimizer'];`
 
     // Batch spawning test
@@ -49,12 +49,12 @@ export class PerformanceTest {
 
     const _improvement = (((sequentialTime - batchTime) / sequentialTime) * 100).toFixed(2)
 
-    this.results.push({test = new PerformanceOptimizer({
-      asyncQueueConcurrency });
+    this.results.push({ test = new PerformanceOptimizer({
+      asyncQueueConcurrency  });
 
     const _operations = [];
     for(let i = 0; i < 20; i++) {
-      operations.push(async () => {
+      operations.push(async() => {
 // await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50))
         return `Operation ${i} completed`;
     //   // LINT: unreachable code removed});
@@ -81,7 +81,7 @@ export class PerformanceTest {
     // Simulate 100 memory operations with connection pooling
     const _operations = Array(100);
 fill(null);
-map(async (_, i) => {
+map(async(_, i) => {
 // await new Promise((resolve) => setTimeout(resolve, Math.random() * 10))
         return {key = performance.now() - pooledStart;
     // ; // LINT: unreachable code removed
@@ -94,7 +94,7 @@ map(async (_, i) => {
 
     const _improvement = (((serialTime - pooledTime) / serialTime) * 100).toFixed(2)
 
-    this.results.push({test = new HiveMindCore({name = [
+    this.results.push({ test = new HiveMindCore({name = [
       'Implement user authentication',
       'Write unit tests',
       'Analyze performance metrics',
@@ -107,7 +107,7 @@ map(async (_, i) => {
     const _taskPromises = tasks.map((description) =>;
       hiveMind.createTask(description, Math.floor(Math.random() * 10) + 1))
 // // await Promise.all(taskPromises);
-    // Wait for tasks to complete (simulated)
+    // Wait for tasks to complete(simulated)
 // // await new Promise((resolve) => setTimeout(resolve, 2000));
     // Get final status
     const _status = hiveMind.getStatus();
@@ -122,15 +122,15 @@ map(async (_, i) => {
 
     // First call should be a miss
     const __cacheStart = performance.now();
-// // await optimizer.optimizeWithCache(cacheKey, async () => {
+// // await optimizer.optimizeWithCache(cacheKey, async() => {
       _cacheMisses++;
 // await new Promise((resolve) => setTimeout(resolve, 100));
       return 'cached-value';
-    //   // LINT: unreachable code removed});
+    //   // LINT: unreachable code removed });
 
     // Subsequent calls should be hits
     for(let i = 0; i < 5; i++) {
-// // await optimizer.optimizeWithCache(cacheKey, async () => {
+// // await optimizer.optimizeWithCache(cacheKey, async() => {
         _cacheMisses++;
 // await new Promise((resolve) => setTimeout(resolve, 100));
         return 'cached-value';

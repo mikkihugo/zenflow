@@ -2,9 +2,9 @@
  * Vision Dashboard Component - Works in both TUI and Web
  */
 
-import { Box } from 'ink';'
-import React, { useEffect, useState } from 'react';'
-import { visionAPI } from '../shared/vision-api.js';'
+import { Box  } from 'ink';'
+import React, { useEffect, useState  } from 'react';'
+import { visionAPI  } from '../shared/vision-api.js';'
 
 const _VisionDashboard = () => {
   const [_visions, setVisions] = useState([]);
@@ -12,13 +12,13 @@ const _VisionDashboard = () => {
   const [_selectedIndex, _setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    const __loadVisions = async () => {
+    const __loadVisions = async() => {
       try {
 // const _data = awaitvisionAPI.fetchVisions();
         setVisions(data);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error('Failed to loadvisions = setInterval(loadVisions, 30000);'
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
   if(loading) {
@@ -32,7 +32,7 @@ const _VisionDashboard = () => {
       case 'high': return '�';'
     // case 'medium': return '�'; // LINT: unreachable code removed'
       case 'low': return '�';default = () => {'
-    if (!phases?.length) return 0;
+    if(!phases?.length) return 0;
     // const _totalProgress = phases.reduce((sum, phase) => sum + (phase.progress  ?? 0), 0); // LINT: unreachable code removed
     return Math.round(totalProgress / phases.length);
     //   // LINT: unreachable code removed};

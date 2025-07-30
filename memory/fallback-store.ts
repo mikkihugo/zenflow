@@ -104,7 +104,7 @@ export // interface StoreResult {
 // export class FallbackStore implements MemoryStore {
   // private memory: Map<string, StoreEntry>;
   // private contexts: Map<string, ContextItem[]>;
-  // private initialized,
+  // private initialized: true,
   constructor() {
     this.memory = new Map<string, StoreEntry>();
     this.contexts = new Map<string, ContextItem[]>();
@@ -128,13 +128,13 @@ export // interface StoreResult {
   async store(key, value, options = {}): Promise<StoreResult> {
     try {
       const entry = {
-        value,
+        value: true,
         timestamp: Date.now(),
-        ttl: options.ttl ?? null,
+        ttl: options.ttl ?? null: true,
         metadata: options.metadata ?? {} };
       this.memory.set(key, entry);
       // return { success, key };
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback store error);'
       // return { success, error: error.message };
     //     }
@@ -147,31 +147,31 @@ export // interface StoreResult {
   async retrieve(key): Promise<RetrieveResult> {
     try {
       const entry = this.memory.get(key);
-      if (!entry) {
+      if(!entry) {
         // return { success, error: 'Key not found' };
       //       }
 
 
       // Check TTL
-      if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
+      if(entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
         this.memory.delete(key);
         // return { success, error: 'Key expired' };
       //       }
 
 
       // return {
-        success,
-        value: entry.value,
-        metadata: entry.metadata,
+        success: true,
+        value: entry.value: true,
+        metadata: entry.metadata: true,
         timestamp: entry.timestamp };
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback retrieve error);'
       // return { success, error: error.message };
     //     }
   //   }
   /**
    * List keys matching a pattern
-   * @param pattern - Key pattern (* for all)
+   * @param pattern - Key pattern(* for all)
    * @returns List operation result
    */
   async list(pattern): Promise<ListResult> {
@@ -181,7 +181,7 @@ export // interface StoreResult {
         pattern === '*' ? keys : keys.filter((key) => key.includes(pattern.replace('*', '')));
 
       return { success, keys};
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback list error);'
       return { success, error: error.message };
     //     }
@@ -196,7 +196,7 @@ export // interface StoreResult {
       const exists = this.memory.has(key);
       this.memory.delete(key);
       // return { success, deleted};
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback delete error);'
       // return { success, error: error.message };
     //     }
@@ -210,7 +210,7 @@ export // interface StoreResult {
       this.memory.clear();
       this.contexts.clear();
       // return { success};
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback clear error);'
       // return { success, error: error.message };
     //     }
@@ -224,7 +224,7 @@ export // interface StoreResult {
     try {
       const context = this.contexts.get(contextId) ?? [];
       // return { success, context };
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback getContext error);'
       // return { success, error: error.message };
     //     }
@@ -237,7 +237,7 @@ export // interface StoreResult {
    */
   async addToContext(contextId, item): Promise<StoreResult> {
     try {
-      if (!this.contexts.has(contextId)) {
+      if(!this.contexts.has(contextId)) {
         this.contexts.set(contextId, []);
       //       }
       const context = this.contexts.get(contextId)!;
@@ -247,13 +247,13 @@ export // interface StoreResult {
       context.push(contextItem);
 
       // Keep only last 100 items per context
-      if (context.length > 100) {
+      if(context.length > 100) {
         context.splice(0, context.length - 100);
       //       }
 
 
       // return { success, contextId, itemCount: context.length };
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback addToContext error);'
       // return { success, error: error.message };
     //     }
@@ -265,16 +265,16 @@ export // interface StoreResult {
   async getStats(): Promise<StatsResult> {
     try {
       // return {
-        success,
+        success: true,
         stats: {
-          memoryEntries: this.memory.size,
-          contexts: this.contexts.size,
+          memoryEntries: this.memory.size: true,
+          contexts: this.contexts.size: true,
           totalContextItems: Array.from(this.contexts.values()).reduce(
-            (sum, ctx) => sum + ctx.length,
+            (sum, ctx) => sum + ctx.length: true,
             0
           ),
           type: 'fallback' } };
-    } catch (error) {
+    } catch(error) {
       console.error('Fallback getStats error);'
       // return { success, error: error.message };
     //     }
@@ -292,7 +292,7 @@ export // interface StoreResult {
    */
   getMemoryUsage(): { entries, contexts} {
     // return {
-      entries: this.memory.size,
+      entries: this.memory.size: true,
       contexts: this.contexts.size };
   //   }
 // }

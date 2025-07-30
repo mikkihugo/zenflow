@@ -3,8 +3,8 @@
  * Simple validation test for worker thread functionality
  */
 
-import { performance } from 'node:perf_hooks';
-import { WorkerThreadPool } from '../src/coordination/workers/worker-pool.js';
+import { performance  } from 'node:perf_hooks';
+import { WorkerThreadPool  } from '../src/coordination/workers/worker-pool.js';
 
 async function testWorkerThreads() {
   console.warn('🧪 Testing Worker Thread Implementation');
@@ -80,23 +80,23 @@ async function testWorkerThreads() {
     });
 
     console.warn('\n� All tests completed successfully!');
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Test failed);'
     throw error;
   } finally {
-    if (pool) {
+    if(pool) {
   // // await pool.shutdown();
       console.warn('� Worker pool shut down');
 // }
 // }
 // }
 // Run test if called directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   try {
   // // await testWorkerThreads();
     console.warn('\n✅ Worker thread test completed successfully');
     process.exit(0);
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Worker thread test failed);'
     process.exit(1);
 // }

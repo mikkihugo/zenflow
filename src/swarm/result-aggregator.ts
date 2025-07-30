@@ -7,7 +7,7 @@
  */
 'node = new Map(); // eslint-disable-line'
   // private resultCache = new Map() {}
-// private (processingQueue =
+// private(processingQueue =
 // {
 // }
 ), (memoryManager = new Logger('SwarmResultAggregator'))
@@ -19,16 +19,15 @@ this.setupEventHandlers() {}
 /**
  * Initialize the result aggregator;
  */
-// async
-initialize() {}
+// async initialize() { }
 : Promise<void>
-// {
+// 
   this.logger.info('Initializing swarm result aggregator...');
   try {
 // // await this.processingQueue.start();
     this.logger.info('Swarm result aggregator initialized successfully');
     this.emit('initialized');
-  } catch (error) {
+  } catch(error) {
     this.logger.error('Failed to initialize result aggregator', error);
     throw error;
   //   }
@@ -49,7 +48,7 @@ shutdown();
 // // await Promise.allSettled(completionPromises);// // await this.processingQueue.stop();
     this.logger.info('Swarm result aggregator shut down successfully');
     this.emit('shutdown');
-  } catch (error) {
+  } catch(error) {
     this.logger.error('Error during result aggregator shutdown', error);
     throw error;
   //   }
@@ -69,15 +68,15 @@ this.memoryManager;
 // )
 this.activeAggregations.set(aggregationId, session)
 // Start real-time processing if enabled
-if (this.config.enableRealTimeUpdates) {
+if(this.config.enableRealTimeUpdates) {
   session.startRealTimeProcessing();
 // }
 this.emit('aggregation = this.activeAggregations.get(aggregationId);'
-if (!session) {
+if(!session) {
   throw new Error(`Aggregation session notfound = this.activeAggregations.get(aggregationId);`
-    if (!session) {
+    if(!session) {
       throw new Error(`Aggregation session notfound = this.activeAggregations.get(aggregationId);`
-  if (!session) {
+  if(!session) {
     throw new Error(`Aggregation session notfound = // await session.finalize();`
 
       // Cache result
@@ -89,12 +88,12 @@ if (!session) {
         aggregationId,qualityScore = 'json';
   ): Promise<ResultReport> {
     const _result = this.resultCache.get(aggregationId);
-    if (!result) {
+    if(!result) {
       throw new Error(`Aggregated result notfound = // await this.createReport(result, format);`
     this.emit('report = this.activeAggregations.get(aggregationId);'
-    if (session) {
+    if(session) {
       // return {status = this.resultCache.get(aggregationId);
-      // if (cachedResult) { // LINT: unreachable code removed
+      // if(cachedResult) { // LINT: unreachable code removed
       // return {status = Array.from(this.resultCache.values());
       // ; // LINT: unreachable code removed
       // return {activeAggregations = generateId('report');
@@ -117,11 +116,11 @@ filter(r => r.validated).length;
     return total > 0 ? successful /total = [];
     // const _threshold = 0.8; // LINT: unreachable code removed
 
-    if (metrics.accuracy >= threshold) strengths.push('High accuracy in results');
-    if (metrics.completeness >= threshold) strengths.push('Comprehensive coverage');
-    if (metrics.consistency >= threshold) strengths.push('Consistent output quality');
-    if (metrics.timeliness >= threshold) strengths.push('Timely execution');
-    if (metrics.reliability >= threshold) strengths.push('Reliable performance');
+    if(metrics.accuracy >= threshold) strengths.push('High accuracy in results');
+    if(metrics.completeness >= threshold) strengths.push('Comprehensive coverage');
+    if(metrics.consistency >= threshold) strengths.push('Consistent output quality');
+    if(metrics.timeliness >= threshold) strengths.push('Timely execution');
+    if(metrics.reliability >= threshold) strengths.push('Reliable performance');
 
     // return strengths;
     //   // LINT: unreachable code removed}
@@ -129,11 +128,11 @@ filter(r => r.validated).length;
   // private identifyImprovementAreas(metrics = [];
     const _threshold = 0.7;
 
-    if (metrics.accuracy < threshold) improvements.push('Accuracy needs improvement');
-    if (metrics.completeness < threshold) improvements.push('Coverage gaps identified');
-    if (metrics.consistency < threshold) improvements.push('Output consistency issues');
-    if (metrics.timeliness < threshold) improvements.push('Execution time optimization needed');
-    if (metrics.reliability < threshold) improvements.push('Reliability concerns');
+    if(metrics.accuracy < threshold) improvements.push('Accuracy needs improvement');
+    if(metrics.completeness < threshold) improvements.push('Coverage gaps identified');
+    if(metrics.consistency < threshold) improvements.push('Output consistency issues');
+    if(metrics.timeliness < threshold) improvements.push('Execution time optimization needed');
+    if(metrics.reliability < threshold) improvements.push('Reliability concerns');
 
     // return improvements;
     //   // LINT: unreachable code removed}
@@ -220,13 +219,13 @@ filter(r => r.validated).length;
     // Placeholder implementation
     const _outputs = [];
     // Add task results
-    for (const result of this.taskResults.values()) {
-      if (result.output) {
+    for(const result of this.taskResults.values()) {
+      if(result.output) {
         outputs.push(result.output);
       //       }
     //     }
     // Add agent outputs
-    for (const agentOutputList of this.agentOutputs.values()) {
+    for(const agentOutputList of this.agentOutputs.values()) {
       outputs.push(...agentOutputList);
     //     }
     // return {summary = Array.from(this.taskResults.values());
@@ -241,7 +240,7 @@ filter(r => r.validated).length;
   async;
   start();
   : Promise<void>
-  if (this.isRunning) return;
+  if(this.isRunning) return;
   // ; // LINT: unreachable code removed
   this.isRunning = true;
   this.intervalHandle = setInterval(() => {
@@ -251,10 +250,10 @@ filter(r => r.validated).length;
   async;
   stop();
   : Promise<void>
-  if (!this.isRunning) return;
+  if(!this.isRunning) return;
   // ; // LINT: unreachable code removed
   this.isRunning = false;
-  if (this.intervalHandle) {
+  if(this.intervalHandle) {
     clearInterval(this.intervalHandle);
   //   }
   getThroughput();

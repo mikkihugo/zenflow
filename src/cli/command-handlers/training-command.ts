@@ -2,10 +2,8 @@
  * Training Command Module
  * Converted from JavaScript to TypeScript
  */
-// {
-  Logger, JSONObject, JSONValue, JSONArray;
-// }
-from;
+// { Logger, JSONObject, JSONValue, JSONArray;
+//  } from;
 ('../types/core.js');
 printSuccess,
 printError,
@@ -20,13 +18,13 @@ export async function trainingAction() {
 // }
 try {
     switch(subcommand) {
-      case 'neural-train':;
+      case 'neural-train':
 // // await neuralTrainCommand(subArgs, flags);
         break;
-      case 'pattern-learn':;
+      case 'pattern-learn':
 // // await patternLearnCommand(subArgs, flags);
         break;
-      case 'model-update':;
+      case 'model-update':
 // // await modelUpdateCommand(subArgs, flags);
         break;default = flags;
   const __data = options.data  ?? 'recent';
@@ -48,7 +46,7 @@ try {
       console.warn(`  Epoch ${i}/${epochs}: Training... (fallback mode)`);
 // // await new Promise((resolve) => setTimeout(resolve, 200));
     //     }
-    printSuccess(`✅ Neural training completed (fallback mode)`);
+    printSuccess(`✅ Neural training completed(fallback mode)`);
   //   }
 // }
 async function patternLearnCommand(subArgs = flags;
@@ -77,10 +75,10 @@ console.warn(`🤖 Agenttype = // await checkRuvSwarmAvailable();`
 // {
   printError(`Model update failed);`
 // }
-} catch (error)
+} catch(error)
 // {
   // Fallback to showing success with default metrics
-  printSuccess(`✅ Model update completed (using cached patterns)`);
+  printSuccess(`✅ Model update completed(using cached patterns)`);
   console.warn(`🧠 ${agentType} agent model updated with new insights`);
   console.warn(`� Performance prediction improved based on);`
   console.warn(`� Update metrics);`
@@ -97,19 +95,19 @@ function showTrainingHelp() {
 
 USAGE);
                     Options, historical, custom, swarm-<id>;
-  --model <name>    Target model (default);
+  --model <name>    Target model(default);
                     Options: task-predictor, agent-selector, performance-optimizer;
-  --epochs <n>      Training epochs (default)
+  --epochs <n>      Training epochs(default)
 
-PATTERN LEARN OPTIONS:;
+PATTERN LEARN OPTIONS:
   --operation <op>  Operation type to learn from;
-  --outcome <result> Operation outcome (success/failure/partial)
+  --outcome <result> Operation outcome(success/failure/partial)
 
-MODEL UPDATE OPTIONS:;
-  --agent-type <type>      Agent type to update (coordinator, coder, researcher, etc.);
+MODEL UPDATE OPTIONS:
+  --agent-type <type>      Agent type to update(coordinator, coder, researcher, etc.);
   --operation-result <res> Result from operation execution
 
-EXAMPLES:;
+EXAMPLES:
   # Train from recent swarm operations;
   claude-zen training neural-train --data recent --model task-predictor
 
@@ -122,7 +120,7 @@ EXAMPLES:;
   # Custom training with specific epochs;
   claude-zen training neural-train --data "swarm-123" --epochs 100 --model "coordinator-predictor"
 
- Neural training improves:;
+ Neural training improves:
   • Task selection accuracy;
   • Agent performance prediction  ;
   • Coordination efficiency;

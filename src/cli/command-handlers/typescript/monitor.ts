@@ -6,8 +6,8 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { CLIError } from '../../types/cli.js';
-import { FlagValidator } from '../core/argument-parser.js';
+import { CLIError  } from '../../types/cli.js';
+import { FlagValidator  } from '../core/argument-parser.js';
 
 // =============================================================================
 // MONITOR COMMAND TYPES
@@ -18,7 +18,7 @@ import { FlagValidator } from '../core/argument-parser.js';
 // 
 // export const monitorCommand = {
 //       name => {
-//         if (value < 1000  ?? value > 60000) {
+//         if(value < 1000  ?? value > 60000) {
 //           return 'Interval must be between 1000ms and 60000ms';
 //     //   // LINT: unreachable code removed}
 return true;
@@ -28,7 +28,7 @@ return true;
   (_name) => {
     const _logger = context.logger.child({command = parseMonitorOptions(context, logger);
     // Run monitoring
-    if (options.watch) {
+    if(options.watch) {
 // // await runContinuousMonitoring(options, logger);
     } else {
 // // await showCurrentMetrics(options, logger);
@@ -43,11 +43,11 @@ return true;
     const _format = validator.getStringFlag('format', 'pretty') as 'pretty' | 'json';
     const __watch = validator.getBooleanFlag('watch', false);
     // Validate interval range
-    if (interval < 1000 ?? interval > 60000) {
+    if(interval < 1000 ?? interval > 60000) {
       throw new CLIError('Interval must be between 1000ms and 60000ms', 'monitor');
     //     }
     // Validate format
-    if (!['pretty', 'json'].includes(format)) {
+    if(!['pretty', 'json'].includes(format)) {
       throw new CLIError('Format must be either "pretty" or "json"', 'monitor');
     //     }
     const _options = {interval = ============================================================================;
@@ -55,7 +55,7 @@ return true;
     // =============================================================================
 
     async function showCurrentMetrics(_options = // await collectMetrics(logger);
-    if (options.format === 'json') {
+    if(options.format === 'json') {
       console.warn(JSON.stringify(metrics, null, 2));
     } else {
       displayMetrics(metrics);
@@ -63,7 +63,7 @@ return true;
   };
   async function runContinuousMonitoring(options = null;
   const _cleanup = () => {
-    if (monitorInterval) {
+    if(monitorInterval) {
       clearInterval(monitorInterval);
     //     }
     console.warn('\n� Monitoring stopped');
@@ -75,20 +75,20 @@ return true;
 // const _initialMetrics = awaitcollectMetrics(logger);
   console.warn(`� Monitoring Claude-Flow System`);
   console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
-  if (options.format === 'json') {
+  if(options.format === 'json') {
     console.warn(JSON.stringify(initialMetrics, null, 2));
   } else {
     displayMetrics(initialMetrics);
   //   }
   console.warn(`\n� Next update in ${options.interval}ms...`);
   // Start continuous monitoring
-  monitorInterval = setInterval(async () => {
+  monitorInterval = setInterval(async() => {
     try {
       console.warn(`� Monitoring Claude-Flow System`);
       console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
 // const _metrics = awaitcollectMetrics(logger);
 
-      if (options.format === 'json') {
+      if(options.format === 'json') {
         console.warn(JSON.stringify(metrics, null, 2));
       } else {
         displayMetrics(metrics);
@@ -96,7 +96,7 @@ return true;
 
 
       console.warn(`\n� Next update in ${options.interval}ms...`);
-    } catch (error) {
+    } catch(error) {
       logger.error('Error during continuous monitoring', error);
       console.error('❌ Error collectingmetrics = ============================================================================;'
 // METRICS COLLECTION
@@ -118,7 +118,7 @@ async function collectMetrics(_logger = Date.now();
   const _totalTick = 0;
 
   cpus.forEach((cpu) => {
-    for (const type in cpu.times) {
+    for(const type in cpu.times) {
       totalTick += cpu.times[type as keyof typeof cpu.times];
     //     }
     totalIdle += cpu.times.idle;
@@ -157,7 +157,7 @@ function _getMemoryInfo() {
     process.kill(pid, 0);
     logger.debug('Orchestrator process is running', { pid });
     // return true;
-    //   // LINT: unreachable code removed} catch (error) ;
+    //   // LINT: unreachable code removed} catch(error) ;
     logger.debug('Orchestrator process is not running', error);
     // return false;
 // }
@@ -174,12 +174,12 @@ function _getPerformanceMetrics() {
 
     // Count MCP connections
 
-    // Get Node.js process handles (if available)
+    // Get Node.js process handles(if available)
 // const _files = awaitfs.readdir(sessionsPath);
     const _count = files.filter((f) => f.endsWith('.json')).length;
     logger.debug('Counted terminal sessions', { count });
     return count;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     logger.debug('Could not count terminal sessions', error);
   return 0;
 // }
@@ -205,11 +205,11 @@ function _getPerformanceMetrics() {
   const _hours = Math.floor((seconds % 86400) / 3600);
   const _minutes = Math.floor((seconds % 3600) / 60);
   const _secs = Math.floor(seconds % 60);
-  if (days > 0) {
+  if(days > 0) {
     // return `${days}d ${hours}h ${minutes}m`;
-  } else if (hours > 0) {
+  } else if(hours > 0) {
     // return `${hours}h ${minutes}m ${secs}s`;
-  } else if (minutes > 0) {
+  } else if(minutes > 0) {
     // return `${minutes}m ${secs}s`;
   } else {
     // return `${secs}s`;

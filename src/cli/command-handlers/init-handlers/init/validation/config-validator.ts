@@ -34,7 +34,7 @@ validateRoomodes();
           result.errors.push(...validationResult.errors);
         //         }
         result.warnings.push(...validationResult.warnings);
-      } catch (/* _jsonError */) {
+      } catch(/* _jsonError */) {
         result.success = false;
         result.errors.push(`Invalid JSON in .roomodes = false;`
         result.errors.push(`Could not read .roomodes = {success = `${this.workingDir}/CLAUDE.md`;`
@@ -50,11 +50,11 @@ validateRoomodes();
         '## SPARC Development Commands' ];
 
       for(const section of requiredSections) {
-        if (!content.includes(section)) {
+        if(!content.includes(section)) {
           result.warnings.push(`Missing recommendedsection = ['npx claude-zen sparc', 'npm run build', 'npm run test'];`
 
       for(const command of importantCommands) {
-        if (!content.includes(command)) {
+        if(!content.includes(command)) {
           result.warnings.push(`Missing important commandreference = false;`
         result.errors.push('CLAUDE.md appears to be too short or empty');
       //       }
@@ -76,7 +76,7 @@ validateRoomodes();
           result.errors.push(...validationResult.errors);
         //         }
         result.warnings.push(...validationResult.warnings);
-      } catch (/* jsonError */) {
+      } catch(/* jsonError */) {
         result.success = false;
         result.errors.push(`Invalid JSON in memorydata = false;`
       result.errors.push(`Could not read memory data = {success = `${this.workingDir}/coordination.md`;`
@@ -92,7 +92,7 @@ validateRoomodes();
         '## Memory Management' ];
 
       for(const section of requiredSections) {
-        if (!content.includes(section)) {
+        if(!content.includes(section)) {
           result.warnings.push(`Missing recommended section in coordination.md = false;`
       result.errors.push(`Could not read coordination.md = {success = `${this.workingDir}/claude-zen`;`
 
@@ -105,7 +105,7 @@ validateRoomodes();
         // return result;
     //   // LINT: unreachable code removed}
 
-      // Check if executable (on Unix systems)
+      // Check if executable(on Unix systems)
       if(node.build.os !== 'windows') {
         const _isExecutable = (stat.mode & 0o111) !== 0;
         if(!isExecutable) {
@@ -118,15 +118,15 @@ validateRoomodes();
 // const _content = awaitnode.readTextFile(executablePath);
 
       // Check for required elements
-      if (content.includes('#!/usr/bin/env')) {
+      if(content.includes('#!/usr/bin/env')) {
         // Script file
-        if (!content.includes('claude-zen') && !content.includes('node run')) {
+        if(!content.includes('claude-zen') && !content.includes('node run')) {
           result.warnings.push('Executable script may not be properly configured');
         //         }
       } else {
         result.warnings.push('Executable may not have proper shebang');
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Could not validate executable = {valid = = 'object'  ?? config === null) {`
       result.valid = false;
@@ -136,13 +136,13 @@ validateRoomodes();
     // Check for required fields
     const _requiredFields = ['modes', 'version'];
     for(const field of requiredFields) {
-      if (!(field in config)) {
+      if(!(field in config)) {
         result.warnings.push(`Missing recommended field in .roomodes = = 'object'  ?? config.modes === null) {`
         result.valid = false;
         result.errors.push('.roomodes modes must be an object');
       } else {
         // Check each mode
-        for (const [modeName, modeConfig] of Object.entries(config.modes)) {
+        for(const [modeName, modeConfig] of Object.entries(config.modes)) {
           const _modeValidation = this.validateModeConfig(modeName, modeConfig);
           if(!modeValidation.valid) {
             result.warnings.push(...modeValidation.errors.map((err) => `Mode ${modeName}: ${err}`));
@@ -165,7 +165,7 @@ validateRoomodes();
     // Check for recommended fields
     const _recommendedFields = ['description', 'persona', 'tools'];
     for(const field of recommendedFields) {
-      if (!(field in modeConfig)) {
+      if(!(field in modeConfig)) {
         result.errors.push(`missing recommendedfield = = 'string') {`
       result.errors.push('description must be a string');
     //     }
@@ -184,7 +184,7 @@ validateRoomodes();
     // Check for required fields
     const _requiredFields = ['agents', 'tasks', 'lastUpdated'];
     for(const field of requiredFields) {
-      if (!(field in data)) {
+      if(!(field in data)) {
         result.warnings.push(`Missing field in memorydata = = 'number') ;`
       result.warnings.push('lastUpdated should be a timestamp number');
 

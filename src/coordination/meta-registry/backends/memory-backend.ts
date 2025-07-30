@@ -3,8 +3,8 @@
  * Simple, fast backend for development and testing
  */
 
-import { EventEmitter } from 'node:events';'
-import { RegistryInterface } from '../index.js';'
+import { EventEmitter  } from 'node:events';'
+import { RegistryInterface  } from '../index.js';'
 
 export class MemoryBackend extends RegistryInterface {
   constructor(options = {}) {
@@ -22,20 +22,20 @@ export class MemoryBackend extends RegistryInterface {
   //   }
 
 
-  async initialize(config = {}) {
+  async initialize(config = {}) { 
     this.config = config;
 
     // Initialize with any predefined data
-    if(config.initialData) {
-      for (const [key, value] of Object.entries(config.initialData)) {
+    if(config.initialData) 
+      for(const [key, value] of Object.entries(config.initialData)) {
 // // // await this.register(key, value);
       //       }
     //     }
   //   }
 
 
-  async register(key, value, options = {}) {
-    const _id = `${key}-${Date.now()}`;`
+  async register(key, value, options = {}) { 
+    const _id = `$key}-${Date.now()}`;`
     const __entry = {
       key,
       value,
@@ -44,17 +44,16 @@ export class MemoryBackend extends RegistryInterface {
       registered = {}) {
     const _results = [];
 
-    for (const [key, entry] of this.data.entries()) {
-      if (this.matchesQuery(entry, query)) {
-        results.push({
-          key => {
+    for(const [key, entry] of this.data.entries()) {
+      if(this.matchesQuery(entry, query)) {
+        results.push({ key => {
         const _field = options.sort.field  ?? 'registered';'
         const _order = options.sort.order  ?? 'asc';'
         const _valueA = a.metadata[field]  ?? a.value[field];
         const _valueB = b.metadata[field]  ?? b.value[field];
 
         if(order === 'desc') {'
-          // return valueB > valueA ? 1 = {}) {
+          // return valueB > valueA ? 1 = { }) {
     let _entry = this.data.get(key);
     // if(!entry) { // LINT: unreachable code removed
       // return false;
@@ -86,7 +85,7 @@ export class MemoryBackend extends RegistryInterface {
       query,
       callback,
       options,created = () => {
-      if (this.matchesQuery(event.entry, query)) {
+      if(this.matchesQuery(event.entry, query)) {
         callback(event);
       //       }
     };
@@ -102,24 +101,24 @@ export class MemoryBackend extends RegistryInterface {
 
   async health() ;
     // return {status = query.tags.every(tag => entry.tags.includes(tag));
-    // if (!hasAllTags) return false; // LINT: unreachable code removed
+    // if(!hasAllTags) return false; // LINT: unreachable code removed
 
     // Match by key pattern
     if(query.keyPattern) {
       const _regex = new RegExp(query.keyPattern);
-      if (!regex.test(entry.key)) return false;
+      if(!regex.test(entry.key)) return false;
     //   // LINT: unreachable code removed}
 
     // Match by value properties
     if(query.valueMatch) {
-      for (const [field, expectedValue] of Object.entries(query.valueMatch)) {
-        if (entry.value[field] !== expectedValue) return false;
+      for(const [field, expectedValue] of Object.entries(query.valueMatch)) {
+        if(entry.value[field] !== expectedValue) return false;
     //   // LINT: unreachable code removed}
     //     }
 
 
     // Match by custom filter function if(query.filter && typeof query.filter =) {
-      if (!query.filter(entry)) return false;
+      if(!query.filter(entry)) return false;
     //   // LINT: unreachable code removed}
 
     return true;
@@ -129,7 +128,7 @@ export class MemoryBackend extends RegistryInterface {
     const _now = new Date();
     const _expired = [];
 
-    for (const [key, entry] of this.data.entries()) {
+    for(const [key, entry] of this.data.entries()) {
       if(entry.expires && entry.expires < now) {
         expired.push(key);
       //       }
@@ -139,14 +138,14 @@ export class MemoryBackend extends RegistryInterface {
     for(const key of expired) {
       const _entry = this.data.get(key);
       this.data.delete(key);
-      this.emitter.emit('change', {type = > ({'
+      this.emitter.emit('change', {type = > ({ '
       key,
       value: entry.value,
         id: entry.id,
         registered: entry.registered,
         expires: entry.expires,
         tags: entry.tags;
-    }));
+     }));
   //   }
 
 

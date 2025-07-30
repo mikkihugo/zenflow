@@ -31,7 +31,7 @@ console.warn(`� Adding ${config.type} database = {id = new SQLiteConnectionPoo
             {minConnections = new SQLiteOperations(instance.pool);
           break;
 
-        case 'lancedb':;
+        case 'lancedb':
           const _lanceDB = new LanceDBInterface({dbPath = lanceDB;
           break;
 
@@ -41,7 +41,7 @@ console.warn(`� Adding ${config.type} database = {id = new SQLiteConnectionPoo
       this.databases.set(id, instance);
 
       console.warn(`✅ Database ${config.name} (${config.type})connected = this.databases.get(id);`
-if (!instance) {
+if(!instance) {
   // return false;
 // }
 console.warn(`� Removingdatabase = === 'function') {`
@@ -51,7 +51,7 @@ console.warn(`� Removingdatabase = === 'function') {`
 
       this.databases.delete(id);
       this.emit('database = this.databases.get(id);'
-    if (!instance  ?? instance.status !== 'connected') {
+    if(!instance  ?? instance.status !== 'connected') {
       // return null;
     //   // LINT: unreachable code removed}
 
@@ -65,63 +65,61 @@ console.warn(`� Removingdatabase = === 'function') {`
   async getAllDatabases(): Promise<DatabaseConnection[]> {
     const _connections = [];
 
-    for (const [id, instance] of this.databases) {
-      connections.push({
-        id,
-        //         type = {}
-  ): Promise<QueryResult> {
+    for(const [id, instance] of this.databases) {
+      connections.push({ id,
+        //         type = { }): Promise<QueryResult> {
     const _startTime = Date.now();
     const _instance = this.databases.get(databaseId);
 
-    if (!instance) {
+    if(!instance) {
       throw new Error(`Database notfound = = 'connected');`
 // {
   throw new Error(`Database notconnected = === 'vector' && 'similaritySearch' in instance.connection) {`
-        if (!query.vectorQuery) {
+        if(!query.vectorQuery) {
           throw new Error('Vector query parameters required');
         //         }
 
 
         result = {success = === 'graph' && 'executeGraphQuery' in instance.connection) {
-        if (!query.graphQuery) {
+        if(!query.graphQuery) {
           throw new Error('Graph query parameters required');
         //         }
 // const _graphResult = awaitinstance.connection.executeGraphQuery(query.graphQuery);
         result = graphResult;
 
-      } else if (instance.pool && query.sql) {
+      } else if(instance.pool && query.sql) {
         // SQL query via connection pool
 
-    for (const query of queries) {
+    for(const query of queries) {
       try {
 // const _result = awaitthis.executeQuery(databaseId, query, options);
         results.push({success = 'read_committed';
   ): Promise<OperationResult[]> {
     const _instance = this.databases.get(databaseId);
 
-    if (!instance) {
+    if(!instance) {
       throw new Error(`Database notfound = queries.map(query => ({query = // await instance.pool.executeTransaction(batchQueries);`
   return results.map((_result, _index) => ({
         success = {overall = > db.status === 'connected').length;
   //   // LINT: unreachable code removed},errors = 0;
   const _totalCount = 0;
-  for (const [id, instance] of this.databases) {
+  for(const [id, instance] of this.databases) {
     totalCount++;
 // const _dbHealth = awaitthis.checkDatabaseHealth(instance);
     report.databases[id] = dbHealth;
-    if (dbHealth.health > 0.7) {
+    if(dbHealth.health > 0.7) {
       healthyCount++;
     //     }
   //   }
   // Determine overall health
-  if (totalCount === 0) {
+  if(totalCount === 0) {
     report.overall = 'critical';
     report.systemHealth.errors.push('No databases configured');
   } else {
     const _healthRatio = healthyCount / totalCount;
-    if (healthRatio < 0.5) {
+    if(healthRatio < 0.5) {
       report.overall = 'critical';
-    } else if (healthRatio < 0.8) {
+    } else if(healthRatio < 0.8) {
       report.overall = 'degraded';
     //     }
   //   }
@@ -136,33 +134,33 @@ getMetrics();
 // {
     const __metrics = [];
 
-    for (const [_id, _instance] of this.databases) {
+    for(const [_id, _instance] of this.databases) {
 
-    for (const [_id, instance] of this.databases) {
+    for(const [_id, instance] of this.databases) {
       try {
         // Perform optimization based on database type
-        if ('optimize' in instance.connection && typeof instance.connection.optimize === 'function') {
+        if('optimize' in instance.connection && typeof instance.connection.optimize === 'function') {
 // // await instance.connection.optimize();
           optimized.push(`${instance.config.name} (${instance.type})`);
         //         }
 
 
-        if (instance.pool) {
+        if(instance.pool) {
 // // await instance.pool.cleanup();
           optimized.push(`${instance.config.name} connection pool`);
         //         }
 
 
-      } catch (_error = this.databases.get(databaseId);
+      } catch(_error = this.databases.get(databaseId);
 
-    if (!instance) {
+    if(!instance) {
       throw new Error(`Database notfound = this.databases.get(databaseId);`
 
-    if (!instance) {
+    if(!instance) {
       throw new Error(`Database notfound = this.databases.get(sourceId);`
     const _target = this.databases.get(targetId);
 
-    if (!source  ?? !target) {
+    if(!source  ?? !target) {
       throw new Error('Source or target database not found');
     //     }
 
@@ -179,7 +177,7 @@ getMetrics();
    */;
   async syncDatabases(primaryId = this.databases.get(primaryId);
 
-    if (!primary) {
+    if(!primary) {
       throw new Error(`Primary database not found = {}`
   ): Promise<Transaction> {
     // return this.transactionManager.beginTransaction(databaseIds, {isolation = [],
@@ -188,7 +186,7 @@ getMetrics();
     // return this.connectionPoolManager.executeWithPool(databaseType, query, params, {timeout = true;
     // ; // LINT: unreachable code removed
     // Stop health checks
-    if (this.healthCheckTimer) {
+    if(this.healthCheckTimer) {
       clearInterval(this.healthCheckTimer);
     //     }
 
@@ -212,7 +210,7 @@ getMetrics();
 
     try {
       // Check connection status
-      if (instance.status !== 'connected') {
+      if(instance.status !== 'connected') {
         issues.push('Database not connected');
         health -= 0.5;
       //       }
@@ -225,7 +223,7 @@ getMetrics();
 
 
       // Check response time
-      if (instance.metrics.avgResponseTime > 5000) {
+      if(instance.metrics.avgResponseTime > 5000) {
         issues.push('High average response time');
         recommendations.push('Consider query optimization');
         health -= 0.2;
@@ -233,16 +231,16 @@ getMetrics();
 
 
       // Database-specific health checks
-      if (instance.pool) {
+      if(instance.pool) {
         const _poolHealth = instance.pool.getHealth();
-        if (poolHealth.status !== 'healthy') {
+        if(poolHealth.status !== 'healthy') {
           issues.push(...poolHealth.issues);
           health -= 0.3;
         //         }
       //       }
 
 
-    } catch (error = 0;
+    } catch(error = 0;
     //     }
 
 
@@ -252,15 +250,15 @@ getMetrics();
     instance.metrics.avgResponseTime = ;
       (instance.metrics.avgResponseTime + executionTime) / 2;
 
-    if (!success) {
+    if(!success) {
       instance.metrics.errorCount++;
     //     }
   //   }
 
 
   // private startHealthChecks() {
-    this.healthCheckTimer = setInterval(async () => {
-      if (this.isShuttingDown) return;
+    this.healthCheckTimer = setInterval(async() => {
+      if(this.isShuttingDown) return;
     // ; // LINT: unreachable code removed
       try {
 

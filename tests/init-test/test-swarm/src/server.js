@@ -16,11 +16,10 @@ const _PORT = process.env.PORT ?? 3000;
 app.use(helmet());
 app.use(cors());
 // Rate limiting
-const _limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS)  ?? 15 * 60 * 1000,
+const _limiter = rateLimit({ windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS)  ?? 15 * 60 * 1000,
 max: parseInt(process.env.RATE_LIMIT_MAX)  ?? 100,
 message: 'Too many requests from this IP'
-})
+ })
 app.use('/api/', limiter)
 // Body parsing
 app.use(express.json())
@@ -30,7 +29,7 @@ app.use(express.urlencoded(
 // }
 ))
 // Metrics middleware
-if (process.env.ENABLE_METRICS === 'true') {
+if(process.env.ENABLE_METRICS === 'true') {
   app.use(metricsMiddleware);
   registerMetrics(app);
 // }
@@ -50,7 +49,7 @@ app.use('/health', healthRoutes);
 // 404 handler
 app.use((_req, res) => {
   res.status(404).json({ error);
-});
+ });
 // Error handling
 app.use(errorHandler);
 // Initialize database and start server
@@ -72,12 +71,12 @@ async function start() {
         process.exit(0);
       });
     });
-  } catch (error) {
+  } catch(error) {
     logger.error('Failed to start server);'
     process.exit(1);
   //   }
 // }
-if (require.main === module) {
+if(require.main === module) {
   start();
 // }
 module.exports = app;

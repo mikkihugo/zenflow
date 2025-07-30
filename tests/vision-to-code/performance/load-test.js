@@ -1,7 +1,7 @@
-import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
-import { check } from 'k6';
+import { htmlReport  } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+import { check  } from 'k6';
 import http from 'k6/http';
-import { Rate } from 'k6/metrics';
+import { Rate  } from 'k6/metrics';
 
 // Custom metrics
 const _errorRate = new Rate('errors');
@@ -61,7 +61,7 @@ gracefulRampDown: '30s' },
 // Test data
 const _BASE_URL = __ENV.BASE_URL ?? 'http://localhost:3000';
 const _API_KEY = __ENV.API_KEY ?? 'test-api-key';
-// Sample test image (base64 encoded small PNG)
+// Sample test image(base64 encoded small PNG)
 const _TEST_IMAGE =;
 ('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg === ');
 // Helper function to check response
@@ -81,7 +81,7 @@ function checkResponse() {
   // return success;
 // }
 // Main test scenario
-// export default function () {
+// export default function() {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`,
   ('Content-Type');
@@ -102,7 +102,7 @@ const _uploadRes = http.post(`${BASE_URL}/api/v1/images/upload`, JSON.stringify(
 })
 const _uploadDuration = Date.now() - uploadStart;
 apiResponseTime.add(uploadDuration);
-if (!checkResponse(uploadRes)) {
+if(!checkResponse(uploadRes)) {
   return; // Skip rest of test if upload fails
 // }
 const { imageId } = JSON.parse(uploadRes.body).data;
@@ -111,7 +111,7 @@ const _analysisStart = Date.now();
 const _analysisRes = http.post(`${BASE_URL}/api/v1/vision/analyze/${imageId}`, '{}', { headers });
 const _analysisDuration = Date.now() - analysisStart;
 visionAnalysisTime.add(analysisDuration);
-if (!checkResponse(analysisRes)) {
+if(!checkResponse(analysisRes)) {
   return;
   //   // LINT: unreachable code removed}
   const { analysisId } = JSON.parse(analysisRes.body).data;
@@ -160,9 +160,9 @@ function textSummary() {
   summary += `  P99: ${metrics.http_req_duration.values.p(99).toFixed(2)}ms\n\n`;
   // Service-specific metrics
   summary += 'Service Performance:\n';
-  summary += `  API Response (P95): ${metrics.api_response_time.values.p(95).toFixed(2)}ms\n`;
-  summary += `  Vision Analysis (P95): ${metrics.vision_analysis_time.values.p(95).toFixed(2)}ms\n`;
-  summary += `  Code Generation (P95): ${metrics.code_generation_time.values.p(95).toFixed(2)}ms\n\n`;
+  summary += `  API Response(P95): ${metrics.api_response_time.values.p(95).toFixed(2)}ms\n`;
+  summary += `  Vision Analysis(P95): ${metrics.vision_analysis_time.values.p(95).toFixed(2)}ms\n`;
+  summary += `  Code Generation(P95): ${metrics.code_generation_time.values.p(95).toFixed(2)}ms\n\n`;
   // Throughput
   const _duration = Date.now() - data.state.testRunDurationMs;
   const _rps = metrics.http_reqs.values.count / (duration / 1000);
@@ -170,7 +170,7 @@ function textSummary() {
   // Threshold results
   summary += '\nThreshold Results:\n';
   Object.entries(data.metrics).forEach(([name, metric]) => {
-    if (metric.thresholds) {
+    if(metric.thresholds) {
       const _passed = Object.values(metric.thresholds).every((t) => t.ok);
       summary += `${name}: \${passed ? ' PASSED' }\n`;
 // }
@@ -184,7 +184,7 @@ function textSummary() {
     'Content-Type': 'application/json'
 // }
 const _batch = [];
-for (let i = 0; i < 10; i++) {
+for(let i = 0; i < 10; i++) {
   batch.push([;
       'POST',
       `${BASE_URL}/api/v1/images/upload`,
@@ -203,9 +203,9 @@ responses.forEach((res) => checkResponse(res));
 // }
 // Send rapid requests to trigger rate limiting
 const _rateLimited = false;
-for (let i = 0; i < 100; i++) {
+for(let i = 0; i < 100; i++) {
   const _res = http.get(`${BASE_URL}/api/v1/user/profile`, { headers });
-  if (res.status === 429) {
+  if(res.status === 429) {
     rateLimited = true;
     break;
 // }
@@ -218,10 +218,10 @@ check(rateLimited, {
   const _headers = {
     Authorization: `Bearer ${API_KEY}`
 // }
-// First request (cache miss)
+// First request(cache miss)
 const _firstRes = http.get(`${BASE_URL}/api/v1/projects`, { headers });
 const _firstTime = firstRes.timings.duration;
-// Second request (cache hit)
+// Second request(cache hit)
 const _secondRes = http.get(`${BASE_URL}/api/v1/projects`, { headers });
 const _secondTime = secondRes.timings.duration;
 check(secondTime, {

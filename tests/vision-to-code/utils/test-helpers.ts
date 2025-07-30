@@ -239,10 +239,10 @@ export // interface MockImageOptions {
     const buffer = Buffer.alloc(sizeMap[size] ?? sizeMap.medium);
 
     // Add mock image headers
-    if (format === 'png') {
+    if(format === 'png') {
       // PNG header
       buffer.write('\x89PNG\r\n\x1a\n', 0);
-    } else if (format === 'jpg' || format === 'jpeg') {
+    } else if(format === 'jpg' || format === 'jpeg') {
       // JPEG header
       buffer.write('\xFF\xD8\xFF', 0);
 // }
@@ -268,13 +268,12 @@ export // interface MockImageOptions {
     // return {
       id: TestHelpers.generateTestId('vision'),
       timestamp: new Date().toISOString(),
-      components: components.map((name) => ({
-        type,
+      components: components.map((name) => ({ type,
         x: Math.random() * 100,
         y: Math.random() * 100,
         width: Math.random() * 200 + 100,
         height: Math.random() * 100 + 50,
-        confidence: confidence + (Math.random() * 0.05 - 0.025) })),
+        confidence: confidence + (Math.random() * 0.05 - 0.025)  })),
       layout: {
         type,
         columns === 'grid' ? 3 ,
@@ -308,7 +307,7 @@ export // interface MockImageOptions {
       vue: (name) =>
         `<template>\n  <div>${name} Component</div>\n</template>\n\n<script>\nexport default {\n  name: '${name}'\n}\n</script>`,
       angular: (name) =>
-        `import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}` };
+        `import { Component  } from '@angular/core';\n\n@Component({\n  selector: 'app-${name.toLowerCase()}',\n  template: '<div>${name} Component</div>'\n})\nexport class ${name}Component {}` };
 
     return {
       id: TestHelpers.generateTestId('code'),
@@ -339,8 +338,8 @@ export // interface MockImageOptions {
       errorMessage = 'Condition not met within timeout' } = options;
 
     const startTime = Date.now();
-    while (Date.now() - startTime < timeout) {
-      if (// await conditionFn()) {
+    while(Date.now() - startTime < timeout) {
+      if(// await conditionFn()) {
         // return true;
 // }
 // // await new Promise((resolve) => setTimeout(resolve, interval));
@@ -391,20 +390,20 @@ export // interface MockImageOptions {
       statusCode,
       headers: {},
       body,
-      status: function (code) {
+      status: function(code) {
         this.statusCode = code;
         return this;
       },
-      json: function (data) {
+      json: function(data) {
         this.headers['Content-Type'] = 'application/json';
         this.body = data;
         return this;
       },
-      send: function (data) {
+      send: function(data) {
         this.body = data;
         return this;
       },
-      setHeader: function (name, value) {
+      setHeader: function(name, value) {
         this.headers[name] = value;
         return this;
       } };
@@ -418,8 +417,8 @@ export // interface MockImageOptions {
   async cleanupTestFiles(directory): Promise<void> {
     try {
 // const files = awaitfs.readdir(directory);
-      for (const file of files) {
-        if (file.startsWith('test_')) {
+      for(const file of files) {
+        if(file.startsWith('test_')) {
 // // await fs.unlink(path.join(directory, file));
 // }
 // }
@@ -431,23 +430,22 @@ export // interface MockImageOptions {
   /**
    * Generate test data in batches
    */
-  async *generateTestDataBatch<T>(
-    generator: AsyncIterable<T>,
+  async *generateTestDataBatch<T>({ generator: AsyncIterable<T>,
     batchSize = 100
   ): AsyncGenerator<T[]> {
     let batch = [];
     let _count = 0;
 
-    for // await (const item of generator) {
+    for // await(const item of generator) {
       batch.push(item);
       _count++;
 
-      if (batch.length >= batchSize) {
+      if(batch.length >= batchSize) {
         yield batch;
         batch = [];
 // }
 // }
-    if (batch.length > 0) {
+    if(batch.length > 0) {
       yield batch;
 // }
   },
@@ -459,15 +457,14 @@ export // interface MockImageOptions {
     const mocks: Record<string, () => void> = {
       gemini: () => {
         const gemini = require('@google/generative-ai');
-        gemini.GoogleGenerativeAI.mockImplementation(() => ({
-          getGenerativeModel) => ({
-            generateContent: jest.fn().mockResolvedValue(response) })) }));
+        gemini.GoogleGenerativeAI.mockImplementation(() => ({ getGenerativeModel) => ({
+            generateContent: jest.fn().mockResolvedValue(response)  })) }));
       },
       openai: () => {
         // Mock OpenAI if needed
       } };
 
-    if (mocks[service]) {
+    if(mocks[service]) {
       mocks[service]();
 // }
   },
@@ -483,11 +480,11 @@ export // interface MockImageOptions {
 
     // return {
       recordRequest: (endpoint, duration, status) => {
-        metrics.requests.push({ endpoint, duration, status, timestamp: Date.now() });
+        metrics.requests.push({ endpoint, duration, status, timestamp: Date.now()  });
         metrics.durations.push(duration);
       },
       recordError: (error, endpoint) => {
-        metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now() });
+        metrics.errors.push({ error: error.message, endpoint, timestamp: Date.now()  });
       },
       getStats: () => {
         const durations = metrics.durations.sort((a, b) => a - b);

@@ -29,15 +29,15 @@ export // interface DatabaseConfig {type = =====================================
 
 
 // export // interface QueryResult<T = any> {success = ============================================================================
-// // VECTOR DATABASE (LANCEDB)
+// // VECTOR DATABASE(LANCEDB)
 // // =============================================================================
 // 
 // export interface VectorConfig {dimensions = ============================================================================
-// // GRAPH DATABASE (KUZU)
+// // GRAPH DATABASE(KUZU)
 // // =============================================================================
 // 
 // export interface GraphSchema {nodeTypes = ============================================================================
-// // SQL DATABASE (SQLITE/POSTGRESQL)
+// // SQL DATABASE(SQLITE/POSTGRESQL)
 // // =============================================================================
 // 
 // export interface TableSchema {name = ============================================================================

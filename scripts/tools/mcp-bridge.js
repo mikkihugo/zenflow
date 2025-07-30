@@ -4,8 +4,8 @@
  * Exposes service document tools  MCP tools;
  */
 
-import { ServicesOrchestrator } from './services/orchestrator.js';
-import { ClaudeFlowMCPServer } from './src/mcp/mcp-server.js';
+import { ServicesOrchestrator  } from './services/orchestrator.js';
+import { ClaudeFlowMCPServer  } from './src/mcp/mcp-server.js';
 
 class MCPBridge {
   constructor() {
@@ -13,7 +13,7 @@ class MCPBridge {
     this.orchestrator = new ServicesOrchestrator();
     this.isRunning = false;
   //   }
-  async start() {
+  async start() { 
     console.warn('� Starting Claude-Flow MCP Bridge...\n');
     // Start the services orchestrator
   // await this.orchestrator.start();
@@ -44,7 +44,7 @@ class MCPBridge {
     console.warn('✅ Service document tools bound to MCP interface');
     // Direct access methods for testing
     async;
-    createServiceDocument(serviceName, documentType, content, (metadata = {}));
+    createServiceDocument(serviceName, documentType, content, (metadata = }));
     // return await this.mcpServer.handleServiceDocumentManager({
       action: 'create',
     // serviceName, // LINT: unreachable code removed
@@ -52,8 +52,8 @@ class MCPBridge {
     content,
     approvalMetadata)
   //   }
-  async listServiceDocuments(_serviceName = null) {
-    // return await this.mcpServer.handleServiceDocumentManager({
+  async listServiceDocuments(_serviceName = null) { 
+    // return await this.mcpServer.handleServiceDocumentManager(
       action: 'list',
     // serviceName, // LINT: unreachable code removed
     documentType: 'all'
@@ -62,20 +62,18 @@ class MCPBridge {
 async;
 validateServiceDocument(serviceName, documentType);
 // {
-  // return await this.mcpServer.handleServiceDocumentValidator({
-      validateType: 'single-document',
+  // return await this.mcpServer.handleServiceDocumentValidator({ validateType: 'single-document',
   // serviceName, // LINT: unreachable code removed
   documentType
-})
+ })
 // }
 // async
 queueApproval(documentId, approver)
 // {
-  // return await this.mcpServer.handleServiceApprovalWorkflow({
-      action: 'queue',
+  // return await this.mcpServer.handleServiceApprovalWorkflow({ action: 'queue',
   // documentId, // LINT: unreachable code removed
   approver
-})
+ })
 // }
 getStatus() {}
 // {
@@ -106,9 +104,9 @@ orchestrator: this.orchestrator.getSystemStatus(),
 // export { MCPBridge };
 
 // CLI support
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   const _bridge = new MCPBridge();
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', async() => {
     console.warn('\n� Shutting down MCP Bridge...');
   // await bridge.stop();
     process.exit(0);
@@ -137,7 +135,7 @@ if (import.meta.url === `file) {`
     console.warn('� Approval queued);'
     console.warn('\n✨ MCP Bridge fully operational!');
     console.warn(' Connect Claude Desktop with);'
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Failed to start MCP Bridge);'
     process.exit(1);
   //   }

@@ -3,9 +3,9 @@
  * Direct integration with compiled Rust neural network
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync  } from 'node:fs';
 import path from 'node:path';
-import { Logger } from '../utils/logger.js';
+import { Logger  } from '../utils/logger.js';
 
 export class NativeFannBindings {
   constructor() {
@@ -15,7 +15,7 @@ export class NativeFannBindings {
     this.capabilities = {
       training,inference = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     const _binaryExists = existsSync(binaryPath) ?? existsSync(`${binaryPath}.exe`);
-    if (!binaryExists) {
+    if(!binaryExists) {
       throw new Error('ruv-FANN binary not found.Run = true;'
       this.logger.info('✅ Native ruv-FANN bindings initialized successfully');
       // return {native = // await this.executeCommand(['--help']);
@@ -24,28 +24,28 @@ export class NativeFannBindings {
       try {
 // // await this.executeCommand(['--test-training']);
         this.capabilities.training = true;
-      } catch (error) {
+      } catch(error) {
         this.logger.debug('Training capability not available');
       //       }
       // Test GPU capability
       try {
 // // await this.executeCommand(['--test-gpu']);
         this.capabilities.gpu = true;
-      } catch (error) {
+      } catch(error) {
         this.logger.debug('GPU capability not available');
       //       }
       // Test SIMD capability
       try {
 // // await this.executeCommand(['--test-simd']);
         this.capabilities.simd = true;
-      } catch (error) {
+      } catch(error) {
         this.logger.debug('SIMD capability not available');
       //       }
     //     }
     catch(error)
     throw new Error(`Capability testingfailed = // await this.executeCommand(['--version']);`
       // return result.stdout.trim();
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       // return 'unknown';
     //   // LINT: unreachable code removed}
   //   }
@@ -54,8 +54,8 @@ export class NativeFannBindings {
   /**
    * Execute ruv-FANN command
    */;
-  async executeCommand(args, input = null) {
-    // return new Promise((resolve, reject) => {
+  async executeCommand(args, input = null) { 
+    // return new Promise((resolve, reject) => 
       const _binaryPath = path.join(this.ruvFannPath, 'target/release/ruv-fann');
     // const _process = spawn(binaryPath, args, {cwd = ''; // LINT: unreachable code removed
       const _stderr = '';
@@ -78,7 +78,7 @@ export class NativeFannBindings {
 
       process.on('close', (code) => {
         if(code === 0) {
-          resolve({ stdout, stderr, code });
+          resolve({ stdout, stderr, code  });
         } else {
           reject(new Error(`Process exited with code ${code});`
     //     )
@@ -100,7 +100,7 @@ export class NativeFannBindings {
 createNetwork(config)
 : unknown
 // {
-  if (!this.isInitialized) {
+  if(!this.isInitialized) {
     throw new Error('Native bindings not initialized');
   //   }
   const _networkConfig = {layers = JSON.stringify(networkConfig);
@@ -116,7 +116,7 @@ createNetwork(config)
         networkId,input = // await this.executeCommand(['stats', networkId]);
   // return JSON.parse(result.stdout); // LINT: unreachable code removed
 // }
-catch (error)
+catch(error)
 // {
       throw new Error(`Stats retrievalfailed = // await this.executeCommand(['load', filePath]);`
 

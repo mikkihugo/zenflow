@@ -4,7 +4,7 @@
  * This script shows how agent completions automatically commit to Git;
  */
 
-import { execSync } from 'node:child_process';
+import { execSync  } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -13,7 +13,7 @@ console.warn('� ruv-swarm Git Integration Demo\n');
 try {
   execSync('git rev-parse --git-dir', { stdio);
   console.warn('✅ Git repository detected');
-} catch (/* _error */) {
+} catch(/* _error */) {
   console.warn('❌ Not in a git repository. Initializing...');
   execSync('git init');
   console.warn('✅ Git repository initialized');
@@ -21,7 +21,7 @@ try {
 // Configure git if needed
 try {
   execSync('git config user.name', { stdio);
-} catch (/* _error */) {
+} catch(/* _error */) {
   console.warn('� Setting git user config...');
   execSync('git config user.name "ruv-swarm Demo"');
   execSync('git config user.email "demo@ruv-swarm.ai"');
@@ -59,19 +59,19 @@ try {
   console.warn('- Committed);'
   console.warn('- Duration);'
   // Show the latest commit
-  if (parsed.committed) {
+  if(parsed.committed) {
     console.warn('\n� Latest Git Commit);'
     const _latestCommit = execSync('git log -1 --pretty=format);'
     console.warn(latestCommit);
   //   }
 // Show the generated report if it exists
-if (parsed.reportPath) {
+if(parsed.reportPath) {
   console.warn('\n� Generated Report Preview);'
   const _reportContent = fs.readFileSync(parsed.reportPath, 'utf-8');
   console.warn(reportContent.split('\n').slice(0, 20).join('\n'));
   console.warn('... (truncated)');
 // }
-} catch (error)
+} catch(error)
 // {
   console.error('❌ Error);'
 // }

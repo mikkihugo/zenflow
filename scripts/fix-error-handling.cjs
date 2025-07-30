@@ -19,7 +19,7 @@ files.forEach((file) => {
     // Fix unknown error types in catch blocks
 {}
       regex: /catch\s*\(\s*error\s*\)\s*{([^}]+error\.message)/g,
-      replacement: 'catch (error) {$1' },
+      replacement: 'catch(error) {$1' },
     // Fix error.message access
 {}
       regex: /(\$\{|`)error\.message/g,`
@@ -31,7 +31,7 @@ files.forEach((file) => {
     // Fix error type annotations
 {}
       regex: /catch\s*\(\s*error)/g,
-      replacement: 'catch (error)' },
+      replacement: 'catch(error)' },
     // Fix error type in functions
 {}
       regex: /\(error)/g,
@@ -40,14 +40,13 @@ files.forEach((file) => {
   patterns.forEach((pattern) => {
     const before = content;
     content = content.replace(pattern.regex, pattern.replacement);
-    if (before !== content) {
+    if(before !== content) {
       modified = true;
     }
   });
 
-  if (modified) {
-    // Add error handler import if needed
-    if (
+  if(modified) { // Add error handler import if needed
+    if(
       !content.includes("from '../utils/error-handler'") &&
       !content.includes("from '../../utils/error-handler'") &&
       content.includes('error instanceof Error')
@@ -55,7 +54,7 @@ files.forEach((file) => {
       const importPath = file.includes('cli/commands')
         ? '../../utils/error-handler'
         : '../utils/error-handler';
-      content = `import { getErrorMessage } from '${importPath}';\n${content}`;
+      content = `import { getErrorMessage  } from '${importPath}';\n${content}`;
     }
 
     fs.writeFileSync(file, content);

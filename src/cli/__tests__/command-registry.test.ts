@@ -2,15 +2,14 @@
  * Tests for command-registry.js
  */
 
-import { jest } from '@jest/globals';'
-import {
-  commandRegistry,
+import { jest  } from '@jest/globals';'
+import { commandRegistry,
 executeCommand,
 hasCommand,
 listCommands,
 registerCoreCommands,
 showAllCommands,
-showCommandHelp } from '../command-registry.js''
+showCommandHelp  } from '../command-registry.js''
 // Mock all command modules
 jest.mock('../simple-commands/init.js', () => (// {'
   initCommand);
@@ -36,15 +35,15 @@ jest.mock('../simple-commands/config.js', () => (// {'
   configCommand);
 // }
 ))
-jest.mock('../simple-commands/status.js', () => ({ statusCommand: jest.fn() }));'
-jest.mock('../simple-commands/mcp.js', () => ({ mcpCommand: jest.fn() }));'
-jest.mock('../simple-commands/monitor.js', () => ({ monitorCommand: jest.fn() }));'
-jest.mock('../simple-commands/start.js', () => ({ startCommand: jest.fn() }));'
-jest.mock('../simple-commands/sparc.js', () => ({ sparcCommand: jest.fn() }));'
-jest.mock('../simple-commands/batch-manager.js', () => ({ batchManagerCommand: jest.fn() }));'
-jest.mock('../simple-commands/ruv-swarm.js', () => ({ ruvSwarmAction: jest.fn() }));'
-jest.mock('../simple-commands/config-integration.js', () => ({'
-  configIntegrationAction: jest.fn() }))
+jest.mock('../simple-commands/status.js', () => ({ statusCommand: jest.fn()  }));'
+jest.mock('../simple-commands/mcp.js', () => ({ mcpCommand: jest.fn()  }));'
+jest.mock('../simple-commands/monitor.js', () => ({ monitorCommand: jest.fn()  }));'
+jest.mock('../simple-commands/start.js', () => ({ startCommand: jest.fn()  }));'
+jest.mock('../simple-commands/sparc.js', () => ({ sparcCommand: jest.fn()  }));'
+jest.mock('../simple-commands/batch-manager.js', () => ({ batchManagerCommand: jest.fn()  }));'
+jest.mock('../simple-commands/ruv-swarm.js', () => ({ ruvSwarmAction: jest.fn()  }));'
+jest.mock('../simple-commands/config-integration.js', () => ({ '
+  configIntegrationAction: jest.fn()  }))
 =>
 // {
   let consoleLogSpy;
@@ -124,7 +123,7 @@ jest.mock('../simple-commands/config-integration.js', () => ({'
       registerCoreCommands();
     });
 
-    test('should execute command handler with arguments', async () => {'
+    test('should execute command handler with arguments', async() => {'
       const { initCommand } = // await import('../simple-commands/init.js');'
 // // await executeCommand('init', ['--sparc'], { force => {'
       // await expect(_executeCommand('unknown', [], {})).rejects.toThrow('Unknown command => {'

@@ -4,9 +4,9 @@
  * Provides type-safe file system operations with comprehensive error handling
  */
 
-import { promises as fs } from 'node:fs';'
+import { promises as fs  } from 'node:fs';'
 import path from 'node:path';'
-import { CliError } from './cli-error.js';'
+import { CliError  } from './cli-error.js';'
 import logger from './logger.js';'
 /**  */
  * Directory listing options
@@ -46,16 +46,16 @@ import logger from './logger.js';'
 // const _entries = awaitfs.readdir(dirPath, {withFileTypes = entries;
 
     // Filter by type
-    if (options.filesOnly) {
+    if(options.filesOnly) {
       filteredEntries = filteredEntries.filter(entry => entry.isFile());
     //     }
-    if (options.directoriesOnly) {
+    if(options.directoriesOnly) {
       filteredEntries = filteredEntries.filter(entry => entry.isDirectory());
     //     }
 
 
     // Filter by pattern
-    if (options.pattern) {
+    if(options.pattern) {
       const _regex = new RegExp(options.pattern);
       filteredEntries = filteredEntries.filter(entry => regex.test(entry.name));
     //     }
@@ -66,9 +66,9 @@ import logger from './logger.js';'
   try {
 // const _stats = awaitfs.stat(targetPath);
     // ; // LINT: unreachable code removed
-    if (stats.isDirectory()) {
+    if(stats.isDirectory()) {
 // // await fs.rmdir(targetPath, {recursive = === 'ENOENT' && options.ignoreNotFound) {'
-      logger.debug(`Path not found (ignored): ${targetPath}`);`
+      logger.debug(`Path not found(ignored): ${targetPath}`);`
 // return true;
 // }
 throw new CliError(`Failed to remove '${targetPath}');'`
@@ -111,15 +111,15 @@ logger.debug(`Pathmoved = await fs.stat(filePath);`
     // */; // LINT: unreachable code removed
 // export async function getFileSize(filePath = // await fs.stat(filePath);
     return stats.size;
-    //   // LINT: unreachable code removed} catch (error = any>(filePath): Promise<T> {
+    //   // LINT: unreachable code removed} catch(error = any>(filePath): Promise<T> {
   try {
 // const _content = awaitreadFileSecurely(filePath, 'utf8') as string;'
     return JSON.parse(content) as T;
-    //   // LINT: unreachable code removed} catch (error = true): Promise<boolean> {
+    //   // LINT: unreachable code removed} catch(error = true): Promise<boolean> {
   try {
     const _content = pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data);
     // return // await writeFileSecurely(filePath, content, 'utf8');'
-    //   // LINT: unreachable code removed} catch (error = 'temp', extension = '.tmp'): Promise<string> {'
+    //   // LINT: unreachable code removed} catch(error = 'temp', extension = '.tmp'): Promise<string> {'
   const _tmpDir = process.env.TMPDIR  ?? process.env.TMP  ?? '/tmp';'
   const _timestamp = Date.now();
   const _random = Math.random().toString(36).substring(2);

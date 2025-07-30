@@ -3,7 +3,7 @@
  * Provides clear, actionable command documentation;
  */
 
-import { HelpFormatter } from './help-formatter.js';
+import { HelpFormatter  } from './help-formatter.js';
 
 export const VERSION = '2.0.0-alpha.73';
 
@@ -16,7 +16,7 @@ export const MAIN_HELP = `
     // `; // LINT): unknown`
 // {
   // Return the vibrant, emoji-rich version by default
-  if (!plain) {
+  if(!plain) {
     // return MAIN_HELP;
     //   // LINT: unreachable code removed}
     // Return plain standardized format when requested

@@ -14,7 +14,7 @@ async function testDirectWasmLoading() {
     // Try to instantiate
     const _imports = {
       env: {
-        memory: new WebAssembly.Memory({ initial, maximum }) },
+        memory: new WebAssembly.Memory({ initial, maximum  }) },
         proc_exit: (code) => {
           throw new Error(`WASI exit ${code}`);
         },
@@ -27,10 +27,10 @@ async function testDirectWasmLoading() {
     console.warn('✅ WASM module instantiated successfully!');
     console.warn('   Exports:', Object.keys(instance.exports));
   //   }
-catch (error)
+catch(error)
 // {
   console.error('❌ Error);'
-  if (error.stack) {
+  if(error.stack) {
     console.error('\nStack trace);'
     console.error(error.stack);
   //   }

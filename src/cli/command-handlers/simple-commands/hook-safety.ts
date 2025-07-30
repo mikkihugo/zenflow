@@ -20,7 +20,7 @@
     this.executions.set(key, count + 1);
 
     // Auto-reset after timeout
-    if (this.resetTimeout) clearTimeout(this.resetTimeout);
+    if(this.resetTimeout) clearTimeout(this.resetTimeout);
     this.resetTimeout = setTimeout(() => {
       this.executions.clear();
     }, HOOK_SAFETY_CONFIG.CIRCUIT_BREAKER_TIMEOUT);
@@ -68,7 +68,7 @@ const _executionTracker = new HookExecutionTracker();
     //   // LINT: unreachable code removed}
 
   // static setSafeMode(enabled = true): unknown
-    if (enabled) {
+    if(enabled) {
       process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SAFE_MODE] = 'true';
     } else {
       delete process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SAFE_MODE];
@@ -76,7 +76,7 @@ const _executionTracker = new HookExecutionTracker();
 
 
   // static setSkipHooks(enabled = true): unknown
-    if (enabled) {
+    if(enabled) {
       process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SKIP_HOOKS] = 'true';
     } else {
       delete process.env[HOOK_SAFETY_CONFIG.ENV_VARS.SKIP_HOOKS];
@@ -98,7 +98,7 @@ const _executionTracker = new HookExecutionTracker();
     // Criticalcheck = === 'Stop' && this.isClaudeCommand(command)) {
     errors.push({type = context.depth;
 
-    if (depth >= HOOK_SAFETY_CONFIG.MAX_HOOK_DEPTH) {
+    if(depth >= HOOK_SAFETY_CONFIG.MAX_HOOK_DEPTH) {
       errors.push({type = === 0 };
     //     }
 
@@ -153,7 +153,7 @@ const _executionTracker = new HookExecutionTracker();
     const _executionCount = executionTracker.track(hookType);
 
     // Stop hook protection - maximum 2 executions per session
-    if (hookType === 'Stop' && executionCount > HOOK_SAFETY_CONFIG.MAX_STOP_HOOK_EXECUTIONS) {
+    if(hookType === 'Stop' && executionCount > HOOK_SAFETY_CONFIG.MAX_STOP_HOOK_EXECUTIONS) {
       throw new Error(;
         `� CIRCUIT BREAKER ACTIVATED!\n` +;
           `Stop hook has executed ${executionCount} times in this session.\n` +;
@@ -208,7 +208,7 @@ const _executionTracker = new HookExecutionTracker();
       // return {safe = === 0,
     // configPath, // LINT: unreachable code removed
 ..validation };
-    } catch (/* err */) {
+    } catch(/* err */) {
       // return {safe = [];
     // const _errors = []; // LINT: unreachable code removed
 
@@ -254,8 +254,8 @@ const _executionTracker = new HookExecutionTracker();
     // Example = {}) {
     try {
       // Skip if hooks are disabled
-      if (HookContextManager.getContext().skipHooks) {
-        console.warn(`⏭  Skipping \$hookTypehook (hooks disabled)`);
+      if(HookContextManager.getContext().skipHooks) {
+        console.warn(`⏭  Skipping \$hookTypehook(hooks disabled)`);
         // return {success = HookCommandValidator.validateCommand(command, hookType);
     // ; // LINT: unreachable code removed
       // Show warnings
@@ -282,13 +282,13 @@ const _executionTracker = new HookExecutionTracker();
     console.warn(`� Executing hookcommand = subArgs[0];`
     // ; // LINT: unreachable code removed
   switch(subcommand) {
-    case 'validate':;
+    case 'validate':
       // return // await validateConfigCommand(subArgs, flags);
-    // case 'status':; // LINT: unreachable code removed
+    // case 'status': // LINT: unreachable code removed
       // return // await statusCommand(subArgs, flags);
-    // case 'reset':; // LINT: unreachable code removed
+    // case 'reset': // LINT: unreachable code removed
       // return // await resetCommand(subArgs, flags);
-    // case 'safe-mode':; // LINT: unreachable code removed
+    // case 'safe-mode': // LINT: unreachable code removed
       // return // await safeModeCommand(subArgs, flags);default = flags.config  ?? flags.c;
 
   console.warn('� Validating hook configuration for safety...\n');
@@ -326,7 +326,7 @@ function showHookSafetyHelp() {
 
   if(context.type) {
     // Automatically add --skip-hooks if in hook context
-    if (!command.includes('--skip-hooks')) {
+    if(!command.includes('--skip-hooks')) {
       command += ' --skip-hooks';
     //     }
   //   }
@@ -334,7 +334,7 @@ function showHookSafetyHelp() {
 
   if(context.safeMode) {
     // Add additional safety flags in safe mode
-    if (!command.includes('--dry-run')) {
+    if(!command.includes('--dry-run')) {
       command += ' --dry-run';
     //     }
   //   }

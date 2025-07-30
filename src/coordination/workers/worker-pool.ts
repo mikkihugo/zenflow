@@ -2,11 +2,11 @@
  * WorkerThreadPool - Manages a pool of worker threads for parallel swarm execution
  */
 
-import { EventEmitter } from 'node:events';'
+import { EventEmitter  } from 'node:events';'
 import os from 'node:os';'
 import path from 'node:path';'
-import { fileURLToPath } from 'node:url';'
-import { Worker } from 'node:worker_threads';'
+import { fileURLToPath  } from 'node:url';'
+import { Worker  } from 'node:worker_threads';'
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
@@ -36,8 +36,8 @@ const ___dirname = path.dirname(__filename);
   /**  */
  * Create a new worker thread
    */
-  async createWorker() {
-    if (this.workers.size >= this.maxWorkers) {
+  async createWorker() { 
+    if(this.workers.size >= this.maxWorkers) 
       throw new Error('Maximum worker limit reached');'
     //     }
 
@@ -70,10 +70,10 @@ const ___dirname = path.dirname(__filename);
   error(`Worker $workerIdmessageerror = message;`
 
   switch(_type) {
-    case 'task-completed':;'
+    case 'task-completed':'
         this.handleTaskCompleted(workerId, taskId, result);
     break;
-    case 'task-error':;'
+    case 'task-error':'
         this.handleTaskError(workerId, taskId, error);
     break;
     case 'worker-ready': {'
@@ -118,7 +118,7 @@ const ___dirname = path.dirname(__filename);
     console.warn(`� Worker ${workerId} exited`);`
 
     // Restart worker if needed and not shutting down
-    if (!this.isShuttingDown && this.workers.size < this.minWorkers) {
+    if(!this.isShuttingDown && this.workers.size < this.minWorkers) {
       setTimeout(() => this.createWorker(), 1000);
     //     }
 
@@ -128,7 +128,7 @@ const ___dirname = path.dirname(__filename);
    */
   updateWorkerStats(workerId, updates) {
     const _current = this.workerStats.get(workerId);
-    if (current) {
+    if(current) {
       this.workerStats.set(workerId, { ...current, ...updates });
     //     }
   //   }
@@ -137,17 +137,17 @@ const ___dirname = path.dirname(__filename);
   /**  */
  * Execute a task using worker threads
    */
-  async executeTask(_task) {
-    // return new Promise((_resolve, _reject) => {
+  async executeTask(_task) { 
+    // return new Promise((_resolve, _reject) => 
       const __taskId = `task-${++this.taskCounter}`;`
     // ; // LINT: unreachable code removed
     //     }
 
 
     const _availableWorker = this.selectAvailableWorker();
-    if (!availableWorker) {
+    if(!availableWorker) {
       // Try to scale up if we have capacity
-      if (this.workers.size < this.maxWorkers) {
+      if(this.workers.size < this.maxWorkers) {
         this.createWorker().then(() => this.processNextTask());
       //       }
       // return;
@@ -168,16 +168,16 @@ const ___dirname = path.dirname(__filename);
 filter(([_workerId, stats]) => stats.status === 'idle');'
 map(([workerId]) => workerId);
 
-    if (idleWorkers.length === 0) {
+    if(idleWorkers.length === 0) {
       // return null;
     //   // LINT: unreachable code removed}
 
-    switch (this.loadBalancer.strategy) {
-      case 'round-robin':;'
+    switch(this.loadBalancer.strategy) {
+      case 'round-robin':'
         // return this.selectRoundRobin(idleWorkers);
-    // case 'least-busy':; // LINT: unreachable code removed'
+    // case 'least-busy': // LINT: unreachable code removed'
         // return this.selectLeastBusy(idleWorkers);
-    // case 'performance-based':; // LINT: unreachable code removed'
+    // case 'performance-based': // LINT: unreachable code removed'
         // return this.selectPerformanceBased(idleWorkers);
     // default = idleWorkers[this.loadBalancer.roundRobinIndex % idleWorkers.length]; // LINT: unreachable code removed
     this.loadBalancer.roundRobinIndex++;
@@ -245,12 +245,12 @@ map(([workerId]) => workerId);
    */
   startHealthMonitoring() {
     setInterval(() => {
-      if (this._isShuttingDown) return;
+      if(this._isShuttingDown) return;
     // ; // LINT: unreachable code removed
-    for (const [workerId, stats] of this.workerStats.entries()) {
+    for(const [workerId, stats] of this.workerStats.entries()) {
       // Check for stuck tasks with configurable timeout
       const _taskTimeout = stats.currentTask.timeout  ?? this.defaultTaskTimeout  ?? 60000; // Default 1 minute
-      if (stats.currentTask && Date.now() - stats.currentTask.startTime > taskTimeout) {
+      if(stats.currentTask && Date.now() - stats.currentTask.startTime > taskTimeout) {
         console.warn(`⚠ Worker ${workerId} appears stuck on task ${stats.currentTask.id}`);`
         this.restartWorker(workerId);
       //       }

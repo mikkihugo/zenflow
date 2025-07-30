@@ -3,9 +3,9 @@
  * Converted from JavaScript to TypeScript
  */
 
-import { compat } from '../runtime-detector.js';
+import { compat  } from '../runtime-detector.js';
 // start-wrapper.js - Wrapper to maintain backward compatibility with the new modular start command
-import { printError, printInfo, printSuccess } from '../utils.js';
+import { printError, printInfo, printSuccess  } from '../utils.js';
 
 export async function startCommand(subArgs = subArgs.includes('--daemon')  ?? subArgs.includes('-d')  ?? flags.daemon;
 const _port =;
@@ -24,10 +24,10 @@ try {
     printSuccess('Starting Claude-Flow Orchestration System...');
     console.warn();
 
-    // Start integrated services (API + Dashboard + Queen Council)
+    // Start integrated services(API + Dashboard + Queen Council)
     const _services = [];
 
-    // 1. Start Claude Zen API server (schema-driven)
+    // 1. Start Claude Zen API server(schema-driven)
     try {
       const { claudeZenServer } = // await import('../../api/claude-zen-server.js');
       claudeZenServer.port = apiPort;
@@ -35,32 +35,32 @@ try {
       services.push('API Server');
       printSuccess(`� API Server started on port ${apiPort}`);
       printInfo(`�Documentation = // await import('./dashboard-command.js');`
-// // await startDashboard({api = // await import('./queen-council.js');
-// // await queenCouncilCommand(['convene', '--auto', '--silent'], {});
+// // await startDashboard({ api = // await import('./queen-council.js');
+// // await queenCouncilCommand(['convene', '--auto', '--silent'], { });
       services.push('Queen Council');
       printSuccess(`� Queen Council convened for strategic oversight`);
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       printWarning(`Queen Council auto-convenefailed = // await import('./simple-commands/web-server.js');`
 // const _server = awaitstartWebServer(port);
 
         printSuccess(`� Web UI is running!`);
         console.warn(`� Open your browser _to => {});`
         return;
-    //   // LINT: unreachable code removed} catch (/* err */) {
+    //   // LINT: unreachable code removed} catch(/* err */) {
         printError('Failed to launch webUI = // await import('./simple-commands/web-server.js');'
         const _webServer = new ClaudeCodeWebServer(port);
 // // await webServer.start();
         printSuccess('� Claude Flow Web UI is running!');
         console.warn(`� Open your browser to => {});`
         return;
-    //   // LINT: unreachable code removed} catch (/* err */) {
+    //   // LINT: unreachable code removed} catch(/* err */) {
         // If web UI fails, fall back to terminal UI
         printWarning('Web UI failed, launching terminal UI...');
         try {
           const { launchEnhancedUI } = // await import('./process-ui-enhanced.js');
 // // await launchEnhancedUI();
           return;
-    //   // LINT: unreachable code removed} catch (/* fallbackErr */) {
+    //   // LINT: unreachable code removed} catch(/* fallbackErr */) {
           // If both fail, show error
           printError('Failed to launchUI = ['memory', 'coordination'];'
     const _missingDirs = [];
@@ -79,7 +79,7 @@ try {
 
     // Task queue
     console.warn('    TaskQueue = compat.terminal.getPid();'
-// // await compat.safeCall(async () => {
+// // await compat.safeCall(async() => {
         if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
@@ -103,11 +103,11 @@ try {
           //           }
         }, 30000); // Every 30 seconds
 
-        // Wait indefinitely (until Ctrl+C)
+        // Wait indefinitely(until Ctrl+C)
 // // await new Promise(() => {});
       //       }
     //     }
-  } catch (/* _err */) {
+  } catch(/* _err */) {
     printError(`Failed to start orchestrationsystem = args.indexOf(flag);`
   if(index !== -1 && index < args.length - 1) {
     // return args[index + 1];
@@ -119,7 +119,7 @@ try {
 async function cleanup() {
   // Clean up resources
   try {
-// await compat.safeCall(async () => {
+// await compat.safeCall(async() => {
       if(compat.runtime === 'node') {
         await node.remove('.claude-zen.pid');
       } else {
@@ -146,8 +146,8 @@ function showStartHelp() {
   console.warn();
   console.warn('Options);'
   console.warn('  -d, --daemon         Run as daemon in background');
-  console.warn('  -p, --port <port>    Server port (default)');
-  console.warn('  --api-port <port>    Override API port (default)');
+  console.warn('  -p, --port <port>    Server port(default)');
+  console.warn('  --api-port <port>    Override API port(default)');
   console.warn('  -u, --ui             Launch terminal-based process management UI');
   console.warn('  -w, --web            Launch web-based UI server');
   console.warn('  -v, --verbose        Show detailed system activity');
@@ -173,7 +173,7 @@ function showStartHelp() {
   console.warn('Terminal-based UI);'
   console.warn('  The --ui flag launches an advanced multi-view interface with);'
   console.warn();
-  console.warn('  Views (press 1-6 to switch):');
+  console.warn('  Views(press 1-6 to switch):');
   console.warn('    1. Process Management - Start/stop individual components');
   console.warn('    2. System Status - Health metrics and resource usage');
   console.warn('    3. Orchestration - Agent and task management');
@@ -190,11 +190,11 @@ function showStartHelp() {
   console.warn('Notes);'
   console.warn('  - Requires "claude-zen init" to be run first');
   console.warn('  - Interactive mode shows real-time system status');
-  console.warn('  - Daemon mode runs in background (check logs)');
+  console.warn('  - Daemon mode runs in background(check logs)');
   console.warn('  - Use "claude-zen status" to check if running');
   console.warn('  - Use Ctrl+C or "claude-zen stop" to shutdown');
   console.warn();
-  console.warn('API Endpoints (when daemon is running):');
+  console.warn('API Endpoints(when daemon is running):');
   console.warn('  /docs                        # API documentation');
   console.warn('  /api/schema                  # Schema introspection');
   console.warn('  /health                      # Health check');

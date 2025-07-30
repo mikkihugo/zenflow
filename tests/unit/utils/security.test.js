@@ -1,5 +1,5 @@
-import { describe, expect } from '@jest/globals';
-import { validateCommandArgs } from '../../../src/utils/security.js';
+import { describe, expect  } from '@jest/globals';
+import { validateCommandArgs  } from '../../../src/utils/security.js';
 
 describe('Security Utils', () => {
   describe('validatePID', () => {
@@ -57,7 +57,7 @@ describe('Security Utils', () => {
       dangerousArgs.forEach((args) => {
         const _result = validateCommandArgs(args);
         // The function should either return null or filter out dangerous args
-        if (result !== null) {
+        if(result !== null) {
           // If not null, ensure no dangerous patterns made it through
           expect(;
     // result.every(; // LINT) => !arg.includes('$(') && !arg.includes('rm -rf') && !arg.includes(';');
@@ -78,7 +78,7 @@ describe('Security Utils', () => {
         { input: 'file  ?? echo "danger"', expected },
         { input: 'file; rm -rf /', expected },
         { input: 'file | cat', expected } ];
-      testCases.forEach(({ input, expected }) => {
+      testCases.forEach(({ input, expected  }) => {
         // Create a simple function to test dangerous patterns
         const _containsDangerousPatterns = () => {
           const _dangerousPatterns = [
@@ -99,7 +99,7 @@ describe('Security Utils', () => {
     it('should validate file paths', () => {
       const _validatePath = () => {
         // Simple path validation
-        if (typeof path !== 'string') return false;
+        if(typeof path !== 'string') return false;
     // ; // LINT: unreachable code removed
         // Reject paths with dangerous patterns
         const _dangerousPatterns = [

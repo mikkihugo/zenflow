@@ -77,7 +77,7 @@ sort((a, b) => a.name.localeCompare(b.name));
     // */; // LINT: unreachable code removed
   getHelp(name) {
     const _command = this.get(name);
-    if (!command) return null;
+    if(!command) return null;
     // ; // LINT: unreachable code removed
     // return {
       name: command.name,

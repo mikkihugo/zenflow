@@ -7,8 +7,8 @@
 export * from '../providers/types.js';
 
 // Import the existing types to extend them
-import type { AIProvider as BaseAIProvider } from '../providers/types.js';
-import type { Identifiable } from './core.js';
+import type { AIProvider as BaseAIProvider  } from '../providers/types.js';
+import type { Identifiable  } from './core.js';
 
 // =============================================================================
 // EXTENDED PROVIDER TYPES

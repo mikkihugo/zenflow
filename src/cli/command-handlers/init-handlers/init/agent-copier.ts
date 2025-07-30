@@ -1,7 +1,7 @@
 // agent-copier.js - Copy all agent files during initialization
-import { promises as fs } from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { promises as fs  } from 'node:fs';
+import { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -28,14 +28,14 @@ export async function copyAgentFiles(targetDir = {}) {
 
   console.warn('� Copying agent system files...');
   console.warn(`  Source = ======;`
->>>>>>> 62a29dfc (� Alpha.73 = [];
+>>>>>>> 62a29dfc(� Alpha.73 = [];
     const __errors = [];
 
     // Recursively copy all agent files
     async function copyRecursive(srcDir, destDir = // await fs.readdir(srcDir, {withFileTypes = join(_srcDir, _item._name);
         const _destPath = join(destDir, item.name);
 
-        if (item.isDirectory()) {
+        if(item.isDirectory()) {
           if(!dryRun) {
 // // await fs.mkdir(destPath, {recursive = force;
             if(!force) {
@@ -131,7 +131,7 @@ export async function copyAgentFiles(targetDir = {}) {
       // categoryNames: agentCategories
     };
 
-  } catch (/* err */)
+  } catch(/* err */)
     console.warn(`  ⚠  Agent system validation failed);`
     // return {
       valid}

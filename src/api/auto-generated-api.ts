@@ -5,7 +5,7 @@
  * Automatically generates REST endpoints, GraphQL schema, and WebSocket handlers;
  * from the CLI command registry with full validation and real-time features.;
  *;
- * Features:;
+ * Features:
  * - ✅ REST API with OpenAPI docs;
  * - ✅ GraphQL schema generation;
  * - ✅ WebSocket real-time commands;
@@ -15,13 +15,13 @@
  * - ✅ Metrics & monitoring;
  */
 
-import { EventEmitter } from 'node:events';
-import { createServer } from 'node:http';
+import { EventEmitter  } from 'node:events';
+import { createServer  } from 'node:http';
 import cors from 'cors';
-import express, { type NextFunction, type Request, type Response } from 'express';
+import express, { type NextFunction, type Request, type Response  } from 'express';
 // import rateLimit from 'express-rate-limit';
 // import helmet from 'helmet';
-// import type { WebSocket } from 'ws';
+// import type { WebSocket  } from 'ws';
 
 // export // interface APIGeneratorOptions {
 //   port?;
@@ -78,10 +78,9 @@ this.setupMiddleware();
 /**
  * Start the API server;
  */
-// async
-start() {}
+// async start() { }
 : Promise<
-// {
+// 
   // port: number
   // host: string
   urls
@@ -92,7 +91,7 @@ start() {}
       this.server = createServer(this.app);
     // ; // LINT: unreachable code removed
       this.server.listen(this.options.port, this.options.host, (err?) => {
-        if (err) {
+        if(err) {
           reject(err);
           return;
     //   // LINT: unreachable code removed}
@@ -108,7 +107,7 @@ start() {}
             `http://${this.options.host}:${this.options.port}/api`,
             `http://${this.options.host}:${this.options.port}/docs` ] };
 
-        if (this.options.enableWebSocket) {
+        if(this.options.enableWebSocket) {
           this.setupWebSocket();
           result.urls.push(`ws);`
         //         }
@@ -127,14 +126,14 @@ stop();
 : Promise<void>
 // {
   // return new Promise((resolve) => {
-      if (!this.server) {
+      if(!this.server) {
         resolve();
     // return; // LINT: unreachable code removed
       //       }
 
 
       // Close WebSocket connections
-      if (this.wss) {
+      if(this.wss) {
         this.wss.close();
       //       }
 
@@ -155,23 +154,22 @@ stop();
 // {
   // Security
   this.app.use(;
-  helmet({
-    contentSecurityPolicy, // Allow dynamic content for docs
-  });
+  helmet({ contentSecurityPolicy, // Allow dynamic content for docs
+   });
   //   )
   // CORS
-  if (this.options.cors) {
+  if(this.options.cors) {
     this.app.use(cors());
   //   }
   // Rate limiting
-  if (this.options.rateLimit) {
+  if(this.options.rateLimit) {
     const _limiter = rateLimit({
       windowMs);
     this.app.use(limiter);
   //   }
   // Body parsing
   this.app.use(express.json({ limit));
-  this.app.use(express.urlencoded({ extended}));
+  this.app.use(express.urlencoded({ extended }));
   // Logging
   this.app.use((req, _res, next) => {
     this.metrics.apiCalls++;
@@ -194,16 +192,14 @@ initializeEndpoints();
 
       // Health check
       this.app.get('/health', (_req, res) => {
-        res.json({
-          status: 'healthy',
+        res.json({ status: 'healthy',
           uptime: Date.now() - this.metrics.uptime,
-          metrics: this.metrics });
+          metrics: this.metrics  });
       //       }
   //   )
   // API documentation
   this.app.get('/docs', (_req, res) =>
-    res.json(
-    title: 'Claude Code Flow API',
+    res.json({ title: 'Claude Code Flow API',
   version: '1.0.0',
   description: 'Auto-generated API from CLI commands',
   endpoints: this.getEndpointList())
@@ -212,12 +208,11 @@ initializeEndpoints();
 this.app.use((err, _req, res, _next) =>
     this.metrics.errors++
   console.error('API Error:', err)
-  res.status(500).json(
-          error: 'Internal Server Error',
+  res.status(500).json({ error: 'Internal Server Error',
   message: err.message)
 // )
 // }
-catch (error)
+catch(error)
 // {
   console.error('Failed to initialize endpoints);'
   throw error;
@@ -231,11 +226,10 @@ catch (error)
 // {
   // API info
   this.app.get('/api', (_req, res) => {
-    res.json({
-        name: 'Claude Code Flow API',
+    res.json({ name: 'Claude Code Flow API',
     version: '1.0.0',
     endpoints: this.getEndpointList(),
-    metrics: this.metrics });
+    metrics: this.metrics  });
 // }
 // )
 // Commands list
@@ -247,12 +241,12 @@ this.app.get('/api/commands', (_req, res) =>
 // )
 })
 // Execute command
-this.app.post('/api/execute', async (req, res) =>
+this.app.post('/api/execute', async(req, res) =>
 // {
   try {
         const { command, args = {} } = req.body;
 
-        if (!command) {
+        if(!command) {
           // return res.status(400).json({
             error);
         //         }
@@ -274,7 +268,7 @@ this.app.post('/api/execute', async (req, res) =>
   command,
   args }
 // )
-} catch (error)
+} catch(error)
 // {
   this.metrics.errors++;
   res.status(500).json({
@@ -287,7 +281,7 @@ this.app.post('/api/execute', async (req, res) =>
 this.app.get('/api/status/) =>'
 // {
   const _session = this.executionSessions.get(req.params.sessionId);
-  if (!session) {
+  if(!session) {
     return res.status(404).json({
           error);
   //   }
@@ -310,7 +304,7 @@ this.app.get('/api/metrics', (_req, res) =>
 // private setupWebSocket() {}
 : void
 // {
-  if (!this.server) return;
+  if(!this.server) return;
   // ; // LINT: unreachable code removed
   this.wss = new WebSocketServer({ server);
   this.wss.on('connection', (ws) => {
@@ -319,7 +313,7 @@ this.app.get('/api/metrics', (_req, res) =>
         try {
           const _message = JSON.parse(data.toString());
           this.handleWebSocketMessage(ws, message);
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           ws.send(;
             JSON.stringify({
               error);
@@ -345,7 +339,7 @@ this.app.get('/api/metrics', (_req, res) =>
 // private handleWebSocketMessage(ws, message)
 : void
 // {
-  switch (message.type) {
+  switch(message.type) {
     case 'subscribe': null
       this.handleSubscribe(ws, message);
       break;
@@ -369,7 +363,7 @@ this.app.get('/api/metrics', (_req, res) =>
 : void
 // {
   const { channel } = message;
-  if (!this.realtimeSubscriptions.has(channel)) {
+  if(!this.realtimeSubscriptions.has(channel)) {
     this.realtimeSubscriptions.set(channel, []);
   //   }
   this.realtimeSubscriptions.get(channel)?.push(ws);
@@ -388,9 +382,9 @@ this.app.get('/api/metrics', (_req, res) =>
 // {
   const { channel } = message;
   const _subscribers = this.realtimeSubscriptions.get(channel);
-  if (subscribers) {
+  if(subscribers) {
     const _index = subscribers.indexOf(ws);
-    if (index !== -1) {
+    if(index !== -1) {
       subscribers.splice(index, 1);
     //     }
   //   }
@@ -419,11 +413,10 @@ handleWebSocketExecute(ws, message)
 this.executionSessions.set(sessionId, session);
 // Send session info
 ws.send(;
-JSON.stringify({
-        type: 'execution_started',
+JSON.stringify({ type: 'execution_started',
 sessionId,
 command,
-args })
+args  })
 // )
 // Execute command with real-time updates
 // // await this.executeCommand(session, ws)
@@ -438,7 +431,7 @@ executeCommand(session, ws?)
   try {
       session.status = 'running';
 
-      if (ws) {
+      if(ws) {
         ws.send(;
           JSON.stringify({
             type);
@@ -449,7 +442,7 @@ executeCommand(session, ws?)
 // // await this.simulateCommandExecution(session, ws);
   session.status = 'completed';
   session.result = { success, message: 'Command completed successfully' };
-  if (ws) {
+  if(ws) {
     ws.send(;
     JSON.stringify({
             type: 'execution_completed',
@@ -458,11 +451,11 @@ executeCommand(session, ws?)
   //   )
   //   )
 // }
-} catch (error)
+} catch(error)
 // {
   session.status = 'error';
   session.error = error instanceof Error ? error.message : 'Unknown error';
-  if (ws) {
+  if(ws) {
     ws.send(;
     JSON.stringify({
             type: 'execution_error',
@@ -482,10 +475,10 @@ session,
 ws?
 ): Promise<void>
 // {
-  for (let i = 0; i <= 100; i += 10) {
+  for(let i = 0; i <= 100; i += 10) {
 // // await new Promise((resolve) => setTimeout(resolve, 100));
     session.progress = i;
-    if (ws) {
+    if(ws) {
       ws.send(;
       JSON.stringify({
             type: 'execution_progress',
@@ -502,11 +495,11 @@ ws?
 // private removeWebSocketSubscriptions(ws)
 : void
 // {
-  for (const [channel, subscribers] of this.realtimeSubscriptions.entries()) {
+  for(const [channel, subscribers] of this.realtimeSubscriptions.entries()) {
     const _index = subscribers.indexOf(ws);
-    if (index !== -1) {
+    if(index !== -1) {
       subscribers.splice(index, 1);
-      if (subscribers.length === 0) {
+      if(subscribers.length === 0) {
         this.realtimeSubscriptions.delete(channel);
       //       }
     //     }

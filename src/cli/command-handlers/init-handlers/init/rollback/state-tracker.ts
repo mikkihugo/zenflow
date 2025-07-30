@@ -17,12 +17,12 @@ recordRollbackPoint(type, data);
   const _rollbackPoint = {id = state.rollbackPoints  ?? [];
   state.rollbackPoints.push(rollbackPoint);
   // Keep only the last 10 rollback points
-  if (state.rollbackPoints.length > 10) {
+  if(state.rollbackPoints.length > 10) {
     state.rollbackPoints = state.rollbackPoints.slice(-10);
   //   }
 // // await this.saveState(state);
 // }
-catch (error)
+catch(error)
 // {
       result.success = false;
       result.errors.push(`Failed to record rollback point = {success = // await this.loadState();`
@@ -37,7 +37,7 @@ catch (error)
         state.checkpoints = state.checkpoints.slice(-20);
       //       }
 // // await this.saveState(state);
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Failed to create checkpoint = {success = // await this.loadState();`
 
@@ -73,8 +73,8 @@ catch (error)
   /**  */
  * Get checkpoints
    */
-  async getCheckpoints() {
-    try {
+  async getCheckpoints() { 
+    try 
 // const _state = awaitthis.loadState();
       // return state.checkpoints  ?? [];
     //   // LINT: unreachable code removed} catch {
@@ -86,8 +86,8 @@ catch (error)
   /**  */
  * Get rollback history
    */
-  async getRollbackHistory() {
-    try {
+  async getRollbackHistory() { 
+    try 
 // const _state = awaitthis.loadState();
       // return state.rollbackHistory  ?? [];
     //   // LINT: unreachable code removed} catch {
@@ -99,8 +99,8 @@ catch (error)
   /**  */
  * Track file operation
    */
-  async trackFileOperation(operation, filePath, metadata = {}) {
-    const _result = {success = await this.loadState();
+  async trackFileOperation(operation, filePath, metadata = {}) { 
+    const _result = success = await this.loadState();
 
       const _fileOp = {id = state.fileOperations  ?? [];
       state.fileOperations.push(fileOp);
@@ -110,7 +110,7 @@ catch (error)
         state.fileOperations = state.fileOperations.slice(-100);
       //       }
 // // await this.saveState(state);
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Failed to track fileoperation = // await this.loadState();`
       // return state.currentPhase  ?? 'not-started';catch ;
@@ -120,8 +120,8 @@ catch (error)
   /**  */
  * Set current initialization phase
    */
-  async setCurrentPhase(phase) {
-    const _result = {success = await this.loadState();
+  async setCurrentPhase(phase) { 
+    const _result = success = await this.loadState();
       state.currentPhase = phase;
       state.phaseTimestamp = Date.now();
 
@@ -166,7 +166,7 @@ catch (error)
       if(cleaned > 0) {
 // // await this.saveState(state);
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`State cleanup failed = {success = // await this.loadState();`
 
@@ -185,7 +185,7 @@ catch (error)
         success = {success = false;
     // result.errors.push('Invalid state data structure'); // LINT: unreachable code removed
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`State importfailed = // await node.readTextFile(this.stateFile);`
       // return JSON.parse(content);catch ;
@@ -210,10 +210,10 @@ catch (error)
     // Check required fields
     const _requiredFields = ['version', 'created', 'lastActivity'];
     for(const field of requiredFields) {
-      if (!(field in state)) {
+      if(!(field in state)) {
         result.issues.push(`Missing requiredfield = ['rollbackPoints', 'checkpoints', 'rollbackHistory', 'fileOperations'];`
     for(const field of arrayFields) {
-      if (field in state && !Array.isArray(state[field])) {
+      if(field in state && !Array.isArray(state[field])) {
         result.issues.push(`Field ${field} must be an array`);
       //       }
     //     }

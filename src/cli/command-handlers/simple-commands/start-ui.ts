@@ -3,8 +3,8 @@
  * Converted from JavaScript to TypeScript;
  */
 
-// start-ui.js - Standalone UI launcher (Web UI by default)
-import { printError } from '../utils.js';
+// start-ui.js - Standalone UI launcher(Web UI by default)
+import { printError  } from '../utils.js';
 
 export async function launchUI(args = []) {
   try {
@@ -25,7 +25,7 @@ export async function launchUI(args = []) {
         console.warn(`� Open your browserto = process.platform === 'darwin';`
               ? 'open';
               );
-          exec(`${openCommand}http = async () => {`
+          exec(`${openCommand}http = async() => {`
           console.warn('\n' + '⏹  Shutting down Web UI...');
 // await webServer.stop();
           printSuccess(' Shutdown complete');
@@ -37,21 +37,21 @@ export async function launchUI(args = []) {
 
         // Keep process alive
 // // await new Promise(() => {});
-      } catch (/* _err */) {
+      } catch(/* _err */) {
         printError(`Failed to launch WebUI = // await import('./process-ui-enhanced.js');`
 // // await launchEnhancedUI();
-  } catch (/* err */) {
+  } catch(/* err */) {
     // Try simple UI as fallback
     try {
       let ProcessManager, ProcessUI;
       try {
-        // Try the compiled version first (for production/npm packages)
+        // Try the compiled version first(for production/npm packages)
 // const _pmModule = awaitimport('../../../dist/cli/commands/start/process-manager.js');
 // const _puiModule = awaitimport('../../../dist/cli/commands/start/process-ui-simple.js');
         ProcessManager = pmModule.ProcessManager;
         ProcessUI = puiModule.ProcessUI;
-      } catch (/* distError */) {
-        // If dist version not found, try TypeScript version (for development)
+      } catch(/* distError */) {
+        // If dist version not found, try TypeScript version(for development)
 // const _pmModule = awaitimport('../commands/start/process-manager.ts');
 // const _puiModule = awaitimport('../commands/start/process-ui-simple.ts');
         ProcessManager = pmModule.ProcessManager;
@@ -72,7 +72,7 @@ export async function launchUI(args = []) {
 // // await processManager.stopAll();
       console.warn();
       printSuccess(' Shutdown complete');
-    } catch (/* fallbackErr */) {
+    } catch(/* fallbackErr */) {
       printError(`Failed to launch TerminalUI = args.indexOf(flag);`
   if(index !== -1 && index < args.length - 1) {
     // return args[index + 1];

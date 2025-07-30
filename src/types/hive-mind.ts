@@ -2,14 +2,13 @@
  * Hive Mind Types;
  * Multi-Queen coordination and persistent intelligence system;
  */
-import type {
-  Identifiable,
+import type { Identifiable,
 JSONObject,
 LifecycleManager,
 ResourceUsage,
-TypedEventEmitter } from './core'
+TypedEventEmitter  } from './core'
 
-import type { QueenMetrics } from './queen';
+import type { QueenMetrics  } from './queen';
 
 // =============================================================================
 // HIVE MIND CORE TYPES

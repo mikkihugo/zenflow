@@ -19,11 +19,11 @@ if(!hasProjectFile) {
   console.warn('Warning = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));'
 
 // Create target .claude directory
-if (!fs.existsSync(TARGET_DIR)) {
+if(!fs.existsSync(TARGET_DIR)) {
   fs.mkdirSync(TARGET_DIR, {recursive = path.join(TARGET_DIR, dirInfo.path);
-  if (!fs.existsSync(targetPath)) {
+  if(!fs.existsSync(targetPath)) {
     fs.mkdirSync(targetPath, {recursive = path.join(targetPath, 'README.md');
-    if (!fs.existsSync(readmePath)) {
+    if(!fs.existsSync(readmePath)) {
       fs.writeFileSync(readmePath, `# ${dirName}\n\nThis directory will be populated during usage.\n`);
     //     }
   //   }
@@ -40,10 +40,10 @@ for(const file of manifest.files) {
   const _targetPath = path.join(TARGET_DIR, file.destination);
 
   try {
-    if (fs.existsSync(sourcePath)) {
+    if(fs.existsSync(sourcePath)) {
       // Ensure target directory exists
       const _targetDir = path.dirname(targetPath);
-      if (!fs.existsSync(targetDir)) {
+      if(!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir, { recursive = {deployed = '.repeat(50));'
 console.warn('DeploymentSummary = === 0) {'
   console.warn('\n� Template deployed successfully!');

@@ -3,7 +3,7 @@
  * Comprehensive event-driven architecture for system-wide coordination;
  */
 
-import type { Identifiable } from './core';
+import type { Identifiable  } from './core';
 
 // =============================================================================
 // EVENT CORE TYPES

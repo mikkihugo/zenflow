@@ -1,7 +1,7 @@
 // utils.ts - Shared CLI utility functions
 
-import { Logger } from '../cli/core/logger.ts';
-import { SqliteMemoryStore } from '../memory/sqlite-store.ts';
+import { Logger  } from '../cli/core/logger.ts';
+import { SqliteMemoryStore  } from '../memory/sqlite-store.ts';
 
 const __logger = new Logger('cli-utils');
 // Color formatting functions
@@ -38,12 +38,12 @@ export async function fileExists(path = {}): Promise<object> {
 // export function parseFlags(args = {};
 const _providedFlags = new Set<string>(); // Track explicitly provided flags
 const _filteredArgs = [];
-for (let i = 0; i < args.length; i++) {
+for(let i = 0; i < args.length; i++) {
   const _arg = args[i];
-  if (arg.startsWith('--')) {
+  if(arg.startsWith('--')) {
     const _flagName = arg.substring(2);
     const _nextArg = args[i + 1];
-    if (nextArg && !nextArg.startsWith('--')) {
+    if(nextArg && !nextArg.startsWith('--')) {
       flags[flagName] = nextArg;
       providedFlags.add(flagName);
       i++; // Skip next arg since we consumed it
@@ -51,10 +51,10 @@ for (let i = 0; i < args.length; i++) {
       flags[flagName] = true;
       providedFlags.add(flagName);
     //     }
-  } else if (arg.startsWith('-') && arg.length > 1) {
+  } else if(arg.startsWith('-') && arg.length > 1) {
     // Short flags
     const _shortFlags = arg.substring(1);
-    for (const flag of shortFlags) {
+    for(const flag of shortFlags) {
       flags[flag] = true;
       providedFlags.add(flag);
     //     }
@@ -66,7 +66,7 @@ for (let i = 0; i < args.length; i++) {
     flags,args = [], options = {}): Promise<any> {
   try {
     // Check if we're in Node.js or node environment'
-    if (typeof process !== 'undefined' && (_process _as _any).versions && (process as any).versions.node) {
+    if(typeof process !== 'undefined' && (_process _as _any).versions && (process as any).versions.node) {
       // Node.js environment
       const { spawn } = // await import('node);'
 // const { promisify  // LINT: unreachable code removed} = // await import('node);'
@@ -82,16 +82,15 @@ for (let i = 0; i < args.length; i++) {
         });
 
         child.on('close', (code) => {
-          resolve({
-            success = === 0,
+          resolve({ success = === 0,
             _code => {
-          resolve({success = new (process as any).Command(command, {
+          resolve({success = new(process as any).Command(command, {
         args,
-..options });
+..options  });
 // const __result = awaitcmd.output();
 
       // return {success = === 0,code = 'claude-zen.config.json'): Promise<object> {
-  const _defaultConfig = {terminal = // await (process as any).readTextFile(path);
+  const _defaultConfig = {terminal = // await(process as any).readTextFile(path);
     // return { ...defaultConfig, ...JSON.parse(content)  // LINT: unreachable code removed};
   } catch {
     // return defaultConfig;
@@ -110,14 +109,14 @@ for (let i = 0; i < args.length; i++) {
 // }
 // Array helpers
 // export function chunk<_T>(array = [];
-for (let i = 0; i < array.length; i += size) {
+for(let i = 0; i < array.length; i += size) {
   chunks.push(array.slice(i, i + size));
 // }
 return chunks;
 // }
 // Environment helpers
 // export function getEnvVar(name = null) {
-  return (process as any).env.get(name) ?? defaultValue;
+  return(process as any).env.get(name) ?? defaultValue;
 // }
 // export function setEnvVar(_name = '') {
   const _percentage = Math.round((current / total) * 100);
@@ -131,11 +130,11 @@ return chunks;
 // export function sleep(ms = > setTimeout(resolve, ms));
 // }
 // export async function retry<T>(fn = > Promise<T>, maxAttempts = 3, delay = 1000): Promise<T> {
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+  for(let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
-    //   // LINT: unreachable code removed} catch (/* err */) {
-      if (attempt === maxAttempts) {
+    //   // LINT: unreachable code removed} catch(/* err */) {
+      if(attempt === maxAttempts) {
         throw err;
       //       }
 // // await sleep(delay * attempt);
@@ -145,21 +144,21 @@ return chunks;
 
 
 // ruv-swarm source integration - Using consolidated main implementation
-// import { RuvSwarm } from '../../ruv-FANN/ruv-swarm/npm/src/index.js';
+// import { RuvSwarm  } from '../../ruv-FANN/ruv-swarm/npm/src/index.js';
 
 // Singleton ruv-swarm instance
 const _ruvSwarmInstance = null;
 const __memoryStoreInstance = null;
 async function _getRuvSwarmInstance(): Promise<any> {
-  if (!ruvSwarmInstance) {
+  if(!ruvSwarmInstance) {
     // Initialize memory store
-    _memoryStoreInstance = new SqliteMemoryStore({dbName = new RuvSwarm({
+    _memoryStoreInstance = new SqliteMemoryStore({ dbName = new RuvSwarm({
       memoryStore,
-      telemetryEnabled = {}): Promise<any>
+      telemetryEnabled = { }): Promise<any>
   try {
 // const _ruvSwarm = await_getRuvSwarmInstance();
 
-    switch (operation) {
+    switch(operation) {
       case 'swarm_init': {
 // const __swarm = awaitruvSwarm.createSwarm(params);
         // return {success = // await ruvSwarm.spawnAgent(params);
@@ -182,7 +181,7 @@ async function _getRuvSwarmInstance(): Promise<any> {
 // }
 
 
-// Direct ruv-swarm neural training (real WASM implementation)
+// Direct ruv-swarm neural training(real WASM implementation)
 // export async function _callRuvSwarmDirectNeural(params = {}): Promise<any> {
   try {
     const _modelName = (params as any).model  ?? 'general';
@@ -220,11 +219,11 @@ async function _getRuvSwarmInstance(): Promise<any> {
       let _latestFile = null;
       let _latestTime = 0;
 
-      for // await (const file of files) {
-        if (file.name.startsWith(`training-\$modelName-`) && file.name.endsWith('.json')) {
+      for // await(const file of files) {
+        if(file.name.startsWith(`training-\$modelName-`) && file.name.endsWith('.json')) {
           const _filePath = `\$neuralDir/\$file.name`;
 // const _stat = await(process as any).stat(filePath);
-          if (stat.mtime > latestTime) {
+          if(stat.mtime > latestTime) {
             latestTime = stat.mtime;
             latestFile = filePath;
           //           }
@@ -232,7 +231,7 @@ async function _getRuvSwarmInstance(): Promise<any> {
       //       }
 
 
-      if (latestFile) {
+      if(latestFile) {
 // const _content = await(process as any).readTextFile(latestFile);
 
         // return {success = === 0,modelId = === 0,
@@ -244,7 +243,7 @@ async function _getRuvSwarmInstance(): Promise<any> {
     // Add parameters as CLI arguments
     Object.entries(params).forEach(([key, value]) => {
       args.push(`--\$key`);
-      if (value !== true && value !== false) {
+      if(value !== true && value !== false) {
         args.push(String(value));
       //       }
     });

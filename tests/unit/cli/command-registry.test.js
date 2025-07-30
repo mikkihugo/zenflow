@@ -1,7 +1,7 @@
-import { promises  } from 'node:fs';
+import { promises   } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it  } from '@jest/globals';
 
 // Mock meow and dependencies
 jest.mock('meow', () =>;
@@ -33,23 +33,23 @@ createHelpText: jest.fn(() => 'Claude Zen CLI Help') }))
 describe('CLI Command Registry', () =>
 // {
   let testDir;
-  beforeEach(async () => {
+  beforeEach(async() => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-cli-test-'));
     process.chdir(testDir);
   });
-  afterEach(async () => {
+  afterEach(async() => {
     try {
   // await fs.rm(testDir, { recursive, force });
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       // Ignore cleanup errors
     //     }
   });
   describe('command registry initialization', () => {
-    it('should initialize command registry', async () => {
+    it('should initialize command registry', async() => {
       const { initializeCommandRegistry } = await import('../../../src/cli/command-registry.js');
   // await expect(initializeCommandRegistry()).resolves.not.toThrow();
     });
-    it('should create meow CLI instance', async () => {
+    it('should create meow CLI instance', async() => {
       const { createMeowCLI } = await import('../../../src/cli/command-registry.js');
 // const _cli = awaitcreateMeowCLI();
       expect(cli).toBeDefined();
@@ -58,7 +58,7 @@ describe('CLI Command Registry', () =>
     });
   });
   describe('command execution', () => {
-    it('should handle init command', async () => {
+    it('should handle init command', async() => {
       const _initCommand = {
         name: 'init',
       description: 'Initialize a new Claude Zen project',
@@ -67,11 +67,11 @@ describe('CLI Command Registry', () =>
       type: 'string', description;
       : 'Template to use' ,
 
-      handler: jest.fn(async (_args, flags) =>
+      handler: jest.fn(async(_args, flags) =>
       //       {
         // Mock init command behavior
         const _configFile = path.join(process.cwd(), 'claude-zen.config.js');
-        if (;
+        if(;
         !flags.force &&;
         (// await fs;
 access(configFile)
@@ -87,18 +87,18 @@ catch(() => false))
       expect(result.success).toBe(true);
       expect(result.message).toBe('Project initialized successfully');
     });
-    it('should handle status command', async () => {
+    it('should handle status command', async() => {
       const _statusCommand = {
         name: 'status',
         description: 'Show project status',
-        handler: jest.fn(async () => {
+        handler: jest.fn(async() => {
           // Mock status command behavior
           const _status = {
             project: 'claude-zen-test',
             version: '2.0.0-alpha.70',
             initialized,
               total: process.memoryUsage().heapTotal,
-              used: process.memoryUsage().heapUsed,,
+              used: process.memoryUsage().heapUsed,
             uptime: process.uptime() };
           // return status;
     //   // LINT: unreachable code removed}) };
@@ -108,17 +108,15 @@ catch(() => false))
     expect(result.initialized).toBe(true);
     expect(typeof result.uptime).toBe('number');
   });
-  it('should handle help command', async () => {
+  it('should handle help command', async() => {
     const _helpCommand = {
         name: 'help',
     description: 'Show help information',
     handler: jest.fn((args) => {
-      const _commands = [
-
-            'init     - Initialize a new Claude Zen project',
+      const _commands = ['init     - Initialize a new Claude Zen project',
             'status   - Show project status',
-            'help     - Show this help message',,,,,,];
-      if (args.length > 0) {
+            'help     - Show this help message',,];
+      if(args.length > 0) {
         const _commandName = args[0];
         // return `Help for command: ${commandName}`;
         //   // LINT: unreachable code removed}
@@ -138,12 +136,12 @@ catch(() => false))
       const _validator = {
         validateArgs: (command, _args, flags) => {
           const _errors = [];
-          if (command === 'init') {
-            if (flags.template && !['basic', 'advanced', 'minimal'].includes(flags.template)) {
+          if(command === 'init') {
+            if(flags.template && !['basic', 'advanced', 'minimal'].includes(flags.template)) {
               errors.push('Invalid template. Must be one of, advanced, minimal');
             //             }
           //           }
-          if (command === 'unknown') {
+          if(command === 'unknown') {
             errors.push('Unknown command. Use "claude-zen help" to see available commands.');
           //           }
           // return errors;
@@ -166,7 +164,7 @@ catch(() => false))
       requiredArgs: ['target'],
       validate: (args) => {
         const _missing = [];
-        if (!args.includes('target') ?? args.length < 1) {
+        if(!args.includes('target') ?? args.length < 1) {
           missing.push('target');
         //         }
         return missing.length > 0 ? { valid, missing } : { valid };
@@ -184,11 +182,11 @@ catch(() => false))
         parseFlags: (rawFlags) => {
           const _parsed = {};
           Object.entries(rawFlags).forEach(([key, value]) => {
-            if (typeof value === 'boolean') {
+            if(typeof value === 'boolean') {
               parsed[key] = value;
-            } else if (value === 'true') {
+            } else if(value === 'true') {
               parsed[key] = true;
-            } else if (value === 'false') {
+            } else if(value === 'false') {
               parsed[key] = false;
             } else {
               parsed[key] = value;
@@ -196,14 +194,13 @@ catch(() => false))
           });
           // return parsed;
     //   // LINT: unreachable code removed} };
-      const _flags = flagParser.parseFlags({
-        verbose,
+      const _flags = flagParser.parseFlags({ verbose,
       force);
     expect(flags.verbose).toBe(true);
     expect(flags.force).toBe(true);
     expect(flags.quiet).toBe(false);
     expect(flags.output).toBe('json');
-  });
+   });
   it('should handle short and long flags', () => {
       const _flagAliases = {
         h: 'help',
@@ -222,16 +219,16 @@ catch(() => false))
 })
 describe('error handling', () =>
 // {
-  it('should handle command execution errors', async () => {
+  it('should handle command execution errors', async() => {
       const _errorCommand = {
         name: 'failing-command',
-        handler: jest.fn(async () => {
+        handler: jest.fn(async() => {
           throw new Error('Command failed');
         }) };
   try {
   // // await errorCommand.handler();
         expect(true).toBe(false); // Should not reach here
-      } catch (error) {
+      } catch(error) {
         expect(error.message).toBe('Command failed');
       //       }
 })
@@ -239,10 +236,10 @@ it('should provide helpful error messages', () =>
 // {
   const _errorFormatter = {
         formatError: (error, command) => {
-          if (error.code === 'MISSING_ARGS') {
+          if(error.code === 'MISSING_ARGS') {
             return `Missing required arguments for '${command}': ${error.missing.join(', ')}`;
     //   // LINT: unreachable code removed}
-          if (error.code === 'INVALID_FLAG') {
+          if(error.code === 'INVALID_FLAG') {
             return `Invalid flag '${error.flag}' for command '${command}'`;
     //   // LINT: unreachable code removed}
           // return `Error executing '${command}': ${error.message}`;
@@ -271,7 +268,7 @@ describe('command discovery', () =>
           { name: 'status', category: 'info' },
           { name: 'deploy', category: 'deployment' },
           { name: 'logs', category: 'debug' } ],
-    getCommandsByCategory: function (_category) {
+    getCommandsByCategory: function(_category) {
           return this.availableCommands;
     // .filter((cmd) => cmd.category === category); // LINT: unreachable code removed
 map((cmd) => cmd.name);
@@ -279,7 +276,7 @@ map((cmd) => cmd.name);
 
 
     // getAllCommands: null
-    function () {
+    function() {
           return this.availableCommands.map((cmd) => cmd.name);
     //   // LINT: unreachable code removed}
 // }

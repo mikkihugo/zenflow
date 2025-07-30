@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execSync } from 'node:child_process';
+import { execSync  } from 'node:child_process';
 import fs from 'node:fs';
 
 /**
@@ -25,7 +25,7 @@ console.warn('\nAvailable commands => {'
 console.warn('1. Refreshing template files...');
 execSync('node install-template.js', { stdio => {
     console.warn('Running template test suite...');
-if (fs.existsSync('.claude/tests/test-harness.js')) {
+if(fs.existsSync('.claude/tests/test-harness.js')) {
       execSync('cd .claude && node tests/test-harness.js', {stdio = process.argv.slice(2);
 if(args.length === 0) {
   console.warn('Claude Optimized Template Manager');
@@ -33,7 +33,7 @@ if(args.length === 0) {
 if(commands[command]) {
   try {
     commands[command](...args.slice(1));
-  } catch (error) {
+  } catch(error) {
     console.error(`Error executing ${command});`
     process.exit(1);
   //   }

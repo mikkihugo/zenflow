@@ -5,7 +5,7 @@
 
 // repl-command.js - Handles the repl command
 
-import { log } from '../core/logger.js';
+import { log  } from '../core/logger.js';
 
 // Helper function
 const _printSuccess = (msg) => log.success(msg);

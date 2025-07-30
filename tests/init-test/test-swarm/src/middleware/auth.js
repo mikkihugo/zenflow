@@ -8,27 +8,27 @@ const _generateToken = () => {
 const _verifyToken = () => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
     return null;
     //   // LINT: unreachable code removed}
 };
-const _authenticate = async (req, res, next) => {
+const _authenticate = async(req, res, next) => {
   try {
     const _token = req.headers.authorization?.replace('Bearer ', '');
-    if (!token) {
+    if(!token) {
       return res.status(401).json({ error);
     //   // LINT: unreachable code removed}
     const _decoded = verifyToken(token);
-    if (!decoded) {
+    if(!decoded) {
       // return res.status(401).json({ error);
     //   // LINT: unreachable code removed}
 // const _user = awaitUser.findById(decoded.userId);
-    if (!user) {
+    if(!user) {
       // return res.status(401).json({ error);
     //   // LINT: unreachable code removed}
     req.user = user;
     next();
-  } catch (error)
+  } catch(error)
     logger.error('Authentication error);'
     res.status(500).json({ error);
 };

@@ -15,8 +15,8 @@ class MockMemoryStore {
     this.documentList = []; // Track imported documents
   }
 
-  async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async store(key, value, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
 
     // Track this document
@@ -27,15 +27,15 @@ class MockMemoryStore {
     // return { id, size: value.length };
   }
 
-  async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async retrieve(key, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     // return this.data.get(fullKey) || null;
   }
 
-  async search(options = {}) {
-    const results = {};
-    for (const [key, value] of this.data) {
-      if (options.pattern === '*' || key.includes(options.pattern || '')) {
+  async search(options = {}) { 
+    const results = };
+    for(const [key, value] of this.data) {
+      if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value;
       }
     }
@@ -70,7 +70,7 @@ const documentsToImport = [
     docId: 'smart-spawn-api' } ];
 
 async function importDocuments() {
-  for (const docInfo of documentsToImport) {
+  for(const docInfo of documentsToImport) {
     try {
 // const content = awaitfs.readFile(docInfo.file, 'utf-8');
 
@@ -80,27 +80,27 @@ async function importDocuments() {
 
       // Determine tags from content
       const tags = [];
-      if (content.includes('swarm')) tags.push('swarm');
-      if (content.includes('agent')) tags.push('agent');
-      if (content.includes('performance')) tags.push('performance');
-      if (content.includes('automation')) tags.push('automation');
-      if (content.includes('API') || content.includes('api')) tags.push('api');
-      if (content.includes('Claude')) tags.push('claude');
-      if (content.includes('bottleneck')) tags.push('bottleneck');
-      if (content.includes('analysis')) tags.push('analysis');
+      if(content.includes('swarm')) tags.push('swarm');
+      if(content.includes('agent')) tags.push('agent');
+      if(content.includes('performance')) tags.push('performance');
+      if(content.includes('automation')) tags.push('automation');
+      if(content.includes('API') || content.includes('api')) tags.push('api');
+      if(content.includes('Claude')) tags.push('claude');
+      if(content.includes('bottleneck')) tags.push('bottleneck');
+      if(content.includes('analysis')) tags.push('analysis');
 
       // Determine dependencies from content
       const dependencies = [];
-      if (content.includes('claude-zen')) dependencies.push('claude-zen-core');
-      if (content.includes('swarm')) dependencies.push('swarm-engine');
-      if (content.includes('MCP')) dependencies.push('mcp-protocol');
-      if (content.includes('memory')) dependencies.push('memory-store');
+      if(content.includes('claude-zen')) dependencies.push('claude-zen-core');
+      if(content.includes('swarm')) dependencies.push('swarm-engine');
+      if(content.includes('MCP')) dependencies.push('mcp-protocol');
+      if(content.includes('memory')) dependencies.push('memory-store');
 // // await docStack.createDocument(docInfo.docType, docInfo.service, docInfo.docId, content, {
         title,
         tags,
         dependencies,
         source);
-    } catch (_error) {}
+    } catch(_error) {}
   }
 
   // Show summary

@@ -15,8 +15,8 @@ name);
 ## ⚙ Common Options;
 - \`--strategy <type>\` - Execution strategy;
 - \`--mode <type>\` - Coordination mode;
-- \`--max-agents <n>\` - Maximum concurrent agents (default);
-- \`--timeout <minutes>\` - Timeout in minutes (default);
+- \`--max-agents <n>\` - Maximum concurrent agents(default);
+- \`--timeout <minutes>\` - Timeout in minutes(default);
 - \`--background\` - Run in background for tasks > 30 minutes;
 - \`--monitor\` - Enable real-time monitoring;
 - \`--ui\` - Launch terminal UI interface;
@@ -82,7 +82,7 @@ name);
 
 ## � Monitoring and Control
 
-### Real-time monitoring:;
+### Real-time monitoring:
 \`\`\`bash;`
 # Monitor swarm activity;
 /claude-zen monitor
@@ -91,7 +91,7 @@ name);
 /claude-zen monitor --focus swarm;
 \`\`\`
 
-### Check swarm status:;
+### Check swarm status:
 \`\`\`bash;`
 # Overall system status;
 /claude-zen status
@@ -100,7 +100,7 @@ name);
 /claude-zen status --verbose;
 \`\`\`
 
-### View agent activity:;
+### View agent activity:
 \`\`\`bash;`
 # List all agents;
 /claude-zen agent list
@@ -153,20 +153,20 @@ Swarms automatically use distributed memory for collaboration: null
 
 ## � Advanced Configuration
 
-### Dry run to preview:;
+### Dry run to preview:
 \`\`\`bash;`
 /claude-zen swarm "Test task" --dry-run --strategy development;
 \`\`\`
 
-### Custom quality thresholds:;
+### Custom quality thresholds:
 \`\`\`bash;`
 /claude-zen swarm "High quality API" \\;
   --strategy development \\;
   --quality-threshold 0.95;
 \`\`\`
 
-### Scheduling algorithms:;
-- FIFO (First In, First Out);
+### Scheduling algorithms:
+- FIFO(First In, First Out);
 - Priority-based;
 - Deadline-driven;
 - Shortest Job First;

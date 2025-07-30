@@ -28,7 +28,7 @@ export class MCPErrorHandler {
       recoveredErrors = {}) {
     // Check circuit breaker
     if(this._circuitState === 'OPEN') {'
-      if (Date.now() - this.lastFailureTime < this.circuitBreakerTimeout) {
+      if(Date.now() - this.lastFailureTime < this.circuitBreakerTimeout) {
         throw new Error('Circuit breaker is OPEN - operation rejected');'
       } else {
         this.circuitState = 'HALF_OPEN';'
@@ -47,12 +47,12 @@ export class MCPErrorHandler {
         this.onOperationSuccess();
         // return result;
     // ; // LINT: unreachable code removed
-      } catch (error) {
+      } catch(error) {
         _lastError = error;
         this.recordError(error, context);
 
         // Don't retry on certain error types'
-        if (this.isNonRetryableError(error)) {
+        if(this.isNonRetryableError(error)) {
           console.error(`[${new Date().toISOString()}] ERROR [ErrorHandler] Non-retryableerror = === this.maxRetries) {`
           break;
         //         }
@@ -144,13 +144,13 @@ export class MCPErrorHandler {
     const __errorCode = -32603; // Internal error default
 
     // Map common errors to appropriate codes
-    if (error.message.includes('Method not found')) {'
+    if(error.message.includes('Method not found')) {'
       _errorCode = -32601;
-    } else if (error.message.includes('Invalid arguments')  ?? error.message.includes('Invalid JSON')) {'
+    } else if(error.message.includes('Invalid arguments')  ?? error.message.includes('Invalid JSON')) {'
       _errorCode = -32602;
-    } else if (error.message.includes('Parse error')) {'
+    } else if(error.message.includes('Parse error')) {'
       _errorCode = -32700;
-    } else if (error.message.includes('Invalid Request')) {'
+    } else if(error.message.includes('Invalid Request')) {'
       _errorCode = -32600;
     //     }
 
@@ -200,26 +200,26 @@ export class MCPErrorHandler {
       // Try to find valid JSON objects in the buffer
       const _jsonMatches = buffer.match(/\{[^{}]*\}/g)  ?? []
 
-      for (const match of jsonMatches) {
+      for(const match of jsonMatches) {
         try {
           const _message = JSON.parse(match);
           recovered.push(message);
-        } catch (error) {
+        } catch(error) {
           // Skip invalid JSON
         //         }
       //       }
-    } catch (error) {
+    } catch(error) {
       console.error(`[${new Date().toISOString()}] WARN [ErrorRecovery] Buffer recoveryfailed = JSON.stringify({ ;`
           jsonrpc => {
           process.stdout.write(testMessage, (error) => {
             resolve(!error);
-          });
+           });
         });
       //       }
 
 
       // return false;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       console.error(`[${new Date().toISOString()}`
       ] WARN [ErrorRecovery] Connection recovery failed = ;
 ..state,

@@ -37,19 +37,19 @@ initializeFormatters();
       status = {}, options = {}) {
     try {
       // Validate tool exists
-      if (!this.isToolAvailable(toolName)) {
+      if(!this.isToolAvailable(toolName)) {
         throw new Error(`Tool "${toolName}" is not available`);
 // }
 // Create execution context
 const _execution = {id = this.maxConcurrentExecutions) {
         this.executionQueue.push(execution);
-this.ui.addLog('info', `Tool ${toolName} queued (${this.executionQueue.length} in queue)`);
+this.ui.addLog('info', `Tool ${toolName} queued(${this.executionQueue.length} in queue)`);
 } else
 // {
 // // await this.executeToolDirect(execution);
 // }
 // return execution;
-} catch (error)
+} catch(error)
 // {
   this.ui.addLog('error', `Failed to execute ${toolName});`
   throw error;
@@ -91,7 +91,7 @@ executeToolDirect(execution)
       this.processQueue();
 
       // return execution;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       execution.status = 'failed';
       execution.endTime = Date.now();
       execution.error = error.message;
@@ -105,11 +105,11 @@ executeToolDirect(execution)
   /**
    * Execute multiple tools in batch;
    */;
-  async executeToolsBatch(toolExecutions, options = {}) {
-    const _batchId = `batch_${Date.now()}`;
+  async executeToolsBatch(toolExecutions, options = {}) { 
+    const _batchId = `batch_$Date.now()}`;
     const _results = [];
 
-    this.ui.addLog('info', `Starting batchexecution = toolExecutions.map(({ toolName, parameters, toolOptions }) =>;`
+    this.ui.addLog('info', `Starting batchexecution = toolExecutions.map(({ toolName, parameters, toolOptions  }) =>;`
           this.executeTool(toolName, parameters, toolOptions));
 // const _settled = awaitPromise.allSettled(promises);
 
@@ -148,14 +148,14 @@ executeToolDirect(execution)
         // Check for step failure
         if(execution.status === 'failed' && step.required !== false) {
           throw new Error(`Required step ${step.toolName}failed = > r.status === 'completed').length,failedSteps = > r.status === 'failed').length } };`
-    } catch (error) {
+    } catch(error) {
       this.ui.addLog('error', `Workflow ${workflowId}failed = = 'object'  ?? parameters === null) ;`
       // return parameters;
     // ; // LINT: unreachable code removed
     const _resolved = {};
 
-    for (const [key, value] of Object.entries(parameters)) {
-      if (typeof value === 'string' && value.startsWith('$')) {
+    for(const [key, value] of Object.entries(parameters)) {
+      if(typeof value === 'string' && value.startsWith('$')) {
         // Context variable reference
         const _varName = value.substring(1);
         resolved[key] = context[varName]  ?? value;

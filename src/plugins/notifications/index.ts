@@ -3,7 +3,7 @@
  * Email and webhook notifications for Claude Zen events;
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFile  } from 'node:fs/promises';
 import path from 'node:path';
 
 export class NotificationPlugin {
@@ -15,7 +15,7 @@ export class NotificationPlugin {
   //   }
 
 
-  async initialize() {
+  async initialize() { 
     console.warn('� Notification Plugin initialized');
 
     // Load notification configuration
@@ -27,11 +27,11 @@ export class NotificationPlugin {
   //   }
 
 
-  async loadNotificationConfig() {
+  async loadNotificationConfig() 
     try {
 // const _content = awaitreadFile(this.config.configFile, 'utf8');
       this.notificationConfig = JSON.parse(content);
-    } catch (error) {
+    } catch(error) {
       if(error.code === 'ENOENT') {
         // Create default configuration
         this.notificationConfig = {providers = // await this.createProvider(name, config);
@@ -56,7 +56,7 @@ export class NotificationPlugin {
 
   createConsoleProvider(config) {
     const __colors = {reset = () => {
-      if (!config.colorize) return '';
+      if(!config.colorize) return '';
     // ; // LINT: unreachable code removed
       switch(priority) {
         case 'critical': return _colors.red + _colors.bright;
@@ -94,11 +94,11 @@ export class NotificationPlugin {
   //   }
 
 
-  async processEventQueue() {}
-    if (this.processing) return;
+  async processEventQueue() { }
+    if(this.processing) return;
     // this.processing = true; // LINT: unreachable code removed
 
-    while(this.eventQueue.length > 0) {
+    while(this.eventQueue.length > 0) 
       const _item = this.eventQueue.shift();
 // // await this.processNotification(item);
     //     }
@@ -106,8 +106,8 @@ export class NotificationPlugin {
 
     this.processing = false;
 
-  async processNotification(item) {
-    const { notification, providers } = item;
+  async processNotification(item) { 
+    const  notification, providers } = item;
     const _results = [];
 
     for(const providerName of providers) {
@@ -179,8 +179,8 @@ export class NotificationPlugin {
   //   }
 
 
-  async runHealthChecks() {
-    const _healthResults = {};
+  async runHealthChecks() { 
+    const _healthResults = };
 
     for(const [name, info] of this.providers) {
       try {
@@ -191,12 +191,12 @@ export class NotificationPlugin {
         healthResults[name] = { healthy, error = {providers = {type = {enabled = true;
 
     // Process event queue every 1 second
-    setInterval(async () => {
+    setInterval(async() => {
       if(this.eventQueue.length > 0) {
         const _event = this.eventQueue.shift();
         try {
 // // await this.processNotification(event.notification, event.providers);
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           console.warn('� Event processingerror = [];'
 
     for(const providerName of providers) {
@@ -216,7 +216,7 @@ export class NotificationPlugin {
       if(info.instance.cleanup) {
         try {
 // // await info.instance.cleanup();
-        } catch (error) {
+        } catch(error) {
           console.warn(`Warning);`
         //         }
       //       }

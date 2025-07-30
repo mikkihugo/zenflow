@@ -3,7 +3,7 @@
  * Comprehensive plugin architecture for extensible functionality;
  */
 
-import type { Identifiable } from './core.js';
+import type { Identifiable  } from './core.js';
 
 // =============================================================================
 // PLUGIN CORE TYPES

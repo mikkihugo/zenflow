@@ -2,11 +2,11 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
-// Source directory for revised templates (repository root .claude/commands)
+// Source directory for revised templates(repository root .claude/commands)
 const _REPO_TEMPLATES_DIR = path.join(__dirname, '../../../../.claude/commands');
 /**  */
  * Copy revised template files from repository to target project
@@ -20,16 +20,16 @@ export async function copyRevisedTemplates(targetDir = {}) {
       {source = path.join(REPO_TEMPLATES_DIR, file.source);
       const _targetPath = path.join(targetDir, file.target);
 
-      if (fs.existsSync(sourcePath)) {
+      if(fs.existsSync(sourcePath)) {
         try {
           const _targetDirPath = path.dirname(targetPath);
 // // await fs.promises.mkdir(targetDirPath, {recursive = results.errors.length === 0;
-  } catch (/* err */) {
+  } catch(/* err */) {
     results.success = false;
     results.errors.push(`Failed to copy revisedtemplates = // await fs.promises.readdir(sourceDir, {withFileTypes = path.join(sourceDir, entry.name);`
       const _targetPath = path.join(targetDir, entry.name);
 
-      if (entry.isDirectory()) {
+      if(entry.isDirectory()) {
         // Create directory and recurse
 // // await fs.promises.mkdir(targetPath, {recursive = path.relative(targetDir, targetPath);
             results.copiedFiles.push(relativePath);
@@ -43,12 +43,12 @@ export async function copyRevisedTemplates(targetDir = {}) {
               console.warn(`  ⏭  Skipped ${relativePath} (already exists)`);
             //             }
           //           }
-        } catch (/* err */) {
+        } catch(/* err */) {
           results.errors.push(`Failed to copy ${entry.name});`
         //         }
 // }
 // }
-  } catch (/* err */) {
+  } catch(/* err */) {
   results.errors.push(`Failed to read directory ${sourceDir});`
 // }
 // }
@@ -61,7 +61,7 @@ export async function copyRevisedTemplates(targetDir = {}) {
   const _results = {success = path.join(REPO_TEMPLATES_DIR, category);
     const _targetCategoryDir = path.join(targetDir, '.claude/commands', category);
 
-    if (fs.existsSync(sourceCategoryDir)) {
+    if(fs.existsSync(sourceCategoryDir)) {
 // // await fs.promises.mkdir(targetCategoryDir, {recursive = results.errors.length === 0;
   // return results;
 // }
@@ -71,13 +71,13 @@ export async function copyRevisedTemplates(targetDir = {}) {
  * Validate that source templates exist
  */
 // export function _validateTemplatesExist() {
-  if (!fs.existsSync(REPO_TEMPLATES_DIR)) {
+  if(!fs.existsSync(REPO_TEMPLATES_DIR)) {
     return {valid = ['analysis', 'github', 'sparc', 'coordination'];
     // const _missingCategories = []; // LINT: unreachable code removed
 
   for(const category of requiredCategories) {
     const _categoryPath = path.join(REPO_TEMPLATES_DIR, category);
-    if (!fs.existsSync(categoryPath)) {
+    if(!fs.existsSync(categoryPath)) {
       missingCategories.push(category);
     //     }
   //   }

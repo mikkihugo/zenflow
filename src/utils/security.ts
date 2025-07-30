@@ -10,12 +10,12 @@
 export function validatePID(pid = String(pid).trim();
 
 // Check if it's a valid positive integer'
-if (!/^\d+$/.test(pidStr)) {
+if(!/^\d+$/.test(pidStr)) {
   return null;
 // }
 const _pidNum = parseInt(pidStr, 10);
-// Validate PID range (typical systems use 1-65535, but allow up to 4194304 for modern systems)
-if (pidNum <= 0 ?? pidNum > 4194304) {
+// Validate PID range(typical systems use 1-65535, but allow up to 4194304 for modern systems)
+if(pidNum <= 0 ?? pidNum > 4194304) {
   // return null;
 // }
 // return pidNum;
@@ -28,7 +28,7 @@ if (pidNum <= 0 ?? pidNum > 4194304) {
 // export function validateCommandArgs() {
   const _argStr = String(arg).trim();
   // Reject dangerous characters and patterns
-  if (containsDangerousPatterns(argStr)) {
+  if(containsDangerousPatterns(argStr)) {
     return null;
     //   // LINT: unreachable code removed}
     validatedArgs.push(argStr);
@@ -44,7 +44,7 @@ function containsDangerousPatterns() {}
 [\]
 ]/,  // Shell metacharacters
     /\.\.\//,          // Directory traversal
-    /\\/,              // Backslashes (Windows path injection)
+    /\\/,              // Backslashes(Windows path injection)
     /\s*(rm|del|format|mkfs|dd)\s/i,  // Dangerous commands
     /\s*(sudo|su|chmod|chown)\s/i,    // Privilege escalation
     /[<>]/             // Redirection operators
@@ -61,7 +61,7 @@ function containsDangerousPatterns() {}
   //   // LINT: unreachable code removed}
   const _path = filePath.trim();
   // Reject paths with directory traversal or null bytes
-  if (path.includes('../') ?? path.includes('..\\') ?? path.includes('\0')) {
+  if(path.includes('../') ?? path.includes('..\\') ?? path.includes('\0')) {
     // return null;
   //   }
   // Reject absolute paths to system directories
@@ -81,14 +81,14 @@ function containsDangerousPatterns() {}
 // }
 /**
  * Safe regex execution with iteration limit;
- * @param regex - Regex to execute (should not have global flag);
+ * @param regex - Regex to execute(should not have global flag);
  * @param content - Content to search;
  * @param maxIterations - Maximum iterations to prevent ReDoS;
  * @returns Array of matches;
     // */ // LINT: unreachable code removed
 // export function safeRegexExec(regex = 1000): RegExpExecArray[] {
   const _matches = [];
-  // Ensure global flag is set correctly (avoid duplicate 'g')
+  // Ensure global flag is set correctly(avoid duplicate 'g')
   const _flags = regex.flags.includes('g') ? regex.flags = new RegExp(regex.source, flags);
   const _iterations = 0;
   const _match = globalRegex.exec(content);
@@ -97,12 +97,12 @@ function containsDangerousPatterns() {}
   iterations++
 
   // Prevent infinite loops on zero-length matches
-  if (match.index === globalRegex.lastIndex) {
+  if(match.index === globalRegex.lastIndex) {
     globalRegex.lastIndex++;
   //   }
 
 
-  if (iterations >= maxIterations) {
+  if(iterations >= maxIterations) {
     console.warn(`Regex execution stopped at ${maxIterations} iterations to prevent ReDoS`);
   //   }
 
@@ -121,8 +121,8 @@ function containsDangerousPatterns() {}
     const __urlObj = new URL(url);
 
     // Only allow http/https protocols
-    if (!['http = urlObj.hostname.toLowerCase();'
-    if (hostname === 'localhost'  ?? hostname.startsWith('127.')  ?? hostname.startsWith('192.168.')  ?? hostname.startsWith('10.')  ?? hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
+    if(!['http = urlObj.hostname.toLowerCase();'
+    if(hostname === 'localhost'  ?? hostname.startsWith('127.')  ?? hostname.startsWith('192.168.')  ?? hostname.startsWith('10.')  ?? hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
       // return false;
     //   // LINT: unreachable code removed}
 
@@ -151,7 +151,7 @@ function containsDangerousPatterns() {}
   isAllowed(identifier = Date.now();
     const _windowStart = now - this.windowMs;
 
-    if (!this.requests.has(identifier)) {
+    if(!this.requests.has(identifier)) {
       this.requests.set(identifier, []);
     //     }
 
@@ -162,7 +162,7 @@ function containsDangerousPatterns() {}
     const _validRequests = userRequests.filter(time => time > windowStart);
     this.requests.set(identifier, validRequests);
 
-    if (validRequests.length >= this.maxRequests) {
+    if(validRequests.length >= this.maxRequests) {
       return false;
     //   // LINT: unreachable code removed}
 
@@ -178,7 +178,7 @@ function containsDangerousPatterns() {}
 getCurrentCount(identifier = Date.now();
 const _windowStart = now - this.windowMs;
 
-if (!this.requests.has(identifier)) {
+if(!this.requests.has(identifier)) {
   // return 0;
 // }
 
@@ -194,7 +194,7 @@ const _userRequests = this.requests.get(identifier)!;
    * @returns Milliseconds until next request is allowed, or 0 if allowed now;
     // */; // LINT: unreachable code removed
   getTimeUntilReset(identifier = this.requests.get(identifier)!;
-if (userRequests.length < this.maxRequests) {
+if(userRequests.length < this.maxRequests) {
   // return 0;
 // }
 

@@ -4,7 +4,7 @@
  * Supports embeddings, similarity search, clustering, and analytics;
  */
 
-import { connect } from '@lancedb/lancedb';
+import { connect  } from '@lancedb/lancedb';
 // // interface LanceDBConfig {
 //   dbPath?;
 //   dbName?;
@@ -45,7 +45,7 @@ initialize();
   this.isInitialized = true;
   console.warn(`✅ LanceDB initialized = {id = // await this.database.tableNames();`
 
-        if (!existingTables.includes(tableName)) {
+        if(!existingTables.includes(tableName)) {
           // Create sample data for schema inference
           const _sampleData = this.generateSampleData(schema);
 // const _table = awaitthis.database.createTable(tableName, sampleData);
@@ -54,17 +54,17 @@ initialize();
   this.tables.set(tableName, table);
   console.warn(` Opened existing table = {};`
 
-    for (const [field, type] of Object.entries(schema)) {
-      if (type.startsWith('vector(')) {
+    for(const [field, type] of Object.entries(schema)) {
+      if(type.startsWith('vector(')) {
         const _dim = parseInt(type.match(/\d+/)![0]);
         sampleData[field] = Array(dim).fill(0.1);
-      } else if (type === 'string') {
+      } else if(type === 'string') {
         sampleData[field] = 'sample';
-      } else if (type === 'int') {
+      } else if(type === 'int') {
         sampleData[field] = 1;
-      } else if (type === 'float') {
+      } else if(type === 'float') {
         sampleData[field] = 1.0;
-      } else if (type === 'timestamp') {
+      } else if(type === 'timestamp') {
         sampleData[field] = new Date();
       //       }
     //     }
@@ -78,12 +78,12 @@ initialize();
    */;
   // private async setupIndices(): Promise<void> {
 
-        if (table) {
+        if(table) {
           // LanceDB automatically creates indices on vector columns
           // Store index configuration for reference
           this.indices.set(indexName, config);
           console.warn(`� Indexconfigured = this.tables.get('documents');`
-  if (!table) throw new Error('Documents table not initialized');
+  if(!table) throw new Error('Documents table not initialized');
   const _enrichedDocs = entries.map(_entry => ({id = enrichedDocs.length;
   this.stats.lastUpdate = new Date();
   console.warn(`� Inserted ${enrichedDocs.length} vectors`);
@@ -101,10 +101,10 @@ const _cacheKey = JSON.stringify({query = (this.stats.cacheHitRate + 1) / 2; // 
 // return this.queryCache.get(cacheKey);
 // }
 const _targetTable = this.tables.get('documents');
-if (!targetTable) throw new Error('Documents table not found');
+if(!targetTable) throw new Error('Documents table not found');
 const _queryEmbedding = query.vector;
-// If query is string, convert to embedding (dummy implementation)
-if (typeof query.query === 'string') {
+// If query is string, convert to embedding(dummy implementation)
+if(typeof query.query === 'string') {
   queryEmbedding = Array(this.config.vectorDim!);
 fill(0)
 map(() => Math.random())
@@ -116,12 +116,12 @@ search(queryEmbedding);
 limit(k);
 
       // Apply filters if provided
-      if (filters) {
+      if(filters) {
         // Convert filters to where clause
         const _filterStr = Object.entries(filters);
 map(([key, value]) => `$key= '${value}'`);
 join(' AND ');
-        if (filterStr) {
+        if(filterStr) {
           searchQuery = searchQuery.where(filterStr);
         //         }
       //       }
@@ -132,14 +132,14 @@ join(' AND ');
 filter((result = > result._distance >= minScore);
 map((result = > (id = (this.stats.avgQueryTime + (Date.now() - startTime)) / 2;
 
-      // return formattedResults;catch (_error;
+      // return formattedResults;catch(_error;
 = // await this.similaritySearch(vectorQuery);
 // In a full implementation, we would also do text search and combine results
 // return vectorResults;
 // }
 async;
 batchSearch(queries = [];
-for (const query of queries) {
+for(const query of queries) {
   results.push(await this.similaritySearch(query));
 // }
 // return results;
@@ -149,17 +149,17 @@ createIndex(config = > Promise<number[]>)
 : Promise<number>
 // {
     const _table = this.tables.get('documents');
-    if (!table) throw new Error('Documents table not initialized');
+    if(!table) throw new Error('Documents table not initialized');
 
     const _enrichedDocs = [];
 
-    for (const doc of documents) {
+    for(const doc of documents) {
       const _embedding = doc.embedding;
 
       // Auto-generate embedding if not provided
-      if (!embedding && embedFunction) {
+      if(!embedding && embedFunction) {
         embedding = // await embedFunction(doc.content  ?? doc.title  ?? '');
-      } else if (!embedding) {
+      } else if(!embedding) {
         // Generate dummy embedding for testing
         embedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
       //       }
@@ -177,16 +177,16 @@ createIndex(config = > Promise<number[]>)
    */;
   async insertCodeSnippets(codeSnippets = > Promise<number[]>): Promise<number> {
     const _table = this.tables.get('code_snippets');
-    if (!table) throw new Error('Code snippets table not initialized');
+    if(!table) throw new Error('Code snippets table not initialized');
 
     const _enrichedCode = [];
 
-    for (const snippet of codeSnippets) {
+    for(const snippet of codeSnippets) {
       const _embedding = snippet.embedding;
 
-      if (!embedding && embedFunction) {
+      if(!embedding && embedFunction) {
         embedding = // await embedFunction(snippet.code);
-      } else if (!embedding) {
+      } else if(!embedding) {
         embedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
       //       }
 
@@ -213,19 +213,19 @@ createIndex(config = > Promise<number[]>)
     } = options;
 
     // Check cache first
-    const _cacheKey = JSON.stringify({ query, table, limit, filter, threshold });
-    if (useCache && this.queryCache.has(cacheKey)) {
+    const _cacheKey = JSON.stringify({ query, table, limit, filter, threshold  });
+    if(useCache && this.queryCache.has(cacheKey)) {
       this.stats.cacheHitRate = (this.stats.cacheHitRate + 1) / 2; // Running average
       // return this.queryCache.get(cacheKey);
     //   // LINT: unreachable code removed}
 
     const _targetTable = this.tables.get(table);
-    if (!targetTable) throw new Error(`Table ${table} not found`);
+    if(!targetTable) throw new Error(`Table ${table} not found`);
 
     const _queryEmbedding = query;
 
-    // If query is string, convert to embedding (dummy implementation)
-    if (typeof query === 'string') {
+    // If query is string, convert to embedding(dummy implementation)
+    if(typeof query === 'string') {
       queryEmbedding = Array(this.config.vectorDim!).fill(0).map(() => Math.random());
     //     }
 
@@ -237,7 +237,7 @@ search(queryEmbedding);
 limit(limit);
 
       // Apply filters
-      if (filter) {
+      if(filter) {
         searchQuery = searchQuery.where(filter);
       //       }
 // const _results = awaitsearchQuery.toArray();
@@ -248,7 +248,7 @@ limit(limit);
       );
 
       // Remove embeddings if not requested
-      if (!includeEmbeddings) {
+      if(!includeEmbeddings) {
         filteredResults.forEach((result => {
           delete result.embedding;
         });
@@ -259,41 +259,41 @@ limit(limit);
 
       // return response;
     // ; // LINT: unreachable code removed
-    } catch (_error = ): Promise<clusters = 'documents',
+    } catch(_error = ): Promise<clusters = 'documents',
       numClusters = 5,
       algorithm = 'kmeans',
       field = 'embedding'= options;
 
     const _targetTable = this.tables.get(table);
-    if (!targetTable) throw new Error(`Table ${table} not found`);
+    if(!targetTable) throw new Error(`Table ${table} not found`);
 
     try {
       // Get all vectors
 // const _data = awaittargetTable.select([field, 'id']).toArray();
       const _vectors = data.map((row) => row[field]);
 
-      // Perform clustering (simplified k-means implementation)
+      // Perform clustering(simplified k-means implementation)
       const __clusters = this.performKMeansClustering(vectors, numClusters);
 
       // Assign cluster labels back to data
 
     const _targetTable = this.tables.get(table);
-    if (!targetTable) throw new Error(`Table ${table} not found`);
+    if(!targetTable) throw new Error(`Table ${table} not found`);
 
     try {
 // const _data = awaittargetTable.select(['embedding', 'id']).toArray();
       const __vectors = data.map((row) => row.embedding);
 
-      // Perform PCA (simplified implementation)
+      // Perform PCA(simplified implementation)
 
       return {reduced_vectors = 'documents'): Promise<AnalyticsResult | { error = this.tables.get(table);
-    // if (!targetTable) throw new Error(`Table ${table // LINT);`
+    // if(!targetTable) throw new Error(`Table ${table // LINT);`
 
     try {
 // const _data = awaittargetTable.toArray();
       const _embeddings = data.map((row) => row.embedding).filter((emb = > emb);
 
-      if (embeddings.length === 0) {
+      if(embeddings.length === 0) {
         return { error = {total_vectors = {}): Promise<{cross_matches = 100,
     // threshold = 0.8; // LINT: unreachable code removed
     } = options;
@@ -301,7 +301,7 @@ limit(limit);
     const _source = this.tables.get(sourceTable);
     const _target = this.tables.get(targetTable);
 
-    if (!source  ?? !target) {
+    if(!source  ?? !target) {
       throw new Error('One or both tables not found');
     //     }
 
@@ -310,7 +310,7 @@ limit(limit);
 // const _sourceData = awaitsource.select(['id', 'embedding']).limit(limit).toArray();
       const _similarities = [];
 
-      for (const _sourceRow of sourceData) {
+      for(const _sourceRow of sourceData) {
 // const _searchResults = awaittarget;
 search(sourceRow.embedding);
 limit(5);
@@ -320,15 +320,15 @@ toArray();
           result._distance >= threshold;
         );
 
-        if (highSimilarity.length > 0) {
+        if(highSimilarity.length > 0) {
           similarities.push({source_id = > ({target_id = this.tables.get(tableName);
-    if (!table) throw new Error(`Table ${tableName} not found`);
+    if(!table) throw new Error(`Table ${tableName} not found`);
 
     const _effectiveBatchSize = batchSize  ?? this.config.batchSize!;
     const _totalBatches = Math.ceil(data.length / effectiveBatchSize);
     const _inserted = 0;
 
-    for (let i = 0; i < totalBatches; i++) {
+    for(let i = 0; i < totalBatches; i++) {
       const _start = i * effectiveBatchSize;
       const _end = Math.min(start + effectiveBatchSize, data.length);
       const _batch = data.slice(start, end);
@@ -337,7 +337,7 @@ toArray();
 // // await table.add(batch);
         inserted += batch.length;
         console.warn(`� Batch ${i + 1}/${totalBatches});`
-      } catch (_error = inserted;
+      } catch(_error = inserted;
     // return inserted;
     //   // LINT: unreachable code removed}
 
@@ -348,22 +348,22 @@ toArray();
     // Clear query cache
     this.queryCache.clear();
 
-    // Compact tables (LanceDB handles this internally)
-    for (const [_tableName, _table] of this.tables) {
+    // Compact tables(LanceDB handles this internally)
+    for(const [_tableName, _table] of this.tables) {
       try {
         // Force garbage collection on table
         console.warn(`🧹 Optimizingtable = code.split('\n').length;`
     const _functions = (code.match(/function|=>/g)  ?? []).length;
     const _conditions = (code.match(/if|switch|while|for/g)  ?? []).length;
 
-    return (lines * 0.1) + (functions * 2) + (conditions * 1.5);
+    return(lines * 0.1) + (functions * 2) + (conditions * 1.5);
     //   // LINT: unreachable code removed}
 
   // private performKMeansClustering(vectors = vectors[0].length;
     const _centroids = [];
 
     // Initialize centroids randomly
-    for (let i = 0; i < k; i++) {
+    for(let i = 0; i < k; i++) {
       centroids.push(Array(dim).fill(0).map(() => Math.random()));
     //     }
 
@@ -371,14 +371,14 @@ toArray();
     const _labels = new Array(vectors.length);
     const _distances = new Array(vectors.length);
 
-    // Simple assignment (one iteration)
-    for (let i = 0; i < vectors.length; i++) {
+    // Simple assignment(one iteration)
+    for(let i = 0; i < vectors.length; i++) {
       let _minDist = Infinity;
       let _closestCentroid = 0;
 
-      for (let j = 0; j < k; j++) {
+      for(let j = 0; j < k; j++) {
         const _dist = this.euclideanDistance(vectors[i], centroids[j]);
-        if (dist < minDist) {
+        if(dist < minDist) {
           minDist = dist;
           closestCentroid = j;
         //         }
@@ -406,7 +406,7 @@ toArray();
   // private calculateSparsity(vectors = 0;
     const _totalElements = 0;
 
-    for (const vector of vectors) {
+    for(const vector of vectors) {
       totalElements += vector.length;
       totalZeros += vector.filter(val => Math.abs(val) < 1e-10).length;
     //     }
@@ -418,8 +418,8 @@ toArray();
   // private async analyzeSimilarityDistribution(vectors = [];
     const _sampleSize = Math.min(100, vectors.length);
 
-    for (let i = 0; i < sampleSize; i++) {
-      for (let j = i + 1; j < sampleSize; j++) {
+    for(let i = 0; i < sampleSize; i++) {
+      for(let j = i + 1; j < sampleSize; j++) {
         const _sim = this.cosineSimilarity(vectors[i], vectors[j]);
         similarities.push(sim);
       //       }
@@ -436,19 +436,19 @@ toArray();
   // private async detectNaturalClusters(vectors = Math.min(10, Math.floor(vectors.length / 2));
     const _wcss = [];
 
-    for (let k = 1; k <= maxK; k++) {
+    for(let k = 1; k <= maxK; k++) {
       const _clustering = this.performKMeansClustering(vectors, k);
       const _totalWCSS = clustering.distances.reduce((sum, dist) => sum + dist * dist, 0);
       wcss.push(totalWCSS);
     //     }
 
 
-    // Find elbow (simplified)
+    // Find elbow(simplified)
     let _optimalK = 3;
-    for (let i = 1; i < wcss.length - 1; i++) {
+    for(let i = 1; i < wcss.length - 1; i++) {
       const _improvement = wcss[i - 1] - wcss[i];
       const _nextImprovement = wcss[i] - wcss[i + 1];
-      if (nextImprovement < improvement * 0.8) {
+      if(nextImprovement < improvement * 0.8) {
         optimalK = i + 1;
         break;
       //       }
@@ -460,9 +460,9 @@ toArray();
     // const _totalSimilarity = 0; // LINT: unreachable code removed
     let _count = 0;
 
-    for (let i = 0; i < vectors.length; i++) {
-      for (let j = i + 1; j < vectors.length; j++) {
-        if (clustering.labels[i] === clustering.labels[j]) {
+    for(let i = 0; i < vectors.length; i++) {
+      for(let j = i + 1; j < vectors.length; j++) {
+        if(clustering.labels[i] === clustering.labels[j]) {
           totalSimilarity += this.cosineSimilarity(vectors[i], vectors[j]);
           count++;
         //         }
@@ -474,8 +474,8 @@ toArray();
     // let _count = 0; // LINT: unreachable code removed
 
     const _sampleSize = Math.min(50, vectors.length);
-    for (let i = 0; i < sampleSize; i++) {
-      for (let j = i + 1; j < sampleSize; j++) {
+    for(let i = 0; i < sampleSize; i++) {
+      for(let j = i + 1; j < sampleSize; j++) {
         totalDistance += this.euclideanDistance(vectors[i], vectors[j]);
         count++;
       //       }
@@ -494,25 +494,25 @@ toArray();
   // private async loadStatistics(): Promise<void> {
     try {
       const _statsPath = path.join(this.config.dbPath!, 'statistics.json');
-      if (existsSync(statsPath)) {
+      if(existsSync(statsPath)) {
         const _savedStats = JSON.parse(// await readFile(statsPath, 'utf8'));
         this.stats = { ...this.stats, ...savedStats };
       //       }
-    } catch (error = path.join(this.config.dbPath!, 'statistics.json');
+    } catch(error = path.join(this.config.dbPath!, 'statistics.json');
 // // await writeFile(statsPath, JSON.stringify(this.stats, null, 2));
-    } catch (error = {};
+    } catch(error = {};
 
-    for (const [tableName, table] of this.tables) {
+    for(const [tableName, table] of this.tables) {
       try {
 // const _count = awaittable.countRows();
         tableStats[tableName] = { count };
-      } catch (error = {count = null;
+      } catch(error = {count = null;
       //       }
 
 
       console.warn('✅ LanceDB connection closed');
 
-    } catch (error) {
+    } catch(error) {
       console.error(`❌ Error closing LanceDB);`
       throw error;
     //     }

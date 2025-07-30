@@ -14,7 +14,7 @@ router.get('/', (_req, _res) => {
       total: os.totalmem()};
 // Check database connection
 db.get('SELECT 1', (err) => {
-  if (err) {
+  if(err) {
     healthcheck.status = 'ERROR';
     healthcheck.database = 'disconnected';
     res.status(503).json(healthcheck);

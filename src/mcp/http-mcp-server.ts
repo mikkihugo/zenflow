@@ -5,20 +5,18 @@
  */
 
 import cors from 'cors';'
-import { EventEmitter } from 'events';'
-import express, { Application, NextFunction, Request, Response } from 'express';'
-import { HealthCheck, JSONObject, JSONValue } from '../types/core.js';'
-import {
-  MCPError,
+import { EventEmitter  } from 'events';'
+import express, { Application, NextFunction, Request, Response  } from 'express';'
+import { HealthCheck, JSONObject, JSONValue  } from '../types/core.js';'
+import { MCPError,
 MCPMessage,
 // type MCPRequest
 
 MCPResponse,
 Tool,
-ToolExecutionResult } from '../types/mcp.js''
+ToolExecutionResult  } from '../types/mcp.js''
 // Import types
-// import {
-  ServerConfig,
+// import { ServerConfig,
 ServerHealth,
 ServerMetrics,
 ServerStatus,
@@ -27,9 +25,9 @@ TypedRequest,
 TypedResponse,
 UnifiedServer,
 UserContext,
-ValidationResult } from '../types/server.js''
+ValidationResult  } from '../types/server.js''
 
-// import { ClaudeFlowMCPServer } from './mcp-server.js';'
+// import { ClaudeFlowMCPServer  } from './mcp-server.js';'
 /**  */
  * HTTP MCP Server Configuration
  */
@@ -64,7 +62,7 @@ ValidationResult } from '../types/server.js''
   // Initialize MCP server
   this._mcpServer = new ClaudeFlowMCPServer({enableGitTools = this._metrics.errors > 0;
   const _mcpHealthy = this._mcpServer !== null;
-  if (hasErrors ?? !mcpHealthy) return 'degraded';'
+  if(hasErrors ?? !mcpHealthy) return 'degraded';'
   // return 'healthy'; // LINT: unreachable code removed'
 // }
 /**  */
@@ -98,7 +96,7 @@ setupMiddleware();
   this._app.use(express.json({ limit => {
       const _start = Date.now();
   this._metrics.requests++;
-  if (req.path.startsWith('/mcp')) {'
+  if(req.path.startsWith('/mcp')) {'
     this._metrics.mcpRequests++;
   //   }
   console.warn(`${new Date().toISOString()} ${req.method} ${req.path}`);`
@@ -107,7 +105,7 @@ setupMiddleware();
     const _responseTime = Date.now() - start;
     this._responseTimes.push(responseTime);
     // Keep only last 100 response times for average calculation
-    if (this._responseTimes.length > 100) {
+    if(this._responseTimes.length > 100) {
       this._responseTimes.shift();
     //     }
     this._metrics.averageResponseTime =;
@@ -120,7 +118,7 @@ setupMiddleware();
 this._app.use((req =>
 // {
       res.setTimeout(this._config.timeout!, () => {
-        if (!res.headersSent) {
+        if(!res.headersSent) {
           res.status(408).json({
             jsonrpc => {
       res.json({ ;
@@ -141,17 +139,17 @@ this._app.use((req =>
         const _message = req.body;
 
         // Track tool calls
-        if ((message as MCPRequest).method === 'tools/call') {'
+        if((message as MCPRequest).method === 'tools/call') {'
           this._metrics.toolCalls++;
         //         }
 // const _response = awaitthis._mcpServer.handleMessage(message);
         res.json(response);
-      } catch (error) ;
+      } catch(error) ;
         this.handleMCPError(req, res, error as Error, req.body.id);
     });
 
-    // List available tools (human-readable)
-    this._app.get('/mcp/tools', async (req => {'
+    // List available tools(human-readable)
+    this._app.get('/mcp/tools', async(req => {'
       try {
 // const _tools = awaitthis._mcpServer.toolsRegistry?.getAllTools()  ?? [];
         res.json({success = > ({
@@ -161,7 +159,7 @@ this._app.use((req =>
 // const _tools = awaitthis._mcpServer.toolsRegistry?.getAllTools()  ?? [];
         const _tool = tools.find(t => t.name === toolName);
 
-        if (!tool) {
+        if(!tool) {
           // return res.status(404).json({
             success => {
       res.json({
@@ -172,7 +170,7 @@ this._app.use((req =>
     // ; // LINT: unreachable code removed
     // return new Promise((resolve, reject) => {
       this._server = this._app.listen(this._port, this._host, (err?) => {
-        if (err) {
+        if(err) {
           reject(err);
     // return; // LINT: unreachable code removed
         //         }
@@ -181,7 +179,7 @@ this._app.use((req =>
         this._isRunning = true;
 
         console.warn(`� HTTP MCP Server running on http => {`
-        if (err.code === 'EADDRINUSE') {'
+        if(err.code === 'EADDRINUSE') {'
           reject(new Error(`Port ${this._port} is already in use`));`
         } else {
           reject(err);
@@ -195,14 +193,14 @@ this._app.use((req =>
  * Stop the HTTP server
    */
   async stop(): Promise<void> {
-    if (!this._isRunning) {
+    if(!this._isRunning) {
       // return;
     //   // LINT: unreachable code removed}
 
     console.warn('� Shutting down HTTP MCP server...');'
 
     // Cleanup MCP server
-    if (this._mcpServer) {
+    if(this._mcpServer) {
 // // // await this._mcpServer.cleanup();
     //     }
 
@@ -225,21 +223,21 @@ this._app.use((req =>
 
     // Basic health checks
     const _healthChecks = [
-      {name = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :;'
-      healthChecks.some(check => check.status === 'error'  ?? check.status === 'offline') ? 'error' :;'
+      {name = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :'
+      healthChecks.some(check => check.status === 'error'  ?? check.status === 'offline') ? 'error' :'
       'degraded';'
 
     // return {status = === `file://${process.argv[1]}`) {`
   const _server = new HTTPMCPServer();
     // ; // LINT: unreachable code removed
   // Graceful shutdown
-  process.on('SIGINT', async () => {'
+  process.on('SIGINT', async() => {'
     console.warn('\n� Received SIGINT, shutting down gracefully...');'
 // // await server.stop();
     process.exit(0);
   });
 
-  process.on('SIGTERM', async () => {'
+  process.on('SIGTERM', async() => {'
     console.warn('\n� Received SIGTERM, shutting down gracefully...');'
 // // await server.stop();
     process.exit(0);

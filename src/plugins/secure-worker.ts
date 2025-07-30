@@ -58,18 +58,18 @@ class SecureEnvironment {
       'path', 'os', 'zlib', 'buffer';
     ]);
 
-    // return (moduleName) => {
+    // return(moduleName) => {
       // Check if module is allowed
-      if (!allowedModules.has(moduleName)) {
+      if(!allowedModules.has(moduleName)) {
         throw new SecurityError(`Module '${moduleName}' is not allowed in sandbox`);
     //   // LINT: unreachable code removed}
 
       // Check if operation is allowed by policy
-      if (!this.isOperationAllowed(`require => {`
+      if(!this.isOperationAllowed(`require => {`
         const _resolvedPath = path.resolve(filePath);
 
         // Check path permissions
-        if (!this.isPathAllowed(resolvedPath, 'read')) {
+        if(!this.isPathAllowed(resolvedPath, 'read')) {
           throw new SecurityError(`File read accessdenied = performance.now();`
 // const _result = awaitfs.readFile(resolvedPath, options);
           const _duration = performance.now() - startTime;
@@ -78,7 +78,7 @@ class SecureEnvironment {
         const _resolvedPath = path.resolve(filePath);
 
         // Check path permissions
-        if (!this.isPathAllowed(resolvedPath, 'write')) {
+        if(!this.isPathAllowed(resolvedPath, 'write')) {
           throw new SecurityError(`File write accessdenied = performance.now();`
 // // await fs.writeFile(resolvedPath, data, options);
           const _duration = performance.now() - startTime;
@@ -86,16 +86,16 @@ class SecureEnvironment {
           this.reportOperation('fs-write', {path = === 'string' ? data.length => {
         const _resolvedPath = path.resolve(dirPath);
 
-        if (!this.isPathAllowed(resolvedPath, 'write')) {
+        if(!this.isPathAllowed(resolvedPath, 'write')) {
           throw new SecurityError(`Directory creation access denied => {`
         const _resolvedPath = path.resolve(dirPath);
 
-        if (!this.isPathAllowed(resolvedPath, 'read')) {
+        if(!this.isPathAllowed(resolvedPath, 'read')) {
           throw new SecurityError(`Directory read accessdenied = // await fs.readdir(resolvedPath, options);`
           this.reportOperation('fs-readdir', { path = {}) => {
         // Check network permissions
-        if (!this.isOperationAllowed('net = new URL(url);'
-        if (!this.isDomainAllowed(urlObj.hostname)) {
+        if(!this.isOperationAllowed('net = new URL(url);'
+        if(!this.isDomainAllowed(urlObj.hostname)) {
           throw new SecurityError(`Domain accessdenied = performance.now();`
 
           // Use a restricted fetch implementation
@@ -132,7 +132,7 @@ class SecureEnvironment {
 
     // Check against denied paths
     for(const deniedPath of deniedPaths) {
-      if (normalizedPath.startsWith(path.normalize(deniedPath))) {
+      if(normalizedPath.startsWith(path.normalize(deniedPath))) {
         // return false;
     //   // LINT: unreachable code removed}
     //     }
@@ -151,7 +151,7 @@ class SecureEnvironment {
 
   isDomainAllowed(hostname) ;
     // Check denied domains first
-    if (policy.deniedDomains.includes(hostname)) {
+    if(policy.deniedDomains.includes(hostname)) {
       // return false;
     //   // LINT: unreachable code removed}
 
@@ -178,14 +178,14 @@ class SecureEnvironment {
     // return this.networkRequestCount < policy.maxNetworkRequests;
     //   // LINT: unreachable code removed}
 
-  async restrictedFetch(url, options) {
+  async restrictedFetch(url, options) { 
     // This would implement a restricted fetch with timeout and size limits
     // For now, using a placeholder that simulates the fetch API
 
     const _controller = new AbortController();
     const _timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-    try {
+    try 
 // const _response = awaitfetch(url, {
 ..options,
         signal => {
@@ -217,30 +217,30 @@ const _plugin = null;
 const _isInitialized = false;
 
 // Message handler for plugin operations
-parentPort.on('message', async (message) => {
+parentPort.on('message', async(message) => {
   try {
     switch(message.type) {
-      case 'init':;
+      case 'init':
 // // await initializePlugin(message.pluginCode);
         break;
 
-      case 'execute':;
+      case 'execute':
 // // await executePlugin(message.method, message.args);
         break;
 
-      case 'healthCheck':;
+      case 'healthCheck':
 // // await performHealthCheck();
         break;
 
-      case 'suspend':;
+      case 'suspend':
         suspendPlugin();
         break;
 
-      case 'resume':;
+      case 'resume':
         resumePlugin();
         break;
 
-      case 'cleanup':;
+      case 'cleanup':
 // // await cleanupPlugin();
         break;
 
@@ -314,21 +314,19 @@ parentPort.on('message', async (message) => {
     plugin = null;
     isInitialized = false;
 
-    parentPort.postMessage({
-      //       type => {
+    parentPort.postMessage({ //       type => {
   secureEnv.reportSecurityViolation('uncaught-exception', 'critical', {
     error => {
   secureEnv.reportSecurityViolation('unhandled-rejection', 'high', {
     reason: String(reason),
     promise: promise.toString();
-  });
+   });
 });
 
 // Send ready signal
-parentPort.postMessage({
-  type: 'worker-ready',
+parentPort.postMessage({ type: 'worker-ready',
   pluginName: manifest.name,
   workerId: require('worker_threads').threadId;
-});
+ });
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})))))))))))))))))))))))

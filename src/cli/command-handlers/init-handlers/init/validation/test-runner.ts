@@ -1,7 +1,7 @@
 // test-runner.js - Test runner for validation and rollback systems
 
-import { RollbackSystem } from '../rollback/index.js';
-import { ValidationSystem } from './index.js';
+import { RollbackSystem  } from '../rollback/index.js';
+import { ValidationSystem  } from './index.js';
 /**  */
  * Test runner for validation and rollback systems
  */
@@ -37,12 +37,12 @@ runAllTests();
     { name = > this.testRecoveryProcedures() },
     { name = > this.testAtomicOperations() } ];
 
-  for (const _testCase of tests) {
+  for(const _testCase of tests) {
     console.warn(`\n�Testing = // await testCase.test();`
         this.testResults.push({name = > console.error(`  - ${error}`));
           //           }
         //         }
-      } catch (error) {
+      } catch(error) {
         this.testResults.push({
           name = {success = // await this.validationSystem.validatePreInit();
       result.details.normal = normalValidation;
@@ -57,7 +57,7 @@ runAllTests();
 // const _forceValidation = awaitthis.validationSystem.validatePreInit({force = forceValidation;
 
       result.success = true; // Pre-init validation tested successfully
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Pre-init validation test failed = {success = // await this.validationSystem.validatePostInit();`
     result.details.postValidation = postValidation;
@@ -86,14 +86,14 @@ runAllTests();
   result.errors.push(`Mode functionality test failed = {success = // await this.validationSystem.runHealthChecks();`
       result.details.healthChecks = healthChecks;
 
-      result.success = true;catch (error) {
+      result.success = true;catch(error) {
       result.success = false;
       result.errors.push(`Health checks test failed = {success = // await this.rollbackSystem.backupManager.createBackup(;`
         'test',
         'Test backup');
   result.details.backupCreation = backupResult;
 
-  if (!backupResult.success) {
+  if(!backupResult.success) {
     result.success = false;
     result.errors.push('Backup creation failed');
     // return result;
@@ -104,11 +104,11 @@ runAllTests();
   result.details.backupListing = {count = // await this.rollbackSystem.backupManager.deleteBackup(backupResult.id);
   result.details.backupDeletion = deleteResult;
 
-  if (!deleteResult.success) {
+  if(!deleteResult.success) {
     result.errors.push('Backup deletion failed');
   //   }
 // }
-catch (error) {
+catch(error) {
   result.success = false;
   result.errors.push(`Backup system test failed = {success = // await this.rollbackSystem.validateRollbackSystem();`
       result.details.rollbackValidation = rollbackValidation;
@@ -126,7 +126,7 @@ catch (error) {
   // Test checkpoint creation
 // const _checkpoint = awaitstateTracker.createCheckpoint('test-phase', {test = checkpoint;
 
-  if (!checkpoint.success) {
+  if(!checkpoint.success) {
     result.errors.push('Checkpoint creation failed');
   //   }
 
@@ -134,7 +134,7 @@ catch (error) {
   // Test rollback point recording
 // const _rollbackPoint = awaitstateTracker.recordRollbackPoint('test', {testData = rollbackPoint;
 
-  if (!rollbackPoint.success) {
+  if(!rollbackPoint.success) {
     result.errors.push('Rollback point creation failed');
   //   }
 
@@ -143,11 +143,11 @@ catch (error) {
 // const _stateValidation = awaitstateTracker.validateStateTracking();
   result.details.stateValidation = stateValidation;
 
-  if (!stateValidation.success) {
+  if(!stateValidation.success) {
     result.errors.push(...stateValidation.errors);
   //   }
 // }
-catch (error) {
+catch(error) {
       result.success = false;
       result.errors.push(`State tracking test failed = {success = this.rollbackSystem.recoveryManager;`
 
@@ -162,7 +162,7 @@ catch (error) {
 
       // Test generic recovery
 // const _genericRecovery = awaitrecoveryManager.performRecovery('test-failure', {test = genericRecovery;
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Recovery procedures test failed = {success = // await import('../rollback/index.js');`
 

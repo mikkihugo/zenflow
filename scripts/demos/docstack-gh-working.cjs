@@ -13,19 +13,19 @@ class MockMemoryStore {
   constructor() {
     this.data = new Map();
   }
-  async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async store(key, value, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
     // return { id, size: value.length };
   }
-  async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async retrieve(key, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     // return this.data.get(fullKey) || null;
   }
-  async search(options = {}) {
-    const results = {};
-    for (const [key, value] of this.data) {
-      if (options.pattern === '*' || key.includes(options.pattern || '')) {
+  async search(options = {}) { 
+    const results = };
+    for(const [key, value] of this.data) {
+      if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value;
       }
     }
@@ -67,7 +67,7 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
 
     gh.on('close', (code) => {
       clearTimeout(timeout);
-      if (code !== 0) reject(new Error(`gh failed));`
+      if(code !== 0) reject(new Error(`gh failed));`
       else resolve(output.trim());
     });
 
@@ -76,21 +76,21 @@ function runGHModel(prompt, model = 'openai/gpt-4o-mini') {
   });
 }
 
-// Extract JSON from response (handles markdown code blocks)
+// Extract JSON from response(handles markdown code blocks)
 function extractJSON(response) {
   try {
     // Try direct parse first
     return JSON.parse(response);
-  } catch (_e) {
+  } catch(_e) {
     // Look for JSON in code blocks
     const codeBlockMatch = response.match(/```(?)?\s*(\{[\s\S]*?\})\s*```/);
-    if (codeBlockMatch) {
+    if(codeBlockMatch) {
       // return JSON.parse(codeBlockMatch[1]);
     }
 
     // Look for any JSON object
     const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
+    if(jsonMatch) {
       // return JSON.parse(jsonMatch[0]);
     }
 
@@ -103,7 +103,7 @@ async function analyzeDocument(docType, service, _docId, content) {
   const prompt = `Analyze this ${docType} document for ${service}: null`
 "${content}"
 
-Respond with ONLY this JSON (no other text) {
+Respond with ONLY this JSON(no other text) {
   "quality_score": <number 1-10>,
   "summary": "<brief summary>",
   "suggested_approvers": ["<role1>", "<role2>"],
@@ -116,7 +116,7 @@ Respond with ONLY this JSON (no other text) {
   try {
 // const response = awaitrunGHModel(prompt);
     // return extractJSON(response);
-  } catch (_error) {
+  } catch(_error) {
     // return null;
   }
 }
@@ -140,7 +140,7 @@ Respond with ONLY JSON: null
   try {
 // const response = awaitrunGHModel(prompt);
     // return extractJSON(response);
-  } catch (_error) {
+  } catch(_error) {
     // return null;
   }
 }
@@ -150,7 +150,7 @@ async function main() {
   // Test connection first
   try {
 // await runGHModel('Respond with just "Connected"');
-  } catch (_error) {
+  } catch(_error) {
     return;
   }
 
@@ -189,27 +189,27 @@ We will use Redis  session storage backend.
   // Analyze with AI
 // const analysis = awaitanalyzeDocument(doc.docType, doc.service, doc.docId, doc.content);
 
-  if (analysis) {
-    if (analysis.suggested_approvers?.length > 0) {
+  if(analysis) {
+    if(analysis.suggested_approvers?.length > 0) {
     }
 
-    if (analysis.issues?.length > 0) {
+    if(analysis.issues?.length > 0) {
     }
 
-    if (analysis.improvements?.length > 0) {
+    if(analysis.improvements?.length > 0) {
     }
   }
 
   // Review routing
 // const routingReview = awaitreviewRouting(doc.docType, result.routing.approvers, doc.content);
 
-  if (routingReview) {
-    if (routingReview.add_approvers?.length > 0) {
+  if(routingReview) {
+    if(routingReview.add_approvers?.length > 0) {
     }
   }
 }
 
-if (require.main === module) {
+if(require.main === module) {
   main().catch(console.error);
 }
 

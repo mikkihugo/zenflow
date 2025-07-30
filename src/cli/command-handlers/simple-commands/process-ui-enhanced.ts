@@ -3,9 +3,9 @@
  * Converted from JavaScript to TypeScript;
  */
 
-import { compat } from '../runtime-detector.js';
+import { compat  } from '../runtime-detector.js';
 // process-ui-enhanced.js - Enhanced process management UI with multiple views
-import { printSuccess } from '../utils.js';
+import { printSuccess  } from '../utils.js';
 
 // Simple color utilities
 const _colors = {
@@ -39,16 +39,16 @@ const __PROCESSES = [
       this.systemStats.uptime++;
     }, 1000);
 
-    // Initialize swarm (this will create mock data)
+    // Initialize swarm(this will create mock data)
     this.initializeSwarm();
   //   }
 
 
-  async initializeSwarm() {
+  async initializeSwarm() { 
     // Initialize swarm with mock data
 // await this.swarmIntegration.initializeSwarm('hierarchical', 8);
     // Mock memory namespaces
-    this.memoryStats = {totalEntries = [
+    this.memoryStats = totalEntries = [
       {time = [
       {key = '';
     tabs.forEach((tab) => {
@@ -136,15 +136,15 @@ const __PROCESSES = [
       let icon, color;
 
       switch(log.level) {
-        case 'success':;
+        case 'success':
           icon = '';
           color = colors.green;
           break;
-        case 'warning':;
+        case 'warning':
           icon = '⚠';
           color = colors.yellow;
           break;
-        case 'error':;
+        case 'error':
           icon = '✗';
           color = colors.red;
           break;
@@ -170,7 +170,7 @@ const __PROCESSES = [
     console.warn(colors.cyan(' Navigation'));
     console.warn(`${colors.yellow('1-6')}     Switch between views`);
     console.warn(`${colors.yellow('Tab')}     Cycle through views`);
-    console.warn(`${colors.yellow('↑/↓')}     Navigate items (when available)`);
+    console.warn(`${colors.yellow('↑/↓')}     Navigate items(when available)`);
     console.warn();
 
     console.warn(colors.cyan(' Process Controls'));
@@ -224,13 +224,13 @@ const __PROCESSES = [
 
   getStatusIcon(status) {
     switch(status) {
-      case 'running':;
+      case 'running':
         // return colors.green('●');
-    // case 'stopped':; // LINT: unreachable code removed
+    // case 'stopped': // LINT: unreachable code removed
         // return colors.gray('○');
-    // case 'error':; // LINT: unreachable code removed
+    // case 'error': // LINT: unreachable code removed
         // return colors.red('✗');
-    // case 'starting':; // LINT: unreachable code removed
+    // case 'starting': // LINT: unreachable code removed
         // return colors.yellow('◐');default = Array.from(this.processes.values()).filter(;
       (p) => p.status === 'running').length;
     const _total = this.processes.size;
@@ -250,64 +250,64 @@ const __PROCESSES = [
     //   // LINT: unreachable code removed}
 
   formatUptime(seconds) {
-    if (seconds < 60) return `${seconds}s`;
-    // if (seconds < 3600) return `\${Math.floor(seconds / 60) // LINT}m ${seconds % 60}s`;
+    if(seconds < 60) return `${seconds}s`;
+    // if(seconds < 3600) return `\${Math.floor(seconds / 60) // LINT}m ${seconds % 60}s`;
     const _hours = Math.floor(seconds / 3600);
     const _minutes = Math.floor((seconds % 3600) / 60);
     // return `${hours}h ${minutes}m`;
     //   // LINT: unreachable code removed}
 
-  async handleInput() {
+  async handleInput() { 
     const _terminal = compat.terminal;
 // await terminal.write('\nCommand = new Uint8Array(1024);'
 // const _n = awaitterminal.read(buf);
-    if (n === null) return;
+    if(n === null) return;
     // ; // LINT: unreachable code removed
     const _rawInput = terminal.decoder.decode(buf.subarray(0, n)).trim();
     const _input = rawInput.split('\n')[0].toLowerCase();
 
     // Global commands
-    switch(input) {
-      case 'q':;
-      case 'quit':;
+    switch(input) 
+      case 'q':
+      case 'quit':
         this.running = false;
         printSuccess('Goodbye!');
         compat.terminal.exit(0);
         break;
 
-      case '1':;
+      case '1':
         this.currentView = VIEWS.PROCESSES;
         this.selectedIndex = 0;
         break;
 
-      case '2':;
+      case '2':
         this.currentView = VIEWS.STATUS;
         this.selectedIndex = 0;
         break;
 
-      case '3':;
+      case '3':
         this.currentView = VIEWS.ORCHESTRATION;
         this.selectedIndex = 0;
         break;
 
-      case '4':;
+      case '4':
         this.currentView = VIEWS.MEMORY;
         this.selectedIndex = 0;
         break;
 
-      case '5':;
+      case '5':
         this.currentView = VIEWS.LOGS;
         this.selectedIndex = 0;
         break;
 
-      case '6':;
-      case '?':;
-      case 'h':;
-      case 'help':;
+      case '6':
+      case '?':
+      case 'h':
+      case 'help':
         this.currentView = VIEWS.HELP;
         break;
 
-      case 'tab':;
+      case 'tab':
       case '\t': {
         // Cycle through views
         const _viewKeys = Object.values(VIEWS);
@@ -318,8 +318,8 @@ const __PROCESSES = [
       }default = Math.max(0, this.selectedIndex - 1);
         break;
 
-      case 'down':;
-      case 'j':;
+      case 'down':
+      case 'j':
         this.selectedIndex = Math.min(this.processes.size - 1, this.selectedIndex + 1);
         break;
     //     }
@@ -351,8 +351,8 @@ const __PROCESSES = [
       //       }
 
 
-      case 'd':;
-        // Complete selected task (simulate)
+      case 'd':
+        // Complete selected task(simulate)
         if(this.tasks.length > 0) {
           const _pendingTasks = this.tasks.filter((t) => t.status === 'in_progress');
           if(pendingTasks.length > 0) {
@@ -374,7 +374,7 @@ const __PROCESSES = [
         this.addLog('info', 'Logs cleared');
         break;
 
-      case 'f':;
+      case 'f':
         this.addLog('info', 'Log filtering not yet implemented');
         break;
     //     }
@@ -400,9 +400,9 @@ const __PROCESSES = [
   //   }
 
 
-  async toggleSelected() {
+  async toggleSelected() { 
     const _process = Array.from(this.processes.values())[this.selectedIndex];
-    if(process.status === 'stopped') {
+    if(process.status === 'stopped') 
 // await this.startProcess(process.id);
     } else {
 // // await this.stopProcess(process.id);
@@ -410,9 +410,9 @@ const __PROCESSES = [
   //   }
 
 
-  async startProcess(id) {
+  async startProcess(id) { 
     const _process = this.processes.get(id);
-    if (!process) return;
+    if(!process) return;
     // ; // LINT: unreachable code removed
     this.addLog('info', `Starting \$process.name...`);
     process.status = 'starting';
@@ -421,15 +421,15 @@ const __PROCESSES = [
     process.pid = Math.floor(Math.random() * 10000) + 1000;
     process.uptime = 0;
 
-    this.addLog('success', `${process.name} started successfully`);
+    this.addLog('success', `$process.name} started successfully`);
   //   }
 
 
-  async stopProcess(id) {
+  async stopProcess(id) { 
     const _process = this.processes.get(id);
-    if (!process) return;
+    if(!process) return;
     // ; // LINT: unreachable code removed
-    this.addLog('info', `Stopping ${process.name}...`);
+    this.addLog('info', `Stopping $process.name}...`);
     process.status = 'stopped';
     process.pid = null;
     process.uptime = 0;
@@ -438,32 +438,32 @@ const __PROCESSES = [
   //   }
 
 
-  async startAll() {}
+  async startAll() { }
     this.addLog('info', 'Starting all processes...');
-    for(const [id, process] of this.processes) {
+    for(const [id, process] of this.processes) 
       if(process.status === 'stopped') {
 // // await this.startProcess(id);
       //       }
     //     }
     this.addLog('success', 'All processes started');
 
-  async stopAll() {}
+  async stopAll() { }
     this.addLog('info', 'Stopping all processes...');
-    for(const [id, process] of this.processes) {
+    for(const [id, process] of this.processes) 
       if(process.status === 'running') {
 // // await this.stopProcess(id);
       //       }
     //     }
     this.addLog('success', 'All processes stopped');
 
-  async restartAll() {}
+  async restartAll() { }
 // await this.stopAll();
 // await new Promise((resolve) => setTimeout(resolve, 500));
 // await this.startAll();
 // }
 
 
-// export async function _launchEnhancedUI() {
+// export async function _launchEnhancedUI() 
   const _ui = new EnhancedProcessUI();
 // await ui.start();
 // }

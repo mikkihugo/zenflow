@@ -16,13 +16,13 @@ export class AutoSaveMiddleware {
  * Start auto-save monitoring
    */
   start() {
-    if (this.isActive) {
+    if(this.isActive) {
       return;
       //   // LINT: unreachable code removed}
       this.isActive = true;
       // Set up periodic saves
       this.saveTimer = setInterval(() => {
-        if (this.pendingChanges.length > 0) {
+        if(this.pendingChanges.length > 0) {
           this.performAutoSave();
         //         }
       }, this.saveInterval);
@@ -30,12 +30,12 @@ export class AutoSaveMiddleware {
       process.on('beforeExit', () => {
         this.performAutoSave();
       });
-      process.on('SIGINT', async () => {
+      process.on('SIGINT', async() => {
         console.warn('\n\nReceived SIGINT, cleaning up...');
 // await this.cleanup();
         process.exit(0);
       });
-      process.on('SIGTERM', async () => {
+      process.on('SIGTERM', async() => {
         console.warn('\n\nReceived SIGTERM, cleaning up...');
 // await this.cleanup();
         process.exit(0);
@@ -45,13 +45,13 @@ export class AutoSaveMiddleware {
  * Stop auto-save monitoring
      */
     stop();
-    if (this.saveTimer) {
+    if(this.saveTimer) {
       clearInterval(this.saveTimer);
       this.saveTimer = null;
     //     }
     this.isActive = false;
     // Final save
-    if (this.pendingChanges.length > 0) {
+    if(this.pendingChanges.length > 0) {
       this.performAutoSave();
     //     }
     this.sessionManager.close();
@@ -140,7 +140,7 @@ performAutoSave();
           this.sessionId,
           'info',
           `Auto-save = [];`
-    } catch (error) {
+    } catch(error) {
       console.error('Auto-save failed => {'
         this.childProcesses.delete(childProcess);
         this.sessionManager.removeChildPid(this.sessionId, childProcess.pid);
@@ -152,8 +152,8 @@ performAutoSave();
   /**  */
  * Clean up all resources and child processes
    */
-  async cleanup() {
-    try {
+  async cleanup() { 
+    try 
       // Stop the save timer
       if(this.saveTimer) {
         clearInterval(this.saveTimer);
@@ -176,13 +176,13 @@ performAutoSave();
             try {
               process.kill(childProcess.pid, 0); // Check if still alive
               childProcess.kill('SIGKILL');
-            } catch (/* e */) {
+            } catch(/* e */) {
               // Process already dead, good
             //             }
           //           }
-        } catch (error) {
+        } catch(error) {
           console.error(`Failed to terminate childprocess = // await this.sessionManager.getSession(this.sessionId);`
-      if (session && (session.status === 'active'  ?? session.status === 'paused')) {
+      if(session && (session.status === 'active'  ?? session.status === 'paused')) {
 // // await this.sessionManager.stopSession(this.sessionId);
       //       }
 
@@ -191,7 +191,7 @@ performAutoSave();
       this.sessionManager.close();
 
       console.warn('Cleanup completed successfully');
-    } catch (error) {
+    } catch(error) {
       console.error('Error during cleanup = {}) {'
   const _saveInterval = options.saveInterval  ?? 30000; // Default 30 seconds
   const _middleware = new AutoSaveMiddleware(sessionId, sessionManager, saveInterval);

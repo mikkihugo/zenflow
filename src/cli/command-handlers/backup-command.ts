@@ -4,18 +4,18 @@
  */
 
 // backup-command.js - Handle backup operations
-import { printError } from '../utils.js';
+import { printError  } from '../utils.js';
 
 export async function backupCommand() {
-    case 'configure':;
+    case 'configure':
 // await handleConfigure(args.slice(1), flags);
       break;
 
-    case 'dr':;
+    case 'dr':
 // // await handleDr(args.slice(1), flags);
       break;
 
-    case 'restore':;
+    case 'restore':
 // // await handleRestore(args.slice(1), flags);
       break;default = args[0];
 

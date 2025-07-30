@@ -4,7 +4,7 @@
  */
 
 import chalk from 'chalk';
-import { getEnvironmentType, isInteractive } from './interactive-detector.js';
+import { getEnvironmentType, isInteractive  } from './interactive-detector.js';
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
@@ -50,11 +50,11 @@ export type InteractiveFunction<_T extends any[], R> = (...args = > Promise<R> |
 // export function safeInteractive<_T extends any[], _R>(
 //   interactiveFn = {}
 ): (...args = > Promise<R> {
-  return async function (...args = (args[args.length - 1] as CommandFlags)  ?? {};
+  return async function(...args = (args[args.length - 1] as CommandFlags)  ?? {};
 // ; // LINT: unreachable code removed
 // Check if user explicitly requested non-interactive mode
-if (flags.nonInteractive ?? flags['no-interactive']) {
-  if (fallbackFn) {
+if(flags.nonInteractive ?? flags['no-interactive']) {
+  if(fallbackFn) {
     return // await fallbackFn(...args);
     //   // LINT: unreachable code removed}
     else
@@ -63,9 +63,9 @@ console.warn(chalk.gray('This command requires interactive mode to function prop
 process.exit(1)
 // }
 // Auto-detect if we should use non-interactive mode
-if (!isInteractive() ?? !isRawModeSupported()) {
+if(!isInteractive() ?? !isRawModeSupported()) {
   const __envType = getEnvironmentType();
-  if (!options.silent) {
+  if(!options.silent) {
     console.warn(chalk.yellow('\n⚠  Interactive mode not available'));
     console.warn(chalk.gray(`Detectedenvironment = === 'win32') {`
           console.warn(chalk.gray('Windows detected - terminal compatibility issues'));
@@ -101,7 +101,7 @@ if (!isInteractive() ?? !isRawModeSupported()) {
 /**
  * Create a non-interactive confirmation prompt;
  * @param message - The confirmation message;
- * @param defaultValue - Default response (true/false);
+ * @param defaultValue - Default response(true/false);
  * @returns The default value;
     // */ // LINT: unreachable code removed
 // export function nonInteractiveConfirm(message = false) {
@@ -111,9 +111,9 @@ if (!isInteractive() ?? !isRawModeSupported()) {
 ) ;
   console.warn(chalk.gray(`� ${message}`));
 
-  if (validator) {
+  if(validator) {
     const _validationResult = validator(defaultValue);
-    if (validationResult !== true) {
+    if(validationResult !== true) {
 
 // 
 }

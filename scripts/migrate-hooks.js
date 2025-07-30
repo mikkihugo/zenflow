@@ -6,7 +6,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 
 const ___dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -16,7 +16,7 @@ async function migrateSettingsFile() {
 // const _content = awaitfs.readFile(settingsPath, 'utf8');
     const _settings = JSON.parse(content);
     // Check if hooks already in new format
-    if (settings.hooks?.PreToolUse) {
+    if(settings.hooks?.PreToolUse) {
       console.warn('✅ Hooks already in new format, no migration needed');
       return;
     //   // LINT: unreachable code removed}
@@ -30,17 +30,17 @@ async function migrateSettingsFile() {
       PostToolUse: [],
       Stop: [] };
     // Convert preCommandHook
-    if (settings.hooks?.preCommandHook) {
+    if(settings.hooks?.preCommandHook) {
       newHooks.PreToolUse.push({
         matcher);
     //     }
     // Convert preEditHook
-    if (settings.hooks?.preEditHook) {
+    if(settings.hooks?.preEditHook) {
       newHooks.PreToolUse.push({
         matcher);
     //     }
 // Convert postCommandHook
-if (settings.hooks?.postCommandHook) {
+if(settings.hooks?.postCommandHook) {
   newHooks.PostToolUse.push({
         matcher: 'Bash',
   hooks: [;
@@ -50,7 +50,7 @@ if (settings.hooks?.postCommandHook) {
 })
 // }
 // Convert postEditHook
-if (settings.hooks?.postEditHook) {
+if(settings.hooks?.postEditHook) {
   newHooks.PostToolUse.push({
         matcher: 'Write|Edit|MultiEdit',
   hooks: [;
@@ -60,7 +60,7 @@ if (settings.hooks?.postEditHook) {
 })
 // }
 // Convert sessionEndHook
-if (settings.hooks?.sessionEndHook) {
+if(settings.hooks?.sessionEndHook) {
   newHooks.Stop.push({
         hooks: [;
           //           {
@@ -79,12 +79,12 @@ delete settings.performance
 console.warn('✅ Successfully migrated settings.json to new hooks format')
 // Show removed fields
 console.warn(;
-('\n� Note: The following fields were removed (not supported by Claude Code 1.0.51+):');
+('\n� Note: The following fields were removed(not supported by Claude Code 1.0.51+):');
 // )
-console.warn('   - mcpServers (use "claude mcp add" command instead)')
+console.warn('   - mcpServers(use "claude mcp add" command instead)')
 console.warn('   - features')
 console.warn('   - performance')
-} catch (error)
+} catch(error)
 // {
   console.error('❌ Error migrating settings);'
   process.exit(1);
@@ -96,7 +96,7 @@ async function findSettingsFiles() {
     path.join(process.cwd(), 'settings.json'),
     path.join(process.env.HOME  ?? '', '.claude', 'settings.json') ];
   const _found = [];
-  for (const location of locations) {
+  for(const location of locations) {
     try {
   // // await fs.access(location);
       found.push(location);
@@ -110,14 +110,14 @@ async function main() {
   console.warn('� Claude Flow Hooks Migration Script\n');
   // Check if specific file provided
   const _args = process.argv.slice(2);
-  if (args.length > 0) {
+  if(args.length > 0) {
     const _targetFile = args[0];
     console.warn(`Migrating specific file);`
   // // await migrateSettingsFile(targetFile);
   } else {
     // Find and migrate all settings files
 // const _files = awaitfindSettingsFiles();
-    if (files.length === 0) {
+    if(files.length === 0) {
       console.warn('❌ No settings.json files found to migrate');
       console.warn('\nSearched locations);'
       console.warn('  - .claude/settings.json');
@@ -126,7 +126,7 @@ async function main() {
       return;
     //   // LINT: unreachable code removed}
     console.warn(`Found ${files.length} settings file(s) to migrate:\n`);
-    for (const file of files) {
+    for(const file of files) {
       console.warn(`\n� Migrating);`
   // // await migrateSettingsFile(file);
     //     }

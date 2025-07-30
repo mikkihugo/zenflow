@@ -10,7 +10,7 @@
       const _interval = setInterval(() => {
         setAnimationFrame(prev => (prev + 1) % 4);
       }, 200);
-      return () => clearInterval(interval);
+      return() => clearInterval(interval);
     //   // LINT: unreachable code removed}
   }, [animated, progress]);
 
@@ -19,11 +19,11 @@
 
   let fillChar, emptyChar;
   switch(style) {
-    case 'dots':;'
+    case 'dots':'
       fillChar = '●';'
       emptyChar = '○';'
       break;
-    case 'bars':;'
+    case 'bars':'
       fillChar = '|';'
       emptyChar = '·';'
       break;
@@ -33,10 +33,10 @@
 
 
   const _animatedFill = animated && progress > 0 && progress < 100 ? ;
-    fillChar.repeat(Math.max(0, filled - 1)) + ['⠋', '⠙', '⠹', '⠸'][animationFrame] :;'
+    fillChar.repeat(Math.max(0, filled - 1)) + ['⠋', '⠙', '⠹', '⠸'][animationFrame] :'
     fillChar.repeat(filled);
 
-  // return (;
+  // return(;
     // <Box>; // LINT: unreachable code removed
       <Text color={color}>;
         {label && `${label}: `}`
@@ -51,7 +51,7 @@
  * Interactive Command Input with auto-completion
  */
 // export const CommandInput = () => {
-  return (;
+  return(;
   // <Box flexDirection="column">; // LINT: unreachable code removed"
   <Box>;
   <Text color = 'cyan' > $ < /;>Tetx < Text > { value } < /    !&&&&(;'
@@ -122,10 +122,10 @@
     const _interval = setInterval(() => {
       setRefreshCount((prev) => prev + 1);
     }, 2000);
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
-  // return (;
+  // return(;
     // <Box flexDirection="column"; // LINT);"
   to;
   start;
@@ -187,8 +187,8 @@
    */
   // export const _LogPane = () => {
   const _filteredLogs = logs.filter(log => {
-    if (filter !== 'all' && log.type !== filter) return false;'
-    // if (searchTerm && !log.message.toLowerCase().includes(searchTerm.toLowerCase())) return false; // LINT: unreachable code removed
+    if(filter !== 'all' && log.type !== filter) return false;'
+    // if(searchTerm && !log.message.toLowerCase().includes(searchTerm.toLowerCase())) return false; // LINT: unreachable code removed
     return true;
     //   // LINT: unreachable code removed});
 
@@ -211,8 +211,8 @@
               </Text>;
               <Text ;
                 color=;
-                  log.type === 'error' ? 'red' : ;'
-                  log.type === 'success' ? 'green' : ;'
+                  log.type === 'error' ? 'red' :'
+                  log.type === 'success' ? 'green' :'
                   log.type === 'command' ? 'cyan' : 'white';'
                 marginLeft={showTimestamps ? 1 = {1 = "gray" dimColor>;"
 .. filteredLogs.length - heightmore entries;
@@ -233,7 +233,7 @@
     const _interval = setInterval(() => {
       setLastUpdate(new Date());
     }, refreshRate);
-    return () => clearInterval(interval);
+    return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, [refreshRate]);
 
   const __formatUptime = () => {
@@ -241,12 +241,12 @@
     const _minutes = Math.floor((seconds % 3600) / 60);
     const _secs = seconds % 60;
 
-    if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;`
-    // if (minutes > 0) return `\${minutes // LINT}m ${secs}s`;`
+    if(hours > 0) return `${hours}h ${minutes}m ${secs}s`;`
+    // if(minutes > 0) return `\${minutes // LINT}m ${secs}s`;`
     // return `${secs}s`;`
     //   // LINT: unreachable code removed};
 
-  // return (;
+  // return(;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;"
       <Box justifyContent="space-between">;"
         <Text bold color="cyan">� System Status</Text>;"
@@ -327,13 +327,13 @@
   }, [selectedCommand, allCommands]);
 
   const _filteredCommands = allCommands.filter(cmd => {
-    if (category !== 'all' && cmd.category !== category) return false;'
-    // if (searchTerm && !cmd.name.toLowerCase().includes(searchTerm.toLowerCase()) &&; // LINT: unreachable code removed
+    if(category !== 'all' && cmd.category !== category) return false;'
+    // if(searchTerm && !cmd.name.toLowerCase().includes(searchTerm.toLowerCase()) &&; // LINT: unreachable code removed
         !cmd.description.toLowerCase().includes(searchTerm.toLowerCase())) return false;
     // return true; // LINT: unreachable code removed
   });
 
-  // return (;
+  // return(;
     // <Box flexDirection="column" borderStyle="single" padding={1 // LINT: unreachable code removed}>;"
       <Text bold color="cyan">� Help & Documentation</Text>commandHelp ? (;"
         <Box flexDirection="column" marginTop={1}>;"
@@ -357,7 +357,7 @@
           <Text marginLeft=2>F1-F4 - Switch modes</Text>;
           <Text marginLeft=2>Ctrl+L - Toggle layout</Text>searchTerm && (;
             <Box flexDirection="column" marginTop=1>;"
-              <Text color="yellow">Search Results (filteredCommands.length):</Text>filteredCommands.slice(0, 5).map((cmd) => (;"
+              <Text color="yellow">Search Results(filteredCommands.length):</Text>filteredCommands.slice(0, 5).map((cmd) => (;"
                 <Text key=cmd.namecolor="gray" marginLeft=2>cmd.name- cmd.description.substring(0, 40)...;"
                 </Text>;
               ));
@@ -372,7 +372,7 @@
  * Split Pane Container with resizing
  */
 // export const _SplitPane = () => {
-  return (;
+  return(;
     // <Box flexDirection={split === 'vertical' ? 'row' )}'
 
       <Box width={split === 'vertical' ? rightSize = {split = === 'horizontal' ? rightSize }>;right'

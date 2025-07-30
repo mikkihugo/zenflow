@@ -3,7 +3,7 @@
  * Resolves task attribution issues between hive-mind and ruv-swarm systems
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync  } from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import chalk from 'chalk';
@@ -19,14 +19,13 @@ export async function getUnifiedSwarmMetrics() {
  */
 async function _getHiveMindMetrics() {
   const _dbPath = path.join(cwd(), '.hive-mind', 'hive.db');
-  if (!existsSync(dbPath)) {
+  if(!existsSync(dbPath)) {
     return {available = new Database(dbPath);
     // ; // LINT: unreachable code removed
     const __stats = db;
 prepare(
     `
-    SELECT
-    (SELECT
+    SELECT(SELECT
     COUNT(*)
     FROM
     swarms
@@ -94,7 +93,7 @@ all() {}
     db.close();
     // return {available = path.join(cwd(), 'node_modules', 'ruv-swarm', 'data', 'ruv-swarm.db');
     // ; // LINT: unreachable code removed
-    if (!existsSync(dbPath)) {
+    if(!existsSync(dbPath)) {
       // return {available = new Database(dbPath);
       // ; // LINT: unreachable code removed
       const __stats = db;
@@ -210,10 +209,10 @@ all() {}
 
         console.warn(`;`
     \$chalk.cyan(name);
-    : \$completed/\$totaltasks (\$
+    : \$completed/\$totaltasks(\$
       rate
     %)`)`
-    if (swarm.objective) {
+    if(swarm.objective) {
       console.warn(`Objective = // await getUnifiedSwarmMetrics();`
   const _fixes = [];
 
@@ -242,10 +241,10 @@ all() {}
     } else {
       console.warn(chalk.green(' All swarms have task assignments'));
     //     }
-  } else if (metrics.hiveMind.available) {
+  } else if(metrics.hiveMind.available) {
     console.warn(chalk.yellow('⚠  Only Hive-Mind system available'));
     fixes.push('SETUP_RUV_SWARM');
-  } else if (metrics.ruvSwarm.available) {
+  } else if(metrics.ruvSwarm.available) {
     console.warn(chalk.yellow('⚠  Only ruv-swarm system available'));
     fixes.push('SETUP_HIVE_MIND');
   } else {
@@ -253,7 +252,7 @@ all() {}
     fixes.push('SETUP_BOTH_SYSTEMS');
   //   }
   // Apply fixes
-  for (const fix of fixes) {
+  for(const fix of fixes) {
 // // await applyFix(fix, metrics);
   //   }
   console.warn(chalk.green('\n✅ Task attribution fix completed'));
@@ -265,7 +264,7 @@ all() {}
  * Apply specific fixes
  */
 async function applyFix(fixType, metrics) {
-  switch (fixType) {
+  switch(fixType) {
     case 'CREATE_SAMPLE_TASKS': null
       console.warn(chalk.blue('� Creating sample tasks for empty swarms...'));
 // // await createSampleTasks(metrics);

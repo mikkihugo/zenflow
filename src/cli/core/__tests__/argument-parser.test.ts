@@ -3,15 +3,14 @@
  * Implements Google's testing best practices;'
  */
 
-import { describe, expect } from '@jest/globals';'
-import {
-  FlagValidator,
+import { describe, expect  } from '@jest/globals';'
+import { FlagValidator,
 normalizeFlags,
 parseCommandLineArguments,
 parseCommandStructure,
-validatePositionalArguments } from '../argument-parser.js''
+validatePositionalArguments  } from '../argument-parser.js''
 
-// import { ValidationError } from '../cli-error.js';'
+// import { ValidationError  } from '../cli-error.js';'
 
 describe('Argument Parser', () => {'
   describe('parseCommandLineArguments', () => {'
@@ -20,8 +19,7 @@ describe('Argument Parser', () => {'
       const __result = parseCommandLineArguments(args);
 
       expect(result.positionalArgs).toEqual(['command', 'arg1']);'
-      expect(result.flags).toEqual({
-        flag1 => { // eslint-disable-line
+      expect(result.flags).toEqual({ flag1 => { // eslint-disable-line
       const _args = ['--config=file.json', '--verbose=true'];'
       const _result = parseCommandLineArguments(args);
 
@@ -40,7 +38,7 @@ describe('Argument Parser', () => {'
       expect(result.getFlag('flag1')).toBe('value1');'
       expect(result.getFlag('flag3', 'default')).toBe('default');'
       expect(result.getBooleanFlag('flag2')).toBe(true);'
-    });
+     });
 
     it('should throw error for required flag', () => {'
       const _args = ['--flag1', 'value1'];'
@@ -77,7 +75,7 @@ toThrow('Insufficient arguments. Usage => {'
       expect(result.command).toBe(null);
       expect(result.subcommand).toBe(null);
       expect(result.args).toEqual([]);
-      expect(result.flags).toEqual({});
+      expect(result.flags).toEqual({ });
     });
 
       it('should handle only command', () => {'
@@ -98,10 +96,9 @@ toThrow('Insufficient arguments. Usage => {'
 
         let _normalized = normalizeFlags(flags);
 
-        expect(normalized).toEqual({
-        maxAgents => {
-      const _normalized = normalizeFlags({});
-        expect(normalized).toEqual({});
+        expect(normalized).toEqual({ maxAgents => {
+      const _normalized = normalizeFlags({ });
+        expect(normalized).toEqual({  });
       });
     });
 
@@ -109,11 +106,10 @@ toThrow('Insufficient arguments. Usage => {'
       let validator;
 
       beforeEach(() => {
-        validator = new FlagValidator({
-        stringFlag => {
+        validator = new FlagValidator({ stringFlag => {
       it('should return valid string', () => {'
         expect(_validator._requireString('stringFlag')).toBe('test');'
-    //   // LINT: unreachable code removed});
+    //   // LINT: unreachable code removed });
 
       it('should throw error for missing flag', () => {'
         expect(() => validator.requireString('missingFlag')).toThrow(ValidationError);'

@@ -5,11 +5,10 @@
  */
 
 import chalk from 'chalk';
-import {
-  parseHiveMindArgs,
+import { parseHiveMindArgs,
 routeHiveMindCommand,
 showHiveMindHelp,
-showSubcommandUsage } from '../hive-mind-core/command-interface.js'
+showSubcommandUsage  } from '../hive-mind-core/command-interface.js'
 /**
  * Main hive mind command handler with clean architecture;
  * @param {string[]} args - Command arguments;
@@ -19,8 +18,8 @@ showSubcommandUsage } from '../hive-mind-core/command-interface.js'
 // export async function handleHiveMindCommand(args = parseHiveMindArgs(args, flags); // LINT: unreachable code removed
 
 // Handle help display
-if (subcommand === 'help' ?? parsedFlags.help) {
-  if (parsedArgs[1]) {
+if(subcommand === 'help' ?? parsedFlags.help) {
+  if(parsedArgs[1]) {
     showSubcommandUsage(parsedArgs[1]);
   } else {
     showHiveMindHelp();
@@ -30,14 +29,14 @@ if (subcommand === 'help' ?? parsedFlags.help) {
 // Route to appropriate handler
 // const _handler = awaitrouteHiveMindCommand(subcommand, parsedArgs, parsedFlags);
 // // await handler();
-} catch (error)
+} catch(error)
 // {
   console.error(chalk.red('❌ Hive Mind Error), error.message);'
-  if (parsedFlags?.verbose ?? parsedFlags?.debug) {
+  if(parsedFlags?.verbose ?? parsedFlags?.debug) {
     console.error(chalk.gray(error.stack));
   //   }
   // Show relevant help for invalid commands
-  if (error.message.startsWith('Unknown subcommand)) {'
+  if(error.message.startsWith('Unknown subcommand)) {'
     console.warn(chalk.yellow('\nAvailable subcommands));'
     showHiveMindHelp();
   //   }
@@ -48,16 +47,14 @@ if (subcommand === 'help' ?? parsedFlags.help) {
 // export default handleHiveMindCommand;
 
 // Export individual functions for testing
-// export {
-  parseHiveMindArgs,
+// export { parseHiveMindArgs,
 routeHiveMindCommand,
-showHiveMindHelp } from '../hive-mind-core/command-interface.js'
+showHiveMindHelp  } from '../hive-mind-core/command-interface.js'
 
-// export { initHiveMind } from '../hive-mind-core/initialization.js';
+// export { initHiveMind  } from '../hive-mind-core/initialization.js';
 
-// export type {
-  showStatus,
+// export type { showStatus,
 spawnSwarm,
 spawnSwarmWizard,
-stopSession } from '../hive-mind-core/swarm-management.js'
+stopSession  } from '../hive-mind-core/swarm-management.js'
 )

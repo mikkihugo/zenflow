@@ -10,14 +10,14 @@ import path from 'node:path';
 export async function monitorCommand(subArgs = getFlag(subArgs, '--interval')  ?? flags.interval  ?? 5000;
 const _format = getFlag(subArgs, '--format') ?? flags.format ?? 'pretty';
 const _continuous = subArgs.includes('--watch') ?? flags.watch;
-if (continuous) {
+if(continuous) {
 // // await runContinuousMonitoring(interval, format);
 } else {
 // // await showCurrentMetrics(format);
 // }
 // }
 async function showCurrentMetrics(format = // await collectMetrics();
-if (format === 'json') {
+if(format === 'json') {
   console.warn(JSON.stringify(metrics, null, 2));
 } else {
   displayMetrics(metrics);
@@ -36,18 +36,18 @@ process.on('SIGTERM', cleanup);
 // const _initialMetrics = awaitcollectMetrics();
 console.warn(`� Monitoring Claude-Flow System`);
 console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
-if (format === 'json') {
+if(format === 'json') {
   console.warn(JSON.stringify(initialMetrics, null, 2));
 } else {
   displayMetrics(initialMetrics);
 // }
 console.warn(`\n� Next update in ${interval}ms...`);
 // Start continuous monitoring
-monitorInterval = setInterval(async () => {
+monitorInterval = setInterval(async() => {
   console.warn(`� Monitoring Claude-Flow System`);
   console.warn(`⏰ ${new Date().toLocaleTimeString()}\n`);
 // const _metrics = awaitcollectMetrics();
-  if (format === 'json') {
+  if(format === 'json') {
     console.warn(JSON.stringify(metrics, null, 2));
   } else {
     displayMetrics(metrics);
@@ -70,7 +70,7 @@ async function collectMetrics() {
   // let _totalIdle = 0; // LINT: unreachable code removed
   const _totalTick = 0;
   cpus.forEach((cpu) => {
-    for (const type in cpu.times) {
+    for(const type in cpu.times) {
       totalTick += cpu.times[type];
     //     }
     totalIdle += cpu.times.idle;
@@ -165,9 +165,9 @@ async function _countMCPConnections() {
   console.warn();
   console.warn('Options);'
   console.warn(;
-    '  --interval <ms>                  Update interval in milliseconds (default)';
+    '  --interval <ms>                  Update interval in milliseconds(default)';
   );
-  console.warn('  --format <type>                  Output format, json (default)');
+  console.warn('  --format <type>                  Output format, json(default)');
   console.warn('  --watch                          Continuous monitoring mode');
   console.warn();
   console.warn('Examples);'

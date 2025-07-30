@@ -11,7 +11,7 @@
       return;
     //   // LINT: unreachable code removed}
 
-    // Option2 = new ClaudeZenServer({ port});
+    // Option2 = new ClaudeZenServer({ port });
 
     // Start server
 // // await server.start();
@@ -29,7 +29,7 @@
       process.exit(0);
     });
 
-  } catch (error)
+  } catch(error)
 // {
   console.error('❌ Demofailed = === `file) {'`
   main();

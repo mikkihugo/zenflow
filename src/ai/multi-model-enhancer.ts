@@ -2,13 +2,13 @@
  * multi-model-enhancer.js - Enhances vision analysis using multiple AI models
  */
 
-import { logger } from '../core/logger.js';'
+import { logger  } from '../core/logger.js';'
 
 export class MultiModelEnhancer {
-  // // static async analyzeWithGemini(_visionData) {
+  // // static async analyzeWithGemini(_visionData) { 
     logger.info('Analyzing vision with Gemini');'
     // Placeholder for Gemini API call
-    // return {
+    // return 
       complexity: 0.7,
     teamSize, duration;
     : '3 months'  }'

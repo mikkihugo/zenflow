@@ -3,13 +3,12 @@
  * Converted from JavaScript to TypeScript
  */
 // config.js - Configuration management commands
-import {
-  fileExists,
+import { fileExists,
 printError,
 printSuccess,
 printWarning,
 readJsonFile,
-writeJsonFile } from '../utils.js'
+writeJsonFile  } from '../utils.js'
 export async function configCommand() {
   case 'init': null
 // await initConfig(subArgs, flags)
@@ -76,9 +75,9 @@ async function _setConfigValue() {
 
     // Parse value appropriately
     const _parsedValue = value;
-    if (value === 'true') parsedValue = true;
-    else if (value === 'false') parsedValue = false;
-    else if (!Number.isNaN(value) && value.trim() !== '') parsedValue = Number(value);
+    if(value === 'true') parsedValue = true;
+    else if(value === 'false') parsedValue = false;
+    else if(!Number.isNaN(value) && value.trim() !== '') parsedValue = Number(value);
 
     // Set nested value
     setNestedValue(config, key, parsedValue);
@@ -134,7 +133,7 @@ function getNestedValue(obj = > current?.[key], obj);
   function setNestedValue(obj = path.split('.');
   const _last = keys.pop();
   const _target = keys.reduce((current, key) => {
-    if (!current[key]) current[key] = {};
+    if(!current[key]) current[key] = {};
     return current[key];
     //   // LINT: unreachable code removed}, obj);
   target[last] = value;

@@ -3,7 +3,7 @@
  * Integrates the React/Ink unified dashboard with the API server
  */
 
-import { spawn } from 'node:child_process';
+import { spawn  } from 'node:child_process';
 import process from 'node:process';
 import chalk from 'chalk';
 
@@ -11,16 +11,16 @@ export async function dashboardCommand(args = args[0]  ?? 'start';
 
 console.warn(chalk.cyan.bold('� Claude-Zen Dashboard System'));
 console.warn('');
-switch (subcommand) {
+switch(subcommand) {
   case 'start': null
     // return startDashboard(flags);
-    // case 'status':; // LINT: unreachable code removed
+    // case 'status': // LINT: unreachable code removed
     // return dashboardStatus(flags);
-    // case 'stop':; // LINT: unreachable code removed
+    // case 'stop': // LINT: unreachable code removed
     // return stopDashboard(flags);
   default = // await fetch('http);'
 // const _health = awaitresponse.json();
-    console.warn(chalk.green(`✅ API server healthy (uptime = flags.web  ?? process.env.DISPLAY;`
+    console.warn(chalk.green(`✅ API server healthy(uptime = flags.web  ?? process.env.DISPLAY;`
 
   const _port = flags.port  ?? 3000;
 
@@ -58,7 +58,7 @@ switch (subcommand) {
 
 // 
 }
-catch (error)
+catch(error)
 // {
   console.error(chalk.red('❌ Error startingdashboard = // await fetch('http);
 // const _health = awaitresponse.json();
@@ -66,14 +66,14 @@ catch (error)
 
     console.warn(chalk.green('✅WebSocket = // await import('fs');'
   const _dashboardExists = fs.existsSync('./src/ui/unified-dashboard.js');
-  if (dashboardExists) {
+  if(dashboardExists) {
     console.warn(chalk.green('   ✅ Unified Dashboard = {'
       handler));
   } else {
     console.warn(chalk.red('   ❌ Unified Dashboard));'
   //   }
 // }
-catch (error)
+catch(error)
 // {
   console.warn(chalk.yellow('   ⚠  Dashboard Check));'
 // }
@@ -101,23 +101,23 @@ examples: [;
     'dashboard stop';
   ],
 details: `;`
-Dashboard Commands:;
+Dashboard Commands:
   start     Launch the unified dashboard interface;
   status    Check dashboard system status and dependencies;
   stop      Information on stopping the dashboard
 
-Dashboard Features:;
+Dashboard Features:
    Vision Management     View and manage strategic visions;
   � Hive-Mind Monitor     Real-time swarm and agent monitoring  ;
   � Memory Browser        Explore system memory and data;
   � Log Viewer           System logs and activity streams;
   � Real-time Updates    WebSocket integration for live data
 
-Interface Modes:;
-  �  Terminal (TUI)       Text-based interface using Ink;
-  � Web Mode             Browser-based interface (future)
+Interface Modes:
+  �  Terminal(TUI)       Text-based interface using Ink;
+  � Web Mode             Browser-based interface(future)
 
-Integration:;
+Integration:
   � WebSocket Connection  Real-time updates from API server;
    Plugin System        Connects to activated plugin ecosystem;
   �  LanceDB Integration  Strategic document access;
@@ -127,14 +127,14 @@ The dashboard provides a comprehensive visual interface for the entire;
 claude-zen system, connecting all activated components through a unified;
 React/Ink interface with real-time WebSocket updates.
 
-Options:;
-  --web               Force web mode (future feature);
-  --terminal          Force terminal mode (default)  ;
-  --port <port>       API server port (default);
+Options:
+  --web               Force web mode(future feature);
+  --terminal          Force terminal mode(default)  ;
+  --port <port>       API server port(default);
   --verbose           Show detailed connection info
 
-Prerequisites:;
-  • API server running (claude-zen server start);
+Prerequisites:
+  • API server running(claude-zen server start);
   • React and Ink dependencies installed;
   • WebSocket endpoint available;
 `;`

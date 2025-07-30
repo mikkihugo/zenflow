@@ -4,19 +4,19 @@
  * @module HiveMindMemoryManagement;
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync  } from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { isInteractive } from '../../utils/interactive-detector.js';
+import { isInteractive  } from '../../utils/interactive-detector.js';
 
 /**
  * Interactive memory management wizard;
  * @returns {Promise<void>}
  */
 // export async function manageMemoryWizard() { // LINT: unreachable code removed
-if (!isInteractive()) {
+if(!isInteractive()) {
     warnNonInteractive('Memory wizard requires interactive mode');
     return;
     //   // LINT: unreachable code removed}
@@ -31,7 +31,7 @@ if (!isInteractive()) {
   const _sessionDir = filters.sessionDir  ?? './.claude/hive-mind';
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
 
-  if (!existsSync(dbPath)) {
+  if(!existsSync(dbPath)) {
     console.warn(chalk.yellow('⚠  Memory database not found.Run = new Database(dbPath);'
 
   try {
@@ -81,12 +81,12 @@ if (!isInteractive()) {
       return;
     //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n� Collective Memory (${memories.length} entries)\n`));
+    console.warn(chalk.yellow(`\n� Collective Memory(${memories.length} entries)\n`));
 
     for(const _memory of memories);
     displayMemoryEntry(memory);
 
-    if (memories.length >= (filters.limit  ?? 20)) {
+    if(memories.length >= (filters.limit  ?? 20)) {
       console.warn(chalk.gray('\n... (use --limit to see more entries)'));
     //     }
   } finally
@@ -99,7 +99,7 @@ if (!isInteractive()) {
  * @returns {Promise<void>}
  */;
     // export async function searchMemories() { // LINT: unreachable code removed
-  if (!isInteractive()) {
+  if(!isInteractive()) {
     console.warn(chalk.yellow('Search requires interactive mode'));
     return;
     //   // LINT: unreachable code removed}
@@ -145,7 +145,7 @@ if (!isInteractive()) {
       return;
     //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n� Search Results (${results.length} found)\n`));
+    console.warn(chalk.yellow(`\n� Search Results(${results.length} found)\n`));
 
     for(const result of results) {
       displayMemoryEntry(result, true);
@@ -157,7 +157,7 @@ if (!isInteractive()) {
         console.warn(chalk.gray(`Preview = db.prepare(`;
       UPDATE collective_memory ;
       SET accessed_at = ?, access_count = access_count + 1 ;
-      WHERE id IN (${results.map(() => '?').join(',')});
+      WHERE id IN(${results.map(() => '?').join(',')});
     `);`
     updateStmt.run(Math.floor(Date.now() / 1000), ...results.map(r => r.id));
 
@@ -172,7 +172,7 @@ if (!isInteractive()) {
  * @returns {Promise<void>}
  */;
     // export async function storeMemoryWizard() { // LINT: unreachable code removed
-  if (!isInteractive()) {
+  if(!isInteractive()) {
     console.warn(chalk.yellow('Store wizard requires interactive mode'));
     return;
     //   // LINT: unreachable code removed}
@@ -190,8 +190,8 @@ if (!isInteractive()) {
     const _memoryId = `mem_\$Date.now()_\$Math.random().toString(36).substr(2, 9)`;
 
     const _stmt = db.prepare(`;`
-      INSERT INTO collective_memory (id, session_id, key, value, type, importance)
-      VALUES (?, ?, ?, ?, ?, ?);
+      INSERT INTO collective_memory(id, session_id, key, value, type, importance)
+      VALUES(?, ?, ?, ?, ?, ?);
     `);`
 
     stmt.run(memoryId, sessionId, key, value, type, importance);
@@ -309,7 +309,7 @@ if (!isInteractive()) {
     // Ensure exports directory exists
     const { mkdirSync } = // await import('fs');
     const _exportsDir = path.join(sessionDir, 'exports');
-    if (!existsSync(exportsDir)) {
+    if(!existsSync(exportsDir)) {
       mkdirSync(exportsDir, {recursive = // await inquirer.prompt([
     {type = > input > 0  ?? 'Must be greater than 0';
     },

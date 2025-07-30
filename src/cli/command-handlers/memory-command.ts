@@ -4,7 +4,7 @@
  */
 
 // memory.js - Memory management commands
-import { printError, printSuccess } from '../cli-utilities.js';
+import { printError, printSuccess  } from '../cli-utilities.js';
 
 export async function memoryCommand() {
   try {
@@ -43,11 +43,11 @@ if(!key  ?? !value) {
     const _namespace = getNamespaceFromArgs(subArgs);
     const _results = [];
 
-    for (const [ns, entries] of Object.entries(data)) {
-      if (namespace && ns !== namespace) continue;
+    for(const [ns, entries] of Object.entries(data)) {
+      if(namespace && ns !== namespace) continue;
 
       for(const entry of entries) {
-        if (entry.key.includes(search)  ?? entry.value.includes(search)) {
+        if(entry.key.includes(search)  ?? entry.value.includes(search)) {
           results.push(entry);
         //         }
       //       }
@@ -61,13 +61,13 @@ if(!key  ?? !value) {
 
     printSuccess(`Found ${results.length}results = > b.timestamp - a.timestamp);`
 
-    for (const entry of results.slice(0, 10)) {
+    for(const entry of results.slice(0, 10)) {
       console.warn(`\n� ${entry.key}`);
       console.warn(`Namespace = // await loadMemory();`
     const __totalEntries = 0;
     const _namespaceStats = {};
 
-    for (const [namespace, entries] of Object.entries(data)) {
+    for(const [namespace, entries] of Object.entries(data)) {
       namespaceStats[namespace] = entries.length;
       _totalEntries += entries.length;
     //     }
@@ -87,12 +87,12 @@ if(!key  ?? !value) {
     printSuccess(`Memory exported to ${filename}`);
 
     const _totalEntries = 0;
-    for (const entries of Object.values(exportData)) {
+    for(const entries of Object.values(exportData)) {
       totalEntries += entries.length;
     //     }
     console.warn(;
       `� Exported ${totalEntries} entries from ${Object.keys(exportData).length} namespace(s)`);
-  } catch (/* _err */) {
+  } catch(/* _err */) {
     printError(`Failed to exportmemory = subArgs[1];`
 
   if(!filename) {
@@ -104,13 +104,13 @@ if(!key  ?? !value) {
 
     // Merge imported data
     const _totalImported = 0;
-    for (const [namespace, entries] of Object.entries(importData)) {
+    for(const [namespace, entries] of Object.entries(importData)) {
       if(!existingData[namespace]) {
         existingData[namespace] = [];
       //       }
 
 
-      // Add entries that don't already exist (by key)'
+      // Add entries that don't already exist(by key)'
       const _existingKeys = new Set(existingData[namespace].map((e) => e.key));
       const _newEntries = entries.filter((e) => !existingKeys.has(e.key));
 
@@ -119,7 +119,7 @@ if(!key  ?? !value) {
     //     }
 // // await saveMemory(existingData);
     printSuccess(`Imported ${totalImported} new entries from ${filename}`);
-  } catch (/* err */) {
+  } catch(/* err */) {
     printError(`Failed to importmemory = getNamespaceFromArgs(subArgs);`
 
   if(!namespace) {
@@ -134,7 +134,7 @@ if(!key  ?? !value) {
     delete data[namespace];
 // // await saveMemory(data);
     printSuccess(`Cleared ${entryCount} entries from namespace '${namespace}'`);
-  } catch (/* err */)
+  } catch(/* err */)
     printError(`Failed to clearmemory = // await loadMemory();`
     const _namespaces = Object.keys(data);
 
@@ -146,7 +146,7 @@ if(!key  ?? !value) {
     printSuccess('Availablenamespaces = data[namespace].length;'
       console.warn(`${namespace} (${count} entries)`);
     //     }
-  } catch (/* err */)
+  } catch(/* err */)
     printError(`Failed to listnamespaces = subArgs.indexOf('--namespace');`
   if(namespaceIndex !== -1 && namespaceIndex + 1 < subArgs.length) {
     // return subArgs[namespaceIndex + 1];
@@ -161,7 +161,7 @@ if(!key  ?? !value) {
 // }
 
 
-// Helper to load memory data (needed for import function)
+// Helper to load memory data(needed for import function)
 async function _loadMemory() {
   try {
 // const _content = awaitnode.readTextFile('./memory/memory-store.json');

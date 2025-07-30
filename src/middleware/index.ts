@@ -5,28 +5,26 @@
 
 import compression from 'compression';
 import cors from 'cors';
-import express, { NextFunction, Request, Response } from 'express';
-import { rateLimit } from 'express-rate-limit';
+import express, { NextFunction, Request, Response  } from 'express';
+import { rateLimit  } from 'express-rate-limit';
 import helmet from 'helmet';
-import type { JSONObject } from '../types/core.js';
+import type { JSONObject  } from '../types/core.js';
 // Import types
-import {
-  MiddlewareFunction,
+import { MiddlewareFunction,
 SessionContext,
 TypedRequest,
 TypedResponse,
 // type UserContext
 
 ValidationError,
-ValidationResult } from '../types/server.js'
+ValidationResult  } from '../types/server.js'
 /**
  * Enhanced request logging middleware
  */
 // export function requestLogger() {
-  return (req) => {
+  return(req) => {
     const _start = Date.now();
-    // const _correlationId =; // LINT: unreachable code removed
-    (req.headers['x-correlation-id'] as string) ??
+    // const _correlationId =; // LINT: unreachable code removed(req.headers['x-correlation-id'] as string) ??
       `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     // Add correlation tracking
     req.correlation = {
@@ -46,46 +44,45 @@ ValidationResult } from '../types/server.js'
     const _validation = {params = validateObject(req.params, schema.params, 'params');
 // }
 // Validate query
-if (schema.query) {
+if(schema.query) {
   validation.query = validateObject(req.query, schema.query, 'query');
 // }
 // Validate body
-if (schema.body) {
+if(schema.body) {
   validation.body = validateObject(req.body, schema.body, 'body');
 // }
 // Validate headers
-if (schema.headers) {
+if(schema.headers) {
   validation.headers = validateObject(req.headers, schema.headers, 'headers');
 // }
 req.validation = validation;
 // Check if any validation failed
 const _hasErrors = Object.values(validation).some((v) => !v.valid);
-if (hasErrors) {
-  return res.status(400).json({success = > Promise<UserContext | null>;
-// }
-): MiddlewareFunction
+if(hasErrors) {
+  return res.status(400).json({ success = > Promise<UserContext | null>;
+//  }): MiddlewareFunction
 // {
-  // return async (req => {
+  // return async(req => {
     try {
       const _authHeader = req.headers.authorization;
     // let _user = null; // LINT: unreachable code removed
 
-      if (authHeader && authHeader.startsWith('Bearer ')) {
+      if(authHeader && authHeader.startsWith('Bearer ')) {
         const _token = authHeader.substring(7);
 
-        if (options.extractUser) {
+        if(options.extractUser) {
           user = // await options.extractUser(token);
         } else {
           // Default user extraction logic
           user = {id = user;
       next();
-    } catch (error) ;
+    } catch(error) ;
       console.error('Authenticationerror = > boolean)) {'
-  // return (req => {
-    if (!req.user) {
+  // return(req => {
+    if(!req.user) {
       return res.status(401).json({success = false;
     // ; // LINT: unreachable code removed
-    if (typeof permissions === 'function') {
+    if(typeof permissions === 'function') {
       hasPermission = permissions(req.user);
     } else {
       hasPermission = permissions.some(permission => ;
@@ -94,13 +91,13 @@ if (hasErrors) {
     //     }
 
 
-    if (!hasPermission) {
+    if(!hasPermission) {
       // return res.status(403).json({
         success => {
     console.error(`Error in ${req.method} ${req.path});`
     // ; // LINT: unreachable code removed
     // Handle different types of errors
-    if (err.name === 'ValidationError') {
+    if(err.name === 'ValidationError') {
       return res.status(400).json({success = === 'UnauthorizedError') {
       // return res.status(401).json({success = === 'ForbiddenError') {
       // return res.status(403).json({success = === 'NotFoundError') {
@@ -110,16 +107,16 @@ if (hasErrors) {
       return this.json({success = function(message, code?, details?) {
       const _statusCode = code  ?? 500;
     // return this.status(statusCode).json({success = function<T>(data,pagination = function(data, ttl?) { // LINT: unreachable code removed
-      if (ttl) {
+      if(ttl) {
         this.set('Cache-Control', `public, max-age=${ttl}`);
       //       }
       return this.json({success = function(data => {
         try {
-          for // await (const chunk of data) {
+          for // await(const chunk of data) {
             this.write(JSON.stringify(chunk) + '\n');
     //   // LINT: unreachable code removed}
           this.end();
-        } catch (error) {
+        } catch(error) {
           this.write(JSON.stringify({error = function<T>() {
       return this.params as T;
     //   // LINT: unreachable code removed};
@@ -150,15 +147,15 @@ if (hasErrors) {
  * CORS middleware with advanced options
  */;
 // export function corsMiddleware(options?) {
-  return cors({origin = === 'production' ? false => {
+  return cors({ origin = === 'production' ? false => {
       res.status(429).json({success = 30000) {
-  return (req => {
+  return(req => {
     const _timer = setTimeout(() => {
-      if (!res.headersSent) {
+      if(!res.headersSent) {
         res.status(408).json({
           success => {
       clearTimeout(timer);
-    //   // LINT: unreachable code removed});
+    //   // LINT: unreachable code removed });
 
     res.on('close', () => {
       clearTimeout(timer);
@@ -172,17 +169,17 @@ if (hasErrors) {
 // Helper functions
 
 /**
- * Validate an object against a schema
+ * Validate an object against a schema: {}
  */;
 function validateObject() {
     errors.push({
       field => {
-    if (typeof schemaValue === 'object' && schemaValue !== null) {
+    if(typeof schemaValue === 'object' && schemaValue !== null) {
       const _fieldSchema = schemaValue as any;
 
-      if (fieldSchema.required && !(key in obj)) {
+      if(fieldSchema.required && !(key in obj)) {
         errors.push({field = typeof obj[key];
-        if (actualType !== fieldSchema.type) {
+        if(actualType !== fieldSchema.type) {
           errors.push({field = === 0,
     errors,
     warnings;

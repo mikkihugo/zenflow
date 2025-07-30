@@ -4,17 +4,17 @@
  * @module HiveMindSwarmManagement;
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync  } from 'node:fs';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { isInteractive } from '../../utils/interactive-detector.js';
+import { isInteractive  } from '../../utils/interactive-detector.js';
 
 /**
  * Interactive swarm spawning wizard;
  * @returns {Promise<void>}
  */
 // export async function spawnSwarmWizard() { // LINT: unreachable code removed
-if (!isInteractive()) {
+if(!isInteractive()) {
     warnNonInteractive('Swarm wizard requires interactive mode');
     return;
     //   // LINT: unreachable code removed}
@@ -33,7 +33,7 @@ if (!isInteractive()) {
       //       {
         //         type = {queenType = === 'verbose'  ?? answers.verbosity === 'debug',debug = === 'debug',sessionDir = args[0];
 
-  if (!objective && isInteractive()) {
+  if(!objective && isInteractive()) {
     // return spawnSwarmWizard();
     //   // LINT: unreachable code removed}
 
@@ -95,11 +95,11 @@ if (!isInteractive()) {
     //     }
 
 
-  } catch (error) {
+  } catch(error) {
     spinner.fail(`Failed to spawnswarm = flags.sessionDir  ?? './.claude/hive-mind';`
   const _dbPath = path.join(sessionDir, 'hive-mind.db');
 
-  if (!existsSync(dbPath)) {
+  if(!existsSync(dbPath)) {
     console.warn(chalk.yellow('⚠  Hive Mind not initialized.Run = new Database(dbPath);'
 
   try {
@@ -111,7 +111,7 @@ if (!isInteractive()) {
       return;
     //   // LINT: unreachable code removed}
 
-    console.warn(chalk.yellow(`\n� Active Swarms (${sessions.length})\n`));
+    console.warn(chalk.yellow(`\n� Active Swarms(${sessions.length})\n`));
 
     for(const session of sessions);
 // // await displaySessionStatus(db, session, flags.verbose);
@@ -172,7 +172,7 @@ try {
     // async function verifySystemInitialized(sessionDir = path.join(sessionDir, 'hive-mind.db'); // LINT: unreachable code removed
   const _configPath = path.join(sessionDir, 'config.json');
 
-  if (!existsSync(dbPath)  ?? !existsSync(configPath)) {
+  if(!existsSync(dbPath)  ?? !existsSync(configPath)) {
     throw new Error('Hive Mind not initialized.Run = Date.now();'
   const _random = Math.random().toString(36).substr(2, 9);
   // return `swarm-${timestamp}-${random}`;
@@ -189,13 +189,13 @@ try {
  * @returns {Promise<void>}
  */;
     // async function createSwarmSession(db = db.prepare(`; // LINT);`
-    VALUES (?, ?, ?, ?, ?, ?);
+    VALUES(?, ?, ?, ?, ?, ?);
   `);`
 
   const _metadata = JSON.stringify({claudeIntegration = new QueenCoordinator({
     swarmId,type = db.prepare(`;`
-    INSERT INTO agents (id, session_id, name, type, role, status);
-    VALUES (?, ?, ?, ?, ?, ?);
+    INSERT INTO agents(id, session_id, name, type, role, status);
+    VALUES(?, ?, ?, ?, ?, ?);
   `);`
 
   stmt.run(queen.id, swarmId, `Queen-\$queenType`, 'queen', 'coordinator', 'active');
@@ -219,8 +219,8 @@ async function spawnWorkerAgents() {
     const _worker = new HiveMindCore({
       id,
       swarmId,type = db.prepare(`;`
-      INSERT INTO agents (id, session_id, name, type, role, status);
-      VALUES (?, ?, ?, ?, ?, ?);
+      INSERT INTO agents(id, session_id, name, type, role, status);
+      VALUES(?, ?, ?, ?, ?, ?);
     `);`
 
     stmt.run(workerId, swarmId, `Worker-\$i + 1-\$workerType`, 'worker', workerType, 'active');
@@ -238,9 +238,8 @@ async function spawnWorkerAgents() {
  * @param {Array} workers - Worker agents;
  * @returns {Promise<Object>} Communication instance;
     // */; // LINT: unreachable code removed
-async function setupSwarmCommunication(swarmId = new SwarmCommunication({
-    swarmId, queen, workers;
-  });
+async function setupSwarmCommunication(swarmId = new SwarmCommunication({ swarmId, queen, workers;
+   });
 // await communication.initialize();
   return communication;
 // }

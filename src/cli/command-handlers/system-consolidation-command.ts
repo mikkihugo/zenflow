@@ -3,18 +3,18 @@
  * Addresses redundant commands and provides clear system control
  */
 
-import { printError, printInfo } from '../utils.js';
+import { printError, printInfo  } from '../utils.js';
 
 export async function systemConsolidationCommand() {
-    case 'start':;
+    case 'start':
       return await startUnifiedSystem(subArgs.slice(1), flags);
-    // case 'stop':; // LINT: unreachable code removed
+    // case 'stop': // LINT: unreachable code removed
       return // await stopUnifiedSystem(subArgs.slice(1), flags);
-    // case 'restart':; // LINT: unreachable code removed
+    // case 'restart': // LINT: unreachable code removed
       // return // await restartUnifiedSystem(subArgs.slice(1), flags);
-    // case 'status':; // LINT: unreachable code removed
+    // case 'status': // LINT: unreachable code removed
       // return // await showUnifiedStatus(subArgs.slice(1), flags);
-    // case 'consolidate':; // LINT: unreachable code removed
+    // case 'consolidate': // LINT: unreachable code removed
       // return // await showConsolidationPlan();default = [];
 
   try {
@@ -24,16 +24,16 @@ export async function systemConsolidationCommand() {
     printSuccess('✅ Unified system started successfully');
     printInfo('� Activeservices = > setTimeout(resolve, 2000)); // Wait 2 seconds'
 // // await startUnifiedSystem(args, flags);
-  } catch (/* _error */) {
+  } catch(/* _error */) {
     printError(`Failed to restartsystem = // await fetch('http);'`
 // const _health = awaitresponse.json();
     printSuccess(`✅ APIServer = // await import('./plugin-status-command.js');`
 
     printSuccess(`✅ PluginSystem = // await import('../database/strategic-documents-manager.js');`
 // // await strategicDocs.getAnalytics();
-    printSuccess('✅ StrategicDocuments = API + Dashboard + Queen Council (integrated)');
-  printInfo('  - server start = API only (individual component)');
-  printInfo('  - dashboard start = UI only (individual component)');
+    printSuccess('✅ StrategicDocuments = API + Dashboard + Queen Council(integrated)');
+  printInfo('  - server start = API only(individual component)');
+  printInfo('  - dashboard start = UI only(individual component)');
   printInfo('  - init = Project setup with template selection');
 // }
 
@@ -43,21 +43,21 @@ async function showConsolidationPlan() {
   console.warn();
 
   printInfo('� REDUNDANT COMMANDSIDENTIFIED = === claude-zen server start');
-  console.warn('  ❌ claude-zen dashboard start (auto-included in start)');
-  console.warn('  ❌ Manual queen council convening (auto-convened)');
+  console.warn('  ❌ claude-zen dashboard start(auto-included in start)');
+  console.warn('  ❌ Manual queen council convening(auto-convened)');
   console.warn();
 
   printInfo('✅ CONSOLIDATEDSYSTEM = Full integrated system');
-  console.warn('     ├── API Server (port 3000)');
-  console.warn('     ├── Dashboard (integrated)');
-  console.warn('     └── Queen Council (auto-convened)');
+  console.warn('     ├── API Server(port 3000)');
+  console.warn('     ├── Dashboard(integrated)');
+  console.warn('     └── Queen Council(auto-convened)');
   console.warn();
-  console.warn('  � claude-zen server start = API only (dev/debug)');
-  console.warn('  � claude-zen dashboard start = UI only (dev/debug)');
+  console.warn('  � claude-zen server start = API only(dev/debug)');
+  console.warn('  � claude-zen dashboard start = UI only(dev/debug)');
   console.warn('  � claude-zen queen-council convene = Manual council');
   console.warn();
 
-  printInfo(' TEMPLATESYSTEM = Project setup (template selection)');
+  printInfo(' TEMPLATESYSTEM = Project setup(template selection)');
   console.warn('  � claude-zen template = Template management');
   console.warn('     Available = {'
       name);
@@ -77,7 +77,7 @@ function showConsolidationHelp() {
   console.warn('Usage);'
   console.warn();
   console.warn('Actions);'
-  console.warn('  start        Start unified system (API + Dashboard + Queen Council)');
+  console.warn('  start        Start unified system(API + Dashboard + Queen Council)');
   console.warn('  stop         Stop all system components');
   console.warn('  restart      Restart entire system');
   console.warn('  status       Show comprehensive system status');

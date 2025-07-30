@@ -27,7 +27,7 @@ export class MCPIntegrationLayer {
   this;
 
   toolCategories = {
-      // Swarm Coordination Tools (12)swarm = // await this.checkMCPAvailability();
+      // Swarm Coordination Tools(12)swarm = // await this.checkMCPAvailability();
       if(!_mcpAvailable) {
         this.ui.addLog('warning', 'MCP tools not available - using mock implementations');
         this.useMockMode = true;
@@ -48,7 +48,7 @@ export class MCPIntegrationLayer {
 
   addLog('success', 'MCP Integration Layer initialized successfully');
 // }
-catch (error)
+catch(error)
 // {
   this.ui.addLog('error', `Failed to initialize MCPintegration = true;`
     //     }
@@ -58,12 +58,12 @@ catch (error)
   /**
    * Check if MCP tools are available;
    */;
-  async checkMCPAvailability() {
-    try {
+  async checkMCPAvailability() { 
+    try 
       // Try to access a simple MCP tool
 // const _result = awaitthis.executeToolDirect('features_detect', {});
       // return result && result.success;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       // return false;
     //   // LINT: unreachable code removed}
   //   }
@@ -72,8 +72,8 @@ catch (error)
   /**
    * Execute MCP tool with full error handling and retry logic;
    */;
-  async executeTool(toolName, parameters = {}, options = {}) {
-    const _executionId = `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  async executeTool(toolName, parameters = {}, options = {}) { 
+    const _executionId = `exec_$Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     try {
       // Store execution info
@@ -101,7 +101,7 @@ catch (error)
         //         }
 // const _result = awaitthis.executeToolDirect(toolName, parameters);
         // return result;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
         lastError = error;
         this.ui.addLog(;
           'warning',
@@ -116,17 +116,17 @@ mcp__claude - zen__$;
 // }
 `;`
 
-      // Check if we have this tool available (would need to be passed from the calling context)
+      // Check if we have this tool available(would need to be passed from the calling context)
       // For now, simulate execution
       // return this.executeMockTool(toolName, parameters);
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       throw new Error(`;`
 MCP;
 tool;
 executionfailed = parameters.epochs ?? 50;
 // return {success = === 'store') {
           // return {success = === 'retrieve') {
-          // return {success = toolExecutions.map(({ toolName, parameters, options }) =>;
+          // return {success = toolExecutions.map(({ toolName, parameters, options  }) =>;
 // this.executeTool(toolName, parameters, options), // LINT: unreachable code removed
 // )
 return Promise.allSettled(promises);
@@ -153,7 +153,7 @@ executeToolsBatch(toolExecutions, progressCallback)
       result,timestamp = this.generateCacheKey(toolName, parameters);
     const _cached = this.resultCache.get(cacheKey);
 
-    if (!cached) return null;
+    if(!cached) return null;
     // ; // LINT: unreachable code removed
     const _age = Date.now() - cached.timestamp;
     if(age > cached.ttl) {
@@ -176,7 +176,7 @@ executeToolsBatch(toolExecutions, progressCallback)
   getCacheTTL(toolName) ;
     // Different tools have different cache lifetimes
 
-    for (const [key, cached] of this.resultCache.entries()) {
+    for(const [key, cached] of this.resultCache.entries()) {
       if(now - cached.timestamp > cached.ttl) {
         this.resultCache.delete(key);
       //       }
@@ -204,9 +204,9 @@ executeToolsBatch(toolExecutions, progressCallback)
   /**
    * Cancel tool execution;
    */;
-  async cancelExecution(executionId) {
+  async cancelExecution(executionId) { 
     const _execution = this.activeTools.get(executionId);
-    if(execution && execution.status === 'running') {
+    if(execution && execution.status === 'running') 
       execution.status = 'cancelled';
       this.notifyUI('tool_cancelled', { executionId });
     //     }
@@ -226,10 +226,10 @@ executeToolsBatch(toolExecutions, progressCallback)
    * Update progress for running tools;
    */;
   updateToolProgress() ;
-    for (const [_executionId, execution] of this.activeTools.entries()) {
+    for(const [_executionId, execution] of this.activeTools.entries()) {
       if(execution.status === 'running') {
         const _elapsed = Date.now() - execution.startTime;
-        // Estimate progress based on elapsed time (simplified)
+        // Estimate progress based on elapsed time(simplified)
         const _estimatedDuration = this.getEstimatedDuration(execution.toolName);
         execution.progress = Math.min((elapsed / estimatedDuration) * 100, 95);
       //       }
@@ -241,7 +241,7 @@ executeToolsBatch(toolExecutions, progressCallback)
    */;
   getEstimatedDuration(toolName): unknown
 
-    for (const [executionId, execution] of this.activeTools.entries()) {
+    for(const [executionId, execution] of this.activeTools.entries()) {
       if(execution.endTime && execution.endTime < oneHourAgo) {
         this.activeTools.delete(executionId);
       //       }
@@ -265,7 +265,7 @@ executeToolsBatch(toolExecutions, progressCallback)
    */;
   handleShutdown() ;
     // Cancel all running executions
-    for (const [executionId, execution] of this.activeTools.entries()) {
+    for(const [executionId, execution] of this.activeTools.entries()) {
       if(execution.status === 'running') {
         this.cancelExecution(executionId);
       //       }
@@ -287,7 +287,7 @@ executeToolsBatch(toolExecutions, progressCallback)
     for(const callback of this.subscriptions) {
       try {
         callback(eventType, data);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         console.error('Error in eventsubscription = > this.subscriptions.delete(callback);'
   //   }
 

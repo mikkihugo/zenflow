@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { ClaudeZenServer } from '../../../src/api/claude-zen-server.js';
+import { afterEach, beforeEach, describe, expect, it  } from '@jest/globals';
+import { ClaudeZenServer  } from '../../../src/api/claude-zen-server.js';
 
 // Mock dependencies
 jest.mock('express', () => {
@@ -11,7 +11,7 @@ jest.mock('express', () => {
   delete
   : jest.fn(),
   listen: jest.fn((_port, callback) =>
-  if (callback) callback();
+  if(callback) callback();
   return { close: jest.fn() };
   //   // LINT: unreachable code removed}),
   set: jest.fn())
@@ -24,7 +24,7 @@ jest.mock('express', () => {
 jest.mock('cors', () => jest.fn(() => (_req, _res, next) => next()));
 jest.mock('helmet', () => jest.fn(() => (_req, _res, next) => next()));
 jest.mock('express-rate-limit', () => jest.fn(() => (_req, _res, next) => next()));
-jest.mock('swagger-ui-express', () => ({ serve: [], setup: jest.fn() }));
+jest.mock('swagger-ui-express', () => ({ serve: [], setup: jest.fn()  }));
 jest.mock('../../../src/api/claude-zen-schema.js', () => ({
   CLAUDE_ZEN_SCHEMA: {
     endpoints: [;
@@ -50,8 +50,8 @@ describe('ClaudeZenServer', () =>
     server = null;
     _mockApp = null;
   });
-  afterEach(async () => {
-    if (server) {
+  afterEach(async() => {
+    if(server) {
   // await server.stop();
     //     }
   });
@@ -80,35 +80,35 @@ describe('ClaudeZenServer', () =>
 describe('server lifecycle', () =>
 // {
   beforeEach(() => {
-    server = new ClaudeZenServer({ port });
+    server = new ClaudeZenServer({ port  });
   });
-  it('should start server successfully', async () => {
+  it('should start server successfully', async() => {
     const _startPromise = server.start();
     expect(startPromise).toBeInstanceOf(Promise);
     try {
   // // await startPromise;
         expect(server.isRunning).toBe(true);
-      } catch (error) {
+      } catch(error) {
         // Server might fail to start in test environment, which is acceptable
         expect(error).toBeDefined();
       //       }
   });
-  it('should stop server successfully', async () => {
+  it('should stop server successfully', async() => {
     try {
   // await server.start();
   // await server.stop();
         expect(server.isRunning).toBe(false);
-      } catch (error) {
+      } catch(error) {
         // Server operations might fail in test environment
         expect(error).toBeDefined();
       //       }
   });
-  it('should handle start errors gracefully', async () => {
+  it('should handle start errors gracefully', async() => {
     // Mock server start failure
     const _invalidServer = new ClaudeZenServer({ port);
     try {
   // // await invalidServer.start();
-      } catch (error) {
+      } catch(error) {
         expect(error).toBeDefined();
       //       }
   });
@@ -150,11 +150,10 @@ describe('route generation', () =>
           { path: '/api/test', method: 'GET', handler: 'testHandler' },
           { path: '/api/users', method: 'POST', handler: 'createUser' } ] };
   // Test schema-based route generation logic
-  const _routes = mockSchema.endpoints.map((endpoint) => ({
-        path: endpoint.path,
+  const _routes = mockSchema.endpoints.map((endpoint) => ({ path: endpoint.path,
   method: endpoint.method.toLowerCase(),
   handler: endpoint.handler
-})
+ })
 // )
 expect(routes).toHaveLength(2)
 expect(routes[0].path).toBe('/api/test')
@@ -178,7 +177,7 @@ it('should handle different HTTP methods', () =>
 describe('WebSocket integration', () =>
 // {
   beforeEach(() => {
-    server = new ClaudeZenServer({ enableWebSocket });
+    server = new ClaudeZenServer({ enableWebSocket  });
   });
   it('should setup WebSocket server when enabled', () => {
       // Mock WebSocket functionality
@@ -216,7 +215,7 @@ describe('health and status endpoints', () =>
   beforeEach(() => {
     server = new ClaudeZenServer();
   });
-  it('should provide health check endpoint', async () => {
+  it('should provide health check endpoint', async() => {
       const _healthResponse = {
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -227,7 +226,7 @@ describe('health and status endpoints', () =>
   expect(typeof healthResponse.uptime).toBe('number');
   expect(healthResponse.version).toBeDefined();
 })
-it('should provide status check endpoint', async () =>
+it('should provide status check endpoint', async() =>
 // {
   const _statusResponse = {
         server: 'running',
@@ -249,13 +248,12 @@ describe('error handling', () =>
   it('should handle server errors gracefully', () => {
       const _errorHandler = {
         handleError: jest.fn((error, _req, res, next) => {
-          if (res.headersSent) {
+          if(res.headersSent) {
             return next(error);
     //   // LINT: unreachable code removed}
-          res.status(500).json({
-            error: 'Internal Server Error',
+          res.status(500).json({ error: 'Internal Server Error',
             message: error.message,
-            timestamp: new Date().toISOString() });
+            timestamp: new Date().toISOString()  });
         }) };
   const _testError = new Error('Test error');
   const _mockRes = {
@@ -266,10 +264,9 @@ describe('error handling', () =>
 errorHandler.handleError(testError, {}, mockRes, jest.fn());
 expect(mockRes.status).toHaveBeenCalledWith(500);
 expect(mockRes.json).toHaveBeenCalledWith(;
-expect.objectContaining({
-          error: 'Internal Server Error',
+expect.objectContaining({ error: 'Internal Server Error',
 message: 'Test error'
-})
+ })
 // )
 })
 it('should handle 404 errors', () =>
@@ -300,14 +297,14 @@ expect.objectContaining(
 describe('metrics collection', () =>
 // {
   beforeEach(() => {
-    server = new ClaudeZenServer({ enableMetrics });
+    server = new ClaudeZenServer({ enableMetrics  });
   });
   it('should collect request metrics when enabled', () => {
       const _metrics = {
         requests: {
-          total,,,
+          total,,
           averageResponseTime },
-  recordRequest: function (method, status, /* responseTime */) {
+  recordRequest: function(method, status, /* responseTime */) {
           this.requests.total++;
           this.requests.byMethod[method] = (this.requests.byMethod[method]  ?? 0) + 1;
           this.requests.byStatus[status] = (this.requests.byStatus[status]  ?? 0) + 1;

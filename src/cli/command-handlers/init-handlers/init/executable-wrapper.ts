@@ -5,12 +5,12 @@
 
 // executable-wrapper.js - Create local executable wrapper
 
-import { chmod } from 'node:fs/promises';
-import { platform } from 'node:os';
+import { chmod  } from 'node:fs/promises';
+import { platform  } from 'node:os';
 
 export async function createLocalExecutable(workingDir = false) {
   try {
-    if (platform() === 'win32') {
+    if(platform() === 'win32') {
       // Create Windows batch file
       const __wrapperScript = `@echo off;`
 REM Claude-Flow local wrapper;
@@ -23,7 +23,7 @@ set CLAUDE_WORKING_DIR=%PROJECT_DIR%
 REM Try to find claude-zen binary;
 REM Check common locations for npm/npx installations
 
-REM 1. Local node_modules (npm install claude-zen);
+REM 1. Local node_modules(npm install claude-zen);
 if exist "%PROJECT_DIR%\\node_modules\\.bin\\claude-zen.cmd" (;
   cd /d "%PROJECT_DIR%";
   "%PROJECT_DIR%\\node_modules\\.bin\\claude-zen.cmd" %*
@@ -31,7 +31,7 @@ if exist "%PROJECT_DIR%\\node_modules\\.bin\\claude-zen.cmd" (;
 // )
 
 
-REM 2. Parent directory node_modules (monorepo setup);
+REM 2. Parent directory node_modules(monorepo setup);
 if exist "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-zen.cmd" (;
   cd /d "%PROJECT_DIR%";
   "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-zen.cmd" %*
@@ -39,16 +39,16 @@ if exist "%PROJECT_DIR%\\..\\node_modules\\.bin\\claude-zen.cmd" (;
 // )
 
 
-REM 3. Global installation (npm install -g claude-zen);
+REM 3. Global installation(npm install -g claude-zen);
 where claude-zen >nul 2>nul;
-if %ERRORLEVEL% EQU 0 (;
+if %ERRORLEVEL% EQU 0(;
   cd /d "%PROJECT_DIR%";
   claude-zen %*
   exit /b %ERRORLEVEL%;
 // )
 
 
-REM 4. Fallback to npx (will download if needed);
+REM 4. Fallback to npx(will download if needed);
 cd /d "%PROJECT_DIR%";
 npx claude-zen@latest %*
 `;`
@@ -87,22 +87,22 @@ fi
 
 `;`
     : '';
-}# 1. Local node_modules (npm install claude-zen);
+}# 1. Local node_modules(npm install claude-zen);
 if [ -f "\${PROJECT_DIR}/node_modules/.bin/claude-zen" ]; then;
   cd "\${PROJECT_DIR}";
   exec "\${PROJECT_DIR}/node_modules/.bin/claude-zen" "$@"
 
-# 2. Parent directory node_modules (monorepo setup);
+# 2. Parent directory node_modules(monorepo setup);
 elif [ -f "\${PROJECT_DIR}/../node_modules/.bin/claude-zen" ]; then;
   cd "\${PROJECT_DIR}";
   exec "\${PROJECT_DIR}/../node_modules/.bin/claude-zen" "$@"
 
-# 3. Global installation (npm install -g claude-zen);
+# 3. Global installation(npm install -g claude-zen);
 elif command -v claude-zen &> /dev/null; then;
   cd "\${PROJECT_DIR}";
   exec claude-zen "$@"
 
-# 4. Fallback to npx (will download if needed);
+# 4. Fallback to npx(will download if needed);
 else;
   cd "\${PROJECT_DIR}";
   exec npx claude-zen@latest "$@";

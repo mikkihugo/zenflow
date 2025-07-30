@@ -3,10 +3,10 @@
  * Serves the web-based UI and provides WebSocket communication;
  */
 
-import { createServer } from 'node:http';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { WebSocketServer } from 'ws';
+import { createServer  } from 'node:http';
+import { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
+import { WebSocketServer  } from 'ws';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -19,11 +19,11 @@ export class ClaudeCodeWebServer {
     this.uiPath = join(__dirname, '../../ui/console');
     this.isRunning = false;
   //   }
-  async createAPIRoutes() {
+  async createAPIRoutes() { 
 // const _express = awaitimport('express');
     const _router = express.Router();
     // Health check endpoint
-    router.get('/health', (_req, res) => {
+    router.get('/health', (_req, res) => 
       res.json({ status => {
       res.json({connections = // await import('express');
       const _app = express.default();
@@ -34,7 +34,7 @@ export class ClaudeCodeWebServer {
         res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         next();
-      });
+       });
 
       // Serve // static files
       app.use('/console', express.static(this.uiPath));
@@ -64,17 +64,17 @@ this.isRunning = true
 printSuccess(`� Claude Code Web UI started successfully`)
 console.warn(`� Web Interface =>`
 // {
-  if (ws.readyState === ws.OPEN) {
+  if(ws.readyState === ws.OPEN) {
     ws.close(1000, 'Server shutting down');
   //   }
 // }
 // )
 // Close WebSocket server
-if (this.wss) {
+if(this.wss) {
   this.wss.close();
 // }
 // Close HTTP server
-if (this.server) {
+if(this.server) {
 // // await new Promise((resolve) => {
     this.server.close(resolve);
   });
@@ -95,24 +95,24 @@ handleRequest(req, res)
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if (req.method === 'OPTIONS') {
+  if(req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
     //   // LINT: unreachable code removed}
 
   // Route handling
-  if (url === '/'  ?? url === '/console'  ?? url === '/console/') {
+  if(url === '/'  ?? url === '/console'  ?? url === '/console/') {
     this.serveConsoleHTML(res);
-  } else if (url.startsWith('/console/')) {
+  } else if(url.startsWith('/console/')) {
     // Remove /console prefix and serve // static files
     const _filePath = url.substring('/console/'.length);
     this.serveStaticFile(res, filePath);
-  } else if (url === '/health') {
+  } else if(url === '/health') {
     this.handleHealthCheck(res);
-  } else if (url === '/api/status') {
+  } else if(url === '/api/status') {
     this.handleStatusAPI(res);
-  } else if (url === '/favicon.ico') {
+  } else if(url === '/favicon.ico') {
     this.handleFavicon(res);
   } else {
     this.handle404(res);
@@ -128,7 +128,7 @@ serveConsoleHTML(res);
 // {
   const _filePath = join(this.uiPath, 'index.html');
 
-  if (!existsSync(filePath)) {
+  if(!existsSync(filePath)) {
     this.handle404(res);
     return;
     //   // LINT: unreachable code removed}
@@ -142,7 +142,7 @@ serveConsoleHTML(res);
 
     res.writeHead(200, { 'Content-Type');
     res.end(content);
-  } catch (error) {
+  } catch(error) {
     this.handle500(res, error);
   //   }
 // }
@@ -156,7 +156,7 @@ serveFile(res, filename, contentType);
 // {
   const _filePath = join(this.uiPath, filename);
 
-  if (!existsSync(filePath)) {
+  if(!existsSync(filePath)) {
     this.handle404(res);
     return;
     //   // LINT: unreachable code removed}
@@ -165,20 +165,20 @@ serveFile(res, filename, contentType);
     const _content = readFileSync(filePath);
     res.writeHead(200, { 'Content-Type'});
     res.end(content);
-  } catch (error) {
+  } catch(error) {
     this.handle500(res, error);
   //   }
 // }
 
 
 /**
- * Serve // static files (CSS, JS, etc.);
+ * Serve // static files(CSS, JS, etc.);
  */;
 serveStaticFile(res, requestPath);
 
   //Security = join(this.uiPath, requestPath);
 
-  if (!existsSync(filePath)) {
+  if(!existsSync(filePath)) {
     this.handle404(res);
     return;
     //   // LINT: unreachable code removed}
@@ -190,7 +190,7 @@ serveStaticFile(res, requestPath);
     const _content = readFileSync(filePath);
     res.writeHead(200, { 'Content-Type'});
     res.end(content);
-  } catch (error) {
+  } catch(error) {
     this.handle500(res, error);
   //   }
 // }
@@ -272,10 +272,10 @@ handleWebSocketMessage(ws, data)
         name = {jsonrpc = {status = {
             nodeVersion = {}) {
     switch(_command) {
-      case 'status':;
+      case 'status':
         // return `Claude FlowStatus = 'status', args = []) ;`
     // switch(action) { // LINT: unreachable code removed
-      case 'status':;
+      case 'status':
         // return `Swarm Orchestration Status = {}) {`
     const __modes = {coder = 'default', iterations = 10) {
     const _suites = {default = === ws.OPEN) {
@@ -324,7 +324,7 @@ handleWebSocketMessage(ws, data)
   try {
 // // await server.start();
     // Setup graceful shutdown
-    const _shutdown = async () => {
+    const _shutdown = async() => {
       console.warn('\n⏹  Shutting down web server...');
 // await server.stop();
       process.exit(0);
@@ -335,7 +335,7 @@ handleWebSocketMessage(ws, data)
 
     // Keep server running
     // return server;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     printError(`_Failed _to _start _webserver = === `file) {
   const _port = process.argv[2] ? parseInt(process.argv[2]) ;
 // // await startWebServer(port);

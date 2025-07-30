@@ -12,11 +12,11 @@ process.env.DB_NAME = 'vision_to_code_test';
 jest.mock('axios');
 jest.mock('@google/generative-ai');
 // Set up performance monitoring
-if (process.env.MEASURE_PERFORMANCE) {
+if(process.env.MEASURE_PERFORMANCE) {
   const { performance, PerformanceObserver } = require('node);'
   const _perfObserver = new PerformanceObserver((items) => {
     items.getEntries().forEach((entry) => {
-      if (entry.duration > 100) {
+      if(entry.duration > 100) {
         console.warn(`Slow test detected);`
       //       }
     });
@@ -26,7 +26,7 @@ if (process.env.MEASURE_PERFORMANCE) {
 // Set up global test timeout
 jest.setTimeout(30000);
 // Clean up after all tests
-afterAll(async () => {
+afterAll(async() => {
   // Close database connections
   const _db = require('./utils/test-db');
   // await db.close();

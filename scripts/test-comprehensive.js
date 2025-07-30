@@ -3,9 +3,9 @@
  * Comprehensive Test Runner for Claude Zen v2.0.0;
  */
 
-import { spawn } from 'node:child_process';
+import { spawn  } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 import chalk from 'chalk';
 
 const ___filename = fileURLToPath(import.meta.url);
@@ -48,7 +48,7 @@ const _testSuites = [
     description: 'Run CLI command tests',
     timeout, // 3 minutes
   } ];
-// Load tests (optional)
+// Load tests(optional)
 const _loadTests = [
   //   {
     name: 'Swarm Load Test',
@@ -64,7 +64,7 @@ const _loadTests = [
     description: 'Test memory management under high throughput',
     timeout, // 10 minutes
   } ];
-// Docker tests (optional)
+// Docker tests(optional)
 const _dockerTests = [
   //   {
     name: 'Docker Build Test',
@@ -80,7 +80,7 @@ const _dockerTests = [
     description: 'Test Docker container execution',
     timeout, // 2 minutes
   } ];
-// NPX tests (optional)
+// NPX tests(optional)
 const _npxTests = [
   //   {
     name: 'NPX Installation Test',
@@ -102,7 +102,7 @@ class TestRunner {
   log(message, level = 'info') {
     const _timestamp = new Date().toISOString();
     const _prefix = `[${timestamp}]`;
-    switch (level) {
+    switch(level) {
       case 'success': null
         console.warn(chalk.green(`${prefix} ✅ ${message}`));
         break;
@@ -117,16 +117,16 @@ class TestRunner {
         break;
     //     }
   //   }
-  async runTest(test) {
+  async runTest(test) { 
     this.log(`Starting);`
     const _startTime = Date.now();
-    // return new Promise((_resolve) => {
+    // return new Promise((_resolve) => 
       const _child = spawn(test.command, test.args, {
         cwd,
       // stdio);
     const _stdout = '';
     const _stderr = '';
-    if (!this.verbose) {
+    if(!this.verbose) {
       child.stdout?.on('data', (data) => {
         stdout += data.toString();
       });
@@ -172,11 +172,11 @@ class TestRunner {
 
 // 
 }
-if (code === 0) {
+if(code === 0) {
   this.log(`Completed: ${test.name} (${duration}ms)`, 'success');
 } else {
   this.log(`Failed: ${test.name} (exit code)`, 'error');
-  if (!this.verbose && stderr) {
+  if(!this.verbose && stderr) {
     console.warn(chalk.red('Error output));'
     console.warn(stderr);
   //   }
@@ -205,12 +205,12 @@ resolve(result);
 runTestSuite(tests, suiteName)
 // {
   this.log(`\n�‍♂ Running ${suiteName} (${tests.length} tests)`);
-  if (this.parallel) {
+  if(this.parallel) {
 // const _results = awaitPromise.all(tests.map((test) => this.runTest(test)));
     return results;
     //   // LINT: unreachable code removed} else {
     const _results = [];
-    for (const test of tests) {
+    for(const test of tests) {
 // const _result = awaitthis.runTest(test);
       results.push(result);
       // Short delay between tests
@@ -235,7 +235,7 @@ runTestSuite(tests, suiteName)
     console.warn(`   Failed: ${chalk.red(failed)}`);
     console.warn(`   Success Rate: ${chalk.cyan(((passed / total) * 100).toFixed(1))}%`);
     console.warn(`   Total Time: ${chalk.yellow((totalTime / 1000).toFixed(2))}s`);
-    if (failed > 0) {
+    if(failed > 0) {
       console.warn(`\n❌ Failed Tests);`
       results;
 filter((r) => !r.success)
@@ -259,11 +259,11 @@ forEach((result) =>
     //     )
     // Performance summary
     const _performanceResults = results.filter((r) => r.name.includes('Performance'));
-    if (performanceResults.length > 0) {
+    if(performanceResults.length > 0) {
       console.warn(`;`
     \n Performance Summary);
       performanceResults.forEach((_result) =>
-      if (result.success) {
+      if(result.success) {
         console.warn(;
         `   • ${result.name}: ${chalk.green('PASSED')} (${(result.duration / 1000).toFixed(2)}s)`;
         //         )
@@ -289,16 +289,16 @@ run();
       // Core test suites
   // // await this.runTestSuite(testSuites, 'Core Test Suites');
       // Optional test suites
-      if (this.includeLoad) {
+      if(this.includeLoad) {
   // // await this.runTestSuite(loadTests, 'Load Tests');
       //       }
-      if (this.includeDocker) {
+      if(this.includeDocker) {
   // // await this.runTestSuite(dockerTests, 'Docker Tests');
       //       }
-      if (this.includeNpx) {
+      if(this.includeNpx) {
   // // await this.runTestSuite(npxTests, 'NPX Tests');
       //       }
-    } catch (error) {
+    } catch(error) {
       this.log(`Test runner error);`
     //     }
   const _report = this.generateReport();
@@ -329,7 +329,7 @@ ${chalk.bold('Options)}'
   -l, --load        Include load tests;
   -d, --docker      Include Docker tests;
   -n, --npx         Include NPX tests;
-  -p, --parallel    Run tests in parallel (faster but less stable);
+  -p, --parallel    Run tests in parallel(faster but less stable);
   -h, --help        Show this help message
 ${chalk.bold('Examples)}'
   node scripts/test-comprehensive.js                    # Run core tests;
@@ -342,15 +342,15 @@ ${chalk.bold('Test Suites)}'
   • End-to-End Tests - Complete workflow tests;
   • Performance Tests - Benchmark and load tests;
   • CLI Tests - Command-line interface tests;
-  • Load Tests - Heavy load and stress tests (optional);
-  • Docker Tests - Container and deployment tests (optional);
-  • NPX Tests - Package distribution tests (optional);
+  • Load Tests - Heavy load and stress tests(optional);
+  • Docker Tests - Container and deployment tests(optional);
+  • NPX Tests - Package distribution tests(optional);
 `);`
 // }
 // Main execution
 async function main() {
   const _options = parseArgs();
-  if (options.help) {
+  if(options.help) {
     showHelp();
     process.exit(0);
   //   }
@@ -367,7 +367,7 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 // Run if called directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   main();
 // }
 // export default TestRunner;

@@ -4,9 +4,9 @@
  * Based on upstream commit 00dd0094;
  */
 
-import { promises as fs } from 'node:fs';
-import { dirname, extname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { promises as fs  } from 'node:fs';
+import { dirname, extname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -32,7 +32,7 @@ export // interface AgentStats {
   // private agentTypes = new Map<string, AgentType>();
   // private initialized = false;
   // static getInstance() {
-    if (!AgentLoader.instance) {
+    if(!AgentLoader.instance) {
       AgentLoader.instance = new AgentLoader();
     //     }
     // return AgentLoader.instance;
@@ -86,11 +86,11 @@ export // interface AgentStats {
    * Initialize the agent loader and discover available agents;
    */
   async initialize(): Promise<void> {
-    if (this.initialized) {
+    if(this.initialized) {
       return;
       //   // LINT: unreachable code removed}
       // Load built-in agents
-      for (const agent of AgentLoader.BUILTIN_AGENTS) {
+      for(const agent of AgentLoader.BUILTIN_AGENTS) {
         this.agentTypes.set(agent.name, agent);
       //       }
       // Set up legacy mappings
@@ -104,9 +104,9 @@ export // interface AgentStats {
      */
     // private setupLegacyMappings();
     : void
-    for (const [legacy, modern] of Object.entries(AgentLoader.LEGACY_AGENT_MAPPING)) {
+    for(const [legacy, modern] of Object.entries(AgentLoader.LEGACY_AGENT_MAPPING)) {
       const _modernAgent = this.agentTypes.get(modern);
-      if (modernAgent) {
+      if(modernAgent) {
         this.agentTypes.set(legacy, {
 ..modernAgent,
         legacy}
@@ -121,8 +121,8 @@ export // interface AgentStats {
     try {
 // const _files = awaitfs.readdir(agentsDir);
 
-      for (const file of files) {
-        if (file === 'agent-loader.ts'  ?? file === 'agent-loader.js') {
+      for(const file of files) {
+        if(file === 'agent-loader.ts'  ?? file === 'agent-loader.js') {
           continue;
         //         }
 
@@ -130,11 +130,11 @@ export // interface AgentStats {
         const _filePath = join(agentsDir, file);
 // const _stats = awaitfs.stat(filePath);
 
-        if (stats.isFile() && (extname(file) === '.js'  ?? extname(file) === '.ts')) {
+        if(stats.isFile() && (extname(file) === '.js'  ?? extname(file) === '.ts')) {
 // // await this.loadAgentFromFile(filePath);
         //         }
       //       }
-    } catch (error) {
+    } catch(error) {
       console.warn(`⚠ Could not discover dynamic agents);`
     //     }
   //   }
@@ -145,10 +145,10 @@ export // interface AgentStats {
     try {
 // const _module = awaitimport(filePath);
 
-      if (module.default && typeof module.default === 'object') {
+      if(module.default && typeof module.default === 'object') {
         const _agentConfig = module.default as AgentType;
 
-        if (agentConfig.name && agentConfig.displayName) {
+        if(agentConfig.name && agentConfig.displayName) {
           const _agentType = {
             name: agentConfig.name,
             displayName: agentConfig.displayName,
@@ -160,7 +160,7 @@ export // interface AgentStats {
         //         }
       //       }
   //   }
-  catch (error) {
+  catch(error) {
     console.warn(`⚠ Could not load agent from ${filePath});`
   //   }
 // }
@@ -173,15 +173,15 @@ getAgentType(name)
 // {
 // // await this.initialize();
     const _agent = this.agentTypes.get(name);
-    if (agent) {
+    if(agent) {
       // return agent;
     //   // LINT: unreachable code removed}
 
     // Try legacy mapping
     const _modernName = AgentLoader.LEGACY_AGENT_MAPPING[name];
-    if (modernName) {
+    if(modernName) {
       agent = this.agentTypes.get(modernName);
-      if (agent) {
+      if(agent) {
         // return {
 ..agent,
     // legacy, // LINT: unreachable code removed

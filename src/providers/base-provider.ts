@@ -3,8 +3,8 @@
  * Abstract base class for all AI providers with common functionality;
  */
 
-import { EventEmitter } from 'node:events';
-import type { BaseProvider as IBaseProvider } from './types.js';
+import { EventEmitter  } from 'node:events';
+import type { BaseProvider as IBaseProvider  } from './types.js';
 
 export abstract class BaseProvider extends EventEmitter implements IBaseProvider {
   abstract name = {inputTokenPrice = {totalRequests = [];
@@ -32,7 +32,7 @@ export abstract class BaseProvider extends EventEmitter implements IBaseProvider
   const;
   timeSinceLastCheck = now.getTime() - this.lastHealthCheck.getTime();
   // Auto health check if it's been too long'
-  if (timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
+  if(timeSinceLastCheck > (this.config.healthCheckInterval  ?? 300000);
   ) {
 // // await this.
   healthCheck();
@@ -50,13 +50,13 @@ protected
 validateRequest(request)
 : void
 // {
-  if (!request.messages ?? request.messages.length === 0) {
+  if(!request.messages ?? request.messages.length === 0) {
     throw new ProviderError('Messages are required', this.name, 'INVALID_REQUEST');
   //   }
-  if (!request.model) {
+  if(!request.model) {
     throw new ProviderError('Model is required', this.name, 'INVALID_REQUEST');
   //   }
-  if (!this.capabilities.models?.includes(request.model)) {
+  if(!this.capabilities.models?.includes(request.model)) {
     throw new ProviderError(;
     `Model ${request.model} not supported`,
     this.name,
@@ -83,7 +83,7 @@ this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 
   // Update response time tracking
   this.responseTimeHistory.push(response.responseTime);
   // Keep only last 1000 response times for memory efficiency
-  if (this.responseTimeHistory.length > 1000) {
+  if(this.responseTimeHistory.length > 1000) {
     this.responseTimeHistory = this.responseTimeHistory.slice(-1000);
   //   }
   // Update average response time
@@ -94,7 +94,7 @@ this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] ?? 
 protected
 updateHealthStatus(healthy = healthy
 this.lastHealthCheck = new Date() {}
-if (healthy && responseTime > 0) {
+if(healthy && responseTime > 0) {
   this.responseTimeHistory.push(responseTime);
 // }
 // }
@@ -102,7 +102,7 @@ protected
 getAverageResponseTime() {}
 : number
 // {
-  if (this.responseTimeHistory.length === 0) return 0;
+  if(this.responseTimeHistory.length === 0) return 0;
   // return this.responseTimeHistory.reduce((sum, time) => sum + time, 0) / ; // LINT: unreachable code removed
   this.responseTimeHistory.length;
 // }
@@ -110,7 +110,7 @@ protected;
 getErrorRate();
 : number
 // {
-  if (this.metrics.totalRequests === 0) return 0;
+  if(this.metrics.totalRequests === 0) return 0;
   // return this.metrics.failedRequests / this.metrics.totalRequests; // LINT: unreachable code removed
 // }
 protected;
@@ -127,17 +127,17 @@ delay = this.config.retryDelay ?? 1000;
   //   )
   try {
     // return // await operation();
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     lastError = error;
 
     // Don't retry on certain error types'
-    if (;
+    if(;
       error instanceof ProviderError &&;
       ['INVALID_REQUEST', 'MODEL_NOT_SUPPORTED'].includes(error.code);
     //     )
       throw error;
 
-    if (attempt < maxRetries) {
+    if(attempt < maxRetries) {
       // await this.sleep(delay * 2 ** attempt); // Exponential backoff
     //     }
   //   }
@@ -152,7 +152,7 @@ sleep(ms = > setTimeout(resolve, ms));
   // Reset metrics periodically to prevent memory leaks
   setInterval(() => {
     // Keep only recent history
-    if (this.responseTimeHistory.length > 10000) {
+    if(this.responseTimeHistory.length > 10000) {
       this.responseTimeHistory = this.responseTimeHistory.slice(-1000);
     //     }
   }, 3600000); // Every hour

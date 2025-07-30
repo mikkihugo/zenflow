@@ -4,10 +4,10 @@
  * Provides GitHub workflow automation capabilities
  */
 
-import { access } from 'node:fs/promises';
-import { platform } from 'node:os';
-import { join } from 'node:path';
-import { printError } from '../utils.js';
+import { access  } from 'node:fs/promises';
+import { platform  } from 'node:os';
+import { join  } from 'node:path';
+import { printError  } from '../utils.js';
 
 /**  */
  * Cross-platform check for executable availability
@@ -16,18 +16,18 @@ import { printError } from '../utils.js';
     // */ // LINT: unreachable code removed
 async function checkCommandAvailable(command = // await import('node);'
 
-if (platform() === 'win32') {
+if(platform() === 'win32') {
   //Windows = [
   '/usr/local/bin',
   '/usr/bin',
   '/opt/homebrew/bin',
   join(process.env.HOME  ?? '', '.local', 'bin'),
   join(process.env.HOME  ?? '', 'bin') ]
-  for (const dir of commonPaths) {
+  for(const dir of commonPaths) {
     try {
 // // await access(join(dir, command), constants.X_OK);
       // return true;
-    //   // LINT: unreachable code removed} catch (/* _e */) {
+    //   // LINT: unreachable code removed} catch(/* _e */) {
       // Continue checking other paths
     //     }
   //   }
@@ -46,7 +46,7 @@ return;
 // }
 const _mode = args[0];
 const _objective = args.slice(1).join(' ').trim();
-if (!objective) {
+if(!objective) {
   printError(`❌Usage = // await import('child_process');`
 
     // Cross-platform check for Claude CLI
@@ -57,7 +57,7 @@ if (!objective) {
 
   const _claudeArgs = [];
   // Add auto-permission flag if requested
-  if (flags['auto-approve'] ?? flags['dangerously-skip-permissions']) {
+  if(flags['auto-approve'] ?? flags['dangerously-skip-permissions']) {
     claudeArgs.push('--dangerously-skip-permissions');
   //   }
   // Spawn claude process
@@ -77,7 +77,7 @@ claudeProcess.on('error', (err) =>
 // }
 // )
 })
-} catch (error)
+} catch(error)
 // {
     printError(`❌ GitHub automationfailed = [];`
   const _flags = {};
@@ -86,11 +86,11 @@ claudeProcess.on('error', (err) =>
   if(typeof node !== 'undefined' && node.args) {
     for(const i = 0; i < node.args.length; i++) {
       const _arg = node.args[i];
-      if (arg.startsWith('--')) {
+      if(arg.startsWith('--')) {
         const _flagName = arg.substring(2);
         const _nextArg = node.args[i + 1];
 
-        if (nextArg && !nextArg.startsWith('--')) {
+        if(nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
         } else {

@@ -7,7 +7,7 @@
  * @module AGUIDemoIntegration;
  */
 
-import { AGUIAdapter } from '../ai/agui-adapter.js';
+import { AGUIAdapter  } from '../ai/agui-adapter.js';
 /**
  * Demo class showcasing AG-UI integration;
  */
@@ -94,7 +94,7 @@ const _demo = new AGUIDemoIntegration();
 // // await demo.demoBasicTextMessage();
 // // await demo.demoToolCallExecution();
 // Test server integration if available
-if (server?.aguiMiddleware) {
+if(server?.aguiMiddleware) {
   const _globalAdapter = server.aguiMiddleware.getGlobalAdapter();
   globalAdapter.emitCustomEvent('integration_test', {
     status: 'success',

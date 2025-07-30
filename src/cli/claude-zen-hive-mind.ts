@@ -11,7 +11,7 @@ async function main() {
   const { input, flags } = cli;
   const _command = input[0];
 
-  // Handle version flag first (no hive-mind needed)
+  // Handle version flag first(no hive-mind needed)
   if(flags.version  ?? flags.v) {
     console.warn(cli.pkg.version);
     printInfo('🧠 Hive-Mind PrimarySystem = ['
@@ -19,7 +19,7 @@ async function main() {
   ];
 
   // Initialize Hive-Mind Primary System for all other commands
-  if (!ultraLightweightCommands.includes(command)) {
+  if(!ultraLightweightCommands.includes(command)) {
     try {
       printInfo('🧠 Initializing Hive-Mind Primary System...');
 
@@ -30,7 +30,7 @@ async function main() {
 // // await registerHiveMindCommands(commandRegistry, globalHiveMind);
       printSuccess('✅ Hive-Mind Primary System ready!');
 
-    } catch (error)
+    } catch(error)
 // {
   printError(`❌ Failed to initialize Hive-Mind PrimarySystem = // await executeCommand(command, input.slice(1), {`
 ..flags,hiveMind = === 'object') {
@@ -39,7 +39,7 @@ async function main() {
   printInfo('🧠 Coordinated by Hive-Mind Primary System');
 // }
 // }
-} catch (error)
+} catch(error)
 // {
     printError(`❌ Command executionfailed = globalHiveMind.getHiveMindStatus();`
       console.warn('� Hive-mindstats = // await initializeHiveMind({'
@@ -63,7 +63,7 @@ async function main() {
       const _action = context.args[0];
 
       switch(action) {
-        case 'store':;
+        case 'store':
           const _key = context.args[1];
           const _value = context.args.slice(2).join(' ');
           if(!key  ?? !value) {
@@ -100,7 +100,7 @@ async function main() {
       const _action = context.args[0];
     // ; // LINT: unreachable code removed
       switch(action) {
-        case 'create':;
+        case 'create':
           return hiveMind.coordinate({type = context.args.slice(1).join(' ');
     // if(!task) { // LINT: unreachable code removed
             throw new Error('Task description required');
@@ -122,7 +122,7 @@ async function main() {
       const _operation = context.args[0];
     // ; // LINT: unreachable code removed
       switch(operation) {
-        case 'search':;
+        case 'search':
           const _query = context.args.slice(1).join(' ');
           if(!query) {
             throw new Error('Search query required');
@@ -155,7 +155,7 @@ async function main() {
             } else {
               printWarning('⚠ System test completed with warnings');
             //             }
-          } catch (error) {
+          } catch(error) {
             printWarning(`⚠ System test _failed => {`
   printInfo('\\n� Shutting down Hive-Mind Primary System...');
 
@@ -163,7 +163,7 @@ async function main() {
     try {
 // // await globalHiveMind.cleanup();
       printSuccess('✅ Hive-Mind shutdown complete');
-    } catch (error) {
+    } catch(error) {
       printError(`❌ Cleanup failed => {`
   if(globalHiveMind) {
 // // await globalHiveMind.cleanup();
@@ -171,7 +171,7 @@ async function main() {
   process.exit(0);
 });
 
-process.on('uncaughtException', async (error) => {
+process.on('uncaughtException', async(error) => {
   printError(`❌ Uncaught _exception => {`
   printError(`❌ Fatal error);`
 

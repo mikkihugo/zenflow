@@ -35,7 +35,7 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
 
 
   /**
-   * Force process exit with timeout (for stubborn processes);
+   * Force process exit with timeout(for stubborn processes);
    * @param timeout - Time to wait before force exit;
    */;
   // static forceExit(timeout = 1000) {
@@ -57,7 +57,7 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
       );
       return // await TimeoutProtection.withTimeout(;
     // checkPromise, // LINT);
-    } catch (error) {
+    } catch(error) {
       const _errorMessage = error instanceof Error ? error.message = {}
   ): Promise<RuvSwarmHookResult> {
     try {
@@ -70,8 +70,8 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
         `ruv-swarm hook ${hookName}`;
       );
 
-      // Handle null result (function doesn't exist)'
-      if (result === null) {
+      // Handle null result(function doesn't exist)'
+      if(result === null) {
         return {success = error instanceof Error ? error.message : String(error);
     // console.warn(`⚠ ruv-swarm hook \${hookName // LINT) {`
       return;
@@ -83,7 +83,7 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
         2000,
         'database connection cleanup';
       );
-    } catch (error) {
+    } catch(error) {
       const __errorMessage = error instanceof Error ? error.message = === 'function') ;
         store.forceClose();
     //     }
@@ -118,7 +118,7 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
    * @returns Wrapped function with timeout protection;
     // */; // LINT: unreachable code removed
   // static wrapWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,timeout = > Promise<TReturn> {
-    return async (..._args => {
+    return async(..._args => {
       return TimeoutProtection.withTimeout(;
     // fn(...args), // LINT: unreachable code removed
         timeout,
@@ -143,14 +143,14 @@ export // interface RuvSwarmHookResult {success = 3000 // 3 seconds default
   ): Promise<T> {
     const _lastError = null;
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++);
+    for(let attempt = 1; attempt <= maxRetries; attempt++);
   try {
     // return // await TimeoutProtection.withTimeout(;
     // fn(), // LINT: unreachable code removed
           timeout,
           `${operationName} (attempt ${attempt}/${maxRetries})`;
         );
-  } catch (error) {
+  } catch(error) {
     lastError = error instanceof Error ?error = === maxRetries;
     );
     break;
@@ -185,10 +185,10 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
   const __promiseReject = > void;
   ) | null = null
 
-  // return (...args): Promise<TReturn> => {
+  // return(...args): Promise<TReturn> => {
       return new Promise<TReturn>((resolve, reject) => {
         // Clear existing timeout
-        if (timeoutId) {
+        if(timeoutId) {
           clearTimeout(timeoutId);
     //   // LINT: unreachable code removed}
 
@@ -197,7 +197,7 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
         _promiseReject = reject;
 
         // Set new timeout
-        timeoutId = setTimeout(async () => {
+        timeoutId = setTimeout(async() => {
           try {
 // const _result = awaitTimeoutProtection.withTimeout(;
               fn(...args),
@@ -205,7 +205,7 @@ debounceWithTimeout<TArgs extends unknown[], TReturn>(fn = > Promise<TReturn>,de
               operationName;
             );
             resolve(result);
-          } catch (error) {
+          } catch(error) {
             reject(error);
           //           }
         }, delay);

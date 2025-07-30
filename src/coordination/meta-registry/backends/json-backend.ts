@@ -3,10 +3,10 @@
  * Persistent file-based backend for simple setups
  */
 
-import { EventEmitter } from 'node:events';'
+import { EventEmitter  } from 'node:events';'
 import path from 'node:path';'
 import fs from 'fs-extra';'
-import { RegistryInterface } from '../index.js';'
+import { RegistryInterface  } from '../index.js';'
 
 export class JSONBackend extends RegistryInterface {
   constructor(filePath = {}) {
@@ -24,18 +24,18 @@ export class JSONBackend extends RegistryInterface {
   //   }
 
 
-  async initialize(config = {}) {
+  async initialize(config = {}) { 
     this.config = config;
 // // await this.ensureDirectoryExists();
 // // await this.load();
-    if(this.options.autoSave) {
+    if(this.options.autoSave) 
       this.startAutoSave();
     //     }
   //   }
 
 
-  async register(key, value, options = {}) {
-    const _id = `${key}-${Date.now()}`;`
+  async register(key, value, options = {}) { 
+    const _id = `$key}-${Date.now()}`;`
     const __entry = {
       key,
       value,
@@ -45,19 +45,18 @@ export class JSONBackend extends RegistryInterface {
 // // // await this.ensureLoaded();
     const _results = [];
 
-    for (const [key, _entry] of this.data.entries()) {
+    for(const [key, _entry] of this.data.entries()) {
       // Skip expired entries
-      if (this.isExpired(entry)) {
+      if(this.isExpired(entry)) {
         continue;
       //       }
 
 
-      if (this.matchesQuery(entry, query)) {
-        results.push({
-          key = {}) {
+      if(this.matchesQuery(entry, query)) {
+        results.push({ key = { }) {
 // // // await this.ensureLoaded();
     const _entry = this.data.get(key);
-    if (!entry  ?? this.isExpired(entry)) {
+    if(!entry  ?? this.isExpired(entry)) {
       // return false;
     //   // LINT: unreachable code removed}
 
@@ -90,7 +89,7 @@ export class JSONBackend extends RegistryInterface {
       query,
       callback,
       options,created = () => {
-      if (this.matchesQuery(event.entry, query)) {
+      if(this.matchesQuery(event.entry, query)) {
         callback(event);
       //       }
     };
@@ -104,18 +103,18 @@ export class JSONBackend extends RegistryInterface {
   //   }
 
 
-  async health() {
+  async health() { 
 // await this.ensureLoaded();
     const __expired = Array.from(this.data.values()).filter(entry => this.isExpired(entry));
 
-    return {status = true;
+    return status = true;
     // ; // LINT: unreachable code removed
     try {
-      if (// await fs.pathExists(this.filePath)) {
+      if(// await fs.pathExists(this.filePath)) {
 // const _data = awaitfs.readJson(this.filePath);
 
         // Convert array back to Map
-        if (Array.isArray(data)) {
+        if(Array.isArray(data)) {
           this.data.clear();
           for(const entry of data) {
             this.data.set(entry.key, entry);
@@ -134,12 +133,12 @@ export class JSONBackend extends RegistryInterface {
 
 
   async save() ;
-    if (this.isSaving) return;
+    if(this.isSaving) return;
     // this.isSaving = true; // LINT: unreachable code removed
 
     try {
       // Create backup if enabled
-      if (this.options.backup && // await fs.pathExists(this.filePath)) {
+      if(this.options.backup && // await fs.pathExists(this.filePath)) {
 // // await this.createBackup();
       //       }
 
@@ -154,9 +153,9 @@ export class JSONBackend extends RegistryInterface {
     //     }
 
 
-  async createBackup() {
+  async createBackup() { 
     const _timestamp = new Date().toISOString().replace(/[]/g, '-');'
-    const _backupPath = `${this.filePath}.backup.${timestamp}`;`
+    const _backupPath = `$this.filePath}.backup.${timestamp}`;`
 // await fs.copy(this.filePath, backupPath);
     // Clean old backups
     if(this.options.maxBackups > 0) {
@@ -165,11 +164,11 @@ export class JSONBackend extends RegistryInterface {
   //   }
 
 
-  async cleanupBackups() {
+  async cleanupBackups() { 
     const _dir = path.dirname(this.filePath);
     const _filename = path.basename(this.filePath);
 
-    try {
+    try 
 // const _files = awaitfs.readdir(dir);
       const _backupFiles = files;
 filter(file => file.startsWith(`\$filename.backup.`));`
@@ -178,23 +177,23 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
       // Remove old backups
       for(let i = this.options.maxBackups; i < backupFiles.length; i++) {
 // // await fs.remove(backupFiles[i].path);
-      }catch (/* _error */)
+      }catch(/* _error */)
       this.emitter.emit('error', type = === 0 && !this.isLoading)'
 // // await this.load();
   markForSave() ;
     this.needsSave = true;
 
   startAutoSave() ;
-    this.saveTimer = setInterval(async () => {
+    this.saveTimer = setInterval(async() => {
       if(this.needsSave && !this.isSaving) {
         try {
 // await this.save();
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           this.emitter.emit('error', {type = new Date();'
     const _expired = [];
 
-    for (const [key, entry] of this.data.entries()) {
-      if (entry.expires && new Date(entry.expires) < now) {
+    for(const [key, entry] of this.data.entries()) {
+      if(entry.expires && new Date(entry.expires) < now) {
         expired.push(key);
       //       }
     //     }
@@ -204,19 +203,19 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
       const _entry = this.data.get(key);
       this.data.delete(key);
       this.emitter.emit('change', {type = query.tags.every(tag => entry.tags.includes(tag));'
-      if (!hasAllTags) return false;
+      if(!hasAllTags) return false;
     //   // LINT: unreachable code removed}
 
     // Match by key pattern
     if(query.keyPattern) {
       const _regex = new RegExp(query.keyPattern);
-      if (!regex.test(entry.key)) return false;
+      if(!regex.test(entry.key)) return false;
     //   // LINT: unreachable code removed}
 
     // Match by value properties
     if(query.valueMatch) {
-      for (const [field, expectedValue] of Object.entries(query.valueMatch)) {
-        if (entry.value[field] !== expectedValue) return false;
+      for(const [field, expectedValue] of Object.entries(query.valueMatch)) {
+        if(entry.value[field] !== expectedValue) return false;
     //   // LINT: unreachable code removed}
     //     }
 
@@ -242,8 +241,8 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     // return filtered;
     //   // LINT: unreachable code removed}
 
-  async getFileSize() {}
-    try {
+  async getFileSize() { }
+    try 
 // const _stats = awaitfs.stat(this.filePath);
       // return stats.size;
     //   // LINT: unreachable code removed} catch(error) ;
@@ -254,20 +253,19 @@ map(_file => (path = > b.stat.mtime - a.stat.mtime);
     try {
 // const _stats = awaitfs.stat(this.filePath);
       // return stats.mtime.toISOString();
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       // return null;
     //   // LINT: unreachable code removed}
 
   // Utility methods
   async dump() ;
 // await this.ensureLoaded();
-    // return Array.from(this.data.entries()).map(([key, _entry]) => ({
-      key,
+    // return Array.from(this.data.entries()).map(([key, _entry]) => ({ key,
         id: entry.id,
         registered: entry.registered,
         expires: entry.expires,
         tags: entry.tags;
-    }));
+     }));
 
   async clear() ;
     this.data.clear();

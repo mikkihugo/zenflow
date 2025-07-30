@@ -6,7 +6,7 @@
  * It integrates with existing MCP tools and provides production-ready;
  * swarm collaboration capabilities.;
  */
-import { EventEmitter } from
+import { EventEmitter  } from
 'node = new Map();'
   // private globalMetrics = false
 // private healthCheckInterval?: NodeJS.Timeout
@@ -28,7 +28,7 @@ constructor((config = {}));
 async;
 initialize();
 : Promise<void>;
-    if (this.isRunning) {
+    if(this.isRunning) {
       this.logger.warn('Orchestrator already running');
       return;
     //   // LINT: unreachable code removed}
@@ -58,7 +58,7 @@ initialize();
   ): Promise<string> {
     const _swarmId = generateId('swarm');
 
-    if (!context) {
+    if(!context) {
       throw new Error(`Swarm notfound = = 'planning') {`
       throw new Error(`Swarm ${swarmId} is not in planning state`);
     //     }
@@ -102,7 +102,7 @@ initialize();
    */;
   async stopSwarm(swarmId = 'Manual stop'): Promise<void> {
     const _context = this.activeSwarms.get(swarmId);
-    if (!context) {
+    if(!context) {
       throw new Error(`Swarm notfound = 'cancelled';`
       context.endTime = new Date();
 
@@ -114,13 +114,13 @@ initialize();
       context.monitor.stop();
 
       // Clean up agents
-      for (const agent of context.agents.values()) {
+      for(const agent of context.agents.values()) {
         try {
 // // await this.terminateAgent(agent.id, reason);
-        } catch (error) {
+        } catch(error) {
           this.logger.warn('Error terminating agent during swarm stop', {
             agentId = {};
-    for (const [swarmId, context] of this.activeSwarms) {
+    for(const [swarmId, context] of this.activeSwarms) {
       swarmMetrics[swarmId] = context.metrics;
     //     }
 
@@ -130,13 +130,13 @@ initialize();
 
     try {
       // Check orchestrator health
-      if (!this.isRunning) {
+      if(!this.isRunning) {
         issues.push('Orchestrator is not running');
       //       }
 
 
       // Check coordinator health
-      if (!this.coordinator) {
+      if(!this.coordinator) {
         issues.push('Coordinator is not initialized');
       //       }
 
@@ -150,7 +150,7 @@ initialize();
 
         // Check for stalled swarms
         const _swarmAge = Date.now() - context.startTime.getTime();
-        if (swarmAge > 3600000 && context.objective.status === 'executing') { // 1 hour
+        if(swarmAge > 3600000 && context.objective.status === 'executing') { // 1 hour
           issues.push(`Swarm ${swarmId} appears to be stalled`);
         //         }
       //       }
@@ -163,8 +163,8 @@ initialize();
     // issues,metrics = []; // LINT: unreachable code removed
     const _baseTaskId = generateId('task');
 
-    switch (objective.strategy) {
-      case 'research':;
+    switch(objective.strategy) {
+      case 'research':
         tasks.push(;
           this.createTaskDefinition(`${baseTaskId}-1`, 'research', 'Conduct comprehensive research', 'high', []),
           this.createTaskDefinition(`${baseTaskId}-2`, 'analysis', 'Analyze research findings', 'high', [`${baseTaskId}-1`]),
@@ -172,7 +172,7 @@ initialize();
           this.createTaskDefinition(`${baseTaskId}-4`, 'documentation', 'Create research documentation', 'medium', [`${baseTaskId}-3`]));
         break;
 
-      case 'development':;
+      case 'development':
         tasks.push(;
           this.createTaskDefinition(`${baseTaskId}-1`, 'system-design', 'Design system architecture', 'high', []),
           this.createTaskDefinition(`${baseTaskId}-2`, 'code-generation', 'Generate core implementation', 'high', [`${baseTaskId}-1`]),
@@ -182,7 +182,7 @@ initialize();
           this.createTaskDefinition(`${baseTaskId}-6`, 'documentation', 'Create technical documentation', 'medium', [`${baseTaskId}-5`]));
         break;
 
-      case 'analysis':;
+      case 'analysis':
         tasks.push(;
           this.createTaskDefinition(`${baseTaskId}-1`, 'data-collection', 'Collect and prepare data', 'high', []),
           this.createTaskDefinition(`${baseTaskId}-2`, 'data-analysis', 'Perform statistical analysis', 'high', [`${baseTaskId}-1`]),
@@ -191,29 +191,29 @@ initialize();
         break;default = > ({ id,swarmId = [];
     const _requiredTypes = context.objective.requirements.agentTypes;
 
-    for (const agentType of requiredTypes) {
+    for(const agentType of requiredTypes) {
       const _agentId = generateId('agent');
 
-      const _agent = {id = setInterval(async () => {
+      const _agent = {id = setInterval(async() => {
       try {
         // Update progress
         this.updateSwarmProgress(context);
 
         // Check for completion
-        if (this.isSwarmComplete(context)) {
+        if(this.isSwarmComplete(context)) {
           clearInterval(monitorInterval);
 // // await this.completeSwarm(context);
         //         }
 
 
         // Check for failure conditions
-        if (this.shouldFailSwarm(context)) {
+        if(this.shouldFailSwarm(context)) {
           clearInterval(monitorInterval);
 // // await this.failSwarm(context, 'Too many failures or timeout');
         //         }
 
 
-      } catch (error) {
+      } catch(error) {
         this.logger.error('Error monitoring swarm execution', {swarmId = Array.from(context.tasks.values());
     const _totalTasks = tasks.length;
     const _completedTasks = tasks.filter(t => t.status === 'completed').length;
@@ -237,12 +237,12 @@ initialize();
     const _totalTasks = tasks.length;
 
     // Fail if too many tasks failed
-    if (failedTasks > context.objective.constraints.allowedFailures) {
+    if(failedTasks > context.objective.constraints.allowedFailures) {
       return true;
     //   // LINT: unreachable code removed}
 
     // Fail if deadline exceeded
-    if (context.objective.constraints.deadline && new Date() > context.objective.constraints.deadline) {
+    if(context.objective.constraints.deadline && new Date() > context.objective.constraints.deadline) {
       // return true;
     //   // LINT: unreachable code removed}
 
@@ -268,11 +268,11 @@ initialize();
     // improvements = {coordinator = context.objective.progress.percentComplete; // LINT: unreachable code removed
     const _elapsed = Date.now() - context.startTime.getTime();
 
-        if (!health.healthy) {
+        if(!health.healthy) {
           this.logger.warn('Health check failed', {issues = setInterval(() => {
       try {
         this.updateGlobalMetrics();
-      } catch (error) {
+      } catch(error) {
         this.logger.error('Metrics collection error', error);
       //       }
     }, 10000); // Every 10 seconds

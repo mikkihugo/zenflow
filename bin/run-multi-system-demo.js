@@ -6,11 +6,11 @@
  * Orchestrates LanceDB, Kuzu, and Vision-to-Code enhancements
  */
 
-import { spawn } from 'child_process';
-import { existsSync } from 'fs';
-import { mkdir } from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn  } from 'child_process';
+import { existsSync  } from 'fs';
+import { mkdir  } from 'fs/promises';
+import { dirname, join  } from 'path';
+import { fileURLToPath  } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,15 +34,15 @@ class MultiSystemDemoRunner {
       'performance-benchmarks',
       'cleanup'
     ];
-  //   }
+  }
 
 
-  async run() {
+  async run() { 
     console.log('\n� MULTI-SYSTEM ENHANCEMENT DEMO STARTING');
     console.log('=' .repeat(60));
 
-    try {
-      for (const phase of this.phases) {
+    try 
+      for(const phase of this.phases) {
         console.log(`\n� PHASE: ${phase.toUpperCase().replace('-', ' ')}`);
         console.log('-'.repeat(40));
 
@@ -52,8 +52,8 @@ class MultiSystemDemoRunner {
 
         this.results.phases[phase] = {
           status: 'completed',
-          duration,
-          timestamp: new Date().toISOString() {}
+          duration: duration,
+          timestamp: new Date().toISOString()
         };
 
         console.log(`✅ ${phase} completed in ${duration}ms`);
@@ -63,15 +63,15 @@ class MultiSystemDemoRunner {
       this.generateSummary();
       console.log('\n� ALL SYSTEMS DEMONSTRATION COMPLETED SUCCESSFULLY!');
 
-    } catch (error) {
+    } catch(error) {
       console.error('\n❌ DEMO FAILED);'
       process.exit(1);
     //     }
   //   }
 
 
-  async executePhase(phase) {
-    switch (phase) {
+  async executePhase(phase) { 
+    switch(phase) 
       case 'prerequisites': null
 // await this.checkPrerequisites();
         break;
@@ -102,23 +102,23 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async checkPrerequisites() {
+  async checkPrerequisites() { 
     console.log('� Checking system prerequisites...');
 
     // Check Node.js version
     const nodeVersion = process.version;
     console.log(`Node.js version);`
 
-    if (!nodeVersion.startsWith('v18') && !nodeVersion.startsWith('v20') && !nodeVersion.startsWith('v22')) {
+    if(!nodeVersion.startsWith('v18') && !nodeVersion.startsWith('v20') && !nodeVersion.startsWith('v22')) 
       console.warn('⚠ Node.js 18+ recommended for optimal performance');
     //     }
 
 
     // Check required directories
     const requiredDirs = ['src', 'tests', 'databases'];
-    for (const dir of requiredDirs) {
+    for(const dir of requiredDirs) {
       const dirPath = join(projectRoot, dir);
-      if (!existsSync(dirPath)) {
+      if(!existsSync(dirPath)) {
         console.log(`� Creating directory);`
 // // await mkdir(dirPath, { recursive });
       //       }
@@ -129,17 +129,17 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async initializeSystems() {
+  async initializeSystems() { 
     console.log(' Initializing enhanced systems...');
 
     // Initialize databases directory
     const dbDir = join(projectRoot, 'databases');
-// // await mkdir(dbDir, { recursive });
+// // await mkdir(dbDir,  recursive });
     console.log('✅ Systems initialized');
   //   }
 
 
-  async demonstrateLanceDB() {
+  async demonstrateLanceDB() { 
     console.log('� Demonstrating LanceDB vector enhancements...');
 
     // Simulate LanceDB operations
@@ -153,7 +153,7 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async demonstrateKuzu() {
+  async demonstrateKuzu() 
     console.log('� Demonstrating Kuzu graph database...');
 
     console.log('  � Building knowledge graph...');
@@ -166,7 +166,7 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async demonstrateVisionToCode() {
+  async demonstrateVisionToCode() { 
     console.log('� Demonstrating Vision-to-Code system...');
 
     console.log('  � Processing mock UI screenshots...');
@@ -179,7 +179,7 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async runIntegrationTests() {
+  async runIntegrationTests() 
     console.log('🧪 Running integration tests...');
 
     console.log('  ✅ Vector + Graph integration test');
@@ -192,7 +192,7 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async runPerformanceBenchmarks() {
+  async runPerformanceBenchmarks() { 
     console.log('� Running performance benchmarks...');
 
     const benchmarks = [
@@ -202,7 +202,7 @@ class MultiSystemDemoRunner {
       'Memory usage efficiency'
     ];
 
-    for (const benchmark of benchmarks) {
+    for(const benchmark of benchmarks) 
       console.log(`  � ${benchmark}...`);
 // // await this.sleep(300);
     //     }
@@ -212,21 +212,21 @@ class MultiSystemDemoRunner {
   //   }
 
 
-  async cleanup() {
+  async cleanup() { 
     console.log('🧹 Cleaning up temporary resources...');
 // await this.sleep(200);
     console.log('✅ Cleanup completed');
   //   }
 
 
-  generateSummary() {
+  generateSummary() 
     const totalDuration = Date.now() - this.results.startTime;
 
     this.results.summary = {
-      totalDuration,
-      phasesCompleted: this.phases.length,
+      totalDuration: true,
+      phasesCompleted: this.phases.length: true,
       status: 'SUCCESS',
-      timestamp: new Date().toISOString() {}
+      timestamp: new Date().toISOString()
     };
 
     console.log('\n� DEMONSTRATION SUMMARY');
@@ -251,7 +251,7 @@ class MultiSystemDemoRunner {
 
 
 // Execute demo if run directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   const demo = new MultiSystemDemoRunner();
   demo.run().catch(console.error);
 // }

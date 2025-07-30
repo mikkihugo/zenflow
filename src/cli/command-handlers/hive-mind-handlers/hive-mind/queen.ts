@@ -8,9 +8,9 @@
 this.config = {
       swarmId = {status = {divide_and_conquer = 'active';
 this.emit('queen = {objective = {length = Object.values(complexityFactors).reduce((a, b) => a + b, 0);'
-if (score <= 3) return 'low';
-// if (score <= 6) return 'medium'; // LINT: unreachable code removed
-if (score <= 9) return 'high';
+if(score <= 3) return 'low';
+// if(score <= 6) return 'medium'; // LINT: unreachable code removed
+if(score <= 9) return 'high';
 // return 'very_high'; // LINT: unreachable code removed
 // }
 /**  */
@@ -19,9 +19,7 @@ if (score <= 9) return 'high';
 _countComplexityKeywords(text)
 : unknown
 // {
-  const _complexKeywords = [
-
-    'complex',
+  const _complexKeywords = ['complex',
     'advanced',
     'enterprise',
     'distributed',
@@ -33,7 +31,7 @@ _countComplexityKeywords(text)
     'security',
     'performance',
     'concurrent',
-    'real-time',,,,,,];
+    'real-time',,];
   const _lowerText = text.toLowerCase();
   // return complexKeywords.filter((keyword) => lowerText.includes(keyword)).length;
 // }
@@ -46,7 +44,7 @@ _identifyComponents(objective);
   const _components = [];
   const _componentKeywords = {backend = objective.toLowerCase();
   Object.entries(componentKeywords).forEach(([component, keywords]) => {
-    if (keywords.some((keyword) => lowerObjective.includes(keyword))) {
+    if(keywords.some((keyword) => lowerObjective.includes(keyword))) {
       components.push(component);
     //     }
   });
@@ -83,19 +81,19 @@ _estimateTaskCount(objective)
   const _components = this._identifyComponents(objective);
 
   // Strategy selection heuristics
-  if (components.length > 3 && complexity !== 'low') {
+  if(components.length > 3 && complexity !== 'low') {
     // return 'divide_and_conquer';
     //   // LINT: unreachable code removed}
 
-  if (objective.toLowerCase().includes('parallel')  ?? components.length > 5) {
+  if(objective.toLowerCase().includes('parallel')  ?? components.length > 5) {
     // return 'parallel_execution';
     //   // LINT: unreachable code removed}
 
-  if (objective.toLowerCase().includes('iterative')  ?? objective.toLowerCase().includes('refine')) {
+  if(objective.toLowerCase().includes('iterative')  ?? objective.toLowerCase().includes('refine')) {
     // return 'sequential_refinement';
     //   // LINT: unreachable code removed}
 
-  if (this.config.type === 'adaptive') {
+  if(this.config.type === 'adaptive') {
     // return 'adaptive_learning';
     //   // LINT: unreachable code removed}
 
@@ -124,7 +122,7 @@ createExecutionPlan(analysis, workers);
 
 // {
   const _strategy = this.strategies[analysis.recommendedStrategy];
-  if (!strategy) {
+  if(!strategy) {
     throw new Error(`Unknownstrategy = // await strategy(analysis, workers);`
 
     this.state.currentStrategy = analysis.recommendedStrategy;
@@ -135,7 +133,7 @@ createExecutionPlan(analysis, workers);
 
     // Phase1 = > ['researcher', 'architect'].includes(w.type)),
       parallel => {
-      phases.push({name = > ['coder', 'architect'].includes(w.type)),parallel = > ['coder', 'tester'].includes(w.type)),parallel = > ['optimizer', 'documenter'].includes(w.type)),parallel = this._generateAllTasks(analysis);
+      phases.push({ name = > ['coder', 'architect'].includes(w.type)),parallel = > ['coder', 'tester'].includes(w.type)),parallel = > ['optimizer', 'documenter'].includes(w.type)),parallel = this._generateAllTasks(analysis);
     const _workerGroups = this._groupWorkersByType(workers);
 
     return {strategy = 3;
@@ -157,7 +155,7 @@ createExecutionPlan(analysis, workers);
     // Add component tasks
     components.forEach((component) => {
       tasks.push(...this._generateComponentTasks(component));
-    });
+     });
 
     // Add integration tasks
     tasks.push('Integrate components', 'Write tests', 'Document solution');
@@ -210,22 +208,22 @@ createExecutionPlan(analysis, workers);
   _findBestWorkerType(task) {
     const _taskLower = task.toLowerCase();
 
-    if (taskLower.includes('research')  ?? taskLower.includes('analyze')) {
+    if(taskLower.includes('research')  ?? taskLower.includes('analyze')) {
       // return 'researcher';
     //   // LINT: unreachable code removed}
-    if (taskLower.includes('design')  ?? taskLower.includes('architect')) {
+    if(taskLower.includes('design')  ?? taskLower.includes('architect')) {
       // return 'architect';
     //   // LINT: unreachable code removed}
-    if (taskLower.includes('implement')  ?? taskLower.includes('code')) {
+    if(taskLower.includes('implement')  ?? taskLower.includes('code')) {
       // return 'coder';
     //   // LINT: unreachable code removed}
-    if (taskLower.includes('test')  ?? taskLower.includes('validate')) {
+    if(taskLower.includes('test')  ?? taskLower.includes('validate')) {
       // return 'tester';
     //   // LINT: unreachable code removed}
-    if (taskLower.includes('optimize')  ?? taskLower.includes('performance')) {
+    if(taskLower.includes('optimize')  ?? taskLower.includes('performance')) {
       // return 'optimizer';
     //   // LINT: unreachable code removed}
-    if (taskLower.includes('document')  ?? taskLower.includes('write')) {
+    if(taskLower.includes('document')  ?? taskLower.includes('write')) {
       // return 'documenter';
     //   // LINT: unreachable code removed}
 
@@ -255,7 +253,7 @@ createExecutionPlan(analysis, workers);
 
 
   // Implementation decisions
-  if (analysis.complexity !== 'low') {
+  if(analysis.complexity !== 'low') {
     decisions.push('Implementation approach');
   //   }
 
@@ -280,7 +278,7 @@ makeDecision(topic, options, (workerVotes = {}));
   this.state.decisionsCount++;
 
   // Learn from decision
-  if (this.config.type === 'adaptive') {
+  if(this.config.type === 'adaptive') {
     this._learnFromDecision(decision);
   //   }
 
@@ -291,13 +289,13 @@ makeDecision(topic, options, (workerVotes = {}));
 
 
 // Tactical queen focuses on immediate efficiency
-if (this.config.type === 'tactical') {
+if(this.config.type === 'tactical') {
   // return this._tacticalVote(topic, options, workerVotes);
 // }
 
 
 // Adaptive queen learns from past decisions
-if (this.config.type === 'adaptive') {
+if(this.config.type === 'adaptive') {
   // return this._adaptiveVote(topic, options, workerVotes);
 // }
 
@@ -314,9 +312,9 @@ if (this.config.type === 'adaptive') {
   // Prefer options that mention long-term benefits
   const _strategicKeywords = ['scalable', 'maintainable', 'extensible', 'future'];
 
-  for (const option of options) {
+  for(const option of options) {
     const _optionLower = option.toLowerCase();
-    if (strategicKeywords.some((keyword) => optionLower.includes(keyword))) {
+    if(strategicKeywords.some((keyword) => optionLower.includes(keyword))) {
       return option;
     //   // LINT: unreachable code removed}
   //   }
@@ -339,16 +337,16 @@ _tacticalVote(topic, options, workerVotes);
   });
 
   const _sorted = Object.entries(voteCounts).sort((a, b) => b[1] - a[1]);
-  if (sorted.length > 0 && sorted[0][1] > Object.keys(workerVotes).length * 0.6) {
+  if(sorted.length > 0 && sorted[0][1] > Object.keys(workerVotes).length * 0.6) {
     return sorted[0][0];
     //   // LINT: unreachable code removed}
 
   // Otherwise, prefer quick implementation
   const _tacticalKeywords = ['simple', 'quick', 'fast', 'efficient'];
 
-  for (const option of options) {
+  for(const option of options) {
     const _optionLower = option.toLowerCase();
-    if (tacticalKeywords.some((keyword) => optionLower.includes(keyword))) {
+    if(tacticalKeywords.some((keyword) => optionLower.includes(keyword))) {
       return option;
     //   // LINT: unreachable code removed}
   //   }
@@ -369,14 +367,14 @@ _adaptiveVote(topic, options, workerVotes);
     ([key, value]) => key.includes('decision') && value.topic.includes(topic);
   );
 
-  if (similarDecisions.length > 0) {
+  if(similarDecisions.length > 0) {
     // Use learned preferences
     const _successfulOptions = similarDecisions;
 filter(([_, decision]) => decision.success);
 map(([_, decision]) => decision.result);
 
-    for (const option of options) {
-      if (successfulOptions.includes(option)) {
+    for(const option of options) {
+      if(successfulOptions.includes(option)) {
         return option;
     //   // LINT: unreachable code removed}
     //     }
@@ -424,7 +422,7 @@ _learnFromDecision(decision);
     const _key = `decision-${decisionId}`;
   const _decision = this.state.learningData.get(key);
 
-  if (decision) {
+  if(decision) {
     decision.success = success;
     decision.metrics = metrics;
     this.emit('learning);'

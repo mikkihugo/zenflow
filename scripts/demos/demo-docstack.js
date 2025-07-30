@@ -53,9 +53,9 @@ Bearer token authentication required for all endpoints except /health.
 ### GET /api/v1/users;
 Retrieve a list of users with pagination support.
 **Query Parameters:**;
-- page (integer): Page number, default 1;
-- limit (integer): Items per page, default 20;
-- sort (string): Sort field, default 'created_at'
+- page(integer): Page number, default 1;
+- limit(integer): Items per page, default 20;
+- sort(string): Sort field, default 'created_at'
 **Response:**;
 \`\`\`json;`
 // {
@@ -119,7 +119,7 @@ This document outlines security requirements for PCI DSS Level 1 compliance for 
 - Encrypt transmission of cardholder data across networks
 #### 2. Protect Cardholder Data;
 - Protect stored cardholder data using AES-256 encryption;
-- Mask PAN when displayed (first 6, last 4 digits max
+- Mask PAN when displayed(first 6, last 4 digits max
 // )
 -Render
 PAN
@@ -278,7 +278,7 @@ $;
 \n`)`
 console.warn('This demo will create real documents using the MCP document stack.\n')
 // Instead of actual MCP calls, let's demonstrate the flow'
-for (const doc of documentExamples) {
+for(const doc of documentExamples) {
   console.warn(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
   console.warn(`${colors.bright}� Creating);`
   console.warn(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`);
@@ -316,13 +316,13 @@ for (const doc of documentExamples) {
   console.warn(`\n${colors.yellow}⚖ Load Balanced to);`
   // Show applied rules
   console.warn(`\n${colors.green}� Applied Rules);`
-  if (doc.docType === 'service-adr') {
+  if(doc.docType === 'service-adr') {
     console.warn(` ADR Review Rule);`
   //   }
-  if (doc.docType === 'security-spec') {
+  if(doc.docType === 'security-spec') {
     console.warn(` Security Approval Rule);`
   //   }
-  if (doc.docType === 'api-documentation') {
+  if(doc.docType === 'api-documentation') {
     console.warn(` API Approval Rule);`
   //   }
   console.warn(` Auto-Tag Rule);`
@@ -408,7 +408,7 @@ const _available = swarms[layer] ?? swarms.application;
 // return available[Math.floor(Math.random() * available.length)];
 // }
 // Run the demo
-if (require.main === module) {
+if(require.main === module) {
   simulateDocumentCreation().catch(console.error);
 // }
 

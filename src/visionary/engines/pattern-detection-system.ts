@@ -8,7 +8,7 @@
  * @version 1.0.0
  */
 
-import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
+import type { CodeAnalysisResult, CodeFileData  } from './code-analysis-engine';'
 /**  */
  * Configuration for pattern detection system
  */
@@ -148,10 +148,10 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
 
     // Use AI for enhanced pattern detection if available
     let aiDetected,
-    if (this.config.neuralEngine) {
+    if(this.config.neuralEngine) {
       try {
         aiDetected = // // await this.performAIAnalysis(codeData, 'pattern-detection');'
-      } catch (error) {
+      } catch(error) {
         console.warn('AI pattern detection unavailable);'
       //       }
     //     }
@@ -208,7 +208,7 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
     // analysis
   ): Promise<DesignPattern[]> {
     const patterns = [];
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const filePatterns = awaitthis.detectFileDesignPatterns(file, analysis);
       patterns.push(...filePatterns);
     //     }
@@ -229,52 +229,48 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
     const content = file.content;
 
     // Singleton pattern
-    if (content.includes('getInstance') || content.includes('_instance')) {'
-      patterns.push({
-        pattern: 'Singleton','
+    if(content.includes('getInstance') || content.includes('_instance')) {'
+      patterns.push({ pattern: 'Singleton','
         confidence: 0.8,
         location: 'getInstance method','
         description: 'Ensures a class has only one instance','
         benefits: ['Controlled access to sole instance', 'Reduced memory footprint'],'
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'getInstance') });'
+        lineNumber: this.findPatternLine(content, 'getInstance')  });'
     //     }
     // Factory pattern
-    if (content.includes('create') && content.includes('new ')) {'
-      patterns.push({
-        pattern: 'Factory','
+    if(content.includes('create') && content.includes('new ')) {'
+      patterns.push({ pattern: 'Factory','
         confidence: 0.7,
         location: 'create method','
         description: 'Creates objects without specifying exact classes','
         benefits: ['Loose coupling', 'Easy extensibility'],'
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'create') });'
+        lineNumber: this.findPatternLine(content, 'create')  });'
     //     }
     // Observer pattern
-    if (
+    if(
       content.includes('addEventListener') ||'
       content.includes('subscribe') ||'
       content.includes('notify')'
     ) {
-      patterns.push({
-        pattern: 'Observer','
+      patterns.push({ pattern: 'Observer','
         confidence: 0.75,
         location: 'event handling','
         description: 'Defines subscription mechanism for object notifications','
         benefits: ['Loose coupling', 'Dynamic relationships'],'
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'addEventListener|subscribe|notify') });'
+        lineNumber: this.findPatternLine(content, 'addEventListener|subscribe|notify')  });'
     //     }
     // Strategy pattern
-    if (content.includes('strategy') || this.hasMultipleAlgorithms(content)) {'
-      patterns.push({
-        pattern: 'Strategy','
+    if(content.includes('strategy') || this.hasMultipleAlgorithms(content)) {'
+      patterns.push({ pattern: 'Strategy','
         confidence: 0.6,
         location: 'algorithm selection','
         description: 'Defines family of algorithms and makes them interchangeable','
         benefits: ['Runtime algorithm selection', 'Easy to extend'],'
         file: file.path,
-        lineNumber: this.findPatternLine(content, 'strategy') });'
+        lineNumber: this.findPatternLine(content, 'strategy')  });'
     //     }
 
 
@@ -288,7 +284,7 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
    */
   // // private async detectAntiPatterns(codeData): Promise<AntiPattern[]> {
     const antiPatterns = [];
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const fileAntiPatterns = awaitthis.detectFileAntiPatterns(file);
       antiPatterns.push(...fileAntiPatterns);
     //     }
@@ -306,24 +302,23 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
     const lines = content.split('\n');'
 
     // God Object
-    if (lines.length > 1000) {
+    if(lines.length > 1000) {
       antiPatterns.push({
         antiPattern);
     //     }
     // Long Parameter List
     const longParamMethods = this.findLongParameterMethods(content);
     longParamMethods.forEach((method) => {
-      antiPatterns.push({
-        antiPattern);
-    });
+      antiPatterns.push({ antiPattern);
+     });
     // Global State Abuse
     const globalUsage = (content.match(/global\.|window\.|process\.env\./g) ?? []).length;
-    if (globalUsage > 5) {
+    if(globalUsage > 5) {
       antiPatterns.push({
         antiPattern: 'Global State Abuse','
         severity: 'high','
         location: 'multiple locations','
-        description: `Excessive use of global state (${globalUsage} occurrences)`,`
+        description: `Excessive use of global state(${globalUsage} occurrences)`,`
         impact: 'Unpredictable behavior, difficult testing','
         recommendation: 'Use dependency injection and local state','
         file: file.path,
@@ -343,7 +338,7 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
   async;
   detectCodeSmells(codeData): Promise<CodeSmell[]> {
     const _smells = [];
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileSmells = awaitthis.detectFileCodeSmells(file);
       smells.push(...fileSmells);
     //     }
@@ -372,15 +367,14 @@ import type { CodeAnalysisResult, CodeFileData } from './code-analysis-engine';'
     // Duplicate Code
     const _duplicates = this.findDuplicateCode(lines);
     duplicates.forEach((duplicate) => {
-      smells.push({
-        smell: 'Duplicate Code','
+      smells.push({ smell: 'Duplicate Code','
       severity: 'medium','
       location: duplicate.locations.join(', '),'
       description: 'Code block appears multiple times','
       impact: 'maintainability','
       suggestion: 'Extract common code into reusable function','
       file: file.path,
-      lineNumber: duplicate.locations[0] });
+      lineNumber: duplicate.locations[0]  });
   //   }
   //   )
 // Dead Code
@@ -440,7 +434,7 @@ codeData): Promise<ArchitecturalPattern[]>
     file.content.includes('route') ??'
     file.content.includes('handler');'
   //   )
-  if (hasModel && hasView && hasController) {
+  if(hasModel && hasView && hasController) {
     patterns.push({
         pattern: 'MVC','
     confidence: 0.8,
@@ -454,7 +448,7 @@ const _hasServices = codeData.filter((file) => file.path.includes('service')).le
 const _hasAPI = codeData.some(;
 (file) => file.content.includes('express') ?? file.content.includes('router');'
 // )
-if (hasServices && hasAPI) {
+if(hasServices && hasAPI) {
   patterns.push({
         pattern: 'Service Layer','
   confidence: 0.7,
@@ -476,7 +470,7 @@ detectLanguageIdioms(codeData)
 : Promise<LanguageIdiom[]>
 // {
   const _idioms = [];
-  for (const file of codeData) {
+  for(const file of codeData) {
 // const _fileIdioms = awaitthis.detectFileIdioms(file);
     idioms.push(...fileIdioms);
   //   }
@@ -494,7 +488,7 @@ detectLanguageIdioms(codeData)
   //   {
     const _idioms = [];
     const _content = file.content;
-    switch (file.language) {
+    switch(file.language) {
       case 'javascript': null'
         idioms.push(...this.detectJavaScriptIdioms(content, file.path));
         break;
@@ -517,7 +511,7 @@ detectLanguageIdioms(codeData)
       const _idioms = [];
       // Destructuring usage
       const _destructuringCount = (content.match(/const\s*\{[^}]+\}\s*=/g) ?? []).length
-      if (destructuringCount > 0) {
+      if(destructuringCount > 0) {
         idioms.push({
         idiom: 'Destructuring Assignment','
         usage: `Used ${destructuringCount} times`,`
@@ -528,7 +522,7 @@ detectLanguageIdioms(codeData)
     //     }
     // Arrow functions
     const _arrowFunctionCount = (content.match(/=>\s*{?/g) ?? []).length
-    if (arrowFunctionCount > 0) {
+    if(arrowFunctionCount > 0) {
       idioms.push({
         idiom: 'Arrow Functions','
       usage: `Used ${arrowFunctionCount} times`,`
@@ -539,7 +533,7 @@ detectLanguageIdioms(codeData)
   //   }
   // Template literals
   const _templateLiteralCount = (content.match(/`[^`]*\${[^}]+}[^`]*`/g) ?? []).length;`
-  if (templateLiteralCount > 0) {
+  if(templateLiteralCount > 0) {
     idioms.push({
         idiom: 'Template Literals','
     usage: `Used ${templateLiteralCount} times`,`
@@ -563,7 +557,7 @@ detectLanguageIdioms(codeData)
   const _idioms = [];
   // List comprehensions
   const _listCompCount = (content.match(/\[[^\]]*for\s+\w+\s+in[^\]]*\]/g) ?? []).length
-  if (listCompCount > 0) {
+  if(listCompCount > 0) {
     idioms.push({
         idiom: 'List Comprehensions','
     usage: `Used ${listCompCount} times`,`
@@ -586,17 +580,17 @@ detectLanguageIdioms(codeData)
     const _layers = [];
 
     // Check for common architectural layers
-    if (patterns.architecturalPatterns.some((p) => p.pattern === 'MVC')) {'
+    if(patterns.architecturalPatterns.some((p) => p.pattern === 'MVC')) {'
       layers.push('presentation', 'business', 'data');'
     //     }
 
 
-    if (patterns.designPatterns.some((p) => p.pattern === 'Repository')) {'
+    if(patterns.designPatterns.some((p) => p.pattern === 'Repository')) {'
       layers.push('data-access');'
     //     }
 
 
-    if (patterns.designPatterns.some((p) => p.pattern === 'Service')) {'
+    if(patterns.designPatterns.some((p) => p.pattern === 'Service')) {'
       layers.push('service');'
     //     }
 
@@ -617,13 +611,13 @@ detectLanguageIdioms(codeData)
     const _issues = [];
 
     // Check for tight coupling indicators
-    if (patterns.antiPatterns.some((p) => p.antiPattern === 'God Object')) {'
+    if(patterns.antiPatterns.some((p) => p.antiPattern === 'God Object')) {'
       couplingLevel = 'tight';'
       issues.push('God objects create tight coupling');'
     //     }
 
 
-    if (patterns.antiPatterns.some((p) => p.antiPattern === 'Global State Abuse')) {'
+    if(patterns.antiPatterns.some((p) => p.antiPattern === 'Global State Abuse')) {'
       couplingLevel = 'moderate';'
       issues.push('Global state increases coupling');'
     //     }
@@ -646,13 +640,13 @@ detectLanguageIdioms(codeData)
     const _strengths = [];
     const _recommendations = [];
 
-    if (patterns.designPatterns.some((p) => p.pattern === 'Single Responsibility')) {'
+    if(patterns.designPatterns.some((p) => p.pattern === 'Single Responsibility')) {'
       cohesionLevel = 'high';'
       strengths.push('Good separation of concerns');'
     //     }
 
 
-    if (patterns.codeSmells.some((s) => s.smell === 'Long Method')) {'
+    if(patterns.codeSmells.some((s) => s.smell === 'Long Method')) {'
       cohesionLevel = 'low';'
       recommendations.push('Break down long methods to improve cohesion');'
     //     }
@@ -683,13 +677,13 @@ detectLanguageIdioms(codeData)
     const _violations = 0;
 
     // Check for SRP violations
-    if (patterns.antiPatterns.some((p) => p.antiPattern === 'God Object')) {'
+    if(patterns.antiPatterns.some((p) => p.antiPattern === 'God Object')) {'
       score -= 0.3;
       violations++;
     //     }
 
 
-    if (patterns.codeSmells.some((s) => s.smell === 'Long Method')) {'
+    if(patterns.codeSmells.some((s) => s.smell === 'Long Method')) {'
       score -= 0.1;
       violations++;
     //     }
@@ -706,12 +700,12 @@ detectLanguageIdioms(codeData)
     const _violations = 0;
 
     // Check for extension patterns
-    if (patterns.designPatterns.some((p) => p.pattern === 'Strategy')) {'
+    if(patterns.designPatterns.some((p) => p.pattern === 'Strategy')) {'
       score += 0.2;
     //     }
 
 
-    if (patterns.designPatterns.some((p) => p.pattern === 'Factory')) {'
+    if(patterns.designPatterns.some((p) => p.pattern === 'Factory')) {'
       score += 0.1;
     //     }
 
@@ -737,7 +731,7 @@ detectLanguageIdioms(codeData)
     const _score = 0.8;
     const _violations = 0;
 
-    if (patterns.antiPatterns.some((p) => p.antiPattern === 'Interface Pollution')) {'
+    if(patterns.antiPatterns.some((p) => p.antiPattern === 'Interface Pollution')) {'
       score -= 0.3;
       violations++;
     //     }
@@ -754,12 +748,12 @@ detectLanguageIdioms(codeData)
     const _violations = 0;
 
     // Check for dependency injection usage
-    if (patterns.designPatterns.some((p) => p.pattern === 'Dependency Injection')) {'
+    if(patterns.designPatterns.some((p) => p.pattern === 'Dependency Injection')) {'
       score += 0.2;
     //     }
 
 
-    if (patterns.antiPatterns.some((p) => p.antiPattern === 'Global State Abuse')) {'
+    if(patterns.antiPatterns.some((p) => p.antiPattern === 'Global State Abuse')) {'
       score -= 0.2;
       violations++;
     //     }
@@ -774,8 +768,8 @@ detectLanguageIdioms(codeData)
     const _lines = content.split('\n');'
     const _regex = new RegExp(pattern, 'i');'
 
-    for (let i = 0; i < lines.length; i++) {
-      if (regex.test(lines[i])) {
+    for(let i = 0; i < lines.length; i++) {
+      if(regex.test(lines[i])) {
         // return i + 1;
     //   // LINT: unreachable code removed}
     //     }
@@ -794,17 +788,17 @@ detectLanguageIdioms(codeData)
     const _methods: Array<{ name, paramCount, lineNumber}> = [];
     const _lines = content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = line.match(;
         /function\s+(\w+)\s*\(([^)]*)\)|(\w+)\s*[]\s*function\s*\(([^)]*)\)|(\w+)\s*\(([^)]*)\)\s*=>/
       );
 
-      if (functionMatch) {
+      if(functionMatch) {
         const _params = functionMatch[2]  ?? functionMatch[4]  ?? functionMatch[6]  ?? '';'
         const _paramCount = params.split(',').filter((p) => p.trim()).length;'
 
-        if (paramCount > 5) {
+        if(paramCount > 5) {
           methods.push({
             name);
         //         }
@@ -820,13 +814,13 @@ detectLanguageIdioms(codeData)
     const _methods: Array<{ name, lineCount, lineNumber}> = [];
     const _lines = content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = this.matchFunction(line);
 
-      if (functionMatch) {
+      if(functionMatch) {
         const _methodLines = this.countMethodLines(lines, i);
-        if (methodLines > 50) {
+        if(methodLines > 50) {
           methods.push({
             name);
         //         }
@@ -843,15 +837,15 @@ detectLanguageIdioms(codeData)
     const _blocks = new Map<string, number[]>();
 
     // Create sliding window of code blocks
-    for (let i = 0; i <= lines.length - blockSize; i++) {
+    for(let i = 0; i <= lines.length - blockSize; i++) {
       const _block = lines;
 slice(i, i + blockSize);
 map((line) => line.trim());
 filter((line) => line && !line.startsWith('//'))'
 join('\n');'
 
-      if (block.length > 20) {
-        if (!blocks.has(block)) {
+      if(block.length > 20) {
+        if(!blocks.has(block)) {
           blocks.set(block, []);
         //         }
         blocks.get(block)?.push(i + 1);
@@ -861,8 +855,8 @@ join('\n');'
 
     // Find blocks that appear multiple times
     blocks.forEach((locations, block) => {
-      if (locations.length > 1) {
-        duplicates.push({ block, locations });
+      if(locations.length > 1) {
+        duplicates.push({ block, locations  });
       //       }
     });
 
@@ -874,25 +868,24 @@ join('\n');'
     const _lines = content.split('\n');'
 
     // Look for unreachable code after return statements
-    for (let i = 0; i < lines.length - 1; i++) {
+    for(let i = 0; i < lines.length - 1; i++) {
       const _line = lines[i].trim();
       const _nextLine = lines[i + 1].trim();
 
-      if (;
+      if(;
         line.startsWith('return') &&;'
     // nextLine &&; // LINT: unreachable code removed
         !nextLine.startsWith('}') &&;'
         !nextLine.startsWith('//')'
       //       )
-        deadCode.push(
-          location: i + 2,
+        deadCode.push({ location: i + 2,
           description: 'Unreachable code after return statement','
     // return deadCode;
     //   // LINT: unreachable code removed}
 
   // // private matchFunction(line): name: string | null {
     const _functionMatch = line.match(/function\s+(\w+)|(\w+)\s*[]\s*function|(\w+)\s*\(/)
-    if (functionMatch) {
+    if(functionMatch) {
       return { name: functionMatch[1]  ?? functionMatch[2]  ?? functionMatch[3]  ?? 'anonymous' };'
     //   // LINT: unreachable code removed}
     return null;
@@ -902,14 +895,14 @@ join('\n');'
     const _braceCount = 0;
     const _lineCount = 0;
 
-    for (let i = startIndex; i < lines.length; i++) {
+    for(let i = startIndex; i < lines.length; i++) {
       const _line = lines[i];
       lineCount++;
 
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startIndex) {
+      if(braceCount === 0 && i > startIndex) {
         break;
       //       }
     //     }
@@ -931,10 +924,10 @@ join('\n');'
       improvements: ['Consider extracting utility modules'] }'
 
   /**  */
- * Perform AI-powered pattern analysis (if neural engine available)
+ * Perform AI-powered pattern analysis(if neural engine available)
    */
   // // private async performAIAnalysis(codeData, analysisType): Promise<any> {
-    if (!this.config.neuralEngine) {
+    if(!this.config.neuralEngine) {
       throw new Error('Neural engine not available');'
     //     }
 

@@ -1,5 +1,5 @@
-import { Agent, RuvSwarm, Swarm } from 'ruv-swarm';
-import { SqliteMemoryStore } from './dist/memory/sqlite-store.js';
+import { Agent, RuvSwarm, Swarm  } from 'ruv-swarm';
+import { SqliteMemoryStore  } from './dist/memory/sqlite-store.js';
 
 async function testLibraryIntegration() {
   console.warn('🧪 Testing ruv-swarm library integration...\n');
@@ -26,7 +26,7 @@ async function testLibraryIntegration() {
     console.warn('✅ Swarm created);'
     console.warn('\n� Library integration successful\! Ready for claude-zen MCP tools.');
   //   }
-catch (error)
+catch(error)
 // {
   console.error('❌ Test failed);'
   console.error('Stack);'

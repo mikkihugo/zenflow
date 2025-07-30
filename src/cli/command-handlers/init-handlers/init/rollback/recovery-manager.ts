@@ -40,7 +40,7 @@ result.success = recoveryResult.success;
 result.errors.push(...recoveryResult.errors);
 result.warnings.push(...recoveryResult.warnings);
 result.actions.push(...recoveryResult.actions);
-} catch (error)
+} catch(error)
 // {
   result.success = false;
   result.errors.push(`Recovery failed = {success = = 'windows') {`
@@ -70,7 +70,7 @@ result.actions.push(...recoveryResult.actions);
   result.success = false;
   result.errors.push('Write permissions still denied');
 // }
-} catch (error)
+} catch(error)
 // {
   result.success = false;
   result.errors.push(`Permission recovery failed = {success = // await this.cleanupTemporaryFiles();`
@@ -87,7 +87,7 @@ result.actions.push(...recoveryResult.actions);
         result.actions.push(`Freedspace = false;`
   result.errors.push('Insufficient disk space even after cleanup');
 // }
-} catch (error)
+} catch(error)
 // {
   result.success = false;
   result.errors.push(`Disk space recovery failed = {success = context.missingDependencies  ?? ['node', 'npm'];`
@@ -96,12 +96,12 @@ result.actions.push(...recoveryResult.actions);
 // const _installResult = awaitthis.attemptDependencyInstallation(dep);
         if(installResult.success) {
           result.actions.push(`Installed/configured = // await this.verifyDependencies(missingDeps);`
-  if (!verifyResult.allAvailable) {
+  if(!verifyResult.allAvailable) {
     result.success = false;
     result.errors.push('Some dependencies still unavailable after recovery');
   //   }
 // }
-catch (error)
+catch(error)
 // {
   result.success = false;
   result.errors.push(`Dependency recovery failed = {success = context.corruptedFiles  ?? ['.roomodes'];`
@@ -110,11 +110,11 @@ catch (error)
 // const _recoveryResult = awaitthis.recoverConfigFile(file);
         if(recoveryResult.success) {
           result.actions.push(`Recovered configfile = // await this.validateRecoveredConfigs(corruptedFiles);`
-  if (!validationResult.valid) {
+  if(!validationResult.valid) {
     result.warnings.push('Some recovered configs may have issues');
   //   }
 // }
-catch (error)
+catch(error)
 // {
   result.success = false;
   result.errors.push(`Config recovery failed = {success = // await this.identifyCompletedItems();`
@@ -128,12 +128,12 @@ catch (error)
 // const _completionResult = awaitthis.completeItem(item);
         if(completionResult.success) {
           result.actions.push(`Completed = // await this.verifyInitializationComplete();`
-  if (!verificationResult.complete) {
+  if(!verificationResult.complete) {
     result.success = false;
     result.errors.push('Initialization still incomplete after recovery');
   //   }
 // }
-catch (error)
+catch(error)
 // {
       result.success = false;
       result.errors.push(`Partial initialization recovery failed = {success = // await this.recoverRoomodesFile();`
@@ -160,7 +160,7 @@ catch (error)
       } else {
         result.warnings.push('Could not recover SPARC commands');
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`SPARC recovery failed = {success = `${this.workingDir}/claude-zen`;`
 
@@ -184,7 +184,7 @@ catch (error)
             const __command = new node.Command('chmod', {args = false;
         result.errors.push('Could not recreate executable');
       //       }
-    } catch (error) {
+    } catch(error) {
       result.success = false;
       result.errors.push(`Executable recovery failed = {success = ['memory', 'memory/agents', 'memory/sessions'];`
 
@@ -248,8 +248,8 @@ catch (error)
   //   }
 
 
-  async verifyDependencies(dependencies) {
-    const _result = {allAvailable = new node.Command(dep, {args = await command.output();
+  async verifyDependencies(dependencies) { 
+    const _result = allAvailable = new node.Command(dep, {args = await command.output();
         if(!success) {
           result.allAvailable = false;
           result.missing.push(dep);
@@ -263,8 +263,8 @@ catch (error)
     // return result;
     //   // LINT: unreachable code removed}
 
-  async recoverConfigFile(filename) {
-    const _result = {success = [];
+  async recoverConfigFile(filename) { 
+    const _result = success = [];
 
     const _checkFiles = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
 
@@ -286,8 +286,8 @@ catch (error)
     // return result;
     //   // LINT: unreachable code removed}
 
-  async recoverRooDirectory() {
-    const _result = {success = ['.roo', '.roo/templates', '.roo/workflows', '.roo/modes'];
+  async recoverRooDirectory() { 
+    const _result = success = ['.roo', '.roo/templates', '.roo/workflows', '.roo/modes'];
 
       for(const dir of rooDirs) {
 // // await node.mkdir(`${this.workingDir}/${dir}`, {recursive = false;
@@ -297,8 +297,8 @@ catch (error)
     // return result;
     //   // LINT: unreachable code removed}
 
-  async recoverSparcCommands() {
-    const __result = {success = {success = `#!/usr/bin/env bash;`
+  async recoverSparcCommands() { 
+    const __result = success = {success = `#!/usr/bin/env bash;`
 # Claude Flow Local Executable Wrapper;
 exec node run --allow-all --unstable-kv --unstable-cron \\;
   "${import.meta.url.replace('file = false;"'
@@ -308,8 +308,8 @@ exec node run --allow-all --unstable-kv --unstable-cron \\;
     // return result;
     //   // LINT: unreachable code removed}
 
-  async verifyBasicPermissions() {
-    const _result = {adequate = `${this.workingDir}/.permission-test`;
+  async verifyBasicPermissions() { 
+    const _result = adequate = `${this.workingDir}/.permission-test`;
 // await node.writeTextFile(testFile, 'test');
 // await node.remove(testFile);
     } catch ;

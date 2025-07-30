@@ -3,7 +3,7 @@
  * Comprehensive hook-based automation and workflow management system;
  */
 
-export { HookManager } from './hook-manager.js';
+export { HookManager  } from './hook-manager.js';
 // Hook implementations
 export * from './llm-hooks.js';
 export * from './memory-hooks.js';
@@ -29,21 +29,20 @@ const { MEMORY_HOOKS } = await import('./memory-hooks.js');
 const { WORKFLOW_HOOKS } = // await import('./workflow-hooks.js');
 
 // Register all hooks
-const _allHooks = [
-..LLM_HOOKS,
+const _allHooks = [..LLM_HOOKS,
 ..NEURAL_HOOKS,
 ..PERFORMANCE_HOOKS,
 ..MEMORY_HOOKS,
-..WORKFLOW_HOOKS,,,,,,];
-for (const hookRegistration of allHooks) {
+..WORKFLOW_HOOKS,,];
+for(const hookRegistration of allHooks) {
   try {
 // // await manager.registerHook(hookRegistration);
-  } catch (error) {
+  } catch(error) {
     console.warn(`Failed to register hook ${hookRegistration.name});`
   //   }
 // }
 console.warn(`Successfully registered ${allHooks.length} built-in hooks`);
-} catch (error)
+} catch(error)
 // {
   console.error('Failed to register built-inhooks = createHookContext('pre-task');'
   const _payload = {
@@ -112,13 +111,13 @@ return result;
       return {
         success => {
       console.warn(`[Hook] LLM Request => {`
-      if (_payload._error) {
+      if(_payload._error) {
         console.error(`[Hook] Error in LLM request = {BASIC_SETUP = // await createHookManager(HOOK_PRESETS.PRODUCTION);`
     // ; // LINT: unreachable code removed
 // Execute hooks for LLM request
 // const _result = awaitexecuteLLMHooks(hookManager, {provider = createLLMRequestHook(;
   'my-custom-hook',
-  async (payload) => {
+  async(payload) => {
     // Custom logic here
     return {
       success,
@@ -138,7 +137,7 @@ return result;
 `,`
   HOOK_PATTERNS: `;`
 // Use predefined hook patterns
-// import { HOOK_PATTERNS } from './agentic-flow-hooks';
+// import { HOOK_PATTERNS  } from './agentic-flow-hooks';
 
 // Add rate limiting
 // // await hookManager.registerHook(HOOK_PATTERNS.RATE_LIMITER(100));

@@ -18,7 +18,7 @@ this.reused = 0;
 // }
 acquire() {}
 // {
-  if (this.pool.length > 0) {
+  if(this.pool.length > 0) {
     this.reused++;
     // return this.pool.pop();
     //   // LINT: unreachable code removed}
@@ -29,7 +29,7 @@ acquire() {}
 
 release(obj);
 
-  if (this.pool.length < this.maxSize) {
+  if(this.pool.length < this.maxSize) {
     this.resetFn(obj);
     this.pool.push(obj);
   //   }
@@ -47,9 +47,9 @@ getStats();
 
 get(key);
 
-  if (this.cache.has(key)) {
+  if(this.cache.has(key)) {
     const _value = this.cache.get(key);
-    // Move to end (most recently used)
+    // Move to end(most recently used)
     this.cache.delete(key);
     this.cache.set(key, value);
     this.hits++;
@@ -66,13 +66,13 @@ set(key, data);
   const _size = this._estimateSize(data);
 
   // Check memory pressure
-  if (this.currentMemory + size > this.maxMemory) {
+  if(this.currentMemory + size > this.maxMemory) {
     this._evictByMemoryPressure(size);
   //   }
 
 
   // Check size limit
-  if (this.cache.size >= this.maxSize) {
+  if(this.cache.size >= this.maxSize) {
     this._evictLRU();
   //   }
 
@@ -90,7 +90,7 @@ _estimateSize(obj);
 _evictLRU();
 // {
   const _firstKey = this.cache.keys().next().value;
-  if (firstKey) {
+  if(firstKey) {
     const _entry = this.cache.get(firstKey);
     this.cache.delete(firstKey);
     this.currentMemory -= entry.size;
@@ -101,7 +101,7 @@ _evictLRU();
 
 _evictByMemoryPressure(neededSize);
 
-  while (this.currentMemory + neededSize > this.maxMemory && this.cache.size > 0) {
+  while(this.currentMemory + neededSize > this.maxMemory && this.cache.size > 0) {
     this._evictLRU();
   //   }
 
@@ -114,7 +114,7 @@ forEach(callback);
 
 delete(key);
 
-  if (this.cache.has(key)) {
+  if(this.cache.has(key)) {
     const _entry = this.cache.get(key);
     this.cache.delete(key);
     this.currentMemory -= entry.size;
@@ -148,7 +148,7 @@ getStats();
   _id => {
           obj.id = obj.key = obj.value = '';
           Object.keys(obj.metadata).forEach((k) => delete obj.metadata[k]);
-        }),
+         }),
 // Prepared statements for better performance
 this.statements = new Map();
 
@@ -173,9 +173,9 @@ this._initialize();
       this.db.pragma('mmap_size = 268435456'); // 256MB memory mapping
       this.db.pragma('optimize');
 
-      // Ensure table exists with optimized schema
+      // Ensure table exists with optimized schema: {}
       this.db.exec(`;`
-        CREATE TABLE IF NOT EXISTS collective_memory (;
+        CREATE TABLE IF NOT EXISTS collective_memory(;
           id TEXT PRIMARY KEY,
           swarm_id TEXT NOT NULL,
           key TEXT NOT NULL,
@@ -183,12 +183,12 @@ this._initialize();
           //           type TEXT DEFAULT 'knowledge',
           confidence REAL DEFAULT 1.0,
           created_by TEXT,
-          created_at INTEGER DEFAULT (strftime('%s','now')),
-          accessed_at INTEGER DEFAULT (strftime('%s','now')),
+          created_at INTEGER DEFAULT(strftime('%s','now')),
+          accessed_at INTEGER DEFAULT(strftime('%s','now')),
           access_count INTEGER DEFAULT 0,
           compressed INTEGER DEFAULT 0,
           size INTEGER DEFAULT 0,
-          FOREIGN KEY (swarm_id) REFERENCES swarms(id);
+          FOREIGN KEY(swarm_id) REFERENCES swarms(id);
         );
 
         -- Optimized indexes;
@@ -277,14 +277,14 @@ this._initialize();
       'deleteExpired',
       this.db.prepare(`;`
       DELETE FROM collective_memory;
-      WHERE swarm_id = ? AND type = ? AND (strftime('%s','now') - accessed_at) > ?;
+      WHERE swarm_id = ? AND type = ? AND(strftime('%s','now') - accessed_at) > ?;
     `));`
 
     this.statements.set(;
       'getLRU',
       this.db.prepare(`;`
       SELECT id, size FROM collective_memory;
-      WHERE swarm_id = ? AND type NOT IN ('system', 'consensus');
+      WHERE swarm_id = ? AND type NOT IN('system', 'consensus');
       ORDER BY accessed_at ASC, access_count ASC;
       LIMIT ?;
     `));`
@@ -321,8 +321,8 @@ this._initialize();
   /**  */
  * Store data in collective memory
    */
-  async store(key, value, type = 'knowledge', metadata = {}) {
-    try {
+  async store(key, value, type = 'knowledge', metadata = {}) { 
+    try 
       const _serialized = JSON.stringify(value);
       const _size = Buffer.byteLength(serialized);
       const _shouldCompress =;
@@ -375,7 +375,7 @@ prepare(;
             `;`
           INSERT INTO collective_memory ;
           (id, swarm_id, key, value, type, confidence, created_by, compressed, size);
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
         `);`
 run(;
             id,
@@ -466,7 +466,7 @@ run(this.config.swarmId, key);
     try {
       // Get the original memory
 // const _original = awaitthis.retrieve(key);
-      if (!original) return [];
+      if(!original) return [];
     // ; // LINT: unreachable code removed
       // Simpleassociation = this.db
 prepare(;
@@ -484,7 +484,7 @@ prepare(;
 all(key, key, this.config.swarmId, limit);
 
       // return result;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       this.emit('error', error);
       throw error;
     //     }
@@ -503,7 +503,7 @@ prepare(;
         SELECT key, value, type, confidence, access_count;
         FROM collective_memory;
         WHERE swarm_id = ?;
-        AND type IN ('knowledge', 'result');
+        AND type IN('knowledge', 'result');
         ORDER BY created_at DESC;
         LIMIT 1000;
       `);`
@@ -511,19 +511,18 @@ all(this.config.swarmId);
 
       const _consolidated = new Map();
 
-      // Group by similarity (simple implementation)
+      // Group by similarity(simple implementation)
       memories.forEach((memory) => {
         const _value = JSON.parse(memory.value);
         const _category = this._categorizeMemory(value);
 
-        if (!consolidated.has(category)) {
+        if(!consolidated.has(category)) {
           consolidated.set(category, []);
         //         }
 
 
-        consolidated.get(category).push({
-..memory,
-          value });
+        consolidated.get(category).push({ ..memory,
+          value  });
       });
 
       // Merge similar memories
@@ -547,7 +546,7 @@ all(this.config.swarmId);
       totalWeight += weight;
       weightedConfidence += memory.confidence * weight
 
-      // Merge values (simple implementation)
+      // Merge values(simple implementation)
       if(typeof memory.value === 'object') {
         Object.assign(mergedValue, memory.value);
       //       }
@@ -565,7 +564,7 @@ prepare(;
             DELETE FROM collective_memory;
             WHERE swarm_id = ?;
             AND type = ?;
-            AND (julianday('now') - julianday(accessed_at)) * 86400000 > ?
+            AND(julianday('now') - julianday(accessed_at)) * 86400000 > ?
           `);`
 run(this.config.swarmId, type, config.ttl);
 
@@ -592,7 +591,7 @@ prepare(;
           `;`
         SELECT id, size FROM collective_memory;
         WHERE swarm_id = ?;
-        AND type NOT IN ('system', 'consensus');
+        AND type NOT IN('system', 'consensus');
         ORDER BY accessed_at ASC, access_count ASC;
         LIMIT 100;
       `);`
@@ -636,7 +635,7 @@ all(this.config.swarmId);
           this.state.performanceMetrics.queryTimes.reduce((sum, time) => sum + time, 0) /;
           this.state.performanceMetrics.queryTimes.length;
 
-        // Keep only recent query times (last 100)
+        // Keep only recent query times(last 100)
         if(this.state.performanceMetrics.queryTimes.length > 100) {
           this.state.performanceMetrics.queryTimes =;
             this.state.performanceMetrics.queryTimes.slice(-100);
@@ -696,14 +695,13 @@ get(this.config.swarmId);
     // .prepare(; // LINT);
 all(this.config.swarmId);
 
-      const _snapshot = {swarmId = > ({
-..m,value = 0;
+      const _snapshot = {swarmId = > ({ ..m,value = 0;
 
       for(const memory of snapshot.memories) {
 // // await this.store(memory.key, memory.value, memory.type, {
           confidence => {
         pool.pool.length = 0;
-      });
+       });
     //     }
 
 
@@ -729,7 +727,7 @@ all(this.config.swarmId);
  * Memory optimization utilities
  */
 // export class MemoryOptimizer {
-  // static async optimizeCollectiveMemory(memory) {
+  // static async optimizeCollectiveMemory(memory) { 
     const _startTime = performance.now();
 
     // Run comprehensive optimization
@@ -739,7 +737,7 @@ all(this.config.swarmId);
 
     const _duration = performance.now() - startTime;
 
-    // return {
+    // return 
       duration,analytics = memoryStats.totalSize / memoryStats.entryCount;
     // const _hotKeys = Array.from(accessPatterns.entries()); // LINT: unreachable code removed
 sort((a, b) => b[1] - a[1]);
@@ -753,19 +751,19 @@ slice(0, Math.min(1000, memoryStats.entryCount * 0.2))
     report.summary.memoryEfficiency = analytics.cache.memoryUsage / (1024 * 1024)
 
     // Generate recommendations
-    if ((analytics.cache.hitRate  ?? 0) < 70) {
+    if((analytics.cache.hitRate  ?? 0) < 70) {
       report.recommendations.push({
         type);
     //     }
 
 
-    if (analytics.performance.avgQueryTime > 50) {
+    if(analytics.performance.avgQueryTime > 50) {
       report.recommendations.push({
         type);
     //     }
 
 
-    if (analytics.pools?.queryResults?.reuseRate < 50) {
+    if(analytics.pools?.queryResults?.reuseRate < 50) {
       report.recommendations.push({
         type);
     //     }

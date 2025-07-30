@@ -1,12 +1,11 @@
 /**
- * Enhanced Plugin Manager (TypeScript);
+ * Enhanced Plugin Manager(TypeScript);
  * Advanced plugin lifecycle management with health monitoring, security, and metrics;
  */
 
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import {
-  Plugin,
+import { readFile  } from 'node:fs/promises';
+import { join  } from 'node:path';
+import { Plugin,
 // type PluginCacheAPI
 
 // 
@@ -26,7 +25,7 @@ type PluginQueueAPI
 
 // 
 type PluginSecretsAPI
- } from '../types/plugin.js'
+  } from '../types/plugin.js'
 
 // import HealthMonitor from './health-monitor.js';
 // import ResourceMonitor from './resource-monitor.js';
@@ -73,10 +72,10 @@ this.healthMonitor.registerPlugin(manifest.name, plugin, manifest, pluginConfig)
 this.emit('loaded', manifest.name, plugin.metadata);
 // return plugin;
 // ; // LINT: unreachable code removed
-} catch (error)
+} catch(error)
 // {
       this.emit('error', path, {message = this.plugins.get(name);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       // return false;
     //   // LINT: unreachable code removed}
 
@@ -86,7 +85,7 @@ this.emit('loaded', manifest.name, plugin.metadata);
       // Stop plugin
 // // await loadedPlugin.plugin.unload();
       // Cleanup security sandbox
-      if (loadedPlugin.sandboxed && loadedPlugin.worker) {
+      if(loadedPlugin.sandboxed && loadedPlugin.worker) {
 // // await this.securityManager.destroySandbox(name);
       //       }
 
@@ -105,9 +104,9 @@ this.emit('loaded', manifest.name, plugin.metadata);
       this.emit('unloaded', name);
       // return true;
     // ; // LINT: unreachable code removed
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       this.emit('error', name, {message = this.plugins.get(name);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = loadedPlugin.manifest.entryPoints.main;`
     const _originalConfig = { ...loadedPlugin.config };
 // // await this.unloadPlugin(name);
@@ -117,14 +116,14 @@ this.emit('loaded', manifest.name, plugin.metadata);
 
 
   async enablePlugin(name = this.plugins.get(name);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = true;`
 // await loadedPlugin.plugin.start();
   //   }
 
 
   async disablePlugin(name = this.plugins.get(name);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = false;`
 // await loadedPlugin.plugin.stop();
   //   }
@@ -156,12 +155,12 @@ map(lp => lp.plugin);
     try {
 // const _entries = awaitreaddir(directory, {withFileTypes = entries.filter(entry => entry.isDirectory());
 
-      for (const dir of pluginDirs) {
+      for(const dir of pluginDirs) {
         const _pluginPath = join(directory, dir.name);
         try {
 // const _result = awaitthis.discoverSinglePlugin(pluginPath);
           results.push(result);
-        } catch (error) {
+        } catch(error) {
           results.push({manifest = > r.valid).map(r => r.manifest);
   //   }
 
@@ -169,7 +168,7 @@ map(lp => lp.plugin);
   async installPlugin(source = this.hooks.get(type)  ?? [];
     const _results = [];
 
-    for (const hook of hooks.sort((a, b) => b.options.priority - a.options.priority)) {
+    for(const hook of hooks.sort((a, b) => b.options.priority - a.options.priority)) {
       try {
         const _startTime = performance.now();
 // const _result = awaitPromise.race([;
@@ -191,23 +190,23 @@ map(lp => lp.plugin);
 
         this.emit('hook-executed', hook.pluginName, type, executionTime);
 
-        if (result.stop) {
+        if(result.stop) {
           break;
         //         }
-      } catch (error) {
+      } catch(error) {
         hook.errorCount++;
         this.emit('hook-failed', hook.pluginName, type, {message = this.apis.get(pluginName);
     // return pluginAPIs?.get(apiName)  ?? null;
     //   // LINT: unreachable code removed}
 
   async callAPI(pluginName = // await this.getAPI(pluginName, apiName);
-    if (!api) {
+    if(!api) {
       throw new Error(`API notfound = await this.getPlugin(pluginName);`
-    if (!plugin) {
+    if(!plugin) {
       throw new Error(`Plugin notfound = [];`
 
-    for (const [pluginName, pluginAPIs] of this.apis) {
-      for (const [apiName, api] of pluginAPIs) {
+    for(const [pluginName, pluginAPIs] of this.apis) {
+      for(const [apiName, api] of pluginAPIs) {
         results.push({plugin = Array.from(this.plugins.values());
 
     const _errorPlugins = plugins.filter(p => p.plugin.metadata.status === 'error').length;
@@ -217,13 +216,13 @@ map(lp => lp.plugin);
 
     return {
       status,pluginCount = name ? ;
-    // [this.plugins.get(name)].filter(Boolean) : ; // LINT: unreachable code removed
+    // [this.plugins.get(name)].filter(Boolean) : // LINT: unreachable code removed
       Array.from(this.plugins.values());
 
     const _results = [];
 
-    for (const loadedPlugin of targetPlugins) {
-      if (loadedPlugin) {
+    for(const loadedPlugin of targetPlugins) {
+      if(loadedPlugin) {
 // const _metrics = awaitloadedPlugin.plugin.getMetrics();
         results.push(metrics);
       //       }
@@ -237,11 +236,11 @@ map(lp => lp.plugin);
     const _plugins = {};
 // const _systemHealth = awaitthis.getSystemHealth();
 
-    for (const [name, loadedPlugin] of this.plugins) {
+    for(const [name, loadedPlugin] of this.plugins) {
       try {
         plugins[name] = // await loadedPlugin.plugin.healthCheck();
         loadedPlugin.lastHealthCheck = new Date();
-      } catch (error) {
+      } catch(error) {
         plugins[name] = {status = Object.values(plugins).filter(h => h.status === 'healthy').length;
 
     const _criticalIssues = Object.values(plugins);
@@ -250,15 +249,15 @@ filter(i => i.severity === 'critical').length;
 
     return {overall = > i.issue);
     //   // LINT: unreachable code removed},summary = this.plugins.get(name);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = this.plugins.get(name);`
     // return loadedPlugin?.config  ?? null;
     //   // LINT: unreachable code removed}
 
   async validatePluginConfig(name = this.plugins.get(name);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = this.plugins.get(pluginName);`
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       // return false;
     //   // LINT: unreachable code removed}
 
@@ -266,11 +265,11 @@ filter(i => i.severity === 'critical').length;
     //   // LINT: unreachable code removed}
 
   async grantPermission(pluginName = this.plugins.get(pluginName);
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = this.plugins.get(pluginName);`
-    if (!loadedPlugin) {
+    if(!loadedPlugin) {
       throw new Error(`Plugin notfound = loadedPlugin.config.permissions.indexOf(permission);`
-    if (index > -1) {
+    if(index > -1) {
       loadedPlugin.config.permissions.splice(index, 1);
     //     }
   //   }
@@ -289,7 +288,7 @@ filter(i => i.severity === 'critical').length;
     try {
 // const _module = awaitimport(resolve(entryPoint));
       // return module;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       throw new Error(`Failed to load plugin module from ${entryPoint});`
     //     }
   //   }
@@ -300,20 +299,20 @@ filter(i => i.severity === 'critical').length;
     // return {name = 14.0.0',npm = [];'
     // ; // LINT: unreachable code removed
     // Required fields
-    if (!_manifest._name) errors.push('Missing requiredfield = ['
+    if(!_manifest._name) errors.push('Missing requiredfield = ['
       'ai-provider', 'architect-advisor', 'security-auth', 'notifications',
       'export-system', 'documentation-linker', 'workflow-engine', 'github-integration',
       'memory-backend', 'performance-monitor', 'code-analysis', 'test-runner',
       'database-connector', 'neural-processor', 'vision-processor', 'custom';
     ];
 
-    if (!validTypes.includes(manifest.type)) {
+    if(!validTypes.includes(manifest.type)) {
       errors.push(`Invalid plugin type = { ...this.systemContext };`
     context.plugin = null as any; // Will be set after plugin instantiation
     context.config = config;
     context.manifest = manifest;
     context.security = {permissions = // await this.securityManager.createSandboxedPlugin(plugin, manifest, config);
-      if (!worker) {
+      if(!worker) {
         throw new Error('Failed to create sandboxed worker');
       //       }
 
@@ -322,8 +321,8 @@ filter(i => i.severity === 'critical').length;
       this.resourceMonitor.registerPlugin(manifest.name, manifest, config, worker);
 
       // return worker;
-    //   // LINT: unreachable code removed} catch (error = hooks.filter(h => h.pluginName !== manifest.name);
-      if (remainingHooks.length === 0) {
+    //   // LINT: unreachable code removed} catch(error = hooks.filter(h => h.pluginName !== manifest.name);
+      if(remainingHooks.length === 0) {
         this.hooks.delete(hookType);
       } else {
         this.hooks.set(hookType, remainingHooks);
@@ -345,30 +344,30 @@ filter(i => i.severity === 'critical').length;
         manifest,
     // path => { // LINT: unreachable code removed
       const _loadedPlugin = this.plugins.get(pluginName);
-      if (loadedPlugin && this.config.autoRestart) {
+      if(loadedPlugin && this.config.autoRestart) {
 // // await this.attemptPluginRestart(pluginName, loadedPlugin);
       //       }
     });
   //   }
 
 
-  // private async attemptPluginRestart(pluginName = this.config.maxRestartAttempts) {
+  // private async attemptPluginRestart(pluginName = this.config.maxRestartAttempts) { 
       this.emit('plugin-restart-failed', pluginName, 'Max restart attempts exceeded');
       return;
     //   // LINT: unreachable code removed}
 
-    try {
+    try 
 // // await new Promise(resolve => setTimeout(resolve, this.config.restartDelay));
 // // await this.reloadPlugin(pluginName);
       this.emit('plugin-restarted', pluginName);
-    } catch (error) {
+    } catch(error) {
       this.emit('plugin-restart-failed', pluginName, error.message);
     //     }
   //   }
 
 
   // private startBackgroundTasks() {
-    if (this.config.enableHealthMonitoring) {
+    if(this.config.enableHealthMonitoring) {
       setInterval(() => {
         this.performHealthCheck().catch(error => {
           this.emit('health-check-failed', error.message);
@@ -377,7 +376,7 @@ filter(i => i.severity === 'critical').length;
     //     }
 
 
-    if (this.config.enableMetrics) {
+    if(this.config.enableMetrics) {
       setInterval(() => {
         this.resourceMonitor.collectMetrics().catch(error => {
           this.emit('metrics-collection-failed', error.message);
@@ -389,21 +388,21 @@ filter(i => i.severity === 'critical').length;
 
   // private async collectSystemIssues(): Promise<Array<{plugin = [];
 
-    for (const [name, loadedPlugin] of this.plugins) {
+    for(const [name, loadedPlugin] of this.plugins) {
 // const _health = awaitloadedPlugin.plugin.healthCheck();
 
-      for (const issue of health.issues) {
+      for(const issue of health.issues) {
         issues.push({plugin = [];
 
     const _criticalIssues = issues.filter(i => i.severity === 'critical');
     const _highIssues = issues.filter(i => i.severity === 'high');
 
-    if (criticalIssues.length > 0) {
+    if(criticalIssues.length > 0) {
       recommendations.push(`Immediately address ${criticalIssues.length} critical issue(s)`);
     //     }
 
 
-    if (highIssues.length > 0) {
+    if(highIssues.length > 0) {
       recommendations.push(`Review and fix ${highIssues.length} high priority issue(s)`);
     //     }
 
@@ -417,7 +416,7 @@ filter(i => i.severity === 'critical').length;
       this.emit('security-violation', violation);
 
       // Take action based on severity
-      if (violation.blocked) {
+      if(violation.blocked) {
         this.emit('plugin-blocked', {
           pluginName => {
       this.emit('plugin-sandboxed', data);
@@ -438,7 +437,7 @@ filter(i => i.severity === 'critical').length;
       this.emit('resource-alert', alert);
 
       // Log critical alerts
-      if (alert.alertType === 'critical') {
+      if(alert.alertType === 'critical') {
         console.error(`Critical resource alert for ${alert.pluginName});`
       //       }
     });
@@ -449,12 +448,12 @@ filter(i => i.severity === 'critical').length;
       console.warn(`Resource enforcement action for ${enforcement.pluginName});`
     });
 
-    this.resourceMonitor.on('plugin-terminated', async (data) => {
+    this.resourceMonitor.on('plugin-terminated', async(data) => {
       this.emit('plugin-terminated', data);
 
       // Clean up terminated plugin
       const _pluginData = this.plugins.get(data.pluginName);
-      if (pluginData) {
+      if(pluginData) {
         pluginData.plugin.status = 'stopped';
 // // await this.unregisterPluginIntegrations(pluginData.plugin, pluginData.manifest);
       //       }
@@ -473,11 +472,11 @@ filter(i => i.severity === 'critical').length;
       this.emit('health-check-failed', data);
 
       // Consider auto-restart for critical health failures
-      if (data.consecutiveFailures >= 3 && this.config.autoRestart) {
+      if(data.consecutiveFailures >= 3 && this.config.autoRestart) {
         this.emit('auto-restart-triggered', { pluginName => {
       this.emit('health-alert', alert);
 
-      if (alert.severity === 'critical') {
+      if(alert.severity === 'critical') {
         console.error(`Critical health alert for ${alert.pluginName});`
       //       }
     });
@@ -485,7 +484,7 @@ filter(i => i.severity === 'critical').length;
     this.healthMonitor.on('health-trend-alert', (trendAlert) => {
       this.emit('health-trend-alert', trendAlert);
 
-      if (trendAlert.trend.trend === 'critical') {
+      if(trendAlert.trend.trend === 'critical') {
         console.warn(`Critical health trend detected for ${trendAlert.pluginName});`
       //       }
     });
@@ -493,21 +492,21 @@ filter(i => i.severity === 'critical').length;
     this.healthMonitor.on('system-health-updated', (systemHealth) => {
       this.emit('system-health-updated', systemHealth);
 
-      if (systemHealth.overall === 'critical') {
+      if(systemHealth.overall === 'critical') {
         console.error(`System health is critical => {`
       this.emit('automatic-recovery-triggered', data);
 
-      if (this.config.autoRestart) {
+      if(this.config.autoRestart) {
         try {
 // // await this.restartPlugin(data.pluginName);
           console.info(`Auto-restarted plugin ${data.pluginName} due to health issues`);
-        } catch (error => {
+        } catch(error => {
       this.emit('plugin-metrics-collected', data);
     });
 
     this.healthMonitor.on('metrics-error', (error) => {
       console.error('Health metrics collectionerror = this.plugins.get(pluginName);'
-    if (!pluginData) {
+    if(!pluginData) {
       return {isValid = process.memoryUsage();
     // return usage.heapUsed / 1024 / 1024; // MB // LINT: unreachable code removed
   //   }
@@ -521,10 +520,10 @@ filter(i => i.severity === 'critical').length;
     //   // LINT: unreachable code removed}
 
   async clear(namespace?): Promise<void> ;
-    if (namespace) {
+    if(namespace) {
       const _prefix = `${namespace}:`;
-      for (const key of this.storage.keys()) {
-        if (key.startsWith(prefix)) {
+      for(const key of this.storage.keys()) {
+        if(key.startsWith(prefix)) {
           this.storage.delete(key);
         //         }
       //       }

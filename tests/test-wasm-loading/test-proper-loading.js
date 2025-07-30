@@ -18,35 +18,35 @@ async function testProperWasmLoading() {
     // Read the WASM file
 // const _wasmBuffer = awaitfs.readFile(wasmPath);
     console.warn(`   WASM file size);`
-    // Call the default export (which is __wbg_init)
+    // Call the default export(which is __wbg_init)
   // // await wasmModule.default(wasmBuffer);
     console.warn('✅ WASM initialized successfully!');
     // Test some functions
     console.warn('\n3. Testing WASM functions...');
-    if (wasmModule.get_version) {
+    if(wasmModule.get_version) {
       const _version = wasmModule.get_version();
       console.warn('   Version);'
     //     }
-    if (wasmModule.get_features) {
+    if(wasmModule.get_features) {
       const _features = wasmModule.get_features();
       console.warn('   Features);'
     //     }
-    if (wasmModule.detect_simd_capabilities) {
+    if(wasmModule.detect_simd_capabilities) {
       const _simd = wasmModule.detect_simd_capabilities();
       console.warn('   SIMD capabilities);'
     //     }
-    if (wasmModule.create_neural_network) {
+    if(wasmModule.create_neural_network) {
       console.warn('\n4. Testing neural network creation...');
       try {
         const _nn = wasmModule.create_neural_network(3, 'relu');
         console.warn('   ✅ Neural network created);'
-      } catch (/* e */) {
+      } catch(/* e */) {
         console.warn('   ❌ Neural network creation failed);'
       //       }
     //     }
-  } catch (error) {
+  } catch(error) {
     console.error('\n❌ Error);'
-    if (error.stack) {
+    if(error.stack) {
       console.error('Stack:', error.stack.split('\n').slice(0, 5).join('\n'));
     //     }
   //   }

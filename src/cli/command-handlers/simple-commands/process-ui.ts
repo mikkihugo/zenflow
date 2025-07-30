@@ -34,13 +34,13 @@ const __PROCESSES = [
     const _encoder = new TextEncoder();
 // // await node.stdout.write(encoder.encode('\nCommand = new Uint8Array(1024);'
 // const _n = awaitnode.stdin.read(buf);
-    if (n === null) return;
+    if(n === null) return;
     // ; // LINT}
         break;
 
-      case ' ':;
-      case 'enter':;
-      case '':;
+      case ' ':
+      case 'enter':
+      case '':
 // // await this.toggleSelected();
         break;default = > setTimeout(resolve, 1000));
         //         }
@@ -48,9 +48,9 @@ const __PROCESSES = [
   //   }
 
 
-  async toggleSelected() {
+  async toggleSelected() { 
     const _process = Array.from(this.processes.values())[this.selectedIndex];
-    if(process.status === 'stopped') {
+    if(process.status === 'stopped') 
 // await this.startProcess(process.id);
     } else {
 // // await this.stopProcess(process.id);
@@ -58,11 +58,11 @@ const __PROCESSES = [
   //   }
 
 
-  async startProcess(id) {
+  async startProcess(id) { 
     const _process = this.processes.get(id);
-    if (!process) return;
+    if(!process) return;
     // ; // LINT: unreachable code removed
-    console.warn(colors.yellow(`Starting ${process.name}...`));
+    console.warn(colors.yellow(`Starting $process.name}...`));
     process.status = 'starting';
 
     // Simulate startup
@@ -84,11 +84,11 @@ const __PROCESSES = [
   //   }
 
 
-  async stopProcess(id) {
+  async stopProcess(id) { 
     const _process = this.processes.get(id);
-    if (!process) return;
+    if(!process) return;
     // ; // LINT: unreachable code removed
-    console.warn(colors.yellow(`Stopping ${process.name}...`));
+    console.warn(colors.yellow(`Stopping $process.name}...`));
     process.status = 'stopped';
     process.pid = null;
     process.uptime = 0;
@@ -97,9 +97,9 @@ const __PROCESSES = [
   //   }
 
 
-  async startAll() {
+  async startAll() { 
     console.warn(colors.yellow('Starting all processes...'));
-    for(const [id, process] of this.processes) {
+    for(const [id, process] of this.processes) 
       if(process.status === 'stopped') {
 // // await this.startProcess(id);
       //       }
@@ -108,9 +108,9 @@ const __PROCESSES = [
   //   }
 
 
-  async stopAll() {
+  async stopAll() { 
     console.warn(colors.yellow('Stopping all processes...'));
-    for(const [id, process] of this.processes) {
+    for(const [id, process] of this.processes) 
       if(process.status === 'running') {
 // // await this.stopProcess(id);
       //       }
@@ -119,7 +119,7 @@ const __PROCESSES = [
   //   }
 
 
-  async restartAll() {
+  async restartAll() { 
 // await this.stopAll();
 // await new Promise((resolve) => setTimeout(resolve, 500));
 // await this.startAll();
@@ -127,7 +127,7 @@ const __PROCESSES = [
 // }
 
 
-// export async function launchProcessUI() {
+// export async function launchProcessUI() 
   const _ui = new ProcessUI();
 // await ui.start();
 // }

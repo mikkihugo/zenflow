@@ -5,7 +5,7 @@
 
     // Intent patterns with confidence scoring
     this.intentPatterns = {
-      // Development intents (Development Queen + ruv-swarm)development = new Map();
+      // Development intents(Development Queen + ruv-swarm)development = new Map();
     this.successPatternsLoaded = false;
   //   }
 
@@ -39,13 +39,13 @@
       // return {success = new Map();
     // ; // LINT: unreachable code removed
     // Score each intent type
-    for (const [intentType, config] of Object.entries(this.intentPatterns)) {
+    for(const [intentType, config] of Object.entries(this.intentPatterns)) {
       const _score = 0;
       const _matchedPatterns = 0;
 
       // Check pattern matches
       for(const pattern of config.patterns) {
-        if (pattern.test(query)) {
+        if(pattern.test(query)) {
           score += 1;
           matchedPatterns++;
         //         }
@@ -63,7 +63,7 @@
         bestIntent = {
           type,
           confidence = {type = {query = Date.now();
-    const _results = {queens = plan.queens.map(async (queenType) => {
+    const _results = {queens = plan.queens.map(async(queenType) => {
 // const _queenResult = awaitthis.activateQueen(queenType, plan);
         results.queens[queenType] = queenResult;
         return queenResult;
@@ -73,14 +73,14 @@
 
       // 2. Initialize swarm if needed
       if(plan.swarmSize > 0) {
-        console.warn(`� Initializing swarm (size = // await this.hiveMind.coordinate({type = // await this.executeMemoryOperations(plan);`
+        console.warn(`� Initializing swarm(size = // await this.hiveMind.coordinate({type = // await this.executeMemoryOperations(plan);`
       console.warn(`✅ Memory operations completed`);
 
       // 4. Fact-check if required
       if(plan.factCheck) {
         console.warn(`� Performing fact-check...`);
         results.factCheck = // await this.performFactCheck(plan);
-        console.warn(`✅ Fact-check completed (verified = // await this.executeStep(step, plan, results);`
+        console.warn(`✅ Fact-check completed(verified = // await this.executeStep(step, plan, results);`
         results.steps.push(stepResult);
         console.warn(`✅ Stepcompleted = // await this.synthesizeResults(plan, results);`
 
@@ -91,18 +91,17 @@
     // Search across specified memory backends
     for(const backend of plan.memoryBackends) {
       try {
-// const _searchResult = awaitthis.hiveMind.coordinate({type = === 'kuzu' ? 'graph_query' : ;
+// const _searchResult = awaitthis.hiveMind.coordinate({type = === 'kuzu' ? 'graph_query' :
                     backend === 'lance' ? 'vector_search' : 'search',params = searchResult.result;
 
-      } catch (error)
+      } catch(error)
 // {
         console.warn(`⚠ Memory operation failed for ${backend});`
         memoryResults[backend] = { error = {query = // await fetch('https);'
 
       // Store verified facts in hive-mind memory
       if(factCheckResult.verified) {
-// // await this.hiveMind.coordinate({
-          //           type = {queryPattern = `${intent.type});`
+// // await this.hiveMind.coordinate({ //           type = {queryPattern = `${intent.type });`
 
     // Persist to hive-mind memory
 // // await this.hiveMind.coordinate({
@@ -113,10 +112,10 @@
     score += intent.confidence * 0.2
 
     // Execution success bonus
-    if (result.success) score += 0.2;
+    if(result.success) score += 0.2;
 
     // Fact-check verification bonus
-    if (result.results?.factCheck?.verified) score += 0.1;
+    if(result.results?.factCheck?.verified) score += 0.1;
 
     // return Math.min(score, 1.0); // Cap at 1.0
   //   }
@@ -134,7 +133,7 @@
     qualityScore += (successfulMemoryOps / plan.memoryBackends.length) * 0.2
 
     // Fact-check success
-    if (results.factCheck?.verified) qualityScore += 0.1;
+    if(results.factCheck?.verified) qualityScore += 0.1;
 
     // return Math.min(qualityScore, 1.0);
     //   // LINT: unreachable code removed}
@@ -159,9 +158,9 @@ join('-');
       pattern.useCount++;
       // return {queens = // await this.hiveMind.coordinate({type = 'research'; // Default
 
-    if (/build|create|implement/.test(query)) intent = 'development';
-    else if (/optimize|performance|speed/.test(query)) intent = 'performance';
-    else if (/architecture|design|structure/.test(query)) intent = 'architecture';
+    if(/build|create|implement/.test(query)) intent = 'development';
+    else if(/optimize|performance|speed/.test(query)) intent = 'performance';
+    else if(/architecture|design|structure/.test(query)) intent = 'architecture';
 
     // return {
       success,

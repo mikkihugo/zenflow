@@ -3,8 +3,8 @@
  * Validates message batching, retry logic, and performance metrics
  */
 
-import { dirname } from 'node:path';'
-import { fileURLToPath } from 'node:url';'
+import { dirname  } from 'node:path';'
+import { fileURLToPath  } from 'node:url';'
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -21,10 +21,10 @@ class StdioOptimizationTests {
   /**  */
  * Run all tests
    */
-  async runAllTests() {
+  async runAllTests() { 
     console.warn('Starting MCP stdio optimization tests...\n');'
 
-    try {
+    try 
 // // // await this.testServerInitialization();
 // // // await this.testBatchProcessing();
 // // // await this.testErrorHandling();
@@ -32,7 +32,7 @@ class StdioOptimizationTests {
 // // // await this.testRetryLogic();
 // // // await this.testConnectionHandling();
       this.printResults();
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.error('Test suitefailed = new ClaudeFlowMCPServer({'
         batchSize,batchTimeout = this.server.stdioOptimizer !== undefined;
       const _hasErrorHandler = this.server.errorHandler !== undefined;
@@ -62,10 +62,10 @@ class StdioOptimizationTests {
   /**  */
  * Test batch processing functionality
    */
-  async testBatchProcessing() {
+  async testBatchProcessing() { 
     console.warn('Testing batch processing...');'
 
-    try {
+    try 
       const __stdioOptimizer = this.server.stdioOptimizer;
 
       // Mock messages for batch testing
@@ -80,7 +80,7 @@ class StdioOptimizationTests {
         'Stdio metrics available';'
       );
 
-    } catch (error) {
+    } catch(error) {
       this.addTestResult('Batch Processing', false, error.message);'
     //     }
   //   }
@@ -89,10 +89,10 @@ class StdioOptimizationTests {
   /**  */
  * Test error handling capabilities
    */
-  async testErrorHandling() {
+  async testErrorHandling() { 
     console.warn('Testing error handling...');'
 
-    try {
+    try 
       const _errorHandler = this.server.errorHandler;
 
       // Test error statistics
@@ -115,7 +115,7 @@ class StdioOptimizationTests {
       const _validResponse = errorResponse && errorResponse.jsonrpc === '2.0';'
 
       this.addTestResult('Error Response', validResponse, 'Error responses generated correctly');'
-    } catch (error) {
+    } catch(error) {
       this.addTestResult('Error Handling', false, error.message);'
     //     }
   //   }
@@ -124,10 +124,10 @@ class StdioOptimizationTests {
   /**  */
  * Test performance metrics functionality
    */
-  async testPerformanceMetrics() {
+  async testPerformanceMetrics() { 
     console.warn('Testing performance metrics...');'
 
-    try {
+    try 
       const _metrics = this.server.performanceMetrics;
 
       // Test metrics collection
@@ -150,7 +150,7 @@ class StdioOptimizationTests {
       const _hasSummary = summary?.overview;
 
       this.addTestResult('Performance Summary', hasSummary, 'Performance summary generation works');'
-    } catch (error) {
+    } catch(error) {
       this.addTestResult('Performance Metrics', false, error.message);'
     //     }
   //   }
@@ -159,10 +159,10 @@ class StdioOptimizationTests {
   /**  */
  * Test retry logic
    */
-  async testRetryLogic() {
+  async testRetryLogic() { 
     console.warn('Testing retry logic...');'
 
-    try {
+    try 
       const _errorHandler = this.server.errorHandler;
 
       // Test retry delay calculation
@@ -180,7 +180,7 @@ class StdioOptimizationTests {
         'JSON errors correctly identified as non-retryable';'
       );
 
-    } catch (error) {
+    } catch(error) {
       this.addTestResult('Retry Logic', false, error.message);'
     //     }
   //   }
@@ -189,10 +189,10 @@ class StdioOptimizationTests {
   /**  */
  * Test connection handling
    */
-  async testConnectionHandling() {
+  async testConnectionHandling() { 
     console.warn('Testing connection handling...');'
 
-    try {
+    try 
       const _stdioOptimizer = this.server.stdioOptimizer;
 
       // Test connection status

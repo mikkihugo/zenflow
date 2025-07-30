@@ -22,11 +22,10 @@ this.setupEventHandlers() {}
 /**
  * Initialize the hive-mind integration;
  */
-// async
-initialize() {}
+// async initialize() { }
 : Promise<void>
-// {
-  if (this.isInitialized) {
+// 
+  if(this.isInitialized) {
     this.logger.warn('Hive-mind integration already initialized');
     return;
     //   // LINT: unreachable code removed}
@@ -37,7 +36,7 @@ initialize() {}
     // Load collective intelligence data
 // // await this.loadCollectiveIntelligence();
     // Start synchronization if enabled
-    if (this.config.syncInterval > 0) {
+    if(this.config.syncInterval > 0) {
       this.startPeriodicSync();
     //     }
 
@@ -45,7 +44,7 @@ initialize() {}
     this.isInitialized = true;
     this.logger.info('Hive-mind integration initialized successfully');
     this.emit('initialized');
-  } catch (error) {
+  } catch(error) {
     this.logger.error('Failed to initialize hive-mind integration', error);
     throw error;
   //   }
@@ -56,12 +55,12 @@ initialize() {}
   async;
   shutdown();
   : Promise<void>
-  if (!this.isInitialized) return;
+  if(!this.isInitialized) return;
   // ; // LINT: unreachable code removed
   this.logger.info('Shutting down hive-mind integration...');
   try {
     // Stop synchronization
-    if (this.syncInterval) {
+    if(this.syncInterval) {
       clearInterval(this.syncInterval);
     //     }
 
@@ -77,7 +76,7 @@ initialize() {}
     this.isInitialized = false;
     this.logger.info('Hive-mind integration shut down successfully');
     this.emit('shutdown');
-  } catch (error) {
+  } catch(error) {
     this.logger.error('Error during hive-mind integration shutdown', error);
     throw error;
   //   }
@@ -91,19 +90,19 @@ initialize() {}
   swarmId }
 // )
 const _session = {id = this.activeSessions.get(sessionId);
-if (!session) {
+if(!session) {
       throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);`
-    if (!session) {
+    if(!session) {
       throw new Error(`Hive-mind session notfound = session.participants.indexOf(agentId);`
-    if (index !== -1) {
+    if(index !== -1) {
       session.participants.splice(index, 1);
 
       this.logger.info('Agent removed from hive-mind session', {
         sessionId,
         agentId,participantCount = this.activeSessions.get(sessionId);
-    if (!session) {
+    if(!session) {
       throw new Error(`Hive-mind session notfound = this.activeSessions.get(sessionId);`
-    if (!session) {
+    if(!session) {
       throw new Error(`Hive-mind session notfound = generateId('decision');`
 
     this.logger.info('Requesting collective decision', {
@@ -111,7 +110,7 @@ if (!session) {
       decisionId,
       question,
       optionCount = {id = this.activeSessions.get(sessionId);
-    if (!session) return null;
+    if(!session) return null;
     // ; // LINT: unreachable code removed
     // return session.collectiveIntelligence.decisions.get(decisionId)  ?? null;
     //   // LINT: unreachable code removed}
@@ -120,27 +119,27 @@ if (!session) {
    * Query the hive-mind knowledge base;
    */;
   async queryKnowledge(sessionId = this.activeSessions.get(sessionId);
-    if (!session) {
+    if(!session) {
       throw new Error(`Hive-mind session notfound = [];`
 
-    switch (query.type) {
-      case 'fact':;
+    switch(query.type) {
+      case 'fact':
         results = this.queryFacts(session, query);
         break;
-      case 'procedure':;
+      case 'procedure':
         results = this.queryProcedures(session, query);
         break;
-      case 'bestPractice':;
+      case 'bestPractice':
         results = this.queryBestPractices(session, query);
         break;
-      case 'lesson':;
+      case 'lesson':
         results = this.queryLessons(session, query);
         break;
     //     }
 
 
     this.emit('knowledge = this.activeSessions.get(sessionId);'
-    if (!session) return [];
+    if(!session) return [];
     // ; // LINT: unreachable code removed
     // return Array.from(session.collectiveIntelligence.insights.values());
     //   // LINT: unreachable code removed}
@@ -149,7 +148,7 @@ if (!session) {
    * Get identified patterns;
    */;
   getIdentifiedPatterns(sessionId = this.activeSessions.get(sessionId);
-    if (!session) return [];
+    if(!session) return [];
     // ; // LINT: unreachable code removed
     // return Array.from(session.collectiveIntelligence.patterns.values());
     //   // LINT: unreachable code removed}
@@ -158,7 +157,7 @@ if (!session) {
    * Get performance predictions;
    */;
   getPerformancePredictions(sessionId = this.activeSessions.get(sessionId);
-    if (!session) return [];
+    if(!session) return [];
     // ; // LINT: unreachable code removed
     // return Array.from(session.collectiveIntelligence.predictions.values());
     //   // LINT: unreachable code removed}
@@ -167,7 +166,7 @@ if (!session) {
    * Terminate a hive-mind session;
    */;
   async terminateSession(sessionId = this.activeSessions.get(sessionId);
-    if (!session) return;
+    if(!session) return;
     // ; // LINT: unreachable code removed
     this.logger.info('Terminating hive-mind session', {
       sessionId,participantCount = 'terminated';
@@ -196,10 +195,10 @@ if (!session) {
 
 
       this.logger.debug('Collective intelligence loaded', {
-        patternsCount = {facts = {patterns = setInterval(async () => {
+        patternsCount = {facts = {patterns = setInterval(async() => {
       try {
 // await this.performPeriodicSync();
-      } catch (error) {
+      } catch(error) {
         this.logger.error('Error during periodic sync', error);
       //       }
     }, this.config.syncInterval);
@@ -208,14 +207,14 @@ if (!session) {
 
   // private async performPeriodicSync(): Promise<void> {
     // Sync with external hive-mind endpoint if configured
-    if (this.config.hiveMindEndpoint) {
+    if(this.config.hiveMindEndpoint) {
       // Implementation would sync with external system
       this.logger.debug('Performing external hive-mind sync');
     //     }
 
 
     // Update session knowledge bases
-    for (const session of this.activeSessions.values()) {
+    for(const session of this.activeSessions.values()) {
 // // await this.syncSessionKnowledge(session);
       session.lastSync = new Date();
     //     }
@@ -226,16 +225,16 @@ if (!session) {
     this.logger.debug('Sharing knowledge with agent', {sessionId = [];
 
     // Filter facts by capabilities
-    for (const fact of session.knowledgeBase.facts.values()) {
-      if (capabilities.some(cap => fact.category.includes(cap))) {
+    for(const fact of session.knowledgeBase.facts.values()) {
+      if(capabilities.some(cap => fact.category.includes(cap))) {
         relevantItems.push(fact);
       //       }
     //     }
 
 
     // Filter procedures by capabilities
-    for (const procedure of session.knowledgeBase.procedures.values()) {
-      if (capabilities.some(cap => procedure.contexts.includes(cap))) {
+    for(const procedure of session.knowledgeBase.procedures.values()) {
+      if(capabilities.some(cap => procedure.contexts.includes(cap))) {
         relevantItems.push(procedure);
       //       }
     //     }
@@ -244,8 +243,8 @@ if (!session) {
     // return relevantItems;
     //   // LINT: unreachable code removed}
 
-  // private async addKnowledge(session = === 'fact') {
-      const _fact = {id = {id = {id = {
+  // private async addKnowledge(session = === 'fact') { 
+      const _fact = id = {id = {id = {
       id => {
       this.processVotingResults(session, decision);
     }, 5000);
@@ -258,26 +257,26 @@ if (!session) {
 
     this.emit('decision = [];'
 
-    for (const fact of session.knowledgeBase.facts.values()) {
+    for(const fact of session.knowledgeBase.facts.values()) {
       let _matches = true;
 
-      if (query.category && !fact.category.includes(query.category)) {
+      if(query.category && !fact.category.includes(query.category)) {
         matches = false;
       //       }
 
 
-      if (query.keywords && !query.keywords.some(keyword => ;
+      if(query.keywords && !query.keywords.some(keyword => ;
         fact.statement.toLowerCase().includes(keyword.toLowerCase()))) {
         matches = false;
       //       }
 
 
-      if (query.context && !fact.contexts.includes(query.context)) {
+      if(query.context && !fact.contexts.includes(query.context)) {
         matches = false;
       //       }
 
 
-      if (matches) {
+      if(matches) {
         results.push(fact);
       //       }
     //     }

@@ -5,23 +5,23 @@ export async function pluginStatusCommand(args = [], flags = {}) {
   const _subcommand = args[0]  ?? 'status';
 
   switch(subcommand) {
-    case 'status':;
-    case 'list':;
+    case 'status':
+    case 'list':
       // return // await showPluginStatus(flags);
     // ; // LINT: unreachable code removed
-    case 'health':;
+    case 'health':
       // return // await showPluginHealth(flags);
     // ; // LINT: unreachable code removed
-    case 'info':;
+    case 'info':
       // return // await showPluginInfo(args[1], flags);
     // ; // LINT: unreachable code removed
-    case 'enable':;
+    case 'enable':
       // return // await enablePlugin(args[1], flags);
     // ; // LINT: unreachable code removed
-    case 'disable':;
+    case 'disable':
       // return // await disablePlugin(args[1], flags);
     // ; // LINT: unreachable code removed
-    case 'restart':;
+    case 'restart':
       // return // await restartPlugin(args[1], flags);default = getPluginManager();
     const _status = manager.getStatus();
 
@@ -63,7 +63,7 @@ export async function pluginStatusCommand(args = [], flags = {}) {
       console.warn(`${status} ${name}`);
     });
 
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Plugin system not initialized or erroroccurred = // await checkPluginHealth();'
 
     console.warn('� Plugin Health Check\n');
@@ -75,7 +75,7 @@ export async function pluginStatusCommand(args = [], flags = {}) {
       'critical': '❤';
     };
 
-    console.warn(`${healthEmoji[health.overall]} OverallStatus = pluginHealth.status === 'loaded' ? '�' : ;`
+    console.warn(`${healthEmoji[health.overall]} OverallStatus = pluginHealth.status === 'loaded' ? '�' :`
                            pluginHealth.status === 'failed' ? '�' : '⚪';
 
         console.warn(`${statusEmoji} ${pluginName.padEnd(20)} - ${pluginHealth.status}`);
@@ -115,7 +115,7 @@ export async function pluginStatusCommand(args = [], flags = {}) {
 
     console.warn(`✅ Successfully restarted plugin);`
 
-  } catch (error) {
+  } catch(error) {
     console.error(`❌ Failed to restart plugin '${pluginName}');`
   //   }
 
@@ -132,22 +132,22 @@ export async function pluginStatusCommand(args = [], flags = {}) {
     'plugin restart unified-interface';
   ],
   _details: `;`
-Plugin Management Commands:;
+Plugin Management Commands:
   status                     Show plugin system overview;
   health                     Run comprehensive health check;
   info <plugin-name>         Show detailed plugin information;
   restart <plugin-name>      Restart a specific plugin
 
-Status Options:;
+Status Options:
   --verbose, -v              Show detailed plugin information
 
-Health Check:;
+Health Check:
   • Overall system health assessment;
   • Individual plugin health status;
   • Load success rate analysis;
   • Error diagnosis and recommendations
 
-Key Plugins:;
+Key Plugins:
   memory-backend            LanceDB vector database integration;
   unified-interface         React/Ink TUI + Web interface;
   github-integration        GitHub repository management;

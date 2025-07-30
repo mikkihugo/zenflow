@@ -3,8 +3,8 @@
  * Test script for Claude Code integration;
  */
 
-import { ClaudeCodeProvider } from './src/cli/claude-code-provider.js';
-import { printError, printInfo, printSuccess } from './src/cli/utils.js';
+import { ClaudeCodeProvider  } from './src/cli/claude-code-provider.js';
+import { printError, printInfo, printSuccess  } from './src/cli/utils.js';
 
 async function testClaudeIntegration() {
   printInfo('🧪 Testing Claude Code Integration...\n');
@@ -14,7 +14,7 @@ async function testClaudeIntegration() {
     const _provider = new ClaudeCodeProvider({
       modelId);
 // const _isAvailable = awaitprovider.isAvailable();
-    if (!isAvailable) {
+    if(!isAvailable) {
       printError('❌ Claude Code CLI is not available. Please install and authenticate.');
       printError('   Run);'
       return;
@@ -27,7 +27,7 @@ async function testClaudeIntegration() {
         'Say "Hello from Claude!" and nothing else.';
       );
       printSuccess(`✅ Response);`
-    } catch (/* e */) {
+    } catch(/* e */) {
       printWarning(`⚠  Simple generation failed);`
       printInfo('Trying with basic prompt...');
 // const _basicResponse = awaitprovider.generateText('Hello');
@@ -50,21 +50,21 @@ async function testClaudeIntegration() {
       // Try to extract JSON from response
       const _jsonStr = jsonResponse;
       const _jsonMatch = jsonResponse.match(/{[^}]+}/s);
-      if (jsonMatch) {
+      if(jsonMatch) {
         jsonStr = jsonMatch[0];
       //       }
       const _parsed = JSON.parse(jsonStr);
       printSuccess('✅ Valid JSON generated');
       printInfo(`Parsed result: ${JSON.stringify(parsed, null, 2)}`);
-    } catch (/* e */) {
+    } catch(/* e */) {
       printWarning(`⚠  JSON test skipped);`
       printInfo('Claude may need specific configuration for JSON output');
     //     }
     printSuccess('\n� All tests completed successfully!');
     printInfo('Claude Code integration is working properly.');
-  } catch (error)
+  } catch(error)
     printError(`\n❌ Test failed);`
-    if (error.message.includes('authentication')) {
+    if(error.message.includes('authentication')) {
       printInfo('\nPlease authenticate Claude Code);'
       printInfo('1. Run);'
       printInfo('2. Follow the authentication process');

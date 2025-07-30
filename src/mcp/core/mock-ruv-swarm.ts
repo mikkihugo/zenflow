@@ -10,13 +10,13 @@ export class RuvSwarm {
   //   }
 
 
-  async createSwarm(config) {
+  async createSwarm(config) { 
     const _swarm = new MockSwarm(config);
     this.swarms.set(config.id, swarm);
     // return swarm;
     //   // LINT: unreachable code removed}
 
-  getSwarms() {}
+  getSwarms() }
     // return Array.from(this.swarms.values());
 
 class MockSwarm {

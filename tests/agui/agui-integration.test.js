@@ -4,17 +4,16 @@
  * Basic tests to validate AG-UI protocol integration;
  */
 
-import { EventEmitter } from 'node:events';
-import { EventType } from '@ag-ui/core';
-import { AGUIAdapter } from '../../src/ai/agui-adapter.js';
-import { AGUIWebSocketMiddleware } from '../../src/api/agui-websocket-middleware.js';
+import { EventEmitter  } from 'node:events';
+import { EventType  } from '@ag-ui/core';
+import { AGUIAdapter  } from '../../src/ai/agui-adapter.js';
+import { AGUIWebSocketMiddleware  } from '../../src/api/agui-websocket-middleware.js';
 
 describe('AG-UI Integration Tests', () => {
   let _adapter;
   beforeEach(() => {
-    _adapter = new AGUIAdapter({
-      sessionId);
-});
+    _adapter = new AGUIAdapter({ sessionId);
+ });
 afterEach(() => {
   adapter.reset();
 });
@@ -29,7 +28,7 @@ describe('AGUIAdapter', () => {
     adapter.on('agui) => {'
       expect(expectedEvents).toContain(event.type);
       eventsReceived++;
-      if (eventsReceived === 3) {
+      if(eventsReceived === 3) {
         done();
       //       }
     });
@@ -39,16 +38,14 @@ describe('AGUIAdapter', () => {
   });
   test('should emit tool call events correctly', (done) => {
     const _eventsReceived = 0;
-    const _expectedEvents = [
-
-        'TOOL_CALL_START',
+    const _expectedEvents = ['TOOL_CALL_START',
         'TOOL_CALL_ARGS',
         'TOOL_CALL_END',
-        'TOOL_CALL_RESULT',,,,,,];
+        'TOOL_CALL_RESULT',,];
     adapter.on('agui) => {'
       expect(expectedEvents).toContain(event.type);
       eventsReceived++;
-      if (eventsReceived === 4) {
+      if(eventsReceived === 4) {
         done();
       //       }
     });
@@ -160,7 +157,7 @@ describe('Integration with Claude Code Zen', () =>
 })
 })
 // Run tests if called directly
-if (process.argv[1].endsWith('/agui-integration.test.js')) {
+if(process.argv[1].endsWith('/agui-integration.test.js')) {
   console.warn('🧪 Running AG-UI Integration Tests...');
   // Simple test runner for when Jest is not available
   async function runBasicTests() {
@@ -173,20 +170,20 @@ if (process.argv[1].endsWith('/agui-integration.test.js')) {
     const _messageId = adapter.startTextMessage();
     adapter.addTextContent('Test');
     adapter.endTextMessage(messageId);
-    console.warn(` Text message flow (${eventCount} events)`);
+    console.warn(` Text message flow(${eventCount} events)`);
     // Test 3: Tool call flow
     const _initialCount = eventCount;
     const _toolCallId = adapter.startToolCall('test_tool');
     adapter.addToolCallArgs('{}');
     adapter.endToolCall(toolCallId);
     adapter.emitToolCallResult('result', toolCallId);
-    console.warn(` Tool call flow (${eventCount - initialCount} events)`);
+    console.warn(` Tool call flow(${eventCount - initialCount} events)`);
     // Test 4: Custom events
     const _beforeCustom = eventCount;
     adapter.emitQueenEvent('queen-1', 'test', {});
     adapter.emitSwarmEvent('swarm-1', 'test', [], {});
     adapter.emitHiveMindEvent('test', {});
-    console.warn(` Custom events (${eventCount - beforeCustom} events)`);
+    console.warn(` Custom events(${eventCount - beforeCustom} events)`);
     console.warn(`\n✅ Basic tests completed! Total events);`
     console.warn('� Final stats:', adapter.getStats());
   //   }

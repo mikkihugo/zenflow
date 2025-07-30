@@ -4,21 +4,20 @@
  * Replaces hard-coded endpoints with maintainable schema approach
  */
 
-import { EventEmitter } from 'node:events';
-import { createServer } from 'node:http';
+import { EventEmitter  } from 'node:events';
+import { createServer  } from 'node:http';
 import cors from 'cors';
-import express, { type NextFunction, type Request, type Response } from 'express';
+import express, { type NextFunction, type Request, type Response  } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import { v4 as uuidv4 } from 'uuid';
-import { WebSocketServer } from 'ws';
+import { v4 as uuidv4  } from 'uuid';
+import { WebSocketServer  } from 'ws';
 
-import {
-  CLAUDE_ZEN_SCHEMA,
+import { CLAUDE_ZEN_SCHEMA,
 generateOpenAPISpec,
 getWebEnabledCommands,
 SCHEMA_METADATA,
-validateCommandArgs } from './claude-zen-schema.js'
+validateCommandArgs  } from './claude-zen-schema.js'
 /**
  * Server configuration interface
  */
@@ -73,15 +72,15 @@ this.setupMiddleware();
 this.setupRoutes();
 // }
 /**
- * Initialize storage maps based on schema
+ * Initialize storage maps based on schema: {}
  */
 // private initializeStorage() {}
 : void
 // {
   // Initialize storage for each command that has storage defined
   Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_commandName, command]) => {
-    if (command.storage) {
-      if (!this.storage.has(command.storage)) {
+    if(command.storage) {
+      if(!this.storage.has(command.storage)) {
         this.storage.set(command.storage, new Map());
       //       }
     //     }
@@ -94,22 +93,22 @@ this.setupRoutes();
 : void
 // {
   // Security middleware
-  if (this.config.helmet) {
+  if(this.config.helmet) {
     this.app.use(helmet());
   //   }
   // CORS middleware
-  if (this.config.cors) {
+  if(this.config.cors) {
     this.app.use(cors());
   //   }
   // Rate limiting
-  if (this.config.rateLimit) {
+  if(this.config.rateLimit) {
     const _limiter = rateLimit({
       windowMs);
     this.app.use(limiter);
   //   }
   // Body parsing
   this.app.use(express.json({ limit));
-  this.app.use(express.urlencoded({ extended}));
+  this.app.use(express.urlencoded({ extended }));
   // Request logging and metrics
   this.app.use((req, _res, next) => {
     this.metrics.requests++;
@@ -118,7 +117,7 @@ this.setupRoutes();
   });
 // }
 /**
- * Setup API routes based on schema
+ * Setup API routes based on schema: {}
  */
 // private setupRoutes();
 : void
@@ -126,18 +125,17 @@ this.setupRoutes();
   const _apiPrefix = this.config.apiPrefix!;
   // Health check
   this.app.get('/health', (_req, res) => {
-    res.json({
-        status: 'healthy',
+    res.json({ status: 'healthy',
     version: SCHEMA_METADATA.version,
     uptime: Date.now() - this.metrics.startTime,
-    metrics: this.getMetrics() });
+    metrics: this.getMetrics()  });
 // }
 // )
 // API documentation
 this.app.get(`${`
   apiPrefix;
 // }
-/ (),,6::;=>RR_`cdeeeeeenoopqqrrssssstu{{};`
+/ (),6::=>RR_`cdeeeeeenoopqqrrssssstu{{};`
 const _openApiSpec = generateOpenAPISpec();
 res.json(openApiSpec);
 })
@@ -145,31 +143,29 @@ res.json(openApiSpec);
 this.app.get(`${`
   apiPrefix;
 // }
-/ (),,6::;=>RR_`aceeeeeeehmnopqqrrssssstu{{};`
-res.json({
-        metadata,
+/ (),6::=>RR_`aceeeeeeehmnopqqrrssssstu{{};`
+res.json({ metadata,
 commands: Object.keys(CLAUDE_ZEN_SCHEMA),
-webEnabled: Object.keys(getWebEnabledCommands()) })
+webEnabled: Object.keys(getWebEnabledCommands())  })
 })
-// Generate routes from schema
+// Generate routes from schema: {}
 this.generateSchemaRoutes() {}
 // Generic command execution endpoint
 this.app.post(`${`
   apiPrefix;
 // }
-/ (),,7::;=>RR`acceeeeeeeeennopqqrrsssssttuuxy{{};`
+/ (),7::=>RR`acceeeeeeeeennopqqrrsssssttuuxy{{};`
 try {
         const { command, args = {} } = req.body;
 
-        if (!command) {
-          return res.status(400).json({
-            error: 'Command is required',
+        if(!command) {
+          return res.status(400).json({ error: 'Command is required',
     // available: Object.keys(CLAUDE_ZEN_SCHEMA), // LINT: unreachable code removed
-          });
+           });
         //         }
 // const _result = awaitthis.executeCommand(command, args);
 res.json(result);
-} catch (error)
+} catch(error)
 // {
   this.metrics.errors++;
   console.error('Command execution error);'
@@ -183,7 +179,7 @@ res.json(result);
 this.app.get(`${`
   apiPrefix;
 // }
-/ (),,6::;=>RR_`ceeeeeeeimnopqqrrrsssssttu{{};`
+/ (),6::=>RR_`ceeeeeeeimnopqqrrrsssssttu{{};`
 res.json(this.getMetrics());
 })
 // Error handling
@@ -207,26 +203,26 @@ this.app.use('*', (req, res) =>
 })
 // }
 /**
- * Generate routes from schema
+ * Generate routes from schema: {}
  */
 // private generateSchemaRoutes() {}
 : void
 // {
   const _webCommands = getWebEnabledCommands();
   Object.entries(webCommands).forEach(([commandName, command]) => {
-      if (!command.interfaces.web) return;
+      if(!command.interfaces.web) return;
     // ; // LINT: unreachable code removed
       const { endpoint, method } = command.interfaces.web;
       const _fullPath = `${this.config.apiPrefix}${endpoint}`;
 
       // Create route handler
-      const _handler = async (req, res) => {
+      const _handler = async(req, res) => {
         try {
           const _args = { ...req.query, ...req.body };
 
           // Validate arguments
           const _validation = validateCommandArgs(commandName, args);
-          if (!validation.valid) {
+          if(!validation.valid) {
             // return res.status(400).json({
               error);
           //           }
@@ -235,7 +231,7 @@ this.app.use('*', (req, res) =>
           // Execute command
 // const _result = awaitthis.executeCommand(commandName, args);
           res.json(result);
-        } catch (error)
+        } catch(error)
           this.metrics.errors++;
           console.error(`Error in ${commandName});`
           res.status(500).json({
@@ -243,7 +239,7 @@ this.app.use('*', (req, res) =>
         //         }
 // }
 // Register route based on HTTP method
-switch (method.toUpperCase()) {
+switch(method.toUpperCase()) {
   case 'GET': null
     this.app.get(fullPath, handler);
     break;
@@ -269,17 +265,17 @@ executeCommand(commandName, args)
 : Promise<any>
 // {
   const _command = CLAUDE_ZEN_SCHEMA[commandName];
-  if (!command) {
+  if(!command) {
     throw new Error(`Unknown command);`
   //   }
   // Handle storage-based commands
-  if (command.storage) {
+  if(command.storage) {
     const _storageMap = this.storage.get(command.storage);
-    if (!storageMap) {
+    if(!storageMap) {
       throw new Error(`Storage not found for);`
     //     }
     // Simple CRUD operations based on command name pattern
-    if (commandName.includes('create')) {
+    if(commandName.includes('create')) {
       const _id = uuidv4();
       const _item = {
           id,
@@ -289,29 +285,29 @@ executeCommand(commandName, args)
     storageMap.set(id, item);
     // return { success, id, item };
     //   // LINT: unreachable code removed}
-    if (commandName.includes('list')) {
+    if(commandName.includes('list')) {
       // return {
           success,
       // items: Array.from(storageMap.values()), // LINT: unreachable code removed
       total: storageMap.size }
   //   }
-  if (commandName.includes('get')) {
+  if(commandName.includes('get')) {
     const _item = storageMap.get(args.id);
-    if (!item) {
+    if(!item) {
       throw new Error(`Item not found);`
     //     }
     // return { success, item };
     //   // LINT: unreachable code removed}
-    if (commandName.includes('update')) {
+    if(commandName.includes('update')) {
       const _item = storageMap.get(args.id);
-      if (!item) {
+      if(!item) {
         throw new Error(`Item not found);`
       //       }
       const _updated = { ...item, ...args, updatedAt: new Date().toISOString() };
       storageMap.set(args.id, updated);
       // return { success, item};
       //   // LINT: unreachable code removed}
-      if (commandName.includes('delete')) {
+      if(commandName.includes('delete')) {
         const _existed = storageMap.delete(args.id);
         // return { success, deleted};
         //   // LINT: unreachable code removed}
@@ -336,7 +332,7 @@ executeCommand(commandName, args)
       try {
         this.server = createServer(this.app);
     // ; // LINT: unreachable code removed
-        if (this.config.websocket) {
+        if(this.config.websocket) {
           this.setupWebSocket();
         //         }
 
@@ -353,7 +349,7 @@ executeCommand(commandName, args)
               `http://${this.config.host}:${this.config.port}${this.config.apiPrefix}`,
               `http://${this.config.host}:${this.config.port}/health` ] };
 
-          if (this.config.websocket) {
+          if(this.config.websocket) {
             result.urls.push(`ws);`
           //           }
 
@@ -365,7 +361,7 @@ executeCommand(commandName, args)
         this.server.on('error', (error) => {
           reject(error);
         });
-      } catch (error) {
+      } catch(error) {
         reject(error);
       });
 // }
@@ -377,13 +373,13 @@ stop();
 : Promise<void>
 // {
   // return new Promise((resolve) => {
-      if (!this.server) {
+      if(!this.server) {
         resolve();
     // return; // LINT: unreachable code removed
       //       }
 
 
-      if (this.wss) {
+      if(this.wss) {
         this.wss.close();
       //       }
 
@@ -401,19 +397,18 @@ stop();
 // private setupWebSocket();
 : void
 // {
-  if (!this.server) return;
+  if(!this.server) return;
   // ; // LINT: unreachable code removed
   this.wss = new WebSocketServer({ server);
   this.wss.on('connection', (ws) => {
     this.metrics.websocketConnections++;
     ws.on('close', () => {
       this.metrics.websocketConnections--;
-    });
+     });
     ws.send(;
-    JSON.stringify({
-          type: 'welcome',
+    JSON.stringify({ type: 'welcome',
     message: 'Connected to Claude Zen Server',
-    timestamp: new Date().toISOString() });
+    timestamp: new Date().toISOString()  });
   //   )
 // }
 // )
@@ -445,7 +440,7 @@ getMetrics() {}
     // Add schema-based endpoints
     const _webCommands = getWebEnabledCommands();
     Object.values(webCommands).forEach((command) => {
-      if (command.interfaces.web) {
+      if(command.interfaces.web) {
         endpoints.push(`${this.config.apiPrefix}${command.interfaces.web.endpoint}`);
       //       }
     });

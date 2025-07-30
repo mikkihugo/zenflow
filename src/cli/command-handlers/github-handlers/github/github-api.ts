@@ -4,8 +4,8 @@
  * Provides authentication, rate limiting, and API wrappers for GitHub workflow commands
  */
 
-import { timingSafeEqual } from 'node = ';
-import { printError, printInfo } from '../utils.js';
+import { timingSafeEqual  } from 'node = ';
+import { printError, printInfo  } from '../utils.js';
 
 https = 5000; // API calls per hour
 const __GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
@@ -23,8 +23,8 @@ class GitHubAPIClient {
   /**  */
  * Authentication Methods
    */
-  async authenticate(token = null) {
-    if(token) {
+  async authenticate(token = null) { 
+    if(token) 
       this.token = token;
     //     }
 
@@ -41,7 +41,7 @@ class GitHubAPIClient {
         // return true;
     //   // LINT: unreachable code removed}
       // return false;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       printError(`Authenticationfailed = 1) {`
       const _resetTime = new Date(this.rateLimitResetTime);
       const _now = new Date();
@@ -64,9 +64,9 @@ class GitHubAPIClient {
   /**  */
  * Core API Request Method
    */
-  async request(endpoint, options = {}) {
+  async request(endpoint, options = {}) { 
 // await this.checkRateLimit();
-    const _url = endpoint.startsWith('http') ? endpoint = {Authorization = {method = JSON.stringify(options.body);
+    const _url = endpoint.startsWith('http') ? endpoint = Authorization = {method = JSON.stringify(options.body);
       headers['Content-Type'] = 'application/json';
     //     }
 
@@ -78,27 +78,24 @@ class GitHubAPIClient {
 
       if(!response.ok) {
         throw new Error(`GitHub API error = {}) {`
-    let _params = new URLSearchParams({
-      sort = {}) {
-    const _params = new URLSearchParams({
-      state = {}) {
-    const _params = new URLSearchParams({
-      state = {}) {
-    const _params = new URLSearchParams({per_page = 'main', inputs = {}) {
+    let _params = new URLSearchParams({ sort = { }) {
+    const _params = new URLSearchParams({ state = { }) {
+    const _params = new URLSearchParams({ state = { }) {
+    const _params = new URLSearchParams({ per_page = 'main', inputs = { }) {
     // return // await this.request(;
         method = {}) {
     const _params = new URLSearchParams({per_page = JSON.parse(payload);
 
     switch(event) {
-      case 'push':;
+      case 'push':
         // return this.handlePushEvent(eventData);
-    // case 'pull_request':; // LINT: unreachable code removed
+    // case 'pull_request': // LINT: unreachable code removed
         // return this.handlePullRequestEvent(eventData);
-    // case 'issues':; // LINT: unreachable code removed
+    // case 'issues': // LINT: unreachable code removed
         // return this.handleIssuesEvent(eventData);
-    // case 'release':; // LINT: unreachable code removed
+    // case 'release': // LINT: unreachable code removed
         // return this.handleReleaseEvent(eventData);
-    // case 'workflow_run':; // LINT: unreachable code removed
+    // case 'workflow_run': // LINT: unreachable code removed
         // return this.handleWorkflowRunEvent(eventData);default = createHmac('sha256', GITHUB_WEBHOOK_SECRET);
     hmac.update(payload);
     const _expectedSignature = `sha256=${hmac.digest('hex')}`;
@@ -109,10 +106,10 @@ class GitHubAPIClient {
   /**  */
  * Event Handlers
    */
-  async handlePushEvent(eventData) {
+  async handlePushEvent(eventData) { 
     printInfo(`Pushevent = eventData.action;`
     const _pr = eventData.pull_request;
-    printInfo(`Pull request ${action});`
+    printInfo(`Pull request $action});`
     // return {handled = eventData.action;
     // const _issue = eventData.issue; // LINT: unreachable code removed
     printInfo(`Issue ${action});`

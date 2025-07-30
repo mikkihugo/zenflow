@@ -7,9 +7,9 @@
  * @version 2.0.0;
  */
 
-import { promises as fs } from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { promises as fs  } from 'node:fs';
+import { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -37,7 +37,7 @@ const _IMPORT_REPLACEMENTS = [
   // Cliffy to Commander/Inquirer migration
   //   {
     from: /import\s*{\s*Command\s*}\s*from\s*['"]@cliffy\/command['"]/g,
-    to: "import { Command } from 'commander'",
+    to: "import { Command  } from 'commander'",
     description: 'Replace Cliffy Command with Commander' },
   //   {
     from: /import\s*{\s*Table\s*}\s*from\s*['"]@cliffy\/table['"]/g,
@@ -63,7 +63,7 @@ const _IMPORT_REPLACEMENTS = [
   // Duplicate import cleanup
   //   {
     from: /import\s*{\s*promises\s*as\s*fs\s*}\s*from\s*['"]node:fs['"];?\s*\n(?)*?import\s*{\s*promises\s*as\s*fs\s*}\s*from\s*['"]node:fs['"];?/g,
-    to: "import { promises as fs } from 'node:fs';",
+    to: "import { promises as fs  } from 'node:fs';",
     description: 'Remove duplicate fs imports' },
   // Method name corrections
   //   {
@@ -114,41 +114,41 @@ async function processFile(filePath, stats): Promise<void> {
     const _modified = false;
     const _fileReplacements = 0;
     // Apply all replacement rules
-    for (const replacement of IMPORT_REPLACEMENTS) {
+    for(const replacement of IMPORT_REPLACEMENTS) {
       const _before = content;
       content = content.replace(replacement.from, replacement.to);
-      if (content !== before) {
+      if(content !== before) {
         modified = true;
         fileReplacements++;
         stats.replacementsApplied++;
       //       }
     //     }
     // Additional TypeScript-specific fixes
-    if (filePath.endsWith('.ts')) {
-      // Fix missing .js extensions in relative imports (ESM requirement)
+    if(filePath.endsWith('.ts')) {
+      // Fix missing .js extensions in relative imports(ESM requirement)
       const _beforeExtensions = content;
       content = content.replace(;
         /from\s+['"](\.\/?[^'"]*?)['"];?/g,"'
         (match, importPath) => {
-          if (!importPath.includes('.') && !importPath.includes('node)) {'
+          if(!importPath.includes('.') && !importPath.includes('node)) {'
             return match.replace(importPath, `${importPath}.js`);
     //   // LINT: unreachable code removed}
           return match;
     //   // LINT: unreachable code removed}
       );
-      if (content !== beforeExtensions) {
+      if(content !== beforeExtensions) {
         modified = true;
         fileReplacements++;
         stats.replacementsApplied++;
       //       }
     //     }
     // Write file if modifications were made
-    if (modified) {
+    if(modified) {
 // // await fs.writeFile(filePath, content);
       stats.filesModified++;
       console.warn(`✅ Fixed ${fileReplacements} imports in);`
     //     }
-  } catch (error) {
+  } catch(error) {
     stats.errorsEncountered++;
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`❌ Error processing ${filePath});`
@@ -165,18 +165,18 @@ async function findTypeScriptFiles(dir): Promise<string[]> {
   const _files = [];
   try {
 // const _entries = awaitfs.readdir(dir, { withFileTypes});
-    for (const entry of entries) {
+    for(const entry of entries) {
       const _fullPath = join(dir, entry.name);
       // Skip excluded directories
       const _excludedDirs = ['node_modules', 'dist', '.git', 'coverage', 'build'];
-      if (entry.isDirectory() && !excludedDirs.includes(entry.name)) {
+      if(entry.isDirectory() && !excludedDirs.includes(entry.name)) {
 // const _subFiles = awaitfindTypeScriptFiles(fullPath);
         files.push(...subFiles);
-      } else if (entry.isFile() && (entry.name.endsWith('.ts')  ?? entry.name.endsWith('.js'))) {
+      } else if(entry.isFile() && (entry.name.endsWith('.ts')  ?? entry.name.endsWith('.js'))) {
         files.push(fullPath);
       //       }
     //     }
-  } catch (error) {
+  } catch(error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`Error reading directory ${dir});`
   //   }
@@ -203,7 +203,7 @@ async function _main(): Promise<void> {
     console.warn('');
     // Process files in parallel batches for performance
     const _batchSize = 10;
-    for (let i = 0; i < files.length; i += batchSize) {
+    for(let i = 0; i < files.length; i += batchSize) {
       const _batch = files.slice(i, i + batchSize);
       const _batchPromises = batch.map((file) => processFile(file, stats));
 // // await Promise.all(batchPromises);
@@ -224,7 +224,7 @@ async function _main(): Promise<void> {
       `  Success rate: ${(((stats.filesProcessed - stats.errorsEncountered) / stats.filesProcessed) * 100).toFixed(1)}%`;
     );
     console.warn('');
-    if (stats.errorsEncountered === 0) {
+    if(stats.errorsEncountered === 0) {
       console.warn('✅ Import fixes completed successfully!');
       console.warn(' All imports now follow Google TypeScript standards');
       process.exit(0);
@@ -232,7 +232,7 @@ async function _main(): Promise<void> {
       console.warn('⚠ Import fixes completed with some errors. Check logs above.');
       process.exit(1);
     //     }
-  } catch (error) {
+  } catch(error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Fatal error in import fixing);'
     process.exit(1);

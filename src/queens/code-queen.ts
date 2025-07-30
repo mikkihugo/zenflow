@@ -1,5 +1,5 @@
-import { NeuralEngine } from '../neural/neural-engine.js';'
-import { BaseQueen } from './base-queen.js';'
+import { NeuralEngine  } from '../neural/neural-engine.js';'
+import { BaseQueen  } from './base-queen.js';'
 
 export class CodeQueen extends BaseQueen {
   constructor() {
@@ -7,9 +7,7 @@ export class CodeQueen extends BaseQueen {
     this.confidence = 0.9;
     this.neuralEngine = new NeuralEngine();
     this.codePatterns = new Map();
-    this.languageSupport = new Set([
-
-            'javascript', 'typescript', 'python', 'java', 'go', 'rust', 'cpp', 'c', 'c#', 'php', 'ruby', 'swift', 'kotlin';,,,,]);'
+    this.languageSupport = new Set(['javascript', 'typescript', 'python', 'java', 'go', 'rust', 'cpp', 'c', 'c#', 'php', 'ruby', 'swift', 'kotlin';,]);'
     this.initializePatterns();
     this.initialize();
   //   }
@@ -18,7 +16,7 @@ export class CodeQueen extends BaseQueen {
    * @private
    * @returns {Promise<void>}
    */
-  // async initialize() { // LINT: unreachable code removed
+  // async initialize() {  // LINT: unreachable code removed
   await;
   this;
 
@@ -35,23 +33,23 @@ export class CodeQueen extends BaseQueen {
 /**  */
  * Initialize code patterns
  * @private
- * @returns {void}
+ * @returns void}
  */
 // initializePatterns() { // LINT: unreachable code removed
 this.codePatterns.set('function', ['
 
             'function {{name}}({{params}}) {\n  {{body}}\n}','
             'const {{name}} = () => {\n  {{body}}\n};','
-            'async function {{name}}({{params}}) {\n  {{body}}\n}';,,,,]);'
+            'async function {{name}}({{params}}) {\n  {{body}}\n}';,]);'
 this.codePatterns.set('class', ['
 
             'class {{name}} {\n  constructor({{params}}) {\n    {{body}}\n  }\n}','
-            'export class {{name}} {\n  // // private {{field}}: {{type}};\n\n  constructor({{params}}) {\n    {{body}}\n  }\n}',,,,]);'
+            'export class {{name}} {\n  // // private {{field}}: {{type}};\n\n  constructor({{params}}) {\n    {{body}}\n  }\n}',]);'
 this.codePatterns.set('interface', [;'
             'interface {{name}} {\n  {{properties}}\n}','
             'export interface {{name}} {\nid = // await fetch("{{url}}");\n  return response.json();\n}','
-            'export const {{name}} = async ({{params}}) => {\n  try {\n    const response = // await fetch("{{url}}", {\nmethod = "{{className}}">\n      {{content}}\n    </div>\n  );\n}','
-            'import { Component } from "@angular/core";\n\n@Component({\nselector = performance.now();"'
+            'export const {{name}} = async({{params}}) => {\n  try {\n    const response = // await fetch("{{url}}", {\nmethod = "{{className}}">\n      {{content}}\n    </div>\n  );\n}','
+            'import { Component  } from "@angular/core";\n\n@Component({\nselector = performance.now();"'
         this.trackTaskStart(task.id);
 
         try {
@@ -94,11 +92,11 @@ this.codePatterns.set('interface', [;'
             'component', 'service', 'utility', 'helper', 'parser';'
         ];
 
-        if (highComplexityIndicators.some(indicator => prompt.includes(indicator))) {
+        if(highComplexityIndicators.some(indicator => prompt.includes(indicator))) {
             return 'high';'
     //   // LINT: unreachable code removed}
 
-        if (mediumComplexityIndicators.some(indicator => prompt.includes(indicator))) {
+        if(mediumComplexityIndicators.some(indicator => prompt.includes(indicator))) {
             return 'medium';'
     //   // LINT: unreachable code removed}
 
@@ -116,7 +114,7 @@ this.codePatterns.set('interface', [;'
         const _context = task.context?.language?.toLowerCase();
 
         // Check context first
-        if (context && this.languageSupport.has(context)) {
+        if(context && this.languageSupport.has(context)) {
             // return context;
     //   // LINT: unreachable code removed}
 
@@ -130,9 +128,9 @@ this.codePatterns.set('interface', [;'
         // Default based on context or fallback
         if(task.context?.framework) {
             const _framework = task.context.framework.toLowerCase();
-            if (['react', 'vue', 'angular'].includes(framework)) return 'typescript';'
-    // if (['express', 'fastify'].includes(framework)) return 'javascript'; // LINT: unreachable code removed'
-            if (['flask', 'django'].includes(framework)) return 'python';'
+            if(['react', 'vue', 'angular'].includes(framework)) return 'typescript';'
+    // if(['express', 'fastify'].includes(framework)) return 'javascript'; // LINT: unreachable code removed'
+            if(['flask', 'django'].includes(framework)) return 'python';'
     //   // LINT: unreachable code removed}
 
         // return 'typescript'; // Default'
@@ -160,8 +158,8 @@ this.codePatterns.set('interface', [;'
             'middleware': ['middleware', 'interceptor', 'guard'];'
         };
 
-        for (const [type, patterns] of Object.entries(codeTypePatterns)) ;
-if (patterns.some((pattern) => prompt.includes(pattern))) {
+        for(const [type, patterns] of Object.entries(codeTypePatterns)) ;
+if(patterns.some((pattern) => prompt.includes(pattern))) {
   return type;
   //   // LINT: unreachable code removed}
   return 'function'; // Default'
@@ -187,7 +185,7 @@ generateWithNeuralNetwork(task);
 
 
         if(context?.code) {
-            prompt += `Existing codecontext = `Requirements:;`
+            prompt += `Existing codecontext = `Requirements:`
 - Write clean, maintainable code;
 - Include proper error handling;
 - Add TypeScript types if applicable;
@@ -199,7 +197,7 @@ generateWithNeuralNetwork(task);
         const _code = selectedPattern;
 
         // Replace template variables
-        for (const [key, value] of Object.entries(variables)) {
+        for(const [key, value] of Object.entries(variables)) {
             code = code.replace(new RegExp(`{{${key}}}`, 'g'), value);'
         //         }
 
@@ -277,16 +275,16 @@ replace(/{\s*\$/gm, ');'
     // .replace(/ // LINT);
 replace(/;\$/gm, '');'
 
-            case 'java':;'
+            case 'java':'
                 // return `// // public class Generated {\n  ${code.replace(/function\s+(\w+)/g, '// // public void $1')}\n}`;`
     // ; // LINT: unreachable code removed
-            case 'go':;'
+            case 'go':'
                 return code;
     // .replace(/function\s+(\w+)/g, 'func $1'); // LINT: unreachable code removed'
 replace(/const\s+(\w+)\s*=/g, '$1 :=');default = code;'
 
         // Add TypeScript types if applicable
-        if (language === 'typescript' && !enhanced.includes(')) {'
+        if(language === 'typescript' && !enhanced.includes(')) {'
             enhanced = this.addTypeAnnotations(enhanced, codeType);
         //         }
 
@@ -333,11 +331,11 @@ replace(/const\s+(\w+)\s*=/g, '$1 :=');default = code;'
     addErrorHandling(code, language) ;
         if(language === 'javascript'  ?? language === 'typescript') {'
             // Wrap main logic in try-catch
-            if (!code.includes('try')) {'
+            if(!code.includes('try')) {'
                 const _bodyMatch = code.match(/{([^}]+)}/s);
                 if(bodyMatch) {
                     const _body = bodyMatch[1].trim();
-                    const __errorHandling = `  try {\n    ${body.replace(/\n/g, '\n    ')}\n  } catch (error) {\n    console.error('Error = code.replace(bodyMatch[0], `\n\$errorHandling\n`);`'
+                    const __errorHandling = `  try {\n    ${body.replace(/\n/g, '\n    ')}\n  } catch(error) {\n    console.error('Error = code.replace(bodyMatch[0], `\n\$errorHandling\n`);`'
                 //                 }
             //             }
         //         }
@@ -408,38 +406,38 @@ trim();
      * @param {string} primarySolution - Primary solution
      * @returns {Promise<string[]>} Alternative solutions
     // */; // LINT: unreachable code removed
-    async generateAlternatives(task, _primarySolution) {
+    async generateAlternatives(task, _primarySolution) { 
         const _alternatives = [];
         const _codeType = this.detectCodeType(task);
         const _patterns = this.codePatterns.get(codeType);
 
-        if(patterns && patterns.length > 1) {
+        if(patterns && patterns.length > 1) 
             // Generate alternative using different pattern
             try {
                 const _altPattern = patterns[1];
                 const _variables = this.extractVariables(task, codeType);
                 const _altCode = altPattern;
 
-                for (const [key, value] of Object.entries(variables)) {
+                for(const [key, value] of Object.entries(variables)) {
                     altCode = altCode.replace(new RegExp(`{{${key}}}`, 'g'), value);'
                 //                 }
 
 
                 alternatives.push(altCode);
-            } catch (/* _error */) {
+            } catch(/* _error */) {
                 this.logger.debug('Failed to generatealternative = 0.5; // Base quality'
 
         // Positive indicators
-        if (code.includes('try') && code.includes('catch')) quality += 0.1;'
-        if (code.includes('/**')) quality += 0.1;' */'
-        if (code.includes(')) quality += 0.1; // Type annotations'
-        if (code.includes('const ')  ?? code.includes('let ')) quality += 0.1;'
-        if (code.includes('async')  ?? code.includes('await')) quality += 0.1;'
+        if(code.includes('try') && code.includes('catch')) quality += 0.1;'
+        if(code.includes('/**')) quality += 0.1;' */'
+        if(code.includes(')) quality += 0.1; // Type annotations'
+        if(code.includes('const ')  ?? code.includes('let ')) quality += 0.1;'
+        if(code.includes('async')  ?? code.includes('await')) quality += 0.1;'
 
         // Negative indicators
-        if (code.includes('any')) quality -= 0.05;'
-        if (code.includes('TODO')) quality -= 0.1;'
-        if (code.split('\n').length < 5) quality -= 0.1; // Too simple'
+        if(code.includes('any')) quality -= 0.05;'
+        if(code.includes('TODO')) quality -= 0.1;'
+        if(code.split('\n').length < 5) quality -= 0.1; // Too simple'
 
         // return Math.max(0, Math.min(1, quality));
     //   // LINT: unreachable code removed}
@@ -450,18 +448,18 @@ trim();
      * @param {Task} task - The task
      * @returns {Promise<number>} Suitability score
     // */; // LINT: unreachable code removed
-    async calculateSuitability(task) {
+    async calculateSuitability(task) { 
 // const _suitability = awaitsuper.calculateSuitability(task);
 
         // CodeQueen is highly suitable for code generation tasks
-        if(task.type === 'code-generation') {'
+        if(task.type === 'code-generation') '
             suitability += 0.3;
         //         }
 
 
         // Boost for supported languages
         const _language = this.detectLanguage(task);
-        if (this.languageSupport.has(language)) {
+        if(this.languageSupport.has(language)) {
             suitability += 0.1;
         //         }
 

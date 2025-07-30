@@ -32,7 +32,7 @@ async function _runInteractiveWizard() {
       console.warn(chalk.cyan('� NextSteps = path.join(process.cwd(), '.hive-mind');'
 
   // Create directory if it doesn't exist'
-  if (!fs.existsSync(hiveMindDir)) {
+  if(!fs.existsSync(hiveMindDir)) {
     fs.mkdirSync(hiveMindDir, { recursive = {version = path.join(hiveMindDir, 'config.json');
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
@@ -43,7 +43,7 @@ async function _runInteractiveWizard() {
     db.serialize(() => {
       // Create tables
       db.run(`;`
-                CREATE TABLE IF NOT EXISTS swarms (;
+                CREATE TABLE IF NOT EXISTS swarms(;
                     id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
                     objective TEXT,
@@ -55,7 +55,7 @@ async function _runInteractiveWizard() {
             `);`
 
       db.run(`;`
-                CREATE TABLE IF NOT EXISTS agents (;
+                CREATE TABLE IF NOT EXISTS agents(;
                     id TEXT PRIMARY KEY,
                     swarm_id TEXT,
                     name TEXT NOT NULL,
@@ -64,36 +64,36 @@ async function _runInteractiveWizard() {
                     status TEXT DEFAULT 'idle',
                     capabilities TEXT,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (swarm_id) REFERENCES swarms(id);
+                    FOREIGN KEY(swarm_id) REFERENCES swarms(id);
                 );
             `);`
 
       db.run(`;`
-                CREATE TABLE IF NOT EXISTS tasks (;
+                CREATE TABLE IF NOT EXISTS tasks(;
                     id TEXT PRIMARY KEY,
                     swarm_id TEXT,
                     description TEXT,
                     status TEXT DEFAULT 'pending',
                     result TEXT,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (swarm_id) REFERENCES swarms(id);
+                    FOREIGN KEY(swarm_id) REFERENCES swarms(id);
                 );
             `);`
 
       db.run(`;`
-                CREATE TABLE IF NOT EXISTS collective_memory (;
+                CREATE TABLE IF NOT EXISTS collective_memory(;
                     id TEXT PRIMARY KEY,
                     swarm_id TEXT,
                     key TEXT NOT NULL,
                     value TEXT,
                     ttl INTEGER,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (swarm_id) REFERENCES swarms(id);
+                    FOREIGN KEY(swarm_id) REFERENCES swarms(id);
                 );
             `);`
 
       db.close((err) => {
-        if (err) reject(err);
+        if(err) reject(err);
         else resolve();
       });
     });
@@ -119,8 +119,8 @@ async function createSwarm() {
       db.serialize(() => {
         // Create swarm record
         const _insertSwarm = db.prepare(`;`
-                    INSERT INTO swarms (id, name, objective, status, queen_type, created_at, updated_at);
-                    VALUES (?, ?, ?, ?, ?, ?, ?);
+                    INSERT INTO swarms(id, name, objective, status, queen_type, created_at, updated_at);
+                    VALUES(?, ?, ?, ?, ?, ?, ?);
                 `);`
 
         insertSwarm.run(;
@@ -134,8 +134,8 @@ async function createSwarm() {
 
         // Create agents
         const _insertAgent = db.prepare(`;`
-                    INSERT INTO agents (id, swarm_id, name, type, role, status, capabilities, created_at);
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                    INSERT INTO agents(id, swarm_id, name, type, role, status, capabilities, created_at);
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?);
                 `);`
 
         // Create Queen
@@ -169,7 +169,7 @@ async function createSwarm() {
         insertAgent.finalize();
 
         db.close((err) => {
-          if (err) reject(err);
+          if(err) reject(err);
           else resolve();
         });
       });
@@ -177,7 +177,7 @@ async function createSwarm() {
 
     // return { success = {
       runInteractiveWizard, swarmId, queenId };
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     console.error('Error creating swarm);'
     // return { success, error: error.message };
     //   // LINT: unreachable code removed}

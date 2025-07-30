@@ -8,61 +8,55 @@
  * @fileoverview Main entry point for the Visionary Software Intelligence System
  * @version 2.0.0 - Decomposed Architecture
  */
-export type {
-  CodeFileData,
+export type { CodeFileData,
 PipelineConfig,
 PipelineResult,
-ProcessingOptions } from './core/pipeline-orchestrator''
+ProcessingOptions  } from './core/pipeline-orchestrator''
 
 // Core Components
-// export { PipelineOrchestrator } from './core/pipeline-orchestrator';'
-// export type {
-  ASTNode,
+// export { PipelineOrchestrator  } from './core/pipeline-orchestrator';'
+// export type { ASTNode,
 ClassData,
 CodeAnalysisResult,
 CodeMetrics,
 ComplexityAnalysis,
 DependencyAnalysis,
-FunctionData } from './engines/code-analysis-engine-modular''
+FunctionData  } from './engines/code-analysis-engine-modular''
 
 // Analysis Engines
-// export { CodeAnalysisEngine } from './engines/code-analysis-engine-modular';'
-// export type { OptimizationResult } from './engines/optimization-engine';'
-// export { OptimizationEngine } from './engines/optimization-engine';'
-// export type {
-  AntiPattern,
+// export { CodeAnalysisEngine  } from './engines/code-analysis-engine-modular';'
+// export type { OptimizationResult  } from './engines/optimization-engine';'
+// export { OptimizationEngine  } from './engines/optimization-engine';'
+// export type { AntiPattern,
 ArchitecturalPattern,
 ArchitectureAnalysis,
 CodeSmell,
 DesignPattern,
 LanguageIdiom,
-PatternDetectionResult } from './engines/pattern-detection-system''
+PatternDetectionResult  } from './engines/pattern-detection-system''
 
-// export { PatternDetectionSystem } from './engines/pattern-detection-system';'
-// export type {
-  QualityAssessment,
+// export { PatternDetectionSystem  } from './engines/pattern-detection-system';'
+// export type { QualityAssessment,
 QualityIssue,
-ValidationResult } from './engines/quality-assessment-engine''
+ValidationResult  } from './engines/quality-assessment-engine''
 
-// export { QualityAssessmentEngine } from './engines/quality-assessment-engine';'
-// export type {
-  BestPracticeRecommendation,
+// export { QualityAssessmentEngine  } from './engines/quality-assessment-engine';'
+// export type { BestPracticeRecommendation,
 MainRefactoring,
 MicroRefactoring,
 OptimizationRecommendation,
 PerformanceEnhancement,
 RefactoringRecommendations,
-SecurityImprovement } from './generators/refactoring-generator''
+SecurityImprovement  } from './generators/refactoring-generator''
 
 // Generators
-// export { RefactoringGenerator } from './generators/refactoring-generator';'
-// export type {
-  AnalysisReport,
+// export { RefactoringGenerator  } from './generators/refactoring-generator';'
+// export type { AnalysisReport,
 AnalyticsData,
-ReportingOptions } from './reporting/analytics-reporter''
+ReportingOptions  } from './reporting/analytics-reporter''
 
 // Reporting
-// export { AnalyticsReporter } from './reporting/analytics-reporter';'
+// export { AnalyticsReporter  } from './reporting/analytics-reporter';'
 /**  */
  * Main Visionary Software Intelligence Processor
  *
@@ -98,7 +92,7 @@ ReportingOptions } from './reporting/analytics-reporter''
    * This is the main entry point for code analysis. It orchestrates
    * the complete pipeline including:
    * - Code analysis and metrics calculation
-   * - Pattern detection (design patterns, anti-patterns, code smells)
+   * - Pattern detection(design patterns, anti-patterns, code smells)
    * - Architecture analysis and SOLID principles evaluation
    * - Quality assessment and scoring
    * - Refactoring recommendations generation
@@ -174,8 +168,7 @@ ReportingOptions } from './reporting/analytics-reporter''
     // */; // LINT: unreachable code removed
 // export async function comprehensiveAnalysis(
   codeFiles): Promise<AnalysisReport> {
-  const _processor = new VisionarySoftwareIntelligenceProcessor({
-    enableAnalytics});
+  const _processor = new VisionarySoftwareIntelligenceProcessor({ enableAnalytics });
 
   try {
 // // await processor.initialize();

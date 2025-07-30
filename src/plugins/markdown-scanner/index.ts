@@ -3,20 +3,20 @@
  * Validates markdown files using markdownlint and checks for standard headers;
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFile  } from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
-import { lint } from 'markdownlint/sync';
+import { lint  } from 'markdownlint/sync';
 
 export class MarkdownScannerPlugin {
   constructor(_config = {}) {
     this.config = {filePatterns = new Map();
   //   }
-  async initialize() {
+  async initialize() { 
     console.warn('� Markdown Scanner Plugin initialized');
     this.setupDefaultRules();
   //   }
-  setupDefaultRules() {
+  setupDefaultRules() 
     // Standard markdown rules
     this.markdownRules.set('frontmatter', {description = > this.checkFrontmatter(frontmatter);
   //   }
@@ -54,7 +54,7 @@ scanMarkdownFiles((options =
 // )
 suggestions.push(...analysis.issues)
 this.updateStats(stats, analysis)
-} catch (error)
+} catch(error)
 // {
         console.warn(`⚠ Could not analyze ${file});`
         suggestions.push({id = [];
@@ -94,7 +94,7 @@ this.updateStats(stats, analysis)
       for(const _result of fileResults) {
         issues.push({id = [];
 
-    if (!frontmatter  ?? Object.keys(frontmatter).length === 0) {
+    if(!frontmatter  ?? Object.keys(frontmatter).length === 0) {
       if(this.config.requireFrontmatter) {
         issues.push({id = [];
     const _lines = content.split('\n');
@@ -125,29 +125,29 @@ this.updateStats(stats, analysis)
       const _current = headings[i];
       const _previous = headings[i - 1];
 
-      // Check for heading level jumps (e.g., H1 to H3)
+      // Check for heading level jumps(e.g., H1 to H3)
       if(current.level > previous.level + 1) {
         issues.push({id = [];
     const _linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     let match;
 
-    while ((match = linkRegex.exec(content)) !== null) {
+    while((match = linkRegex.exec(content)) !== null) {
 
       const _linkUrl = match[2];
 
-      // Skip external links for now (would need HTTP requests)
-      if (linkUrl.startsWith('http')) {
+      // Skip external links for now(would need HTTP requests)
+      if(linkUrl.startsWith('http')) {
         continue;
       //       }
 
 
       // Check internal links
-      if (linkUrl.startsWith('./')  ?? linkUrl.startsWith('../')  ?? !linkUrl.includes(')) {'
+      if(linkUrl.startsWith('./')  ?? linkUrl.startsWith('../')  ?? !linkUrl.includes(')) {'
         const _fullPath = path.resolve(path.dirname(filepath), linkUrl);
 
         try {
 // // await readFile(fullPath);
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           issues.push({id = path.basename(filepath, '.md');
 
   // 
@@ -158,7 +158,7 @@ this.updateStats(stats, analysis)
    * Count headings in content;
    */;
   countHeadings(content) ;
-    // return (content.match(/^#{1,6}\s+/gm)  ?? []).length;
+    // return(content.match(/^#{1,6}\s+/gm)  ?? []).length;
     // ; // LINT: unreachable code removed
   /**
    * Update statistics;

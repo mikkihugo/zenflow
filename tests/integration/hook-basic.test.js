@@ -2,7 +2,7 @@
  * Basic hook functionality tests;
  */
 
-import { describe, expect } from '@jest/globals';
+import { describe, expect  } from '@jest/globals';
 
 describe('Hook Basic Tests', () => {
   it('should pass basic test', () => {

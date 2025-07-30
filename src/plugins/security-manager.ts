@@ -3,7 +3,7 @@
  * Comprehensive security system for plugin sandboxing, permission management, and threat detection;
  */
 
-import { Worker } from 'node:worker_threads';
+import { Worker  } from 'node:worker_threads';
 // // interface SecurityPolicy {allowedOperations = new Map() {}
 // private;
 // violations = []
@@ -24,7 +24,7 @@ import { Worker } from 'node:worker_threads';
 // {
   super();
   this.config = {isolateMemory = // await this.validatePluginSecurity(plugin, manifest, config);
-  if (!securityValidation.isValid) {
+  if(!securityValidation.isValid) {
     throw new Error(`Security validationfailed = this.createSecurityPolicy(manifest, config);`
       this.securityPolicies.set(manifest.name, policy);
 
@@ -36,25 +36,25 @@ import { Worker } from 'node:worker_threads';
       this.monitorWorkerSecurity(worker, manifest.name);
 
       this.emit('plugin-sandboxed', {pluginName = this.sandboxWorkers.get(pluginName);
-    if (worker) {
+    if(worker) {
       try {
 // // await worker.terminate();
         this.sandboxWorkers.delete(pluginName);
         this.securityPolicies.delete(pluginName);
 
         this.emit('sandbox-destroyed', { pluginName });
-      } catch (error = [];
+      } catch(error = [];
     const _riskScore = 0;
 
-    for (const permission of requestedPermissions) {
+    for(const permission of requestedPermissions) {
       const _validation = this.validateSinglePermission(permission);
-      if (!validation.isValid) {
+      if(!validation.isValid) {
         errors.push(`Permission ${permission}: ${validation.errors.join(', ')}`);
   //   }
   riskScore += this.calculatePermissionRisk(permission);
 // }
 // Check if risk score exceeds threshold
-if (riskScore > 75) {
+if(riskScore > 75) {
   errors.push(`Plugin risk score too high = {pluginName = === 0 ? requestedPermissions );`
     this.emit('permission-audit', audit);
 
@@ -69,7 +69,7 @@ if (riskScore > 75) {
 
 
   // private calculatePermissionRisk(permission = {
-      // System permissions (highest risk)
+      // System permissions(highest risk)
       'system = [];'
     const _warnings = [];
 
@@ -85,7 +85,7 @@ if (riskScore > 75) {
       warnings.push(...threatScan.warnings);
 
       // 3. Validate permissions
-      if (config.permissions && config.permissions.length > 0) {
+      if(config.permissions && config.permissions.length > 0) {
 // const _permissionValidation = awaitthis.validatePermissions(manifest.name, config.permissions);
         errors.push(...permissionValidation.errors);
         warnings.push(...permissionValidation.warnings);
@@ -103,20 +103,20 @@ if (riskScore > 75) {
     const _warnings = [];
 
     // Check for suspicious fields
-    if (manifest.name.includes('..')  ?? manifest.name.includes('/')) {
+    if(manifest.name.includes('..')  ?? manifest.name.includes('/')) {
       errors.push('Plugin name contains path traversal characters');
     //     }
 
 
-    if (manifest.version && !/^\d+\.\d+\.\d+/.test(manifest.version)) {
+    if(manifest.version && !/^\d+\.\d+\.\d+/.test(manifest.version)) {
       warnings.push('Plugin version format appears invalid');
     //     }
 
 
     // Check for suspicious scripts
-    if (manifest.scripts) {
-      for (const [scriptName, scriptCommand] of Object.entries(manifest.scripts)) {
-        if (typeof scriptCommand === 'string' && this.containsSuspiciousCommands(scriptCommand)) {
+    if(manifest.scripts) {
+      for(const [scriptName, scriptCommand] of Object.entries(manifest.scripts)) {
+        if(typeof scriptCommand === 'string' && this.containsSuspiciousCommands(scriptCommand)) {
           errors.push(`Script '${scriptName}' contains suspicious commands`);
         //         }
       //       }
@@ -146,18 +146,18 @@ try {
       // Convert plugin to searchable string
       const _pluginSource = plugin.toString();
 
-      for (const signature of this.threatSignatures) {
-        if (signature.pattern.test(pluginSource)) {
+      for(const signature of this.threatSignatures) {
+        if(signature.pattern.test(pluginSource)) {
           const __message = `Threatdetected = === 0, errors, warnings };`
 
-    } catch (error = [];
+    } catch(error = [];
     const _warnings = [];
 
-    if (config.resourceLimits) {
+    if(config.resourceLimits) {
       const _limits = config.resourceLimits;
 
       // Memory limits
-      if (limits.memory && limits.memory > 1024) { // > 1GB
+      if(limits.memory && limits.memory > 1024) { // > 1GB
         warnings.push(`High memory limitrequested = === 0, errors, _warnings };`
   //   }
 
@@ -186,7 +186,7 @@ getWorkerScript();
 private;
 monitorWorkerSecurity((_worker) => {
   // Monitor worker messages for security violations
-  if (message.type === 'security-violation') {
+  if(message.type === 'security-violation') {
     this.recordSecurityViolation(pluginName, message.violation, message.severity, message.details);
   //   }
 });
@@ -196,15 +196,15 @@ worker.on('error', (_error) => {
         pluginName,
         'worker-error',
         'high',_error => {
-      if (_code !== 0) {
+      if(_code !== 0) {
         this.recordSecurityViolation(;
           pluginName,
           'worker-abnormal-exit',
           'medium',exitCode = {
       'filesystem = [];'
-    for (const permission of permissions) {
+    for(const permission of permissions) {
       const _ops = operationMap[permission];
-      if (ops) {
+      if(ops) {
         operations.push(...ops);
       //       }
     //     }
@@ -222,36 +222,36 @@ worker.on('error', (_error) => {
     this.emit('security-violation', violationRecord);
 
     // Take action based on severity
-    if (violationRecord.blocked) {
+    if(violationRecord.blocked) {
       this.quarantinePlugin(pluginName, violationRecord);
     //     }
   //   }
 
 
   // private async quarantinePlugin(pluginName = this.sandboxWorkers.get(pluginName);
-      if (worker) {
+      if(worker) {
 // await worker.terminate();
         this.sandboxWorkers.delete(pluginName);
       //       }
 
 
       this.emit('plugin-quarantined', { pluginName, violation });
-    } catch (_error =>
-      if (this.violations.length > 1000) {
+    } catch(_error =>
+      if(this.violations.length > 1000) {
         this.violations = this.violations.slice(-1000);
       }, 300000); // Every 5 minutes
 
-    // Clean up old audits (keep last 500)
+    // Clean up old audits(keep last 500)
     setInterval(() => {
-      if (this.permissionAudits.length > 500) {
+      if(this.permissionAudits.length > 500) {
         this.permissionAudits = this.permissionAudits.slice(-500);
       //       }
     }, 300000); // Every 5 minutes
 
     // Monitor worker health
     setInterval(() => {
-      for (const [pluginName, worker] of this.sandboxWorkers) {
-        if (worker.threadId === -1) { // Worker has terminated
+      for(const [pluginName, worker] of this.sandboxWorkers) {
+        if(worker.threadId === -1) { // Worker has terminated
           this.recordSecurityViolation(;
             pluginName,
             'worker-unexpected-termination',

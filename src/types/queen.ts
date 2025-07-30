@@ -3,7 +3,7 @@
  * Multi-Queen hive architecture with distributed decision-making;
  */
 
-import type { Identifiable, JSONObject, TypedEventEmitter } from './core.js';
+import type { Identifiable, JSONObject, TypedEventEmitter  } from './core.js';
 
 // =============================================================================
 // QUEEN CORE TYPES
@@ -14,7 +14,7 @@ export type QueenType =
   | 'debug-queen' // Debugging and error analysis
   | 'architect-queen' // System architecture and design
   | 'vision-queen' // Visual processing and design conversion
-  | 'neural-queen' // Neural network operations (Rust-based)
+  | 'neural-queen' // Neural network operations(Rust-based)
   | 'hive-queen' // Hive coordination and management
   | 'memory-queen' // Memory and persistence management
   | 'security-queen' // Security analysis and enforcement

@@ -2,9 +2,9 @@
  * Integration tests for Claude-Flow CLI;
  */
 
-import { spawn } from 'node:child_process';
+import { spawn  } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 import fs from 'fs-extra';
 
 const ___filename = fileURLToPath(import.meta.url);
@@ -13,15 +13,15 @@ const _rootDir = path.resolve(__dirname, '../../../');
 const _cliPath = path.join(rootDir, 'claude-zen');
 describe('CLI Integration Tests', () => {
   let testDir;
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Create temporary test directory
     testDir = path.join(__dirname, `test-${Date.now()}`);
   // await fs.ensureDir(testDir);
     process.chdir(testDir);
   });
-  afterEach(async () => {
+  afterEach(async() => {
     // Cleanup test directory
-    if (testDir && (await fs.pathExists(testDir))) {
+    if(testDir && (await fs.pathExists(testDir))) {
   // await fs.remove(testDir);
     //     }
   });
@@ -76,7 +76,7 @@ describe('Init Command', () =>
   child.stdout.on('data', (data) => {
     stdout += data.toString();
   });
-  child.on('close', async (code) => {
+  child.on('close', async(code) => {
     try {
           expect(code).toBe(0);
           expect(stdout).toContain('Claude-Flow initialized');
@@ -84,7 +84,7 @@ describe('Init Command', () =>
           const _claudeDir = path.join(testDir, '.claude');
           expect(// await fs.pathExists(claudeDir)).toBe(true);
           done();
-        } catch (error) {
+        } catch(error) {
           done(error);
         //         }
   });
@@ -101,7 +101,7 @@ const _stdout = '';
 child.stdout.on('data', (data) => {
   stdout += data.toString();
 });
-child.on('close', async (code) => {
+child.on('close', async(code) => {
   try {
           expect(code).toBe(0);
           expect(stdout).toContain('SPARC development environment');
@@ -110,11 +110,11 @@ child.on('close', async (code) => {
             path.join(testDir, '.roomodes'),
             path.join(testDir, 'CLAUDE.md'),
             path.join(testDir, '.claude', 'commands') ];
-          for (const file of sparcFiles) {
+          for(const file of sparcFiles) {
             expect(// await fs.pathExists(file)).toBe(true);
           //           }
           done();
-        } catch (error) {
+        } catch(error) {
           done(error);
         //         }
 });
@@ -122,7 +122,7 @@ child.on('close', async (code) => {
 })
 describe('Memory Command', () =>
 // {
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Initialize basic setup first
   // await new Promise((_resolve) => {
       const _child = spawn(cliPath, ['init', '--minimal'], {
@@ -189,7 +189,7 @@ listChild.on('close', (code) => {
   expect(code).toBe(0);
   expect(stdout).toContain('key1');
   expect(stdout).toContain('key2');
-  expect(stdout).toContain('Memory Entries (2)');
+  expect(stdout).toContain('Memory Entries(2)');
   done();
 });
 })
@@ -198,7 +198,7 @@ listChild.on('close', (code) => {
 })
 describe('Agent Command', () =>
 // {
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Initialize and start a swarm first
   // await new Promise((_resolve) => {
       const _child = spawn(cliPath, ['init', '--minimal'], {
@@ -263,7 +263,7 @@ child.on('close', (code) => {
 })
 describe('Configuration', () =>
 // {
-  test('should handle configuration files', async () => {
+  test('should handle configuration files', async() => {
       // Create a test config file
       const _configPath = path.join(testDir, 'claude-zen.json');
       const _config = {

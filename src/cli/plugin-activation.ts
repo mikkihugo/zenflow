@@ -3,7 +3,7 @@
  * This file handles the activation and registration of all valuable plugins
  */
 
-import { PluginManager } from '../plugins/plugin-manager.js';'
+import { PluginManager  } from '../plugins/plugin-manager.js';'
 
 // All plugins are imported dynamically to handle missing ones gracefully
 
@@ -37,7 +37,7 @@ const _globalPluginManager = null;
         throw new Error(`Plugin class '${plugin.className}' not found in ${plugin.importPath}`);`
       //       }
 // // await pluginManager.registerPlugin(plugin.name, PluginClass, plugin.config);
-    } catch (error) {
+    } catch(error) {
       console.warn(`⚠ Failed to register plugin '${plugin.name}');'`
 
       // Continue with other plugins even if one fails
@@ -130,7 +130,7 @@ forEach(plugin => {
       if(instance && instance.getHealth && typeof instance.getHealth === 'function') {'
         try {
           pluginHealth.details = // await instance.getHealth();
-        } catch (error) {
+        } catch(error) {
           pluginHealth.status = 'unhealthy';'
           pluginHealth.error = error.message;
         //         }

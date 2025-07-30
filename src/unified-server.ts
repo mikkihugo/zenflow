@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 /**
  * � UNIFIED CLAUDE-ZEN SERVER;
- * Single server combining API + MCP + WebSocket on configurable port (default 3000);
+ * Single server combining API + MCP + WebSocket on configurable port(default 3000);
  *;
- * Features:;
+ * Features:
  * - REST API endpoints;
- * - MCP (Model Context Protocol) server;
+ * - MCP(Model Context Protocol) server;
  * - WebSocket real-time communication;
  * - Neural network integration via ruv-FANN;
- * - Database orchestration (SQLite + LanceDB + Kuzu);
+ * - Database orchestration(SQLite + LanceDB + Kuzu);
  * - Multi-Queen hive-mind coordination
  */
 
-import { createServer } from 'node:http';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { createServer  } from 'node:http';
+import { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 import cors from 'cors';
-import express, { type Request, type Response } from 'express';
-import { WebSocketServer } from 'ws';
+import express, { type Request, type Response  } from 'express';
+import { WebSocketServer  } from 'ws';
 import config from '../config/default.js';
 
 const ___filename = fileURLToPath(import.meta.url);
@@ -90,12 +90,11 @@ this.app.use((req, _res, next) =>
 // {
   // Health check
   this.app.get('/', (_req, res) => {
-    res.json({
-        name);
+    res.json({ name);
     : 'integrated',
 
     uptime: process.uptime(),
-    timestamp: new Date().toISOString() });
+    timestamp: new Date().toISOString()  });
 // }
 // )
 // System status
@@ -119,7 +118,7 @@ uptime: process.uptime(),
 timestamp: new Date().toISOString() })
 })
 // MCP endpoints
-if (this.options.enableMCP) {
+if(this.options.enableMCP) {
   this.app.get('/mcp/tools', (_req, res) => {
     res.json({
           tools);
@@ -127,7 +126,7 @@ if (this.options.enableMCP) {
 // )
 // }
 // Neural endpoints
-if (this.options.enableNeural) {
+if(this.options.enableNeural) {
   this.app.get('/neural/status', (_req, res) => {
     res.json({
           status);
@@ -154,7 +153,7 @@ this.app.get('/health', (_req, res) =>
 // private setupWebSocket() {}
 : void
 // {
-  if (!this.options.enableWebSocket ?? !this.server) return;
+  if(!this.options.enableWebSocket ?? !this.server) return;
   // ; // LINT: unreachable code removed
   this.wss = new WebSocketServer({ server);
   this.wss.on('connection', (ws, req) => {
@@ -166,12 +165,11 @@ this.app.get('/health', (_req, res) =>
 
           // Echo back for now - integrate with swarm orchestration
           ws.send(;
-            JSON.stringify({
-              type: 'response',
+            JSON.stringify({ type: 'response',
               data,
-              timestamp: new Date().toISOString() });
+              timestamp: new Date().toISOString()  });
           );
-        } catch (error) {
+        } catch(error) {
           console.error('❌ WebSocket message error);'
         //         }
   });
@@ -194,30 +192,29 @@ console.warn(' WebSocket server enabled')
 /**
  * Initialize components
  */
-// private // async
-initializeComponents() {}
+// private // async initializeComponents() { }
 : Promise<void>
-// {
+// 
   try {
       // Initialize database connections
       console.warn('� Initializing databases...');
 
-      // Initialize neural engine (ruv-FANN integration)
-      if (this.options.enableNeural) {
+      // Initialize neural engine(ruv-FANN integration)
+      if(this.options.enableNeural) {
         console.warn('🧠 Initializing ruv-FANN neural engine...');
         // Integration point for ruv-FANN
       //       }
 
 
       // Initialize MCP server
-      if (this.options.enableMCP) {
+      if(this.options.enableMCP) {
         console.warn('� Initializing MCP server...');
         // MCP server integration
       //       }
 
 
       console.warn('✅ All components initialized');
-    } catch (error) {
+    } catch(error) {
       console.error('❌ Component initialization failed);'
       throw error;
     //     }
@@ -229,7 +226,7 @@ async;
 start();
 : Promise<void>
 // {
-  if (this.isRunning) {
+  if(this.isRunning) {
     console.warn('⚠ Server is already running');
     return;
     //   // LINT: unreachable code removed}
@@ -260,7 +257,7 @@ start();
           reject(error);
         });
       });
-    } catch (error) {
+    } catch(error) {
       console.error('❌ Failed to start server);'
       throw error;
     //     }
@@ -271,20 +268,20 @@ start();
   async;
   stop();
   : Promise<void>
-  if (!this.isRunning) {
+  if(!this.isRunning) {
     console.warn('⚠ Server is not running');
     return;
     //   // LINT: unreachable code removed}
     try {
       // Close WebSocket server
-      if (this.wss) {
+      if(this.wss) {
         this.wss.close();
         this.wss = null;
       //       }
 
 
       // Close HTTP server
-      if (this.server) {
+      if(this.server) {
 // // await new Promise<void>((resolve) => {
           this.server?.close(() => {
             this.server = null;
@@ -296,7 +293,7 @@ start();
 
       this.isRunning = false;
       console.warn('� Claude-Zen Unified Server stopped');
-    } catch (error) {
+    } catch(error) {
       console.error('❌ Error stopping server);'
       throw error;
     //     }
@@ -316,14 +313,14 @@ async function main() {
   const _args = process.argv.slice(2);
   const _portArg = args.find((arg) => arg.startsWith('--port='));
   const _port = portArg ? parseInt(portArg.split('=')[1], 10) ;
-  const _server = new UnifiedServer({ port });
+  const _server = new UnifiedServer({ port  });
   // Graceful shutdown
-  const _shutdown = async (signal) => {
+  const _shutdown = async(signal) => {
     console.warn(`\n� Received ${signal}, shutting down gracefully...`);
     try {
 // await server.stop();
       process.exit(0);
-    } catch (error) {
+    } catch(error) {
       console.error('❌ Error during shutdown);'
       process.exit(1);
     //     }
@@ -332,7 +329,7 @@ async function main() {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   try {
 // // await server.start();
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Failed to start server);'
     process.exit(1);
   //   }
@@ -342,7 +339,7 @@ async function main() {
 // export { UnifiedServer };
 
 // Run if called directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   main().catch((error) => {
     console.error('❌ Unhandled error);'
     process.exit(1);

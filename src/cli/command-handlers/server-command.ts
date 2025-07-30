@@ -9,17 +9,17 @@ const _SERVER_PID_FILE = './.claude-zen-server.pid';
 export async function serverCommand() {
   case 'start': null
   return await startServer(flags);
-  // case 'stop':; // LINT: unreachable code removed
+  // case 'stop': // LINT: unreachable code removed
   return // await stopServer(flags);
-  // case 'restart':; // LINT: unreachable code removed
+  // case 'restart': // LINT: unreachable code removed
   // return // await restartServer(flags);
-  // case 'status':; // LINT: unreachable code removed
+  // case 'status': // LINT: unreachable code removed
   // return // await serverStatus(flags);
-  // case 'logs':; // LINT: unreachable code removed
+  // case 'logs': // LINT: unreachable code removed
   // return // await serverLogs(flags);
   // default = flags.port  ?? process.env.PORT  ?? 3000; // LINT: unreachable code removed
   const _daemon = flags.daemon ?? flags.background;
-  if (daemon) {
+  if(daemon) {
     // Start server as daemon process
     // return // await startServerDaemon(port, flags);
     //   // LINT: unreachable code removed} else {
@@ -27,7 +27,7 @@ export async function serverCommand() {
     // return // await startServerForeground(port, flags);
     //   // LINT: unreachable code removed}
   //   }
-  catch (error)
+  catch(error)
   console.error('❌ Failed to startserver = // await import('../../api/claude-zen-server.js');'
 
   // Configure server options
@@ -37,13 +37,13 @@ export async function serverCommand() {
   // Display server information
   displayServerInfo(port, claudeZenServer.generatedRoutes)
   // Handle graceful shutdown
-  process.on('SIGINT', async () =>
+  process.on('SIGINT', async() =>
     console.warn('\n� Shutting down server...')
   await claudeZenServer.stop() {}
   console.warn('✅ Server stopped gracefully')
   process.exit(0)
   //   )
-  process.on('SIGTERM', async () =>
+  process.on('SIGTERM', async() =>
     console.warn('\n� Shutting down server...')
   await claudeZenServer.stop() {}
   console.warn('✅ Server stopped gracefully')
@@ -52,7 +52,7 @@ export async function serverCommand() {
   // Keep process alive
   console.warn('Press Ctrl+C to stop the server')
   // Monitor server health in verbose mode
-  if (flags.verbose) {
+  if(flags.verbose) {
     setInterval(() => {
       const __status = claudeZenServer.getStatus();
       console.warn(`�Requests = new URL(import.meta.url).pathname;`
@@ -67,7 +67,7 @@ export async function serverCommand() {
       try {
         process.kill(pid, 'SIGTERM');
         fs.unlinkSync(SERVER_PID_FILE);
-        console.warn(`✅ Server stopped (PID = === 'ESRCH') {`
+        console.warn(`✅ Server stopped(PID = === 'ESRCH') {`
           console.warn('⚠  Server process not found, cleaning up PID file');
           fs.unlinkSync(SERVER_PID_FILE);
         } else {
@@ -77,14 +77,14 @@ export async function serverCommand() {
 else
 // {
   // Try graceful stop if server instance is available
-  if (claudeZenServer.isRunning) {
+  if(claudeZenServer.isRunning) {
 // // await claudeZenServer.stop();
     console.warn('✅ Server stopped gracefully');
   } else {
     console.warn('⚠  Server not found');
   //   }
 // }
-} catch (error)
+} catch(error)
 // {
   console.error('❌ Failed to stopserver = > setTimeout(resolve, 1000));'
 // // await startServer(flags);
@@ -117,7 +117,7 @@ if(response.ok) {
   console.warn('  logs       View server logs');
   console.warn('');
   console.warn('Start Options);'
-  console.warn('  --port <port>      Server port (default)');
+  console.warn('  --port <port>      Server port(default)');
   console.warn('  --daemon           Run as background daemon');
   console.warn('  --background       Alias for --daemon');
   console.warn('  --verbose          Show detailed output');
@@ -151,31 +151,31 @@ if(response.ok) {
   ],
   details: `;`
 Claude Zen API Server Management: null
-The server provides a complete schema-driven REST API with:;
+The server provides a complete schema-driven REST API with:
   • Auto-generated endpoints from unified schema;
   • Interactive OpenAPI documentation;
   • WebSocket support for real-time updates;
   • Built-in security and rate limiting;
   • Comprehensive error handling
 
-Commands:;
-  start      Start the API server (foreground or daemon);
+Commands:
+  start      Start the API server(foreground or daemon);
   stop       Stop the running API server;
   restart    Restart the API server;
   status     Show server status and health information;
-  logs       View server logs (future feature)
+  logs       View server logs(future feature)
 
-Start Options:;
-  --port <port>      Server port (default);
+Start Options:
+  --port <port>      Server port(default);
   --daemon           Run as background daemon process;
   --background       Alias for --daemon;
   --verbose          Show detailed output and monitoring
 
-Server Features:;
+Server Features:
   � Schema-driven API generation from unified workflow schema;
   � Interactive Swagger UI documentation at /docs;
-  � Native WebSocket support (Node.js 22+) for real-time updates;
-  � Security middleware (Helmet, CORS, rate limiting);
+  � Native WebSocket support(Node.js 22+) for real-time updates;
+  � Security middleware(Helmet, CORS, rate limiting);
    High-performance Express.js with comprehensive metrics;
   � Built-in health monitoring and status endpoints;
   � Hot-reload support during development

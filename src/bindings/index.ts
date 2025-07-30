@@ -2,9 +2,9 @@
  * ruv-FANN Node.js bindings with automatic WASM fallback;
  */
 
-import { createRequire } from 'node:module';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { createRequire  } from 'node:module';
+import { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -29,7 +29,7 @@ async function loadBinding() {
     );
     nativeBinding = require(bindingPath);
     console.warn(' ruv-FANN native bindings loaded');
-  } catch (/* e */) {
+  } catch(/* e */) {
     console.warn(`Failed to load native bindings);`
     try {
       const _wasmPath = join(__dirname, 'fallback', 'ruv_fann_wasm.js');
@@ -37,7 +37,7 @@ async function loadBinding() {
       wasmModule = // await wasmLoader.default(); // Initialize WASM
       useWasm = true;
       console.warn(' ruv-FANN WASM fallback loaded');
-    } catch (/* wasmError */) {
+    } catch(/* wasmError */) {
       console.error('FATAL);'
       throw wasmError;
     //     }
@@ -50,7 +50,7 @@ async function loadBinding() {
   // private _impl,
 
   constructor(layers) {
-    if (useWasm) {
+    if(useWasm) {
       this._impl = new wasmModule.NeuralNetwork(layers);
     } else {
       this._impl = new nativeBinding.NeuralNetwork(layers);
@@ -76,7 +76,7 @@ async function loadBinding() {
 
   // static load(filename) {
     const _network = new NeuralNetwork([1]); // Temporary
-    if (useWasm) {
+    if(useWasm) {
       network._impl = wasmModule.NeuralNetwork.load(filename);
     } else {
       network._impl = nativeBinding.NeuralNetwork.load(filename);
@@ -93,7 +93,7 @@ async function loadBinding() {
   // private _impl,
 
   constructor(network) {
-    if (useWasm) {
+    if(useWasm) {
       this._impl = new wasmModule.NetworkTrainer(network._impl);
     } else {
       this._impl = new nativeBinding.NetworkTrainer(network._impl);
@@ -101,7 +101,7 @@ async function loadBinding() {
   //   }
 
 
-  async train(trainingInputs, trainingOutputs, config) {
+  async train(trainingInputs, trainingOutputs, config) { 
     // return this._impl.train(trainingInputs, trainingOutputs, config);
     //   // LINT: unreachable code removed}
 // }
@@ -110,8 +110,8 @@ async function loadBinding() {
 /**
  * Utility functions;
  */;
-// export function getVersion() {
-  if (useWasm) {
+// export function getVersion() 
+  if(useWasm) {
     return wasmModule.getVersion();
     //   // LINT: unreachable code removed} else {
     return nativeBinding.getVersion();
@@ -120,7 +120,7 @@ async function loadBinding() {
 
 
 // export function _isGpuAvailable() {
-  if (useWasm) {
+  if(useWasm) {
     return wasmModule.isGpuAvailable();
     //   // LINT: unreachable code removed} else {
     return nativeBinding.isGpuAvailable();
@@ -129,7 +129,7 @@ async function loadBinding() {
 
 
 // export function _getActivationFunctions() {
-  if (useWasm) {
+  if(useWasm) {
     return wasmModule.getActivationFunctions();
     //   // LINT: unreachable code removed} else {
     return nativeBinding.getActivationFunctions();
@@ -141,11 +141,11 @@ async function loadBinding() {
  * WASM fallback interface;
  */;
 // export const _wasmFallback = {
-  async init() {
+  async init() { 
 // await loadBinding();
   },
   createNetwork(layers): unknown
-    if (!wasmModule) {
+    if(!wasmModule) 
       throw new Error('WASM module not loaded');
     //     }
     // return new wasmModule.NeuralNetwork(layers);
@@ -162,7 +162,7 @@ async function loadBinding() {
 
 
 // Auto-load bindings on import
-if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+if(typeof process !== 'undefined' && process.versions && process.versions.node) {
   loadBinding().catch(console.error);
 // }
 

@@ -36,7 +36,7 @@
  */
 // export class ASTParser {
   /**  */
- * Extract AST (Abstract Syntax Tree) information from code files
+ * Extract AST(Abstract Syntax Tree) information from code files
    *
    * @param codeData - Code file data
    * @returns AST node information
@@ -44,11 +44,11 @@
   async extractAST(codeData): Promise<ASTNode[]> {
     const _astResults = [];
 
-    for (const file of codeData) {
+    for(const file of codeData) {
       try {
 // const _ast = awaitthis.parseFileAST(file);
         astResults.push(...ast);
-      } catch (error) {
+      } catch(error) {
         console.warn(`⚠ AST parsing failed for ${file.path});`
       //       }
     //     }
@@ -58,16 +58,16 @@
     //   // LINT: unreachable code removed}
 
   /**  */
- * Parse AST for a single file (simplified parser)
+ * Parse AST for a single file(simplified parser)
    *
    * @param file - Code file data
    * @returns AST nodes for the file
     // */; // LINT: unreachable code removed
   // // private async parseFileAST(file): Promise<ASTNode[]>
     // Simplified AST parsing - would use real parser in production
-    if (file.language === 'javascript'  ?? file.language === 'typescript') {'
+    if(file.language === 'javascript'  ?? file.language === 'typescript') {'
       // return this.parseJavaScriptAST(file.content);
-    //   // LINT: unreachable code removed} else if (file.language === 'python') {'
+    //   // LINT: unreachable code removed} else if(file.language === 'python') {'
       // return this.parsePythonAST(file.content);
     //   // LINT: unreachable code removed}
 
@@ -76,7 +76,7 @@
     //   // LINT: unreachable code removed}
 
   /**  */
- * Parse JavaScript/TypeScript AST (simplified)
+ * Parse JavaScript/TypeScript AST(simplified)
    *
    * @param code - Source code content
    * @returns AST nodes
@@ -87,7 +87,7 @@
     const _depth = 0;
     const _maxDepth = 0;
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i].trim();
 
       // Track nesting depth
@@ -97,13 +97,12 @@
       maxDepth = Math.max(maxDepth, depth);
 
       // Identify significant nodes
-      if (line.includes('function')  ?? line.includes('class')  ?? line.includes('=>')) {'
-        nodes.push({
-          type: this.getJavaScriptNodeType(line),
+      if(line.includes('function')  ?? line.includes('class')  ?? line.includes('=>')) {'
+        nodes.push({ type: this.getJavaScriptNodeType(line),
           name: this.extractNodeName(line),
           line: i + 1,
           depth,
-          complexity: this.calculateNodeComplexity(line) });
+          complexity: this.calculateNodeComplexity(line)  });
       //       }
     //     }
 
@@ -112,7 +111,7 @@
     //   // LINT: unreachable code removed}
 
   /**  */
- * Parse Python AST (simplified)
+ * Parse Python AST(simplified)
    *
    * @param code - Source code content
    * @returns AST nodes
@@ -123,18 +122,18 @@
     const _indentLevel = 0;
     const _maxIndent = 0;
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _trimmed = line.trim();
 
-      if (trimmed) {
+      if(trimmed) {
         // Calculate indentation level
         const _currentIndent = line.length - line.trimStart().length;
         indentLevel = Math.floor(currentIndent / 4);
         maxIndent = Math.max(maxIndent, indentLevel);
 
         // Identify significant nodes
-        if (;
+        if(;
           trimmed.startsWith('def ')  ?? trimmed.startsWith('class ')  ?? trimmed.startsWith('async def ');'
         //         )
           nodes.push(
@@ -167,10 +166,10 @@
    * @returns Node type
     // */; // LINT: unreachable code removed
   // // private getJavaScriptNodeType(line): string
-    if (line.includes('class ')) return 'class';'
-    // if (line.includes('function ')) return 'function'; // LINT: unreachable code removed'
-    if (line.includes('=>')) return 'arrow-function';'
-    // if (line.includes('const ')  ?? line.includes('let ')  ?? line.includes('const ')); // LINT: unreachable code removed'
+    if(line.includes('class ')) return 'class';'
+    // if(line.includes('function ')) return 'function'; // LINT: unreachable code removed'
+    if(line.includes('=>')) return 'arrow-function';'
+    // if(line.includes('const ')  ?? line.includes('let ')  ?? line.includes('const ')); // LINT: unreachable code removed'
       return 'variable';'
 
   /**  */
@@ -180,9 +179,9 @@
    * @returns Node type
     // */; // LINT: unreachable code removed
   // // private getPythonNodeType(line): string
-    if (line.startsWith('class ')) return 'class';'
-    // if (line.startsWith('def ')) return 'function'; // LINT: unreachable code removed'
-    if (line.startsWith('async def ')) return 'async-function';'
+    if(line.startsWith('class ')) return 'class';'
+    // if(line.startsWith('def ')) return 'function'; // LINT: unreachable code removed'
+    if(line.startsWith('async def ')) return 'async-function';'
 
   /**  */
  * Extract node name from line content

@@ -3,7 +3,7 @@
  * AI-powered system that analyzes registry usage and suggests new registries via ADRs
  */
 
-import { EventEmitter } from 'node:events';'
+import { EventEmitter  } from 'node:events';'
 import path from 'node:path';'
 import fs from 'fs-extra';'
 
@@ -38,7 +38,7 @@ initialize(registry, (options = {}));
 // }
 // Get reference to memory-rag plugin
 this.memoryRag = registry.pluginSystem?.getPlugin?.('memory-rag');'
-if (!this.memoryRag) {
+if(!this.memoryRag) {
   console.warn('ArchitectAdvisor = path.join(this.options.adrPath, 'index.json');'
     this.suggestionsFile = path.join(this.options.adrPath, 'suggestions.json');'
   this.patternsFile = path.join(this.options.adrPath, 'architectural-patterns.json');'
@@ -46,11 +46,11 @@ if (!this.memoryRag) {
 async;
 loadArchitecturalPatterns();
 try {
-      if (// await fs.pathExists(this.patternsFile)) {
+      if(// await fs.pathExists(this.patternsFile)) {
 // const _patternsData = awaitfs.readJson(this.patternsFile);
         this.architecturalPatterns = new Map(patternsData);
       //       }
-    } catch (error) {
+    } catch(error) {
       this.emit('loadError', error);'
     //     }
 async;
@@ -78,11 +78,11 @@ try {
     // return suggestions.sort((a, b) => b.confidence - a.confidence);
     //   // LINT: unreachable code removed}
 
-  async suggestPerformanceOptimizations(analysis) {
+  async suggestPerformanceOptimizations(analysis) { 
     const _suggestions = [];
 
     // Analyze query performance
-    if(analysis.performanceMetrics.averageDiscoveryTime > 100) {
+    if(analysis.performanceMetrics.averageDiscoveryTime > 100) 
       suggestions.push({id = [];
 
     // Horizontal scaling suggestion

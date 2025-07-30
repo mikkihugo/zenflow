@@ -13,13 +13,13 @@ export async function automationAction() {
 // }
 try {
     switch(subcommand) {
-      case 'auto-agent':;
+      case 'auto-agent':
 // // await autoAgentCommand(subArgs, flags);
         break;
-      case 'smart-spawn':;
+      case 'smart-spawn':
 // // await smartSpawnCommand(subArgs, flags);
         break;
-      case 'workflow-select':;
+      case 'workflow-select':
 // // await workflowSelectCommand(subArgs, flags);
         break;default = flags;
   const __complexity = options['task-complexity']  ?? options.complexity  ?? 'medium';
@@ -52,7 +52,7 @@ const _requirement = options.requirement ?? 'general-development';
 const _maxAgents = parseInt(options['max-agents'] ?? options.maxAgents ?? '10');
 console.warn(`🧠 Smart spawning agents based on requirements...`);
 console.warn(`�Requirement = [];`
-if (requirement.includes('development') ?? requirement.includes('coding')) {
+if(requirement.includes('development') ?? requirement.includes('coding')) {
   recommendedAgents.push(;
   //   type = === 0
   //   )
@@ -67,7 +67,7 @@ recommendedAgents.forEach((agent) => {
   totalRecommended += agent.count;
   //   )
     console.warn(`\n�SUMMARY = maxAgents ? 'Within limits' )`
-  if (totalRecommended > maxAgents) {
+  if(totalRecommended > maxAgents) {
     printWarning(;
     `⚠  Recommended configuration exceeds max agents. Consider increasing limit or simplifying requirements.`;
     //     )
@@ -87,7 +87,7 @@ console.warn(`\n� SELECTED _WORKFLOW => {`
     console.warn(`  • ${type});`
 });
 console.warn(`\n PRIORITY OPTIMIZATIONS);`
-switch (priority) {
+switch(priority) {
   case 'speed': null
     console.warn(`  � Speed-optimized);`
     break;
@@ -110,18 +110,18 @@ USAGE);
                              Options, medium, high, enterprise;
   --swarm-id <id>           Target swarm ID for agent spawning
 
-SMART-SPAWN OPTIONS:;
+SMART-SPAWN OPTIONS:
   --requirement <req>       Specific requirement description;
                            Examples: "web-development", "data-analysis", "enterprise-api";
-  --max-agents <n>         Maximum number of agents to spawn (default)
+  --max-agents <n>         Maximum number of agents to spawn(default)
 
-WORKFLOW-SELECT OPTIONS:;
-  --project-type <type>     Project type (default);
+WORKFLOW-SELECT OPTIONS:
+  --project-type <type>     Project type(default);
                            Options: web-app, api, data-analysis, enterprise, general;
-  --priority <priority>     Optimization priority (default);
+  --priority <priority>     Optimization priority(default);
                            Options, quality, cost, balanced
 
-EXAMPLES:;
+EXAMPLES:
   # Auto-spawn for complex enterprise task;
   claude-zen automation auto-agent --task-complexity enterprise --swarm-id swarm-123
 
@@ -134,7 +134,7 @@ EXAMPLES:;
   # Auto-spawn for simple task;
   claude-zen automation auto-agent --task-complexity low
 
- Automation benefits:;
+ Automation benefits:
   • Optimal resource allocation;
   • Intelligent agent selection;
   • Workflow optimization;

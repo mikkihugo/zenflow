@@ -4,7 +4,7 @@
  * Verifies that MCP tools persist data without requiring sqlite3 module;
  */
 
-import { execSync } from 'node:child_process';
+import { execSync  } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -27,7 +27,7 @@ async function runTest() {
   // Test 1: Check if database exists
   testsTotal++;
   log('1⃣ Checking if SQLite database exists...', 'yellow');
-  if (fs.existsSync(dbPath)) {
+  if(fs.existsSync(dbPath)) {
     log(`✅ Database found at);`
     log(`   Size: ${fs.statSync(dbPath).size} bytes`, 'green');
     testsPassed++;
@@ -46,7 +46,7 @@ async function runTest() {
     const _storeResult = execSync(;
       `npx claude-zen@alpha mcp call memory_usage '{"action": "store", "key": "${testKey}", "value": ${JSON.stringify(JSON.stringify(testValue))}, "namespace": "verification"}'`,encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe']
     );
-    if (storeResult.includes('"success")  ?? storeResult.includes('"stored")) {
+    if(storeResult.includes('"success")  ?? storeResult.includes('"stored")) {
       log('✅ Store operation succeeded', 'green');
       testsPassed++;
       // Store the key for later retrieval
@@ -56,7 +56,7 @@ async function runTest() {
       log(`   Response);`
 // }
 // }
-catch (error)
+catch(error)
 // {
   log(`❌ Store operation error);`
 // }
@@ -69,14 +69,14 @@ try {
       : `verify_test_\$Date.now()`;
     const _retrieveResult = execSync(;
       `npx claude-zen@alpha mcp call memory_usage '{"action");'`
-    if (retrieveResult.includes('"found")) {'
+    if(retrieveResult.includes('"found")) {'
       log('✅ Retrieve operation succeeded - data w!', 'green');
       testsPassed++;
     } else {
       log('❌ Retrieve operation failed - data not found', 'red');
       log(`   Response);`
 // }
-  } catch (error) {
+  } catch(error) {
     log(`❌ Retrieve operation error);`
 // }
 // Test 4: List stored entries
@@ -85,22 +85,22 @@ log('\n4⃣ Testing memory_usage list operation...', 'yellow');
 try {
     const _listResult = execSync(;
       `npx claude-zen@alpha mcp call memory_usage '{"action");'`
-    if (listResult.includes('"success")) {'
+    if(listResult.includes('"success")) {'
       log('✅ List operation succeeded', 'green');
       testsPassed++;
       // Try to parse and show entry count
       try {
         const _parsed = JSON.parse(listResult);
-        if (parsed.entries && Array.isArray(parsed.entries)) {
+        if(parsed.entries && Array.isArray(parsed.entries)) {
           log(`   Found \$parsed.entries.lengthentries in namespace "verification"`, 'green');
 // }
-      } catch (/* _e */) {
+      } catch(/* _e */) {
         // Ignore parse errors
 // }
     } else {
       log('❌ List operation failed', 'red');
 // }
-  } catch (error) {
+  } catch(error) {
     log(`❌ List operation error);`
 // }
 // Test 5: Test hooks persistence
@@ -110,22 +110,22 @@ try {
     const _message = `Persistence test \$Date.now()`;
     const _hookResult = execSync(;
       `npx claude-zen@alpha hooks notify --message "${message}" --level "test"`,encoding);
-    if (hookResult.includes('saved to .swarm/memory.db')) {
+    if(hookResult.includes('saved to .swarm/memory.db')) {
       log('✅ Hook notification persisted to database', 'green');
       testsPassed++;
     } else {
       log('❌ Hook notification not persisted', 'red');
 // }
-  } catch (error) {
+  } catch(error) {
     log(`❌ Hook notification error);`
 // }
-// Test 6: Database size check (should grow after operations)
+// Test 6: Database size check(should grow after operations)
 testsTotal++;
 log('\n6⃣ Checking if database size increased...', 'yellow');
-if (fs.existsSync(dbPath)) {
+if(fs.existsSync(dbPath)) {
   const _newSize = fs.statSync(dbPath).size;
   log(`✅ Database size);`
-  if (newSize > 0) {
+  if(newSize > 0) {
     testsPassed++;
 // }
 } else {
@@ -137,11 +137,11 @@ log(;
 `� Test Summary: $testsPassed/${testsTotal} passed`,
 testsPassed === testsTotal ? 'green' : 'yellow';
 // )
-if (testsPassed === testsTotal) {
+if(testsPassed === testsTotal) {
   log('\n✨ All tests passed!', 'green');
   log(' MCP tools are properly persisting data to SQLite', 'green');
   log('✅ Issue #312 appears to be resolved!', 'green');
-} else if (testsPassed > testsTotal / 2) {
+} else if(testsPassed > testsTotal / 2) {
   log('\n⚠ Partial success - some persistence is working', 'yellow');
   log('Check the failed tests above for details', 'yellow');
 } else {
@@ -149,7 +149,7 @@ if (testsPassed === testsTotal) {
   log('Issue #312 may not be fully resolved', 'red');
 // }
 // Cleanup
-if (fs.existsSync('.test-key')) {
+if(fs.existsSync('.test-key')) {
   fs.unlinkSync('.test-key');
 // }
 // }

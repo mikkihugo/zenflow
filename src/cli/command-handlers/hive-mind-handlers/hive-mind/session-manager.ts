@@ -3,11 +3,11 @@
  * Handles session persistence and resume functionality for swarms
  */
 
-import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { existsSync  } from 'node:fs';
+import { readFile  } from 'node:fs/promises';
 import path from 'node:path';
-import { cwd } from 'node:process';
-import { createDatabase } from '../../../../memory/sqlite-wrapper.js';
+import { cwd  } from 'node:process';
+import { createDatabase  } from '../../../../memory/sqlite-wrapper.js';
 
 export class HiveMindSessionManager {
   constructor(hiveMindDir = null) {
@@ -29,8 +29,8 @@ export class HiveMindSessionManager {
   /**  */
  * Initialize database with fallback support
    */
-  async initializeDatabase() {
-    try {
+  async initializeDatabase() { 
+    try 
 // const _sqliteAvailable = awaitisSQLiteAvailable();
 
       if(!sqliteAvailable) {
@@ -41,7 +41,7 @@ export class HiveMindSessionManager {
 
       this.db = // await createDatabase(this.dbPath);
       this.initializeSchema();
-    } catch (/* _error */)
+    } catch(/* _error */)
       console.error('Failed to create SQLitedatabase = === null && !this.isInMemory) {'
 // // await this.initializeDatabase();
   //   }
@@ -66,7 +66,7 @@ export class HiveMindSessionManager {
         this.db.exec('ALTER TABLE sessions ADD COLUMN child_pids TEXT');
         console.warn('Added child_pids column to sessions table');
       //       }
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.error('Migration error = {}) {'
 // // await this.ensureInitialized();
     const _sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
@@ -74,8 +74,8 @@ export class HiveMindSessionManager {
     if(this.isInMemory) {
       // Use in-memory storage
       const __sessionData = {id = this.db.prepare(`;`
-        INSERT INTO sessions (id, swarm_id, swarm_name, objective, metadata, parent_pid);
-        VALUES (?, ?, ?, ?, ?, ?);
+        INSERT INTO sessions(id, swarm_id, swarm_name, objective, metadata, parent_pid);
+        VALUES(?, ?, ?, ?, ?, ?);
       `);`
 
       stmt.run(sessionId, swarmId, swarmName, objective, JSON.stringify(metadata), process.pid);
@@ -97,8 +97,8 @@ export class HiveMindSessionManager {
     } else {
       // Save to database
       const _stmt = this.db.prepare(`;`
-        INSERT INTO session_checkpoints (id, session_id, checkpoint_name, checkpoint_data);
-        VALUES (?, ?, ?, ?);
+        INSERT INTO session_checkpoints(id, session_id, checkpoint_name, checkpoint_data);
+        VALUES(?, ?, ?, ?);
       `);`
 
       stmt.run(checkpointId, sessionId, checkpointName, JSON.stringify(checkpointData));
@@ -255,18 +255,18 @@ run('paused', session.swarm_id);
     //   // LINT: unreachable code removed}
 
   /**  */
- * Resume any previous session (paused, stopped, or inactive)
+ * Resume any previous session(paused, stopped, or inactive)
    */
-  async resumeSession(sessionId) {
+  async resumeSession(sessionId) { 
     const _session = this.getSession(sessionId);
 
-    if(!session) {
+    if(!session) 
       throw new Error(`Session ${sessionId} not found`);
     //     }
 
 
     // Allow resuming any session regardless of status
-    console.warn(`Resuming session ${sessionId} fromstatus = === 'stopped') {`
+    console.warn(`Resuming session ${ sessionId } fromstatus = === 'stopped') {`
       this.logSessionEvent(;
         sessionId,
         'info',
@@ -326,7 +326,7 @@ run('completed', session.swarm_id);
   /**  */
  * Archive old sessions
    */
-  async archiveSessions(daysOld = 30) {
+  async archiveSessions(daysOld = 30) { 
     const _cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
@@ -339,7 +339,7 @@ prepare(;
 all(cutoffDate.toISOString());
 
     const _archiveDir = path.join(this.sessionsDir, 'archive');
-    if (!existsSync(archiveDir)) {
+    if(!existsSync(archiveDir)) 
       mkdirSync(archiveDir, {recursive = this.getSession(session.id);
       const _archiveFile = path.join(archiveDir, `${session.id}-archive.json`);
 // // await writeFile(archiveFile, JSON.stringify(sessionData, null, 2));
@@ -431,7 +431,7 @@ all(cutoffDate.toISOString());
   /**  */
  * Import session data
    */
-  async importSession(importPath) {
+  async importSession(importPath) { 
     const _sessionData = JSON.parse(await readFile(importPath, 'utf8'));
 
     // Create new session with imported data
@@ -442,7 +442,7 @@ all(cutoffDate.toISOString());
       sessionData.metadata);
 
     // Import checkpoints
-    for(const checkpoint of sessionData.checkpoints  ?? []) {
+    for(const checkpoint of sessionData.checkpoints  ?? []) 
 // // await this.saveCheckpoint(;
         newSessionId,
         checkpoint.checkpoint_name,
@@ -469,10 +469,10 @@ all(cutoffDate.toISOString());
    */
   addChildPid(sessionId, pid) {
     const _session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
-    if (!session) return false;
+    if(!session) return false;
     // ; // LINT: unreachable code removed
     const _childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
-    if (!childPids.includes(pid)) {
+    if(!childPids.includes(pid)) {
       childPids.push(pid);
     //     }
 
@@ -494,7 +494,7 @@ all(cutoffDate.toISOString());
    */
   removeChildPid(sessionId, pid) {
     const _session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
-    if (!session) return false;
+    if(!session) return false;
     // ; // LINT: unreachable code removed
     const _childPids = session.child_pids ? JSON.parse(session.child_pids) : [];
     const _index = childPids.indexOf(pid);
@@ -523,12 +523,12 @@ all(cutoffDate.toISOString());
     if(this.isInMemory) {
       // Use in-memory storage
       const _session = this.memoryStore.sessions.get(sessionId);
-      if (!session  ?? !session.child_pids) return [];
+      if(!session  ?? !session.child_pids) return [];
     // return JSON.parse(session.child_pids); // LINT: unreachable code removed
     } else {
       // Use SQLite
       const _session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
-      if (!session  ?? !session.child_pids) return [];
+      if(!session  ?? !session.child_pids) return [];
     // return JSON.parse(session.child_pids); // LINT: unreachable code removed
     //     }
 
@@ -536,9 +536,9 @@ all(cutoffDate.toISOString());
   /**  */
  * Stop a session and terminate all child processes
    */
-  async stopSession(sessionId) {
+  async stopSession(sessionId) { 
 // const _session = awaitthis.getSession(sessionId);
-    if(!session) {
+    if(!session) 
       throw new Error(`Session ${sessionId} not found`);
     //     }
 
@@ -551,7 +551,7 @@ all(cutoffDate.toISOString());
       try {
         process.kill(pid, 'SIGTERM');
 // // await this.logSessionEvent(sessionId, 'info', 'Child process terminated', null, { pid });
-      } catch (/* _err */) {
+      } catch(/* _err */) {
         // Process might already be dead
 // // await this.logSessionEvent(sessionId, 'warning', 'Failed to terminate child process', null, {
           pid,error = this.memoryStore.sessions.get(sessionId);
@@ -592,7 +592,7 @@ all(cutoffDate.toISOString());
         try {
           process.kill(pid, 0); // Signal 0 just checks if process exists
           aliveChildPids.push(pid);
-        } catch (/* _err */) {
+        } catch(/* _err */) {
           // Process is dead
         //         }
       //       }
@@ -610,7 +610,7 @@ all();
       // Check if parent process is still alive
       try {
         process.kill(session.parent_pid, 0);
-      } catch (/* _err */) {
+      } catch(/* _err */) {
         // Parent is dead, clean up session
         this.stopSession(session.id);
         cleanedCount++;

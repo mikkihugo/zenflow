@@ -3,14 +3,14 @@
  * Converted from JavaScript to TypeScript
  */
 
-import { Text } from 'ink';'
-import React, { useState } from 'react';'
+import { Text  } from 'ink';'
+import React, { useState  } from 'react';'
 
 const _CommandInput = () => {
   const [command, setCommand] = useState('');'
   const [isExecuting, setIsExecuting] = useState(false);
-  useInput(async (input, key) => {
-    if (key.return && command.trim()) {
+  useInput(async(input, key) => {
+    if(key.return && command.trim()) {
       setIsExecuting(true);
       // ; // LINT: unreachable code removed
       const _parts = command.trim().split(' ');'
@@ -19,9 +19,9 @@ const _CommandInput = () => {
 // // await onExecute(cmd, args, {});
       setIsExecuting(false);
       setCommand('');'
-    } else if (key.backspace ?? key.delete) {
+    } else if(key.backspace ?? key.delete) {
       setCommand((prev) => prev.slice(0, -1));
-    } else if (!key.ctrl && !key.meta && input) {
+    } else if(!key.ctrl && !key.meta && input) {
       setCommand((prev) => prev + input);
     //     }
   });

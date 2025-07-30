@@ -5,7 +5,7 @@
 
 // project-command.js - Handles the project command
 
-import { log } from '../core/logger.js';
+import { log  } from '../core/logger.js';
 
 // Helper functions
 const _printSuccess = (msg) => log.success(msg);
@@ -29,7 +29,7 @@ export async function projectCommand() {
 
           printSuccess('Availableprojects = ['
             { name => {
-            if (showActive && project.status !== 'active') return;
+            if(showActive && project.status !== 'active') return;
     // ; // LINT: unreachable code removed
             console.warn(`\n� ${project.name}`);
             console.warn(`Status = args[1];`
@@ -82,7 +82,7 @@ export async function projectCommand() {
           //           }
           break;
 
-        default:;
+        default:
           console.warn('Project commands);'
           console.warn('  create    - Create new project with isolation');
           console.warn('  switch    - Switch active project context');

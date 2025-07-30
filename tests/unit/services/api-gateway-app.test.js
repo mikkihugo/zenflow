@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it  } from '@jest/globals';
 
 // Mock express to avoid server startup issues
 const _mockApp = {
@@ -11,7 +11,7 @@ mockExpress.json = jest.fn(() => 'json-middleware');
 jest.mock('express', () => mockExpress);
 describe('API Gateway App', () => {
   let _app;
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Clear all mocks
     jest.clearAllMocks();
     // Import the app module
@@ -45,11 +45,11 @@ describe('API Gateway App', () => {
     // Verify response
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.send).toHaveBeenCalledWith({ status);
-  });
+   });
   it('should handle multiple health check calls', () => {
       const _healthHandler = mockApp.get.mock.calls.find((call) => call[0] === '/health')[1];
       // Call multiple times
-      for (let i = 0; i < 3; i++) {
+      for(let i = 0; i < 3; i++) {
         const _mockRes = {
           status: jest.fn().mockReturnThis(),
           send: jest.fn() };
@@ -62,12 +62,12 @@ describe('API Gateway App', () => {
 describe('middleware configuration', () =>
 // {
   it('should only use JSON middleware', () => {
-    // Should only have one middleware call (for JSON)
+    // Should only have one middleware call(for JSON)
     expect(mockApp.use).toHaveBeenCalledTimes(1);
     expect(mockApp.use).toHaveBeenCalledWith('json-middleware');
   });
   it('should only register one route', () => {
-    // Should only have one route registration (health check)
+    // Should only have one route registration(health check)
     expect(mockApp.get).toHaveBeenCalledTimes(1);
     expect(mockApp.get).toHaveBeenCalledWith('/health', expect.any(Function));
   });
@@ -77,7 +77,7 @@ describe('app export', () =>
   it('should export the express app instance', () => {
     expect(app).toBe(mockApp);
   });
-  it('should be the default export', async () => {
+  it('should be the default export', async() => {
 // const _appModule = awaitimport('../../../src/services/api-gateway/app.js');
     expect(appModule.default).toBeDefined();
     expect(appModule.default).toBe(mockApp);
@@ -96,7 +96,7 @@ describe('health endpoint response format', () =>
   expect(responseData).toEqual({ status);
   expect(typeof responseData.status).toBe('string');
   expect(responseData.status).toBe('healthy');
-})
+ })
 it('should use 200 status code', () =>
 // {
   const _healthHandler = mockApp.get.mock.calls.find((call) => call[0] === '/health')[1];

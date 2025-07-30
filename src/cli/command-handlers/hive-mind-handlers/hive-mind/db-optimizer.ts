@@ -57,7 +57,7 @@ export async function optimizeHiveMindDatabase(dbPath = {}) {
     spinner.text = 'Updating query statistics...';
     db.exec('ANALYZE');
 
-    // Vacuum if requested (requires exclusive access)
+    // Vacuum if requested(requires exclusive access)
     if(options.vacuum) {
       spinner.text = 'Vacuuming database...';
       db.exec('VACUUM');
@@ -89,7 +89,7 @@ get();
     if(!tableExists) {
       // Create schema version table
       db.exec(`;`
-        CREATE TABLE schema_version (;
+        CREATE TABLE schema_version(;
           version REAL PRIMARY KEY,
           applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           description TEXT;
@@ -99,8 +99,8 @@ get();
       // Insert initial version
       db.prepare(;
         `;`
-        INSERT INTO schema_version (version, description) ;
-        VALUES (1.0, 'Initial schema');
+        INSERT INTO schema_version(version, description) ;
+        VALUES(1.0, 'Initial schema');
       `).run();`
 
       // return 1.0;
@@ -118,7 +118,7 @@ get();
     // return result ? result.version = '') {
   db.prepare(;
     // `; // LINT);`
-    VALUES (?, ?);
+    VALUES(?, ?);
   `).run(version, description  ?? `Updated to version \$version`);`
 // }
 
@@ -140,14 +140,14 @@ map((row) => row.name);
   const _indexes = [];
 
   // Only create indexes for tables that exist
-  if (tableSet.has('swarms')) {
+  if(tableSet.has('swarms')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)',
       'CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created_at)');
   //   }
 
 
-  if (tableSet.has('agents')) {
+  if(tableSet.has('agents')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_agents_swarm ON agents(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_agents_type ON agents(type)',
@@ -155,7 +155,7 @@ map((row) => row.name);
   //   }
 
 
-  if (tableSet.has('tasks')) {
+  if(tableSet.has('tasks')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_tasks_swarm ON tasks(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(agent_id)',
@@ -164,7 +164,7 @@ map((row) => row.name);
   //   }
 
 
-  if (tableSet.has('collective_memory')) {
+  if(tableSet.has('collective_memory')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_memory_swarm ON collective_memory(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_memory_key ON collective_memory(key)',
@@ -172,7 +172,7 @@ map((row) => row.name);
   //   }
 
 
-  if (tableSet.has('consensus_decisions')) {
+  if(tableSet.has('consensus_decisions')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_consensus_swarm ON consensus_decisions(swarm_id)',
       'CREATE INDEX IF NOT EXISTS idx_consensus_created ON consensus_decisions(created_at)');
@@ -182,7 +182,7 @@ map((row) => row.name);
   indexes.forEach((sql) => {
     try {
       db.exec(sql);
-    } catch (error) {
+    } catch(error) {
       console.warn(`Warning = db;`
 prepare(;
       `;`
@@ -195,7 +195,7 @@ map((row) => row.name);
   const _tableSet = new Set(tables);
 
   // Only check columns for tables that exist
-  if (tableSet.has('tasks')) {
+  if(tableSet.has('tasks')) {
     // Check and add priority column to tasks table
     const _hasPriority = db;
 prepare(;
@@ -209,8 +209,8 @@ get();
       try {
         db.exec('ALTER TABLE tasks ADD COLUMN priority INTEGER DEFAULT 5');
         console.warn('Added missing priority column to tasks table');
-      } catch (error) {
-        if (;
+      } catch(error) {
+        if(;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
         //         )
@@ -232,8 +232,8 @@ get();
       try {
         db.exec('ALTER TABLE tasks ADD COLUMN completed_at DATETIME');
         console.warn('Added missing completed_at column to tasks table');
-      } catch (error) {
-        if (;
+      } catch(error) {
+        if(;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
         //         )
@@ -255,8 +255,8 @@ get();
       try {
         db.exec('ALTER TABLE tasks ADD COLUMN result TEXT');
         console.warn('Added missing result column to tasks table');
-      } catch (error) {
-        if (;
+      } catch(error) {
+        if(;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
         //         )
@@ -266,7 +266,7 @@ get();
   //   }
 
 
-  if (tableSet.has('swarms')) {
+  if(tableSet.has('swarms')) {
     // Check and add updated_at column to swarms table
     const _hasUpdatedAt = db;
 prepare(;
@@ -280,8 +280,8 @@ get();
       try {
         db.exec('ALTER TABLE swarms ADD COLUMN updated_at DATETIME');
         console.warn('Added missing updated_at column to swarms table');
-      } catch (error) {
-        if (;
+      } catch(error) {
+        if(;
           !error.message.includes('duplicate column') &&;
           !error.message.includes('no such table');
         //         )
@@ -308,7 +308,7 @@ map((_row) => row.name);
   const _indexes = [];
 
   // Composite indexes for common queries
-  if (tableSet.has('tasks')) {
+  if(tableSet.has('tasks')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_tasks_swarm_status ON tasks(swarm_id, status)',
       'CREATE INDEX IF NOT EXISTS idx_tasks_full ON tasks(swarm_id, agent_id, status, priority)',
@@ -316,20 +316,20 @@ map((_row) => row.name);
   //   }
 
 
-  if (tableSet.has('agents')) {
+  if(tableSet.has('agents')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_agents_swarm_type ON agents(swarm_id, type)',
       'CREATE INDEX IF NOT EXISTS idx_agents_full ON agents(swarm_id, type, status, role)');
   //   }
 
 
-  if (tableSet.has('collective_memory')) {
+  if(tableSet.has('collective_memory')) {
     indexes.push(;
       'CREATE INDEX IF NOT EXISTS idx_memory_swarm_key ON collective_memory(swarm_id, key)');
   //   }
 
 
-  if (tableSet.has('swarms')) {
+  if(tableSet.has('swarms')) {
     indexes.push(;
       "CREATE INDEX IF NOT EXISTS idx_swarms_active ON swarms(id, name) WHERE status = 'active'");
   //   }
@@ -338,11 +338,11 @@ map((_row) => row.name);
   indexes.forEach((sql) => {
     try {
       db.exec(sql);
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.warn(`Warning = 'completed' OR NEW.status = 'failed';`
     BEGIN;
-      INSERT OR REPLACE INTO agent_performance (agent_id, tasks_completed, tasks_failed);
-      VALUES (;
+      INSERT OR REPLACE INTO agent_performance(agent_id, tasks_completed, tasks_failed);
+      VALUES(;
         NEW.agent_id,
         COALESCE((SELECT tasks_completed FROM agent_performance WHERE agent_id = NEW.agent_id), 0) + ;
           CASE WHEN NEW.status = 'completed' THEN 1 ELSE 0 END,
@@ -386,15 +386,15 @@ get();
         ADD COLUMN access_count INTEGER DEFAULT 0;
       `);`
       console.warn('Added access_count column to collective_memory table');
-    } catch (error) {
-      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+    } catch(error) {
+      if(!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       //       }
     //     }
   //   }
 
 
-  // Check and add accessed_at column (not last_accessed)
+  // Check and add accessed_at column(not last_accessed)
   const _hasAccessedAt = db;
 prepare(;
       `;`
@@ -410,8 +410,8 @@ get();
         ADD COLUMN accessed_at DATETIME;
       `);`
       console.warn('Added accessed_at column to collective_memory table');
-    } catch (error) {
-      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+    } catch(error) {
+      if(!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       //       }
     //     }
@@ -433,8 +433,8 @@ get();
         ALTER TABLE collective_memory ;
         ADD COLUMN compressed INTEGER DEFAULT 0;
       `);`
-    } catch (error) {
-      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+    } catch(error) {
+      if(!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       //       }
     //     }
@@ -455,8 +455,8 @@ get();
         ALTER TABLE collective_memory ;
         ADD COLUMN size INTEGER DEFAULT 0;
       `);`
-    } catch (error) {
-      if (!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
+    } catch(error) {
+      if(!error.message.includes('duplicate column') && !error.message.includes('no such table')) {
         throw error;
       //       }
     //     }
@@ -478,7 +478,7 @@ get();
 
   // Add memory cleanup tracking
   db.exec(`;`
-    CREATE TABLE IF NOT EXISTS memory_cleanup_log (;
+    CREATE TABLE IF NOT EXISTS memory_cleanup_log(;
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       swarm_id TEXT,
       entries_removed INTEGER,
@@ -525,7 +525,7 @@ prepare(;
 run(cutoffDate.toISOString());
 
           console.warn(chalk.green(` Removed ${result.changes} old memory entries`));
-        } catch (/* _error */) {
+        } catch(/* _error */) {
           console.warn(chalk.yellow(`⚠ Could not clean memoryentries = 'Archiving completed tasks...';`
 
       // Create archive table if not exists
@@ -602,7 +602,7 @@ run(archiveCutoff.toISOString());
 
     db.close();
     spinner.succeed('Database maintenance complete!');
-  } catch (error)
+  } catch(error)
     spinner.fail('Database maintenance failed');
     console.error(chalk.red('Error = new Database(dbPath, { readonly = {schemaVersion = db;'
 prepare(;
@@ -627,7 +627,7 @@ prepare(;
     `);`
 all();
 
-    // Get performance metrics (check if completed_at column exists)
+    // Get performance metrics(check if completed_at column exists)
     const _avgTaskTime = {avg_minutes = db;
 prepare(;
           `;`
@@ -645,14 +645,14 @@ prepare(;
         `);`
 get();
       //       }
-    } catch (error)
+    } catch(error)
       // If error, just use default value
       console.warn('Could not calculate average tasktime = avgTaskTime?.avg_minutes  ?? 0;'
 
     db.close();
 
     // return report;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     console.error('Error generating report);'
     // return null;
 

@@ -1,10 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it  } from '@jest/globals';
 
 describe('CLI Utils', () => {
   let originalConsoleLog;
   let consoleOutput;
   let utils;
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Capture console.log output
     consoleOutput = [];
     originalConsoleLog = console.log;
@@ -110,20 +110,20 @@ describe('CLI Utils', () => {
       // Replace process global for testing
       global.process = { ...global.process, mkdir: mockProcess.mkdir };
     });
-    it('should create directory successfully', async () => {
+    it('should create directory successfully', async() => {
       mockProcess.mkdir.mockResolvedValue(undefined);
 // const _result = awaitutils.ensureDirectory('/test/path');
       expect(result).toBe(true);
       expect(mockProcess.mkdir).toHaveBeenCalledWith('/test/path', { recursive });
     });
-    it('should handle existing directory', async () => {
+    it('should handle existing directory', async() => {
       const _existsError = new Error('Directory exists');
       existsError.code = 'EEXIST';
       mockProcess.mkdir.mockRejectedValue(existsError);
 // const _result = awaitutils.ensureDirectory('/existing/path');
       expect(result).toBe(true);
     });
-    it('should rethrow non-EEXIST errors', async () => {
+    it('should rethrow non-EEXIST errors', async() => {
       const _permissionError = new Error('Permission denied');
       permissionError.code = 'EACCES';
       mockProcess.mkdir.mockRejectedValue(permissionError);
@@ -138,21 +138,21 @@ describe('CLI Utils', () => {
           stat: jest.fn() };
     global.process = { ...global.process, stat: mockProcess.stat };
   });
-  it('should return true for existing files', async () => {
-    mockProcess.stat.mockResolvedValue({ isFile) => true });
+  it('should return true for existing files', async() => {
+    mockProcess.stat.mockResolvedValue({ isFile) => true  });
     // ; // LINT: unreachable code removed
 // const _result = awaitutils.fileExists('/existing/file.txt');
     expect(result).toBe(true);
     expect(mockProcess.stat).toHaveBeenCalledWith('/existing/file.txt');
   });
-  it('should return false for non-existing files', async () => {
+  it('should return false for non-existing files', async() => {
     const _notFoundError = new Error('File not found');
     // notFoundError.code = 'ENOENT'; // LINT: unreachable code removed
     mockProcess.stat.mockRejectedValue(notFoundError);
 // const _result = awaitutils.fileExists('/nonexistent/file.txt');
     expect(result).toBe(false);
   });
-  it('should return false for any stat error', async () => {
+  it('should return false for any stat error', async() => {
     const _permissionError = new Error('Permission denied');
     // mockProcess.stat.mockRejectedValue(permissionError); // LINT: unreachable code removed
 // const _result = awaitutils.fileExists('/forbidden/file.txt');

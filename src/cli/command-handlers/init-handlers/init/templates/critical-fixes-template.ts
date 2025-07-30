@@ -18,7 +18,7 @@ TimeoutProtection.setupSafeExit();
 **Problem Solved**: 2-minute timeouts with backticks and command substitution in GitHub CLI operations
 
 **Features Added**:
-- Safe handling of special characters (\`, \$, ", newlines);
+- Safe handling of special characters(\`, \$, ", newlines);
 - Temporary file approach for complex content;
 - Command substitution sanitization;
 - Repository name validation
@@ -38,28 +38,28 @@ import GitHubCliSafe from './src/utils/github-cli-safe.js';
 console.warn(\`Total = await checkRuvSwarmAvailable();
 // const _result = awaitexecRuvSwarmHook('pre-task', params);
 
-// NEW (timeout protected)
+// NEW(timeout protected)
 // const _result = awaitTimeoutProtection.execRuvSwarmHookWithTimeout('pre-task', params);
 \`\`\`
 
 ### For GitHub Operations;
 Replace direct ghcommands = execSync(\`gh pr create --title "\${title}" --body "\${body}"\`);
 
-// NEW (safe)
-// const _result = awaitGitHubCliSafe.createPullRequestSafe({ title, body });
+// NEW(safe)
+// const _result = awaitGitHubCliSafe.createPullRequestSafe({ title, body  });
 \`\`\`
 
 ### For Agent Management;
 Update agentspawning = === 'analyst') { /* spawn analyst */ }
 
-// NEW (handles legacy mapping)
+// NEW(handles legacy mapping)
 // const _agentTypeInfo = awaitagentLoader.getAgentType('analyst'); // Returns code-analyzer
 if(agentTypeInfo) { /* spawn agent using agentTypeInfo */ }
 \`\`\`
 
 ## 7. Backward Compatibility
 
-All changes are backward compatible:;
+All changes are backward compatible:
 - Existing hook calls continue to work;
 - Legacy agent names are automatically mapped;
 - GitHub CLI operations are enhanced, not replaced;

@@ -4,8 +4,8 @@
  * Provides access to all 87 Claude-Flow MCP tools through a comprehensive interface;
  */
 
-import { printSuccess } from '../utils.js';
-import { ENHANCED_VIEWS } from './enhanced-ui-views.js';
+import { printSuccess  } from '../utils.js';
+import { ENHANCED_VIEWS  } from './enhanced-ui-views.js';
 import MCPIntegrationLayer from './mcp-integration-layer.js';
 import RealtimeUpdateSystem from './realtime-update-system.js';
 import SwarmWebUIIntegration from './swarm-webui-integration.js';
@@ -72,7 +72,7 @@ initializeEnhancedUI();
       this.startSystemMonitoring();
 
       this.addLog('success', '� Enhanced Web UI fully initialized with all 87 MCP tools');
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       this.addLog('error', `Failed to initialize enhancedUI = [`
       { id => {
       this.processes.set(p.id, {
@@ -133,7 +133,7 @@ initializeEnhancedUI();
 // }
 // )
 console.warn(mainTabLine)
-// Enhanced tool tabs (row 2)
+// Enhanced tool tabs(row 2)
 const _toolTabs = [
       {key = '';
     toolTabs.forEach((tab) => {
@@ -146,7 +146,7 @@ const _toolTabs = [
 
     console.warn(toolTabLine);
 
-    // Additional tabs (row 3)
+    // Additional tabs(row 3)
     const _additionalTabs = [
       {key = '';
     additionalTabs.forEach((tab) => {
@@ -191,9 +191,9 @@ const _toolTabs = [
   /**
    * Enhanced input handling;
    */;
-  async handleInput() {
-    // return new Promise((resolve) => {
-      const __onData = async (chunk) => {
+  async handleInput() { 
+    // return new Promise((resolve) => 
+      const __onData = async(chunk) => {
         const _key = chunk.toString();
     // ; // LINT: unreachable code removed
         // Remove listener
@@ -201,26 +201,26 @@ const _toolTabs = [
 
         try {
           // Handle navigation keys
-          if (// await this.handleNavigationInput(key)) {
+          if(// await this.handleNavigationInput(key)) {
             resolve();
             return;
     //   // LINT: unreachable code removed}
 
           // Handle enhanced view input
-          if (// await this.handleEnhancedViewInput(key)) {
+          if(// await this.handleEnhancedViewInput(key)) {
             resolve();
             return;
     //   // LINT: unreachable code removed}
 
           // Handle global commands
-          if (// await this.handleGlobalCommands(key)) {
+          if(// await this.handleGlobalCommands(key)) {
             resolve();
             return;
     //   // LINT: unreachable code removed}
 
           // Handle original input
 // // await this.handleOriginalInput(key);
-        } catch (/* _error */)
+        } catch(/* _error */)
           this.addLog('error', `Input handling error = {1 = navigationMap[key];`
       this.selectedIndex = 0;
       this.addLog('info', `Switched to ${this.currentView} view`);
@@ -245,17 +245,17 @@ const _toolTabs = [
    */;
   async handleGlobalCommands(key): unknown
     switch(key) {
-      case 'r':;
+      case 'r':
 // await this.promptRunTool();
         // return true;
-    // case 'w':; // LINT: unreachable code removed
+    // case 'w': // LINT: unreachable code removed
 // // await this.promptRunWorkflow();
         // return true;
-    // case 'b':; // LINT: unreachable code removed
+    // case 'b': // LINT: unreachable code removed
 // // await this.promptBatchExecution();
         // return true;
         // return true;
-    // case 'q':; // LINT: unreachable code removed
+    // case 'q': // LINT: unreachable code removed
       case '\x03': // Ctrl+C
 // // await this.shutdown();
         // return true;
@@ -267,18 +267,18 @@ const _toolTabs = [
   /**
    * Prompt for tool execution;
    */;
-  async promptRunTool() {
+  async promptRunTool() { 
     // In a real implementation, this would show an interactive prompt
     // For now, execute a sample tool
-    this.addLog('info', 'Tool execution prompt (demo)');
+    this.addLog('info', 'Tool execution prompt(demo)');
 
-    try {
+    try 
 // const _result = awaitthis.toolFramework.executeTool('features_detect');
       this.addLog('success', 'Tool executed successfully');
       this.enhancedViews.displayToolResult(result);
-    } catch (error) {
+    } catch(error) {
       this.addLog('error', `Tool executionfailed = // await this.toolFramework.executePredefinedWorkflow('performance_analysis');`
-      this.addLog('success', 'Workflow completed successfully');catch (error)
+      this.addLog('success', 'Workflow completed successfully');catch(error)
       this.addLog('error', `Workflowfailed = [`
       {toolName = // await this.toolFramework.executeToolsBatch(batchTools, {parallel = === ALL_VIEWS.PROCESSES) {
       switch(_key) {
@@ -288,8 +288,8 @@ const _toolTabs = [
         case '\x1b[B': // Down arrow
           this.selectedIndex = Math.min(this.processes.size - 1, this.selectedIndex + 1);
           break;
-        case ' ':;
-        case '\r':;
+        case ' ':
+        case '\r':
 // // await this.toggleSelectedProcess();
           break;
       //       }
@@ -300,11 +300,11 @@ const _toolTabs = [
   /**
    * Toggle selected process status;
    */;
-  async toggleSelectedProcess() {
+  async toggleSelectedProcess() { 
     const _processes = Array.from(this.processes.values());
     const _selected = processes[this.selectedIndex];
 
-    if(selected) {
+    if(selected) 
       if(selected.status === 'running') {
         selected.status = 'stopped';
         selected.pid = null;
@@ -334,7 +334,7 @@ const _toolTabs = [
 
 
   /**
-   * Render process view (original);
+   * Render process view(original);
    */;
   renderProcessView() {
     console.warn(this.colors.white(this.colors.bold('Process Management')));
@@ -390,7 +390,7 @@ const _toolTabs = [
       console.warn(`     _ID => {`
       const _usageBar = this.getUsageBar(ns.entries, 100);
       console.warn(;
-        `${this.colors.white(ns.name.padEnd(12))} ${usageBar} ${this.colors.yellow(ns.entries)} entries (${this.colors.blue(ns.size)})`);
+        `${this.colors.white(ns.name.padEnd(12))} ${usageBar} ${this.colors.yellow(ns.entries)} entries(${this.colors.blue(ns.size)})`);
     });
 
     console.warn();

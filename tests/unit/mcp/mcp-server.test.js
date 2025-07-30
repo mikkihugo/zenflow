@@ -1,14 +1,13 @@
-import { promises  } from 'node:fs';
+import { promises   } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it  } from '@jest/globals';
 
 // Mock all the dependencies
-jest.mock('../../../src/mcp/core/stdio-optimizer.js', () => ({
-  StdioOptimizer: jest.fn().mockImplementation(() => ({
+jest.mock('../../../src/mcp/core/stdio-optimizer.js', () => ({ StdioOptimizer: jest.fn().mockImplementation(() => ({
     initialize: jest.fn(),
 optimize: jest.fn(),
-cleanup: jest.fn() })) }))
+cleanup: jest.fn()  })) }))
 jest.mock('../../../src/mcp/core/error-handler.js', () => (
 // {
   MCPErrorHandler: jest.fn().mockImplementation(() => ({
@@ -18,11 +17,10 @@ jest.mock('../../../src/mcp/core/error-handler.js', () => (
 )) }))
 jest.mock('../../../src/mcp/core/performance-metrics.js', () => (
 // {
-  PerformanceMetrics: jest.fn().mockImplementation(() => ({
-    startTimer: jest.fn(),
+  PerformanceMetrics: jest.fn().mockImplementation(() => ({ startTimer: jest.fn(),
   endTimer: jest.fn(),
   recordMetric: jest.fn(),
-  getMetrics: jest.fn(() => ({ requests, averageTime }))
+  getMetrics: jest.fn(() => ({ requests, averageTime  }))
 // }
 )) }))
 jest.mock('../../../src/memory/sqlite-store.js', () => (
@@ -39,25 +37,25 @@ jest.mock('../../../src/memory/sqlite-store.js', () => (
 describe('MCP Server', () =>
 // {
   let testDir;
-  beforeEach(async () => {
+  beforeEach(async() => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-mcp-test-'));
     process.chdir(testDir);
   });
-  afterEach(async () => {
+  afterEach(async() => {
     try {
   // await fs.rm(testDir, { recursive, force });
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       // Ignore cleanup errors
     //     }
   });
   describe('Module Loading', () => {
-    it('should import the MCP server module without errors', async () => {
+    it('should import the MCP server module without errors', async() => {
       // Since the MCP server uses dynamic imports with fallbacks,
       // we'll test that the module can be imported'
       let _mcpServerModule;
       try {
         _mcpServerModule = // await import('../../../src/mcp/mcp-server.js');
-      } catch (error) {
+      } catch(error) {
         // If import fails, that's part of what we're testing
         expect(error).toBeDefined();
       //       }
@@ -66,7 +64,7 @@ describe('MCP Server', () =>
     });
   });
   describe('Error Handling', () => {
-    it('should handle missing dependencies gracefully', async () => {
+    it('should handle missing dependencies gracefully', async() => {
       // Test that the server can start even with missing dependencies
       // This tests the fallback mechanisms
 
@@ -79,7 +77,7 @@ describe('MCP Server', () =>
 
         // Should have warnings about missing dependencies
         expect(warnings.some((w) => w.includes('not available'))).toBe(true);
-      } catch (error) {
+      } catch(error) {
         // Import might fail, which is acceptable for testing
         expect(error).toBeDefined();
       } finally {
@@ -92,7 +90,7 @@ describe('MCP Server', () =>
       // Test default configuration values
       const _defaultConfig = {
         port: process.env.MCP_PORT  ?? 3000,
-          type: 'sqlite',,,
+          type: 'sqlite',,
           enabled,
           autoDiscovery};
     expect(defaultConfig.port).toBeDefined();
@@ -100,17 +98,15 @@ describe('MCP Server', () =>
     expect(defaultConfig.tools.enabled).toBe(true);
   });
   it('should validate configuration parameters', () => {
-    const _invalidConfigs = [
-
-        { port: 'invalid' },
+    const _invalidConfigs = [{ port: 'invalid' },
         { port: -1 },
         { port },
         { memory },
-        { tools: 'invalid' },,,,,,];
+        { tools: 'invalid' },,];
     invalidConfigs.forEach((config) => {
       // Test configuration validation logic
       const _isValid = typeof config.port === 'number' && config.port > 0 && config.port < 65536;
-      if (config.port === 'invalid' ?? config.port === -1 ?? config.port === 70000) {
+      if(config.port === 'invalid' ?? config.port === -1 ?? config.port === 70000) {
         expect(isValid).toBe(false);
       //       }
     });
@@ -120,24 +116,22 @@ describe('Tool Registry', () =>
 // {
   it('should initialize tools registry', () => {
     // Mock tools registry functionality
-    const _mockTools = [
-
-        { name: 'file_read', description: 'Read file contents' },
+    const _mockTools = [{ name: 'file_read', description: 'Read file contents' },
         { name: 'file_write', description: 'Write file contents' },
-        { name: 'shell_execute', description: 'Execute shell commands' },,,,,,];
+        { name: 'shell_execute', description: 'Execute shell commands' },,];
     expect(mockTools).toHaveLength(3);
     expect(mockTools[0].name).toBe('file_read');
     expect(mockTools[1].name).toBe('file_write');
     expect(mockTools[2].name).toBe('shell_execute');
   });
-  it('should handle tool execution', async () => {
+  it('should handle tool execution', async() => {
     // Mock tool execution
     const _mockToolExecutor = {
-        execute: jest.fn(async (toolName, _args) => {
-          if (toolName === 'file_read') {
+        execute: jest.fn(async(toolName, _args) => {
+          if(toolName === 'file_read') {
             return { content: 'file contents', success };
     //   // LINT: unreachable code removed}
-          if (toolName === 'file_write') {
+          if(toolName === 'file_write') {
             return { written, success };
     //   // LINT: unreachable code removed}
           // return { error: 'Unknown tool', success };
@@ -156,15 +150,13 @@ describe('Tool Registry', () =>
   });
   describe('Message Handling', () => {
     it('should handle various MCP message types', () => {
-      const _messageTypes = [
-
-        'initialize',
+      const _messageTypes = ['initialize',
         'tools/list',
         'tools/call',
         'resources/list',
         'resources/read',
         'prompts/list',
-        'prompts/get',,,,,,];
+        'prompts/get',,];
       messageTypes.forEach((type) => {
         const _message = {
           jsonrpc: '2.0',
@@ -185,7 +177,7 @@ describe('Tool Registry', () =>
         {}, // missing required fields
         { jsonrpc: '1.0' }, // wrong version
         { jsonrpc: '2.0', method: 'test' }, // missing id
-        { jsonrpc: '2.0', id },,,,,,,, // missing method
+        { jsonrpc: '2.0', id },,,, // missing method
   ];
   // Validate the valid message
   expect(validMessage.jsonrpc).toBe('2.0');
@@ -224,17 +216,16 @@ it('should handle error tracking', () =>
 // {
   const _errorTracker = {
         errors: [],
-  addError: function (error) {
-          this.errors.push({
-            timestamp: Date.now(),
+  addError: function(error) {
+          this.errors.push({ timestamp: Date.now(),
             message: error.message,
             stack: error.stack
-})
+ })
 // }
 
 
 // getErrorCount: null
-function () {
+function() {
           return this.errors.length;
     //   // LINT: unreachable code removed}
 // }
@@ -246,7 +237,7 @@ expect(errorTracker.errors[0].message).toBe('Test error');
 })
 describe('Memory Integration', () =>
 // {
-  it('should integrate with memory store', async () => {
+  it('should integrate with memory store', async() => {
     // Mock memory store operations
     const _mockMemoryStore = {
         initialized,
@@ -257,19 +248,19 @@ describe('Memory Integration', () =>
 
     // async
     store(key, value)
-    if (!this.initialized) throw new Error('Not initialized');
+    if(!this.initialized) throw new Error('Not initialized');
     this.data.set(key, value);
 
     // async
     retrieve(key)
     //     {
-      if (!this.initialized) throw new Error('Not initialized');
+      if(!this.initialized) throw new Error('Not initialized');
       // return this.data.get(key) ?? null;
       //   // LINT: unreachable code removed},
       async;
       list();
-      if (!this.initialized) throw new Error('Not initialized');
-      // return Array.from(this.data.entries()).map(([key, value]) => ({ key, value }));
+      if(!this.initialized) throw new Error('Not initialized');
+      // return Array.from(this.data.entries()).map(([key, value]) => ({ key, value  }));
   // // await mockMemoryStore.initialize();
       expect(mockMemoryStore.initialized).toBe(true);
   // // await mockMemoryStore.store('test-key', 'test-value');

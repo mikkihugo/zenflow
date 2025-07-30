@@ -15,21 +15,21 @@ class MockMemoryStore {
     this.data = new Map();
   }
 
-  async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async store(key, value, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
     // return { id, size: value.length };
   }
 
-  async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async retrieve(key, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     // return this.data.get(fullKey) || null;
   }
 
-  async search(options = {}) {
-    const results = {};
-    for (const [key, value] of this.data) {
-      if (options.pattern === '*' || key.includes(options.pattern || '')) {
+  async search(options = {}) { 
+    const results = };
+    for(const [key, value] of this.data) {
+      if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value;
       }
     }
@@ -71,7 +71,7 @@ async function runGHModel(prompt, model = 'gpt-4o-mini') {
     });
 
     gh.on('close', (code) => {
-      if (code !== 0) {
+      if(code !== 0) {
         reject(new Error(`gh models run failed));`
       } else {
         resolve(output.trim());
@@ -89,7 +89,7 @@ async function checkGHCLI() {
   try {
 // const response = awaitrunGHModel('Respond with just "OK"', 'openai/gpt-4o-mini');
     return response.includes('OK');
-  } catch (_error) {
+  } catch(_error) {
     return false;
   }
 }
@@ -129,12 +129,12 @@ Focus on practical, actionable feedback. IMPORTANT: Respond with ONLY the JSON o
 
     // Extract JSON from response if it contains other text
     const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
+    if(jsonMatch) {
       // return JSON.parse(jsonMatch[0]);
     } else {
       // return null;
     }
-  } catch (_error) {
+  } catch(_error) {
     // return null;
   }
 }
@@ -171,12 +171,12 @@ IMPORTANT: Respond with ONLY the JSON object, no other text.`;`
 
     // Extract JSON from response if it contains other text
     const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
+    if(jsonMatch) {
       // return JSON.parse(jsonMatch[0]);
     } else {
       // return null;
     }
-  } catch (_error) {
+  } catch(_error) {
     // return null;
   }
 }
@@ -185,7 +185,7 @@ IMPORTANT: Respond with ONLY the JSON object, no other text.`;`
 async function generateDocumentWithAI(docType, service, requirements) {
   const templates = {
     'service-adr': null
-      'Architecture Decision Record (ADR) template with Status, Context, Decision, Consequences sections',
+      'Architecture Decision Record(ADR) template with Status, Context, Decision, Consequences sections',
     'api-documentation': 'API documentation with Overview, Authentication, Endpoints, Examples',
     'security-spec': 'Security specification with Requirements, Implementation, Compliance details' };
 
@@ -207,7 +207,7 @@ Return only the document content, no JSON wrapper.`;`
   try {
 // const response = awaitrunGHModel(prompt, 'openai/gpt-4o-mini');
     // return response;
-  } catch (_error) {
+  } catch(_error) {
     // return null;
   }
 }
@@ -215,7 +215,7 @@ Return only the document content, no JSON wrapper.`;`
 // Main CLI // interface
 // async function main() {
 //   // Check GitHub CLI availability
-//   if (!(await checkGHCLI())) {
+//   if(!(await checkGHCLI())) {
 //     process.exit(1);
 //   }
 
@@ -263,15 +263,15 @@ We will use Redis  session storage backend for the user service.
     result.metadata
   );
 
-  if (aiAnalysis) {
-    if (aiAnalysis.suggested_approvers?.length > 0) {
+  if(aiAnalysis) {
+    if(aiAnalysis.suggested_approvers?.length > 0) {
     }
 
-    if (aiAnalysis.detected_issues?.length > 0) {
+    if(aiAnalysis.detected_issues?.length > 0) {
       aiAnalysis.detected_issues.forEach((_issue) => {});
     }
 
-    if (aiAnalysis.improvement_suggestions?.length > 0) {
+    if(aiAnalysis.improvement_suggestions?.length > 0) {
       aiAnalysis.improvement_suggestions.forEach((_suggestion) => {});
     }
 
@@ -283,11 +283,11 @@ We will use Redis  session storage backend for the user service.
       demoDoc.content
     );
 
-    if (routingReview) {
-      if (routingReview.suggested_changes?.add_approvers?.length > 0) {
+    if(routingReview) {
+      if(routingReview.suggested_changes?.add_approvers?.length > 0) {
       }
 
-      if (routingReview.recommendations?.length > 0) {
+      if(routingReview.recommendations?.length > 0) {
         routingReview.recommendations.forEach((_rec) => {});
       }
     }
@@ -295,7 +295,7 @@ We will use Redis  session storage backend for the user service.
 }
 
 // Run the demo
-if (require.main === module) {
+if(require.main === module) {
   main().catch(console.error);
 }
 

@@ -7,8 +7,8 @@
  * @module AGUIMCPToolExecutor
  */
 
-import { AGUIAdapter } from '../ai/agui-adapter.js';'
-import { MCPToolExecutor } from './tool-executor.js';'
+import { AGUIAdapter  } from '../ai/agui-adapter.js';'
+import { MCPToolExecutor  } from './tool-executor.js';'
 /**  */
  * AG-UI Enhanced Tool Executor
  * Wraps MCP tool execution with AG-UI event emission
@@ -18,8 +18,7 @@ import { MCPToolExecutor } from './tool-executor.js';'
     super(server);
 
     // Create AG-UI adapter for tool execution events
-    this.aguiAdapter = new AGUIAdapter({
-      sessionId = {emitToolEvents = {toolCallsWithEvents = {}) {
+    this.aguiAdapter = new AGUIAdapter({ sessionId = {emitToolEvents = {toolCallsWithEvents = { }) {
     const { parentMessageId } = context;
     const _toolCallId = null;
 
@@ -97,9 +96,9 @@ import { MCPToolExecutor } from './tool-executor.js';'
  * Middleware to wrap existing tool executor with AG-UI capabilities
  */
 // export function _enhanceToolExecutorWithAGUI(existingExecutor = {}) {
-  const _aguiAdapter = new AGUIAdapter({sessionId = existingExecutor.executeTool.bind(existingExecutor);
+  const _aguiAdapter = new AGUIAdapter({ sessionId = existingExecutor.executeTool.bind(existingExecutor);
 
-  existingExecutor.executeTool = async (name, args, context = {}) => {
+  existingExecutor.executeTool = async(name, args, context = { }) => {
     const _toolCallId = null;
 
     try {
@@ -124,7 +123,7 @@ import { MCPToolExecutor } from './tool-executor.js';'
 
       // return result;
     // ; // LINT: unreachable code removed
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       if(toolCallId) {
         aguiAdapter.endToolCall(toolCallId);
         aguiAdapter.emitToolCallResult(`Error = () => aguiAdapter;`

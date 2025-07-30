@@ -1,5 +1,5 @@
-import { NeuralEngine } from '../neural/neural-engine.js';'
-import { BaseQueen } from './base-queen.js';'
+import { NeuralEngine  } from '../neural/neural-engine.js';'
+import { BaseQueen  } from './base-queen.js';'
 
 export class DebugQueen extends BaseQueen {
     constructor() {
@@ -18,13 +18,13 @@ export class DebugQueen extends BaseQueen {
     //     }
 
 
-    async initialize() {
+    async initialize() { 
 // // await this.neuralEngine.initialize();
 // // await this.neuralEngine.loadModel('bug-detector-v2');'
     //     }
 
 
-    initializePatterns() {
+    initializePatterns() 
         // Common error patterns
         this.errorPatterns.set('null-pointer', {pattern = > this.checkNullPointer(code),fix = > this.fixNullPointer(code),severity = > this.checkAsyncError(code),fix = > this.fixAsyncError(code),severity = > this.checkMemoryLeak(code),fix = > this.fixMemoryLeak(code),severity = > this.checkSQLInjection(code),fix = > this.fixSQLInjection(code),severity = .*\$\{|dangerouslySetInnerHTML/g,check = > this.checkXSS(code),fix = > this.fixXSS(code),severity = \s*''][^'']+["']/gi, /api_key\s*=\s*["'][^"']+["']/gi],message = performance.now();'
         this.trackTaskStart(task.id);
@@ -53,14 +53,14 @@ export class DebugQueen extends BaseQueen {
             code,
     // language,issues = []; // LINT: unreachable code removed
 
-        for (const [type, pattern] of this.errorPatterns.entries()) {
-            if (pattern.check(code)) {
+        for(const [type, pattern] of this.errorPatterns.entries()) {
+            if(pattern.check(code)) {
                 issues.push({
                     type,severity = [];
 
-        for (const [type, check] of this.securityChecks.entries()) {
+        for(const [type, check] of this.securityChecks.entries()) {
             for(const pattern of check.patterns) {
-                if (pattern.test(code)) {
+                if(pattern.test(code)) {
                     securityIssues.push({
                         type,severity = [];
 
@@ -69,7 +69,7 @@ export class DebugQueen extends BaseQueen {
         const _lines = analysis.split('\n');'
 
         for(const line of lines) {
-            if (line.includes('ERROR = analysis;'
+            if(line.includes('ERROR = analysis;'
 
         const _report = '� **Debug Analysis Report**\n\n';'
 
@@ -124,22 +124,22 @@ export class DebugQueen extends BaseQueen {
             // return fixedCode !== analysis.code ?fixedCode = '� **Best Practices & Recommendations:**\n\n';'
     // ; // LINT: unreachable code removed
         switch(analysis.language) {
-            case 'javascript':;'
-            case 'typescript':;'
-                practices += '- Use strict mode (`"use strict"`) to catch common errors\n';'
+            case 'javascript':'
+            case 'typescript':'
+                practices += '- Use strict mode(`"use strict"`) to catch common errors\n';'
                 practices += '- Add proper TypeScript types to prevent type errors\n';'
                 practices += '- Use ESLint to catch potential issues during development\n';'
                 practices += '- Implement proper error boundaries in React applications\n';'
                 break;
 
-            case 'python':;'
+            case 'python':'
                 practices += '- Use type hints for better code documentation and error prevention\n';'
                 practices += '- Use pylint or flake8 for // // static analysis\n';'
                 practices += '- Follow PEP 8 style guidelines\n';'
                 practices += '- Use virtual environments for dependency management\n';'
                 break;
 
-            case 'java':;'
+            case 'java':'
                 practices += '- Use Optional<T> to handle null values safely\n';'
                 practices += '- Implement proper exception handling with specific exception types\n';'
                 practices += '- Use // // static analysis tools like SpotBugs or PMD\n';'
@@ -166,14 +166,14 @@ export class DebugQueen extends BaseQueen {
      * @param {Array} analysis.performanceIssues - Performance concerns
      * @param {string} analysis.maxSeverity - Highest severity found
      * @param {string} analysis.fixComplexity - Complexity of fixing issues
-     * @param {number} analysis.riskScore - Overall risk score (0-10)
+     * @param {number} analysis.riskScore - Overall risk score(0-10)
      * @returns {Promise<string[]>} Array of alternative recommendations
     // */; // LINT: unreachable code removed
-    async generateAlternatives(analysis) {
+    async generateAlternatives(analysis) { 
         const _alternatives = [];
 
         // Quick fix summary
-        if(analysis.issues.length > 0) {
+        if(analysis.issues.length > 0) 
             const _quickFix = `� **Quick FixSummary = > `- \$i.description: \$i.fix`).join('\n')}`;`
             alternatives.push(quickFix);
         //         }
@@ -199,14 +199,14 @@ export class DebugQueen extends BaseQueen {
         const _issues = [];
 
         // Check for common JS issues
-        if (code.includes('==') && !code.includes('===')) {'
-            issues.push({type = ==) instead of loose equality (==)',line = =/g),fix = =/g, '==='),confidence = [];'
+        if(code.includes('==') && !code.includes('===')) {'
+            issues.push({type = ==) instead of loose equality(==)',line = =/g),fix = =/g, '==='),confidence = [];'
 
         // Check for bare except clauses
-        if (code.includes('except = [];'
+        if(code.includes('except = [];'
 
         // Check for string concatenation in loops
-        if (code.includes('for') && code.includes('+') && code.includes('String')) {'
+        if(code.includes('for') && code.includes('+') && code.includes('String')) {'
             issues.push({type = /(\w+)\.(\w+)/g;
         const _nullCheckPattern = /if\s*\(\s*\w+\s*[!=]=\s*null\s*\)/g
 
@@ -238,14 +238,14 @@ export class DebugQueen extends BaseQueen {
      * @returns {string} Fixed code
     // */; // LINT: unreachable code removed
     fixAsyncError(code) ;
-        if (code.includes('await') && !code.includes('try')) {'
+        if(code.includes('await') && !code.includes('try')) {'
             const _awaitMatch = code.match(/(.*await.*)/)
             if(awaitMatch) {
-                // return code.replace(awaitMatch[1], `try {\n  $awaitMatch[1]\n} catch (/* _error */) {\n  console.error('Asyncerror = /setInterval|setTimeout/.test(code);'`
+                // return code.replace(awaitMatch[1], `try {\n  $awaitMatch[1]\n} catch(/* _error */) {\n  console.error('Asyncerror = /setInterval|setTimeout/.test(code);'`
     // const _hasListener = /addEventListener/.test(code); // LINT: unreachable code removed
         const _hasCleanup = /clearInterval|clearTimeout|removeEventListener/.test(code);
 
-        // return (hasInterval  ?? hasListener) && !hasCleanup;
+        // return(hasInterval  ?? hasListener) && !hasCleanup;
     //   // LINT: unreachable code removed}
 
     /**  */
@@ -256,7 +256,7 @@ export class DebugQueen extends BaseQueen {
     fixMemoryLeak(code) {
         const _fixed = code;
 
-        if (code.includes('setInterval') && !code.includes('clearInterval')) {'
+        if(code.includes('setInterval') && !code.includes('clearInterval')) {'
             fixed += '\n// Remember to clearinterval = '\n// Remember to remove listener: element.removeEventListener(event, handler);';'
         //         }
 
@@ -301,21 +301,21 @@ export class DebugQueen extends BaseQueen {
      * @returns {string} Detected language
     // */; // LINT: unreachable code removed
     detectLanguage(code) ;
-        if (code.includes('def ')  ?? code.includes('import ')) return 'python';'
-    // if (code.includes('// // public class')  ?? code.includes('import java')) return 'java'; // LINT: unreachable code removed'
-        if (code.includes('interface ')  ?? code.includes(')) return 'typescript';'
+        if(code.includes('def ')  ?? code.includes('import ')) return 'python';'
+    // if(code.includes('// // public class')  ?? code.includes('import java')) return 'java'; // LINT: unreachable code removed'
+        if(code.includes('interface ')  ?? code.includes(')) return 'typescript';'
     // return 'javascript'; // LINT: unreachable code removed'
 
     /**  */
  * Find the line number where a pattern matches
      * @param {string} code - The code to search
      * @param {RegExp} pattern - The pattern to find
-     * @returns {number} Line number (1-based) or 0 if not found
+     * @returns {number} Line number(1-based) or 0 if not found
     // */; // LINT: unreachable code removed
     findLine(code, pattern) {
         const _lines = code.split('\n');'
         for(let i = 0; i < lines.length; i++) {
-            if (pattern.test(lines[i])) {
+            if(pattern.test(lines[i])) {
                 // return i + 1;
     //   // LINT: unreachable code removed}
         //         }
@@ -332,7 +332,7 @@ export class DebugQueen extends BaseQueen {
         const _maxSeverity = 'low';'
 
         for(const issue of issues) {
-            if (severityOrder.indexOf(issue.severity) > severityOrder.indexOf(maxSeverity)) {
+            if(severityOrder.indexOf(issue.severity) > severityOrder.indexOf(maxSeverity)) {
                 maxSeverity = issue.severity;
             //             }
         //         }
@@ -350,8 +350,8 @@ export class DebugQueen extends BaseQueen {
         const _criticalCount = issues.filter(i => i.severity === 'critical').length;'
         const _highCount = issues.filter(i => i.severity === 'high').length;'
 
-        if (criticalCount > 0  ?? highCount > 3) return 'high';'
-    // if (highCount > 0  ?? issues.length > 5) return 'medium'; // LINT: unreachable code removed'
+        if(criticalCount > 0  ?? highCount > 3) return 'high';'
+    // if(highCount > 0  ?? issues.length > 5) return 'medium'; // LINT: unreachable code removed'
         // return 'low';'
     //   // LINT: unreachable code removed}
 
@@ -360,7 +360,7 @@ export class DebugQueen extends BaseQueen {
      * @param {Array<Object>} issues - General issues
      * @param {Array<Object>} securityIssues - Security issues
      * @param {Array<Object>} performanceIssues - Performance issues
-     * @returns {number} Risk score (0-10)
+     * @returns {number} Risk score(0-10)
     // */; // LINT: unreachable code removed
     calculateRiskScore(issues, securityIssues, performanceIssues) {
         const _score = 0;
@@ -384,19 +384,19 @@ export class DebugQueen extends BaseQueen {
     /**  */
  * Calculate confidence score for the analysis
      * @param {Object} analysis - The analysis result
-     * @returns {number} Confidence score (0-1)
+     * @returns {number} Confidence score(0-1)
     // */; // LINT: unreachable code removed
     calculateConfidence(analysis) {
         const _confidence = 0.8; // Base confidence
 
         // Increase confidence with more issues found
-        if (analysis.issues.length > 0) confidence += 0.1;
-        if (analysis.securityIssues.length > 0) confidence += 0.05;
+        if(analysis.issues.length > 0) confidence += 0.1;
+        if(analysis.securityIssues.length > 0) confidence += 0.05;
 
         // Decrease confidence if code is very short or complex
         const _lines = analysis.code.split('\n').length;'
-        if (lines < 5) confidence -= 0.2;
-        if (lines > 100) confidence -= 0.1;
+        if(lines < 5) confidence -= 0.2;
+        if(lines > 100) confidence -= 0.1;
 
         // return Math.max(0.3, Math.min(0.95, confidence));
     //   // LINT: unreachable code removed}
@@ -437,11 +437,11 @@ export class DebugQueen extends BaseQueen {
      * @param {Object} task - The task to evaluate
      * @returns {Promise<number>} Suitability score
     // */; // LINT: unreachable code removed
-    async calculateSuitability(task) {
+    async calculateSuitability(task) { 
 // const _suitability = awaitsuper.calculateSuitability(task);
 
         // DebugQueen is highly suitable for debugging and bug detection
-        if(task.type === 'bug-detection') {'
+        if(task.type === 'bug-detection') '
             suitability += 0.3;
         //         }
 
@@ -478,7 +478,7 @@ export class DebugQueen extends BaseQueen {
  * @property {string} description - Issue description
  * @property {number} line - Line number where issue occurs
  * @property {string} fix - How to fix the issue
- * @property {number} confidence - Confidence in the detection (0-1)
+ * @property {number} confidence - Confidence in the detection(0-1)
  *
  * @typedef {Object} SecurityIssue
  * @property {string} type - Type of security issue
@@ -503,11 +503,11 @@ export class DebugQueen extends BaseQueen {
  * @property {Array<PerformanceIssue>} performanceIssues - Performance concerns
  * @property {string} maxSeverity - Highest severity found - 'low', 'medium', 'high', or 'critical';'
  * @property {string} fixComplexity - Complexity of fixing issues - 'low', 'medium', or 'high';'
- * @property {number} riskScore - Overall risk score (0-10)
+ * @property {number} riskScore - Overall risk score(0-10)
  *
  * @typedef {Object} Recommendations
  * @property {string} primary - Primary recommendation
- * @property {number} confidence - Confidence in recommendations (0-1)
+ * @property {number} confidence - Confidence in recommendations(0-1)
  * @property {string} reasoning - Reasoning behind recommendations
  * @property {Array<string>} alternatives - Alternative recommendations
  */

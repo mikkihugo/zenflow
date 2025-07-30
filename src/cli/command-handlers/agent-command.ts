@@ -3,40 +3,40 @@
  * Converted from JavaScript to TypeScript
  */
 
-import { agentLoader } from '../../agents/agent-loader.js';
+import { agentLoader  } from '../../agents/agent-loader.js';
 // agent.js - Agent management commands
-import { printError, printSuccess } from '../utils.js';
+import { printError, printSuccess  } from '../utils.js';
 
 export async function agentCommand() {
-  case 'spawn':;
+  case 'spawn':
 // await spawnAgent(subArgs, flags);
     break;
 
-  case 'list':;
+  case 'list':
 // // await listAgents(subArgs, flags);
     break;
 
-  case 'hierarchy':;
+  case 'hierarchy':
 // // await manageHierarchy(subArgs, flags);
     break;
 
-  case 'network':;
+  case 'network':
 // // await manageNetwork(subArgs, flags);
     break;
 
-  case 'ecosystem':;
+  case 'ecosystem':
 // // await manageEcosystem(subArgs, flags);
     break;
 
-  case 'provision':;
+  case 'provision':
 // // await provisionAgent(subArgs, flags);
     break;
 
-  case 'terminate':;
+  case 'terminate':
 // // await terminateAgent(subArgs, flags);
     break;
 
-  case 'info':;
+  case 'info':
 // // await showAgentInfo(subArgs, flags);
     break;
   default = subArgs[1]  ?? 'general';
@@ -68,22 +68,22 @@ export async function agentCommand() {
       console.warn(`Capabilities = subArgs[1];`
 
   switch(hierarchyCmd) {
-    case 'create':;
+    case 'create':
       const _hierarchyType = subArgs[2]  ?? 'basic';
       printSuccess(`Creating ${hierarchyType} agent hierarchy`);
       console.warn('�  Hierarchy structure wouldinclude = subArgs[1];'
 
   switch(networkCmd) {
-    case 'topology':;
+    case 'topology':
       printSuccess('Agent networktopology = subArgs[1];'
 
   switch(ecosystemCmd) {
-    case 'status':;
+    case 'status':
       printSuccess('Agent ecosystemstatus = subArgs[1];'
 
   if(!provision) {
     printError('Usage = parseInt(provision);'
-  if (isNaN(count)  ?? count < 1) {
+  if(isNaN(count)  ?? count < 1) {
     printError('Count must be a positive number');
     return;
     //   // LINT: unreachable code removed}

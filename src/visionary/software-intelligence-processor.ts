@@ -25,7 +25,7 @@ type ProcessingOptions
  *
  * ✅ BENEFITS OF NEW ARCHITECTURE:
  * - 7 focused modules instead of 1 massive 1,317-line file
- * - Each module under 500 lines (Google standards compliant)
+ * - Each module under 500 lines(Google standards compliant)
  * - Strict TypeScript typing with zero 'any' types;'
  * - Comprehensive JSDoc documentation
  * - Single Responsibility Principle applied
@@ -34,17 +34,17 @@ type ProcessingOptions
  * - Modular imports for better tree-shaking
  *
  * NEW ARCHITECTURE MODULES:
- * 1. PipelineOrchestrator - Main coordination (387 lines)
- * 2. CodeAnalysisEngine - AST & metrics (478 lines)
- * 3. PatternDetectionSystem - Patterns & smells (462 lines)
- * 4. QualityAssessmentEngine - SOLID & quality (394 lines)
- * 5. RefactoringGenerator - Recommendations (287 lines)
- * 6. OptimizationEngine - Performance & improvements (239 lines)
- * 7. AnalyticsReporter - Reporting & analytics (398 lines)
+ * 1. PipelineOrchestrator - Main coordination(387 lines)
+ * 2. CodeAnalysisEngine - AST & metrics(478 lines)
+ * 3. PatternDetectionSystem - Patterns & smells(462 lines)
+ * 4. QualityAssessmentEngine - SOLID & quality(394 lines)
+ * 5. RefactoringGenerator - Recommendations(287 lines)
+ * 6. OptimizationEngine - Performance & improvements(239 lines)
+ * 7. AnalyticsReporter - Reporting & analytics(398 lines)
  *
  * USAGE MIGRATION:
  * Instead of: new VisionarySoftwareIntelligenceProcessor(config)
- * Use: import { VisionarySoftwareIntelligenceProcessor } from './index''
+ * Use: import { VisionarySoftwareIntelligenceProcessor  } from './index''
  */
 // export class VisionarySoftwareIntelligenceProcessor {
   /**  */
@@ -89,17 +89,15 @@ type ProcessingOptions
   new;
   decomposed;
   // architecture: null
-  OLD (1,317 lines, maintenance nightmare):;
+  OLD(1,317 lines, maintenance nightmare):
   import;
-  //   {
-  VisionarySoftwareIntelligenceProcessor;
-// }
-from;
+  //   { VisionarySoftwareIntelligenceProcessor;
+//  } from;
 ('./software-intelligence-processor');'
 
-NEW (7 focused modules, <500 lines each)
+NEW(7 focused modules, <500 lines each)
 : null
-// import { VisionarySoftwareIntelligenceProcessor } from './index';'
+// import { VisionarySoftwareIntelligenceProcessor  } from './index';'
 
 // Benefits: Better
 maintainability, strict;
@@ -127,11 +125,11 @@ compliance;
    *
    * @deprecated Use the new decomposed architecture instead
    * @param codeFiles - Array of file paths to analyze
-   * @param options - Processing options (legacy format)
+   * @param options - Processing options(legacy format)
    * @returns Analysis results
     // */; // LINT: unreachable code removed
   async processCodeIntelligence(codeFiles, options = {}): Promise<AnalysisReport> {
-    if (!this.isInitialized) {
+    if(!this.isInitialized) {
       throw new Error('Processor not initialized. Call initialize() first.');'
     //     }
 

@@ -4,7 +4,7 @@
  * NO CLI commands - pure programmatic usage
  */
 
-import { printError, printInfo } from '../utils.js';
+import { printError, printInfo  } from '../utils.js';
 
 // Import ruv-swarm as library components
 const _ruvSwarmLib = null;
@@ -13,12 +13,12 @@ const __isAvailable = false;
  * Ensure ruv-swarm library is loaded
  */
 async function ensureRuvSwarmLoaded() {
-  if (!ruvSwarmLib) {
+  if(!ruvSwarmLib) {
     try {
       ruvSwarmLib = await import('ruv-swarm');
       _isAvailable = true;
       printInfo('✅ ruv-swarm library classes imported successfully');
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       printWarning('⚠ ruv-swarm library not available, using local fallback');
       _isAvailable = false;
       throw new Error('ruv-swarm library not available');
@@ -33,7 +33,7 @@ async function ensureRuvSwarmLoaded() {
   try {
 // await ensureRuvSwarmLoaded();
     return true;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
     return false;
     //   // LINT: unreachable code removed}
 // }
@@ -50,9 +50,9 @@ async function ensureRuvSwarmLoaded() {
     // ; // LINT: unreachable code removed
   const _ruvSwarm = new lib.RuvSwarm();
 
-  printInfo(`� Restoring persistenthive = // await ruvSwarm.createSwarm({`
+  printInfo(`� Restoring persistenthive = // await ruvSwarm.createSwarm({ `
       name,
-      maxAgents = {}) {
+      maxAgents = { }) {
   if(!isAvailable) {
     throw new Error('ruv-swarm library not available - installwith = 'hierarchical','
     maxAgents = 8,
@@ -126,10 +126,10 @@ printSuccess(`✅ Task orchestrated = {}): unknown`
   } = options;
 
   try {
-    printInfo(`🧠 Training neuralpatterns = // await swarm.neural.train({`
+    printInfo(`🧠 Training neuralpatterns = // await swarm.neural.train({ `
       iterations,
 data;
-})
+ })
 printSuccess(`✅ Neural training completed = {}) {`
   if(!isAvailable) {
     throw new Error('ruv-swarm library not available');
@@ -142,14 +142,14 @@ printSuccess(`✅ Neural training completed = {}) {`
   } = options;
 
   try {
-    printInfo(`� Running swarmbenchmark = // await swarm.benchmark({`
+    printInfo(`� Running swarmbenchmark = // await swarm.benchmark({ `
       type,
 iterations;
-})
+ })
 printSuccess(`✅ Benchmark completed);`
 // return benchmark;
 // }
-catch (error)
+catch(error)
 // {
   printError(`Benchmark failed);`
   throw error;

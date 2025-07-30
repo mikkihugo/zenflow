@@ -13,7 +13,7 @@ const _port = process.argv[2] ?? 4102;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended }));
+app.use(express.urlencoded({ extended  }));
 // Mock data storage
 const _mockData = {
   visions: new Map(),
@@ -37,20 +37,19 @@ app.use((req, _res, next) =>
 app.get('/api/health', (_req, res) =>
 // {
   res.json(;
-  apiResponseTemplates.success({
-      service: 'business',
+  apiResponseTemplates.success({ service: 'business',
   status: 'healthy',
   version: '1.0.0-mock',
   uptime: process.uptime(),
-  timestamp: new Date().toISOString() {}
-})
+  timestamp: new Date().toISOString()
+ })
 // )
 })
 // Authentication endpoints
 app.post('/auth/login', (req, res) =>
 // {
   const { email, password } = req.body;
-  if (email && password) {
+  if(email && password) {
     res.json(;
     apiResponseTemplates.success({
         token: `mock_business_token_${Date.now()}`,
@@ -89,7 +88,7 @@ app.post('/api/visions', (req, res) =>
   id: req.body.id  ?? `vision_mock_${Date.now() }`,
   status: 'pending_approval',
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString() {}
+  updated_at: new Date().toISOString()
 // }
 mockData.visions.set(vision.id, vision);
 mockData.analytics.total_visions++;
@@ -104,7 +103,7 @@ Math.random() * 100 + 50;
 app.get('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
-  if (vision) {
+  if(vision) {
     res.json(apiResponseTemplates.success(vision));
   } else {
     res.status(404).json(apiResponseTemplates.error('Vision not found', 'VISION_NOT_FOUND'));
@@ -117,10 +116,10 @@ app.get('/api/visions', (req, res) =>
   const _limitNum = parseInt(limit);
   const _visions = Array.from(mockData.visions.values());
   // Apply filters
-  if (status) {
+  if(status) {
     visions = visions.filter((v) => v.status === status);
 // }
-  if (priority) {
+  if(priority) {
     visions = visions.filter((v) => v.priority === priority);
 // }
   // Pagination
@@ -128,22 +127,21 @@ app.get('/api/visions', (req, res) =>
   const _endIndex = startIndex + limitNum;
   const _paginatedVisions = visions.slice(startIndex, endIndex);
   res.json(;
-  apiResponseTemplates.success({
-      visions,
+  apiResponseTemplates.success({ visions,
   page,
   limit,
   total: visions.length,
   totalPages: Math.ceil(visions.length / limitNum)
-})
+ })
 // )
 })
 app.patch('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
-  if (vision) {
+  if(vision) {
     const _updatedVision = { ...vision,
 ..req.body,
-    updated_at: new Date().toISOString() {}
+    updated_at: new Date().toISOString()
 // }
   mockData.visions.set(req.params.id, updatedVision);
   res.json(apiResponseTemplates.success(updatedVision));
@@ -155,9 +153,9 @@ else
 })
 app.delete('/api/visions/) =>'
 // {
-  if (mockData.visions.has(req.params.id)) {
+  if(mockData.visions.has(req.params.id)) {
     mockData.visions.delete(req.params.id);
-    res.json(apiResponseTemplates.success({ deleted, id: req.params.id }));
+    res.json(apiResponseTemplates.success({ deleted, id: req.params.id  }));
   } else {
     res.status(404).json(apiResponseTemplates.error('Vision not found', 'VISION_NOT_FOUND'));
 // }
@@ -166,7 +164,7 @@ app.delete('/api/visions/) =>'
 app.post('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
-  if (vision) {
+  if(vision) {
     const _approval = {
       vision_id: req.params.id,
     stakeholder_ids: req.body.stakeholder_ids  ?? [],
@@ -176,7 +174,7 @@ app.post('/api/visions/) =>'
       Date.now() + 7 * 24 * 60 * 60 * 1000
     ).toISOString(), // 7 days
       submitted_at;
-    : new Date().toISOString() {}
+    : new Date().toISOString()
 // }
   mockData.approvals.set(req.params.id, approval);
   res.json(apiResponseTemplates.success(approval));
@@ -190,24 +188,23 @@ app.post('/api/visions/) =>'
 // {
   const _approval = mockData.approvals.get(req.params.id);
   const { stakeholder_id, decision, comments } = req.body;
-  if (approval) {
-    if (decision === 'approved') {
+  if(approval) {
+    if(decision === 'approved') {
       approval.approval_status = 'approved';
       approval.approved_by = approval.approved_by ?? [];
       approval.approved_by.push(stakeholder_id);
       approval.approval_timestamp = new Date().toISOString();
-    } else if (decision === 'rejected') {
+    } else if(decision === 'rejected') {
       approval.approval_status = 'rejected';
       approval.rejection_reason = comments;
       approval.required_changes = req.body.required_changes ?? [];
 // }
     approval.comments = approval.comments ?? [];
-    approval.comments.push({
-      stakeholder_id,
+    approval.comments.push({ stakeholder_id,
     decision,
     comments,
-    timestamp: new Date().toISOString() {}
-})
+    timestamp: new Date().toISOString()
+ })
   res.json(apiResponseTemplates.success(approval))
 // }
 else
@@ -221,7 +218,7 @@ json(apiResponseTemplates.error('Approval request not found', 'APPROVAL_NOT_FOUN
 app.post('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
-  if (vision) {
+  if(vision) {
     // Mock ROI analysis with realistic values
     const _estimatedRevenue = Math.random() * 1000000 + 100000; // $100K - $1M
     const _implementationCost = Math.random() * 200000 + 50000; // $50K - $250K
@@ -231,7 +228,7 @@ app.post('/api/visions/) =>'
         estimated_revenue: Math.round(estimatedRevenue),
     implementation_cost: Math.round(implementationCost),
     roi_percentage: Math.round(roi * 100) / 100,
-    payback_period_months:;
+    payback_period_months:
     Math.round((implementationCost / (estimatedRevenue / 12)) * 100) / 100,
     risk_factors: [;
           'Market competition',
@@ -254,7 +251,7 @@ app.get('/api/analytics/portfolio-metrics', (_req, res) =>
 app.get('/api/visions/) =>'
 // {
   const _vision = mockData.visions.get(req.params.id);
-  if (vision) {
+  if(vision) {
     const _analytics = {
       progress_percentage: Math.random() * 100,
     time_elapsed: Math.random() *
@@ -362,7 +359,7 @@ app.get('/api/events', (req, res) =>
       entity_id: entity_id  ?? 'test_vision_001',
       timestamp: new Date(Date.now() - 60000).toISOString(),
       data: { vision_id, status: 'updated' } } ];
-  res.json(apiResponseTemplates.success({ events: events.slice(0, parseInt(limit)) }));
+  res.json(apiResponseTemplates.success({ events: events.slice(0, parseInt(limit))  }));
 })
 // Error handling middleware
 app.use((error, _req, res, _next) =>

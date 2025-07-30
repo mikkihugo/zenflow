@@ -13,7 +13,7 @@ export class JsonYamlValidatorPlugin {
 
           // Check formatting
           const _formatted = JSON.stringify(parsed, null, this.config.indentSize);
-          if (content.trim() !== formatted.trim()) {
+          if(content.trim() !== formatted.trim()) {
             issues.push({type = // await this.validateJsonStructure(parsed, filename);
           issues.push(...jsonIssues);
 
@@ -28,13 +28,13 @@ export class JsonYamlValidatorPlugin {
 
           // Check formatting
           const _formatted = yaml.dump(parsed, {indent = = formatted.trim()) {
-            issues.push({type = // await this.validateYamlStructure(parsed, content, filename);
+            issues.push({ type = // await this.validateYamlStructure(parsed, content, filename);
           issues.push(...yamlIssues);
 
           // return {valid = // await import('js-yaml');
     // const _parsed = yaml.load(content); // LINT: unreachable code removed
           // return yaml.dump(parsed, { ;
-    // indent = {type = { // LINT: unreachable code removed}) {
+    // indent = {type = { // LINT: unreachable code removed }) {
     console.warn(`� Scanning JSON/YAML files in ${rootPath}`);
 
     this.stats = {filesScanned = {summary = // await this.findFiles(rootPath);
@@ -70,7 +70,7 @@ export class JsonYamlValidatorPlugin {
       console.warn(`✅ Scanned ${results.summary.filesScanned} files, found ${results.summary.issuesFound} issues`);
 
       // return results;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       console.error('❌ JSON/YAML scanning failed = {}) {'
     const _result = {file = // await import('fs').then(fs => fs.promises.stat(filePath));
       result.metadata.size = stats.size;
@@ -105,12 +105,12 @@ find(v => v.extensions.includes(ext));
 // const _securityIssues = awaitthis.performSecurityChecks(content, filePath);
       result.issues.push(...securityIssues);
 
-    } catch (error) {
+    } catch(error) {
       result.valid = false;
       result.issues.push({type = [];
 
     // Check for empty objects/arrays
-    if (typeof parsed === 'object' && Object.keys(parsed).length === 0) {
+    if(typeof parsed === 'object' && Object.keys(parsed).length === 0) {
       issues.push({type = this.countNullValues(parsed);
     if(nullCount > 0) {
       issues.push({type = this.calculateDepth(parsed);
@@ -123,24 +123,24 @@ find(v => v.extensions.includes(ext));
     // return issues;
     //   // LINT: unreachable code removed}
 
-  async validateYamlStructure(parsed, content, filename) {
+  async validateYamlStructure(parsed, content, filename) { 
     const _issues = [];
 
-    // Check for tabs (YAML should use spaces)
-    if (content.includes('\t')) {
+    // Check for tabs(YAML should use spaces)
+    if(content.includes('\t')) 
       issues.push({type = content.split('\n');
     const _indentationIssues = this.checkYamlIndentation(lines);
     issues.push(...indentationIssues);
 
     // Docker Compose specific checks
-    if (filename.includes('docker-compose')) {
+    if(filename.includes('docker-compose')) {
       const _dockerIssues = this.validateDockerCompose(parsed);
       issues.push(...dockerIssues);
     //     }
 
 
     // GitHub Actions workflow checks
-    if (filename.includes('.github/workflows')) {
+    if(filename.includes('.github/workflows')) {
       const _workflowIssues = this.validateGitHubWorkflow(parsed);
       issues.push(...workflowIssues);
     //     }
@@ -149,15 +149,15 @@ find(v => v.extensions.includes(ext));
     // return issues;
     //   // LINT: unreachable code removed}
 
-  async validateSchema(data, filePath) {
+  async validateSchema(data, filePath) { 
     const _issues = [];
 
-    // Find matching schema
+    // Find matching schema: }
     let _matchingSchema = null;
     const _fileName = path.basename(filePath);
 
     for(const [pattern, schema] of this.schemas) {
-      if (this.matchesPattern(filePath, pattern)  ?? fileName === pattern) {
+      if(this.matchesPattern(filePath, pattern)  ?? fileName === pattern) {
         matchingSchema = schema;
         break;
       //       }
@@ -170,7 +170,7 @@ find(v => v.extensions.includes(ext));
 
 
     try {
-      // Simple schema validation (in production, use ajv or similar)
+      // Simple schema validation(in production, use ajv or similar)
       const _validationErrors = this.validateAgainstSchema(data, matchingSchema);
       for(const error of validationErrors) {
         issues.push({type = [];
@@ -179,7 +179,7 @@ find(v => v.extensions.includes(ext));
 
     const _urls = content.match(urlPattern)  ?? [];
     for(const url of urls) {
-      if (url.includes('localhost')  ?? url.includes('127.0.0.1')) {
+      if(url.includes('localhost')  ?? url.includes('127.0.0.1')) {
         issues.push({type = [];
 
     // Check for missing important fields
@@ -198,7 +198,7 @@ find(v => v.extensions.includes(ext));
     const _files = [];
     for(const pattern of this.config.filePatterns) {
 // const _matches = awaitglob(pattern, {cwd = validationResult.issues.filter(i => i.fixable);
-    if (fixableIssues.length === 0) return;
+    if(fixableIssues.length === 0) return;
     // ; // LINT: unreachable code removed
     try {
 // const _content = awaitreadFile(filePath, 'utf8');
@@ -211,28 +211,28 @@ find(v => v.extensions.includes(ext));
 // // await writeFile(filePath, formatted, 'utf8');
         console.warn(`� Auto-fixed formatting in ${filePath}`);
       //       }
-    } catch (error) {
+    } catch(error) {
       console.warn(`⚠ Auto-fix failed for ${filePath});`
   //   }
 
 
   // Utility methods
   extractLineNumber(errorMessage) {
-    const _match = errorMessage.match(/line (\d+)/);
+    const _match = errorMessage.match(/line(\d+)/);
     // return match ? parseInt(match[1]) ;
     //   // LINT: unreachable code removed}
 
   countNullValues(obj, count = 0) ;
-    if (obj === null) return count + 1;
+    if(obj === null) return count + 1;
     // if(typeof obj === 'object' && obj !== null) { // LINT: unreachable code removed
-      for (const value of Object.values(obj)) {
+      for(const value of Object.values(obj)) {
         count = this.countNullValues(value, count);
       //       }
     //     }
     // return count;
     // ; // LINT: unreachable code removed
   calculateDepth(obj, depth = 0) ;
-    if (typeof obj !== 'object'  ?? obj === null) return depth;
+    if(typeof obj !== 'object'  ?? obj === null) return depth;
     // return Math.max(...Object.values(obj).map(v => this.calculateDepth(v, depth + 1))); // LINT: unreachable code removed
 
   checkYamlIndentation(lines) {
@@ -240,7 +240,7 @@ find(v => v.extensions.includes(ext));
 
     for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
-      if (line.trim() === ''  ?? line.trim().startsWith('#')) continue;
+      if(line.trim() === ''  ?? line.trim().startsWith('#')) continue;
 
       const _indent = line.match(/^(\s*)/)[1].length;
       if(indent % this.config.indentSize !== 0) {
@@ -261,7 +261,7 @@ find(v => v.extensions.includes(ext));
 
     if(schema.required) {
       for(const field of schema.required) {
-        if (!(field in data)) {
+        if(!(field in data)) {
           errors.push(`Missing required field);`
         //         }
       //       }

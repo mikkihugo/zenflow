@@ -1,8 +1,8 @@
 // workflow-command.js - Modern workflow command handler with SPARC methodology integration
 
-import { promises as fs } from 'node:fs';
+import { promises as fs  } from 'node:fs';
 import path from 'node:path';
-import { printError } from '../utils.js';
+import { printError  } from '../utils.js';
 
 // Workflow templates and predefined workflows
 const _WORKFLOW_TEMPLATES = {
@@ -21,29 +21,29 @@ export async function workflowCommand() {
 // }
 try {
     switch(subCommand) {
-      case 'create':;
+      case 'create':
 // // await createWorkflow(args.slice(1), flags);
         break;
-      case 'list':;
+      case 'list':
 // // await listWorkflows(args.slice(1), flags);
         break;
-      case 'run':;
-      case 'execute':;
+      case 'run':
+      case 'execute':
 // // await runWorkflow(args.slice(1), flags);
         break;
-      case 'status':;
+      case 'status':
 // // await showWorkflowStatus(args.slice(1), flags);
         break;
-      case 'stop':;
+      case 'stop':
 // // await stopWorkflow(args.slice(1), flags);
         break;
-      case 'templates':;
+      case 'templates':
 // // await showTemplates(args.slice(1), flags);
         break;
-      case 'modes':;
+      case 'modes':
 // // await showModes(args.slice(1), flags);
         break;
-      case 'info':;
+      case 'info':
 // // await showWorkflowInfo(args.slice(1), flags);
         break;default = args[0];
   const _template = flags.template  ?? flags.t;
@@ -90,9 +90,9 @@ $;
   });
 
   console.warn('\n Available SPARC Modes => {'
-    if (index % 3 === 0) console.warn('  ', end='');
+    if(index % 3 === 0) console.warn('  ', end='');
     console.warn(mode.padEnd(20), end='');
-    if ((index + 1) % 3 === 0) console.warn('');
+    if((index + 1) % 3 === 0) console.warn('');
   });
 
   printInfo('\nTo create a workflow interactively, use a workflow template or define custom phases.');
@@ -114,9 +114,9 @@ $;
 `);`
         console.warn(`;`
 ID = args[0];
-if (!workflowIdentifier) {
+if(!workflowIdentifier) {
   printError('Usage = // await findWorkflow(workflowIdentifier);'
-  if (!workflow) {
+  if(!workflow) {
     printError(`Workflow notfound = flags['dry-run']  ?? flags.dryRun;`
 
   const _verbose = flags.verbose  ?? flags.v;
@@ -134,7 +134,7 @@ if (!workflowIdentifier) {
 
     if(verbose) {
       console.warn(`   SPARCMode = workflow.phases.find(p => p.name === phaseName);`
-      if (!phase) {
+      if(!phase) {
         printError(`Phase notfound = > console.warn(`  - ${p.name}`));`
     return;
     //   // LINT: unreachable code removed}
@@ -209,7 +209,7 @@ async function showWorkflowInfo() {
     printSuccess(`Template Info => {`
       console.warn(`${index + 1}. ${phase.name}`);
       console.warn(`Mode = // await findWorkflow(target);`
-  if (workflow) {
+  if(workflow) {
 // // await showWorkflowStatus([target], flags);
     return;
     //   // LINT: unreachable code removed}
@@ -235,11 +235,11 @@ async function findWorkflow(identifier = path.join('.claude-zen', 'workflows');
         if(workflow.id === identifier  ?? workflow.name === identifier) {
           // return workflow;
     //   // LINT: unreachable code removed}
-      } catch (error) {
+      } catch(error) {
         continue;
       //       }
     //     }
-  } catch (error) {
+  } catch(error) {
     // Directory doesn't exist or other error'
   //   }
   // return null;
@@ -254,7 +254,7 @@ async function updateWorkflowStatus(workflowId = // await findWorkflow(workflowI
       const _workflowPath = path.join('.claude-zen', 'workflows', `${workflowId}.json`);
 // // await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
     //     }
-  } catch (error) {
+  } catch(error) {
     printWarning(`Could not update workflow status = {`
     'spec-pseudocode');
     : 'Design',

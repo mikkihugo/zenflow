@@ -3,7 +3,7 @@
  * Comprehensive system status monitoring with full type safety
  */
 
-import { FlagValidator } from '../core/argument-parser.js';
+import { FlagValidator  } from '../core/argument-parser.js';
 
 // =============================================================================
 // STATUS COMMAND TYPES
@@ -19,7 +19,7 @@ import { FlagValidator } from '../core/argument-parser.js';
 // // Get system status
 // // const _status = awaitgetSystemStatus(options.verbose, logger);
 // // Output status
-// if (options.json) {
+// if(options.json) {
 //   console.warn(JSON.stringify(status, null, 2));
 // } else {
   displayStatus(status, options.verbose, logger);
@@ -41,14 +41,14 @@ const _memoryStore = './memory/memory-store.json';
 // const _content = awaitfs.readFile(memoryStore, 'utf-8');
 const _data = JSON.parse(content);
 const _totalEntries = 0;
-for (const entries of Object.values(data)) {
-  if (Array.isArray(entries)) {
+for(const entries of Object.values(data)) {
+  if(Array.isArray(entries)) {
     totalEntries += entries.length;
   //   }
 // }
 logger.debug('Memory stats retrieved', { totalEntries });
 // return totalEntries;
-} catch (error)
+} catch(error)
 // {
   logger.warn('Failed to get memory stats', error);
   // return 0;
@@ -82,7 +82,7 @@ async function getResourceUsage(logger = // await import('node);'
   console.warn(`🤖Agents = === 0) {`
     console.warn('   Run "claude-zen agent spawn researcher" to create an agent');
   //   }
-  if (status.memory.entries === 0) {
+  if(status.memory.entries === 0) {
     console.warn('   Run "claude-zen memory store key value" to test memory');
   //   }
 // }
@@ -109,9 +109,9 @@ function formatUptime(milliseconds = === 0) return '0s';
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
-    // if (hours > 0) return `\${hours // LINT}h ${minutes % 60}m ${seconds % 60}s`;
-  if (_minutes > 0) return `${minutes}m ${seconds % 60}s`;
+  if(days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+    // if(hours > 0) return `\${hours // LINT}h ${minutes % 60}m ${seconds % 60}s`;
+  if(_minutes > 0) return `${minutes}m ${seconds % 60}s`;
     // return `\${seconds // LINT}s`;
 // }
 

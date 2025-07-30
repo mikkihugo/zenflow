@@ -8,10 +8,10 @@
  * @version 2.0.0;
  */
 
-import { execSync } from 'node:child_process';
+import { execSync  } from 'node:child_process';
 import fs from 'node:fs';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path, { dirname  } from 'node:path';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = dirname(__filename);
@@ -109,12 +109,12 @@ function updateVersionFiles(version) {
   console.warn('� Updating version in source files...');
   const _versionFiles = getVersionFiles(version);
   const _updatedCount = 0;
-  versionFiles.forEach(({ path, pattern, replacement }) => {
+  versionFiles.forEach(({ path, pattern, replacement  }) => {
     const _fullPath = path.join(rootDir, filePath);
-    if (fs.existsSync(fullPath)) {
+    if(fs.existsSync(fullPath)) {
       const _content = fs.readFileSync(fullPath, 'utf8');
       const _newContent = content.replace(pattern, replacement);
-      if (content !== newContent) {
+      if(content !== newContent) {
         fs.writeFileSync(fullPath, newContent);
         console.warn(`   ✅ Updated ${filePath}`);
         updatedCount++;
@@ -134,7 +134,7 @@ function updateVersionFiles(version) {
 function cleanDistDirectory() {
   console.warn('🧹 Cleaning dist directory...');
   const _distDir = path.join(rootDir, 'dist');
-  if (fs.existsSync(distDir)) {
+  if(fs.existsSync(distDir)) {
     execSync('rm -rf dist', { cwd});
     console.warn('   ✅ Cleaned dist directory');
   //   }
@@ -148,12 +148,12 @@ function buildTypeScriptFiles() {
     // First try to build CLI files with relaxed config
     execSync('npx tsc -p tsconfig.cli.json', { cwd, stdio);
     console.warn('   ✅ CLI files built successfully');
-  } catch (/* _error */) {
+  } catch(/* _error */) {
     console.warn('   ⚠  Build had errors, trying fallback...');
     try {
       // Fallback: try the regular build
       execSync('npm run build);'
-    } catch (/* _fallbackError */) {
+    } catch(/* _fallbackError */) {
       console.warn('   ⚠  Build had errors, but continuing...');
       // Continue anyway as there might be type errors that don't affect runtime'
     //     }
@@ -169,11 +169,11 @@ function verifyDistFiles(version) {
   const _distFiles = ['dist/cli/cli-main.js', 'dist/cli/index.js'];
   distFiles.forEach((distFile) => {
     const _fullPath = path.join(rootDir, distFile);
-    if (fs.existsSync(fullPath)) {
+    if(fs.existsSync(fullPath)) {
       const _content = fs.readFileSync(fullPath, 'utf8');
       const _versionMatch = content.match(/VERSION = ['"]([^'"]+)['"]/);"'
-      if (versionMatch) {
-        if (versionMatch[1] === version) {
+      if(versionMatch) {
+        if(versionMatch[1] === version) {
           console.warn(`   ✅ ${distFile});`
         } else {
           console.warn(`   ❌ ${distFile}: ${versionMatch[1]} (expected ${version})`);
@@ -197,7 +197,7 @@ function checkPublishFiles() {
       encoding: 'utf8'
 })
   const _packInfo = JSON.parse(packOutput) as PackInfo[];
-  if (packInfo[0]?.files) {
+  if(packInfo[0]?.files) {
     const _importantFiles = packInfo[0].files.filter(
         (_f) =>;
     f.path.includes('cli.js') ??
@@ -207,8 +207,7 @@ function checkPublishFiles() {
     //     )
     importantFiles.forEach((file) =>
       console.warn(`   � \$`
-      file.path
-    (\$
+      file.path(\$
       (file.size / 1024).toFixed(1)
     KB
     )`)`
@@ -217,7 +216,7 @@ function checkPublishFiles() {
     console.warn(`   Total size: \$(packInfo[0].size / 1024 / 1024).toFixed(2)MB`)
   //   }
 // }
-catch (/* _error */)
+catch(/* _error */)
 // {
   console.warn('   ⚠  Could not get pack info');
 // }
@@ -259,7 +258,7 @@ async function _main(): Promise<void> {
     checkPublishFiles();
     // Display next steps
     displayNextSteps(version);
-  } catch (error) {
+  } catch(error) {
     const _errorMessage = error instanceof Error ? error.message : String(error);
     console.error('❌ Publication preparation failed);'
     process.exit(1);

@@ -3,16 +3,16 @@
  * Uses jscpd to detect duplicate code patterns across the codebase;
  */
 
-import { exec } from 'node:child_process';
-import { createHash } from 'node:crypto';
-import { promisify } from 'node:util';
+import { exec  } from 'node:child_process';
+import { createHash  } from 'node:crypto';
+import { promisify  } from 'node:util';
 
 // Import glob using dynamic import to avoid ESM issues
 let _glob;
 try {
 // const _globModule = awaitimport('glob');
   _glob = globModule.glob  ?? globModule.default;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Glob not available, using fallback file discovery');
   _glob = null;
 // }
@@ -21,7 +21,7 @@ const _execAsync = promisify(exec);
 const __jscpdAvailable = false;
 try {
 // // await execAsync('which jscpd', {timeout = true;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('jscpd not available, using fallback duplicate detection');
   _jscpdAvailable = false;
 // }
@@ -44,7 +44,7 @@ try {
       try {
 // const _reportContent = awaitreadFile(outputFile, 'utf8');
         // return JSON.parse(reportContent);
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
         // Fallback = {minTokens = path.join(this.config.outputDir, '.jscpd.json');
 // // await writeFile(configPath, JSON.stringify(config, null, 2));
     // return configPath;
@@ -59,9 +59,9 @@ try {
     const _duplicates = [];
 
     for(const line of lines) {
-      if (line.includes('Found') && line.includes('clones')) {
+      if(line.includes('Found') && line.includes('clones')) {
         // Parse clone information
-        const _match = line.match(/Found (\d+) clones/);
+        const _match = line.match(/Found(\d+) clones/);
         if(match) {
           console.warn(`� Found ${match1} duplicates in output`);
         //         }
@@ -80,7 +80,7 @@ try {
         for(const block of blocks) {
           const _hash = this.generateBlockHash(block.code);
 
-          if (codeBlocks.has(hash)) {
+          if(codeBlocks.has(hash)) {
             const _existing = codeBlocks.get(hash);
             duplicates.push({id = content.split('\n');
     const _blocks = [];
@@ -90,13 +90,13 @@ try {
       const _block = lines.slice(i, i + minLines).join('\n');
 
       // Skip blocks that are mostly whitespace or comments
-      if (this.isSignificantBlock(block)) {
+      if(this.isSignificantBlock(block)) {
         blocks.push({start = code.split('\n');
     const _significantLines = 0;
 
     for(const line of lines) {
       const _trimmed = line.trim();
-      if (trimmed && ;
+      if(trimmed && ;
           !trimmed.startsWith('//') &&
           !trimmed.startsWith('/*') && */
           !trimmed.startsWith('*') &&;
@@ -113,10 +113,10 @@ try {
   /**
    * Process and enhance duplicate results;
    */;
-  async processDuplicates(jscpdResults) {
+  async processDuplicates(jscpdResults) { 
     const _duplicates = [];
 
-    if(jscpdResults.duplicates) {
+    if(jscpdResults.duplicates) 
       for(const duplicate of jscpdResults.duplicates) {
 // const _processed = awaitthis.enhanceDuplicate(duplicate);
         duplicates.push(processed);
@@ -130,8 +130,8 @@ try {
   /**
    * Enhance duplicate information;
    */;
-  async enhanceDuplicate(duplicate) {
-    const _enhanced = {id = 0; i < duplicate.files.length; i++) {
+  async enhanceDuplicate(duplicate) { 
+    const _enhanced = id = 0; i < duplicate.files.length; i++) {
         const _file = duplicate.files[i];
         const _occurrence = {file = === 0;
         };
@@ -234,10 +234,10 @@ try {
 
     for(const duplicate of duplicates) {
       for(const occurrence of duplicate.occurrences) {
-        relationships.push({id = > b.complexity_score - a.complexity_score);
+        relationships.push({ id = > b.complexity_score - a.complexity_score);
 slice(0, 10);
 map(d => ({id = > o.file);
-        })),recommendations = [];
+         })),recommendations = [];
 
     if(metrics.severity_breakdown.critical > 0) {
       recommendations.push({priority = > token.length > 0);
@@ -249,7 +249,7 @@ length;
    * Generate block hash;
    */;
   generateBlockHash(code) {
-    // Normalize code for hashing (remove whitespace variations)
+    // Normalize code for hashing(remove whitespace variations)
     const _normalized = code;
 replace(/\s+/g, ' ');
 replace(/;\s*}/g, ';}');
@@ -277,10 +277,10 @@ trim();
   /**
    * Create fallback duplicate analysis when JSCPD isn't available;'
    */;
-  async createFallbackDuplicateAnalysis(targetPath) {
+  async createFallbackDuplicateAnalysis(targetPath) { 
     console.warn('Using fallback duplicate detection with basic hashing');
 
-    const { readFile, readdir, stat } = await import('node);'
+    const  readFile, readdir, stat } = await import('node);'
     const { join } = // await import('node);'
 // const _files = awaitthis.getAllJSFiles(targetPath);
 
@@ -297,14 +297,14 @@ trim();
         // Hash each significant line
         for(let i = 0; i < lines.length; i++) {
           const _line = lines[i].trim();
-          if (line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) { */
+          if(line.length < 20  ?? line.startsWith('//')  ?? line.startsWith('/*')) { */
             continue; // Skip short lines and comments
           //           }
 
 
           const _lineHash = createHash('md5').update(line).digest('hex');
 
-          if (!lineHashes.has(lineHash)) {
+          if(!lineHashes.has(lineHash)) {
             lineHashes.set(lineHash, []);
           //           }
 
@@ -313,7 +313,7 @@ trim();
           const _block = lines.slice(i, i + this.config.minLines).join('\n');
           const _blockHash = createHash('md5').update(block).digest('hex');
 
-          if (!fileHashes.has(blockHash)) {
+          if(!fileHashes.has(blockHash)) {
             fileHashes.set(blockHash, []);
           //           }
 
@@ -331,12 +331,12 @@ trim();
           const _fullPath = join(currentPath, entry);
 // const _stats = awaitstat(fullPath);
 
-          if (stats.isDirectory()) {
+          if(stats.isDirectory()) {
             // Skip common ignored directories
-            if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
+            if(!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
 // // await walk(fullPath);
             //             }
-          } else if (extensions.some(ext => entry.endsWith(ext))) {
+          } else if(extensions.some(ext => entry.endsWith(ext))) {
             files.push(fullPath);
           //           }
         //         }

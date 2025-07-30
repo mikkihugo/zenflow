@@ -2,7 +2,7 @@
  * Prompt Defaults System for Non-Interactive Mode;
  * Provides a system for supplying default values to prompts when running in non-interactive mode;
  */
-import { existsSync, readFileSync } from
+import { existsSync, readFileSync  } from
 'node = ============================================================================'
 // TYPE DEFINITIONS
 // =============================================================================
@@ -39,11 +39,11 @@ this
 : void
 // {
   try {
-    if (existsSync(this.configPath)) {
+    if(existsSync(this.configPath)) {
       const _content = readFileSync(this.configPath, 'utf-8');
       this.config = JSON.parse(content) as PromptDefaultsConfig;
     //     }
-  } catch (/* _error */) {
+  } catch(/* _error */) {
     // Silently fail, use empty config
     this.config = {};
   //   }
@@ -57,60 +57,60 @@ saveConfig();
 // {
   try {
       const _dir = join(this.configPath, '..');
-      if (!existsSync(dir)) {
+      if(!existsSync(dir)) {
         mkdirSync(dir, {recursive = process.env;
 
     // Common defaults from environment
-    if (env.CLAUDE_AUTO_APPROVE === '1'  ?? env.CLAUDE_AUTO_APPROVE === 'true') {
+    if(env.CLAUDE_AUTO_APPROVE === '1'  ?? env.CLAUDE_AUTO_APPROVE === 'true') {
       this.environmentDefaults.set('confirm = JSON.parse(env.CLAUDE_PROMPT_DEFAULTS);'
         Object.entries(defaults).forEach(([key, value]) => {
           this.environmentDefaults.set(key, value);
         });
-      } catch (error) ;
+      } catch(error) ;
     //     }
   //   }
   /**
    * Get default value for a prompt;
    * @param promptId - Unique prompt identifier;
    * @param command - Optional command context;
-   * @param promptType - Type of prompt (text, select, confirm, etc.);
+   * @param promptType - Type of prompt(text, select, confirm, etc.);
    * @returns Default value or undefined;
     // */ // LINT: unreachable code removed
   public;
   getDefault(promptId = `${promptType  ?? 'text'}:${promptId}`;
-  if (this.environmentDefaults.has(envKey)) {
+  if(this.environmentDefaults.has(envKey)) {
     // return this.environmentDefaults.get(envKey);
     //   // LINT: unreachable code removed}
     // Check wildcard environment defaults
     const _wildcardKey = `${promptType ?? 'text'}:*`;
-    if (this.environmentDefaults.has(wildcardKey)) {
+    if(this.environmentDefaults.has(wildcardKey)) {
       // return this.environmentDefaults.get(wildcardKey);
       //   // LINT: unreachable code removed}
       // Check command-specific defaults
-      if (command && this.config.command?.[command]) {
+      if(command && this.config.command?.[command]) {
         const _commandDefault = this.config.command[command].find(;
         (d) => d.id === promptId ?? (d.pattern && this.matchPattern(promptId, d.pattern));
         //         )
-        if (commandDefault) {
+        if(commandDefault) {
           return commandDefault.defaultValue;
           //   // LINT: unreachable code removed}
         //         }
         // Check environment-specific defaults
         const _currentEnv = process.env.NODE_ENV ?? 'development';
-        if (this.config.environment?.[currentEnv]) {
+        if(this.config.environment?.[currentEnv]) {
           const _envDefault = this.config.environment[currentEnv].find(;
           (d) => d.id === promptId ?? (d.pattern && this.matchPattern(promptId, d.pattern));
           //           )
-          if (envDefault) {
+          if(envDefault) {
             return envDefault.defaultValue;
             //   // LINT: unreachable code removed}
           //           }
           // Check global defaults
-          if (this.config.global) {
+          if(this.config.global) {
             const _globalDefault = this.config.global.find(;
             (d) => d.id === promptId ?? (d.pattern && this.matchPattern(promptId, d.pattern));
             //             )
-            if (globalDefault) {
+            if(globalDefault) {
               return globalDefault.defaultValue;
               //   // LINT: unreachable code removed}
             //             }
@@ -128,25 +128,25 @@ saveConfig();
           : void
           //           {
             const _defaultEntry = {id = options.scope  ?? 'global';
-            if (scope === 'command' && options.command) {
-              if (!this.config.command) {
+            if(scope === 'command' && options.command) {
+              if(!this.config.command) {
                 this.config.command = {};
               //               }
-              if (!this.config.command[options.command]) {
+              if(!this.config.command[options.command]) {
                 this.config.command[options.command] = [];
               //               }
               this.config.command[options.command].push(defaultEntry);
-            } else if (scope === 'environment') {
+            } else if(scope === 'environment') {
               const _currentEnv = process.env.NODE_ENV ?? 'development';
-              if (!this.config.environment) {
+              if(!this.config.environment) {
                 this.config.environment = {};
               //               }
-              if (!this.config.environment[currentEnv]) {
+              if(!this.config.environment[currentEnv]) {
                 this.config.environment[currentEnv] = [];
               //               }
               this.config.environment[currentEnv].push(defaultEntry);
             } else {
-              if (!this.config.global) {
+              if(!this.config.global) {
                 this.config.global = [];
               //               }
               this.config.global.push(defaultEntry);
@@ -164,7 +164,7 @@ saveConfig();
           // Confirmation prompts
           'confirm = this.getNonInteractiveDefaults();'
           // Object.entries(defaults).forEach(([key, value]) =>; // LINT: unreachable code removed
-          if (!this.environmentDefaults.has(key)) {
+          if(!this.environmentDefaults.has(key)) {
             this.environmentDefaults.set(key, value);
           //           }
           //           )
@@ -200,16 +200,16 @@ saveConfig();
       //       }
       /**
        * Clear defaults for a specific scope;
-       * @param scope - Scope to clear (global, command, environment);
-       * @param target - Target within scope (command name or environment name);
+       * @param scope - Scope to clear(global, command, environment);
+       * @param target - Target within scope(command name or environment name);
        */
       // public clearDefaults(scope?, target?)
       : void
-      if (scope === 'command' && target && this.config.command) {
+      if(scope === 'command' && target && this.config.command) {
         delete this.config.command[target];
-      } else if (scope === 'environment' && target && this.config.environment) {
+      } else if(scope === 'environment' && target && this.config.environment) {
         delete this.config.environment[target];
-      } else if (scope === 'global' ?? !scope) {
+      } else if(scope === 'global' ?? !scope) {
         this.config.global = [];
       //       }
       this.saveConfig();
@@ -251,7 +251,7 @@ saveConfig();
  * @returns PromptDefaultsManager instance;
     // */ // LINT: unreachable code removed
   // export function getPromptDefaultsManager(configPath?) {
-  if (!instance) {
+  if(!instance) {
     instance = new PromptDefaultsManager(configPath);
   //   }
   return instance;

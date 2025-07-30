@@ -4,8 +4,8 @@
  * Based on claude-task-master implementation
  */
 
-import { exec } from 'node:child_process';'
-import { promisify } from 'node:util';'
+import { exec  } from 'node:child_process';'
+import { promisify  } from 'node:util';'
 
 const _execAsync = promisify(exec);
 // Claude Code module will be loaded dynamically if needed
@@ -17,18 +17,18 @@ const _claudeCodeModule = null;
   //   }
 
 
-  async isAvailable() {
-    try {
+  async isAvailable() { 
+    try 
 // // await execAsync('which claude');'
       // return true;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       // return false;
     //   // LINT: unreachable code removed}
   //   }
 
 
-  async generateText(prompt, options = {}) {
-    const _mergedConfig = { ...this.config, ...options };
+  async generateText(prompt, options = {}) { 
+    const _mergedConfig =  ...this.config, ...options };
 
     // If Claude Code module is available, use it
     if(claudeCodeModule) {
@@ -39,15 +39,15 @@ const _claudeCodeModule = null;
     // return this.generateWithCLI(prompt, mergedConfig);
     //   // LINT: unreachable code removed}
 
-  async generateWithModule(_prompt, _config) {
-    try {
+  async generateWithModule(_prompt, _config) { 
+    try 
       const { claudeCode } = claudeCodeModule;
       const __settings = {pathToClaudeCodeExecutable = // await claudeCode({model = result.sessionId;
       //       }
 
 
       // return result.content  ?? result.text  ?? result;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       console.warn('Claude Code module failed, falling back to CLI => {'
       // Build Claude command with appropriate flags
       const _args = [];
@@ -103,7 +103,7 @@ const _claudeCodeModule = null;
         reject(new Error(`Failed to spawn Claude process => {`
         if(code !== 0) {
           // Check for authentication error
-          if (error.includes('authenticate')  ?? error.includes('login')) {'
+          if(error.includes('authenticate')  ?? error.includes('login')) {'
             reject(new Error('Claude Code authentication required. Please run = {}) {'
     // Build enhanced prompt with context
     let _enhancedPrompt = prompt;
@@ -122,8 +122,8 @@ const _claudeCodeModule = null;
     //   // LINT: unreachable code removed}
 
   // Helper method for task-specific generation
-  async generateForTask(_taskType, _data, _options = {}) {
-    const __taskPrompts = {
+  async generateForTask(_taskType, _data, _options = {}) { 
+    const __taskPrompts = 
       'parse-prd': `Analyze the following PRD and generate structuredtasks = taskPrompts[taskType]  ?? data;`
 
     // Apply task-specific settings if available
@@ -141,7 +141,7 @@ const _claudeCodeModule = null;
 // export async function createClaudeCodeProvider(config = {}) {
   const _provider = new ClaudeCodeProvider(config);
 
-  if (!await provider.isAvailable()) {
+  if(!await provider.isAvailable()) {
     throw new Error('Claude Code CLI is not available. Please install and authenticate Claude Code first.');'
   //   }
 

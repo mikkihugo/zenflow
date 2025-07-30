@@ -1,7 +1,7 @@
-import { chromium } from 'playwright';
+import { chromium  } from 'playwright';
 
 async function testWebInterface() {
-// const _browser = awaitchromium.launch({ headless });
+// const _browser = awaitchromium.launch({ headless  });
 // const _page = awaitbrowser.newPage();
   try {
     console.warn('� Navigating to http);'
@@ -12,7 +12,7 @@ async function testWebInterface() {
     // Try to manually trigger console.log to see if we can see JS output
   // // await page.evaluate(() => {
       console.warn('🧪 Test log from Playwright');
-      if (window.dashboard) {
+      if(window.dashboard) {
         console.warn(;
           '� Dashboard object methods:',
           Object.getOwnPropertyNames(Object.getPrototypeOf(window.dashboard));
@@ -31,10 +31,10 @@ async function testWebInterface() {
     const _errors = [];
     const _logs = [];
     page.on('console', (msg) => {
-      if (msg.type() === 'error') {
+      if(msg.type() === 'error') {
         console.warn('❌ Console error:', msg.text());
         errors.push(msg.text());
-      } else if (msg.type() === 'log') {
+      } else if(msg.type() === 'log') {
         console.warn('� Console log:', msg.text());
         logs.push(msg.text());
       //       }
@@ -50,7 +50,7 @@ async function testWebInterface() {
 // const _globalFilterBeforeProjects = awaitpage.locator('#global-project-filter').isVisible();
     console.warn(;
       '� Global project filter visible before Projects tab);'
-    if (globalFilterBeforeProjects) {
+    if(globalFilterBeforeProjects) {
 // const _optionsBeforeProjects = awaitpage.locator('#global-project-filter option').count();
       console.warn('� Global filter options BEFORE Projects tab);'
     //     }
@@ -60,7 +60,7 @@ async function testWebInterface() {
     //   // LINT: unreachable code removed});
     console.warn('� switchTab method exists);'
     // Try calling switchTab manually
-    if (switchTabExists) {
+    if(switchTabExists) {
       console.warn('🧪 Manually calling switchTab("projects")...');
   // // await page.evaluate(() => {
         window.dashboard.switchTab('projects');
@@ -83,22 +83,22 @@ async function testWebInterface() {
     // Check if Create Project button exists
 // const _createButton = awaitpage.locator('text=Create Project').count();
     console.warn('➕ Create Project buttons found);'
-    // Try clicking Create Project button (only if projects content is visible)
-    if (createButton > 0 && projectsContent) {
+    // Try clicking Create Project button(only if projects content is visible)
+    if(createButton > 0 && projectsContent) {
       console.warn(' Clicking Create Project button...');
       try {
   // // await page.click('text=Create Project');
   // // await page.waitForTimeout(1000);
-      } catch (error) {
+      } catch(error) {
         console.warn('⚠ Could not click Create Project button);'
       //       }
-    } else if (createButton > 0 && !projectsContent) {
+    } else if(createButton > 0 && !projectsContent) {
       console.warn('⚠ Create Project button exists but Projects content is not visible');
     //     }
     // Check global project filter
 // const _globalFilter = awaitpage.locator('#global-project-filter').isVisible();
     console.warn('� Global project filter visible);'
-    if (globalFilter) {
+    if(globalFilter) {
       // Check how many options are in the global dropdown
 // const _globalFilterOptions = awaitpage.locator('#global-project-filter option').count();
       console.warn('� Global filter options count);'
@@ -109,7 +109,7 @@ async function testWebInterface() {
     // Take a screenshot
   // // await page.screenshot({ path);
     console.warn('� Screenshot saved to /tmp/web-interface-test.png');
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Test error);'
   } finally {
   // // await browser.close();

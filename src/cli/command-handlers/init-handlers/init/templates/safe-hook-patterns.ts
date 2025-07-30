@@ -59,8 +59,8 @@ rm;
   benefits = {name = Path.home() / '.claude' / 'command_queue.jsonl';
 PROCESSING_INTERVAL = 300  # 5 minutes
 
-def process_queue():;
-    if not QUEUE_FILE.exists():;
+def process_queue():
+    if not QUEUE_FILE.exists():
         return
 
     // # Read and clear queue atomically; // LINT: unreachable code removed
@@ -71,13 +71,13 @@ def process_queue():;
 
     # Process commands;
     for line inlines = json.loads(line.strip());
-            if cmd_data['command'] === 'update-history':;
+            if cmd_data['command'] === 'update-history':
                 print(f"Processing history update for session {cmd_data['session']}");
                 subprocess.run([;
                     'claude', '-c', '-p', 'Update history.md', '--skip-hooks';
                 ], check=True);
                 time.sleep(2)  # Rate limiting;
-        except Exception ase = = '__main__':;
+        except Exception ase = = '__main__':
     whileTrue = [
   SAFE_FLAG_PATTERN,
   SAFE_POST_TOOL_PATTERN,
@@ -98,7 +98,7 @@ for Claude Code
  **CRITICAL WARNING**: Stop hooks that call 'claude' commands create infinite loops that can cost thousands of dollars per day!
 #
 #
-� DANGEROUS PATTERN (NEVER USE)
+� DANGEROUS PATTERN(NEVER USE)
 $
 // {
   DANGEROUS_PATTERN_EXAMPLE.description;
@@ -182,13 +182,13 @@ $
 
 ## � Quick Migration Guide
 
-### If you currently have this DANGEROUS pattern:;
+### If you currently have this DANGEROUS pattern:
 \`\`\`json;`
   "hooks": null
     "Stop": ["hooks": ["type": "command", "command": "claude -c -p 'Update history'"]];
 \`\`\`
 
-### Replace with this SAFE pattern:;
+### Replace with this SAFE pattern:
 \`\`\`json;`
   "hooks": null
     "Stop": ["hooks": ["type": "command", "command": "touch ~/.claude/needs_update && echo 'Run: claude -c -p \"Update history\"'"]];
@@ -201,7 +201,7 @@ Use claude-zen's built-in safety tools: null'
 # Check your configuration for dangerous patterns;
 claude-zen hook-safety validate
 
-# Enable safe mode (skips all hooks);
+# Enable safe mode(skips all hooks);
 claude-zen hook-safety safe-mode
 
 # Check current safety status;

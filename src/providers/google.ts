@@ -3,7 +3,7 @@
  * Integration with Google's Gemini models via Vertex AI;'
  */
 
-import { ProviderError } from './types.js';
+import { ProviderError  } from './types.js';
 // // interface GoogleRequest {contents = 'google'
 // version = '2024-07-29'
 // config = {enabled = {textGeneration = 'us-central1'
@@ -15,10 +15,10 @@ import { ProviderError } from './types.js';
 //   super();
 //   this.pricing = {inputTokenPrice = config.apiKey  ?? process.env.GOOGLE_API_KEY;
 //   this.projectId = config.projectId ?? process.env.GOOGLE_PROJECT_ID;
-//   if (!this.apiKey) {
+//   if(!this.apiKey) {
 //     throw new ProviderError('Google API key is required', this.name, 'MISSING_API_KEY');
 //   //   }
-  if (!this.projectId) {
+  if(!this.projectId) {
     throw new ProviderError('Google Project ID is required', this.name, 'MISSING_PROJECT_ID');
   //   }
   this.location = config.location ?? this.location;
@@ -38,49 +38,48 @@ import { ProviderError } from './types.js';
   :generateContent`,`
   googleRequest
   //   )
-  if (!response.candidates ?? response.candidates.length === 0) {
+  if(!response.candidates ?? response.candidates.length === 0) {
     throw new ProviderError('No response generated', this.name, 'NO_RESPONSE');
   //   }
   const _candidate = response.candidates[0];
   const __content = candidate.content.parts.map((p) => p.text).join('');
-  if (!reader) {
+  if(!reader) {
     throw new ProviderError('No response body', this.name);
   //   }
   const _decoder = new TextDecoder();
   const _buffer = '';
-  while (true) {
+  while(true) {
     const { done, value } = // await reader.read();
-    if (done) break;
+    if(done) break;
     buffer += decoder.decode(value, {stream = buffer.split('\n');
     buffer = lines.pop() ?? '';
-    for (const line of lines) {
-      if (line.startsWith('data = line.slice(6);'
+    for(const line of lines) {
+      if(line.startsWith('data = line.slice(6);'
 
       try {
               const _parsed = JSON.parse(data);
-              if (parsed.candidates?.[0]?.content?.parts) {
-                for (const part of parsed.candidates[0].content.parts) {
-                  if (part.text) {
+              if(parsed.candidates?.[0]?.content?.parts) {
+                for(const part of parsed.candidates[0].content.parts) {
+                  if(part.text) {
                     yield part.text;
                   //                   }
                 //                 }
               //               }
-            } catch (/* _e */) {
+            } catch(/* _e */) {
               // Ignore parsing errors for streaming
             //             }
     //     }
   //   }
 // }
-} catch (error)
+} catch(error)
 // {
   this.emitError(error, request);
   throw this.handleError(error);
 // }
 // }
-// async
-getModels() {}
+// async getModels() { }
 : Promise<string[]>
-// {
+// 
   // return [...this.availableModels];
 // }
 async;
@@ -91,8 +90,8 @@ cleanup();
 // }
 private;
 convertMessages(messages = [];
-for (const msg of messages) {
-  if (msg.role === 'system') {
+for(const msg of messages) {
+  if(msg.role === 'system') {
     // System messages are handled separately in Google's API'
     continue;
   //   }
@@ -103,7 +102,7 @@ for (const msg of messages) {
 
   try {
     errorData = JSON.parse(text);
-  } catch (/* _e */) {
+  } catch(/* _e */) {
     errorData = {message = === 429) {
       const _retryAfter = response.headers.get('retry-after');
     // return new RateLimitError(this.name, retryAfter ? parseInt(retryAfter) );
@@ -117,16 +116,16 @@ for (const msg of messages) {
 private;
 mapFinishReason(reason);
 : AIResponse['finishReason'];
-  switch (reason) {
-    case 'FINISH_REASON_STOP':;
+  switch(reason) {
+    case 'FINISH_REASON_STOP':
       // return 'stop';
-    // case 'FINISH_REASON_MAX_TOKENS':; // LINT: unreachable code removed
+    // case 'FINISH_REASON_MAX_TOKENS': // LINT: unreachable code removed
       // return 'length';
-    // case 'FINISH_REASON_SAFETY':; // LINT: unreachable code removed
+    // case 'FINISH_REASON_SAFETY': // LINT: unreachable code removed
       // return 'content_filter';
-    // case 'FINISH_REASON_RECITATION':; // LINT: unreachable code removed
+    // case 'FINISH_REASON_RECITATION': // LINT: unreachable code removed
       // return 'content_filter';
-    // default:; // LINT: unreachable code removed
+    // default: // LINT: unreachable code removed
       // return 'stop';
     //   // LINT: unreachable code removed}
 // }
@@ -135,7 +134,7 @@ mapFinishReason(reason);
 private;
 handleError(error);
 
-  if (error instanceof ProviderError) {
+  if(error instanceof ProviderError) {
     // return error;
     //   // LINT: unreachable code removed}
 

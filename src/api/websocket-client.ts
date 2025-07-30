@@ -4,7 +4,7 @@
  * Provides high-performance, standards-compliant WebSocket connectivity;
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter  } from 'node:events';
 // // interface WebSocketClientOptions {
 //   reconnect?;
 //   reconnectInterval?;
@@ -14,7 +14,7 @@ import { EventEmitter } from 'node:events';
 /**
  * Native WebSocket Client using Node.js 22 built-in WebSocket;
  *;
- * Features:;
+ * Features:
  * - Auto-reconnection with exponential backoff;
  * - Message queuing during disconnection;
  * - Heartbeat/ping-pong support;
@@ -71,7 +71,7 @@ connect();
           try {
             const _data = JSON.parse(event.data);
             this.emit('message', data);
-          } catch (/* _error */) {
+          } catch(/* _error */) {
             this.emit('message', event.data);
           //           }
         };
@@ -82,7 +82,7 @@ connect();
           this.stopHeartbeat();
           this.emit('disconnected', event.code, event.reason);
 
-          if (;
+          if(;
             this.options.reconnect &&;
             this.reconnectAttempts < this.options.maxReconnectAttempts;
           //           )
@@ -94,7 +94,7 @@ connect();
           this.emit('error', error);
           reject(error);
         };
-      } catch (error) {
+      } catch(error) {
         reject(error);
       //       }
     });
@@ -105,12 +105,12 @@ connect();
 disconnect();
 : void
 // {
-  if (this.reconnectTimer) {
+  if(this.reconnectTimer) {
     clearTimeout(this.reconnectTimer);
     this.reconnectTimer = undefined;
   //   }
   this.stopHeartbeat();
-  if (this.ws && this.isConnected) {
+  if(this.ws && this.isConnected) {
     this.ws.close();
   //   }
   this.isConnected = false;
@@ -122,10 +122,10 @@ send(data)
 : void
 // {
   const _message = typeof data === 'string' ? data : JSON.stringify(data);
-  if (this.isConnected && this.ws) {
+  if(this.isConnected && this.ws) {
     try {
         this.ws.send(message);
-      } catch (error) {
+      } catch(error) {
         this.emit('error', error);
         this.queueMessage(message);
       //       }
@@ -141,7 +141,7 @@ send(data)
 // {
   this.messageQueue.push(message);
   // Limit queue size to prevent memory issues
-  if (this.messageQueue.length > 1000) {
+  if(this.messageQueue.length > 1000) {
     this.messageQueue.shift();
   //   }
 // }
@@ -151,12 +151,12 @@ send(data)
 // private flushMessageQueue();
 : void
 // {
-  while (this.messageQueue.length > 0 && this.isConnected) {
+  while(this.messageQueue.length > 0 && this.isConnected) {
     const _message = this.messageQueue.shift();
-    if (message) {
+    if(message) {
       try {
           this.ws.send(message);
-        } catch (error) {
+        } catch(error) {
           this.emit('error', error);
           this.messageQueue.unshift(message);
           break;
@@ -171,15 +171,15 @@ send(data)
 : void
 // {
   const _delay = this.options.reconnectInterval * 2 ** this.reconnectAttempts;
-  this.reconnectTimer = setTimeout(async () => {
+  this.reconnectTimer = setTimeout(async() => {
     this.reconnectAttempts++;
     this.emit('reconnecting', this.reconnectAttempts);
     try {
 // // await this.connect();
-      } catch (error) {
+      } catch(error) {
         this.emit('reconnectError', error);
 
-        if (this.reconnectAttempts < this.options.maxReconnectAttempts) {
+        if(this.reconnectAttempts < this.options.maxReconnectAttempts) {
           this.scheduleReconnect();
         } else {
           this.emit('reconnectFailed');
@@ -194,10 +194,10 @@ send(data)
 : void
 // {
   this.heartbeatTimer = setInterval(() => {
-    if (this.isConnected && this.ws) {
+    if(this.isConnected && this.ws) {
       try {
           this.ws.ping();
-        } catch (error) {
+        } catch(error) {
           this.emit('error', error);
         //         }
     //     }
@@ -209,7 +209,7 @@ send(data)
 // private stopHeartbeat();
 : void
 // {
-  if (this.heartbeatTimer) {
+  if(this.heartbeatTimer) {
     clearInterval(this.heartbeatTimer);
     this.heartbeatTimer = undefined;
   //   }

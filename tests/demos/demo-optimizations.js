@@ -3,18 +3,17 @@
  * Demonstrates the performance improvements and new features;
  */
 
-import { ClaudeFlowMCPServer } from './src/mcp/mcp-server.js';
+import { ClaudeFlowMCPServer  } from './src/mcp/mcp-server.js';
 
 async function demonstrateMCPOptimizations() {
   console.warn('� Claude Flow MCP Server Optimization Demo\n');
   // Create optimized server instance
   console.warn('� Creating optimized MCP server...');
-  const _server = new ClaudeFlowMCPServer({
-    batchSize,
+  const _server = new ClaudeFlowMCPServer({ batchSize,
     batchTimeout,
     retryAttempts,
     enableMetricsLogging
-})
+ })
 console.warn('✅ Server created with optimizations)'
 console.warn(`   - Batch size);`
 console.warn(` - Batch;`
@@ -42,7 +41,7 @@ const _testMessages = [
       receivedAt: Date.now() } ];
 // Process messages through optimized path
 const __processedCount = 0;
-server.stdioOptimizer.on('batch', async (batch) => {
+server.stdioOptimizer.on('batch', async(batch) => {
   console.warn(`;`
 Processing;
 batch;
@@ -55,11 +54,11 @@ messages;
 ..`)`
 _processedCount += batch.length
 // Simulate processing each message in the batch
-for (const item of batch) {
+for(const item of batch) {
   try {
 // const _response = awaitserver.handleMessage(item.message);
         console.warn(`   ✅ ${item.message.method} -> ${response.result ? 'Success' );`
-      } catch (error) {
+      } catch(error) {
         console.warn(`   ❌ ${item.message.method} -> Error);`
       //       }
 // }
@@ -185,7 +184,7 @@ usage: $;
   (perfSummary.health.memoryUsage / 1024 / 1024).toFixed(1);
 // }
 MB`);`
-} catch (error)
+} catch(error)
 // {
   console.warn(`;`
 Error;

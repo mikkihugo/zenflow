@@ -19,5 +19,6 @@ try {
   // Fallback to compiled JS version if tsx fails
   const cliMainJs = join(__dirname, '..', 'src', 'cli', 'cli-main.js');
   execSync(`node ${cliMainJs} ${process.argv.slice(2).join(' ')}`, {
-    stdio: 'inherit' });
-// } // eslint-disable-line
+    stdio: 'inherit'
+  });
+}

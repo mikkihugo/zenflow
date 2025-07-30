@@ -3,12 +3,12 @@
  * Converted from JavaScript to TypeScript;
  */
 
-import { compat } from '../runtime-detector.js';
+import { compat  } from '../runtime-detector.js';
 
 export async function startCommand(subArgs = [];
 // }
 // Show help if requested
-if (flags.help  ?? flags.h  ?? subArgs.includes('--help')  ?? subArgs.includes('-h')) {
+if(flags.help  ?? flags.h  ?? subArgs.includes('--help')  ?? subArgs.includes('-h')) {
   showStartHelp();
   return;
 // }
@@ -45,7 +45,7 @@ try {
 // )
 
 
-process.on('SIGTERM', async () =>;
+process.on('SIGTERM', async() =>;
 // await server.shutdown();
   process.exit(0);
 // )
@@ -57,7 +57,7 @@ process.on('SIGTERM', async () =>;
 return;
     // ; // LINT: unreachable code removed
 // Check if we should launch the web UI mode
-if (web) {
+if(web) {
   try {
         // Launch the web server
         const { startWebServer } = // await import('./web-server.js');
@@ -66,11 +66,11 @@ if (web) {
         printSuccess(`� Web UI is running!`);
         console.warn(`� Open your browser to => {});`
         return;
-    //   // LINT: unreachable code removed} catch (/* err */) {
+    //   // LINT: unreachable code removed} catch(/* err */) {
         printError('Failed to launch webUI = // await import('child_process');'
 
             // Fallback to existing UI
-            import('./process-ui-enhanced.js').then(({ launchEnhancedUI }) => {
+            import('./process-ui-enhanced.js').then(({ launchEnhancedUI  }) => {
               launchEnhancedUI();
             });
           //           }
@@ -79,14 +79,14 @@ if (web) {
         // Keep process running
 // // await new Promise(() => {});
         return;
-    //   // LINT: unreachable code removed} catch (/* err */) {
+    //   // LINT: unreachable code removed} catch(/* err */) {
         // If unified UI fails, fall back to existing terminal UI
         printWarning('Unified UI failed, launching fallback UI...');
         try {
           const { launchEnhancedUI } = // await import('./process-ui-enhanced.js');
 // // await launchEnhancedUI();
           return;
-    //   // LINT: unreachable code removed} catch (/* fallbackErr */) {
+    //   // LINT: unreachable code removed} catch(/* fallbackErr */) {
           printError('Failed to launchUI = ['memory', 'coordination'];'
     const _missingDirs = [];
 
@@ -104,7 +104,7 @@ if (web) {
 
     // Task queue
     console.warn('    TaskQueue = compat.terminal.getPid();'
-// // await compat.safeCall(async () => {
+// // await compat.safeCall(async() => {
         if(compat.runtime === 'node') {
           await node.writeTextFile('.claude-zen.pid', pid.toString());
         } else {
@@ -128,12 +128,12 @@ if (web) {
           //           }
         }, 30000); // Every 30 seconds
 
-        // Wait indefinitely (until Ctrl+C)
+        // Wait indefinitely(until Ctrl+C)
 // // await new Promise(() => {});
       //       }
     //     }
 // }
-catch (/* err */)
+catch(/* err */)
     printError(`Failed to start orchestrationsystem = args.indexOf(flag);`
   if(index !== -1 && index < args.length - 1) {
     // return args[index + 1];
@@ -145,7 +145,7 @@ catch (/* err */)
 async function cleanup() {
   // Clean up resources
   try {
-// await compat.safeCall(async () => {
+// await compat.safeCall(async() => {
       if(compat.runtime === 'node') {
         await node.remove('.claude-zen.pid');
       } else {
@@ -173,16 +173,16 @@ function _showStartHelp() {
   console.warn('  Start Claude-Zen orchestration with UI and swarm intelligence enabled by');
   console.warn('  default. Runs dual MCP architecture for both external and internal coordination.\n');
   console.warn('OPTIONS);'
-  console.warn('  -d, --daemon         Run as background daemon (disables UI/swarm)');
-  console.warn('  -p, --port <port>    HTTP MCP server port for Claude Desktop (default)');
+  console.warn('  -d, --daemon         Run as background daemon(disables UI/swarm)');
+  console.warn('  -p, --port <port>    HTTP MCP server port for Claude Desktop(default)');
   console.warn('  --no-ui              Disable interactive user interface');
   console.warn('  --no-swarm           Disable swarm intelligence features');
-  console.warn('  -w, --web            Force web-based UI (default when UI enabled)');
+  console.warn('  -w, --web            Force web-based UI(default when UI enabled)');
   console.warn('  -v, --verbose        Detailed logging');
   console.warn('  -h, --help           Show this help message\n');
   console.warn('MCP ARCHITECTURE);'
-  console.warn('  • HTTP MCP (--port): External Claude Desktop, vision roadmaps');
-  console.warn('  • STDIO MCP: Internal claude-zen swarm coordination (automatic)\n');
+  console.warn('  • HTTP MCP(--port): External Claude Desktop, vision roadmaps');
+  console.warn('  • STDIO MCP: Internal claude-zen swarm coordination(automatic)\n');
   console.warn('EXAMPLES);'
   console.warn('  claude-zen start                         # Default);'
   console.warn('  claude-zen start --no-swarm              # UI + HTTP MCP only');
@@ -199,7 +199,7 @@ function _showStartHelp() {
   console.warn('Terminal-based UI);'
   console.warn('  The --ui flag launches an advanced multi-view interface with);'
   console.warn();
-  console.warn('  Views (press 1-6 to switch):');
+  console.warn('  Views(press 1-6 to switch):');
   console.warn('    1. Process Management - Start/stop individual components');
   console.warn('    2. System Status - Health metrics and resource usage');
   console.warn('    3. Orchestration - Agent and task management');
@@ -216,7 +216,7 @@ function _showStartHelp() {
   console.warn('Notes);'
   console.warn('  - Requires "claude-zen init" to be run first');
   console.warn('  - Interactive mode shows real-time system status');
-  console.warn('  - Daemon mode runs in background (check logs)');
+  console.warn('  - Daemon mode runs in background(check logs)');
   console.warn('  - Use "claude-zen status" to check if running');
   console.warn('  - Use Ctrl+C or "claude-zen stop" to shutdown');
 // }

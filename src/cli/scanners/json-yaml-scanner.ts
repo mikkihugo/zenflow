@@ -7,7 +7,7 @@ try {
   let parsedContent;
   let _formattedContent;
 
-  if (file.endsWith('.json')) {
+  if(file.endsWith('.json')) {
     parsedContent = jsonlint.parse(content);
     _formattedContent = JSON.stringify(parsedContent, null, 2);
   } else {
@@ -16,7 +16,7 @@ try {
         suggestions.push({
           id);
   //   }
-} catch (error)
+} catch(error)
 // {
   suggestions.push({
     id: `invalid-syntax-${file}`,

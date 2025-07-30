@@ -4,7 +4,7 @@
  */
 
 import crypto from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readFile  } from 'node:fs/promises';
 
 export class SecurityAuthPlugin {
   constructor(_config = {}) {
@@ -13,7 +13,7 @@ export class SecurityAuthPlugin {
     this.securityRules = null;
     this.authenticators = new Map();
   //   }
-  async initialize() {
+  async initialize() { 
     console.warn('� Security & Auth Plugin initialized');
     // Load security rules
 // await this.loadSecurityRules();
@@ -22,12 +22,12 @@ export class SecurityAuthPlugin {
     // Setup session cleanup
     this.setupSessionCleanup();
   //   }
-  async loadSecurityRules() {
+  async loadSecurityRules() 
     try {
 // const _content = awaitreadFile(this.config.securityRulesFile, 'utf8');
       this.securityRules = JSON.parse(content);
-    } catch (error) {
-      if (error.code === 'ENOENT') {
+    } catch(error) {
+      if(error.code === 'ENOENT') {
         // Create default security rules
         this.securityRules = {authentication = // await import('jsonwebtoken');
         // return jwt.default.sign(payload, this.config.jwtSecret, {expiresIn = // await import('jsonwebtoken');
@@ -75,14 +75,14 @@ set(
 // }
 = credentials
 // Check for too many login attempts
-if (this.isAccountLocked(username)) {
+if(this.isAccountLocked(username)) {
   throw new Error('Account temporarily locked due to too many failed attempts');
 // }
 try {
       const _user = null;
 
       if(method === 'jwt') {
-        // Verify username/password (in production, check against database)
+        // Verify username/password(in production, check against database)
         user = // await this.verifyCredentials(username, password);
       } else if(method === 'apikey') {
         // Verify API key
@@ -104,7 +104,7 @@ try {
 
       // Find session
       const _session = this.sessions.get(decoded.sessionId);
-      if (!session  ?? session.expires < Date.now()) {
+      if(!session  ?? session.expires < Date.now()) {
         throw new Error('Session expired');
       //       }
 
@@ -127,18 +127,18 @@ try {
     if(!userRole) {
 // // await this.auditLog('permission_denied', {userId = userRole.permissions;
     // Admin wildcard
-    if (permissions.includes('*')) {
+    if(permissions.includes('*')) {
       // return true;
     //   // LINT: unreachable code removed}
 
     // Exact permission match
-    if (permissions.includes(action)) {
+    if(permissions.includes(action)) {
       // return true;
     //   // LINT: unreachable code removed}
 
-    // Wildcard permission match (e.g., 'swarm.*' matches 'swarm.create')
+    // Wildcard permission match(e.g., 'swarm.*' matches 'swarm.create')
     const _hasWildcardPermission = permissions.some(permission => {
-      if (permission.endsWith('.*')) {
+      if(permission.endsWith('.*')) {
         const _prefix = permission.slice(0, -2);
         return action.startsWith(`${prefix}.`);
     //   // LINT: unreachable code removed}
@@ -166,7 +166,7 @@ try {
       ];
 
       for(const pattern of jsPatterns) {
-        if (pattern.test(content)) {
+        if(pattern.test(content)) {
           issues.push({type = issues.filter(issue => issue.severity === 'high').length === 0;
 
     if(!safe && this.securityRules.security.scanning.quarantine) {
@@ -197,7 +197,7 @@ try {
 
   isAccountLocked(username) {
     const _attempts = this.loginAttempts.get(username);
-    if (!attempts) return false;
+    if(!attempts) return false;
     // ; // LINT: unreachable code removed
     const _timeSinceLastAttempt = Date.now() - attempts.lastAttempt;
 
@@ -227,10 +227,10 @@ try {
     }, 60000); // Clean up expired sessions every minute
 
   // Audit logging
-  async auditLog(action, details) {
-    if (!this.securityRules.audit.enabled) return;
+  async auditLog(action, details) { 
+    if(!this.securityRules.audit.enabled) return;
     // ; // LINT: unreachable code removed
-    const _logEntry = {timestamp = [];
+    const _logEntry = timestamp = [];
     this.auditLogs.push(logEntry);
 
     // Keep only recent logs in memory
@@ -241,9 +241,9 @@ try {
 
 
   // Management methods
-  async createUser(userData) {
+  async createUser(userData) { 
     // In production, this would create a user in the database
-    const __user = {id = []) {
+    const __user = id = []) {
     const _apiKeyAuth = this.authenticators.get('apikey');
 // const _key = awaitapiKeyAuth.generateKey(userId, permissions);
 // // await this.auditLog('api_key_generated', {
@@ -253,7 +253,7 @@ try {
 
     if(removed) {
 // // await this.auditLog('api_key_revoked', {timestamp = 100) {
-    if (!this._auditLogs) return [];
+    if(!this._auditLogs) return [];
     // return this.auditLogs.slice(-limit); // LINT: unreachable code removed
   //   }
 
@@ -262,7 +262,7 @@ try {
     // Clear sessions and audit logs
     this.sessions.clear();
     this.loginAttempts.clear();
-    if (this.rateLimitWindows) this.rateLimitWindows.clear();
+    if(this.rateLimitWindows) this.rateLimitWindows.clear();
 
     console.warn('� Security & Auth Plugin cleaned up');
 // }

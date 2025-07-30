@@ -14,21 +14,21 @@ class MockMemoryStore {
     this.data = new Map();
   }
 
-  async store(key, value, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async store(key, value, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     this.data.set(fullKey, value);
     // return { id, size: value.length };
   }
 
-  async retrieve(key, options = {}) {
-    const fullKey = options.namespace ? `${options.namespace}:${key}` ;
+  async retrieve(key, options = {}) { 
+    const fullKey = options.namespace ? `$options.namespace}:${key}` ;
     // return this.data.get(fullKey) || null;
   }
 
-  async search(options = {}) {
-    const results = {};
-    for (const [key, value] of this.data) {
-      if (options.pattern === '*' || key.includes(options.pattern || '')) {
+  async search(options = {}) { 
+    const results = };
+    for(const [key, value] of this.data) {
+      if(options.pattern === '*' || key.includes(options.pattern || '')) {
         results[key] = value;
       }
     }
@@ -58,16 +58,15 @@ async function testDocumentStack() {
     content: 'Payment processing decision...' };
 // const ruleResults = awaitdocStack.applyRules(testDoc);
   ruleResults.forEach((_result) => {});
-// const searchResults = awaitdocStack.searchByMetadata({
-    stack_layer);
-  searchResults.forEach((_result) => {});
+// const searchResults = awaitdocStack.searchByMetadata({ stack_layer);
+  searchResults.forEach((_result) => { });
   ['infrastructure', 'service', 'application', 'business'].forEach((layer) => {
     const _swarm = docStack.getAvailableSwarm(layer);
   });
 }
 
 // Run the test
-if (require.main === module) {
+if(require.main === module) {
   testDocumentStack().catch(console.error);
 }
 

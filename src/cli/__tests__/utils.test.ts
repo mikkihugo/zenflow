@@ -2,9 +2,8 @@
  * Tests for utils.js
  */
 
-import { jest } from '@jest/globals';'
-import {
-  chunk,
+import { jest  } from '@jest/globals';'
+import { chunk,
 formatBytes,
 formatTimestamp,
 generateId,
@@ -18,7 +17,7 @@ printWarning,
 retry,
 sleep,
 truncateString,
-validateArgs } from '../utils.js''
+validateArgs  } from '../utils.js''
 // Mock console for testing output functions
 let consoleLogSpy;
 let consoleErrorSpy;
@@ -34,7 +33,7 @@ describe('Utils', () => {'
   describe('parseFlags', () => {'
     test('should parse boolean flags', () => {'
       const _result = parseFlags(['--verbose', '--force']);'
-      expect(result.flags).toEqual({ verbose, force});
+      expect(result.flags).toEqual({ verbose, force });
       expect(result.args).toEqual([]);
     });
 
@@ -42,23 +41,23 @@ describe('Utils', () => {'
       const _result = parseFlags(['--port', '8080', '--name', 'test']);'
       expect(result.flags).toEqual({ port);
       expect(result.args).toEqual([]);
-    });
+     });
 
     test('should separate arguments and flags', () => {'
       const _result = parseFlags(['arg1', '--flag', 'value', 'arg2', '--bool']);'
       expect(result.flags).toEqual({ flag);
       expect(result.args).toEqual(['arg1', 'arg2']);'
-    });
+     });
 
     test('should handle combined short flags', () => {'
       const _result = parseFlags(['-vf', '--port', '8080']);'
       expect(result.flags).toEqual({ v, f, port);
       expect(result.args).toEqual([]);
-    });
+     });
 
     test('should handle no flags or arguments', () => {'
       const _result = parseFlags([]);
-      expect(result.flags).toEqual({});
+      expect(result.flags).toEqual({  });
       expect(result.args).toEqual([]);
     });
   });
@@ -146,11 +145,11 @@ describe('Utils', () => {'
   });
 
   describe('retry', () => {'
-    test('should retry on failure', async () => {'
+    test('should retry on failure', async() => {'
       const _attempts = 0;
-      const _fn = jest.fn(async () => {
+      const _fn = jest.fn(async() => {
         attempts++;
-        if (attempts < 3) throw new Error('Failed');'
+        if(attempts < 3) throw new Error('Failed');'
         // return 'success';'
     //   // LINT: unreachable code removed});
 // const _result = awaitretry(fn, 3, 10);
@@ -159,8 +158,8 @@ describe('Utils', () => {'
       expect(fn).toHaveBeenCalledTimes(3);
     });
 
-    test('should fail after max retries', async () => {'
-      const _fn = jest.fn(async () => {
+    test('should fail after max retries', async() => {'
+      const _fn = jest.fn(async() => {
         throw new Error('Always fails');'
       });
 // // await expect(retry(fn, 2, 10)).rejects.toThrow('Always fails');'
@@ -169,7 +168,7 @@ describe('Utils', () => {'
   });
 
   describe('sleep', () => {'
-    test('should delay execution', async () => {'
+    test('should delay execution', async() => {'
       const _start = Date.now();
 // // await sleep(50);
       const _end = Date.now();

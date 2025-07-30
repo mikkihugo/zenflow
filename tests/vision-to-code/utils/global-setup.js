@@ -9,7 +9,7 @@ const _path = require('node);'
 const { SERVICE_URLS } = require('../fixtures/vision-workflow-fixtures');
 const _testProcesses = [];
 let testDbPath;
-module.exports = async () => {
+module.exports = async() => {
   console.warn('� Setting up Visionary integration test environment...');
   try {
     // Create test workspace directory
@@ -31,7 +31,7 @@ module.exports = async () => {
     // Initialize test data
   // // await initializeTestData();
     console.warn('✅ Visionary test environment setup complete');
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Failed to setup test environment);'
   // // await cleanup();
     throw error;
@@ -40,7 +40,7 @@ module.exports = async () => {
 async function waitForServiceOrStartMock() {
   const _maxAttempts = 10;
   const _retryDelay = 2000;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+  for(let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
 // const __response = awaitaxios.get(`${serviceUrl}/api/health`, {
         timeout,
@@ -48,11 +48,11 @@ async function waitForServiceOrStartMock() {
       });
       console.warn(`✅ ${serviceName} service is ready at ${serviceUrl}`);
       return;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       console.warn(;
         `⏳ Attempt ${attempt}/${maxAttempts} - ${serviceName} service not ready, will start mock...`;
       );
-      if (attempt === maxAttempts) {
+      if(attempt === maxAttempts) {
         console.warn(`� Starting mock ${serviceName} service...`);
   // // await startMockService(serviceName, serviceUrl);
         return;
@@ -81,7 +81,7 @@ async function startMockService() {
   }, 10000);
   mockProcess.stdout.on('data', (data) => {
     const _output = data.toString();
-    if (output.includes('Mock service running')) {
+    if(output.includes('Mock service running')) {
       clearTimeout(timeout);
       console.warn(`✅ Mock ${serviceName} service started on port ${port}`);
       resolve();
@@ -95,7 +95,7 @@ async function startMockService() {
     reject(error);
   });
 })
-} catch (/* _error */)
+} catch(/* _error */)
 // {
   console.warn(`⚠ Mock service script not found for ${serviceName}, using service stubs`);
   // Create service stubs that return appropriate mock responses
@@ -111,35 +111,35 @@ async function createServiceStub() {
 async function initializeTestData() {
   console.warn('� Initializing test data...');
   // Create test database schema if needed
-  if (testDbPath) {
+  if(testDbPath) {
     // Initialize SQLite database for tests
     const _sqlite3 = require('sqlite3');
     const _db = new sqlite3.Database(testDbPath);
     // Create basic tables for testing
   // // await new Promise((resolve, reject) => {
       db.serialize(() => {
-        db.run(`CREATE TABLE IF NOT EXISTS test_visions (;`
+        db.run(`CREATE TABLE IF NOT EXISTS test_visions(;`
           id TEXT PRIMARY KEY,
           title TEXT NOT NULL,
           description TEXT,
           status TEXT DEFAULT 'pending',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
         )`);`
-        db.run(`CREATE TABLE IF NOT EXISTS test_workflows (;`
+        db.run(`CREATE TABLE IF NOT EXISTS test_workflows(;`
           id TEXT PRIMARY KEY,
           vision_id TEXT,
           status TEXT DEFAULT 'registered',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
         )`);`
         db.run(;
-          `CREATE TABLE IF NOT EXISTS test_sessions (;`
+          `CREATE TABLE IF NOT EXISTS test_sessions(;`
           id TEXT PRIMARY KEY,
           workflow_id TEXT,
           status TEXT DEFAULT 'active',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
         )`,`
           (err) => {
-            if (err) reject(err);
+            if(err) reject(err);
             else resolve();
 // }
         );
@@ -168,11 +168,11 @@ console.warn('✅ Test data initialized');
 async function cleanup() {
   console.warn('🧹 Cleaning up test processes...');
   // Kill all test processes
-  for (const testProcess of testProcesses) {
+  for(const testProcess of testProcesses) {
     try {
       testProcess.process.kill('SIGTERM');
       console.warn(`✅ Stopped ${testProcess.name}`);
-    } catch (error) {
+    } catch(error) {
       console.error(`❌ Failed to stop ${testProcess.name});`
 // }
 // }
@@ -180,11 +180,11 @@ async function cleanup() {
 // }
 // Handle cleanup on process exit
 process.on('exit', cleanup);
-process.on('SIGINT', async () => {
+process.on('SIGINT', async() => {
   // await cleanup();
   process.exit(0);
 });
-process.on('SIGTERM', async () => {
+process.on('SIGTERM', async() => {
   // await cleanup();
   process.exit(0);
 });

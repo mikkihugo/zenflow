@@ -6,17 +6,16 @@
  * Integrates with SQLite, LanceDB, and Kuzu for comprehensive persistence.
  */
 
-import { EventEmitter } from 'events';
-import type {
-  DSPyProgram,
+import { EventEmitter  } from 'events';
+import type { DSPyProgram,
   DSPyExample,
   DSPyMetrics,
   DSPyOptimizationResult,
-  DSPyConfig } from '../plugins/dspy-provider';
-import type { SwarmCoordinator, SwarmAgent, SwarmTask } from './types';
-import type { SqliteStore } from '../memory/sqlite-store';
-import type { LanceDBInterface } from '../database/lancedb-interface';
-import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface';
+  DSPyConfig  } from '../plugins/dspy-provider';
+import type { SwarmCoordinator, SwarmAgent, SwarmTask  } from './types';
+import type { SqliteStore  } from '../memory/sqlite-store';
+import type { LanceDBInterface  } from '../database/lancedb-interface';
+import type { KuzuAdvancedInterface  } from '../database/kuzu-advanced-interface';
 
 /**
  * DSPy Swarm Agent Specialization
@@ -178,18 +177,18 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     try {
       // Restore from SQLite
 // const sqliteMemory = awaitthis.sqliteStore.get('dspy_persistent_memory');
-      if (sqliteMemory) {
+      if(sqliteMemory) {
         const memory = JSON.parse(sqliteMemory as string);
         this.persistentMemory.globalMetrics = memory.globalMetrics ?? this.persistentMemory.globalMetrics;
         this.persistentMemory.optimizationHistory = memory.optimizationHistory ?? [];
       //       }
 
 
-      // Restore patterns from LanceDB (vector similarity search)
+      // Restore patterns from LanceDB(vector similarity search)
 // const patternVectors = awaitthis.lanceDB.search({
         query);
 
-      for (const vector of patternVectors) {
+      for(const vector of patternVectors) {
         const pattern = vector.metadata as DSPyPattern;
         this.persistentMemory.patterns.set(pattern.id, pattern);
       //       }
@@ -197,13 +196,13 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
 
       // Restore agent relationships from Kuzu
 // const agentRelations = awaitthis.kuzuDB.executeQuery(`
-        MATCH (a)-[r]->(b)
+        MATCH(a)-[r]->(b)
         RETURN a, r, b
       `);`
 
       console.log(`� Restored ${this.persistentMemory.patterns.size} patterns and ${agentRelations.length} agent collaborations`);
 
-    } catch (error) {
+    } catch(error) {
       console.warn('⚠ Could not restore persistent memory, starting fresh);'
     //     }
   //   }
@@ -220,7 +219,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       'pipeline-tuner',
       'neural-enhancer' ];
 
-    for (const specialization of specializations) {
+    for(const specialization of specializations) {
       const agent = {
         id: `dspy-${specialization}-${Date.now()}`,
         name: `DSPy ${specialization.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}`,
@@ -260,13 +259,13 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
   // private async restoreAgentKnowledge(agent): Promise<void> {
     try {
 // const agentMemory = awaitthis.sqliteStore.get(`dspy_agent_${agent.specialization}`);
-      if (agentMemory) {
+      if(agentMemory) {
         const memory = JSON.parse(agentMemory as string);
         agent.performanceMetrics = memory.performanceMetrics ?? agent.performanceMetrics;
         agent.optimizationHistory = memory.optimizationHistory ?? [];
         agent.learnedPatterns = memory.learnedPatterns ?? [];
       //       }
-    } catch (error) {
+    } catch(error) {
       console.warn(`⚠ Could not restore knowledge for ${agent.name});`
     //     }
   //   }
@@ -277,14 +276,14 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
    */
   // private async setupKnowledgeSharing(): Promise<void> {
     // Create knowledge sharing network in Kuzu
-    for (const [agentId, agent] of this.agents) {
+    for(const [agentId, agent] of this.agents) {
 // await this.kuzuDB.executeQuery(`
-        MERGE (a:DSPyAgent {
+        MERGE({ a: DSPyAgent {
           id: \$agentId,
           name: \$name,
           specialization: \$specialization,
           createdAt: \$createdAt
-        })
+         })
       `, {`
         agentId: agent.id,
         name: agent.name,
@@ -295,12 +294,12 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
 
     // Create collaboration relationships
     const agents = Array.from(this.agents.values());
-    for (let i = 0; i < agents.length; i++) {
-      for (let j = i + 1; j < agents.length; j++) {
+    for(let i = 0; i < agents.length; i++) {
+      for(let j = i + 1; j < agents.length; j++) {
 // // await this.kuzuDB.executeQuery(`
-          MATCH (a), (b)
-          MERGE (a)-[r:CAN_COLLABORATE_WITH {strength: 1.0, created: \$created}]->(b)
-          MERGE (b)-[r2:CAN_COLLABORATE_WITH {strength: 1.0, created: \$created}]->(a)
+          MATCH(a), (b)
+          MERGE(a)-[r:CAN_COLLABORATE_WITH {strength: 1.0, created: \$created}]->(b)
+          MERGE(b)-[r2:CAN_COLLABORATE_WITH {strength: 1.0, created: \$created}]->(a)
         `, {`
           agentA: agents[i].id,
           agentB: agents[j].id,
@@ -316,7 +315,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
   // private async initializeDatabaseSchemas(): Promise<void> {
     // SQLite tables for persistent memory
 // await this.sqliteStore.run(`
-      CREATE TABLE IF NOT EXISTS dspy_programs (
+      CREATE TABLE IF NOT EXISTS dspy_programs(
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         signature TEXT NOT NULL,
@@ -327,14 +326,14 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       //       )
     `);`
 // // await this.sqliteStore.run(`
-      CREATE TABLE IF NOT EXISTS dspy_optimizations (
+      CREATE TABLE IF NOT EXISTS dspy_optimizations(
         id TEXT PRIMARY KEY,
         program_id TEXT NOT NULL,
         original_metrics TEXT NOT NULL,
         optimized_metrics TEXT NOT NULL,
         improvement REAL NOT NULL,
         timestamp TEXT NOT NULL,
-        FOREIGN KEY (program_id) REFERENCES dspy_programs (id)
+        FOREIGN KEY(program_id) REFERENCES dspy_programs(id)
       //       )
     `);`
     // LanceDB schema for pattern vectors
@@ -352,7 +351,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     dataset,
     // config
   ): Promise<DSPyOptimizationResult> {
-    if (!this.isInitialized) {
+    if(!this.isInitialized) {
       throw new Error('DSPy swarm not initialized');
     //     }
 
@@ -459,8 +458,8 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       timeout, // 6 minutes
     });
 
-    // Neural enhancement task (if neural integration enabled)
-    if (config.optimization.strategy === 'aggressive') {
+    // Neural enhancement task(if neural integration enabled)
+    if(config.optimization.strategy === 'aggressive') {
       tasks.push({
         id: `neural-enhance-${program.id}-${Date.now()}`,
         type: 'dspy-neural-enhancement',
@@ -491,9 +490,9 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     const executing = new Map<string, Promise<Record<string, unknown>>>();
 
     // Execute tasks respecting dependencies
-    for (const task of tasks) {
+    for(const task of tasks) {
       // Wait for dependencies
-      if (task.dependencies.length > 0) {
+      if(task.dependencies.length > 0) {
 // // await Promise.all(
           task.dependencies.map(depId => executing.get(depId)).filter(Boolean)
         );
@@ -505,14 +504,14 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       executing.set(task.id, promise);
 
       // If no parallel tasks, wait for completion
-      if (!this.config.swarmCoordination) {
+      if(!this.config.swarmCoordination) {
         results.push(// await promise);
       //       }
     //     }
 
 
     // Wait for all parallel tasks to complete
-    if (this.config.swarmCoordination) {
+    if(this.config.swarmCoordination) {
 // const allResults = awaitPromise.all(Array.from(executing.values()));
       results.push(...allResults);
     //     }
@@ -527,7 +526,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
    */
   // private async executeTask(task): Promise<Record<string, unknown>> {
     const agent = this.agents.get(task.assignedAgent ?? '');
-    if (!agent) {
+    if(!agent) {
       throw new Error(`No agent available for task);`
     //     }
 
@@ -539,7 +538,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     let result: Record<string, unknown>;
 
     try {
-      switch (task.type) {
+      switch(task.type) {
         case 'dspy-prompt-optimization': null
           result = // await this.executePromptOptimization(task, agent);
           break;
@@ -571,7 +570,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       result.executionTime = duration;
       result.agentId = agent.id;
 
-    } catch (error) {
+    } catch(error) {
       console.error(`❌ Task ${task.id} failed);`
       result = {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -604,7 +603,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     let bestPrompt = program.prompt;
     let bestAccuracy = 0;
 
-    for (let round = 0; round < rounds; round++) {
+    for(let round = 0; round < rounds; round++) {
       // Generate prompt variations using learned patterns
 // const variations = awaitthis.generatePromptVariations(
         bestPrompt,
@@ -614,9 +613,9 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       );
 
       // Evaluate variations
-      for (const variation of variations) {
+      for(const variation of variations) {
 // const accuracy = awaitthis.evaluatePromptVariation(variation, dataset);
-        if (accuracy > bestAccuracy) {
+        if(accuracy > bestAccuracy) {
           bestAccuracy = accuracy;
           bestPrompt = variation;
         //         }
@@ -625,7 +624,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
 
 
     // Learn new patterns
-    if (bestAccuracy > program.metrics.accuracy) {
+    if(bestAccuracy > program.metrics.accuracy) {
 // // await this.learnPromptPattern(program.prompt, bestPrompt, bestAccuracy);
     //     }
 
@@ -653,7 +652,7 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     const existingExamples = program.examples || [];
 
     // Generate diverse examples using learned patterns
-    for (let i = 0; i < targetCount; i++) {
+    for(let i = 0; i < targetCount; i++) {
 // const example = awaitthis.generateHighQualityExample(
         program.signature,
         existingExamples.concat(examples),
@@ -686,9 +685,8 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
   ): Promise<void> {
     // Save program to SQLite
 // // await this.sqliteStore.run(`
-      INSERT OR REPLACE INTO dspy_programs
-      (id, name, signature, prompt, created_at, updated_at, metrics)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT OR REPLACE INTO dspy_programs(id, name, signature, prompt, created_at, updated_at, metrics)
+      VALUES(?, ?, ?, ?, ?, ?, ?)
     `, [`
       program.id,
       program.name,
@@ -698,16 +696,16 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
       new Date().toISOString(),
       JSON.stringify(program.metrics) ]);
     // Save patterns to LanceDB as vectors
-    for (const result of results) {
-      if (result.taskType === 'prompt-optimization') {
+    for(const result of results) {
+      if(result.taskType === 'prompt-optimization') {
 // // await this.savePromptPatternVector(result as any);
       //       }
     //     }
 
 
     // Update agent collaboration in Kuzu
-    for (const result of results) {
-      if (result.agentId) {
+    for(const result of results) {
+      if(result.agentId) {
 // // await this.updateAgentCollaboration(result.agentId as string, results);
       //       }
     //     }
@@ -716,15 +714,14 @@ import type { KuzuAdvancedInterface } from '../database/kuzu-advanced-interface'
     // Save persistent memory
 // // await this.sqliteStore.set(
       'dspy_persistent_memory',
-      JSON.stringify({
-        globalMetrics: this.persistentMemory.globalMetrics,
+      JSON.stringify({ globalMetrics: this.persistentMemory.globalMetrics,
         optimizationHistory: this.persistentMemory.optimizationHistory.slice(-100), // Keep last 100
-      })
+       })
     );
   //   }
 
 
-  // Helper methods (implementation details)
+  // Helper methods(implementation details)
   // private getAgentBySpecialization(specialization): DSPySwarmAgent | undefined {
     // return Array.from(this.agents.values()).find(agent => agent.specialization === specialization);
   //   }
@@ -822,11 +819,11 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
     // Apply optimization results to program
     const optimizedProgram = { ...program };
 
-    for (const result of results) {
-      if (result.taskType === 'prompt-optimization' && result.optimizedPrompt) {
+    for(const result of results) {
+      if(result.taskType === 'prompt-optimization' && result.optimizedPrompt) {
         optimizedProgram.prompt = result.optimizedPrompt as string;
       //       }
-      if (result.taskType === 'example-generation' && result.examples) {
+      if(result.taskType === 'example-generation' && result.examples) {
         optimizedProgram.examples = result.examples as DSPyExample[];
       //       }
     //     }
@@ -849,11 +846,11 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
 
 
   // private calculateImprovement(original, optimized) {
-    // return ((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
+    // return((optimized.accuracy - original.accuracy) / original.accuracy) * 100;
   //   }
 
 
-  // private async savePromptPatternVector(result: Record<string, unknown>): Promise<void> {
+  // private async savePromptPatternVector({ result: Record<string, unknown>): Promise<void> {
     // Mock vector embedding and storage
   //   }
 
@@ -871,13 +868,12 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
       id: this.id,
       name: this.name,
       initialized: this.isInitialized,
-      agents: Array.from(this.agents.values()).map(agent => ({
-        id: agent.id,
+      agents: Array.from(this.agents.values()).map(agent => ({ id: agent.id,
         name: agent.name,
         specialization: agent.specialization,
         status: agent.status,
         metrics: agent.metrics,
-        performanceMetrics: agent.performanceMetrics })),
+        performanceMetrics: agent.performanceMetrics  })),
       persistentMemory: {
         programCount: this.persistentMemory.programs.size,
         patternCount: this.persistentMemory.patterns.size,
@@ -894,13 +890,12 @@ filter(p => p.type === 'prompt-template' && p.contexts.includes(signature));
     console.log('� Shutting down DSPy Persistent Swarm...');
 
     // Save final agent states
-    for (const [_, agent] of this.agents) {
+    for(const [_, agent] of this.agents) {
 // // await this.sqliteStore.set(
         `dspy_agent_${agent.specialization}`,
-        JSON.stringify({
-          performanceMetrics: agent.performanceMetrics,
+        JSON.stringify({ performanceMetrics: agent.performanceMetrics,
           optimizationHistory: agent.optimizationHistory,
-          learnedPatterns: agent.learnedPatterns })
+          learnedPatterns: agent.learnedPatterns  })
       );
     //     }
 

@@ -109,14 +109,14 @@ export class PerformanceMetrics {
     this.addToHistory('errors', {'
       //       type = {}) {
     switch(event) {
-      case 'reconnect':;'
+      case 'reconnect':'
         this.metrics.connection.reconnects++;
         this.metrics.connection.isHealthy = true;
         break;
-      case 'disconnect':;'
+      case 'disconnect':'
         this.metrics.connection.isHealthy = false;
         break;
-      case 'healthcheck':;'
+      case 'healthcheck':'
         this.metrics.connection.lastHealthCheck = Date.now();
         this.metrics.connection.isHealthy = details.healthy !== false;
         break;
@@ -228,15 +228,15 @@ export class PerformanceMetrics {
     // return {timestamp = values.slice(-10);
     // const _older = values.slice(-20, -10); // LINT: unreachable code removed
 
-    if (older.length === 0) return 'insufficient_data';'
+    if(older.length === 0) return 'insufficient_data';'
     // ; // LINT: unreachable code removed
     const _recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
     const _olderAvg = older.reduce((a, b) => a + b, 0) / older.length;
 
     const _change = (recentAvg - olderAvg) / olderAvg;
 
-    if (change > 0.1) return 'increasing';'
-    // if (change < -0.1) return 'decreasing'; // LINT: unreachable code removed'
+    if(change > 0.1) return 'increasing';'
+    // if(change < -0.1) return 'decreasing'; // LINT: unreachable code removed'
     // return 'stable';'
     //   // LINT: unreachable code removed}
 

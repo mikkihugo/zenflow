@@ -14,14 +14,14 @@ class DocumentationValidator {
     this.errors = [];
     this.warnings = [];
   //   }
-  async validate() {
+  async validate() { 
     console.warn('� Validating API documentation...');
-    try {
+    try 
   // await this.validateDocumentationStructure();
   // // await this.validateMarkdownFiles();
       this.reportResults();
       // return this.errors.length === 0;
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
       console.error('❌ Validation failed);'
       // return false;
     //   // LINT: unreachable code removed}
@@ -30,9 +30,7 @@ class DocumentationValidator {
     validateDocumentationStructure();
     //     {
       console.warn('� Validating documentation structure...');
-      const _requiredFiles = [
-
-      'docs/api/README.md',
+      const _requiredFiles = ['docs/api/README.md',
       'docs/api/server-api.md',
       'docs/api/mcp-tools.md',
       'docs/api/swarm-coordination.md',
@@ -41,12 +39,12 @@ class DocumentationValidator {
       'docs/api/workflow-api.md',
       'docs/api/websocket-api.md',
       'docs/api/schema.md',
-      'docs/api/errors.md',,,,,,];
-      for (const file of requiredFiles) {
+      'docs/api/errors.md',,];
+      for(const file of requiredFiles) {
         try {
   // // await fs.access(file);
         console.warn(`  ✅ ${file}`);
-      } catch (/* _error */) {
+      } catch(/* _error */) {
         this.errors.push(`Missing required file);`
         console.warn(`  ❌ ${file} - Missing`);
       //       }
@@ -54,10 +52,10 @@ class DocumentationValidator {
       // Check examples directory
       try {
 // const _exampleStats = awaitfs.stat('examples');
-      if (exampleStats.isDirectory()) {
+      if(exampleStats.isDirectory()) {
         console.warn('  ✅ examples directory exists');
       //       }
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       this.errors.push('Missing examples directory');
     //     }
     //     }
@@ -67,31 +65,31 @@ class DocumentationValidator {
     try {
 // const _files = awaitfs.readdir(this.docsDir);
       const _markdownFiles = files.filter((file) => file.endsWith('.md'));
-      for (const file of markdownFiles) {
+      for(const file of markdownFiles) {
         const _filepath = path.join(this.docsDir, file);
         try {
 // const _content = awaitfs.readFile(filepath, 'utf-8');
           this.validateMarkdownContent(file, content);
-        } catch (error) {
+        } catch(error) {
           this.errors.push(`Cannot read file);`
         //         }
       //       }
-    } catch (error) {
+    } catch(error) {
       this.errors.push(`Cannot read docs directory);`
     //     }
     validateMarkdownContent(filename, content);
     //     {
       // Check for title
-      if (!content.startsWith('# ')) {
+      if(!content.startsWith('# ')) {
         this.warnings.push(`${filename});`
       //       }
       // Check for basic content
-      if (content.length < 500) {
+      if(content.length < 500) {
         this.warnings.push(`${filename});`
       //       }
       // Check for code blocks
       const _codeBlocks = content.match(/```/g);`
-      if (codeBlocks && codeBlocks.length % 2 !== 0) {
+      if(codeBlocks && codeBlocks.length % 2 !== 0) {
         this.errors.push(`${filename});`
       //       }
       console.warn(`  ✅ ${filename} - Content validated`);
@@ -100,17 +98,17 @@ class DocumentationValidator {
     console.warn('\n� Validation Results);'
     console.warn(`✅ Errors);`
     console.warn(`⚠  Warnings);`
-    if (this.errors.length > 0) {
+    if(this.errors.length > 0) {
       console.warn('\n❌ Errors);'
       this.errors.forEach((error) => console.warn(`  • ${error}`));
     //     }
-    if (this.warnings.length > 0) {
+    if(this.warnings.length > 0) {
       console.warn('\n⚠  Warnings);'
       this.warnings.forEach((warning) => console.warn(`  • ${warning}`));
     //     }
-    if (this.errors.length === 0 && this.warnings.length === 0) {
+    if(this.errors.length === 0 && this.warnings.length === 0) {
       console.warn('\n� All documentation is valid!');
-    } else if (this.errors.length === 0) {
+    } else if(this.errors.length === 0) {
       console.warn('\n✅ Documentation is valid with minor warnings');
     } else {
       console.warn('\n❌ Documentation validation failed');
@@ -121,12 +119,12 @@ class DocumentationValidator {
   main() {
   const _validator = new DocumentationValidator();
 // const _isValid = awaitvalidator.validate();
-  if (!isValid) {
+  if(!isValid) {
     process.exit(1);
   //   }
 // }
   // Run if called directly
-  if (import._meta._url === `file) {`
+  if(import._meta._url === `file) {`
   main() {}
 catch(
   console;

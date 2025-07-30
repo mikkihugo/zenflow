@@ -28,12 +28,12 @@
   //   }
 
 
-  async initialize() {
-    if (this.initialized) return;
+  async initialize() { 
+    if(this.initialized) return;
     // ; // LINT: unreachable code removed
     printInfo('ROCKET Initializing Claude Zen Native Swarm Integration...');'
 
-    try {
+    try 
       // Initialize native hive-mind
       this.nativeHiveMind = new NativeHiveMind({enableSemanticMemory = true;
 
@@ -42,7 +42,7 @@
 
       this.emit('initialized');'
 
-    } catch (error)
+    } catch(error)
 // {
       printError(`X Failed to initialize Native Swarm Integration => {`
       printSuccess('BRAIN Native Hive-Mind ready for coordination');'
@@ -61,7 +61,7 @@
     // return agents;
     //   // LINT: unreachable code removed}
 
-// NATIVE COORDINATION METHODS (Direct replacements for MCP tools)
+// NATIVE COORDINATION METHODS(Direct replacements for MCP tools)
 
 /**  */
  * NATIVE = {}) {
@@ -77,20 +77,19 @@
         // return cached;
     //   // LINT: unreachable code removed}
 
-      // Direct native call (no MCP overhead)
-// const _result = awaitthis.nativeHiveMind.initializeSwarm({
-        topology = {}) {
+      // Direct native call(no MCP overhead)
+// const _result = awaitthis.nativeHiveMind.initializeSwarm({ topology = { }) {
 // // // await this.ensureInitialized();
     const _operation = this.trackOperation('agent_spawn');'
 
     try {
-// const _result = awaitthis.nativeHiveMind.spawnAgent({type = = false,
-        cognitivePattern = {}) {
+// const _result = awaitthis.nativeHiveMind.spawnAgent({ type = = false,
+        cognitivePattern = { }) {
 // // // await this.ensureInitialized();
     const _operation = this.trackOperation('task_orchestrate');'
 
     try {
-// const _result = awaitthis.nativeHiveMind.orchestrateTask({task = null) {
+// const _result = awaitthis.nativeHiveMind.orchestrateTask({ task = null) {
 // // // await this.ensureInitialized();
     const _operation = this.trackOperation('swarm_status');'
 
@@ -101,7 +100,7 @@
 
       // return {
 ..result,
-    // claudeZenIntegration = { // LINT: unreachable code removed}) {
+    // claudeZenIntegration = { // LINT: unreachable code removed }) {
 // // // await this.ensureInitialized();
     if(!this.options.enableSemanticMemory) {
       throw new Error('Semantic memory search is disabled');'
@@ -114,8 +113,8 @@
       printInfo(`SEARCH Performing semanticsearch = // // await this.nativeHiveMind.semanticSearch(query, {vectorLimit = this.trackOperation('neural_learning');'`
 
     try {
-// // // await this.nativeHiveMind.learnFromCoordination({operation = = false;
-      });
+// // // await this.nativeHiveMind.learnFromCoordination({ operation = = false;
+       });
 
       this.completeOperation(operation, true);
 
@@ -148,7 +147,7 @@
       const _batchEfficiency = operations.length / batchOperation.duration * 1000
       this.metrics.batchEfficiency = (this.metrics.batchEfficiency + batchEfficiency) / 2;
 
-      printSuccess(`CHECK Completed ${operations.length} operations in ${batchOperation.duration}ms (${batchEfficiency.toFixed(1)} ops/sec)`);`
+      printSuccess(`CHECK Completed ${operations.length} operations in ${batchOperation.duration}ms(${batchEfficiency.toFixed(1)} ops/sec)`);`
 
       // return {
         results,
@@ -169,7 +168,7 @@
     groupResults.forEach(group => {
       group.results.forEach(result => {
         results[result.originalIndex] = result;
-      });
+       });
     });
 
     // return results;
@@ -197,12 +196,12 @@
   // RESULT CACHING
 
   getCachedResult(key) {
-    if (!this.options.cacheResults) return null;
+    if(!this.options.cacheResults) return null;
     // ; // LINT: unreachable code removed
     const _cached = this.resultCache.get(key);
-    if (!cached) return null;
+    if(!cached) return null;
     // ; // LINT: unreachable code removed
-    if (Date.now() - cached.timestamp > this.cacheExpiry) {
+    if(Date.now() - cached.timestamp > this.cacheExpiry) {
       this.resultCache.delete(key);
       // return null;
     //   // LINT: unreachable code removed}
@@ -211,11 +210,11 @@
     //   // LINT: unreachable code removed}
 
   cacheResult(key, result) {
-    if (!this.options.cacheResults) return;
+    if(!this.options.cacheResults) return;
     // ; // LINT: unreachable code removed
     this.resultCache.set(key, {
       result,timestamp = Date.now() - this.cacheExpiry;
-      for (const [k, v] of this.resultCache.entries()) {
+      for(const [k, v] of this.resultCache.entries()) {
         if(v.timestamp < cutoff) {
           this.resultCache.delete(k);
         //         }
@@ -226,8 +225,8 @@
 
   // UTILITY METHODS
 
-  async ensureInitialized() {
-    if(!this.initialized) {
+  async ensureInitialized() { 
+    if(!this.initialized) 
 // // await this.initialize();
     //     }
   //   }

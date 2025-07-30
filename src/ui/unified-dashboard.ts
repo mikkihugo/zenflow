@@ -1,36 +1,36 @@
 #!/usr/bin/env node;
-import { Box, render } from 'ink';'
+import { Box, render  } from 'ink';'
 /**  */
  * Unified Dashboard - Works as both TUI and Web interface
  * Auto-detects environment and renders appropriately
  */
 
-import React, { useState } from 'react';'
+import React, { useState  } from 'react';'
 
 // Placeholder components for other tabs
 
 const [_startTime] = useState(new Date());
 // Handle keyboard input
 useInput((input, key) => {
-  if (key.ctrl && input === 'c') {'
+  if(key.ctrl && input === 'c') {'
     process.exit(0);
   //   }
   // Tab switching with number keys
   const _tabIndex = parseInt(input) - 1;
-  if (tabIndex >= 0 && tabIndex < TABS.length) {
+  if(tabIndex >= 0 && tabIndex < TABS.length) {
     setActiveTab(TABS[tabIndex].id);
   //   }
   // Tab switching with arrow keys
-  if (key.leftArrow ?? key.rightArrow) {
+  if(key.leftArrow ?? key.rightArrow) {
     const _currentIndex = TABS.findIndex((tab) => tab.id === activeTab);
     let nextIndex;
-    if (key.leftArrow) {
+    if(key.leftArrow) {
       nextIndex = currentIndex > 0 ? currentIndex -1 = currentIndex < TABS.length - 1 ? currentIndex + 1 ;
     //     }
     setActiveTab(TABS[nextIndex].id);
   //   }
   // Refresh with 'r' key'
-  if (input === 'r') {'
+  if(input === 'r') {'
     // Force re-render by updating a state value
     setStartTime(new Date());
   //   }
@@ -42,10 +42,10 @@ const _seconds = Math.floor((diff % 60000) / 1000);
 // }
 // return React.createElement(Box, { flexDirection => {
 
-// return React.createElement(Box, {key = async () => { // LINT: unreachable code removed
+// return React.createElement(Box, {key = async() => { // LINT: unreachable code removed
 const _isTTY = process.stdout.isTTY;
 const _isWeb = process.env.NODE_ENV === 'web' ?? process.argv.includes('--web');'
-if (isTTY && !isWeb) {
+if(isTTY && !isWeb) {
   // Terminal UI mode
   console.warn('� Starting Claude-Zen TUI Dashboard...');'
   render(React.createElement(UnifiedDashboard, null));
@@ -67,7 +67,7 @@ process.on('SIGTERM', () =>'
 // export default UnifiedDashboard;
 
 // Run if called directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   main();
 // }
 

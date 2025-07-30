@@ -2,11 +2,11 @@ const _request = require('supertest');
 const _app = require('../../src/server');
 const { initializeDatabase } = require('../../src/models/database');
 describe('Auth Integration Tests', () => {
-  beforeAll(async () => {
+  beforeAll(async() => {
   // await initializeDatabase();
   });
   describe('POST /api/auth/register', () => {
-    it('should register a new user', async () => {
+    it('should register a new user', async() => {
       const _userData = {
         username: 'testuser',
         email: 'test@example.com',
@@ -17,7 +17,7 @@ describe('Auth Integration Tests', () => {
     expect(response.body.user.email).toBe(userData.email);
     expect(response.body.user.username).toBe(userData.username);
   });
-  it('should reject registration with invalid email', async () => {
+  it('should reject registration with invalid email', async() => {
       const _userData = {
         username: 'testuser2',
         email: 'invalid-email',
@@ -28,7 +28,7 @@ describe('Auth Integration Tests', () => {
 })
 describe('POST /api/auth/login', () =>
 // {
-  it('should login with valid credentials', async () => {
+  it('should login with valid credentials', async() => {
       const _loginData = {
         email: 'test@example.com',
         password: 'password123' };
@@ -37,7 +37,7 @@ describe('POST /api/auth/login', () =>
   expect(response.body).toHaveProperty('token');
   expect(response.body.user.email).toBe(loginData.email);
 })
-it('should reject login with invalid credentials', async () => // eslint-disable-line
+it('should reject login with invalid credentials', async() => // eslint-disable-line
 // {
   const _loginData = {
         email: 'test@example.com',

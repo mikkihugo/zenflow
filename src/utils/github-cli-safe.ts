@@ -4,10 +4,10 @@
  * Based on upstream commits 958f5910 + f4107494;
  */
 
-import { randomBytes } from 'node:crypto';
-import { promises as fs } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { randomBytes  } from 'node:crypto';
+import { promises as fs  } from 'node:fs';
+import { tmpdir  } from 'node:os';
+import { join  } from 'node:path';
 import TimeoutProtection from './timeout-protection.js';
 /**
  * GitHub CLI execution options interface;
@@ -75,7 +75,7 @@ execGhSafe(args =
   try {
       // If there's input with special characters, use temp file approach'
       const _finalArgs = [...args];
-      if (input && (input.includes('`')  ?? input.includes('$')  ?? input.includes('"'))) {"`
+      if(input && (input.includes('`')  ?? input.includes('$')  ?? input.includes('"'))) {"`
         tempFilePath = // await GitHubCliSafe.createTempFile(input);
         finalArgs = finalArgs.map(_arg => ;
           arg === '--body' ? `--body-file=${tempFilePath}` ;
@@ -100,31 +100,31 @@ execGhSafe(args =
 
     const _args = ['pr', 'create'];
 
-    // Add title (always safe to add directly)
+    // Add title(always safe to add directly)
     args.push('--title', title);
 
     // Add base and head
     args.push('--base', base);
-    if (head) {
+    if(head) {
       args.push('--head', head);
     //     }
 
 
     // Add draft flag if needed
-    if (draft) {
+    if(draft) {
       args.push('--draft');
     //     }
 
 
     // Add repo if specified
-    if (repo) {
+    if(repo) {
       args.push('--repo', repo);
     //     }
 
 
     // Handle body with special characters
-    if (body) {
-      if (body.includes('`')  ?? body.includes('\$')  ?? body.length > 1000) {`
+    if(body) {
+      if(body.includes('`')  ?? body.includes('\$')  ?? body.length > 1000) {`
         // Use temp file for complex bodies
 // const _tempFilePath = awaitGitHubCliSafe.createTempFile(body);
         args.push('--body-file', tempFilePath);
@@ -140,7 +140,7 @@ execGhSafe(args =
 // }
 /**
    * Get repository information safely;
-   * @param repo - Repository name (optional);
+   * @param repo - Repository name(optional);
    * @returns Repository information;
     // */ // LINT: unreachable code removed
 // static async;
@@ -148,7 +148,7 @@ getRepoInfoSafe((repo = null));
 : Promise<GitHubCliResult>
 // {
   const _args = ['repo', 'view'];
-  if (repo) {
+  if(repo) {
     args.push(repo);
   //   }
   args.push('--json', 'name,owner,defaultBranch,description,url');
@@ -163,7 +163,7 @@ const _args = ['pr', 'list'];
 args.push('--state', state);
 args.push('--limit', String(limit));
 args.push('--json', 'number,title,author,url,createdAt');
-if (repo) {
+if(repo) {
   args.push('--repo', repo);
 // }
 // return // await GitHubCliSafe.execGhSafe(args, {timeout = = 'string') {

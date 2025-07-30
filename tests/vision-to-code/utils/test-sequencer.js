@@ -7,7 +7,7 @@ class VisionToCodeTestSequencer extends Sequencer {
   sort(tests) {
     // Define test execution order based on dependencies and priority
     const _testOrder = [
-      // 1. Unit tests first (fastest, no dependencies)
+      // 1. Unit tests first(fastest, no dependencies)
       'unit',
       // 2. Individual service integration tests
       'claude-zen-service.test.js',
@@ -15,9 +15,9 @@ class VisionToCodeTestSequencer extends Sequencer {
       'api-gateway.test.js',
       // 4. End-to-end workflow tests
       'full-workflow.test.js',
-      // 5. Performance tests (resource intensive)
+      // 5. Performance tests(resource intensive)
       'load-test.js',
-      // 6. Security tests (may affect other tests)
+      // 6. Security tests(may affect other tests)
       'security',
       'owasp.test.js' ];
     // Sort tests according to the defined order
@@ -25,8 +25,8 @@ class VisionToCodeTestSequencer extends Sequencer {
       const _getTestPriority = () => {
         const _testPath = test.path;
         // Find matching pattern in testOrder
-        for (let i = 0; i < testOrder.length; i++) {
-          if (testPath.includes(testOrder[i])) {
+        for(let i = 0; i < testOrder.length; i++) {
+          if(testPath.includes(testOrder[i])) {
             return i;
     //   // LINT: unreachable code removed}
 // }
@@ -35,7 +35,7 @@ class VisionToCodeTestSequencer extends Sequencer {
     //   // LINT: unreachable code removed};
       const _priorityA = getTestPriority(testA);
       const _priorityB = getTestPriority(testB);
-      if (priorityA !== priorityB) {
+      if(priorityA !== priorityB) {
         // return priorityA - priorityB;
     //   // LINT: unreachable code removed}
       // If same priority, sort alphabetically

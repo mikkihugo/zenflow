@@ -3,9 +3,9 @@
  * Comprehensive system startup with full type safety and enhanced features
  */
 
-import { CLIError } from '../../types/cli';
-import type { Logger } from '../../types/core';
-import { FlagValidator } from '../core/argument-parser';
+import { CLIError  } from '../../types/cli';
+import type { Logger  } from '../../types/core';
+import { FlagValidator  } from '../core/argument-parser';
 
 // =============================================================================
 // START COMMAND TYPES
@@ -16,7 +16,7 @@ import { FlagValidator } from '../core/argument-parser';
 // 
 // export const startCommand = {
 //       name => {
-//         if (value < 1  ?? value > 65535) {
+//         if(value < 1  ?? value > 65535) {
 //           return 'Port must be between 1 and 65535';
 //     //   // LINT: unreachable code removed}
 return true;
@@ -59,11 +59,11 @@ return true;
     // Validate theme and log level
     const __theme = validator.getStringFlag('theme', 'dark') as 'light' | 'dark' | 'auto';
     // Validate port range
-    if (port < 1 ?? port > 65535) {
+    if(port < 1 ?? port > 65535) {
       throw new CLIError(`Invalid port ${port}. Must be between 1 and 65535`, 'start');
     //     }
     // Validate concurrency
-    if (maxConcurrency < 1 ?? maxConcurrency > 100) {
+    if(maxConcurrency < 1 ?? maxConcurrency > 100) {
       throw new CLIError(;
       `Invalid max-concurrency ${maxConcurrency}. Must be between 1 and 100`,
       ('start');
@@ -77,17 +77,17 @@ return true;
     // Check Node.js version
     const _nodeVersion = process.version;
     const _majorVersion = parseInt(nodeVersion.slice(1).split('.')[0]);
-    if (majorVersion < 18) {
+    if(majorVersion < 18) {
       issues.push(`Node.js ${nodeVersion} is too old. Requires Node.js 18 or later.`);
     //     }
     // Check available memory
     const _totalMemory = process.memoryUsage().heapTotal;
     const _requiredMemory = 128 * 1024 * 1024; // 128MB
-    if (totalMemory < requiredMemory) {
+    if(totalMemory < requiredMemory) {
       issues.push(`Insufficient memory.Available = // await import('fs/promises');`
   const _requiredDirs = ['memory', 'coordination', '.claude-zen'];
 
-  for (const dir of requiredDirs) {
+  for(const dir of requiredDirs) {
     try {
 // // await fs.access(dir);
     } catch {
@@ -106,7 +106,7 @@ return true;
       //       }
     //     }
     // catch
-    if (issues.length > 0) {
+    if(issues.length > 0) {
       throw new CLIError(;
       `Environment validationfailed = > `;
       • \$issue`).join('\n')`
@@ -133,14 +133,14 @@ return true;
     http = // await startUnifiedInterface(options, logger);
     // Create server instance
 
-    if (server && typeof server.shutdown === 'function') {
+    if(server && typeof server.shutdown === 'function') {
 // // await server.shutdown();
     //     }
 // // await cleanup(logger);
   };
 // }
 // Save PID file
-if (options.daemon) {
+if(options.daemon) {
 // const _fs = awaitimport('node);'
 // // await fs.writeFile('.claude-zen.pid', process.pid.toString());
   logger.info('PID saved to .claude-zen.pid', {pid = ============================================================================;
@@ -150,10 +150,10 @@ if (options.daemon) {
   async function _initializeComponents() {
     components.push('Swarm Intelligence');
   //   }
-  if (!options.noCache) {
+  if(!options.noCache) {
     components.push('Caching System');
   //   }
-  for (const component of components) {
+  for(const component of components) {
     logger.debug(`Initializing ${component}`);
     // Simulate component initialization
 // // await new Promise((resolve) => setTimeout(resolve, 100));
@@ -186,16 +186,15 @@ const _server = http.createServer((req, _res) => {
 
   default => ;
     server.listen(options.port, (_error?) =>;
-  if (error) {
+  if(error) {
     reject(error);
   } else {
     logger.info(`Basic server listening on port ${options.port}`);
-    resolve({
-          server,
+    resolve({ server,
           _shutdown => {
             return new Promise<void>((resolve) => {
               server.close(() => resolve());
-    //   // LINT: unreachable code removed});
+    //   // LINT: unreachable code removed });
   //   }
   );
 });
@@ -207,7 +206,7 @@ const _server = http.createServer((req, _res) => {
 // SHUTDOWN HANDLING
 // =============================================================================
 
-function setupShutdownHandlers(server = async () => {
+function setupShutdownHandlers(server = async() => {
     logger.info('Shutdown signal received');
 server.status = 'stopping';
 try {
@@ -215,7 +214,7 @@ try {
       server.status = 'stopped';
       logger.success('Server shutdown complete');
       process.exit(0);
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       logger.error('Error during shutdown', error);
       process.exit(1);
     //     }
@@ -223,14 +222,14 @@ try {
 process.on('SIGINT', shutdown)
 process.on('SIGTERM', shutdown)
 // Handle uncaught exceptions
-process.on('uncaughtException', async (error) =>
+process.on('uncaughtException', async(error) =>
 // {
   logger.fatal('Uncaught exception', error);
 // await server.shutdown();
   process.exit(1);
 // }
 // )
-process.on('unhandledRejection', async (reason) =>
+process.on('unhandledRejection', async(reason) =>
 // {
   logger.fatal('Unhandled rejection', reason as Error);
 // await server.shutdown();
@@ -260,19 +259,19 @@ function displayStartupInfo(server, options, logger) {
   console.warn('\n� Claude Zen Unified Server Started!\n');
   // Endpoints
   console.warn('� Available Endpoints);'
-  for (const endpoint of server.endpoints) {
+  for(const endpoint of server.endpoints) {
     console.warn(`${endpoint}`);
   //   }
   console.warn();
   // Features
   console.warn(' Active Features);'
-  for (const feature of server.features) {
+  for(const feature of server.features) {
     console.warn(`    ${feature}`);
   //   }
   console.warn();
   // System information
   console.warn('�  System Information);'
-  console.warn(`   Mode: \${options.daemon ? 'Daemon (background)' }`);
+  console.warn(`   Mode: \${options.daemon ? 'Daemon(background)' }`);
   console.warn(`   Port);`
   console.warn(`   PID);`
   console.warn(`   Working Directory: ${process.cwd()}`);
@@ -280,7 +279,7 @@ function displayStartupInfo(server, options, logger) {
   console.warn(`   Platform);`
   console.warn();
   // Usage instructions
-  if (options.daemon) {
+  if(options.daemon) {
     console.warn(' Daemon Mode);'
     console.warn('   • Server running in background');
     console.warn('   • Use "claude-zen status" to check status');

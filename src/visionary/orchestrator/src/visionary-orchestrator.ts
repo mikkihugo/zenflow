@@ -5,7 +5,7 @@
  * Integrated directly into the Hive Mind as a primary capability
  */
 
-import { EventEmitter } from 'node:events';'
+import { EventEmitter  } from 'node:events';'
 
 export class VisionarySoftwareOrchestrator extends EventEmitter {
   constructor(_options = {}) {
@@ -21,10 +21,10 @@ export class VisionarySoftwareOrchestrator extends EventEmitter {
   //   }
 
 
-  async initialize() {
+  async initialize() { 
     console.warn('🧠 Initializing Visionary Software Intelligence Orchestrator...');'
 
-    try {
+    try 
       // Initialize core services
 // // // await this._initializeAnalysisService();
 // // // await this._initializePatternService();
@@ -34,7 +34,7 @@ export class VisionarySoftwareOrchestrator extends EventEmitter {
 
       this.emit('initialized');'
       // return true;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       console.error('❌ Failed to initialize Visionary Software Intelligence Orchestrator = {}) {'
     if(!this.isInitialized) {
       throw new Error('Visionary Software Intelligence Orchestrator not initialized');'
@@ -53,10 +53,9 @@ export class VisionarySoftwareOrchestrator extends EventEmitter {
 
       // Update job status
       this.activeJobs.set(jobId, {
-..this.activeJobs.get(jobId),status = > ({
-      id,
+..this.activeJobs.get(jobId),status = > ({ id,
 ..job;
-    }));
+     }));
   //   }
 
 
@@ -67,8 +66,8 @@ export class VisionarySoftwareOrchestrator extends EventEmitter {
   cleanupJobs(maxAge = 3600000) { // 1 hour default
     const _now = Date.now();
 
-    for (const [jobId, job] of this.activeJobs.entries()) {
-      if (job.endTime && (now - job.endTime) > maxAge) {
+    for(const [jobId, job] of this.activeJobs.entries()) {
+      if(job.endTime && (now - job.endTime) > maxAge) {
         this.activeJobs.delete(jobId);
       //       }
     //     }

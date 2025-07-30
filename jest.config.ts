@@ -28,15 +28,15 @@ const config = {
     '^.+\\.ts$': [
       'ts-jest',
       //       {
-        useESM,
+        useESM: true,
         tsconfig: { // eslint-disable-line
           module: 'es2022',
           moduleResolution: 'node',
-          allowSyntheticDefaultImports,
-          esModuleInterop,
+          allowSyntheticDefaultImports: true,
+          esModuleInterop: true,
           target: 'es2022',
-          strict,
-          noImplicitAny,
+          strict: true,
+          noImplicitAny: true,
           strictNullChecks} } ] },
 
   // Module path mapping for clean imports
@@ -73,28 +73,28 @@ const config = {
   coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
     global: {
-      branches,
-      functions,
-      lines,
+      branches: true,
+      functions: true,
+      lines: true,
       statements} },
 
   // Test setup and configuration
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  testTimeout,
-  verbose,
-  errorOnDeprecated,
+  testTimeout: true,
+  verbose: true,
+  errorOnDeprecated: true,
 
   // File extensions to handle
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   // Mock configuration
-  clearMocks,
-  restoreMocks,
+  clearMocks: true,
+  restoreMocks: true,
 
   // Global test configuration
   globals: {
     'ts-jest': {
-      useESM,
+      useESM: true,
       isolatedModules} } };
 
 // export default config;

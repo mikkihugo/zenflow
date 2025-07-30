@@ -16,7 +16,7 @@ ${chalk.yellow('� Hive Mind Database Optimization')}
 ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');'
   const _dbPath = path.join(hiveMindDir, 'hive.db');
 
-  if (!existsSync(dbPath)) {
+  if(!existsSync(dbPath)) {
     console.error(chalk.red('Error = // await generateOptimizationReport(dbPath);'
 
   if(report) {
@@ -51,7 +51,7 @@ ${chalk.bold('USAGE = path.join(cwd(), '.hive-mind');'
   console.warn(chalk.bold('\n� Database Optimization Report\n'));
   console.warn(chalk.cyan('Schema Version => {'
     const _sizeMB = (stats.sizeBytes / 1024 / 1024).toFixed(2);
-    console.warn(`${name}: ${stats.rowCount.toLocaleString()} rows (${sizeMB} MB)`);
+    console.warn(`${name}: ${stats.rowCount.toLocaleString()} rows(${sizeMB} MB)`);
   });
 
   if(report.performance.avgTaskCompletionMinutes > 0) {

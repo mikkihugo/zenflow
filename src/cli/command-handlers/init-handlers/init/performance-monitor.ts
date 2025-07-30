@@ -13,26 +13,26 @@ export class PerformanceMonitor {
       startTime,endTime = null;
   //   }
   start() {
-    if (!this.enabled) return;
+    if(!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.startTime = Date.now();
     this.startMemoryMonitoring();
-    if (this.logLevel === 'debug') {
+    if(this.logLevel === 'debug') {
       console.warn('� Performance monitoring started');
     //     }
   //   }
   stop() {
-    if (!this.enabled) return;
+    if(!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.endTime = Date.now();
     this.stopMemoryMonitoring();
     this.calculateAverages();
-    if (this.logLevel === 'debug') {
+    if(this.logLevel === 'debug') {
       console.warn('� Performance monitoring stopped');
     //     }
   //   }
   startMemoryMonitoring() {
-    if (typeof node !== 'undefined' && node.memoryUsage) {
+    if(typeof node !== 'undefined' && node.memoryUsage) {
       this.memoryMonitor = setInterval(() => {
         const _memUsage = node.memoryUsage();
         const _memoryMB = memUsage.rss / 1024 / 1024;
@@ -42,12 +42,12 @@ export class PerformanceMonitor {
 
 
       // Check memory limit
-      if (memoryMB > this.maxMemoryMB) {
+      if(memoryMB > this.maxMemoryMB) {
         this.metrics.warnings.push({timestamp = null;
       //       }
     //     }
     calculateAverages();
-    if (this.metrics.memoryReadings.length > 0) {
+    if(this.metrics.memoryReadings.length > 0) {
       const _totalMemory = this.metrics.memoryReadings.reduce(;
       (sum, reading) => sum + reading.memoryMB,
       0;
@@ -56,16 +56,16 @@ export class PerformanceMonitor {
     //     }
     recordOperation(operationType, (details = {}));
     : unknown
-    if (!this.enabled) return;
+    if(!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.operationCount++;
-    if (this.logLevel === 'debug') {
+    if(this.logLevel === 'debug') {
       console.warn(`� Operation = {}) {`
-    if (!this.enabled) return;
+    if(!this.enabled) return;
     // ; // LINT: unreachable code removed
-    this.metrics.errors.push({timestamp = === 'debug') {
-      console.warn('❌ Error recorded = {}) {'
-    if (!this.enabled) return;
+    this.metrics.errors.push({ timestamp = === 'debug') {
+      console.warn('❌ Error recorded = { }) {'
+    if(!this.enabled) return;
     // ; // LINT: unreachable code removed
     this.metrics.warnings.push({timestamp = === 'debug') {
       console.warn('⚠ Warningrecorded = this.metrics.endTime - this.metrics.startTime;'
@@ -81,7 +81,7 @@ export class PerformanceMonitor {
       Memory;
       Efficiency: \$metrics.memoryEfficiency;
       \n`
-      if (metrics.errors.length > 0) {
+      if(metrics.errors.length > 0) {
         report +=;
         `\n❌ Errors => {`
         report += ` - \$error.error;`
@@ -89,7 +89,7 @@ export class PerformanceMonitor {
       //       }
       //       )
     //     }
-    if (metrics.warnings.length > 0) {
+    if(metrics.warnings.length > 0) {
       report +=;
       `\n⚠  Warnings => {`
         report += ` - \$warning.message;`
@@ -101,11 +101,11 @@ export class PerformanceMonitor {
     // Real-time monitoring display
     displayRealTimeStats();
     //     {
-      if (!this.enabled) return;
+      if(!this.enabled) return;
       // ; // LINT: unreachable code removed
       const _currentTime = Date.now();
       const _elapsed = this.metrics.startTime ? (currentTime - this.metrics.startTime) /1000 = '—';
-      if (typeof node !== 'undefined' && node.memoryUsage) {
+      if(typeof node !== 'undefined' && node.memoryUsage) {
         const _memUsage = node.memoryUsage();
         currentMemory = `${(memUsage.rss / 1024 / 1024).toFixed(1)}MB`;
       //       }
@@ -148,7 +148,7 @@ export class PerformanceMonitor {
 // }
 start() {}
 // {
-  if (this.isMonitoring) return;
+  if(this.isMonitoring) return;
   // ; // LINT: unreachable code removed
   this.isMonitoring = true;
   this.monitorInterval = setInterval(() => {
@@ -157,24 +157,24 @@ start() {}
 // }
 stop();
 // {
-  if (!this.isMonitoring) return;
+  if(!this.isMonitoring) return;
   // ; // LINT: unreachable code removed
   this.isMonitoring = false;
-  if (this.monitorInterval) {
+  if(this.monitorInterval) {
     clearInterval(this.monitorInterval);
     this.monitorInterval = null;
   //   }
 // }
 checkResources();
 // {
-  if (typeof node !== 'undefined' && node.memoryUsage) {
+  if(typeof node !== 'undefined' && node.memoryUsage) {
     const _memUsage = node.memoryUsage();
     const _memoryMB = memUsage.rss / 1024 / 1024;
     const _warningThreshold = this.maxMemoryMB * 0.8
     const _errorThreshold = this.maxMemoryMB * 0.95
-    if (memoryMB > errorThreshold) {
+    if(memoryMB > errorThreshold) {
       this.callbacks.memoryError(memoryMB, this.maxMemoryMB);
-    } else if (memoryMB > warningThreshold) {
+    } else if(memoryMB > warningThreshold) {
       this.callbacks.memoryWarning(memoryMB, this.maxMemoryMB);
     //     }
   //   }
@@ -199,7 +199,7 @@ createDefaultCallbacks();
       20, // Hard limit
   //   )
   // Adjust for disk speed
-  if (diskSpeed === 'hdd') {
+  if(diskSpeed === 'hdd') {
     optimal = Math.ceil(optimal * 0.7); // Reduce for HDD
   //   }
   // return Math.max(1, optimal);
@@ -223,7 +223,7 @@ createDefaultCallbacks();
   ('react-app')
   : 1.5,microservice = templateMultipliers[template]  ?? 1
   // Adjust for SPARC
-  if (sparc) {
+  if(sparc) {
     timeMultiplier *= 1.3
   //   }
   const __adjustedTime = averageTimePerProject * timeMultiplier
@@ -231,17 +231,17 @@ createDefaultCallbacks();
       sequential = {}) {
     const _recommendations = [];
   // ; // LINT: unreachable code removed
-  if (projectCount > 10) {
+  if(projectCount > 10) {
     recommendations.push('Consider using parallel processing for better performance');
   //   }
-  if (projectCount > 20) {
+  if(projectCount > 20) {
     recommendations.push('Use configuration files for better organization');
     recommendations.push('Consider breaking into smaller batches');
   //   }
-  if (options.sparc && projectCount > 5) {
+  if(options.sparc && projectCount > 5) {
     recommendations.push('SPARC initialization adds overhead - monitor memory usage');
   //   }
-  if (options.template === 'microservice' && projectCount > 3) {
+  if(options.template === 'microservice' && projectCount > 3) {
     recommendations.push('Microservice template is complex - consider lower concurrency');
   //   }
   // return recommendations;

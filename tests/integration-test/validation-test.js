@@ -19,7 +19,7 @@ function runCommand() {
       stderr += data.toString();
     });
     child.on('close', (code) => {
-      resolve({ code, stdout, stderr });
+      resolve({ code, stdout, stderr  });
     });
     // Set a timeout to kill the process if it hangs
     setTimeout(() => {
@@ -78,13 +78,13 @@ async function runTests() {
       expectedMessage: 'Task orchestrated' } ];
   const _passed = 0;
   const _failed = 0;
-  for (const test of tests) {
+  for(const test of tests) {
     console.warn(`\n� Testing);`
     console.warn(`   Command: ruv-swarm ${test.args.join(' ')}`);
 // const _result = awaitrunCommand(test.args);
     const _output = result.stdout + result.stderr;
-    if (test.expectFailure) {
-      if (result.code !== 0 && output.includes(test.expectedMessage)) {
+    if(test.expectFailure) {
+      if(result.code !== 0 && output.includes(test.expectedMessage)) {
         console.warn(`   ✅ PASS - Correctly rejected with);`
         passed++;
       } else {
@@ -94,7 +94,7 @@ async function runTests() {
         failed++;
       //       }
     } else {
-      if (result.code === 0 && output.includes(test.expectedMessage)) {
+      if(result.code === 0 && output.includes(test.expectedMessage)) {
         console.warn(`   ✅ PASS - Successfully executed with);`
         passed++;
       } else {
@@ -109,7 +109,7 @@ async function runTests() {
   console.warn(`   ✅ Passed);`
   console.warn(`   ❌ Failed);`
   console.warn(`   � Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
-  if (failed === 0) {
+  if(failed === 0) {
     console.warn('\n� All validation tests passed! Input validation is working correctly.');
     process.exit(0);
   } else {

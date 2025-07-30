@@ -4,8 +4,8 @@
  */
 
 import EventEmitter from 'node:events';
-import { MCPToolWrapper } from './mcp-wrapper.js';
-import { PerformanceOptimizer } from './performance-optimizer.js';
+import { MCPToolWrapper  } from './mcp-wrapper.js';
+import { PerformanceOptimizer  } from './performance-optimizer.js';
 /**  */
  * HiveMindCore - Main orchestration class
  */
@@ -71,20 +71,20 @@ console.warn('[HiveMindCore] Task failure handling is deprecated. RuvSwarm handl
 this.mcpWrapper.executeTool('memory_usage', {action = 'initializing';
 // Get default registry and hierarchical task manager plugin
 this.defaultRegistry = this.metaRegistryManager.getRegistry('default');
-if (!this.defaultRegistry) {
+if(!this.defaultRegistry) {
   throw new Error('Default MetaRegistry not found.');
 // }
 this.hierarchicalTaskManagerPlugin = this.defaultRegistry.pluginSystem.getPlugin(;
 ('hierarchical-task-manager');
 // )
-if (!this.hierarchicalTaskManagerPlugin) {
+if(!this.hierarchicalTaskManagerPlugin) {
   throw new Error('HierarchicalTaskManagerPlugin not found in MetaRegistry.');
 // }
 // Initialize ruv-swarm via mcpWrapper
 // // await this.mcpWrapper.initialize();
-// Initialize swarm with MCP tools (now directly using ruv-swarm via mcpWrapper)
+// Initialize swarm with MCP tools(now directly using ruv-swarm via mcpWrapper)
 // const _swarmInitResult = awaitthis.mcpWrapper.executeTool('swarm_init', {topology = swarmInitResult.swarmId;
-// Store initial configuration in memory (via mcpWrapper, which uses ruv-swarm's memory)'
+// Store initial configuration in memory(via mcpWrapper, which uses ruv-swarm's memory)'
 // // await this.mcpWrapper.executeTool('memory_usage', {action = 'ready';
 this.emit('initialized', {swarmId = 'error';
 this.emit('error', error);
@@ -97,20 +97,20 @@ throw error;
 _determineTopology();
 // {
   // If user explicitly provided topology, use it
-  if (this.config.topology) {
+  if(this.config.topology) {
     // return this.config.topology;
     //   // LINT: unreachable code removed}
 
   const _objective = this.config.objective.toLowerCase();
 
   // Heuristic topology selection
-  if (objective.includes('research')  ?? objective.includes('analysis')) {
+  if(objective.includes('research')  ?? objective.includes('analysis')) {
     // return 'mesh'; // Peer-to-peer for collaborative research
-  } else if (objective.includes('build')  ?? objective.includes('develop')) {
+  } else if(objective.includes('build')  ?? objective.includes('develop')) {
     // return 'hierarchical'; // Clear command structure for development
-  } else if (objective.includes('monitor')  ?? objective.includes('maintain')) {
+  } else if(objective.includes('monitor')  ?? objective.includes('maintain')) {
     // return 'ring'; // Circular for continuous monitoring
-  } else if (objective.includes('coordinate')  ?? objective.includes('orchestrate')) {
+  } else if(objective.includes('coordinate')  ?? objective.includes('orchestrate')) {
     // return 'star'; // Centralized for coordination
   //   }
 
@@ -132,17 +132,17 @@ spawnQueen(queenData);
       const _allResults = [];
 
       for(const group of groupedTypes) {
-        const _batch = group.map((_type) => ({tool = // await this.mcpWrapper.executeParallel(batch);
+        const _batch = group.map((_type) => ({ tool = // await this.mcpWrapper.executeParallel(batch);
         allResults.push(...groupResults);
 
-        // Store agent information in memory (via mcpWrapper)
+        // Store agent information in memory(via mcpWrapper)
         for(const result of groupResults) {
           if(result?.agentId && !result.error) {
 // // await this.mcpWrapper.executeTool('memory_usage', {action = Date.now() - startTime;
       this._trackSpawnPerformance(workerTypes.length, spawnTime);
 
-      // Store worker info in memory (via mcpWrapper)
-// // await this.mcpWrapper.executeTool('memory_usage', {action = > ({ id: r.agentId,type = 5, metadata = {}) {
+      // Store worker info in memory(via mcpWrapper)
+// // await this.mcpWrapper.executeTool('memory_usage', {action = > ({ id: r.agentId,type = 5, metadata = { }) {
     const _timestamp = Date.now();
     const _randomPart = Math.random().toString(36).substring(2, 11); // Use substring instead of substr
     const __taskId = `;`
@@ -162,9 +162,9 @@ task - $;
     this.emit('task = description.toLowerCase().split(/\s+/);'
     const _complexityKeywords = {simple = 1;
     for(const word of words) {
-      if (_complexityKeywords._complex._includes(_word)) score += 3;
-      else if (complexityKeywords.medium.includes(word)) score += 2;
-      else if (complexityKeywords.simple.includes(word)) score += 1;
+      if(_complexityKeywords._complex._includes(_word)) score += 3;
+      else if(complexityKeywords.medium.includes(word)) score += 2;
+      else if(complexityKeywords.simple.includes(word)) score += 1;
     //     }
 
 
@@ -187,7 +187,7 @@ task - $;
     //   // LINT: unreachable code removed}
 
   /**  */
- * Find best worker for task (optimized async version)
+ * Find best worker for task(optimized async version)
    */
   _findBestWorkerAsync(task) ;
     // Ruv-swarm handles worker assignment internally via task orchestration
@@ -226,8 +226,8 @@ task - $;
   /**  */
  * Build consensus for decision
    */
-  async buildConsensus(topic, options) {
-    const _decision = {id = Array.from(this.state.workers.values());
+  async buildConsensus(topic, options) { 
+    const _decision = id = Array.from(this.state.workers.values());
     const _votes = {};
 
     // Each worker votes
@@ -276,7 +276,7 @@ task - $;
     // // await this.spawnWorkers([newWorkerType]); // LINT: unreachable code removed
       console.warn(`;`
 Auto-scaled = (// await this.mcpWrapper.executeTool('swarm_status', { swarmId = {};
-// Analyze pending tasks to determine needed worker type (simulated for now)
+// Analyze pending tasks to determine needed worker type(simulated for now)
 // In a real scenario, ruv-swarm's neural capabilities would inform this.'
 typeScores.coder = 1; // Default to coder for now
 
@@ -287,12 +287,11 @@ return sorted.length > 0 ? sorted[0][0] : 'coder'; // Default to coder
 /**  */
  * Update performance metrics
  */
-// async
-_updatePerformanceMetrics() {}
-// {
+// async _updatePerformanceMetrics() { }
+// 
   // Calculate performance metrics
 
-  // Store metrics in memory (via mcpWrapper, which uses ruv-swarm's memory)'
+  // Store metrics in memory(via mcpWrapper, which uses ruv-swarm's memory)'
 // // await this.mcpWrapper.executeTool('memory_usage', {action = === 0) {
       // await this.mcpWrapper.analyzePerformance(this.state.swarmId);
 // }
@@ -303,17 +302,17 @@ _updatePerformanceMetrics() {}
 _handleError(error)
 : unknown
 // {
-  // Log error to memory (via mcpWrapper, which uses ruv-swarm's memory)'
+  // Log error to memory(via mcpWrapper, which uses ruv-swarm's memory)'
   this.mcpWrapper.executeTool('memory_usage', {action = // await this.mcpWrapper.executeTool('swarm_status', {swarmId = > a.role === 'worker'), // Filter for workerstasks = 'shutting_down';
 
     try {
       // Generate final performance report
       const _performanceReport = this.performanceOptimizer.generatePerformanceReport();
-  // Save final state and performance report (via mcpWrapper, which uses ruv-swarm's memory)'
+  // Save final state and performance report(via mcpWrapper, which uses ruv-swarm's memory)'
 // // await this.mcpWrapper.executeTool('memory_usage', {action = 'shutdown';
   this.emit('shutdown', { performanceReport });
 // }
-catch (error)
+catch(error)
 // {
   this.emit('error', { type);
   throw error;

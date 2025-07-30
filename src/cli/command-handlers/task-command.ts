@@ -4,35 +4,35 @@
  */
 
 // task.js - Task management commands with improved argument parsing
-import { printError } from '../utils.js';
+import { printError  } from '../utils.js';
 
 export async function taskCommand() {
-    case 'create':;
+    case 'create':
 // await createTask(subArgs, flags);
       break;
 
-    case 'list':;
+    case 'list':
 // // await listTasks(subArgs, flags);
       break;
 
-    case 'status':;
+    case 'status':
 // // await showTaskStatus(subArgs, flags);
       break;
 
-    case 'cancel':;
+    case 'cancel':
 // // await cancelTask(subArgs, flags);
       break;
 
-    case 'workflow':;
+    case 'workflow':
 // // await executeWorkflow(subArgs, flags);
       break;
 
-    case 'coordination':;
+    case 'coordination':
 // // await manageCoordination(subArgs, flags);
       break;default = new Command();
 exitOverride();
 allowUnknownOption();
-option('--priority <value>', 'Set task priority (1-10)', '5');
+option('--priority <value>', 'Set task priority(1-10)', '5');
 
   try {
     // Parse the arguments starting from the create command
@@ -58,7 +58,7 @@ option('--priority <value>', 'Set task priority (1-10)', '5');
   printSuccess(`Creating ${taskType}task = args.join(' ');`
 
   // Check if it starts with a quote
-  if (fullString.startsWith('"')  ?? fullString.startsWith("'")) {"'
+  if(fullString.startsWith('"')  ?? fullString.startsWith("'")) {"'
     const _quoteChar = fullString[0];
     const _endIndex = fullString.lastIndexOf(quoteChar);
 
@@ -98,7 +98,7 @@ option('-v', 'Show detailed output');
     printError('Usage = subArgs[1];'
 
   switch(coordCmd) {
-    case 'status':;
+    case 'status':
       printSuccess('Task coordination status);'
       console.warn(' Coordination engine);'
       console.warn('   Active coordinators);'
@@ -106,7 +106,7 @@ option('-v', 'Show detailed output');
       console.warn('   Resource utilization);'
       break;
 
-    case 'optimize':;
+    case 'optimize':
       printSuccess('Optimizing task coordination...');
       console.warn(' Optimization would include);'
       console.warn('   - Task dependency analysis');
@@ -114,7 +114,7 @@ option('-v', 'Show detailed output');
       console.warn('   - Parallel execution planning');
       break;
 
-    default:;
+    default:
       console.warn('Coordination commands, optimize');
   //   }
 // }

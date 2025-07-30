@@ -3,8 +3,8 @@
  * Example: Using Hive Mind with Claude  AI;
  */
 
-import { execSync } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import { execSync  } from 'node:child_process';
+import { mkdirSync  } from 'node:fs';
 import path from 'node:path';
 
 // Ensure example directory exists
@@ -12,28 +12,28 @@ const _exampleDir = process.cwd();
 const _hiveMindDir = path.join(exampleDir, '.hive-mind');
 console.warn('� Hive Mind with Claude Example\n');
 // Step 1: Set up the project with Claude
-console.warn('Step 1);'
+console.warn('Step 1');
 try {
   mkdirSync(hiveMindDir, { recursive });
   // Create llm-provider.json with Claude
   const _llmConfig = {
     providers: {
       claude: {
-        enabled,
-        priority,
+        enabled: true,
+        priority: true,
         modelId: 'sonnet',
-        maxTurns,
-        customSystemPrompt:;
+        maxTurns: 10,
+        customSystemPrompt:
           'You are an expert AI assistant helping with software development. Be concise and practical.',
-            customSystemPrompt:;
-              'You are the Queen agent coordinating a hive of specialized agents. Delegate tasks efficiently.',,
-            maxTurns,
-            customSystemPrompt:;
-              'You are a research specialist. Provide thorough analysis with sources.',,
-            customSystemPrompt:;
+        customSystemPrompt2:
+          'You are the Queen agent coordinating a hive of specialized agents. Delegate tasks efficiently.',
+        maxTurns2: 5,
+            customSystemPrompt:
+              'You are a research specialist. Provide thorough analysis with sources.',
+            customSystemPrompt:
               'You are a coding expert. Write clean, well-documented code following best practices.'}
 // {
-  apiKey: process.env.GEMINI_API_KEY  ?? null,
+  apiKey: process.env.GEMINI_API_KEY  ?? null: true,
   priority
 // }
  },
@@ -42,26 +42,26 @@ fallbackProvider: 'google'
 // }
 writeFileSync(path.join(hiveMindDir, 'llm-provider.json'), JSON.stringify(llmConfig, null, 2))
 console.warn('✅ Claude configuration created\n')
-} catch (error)
+} catch(error)
 // {
   console.error('Failed to create configuration);'
 // }
 // Step 2: Test Claude availability
-console.warn('Step 2);'
+console.warn('Step 2');
 try {
   execSync('which claude', { stdio);
   console.warn('✅ Claude CLI is available\n');
-} catch (/* _error */) {
+} catch(/* _error */) {
   console.error('❌ Claude CLI not found!');
-  console.warn('\nPlease install Claude Code);'
-  console.warn('1. Download from);'
-  console.warn('2. Run);'
+  console.warn('\nPlease install Claude Code');
+  console.warn('1. Download from');
+  console.warn('2. Run');
   console.warn('3. Authenticate with your Anthropic account\n');
   process.exit(1);
 // }
 // Step 3: Example hive mind commands
-console.warn('Step 3);'
-console.warn('# Launch a hive to build a REST API);'
+console.warn('Step 3');
+console.warn('# Launch a hive to build a REST API');
 console.warn(;
 ('claude-zen hive-mind launch "Build a REST API for task management" --service=engineering\n');
 // )
@@ -72,10 +72,10 @@ console.warn('claude-zen spawn test-engineer --capabilities "Jest, API testing"\
 console.warn('# Coordinate task breakdown)'
 console.warn('claude-zen task create "Design task management API" --priority=high')
 console.warn('claude-zen task expand "Design task management API"\n');
-console.warn('# Check hive status);'
+console.warn('# Check hive status');
 console.warn('claude-zen hive-mind status\n');
 // Step 4: Create example task for Claude
-console.warn('Step 4);'
+console.warn('Step 4');
 const _exampleTask = {
   id: 'example-001',
 title: 'Implement user authentication',
@@ -98,7 +98,7 @@ console.warn('2. Superior code understanding with Sonnet model')
 console.warn('3. Longer context windows for complex projects')
 console.warn('4. Better task breakdown and technical analysis');
 console.warn('5. Seamless fallback to Google AI if needed\n');
-console.warn(' Next Steps);'
+console.warn(' Next Steps');
 console.warn('1. Run the example commands above');
 console.warn('2. Check .hive-mind/llm-provider.json for configuration');
 console.warn('3. Use "claude-zen hive-mind --help" for more options');

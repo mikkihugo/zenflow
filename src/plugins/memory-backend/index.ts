@@ -4,7 +4,7 @@
  */
 
 import LanceDBInterface from '../../database/lancedb-interface';
-import { JSONValue } from '../../types/core';
+import { JSONValue  } from '../../types/core';
 // // interface MemoryBackendConfig {backend = null
 // private;
 // initialized = false
@@ -31,12 +31,12 @@ import { JSONValue } from '../../types/core';
   case 'unified': null
   case 'hybrid': null
   // Unified/hybrid backend uses LanceDB as primary with fallback capabilities
-  console.warn('� Using LanceDB as unified backend (hybrid memory simulation)')
+  console.warn('� Using LanceDB as unified backend(hybrid memory simulation)')
   this.storage = new LanceDBBackend(this.config)
   break;
   default = // await this.storage.initialize() {}
   // Handle fallback returns
-  if (result && result !== this.storage) {
+  if(result && result !== this.storage) {
     this.storage = result;
     //   // LINT: unreachable code removed}
     this.initialized = true;
@@ -59,23 +59,22 @@ import { JSONValue } from '../../types/core';
   // MEGASWARM = {}): Promise<VectorSearchResult[]> {
 // // await this.ensureInitialized();
   // Delegate to search method with appropriate parameters
-  if (this.storage?.vectorSearch) {
+  if(this.storage?.vectorSearch) {
     // return this.storage?.vectorSearch(embedding, options);
   //   }
   // Fallback to regular search
 // const _results = awaitthis.storage?.search(embedding.toString(), options.namespace ?? 'default');
-  // return Object.entries(results).map(([_key, _value], _index) => ({
-      id = {}): Promise<any> {
+  // return Object.entries(results).map(([_key, _value], _index) => ({ id = { }): Promise<any> {
 // // await this.ensureInitialized();
   // // Delegate to graph query if available // LINT: unreachable code removed
-  if (this.storage?.graphQuery) {
+  if(this.storage?.graphQuery) {
     return this.storage?.graphQuery(query, options);
   //   }
   // Fallback to regular search
   // return this.storage?.search(query, options.namespace  ?? 'default');
 // }
 async;
-delete (key = 'default');
+delete(key = 'default');
 : Promise<boolean>
 // {
 // // await this.ensureInitialized();
@@ -100,13 +99,13 @@ async;
 ensureInitialized();
 : Promise<void>
 // {
-  if (!this.initialized) {
+  if(!this.initialized) {
 // // await this.initialize();
   //   }
 // }
 // }
 /**
- * LanceDB Backend (Default - Local Vector Database);
+ * LanceDB Backend(Default - Local Vector Database);
  */
 class LanceDBBackend implements BackendInterface {
   // private config = config;
@@ -155,26 +154,26 @@ store((key = 'default'))
   const _result = searchResult.results[0];
   const _metadata = JSON.parse(result.metadata  ?? '{}');
 
-  if (metadata.serialized_data) {
+  if(metadata.serialized_data) {
     // return JSON.parse(metadata.serialized_data);
     //   // LINT: unreachable code removed}
 
   // return null;
 // }
-catch (error = 'default'): Promise<Record<string, JSONValue>>;
+catch(error = 'default'): Promise<Record<string, JSONValue>>;
 // {
     const _results = {};
 
     try {
       // Use semantic search with pattern
 // const __searchResult = awaitthis.lanceInterface.semanticSearch(pattern, {table = JSON.parse(result.metadata  ?? '{}');
-          if (metadata.namespace === namespace && metadata.serialized_data) {
+          if(metadata.namespace === namespace && metadata.serialized_data) {
             const _key = metadata.key;
-            if (pattern === '*'  ?? key.includes(pattern.replace('*', ''))) {
+            if(pattern === '*'  ?? key.includes(pattern.replace('*', ''))) {
               results[key] = JSON.parse(metadata.serialized_data);
             //             }
           //           }
-        } catch (_error = ): Promise<VectorSearchResult[]> {
+        } catch(_error = ): Promise<VectorSearchResult[]> {
     const { namespace = 'default', limit = 10, threshold = 0.7 } = options;
 
     try {
@@ -194,13 +193,13 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
     // Extract namespaces from stored metadata
     try {
 // const _searchResult = awaitthis.lanceInterface.semanticSearch('*', {table = new Set<string>();
-      for (const result of searchResult.results) {
+      for(const result of searchResult.results) {
         try {
           const _metadata = JSON.parse(result.metadata  ?? '{}');
-          if (metadata.namespace) {
+          if(metadata.namespace) {
             namespaces.add(metadata.namespace);
           //           }
-        } catch (_error = // await this.lanceInterface.getStats();
+        } catch(_error = // await this.lanceInterface.getStats();
       // return {entries = null;
     // // private conn = null; // LINT: unreachable code removed
   // private kuzuConfig = config;
@@ -255,7 +254,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       `);`
 
       console.warn('� Kuzu schema initialized for strategic documents');
-    } catch (error = 'default'): Promise<StorageResult> {
+    } catch(error = 'default'): Promise<StorageResult> {
     const _fullKey = `\$namespace:\$key`;
     const _timestamp = Date.now();
 
@@ -280,7 +279,7 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
 
     try {
 // const __result = awaitthis.conn.query(`;`
-        MATCH (d = 'default'): Promise<Record<string, JSONValue>> {
+        MATCH(d = 'default'): Promise<Record<string, JSONValue>> {
     const _results = {};
 
     try {
@@ -288,41 +287,41 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
         const _metadata = row['d.metadata'];
         try {
           results[key] = JSON.parse(metadata);
-        } catch (error = {}): Promise<any> {
+        } catch(error = {}): Promise<any> {
     try {
       // return // await this.conn.query(query, options.params  ?? {});
-    //   // LINT: unreachable code removed} catch (error = 1.0;
+    //   // LINT: unreachable code removed} catch(error = 1.0;
   ): Promise<boolean> {
 
     try {
 // // await this.conn.query(`;`
-        MATCH (from = [],
+        MATCH(from = [],
     maxDepth = 2;
   ): Promise<any[]> {
     const _fullKey = `${namespace}:${key}`;
 
     try {
       const __relationFilter = '';
-      if (relationshipTypes.length > 0) {
+      if(relationshipTypes.length > 0) {
         const _typeList = relationshipTypes.map(t => `'${t}'`).join(', ');
         _relationFilter = `WHERE r.relationship_type IN [${typeList}]`;
       //       }
 
 
       let _result = // await this.conn.query(`;`
-        MATCH (start = > ({key = 'default'): Promise<boolean> {
+        MATCH(start = > ({key = 'default'): Promise<boolean> {
     const _fullKey = `${namespace}:${key}`;
 
     try {
 // // await this.conn.query(`;`
-        MATCH (d = // await this.conn.query(`;`
-        MATCH (d);
+        MATCH(d = // await this.conn.query(`;`
+        MATCH(d);
         RETURN DISTINCT d.namespace;
       `);`
 
       // return result.map((row = > row['d.namespace']).sort();
-    //   // LINT: unreachable code removed} catch (error = // await this.conn.query(`;`
-        MATCH (d) RETURN count(d) as count;
+    //   // LINT: unreachable code removed} catch(error = // await this.conn.query(`;`
+        MATCH(d) RETURN count(d) as count;
       `);`
 
       // return {entries = config;
@@ -342,19 +341,19 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
     const _timestamp = Date.now();
     const _serializedValue = JSON.stringify(value);
 // // await this.connectionPool.execute(`;`
-      INSERT OR REPLACE INTO storage (id, namespace, key, value, timestamp);
-      VALUES (?, ?, ?, ?, ?);
+      INSERT OR REPLACE INTO storage(id, namespace, key, value, timestamp);
+      VALUES(?, ?, ?, ?, ?);
     `, [fullKey, namespace, key, serializedValue, timestamp]);`
 
     // return {id = 'default'): Promise<JSONValue | null> {
 // const _result = awaitthis.connectionPool.execute(`;`
     // SELECT value FROM storage ; // LINT);
 
-    if (!result  ?? result.length === 0) return null;
+    if(!result  ?? result.length === 0) return null;
     // ; // LINT: unreachable code removed
     try {
       // return JSON.parse(result[0].value);
-    //   // LINT: unreachable code removed} catch (_error = 'default'): Promise<Record<string, JSONValue>> {
+    //   // LINT: unreachable code removed} catch(_error = 'default'): Promise<Record<string, JSONValue>> {
     const _results = {};
 
     const _searchPattern = pattern.replace('*', '%');
@@ -363,16 +362,16 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
       WHERE namespace = ? AND key LIKE ?;
     `, [namespace, searchPattern]);`
 
-    for (let row of rows) {
+    for(let row of rows) {
       try {
         results[row.key] = JSON.parse(row.value);
-      } catch (_error = 'default'): Promise<boolean> {
+      } catch(_error = 'default'): Promise<boolean> {
 // const _result = awaitthis.connectionPool.execute(`;`
       DELETE FROM storage ;
       WHERE namespace = ? AND key = ?;
     `, [namespace, key]);`
 
-    // return (result as any).changes > 0;
+    // return(result as any).changes > 0;
     //   // LINT: unreachable code removed}
 
   async listNamespaces(): Promise<string[]> {
@@ -428,8 +427,8 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
     const _results = {};
     const _prefix = `${namespace}:`;
 
-    for (const [key, entry] of this.data) {
-      if (key.startsWith(prefix) && key.includes(pattern)) {
+    for(const [key, entry] of this.data) {
+      if(key.startsWith(prefix) && key.includes(pattern)) {
         results[key.substring(prefix.length)] = entry.value;
       //       }
     //     }
@@ -441,13 +440,13 @@ catch (error = 'default'): Promise<Record<string, JSONValue>>;
   async delete(key = 'default'): Promise<boolean> {
     const _fullKey = `${namespace}:${key}`;
     const _deleted = this.data.delete(fullKey);
-    if (deleted) await this.persist();
+    if(deleted) await this.persist();
     // return deleted;
     //   // LINT: unreachable code removed}
 
   async listNamespaces(): Promise<string[]> {
     const _namespaces = new Set<string>();
-    for (const key of this.data.keys()) {
+    for(const key of this.data.keys()) {
       const _namespace = key.split(')[0];'
       namespaces.add(namespace);
     //     }

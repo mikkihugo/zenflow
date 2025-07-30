@@ -4,7 +4,7 @@
  */
 
 import fs from 'fs/promises';'
-import { nanoid } from 'nanoid';'
+import { nanoid  } from 'nanoid';'
 import path from 'path';'
 
 // // enum LogLevel {
@@ -23,7 +23,7 @@ TRACE = 4 }
 //   this.logBuffer = []; // Buffer for batch logging
 //   this.logFile = null; // Log file path
 //   this.enableFileLogging = process.env.CLAUDE_FLOW_LOG_FILE === 'true';'
-//   if (this.enableFileLogging) {
+//   if(this.enableFileLogging) {
 //     this.initFileLogging();
 //   //   }
 // }
@@ -39,7 +39,7 @@ initFileLogging();
       const _logDir = path.join(process.cwd(), '.hive-mind', 'logs');'
 // // // await fs.mkdir(logDir, {recursive = `claude-zen-${new Date().toISOString().split('T')[0]}.log`;`
       this.logFile = path.join(logDir, logFileName);
-    } catch (error
+    } catch(error
   = false
 // }
 // }
@@ -61,26 +61,26 @@ shouldLog(level = this.level
     const _baseMessage = `[${timestamp}] [${level}] [${logger}] ${message}`;`
 
     // Add metadata if present
-    if (Object.keys(meta).length > 0) {
+    if(Object.keys(meta).length > 0) {
       baseMessage += ` | ${JSON.stringify(meta)}`;`
     //     }
 
 
     // Add error details for console
-    if (error) {
+    if(error) {
       baseMessage += `\nError = === 'true') {'`
         baseMessage += `\nStack = JSON.stringify(logEntry) + '\n';'`
 // // // await fs.appendFile(this.logFile, logLine);
-    } catch (error = ,error = null): Promise<void> {
-    if (!this.shouldLog(level)) return;
+    } catch(error = ,error = null): Promise<void> {
+    if(!this.shouldLog(level)) return;
     // ; // LINT: unreachable code removed
     const _logEntry = this.createLogEntry(level, message, meta, error);
 
     // Console output
     const _formatted = this.formatConsoleMessage(logEntry);
-    if (level === LogLevel.ERROR) {
+    if(level === LogLevel.ERROR) {
       console.error(formatted);
-    } else if (level === LogLevel.WARN) {
+    } else if(level === LogLevel.WARN) {
       console.warn(formatted);
     } else {
       console.warn(formatted);
@@ -124,12 +124,12 @@ shouldLog(level = this.level
       this.info(`Completedoperation = Date.now() - startTime;`
 
       this.error(`Failed operation = {}): Promise<any> {`
-    // return this.logOperation(`Database ${operation}`, async () => {`
+    // return this.logOperation(`Database ${operation}`, async() => {`
       // This is a wrapper - actual operation should be passed as function
       return data;
     //   // LINT: unreachable code removed}, {
       component = {}): Promise<any> {
-    return this.logOperation(`Queen ${operation}`, async () => {`
+    return this.logOperation(`Queen ${operation}`, async() => {`
       // This is a wrapper - actual operation should be passed as function
       return meta;
     //   // LINT: unreachable code removed}, {
@@ -141,7 +141,7 @@ shouldLog(level = this.level
 
     // Add default context to all child logs
     const _originalLog = childLogger.log.bind(childLogger);
-    childLogger.log = async (level, message = {},error = null): Promise<void> => {
+    childLogger.log = async(level, message = {},error = null): Promise<void> => {
       return originalLog(level, message, { ...context, ...meta }, error);
     //   // LINT: unreachable code removed};
 
@@ -151,9 +151,9 @@ shouldLog(level = this.level
   createChild(name = new Logger();
 
 // Set initial log level from environment
-if (process.env.CLAUDE_FLOW_LOG_LEVEL) {
+if(process.env.CLAUDE_FLOW_LOG_LEVEL) {
   defaultLogger.setLevel(process.env.CLAUDE_FLOW_LOG_LEVEL);
-} else if (process.env.CLAUDE_FLOW_VERBOSE) {
+} else if(process.env.CLAUDE_FLOW_VERBOSE) {
   defaultLogger.setLevel(LogLevel.DEBUG);
 // }
 

@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL  } from 'node:url';
 
 async function testBindingsLoader() {
   console.warn('Testing wasm-bindings-loader.mjs...\n');
@@ -15,26 +15,26 @@ async function testBindingsLoader() {
 // const _loaderModule = awaitimport(loaderURL);
     console.warn('✅ Loader module imported successfully');
     console.warn('   Module keys:', Object.keys(loaderModule));
-    if (loaderModule.default) {
+    if(loaderModule.default) {
       const _bindingsLoader = loaderModule.default;
       console.warn('\n✅ Found default export');
       console.warn('   Type);'
-      if (typeof bindingsLoader.initialize === 'function') {
+      if(typeof bindingsLoader.initialize === 'function') {
         console.warn('\n   Initializing bindings loader...');
   // // await bindingsLoader.initialize();
         console.warn('✅ Bindings loader initialized!');
         // Check what functions are available
         console.warn('\n   Available functions);'
-        for (const key in bindingsLoader) {
-          if (typeof bindingsLoader[key] === 'function' && !key.startsWith('_')) {
+        for(const key in bindingsLoader) {
+          if(typeof bindingsLoader[key] === 'function' && !key.startsWith('_')) {
             console.warn(`     - ${key}`);
           //           }
         //         }
       //       }
     //     }
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Error);'
-    if (error.stack) {
+    if(error.stack) {
       console.error('\nStack trace);'
       console.error(error.stack.split('\n').slice(0, 5).join('\n'));
     //     }

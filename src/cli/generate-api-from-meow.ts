@@ -30,12 +30,12 @@ Object.entries(flags).forEach(([flagName, flagConfig]) => {
       schema[flagName] = {
         //         type = {};
 Object.entries(flags).forEach(([flagName, flagConfig]) => {
-  if (typeof flagConfig === 'object' && flagConfig !== null) {
-    if (flagConfig.default !== undefined) {
+  if(typeof flagConfig === 'object' && flagConfig !== null) {
+    if(flagConfig.default !== undefined) {
       example[flagName] = flagConfig.default;
-    } else if (flagConfig.type === 'boolean') {
+    } else if(flagConfig.type === 'boolean') {
       example[flagName] = true;
-    } else if (flagConfig.choices) {
+    } else if(flagConfig.choices) {
       example[flagName] = flagConfig.choices[0];
     } else {
       example[flagName] = `example-${flagName}`;
@@ -47,7 +47,7 @@ Object.entries(flags).forEach(([flagName, flagConfig]) => {
 // return example;
 // }
 /**
- * Generate GraphQL schema from commands (future enhancement);
+ * Generate GraphQL schema from commands(future enhancement);
  */
 // export function generateGraphQLSchema(commands = > commands, command = > commands.find(_cmd => cmd.name === name)
 },Mutation = [], flags =

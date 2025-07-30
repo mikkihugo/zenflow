@@ -1,9 +1,8 @@
 // spawn-command.js - Modern ES module spawn command handler
-import {
-  callRuvSwarmLibrary,
+import { callRuvSwarmLibrary,
 checkRuvSwarmAvailable,
 printSuccess,
-printWarning } from '../utils.js'
+printWarning  } from '../utils.js'
 // Simple ID generator
 function generateId(prefix = 'id') {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -20,9 +19,7 @@ const _capabilities = flags.capabilities;
 const __coordinated = flags.coordinated ?? flags.coord;
 const __enhanced = flags.enhanced ?? flags.e;
 // Validate agent type
-const _validTypes = [
-
-  'coordinator',
+const _validTypes = ['coordinator',
   'coder',
   'developer',
   'researcher',
@@ -32,9 +29,9 @@ const _validTypes = [
   'architect',
   'reviewer',
   'optimizer',
-  'general',,,,,,];
+  'general',,];
 const __validatedType = agentType;
-if (!validTypes.includes(agentType)) {
+if(!validTypes.includes(agentType)) {
   printWarning(`⚠  Unknown agent type '${agentType}'. Using 'general' instead.`);
   _validatedType = 'general';
 // }
@@ -43,7 +40,7 @@ console.warn(`🤖 Spawning agent...`);
 console.warn(`�  Agenttype = > setTimeout(resolve, 500));`
 
   printSuccess(`✅ Agentspawned = // await checkRuvSwarmAvailable();`
-if (isAvailable) {
+if(isAvailable) {
   try {
       console.warn(`� Spawning agent with ruv-swarm coordination...`);
 // const __spawnResult = awaitcallRuvSwarmLibrary('agent_spawn', {type = > setTimeout(resolve, 800));
@@ -70,10 +67,10 @@ if (isAvailable) {
   console.warn(`  � Coordination);`
   console.warn(`  � Memory access);`
   console.warn(`  � Status);`
-  if (swarmId) {
+  if(swarmId) {
     console.warn(`  � Swarm membership);`
   //   }
-  if (spawnResult && flags.verbose) {
+  if(spawnResult && flags.verbose) {
     console.warn(`\n� TECHNICAL DETAILS);`
     console.warn(`  � Created: ${new Date().toISOString()}`);
     console.warn(`  �  Architecture);`
@@ -84,7 +81,7 @@ if (isAvailable) {
   console.warn(`  • Use);`
   console.warn(`  • Monitor);`
   console.warn(`  • Coordinate);`
-  if (swarmId) {
+  if(swarmId) {
     console.warn(`  • Swarm status);`
   //   }
 // }

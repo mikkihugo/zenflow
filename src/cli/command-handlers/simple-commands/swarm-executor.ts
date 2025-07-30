@@ -2,9 +2,9 @@
  * Simple Swarm Executor - Provides basic swarm functionality without TypeScript dependencies;
  */
 
-import { promises as fs } from 'node:fs';
+import { promises as fs  } from 'node:fs';
 import path from 'node:path';
-import { generateId } from '../../utils/helpers.js';
+import { generateId  } from '../../utils/helpers.js';
 
 // Simple SwarmCoordinator implementation
 class SwarmCoordinator {
@@ -40,11 +40,11 @@ initialize();
     // return taskObj;
     //   // LINT: unreachable code removed}
 
-  async createAPIProject() {
+  async createAPIProject() { 
     console.warn(`  �  Creating API project structure...`);
 
     const _projectDir = './api-project';
-// // await fs.mkdir(projectDir, {recursive = `import express from 'express';`
+// // await fs.mkdir(projectDir, recursive = `import express from 'express';`
   const _app = express();
   const __port = process.env.PORT ?? 3000;
   app.use(express.json());
@@ -107,7 +107,7 @@ async function executeSwarm(objective = {}) {
 // const _summary = awaitcoordinator.complete();
     // ; // LINT: unreachable code removed
     // return { success, summary };
-    //   // LINT: unreachable code removed} catch (error) {
+    //   // LINT: unreachable code removed} catch(error) {
     console.error(`❌ Swarm execution failed);`
     // return { success, error: error.message };
   //   }

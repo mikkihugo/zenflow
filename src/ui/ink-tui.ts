@@ -4,8 +4,8 @@
  */
 
 import path from 'node:path';'
-import { Box, render, Text } from 'ink';'
-import React, { useEffect, useState } from 'react';'
+import { Box, render, Text  } from 'ink';'
+import React, { useEffect, useState  } from 'react';'
 
 // API client for auto-generated API
 class ApiClient {
@@ -17,7 +17,7 @@ fetchHives();
   try {
 // const _response = awaitfetch(`${this.baseUrl}/api/hives`);`
     // return // // await response.json();
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
     console.error('Failed to fetchhives = // // await fetch(`${this.baseUrl}/hive-mind/${hiveName}`);`'`
     // return // // await response.json();
     //   // LINT: unreachable code removed}
@@ -36,7 +36,7 @@ executeCommand(command, (args = []), (flags = {}));
 // const __response = awaitfetch(`${this.baseUrl}/${command}`, {method = new ApiClient();`
 
 const __SingularityAlpha = () => {
-  const [_hives, setHives] = useState({});
+  const [_hives, setHives] = useState({  });
   const [_selectedHive, setSelectedHive] = useState(null);
   const [currentView, setCurrentView] = useState('hives'); // 'hives', 'details', 'command', 'create', 'directory''
   const [_selectedHiveName, setSelectedHiveName] = useState(null);
@@ -57,16 +57,16 @@ const __SingularityAlpha = () => {
 
     // Auto-refresh every 30 seconds
     const _interval = setInterval(loadHives, 30000);
-    // return () => clearInterval(interval);
+    // return() => clearInterval(interval);
     //   // LINT: unreachable code removed}, []);
 
-  useInput(async (input, key) => {
+  useInput(async(input, key) => {
     // Handle create view input
     if(currentView === 'create') {'
       if(key.escape) {
         setCurrentView('hives');'
         setNewServiceName('');'
-      } else if (key.return && newServiceName.trim()) {
+      } else if(key.return && newServiceName.trim()) {
         // Create the service
 // const __result = awaitapiClient.executeCommand('create', [newServiceName], {path = > prev.slice(0, -1));'
     //   // LINT: unreachable code removed} else if(!key.ctrl && !key.meta && input) {
@@ -94,7 +94,7 @@ const __SingularityAlpha = () => {
     //   // LINT: unreachable code removed}
 
     // Always capture command input regardless of view
-    if (key.return && command.trim()) {
+    if(key.return && command.trim()) {
       setIsExecuting(true);
     // ; // LINT: unreachable code removed
       const _parts = command.trim().split(' ');'
@@ -136,7 +136,7 @@ const __SingularityAlpha = () => {
     setCommandResult(result);
   };
 
-  const _loadHives = async () => {
+  const _loadHives = async() => {
 // const _hivesData = awaitapiClient.fetchHives();
     setHives(hivesData);
   };
@@ -156,8 +156,8 @@ const __SingularityAlpha = () => {
     currentView === 'details' && selectedHive && React.createElement(HiveDetails, hive = === 'create' && React.createElement(Box, borderStyle = === 'directory' && React.createElement(DirectorySelector,'
       _currentPath => ;
         setSelectedDirectory(_dir);
-        setCommandResult({success = > setCurrentView('hives');'
-    }),
+        setCommandResult({ success = > setCurrentView('hives');'
+     }),
     React.createElement(Box, { borderStyle: "single", paddingX},"
       React.createElement(Text, { color: "gray" },"
         `View: ${currentView} | Services: ${Object.keys(hives).length} | API: Connected`;`

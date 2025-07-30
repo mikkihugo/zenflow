@@ -5,18 +5,18 @@
  * @module MCPServerRefactored
  */
 
-import { fileURLToPath } from 'node:url';'
-import { NeuralEngine } from '../neural/neural-engine.js';'
-import { MCPErrorHandler } from './core/error-handler.js';'
-import { PerformanceMetrics } from './core/performance-metrics.js';'
-// import { StdioOptimizer } from './core/stdio-optimizer.js';'
+import { fileURLToPath  } from 'node:url';'
+import { NeuralEngine  } from '../neural/neural-engine.js';'
+import { MCPErrorHandler  } from './core/error-handler.js';'
+import { PerformanceMetrics  } from './core/performance-metrics.js';'
+// import { StdioOptimizer  } from './core/stdio-optimizer.js';'
 
 // Try to import dependencies, fall back to mocks if not available
 let SqliteMemoryStore, RuvSwarm, initializeAllTools, MCPMessageHandler, MCPToolExecutor;
 try {
 // const _memoryModule = awaitimport('../memory/sqlite-store.js');'
   SqliteMemoryStore = memoryModule.SqliteMemoryStore;
-} catch (error) {
+} catch(error) {
   console.warn('[MCP-Server] SqliteMemoryStore not available, using mock implementation');'
 // const _mockModule = awaitimport('./core/mock-memory-store.js');'
   SqliteMemoryStore = mockModule.SqliteMemoryStore;
@@ -24,7 +24,7 @@ try {
 try {
 // const _ruvSwarmModule = awaitimport('../../ruv-FANN/ruv-swarm/npm/src/index.js');'
   RuvSwarm = ruvSwarmModule.RuvSwarm;
-} catch (error) {
+} catch(error) {
   console.warn('[MCP-Server] RuvSwarm not available, using mock implementation');'
 // const _mockModule = awaitimport('./core/mock-ruv-swarm.js');'
   RuvSwarm = mockModule.RuvSwarm;
@@ -32,7 +32,7 @@ try {
 try {
 // const _toolsModule = awaitimport('./core/tools-registry.js');'
   initializeAllTools = toolsModule.initializeAllTools;
-} catch (error) {
+} catch(error) {
   console.warn('[MCP-Server] Tools registry not available, using mock implementation');'
 // const _mockModule = awaitimport('./core/mock-tools-registry.js');'
   initializeAllTools = mockModule.initializeAllTools;
@@ -40,17 +40,17 @@ try {
 try {
 // const _handlerModule = awaitimport('./core/message-handler.js');'
   MCPMessageHandler = handlerModule.MCPMessageHandler;
-} catch (error) {
+} catch(error) {
   console.warn('[MCP-Server] Message handler not available, using simplified version');'
   MCPMessageHandler = class {
-    async handleMessage(_message) {
-      // return {jsonrpc = // await import('./core/tool-executor.js');'
+    async handleMessage(_message) { 
+      // return jsonrpc = // await import('./core/tool-executor.js');'
     // MCPToolExecutor = executorModule.MCPToolExecutor; // LINT: unreachable code removed
-} catch (error) {
+} catch(error) {
   console.warn('[MCP-Server] Tool executor not available, using simplified version');'
   MCPToolExecutor = class {
-    async executeTool(_name, _args) {
-      // return {tool = fileURLToPath(import.meta.url);
+    async executeTool(_name, _args) { 
+      // return tool = fileURLToPath(import.meta.url);
     // /** // LINT: unreachable code removed */
 // Refactored Claude Flow MCP Server
 // Implements MCP protocol with clean modular architecture
@@ -86,7 +86,7 @@ try {
     });
 
     // Handle individual errors
-    this.stdioOptimizer.on('error', async (error, message) => {'
+    this.stdioOptimizer.on('error', async(error, message) => {'
 // // await this.handleMessageError(error, message);
     });
 
@@ -102,11 +102,11 @@ try {
  * Process a batch of messages
    * @param {Array} batch - Array of message objects
    */
-  async processBatch(batch) {
+  async processBatch(batch) { 
     const _batchStartTime = Date.now();
     this.performanceMetrics.recordBatchMetrics(batch.length, 0); // Will update processing time later
 
-    console.error(`[${new Date().toISOString()}] DEBUG [MCP-Server] Processing batch of ${batch.length} messages`);`
+    console.error(`[$new Date().toISOString()}] DEBUG [MCP-Server] Processing batch of ${batch.length} messages`);`
 
     for(const item of batch) {
       const { message, receivedAt } = item;
@@ -149,12 +149,12 @@ try {
     const _server = new ClaudeFlowMCPServer();
 
     // Setup graceful shutdown
-    process.on('SIGINT', async () => {'
+    process.on('SIGINT', async() => {'
 // // await server.shutdown();
       process.exit(0);
     });
 
-    process.on('SIGTERM', async () => {'
+    process.on('SIGTERM', async() => {'
 // // await server.shutdown();
       process.exit(0);
     });
@@ -162,7 +162,7 @@ try {
   //   }
 
 
-// Export for use as module (class already exported above)
+// Export for use as module(class already exported above)
 // export default ClaudeFlowMCPServer;
 
 // Start server if run directly

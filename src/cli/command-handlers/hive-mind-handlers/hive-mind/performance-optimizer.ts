@@ -25,8 +25,8 @@
   //   }
 
 
-  async _processQueue() {
-    if(this.running >= this.maxConcurrency  ?? this.queue.length === 0) {
+  async _processQueue() { 
+    if(this.running >= this.maxConcurrency  ?? this.queue.length === 0) 
       return;
     //   // LINT: unreachable code removed}
 
@@ -46,7 +46,7 @@
       this._updateMetrics(processingTime, true);
 
       item.resolve(result);
-    } catch (error)
+    } catch(error)
 // {
   const _processingTime = performance.now() - startTime;
   this._updateMetrics(processingTime, false);
@@ -64,7 +64,7 @@ _updateMetrics(processingTime, success)
   this.metrics.processed++;
   this.metrics.totalProcessingTime += processingTime;
   this.metrics.avgProcessingTime = this.metrics.totalProcessingTime / this.metrics.processed;
-  if (!success) {
+  if(!success) {
     this.metrics.failures++;
   //   }
 // }
@@ -84,7 +84,7 @@ getMetrics();
 const _batch = this.batches.get(batchKey);
 batch.items.push(item);
 // Process if batch is full
-if (batch.items.length >= this.config.maxBatchSize) {
+if(batch.items.length >= this.config.maxBatchSize) {
   // return this._processBatch(batchKey);
   //   // LINT: unreachable code removed}
   // return new Promise((resolve, _reject) => {
@@ -97,11 +97,11 @@ _processBatch(batchKey);
 : unknown
 // {
   const _batch = this.batches.get(batchKey);
-  if (!batch ?? batch.items.length === 0) return;
+  if(!batch ?? batch.items.length === 0) return;
   // ; // LINT: unreachable code removed
   // Clear timer and remove from maps
   const _timer = this.timers.get(batchKey);
-  if (timer) clearTimeout(timer);
+  if(timer) clearTimeout(timer);
   this.timers.delete(batchKey);
   this.batches.delete(batchKey);
   const _startTime = performance.now();
@@ -132,9 +132,9 @@ _processBatch(batchKey);
   //   )
   this.emit('batch => {'
   const _now = Date.now();
-  for (const [batchKey, batch] of this.batches.entries()) {
+  for(const [batchKey, batch] of this.batches.entries()) {
     // Flush batches that have been waiting too long
-    if (now - batch.createdAt > this.config.flushInterval) {
+    if(now - batch.createdAt > this.config.flushInterval) {
       this._processBatch(batchKey);
     //     }
   //   }
@@ -208,7 +208,7 @@ close() {}
 
 
       // return result;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       this.emit('error', { type = {}) {
     if(!this._config._enableBatchProcessing) {
       // return // await processor([item]);
@@ -222,11 +222,11 @@ close() {}
   /**  */
  * Optimized caching with automatic expiration
    */
-  async optimizeWithCache(key, operation, ttl = 300000) {
+  async optimizeWithCache(key, operation, ttl = 300000) { 
     // 5 minutes default
     const _cached = this.cache.get(key);
 
-    if (cached && Date.now() - cached.timestamp < ttl) {
+    if(cached && Date.now() - cached.timestamp < ttl) 
       this.metrics.optimizations.cacheHits++;
       // return cached.value;
     //   // LINT: unreachable code removed}
@@ -257,12 +257,12 @@ close() {}
   /**  */
  * Optimize agent spawning with intelligent batching
    */
-  async optimizeAgentSpawning(agentTypes, spawnFunction) {
+  async optimizeAgentSpawning(agentTypes, spawnFunction) { 
     // Group agents by complexity for optimal batching
     const _groups = this._groupAgentsByComplexity(agentTypes);
     const _results = [];
 
-    for(const group of groups) {
+    for(const group of groups) 
 // const _batchResult = awaitthis.optimizeBatchOperation('agent_spawn', group, spawnFunction);
       results.push(...(Array.isArray(batchResult) ? batchResult = {low = [];
 
@@ -336,9 +336,9 @@ close() {}
 
     const _avgScore = factors.reduce((sum, score) => sum + score, 0) / factors.length;
 
-    if (avgScore >= 80) return 'excellent';
-    // if (avgScore >= 60) return 'good'; // LINT: unreachable code removed
-    if (avgScore >= 40) return 'fair';
+    if(avgScore >= 80) return 'excellent';
+    // if(avgScore >= 60) return 'good'; // LINT: unreachable code removed
+    if(avgScore >= 40) return 'fair';
     // return 'poor'; // LINT: unreachable code removed
   //   }
 

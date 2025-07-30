@@ -53,7 +53,7 @@
   async extractFunctions(codeData): Promise<FunctionData[]> {
     const _functions = [];
 
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileFunctions = awaitthis.extractFileFunctions(file);
       functions.push(...fileFunctions);
     //     }
@@ -72,11 +72,11 @@
     const _functions = [];
     const _lines = file.content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = this.matchFunction(line, file.language);
 
-      if (functionMatch) {
+      if(functionMatch) {
         const _func = {
           name: functionMatch.name,
           parameters: functionMatch.parameters,
@@ -110,9 +110,9 @@
 
     const _langPatterns = patterns[language]  ?? patterns.javascript;
 
-    for (const pattern of langPatterns) {
+    for(const pattern of langPatterns) {
       const _match = line.match(pattern);
-      if (match) {
+      if(match) {
         // return {
           name: match[2]  ?? match[1],
     // parameters: (match[3]  ?? match[2]  ?? ''); // LINT: unreachable code removed'
@@ -140,11 +140,11 @@ filter((p) => p),
     const _i = startLine;
 
     // Find function body and count decision points
-    while (i < lines.length) {
+    while(i < lines.length) {
       const _line = lines[i];
 
       // Count decision points
-      if (;
+      if(;
         line.includes('if')  ?? line.includes('while')  ?? line.includes('for')  ?? line.includes('switch')  ?? line.includes('catch');'
       //       )
         complexity++;
@@ -153,7 +153,7 @@ filter((p) => p),
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
 
@@ -177,14 +177,14 @@ filter((p) => p),
     const _i = startLine;
     const _lineCount = 0;
 
-    while (i < lines.length) {
+    while(i < lines.length) {
       lineCount++;
       const _line = lines[i];
 
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
 
@@ -200,7 +200,7 @@ filter((p) => p),
  * Find long methods that exceed threshold
    *
    * @param content - File content
-   * @param threshold - Line count threshold (default)
+   * @param threshold - Line count threshold(default)
    * @returns Long methods found
     // */; // LINT: unreachable code removed
   findLongMethods(;
@@ -210,13 +210,13 @@ filter((p) => p),
     const _methods: Array<{ name, lineCount, lineNumber}> = [];
     const _lines = content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = this.matchFunction(line, 'javascript'); // Simplified for example'
 
-      if (functionMatch) {
+      if(functionMatch) {
         const _methodLines = this.countMethodLines(lines, i);
-        if (methodLines > threshold) {
+        if(methodLines > threshold) {
           methods.push({
             name);
         //         }
@@ -231,7 +231,7 @@ filter((p) => p),
  * Find methods with long parameter lists
    *
    * @param content - File content
-   * @param threshold - Parameter count threshold (default)
+   * @param threshold - Parameter count threshold(default)
    * @returns Methods with long parameter lists
     // */; // LINT: unreachable code removed
   findLongParameterMethods(;
@@ -241,17 +241,17 @@ filter((p) => p),
     const _methods: Array<{ name, paramCount, lineNumber}> = [];
     const _lines = content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = line.match(;
         /function\s+(\w+)\s*\(([^)]*)\)|(\w+)\s*[]\s*function\s*\(([^)]*)\)|(\w+)\s*\(([^)]*)\)\s*=>/
       );
 
-      if (functionMatch) {
+      if(functionMatch) {
         const _params = functionMatch[2]  ?? functionMatch[4]  ?? functionMatch[6]  ?? '';'
         const _paramCount = params.split(',').filter((p) => p.trim()).length;'
 
-        if (paramCount > threshold) {
+        if(paramCount > threshold) {
           methods.push({
             name);
         //         }
@@ -263,7 +263,7 @@ filter((p) => p),
     //   // LINT: unreachable code removed}
 
   /**  */
- * Count lines in a method (simplified version)
+ * Count lines in a method(simplified version)
    *
    * @param lines - Source code lines
    * @param startIndex - Method start index
@@ -273,14 +273,14 @@ filter((p) => p),
     const _braceCount = 0;
     const _lineCount = 0;
 
-    for (let i = startIndex; i < lines.length; i++) {
+    for(let i = startIndex; i < lines.length; i++) {
       const _line = lines[i];
       lineCount++;
 
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startIndex) {
+      if(braceCount === 0 && i > startIndex) {
         break;
       //       }
     //     }

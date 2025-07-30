@@ -3,7 +3,7 @@
  * Validates that WebUI components work across Node.js and node;
  */
 
-import { compat } from '../runtime-detector.js';
+import { compat  } from '../runtime-detector.js';
 
 export class WebUIValidator {
   constructor() {
@@ -37,12 +37,12 @@ export class WebUIValidator {
 
 
 // Component Import Test
-// // await this.asyncTest('Component Imports', async () =>;
+// // await this.asyncTest('Component Imports', async() =>;
   try {
 // await import('./start-wrapper.js');
 // await import('./process-ui-enhanced.js');
     return true;
-    //   // LINT: unreachable code removed} catch (/* _err */) {
+    //   // LINT: unreachable code removed} catch(/* _err */) {
     // return false;
     //   // LINT: unreachable code removed}
 // }
@@ -50,12 +50,12 @@ export class WebUIValidator {
 
 
 // UI Instantiation Test
-// // await this.asyncTest('UI Instantiation', async () =>;
+// // await this.asyncTest('UI Instantiation', async() =>;
   try {
     const { EnhancedProcessUI } = await import('./process-ui-enhanced.js');
     const _ui = new EnhancedProcessUI();
     return ui?.processes && ui.processes.size > 0;
-    //   // LINT: unreachable code removed} catch (/* _err */) {
+    //   // LINT: unreachable code removed} catch(/* _err */) {
     // return false;
     //   // LINT: unreachable code removed}
 // }
@@ -63,10 +63,10 @@ export class WebUIValidator {
 
 
 // File Operations Test
-// // await this.asyncTest('File Operations', async () =>;
+// // await this.asyncTest('File Operations', async() =>;
   try {
-// await compat.safeCall(async () => {
-      if (compat.runtime === 'node') {
+// await compat.safeCall(async() => {
+      if(compat.runtime === 'node') {
         await node.writeTextFile('.webui-test', 'test');
 // await node.remove('.webui-test');
       } else {
@@ -76,7 +76,7 @@ export class WebUIValidator {
       //       }
     });
     // return true;
-    //   // LINT: unreachable code removed} catch (/* _err */) {
+    //   // LINT: unreachable code removed} catch(/* _err */) {
     // return false;
     //   // LINT: unreachable code removed}
 // }
@@ -90,14 +90,14 @@ this.printSummary();
   this.results.total++;
   try {
     const _result = testFn();
-    if (result) {
+    if(result) {
       console.warn(`✅ ${name}`);
       this.results.passed++;
     } else {
       console.warn(`❌ ${name}`);
       this.results.failed++;
     //     }
-  } catch (/* err */) {
+  } catch(/* err */) {
     console.warn(`❌ ${name});`
     this.results.failed++;
   //   }
@@ -109,14 +109,14 @@ asyncTest(name, testFn);
   this.results.total++;
   try {
 // const _result = awaittestFn();
-    if (result) {
+    if(result) {
       console.warn(`✅ ${name}`);
       this.results.passed++;
     } else {
       console.warn(`❌ ${name}`);
       this.results.failed++;
     //     }
-  } catch (/* err */) {
+  } catch(/* err */) {
     console.warn(`❌ ${name});`
     this.results.failed++;
   //   }

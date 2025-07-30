@@ -4,7 +4,7 @@
  * @module MCPMessageHandler
  */
 
-import { validateToolArgs } from './tools-registry.js';'
+import { validateToolArgs  } from './tools-registry.js';'
 /**  */
  * MCP Message Handler class
  * Processes incoming MCP protocol messages and routes to appropriate handlers
@@ -32,16 +32,16 @@ import { validateToolArgs } from './tools-registry.js';'
 // {
   const { method, id, params } = message;
   try {
-    switch (method) {
-      case 'initialize':;'
+    switch(method) {
+      case 'initialize':'
         // return this.handleInitialize(id, params);
-    // case 'tools/list':; // LINT: unreachable code removed'
+    // case 'tools/list': // LINT: unreachable code removed'
         // return this.handleToolsList(id);
-    // case 'tools/call':; // LINT: unreachable code removed'
+    // case 'tools/call': // LINT: unreachable code removed'
         // return // // await this.handleToolCall(id, params);
-    // case 'resources/list':; // LINT: unreachable code removed'
+    // case 'resources/list': // LINT: unreachable code removed'
         // return this.handleResourcesList(id);
-    // case 'resources/read':; // LINT: unreachable code removed'
+    // case 'resources/read': // LINT: unreachable code removed'
         // return // // await this.handleResourceRead(id, params);
     // default = Object.values(this.server.tools); // LINT: unreachable code removed
 
@@ -62,7 +62,7 @@ import { validateToolArgs } from './tools-registry.js';'
         //         }
     //     }
 // }
-catch (error)
+catch(error)
 // {
   console.error(`[\$new Date().toISOString()] ERROR [MCP-Handler] Tool executionfailed = this.server.resources;`
 
@@ -89,7 +89,7 @@ catch (error)
 validateMessage(message);
 : unknown
 // {
-  if (!message) {
+  if(!message) {
     // return {valid = = '2.0') {'
       // return {valid = === undefined) {
       // return {valid = success ? 'SUCCESS' : 'FAILED';'

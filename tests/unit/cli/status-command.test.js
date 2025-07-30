@@ -1,15 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it  } from '@jest/globals';
 
 // Mock the utils module
-jest.mock('../../../src/cli/utils.js', () => ({
-  printSuccess: jest.fn() }))
+jest.mock('../../../src/cli/utils.js', () => ({ printSuccess: jest.fn()  }))
 describe('Status Command', () =>
 // {
   let originalConsoleLog;
   let consoleOutput;
   let statusCommand;
   let printSuccess;
-  beforeEach(async () => {
+  beforeEach(async() => {
     // Capture console.log output
     consoleOutput = [];
     originalConsoleLog = console.log;
@@ -31,42 +30,40 @@ describe('Status Command', () =>
       expect(statusCommand).toBeDefined();
       expect(typeof statusCommand).toBe('function');
     });
-    it('should execute without errors', async () => {
+    it('should execute without errors', async() => {
   // await expect(statusCommand([], {})).resolves.not.toThrow();
     });
-    it('should call printSuccess with correct message', async () => {
+    it('should call printSuccess with correct message', async() => {
   // await statusCommand([], {});
       expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status);'
       expect(printSuccess).toHaveBeenCalledTimes(1);
     });
-    it('should display system status information', async () => {
+    it('should display system status information', async() => {
   // await statusCommand([], {});
       // Check that all expected status lines are logged
-      const _expectedLines = [
-
-        '� Status: Not Running (orchestrator not started)',
+      const _expectedLines = ['� Status: Not Running(orchestrator not started)',
         '🤖 Agents: 0 active',
         '� Tasks: 0 in queue',
         '� Memory: Ready',
         '�  Terminal Pool: Ready',
-        '� MCP Server: Stopped',,,,,,];
+        '� MCP Server: Stopped',,];
       expectedLines.forEach((expectedLine) => {
         expect(consoleOutput).toContain(expectedLine);
       });
     });
-    it('should log exactly 6 status lines', async () => {
+    it('should log exactly 6 status lines', async() => {
   // await statusCommand([], {});
       // Should have 6 console.log calls for status information
       expect(consoleOutput).toHaveLength(6);
     });
-    it('should handle arguments and flags gracefully', async () => {
+    it('should handle arguments and flags gracefully', async() => {
       // Test with various arguments and flags
   // await statusCommand(['arg1', 'arg2'], { verbose, json });
       // Should still work the same way regardless of args/flags
       expect(printSuccess).toHaveBeenCalledWith('Claude-Flow System Status);'
       expect(consoleOutput).toHaveLength(6);
     });
-    it('should show consistent status format', async () => {
+    it('should show consistent status format', async() => {
   // await statusCommand([], {});
       // Each status line should follow the pattern: emoji + space + description
       consoleOutput.forEach((line) => {
@@ -75,27 +72,27 @@ describe('Status Command', () =>
         //         )
       });
     });
-    it('should indicate system is not running', async () => {
+    it('should indicate system is not running', async() => {
   // await statusCommand([], {});
       const _statusLine = consoleOutput.find((line) => line.includes('Status));'
       expect(statusLine).toContain('Not Running');
       expect(statusLine).toContain('orchestrator not started');
     });
-    it('should show zero counts for inactive system', async () => {
+    it('should show zero counts for inactive system', async() => {
   // await statusCommand([], {});
       const _agentsLine = consoleOutput.find((line) => line.includes('Agents));'
       expect(agentsLine).toContain('0 active');
       const _tasksLine = consoleOutput.find((line) => line.includes('Tasks));'
       expect(tasksLine).toContain('0 in queue');
     });
-    it('should show ready status for memory and terminal pool', async () => {
+    it('should show ready status for memory and terminal pool', async() => {
   // await statusCommand([], {});
       const _memoryLine = consoleOutput.find((line) => line.includes('Memory));'
       expect(memoryLine).toContain('Ready');
       const _terminalLine = consoleOutput.find((line) => line.includes('Terminal Pool));'
       expect(terminalLine).toContain('Ready');
     });
-    it('should show stopped status for MCP server', async () => {
+    it('should show stopped status for MCP server', async() => {
   // await statusCommand([], {});
       const _mcpLine = consoleOutput.find((line) => line.includes('MCP Server));'
       expect(mcpLine).toContain('Stopped');
@@ -104,16 +101,16 @@ describe('Status Command', () =>
       const _result = statusCommand([], {});
       expect(result).toBeInstanceOf(Promise);
     });
-    it('should complete execution quickly', async () => {
+    it('should complete execution quickly', async() => {
       const _startTime = Date.now();
   // await statusCommand([], {});
       const _endTime = Date.now();
-      // Should complete in less than 100ms (it's just logging)'
+      // Should complete in less than 100ms(it's just logging)'
       expect(endTime - startTime).toBeLessThan(100);
     });
   });
   describe('error handling', () => {
-    it('should handle mock failures gracefully', async () => {
+    it('should handle mock failures gracefully', async() => {
       // Temporarily break the printSuccess mock
       printSuccess.mockImplementation(() => {
         throw new Error('Mock error');
@@ -121,13 +118,13 @@ describe('Status Command', () =>
       // The function should still try to execute
       try {
   // // await statusCommand([], {});
-      } catch (error) {
+      } catch(error) {
         expect(error.message).toBe('Mock error');
       //       }
       // Restore the mock
       printSuccess.mockRestore();
     });
-    it('should handle console.log failures', async () => {
+    it('should handle console.log failures', async() => {
       // Temporarily break console.log
       console.log = jest.fn(() => {
         throw new Error('Console error');

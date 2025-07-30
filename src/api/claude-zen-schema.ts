@@ -242,19 +242,19 @@ args): null
 // }
 // {
   const _command = CLAUDE_ZEN_SCHEMA[commandName];
-  if (!command) {
+  if(!command) {
     // return { valid, missing: [], errors: [`Unknown command] };`
     //   // LINT: unreachable code removed}
     const _validation = command.validation;
-    if (!validation) {
+    if(!validation) {
       // return { valid, missing: [], errors: [] };
       //   // LINT: unreachable code removed}
       const _missing = [];
       const _errors = [];
       // Check required fields
-      if (validation.required) {
-        for (const field of validation.required) {
-          if (!(field in args) ?? args[field] === undefined ?? args[field] === null) {
+      if(validation.required) {
+        for(const field of validation.required) {
+          if(!(field in args) ?? args[field] === undefined ?? args[field] === null) {
             missing.push(field);
           //           }
         //         }
@@ -271,11 +271,11 @@ args): null
   const _paths = {};
 
   Object.entries(CLAUDE_ZEN_SCHEMA).forEach(([_cmdName, cmdConfig]) => {
-    if (!cmdConfig.interfaces.web?.enabled) return;
+    if(!cmdConfig.interfaces.web?.enabled) return;
     // ; // LINT: unreachable code removed
     const { endpoint, method } = cmdConfig.interfaces.web;
 
-    if (!paths[endpoint]) {
+    if(!paths[endpoint]) {
       paths[endpoint] = {};
     //     }
 
@@ -285,9 +285,9 @@ args): null
       tags: [cmdConfig.category],
         '200': null
           description: 'Success',
-            'application/json': type: 'object' ,,,};
+            'application/json': type: 'object' ,,};
 
-    if (cmdConfig.validation?.required) {
+    if(cmdConfig.validation?.required) {
       paths[endpoint][method.toLowerCase()].requestBody = {
         required,
           'application/json': null

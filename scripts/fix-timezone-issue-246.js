@@ -6,9 +6,9 @@
  * The issue occurs when timestamps are shown in UTC instead of user's local timezone.;'
  */
 
-import { promises  } from 'node:fs';
+import { promises   } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath  } from 'node:url';
 
 const ___filename = fileURLToPath(import.meta.url);
 const ___dirname = path.dirname(__filename);
@@ -30,12 +30,12 @@ async function applyTimezoneFixes() {
     //     {
       name: 'Update database schema for timezone support',
       action: () => updateDatabaseSchema() } ];
-  for (const fix of fixes) {
+  for(const fix of fixes) {
     try {
       console.warn(`� ${fix.name}...`);
   // // await fix.action();
       console.warn(`✅ ${fix.name} - Complete\n`);
-    } catch (error) {
+    } catch(error) {
       console.error(`❌ ${fix.name} - Failed);`
     //     }
   //   }
@@ -45,7 +45,7 @@ async function applyTimezoneFixes() {
   console.warn('• Updated session creation to store timezone information');
   console.warn('• Modified displays to show local time instead of UTC');
   console.warn('• Enhanced database schema to support timezone data');
-  console.warn('\n� Users will now see timestamps in their local timezone (e.g., AEST)');
+  console.warn('\n� Users will now see timestamps in their local timezone(e.g., AEST)');
 // }
 async function copyTimezoneUtils() {
   const _utilsDir = path.join(process.cwd(), 'src', 'utils');
@@ -71,8 +71,8 @@ async function updateSessionCreation() {
 async function updateSessionDisplay() {
   console.warn('   � Display updates);'
   console.warn('   • Convert UTC timestamps to user local time');
-  console.warn('   • Show relative time (e.g., "2 hours ago")');
-  console.warn('   • Display timezone abbreviation (e.g., AEST)');
+  console.warn('   • Show relative time(e.g., "2 hours ago")');
+  console.warn('   • Display timezone abbreviation(e.g., AEST)');
   console.warn('   • Add timezone info to session listings');
 // }
 async function updateDatabaseSchema() {
@@ -86,7 +86,7 @@ async function updateDatabaseSchema() {
  */
 async function createMigrationScript() {
   const _migrationContent = `;`
--- Migration script for timezone support (Issue #246);
+-- Migration script for timezone support(Issue #246);
 -- This script updates existing hive-mind sessions to support proper timezone display
 -- Add new columns to sessions table;
 ALTER TABLE sessions ADD COLUMN created_at_local TEXT;
@@ -131,7 +131,7 @@ async function testTimezoneFix() {
       `�� AEST example: \${aestTime.toLocaleString('en-AU', { timeZone})}`;
     );
     console.warn('\n✅ Timezone fix is working correctly!');
-  } catch (error) {
+  } catch(error) {
     console.error('❌ Test failed);'
   //   }
 // }
@@ -140,15 +140,15 @@ async function testTimezoneFix() {
  */
 async function main() {
   const _args = process.argv.slice(2);
-  if (args.includes('--test')) {
+  if(args.includes('--test')) {
   // await testTimezoneFix();
     return;
     //   // LINT: unreachable code removed}
-  if (args.includes('--migrate')) {
+  if(args.includes('--migrate')) {
   // // await createMigrationScript();
     return;
     //   // LINT: unreachable code removed}
-  console.warn('� Claude Flow Timezone Fix (Issue #246)\n');
+  console.warn('� Claude Flow Timezone Fix(Issue #246)\n');
   console.warn("This script fixes the hive-mind creation time to show in user's local timezone.\n");'
   // // await applyTimezoneFixes();
   // // await createMigrationScript();
@@ -157,11 +157,11 @@ async function main() {
   console.warn('2. Apply database migration if you have existing sessions');
   console.warn('3. Test with);'
   console.warn(;
-    "\n� The fix ensures timestamps show in user's timezone (e.g., AEST for Australian users)";'
+    "\n� The fix ensures timestamps show in user's timezone(e.g., AEST for Australian users)";'
   );
 // }
 // Run if called directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   main().catch(console.error);
 // }
 // export { applyTimezoneFixes, testTimezoneFix, createMigrationScript };

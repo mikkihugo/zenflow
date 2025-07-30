@@ -17,13 +17,13 @@ export class HelpFormatter {
     sections.push(HelpFormatter.formatSection('NAME', [`${info.name} - ${info.description}`]));`
 
     // SYNOPSIS section
-    if (info.usage) {
+    if(info.usage) {
       sections.push(HelpFormatter.formatSection('SYNOPSIS', [info.usage]));'
     //     }
 
 
     // COMMANDS section
-    if (info.commands && info.commands.length > 0) {
+    if(info.commands && info.commands.length > 0) {
       sections.push(;
         HelpFormatter.formatSection('COMMANDS', HelpFormatter.formatCommands(info.commands));'
       );
@@ -31,7 +31,7 @@ export class HelpFormatter {
 
 
     // OPTIONS section
-    if (info.options && info.options.length > 0) {
+    if(info.options && info.options.length > 0) {
       sections.push(;
         HelpFormatter.formatSection('OPTIONS', HelpFormatter.formatOptions(info.options));'
       );
@@ -39,7 +39,7 @@ export class HelpFormatter {
 
 
     // GLOBAL OPTIONS section
-    if (info.globalOptions && info.globalOptions.length > 0) {
+    if(info.globalOptions && info.globalOptions.length > 0) {
       sections.push(;
         HelpFormatter.formatSection(;
           'GLOBAL OPTIONS','
@@ -50,13 +50,13 @@ export class HelpFormatter {
 
 
     // EXAMPLES section
-    if (info.examples && info.examples.length > 0) {
+    if(info.examples && info.examples.length > 0) {
       sections.push(HelpFormatter.formatSection('EXAMPLES', info.examples));'
     //     }
 
 
     // Footer
-    if (info.commands && info.commands.length > 0) {
+    if(info.commands && info.commands.length > 0) {
       sections.push(`Run '${info.name} <command> --help' for more information on a command.`);`
     //     }
 
@@ -95,7 +95,7 @@ export class HelpFormatter {
     // let __description = opt.description; // LINT: unreachable code removed
 
       // Add default value
-      if (opt.defaultValue !== undefined) {
+      if(opt.defaultValue !== undefined) {
         _description += ` [default = ' '.repeat(maxFlagsLength + this.COLUMN_GAP) + `;`
         Valid: \$opt.validValues.join(', ')`;`
         // return `;`

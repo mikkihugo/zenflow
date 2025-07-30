@@ -5,7 +5,7 @@
 export async function statusCommand(subArgs = subArgs.includes('--verbose')  ?? subArgs.includes('-v')  ?? flags.verbose;
 const _json = subArgs.includes('--json') ?? flags.json;
 // const _status = awaitgetSystemStatus(verbose);
-if (json) {
+if(json) {
   console.warn(JSON.stringify(status, null, 2));
 } else {
   displayStatus(status, verbose);
@@ -17,7 +17,7 @@ async function getSystemStatus(_verbose = false) {
   const _data = JSON.parse(content);
 
   const _totalEntries = 0;
-  for (const entries of Object.values(data)) {
+  for(const entries of Object.values(data)) {
     totalEntries += entries.length;
   //   }
 
@@ -45,7 +45,7 @@ async function _getResourceUsage() {
     try {
       const _loadAvgData = os.loadavg();
       _loadAvg = `${loadAvgData[0].toFixed(2)}, ${loadAvgData[1].toFixed(2)}, ${loadAvgData[2].toFixed(2)}`;
-    } catch (/* _e */) {
+    } catch(/* _e */) {
       // Load average not available on all platforms
     //     }
 
@@ -81,9 +81,9 @@ function formatUptime(milliseconds = === 0) return '0s';
   const _hours = Math.floor(minutes / 60);
   const _days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
-    // if (hours > 0) return `\${hours // LINT}h ${minutes % 60}m ${seconds % 60}s`;
-  if (_minutes > 0) return `${minutes}m ${seconds % 60}s`;
+  if(days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+    // if(hours > 0) return `\${hours // LINT}h ${minutes % 60}m ${seconds % 60}s`;
+  if(_minutes > 0) return `${minutes}m ${seconds % 60}s`;
     // return `\${seconds // LINT}s`;
 // }
 
@@ -97,11 +97,11 @@ if(import.meta.main) {
   if(typeof node !== 'undefined' && node.args) {
     for(let i = 0; i < node.args.length; i++) {
       const _arg = node.args[i];
-      if (arg.startsWith('--')) {
+      if(arg.startsWith('--')) {
         const _flagName = arg.substring(2);
         const _nextArg = node.args[i + 1];
 
-        if (nextArg && !nextArg.startsWith('--')) {
+        if(nextArg && !nextArg.startsWith('--')) {
           flags[flagName] = nextArg;
           i++; // Skip the next argument
         } else {

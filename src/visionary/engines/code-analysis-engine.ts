@@ -8,8 +8,8 @@
  * @version 1.0.0
  */
 
-import { existsSync } from 'node:fs';'
-// import { readFile } from 'node:fs/promises';'
+import { existsSync  } from 'node:fs';'
+// import { readFile  } from 'node:fs/promises';'
 // import path from 'node:path';'
 /**  */
  * Code file data structure
@@ -171,10 +171,10 @@ import { existsSync } from 'node:fs';'
 
       // Optional AI analysis
       let _aiInsights;
-      if (this.config.neuralEngine) {
+      if(this.config.neuralEngine) {
         try {
           _aiInsights = // // await this.performAIAnalysis(codeData, 'code-analysis');'
-        } catch (error) {
+        } catch(error) {
           console.warn('AI analysis unavailable);'
         //         }
       //       }
@@ -195,7 +195,7 @@ import { existsSync } from 'node:fs';'
           analysisTime,
           language: codeData[0]?.language  ?? 'unknown'}'
   //   }
-  catch (error) {
+  catch(error) {
     console.error('❌ Code analysis failed);'
     throw error;
   //   }
@@ -211,8 +211,8 @@ readCodeData(codeFiles)
 : Promise<CodeFileData[]>
 // {
   const _codeData = [];
-  for (const filePath of codeFiles) {
-    if (!existsSync(filePath)) {
+  for(const filePath of codeFiles) {
+    if(!existsSync(filePath)) {
       throw new Error(`Code file not found);`
     //     }
 // const _content = awaitreadFile(filePath, 'utf8');'
@@ -275,22 +275,22 @@ validateCodeInputs(codeFiles, language)
 : Promise<void>
 // {
   // Validate code files exist
-  for (const filePath of codeFiles) {
-    if (!existsSync(filePath)) {
+  for(const filePath of codeFiles) {
+    if(!existsSync(filePath)) {
       throw new Error(`Code file not found);`
     //     }
     const _extension = path.extname(filePath).toLowerCase().substring(1);
-    if (!this.config.supportedFormats.includes(extension)) {
+    if(!this.config.supportedFormats.includes(extension)) {
       throw new Error(`Unsupported code file format);`
     //     }
   //   }
   // Validate language is supported
-  if (!this.supportedLanguages.has(language)) {
+  if(!this.supportedLanguages.has(language)) {
     throw new Error(`Unsupported language);`
   //   }
 // }
 /**  */
- * Extract AST (Abstract Syntax Tree) information
+ * Extract AST(Abstract Syntax Tree) information
    *
    * @param codeData - Code file data
    * @returns AST node information
@@ -301,11 +301,11 @@ extractAST(codeData)
 // {
     const _astResults = [];
 
-    for (const file of codeData) {
+    for(const file of codeData) {
       try {
 // const _ast = awaitthis.parseFileAST(file);
         astResults.push(...ast);
-      } catch (error) {
+      } catch(error) {
         console.warn(`⚠ AST parsing failed for ${file.path});`
       //       }
     //     }
@@ -315,16 +315,16 @@ extractAST(codeData)
     //   // LINT: unreachable code removed}
 
   /**  */
- * Parse AST for a single file (simplified parser)
+ * Parse AST for a single file(simplified parser)
    *
    * @param file - Code file data
    * @returns AST nodes for the file
     // */; // LINT: unreachable code removed
   // // private async parseFileAST(file): Promise<ASTNode[]>
     // Simplified AST parsing - would use real parser in production
-    if (file.language === 'javascript'  ?? file.language === 'typescript') {'
+    if(file.language === 'javascript'  ?? file.language === 'typescript') {'
       // return this.parseJavaScriptAST(file.content);
-    //   // LINT: unreachable code removed} else if (file.language === 'python') {'
+    //   // LINT: unreachable code removed} else if(file.language === 'python') {'
       // return this.parsePythonAST(file.content);
     //   // LINT: unreachable code removed}
 
@@ -333,7 +333,7 @@ extractAST(codeData)
     //   // LINT: unreachable code removed}
 
   /**  */
- * Parse JavaScript/TypeScript AST (simplified)
+ * Parse JavaScript/TypeScript AST(simplified)
    *
    * @param code - Source code content
    * @returns AST nodes
@@ -344,7 +344,7 @@ extractAST(codeData)
     const _depth = 0;
     const _maxDepth = 0;
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i].trim();
 
       // Track nesting depth
@@ -354,13 +354,12 @@ extractAST(codeData)
       maxDepth = Math.max(maxDepth, depth);
 
       // Identify significant nodes
-      if (line.includes('function')  ?? line.includes('class')  ?? line.includes('=>')) {'
-        nodes.push({
-          type: this.getJavaScriptNodeType(line),
+      if(line.includes('function')  ?? line.includes('class')  ?? line.includes('=>')) {'
+        nodes.push({ type: this.getJavaScriptNodeType(line),
           name: this.extractNodeName(line),
           line: i + 1,
           depth,
-          complexity: this.calculateNodeComplexity(line) });
+          complexity: this.calculateNodeComplexity(line)  });
       //       }
     //     }
 
@@ -369,7 +368,7 @@ extractAST(codeData)
     //   // LINT: unreachable code removed}
 
   /**  */
- * Parse Python AST (simplified)
+ * Parse Python AST(simplified)
    *
    * @param code - Source code content
    * @returns AST nodes
@@ -380,18 +379,18 @@ extractAST(codeData)
     const _indentLevel = 0;
     const _maxIndent = 0;
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _trimmed = line.trim();
 
-      if (trimmed) {
+      if(trimmed) {
         // Calculate indentation level
         const _currentIndent = line.length - line.trimStart().length;
         indentLevel = Math.floor(currentIndent / 4);
         maxIndent = Math.max(maxIndent, indentLevel);
 
         // Identify significant nodes
-        if (;
+        if(;
           trimmed.startsWith('def ')  ?? trimmed.startsWith('class ')  ?? trimmed.startsWith('async def ');'
         //         )
           nodes.push(
@@ -424,10 +423,10 @@ extractAST(codeData)
    * @returns Node type
     // */; // LINT: unreachable code removed
   // // private getJavaScriptNodeType(line): string
-    if (line.includes('class ')) return 'class';'
-    // if (line.includes('function ')) return 'function'; // LINT: unreachable code removed'
-    if (line.includes('=>')) return 'arrow-function';'
-    // if (line.includes('const ')  ?? line.includes('let ')  ?? line.includes('const ')); // LINT: unreachable code removed'
+    if(line.includes('class ')) return 'class';'
+    // if(line.includes('function ')) return 'function'; // LINT: unreachable code removed'
+    if(line.includes('=>')) return 'arrow-function';'
+    // if(line.includes('const ')  ?? line.includes('let ')  ?? line.includes('const ')); // LINT: unreachable code removed'
       return 'variable';'
 
   /**  */
@@ -437,9 +436,9 @@ extractAST(codeData)
    * @returns Node type
     // */; // LINT: unreachable code removed
   // // private getPythonNodeType(line): string
-    if (line.startsWith('class ')) return 'class';'
-    // if (line.startsWith('def ')) return 'function'; // LINT: unreachable code removed'
-    if (line.startsWith('async def ')) return 'async-function';'
+    if(line.startsWith('class ')) return 'class';'
+    // if(line.startsWith('def ')) return 'function'; // LINT: unreachable code removed'
+    if(line.startsWith('async def ')) return 'async-function';'
 
   /**  */
  * Extract node name from line content
@@ -474,7 +473,7 @@ extractAST(codeData)
   // // private async extractFunctions(codeData): Promise<FunctionData[]> {
     const _functions = [];
 
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileFunctions = awaitthis.extractFileFunctions(file);
       functions.push(...fileFunctions);
     //     }
@@ -493,11 +492,11 @@ extractAST(codeData)
     const _functions = [];
     const _lines = file.content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _functionMatch = this.matchFunction(line, file.language);
 
-      if (functionMatch) {
+      if(functionMatch) {
         const _func = {
           name: functionMatch.name,
           parameters: functionMatch.parameters,
@@ -537,9 +536,9 @@ extractAST(codeData)
 
     const _langPatterns = patterns[language]  ?? patterns.javascript;
 
-    for (const pattern of langPatterns) {
+    for(const pattern of langPatterns) {
       const _match = line.match(pattern);
-      if (match) {
+      if(match) {
         // return {
           name: match[2]  ?? match[1],
     // parameters: (match[3]  ?? match[2]  ?? ''); // LINT: unreachable code removed'
@@ -567,11 +566,11 @@ filter((p) => p),
     const _i = startLine;
 
     // Find function body and count decision points
-    while (i < lines.length) {
+    while(i < lines.length) {
       const _line = lines[i];
 
       // Count decision points
-      if (;
+      if(;
         line.includes('if')  ?? line.includes('while')  ?? line.includes('for')  ?? line.includes('switch')  ?? line.includes('catch');'
       //       )
         complexity++;
@@ -580,7 +579,7 @@ filter((p) => p),
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
 
@@ -604,14 +603,14 @@ filter((p) => p),
     const _i = startLine;
     const _lineCount = 0;
 
-    while (i < lines.length) {
+    while(i < lines.length) {
       lineCount++;
       const _line = lines[i];
 
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
 
@@ -632,7 +631,7 @@ filter((p) => p),
   // // private async extractClasses(codeData): Promise<ClassData[]> {
     const _classes = [];
 
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileClasses = awaitthis.extractFileClasses(file);
       classes.push(...fileClasses);
     //     }
@@ -651,11 +650,11 @@ filter((p) => p),
     const _classes = [];
     const _lines = file.content.split('\n');'
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
       const _classMatch = this.matchClass(line, file.language);
 
-      if (classMatch) {
+      if(classMatch) {
         const _cls = {
           name: classMatch.name,
           extends: classMatch.extends,
@@ -693,7 +692,7 @@ filter((p) => p),
     const _pattern = patterns[language]  ?? patterns.javascript;
     const _match = line.match(pattern);
 
-    if (match) {
+    if(match) {
       // return {
         name: match[1],
     // extends: match[2] ? [match[2]] , // LINT: unreachable code removed
@@ -716,11 +715,11 @@ filter((p) => p),
     const _braceCount = 0;
     const _i = startLine;
 
-    while (i < lines.length) {
+    while(i < lines.length) {
       const _line = lines[i];
 
       // Count methods
-      if (this.matchFunction(line, 'javascript')) {'
+      if(this.matchFunction(line, 'javascript')) {'
         methodCount++;
       //       }
 
@@ -728,7 +727,7 @@ filter((p) => p),
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
 
@@ -752,14 +751,14 @@ filter((p) => p),
     const _i = startLine;
     const _lineCount = 0;
 
-    while (i < lines.length) {
+    while(i < lines.length) {
       lineCount++;
       const _line = lines[i];
 
       braceCount += (line.match(/\{/g)  ?? []).length;
       braceCount -= (line.match(/\}/g)  ?? []).length;
 
-      if (braceCount === 0 && i > startLine) {
+      if(braceCount === 0 && i > startLine) {
         break;
       //       }
 
@@ -783,7 +782,7 @@ filter((p) => p),
     const _totalFunctions = 0;
     const _maxComplexity = 0;
 
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileComplexity = awaitthis.calculateFileComplexity(file);
       totalComplexity += fileComplexity.cyclomatic;
       totalLines += fileComplexity.lines;
@@ -827,7 +826,7 @@ filter((p) => p),
     const _functionCount = 0;
     const _maxFunctionComplexity = 0;
 
-    for (let i = 0; i < lines.length; i++) {
+    for(let i = 0; i < lines.length; i++) {
       const _line = lines[i];
 
       // Count decision points
@@ -835,7 +834,7 @@ filter((p) => p),
       complexity += decisions;
 
       // Check if this is a function and calculate its complexity
-      if (this.matchFunction(line, file.language)) {
+      if(this.matchFunction(line, file.language)) {
         functionCount++;
 // const _funcComplexity = awaitthis.calculateFunctionComplexity(lines, i);
         maxFunctionComplexity = Math.max(maxFunctionComplexity, funcComplexity);
@@ -856,8 +855,8 @@ filter((p) => p),
    *
    * @param lines - Total lines of code
    * @param complexity - Cyclomatic complexity
-   * @param halsteadVolume - Halstead volume (simplified)
-   * @returns Maintainability index (0-100)
+   * @param halsteadVolume - Halstead volume(simplified)
+   * @returns Maintainability index(0-100)
     // */; // LINT: unreachable code removed
   // // private calculateMaintainabilityIndex(;
     lines,
@@ -884,9 +883,9 @@ filter((p) => p),
     avgComplexity,
     // maxComplexity
   ): 'minimal' | 'low' | 'moderate' | 'high''
-    if (maxComplexity > 20  ?? avgComplexity > 10) return 'high';'
-    // if (maxComplexity > 10  ?? avgComplexity > 7) return 'moderate'; // LINT: unreachable code removed'
-    if (maxComplexity > 5  ?? avgComplexity > 4) return 'low';'
+    if(maxComplexity > 20  ?? avgComplexity > 10) return 'high';'
+    // if(maxComplexity > 10  ?? avgComplexity > 7) return 'moderate'; // LINT: unreachable code removed'
+    if(maxComplexity > 5  ?? avgComplexity > 4) return 'low';'
 
   /**  */
  * Analyze code dependencies
@@ -899,7 +898,7 @@ filter((p) => p),
       external: new Set<string>(),
       internal: new Set<string>() };
 
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileDeps = awaitthis.extractFileDependencies(file);
       fileDeps.external.forEach((dep) => dependencies.external.add(dep));
       fileDeps.internal.forEach((dep) => dependencies.internal.add(dep));
@@ -934,12 +933,12 @@ filter((p) => p),
 
     const _lines = file.content.split('\n');'
 
-    for (const line of lines) {
+    for(const line of lines) {
       // Extract import statements
       const _importMatch = line.match(/import\s+.*\s+from\s+['"]([^'"]+)['"]/);"'
-      if (importMatch) {
+      if(importMatch) {
         const _dep = importMatch[1];
-        if (dep.startsWith('.')  ?? dep.startsWith('/')) {'
+        if(dep.startsWith('.')  ?? dep.startsWith('/')) {'
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
@@ -949,9 +948,9 @@ filter((p) => p),
 
       // Extract require statements
       const _requireMatch = line.match(/require\(['"]([^'"]+)['"]\)/);"'
-      if (requireMatch) {
+      if(requireMatch) {
         const _dep = requireMatch[1];
-        if (dep.startsWith('.')  ?? dep.startsWith('/')) {'
+        if(dep.startsWith('.')  ?? dep.startsWith('/')) {'
           dependencies.internal.add(dep);
         } else {
           dependencies.external.add(dep);
@@ -977,7 +976,7 @@ filter((p) => p),
     const _totalFunctions = 0;
     const _totalClasses = 0;
 
-    for (const file of codeData) {
+    for(const file of codeData) {
 // const _fileMetrics = awaitthis.calculateFileMetrics(file);
       totalLines += fileMetrics.totalLines;
       codeLines += fileMetrics.codeLines;
@@ -1015,22 +1014,22 @@ filter((p) => p),
     const _functions = 0;
     const _classes = 0;
 
-    for (const line of lines) {
+    for(const line of lines) {
       const _trimmed = line.trim();
 
-      if (!trimmed) {
+      if(!trimmed) {
         blankLines++;
-      } else if (this.isCommentLine(trimmed, file.language)) {
+      } else if(this.isCommentLine(trimmed, file.language)) {
         commentLines++;
       } else {
         codeLines++;
 
-        if (this.matchFunction(line, file.language)) {
+        if(this.matchFunction(line, file.language)) {
           functions++;
         //         }
 
 
-        if (this.matchClass(line, file.language)) {
+        if(this.matchClass(line, file.language)) {
           classes++;
         //         }
       //       }
@@ -1068,14 +1067,14 @@ filter((p) => p),
     //   // LINT: unreachable code removed}
 
   /**  */
- * Perform AI-powered analysis (if neural engine available)
+ * Perform AI-powered analysis(if neural engine available)
    *
    * @param codeData - Code file data
    * @param analysisType - Type of analysis to perform
    * @returns AI analysis results
     // */; // LINT: unreachable code removed
   // // private async performAIAnalysis(codeData, analysisType): Promise<any> {
-    if (!this.config.neuralEngine) {
+    if(!this.config.neuralEngine) {
       throw new Error('Neural engine not available');'
     //     }
 

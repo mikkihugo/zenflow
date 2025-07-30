@@ -27,7 +27,7 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
   try {
     // Check if ruv-swarm is available
 // const _hasSwarm = awaitthis.checkSwarmAvailability();
-    if (!hasSwarm) {
+    if(!hasSwarm) {
       this.ui.addLog('warning', 'ruv-swarm not available - using mock swarm');
       this.initializeMockSwarm();
       return;
@@ -45,9 +45,9 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
 
     // Update UI with swarm status
     this.updateSwarmStatus();
-  } catch (/* _err */) {
+  } catch(/* _err */) {
     this.ui.addLog('error', `Failed to initializeswarm = === 'true';`
-    } catch (/* err */) {
+    } catch(/* err */) {
       // return false;
     //   // LINT: unreachable code removed}
   //   }
@@ -83,8 +83,8 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
   /**  */
  * Spawn new agent
    */
-  async spawnAgent(type, name = null) {
-    if(!this.swarmActive) {
+  async spawnAgent(type, name = null) { 
+    if(!this.swarmActive) 
       this.ui.addLog('warning', 'Swarm not active - cannot spawn agent');
       // return null;
     //   // LINT: unreachable code removed}
@@ -118,9 +118,9 @@ initializeSwarm((topology = 'hierarchical'), (maxAgents = 8));
   /**  */
  * Complete task
    */
-  async completeTask(taskId) {
+  async completeTask(taskId) { 
     const _task = this.tasks.get(taskId);
-    if(!task) {
+    if(!task) 
       this.ui.addLog('error', 'Invalid task ID');
       // return false;
     //   // LINT: unreachable code removed}

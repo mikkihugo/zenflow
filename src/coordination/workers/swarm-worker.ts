@@ -2,7 +2,7 @@
  * Swarm Worker Thread - Executes individual swarm tasks in parallel
  */
 
-import { parentPort } from 'node:worker_threads';'
+import { parentPort  } from 'node:worker_threads';'
 
 class SwarmWorker {
   constructor(workerId = workerId;
@@ -21,7 +21,7 @@ class SwarmWorker {
  */
 initialize();
 // {
-  if (!parentPort) {
+  if(!parentPort) {
     throw new Error('Worker must be run in a worker thread');'
   //   }
   // Listen for messages from main thread
@@ -32,10 +32,10 @@ initialize();
   parentPort.postMessage({type = message;
   try {
       switch(type) {
-        case 'execute-task':;'
+        case 'execute-task':'
 // // // await this.executeTask(task);
           break;
-        case 'shutdown':;'
+        case 'shutdown':'
 // // // await this.shutdown();
           break;default = task;
     const _startTime = Date.now();
@@ -46,22 +46,22 @@ initialize();
       // Send progress update
       this.sendProgress(task.id, {status = // // await this.executeAgentSpawn(task);
           break;
-        case 'task-coordination':;'
+        case 'task-coordination':'
           result = // // await this.executeTaskCoordination(task);
           break;
-        case 'neural-analysis':;'
+        case 'neural-analysis':'
           result = // // await this.executeNeuralAnalysis(task);
           break;
-        case 'performance-optimization':;'
+        case 'performance-optimization':'
           result = // // await this.executePerformanceOptimization(task);
           break;
-        case 'code-analysis':;'
+        case 'code-analysis':'
           result = // // await this.executeCodeAnalysis(task);
           break;
-        case 'research-task':;'
+        case 'research-task':'
           result = // // await this.executeResearchTask(task);
           break;
-        case 'testing-task':;'
+        case 'testing-task':'
           result = // // await this.executeTestingTask(task);
           break;
         default = // // await this.executeGenericTask(task);
@@ -112,15 +112,13 @@ initialize();
   createCoordinationPlan(subtasks, strategy);
   : unknown
   // return {
-      strategy,subtasks = > ({
-..task,id = === 'parallel' ? 'concurrent' : 'sequential',estimatedTime = [];'
+      strategy,subtasks = > ({ ..task,id = === 'parallel' ? 'concurrent' : 'sequential',estimatedTime = [];'
   // ; // LINT: unreachable code removed
-  for (const _subtask of plan.subtasks) {
+  for(const _subtask of plan.subtasks) {
     // Simulate subtask execution
 // // // await this.delay(200);
     results.push({subtaskId = > ({bottleneck = === 'high' ? '20-30%' : '5-15%',effort = === 'high' ? 'medium' : 'low';'
-  //   }
-  ))
+  //    }))
 // }
 /**  */
  * Analyze code complexity
@@ -142,7 +140,7 @@ shutdown();
 console.warn(`� Worker ${this.workerId} shutting down...`);`
 this.isShuttingDown = true;
 // Wait for current task to complete if any
-if (this.currentTask) {
+if(this.currentTask) {
   console.warn(`⏳ Waiting for current task ${this.currentTask.id} to complete...`);`
   // In a real implementation, you might want to interrupt the task
 // }
@@ -154,13 +152,13 @@ worker.initialize();
 process.on('uncaughtException', (error) => {'
   console.error(`Uncaught exception in worker ${workerData.workerId});`
   if(parentPort) {
-    parentPort.postMessage({type = > process.exit(1), 100); // Brief delay to send message
-});
+    parentPort.postMessage({ type = > process.exit(1), 100); // Brief delay to send message
+ });
 
 process.on('unhandledRejection', (reason, _promise) => {'
   console.error(`Unhandled rejection in worker ${workerData.workerId});`
   if(parentPort) {
-    parentPort.postMessage({type = > process.exit(1), 100); // Brief delay to send message
-});
+    parentPort.postMessage({ type = > process.exit(1), 100); // Brief delay to send message
+ });
 
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}))))))))))))))))

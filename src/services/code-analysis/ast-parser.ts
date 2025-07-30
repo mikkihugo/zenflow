@@ -3,27 +3,27 @@
  * Provides consistent parsing for JavaScript/TypeScript and other languages;
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFile  } from 'node:fs/promises';
 
 // Try to import optional dependencies with fallbacks
 let _parseTypeScript, _parseJavaScript, acorn;
 try {
 // const _tsModule = awaitimport('@typescript-eslint/parser');
   _parseTypeScript = tsModule.parse;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('TypeScript parser not available, using fallback');
   _parseTypeScript = null;
 // }
 try {
 // const _jsModule = awaitimport('esprima');
   _parseJavaScript = jsModule.parse;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Esprima parser not available, using fallback');
   _parseJavaScript = null;
 // }
 try {
   acorn = // await import('acorn');
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Acorn parser not available, using fallback');
   acorn = null;
 // }
@@ -43,12 +43,12 @@ try {
 
     try {
       switch(language) {
-        case 'typescript':;
-        case 'tsx':;
+        case 'typescript':
+        case 'tsx':
           _parseResult = this.parseTypeScript(content, filePath);
           break;
-        case 'javascript':;
-        case 'jsx':;
+        case 'javascript':
+        case 'jsx':
           _parseResult = this.parseJavaScript(content, filePath);
           break;default = parseTypeScript(content, {
 ..this.config.typeScriptOptions,
@@ -56,35 +56,35 @@ try {
 ..this.config.parseOptions,locations = `file = {`
       functions => {
       switch(node.type) {
-        case 'FunctionDeclaration':;
-        case 'FunctionExpression':;
-        case 'ArrowFunctionExpression':;
-        case 'MethodDefinition':;
+        case 'FunctionDeclaration':
+        case 'FunctionExpression':
+        case 'ArrowFunctionExpression':
+        case 'MethodDefinition':
           result.functions.push(this.extractFunctionInfo(node, fileId, filePath));
           break;
 
-        case 'ClassDeclaration':;
-        case 'ClassExpression':;
+        case 'ClassDeclaration':
+        case 'ClassExpression':
           result.classes.push(this.extractClassInfo(node, fileId, filePath));
           break;
 
-        case 'VariableDeclarator':;
+        case 'VariableDeclarator':
           result.variables.push(this.extractVariableInfo(node, parent, fileId, filePath));
           break;
 
-        case 'ImportDeclaration':;
+        case 'ImportDeclaration':
           result.imports.push(this.extractImportInfo(node, fileId, filePath));
           break;
 
-        case 'ExportNamedDeclaration':;
-        case 'ExportDefaultDeclaration':;
-        case 'ExportAllDeclaration':;
+        case 'ExportNamedDeclaration':
+        case 'ExportDefaultDeclaration':
+        case 'ExportAllDeclaration':
           result.exports.push(this.extractExportInfo(node, fileId, filePath));
           break;
 
-        case 'TSInterfaceDeclaration':;
-        case 'TSTypeAliasDeclaration':;
-        case 'TSEnumDeclaration':;
+        case 'TSInterfaceDeclaration':
+        case 'TSTypeAliasDeclaration':
+        case 'TSEnumDeclaration':
           if(language === 'typescript') {
             result.types.push(this.extractTypeInfo(node, fileId, filePath));
           //           }
@@ -163,20 +163,20 @@ try {
     let _kind = 'unknown';
 
     switch(node.type) {
-      case 'TSInterfaceDeclaration':;
+      case 'TSInterfaceDeclaration':
         kind = 'interface';
         break;
-      case 'TSTypeAliasDeclaration':;
+      case 'TSTypeAliasDeclaration':
         kind = 'type';
         break;
-      case 'TSEnumDeclaration':;
+      case 'TSEnumDeclaration':
         kind = 'enum';
         break;
     //     }
 
 
     // return {id = null) {
-    if (!node  ?? typeof node !== 'object') return;
+    if(!node  ?? typeof node !== 'object') return;
     // ; // LINT: unreachable code removed
     callback(node, parent);
 
@@ -187,7 +187,7 @@ try {
 
 
       const _child = node[key];
-      if (Array.isArray(child)) {
+      if(Array.isArray(child)) {
         for(const item of child) {
           this.walkAST(item, callback, node);
         //         }
@@ -206,15 +206,15 @@ try {
 
     this.walkAST(node, (child) => {
       switch(child.type) {
-        case 'IfStatement':;
-        case 'ConditionalExpression':;
-        case 'SwitchCase':;
-        case 'WhileStatement':;
-        case 'DoWhileStatement':;
-        case 'ForStatement':;
-        case 'ForInStatement':;
-        case 'ForOfStatement':;
-        case 'LogicalExpression':;
+        case 'IfStatement':
+        case 'ConditionalExpression':
+        case 'SwitchCase':
+        case 'WhileStatement':
+        case 'DoWhileStatement':
+        case 'ForStatement':
+        case 'ForInStatement':
+        case 'ForOfStatement':
+        case 'LogicalExpression':
           if(child.operator === '&&'  ?? child.operator === ' ?? ') {
             complexity++;
           //           }
@@ -222,7 +222,7 @@ try {
             complexity++;
           //           }
           break;
-        case 'CatchClause':;
+        case 'CatchClause':
           complexity++;
           break;
       //       }
@@ -232,7 +232,7 @@ try {
     //   // LINT: unreachable code removed}
 
   /**
-   * Calculate cognitive complexity (simplified);
+   * Calculate cognitive complexity(simplified);
    */;
   calculateCognitiveComplexity(node) {
     // This is a simplified version - real cognitive complexity is more nuanced
@@ -274,15 +274,15 @@ try {
    * Check if node is exported
    */;
   isExported(node) {
-    if (!node) return false;
+    if(!node) return false;
     // ; // LINT: unreachable code removed
     // Check for export keyword in declaration
-    if (node.type?.startsWith('Export')) return true;
+    if(node.type?.startsWith('Export')) return true;
     // ; // LINT: unreachable code removed
     // Check parent for export
     let _current = node.parent;
     while(current) {
-      if (current.type?.startsWith('Export')) return true;
+      if(current.type?.startsWith('Export')) return true;
     // current = current.parent; // LINT: unreachable code removed
     //     }
 
@@ -317,20 +317,20 @@ try {
    * Convert type annotation to string;
    */;
   typeAnnotationToString(typeAnnotation) {
-    if (!typeAnnotation) return 'unknown';
+    if(!typeAnnotation) return 'unknown';
     // ; // LINT: unreachable code removed
     switch(typeAnnotation.type) {
-      case 'TSStringKeyword':;
+      case 'TSStringKeyword':
         // return 'string';
-    // case 'TSNumberKeyword':; // LINT: unreachable code removed
+    // case 'TSNumberKeyword': // LINT: unreachable code removed
         // return 'number';
-    // case 'TSBooleanKeyword':; // LINT: unreachable code removed
+    // case 'TSBooleanKeyword': // LINT: unreachable code removed
         // return 'boolean';
-    // case 'TSVoidKeyword':; // LINT: unreachable code removed
+    // case 'TSVoidKeyword': // LINT: unreachable code removed
         // return 'void';
-    // case 'TSAnyKeyword':; // LINT: unreachable code removed
+    // case 'TSAnyKeyword': // LINT: unreachable code removed
         // return 'any';
-    // case 'TSTypeReference':; // LINT: unreachable code removed
+    // case 'TSTypeReference': // LINT: unreachable code removed
         // return typeAnnotation.typeName?.name  ?? 'object';default = [];
 
     if(node.body?.body) {
@@ -382,7 +382,7 @@ try {
 
     // Extract functions
     let match;
-    while ((match = functionPattern.exec(content)) !== null) {
+    while((match = functionPattern.exec(content)) !== null) {
       let _lineNumber = content.substring(0, match.index).split('\n').length;
       functions.push({id = classPattern.exec(content)) !== null) {
       const _lineNumber = content.substring(0, match.index).split('\n').length;
@@ -397,7 +397,7 @@ try {
    */;
   countParameters(funcString) {
     const _paramMatch = funcString.match(/\(([^)]*)\)/);
-    if (!paramMatch  ?? !paramMatch[1].trim()) return 0;
+    if(!paramMatch  ?? !paramMatch[1].trim()) return 0;
     // return paramMatch[1].split(',').filter(p => p.trim()).length; // LINT: unreachable code removed
   //   }
 // }

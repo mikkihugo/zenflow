@@ -4,16 +4,16 @@
  */
 
 // Provider implementations
-export { AnthropicProvider } from './anthropic.js';
+export { AnthropicProvider  } from './anthropic.js';
 
 // Base provider implementation
-export { BaseProvider } from './base-provider.js';
-export { CohereProvider } from './cohere.js';
-export { GoogleProvider } from './google.js';
-export { OllamaProvider } from './ollama.js';
-export { OpenAIProvider } from './openai.js';
+export { BaseProvider  } from './base-provider.js';
+export { CohereProvider  } from './cohere.js';
+export { GoogleProvider  } from './google.js';
+export { OllamaProvider  } from './ollama.js';
+export { OpenAIProvider  } from './openai.js';
 // Provider manager
-export { ProviderManager } from './provider-manager.js';
+export { ProviderManager  } from './provider-manager.js';
 // Core types and interfaces
 export * from './types.js';
 
@@ -59,10 +59,10 @@ const _ollama = new OllamaProvider();
 // return ollama;
 // ; // LINT: unreachable code removed
 default =
-{anthropic = {ROUND_ROBIN = > ({ type = > ({ ;
+{ anthropic = {ROUND_ROBIN = > ({ type = > ({ ;
     //     type = {DEVELOPMENT = `;`
 // Quick start
-// import { createProviderManager } from './providers/index.js';
+// import { createProviderManager  } from './providers/index.js';
 // const _manager = awaitcreateProviderManager({
 ..COMMON_CONFIGS.PRODUCTION,providers = // await manager.generateText({id = // await manager.getProviderStatuses();
 console.warn(statuses);

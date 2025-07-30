@@ -2,11 +2,11 @@
  * Tests for SIGINT handling in hive-mind spawn command;
  */
 
-import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { spawn  } from 'node:child_process';
+import { existsSync  } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { afterEach, beforeEach, describe, expect } from '@jest/globals';
+import { fileURLToPath  } from 'node:url';
+import { afterEach, beforeEach, describe, expect  } from '@jest/globals';
 import Database from 'better-sqlite3';
 
 const ___filename = fileURLToPath(import.meta.url);
@@ -17,14 +17,14 @@ describe('Hive Mind SIGINT Handler', () => {
   const _dbPath = path.join(__dirname, '..', '.hive-mind', 'hive.db');
   beforeEach(() => {
     // Clean up any existing sessions
-    if (existsSync(dbPath)) {
+    if(existsSync(dbPath)) {
       const _db = new Database(dbPath);
       db.prepare('DELETE FROM sessions').run();
       db.close();
     //     }
   });
   afterEach(() => {
-    if (hiveMindProcess && !hiveMindProcess.killed) {
+    if(hiveMindProcess && !hiveMindProcess.killed) {
       hiveMindProcess.kill('SIGKILL');
     //     }
   });
@@ -38,11 +38,11 @@ describe('Hive Mind SIGINT Handler', () => {
     output += data.toString();
     // Extract session ID from output
     const _sessionMatch = output.match(/Session ID:\s+(\S+)/);
-    if (sessionMatch && !sessionId) {
+    if(sessionMatch && !sessionId) {
       sessionId = sessionMatch[1];
     //     }
     // When swarm is ready, send SIGINT
-    if (output.includes('Swarm is ready for coordination')) {
+    if(output.includes('Swarm is ready for coordination')) {
       setTimeout(() => {
         hiveMindProcess.kill('SIGINT');
       }, 500);
@@ -57,7 +57,7 @@ describe('Hive Mind SIGINT Handler', () => {
     expect(output).toContain('Session paused successfully');
     expect(output).toContain(`claude-zen hive-mind resume ${sessionId}`);
     // Verify session w in database
-    if (existsSync(dbPath)) {
+    if(existsSync(dbPath)) {
       const _db = new Database(dbPath);
       const _session = db.prepare('SELECT * FROM sessions WHERE id = ?').get(sessionId);
       expect(session).toBeTruthy();
@@ -76,17 +76,17 @@ const _sessionId = null;
 hiveMindProcess.stdout.on('data', (data) => {
   output += data.toString();
   const _sessionMatch = output.match(/Session ID:\s+(\S+)/);
-  if (sessionMatch && !sessionId) {
+  if(sessionMatch && !sessionId) {
     sessionId = sessionMatch[1];
   //   }
-  if (output.includes('Swarm is ready for coordination')) {
+  if(output.includes('Swarm is ready for coordination')) {
     setTimeout(() => {
       hiveMindProcess.kill('SIGINT');
     }, 500);
   //   }
 });
 hiveMindProcess.on('exit', () => {
-  if (existsSync(dbPath) && sessionId) {
+  if(existsSync(dbPath) && sessionId) {
     const _db = new Database(dbPath);
     // Check for checkpoint
     const _checkpoint = db;
@@ -121,7 +121,7 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
     const _claudeLaunched = false;
     hiveMindProcess.stdout.on('data', (data) => {
       output += data.toString();
-      if (output.includes('Claude Code launched with Hive Mind coordination')) {
+      if(output.includes('Claude Code launched with Hive Mind coordination')) {
         claudeLaunched = true;
         setTimeout(() => {
           hiveMindProcess.kill('SIGINT');
@@ -129,7 +129,7 @@ it('should terminate Claude Code process when SIGINT is received', (done) =>
       //       }
     });
     hiveMindProcess.on('exit', (code) => {
-      if (claudeLaunched) {
+      if(claudeLaunched) {
         expect(output).toContain('Pausing session and terminating Claude Code...');
       //       }
       expect(code).toBe(0);

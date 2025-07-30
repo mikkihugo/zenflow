@@ -3,9 +3,9 @@
  * Cross-reference validation, broken link detection, and intelligent linking suggestions;
  */
 
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile  } from 'node:fs/promises';
 import path from 'node:path';
-import { safeRegexExec } from '../../utils/security.js';
+import { safeRegexExec  } from '../../utils/security.js';
 
 export class DocumentationLinkerPlugin {
   constructor(_config = {}) {
@@ -73,7 +73,7 @@ export class DocumentationLinkerPlugin {
       // Extract anchors/headings
       document.anchors = this.extractMarkdownAnchors(parsed.content);
 
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       console.warn(`⚠ Failed to parse markdown \$document.filePath);`
     //     }
 
@@ -115,7 +115,7 @@ export class DocumentationLinkerPlugin {
     const _linkMatches = safeRegexExec(linkRegex, content, 500);
 
     for(const _match of linkMatches) {
-      links.push({type = /\[([^\]]+)\]\[([^\]]+)\]/;
+      links.push({ type = /\[([^\]]+)\]\[([^\]]+)\]/;
     const _refLinkMatches = safeRegexExec(refLinkRegex, content, 500);
 
     for(const _match of refLinkMatches) {
@@ -129,7 +129,7 @@ export class DocumentationLinkerPlugin {
 
     for(const _match of imageMatches) {
       images.push({alt = [];
-    const _headingRegex = /^(#{1,6})\s+(.+)$/m;
+    const _headingRegex = /^(#{1,6 })\s+(.+)$/m;
     const _headingMatches = safeRegexExec(headingRegex, content, 200);
 
     for(const match of headingMatches) {
@@ -148,7 +148,7 @@ export class DocumentationLinkerPlugin {
       const _line = lines[i].trim();
       const _nextLine = lines[i + 1];
 
-      if (line && nextLine && nextLine.match(/^[=\-~`#"^]+$/)) {"`
+      if(line && nextLine && nextLine.match(/^[=\-~`#"^]+$/)) {"`
         // return line;
     //   // LINT: unreachable code removed}
     //     }
@@ -162,7 +162,7 @@ export class DocumentationLinkerPlugin {
       const _line = lines[i].trim();
       const _nextLine = lines[i + 1];
 
-      if (line && nextLine && nextLine.match(/^[=\-~`#"^]+$/)) {"`
+      if(line && nextLine && nextLine.match(/^[=\-~`#"^]+$/)) {"`
         const _level = this.getRstHeadingLevel(nextLine[0]);
         anchors.push({level = [];
 
@@ -266,7 +266,7 @@ trim();
         if(link.internal) {
           const _resolvedPath = this.resolveLinkPath(filePath, link.url);
 
-          if (!this.linkMap.has(resolvedPath)) {
+          if(!this.linkMap.has(resolvedPath)) {
             this.linkMap.set(resolvedPath, {targetPath = path.dirname(sourcePath);
 
     // Guard against undefined linkUrl
@@ -279,10 +279,10 @@ trim();
     // return anchor ? `${resolvedPath}#${anchor}` ;
     //   // LINT: unreachable code removed}
 
-  async validateLinks() {
+  async validateLinks() { 
     console.warn('✅ Validating links...');
 
-    for(const [targetPath, linkInfo] of this.linkMap) {
+    for(const [targetPath, linkInfo] of this.linkMap) 
       // Guard against undefined targetPath
       if(!targetPath  ?? typeof targetPath !== 'string') {
         console.warn(`⚠ InvalidtargetPath = targetPath.split('#');`
@@ -329,7 +329,7 @@ trim();
     //     }
 
 
-    if (norm1 === 0  ?? norm2 === 0) return 0;
+    if(norm1 === 0  ?? norm2 === 0) return 0;
     // ; // LINT: unreachable code removed
     // return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
     //   // LINT: unreachable code removed}
@@ -344,7 +344,7 @@ trim();
   generateOrphanSuggestions() {
     // Find documents with no incoming links
     const _referencedFiles = new Set();
-    for (const linkInfo of this.linkMap.values()) {
+    for(const linkInfo of this.linkMap.values()) {
       for(const ref of linkInfo.references) {
         referencedFiles.add(ref.sourcePath);
       //       }
@@ -352,7 +352,7 @@ trim();
 
 
     for(const [filePath, document] of this.documents) {
-      if (!referencedFiles.has(filePath) && !filePath.includes('README')) {
+      if(!referencedFiles.has(filePath) && !filePath.includes('README')) {
         this.suggestions.push({id = ['.js', '.ts', '.py', '.go', '.java', '.rs'];
     // Implementation would scan for code files and suggest documentation
   //   }
@@ -394,8 +394,8 @@ trim();
     // return report;
     //   // LINT: unreachable code removed}
 
-  async exportLinkMap() {
-    const _linkMapData = {timestamp = path.join(this.config.outputDir, 'link-map.json');
+  async exportLinkMap() { 
+    const _linkMapData = timestamp = path.join(this.config.outputDir, 'link-map.json');
 // await writeFile(exportPath, JSON.stringify(linkMapData, null, 2));
     console.warn(`� Link map exported to ${exportPath}`);
     // return linkMapData;
@@ -410,7 +410,7 @@ trim();
 
   getSimilarDocuments(filePath, threshold = this.config.similarityThreshold) {
     const _targetDoc = this.documents.get(filePath);
-    if (!targetDoc) return [];
+    if(!targetDoc) return [];
     // ; // LINT: unreachable code removed
     const _similarities = [];
 

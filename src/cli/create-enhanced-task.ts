@@ -59,7 +59,7 @@ $;
   flags.commit === 'phase';
     ? `- **Phase`
 Commits**
-: Commit after completing major phases (planning, implementation, testing)`
+: Commit after completing major phases(planning, implementation, testing)`
 : ''
 // }
 $
@@ -80,7 +80,7 @@ $;
 // }
 $;
 // {
-  !flags.commit ? `- **Default (Phase)**: Commit after completing major phases` : '';
+  !flags.commit ? `- **Default(Phase)**: Commit after completing major phases` : '';
 // }
 #;
 #;

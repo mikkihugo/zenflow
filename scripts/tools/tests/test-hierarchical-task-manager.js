@@ -3,9 +3,9 @@
  * Test script for the enhanced Hierarchical Task Manager with AI breakdown;
  */
 
-import { mkdir } from 'node:fs/promises';
+import { mkdir  } from 'node:fs/promises';
 import path from 'node:path';
-import { HierarchicalTaskManagerPlugin } from './src/coordination/meta-registry/plugins/hierarchical-task-manager.js';
+import { HierarchicalTaskManagerPlugin  } from './src/coordination/meta-registry/plugins/hierarchical-task-manager.js';
 
 async function testHierarchicalTaskManager() {
   console.warn('🧪 Testing Enhanced Hierarchical Task Manager with AI Breakdown...\n');
@@ -16,7 +16,7 @@ async function testHierarchicalTaskManager() {
   const _taskManager = new HierarchicalTaskManagerPlugin();
   // Mock registry object
   const _mockRegistry = {
-    register: async (key, _value, _options) => {
+    register: async(key, _value, _options) => {
       console.warn(`� Registered);`
       return true;
       getPlugin: (name) => {
@@ -35,7 +35,7 @@ async function testHierarchicalTaskManager() {
     console.warn(' Testing Vision Creation with AI Breakdown...');
     const _testVision = {
       title: 'Build Modern E-commerce Platform',
-      description:;
+      description:
         'Create a comprehensive e-commerce platform with user authentication, product catalog, shopping cart, payment processing, and admin dashboard. The platform should be scalable, secure, and provide excellent user experience.',
       objectives: [;
         'Enable online product sales',
@@ -59,14 +59,14 @@ console.warn(`\nResults);`
 console.warn(`- Visions);`
 console.warn(`- Epics);`
 console.warn(`- Assignments);`
-if (epics.length > 0) {
+if(epics.length > 0) {
   console.warn('\n� Generated Epics);'
   epics.forEach((epic, index) => {
     console.warn(`${index + 1}. ${epic.title}`);
     console.warn(`     Priority);`
   });
 // }
-if (assignments.length > 0) {
+if(assignments.length > 0) {
   console.warn('\n Delegations);'
   assignments.forEach((assignment, index) => {
     const _context = JSON.parse(assignment.context);
@@ -76,7 +76,7 @@ if (assignments.length > 0) {
   });
 // }
 console.warn('\n✅ Test completed successfully!');
-} catch (error)
+} catch(error)
 // {
   console.error('❌ Test failed);'
   console.error(error.stack);

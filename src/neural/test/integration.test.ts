@@ -2,7 +2,7 @@
  * Integration test for Claude Zen Neural Service;
  */
 
-import { getNeuralServiceStatus, predictWithNetwork } from '../integration.js';
+import { getNeuralServiceStatus, predictWithNetwork  } from '../integration.js';
 
 async function runNeuralServiceTests() {
   console.warn('🧠 Testing Claude Zen Neural Service Integration...\n');
@@ -54,7 +54,7 @@ console.warn(;
 ` Decision for scenario ${testScenario}) => x.toFixed(3)).join(', ')}]`;
 // )
 console.warn(' Claude Zen integration test completed successfully')
-} catch (error)
+} catch(error)
 // {
   console.error('❌ Claude Zen integration testfailed = === `file) {'`
   runNeuralServiceTests();

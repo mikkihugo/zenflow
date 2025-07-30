@@ -5,33 +5,33 @@
 
 // monitor-command.js - Handles the monitor command
 
-import { circuitBreakerManager } from '../core/circuit-breaker.js';
-import { healthMonitor } from '../core/health-monitor.js';
-import { printSuccess } from '../utils.js';
+import { circuitBreakerManager  } from '../core/circuit-breaker.js';
+import { healthMonitor  } from '../core/health-monitor.js';
+import { printSuccess  } from '../utils.js';
 
 export async function monitorCommand() {
-    case 'status':;
+    case 'status':
 // await showSystemStatus();
       break;
 
     case 'start': {
       const _interval = parseInt(flags.interval)  ?? 60000; // Default 1 minute
       healthMonitor.startMonitoring(interval);
-      printSuccess(`� Started continuous health monitoring (${interval}ms interval)`);
+      printSuccess(`� Started continuous health monitoring(${interval}ms interval)`);
       break;
     //     }
 
 
-    case 'stop':;
+    case 'stop':
       healthMonitor.stopMonitoring();
       printSuccess('� Stopped health monitoring');
       break;
 
-    case 'health':;
+    case 'health':
 // // await showHealthReport();
       break;
 
-    case 'circuit-breakers':;
+    case 'circuit-breakers':
 // // await showCircuitBreakerStatus();
       break;
 
@@ -42,9 +42,9 @@ export async function monitorCommand() {
     }default = // await healthMonitor.performHealthCheck();
 
     // Overall status
-    const _statusIcon = health.status === 'healthy' ? '�' : ;
+    const _statusIcon = health.status === 'healthy' ? '�' :
                       health.status === 'degraded' ? '�' : '�';
-    console.warn(`${statusIcon} OverallStatus = check.status === 'healthy' ? '✅' : ;`
+    console.warn(`${statusIcon} OverallStatus = check.status === 'healthy' ? '✅' :`
                    check.status === 'degraded' ? '⚠' : '❌';
       console.warn(`${icon} ${name.padEnd(20)}: ${check.status.toUpperCase()}`);
 
@@ -54,10 +54,10 @@ map(([key, value]) => `${key}: ${value}`);
 join(', ');
         console.warn(`Metrics = // await healthMonitor.generateHealthReport();`
     console.warn(report);
-  } catch (error) {
+  } catch(error) {
     printError(`Failed to generate healthreport = circuitBreakerManager.getAllStatus();`
 
-    if (Object.keys(allStatus).length === 0) {
+    if(Object.keys(allStatus).length === 0) {
       console.warn('No circuit breakers registered');
       return;
     //   // LINT: unreachable code removed}
@@ -66,7 +66,7 @@ join(', ');
     console.warn('│ Service             │ State   │ Failures │ Successes │ Available   │');
     console.warn('├─────────────────────┼─────────┼──────────┼───────────┼─────────────┤');
 
-    for (const [name, status] of Object.entries(allStatus)) {
+    for(const [name, status] of Object.entries(allStatus)) {
       const _statePadded = status.state.padEnd(7);
       const _namePadded = name.padEnd(19);
       const _failures = status.failureCount.toString().padEnd(8);
@@ -90,23 +90,23 @@ join(', ');
       return;
     //   // LINT: unreachable code removed}
 
-    const _trendIcon = trend.status === 'excellent' ? '�' : ;
-                     trend.status === 'good' ? '�' : ;
+    const _trendIcon = trend.status === 'excellent' ? '�' :
+                     trend.status === 'good' ? '�' :
                      trend.status === 'concerning' ? '�' : '�';
 
     console.warn(`${trendIcon} TrendStatus = 60000]   Start continuous monitoring;`
   stop                       Stop continuous monitoring;
   circuit-breakers           Show circuit breaker status;
-  trend [--minutes=60]       Show health trend analysisOPTIONS = <ms>           Monitoring interval in milliseconds (default);
-  --minutes = <num>           Time window for trend analysis (default)EXAMPLES = 30000   # Start monitoring every 30s;
+  trend [--minutes=60]       Show health trend analysisOPTIONS = <ms>           Monitoring interval in milliseconds(default);
+  --minutes = <num>           Time window for trend analysis(default)EXAMPLES = 30000   # Start monitoring every 30s;
   claude-zen monitor health                   # Full health report;
   claude-zen monitor trend --minutes=120      # 2-hour trend analysis;
   claude-zen monitor circuit-breakers         # Circuit breaker dashboard
 
-MONITORED COMPONENTS:;
+MONITORED COMPONENTS:
   �  Database connectivity and table health;
    Circuit breaker status and failure rates;
-  � System resources (CPU, memory, disk);
+  � System resources(CPU, memory, disk);
   🧪 Queen Council operation health;
   � Performance metrics and trends;
 `);`

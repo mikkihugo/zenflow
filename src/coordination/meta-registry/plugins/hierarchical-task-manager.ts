@@ -12,9 +12,9 @@
   //   }
 
 
-  async initialize(registry, options = {}) {
+  async initialize(registry, options = {}) { 
     this.registry = registry;
-    this.options = {dbPath = = false,completenessThreshold = = false,minConfidenceForSuggestion = new Database(this.options.dbPath);
+    this.options = dbPath = = false,completenessThreshold = = false,minConfidenceForSuggestion = new Database(this.options.dbPath);
     this.createSchema();
 
     // Get dependent plugins
@@ -38,7 +38,7 @@
 
   createSchema() {
     this.db.exec(`;`
-      CREATE TABLE IF NOT EXISTS visions (;
+      CREATE TABLE IF NOT EXISTS visions(;
           id TEXT PRIMARY KEY,
           title TEXT,
           description TEXT,
@@ -51,7 +51,7 @@
           metadata TEXT;
       );
 
-      CREATE TABLE IF NOT EXISTS epics (;
+      CREATE TABLE IF NOT EXISTS epics(;
           id TEXT PRIMARY KEY,
           vision_id TEXT,
           title TEXT,
@@ -63,10 +63,10 @@
           status TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           metadata TEXT,
-          FOREIGN KEY (vision_id) REFERENCES visions(id);
+          FOREIGN KEY(vision_id) REFERENCES visions(id);
       );
 
-      CREATE TABLE IF NOT EXISTS features (;
+      CREATE TABLE IF NOT EXISTS features(;
           id TEXT PRIMARY KEY,
           epic_id TEXT,
           title TEXT,
@@ -80,10 +80,10 @@
           status TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           metadata TEXT,
-          FOREIGN KEY (epic_id) REFERENCES epics(id);
+          FOREIGN KEY(epic_id) REFERENCES epics(id);
       );
 
-      CREATE TABLE IF NOT EXISTS prds (;
+      CREATE TABLE IF NOT EXISTS prds(;
           id TEXT PRIMARY KEY,
           feature_id TEXT,
           title TEXT,
@@ -91,10 +91,10 @@
           status TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           metadata TEXT,
-          FOREIGN KEY (feature_id) REFERENCES features(id);
+          FOREIGN KEY(feature_id) REFERENCES features(id);
       );
 
-      CREATE TABLE IF NOT EXISTS user_stories (;
+      CREATE TABLE IF NOT EXISTS user_stories(;
           id TEXT PRIMARY KEY,
           parent_id TEXT,
           parent_type TEXT,
@@ -108,7 +108,7 @@
           metadata TEXT;
       );
 
-      CREATE TABLE IF NOT EXISTS tasks (;
+      CREATE TABLE IF NOT EXISTS tasks(;
           id TEXT PRIMARY KEY,
           parent_id TEXT,
           parent_type TEXT,
@@ -125,7 +125,7 @@
           metadata TEXT;
       );
 
-      CREATE TABLE IF NOT EXISTS assignments (;
+      CREATE TABLE IF NOT EXISTS assignments(;
           id TEXT PRIMARY KEY,
           task_id TEXT,
           queen_id TEXT,
@@ -134,10 +134,10 @@
           status TEXT,
           progress TEXT,
           communication TEXT,
-          FOREIGN KEY (task_id) REFERENCES tasks(id);
+          FOREIGN KEY(task_id) REFERENCES tasks(id);
       );
 
-      CREATE TABLE IF NOT EXISTS service_scopes (;
+      CREATE TABLE IF NOT EXISTS service_scopes(;
           name TEXT PRIMARY KEY,
           path TEXT,
           content TEXT,
@@ -148,16 +148,16 @@
   //   }
 
 
-  async loadServiceScopes() {
+  async loadServiceScopes() { 
 // const _registry = awaitreadHiveRegistry();
-    const _scopes = {};
-    for (const [name, hive] of Object.entries(registry)) {
+    const _scopes = };
+    for(const [name, hive] of Object.entries(registry)) {
       const _scopePath = path.join(path.dirname(hive.path), 'scope.md');'
       try {
 // const _content = awaitreadFile(scopePath, 'utf8');'
 
         const _scopeData = {name = scopeData;
-      } catch (error)
+      } catch(error)
 // {
   // Scope file might not exist, which is fine.
   console.warn(`Could not load scope for ${name});`
@@ -176,19 +176,19 @@ initializeIntelligenceEngines();
 startIntelligentMonitoring();
 // {
     // Start periodic monitoring for incomplete work and optimization opportunities
-    this.monitoringInterval = setInterval(async () => {
+    this.monitoringInterval = setInterval(async() => {
       try {
 // // await this.analyzeCompleteness();
 // // await this.optimizeDelegations();
-      } catch (error) {
+      } catch(error) {
         console.warn('Monitoring cycleerror = this.db.prepare(`;`'
       SELECT v.* FROM visions v 
-      WHERE v.status IN ('draft', 'in_progress');'
-      AND (SELECT COUNT(*) FROM epics e WHERE e.vision_id = v.id) = 0
+      WHERE v.status IN('draft', 'in_progress');'
+      AND(SELECT COUNT(*) FROM epics e WHERE e.vision_id = v.id) = 0
     `).all();`
 
     for(const vision of incompleteVisions) {
-      if (Math.random() < 0.1) { // Only suggest occasionally to avoid spam
+      if(Math.random() < 0.1) { // Only suggest occasionally to avoid spam
         this.emit('suggestionGenerated', {type = this.db.prepare(`;`
       SELECT * FROM assignments 
       WHERE status = 'delegated' ;'
@@ -198,50 +198,50 @@ startIntelligentMonitoring();
     for(const assignment of stalledAssignments) {
       this.emit('suggestionGenerated', {type = nanoid();'
     const _vision = {id = this.db.prepare(`;`
-      INSERT INTO visions (id, title, description, objectives, stakeholders, timeline, priority, status, metadata);
-      VALUES (@id, @title, @description, @objectives, @stakeholders, @timeline, @priority, @status, @metadata);
+      INSERT INTO visions(id, title, description, objectives, stakeholders, timeline, priority, status, metadata);
+      VALUES(@id, @title, @description, @objectives, @stakeholders, @timeline, @priority, @status, @metadata);
     `);`
     stmt.run(vision);
 // // // await this.registry.register(`vision = nanoid();`
     const _epic = {id = this.db.prepare(`;`
-        INSERT INTO epics (id, vision_id, title, description, acceptance_criteria, business_value, effort, priority, status, metadata);
-        VALUES (@id, @vision_id, @title, @description, @acceptance_criteria, @business_value, @effort, @priority, @status, @metadata);
+        INSERT INTO epics(id, vision_id, title, description, acceptance_criteria, business_value, effort, priority, status, metadata);
+        VALUES(@id, @vision_id, @title, @description, @acceptance_criteria, @business_value, @effort, @priority, @status, @metadata);
     `);`
     stmt.run(epic);
 // // // await this.registry.register(`epic = nanoid();`
     const _feature = {id = this.db.prepare(`;`
-        INSERT INTO features (id, epic_id, title, description, functional_requirements, non_functional_requirements, dependencies, risks, effort, priority, status, metadata);
-        VALUES (@id, @epic_id, @title, @description, @functional_requirements, @non_functional_requirements, @dependencies, @risks, @effort, @priority, @status, @metadata);
+        INSERT INTO features(id, epic_id, title, description, functional_requirements, non_functional_requirements, dependencies, risks, effort, priority, status, metadata);
+        VALUES(@id, @epic_id, @title, @description, @functional_requirements, @non_functional_requirements, @dependencies, @risks, @effort, @priority, @status, @metadata);
     `);`
     stmt.run(feature);
 // // // await this.registry.register(`feature = this.db.prepare('SELECT * FROM features WHERE id = ?').get(featureId);'`
-    if (!feature) throw new Error(`Feature ${featureId} not found`);`
+    if(!feature) throw new Error(`Feature ${featureId} not found`);`
 
     const _prd = {id = this.db.prepare(`;`
-        INSERT INTO prds (id, feature_id, title, sections, status, metadata);
-        VALUES (@id, @feature_id, @title, @sections, @status, @metadata);
+        INSERT INTO prds(id, feature_id, title, sections, status, metadata);
+        VALUES(@id, @feature_id, @title, @sections, @status, @metadata);
     `);`
     stmt.run(prd);
 // // // await this.registry.register(`prd = nanoid();`
     const _userStory = {id = this.db.prepare(`;`
-        INSERT INTO user_stories (id, parent_id, parent_type, title, narrative, acceptance_criteria, priority, effort, status, metadata);
-        VALUES (@id, @parent_id, @parent_type, @title, @narrative, @acceptance_criteria, @priority, @effort, @status, @metadata);
+        INSERT INTO user_stories(id, parent_id, parent_type, title, narrative, acceptance_criteria, priority, effort, status, metadata);
+        VALUES(@id, @parent_id, @parent_type, @title, @narrative, @acceptance_criteria, @priority, @effort, @status, @metadata);
     `);`
     stmt.run(userStory);
 // // // await this.registry.register(`user-story = nanoid();`
     const _task = {id = this.db.prepare(`;`
-        INSERT INTO tasks (id, parent_id, parent_type, title, description, type, priority, effort, skills, dependencies, status, assignee, metadata);
-        VALUES (@id, @parent_id, @parent_type, @title, @description, @type, @priority, @effort, @skills, @dependencies, @status, @assignee, @metadata);
+        INSERT INTO tasks(id, parent_id, parent_type, title, description, type, priority, effort, skills, dependencies, status, assignee, metadata);
+        VALUES(@id, @parent_id, @parent_type, @title, @description, @type, @priority, @effort, @skills, @dependencies, @status, @assignee, @metadata);
     `);`
     stmt.run(task);
 // // // await this.registry.register(`task = {}) {`
     const _task = this.db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);'
-    if (!task) throw new Error(`Task ${taskId} not found`);`
+    if(!task) throw new Error(`Task ${taskId} not found`);`
 
     const _assignmentId = nanoid();
     const _assignment = {id = this.db.prepare(`;`
-        INSERT INTO assignments (id, task_id, queen_id, context, status, progress, communication);
-        VALUES (@id, @task_id, @queen_id, @context, @status, @progress, @communication);
+        INSERT INTO assignments(id, task_id, queen_id, context, status, progress, communication);
+        VALUES(@id, @task_id, @queen_id, @context, @status, @progress, @communication);
     `);`
     stmt.run(assignment);
 
@@ -252,12 +252,12 @@ startIntelligentMonitoring();
 
     try {
       epics = JSON.parse(aiBreakdown);
-    } catch (error) {
+    } catch(error) {
       console.warn('Failed to parse AI breakdown, creating fallback epic');'
       epics = [{title = 3; // Prevent overwhelming the system
     const _delegatedEpics = [];
 
-    for (const [index, epicData] of epics.slice(0, maxConcurrentDelegations).entries()) {
+    for(const [index, epicData] of epics.slice(0, maxConcurrentDelegations).entries()) {
       try {
         // Create the epic in our hierarchy
 // const _epicId = awaitthis.createEpic({title = // // await this.findRelevantService(epicData);
@@ -268,7 +268,7 @@ run('in_progress', visionId);'
 
     console.warn(`✅ Vision breakdown complete. Created \$epics.lengthepics, delegated \$delegatedEpics.length`);`
     this.emit('visionBreakdownComplete', { visionId,epics = Object.values(this.serviceScopes);'
-    if (services.length === 0) return null;
+    if(services.length === 0) return null;
     // ; // LINT: unreachable code removed
     // Simple keyword matching - can be enhanced with AI semantic matching
     const _epicKeywords = [
@@ -307,7 +307,7 @@ slice(0, 20); // Limit to most relevant keywords
     const _set2 = new Set(keywords2);
     const _intersection = new Set([...set1].filter(x => set2.has(x)));
 
-    if (set1.size === 0  ?? set2.size === 0) return 0;
+    if(set1.size === 0  ?? set2.size === 0) return 0;
     // return intersection.size / Math.max(set1.size, set2.size); // LINT: unreachable code removed
   //   }
 
@@ -334,23 +334,23 @@ slice(0, 20); // Limit to most relevant keywords
       // Create assignment record
       const _assignmentId = nanoid();
       const _assignment = {id = this.db.prepare(`;`
-        INSERT INTO assignments (id, task_id, queen_id, context, status, progress, communication);
-        VALUES (@id, @task_id, @queen_id, @context, @status, @progress, @communication);
+        INSERT INTO assignments(id, task_id, queen_id, context, status, progress, communication);
+        VALUES(@id, @task_id, @queen_id, @context, @status, @progress, @communication);
       `);`
       stmt.run(assignment);
 
       // Delegate to the service using swarm command
 
-    if (data.description) complexity += Math.min(data.description.length / 100, 3);
-    if (data.objectives?.length) complexity += data.objectives.length * 0.5
-    if (data.functionalRequirements?.length) complexity += data.functionalRequirements.length * 0.3
+    if(data.description) complexity += Math.min(data.description.length / 100, 3);
+    if(data.objectives?.length) complexity += data.objectives.length * 0.5
+    if(data.functionalRequirements?.length) complexity += data.functionalRequirements.length * 0.3
     // return Math.min(complexity, 10);
     //   // LINT: unreachable code removed}
 
   // ... Other methods like intelligence engines and hierarchy navigation would also need to be refactored to use the DB ...
 
-  async cleanup() {
-    if(this.monitoringInterval) {
+  async cleanup() { 
+    if(this.monitoringInterval) 
       clearInterval(this.monitoringInterval);
     //     }
     if(this.db) {

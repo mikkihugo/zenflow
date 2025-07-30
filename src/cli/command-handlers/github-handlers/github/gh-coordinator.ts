@@ -4,9 +4,9 @@
  * Provides GitHub workflow orchestration and coordination capabilities
  */
 
-import { execSync } from 'node:child_process';
-import { printInfo, printSuccess } from '../utils.js';
-import { githubAPI } from './github-api.js';
+import { execSync  } from 'node:child_process';
+import { printInfo, printSuccess  } from '../utils.js';
+import { githubAPI  } from './github-api.js';
 
 class GitHubCoordinator {
   constructor() {
@@ -19,12 +19,12 @@ class GitHubCoordinator {
   /**  */
  * Initialize GitHub coordination
    */
-  async initialize(options = {}) {
+  async initialize(options = {}) { 
     printInfo('� Initializing GitHub Coordinator...');
 
     // Authenticate with GitHub
 // const _authenticated = awaitthis.api.authenticate(options.token);
-    if (!authenticated) {
+    if(!authenticated) 
       throw new Error('Failed to authenticate with GitHub');
     //     }
 
@@ -33,10 +33,10 @@ class GitHubCoordinator {
     try {
       const _remoteUrl = execSync('git config --get remote.origin.url', {encoding = remoteUrl.match(/github\.com[]([^/]+)\/([^/]+?)(?)?$/);
 
-      if (repoMatch) {
+      if(repoMatch) {
         this.currentRepo = {owner = true;
       //       }
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       printWarning('Swarm integration not available - continuing without swarm features');
       this.swarmEnabled = false;
     //     }
@@ -46,10 +46,10 @@ class GitHubCoordinator {
   /**  */
  * Coordinate CI/CD pipeline setup
    */
-  async coordinateCIPipeline(options = {}) {
+  async coordinateCIPipeline(options = {}) { 
     printInfo('� Coordinating CI/CD pipeline setup...');
 
-    if (!this.currentRepo) {
+    if(!this.currentRepo) 
       throw new Error('No GitHub repository context available');
     //     }
 
@@ -64,39 +64,39 @@ class GitHubCoordinator {
       `npx claude-zen hooks notification --message "GitHubCoordination = this.currentRepo;"`
 
     switch(step) {
-      case 'analyze_repository_structure':;
+      case 'analyze_repository_structure':
 // // await this.analyzeRepositoryStructure(owner, repo);
         break;
-      case 'create_workflow_files':;
+      case 'create_workflow_files':
 // // await this.createWorkflowFiles(owner, repo, coordinationPlan.pipeline);
         break;
-      case 'setup_environment_secrets':;
+      case 'setup_environment_secrets':
 // // await this.setupEnvironmentSecrets(owner, repo);
         break;
-      case 'configure_branch_protection':;
+      case 'configure_branch_protection':
 // // await this.configureBranchProtection(owner, repo);
         break;
-      case 'test_pipeline_execution':;
+      case 'test_pipeline_execution':
 // // await this.testPipelineExecution(owner, repo);
         break;
-      case 'setup_notifications':;
+      case 'setup_notifications':
 // // await this.setupNotifications(owner, repo);
         break;default = // await this.api.getRepository(owner, repo);
     if(!response.success) {
       throw new Error(`Failed to get repositoryinfo = response.data;`
     const _analysis = {language = // await this.api.listWorkflows(owner, repo);
-    if (workflowsResponse.success) {
+    if(workflowsResponse.success) {
       analysis.hasWorkflows = workflowsResponse.data.total_count > 0;
     //     }
 
 
-    // Check for package.json (Node.js projects)
+    // Check for package.json(Node.js projects)
     try {
 // const _packageResponse = awaitthis.api.request(;
         `/repos/${owner}/${repo}/contents/package.json`;
       );
       analysis.hasPackageJson = packageResponse.success;
-    } catch (/* _error */) {
+    } catch(/* _error */) {
       // package.json doesn't exist'
     //     }
 
@@ -170,9 +170,9 @@ class GitHubCoordinator {
 // // await coordinator.initialize(flags);
     const _objective = args.join(' ').trim();
 
-    if (objective.includes('CI/CD')  ?? objective.includes('pipeline')) {
+    if(objective.includes('CI/CD')  ?? objective.includes('pipeline')) {
       // return // await coordinator.coordinateCIPipeline(flags);
-    //   // LINT: unreachable code removed} else if (objective.includes('release')) {
+    //   // LINT: unreachable code removed} else if(objective.includes('release')) {
       // return // await coordinator.coordinateRelease(flags);
     //   // LINT: unreachable code removed} else {
       // General coordination
@@ -196,7 +196,7 @@ class GitHubCoordinator {
 
       // return coordinationPlan;
     //   // LINT: unreachable code removed}
-  } catch (error) {
+  } catch(error) {
     printError(`❌ GitHub coordination failed);`
     throw error;
   //   }

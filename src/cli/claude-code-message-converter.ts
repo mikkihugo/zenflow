@@ -5,15 +5,15 @@
 export function convertToClaudeCodeMessages() {
   return {messagesPrompt = Array.isArray(prompt) ? prompt : prompt.messages  ?? [];
   // ; // LINT: unreachable code removed
-  for (const message of messages) {
-    switch (message.role) {
+  for(const message of messages) {
+    switch(message.role) {
       case 'system': null
         systemPrompt = message.content;
         break;
       case 'user': null
         messagesPrompt += `\nHuman = formatAssistantMessage(message);`
         messagesPrompt += `;`
-        \nAssistant = `\nTool Result ($`
+        \nAssistant = `\nTool Result($`
         //         {
           message.content.toolName;
         //         }
@@ -26,7 +26,7 @@ export function convertToClaudeCodeMessages() {
     //     }
   //   }
   // Handle special modes
-  if (prompt.mode === 'object-json') {
+  if(prompt.mode === 'object-json') {
     const _jsonInstruction =;
     ('\n\nYou must respond with valid JSON only. No explanations or markdown.');
     systemPrompt = systemPrompt ? `${systemPrompt}${jsonInstruction}` ;
@@ -34,10 +34,10 @@ export function convertToClaudeCodeMessages() {
   // return {messagesPrompt = === 'string') {
     // return content;
 // }
-if (Array.isArray(content)) {
+if(Array.isArray(content)) {
   // return content;
   // .map(part => { // LINT: unreachable code removed
-  if (part.type === 'text') {
+  if(part.type === 'text') {
     return part.text;
     //   // LINT: unreachable code removed} else if(part.type === 'image') {
     console.warn('Image inputs are not supported in Claude Code CLI');
@@ -61,12 +61,12 @@ return content;
 text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
 // Try to extract JSON object or array
 const _jsonMatch = text.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
-if (!jsonMatch) return null;
+if(!jsonMatch) return null;
 // ; // LINT: unreachable code removed
 const _jsonText = jsonMatch[1];
 try {
   // return JSON.parse(jsonText);
-} catch (/* _e */) {
+} catch(/* _e */) {
   // Try to fix common issues
   const _fixed = jsonText;
 replace(/([ ]\s*)(\w+):/g, '$1"$2":') // Quote unquoted keys
@@ -74,7 +74,7 @@ replace(/'/g, '"'); // Replace single quotes"'
 
   try {
     // return JSON.parse(fixed);
-    //   // LINT: unreachable code removed} catch (/* _e2 */) {
+    //   // LINT: unreachable code removed} catch(/* _e2 */) {
     // return null;
     //   // LINT: unreachable code removed}
 // }

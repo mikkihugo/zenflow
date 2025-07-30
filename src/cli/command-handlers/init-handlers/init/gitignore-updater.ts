@@ -44,7 +44,7 @@ hive-mind-prompt-*.txt
     let _fileExists = false;
 
     // Check if .gitignore exists
-    if (existsSync(gitignorePath)) {
+    if(existsSync(gitignorePath)) {
       fileExists = true;
       gitignoreContent = // await readTextFile(gitignorePath);
     //     }
@@ -52,11 +52,11 @@ hive-mind-prompt-*.txt
 
     // Check if Claude Flow section already exists
     const _claudeFlowMarker = '# Claude Flow generated files';
-    if (gitignoreContent.includes(claudeFlowMarker) && !force) {
+    if(gitignoreContent.includes(claudeFlowMarker) && !force) {
       // return {success = gitignoreContent;
     // ; // LINT: unreachable code removed
     // Remove existing Claude Flow section if force updating
-    if (force && gitignoreContent.includes(claudeFlowMarker)) {
+    if(force && gitignoreContent.includes(claudeFlowMarker)) {
       const _startIndex = gitignoreContent.indexOf(claudeFlowMarker);
       const _endIndex = gitignoreContent.indexOf('\n# ', startIndex + 1);
       if(endIndex !== -1) {
@@ -70,7 +70,7 @@ hive-mind-prompt-*.txt
 
 
     // Add Claude Flow entries
-    if (!newContent.endsWith('\n') && newContent.length > 0) {
+    if(!newContent.endsWith('\n') && newContent.length > 0) {
       newContent += '\n';
     //     }
     newContent += CLAUDE_FLOW_GITIGNORE_ENTRIES;
@@ -83,7 +83,7 @@ hive-mind-prompt-*.txt
 
     // return {success = `${workingDir}/.gitignore`;
     // ; // LINT: unreachable code removed
-  if (!existsSync(gitignorePath)) {
+  if(!existsSync(gitignorePath)) {
     // return true;
     //   // LINT: unreachable code removed}
 

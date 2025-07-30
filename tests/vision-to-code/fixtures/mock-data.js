@@ -100,7 +100,7 @@ const _mockCodeTemplates = {
   className?;
 // }
 // export const ${name}: React.FC<${name}Props> = () => {
-  return (;
+  return(;
     // <div className={\`\${styles.container // LINT);`
 };
 // export default ${name};`,`
@@ -109,8 +109,8 @@ const _mockCodeTemplates = {
   /* ${name} styles */
 }`,`
 test: (name) => `import React from 'react';`
-// import { render } from '@testing-library/react';
-// import ${name} from './${name}';
+// import { render  } from '@testing-library/react';
+// import ${ name } from './${name}';
 
 describe('${name}', () => {
   it('renders without crashing', () => {

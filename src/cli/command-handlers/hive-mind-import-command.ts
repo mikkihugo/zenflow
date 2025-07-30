@@ -4,8 +4,8 @@
  */
 
 import path from 'node:path';
-import { glob } from 'glob';
-import { createHive } from './hive-mind-command.js';
+import { glob  } from 'glob';
+import { createHive  } from './hive-mind-command.js';
 
 async function generateScopeFromCode(servicePath = path.basename(servicePath);
 return `;`
@@ -14,7 +14,7 @@ return `;`
 
   let scopeMdContent;
 
-  if (existsSync(projectJsonPath)) {
+  if(existsSync(projectJsonPath)) {
     const _projectJson = JSON.parse(readFileSync(projectJsonPath, 'utf8'));
     scopeMdContent = `;`
 ---name = > `- ${dep}`;
@@ -34,12 +34,12 @@ console.warn('------------------');
     const _rlInterface = rl.createInterface({ input => {
         rlInterface.close();
     resolve(answer);
-  });
+   });
 });
 })
-if (answer.toLowerCase() === 'y') {
+if(answer.toLowerCase() === 'y') {
 // // await createHive([serviceName], {path = // await glob('services/*', { onlyDirectories}); */
-  for (const serviceDir of serviceDirs) {
+  for(const serviceDir of serviceDirs) {
 // // await importService(serviceDir);
   //   }
 // }

@@ -5,7 +5,7 @@
 export async function hiveCommand(args = (args  ?? [])
 join(' ').trim() {}
 
-if (!objective ?? flags.help ?? flags.h) {
+if(!objective ?? flags.help ?? flags.h) {
   showHiveHelp();
   return;
 // }
@@ -19,7 +19,7 @@ console.warn(`�Objective = `hive_${Date.now()}_${Math.random().toString(36).su
     { type: '�', name: 'Worker-2', role: 'Frontend Development' },
     { type: '�', name: 'Scout-Alpha', role: 'Research & Analysis' },
     { type: '�', name: 'Guardian-Omega', role: 'Quality Assurance' } ];
-for (const agent of agents) {
+for(const agent of agents) {
   console.warn(`${agent.type} ${agent.name} - ${agent.role}`);
 // }
 console.warn('');
@@ -27,7 +27,7 @@ console.warn('');
 console.warn('🧩 Phase 1);'
 console.warn('  � Queen proposes task breakdown...');
 console.warn('  � Agents voting on tasks...');
-console.warn('  ✅ Consensus reached (87.5% approval)');
+console.warn('  ✅ Consensus reached(87.5% approval)');
 console.warn('');
 // Show task assignment
 console.warn('� Phase 2);'
@@ -44,7 +44,7 @@ console.warn('  [▓▓▓░░░░░░░░░░░░░░░] 15% - D
 console.warn('  [░░░░░░░░░░░░░░░░░░] 0%  - Implementation pending...');
 console.warn('');
 // Show monitoring dashboard
-if (flags.monitor) {
+if(flags.monitor) {
   console.warn('� Hive Mind Dashboard');
   console.warn('═══════════════════════════════════════════════════════════════');
   console.warn(`Status: EXECUTING | Time: ${new Date().toLocaleTimeString()}`);
@@ -68,31 +68,31 @@ USAGE);
   ring           Sequential processing;
   star           Centralized hub
 
-CONSENSUS MECHANISMS:;
-  quorum         Simple majority (default);
+CONSENSUS MECHANISMS:
+  quorum         Simple majority(default);
   unanimous      All agents must agree;
   weighted       Capability-based voting;
   leader         Queen decides with input
 
-OPTIONS:;
-  --topology <type>         Swarm topology (default);
-  --consensus <type>        Decision mechanism (default);
-  --max-agents <n>          Maximum agents (default);
-  --quality-threshold <n>   Min quality 0-1 (default);
-  --memory-namespace <ns>   Memory namespace (default);
+OPTIONS:
+  --topology <type>         Swarm topology(default);
+  --consensus <type>        Decision mechanism(default);
+  --max-agents <n>          Maximum agents(default);
+  --quality-threshold <n>   Min quality 0-1(default);
+  --memory-namespace <ns>   Memory namespace(default);
   --monitor                 Real-time monitoring;
   --background              Run in background;
   --sparc                   Use SPARC methodology;
-  --timeout <min>           Timeout minutes (default)
+  --timeout <min>           Timeout minutes(default)
 
-AGENT TYPES:;
+AGENT TYPES:
   � Queen        Orchestrator and decision maker;
   � Architect    System design and planning;
   � Worker       Implementation and execution;
   � Scout        Research and exploration;
   � Guardian     Quality and validation
 
-FEATURES:;
+FEATURES:
   • Consensus-based task decomposition;
   • Capability-based task assignment;
   • Parallel execution with monitoring;

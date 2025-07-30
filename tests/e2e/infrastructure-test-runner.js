@@ -7,9 +7,9 @@
 import fs from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
-import { KuzuGraphInterface } from '../../src/cli/database/kuzu-graph-interface.js';
-import { RealFannEngine } from '../../src/neural/real-fann-integration.js';
-import { Logger } from '../../src/utils/logger.js';
+import { KuzuGraphInterface  } from '../../src/cli/database/kuzu-graph-interface.js';
+import { RealFannEngine  } from '../../src/neural/real-fann-integration.js';
+import { Logger  } from '../../src/utils/logger.js';
 
 const _logger = new Logger('InfrastructureTestRunner');
 /**
@@ -26,17 +26,17 @@ export class MockServiceManager {
   /**
    * Start mock services for E2E testing;
    */
-  async startMockServices() {
+  async startMockServices() { 
     logger.info('� Starting mock services for E2E testing...');
     const _serviceConfigs = [
-      { name: 'business', port: this.basePort, endpoints: this.createBusinessEndpoints() },
+       name: 'business', port: this.basePort, endpoints: this.createBusinessEndpoints() },
       { name: 'core', port: this.basePort + 1, endpoints: this.createCoreEndpoints() },
       { name: 'swarm', port: this.basePort + 2, endpoints: this.createSwarmEndpoints() },
       //       {
         name: 'development',
         port: this.basePort + 3,
         endpoints: this.createDevelopmentEndpoints() } ];
-    for (const config of serviceConfigs) {
+    for(const config of serviceConfigs) {
   // // await this.startMockService(config);
     //     }
     this.isRunning = true;
@@ -63,7 +63,7 @@ startMockService(config);
         resolve();
       });
       server.on('error', (error) => {
-        if (error.code === 'EADDRINUSE') {
+        if(error.code === 'EADDRINUSE') {
           logger.warn(`⚠ Port ${config.port} in use, trying next port...`);
           config.port++;
           this.startMockService(config).then(resolve).catch(reject);
@@ -81,7 +81,7 @@ startMockService(config);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
+  if(req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
@@ -90,18 +90,17 @@ startMockService(config);
     const _endpoint = config.endpoints.find(;
     (e) => e.path === url.pathname && e.method === req.method;
     //     )
-    if (endpoint) {
+    if(endpoint) {
       this.handleEndpoint(req, res, endpoint);
     } else {
       // Default health check
-      if (url.pathname === '/api/health' ?? url.pathname === '/health') {
+      if(url.pathname === '/api/health' ?? url.pathname === '/health') {
         res.writeHead(200, { 'Content-Type');
         res.end(;
-        JSON.stringify({
-            status: 'healthy',
+        JSON.stringify({ status: 'healthy',
         service: config.name,
-        timestamp: new Date().toISOString() {}
-})
+        timestamp: new Date().toISOString()
+ })
       //       )
     //     }
     else
@@ -121,19 +120,19 @@ startMockService(config);
       req.on('data', (chunk) => {
         body += chunk.toString();
       });
-      req.on('end', async () => {
+      req.on('end', async() => {
         try {
           const _requestData = body ? JSON.parse(body) : {};
 // const _response = awaitendpoint.handler(requestData, req.url);
           res.writeHead(response.status  ?? 200, { 'Content-Type');
           res.end(JSON.stringify(response));
-        } catch (error) {
+        } catch(error) {
           logger.error(`❌ Endpoint handler error);`
           res.writeHead(500, { 'Content-Type');
           res.end(JSON.stringify({ error));
         //         }
       });
-    } catch (error) {
+    } catch(error) {
       logger.error(`❌ Request handling error);`
       res.writeHead(500, { 'Content-Type');
       res.end(JSON.stringify({ error));
@@ -146,7 +145,7 @@ startMockService(config);
     // { // LINT: unreachable code removed
         path: '/auth/service-token',
         method: 'POST',
-        handler: async (_data) => ({
+        handler: async(_data) => ({
           status,
           data: {
             token: `mock_business_token_${Date.now()}`,
@@ -156,7 +155,7 @@ startMockService(config);
 
   path: '/api/visions',
   method: 'POST',
-  handler: async (_data) => (
+  handler: async(_data) => (
           status,
   id: data.id  ?? `vision_\$Date.now()`,
   title: data.title  ?? 'Test Vision',
@@ -165,7 +164,7 @@ startMockService(config);
 
   path: '/api/visions',
   method: 'DELETE',
-  handler: async (_data, url) =>
+  handler: async(_data, url) =>
   //   {
     const _visionId = url.split('/').pop();
     return {
@@ -182,7 +181,7 @@ createCoreEndpoints();
     // { // LINT: unreachable code removed
         path: '/auth/service-token',
         method: 'POST',
-        handler: async (_data) => ({
+        handler: async(_data) => ({
           status,
           data: {
             token: `mock_core_token_${Date.now()}`,
@@ -195,7 +194,7 @@ createCoreEndpoints();
 {}
   path: '/api/workflows/register',
   method: 'POST',
-  handler: async (_data) => ({
+  handler: async(_data) => ({
           status,
   workflow_id: data.workflow_id  ?? `workflow_${Date.now()}`,
   status: 'registered',
@@ -203,7 +202,7 @@ createCoreEndpoints();
 // {
   path: '/api/workflows',
   method: 'PATCH',
-  handler: async (data, url) => {
+  handler: async(data, url) => {
           const _workflowId = url.split('/').pop();
           return {
             status,
@@ -222,7 +221,7 @@ createSwarmEndpoints() {}
     // { // LINT: unreachable code removed
         path: '/auth/service-token',
         method: 'POST',
-        handler: async (_data) => ({
+        handler: async(_data) => ({
           status,
           data: {
             token: `mock_swarm_token_${Date.now()}`,
@@ -235,7 +234,7 @@ createSwarmEndpoints() {}
 {}
   path: '/api/swarms/initialize',
   method: 'POST',
-  handler: async (_data) => ({
+  handler: async(_data) => ({
           status,
   swarm_id: data.swarm_id  ?? `swarm_${Date.now()}`,
   topology: data.topology  ?? 'hierarchical',
@@ -243,7 +242,7 @@ createSwarmEndpoints() {}
 // {
   path: '/api/swarms/spawn-agents',
   method: 'POST',
-  handler: async (data, _url) => {
+  handler: async(data, _url) => {
           return {
             status,
                 spawned_agents: (data.agent_types  ?? ['agent1', 'agent2']).map((type) => ({
@@ -266,7 +265,7 @@ createDevelopmentEndpoints() {}
     // { // LINT: unreachable code removed
         path: '/auth/service-token',
         method: 'POST',
-        handler: async (_data) => ({
+        handler: async(_data) => ({
           status,
           data: {
             token: `mock_development_token_${Date.now()}`,
@@ -279,7 +278,7 @@ createDevelopmentEndpoints() {}
 {}
   path: '/api/vision-to-code/initialize',
   method: 'POST',
-  handler: async (_data) => ({
+  handler: async(_data) => ({
           status,
   session_id: data.session_id  ?? `session_${Date.now()}`,
   status: 'initialized',
@@ -287,7 +286,7 @@ createDevelopmentEndpoints() {}
 // {
   path: '/api/vision-to-code/analyze',
   method: 'POST',
-  handler: async (_data, _url) => {
+  handler: async(_data, _url) => {
           return {
             status,
                   complexity: 'medium',
@@ -299,11 +298,10 @@ createDevelopmentEndpoints() {}
 /**
  * Stop all mock services;
  */
-// async
-stopMockServices() {}
-// {
+// async stopMockServices() { }
+// 
   logger.info('� Stopping mock services...');
-  for (const [name, server] of this.servers) {
+  for(const [name, server] of this.servers) {
   // // await new Promise((resolve) => {
       server.close(() => {
         logger.info(`✅ Mock ${name} service stopped`);
@@ -360,7 +358,7 @@ runFullSuite();
         recommendations: this.generateRecommendations() {}
 // }
 // }
-catch (error)
+catch(error)
 // {
   this.logger.error('❌ Infrastructure test suite failed);'
   throw error;
@@ -369,20 +367,18 @@ catch (error)
 /**
  * Test Kuzu database integration;
  */
-// async
-testKuzuIntegration() {}
-// {
+// async testKuzuIntegration() { }
+// 
   this.logger.info('� Testing Kuzu database integration...');
   try {
       // Create unique test directory
       const _testDbDir = path.join(process.cwd(), `test-kuzu-${Date.now()}`);
-      const _kuzu = new KuzuGraphInterface({
-        dbPath,
+      const _kuzu = new KuzuGraphInterface({ dbPath,
         useRealKuzu
-})
+ })
   // Test initialization
 // const _initResult = awaitkuzu.initialize();
-  if (initResult.mode === 'real') {
+  if(initResult.mode === 'real') {
     this.logger.info('✅ Real Kuzu database connection established');
     // Test basic operations
   // // await kuzu.insertServices([;
@@ -390,9 +386,9 @@ testKuzuIntegration() {}
             name);
     // Test querying
 // const _services = awaitkuzu.queryServices({ name);
-    if (services.length > 0) {
+    if(services.length > 0) {
       this.testResults.kuzu = { passed, mode: 'real' };
-      this.logger.info('✅ Kuzu integration test passed (REAL MODE)');
+      this.logger.info('✅ Kuzu integration test passed(REAL MODE)');
     } else {
       throw new Error('Query returned no results');
       //   // LINT: unreachable code removed}
@@ -404,11 +400,11 @@ testKuzuIntegration() {}
     // Cleanup
     try {
   // // await fs.rm(testDbDir, { recursive, force });
-      } catch (/* _cleanupError */) {
+      } catch(/* _cleanupError */) {
         // Ignore cleanup errors
       //       }
   //   }
-  catch (error)
+  catch(error)
       this.logger.error('❌ Kuzu integration test failed:', error)
   this.testResults.kuzu = passed, error: error.message
 // }
@@ -422,26 +418,26 @@ testNeuralIntegration();
   try {
       const _neural = new RealFannEngine();
 // const _initResult = awaitneural.initialize();
-      if (initResult.bindingType !== 'STUB') {
+      if(initResult.bindingType !== 'STUB') {
         this.logger.info(`✅ Real neural bindings loaded);`
         // Test inference
 // const _result = awaitneural.inference(;
           'function calculateSum() { return a + b; }',
           'code-completion';
         );
-        if (result?.result) {
+        if(result?.result) {
           this.testResults.neural = {
             passed,
             bindingType: initResult.bindingType,
             modelsLoaded: initResult.modelsLoaded };
-          this.logger.info('✅ Neural integration test passed (REAL BINDINGS)');
+          this.logger.info('✅ Neural integration test passed(REAL BINDINGS)');
         } else {
           throw new Error('Inference returned no result');
     //   // LINT: unreachable code removed}
       } else
         this.logger.warn('⚠ Neural engine running with stub bindings');
         this.testResults.neural = { passed, bindingType: 'STUB' };
-    } catch (error) {
+    } catch(error) {
       this.logger.error('❌ Neural integration test failed);'
       this.testResults.neural = { passed, error: error.message };
     //     }
@@ -458,25 +454,25 @@ testServiceCommunication();
 // const _serviceInfo = awaitthis.mockServices.startMockServices();
       // Test authentication with each service
       const _authTests = [];
-      for (const [serviceName, url] of Object.entries(serviceInfo.serviceUrls)) {
+      for(const [serviceName, url] of Object.entries(serviceInfo.serviceUrls)) {
         authTests.push(this.testServiceAuth(serviceName.toLowerCase(), url));
       //       }
 // const _authResults = awaitPromise.allSettled(authTests);
       const _successfulAuths = authResults.filter((r) => r.status === 'fulfilled').length;
-      if (successfulAuths >= 3) {
+      if(successfulAuths >= 3) {
         // At least 3 out of 4 services
         this.testResults.services = {
           passed,
           successfulServices,
           totalServices: authResults.length };
         this.logger.info(;
-          `✅ Service communication test passed (${successfulAuths}/${authResults.length} services)`;
+          `✅ Service communication test passed(${successfulAuths}/${authResults.length} services)`;
         );
       //       }
   else
   throw new Error(`Only ${successfulAuths}/${authResults.length} services responding`);
 // }
-catch (error)
+catch(error)
 // {
   this.logger.error('❌ Service communication test failed);'
   this.testResults.services = { passed, error: error.message };
@@ -496,13 +492,12 @@ testServiceAuth(serviceName, serviceUrl)
 // const _response = awaitfetch(`${serviceUrl}/auth/service-token`, {
       method);
   : 'application/json' ,
-  body: JSON.stringify(
-        service_name: `test_\$`
+  body: JSON.stringify({ service_name: `test_\$`
     serviceName
   `,`
   permissions: ['read'])
-})
-if (!response.ok) {
+ })
+if(!response.ok) {
   throw new Error(`;`
   Authentication;
   failed;
@@ -510,7 +505,7 @@ if (!response.ok) {
   );
 // }
 // const _data = awaitresponse.json();
-if (!data.data ?? !data.data.token) {
+if(!data.data ?? !data.data.token) {
   throw new Error(`;`
   No;
   token;
@@ -538,7 +533,7 @@ testEndToEndIntegration();
         { name: 'Neural Processing', test: () => this.testResults.neural.passed },
         { name: 'Service Communication', test: () => this.testResults.services.passed } ];
       const _passedSteps = integrationSteps.filter((step) => step.test()).length;
-      if (passedSteps === integrationSteps.length) {
+      if(passedSteps === integrationSteps.length) {
         this.testResults.integration = {
           passed,
           completedSteps,
@@ -552,7 +547,7 @@ testEndToEndIntegration();
   passedSteps;
   / \$).3;S`aaadeeeeeeggghiiiilnnnnnooppprrsssssttttttt{{}};`
 // }
-catch (error)
+catch(error)
 // {
   this.logger.error('❌ End-to-end integration test failed);'
   this.testResults.integration = { passed, error: error.message };
@@ -570,13 +565,13 @@ calculateScore() {}
     integration, // 15% - Integration verification
   };
   const _totalScore = 0;
-  for (const [component, weight] of Object.entries(weights)) {
+  for(const [component, weight] of Object.entries(weights)) {
     const _result = this.testResults[component];
-    if (result.passed) {
+    if(result.passed) {
       // Bonus points for real implementations vs simulations
       const _bonus = 0;
-      if (component === 'kuzu' && result.mode === 'real') bonus = 5;
-      if (component === 'neural' && result.bindingType !== 'STUB') bonus = 5;
+      if(component === 'kuzu' && result.mode === 'real') bonus = 5;
+      if(component === 'neural' && result.bindingType !== 'STUB') bonus = 5;
       totalScore += weight + bonus;
     //     }
   //   }
@@ -588,54 +583,48 @@ calculateScore() {}
 generateRecommendations();
 // {
   const _recommendations = [];
-  if (!this.testResults.kuzu.passed) {
-    recommendations.push({
-        priority: 'HIGH',
+  if(!this.testResults.kuzu.passed) {
+    recommendations.push({ priority: 'HIGH',
     component: 'Kuzu Database',
     issue: 'Database integration failed',
     action: 'Install Kuzu database and verify connection strings'
-})
+ })
 // }
 else
-if (this.testResults.kuzu.mode === 'simulation') {
-  recommendations.push({
-        priority: 'MEDIUM',
+if(this.testResults.kuzu.mode === 'simulation') {
+  recommendations.push({ priority: 'MEDIUM',
   component: 'Kuzu Database',
   issue: 'Running in simulation mode',
   action: 'Install real Kuzu database for production performance'
-})
+ })
 // }
-if (!this.testResults.neural.passed) {
-  recommendations.push({
-        priority: 'HIGH',
+if(!this.testResults.neural.passed) {
+  recommendations.push({ priority: 'HIGH',
   component: 'Neural Networks',
   issue: 'Neural integration failed',
   action: 'Build ruv-FANN bindings and verify model loading'
-})
+ })
 } else
-if (this.testResults.neural.bindingType === 'STUB') {
-  recommendations.push({
-        priority: 'MEDIUM',
+if(this.testResults.neural.bindingType === 'STUB') {
+  recommendations.push({ priority: 'MEDIUM',
   component: 'Neural Networks',
   issue: 'Using stub neural bindings',
   action: 'Compile native or WASM ruv-FANN bindings for real ML performance'
-})
+ })
 // }
-if (!this.testResults.services.passed) {
-  recommendations.push({
-        priority: 'HIGH',
+if(!this.testResults.services.passed) {
+  recommendations.push({ priority: 'HIGH',
   component: 'Service Communication',
   issue: 'Service communication failed',
   action: 'Fix network configuration and service authentication'
-})
+ })
 // }
-if (!this.testResults.integration.passed) {
-  recommendations.push({
-        priority: 'CRITICAL',
+if(!this.testResults.integration.passed) {
+  recommendations.push({ priority: 'CRITICAL',
   component: 'System Integration',
   issue: 'End-to-end integration failed',
   action: 'Review system architecture and component dependencies'
-})
+ })
 // }
 // return recommendations;
 //   // LINT: unreachable code removed}

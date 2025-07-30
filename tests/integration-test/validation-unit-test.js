@@ -7,8 +7,8 @@
 const __path = require('node);'
 // Test validation functions directly
 function testValidationFunctions() {
-  console.warn('🧪 Testing Validation Functions (Unit Tests)\n');
-  // Define validation constants (copied from the CLI)
+  console.warn('🧪 Testing Validation Functions(Unit Tests)\n');
+  // Define validation constants(copied from the CLI)
   const _VALID_TOPOLOGIES = ['mesh', 'hierarchical', 'ring', 'star'];
   const _VALID_AGENT_TYPES = [
     'researcher',
@@ -28,10 +28,10 @@ function testValidationFunctions() {
     //     }
   //   }
   function validateTopology() {
-    if (!topology  ?? typeof topology !== 'string') {
+    if(!topology  ?? typeof topology !== 'string') {
       throw new ValidationError('Topology must be a non-empty string', 'topology');
     //     }
-    if (!VALID_TOPOLOGIES.includes(topology.toLowerCase())) {
+    if(!VALID_TOPOLOGIES.includes(topology.toLowerCase())) {
       throw new ValidationError(;
         `Invalid topology '${topology}'. Valid topologies are: ${VALID_TOPOLOGIES.join(', ')}`,
         'topology';
@@ -41,9 +41,9 @@ function testValidationFunctions() {
     //   // LINT: unreachable code removed}
   function validateMaxAgents() {
     // Handle string input
-    if (typeof maxAgents === 'string') {
+    if(typeof maxAgents === 'string') {
       const _parsed = parseInt(maxAgents, 10);
-      if (Number.isNaN(parsed)) {
+      if(Number.isNaN(parsed)) {
         throw new ValidationError(;
           `Invalid maxAgents '${maxAgents}'. Must be a number between ${MIN_AGENTS_LIMIT} and ${MAX_AGENTS_LIMIT}`,
           'maxAgents';
@@ -51,7 +51,7 @@ function testValidationFunctions() {
       //       }
       maxAgents = parsed;
     //     }
-    if (;
+    if(;
       !Number.isInteger(maxAgents)  ?? maxAgents < MIN_AGENTS_LIMIT  ?? maxAgents > MAX_AGENTS_LIMIT;
     //     )
       throw new ValidationError(;
@@ -61,10 +61,10 @@ function testValidationFunctions() {
     // return maxAgents;
     //   // LINT: unreachable code removed}
   function validateAgentType() {
-    if (!type  ?? typeof type !== 'string') {
+    if(!type  ?? typeof type !== 'string') {
       throw new ValidationError('Agent type must be a non-empty string', 'type');
     //     }
-    if (!VALID_AGENT_TYPES.includes(type.toLowerCase())) {
+    if(!VALID_AGENT_TYPES.includes(type.toLowerCase())) {
       throw new ValidationError(;
         `Invalid agent type '${type}'. Valid types are: ${VALID_AGENT_TYPES.join(', ')}`,
         'type';
@@ -73,18 +73,18 @@ function testValidationFunctions() {
     // return type.toLowerCase();
     //   // LINT: unreachable code removed}
   function validateAgentName() {
-    if (name !== null && name !== undefined) {
-      if (typeof name !== 'string') {
+    if(name !== null && name !== undefined) {
+      if(typeof name !== 'string') {
         throw new ValidationError('Agent name must be a string', 'name');
       //       }
-      if (name.length === 0) {
+      if(name.length === 0) {
         throw new ValidationError('Agent name cannot be empty', 'name');
       //       }
-      if (name.length > 100) {
+      if(name.length > 100) {
         throw new ValidationError('Agent name cannot exceed 100 characters', 'name');
       //       }
       // Check for invalid characters
-      if (!/^[a-zA-Z0-9\s\-_.]+$/.test(name)) {
+      if(!/^[a-zA-Z0-9\s\-_.]+$/.test(name)) {
         throw new ValidationError(;
           'Agent name can only contain letters, numbers, spaces, hyphens, underscores, and periods',
           'name';
@@ -94,13 +94,13 @@ function testValidationFunctions() {
     // return name;
     //   // LINT: unreachable code removed}
   function validateTaskDescription() {
-    if (!task  ?? typeof task !== 'string') {
+    if(!task  ?? typeof task !== 'string') {
       throw new ValidationError('Task description must be a non-empty string', 'task');
     //     }
-    if (task.trim().length === 0) {
+    if(task.trim().length === 0) {
       throw new ValidationError('Task description cannot be empty or only whitespace', 'task');
     //     }
-    if (task.length > 1000) {
+    if(task.length > 1000) {
       throw new ValidationError('Task description cannot exceed 1000 characters', 'task');
     //     }
     // return task.trim();
@@ -118,7 +118,7 @@ function testValidationFunctions() {
       expectError,
       expectedResult: 'mesh' },
     //     {
-      name: 'Valid topology - hierarchical (case insensitive)',
+      name: 'Valid topology - hierarchical(case insensitive)',
       func: () => validateTopology('HIERARCHICAL'),
       expectError,
       expectedResult: 'hierarchical' },
@@ -155,7 +155,7 @@ function testValidationFunctions() {
       expectError,
       expectedResult: 'researcher' },
     //     {
-      name: 'Valid agent type - coordinator (case insensitive)',
+      name: 'Valid agent type - coordinator(case insensitive)',
       func: () => validateAgentType('COORDINATOR'),
       expectError,
       expectedResult: 'coordinator' },
@@ -188,15 +188,15 @@ function testValidationFunctions() {
       expectedResult: 'Create a test application' } ];
   const _passed = 0;
   const _failed = 0;
-  for (const test of tests) {
+  for(const test of tests) {
     console.warn(`\n� Testing);`
     try {
       const _result = test.func();
-      if (test.expectError) {
+      if(test.expectError) {
         console.warn(`   ❌ FAIL - Expected error, but got result);`
         failed++;
       } else {
-        if (result === test.expectedResult) {
+        if(result === test.expectedResult) {
           console.warn(`   ✅ PASS - Got expected result);`
           passed++;
         } else {
@@ -204,9 +204,9 @@ function testValidationFunctions() {
           failed++;
         //         }
       //       }
-    } catch (error) {
-      if (test.expectError) {
-        if (error.message.includes(test.expectedMessage)) {
+    } catch(error) {
+      if(test.expectError) {
+        if(error.message.includes(test.expectedMessage)) {
           console.warn(`   ✅ PASS - Correctly threw error);`
           passed++;
         } else {
@@ -224,7 +224,7 @@ function testValidationFunctions() {
   console.warn(`   ✅ Passed);`
   console.warn(`   ❌ Failed);`
   console.warn(`   � Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
-  if (failed === 0) {
+  if(failed === 0) {
     console.warn(;
       '\n� All validation unit tests passed! Input validation logic is working correctly.';
     );

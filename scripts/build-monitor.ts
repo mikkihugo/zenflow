@@ -7,8 +7,8 @@
  * @version 2.0.0;
  */
 
-import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
+import { exec  } from 'node:child_process';
+import { promisify  } from 'node:util';
 
 const _execAsync = promisify(exec);
 /**
@@ -102,7 +102,7 @@ runBuild();
         success: errors.length === 0 }
   this.buildHistory.push(buildResult);
   // return buildResult;
-  //   // LINT: unreachable code removed} catch (error) {
+  //   // LINT: unreachable code removed} catch(error) {
   // Build failed, capture error information
   const _errorMessage = error instanceof Error ? error.message : String(error);
   const _errors = this.parseErrors(errorMessage);
@@ -125,14 +125,14 @@ this.buildHistory.push(buildResult);
 // private parseErrors(buildOutput)
 : TypeScriptError[]
 // {
-  if (!buildOutput) return [];
+  if(!buildOutput) return [];
   // ; // LINT: unreachable code removed
   const _errorLines = buildOutput;
 split('\n')
 filter((line) => line.includes('error TS')  ?? line.includes('Error))'
   return errorLines.map((line) => {
       const _match = line.match(/([^]+):\s*error\s+TS(\d+):\s*(.+)/);
-    // if (match) { // LINT: unreachable code removed
+    // if(match) { // LINT: unreachable code removed
         return {
           file: match[1],
     // code: match[2], // LINT: unreachable code removed
@@ -147,16 +147,15 @@ filter((line) => line.includes('error TS')  ?? line.includes('Error))'
    *;
    * @returns Promise resolving to boolean indicating activity;
     // */ // LINT: unreachable code removed
-// async
-checkSwarmMemory() {}
+// async checkSwarmMemory() { }
 : Promise<boolean>
-// {
+// 
   try {
       const { stdout } = // await execAsync(;
         'npx claude-zen hooks pre-search --query "agent-progress" --cache-results true';
       );
       // return stdout.includes('progress')  ?? stdout.includes('fixed');
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       // Swarm memory check failed, assume no activity
       // return false;
     //   // LINT: unreachable code removed}
@@ -171,14 +170,14 @@ checkSwarmMemory() {}
     console.warn('� Build-Verifier Agent - Continuous Monitoring Active')
   console.warn(`� Baseline)`
   console.warn(' Target)'
-  while (this.monitoringActive) {
+  while(this.monitoringActive) {
     try {
         // Check for swarm activity
 // const _swarmActivity = awaitthis.checkSwarmMemory();
-        if (swarmActivity) {
+        if(swarmActivity) {
           console.warn('� Swarm activity detected - Running build verification...');
 // const _buildResult = awaitthis.runBuild();
-          if (buildResult.errorCount < this.errorCount) {
+          if(buildResult.errorCount < this.errorCount) {
             const _reduction = this.errorCount - buildResult.errorCount;
             console.warn(;
               `✅ Progress! Errors reduced by \$reduction);`
@@ -187,7 +186,7 @@ checkSwarmMemory() {}
             // Store progress and alert swarm
 // // await this.storeProgress(buildResult);
 // // await this.alertSwarm(buildResult);
-          } else if (buildResult.errorCount > this.errorCount) {
+          } else if(buildResult.errorCount > this.errorCount) {
             const _increase = buildResult.errorCount - this.errorCount;
             console.warn(;
               `⚠  WARNING);`
@@ -195,18 +194,18 @@ checkSwarmMemory() {}
 // // await this.alertRegression(buildResult);
           //           }
           // Check for alpha readiness
-          if (buildResult.errorCount === 0) {
+          if(buildResult.errorCount === 0) {
             console.warn('� ALPHA RELEASE READY);'
 // // await this.certifyAlphaReady();
             break;
           //           }
         //         }
-        // Wait before next check (30 second intervals)
+        // Wait before next check(30 second intervals)
 // // await new Promise((resolve) => setTimeout(resolve, 30000));
-      } catch (error) {
+      } catch(error) {
         const _errorMessage = error instanceof Error ? error.message : String(error);
         console.error('❌ Monitor error);'
-        // Wait longer on error (1 minute)
+        // Wait longer on error(1 minute)
 // // await new Promise((resolve) => setTimeout(resolve, 60000));
       //       }
   //   }
@@ -220,9 +219,9 @@ checkSwarmMemory() {}
   storeProgress(buildResult)
   : Promise<void>
   try {
-      const _message = `BUILD PROGRESS: $buildResult.errorCounterrors remaining (${this.errorCount - buildResult.errorCount} fixed)`;
+      const _message = `BUILD PROGRESS: $buildResult.errorCounterrors remaining(${this.errorCount - buildResult.errorCount} fixed)`;
 // // await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
-    } catch (error) {
+    } catch(error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
       console.error('Failed to store progress);'
     //     }
@@ -240,7 +239,7 @@ checkSwarmMemory() {}
     console.warn(message);
     try {
 // // await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
-    } catch (error) {
+    } catch(error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
       console.error('Failed to alert swarm);'
     //     }
@@ -259,7 +258,7 @@ checkSwarmMemory() {}
     console.warn(message);
     try {
 // // await execAsync(`npx claude-zen hooks notification --message "${message}" --telemetry true`);
-    } catch (error) {
+    } catch(error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
       console.error('Failed to alert regression);'
     //     }
@@ -288,7 +287,7 @@ checkSwarmMemory() {}
 // // await execAsync(;
         `npx claude-zen hooks post-task --task-id "alpha-build-verification" --analyze-performance true`;
       );
-    } catch (error) {
+    } catch(error) {
       const _errorMessage = error instanceof Error ? error.message : String(error);
       console.error('Failed to certify alpha);'
     //     }
@@ -325,7 +324,7 @@ async function main(): Promise<void> {
 // await monitor.monitor();
 // }
 // Start monitoring if run directly
-if (import.meta.url === `file) {`
+if(import.meta.url === `file) {`
   main().catch((error) => {
     console.error('❌ Build monitor error);'
     process.exit(1);

@@ -8,8 +8,8 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { describe, expect } from '@jest/globals';
+import { fileURLToPath  } from 'node:url';
+import { describe, expect  } from '@jest/globals';
 import packageJson from '../../package.json';
 
 assert;
@@ -42,7 +42,7 @@ describe('CLI Basic Tests', () => {
     const _cliPath = path.resolve(__dirname, '../../claude-zen');
     const _cliExists = fs.existsSync(cliPath);
     expect(cliExists).toBe(true);
-    if (cliExists) {
+    if(cliExists) {
       // Additional validation: check if file is executable
       const _stats = fs.statSync(cliPath);
       expect(stats.isFile()).toBe(true);
@@ -67,10 +67,10 @@ describe('CLI Basic Tests', () => {
    */
   test('should have valid package.json structure', () => {
     const _pkg = packageJson as PackageJson;
-    // Check version format (semantic versioning)
+    // Check version format(semantic versioning)
     const _versionPattern = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/;
     expect(versionPattern.test(pkg.version)).toBe(true);
-    // Validate name format (npm package naming)
+    // Validate name format(npm package naming)
     const _namePattern = /^[a-z][a-z0-9-]*$/;
     expect(namePattern.test(pkg.name)).toBe(true);
   });
@@ -80,8 +80,8 @@ describe('CLI Basic Tests', () => {
   test('should have CLI dependencies configured', () => {
     const _pkg = packageJson as PackageJson;
     // Check if this is a CLI package
-    if (pkg.bin) {
-      if (typeof pkg.bin === 'string') {
+    if(pkg.bin) {
+      if(typeof pkg.bin === 'string') {
         expect(pkg.bin).toBeTruthy();
       } else {
         expect(Object.keys(pkg.bin).length).toBeGreaterThan(0);

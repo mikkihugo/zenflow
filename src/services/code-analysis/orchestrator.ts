@@ -3,7 +3,7 @@
  * Coordinates AST parsing, dependency analysis, duplicate detection and Kuzu graph storage;
  */
 
-import { mkdir } from 'node:fs/promises';
+import { mkdir  } from 'node:fs/promises';
 import ASTParser from './ast-parser.js';
 import ComplexityAnalyzer from './complexity-analyzer.js';
 import DependencyAnalyzer from './dependency-analyzer.js';
@@ -15,7 +15,7 @@ let KuzuGraphInterface;
 try {
 // const _kuzuModule = awaitimport('../../cli/database/kuzu-graph-interface.js');
   KuzuGraphInterface = kuzuModule.default;
-} catch (/* _e */) {
+} catch(/* _e */) {
   console.warn('Kuzu graph interface not available, graph storage disabled');
   KuzuGraphInterface = null;
 // }
@@ -36,10 +36,10 @@ try {
   /**
    * Initialize the analysis system;
    */;
-  async initialize() {
+  async initialize() { 
     console.warn('� Initializing Code Analysis Orchestrator...');
 
-    try {
+    try 
       // Create output directory
 // // await mkdir(this.config.outputDir, {recursive = true;
       console.warn('✅ Code analysis system initialized');
@@ -60,28 +60,28 @@ try {
       results.ast = // await this.performASTAnalysis(sourceFiles);
 
       // 3. Dependency Analysis
-      if (analysisOptions.includeDependencies) {
+      if(analysisOptions.includeDependencies) {
         console.warn('� Analyzing dependencies...');
         results.dependencies = // await this.performDependencyAnalysis();
       //       }
 
 
       // 4. Duplicate Detection
-      if (analysisOptions.includeDuplicates) {
+      if(analysisOptions.includeDuplicates) {
         console.warn('� Detecting duplicates...');
         results.duplicates = // await this.performDuplicateAnalysis();
       //       }
 
 
       // 5. Complexity Analysis
-      if (analysisOptions.includeComplexity) {
+      if(analysisOptions.includeComplexity) {
         console.warn('� Analyzing complexity...');
         results.complexity = // await this.performComplexityAnalysis(sourceFiles);
       //       }
 
 
       // 6. Store in Kuzu Graph
-      if (analysisOptions.storeInGraph) {
+      if(analysisOptions.storeInGraph) {
         console.warn('� Storing in graph database...');
         results.graph = // await this.storeInGraph(results);
       //       }
@@ -94,7 +94,7 @@ try {
 // // await this.saveAnalysisResults(results);
       console.warn('✅ Code analysis complete!');
       // return results;
-    //   // LINT: unreachable code removed} catch (/* _error */) {
+    //   // LINT: unreachable code removed} catch(/* _error */) {
       console.error(`❌ Code analysisfailed = // await this.getAllFiles(this.config.projectPath);`
 
     // return files.filter(file => {
@@ -111,8 +111,8 @@ try {
   /**
    * Get all files recursively;
    */;
-  async getAllFiles(dirPath) {
-    const { readdir, stat } = await import('fs/promises');
+  async getAllFiles(dirPath) { 
+    const  readdir, stat } = await import('fs/promises');
     const { join } = await import('path');
 
     const _files = [];
@@ -125,16 +125,16 @@ try {
           const _fullPath = join(currentPath, entry);
 // const _stats = awaitstat(fullPath);
 
-          if (stats.isDirectory()) {
+          if(stats.isDirectory()) {
             // Skip common ignored directories
-            if (!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
+            if(!['node_modules', '.git', 'dist', 'build'].includes(entry)) {
 // // await walk(fullPath);
             //             }
           } else {
             files.push(fullPath);
           //           }
         //         }
-      } catch (error) {
+      } catch(error) {
         console.warn(`Skipping directory ${currentPath});`
     //     }
   //   }
@@ -192,14 +192,14 @@ performASTAnalysis(sourceFiles);
   /**
    * Perform dependency analysis;
    */;
-  async performDependencyAnalysis() {
+  async performDependencyAnalysis() { 
 // const _dependencyResults = awaitthis.dependencyAnalyzer.analyzeDependencies(this.config.projectPath);
 
     // Find circular dependencies
 
     // Analyze graph structure
 
-    // return {
+    // return 
 ..dependencyResults,
     // circular = {nodes_inserted = results.ast.files.length; // LINT: unreachable code removed
         graphResults.operations.push('source_files');
@@ -238,7 +238,7 @@ performASTAnalysis(sourceFiles);
       //       }
 
 
-      // 6. Insert types (TypeScript)
+      // 6. Insert types(TypeScript)
       if(results.ast.types && results.ast.types.length > 0) {
 // // await this.insertTypes(results.ast.types);
         graphResults.nodes_inserted += results.ast.types.length;
@@ -294,21 +294,21 @@ performASTAnalysis(sourceFiles);
   /**
    * Generate comprehensive analysis summary;
    */;
-  async generateAnalysisSummary(results) {
-    const __summary = {overview = > sum + f.line_count, 0),average_complexity = [];
+  async generateAnalysisSummary(results) { 
+    const __summary = overview = > sum + f.line_count, 0),average_complexity = [];
 
     // High complexity functions
     if(results.ast.metrics.highComplexityFunctions.length > 0) {
-      recommendations.push({type = [];
+      recommendations.push({ type = [];
 
     // Add complexity issues
-    for (const _func of results.ast.metrics.highComplexityFunctions.slice(0, 5)) {
+    for(const _func of results.ast.metrics.highComplexityFunctions.slice(0, 5)) {
       issues.push({
         //         type => {
       const _severityOrder = {critical = severityOrder[b.severity] - severityOrder[a.severity];
-      if (severityDiff !== 0) return severityDiff;
-    // return (b.metric  ?? 0) - (a.metric  ?? 0); // LINT: unreachable code removed
-    });
+      if(severityDiff !== 0) return severityDiff;
+    // return(b.metric  ?? 0) - (a.metric  ?? 0); // LINT: unreachable code removed
+     });
   //   }
 
 
@@ -317,14 +317,14 @@ performASTAnalysis(sourceFiles);
    */;
   calculateFileComplexity(file, functions) {
     const _fileFunctions = functions.filter(f => f.file_id === file.id);
-    if (fileFunctions.length === 0) return 0;
+    if(fileFunctions.length === 0) return 0;
     // ; // LINT: unreachable code removed
     const _totalComplexity = fileFunctions.reduce((sum, f) => sum + f.cyclomatic_complexity, 0);
     return Math.round((totalComplexity / fileFunctions.length) * 100) / 100;
     //   // LINT: unreachable code removed}
 
   /**
-   * Calculate maintainability index (simplified);
+   * Calculate maintainability index(simplified);
    */;
   calculateMaintainabilityIndex(file) {
     // Simplified maintainability index based on file size and estimated complexity
@@ -337,11 +337,11 @@ performASTAnalysis(sourceFiles);
   /**
    * Save analysis results to files;
    */;
-  async saveAnalysisResults(results) {
+  async saveAnalysisResults(results) { 
     const _timestamp = new Date().toISOString().replace(/[]/g, '-');
 
     // Save comprehensive results
-    const _resultsPath = path.join(this.config.outputDir, `analysis-results-${timestamp}.json`);
+    const _resultsPath = path.join(this.config.outputDir, `analysis-results-$timestamp}.json`);
 // // await writeFile(resultsPath, JSON.stringify(results, null, 2));
     // Save summary report
     const _summaryPath = path.join(this.config.outputDir, `analysis-summary-${timestamp}.json`);
@@ -373,7 +373,7 @@ performASTAnalysis(sourceFiles);
 
     // Update graph if requested
     if(options.updateGraph) {
-// // await this.storeInGraph({ ast});
+// // await this.storeInGraph({ ast });
     //     }
 
 
